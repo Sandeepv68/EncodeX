@@ -62,30 +62,45 @@ export async function runCli(): Promise<void> {
 
       await new Promise<void>((resolve, reject) => {
         const emitter = transcoder.convert(input, output, options);
+        const timeout = setTimeout(() => {
+          transcoder.cancel();
+          reject(new Error('Conversion timed out'));
+        }, 300000);
         emitter.on('progress', (progress) => {
-          process.stdout.clearLine(0);
-          process.stdout.cursorTo(0);
-          process.stdout.write(`Progress: ${progress.time} | Speed: ${progress.speed} | ETA: ${progress.eta}s`);
+          try {
+            process.stdout.clearLine(0);
+            process.stdout.cursorTo(0);
+            process.stdout.write(`Progress: ${progress.time} | Speed: ${progress.speed} | ETA: ${progress.eta}s`);
+          } catch { /* non-TTY stdout */ }
         });
         emitter.on('end', () => {
+          clearTimeout(timeout);
           console.log('\nConversion completed successfully!');
           resolve();
         });
         emitter.on('error', (err) => {
+          clearTimeout(timeout);
           console.error('\nConversion failed:', err.message);
           reject(err);
         });
       });
     });
 
-  const cliArgs = process.argv.filter((arg) => arg !== '--cli' && arg !== '--no-sandbox' && arg !== '--disable-gpu');
+  const scriptIndex = (() => {
+    for (let i = process.argv.length - 1; i >= 0; i--) {
+      if (process.argv[i].endsWith('index.js')) return i;
+    }
+    return -1;
+  })();
+  const userArgs = scriptIndex >= 0 ? process.argv.slice(scriptIndex + 1) : process.argv.slice(2);
+  const cliArgs = userArgs.filter((arg) => arg !== '--cli');
 
   if (cliArgs.includes('-h') || cliArgs.includes('--help')) {
     program.outputHelp();
     return;
   }
 
-  await program.parseAsync(cliArgs);
+  await program.parseAsync(cliArgs, { from: 'user' });
 }
 
 function createTranscoder(type: TranscoderType): FfmpegCore | FFToolCore | BmfCore {
