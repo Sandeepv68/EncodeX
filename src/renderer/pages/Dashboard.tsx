@@ -30,7 +30,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   return (
     <Box>
-      <Typography variant="h4" sx={{ color: 'primary.main', fontWeight: 700, mb: 1 }}>Welcome to OpenConverter</Typography>
+      <Typography variant="h4" sx={{ color: 'primary.main', fontWeight: 700, mb: 1 }}>Welcome to EncodeX</Typography>
       <Typography color="text.secondary" sx={{ mb: 3 }}>
         Simple and user-friendly tools to convert, edit, and process audio and video files.
       </Typography>

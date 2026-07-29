@@ -9,7 +9,7 @@ export const WINDOW_SIZE = {
   MIN_HEIGHT: 600,
 } as const;
 
-export const APP_NAME = 'OpenConverter';
+export const APP_NAME = 'EncodeX';
 
 export const THEME_STORAGE_KEY = 'openconverter-theme';
 

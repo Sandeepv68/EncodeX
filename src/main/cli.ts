@@ -11,7 +11,7 @@ export function runCli(): void {
 
   program
     .name(APP_NAME)
-    .description('OpenConverter - Multimedia conversion tool')
+    .description('EncodeX - Multimedia conversion tool')
     .argument('<input>', 'Input file')
     .argument('<output>', 'Output file')
     .option('--transcoder <type>', `Set transcoder type (${TRANSCODER_TYPES.join(', ')})`, TRANSCODER_TYPES[0])
