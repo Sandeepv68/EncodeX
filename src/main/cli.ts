@@ -71,7 +71,9 @@ export async function runCli(): Promise<void> {
             process.stdout.clearLine(0);
             process.stdout.cursorTo(0);
             process.stdout.write(`Progress: ${progress.time} | Speed: ${progress.speed} | ETA: ${progress.eta}s`);
-          } catch { /* non-TTY stdout */ }
+          } catch {
+            /* non-TTY stdout */
+          }
         });
         emitter.on('end', () => {
           clearTimeout(timeout);
