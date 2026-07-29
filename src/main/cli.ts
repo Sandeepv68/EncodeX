@@ -31,18 +31,6 @@ export async function runCli(): Promise<void> {
       const options: ConversionOptions = {};
       const transcoderType = (opts.transcoder as TranscoderType) || TRANSCODER_TYPES[0];
 
-      if (opts.info) {
-        const transcoder = createTranscoder(transcoderType);
-        try {
-          const info = await transcoder.getInfo(input);
-          console.log(JSON.stringify(info, null, 2));
-        } catch (err: unknown) {
-          console.error('Error getting media info:', err instanceof Error ? err.message : String(err));
-          process.exit(EXIT_CODES.ERROR);
-        }
-        process.exit(EXIT_CODES.SUCCESS);
-      }
-
       if (opts.copy) options.copy = true;
       if (opts.videoCodec) options.videoCodec = opts.videoCodec;
       if (opts.audioCodec) options.audioCodec = opts.audioCodec;
@@ -97,9 +85,34 @@ export async function runCli(): Promise<void> {
   const userArgs = scriptIndex >= 0 ? process.argv.slice(scriptIndex + 1) : process.argv.slice(2);
   const cliArgs = userArgs.filter((arg) => arg !== '--cli');
 
+  const infoIndex = cliArgs.indexOf('--info');
   if (cliArgs.includes('-h') || cliArgs.includes('--help')) {
     program.outputHelp();
     return;
+  }
+
+  if (infoIndex >= 0) {
+    const input = infoIndex + 1 < cliArgs.length ? cliArgs[infoIndex + 1] : undefined;
+    const transcoderType = (() => {
+      const tIdx = cliArgs.indexOf('--transcoder');
+      if (tIdx >= 0 && tIdx + 1 < cliArgs.length) return cliArgs[tIdx + 1];
+      return TRANSCODER_TYPES[0];
+    })() as TranscoderType;
+
+    if (!input) {
+      console.error('Error: --info requires an input file');
+      process.exit(EXIT_CODES.ERROR);
+    }
+
+    const transcoder = createTranscoder(transcoderType);
+    try {
+      const info = await transcoder.getInfo(input);
+      console.log(JSON.stringify(info, null, 2));
+    } catch (err: unknown) {
+      console.error('Error getting media info:', err instanceof Error ? err.message : String(err));
+      process.exit(EXIT_CODES.ERROR);
+    }
+    process.exit(EXIT_CODES.SUCCESS);
   }
 
   await program.parseAsync(cliArgs, { from: 'user' });
