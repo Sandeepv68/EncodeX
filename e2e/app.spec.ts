@@ -20,7 +20,16 @@ describe.runIf(IS_E2E)('Electron App', () => {
   }, 60000);
 
   afterAll(async () => {
-    await electronApp?.close();
+    if (electronApp) {
+      const pid = electronApp.process().pid;
+      await Promise.race([
+        electronApp.close(),
+        new Promise((resolve) => setTimeout(resolve, 5000)),
+      ]);
+      if (pid) {
+        try { process.kill(pid, 'SIGKILL'); } catch { /* already dead */ }
+      }
+    }
   });
 
   it('should open a window with the correct title', async () => {
@@ -29,7 +38,7 @@ describe.runIf(IS_E2E)('Electron App', () => {
   });
 
   it('should render the dashboard on load', async () => {
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
     const url = page.url();
     expect(url).toContain('/');
     const bodyText = await page.textContent('body');
