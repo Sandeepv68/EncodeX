@@ -5,3 +5,4 @@ release/
 *.log
 .DS_Store
 Thumbs.db
+e2e-media-*/
