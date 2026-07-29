@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
@@ -8,18 +9,23 @@ interface Props {
   accept?: string;
 }
 
-export default function FileDropZone({ onFileSelect, label = 'Drop file here or click to browse', accept }: Props) {
+export default function FileDropZone({ onFileSelect, label, accept }: Props) {
+  const { t } = useTranslation();
+  const resolvedLabel = label || t('fileDropZone.defaultLabel');
   const [dragging, setDragging] = useState(false);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) onFileSelect((file as any).path);
-  }, [onFileSelect]);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragging(false);
+      const file = e.dataTransfer.files[0];
+      if (file) onFileSelect((file as any).path);
+    },
+    [onFileSelect],
+  );
 
   const handleClick = async () => {
-    const extList = accept ? [{ name: 'Files', extensions: accept.split(',').map(s => s.trim()) }] : undefined;
+    const extList = accept ? [{ name: 'Files', extensions: accept.split(',').map((s) => s.trim()) }] : undefined;
     const file = await window.electronAPI?.selectFile(extList);
     if (file) onFileSelect(file);
   };
@@ -27,7 +33,10 @@ export default function FileDropZone({ onFileSelect, label = 'Drop file here or 
   return (
     <Box
       onDrop={handleDrop}
-      onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setDragging(true);
+      }}
       onDragLeave={() => setDragging(false)}
       onClick={handleClick}
       sx={{

@@ -1,0 +1,132 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "Switch to Light Mode",
+    "switchDark": "Switch to Dark Mode",
+    "language": "Language"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "convert": "Convert",
+    "mediaInfo": "Media Info",
+    "image": "Image",
+    "audio": "Audio",
+    "cut": "Cut",
+    "batchQueue": "Batch Queue"
+  },
+  "dashboard": {
+    "welcome": "Welcome to EncodeX",
+    "subtitle": "Simple and user-friendly tools to convert, edit, and process audio and video files.",
+    "descConvert": "Change codecs, resolution, pixel format",
+    "descMediaInfo": "View detailed stream information",
+    "descImage": "Compress images with format control",
+    "descAudio": "Extract audio from video files",
+    "descCut": "Cut video with frame-accurate player",
+    "descBatch": "Process multiple files at once"
+  },
+  "convert": {
+    "title": "Convert Media",
+    "inputFile": "Input File",
+    "outputFile": "Output File",
+    "noFile": "No file selected",
+    "noOutput": "No output selected",
+    "browse": "Browse",
+    "saveAs": "Save As",
+    "losslessCopy": "Lossless copy (no re-encoding)",
+    "videoCodec": "Video Codec",
+    "audioCodec": "Audio Codec",
+    "videoBitrate": "Video Bitrate",
+    "audioBitrate": "Audio Bitrate",
+    "qscale": "QScale (1-31)",
+    "scale": "Scale (WxH)",
+    "pixelFormat": "Pixel Format",
+    "transcoderCore": "Transcoder Core",
+    "startConversion": "Start Conversion",
+    "converting": "Converting...",
+    "cancel": "Cancel",
+    "placeholderBitrate": "e.g. 2000k",
+    "placeholderAudioBitrate": "e.g. 192k",
+    "placeholderScale": "e.g. 1280x720"
+  },
+  "mediaInfo": {
+    "title": "Media Information",
+    "dropLabel": "Drop a media file here or click to browse",
+    "fileInfo": "File Info",
+    "file": "File",
+    "format": "Format",
+    "size": "Size",
+    "duration": "Duration",
+    "bitrate": "Bitrate",
+    "streams": "Streams",
+    "stream": "Stream",
+    "codec": "Codec",
+    "resolution": "Resolution",
+    "pixelFormat": "Pixel Format",
+    "frameRate": "Frame Rate",
+    "sampleRate": "Sample Rate",
+    "channels": "Channels",
+    "language": "Language"
+  },
+  "imageCompress": {
+    "title": "Compress Image",
+    "inputImage": "Input Image",
+    "dropLabel": "Drop image here",
+    "outputFile": "Output File",
+    "outputFormat": "Output Format",
+    "quality": "Quality (1-31)",
+    "scale": "Scale (optional)",
+    "compress": "Compress Image",
+    "compressing": "Compressing...",
+    "placeholderOutput": "output path",
+    "placeholderScale": "e.g. 800x600"
+  },
+  "audioExtract": {
+    "title": "Extract Audio",
+    "videoFile": "Video File",
+    "dropLabel": "Drop video file here",
+    "outputFile": "Output File",
+    "audioCodec": "Audio Codec",
+    "bitrate": "Bitrate",
+    "extract": "Extract Audio",
+    "extracting": "Extracting...",
+    "placeholderOutput": "e.g. output.mp3"
+  },
+  "videoCut": {
+    "title": "Cut Video",
+    "videoFile": "Video File",
+    "noFile": "No file selected",
+    "browse": "Browse",
+    "outputFile": "Output File",
+    "startTime": "Start Time (HH:MM:SS)",
+    "duration": "Duration (HH:MM:SS)",
+    "endTime": "End Time (HH:MM:SS)",
+    "useDuration": "Use duration instead of end time",
+    "cut": "Cut Video",
+    "cutting": "Cutting...",
+    "placeholderOutput": "output path",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "e.g. 00:01:30",
+    "placeholderEnd": "e.g. 00:01:30"
+  },
+  "batchQueue": {
+    "title": "Batch Queue",
+    "suffix": "Suffix",
+    "addFiles": "Add Files",
+    "cancelAll": "Cancel All",
+    "empty": "Queue is empty. Add files to begin batch processing.",
+    "remove": "Remove"
+  },
+  "progress": {
+    "time": "Time",
+    "speed": "Speed",
+    "eta": "ETA"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "tryAgain": "Try Again",
+    "description": "An unexpected error occurred."
+  },
+  "fileDropZone": {
+    "defaultLabel": "Drop file here or click to browse"
+  }
+}

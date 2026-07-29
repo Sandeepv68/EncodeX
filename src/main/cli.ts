@@ -36,8 +36,8 @@ export function runCli(): void {
         try {
           const info = await transcoder.getInfo(input);
           console.log(JSON.stringify(info, null, 2));
-        } catch (err: any) {
-          console.error('Error getting media info:', err.message);
+        } catch (err: unknown) {
+          console.error('Error getting media info:', err instanceof Error ? err.message : String(err));
           process.exit(EXIT_CODES.ERROR);
         }
         process.exit(EXIT_CODES.SUCCESS);
@@ -81,8 +81,11 @@ export function runCli(): void {
 
 function createTranscoder(type: TranscoderType): FfmpegCore | FFToolCore | BmfCore {
   switch (type) {
-    case 'FFMPEG': return new FfmpegCore();
-    case 'FFTOOL': return new FFToolCore();
-    case 'BMF': return new BmfCore();
+    case 'FFMPEG':
+      return new FfmpegCore();
+    case 'FFTOOL':
+      return new FFToolCore();
+    case 'BMF':
+      return new BmfCore();
   }
 }

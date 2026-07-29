@@ -39,26 +39,26 @@ export class FFToolCore implements ITranscoder {
       ];
       const proc = spawn(ffprobePath, args);
       let stdout = '';
-      proc.stdout.on('data', (chunk) => { stdout += chunk; });
+      proc.stdout.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
       proc.on('error', reject);
-      proc.on('close', (code) => {
+      proc.on('close', (code: number | null) => {
         if (code !== 0) return reject(new Error(`ffprobe exited with code ${code}`));
         try {
           const data = JSON.parse(stdout);
-          const streams: MediaStreamInfo[] = (data.streams || []).map((s: any) => ({
-            index: s.index ?? 0,
-            type: s.codec_type ?? 'video',
-            codec: s.codec_name ?? 'unknown',
-            codecLong: s.codec_long_name,
-            width: s.width,
-            height: s.height,
-            pixelFormat: s.pix_fmt,
-            frameRate: s.r_frame_rate,
-            bitrate: s.bit_rate != null ? String(s.bit_rate) : undefined,
-            sampleRate: s.sample_rate,
-            channels: s.channels,
-            duration: s.duration != null ? Number(s.duration) : undefined,
-            language: s.tags?.language,
+          const streams: MediaStreamInfo[] = (data.streams || []).map((s: Record<string, unknown>) => ({
+            index: (s.index as number) ?? 0,
+            type: (s.codec_type as string) ?? 'video',
+            codec: (s.codec_name as string) ?? 'unknown',
+            codecLong: s.codec_long_name as string | undefined,
+            width: s.width as number | undefined,
+            height: s.height as number | undefined,
+            pixelFormat: s.pix_fmt as string | undefined,
+            frameRate: s.r_frame_rate as string | undefined,
+            bitrate: s.bit_rate != null ? String(s.bit_rate as string) : undefined,
+            sampleRate: s.sample_rate as number | undefined,
+            channels: s.channels as number | undefined,
+            duration: s.duration != null ? Number(s.duration as string) : undefined,
+            language: (s.tags as Record<string, unknown> | undefined)?.language as string | undefined,
           }));
           const fmt = data.format || {};
           resolve({
@@ -106,7 +106,7 @@ export class FFToolCore implements ITranscoder {
     this.process = proc;
 
     let stderrData = '';
-    proc.stderr?.on('data', (chunk) => {
+    proc.stderr?.on('data', (chunk: Buffer) => {
       stderrData += chunk.toString();
       const matches = stderrData.match(PROGRESS_PATTERNS.TIME);
       if (matches?.length) {
@@ -129,12 +129,12 @@ export class FFToolCore implements ITranscoder {
       emitter.emit('progress', progress);
     }, TRANSCODER_DEFAULTS.PROGRESS_INTERVAL_MS);
 
-    proc.on('error', (err) => {
+    proc.on('error', (err: Error) => {
       if (progressTimer) clearInterval(progressTimer);
       emitter.emit('error', err);
     });
 
-    proc.on('close', (code) => {
+    proc.on('close', (code: number | null) => {
       if (progressTimer) clearInterval(progressTimer);
       if (code === 0) {
         emitter.emit('end');

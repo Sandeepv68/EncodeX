@@ -12,7 +12,9 @@ export default function CodecSelect({ type, value, onChange }: Props) {
   return (
     <TextField select fullWidth size="small" value={value} onChange={(e) => onChange(e.target.value)}>
       {codecs.map((c) => (
-        <MenuItem key={c.value} value={c.value}>{c.label}</MenuItem>
+        <MenuItem key={c.value} value={c.value}>
+          {c.label}
+        </MenuItem>
       ))}
     </TextField>
   );

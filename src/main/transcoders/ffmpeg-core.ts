@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import ffmpeg from 'fluent-ffmpeg';
+import type Ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
 import { existsSync } from 'fs';
 import { ITranscoder } from './interface';
@@ -31,12 +32,11 @@ export class FfmpegCore implements ITranscoder {
   getInfo(input: string): Promise<MediaInfo> {
     return new Promise((resolve, reject) => {
       const proc = ffmpeg(input);
-      proc.ffprobe((err, data) => {
+      proc.ffprobe((err: Error | null, data: Ffmpeg.FfprobeData) => {
         if (err) return reject(err);
-        const rawData = data as any;
-        const streams: MediaStreamInfo[] = (rawData.streams || []).map((s: any) => ({
+        const streams: MediaStreamInfo[] = (data.streams || []).map((s: Ffmpeg.FfprobeStream) => ({
           index: s.index ?? 0,
-          type: s.codec_type ?? 'video',
+          type: (s.codec_type as MediaStreamInfo['type']) ?? 'video',
           codec: s.codec_name ?? 'unknown',
           codecLong: s.codec_long_name,
           width: s.width,
@@ -47,9 +47,9 @@ export class FfmpegCore implements ITranscoder {
           sampleRate: s.sample_rate,
           channels: s.channels,
           duration: s.duration != null ? Number(s.duration) : undefined,
-          language: s.tags?.language,
+          language: s.tags?.language as string | undefined,
         }));
-        const fmt = rawData.format || {};
+        const fmt = data.format;
         resolve({
           file: fmt.filename ?? input,
           format: fmt.format_name ?? 'unknown',
@@ -85,18 +85,18 @@ export class FfmpegCore implements ITranscoder {
     cmd.output(output);
     cmd.on('start', (commandLine) => emitter.emit('start', commandLine));
     cmd.on('codecData', (data) => emitter.emit('codecData', data));
-    cmd.on('progress', (info: any) => {
+    cmd.on('progress', (info: { percent?: number; timemark?: string; currentFps?: number; speed?: string; eta?: number; currentKbps?: number }) => {
       const progress: ConversionProgress = {
         percent: info.percent ?? 0,
         time: info.timemark ?? EMPTY_PROGRESS.time,
         fps: info.currentFps ?? 0,
         speed: info.speed ?? EMPTY_PROGRESS.speed,
-        eta: info.eta ?? EMPTY_PROGRESS.eta,
+        eta: info.eta != null ? String(info.eta) : EMPTY_PROGRESS.eta,
         bitrate: info.currentKbps ? `${info.currentKbps}kbps` : '',
       };
       emitter.emit('progress', progress);
     });
-    cmd.on('error', (err) => emitter.emit('error', err));
+    cmd.on('error', (err: Error) => emitter.emit('error', err));
     cmd.on('end', () => emitter.emit('end'));
 
     this.currentProcess = cmd;

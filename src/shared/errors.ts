@@ -42,8 +42,10 @@ export function createError(code: ErrorCodeType, message: string, detail?: strin
   return new AppErrorImpl(code, message, detail);
 }
 
-export function isAppError(err: any): err is AppError {
-  return err && typeof err === 'object' && err.code && err.message && err.timestamp;
+export function isAppError(err: unknown): err is AppError {
+  if (!err || typeof err !== 'object') return false;
+  const obj = err as Record<string, unknown>;
+  return typeof obj.code === 'string' && typeof obj.message === 'string' && typeof obj.timestamp === 'number';
 }
 
 export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
@@ -63,10 +65,11 @@ export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
   UNKNOWN: 'An unexpected error occurred. Please try again.',
 };
 
-export function formatError(err: any): AppError {
+export function formatError(err: unknown): AppError {
   if (isAppError(err)) return err;
   if (err && typeof err === 'object') {
-    const message = err.message || 'Unknown error';
+    const msg = 'message' in err ? (err as Record<string, unknown>).message : undefined;
+    const message = typeof msg === 'string' ? msg : 'Unknown error';
     const code = inferErrorCode(message, err);
     return createError(code, ERROR_MESSAGES[code], message);
   }
@@ -75,14 +78,15 @@ export function formatError(err: any): AppError {
   return createError(code, ERROR_MESSAGES[code], strMessage);
 }
 
-function inferErrorCode(message: string, err?: any): ErrorCodeType {
+function inferErrorCode(message: string, err?: unknown): ErrorCodeType {
   const m = message.toLowerCase();
-  if (err?.code === 'ENOENT' || m.includes('enoent') || m.includes('not found') || m.includes('no such file')) {
+  const errCode = err && typeof err === 'object' && 'code' in err ? (err as Record<string, unknown>).code : undefined;
+  if (errCode === 'ENOENT' || m.includes('enoent') || m.includes('not found') || m.includes('no such file')) {
     if (m.includes('ffmpeg')) return ErrorCode.FFMPEG_NOT_FOUND;
     if (m.includes('ffprobe')) return ErrorCode.FFPROBE_NOT_FOUND;
     return ErrorCode.FILE_NOT_FOUND;
   }
-  if (err?.code === 'EACCES' || m.includes('permission denied') || m.includes('eacces')) return ErrorCode.PERMISSION_DENIED;
+  if (errCode === 'EACCES' || m.includes('permission denied') || m.includes('eacces')) return ErrorCode.PERMISSION_DENIED;
   if (m.includes('bmf') && (m.includes('not available') || m.includes('not installed'))) return ErrorCode.BMF_NOT_AVAILABLE;
   if (m.includes('cancelled') || m.includes('cancel')) return ErrorCode.CANCELLED;
   if (m.includes('probe') || m.includes('could not read')) return ErrorCode.PROBE_FAILED;

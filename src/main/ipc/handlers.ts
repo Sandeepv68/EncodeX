@@ -14,7 +14,7 @@ const jobQueue = new JobQueue();
 let currentTranscoder: FfmpegCore | FFToolCore | BmfCore | null = null;
 
 export function registerIpcHandlers(win: BrowserWindow): void {
-  const send = (channel: string, ...args: any[]) => {
+  const send = (channel: string, ...args: unknown[]) => {
     if (!win.isDestroyed()) win.webContents.send(channel, ...args);
   };
 
@@ -45,28 +45,31 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     try {
       const transcoder = createTranscoder(transcoderType);
       return await transcoder.getInfo(filePath);
-    } catch (err: any) {
+    } catch (err: unknown) {
       throw formatError(err);
     }
   });
 
-  ipcMain.handle(IPC.CONVERT_FILE, async (_event, input: string, output: string, options: ConversionOptions, transcoderType: TranscoderType) => {
-    try {
-      const transcoder = createTranscoder(transcoderType);
-      currentTranscoder = transcoder;
-      const emitter = transcoder.convert(input, output, options);
+  ipcMain.handle(
+    IPC.CONVERT_FILE,
+    async (_event, input: string, output: string, options: ConversionOptions, transcoderType: TranscoderType) => {
+      try {
+        const transcoder = createTranscoder(transcoderType);
+        currentTranscoder = transcoder;
+        const emitter = transcoder.convert(input, output, options);
 
-      return await new Promise<void>((resolve, reject) => {
-        emitter.on('progress', (progress: ConversionProgress) => {
-          send(IPC.CONVERSION_PROGRESS, { input, output, progress });
+        return await new Promise<void>((resolve, reject) => {
+          emitter.on('progress', (progress: ConversionProgress) => {
+            send(IPC.CONVERSION_PROGRESS, { input, output, progress });
+          });
+          emitter.on('error', (err: Error) => reject(formatError(err)));
+          emitter.on('end', () => resolve());
         });
-        emitter.on('error', (err: Error) => reject(formatError(err)));
-        emitter.on('end', () => resolve());
-      });
-    } catch (err: any) {
-      throw formatError(err);
-    }
-  });
+      } catch (err: unknown) {
+        throw formatError(err);
+      }
+    },
+  );
 
   ipcMain.handle(IPC.CANCEL_CONVERSION, async () => {
     if (currentTranscoder) {
@@ -106,7 +109,7 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     try {
       decoderInput = filePath;
       decoder.open(filePath);
-    } catch (err: any) {
+    } catch (err: unknown) {
       throw formatError(err);
     }
   });
@@ -145,8 +148,11 @@ export function registerIpcHandlers(win: BrowserWindow): void {
 
 function createTranscoder(type: TranscoderType): FfmpegCore | FFToolCore | BmfCore {
   switch (type) {
-    case 'FFMPEG': return new FfmpegCore();
-    case 'FFTOOL': return new FFToolCore();
-    case 'BMF': return new BmfCore();
+    case 'FFMPEG':
+      return new FfmpegCore();
+    case 'FFTOOL':
+      return new FFToolCore();
+    case 'BMF':
+      return new BmfCore();
   }
 }

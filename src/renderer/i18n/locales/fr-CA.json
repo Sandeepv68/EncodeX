@@ -1,0 +1,132 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "Passer en mode clair",
+    "switchDark": "Passer en mode sombre",
+    "language": "Langue"
+  },
+  "nav": {
+    "dashboard": "Tableau de Bord",
+    "convert": "Convertir",
+    "mediaInfo": "Infos Média",
+    "image": "Image",
+    "audio": "Audio",
+    "cut": "Couper",
+    "batchQueue": "File d'Attente"
+  },
+  "dashboard": {
+    "welcome": "Bienvenue sur EncodeX",
+    "subtitle": "Des outils simples et conviviaux pour convertir, éditer et traiter des fichiers audio et vidéo.",
+    "descConvert": "Modifier les codecs, la résolution, le format des pixels",
+    "descMediaInfo": "Voir les informations détaillées du flux",
+    "descImage": "Compresser les images avec contrôle du format",
+    "descAudio": "Extraire l'audio des fichiers vidéo",
+    "descCut": "Couper la vidéo avec un lecteur précis",
+    "descBatch": "Traiter plusieurs fichiers à la fois"
+  },
+  "convert": {
+    "title": "Convertir un Média",
+    "inputFile": "Fichier d'Entrée",
+    "outputFile": "Fichier de Sortie",
+    "noFile": "Aucun fichier sélectionné",
+    "noOutput": "Aucune sortie sélectionnée",
+    "browse": "Parcourir",
+    "saveAs": "Enregistrer Sous",
+    "losslessCopy": "Copie sans perte (sans ré-encodage)",
+    "videoCodec": "Codec Vidéo",
+    "audioCodec": "Codec Audio",
+    "videoBitrate": "Débit Vidéo",
+    "audioBitrate": "Débit Audio",
+    "qscale": "QScale (1-31)",
+    "scale": "Échelle (LxH)",
+    "pixelFormat": "Format de Pixel",
+    "transcoderCore": "Cœur du Transcodeur",
+    "startConversion": "Démarrer la Conversion",
+    "converting": "Conversion en cours...",
+    "cancel": "Annuler",
+    "placeholderBitrate": "ex. 2000k",
+    "placeholderAudioBitrate": "ex. 192k",
+    "placeholderScale": "ex. 1280x720"
+  },
+  "mediaInfo": {
+    "title": "Informations Média",
+    "dropLabel": "Déposez un fichier média ici ou cliquez pour parcourir",
+    "fileInfo": "Informations du Fichier",
+    "file": "Fichier",
+    "format": "Format",
+    "size": "Taille",
+    "duration": "Durée",
+    "bitrate": "Débit",
+    "streams": "Flux",
+    "stream": "Flux",
+    "codec": "Codec",
+    "resolution": "Résolution",
+    "pixelFormat": "Format de Pixel",
+    "frameRate": "Images par Seconde",
+    "sampleRate": "Fréquence d'Échantillonnage",
+    "channels": "Canaux",
+    "language": "Langue"
+  },
+  "imageCompress": {
+    "title": "Compresser une Image",
+    "inputImage": "Image d'Entrée",
+    "dropLabel": "Déposez l'image ici",
+    "outputFile": "Fichier de Sortie",
+    "outputFormat": "Format de Sortie",
+    "quality": "Qualité (1-31)",
+    "scale": "Échelle (optionnel)",
+    "compress": "Compresser l'Image",
+    "compressing": "Compression en cours...",
+    "placeholderOutput": "chemin de sortie",
+    "placeholderScale": "ex. 800x600"
+  },
+  "audioExtract": {
+    "title": "Extraire l'Audio",
+    "videoFile": "Fichier Vidéo",
+    "dropLabel": "Déposez le fichier vidéo ici",
+    "outputFile": "Fichier de Sortie",
+    "audioCodec": "Codec Audio",
+    "bitrate": "Débit",
+    "extract": "Extraire l'Audio",
+    "extracting": "Extraction en cours...",
+    "placeholderOutput": "ex. output.mp3"
+  },
+  "videoCut": {
+    "title": "Couper la Vidéo",
+    "videoFile": "Fichier Vidéo",
+    "noFile": "Aucun fichier sélectionné",
+    "browse": "Parcourir",
+    "outputFile": "Fichier de Sortie",
+    "startTime": "Heure de Début (HH:MM:SS)",
+    "duration": "Durée (HH:MM:SS)",
+    "endTime": "Heure de Fin (HH:MM:SS)",
+    "useDuration": "Utiliser la durée au lieu de l'heure de fin",
+    "cut": "Couper la Vidéo",
+    "cutting": "Coupe en cours...",
+    "placeholderOutput": "chemin de sortie",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "ex. 00:01:30",
+    "placeholderEnd": "ex. 00:01:30"
+  },
+  "batchQueue": {
+    "title": "File d'Attente",
+    "suffix": "Suffixe",
+    "addFiles": "Ajouter des Fichiers",
+    "cancelAll": "Tout Annuler",
+    "empty": "La file d'attente est vide. Ajoutez des fichiers pour commencer le traitement par lots.",
+    "remove": "Supprimer"
+  },
+  "progress": {
+    "time": "Temps",
+    "speed": "Vitesse",
+    "eta": "Estimation"
+  },
+  "errorBoundary": {
+    "title": "Quelque chose s'est mal passé",
+    "tryAgain": "Réessayer",
+    "description": "Une erreur inattendue s'est produite."
+  },
+  "fileDropZone": {
+    "defaultLabel": "Déposez le fichier ici ou cliquez pour parcourir"
+  }
+}

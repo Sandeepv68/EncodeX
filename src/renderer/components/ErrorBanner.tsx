@@ -32,11 +32,27 @@ export default function ErrorBanner({ error, onClose }: Props) {
   const cfg = config[error.code] || config[ErrorCode.UNKNOWN];
   return (
     <Collapse in>
-      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5, p: 1.5, borderRadius: 1, bgcolor: cfg.bg, border: `1px solid ${cfg.color}33` }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 1.5,
+          p: 1.5,
+          borderRadius: 1,
+          bgcolor: cfg.bg,
+          border: `1px solid ${cfg.color}33`,
+        }}
+      >
         <Box sx={{ color: cfg.color, mt: 0.3, display: 'flex' }}>{cfg.icon}</Box>
         <Box sx={{ flex: 1 }}>
-          <Typography variant="body2" sx={{ fontWeight: 600, color: cfg.color }}>{error.message}</Typography>
-          {error.detail && <Typography variant="caption" sx={{ color: cfg.color, opacity: 0.8, display: 'block', mt: 0.3 }}>{error.detail}</Typography>}
+          <Typography variant="body2" sx={{ fontWeight: 600, color: cfg.color }}>
+            {error.message}
+          </Typography>
+          {error.detail && (
+            <Typography variant="caption" sx={{ color: cfg.color, opacity: 0.8, display: 'block', mt: 0.3 }}>
+              {error.detail}
+            </Typography>
+          )}
         </Box>
         {onClose && (
           <IconButton size="small" onClick={onClose} sx={{ color: cfg.color, mt: -0.3 }}>

@@ -34,10 +34,14 @@ export class FrameDecoder extends EventEmitter {
 
     const ffmpegPath = getFfmpegPath();
     const args = [
-      FFMPEG_FLAGS.INPUT, input,
-      '-f', FFMPEG_FLAGS.RAWVIDEO,
-      FFMPEG_FLAGS.PIX_FMT, FFMPEG_FLAGS.PIX_FMT_RGB24,
-      '-s', `${width}x${height}`,
+      FFMPEG_FLAGS.INPUT,
+      input,
+      '-f',
+      FFMPEG_FLAGS.RAWVIDEO,
+      FFMPEG_FLAGS.PIX_FMT,
+      FFMPEG_FLAGS.PIX_FMT_RGB24,
+      '-s',
+      `${width}x${height}`,
       FFMPEG_FLAGS.NO_AUDIO,
       FFMPEG_FLAGS.NO_SUBTITLES,
       FFMPEG_FLAGS.NO_DATA,

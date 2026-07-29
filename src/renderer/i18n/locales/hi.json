@@ -1,0 +1,132 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "लाइट मोड पर स्विच करें",
+    "switchDark": "डार्क मोड पर स्विच करें",
+    "language": "भाषा"
+  },
+  "nav": {
+    "dashboard": "डैशबोर्ड",
+    "convert": "कन्वर्ट",
+    "mediaInfo": "मीडिया जानकारी",
+    "image": "इमेज",
+    "audio": "ऑडियो",
+    "cut": "कट",
+    "batchQueue": "बैच क्यू"
+  },
+  "dashboard": {
+    "welcome": "EncodeX में आपका स्वागत है",
+    "subtitle": "ऑडियो और वीडियो फ़ाइलों को कन्वर्ट, संपादित और प्रोसेस करने के लिए सरल और उपयोग में आसान उपकरण।",
+    "descConvert": "कोडेक, रिज़ॉल्यूशन, पिक्सल फ़ॉर्मैट बदलें",
+    "descMediaInfo": "विस्तृत स्ट्रीम जानकारी देखें",
+    "descImage": "फ़ॉर्मैट नियंत्रण के साथ इमेज कंप्रेस करें",
+    "descAudio": "वीडियो फ़ाइलों से ऑडियो निकालें",
+    "descCut": "फ़्रेम-सटीक प्लेयर से वीडियो काटें",
+    "descBatch": "एक साथ कई फ़ाइलों को प्रोसेस करें"
+  },
+  "convert": {
+    "title": "मीडिया कन्वर्ट करें",
+    "inputFile": "इनपुट फ़ाइल",
+    "outputFile": "आउटपुट फ़ाइल",
+    "noFile": "कोई फ़ाइल चयनित नहीं",
+    "noOutput": "कोई आउटपुट चयनित नहीं",
+    "browse": "ब्राउज़ करें",
+    "saveAs": "इस रूप में सहेजें",
+    "losslessCopy": "लॉसलेस कॉपी (बिना री-एन्कोडिंग)",
+    "videoCodec": "वीडियो कोडेक",
+    "audioCodec": "ऑडियो कोडेक",
+    "videoBitrate": "वीडियो बिटरेट",
+    "audioBitrate": "ऑडियो बिटरेट",
+    "qscale": "QScale (1-31)",
+    "scale": "स्केल (WxH)",
+    "pixelFormat": "पिक्सल फ़ॉर्मैट",
+    "transcoderCore": "ट्रांसकोडर कोर",
+    "startConversion": "कन्वर्ज़न शुरू करें",
+    "converting": "कन्वर्ट हो रहा है...",
+    "cancel": "रद्द करें",
+    "placeholderBitrate": "जैसे 2000k",
+    "placeholderAudioBitrate": "जैसे 192k",
+    "placeholderScale": "जैसे 1280x720"
+  },
+  "mediaInfo": {
+    "title": "मीडिया जानकारी",
+    "dropLabel": "मीडिया फ़ाइल यहाँ छोड़ें या ब्राउज़ करें",
+    "fileInfo": "फ़ाइल जानकारी",
+    "file": "फ़ाइल",
+    "format": "फ़ॉर्मैट",
+    "size": "आकार",
+    "duration": "अवधि",
+    "bitrate": "बिटरेट",
+    "streams": "स्ट्रीम्स",
+    "stream": "स्ट्रीम",
+    "codec": "कोडेक",
+    "resolution": "रिज़ॉल्यूशन",
+    "pixelFormat": "पिक्सल फ़ॉर्मैट",
+    "frameRate": "फ़्रेम रेट",
+    "sampleRate": "सैंपल रेट",
+    "channels": "चैनल",
+    "language": "भाषा"
+  },
+  "imageCompress": {
+    "title": "इमेज कंप्रेस करें",
+    "inputImage": "इनपुट इमेज",
+    "dropLabel": "इमेज यहाँ छोड़ें",
+    "outputFile": "आउटपुट फ़ाइल",
+    "outputFormat": "आउटपुट फ़ॉर्मैट",
+    "quality": "गुणवत्ता (1-31)",
+    "scale": "स्केल (वैकल्पिक)",
+    "compress": "इमेज कंप्रेस करें",
+    "compressing": "कंप्रेस हो रहा है...",
+    "placeholderOutput": "आउटपुट पथ",
+    "placeholderScale": "जैसे 800x600"
+  },
+  "audioExtract": {
+    "title": "ऑडियो निकालें",
+    "videoFile": "वीडियो फ़ाइल",
+    "dropLabel": "वीडियो फ़ाइल यहाँ छोड़ें",
+    "outputFile": "आउटपुट फ़ाइल",
+    "audioCodec": "ऑडियो कोडेक",
+    "bitrate": "बिटरेट",
+    "extract": "ऑडियो निकालें",
+    "extracting": "निकाला जा रहा है...",
+    "placeholderOutput": "जैसे output.mp3"
+  },
+  "videoCut": {
+    "title": "वीडियो काटें",
+    "videoFile": "वीडियो फ़ाइल",
+    "noFile": "कोई फ़ाइल चयनित नहीं",
+    "browse": "ब्राउज़ करें",
+    "outputFile": "आउटपुट फ़ाइल",
+    "startTime": "शुरुआत समय (HH:MM:SS)",
+    "duration": "अवधि (HH:MM:SS)",
+    "endTime": "समाप्ति समय (HH:MM:SS)",
+    "useDuration": "समाप्ति समय के बजाय अवधि का उपयोग करें",
+    "cut": "वीडियो काटें",
+    "cutting": "काटा जा रहा है...",
+    "placeholderOutput": "आउटपुट पथ",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "जैसे 00:01:30",
+    "placeholderEnd": "जैसे 00:01:30"
+  },
+  "batchQueue": {
+    "title": "बैच क्यू",
+    "suffix": "सफ़िक्स",
+    "addFiles": "फ़ाइलें जोड़ें",
+    "cancelAll": "सभी रद्द करें",
+    "empty": "क्यू खाली है। बैच प्रोसेसिंग शुरू करने के लिए फ़ाइलें जोड़ें।",
+    "remove": "हटाएँ"
+  },
+  "progress": {
+    "time": "समय",
+    "speed": "गति",
+    "eta": "अनुमानित समय"
+  },
+  "errorBoundary": {
+    "title": "कुछ गलत हो गया",
+    "tryAgain": "पुनः प्रयास करें",
+    "description": "एक अप्रत्याशित त्रुटि हुई।"
+  },
+  "fileDropZone": {
+    "defaultLabel": "फ़ाइल यहाँ छोड़ें या ब्राउज़ करें"
+  }
+}
