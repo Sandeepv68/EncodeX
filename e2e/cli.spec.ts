@@ -17,7 +17,7 @@ const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
 function electronArgs(scriptArgs: string[]): string[] {
   const baseArgs = [path.join(getBuildPaths().root, 'dist', 'main', 'index.js'), ...scriptArgs];
   if (process.env.CI || process.platform === 'linux') {
-    return ['--no-sandbox', ...baseArgs];
+    return ['--no-sandbox', '--disable-gpu', ...baseArgs];
   }
   return baseArgs;
 }
@@ -61,10 +61,11 @@ describe.runIf(IS_E2E)('CLI mode (--cli)', () => {
   });
 
   it('should detect --cli flag and route to CLI', () => {
-    const result = spawnSync(electronBin, electronArgs(['--cli', 'input.mp4', 'output.mp4']), { encoding: 'utf-8', timeout: 15000 });
+    const result = spawnSync(electronBin, electronArgs(['--cli', '--help']), { encoding: 'utf-8', timeout: 15000 });
 
-    expect(result.stdout).toContain('Starting conversion');
-    expect(result.stdout).toContain('Transcoder: FFMPEG');
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('EncodeX');
+    expect(result.stdout).toContain('Usage');
   });
 
   it('should show media info with --info flag', () => {

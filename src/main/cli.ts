@@ -78,7 +78,7 @@ export async function runCli(): Promise<void> {
       });
     });
 
-  const cliArgs = process.argv.filter((arg) => arg !== '--cli' && arg !== '--no-sandbox');
+  const cliArgs = process.argv.filter((arg) => arg !== '--cli' && arg !== '--no-sandbox' && arg !== '--disable-gpu');
 
   if (cliArgs.includes('-h') || cliArgs.includes('--help')) {
     program.outputHelp();

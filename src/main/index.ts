@@ -14,14 +14,16 @@ function isCliMode(): boolean {
 }
 
 if (isCliMode()) {
-  runCli()
-    .then(() => {
-      app.exit(EXIT_CODES.SUCCESS);
-    })
-    .catch((err) => {
-      console.error(err);
-      app.exit(EXIT_CODES.ERROR);
-    });
+  app.whenReady().then(() => {
+    runCli()
+      .then(() => {
+        app.exit(EXIT_CODES.SUCCESS);
+      })
+      .catch((err) => {
+        console.error(err);
+        app.exit(EXIT_CODES.ERROR);
+      });
+  });
 } else {
   let mainWindow: BrowserWindow | null = null;
 
