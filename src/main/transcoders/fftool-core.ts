@@ -4,7 +4,15 @@ import ffmpegStatic from 'ffmpeg-static';
 import { existsSync } from 'fs';
 import { ITranscoder } from './interface';
 import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
-import { FFMPEG_FLAGS, FFPROBE_FLAGS, PROGRESS_PATTERNS, TRANSCODER_TYPES, KILL_SIGNAL, TRANSCODER_DEFAULTS, EMPTY_PROGRESS } from '../../shared/transcoder-constants';
+import {
+  FFMPEG_FLAGS,
+  FFPROBE_FLAGS,
+  PROGRESS_PATTERNS,
+  TRANSCODER_TYPES,
+  KILL_SIGNAL,
+  TRANSCODER_DEFAULTS,
+  EMPTY_PROGRESS,
+} from '../../shared/transcoder-constants';
 
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
@@ -31,15 +39,19 @@ export class FFToolCore implements ITranscoder {
     const ffprobePath = getFfprobePath();
     return new Promise((resolve, reject) => {
       const args = [
-        FFPROBE_FLAGS.VERBOSE, FFPROBE_FLAGS.QUIET,
-        FFPROBE_FLAGS.PRINT_FORMAT, FFPROBE_FLAGS.FORMAT_JSON,
+        FFPROBE_FLAGS.VERBOSE,
+        FFPROBE_FLAGS.QUIET,
+        FFPROBE_FLAGS.PRINT_FORMAT,
+        FFPROBE_FLAGS.FORMAT_JSON,
         FFPROBE_FLAGS.SHOW_FORMAT,
         FFPROBE_FLAGS.SHOW_STREAMS,
         input,
       ];
       const proc = spawn(ffprobePath, args);
       let stdout = '';
-      proc.stdout.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
+      proc.stdout.on('data', (chunk: Buffer) => {
+        stdout += chunk.toString();
+      });
       proc.on('error', reject);
       proc.on('close', (code: number | null) => {
         if (code !== 0) return reject(new Error(`ffprobe exited with code ${code}`));

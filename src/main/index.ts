@@ -9,7 +9,7 @@ function isCliMode(): boolean {
   if (argv.includes('--headless') || argv.includes('-h') || argv.includes('--help')) {
     return true;
   }
-  const args = argv.slice(2).filter(a => !a.startsWith('-'));
+  const args = argv.slice(2).filter((a) => !a.startsWith('-'));
   return args.length >= 2;
 }
 

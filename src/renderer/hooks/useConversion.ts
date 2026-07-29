@@ -48,7 +48,20 @@ export function useConversion() {
     } finally {
       store.setIsConverting(false);
     }
-  }, [store.inputFile, store.outputFile, store.videoCodec, store.audioCodec, store.videoBitrate, store.audioBitrate, store.qscale, store.scale, store.pixelFormat, store.copyMode, store.transcoder, showError]);
+  }, [
+    store.inputFile,
+    store.outputFile,
+    store.videoCodec,
+    store.audioCodec,
+    store.videoBitrate,
+    store.audioBitrate,
+    store.qscale,
+    store.scale,
+    store.pixelFormat,
+    store.copyMode,
+    store.transcoder,
+    showError,
+  ]);
 
   const cancelConversion = useCallback(async () => {
     await window.electronAPI?.cancelConversion();

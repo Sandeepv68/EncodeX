@@ -77,11 +77,25 @@ export default function MediaPlayer({ filePath, onTimeUpdate }: Props) {
   return (
     <Box sx={{ bgcolor: '#000', borderRadius: 2, overflow: 'hidden', position: 'relative' }}>
       <canvas ref={canvasRef} style={{ width: '100%', maxHeight: 400, display: 'block' }} />
-      <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', gap: 1, p: 1, background: 'linear-gradient(transparent, rgba(0,0,0,0.7))' }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          p: 1,
+          background: 'linear-gradient(transparent, rgba(0,0,0,0.7))',
+        }}
+      >
         <IconButton size="small" sx={{ color: '#fff' }} onClick={() => setIsPlaying(!isPlaying)}>
           {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
         </IconButton>
-        <Typography variant="caption" sx={{ color: '#fff' }}>{mins}:{secs.toString().padStart(2, '0')}</Typography>
+        <Typography variant="caption" sx={{ color: '#fff' }}>
+          {mins}:{secs.toString().padStart(2, '0')}
+        </Typography>
       </Box>
     </Box>
   );

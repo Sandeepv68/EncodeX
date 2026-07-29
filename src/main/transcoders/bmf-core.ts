@@ -2,7 +2,15 @@ import { EventEmitter } from 'events';
 import { spawn, ChildProcess, execSync } from 'child_process';
 import { ITranscoder } from './interface';
 import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
-import { TRANSCODER_TYPES, TRANSCODER_COMMANDS, TRANSCODER_DEFAULTS, KILL_SIGNAL, PROGRESS_PATTERNS, EMPTY_PROGRESS, FFMPEG_FLAGS } from '../../shared/transcoder-constants';
+import {
+  TRANSCODER_TYPES,
+  TRANSCODER_COMMANDS,
+  TRANSCODER_DEFAULTS,
+  KILL_SIGNAL,
+  PROGRESS_PATTERNS,
+  EMPTY_PROGRESS,
+  FFMPEG_FLAGS,
+} from '../../shared/transcoder-constants';
 
 export class BmfCore implements ITranscoder {
   private process: ChildProcess | null = null;
@@ -13,10 +21,10 @@ export class BmfCore implements ITranscoder {
 
   async getInfo(input: string): Promise<MediaInfo> {
     try {
-      const result = execSync(
-        `${TRANSCODER_COMMANDS.BMF_FFPROBE} -v quiet -print_format json -show_format -show_streams "${input}"`,
-        { encoding: 'utf-8' as BufferEncoding, timeout: TRANSCODER_DEFAULTS.BMF_TIMEOUT_MS },
-      );
+      const result = execSync(`${TRANSCODER_COMMANDS.BMF_FFPROBE} -v quiet -print_format json -show_format -show_streams "${input}"`, {
+        encoding: 'utf-8' as BufferEncoding,
+        timeout: TRANSCODER_DEFAULTS.BMF_TIMEOUT_MS,
+      });
       const data = JSON.parse(result as string);
       const streams: MediaStreamInfo[] = (data.streams || []).map((s: Record<string, unknown>) => ({
         index: (s.index as number) ?? 0,

@@ -85,17 +85,20 @@ export class FfmpegCore implements ITranscoder {
     cmd.output(output);
     cmd.on('start', (commandLine) => emitter.emit('start', commandLine));
     cmd.on('codecData', (data) => emitter.emit('codecData', data));
-    cmd.on('progress', (info: { percent?: number; timemark?: string; currentFps?: number; speed?: string; eta?: number; currentKbps?: number }) => {
-      const progress: ConversionProgress = {
-        percent: info.percent ?? 0,
-        time: info.timemark ?? EMPTY_PROGRESS.time,
-        fps: info.currentFps ?? 0,
-        speed: info.speed ?? EMPTY_PROGRESS.speed,
-        eta: info.eta != null ? String(info.eta) : EMPTY_PROGRESS.eta,
-        bitrate: info.currentKbps ? `${info.currentKbps}kbps` : '',
-      };
-      emitter.emit('progress', progress);
-    });
+    cmd.on(
+      'progress',
+      (info: { percent?: number; timemark?: string; currentFps?: number; speed?: string; eta?: number; currentKbps?: number }) => {
+        const progress: ConversionProgress = {
+          percent: info.percent ?? 0,
+          time: info.timemark ?? EMPTY_PROGRESS.time,
+          fps: info.currentFps ?? 0,
+          speed: info.speed ?? EMPTY_PROGRESS.speed,
+          eta: info.eta != null ? String(info.eta) : EMPTY_PROGRESS.eta,
+          bitrate: info.currentKbps ? `${info.currentKbps}kbps` : '',
+        };
+        emitter.emit('progress', progress);
+      },
+    );
     cmd.on('error', (err: Error) => emitter.emit('error', err));
     cmd.on('end', () => emitter.emit('end'));
 

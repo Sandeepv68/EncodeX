@@ -3,34 +3,23 @@ import { IPC } from '../shared/ipc-channels';
 import { ConversionOptions, ConversionProgress, QueueJob, PlayerFrame, MediaInfo } from '../shared/types';
 
 const api = {
-  selectFile: (filters?: Electron.FileFilter[]) =>
-    ipcRenderer.invoke(IPC.SELECT_FILE, filters) as Promise<string | null>,
-  selectFiles: (filters?: Electron.FileFilter[]) =>
-    ipcRenderer.invoke(IPC.SELECT_FILES, filters) as Promise<string[]>,
-  selectOutput: () =>
-    ipcRenderer.invoke(IPC.SELECT_OUTPUT) as Promise<string | null>,
+  selectFile: (filters?: Electron.FileFilter[]) => ipcRenderer.invoke(IPC.SELECT_FILE, filters) as Promise<string | null>,
+  selectFiles: (filters?: Electron.FileFilter[]) => ipcRenderer.invoke(IPC.SELECT_FILES, filters) as Promise<string[]>,
+  selectOutput: () => ipcRenderer.invoke(IPC.SELECT_OUTPUT) as Promise<string | null>,
   getMediaInfo: (filePath: string, transcoderType: string) =>
     ipcRenderer.invoke(IPC.GET_MEDIA_INFO, filePath, transcoderType) as Promise<MediaInfo>,
   convertFile: (input: string, output: string, options: ConversionOptions, transcoderType: string) =>
     ipcRenderer.invoke(IPC.CONVERT_FILE, input, output, options, transcoderType) as Promise<void>,
-  cancelConversion: () =>
-    ipcRenderer.invoke(IPC.CANCEL_CONVERSION) as Promise<void>,
+  cancelConversion: () => ipcRenderer.invoke(IPC.CANCEL_CONVERSION) as Promise<void>,
   queueAdd: (input: string, output: string, options: ConversionOptions, transcoder: string) =>
     ipcRenderer.invoke(IPC.QUEUE_ADD, input, output, options, transcoder) as Promise<string>,
-  queueRemove: (id: string) =>
-    ipcRenderer.invoke(IPC.QUEUE_REMOVE, id) as Promise<void>,
-  queueList: () =>
-    ipcRenderer.invoke(IPC.QUEUE_LIST) as Promise<QueueJob[]>,
-  queueCancelAll: () =>
-    ipcRenderer.invoke(IPC.QUEUE_CANCEL_ALL) as Promise<void>,
-  playerOpen: (filePath: string) =>
-    ipcRenderer.invoke(IPC.PLAYER_OPEN, filePath) as Promise<void>,
-  playerSeek: (time: string) =>
-    ipcRenderer.invoke(IPC.PLAYER_SEEK, time) as Promise<void>,
-  playerClose: () =>
-    ipcRenderer.invoke(IPC.PLAYER_CLOSE) as Promise<void>,
-  playerGetFrame: () =>
-    ipcRenderer.invoke(IPC.PLAYER_GET_FRAME) as Promise<PlayerFrame | null>,
+  queueRemove: (id: string) => ipcRenderer.invoke(IPC.QUEUE_REMOVE, id) as Promise<void>,
+  queueList: () => ipcRenderer.invoke(IPC.QUEUE_LIST) as Promise<QueueJob[]>,
+  queueCancelAll: () => ipcRenderer.invoke(IPC.QUEUE_CANCEL_ALL) as Promise<void>,
+  playerOpen: (filePath: string) => ipcRenderer.invoke(IPC.PLAYER_OPEN, filePath) as Promise<void>,
+  playerSeek: (time: string) => ipcRenderer.invoke(IPC.PLAYER_SEEK, time) as Promise<void>,
+  playerClose: () => ipcRenderer.invoke(IPC.PLAYER_CLOSE) as Promise<void>,
+  playerGetFrame: () => ipcRenderer.invoke(IPC.PLAYER_GET_FRAME) as Promise<PlayerFrame | null>,
 
   onConversionProgress: (cb: (data: { input: string; output: string; progress: ConversionProgress }) => void) => {
     const handler = (_event: IpcRendererEvent, data: { input: string; output: string; progress: ConversionProgress }) => cb(data);
