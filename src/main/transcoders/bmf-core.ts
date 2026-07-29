@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess, execSync } from 'child_process';
 import { ITranscoder } from './interface';
-import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/types';
+import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
 import { TRANSCODER_TYPES, TRANSCODER_COMMANDS, TRANSCODER_DEFAULTS, KILL_SIGNAL, PROGRESS_PATTERNS, EMPTY_PROGRESS, FFMPEG_FLAGS } from '../../shared/transcoder-constants';
 
 export class BmfCore implements ITranscoder {
@@ -15,23 +15,23 @@ export class BmfCore implements ITranscoder {
     try {
       const result = execSync(
         `${TRANSCODER_COMMANDS.BMF_FFPROBE} -v quiet -print_format json -show_format -show_streams "${input}"`,
-        { encoding: 'utf-8', timeout: TRANSCODER_DEFAULTS.BMF_TIMEOUT_MS },
+        { encoding: 'utf-8' as BufferEncoding, timeout: TRANSCODER_DEFAULTS.BMF_TIMEOUT_MS },
       );
-      const data = JSON.parse(result);
-      const streams = (data.streams || []).map((s: any) => ({
-        index: s.index ?? 0,
-        type: s.codec_type ?? 'video',
-        codec: s.codec_name ?? 'unknown',
-        codecLong: s.codec_long_name,
-        width: s.width,
-        height: s.height,
-        pixelFormat: s.pix_fmt,
-        frameRate: s.r_frame_rate,
-        bitrate: s.bit_rate,
-        sampleRate: s.sample_rate,
-        channels: s.channels,
-        duration: s.duration ? parseFloat(s.duration) : undefined,
-        language: s.tags?.language,
+      const data = JSON.parse(result as string);
+      const streams: MediaStreamInfo[] = (data.streams || []).map((s: Record<string, unknown>) => ({
+        index: (s.index as number) ?? 0,
+        type: (s.codec_type as string) ?? 'video',
+        codec: (s.codec_name as string) ?? 'unknown',
+        codecLong: s.codec_long_name as string | undefined,
+        width: s.width as number | undefined,
+        height: s.height as number | undefined,
+        pixelFormat: s.pix_fmt as string | undefined,
+        frameRate: s.r_frame_rate as string | undefined,
+        bitrate: s.bit_rate as string | undefined,
+        sampleRate: s.sample_rate as number | undefined,
+        channels: s.channels as number | undefined,
+        duration: s.duration ? parseFloat(s.duration as string) : undefined,
+        language: (s.tags as Record<string, unknown> | undefined)?.language as string | undefined,
       }));
       return {
         file: data.format?.filename ?? input,
@@ -73,7 +73,7 @@ export class BmfCore implements ITranscoder {
       this.process = proc;
 
       let stderrData = '';
-      proc.stderr?.on('data', (chunk) => {
+      proc.stderr?.on('data', (chunk: Buffer) => {
         stderrData += chunk.toString();
         const timeMatch = stderrData.match(PROGRESS_PATTERNS.TIME_SINGLE);
         if (timeMatch) {
@@ -81,8 +81,8 @@ export class BmfCore implements ITranscoder {
         }
       });
 
-      proc.on('error', (err) => emitter.emit('error', err));
-      proc.on('close', (code) => {
+      proc.on('error', (err: Error) => emitter.emit('error', err));
+      proc.on('close', (code: number | null) => {
         if (code === 0) emitter.emit('end');
         else emitter.emit('error', new Error(`BMF exited with code ${code}: ${stderrData.slice(-200)}`));
       });

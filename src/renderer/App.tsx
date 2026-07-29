@@ -1,5 +1,19 @@
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { CssBaseline, Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography, Divider, IconButton, Tooltip, Menu, MenuItem } from '@mui/material';
+import {
+  CssBaseline,
+  Box,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+  Divider,
+  IconButton,
+  Tooltip,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import HomeIcon from '@mui/icons-material/Home';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
@@ -62,9 +76,14 @@ function AppLayout() {
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
-      <Drawer variant="permanent" sx={{ width: DRAWER_WIDTH, flexShrink: 0, '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' } }}>
+      <Drawer
+        variant="permanent"
+        sx={{ width: DRAWER_WIDTH, flexShrink: 0, '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' } }}
+      >
         <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 700 }}>{t('app.name')}</Typography>
+          <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 700 }}>
+            {t('app.name')}
+          </Typography>
           <Tooltip title={mode === 'dark' ? t('app.switchLight') : t('app.switchDark')}>
             <IconButton size="small" onClick={toggleColorMode} sx={{ color: 'text.secondary' }}>
               {mode === 'dark' ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
@@ -100,13 +119,27 @@ function AppLayout() {
           </Tooltip>
         </Box>
         <Menu anchorEl={langAnchor} open={Boolean(langAnchor)} onClose={() => setLangAnchor(null)}>
-          <MenuItem selected={i18n.language.startsWith('en-US')} onClick={() => switchLanguage('en-US')}>English (US)</MenuItem>
-          <MenuItem selected={i18n.language.startsWith('en-GB')} onClick={() => switchLanguage('en-GB')}>English (UK)</MenuItem>
-          <MenuItem selected={i18n.language.startsWith('en-IN')} onClick={() => switchLanguage('en-IN')}>English (India)</MenuItem>
-          <MenuItem selected={i18n.language.startsWith('es')} onClick={() => switchLanguage('es-ES')}>Español</MenuItem>
-          <MenuItem selected={i18n.language.startsWith('fr-FR')} onClick={() => switchLanguage('fr-FR')}>Français (France)</MenuItem>
-          <MenuItem selected={i18n.language.startsWith('fr-CA')} onClick={() => switchLanguage('fr-CA')}>Français (Canada)</MenuItem>
-          <MenuItem selected={i18n.language.startsWith('hi')} onClick={() => switchLanguage('hi')}>हिन्दी</MenuItem>
+          <MenuItem selected={i18n.language.startsWith('en-US')} onClick={() => switchLanguage('en-US')}>
+            English (US)
+          </MenuItem>
+          <MenuItem selected={i18n.language.startsWith('en-GB')} onClick={() => switchLanguage('en-GB')}>
+            English (UK)
+          </MenuItem>
+          <MenuItem selected={i18n.language.startsWith('en-IN')} onClick={() => switchLanguage('en-IN')}>
+            English (India)
+          </MenuItem>
+          <MenuItem selected={i18n.language.startsWith('es')} onClick={() => switchLanguage('es-ES')}>
+            Español
+          </MenuItem>
+          <MenuItem selected={i18n.language.startsWith('fr-FR')} onClick={() => switchLanguage('fr-FR')}>
+            Français (France)
+          </MenuItem>
+          <MenuItem selected={i18n.language.startsWith('fr-CA')} onClick={() => switchLanguage('fr-CA')}>
+            Français (Canada)
+          </MenuItem>
+          <MenuItem selected={i18n.language.startsWith('hi')} onClick={() => switchLanguage('hi')}>
+            हिन्दी
+          </MenuItem>
         </Menu>
       </Drawer>
       <Box component="main" sx={{ flex: 1, overflow: 'auto', p: 3, position: 'relative' }}>

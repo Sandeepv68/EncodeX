@@ -16,7 +16,7 @@ export default function VideoCut() {
   const [endTime, setEndTime] = useState('');
   const [duration, setDuration] = useState('');
   const [isConverting, setIsConverting] = useState(false);
-  const [progress, setProgress] = useState<any>(null);
+  const [progress, setProgress] = useState<{ percent: number; time?: string; speed?: string; eta?: string } | null>(null);
   const [useDuration, setUseDuration] = useState(false);
   const { currentError, showError, clearError } = useErrorStore();
   const transcoder = TRANSCODER_TYPES[0];
@@ -32,7 +32,7 @@ export default function VideoCut() {
         ...(useDuration ? { duration } : { endTime }),
       }, transcoder);
       setProgress({ percent: 100, time: 'Done', speed: '-', eta: '0' });
-    } catch (err: any) {
+    } catch (err: unknown) {
       showError(err);
     } finally {
       setIsConverting(false);

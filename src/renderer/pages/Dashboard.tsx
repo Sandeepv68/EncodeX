@@ -32,17 +32,35 @@ export default function Dashboard() {
   const { t } = useTranslation();
   return (
     <Box>
-      <Typography variant="h4" sx={{ color: 'primary.main', fontWeight: 700, mb: 1 }}>{t('dashboard.welcome')}</Typography>
-      <Typography color="text.secondary" sx={{ mb: 3 }}>{t('dashboard.subtitle')}</Typography>
+      <Typography variant="h4" sx={{ color: 'primary.main', fontWeight: 700, mb: 1 }}>
+        {t('dashboard.welcome')}
+      </Typography>
+      <Typography color="text.secondary" sx={{ mb: 3 }}>
+        {t('dashboard.subtitle')}
+      </Typography>
       <Grid container spacing={2}>
         {NAV_ITEMS.filter((item) => item.to !== '/').map((item) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
-            <Card sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', transition: 'border-color 0.2s, transform 0.2s', '&:hover': { borderColor: 'primary.main', transform: 'translateY(-2px)' } }}>
+            <Card
+              sx={{
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+                transition: 'border-color 0.2s, transform 0.2s',
+                '&:hover': { borderColor: 'primary.main', transform: 'translateY(-2px)' },
+              }}
+            >
               <CardActionArea onClick={() => navigate(item.to)} sx={{ p: 2 }}>
                 <Box sx={{ color: 'primary.main', mb: 1 }}>{featureIcons[item.to]}</Box>
                 <CardContent sx={{ p: 0 }}>
-                  <Typography variant="h6" sx={{ mb: 0.5 }}>{t(`nav.${item.to === '/convert' ? 'convert' : item.to === '/media-info' ? 'mediaInfo' : item.to === '/image-compress' ? 'image' : item.to === '/audio-extract' ? 'audio' : item.to === '/video-cut' ? 'cut' : 'batchQueue'}`)}</Typography>
-                  <Typography variant="body2" color="text.secondary">{t(`dashboard.${descKeys[item.to]}`)}</Typography>
+                  <Typography variant="h6" sx={{ mb: 0.5 }}>
+                    {t(
+                      `nav.${item.to === '/convert' ? 'convert' : item.to === '/media-info' ? 'mediaInfo' : item.to === '/image-compress' ? 'image' : item.to === '/audio-extract' ? 'audio' : item.to === '/video-cut' ? 'cut' : 'batchQueue'}`,
+                    )}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {t(`dashboard.${descKeys[item.to]}`)}
+                  </Typography>
                 </CardContent>
               </CardActionArea>
             </Card>

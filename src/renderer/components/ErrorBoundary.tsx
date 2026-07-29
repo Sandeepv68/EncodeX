@@ -35,7 +35,9 @@ export class ErrorBoundary extends Component<Props, State> {
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', p: 4 }}>
           <Paper sx={{ p: 4, maxWidth: 480, textAlign: 'center' }}>
             <WarningAmberIcon sx={{ fontSize: 48, color: 'error.main', mb: 2 }} />
-            <Typography variant="h6" sx={{ mb: 1 }}>{t('errorBoundary.title')}</Typography>
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              {t('errorBoundary.title')}
+            </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               {this.state.error?.message || t('errorBoundary.description')}
             </Typography>

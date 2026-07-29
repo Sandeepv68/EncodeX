@@ -1,0 +1,45 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+    groups:
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      mui:
+        patterns:
+          - "@mui/*"
+          - "@emotion/*"
+      electron:
+        patterns:
+          - "electron"
+          - "electron-builder"
+      typescript:
+        patterns:
+          - "typescript"
+          - "tslib"
+      vite:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "ci"

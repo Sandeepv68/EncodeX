@@ -16,7 +16,7 @@ export default function ImageCompress() {
   const [format, setFormat] = useState(IMAGE_FORMATS[0].value);
   const [quality, setQuality] = useState(23);
   const [scale, setScale] = useState('');
-  const [progress, setProgress] = useState<any>(null);
+  const [progress, setProgress] = useState<{ percent: number; time?: string; speed?: string; eta?: string } | null>(null);
   const [isConverting, setIsConverting] = useState(false);
   const { currentError, showError, clearError } = useErrorStore();
   const transcoder = TRANSCODER_TYPES[0];
@@ -33,7 +33,7 @@ export default function ImageCompress() {
         pixelFormat: 'yuv420p',
       }, transcoder);
       setProgress({ percent: 100, time: 'Done', speed: '-', eta: '0' });
-    } catch (err: any) {
+    } catch (err: unknown) {
       showError(err);
     } finally {
       setIsConverting(false);

@@ -1,10 +1,10 @@
 import { create } from 'zustand';
-import { AppError, createError, formatError, ErrorCode, ErrorCodeType } from '../../shared/errors';
+import { AppError, createError, formatError, ErrorCode, ErrorCodeType, ERROR_MESSAGES } from '../../shared/errors';
 
 interface ErrorState {
   currentError: AppError | null;
   errorHistory: AppError[];
-  showError: (err: any) => void;
+  showError: (err: unknown) => void;
   showErrorMessage: (code: ErrorCodeType, detail?: string) => void;
   clearError: () => void;
   clearHistory: () => void;
@@ -13,7 +13,7 @@ interface ErrorState {
 export const useErrorStore = create<ErrorState>((set) => ({
   currentError: null,
   errorHistory: [],
-  showError: (err: any) => {
+  showError: (err: unknown) => {
     const appError = formatError(err);
     set((s) => ({
       currentError: appError,

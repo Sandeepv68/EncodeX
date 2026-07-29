@@ -4,6 +4,7 @@ import { Box, Typography, Paper, Grid, Chip, CircularProgress } from '@mui/mater
 import FileDropZone from '../components/FileDropZone';
 import ErrorBanner from '../components/ErrorBanner';
 import { useErrorStore } from '../stores/errorStore';
+import { MediaInfo as MediaInfoType, MediaStreamInfo } from '../../shared/types';
 
 function formatSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -13,7 +14,7 @@ function formatSize(bytes: number) {
 
 export default function MediaInfo() {
   const { t } = useTranslation();
-  const [info, setInfo] = useState<any>(null);
+  const [info, setInfo] = useState<MediaInfoType | null>(null);
   const [loading, setLoading] = useState(false);
   const { currentError, showError, clearError } = useErrorStore();
 
@@ -22,7 +23,7 @@ export default function MediaInfo() {
     try {
       const data = await window.electronAPI.getMediaInfo(path, 'FFMPEG');
       setInfo(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       showError(err);
     } finally {
       setLoading(false);
@@ -40,22 +41,22 @@ export default function MediaInfo() {
           <Paper sx={{ p: 2, mt: 2 }}>
             <Typography variant="h6" sx={{ mb: 1 }}>{t('mediaInfo.fileInfo')}</Typography>
             <Grid container spacing={1} sx={{ mb: 2 }}>
-              {[
+              {([
                 [t('mediaInfo.file'), info.file],
                 [t('mediaInfo.format'), info.format],
                 [t('mediaInfo.size'), formatSize(info.size)],
                 [t('mediaInfo.duration'), `${info.duration.toFixed(2)}s`],
                 [t('mediaInfo.bitrate'), info.bitrate],
-              ].map(([label, value]) => (
-                <Grid size={{ xs: 6 }} key={label as string}>
+              ] as const).map(([label, value]) => (
+                <Grid size={{ xs: 6 }} key={label}>
                   <Typography variant="caption" color="text.secondary">{label}</Typography>
-                  <Typography variant="body2">{value as string}</Typography>
+                  <Typography variant="body2">{value}</Typography>
                 </Grid>
               ))}
             </Grid>
 
             <Typography variant="h6" sx={{ mb: 1 }}>{t('mediaInfo.streams')} ({info.streams.length})</Typography>
-            {info.streams.map((stream: any, i: number) => (
+            {info.streams.map((stream: MediaStreamInfo, i: number) => (
               <Paper key={i} variant="outlined" sx={{ p: 1.5, mb: 1, bgcolor: 'background.default' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                   <Chip label={stream.type.toUpperCase()} size="small" color={stream.type === 'video' ? 'primary' : 'warning'} />

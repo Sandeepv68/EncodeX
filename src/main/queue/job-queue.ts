@@ -15,17 +15,24 @@ export class JobQueue extends EventEmitter {
 
   private createTranscoder(type: TranscoderType): ITranscoder {
     switch (type) {
-      case 'FFMPEG': return new FfmpegCore();
-      case 'FFTOOL': return new FFToolCore();
-      case 'BMF': return new BmfCore();
+      case 'FFMPEG':
+        return new FfmpegCore();
+      case 'FFTOOL':
+        return new FFToolCore();
+      case 'BMF':
+        return new BmfCore();
     }
   }
 
   addJob(input: string, output: string, options: ConversionOptions, transcoder: TranscoderType): string {
     const id = randomUUID();
     const job: QueueJob = {
-      id, input, output, options, transcoder,
-      status: QUEUE_STATUS.QUEUED as any,
+      id,
+      input,
+      output,
+      options,
+      transcoder,
+      status: QUEUE_STATUS.QUEUED,
       progress: 0,
       createdAt: Date.now(),
     };
@@ -68,7 +75,7 @@ export class JobQueue extends EventEmitter {
 
     this.running = true;
     this.currentJob = nextJob;
-    nextJob.status = QUEUE_STATUS.RUNNING as any;
+    nextJob.status = QUEUE_STATUS.RUNNING;
     this.emit('statusChange', nextJob);
 
     const transcoder = this.createTranscoder(nextJob.transcoder);
@@ -81,7 +88,7 @@ export class JobQueue extends EventEmitter {
         this.emit('progress', { job: nextJob, progress });
       });
       emitter.on('error', (err) => {
-        nextJob.status = QUEUE_STATUS.ERROR as any;
+        nextJob.status = QUEUE_STATUS.ERROR;
         nextJob.error = err.message;
         this.emit('statusChange', nextJob);
         this.running = false;
@@ -90,7 +97,7 @@ export class JobQueue extends EventEmitter {
         this.processNext();
       });
       emitter.on('end', () => {
-        nextJob.status = QUEUE_STATUS.DONE as any;
+        nextJob.status = QUEUE_STATUS.DONE;
         nextJob.progress = 100;
         this.emit('statusChange', nextJob);
         this.running = false;
@@ -98,9 +105,9 @@ export class JobQueue extends EventEmitter {
         this.currentTranscoder = null;
         this.processNext();
       });
-    } catch (err: any) {
-      nextJob.status = QUEUE_STATUS.ERROR as any;
-      nextJob.error = err.message;
+    } catch (err: unknown) {
+      nextJob.status = QUEUE_STATUS.ERROR;
+      nextJob.error = err instanceof Error ? err.message : String(err);
       this.emit('statusChange', nextJob);
       this.running = false;
       this.currentJob = null;

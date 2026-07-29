@@ -3,11 +3,7 @@ import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/t
 
 export interface ITranscoder {
   getInfo(input: string): Promise<MediaInfo>;
-  convert(
-    input: string,
-    output: string,
-    options: ConversionOptions,
-  ): EventEmitter;
+  convert(input: string, output: string, options: ConversionOptions): EventEmitter;
   cancel(): void;
   getType(): string;
 }

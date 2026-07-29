@@ -1,21 +1,16 @@
 import { useEffect, useCallback } from 'react';
 import { useConversionStore } from '../stores/conversionStore';
 import { useErrorStore } from '../stores/errorStore';
+import { ConversionProgress } from '../../shared/types';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import { ErrorCode } from '../../shared/errors';
-
-declare global {
-  interface Window {
-    electronAPI: any;
-  }
-}
 
 export function useConversion() {
   const store = useConversionStore();
   const showError = useErrorStore((s) => s.showError);
 
   useEffect(() => {
-    const cleanup = window.electronAPI?.onConversionProgress((data: any) => {
+    const cleanup = window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
       store.setProgress(data.progress);
     });
     return cleanup;
@@ -48,7 +43,7 @@ export function useConversion() {
         store.transcoder,
       );
       store.setProgress(COMPLETED_PROGRESS);
-    } catch (err: any) {
+    } catch (err: unknown) {
       showError(err);
     } finally {
       store.setIsConverting(false);
@@ -64,7 +59,7 @@ export function useConversion() {
     try {
       const file = await window.electronAPI?.selectFile();
       if (file) store.setInputFile(file);
-    } catch (err: any) {
+    } catch (err: unknown) {
       showError(err);
     }
   }, [showError]);
@@ -73,7 +68,7 @@ export function useConversion() {
     try {
       const file = await window.electronAPI?.selectOutput();
       if (file) store.setOutputFile(file);
-    } catch (err: any) {
+    } catch (err: unknown) {
       showError(err);
     }
   }, [showError]);

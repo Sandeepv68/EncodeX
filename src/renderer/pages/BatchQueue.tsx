@@ -1,12 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, TextField, MenuItem, Button, Paper, Stack, Chip } from '@mui/material';
+import { Box, Typography, TextField, MenuItem, Button, Paper, Stack, Chip, SelectChangeEvent } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import ProgressBar from '../components/ProgressBar';
 import { useQueueStore } from '../stores/queueStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX, QUEUE_STATUS } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
+import { QueueJob } from '../../shared/types';
 
 const statusColors: Record<string, 'default' | 'primary' | 'success' | 'error' | 'warning'> = {
   [QUEUE_STATUS.QUEUED]: 'warning',
@@ -18,14 +19,14 @@ const statusColors: Record<string, 'default' | 'primary' | 'success' | 'error' |
 export default function BatchQueue() {
   const { t } = useTranslation();
   const { jobs, addJob, removeJob, updateJob, clearJobs } = useQueueStore();
-  let videoCodec = 'libx264';
-  let audioCodec = 'aac';
-  let transcoder = TRANSCODER_TYPES[0];
-  let operation = BATCH_OPERATIONS[0].value;
-  let suffix = DEFAULT_SUFFIX;
+  const videoCodecRef = useRef('libx264');
+  const audioCodecRef = useRef('aac');
+  const transcoderRef = useRef(TRANSCODER_TYPES[0]);
+  const operationRef = useRef(BATCH_OPERATIONS[0].value);
+  const suffixRef = useRef(DEFAULT_SUFFIX);
 
   useEffect(() => {
-    window.electronAPI?.queueList().then((jobs: any[]) => useQueueStore.getState().setJobs(jobs));
+    window.electronAPI?.queueList().then((jobs: QueueJob[]) => useQueueStore.getState().setJobs(jobs));
   }, []);
 
   useEffect(() => { return window.electronAPI?.onQueueAdded(addJob); }, []);
@@ -37,11 +38,11 @@ export default function BatchQueue() {
     if (!files) return;
     for (const file of files) {
       const ext = file.split('.').pop();
-      const outFile = `${file.substring(0, file.lastIndexOf('.'))}${suffix}.${ext}`;
+      const outFile = `${file.substring(0, file.lastIndexOf('.'))}${suffixRef.current}.${ext}`;
       window.electronAPI.queueAdd(file, outFile, {
-        videoCodec: operation === 'extract_audio' ? undefined : videoCodec,
-        audioCodec: operation === 'transcode' ? audioCodec : operation === 'extract_audio' ? audioCodec : undefined,
-      }, transcoder);
+        videoCodec: operationRef.current === 'extract_audio' ? undefined : videoCodecRef.current,
+        audioCodec: operationRef.current === 'transcode' ? audioCodecRef.current : operationRef.current === 'extract_audio' ? audioCodecRef.current : undefined,
+      }, transcoderRef.current);
     }
   };
 
@@ -55,13 +56,13 @@ export default function BatchQueue() {
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>{t('batchQueue.title')}</Typography>
       <Paper sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-          <TextField select size="small" sx={{ minWidth: 140 }} defaultValue={operation} onChange={(e: any) => { operation = e.target.value; }}>
+          <TextField select size="small" sx={{ minWidth: 140 }} defaultValue={BATCH_OPERATIONS[0].value} onChange={(e: SelectChangeEvent) => { operationRef.current = e.target.value; }}>
             {BATCH_OPERATIONS.map((o) => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
           </TextField>
-          <TextField select size="small" sx={{ minWidth: 110 }} defaultValue={transcoder} onChange={(e: any) => { transcoder = e.target.value; }}>
+          <TextField select size="small" sx={{ minWidth: 110 }} defaultValue={TRANSCODER_TYPES[0]} onChange={(e: SelectChangeEvent) => { transcoderRef.current = e.target.value; }}>
             {TRANSCODER_TYPES.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
           </TextField>
-          <TextField size="small" sx={{ minWidth: 120 }} defaultValue={suffix} onChange={(e: any) => { suffix = e.target.value; }} placeholder={t('batchQueue.suffix')} />
+          <TextField size="small" sx={{ minWidth: 120 }} defaultValue={DEFAULT_SUFFIX} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { suffixRef.current = e.target.value; }} placeholder={t('batchQueue.suffix')} />
           <Button variant="outlined" startIcon={<AddIcon />} onClick={handleAddFiles}>{t('batchQueue.addFiles')}</Button>
           <Button variant="outlined" color="error" startIcon={<DeleteSweepIcon />} onClick={handleCancelAll}>{t('batchQueue.cancelAll')}</Button>
         </Stack>
@@ -72,7 +73,7 @@ export default function BatchQueue() {
           <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>{t('batchQueue.empty')}</Typography>
         ) : (
           <Stack spacing={1}>
-            {jobs.map((job) => (
+            {jobs.map((job: QueueJob) => (
               <Paper key={job.id} variant="outlined" sx={{ p: 1.5, borderColor: job.status === QUEUE_STATUS.ERROR ? 'error.main' : job.status === QUEUE_STATUS.DONE ? 'success.main' : 'divider' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                   <Typography variant="body2" sx={{ fontWeight: 600 }}>

@@ -2,6 +2,7 @@ import { useRef, useEffect, useCallback, useState } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
+import { PlayerFrame } from '../../shared/types';
 
 interface Props {
   filePath: string;
@@ -22,7 +23,7 @@ export default function MediaPlayer({ filePath, onTimeUpdate }: Props) {
     window.electronAPI.playerOpen(filePath);
     frameBuffer.current = [];
 
-    const cleanup = window.electronAPI.onPlayerFrame((frame: any) => {
+    const cleanup = window.electronAPI.onPlayerFrame((frame: PlayerFrame) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
       const ctx = canvas.getContext('2d');

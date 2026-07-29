@@ -1,0 +1,10 @@
+dist/
+release/
+node_modules/
+*.json
+*.yml
+*.yaml
+*.lock
+.gitignore
+.prettierignore
+LICENSE
