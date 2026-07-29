@@ -45,7 +45,7 @@
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",
     "@vitest/coverage-v8": "^4.1.10",
-    "concurrently": "^9.0.0",
+    "concurrently": "^10.0.4",
     "electron": "^33.0.0",
     "electron-builder": "^25.0.0",
     "ffmpeg-static": "^5.2.0",
