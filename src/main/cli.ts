@@ -1,4 +1,3 @@
-import { Command } from 'commander';
 import { FfmpegCore } from './transcoders/ffmpeg-core';
 import { FFToolCore } from './transcoders/fftool-core';
 import { BmfCore } from './transcoders/bmf-core';
@@ -6,25 +5,26 @@ import { ConversionOptions, TranscoderType } from '../shared/types';
 import { APP_NAME, EXIT_CODES } from '../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../shared/transcoder-constants';
 
-export function runCli(): void {
+export async function runCli(): Promise<void> {
+  const { Command } = await import('commander');
   const program = new Command();
 
   program
     .name(APP_NAME)
     .description('EncodeX - Multimedia conversion tool')
-    .argument('<input>', 'Input file')
-    .argument('<output>', 'Output file')
+    .argument('[input]', 'Input file')
+    .argument('[output]', 'Output file')
     .option('--transcoder <type>', `Set transcoder type (${TRANSCODER_TYPES.join(', ')})`, TRANSCODER_TYPES[0])
     .option('-v, --video-codec <codec>', 'Set video codec (could set copy)')
     .option('-q, --qscale <qscale>', 'Set qscale for video codec', parseInt)
     .option('-a, --audio-codec <codec>', 'Set audio codec (could set copy)')
-    .option('-b:v, --bitrate-video <bitrate>', 'Set bitrate for video codec')
-    .option('-b:a, --bitrate-audio <bitrate>', 'Set bitrate for audio codec')
+    .option('--bitrate-video <bitrate>', 'Set bitrate for video codec')
+    .option('--bitrate-audio <bitrate>', 'Set bitrate for audio codec')
     .option('--pix-fmt <pix_fmt>', 'Set pixel format for video')
     .option('-s, --scale <scale>', 'Set scale for video (WxH)')
-    .option('-ss, --start-time <time>', 'Set start time for cutting (HH:MM:SS or seconds)')
-    .option('-to, --end-time <time>', 'Set end time for cutting (HH:MM:SS or seconds)')
-    .option('-t, --duration <duration>', 'Set duration for cutting (HH:MM:SS or seconds)')
+    .option('--start-time <time>', 'Set start time for cutting (HH:MM:SS or seconds)')
+    .option('--end-time <time>', 'Set end time for cutting (HH:MM:SS or seconds)')
+    .option('--duration <duration>', 'Set duration for cutting (HH:MM:SS or seconds)')
     .option('--copy', 'Lossless copy streams')
     .option('--info', 'Show media info and exit')
     .action(async (input, output, opts) => {
@@ -60,23 +60,32 @@ export function runCli(): void {
       console.log(`Transcoder: ${transcoderType}`);
       console.log(`Options: ${JSON.stringify(options)}`);
 
-      const emitter = transcoder.convert(input, output, options);
-      emitter.on('progress', (progress) => {
-        process.stdout.clearLine(0);
-        process.stdout.cursorTo(0);
-        process.stdout.write(`Progress: ${progress.time} | Speed: ${progress.speed} | ETA: ${progress.eta}s`);
-      });
-      emitter.on('end', () => {
-        console.log('\nConversion completed successfully!');
-        process.exit(EXIT_CODES.SUCCESS);
-      });
-      emitter.on('error', (err) => {
-        console.error('\nConversion failed:', err.message);
-        process.exit(EXIT_CODES.ERROR);
+      await new Promise<void>((resolve, reject) => {
+        const emitter = transcoder.convert(input, output, options);
+        emitter.on('progress', (progress) => {
+          process.stdout.clearLine(0);
+          process.stdout.cursorTo(0);
+          process.stdout.write(`Progress: ${progress.time} | Speed: ${progress.speed} | ETA: ${progress.eta}s`);
+        });
+        emitter.on('end', () => {
+          console.log('\nConversion completed successfully!');
+          resolve();
+        });
+        emitter.on('error', (err) => {
+          console.error('\nConversion failed:', err.message);
+          reject(err);
+        });
       });
     });
 
-  program.parse(process.argv);
+  const cliArgs = process.argv.filter(arg => arg !== '--headless');
+
+  if (cliArgs.includes('-h') || cliArgs.includes('--help')) {
+    program.outputHelp();
+    return;
+  }
+
+  await program.parseAsync(cliArgs);
 }
 
 function createTranscoder(type: TranscoderType): FfmpegCore | FFToolCore | BmfCore {
