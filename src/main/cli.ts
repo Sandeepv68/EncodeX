@@ -78,7 +78,7 @@ export async function runCli(): Promise<void> {
       });
     });
 
-  const cliArgs = process.argv.filter((arg) => arg !== '--headless');
+  const cliArgs = process.argv.filter((arg) => arg !== '--cli');
 
   if (cliArgs.includes('-h') || cliArgs.includes('--help')) {
     program.outputHelp();

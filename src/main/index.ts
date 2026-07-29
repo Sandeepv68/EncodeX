@@ -6,7 +6,7 @@ import { WINDOW_SIZE, DEV_SERVER_URL, APP_NAME, EXIT_CODES } from '../shared/ui-
 
 function isCliMode(): boolean {
   const argv = process.argv;
-  if (argv.includes('--headless') || argv.includes('-h') || argv.includes('--help')) {
+  if (argv.includes('--cli') || argv.includes('-h') || argv.includes('--help')) {
     return true;
   }
   const args = argv.slice(2).filter((a) => !a.startsWith('-'));
