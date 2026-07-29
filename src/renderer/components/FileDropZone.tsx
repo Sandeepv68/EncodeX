@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
@@ -8,7 +9,9 @@ interface Props {
   accept?: string;
 }
 
-export default function FileDropZone({ onFileSelect, label = 'Drop file here or click to browse', accept }: Props) {
+export default function FileDropZone({ onFileSelect, label, accept }: Props) {
+  const { t } = useTranslation();
+  const resolvedLabel = label || t('fileDropZone.defaultLabel');
   const [dragging, setDragging] = useState(false);
 
   const handleDrop = useCallback((e: React.DragEvent) => {

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, TextField, MenuItem, Button, Paper, Stack } from '@mui/material';
 import CodecSelect from '../components/CodecSelect';
 import ErrorBanner from '../components/ErrorBanner';
@@ -10,6 +11,7 @@ import { BITRATE_OPTIONS } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 
 export default function AudioExtract() {
+  const { t } = useTranslation();
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [audioCodec, setAudioCodec] = useState('libmp3lame');
@@ -35,28 +37,28 @@ export default function AudioExtract() {
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>Extract Audio</Typography>
+      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>{t('audioExtract.title')}</Typography>
       <Paper sx={{ p: 3, maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 2 }}>
         {currentError && <ErrorBanner error={currentError} onClose={clearError} />}
         <Box>
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>Video File</Typography>
-          <FileDropZone onFileSelect={setInput} label="Drop video file here" accept="mp4,avi,mkv,mov,flv,wmv,webm" />
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>{t('audioExtract.videoFile')}</Typography>
+          <FileDropZone onFileSelect={setInput} label={t('audioExtract.dropLabel')} accept="mp4,avi,mkv,mov,flv,wmv,webm" />
         </Box>
         <Stack direction="row" spacing={1}>
-          <TextField fullWidth size="small" label="Output File" value={output} onChange={(e) => setOutput(e.target.value)} placeholder="e.g. output.mp3" />
-          <Button variant="outlined" onClick={async () => { const f = await window.electronAPI.selectOutput(); if (f) setOutput(f); }}>Browse</Button>
+          <TextField fullWidth size="small" label={t('audioExtract.outputFile')} value={output} onChange={(e) => setOutput(e.target.value)} placeholder={t('audioExtract.placeholderOutput')} />
+          <Button variant="outlined" onClick={async () => { const f = await window.electronAPI.selectOutput(); if (f) setOutput(f); }}>{t('convert.browse')}</Button>
         </Stack>
         <Stack direction="row" spacing={2}>
           <Box sx={{ flex: 1 }}>
-            <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>Audio Codec</Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>{t('audioExtract.audioCodec')}</Typography>
             <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} />
           </Box>
-          <TextField select fullWidth size="small" label="Bitrate" value={audioBitrate} onChange={(e) => setAudioBitrate(e.target.value)}>
+          <TextField select fullWidth size="small" label={t('audioExtract.bitrate')} value={audioBitrate} onChange={(e) => setAudioBitrate(e.target.value)}>
             {BITRATE_OPTIONS.map((b) => <MenuItem key={b} value={b}>{b}</MenuItem>)}
           </TextField>
         </Stack>
         <Button variant="contained" onClick={handleExtract} disabled={!input || !output || isConverting}>
-          {isConverting ? 'Extracting...' : 'Extract Audio'}
+          {isConverting ? t('audioExtract.extracting') : t('audioExtract.extract')}
         </Button>
         {progress && <ProgressBar percent={progress.percent} />}
       </Paper>

@@ -1,0 +1,132 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "Cambiar a modo claro",
+    "switchDark": "Cambiar a modo oscuro",
+    "language": "Idioma"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "convert": "Convertir",
+    "mediaInfo": "Info. Multimedia",
+    "image": "Imagen",
+    "audio": "Audio",
+    "cut": "Cortar",
+    "batchQueue": "Cola de Lotes"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido a EncodeX",
+    "subtitle": "Herramientas sencillas y fáciles de usar para convertir, editar y procesar archivos de audio y vídeo.",
+    "descConvert": "Cambiar códecs, resolución, formato de píxel",
+    "descMediaInfo": "Ver información detallada del flujo",
+    "descImage": "Comprimir imágenes con control de formato",
+    "descAudio": "Extraer audio de archivos de vídeo",
+    "descCut": "Cortar vídeo con reproductor de precisión",
+    "descBatch": "Procesar varios archivos a la vez"
+  },
+  "convert": {
+    "title": "Convertir Multimedia",
+    "inputFile": "Archivo de Entrada",
+    "outputFile": "Archivo de Salida",
+    "noFile": "Ningún archivo seleccionado",
+    "noOutput": "Ninguna salida seleccionada",
+    "browse": "Examinar",
+    "saveAs": "Guardar Como",
+    "losslessCopy": "Copia sin pérdida (sin recodificar)",
+    "videoCodec": "Códec de Vídeo",
+    "audioCodec": "Códec de Audio",
+    "videoBitrate": "Tasa de Bits de Vídeo",
+    "audioBitrate": "Tasa de Bits de Audio",
+    "qscale": "QScale (1-31)",
+    "scale": "Escala (WxH)",
+    "pixelFormat": "Formato de Píxel",
+    "transcoderCore": "Núcleo de Transcodificador",
+    "startConversion": "Iniciar Conversión",
+    "converting": "Convirtiendo...",
+    "cancel": "Cancelar",
+    "placeholderBitrate": "ej. 2000k",
+    "placeholderAudioBitrate": "ej. 192k",
+    "placeholderScale": "ej. 1280x720"
+  },
+  "mediaInfo": {
+    "title": "Información Multimedia",
+    "dropLabel": "Suelte un archivo multimedia aquí o haga clic para examinar",
+    "fileInfo": "Información del Archivo",
+    "file": "Archivo",
+    "format": "Formato",
+    "size": "Tamaño",
+    "duration": "Duración",
+    "bitrate": "Tasa de Bits",
+    "streams": "Flujos",
+    "stream": "Flujo",
+    "codec": "Códec",
+    "resolution": "Resolución",
+    "pixelFormat": "Formato de Píxel",
+    "frameRate": "Fotogramas por Segundo",
+    "sampleRate": "Frecuencia de Muestreo",
+    "channels": "Canales",
+    "language": "Idioma"
+  },
+  "imageCompress": {
+    "title": "Comprimir Imagen",
+    "inputImage": "Imagen de Entrada",
+    "dropLabel": "Suelte la imagen aquí",
+    "outputFile": "Archivo de Salida",
+    "outputFormat": "Formato de Salida",
+    "quality": "Calidad (1-31)",
+    "scale": "Escala (opcional)",
+    "compress": "Comprimir Imagen",
+    "compressing": "Comprimiendo...",
+    "placeholderOutput": "ruta de salida",
+    "placeholderScale": "ej. 800x600"
+  },
+  "audioExtract": {
+    "title": "Extraer Audio",
+    "videoFile": "Archivo de Vídeo",
+    "dropLabel": "Suelte el archivo de vídeo aquí",
+    "outputFile": "Archivo de Salida",
+    "audioCodec": "Códec de Audio",
+    "bitrate": "Tasa de Bits",
+    "extract": "Extraer Audio",
+    "extracting": "Extrayendo...",
+    "placeholderOutput": "ej. output.mp3"
+  },
+  "videoCut": {
+    "title": "Cortar Vídeo",
+    "videoFile": "Archivo de Vídeo",
+    "noFile": "Ningún archivo seleccionado",
+    "browse": "Examinar",
+    "outputFile": "Archivo de Salida",
+    "startTime": "Hora de Inicio (HH:MM:SS)",
+    "duration": "Duración (HH:MM:SS)",
+    "endTime": "Hora de Fin (HH:MM:SS)",
+    "useDuration": "Usar duración en lugar de hora de fin",
+    "cut": "Cortar Vídeo",
+    "cutting": "Cortando...",
+    "placeholderOutput": "ruta de salida",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "ej. 00:01:30",
+    "placeholderEnd": "ej. 00:01:30"
+  },
+  "batchQueue": {
+    "title": "Cola de Lotes",
+    "suffix": "Sufijo",
+    "addFiles": "Añadir Archivos",
+    "cancelAll": "Cancelar Todo",
+    "empty": "La cola está vacía. Añada archivos para comenzar el procesamiento por lotes.",
+    "remove": "Eliminar"
+  },
+  "progress": {
+    "time": "Tiempo",
+    "speed": "Velocidad",
+    "eta": "Tiempo Restante"
+  },
+  "errorBoundary": {
+    "title": "Algo salió mal",
+    "tryAgain": "Intentar de Nuevo",
+    "description": "Ocurrió un error inesperado."
+  },
+  "fileDropZone": {
+    "defaultLabel": "Suelte el archivo aquí o haga clic para examinar"
+  }
+}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, TextField, MenuItem, Button, Paper, Stack } from '@mui/material';
 import FileDropZone from '../components/FileDropZone';
 import ErrorBanner from '../components/ErrorBanner';
@@ -9,6 +10,7 @@ import { IMAGE_FORMATS, IMAGE_CODEC_MAP } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 
 export default function ImageCompress() {
+  const { t } = useTranslation();
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [format, setFormat] = useState(IMAGE_FORMATS[0].value);
@@ -40,26 +42,26 @@ export default function ImageCompress() {
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>Compress Image</Typography>
+      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>{t('imageCompress.title')}</Typography>
       <Paper sx={{ p: 3, maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 2 }}>
         {currentError && <ErrorBanner error={currentError} onClose={clearError} />}
         <Box>
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>Input Image</Typography>
-          <FileDropZone onFileSelect={setInput} label="Drop image here" accept="jpg,jpeg,png,webp,bmp" />
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>{t('imageCompress.inputImage')}</Typography>
+          <FileDropZone onFileSelect={setInput} label={t('imageCompress.dropLabel')} accept="jpg,jpeg,png,webp,bmp" />
         </Box>
         <Stack direction="row" spacing={1}>
-          <TextField fullWidth size="small" label="Output File" value={output} onChange={(e) => setOutput(e.target.value)} placeholder="output path" />
-          <Button variant="outlined" onClick={async () => { const f = await window.electronAPI.selectOutput(); if (f) setOutput(f); }}>Browse</Button>
+          <TextField fullWidth size="small" label={t('imageCompress.outputFile')} value={output} onChange={(e) => setOutput(e.target.value)} placeholder={t('imageCompress.placeholderOutput')} />
+          <Button variant="outlined" onClick={async () => { const f = await window.electronAPI.selectOutput(); if (f) setOutput(f); }}>{t('convert.browse')}</Button>
         </Stack>
         <Stack direction="row" spacing={2}>
-          <TextField select fullWidth size="small" label="Output Format" value={format} onChange={(e) => setFormat(e.target.value)}>
+          <TextField select fullWidth size="small" label={t('imageCompress.outputFormat')} value={format} onChange={(e) => setFormat(e.target.value)}>
             {IMAGE_FORMATS.map((f) => <MenuItem key={f.value} value={f.value}>{f.label}</MenuItem>)}
           </TextField>
-          <TextField fullWidth size="small" label="Quality (1-31)" type="number" value={quality} onChange={(e) => setQuality(parseInt(e.target.value) || 23)} slotProps={{ htmlInput: { min: 1, max: 31 } }} />
+          <TextField fullWidth size="small" label={t('imageCompress.quality')} type="number" value={quality} onChange={(e) => setQuality(parseInt(e.target.value) || 23)} slotProps={{ htmlInput: { min: 1, max: 31 } }} />
         </Stack>
-        <TextField fullWidth size="small" label="Scale (optional)" value={scale} onChange={(e) => setScale(e.target.value)} placeholder="e.g. 800x600" />
+        <TextField fullWidth size="small" label={t('imageCompress.scale')} value={scale} onChange={(e) => setScale(e.target.value)} placeholder={t('imageCompress.placeholderScale')} />
         <Button variant="contained" onClick={handleConvert} disabled={!input || !output || isConverting}>
-          {isConverting ? 'Compressing...' : 'Compress Image'}
+          {isConverting ? t('imageCompress.compressing') : t('imageCompress.compress')}
         </Button>
         {progress && <ProgressBar percent={progress.percent} />}
       </Paper>

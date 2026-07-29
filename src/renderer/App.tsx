@@ -1,5 +1,6 @@
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { CssBaseline, Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography, Divider, IconButton, Tooltip } from '@mui/material';
+import { CssBaseline, Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography, Divider, IconButton, Tooltip, Menu, MenuItem } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import HomeIcon from '@mui/icons-material/Home';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import InfoIcon from '@mui/icons-material/Info';
@@ -9,6 +10,7 @@ import ContentCutIcon from '@mui/icons-material/ContentCut';
 import QueueIcon from '@mui/icons-material/Queue';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import TranslateIcon from '@mui/icons-material/Translate';
 import { ColorModeProvider, useColorMode } from './ColorModeContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import ErrorSnackbar from './components/ErrorSnackbar';
@@ -20,7 +22,9 @@ import ImageCompress from './pages/ImageCompress';
 import AudioExtract from './pages/AudioExtract';
 import VideoCut from './pages/VideoCut';
 import BatchQueue from './pages/BatchQueue';
-import { DRAWER_WIDTH, NAV_ITEMS, APP_NAME } from '../shared/ui-constants';
+import { DRAWER_WIDTH, NAV_ITEMS } from '../shared/ui-constants';
+import i18n from './i18n/config';
+import { useState } from 'react';
 
 const navIconMap: Record<string, React.ReactNode> = {
   '/': <HomeIcon />,
@@ -32,18 +36,36 @@ const navIconMap: Record<string, React.ReactNode> = {
   '/batch': <QueueIcon />,
 };
 
+const navKeyMap: Record<string, string> = {
+  '/': 'dashboard',
+  '/convert': 'convert',
+  '/media-info': 'mediaInfo',
+  '/image-compress': 'image',
+  '/audio-extract': 'audio',
+  '/video-cut': 'cut',
+  '/batch': 'batchQueue',
+};
+
 function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { mode, toggleColorMode } = useColorMode();
   const { currentError, clearError } = useErrorStore();
+  const { t } = useTranslation();
+  const [langAnchor, setLangAnchor] = useState<HTMLElement | null>(null);
+
+  const switchLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem('encodex-lang', lng);
+    setLangAnchor(null);
+  };
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       <Drawer variant="permanent" sx={{ width: DRAWER_WIDTH, flexShrink: 0, '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' } }}>
         <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 700 }}>{APP_NAME}</Typography>
-          <Tooltip title={mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
+          <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 700 }}>{t('app.name')}</Typography>
+          <Tooltip title={mode === 'dark' ? t('app.switchLight') : t('app.switchDark')}>
             <IconButton size="small" onClick={toggleColorMode} sx={{ color: 'text.secondary' }}>
               {mode === 'dark' ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
             </IconButton>
@@ -65,10 +87,27 @@ function AppLayout() {
               <ListItemIcon sx={{ minWidth: 36, color: location.pathname === item.to ? 'primary.main' : 'text.secondary' }}>
                 {navIconMap[item.to]}
               </ListItemIcon>
-              <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />
+              <ListItemText primary={t(`nav.${navKeyMap[item.to]}`)} primaryTypographyProps={{ fontSize: 14 }} />
             </ListItemButton>
           ))}
         </List>
+        <Divider sx={{ borderColor: 'divider' }} />
+        <Box sx={{ p: 1.5, display: 'flex', justifyContent: 'center' }}>
+          <Tooltip title={t('app.language')}>
+            <IconButton size="small" onClick={(e) => setLangAnchor(e.currentTarget)} sx={{ color: 'text.secondary' }}>
+              <TranslateIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Box>
+        <Menu anchorEl={langAnchor} open={Boolean(langAnchor)} onClose={() => setLangAnchor(null)}>
+          <MenuItem selected={i18n.language.startsWith('en-US')} onClick={() => switchLanguage('en-US')}>English (US)</MenuItem>
+          <MenuItem selected={i18n.language.startsWith('en-GB')} onClick={() => switchLanguage('en-GB')}>English (UK)</MenuItem>
+          <MenuItem selected={i18n.language.startsWith('en-IN')} onClick={() => switchLanguage('en-IN')}>English (India)</MenuItem>
+          <MenuItem selected={i18n.language.startsWith('es')} onClick={() => switchLanguage('es-ES')}>Español</MenuItem>
+          <MenuItem selected={i18n.language.startsWith('fr-FR')} onClick={() => switchLanguage('fr-FR')}>Français (France)</MenuItem>
+          <MenuItem selected={i18n.language.startsWith('fr-CA')} onClick={() => switchLanguage('fr-CA')}>Français (Canada)</MenuItem>
+          <MenuItem selected={i18n.language.startsWith('hi')} onClick={() => switchLanguage('hi')}>हिन्दी</MenuItem>
+        </Menu>
       </Drawer>
       <Box component="main" sx={{ flex: 1, overflow: 'auto', p: 3, position: 'relative' }}>
         <ErrorBoundary>

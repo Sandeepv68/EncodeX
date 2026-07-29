@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, TextField, MenuItem, Button, Paper, Stack, Chip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
@@ -15,6 +16,7 @@ const statusColors: Record<string, 'default' | 'primary' | 'success' | 'error' |
 };
 
 export default function BatchQueue() {
+  const { t } = useTranslation();
   const { jobs, addJob, removeJob, updateJob, clearJobs } = useQueueStore();
   let videoCodec = 'libx264';
   let audioCodec = 'aac';
@@ -50,7 +52,7 @@ export default function BatchQueue() {
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>Batch Queue</Typography>
+      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>{t('batchQueue.title')}</Typography>
       <Paper sx={{ p: 2, mb: 2 }}>
         <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
           <TextField select size="small" sx={{ minWidth: 140 }} defaultValue={operation} onChange={(e: any) => { operation = e.target.value; }}>
@@ -59,15 +61,15 @@ export default function BatchQueue() {
           <TextField select size="small" sx={{ minWidth: 110 }} defaultValue={transcoder} onChange={(e: any) => { transcoder = e.target.value; }}>
             {TRANSCODER_TYPES.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
           </TextField>
-          <TextField size="small" sx={{ minWidth: 120 }} defaultValue={suffix} onChange={(e: any) => { suffix = e.target.value; }} placeholder="Suffix" />
-          <Button variant="outlined" startIcon={<AddIcon />} onClick={handleAddFiles}>Add Files</Button>
-          <Button variant="outlined" color="error" startIcon={<DeleteSweepIcon />} onClick={handleCancelAll}>Cancel All</Button>
+          <TextField size="small" sx={{ minWidth: 120 }} defaultValue={suffix} onChange={(e: any) => { suffix = e.target.value; }} placeholder={t('batchQueue.suffix')} />
+          <Button variant="outlined" startIcon={<AddIcon />} onClick={handleAddFiles}>{t('batchQueue.addFiles')}</Button>
+          <Button variant="outlined" color="error" startIcon={<DeleteSweepIcon />} onClick={handleCancelAll}>{t('batchQueue.cancelAll')}</Button>
         </Stack>
       </Paper>
 
       <Paper sx={{ p: 2 }}>
         {jobs.length === 0 ? (
-          <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>Queue is empty. Add files to begin batch processing.</Typography>
+          <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>{t('batchQueue.empty')}</Typography>
         ) : (
           <Stack spacing={1}>
             {jobs.map((job) => (
@@ -78,7 +80,7 @@ export default function BatchQueue() {
                   </Typography>
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Chip label={job.status} size="small" color={statusColors[job.status] || 'default'} />
-                    <Button size="small" color="error" onClick={() => window.electronAPI.queueRemove(job.id)}>Remove</Button>
+                    <Button size="small" color="error" onClick={() => window.electronAPI.queueRemove(job.id)}>{t('batchQueue.remove')}</Button>
                   </Stack>
                 </Box>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>{job.output}</Typography>
