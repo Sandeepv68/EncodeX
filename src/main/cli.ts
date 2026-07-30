@@ -2,7 +2,7 @@ import { FfmpegCore } from './transcoders/ffmpeg-core';
 import { FFToolCore } from './transcoders/fftool-core';
 import { BmfCore } from './transcoders/bmf-core';
 import { ConversionOptions, TranscoderType } from '../shared/types';
-import { APP_NAME, EXIT_CODES } from '../shared/ui-constants';
+import { APP_NAME } from '../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../shared/transcoder-constants';
 
 export async function runCli(): Promise<void> {
@@ -34,15 +34,10 @@ export async function runCli(): Promise<void> {
       if (opts.info) {
         if (!input) {
           console.error('Error: --info requires an input file');
-          process.exit(EXIT_CODES.ERROR);
+          throw new Error('Missing input file');
         }
-        try {
-          const info = await transcoder.getInfo(input);
-          console.log(JSON.stringify(info, null, 2));
-        } catch (err: unknown) {
-          console.error('Error getting media info:', err instanceof Error ? err.message : String(err));
-          process.exit(EXIT_CODES.ERROR);
-        }
+        const info = await transcoder.getInfo(input);
+        console.log(JSON.stringify(info, null, 2));
         return;
       }
 

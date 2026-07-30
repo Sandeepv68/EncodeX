@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import ffmpeg from 'fluent-ffmpeg';
 import type Ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
+import { path as ffprobePath } from 'ffprobe-static';
 import { existsSync } from 'fs';
 import { ITranscoder } from './interface';
 import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
@@ -10,6 +11,10 @@ import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/tra
 const staticPath = ffmpegStatic as unknown as string;
 if (existsSync(staticPath)) {
   ffmpeg.setFfmpegPath(staticPath);
+}
+
+if (existsSync(ffprobePath)) {
+  ffmpeg.setFfprobePath(ffprobePath);
 }
 
 function parseRatio(ratio: string): string {
