@@ -22,6 +22,11 @@ const statusColors: Record<string, 'default' | 'primary' | 'success' | 'error' |
 
 export default function BatchQueue() {
   const { t } = useTranslation();
+  const operationLabels: Record<string, string> = {
+    transcode: t('batchQueue.operationTranscode'),
+    extract_audio: t('batchQueue.operationExtractAudio'),
+    compress_image: t('batchQueue.operationCompressImage'),
+  };
   const { jobs, addJob, removeJob, updateJob, clearJobs } = useQueueStore();
   const videoCodecRef = useRef('libx264');
   const audioCodecRef = useRef('aac');
@@ -89,7 +94,7 @@ export default function BatchQueue() {
           >
             {BATCH_OPERATIONS.map((o) => (
               <MenuItem key={o.value} value={o.value}>
-                {o.label}
+                {operationLabels[o.value]}
               </MenuItem>
             ))}
           </TextField>

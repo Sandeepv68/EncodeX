@@ -88,7 +88,8 @@
     "compress": "इमेज कंप्रेस करें",
     "compressing": "कंप्रेस हो रहा है...",
     "placeholderOutput": "आउटपुट पथ",
-    "placeholderScale": "जैसे 800x600"
+    "placeholderScale": "जैसे 800x600",
+    "validationRequired": "Please select an input image."
   },
   "audioExtract": {
     "title": "ऑडियो निकालें",
@@ -99,7 +100,8 @@
     "bitrate": "बिटरेट",
     "extract": "ऑडियो निकालें",
     "extracting": "निकाला जा रहा है...",
-    "placeholderOutput": "जैसे output.mp3"
+    "placeholderOutput": "जैसे output.mp3",
+    "validationRequired": "Please select a video file."
   },
   "videoCut": {
     "title": "वीडियो काटें",
@@ -116,7 +118,8 @@
     "placeholderOutput": "आउटपुट पथ",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "जैसे 00:01:30",
-    "placeholderEnd": "जैसे 00:01:30"
+    "placeholderEnd": "जैसे 00:01:30",
+    "validationRequired": "Please select a video file."
   },
   "batchQueue": {
     "title": "बैच क्यू",
@@ -124,7 +127,10 @@
     "addFiles": "फ़ाइलें जोड़ें",
     "cancelAll": "सभी रद्द करें",
     "empty": "क्यू खाली है। बैच प्रोसेसिंग शुरू करने के लिए फ़ाइलें जोड़ें।",
-    "remove": "हटाएँ"
+    "remove": "हटाएँ",
+    "operationTranscode": "Transcode",
+    "operationExtractAudio": "Extract Audio",
+    "operationCompressImage": "Compress Image"
   },
   "progress": {
     "time": "समय",
@@ -146,10 +152,23 @@
     "invalidScale": "Invalid scale format (e.g. 1920:1080, 50%)",
     "invalidBitrate": "Invalid bitrate (e.g. 128k, 1M)",
     "qscaleRange": "QScale must be between 1 and 31",
-    "qualityRange": "Quality must be between 1 and 31"
+    "qualityRange": "Quality must be between 1 and 31",
+    "inputRequired": "Please select an input file.",
+    "outputRequiredDetailed": "Please select an output file."
   },
   "logs": {
     "clear": "साफ़ करें",
-    "download": "Download as TXT"
+    "download": "Download as TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "No log entries yet.",
+    "entryCount": "{{count}} entries"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "None"
   }
 }

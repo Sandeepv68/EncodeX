@@ -62,7 +62,7 @@ export default function FileDropZone({ onFileSelect, label, accept }: Props) {
       }}
     >
       <CloudUploadIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
-      <Typography color="text.secondary">{label}</Typography>
+      <Typography color="text.secondary">{resolvedLabel}</Typography>
     </Box>
   );
 }

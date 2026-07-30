@@ -23,7 +23,7 @@ export default function AudioExtract() {
   const [progress, setProgress] = useState<{ percent: number; time?: string; speed?: string; eta?: string } | null>(null);
   const [isConverting, setIsConverting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { currentError, showError, clearError } = useErrorStore();
+  const { currentError, showError, showErrorMessage, clearError } = useErrorStore();
   const transcoder = TRANSCODER_TYPES[0];
 
   const validate = (): boolean => {
@@ -42,7 +42,7 @@ export default function AudioExtract() {
     }
     if (!input) {
       log.warn('No input file selected');
-      showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select a video file.' });
+      showErrorMessage(ErrorCode.INPUT_NOT_SPECIFIED, t('audioExtract.validationRequired'));
       return;
     }
     log.info('Extracting audio:', input, '->', output, 'codec:', audioCodec);

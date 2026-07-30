@@ -88,7 +88,8 @@
     "compress": "画像を圧縮",
     "compressing": "圧縮中...",
     "placeholderOutput": "出力パス",
-    "placeholderScale": "例: 800x600"
+    "placeholderScale": "例: 800x600",
+    "validationRequired": "Please select an input image."
   },
   "audioExtract": {
     "title": "音声抽出",
@@ -99,7 +100,8 @@
     "bitrate": "ビットレート",
     "extract": "音声を抽出",
     "extracting": "抽出中...",
-    "placeholderOutput": "例: output.mp3"
+    "placeholderOutput": "例: output.mp3",
+    "validationRequired": "Please select a video file."
   },
   "videoCut": {
     "title": "動画カット",
@@ -116,7 +118,8 @@
     "placeholderOutput": "出力パス",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "例: 00:01:30",
-    "placeholderEnd": "例: 00:01:30"
+    "placeholderEnd": "例: 00:01:30",
+    "validationRequired": "Please select a video file."
   },
   "batchQueue": {
     "title": "バッチキュー",
@@ -124,7 +127,10 @@
     "addFiles": "ファイルを追加",
     "cancelAll": "すべてキャンセル",
     "empty": "キューは空です。ファイルを追加してバッチ処理を開始してください。",
-    "remove": "削除"
+    "remove": "削除",
+    "operationTranscode": "Transcode",
+    "operationExtractAudio": "Extract Audio",
+    "operationCompressImage": "Compress Image"
   },
   "progress": {
     "time": "時間",
@@ -146,10 +152,23 @@
     "invalidScale": "無効なスケール形式です（例: 1920:1080, 50%）",
     "invalidBitrate": "無効なビットレートです（例: 128k, 1M）",
     "qscaleRange": "QScale は 1 から 31 の間でなければなりません",
-    "qualityRange": "品質は 1 から 31 の間でなければなりません"
+    "qualityRange": "品質は 1 から 31 の間でなければなりません",
+    "inputRequired": "Please select an input file.",
+    "outputRequiredDetailed": "Please select an output file."
   },
   "logs": {
     "clear": "クリア",
-    "download": "Download as TXT"
+    "download": "Download as TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "No log entries yet.",
+    "entryCount": "{{count}} entries"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "None"
   }
 }

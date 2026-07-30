@@ -247,7 +247,7 @@ export default function Convert() {
                     clearFieldError('audioBitrate');
                   }}
                 >
-                  <MenuItem value="">Auto</MenuItem>
+                  <MenuItem value="">{t('status.auto')}</MenuItem>
                   {BITRATE_OPTIONS.map((b) => (
                     <MenuItem key={b} value={b}>
                       {b}
@@ -295,7 +295,7 @@ export default function Convert() {
                 >
                   {SCALE_OPTIONS.map((s) => (
                     <MenuItem key={s} value={s}>
-                      {s || 'None'}
+                      {s || t('status.none')}
                     </MenuItem>
                   ))}
                 </TextField>

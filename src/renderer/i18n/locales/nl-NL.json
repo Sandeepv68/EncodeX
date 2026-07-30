@@ -88,7 +88,8 @@
     "compress": "Afbeelding comprimeren",
     "compressing": "Bezig met comprimeren...",
     "placeholderOutput": "uitvoerpad",
-    "placeholderScale": "bijv. 800x600"
+    "placeholderScale": "bijv. 800x600",
+    "validationRequired": "Please select an input image."
   },
   "audioExtract": {
     "title": "Audio extraheren",
@@ -99,7 +100,8 @@
     "bitrate": "Bitrate",
     "extract": "Audio extraheren",
     "extracting": "Bezig met extraheren...",
-    "placeholderOutput": "bijv. output.mp3"
+    "placeholderOutput": "bijv. output.mp3",
+    "validationRequired": "Please select a video file."
   },
   "videoCut": {
     "title": "Video knippen",
@@ -116,7 +118,8 @@
     "placeholderOutput": "uitvoerpad",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "bijv. 00:01:30",
-    "placeholderEnd": "bijv. 00:01:30"
+    "placeholderEnd": "bijv. 00:01:30",
+    "validationRequired": "Please select a video file."
   },
   "batchQueue": {
     "title": "Batchwachtrij",
@@ -124,7 +127,10 @@
     "addFiles": "Bestanden toevoegen",
     "cancelAll": "Alles annuleren",
     "empty": "Wachtrij is leeg. Voeg bestanden toe om batchverwerking te starten.",
-    "remove": "Verwijderen"
+    "remove": "Verwijderen",
+    "operationTranscode": "Transcode",
+    "operationExtractAudio": "Extract Audio",
+    "operationCompressImage": "Compress Image"
   },
   "progress": {
     "time": "Tijd",
@@ -146,10 +152,23 @@
     "invalidScale": "Ongeldig schaalformaat (bijv. 1920:1080, 50%)",
     "invalidBitrate": "Ongeldige bitrate (bijv. 128k, 1M)",
     "qscaleRange": "QScale moet tussen 1 en 31 liggen",
-    "qualityRange": "Kwaliteit moet tussen 1 en 31 liggen"
+    "qualityRange": "Kwaliteit moet tussen 1 en 31 liggen",
+    "inputRequired": "Please select an input file.",
+    "outputRequiredDetailed": "Please select an output file."
   },
   "logs": {
     "clear": "Wissen",
-    "download": "Download as TXT"
+    "download": "Download as TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "No log entries yet.",
+    "entryCount": "{{count}} entries"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "None"
   }
 }

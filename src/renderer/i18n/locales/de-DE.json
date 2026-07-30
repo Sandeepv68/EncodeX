@@ -88,7 +88,8 @@
     "compress": "Bild komprimieren",
     "compressing": "Komprimiere...",
     "placeholderOutput": "Ausgabepfad",
-    "placeholderScale": "z.B. 800x600"
+    "placeholderScale": "z.B. 800x600",
+    "validationRequired": "Please select an input image."
   },
   "audioExtract": {
     "title": "Audio extrahieren",
@@ -99,7 +100,8 @@
     "bitrate": "Bitrate",
     "extract": "Audio extrahieren",
     "extracting": "Extrahiere...",
-    "placeholderOutput": "z.B. output.mp3"
+    "placeholderOutput": "z.B. output.mp3",
+    "validationRequired": "Please select a video file."
   },
   "videoCut": {
     "title": "Video schneiden",
@@ -116,7 +118,8 @@
     "placeholderOutput": "Ausgabepfad",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "z.B. 00:01:30",
-    "placeholderEnd": "z.B. 00:01:30"
+    "placeholderEnd": "z.B. 00:01:30",
+    "validationRequired": "Please select a video file."
   },
   "batchQueue": {
     "title": "Stapelwarteschlange",
@@ -124,7 +127,10 @@
     "addFiles": "Dateien hinzufügen",
     "cancelAll": "Alle abbrechen",
     "empty": "Warteschlange ist leer. Fügen Sie Dateien hinzu, um die Stapelverarbeitung zu starten.",
-    "remove": "Entfernen"
+    "remove": "Entfernen",
+    "operationTranscode": "Transcode",
+    "operationExtractAudio": "Extract Audio",
+    "operationCompressImage": "Compress Image"
   },
   "progress": {
     "time": "Zeit",
@@ -146,10 +152,23 @@
     "invalidScale": "Ungültiges Skalierungsformat (z.B. 1920:1080, 50%)",
     "invalidBitrate": "Ungültige Bitrate (z.B. 128k, 1M)",
     "qscaleRange": "QScale muss zwischen 1 und 31 liegen",
-    "qualityRange": "Qualität muss zwischen 1 und 31 liegen"
+    "qualityRange": "Qualität muss zwischen 1 und 31 liegen",
+    "inputRequired": "Please select an input file.",
+    "outputRequiredDetailed": "Please select an output file."
   },
   "logs": {
     "clear": "Leeren",
-    "download": "Download as TXT"
+    "download": "Download as TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "No log entries yet.",
+    "entryCount": "{{count}} entries"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "None"
   }
 }

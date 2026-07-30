@@ -88,7 +88,8 @@
     "compress": "이미지 압축",
     "compressing": "압축 중...",
     "placeholderOutput": "출력 경로",
-    "placeholderScale": "예: 800x600"
+    "placeholderScale": "예: 800x600",
+    "validationRequired": "Please select an input image."
   },
   "audioExtract": {
     "title": "오디오 추출",
@@ -99,7 +100,8 @@
     "bitrate": "비트레이트",
     "extract": "오디오 추출",
     "extracting": "추출 중...",
-    "placeholderOutput": "예: output.mp3"
+    "placeholderOutput": "예: output.mp3",
+    "validationRequired": "Please select a video file."
   },
   "videoCut": {
     "title": "비디오 자르기",
@@ -116,7 +118,8 @@
     "placeholderOutput": "출력 경로",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "예: 00:01:30",
-    "placeholderEnd": "예: 00:01:30"
+    "placeholderEnd": "예: 00:01:30",
+    "validationRequired": "Please select a video file."
   },
   "batchQueue": {
     "title": "배치 큐",
@@ -124,7 +127,10 @@
     "addFiles": "파일 추가",
     "cancelAll": "모두 취소",
     "empty": "큐가 비어 있습니다. 파일을 추가하여 배치 처리를 시작하세요.",
-    "remove": "제거"
+    "remove": "제거",
+    "operationTranscode": "Transcode",
+    "operationExtractAudio": "Extract Audio",
+    "operationCompressImage": "Compress Image"
   },
   "progress": {
     "time": "시간",
@@ -146,10 +152,23 @@
     "invalidScale": "잘못된 크기 조정 형식입니다 (예: 1920:1080, 50%)",
     "invalidBitrate": "잘못된 비트레이트입니다 (예: 128k, 1M)",
     "qscaleRange": "QScale은 1에서 31 사이여야 합니다",
-    "qualityRange": "품질은 1에서 31 사이여야 합니다"
+    "qualityRange": "품질은 1에서 31 사이여야 합니다",
+    "inputRequired": "Please select an input file.",
+    "outputRequiredDetailed": "Please select an output file."
   },
   "logs": {
     "clear": "지우기",
-    "download": "Download as TXT"
+    "download": "Download as TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "No log entries yet.",
+    "entryCount": "{{count}} entries"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "None"
   }
 }

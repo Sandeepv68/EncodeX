@@ -24,7 +24,7 @@ export default function VideoCut() {
   const [progress, setProgress] = useState<{ percent: number; time?: string; speed?: string; eta?: string } | null>(null);
   const [useDuration, setUseDuration] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { currentError, showError, clearError: clearErrorBanner } = useErrorStore();
+  const { currentError, showError, showErrorMessage, clearError: clearErrorBanner } = useErrorStore();
   const transcoder = TRANSCODER_TYPES[0];
 
   const clearFieldError = (field: string) => {
@@ -57,7 +57,7 @@ export default function VideoCut() {
     }
     if (!input) {
       log.warn('No input file selected');
-      showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select a video file.' });
+      showErrorMessage(ErrorCode.INPUT_NOT_SPECIFIED, t('videoCut.validationRequired'));
       return;
     }
     log.info('Cutting video:', input, '->', output, 'start:', startTime, 'useDuration:', useDuration);

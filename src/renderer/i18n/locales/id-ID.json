@@ -88,7 +88,8 @@
     "compress": "Kompres Gambar",
     "compressing": "Mengompres...",
     "placeholderOutput": "jalur output",
-    "placeholderScale": "mis. 800x600"
+    "placeholderScale": "mis. 800x600",
+    "validationRequired": "Please select an input image."
   },
   "audioExtract": {
     "title": "Ekstrak Audio",
@@ -99,7 +100,8 @@
     "bitrate": "Bitrate",
     "extract": "Ekstrak Audio",
     "extracting": "Mengekstrak...",
-    "placeholderOutput": "mis. output.mp3"
+    "placeholderOutput": "mis. output.mp3",
+    "validationRequired": "Please select a video file."
   },
   "videoCut": {
     "title": "Potong Video",
@@ -116,7 +118,8 @@
     "placeholderOutput": "jalur output",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "mis. 00:01:30",
-    "placeholderEnd": "mis. 00:01:30"
+    "placeholderEnd": "mis. 00:01:30",
+    "validationRequired": "Please select a video file."
   },
   "batchQueue": {
     "title": "Antrean Batch",
@@ -124,7 +127,10 @@
     "addFiles": "Tambah File",
     "cancelAll": "Batalkan Semua",
     "empty": "Antrean kosong. Tambahkan file untuk memulai pemrosesan batch.",
-    "remove": "Hapus"
+    "remove": "Hapus",
+    "operationTranscode": "Transcode",
+    "operationExtractAudio": "Extract Audio",
+    "operationCompressImage": "Compress Image"
   },
   "progress": {
     "time": "Waktu",
@@ -146,10 +152,23 @@
     "invalidScale": "Format skala tidak valid (mis. 1920:1080, 50%)",
     "invalidBitrate": "Bitrate tidak valid (mis. 128k, 1M)",
     "qscaleRange": "QScale harus antara 1 dan 31",
-    "qualityRange": "Kualitas harus antara 1 dan 31"
+    "qualityRange": "Kualitas harus antara 1 dan 31",
+    "inputRequired": "Please select an input file.",
+    "outputRequiredDetailed": "Please select an output file."
   },
   "logs": {
     "clear": "Hapus",
-    "download": "Download as TXT"
+    "download": "Download as TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "No log entries yet.",
+    "entryCount": "{{count}} entries"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "None"
   }
 }

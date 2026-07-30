@@ -20,9 +20,7 @@ export default function Logs() {
   const [filter, setFilter] = useState('ALL');
 
   const downloadLogs = () => {
-    const text = filtered
-      .map((e) => `${e.timestamp} [${e.level}] [${e.source}] ${e.text}`)
-      .join('\n');
+    const text = filtered.map((e) => `${e.timestamp} [${e.level}] [${e.source}] ${e.text}`).join('\n');
     const blob = new Blob([text], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -45,11 +43,11 @@ export default function Logs() {
           {t('nav.logs')}
         </Typography>
         <Select size="small" value={filter} onChange={(e: SelectChangeEvent) => setFilter(e.target.value as string)} sx={{ minWidth: 100 }}>
-          <MenuItem value="ALL">ALL</MenuItem>
-          <MenuItem value="DEBUG">DEBUG</MenuItem>
-          <MenuItem value="INFO">INFO</MenuItem>
-          <MenuItem value="WARN">WARN</MenuItem>
-          <MenuItem value="ERROR">ERROR</MenuItem>
+          <MenuItem value="ALL">{t('logs.levelAll')}</MenuItem>
+          <MenuItem value="DEBUG">{t('logs.levelDebug')}</MenuItem>
+          <MenuItem value="INFO">{t('logs.levelInfo')}</MenuItem>
+          <MenuItem value="WARN">{t('logs.levelWarn')}</MenuItem>
+          <MenuItem value="ERROR">{t('logs.levelError')}</MenuItem>
         </Select>
         <Tooltip title={t('logs.clear')}>
           <IconButton size="small" onClick={clear}>
@@ -62,7 +60,7 @@ export default function Logs() {
           </IconButton>
         </Tooltip>
         <Typography variant="caption" color="text.secondary">
-          {entries.length} entries
+          {t('logs.entryCount', { count: entries.length })}
         </Typography>
       </Box>
       <Box
@@ -81,7 +79,7 @@ export default function Logs() {
       >
         {filtered.length === 0 && (
           <Typography variant="body2" sx={{ color: '#888', p: 1 }}>
-            No log entries yet.
+            {t('logs.noEntries')}
           </Typography>
         )}
         {filtered.map((entry, i) => (

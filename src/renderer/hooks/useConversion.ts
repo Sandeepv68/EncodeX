@@ -11,6 +11,7 @@ const log = new Logger('renderer/hooks/useConversion');
 export function useConversion() {
   const store = useConversionStore();
   const showError = useErrorStore((s) => s.showError);
+  const showErrorMessage = useErrorStore((s) => s.showErrorMessage);
 
   useEffect(() => {
     log.debug('Subscribing to conversion progress');
@@ -26,12 +27,12 @@ export function useConversion() {
   const startConversion = useCallback(async () => {
     if (!store.inputFile) {
       log.warn('startConversion: no input file');
-      showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select an input file.' });
+      showErrorMessage(ErrorCode.INPUT_NOT_SPECIFIED);
       return;
     }
     if (!store.outputFile) {
       log.warn('startConversion: no output file');
-      showError({ code: ErrorCode.OUTPUT_NOT_SPECIFIED, message: 'Please select an output file.' });
+      showErrorMessage(ErrorCode.OUTPUT_NOT_SPECIFIED);
       return;
     }
     log.info('startConversion:', store.inputFile, '->', store.outputFile, 'copyMode:', store.copyMode);
@@ -73,6 +74,7 @@ export function useConversion() {
     store.copyMode,
     store.transcoder,
     showError,
+    showErrorMessage,
   ]);
 
   const pauseConversion = useCallback(async () => {

@@ -24,7 +24,7 @@ export default function ImageCompress() {
   const [progress, setProgress] = useState<{ percent: number; time?: string; speed?: string; eta?: string } | null>(null);
   const [isConverting, setIsConverting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { currentError, showError, clearError: clearErrorBanner } = useErrorStore();
+  const { currentError, showError, showErrorMessage, clearError: clearErrorBanner } = useErrorStore();
   const transcoder = TRANSCODER_TYPES[0];
 
   const clearFieldError = (field: string) => {
@@ -52,7 +52,7 @@ export default function ImageCompress() {
     }
     if (!input) {
       log.warn('No input file selected');
-      showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select an input image.' });
+      showErrorMessage(ErrorCode.INPUT_NOT_SPECIFIED, t('imageCompress.validationRequired'));
       return;
     }
     log.info('Compressing image:', input, '->', output, 'format:', format, 'quality:', quality);

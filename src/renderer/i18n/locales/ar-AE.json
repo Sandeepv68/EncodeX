@@ -88,7 +88,8 @@
     "compress": "ضغط الصورة",
     "compressing": "جاري الضغط...",
     "placeholderOutput": "مسار الإخراج",
-    "placeholderScale": "مثال 800x600"
+    "placeholderScale": "مثال 800x600",
+    "validationRequired": "Please select an input image."
   },
   "audioExtract": {
     "title": "استخراج الصوت",
@@ -99,7 +100,8 @@
     "bitrate": "معدل البت",
     "extract": "استخراج الصوت",
     "extracting": "جاري الاستخراج...",
-    "placeholderOutput": "مثال output.mp3"
+    "placeholderOutput": "مثال output.mp3",
+    "validationRequired": "Please select a video file."
   },
   "videoCut": {
     "title": "قص الفيديو",
@@ -116,7 +118,8 @@
     "placeholderOutput": "مسار الإخراج",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "مثال 00:01:30",
-    "placeholderEnd": "مثال 00:01:30"
+    "placeholderEnd": "مثال 00:01:30",
+    "validationRequired": "Please select a video file."
   },
   "batchQueue": {
     "title": "قائمة الدفعات",
@@ -124,7 +127,10 @@
     "addFiles": "إضافة ملفات",
     "cancelAll": "إلغاء الكل",
     "empty": "القائمة فارغة. أضف ملفات لبدء المعالجة بالدفعات.",
-    "remove": "إزالة"
+    "remove": "إزالة",
+    "operationTranscode": "Transcode",
+    "operationExtractAudio": "Extract Audio",
+    "operationCompressImage": "Compress Image"
   },
   "progress": {
     "time": "الوقت",
@@ -146,10 +152,23 @@
     "invalidScale": "تنسيق قياس غير صحيح (مثال 1920:1080، 50%)",
     "invalidBitrate": "معدل بت غير صحيح (مثال 128k، 1M)",
     "qscaleRange": "مقياس الجودة يجب أن يكون بين 1 و 31",
-    "qualityRange": "الجودة يجب أن تكون بين 1 و 31"
+    "qualityRange": "الجودة يجب أن تكون بين 1 و 31",
+    "inputRequired": "Please select an input file.",
+    "outputRequiredDetailed": "Please select an output file."
   },
   "logs": {
     "clear": "مسح",
-    "download": "Download as TXT"
+    "download": "Download as TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "No log entries yet.",
+    "entryCount": "{{count}} entries"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "None"
   }
 }

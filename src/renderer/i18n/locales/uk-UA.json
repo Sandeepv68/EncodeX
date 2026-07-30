@@ -88,7 +88,8 @@
     "compress": "Стиснути зображення",
     "compressing": "Стиснення...",
     "placeholderOutput": "шлях вихідного файлу",
-    "placeholderScale": "напр. 800x600"
+    "placeholderScale": "напр. 800x600",
+    "validationRequired": "Please select an input image."
   },
   "audioExtract": {
     "title": "Виділити аудіо",
@@ -99,7 +100,8 @@
     "bitrate": "Бітрейт",
     "extract": "Виділити аудіо",
     "extracting": "Виділення...",
-    "placeholderOutput": "напр. output.mp3"
+    "placeholderOutput": "напр. output.mp3",
+    "validationRequired": "Please select a video file."
   },
   "videoCut": {
     "title": "Обрізати відео",
@@ -116,7 +118,8 @@
     "placeholderOutput": "шлях вихідного файлу",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "напр. 00:01:30",
-    "placeholderEnd": "напр. 00:01:30"
+    "placeholderEnd": "напр. 00:01:30",
+    "validationRequired": "Please select a video file."
   },
   "batchQueue": {
     "title": "Пакетна черга",
@@ -124,7 +127,10 @@
     "addFiles": "Додати файли",
     "cancelAll": "Скасувати все",
     "empty": "Черга порожня. Додайте файли для початку пакетної обробки.",
-    "remove": "Видалити"
+    "remove": "Видалити",
+    "operationTranscode": "Transcode",
+    "operationExtractAudio": "Extract Audio",
+    "operationCompressImage": "Compress Image"
   },
   "progress": {
     "time": "Час",
@@ -146,10 +152,23 @@
     "invalidScale": "Неправильний формат масштабу (напр. 1920:1080, 50%)",
     "invalidBitrate": "Неправильний бітрейт (напр. 128k, 1M)",
     "qscaleRange": "QScale має бути від 1 до 31",
-    "qualityRange": "Якість має бути від 1 до 31"
+    "qualityRange": "Якість має бути від 1 до 31",
+    "inputRequired": "Please select an input file.",
+    "outputRequiredDetailed": "Please select an output file."
   },
   "logs": {
     "clear": "Очистити",
-    "download": "Download as TXT"
+    "download": "Download as TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "No log entries yet.",
+    "entryCount": "{{count}} entries"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "None"
   }
 }

@@ -88,7 +88,8 @@
     "compress": "Compress Image",
     "compressing": "Compressing...",
     "placeholderOutput": "output path",
-    "placeholderScale": "e.g. 800x600"
+    "placeholderScale": "e.g. 800x600",
+    "validationRequired": "Please select an input image."
   },
   "audioExtract": {
     "title": "Extract Audio",
@@ -99,7 +100,8 @@
     "bitrate": "Bitrate",
     "extract": "Extract Audio",
     "extracting": "Extracting...",
-    "placeholderOutput": "e.g. output.mp3"
+    "placeholderOutput": "e.g. output.mp3",
+    "validationRequired": "Please select a video file."
   },
   "videoCut": {
     "title": "Cut Video",
@@ -116,7 +118,8 @@
     "placeholderOutput": "output path",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "e.g. 00:01:30",
-    "placeholderEnd": "e.g. 00:01:30"
+    "placeholderEnd": "e.g. 00:01:30",
+    "validationRequired": "Please select a video file."
   },
   "batchQueue": {
     "title": "Batch Queue",
@@ -124,7 +127,10 @@
     "addFiles": "Add Files",
     "cancelAll": "Cancel All",
     "empty": "Queue is empty. Add files to begin batch processing.",
-    "remove": "Remove"
+    "remove": "Remove",
+    "operationTranscode": "Transcode",
+    "operationExtractAudio": "Extract Audio",
+    "operationCompressImage": "Compress Image"
   },
   "progress": {
     "time": "Time",
@@ -146,10 +152,23 @@
     "invalidScale": "Invalid scale format (e.g. 1920:1080, 50%)",
     "invalidBitrate": "Invalid bitrate (e.g. 128k, 1M)",
     "qscaleRange": "QScale must be between 1 and 31",
-    "qualityRange": "Quality must be between 1 and 31"
+    "qualityRange": "Quality must be between 1 and 31",
+    "inputRequired": "Please select an input file.",
+    "outputRequiredDetailed": "Please select an output file."
   },
   "logs": {
     "clear": "Clear",
-    "download": "Download as TXT"
+    "download": "Download as TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "No log entries yet.",
+    "entryCount": "{{count}} entries"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "None"
   }
 }
