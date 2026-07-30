@@ -79,7 +79,11 @@ export default function VideoCut() {
         {t('videoCut.title')}
       </Typography>
       <Paper sx={{ p: 3, maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {currentError && <ErrorBoundary fallback={null}><ErrorBanner error={currentError} onClose={clearErrorBanner} /></ErrorBoundary>}
+        {currentError && (
+          <ErrorBoundary fallback={null}>
+            <ErrorBanner error={currentError} onClose={clearErrorBanner} />
+          </ErrorBoundary>
+        )}
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('videoCut.videoFile')}
@@ -104,7 +108,11 @@ export default function VideoCut() {
           </Stack>
         </Box>
 
-        {input && <ErrorBoundary fallback={null}><MediaPlayer filePath={input} /></ErrorBoundary>}
+        {input && (
+          <ErrorBoundary fallback={null}>
+            <MediaPlayer filePath={input} />
+          </ErrorBoundary>
+        )}
 
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
@@ -218,7 +226,11 @@ export default function VideoCut() {
           {isConverting ? t('videoCut.cutting') : t('videoCut.cut')}
         </Button>
 
-        {progress && <ErrorBoundary fallback={null}><ProgressBar percent={progress.percent} /></ErrorBoundary>}
+        {progress && (
+          <ErrorBoundary fallback={null}>
+            <ProgressBar percent={progress.percent} />
+          </ErrorBoundary>
+        )}
       </Paper>
     </Box>
   );

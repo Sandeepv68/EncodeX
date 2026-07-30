@@ -94,7 +94,11 @@ export default function Convert() {
         {t('convert.title')}
       </Typography>
       <Paper sx={{ p: 3, maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {currentError && <ErrorBoundary fallback={null}><ErrorBanner error={currentError} onClose={clearError} /></ErrorBoundary>}
+        {currentError && (
+          <ErrorBoundary fallback={null}>
+            <ErrorBanner error={currentError} onClose={clearError} />
+          </ErrorBoundary>
+        )}
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('convert.inputFile')}
@@ -145,13 +149,17 @@ export default function Convert() {
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                   {t('convert.videoCodec')}
                 </Typography>
-                <ErrorBoundary fallback={null}><CodecSelect type="video" value={videoCodec} onChange={setVideoCodec} /></ErrorBoundary>
+                <ErrorBoundary fallback={null}>
+                  <CodecSelect type="video" value={videoCodec} onChange={setVideoCodec} />
+                </ErrorBoundary>
               </Box>
               <Box sx={{ flex: 1 }}>
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                   {t('convert.audioCodec')}
                 </Typography>
-                <ErrorBoundary fallback={null}><CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} /></ErrorBoundary>
+                <ErrorBoundary fallback={null}>
+                  <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} />
+                </ErrorBoundary>
               </Box>
             </Stack>
 
@@ -312,7 +320,11 @@ export default function Convert() {
           )}
         </Stack>
 
-        {progress && <ErrorBoundary fallback={null}><ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} /></ErrorBoundary>}
+        {progress && (
+          <ErrorBoundary fallback={null}>
+            <ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} />
+          </ErrorBoundary>
+        )}
       </Paper>
     </Box>
   );

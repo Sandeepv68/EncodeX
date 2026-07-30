@@ -75,12 +75,18 @@ export default function ImageCompress() {
         {t('imageCompress.title')}
       </Typography>
       <Paper sx={{ p: 3, maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {currentError && <ErrorBoundary fallback={null}><ErrorBanner error={currentError} onClose={clearErrorBanner} /></ErrorBoundary>}
+        {currentError && (
+          <ErrorBoundary fallback={null}>
+            <ErrorBanner error={currentError} onClose={clearErrorBanner} />
+          </ErrorBoundary>
+        )}
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('imageCompress.inputImage')}
           </Typography>
-          <ErrorBoundary fallback={null}><FileDropZone onFileSelect={setInput} label={t('imageCompress.dropLabel')} accept="jpg,jpeg,png,webp,bmp" /></ErrorBoundary>
+          <ErrorBoundary fallback={null}>
+            <FileDropZone onFileSelect={setInput} label={t('imageCompress.dropLabel')} accept="jpg,jpeg,png,webp,bmp" />
+          </ErrorBoundary>
         </Box>
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
@@ -174,7 +180,11 @@ export default function ImageCompress() {
         <Button variant="contained" onClick={handleConvert} disabled={!input || !output || isConverting}>
           {isConverting ? t('imageCompress.compressing') : t('imageCompress.compress')}
         </Button>
-        {progress && <ErrorBoundary fallback={null}><ProgressBar percent={progress.percent} /></ErrorBoundary>}
+        {progress && (
+          <ErrorBoundary fallback={null}>
+            <ProgressBar percent={progress.percent} />
+          </ErrorBoundary>
+        )}
       </Paper>
     </Box>
   );

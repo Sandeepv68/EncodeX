@@ -154,7 +154,11 @@ export default function BatchQueue() {
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
                   {job.output}
                 </Typography>
-                {job.status === QUEUE_STATUS.RUNNING && <ErrorBoundary fallback={null}><ProgressBar percent={job.progress} /></ErrorBoundary>}
+                {job.status === QUEUE_STATUS.RUNNING && (
+                  <ErrorBoundary fallback={null}>
+                    <ProgressBar percent={job.progress} />
+                  </ErrorBoundary>
+                )}
                 {job.error && (
                   <Typography variant="caption" color="error">
                     {job.error}

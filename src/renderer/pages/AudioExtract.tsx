@@ -55,12 +55,18 @@ export default function AudioExtract() {
         {t('audioExtract.title')}
       </Typography>
       <Paper sx={{ p: 3, maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {currentError && <ErrorBoundary fallback={null}><ErrorBanner error={currentError} onClose={clearError} /></ErrorBoundary>}
+        {currentError && (
+          <ErrorBoundary fallback={null}>
+            <ErrorBanner error={currentError} onClose={clearError} />
+          </ErrorBoundary>
+        )}
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('audioExtract.videoFile')}
           </Typography>
-          <ErrorBoundary fallback={null}><FileDropZone onFileSelect={setInput} label={t('audioExtract.dropLabel')} accept="mp4,avi,mkv,mov,flv,wmv,webm" /></ErrorBoundary>
+          <ErrorBoundary fallback={null}>
+            <FileDropZone onFileSelect={setInput} label={t('audioExtract.dropLabel')} accept="mp4,avi,mkv,mov,flv,wmv,webm" />
+          </ErrorBoundary>
         </Box>
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
@@ -109,7 +115,9 @@ export default function AudioExtract() {
             <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
               {t('audioExtract.audioCodec')}
             </Typography>
-            <ErrorBoundary fallback={null}><CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} /></ErrorBoundary>
+            <ErrorBoundary fallback={null}>
+              <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} />
+            </ErrorBoundary>
           </Box>
           <Box sx={{ flex: 1 }}>
             <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
@@ -127,7 +135,11 @@ export default function AudioExtract() {
         <Button variant="contained" onClick={handleExtract} disabled={!input || !output || isConverting}>
           {isConverting ? t('audioExtract.extracting') : t('audioExtract.extract')}
         </Button>
-        {progress && <ErrorBoundary fallback={null}><ProgressBar percent={progress.percent} /></ErrorBoundary>}
+        {progress && (
+          <ErrorBoundary fallback={null}>
+            <ProgressBar percent={progress.percent} />
+          </ErrorBoundary>
+        )}
       </Paper>
     </Box>
   );
