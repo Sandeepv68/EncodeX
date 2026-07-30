@@ -1,5 +1,5 @@
 {
-  "name": "open-converter",
+  "name": "EncodeX",
   "version": "1.0.0",
   "description": "Multimedia converter built on FFmpeg, React, TypeScript, and Electron",
   "main": "dist/main/index.js",
