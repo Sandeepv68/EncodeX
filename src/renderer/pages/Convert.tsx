@@ -24,6 +24,7 @@ import { useConversion } from '../hooks/useConversion';
 import CodecSelect from '../components/CodecSelect';
 import ErrorBanner from '../components/ErrorBanner';
 import ProgressBar from '../components/ProgressBar';
+import MediaPlayer from '../components/MediaPlayer';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useErrorHandler } from '../hooks/useErrorHandler';
 import { PIXEL_FORMATS, VIDEO_BITRATE_OPTIONS, SCALE_OPTIONS, BITRATE_OPTIONS } from '../../shared/ui-constants';
@@ -79,11 +80,14 @@ export default function Convert() {
     cancelConversion,
     selectInput,
     selectOutput,
+    isDirty,
+    resetForm,
   } = useConversion();
 
   const { currentError, clearError } = useErrorHandler();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
+  const [jobCancelOpen, setJobCancelOpen] = useState(false);
 
   const clearFieldError = (field: string) => {
     setErrors((prev) => {
@@ -108,6 +112,11 @@ export default function Convert() {
 
   const handleCancelClick = () => {
     setCancelConfirmOpen(true);
+  };
+
+  const handleConfirmJobCancel = () => {
+    setJobCancelOpen(false);
+    resetForm();
   };
 
   const handleStartConversion = () => {
@@ -148,6 +157,12 @@ export default function Convert() {
             </Button>
           </Stack>
         </Box>
+
+        {inputFile && !isConverting && (
+          <ErrorBoundary fallback={null}>
+            <MediaPlayer filePath={inputFile} />
+          </ErrorBoundary>
+        )}
 
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
@@ -363,6 +378,11 @@ export default function Convert() {
               {t('convert.cancel')}
             </Button>
           )}
+          {isDirty && !isConverting && (
+            <Button variant="outlined" color="error" onClick={() => setJobCancelOpen(true)}>
+              {t('convert.cancelJob')}
+            </Button>
+          )}
         </Stack>
 
         {progress && (
@@ -379,6 +399,19 @@ export default function Convert() {
           <DialogActions>
             <Button onClick={() => setCancelConfirmOpen(false)}>{t('convert.no')}</Button>
             <Button onClick={handleConfirmCancel} color="error" variant="contained">
+              {t('convert.yes')}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={jobCancelOpen} onClose={() => setJobCancelOpen(false)}>
+          <DialogTitle>{t('convert.jobCancelTitle')}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{t('convert.jobCancelMessage')}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setJobCancelOpen(false)}>{t('convert.no')}</Button>
+            <Button onClick={handleConfirmJobCancel} color="error" variant="contained">
               {t('convert.yes')}
             </Button>
           </DialogActions>

@@ -29,6 +29,7 @@ export const FFMPEG_FLAGS = {
   NO_SUBTITLES: '-sn',
   NO_DATA: '-dn',
   OUTPUT_PIPE: '-',
+  REALTIME: '-re',
 } as const;
 
 export const FFPROBE_FLAGS = {

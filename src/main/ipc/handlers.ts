@@ -164,10 +164,16 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     log.info('PLAYER_OPEN:', filePath);
     try {
       decoderInput = filePath;
-      decoder.open(filePath);
+      const info = await new FfmpegCore().getInfo(filePath);
+      const videoStream = info.streams?.find((s) => s.type === 'video');
+      if (videoStream?.width && videoStream?.height) {
+        decoder.open(filePath, videoStream.width, videoStream.height);
+      } else {
+        decoder.open(filePath);
+      }
     } catch (err: unknown) {
-      log.error('PLAYER_OPEN failed:', err);
-      throw formatError(err);
+      log.error('PLAYER_OPEN failed, falling back to default resolution:', err);
+      decoder.open(filePath);
     }
   });
 
