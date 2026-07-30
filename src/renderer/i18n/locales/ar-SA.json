@@ -12,7 +12,8 @@
     "image": "صورة",
     "audio": "صوت",
     "cut": "قص",
-    "batchQueue": "قائمة الدفعات"
+    "batchQueue": "قائمة الدفعات",
+    "logs": "السجلات"
   },
   "dashboard": {
     "welcome": "مرحباً بك في EncodeX",
@@ -146,5 +147,8 @@
     "invalidBitrate": "معدل بت غير صحيح (مثال 128k، 1M)",
     "qscaleRange": "مقياس الجودة يجب أن يكون بين 1 و 31",
     "qualityRange": "الجودة يجب أن تكون بين 1 و 31"
+  },
+  "logs": {
+    "clear": "مسح"
   }
 }

@@ -12,7 +12,8 @@
     "image": "Immagine",
     "audio": "Audio",
     "cut": "Taglia",
-    "batchQueue": "Coda batch"
+    "batchQueue": "Coda batch",
+    "logs": "Registri"
   },
   "dashboard": {
     "welcome": "Benvenuto in EncodeX",
@@ -146,5 +147,8 @@
     "invalidBitrate": "Bitrate non valido (es. 128k, 1M)",
     "qscaleRange": "QScale deve essere compreso tra 1 e 31",
     "qualityRange": "La qualità deve essere compresa tra 1 e 31"
+  },
+  "logs": {
+    "clear": "Cancella"
   }
 }

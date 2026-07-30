@@ -1,4 +1,4 @@
-import { ConversionOptions, ConversionProgress, MediaInfo, QueueJob, PlayerFrame } from '../shared/types';
+import { ConversionOptions, ConversionProgress, MediaInfo, QueueJob, PlayerFrame, LogEntry } from '../shared/types';
 
 export interface ElectronAPI {
   selectFile(filters?: Electron.FileFilter[]): Promise<string | null>;
@@ -24,6 +24,7 @@ export interface ElectronAPI {
   onQueueProgress(cb: (data: { job: QueueJob; progress: ConversionProgress }) => void): () => void;
   onQueueCancelled(cb: () => void): () => void;
   onPlayerFrame(cb: (frame: PlayerFrame) => void): () => void;
+  onLogMessage(cb: (entry: LogEntry) => void): () => void;
 }
 
 declare global {

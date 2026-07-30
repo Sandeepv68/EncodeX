@@ -12,7 +12,8 @@
     "image": "Afbeelding",
     "audio": "Audio",
     "cut": "Knippen",
-    "batchQueue": "Batchwachtrij"
+    "batchQueue": "Batchwachtrij",
+    "logs": "Logboeken"
   },
   "dashboard": {
     "welcome": "Welkom bij EncodeX",
@@ -146,5 +147,8 @@
     "invalidBitrate": "Ongeldige bitrate (bijv. 128k, 1M)",
     "qscaleRange": "QScale moet tussen 1 en 31 liggen",
     "qualityRange": "Kwaliteit moet tussen 1 en 31 liggen"
+  },
+  "logs": {
+    "clear": "Wissen"
   }
 }

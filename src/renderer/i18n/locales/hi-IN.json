@@ -12,7 +12,8 @@
     "image": "इमेज",
     "audio": "ऑडियो",
     "cut": "कट",
-    "batchQueue": "बैच क्यू"
+    "batchQueue": "बैच क्यू",
+    "logs": "लॉग्स"
   },
   "dashboard": {
     "welcome": "EncodeX में आपका स्वागत है",
@@ -146,5 +147,8 @@
     "invalidBitrate": "Invalid bitrate (e.g. 128k, 1M)",
     "qscaleRange": "QScale must be between 1 and 31",
     "qualityRange": "Quality must be between 1 and 31"
+  },
+  "logs": {
+    "clear": "साफ़ करें"
   }
 }

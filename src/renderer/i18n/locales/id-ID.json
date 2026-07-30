@@ -12,7 +12,8 @@
     "image": "Gambar",
     "audio": "Audio",
     "cut": "Potong",
-    "batchQueue": "Antrean Batch"
+    "batchQueue": "Antrean Batch",
+    "logs": "Log"
   },
   "dashboard": {
     "welcome": "Selamat datang di EncodeX",
@@ -146,5 +147,8 @@
     "invalidBitrate": "Bitrate tidak valid (mis. 128k, 1M)",
     "qscaleRange": "QScale harus antara 1 dan 31",
     "qualityRange": "Kualitas harus antara 1 dan 31"
+  },
+  "logs": {
+    "clear": "Hapus"
   }
 }

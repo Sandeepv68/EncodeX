@@ -23,4 +23,5 @@ export const IPC = {
   QUEUE_PROGRESS: 'queue-progress',
   QUEUE_CANCELLED: 'queue-cancelled',
   PLAYER_FRAME: 'player-frame',
+  LOG_MESSAGE: 'log-message',
 } as const;

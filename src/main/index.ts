@@ -4,6 +4,7 @@ import { registerIpcHandlers } from './ipc/handlers';
 import { runCli } from './cli';
 import { Logger } from '../shared/logger';
 import { WINDOW_SIZE, DEV_SERVER_URL, APP_NAME, EXIT_CODES } from '../shared/ui-constants';
+import { IPC } from '../shared/ipc-channels';
 
 const log = new Logger('main/index');
 
@@ -49,6 +50,7 @@ if (isCliMode()) {
     });
 
     registerIpcHandlers(mainWindow);
+    patchConsole(mainWindow);
 
     if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
       log.info('Loading dev server URL:', DEV_SERVER_URL);
@@ -79,4 +81,22 @@ if (isCliMode()) {
     log.info('Activate event, mainWindow null:', mainWindow === null);
     if (mainWindow === null) createWindow();
   });
+}
+
+function patchConsole(win: BrowserWindow) {
+  const levels: Array<{ method: 'log' | 'warn' | 'error'; level: 'INFO' | 'WARN' | 'ERROR' }> = [
+    { method: 'log', level: 'INFO' },
+    { method: 'warn', level: 'WARN' },
+    { method: 'error', level: 'ERROR' },
+  ];
+  for (const { method, level } of levels) {
+    const original = console[method];
+    console[method] = (...args: unknown[]) => {
+      original.apply(console, args);
+      if (!win.isDestroyed()) {
+        const text = args.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
+        win.webContents.send(IPC.LOG_MESSAGE, { timestamp: new Date().toISOString(), level, text, source: 'main' });
+      }
+    };
+  }
 }

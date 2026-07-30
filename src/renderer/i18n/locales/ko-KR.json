@@ -12,7 +12,8 @@
     "image": "이미지",
     "audio": "오디오",
     "cut": "자르기",
-    "batchQueue": "배치 큐"
+    "batchQueue": "배치 큐",
+    "logs": "로그"
   },
   "dashboard": {
     "welcome": "EncodeX에 오신 것을 환영합니다",
@@ -146,5 +147,8 @@
     "invalidBitrate": "잘못된 비트레이트입니다 (예: 128k, 1M)",
     "qscaleRange": "QScale은 1에서 31 사이여야 합니다",
     "qualityRange": "품질은 1에서 31 사이여야 합니다"
+  },
+  "logs": {
+    "clear": "지우기"
   }
 }

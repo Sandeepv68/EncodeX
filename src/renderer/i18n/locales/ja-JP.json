@@ -12,7 +12,8 @@
     "image": "画像",
     "audio": "音声",
     "cut": "カット",
-    "batchQueue": "バッチキュー"
+    "batchQueue": "バッチキュー",
+    "logs": "ログ"
   },
   "dashboard": {
     "welcome": "EncodeX へようこそ",
@@ -146,5 +147,8 @@
     "invalidBitrate": "無効なビットレートです（例: 128k, 1M）",
     "qscaleRange": "QScale は 1 から 31 の間でなければなりません",
     "qualityRange": "品質は 1 から 31 の間でなければなりません"
+  },
+  "logs": {
+    "clear": "クリア"
   }
 }

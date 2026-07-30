@@ -12,7 +12,8 @@
     "image": "Imagem",
     "audio": "Áudio",
     "cut": "Cortar",
-    "batchQueue": "Fila em Lote"
+    "batchQueue": "Fila em Lote",
+    "logs": "Registros"
   },
   "dashboard": {
     "welcome": "Bem-vindo ao EncodeX",
@@ -146,5 +147,8 @@
     "invalidBitrate": "Taxa de bits inválida (ex. 128k, 1M)",
     "qscaleRange": "QScale deve estar entre 1 e 31",
     "qualityRange": "A qualidade deve estar entre 1 e 31"
+  },
+  "logs": {
+    "clear": "Limpar"
   }
 }

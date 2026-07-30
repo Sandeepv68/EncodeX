@@ -348,6 +348,7 @@ export const NAV_ITEMS = [
   { to: '/audio-extract', label: 'Audio' },
   { to: '/video-cut', label: 'Cut' },
   { to: '/batch', label: 'Batch Queue' },
+  { to: '/logs', label: 'Logs' },
 ] as const;
 
 export const FALLBACK_VALUES = {

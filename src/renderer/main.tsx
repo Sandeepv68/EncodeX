@@ -7,8 +7,28 @@ import App from './App';
 import i18n from './i18n/config';
 import { DirectionProvider } from './i18n/DirectionProvider';
 import { useLanguageDirection } from './useLanguageDirection';
+import { useLogStore } from './stores/logStore';
 
 const log = new Logger('renderer/main');
+
+const levels: Array<{ method: 'log' | 'warn' | 'error'; level: 'INFO' | 'WARN' | 'ERROR' }> = [
+  { method: 'log', level: 'INFO' },
+  { method: 'warn', level: 'WARN' },
+  { method: 'error', level: 'ERROR' },
+];
+for (const { method, level } of levels) {
+  const original = console[method];
+  console[method] = (...args: unknown[]) => {
+    original.apply(console, args);
+    const text = args.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
+    useLogStore.getState().addEntry({
+      timestamp: new Date().toISOString(),
+      level: level as 'DEBUG' | 'INFO' | 'WARN' | 'ERROR',
+      text,
+      source: 'renderer',
+    });
+  };
+}
 
 function Root() {
   const direction = useLanguageDirection();

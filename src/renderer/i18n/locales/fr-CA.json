@@ -12,7 +12,8 @@
     "image": "Image",
     "audio": "Audio",
     "cut": "Couper",
-    "batchQueue": "File d'Attente"
+    "batchQueue": "File d'Attente",
+    "logs": "Journaux"
   },
   "dashboard": {
     "welcome": "Bienvenue sur EncodeX",
@@ -146,5 +147,8 @@
     "invalidBitrate": "Invalid bitrate (e.g. 128k, 1M)",
     "qscaleRange": "QScale must be between 1 and 31",
     "qualityRange": "Quality must be between 1 and 31"
+  },
+  "logs": {
+    "clear": "Effacer"
   }
 }

@@ -12,7 +12,8 @@
     "image": "Зображення",
     "audio": "Аудіо",
     "cut": "Обрізати",
-    "batchQueue": "Пакетна черга"
+    "batchQueue": "Пакетна черга",
+    "logs": "Логи"
   },
   "dashboard": {
     "welcome": "Ласкаво просимо до EncodeX",
@@ -146,5 +147,8 @@
     "invalidBitrate": "Неправильний бітрейт (напр. 128k, 1M)",
     "qscaleRange": "QScale має бути від 1 до 31",
     "qualityRange": "Якість має бути від 1 до 31"
+  },
+  "logs": {
+    "clear": "Очистити"
   }
 }

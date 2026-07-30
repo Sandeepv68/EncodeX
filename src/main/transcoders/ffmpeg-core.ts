@@ -37,6 +37,7 @@ export class FfmpegCore implements ITranscoder {
   private currentProcess: ffmpeg.FfmpegCommand | null = null;
   private processPid: number | null = null;
   private cancelled = false;
+  private sourceDuration = 0;
 
   getType(): string {
     return TRANSCODER_TYPES[0];
@@ -83,6 +84,12 @@ export class FfmpegCore implements ITranscoder {
   convert(input: string, output: string, options: ConversionOptions): EventEmitter {
     log.info('convert:', input, '->', output, 'copy:', !!options.copy);
     this.cancelled = false;
+    this.sourceDuration = 0;
+    this.getInfo(input)
+      .then((info) => {
+        this.sourceDuration = info.duration;
+      })
+      .catch(() => {});
     const progressStart = Date.now();
     const emitter = new EventEmitter();
     const cmd = ffmpeg({ source: input });
@@ -148,23 +155,38 @@ export class FfmpegCore implements ITranscoder {
     });
     cmd.on('progress', (info: { percent?: number; timemark?: string; currentFps?: number; speed?: string; currentKbps?: number }) => {
       const elapsed = (Date.now() - progressStart) / 1000;
+      const timemarkParts = info.timemark ? info.timemark.split(':').map(Number) : null;
+      const currentSec =
+        timemarkParts && timemarkParts.length === 3 && !timemarkParts.some(isNaN)
+          ? timemarkParts[0] * 3600 + timemarkParts[1] * 60 + timemarkParts[2]
+          : 0;
+
+      let percent = info.percent;
+      if (percent == null && this.sourceDuration > 0 && currentSec > 0) {
+        percent = (currentSec / this.sourceDuration) * 100;
+      }
+
+      let speed = info.speed;
+      if (speed == null && elapsed > 0) {
+        speed = `${(currentSec / elapsed).toFixed(2)}x`;
+      }
+
       let eta: string = EMPTY_PROGRESS.eta;
-      if (info.percent != null && info.percent > 0) {
-        eta = ((elapsed / info.percent) * (100 - info.percent)).toFixed(0);
-      } else if (info.speed && info.timemark) {
-        const speed = parseFloat(info.speed.replace('x', ''));
-        const parts = info.timemark.split(':').map(Number);
-        if (speed > 0 && parts.length === 3 && !parts.some(isNaN)) {
-          const currentSec = parts[0] * 3600 + parts[1] * 60 + parts[2];
-          const remainingEst = elapsed - currentSec / speed;
+      if (percent != null && percent > 0) {
+        eta = ((elapsed / percent) * (100 - percent)).toFixed(0);
+      } else if (speed && currentSec > 0) {
+        const speedNum = parseFloat(speed.replace('x', ''));
+        if (speedNum > 0) {
+          const remainingEst = elapsed - currentSec / speedNum;
           if (remainingEst > 0) eta = remainingEst.toFixed(0);
         }
       }
+
       const progress: ConversionProgress = {
-        percent: info.percent ?? 0,
+        percent: percent ?? 0,
         time: info.timemark ?? EMPTY_PROGRESS.time,
         fps: info.currentFps ?? 0,
-        speed: info.speed ?? EMPTY_PROGRESS.speed,
+        speed: speed ?? EMPTY_PROGRESS.speed,
         eta,
         bitrate: info.currentKbps ? `${info.currentKbps}kbps` : '',
       };

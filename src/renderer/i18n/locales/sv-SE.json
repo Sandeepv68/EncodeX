@@ -12,7 +12,8 @@
     "image": "Bild",
     "audio": "Ljud",
     "cut": "Klipp",
-    "batchQueue": "Batchkö"
+    "batchQueue": "Batchkö",
+    "logs": "Loggar"
   },
   "dashboard": {
     "welcome": "Välkommen till EncodeX",
@@ -146,5 +147,8 @@
     "invalidBitrate": "Ogiltig bithastighet (t.ex. 128k, 1M)",
     "qscaleRange": "QScale måste vara mellan 1 och 31",
     "qualityRange": "Kvalitet måste vara mellan 1 och 31"
+  },
+  "logs": {
+    "clear": "Rensa"
   }
 }

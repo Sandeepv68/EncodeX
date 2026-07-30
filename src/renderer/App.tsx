@@ -24,6 +24,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import QueueIcon from '@mui/icons-material/Queue';
+import DescriptionIcon from '@mui/icons-material/Description';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -40,7 +41,9 @@ import ImageCompress from './pages/ImageCompress';
 import AudioExtract from './pages/AudioExtract';
 import VideoCut from './pages/VideoCut';
 import BatchQueue from './pages/BatchQueue';
+import Logs from './pages/Logs';
 import { DRAWER_WIDTH, NAV_ITEMS } from '../shared/ui-constants';
+import { useLogStore } from './stores/logStore';
 import i18n from './i18n/config';
 import { useState, useEffect, type ComponentType } from 'react';
 import { US, GB, CA, IN, ES, MX, FR, DE, IT, NL, SE, BR, UA, JP, KR, ID, SA, AE } from 'country-flag-icons/react/3x2';
@@ -101,6 +104,7 @@ const navIconMap: Record<string, React.ReactNode> = {
   '/audio-extract': <MusicNoteIcon />,
   '/video-cut': <ContentCutIcon />,
   '/batch': <QueueIcon />,
+  '/logs': <DescriptionIcon />,
 };
 
 const navKeyMap: Record<string, string> = {
@@ -111,6 +115,7 @@ const navKeyMap: Record<string, string> = {
   '/audio-extract': 'audio',
   '/video-cut': 'cut',
   '/batch': 'batchQueue',
+  '/logs': 'logs',
 };
 
 function AppLayout() {
@@ -127,6 +132,13 @@ function AppLayout() {
   useEffect(() => {
     log.info('Route changed:', location.pathname);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const cleanup = window.electronAPI?.onLogMessage((entry) => {
+      useLogStore.getState().addEntry(entry);
+    });
+    return () => cleanup?.();
+  }, []);
 
   const RTL_LOCALES = ['ar-SA', 'ar-AE'];
 
@@ -359,6 +371,14 @@ function AppLayout() {
               element={
                 <ErrorBoundary>
                   <BatchQueue />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/logs"
+              element={
+                <ErrorBoundary>
+                  <Logs />
                 </ErrorBoundary>
               }
             />

@@ -12,7 +12,8 @@
     "image": "Bild",
     "audio": "Audio",
     "cut": "Schneiden",
-    "batchQueue": "Stapelwarteschlange"
+    "batchQueue": "Stapelwarteschlange",
+    "logs": "Protokolle"
   },
   "dashboard": {
     "welcome": "Willkommen bei EncodeX",
@@ -146,5 +147,8 @@
     "invalidBitrate": "Ungültige Bitrate (z.B. 128k, 1M)",
     "qscaleRange": "QScale muss zwischen 1 und 31 liegen",
     "qualityRange": "Qualität muss zwischen 1 und 31 liegen"
+  },
+  "logs": {
+    "clear": "Leeren"
   }
 }

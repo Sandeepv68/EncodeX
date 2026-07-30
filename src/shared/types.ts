@@ -78,6 +78,13 @@ export enum ConversionOperation {
   CutVideo = 'cut_video',
 }
 
+export interface LogEntry {
+  timestamp: string;
+  level: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
+  text: string;
+  source: 'main' | 'renderer';
+}
+
 export interface FileItem {
   path: string;
   name: string;
