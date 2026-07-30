@@ -1,7 +1,10 @@
 import { Component, ReactNode, ErrorInfo } from 'react';
 import { Box, Typography, Button, Paper } from '@mui/material';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { Logger } from '../../shared/logger';
 import i18n from '../i18n/config';
+
+const log = new Logger('renderer/components/ErrorBoundary');
 
 interface Props {
   children: ReactNode;
@@ -24,7 +27,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error('ErrorBoundary caught:', error, errorInfo);
+    log.error('ErrorBoundary caught:', error.message, errorInfo.componentStack);
   }
 
   render(): ReactNode {

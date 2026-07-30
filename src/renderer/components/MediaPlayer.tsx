@@ -2,7 +2,10 @@ import { useRef, useEffect, useCallback, useState } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
+import { Logger } from '../../shared/logger';
 import { PlayerFrame } from '../../shared/types';
+
+const log = new Logger('renderer/components/MediaPlayer');
 
 interface Props {
   filePath: string;
@@ -19,7 +22,11 @@ export default function MediaPlayer({ filePath, onTimeUpdate }: Props) {
   const frameBuffer = useRef<ImageData[]>([]);
 
   useEffect(() => {
-    if (!filePath) return;
+    if (!filePath) {
+      log.warn('No file path provided');
+      return;
+    }
+    log.info('Opening player for:', filePath);
     window.electronAPI.playerOpen(filePath);
     frameBuffer.current = [];
 
@@ -41,6 +48,7 @@ export default function MediaPlayer({ filePath, onTimeUpdate }: Props) {
     });
 
     return () => {
+      log.debug('Closing player');
       window.electronAPI.playerClose();
       cleanup();
       cancelAnimationFrame(animRef.current);

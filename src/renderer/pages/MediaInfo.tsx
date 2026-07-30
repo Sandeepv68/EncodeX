@@ -4,8 +4,11 @@ import { Box, Typography, Paper, Grid, Chip, CircularProgress } from '@mui/mater
 import FileDropZone from '../components/FileDropZone';
 import ErrorBanner from '../components/ErrorBanner';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
 import { MediaInfo as MediaInfoType, MediaStreamInfo } from '../../shared/types';
+
+const log = new Logger('renderer/pages/MediaInfo');
 
 function formatSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -20,11 +23,14 @@ export default function MediaInfo() {
   const { currentError, showError, clearError } = useErrorStore();
 
   const handleFile = async (path: string) => {
+    log.info('Getting media info for:', path);
     setLoading(true);
     try {
       const data = await window.electronAPI.getMediaInfo(path, 'FFMPEG');
+      log.info('Media info retrieved:', data.format, data.duration.toFixed(2) + 's,', data.streams.length, 'streams');
       setInfo(data);
     } catch (err: unknown) {
+      log.error('Failed to get media info:', err);
       showError(err);
     } finally {
       setLoading(false);
@@ -36,7 +42,7 @@ export default function MediaInfo() {
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
         {t('mediaInfo.title')}
       </Typography>
-      <Box sx={{ maxWidth: 640 }}>
+      <Box sx={{ width: '100%' }}>
         {currentError && (
           <Box sx={{ mb: 2 }}>
             <ErrorBoundary fallback={null}>
@@ -68,7 +74,7 @@ export default function MediaInfo() {
                     [t('mediaInfo.bitrate'), info.bitrate],
                   ] as const
                 ).map(([label, value]) => (
-                  <Grid size={{ xs: 6 }} key={label}>
+                  <Grid size={{ xs: 12, sm: 6 }} key={label}>
                     <Typography variant="caption" color="text.secondary">
                       {label}
                     </Typography>
@@ -90,56 +96,56 @@ export default function MediaInfo() {
                   </Box>
                   <Grid container spacing={0.5}>
                     {stream.codec && (
-                      <Grid size={{ xs: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Typography variant="caption" color="text.secondary">
                           {t('mediaInfo.codec')}: {stream.codec}
                         </Typography>
                       </Grid>
                     )}
                     {stream.width && (
-                      <Grid size={{ xs: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Typography variant="caption" color="text.secondary">
                           {t('mediaInfo.resolution')}: {stream.width}x{stream.height}
                         </Typography>
                       </Grid>
                     )}
                     {stream.pixelFormat && (
-                      <Grid size={{ xs: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Typography variant="caption" color="text.secondary">
                           {t('mediaInfo.pixelFormat')}: {stream.pixelFormat}
                         </Typography>
                       </Grid>
                     )}
                     {stream.frameRate && (
-                      <Grid size={{ xs: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Typography variant="caption" color="text.secondary">
                           {t('mediaInfo.frameRate')}: {stream.frameRate} fps
                         </Typography>
                       </Grid>
                     )}
                     {stream.bitrate && (
-                      <Grid size={{ xs: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Typography variant="caption" color="text.secondary">
                           {t('mediaInfo.bitrate')}: {stream.bitrate}
                         </Typography>
                       </Grid>
                     )}
                     {stream.sampleRate && (
-                      <Grid size={{ xs: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Typography variant="caption" color="text.secondary">
                           {t('mediaInfo.sampleRate')}: {stream.sampleRate} Hz
                         </Typography>
                       </Grid>
                     )}
                     {stream.channels && (
-                      <Grid size={{ xs: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Typography variant="caption" color="text.secondary">
                           {t('mediaInfo.channels')}: {stream.channels}
                         </Typography>
                       </Grid>
                     )}
                     {stream.language && (
-                      <Grid size={{ xs: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Typography variant="caption" color="text.secondary">
                           {t('mediaInfo.language')}: {stream.language}
                         </Typography>

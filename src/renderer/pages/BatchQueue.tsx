@@ -3,12 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { Box, Typography, TextField, MenuItem, Button, Paper, Stack, Chip, SelectChangeEvent } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import { Logger } from '../../shared/logger';
 import ProgressBar from '../components/ProgressBar';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useQueueStore } from '../stores/queueStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX, QUEUE_STATUS } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { QueueJob } from '../../shared/types';
+
+const log = new Logger('renderer/pages/BatchQueue');
 
 const statusColors: Record<string, 'default' | 'primary' | 'success' | 'error' | 'warning'> = {
   [QUEUE_STATUS.QUEUED]: 'warning',
@@ -144,7 +147,7 @@ export default function BatchQueue() {
                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
                     {job.input.split('\\').pop() || job.input.split('/').pop()}
                   </Typography>
-                  <Stack direction="row" spacing={1} alignItems="center">
+                  <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
                     <Chip label={job.status} size="small" color={statusColors[job.status] || 'default'} />
                     <Button size="small" color="error" onClick={() => window.electronAPI.queueRemove(job.id)}>
                       {t('batchQueue.remove')}

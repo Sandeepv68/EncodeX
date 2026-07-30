@@ -5,6 +5,7 @@ import PaletteIcon from '@mui/icons-material/Palette';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import InvertColorsIcon from '@mui/icons-material/InvertColors';
 import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';
+import { Logger } from '../../shared/logger';
 import { useConversion } from '../hooks/useConversion';
 import CodecSelect from '../components/CodecSelect';
 import ErrorBanner from '../components/ErrorBanner';
@@ -14,6 +15,8 @@ import { useErrorHandler } from '../hooks/useErrorHandler';
 import { PIXEL_FORMATS } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES, TRANSCODER_LABELS } from '../../shared/transcoder-constants';
 import { isValidScale, isValidBitrate, isInRange } from '../../shared/validation';
+
+const log = new Logger('renderer/pages/Convert');
 
 const pixelGroupIcons: Record<string, React.ComponentType<{ sx?: object }>> = {
   'YUV 8-bit': PaletteIcon,
@@ -84,7 +87,11 @@ export default function Convert() {
   };
 
   const handleStartConversion = () => {
-    if (!validateFields()) return;
+    if (!validateFields()) {
+      log.warn('Validation failed, not starting conversion');
+      return;
+    }
+    log.info('Starting conversion:', inputFile, '->', outputFile);
     startConversion();
   };
 
@@ -93,7 +100,7 @@ export default function Convert() {
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
         {t('convert.title')}
       </Typography>
-      <Paper sx={{ p: 3, maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Paper sx={{ p: { xs: 2, sm: 3 }, width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
         {currentError && (
           <ErrorBoundary fallback={null}>
             <ErrorBanner error={currentError} onClose={clearError} />
@@ -103,13 +110,14 @@ export default function Convert() {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('convert.inputFile')}
           </Typography>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             <TextField
               fullWidth
               size="small"
               value={inputFile || ''}
               placeholder={t('convert.noFile')}
               slotProps={{ input: { readOnly: true } }}
+              sx={{ minWidth: 200, flex: 1 }}
             />
             <Button variant="outlined" onClick={selectInput}>
               {t('convert.browse')}
@@ -121,13 +129,14 @@ export default function Convert() {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('convert.outputFile')}
           </Typography>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             <TextField
               fullWidth
               size="small"
               value={outputFile || ''}
               placeholder={t('convert.noOutput')}
               slotProps={{ input: { readOnly: true } }}
+              sx={{ minWidth: 200, flex: 1 }}
             />
             <Button variant="outlined" onClick={selectOutput}>
               {t('convert.saveAs')}
@@ -144,7 +153,7 @@ export default function Convert() {
 
         {!copyMode && (
           <>
-            <Stack direction="row" spacing={2}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <Box sx={{ flex: 1 }}>
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                   {t('convert.videoCodec')}
@@ -163,7 +172,7 @@ export default function Convert() {
               </Box>
             </Stack>
 
-            <Stack direction="row" spacing={2}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <Box sx={{ flex: 1 }}>
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                   {t('convert.videoBitrate')}
@@ -208,7 +217,7 @@ export default function Convert() {
               </Box>
             </Stack>
 
-            <Stack direction="row" spacing={2}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <Box sx={{ flex: 1 }}>
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                   {t('convert.qscale')}
@@ -309,7 +318,7 @@ export default function Convert() {
           </TextField>
         </Box>
 
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
           <Button variant="contained" onClick={handleStartConversion} disabled={!inputFile || !outputFile || isConverting}>
             {isConverting ? t('convert.converting') : t('convert.startConversion')}
           </Button>

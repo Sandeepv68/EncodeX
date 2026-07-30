@@ -4,17 +4,22 @@ import type Ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
 import { path as ffprobePath } from 'ffprobe-static';
 import { existsSync } from 'fs';
+import { Logger } from '../../shared/logger';
 import { ITranscoder } from './interface';
 import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
 import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/transcoder-constants';
 
+const log = new Logger('main/transcoders/ffmpeg-core');
+
 const staticPath = ffmpegStatic as unknown as string;
 if (existsSync(staticPath)) {
   ffmpeg.setFfmpegPath(staticPath);
+  log.debug('FFmpeg path set to:', staticPath);
 }
 
 if (existsSync(ffprobePath)) {
   ffmpeg.setFfprobePath(ffprobePath);
+  log.debug('FFprobe path set to:', ffprobePath);
 }
 
 function parseRatio(ratio: string): string {
@@ -35,10 +40,14 @@ export class FfmpegCore implements ITranscoder {
   }
 
   getInfo(input: string): Promise<MediaInfo> {
+    log.info('getInfo:', input);
     return new Promise((resolve, reject) => {
       const proc = ffmpeg(input);
       proc.ffprobe((err: Error | null, data: Ffmpeg.FfprobeData) => {
-        if (err) return reject(err);
+        if (err) {
+          log.error('getInfo ffprobe failed:', err);
+          return reject(err);
+        }
         const streams: MediaStreamInfo[] = (data.streams || []).map((s: Ffmpeg.FfprobeStream) => ({
           index: s.index ?? 0,
           type: (s.codec_type as MediaStreamInfo['type']) ?? 'video',
@@ -55,6 +64,7 @@ export class FfmpegCore implements ITranscoder {
           language: s.tags?.language as string | undefined,
         }));
         const fmt = data.format;
+        log.info('getInfo completed:', fmt.format_name, fmt.duration?.toFixed(2) + 's');
         resolve({
           file: fmt.filename ?? input,
           format: fmt.format_name ?? 'unknown',
@@ -68,27 +78,62 @@ export class FfmpegCore implements ITranscoder {
   }
 
   convert(input: string, output: string, options: ConversionOptions): EventEmitter {
+    log.info('convert:', input, '->', output, 'copy:', !!options.copy);
     const emitter = new EventEmitter();
     const cmd = ffmpeg({ source: input });
 
     if (options.copy) {
+      log.debug('Using stream copy mode');
       cmd.outputOptions(FFMPEG_FLAGS.COPY, FFMPEG_FLAGS.COPY_VALUE);
     } else {
-      if (options.videoCodec) cmd.videoCodec(options.videoCodec);
-      if (options.audioCodec) cmd.audioCodec(options.audioCodec);
-      if (options.videoBitrate) cmd.videoBitrate(options.videoBitrate);
-      if (options.audioBitrate) cmd.audioBitrate(options.audioBitrate);
-      if (options.qscale !== undefined) cmd.outputOptions(`${FFMPEG_FLAGS.QSCALE} ${options.qscale}`);
-      if (options.scale) cmd.size(options.scale);
-      if (options.pixelFormat) cmd.outputOptions(`${FFMPEG_FLAGS.PIX_FMT} ${options.pixelFormat}`);
+      if (options.videoCodec) {
+        log.debug('Video codec:', options.videoCodec);
+        cmd.videoCodec(options.videoCodec);
+      }
+      if (options.audioCodec) {
+        log.debug('Audio codec:', options.audioCodec);
+        cmd.audioCodec(options.audioCodec);
+      }
+      if (options.videoBitrate) {
+        log.debug('Video bitrate:', options.videoBitrate);
+        cmd.videoBitrate(options.videoBitrate);
+      }
+      if (options.audioBitrate) {
+        log.debug('Audio bitrate:', options.audioBitrate);
+        cmd.audioBitrate(options.audioBitrate);
+      }
+      if (options.qscale !== undefined) {
+        log.debug('Qscale:', options.qscale);
+        cmd.outputOptions(`${FFMPEG_FLAGS.QSCALE} ${options.qscale}`);
+      }
+      if (options.scale) {
+        log.debug('Scale:', options.scale);
+        cmd.size(options.scale);
+      }
+      if (options.pixelFormat) {
+        log.debug('Pixel format:', options.pixelFormat);
+        cmd.outputOptions(`${FFMPEG_FLAGS.PIX_FMT} ${options.pixelFormat}`);
+      }
     }
 
-    if (options.startTime) cmd.setStartTime(options.startTime);
-    if (options.endTime) cmd.seekOutput(options.endTime);
-    if (options.duration) cmd.duration(options.duration);
+    if (options.startTime) {
+      log.debug('Start time:', options.startTime);
+      cmd.setStartTime(options.startTime);
+    }
+    if (options.endTime) {
+      log.debug('End time:', options.endTime);
+      cmd.seekOutput(options.endTime);
+    }
+    if (options.duration) {
+      log.debug('Duration:', options.duration);
+      cmd.duration(options.duration);
+    }
 
     cmd.output(output);
-    cmd.on('start', (commandLine) => emitter.emit('start', commandLine));
+    cmd.on('start', (commandLine) => {
+      log.debug('FFmpeg process started:', commandLine);
+      emitter.emit('start', commandLine);
+    });
     cmd.on('codecData', (data) => emitter.emit('codecData', data));
     cmd.on(
       'progress',
@@ -104,8 +149,14 @@ export class FfmpegCore implements ITranscoder {
         emitter.emit('progress', progress);
       },
     );
-    cmd.on('error', (err: Error) => emitter.emit('error', err));
-    cmd.on('end', () => emitter.emit('end'));
+    cmd.on('error', (err: Error) => {
+      log.error('FFmpeg process error:', err);
+      emitter.emit('error', err);
+    });
+    cmd.on('end', () => {
+      log.info('FFmpeg process ended successfully');
+      emitter.emit('end');
+    });
 
     this.currentProcess = cmd;
     cmd.run();
@@ -113,9 +164,11 @@ export class FfmpegCore implements ITranscoder {
   }
 
   cancel(): void {
+    log.info('Cancelling current FFmpeg process');
     if (this.currentProcess) {
       this.currentProcess.kill('SIGKILL');
       this.currentProcess = null;
+      log.info('FFmpeg process killed');
     }
   }
 }

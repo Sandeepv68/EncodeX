@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess, execSync } from 'child_process';
+import { Logger } from '../../shared/logger';
 import { ITranscoder } from './interface';
 import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
 import {
@@ -12,6 +13,8 @@ import {
   FFMPEG_FLAGS,
 } from '../../shared/transcoder-constants';
 
+const log = new Logger('main/transcoders/bmf-core');
+
 export class BmfCore implements ITranscoder {
   private process: ChildProcess | null = null;
 
@@ -20,8 +23,11 @@ export class BmfCore implements ITranscoder {
   }
 
   async getInfo(input: string): Promise<MediaInfo> {
+    log.info('getInfo:', input);
     try {
-      const result = execSync(`${TRANSCODER_COMMANDS.BMF_FFPROBE} -v quiet -print_format json -show_format -show_streams "${input}"`, {
+      const cmd = `${TRANSCODER_COMMANDS.BMF_FFPROBE} -v quiet -print_format json -show_format -show_streams "${input}"`;
+      log.debug('BMF ffprobe command:', cmd);
+      const result = execSync(cmd, {
         encoding: 'utf-8' as BufferEncoding,
         timeout: TRANSCODER_DEFAULTS.BMF_TIMEOUT_MS,
       });
@@ -41,6 +47,7 @@ export class BmfCore implements ITranscoder {
         duration: s.duration ? parseFloat(s.duration as string) : undefined,
         language: (s.tags as Record<string, unknown> | undefined)?.language as string | undefined,
       }));
+      log.info('getInfo completed:', data.format?.format_name, data.format?.duration);
       return {
         file: data.format?.filename ?? input,
         format: data.format?.format_name ?? 'unknown',
@@ -49,32 +56,66 @@ export class BmfCore implements ITranscoder {
         bitrate: data.format?.bit_rate ?? 'N/A',
         streams,
       };
-    } catch {
+    } catch (err) {
+      log.error('getInfo failed - BMF not available:', err);
       throw new Error('BMF not available. Please ensure BMF CLI tools are installed.');
     }
   }
 
   convert(input: string, output: string, options: ConversionOptions): EventEmitter {
+    log.info('convert:', input, '->', output, 'copy:', !!options.copy);
     const emitter = new EventEmitter();
     const args: string[] = [FFMPEG_FLAGS.INPUT, input];
 
     if (options.copy) {
       args.push(FFMPEG_FLAGS.COPY, FFMPEG_FLAGS.COPY_VALUE);
     } else {
-      if (options.videoCodec) args.push(FFMPEG_FLAGS.VIDEO_CODEC, options.videoCodec);
-      if (options.audioCodec) args.push(FFMPEG_FLAGS.AUDIO_CODEC, options.audioCodec);
-      if (options.videoBitrate) args.push(FFMPEG_FLAGS.VIDEO_BITRATE, options.videoBitrate);
-      if (options.audioBitrate) args.push(FFMPEG_FLAGS.AUDIO_BITRATE, options.audioBitrate);
-      if (options.qscale !== undefined) args.push(FFMPEG_FLAGS.QSCALE, String(options.qscale));
-      if (options.scale) args.push(FFMPEG_FLAGS.VIDEO_FILTER, `${FFMPEG_FLAGS.SCALE}${options.scale}`);
-      if (options.pixelFormat) args.push(FFMPEG_FLAGS.PIX_FMT, options.pixelFormat);
+      if (options.videoCodec) {
+        args.push(FFMPEG_FLAGS.VIDEO_CODEC, options.videoCodec);
+        log.debug('Video codec:', options.videoCodec);
+      }
+      if (options.audioCodec) {
+        args.push(FFMPEG_FLAGS.AUDIO_CODEC, options.audioCodec);
+        log.debug('Audio codec:', options.audioCodec);
+      }
+      if (options.videoBitrate) {
+        args.push(FFMPEG_FLAGS.VIDEO_BITRATE, options.videoBitrate);
+        log.debug('Video bitrate:', options.videoBitrate);
+      }
+      if (options.audioBitrate) {
+        args.push(FFMPEG_FLAGS.AUDIO_BITRATE, options.audioBitrate);
+        log.debug('Audio bitrate:', options.audioBitrate);
+      }
+      if (options.qscale !== undefined) {
+        args.push(FFMPEG_FLAGS.QSCALE, String(options.qscale));
+        log.debug('Qscale:', options.qscale);
+      }
+      if (options.scale) {
+        args.push(FFMPEG_FLAGS.VIDEO_FILTER, `${FFMPEG_FLAGS.SCALE}${options.scale}`);
+        log.debug('Scale:', options.scale);
+      }
+      if (options.pixelFormat) {
+        args.push(FFMPEG_FLAGS.PIX_FMT, options.pixelFormat);
+        log.debug('Pixel format:', options.pixelFormat);
+      }
     }
 
-    if (options.startTime) args.push(FFMPEG_FLAGS.START, options.startTime);
-    if (options.endTime) args.push(FFMPEG_FLAGS.END, options.endTime);
-    if (options.duration) args.push(FFMPEG_FLAGS.DURATION, options.duration);
+    if (options.startTime) {
+      args.push(FFMPEG_FLAGS.START, options.startTime);
+      log.debug('Start time:', options.startTime);
+    }
+    if (options.endTime) {
+      args.push(FFMPEG_FLAGS.END, options.endTime);
+      log.debug('End time:', options.endTime);
+    }
+    if (options.duration) {
+      args.push(FFMPEG_FLAGS.DURATION, options.duration);
+      log.debug('Duration:', options.duration);
+    }
 
     args.push(FFMPEG_FLAGS.OVERWRITE, output);
+
+    log.debug('BMF command:', TRANSCODER_COMMANDS.BMF_FFMPEG, args.join(' '));
 
     try {
       const proc = spawn(TRANSCODER_COMMANDS.BMF_FFMPEG, args);
@@ -89,12 +130,22 @@ export class BmfCore implements ITranscoder {
         }
       });
 
-      proc.on('error', (err: Error) => emitter.emit('error', err));
+      proc.on('error', (err: Error) => {
+        log.error('BMF process error:', err);
+        emitter.emit('error', err);
+      });
       proc.on('close', (code: number | null) => {
-        if (code === 0) emitter.emit('end');
-        else emitter.emit('error', new Error(`BMF exited with code ${code}: ${stderrData.slice(-200)}`));
+        log.debug('BMF exited with code:', code);
+        if (code === 0) {
+          log.info('BMF process completed successfully');
+          emitter.emit('end');
+        } else {
+          log.error('BMF process failed with code:', code, 'stderr:', stderrData.slice(-200));
+          emitter.emit('error', new Error(`BMF exited with code ${code}: ${stderrData.slice(-200)}`));
+        }
       });
     } catch (err) {
+      log.error('BMF spawn error:', err);
       process.nextTick(() => emitter.emit('error', err));
     }
 
@@ -102,9 +153,11 @@ export class BmfCore implements ITranscoder {
   }
 
   cancel(): void {
+    log.info('Cancelling current BMF process');
     if (this.process) {
       this.process.kill(KILL_SIGNAL);
       this.process = null;
+      log.info('BMF process killed');
     }
   }
 }

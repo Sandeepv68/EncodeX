@@ -1,5 +1,8 @@
 import { create } from 'zustand';
+import { Logger } from '../../shared/logger';
 import { QueueJob } from '../../shared/types';
+
+const log = new Logger('renderer/stores/queueStore');
 
 interface QueueState {
   jobs: QueueJob[];
@@ -12,12 +15,26 @@ interface QueueState {
 
 export const useQueueStore = create<QueueState>((set) => ({
   jobs: [],
-  setJobs: (jobs) => set({ jobs }),
-  addJob: (job) => set((s) => ({ jobs: [...s.jobs, job] })),
-  removeJob: (id) => set((s) => ({ jobs: s.jobs.filter((j: QueueJob) => j.id !== id) })),
-  updateJob: (job) =>
+  setJobs: (jobs) => {
+    log.debug('setJobs:', jobs.length, 'jobs');
+    set({ jobs });
+  },
+  addJob: (job) => {
+    log.info('addJob:', job.id, job.input);
+    set((s) => ({ jobs: [...s.jobs, job] }));
+  },
+  removeJob: (id) => {
+    log.info('removeJob:', id);
+    set((s) => ({ jobs: s.jobs.filter((j: QueueJob) => j.id !== id) }));
+  },
+  updateJob: (job) => {
+    log.debug('updateJob:', job.id, job.status, job.progress.toFixed(0) + '%');
     set((s) => ({
       jobs: s.jobs.map((j: QueueJob) => (j.id === job.id ? job : j)),
-    })),
-  clearJobs: () => set({ jobs: [] }),
+    }));
+  },
+  clearJobs: () => {
+    log.info('clearJobs');
+    set({ jobs: [] });
+  },
 }));

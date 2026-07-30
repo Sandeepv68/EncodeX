@@ -2,6 +2,9 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Logger } from '../../shared/logger';
+
+const log = new Logger('renderer/components/FileDropZone');
 
 interface Props {
   onFileSelect: (path: string) => void;
@@ -19,15 +22,23 @@ export default function FileDropZone({ onFileSelect, label, accept }: Props) {
       e.preventDefault();
       setDragging(false);
       const file = e.dataTransfer.files[0];
-      if (file) onFileSelect((file as any).path);
+      if (file) {
+        const path = (file as any).path;
+        log.info('File dropped:', path);
+        onFileSelect(path);
+      }
     },
     [onFileSelect],
   );
 
   const handleClick = async () => {
     const extList = accept ? [{ name: 'Files', extensions: accept.split(',').map((s) => s.trim()) }] : undefined;
+    log.debug('Opening file dialog, accept:', accept);
     const file = await window.electronAPI?.selectFile(extList);
-    if (file) onFileSelect(file);
+    if (file) {
+      log.info('File selected:', file);
+      onFileSelect(file);
+    }
   };
 
   return (

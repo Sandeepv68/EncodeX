@@ -6,10 +6,13 @@ import ErrorBanner from '../components/ErrorBanner';
 import FileDropZone from '../components/FileDropZone';
 import ProgressBar from '../components/ProgressBar';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
 import { ErrorCode } from '../../shared/errors';
 import { BITRATE_OPTIONS } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
+
+const log = new Logger('renderer/pages/AudioExtract');
 
 export default function AudioExtract() {
   const { t } = useTranslation();
@@ -33,11 +36,16 @@ export default function AudioExtract() {
   };
 
   const handleExtract = async () => {
-    if (!validate()) return;
+    if (!validate()) {
+      log.warn('Validation failed');
+      return;
+    }
     if (!input) {
+      log.warn('No input file selected');
       showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select a video file.' });
       return;
     }
+    log.info('Extracting audio:', input, '->', output, 'codec:', audioCodec);
     setIsConverting(true);
     try {
       await window.electronAPI.convertFile(input, output, { audioCodec, audioBitrate }, transcoder);
@@ -54,7 +62,7 @@ export default function AudioExtract() {
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
         {t('audioExtract.title')}
       </Typography>
-      <Paper sx={{ p: 3, maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Paper sx={{ p: { xs: 2, sm: 3 }, width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
         {currentError && (
           <ErrorBoundary fallback={null}>
             <ErrorBanner error={currentError} onClose={clearError} />
@@ -72,7 +80,7 @@ export default function AudioExtract() {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('audioExtract.outputFile')}
           </Typography>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             <TextField
               fullWidth
               size="small"
@@ -91,6 +99,7 @@ export default function AudioExtract() {
                 if (!output.trim()) setErrors((prev) => ({ ...prev, output: t('validation.outputRequired') }));
               }}
               placeholder={t('audioExtract.placeholderOutput')}
+              sx={{ minWidth: 200, flex: 1 }}
             />
             <Button
               variant="outlined"
@@ -110,7 +119,7 @@ export default function AudioExtract() {
             </Button>
           </Stack>
         </Box>
-        <Stack direction="row" spacing={2}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <Box sx={{ flex: 1 }}>
             <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
               {t('audioExtract.audioCodec')}

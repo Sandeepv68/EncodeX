@@ -1,5 +1,8 @@
 import { create } from 'zustand';
+import { Logger } from '../../shared/logger';
 import { CONVERSION_DEFAULTS, TRANSCODER_TYPES } from '../../shared/transcoder-constants';
+
+const log = new Logger('renderer/stores/conversionStore');
 
 interface ProgressData {
   percent: number;
@@ -51,17 +54,53 @@ export const useConversionStore = create<ConversionState>((set) => ({
   transcoder: TRANSCODER_TYPES[0],
   isConverting: false,
   progress: null,
-  setInputFile: (file) => set({ inputFile: file }),
-  setOutputFile: (file) => set({ outputFile: file }),
-  setVideoCodec: (codec) => set({ videoCodec: codec }),
-  setAudioCodec: (codec) => set({ audioCodec: codec }),
-  setVideoBitrate: (bitrate) => set({ videoBitrate: bitrate }),
-  setAudioBitrate: (bitrate) => set({ audioBitrate: bitrate }),
-  setQscale: (q) => set({ qscale: q }),
-  setScale: (s) => set({ scale: s }),
-  setPixelFormat: (f) => set({ pixelFormat: f }),
-  setCopyMode: (c) => set({ copyMode: c }),
-  setTranscoder: (t) => set({ transcoder: t }),
-  setIsConverting: (v) => set({ isConverting: v }),
+  setInputFile: (file) => {
+    log.debug('setInputFile:', file);
+    set({ inputFile: file });
+  },
+  setOutputFile: (file) => {
+    log.debug('setOutputFile:', file);
+    set({ outputFile: file });
+  },
+  setVideoCodec: (codec) => {
+    log.debug('setVideoCodec:', codec);
+    set({ videoCodec: codec });
+  },
+  setAudioCodec: (codec) => {
+    log.debug('setAudioCodec:', codec);
+    set({ audioCodec: codec });
+  },
+  setVideoBitrate: (bitrate) => {
+    log.debug('setVideoBitrate:', bitrate);
+    set({ videoBitrate: bitrate });
+  },
+  setAudioBitrate: (bitrate) => {
+    log.debug('setAudioBitrate:', bitrate);
+    set({ audioBitrate: bitrate });
+  },
+  setQscale: (q) => {
+    log.debug('setQscale:', q);
+    set({ qscale: q });
+  },
+  setScale: (s) => {
+    log.debug('setScale:', s);
+    set({ scale: s });
+  },
+  setPixelFormat: (f) => {
+    log.debug('setPixelFormat:', f);
+    set({ pixelFormat: f });
+  },
+  setCopyMode: (c) => {
+    log.debug('setCopyMode:', c);
+    set({ copyMode: c });
+  },
+  setTranscoder: (t) => {
+    log.debug('setTranscoder:', t);
+    set({ transcoder: t });
+  },
+  setIsConverting: (v) => {
+    log.debug('setIsConverting:', v);
+    set({ isConverting: v });
+  },
   setProgress: (p) => set({ progress: p }),
 }));

@@ -5,11 +5,14 @@ import FileDropZone from '../components/FileDropZone';
 import ErrorBanner from '../components/ErrorBanner';
 import ProgressBar from '../components/ProgressBar';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
 import { ErrorCode } from '../../shared/errors';
 import { IMAGE_FORMATS, IMAGE_CODEC_MAP } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { isValidScale, isInRange } from '../../shared/validation';
+
+const log = new Logger('renderer/pages/ImageCompress');
 
 export default function ImageCompress() {
   const { t } = useTranslation();
@@ -43,11 +46,16 @@ export default function ImageCompress() {
   };
 
   const handleConvert = async () => {
-    if (!validate()) return;
+    if (!validate()) {
+      log.warn('Validation failed');
+      return;
+    }
     if (!input) {
+      log.warn('No input file selected');
       showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select an input image.' });
       return;
     }
+    log.info('Compressing image:', input, '->', output, 'format:', format, 'quality:', quality);
     setIsConverting(true);
     try {
       await window.electronAPI.convertFile(
@@ -74,7 +82,7 @@ export default function ImageCompress() {
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
         {t('imageCompress.title')}
       </Typography>
-      <Paper sx={{ p: 3, maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Paper sx={{ p: { xs: 2, sm: 3 }, width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
         {currentError && (
           <ErrorBoundary fallback={null}>
             <ErrorBanner error={currentError} onClose={clearErrorBanner} />
@@ -92,7 +100,7 @@ export default function ImageCompress() {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('imageCompress.outputFile')}
           </Typography>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             <TextField
               fullWidth
               size="small"
@@ -107,6 +115,7 @@ export default function ImageCompress() {
                 if (!output.trim()) setErrors((prev) => ({ ...prev, output: t('validation.outputRequired') }));
               }}
               placeholder={t('imageCompress.placeholderOutput')}
+              sx={{ minWidth: 200, flex: 1 }}
             />
             <Button
               variant="outlined"
@@ -122,7 +131,7 @@ export default function ImageCompress() {
             </Button>
           </Stack>
         </Box>
-        <Stack direction="row" spacing={2}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <Box sx={{ flex: 1 }}>
             <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
               {t('imageCompress.outputFormat')}

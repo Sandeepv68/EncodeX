@@ -2,7 +2,10 @@ import { EventEmitter } from 'events';
 import { spawn, ChildProcess } from 'child_process';
 import ffmpegStatic from 'ffmpeg-static';
 import { existsSync } from 'fs';
+import { Logger } from '../../shared/logger';
 import { FFMPEG_FLAGS, KILL_SIGNAL, TRANSCODER_DEFAULTS } from '../../shared/transcoder-constants';
+
+const log = new Logger('main/player/frame-decoder');
 
 export interface DecodedFrame {
   buffer: Buffer;
@@ -14,6 +17,7 @@ export interface DecodedFrame {
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
+  log.warn('ffmpeg-static not found, falling back to system ffmpeg');
   return 'ffmpeg';
 }
 
@@ -26,6 +30,7 @@ export class FrameDecoder extends EventEmitter {
   private running = false;
 
   open(input: string, width = TRANSCODER_DEFAULTS.PLAYER_DEFAULT_WIDTH, height = TRANSCODER_DEFAULTS.PLAYER_DEFAULT_HEIGHT): void {
+    log.info('open:', input, 'resolution:', width, 'x', height);
     this.width = width;
     this.height = height;
     this.frameSize = width * height * 3;
@@ -48,6 +53,7 @@ export class FrameDecoder extends EventEmitter {
       FFMPEG_FLAGS.OUTPUT_PIPE,
     ];
 
+    log.debug('FFmpeg decoder args:', args.join(' '));
     this.process = spawn(ffmpegPath, args);
     let pts = 0;
 
@@ -70,11 +76,16 @@ export class FrameDecoder extends EventEmitter {
 
     this.process.stderr?.on('data', () => {});
 
-    this.process.on('error', (err) => this.emit('error', err));
+    this.process.on('error', (err) => {
+      log.error('Decoder process error:', err);
+      this.emit('error', err);
+    });
 
     this.process.on('close', (code) => {
+      log.debug('Decoder process exited with code:', code);
       this.running = false;
       if (code !== 0) {
+        log.error('Decoder exited with non-zero code:', code);
         this.emit('error', new Error(`Decoder exited with code ${code}`));
       }
       this.emit('end');
@@ -82,15 +93,18 @@ export class FrameDecoder extends EventEmitter {
   }
 
   seek(seekTo: string): void {
+    log.debug('seek:', seekTo);
     this.close();
     this.emit('seek', seekTo);
   }
 
   close(): void {
+    log.debug('close');
     this.running = false;
     if (this.process) {
       this.process.kill(KILL_SIGNAL);
       this.process = null;
+      log.debug('Decoder process killed');
     }
     this.buffer = Buffer.alloc(0);
   }

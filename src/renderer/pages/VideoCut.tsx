@@ -5,10 +5,13 @@ import ErrorBanner from '../components/ErrorBanner';
 import MediaPlayer from '../components/MediaPlayer';
 import ProgressBar from '../components/ProgressBar';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
 import { ErrorCode } from '../../shared/errors';
 import { isValidTime } from '../../shared/validation';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
+
+const log = new Logger('renderer/pages/VideoCut');
 
 export default function VideoCut() {
   const { t } = useTranslation();
@@ -48,11 +51,16 @@ export default function VideoCut() {
   };
 
   const handleCut = async () => {
-    if (!validate()) return;
+    if (!validate()) {
+      log.warn('Validation failed');
+      return;
+    }
     if (!input) {
+      log.warn('No input file selected');
       showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select a video file.' });
       return;
     }
+    log.info('Cutting video:', input, '->', output, 'start:', startTime, 'useDuration:', useDuration);
     setIsConverting(true);
     try {
       await window.electronAPI.convertFile(
@@ -78,7 +86,7 @@ export default function VideoCut() {
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
         {t('videoCut.title')}
       </Typography>
-      <Paper sx={{ p: 3, maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Paper sx={{ p: { xs: 2, sm: 3 }, width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
         {currentError && (
           <ErrorBoundary fallback={null}>
             <ErrorBanner error={currentError} onClose={clearErrorBanner} />
@@ -88,13 +96,14 @@ export default function VideoCut() {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('videoCut.videoFile')}
           </Typography>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             <TextField
               fullWidth
               size="small"
               value={input || ''}
               placeholder={t('videoCut.noFile')}
               slotProps={{ input: { readOnly: true } }}
+              sx={{ minWidth: 200, flex: 1 }}
             />
             <Button
               variant="outlined"
@@ -118,7 +127,7 @@ export default function VideoCut() {
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('videoCut.outputFile')}
           </Typography>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             <TextField
               fullWidth
               size="small"
@@ -133,6 +142,7 @@ export default function VideoCut() {
                 if (!output.trim()) setErrors((prev) => ({ ...prev, output: t('validation.outputRequired') }));
               }}
               placeholder={t('videoCut.placeholderOutput')}
+              sx={{ minWidth: 200, flex: 1 }}
             />
             <Button
               variant="outlined"
@@ -149,7 +159,7 @@ export default function VideoCut() {
           </Stack>
         </Box>
 
-        <Stack direction="row" spacing={2}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <Box sx={{ flex: 1 }}>
             <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
               {t('videoCut.startTime')}

@@ -10,7 +10,10 @@ import WifiIcon from '@mui/icons-material/Wifi';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import type { SvgIconProps } from '@mui/material/SvgIcon';
+import { Logger } from '../../shared/logger';
 import { VIDEO_CODECS, AUDIO_CODECS } from '../../shared/ui-constants';
+
+const log = new Logger('renderer/components/CodecSelect');
 
 const groupIcons: Record<string, React.ComponentType<SvgIconProps>> = {
   Software: CodeIcon,

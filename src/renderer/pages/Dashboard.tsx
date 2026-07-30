@@ -7,7 +7,10 @@ import ImageIcon from '@mui/icons-material/Image';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import QueueIcon from '@mui/icons-material/Queue';
+import { Logger } from '../../shared/logger';
 import { NAV_ITEMS } from '../../shared/ui-constants';
+
+const log = new Logger('renderer/pages/Dashboard');
 
 const featureIcons: Record<string, React.ReactNode> = {
   '/convert': <SwapHorizIcon sx={{ fontSize: 40 }} />,
@@ -30,6 +33,7 @@ const descKeys: Record<string, string> = {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  log.debug('Dashboard rendered');
   return (
     <Box>
       <Typography variant="h4" sx={{ color: 'primary.main', fontWeight: 700, mb: 1 }}>
