@@ -149,6 +149,7 @@
     "qualityRange": "الجودة يجب أن تكون بين 1 و 31"
   },
   "logs": {
-    "clear": "مسح"
+    "clear": "مسح",
+    "download": "Download as TXT"
   }
 }

@@ -149,6 +149,7 @@
     "qualityRange": "Kualitas harus antara 1 dan 31"
   },
   "logs": {
-    "clear": "Hapus"
+    "clear": "Hapus",
+    "download": "Download as TXT"
   }
 }

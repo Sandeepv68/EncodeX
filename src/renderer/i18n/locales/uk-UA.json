@@ -149,6 +149,7 @@
     "qualityRange": "Якість має бути від 1 до 31"
   },
   "logs": {
-    "clear": "Очистити"
+    "clear": "Очистити",
+    "download": "Download as TXT"
   }
 }

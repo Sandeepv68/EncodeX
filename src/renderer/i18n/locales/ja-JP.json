@@ -149,6 +149,7 @@
     "qualityRange": "品質は 1 から 31 の間でなければなりません"
   },
   "logs": {
-    "clear": "クリア"
+    "clear": "クリア",
+    "download": "Download as TXT"
   }
 }

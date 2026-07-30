@@ -149,6 +149,7 @@
     "qualityRange": "Kwaliteit moet tussen 1 en 31 liggen"
   },
   "logs": {
-    "clear": "Wissen"
+    "clear": "Wissen",
+    "download": "Download as TXT"
   }
 }

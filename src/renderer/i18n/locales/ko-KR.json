@@ -149,6 +149,7 @@
     "qualityRange": "품질은 1에서 31 사이여야 합니다"
   },
   "logs": {
-    "clear": "지우기"
+    "clear": "지우기",
+    "download": "Download as TXT"
   }
 }

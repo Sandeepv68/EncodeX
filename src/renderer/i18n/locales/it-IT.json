@@ -149,6 +149,7 @@
     "qualityRange": "La qualità deve essere compresa tra 1 e 31"
   },
   "logs": {
-    "clear": "Cancella"
+    "clear": "Cancella",
+    "download": "Download as TXT"
   }
 }

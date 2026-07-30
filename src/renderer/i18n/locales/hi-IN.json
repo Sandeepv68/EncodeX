@@ -149,6 +149,7 @@
     "qualityRange": "Quality must be between 1 and 31"
   },
   "logs": {
-    "clear": "साफ़ करें"
+    "clear": "साफ़ करें",
+    "download": "Download as TXT"
   }
 }

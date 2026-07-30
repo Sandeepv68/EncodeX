@@ -149,6 +149,7 @@
     "qualityRange": "Qualität muss zwischen 1 und 31 liegen"
   },
   "logs": {
-    "clear": "Leeren"
+    "clear": "Leeren",
+    "download": "Download as TXT"
   }
 }

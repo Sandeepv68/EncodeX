@@ -149,6 +149,7 @@
     "qualityRange": "Kvalitet måste vara mellan 1 och 31"
   },
   "logs": {
-    "clear": "Rensa"
+    "clear": "Rensa",
+    "download": "Download as TXT"
   }
 }

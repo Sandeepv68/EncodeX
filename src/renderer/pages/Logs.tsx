@@ -2,6 +2,7 @@ import { useRef, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton, Tooltip, Typography, Select, MenuItem, type SelectChangeEvent } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
+import DownloadIcon from '@mui/icons-material/Download';
 import { useLogStore } from '../stores/logStore';
 
 const LEVEL_COLORS: Record<string, string> = {
@@ -17,6 +18,19 @@ export default function Logs() {
   const clear = useLogStore((s) => s.clear);
   const bottomRef = useRef<HTMLDivElement>(null);
   const [filter, setFilter] = useState('ALL');
+
+  const downloadLogs = () => {
+    const text = filtered
+      .map((e) => `${e.timestamp} [${e.level}] [${e.source}] ${e.text}`)
+      .join('\n');
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `encodex-logs-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -40,6 +54,11 @@ export default function Logs() {
         <Tooltip title={t('logs.clear')}>
           <IconButton size="small" onClick={clear}>
             <ClearIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={t('logs.download')}>
+          <IconButton size="small" onClick={downloadLogs}>
+            <DownloadIcon fontSize="small" />
           </IconButton>
         </Tooltip>
         <Typography variant="caption" color="text.secondary">
