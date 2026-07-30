@@ -22,16 +22,27 @@ export default function ImageCompress() {
   const transcoder = TRANSCODER_TYPES[0];
 
   const handleConvert = async () => {
-    if (!input) { showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select an input image.' }); return; }
-    if (!output) { showError({ code: ErrorCode.OUTPUT_NOT_SPECIFIED, message: 'Please specify an output file path.' }); return; }
+    if (!input) {
+      showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select an input image.' });
+      return;
+    }
+    if (!output) {
+      showError({ code: ErrorCode.OUTPUT_NOT_SPECIFIED, message: 'Please specify an output file path.' });
+      return;
+    }
     setIsConverting(true);
     try {
-      await window.electronAPI.convertFile(input, output, {
-        videoCodec: IMAGE_CODEC_MAP[format],
-        qscale: quality,
-        scale: scale || undefined,
-        pixelFormat: 'yuv420p',
-      }, transcoder);
+      await window.electronAPI.convertFile(
+        input,
+        output,
+        {
+          videoCodec: IMAGE_CODEC_MAP[format],
+          qscale: quality,
+          scale: scale || undefined,
+          pixelFormat: 'yuv420p',
+        },
+        transcoder,
+      );
       setProgress({ percent: 100, time: 'Done', speed: '-', eta: '0' });
     } catch (err: unknown) {
       showError(err);
@@ -42,24 +53,69 @@ export default function ImageCompress() {
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>{t('imageCompress.title')}</Typography>
+      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+        {t('imageCompress.title')}
+      </Typography>
       <Paper sx={{ p: 3, maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 2 }}>
         {currentError && <ErrorBanner error={currentError} onClose={clearError} />}
         <Box>
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>{t('imageCompress.inputImage')}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+            {t('imageCompress.inputImage')}
+          </Typography>
           <FileDropZone onFileSelect={setInput} label={t('imageCompress.dropLabel')} accept="jpg,jpeg,png,webp,bmp" />
         </Box>
         <Stack direction="row" spacing={1}>
-          <TextField fullWidth size="small" label={t('imageCompress.outputFile')} value={output} onChange={(e) => setOutput(e.target.value)} placeholder={t('imageCompress.placeholderOutput')} />
-          <Button variant="outlined" onClick={async () => { const f = await window.electronAPI.selectOutput(); if (f) setOutput(f); }}>{t('convert.browse')}</Button>
+          <TextField
+            fullWidth
+            size="small"
+            label={t('imageCompress.outputFile')}
+            value={output}
+            onChange={(e) => setOutput(e.target.value)}
+            placeholder={t('imageCompress.placeholderOutput')}
+          />
+          <Button
+            variant="outlined"
+            onClick={async () => {
+              const f = await window.electronAPI.selectOutput();
+              if (f) setOutput(f);
+            }}
+          >
+            {t('convert.browse')}
+          </Button>
         </Stack>
         <Stack direction="row" spacing={2}>
-          <TextField select fullWidth size="small" label={t('imageCompress.outputFormat')} value={format} onChange={(e) => setFormat(e.target.value)}>
-            {IMAGE_FORMATS.map((f) => <MenuItem key={f.value} value={f.value}>{f.label}</MenuItem>)}
+          <TextField
+            select
+            fullWidth
+            size="small"
+            label={t('imageCompress.outputFormat')}
+            value={format}
+            onChange={(e) => setFormat(e.target.value)}
+          >
+            {IMAGE_FORMATS.map((f) => (
+              <MenuItem key={f.value} value={f.value}>
+                {f.label}
+              </MenuItem>
+            ))}
           </TextField>
-          <TextField fullWidth size="small" label={t('imageCompress.quality')} type="number" value={quality} onChange={(e) => setQuality(parseInt(e.target.value) || 23)} slotProps={{ htmlInput: { min: 1, max: 31 } }} />
+          <TextField
+            fullWidth
+            size="small"
+            label={t('imageCompress.quality')}
+            type="number"
+            value={quality}
+            onChange={(e) => setQuality(parseInt(e.target.value) || 23)}
+            slotProps={{ htmlInput: { min: 1, max: 31 } }}
+          />
         </Stack>
-        <TextField fullWidth size="small" label={t('imageCompress.scale')} value={scale} onChange={(e) => setScale(e.target.value)} placeholder={t('imageCompress.placeholderScale')} />
+        <TextField
+          fullWidth
+          size="small"
+          label={t('imageCompress.scale')}
+          value={scale}
+          onChange={(e) => setScale(e.target.value)}
+          placeholder={t('imageCompress.placeholderScale')}
+        />
         <Button variant="contained" onClick={handleConvert} disabled={!input || !output || isConverting}>
           {isConverting ? t('imageCompress.compressing') : t('imageCompress.compress')}
         </Button>

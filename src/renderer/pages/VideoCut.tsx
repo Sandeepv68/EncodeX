@@ -22,15 +22,26 @@ export default function VideoCut() {
   const transcoder = TRANSCODER_TYPES[0];
 
   const handleCut = async () => {
-    if (!input) { showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select a video file.' }); return; }
-    if (!output) { showError({ code: ErrorCode.OUTPUT_NOT_SPECIFIED, message: 'Please specify an output file path.' }); return; }
+    if (!input) {
+      showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select a video file.' });
+      return;
+    }
+    if (!output) {
+      showError({ code: ErrorCode.OUTPUT_NOT_SPECIFIED, message: 'Please specify an output file path.' });
+      return;
+    }
     setIsConverting(true);
     try {
-      await window.electronAPI.convertFile(input, output, {
-        copy: true,
-        startTime,
-        ...(useDuration ? { duration } : { endTime }),
-      }, transcoder);
+      await window.electronAPI.convertFile(
+        input,
+        output,
+        {
+          copy: true,
+          startTime,
+          ...(useDuration ? { duration } : { endTime }),
+        },
+        transcoder,
+      );
       setProgress({ percent: 100, time: 'Done', speed: '-', eta: '0' });
     } catch (err: unknown) {
       showError(err);
@@ -41,34 +52,91 @@ export default function VideoCut() {
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>{t('videoCut.title')}</Typography>
+      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+        {t('videoCut.title')}
+      </Typography>
       <Paper sx={{ p: 3, maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 2 }}>
         {currentError && <ErrorBanner error={currentError} onClose={clearError} />}
         <Box>
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>{t('videoCut.videoFile')}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+            {t('videoCut.videoFile')}
+          </Typography>
           <Stack direction="row" spacing={1}>
-            <TextField fullWidth size="small" value={input || ''} placeholder={t('videoCut.noFile')} slotProps={{ input: { readOnly: true } }} />
-            <Button variant="outlined" onClick={async () => { const f = await window.electronAPI.selectFile(); if (f) setInput(f); }}>{t('videoCut.browse')}</Button>
+            <TextField
+              fullWidth
+              size="small"
+              value={input || ''}
+              placeholder={t('videoCut.noFile')}
+              slotProps={{ input: { readOnly: true } }}
+            />
+            <Button
+              variant="outlined"
+              onClick={async () => {
+                const f = await window.electronAPI.selectFile();
+                if (f) setInput(f);
+              }}
+            >
+              {t('videoCut.browse')}
+            </Button>
           </Stack>
         </Box>
 
         {input && <MediaPlayer filePath={input} />}
 
         <Stack direction="row" spacing={1}>
-          <TextField fullWidth size="small" label={t('videoCut.outputFile')} value={output} onChange={(e) => setOutput(e.target.value)} placeholder={t('videoCut.placeholderOutput')} />
-          <Button variant="outlined" onClick={async () => { const f = await window.electronAPI.selectOutput(); if (f) setOutput(f); }}>{t('convert.browse')}</Button>
+          <TextField
+            fullWidth
+            size="small"
+            label={t('videoCut.outputFile')}
+            value={output}
+            onChange={(e) => setOutput(e.target.value)}
+            placeholder={t('videoCut.placeholderOutput')}
+          />
+          <Button
+            variant="outlined"
+            onClick={async () => {
+              const f = await window.electronAPI.selectOutput();
+              if (f) setOutput(f);
+            }}
+          >
+            {t('convert.browse')}
+          </Button>
         </Stack>
 
         <Stack direction="row" spacing={2}>
-          <TextField fullWidth size="small" label={t('videoCut.startTime')} value={startTime} onChange={(e) => setStartTime(e.target.value)} placeholder={t('videoCut.placeholderStart')} />
+          <TextField
+            fullWidth
+            size="small"
+            label={t('videoCut.startTime')}
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+            placeholder={t('videoCut.placeholderStart')}
+          />
           {useDuration ? (
-            <TextField fullWidth size="small" label={t('videoCut.duration')} value={duration} onChange={(e) => setDuration(e.target.value)} placeholder={t('videoCut.placeholderDuration')} />
+            <TextField
+              fullWidth
+              size="small"
+              label={t('videoCut.duration')}
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              placeholder={t('videoCut.placeholderDuration')}
+            />
           ) : (
-            <TextField fullWidth size="small" label={t('videoCut.endTime')} value={endTime} onChange={(e) => setEndTime(e.target.value)} placeholder={t('videoCut.placeholderEnd')} />
+            <TextField
+              fullWidth
+              size="small"
+              label={t('videoCut.endTime')}
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              placeholder={t('videoCut.placeholderEnd')}
+            />
           )}
         </Stack>
 
-        <FormControlLabel control={<Switch checked={useDuration} onChange={() => setUseDuration(!useDuration)} />} label={t('videoCut.useDuration')} />
+        <FormControlLabel
+          control={<Switch checked={useDuration} onChange={() => setUseDuration(!useDuration)} />}
+          label={t('videoCut.useDuration')}
+        />
 
         <Button variant="contained" onClick={handleCut} disabled={!input || !output || isConverting}>
           {isConverting ? t('videoCut.cutting') : t('videoCut.cut')}

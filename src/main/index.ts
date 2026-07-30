@@ -6,22 +6,24 @@ import { WINDOW_SIZE, DEV_SERVER_URL, APP_NAME, EXIT_CODES } from '../shared/ui-
 
 function isCliMode(): boolean {
   const argv = process.argv;
-  if (argv.includes('--headless') || argv.includes('-h') || argv.includes('--help')) {
+  if (argv.includes('--cli') || argv.includes('-h') || argv.includes('--help')) {
     return true;
   }
-  const args = argv.slice(2).filter(a => !a.startsWith('-'));
+  const args = argv.slice(2).filter((a) => !a.startsWith('-'));
   return args.length >= 2;
 }
 
 if (isCliMode()) {
-  runCli()
-    .then(() => {
-      app.exit(EXIT_CODES.SUCCESS);
-    })
-    .catch((err) => {
-      console.error(err);
-      app.exit(EXIT_CODES.ERROR);
-    });
+  app.whenReady().then(() => {
+    runCli()
+      .then(() => {
+        app.exit(EXIT_CODES.SUCCESS);
+      })
+      .catch((err) => {
+        console.error(err);
+        app.exit(EXIT_CODES.ERROR);
+      });
+  });
 } else {
   let mainWindow: BrowserWindow | null = null;
 

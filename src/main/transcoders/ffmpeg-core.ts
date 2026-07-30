@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import ffmpeg from 'fluent-ffmpeg';
 import type Ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
+import { path as ffprobePath } from 'ffprobe-static';
 import { existsSync } from 'fs';
 import { ITranscoder } from './interface';
 import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
@@ -10,6 +11,10 @@ import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/tra
 const staticPath = ffmpegStatic as unknown as string;
 if (existsSync(staticPath)) {
   ffmpeg.setFfmpegPath(staticPath);
+}
+
+if (existsSync(ffprobePath)) {
+  ffmpeg.setFfprobePath(ffprobePath);
 }
 
 function parseRatio(ratio: string): string {
@@ -85,17 +90,20 @@ export class FfmpegCore implements ITranscoder {
     cmd.output(output);
     cmd.on('start', (commandLine) => emitter.emit('start', commandLine));
     cmd.on('codecData', (data) => emitter.emit('codecData', data));
-    cmd.on('progress', (info: { percent?: number; timemark?: string; currentFps?: number; speed?: string; eta?: number; currentKbps?: number }) => {
-      const progress: ConversionProgress = {
-        percent: info.percent ?? 0,
-        time: info.timemark ?? EMPTY_PROGRESS.time,
-        fps: info.currentFps ?? 0,
-        speed: info.speed ?? EMPTY_PROGRESS.speed,
-        eta: info.eta != null ? String(info.eta) : EMPTY_PROGRESS.eta,
-        bitrate: info.currentKbps ? `${info.currentKbps}kbps` : '',
-      };
-      emitter.emit('progress', progress);
-    });
+    cmd.on(
+      'progress',
+      (info: { percent?: number; timemark?: string; currentFps?: number; speed?: string; eta?: number; currentKbps?: number }) => {
+        const progress: ConversionProgress = {
+          percent: info.percent ?? 0,
+          time: info.timemark ?? EMPTY_PROGRESS.time,
+          fps: info.currentFps ?? 0,
+          speed: info.speed ?? EMPTY_PROGRESS.speed,
+          eta: info.eta != null ? String(info.eta) : EMPTY_PROGRESS.eta,
+          bitrate: info.currentKbps ? `${info.currentKbps}kbps` : '',
+        };
+        emitter.emit('progress', progress);
+      },
+    );
     cmd.on('error', (err: Error) => emitter.emit('error', err));
     cmd.on('end', () => emitter.emit('end'));
 

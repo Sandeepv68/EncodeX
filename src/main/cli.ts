@@ -2,7 +2,7 @@ import { FfmpegCore } from './transcoders/ffmpeg-core';
 import { FFToolCore } from './transcoders/fftool-core';
 import { BmfCore } from './transcoders/bmf-core';
 import { ConversionOptions, TranscoderType } from '../shared/types';
-import { APP_NAME, EXIT_CODES } from '../shared/ui-constants';
+import { APP_NAME } from '../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../shared/transcoder-constants';
 
 export async function runCli(): Promise<void> {
@@ -28,20 +28,20 @@ export async function runCli(): Promise<void> {
     .option('--copy', 'Lossless copy streams')
     .option('--info', 'Show media info and exit')
     .action(async (input, output, opts) => {
-      const options: ConversionOptions = {};
       const transcoderType = (opts.transcoder as TranscoderType) || TRANSCODER_TYPES[0];
+      const transcoder = createTranscoder(transcoderType);
 
       if (opts.info) {
-        const transcoder = createTranscoder(transcoderType);
-        try {
-          const info = await transcoder.getInfo(input);
-          console.log(JSON.stringify(info, null, 2));
-        } catch (err: unknown) {
-          console.error('Error getting media info:', err instanceof Error ? err.message : String(err));
-          process.exit(EXIT_CODES.ERROR);
+        if (!input) {
+          console.error('Error: --info requires an input file');
+          throw new Error('Missing input file');
         }
-        process.exit(EXIT_CODES.SUCCESS);
+        const info = await transcoder.getInfo(input);
+        console.log(JSON.stringify(info, null, 2));
+        return;
       }
+
+      const options: ConversionOptions = {};
 
       if (opts.copy) options.copy = true;
       if (opts.videoCodec) options.videoCodec = opts.videoCodec;
@@ -55,37 +55,53 @@ export async function runCli(): Promise<void> {
       if (opts.endTime) options.endTime = opts.endTime;
       if (opts.duration) options.duration = opts.duration;
 
-      const transcoder = createTranscoder(transcoderType);
       console.log(`Starting conversion: ${input} -> ${output}`);
       console.log(`Transcoder: ${transcoderType}`);
       console.log(`Options: ${JSON.stringify(options)}`);
 
       await new Promise<void>((resolve, reject) => {
         const emitter = transcoder.convert(input, output, options);
+        const timeout = setTimeout(() => {
+          transcoder.cancel();
+          reject(new Error('Conversion timed out'));
+        }, 300000);
         emitter.on('progress', (progress) => {
-          process.stdout.clearLine(0);
-          process.stdout.cursorTo(0);
-          process.stdout.write(`Progress: ${progress.time} | Speed: ${progress.speed} | ETA: ${progress.eta}s`);
+          try {
+            process.stdout.clearLine(0);
+            process.stdout.cursorTo(0);
+            process.stdout.write(`Progress: ${progress.time} | Speed: ${progress.speed} | ETA: ${progress.eta}s`);
+          } catch {
+            /* non-TTY stdout */
+          }
         });
         emitter.on('end', () => {
+          clearTimeout(timeout);
           console.log('\nConversion completed successfully!');
           resolve();
         });
         emitter.on('error', (err) => {
+          clearTimeout(timeout);
           console.error('\nConversion failed:', err.message);
           reject(err);
         });
       });
     });
 
-  const cliArgs = process.argv.filter(arg => arg !== '--headless');
+  const scriptIndex = (() => {
+    for (let i = process.argv.length - 1; i >= 0; i--) {
+      if (process.argv[i].endsWith('index.js')) return i;
+    }
+    return -1;
+  })();
+  const userArgs = scriptIndex >= 0 ? process.argv.slice(scriptIndex + 1) : process.argv.slice(2);
+  const cliArgs = userArgs.filter((arg) => arg !== '--cli');
 
   if (cliArgs.includes('-h') || cliArgs.includes('--help')) {
     program.outputHelp();
     return;
   }
 
-  await program.parseAsync(cliArgs);
+  await program.parseAsync(cliArgs, { from: 'user' });
 }
 
 function createTranscoder(type: TranscoderType): FfmpegCore | FFToolCore | BmfCore {
