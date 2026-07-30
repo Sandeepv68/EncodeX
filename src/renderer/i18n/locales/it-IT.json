@@ -1,0 +1,141 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "Passa alla modalità chiara",
+    "switchDark": "Passa alla modalità scura",
+    "language": "Lingua"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "convert": "Converti",
+    "mediaInfo": "Informazioni file",
+    "image": "Immagine",
+    "audio": "Audio",
+    "cut": "Taglia",
+    "batchQueue": "Coda batch"
+  },
+  "dashboard": {
+    "welcome": "Benvenuto in EncodeX",
+    "subtitle": "Strumenti semplici e intuitivi per convertire, modificare ed elaborare file audio e video.",
+    "descConvert": "Cambia codec, risoluzione, formato pixel",
+    "descMediaInfo": "Visualizza informazioni dettagliate sui flussi",
+    "descImage": "Comprimi immagini con controllo del formato",
+    "descAudio": "Estrai audio da file video",
+    "descCut": "Taglia video con player frame-accurato",
+    "descBatch": "Elabora più file contemporaneamente"
+  },
+  "convert": {
+    "title": "Converti file",
+    "inputFile": "File di input",
+    "outputFile": "File di output",
+    "noFile": "Nessun file selezionato",
+    "noOutput": "Nessun output selezionato",
+    "browse": "Sfoglia",
+    "saveAs": "Salva con nome",
+    "losslessCopy": "Copia senza perdita (nessuna ricodifica)",
+    "videoCodec": "Codec video",
+    "audioCodec": "Codec audio",
+    "videoBitrate": "Bitrate video",
+    "audioBitrate": "Bitrate audio",
+    "qscale": "QScale (1-31)",
+    "scale": "Scala (LxA)",
+    "pixelFormat": "Formato pixel",
+    "transcoderCore": "Core del transcoder",
+    "startConversion": "Avvia conversione",
+    "converting": "Conversione in corso...",
+    "cancel": "Annulla",
+    "placeholderBitrate": "es. 2000k",
+    "placeholderAudioBitrate": "es. 192k",
+    "placeholderScale": "es. 1280x720"
+  },
+  "mediaInfo": {
+    "title": "Informazioni file",
+    "dropLabel": "Rilascia un file qui o clicca per sfogliare",
+    "fileInfo": "Informazioni file",
+    "file": "File",
+    "format": "Formato",
+    "size": "Dimensioni",
+    "duration": "Durata",
+    "bitrate": "Bitrate",
+    "streams": "Flussi",
+    "stream": "Flusso",
+    "codec": "Codec",
+    "resolution": "Risoluzione",
+    "pixelFormat": "Formato pixel",
+    "frameRate": "Frame rate",
+    "sampleRate": "Frequenza di campionamento",
+    "channels": "Canali",
+    "language": "Lingua"
+  },
+  "imageCompress": {
+    "title": "Comprimi immagine",
+    "inputImage": "Immagine di input",
+    "dropLabel": "Rilascia immagine qui",
+    "outputFile": "File di output",
+    "outputFormat": "Formato di output",
+    "quality": "Qualità (1-31)",
+    "scale": "Scala (opzionale)",
+    "compress": "Comprimi immagine",
+    "compressing": "Compressione in corso...",
+    "placeholderOutput": "percorso di output",
+    "placeholderScale": "es. 800x600"
+  },
+  "audioExtract": {
+    "title": "Estrai audio",
+    "videoFile": "File video",
+    "dropLabel": "Rilascia file video qui",
+    "outputFile": "File di output",
+    "audioCodec": "Codec audio",
+    "bitrate": "Bitrate",
+    "extract": "Estrai audio",
+    "extracting": "Estrazione in corso...",
+    "placeholderOutput": "es. output.mp3"
+  },
+  "videoCut": {
+    "title": "Taglia video",
+    "videoFile": "File video",
+    "noFile": "Nessun file selezionato",
+    "browse": "Sfoglia",
+    "outputFile": "File di output",
+    "startTime": "Ora di inizio (HH:MM:SS)",
+    "duration": "Durata (HH:MM:SS)",
+    "endTime": "Ora di fine (HH:MM:SS)",
+    "useDuration": "Usa durata invece dell'ora di fine",
+    "cut": "Taglia video",
+    "cutting": "Taglio in corso...",
+    "placeholderOutput": "percorso di output",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "es. 00:01:30",
+    "placeholderEnd": "es. 00:01:30"
+  },
+  "batchQueue": {
+    "title": "Coda batch",
+    "suffix": "Suffisso",
+    "addFiles": "Aggiungi file",
+    "cancelAll": "Annulla tutto",
+    "empty": "La coda è vuota. Aggiungi file per iniziare l'elaborazione batch.",
+    "remove": "Rimuovi"
+  },
+  "progress": {
+    "time": "Tempo",
+    "speed": "Velocità",
+    "eta": "PRE"
+  },
+  "errorBoundary": {
+    "title": "Qualcosa è andato storto",
+    "tryAgain": "Riprova",
+    "description": "Si è verificato un errore imprevisto."
+  },
+  "fileDropZone": {
+    "defaultLabel": "Rilascia file qui o clicca per sfogliare"
+  },
+  "validation": {
+    "outputRequired": "Il file di output è obbligatorio",
+    "invalidTime": "Formato ora non valido (HH:MM:SS o secondi)",
+    "durationRequired": "La durata è obbligatoria",
+    "invalidScale": "Formato scala non valido (es. 1920:1080, 50%)",
+    "invalidBitrate": "Bitrate non valido (es. 128k, 1M)",
+    "qscaleRange": "QScale deve essere compreso tra 1 e 31",
+    "qualityRange": "La qualità deve essere compresa tra 1 e 31"
+  }
+}

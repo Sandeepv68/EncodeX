@@ -1,0 +1,141 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "Overschakelen naar lichte modus",
+    "switchDark": "Overschakelen naar donkere modus",
+    "language": "Taal"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "convert": "Converteren",
+    "mediaInfo": "Media-info",
+    "image": "Afbeelding",
+    "audio": "Audio",
+    "cut": "Knippen",
+    "batchQueue": "Batchwachtrij"
+  },
+  "dashboard": {
+    "welcome": "Welkom bij EncodeX",
+    "subtitle": "Eenvoudige en gebruiksvriendelijke tools om audio- en videobestanden te converteren, bewerken en verwerken.",
+    "descConvert": "Wijzig codecs, resolutie, pixelformaat",
+    "descMediaInfo": "Bekijk gedetailleerde streaminformatie",
+    "descImage": "Afbeeldingen comprimeren met formaatcontrole",
+    "descAudio": "Audio extraheren uit videobestanden",
+    "descCut": "Video knippen met frame-nauwkeurige speler",
+    "descBatch": "Meerdere bestanden tegelijk verwerken"
+  },
+  "convert": {
+    "title": "Media converteren",
+    "inputFile": "Invoerbestand",
+    "outputFile": "Uitvoerbestand",
+    "noFile": "Geen bestand geselecteerd",
+    "noOutput": "Geen uitvoer geselecteerd",
+    "browse": "Bladeren",
+    "saveAs": "Opslaan als",
+    "losslessCopy": "Verliesvrije kopie (geen hercodering)",
+    "videoCodec": "Videocodec",
+    "audioCodec": "Audiocodec",
+    "videoBitrate": "Videobitrate",
+    "audioBitrate": "Audiobitrate",
+    "qscale": "QScale (1-31)",
+    "scale": "Schaal (BxH)",
+    "pixelFormat": "Pixelformaat",
+    "transcoderCore": "Transcoder-kern",
+    "startConversion": "Conversie starten",
+    "converting": "Bezig met converteren...",
+    "cancel": "Annuleren",
+    "placeholderBitrate": "bijv. 2000k",
+    "placeholderAudioBitrate": "bijv. 192k",
+    "placeholderScale": "bijv. 1280x720"
+  },
+  "mediaInfo": {
+    "title": "Media-informatie",
+    "dropLabel": "Sleep een mediabestand hierheen of klik om te bladeren",
+    "fileInfo": "Bestandsinfo",
+    "file": "Bestand",
+    "format": "Formaat",
+    "size": "Grootte",
+    "duration": "Duur",
+    "bitrate": "Bitrate",
+    "streams": "Streams",
+    "stream": "Stream",
+    "codec": "Codec",
+    "resolution": "Resolutie",
+    "pixelFormat": "Pixelformaat",
+    "frameRate": "Framesnelheid",
+    "sampleRate": "Samplingsnelheid",
+    "channels": "Kanalen",
+    "language": "Taal"
+  },
+  "imageCompress": {
+    "title": "Afbeelding comprimeren",
+    "inputImage": "Invoerafbeelding",
+    "dropLabel": "Sleep afbeelding hierheen",
+    "outputFile": "Uitvoerbestand",
+    "outputFormat": "Uitvoerformaat",
+    "quality": "Kwaliteit (1-31)",
+    "scale": "Schaal (optioneel)",
+    "compress": "Afbeelding comprimeren",
+    "compressing": "Bezig met comprimeren...",
+    "placeholderOutput": "uitvoerpad",
+    "placeholderScale": "bijv. 800x600"
+  },
+  "audioExtract": {
+    "title": "Audio extraheren",
+    "videoFile": "Videobestand",
+    "dropLabel": "Sleep videobestand hierheen",
+    "outputFile": "Uitvoerbestand",
+    "audioCodec": "Audiocodec",
+    "bitrate": "Bitrate",
+    "extract": "Audio extraheren",
+    "extracting": "Bezig met extraheren...",
+    "placeholderOutput": "bijv. output.mp3"
+  },
+  "videoCut": {
+    "title": "Video knippen",
+    "videoFile": "Videobestand",
+    "noFile": "Geen bestand geselecteerd",
+    "browse": "Bladeren",
+    "outputFile": "Uitvoerbestand",
+    "startTime": "Starttijd (HH:MM:SS)",
+    "duration": "Duur (HH:MM:SS)",
+    "endTime": "Eindtijd (HH:MM:SS)",
+    "useDuration": "Duur gebruiken in plaats van eindtijd",
+    "cut": "Video knippen",
+    "cutting": "Bezig met knippen...",
+    "placeholderOutput": "uitvoerpad",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "bijv. 00:01:30",
+    "placeholderEnd": "bijv. 00:01:30"
+  },
+  "batchQueue": {
+    "title": "Batchwachtrij",
+    "suffix": "Achtervoegsel",
+    "addFiles": "Bestanden toevoegen",
+    "cancelAll": "Alles annuleren",
+    "empty": "Wachtrij is leeg. Voeg bestanden toe om batchverwerking te starten.",
+    "remove": "Verwijderen"
+  },
+  "progress": {
+    "time": "Tijd",
+    "speed": "Snelheid",
+    "eta": "VER"
+  },
+  "errorBoundary": {
+    "title": "Er is iets misgegaan",
+    "tryAgain": "Opnieuw proberen",
+    "description": "Er is een onverwachte fout opgetreden."
+  },
+  "fileDropZone": {
+    "defaultLabel": "Sleep bestand hierheen of klik om te bladeren"
+  },
+  "validation": {
+    "outputRequired": "Uitvoerbestand is vereist",
+    "invalidTime": "Ongeldig tijdformaat (HH:MM:SS of seconden)",
+    "durationRequired": "Duur is vereist",
+    "invalidScale": "Ongeldig schaalformaat (bijv. 1920:1080, 50%)",
+    "invalidBitrate": "Ongeldige bitrate (bijv. 128k, 1M)",
+    "qscaleRange": "QScale moet tussen 1 en 31 liggen",
+    "qualityRange": "Kwaliteit moet tussen 1 en 31 liggen"
+  }
+}

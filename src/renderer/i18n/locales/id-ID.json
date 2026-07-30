@@ -1,0 +1,141 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "Beralih ke Mode Terang",
+    "switchDark": "Beralih ke Mode Gelap",
+    "language": "Bahasa"
+  },
+  "nav": {
+    "dashboard": "Dasbor",
+    "convert": "Konversi",
+    "mediaInfo": "Info Media",
+    "image": "Gambar",
+    "audio": "Audio",
+    "cut": "Potong",
+    "batchQueue": "Antrean Batch"
+  },
+  "dashboard": {
+    "welcome": "Selamat datang di EncodeX",
+    "subtitle": "Alat sederhana dan ramah pengguna untuk mengonversi, mengedit, dan memproses file audio dan video.",
+    "descConvert": "Ubah codec, resolusi, format piksel",
+    "descMediaInfo": "Lihat informasi stream detail",
+    "descImage": "Kompres gambar dengan kontrol format",
+    "descAudio": "Ekstrak audio dari file video",
+    "descCut": "Potong video dengan pemutar presisi bingkai",
+    "descBatch": "Proses beberapa file sekaligus"
+  },
+  "convert": {
+    "title": "Konversi Media",
+    "inputFile": "File Masukan",
+    "outputFile": "File Keluaran",
+    "noFile": "Tidak ada file dipilih",
+    "noOutput": "Tidak ada output dipilih",
+    "browse": "Jelajahi",
+    "saveAs": "Simpan Sebagai",
+    "losslessCopy": "Salin lossless (tanpa pengkodean ulang)",
+    "videoCodec": "Codec Video",
+    "audioCodec": "Codec Audio",
+    "videoBitrate": "Bitrate Video",
+    "audioBitrate": "Bitrate Audio",
+    "qscale": "QScale (1-31)",
+    "scale": "Skala (WxH)",
+    "pixelFormat": "Format Piksel",
+    "transcoderCore": "Inti Transkoder",
+    "startConversion": "Mulai Konversi",
+    "converting": "Mengonversi...",
+    "cancel": "Batal",
+    "placeholderBitrate": "mis. 2000k",
+    "placeholderAudioBitrate": "mis. 192k",
+    "placeholderScale": "mis. 1280x720"
+  },
+  "mediaInfo": {
+    "title": "Informasi Media",
+    "dropLabel": "Letakkan file media di sini atau klik untuk menjelajah",
+    "fileInfo": "Info File",
+    "file": "File",
+    "format": "Format",
+    "size": "Ukuran",
+    "duration": "Durasi",
+    "bitrate": "Bitrate",
+    "streams": "Stream",
+    "stream": "Stream",
+    "codec": "Codec",
+    "resolution": "Resolusi",
+    "pixelFormat": "Format Piksel",
+    "frameRate": "Frame Rate",
+    "sampleRate": "Sample Rate",
+    "channels": "Saluran",
+    "language": "Bahasa"
+  },
+  "imageCompress": {
+    "title": "Kompres Gambar",
+    "inputImage": "Gambar Masukan",
+    "dropLabel": "Letakkan gambar di sini",
+    "outputFile": "File Keluaran",
+    "outputFormat": "Format Keluaran",
+    "quality": "Kualitas (1-31)",
+    "scale": "Skala (opsional)",
+    "compress": "Kompres Gambar",
+    "compressing": "Mengompres...",
+    "placeholderOutput": "jalur output",
+    "placeholderScale": "mis. 800x600"
+  },
+  "audioExtract": {
+    "title": "Ekstrak Audio",
+    "videoFile": "File Video",
+    "dropLabel": "Letakkan file video di sini",
+    "outputFile": "File Keluaran",
+    "audioCodec": "Codec Audio",
+    "bitrate": "Bitrate",
+    "extract": "Ekstrak Audio",
+    "extracting": "Mengekstrak...",
+    "placeholderOutput": "mis. output.mp3"
+  },
+  "videoCut": {
+    "title": "Potong Video",
+    "videoFile": "File Video",
+    "noFile": "Tidak ada file dipilih",
+    "browse": "Jelajahi",
+    "outputFile": "File Keluaran",
+    "startTime": "Waktu Mulai (HH:MM:SS)",
+    "duration": "Durasi (HH:MM:SS)",
+    "endTime": "Waktu Selesai (HH:MM:SS)",
+    "useDuration": "Gunakan durasi sebagai pengganti waktu selesai",
+    "cut": "Potong Video",
+    "cutting": "Memotong...",
+    "placeholderOutput": "jalur output",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "mis. 00:01:30",
+    "placeholderEnd": "mis. 00:01:30"
+  },
+  "batchQueue": {
+    "title": "Antrean Batch",
+    "suffix": "Akhiran",
+    "addFiles": "Tambah File",
+    "cancelAll": "Batalkan Semua",
+    "empty": "Antrean kosong. Tambahkan file untuk memulai pemrosesan batch.",
+    "remove": "Hapus"
+  },
+  "progress": {
+    "time": "Waktu",
+    "speed": "Kecepatan",
+    "eta": "Perkiraan Selesai"
+  },
+  "errorBoundary": {
+    "title": "Terjadi kesalahan",
+    "tryAgain": "Coba Lagi",
+    "description": "Terjadi kesalahan yang tidak terduga."
+  },
+  "fileDropZone": {
+    "defaultLabel": "Letakkan file di sini atau klik untuk menjelajah"
+  },
+  "validation": {
+    "outputRequired": "File keluaran diperlukan",
+    "invalidTime": "Format waktu tidak valid (HH:MM:SS atau detik)",
+    "durationRequired": "Durasi diperlukan",
+    "invalidScale": "Format skala tidak valid (mis. 1920:1080, 50%)",
+    "invalidBitrate": "Bitrate tidak valid (mis. 128k, 1M)",
+    "qscaleRange": "QScale harus antara 1 dan 31",
+    "qualityRange": "Kualitas harus antara 1 dan 31"
+  }
+}

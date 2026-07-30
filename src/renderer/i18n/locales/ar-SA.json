@@ -1,0 +1,141 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "التبديل إلى الوضع الفاتح",
+    "switchDark": "التبديل إلى الوضع الداكن",
+    "language": "اللغة"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "convert": "تحويل",
+    "mediaInfo": "معلومات الوسائط",
+    "image": "صورة",
+    "audio": "صوت",
+    "cut": "قص",
+    "batchQueue": "قائمة الدفعات"
+  },
+  "dashboard": {
+    "welcome": "مرحباً بك في EncodeX",
+    "subtitle": "أدوات بسيطة وسهلة الاستخدام لتحويل وتحرير ومعالجة ملفات الصوت والفيديو.",
+    "descConvert": "تغيير الترميزات، الدقة، تنسيق البكسل",
+    "descMediaInfo": "عرض معلومات مفصلة عن التدفقات",
+    "descImage": "ضغط الصور مع التحكم بالتنسيق",
+    "descAudio": "استخراج الصوت من ملفات الفيديو",
+    "descCut": "قص الفيديو مع مشغل دقيق الإطارات",
+    "descBatch": "معالجة ملفات متعددة دفعة واحدة"
+  },
+  "convert": {
+    "title": "تحويل الوسائط",
+    "inputFile": "ملف الإدخال",
+    "outputFile": "ملف الإخراج",
+    "noFile": "لم يتم تحديد ملف",
+    "noOutput": "لم يتم تحديد مخرج",
+    "browse": "تصفح",
+    "saveAs": "حفظ باسم",
+    "losslessCopy": "نسخ بدون فقدان (بدون إعادة ترميز)",
+    "videoCodec": "ترميز الفيديو",
+    "audioCodec": "ترميز الصوت",
+    "videoBitrate": "معدل بت الفيديو",
+    "audioBitrate": "معدل بت الصوت",
+    "qscale": "مقياس الجودة (1-31)",
+    "scale": "القياس (عرضxارتفاع)",
+    "pixelFormat": "تنسيق البكسل",
+    "transcoderCore": "نواة التحويل",
+    "startConversion": "بدء التحويل",
+    "converting": "جاري التحويل...",
+    "cancel": "إلغاء",
+    "placeholderBitrate": "مثال 2000k",
+    "placeholderAudioBitrate": "مثال 192k",
+    "placeholderScale": "مثال 1280x720"
+  },
+  "mediaInfo": {
+    "title": "معلومات الوسائط",
+    "dropLabel": "أسقط ملف الوسائط هنا أو انقر للتصفح",
+    "fileInfo": "معلومات الملف",
+    "file": "الملف",
+    "format": "التنسيق",
+    "size": "الحجم",
+    "duration": "المدة",
+    "bitrate": "معدل البت",
+    "streams": "التدفقات",
+    "stream": "تدفق",
+    "codec": "الترميز",
+    "resolution": "الدقة",
+    "pixelFormat": "تنسيق البكسل",
+    "frameRate": "معدل الإطارات",
+    "sampleRate": "معدل العينات",
+    "channels": "القنوات",
+    "language": "اللغة"
+  },
+  "imageCompress": {
+    "title": "ضغط الصورة",
+    "inputImage": "الصورة المدخلة",
+    "dropLabel": "أسقط الصورة هنا",
+    "outputFile": "ملف الإخراج",
+    "outputFormat": "تنسيق الإخراج",
+    "quality": "الجودة (1-31)",
+    "scale": "القياس (اختياري)",
+    "compress": "ضغط الصورة",
+    "compressing": "جاري الضغط...",
+    "placeholderOutput": "مسار الإخراج",
+    "placeholderScale": "مثال 800x600"
+  },
+  "audioExtract": {
+    "title": "استخراج الصوت",
+    "videoFile": "ملف الفيديو",
+    "dropLabel": "أسقط ملف الفيديو هنا",
+    "outputFile": "ملف الإخراج",
+    "audioCodec": "ترميز الصوت",
+    "bitrate": "معدل البت",
+    "extract": "استخراج الصوت",
+    "extracting": "جاري الاستخراج...",
+    "placeholderOutput": "مثال output.mp3"
+  },
+  "videoCut": {
+    "title": "قص الفيديو",
+    "videoFile": "ملف الفيديو",
+    "noFile": "لم يتم تحديد ملف",
+    "browse": "تصفح",
+    "outputFile": "ملف الإخراج",
+    "startTime": "وقت البداية (ساعة:دقيقة:ثانية)",
+    "duration": "المدة (ساعة:دقيقة:ثانية)",
+    "endTime": "وقت النهاية (ساعة:دقيقة:ثانية)",
+    "useDuration": "استخدام المدة بدلاً من وقت النهاية",
+    "cut": "قص الفيديو",
+    "cutting": "جاري القص...",
+    "placeholderOutput": "مسار الإخراج",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "مثال 00:01:30",
+    "placeholderEnd": "مثال 00:01:30"
+  },
+  "batchQueue": {
+    "title": "قائمة الدفعات",
+    "suffix": "اللاحقة",
+    "addFiles": "إضافة ملفات",
+    "cancelAll": "إلغاء الكل",
+    "empty": "القائمة فارغة. أضف ملفات لبدء المعالجة بالدفعات.",
+    "remove": "إزالة"
+  },
+  "progress": {
+    "time": "الوقت",
+    "speed": "السرعة",
+    "eta": "الوقت المتبقي"
+  },
+  "errorBoundary": {
+    "title": "حدث خطأ ما",
+    "tryAgain": "حاول مرة أخرى",
+    "description": "حدث خطأ غير متوقع."
+  },
+  "fileDropZone": {
+    "defaultLabel": "أسقط الملف هنا أو انقر للتصفح"
+  },
+  "validation": {
+    "outputRequired": "ملف الإخراج مطلوب",
+    "invalidTime": "تنسيق وقت غير صحيح (ساعة:دقيقة:ثانية أو ثوان)",
+    "durationRequired": "المدة مطلوبة",
+    "invalidScale": "تنسيق قياس غير صحيح (مثال 1920:1080، 50%)",
+    "invalidBitrate": "معدل بت غير صحيح (مثال 128k، 1M)",
+    "qscaleRange": "مقياس الجودة يجب أن يكون بين 1 و 31",
+    "qualityRange": "الجودة يجب أن تكون بين 1 و 31"
+  }
+}

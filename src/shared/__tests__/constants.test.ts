@@ -139,25 +139,36 @@ describe('FILE_EXTENSIONS', () => {
     expect(FILE_EXTENSIONS.MEDIA_INPUT).toContain('mp3');
   });
 
-  it('MEDIA_OUTPUT does not include flv', () => {
-    expect(FILE_EXTENSIONS.MEDIA_OUTPUT).not.toContain('flv');
+  it('MEDIA_INPUT includes video, audio, image, and subtitle formats', () => {
+    expect(FILE_EXTENSIONS.MEDIA_INPUT.length).toBeGreaterThan(50);
+  });
+
+  it('MEDIA_OUTPUT includes common video, audio, and image output formats', () => {
+    expect(FILE_EXTENSIONS.MEDIA_OUTPUT).toContain('mp4');
+    expect(FILE_EXTENSIONS.MEDIA_OUTPUT).toContain('avi');
+    expect(FILE_EXTENSIONS.MEDIA_OUTPUT).toContain('flv');
+    expect(FILE_EXTENSIONS.MEDIA_OUTPUT).toContain('mp3');
+    expect(FILE_EXTENSIONS.MEDIA_OUTPUT).toContain('wav');
+    expect(FILE_EXTENSIONS.MEDIA_OUTPUT).toContain('webp');
   });
 });
 
 describe('PIXEL_FORMATS', () => {
   it('includes common pixel formats', () => {
-    expect(PIXEL_FORMATS).toContain('yuv420p');
-    expect(PIXEL_FORMATS).toContain('rgb24');
+    expect(PIXEL_FORMATS.some((f) => f.value === 'yuv420p')).toBe(true);
+    expect(PIXEL_FORMATS.some((f) => f.value === 'rgb24')).toBe(true);
   });
 });
 
 describe('VIDEO_CODECS', () => {
-  it('has entries with value and label', () => {
+  it('has entries with value, label, and group', () => {
     for (const c of VIDEO_CODECS) {
       expect(c.value).toBeDefined();
       expect(c.label).toBeDefined();
+      expect(c.group).toBeDefined();
       expect(typeof c.value).toBe('string');
       expect(typeof c.label).toBe('string');
+      expect(typeof c.group).toBe('string');
     }
   });
 });
@@ -166,6 +177,24 @@ describe('AUDIO_CODECS', () => {
   it('includes AAC and MP3', () => {
     expect(AUDIO_CODECS.some((c) => c.value === 'aac')).toBe(true);
     expect(AUDIO_CODECS.some((c) => c.value === 'libmp3lame')).toBe(true);
+  });
+
+  it('has entries with value, label, and group', () => {
+    for (const c of AUDIO_CODECS) {
+      expect(c.group).toBeDefined();
+      expect(typeof c.group).toBe('string');
+    }
+  });
+});
+
+describe('PIXEL_FORMATS', () => {
+  it('has entries with value and group', () => {
+    for (const f of PIXEL_FORMATS) {
+      expect(f.value).toBeDefined();
+      expect(f.group).toBeDefined();
+      expect(typeof f.value).toBe('string');
+      expect(typeof f.group).toBe('string');
+    }
   });
 });
 

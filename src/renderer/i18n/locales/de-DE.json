@@ -1,0 +1,141 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "Zum hellen Modus wechseln",
+    "switchDark": "Zum dunklen Modus wechseln",
+    "language": "Sprache"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "convert": "Konvertieren",
+    "mediaInfo": "Medieninfo",
+    "image": "Bild",
+    "audio": "Audio",
+    "cut": "Schneiden",
+    "batchQueue": "Stapelwarteschlange"
+  },
+  "dashboard": {
+    "welcome": "Willkommen bei EncodeX",
+    "subtitle": "Einfache und benutzerfreundliche Werkzeuge zum Konvertieren, Bearbeiten und Verarbeiten von Audio- und Videodateien.",
+    "descConvert": "Codecs, Auflösung, Pixelformat ändern",
+    "descMediaInfo": "Detaillierte Stream-Informationen anzeigen",
+    "descImage": "Bilder mit Formatsteuerung komprimieren",
+    "descAudio": "Audio aus Videodateien extrahieren",
+    "descCut": "Video mit frame-genauem Player schneiden",
+    "descBatch": "Mehrere Dateien gleichzeitig verarbeiten"
+  },
+  "convert": {
+    "title": "Medien konvertieren",
+    "inputFile": "Eingabedatei",
+    "outputFile": "Ausgabedatei",
+    "noFile": "Keine Datei ausgewählt",
+    "noOutput": "Keine Ausgabe ausgewählt",
+    "browse": "Durchsuchen",
+    "saveAs": "Speichern unter",
+    "losslessCopy": "Verlustfreie Kopie (ohne Neucodierung)",
+    "videoCodec": "Video-Codec",
+    "audioCodec": "Audio-Codec",
+    "videoBitrate": "Video-Bitrate",
+    "audioBitrate": "Audio-Bitrate",
+    "qscale": "QScale (1-31)",
+    "scale": "Skalierung (BxH)",
+    "pixelFormat": "Pixelformat",
+    "transcoderCore": "Transcoder-Kern",
+    "startConversion": "Konvertierung starten",
+    "converting": "Konvertiere...",
+    "cancel": "Abbrechen",
+    "placeholderBitrate": "z.B. 2000k",
+    "placeholderAudioBitrate": "z.B. 192k",
+    "placeholderScale": "z.B. 1280x720"
+  },
+  "mediaInfo": {
+    "title": "Medieninformationen",
+    "dropLabel": "Mediendatei hier ablegen oder klicken zum Durchsuchen",
+    "fileInfo": "Dateiinfo",
+    "file": "Datei",
+    "format": "Format",
+    "size": "Größe",
+    "duration": "Dauer",
+    "bitrate": "Bitrate",
+    "streams": "Streams",
+    "stream": "Stream",
+    "codec": "Codec",
+    "resolution": "Auflösung",
+    "pixelFormat": "Pixelformat",
+    "frameRate": "Bildrate",
+    "sampleRate": "Abtastrate",
+    "channels": "Kanäle",
+    "language": "Sprache"
+  },
+  "imageCompress": {
+    "title": "Bild komprimieren",
+    "inputImage": "Eingabebild",
+    "dropLabel": "Bild hier ablegen",
+    "outputFile": "Ausgabedatei",
+    "outputFormat": "Ausgabeformat",
+    "quality": "Qualität (1-31)",
+    "scale": "Skalierung (optional)",
+    "compress": "Bild komprimieren",
+    "compressing": "Komprimiere...",
+    "placeholderOutput": "Ausgabepfad",
+    "placeholderScale": "z.B. 800x600"
+  },
+  "audioExtract": {
+    "title": "Audio extrahieren",
+    "videoFile": "Videodatei",
+    "dropLabel": "Videodatei hier ablegen",
+    "outputFile": "Ausgabedatei",
+    "audioCodec": "Audio-Codec",
+    "bitrate": "Bitrate",
+    "extract": "Audio extrahieren",
+    "extracting": "Extrahiere...",
+    "placeholderOutput": "z.B. output.mp3"
+  },
+  "videoCut": {
+    "title": "Video schneiden",
+    "videoFile": "Videodatei",
+    "noFile": "Keine Datei ausgewählt",
+    "browse": "Durchsuchen",
+    "outputFile": "Ausgabedatei",
+    "startTime": "Startzeit (HH:MM:SS)",
+    "duration": "Dauer (HH:MM:SS)",
+    "endTime": "Endzeit (HH:MM:SS)",
+    "useDuration": "Dauer statt Endzeit verwenden",
+    "cut": "Video schneiden",
+    "cutting": "Schneide...",
+    "placeholderOutput": "Ausgabepfad",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "z.B. 00:01:30",
+    "placeholderEnd": "z.B. 00:01:30"
+  },
+  "batchQueue": {
+    "title": "Stapelwarteschlange",
+    "suffix": "Suffix",
+    "addFiles": "Dateien hinzufügen",
+    "cancelAll": "Alle abbrechen",
+    "empty": "Warteschlange ist leer. Fügen Sie Dateien hinzu, um die Stapelverarbeitung zu starten.",
+    "remove": "Entfernen"
+  },
+  "progress": {
+    "time": "Zeit",
+    "speed": "Geschwindigkeit",
+    "eta": "VZR"
+  },
+  "errorBoundary": {
+    "title": "Etwas ist schiefgelaufen",
+    "tryAgain": "Erneut versuchen",
+    "description": "Ein unerwarteter Fehler ist aufgetreten."
+  },
+  "fileDropZone": {
+    "defaultLabel": "Datei hier ablegen oder klicken zum Durchsuchen"
+  },
+  "validation": {
+    "outputRequired": "Ausgabedatei ist erforderlich",
+    "invalidTime": "Ungültiges Zeitformat (HH:MM:SS oder Sekunden)",
+    "durationRequired": "Dauer ist erforderlich",
+    "invalidScale": "Ungültiges Skalierungsformat (z.B. 1920:1080, 50%)",
+    "invalidBitrate": "Ungültige Bitrate (z.B. 128k, 1M)",
+    "qscaleRange": "QScale muss zwischen 1 und 31 liegen",
+    "qualityRange": "Qualität muss zwischen 1 und 31 liegen"
+  }
+}

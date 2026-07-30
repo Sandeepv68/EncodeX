@@ -1,0 +1,141 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "라이트 모드로 전환",
+    "switchDark": "다크 모드로 전환",
+    "language": "언어"
+  },
+  "nav": {
+    "dashboard": "대시보드",
+    "convert": "변환",
+    "mediaInfo": "미디어 정보",
+    "image": "이미지",
+    "audio": "오디오",
+    "cut": "자르기",
+    "batchQueue": "배치 큐"
+  },
+  "dashboard": {
+    "welcome": "EncodeX에 오신 것을 환영합니다",
+    "subtitle": "오디오 및 비디오 파일을 변환, 편집, 처리하는 간단하고 사용자 친화적인 도구입니다.",
+    "descConvert": "코덱, 해상도, 픽셀 형식 변경",
+    "descMediaInfo": "상세 스트림 정보 보기",
+    "descImage": "형식 제어로 이미지 압축",
+    "descAudio": "비디오 파일에서 오디오 추출",
+    "descCut": "프레임 정확도 플레이어로 비디오 자르기",
+    "descBatch": "여러 파일을 한 번에 처리"
+  },
+  "convert": {
+    "title": "미디어 변환",
+    "inputFile": "입력 파일",
+    "outputFile": "출력 파일",
+    "noFile": "선택된 파일 없음",
+    "noOutput": "선택된 출력 없음",
+    "browse": "찾아보기",
+    "saveAs": "다른 이름으로 저장",
+    "losslessCopy": "무손실 복사 (재인코딩 없음)",
+    "videoCodec": "비디오 코덱",
+    "audioCodec": "오디오 코덱",
+    "videoBitrate": "비디오 비트레이트",
+    "audioBitrate": "오디오 비트레이트",
+    "qscale": "QScale (1-31)",
+    "scale": "크기 조정 (WxH)",
+    "pixelFormat": "픽셀 형식",
+    "transcoderCore": "트랜스코더 코어",
+    "startConversion": "변환 시작",
+    "converting": "변환 중...",
+    "cancel": "취소",
+    "placeholderBitrate": "예: 2000k",
+    "placeholderAudioBitrate": "예: 192k",
+    "placeholderScale": "예: 1280x720"
+  },
+  "mediaInfo": {
+    "title": "미디어 정보",
+    "dropLabel": "미디어 파일을 여기에 드롭하거나 클릭하여 찾아보기",
+    "fileInfo": "파일 정보",
+    "file": "파일",
+    "format": "형식",
+    "size": "크기",
+    "duration": "재생 시간",
+    "bitrate": "비트레이트",
+    "streams": "스트림",
+    "stream": "스트림",
+    "codec": "코덱",
+    "resolution": "해상도",
+    "pixelFormat": "픽셀 형식",
+    "frameRate": "프레임 레이트",
+    "sampleRate": "샘플 레이트",
+    "channels": "채널",
+    "language": "언어"
+  },
+  "imageCompress": {
+    "title": "이미지 압축",
+    "inputImage": "입력 이미지",
+    "dropLabel": "이미지를 여기에 드롭",
+    "outputFile": "출력 파일",
+    "outputFormat": "출력 형식",
+    "quality": "품질 (1-31)",
+    "scale": "크기 조정 (선택사항)",
+    "compress": "이미지 압축",
+    "compressing": "압축 중...",
+    "placeholderOutput": "출력 경로",
+    "placeholderScale": "예: 800x600"
+  },
+  "audioExtract": {
+    "title": "오디오 추출",
+    "videoFile": "비디오 파일",
+    "dropLabel": "비디오 파일을 여기에 드롭",
+    "outputFile": "출력 파일",
+    "audioCodec": "오디오 코덱",
+    "bitrate": "비트레이트",
+    "extract": "오디오 추출",
+    "extracting": "추출 중...",
+    "placeholderOutput": "예: output.mp3"
+  },
+  "videoCut": {
+    "title": "비디오 자르기",
+    "videoFile": "비디오 파일",
+    "noFile": "선택된 파일 없음",
+    "browse": "찾아보기",
+    "outputFile": "출력 파일",
+    "startTime": "시작 시간 (HH:MM:SS)",
+    "duration": "재생 시간 (HH:MM:SS)",
+    "endTime": "종료 시간 (HH:MM:SS)",
+    "useDuration": "종료 시간 대신 재생 시간 사용",
+    "cut": "비디오 자르기",
+    "cutting": "자르는 중...",
+    "placeholderOutput": "출력 경로",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "예: 00:01:30",
+    "placeholderEnd": "예: 00:01:30"
+  },
+  "batchQueue": {
+    "title": "배치 큐",
+    "suffix": "접미사",
+    "addFiles": "파일 추가",
+    "cancelAll": "모두 취소",
+    "empty": "큐가 비어 있습니다. 파일을 추가하여 배치 처리를 시작하세요.",
+    "remove": "제거"
+  },
+  "progress": {
+    "time": "시간",
+    "speed": "속도",
+    "eta": "예상 완료 시간"
+  },
+  "errorBoundary": {
+    "title": "문제가 발생했습니다",
+    "tryAgain": "다시 시도",
+    "description": "예상치 못한 오류가 발생했습니다."
+  },
+  "fileDropZone": {
+    "defaultLabel": "파일을 여기에 드롭하거나 클릭하여 찾아보기"
+  },
+  "validation": {
+    "outputRequired": "출력 파일이 필요합니다",
+    "invalidTime": "잘못된 시간 형식입니다 (HH:MM:SS 또는 초)",
+    "durationRequired": "재생 시간이 필요합니다",
+    "invalidScale": "잘못된 크기 조정 형식입니다 (예: 1920:1080, 50%)",
+    "invalidBitrate": "잘못된 비트레이트입니다 (예: 128k, 1M)",
+    "qscaleRange": "QScale은 1에서 31 사이여야 합니다",
+    "qualityRange": "품질은 1에서 31 사이여야 합니다"
+  }
+}
