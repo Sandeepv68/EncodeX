@@ -51,7 +51,7 @@
     "placeholderScale": "es. 1280x720",
     "cancelJob": "Cancel Job",
     "jobCancelTitle": "Cancel Job",
-    "jobCancelMessage": "This will clear all fields and reset the form. Are you sure?",
+    "jobCancelMessage": "This will clear the current conversion job. Are you sure?",
     "cancelTitle": "Cancel Conversion",
     "cancelMessage": "Are you sure you want to cancel the current conversion?",
     "yes": "Yes",
