@@ -5,6 +5,7 @@ import CodecSelect from '../components/CodecSelect';
 import ErrorBanner from '../components/ErrorBanner';
 import FileDropZone from '../components/FileDropZone';
 import ProgressBar from '../components/ProgressBar';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useErrorStore } from '../stores/errorStore';
 import { ErrorCode } from '../../shared/errors';
 import { BITRATE_OPTIONS } from '../../shared/ui-constants';
@@ -54,12 +55,12 @@ export default function AudioExtract() {
         {t('audioExtract.title')}
       </Typography>
       <Paper sx={{ p: 3, maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {currentError && <ErrorBanner error={currentError} onClose={clearError} />}
+        {currentError && <ErrorBoundary fallback={null}><ErrorBanner error={currentError} onClose={clearError} /></ErrorBoundary>}
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('audioExtract.videoFile')}
           </Typography>
-          <FileDropZone onFileSelect={setInput} label={t('audioExtract.dropLabel')} accept="mp4,avi,mkv,mov,flv,wmv,webm" />
+          <ErrorBoundary fallback={null}><FileDropZone onFileSelect={setInput} label={t('audioExtract.dropLabel')} accept="mp4,avi,mkv,mov,flv,wmv,webm" /></ErrorBoundary>
         </Box>
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
@@ -108,7 +109,7 @@ export default function AudioExtract() {
             <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
               {t('audioExtract.audioCodec')}
             </Typography>
-            <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} />
+            <ErrorBoundary fallback={null}><CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} /></ErrorBoundary>
           </Box>
           <Box sx={{ flex: 1 }}>
             <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
@@ -126,7 +127,7 @@ export default function AudioExtract() {
         <Button variant="contained" onClick={handleExtract} disabled={!input || !output || isConverting}>
           {isConverting ? t('audioExtract.extracting') : t('audioExtract.extract')}
         </Button>
-        {progress && <ProgressBar percent={progress.percent} />}
+        {progress && <ErrorBoundary fallback={null}><ProgressBar percent={progress.percent} /></ErrorBoundary>}
       </Paper>
     </Box>
   );

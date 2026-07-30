@@ -9,6 +9,7 @@ import { useConversion } from '../hooks/useConversion';
 import CodecSelect from '../components/CodecSelect';
 import ErrorBanner from '../components/ErrorBanner';
 import ProgressBar from '../components/ProgressBar';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useErrorHandler } from '../hooks/useErrorHandler';
 import { PIXEL_FORMATS } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES, TRANSCODER_LABELS } from '../../shared/transcoder-constants';
@@ -93,7 +94,7 @@ export default function Convert() {
         {t('convert.title')}
       </Typography>
       <Paper sx={{ p: 3, maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {currentError && <ErrorBanner error={currentError} onClose={clearError} />}
+        {currentError && <ErrorBoundary fallback={null}><ErrorBanner error={currentError} onClose={clearError} /></ErrorBoundary>}
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('convert.inputFile')}
@@ -144,13 +145,13 @@ export default function Convert() {
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                   {t('convert.videoCodec')}
                 </Typography>
-                <CodecSelect type="video" value={videoCodec} onChange={setVideoCodec} />
+                <ErrorBoundary fallback={null}><CodecSelect type="video" value={videoCodec} onChange={setVideoCodec} /></ErrorBoundary>
               </Box>
               <Box sx={{ flex: 1 }}>
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                   {t('convert.audioCodec')}
                 </Typography>
-                <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} />
+                <ErrorBoundary fallback={null}><CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} /></ErrorBoundary>
               </Box>
             </Stack>
 
@@ -311,7 +312,7 @@ export default function Convert() {
           )}
         </Stack>
 
-        {progress && <ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} />}
+        {progress && <ErrorBoundary fallback={null}><ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} /></ErrorBoundary>}
       </Paper>
     </Box>
   );

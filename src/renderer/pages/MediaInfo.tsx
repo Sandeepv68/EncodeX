@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Typography, Paper, Grid, Chip, CircularProgress } from '@mui/material';
 import FileDropZone from '../components/FileDropZone';
 import ErrorBanner from '../components/ErrorBanner';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useErrorStore } from '../stores/errorStore';
 import { MediaInfo as MediaInfoType, MediaStreamInfo } from '../../shared/types';
 
@@ -38,17 +39,17 @@ export default function MediaInfo() {
       <Box sx={{ maxWidth: 640 }}>
         {currentError && (
           <Box sx={{ mb: 2 }}>
-            <ErrorBanner error={currentError} onClose={clearError} />
+            <ErrorBoundary fallback={null}><ErrorBanner error={currentError} onClose={clearError} /></ErrorBoundary>
           </Box>
         )}
-        <FileDropZone onFileSelect={handleFile} label={t('mediaInfo.dropLabel')} />
+        <ErrorBoundary fallback={null}><FileDropZone onFileSelect={handleFile} label={t('mediaInfo.dropLabel')} /></ErrorBoundary>
         {loading && (
           <Box sx={{ textAlign: 'center', mt: 2 }}>
             <CircularProgress size={24} />
           </Box>
         )}
         {info && (
-          <Paper sx={{ p: 2, mt: 2 }}>
+          <ErrorBoundary fallback={null}><Paper sx={{ p: 2, mt: 2 }}>
             <Typography variant="h6" sx={{ mb: 1 }}>
               {t('mediaInfo.fileInfo')}
             </Typography>
@@ -142,7 +143,7 @@ export default function MediaInfo() {
                 </Grid>
               </Paper>
             ))}
-          </Paper>
+          </Paper></ErrorBoundary>
         )}
       </Box>
     </Box>
