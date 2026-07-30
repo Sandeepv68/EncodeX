@@ -4,6 +4,7 @@ import { Box, Typography, TextField, MenuItem, Button, Paper, Stack, Chip, Selec
 import AddIcon from '@mui/icons-material/Add';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import ProgressBar from '../components/ProgressBar';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useQueueStore } from '../stores/queueStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX, QUEUE_STATUS } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
@@ -153,7 +154,11 @@ export default function BatchQueue() {
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
                   {job.output}
                 </Typography>
-                {job.status === QUEUE_STATUS.RUNNING && <ProgressBar percent={job.progress} />}
+                {job.status === QUEUE_STATUS.RUNNING && (
+                  <ErrorBoundary fallback={null}>
+                    <ProgressBar percent={job.progress} />
+                  </ErrorBoundary>
+                )}
                 {job.error && (
                   <Typography variant="caption" color="error">
                     {job.error}

@@ -4,6 +4,7 @@ import { Box, Typography, TextField, Button, Paper, Stack, Switch } from '@mui/m
 import ErrorBanner from '../components/ErrorBanner';
 import MediaPlayer from '../components/MediaPlayer';
 import ProgressBar from '../components/ProgressBar';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useErrorStore } from '../stores/errorStore';
 import { ErrorCode } from '../../shared/errors';
 import { isValidTime } from '../../shared/validation';
@@ -78,7 +79,11 @@ export default function VideoCut() {
         {t('videoCut.title')}
       </Typography>
       <Paper sx={{ p: 3, maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {currentError && <ErrorBanner error={currentError} onClose={clearErrorBanner} />}
+        {currentError && (
+          <ErrorBoundary fallback={null}>
+            <ErrorBanner error={currentError} onClose={clearErrorBanner} />
+          </ErrorBoundary>
+        )}
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('videoCut.videoFile')}
@@ -103,7 +108,11 @@ export default function VideoCut() {
           </Stack>
         </Box>
 
-        {input && <MediaPlayer filePath={input} />}
+        {input && (
+          <ErrorBoundary fallback={null}>
+            <MediaPlayer filePath={input} />
+          </ErrorBoundary>
+        )}
 
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
@@ -217,7 +226,11 @@ export default function VideoCut() {
           {isConverting ? t('videoCut.cutting') : t('videoCut.cut')}
         </Button>
 
-        {progress && <ProgressBar percent={progress.percent} />}
+        {progress && (
+          <ErrorBoundary fallback={null}>
+            <ProgressBar percent={progress.percent} />
+          </ErrorBoundary>
+        )}
       </Paper>
     </Box>
   );

@@ -4,6 +4,7 @@ import { Box, Typography, TextField, MenuItem, Button, Paper, Stack } from '@mui
 import FileDropZone from '../components/FileDropZone';
 import ErrorBanner from '../components/ErrorBanner';
 import ProgressBar from '../components/ProgressBar';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useErrorStore } from '../stores/errorStore';
 import { ErrorCode } from '../../shared/errors';
 import { IMAGE_FORMATS, IMAGE_CODEC_MAP } from '../../shared/ui-constants';
@@ -74,12 +75,18 @@ export default function ImageCompress() {
         {t('imageCompress.title')}
       </Typography>
       <Paper sx={{ p: 3, maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {currentError && <ErrorBanner error={currentError} onClose={clearErrorBanner} />}
+        {currentError && (
+          <ErrorBoundary fallback={null}>
+            <ErrorBanner error={currentError} onClose={clearErrorBanner} />
+          </ErrorBoundary>
+        )}
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('imageCompress.inputImage')}
           </Typography>
-          <FileDropZone onFileSelect={setInput} label={t('imageCompress.dropLabel')} accept="jpg,jpeg,png,webp,bmp" />
+          <ErrorBoundary fallback={null}>
+            <FileDropZone onFileSelect={setInput} label={t('imageCompress.dropLabel')} accept="jpg,jpeg,png,webp,bmp" />
+          </ErrorBoundary>
         </Box>
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
@@ -173,7 +180,11 @@ export default function ImageCompress() {
         <Button variant="contained" onClick={handleConvert} disabled={!input || !output || isConverting}>
           {isConverting ? t('imageCompress.compressing') : t('imageCompress.compress')}
         </Button>
-        {progress && <ProgressBar percent={progress.percent} />}
+        {progress && (
+          <ErrorBoundary fallback={null}>
+            <ProgressBar percent={progress.percent} />
+          </ErrorBoundary>
+        )}
       </Paper>
     </Box>
   );

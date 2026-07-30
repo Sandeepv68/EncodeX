@@ -267,13 +267,62 @@ function AppLayout() {
       <Box component="main" sx={{ flex: 1, overflow: 'auto', p: 3, position: 'relative' }}>
         <ErrorBoundary>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/convert" element={<Convert />} />
-            <Route path="/media-info" element={<MediaInfo />} />
-            <Route path="/image-compress" element={<ImageCompress />} />
-            <Route path="/audio-extract" element={<AudioExtract />} />
-            <Route path="/video-cut" element={<VideoCut />} />
-            <Route path="/batch" element={<BatchQueue />} />
+            <Route
+              path="/"
+              element={
+                <ErrorBoundary>
+                  <Dashboard />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/convert"
+              element={
+                <ErrorBoundary>
+                  <Convert />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/media-info"
+              element={
+                <ErrorBoundary>
+                  <MediaInfo />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/image-compress"
+              element={
+                <ErrorBoundary>
+                  <ImageCompress />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/audio-extract"
+              element={
+                <ErrorBoundary>
+                  <AudioExtract />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/video-cut"
+              element={
+                <ErrorBoundary>
+                  <VideoCut />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/batch"
+              element={
+                <ErrorBoundary>
+                  <BatchQueue />
+                </ErrorBoundary>
+              }
+            />
           </Routes>
         </ErrorBoundary>
       </Box>
