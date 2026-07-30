@@ -1,0 +1,141 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "Перемкнути на світлу тему",
+    "switchDark": "Перемкнути на темну тему",
+    "language": "Мова"
+  },
+  "nav": {
+    "dashboard": "Панель керування",
+    "convert": "Конвертувати",
+    "mediaInfo": "Інформація про медіа",
+    "image": "Зображення",
+    "audio": "Аудіо",
+    "cut": "Обрізати",
+    "batchQueue": "Пакетна черга"
+  },
+  "dashboard": {
+    "welcome": "Ласкаво просимо до EncodeX",
+    "subtitle": "Прості та зручні інструменти для конвертації, редагування та обробки аудіо та відео файлів.",
+    "descConvert": "Зміна кодеків, роздільної здатності, піксельного формату",
+    "descMediaInfo": "Перегляд детальної інформації про потоки",
+    "descImage": "Стиснення зображень з контролем формату",
+    "descAudio": "Виділення аудіо з відео файлів",
+    "descCut": "Обрізка відео з покадровим плеєром",
+    "descBatch": "Обробка кількох файлів одночасно"
+  },
+  "convert": {
+    "title": "Конвертувати медіа",
+    "inputFile": "Вхідний файл",
+    "outputFile": "Вихідний файл",
+    "noFile": "Файл не вибрано",
+    "noOutput": "Вихідний файл не вибрано",
+    "browse": "Огляд",
+    "saveAs": "Зберегти як",
+    "losslessCopy": "Скопіювати без втрат (без перекодування)",
+    "videoCodec": "Відеокодек",
+    "audioCodec": "Аудіокодек",
+    "videoBitrate": "Відеобітрейт",
+    "audioBitrate": "Аудіобітрейт",
+    "qscale": "QScale (1-31)",
+    "scale": "Масштаб (ШxВ)",
+    "pixelFormat": "Піксельний формат",
+    "transcoderCore": "Ядро транскодера",
+    "startConversion": "Почати конвертацію",
+    "converting": "Конвертація...",
+    "cancel": "Скасувати",
+    "placeholderBitrate": "напр. 2000k",
+    "placeholderAudioBitrate": "напр. 192k",
+    "placeholderScale": "напр. 1280x720"
+  },
+  "mediaInfo": {
+    "title": "Інформація про медіа",
+    "dropLabel": "Перетягніть медіафайл сюди або натисніть для вибору",
+    "fileInfo": "Інформація про файл",
+    "file": "Файл",
+    "format": "Формат",
+    "size": "Розмір",
+    "duration": "Тривалість",
+    "bitrate": "Бітрейт",
+    "streams": "Потоки",
+    "stream": "Потік",
+    "codec": "Кодек",
+    "resolution": "Роздільна здатність",
+    "pixelFormat": "Піксельний формат",
+    "frameRate": "Частота кадрів",
+    "sampleRate": "Частота дискретизації",
+    "channels": "Канали",
+    "language": "Мова"
+  },
+  "imageCompress": {
+    "title": "Стиснути зображення",
+    "inputImage": "Вхідне зображення",
+    "dropLabel": "Перетягніть зображення сюди",
+    "outputFile": "Вихідний файл",
+    "outputFormat": "Вихідний формат",
+    "quality": "Якість (1-31)",
+    "scale": "Масштаб (необов'язково)",
+    "compress": "Стиснути зображення",
+    "compressing": "Стиснення...",
+    "placeholderOutput": "шлях вихідного файлу",
+    "placeholderScale": "напр. 800x600"
+  },
+  "audioExtract": {
+    "title": "Виділити аудіо",
+    "videoFile": "Відеофайл",
+    "dropLabel": "Перетягніть відеофайл сюди",
+    "outputFile": "Вихідний файл",
+    "audioCodec": "Аудіокодек",
+    "bitrate": "Бітрейт",
+    "extract": "Виділити аудіо",
+    "extracting": "Виділення...",
+    "placeholderOutput": "напр. output.mp3"
+  },
+  "videoCut": {
+    "title": "Обрізати відео",
+    "videoFile": "Відеофайл",
+    "noFile": "Файл не вибрано",
+    "browse": "Огляд",
+    "outputFile": "Вихідний файл",
+    "startTime": "Час початку (ГГ:ХХ:СС)",
+    "duration": "Тривалість (ГГ:ХХ:СС)",
+    "endTime": "Час закінчення (ГГ:ХХ:СС)",
+    "useDuration": "Використовувати тривалість замість часу закінчення",
+    "cut": "Обрізати відео",
+    "cutting": "Обрізка...",
+    "placeholderOutput": "шлях вихідного файлу",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "напр. 00:01:30",
+    "placeholderEnd": "напр. 00:01:30"
+  },
+  "batchQueue": {
+    "title": "Пакетна черга",
+    "suffix": "Суфікс",
+    "addFiles": "Додати файли",
+    "cancelAll": "Скасувати все",
+    "empty": "Черга порожня. Додайте файли для початку пакетної обробки.",
+    "remove": "Видалити"
+  },
+  "progress": {
+    "time": "Час",
+    "speed": "Швидкість",
+    "eta": "Залишилось"
+  },
+  "errorBoundary": {
+    "title": "Щось пішло не так",
+    "tryAgain": "Спробувати ще раз",
+    "description": "Сталася неочікувана помилка."
+  },
+  "fileDropZone": {
+    "defaultLabel": "Перетягніть файл сюди або натисніть для вибору"
+  },
+  "validation": {
+    "outputRequired": "Вихідний файл обов'язковий",
+    "invalidTime": "Неправильний формат часу (ГГ:ХХ:СС або секунди)",
+    "durationRequired": "Тривалість обов'язкова",
+    "invalidScale": "Неправильний формат масштабу (напр. 1920:1080, 50%)",
+    "invalidBitrate": "Неправильний бітрейт (напр. 128k, 1M)",
+    "qscaleRange": "QScale має бути від 1 до 31",
+    "qualityRange": "Якість має бути від 1 до 31"
+  }
+}

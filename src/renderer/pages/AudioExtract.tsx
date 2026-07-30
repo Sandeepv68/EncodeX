@@ -18,16 +18,23 @@ export default function AudioExtract() {
   const [audioBitrate, setAudioBitrate] = useState(BITRATE_OPTIONS[1]);
   const [progress, setProgress] = useState<{ percent: number; time?: string; speed?: string; eta?: string } | null>(null);
   const [isConverting, setIsConverting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const { currentError, showError, clearError } = useErrorStore();
   const transcoder = TRANSCODER_TYPES[0];
 
+  const validate = (): boolean => {
+    if (!output.trim()) {
+      setErrors({ output: t('validation.outputRequired') });
+      return false;
+    }
+    setErrors({});
+    return true;
+  };
+
   const handleExtract = async () => {
+    if (!validate()) return;
     if (!input) {
       showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select a video file.' });
-      return;
-    }
-    if (!output) {
-      showError({ code: ErrorCode.OUTPUT_NOT_SPECIFIED, message: 'Please specify an output file path.' });
       return;
     }
     setIsConverting(true);
@@ -54,25 +61,48 @@ export default function AudioExtract() {
           </Typography>
           <FileDropZone onFileSelect={setInput} label={t('audioExtract.dropLabel')} accept="mp4,avi,mkv,mov,flv,wmv,webm" />
         </Box>
-        <Stack direction="row" spacing={1}>
-          <TextField
-            fullWidth
-            size="small"
-            label={t('audioExtract.outputFile')}
-            value={output}
-            onChange={(e) => setOutput(e.target.value)}
-            placeholder={t('audioExtract.placeholderOutput')}
-          />
-          <Button
-            variant="outlined"
-            onClick={async () => {
-              const f = await window.electronAPI.selectOutput();
-              if (f) setOutput(f);
-            }}
-          >
-            {t('convert.browse')}
-          </Button>
-        </Stack>
+        <Box>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+            {t('audioExtract.outputFile')}
+          </Typography>
+          <Stack direction="row" spacing={1}>
+            <TextField
+              fullWidth
+              size="small"
+              error={!!errors.output}
+              helperText={errors.output || ' '}
+              value={output}
+              onChange={(e) => {
+                setOutput(e.target.value);
+                setErrors((prev) => {
+                  const next = { ...prev };
+                  delete next.output;
+                  return next;
+                });
+              }}
+              onBlur={() => {
+                if (!output.trim()) setErrors((prev) => ({ ...prev, output: t('validation.outputRequired') }));
+              }}
+              placeholder={t('audioExtract.placeholderOutput')}
+            />
+            <Button
+              variant="outlined"
+              onClick={async () => {
+                const f = await window.electronAPI.selectOutput();
+                if (f) {
+                  setOutput(f);
+                  setErrors((prev) => {
+                    const next = { ...prev };
+                    delete next.output;
+                    return next;
+                  });
+                }
+              }}
+            >
+              {t('convert.browse')}
+            </Button>
+          </Stack>
+        </Box>
         <Stack direction="row" spacing={2}>
           <Box sx={{ flex: 1 }}>
             <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
@@ -80,20 +110,18 @@ export default function AudioExtract() {
             </Typography>
             <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} />
           </Box>
-          <TextField
-            select
-            fullWidth
-            size="small"
-            label={t('audioExtract.bitrate')}
-            value={audioBitrate}
-            onChange={(e) => setAudioBitrate(e.target.value)}
-          >
-            {BITRATE_OPTIONS.map((b) => (
-              <MenuItem key={b} value={b}>
-                {b}
-              </MenuItem>
-            ))}
-          </TextField>
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+              {t('audioExtract.bitrate')}
+            </Typography>
+            <TextField select fullWidth size="small" value={audioBitrate} onChange={(e) => setAudioBitrate(e.target.value)}>
+              {BITRATE_OPTIONS.map((b) => (
+                <MenuItem key={b} value={b}>
+                  {b}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
         </Stack>
         <Button variant="contained" onClick={handleExtract} disabled={!input || !output || isConverting}>
           {isConverting ? t('audioExtract.extracting') : t('audioExtract.extract')}

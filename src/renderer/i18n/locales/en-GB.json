@@ -128,5 +128,14 @@
   },
   "fileDropZone": {
     "defaultLabel": "Drop file here or click to browse"
+  },
+  "validation": {
+    "outputRequired": "Output file is required",
+    "invalidTime": "Invalid time format (HH:MM:SS or seconds)",
+    "durationRequired": "Duration is required",
+    "invalidScale": "Invalid scale format (e.g. 1920:1080, 50%)",
+    "invalidBitrate": "Invalid bitrate (e.g. 128k, 1M)",
+    "qscaleRange": "QScale must be between 1 and 31",
+    "qualityRange": "Quality must be between 1 and 31"
   }
 }

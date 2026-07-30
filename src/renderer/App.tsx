@@ -38,7 +38,54 @@ import VideoCut from './pages/VideoCut';
 import BatchQueue from './pages/BatchQueue';
 import { DRAWER_WIDTH, NAV_ITEMS } from '../shared/ui-constants';
 import i18n from './i18n/config';
-import { useState } from 'react';
+import { useState, type ComponentType } from 'react';
+import { US, GB, CA, IN, ES, MX, FR, DE, IT, NL, SE, BR, UA, JP, KR, ID, SA, AE } from 'country-flag-icons/react/3x2';
+
+const flags: Record<string, ComponentType<{ style?: React.CSSProperties }>> = {
+  'en-US': US,
+  'en-GB': GB,
+  'en-CA': CA,
+  'en-IN': IN,
+  'es-ES': ES,
+  'es-MX': MX,
+  'fr-FR': FR,
+  'fr-CA': CA,
+  'hi-IN': IN,
+  'de-DE': DE,
+  'it-IT': IT,
+  'nl-NL': NL,
+  'sv-SE': SE,
+  'pt-BR': BR,
+  'uk-UA': UA,
+  'ja-JP': JP,
+  'ko-KR': KR,
+  'id-ID': ID,
+  'ar-SA': SA,
+  'ar-AE': AE,
+};
+
+const localeLabels: Record<string, string> = {
+  'en-US': 'English (US)',
+  'en-GB': 'English (UK)',
+  'en-CA': 'English (Canada)',
+  'en-IN': 'English (India)',
+  'es-ES': 'Español (España)',
+  'es-MX': 'Español (México)',
+  'fr-FR': 'Français (France)',
+  'fr-CA': 'Français (Canada)',
+  'hi-IN': 'हिन्दी (India)',
+  'de-DE': 'Deutsch (Germany)',
+  'it-IT': 'Italiano (Italy)',
+  'nl-NL': 'Nederlands (Netherlands)',
+  'sv-SE': 'Svenska (Sweden)',
+  'pt-BR': 'Português (Brasil)',
+  'uk-UA': 'Українська (Ukraine)',
+  'ja-JP': '日本語 (Japan)',
+  'ko-KR': '한국어 (South Korea)',
+  'id-ID': 'Bahasa Indonesia (Indonesia)',
+  'ar-SA': 'العربية (Saudi Arabia)',
+  'ar-AE': 'العربية (UAE)',
+};
 
 const navIconMap: Record<string, React.ReactNode> = {
   '/': <HomeIcon />,
@@ -63,16 +110,28 @@ const navKeyMap: Record<string, string> = {
 function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { mode, toggleColorMode } = useColorMode();
+  const { mode, toggleColorMode, setDirection } = useColorMode();
   const { currentError, clearError } = useErrorStore();
   const { t } = useTranslation();
   const [langAnchor, setLangAnchor] = useState<HTMLElement | null>(null);
 
-  const switchLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
+  const RTL_LOCALES = ['ar-SA', 'ar-AE'];
+
+  const switchLanguage = async (lng: string) => {
+    const isRtl = RTL_LOCALES.some((c) => lng.startsWith(c));
+    setDirection(isRtl ? 'rtl' : 'ltr');
+    document.dir = isRtl ? 'rtl' : 'ltr';
+    await i18n.changeLanguage(lng);
     localStorage.setItem('encodex-lang', lng);
     setLangAnchor(null);
   };
+
+  const isActive = (code: string) => i18n.language.startsWith(code);
+
+  function FlagIcon({ locale }: { locale: string }) {
+    const Flag = flags[locale];
+    return Flag ? <Flag style={{ width: 20, height: 15, marginRight: 8, verticalAlign: 'middle' }} /> : null;
+  }
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
@@ -111,34 +170,97 @@ function AppLayout() {
           ))}
         </List>
         <Divider sx={{ borderColor: 'divider' }} />
-        <Box sx={{ p: 1.5, display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' }}>
           <Tooltip title={t('app.language')}>
-            <IconButton size="small" onClick={(e) => setLangAnchor(e.currentTarget)} sx={{ color: 'text.secondary' }}>
-              <TranslateIcon fontSize="small" />
-            </IconButton>
+            <Box
+              component="button"
+              onClick={(e) => setLangAnchor(e.currentTarget)}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5,
+                cursor: 'pointer',
+                color: 'text.secondary',
+                bgcolor: 'transparent',
+                px: 1,
+                py: 0.5,
+                borderRadius: 1,
+                border: '1px solid transparent',
+                '&:hover': { borderColor: 'divider' },
+              }}
+            >
+              <FlagIcon locale={i18n.language} />
+              <Typography variant="caption" sx={{ textTransform: 'none', color: 'text.secondary', lineHeight: 1 }}>
+                {localeLabels[i18n.language] || i18n.language}
+              </Typography>
+            </Box>
           </Tooltip>
         </Box>
-        <Menu anchorEl={langAnchor} open={Boolean(langAnchor)} onClose={() => setLangAnchor(null)}>
-          <MenuItem selected={i18n.language.startsWith('en-US')} onClick={() => switchLanguage('en-US')}>
-            English (US)
+        <Menu
+          anchorEl={langAnchor}
+          open={Boolean(langAnchor)}
+          onClose={() => setLangAnchor(null)}
+          slotProps={{ paper: { sx: { maxHeight: 320 } } }}
+        >
+          <MenuItem selected={isActive('en-IN')} onClick={() => switchLanguage('en-IN')}>
+            <FlagIcon locale="en-IN" /> English (India)
           </MenuItem>
-          <MenuItem selected={i18n.language.startsWith('en-GB')} onClick={() => switchLanguage('en-GB')}>
-            English (UK)
+          <MenuItem selected={isActive('hi-IN')} onClick={() => switchLanguage('hi-IN')}>
+            <FlagIcon locale="hi-IN" /> हिन्दी (India)
           </MenuItem>
-          <MenuItem selected={i18n.language.startsWith('en-IN')} onClick={() => switchLanguage('en-IN')}>
-            English (India)
+          <MenuItem selected={isActive('en-US')} onClick={() => switchLanguage('en-US')}>
+            <FlagIcon locale="en-US" /> English (US)
           </MenuItem>
-          <MenuItem selected={i18n.language.startsWith('es')} onClick={() => switchLanguage('es-ES')}>
-            Español
+          <MenuItem selected={isActive('en-GB')} onClick={() => switchLanguage('en-GB')}>
+            <FlagIcon locale="en-GB" /> English (UK)
           </MenuItem>
-          <MenuItem selected={i18n.language.startsWith('fr-FR')} onClick={() => switchLanguage('fr-FR')}>
-            Français (France)
+          <MenuItem selected={isActive('en-CA')} onClick={() => switchLanguage('en-CA')}>
+            <FlagIcon locale="en-CA" /> English (Canada)
           </MenuItem>
-          <MenuItem selected={i18n.language.startsWith('fr-CA')} onClick={() => switchLanguage('fr-CA')}>
-            Français (Canada)
+          <MenuItem selected={isActive('es-ES')} onClick={() => switchLanguage('es-ES')}>
+            <FlagIcon locale="es-ES" /> Español (España)
           </MenuItem>
-          <MenuItem selected={i18n.language.startsWith('hi')} onClick={() => switchLanguage('hi')}>
-            हिन्दी
+          <MenuItem selected={isActive('es-MX')} onClick={() => switchLanguage('es-MX')}>
+            <FlagIcon locale="es-MX" /> Español (México)
+          </MenuItem>
+          <MenuItem selected={isActive('fr-FR')} onClick={() => switchLanguage('fr-FR')}>
+            <FlagIcon locale="fr-FR" /> Français (France)
+          </MenuItem>
+          <MenuItem selected={isActive('fr-CA')} onClick={() => switchLanguage('fr-CA')}>
+            <FlagIcon locale="fr-CA" /> Français (Canada)
+          </MenuItem>
+          <MenuItem selected={isActive('de-DE')} onClick={() => switchLanguage('de-DE')}>
+            <FlagIcon locale="de-DE" /> Deutsch (Germany)
+          </MenuItem>
+          <MenuItem selected={isActive('it-IT')} onClick={() => switchLanguage('it-IT')}>
+            <FlagIcon locale="it-IT" /> Italiano (Italy)
+          </MenuItem>
+          <MenuItem selected={isActive('nl-NL')} onClick={() => switchLanguage('nl-NL')}>
+            <FlagIcon locale="nl-NL" /> Nederlands (Netherlands)
+          </MenuItem>
+          <MenuItem selected={isActive('sv-SE')} onClick={() => switchLanguage('sv-SE')}>
+            <FlagIcon locale="sv-SE" /> Svenska (Sweden)
+          </MenuItem>
+          <MenuItem selected={isActive('pt-BR')} onClick={() => switchLanguage('pt-BR')}>
+            <FlagIcon locale="pt-BR" /> Português (Brasil)
+          </MenuItem>
+          <MenuItem selected={isActive('uk-UA')} onClick={() => switchLanguage('uk-UA')}>
+            <FlagIcon locale="uk-UA" /> Українська (Ukraine)
+          </MenuItem>
+          <MenuItem selected={isActive('ja-JP')} onClick={() => switchLanguage('ja-JP')}>
+            <FlagIcon locale="ja-JP" /> 日本語 (Japan)
+          </MenuItem>
+          <MenuItem selected={isActive('ko-KR')} onClick={() => switchLanguage('ko-KR')}>
+            <FlagIcon locale="ko-KR" /> 한국어 (South Korea)
+          </MenuItem>
+          <MenuItem selected={isActive('id-ID')} onClick={() => switchLanguage('id-ID')}>
+            <FlagIcon locale="id-ID" /> Bahasa Indonesia (Indonesia)
+          </MenuItem>
+          <MenuItem selected={isActive('ar-SA')} onClick={() => switchLanguage('ar-SA')}>
+            <FlagIcon locale="ar-SA" /> العربية (Saudi Arabia)
+          </MenuItem>
+          <MenuItem selected={isActive('ar-AE')} onClick={() => switchLanguage('ar-AE')}>
+            <FlagIcon locale="ar-AE" /> العربية (UAE)
           </MenuItem>
         </Menu>
       </Drawer>

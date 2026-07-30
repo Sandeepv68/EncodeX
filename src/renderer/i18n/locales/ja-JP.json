@@ -1,0 +1,141 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "ライトモードに切り替え",
+    "switchDark": "ダークモードに切り替え",
+    "language": "言語"
+  },
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "convert": "変換",
+    "mediaInfo": "メディア情報",
+    "image": "画像",
+    "audio": "音声",
+    "cut": "カット",
+    "batchQueue": "バッチキュー"
+  },
+  "dashboard": {
+    "welcome": "EncodeX へようこそ",
+    "subtitle": "音声・動画ファイルの変換、編集、処理を簡単に行えるユーザーフレンドリーなツールです。",
+    "descConvert": "コーデック、解像度、ピクセル形式を変更",
+    "descMediaInfo": "詳細なストリーム情報を表示",
+    "descImage": "画像を圧縮し、形式を制御",
+    "descAudio": "動画ファイルから音声を抽出",
+    "descCut": "フレーム精度のプレーヤーで動画をカット",
+    "descBatch": "複数ファイルを一度に処理"
+  },
+  "convert": {
+    "title": "メディア変換",
+    "inputFile": "入力ファイル",
+    "outputFile": "出力ファイル",
+    "noFile": "ファイルが選択されていません",
+    "noOutput": "出力が選択されていません",
+    "browse": "参照",
+    "saveAs": "名前を付けて保存",
+    "losslessCopy": "ロスレスコピー（再エンコードなし）",
+    "videoCodec": "ビデオコーデック",
+    "audioCodec": "オーディオコーデック",
+    "videoBitrate": "ビデオビットレート",
+    "audioBitrate": "オーディオビットレート",
+    "qscale": "QScale (1-31)",
+    "scale": "スケール (WxH)",
+    "pixelFormat": "ピクセル形式",
+    "transcoderCore": "トランスコーダーコア",
+    "startConversion": "変換を開始",
+    "converting": "変換中...",
+    "cancel": "キャンセル",
+    "placeholderBitrate": "例: 2000k",
+    "placeholderAudioBitrate": "例: 192k",
+    "placeholderScale": "例: 1280x720"
+  },
+  "mediaInfo": {
+    "title": "メディア情報",
+    "dropLabel": "メディアファイルをここにドロップするか、クリックして参照",
+    "fileInfo": "ファイル情報",
+    "file": "ファイル",
+    "format": "フォーマット",
+    "size": "サイズ",
+    "duration": "再生時間",
+    "bitrate": "ビットレート",
+    "streams": "ストリーム",
+    "stream": "ストリーム",
+    "codec": "コーデック",
+    "resolution": "解像度",
+    "pixelFormat": "ピクセル形式",
+    "frameRate": "フレームレート",
+    "sampleRate": "サンプルレート",
+    "channels": "チャンネル",
+    "language": "言語"
+  },
+  "imageCompress": {
+    "title": "画像圧縮",
+    "inputImage": "入力画像",
+    "dropLabel": "画像をここにドロップ",
+    "outputFile": "出力ファイル",
+    "outputFormat": "出力フォーマット",
+    "quality": "品質 (1-31)",
+    "scale": "スケール（任意）",
+    "compress": "画像を圧縮",
+    "compressing": "圧縮中...",
+    "placeholderOutput": "出力パス",
+    "placeholderScale": "例: 800x600"
+  },
+  "audioExtract": {
+    "title": "音声抽出",
+    "videoFile": "動画ファイル",
+    "dropLabel": "動画ファイルをここにドロップ",
+    "outputFile": "出力ファイル",
+    "audioCodec": "オーディオコーデック",
+    "bitrate": "ビットレート",
+    "extract": "音声を抽出",
+    "extracting": "抽出中...",
+    "placeholderOutput": "例: output.mp3"
+  },
+  "videoCut": {
+    "title": "動画カット",
+    "videoFile": "動画ファイル",
+    "noFile": "ファイルが選択されていません",
+    "browse": "参照",
+    "outputFile": "出力ファイル",
+    "startTime": "開始時間 (HH:MM:SS)",
+    "duration": "再生時間 (HH:MM:SS)",
+    "endTime": "終了時間 (HH:MM:SS)",
+    "useDuration": "終了時間の代わりに再生時間を使用",
+    "cut": "動画をカット",
+    "cutting": "カット中...",
+    "placeholderOutput": "出力パス",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "例: 00:01:30",
+    "placeholderEnd": "例: 00:01:30"
+  },
+  "batchQueue": {
+    "title": "バッチキュー",
+    "suffix": "サフィックス",
+    "addFiles": "ファイルを追加",
+    "cancelAll": "すべてキャンセル",
+    "empty": "キューは空です。ファイルを追加してバッチ処理を開始してください。",
+    "remove": "削除"
+  },
+  "progress": {
+    "time": "時間",
+    "speed": "速度",
+    "eta": "残り時間"
+  },
+  "errorBoundary": {
+    "title": "問題が発生しました",
+    "tryAgain": "再試行",
+    "description": "予期しないエラーが発生しました。"
+  },
+  "fileDropZone": {
+    "defaultLabel": "ファイルをここにドロップするか、クリックして参照"
+  },
+  "validation": {
+    "outputRequired": "出力ファイルが必要です",
+    "invalidTime": "無効な時間形式です（HH:MM:SS または秒）",
+    "durationRequired": "再生時間が必要です",
+    "invalidScale": "無効なスケール形式です（例: 1920:1080, 50%）",
+    "invalidBitrate": "無効なビットレートです（例: 128k, 1M）",
+    "qscaleRange": "QScale は 1 から 31 の間でなければなりません",
+    "qualityRange": "品質は 1 から 31 の間でなければなりません"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "Växla till ljust läge",
+    "switchDark": "Växla till mörkt läge",
+    "language": "Språk"
+  },
+  "nav": {
+    "dashboard": "Instrumentpanel",
+    "convert": "Konvertera",
+    "mediaInfo": "Mediainfo",
+    "image": "Bild",
+    "audio": "Ljud",
+    "cut": "Klipp",
+    "batchQueue": "Batchkö"
+  },
+  "dashboard": {
+    "welcome": "Välkommen till EncodeX",
+    "subtitle": "Enkla och användarvänliga verktyg för att konvertera, redigera och bearbeta ljud- och videofiler.",
+    "descConvert": "Ändra codecs, upplösning, pixelformat",
+    "descMediaInfo": "Visa detaljerad ströminformation",
+    "descImage": "Komprimera bilder med formatkontroll",
+    "descAudio": "Extrahera ljud från videofiler",
+    "descCut": "Klipp video med bildruteexakt spelare",
+    "descBatch": "Bearbeta flera filer samtidigt"
+  },
+  "convert": {
+    "title": "Konvertera media",
+    "inputFile": "Indatafil",
+    "outputFile": "Utdatafil",
+    "noFile": "Ingen fil vald",
+    "noOutput": "Ingen utdata vald",
+    "browse": "Bläddra",
+    "saveAs": "Spara som",
+    "losslessCopy": "Förlustfri kopia (ingen omkodning)",
+    "videoCodec": "Videocodec",
+    "audioCodec": "Ljudcodec",
+    "videoBitrate": "Videobithastighet",
+    "audioBitrate": "Ljudbithastighet",
+    "qscale": "QScale (1-31)",
+    "scale": "Skala (BxH)",
+    "pixelFormat": "Pixelformat",
+    "transcoderCore": "Transcoderkärna",
+    "startConversion": "Starta konvertering",
+    "converting": "Konverterar...",
+    "cancel": "Avbryt",
+    "placeholderBitrate": "t.ex. 2000k",
+    "placeholderAudioBitrate": "t.ex. 192k",
+    "placeholderScale": "t.ex. 1280x720"
+  },
+  "mediaInfo": {
+    "title": "Mediainformation",
+    "dropLabel": "Släpp en mediafil här eller klicka för att bläddra",
+    "fileInfo": "Filinfo",
+    "file": "Fil",
+    "format": "Format",
+    "size": "Storlek",
+    "duration": "Längd",
+    "bitrate": "Bithastighet",
+    "streams": "Strömmar",
+    "stream": "Ström",
+    "codec": "Codec",
+    "resolution": "Upplösning",
+    "pixelFormat": "Pixelformat",
+    "frameRate": "Bildhastighet",
+    "sampleRate": "Samplingshastighet",
+    "channels": "Kanaler",
+    "language": "Språk"
+  },
+  "imageCompress": {
+    "title": "Komprimera bild",
+    "inputImage": "Indatabild",
+    "dropLabel": "Släpp bild här",
+    "outputFile": "Utdatafil",
+    "outputFormat": "Utdataformat",
+    "quality": "Kvalitet (1-31)",
+    "scale": "Skala (valfritt)",
+    "compress": "Komprimera bild",
+    "compressing": "Komprimerar...",
+    "placeholderOutput": "utdatasökväg",
+    "placeholderScale": "t.ex. 800x600"
+  },
+  "audioExtract": {
+    "title": "Extrahera ljud",
+    "videoFile": "Videofil",
+    "dropLabel": "Släpp videofil här",
+    "outputFile": "Utdatafil",
+    "audioCodec": "Ljudcodec",
+    "bitrate": "Bithastighet",
+    "extract": "Extrahera ljud",
+    "extracting": "Extraherar...",
+    "placeholderOutput": "t.ex. output.mp3"
+  },
+  "videoCut": {
+    "title": "Klipp video",
+    "videoFile": "Videofil",
+    "noFile": "Ingen fil vald",
+    "browse": "Bläddra",
+    "outputFile": "Utdatafil",
+    "startTime": "Starttid (HH:MM:SS)",
+    "duration": "Längd (HH:MM:SS)",
+    "endTime": "Sluttid (HH:MM:SS)",
+    "useDuration": "Använd längd istället för sluttid",
+    "cut": "Klipp video",
+    "cutting": "Klipper...",
+    "placeholderOutput": "utdatasökväg",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "t.ex. 00:01:30",
+    "placeholderEnd": "t.ex. 00:01:30"
+  },
+  "batchQueue": {
+    "title": "Batchkö",
+    "suffix": "Suffix",
+    "addFiles": "Lägg till filer",
+    "cancelAll": "Avbryt alla",
+    "empty": "Kön är tom. Lägg till filer för att påbörja batchbearbetning.",
+    "remove": "Ta bort"
+  },
+  "progress": {
+    "time": "Tid",
+    "speed": "Hastighet",
+    "eta": "BPT"
+  },
+  "errorBoundary": {
+    "title": "Något gick fel",
+    "tryAgain": "Försök igen",
+    "description": "Ett oväntat fel inträffade."
+  },
+  "fileDropZone": {
+    "defaultLabel": "Släpp fil här eller klicka för att bläddra"
+  },
+  "validation": {
+    "outputRequired": "Utdatafil krävs",
+    "invalidTime": "Ogiltigt tidsformat (HH:MM:SS eller sekunder)",
+    "durationRequired": "Längd krävs",
+    "invalidScale": "Ogiltigt skalaformat (t.ex. 1920:1080, 50%)",
+    "invalidBitrate": "Ogiltig bithastighet (t.ex. 128k, 1M)",
+    "qscaleRange": "QScale måste vara mellan 1 och 31",
+    "qualityRange": "Kvalitet måste vara mellan 1 och 31"
+  }
+}

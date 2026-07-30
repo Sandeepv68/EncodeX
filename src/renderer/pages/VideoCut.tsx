@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, TextField, Button, Paper, Stack, FormControlLabel, Switch } from '@mui/material';
+import { Box, Typography, TextField, Button, Paper, Stack, Switch } from '@mui/material';
 import ErrorBanner from '../components/ErrorBanner';
 import MediaPlayer from '../components/MediaPlayer';
 import ProgressBar from '../components/ProgressBar';
 import { useErrorStore } from '../stores/errorStore';
 import { ErrorCode } from '../../shared/errors';
+import { isValidTime } from '../../shared/validation';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 
 export default function VideoCut() {
@@ -18,16 +19,37 @@ export default function VideoCut() {
   const [isConverting, setIsConverting] = useState(false);
   const [progress, setProgress] = useState<{ percent: number; time?: string; speed?: string; eta?: string } | null>(null);
   const [useDuration, setUseDuration] = useState(false);
-  const { currentError, showError, clearError } = useErrorStore();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const { currentError, showError, clearError: clearErrorBanner } = useErrorStore();
   const transcoder = TRANSCODER_TYPES[0];
 
+  const clearFieldError = (field: string) => {
+    setErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  };
+
+  const validate = (): boolean => {
+    const next: Record<string, string> = {};
+    if (!output.trim()) next.output = t('validation.outputRequired');
+    if (startTime && !isValidTime(startTime)) next.startTime = t('validation.invalidTime');
+    if (useDuration) {
+      if (!duration.trim()) next.duration = t('validation.durationRequired');
+      else if (!isValidTime(duration)) next.duration = t('validation.invalidTime');
+    } else if (endTime.trim() && !isValidTime(endTime)) {
+      next.endTime = t('validation.invalidTime');
+    }
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
+
   const handleCut = async () => {
+    if (!validate()) return;
     if (!input) {
       showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select a video file.' });
-      return;
-    }
-    if (!output) {
-      showError({ code: ErrorCode.OUTPUT_NOT_SPECIFIED, message: 'Please specify an output file path.' });
       return;
     }
     setIsConverting(true);
@@ -56,7 +78,7 @@ export default function VideoCut() {
         {t('videoCut.title')}
       </Typography>
       <Paper sx={{ p: 3, maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {currentError && <ErrorBanner error={currentError} onClose={clearError} />}
+        {currentError && <ErrorBanner error={currentError} onClose={clearErrorBanner} />}
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {t('videoCut.videoFile')}
@@ -83,60 +105,113 @@ export default function VideoCut() {
 
         {input && <MediaPlayer filePath={input} />}
 
-        <Stack direction="row" spacing={1}>
-          <TextField
-            fullWidth
-            size="small"
-            label={t('videoCut.outputFile')}
-            value={output}
-            onChange={(e) => setOutput(e.target.value)}
-            placeholder={t('videoCut.placeholderOutput')}
-          />
-          <Button
-            variant="outlined"
-            onClick={async () => {
-              const f = await window.electronAPI.selectOutput();
-              if (f) setOutput(f);
-            }}
-          >
-            {t('convert.browse')}
-          </Button>
-        </Stack>
+        <Box>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+            {t('videoCut.outputFile')}
+          </Typography>
+          <Stack direction="row" spacing={1}>
+            <TextField
+              fullWidth
+              size="small"
+              error={!!errors.output}
+              helperText={errors.output || ' '}
+              value={output}
+              onChange={(e) => {
+                setOutput(e.target.value);
+                clearFieldError('output');
+              }}
+              onBlur={() => {
+                if (!output.trim()) setErrors((prev) => ({ ...prev, output: t('validation.outputRequired') }));
+              }}
+              placeholder={t('videoCut.placeholderOutput')}
+            />
+            <Button
+              variant="outlined"
+              onClick={async () => {
+                const f = await window.electronAPI.selectOutput();
+                if (f) {
+                  setOutput(f);
+                  clearFieldError('output');
+                }
+              }}
+            >
+              {t('convert.browse')}
+            </Button>
+          </Stack>
+        </Box>
 
         <Stack direction="row" spacing={2}>
-          <TextField
-            fullWidth
-            size="small"
-            label={t('videoCut.startTime')}
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-            placeholder={t('videoCut.placeholderStart')}
-          />
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+              {t('videoCut.startTime')}
+            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              error={!!errors.startTime}
+              helperText={errors.startTime || ' '}
+              value={startTime}
+              onChange={(e) => {
+                setStartTime(e.target.value);
+                clearFieldError('startTime');
+              }}
+              onBlur={() => {
+                if (startTime && !isValidTime(startTime)) setErrors((prev) => ({ ...prev, startTime: t('validation.invalidTime') }));
+              }}
+              placeholder={t('videoCut.placeholderStart')}
+            />
+          </Box>
           {useDuration ? (
-            <TextField
-              fullWidth
-              size="small"
-              label={t('videoCut.duration')}
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              placeholder={t('videoCut.placeholderDuration')}
-            />
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+                {t('videoCut.duration')}
+              </Typography>
+              <TextField
+                fullWidth
+                size="small"
+                error={!!errors.duration}
+                helperText={errors.duration || ' '}
+                value={duration}
+                onChange={(e) => {
+                  setDuration(e.target.value);
+                  clearFieldError('duration');
+                }}
+                onBlur={() => {
+                  if (duration && !isValidTime(duration)) setErrors((prev) => ({ ...prev, duration: t('validation.invalidTime') }));
+                }}
+                placeholder={t('videoCut.placeholderDuration')}
+              />
+            </Box>
           ) : (
-            <TextField
-              fullWidth
-              size="small"
-              label={t('videoCut.endTime')}
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              placeholder={t('videoCut.placeholderEnd')}
-            />
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+                {t('videoCut.endTime')}
+              </Typography>
+              <TextField
+                fullWidth
+                size="small"
+                error={!!errors.endTime}
+                helperText={errors.endTime || ' '}
+                value={endTime}
+                onChange={(e) => {
+                  setEndTime(e.target.value);
+                  clearFieldError('endTime');
+                }}
+                onBlur={() => {
+                  if (endTime && !isValidTime(endTime)) setErrors((prev) => ({ ...prev, endTime: t('validation.invalidTime') }));
+                }}
+                placeholder={t('videoCut.placeholderEnd')}
+              />
+            </Box>
           )}
         </Stack>
 
-        <FormControlLabel
-          control={<Switch checked={useDuration} onChange={() => setUseDuration(!useDuration)} />}
-          label={t('videoCut.useDuration')}
-        />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Switch checked={useDuration} onChange={() => setUseDuration(!useDuration)} />
+          <Typography variant="caption" color="text.secondary">
+            {t('videoCut.useDuration')}
+          </Typography>
+        </Box>
 
         <Button variant="contained" onClick={handleCut} disabled={!input || !output || isConverting}>
           {isConverting ? t('videoCut.cutting') : t('videoCut.cut')}

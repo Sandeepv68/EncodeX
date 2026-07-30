@@ -1,0 +1,141 @@
+{
+  "app": {
+    "name": "EncodeX",
+    "switchLight": "Cambiar a modo claro",
+    "switchDark": "Cambiar a modo oscuro",
+    "language": "Idioma"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "convert": "Convertir",
+    "mediaInfo": "Información del medio",
+    "image": "Imagen",
+    "audio": "Audio",
+    "cut": "Cortar",
+    "batchQueue": "Cola de lotes"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido a EncodeX",
+    "subtitle": "Herramientas simples y fáciles de usar para convertir, editar y procesar archivos de audio y video.",
+    "descConvert": "Cambiar códecs, resolución, formato de píxel",
+    "descMediaInfo": "Ver información detallada de los flujos",
+    "descImage": "Comprimir imágenes con control de formato",
+    "descAudio": "Extraer audio de archivos de video",
+    "descCut": "Cortar video con reproductor de fotogramas preciso",
+    "descBatch": "Procesar múltiples archivos a la vez"
+  },
+  "convert": {
+    "title": "Convertir medio",
+    "inputFile": "Archivo de entrada",
+    "outputFile": "Archivo de salida",
+    "noFile": "Ningún archivo seleccionado",
+    "noOutput": "Ninguna salida seleccionada",
+    "browse": "Examinar",
+    "saveAs": "Guardar como",
+    "losslessCopy": "Copia sin pérdida (sin recodificar)",
+    "videoCodec": "Códec de video",
+    "audioCodec": "Códec de audio",
+    "videoBitrate": "Tasa de bits de video",
+    "audioBitrate": "Tasa de bits de audio",
+    "qscale": "QScale (1-31)",
+    "scale": "Escala (AxA)",
+    "pixelFormat": "Formato de píxel",
+    "transcoderCore": "Núcleo del transcodificador",
+    "startConversion": "Iniciar conversión",
+    "converting": "Convirtiendo...",
+    "cancel": "Cancelar",
+    "placeholderBitrate": "ej. 2000k",
+    "placeholderAudioBitrate": "ej. 192k",
+    "placeholderScale": "ej. 1280x720"
+  },
+  "mediaInfo": {
+    "title": "Información del medio",
+    "dropLabel": "Suelta un archivo multimedia aquí o haz clic para examinar",
+    "fileInfo": "Información del archivo",
+    "file": "Archivo",
+    "format": "Formato",
+    "size": "Tamaño",
+    "duration": "Duración",
+    "bitrate": "Tasa de bits",
+    "streams": "Flujos",
+    "stream": "Flujo",
+    "codec": "Códec",
+    "resolution": "Resolución",
+    "pixelFormat": "Formato de píxel",
+    "frameRate": "Fotogramas por segundo",
+    "sampleRate": "Frecuencia de muestreo",
+    "channels": "Canales",
+    "language": "Idioma"
+  },
+  "imageCompress": {
+    "title": "Comprimir imagen",
+    "inputImage": "Imagen de entrada",
+    "dropLabel": "Suelta la imagen aquí",
+    "outputFile": "Archivo de salida",
+    "outputFormat": "Formato de salida",
+    "quality": "Calidad (1-31)",
+    "scale": "Escala (opcional)",
+    "compress": "Comprimir imagen",
+    "compressing": "Comprimiendo...",
+    "placeholderOutput": "ruta de salida",
+    "placeholderScale": "ej. 800x600"
+  },
+  "audioExtract": {
+    "title": "Extraer audio",
+    "videoFile": "Archivo de video",
+    "dropLabel": "Suelta el archivo de video aquí",
+    "outputFile": "Archivo de salida",
+    "audioCodec": "Códec de audio",
+    "bitrate": "Tasa de bits",
+    "extract": "Extraer audio",
+    "extracting": "Extrayendo...",
+    "placeholderOutput": "ej. output.mp3"
+  },
+  "videoCut": {
+    "title": "Cortar video",
+    "videoFile": "Archivo de video",
+    "noFile": "Ningún archivo seleccionado",
+    "browse": "Examinar",
+    "outputFile": "Archivo de salida",
+    "startTime": "Hora de inicio (HH:MM:SS)",
+    "duration": "Duración (HH:MM:SS)",
+    "endTime": "Hora de fin (HH:MM:SS)",
+    "useDuration": "Usar duración en lugar de hora de fin",
+    "cut": "Cortar video",
+    "cutting": "Cortando...",
+    "placeholderOutput": "ruta de salida",
+    "placeholderStart": "00:00:00",
+    "placeholderDuration": "ej. 00:01:30",
+    "placeholderEnd": "ej. 00:01:30"
+  },
+  "batchQueue": {
+    "title": "Cola de lotes",
+    "suffix": "Sufijo",
+    "addFiles": "Agregar archivos",
+    "cancelAll": "Cancelar todo",
+    "empty": "La cola está vacía. Agrega archivos para comenzar el procesamiento por lotes.",
+    "remove": "Eliminar"
+  },
+  "progress": {
+    "time": "Tiempo",
+    "speed": "Velocidad",
+    "eta": "ETA"
+  },
+  "errorBoundary": {
+    "title": "Algo salió mal",
+    "tryAgain": "Intentar de nuevo",
+    "description": "Ocurrió un error inesperado."
+  },
+  "fileDropZone": {
+    "defaultLabel": "Suelta el archivo aquí o haz clic para examinar"
+  },
+  "validation": {
+    "outputRequired": "El archivo de salida es obligatorio",
+    "invalidTime": "Formato de hora inválido (HH:MM:SS o segundos)",
+    "durationRequired": "La duración es obligatoria",
+    "invalidScale": "Formato de escala inválido (ej. 1920:1080, 50%)",
+    "invalidBitrate": "Tasa de bits inválida (ej. 128k, 1M)",
+    "qscaleRange": "QScale debe estar entre 1 y 31",
+    "qualityRange": "La calidad debe estar entre 1 y 31"
+  }
+}
