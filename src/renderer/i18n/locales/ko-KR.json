@@ -38,25 +38,25 @@
     "audioCodec": "오디오 코덱",
     "videoBitrate": "비디오 비트레이트",
     "audioBitrate": "오디오 비트레이트",
-    "qscale": "QScale (1-31)",
+    "qscale": "QScale(1-31)",
     "scale": "크기 조정 (WxH)",
     "pixelFormat": "픽셀 형식",
     "transcoderCore": "트랜스코더 코어",
     "startConversion": "변환 시작",
     "converting": "변환 중...",
-    "pause": "Pause",
-    "resume": "Resume",
+    "pause": "정지시키다",
+    "resume": "재개하다",
     "cancel": "취소",
     "placeholderBitrate": "예: 2000k",
     "placeholderAudioBitrate": "예: 192k",
     "placeholderScale": "예: 1280x720",
-    "cancelJob": "Cancel Job",
-    "jobCancelTitle": "Cancel Job",
-    "jobCancelMessage": "This will clear the current conversion job. Are you sure?",
-    "cancelTitle": "Cancel Conversion",
-    "cancelMessage": "Are you sure you want to cancel the current conversion?",
-    "yes": "Yes",
-    "no": "No"
+    "cancelJob": "작업 취소",
+    "jobCancelTitle": "작업 취소",
+    "jobCancelMessage": "그러면 현재 변환 작업이 지워집니다. ",
+    "cancelTitle": "변환 취소",
+    "cancelMessage": "현재 변환을 취소하시겠습니까?",
+    "yes": "예",
+    "no": "아니요"
   },
   "mediaInfo": {
     "title": "미디어 정보",
@@ -89,7 +89,7 @@
     "compressing": "압축 중...",
     "placeholderOutput": "출력 경로",
     "placeholderScale": "예: 800x600",
-    "validationRequired": "Please select an input image."
+    "validationRequired": "입력 이미지를 선택하세요."
   },
   "audioExtract": {
     "title": "오디오 추출",
@@ -101,7 +101,7 @@
     "extract": "오디오 추출",
     "extracting": "추출 중...",
     "placeholderOutput": "예: output.mp3",
-    "validationRequired": "Please select a video file."
+    "validationRequired": "동영상 파일을 선택하세요."
   },
   "videoCut": {
     "title": "비디오 자르기",
@@ -119,7 +119,7 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "예: 00:01:30",
     "placeholderEnd": "예: 00:01:30",
-    "validationRequired": "Please select a video file."
+    "validationRequired": "동영상 파일을 선택하세요."
   },
   "batchQueue": {
     "title": "배치 큐",
@@ -128,9 +128,9 @@
     "cancelAll": "모두 취소",
     "empty": "큐가 비어 있습니다. 파일을 추가하여 배치 처리를 시작하세요.",
     "remove": "제거",
-    "operationTranscode": "Transcode",
-    "operationExtractAudio": "Extract Audio",
-    "operationCompressImage": "Compress Image"
+    "operationTranscode": "트랜스코드",
+    "operationExtractAudio": "오디오 추출",
+    "operationCompressImage": "이미지 압축"
   },
   "progress": {
     "time": "시간",
@@ -153,22 +153,22 @@
     "invalidBitrate": "잘못된 비트레이트입니다 (예: 128k, 1M)",
     "qscaleRange": "QScale은 1에서 31 사이여야 합니다",
     "qualityRange": "품질은 1에서 31 사이여야 합니다",
-    "inputRequired": "Please select an input file.",
-    "outputRequiredDetailed": "Please select an output file."
+    "inputRequired": "입력 파일을 선택하세요.",
+    "outputRequiredDetailed": "출력 파일을 선택하세요."
   },
   "logs": {
     "clear": "지우기",
-    "download": "Download as TXT",
+    "download": "TXT로 다운로드",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "WARN",
     "levelError": "ERROR",
-    "noEntries": "No log entries yet.",
-    "entryCount": "{{count}} entries"
+    "noEntries": "아직 로그 항목이 없습니다.",
+    "entryCount": "{{count}}개 항목"
   },
   "status": {
     "auto": "Auto",
-    "none": "None"
+    "none": "없음"
   }
 }

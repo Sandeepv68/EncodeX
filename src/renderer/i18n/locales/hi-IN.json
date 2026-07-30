@@ -38,25 +38,25 @@
     "audioCodec": "ऑडियो कोडेक",
     "videoBitrate": "वीडियो बिटरेट",
     "audioBitrate": "ऑडियो बिटरेट",
-    "qscale": "QScale (1-31)",
+    "qscale": "क्यूस्केल (1-31)",
     "scale": "स्केल (WxH)",
     "pixelFormat": "पिक्सल फ़ॉर्मैट",
     "transcoderCore": "ट्रांसकोडर कोर",
     "startConversion": "कन्वर्ज़न शुरू करें",
     "converting": "कन्वर्ट हो रहा है...",
-    "pause": "Pause",
-    "resume": "Resume",
+    "pause": "विराम",
+    "resume": "फिर शुरू करना",
     "cancel": "रद्द करें",
     "placeholderBitrate": "जैसे 2000k",
     "placeholderAudioBitrate": "जैसे 192k",
     "placeholderScale": "जैसे 1280x720",
-    "cancelJob": "Cancel Job",
-    "jobCancelTitle": "Cancel Job",
-    "jobCancelMessage": "This will clear the current conversion job. Are you sure?",
-    "cancelTitle": "Cancel Conversion",
-    "cancelMessage": "Are you sure you want to cancel the current conversion?",
-    "yes": "Yes",
-    "no": "No"
+    "cancelJob": "कार्य रद्द करें",
+    "jobCancelTitle": "कार्य रद्द करें",
+    "jobCancelMessage": "इससे वर्तमान रूपांतरण कार्य साफ़ हो जाएगा. ",
+    "cancelTitle": "रूपांतरण रद्द करें",
+    "cancelMessage": "क्या आप वाकई वर्तमान रूपांतरण रद्द करना चाहते हैं?",
+    "yes": "हाँ",
+    "no": "नहीं"
   },
   "mediaInfo": {
     "title": "मीडिया जानकारी",
@@ -89,7 +89,7 @@
     "compressing": "कंप्रेस हो रहा है...",
     "placeholderOutput": "आउटपुट पथ",
     "placeholderScale": "जैसे 800x600",
-    "validationRequired": "Please select an input image."
+    "validationRequired": "कृपया एक इनपुट छवि चुनें."
   },
   "audioExtract": {
     "title": "ऑडियो निकालें",
@@ -101,7 +101,7 @@
     "extract": "ऑडियो निकालें",
     "extracting": "निकाला जा रहा है...",
     "placeholderOutput": "जैसे output.mp3",
-    "validationRequired": "Please select a video file."
+    "validationRequired": "कृपया एक वीडियो फ़ाइल चुनें."
   },
   "videoCut": {
     "title": "वीडियो काटें",
@@ -119,7 +119,7 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "जैसे 00:01:30",
     "placeholderEnd": "जैसे 00:01:30",
-    "validationRequired": "Please select a video file."
+    "validationRequired": "कृपया एक वीडियो फ़ाइल चुनें."
   },
   "batchQueue": {
     "title": "बैच क्यू",
@@ -128,9 +128,9 @@
     "cancelAll": "सभी रद्द करें",
     "empty": "क्यू खाली है। बैच प्रोसेसिंग शुरू करने के लिए फ़ाइलें जोड़ें।",
     "remove": "हटाएँ",
-    "operationTranscode": "Transcode",
-    "operationExtractAudio": "Extract Audio",
-    "operationCompressImage": "Compress Image"
+    "operationTranscode": "ट्रांसकोड",
+    "operationExtractAudio": "ऑडियो निकालें",
+    "operationCompressImage": "छवि संपीड़ित करें"
   },
   "progress": {
     "time": "समय",
@@ -146,29 +146,29 @@
     "defaultLabel": "फ़ाइल यहाँ छोड़ें या ब्राउज़ करें"
   },
   "validation": {
-    "outputRequired": "Output file is required",
-    "invalidTime": "Invalid time format (HH:MM:SS or seconds)",
-    "durationRequired": "Duration is required",
-    "invalidScale": "Invalid scale format (e.g. 1920:1080, 50%)",
-    "invalidBitrate": "Invalid bitrate (e.g. 128k, 1M)",
-    "qscaleRange": "QScale must be between 1 and 31",
-    "qualityRange": "Quality must be between 1 and 31",
-    "inputRequired": "Please select an input file.",
-    "outputRequiredDetailed": "Please select an output file."
+    "outputRequired": "आउटपुट फ़ाइल आवश्यक है",
+    "invalidTime": "अमान्य समय प्रारूप (HH:MM:SS या सेकंड)",
+    "durationRequired": "अवधि आवश्यक है",
+    "invalidScale": "अमान्य स्केल प्रारूप (उदा. 1920:1080, 50%)",
+    "invalidBitrate": "अमान्य बिटरेट (जैसे 128k, 1M)",
+    "qscaleRange": "QScale 1 और 31 के बीच होना चाहिए",
+    "qualityRange": "गुणवत्ता 1 और 31 के बीच होनी चाहिए",
+    "inputRequired": "कृपया एक इनपुट फ़ाइल चुनें.",
+    "outputRequiredDetailed": "कृपया एक आउटपुट फ़ाइल चुनें."
   },
   "logs": {
     "clear": "साफ़ करें",
-    "download": "Download as TXT",
+    "download": "TXT के रूप में डाउनलोड करें",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "WARN",
     "levelError": "ERROR",
-    "noEntries": "No log entries yet.",
-    "entryCount": "{{count}} entries"
+    "noEntries": "अभी तक कोई लॉग प्रविष्टियाँ नहीं.",
+    "entryCount": "{{count}} प्रविष्टियाँ"
   },
   "status": {
     "auto": "Auto",
-    "none": "None"
+    "none": "कोई नहीं"
   }
 }
