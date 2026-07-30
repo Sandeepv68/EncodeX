@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Card, CardContent, CardActionArea, Typography, Grid } from '@mui/material';
@@ -33,7 +34,9 @@ const descKeys: Record<string, string> = {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  log.debug('Dashboard rendered');
+  useEffect(() => {
+    log.debug('Dashboard rendered');
+  }, []);
   return (
     <Box>
       <Typography variant="h4" sx={{ color: 'primary.main', fontWeight: 700, mb: 1 }}>
@@ -43,7 +46,7 @@ export default function Dashboard() {
         {t('dashboard.subtitle')}
       </Typography>
       <Grid container spacing={2}>
-        {NAV_ITEMS.filter((item) => item.to !== '/').map((item) => (
+        {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs').map((item) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
             <Card
               sx={{
