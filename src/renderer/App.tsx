@@ -42,25 +42,49 @@ import { useState, type ComponentType } from 'react';
 import { US, GB, CA, IN, ES, MX, FR, DE, IT, NL, SE, BR, UA, JP, KR, ID, SA, AE } from 'country-flag-icons/react/3x2';
 
 const flags: Record<string, ComponentType<{ style?: React.CSSProperties }>> = {
-  'en-US': US, 'en-GB': GB, 'en-CA': CA, 'en-IN': IN,
-  'es-ES': ES, 'es-MX': MX,
-  'fr-FR': FR, 'fr-CA': CA,
+  'en-US': US,
+  'en-GB': GB,
+  'en-CA': CA,
+  'en-IN': IN,
+  'es-ES': ES,
+  'es-MX': MX,
+  'fr-FR': FR,
+  'fr-CA': CA,
   'hi-IN': IN,
-  'de-DE': DE, 'it-IT': IT, 'nl-NL': NL, 'sv-SE': SE, 'pt-BR': BR,
+  'de-DE': DE,
+  'it-IT': IT,
+  'nl-NL': NL,
+  'sv-SE': SE,
+  'pt-BR': BR,
   'uk-UA': UA,
-  'ja-JP': JP, 'ko-KR': KR, 'id-ID': ID, 'ar-SA': SA, 'ar-AE': AE,
+  'ja-JP': JP,
+  'ko-KR': KR,
+  'id-ID': ID,
+  'ar-SA': SA,
+  'ar-AE': AE,
 };
 
 const localeLabels: Record<string, string> = {
-  'en-US': 'English (US)', 'en-GB': 'English (UK)', 'en-CA': 'English (Canada)', 'en-IN': 'English (India)',
-  'es-ES': 'Español (España)', 'es-MX': 'Español (México)',
-  'fr-FR': 'Français (France)', 'fr-CA': 'Français (Canada)',
+  'en-US': 'English (US)',
+  'en-GB': 'English (UK)',
+  'en-CA': 'English (Canada)',
+  'en-IN': 'English (India)',
+  'es-ES': 'Español (España)',
+  'es-MX': 'Español (México)',
+  'fr-FR': 'Français (France)',
+  'fr-CA': 'Français (Canada)',
   'hi-IN': 'हिन्दी (India)',
-  'de-DE': 'Deutsch (Germany)', 'it-IT': 'Italiano (Italy)', 'nl-NL': 'Nederlands (Netherlands)',
-  'sv-SE': 'Svenska (Sweden)', 'pt-BR': 'Português (Brasil)',
+  'de-DE': 'Deutsch (Germany)',
+  'it-IT': 'Italiano (Italy)',
+  'nl-NL': 'Nederlands (Netherlands)',
+  'sv-SE': 'Svenska (Sweden)',
+  'pt-BR': 'Português (Brasil)',
   'uk-UA': 'Українська (Ukraine)',
-  'ja-JP': '日本語 (Japan)', 'ko-KR': '한국어 (South Korea)', 'id-ID': 'Bahasa Indonesia (Indonesia)',
-  'ar-SA': 'العربية (Saudi Arabia)', 'ar-AE': 'العربية (UAE)',
+  'ja-JP': '日本語 (Japan)',
+  'ko-KR': '한국어 (South Korea)',
+  'id-ID': 'Bahasa Indonesia (Indonesia)',
+  'ar-SA': 'العربية (Saudi Arabia)',
+  'ar-AE': 'العربية (UAE)',
 };
 
 const navIconMap: Record<string, React.ReactNode> = {
@@ -152,9 +176,16 @@ function AppLayout() {
               component="button"
               onClick={(e) => setLangAnchor(e.currentTarget)}
               sx={{
-                display: 'flex', alignItems: 'center', gap: 0.5, cursor: 'pointer',
-                color: 'text.secondary', bgcolor: 'transparent',
-                px: 1, py: 0.5, borderRadius: 1, border: '1px solid transparent',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5,
+                cursor: 'pointer',
+                color: 'text.secondary',
+                bgcolor: 'transparent',
+                px: 1,
+                py: 0.5,
+                borderRadius: 1,
+                border: '1px solid transparent',
                 '&:hover': { borderColor: 'divider' },
               }}
             >
@@ -165,8 +196,12 @@ function AppLayout() {
             </Box>
           </Tooltip>
         </Box>
-        <Menu anchorEl={langAnchor} open={Boolean(langAnchor)} onClose={() => setLangAnchor(null)}
-          slotProps={{ paper: { sx: { maxHeight: 320 } } }}>
+        <Menu
+          anchorEl={langAnchor}
+          open={Boolean(langAnchor)}
+          onClose={() => setLangAnchor(null)}
+          slotProps={{ paper: { sx: { maxHeight: 320 } } }}
+        >
           <MenuItem selected={isActive('en-IN')} onClick={() => switchLanguage('en-IN')}>
             <FlagIcon locale="en-IN" /> English (India)
           </MenuItem>

@@ -72,15 +72,31 @@ export default function AudioExtract() {
               error={!!errors.output}
               helperText={errors.output || ' '}
               value={output}
-              onChange={(e) => { setOutput(e.target.value); setErrors(prev => { const next = { ...prev }; delete next.output; return next; }); }}
-              onBlur={() => { if (!output.trim()) setErrors(prev => ({ ...prev, output: t('validation.outputRequired') })); }}
+              onChange={(e) => {
+                setOutput(e.target.value);
+                setErrors((prev) => {
+                  const next = { ...prev };
+                  delete next.output;
+                  return next;
+                });
+              }}
+              onBlur={() => {
+                if (!output.trim()) setErrors((prev) => ({ ...prev, output: t('validation.outputRequired') }));
+              }}
               placeholder={t('audioExtract.placeholderOutput')}
             />
             <Button
               variant="outlined"
               onClick={async () => {
                 const f = await window.electronAPI.selectOutput();
-                if (f) { setOutput(f); setErrors(prev => { const next = { ...prev }; delete next.output; return next; }); }
+                if (f) {
+                  setOutput(f);
+                  setErrors((prev) => {
+                    const next = { ...prev };
+                    delete next.output;
+                    return next;
+                  });
+                }
               }}
             >
               {t('convert.browse')}
@@ -98,13 +114,7 @@ export default function AudioExtract() {
             <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
               {t('audioExtract.bitrate')}
             </Typography>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              value={audioBitrate}
-              onChange={(e) => setAudioBitrate(e.target.value)}
-            >
+            <TextField select fullWidth size="small" value={audioBitrate} onChange={(e) => setAudioBitrate(e.target.value)}>
               {BITRATE_OPTIONS.map((b) => (
                 <MenuItem key={b} value={b}>
                   {b}

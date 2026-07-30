@@ -24,7 +24,7 @@ export default function ImageCompress() {
   const transcoder = TRANSCODER_TYPES[0];
 
   const clearFieldError = (field: string) => {
-    setErrors(prev => {
+    setErrors((prev) => {
       if (!prev[field]) return prev;
       const next = { ...prev };
       delete next[field];
@@ -92,15 +92,23 @@ export default function ImageCompress() {
               error={!!errors.output}
               helperText={errors.output || ' '}
               value={output}
-              onChange={(e) => { setOutput(e.target.value); clearFieldError('output'); }}
-              onBlur={() => { if (!output.trim()) setErrors(prev => ({ ...prev, output: t('validation.outputRequired') })); }}
+              onChange={(e) => {
+                setOutput(e.target.value);
+                clearFieldError('output');
+              }}
+              onBlur={() => {
+                if (!output.trim()) setErrors((prev) => ({ ...prev, output: t('validation.outputRequired') }));
+              }}
               placeholder={t('imageCompress.placeholderOutput')}
             />
             <Button
               variant="outlined"
               onClick={async () => {
                 const f = await window.electronAPI.selectOutput();
-                if (f) { setOutput(f); clearFieldError('output'); }
+                if (f) {
+                  setOutput(f);
+                  clearFieldError('output');
+                }
               }}
             >
               {t('convert.browse')}
@@ -112,13 +120,7 @@ export default function ImageCompress() {
             <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
               {t('imageCompress.outputFormat')}
             </Typography>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              value={format}
-              onChange={(e) => setFormat(e.target.value)}
-            >
+            <TextField select fullWidth size="small" value={format} onChange={(e) => setFormat(e.target.value)}>
               {IMAGE_FORMATS.map((f) => (
                 <MenuItem key={f.value} value={f.value}>
                   {f.label}
@@ -137,8 +139,13 @@ export default function ImageCompress() {
               error={!!errors.quality}
               helperText={errors.quality || ' '}
               value={quality}
-              onChange={(e) => { setQuality(parseInt(e.target.value) || 23); clearFieldError('quality'); }}
-              onBlur={() => { if (!isInRange(quality, 1, 31)) setErrors(prev => ({ ...prev, quality: t('validation.qualityRange') })); }}
+              onChange={(e) => {
+                setQuality(parseInt(e.target.value) || 23);
+                clearFieldError('quality');
+              }}
+              onBlur={() => {
+                if (!isInRange(quality, 1, 31)) setErrors((prev) => ({ ...prev, quality: t('validation.qualityRange') }));
+              }}
               slotProps={{ htmlInput: { min: 1, max: 31 } }}
             />
           </Box>
@@ -153,8 +160,13 @@ export default function ImageCompress() {
             error={!!errors.scale}
             helperText={errors.scale || ' '}
             value={scale}
-            onChange={(e) => { setScale(e.target.value); clearFieldError('scale'); }}
-            onBlur={() => { if (scale && !isValidScale(scale)) setErrors(prev => ({ ...prev, scale: t('validation.invalidScale') })); }}
+            onChange={(e) => {
+              setScale(e.target.value);
+              clearFieldError('scale');
+            }}
+            onBlur={() => {
+              if (scale && !isValidScale(scale)) setErrors((prev) => ({ ...prev, scale: t('validation.invalidScale') }));
+            }}
             placeholder={t('imageCompress.placeholderScale')}
           />
         </Box>

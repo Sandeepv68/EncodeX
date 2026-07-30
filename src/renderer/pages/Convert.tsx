@@ -23,8 +23,8 @@ const pixelGroupIcons: Record<string, React.ComponentType<{ sx?: object }>> = {
   'YUV with Alpha': PaletteIcon,
   'RGB Packed': ColorLensIcon,
   'Planar RGB': ColorLensIcon,
-  'Monochrome': InvertColorsIcon,
-  'HDR': BrightnessHighIcon,
+  Monochrome: InvertColorsIcon,
+  HDR: BrightnessHighIcon,
 };
 
 export default function Convert() {
@@ -64,7 +64,7 @@ export default function Convert() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const clearFieldError = (field: string) => {
-    setErrors(prev => {
+    setErrors((prev) => {
       if (!prev[field]) return prev;
       const next = { ...prev };
       delete next[field];
@@ -165,8 +165,14 @@ export default function Convert() {
                   error={!!errors.videoBitrate}
                   helperText={errors.videoBitrate || ' '}
                   value={videoBitrate}
-                  onChange={(e) => { setVideoBitrate(e.target.value); clearFieldError('videoBitrate'); }}
-                  onBlur={() => { if (videoBitrate && !isValidBitrate(videoBitrate)) setErrors(prev => ({ ...prev, videoBitrate: t('validation.invalidBitrate') })); }}
+                  onChange={(e) => {
+                    setVideoBitrate(e.target.value);
+                    clearFieldError('videoBitrate');
+                  }}
+                  onBlur={() => {
+                    if (videoBitrate && !isValidBitrate(videoBitrate))
+                      setErrors((prev) => ({ ...prev, videoBitrate: t('validation.invalidBitrate') }));
+                  }}
                   placeholder={t('convert.placeholderBitrate')}
                 />
               </Box>
@@ -180,8 +186,14 @@ export default function Convert() {
                   error={!!errors.audioBitrate}
                   helperText={errors.audioBitrate || ' '}
                   value={audioBitrate}
-                  onChange={(e) => { setAudioBitrate(e.target.value); clearFieldError('audioBitrate'); }}
-                  onBlur={() => { if (audioBitrate && !isValidBitrate(audioBitrate)) setErrors(prev => ({ ...prev, audioBitrate: t('validation.invalidBitrate') })); }}
+                  onChange={(e) => {
+                    setAudioBitrate(e.target.value);
+                    clearFieldError('audioBitrate');
+                  }}
+                  onBlur={() => {
+                    if (audioBitrate && !isValidBitrate(audioBitrate))
+                      setErrors((prev) => ({ ...prev, audioBitrate: t('validation.invalidBitrate') }));
+                  }}
                   placeholder={t('convert.placeholderAudioBitrate')}
                 />
               </Box>
@@ -199,8 +211,13 @@ export default function Convert() {
                   error={!!errors.qscale}
                   helperText={errors.qscale || ' '}
                   value={qscale}
-                  onChange={(e) => { setQscale(parseInt(e.target.value) || 23); clearFieldError('qscale'); }}
-                  onBlur={() => { if (!isInRange(qscale, 1, 31)) setErrors(prev => ({ ...prev, qscale: t('validation.qscaleRange') })); }}
+                  onChange={(e) => {
+                    setQscale(parseInt(e.target.value) || 23);
+                    clearFieldError('qscale');
+                  }}
+                  onBlur={() => {
+                    if (!isInRange(qscale, 1, 31)) setErrors((prev) => ({ ...prev, qscale: t('validation.qscaleRange') }));
+                  }}
                   slotProps={{ htmlInput: { min: 1, max: 31 } }}
                 />
               </Box>
@@ -214,8 +231,13 @@ export default function Convert() {
                   error={!!errors.scale}
                   helperText={errors.scale || ' '}
                   value={scale}
-                  onChange={(e) => { setScale(e.target.value); clearFieldError('scale'); }}
-                  onBlur={() => { if (scale && !isValidScale(scale)) setErrors(prev => ({ ...prev, scale: t('validation.invalidScale') })); }}
+                  onChange={(e) => {
+                    setScale(e.target.value);
+                    clearFieldError('scale');
+                  }}
+                  onBlur={() => {
+                    if (scale && !isValidScale(scale)) setErrors((prev) => ({ ...prev, scale: t('validation.invalidScale') }));
+                  }}
                   placeholder={t('convert.placeholderScale')}
                 />
               </Box>
@@ -223,33 +245,44 @@ export default function Convert() {
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                   {t('convert.pixelFormat')}
                 </Typography>
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  value={pixelFormat}
-                  onChange={(e) => setPixelFormat(e.target.value)}
-                >
-                {PIXEL_FORMATS.reduce<React.ReactNode[]>((acc, f, i) => {
-                  if (i === 0 || f.group !== PIXEL_FORMATS[i - 1].group) {
-                    acc.push(
-                      <MenuItem key={`group-${f.group}`} disabled sx={{ fontWeight: 700, opacity: '1 !important', cursor: 'default', fontSize: '0.8rem', bgcolor: 'action.selected', color: 'primary.main', py: 0.75, borderBottom: '1px solid', borderColor: 'divider' }}>
+                <TextField select fullWidth size="small" value={pixelFormat} onChange={(e) => setPixelFormat(e.target.value)}>
+                  {PIXEL_FORMATS.reduce<React.ReactNode[]>((acc, f, i) => {
+                    if (i === 0 || f.group !== PIXEL_FORMATS[i - 1].group) {
+                      acc.push(
+                        <MenuItem
+                          key={`group-${f.group}`}
+                          disabled
+                          sx={{
+                            fontWeight: 700,
+                            opacity: '1 !important',
+                            cursor: 'default',
+                            fontSize: '0.8rem',
+                            bgcolor: 'action.selected',
+                            color: 'primary.main',
+                            py: 0.75,
+                            borderBottom: '1px solid',
+                            borderColor: 'divider',
+                          }}
+                        >
                           <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
-                            {(() => { const Icon = pixelGroupIcons[f.group]; return Icon ? <Icon sx={{ fontSize: 16 }} /> : null; })()}
+                            {(() => {
+                              const Icon = pixelGroupIcons[f.group];
+                              return Icon ? <Icon sx={{ fontSize: 16 }} /> : null;
+                            })()}
                             {f.group}
                           </Box>
                         </MenuItem>,
+                      );
+                    }
+                    acc.push(
+                      <MenuItem key={f.value} value={f.value}>
+                        {f.value}
+                      </MenuItem>,
                     );
-                  }
-                  acc.push(
-                    <MenuItem key={f.value} value={f.value}>
-                      {f.value}
-                    </MenuItem>,
-                  );
-                  return acc;
-                }, [])}
-              </TextField>
-            </Box>
+                    return acc;
+                  }, [])}
+                </TextField>
+              </Box>
             </Stack>
           </>
         )}

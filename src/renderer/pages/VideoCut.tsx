@@ -24,7 +24,7 @@ export default function VideoCut() {
   const transcoder = TRANSCODER_TYPES[0];
 
   const clearFieldError = (field: string) => {
-    setErrors(prev => {
+    setErrors((prev) => {
       if (!prev[field]) return prev;
       const next = { ...prev };
       delete next[field];
@@ -116,15 +116,23 @@ export default function VideoCut() {
               error={!!errors.output}
               helperText={errors.output || ' '}
               value={output}
-              onChange={(e) => { setOutput(e.target.value); clearFieldError('output'); }}
-              onBlur={() => { if (!output.trim()) setErrors(prev => ({ ...prev, output: t('validation.outputRequired') })); }}
+              onChange={(e) => {
+                setOutput(e.target.value);
+                clearFieldError('output');
+              }}
+              onBlur={() => {
+                if (!output.trim()) setErrors((prev) => ({ ...prev, output: t('validation.outputRequired') }));
+              }}
               placeholder={t('videoCut.placeholderOutput')}
             />
             <Button
               variant="outlined"
               onClick={async () => {
                 const f = await window.electronAPI.selectOutput();
-                if (f) { setOutput(f); clearFieldError('output'); }
+                if (f) {
+                  setOutput(f);
+                  clearFieldError('output');
+                }
               }}
             >
               {t('convert.browse')}
@@ -143,8 +151,13 @@ export default function VideoCut() {
               error={!!errors.startTime}
               helperText={errors.startTime || ' '}
               value={startTime}
-              onChange={(e) => { setStartTime(e.target.value); clearFieldError('startTime'); }}
-              onBlur={() => { if (startTime && !isValidTime(startTime)) setErrors(prev => ({ ...prev, startTime: t('validation.invalidTime') })); }}
+              onChange={(e) => {
+                setStartTime(e.target.value);
+                clearFieldError('startTime');
+              }}
+              onBlur={() => {
+                if (startTime && !isValidTime(startTime)) setErrors((prev) => ({ ...prev, startTime: t('validation.invalidTime') }));
+              }}
               placeholder={t('videoCut.placeholderStart')}
             />
           </Box>
@@ -159,8 +172,13 @@ export default function VideoCut() {
                 error={!!errors.duration}
                 helperText={errors.duration || ' '}
                 value={duration}
-                onChange={(e) => { setDuration(e.target.value); clearFieldError('duration'); }}
-                onBlur={() => { if (duration && !isValidTime(duration)) setErrors(prev => ({ ...prev, duration: t('validation.invalidTime') })); }}
+                onChange={(e) => {
+                  setDuration(e.target.value);
+                  clearFieldError('duration');
+                }}
+                onBlur={() => {
+                  if (duration && !isValidTime(duration)) setErrors((prev) => ({ ...prev, duration: t('validation.invalidTime') }));
+                }}
                 placeholder={t('videoCut.placeholderDuration')}
               />
             </Box>
@@ -175,8 +193,13 @@ export default function VideoCut() {
                 error={!!errors.endTime}
                 helperText={errors.endTime || ' '}
                 value={endTime}
-                onChange={(e) => { setEndTime(e.target.value); clearFieldError('endTime'); }}
-                onBlur={() => { if (endTime && !isValidTime(endTime)) setErrors(prev => ({ ...prev, endTime: t('validation.invalidTime') })); }}
+                onChange={(e) => {
+                  setEndTime(e.target.value);
+                  clearFieldError('endTime');
+                }}
+                onBlur={() => {
+                  if (endTime && !isValidTime(endTime)) setErrors((prev) => ({ ...prev, endTime: t('validation.invalidTime') }));
+                }}
                 placeholder={t('videoCut.placeholderEnd')}
               />
             </Box>
