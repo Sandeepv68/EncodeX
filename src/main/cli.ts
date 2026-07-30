@@ -28,8 +28,25 @@ export async function runCli(): Promise<void> {
     .option('--copy', 'Lossless copy streams')
     .option('--info', 'Show media info and exit')
     .action(async (input, output, opts) => {
-      const options: ConversionOptions = {};
       const transcoderType = (opts.transcoder as TranscoderType) || TRANSCODER_TYPES[0];
+      const transcoder = createTranscoder(transcoderType);
+
+      if (opts.info) {
+        if (!input) {
+          console.error('Error: --info requires an input file');
+          process.exit(EXIT_CODES.ERROR);
+        }
+        try {
+          const info = await transcoder.getInfo(input);
+          console.log(JSON.stringify(info, null, 2));
+        } catch (err: unknown) {
+          console.error('Error getting media info:', err instanceof Error ? err.message : String(err));
+          process.exit(EXIT_CODES.ERROR);
+        }
+        return;
+      }
+
+      const options: ConversionOptions = {};
 
       if (opts.copy) options.copy = true;
       if (opts.videoCodec) options.videoCodec = opts.videoCodec;
@@ -43,7 +60,6 @@ export async function runCli(): Promise<void> {
       if (opts.endTime) options.endTime = opts.endTime;
       if (opts.duration) options.duration = opts.duration;
 
-      const transcoder = createTranscoder(transcoderType);
       console.log(`Starting conversion: ${input} -> ${output}`);
       console.log(`Transcoder: ${transcoderType}`);
       console.log(`Options: ${JSON.stringify(options)}`);
@@ -85,34 +101,9 @@ export async function runCli(): Promise<void> {
   const userArgs = scriptIndex >= 0 ? process.argv.slice(scriptIndex + 1) : process.argv.slice(2);
   const cliArgs = userArgs.filter((arg) => arg !== '--cli');
 
-  const infoIndex = cliArgs.indexOf('--info');
   if (cliArgs.includes('-h') || cliArgs.includes('--help')) {
     program.outputHelp();
     return;
-  }
-
-  if (infoIndex >= 0) {
-    const input = infoIndex + 1 < cliArgs.length ? cliArgs[infoIndex + 1] : undefined;
-    const transcoderType = (() => {
-      const tIdx = cliArgs.indexOf('--transcoder');
-      if (tIdx >= 0 && tIdx + 1 < cliArgs.length) return cliArgs[tIdx + 1];
-      return TRANSCODER_TYPES[0];
-    })() as TranscoderType;
-
-    if (!input) {
-      console.error('Error: --info requires an input file');
-      process.exit(EXIT_CODES.ERROR);
-    }
-
-    const transcoder = createTranscoder(transcoderType);
-    try {
-      const info = await transcoder.getInfo(input);
-      console.log(JSON.stringify(info, null, 2));
-    } catch (err: unknown) {
-      console.error('Error getting media info:', err instanceof Error ? err.message : String(err));
-      process.exit(EXIT_CODES.ERROR);
-    }
-    process.exit(EXIT_CODES.SUCCESS);
   }
 
   await program.parseAsync(cliArgs, { from: 'user' });
