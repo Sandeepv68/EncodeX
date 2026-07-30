@@ -224,6 +224,23 @@ export const PIXEL_FORMATS = [
 
 export const BITRATE_OPTIONS = ['128k', '192k', '256k', '320k', 'lossless'] as const;
 
+export const VIDEO_BITRATE_OPTIONS = [
+  '',
+  '500k',
+  '1000k',
+  '2000k',
+  '4000k',
+  '6000k',
+  '8000k',
+  '10000k',
+  '12000k',
+  '15000k',
+  '20000k',
+  '40000k',
+] as const;
+
+export const SCALE_OPTIONS = ['', '3840x2160', '2560x1440', '1920x1080', '1280x720', '854x480', '640x360'] as const;
+
 export const VIDEO_CODECS = [
   { value: 'libx264', label: 'H.264 (libx264)', group: 'Software' },
   { value: 'libx264rgb', label: 'H.264 RGB (libx264rgb)', group: 'Software' },

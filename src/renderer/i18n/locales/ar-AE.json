@@ -46,7 +46,11 @@
     "cancel": "إلغاء",
     "placeholderBitrate": "مثال 2000k",
     "placeholderAudioBitrate": "مثال 192k",
-    "placeholderScale": "مثال 1280x720"
+    "placeholderScale": "مثال 1280x720",
+    "cancelTitle": "Cancel Conversion",
+    "cancelMessage": "Are you sure you want to cancel the current conversion?",
+    "yes": "Yes",
+    "no": "No"
   },
   "mediaInfo": {
     "title": "معلومات الوسائط",

@@ -46,7 +46,11 @@
     "cancel": "Batal",
     "placeholderBitrate": "mis. 2000k",
     "placeholderAudioBitrate": "mis. 192k",
-    "placeholderScale": "mis. 1280x720"
+    "placeholderScale": "mis. 1280x720",
+    "cancelTitle": "Cancel Conversion",
+    "cancelMessage": "Are you sure you want to cancel the current conversion?",
+    "yes": "Yes",
+    "no": "No"
   },
   "mediaInfo": {
     "title": "Informasi Media",

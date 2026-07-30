@@ -85,7 +85,7 @@ export const CONVERSION_DEFAULTS = {
   AUDIO_CODEC: 'aac',
   QSCALE: 23,
   PIXEL_FORMAT: 'yuv420p',
-  SCALE: '',
-  VIDEO_BITRATE: '',
-  AUDIO_BITRATE: '',
+  SCALE: '1920x1080',
+  VIDEO_BITRATE: '2000k',
+  AUDIO_BITRATE: '192k',
 } as const;

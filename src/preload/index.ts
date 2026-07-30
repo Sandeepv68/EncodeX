@@ -26,6 +26,14 @@ const api = {
     log.info('convertFile:', input, '->', output, 'transcoder:', transcoderType);
     return ipcRenderer.invoke(IPC.CONVERT_FILE, input, output, options, transcoderType) as Promise<void>;
   },
+  pauseConversion: () => {
+    log.info('pauseConversion called');
+    return ipcRenderer.invoke(IPC.PAUSE_CONVERSION) as Promise<void>;
+  },
+  resumeConversion: () => {
+    log.info('resumeConversion called');
+    return ipcRenderer.invoke(IPC.RESUME_CONVERSION) as Promise<void>;
+  },
   cancelConversion: () => {
     log.info('cancelConversion called');
     return ipcRenderer.invoke(IPC.CANCEL_CONVERSION) as Promise<void>;

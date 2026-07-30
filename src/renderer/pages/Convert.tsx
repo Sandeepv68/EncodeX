@@ -1,6 +1,20 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Typography, TextField, MenuItem, Switch, Paper, Stack } from '@mui/material';
+import {
+  Box,
+  Button,
+  Typography,
+  TextField,
+  MenuItem,
+  Switch,
+  Paper,
+  Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@mui/material';
 import PaletteIcon from '@mui/icons-material/Palette';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import InvertColorsIcon from '@mui/icons-material/InvertColors';
@@ -12,9 +26,9 @@ import ErrorBanner from '../components/ErrorBanner';
 import ProgressBar from '../components/ProgressBar';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useErrorHandler } from '../hooks/useErrorHandler';
-import { PIXEL_FORMATS } from '../../shared/ui-constants';
+import { PIXEL_FORMATS, VIDEO_BITRATE_OPTIONS, SCALE_OPTIONS, BITRATE_OPTIONS } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES, TRANSCODER_LABELS } from '../../shared/transcoder-constants';
-import { isValidScale, isValidBitrate, isInRange } from '../../shared/validation';
+import { isInRange } from '../../shared/validation';
 
 const log = new Logger('renderer/pages/Convert');
 
@@ -46,6 +60,7 @@ export default function Convert() {
     copyMode,
     transcoder,
     isConverting,
+    isPaused,
     progress,
     setInputFile,
     setOutputFile,
@@ -59,6 +74,8 @@ export default function Convert() {
     setCopyMode,
     setTranscoder,
     startConversion,
+    pauseConversion,
+    resumeConversion,
     cancelConversion,
     selectInput,
     selectOutput,
@@ -66,6 +83,7 @@ export default function Convert() {
 
   const { currentError, clearError } = useErrorHandler();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
 
   const clearFieldError = (field: string) => {
     setErrors((prev) => {
@@ -79,11 +97,17 @@ export default function Convert() {
   const validateFields = (): boolean => {
     const next: Record<string, string> = {};
     if (!isInRange(qscale, 1, 31)) next.qscale = t('validation.qscaleRange');
-    if (scale && !isValidScale(scale)) next.scale = t('validation.invalidScale');
-    if (videoBitrate && !isValidBitrate(videoBitrate)) next.videoBitrate = t('validation.invalidBitrate');
-    if (audioBitrate && !isValidBitrate(audioBitrate)) next.audioBitrate = t('validation.invalidBitrate');
     setErrors(next);
     return Object.keys(next).length === 0;
+  };
+
+  const handleConfirmCancel = () => {
+    setCancelConfirmOpen(false);
+    cancelConversion();
+  };
+
+  const handleCancelClick = () => {
+    setCancelConfirmOpen(true);
   };
 
   const handleStartConversion = () => {
@@ -178,42 +202,43 @@ export default function Convert() {
                   {t('convert.videoBitrate')}
                 </Typography>
                 <TextField
+                  select
                   fullWidth
                   size="small"
-                  error={!!errors.videoBitrate}
-                  helperText={errors.videoBitrate || ' '}
                   value={videoBitrate}
                   onChange={(e) => {
                     setVideoBitrate(e.target.value);
                     clearFieldError('videoBitrate');
                   }}
-                  onBlur={() => {
-                    if (videoBitrate && !isValidBitrate(videoBitrate))
-                      setErrors((prev) => ({ ...prev, videoBitrate: t('validation.invalidBitrate') }));
-                  }}
-                  placeholder={t('convert.placeholderBitrate')}
-                />
+                >
+                  {VIDEO_BITRATE_OPTIONS.map((b) => (
+                    <MenuItem key={b} value={b}>
+                      {b || 'Auto'}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Box>
               <Box sx={{ flex: 1 }}>
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                   {t('convert.audioBitrate')}
                 </Typography>
                 <TextField
+                  select
                   fullWidth
                   size="small"
-                  error={!!errors.audioBitrate}
-                  helperText={errors.audioBitrate || ' '}
                   value={audioBitrate}
                   onChange={(e) => {
                     setAudioBitrate(e.target.value);
                     clearFieldError('audioBitrate');
                   }}
-                  onBlur={() => {
-                    if (audioBitrate && !isValidBitrate(audioBitrate))
-                      setErrors((prev) => ({ ...prev, audioBitrate: t('validation.invalidBitrate') }));
-                  }}
-                  placeholder={t('convert.placeholderAudioBitrate')}
-                />
+                >
+                  <MenuItem value="">Auto</MenuItem>
+                  {BITRATE_OPTIONS.map((b) => (
+                    <MenuItem key={b} value={b}>
+                      {b}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Box>
             </Stack>
 
@@ -244,20 +269,21 @@ export default function Convert() {
                   {t('convert.scale')}
                 </Typography>
                 <TextField
+                  select
                   fullWidth
                   size="small"
-                  error={!!errors.scale}
-                  helperText={errors.scale || ' '}
                   value={scale}
                   onChange={(e) => {
                     setScale(e.target.value);
                     clearFieldError('scale');
                   }}
-                  onBlur={() => {
-                    if (scale && !isValidScale(scale)) setErrors((prev) => ({ ...prev, scale: t('validation.invalidScale') }));
-                  }}
-                  placeholder={t('convert.placeholderScale')}
-                />
+                >
+                  {SCALE_OPTIONS.map((s) => (
+                    <MenuItem key={s} value={s}>
+                      {s || 'None'}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Box>
               <Box sx={{ flex: 1 }}>
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
@@ -322,8 +348,18 @@ export default function Convert() {
           <Button variant="contained" onClick={handleStartConversion} disabled={!inputFile || !outputFile || isConverting}>
             {isConverting ? t('convert.converting') : t('convert.startConversion')}
           </Button>
+          {isConverting && !isPaused && (
+            <Button variant="contained" color="warning" onClick={pauseConversion}>
+              {t('convert.pause')}
+            </Button>
+          )}
+          {isConverting && isPaused && (
+            <Button variant="contained" color="success" onClick={resumeConversion}>
+              {t('convert.resume')}
+            </Button>
+          )}
           {isConverting && (
-            <Button variant="contained" color="error" onClick={cancelConversion}>
+            <Button variant="contained" color="error" onClick={handleCancelClick}>
               {t('convert.cancel')}
             </Button>
           )}
@@ -334,6 +370,19 @@ export default function Convert() {
             <ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} />
           </ErrorBoundary>
         )}
+
+        <Dialog open={cancelConfirmOpen} onClose={() => setCancelConfirmOpen(false)}>
+          <DialogTitle>{t('convert.cancelTitle')}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{t('convert.cancelMessage')}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setCancelConfirmOpen(false)}>{t('convert.no')}</Button>
+            <Button onClick={handleConfirmCancel} color="error" variant="contained">
+              {t('convert.yes')}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Paper>
     </Box>
   );

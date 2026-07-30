@@ -46,7 +46,11 @@
     "cancel": "Annuler",
     "placeholderBitrate": "ex. 2000k",
     "placeholderAudioBitrate": "ex. 192k",
-    "placeholderScale": "ex. 1280x720"
+    "placeholderScale": "ex. 1280x720",
+    "cancelTitle": "Cancel Conversion",
+    "cancelMessage": "Are you sure you want to cancel the current conversion?",
+    "yes": "Yes",
+    "no": "No"
   },
   "mediaInfo": {
     "title": "Informations Média",

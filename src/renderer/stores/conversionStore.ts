@@ -24,6 +24,7 @@ interface ConversionState {
   copyMode: boolean;
   transcoder: string;
   isConverting: boolean;
+  isPaused: boolean;
   progress: ProgressData | null;
   setInputFile: (file: string | null) => void;
   setOutputFile: (file: string | null) => void;
@@ -37,6 +38,7 @@ interface ConversionState {
   setCopyMode: (c: boolean) => void;
   setTranscoder: (t: string) => void;
   setIsConverting: (v: boolean) => void;
+  setIsPaused: (v: boolean) => void;
   setProgress: (p: ProgressData | null) => void;
 }
 
@@ -53,6 +55,7 @@ export const useConversionStore = create<ConversionState>((set) => ({
   copyMode: false,
   transcoder: TRANSCODER_TYPES[0],
   isConverting: false,
+  isPaused: false,
   progress: null,
   setInputFile: (file) => {
     log.debug('setInputFile:', file);
@@ -100,7 +103,12 @@ export const useConversionStore = create<ConversionState>((set) => ({
   },
   setIsConverting: (v) => {
     log.debug('setIsConverting:', v);
+    if (!v) set({ isPaused: false });
     set({ isConverting: v });
+  },
+  setIsPaused: (v) => {
+    log.debug('setIsPaused:', v);
+    set({ isPaused: v });
   },
   setProgress: (p) => set({ progress: p }),
 }));

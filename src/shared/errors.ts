@@ -88,7 +88,7 @@ function inferErrorCode(message: string, err?: unknown): ErrorCodeType {
   }
   if (errCode === 'EACCES' || m.includes('permission denied') || m.includes('eacces')) return ErrorCode.PERMISSION_DENIED;
   if (m.includes('bmf') && (m.includes('not available') || m.includes('not installed'))) return ErrorCode.BMF_NOT_AVAILABLE;
-  if (m.includes('cancelled') || m.includes('cancel')) return ErrorCode.CANCELLED;
+  if (m.includes('cancelled') || m.includes('cancel') || m.includes('killed') || m.includes('sigkill')) return ErrorCode.CANCELLED;
   if (m.includes('probe') || m.includes('could not read')) return ErrorCode.PROBE_FAILED;
   if (m.includes('format') || m.includes('unsupported')) return ErrorCode.INVALID_FORMAT;
   if (m.includes('queue')) return ErrorCode.QUEUE_ERROR;

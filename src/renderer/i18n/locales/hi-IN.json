@@ -46,7 +46,11 @@
     "cancel": "रद्द करें",
     "placeholderBitrate": "जैसे 2000k",
     "placeholderAudioBitrate": "जैसे 192k",
-    "placeholderScale": "जैसे 1280x720"
+    "placeholderScale": "जैसे 1280x720",
+    "cancelTitle": "Cancel Conversion",
+    "cancelMessage": "Are you sure you want to cancel the current conversion?",
+    "yes": "Yes",
+    "no": "No"
   },
   "mediaInfo": {
     "title": "मीडिया जानकारी",

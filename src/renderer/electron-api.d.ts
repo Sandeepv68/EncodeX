@@ -6,6 +6,8 @@ export interface ElectronAPI {
   selectOutput(): Promise<string | null>;
   getMediaInfo(filePath: string, transcoderType: string): Promise<MediaInfo>;
   convertFile(input: string, output: string, options: ConversionOptions, transcoderType: string): Promise<void>;
+  pauseConversion(): Promise<void>;
+  resumeConversion(): Promise<void>;
   cancelConversion(): Promise<void>;
   queueAdd(input: string, output: string, options: ConversionOptions, transcoder: string): Promise<string>;
   queueRemove(id: string): Promise<void>;

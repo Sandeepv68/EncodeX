@@ -8,6 +8,7 @@ import { Logger } from '../../shared/logger';
 import { ITranscoder } from './interface';
 import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
 import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/transcoder-constants';
+import { suspendProcess, resumeProcess } from '../process-utils';
 
 const log = new Logger('main/transcoders/ffmpeg-core');
 
@@ -34,6 +35,8 @@ function parseRatio(ratio: string): string {
 
 export class FfmpegCore implements ITranscoder {
   private currentProcess: ffmpeg.FfmpegCommand | null = null;
+  private processPid: number | null = null;
+  private cancelled = false;
 
   getType(): string {
     return TRANSCODER_TYPES[0];
@@ -79,6 +82,8 @@ export class FfmpegCore implements ITranscoder {
 
   convert(input: string, output: string, options: ConversionOptions): EventEmitter {
     log.info('convert:', input, '->', output, 'copy:', !!options.copy);
+    this.cancelled = false;
+    const progressStart = Date.now();
     const emitter = new EventEmitter();
     const cmd = ffmpeg({ source: input });
 
@@ -132,24 +137,45 @@ export class FfmpegCore implements ITranscoder {
     cmd.output(output);
     cmd.on('start', (commandLine) => {
       log.debug('FFmpeg process started:', commandLine);
+      const childProc = (cmd as any).ffmpegProc;
+      if (childProc) this.processPid = childProc.pid;
       emitter.emit('start', commandLine);
     });
-    cmd.on('codecData', (data) => emitter.emit('codecData', data));
-    cmd.on(
-      'progress',
-      (info: { percent?: number; timemark?: string; currentFps?: number; speed?: string; eta?: number; currentKbps?: number }) => {
-        const progress: ConversionProgress = {
-          percent: info.percent ?? 0,
-          time: info.timemark ?? EMPTY_PROGRESS.time,
-          fps: info.currentFps ?? 0,
-          speed: info.speed ?? EMPTY_PROGRESS.speed,
-          eta: info.eta != null ? String(info.eta) : EMPTY_PROGRESS.eta,
-          bitrate: info.currentKbps ? `${info.currentKbps}kbps` : '',
-        };
-        emitter.emit('progress', progress);
-      },
-    );
+    cmd.on('codecData', (data) => {
+      const childProc = (cmd as any).ffmpegProc;
+      if (childProc) this.processPid = childProc.pid;
+      emitter.emit('codecData', data);
+    });
+    cmd.on('progress', (info: { percent?: number; timemark?: string; currentFps?: number; speed?: string; currentKbps?: number }) => {
+      const elapsed = (Date.now() - progressStart) / 1000;
+      let eta: string = EMPTY_PROGRESS.eta;
+      if (info.percent != null && info.percent > 0) {
+        eta = ((elapsed / info.percent) * (100 - info.percent)).toFixed(0);
+      } else if (info.speed && info.timemark) {
+        const speed = parseFloat(info.speed.replace('x', ''));
+        const parts = info.timemark.split(':').map(Number);
+        if (speed > 0 && parts.length === 3 && !parts.some(isNaN)) {
+          const currentSec = parts[0] * 3600 + parts[1] * 60 + parts[2];
+          const remainingEst = elapsed - currentSec / speed;
+          if (remainingEst > 0) eta = remainingEst.toFixed(0);
+        }
+      }
+      const progress: ConversionProgress = {
+        percent: info.percent ?? 0,
+        time: info.timemark ?? EMPTY_PROGRESS.time,
+        fps: info.currentFps ?? 0,
+        speed: info.speed ?? EMPTY_PROGRESS.speed,
+        eta,
+        bitrate: info.currentKbps ? `${info.currentKbps}kbps` : '',
+      };
+      emitter.emit('progress', progress);
+    });
     cmd.on('error', (err: Error) => {
+      if (this.cancelled) {
+        log.info('FFmpeg process cancelled');
+        emitter.emit('end');
+        return;
+      }
       log.error('FFmpeg process error:', err);
       emitter.emit('error', err);
     });
@@ -163,8 +189,23 @@ export class FfmpegCore implements ITranscoder {
     return emitter;
   }
 
+  pause(): void {
+    log.info('Pausing FFmpeg process');
+    if (this.processPid != null) {
+      suspendProcess(this.processPid);
+    }
+  }
+
+  resume(): void {
+    log.info('Resuming FFmpeg process');
+    if (this.processPid != null) {
+      resumeProcess(this.processPid);
+    }
+  }
+
   cancel(): void {
     log.info('Cancelling current FFmpeg process');
+    this.cancelled = true;
     if (this.currentProcess) {
       this.currentProcess.kill('SIGKILL');
       this.currentProcess = null;

@@ -46,7 +46,11 @@
     "cancel": "취소",
     "placeholderBitrate": "예: 2000k",
     "placeholderAudioBitrate": "예: 192k",
-    "placeholderScale": "예: 1280x720"
+    "placeholderScale": "예: 1280x720",
+    "cancelTitle": "Cancel Conversion",
+    "cancelMessage": "Are you sure you want to cancel the current conversion?",
+    "yes": "Yes",
+    "no": "No"
   },
   "mediaInfo": {
     "title": "미디어 정보",

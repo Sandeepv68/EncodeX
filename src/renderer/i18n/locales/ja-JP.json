@@ -46,7 +46,11 @@
     "cancel": "キャンセル",
     "placeholderBitrate": "例: 2000k",
     "placeholderAudioBitrate": "例: 192k",
-    "placeholderScale": "例: 1280x720"
+    "placeholderScale": "例: 1280x720",
+    "cancelTitle": "Cancel Conversion",
+    "cancelMessage": "Are you sure you want to cancel the current conversion?",
+    "yes": "Yes",
+    "no": "No"
   },
   "mediaInfo": {
     "title": "メディア情報",

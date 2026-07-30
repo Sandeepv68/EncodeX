@@ -93,6 +93,20 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     },
   );
 
+  ipcMain.handle(IPC.PAUSE_CONVERSION, async () => {
+    log.info('PAUSE_CONVERSION called');
+    if (currentTranscoder) {
+      currentTranscoder.pause();
+    }
+  });
+
+  ipcMain.handle(IPC.RESUME_CONVERSION, async () => {
+    log.info('RESUME_CONVERSION called');
+    if (currentTranscoder) {
+      currentTranscoder.resume();
+    }
+  });
+
   ipcMain.handle(IPC.CANCEL_CONVERSION, async () => {
     log.info('CANCEL_CONVERSION called');
     if (currentTranscoder) {

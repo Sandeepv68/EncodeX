@@ -4,6 +4,7 @@ import ffmpegStatic from 'ffmpeg-static';
 import { existsSync } from 'fs';
 import { Logger } from '../../shared/logger';
 import { ITranscoder } from './interface';
+import { suspendProcess, resumeProcess } from '../process-utils';
 import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
 import {
   FFMPEG_FLAGS,
@@ -35,6 +36,8 @@ function getFfprobePath(): string {
 
 export class FFToolCore implements ITranscoder {
   private process: ChildProcess | null = null;
+  private cancelled = false;
+  private processPid: number | null = null;
 
   getType(): string {
     return TRANSCODER_TYPES[1];
@@ -103,6 +106,7 @@ export class FFToolCore implements ITranscoder {
 
   convert(input: string, output: string, options: ConversionOptions): EventEmitter {
     log.info('convert:', input, '->', output, 'copy:', !!options.copy);
+    this.cancelled = false;
     const emitter = new EventEmitter();
     const ffmpegPath = getFfmpegPath();
     const args: string[] = [FFMPEG_FLAGS.INPUT, input];
@@ -162,6 +166,7 @@ export class FFToolCore implements ITranscoder {
 
     const proc = spawn(ffmpegPath, args);
     this.process = proc;
+    this.processPid = proc.pid ?? null;
 
     let stderrData = '';
     proc.stderr?.on('data', (chunk: Buffer) => {
@@ -188,6 +193,12 @@ export class FFToolCore implements ITranscoder {
     }, TRANSCODER_DEFAULTS.PROGRESS_INTERVAL_MS);
 
     proc.on('error', (err: Error) => {
+      if (this.cancelled) {
+        if (progressTimer) clearInterval(progressTimer);
+        log.info('FFmpeg process cancelled');
+        emitter.emit('end');
+        return;
+      }
       log.error('FFmpeg process error:', err);
       if (progressTimer) clearInterval(progressTimer);
       emitter.emit('error', err);
@@ -196,6 +207,11 @@ export class FFToolCore implements ITranscoder {
     proc.on('close', (code: number | null) => {
       log.debug('FFmpeg exited with code:', code);
       if (progressTimer) clearInterval(progressTimer);
+      if (this.cancelled) {
+        log.info('FFmpeg process cancelled');
+        emitter.emit('end');
+        return;
+      }
       if (code === 0) {
         log.info('FFmpeg process completed successfully');
         emitter.emit('end');
@@ -208,11 +224,27 @@ export class FFToolCore implements ITranscoder {
     return emitter;
   }
 
+  pause(): void {
+    log.info('Pausing FFmpeg process');
+    if (this.processPid != null) {
+      suspendProcess(this.processPid);
+    }
+  }
+
+  resume(): void {
+    log.info('Resuming FFmpeg process');
+    if (this.processPid != null) {
+      resumeProcess(this.processPid);
+    }
+  }
+
   cancel(): void {
     log.info('Cancelling current FFmpeg process');
+    this.cancelled = true;
     if (this.process) {
       this.process.kill(KILL_SIGNAL);
       this.process = null;
+      this.processPid = null;
       log.info('FFmpeg process killed');
     }
   }

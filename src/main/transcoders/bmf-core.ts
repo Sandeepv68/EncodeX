@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import { spawn, ChildProcess, execSync } from 'child_process';
 import { Logger } from '../../shared/logger';
 import { ITranscoder } from './interface';
+import { suspendProcess, resumeProcess } from '../process-utils';
 import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
 import {
   TRANSCODER_TYPES,
@@ -17,6 +18,8 @@ const log = new Logger('main/transcoders/bmf-core');
 
 export class BmfCore implements ITranscoder {
   private process: ChildProcess | null = null;
+  private cancelled = false;
+  private processPid: number | null = null;
 
   getType(): string {
     return TRANSCODER_TYPES[2];
@@ -64,6 +67,7 @@ export class BmfCore implements ITranscoder {
 
   convert(input: string, output: string, options: ConversionOptions): EventEmitter {
     log.info('convert:', input, '->', output, 'copy:', !!options.copy);
+    this.cancelled = false;
     const emitter = new EventEmitter();
     const args: string[] = [FFMPEG_FLAGS.INPUT, input];
 
@@ -120,6 +124,7 @@ export class BmfCore implements ITranscoder {
     try {
       const proc = spawn(TRANSCODER_COMMANDS.BMF_FFMPEG, args);
       this.process = proc;
+      this.processPid = proc.pid ?? null;
 
       let stderrData = '';
       proc.stderr?.on('data', (chunk: Buffer) => {
@@ -131,11 +136,21 @@ export class BmfCore implements ITranscoder {
       });
 
       proc.on('error', (err: Error) => {
+        if (this.cancelled) {
+          log.info('BMF process cancelled');
+          emitter.emit('end');
+          return;
+        }
         log.error('BMF process error:', err);
         emitter.emit('error', err);
       });
       proc.on('close', (code: number | null) => {
         log.debug('BMF exited with code:', code);
+        if (this.cancelled) {
+          log.info('BMF process cancelled');
+          emitter.emit('end');
+          return;
+        }
         if (code === 0) {
           log.info('BMF process completed successfully');
           emitter.emit('end');
@@ -152,11 +167,27 @@ export class BmfCore implements ITranscoder {
     return emitter;
   }
 
+  pause(): void {
+    log.info('Pausing BMF process');
+    if (this.processPid != null) {
+      suspendProcess(this.processPid);
+    }
+  }
+
+  resume(): void {
+    log.info('Resuming BMF process');
+    if (this.processPid != null) {
+      resumeProcess(this.processPid);
+    }
+  }
+
   cancel(): void {
     log.info('Cancelling current BMF process');
+    this.cancelled = true;
     if (this.process) {
       this.process.kill(KILL_SIGNAL);
       this.process = null;
+      this.processPid = null;
       log.info('BMF process killed');
     }
   }

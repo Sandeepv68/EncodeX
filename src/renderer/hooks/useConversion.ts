@@ -75,6 +75,18 @@ export function useConversion() {
     showError,
   ]);
 
+  const pauseConversion = useCallback(async () => {
+    log.info('pauseConversion called');
+    await window.electronAPI?.pauseConversion();
+    store.setIsPaused(true);
+  }, []);
+
+  const resumeConversion = useCallback(async () => {
+    log.info('resumeConversion called');
+    await window.electronAPI?.resumeConversion();
+    store.setIsPaused(false);
+  }, []);
+
   const cancelConversion = useCallback(async () => {
     log.info('cancelConversion called');
     await window.electronAPI?.cancelConversion();
@@ -107,5 +119,5 @@ export function useConversion() {
     }
   }, [showError]);
 
-  return { ...store, startConversion, cancelConversion, selectInput, selectOutput };
+  return { ...store, startConversion, pauseConversion, resumeConversion, cancelConversion, selectInput, selectOutput };
 }

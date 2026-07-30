@@ -5,5 +5,7 @@ export interface ITranscoder {
   getInfo(input: string): Promise<MediaInfo>;
   convert(input: string, output: string, options: ConversionOptions): EventEmitter;
   cancel(): void;
+  pause(): void;
+  resume(): void;
   getType(): string;
 }
