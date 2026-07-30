@@ -4,6 +4,7 @@ import { Box, IconButton, Tooltip, Typography, Select, MenuItem, type SelectChan
 import ClearIcon from '@mui/icons-material/Clear';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useLogStore } from '../stores/logStore';
+import { useToastStore } from '../stores/toastStore';
 
 const LEVEL_COLORS: Record<string, string> = {
   DEBUG: '#9e9e9e',
@@ -28,6 +29,7 @@ export default function Logs() {
     a.download = `encodex-logs-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
     a.click();
     URL.revokeObjectURL(url);
+    useToastStore.getState().success(t('toast.logsDownloaded'));
   };
 
   useEffect(() => {

@@ -6,6 +6,7 @@ import ErrorBanner from '../components/ErrorBanner';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
+import { useToastStore } from '../stores/toastStore';
 import { MediaInfo as MediaInfoType, MediaStreamInfo } from '../../shared/types';
 
 const log = new Logger('renderer/pages/MediaInfo');
@@ -29,6 +30,7 @@ export default function MediaInfo() {
       const data = await window.electronAPI.getMediaInfo(path, 'FFMPEG');
       log.info('Media info retrieved:', data.format, data.duration.toFixed(2) + 's,', data.streams.length, 'streams');
       setInfo(data);
+      useToastStore.getState().success(t('toast.mediaInfoLoaded'));
     } catch (err: unknown) {
       log.error('Failed to get media info:', err);
       showError(err);

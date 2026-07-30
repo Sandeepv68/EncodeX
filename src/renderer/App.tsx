@@ -33,6 +33,7 @@ import { Logger } from '../shared/logger';
 import { ColorModeProvider, useColorMode } from './ColorModeContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import ErrorSnackbar from './components/ErrorSnackbar';
+import ToastContainer from './components/ToastContainer';
 import { useErrorStore } from './stores/errorStore';
 import Dashboard from './pages/Dashboard';
 import Convert from './pages/Convert';
@@ -386,6 +387,7 @@ function AppLayout() {
         </ErrorBoundary>
       </Box>
       <ErrorSnackbar error={currentError} onClose={clearError} />
+      <ToastContainer />
     </Box>
   );
 }

@@ -8,6 +8,7 @@ import ProgressBar from '../components/ProgressBar';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
+import { useToastStore } from '../stores/toastStore';
 import { ErrorCode } from '../../shared/errors';
 import { BITRATE_OPTIONS } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
@@ -50,6 +51,7 @@ export default function AudioExtract() {
     try {
       await window.electronAPI.convertFile(input, output, { audioCodec, audioBitrate }, transcoder);
       setProgress({ percent: 100, time: 'Done', speed: '-', eta: '0' });
+      useToastStore.getState().success(t('toast.audioExtracted'));
     } catch (err: unknown) {
       showError(err);
     } finally {

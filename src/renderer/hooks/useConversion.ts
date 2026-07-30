@@ -2,9 +2,11 @@ import { useEffect, useCallback } from 'react';
 import { Logger } from '../../shared/logger';
 import { useConversionStore } from '../stores/conversionStore';
 import { useErrorStore } from '../stores/errorStore';
+import { useToastStore } from '../stores/toastStore';
 import { ConversionProgress } from '../../shared/types';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import { ErrorCode } from '../../shared/errors';
+import i18n from '../i18n/config';
 
 const log = new Logger('renderer/hooks/useConversion');
 
@@ -55,6 +57,7 @@ export function useConversion() {
       );
       log.info('Conversion completed successfully');
       store.setProgress(COMPLETED_PROGRESS);
+      useToastStore.getState().success(i18n.t('toast.conversionComplete'));
     } catch (err: unknown) {
       log.error('Conversion failed:', err);
       showError(err);

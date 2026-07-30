@@ -170,5 +170,17 @@
   "status": {
     "auto": "Auto",
     "none": "Tidak ada"
+  },
+  "toast": {
+    "conversionComplete": "Conversion complete",
+    "imageCompressed": "Image compressed successfully",
+    "audioExtracted": "Audio extracted successfully",
+    "videoCut": "Video cut successfully",
+    "jobAdded": "Job added to queue",
+    "allCancelled": "All jobs cancelled",
+    "logsDownloaded": "Logs downloaded",
+    "mediaInfoLoaded": "Media info loaded",
+    "languageChanged": "Language changed to {{language}}",
+    "cancelled": "Cancelled"
   }
 }

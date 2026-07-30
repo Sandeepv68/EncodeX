@@ -7,6 +7,7 @@ import ProgressBar from '../components/ProgressBar';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
+import { useToastStore } from '../stores/toastStore';
 import { ErrorCode } from '../../shared/errors';
 import { isValidTime } from '../../shared/validation';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
@@ -74,6 +75,7 @@ export default function VideoCut() {
         transcoder,
       );
       setProgress({ percent: 100, time: 'Done', speed: '-', eta: '0' });
+      useToastStore.getState().success(t('toast.videoCut'));
     } catch (err: unknown) {
       showError(err);
     } finally {

@@ -7,6 +7,7 @@ import { Logger } from '../../shared/logger';
 import ProgressBar from '../components/ProgressBar';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useQueueStore } from '../stores/queueStore';
+import { useToastStore } from '../stores/toastStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX, QUEUE_STATUS } from '../../shared/ui-constants';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { QueueJob } from '../../shared/types';
@@ -68,12 +69,14 @@ export default function BatchQueue() {
         },
         transcoderRef.current,
       );
+      useToastStore.getState().success(t('toast.jobAdded'));
     }
   };
 
   const handleCancelAll = async () => {
     await window.electronAPI.queueCancelAll();
     clearJobs();
+    useToastStore.getState().info(t('toast.allCancelled'));
   };
 
   return (
