@@ -167,6 +167,10 @@
     "noEntries": "Inga loggposter än.",
     "entryCount": "{{count}} poster"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Drivs av"
+  },
   "status": {
     "auto": "Auto",
     "none": "Ingen"

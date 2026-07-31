@@ -167,6 +167,10 @@
     "noEntries": "Aucune entrée de journal pour l'instant.",
     "entryCount": "{{count}} entrées"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Propulsé par"
+  },
   "status": {
     "auto": "Auto",
     "none": "Aucun"

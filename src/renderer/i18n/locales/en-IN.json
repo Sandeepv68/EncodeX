@@ -167,6 +167,10 @@
     "noEntries": "No log entries yet.",
     "entryCount": "{{count}} entries"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Powered by"
+  },
   "status": {
     "auto": "Auto",
     "none": "None"

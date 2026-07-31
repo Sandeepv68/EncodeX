@@ -167,6 +167,10 @@
     "noEntries": "Nog geen loggegevens.",
     "entryCount": "{{count}} items"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Mogelijk gemaakt door"
+  },
   "status": {
     "auto": "Auto",
     "none": "Geen"

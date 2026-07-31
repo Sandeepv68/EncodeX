@@ -167,6 +167,10 @@
     "noEntries": "अभी तक कोई लॉग प्रविष्टियाँ नहीं.",
     "entryCount": "{{count}} प्रविष्टियाँ"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "द्वारा संचालित"
+  },
   "status": {
     "auto": "Auto",
     "none": "कोई नहीं"

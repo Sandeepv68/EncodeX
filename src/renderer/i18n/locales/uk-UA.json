@@ -167,6 +167,10 @@
     "noEntries": "Записів у журналі ще немає.",
     "entryCount": "{{count}} записів"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Працює на"
+  },
   "status": {
     "auto": "Auto",
     "none": "Немає"

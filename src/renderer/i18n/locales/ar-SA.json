@@ -167,6 +167,10 @@
     "noEntries": "لا توجد إدخالات السجل حتى الآن.",
     "entryCount": "{{count}} إدخال"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "مدعوم بواسطة"
+  },
   "status": {
     "auto": "Auto",
     "none": "لا شيء"

@@ -34,6 +34,7 @@ import { ColorModeProvider, useColorMode } from './ColorModeContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import ErrorSnackbar from './components/ErrorSnackbar';
 import ToastContainer from './components/ToastContainer';
+import Footer from './components/Footer';
 import { useErrorStore } from './stores/errorStore';
 import Dashboard from './pages/Dashboard';
 import Convert from './pages/Convert';
@@ -196,7 +197,7 @@ function AppLayout() {
         ))}
       </List>
       <Divider sx={{ borderColor: 'divider' }} />
-      <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' , height:47}}>
         <Tooltip title={t('app.language')}>
           <Box
             component="button"
@@ -216,7 +217,7 @@ function AppLayout() {
             }}
           >
             <FlagIcon locale={i18n.language} />
-            <Typography variant="caption" sx={{ textTransform: 'none', color: 'text.secondary', lineHeight: 1 }}>
+            <Typography variant="caption" sx={{ textTransform: 'none', color: 'text.secondary', lineHeight: 1, fontWeight: 'bold' }}>
               {localeLabels[i18n.language] || i18n.language}
             </Typography>
           </Box>
@@ -306,85 +307,102 @@ function AppLayout() {
       ) : (
         <Drawer
           variant="permanent"
-          sx={{ width: DRAWER_WIDTH, flexShrink: 0, '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' } }}
+          sx={{
+            width: DRAWER_WIDTH,
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: DRAWER_WIDTH,
+              boxSizing: 'border-box',
+              position: 'relative',
+              height: '100vh',
+            },
+          }}
         >
           {drawerContent}
         </Drawer>
       )}
-      <Box component="main" sx={{ flex: 1, overflow: 'auto', p: { xs: 2, sm: 3 }, position: 'relative' }}>
-        {isMobile && (
-          <IconButton onClick={() => setMobileOpen(true)} sx={{ mb: 1, color: 'text.secondary' }}>
-            <MenuOpenIcon />
-          </IconButton>
-        )}
-        <ErrorBoundary>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <ErrorBoundary>
-                  <Dashboard />
-                </ErrorBoundary>
-              }
-            />
-            <Route
-              path="/convert"
-              element={
-                <ErrorBoundary>
-                  <Convert />
-                </ErrorBoundary>
-              }
-            />
-            <Route
-              path="/media-info"
-              element={
-                <ErrorBoundary>
-                  <MediaInfo />
-                </ErrorBoundary>
-              }
-            />
-            <Route
-              path="/image-compress"
-              element={
-                <ErrorBoundary>
-                  <ImageCompress />
-                </ErrorBoundary>
-              }
-            />
-            <Route
-              path="/audio-extract"
-              element={
-                <ErrorBoundary>
-                  <AudioExtract />
-                </ErrorBoundary>
-              }
-            />
-            <Route
-              path="/video-cut"
-              element={
-                <ErrorBoundary>
-                  <VideoCut />
-                </ErrorBoundary>
-              }
-            />
-            <Route
-              path="/batch"
-              element={
-                <ErrorBoundary>
-                  <BatchQueue />
-                </ErrorBoundary>
-              }
-            />
-            <Route
-              path="/logs"
-              element={
-                <ErrorBoundary>
-                  <Logs />
-                </ErrorBoundary>
-              }
-            />
-          </Routes>
-        </ErrorBoundary>
+      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+        <Box
+          component="main"
+          sx={{ flex: 1, overflow: 'auto', p: { xs: 2, sm: 3 }, position: 'relative', display: 'flex', flexDirection: 'column' }}
+        >
+          {isMobile && (
+            <IconButton onClick={() => setMobileOpen(true)} sx={{ mb: 1, color: 'text.secondary', alignSelf: 'flex-start' }}>
+              <MenuOpenIcon />
+            </IconButton>
+          )}
+          <ErrorBoundary>
+            <Box sx={{ flex: 1 }}>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <ErrorBoundary>
+                      <Dashboard />
+                    </ErrorBoundary>
+                  }
+                />
+                <Route
+                  path="/convert"
+                  element={
+                    <ErrorBoundary>
+                      <Convert />
+                    </ErrorBoundary>
+                  }
+                />
+                <Route
+                  path="/media-info"
+                  element={
+                    <ErrorBoundary>
+                      <MediaInfo />
+                    </ErrorBoundary>
+                  }
+                />
+                <Route
+                  path="/image-compress"
+                  element={
+                    <ErrorBoundary>
+                      <ImageCompress />
+                    </ErrorBoundary>
+                  }
+                />
+                <Route
+                  path="/audio-extract"
+                  element={
+                    <ErrorBoundary>
+                      <AudioExtract />
+                    </ErrorBoundary>
+                  }
+                />
+                <Route
+                  path="/video-cut"
+                  element={
+                    <ErrorBoundary>
+                      <VideoCut />
+                    </ErrorBoundary>
+                  }
+                />
+                <Route
+                  path="/batch"
+                  element={
+                    <ErrorBoundary>
+                      <BatchQueue />
+                    </ErrorBoundary>
+                  }
+                />
+                <Route
+                  path="/logs"
+                  element={
+                    <ErrorBoundary>
+                      <Logs />
+                    </ErrorBoundary>
+                  }
+                />
+              </Routes>
+            </Box>
+          </ErrorBoundary>
+        </Box>
+        <Footer />
       </Box>
       <ErrorSnackbar error={currentError} onClose={clearError} />
       <ToastContainer />

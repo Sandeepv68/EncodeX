@@ -167,6 +167,10 @@
     "noEntries": "Belum ada entri log.",
     "entryCount": "{{count}} entri"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Didukung oleh"
+  },
   "status": {
     "auto": "Auto",
     "none": "Tidak ada"

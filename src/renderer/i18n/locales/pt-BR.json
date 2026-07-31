@@ -167,6 +167,10 @@
     "noEntries": "Ainda não há entradas de registro.",
     "entryCount": "{{count}} entradas"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Desenvolvido por"
+  },
   "status": {
     "auto": "Auto",
     "none": "Nenhum"

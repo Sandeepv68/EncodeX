@@ -61,6 +61,7 @@ export function ColorModeProvider({ children }: { children: ReactNode }) {
           success: { main: '#2ecc71' },
           warning: { main: '#f39c12' },
         },
+        typography: { fontFamily: '"Roboto","Helvetica","Arial",sans-serif' },
         shape: { borderRadius: 8 },
         components: {
           MuiDrawer: {

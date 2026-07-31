@@ -167,6 +167,10 @@
     "noEntries": "Noch keine Protokolleinträge.",
     "entryCount": "{{count}} Einträge"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Unterstützt von"
+  },
   "status": {
     "auto": "Auto",
     "none": "Keine"

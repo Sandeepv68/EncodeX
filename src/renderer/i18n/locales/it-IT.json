@@ -167,6 +167,10 @@
     "noEntries": "Nessuna voce di registro ancora.",
     "entryCount": "{{count}} voci"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Con tecnologia"
+  },
   "status": {
     "auto": "Auto",
     "none": "Nessuno"

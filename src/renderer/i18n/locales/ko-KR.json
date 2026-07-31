@@ -167,6 +167,10 @@
     "noEntries": "아직 로그 항목이 없습니다.",
     "entryCount": "{{count}}개 항목"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Powered by"
+  },
   "status": {
     "auto": "Auto",
     "none": "없음"

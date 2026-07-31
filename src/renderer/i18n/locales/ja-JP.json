@@ -167,6 +167,10 @@
     "noEntries": "まだログエントリがありません。",
     "entryCount": "{{count}} 件のログ"
   },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Powered by"
+  },
   "status": {
     "auto": "Auto",
     "none": "なし"
