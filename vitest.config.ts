@@ -22,6 +22,7 @@ export default defineConfig({
         'src/**/*.d.ts',
         'src/**/__tests__/**',
         'src/**/*.{test,spec}.{ts,tsx}',
+        'src/**/*.styles.ts',
         'src/renderer/i18n/**',
         'src/renderer/index.html',
         'src/renderer/global.css',
