@@ -1,8 +1,9 @@
 import { styled } from '@mui/material/styles';
 import { Box, IconButton, Slider, Typography } from '@mui/material';
+import { COLORS } from '../colors';
 
 export const PlayerRoot = styled(Box)(({ theme }) => ({
-  backgroundColor: '#000',
+  backgroundColor: COLORS.player.background,
   borderRadius: (theme.shape.borderRadius as number) * 2,
   overflow: 'hidden',
 }));
@@ -22,9 +23,9 @@ export const ControlsArea = styled(Box)(({ theme }) => ({
   paddingTop: theme.spacing(0.5),
 }));
 
-export const SeekSlider = styled(Slider)({ color: '#fff', paddingTop: 0, paddingBottom: 0 });
+export const SeekSlider = styled(Slider)({ color: COLORS.player.control, paddingTop: 0, paddingBottom: 0 });
 
-export const ControlButton = styled(IconButton)({ color: '#fff' });
+export const ControlButton = styled(IconButton)({ color: COLORS.player.control });
 
 export const ControlsRow = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -32,4 +33,4 @@ export const ControlsRow = styled('div')(({ theme }) => ({
   gap: theme.spacing(0.5),
 }));
 
-export const TimeText = styled(Typography)({ color: '#fff', marginLeft: 'auto' });
+export const TimeText = styled(Typography)({ color: COLORS.player.control, marginLeft: 'auto' });

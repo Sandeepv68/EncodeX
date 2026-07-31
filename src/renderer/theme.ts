@@ -1,37 +1,46 @@
 import { createTheme } from '@mui/material/styles';
+import { COLORS } from './colors';
 
 export type ColorMode = 'light' | 'dark';
+
+const FONT_FAMILY = '"Roboto","Helvetica","Arial",sans-serif';
 
 export function createAppTheme(mode: ColorMode, direction: 'ltr' | 'rtl') {
   return createTheme({
     direction,
     palette: {
       mode,
-      primary: { main: '#0f9b8e' },
-      secondary: { main: '#0dbfb0' },
+      primary: { main: COLORS.primary },
+      secondary: { main: COLORS.secondary },
       ...(mode === 'dark'
         ? {
-            background: { default: '#1a1a2e', paper: '#1e2a4a' },
-            text: { primary: '#e8e8e8', secondary: '#a0a0b0' },
+            background: { default: COLORS.background.dark, paper: COLORS.background.darkPaper },
+            text: { primary: COLORS.text.darkPrimary, secondary: COLORS.text.darkSecondary },
           }
         : {
-            background: { default: '#f5f5f5', paper: '#ffffff' },
-            text: { primary: '#1a1a2e', secondary: '#6b6b80' },
+            background: { default: COLORS.background.light, paper: COLORS.background.lightPaper },
+            text: { primary: COLORS.text.lightPrimary, secondary: COLORS.text.lightSecondary },
           }),
-      error: { main: '#e74c3c' },
-      success: { main: '#2ecc71' },
-      warning: { main: '#f39c12' },
+      error: { main: COLORS.error },
+      success: { main: COLORS.success },
+      warning: { main: COLORS.warning },
     },
-    typography: { fontFamily: '"Roboto","Helvetica","Arial",sans-serif' },
+    typography: { fontFamily: FONT_FAMILY },
     shape: { borderRadius: 8 },
     components: {
       MuiDrawer: {
         styleOverrides: {
-          paper: {
+          paper: ({ theme }) => ({
             ...(mode === 'dark'
-              ? { borderRight: '1px solid #2a3a5a', backgroundColor: '#16213e' }
-              : { borderRight: '1px solid #e0e0e0', backgroundColor: '#ffffff' }),
-          },
+              ? {
+                  borderRight: `${theme.typography.pxToRem(1)} solid ${COLORS.border.dark}`,
+                  backgroundColor: COLORS.background.drawerDark,
+                }
+              : {
+                  borderRight: `${theme.typography.pxToRem(1)} solid ${COLORS.border.light}`,
+                  backgroundColor: COLORS.background.lightPaper,
+                }),
+          }),
         },
       },
       MuiButton: {

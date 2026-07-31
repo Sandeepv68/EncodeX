@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, Divider, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { COLORS } from '../colors';
 
 export const DrawerHeader = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -31,18 +32,18 @@ export const NavItemButton = styled(ListItemButton)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   marginBottom: theme.spacing(0.5),
   '&.Mui-selected': {
-    backgroundColor: 'rgba(15,155,142,0.15)',
-    '&:hover': { backgroundColor: 'rgba(15,155,142,0.25)' },
+    backgroundColor: COLORS.tint.primary15,
+    '&:hover': { backgroundColor: COLORS.tint.primary25 },
   },
 }));
 
 export const NavItemIcon = styled(ListItemIcon, {
   shouldForwardProp: (prop) => prop !== '$active',
 })<{ $active: boolean }>(({ theme, $active }) => ({
-  minWidth: 36,
+  minWidth: theme.typography.pxToRem(36),
   color: $active ? theme.palette.primary.main : theme.palette.text.secondary,
 }));
 
-export const NavItemText = styled(ListItemText)({
-  '& .MuiListItemText-primary': { fontSize: 14 },
-});
+export const NavItemText = styled(ListItemText)(({ theme }) => ({
+  '& .MuiListItemText-primary': { fontSize: theme.typography.pxToRem(14) },
+}));

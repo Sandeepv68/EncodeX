@@ -5,6 +5,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useLogStore } from '../stores/logStore';
 import { useToastStore } from '../stores/toastStore';
+import { COLORS } from '../colors';
 import {
   LogsRoot,
   LogsHeader,
@@ -19,10 +20,10 @@ import {
 } from '../styles/Logs.styles';
 
 const LEVEL_COLORS: Record<string, string> = {
-  DEBUG: '#9e9e9e',
-  INFO: '#4fc3f7',
-  WARN: '#ffa726',
-  ERROR: '#ef5350',
+  DEBUG: COLORS.log.debug,
+  INFO: COLORS.log.info,
+  WARN: COLORS.log.warn,
+  ERROR: COLORS.log.error,
 };
 
 export default function Logs() {
@@ -80,8 +81,8 @@ export default function Logs() {
         {filtered.map((entry, i) => (
           <LogEntryRow key={i}>
             <TimestampSpan>{entry.timestamp.slice(11, 23)}</TimestampSpan>{' '}
-            <LevelSpan $color={LEVEL_COLORS[entry.level] || '#d4d4d4'}>[{entry.level}]</LevelSpan> <SourceSpan>[{entry.source}]</SourceSpan>{' '}
-            <span>{entry.text}</span>
+            <LevelSpan $color={LEVEL_COLORS[entry.level] || COLORS.log.text}>[{entry.level}]</LevelSpan>{' '}
+            <SourceSpan>[{entry.source}]</SourceSpan> <span>{entry.text}</span>
           </LogEntryRow>
         ))}
         <div ref={bottomRef} />

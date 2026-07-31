@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography, Select } from '@mui/material';
+import { COLORS } from '../colors';
 
 export const LogsRoot = styled(Box)({ display: 'flex', flexDirection: 'column', height: '100%' });
 
@@ -18,8 +19,8 @@ export const FilterSelect = styled(Select)(({ theme }) => ({ minWidth: theme.typ
 export const LogsBody = styled(Box)(({ theme }) => ({
   flex: 1,
   overflow: 'auto',
-  backgroundColor: '#1e1e1e',
-  color: '#d4d4d4',
+  backgroundColor: COLORS.log.background,
+  color: COLORS.log.text,
   fontFamily: 'monospace',
   fontSize: theme.typography.pxToRem(12),
   padding: theme.spacing(1),
@@ -29,16 +30,16 @@ export const LogsBody = styled(Box)(({ theme }) => ({
 }));
 
 export const NoEntriesText = styled(Typography)(({ theme }) => ({
-  color: '#888',
+  color: COLORS.log.muted,
   padding: theme.spacing(1),
 }));
 
 export const LogEntryRow = styled(Box)({ lineHeight: 1.5 });
 
-export const TimestampSpan = styled('span')({ color: '#888' });
+export const TimestampSpan = styled('span')({ color: COLORS.log.muted });
 
 export const LevelSpan = styled('span', {
   shouldForwardProp: (prop) => prop !== '$color',
 })<{ $color: string }>(({ $color }) => ({ color: $color }));
 
-export const SourceSpan = styled('span')({ color: '#888' });
+export const SourceSpan = styled('span')({ color: COLORS.log.muted });
