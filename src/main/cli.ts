@@ -1,9 +1,7 @@
-import { FfmpegCore } from './transcoders/ffmpeg-core';
-import { FFToolCore } from './transcoders/fftool-core';
-import { BmfCore } from './transcoders/bmf-core';
+import { createTranscoder } from './transcoders/factory';
 import { Logger } from '../shared/logger';
 import { ConversionOptions, TranscoderType } from '../shared/types';
-import { APP_NAME } from '../shared/ui-constants';
+import { APP_NAME } from '../shared/app-constants';
 import { TRANSCODER_TYPES } from '../shared/transcoder-constants';
 
 const log = new Logger('main/cli');
@@ -113,16 +111,4 @@ export async function runCli(): Promise<void> {
 
   log.info('Parsing CLI args:', cliArgs);
   await program.parseAsync(cliArgs, { from: 'user' });
-}
-
-function createTranscoder(type: TranscoderType): FfmpegCore | FFToolCore | BmfCore {
-  log.debug('Creating transcoder:', type);
-  switch (type) {
-    case 'FFMPEG':
-      return new FfmpegCore();
-    case 'FFTOOL':
-      return new FFToolCore();
-    case 'BMF':
-      return new BmfCore();
-  }
 }

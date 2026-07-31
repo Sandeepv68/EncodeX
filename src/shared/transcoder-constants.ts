@@ -90,3 +90,8 @@ export const CONVERSION_DEFAULTS = {
   VIDEO_BITRATE: '2000k',
   AUDIO_BITRATE: '192k',
 } as const;
+
+export const QSCALE_RANGE = {
+  MIN: 1,
+  MAX: 31,
+} as const;

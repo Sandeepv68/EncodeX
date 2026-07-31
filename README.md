@@ -267,7 +267,9 @@ src/
     ├── transcoder-constants.ts        # FFmpeg flags, defaults, progress patterns
     ├── types.ts                       # Shared interfaces: ConversionOptions, QueueJob,
     │                                  #   MediaInfo, MediaStreamInfo, PlayerFrame, etc.
-    └── ui-constants.ts                # UI layout, file extensions, codec lists, nav items
+    ├── app-constants.ts               # app/window layout, nav items
+    ├── file-extensions.ts             # input/output file extensions and filters
+    └── media-options.ts               # codec lists, pixel formats, bitrate/scale options
 
 e2e/
 ├── vitest.e2e.config.ts               # Vitest config for e2e (node env, 60s timeout)

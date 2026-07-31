@@ -3,7 +3,7 @@ import { spawn, ChildProcess, execSync } from 'child_process';
 import { Logger } from '../../shared/logger';
 import { ITranscoder } from './interface';
 import { suspendProcess, resumeProcess } from '../process-utils';
-import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
+import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/types';
 import {
   TRANSCODER_TYPES,
   TRANSCODER_COMMANDS,
@@ -11,8 +11,9 @@ import {
   KILL_SIGNAL,
   PROGRESS_PATTERNS,
   EMPTY_PROGRESS,
-  FFMPEG_FLAGS,
 } from '../../shared/transcoder-constants';
+import { buildFfmpegArgs } from './ffmpeg-utils';
+import { mapFfprobeData } from './ffprobe-mapper';
 
 const log = new Logger('main/transcoders/bmf-core');
 
@@ -35,30 +36,9 @@ export class BmfCore implements ITranscoder {
         timeout: TRANSCODER_DEFAULTS.BMF_TIMEOUT_MS,
       });
       const data = JSON.parse(result as string);
-      const streams: MediaStreamInfo[] = (data.streams || []).map((s: Record<string, unknown>) => ({
-        index: (s.index as number) ?? 0,
-        type: (s.codec_type as string) ?? 'video',
-        codec: (s.codec_name as string) ?? 'unknown',
-        codecLong: s.codec_long_name as string | undefined,
-        width: s.width as number | undefined,
-        height: s.height as number | undefined,
-        pixelFormat: s.pix_fmt as string | undefined,
-        frameRate: s.r_frame_rate as string | undefined,
-        bitrate: s.bit_rate as string | undefined,
-        sampleRate: s.sample_rate as number | undefined,
-        channels: s.channels as number | undefined,
-        duration: s.duration ? parseFloat(s.duration as string) : undefined,
-        language: (s.tags as Record<string, unknown> | undefined)?.language as string | undefined,
-      }));
-      log.info('getInfo completed:', data.format?.format_name, data.format?.duration);
-      return {
-        file: data.format?.filename ?? input,
-        format: data.format?.format_name ?? 'unknown',
-        size: data.format?.size ?? 0,
-        duration: data.format?.duration ? parseFloat(data.format.duration) : 0,
-        bitrate: data.format?.bit_rate ?? 'N/A',
-        streams,
-      };
+      const info = mapFfprobeData(data, input);
+      log.info('getInfo completed:', info.format, info.duration);
+      return info;
     } catch (err) {
       log.error('getInfo failed - BMF not available:', err);
       throw new Error('BMF not available. Please ensure BMF CLI tools are installed.');
@@ -69,55 +49,7 @@ export class BmfCore implements ITranscoder {
     log.info('convert:', input, '->', output, 'copy:', !!options.copy);
     this.cancelled = false;
     const emitter = new EventEmitter();
-    const args: string[] = [FFMPEG_FLAGS.INPUT, input];
-
-    if (options.copy) {
-      args.push(FFMPEG_FLAGS.COPY, FFMPEG_FLAGS.COPY_VALUE);
-    } else {
-      if (options.videoCodec) {
-        args.push(FFMPEG_FLAGS.VIDEO_CODEC, options.videoCodec);
-        log.debug('Video codec:', options.videoCodec);
-      }
-      if (options.audioCodec) {
-        args.push(FFMPEG_FLAGS.AUDIO_CODEC, options.audioCodec);
-        log.debug('Audio codec:', options.audioCodec);
-      }
-      if (options.videoBitrate) {
-        args.push(FFMPEG_FLAGS.VIDEO_BITRATE, options.videoBitrate);
-        log.debug('Video bitrate:', options.videoBitrate);
-      }
-      if (options.audioBitrate) {
-        args.push(FFMPEG_FLAGS.AUDIO_BITRATE, options.audioBitrate);
-        log.debug('Audio bitrate:', options.audioBitrate);
-      }
-      if (options.qscale !== undefined) {
-        args.push(FFMPEG_FLAGS.QSCALE, String(options.qscale));
-        log.debug('Qscale:', options.qscale);
-      }
-      if (options.scale) {
-        args.push(FFMPEG_FLAGS.VIDEO_FILTER, `${FFMPEG_FLAGS.SCALE}${options.scale}`);
-        log.debug('Scale:', options.scale);
-      }
-      if (options.pixelFormat) {
-        args.push(FFMPEG_FLAGS.PIX_FMT, options.pixelFormat);
-        log.debug('Pixel format:', options.pixelFormat);
-      }
-    }
-
-    if (options.startTime) {
-      args.push(FFMPEG_FLAGS.START, options.startTime);
-      log.debug('Start time:', options.startTime);
-    }
-    if (options.endTime) {
-      args.push(FFMPEG_FLAGS.END, options.endTime);
-      log.debug('End time:', options.endTime);
-    }
-    if (options.duration) {
-      args.push(FFMPEG_FLAGS.DURATION, options.duration);
-      log.debug('Duration:', options.duration);
-    }
-
-    args.push(FFMPEG_FLAGS.OVERWRITE, output);
+    const args = buildFfmpegArgs(input, output, options);
 
     log.debug('BMF command:', TRANSCODER_COMMANDS.BMF_FFMPEG, args.join(' '));
 

@@ -9,7 +9,7 @@ import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import QueueIcon from '@mui/icons-material/Queue';
 import { Logger } from '../../shared/logger';
-import { NAV_ITEMS } from '../../shared/ui-constants';
+import { NAV_ITEMS } from '../../shared/app-constants';
 
 const log = new Logger('renderer/pages/Dashboard');
 

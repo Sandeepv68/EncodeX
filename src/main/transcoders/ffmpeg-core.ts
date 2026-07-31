@@ -6,9 +6,10 @@ import { path as ffprobePath } from 'ffprobe-static';
 import { existsSync } from 'fs';
 import { Logger } from '../../shared/logger';
 import { ITranscoder } from './interface';
-import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
+import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/types';
 import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/transcoder-constants';
 import { suspendProcess, resumeProcess } from '../process-utils';
+import { mapFfprobeData } from './ffprobe-mapper';
 
 const log = new Logger('main/transcoders/ffmpeg-core');
 
@@ -21,16 +22,6 @@ if (existsSync(staticPath)) {
 if (existsSync(ffprobePath)) {
   ffmpeg.setFfprobePath(ffprobePath);
   log.debug('FFprobe path set to:', ffprobePath);
-}
-
-function parseRatio(ratio: string): string {
-  const parts = ratio.split('/');
-  if (parts.length === 2) {
-    const num = parseFloat(parts[0]);
-    const den = parseFloat(parts[1]);
-    if (den !== 0) return (num / den).toFixed(2);
-  }
-  return ratio;
 }
 
 export class FfmpegCore implements ITranscoder {
@@ -52,31 +43,9 @@ export class FfmpegCore implements ITranscoder {
           log.error('getInfo ffprobe failed:', err);
           return reject(err);
         }
-        const streams: MediaStreamInfo[] = (data.streams || []).map((s: Ffmpeg.FfprobeStream) => ({
-          index: s.index ?? 0,
-          type: (s.codec_type as MediaStreamInfo['type']) ?? 'video',
-          codec: s.codec_name ?? 'unknown',
-          codecLong: s.codec_long_name,
-          width: s.width,
-          height: s.height,
-          pixelFormat: s.pix_fmt,
-          frameRate: s.r_frame_rate ? parseRatio(s.r_frame_rate) : undefined,
-          bitrate: s.bit_rate != null ? String(s.bit_rate) : undefined,
-          sampleRate: s.sample_rate,
-          channels: s.channels,
-          duration: s.duration != null ? Number(s.duration) : undefined,
-          language: s.tags?.language as string | undefined,
-        }));
-        const fmt = data.format;
-        log.info('getInfo completed:', fmt.format_name, fmt.duration?.toFixed(2) + 's');
-        resolve({
-          file: fmt.filename ?? input,
-          format: fmt.format_name ?? 'unknown',
-          size: fmt.size ?? 0,
-          duration: fmt.duration != null ? Number(fmt.duration) : 0,
-          bitrate: fmt.bit_rate != null ? String(fmt.bit_rate) : 'N/A',
-          streams,
-        });
+        const info = mapFfprobeData(data, input);
+        log.info('getInfo completed:', info.format, info.duration.toFixed(2) + 's');
+        resolve(info);
       });
     });
   }

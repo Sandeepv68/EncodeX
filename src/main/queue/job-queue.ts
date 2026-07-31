@@ -2,11 +2,9 @@ import { EventEmitter } from 'events';
 import { randomUUID } from 'crypto';
 import { Logger } from '../../shared/logger';
 import { QueueJob, ConversionOptions, TranscoderType } from '../../shared/types';
-import { FfmpegCore } from '../transcoders/ffmpeg-core';
-import { FFToolCore } from '../transcoders/fftool-core';
-import { BmfCore } from '../transcoders/bmf-core';
+import { createTranscoder } from '../transcoders/factory';
 import { ITranscoder } from '../transcoders/interface';
-import { QUEUE_STATUS } from '../../shared/ui-constants';
+import { QUEUE_STATUS } from '../../shared/media-options';
 
 const log = new Logger('main/queue/job-queue');
 
@@ -15,17 +13,6 @@ export class JobQueue extends EventEmitter {
   private running = false;
   private currentJob: QueueJob | null = null;
   private currentTranscoder: ITranscoder | null = null;
-
-  private createTranscoder(type: TranscoderType): ITranscoder {
-    switch (type) {
-      case 'FFMPEG':
-        return new FfmpegCore();
-      case 'FFTOOL':
-        return new FFToolCore();
-      case 'BMF':
-        return new BmfCore();
-    }
-  }
 
   addJob(input: string, output: string, options: ConversionOptions, transcoder: TranscoderType): string {
     const id = randomUUID();
@@ -95,7 +82,7 @@ export class JobQueue extends EventEmitter {
     nextJob.status = QUEUE_STATUS.RUNNING;
     this.emit('statusChange', nextJob);
 
-    const transcoder = this.createTranscoder(nextJob.transcoder);
+    const transcoder = createTranscoder(nextJob.transcoder);
     this.currentTranscoder = transcoder;
 
     try {

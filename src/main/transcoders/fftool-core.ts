@@ -1,13 +1,10 @@
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess } from 'child_process';
-import ffmpegStatic from 'ffmpeg-static';
-import { existsSync } from 'fs';
 import { Logger } from '../../shared/logger';
 import { ITranscoder } from './interface';
 import { suspendProcess, resumeProcess } from '../process-utils';
-import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
+import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/types';
 import {
-  FFMPEG_FLAGS,
   FFPROBE_FLAGS,
   PROGRESS_PATTERNS,
   TRANSCODER_TYPES,
@@ -15,24 +12,10 @@ import {
   TRANSCODER_DEFAULTS,
   EMPTY_PROGRESS,
 } from '../../shared/transcoder-constants';
+import { getFfmpegPath, getFfprobePath, buildFfmpegArgs } from './ffmpeg-utils';
+import { mapFfprobeData } from './ffprobe-mapper';
 
 const log = new Logger('main/transcoders/fftool-core');
-
-function getFfmpegPath(): string {
-  const staticPath = ffmpegStatic as unknown as string;
-  if (existsSync(staticPath)) return staticPath;
-  log.warn('ffmpeg-static not found, falling back to system ffmpeg');
-  return 'ffmpeg';
-}
-
-function getFfprobePath(): string {
-  try {
-    return require('ffprobe-static').path;
-  } catch {
-    log.warn('ffprobe-static not found, falling back to system ffprobe');
-    return 'ffprobe';
-  }
-}
 
 export class FFToolCore implements ITranscoder {
   private process: ChildProcess | null = null;
@@ -71,31 +54,9 @@ export class FFToolCore implements ITranscoder {
         if (code !== 0) return reject(new Error(`ffprobe exited with code ${code}`));
         try {
           const data = JSON.parse(stdout);
-          const streams: MediaStreamInfo[] = (data.streams || []).map((s: Record<string, unknown>) => ({
-            index: (s.index as number) ?? 0,
-            type: (s.codec_type as string) ?? 'video',
-            codec: (s.codec_name as string) ?? 'unknown',
-            codecLong: s.codec_long_name as string | undefined,
-            width: s.width as number | undefined,
-            height: s.height as number | undefined,
-            pixelFormat: s.pix_fmt as string | undefined,
-            frameRate: s.r_frame_rate as string | undefined,
-            bitrate: s.bit_rate != null ? String(s.bit_rate as string) : undefined,
-            sampleRate: s.sample_rate as number | undefined,
-            channels: s.channels as number | undefined,
-            duration: s.duration != null ? Number(s.duration as string) : undefined,
-            language: (s.tags as Record<string, unknown> | undefined)?.language as string | undefined,
-          }));
-          const fmt = data.format || {};
-          log.info('getInfo completed:', fmt.format_name, fmt.duration);
-          resolve({
-            file: fmt.filename ?? input,
-            format: fmt.format_name ?? 'unknown',
-            size: fmt.size ?? 0,
-            duration: fmt.duration != null ? Number(fmt.duration) : 0,
-            bitrate: fmt.bit_rate != null ? String(fmt.bit_rate) : 'N/A',
-            streams,
-          });
+          const info = mapFfprobeData(data, input);
+          log.info('getInfo completed:', info.format, info.duration);
+          resolve(info);
         } catch (e) {
           log.error('getInfo JSON parse error:', e);
           reject(e);
@@ -109,58 +70,10 @@ export class FFToolCore implements ITranscoder {
     this.cancelled = false;
     const emitter = new EventEmitter();
     const ffmpegPath = getFfmpegPath();
-    const args: string[] = [FFMPEG_FLAGS.INPUT, input];
+    const args = buildFfmpegArgs(input, output, options);
     let progressTimer: ReturnType<typeof setInterval> | null = null;
     let lastTime: string = EMPTY_PROGRESS.time;
     const progressStart = Date.now();
-
-    if (options.copy) {
-      args.push(FFMPEG_FLAGS.COPY, FFMPEG_FLAGS.COPY_VALUE);
-    } else {
-      if (options.videoCodec) {
-        args.push(FFMPEG_FLAGS.VIDEO_CODEC, options.videoCodec);
-        log.debug('Video codec:', options.videoCodec);
-      }
-      if (options.audioCodec) {
-        args.push(FFMPEG_FLAGS.AUDIO_CODEC, options.audioCodec);
-        log.debug('Audio codec:', options.audioCodec);
-      }
-      if (options.videoBitrate) {
-        args.push(FFMPEG_FLAGS.VIDEO_BITRATE, options.videoBitrate);
-        log.debug('Video bitrate:', options.videoBitrate);
-      }
-      if (options.audioBitrate) {
-        args.push(FFMPEG_FLAGS.AUDIO_BITRATE, options.audioBitrate);
-        log.debug('Audio bitrate:', options.audioBitrate);
-      }
-      if (options.qscale !== undefined) {
-        args.push(FFMPEG_FLAGS.QSCALE, String(options.qscale));
-        log.debug('Qscale:', options.qscale);
-      }
-      if (options.scale) {
-        args.push(FFMPEG_FLAGS.VIDEO_FILTER, `${FFMPEG_FLAGS.SCALE}${options.scale}`);
-        log.debug('Scale:', options.scale);
-      }
-      if (options.pixelFormat) {
-        args.push(FFMPEG_FLAGS.PIX_FMT, options.pixelFormat);
-        log.debug('Pixel format:', options.pixelFormat);
-      }
-    }
-
-    if (options.startTime) {
-      args.push(FFMPEG_FLAGS.START, options.startTime);
-      log.debug('Start time:', options.startTime);
-    }
-    if (options.endTime) {
-      args.push(FFMPEG_FLAGS.END, options.endTime);
-      log.debug('End time:', options.endTime);
-    }
-    if (options.duration) {
-      args.push(FFMPEG_FLAGS.DURATION, options.duration);
-      log.debug('Duration:', options.duration);
-    }
-
-    args.push(FFMPEG_FLAGS.OVERWRITE, output);
 
     log.debug('FFmpeg command:', ffmpegPath, args.join(' '));
 

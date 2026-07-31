@@ -3,7 +3,7 @@ import * as path from 'path';
 import { registerIpcHandlers } from './ipc/handlers';
 import { runCli } from './cli';
 import { Logger } from '../shared/logger';
-import { WINDOW_SIZE, DEV_SERVER_URL, APP_NAME, EXIT_CODES } from '../shared/ui-constants';
+import { WINDOW_SIZE, DEV_SERVER_URL, APP_NAME, EXIT_CODES } from '../shared/app-constants';
 import { IPC } from '../shared/ipc-channels';
 
 const log = new Logger('main/index');

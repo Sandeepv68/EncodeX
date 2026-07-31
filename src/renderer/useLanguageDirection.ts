@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
 import i18n from './i18n/config';
-
-const RTL_LOCALES = ['ar-SA', 'ar-AE'];
+import { isRtlLocale } from './i18n/localeMeta';
 
 export function useLanguageDirection(): 'ltr' | 'rtl' {
-  const [direction, setDirection] = useState<'ltr' | 'rtl'>(() => (RTL_LOCALES.some((c) => i18n.language.startsWith(c)) ? 'rtl' : 'ltr'));
+  const [direction, setDirection] = useState<'ltr' | 'rtl'>(() => (isRtlLocale(i18n.language) ? 'rtl' : 'ltr'));
 
   useEffect(() => {
     const update = () => {
-      const isRtl = RTL_LOCALES.some((c) => i18n.language.startsWith(c));
-      const dir = isRtl ? 'rtl' : 'ltr';
+      const dir = isRtlLocale(i18n.language) ? 'rtl' : 'ltr';
       setDirection(dir);
       document.dir = dir;
     };

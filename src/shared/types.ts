@@ -1,4 +1,4 @@
-import { QUEUE_STATUS, FALLBACK_VALUES } from './ui-constants';
+import { QUEUE_STATUS, FALLBACK_VALUES } from './media-options';
 import { TRANSCODER_TYPES, TranscoderType } from './transcoder-constants';
 
 export type { TranscoderType };

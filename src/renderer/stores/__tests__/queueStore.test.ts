@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useQueueStore } from '../queueStore';
-import { QUEUE_STATUS } from '../../../shared/ui-constants';
+import { QUEUE_STATUS } from '../../../shared/media-options';
 
 function makeJob(id: string) {
   return {
