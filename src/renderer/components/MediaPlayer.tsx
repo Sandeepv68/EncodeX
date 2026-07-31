@@ -1,10 +1,10 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
-import { Box, IconButton, Slider, Stack, Typography } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import StopIcon from '@mui/icons-material/Stop';
 import { Logger } from '../../shared/logger';
 import { PlayerFrame } from '../../shared/types';
+import { PlayerRoot, PlayerCanvas, ControlsArea, SeekSlider, ControlButton, ControlsRow, TimeText } from '../styles/MediaPlayer.styles';
 
 const log = new Logger('renderer/components/MediaPlayer');
 
@@ -142,34 +142,29 @@ export default function MediaPlayer({ filePath, onTimeUpdate }: Props) {
   }
 
   return (
-    <Box sx={{ bgcolor: '#000', borderRadius: 2, overflow: 'hidden' }}>
-      <canvas
-        ref={canvasRef}
-        style={{ maxWidth: '100%', maxHeight: 400, display: 'block', cursor: 'pointer', margin: '0 auto' }}
-        onClick={handlePlayPause}
-      />
-      <Box sx={{ px: 2, pb: 1.5, pt: 0.5 }}>
-        <Slider
+    <PlayerRoot>
+      <PlayerCanvas ref={canvasRef} onClick={handlePlayPause} />
+      <ControlsArea>
+        <SeekSlider
           size="small"
           min={0}
           max={duration || 100}
           value={currentTime}
           onChange={handleSeek}
           onChangeCommitted={handleSeekCommitted}
-          sx={{ color: '#fff', py: 0 }}
         />
-        <Stack direction="row" alignItems="center" spacing={0.5}>
-          <IconButton size="small" sx={{ color: '#fff' }} onClick={handlePlayPause}>
+        <ControlsRow>
+          <ControlButton size="small" onClick={handlePlayPause}>
             {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-          </IconButton>
-          <IconButton size="small" sx={{ color: '#fff' }} onClick={handleStop}>
+          </ControlButton>
+          <ControlButton size="small" onClick={handleStop}>
             <StopIcon />
-          </IconButton>
-          <Typography variant="caption" sx={{ color: '#fff', ml: 'auto' }}>
+          </ControlButton>
+          <TimeText variant="caption">
             {displayTime(currentTime)} / {displayTime(duration)}
-          </Typography>
-        </Stack>
-      </Box>
-    </Box>
+          </TimeText>
+        </ControlsRow>
+      </ControlsArea>
+    </PlayerRoot>
   );
 }

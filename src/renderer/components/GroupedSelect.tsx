@@ -1,5 +1,6 @@
-import { Box, MenuItem, TextField } from '@mui/material';
+import { MenuItem, TextField } from '@mui/material';
 import type { SvgIconProps } from '@mui/material/SvgIcon';
+import { GroupHeader, GroupLabel, GroupHeaderIconBox } from '../styles/GroupedSelect.styles';
 
 export interface GroupedOption {
   value: string;
@@ -22,26 +23,12 @@ export default function GroupedSelect({ value, onChange, options, groupIcons }: 
       lastGroup = opt.group;
       const Icon = groupIcons[opt.group];
       items.push(
-        <MenuItem
-          key={`group-${opt.group}`}
-          disabled
-          sx={{
-            fontWeight: 700,
-            opacity: '1 !important',
-            cursor: 'default',
-            fontSize: '0.8rem',
-            bgcolor: 'action.selected',
-            color: 'primary.main',
-            py: 0.75,
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-          }}
-        >
-          <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
-            {Icon && <Icon sx={{ fontSize: 16 }} />}
+        <GroupHeader key={`group-${opt.group}`} disabled>
+          <GroupLabel>
+            <GroupHeaderIconBox>{Icon && <Icon fontSize="inherit" />}</GroupHeaderIconBox>
             {opt.group}
-          </Box>
-        </MenuItem>,
+          </GroupLabel>
+        </GroupHeader>,
       );
     }
     items.push(

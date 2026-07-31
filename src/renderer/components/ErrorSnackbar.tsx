@@ -1,6 +1,7 @@
-import { Snackbar, Alert, AlertColor } from '@mui/material';
+import { Snackbar, AlertColor } from '@mui/material';
 import { Logger } from '../../shared/logger';
 import { AppError, ErrorCode, ErrorCodeType } from '../../shared/errors';
+import { SnackbarAlert, AlertMessage, AlertDetail } from '../styles/ErrorSnackbar.styles';
 
 const log = new Logger('renderer/components/ErrorSnackbar');
 
@@ -31,10 +32,10 @@ export default function ErrorSnackbar({ error, onClose }: Props) {
   const severity = severityMap[error.code] || 'error';
   return (
     <Snackbar open autoHideDuration={6000} onClose={onClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-      <Alert onClose={onClose} severity={severity} variant="filled" sx={{ maxWidth: 600 }}>
-        <div style={{ fontWeight: 600, fontSize: 13 }}>{error.message}</div>
-        {error.detail && <div style={{ fontSize: 12, opacity: 0.9, marginTop: 2 }}>{error.detail}</div>}
-      </Alert>
+      <SnackbarAlert onClose={onClose} severity={severity} variant="filled">
+        <AlertMessage>{error.message}</AlertMessage>
+        {error.detail && <AlertDetail>{error.detail}</AlertDetail>}
+      </SnackbarAlert>
     </Snackbar>
   );
 }

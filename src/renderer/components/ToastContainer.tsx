@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar } from '@mui/material';
 import { useToastStore } from '../stores/toastStore';
 import type { Toast } from '../stores/toastStore';
+import { ToastAlert, ToastMessage, ToastDetail } from '../styles/ToastContainer.styles';
 
 export default function ToastContainer() {
   const toasts = useToastStore((s) => s.toasts);
@@ -46,10 +47,10 @@ export default function ToastContainer() {
       TransitionProps={{ onExited: handleExited }}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
     >
-      <Alert onClose={handleClose} severity={active.type} variant="filled" sx={{ maxWidth: 600 }}>
-        <div style={{ fontWeight: 600, fontSize: 13 }}>{active.message}</div>
-        {active.detail && <div style={{ fontSize: 12, opacity: 0.9, marginTop: 2 }}>{active.detail}</div>}
-      </Alert>
+      <ToastAlert onClose={handleClose} severity={active.type} variant="filled">
+        <ToastMessage>{active.message}</ToastMessage>
+        {active.detail && <ToastDetail>{active.detail}</ToastDetail>}
+      </ToastAlert>
     </Snackbar>
   );
 }

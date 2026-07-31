@@ -1,6 +1,7 @@
-import { Box, Chip, Grid, Paper, Typography } from '@mui/material';
+import { Chip, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaStreamInfo } from '../../shared/types';
+import { StreamTitle, StreamPaper, StreamHeaderRow, StreamName } from '../styles/StreamDetails.styles';
 
 export interface StreamDetailsProps {
   streams: MediaStreamInfo[];
@@ -11,17 +12,17 @@ export default function StreamDetails({ streams }: StreamDetailsProps) {
 
   return (
     <>
-      <Typography variant="h6" sx={{ mb: 1 }}>
+      <StreamTitle variant="h6">
         {t('mediaInfo.streams')} ({streams.length})
-      </Typography>
+      </StreamTitle>
       {streams.map((stream, i) => (
-        <Paper key={i} variant="outlined" sx={{ p: 1.5, mb: 1, bgcolor: 'background.default' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+        <StreamPaper key={i} variant="outlined">
+          <StreamHeaderRow>
             <Chip label={stream.type.toUpperCase()} size="small" color={stream.type === 'video' ? 'primary' : 'warning'} />
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            <StreamName variant="body2">
               {t('mediaInfo.stream')} #{stream.index}
-            </Typography>
-          </Box>
+            </StreamName>
+          </StreamHeaderRow>
           <Grid container spacing={0.5}>
             {stream.codec && (
               <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -80,7 +81,7 @@ export default function StreamDetails({ streams }: StreamDetailsProps) {
               </Grid>
             )}
           </Grid>
-        </Paper>
+        </StreamPaper>
       ))}
     </>
   );

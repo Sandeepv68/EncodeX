@@ -1,10 +1,18 @@
-import { Box, Typography, IconButton, Collapse } from '@mui/material';
+import { Collapse } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ErrorIcon from '@mui/icons-material/Error';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Logger } from '../../shared/logger';
 import { AppError, ErrorCode, ErrorCodeType } from '../../shared/errors';
+import {
+  BannerRoot,
+  BannerIconBox,
+  BannerMessageBox,
+  BannerMessageText,
+  BannerDetailText,
+  BannerCloseButton,
+} from '../styles/ErrorBanner.styles';
 
 const log = new Logger('renderer/components/ErrorBanner');
 
@@ -35,34 +43,24 @@ export default function ErrorBanner({ error, onClose }: Props) {
   const cfg = config[error.code] || config[ErrorCode.UNKNOWN];
   return (
     <Collapse in>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: 1.5,
-          p: 1.5,
-          borderRadius: 1,
-          bgcolor: cfg.bg,
-          border: `1px solid ${cfg.color}33`,
-        }}
-      >
-        <Box sx={{ color: cfg.color, mt: 0.3, display: 'flex' }}>{cfg.icon}</Box>
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="body2" sx={{ fontWeight: 600, color: cfg.color }}>
+      <BannerRoot $tone={cfg.color} $tint={cfg.bg}>
+        <BannerIconBox $tone={cfg.color}>{cfg.icon}</BannerIconBox>
+        <BannerMessageBox>
+          <BannerMessageText variant="body2" $tone={cfg.color}>
             {error.message}
-          </Typography>
+          </BannerMessageText>
           {error.detail && (
-            <Typography variant="caption" sx={{ color: cfg.color, opacity: 0.8, display: 'block', mt: 0.3 }}>
+            <BannerDetailText variant="caption" $tone={cfg.color}>
               {error.detail}
-            </Typography>
+            </BannerDetailText>
           )}
-        </Box>
+        </BannerMessageBox>
         {onClose && (
-          <IconButton size="small" onClick={onClose} sx={{ color: cfg.color, mt: -0.3 }}>
+          <BannerCloseButton size="small" onClick={onClose} $tone={cfg.color}>
             <CloseIcon fontSize="small" />
-          </IconButton>
+          </BannerCloseButton>
         )}
-      </Box>
+      </BannerRoot>
     </Collapse>
   );
 }

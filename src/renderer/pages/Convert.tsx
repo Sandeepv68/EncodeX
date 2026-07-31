@@ -20,6 +20,7 @@ import { PIXEL_FORMATS, VIDEO_BITRATE_OPTIONS, SCALE_OPTIONS, BITRATE_OPTIONS } 
 import { TRANSCODER_TYPES, TRANSCODER_LABELS, CONVERSION_DEFAULTS, QSCALE_RANGE } from '../../shared/transcoder-constants';
 import { isInRange } from '../../shared/validation';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { ToggleRow, FieldBox, FieldLabel, ActionStack } from '../styles/Convert.styles';
 
 const log = new Logger('renderer/pages/Convert');
 
@@ -131,39 +132,39 @@ export default function Convert() {
         onBrowse={selectOutput}
       />
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <ToggleRow>
         <Switch checked={copyMode} onChange={(e) => setCopyMode(e.target.checked)} />
         <Typography variant="caption" color="text.secondary">
           {t('convert.losslessCopy')}
         </Typography>
-      </Box>
+      </ToggleRow>
 
       {!copyMode && (
         <>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+            <FieldBox>
+              <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.videoCodec')}
-              </Typography>
+              </FieldLabel>
               <ErrorBoundary fallback={null}>
                 <CodecSelect type="video" value={videoCodec} onChange={setVideoCodec} />
               </ErrorBoundary>
-            </Box>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+            </FieldBox>
+            <FieldBox>
+              <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.audioCodec')}
-              </Typography>
+              </FieldLabel>
               <ErrorBoundary fallback={null}>
                 <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} />
               </ErrorBoundary>
-            </Box>
+            </FieldBox>
           </Stack>
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+            <FieldBox>
+              <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.videoBitrate')}
-              </Typography>
+              </FieldLabel>
               <TextField
                 select
                 fullWidth
@@ -180,11 +181,11 @@ export default function Convert() {
                   </MenuItem>
                 ))}
               </TextField>
-            </Box>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+            </FieldBox>
+            <FieldBox>
+              <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.audioBitrate')}
-              </Typography>
+              </FieldLabel>
               <TextField
                 select
                 fullWidth
@@ -202,14 +203,14 @@ export default function Convert() {
                   </MenuItem>
                 ))}
               </TextField>
-            </Box>
+            </FieldBox>
           </Stack>
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+            <FieldBox>
+              <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.qscale')}
-              </Typography>
+              </FieldLabel>
               <TextField
                 fullWidth
                 size="small"
@@ -226,11 +227,11 @@ export default function Convert() {
                 }}
                 slotProps={{ htmlInput: { min: QSCALE_RANGE.MIN, max: QSCALE_RANGE.MAX } }}
               />
-            </Box>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+            </FieldBox>
+            <FieldBox>
+              <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.scale')}
-              </Typography>
+              </FieldLabel>
               <TextField
                 select
                 fullWidth
@@ -247,21 +248,21 @@ export default function Convert() {
                   </MenuItem>
                 ))}
               </TextField>
-            </Box>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+            </FieldBox>
+            <FieldBox>
+              <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.pixelFormat')}
-              </Typography>
+              </FieldLabel>
               <GroupedSelect value={pixelFormat} onChange={setPixelFormat} options={pixelFormatOptions} groupIcons={pixelGroupIcons} />
-            </Box>
+            </FieldBox>
           </Stack>
         </>
       )}
 
       <Box>
-        <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+        <FieldLabel variant="caption" color="text.secondary">
           {t('convert.transcoderCore')}
-        </Typography>
+        </FieldLabel>
         <TextField select fullWidth size="small" value={transcoder} onChange={(e) => setTranscoder(e.target.value)}>
           {TRANSCODER_TYPES.map((tc) => (
             <MenuItem key={tc} value={tc}>
@@ -271,7 +272,7 @@ export default function Convert() {
         </TextField>
       </Box>
 
-      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+      <ActionStack direction="row" spacing={1} useFlexGap>
         <Button variant="contained" onClick={handleStartConversion} disabled={!inputFile || !outputFile || isConverting}>
           {isConverting ? t('convert.converting') : t('convert.startConversion')}
         </Button>
@@ -295,7 +296,7 @@ export default function Convert() {
             {t('convert.cancelJob')}
           </Button>
         )}
-      </Stack>
+      </ActionStack>
 
       {progress && (
         <ErrorBoundary fallback={null}>

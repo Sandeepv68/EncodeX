@@ -1,7 +1,8 @@
-import { Box, Typography, Paper } from '@mui/material';
+import { Box } from '@mui/material';
 import { useErrorStore } from '../stores/errorStore';
 import ErrorBanner from './ErrorBanner';
 import { ErrorBoundary } from './ErrorBoundary';
+import { PageTitle, ContentPaper } from '../styles/PageContainer.styles';
 
 interface Props {
   title: string;
@@ -13,17 +14,15 @@ export default function PageContainer({ title, children }: Props) {
   const clearError = useErrorStore((s) => s.clearError);
   return (
     <Box>
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-        {title}
-      </Typography>
-      <Paper sx={{ p: { xs: 2, sm: 3 }, width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <PageTitle variant="h5">{title}</PageTitle>
+      <ContentPaper>
         {currentError && (
           <ErrorBoundary fallback={null}>
             <ErrorBanner error={currentError} onClose={clearError} />
           </ErrorBoundary>
         )}
         {children}
-      </Paper>
+      </ContentPaper>
     </Box>
   );
 }

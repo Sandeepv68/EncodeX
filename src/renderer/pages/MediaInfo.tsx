@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, Paper, CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import FileDropZone from '../components/FileDropZone';
 import ErrorBanner from '../components/ErrorBanner';
 import FileSummary from '../components/FileSummary';
@@ -10,6 +10,7 @@ import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
 import { MediaInfo as MediaInfoType } from '../../shared/types';
+import { PageTitle, ContentBox, ErrorBox, LoadingBox, InfoPaper, InfoTitle } from '../styles/MediaInfo.styles';
 
 const log = new Logger('renderer/pages/MediaInfo');
 
@@ -37,37 +38,33 @@ export default function MediaInfo() {
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-        {t('mediaInfo.title')}
-      </Typography>
-      <Box sx={{ width: '100%' }}>
+      <PageTitle variant="h5">{t('mediaInfo.title')}</PageTitle>
+      <ContentBox>
         {currentError && (
-          <Box sx={{ mb: 2 }}>
+          <ErrorBox>
             <ErrorBoundary fallback={null}>
               <ErrorBanner error={currentError} onClose={clearError} />
             </ErrorBoundary>
-          </Box>
+          </ErrorBox>
         )}
         <ErrorBoundary fallback={null}>
           <FileDropZone onFileSelect={handleFile} label={t('mediaInfo.dropLabel')} />
         </ErrorBoundary>
         {loading && (
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <LoadingBox>
             <CircularProgress size={24} />
-          </Box>
+          </LoadingBox>
         )}
         {info && (
           <ErrorBoundary fallback={null}>
-            <Paper sx={{ p: 2, mt: 2 }}>
-              <Typography variant="h6" sx={{ mb: 1 }}>
-                {t('mediaInfo.fileInfo')}
-              </Typography>
+            <InfoPaper>
+              <InfoTitle variant="h6">{t('mediaInfo.fileInfo')}</InfoTitle>
               <FileSummary info={info} />
               <StreamDetails streams={info.streams} />
-            </Paper>
+            </InfoPaper>
           </ErrorBoundary>
         )}
-      </Box>
+      </ContentBox>
     </Box>
   );
 }
