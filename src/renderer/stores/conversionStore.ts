@@ -1,5 +1,8 @@
 import { create } from 'zustand';
+import { Logger } from '../../shared/logger';
 import { CONVERSION_DEFAULTS, TRANSCODER_TYPES } from '../../shared/transcoder-constants';
+
+const log = new Logger('renderer/stores/conversionStore');
 
 interface ProgressData {
   percent: number;
@@ -21,6 +24,8 @@ interface ConversionState {
   copyMode: boolean;
   transcoder: string;
   isConverting: boolean;
+  isPaused: boolean;
+  isDirty: boolean;
   progress: ProgressData | null;
   setInputFile: (file: string | null) => void;
   setOutputFile: (file: string | null) => void;
@@ -34,12 +39,14 @@ interface ConversionState {
   setCopyMode: (c: boolean) => void;
   setTranscoder: (t: string) => void;
   setIsConverting: (v: boolean) => void;
+  setIsPaused: (v: boolean) => void;
   setProgress: (p: ProgressData | null) => void;
+  resetForm: () => void;
 }
 
-export const useConversionStore = create<ConversionState>((set) => ({
-  inputFile: null,
-  outputFile: null,
+const INITIAL_STATE = {
+  inputFile: null as string | null,
+  outputFile: null as string | null,
   videoCodec: CONVERSION_DEFAULTS.VIDEO_CODEC,
   audioCodec: CONVERSION_DEFAULTS.AUDIO_CODEC,
   videoBitrate: CONVERSION_DEFAULTS.VIDEO_BITRATE,
@@ -50,18 +57,69 @@ export const useConversionStore = create<ConversionState>((set) => ({
   copyMode: false,
   transcoder: TRANSCODER_TYPES[0],
   isConverting: false,
+  isPaused: false,
+  isDirty: false,
   progress: null,
-  setInputFile: (file) => set({ inputFile: file }),
-  setOutputFile: (file) => set({ outputFile: file }),
-  setVideoCodec: (codec) => set({ videoCodec: codec }),
-  setAudioCodec: (codec) => set({ audioCodec: codec }),
-  setVideoBitrate: (bitrate) => set({ videoBitrate: bitrate }),
-  setAudioBitrate: (bitrate) => set({ audioBitrate: bitrate }),
-  setQscale: (q) => set({ qscale: q }),
-  setScale: (s) => set({ scale: s }),
-  setPixelFormat: (f) => set({ pixelFormat: f }),
-  setCopyMode: (c) => set({ copyMode: c }),
-  setTranscoder: (t) => set({ transcoder: t }),
-  setIsConverting: (v) => set({ isConverting: v }),
+};
+
+export const useConversionStore = create<ConversionState>((set) => ({
+  ...INITIAL_STATE,
+  setInputFile: (file) => {
+    log.debug('setInputFile:', file);
+    set({ inputFile: file, isDirty: true });
+  },
+  setOutputFile: (file) => {
+    log.debug('setOutputFile:', file);
+    set({ outputFile: file, isDirty: true });
+  },
+  setVideoCodec: (codec) => {
+    log.debug('setVideoCodec:', codec);
+    set({ videoCodec: codec, isDirty: true });
+  },
+  setAudioCodec: (codec) => {
+    log.debug('setAudioCodec:', codec);
+    set({ audioCodec: codec, isDirty: true });
+  },
+  setVideoBitrate: (bitrate) => {
+    log.debug('setVideoBitrate:', bitrate);
+    set({ videoBitrate: bitrate, isDirty: true });
+  },
+  setAudioBitrate: (bitrate) => {
+    log.debug('setAudioBitrate:', bitrate);
+    set({ audioBitrate: bitrate, isDirty: true });
+  },
+  setQscale: (q) => {
+    log.debug('setQscale:', q);
+    set({ qscale: q, isDirty: true });
+  },
+  setScale: (s) => {
+    log.debug('setScale:', s);
+    set({ scale: s, isDirty: true });
+  },
+  setPixelFormat: (f) => {
+    log.debug('setPixelFormat:', f);
+    set({ pixelFormat: f, isDirty: true });
+  },
+  setCopyMode: (c) => {
+    log.debug('setCopyMode:', c);
+    set({ copyMode: c, isDirty: true });
+  },
+  setTranscoder: (t) => {
+    log.debug('setTranscoder:', t);
+    set({ transcoder: t, isDirty: true });
+  },
+  setIsConverting: (v) => {
+    log.debug('setIsConverting:', v);
+    if (!v) set({ isPaused: false });
+    set({ isConverting: v });
+  },
+  setIsPaused: (v) => {
+    log.debug('setIsPaused:', v);
+    set({ isPaused: v });
+  },
   setProgress: (p) => set({ progress: p }),
+  resetForm: () => {
+    log.info('resetForm');
+    set(INITIAL_STATE);
+  },
 }));

@@ -12,7 +12,8 @@
     "image": "صورة",
     "audio": "صوت",
     "cut": "قص",
-    "batchQueue": "قائمة الدفعات"
+    "batchQueue": "قائمة الدفعات",
+    "logs": "السجلات"
   },
   "dashboard": {
     "welcome": "مرحباً بك في EncodeX",
@@ -43,10 +44,19 @@
     "transcoderCore": "نواة التحويل",
     "startConversion": "بدء التحويل",
     "converting": "جاري التحويل...",
+    "pause": "يوقف",
+    "resume": "سيرة ذاتية",
     "cancel": "إلغاء",
     "placeholderBitrate": "مثال 2000k",
     "placeholderAudioBitrate": "مثال 192k",
-    "placeholderScale": "مثال 1280x720"
+    "placeholderScale": "مثال 1280x720",
+    "cancelJob": "إلغاء الوظيفة",
+    "jobCancelTitle": "إلغاء الوظيفة",
+    "jobCancelMessage": "سيؤدي هذا إلى مسح مهمة التحويل الحالية. ",
+    "cancelTitle": "إلغاء التحويل",
+    "cancelMessage": "هل أنت متأكد أنك تريد إلغاء التحويل الحالي؟",
+    "yes": "نعم",
+    "no": "لا"
   },
   "mediaInfo": {
     "title": "معلومات الوسائط",
@@ -78,7 +88,8 @@
     "compress": "ضغط الصورة",
     "compressing": "جاري الضغط...",
     "placeholderOutput": "مسار الإخراج",
-    "placeholderScale": "مثال 800x600"
+    "placeholderScale": "مثال 800x600",
+    "validationRequired": "الرجاء تحديد صورة الإدخال."
   },
   "audioExtract": {
     "title": "استخراج الصوت",
@@ -89,7 +100,8 @@
     "bitrate": "معدل البت",
     "extract": "استخراج الصوت",
     "extracting": "جاري الاستخراج...",
-    "placeholderOutput": "مثال output.mp3"
+    "placeholderOutput": "مثال output.mp3",
+    "validationRequired": "الرجاء تحديد ملف فيديو."
   },
   "videoCut": {
     "title": "قص الفيديو",
@@ -106,7 +118,8 @@
     "placeholderOutput": "مسار الإخراج",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "مثال 00:01:30",
-    "placeholderEnd": "مثال 00:01:30"
+    "placeholderEnd": "مثال 00:01:30",
+    "validationRequired": "الرجاء تحديد ملف فيديو."
   },
   "batchQueue": {
     "title": "قائمة الدفعات",
@@ -114,7 +127,10 @@
     "addFiles": "إضافة ملفات",
     "cancelAll": "إلغاء الكل",
     "empty": "القائمة فارغة. أضف ملفات لبدء المعالجة بالدفعات.",
-    "remove": "إزالة"
+    "remove": "إزالة",
+    "operationTranscode": "تحويل الشفرة",
+    "operationExtractAudio": "استخراج الصوت",
+    "operationCompressImage": "ضغط الصورة"
   },
   "progress": {
     "time": "الوقت",
@@ -136,6 +152,39 @@
     "invalidScale": "تنسيق قياس غير صحيح (مثال 1920:1080، 50%)",
     "invalidBitrate": "معدل بت غير صحيح (مثال 128k، 1M)",
     "qscaleRange": "مقياس الجودة يجب أن يكون بين 1 و 31",
-    "qualityRange": "الجودة يجب أن تكون بين 1 و 31"
+    "qualityRange": "الجودة يجب أن تكون بين 1 و 31",
+    "inputRequired": "الرجاء تحديد ملف الإدخال.",
+    "outputRequiredDetailed": "الرجاء تحديد ملف الإخراج."
+  },
+  "logs": {
+    "clear": "مسح",
+    "download": "قم بالتنزيل بصيغة TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "لا توجد إدخالات السجل حتى الآن.",
+    "entryCount": "{{count}} إدخال"
+  },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "مدعوم بواسطة"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "لا شيء"
+  },
+  "toast": {
+    "conversionComplete": "Conversion complete",
+    "imageCompressed": "Image compressed successfully",
+    "audioExtracted": "Audio extracted successfully",
+    "videoCut": "Video cut successfully",
+    "jobAdded": "Job added to queue",
+    "allCancelled": "All jobs cancelled",
+    "logsDownloaded": "Logs downloaded",
+    "mediaInfoLoaded": "Media info loaded",
+    "languageChanged": "Language changed to {{language}}",
+    "cancelled": "Cancelled"
   }
 }

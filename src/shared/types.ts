@@ -1,4 +1,4 @@
-import { QUEUE_STATUS, FALLBACK_VALUES } from './ui-constants';
+import { QUEUE_STATUS, FALLBACK_VALUES } from './media-options';
 import { TRANSCODER_TYPES, TranscoderType } from './transcoder-constants';
 
 export type { TranscoderType };
@@ -76,6 +76,13 @@ export enum ConversionOperation {
   CompressImage = 'compress_image',
   CreateGif = 'create_gif',
   CutVideo = 'cut_video',
+}
+
+export interface LogEntry {
+  timestamp: string;
+  level: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
+  text: string;
+  source: 'main' | 'renderer';
 }
 
 export interface FileItem {

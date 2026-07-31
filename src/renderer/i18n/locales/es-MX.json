@@ -12,7 +12,8 @@
     "image": "Imagen",
     "audio": "Audio",
     "cut": "Cortar",
-    "batchQueue": "Cola de lotes"
+    "batchQueue": "Cola de lotes",
+    "logs": "Registros"
   },
   "dashboard": {
     "welcome": "Bienvenido a EncodeX",
@@ -37,16 +38,25 @@
     "audioCodec": "Códec de audio",
     "videoBitrate": "Tasa de bits de video",
     "audioBitrate": "Tasa de bits de audio",
-    "qscale": "QScale (1-31)",
+    "qscale": "Escala Q (1-31)",
     "scale": "Escala (AxA)",
     "pixelFormat": "Formato de píxel",
     "transcoderCore": "Núcleo del transcodificador",
     "startConversion": "Iniciar conversión",
     "converting": "Convirtiendo...",
+    "pause": "Pausa",
+    "resume": "Reanudar",
     "cancel": "Cancelar",
     "placeholderBitrate": "ej. 2000k",
     "placeholderAudioBitrate": "ej. 192k",
-    "placeholderScale": "ej. 1280x720"
+    "placeholderScale": "ej. 1280x720",
+    "cancelJob": "Cancelar trabajo",
+    "jobCancelTitle": "Cancelar trabajo",
+    "jobCancelMessage": "Esto borrará el trabajo de conversión actual. ",
+    "cancelTitle": "Cancelar conversión",
+    "cancelMessage": "¿Está seguro de que desea cancelar la conversión actual?",
+    "yes": "Sí",
+    "no": "No"
   },
   "mediaInfo": {
     "title": "Información del medio",
@@ -78,7 +88,8 @@
     "compress": "Comprimir imagen",
     "compressing": "Comprimiendo...",
     "placeholderOutput": "ruta de salida",
-    "placeholderScale": "ej. 800x600"
+    "placeholderScale": "ej. 800x600",
+    "validationRequired": "Seleccione una imagen de entrada."
   },
   "audioExtract": {
     "title": "Extraer audio",
@@ -89,7 +100,8 @@
     "bitrate": "Tasa de bits",
     "extract": "Extraer audio",
     "extracting": "Extrayendo...",
-    "placeholderOutput": "ej. output.mp3"
+    "placeholderOutput": "ej. output.mp3",
+    "validationRequired": "Seleccione un archivo de vídeo."
   },
   "videoCut": {
     "title": "Cortar video",
@@ -106,7 +118,8 @@
     "placeholderOutput": "ruta de salida",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "ej. 00:01:30",
-    "placeholderEnd": "ej. 00:01:30"
+    "placeholderEnd": "ej. 00:01:30",
+    "validationRequired": "Seleccione un archivo de vídeo."
   },
   "batchQueue": {
     "title": "Cola de lotes",
@@ -114,7 +127,10 @@
     "addFiles": "Agregar archivos",
     "cancelAll": "Cancelar todo",
     "empty": "La cola está vacía. Agrega archivos para comenzar el procesamiento por lotes.",
-    "remove": "Eliminar"
+    "remove": "Eliminar",
+    "operationTranscode": "Transcodificar",
+    "operationExtractAudio": "Extraer audio",
+    "operationCompressImage": "Comprimir imagen"
   },
   "progress": {
     "time": "Tiempo",
@@ -136,6 +152,39 @@
     "invalidScale": "Formato de escala inválido (ej. 1920:1080, 50%)",
     "invalidBitrate": "Tasa de bits inválida (ej. 128k, 1M)",
     "qscaleRange": "QScale debe estar entre 1 y 31",
-    "qualityRange": "La calidad debe estar entre 1 y 31"
+    "qualityRange": "La calidad debe estar entre 1 y 31",
+    "inputRequired": "Seleccione un archivo de entrada.",
+    "outputRequiredDetailed": "Seleccione un archivo de salida."
+  },
+  "logs": {
+    "clear": "Limpiar",
+    "download": "Descargar como TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "Aún no hay entradas de registro.",
+    "entryCount": "{{count}} entradas"
+  },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Con la tecnología de"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "Ninguno"
+  },
+  "toast": {
+    "conversionComplete": "Conversion complete",
+    "imageCompressed": "Image compressed successfully",
+    "audioExtracted": "Audio extracted successfully",
+    "videoCut": "Video cut successfully",
+    "jobAdded": "Job added to queue",
+    "allCancelled": "All jobs cancelled",
+    "logsDownloaded": "Logs downloaded",
+    "mediaInfoLoaded": "Media info loaded",
+    "languageChanged": "Language changed to {{language}}",
+    "cancelled": "Cancelled"
   }
 }

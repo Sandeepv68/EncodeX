@@ -1,4 +1,4 @@
-import { ConversionOptions, ConversionProgress, MediaInfo, QueueJob, PlayerFrame } from '../shared/types';
+import { ConversionOptions, ConversionProgress, MediaInfo, QueueJob, PlayerFrame, LogEntry } from '../shared/types';
 
 export interface ElectronAPI {
   selectFile(filters?: Electron.FileFilter[]): Promise<string | null>;
@@ -6,6 +6,8 @@ export interface ElectronAPI {
   selectOutput(): Promise<string | null>;
   getMediaInfo(filePath: string, transcoderType: string): Promise<MediaInfo>;
   convertFile(input: string, output: string, options: ConversionOptions, transcoderType: string): Promise<void>;
+  pauseConversion(): Promise<void>;
+  resumeConversion(): Promise<void>;
   cancelConversion(): Promise<void>;
   queueAdd(input: string, output: string, options: ConversionOptions, transcoder: string): Promise<string>;
   queueRemove(id: string): Promise<void>;
@@ -22,6 +24,7 @@ export interface ElectronAPI {
   onQueueProgress(cb: (data: { job: QueueJob; progress: ConversionProgress }) => void): () => void;
   onQueueCancelled(cb: () => void): () => void;
   onPlayerFrame(cb: (frame: PlayerFrame) => void): () => void;
+  onLogMessage(cb: (entry: LogEntry) => void): () => void;
 }
 
 declare global {

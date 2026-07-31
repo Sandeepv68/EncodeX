@@ -12,7 +12,8 @@
     "image": "画像",
     "audio": "音声",
     "cut": "カット",
-    "batchQueue": "バッチキュー"
+    "batchQueue": "バッチキュー",
+    "logs": "ログ"
   },
   "dashboard": {
     "welcome": "EncodeX へようこそ",
@@ -37,16 +38,25 @@
     "audioCodec": "オーディオコーデック",
     "videoBitrate": "ビデオビットレート",
     "audioBitrate": "オーディオビットレート",
-    "qscale": "QScale (1-31)",
+    "qscale": "Qスケール(1-31)",
     "scale": "スケール (WxH)",
     "pixelFormat": "ピクセル形式",
     "transcoderCore": "トランスコーダーコア",
     "startConversion": "変換を開始",
     "converting": "変換中...",
+    "pause": "一時停止",
+    "resume": "再開する",
     "cancel": "キャンセル",
     "placeholderBitrate": "例: 2000k",
     "placeholderAudioBitrate": "例: 192k",
-    "placeholderScale": "例: 1280x720"
+    "placeholderScale": "例: 1280x720",
+    "cancelJob": "ジョブのキャンセル",
+    "jobCancelTitle": "ジョブのキャンセル",
+    "jobCancelMessage": "これにより、現在の変換ジョブがクリアされます。",
+    "cancelTitle": "変換のキャンセル",
+    "cancelMessage": "現在の変換をキャンセルしてもよろしいですか?",
+    "yes": "はい",
+    "no": "いいえ"
   },
   "mediaInfo": {
     "title": "メディア情報",
@@ -78,7 +88,8 @@
     "compress": "画像を圧縮",
     "compressing": "圧縮中...",
     "placeholderOutput": "出力パス",
-    "placeholderScale": "例: 800x600"
+    "placeholderScale": "例: 800x600",
+    "validationRequired": "入力画像を選択してください。"
   },
   "audioExtract": {
     "title": "音声抽出",
@@ -89,7 +100,8 @@
     "bitrate": "ビットレート",
     "extract": "音声を抽出",
     "extracting": "抽出中...",
-    "placeholderOutput": "例: output.mp3"
+    "placeholderOutput": "例: output.mp3",
+    "validationRequired": "ビデオファイルを選択してください。"
   },
   "videoCut": {
     "title": "動画カット",
@@ -106,7 +118,8 @@
     "placeholderOutput": "出力パス",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "例: 00:01:30",
-    "placeholderEnd": "例: 00:01:30"
+    "placeholderEnd": "例: 00:01:30",
+    "validationRequired": "ビデオファイルを選択してください。"
   },
   "batchQueue": {
     "title": "バッチキュー",
@@ -114,7 +127,10 @@
     "addFiles": "ファイルを追加",
     "cancelAll": "すべてキャンセル",
     "empty": "キューは空です。ファイルを追加してバッチ処理を開始してください。",
-    "remove": "削除"
+    "remove": "削除",
+    "operationTranscode": "トランスコード",
+    "operationExtractAudio": "音声を抽出する",
+    "operationCompressImage": "画像を圧縮する"
   },
   "progress": {
     "time": "時間",
@@ -136,6 +152,39 @@
     "invalidScale": "無効なスケール形式です（例: 1920:1080, 50%）",
     "invalidBitrate": "無効なビットレートです（例: 128k, 1M）",
     "qscaleRange": "QScale は 1 から 31 の間でなければなりません",
-    "qualityRange": "品質は 1 から 31 の間でなければなりません"
+    "qualityRange": "品質は 1 から 31 の間でなければなりません",
+    "inputRequired": "入力ファイルを選択してください。",
+    "outputRequiredDetailed": "出力ファイルを選択してください。"
+  },
+  "logs": {
+    "clear": "クリア",
+    "download": "TXTとしてダウンロード",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "まだログエントリがありません。",
+    "entryCount": "{{count}} 件のログ"
+  },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Powered by"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "なし"
+  },
+  "toast": {
+    "conversionComplete": "Conversion complete",
+    "imageCompressed": "Image compressed successfully",
+    "audioExtracted": "Audio extracted successfully",
+    "videoCut": "Video cut successfully",
+    "jobAdded": "Job added to queue",
+    "allCancelled": "All jobs cancelled",
+    "logsDownloaded": "Logs downloaded",
+    "mediaInfoLoaded": "Media info loaded",
+    "languageChanged": "Language changed to {{language}}",
+    "cancelled": "Cancelled"
   }
 }

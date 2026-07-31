@@ -1,9 +1,10 @@
-import { FfmpegCore } from './transcoders/ffmpeg-core';
-import { FFToolCore } from './transcoders/fftool-core';
-import { BmfCore } from './transcoders/bmf-core';
+import { createTranscoder } from './transcoders/factory';
+import { Logger } from '../shared/logger';
 import { ConversionOptions, TranscoderType } from '../shared/types';
-import { APP_NAME } from '../shared/ui-constants';
+import { APP_NAME } from '../shared/app-constants';
 import { TRANSCODER_TYPES } from '../shared/transcoder-constants';
+
+const log = new Logger('main/cli');
 
 export async function runCli(): Promise<void> {
   const { Command } = await import('commander');
@@ -33,9 +34,11 @@ export async function runCli(): Promise<void> {
 
       if (opts.info) {
         if (!input) {
+          log.error('--info requires an input file');
           console.error('Error: --info requires an input file');
           throw new Error('Missing input file');
         }
+        log.info('Getting media info for:', input);
         const info = await transcoder.getInfo(input);
         console.log(JSON.stringify(info, null, 2));
         return;
@@ -55,6 +58,7 @@ export async function runCli(): Promise<void> {
       if (opts.endTime) options.endTime = opts.endTime;
       if (opts.duration) options.duration = opts.duration;
 
+      log.info('Starting conversion:', input, '->', output, 'transcoder:', transcoderType, 'options:', JSON.stringify(options));
       console.log(`Starting conversion: ${input} -> ${output}`);
       console.log(`Transcoder: ${transcoderType}`);
       console.log(`Options: ${JSON.stringify(options)}`);
@@ -62,6 +66,7 @@ export async function runCli(): Promise<void> {
       await new Promise<void>((resolve, reject) => {
         const emitter = transcoder.convert(input, output, options);
         const timeout = setTimeout(() => {
+          log.warn('Conversion timed out after 300s');
           transcoder.cancel();
           reject(new Error('Conversion timed out'));
         }, 300000);
@@ -76,11 +81,13 @@ export async function runCli(): Promise<void> {
         });
         emitter.on('end', () => {
           clearTimeout(timeout);
+          log.info('CLI conversion completed successfully');
           console.log('\nConversion completed successfully!');
           resolve();
         });
         emitter.on('error', (err) => {
           clearTimeout(timeout);
+          log.error('CLI conversion failed:', err.message);
           console.error('\nConversion failed:', err.message);
           reject(err);
         });
@@ -97,20 +104,11 @@ export async function runCli(): Promise<void> {
   const cliArgs = userArgs.filter((arg) => arg !== '--cli');
 
   if (cliArgs.includes('-h') || cliArgs.includes('--help')) {
+    log.debug('Showing help');
     program.outputHelp();
     return;
   }
 
+  log.info('Parsing CLI args:', cliArgs);
   await program.parseAsync(cliArgs, { from: 'user' });
-}
-
-function createTranscoder(type: TranscoderType): FfmpegCore | FFToolCore | BmfCore {
-  switch (type) {
-    case 'FFMPEG':
-      return new FfmpegCore();
-    case 'FFTOOL':
-      return new FFToolCore();
-    case 'BMF':
-      return new BmfCore();
-  }
 }

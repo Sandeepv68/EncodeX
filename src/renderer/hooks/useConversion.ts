@@ -1,30 +1,43 @@
 import { useEffect, useCallback } from 'react';
+import { Logger } from '../../shared/logger';
 import { useConversionStore } from '../stores/conversionStore';
 import { useErrorStore } from '../stores/errorStore';
+import { useToastStore } from '../stores/toastStore';
 import { ConversionProgress } from '../../shared/types';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import { ErrorCode } from '../../shared/errors';
+import i18n from '../i18n/config';
+
+const log = new Logger('renderer/hooks/useConversion');
 
 export function useConversion() {
   const store = useConversionStore();
   const showError = useErrorStore((s) => s.showError);
+  const showErrorMessage = useErrorStore((s) => s.showErrorMessage);
 
   useEffect(() => {
+    log.debug('Subscribing to conversion progress');
     const cleanup = window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
       store.setProgress(data.progress);
     });
-    return cleanup;
+    return () => {
+      log.debug('Unsubscribing from conversion progress');
+      cleanup?.();
+    };
   }, []);
 
   const startConversion = useCallback(async () => {
     if (!store.inputFile) {
-      showError({ code: ErrorCode.INPUT_NOT_SPECIFIED, message: 'Please select an input file.' });
+      log.warn('startConversion: no input file');
+      showErrorMessage(ErrorCode.INPUT_NOT_SPECIFIED);
       return;
     }
     if (!store.outputFile) {
-      showError({ code: ErrorCode.OUTPUT_NOT_SPECIFIED, message: 'Please select an output file.' });
+      log.warn('startConversion: no output file');
+      showErrorMessage(ErrorCode.OUTPUT_NOT_SPECIFIED);
       return;
     }
+    log.info('startConversion:', store.inputFile, '->', store.outputFile, 'copyMode:', store.copyMode);
     store.setIsConverting(true);
     try {
       await window.electronAPI.convertFile(
@@ -42,8 +55,11 @@ export function useConversion() {
         },
         store.transcoder,
       );
+      log.info('Conversion completed successfully');
       store.setProgress(COMPLETED_PROGRESS);
+      useToastStore.getState().success(i18n.t('toast.conversionComplete'));
     } catch (err: unknown) {
+      log.error('Conversion failed:', err);
       showError(err);
     } finally {
       store.setIsConverting(false);
@@ -61,9 +77,23 @@ export function useConversion() {
     store.copyMode,
     store.transcoder,
     showError,
+    showErrorMessage,
   ]);
 
+  const pauseConversion = useCallback(async () => {
+    log.info('pauseConversion called');
+    await window.electronAPI?.pauseConversion();
+    store.setIsPaused(true);
+  }, []);
+
+  const resumeConversion = useCallback(async () => {
+    log.info('resumeConversion called');
+    await window.electronAPI?.resumeConversion();
+    store.setIsPaused(false);
+  }, []);
+
   const cancelConversion = useCallback(async () => {
+    log.info('cancelConversion called');
     await window.electronAPI?.cancelConversion();
     store.setIsConverting(false);
   }, []);
@@ -71,8 +101,12 @@ export function useConversion() {
   const selectInput = useCallback(async () => {
     try {
       const file = await window.electronAPI?.selectFile();
-      if (file) store.setInputFile(file);
+      if (file) {
+        log.info('selectInput:', file);
+        store.setInputFile(file);
+      }
     } catch (err: unknown) {
+      log.error('selectInput failed:', err);
       showError(err);
     }
   }, [showError]);
@@ -80,11 +114,15 @@ export function useConversion() {
   const selectOutput = useCallback(async () => {
     try {
       const file = await window.electronAPI?.selectOutput();
-      if (file) store.setOutputFile(file);
+      if (file) {
+        log.info('selectOutput:', file);
+        store.setOutputFile(file);
+      }
     } catch (err: unknown) {
+      log.error('selectOutput failed:', err);
       showError(err);
     }
   }, [showError]);
 
-  return { ...store, startConversion, cancelConversion, selectInput, selectOutput };
+  return { ...store, startConversion, pauseConversion, resumeConversion, cancelConversion, selectInput, selectOutput };
 }

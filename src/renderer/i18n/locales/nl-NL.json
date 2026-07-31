@@ -12,7 +12,8 @@
     "image": "Afbeelding",
     "audio": "Audio",
     "cut": "Knippen",
-    "batchQueue": "Batchwachtrij"
+    "batchQueue": "Batchwachtrij",
+    "logs": "Logboeken"
   },
   "dashboard": {
     "welcome": "Welkom bij EncodeX",
@@ -37,16 +38,25 @@
     "audioCodec": "Audiocodec",
     "videoBitrate": "Videobitrate",
     "audioBitrate": "Audiobitrate",
-    "qscale": "QScale (1-31)",
+    "qscale": "QSchaal (1-31)",
     "scale": "Schaal (BxH)",
     "pixelFormat": "Pixelformaat",
     "transcoderCore": "Transcoder-kern",
     "startConversion": "Conversie starten",
     "converting": "Bezig met converteren...",
+    "pause": "Pauze",
+    "resume": "Hervatten",
     "cancel": "Annuleren",
     "placeholderBitrate": "bijv. 2000k",
     "placeholderAudioBitrate": "bijv. 192k",
-    "placeholderScale": "bijv. 1280x720"
+    "placeholderScale": "bijv. 1280x720",
+    "cancelJob": "Taak annuleren",
+    "jobCancelTitle": "Taak annuleren",
+    "jobCancelMessage": "Hierdoor wordt de huidige conversietaak gewist. ",
+    "cancelTitle": "Conversie annuleren",
+    "cancelMessage": "Weet u zeker dat u de huidige conversie wilt annuleren?",
+    "yes": "Ja",
+    "no": "Nee"
   },
   "mediaInfo": {
     "title": "Media-informatie",
@@ -56,7 +66,7 @@
     "format": "Formaat",
     "size": "Grootte",
     "duration": "Duur",
-    "bitrate": "Bitrate",
+    "bitrate": "Bitsnelheid",
     "streams": "Streams",
     "stream": "Stream",
     "codec": "Codec",
@@ -78,7 +88,8 @@
     "compress": "Afbeelding comprimeren",
     "compressing": "Bezig met comprimeren...",
     "placeholderOutput": "uitvoerpad",
-    "placeholderScale": "bijv. 800x600"
+    "placeholderScale": "bijv. 800x600",
+    "validationRequired": "Selecteer een invoerafbeelding."
   },
   "audioExtract": {
     "title": "Audio extraheren",
@@ -86,10 +97,11 @@
     "dropLabel": "Sleep videobestand hierheen",
     "outputFile": "Uitvoerbestand",
     "audioCodec": "Audiocodec",
-    "bitrate": "Bitrate",
+    "bitrate": "Bitsnelheid",
     "extract": "Audio extraheren",
     "extracting": "Bezig met extraheren...",
-    "placeholderOutput": "bijv. output.mp3"
+    "placeholderOutput": "bijv. output.mp3",
+    "validationRequired": "Selecteer een videobestand."
   },
   "videoCut": {
     "title": "Video knippen",
@@ -106,7 +118,8 @@
     "placeholderOutput": "uitvoerpad",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "bijv. 00:01:30",
-    "placeholderEnd": "bijv. 00:01:30"
+    "placeholderEnd": "bijv. 00:01:30",
+    "validationRequired": "Selecteer een videobestand."
   },
   "batchQueue": {
     "title": "Batchwachtrij",
@@ -114,7 +127,10 @@
     "addFiles": "Bestanden toevoegen",
     "cancelAll": "Alles annuleren",
     "empty": "Wachtrij is leeg. Voeg bestanden toe om batchverwerking te starten.",
-    "remove": "Verwijderen"
+    "remove": "Verwijderen",
+    "operationTranscode": "Transcoderen",
+    "operationExtractAudio": "Audio extraheren",
+    "operationCompressImage": "Comprimeer afbeelding"
   },
   "progress": {
     "time": "Tijd",
@@ -136,6 +152,39 @@
     "invalidScale": "Ongeldig schaalformaat (bijv. 1920:1080, 50%)",
     "invalidBitrate": "Ongeldige bitrate (bijv. 128k, 1M)",
     "qscaleRange": "QScale moet tussen 1 en 31 liggen",
-    "qualityRange": "Kwaliteit moet tussen 1 en 31 liggen"
+    "qualityRange": "Kwaliteit moet tussen 1 en 31 liggen",
+    "inputRequired": "Selecteer een invoerbestand.",
+    "outputRequiredDetailed": "Selecteer een uitvoerbestand."
+  },
+  "logs": {
+    "clear": "Wissen",
+    "download": "Downloaden als TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "Nog geen loggegevens.",
+    "entryCount": "{{count}} items"
+  },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Mogelijk gemaakt door"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "Geen"
+  },
+  "toast": {
+    "conversionComplete": "Conversion complete",
+    "imageCompressed": "Image compressed successfully",
+    "audioExtracted": "Audio extracted successfully",
+    "videoCut": "Video cut successfully",
+    "jobAdded": "Job added to queue",
+    "allCancelled": "All jobs cancelled",
+    "logsDownloaded": "Logs downloaded",
+    "mediaInfoLoaded": "Media info loaded",
+    "languageChanged": "Language changed to {{language}}",
+    "cancelled": "Cancelled"
   }
 }

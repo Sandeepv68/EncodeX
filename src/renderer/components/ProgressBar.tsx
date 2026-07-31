@@ -28,7 +28,7 @@ export default function ProgressBar({ percent, time, speed, eta }: Props) {
             {t('progress.speed')}: {speed}
           </Typography>
         )}
-        {eta && (
+        {eta && eta !== '0' && (
           <Typography variant="caption" color="text.secondary">
             {t('progress.eta')}: {eta}s
           </Typography>

@@ -12,7 +12,8 @@
     "image": "Зображення",
     "audio": "Аудіо",
     "cut": "Обрізати",
-    "batchQueue": "Пакетна черга"
+    "batchQueue": "Пакетна черга",
+    "logs": "Логи"
   },
   "dashboard": {
     "welcome": "Ласкаво просимо до EncodeX",
@@ -43,10 +44,19 @@
     "transcoderCore": "Ядро транскодера",
     "startConversion": "Почати конвертацію",
     "converting": "Конвертація...",
+    "pause": "Пауза",
+    "resume": "Резюме",
     "cancel": "Скасувати",
     "placeholderBitrate": "напр. 2000k",
     "placeholderAudioBitrate": "напр. 192k",
-    "placeholderScale": "напр. 1280x720"
+    "placeholderScale": "напр. 1280x720",
+    "cancelJob": "Скасувати роботу",
+    "jobCancelTitle": "Скасувати роботу",
+    "jobCancelMessage": "Це очистить поточне завдання перетворення. ",
+    "cancelTitle": "Скасувати перетворення",
+    "cancelMessage": "Ви впевнені, що бажаєте скасувати поточне перетворення?",
+    "yes": "Так",
+    "no": "Ні"
   },
   "mediaInfo": {
     "title": "Інформація про медіа",
@@ -78,7 +88,8 @@
     "compress": "Стиснути зображення",
     "compressing": "Стиснення...",
     "placeholderOutput": "шлях вихідного файлу",
-    "placeholderScale": "напр. 800x600"
+    "placeholderScale": "напр. 800x600",
+    "validationRequired": "Виберіть вхідне зображення."
   },
   "audioExtract": {
     "title": "Виділити аудіо",
@@ -89,7 +100,8 @@
     "bitrate": "Бітрейт",
     "extract": "Виділити аудіо",
     "extracting": "Виділення...",
-    "placeholderOutput": "напр. output.mp3"
+    "placeholderOutput": "напр. output.mp3",
+    "validationRequired": "Виберіть відеофайл."
   },
   "videoCut": {
     "title": "Обрізати відео",
@@ -106,7 +118,8 @@
     "placeholderOutput": "шлях вихідного файлу",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "напр. 00:01:30",
-    "placeholderEnd": "напр. 00:01:30"
+    "placeholderEnd": "напр. 00:01:30",
+    "validationRequired": "Виберіть відеофайл."
   },
   "batchQueue": {
     "title": "Пакетна черга",
@@ -114,7 +127,10 @@
     "addFiles": "Додати файли",
     "cancelAll": "Скасувати все",
     "empty": "Черга порожня. Додайте файли для початку пакетної обробки.",
-    "remove": "Видалити"
+    "remove": "Видалити",
+    "operationTranscode": "Перекодувати",
+    "operationExtractAudio": "Витяг аудіо",
+    "operationCompressImage": "Стиснути зображення"
   },
   "progress": {
     "time": "Час",
@@ -136,6 +152,39 @@
     "invalidScale": "Неправильний формат масштабу (напр. 1920:1080, 50%)",
     "invalidBitrate": "Неправильний бітрейт (напр. 128k, 1M)",
     "qscaleRange": "QScale має бути від 1 до 31",
-    "qualityRange": "Якість має бути від 1 до 31"
+    "qualityRange": "Якість має бути від 1 до 31",
+    "inputRequired": "Виберіть вхідний файл.",
+    "outputRequiredDetailed": "Виберіть вихідний файл."
+  },
+  "logs": {
+    "clear": "Очистити",
+    "download": "Завантажити як TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "Записів у журналі ще немає.",
+    "entryCount": "{{count}} записів"
+  },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Працює на"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "Немає"
+  },
+  "toast": {
+    "conversionComplete": "Conversion complete",
+    "imageCompressed": "Image compressed successfully",
+    "audioExtracted": "Audio extracted successfully",
+    "videoCut": "Video cut successfully",
+    "jobAdded": "Job added to queue",
+    "allCancelled": "All jobs cancelled",
+    "logsDownloaded": "Logs downloaded",
+    "mediaInfoLoaded": "Media info loaded",
+    "languageChanged": "Language changed to {{language}}",
+    "cancelled": "Cancelled"
   }
 }

@@ -13,18 +13,9 @@ import {
   EMPTY_PROGRESS,
   CONVERSION_DEFAULTS,
 } from '../transcoder-constants';
-import {
-  DRAWER_WIDTH,
-  DEV_SERVER_URL,
-  WINDOW_SIZE,
-  APP_NAME,
-  FILE_EXTENSIONS,
-  PIXEL_FORMATS,
-  VIDEO_CODECS,
-  AUDIO_CODECS,
-  QUEUE_STATUS,
-  NAV_ITEMS,
-} from '../ui-constants';
+import { DRAWER_WIDTH, DEV_SERVER_URL, WINDOW_SIZE, APP_NAME, NAV_ITEMS } from '../app-constants';
+import { FILE_EXTENSIONS } from '../file-extensions';
+import { PIXEL_FORMATS, VIDEO_CODECS, AUDIO_CODECS, QUEUE_STATUS } from '../media-options';
 
 describe('IPC channels', () => {
   it('all channels are kebab-case strings', () => {

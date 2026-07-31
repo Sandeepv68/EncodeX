@@ -12,7 +12,8 @@
     "image": "Image",
     "audio": "Audio",
     "cut": "Cut",
-    "batchQueue": "Batch Queue"
+    "batchQueue": "Batch Queue",
+    "logs": "Logs"
   },
   "dashboard": {
     "welcome": "Welcome to EncodeX",
@@ -43,10 +44,19 @@
     "transcoderCore": "Transcoder Core",
     "startConversion": "Start Conversion",
     "converting": "Converting...",
+    "pause": "Pause",
+    "resume": "Resume",
     "cancel": "Cancel",
     "placeholderBitrate": "e.g. 2000k",
     "placeholderAudioBitrate": "e.g. 192k",
-    "placeholderScale": "e.g. 1280x720"
+    "placeholderScale": "e.g. 1280x720",
+    "cancelTitle": "Cancel Conversion",
+    "cancelMessage": "Are you sure you want to cancel the current conversion?",
+    "cancelJob": "Cancel Job",
+    "jobCancelTitle": "Cancel Job",
+    "jobCancelMessage": "This will clear the current conversion job. Are you sure?",
+    "yes": "Yes",
+    "no": "No"
   },
   "mediaInfo": {
     "title": "Media Information",
@@ -78,7 +88,8 @@
     "compress": "Compress Image",
     "compressing": "Compressing...",
     "placeholderOutput": "output path",
-    "placeholderScale": "e.g. 800x600"
+    "placeholderScale": "e.g. 800x600",
+    "validationRequired": "Please select an input image."
   },
   "audioExtract": {
     "title": "Extract Audio",
@@ -89,7 +100,8 @@
     "bitrate": "Bitrate",
     "extract": "Extract Audio",
     "extracting": "Extracting...",
-    "placeholderOutput": "e.g. output.mp3"
+    "placeholderOutput": "e.g. output.mp3",
+    "validationRequired": "Please select a video file."
   },
   "videoCut": {
     "title": "Cut Video",
@@ -106,7 +118,8 @@
     "placeholderOutput": "output path",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "e.g. 00:01:30",
-    "placeholderEnd": "e.g. 00:01:30"
+    "placeholderEnd": "e.g. 00:01:30",
+    "validationRequired": "Please select a video file."
   },
   "batchQueue": {
     "title": "Batch Queue",
@@ -114,7 +127,10 @@
     "addFiles": "Add Files",
     "cancelAll": "Cancel All",
     "empty": "Queue is empty. Add files to begin batch processing.",
-    "remove": "Remove"
+    "remove": "Remove",
+    "operationTranscode": "Transcode",
+    "operationExtractAudio": "Extract Audio",
+    "operationCompressImage": "Compress Image"
   },
   "progress": {
     "time": "Time",
@@ -136,6 +152,39 @@
     "invalidScale": "Invalid scale format (e.g. 1920:1080, 50%)",
     "invalidBitrate": "Invalid bitrate (e.g. 128k, 1M)",
     "qscaleRange": "QScale must be between 1 and 31",
-    "qualityRange": "Quality must be between 1 and 31"
+    "qualityRange": "Quality must be between 1 and 31",
+    "inputRequired": "Please select an input file.",
+    "outputRequiredDetailed": "Please select an output file."
+  },
+  "logs": {
+    "clear": "Clear",
+    "download": "Download as TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "No log entries yet.",
+    "entryCount": "{{count}} entries"
+  },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Powered by"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "None"
+  },
+  "toast": {
+    "conversionComplete": "Conversion complete",
+    "imageCompressed": "Image compressed successfully",
+    "audioExtracted": "Audio extracted successfully",
+    "videoCut": "Video cut successfully",
+    "jobAdded": "Job added to queue",
+    "allCancelled": "All jobs cancelled",
+    "logsDownloaded": "Logs downloaded",
+    "mediaInfoLoaded": "Media info loaded",
+    "languageChanged": "Language changed to {{language}}",
+    "cancelled": "Cancelled"
   }
 }

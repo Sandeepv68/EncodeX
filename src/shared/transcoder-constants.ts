@@ -29,6 +29,7 @@ export const FFMPEG_FLAGS = {
   NO_SUBTITLES: '-sn',
   NO_DATA: '-dn',
   OUTPUT_PIPE: '-',
+  REALTIME: '-re',
 } as const;
 
 export const FFPROBE_FLAGS = {
@@ -85,7 +86,12 @@ export const CONVERSION_DEFAULTS = {
   AUDIO_CODEC: 'aac',
   QSCALE: 23,
   PIXEL_FORMAT: 'yuv420p',
-  SCALE: '',
-  VIDEO_BITRATE: '',
-  AUDIO_BITRATE: '',
+  SCALE: '1920x1080',
+  VIDEO_BITRATE: '2000k',
+  AUDIO_BITRATE: '192k',
+} as const;
+
+export const QSCALE_RANGE = {
+  MIN: 1,
+  MAX: 31,
 } as const;

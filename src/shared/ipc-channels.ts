@@ -5,6 +5,8 @@ export const IPC = {
   GET_MEDIA_INFO: 'get-media-info',
   CONVERT_FILE: 'convert-file',
   CANCEL_CONVERSION: 'cancel-conversion',
+  PAUSE_CONVERSION: 'pause-conversion',
+  RESUME_CONVERSION: 'resume-conversion',
   QUEUE_ADD: 'queue-add',
   QUEUE_REMOVE: 'queue-remove',
   QUEUE_LIST: 'queue-list',
@@ -21,4 +23,5 @@ export const IPC = {
   QUEUE_PROGRESS: 'queue-progress',
   QUEUE_CANCELLED: 'queue-cancelled',
   PLAYER_FRAME: 'player-frame',
+  LOG_MESSAGE: 'log-message',
 } as const;

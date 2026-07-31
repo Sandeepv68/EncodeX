@@ -12,7 +12,8 @@
     "image": "Gambar",
     "audio": "Audio",
     "cut": "Potong",
-    "batchQueue": "Antrean Batch"
+    "batchQueue": "Antrean Batch",
+    "logs": "Log"
   },
   "dashboard": {
     "welcome": "Selamat datang di EncodeX",
@@ -37,33 +38,42 @@
     "audioCodec": "Codec Audio",
     "videoBitrate": "Bitrate Video",
     "audioBitrate": "Bitrate Audio",
-    "qscale": "QScale (1-31)",
+    "qscale": "Skala Q (1-31)",
     "scale": "Skala (WxH)",
     "pixelFormat": "Format Piksel",
     "transcoderCore": "Inti Transkoder",
     "startConversion": "Mulai Konversi",
     "converting": "Mengonversi...",
+    "pause": "Berhenti sebentar",
+    "resume": "Melanjutkan",
     "cancel": "Batal",
     "placeholderBitrate": "mis. 2000k",
     "placeholderAudioBitrate": "mis. 192k",
-    "placeholderScale": "mis. 1280x720"
+    "placeholderScale": "mis. 1280x720",
+    "cancelJob": "Batalkan Pekerjaan",
+    "jobCancelTitle": "Batalkan Pekerjaan",
+    "jobCancelMessage": "Ini akan menghapus tugas konversi saat ini. ",
+    "cancelTitle": "Batalkan Konversi",
+    "cancelMessage": "Apakah Anda yakin ingin membatalkan konversi saat ini?",
+    "yes": "Ya",
+    "no": "Tidak"
   },
   "mediaInfo": {
     "title": "Informasi Media",
     "dropLabel": "Letakkan file media di sini atau klik untuk menjelajah",
     "fileInfo": "Info File",
-    "file": "File",
+    "file": "Berkas",
     "format": "Format",
     "size": "Ukuran",
     "duration": "Durasi",
-    "bitrate": "Bitrate",
+    "bitrate": "Kecepatan bit",
     "streams": "Stream",
-    "stream": "Stream",
-    "codec": "Codec",
+    "stream": "Sungai kecil",
+    "codec": "Kodek",
     "resolution": "Resolusi",
     "pixelFormat": "Format Piksel",
-    "frameRate": "Frame Rate",
-    "sampleRate": "Sample Rate",
+    "frameRate": "Kecepatan Bingkai",
+    "sampleRate": "Tingkat Sampel",
     "channels": "Saluran",
     "language": "Bahasa"
   },
@@ -78,7 +88,8 @@
     "compress": "Kompres Gambar",
     "compressing": "Mengompres...",
     "placeholderOutput": "jalur output",
-    "placeholderScale": "mis. 800x600"
+    "placeholderScale": "mis. 800x600",
+    "validationRequired": "Silakan pilih gambar masukan."
   },
   "audioExtract": {
     "title": "Ekstrak Audio",
@@ -86,10 +97,11 @@
     "dropLabel": "Letakkan file video di sini",
     "outputFile": "File Keluaran",
     "audioCodec": "Codec Audio",
-    "bitrate": "Bitrate",
+    "bitrate": "Kecepatan bit",
     "extract": "Ekstrak Audio",
     "extracting": "Mengekstrak...",
-    "placeholderOutput": "mis. output.mp3"
+    "placeholderOutput": "mis. output.mp3",
+    "validationRequired": "Silakan pilih file video."
   },
   "videoCut": {
     "title": "Potong Video",
@@ -106,7 +118,8 @@
     "placeholderOutput": "jalur output",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "mis. 00:01:30",
-    "placeholderEnd": "mis. 00:01:30"
+    "placeholderEnd": "mis. 00:01:30",
+    "validationRequired": "Silakan pilih file video."
   },
   "batchQueue": {
     "title": "Antrean Batch",
@@ -114,7 +127,10 @@
     "addFiles": "Tambah File",
     "cancelAll": "Batalkan Semua",
     "empty": "Antrean kosong. Tambahkan file untuk memulai pemrosesan batch.",
-    "remove": "Hapus"
+    "remove": "Hapus",
+    "operationTranscode": "Transkode",
+    "operationExtractAudio": "Ekstrak Audio",
+    "operationCompressImage": "Kompres Gambar"
   },
   "progress": {
     "time": "Waktu",
@@ -136,6 +152,39 @@
     "invalidScale": "Format skala tidak valid (mis. 1920:1080, 50%)",
     "invalidBitrate": "Bitrate tidak valid (mis. 128k, 1M)",
     "qscaleRange": "QScale harus antara 1 dan 31",
-    "qualityRange": "Kualitas harus antara 1 dan 31"
+    "qualityRange": "Kualitas harus antara 1 dan 31",
+    "inputRequired": "Silakan pilih file masukan.",
+    "outputRequiredDetailed": "Silakan pilih file keluaran."
+  },
+  "logs": {
+    "clear": "Hapus",
+    "download": "Unduh sebagai TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "Belum ada entri log.",
+    "entryCount": "{{count}} entri"
+  },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Didukung oleh"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "Tidak ada"
+  },
+  "toast": {
+    "conversionComplete": "Conversion complete",
+    "imageCompressed": "Image compressed successfully",
+    "audioExtracted": "Audio extracted successfully",
+    "videoCut": "Video cut successfully",
+    "jobAdded": "Job added to queue",
+    "allCancelled": "All jobs cancelled",
+    "logsDownloaded": "Logs downloaded",
+    "mediaInfoLoaded": "Media info loaded",
+    "languageChanged": "Language changed to {{language}}",
+    "cancelled": "Cancelled"
   }
 }

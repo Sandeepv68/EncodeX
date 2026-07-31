@@ -3,7 +3,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import ErrorIcon from '@mui/icons-material/Error';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Logger } from '../../shared/logger';
 import { AppError, ErrorCode, ErrorCodeType } from '../../shared/errors';
+
+const log = new Logger('renderer/components/ErrorBanner');
 
 const config: Record<string, { color: string; bg: string; icon: React.ReactElement }> = {
   [ErrorCode.FILE_NOT_FOUND]: { color: '#e74c3c', bg: 'rgba(231,76,60,0.1)', icon: <ErrorIcon /> },

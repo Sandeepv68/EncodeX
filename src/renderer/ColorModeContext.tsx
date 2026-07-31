@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState, ReactNode, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { THEME_STORAGE_KEY } from '../shared/ui-constants';
+import { THEME_STORAGE_KEY } from '../shared/app-constants';
 
 type ColorMode = 'light' | 'dark';
 
@@ -61,6 +61,7 @@ export function ColorModeProvider({ children }: { children: ReactNode }) {
           success: { main: '#2ecc71' },
           warning: { main: '#f39c12' },
         },
+        typography: { fontFamily: '"Roboto","Helvetica","Arial",sans-serif' },
         shape: { borderRadius: 8 },
         components: {
           MuiDrawer: {

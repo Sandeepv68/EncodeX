@@ -12,7 +12,8 @@
     "image": "Image",
     "audio": "Audio",
     "cut": "Couper",
-    "batchQueue": "File d'Attente"
+    "batchQueue": "File d'Attente",
+    "logs": "Journaux"
   },
   "dashboard": {
     "welcome": "Bienvenue sur EncodeX",
@@ -37,16 +38,25 @@
     "audioCodec": "Codec Audio",
     "videoBitrate": "Débit Vidéo",
     "audioBitrate": "Débit Audio",
-    "qscale": "QScale (1-31)",
+    "qscale": "QÉchelle (1-31)",
     "scale": "Échelle (LxH)",
     "pixelFormat": "Format de Pixel",
     "transcoderCore": "Cœur du Transcodeur",
     "startConversion": "Démarrer la Conversion",
     "converting": "Conversion en cours...",
+    "pause": "Pause",
+    "resume": "Reprendre",
     "cancel": "Annuler",
     "placeholderBitrate": "ex. 2000k",
     "placeholderAudioBitrate": "ex. 192k",
-    "placeholderScale": "ex. 1280x720"
+    "placeholderScale": "ex. 1280x720",
+    "cancelJob": "Annuler le travail",
+    "jobCancelTitle": "Annuler le travail",
+    "jobCancelMessage": "Cela effacera le travail de conversion en cours. ",
+    "cancelTitle": "Annuler la conversion",
+    "cancelMessage": "Êtes-vous sûr de vouloir annuler la conversion en cours ?",
+    "yes": "Oui",
+    "no": "Non"
   },
   "mediaInfo": {
     "title": "Informations Média",
@@ -78,7 +88,8 @@
     "compress": "Compresser l'Image",
     "compressing": "Compression en cours...",
     "placeholderOutput": "chemin de sortie",
-    "placeholderScale": "ex. 800x600"
+    "placeholderScale": "ex. 800x600",
+    "validationRequired": "Veuillez sélectionner une image d'entrée."
   },
   "audioExtract": {
     "title": "Extraire l'Audio",
@@ -89,7 +100,8 @@
     "bitrate": "Débit",
     "extract": "Extraire l'Audio",
     "extracting": "Extraction en cours...",
-    "placeholderOutput": "ex. output.mp3"
+    "placeholderOutput": "ex. output.mp3",
+    "validationRequired": "Veuillez sélectionner un fichier vidéo."
   },
   "videoCut": {
     "title": "Couper la Vidéo",
@@ -106,7 +118,8 @@
     "placeholderOutput": "chemin de sortie",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "ex. 00:01:30",
-    "placeholderEnd": "ex. 00:01:30"
+    "placeholderEnd": "ex. 00:01:30",
+    "validationRequired": "Veuillez sélectionner un fichier vidéo."
   },
   "batchQueue": {
     "title": "File d'Attente",
@@ -114,7 +127,10 @@
     "addFiles": "Ajouter des Fichiers",
     "cancelAll": "Tout Annuler",
     "empty": "La file d'attente est vide. Ajoutez des fichiers pour commencer le traitement par lots.",
-    "remove": "Supprimer"
+    "remove": "Supprimer",
+    "operationTranscode": "Transcoder",
+    "operationExtractAudio": "Extraire l'audio",
+    "operationCompressImage": "Compresser l'image"
   },
   "progress": {
     "time": "Temps",
@@ -130,12 +146,45 @@
     "defaultLabel": "Déposez le fichier ici ou cliquez pour parcourir"
   },
   "validation": {
-    "outputRequired": "Output file is required",
-    "invalidTime": "Invalid time format (HH:MM:SS or seconds)",
-    "durationRequired": "Duration is required",
-    "invalidScale": "Invalid scale format (e.g. 1920:1080, 50%)",
-    "invalidBitrate": "Invalid bitrate (e.g. 128k, 1M)",
-    "qscaleRange": "QScale must be between 1 and 31",
-    "qualityRange": "Quality must be between 1 and 31"
+    "outputRequired": "Le fichier de sortie est requis",
+    "invalidTime": "Format d'heure non valide (HH:MM:SS ou secondes)",
+    "durationRequired": "La durée est requise",
+    "invalidScale": "Format d'échelle non valide (par exemple, 1920 : 1080, 50 %)",
+    "invalidBitrate": "Débit binaire invalide (par exemple 128 Ko, 1 M)",
+    "qscaleRange": "QScale doit être compris entre 1 et 31",
+    "qualityRange": "La qualité doit être comprise entre 1 et 31",
+    "inputRequired": "Veuillez sélectionner un fichier d'entrée.",
+    "outputRequiredDetailed": "Veuillez sélectionner un fichier de sortie."
+  },
+  "logs": {
+    "clear": "Effacer",
+    "download": "Télécharger au format TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "Aucune entrée de journal pour l'instant.",
+    "entryCount": "{{count}} entrées"
+  },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Propulsé par"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "Aucun"
+  },
+  "toast": {
+    "conversionComplete": "Conversion complete",
+    "imageCompressed": "Image compressed successfully",
+    "audioExtracted": "Audio extracted successfully",
+    "videoCut": "Video cut successfully",
+    "jobAdded": "Job added to queue",
+    "allCancelled": "All jobs cancelled",
+    "logsDownloaded": "Logs downloaded",
+    "mediaInfoLoaded": "Media info loaded",
+    "languageChanged": "Language changed to {{language}}",
+    "cancelled": "Cancelled"
   }
 }

@@ -12,7 +12,8 @@
     "image": "Imagem",
     "audio": "Áudio",
     "cut": "Cortar",
-    "batchQueue": "Fila em Lote"
+    "batchQueue": "Fila em Lote",
+    "logs": "Registros"
   },
   "dashboard": {
     "welcome": "Bem-vindo ao EncodeX",
@@ -37,16 +38,25 @@
     "audioCodec": "Codec de Áudio",
     "videoBitrate": "Taxa de Bits de Vídeo",
     "audioBitrate": "Taxa de Bits de Áudio",
-    "qscale": "QScale (1-31)",
+    "qscale": "Escala Q (1-31)",
     "scale": "Escala (LxA)",
     "pixelFormat": "Formato de Pixel",
     "transcoderCore": "Núcleo do Transcoder",
     "startConversion": "Iniciar Conversão",
     "converting": "Convertendo...",
+    "pause": "Pausa",
+    "resume": "Retomar",
     "cancel": "Cancelar",
     "placeholderBitrate": "ex. 2000k",
     "placeholderAudioBitrate": "ex. 192k",
-    "placeholderScale": "ex. 1280x720"
+    "placeholderScale": "ex. 1280x720",
+    "cancelJob": "Cancelar trabalho",
+    "jobCancelTitle": "Cancelar trabalho",
+    "jobCancelMessage": "Isso limpará o trabalho de conversão atual. ",
+    "cancelTitle": "Cancelar conversão",
+    "cancelMessage": "Tem certeza de que deseja cancelar a conversão atual?",
+    "yes": "Sim",
+    "no": "Não"
   },
   "mediaInfo": {
     "title": "Informações da Mídia",
@@ -78,7 +88,8 @@
     "compress": "Comprimir Imagem",
     "compressing": "Comprimindo...",
     "placeholderOutput": "caminho de saída",
-    "placeholderScale": "ex. 800x600"
+    "placeholderScale": "ex. 800x600",
+    "validationRequired": "Selecione uma imagem de entrada."
   },
   "audioExtract": {
     "title": "Extrair Áudio",
@@ -89,7 +100,8 @@
     "bitrate": "Taxa de Bits",
     "extract": "Extrair Áudio",
     "extracting": "Extraindo...",
-    "placeholderOutput": "ex. output.mp3"
+    "placeholderOutput": "ex. output.mp3",
+    "validationRequired": "Selecione um arquivo de vídeo."
   },
   "videoCut": {
     "title": "Cortar Vídeo",
@@ -106,7 +118,8 @@
     "placeholderOutput": "caminho de saída",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "ex. 00:01:30",
-    "placeholderEnd": "ex. 00:01:30"
+    "placeholderEnd": "ex. 00:01:30",
+    "validationRequired": "Selecione um arquivo de vídeo."
   },
   "batchQueue": {
     "title": "Fila em Lote",
@@ -114,7 +127,10 @@
     "addFiles": "Adicionar Arquivos",
     "cancelAll": "Cancelar Tudo",
     "empty": "A fila está vazia. Adicione arquivos para iniciar o processamento em lote.",
-    "remove": "Remover"
+    "remove": "Remover",
+    "operationTranscode": "Transcodificar",
+    "operationExtractAudio": "Extrair áudio",
+    "operationCompressImage": "Compactar imagem"
   },
   "progress": {
     "time": "Tempo",
@@ -136,6 +152,39 @@
     "invalidScale": "Formato de escala inválido (ex. 1920:1080, 50%)",
     "invalidBitrate": "Taxa de bits inválida (ex. 128k, 1M)",
     "qscaleRange": "QScale deve estar entre 1 e 31",
-    "qualityRange": "A qualidade deve estar entre 1 e 31"
+    "qualityRange": "A qualidade deve estar entre 1 e 31",
+    "inputRequired": "Selecione um arquivo de entrada.",
+    "outputRequiredDetailed": "Selecione um arquivo de saída."
+  },
+  "logs": {
+    "clear": "Limpar",
+    "download": "Baixar como TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "Ainda não há entradas de registro.",
+    "entryCount": "{{count}} entradas"
+  },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Desenvolvido por"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "Nenhum"
+  },
+  "toast": {
+    "conversionComplete": "Conversion complete",
+    "imageCompressed": "Image compressed successfully",
+    "audioExtracted": "Audio extracted successfully",
+    "videoCut": "Video cut successfully",
+    "jobAdded": "Job added to queue",
+    "allCancelled": "All jobs cancelled",
+    "logsDownloaded": "Logs downloaded",
+    "mediaInfoLoaded": "Media info loaded",
+    "languageChanged": "Language changed to {{language}}",
+    "cancelled": "Cancelled"
   }
 }

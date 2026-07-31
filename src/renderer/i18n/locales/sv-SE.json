@@ -12,7 +12,8 @@
     "image": "Bild",
     "audio": "Ljud",
     "cut": "Klipp",
-    "batchQueue": "Batchkö"
+    "batchQueue": "Batchkö",
+    "logs": "Loggar"
   },
   "dashboard": {
     "welcome": "Välkommen till EncodeX",
@@ -43,17 +44,26 @@
     "transcoderCore": "Transcoderkärna",
     "startConversion": "Starta konvertering",
     "converting": "Konverterar...",
+    "pause": "Pausa",
+    "resume": "Resume",
     "cancel": "Avbryt",
     "placeholderBitrate": "t.ex. 2000k",
     "placeholderAudioBitrate": "t.ex. 192k",
-    "placeholderScale": "t.ex. 1280x720"
+    "placeholderScale": "t.ex. 1280x720",
+    "cancelJob": "Avbryt jobb",
+    "jobCancelTitle": "Avbryt jobb",
+    "jobCancelMessage": "Detta tar bort det aktuella konverteringsjobbet. ",
+    "cancelTitle": "Avbryt konvertering",
+    "cancelMessage": "Är du säker på att du vill avbryta den aktuella konverteringen?",
+    "yes": "Ja",
+    "no": "Nej"
   },
   "mediaInfo": {
     "title": "Mediainformation",
     "dropLabel": "Släpp en mediafil här eller klicka för att bläddra",
     "fileInfo": "Filinfo",
     "file": "Fil",
-    "format": "Format",
+    "format": "Formatera",
     "size": "Storlek",
     "duration": "Längd",
     "bitrate": "Bithastighet",
@@ -78,7 +88,8 @@
     "compress": "Komprimera bild",
     "compressing": "Komprimerar...",
     "placeholderOutput": "utdatasökväg",
-    "placeholderScale": "t.ex. 800x600"
+    "placeholderScale": "t.ex. 800x600",
+    "validationRequired": "Välj en ingångsbild."
   },
   "audioExtract": {
     "title": "Extrahera ljud",
@@ -89,7 +100,8 @@
     "bitrate": "Bithastighet",
     "extract": "Extrahera ljud",
     "extracting": "Extraherar...",
-    "placeholderOutput": "t.ex. output.mp3"
+    "placeholderOutput": "t.ex. output.mp3",
+    "validationRequired": "Välj en videofil."
   },
   "videoCut": {
     "title": "Klipp video",
@@ -106,15 +118,19 @@
     "placeholderOutput": "utdatasökväg",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "t.ex. 00:01:30",
-    "placeholderEnd": "t.ex. 00:01:30"
+    "placeholderEnd": "t.ex. 00:01:30",
+    "validationRequired": "Välj en videofil."
   },
   "batchQueue": {
     "title": "Batchkö",
-    "suffix": "Suffix",
+    "suffix": "Ändelse",
     "addFiles": "Lägg till filer",
     "cancelAll": "Avbryt alla",
     "empty": "Kön är tom. Lägg till filer för att påbörja batchbearbetning.",
-    "remove": "Ta bort"
+    "remove": "Ta bort",
+    "operationTranscode": "Omkoda",
+    "operationExtractAudio": "Extrahera ljud",
+    "operationCompressImage": "Komprimera bild"
   },
   "progress": {
     "time": "Tid",
@@ -136,6 +152,39 @@
     "invalidScale": "Ogiltigt skalaformat (t.ex. 1920:1080, 50%)",
     "invalidBitrate": "Ogiltig bithastighet (t.ex. 128k, 1M)",
     "qscaleRange": "QScale måste vara mellan 1 och 31",
-    "qualityRange": "Kvalitet måste vara mellan 1 och 31"
+    "qualityRange": "Kvalitet måste vara mellan 1 och 31",
+    "inputRequired": "Välj en indatafil.",
+    "outputRequiredDetailed": "Välj en utdatafil."
+  },
+  "logs": {
+    "clear": "Rensa",
+    "download": "Ladda ner som TXT",
+    "levelAll": "ALL",
+    "levelDebug": "DEBUG",
+    "levelInfo": "INFO",
+    "levelWarn": "WARN",
+    "levelError": "ERROR",
+    "noEntries": "Inga loggposter än.",
+    "entryCount": "{{count}} poster"
+  },
+  "footer": {
+    "version": "v{{version}}",
+    "poweredBy": "Drivs av"
+  },
+  "status": {
+    "auto": "Auto",
+    "none": "Ingen"
+  },
+  "toast": {
+    "conversionComplete": "Conversion complete",
+    "imageCompressed": "Image compressed successfully",
+    "audioExtracted": "Audio extracted successfully",
+    "videoCut": "Video cut successfully",
+    "jobAdded": "Job added to queue",
+    "allCancelled": "All jobs cancelled",
+    "logsDownloaded": "Logs downloaded",
+    "mediaInfoLoaded": "Media info loaded",
+    "languageChanged": "Language changed to {{language}}",
+    "cancelled": "Cancelled"
   }
 }

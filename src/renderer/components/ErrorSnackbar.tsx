@@ -1,5 +1,8 @@
 import { Snackbar, Alert, AlertColor } from '@mui/material';
+import { Logger } from '../../shared/logger';
 import { AppError, ErrorCode, ErrorCodeType } from '../../shared/errors';
+
+const log = new Logger('renderer/components/ErrorSnackbar');
 
 const severityMap: Record<string, AlertColor> = {
   [ErrorCode.CONVERSION_FAILED]: 'error',

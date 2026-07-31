@@ -1,7 +1,9 @@
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess, execSync } from 'child_process';
+import { Logger } from '../../shared/logger';
 import { ITranscoder } from './interface';
-import { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
+import { suspendProcess, resumeProcess } from '../process-utils';
+import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/types';
 import {
   TRANSCODER_TYPES,
   TRANSCODER_COMMANDS,
@@ -9,76 +11,52 @@ import {
   KILL_SIGNAL,
   PROGRESS_PATTERNS,
   EMPTY_PROGRESS,
-  FFMPEG_FLAGS,
 } from '../../shared/transcoder-constants';
+import { buildFfmpegArgs } from './ffmpeg-utils';
+import { mapFfprobeData } from './ffprobe-mapper';
+
+const log = new Logger('main/transcoders/bmf-core');
 
 export class BmfCore implements ITranscoder {
   private process: ChildProcess | null = null;
+  private cancelled = false;
+  private processPid: number | null = null;
 
   getType(): string {
     return TRANSCODER_TYPES[2];
   }
 
   async getInfo(input: string): Promise<MediaInfo> {
+    log.info('getInfo:', input);
     try {
-      const result = execSync(`${TRANSCODER_COMMANDS.BMF_FFPROBE} -v quiet -print_format json -show_format -show_streams "${input}"`, {
+      const cmd = `${TRANSCODER_COMMANDS.BMF_FFPROBE} -v quiet -print_format json -show_format -show_streams "${input}"`;
+      log.debug('BMF ffprobe command:', cmd);
+      const result = execSync(cmd, {
         encoding: 'utf-8' as BufferEncoding,
         timeout: TRANSCODER_DEFAULTS.BMF_TIMEOUT_MS,
       });
       const data = JSON.parse(result as string);
-      const streams: MediaStreamInfo[] = (data.streams || []).map((s: Record<string, unknown>) => ({
-        index: (s.index as number) ?? 0,
-        type: (s.codec_type as string) ?? 'video',
-        codec: (s.codec_name as string) ?? 'unknown',
-        codecLong: s.codec_long_name as string | undefined,
-        width: s.width as number | undefined,
-        height: s.height as number | undefined,
-        pixelFormat: s.pix_fmt as string | undefined,
-        frameRate: s.r_frame_rate as string | undefined,
-        bitrate: s.bit_rate as string | undefined,
-        sampleRate: s.sample_rate as number | undefined,
-        channels: s.channels as number | undefined,
-        duration: s.duration ? parseFloat(s.duration as string) : undefined,
-        language: (s.tags as Record<string, unknown> | undefined)?.language as string | undefined,
-      }));
-      return {
-        file: data.format?.filename ?? input,
-        format: data.format?.format_name ?? 'unknown',
-        size: data.format?.size ?? 0,
-        duration: data.format?.duration ? parseFloat(data.format.duration) : 0,
-        bitrate: data.format?.bit_rate ?? 'N/A',
-        streams,
-      };
-    } catch {
+      const info = mapFfprobeData(data, input);
+      log.info('getInfo completed:', info.format, info.duration);
+      return info;
+    } catch (err) {
+      log.error('getInfo failed - BMF not available:', err);
       throw new Error('BMF not available. Please ensure BMF CLI tools are installed.');
     }
   }
 
   convert(input: string, output: string, options: ConversionOptions): EventEmitter {
+    log.info('convert:', input, '->', output, 'copy:', !!options.copy);
+    this.cancelled = false;
     const emitter = new EventEmitter();
-    const args: string[] = [FFMPEG_FLAGS.INPUT, input];
+    const args = buildFfmpegArgs(input, output, options);
 
-    if (options.copy) {
-      args.push(FFMPEG_FLAGS.COPY, FFMPEG_FLAGS.COPY_VALUE);
-    } else {
-      if (options.videoCodec) args.push(FFMPEG_FLAGS.VIDEO_CODEC, options.videoCodec);
-      if (options.audioCodec) args.push(FFMPEG_FLAGS.AUDIO_CODEC, options.audioCodec);
-      if (options.videoBitrate) args.push(FFMPEG_FLAGS.VIDEO_BITRATE, options.videoBitrate);
-      if (options.audioBitrate) args.push(FFMPEG_FLAGS.AUDIO_BITRATE, options.audioBitrate);
-      if (options.qscale !== undefined) args.push(FFMPEG_FLAGS.QSCALE, String(options.qscale));
-      if (options.scale) args.push(FFMPEG_FLAGS.VIDEO_FILTER, `${FFMPEG_FLAGS.SCALE}${options.scale}`);
-      if (options.pixelFormat) args.push(FFMPEG_FLAGS.PIX_FMT, options.pixelFormat);
-    }
-
-    if (options.startTime) args.push(FFMPEG_FLAGS.START, options.startTime);
-    if (options.endTime) args.push(FFMPEG_FLAGS.END, options.endTime);
-    if (options.duration) args.push(FFMPEG_FLAGS.DURATION, options.duration);
-
-    args.push(FFMPEG_FLAGS.OVERWRITE, output);
+    log.debug('BMF command:', TRANSCODER_COMMANDS.BMF_FFMPEG, args.join(' '));
 
     try {
       const proc = spawn(TRANSCODER_COMMANDS.BMF_FFMPEG, args);
       this.process = proc;
+      this.processPid = proc.pid ?? null;
 
       let stderrData = '';
       proc.stderr?.on('data', (chunk: Buffer) => {
@@ -89,22 +67,60 @@ export class BmfCore implements ITranscoder {
         }
       });
 
-      proc.on('error', (err: Error) => emitter.emit('error', err));
+      proc.on('error', (err: Error) => {
+        if (this.cancelled) {
+          log.info('BMF process cancelled');
+          emitter.emit('end');
+          return;
+        }
+        log.error('BMF process error:', err);
+        emitter.emit('error', err);
+      });
       proc.on('close', (code: number | null) => {
-        if (code === 0) emitter.emit('end');
-        else emitter.emit('error', new Error(`BMF exited with code ${code}: ${stderrData.slice(-200)}`));
+        log.debug('BMF exited with code:', code);
+        if (this.cancelled) {
+          log.info('BMF process cancelled');
+          emitter.emit('end');
+          return;
+        }
+        if (code === 0) {
+          log.info('BMF process completed successfully');
+          emitter.emit('end');
+        } else {
+          log.error('BMF process failed with code:', code, 'stderr:', stderrData.slice(-200));
+          emitter.emit('error', new Error(`BMF exited with code ${code}: ${stderrData.slice(-200)}`));
+        }
       });
     } catch (err) {
+      log.error('BMF spawn error:', err);
       process.nextTick(() => emitter.emit('error', err));
     }
 
     return emitter;
   }
 
+  pause(): void {
+    log.info('Pausing BMF process');
+    if (this.processPid != null) {
+      suspendProcess(this.processPid);
+    }
+  }
+
+  resume(): void {
+    log.info('Resuming BMF process');
+    if (this.processPid != null) {
+      resumeProcess(this.processPid);
+    }
+  }
+
   cancel(): void {
+    log.info('Cancelling current BMF process');
+    this.cancelled = true;
     if (this.process) {
       this.process.kill(KILL_SIGNAL);
       this.process = null;
+      this.processPid = null;
+      log.info('BMF process killed');
     }
   }
 }
