@@ -23,6 +23,7 @@ describe('process-utils', () => {
   });
 
   it('suspendProcess runs a PowerShell NtSuspendProcess command on win32', async () => {
+    Object.defineProperty(process, 'platform', { value: 'win32' });
     execMock.mockImplementation((_cmd: string, cb: (err: Error | null) => void) => cb(null));
     const killSpy = vi.spyOn(process, 'kill');
     await suspendProcess(1234);
@@ -36,6 +37,7 @@ describe('process-utils', () => {
   });
 
   it('suspendProcess logs a warning when the command errors', async () => {
+    Object.defineProperty(process, 'platform', { value: 'win32' });
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     execMock.mockImplementation((_cmd: string, cb: (err: Error | null) => void) => cb(new Error('boom')));
     await suspendProcess(1);
@@ -71,6 +73,7 @@ describe('process-utils', () => {
   });
 
   it('resumeProcess runs a PowerShell NtResumeProcess command on win32', async () => {
+    Object.defineProperty(process, 'platform', { value: 'win32' });
     execMock.mockImplementation((_cmd: string, cb: (err: Error | null) => void) => cb(null));
     const killSpy = vi.spyOn(process, 'kill');
     await resumeProcess(555);
@@ -84,6 +87,7 @@ describe('process-utils', () => {
   });
 
   it('resumeProcess logs a warning when the resume command errors', async () => {
+    Object.defineProperty(process, 'platform', { value: 'win32' });
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     execMock.mockImplementation((_cmd: string, cb: (err: Error | null) => void) => cb(new Error('boom')));
     await resumeProcess(1);
