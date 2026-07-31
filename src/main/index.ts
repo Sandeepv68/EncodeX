@@ -1,9 +1,9 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu } from 'electron';
 import * as path from 'path';
 import { registerIpcHandlers } from './ipc/handlers';
 import { runCli } from './cli';
 import { Logger } from '../shared/logger';
-import { WINDOW_SIZE, DEV_SERVER_URL, APP_NAME, EXIT_CODES } from '../shared/app-constants';
+import { WINDOW_SIZE, DEV_SERVER_URL, APP_NAME, EXIT_CODES, SPLASH_SIZE, SPLASH_IMAGE, SPLASH_BACKGROUND } from '../shared/app-constants';
 import { IPC } from '../shared/ipc-channels';
 
 const log = new Logger('main/index');
@@ -32,15 +32,48 @@ if (isCliMode()) {
   });
 } else {
   let mainWindow: BrowserWindow | null = null;
+  let splashWindow: BrowserWindow | null = null;
+
+  function createSplashWindow(): void {
+    log.info('Creating splash window');
+    splashWindow = new BrowserWindow({
+      width: SPLASH_SIZE.WIDTH,
+      height: SPLASH_SIZE.HEIGHT,
+      title: APP_NAME,
+      frame: false,
+      resizable: false,
+      movable: false,
+      minimizable: false,
+      maximizable: false,
+      fullscreenable: false,
+      skipTaskbar: true,
+      alwaysOnTop: true,
+      center: true,
+      backgroundColor: SPLASH_BACKGROUND,
+      webPreferences: {
+        contextIsolation: true,
+        nodeIntegration: false,
+        sandbox: true,
+      },
+    });
+    splashWindow.loadFile(path.join(app.getAppPath(), SPLASH_IMAGE));
+    splashWindow.on('closed', () => {
+      log.info('Splash window closed');
+      splashWindow = null;
+    });
+  }
 
   function createWindow(): void {
     log.info('Creating main window');
+    Menu.setApplicationMenu(null);
     mainWindow = new BrowserWindow({
       width: WINDOW_SIZE.WIDTH,
       height: WINDOW_SIZE.HEIGHT,
       minWidth: WINDOW_SIZE.MIN_WIDTH,
       minHeight: WINDOW_SIZE.MIN_HEIGHT,
       title: APP_NAME,
+      frame: false,
+      show: false,
       webPreferences: {
         preload: path.join(__dirname, '..', 'preload', 'index.js'),
         contextIsolation: true,
@@ -51,6 +84,14 @@ if (isCliMode()) {
 
     registerIpcHandlers(mainWindow);
     patchConsole(mainWindow);
+
+    mainWindow.on('ready-to-show', () => {
+      log.info('Main window ready, showing');
+      mainWindow?.show();
+      if (splashWindow && !splashWindow.isDestroyed()) {
+        splashWindow.close();
+      }
+    });
 
     if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
       log.info('Loading dev server URL:', DEV_SERVER_URL);
@@ -68,7 +109,8 @@ if (isCliMode()) {
   }
 
   app.whenReady().then(() => {
-    log.info('App ready, creating window');
+    log.info('App ready, creating splash and main windows');
+    createSplashWindow();
     createWindow();
   });
 

@@ -70,6 +70,28 @@ const api = {
     return ipcRenderer.invoke(IPC.PLAYER_GET_FRAME) as Promise<PlayerFrame | null>;
   },
 
+  windowMinimize: () => {
+    log.debug('windowMinimize called');
+    ipcRenderer.send(IPC.WINDOW_MINIMIZE);
+  },
+  windowMaximizeToggle: () => {
+    log.debug('windowMaximizeToggle called');
+    ipcRenderer.send(IPC.WINDOW_MAXIMIZE_TOGGLE);
+  },
+  windowClose: () => {
+    log.debug('windowClose called');
+    ipcRenderer.send(IPC.WINDOW_CLOSE);
+  },
+
+  onWindowMaximizedChange: (cb: (maximized: boolean) => void) => {
+    const handler = (_event: IpcRendererEvent, maximized: boolean) => {
+      log.debug('onWindowMaximizedChange:', maximized);
+      cb(maximized);
+    };
+    ipcRenderer.on(IPC.WINDOW_MAXIMIZED_CHANGED, handler);
+    return () => ipcRenderer.removeListener(IPC.WINDOW_MAXIMIZED_CHANGED, handler);
+  },
+
   onConversionProgress: (cb: (data: { input: string; output: string; progress: ConversionProgress }) => void) => {
     const handler = (_event: IpcRendererEvent, data: { input: string; output: string; progress: ConversionProgress }) => {
       log.debug('onConversionProgress:', data.input, data.progress.percent.toFixed(1) + '%');

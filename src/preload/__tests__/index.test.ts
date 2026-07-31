@@ -11,6 +11,7 @@ const { contextBridgeMock, ipcRendererMock, getExposed } = vi.hoisted(() => {
     },
     ipcRendererMock: {
       invoke: vi.fn(),
+      send: vi.fn(),
       on: vi.fn(),
       removeListener: vi.fn(),
     },
@@ -82,6 +83,7 @@ describe('preload', () => {
     ['onQueueCancelled', IPC.QUEUE_CANCELLED, undefined],
     ['onPlayerFrame', IPC.PLAYER_FRAME, { data: new ArrayBuffer(0), width: 1, height: 1, pts: 0 }],
     ['onLogMessage', IPC.LOG_MESSAGE, { timestamp: 't', level: 'INFO', text: 'hello', source: 'main' }],
+    ['onWindowMaximizedChange', IPC.WINDOW_MAXIMIZED_CHANGED, true],
   ])('%s subscribes and unsubscribes on the %s channel', (method, channel, payload) => {
     const cb = vi.fn();
     const unsubscribe = (api[method] as (cb: (data: unknown) => void) => () => void)(cb);
@@ -95,5 +97,14 @@ describe('preload', () => {
     }
     unsubscribe();
     expect(ipcRendererMock.removeListener).toHaveBeenCalledWith(channel, handler);
+  });
+
+  it.each([
+    ['windowMinimize', IPC.WINDOW_MINIMIZE],
+    ['windowMaximizeToggle', IPC.WINDOW_MAXIMIZE_TOGGLE],
+    ['windowClose', IPC.WINDOW_CLOSE],
+  ])('%s sends the %s channel', (method, channel) => {
+    (api[method] as () => void)();
+    expect(ipcRendererMock.send).toHaveBeenCalledWith(channel);
   });
 });

@@ -2,7 +2,9 @@ import { styled } from '@mui/material/styles';
 import { Box, Drawer, IconButton } from '@mui/material';
 import { DRAWER_WIDTH } from '../../shared/app-constants';
 
-export const AppRoot = styled(Box)({ display: 'flex', height: '100vh' });
+export const AppRoot = styled(Box)({ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' });
+
+export const AppBody = styled(Box)({ display: 'flex', flex: 1, minHeight: 0 });
 
 export const TemporaryDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': { width: theme.typography.pxToRem(DRAWER_WIDTH), boxSizing: 'border-box' },
@@ -11,11 +13,12 @@ export const TemporaryDrawer = styled(Drawer)(({ theme }) => ({
 export const PermanentDrawer = styled(Drawer)(({ theme }) => ({
   width: theme.typography.pxToRem(DRAWER_WIDTH),
   flexShrink: 0,
+  height: '100%',
   '& .MuiDrawer-paper': {
     width: theme.typography.pxToRem(DRAWER_WIDTH),
     boxSizing: 'border-box',
     position: 'relative',
-    height: '100vh',
+    height: '100%',
   },
 }));
 

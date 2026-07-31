@@ -5,6 +5,7 @@ import { registerDialogHandlers } from './dialogs';
 import { registerConversionHandlers } from './conversion';
 import { registerQueueHandlers } from './queue';
 import { registerPlayerHandlers } from './player';
+import { registerWindowHandlers } from './window';
 
 const log = new Logger('main/ipc/handlers');
 
@@ -15,4 +16,5 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   registerConversionHandlers(win, send);
   registerQueueHandlers(win, send);
   registerPlayerHandlers(win, send);
+  registerWindowHandlers(win);
 }

@@ -16,6 +16,11 @@ export const IPC = {
   PLAYER_CLOSE: 'player-close',
   PLAYER_GET_FRAME: 'player-get-frame',
 
+  WINDOW_MINIMIZE: 'window-minimize',
+  WINDOW_MAXIMIZE_TOGGLE: 'window-maximize-toggle',
+  WINDOW_CLOSE: 'window-close',
+  WINDOW_MAXIMIZED_CHANGED: 'window-maximized-changed',
+
   CONVERSION_PROGRESS: 'conversion-progress',
   QUEUE_ADDED: 'queue-added',
   QUEUE_REMOVED: 'queue-removed',

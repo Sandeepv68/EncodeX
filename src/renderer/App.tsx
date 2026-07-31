@@ -10,11 +10,13 @@ import ErrorSnackbar from './components/ErrorSnackbar';
 import ToastContainer from './components/ToastContainer';
 import Footer from './components/Footer';
 import AppDrawer from './components/AppDrawer';
+import TitleBar from './components/TitleBar';
 import { useErrorStore } from './stores/errorStore';
 import { useLogStore } from './stores/logStore';
 import { useLanguageDirection } from './useLanguageDirection';
 import {
   AppRoot,
+  AppBody,
   TemporaryDrawer,
   PermanentDrawer,
   ColumnLayout,
@@ -70,40 +72,43 @@ function AppLayout() {
 
   return (
     <AppRoot>
-      {isMobile ? (
-        <TemporaryDrawer variant="temporary" open={mobileOpen} onClose={() => setMobileOpen(false)}>
-          {drawerContent}
-        </TemporaryDrawer>
-      ) : (
-        <PermanentDrawer variant="permanent">{drawerContent}</PermanentDrawer>
-      )}
-      <ColumnLayout>
-        <MainContent>
-          {isMobile && (
-            <MobileMenuButton onClick={() => setMobileOpen(true)}>
-              <MenuOpenIcon />
-            </MobileMenuButton>
-          )}
-          <ErrorBoundary>
-            <RouteContent>
-              <Suspense
-                fallback={
-                  <PageFallback>
-                    <CircularProgress />
-                  </PageFallback>
-                }
-              >
-                <Routes>
-                  {routes.map(({ path, element }) => (
-                    <Route key={path} path={path} element={<ErrorBoundary>{element}</ErrorBoundary>} />
-                  ))}
-                </Routes>
-              </Suspense>
-            </RouteContent>
-          </ErrorBoundary>
-        </MainContent>
-        <Footer />
-      </ColumnLayout>
+      <TitleBar />
+      <AppBody>
+        {isMobile ? (
+          <TemporaryDrawer variant="temporary" open={mobileOpen} onClose={() => setMobileOpen(false)}>
+            {drawerContent}
+          </TemporaryDrawer>
+        ) : (
+          <PermanentDrawer variant="permanent">{drawerContent}</PermanentDrawer>
+        )}
+        <ColumnLayout>
+          <MainContent>
+            {isMobile && (
+              <MobileMenuButton onClick={() => setMobileOpen(true)}>
+                <MenuOpenIcon />
+              </MobileMenuButton>
+            )}
+            <ErrorBoundary>
+              <RouteContent>
+                <Suspense
+                  fallback={
+                    <PageFallback>
+                      <CircularProgress />
+                    </PageFallback>
+                  }
+                >
+                  <Routes>
+                    {routes.map(({ path, element }) => (
+                      <Route key={path} path={path} element={<ErrorBoundary>{element}</ErrorBoundary>} />
+                    ))}
+                  </Routes>
+                </Suspense>
+              </RouteContent>
+            </ErrorBoundary>
+          </MainContent>
+          <Footer />
+        </ColumnLayout>
+      </AppBody>
       <ErrorSnackbar error={currentError} onClose={clearError} />
       <ToastContainer />
     </AppRoot>
