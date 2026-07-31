@@ -1,6 +1,5 @@
 import { createContext, useContext, useMemo, useState, ReactNode, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { THEME_STORAGE_KEY } from '../shared/app-constants';
 import { createAppTheme, ColorMode } from './theme';
 
@@ -12,7 +11,7 @@ interface ColorModeContextValue {
 }
 
 const ColorModeContext = createContext<ColorModeContextValue>({
-  mode: 'dark',
+  mode: 'light',
   direction: 'ltr',
   setDirection: () => {},
   toggleColorMode: () => {},
@@ -23,11 +22,10 @@ export function useColorMode() {
 }
 
 export function ColorModeProvider({ children }: { children: ReactNode }) {
-  const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
   const [mode, setMode] = useState<ColorMode>(() => {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
     if (saved === 'light' || saved === 'dark') return saved;
-    return prefersDark ? 'dark' : 'light';
+    return 'light';
   });
   const [direction, setDirection] = useState<'ltr' | 'rtl'>('ltr');
 
