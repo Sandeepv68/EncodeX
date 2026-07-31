@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, TextField, MenuItem, Button, Stack } from '@mui/material';
+import { Box, TextField, MenuItem, Button, Stack } from '@mui/material';
 import FileDropZone from '../components/FileDropZone';
 import ProgressBar from '../components/ProgressBar';
 import PageContainer from '../components/PageContainer';
@@ -16,6 +16,7 @@ import { TRANSCODER_TYPES, CONVERSION_DEFAULTS, QSCALE_RANGE } from '../../share
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { isValidScale, isInRange } from '../../shared/validation';
+import { FieldBox, FieldLabel } from '../styles/ImageCompress.styles';
 
 const log = new Logger('renderer/pages/ImageCompress');
 
@@ -70,9 +71,9 @@ export default function ImageCompress() {
   return (
     <PageContainer title={t('imageCompress.title')}>
       <Box>
-        <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+        <FieldLabel variant="caption" color="text.secondary">
           {t('imageCompress.inputImage')}
-        </Typography>
+        </FieldLabel>
         <ErrorBoundary fallback={null}>
           <FileDropZone onFileSelect={setInput} label={t('imageCompress.dropLabel')} accept={IMAGE_DROPZONE_ACCEPT} />
         </ErrorBoundary>
@@ -101,10 +102,10 @@ export default function ImageCompress() {
       />
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+        <FieldBox>
+          <FieldLabel variant="caption" color="text.secondary">
             {t('imageCompress.outputFormat')}
-          </Typography>
+          </FieldLabel>
           <TextField select fullWidth size="small" value={format} onChange={(e) => setFormat(e.target.value)}>
             {IMAGE_FORMATS.map((f) => (
               <MenuItem key={f.value} value={f.value}>
@@ -112,11 +113,11 @@ export default function ImageCompress() {
               </MenuItem>
             ))}
           </TextField>
-        </Box>
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+        </FieldBox>
+        <FieldBox>
+          <FieldLabel variant="caption" color="text.secondary">
             {t('imageCompress.quality')}
-          </Typography>
+          </FieldLabel>
           <TextField
             fullWidth
             size="small"
@@ -133,13 +134,13 @@ export default function ImageCompress() {
             }}
             slotProps={{ htmlInput: { min: QSCALE_RANGE.MIN, max: QSCALE_RANGE.MAX } }}
           />
-        </Box>
+        </FieldBox>
       </Stack>
 
       <Box>
-        <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+        <FieldLabel variant="caption" color="text.secondary">
           {t('imageCompress.scale')}
-        </Typography>
+        </FieldLabel>
         <TextField
           fullWidth
           size="small"

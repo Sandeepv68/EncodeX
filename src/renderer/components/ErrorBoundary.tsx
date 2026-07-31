@@ -1,8 +1,8 @@
 import { Component, ReactNode, ErrorInfo } from 'react';
-import { Box, Typography, Button, Paper } from '@mui/material';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { Button } from '@mui/material';
 import { Logger } from '../../shared/logger';
 import i18n from '../i18n/config';
+import { FallbackBox, FallbackPaper, WarningIcon, FallbackTitle, FallbackDescription } from '../styles/ErrorBoundary.styles';
 
 const log = new Logger('renderer/components/ErrorBoundary');
 
@@ -35,20 +35,18 @@ export class ErrorBoundary extends Component<Props, State> {
       if (this.props.fallback) return this.props.fallback;
       const t = i18n.t.bind(i18n);
       return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', p: 4 }}>
-          <Paper sx={{ p: 4, maxWidth: 480, textAlign: 'center' }}>
-            <WarningAmberIcon sx={{ fontSize: 48, color: 'error.main', mb: 2 }} />
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              {t('errorBoundary.title')}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <FallbackBox>
+          <FallbackPaper>
+            <WarningIcon />
+            <FallbackTitle variant="h6">{t('errorBoundary.title')}</FallbackTitle>
+            <FallbackDescription variant="body2" color="text.secondary">
               {this.state.error?.message || t('errorBoundary.description')}
-            </Typography>
+            </FallbackDescription>
             <Button variant="contained" onClick={() => this.setState({ hasError: false, error: null })}>
               {t('errorBoundary.tryAgain')}
             </Button>
-          </Paper>
-        </Box>
+          </FallbackPaper>
+        </FallbackBox>
       );
     }
     return this.props.children;

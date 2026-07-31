@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Paper, Stack, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import BatchControls from '../components/BatchControls';
 import QueueJobCard from '../components/QueueJobCard';
 import { useQueueStore } from '../stores/queueStore';
@@ -8,6 +8,7 @@ import { useToastStore } from '../stores/toastStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { QueueJob } from '../../shared/types';
+import { PageTitle, QueuePaper, EmptyText } from '../styles/BatchQueue.styles';
 
 export default function BatchQueue() {
   const { t } = useTranslation();
@@ -64,9 +65,7 @@ export default function BatchQueue() {
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-        {t('batchQueue.title')}
-      </Typography>
+      <PageTitle variant="h5">{t('batchQueue.title')}</PageTitle>
       <BatchControls
         operationRef={operationRef}
         transcoderRef={transcoderRef}
@@ -75,11 +74,9 @@ export default function BatchQueue() {
         onCancelAll={handleCancelAll}
       />
 
-      <Paper sx={{ p: 2 }}>
+      <QueuePaper>
         {jobs.length === 0 ? (
-          <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-            {t('batchQueue.empty')}
-          </Typography>
+          <EmptyText color="text.secondary">{t('batchQueue.empty')}</EmptyText>
         ) : (
           <Stack spacing={1}>
             {jobs.map((job: QueueJob) => (
@@ -87,7 +84,7 @@ export default function BatchQueue() {
             ))}
           </Stack>
         )}
-      </Paper>
+      </QueuePaper>
     </Box>
   );
 }

@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Typography } from '@mui/material';
 import { Logger } from '../../shared/logger';
+import { DropZoneRoot, UploadIcon } from '../styles/FileDropZone.styles';
 
 const log = new Logger('renderer/components/FileDropZone');
 
@@ -42,7 +42,8 @@ export default function FileDropZone({ onFileSelect, label, accept }: Props) {
   };
 
   return (
-    <Box
+    <DropZoneRoot
+      $dragging={dragging}
       onDrop={handleDrop}
       onDragOver={(e) => {
         e.preventDefault();
@@ -50,19 +51,9 @@ export default function FileDropZone({ onFileSelect, label, accept }: Props) {
       }}
       onDragLeave={() => setDragging(false)}
       onClick={handleClick}
-      sx={{
-        border: '2px dashed',
-        borderColor: dragging ? 'primary.main' : 'divider',
-        borderRadius: 2,
-        p: 4,
-        textAlign: 'center',
-        cursor: 'pointer',
-        bgcolor: dragging ? 'action.hover' : 'transparent',
-        transition: 'all 0.2s',
-      }}
     >
-      <CloudUploadIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
+      <UploadIcon />
       <Typography color="text.secondary">{resolvedLabel}</Typography>
-    </Box>
+    </DropZoneRoot>
   );
 }

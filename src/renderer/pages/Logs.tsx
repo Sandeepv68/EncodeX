@@ -1,16 +1,29 @@
 import { useRef, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, IconButton, Tooltip, Typography, Select, MenuItem, type SelectChangeEvent } from '@mui/material';
+import { IconButton, Tooltip, Typography, MenuItem } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useLogStore } from '../stores/logStore';
 import { useToastStore } from '../stores/toastStore';
+import { COLORS } from '../colors';
+import {
+  LogsRoot,
+  LogsHeader,
+  LogsTitle,
+  FilterSelect,
+  LogsBody,
+  NoEntriesText,
+  LogEntryRow,
+  TimestampSpan,
+  LevelSpan,
+  SourceSpan,
+} from '../styles/Logs.styles';
 
 const LEVEL_COLORS: Record<string, string> = {
-  DEBUG: '#9e9e9e',
-  INFO: '#4fc3f7',
-  WARN: '#ffa726',
-  ERROR: '#ef5350',
+  DEBUG: COLORS.log.debug,
+  INFO: COLORS.log.info,
+  WARN: COLORS.log.warn,
+  ERROR: COLORS.log.error,
 };
 
 export default function Logs() {
@@ -39,18 +52,16 @@ export default function Logs() {
   const filtered = useMemo(() => (filter === 'ALL' ? entries : entries.filter((e) => e.level === filter)), [entries, filter]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1, flexShrink: 0 }}>
-        <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          {t('nav.logs')}
-        </Typography>
-        <Select size="small" value={filter} onChange={(e: SelectChangeEvent) => setFilter(e.target.value as string)} sx={{ minWidth: 100 }}>
+    <LogsRoot>
+      <LogsHeader>
+        <LogsTitle variant="h5">{t('nav.logs')}</LogsTitle>
+        <FilterSelect size="small" value={filter} onChange={(e) => setFilter(e.target.value as string)}>
           <MenuItem value="ALL">{t('logs.levelAll')}</MenuItem>
           <MenuItem value="DEBUG">{t('logs.levelDebug')}</MenuItem>
           <MenuItem value="INFO">{t('logs.levelInfo')}</MenuItem>
           <MenuItem value="WARN">{t('logs.levelWarn')}</MenuItem>
           <MenuItem value="ERROR">{t('logs.levelError')}</MenuItem>
-        </Select>
+        </FilterSelect>
         <Tooltip title={t('logs.clear')}>
           <IconButton size="small" onClick={clear}>
             <ClearIcon fontSize="small" />
@@ -64,35 +75,18 @@ export default function Logs() {
         <Typography variant="caption" color="text.secondary">
           {t('logs.entryCount', { count: entries.length })}
         </Typography>
-      </Box>
-      <Box
-        sx={{
-          flex: 1,
-          overflow: 'auto',
-          bgcolor: '#1e1e1e',
-          color: '#d4d4d4',
-          fontFamily: 'monospace',
-          fontSize: 12,
-          p: 1,
-          borderRadius: 1,
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-all',
-        }}
-      >
-        {filtered.length === 0 && (
-          <Typography variant="body2" sx={{ color: '#888', p: 1 }}>
-            {t('logs.noEntries')}
-          </Typography>
-        )}
+      </LogsHeader>
+      <LogsBody>
+        {filtered.length === 0 && <NoEntriesText variant="body2">{t('logs.noEntries')}</NoEntriesText>}
         {filtered.map((entry, i) => (
-          <Box key={i} sx={{ lineHeight: 1.5 }}>
-            <span style={{ color: '#888' }}>{entry.timestamp.slice(11, 23)}</span>{' '}
-            <span style={{ color: LEVEL_COLORS[entry.level] || '#d4d4d4' }}>[{entry.level}]</span>{' '}
-            <span style={{ color: '#888' }}>[{entry.source}]</span> <span>{entry.text}</span>
-          </Box>
+          <LogEntryRow key={i}>
+            <TimestampSpan>{entry.timestamp.slice(11, 23)}</TimestampSpan>{' '}
+            <LevelSpan $color={LEVEL_COLORS[entry.level] || COLORS.log.text}>[{entry.level}]</LevelSpan>{' '}
+            <SourceSpan>[{entry.source}]</SourceSpan> <span>{entry.text}</span>
+          </LogEntryRow>
         ))}
         <div ref={bottomRef} />
-      </Box>
-    </Box>
+      </LogsBody>
+    </LogsRoot>
   );
 }

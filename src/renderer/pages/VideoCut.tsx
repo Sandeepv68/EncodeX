@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Stack, Switch, Button, Typography } from '@mui/material';
+import { Stack, Switch, Button, Typography } from '@mui/material';
 import PageContainer from '../components/PageContainer';
 import FilePathField from '../components/FilePathField';
 import TimeField from '../components/TimeField';
@@ -15,6 +15,7 @@ import { isValidTime } from '../../shared/validation';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { ToggleRow } from '../styles/VideoCut.styles';
 
 const log = new Logger('renderer/pages/VideoCut');
 
@@ -157,12 +158,12 @@ export default function VideoCut() {
         )}
       </Stack>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <ToggleRow>
         <Switch checked={useDuration} onChange={() => setUseDuration(!useDuration)} />
         <Typography variant="caption" color="text.secondary">
           {t('videoCut.useDuration')}
         </Typography>
-      </Box>
+      </ToggleRow>
 
       <Button variant="contained" onClick={handleCut} disabled={!input || !output || isConverting}>
         {isConverting ? t('videoCut.cutting') : t('videoCut.cut')}

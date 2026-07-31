@@ -1,16 +1,21 @@
 import { useState } from 'react';
-import { Box, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
+import { Menu, MenuItem, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Logger } from '../../shared/logger';
 import { LOCALES, LOCALE_MAP, isRtlLocale } from '../i18n/localeMeta';
 import { useColorMode } from '../ColorModeContext';
 import i18n from '../i18n/config';
+import { LanguageMenuBox, LanguageButton, LanguageLabel, FlagIconWrapper, menuPaperSx } from '../styles/LanguageMenu.styles';
 
 const log = new Logger('renderer/LanguageMenu');
 
 function FlagIcon({ locale }: { locale: string }) {
   const Flag = LOCALE_MAP[locale]?.Flag;
-  return Flag ? <Flag style={{ width: 20, height: 15, marginRight: 8, verticalAlign: 'middle' }} /> : null;
+  return Flag ? (
+    <FlagIconWrapper>
+      <Flag />
+    </FlagIconWrapper>
+  ) : null;
 }
 
 export default function LanguageMenu() {
@@ -32,33 +37,15 @@ export default function LanguageMenu() {
 
   return (
     <>
-      <Box sx={{ p: 1, display: 'flex', justifyContent: 'center', height: 47 }}>
+      <LanguageMenuBox>
         <Tooltip title={t('app.language')}>
-          <Box
-            component="button"
-            onClick={(e) => setAnchor(e.currentTarget)}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 0.5,
-              cursor: 'pointer',
-              color: 'text.secondary',
-              bgcolor: 'transparent',
-              px: 1,
-              py: 0.5,
-              borderRadius: 1,
-              border: '1px solid transparent',
-              '&:hover': { borderColor: 'divider' },
-            }}
-          >
+          <LanguageButton type="button" onClick={(e) => setAnchor(e.currentTarget)}>
             <FlagIcon locale={i18n.language} />
-            <Typography variant="caption" sx={{ textTransform: 'none', color: 'text.secondary', lineHeight: 1, fontWeight: 'bold' }}>
-              {LOCALE_MAP[i18n.language]?.label || i18n.language}
-            </Typography>
-          </Box>
+            <LanguageLabel variant="caption">{LOCALE_MAP[i18n.language]?.label || i18n.language}</LanguageLabel>
+          </LanguageButton>
         </Tooltip>
-      </Box>
-      <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={() => setAnchor(null)} slotProps={{ paper: { sx: { maxHeight: 320 } } }}>
+      </LanguageMenuBox>
+      <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={() => setAnchor(null)} slotProps={{ paper: { sx: menuPaperSx } }}>
         {LOCALES.map(({ code, label }) => (
           <MenuItem key={code} selected={isActive(code)} onClick={() => switchLanguage(code)}>
             <FlagIcon locale={code} /> {label}

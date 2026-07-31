@@ -2,6 +2,7 @@ import { Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaInfo } from '../../shared/types';
 import { formatSize, formatDuration } from '../utils/formatters';
+import { SummaryGrid } from '../styles/FileSummary.styles';
 
 export interface FileSummaryProps {
   info: MediaInfo;
@@ -19,7 +20,7 @@ export default function FileSummary({ info }: FileSummaryProps) {
   ];
 
   return (
-    <Grid container spacing={1} sx={{ mb: 2 }}>
+    <SummaryGrid container spacing={1}>
       {rows.map(([label, value]) => (
         <Grid size={{ xs: 12, sm: 6 }} key={label}>
           <Typography variant="caption" color="text.secondary">
@@ -28,6 +29,6 @@ export default function FileSummary({ info }: FileSummaryProps) {
           <Typography variant="body2">{value}</Typography>
         </Grid>
       ))}
-    </Grid>
+    </SummaryGrid>
   );
 }

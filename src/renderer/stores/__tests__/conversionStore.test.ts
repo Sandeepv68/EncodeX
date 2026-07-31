@@ -7,6 +7,8 @@ describe('conversionStore', () => {
       inputFile: null,
       outputFile: null,
       isConverting: false,
+      isPaused: false,
+      isDirty: false,
       progress: null,
     });
   });
@@ -91,5 +93,37 @@ describe('conversionStore', () => {
     useConversionStore.getState().setProgress({ percent: 100, time: 'Done', speed: '-', eta: '0' });
     useConversionStore.getState().setProgress(null);
     expect(useConversionStore.getState().progress).toBeNull();
+  });
+
+  it('sets paused state', () => {
+    useConversionStore.getState().setIsPaused(true);
+    expect(useConversionStore.getState().isPaused).toBe(true);
+  });
+
+  it('clears paused state when converting is turned off', () => {
+    useConversionStore.getState().setIsPaused(true);
+    useConversionStore.getState().setIsConverting(false);
+    expect(useConversionStore.getState().isPaused).toBe(false);
+    expect(useConversionStore.getState().isConverting).toBe(false);
+  });
+
+  it('marks fields dirty when they change', () => {
+    expect(useConversionStore.getState().isDirty).toBe(false);
+    useConversionStore.getState().setVideoCodec('libx265');
+    expect(useConversionStore.getState().isDirty).toBe(true);
+  });
+
+  it('resets the form to initial state', () => {
+    useConversionStore.getState().setVideoCodec('libx265');
+    useConversionStore.getState().setScale('1280x720');
+    useConversionStore.getState().setProgress({ percent: 10, time: '00:00:01', speed: '1x', eta: '1' });
+    useConversionStore.getState().setIsConverting(true);
+    useConversionStore.getState().resetForm();
+    const state = useConversionStore.getState();
+    expect(state.videoCodec).toBe('libx264');
+    expect(state.scale).toBe('1920x1080');
+    expect(state.progress).toBeNull();
+    expect(state.isConverting).toBe(false);
+    expect(state.isDirty).toBe(false);
   });
 });

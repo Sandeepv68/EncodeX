@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Box, Divider, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Tooltip, Typography } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import HomeIcon from '@mui/icons-material/Home';
@@ -12,9 +12,19 @@ import QueueIcon from '@mui/icons-material/Queue';
 import DescriptionIcon from '@mui/icons-material/Description';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import { DRAWER_WIDTH, NAV_ITEMS } from '../../shared/app-constants';
+import { NAV_ITEMS } from '../../shared/app-constants';
 import { useColorMode } from '../ColorModeContext';
 import LanguageMenu from './LanguageMenu';
+import {
+  DrawerHeader,
+  AppTitle,
+  ThemeToggleButton,
+  DrawerDivider,
+  NavList,
+  NavItemButton,
+  NavItemIcon,
+  NavItemText,
+} from '../styles/AppDrawer.styles';
 
 const navIconMap: Record<string, ReactNode> = {
   '/': <HomeIcon />,
@@ -51,40 +61,31 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
 
   return (
     <>
-      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 700 }}>
-          {t('app.name')}
-        </Typography>
+      <DrawerHeader>
+        <AppTitle variant="h6">{t('app.name')}</AppTitle>
         <Tooltip title={mode === 'dark' ? t('app.switchLight') : t('app.switchDark')}>
-          <IconButton size="small" onClick={toggleColorMode} sx={{ color: 'text.secondary' }}>
+          <ThemeToggleButton size="small" onClick={toggleColorMode}>
             {mode === 'dark' ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
-          </IconButton>
+          </ThemeToggleButton>
         </Tooltip>
-      </Box>
-      <Divider sx={{ borderColor: 'divider' }} />
-      <List sx={{ flex: 1, px: 1 }}>
+      </DrawerHeader>
+      <DrawerDivider />
+      <NavList>
         {NAV_ITEMS.map((item) => (
-          <ListItemButton
+          <NavItemButton
             key={item.to}
             selected={location.pathname === item.to}
             onClick={() => {
               navigate(item.to);
               if (isMobile) onNavigate();
             }}
-            sx={{
-              borderRadius: 1,
-              mb: 0.5,
-              '&.Mui-selected': { bgcolor: 'rgba(15,155,142,0.15)', '&:hover': { bgcolor: 'rgba(15,155,142,0.25)' } },
-            }}
           >
-            <ListItemIcon sx={{ minWidth: 36, color: location.pathname === item.to ? 'primary.main' : 'text.secondary' }}>
-              {navIconMap[item.to]}
-            </ListItemIcon>
-            <ListItemText primary={t(`nav.${navKeyMap[item.to]}`)} slotProps={{ primary: { sx: { fontSize: 14 } } }} />
-          </ListItemButton>
+            <NavItemIcon $active={location.pathname === item.to}>{navIconMap[item.to]}</NavItemIcon>
+            <NavItemText primary={t(`nav.${navKeyMap[item.to]}`)} />
+          </NavItemButton>
         ))}
-      </List>
-      <Divider sx={{ borderColor: 'divider' }} />
+      </NavList>
+      <DrawerDivider />
       <LanguageMenu />
     </>
   );

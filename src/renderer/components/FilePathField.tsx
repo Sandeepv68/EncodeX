@@ -1,4 +1,5 @@
-import { Box, Button, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
+import { FieldLabel, FieldStack, PathField } from '../styles/FilePathField.styles';
 
 interface Props {
   label: string;
@@ -15,11 +16,11 @@ export default function FilePathField({ label, value, placeholder, buttonLabel, 
   const helperText = error ? error : onChange ? ' ' : undefined;
   return (
     <Box>
-      <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+      <FieldLabel variant="caption" color="text.secondary">
         {label}
-      </Typography>
-      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
-        <TextField
+      </FieldLabel>
+      <FieldStack direction="row" spacing={1} useFlexGap>
+        <PathField
           fullWidth
           size="small"
           error={!!error}
@@ -29,12 +30,11 @@ export default function FilePathField({ label, value, placeholder, buttonLabel, 
           onChange={onChange ? (e) => onChange(e.target.value) : undefined}
           onBlur={onBlur}
           slotProps={onChange ? undefined : { input: { readOnly: true } }}
-          sx={{ minWidth: 200, flex: 1 }}
         />
         <Button variant="outlined" onClick={onBrowse}>
           {buttonLabel}
         </Button>
-      </Stack>
+      </FieldStack>
     </Box>
   );
 }

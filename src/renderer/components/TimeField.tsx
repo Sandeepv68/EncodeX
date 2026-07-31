@@ -1,4 +1,5 @@
-import { Box, TextField, Typography } from '@mui/material';
+import { TextField } from '@mui/material';
+import { FieldBox, FieldLabel } from '../styles/TimeField.styles';
 
 interface Props {
   label: string;
@@ -11,10 +12,10 @@ interface Props {
 
 export default function TimeField({ label, value, placeholder, error, onChange, onBlur }: Props) {
   return (
-    <Box sx={{ flex: 1 }}>
-      <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+    <FieldBox>
+      <FieldLabel variant="caption" color="text.secondary">
         {label}
-      </Typography>
+      </FieldLabel>
       <TextField
         fullWidth
         size="small"
@@ -25,6 +26,6 @@ export default function TimeField({ label, value, placeholder, error, onChange, 
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
       />
-    </Box>
+    </FieldBox>
   );
 }

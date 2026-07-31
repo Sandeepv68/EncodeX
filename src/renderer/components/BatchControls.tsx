@@ -1,10 +1,11 @@
 import type { RefObject } from 'react';
-import { Button, MenuItem, Paper, Stack, TextField } from '@mui/material';
+import { Button, MenuItem } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import { useTranslation } from 'react-i18next';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../shared/media-options';
 import { TRANSCODER_TYPES, type TranscoderType } from '../../shared/transcoder-constants';
+import { ControlsPaper, ControlsStack, OperationSelect, TranscoderSelect, SuffixField } from '../styles/BatchControls.styles';
 
 export interface BatchControlsProps {
   operationRef: RefObject<string>;
@@ -24,12 +25,11 @@ export default function BatchControls({ operationRef, transcoderRef, suffixRef, 
   };
 
   return (
-    <Paper sx={{ p: 2, mb: 2 }}>
-      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
-        <TextField
+    <ControlsPaper>
+      <ControlsStack direction="row" spacing={1} useFlexGap>
+        <OperationSelect
           select
           size="small"
-          sx={{ minWidth: 140 }}
           defaultValue={BATCH_OPERATIONS[0].value}
           onChange={(e) => {
             operationRef.current = e.target.value;
@@ -40,11 +40,10 @@ export default function BatchControls({ operationRef, transcoderRef, suffixRef, 
               {operationLabels[o.value]}
             </MenuItem>
           ))}
-        </TextField>
-        <TextField
+        </OperationSelect>
+        <TranscoderSelect
           select
           size="small"
-          sx={{ minWidth: 110 }}
           defaultValue={TRANSCODER_TYPES[0]}
           onChange={(e) => {
             transcoderRef.current = e.target.value as TranscoderType;
@@ -55,10 +54,9 @@ export default function BatchControls({ operationRef, transcoderRef, suffixRef, 
               {codec}
             </MenuItem>
           ))}
-        </TextField>
-        <TextField
+        </TranscoderSelect>
+        <SuffixField
           size="small"
-          sx={{ minWidth: 120 }}
           defaultValue={DEFAULT_SUFFIX}
           onChange={(e) => {
             suffixRef.current = e.target.value;
@@ -71,7 +69,7 @@ export default function BatchControls({ operationRef, transcoderRef, suffixRef, 
         <Button variant="outlined" color="error" startIcon={<DeleteSweepIcon />} onClick={onCancelAll}>
           {t('batchQueue.cancelAll')}
         </Button>
-      </Stack>
-    </Paper>
+      </ControlsStack>
+    </ControlsPaper>
   );
 }

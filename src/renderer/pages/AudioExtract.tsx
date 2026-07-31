@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, TextField, MenuItem, Button, Stack } from '@mui/material';
+import { Box, TextField, MenuItem, Button, Stack } from '@mui/material';
 import CodecSelect from '../components/CodecSelect';
 import FileDropZone from '../components/FileDropZone';
 import ProgressBar from '../components/ProgressBar';
@@ -16,6 +16,7 @@ import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { FieldBox, FieldLabel } from '../styles/AudioExtract.styles';
 
 const log = new Logger('renderer/pages/AudioExtract');
 
@@ -59,9 +60,9 @@ export default function AudioExtract() {
   return (
     <PageContainer title={t('audioExtract.title')}>
       <Box>
-        <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+        <FieldLabel variant="caption" color="text.secondary">
           {t('audioExtract.videoFile')}
-        </Typography>
+        </FieldLabel>
         <ErrorBoundary fallback={null}>
           <FileDropZone onFileSelect={setInput} label={t('audioExtract.dropLabel')} accept={VIDEO_DROPZONE_ACCEPT} />
         </ErrorBoundary>
@@ -90,18 +91,18 @@ export default function AudioExtract() {
       />
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+        <FieldBox>
+          <FieldLabel variant="caption" color="text.secondary">
             {t('audioExtract.audioCodec')}
-          </Typography>
+          </FieldLabel>
           <ErrorBoundary fallback={null}>
             <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} />
           </ErrorBoundary>
-        </Box>
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+        </FieldBox>
+        <FieldBox>
+          <FieldLabel variant="caption" color="text.secondary">
             {t('audioExtract.bitrate')}
-          </Typography>
+          </FieldLabel>
           <TextField select fullWidth size="small" value={audioBitrate} onChange={(e) => setAudioBitrate(e.target.value)}>
             {BITRATE_OPTIONS.map((b) => (
               <MenuItem key={b} value={b}>
@@ -109,7 +110,7 @@ export default function AudioExtract() {
               </MenuItem>
             ))}
           </TextField>
-        </Box>
+        </FieldBox>
       </Stack>
 
       <Button variant="contained" onClick={handleExtract} disabled={!input || !output || isConverting}>
