@@ -38,3 +38,11 @@ export const MobileMenuButton = styled(IconButton)(({ theme }) => ({
 }));
 
 export const RouteContent = styled(Box)({ flex: 1 });
+
+export const PageFallback = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  height: '100%',
+  minHeight: 200,
+});

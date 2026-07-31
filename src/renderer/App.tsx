@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import { ColorModeProvider } from './ColorModeContext';
@@ -11,17 +11,27 @@ import ToastContainer from './components/ToastContainer';
 import Footer from './components/Footer';
 import AppDrawer from './components/AppDrawer';
 import { useErrorStore } from './stores/errorStore';
-import Dashboard from './pages/Dashboard';
-import Convert from './pages/Convert';
-import MediaInfo from './pages/MediaInfo';
-import ImageCompress from './pages/ImageCompress';
-import AudioExtract from './pages/AudioExtract';
-import VideoCut from './pages/VideoCut';
-import BatchQueue from './pages/BatchQueue';
-import Logs from './pages/Logs';
 import { useLogStore } from './stores/logStore';
 import { useLanguageDirection } from './useLanguageDirection';
-import { AppRoot, TemporaryDrawer, PermanentDrawer, ColumnLayout, MainContent, MobileMenuButton, RouteContent } from './styles/App.styles';
+import {
+  AppRoot,
+  TemporaryDrawer,
+  PermanentDrawer,
+  ColumnLayout,
+  MainContent,
+  MobileMenuButton,
+  RouteContent,
+  PageFallback,
+} from './styles/App.styles';
+
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Convert = lazy(() => import('./pages/Convert'));
+const MediaInfo = lazy(() => import('./pages/MediaInfo'));
+const ImageCompress = lazy(() => import('./pages/ImageCompress'));
+const AudioExtract = lazy(() => import('./pages/AudioExtract'));
+const VideoCut = lazy(() => import('./pages/VideoCut'));
+const BatchQueue = lazy(() => import('./pages/BatchQueue'));
+const Logs = lazy(() => import('./pages/Logs'));
 
 function AppLayout() {
   const theme = useTheme();
@@ -76,11 +86,19 @@ function AppLayout() {
           )}
           <ErrorBoundary>
             <RouteContent>
-              <Routes>
-                {routes.map(({ path, element }) => (
-                  <Route key={path} path={path} element={<ErrorBoundary>{element}</ErrorBoundary>} />
-                ))}
-              </Routes>
+              <Suspense
+                fallback={
+                  <PageFallback>
+                    <CircularProgress />
+                  </PageFallback>
+                }
+              >
+                <Routes>
+                  {routes.map(({ path, element }) => (
+                    <Route key={path} path={path} element={<ErrorBoundary>{element}</ErrorBoundary>} />
+                  ))}
+                </Routes>
+              </Suspense>
             </RouteContent>
           </ErrorBoundary>
         </MainContent>
