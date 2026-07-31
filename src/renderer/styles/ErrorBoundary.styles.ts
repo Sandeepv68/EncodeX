@@ -12,12 +12,12 @@ export const FallbackBox = styled(Box)(({ theme }) => ({
 
 export const FallbackPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
-  maxWidth: 480,
+  maxWidth: theme.typography.pxToRem(480),
   textAlign: 'center',
 }));
 
 export const WarningIcon = styled(WarningAmberIcon)(({ theme }) => ({
-  fontSize: 48,
+  fontSize: theme.typography.pxToRem(48),
   color: theme.palette.error.main,
   marginBottom: theme.spacing(2),
 }));

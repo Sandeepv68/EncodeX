@@ -10,7 +10,7 @@ export const FooterBox = styled('footer')(({ theme }) => ({
   paddingBottom: theme.spacing(1),
   paddingLeft: theme.spacing(2),
   paddingRight: theme.spacing(2),
-  borderTop: '1px solid',
+  borderTop: `${theme.typography.pxToRem(1)} solid`,
   borderColor: theme.palette.divider,
   backgroundColor: theme.palette.background.paper,
 }));
@@ -23,4 +23,4 @@ export const FooterRight = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
-export const FfmpegBanner = styled('img')({ height: 30 });
+export const FfmpegBanner = styled('img')(({ theme }) => ({ height: theme.typography.pxToRem(30) }));

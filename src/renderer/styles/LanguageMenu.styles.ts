@@ -7,7 +7,7 @@ export const LanguageMenuBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1),
   display: 'flex',
   justifyContent: 'center',
-  height: 47,
+  height: theme.typography.pxToRem(47),
 }));
 
 export const LanguageButton = styled('button')(({ theme }) => ({
@@ -22,7 +22,7 @@ export const LanguageButton = styled('button')(({ theme }) => ({
   paddingTop: theme.spacing(0.5),
   paddingBottom: theme.spacing(0.5),
   borderRadius: theme.shape.borderRadius,
-  border: '1px solid transparent',
+  border: `${theme.typography.pxToRem(1)} solid transparent`,
   fontFamily: 'inherit',
   '&:hover': { borderColor: theme.palette.divider },
 }));
@@ -34,13 +34,13 @@ export const LanguageLabel = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
 }));
 
-export const FlagIconWrapper = styled('span')({
+export const FlagIconWrapper = styled('span')(({ theme }) => ({
   display: 'inline-flex',
-  width: 20,
-  height: 15,
-  marginRight: 8,
+  width: theme.typography.pxToRem(20),
+  height: theme.typography.pxToRem(15),
+  marginRight: theme.typography.pxToRem(8),
   verticalAlign: 'middle',
   '& svg': { width: '100%', height: '100%' },
-});
+}));
 
-export const menuPaperSx: SxProps<Theme> = { maxHeight: 320 };
+export const menuPaperSx: SxProps<Theme> = (theme) => ({ maxHeight: theme.typography.pxToRem(320) });

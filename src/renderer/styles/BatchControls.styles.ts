@@ -8,8 +8,14 @@ export const ControlsPaper = styled(Paper)(({ theme }) => ({
 
 export const ControlsStack = styled(Stack)({ flexWrap: 'wrap' });
 
-export const OperationSelect = styled(TextField)({ minWidth: 140 });
+export const OperationSelect = styled(TextField)(({ theme }) => ({
+  minWidth: theme.typography.pxToRem(140),
+}));
 
-export const TranscoderSelect = styled(TextField)({ minWidth: 110 });
+export const TranscoderSelect = styled(TextField)(({ theme }) => ({
+  minWidth: theme.typography.pxToRem(110),
+}));
 
-export const SuffixField = styled(TextField)({ minWidth: 120 });
+export const SuffixField = styled(TextField)(({ theme }) => ({
+  minWidth: theme.typography.pxToRem(120),
+}));

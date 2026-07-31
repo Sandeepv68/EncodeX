@@ -10,7 +10,7 @@ export const BannerRoot = styled(Box, {
   padding: theme.spacing(1.5),
   borderRadius: theme.shape.borderRadius,
   backgroundColor: $tint,
-  border: `1px solid ${$tone}33`,
+  border: `${theme.typography.pxToRem(1)} solid ${$tone}33`,
 }));
 
 export const BannerIconBox = styled(Box, {

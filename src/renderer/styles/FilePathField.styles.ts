@@ -8,4 +8,7 @@ export const FieldLabel = styled(Typography)(({ theme }) => ({
 
 export const FieldStack = styled(Stack)({ flexWrap: 'wrap' });
 
-export const PathField = styled(TextField)({ minWidth: 200, flex: 1 });
+export const PathField = styled(TextField)(({ theme }) => ({
+  minWidth: theme.typography.pxToRem(200),
+  flex: 1,
+}));

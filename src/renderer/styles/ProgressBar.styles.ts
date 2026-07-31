@@ -2,7 +2,7 @@ import { styled } from '@mui/material/styles';
 import { Box, LinearProgress } from '@mui/material';
 
 export const ProgressTrack = styled(LinearProgress)(({ theme }) => ({
-  height: 8,
+  height: theme.typography.pxToRem(8),
   borderRadius: theme.shape.borderRadius,
 }));
 

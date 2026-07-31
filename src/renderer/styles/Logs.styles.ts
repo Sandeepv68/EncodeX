@@ -13,7 +13,7 @@ export const LogsHeader = styled(Box)(({ theme }) => ({
 
 export const LogsTitle = styled(Typography)({ fontWeight: 600 });
 
-export const FilterSelect = styled(Select)({ minWidth: 100 });
+export const FilterSelect = styled(Select)(({ theme }) => ({ minWidth: theme.typography.pxToRem(100) }));
 
 export const LogsBody = styled(Box)(({ theme }) => ({
   flex: 1,
@@ -21,7 +21,7 @@ export const LogsBody = styled(Box)(({ theme }) => ({
   backgroundColor: '#1e1e1e',
   color: '#d4d4d4',
   fontFamily: 'monospace',
-  fontSize: 12,
+  fontSize: theme.typography.pxToRem(12),
   padding: theme.spacing(1),
   borderRadius: theme.shape.borderRadius,
   whiteSpace: 'pre-wrap',

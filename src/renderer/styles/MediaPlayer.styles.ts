@@ -7,7 +7,13 @@ export const PlayerRoot = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
 }));
 
-export const PlayerCanvas = styled('canvas')({ maxWidth: '100%', maxHeight: 400, display: 'block', cursor: 'pointer', margin: '0 auto' });
+export const PlayerCanvas = styled('canvas')(({ theme }) => ({
+  maxWidth: '100%',
+  maxHeight: theme.typography.pxToRem(400),
+  display: 'block',
+  cursor: 'pointer',
+  margin: '0 auto',
+}));
 
 export const ControlsArea = styled(Box)(({ theme }) => ({
   paddingLeft: theme.spacing(2),

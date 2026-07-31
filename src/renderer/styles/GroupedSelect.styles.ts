@@ -10,7 +10,7 @@ export const GroupHeader = styled(MenuItem)(({ theme }) => ({
   color: theme.palette.primary.main,
   paddingTop: theme.spacing(0.75),
   paddingBottom: theme.spacing(0.75),
-  borderBottom: '1px solid',
+  borderBottom: `${theme.typography.pxToRem(1)} solid`,
   borderColor: theme.palette.divider,
 }));
 
@@ -20,4 +20,7 @@ export const GroupLabel = styled(Box)(({ theme }) => ({
   gap: theme.spacing(0.75),
 }));
 
-export const GroupHeaderIconBox = styled(Box)({ fontSize: 16, display: 'inline-flex' });
+export const GroupHeaderIconBox = styled(Box)(({ theme }) => ({
+  fontSize: theme.typography.pxToRem(16),
+  display: 'inline-flex',
+}));
