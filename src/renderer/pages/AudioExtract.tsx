@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, TextField, MenuItem, Button, Stack } from '@mui/material';
+import { faMusic } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CodecSelect from '../components/CodecSelect';
 import FileDropZone from '../components/FileDropZone';
 import ProgressBar from '../components/ProgressBar';
@@ -113,7 +115,12 @@ export default function AudioExtract() {
         </FieldBox>
       </Stack>
 
-      <Button variant="contained" onClick={handleExtract} disabled={!input || !output || isConverting}>
+      <Button
+        variant="contained"
+        startIcon={<FontAwesomeIcon icon={faMusic} />}
+        onClick={handleExtract}
+        disabled={!input || !output || isConverting}
+      >
         {isConverting ? t('audioExtract.extracting') : t('audioExtract.extract')}
       </Button>
 

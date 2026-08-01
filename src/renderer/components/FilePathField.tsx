@@ -1,5 +1,7 @@
-import { Box } from '@mui/material';
-import { FieldLabel, FieldStack, PathField, BrowseButton } from '../styles/FilePathField.styles';
+import { Box, Button } from '@mui/material';
+import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FieldLabel, FieldStack, PathField } from '../styles/FilePathField.styles';
 
 interface Props {
   label: string;
@@ -31,9 +33,9 @@ export default function FilePathField({ label, value, placeholder, buttonLabel, 
           onBlur={onBlur}
           slotProps={onChange ? undefined : { input: { readOnly: true } }}
         />
-        <BrowseButton variant="outlined" onClick={onBrowse}>
+        <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faFolderOpen} />} onClick={onBrowse}>
           {buttonLabel}
-        </BrowseButton>
+        </Button>
       </FieldStack>
     </Box>
   );

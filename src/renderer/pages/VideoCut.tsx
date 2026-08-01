@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Stack, Switch, Button, Typography } from '@mui/material';
+import { faScissors } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PageContainer from '../components/PageContainer';
 import FilePathField from '../components/FilePathField';
 import TimeField from '../components/TimeField';
@@ -165,7 +167,12 @@ export default function VideoCut() {
         </Typography>
       </ToggleRow>
 
-      <Button variant="contained" onClick={handleCut} disabled={!input || !output || isConverting}>
+      <Button
+        variant="contained"
+        startIcon={<FontAwesomeIcon icon={faScissors} />}
+        onClick={handleCut}
+        disabled={!input || !output || isConverting}
+      >
         {isConverting ? t('videoCut.cutting') : t('videoCut.cut')}
       </Button>
 

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography, TextField, MenuItem, Switch, Stack, Button } from '@mui/material';
-import { faPalette, faBrush, faDroplet, faSun } from '@fortawesome/free-solid-svg-icons';
+import { faPalette, faBrush, faDroplet, faSun, faPlay, faPause, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Logger } from '../../shared/logger';
 import { useConversion } from '../hooks/useConversion';
@@ -306,26 +307,31 @@ export default function Convert() {
       </Box>
 
       <ActionStack direction="row" spacing={1} useFlexGap>
-        <Button variant="contained" onClick={handleStartConversion} disabled={!inputFile || !outputFile || isConverting}>
+        <Button
+          variant="contained"
+          startIcon={<FontAwesomeIcon icon={faPlay} />}
+          onClick={handleStartConversion}
+          disabled={!inputFile || !outputFile || isConverting}
+        >
           {isConverting ? t('convert.converting') : t('convert.startConversion')}
         </Button>
         {isConverting && !isPaused && (
-          <Button variant="contained" color="warning" onClick={pauseConversion}>
+          <Button variant="contained" color="warning" startIcon={<FontAwesomeIcon icon={faPause} />} onClick={pauseConversion}>
             {t('convert.pause')}
           </Button>
         )}
         {isConverting && isPaused && (
-          <Button variant="contained" color="success" onClick={resumeConversion}>
+          <Button variant="contained" color="success" startIcon={<FontAwesomeIcon icon={faPlay} />} onClick={resumeConversion}>
             {t('convert.resume')}
           </Button>
         )}
         {isConverting && (
-          <Button variant="contained" color="error" onClick={handleCancelClick}>
+          <Button variant="contained" color="error" startIcon={<FontAwesomeIcon icon={faXmark} />} onClick={handleCancelClick}>
             {t('convert.cancel')}
           </Button>
         )}
         {isDirty && !isConverting && (
-          <Button variant="outlined" color="error" onClick={() => setJobCancelOpen(true)}>
+          <Button variant="outlined" color="error" startIcon={<FontAwesomeIcon icon={faXmark} />} onClick={() => setJobCancelOpen(true)}>
             {t('convert.cancelJob')}
           </Button>
         )}

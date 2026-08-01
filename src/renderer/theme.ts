@@ -46,6 +46,7 @@ export function createAppTheme(mode: ColorMode, direction: 'ltr' | 'rtl') {
       MuiButton: {
         styleOverrides: {
           root: { textTransform: 'none', fontWeight: 600 },
+          sizeMedium: ({ theme }) => ({ height: theme.typography.pxToRem(40) }),
         },
       },
       MuiPaper: {

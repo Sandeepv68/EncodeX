@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, TextField, MenuItem, Button, Stack, Typography } from '@mui/material';
+import { faCompress } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FileDropZone from '../components/FileDropZone';
 import ProgressBar from '../components/ProgressBar';
 import PageContainer from '../components/PageContainer';
@@ -167,7 +169,12 @@ export default function ImageCompress() {
         />
       </Box>
 
-      <Button variant="contained" onClick={handleConvert} disabled={!input || !output || isConverting}>
+      <Button
+        variant="contained"
+        startIcon={<FontAwesomeIcon icon={faCompress} />}
+        onClick={handleConvert}
+        disabled={!input || !output || isConverting}
+      >
         {isConverting ? t('imageCompress.compressing') : t('imageCompress.compress')}
       </Button>
       {progress && (
