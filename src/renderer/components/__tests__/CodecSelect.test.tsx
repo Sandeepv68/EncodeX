@@ -71,4 +71,38 @@ describe('CodecSelect', () => {
     expect(await screen.findByRole('option', { name: 'H.264 (libx264)' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'hevc_nvenc' })).toBeInTheDocument();
   });
+
+  it('shows only hardware video codecs when encoderType is hardware', async () => {
+    mockCapabilities(['libx264', 'h264_nvenc', 'hevc_qsv'], ['aac']);
+    render(<CodecSelect type="video" value="h264_nvenc" onChange={() => {}} encoderType="hardware" />);
+    fireEvent.mouseDown(screen.getByRole('combobox'));
+    expect(await screen.findByRole('option', { name: 'H.264 (NVENC)' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'H.265 (QSV)' })).toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: 'H.264 (libx264)' })).not.toBeInTheDocument();
+  });
+
+  it('shows only software video codecs when encoderType is software', async () => {
+    mockCapabilities(['libx264', 'h264_nvenc', 'hevc_qsv'], ['aac']);
+    render(<CodecSelect type="video" value="libx264" onChange={() => {}} encoderType="software" />);
+    fireEvent.mouseDown(screen.getByRole('combobox'));
+    expect(await screen.findByRole('option', { name: 'H.264 (libx264)' })).toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: 'H.264 (NVENC)' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: 'H.265 (QSV)' })).not.toBeInTheDocument();
+  });
+
+  it('keeps the current value visible even when it is filtered out', async () => {
+    mockCapabilities(['libx264', 'h264_nvenc'], ['aac']);
+    render(<CodecSelect type="video" value="h264_nvenc" onChange={() => {}} encoderType="software" />);
+    fireEvent.mouseDown(screen.getByRole('combobox'));
+    expect(await screen.findByRole('option', { name: 'H.264 (libx264)' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'h264_nvenc' })).toBeInTheDocument();
+  });
+
+  it('does not filter audio codecs by encoder type', async () => {
+    mockCapabilities(['libx264', 'h264_nvenc'], ['aac', 'libmp3lame']);
+    render(<CodecSelect type="audio" value="aac" onChange={() => {}} encoderType="hardware" />);
+    fireEvent.mouseDown(screen.getByRole('combobox'));
+    expect(await screen.findByRole('option', { name: 'AAC (native)' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'MP3 (LAME)' })).toBeInTheDocument();
+  });
 });

@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { CONVERSION_DEFAULTS, TRANSCODER_TYPES } from '../../shared/transcoder-constants';
+import { ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
+import type { EncoderType } from '../../shared/hwaccel-settings';
 
 const log = new Logger('renderer/stores/conversionStore');
 
@@ -23,6 +25,7 @@ interface ConversionState {
   pixelFormat: string;
   copyMode: boolean;
   transcoder: string;
+  encoderType: EncoderType;
   isConverting: boolean;
   isPaused: boolean;
   isDirty: boolean;
@@ -38,6 +41,7 @@ interface ConversionState {
   setPixelFormat: (f: string) => void;
   setCopyMode: (c: boolean) => void;
   setTranscoder: (t: string) => void;
+  setEncoderType: (type: EncoderType) => void;
   setIsConverting: (v: boolean) => void;
   setIsPaused: (v: boolean) => void;
   setProgress: (p: ProgressData | null) => void;
@@ -56,6 +60,7 @@ const INITIAL_STATE = {
   pixelFormat: CONVERSION_DEFAULTS.PIXEL_FORMAT,
   copyMode: false,
   transcoder: TRANSCODER_TYPES[0],
+  encoderType: ENCODER_TYPE_DEFAULT,
   isConverting: false,
   isPaused: false,
   isDirty: false,
@@ -107,6 +112,10 @@ export const useConversionStore = create<ConversionState>((set) => ({
   setTranscoder: (t) => {
     log.debug('setTranscoder:', t);
     set({ transcoder: t, isDirty: true });
+  },
+  setEncoderType: (type) => {
+    log.debug('setEncoderType:', type);
+    set({ encoderType: type, isDirty: true });
   },
   setIsConverting: (v) => {
     log.debug('setIsConverting:', v);

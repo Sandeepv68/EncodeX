@@ -12,14 +12,24 @@ import PageContainer from '../components/PageContainer';
 import FilePathField from '../components/FilePathField';
 import ConfirmDialog from '../components/ConfirmDialog';
 import GroupedSelect from '../components/GroupedSelect';
+import InfoTooltip from '../components/InfoTooltip';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { PIXEL_FORMATS, VIDEO_BITRATE_OPTIONS, SCALE_OPTIONS, BITRATE_OPTIONS } from '../../shared/media-options';
 import { TRANSCODER_TYPES, TRANSCODER_LABELS, CONVERSION_DEFAULTS, QSCALE_RANGE } from '../../shared/transcoder-constants';
 import { isInRange } from '../../shared/validation';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { useSettingsStore } from '../stores/settingsStore';
+import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
+import type { EncoderType } from '../../shared/hwaccel-settings';
 import { ToggleRow, FieldBox, FieldLabel, ActionStack } from '../styles/Convert.styles';
 
 const log = new Logger('renderer/pages/Convert');
+
+const encoderTypeLabel: Record<EncoderType, string> = {
+  auto: 'settings.encoderTypeAuto',
+  hardware: 'settings.encoderTypeHardware',
+  software: 'settings.encoderTypeSoftware',
+};
 
 const pixelGroupIcons: Record<string, IconDefinition> = {
   'YUV 8-bit': faPalette,
@@ -50,6 +60,7 @@ export default function Convert() {
     pixelFormat,
     copyMode,
     transcoder,
+    encoderType,
     isConverting,
     isPaused,
     progress,
@@ -62,6 +73,7 @@ export default function Convert() {
     setPixelFormat,
     setCopyMode,
     setTranscoder,
+    setEncoderType,
     startConversion,
     pauseConversion,
     resumeConversion,
@@ -74,6 +86,9 @@ export default function Convert() {
   const { errors, setErrors, clearFieldError, setFieldError } = useFormErrors();
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
   const [jobCancelOpen, setJobCancelOpen] = useState(false);
+  const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
+  const settingsEncoderType = useSettingsStore((s) => s.encoderType);
+  const effectiveEncoderType: EncoderType = encoderType !== 'auto' ? encoderType : settingsEncoderType;
 
   const validateFields = (): boolean => {
     const next: Record<string, string> = {};
@@ -138,13 +153,34 @@ export default function Convert() {
 
       {!copyMode && (
         <>
+          {settingsHardwareAcceleration && (
+            <FieldBox>
+              <FieldLabel variant="caption" color="text.secondary">
+                {t('settings.encoderType')}
+                <InfoTooltip title={t('convert.encoderTypeHint')} />
+              </FieldLabel>
+              <TextField select fullWidth size="small" value={encoderType} onChange={(e) => setEncoderType(e.target.value as EncoderType)}>
+                {ENCODER_TYPES.map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {t(encoderTypeLabel[type])}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FieldBox>
+          )}
+
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <FieldBox>
               <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.videoCodec')}
               </FieldLabel>
               <ErrorBoundary fallback={null}>
-                <CodecSelect type="video" value={videoCodec} onChange={setVideoCodec} />
+                <CodecSelect
+                  type="video"
+                  value={videoCodec}
+                  onChange={setVideoCodec}
+                  encoderType={settingsHardwareAcceleration ? effectiveEncoderType : 'auto'}
+                />
               </ErrorBoundary>
             </FieldBox>
             <FieldBox>

@@ -57,7 +57,8 @@
     "cancelTitle": "Avbryt konvertering",
     "cancelMessage": "Är du säker på att du vill avbryta den aktuella konverteringen?",
     "yes": "Ja",
-    "no": "Nej"
+    "no": "Nej",
+    "encoderTypeHint": "Åsidosätter det i Inställningar valda enkodartypen för den här konverteringen. Automatisk följer värdet i Inställningar."
   },
   "mediaInfo": {
     "title": "Mediainformation",
@@ -190,6 +191,17 @@
   },
   "settings": {
     "title": "Inställningar",
-    "theme": "Tema"
+    "theme": "Tema",
+    "hardwareAcceleration": "Hårdvaruacceleration",
+    "hwaccelMode": "Accelerationsläge",
+    "hwaccelModeAuto": "Automatisk (avkoda + koda)",
+    "hwaccelModeEncode": "Endast kodning",
+    "encoderType": "Encoder-typ",
+    "encoderTypeAuto": "Automatisk",
+    "encoderTypeHardware": "Hårdvara",
+    "encoderTypeSoftware": "Mjukvara",
+    "hardwareAccelerationHint": "Använder din GPU (NVIDIA NVENC, Intel QSV, AMD AMF) för videoenkodning och -avkodning. Stäng av för enbart programvaruenkodning.",
+    "hwaccelModeHint": "Automatisk: GPU gör både avkodning och enkodning (snabbast, inte alltid kompatibelt). Endast enkoda: GPU enkodar, CPU avkodar (säkrast).",
+    "encoderTypeHint": "Filtrerar videocodeclistan. Automatisk visar alla tillgängliga enkodare, Hårdvara endast GPU-enkodare, Mjukvara endast CPU-enkodare."
   }
 }

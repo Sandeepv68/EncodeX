@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, IconButton, TextField, Typography } from '@mui/material';
 import { COLORS } from '../colors';
 
 export const SettingsRoot = styled(Box)(({ theme }) => ({ display: 'flex', flexDirection: 'column', gap: theme.spacing(2) }));
@@ -28,8 +28,14 @@ export const SettingsLabel = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.primary,
 }));
 
+export const SettingsLabelRow = styled(Box)({ display: 'flex', alignItems: 'center' });
+
 export const ThemeToggleButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.secondary,
   border: `1px solid ${COLORS.border.light}`,
   borderRadius: theme.shape.borderRadius,
+}));
+
+export const ModeSelect = styled(TextField)(({ theme }) => ({
+  minWidth: theme.spacing(26),
 }));

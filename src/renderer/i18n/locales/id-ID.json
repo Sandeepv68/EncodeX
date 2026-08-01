@@ -57,7 +57,8 @@
     "cancelTitle": "Batalkan Konversi",
     "cancelMessage": "Apakah Anda yakin ingin membatalkan konversi saat ini?",
     "yes": "Ya",
-    "no": "Tidak"
+    "no": "Tidak",
+    "encoderTypeHint": "Menimpa jenis encoder yang dipilih di Pengaturan untuk konversi ini. Otomatis mengikuti nilai di Pengaturan."
   },
   "mediaInfo": {
     "title": "Informasi Media",
@@ -190,6 +191,17 @@
   },
   "settings": {
     "title": "Pengaturan",
-    "theme": "Tema"
+    "theme": "Tema",
+    "hardwareAcceleration": "Akselerasi perangkat keras",
+    "hwaccelMode": "Mode akselerasi",
+    "hwaccelModeAuto": "Otomatis (decode + encode)",
+    "hwaccelModeEncode": "Encode saja",
+    "encoderType": "Jenis Encoder",
+    "encoderTypeAuto": "Otomatis",
+    "encoderTypeHardware": "Perangkat keras",
+    "encoderTypeSoftware": "Perangkat lunak",
+    "hardwareAccelerationHint": "Menggunakan GPU Anda (NVIDIA NVENC, Intel QSV, AMD AMF) untuk encoding dan decoding video. Matikan untuk encoding khusus perangkat lunak.",
+    "hwaccelModeHint": "Otomatis: GPU melakukan decoding dan encoding (tercepat, tidak selalu kompatibel). Hanya encode: GPU meng-encode, CPU mendecode (paling aman).",
+    "encoderTypeHint": "Memfilter daftar codec video. Otomatis menampilkan semua encoder, Perangkat keras hanya encoder GPU, Perangkat lunak hanya encoder CPU."
   }
 }

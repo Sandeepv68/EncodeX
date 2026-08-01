@@ -57,7 +57,8 @@
     "cancelTitle": "Konvertierung abbrechen",
     "cancelMessage": "Möchten Sie die aktuelle Konvertierung wirklich abbrechen?",
     "yes": "Ja",
-    "no": "Nein"
+    "no": "Nein",
+    "encoderTypeHint": "Überschreibt den in den Einstellungen gewählten Encoder-Typ für diese Konvertierung. Automatisch folgt dem in den Einstellungen gesetzten Wert."
   },
   "mediaInfo": {
     "title": "Medieninformationen",
@@ -190,6 +191,17 @@
   },
   "settings": {
     "title": "Einstellungen",
-    "theme": "Design"
+    "theme": "Design",
+    "hardwareAcceleration": "Hardwarebeschleunigung",
+    "hwaccelMode": "Beschleunigungsmodus",
+    "hwaccelModeAuto": "Automatisch (Decodieren + Encodieren)",
+    "hwaccelModeEncode": "Nur Encodieren",
+    "encoderType": "Encoder-Typ",
+    "encoderTypeAuto": "Automatisch",
+    "encoderTypeHardware": "Hardware",
+    "encoderTypeSoftware": "Software",
+    "hardwareAccelerationHint": "Verwendet Ihre GPU (NVIDIA NVENC, Intel QSV, AMD AMF) für Video-Encoding und -Decoding. Deaktivieren für reines Software-Encoding.",
+    "hwaccelModeHint": "Automatisch: Die GPU übernimmt Encoding und Decoding (am schnellsten, nicht immer kompatibel). Nur Encodieren: Die GPU encodiert, die CPU decodiert (am sichersten).",
+    "encoderTypeHint": "Filtert die Videocodec-Liste. Automatisch zeigt alle verfügbaren Encoder, Hardware nur GPU-Encoder, Software nur CPU-Encoder."
   }
 }

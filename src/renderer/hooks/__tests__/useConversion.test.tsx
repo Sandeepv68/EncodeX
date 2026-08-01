@@ -113,6 +113,8 @@ describe('useConversion', () => {
         scale: '1920x1080',
         pixelFormat: 'yuv420p',
         copy: false,
+        hardwareAcceleration: true,
+        hwaccelMode: 'auto',
       },
       'FFMPEG',
     );

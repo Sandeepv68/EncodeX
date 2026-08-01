@@ -65,7 +65,7 @@ export class FfmpegCore implements ITranscoder {
     const cmd = ffmpeg({ source: input });
 
     if (!options.copy) {
-      const hwAccelArgs = getHwAccelArgs(options.videoCodec);
+      const hwAccelArgs = getHwAccelArgs(options.videoCodec, options.hardwareAcceleration, options.hwaccelMode);
       if (hwAccelArgs.length > 0) {
         log.debug('Hardware acceleration input options:', hwAccelArgs.join(' '));
         cmd.inputOptions(hwAccelArgs);

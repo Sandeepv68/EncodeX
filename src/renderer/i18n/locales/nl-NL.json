@@ -57,7 +57,8 @@
     "cancelTitle": "Conversie annuleren",
     "cancelMessage": "Weet u zeker dat u de huidige conversie wilt annuleren?",
     "yes": "Ja",
-    "no": "Nee"
+    "no": "Nee",
+    "encoderTypeHint": "Overschrijft het in Instellingen gekozen encodertype voor deze conversie. Automatisch volgt de waarde in Instellingen."
   },
   "mediaInfo": {
     "title": "Media-informatie",
@@ -190,6 +191,17 @@
   },
   "settings": {
     "title": "Instellingen",
-    "theme": "Thema"
+    "theme": "Thema",
+    "hardwareAcceleration": "Hardwareversnelling",
+    "hwaccelMode": "Versnellingsmodus",
+    "hwaccelModeAuto": "Automatisch (decoderen + coderen)",
+    "hwaccelModeEncode": "Alleen coderen",
+    "encoderType": "Encoder-type",
+    "encoderTypeAuto": "Automatisch",
+    "encoderTypeHardware": "Hardware",
+    "encoderTypeSoftware": "Software",
+    "hardwareAccelerationHint": "Gebruikt uw GPU (NVIDIA NVENC, Intel QSV, AMD AMF) voor video-encoding en -decoding. Schakel uit voor alleen software-encoding.",
+    "hwaccelModeHint": "Automatisch: de GPU doet zowel decoderen als encoderen (snelst, niet altijd compatibel). Alleen encoderen: de GPU encodeert, de CPU decodeert (veiligst).",
+    "encoderTypeHint": "Filtert de videocodeclijst. Automatisch toont alle beschikbare encoders, Hardware alleen GPU-encoders, Software alleen CPU-encoders."
   }
 }

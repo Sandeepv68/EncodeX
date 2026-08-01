@@ -1,4 +1,9 @@
 import { Logger } from '../../shared/logger';
+import { HWACCEL_DEFAULTS } from '../../shared/hwaccel-settings';
+import { isHardwareVideoCodec } from '../../shared/codec-classification';
+import type { HwAccelMode } from '../../shared/hwaccel-settings';
+
+export { isHardwareVideoCodec };
 
 const log = new Logger('main/transcoders/hwaccel');
 
@@ -25,7 +30,11 @@ function matchHwAccelFamily(videoCodec: string | undefined): string | null {
   return null;
 }
 
-export function getHwAccelArgs(videoCodec?: string): string[] {
+export function getHwAccelArgs(videoCodec?: string, enabled?: boolean, mode?: HwAccelMode): string[] {
+  const isEnabled = enabled ?? HWACCEL_DEFAULTS.ENABLED;
+  const accelMode = mode ?? HWACCEL_DEFAULTS.MODE;
+  if (!isEnabled || accelMode !== 'auto') return [];
+
   const family = matchHwAccelFamily(videoCodec);
   if (!family) return [];
 
@@ -62,8 +71,4 @@ export function getHwAccelArgs(videoCodec?: string): string[] {
 
   log.debug('Applying hardware acceleration flags for', videoCodec, ':', flags.join(' '));
   return flags;
-}
-
-export function isHardwareVideoCodec(videoCodec?: string): boolean {
-  return matchHwAccelFamily(videoCodec) !== null;
 }

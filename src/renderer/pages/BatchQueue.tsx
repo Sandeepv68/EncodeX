@@ -8,6 +8,7 @@ import { useToastStore } from '../stores/toastStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { QueueJob } from '../../shared/types';
+import { useSettingsStore } from '../stores/settingsStore';
 import { PageTitle, QueuePaper, EmptyText } from '../styles/BatchQueue.styles';
 
 export default function BatchQueue() {
@@ -36,6 +37,7 @@ export default function BatchQueue() {
   const handleAddFiles = async () => {
     const files = await window.electronAPI.selectFiles();
     if (!files) return;
+    const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
     for (const file of files) {
       const ext = file.split('.').pop();
       const outFile = `${file.substring(0, file.lastIndexOf('.'))}${suffixRef.current}.${ext}`;
@@ -50,6 +52,8 @@ export default function BatchQueue() {
               : operationRef.current === 'extract_audio'
                 ? audioCodecRef.current
                 : undefined,
+          hardwareAcceleration,
+          hwaccelMode,
         },
         transcoderRef.current,
       );

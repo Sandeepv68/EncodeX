@@ -7,6 +7,7 @@ import { ConversionProgress } from '../../shared/types';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import { ErrorCode } from '../../shared/errors';
 import i18n from '../i18n/config';
+import { useSettingsStore } from '../stores/settingsStore';
 
 const log = new Logger('renderer/hooks/useConversion');
 
@@ -40,6 +41,7 @@ export function useConversion() {
     log.info('startConversion:', store.inputFile, '->', store.outputFile, 'copyMode:', store.copyMode);
     store.setIsConverting(true);
     try {
+      const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
       await window.electronAPI.convertFile(
         store.inputFile,
         store.outputFile,
@@ -52,6 +54,8 @@ export function useConversion() {
           scale: store.scale || undefined,
           pixelFormat: store.pixelFormat || undefined,
           copy: store.copyMode,
+          hardwareAcceleration,
+          hwaccelMode,
         },
         store.transcoder,
       );

@@ -26,7 +26,7 @@ export function getFfprobePath(): string {
 export function buildFfmpegArgs(input: string, output: string, options: ConversionOptions): string[] {
   const args: string[] = [];
   if (!options.copy) {
-    args.push(...getHwAccelArgs(options.videoCodec));
+    args.push(...getHwAccelArgs(options.videoCodec, options.hardwareAcceleration, options.hwaccelMode));
   }
   args.push(FFMPEG_FLAGS.INPUT, input);
 

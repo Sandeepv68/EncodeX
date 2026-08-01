@@ -13,7 +13,9 @@ import {
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import GroupedSelect from './GroupedSelect';
 import { useCapabilities } from '../hooks/useCapabilities';
+import { isHardwareVideoCodec } from '../../shared/codec-classification';
 import type { GroupedOption } from './GroupedSelect';
+import type { EncoderType } from '../../shared/hwaccel-settings';
 
 const groupIcons: Record<string, IconDefinition> = {
   Software: faCode,
@@ -36,11 +38,17 @@ interface Props {
   type: 'video' | 'audio';
   value: string;
   onChange: (value: string) => void;
+  encoderType?: EncoderType;
 }
 
-export default function CodecSelect({ type, value, onChange }: Props) {
+export default function CodecSelect({ type, value, onChange, encoderType = 'auto' }: Props) {
   const { videoCodecs, audioCodecs } = useCapabilities();
   const base = type === 'video' ? videoCodecs : audioCodecs;
-  const codecs: GroupedOption[] = value && !base.some((c) => c.value === value) ? [{ value, label: value, group: 'Other' }, ...base] : base;
+  const filtered =
+    type === 'video' && (encoderType === 'hardware' || encoderType === 'software')
+      ? base.filter((c) => (encoderType === 'hardware' ? isHardwareVideoCodec(c.value) : !isHardwareVideoCodec(c.value)))
+      : base;
+  const codecs: GroupedOption[] =
+    value && !filtered.some((c) => c.value === value) ? [{ value, label: value, group: 'Other' }, ...filtered] : filtered;
   return <GroupedSelect value={value} onChange={onChange} options={codecs} groupIcons={groupIcons} />;
 }

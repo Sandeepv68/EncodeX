@@ -47,6 +47,24 @@ describe('getHwAccelArgs', () => {
     expect(HWACCEL.HWACCEL).toBe('-hwaccel');
     expect(HWACCEL.VAAPI_DEVICE).toBe('-vaapi_device');
   });
+
+  it('returns no flags when hardware acceleration is disabled', () => {
+    expect(getHwAccelArgs('h264_nvenc', false)).toEqual([]);
+    expect(getHwAccelArgs('hevc_qsv', false, 'auto')).toEqual([]);
+  });
+
+  it('returns no flags in encode-only mode', () => {
+    expect(getHwAccelArgs('h264_nvenc', true, 'encode')).toEqual([]);
+    expect(getHwAccelArgs('h264_nvenc', undefined, 'encode')).toEqual([]);
+  });
+
+  it('applies the per-family flags when enabled with automatic mode', () => {
+    expect(getHwAccelArgs('h264_nvenc', true, 'auto')).toEqual(['-hwaccel', 'cuda', '-hwaccel_output_format', 'cuda']);
+  });
+
+  it('treats undefined enabled/mode as enabled with automatic mode', () => {
+    expect(getHwAccelArgs('h264_nvenc', undefined, undefined)).toEqual(['-hwaccel', 'cuda', '-hwaccel_output_format', 'cuda']);
+  });
 });
 
 describe('isHardwareVideoCodec', () => {

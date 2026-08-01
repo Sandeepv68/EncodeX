@@ -21,6 +21,7 @@ describe('conversionStore', () => {
     expect(state.pixelFormat).toBe('yuv420p');
     expect(state.copyMode).toBe(false);
     expect(state.transcoder).toBe('FFMPEG');
+    expect(state.encoderType).toBe('auto');
   });
 
   it('sets input file', () => {
@@ -71,6 +72,12 @@ describe('conversionStore', () => {
   it('sets copy mode', () => {
     useConversionStore.getState().setCopyMode(true);
     expect(useConversionStore.getState().copyMode).toBe(true);
+  });
+
+  it('sets encoder type', () => {
+    useConversionStore.getState().setEncoderType('hardware');
+    expect(useConversionStore.getState().encoderType).toBe('hardware');
+    expect(useConversionStore.getState().isDirty).toBe(true);
   });
 
   it('sets transcoder', () => {

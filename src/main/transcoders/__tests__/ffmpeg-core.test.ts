@@ -138,6 +138,21 @@ describe('FfmpegCore', () => {
     expect(cmd.inputOptions).not.toHaveBeenCalled();
   });
 
+  it('does not apply hardware acceleration input options when hardware acceleration is disabled', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { videoCodec: 'h264_nvenc', hardwareAcceleration: false });
+    const cmd = getCommand();
+    expect(cmd.inputOptions).not.toHaveBeenCalled();
+  });
+
+  it('does not apply hardware acceleration input options in encode-only mode', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { videoCodec: 'h264_nvenc', hardwareAcceleration: true, hwaccelMode: 'encode' });
+    const cmd = getCommand();
+    expect(cmd.inputOptions).not.toHaveBeenCalled();
+    expect(cmd.videoCodec).toHaveBeenCalledWith('h264_nvenc');
+  });
+
   it('applies all codec, bitrate, and filter options', () => {
     const core = new FfmpegCore();
     core.convert('in.mp4', 'out.mp4', {
