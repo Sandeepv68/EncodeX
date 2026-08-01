@@ -70,7 +70,9 @@
     "scaleHint": "Schakelt het videoformaat naar de opgegeven breedte en hoogte, bijv. 1280x720. Leeg behoudt de oorspronkelijke resolutie.",
     "pixelFormatHint": "Het kleurformaat van de gecodeerde video, bijv. yuv420p voor 8-bits of yuv420p10le voor 10-bits. Stem af op de bron voor de beste compatibiliteit.",
     "transcoderCoreHint": "De engine die wordt gebruikt voor de conversie. FFmpeg is de standaard en meest compatibele optie.",
-    "encoderTypeHint": "Overschrijft het in Instellingen gekozen encodertype voor deze conversie. Automatisch volgt de waarde in Instellingen."
+    "encoderTypeHint": "Overschrijft het in Instellingen gekozen encodertype voor deze conversie. Automatisch volgt de waarde in Instellingen.",
+    "codecCompatWarning": "De videocodec {{codec}} is mogelijk niet volledig compatibel met de .{{extension}}-container. Voorgestelde extensie: .{{suggested}}",
+    "applySuggestedExt": "Gebruik .{{extension}}"
   },
   "mediaInfo": {
     "title": "Media-informatie",

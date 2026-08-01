@@ -23,7 +23,13 @@ import { useFormErrors } from '../hooks/useFormErrors';
 import { useSettingsStore } from '../stores/settingsStore';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import type { EncoderType } from '../../shared/hwaccel-settings';
-import { ToggleRow, FieldBox, FieldLabel, ActionStack, AccelAlert } from '../styles/Convert.styles';
+import { ToggleRow, FieldBox, FieldLabel, ActionStack, AccelAlert, CompatAlert } from '../styles/Convert.styles';
+import {
+  getExtension,
+  replaceExtension,
+  suggestedExtensionForVideoCodec,
+  isExtensionCompatibleWithVideoCodec,
+} from '../../shared/codec-containers';
 
 const log = new Logger('renderer/pages/Convert');
 
@@ -53,6 +59,7 @@ export default function Convert() {
   const {
     inputFile,
     outputFile,
+    outputUserSet,
     videoCodec,
     audioCodec,
     videoBitrate,
@@ -91,6 +98,15 @@ export default function Convert() {
   const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
   const settingsEncoderType = useSettingsStore((s) => s.encoderType);
   const effectiveEncoderType: EncoderType = encoderType !== 'auto' ? encoderType : settingsEncoderType;
+  const outputExt = getExtension(outputFile || '');
+  const suggestedOutputExt = suggestedExtensionForVideoCodec(videoCodec);
+  const showCompatWarning =
+    !copyMode && !isConverting && !!outputFile && !!outputExt && outputUserSet && !isExtensionCompatibleWithVideoCodec(outputExt, videoCodec);
+
+  const applySuggestedExtension = () => {
+    if (!outputFile) return;
+    setOutputFile(replaceExtension(outputFile, suggestedOutputExt));
+  };
 
   const validateFields = (): boolean => {
     const next: Record<string, string> = {};
@@ -147,6 +163,19 @@ export default function Convert() {
         buttonLabel={t('convert.saveAs')}
         onBrowse={selectOutput}
       />
+
+      {showCompatWarning && (
+        <CompatAlert
+          severity="warning"
+          action={
+            <Button size="small" color="inherit" onClick={applySuggestedExtension}>
+              {t('convert.applySuggestedExt', { extension: suggestedOutputExt })}
+            </Button>
+          }
+        >
+          {t('convert.codecCompatWarning', { codec: videoCodec, extension: outputExt, suggested: suggestedOutputExt })}
+        </CompatAlert>
+      )}
 
       <ToggleRow>
         <Switch checked={copyMode} onChange={(e) => setCopyMode(e.target.checked)} />

@@ -70,7 +70,9 @@
     "scaleHint": "Ridimensiona il video alla larghezza e all'altezza indicate, ad es. 1280x720. Vuoto mantiene la risoluzione originale.",
     "pixelFormatHint": "Il formato colore del video codificato, ad es. yuv420p per 8 bit o yuv420p10le per 10 bit. Allinealo all'origine per la migliore compatibilità.",
     "transcoderCoreHint": "Il motore utilizzato per la conversione. FFmpeg è quello predefinito e più compatibile.",
-    "encoderTypeHint": "Sovrascrive il tipo di codificatore scelto nelle Impostazioni per questa conversione. Automatico segue il valore impostato nelle Impostazioni."
+    "encoderTypeHint": "Sovrascrive il tipo di codificatore scelto nelle Impostazioni per questa conversione. Automatico segue il valore impostato nelle Impostazioni.",
+    "codecCompatWarning": "Il codec video {{codec}} potrebbe non essere completamente compatibile con il contenitore .{{extension}}. Estensione suggerita: .{{suggested}}",
+    "applySuggestedExt": "Usa .{{extension}}"
   },
   "mediaInfo": {
     "title": "Informazioni file",

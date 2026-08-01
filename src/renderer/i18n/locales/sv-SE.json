@@ -70,7 +70,9 @@
     "scaleHint": "Skalar om videon till angiven bredd och höjd, t.ex. 1280x720. Tom behåller den ursprungliga upplösningen.",
     "pixelFormatHint": "Färgformatet för den kodade videon, t.ex. yuv420p för 8-bit eller yuv420p10le för 10-bit. Matcha källan för bästa kompatibilitet.",
     "transcoderCoreHint": "Motorn som används för konverteringen. FFmpeg är standard och mest kompatibel.",
-    "encoderTypeHint": "Åsidosätter det i Inställningar valda enkodartypen för den här konverteringen. Automatisk följer värdet i Inställningar."
+    "encoderTypeHint": "Åsidosätter det i Inställningar valda enkodartypen för den här konverteringen. Automatisk följer värdet i Inställningar.",
+    "codecCompatWarning": "Videokodeken {{codec}} kanske inte är helt kompatibel med .{{extension}}-behållaren. Föreslagen ändelse: .{{suggested}}",
+    "applySuggestedExt": "Använd .{{extension}}"
   },
   "mediaInfo": {
     "title": "Mediainformation",

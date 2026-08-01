@@ -7,6 +7,11 @@ export const AccelAlert = styled(Alert)(({ }) => ({
   color: COLORS.alert.info,
 }));
 
+export const CompatAlert = styled(Alert)(({ }) => ({
+  fontWeight: 500,
+  color: COLORS.alert.warning,
+}));
+
 export const ToggleRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',

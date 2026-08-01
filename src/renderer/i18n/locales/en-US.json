@@ -70,7 +70,9 @@
     "scaleHint": "Resizes the video to the given width and height, e.g. 1280x720. Empty keeps the original resolution.",
     "pixelFormatHint": "The color format of the encoded video, e.g. yuv420p for 8-bit or yuv420p10le for 10-bit. Match the source for best compatibility.",
     "transcoderCoreHint": "The engine used for the conversion. FFmpeg is the default and most compatible.",
-    "encoderTypeHint": "Overrides the encoder type chosen in Settings for this conversion. Automatic follows the value set in Settings."
+    "encoderTypeHint": "Overrides the encoder type chosen in Settings for this conversion. Automatic follows the value set in Settings.",
+    "codecCompatWarning": "The video codec {{codec}} may not be fully compatible with the .{{extension}} container. Suggested extension: .{{suggested}}",
+    "applySuggestedExt": "Use .{{extension}}"
   },
   "mediaInfo": {
     "title": "Media Information",

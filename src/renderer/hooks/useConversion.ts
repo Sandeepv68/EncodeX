@@ -8,6 +8,8 @@ import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import { ErrorCode } from '../../shared/errors';
 import i18n from '../i18n/config';
 import { useSettingsStore } from '../stores/settingsStore';
+import { getExtension, suggestedExtensionForVideoCodec } from '../../shared/codec-containers';
+import { DEFAULT_SUFFIX } from '../../shared/media-options';
 
 const log = new Logger('renderer/hooks/useConversion');
 
@@ -26,6 +28,19 @@ export function useConversion() {
       cleanup?.();
     };
   }, []);
+
+  useEffect(() => {
+    const { inputFile, outputFile, videoCodec, copyMode, outputUserSet, isConverting } = store;
+    if (isConverting || !inputFile || outputUserSet) return;
+    const inputExt = getExtension(inputFile);
+    const outputExt = copyMode ? inputExt : suggestedExtensionForVideoCodec(videoCodec);
+    if (!outputExt) return;
+    const stem = inputFile.replace(/\.[^./\\]+$/, '');
+    const suggested = `${stem}${DEFAULT_SUFFIX}.${outputExt}`;
+    if (suggested === outputFile) return;
+    log.debug('Auto-suggesting output file:', suggested);
+    store.setOutputAuto(suggested);
+  }, [store.inputFile, store.outputFile, store.videoCodec, store.copyMode, store.outputUserSet, store.isConverting]);
 
   const startConversion = useCallback(async () => {
     if (!store.inputFile) {

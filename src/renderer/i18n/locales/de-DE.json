@@ -70,7 +70,9 @@
     "scaleHint": "Skaliert das Video auf die angegebene Breite und Höhe, z.B. 1280x720. Leer lässt die Originalauflösung unverändert.",
     "pixelFormatHint": "Das Farbformat des codierten Videos, z.B. yuv420p für 8 Bit oder yuv420p10le für 10 Bit. Für beste Kompatibilität am besten an die Quelle anpassen.",
     "transcoderCoreHint": "Die für die Konvertierung verwendete Engine. FFmpeg ist die Standard- und kompatibelste Option.",
-    "encoderTypeHint": "Überschreibt den in den Einstellungen gewählten Encoder-Typ für diese Konvertierung. Automatisch folgt dem in den Einstellungen gesetzten Wert."
+    "encoderTypeHint": "Überschreibt den in den Einstellungen gewählten Encoder-Typ für diese Konvertierung. Automatisch folgt dem in den Einstellungen gesetzten Wert.",
+    "codecCompatWarning": "Der Videocodec {{codec}} ist möglicherweise nicht vollständig mit dem .{{extension}}-Container kompatibel. Empfohlene Endung: .{{suggested}}",
+    "applySuggestedExt": "Endung .{{extension}} verwenden"
   },
   "mediaInfo": {
     "title": "Medieninformationen",

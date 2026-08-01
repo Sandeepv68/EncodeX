@@ -44,6 +44,7 @@ export const COLORS = {
   },
   alert:{
     info: '#0288d1',
+    warning: '#ed6c02',
   }
 } as const;
 

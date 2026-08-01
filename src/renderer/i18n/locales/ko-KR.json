@@ -70,7 +70,9 @@
     "scaleHint": "지정된 너비와 높이로 비디오 크기를 조정합니다. 예: 1280x720. 비워 두면 원본 해상도를 유지합니다.",
     "pixelFormatHint": "인코딩된 비디오의 색상 형식입니다. 예: 8비트는 yuv420p, 10비트는 yuv420p10le. 최상의 호환성을 위해 소스와 일치시키세요.",
     "transcoderCoreHint": "변환에 사용되는 엔진입니다. FFmpeg가 기본값이며 가장 호환성이 좋습니다.",
-    "encoderTypeHint": "이 변환에 대해 설정에서 선택한 인코더 유형을 재정의합니다. 자동은 설정의 값을 따릅니다."
+    "encoderTypeHint": "이 변환에 대해 설정에서 선택한 인코더 유형을 재정의합니다. 자동은 설정의 값을 따릅니다.",
+    "codecCompatWarning": "비디오 코덱 {{codec}}이(가) .{{extension}} 컨테이너와 완전히 호환되지 않을 수 있습니다. 권장 확장자: .{{suggested}}",
+    "applySuggestedExt": ".{{extension}} 사용"
   },
   "mediaInfo": {
     "title": "미디어 정보",

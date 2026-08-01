@@ -70,7 +70,9 @@
     "scaleHint": "Mengubah ukuran video ke lebar dan tinggi yang ditentukan, mis. 1280x720. Kosong mempertahankan resolusi asli.",
     "pixelFormatHint": "Format warna video yang disandikan, mis. yuv420p untuk 8-bit atau yuv420p10le untuk 10-bit. Samakan dengan sumber untuk kompatibilitas terbaik.",
     "transcoderCoreHint": "Mesin yang digunakan untuk konversi. FFmpeg adalah bawaan dan paling kompatibel.",
-    "encoderTypeHint": "Menimpa jenis encoder yang dipilih di Pengaturan untuk konversi ini. Otomatis mengikuti nilai di Pengaturan."
+    "encoderTypeHint": "Menimpa jenis encoder yang dipilih di Pengaturan untuk konversi ini. Otomatis mengikuti nilai di Pengaturan.",
+    "codecCompatWarning": "Codec video {{codec}} mungkin tidak sepenuhnya kompatibel dengan kontainer .{{extension}}. Ekstensi yang disarankan: .{{suggested}}",
+    "applySuggestedExt": "Gunakan .{{extension}}"
   },
   "mediaInfo": {
     "title": "Informasi Media",
