@@ -16,6 +16,7 @@ export const FieldLabel = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(0.5),
   display: 'block',
   fontWeight:  theme.typography.fontWeightBold,
+  color: theme.palette.text.secondary,
 }));
 
 export const ActionStack = styled(Stack)({ flexWrap: 'wrap' });

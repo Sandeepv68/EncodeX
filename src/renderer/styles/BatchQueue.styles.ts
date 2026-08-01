@@ -16,4 +16,6 @@ export const EmptyText = styled(Typography)(({ theme }) => ({
   textAlign: 'center',
   paddingTop: theme.spacing(4),
   paddingBottom: theme.spacing(4),
+  fontWeight: theme.typography.fontWeightBold,
+  color: theme.palette.text.secondary,
 }));
