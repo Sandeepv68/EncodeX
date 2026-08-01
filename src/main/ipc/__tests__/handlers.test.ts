@@ -4,6 +4,7 @@ const {
   sendSpy,
   createSenderMock,
   registerDialogHandlersMock,
+  registerCapabilityHandlersMock,
   registerConversionHandlersMock,
   registerQueueHandlersMock,
   registerPlayerHandlersMock,
@@ -12,6 +13,7 @@ const {
   sendSpy: vi.fn(),
   createSenderMock: vi.fn(),
   registerDialogHandlersMock: vi.fn(),
+  registerCapabilityHandlersMock: vi.fn(),
   registerConversionHandlersMock: vi.fn(),
   registerQueueHandlersMock: vi.fn(),
   registerPlayerHandlersMock: vi.fn(),
@@ -21,6 +23,7 @@ const {
 vi.mock('electron', () => ({ BrowserWindow: class {} }));
 vi.mock('../send', () => ({ createSender: createSenderMock }));
 vi.mock('../dialogs', () => ({ registerDialogHandlers: registerDialogHandlersMock }));
+vi.mock('../capabilities', () => ({ registerCapabilityHandlers: registerCapabilityHandlersMock }));
 vi.mock('../conversion', () => ({ registerConversionHandlers: registerConversionHandlersMock }));
 vi.mock('../queue', () => ({ registerQueueHandlers: registerQueueHandlersMock }));
 vi.mock('../player', () => ({ registerPlayerHandlers: registerPlayerHandlersMock }));
@@ -43,6 +46,7 @@ describe('registerIpcHandlers', () => {
     registerIpcHandlers(win);
     expect(createSenderMock).toHaveBeenCalledWith(win);
     expect(registerDialogHandlersMock).toHaveBeenCalledWith(win);
+    expect(registerCapabilityHandlersMock).toHaveBeenCalledWith();
     expect(registerConversionHandlersMock).toHaveBeenCalledWith(win, sendSpy);
     expect(registerQueueHandlersMock).toHaveBeenCalledWith(win, sendSpy);
     expect(registerPlayerHandlersMock).toHaveBeenCalledWith(win, sendSpy);

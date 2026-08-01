@@ -11,8 +11,9 @@ import {
   faEllipsis,
 } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { VIDEO_CODECS, AUDIO_CODECS } from '../../shared/media-options';
 import GroupedSelect from './GroupedSelect';
+import { useCapabilities } from '../hooks/useCapabilities';
+import type { GroupedOption } from './GroupedSelect';
 
 const groupIcons: Record<string, IconDefinition> = {
   Software: faCode,
@@ -38,6 +39,8 @@ interface Props {
 }
 
 export default function CodecSelect({ type, value, onChange }: Props) {
-  const codecs = type === 'video' ? VIDEO_CODECS : AUDIO_CODECS;
+  const { videoCodecs, audioCodecs } = useCapabilities();
+  const base = type === 'video' ? videoCodecs : audioCodecs;
+  const codecs: GroupedOption[] = value && !base.some((c) => c.value === value) ? [{ value, label: value, group: 'Other' }, ...base] : base;
   return <GroupedSelect value={value} onChange={onChange} options={codecs} groupIcons={groupIcons} />;
 }

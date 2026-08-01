@@ -91,3 +91,9 @@ export interface FileItem {
   size: number;
   operation: ConversionOperation;
 }
+
+export interface EncoderCapabilities {
+  videoEncoders: string[];
+  audioEncoders: string[];
+  hwaccels: string[];
+}

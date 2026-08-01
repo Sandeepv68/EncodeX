@@ -3,6 +3,7 @@ import ffmpegStatic from 'ffmpeg-static';
 import { Logger } from '../../shared/logger';
 import { ConversionOptions } from '../../shared/types';
 import { FFMPEG_FLAGS } from '../../shared/transcoder-constants';
+import { getHwAccelArgs } from './hwaccel';
 
 const log = new Logger('main/transcoders/ffmpeg-utils');
 
@@ -23,7 +24,11 @@ export function getFfprobePath(): string {
 }
 
 export function buildFfmpegArgs(input: string, output: string, options: ConversionOptions): string[] {
-  const args: string[] = [FFMPEG_FLAGS.INPUT, input];
+  const args: string[] = [];
+  if (!options.copy) {
+    args.push(...getHwAccelArgs(options.videoCodec));
+  }
+  args.push(FFMPEG_FLAGS.INPUT, input);
 
   if (options.copy) {
     args.push(FFMPEG_FLAGS.COPY, FFMPEG_FLAGS.COPY_VALUE);

@@ -10,6 +10,7 @@ import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/t
 import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/transcoder-constants';
 import { suspendProcess, resumeProcess } from '../process-utils';
 import { mapFfprobeData } from './ffprobe-mapper';
+import { getHwAccelArgs } from './hwaccel';
 
 const log = new Logger('main/transcoders/ffmpeg-core');
 
@@ -62,6 +63,14 @@ export class FfmpegCore implements ITranscoder {
     const progressStart = Date.now();
     const emitter = new EventEmitter();
     const cmd = ffmpeg({ source: input });
+
+    if (!options.copy) {
+      const hwAccelArgs = getHwAccelArgs(options.videoCodec);
+      if (hwAccelArgs.length > 0) {
+        log.debug('Hardware acceleration input options:', hwAccelArgs.join(' '));
+        cmd.inputOptions(hwAccelArgs);
+      }
+    }
 
     if (options.copy) {
       log.debug('Using stream copy mode');

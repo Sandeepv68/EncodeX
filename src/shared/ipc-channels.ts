@@ -3,6 +3,7 @@ export const IPC = {
   SELECT_FILES: 'select-files',
   SELECT_OUTPUT: 'select-output',
   GET_MEDIA_INFO: 'get-media-info',
+  GET_CAPABILITIES: 'get-capabilities',
   CONVERT_FILE: 'convert-file',
   CANCEL_CONVERSION: 'cancel-conversion',
   PAUSE_CONVERSION: 'pause-conversion',

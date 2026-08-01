@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { Logger } from '../shared/logger';
 import { IPC } from '../shared/ipc-channels';
-import { ConversionOptions, ConversionProgress, QueueJob, PlayerFrame, MediaInfo, LogEntry } from '../shared/types';
+import { ConversionOptions, ConversionProgress, QueueJob, PlayerFrame, MediaInfo, LogEntry, EncoderCapabilities } from '../shared/types';
 
 const log = new Logger('preload');
 
@@ -21,6 +21,10 @@ const api = {
   getMediaInfo: (filePath: string, transcoderType: string) => {
     log.info('getMediaInfo:', filePath, 'transcoder:', transcoderType);
     return ipcRenderer.invoke(IPC.GET_MEDIA_INFO, filePath, transcoderType) as Promise<MediaInfo>;
+  },
+  getCapabilities: () => {
+    log.debug('getCapabilities called');
+    return ipcRenderer.invoke(IPC.GET_CAPABILITIES) as Promise<EncoderCapabilities | null>;
   },
   convertFile: (input: string, output: string, options: ConversionOptions, transcoderType: string) => {
     log.info('convertFile:', input, '->', output, 'transcoder:', transcoderType);

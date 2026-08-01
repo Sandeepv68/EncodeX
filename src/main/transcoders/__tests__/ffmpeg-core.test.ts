@@ -5,6 +5,7 @@ const { ffmpegMock, setFfmpegPathMock, setFfprobePathMock, existsSyncMock, suspe
     function makeCommand() {
       const self: Record<string, unknown> = {};
       for (const method of [
+        'inputOptions',
         'outputOptions',
         'videoCodec',
         'audioCodec',
@@ -119,6 +120,22 @@ describe('FfmpegCore', () => {
     const cmd = getCommand();
     expect(cmd.outputOptions).toHaveBeenCalledWith('-c', 'copy');
     expect(cmd.videoCodec).not.toHaveBeenCalled();
+    expect(cmd.inputOptions).not.toHaveBeenCalled();
+  });
+
+  it('applies hardware acceleration input options for hardware video codecs', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { videoCodec: 'h264_nvenc' });
+    const cmd = getCommand();
+    expect(cmd.inputOptions).toHaveBeenCalledWith(['-hwaccel', 'cuda', '-hwaccel_output_format', 'cuda']);
+    expect(cmd.videoCodec).toHaveBeenCalledWith('h264_nvenc');
+  });
+
+  it('does not apply hardware acceleration input options for software codecs', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { videoCodec: 'libx265' });
+    const cmd = getCommand();
+    expect(cmd.inputOptions).not.toHaveBeenCalled();
   });
 
   it('applies all codec, bitrate, and filter options', () => {
