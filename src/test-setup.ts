@@ -59,6 +59,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     onQueueProgress: vi.fn(() => vi.fn()),
     onQueueCancelled: vi.fn(() => vi.fn()),
     onPlayerFrame: vi.fn(() => vi.fn()),
+    onPlayerAudio: vi.fn(() => vi.fn()),
     onLogMessage: vi.fn(() => vi.fn()),
   },
   writable: true,

@@ -83,6 +83,35 @@ describe('registerPlayerHandlers', () => {
     expect(decoder.open).toHaveBeenCalledWith('v.mp4', 1280, 720);
   });
 
+  it('PLAYER_OPEN passes the audio stream config when present', async () => {
+    getInfoMock.mockResolvedValueOnce({
+      file: 'v.mp4',
+      format: 'mp4',
+      size: 1,
+      duration: 10,
+      bitrate: '1',
+      streams: [
+        { type: 'video', width: 1280, height: 720 },
+        { type: 'audio', sampleRate: 44100, channels: 2 },
+      ],
+    });
+    await getHandlers()[IPC.PLAYER_OPEN]({}, 'v.mp4');
+    expect(decoder.open).toHaveBeenCalledWith('v.mp4', 1280, 720, { sampleRate: 44100, channels: 2 });
+  });
+
+  it('PLAYER_OPEN does not pass an audio config when there is no audio stream', async () => {
+    getInfoMock.mockResolvedValueOnce({
+      file: 'v.mp4',
+      format: 'mp4',
+      size: 1,
+      duration: 10,
+      bitrate: '1',
+      streams: [{ type: 'video', width: 320, height: 240 }],
+    });
+    await getHandlers()[IPC.PLAYER_OPEN]({}, 'v.mp4');
+    expect(decoder.open).toHaveBeenCalledWith('v.mp4', 320, 240);
+  });
+
   it('PLAYER_OPEN opens at the default resolution when there is no video stream', async () => {
     getInfoMock.mockResolvedValueOnce({
       file: 'a.mp3',
@@ -134,6 +163,29 @@ describe('registerPlayerHandlers', () => {
       width: 2,
       height: 2,
       pts: 5,
+    });
+  });
+
+  it('forwards decoded audio chunks to the renderer', async () => {
+    getInfoMock.mockResolvedValueOnce({
+      file: 'v.mp4',
+      format: 'mp4',
+      size: 1,
+      duration: 10,
+      bitrate: '1',
+      streams: [
+        { type: 'video', width: 2, height: 2 },
+        { type: 'audio', sampleRate: 48000, channels: 2 },
+      ],
+    });
+    await getHandlers()[IPC.PLAYER_OPEN]({}, 'v.mp4');
+    send.mockClear();
+    const chunk = { buffer: Buffer.from([1, 2, 3, 4]), sampleRate: 48000, channels: 2 };
+    decoder.emit('audio', chunk);
+    expect(send).toHaveBeenCalledWith(IPC.PLAYER_AUDIO, {
+      data: chunk.buffer.buffer,
+      sampleRate: 48000,
+      channels: 2,
     });
   });
 });

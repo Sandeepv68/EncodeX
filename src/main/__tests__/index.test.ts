@@ -25,6 +25,9 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
       getAppPath: vi.fn(() => 'C:\\project'),
       exit: vi.fn(),
       quit: vi.fn(),
+      commandLine: {
+        appendSwitch: vi.fn(),
+      },
       on: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
         appOnHandlers[event] = cb;
       }),

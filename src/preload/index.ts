@@ -1,7 +1,16 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
 import { Logger } from '../shared/logger';
 import { IPC } from '../shared/ipc-channels';
-import { ConversionOptions, ConversionProgress, QueueJob, PlayerFrame, MediaInfo, LogEntry, EncoderCapabilities } from '../shared/types';
+import {
+  ConversionOptions,
+  ConversionProgress,
+  QueueJob,
+  PlayerFrame,
+  PlayerAudioChunk,
+  MediaInfo,
+  LogEntry,
+  EncoderCapabilities,
+} from '../shared/types';
 
 const log = new Logger('preload');
 
@@ -152,6 +161,13 @@ const api = {
     };
     ipcRenderer.on(IPC.PLAYER_FRAME, handler);
     return () => ipcRenderer.removeListener(IPC.PLAYER_FRAME, handler);
+  },
+  onPlayerAudio: (cb: (chunk: PlayerAudioChunk) => void) => {
+    const handler = (_event: IpcRendererEvent, chunk: PlayerAudioChunk) => {
+      cb(chunk);
+    };
+    ipcRenderer.on(IPC.PLAYER_AUDIO, handler);
+    return () => ipcRenderer.removeListener(IPC.PLAYER_AUDIO, handler);
   },
   onLogMessage: (cb: (entry: LogEntry) => void) => {
     const handler = (_event: IpcRendererEvent, entry: LogEntry) => {

@@ -14,6 +14,17 @@ export interface DecodedFrame {
   pts: number;
 }
 
+export interface DecodedAudio {
+  buffer: Buffer;
+  sampleRate: number;
+  channels: number;
+}
+
+export interface AudioDecodeConfig {
+  sampleRate: number;
+  channels: number;
+}
+
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
@@ -29,8 +40,10 @@ export class FrameDecoder extends EventEmitter {
   private buffer = Buffer.alloc(0);
   private running = false;
   private inputPath = '';
+  private audioSampleRate = 0;
+  private audioChannels = 0;
 
-  private spawnFfmpeg(seekTo?: string, width?: number, height?: number): void {
+  private spawnFfmpeg(seekTo?: string, width?: number, height?: number, audio?: AudioDecodeConfig): void {
     if (width !== undefined) {
       this.width = width;
       this.height = height ?? this.height;
@@ -44,24 +57,51 @@ export class FrameDecoder extends EventEmitter {
     if (seekTo) {
       args.push('-ss', seekTo);
     }
-    args.push(
-      FFMPEG_FLAGS.REALTIME,
-      FFMPEG_FLAGS.INPUT,
-      this.inputPath,
-      '-f',
-      FFMPEG_FLAGS.RAWVIDEO,
-      FFMPEG_FLAGS.PIX_FMT,
-      FFMPEG_FLAGS.PIX_FMT_RGB24,
-      '-s',
-      `${this.width}x${this.height}`,
-      FFMPEG_FLAGS.NO_AUDIO,
-      FFMPEG_FLAGS.NO_SUBTITLES,
-      FFMPEG_FLAGS.NO_DATA,
-      FFMPEG_FLAGS.OUTPUT_PIPE,
-    );
+    args.push(FFMPEG_FLAGS.REALTIME, FFMPEG_FLAGS.INPUT, this.inputPath);
+
+    if (audio) {
+      this.audioSampleRate = audio.sampleRate;
+      this.audioChannels = audio.channels;
+      args.push(
+        '-map',
+        '0:v:0',
+        '-f',
+        FFMPEG_FLAGS.RAWVIDEO,
+        FFMPEG_FLAGS.PIX_FMT,
+        FFMPEG_FLAGS.PIX_FMT_RGB24,
+        '-s',
+        `${this.width}x${this.height}`,
+        FFMPEG_FLAGS.NO_AUDIO,
+        FFMPEG_FLAGS.NO_SUBTITLES,
+        FFMPEG_FLAGS.NO_DATA,
+        'pipe:1',
+        '-map',
+        '0:a:0',
+        '-f',
+        's16le',
+        '-ac',
+        String(audio.channels),
+        '-ar',
+        String(audio.sampleRate),
+        'pipe:3',
+      );
+    } else {
+      args.push(
+        '-f',
+        FFMPEG_FLAGS.RAWVIDEO,
+        FFMPEG_FLAGS.PIX_FMT,
+        FFMPEG_FLAGS.PIX_FMT_RGB24,
+        '-s',
+        `${this.width}x${this.height}`,
+        FFMPEG_FLAGS.NO_AUDIO,
+        FFMPEG_FLAGS.NO_SUBTITLES,
+        FFMPEG_FLAGS.NO_DATA,
+        FFMPEG_FLAGS.OUTPUT_PIPE,
+      );
+    }
 
     log.debug('FFmpeg decoder args:', args.join(' '));
-    const currentProcess = spawn(ffmpegPath, args);
+    const currentProcess = audio ? spawn(ffmpegPath, args, { stdio: ['ignore', 'pipe', 'pipe', 'pipe'] }) : spawn(ffmpegPath, args);
     this.process = currentProcess;
     let pts = 0;
 
@@ -81,6 +121,17 @@ export class FrameDecoder extends EventEmitter {
         pts++;
       }
     });
+
+    if (audio) {
+      currentProcess.stdio?.[3]?.on('data', (chunk: Buffer) => {
+        if (!this.running || this.process !== currentProcess) return;
+        this.emit('audio', {
+          buffer: Buffer.from(chunk),
+          sampleRate: audio.sampleRate,
+          channels: audio.channels,
+        } as DecodedAudio);
+      });
+    }
 
     currentProcess.stderr?.on('data', () => {});
 
@@ -106,23 +157,31 @@ export class FrameDecoder extends EventEmitter {
     input: string,
     width: number = TRANSCODER_DEFAULTS.PLAYER_DEFAULT_WIDTH,
     height: number = TRANSCODER_DEFAULTS.PLAYER_DEFAULT_HEIGHT,
+    audio?: AudioDecodeConfig,
   ): void {
     this.close();
 
-    log.info('open:', input, 'resolution:', width, 'x', height);
+    log.info('open:', input, 'resolution:', width, 'x', height, 'audio:', audio);
     this.inputPath = input;
     this.width = width;
     this.height = height;
     this.frameSize = width * height * 3;
+    this.audioSampleRate = audio?.sampleRate ?? 0;
+    this.audioChannels = audio?.channels ?? 0;
 
-    this.spawnFfmpeg();
+    this.spawnFfmpeg(undefined, undefined, undefined, audio);
   }
 
   seek(seekTo: string): void {
     log.debug('seek:', seekTo);
     this.close();
     if (this.inputPath) {
-      this.spawnFfmpeg(seekTo);
+      this.spawnFfmpeg(
+        seekTo,
+        undefined,
+        undefined,
+        this.audioSampleRate ? { sampleRate: this.audioSampleRate, channels: this.audioChannels } : undefined,
+      );
     }
     this.emit('seek', seekTo);
   }

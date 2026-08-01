@@ -94,6 +94,7 @@ describe('preload', () => {
     ['onQueueProgress', IPC.QUEUE_PROGRESS, { job: { id: 'id-1' }, progress: { percent: 20 } }],
     ['onQueueCancelled', IPC.QUEUE_CANCELLED, undefined],
     ['onPlayerFrame', IPC.PLAYER_FRAME, { data: new ArrayBuffer(0), width: 1, height: 1, pts: 0 }],
+    ['onPlayerAudio', IPC.PLAYER_AUDIO, { data: new ArrayBuffer(0), sampleRate: 48000, channels: 2 }],
     ['onLogMessage', IPC.LOG_MESSAGE, { timestamp: 't', level: 'INFO', text: 'hello', source: 'main' }],
     ['onWindowMaximizedChange', IPC.WINDOW_MAXIMIZED_CHANGED, true],
   ])('%s subscribes and unsubscribes on the %s channel', (method, channel, payload) => {

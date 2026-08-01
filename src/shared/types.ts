@@ -74,6 +74,12 @@ export interface PlayerFrame {
   pts: number;
 }
 
+export interface PlayerAudioChunk {
+  data: ArrayBuffer;
+  sampleRate: number;
+  channels: number;
+}
+
 export enum ConversionOperation {
   Transcode = 'transcode',
   ExtractAudio = 'extract_audio',

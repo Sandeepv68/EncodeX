@@ -8,6 +8,7 @@ const getMediaInfo = vi.mocked(window.electronAPI.getMediaInfo);
 const playerClose = vi.mocked(window.electronAPI.playerClose);
 const playerSeek = vi.mocked(window.electronAPI.playerSeek);
 const onPlayerFrame = vi.mocked(window.electronAPI.onPlayerFrame);
+const onPlayerAudio = vi.mocked(window.electronAPI.onPlayerAudio);
 
 function mediaInfo(duration: number): MediaInfo {
   return { file: 'v.mp4', format: 'mp4', size: 0, duration, bitrate: '', streams: [] };
@@ -21,6 +22,8 @@ describe('MediaPlayer', () => {
     getMediaInfo.mockReset();
     onPlayerFrame.mockReset();
     onPlayerFrame.mockReturnValue(vi.fn());
+    onPlayerAudio.mockReset();
+    onPlayerAudio.mockReturnValue(vi.fn());
   });
 
   it('opens the player and requests media info on mount', () => {
@@ -29,6 +32,7 @@ describe('MediaPlayer', () => {
     expect(playerOpen).toHaveBeenCalledWith('/v.mp4');
     expect(getMediaInfo).toHaveBeenCalledWith('/v.mp4', 'FFMPEG');
     expect(onPlayerFrame).toHaveBeenCalledOnce();
+    expect(onPlayerAudio).toHaveBeenCalledOnce();
     unmount();
   });
 
@@ -72,5 +76,15 @@ describe('MediaPlayer', () => {
     const sliderInput = container.querySelector('input[type="range"]')!;
     fireEvent.keyDown(sliderInput, { key: 'ArrowRight' });
     expect(playerSeek).toHaveBeenCalled();
+  });
+
+  it('renders a mute button that toggles its icon', () => {
+    getMediaInfo.mockResolvedValue(mediaInfo(60));
+    const { container } = render(<MediaPlayer filePath="/v.mp4" />);
+    expect(container.querySelector('[data-icon="volume-high"]')).not.toBeNull();
+    fireEvent.click(container.querySelector('button[aria-label="mute"]')!);
+    expect(container.querySelector('[data-icon="volume-xmark"]')).not.toBeNull();
+    fireEvent.click(container.querySelector('button[aria-label="unmute"]')!);
+    expect(container.querySelector('[data-icon="volume-high"]')).not.toBeNull();
   });
 });

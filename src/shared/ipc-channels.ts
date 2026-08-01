@@ -16,6 +16,7 @@ export const IPC = {
   PLAYER_SEEK: 'player-seek',
   PLAYER_CLOSE: 'player-close',
   PLAYER_GET_FRAME: 'player-get-frame',
+  PLAYER_AUDIO: 'player-audio',
 
   WINDOW_MINIMIZE: 'window-minimize',
   WINDOW_MAXIMIZE_TOGGLE: 'window-maximize-toggle',

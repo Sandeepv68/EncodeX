@@ -31,6 +31,7 @@ if (isCliMode()) {
       });
   });
 } else {
+  app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
   let mainWindow: BrowserWindow | null = null;
   let splashWindow: BrowserWindow | null = null;
 
