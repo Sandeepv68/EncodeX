@@ -21,6 +21,7 @@ export const SettingsSection = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
   border: `1px solid ${COLORS.border.light}`,
   borderRadius: theme.shape.borderRadius,
+  backgroundColor: theme.palette.background.paper,
 }));
 
 export const SettingsLabel = styled(Typography)(({ theme }) => ({
