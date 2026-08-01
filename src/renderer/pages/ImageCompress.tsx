@@ -7,6 +7,7 @@ import FileDropZone from '../components/FileDropZone';
 import ProgressBar from '../components/ProgressBar';
 import PageContainer from '../components/PageContainer';
 import FilePathField from '../components/FilePathField';
+import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
@@ -75,7 +76,7 @@ export default function ImageCompress() {
   };
 
   return (
-    <PageContainer title={t('imageCompress.title')}>
+    <PageContainer title={t('imageCompress.title')} icon={pageIcons['/image-compress']}>
       <Box>
         <FieldLabel variant="caption" color="text.secondary">
           {t('imageCompress.inputImage')}

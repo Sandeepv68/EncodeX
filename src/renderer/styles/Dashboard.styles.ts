@@ -3,6 +3,8 @@ import { Box, Card, CardActionArea, CardContent, Typography } from '@mui/materia
 import { SHADOWS } from '../colors';
 
 export const WelcomeTitle = styled(Typography)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
   color: theme.palette.primary.main,
   fontWeight: 700,
   marginBottom: theme.spacing(1),

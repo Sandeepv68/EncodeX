@@ -17,6 +17,8 @@ import {
   ThemeToggleButton,
   ModeSelect,
 } from '../styles/Settings.styles';
+import { TitleIcon } from '../styles/PageContainer.styles';
+import { pageIcons } from '../pageIcons';
 
 const hwaccelModeLabel: Record<HwAccelMode, string> = {
   auto: 'settings.hwaccelModeAuto',
@@ -51,7 +53,10 @@ export default function Settings() {
   return (
     <SettingsRoot>
       <SettingsHeader>
-        <SettingsTitle variant="h5">{t('settings.title')}</SettingsTitle>
+        <SettingsTitle variant="h5">
+          <TitleIcon>{pageIcons['/settings']}</TitleIcon>
+          {t('settings.title')}
+        </SettingsTitle>
       </SettingsHeader>
       <SettingsSection>
         <SettingsLabel variant="body1">{t('settings.theme')}</SettingsLabel>

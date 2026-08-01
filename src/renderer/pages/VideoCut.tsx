@@ -5,6 +5,7 @@ import { faScissors } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PageContainer from '../components/PageContainer';
 import FilePathField from '../components/FilePathField';
+import { pageIcons } from '../pageIcons';
 import TimeField from '../components/TimeField';
 import MediaPlayer from '../components/MediaPlayer';
 import ProgressBar from '../components/ProgressBar';
@@ -75,7 +76,7 @@ export default function VideoCut() {
   };
 
   return (
-    <PageContainer title={t('videoCut.title')}>
+    <PageContainer title={t('videoCut.title')} icon={pageIcons['/video-cut']}>
       <FilePathField
         label={t('videoCut.videoFile')}
         value={input || ''}

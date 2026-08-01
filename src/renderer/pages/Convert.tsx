@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, TextField, MenuItem, Switch, Stack, Button, Alert } from '@mui/material';
+import { Box, Typography, TextField, MenuItem, Switch, Stack, Button } from '@mui/material';
 import { faPalette, faBrush, faDroplet, faSun, faPlay, faPause, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -12,6 +12,7 @@ import MediaPlayer from '../components/MediaPlayer';
 import PageContainer from '../components/PageContainer';
 import FilePathField from '../components/FilePathField';
 import ConfirmDialog from '../components/ConfirmDialog';
+import { pageIcons } from '../pageIcons';
 import GroupedSelect from '../components/GroupedSelect';
 import InfoTooltip from '../components/InfoTooltip';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -22,7 +23,7 @@ import { useFormErrors } from '../hooks/useFormErrors';
 import { useSettingsStore } from '../stores/settingsStore';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import type { EncoderType } from '../../shared/hwaccel-settings';
-import { ToggleRow, FieldBox, FieldLabel, ActionStack } from '../styles/Convert.styles';
+import { ToggleRow, FieldBox, FieldLabel, ActionStack, AccelAlert } from '../styles/Convert.styles';
 
 const log = new Logger('renderer/pages/Convert');
 
@@ -122,7 +123,7 @@ export default function Convert() {
   };
 
   return (
-    <PageContainer title={t('convert.title')}>
+    <PageContainer title={t('convert.title')} icon={pageIcons['/convert']}>
       <FilePathField
         label={t('convert.inputFile')}
         hint={t('convert.inputFileHint')}
@@ -159,7 +160,7 @@ export default function Convert() {
         <>
           {settingsHardwareAcceleration && (
             <>
-              <Alert severity="info">{t('convert.hardwareAccelAlert')}</Alert>
+              <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>
               <FieldBox>
                 <FieldLabel variant="caption" color="text.secondary">
                   {t('settings.encoderType')}

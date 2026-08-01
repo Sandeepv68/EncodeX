@@ -11,6 +11,8 @@ import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
 import { MediaInfo as MediaInfoType } from '../../shared/types';
 import { PageTitle, ContentBox, ErrorBox, LoadingBox, InfoPaper, InfoTitle } from '../styles/MediaInfo.styles';
+import { TitleIcon } from '../styles/PageContainer.styles';
+import { pageIcons } from '../pageIcons';
 
 const log = new Logger('renderer/pages/MediaInfo');
 
@@ -38,7 +40,10 @@ export default function MediaInfo() {
 
   return (
     <Box>
-      <PageTitle variant="h5">{t('mediaInfo.title')}</PageTitle>
+      <PageTitle variant="h5">
+        <TitleIcon>{pageIcons['/media-info']}</TitleIcon>
+        {t('mediaInfo.title')}
+      </PageTitle>
       <ContentBox>
         {currentError && (
           <ErrorBox>

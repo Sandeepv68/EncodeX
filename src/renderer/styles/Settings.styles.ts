@@ -11,7 +11,7 @@ export const SettingsHeader = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(1),
 }));
 
-export const SettingsTitle = styled(Typography)({ fontWeight: 600 });
+export const SettingsTitle = styled(Typography)({ display: 'flex', alignItems: 'center', fontWeight: 600 });
 
 export const SettingsSection = styled(Box)(({ theme }) => ({
   display: 'flex',

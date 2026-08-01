@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRightLeft, faCircleInfo, faImage, faMusic, faScissors, faListCheck } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
 import { NAV_ITEMS } from '../../shared/app-constants';
+import { pageIcons } from '../pageIcons';
+import { TitleIcon } from '../styles/PageContainer.styles';
 import {
   WelcomeTitle,
   DashboardSubtitle,
@@ -17,15 +17,6 @@ import {
 } from '../styles/Dashboard.styles';
 
 const log = new Logger('renderer/pages/Dashboard');
-
-const featureIcons: Record<string, React.ReactNode> = {
-  '/convert': <FontAwesomeIcon icon={faRightLeft} />,
-  '/media-info': <FontAwesomeIcon icon={faCircleInfo} />,
-  '/image-compress': <FontAwesomeIcon icon={faImage} />,
-  '/audio-extract': <FontAwesomeIcon icon={faMusic} />,
-  '/video-cut': <FontAwesomeIcon icon={faScissors} />,
-  '/batch': <FontAwesomeIcon icon={faListCheck} />,
-};
 
 const descKeys: Record<string, string> = {
   '/convert': 'descConvert',
@@ -44,14 +35,17 @@ export default function Dashboard() {
   }, []);
   return (
     <Box>
-      <WelcomeTitle variant="h4">{t('dashboard.welcome')}</WelcomeTitle>
+      <WelcomeTitle variant="h4">
+        <TitleIcon>{pageIcons['/']}</TitleIcon>
+        {t('dashboard.welcome')}
+      </WelcomeTitle>
       <DashboardSubtitle color="text.secondary">{t('dashboard.subtitle')}</DashboardSubtitle>
       <Grid container spacing={2}>
         {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs' && item.to !== '/settings').map((item) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
             <FeatureCard>
               <CardLink onClick={() => navigate(item.to)}>
-                <FeatureIconBox>{featureIcons[item.to]}</FeatureIconBox>
+                <FeatureIconBox>{pageIcons[item.to]}</FeatureIconBox>
                 <CardBody>
                   <CardTitleText variant="h6">
                     {t(
