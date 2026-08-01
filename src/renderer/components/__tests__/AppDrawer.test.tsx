@@ -25,9 +25,9 @@ describe('AppDrawer', () => {
     localStorage.clear();
   });
 
-  it('renders the app title and nav items', () => {
+  it('renders the nav items', () => {
     renderDrawer();
-    expect(screen.getByText('app.name')).toBeInTheDocument();
+    expect(screen.queryByText('app.name')).not.toBeInTheDocument();
     expect(screen.getByText('nav.dashboard')).toBeInTheDocument();
     expect(screen.getByText('nav.convert')).toBeInTheDocument();
     expect(screen.getByText('nav.batchQueue')).toBeInTheDocument();

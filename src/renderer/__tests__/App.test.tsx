@@ -39,9 +39,9 @@ describe('App', () => {
     useToastStore.setState({ toasts: [] });
   });
 
-  it('renders the app title and the dashboard on the initial route', async () => {
+  it('renders the dashboard on the initial route', async () => {
     renderApp();
-    expect(screen.getByText('app.name')).toBeInTheDocument();
+    expect(screen.queryByText('app.name')).not.toBeInTheDocument();
     expect(await screen.findByText('dashboard.welcome')).toBeInTheDocument();
   });
 

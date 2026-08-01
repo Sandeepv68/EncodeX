@@ -15,7 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import LanguageMenu from './LanguageMenu';
-import { DrawerHeader, AppTitle, DrawerDivider, NavList, NavItemButton, NavItemIcon, NavItemText } from '../styles/AppDrawer.styles';
+import { DrawerDivider, NavList, NavItemButton, NavItemIcon, NavItemText } from '../styles/AppDrawer.styles';
 
 const navIconMap: Record<string, ReactNode> = {
   '/': <FontAwesomeIcon icon={faHouse} />,
@@ -53,10 +53,6 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
 
   return (
     <>
-      <DrawerHeader>
-        <AppTitle variant="h6">{t('app.name')}</AppTitle>
-      </DrawerHeader>
-      <DrawerDivider />
       <NavList>
         {NAV_ITEMS.map((item) => (
           <NavItemButton
