@@ -58,6 +58,7 @@
     "cancelMessage": "Apakah Anda yakin ingin membatalkan konversi saat ini?",
     "yes": "Ya",
     "no": "Tidak",
+    "hardwareAccelAlert": "Akselerasi perangkat keras diaktifkan. Pengodean video akan menggunakan GPU Anda jika kompatibel.",
     "inputFileHint": "File media sumber yang akan dikonversi. Format umum meliputi MP4, MKV, MOV, AVI, MP3, dan WAV.",
     "outputFileHint": "Lokasi tujuan tempat file hasil konversi akan disimpan.",
     "losslessCopyHint": "Menyalin aliran tanpa pengkodean ulang. Cepat dan lossless, tetapi kontainer keluaran harus mendukung codec sumber.",

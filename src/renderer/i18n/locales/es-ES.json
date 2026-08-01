@@ -58,6 +58,7 @@
     "cancelMessage": "¿Está seguro de que desea cancelar la conversión actual?",
     "yes": "Sí",
     "no": "No",
+    "hardwareAccelAlert": "La aceleración de hardware está habilitada. La codificación de vídeo usará tu GPU cuando sea compatible.",
     "inputFileHint": "El archivo multimedia de origen que se va a convertir. Los formatos comunes incluyen MP4, MKV, MOV, AVI, MP3 y WAV.",
     "outputFileHint": "La ruta de destino donde se guardará el archivo convertido.",
     "losslessCopyHint": "Copia los flujos sin recodificar. Rápido y sin pérdida, pero requiere que el contenedor de salida admita los códecs de origen.",

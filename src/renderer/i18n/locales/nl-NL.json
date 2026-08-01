@@ -58,6 +58,7 @@
     "cancelMessage": "Weet u zeker dat u de huidige conversie wilt annuleren?",
     "yes": "Ja",
     "no": "Nee",
+    "hardwareAccelAlert": "Hardwareversnelling is ingeschakeld. Videocodering gebruikt uw GPU wanneer compatibel.",
     "inputFileHint": "Het bronbestand dat u wilt converteren. Veelvoorkomende formaten zijn MP4, MKV, MOV, AVI, MP3 en WAV.",
     "outputFileHint": "Het doelpad waar het geconverteerde bestand wordt opgeslagen.",
     "losslessCopyHint": "Kopieert de streams zonder hercodering. Snel en verliesvrij, maar de uitvoercontainer moet de broncodecs ondersteunen.",

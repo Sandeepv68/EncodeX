@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, TextField, MenuItem, Switch, Stack, Button } from '@mui/material';
+import { Box, Typography, TextField, MenuItem, Switch, Stack, Button, Alert } from '@mui/material';
 import { faPalette, faBrush, faDroplet, faSun, faPlay, faPause, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -158,19 +158,28 @@ export default function Convert() {
       {!copyMode && (
         <>
           {settingsHardwareAcceleration && (
-            <FieldBox>
-              <FieldLabel variant="caption" color="text.secondary">
-                {t('settings.encoderType')}
-                <InfoTooltip title={t('convert.encoderTypeHint')} />
-              </FieldLabel>
-              <TextField select fullWidth size="small" value={encoderType} onChange={(e) => setEncoderType(e.target.value as EncoderType)}>
-                {ENCODER_TYPES.map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {t(encoderTypeLabel[type])}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
+            <>
+              <Alert severity="info">{t('convert.hardwareAccelAlert')}</Alert>
+              <FieldBox>
+                <FieldLabel variant="caption" color="text.secondary">
+                  {t('settings.encoderType')}
+                  <InfoTooltip title={t('convert.encoderTypeHint')} />
+                </FieldLabel>
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  value={encoderType}
+                  onChange={(e) => setEncoderType(e.target.value as EncoderType)}
+                >
+                  {ENCODER_TYPES.map((type) => (
+                    <MenuItem key={type} value={type}>
+                      {t(encoderTypeLabel[type])}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </FieldBox>
+            </>
           )}
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>

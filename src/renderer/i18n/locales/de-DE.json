@@ -58,6 +58,7 @@
     "cancelMessage": "Möchten Sie die aktuelle Konvertierung wirklich abbrechen?",
     "yes": "Ja",
     "no": "Nein",
+    "hardwareAccelAlert": "Die Hardware-Beschleunigung ist aktiviert. Die Videocodierung verwendet bei Kompatibilität Ihre GPU.",
     "inputFileHint": "Die Quell-Mediendatei, die konvertiert werden soll. Gängige Formate sind MP4, MKV, MOV, AVI, MP3 und WAV.",
     "outputFileHint": "Der Zielpfad, in dem die konvertierte Datei gespeichert wird.",
     "losslessCopyHint": "Kopiert die Streams ohne Neucodierung. Schnell und verlustfrei, erfordert aber, dass der Ausgabe-Container die Quell-Codecs unterstützt.",

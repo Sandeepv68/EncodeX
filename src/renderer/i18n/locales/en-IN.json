@@ -58,6 +58,7 @@
     "cancelMessage": "Are you sure you want to cancel the current conversion?",
     "yes": "Yes",
     "no": "No",
+    "hardwareAccelAlert": "Hardware acceleration is enabled. Video encoding will use your GPU when compatible.",
     "inputFileHint": "The source media file to convert. Common formats include MP4, MKV, MOV, AVI, MP3, and WAV.",
     "outputFileHint": "The destination path where the converted file will be saved.",
     "losslessCopyHint": "Copies the streams without re-encoding. Fast and lossless, but requires the output container to support the source codecs.",

@@ -58,6 +58,7 @@
     "cancelMessage": "Är du säker på att du vill avbryta den aktuella konverteringen?",
     "yes": "Ja",
     "no": "Nej",
+    "hardwareAccelAlert": "Hårdvaruacceleration är aktiverad. Videokodning använder din GPU när det är kompatibelt.",
     "inputFileHint": "Källfilen som ska konverteras. Vanliga format inkluderar MP4, MKV, MOV, AVI, MP3 och WAV.",
     "outputFileHint": "Målbanan där den konverterade filen sparas.",
     "losslessCopyHint": "Kopierar strömmarna utan omkodning. Snabbt och förlustfritt, men kräver att utdatabehållaren stödjer källcodecarna.",

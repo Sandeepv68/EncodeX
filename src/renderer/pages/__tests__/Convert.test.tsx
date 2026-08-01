@@ -298,4 +298,21 @@ describe('Convert', () => {
     renderPage();
     expect(screen.getAllByTestId('info-tooltip')).toHaveLength(11);
   });
+
+  it('shows a hardware acceleration alert above the encoder type field', () => {
+    renderPage();
+    expect(screen.getByRole('alert')).toHaveTextContent('convert.hardwareAccelAlert');
+  });
+
+  it('does not show the hardware acceleration alert when hardware acceleration is disabled', () => {
+    useSettingsStore.setState({ hardwareAcceleration: false });
+    renderPage();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('does not show the hardware acceleration alert in lossless copy mode', () => {
+    useConversionStore.setState({ copyMode: true });
+    renderPage();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
 });

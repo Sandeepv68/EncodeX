@@ -58,6 +58,7 @@
     "cancelMessage": "현재 변환을 취소하시겠습니까?",
     "yes": "예",
     "no": "아니요",
+    "hardwareAccelAlert": "하드웨어 가속이 활성화되었습니다. 호환되는 경우 비디오 인코딩에서 GPU를 사용합니다.",
     "inputFileHint": "변환할 소스 미디어 파일입니다. 일반적인 형식으로 MP4, MKV, MOV, AVI, MP3, WAV가 있습니다.",
     "outputFileHint": "변환된 파일이 저장될 대상 경로입니다.",
     "losslessCopyHint": "재인코딩 없이 스트림을 복사합니다. 빠르고 무손실이지만 출력 컨테이너가 소스 코덱을 지원해야 합니다.",
