@@ -1,11 +1,14 @@
-import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { contextBridge, ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
 import { Logger } from '../shared/logger';
 import { IPC } from '../shared/ipc-channels';
-import { ConversionOptions, ConversionProgress, QueueJob, PlayerFrame, MediaInfo, LogEntry } from '../shared/types';
+import { ConversionOptions, ConversionProgress, QueueJob, PlayerFrame, MediaInfo, LogEntry, EncoderCapabilities } from '../shared/types';
 
 const log = new Logger('preload');
 
 const api = {
+  getPathForFile: (file: File) => {
+    return webUtils.getPathForFile(file);
+  },
   selectFile: (filters?: Electron.FileFilter[]) => {
     log.debug('selectFile called');
     return ipcRenderer.invoke(IPC.SELECT_FILE, filters) as Promise<string | null>;
@@ -21,6 +24,10 @@ const api = {
   getMediaInfo: (filePath: string, transcoderType: string) => {
     log.info('getMediaInfo:', filePath, 'transcoder:', transcoderType);
     return ipcRenderer.invoke(IPC.GET_MEDIA_INFO, filePath, transcoderType) as Promise<MediaInfo>;
+  },
+  getCapabilities: () => {
+    log.debug('getCapabilities called');
+    return ipcRenderer.invoke(IPC.GET_CAPABILITIES) as Promise<EncoderCapabilities | null>;
   },
   convertFile: (input: string, output: string, options: ConversionOptions, transcoderType: string) => {
     log.info('convertFile:', input, '->', output, 'transcoder:', transcoderType);
@@ -68,6 +75,28 @@ const api = {
   },
   playerGetFrame: () => {
     return ipcRenderer.invoke(IPC.PLAYER_GET_FRAME) as Promise<PlayerFrame | null>;
+  },
+
+  windowMinimize: () => {
+    log.debug('windowMinimize called');
+    ipcRenderer.send(IPC.WINDOW_MINIMIZE);
+  },
+  windowMaximizeToggle: () => {
+    log.debug('windowMaximizeToggle called');
+    ipcRenderer.send(IPC.WINDOW_MAXIMIZE_TOGGLE);
+  },
+  windowClose: () => {
+    log.debug('windowClose called');
+    ipcRenderer.send(IPC.WINDOW_CLOSE);
+  },
+
+  onWindowMaximizedChange: (cb: (maximized: boolean) => void) => {
+    const handler = (_event: IpcRendererEvent, maximized: boolean) => {
+      log.debug('onWindowMaximizedChange:', maximized);
+      cb(maximized);
+    };
+    ipcRenderer.on(IPC.WINDOW_MAXIMIZED_CHANGED, handler);
+    return () => ipcRenderer.removeListener(IPC.WINDOW_MAXIMIZED_CHANGED, handler);
   },
 
   onConversionProgress: (cb: (data: { input: string; output: string; progress: ConversionProgress }) => void) => {

@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography, Paper } from '@mui/material';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const FallbackBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -16,7 +16,7 @@ export const FallbackPaper = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
 }));
 
-export const WarningIcon = styled(WarningAmberIcon)(({ theme }) => ({
+export const WarningIcon = styled(FontAwesomeIcon)(({ theme }) => ({
   fontSize: theme.typography.pxToRem(48),
   color: theme.palette.error.main,
   marginBottom: theme.spacing(2),

@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { DEV_SERVER_URL, EXIT_CODES, WINDOW_SIZE } from '../../shared/app-constants';
+import { DEV_SERVER_URL, EXIT_CODES, WINDOW_SIZE, SPLASH_SIZE } from '../../shared/app-constants';
 import { IPC } from '../../shared/ipc-channels';
 
-const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindowInstances, runCliMock, registerIpcHandlersMock } =
+const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindowInstances, runCliMock, registerIpcHandlersMock, menuMock } =
   vi.hoisted(() => {
     const whenReadyCbs: Array<() => void> = [];
     const appOnHandlers: Record<string, (...args: unknown[]) => void> = {};
@@ -11,6 +11,8 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
       loadFile: ReturnType<typeof vi.fn>;
       openDevTools: ReturnType<typeof vi.fn>;
       isDestroyed: ReturnType<typeof vi.fn>;
+      show: ReturnType<typeof vi.fn>;
+      close: ReturnType<typeof vi.fn>;
       webContents: { send: ReturnType<typeof vi.fn>; openDevTools: ReturnType<typeof vi.fn> };
       on: ReturnType<typeof vi.fn>;
     }> = [];
@@ -20,17 +22,23 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
           whenReadyCbs.push(cb);
         },
       })),
+      getAppPath: vi.fn(() => 'C:\\project'),
       exit: vi.fn(),
       quit: vi.fn(),
       on: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
         appOnHandlers[event] = cb;
       }),
     };
+    const menuMock = {
+      setApplicationMenu: vi.fn(),
+    };
     const BrowserWindowMock = vi.fn(function (this: {
       loadURL: ReturnType<typeof vi.fn>;
       loadFile: ReturnType<typeof vi.fn>;
       openDevTools: ReturnType<typeof vi.fn>;
       isDestroyed: ReturnType<typeof vi.fn>;
+      show: ReturnType<typeof vi.fn>;
+      close: ReturnType<typeof vi.fn>;
       webContents: { send: ReturnType<typeof vi.fn>; openDevTools: ReturnType<typeof vi.fn> };
       on: ReturnType<typeof vi.fn>;
     }) {
@@ -38,6 +46,8 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
       this.loadFile = vi.fn();
       this.openDevTools = vi.fn();
       this.isDestroyed = vi.fn(() => false);
+      this.show = vi.fn();
+      this.close = vi.fn();
       this.webContents = { send: vi.fn(), openDevTools: vi.fn() };
       this.on = vi.fn();
       windowInstances.push(this as never);
@@ -50,10 +60,11 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
       getWindowInstances: () => windowInstances,
       runCliMock: vi.fn(),
       registerIpcHandlersMock: vi.fn(),
+      menuMock,
     };
   });
 
-vi.mock('electron', () => ({ app: appMock, BrowserWindow: BrowserWindowMock }));
+vi.mock('electron', () => ({ app: appMock, BrowserWindow: BrowserWindowMock, Menu: menuMock }));
 vi.mock('../cli', () => ({ runCli: runCliMock }));
 vi.mock('../ipc/handlers', () => ({ registerIpcHandlers: registerIpcHandlersMock }));
 
@@ -62,6 +73,8 @@ const ORIGINAL_PLATFORM = process.platform;
 const ORIGINAL_LOG = console.log;
 const ORIGINAL_WARN = console.warn;
 const ORIGINAL_ERROR = console.error;
+
+const getMainWindows = () => registerIpcHandlersMock.mock.calls.map((call) => call[0]);
 
 describe('main/index', () => {
   beforeEach(() => {
@@ -109,12 +122,14 @@ describe('main/index', () => {
     await import('../index');
     expect(appMock.whenReady).toHaveBeenCalled();
     getWhenReadyCbs()[0]();
-    const win = getWindowInstances()[0];
+    const win = getMainWindows()[0];
+    expect(menuMock.setApplicationMenu).toHaveBeenCalledWith(null);
     expect(BrowserWindowMock).toHaveBeenCalledWith(
       expect.objectContaining({
         width: WINDOW_SIZE.WIDTH,
         height: WINDOW_SIZE.HEIGHT,
         title: 'EncodeX',
+        frame: false,
       }),
     );
     expect(registerIpcHandlersMock).toHaveBeenCalledWith(win);
@@ -122,12 +137,41 @@ describe('main/index', () => {
     expect(win.loadURL).not.toHaveBeenCalled();
   });
 
+  it('shows a splash window that loads the splash image', async () => {
+    process.argv = ['node', 'x.js'];
+    await import('../index');
+    getWhenReadyCbs()[0]();
+    expect(BrowserWindowMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        width: SPLASH_SIZE.WIDTH,
+        height: SPLASH_SIZE.HEIGHT,
+        frame: false,
+        skipTaskbar: true,
+        alwaysOnTop: true,
+      }),
+    );
+    const splash = getWindowInstances()[0];
+    expect(splash.loadFile).toHaveBeenCalledWith(expect.stringContaining('splash_screen.png'));
+  });
+
+  it('shows the main window and closes the splash when ready', async () => {
+    process.argv = ['node', 'x.js'];
+    await import('../index');
+    getWhenReadyCbs()[0]();
+    const splash = getWindowInstances()[0];
+    const win = getMainWindows()[0];
+    const readyCb = win.on.mock.calls.find(([event]) => event === 'ready-to-show')?.[1] as () => void;
+    readyCb();
+    expect(win.show).toHaveBeenCalled();
+    expect(splash.close).toHaveBeenCalled();
+  });
+
   it('loads the dev server URL in development mode', async () => {
     process.argv = ['node', 'x.js'];
     process.env.NODE_ENV = 'development';
     await import('../index');
     getWhenReadyCbs()[0]();
-    const win = getWindowInstances()[0];
+    const win = getMainWindows()[0];
     expect(win.loadURL).toHaveBeenCalledWith(DEV_SERVER_URL);
     expect(win.webContents.openDevTools).toHaveBeenCalled();
   });
@@ -136,7 +180,7 @@ describe('main/index', () => {
     process.argv = ['node', 'x.js'];
     await import('../index');
     getWhenReadyCbs()[0]();
-    const win = getWindowInstances()[0];
+    const win = getMainWindows()[0];
     console.log('hello');
     expect(win.webContents.send).toHaveBeenCalledWith(
       IPC.LOG_MESSAGE,
@@ -160,7 +204,7 @@ describe('main/index', () => {
     process.argv = ['node', 'x.js'];
     await import('../index');
     getWhenReadyCbs()[0]();
-    const win = getWindowInstances()[0];
+    const win = getMainWindows()[0];
     win.isDestroyed.mockReturnValue(true);
     win.webContents.send.mockClear();
     console.log('hello');
@@ -171,11 +215,11 @@ describe('main/index', () => {
     process.argv = ['node', 'x.js'];
     await import('../index');
     getWhenReadyCbs()[0]();
-    const win = getWindowInstances()[0];
+    const win = getMainWindows()[0];
     const closedCb = win.on.mock.calls.find(([event]) => event === 'closed')?.[1] as () => void;
     closedCb();
     getAppOnHandlers()['activate']();
-    expect(getWindowInstances()).toHaveLength(2);
+    expect(getMainWindows()).toHaveLength(2);
   });
 
   it('quits on window-all-closed on non-darwin platforms', async () => {

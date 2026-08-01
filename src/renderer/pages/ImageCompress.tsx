@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, TextField, MenuItem, Button, Stack } from '@mui/material';
+import { Box, TextField, MenuItem, Button, Stack, Typography } from '@mui/material';
 import FileDropZone from '../components/FileDropZone';
 import ProgressBar from '../components/ProgressBar';
 import PageContainer from '../components/PageContainer';
@@ -19,6 +19,10 @@ import { isValidScale, isInRange } from '../../shared/validation';
 import { FieldBox, FieldLabel } from '../styles/ImageCompress.styles';
 
 const log = new Logger('renderer/pages/ImageCompress');
+
+function fileName(path: string): string {
+  return path.split(/[\\/]/).pop() ?? path;
+}
 
 export default function ImageCompress() {
   const { t } = useTranslation();
@@ -77,6 +81,11 @@ export default function ImageCompress() {
         <ErrorBoundary fallback={null}>
           <FileDropZone onFileSelect={setInput} label={t('imageCompress.dropLabel')} accept={IMAGE_DROPZONE_ACCEPT} />
         </ErrorBoundary>
+        {input && (
+          <Typography variant="body2" color="text.secondary" data-testid="selected-image">
+            {t('imageCompress.selectedImage', { file: fileName(input) })}
+          </Typography>
+        )}
       </Box>
 
       <FilePathField

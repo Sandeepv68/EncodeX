@@ -43,3 +43,10 @@ export const COLORS = {
     control: '#ffffff',
   },
 } as const;
+
+export const SHADOWS = {
+  SOFT_LIGHT: '0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 10px rgba(0, 0, 0, 0.05)',
+  SOFT_DARK: '0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15)',
+  SOFT_HOVER_LIGHT: '0 2px 4px rgba(0, 0, 0, 0.05), 0 6px 18px rgba(0, 0, 0, 0.08)',
+  SOFT_HOVER_DARK: '0 2px 4px rgba(0, 0, 0, 0.25), 0 4px 14px rgba(0, 0, 0, 0.2)',
+} as const;

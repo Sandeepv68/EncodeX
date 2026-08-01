@@ -1,15 +1,14 @@
 import { useRef, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconButton, Tooltip, Typography, MenuItem } from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
-import DownloadIcon from '@mui/icons-material/Download';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEraser, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { useLogStore } from '../stores/logStore';
 import { useToastStore } from '../stores/toastStore';
 import { COLORS } from '../colors';
 import {
   LogsRoot,
   LogsHeader,
-  LogsTitle,
   FilterSelect,
   LogsBody,
   NoEntriesText,
@@ -18,6 +17,7 @@ import {
   LevelSpan,
   SourceSpan,
 } from '../styles/Logs.styles';
+import { PageTitle } from '../styles/BatchQueue.styles';
 
 const LEVEL_COLORS: Record<string, string> = {
   DEBUG: COLORS.log.debug,
@@ -53,8 +53,8 @@ export default function Logs() {
 
   return (
     <LogsRoot>
+      <PageTitle variant="h5">{t('nav.logs')}</PageTitle>
       <LogsHeader>
-        <LogsTitle variant="h5">{t('nav.logs')}</LogsTitle>
         <FilterSelect size="small" value={filter} onChange={(e) => setFilter(e.target.value as string)}>
           <MenuItem value="ALL">{t('logs.levelAll')}</MenuItem>
           <MenuItem value="DEBUG">{t('logs.levelDebug')}</MenuItem>
@@ -64,12 +64,12 @@ export default function Logs() {
         </FilterSelect>
         <Tooltip title={t('logs.clear')}>
           <IconButton size="small" onClick={clear}>
-            <ClearIcon fontSize="small" />
+            <FontAwesomeIcon icon={faEraser} style={{ fontSize: 20 }} />
           </IconButton>
         </Tooltip>
         <Tooltip title={t('logs.download')}>
           <IconButton size="small" onClick={downloadLogs}>
-            <DownloadIcon fontSize="small" />
+            <FontAwesomeIcon icon={faDownload} style={{ fontSize: 20 }} />
           </IconButton>
         </Tooltip>
         <Typography variant="caption" color="text.secondary">

@@ -1,41 +1,54 @@
-import CodeIcon from '@mui/icons-material/Code';
-import MemoryIcon from '@mui/icons-material/Memory';
-import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
-import WindowIcon from '@mui/icons-material/Window';
-import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
-import AlbumIcon from '@mui/icons-material/Album';
-import WifiIcon from '@mui/icons-material/Wifi';
-import EqualizerIcon from '@mui/icons-material/Equalizer';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import type { SvgIconProps } from '@mui/material/SvgIcon';
-import { VIDEO_CODECS, AUDIO_CODECS } from '../../shared/media-options';
+import {
+  faCode,
+  faMemory,
+  faDesktop,
+  faWindowRestore,
+  faMusic,
+  faMasksTheater,
+  faCompactDisc,
+  faWifi,
+  faSliders,
+  faEllipsis,
+} from '@fortawesome/free-solid-svg-icons';
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import GroupedSelect from './GroupedSelect';
+import { useCapabilities } from '../hooks/useCapabilities';
+import { isHardwareVideoCodec } from '../../shared/codec-classification';
+import type { GroupedOption } from './GroupedSelect';
+import type { EncoderType } from '../../shared/hwaccel-settings';
 
-const groupIcons: Record<string, React.ComponentType<SvgIconProps>> = {
-  Software: CodeIcon,
-  'NVIDIA NVENC': MemoryIcon,
-  'Intel QSV': MemoryIcon,
-  'AMD AMF': MemoryIcon,
-  VAAPI: MemoryIcon,
-  'Apple VideoToolbox': DevicesOtherIcon,
-  'Media Foundation': WindowIcon,
-  'AAC / MPEG': MusicNoteIcon,
-  Dolby: TheaterComedyIcon,
-  Lossless: AlbumIcon,
-  Streaming: WifiIcon,
-  PCM: EqualizerIcon,
-  'Windows Media': WindowIcon,
-  Other: MoreHorizIcon,
+const groupIcons: Record<string, IconDefinition> = {
+  Software: faCode,
+  'NVIDIA NVENC': faMemory,
+  'Intel QSV': faMemory,
+  'AMD AMF': faMemory,
+  VAAPI: faMemory,
+  'Apple VideoToolbox': faDesktop,
+  'Media Foundation': faWindowRestore,
+  'AAC / MPEG': faMusic,
+  Dolby: faMasksTheater,
+  Lossless: faCompactDisc,
+  Streaming: faWifi,
+  PCM: faSliders,
+  'Windows Media': faWindowRestore,
+  Other: faEllipsis,
 };
 
 interface Props {
   type: 'video' | 'audio';
   value: string;
   onChange: (value: string) => void;
+  encoderType?: EncoderType;
 }
 
-export default function CodecSelect({ type, value, onChange }: Props) {
-  const codecs = type === 'video' ? VIDEO_CODECS : AUDIO_CODECS;
+export default function CodecSelect({ type, value, onChange, encoderType = 'auto' }: Props) {
+  const { videoCodecs, audioCodecs } = useCapabilities();
+  const base = type === 'video' ? videoCodecs : audioCodecs;
+  const filtered =
+    type === 'video' && (encoderType === 'hardware' || encoderType === 'software')
+      ? base.filter((c) => (encoderType === 'hardware' ? isHardwareVideoCodec(c.value) : !isHardwareVideoCodec(c.value)))
+      : base;
+  const codecs: GroupedOption[] =
+    value && !filtered.some((c) => c.value === value) ? [{ value, label: value, group: 'Other' }, ...filtered] : filtered;
   return <GroupedSelect value={value} onChange={onChange} options={codecs} groupIcons={groupIcons} />;
 }

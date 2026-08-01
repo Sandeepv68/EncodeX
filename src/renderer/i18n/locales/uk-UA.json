@@ -13,7 +13,8 @@
     "audio": "Аудіо",
     "cut": "Обрізати",
     "batchQueue": "Пакетна черга",
-    "logs": "Логи"
+    "logs": "Логи",
+    "settings": "Налаштування"
   },
   "dashboard": {
     "welcome": "Ласкаво просимо до EncodeX",
@@ -56,7 +57,8 @@
     "cancelTitle": "Скасувати перетворення",
     "cancelMessage": "Ви впевнені, що бажаєте скасувати поточне перетворення?",
     "yes": "Так",
-    "no": "Ні"
+    "no": "Ні",
+    "encoderTypeHint": "Перевизначає тип кодеків, обраний у налаштуваннях, для цієї конвертації. Автоматично слідує значенню в налаштуваннях."
   },
   "mediaInfo": {
     "title": "Інформація про медіа",
@@ -89,7 +91,8 @@
     "compressing": "Стиснення...",
     "placeholderOutput": "шлях вихідного файлу",
     "placeholderScale": "напр. 800x600",
-    "validationRequired": "Виберіть вхідне зображення."
+    "validationRequired": "Виберіть вхідне зображення.",
+    "selectedImage": "Вибране зображення: {{file}}"
   },
   "audioExtract": {
     "title": "Виділити аудіо",
@@ -186,5 +189,20 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "Налаштування",
+    "theme": "Тема",
+    "hardwareAcceleration": "Апаратне прискорення",
+    "hwaccelMode": "Режим прискорення",
+    "hwaccelModeAuto": "Автоматично (декодування + кодування)",
+    "hwaccelModeEncode": "Тільки кодування",
+    "encoderType": "Тип кодека",
+    "encoderTypeAuto": "Автоматично",
+    "encoderTypeHardware": "Апаратне забезпечення",
+    "encoderTypeSoftware": "Програмне забезпечення",
+    "hardwareAccelerationHint": "Використовує ваш GPU (NVIDIA NVENC, Intel QSV, AMD AMF) для кодування та декодування відео. Вимкніть для кодування лише програмним забезпеченням.",
+    "hwaccelModeHint": "Автоматично: GPU виконує декодування та кодування (найшвидше, не завжди сумісно). Лише кодування: GPU кодує, CPU декодує (найбезпечніше).",
+    "encoderTypeHint": "Фільтрує список відеокодеків. Автоматично показує всі доступні, Апаратне забезпечення — лише GPU, Програмне забезпечення — лише CPU."
   }
 }

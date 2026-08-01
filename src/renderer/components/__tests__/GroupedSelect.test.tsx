@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import GroupedSelect, { type GroupedOption } from '../GroupedSelect';
-import CodeIcon from '@mui/icons-material/Code';
-import MemoryIcon from '@mui/icons-material/Memory';
+import { faCode, faMemory } from '@fortawesome/free-solid-svg-icons';
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 const options: readonly GroupedOption[] = [
   { value: 'libx264', label: 'H.264 (libx264)', group: 'Software' },
@@ -10,7 +10,7 @@ const options: readonly GroupedOption[] = [
   { value: 'h264_nvenc', label: 'H.264 (NVENC)', group: 'Hardware' },
 ];
 
-const groupIcons: Record<string, React.ComponentType> = { Software: CodeIcon, Hardware: MemoryIcon };
+const groupIcons: Record<string, IconDefinition> = { Software: faCode, Hardware: faMemory };
 
 describe('GroupedSelect', () => {
   it('renders options and group headers when opened', async () => {

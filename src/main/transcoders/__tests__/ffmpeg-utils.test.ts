@@ -94,4 +94,32 @@ describe('buildFfmpegArgs', () => {
     const args = buildFfmpegArgs('in.mp4', 'out.mp4', {});
     expect(args).toEqual(['-i', 'in.mp4', '-y', 'out.mp4']);
   });
+
+  it('prepends hardware acceleration flags for hardware video codecs', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { videoCodec: 'h264_nvenc' });
+    expect(args.slice(0, 6)).toEqual(['-hwaccel', 'cuda', '-hwaccel_output_format', 'cuda', '-i', 'in.mp4']);
+    expect(args).toContain('-vcodec');
+    expect(args).toContain('h264_nvenc');
+  });
+
+  it('does not add hardware acceleration flags in copy mode', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { copy: true, videoCodec: 'h264_nvenc' });
+    expect(args).toEqual(['-i', 'in.mp4', '-c', 'copy', '-y', 'out.mp4']);
+  });
+
+  it('does not add hardware acceleration flags when hardware acceleration is disabled', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { videoCodec: 'h264_nvenc', hardwareAcceleration: false });
+    expect(args).toEqual(['-i', 'in.mp4', '-vcodec', 'h264_nvenc', '-y', 'out.mp4']);
+  });
+
+  it('does not add hardware acceleration flags in encode-only mode', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { videoCodec: 'h264_nvenc', hardwareAcceleration: true, hwaccelMode: 'encode' });
+    expect(args).toEqual(['-i', 'in.mp4', '-vcodec', 'h264_nvenc', '-y', 'out.mp4']);
+  });
+
+  it('adds hardware acceleration flags when enabled with automatic mode', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { videoCodec: 'h264_nvenc', hardwareAcceleration: true, hwaccelMode: 'auto' });
+    expect(args.slice(0, 6)).toEqual(['-hwaccel', 'cuda', '-hwaccel_output_format', 'cuda', '-i', 'in.mp4']);
+    expect(args).toContain('h264_nvenc');
+  });
 });

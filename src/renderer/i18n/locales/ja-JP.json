@@ -13,7 +13,8 @@
     "audio": "音声",
     "cut": "カット",
     "batchQueue": "バッチキュー",
-    "logs": "ログ"
+    "logs": "ログ",
+    "settings": "設定"
   },
   "dashboard": {
     "welcome": "EncodeX へようこそ",
@@ -56,7 +57,8 @@
     "cancelTitle": "変換のキャンセル",
     "cancelMessage": "現在の変換をキャンセルしてもよろしいですか?",
     "yes": "はい",
-    "no": "いいえ"
+    "no": "いいえ",
+    "encoderTypeHint": "この変換では、設定で選択したエンコーダータイプを上書きします。自動は設定の値を参照します。"
   },
   "mediaInfo": {
     "title": "メディア情報",
@@ -89,7 +91,8 @@
     "compressing": "圧縮中...",
     "placeholderOutput": "出力パス",
     "placeholderScale": "例: 800x600",
-    "validationRequired": "入力画像を選択してください。"
+    "validationRequired": "入力画像を選択してください。",
+    "selectedImage": "選択した画像: {{file}}"
   },
   "audioExtract": {
     "title": "音声抽出",
@@ -186,5 +189,20 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "設定",
+    "theme": "テーマ",
+    "hardwareAcceleration": "ハードウェアアクセラレーション",
+    "hwaccelMode": "アクセラレーションモード",
+    "hwaccelModeAuto": "自動（デコード＋エンコード）",
+    "hwaccelModeEncode": "エンコードのみ",
+    "encoderType": "エンコーダーの種類",
+    "encoderTypeAuto": "自動",
+    "encoderTypeHardware": "ハードウェア",
+    "encoderTypeSoftware": "ソフトウェア",
+    "hardwareAccelerationHint": "GPU（NVIDIA NVENC、Intel QSV、AMD AMF）を使用して動画のエンコードとデコードを行います。ソフトウェアのみのエンコードにする場合はオフにします。",
+    "hwaccelModeHint": "自動: GPUがデコードとエンコードの両方を行います（最速ですが、互換性がない場合があります）。エンコードのみ: GPUがエンコードし、CPUがデコードします（最も安全）。",
+    "encoderTypeHint": "動画コーデックの一覧をフィルタリングします。自動は利用可能なすべてのエンコーダー、ハードウェアはGPUエンコーダーのみ、ソフトウェアはCPUエンコーダーのみを表示します。"
   }
 }

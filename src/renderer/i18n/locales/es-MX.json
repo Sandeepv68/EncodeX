@@ -13,7 +13,8 @@
     "audio": "Audio",
     "cut": "Cortar",
     "batchQueue": "Cola de lotes",
-    "logs": "Registros"
+    "logs": "Registros",
+    "settings": "Configuración"
   },
   "dashboard": {
     "welcome": "Bienvenido a EncodeX",
@@ -56,7 +57,8 @@
     "cancelTitle": "Cancelar conversión",
     "cancelMessage": "¿Está seguro de que desea cancelar la conversión actual?",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "encoderTypeHint": "Anula el tipo de codificador elegido en Configuración para esta conversión. Automático sigue el valor de Configuración."
   },
   "mediaInfo": {
     "title": "Información del medio",
@@ -89,7 +91,8 @@
     "compressing": "Comprimiendo...",
     "placeholderOutput": "ruta de salida",
     "placeholderScale": "ej. 800x600",
-    "validationRequired": "Seleccione una imagen de entrada."
+    "validationRequired": "Seleccione una imagen de entrada.",
+    "selectedImage": "Imagen seleccionada: {{file}}"
   },
   "audioExtract": {
     "title": "Extraer audio",
@@ -186,5 +189,20 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "Configuración",
+    "theme": "Tema",
+    "hardwareAcceleration": "Aceleración por hardware",
+    "hwaccelMode": "Modo de aceleración",
+    "hwaccelModeAuto": "Automático (decodificar + codificar)",
+    "hwaccelModeEncode": "Solo codificar",
+    "encoderType": "Tipo de codificador",
+    "encoderTypeAuto": "Automático",
+    "encoderTypeHardware": "Hardware",
+    "encoderTypeSoftware": "Software",
+    "hardwareAccelerationHint": "Usa su GPU (NVIDIA NVENC, Intel QSV, AMD AMF) para codificar y decodificar vídeo. Desactívelo para codificar solo con software.",
+    "hwaccelModeHint": "Automático: la GPU decodifica y codifica (lo más rápido, no siempre compatible). Solo codificar: la GPU codifica y la CPU decodifica (lo más seguro).",
+    "encoderTypeHint": "Filtra la lista de códecs de vídeo. Automático muestra todos los disponibles, Hardware solo los de GPU y Software solo los de CPU."
   }
 }

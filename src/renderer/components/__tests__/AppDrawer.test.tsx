@@ -25,12 +25,13 @@ describe('AppDrawer', () => {
     localStorage.clear();
   });
 
-  it('renders the app title and nav items', () => {
+  it('renders the nav items', () => {
     renderDrawer();
-    expect(screen.getByText('app.name')).toBeInTheDocument();
+    expect(screen.queryByText('app.name')).not.toBeInTheDocument();
     expect(screen.getByText('nav.dashboard')).toBeInTheDocument();
     expect(screen.getByText('nav.convert')).toBeInTheDocument();
     expect(screen.getByText('nav.batchQueue')).toBeInTheDocument();
+    expect(screen.getByText('nav.settings')).toBeInTheDocument();
   });
 
   it('navigates to the clicked route', () => {
@@ -54,13 +55,9 @@ describe('AppDrawer', () => {
     expect(onNavigate).not.toHaveBeenCalled();
   });
 
-  it('toggles the color mode icon when clicked', () => {
-    const { container } = renderDrawer();
-    const initialIcon = container.querySelector('[data-testid="DarkModeIcon"], [data-testid="LightModeIcon"]');
-    expect(initialIcon).not.toBeNull();
-    const toggleButton = container.querySelector('button')!;
-    fireEvent.click(toggleButton);
-    const nextIcon = container.querySelector('[data-testid="DarkModeIcon"], [data-testid="LightModeIcon"]');
-    expect(nextIcon?.getAttribute('data-testid')).not.toBe(initialIcon?.getAttribute('data-testid'));
+  it('navigates to the settings page when its nav item is clicked', () => {
+    renderDrawer();
+    fireEvent.click(screen.getByText('nav.settings'));
+    expect(screen.getByTestId('location')).toHaveTextContent('/settings');
   });
 });

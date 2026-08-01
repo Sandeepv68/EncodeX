@@ -13,7 +13,8 @@
     "audio": "Audio",
     "cut": "Taglia",
     "batchQueue": "Coda batch",
-    "logs": "Registri"
+    "logs": "Registri",
+    "settings": "Impostazioni"
   },
   "dashboard": {
     "welcome": "Benvenuto in EncodeX",
@@ -56,7 +57,8 @@
     "cancelTitle": "Annulla conversione",
     "cancelMessage": "Sei sicuro di voler annullare la conversione corrente?",
     "yes": "Sì",
-    "no": "No"
+    "no": "No",
+    "encoderTypeHint": "Sovrascrive il tipo di codificatore scelto nelle Impostazioni per questa conversione. Automatico segue il valore impostato nelle Impostazioni."
   },
   "mediaInfo": {
     "title": "Informazioni file",
@@ -89,7 +91,8 @@
     "compressing": "Compressione in corso...",
     "placeholderOutput": "percorso di output",
     "placeholderScale": "es. 800x600",
-    "validationRequired": "Seleziona un'immagine di input."
+    "validationRequired": "Seleziona un'immagine di input.",
+    "selectedImage": "Immagine selezionata: {{file}}"
   },
   "audioExtract": {
     "title": "Estrai audio",
@@ -186,5 +189,20 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "theme": "Tema",
+    "hardwareAcceleration": "Accelerazione hardware",
+    "hwaccelMode": "Modalità di accelerazione",
+    "hwaccelModeAuto": "Automatica (decodifica + codifica)",
+    "hwaccelModeEncode": "Solo codifica",
+    "encoderType": "Tipo di codificatore",
+    "encoderTypeAuto": "Automatico",
+    "encoderTypeHardware": "Hardware",
+    "encoderTypeSoftware": "Software",
+    "hardwareAccelerationHint": "Usa la GPU (NVIDIA NVENC, Intel QSV, AMD AMF) per codifica e decodifica video. Disattivalo per la sola codifica software.",
+    "hwaccelModeHint": "Automatico: la GPU decodifica e codifica (più veloce, non sempre compatibile). Solo codifica: la GPU codifica, la CPU decodifica (più sicuro).",
+    "encoderTypeHint": "Filtra l'elenco dei codec video. Automatico mostra tutti i codec disponibili, Hardware solo quelli GPU, Software solo quelli CPU."
   }
 }

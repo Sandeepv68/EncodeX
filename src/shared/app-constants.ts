@@ -9,6 +9,15 @@ export const WINDOW_SIZE = {
   MIN_HEIGHT: 600,
 } as const;
 
+export const SPLASH_SIZE = {
+  WIDTH: 600,
+  HEIGHT: 600,
+} as const;
+
+export const SPLASH_IMAGE = 'assets/splash_screen.png';
+
+export const SPLASH_BACKGROUND = '#EEF4F4';
+
 export const APP_NAME = 'EncodeX';
 
 export const THEME_STORAGE_KEY = 'openconverter-theme';
@@ -29,4 +38,5 @@ export const NAV_ITEMS = [
   { to: '/video-cut', label: 'Cut' },
   { to: '/batch', label: 'Batch Queue' },
   { to: '/logs', label: 'Logs' },
+  { to: '/settings', label: 'Settings' },
 ] as const;

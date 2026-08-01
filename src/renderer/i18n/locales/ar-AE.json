@@ -13,7 +13,8 @@
     "audio": "صوت",
     "cut": "قص",
     "batchQueue": "قائمة الدفعات",
-    "logs": "السجلات"
+    "logs": "السجلات",
+    "settings": "الإعدادات"
   },
   "dashboard": {
     "welcome": "مرحباً بك في EncodeX",
@@ -56,7 +57,8 @@
     "cancelTitle": "إلغاء التحويل",
     "cancelMessage": "هل أنت متأكد أنك تريد إلغاء التحويل الحالي؟",
     "yes": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "encoderTypeHint": "يتجاوز نوع الترميز المختار في الإعدادات لهذا التحويل. تلقائي يتبع القيمة المحددة في الإعدادات."
   },
   "mediaInfo": {
     "title": "معلومات الوسائط",
@@ -89,7 +91,8 @@
     "compressing": "جاري الضغط...",
     "placeholderOutput": "مسار الإخراج",
     "placeholderScale": "مثال 800x600",
-    "validationRequired": "الرجاء تحديد صورة الإدخال."
+    "validationRequired": "الرجاء تحديد صورة الإدخال.",
+    "selectedImage": "الصورة المحددة: {{file}}"
   },
   "audioExtract": {
     "title": "استخراج الصوت",
@@ -186,5 +189,20 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "theme": "السمة",
+    "hardwareAcceleration": "تسريع الأجهزة",
+    "hwaccelMode": "وضع التسريع",
+    "hwaccelModeAuto": "تلقائي (فك التشفير + التشفير)",
+    "hwaccelModeEncode": "التشفير فقط",
+    "encoderType": "نوع التشفير",
+    "encoderTypeAuto": "تلقائي",
+    "encoderTypeHardware": "عتاد",
+    "encoderTypeSoftware": "برنامج",
+    "hardwareAccelerationHint": "يستخدم بطاقة الرسوميات (NVIDIA NVENC أو Intel QSV أو AMD AMF) لتشفير وفك تشفير الفيديو. عطّل للاكتفاء بتشفير البرمجيات.",
+    "hwaccelModeHint": "تلقائي: تقوم بطاقة الرسوميات بالفك والتشفير معًا (الأسرع، غير متوافق دائمًا). التشفير فقط: يشفر على GPU ويفك على CPU (الأكثر أمانًا).",
+    "encoderTypeHint": "يصفّي قائمة ترميزات الفيديو. تلقائي يعرض جميع الترميزات المتاحة، عتاد يعرض ترميزات GPU فقط، برنامج يعرض ترميزات CPU فقط."
   }
 }

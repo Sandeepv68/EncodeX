@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const DropZoneRoot = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$dragging',
@@ -15,7 +15,7 @@ export const DropZoneRoot = styled(Box, {
   transition: 'all 0.2s',
 }));
 
-export const UploadIcon = styled(CloudUploadIcon)(({ theme }) => ({
+export const UploadIcon = styled(FontAwesomeIcon)(({ theme }) => ({
   fontSize: theme.typography.pxToRem(48),
   color: theme.palette.text.secondary,
   marginBottom: theme.spacing(1),

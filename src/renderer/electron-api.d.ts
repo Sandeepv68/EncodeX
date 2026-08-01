@@ -1,10 +1,12 @@
-import { ConversionOptions, ConversionProgress, MediaInfo, QueueJob, PlayerFrame, LogEntry } from '../shared/types';
+import { ConversionOptions, ConversionProgress, MediaInfo, QueueJob, PlayerFrame, LogEntry, EncoderCapabilities } from '../shared/types';
 
 export interface ElectronAPI {
+  getPathForFile(file: File): string;
   selectFile(filters?: Electron.FileFilter[]): Promise<string | null>;
   selectFiles(filters?: Electron.FileFilter[]): Promise<string[]>;
   selectOutput(): Promise<string | null>;
   getMediaInfo(filePath: string, transcoderType: string): Promise<MediaInfo>;
+  getCapabilities(): Promise<EncoderCapabilities | null>;
   convertFile(input: string, output: string, options: ConversionOptions, transcoderType: string): Promise<void>;
   pauseConversion(): Promise<void>;
   resumeConversion(): Promise<void>;
@@ -17,6 +19,10 @@ export interface ElectronAPI {
   playerSeek(time: string): Promise<void>;
   playerClose(): Promise<void>;
   playerGetFrame(): Promise<PlayerFrame | null>;
+  windowMinimize(): void;
+  windowMaximizeToggle(): void;
+  windowClose(): void;
+  onWindowMaximizedChange(cb: (maximized: boolean) => void): () => void;
   onConversionProgress(cb: (data: { input: string; output: string; progress: ConversionProgress }) => void): () => void;
   onQueueAdded(cb: (job: QueueJob) => void): () => void;
   onQueueRemoved(cb: (id: string) => void): () => void;

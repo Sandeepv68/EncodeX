@@ -13,7 +13,8 @@
     "audio": "Audio",
     "cut": "Knippen",
     "batchQueue": "Batchwachtrij",
-    "logs": "Logboeken"
+    "logs": "Logboeken",
+    "settings": "Instellingen"
   },
   "dashboard": {
     "welcome": "Welkom bij EncodeX",
@@ -56,7 +57,8 @@
     "cancelTitle": "Conversie annuleren",
     "cancelMessage": "Weet u zeker dat u de huidige conversie wilt annuleren?",
     "yes": "Ja",
-    "no": "Nee"
+    "no": "Nee",
+    "encoderTypeHint": "Overschrijft het in Instellingen gekozen encodertype voor deze conversie. Automatisch volgt de waarde in Instellingen."
   },
   "mediaInfo": {
     "title": "Media-informatie",
@@ -89,7 +91,8 @@
     "compressing": "Bezig met comprimeren...",
     "placeholderOutput": "uitvoerpad",
     "placeholderScale": "bijv. 800x600",
-    "validationRequired": "Selecteer een invoerafbeelding."
+    "validationRequired": "Selecteer een invoerafbeelding.",
+    "selectedImage": "Geselecteerde afbeelding: {{file}}"
   },
   "audioExtract": {
     "title": "Audio extraheren",
@@ -186,5 +189,20 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "theme": "Thema",
+    "hardwareAcceleration": "Hardwareversnelling",
+    "hwaccelMode": "Versnellingsmodus",
+    "hwaccelModeAuto": "Automatisch (decoderen + coderen)",
+    "hwaccelModeEncode": "Alleen coderen",
+    "encoderType": "Encoder-type",
+    "encoderTypeAuto": "Automatisch",
+    "encoderTypeHardware": "Hardware",
+    "encoderTypeSoftware": "Software",
+    "hardwareAccelerationHint": "Gebruikt uw GPU (NVIDIA NVENC, Intel QSV, AMD AMF) voor video-encoding en -decoding. Schakel uit voor alleen software-encoding.",
+    "hwaccelModeHint": "Automatisch: de GPU doet zowel decoderen als encoderen (snelst, niet altijd compatibel). Alleen encoderen: de GPU encodeert, de CPU decodeert (veiligst).",
+    "encoderTypeHint": "Filtert de videocodeclijst. Automatisch toont alle beschikbare encoders, Hardware alleen GPU-encoders, Software alleen CPU-encoders."
   }
 }

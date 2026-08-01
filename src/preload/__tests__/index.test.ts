@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IPC } from '../../shared/ipc-channels';
 
-const { contextBridgeMock, ipcRendererMock, getExposed } = vi.hoisted(() => {
+const { contextBridgeMock, ipcRendererMock, webUtilsMock, getExposed } = vi.hoisted(() => {
   const exposed: Record<string, unknown> = {};
   return {
     contextBridgeMock: {
@@ -11,8 +11,12 @@ const { contextBridgeMock, ipcRendererMock, getExposed } = vi.hoisted(() => {
     },
     ipcRendererMock: {
       invoke: vi.fn(),
+      send: vi.fn(),
       on: vi.fn(),
       removeListener: vi.fn(),
+    },
+    webUtilsMock: {
+      getPathForFile: vi.fn(),
     },
     getExposed: () => exposed,
   };
@@ -21,6 +25,7 @@ const { contextBridgeMock, ipcRendererMock, getExposed } = vi.hoisted(() => {
 vi.mock('electron', () => ({
   contextBridge: contextBridgeMock,
   ipcRenderer: ipcRendererMock,
+  webUtils: webUtilsMock,
   IpcRendererEvent: class {},
 }));
 
@@ -49,11 +54,19 @@ describe('preload', () => {
     expect(api.onLogMessage).toBeTypeOf('function');
   });
 
+  it('getPathForFile resolves a dropped file path via webUtils', () => {
+    const file = {} as File;
+    webUtilsMock.getPathForFile.mockReturnValue('/dropped/image.png');
+    expect((api.getPathForFile as (f: File) => string)(file)).toBe('/dropped/image.png');
+    expect(webUtilsMock.getPathForFile).toHaveBeenCalledWith(file);
+  });
+
   it.each([
     ['selectFile', IPC.SELECT_FILE, [undefined]],
     ['selectFiles', IPC.SELECT_FILES, [undefined]],
     ['selectOutput', IPC.SELECT_OUTPUT, []],
     ['getMediaInfo', IPC.GET_MEDIA_INFO, ['in.mp4', 'FFMPEG']],
+    ['getCapabilities', IPC.GET_CAPABILITIES, []],
     ['convertFile', IPC.CONVERT_FILE, ['in.mp4', 'out.mp4', {}, 'FFMPEG']],
     ['pauseConversion', IPC.PAUSE_CONVERSION, []],
     ['resumeConversion', IPC.RESUME_CONVERSION, []],
@@ -82,6 +95,7 @@ describe('preload', () => {
     ['onQueueCancelled', IPC.QUEUE_CANCELLED, undefined],
     ['onPlayerFrame', IPC.PLAYER_FRAME, { data: new ArrayBuffer(0), width: 1, height: 1, pts: 0 }],
     ['onLogMessage', IPC.LOG_MESSAGE, { timestamp: 't', level: 'INFO', text: 'hello', source: 'main' }],
+    ['onWindowMaximizedChange', IPC.WINDOW_MAXIMIZED_CHANGED, true],
   ])('%s subscribes and unsubscribes on the %s channel', (method, channel, payload) => {
     const cb = vi.fn();
     const unsubscribe = (api[method] as (cb: (data: unknown) => void) => () => void)(cb);
@@ -95,5 +109,14 @@ describe('preload', () => {
     }
     unsubscribe();
     expect(ipcRendererMock.removeListener).toHaveBeenCalledWith(channel, handler);
+  });
+
+  it.each([
+    ['windowMinimize', IPC.WINDOW_MINIMIZE],
+    ['windowMaximizeToggle', IPC.WINDOW_MAXIMIZE_TOGGLE],
+    ['windowClose', IPC.WINDOW_CLOSE],
+  ])('%s sends the %s channel', (method, channel) => {
+    (api[method] as () => void)();
+    expect(ipcRendererMock.send).toHaveBeenCalledWith(channel);
   });
 });

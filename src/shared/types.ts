@@ -1,7 +1,9 @@
 import { QUEUE_STATUS, FALLBACK_VALUES } from './media-options';
 import { TRANSCODER_TYPES, TranscoderType } from './transcoder-constants';
+import { HwAccelMode } from './hwaccel-settings';
 
 export type { TranscoderType };
+export type { HwAccelMode };
 
 export interface ConversionOptions {
   videoCodec?: string;
@@ -15,6 +17,8 @@ export interface ConversionOptions {
   endTime?: string;
   duration?: string;
   copy?: boolean;
+  hardwareAcceleration?: boolean;
+  hwaccelMode?: HwAccelMode;
 }
 
 export interface MediaStreamInfo {
@@ -90,4 +94,10 @@ export interface FileItem {
   name: string;
   size: number;
   operation: ConversionOperation;
+}
+
+export interface EncoderCapabilities {
+  videoEncoders: string[];
+  audioEncoders: string[];
+  hwaccels: string[];
 }

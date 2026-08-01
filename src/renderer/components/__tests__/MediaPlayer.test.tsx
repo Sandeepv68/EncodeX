@@ -49,9 +49,9 @@ describe('MediaPlayer', () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const { container } = render(<MediaPlayer filePath="/v.mp4" />);
     const canvas = container.querySelector('canvas')!;
-    expect(container.querySelector('[data-testid="PauseIcon"]')).not.toBeNull();
+    expect(container.querySelector('[data-icon="pause"]')).not.toBeNull();
     fireEvent.click(canvas);
-    expect(container.querySelector('[data-testid="PlayArrowIcon"]')).not.toBeNull();
+    expect(container.querySelector('[data-icon="play"]')).not.toBeNull();
     fireEvent.click(canvas);
     expect(playerOpen).toHaveBeenCalledTimes(2);
   });
@@ -60,9 +60,9 @@ describe('MediaPlayer', () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const { container } = render(<MediaPlayer filePath="/v.mp4" />);
     playerClose.mockClear();
-    fireEvent.click(container.querySelector('[data-testid="StopIcon"]')!);
+    fireEvent.click(container.querySelector('[data-icon="stop"]')!);
     expect(playerClose).toHaveBeenCalledOnce();
-    expect(container.querySelector('[data-testid="PlayArrowIcon"]')).not.toBeNull();
+    expect(container.querySelector('[data-icon="play"]')).not.toBeNull();
   });
 
   it('seeks the player when the slider is committed', async () => {

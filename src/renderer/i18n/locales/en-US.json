@@ -13,7 +13,8 @@
     "audio": "Audio",
     "cut": "Cut",
     "batchQueue": "Batch Queue",
-    "logs": "Logs"
+    "logs": "Logs",
+    "settings": "Settings"
   },
   "dashboard": {
     "welcome": "Welcome to EncodeX",
@@ -56,7 +57,8 @@
     "jobCancelTitle": "Cancel Job",
     "jobCancelMessage": "This will clear the current conversion job. Are you sure?",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "encoderTypeHint": "Overrides the encoder type chosen in Settings for this conversion. Automatic follows the value set in Settings."
   },
   "mediaInfo": {
     "title": "Media Information",
@@ -89,7 +91,8 @@
     "compressing": "Compressing...",
     "placeholderOutput": "output path",
     "placeholderScale": "e.g. 800x600",
-    "validationRequired": "Please select an input image."
+    "validationRequired": "Please select an input image.",
+    "selectedImage": "Selected image: {{file}}"
   },
   "audioExtract": {
     "title": "Extract Audio",
@@ -186,5 +189,20 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "hardwareAcceleration": "Hardware Acceleration",
+    "hwaccelMode": "Acceleration Mode",
+    "hwaccelModeAuto": "Automatic (decode + encode)",
+    "hwaccelModeEncode": "Encode only",
+    "encoderType": "Encoder Type",
+    "encoderTypeAuto": "Automatic",
+    "encoderTypeHardware": "Hardware",
+    "encoderTypeSoftware": "Software",
+    "hardwareAccelerationHint": "Uses your GPU (NVIDIA NVENC, Intel QSV, AMD AMF) for video encoding and decoding. Turn off for software-only encoding.",
+    "hwaccelModeHint": "Automatic: the GPU does both decoding and encoding (fastest, not always compatible). Encode only: the GPU encodes and the CPU decodes (safest).",
+    "encoderTypeHint": "Filters the video codec list. Automatic shows all available encoders, Hardware shows GPU encoders only, Software shows CPU encoders only."
   }
 }

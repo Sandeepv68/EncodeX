@@ -3,6 +3,7 @@ export const IPC = {
   SELECT_FILES: 'select-files',
   SELECT_OUTPUT: 'select-output',
   GET_MEDIA_INFO: 'get-media-info',
+  GET_CAPABILITIES: 'get-capabilities',
   CONVERT_FILE: 'convert-file',
   CANCEL_CONVERSION: 'cancel-conversion',
   PAUSE_CONVERSION: 'pause-conversion',
@@ -15,6 +16,11 @@ export const IPC = {
   PLAYER_SEEK: 'player-seek',
   PLAYER_CLOSE: 'player-close',
   PLAYER_GET_FRAME: 'player-get-frame',
+
+  WINDOW_MINIMIZE: 'window-minimize',
+  WINDOW_MAXIMIZE_TOGGLE: 'window-maximize-toggle',
+  WINDOW_CLOSE: 'window-close',
+  WINDOW_MAXIMIZED_CHANGED: 'window-maximized-changed',
 
   CONVERSION_PROGRESS: 'conversion-progress',
   QUEUE_ADDED: 'queue-added',

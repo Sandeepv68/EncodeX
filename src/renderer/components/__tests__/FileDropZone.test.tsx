@@ -3,10 +3,12 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import FileDropZone from '../FileDropZone';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
+const getPathForFileMock = vi.mocked(window.electronAPI.getPathForFile);
 
 describe('FileDropZone', () => {
   beforeEach(() => {
     selectFileMock.mockReset();
+    getPathForFileMock.mockReset();
   });
 
   it('renders the default label when none is provided', () => {
@@ -46,11 +48,13 @@ describe('FileDropZone', () => {
   });
 
   it('reports the dropped file path', () => {
+    getPathForFileMock.mockReturnValue('/dropped/file.mp4');
     const onFileSelect = vi.fn();
     render(<FileDropZone onFileSelect={onFileSelect} />);
     const zone = screen.getByText('fileDropZone.defaultLabel').parentElement!;
-    const file = { path: '/dropped/file.mp4' } as File & { path: string };
+    const file = new File(['data'], 'photo.png');
     fireEvent.drop(zone, { dataTransfer: { files: [file] } });
+    expect(getPathForFileMock).toHaveBeenCalledWith(file);
     expect(onFileSelect).toHaveBeenCalledWith('/dropped/file.mp4');
   });
 });

@@ -13,7 +13,8 @@
     "audio": "ऑडियो",
     "cut": "कट",
     "batchQueue": "बैच क्यू",
-    "logs": "लॉग्स"
+    "logs": "लॉग्स",
+    "settings": "सेटिंग्स"
   },
   "dashboard": {
     "welcome": "EncodeX में आपका स्वागत है",
@@ -56,7 +57,8 @@
     "cancelTitle": "रूपांतरण रद्द करें",
     "cancelMessage": "क्या आप वाकई वर्तमान रूपांतरण रद्द करना चाहते हैं?",
     "yes": "हाँ",
-    "no": "नहीं"
+    "no": "नहीं",
+    "encoderTypeHint": "इस कनवर्ज़न के लिए सेटिंग्स में चुने गए एन्कोडर प्रकार को ओवरराइड करता है। स्वचालित सेटिंग्स में मान का अनुसरण करता है।"
   },
   "mediaInfo": {
     "title": "मीडिया जानकारी",
@@ -89,7 +91,8 @@
     "compressing": "कंप्रेस हो रहा है...",
     "placeholderOutput": "आउटपुट पथ",
     "placeholderScale": "जैसे 800x600",
-    "validationRequired": "कृपया एक इनपुट छवि चुनें."
+    "validationRequired": "कृपया एक इनपुट छवि चुनें.",
+    "selectedImage": "चयनित छवि: {{file}}"
   },
   "audioExtract": {
     "title": "ऑडियो निकालें",
@@ -186,5 +189,20 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "theme": "थीम",
+    "hardwareAcceleration": "हार्डवेयर त्वरण",
+    "hwaccelMode": "त्वरण मोड",
+    "hwaccelModeAuto": "स्वचालित (डिकोड + एन्कोड)",
+    "hwaccelModeEncode": "केवल एन्कोड",
+    "encoderType": "एन्कोडर प्रकार",
+    "encoderTypeAuto": "स्वचालित",
+    "encoderTypeHardware": "हार्डवेयर",
+    "encoderTypeSoftware": "सॉफ़्टवेयर",
+    "hardwareAccelerationHint": "वीडियो एन्कोडिंग और डिकोडिंग के लिए आपके GPU (NVIDIA NVENC, Intel QSV, AMD AMF) का उपयोग करता है। केवल सॉफ़्टवेयर एन्कोडिंग के लिए बंद करें।",
+    "hwaccelModeHint": "स्वचालित: GPU डिकोडिंग और एन्कोडिंग दोनों करता है (सबसे तेज़, हमेशा संगत नहीं)। केवल एन्कोड: GPU एन्कोड करता है, CPU डिकोड करता है (सबसे सुरक्षित)।",
+    "encoderTypeHint": "वीडियो कोडेक सूची को फ़िल्टर करता है। स्वचालित सभी उपलब्ध एन्कोडर दिखाता है, हार्डवेयर केवल GPU एन्कोडर, सॉफ़्टवेयर केवल CPU एन्कोडर।"
   }
 }

@@ -60,7 +60,7 @@ describe('BatchQueue', () => {
       expect(queueAddMock).toHaveBeenCalledWith(
         '/in/video.mp4',
         '/in/video_converted.mp4',
-        { videoCodec: 'libx264', audioCodec: 'aac' },
+        { videoCodec: 'libx264', audioCodec: 'aac', hardwareAcceleration: true, hwaccelMode: 'auto' },
         'FFMPEG',
       ),
     );
@@ -88,7 +88,7 @@ describe('BatchQueue', () => {
       expect(queueAddMock).toHaveBeenCalledWith(
         '/in/video.mp4',
         '/in/video_converted.mp4',
-        { videoCodec: undefined, audioCodec: 'aac' },
+        { videoCodec: undefined, audioCodec: 'aac', hardwareAcceleration: true, hwaccelMode: 'auto' },
         'FFMPEG',
       ),
     );
@@ -105,7 +105,7 @@ describe('BatchQueue', () => {
       expect(queueAddMock).toHaveBeenCalledWith(
         '/in/photo.png',
         '/in/photo_converted.png',
-        { videoCodec: 'libx264', audioCodec: undefined },
+        { videoCodec: 'libx264', audioCodec: undefined, hardwareAcceleration: true, hwaccelMode: 'auto' },
         'FFMPEG',
       ),
     );
