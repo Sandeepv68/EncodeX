@@ -4,6 +4,22 @@ import { ensureBuildExists, getBuildPaths } from './helpers';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
 
+async function getMainWindow(electronApp: import('playwright').ElectronApplication): Promise<import('playwright').Page> {
+  const deadline = Date.now() + 30000;
+  while (Date.now() < deadline) {
+    for (const win of electronApp.windows()) {
+      try {
+        const hasApi = await win.evaluate(() => typeof (window as any).electronAPI !== 'undefined');
+        if (hasApi) return win;
+      } catch {
+        // window may have closed; skip it
+      }
+    }
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  throw new Error('Main window (with electronAPI) was not found');
+}
+
 describe.runIf(IS_E2E)('Electron App', () => {
   let playwright: typeof import('playwright');
   let electronApp: import('playwright').ElectronApplication;
@@ -16,18 +32,20 @@ describe.runIf(IS_E2E)('Electron App', () => {
       args: [path.join(getBuildPaths().root, 'dist', 'main', 'index.js')],
       cwd: getBuildPaths().root,
     });
-    page = await electronApp.firstWindow();
+    await electronApp.firstWindow();
+    page = await getMainWindow(electronApp);
   }, 60000);
 
   afterAll(async () => {
     if (electronApp) {
       const pid = electronApp.process().pid;
-      await Promise.race([
-        electronApp.close(),
-        new Promise((resolve) => setTimeout(resolve, 5000)),
-      ]);
+      await Promise.race([electronApp.close(), new Promise((resolve) => setTimeout(resolve, 5000))]);
       if (pid) {
-        try { process.kill(pid, 'SIGKILL'); } catch { /* already dead */ }
+        try {
+          process.kill(pid, 'SIGKILL');
+        } catch {
+          /* already dead */
+        }
       }
     }
   });
@@ -91,8 +109,10 @@ describe.runIf(IS_E2E)('Electron App', () => {
   it('should have drawer navigation with expected items', async () => {
     await page.waitForSelector('nav', { timeout: 5000 }).catch(() => null);
     const hasNav = await page.evaluate(() => {
-      return document.querySelectorAll('nav a, nav button, [role="navigation"] a').length > 0
-        || document.querySelector('.MuiDrawer-root') !== null;
+      return (
+        document.querySelectorAll('nav a, nav button, [role="navigation"] a').length > 0 ||
+        document.querySelector('.MuiDrawer-root') !== null
+      );
     });
     expect(hasNav).toBe(true);
   });
