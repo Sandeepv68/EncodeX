@@ -58,6 +58,17 @@
     "cancelMessage": "Weet u zeker dat u de huidige conversie wilt annuleren?",
     "yes": "Ja",
     "no": "Nee",
+    "inputFileHint": "Het bronbestand dat u wilt converteren. Veelvoorkomende formaten zijn MP4, MKV, MOV, AVI, MP3 en WAV.",
+    "outputFileHint": "Het doelpad waar het geconverteerde bestand wordt opgeslagen.",
+    "losslessCopyHint": "Kopieert de streams zonder hercodering. Snel en verliesvrij, maar de uitvoercontainer moet de broncodecs ondersteunen.",
+    "videoCodecHint": "De codec die wordt gebruikt om de videostream te coderen, bijv. H.264, H.265 of VP9.",
+    "audioCodecHint": "De codec die wordt gebruikt om de audiostroom te coderen, bijv. AAC, MP3 of Opus.",
+    "videoBitrateHint": "De doelbitrate voor de videostream. Hogere waarden verhogen de kwaliteit en bestandsgrootte. Automatisch behoudt de bronbitrate.",
+    "audioBitrateHint": "De doelbitrate voor de audiostroom. Hogere waarden verhogen de kwaliteit en bestandsgrootte. Automatisch behoudt de bronbitrate.",
+    "qscaleHint": "Constante kwaliteitsschaal van 1 (beste kwaliteit, grootste bestand) tot 31 (slechtste kwaliteit, kleinste bestand).",
+    "scaleHint": "Schakelt het videoformaat naar de opgegeven breedte en hoogte, bijv. 1280x720. Leeg behoudt de oorspronkelijke resolutie.",
+    "pixelFormatHint": "Het kleurformaat van de gecodeerde video, bijv. yuv420p voor 8-bits of yuv420p10le voor 10-bits. Stem af op de bron voor de beste compatibiliteit.",
+    "transcoderCoreHint": "De engine die wordt gebruikt voor de conversie. FFmpeg is de standaard en meest compatibele optie.",
     "encoderTypeHint": "Overschrijft het in Instellingen gekozen encodertype voor deze conversie. Automatisch volgt de waarde in Instellingen."
   },
   "mediaInfo": {

@@ -58,6 +58,17 @@
     "cancelMessage": "Är du säker på att du vill avbryta den aktuella konverteringen?",
     "yes": "Ja",
     "no": "Nej",
+    "inputFileHint": "Källfilen som ska konverteras. Vanliga format inkluderar MP4, MKV, MOV, AVI, MP3 och WAV.",
+    "outputFileHint": "Målbanan där den konverterade filen sparas.",
+    "losslessCopyHint": "Kopierar strömmarna utan omkodning. Snabbt och förlustfritt, men kräver att utdatabehållaren stödjer källcodecarna.",
+    "videoCodecHint": "Codecen som används för att koda videoströmmen, t.ex. H.264, H.265 eller VP9.",
+    "audioCodecHint": "Codecen som används för att koda ljudströmmen, t.ex. AAC, MP3 eller Opus.",
+    "videoBitrateHint": "Målbithastigheten för videoströmmen. Högre värden ökar kvaliteten och filstorleken. Automatisk behåller källans bithastighet.",
+    "audioBitrateHint": "Målbithastigheten för ljudströmmen. Högre värden ökar kvaliteten och filstorleken. Automatisk behåller källans bithastighet.",
+    "qscaleHint": "Konstant kvalitetsskala från 1 (bästa kvalitet, största filen) till 31 (sämsta kvalitet, minsta filen).",
+    "scaleHint": "Skalar om videon till angiven bredd och höjd, t.ex. 1280x720. Tom behåller den ursprungliga upplösningen.",
+    "pixelFormatHint": "Färgformatet för den kodade videon, t.ex. yuv420p för 8-bit eller yuv420p10le för 10-bit. Matcha källan för bästa kompatibilitet.",
+    "transcoderCoreHint": "Motorn som används för konverteringen. FFmpeg är standard och mest kompatibel.",
     "encoderTypeHint": "Åsidosätter det i Inställningar valda enkodartypen för den här konverteringen. Automatisk följer värdet i Inställningar."
   },
   "mediaInfo": {

@@ -58,6 +58,17 @@
     "cancelMessage": "Êtes-vous sûr de vouloir annuler la conversion en cours ?",
     "yes": "Oui",
     "no": "Non",
+    "inputFileHint": "Le fichier multimédia source à convertir. Les formats courants incluent MP4, MKV, MOV, AVI, MP3 et WAV.",
+    "outputFileHint": "Le chemin de destination où le fichier converti sera enregistré.",
+    "losslessCopyHint": "Copie les flux sans ré-encodage. Rapide et sans perte, mais nécessite que le conteneur de sortie prenne en charge les codecs source.",
+    "videoCodecHint": "Le codec utilisé pour encoder le flux vidéo, p. ex. H.264, H.265 ou VP9.",
+    "audioCodecHint": "Le codec utilisé pour encoder le flux audio, p. ex. AAC, MP3 ou Opus.",
+    "videoBitrateHint": "Le débit cible pour le flux vidéo. Des valeurs plus élevées augmentent la qualité et la taille du fichier. Automatique conserve le débit source.",
+    "audioBitrateHint": "Le débit cible pour le flux audio. Des valeurs plus élevées augmentent la qualité et la taille du fichier. Automatique conserve le débit source.",
+    "qscaleHint": "Échelle de qualité constante de 1 (meilleure qualité, fichier le plus volumineux) à 31 (moins bonne qualité, fichier le plus petit).",
+    "scaleHint": "Redimensionne la vidéo à la largeur et à la hauteur indiquées, p. ex. 1280x720. Vide conserve la résolution d'origine.",
+    "pixelFormatHint": "Le format de couleur de la vidéo encodée, p. ex. yuv420p pour 8 bits ou yuv420p10le pour 10 bits. Faites correspondre la source pour une meilleure compatibilité.",
+    "transcoderCoreHint": "Le moteur utilisé pour la conversion. FFmpeg est le moteur par défaut et le plus compatible.",
     "encoderTypeHint": "Remplace le type d'encodeur choisi dans les paramètres pour cette conversion. Automatique suit la valeur définie dans les paramètres."
   },
   "mediaInfo": {

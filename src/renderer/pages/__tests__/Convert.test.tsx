@@ -261,13 +261,41 @@ describe('Convert', () => {
 
   it('shows an info tooltip explaining the encoder type dropdown', async () => {
     renderPage();
-    fireEvent.mouseEnter(screen.getByTestId('info-tooltip'));
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[3]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('convert.encoderTypeHint');
   });
+
+  it('shows an info tooltip explaining every form field', async () => {
+    renderPage();
+    const triggers = screen.getAllByTestId('info-tooltip');
+    const expected = new Set([
+      'convert.inputFileHint',
+      'convert.outputFileHint',
+      'convert.losslessCopyHint',
+      'convert.encoderTypeHint',
+      'convert.videoCodecHint',
+      'convert.audioCodecHint',
+      'convert.videoBitrateHint',
+      'convert.audioBitrateHint',
+      'convert.qscaleHint',
+      'convert.scaleHint',
+      'convert.pixelFormatHint',
+      'convert.transcoderCoreHint',
+    ]);
+    const seen = new Set<string>();
+    for (let i = 0; i < triggers.length; i += 1) {
+      fireEvent.mouseEnter(triggers[i]);
+      const tooltip = await screen.findByRole('tooltip');
+      seen.add(tooltip.textContent as string);
+      fireEvent.mouseLeave(triggers[i]);
+      await waitFor(() => expect(screen.queryByRole('tooltip')).not.toBeInTheDocument());
+    }
+    expect(seen).toEqual(expected);
+  }, 20000);
 
   it('does not show the encoder type info tooltip when hardware acceleration is disabled', () => {
     useSettingsStore.setState({ hardwareAcceleration: false });
     renderPage();
-    expect(screen.queryByTestId('info-tooltip')).not.toBeInTheDocument();
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(11);
   });
 });

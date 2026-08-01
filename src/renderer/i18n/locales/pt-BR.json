@@ -58,6 +58,17 @@
     "cancelMessage": "Tem certeza de que deseja cancelar a conversão atual?",
     "yes": "Sim",
     "no": "Não",
+    "inputFileHint": "O arquivo de mídia de origem a ser convertido. Formatos comuns incluem MP4, MKV, MOV, AVI, MP3 e WAV.",
+    "outputFileHint": "O caminho de destino onde o arquivo convertido será salvo.",
+    "losslessCopyHint": "Copia os fluxos sem recodificação. Rápido e sem perdas, mas exige que o contêiner de saída suporte os codecs de origem.",
+    "videoCodecHint": "O codec usado para codificar o fluxo de vídeo, ex. H.264, H.265 ou VP9.",
+    "audioCodecHint": "O codec usado para codificar o fluxo de áudio, ex. AAC, MP3 ou Opus.",
+    "videoBitrateHint": "A taxa de bits alvo para o fluxo de vídeo. Valores mais altos aumentam a qualidade e o tamanho do arquivo. Automático mantém a taxa de bits de origem.",
+    "audioBitrateHint": "A taxa de bits alvo para o fluxo de áudio. Valores mais altos aumentam a qualidade e o tamanho do arquivo. Automático mantém a taxa de bits de origem.",
+    "qscaleHint": "Escala de qualidade constante de 1 (melhor qualidade, maior arquivo) a 31 (pior qualidade, menor arquivo).",
+    "scaleHint": "Redimensiona o vídeo para a largura e altura informadas, ex. 1280x720. Vazio mantém a resolução original.",
+    "pixelFormatHint": "O formato de cor do vídeo codificado, ex. yuv420p para 8 bits ou yuv420p10le para 10 bits. Combine com a origem para melhor compatibilidade.",
+    "transcoderCoreHint": "O mecanismo usado para a conversão. FFmpeg é o padrão e o mais compatível.",
     "encoderTypeHint": "Substitui o tipo de codificador escolhido nas Configurações para esta conversão. Automático segue o valor das Configurações."
   },
   "mediaInfo": {

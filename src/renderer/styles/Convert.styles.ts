@@ -6,7 +6,8 @@ export const ToggleRow = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(1),
   "& .MuiTypography-root.MuiTypography-caption": {
-     fontWeight:  theme.typography.fontWeightBold,
+    fontWeight: theme.typography.fontWeightBold,
+    color: theme.palette.text.secondary,
   }
 }));
 
@@ -15,7 +16,7 @@ export const FieldBox = styled(Box)({ flex: 1 });
 export const FieldLabel = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(0.5),
   display: 'block',
-  fontWeight:  theme.typography.fontWeightBold,
+  fontWeight: theme.typography.fontWeightBold,
   color: theme.palette.text.secondary,
 }));
 

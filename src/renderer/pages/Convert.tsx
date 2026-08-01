@@ -125,6 +125,7 @@ export default function Convert() {
     <PageContainer title={t('convert.title')}>
       <FilePathField
         label={t('convert.inputFile')}
+        hint={t('convert.inputFileHint')}
         value={inputFile || ''}
         placeholder={t('convert.noFile')}
         buttonLabel={t('convert.browse')}
@@ -139,6 +140,7 @@ export default function Convert() {
 
       <FilePathField
         label={t('convert.outputFile')}
+        hint={t('convert.outputFileHint')}
         value={outputFile || ''}
         placeholder={t('convert.noOutput')}
         buttonLabel={t('convert.saveAs')}
@@ -150,6 +152,7 @@ export default function Convert() {
         <Typography variant="caption" color="text.secondary">
           {t('convert.losslessCopy')}
         </Typography>
+        <InfoTooltip title={t('convert.losslessCopyHint')} />
       </ToggleRow>
 
       {!copyMode && (
@@ -174,6 +177,7 @@ export default function Convert() {
             <FieldBox>
               <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.videoCodec')}
+                <InfoTooltip title={t('convert.videoCodecHint')} />
               </FieldLabel>
               <ErrorBoundary fallback={null}>
                 <CodecSelect
@@ -187,6 +191,7 @@ export default function Convert() {
             <FieldBox>
               <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.audioCodec')}
+                <InfoTooltip title={t('convert.audioCodecHint')} />
               </FieldLabel>
               <ErrorBoundary fallback={null}>
                 <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} />
@@ -198,6 +203,7 @@ export default function Convert() {
             <FieldBox>
               <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.videoBitrate')}
+                <InfoTooltip title={t('convert.videoBitrateHint')} />
               </FieldLabel>
               <TextField
                 select
@@ -219,6 +225,7 @@ export default function Convert() {
             <FieldBox>
               <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.audioBitrate')}
+                <InfoTooltip title={t('convert.audioBitrateHint')} />
               </FieldLabel>
               <TextField
                 select
@@ -244,6 +251,7 @@ export default function Convert() {
             <FieldBox>
               <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.qscale')}
+                <InfoTooltip title={t('convert.qscaleHint')} />
               </FieldLabel>
               <TextField
                 fullWidth
@@ -265,6 +273,7 @@ export default function Convert() {
             <FieldBox>
               <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.scale')}
+                <InfoTooltip title={t('convert.scaleHint')} />
               </FieldLabel>
               <TextField
                 select
@@ -286,6 +295,7 @@ export default function Convert() {
             <FieldBox>
               <FieldLabel variant="caption" color="text.secondary">
                 {t('convert.pixelFormat')}
+                <InfoTooltip title={t('convert.pixelFormatHint')} />
               </FieldLabel>
               <GroupedSelect value={pixelFormat} onChange={setPixelFormat} options={pixelFormatOptions} groupIcons={pixelGroupIcons} />
             </FieldBox>
@@ -296,6 +306,7 @@ export default function Convert() {
       <Box>
         <FieldLabel variant="caption" color="text.secondary">
           {t('convert.transcoderCore')}
+          <InfoTooltip title={t('convert.transcoderCoreHint')} />
         </FieldLabel>
         <TextField select fullWidth size="small" value={transcoder} onChange={(e) => setTranscoder(e.target.value)}>
           {TRANSCODER_TYPES.map((tc) => (

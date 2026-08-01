@@ -58,6 +58,17 @@
     "cancelMessage": "Möchten Sie die aktuelle Konvertierung wirklich abbrechen?",
     "yes": "Ja",
     "no": "Nein",
+    "inputFileHint": "Die Quell-Mediendatei, die konvertiert werden soll. Gängige Formate sind MP4, MKV, MOV, AVI, MP3 und WAV.",
+    "outputFileHint": "Der Zielpfad, in dem die konvertierte Datei gespeichert wird.",
+    "losslessCopyHint": "Kopiert die Streams ohne Neucodierung. Schnell und verlustfrei, erfordert aber, dass der Ausgabe-Container die Quell-Codecs unterstützt.",
+    "videoCodecHint": "Der Codec zum Codieren des Video-Streams, z.B. H.264, H.265 oder VP9.",
+    "audioCodecHint": "Der Codec zum Codieren des Audio-Streams, z.B. AAC, MP3 oder Opus.",
+    "videoBitrateHint": "Die Ziel-Bitrate für den Video-Stream. Höhere Werte erhöhen die Qualität und die Dateigröße. Automatisch behält die Quell-Bitrate bei.",
+    "audioBitrateHint": "Die Ziel-Bitrate für den Audio-Stream. Höhere Werte erhöhen die Qualität und die Dateigröße. Automatisch behält die Quell-Bitrate bei.",
+    "qscaleHint": "Konstante Qualitätsskala von 1 (beste Qualität, größte Datei) bis 31 (schlechteste Qualität, kleinste Datei).",
+    "scaleHint": "Skaliert das Video auf die angegebene Breite und Höhe, z.B. 1280x720. Leer lässt die Originalauflösung unverändert.",
+    "pixelFormatHint": "Das Farbformat des codierten Videos, z.B. yuv420p für 8 Bit oder yuv420p10le für 10 Bit. Für beste Kompatibilität am besten an die Quelle anpassen.",
+    "transcoderCoreHint": "Die für die Konvertierung verwendete Engine. FFmpeg ist die Standard- und kompatibelste Option.",
     "encoderTypeHint": "Überschreibt den in den Einstellungen gewählten Encoder-Typ für diese Konvertierung. Automatisch folgt dem in den Einstellungen gesetzten Wert."
   },
   "mediaInfo": {

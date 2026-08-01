@@ -58,6 +58,17 @@
     "cancelMessage": "Are you sure you want to cancel the current conversion?",
     "yes": "Yes",
     "no": "No",
+    "inputFileHint": "The source media file to convert. Common formats include MP4, MKV, MOV, AVI, MP3, and WAV.",
+    "outputFileHint": "The destination path where the converted file will be saved.",
+    "losslessCopyHint": "Copies the streams without re-encoding. Fast and lossless, but requires the output container to support the source codecs.",
+    "videoCodecHint": "The codec used to encode the video stream, e.g. H.264, H.265, or VP9.",
+    "audioCodecHint": "The codec used to encode the audio stream, e.g. AAC, MP3, or Opus.",
+    "videoBitrateHint": "The target bitrate for the video stream. Higher values increase quality and file size. Auto keeps the source bitrate.",
+    "audioBitrateHint": "The target bitrate for the audio stream. Higher values increase quality and file size. Auto keeps the source bitrate.",
+    "qscaleHint": "Constant-quality scale from 1 (best quality, largest file) to 31 (worst quality, smallest file).",
+    "scaleHint": "Resizes the video to the given width and height, e.g. 1280x720. Empty keeps the original resolution.",
+    "pixelFormatHint": "The color format of the encoded video, e.g. yuv420p for 8-bit or yuv420p10le for 10-bit. Match the source for best compatibility.",
+    "transcoderCoreHint": "The engine used for the conversion. FFmpeg is the default and most compatible.",
     "encoderTypeHint": "Overrides the encoder type chosen in Settings for this conversion. Automatic follows the value set in Settings."
   },
   "mediaInfo": {

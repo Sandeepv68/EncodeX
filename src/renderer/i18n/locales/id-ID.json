@@ -58,6 +58,17 @@
     "cancelMessage": "Apakah Anda yakin ingin membatalkan konversi saat ini?",
     "yes": "Ya",
     "no": "Tidak",
+    "inputFileHint": "File media sumber yang akan dikonversi. Format umum meliputi MP4, MKV, MOV, AVI, MP3, dan WAV.",
+    "outputFileHint": "Lokasi tujuan tempat file hasil konversi akan disimpan.",
+    "losslessCopyHint": "Menyalin aliran tanpa pengkodean ulang. Cepat dan lossless, tetapi kontainer keluaran harus mendukung codec sumber.",
+    "videoCodecHint": "Codec yang digunakan untuk menyandikan aliran video, mis. H.264, H.265, atau VP9.",
+    "audioCodecHint": "Codec yang digunakan untuk menyandikan aliran audio, mis. AAC, MP3, atau Opus.",
+    "videoBitrateHint": "Bitrate target untuk aliran video. Nilai yang lebih tinggi meningkatkan kualitas dan ukuran file. Otomatis mempertahankan bitrate sumber.",
+    "audioBitrateHint": "Bitrate target untuk aliran audio. Nilai yang lebih tinggi meningkatkan kualitas dan ukuran file. Otomatis mempertahankan bitrate sumber.",
+    "qscaleHint": "Skala kualitas tetap dari 1 (kualitas terbaik, file terbesar) hingga 31 (kualitas terburuk, file terkecil).",
+    "scaleHint": "Mengubah ukuran video ke lebar dan tinggi yang ditentukan, mis. 1280x720. Kosong mempertahankan resolusi asli.",
+    "pixelFormatHint": "Format warna video yang disandikan, mis. yuv420p untuk 8-bit atau yuv420p10le untuk 10-bit. Samakan dengan sumber untuk kompatibilitas terbaik.",
+    "transcoderCoreHint": "Mesin yang digunakan untuk konversi. FFmpeg adalah bawaan dan paling kompatibel.",
     "encoderTypeHint": "Menimpa jenis encoder yang dipilih di Pengaturan untuk konversi ini. Otomatis mengikuti nilai di Pengaturan."
   },
   "mediaInfo": {
