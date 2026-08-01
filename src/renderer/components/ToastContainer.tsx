@@ -45,7 +45,7 @@ export default function ToastContainer() {
       autoHideDuration={active.duration ?? 4000}
       onClose={handleClose}
       TransitionProps={{ onExited: handleExited }}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
       <ToastAlert onClose={handleClose} severity={active.type} variant="filled">
         <ToastMessage>{active.message}</ToastMessage>
