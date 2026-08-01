@@ -13,7 +13,8 @@
     "audio": "Ljud",
     "cut": "Klipp",
     "batchQueue": "Batchkö",
-    "logs": "Loggar"
+    "logs": "Loggar",
+    "settings": "Inställningar"
   },
   "dashboard": {
     "welcome": "Välkommen till EncodeX",
@@ -186,5 +187,9 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "Inställningar",
+    "theme": "Tema"
   }
 }

@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { Tooltip } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import HomeIcon from '@mui/icons-material/Home';
@@ -10,15 +9,12 @@ import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import QueueIcon from '@mui/icons-material/Queue';
 import DescriptionIcon from '@mui/icons-material/Description';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { NAV_ITEMS } from '../../shared/app-constants';
-import { useColorMode } from '../ColorModeContext';
 import LanguageMenu from './LanguageMenu';
 import {
   DrawerHeader,
   AppTitle,
-  ThemeToggleButton,
   DrawerDivider,
   NavList,
   NavItemButton,
@@ -35,6 +31,7 @@ const navIconMap: Record<string, ReactNode> = {
   '/video-cut': <ContentCutIcon />,
   '/batch': <QueueIcon />,
   '/logs': <DescriptionIcon />,
+  '/settings': <SettingsIcon />,
 };
 
 const navKeyMap: Record<string, string> = {
@@ -46,6 +43,7 @@ const navKeyMap: Record<string, string> = {
   '/video-cut': 'cut',
   '/batch': 'batchQueue',
   '/logs': 'logs',
+  '/settings': 'settings',
 };
 
 interface AppDrawerProps {
@@ -56,18 +54,12 @@ interface AppDrawerProps {
 export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { mode, toggleColorMode } = useColorMode();
   const { t } = useTranslation();
 
   return (
     <>
       <DrawerHeader>
         <AppTitle variant="h6">{t('app.name')}</AppTitle>
-        <Tooltip title={mode === 'dark' ? t('app.switchLight') : t('app.switchDark')}>
-          <ThemeToggleButton size="small" onClick={toggleColorMode}>
-            {mode === 'dark' ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
-          </ThemeToggleButton>
-        </Tooltip>
       </DrawerHeader>
       <DrawerDivider />
       <NavList>

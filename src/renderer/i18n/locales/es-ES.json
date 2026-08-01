@@ -13,7 +13,8 @@
     "audio": "Audio",
     "cut": "Cortar",
     "batchQueue": "Cola de Lotes",
-    "logs": "Registros"
+    "logs": "Registros",
+    "settings": "Configuración"
   },
   "dashboard": {
     "welcome": "Bienvenido a EncodeX",
@@ -186,5 +187,9 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "Configuración",
+    "theme": "Tema"
   }
 }

@@ -13,7 +13,8 @@
     "audio": "Audio",
     "cut": "Schneiden",
     "batchQueue": "Stapelwarteschlange",
-    "logs": "Protokolle"
+    "logs": "Protokolle",
+    "settings": "Einstellungen"
   },
   "dashboard": {
     "welcome": "Willkommen bei EncodeX",
@@ -186,5 +187,9 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "theme": "Design"
   }
 }

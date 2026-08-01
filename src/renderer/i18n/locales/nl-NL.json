@@ -13,7 +13,8 @@
     "audio": "Audio",
     "cut": "Knippen",
     "batchQueue": "Batchwachtrij",
-    "logs": "Logboeken"
+    "logs": "Logboeken",
+    "settings": "Instellingen"
   },
   "dashboard": {
     "welcome": "Welkom bij EncodeX",
@@ -186,5 +187,9 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "theme": "Thema"
   }
 }

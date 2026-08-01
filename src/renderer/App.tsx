@@ -34,6 +34,7 @@ const AudioExtract = lazy(() => import('./pages/AudioExtract'));
 const VideoCut = lazy(() => import('./pages/VideoCut'));
 const BatchQueue = lazy(() => import('./pages/BatchQueue'));
 const Logs = lazy(() => import('./pages/Logs'));
+const Settings = lazy(() => import('./pages/Settings'));
 
 function AppLayout() {
   const theme = useTheme();
@@ -59,6 +60,7 @@ function AppLayout() {
     { path: '/video-cut', element: <VideoCut /> },
     { path: '/batch', element: <BatchQueue /> },
     { path: '/logs', element: <Logs /> },
+    { path: '/settings', element: <Settings /> },
   ];
 
   const drawerContent = (

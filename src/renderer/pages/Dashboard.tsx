@@ -51,7 +51,7 @@ export default function Dashboard() {
       <WelcomeTitle variant="h4">{t('dashboard.welcome')}</WelcomeTitle>
       <DashboardSubtitle color="text.secondary">{t('dashboard.subtitle')}</DashboardSubtitle>
       <Grid container spacing={2}>
-        {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs').map((item) => (
+        {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs' && item.to !== '/settings').map((item) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
             <FeatureCard>
               <CardLink onClick={() => navigate(item.to)}>

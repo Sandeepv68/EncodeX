@@ -13,7 +13,8 @@
     "audio": "صوت",
     "cut": "قص",
     "batchQueue": "قائمة الدفعات",
-    "logs": "السجلات"
+    "logs": "السجلات",
+    "settings": "الإعدادات"
   },
   "dashboard": {
     "welcome": "مرحباً بك في EncodeX",
@@ -186,5 +187,9 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "theme": "السمة"
   }
 }

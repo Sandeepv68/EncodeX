@@ -203,6 +203,7 @@ describe('NAV_ITEMS', () => {
     expect(NAV_ITEMS.some((n) => n.to === '/')).toBe(true);
     expect(NAV_ITEMS.some((n) => n.to === '/convert')).toBe(true);
     expect(NAV_ITEMS.some((n) => n.to === '/batch')).toBe(true);
+    expect(NAV_ITEMS.some((n) => n.to === '/settings')).toBe(true);
   });
 
   it('all routes start with /', () => {

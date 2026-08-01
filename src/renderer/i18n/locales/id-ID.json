@@ -13,7 +13,8 @@
     "audio": "Audio",
     "cut": "Potong",
     "batchQueue": "Antrean Batch",
-    "logs": "Log"
+    "logs": "Log",
+    "settings": "Pengaturan"
   },
   "dashboard": {
     "welcome": "Selamat datang di EncodeX",
@@ -186,5 +187,9 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "Pengaturan",
+    "theme": "Tema"
   }
 }

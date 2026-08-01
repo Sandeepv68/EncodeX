@@ -13,7 +13,8 @@
     "audio": "Аудіо",
     "cut": "Обрізати",
     "batchQueue": "Пакетна черга",
-    "logs": "Логи"
+    "logs": "Логи",
+    "settings": "Налаштування"
   },
   "dashboard": {
     "welcome": "Ласкаво просимо до EncodeX",
@@ -186,5 +187,9 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "Налаштування",
+    "theme": "Тема"
   }
 }

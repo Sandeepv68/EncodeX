@@ -13,7 +13,8 @@
     "audio": "ऑडियो",
     "cut": "कट",
     "batchQueue": "बैच क्यू",
-    "logs": "लॉग्स"
+    "logs": "लॉग्स",
+    "settings": "सेटिंग्स"
   },
   "dashboard": {
     "welcome": "EncodeX में आपका स्वागत है",
@@ -186,5 +187,9 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "theme": "थीम"
   }
 }

@@ -24,7 +24,7 @@ describe('Dashboard', () => {
     expect(screen.getByText('dashboard.subtitle')).toBeInTheDocument();
   });
 
-  it('renders a feature card for every nav route except home and logs', () => {
+  it('renders a feature card for every nav route except home, logs, and settings', () => {
     renderDashboard();
     expect(screen.getByText('nav.convert')).toBeInTheDocument();
     expect(screen.getByText('nav.mediaInfo')).toBeInTheDocument();
@@ -33,6 +33,7 @@ describe('Dashboard', () => {
     expect(screen.getByText('nav.cut')).toBeInTheDocument();
     expect(screen.getByText('nav.batchQueue')).toBeInTheDocument();
     expect(screen.queryByText('nav.logs')).not.toBeInTheDocument();
+    expect(screen.queryByText('nav.settings')).not.toBeInTheDocument();
   });
 
   it('navigates to the feature page when a card is clicked', () => {

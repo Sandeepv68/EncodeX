@@ -13,7 +13,8 @@
     "audio": "오디오",
     "cut": "자르기",
     "batchQueue": "배치 큐",
-    "logs": "로그"
+    "logs": "로그",
+    "settings": "설정"
   },
   "dashboard": {
     "welcome": "EncodeX에 오신 것을 환영합니다",
@@ -186,5 +187,9 @@
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled"
+  },
+  "settings": {
+    "title": "설정",
+    "theme": "테마"
   }
 }
