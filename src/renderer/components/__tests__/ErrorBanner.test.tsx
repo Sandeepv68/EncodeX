@@ -45,12 +45,12 @@ describe('ErrorBanner', () => {
   it('renders error icon for error-level codes', () => {
     const error = createError(ErrorCode.PERMISSION_DENIED, 'Permission');
     const { container } = render(<ErrorBanner error={error} />);
-    expect(container.querySelector('[data-testid="ErrorIcon"]')).not.toBeNull();
+    expect(container.querySelector('[data-icon="circle-exclamation"]')).not.toBeNull();
   });
 
   it('renders info icon for informational codes', () => {
     const error = createError(ErrorCode.INPUT_NOT_SPECIFIED, 'Input needed');
     const { container } = render(<ErrorBanner error={error} />);
-    expect(container.querySelector('[data-testid="InfoOutlinedIcon"]')).not.toBeNull();
+    expect(container.querySelector('[data-icon="circle-info"]')).not.toBeNull();
   });
 });

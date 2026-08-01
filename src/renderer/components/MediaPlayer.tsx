@@ -1,7 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
-import StopIcon from '@mui/icons-material/Stop';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay, faPause, faStop } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
 import { PlayerFrame } from '../../shared/types';
 import { PlayerRoot, PlayerCanvas, ControlsArea, SeekSlider, ControlButton, ControlsRow, TimeText } from '../styles/MediaPlayer.styles';
@@ -155,10 +154,10 @@ export default function MediaPlayer({ filePath, onTimeUpdate }: Props) {
         />
         <ControlsRow>
           <ControlButton size="small" onClick={handlePlayPause}>
-            {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+            {isPlaying ? <FontAwesomeIcon icon={faPause} /> : <FontAwesomeIcon icon={faPlay} />}
           </ControlButton>
           <ControlButton size="small" onClick={handleStop}>
-            <StopIcon />
+            <FontAwesomeIcon icon={faStop} />
           </ControlButton>
           <TimeText variant="caption">
             {displayTime(currentTime)} / {displayTime(duration)}

@@ -1,5 +1,6 @@
 import { Component, ReactNode, ErrorInfo } from 'react';
 import { Button } from '@mui/material';
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
 import i18n from '../i18n/config';
 import { FallbackBox, FallbackPaper, WarningIcon, FallbackTitle, FallbackDescription } from '../styles/ErrorBoundary.styles';
@@ -37,7 +38,7 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <FallbackBox>
           <FallbackPaper>
-            <WarningIcon />
+            <WarningIcon icon={faTriangleExclamation} />
             <FallbackTitle variant="h6">{t('errorBoundary.title')}</FallbackTitle>
             <FallbackDescription variant="body2" color="text.secondary">
               {this.state.error?.message || t('errorBoundary.description')}

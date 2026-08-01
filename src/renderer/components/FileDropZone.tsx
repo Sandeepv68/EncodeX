@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@mui/material';
+import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
 import { DropZoneRoot, UploadIcon } from '../styles/FileDropZone.styles';
 
@@ -52,7 +53,7 @@ export default function FileDropZone({ onFileSelect, label, accept }: Props) {
       onDragLeave={() => setDragging(false)}
       onClick={handleClick}
     >
-      <UploadIcon />
+      <UploadIcon icon={faCloudArrowUp} />
       <Typography color="text.secondary">{resolvedLabel}</Typography>
     </DropZoneRoot>
   );

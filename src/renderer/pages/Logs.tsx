@@ -1,8 +1,8 @@
 import { useRef, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconButton, Tooltip, Typography, MenuItem } from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
-import DownloadIcon from '@mui/icons-material/Download';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEraser, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { useLogStore } from '../stores/logStore';
 import { useToastStore } from '../stores/toastStore';
 import { COLORS } from '../colors';
@@ -64,12 +64,12 @@ export default function Logs() {
         </FilterSelect>
         <Tooltip title={t('logs.clear')}>
           <IconButton size="small" onClick={clear}>
-            <ClearIcon fontSize="small" />
+            <FontAwesomeIcon icon={faEraser} style={{ fontSize: 20 }} />
           </IconButton>
         </Tooltip>
         <Tooltip title={t('logs.download')}>
           <IconButton size="small" onClick={downloadLogs}>
-            <DownloadIcon fontSize="small" />
+            <FontAwesomeIcon icon={faDownload} style={{ fontSize: 20 }} />
           </IconButton>
         </Tooltip>
         <Typography variant="caption" color="text.secondary">

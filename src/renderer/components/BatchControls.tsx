@@ -1,7 +1,7 @@
 import type { RefObject } from 'react';
 import { Button, MenuItem } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faBroom } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../shared/media-options';
 import { TRANSCODER_TYPES, type TranscoderType } from '../../shared/transcoder-constants';
@@ -63,10 +63,10 @@ export default function BatchControls({ operationRef, transcoderRef, suffixRef, 
           }}
           placeholder={t('batchQueue.suffix')}
         />
-        <Button variant="outlined" startIcon={<AddIcon />} onClick={onAddFiles}>
+        <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faPlus} />} onClick={onAddFiles}>
           {t('batchQueue.addFiles')}
         </Button>
-        <Button variant="outlined" color="error" startIcon={<DeleteSweepIcon />} onClick={onCancelAll}>
+        <Button variant="outlined" color="error" startIcon={<FontAwesomeIcon icon={faBroom} />} onClick={onCancelAll}>
           {t('batchQueue.cancelAll')}
         </Button>
       </ControlsStack>

@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography, TextField, MenuItem, Switch, Stack, Button } from '@mui/material';
-import PaletteIcon from '@mui/icons-material/Palette';
-import ColorLensIcon from '@mui/icons-material/ColorLens';
-import InvertColorsIcon from '@mui/icons-material/InvertColors';
-import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';
-import type { SvgIconProps } from '@mui/material/SvgIcon';
+import { faPalette, faBrush, faDroplet, faSun } from '@fortawesome/free-solid-svg-icons';
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Logger } from '../../shared/logger';
 import { useConversion } from '../hooks/useConversion';
 import CodecSelect from '../components/CodecSelect';
@@ -24,17 +21,17 @@ import { ToggleRow, FieldBox, FieldLabel, ActionStack } from '../styles/Convert.
 
 const log = new Logger('renderer/pages/Convert');
 
-const pixelGroupIcons: Record<string, React.ComponentType<SvgIconProps>> = {
-  'YUV 8-bit': PaletteIcon,
-  'YUV 10-bit': PaletteIcon,
-  'YUV 12-bit': PaletteIcon,
-  'YUV 16-bit': PaletteIcon,
-  'YUV Semi-planar': PaletteIcon,
-  'YUV with Alpha': PaletteIcon,
-  'RGB Packed': ColorLensIcon,
-  'Planar RGB': ColorLensIcon,
-  Monochrome: InvertColorsIcon,
-  HDR: BrightnessHighIcon,
+const pixelGroupIcons: Record<string, IconDefinition> = {
+  'YUV 8-bit': faPalette,
+  'YUV 10-bit': faPalette,
+  'YUV 12-bit': faPalette,
+  'YUV 16-bit': faPalette,
+  'YUV Semi-planar': faPalette,
+  'YUV with Alpha': faPalette,
+  'RGB Packed': faBrush,
+  'Planar RGB': faBrush,
+  Monochrome: faDroplet,
+  HDR: faSun,
 };
 
 const pixelFormatOptions = PIXEL_FORMATS.map((f) => ({ ...f, label: f.value }));

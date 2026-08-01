@@ -82,7 +82,7 @@ describe('App', () => {
     vi.stubGlobal('matchMedia', createMatchMedia(true));
     renderApp();
     await screen.findByText('dashboard.welcome');
-    const menuButton = screen.getByTestId('MenuOpenIcon').closest('button')!;
+    const menuButton = document.querySelector('[data-icon="bars"]')!.closest('button')!;
     fireEvent.click(menuButton);
     fireEvent.click(screen.getAllByText('nav.convert')[0]);
     expect(await screen.findByText('convert.title')).toBeInTheDocument();

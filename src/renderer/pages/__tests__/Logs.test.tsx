@@ -53,7 +53,7 @@ describe('Logs', () => {
     useLogStore.setState({ entries: [entry({ text: 'to be cleared' })] });
     render(<Logs />);
     expect(screen.getByText(/to be cleared/)).toBeInTheDocument();
-    fireEvent.click(document.querySelector('[data-testid="ClearIcon"]')!);
+    fireEvent.click(document.querySelector('[data-icon="eraser"]')!);
     expect(useLogStore.getState().entries).toHaveLength(0);
     expect(screen.getByText('logs.noEntries')).toBeInTheDocument();
   });
@@ -64,7 +64,7 @@ describe('Logs', () => {
     const revokeObjectURL = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
     const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
     render(<Logs />);
-    fireEvent.click(document.querySelector('[data-testid="DownloadIcon"]')!);
+    fireEvent.click(document.querySelector('[data-icon="download"]')!);
     expect(createObjectURL).toHaveBeenCalledOnce();
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:fake');
     expect(clickSpy).toHaveBeenCalledOnce();

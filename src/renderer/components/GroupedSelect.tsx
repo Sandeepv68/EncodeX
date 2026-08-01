@@ -1,5 +1,6 @@
 import { MenuItem, TextField } from '@mui/material';
-import type { SvgIconProps } from '@mui/material/SvgIcon';
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GroupHeader, GroupLabel, GroupHeaderIconBox } from '../styles/GroupedSelect.styles';
 
 export interface GroupedOption {
@@ -12,7 +13,7 @@ interface Props {
   value: string;
   onChange: (value: string) => void;
   options: readonly GroupedOption[];
-  groupIcons: Record<string, React.ComponentType<SvgIconProps>>;
+  groupIcons: Record<string, IconDefinition>;
 }
 
 export default function GroupedSelect({ value, onChange, options, groupIcons }: Props) {
@@ -21,11 +22,11 @@ export default function GroupedSelect({ value, onChange, options, groupIcons }: 
   for (const opt of options) {
     if (opt.group !== lastGroup) {
       lastGroup = opt.group;
-      const Icon = groupIcons[opt.group];
+      const icon = groupIcons[opt.group];
       items.push(
         <GroupHeader key={`group-${opt.group}`} disabled>
           <GroupLabel>
-            <GroupHeaderIconBox>{Icon && <Icon fontSize="inherit" />}</GroupHeaderIconBox>
+            <GroupHeaderIconBox>{icon && <FontAwesomeIcon icon={icon} />}</GroupHeaderIconBox>
             {opt.group}
           </GroupLabel>
         </GroupHeader>,

@@ -73,7 +73,7 @@ describe('MediaInfo', () => {
     const { container } = renderPage();
     fireEvent.click(screen.getByText('mediaInfo.dropLabel'));
     await waitFor(() => expect(useErrorStore.getState().currentError).not.toBeNull());
-    fireEvent.click(container.querySelector('[data-testid="CloseIcon"]')!);
+    fireEvent.click(container.querySelector('[data-icon="xmark"]')!);
     expect(useErrorStore.getState().currentError).toBeNull();
   });
 });

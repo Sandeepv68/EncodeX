@@ -24,11 +24,12 @@ describe('Settings', () => {
 
   it('toggles the color mode when the theme button is clicked', () => {
     const { container } = renderSettings();
-    const initialIcon = container.querySelector('[data-testid="DarkModeIcon"], [data-testid="LightModeIcon"]');
+    const initialIcon = container.querySelector('[data-icon="moon"], [data-icon="sun"]');
     expect(initialIcon).not.toBeNull();
+    const initialIconName = initialIcon!.getAttribute('data-icon');
     const toggleButton = container.querySelector('button')!;
     fireEvent.click(toggleButton);
-    const nextIcon = container.querySelector('[data-testid="DarkModeIcon"], [data-testid="LightModeIcon"]');
-    expect(nextIcon?.getAttribute('data-testid')).not.toBe(initialIcon?.getAttribute('data-testid'));
+    const nextIconName = container.querySelector('[data-icon="moon"], [data-icon="sun"]')!.getAttribute('data-icon');
+    expect(nextIconName).not.toBe(initialIconName);
   });
 });

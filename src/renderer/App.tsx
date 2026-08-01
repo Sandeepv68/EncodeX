@@ -3,7 +3,8 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
-import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { ColorModeProvider } from './ColorModeContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import ErrorSnackbar from './components/ErrorSnackbar';
@@ -87,7 +88,7 @@ function AppLayout() {
           <MainContent>
             {isMobile && (
               <MobileMenuButton onClick={() => setMobileOpen(true)}>
-                <MenuOpenIcon />
+                <FontAwesomeIcon icon={faBars} />
               </MobileMenuButton>
             )}
             <ErrorBoundary>

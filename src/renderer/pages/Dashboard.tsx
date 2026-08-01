@@ -2,12 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography } from '@mui/material';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import InfoIcon from '@mui/icons-material/Info';
-import ImageIcon from '@mui/icons-material/Image';
-import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import ContentCutIcon from '@mui/icons-material/ContentCut';
-import QueueIcon from '@mui/icons-material/Queue';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRightLeft, faCircleInfo, faImage, faMusic, faScissors, faListCheck } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import {
@@ -23,12 +19,12 @@ import {
 const log = new Logger('renderer/pages/Dashboard');
 
 const featureIcons: Record<string, React.ReactNode> = {
-  '/convert': <SwapHorizIcon fontSize="inherit" />,
-  '/media-info': <InfoIcon fontSize="inherit" />,
-  '/image-compress': <ImageIcon fontSize="inherit" />,
-  '/audio-extract': <MusicNoteIcon fontSize="inherit" />,
-  '/video-cut': <ContentCutIcon fontSize="inherit" />,
-  '/batch': <QueueIcon fontSize="inherit" />,
+  '/convert': <FontAwesomeIcon icon={faRightLeft} />,
+  '/media-info': <FontAwesomeIcon icon={faCircleInfo} />,
+  '/image-compress': <FontAwesomeIcon icon={faImage} />,
+  '/audio-extract': <FontAwesomeIcon icon={faMusic} />,
+  '/video-cut': <FontAwesomeIcon icon={faScissors} />,
+  '/batch': <FontAwesomeIcon icon={faListCheck} />,
 };
 
 const descKeys: Record<string, string> = {
