@@ -1,5 +1,5 @@
-import { Box, Button } from '@mui/material';
-import { FieldLabel, FieldStack, PathField } from '../styles/FilePathField.styles';
+import { Box } from '@mui/material';
+import { FieldLabel, FieldStack, PathField, BrowseButton } from '../styles/FilePathField.styles';
 
 interface Props {
   label: string;
@@ -31,9 +31,9 @@ export default function FilePathField({ label, value, placeholder, buttonLabel, 
           onBlur={onBlur}
           slotProps={onChange ? undefined : { input: { readOnly: true } }}
         />
-        <Button variant="outlined" onClick={onBrowse}>
+        <BrowseButton variant="outlined" onClick={onBrowse}>
           {buttonLabel}
-        </Button>
+        </BrowseButton>
       </FieldStack>
     </Box>
   );
