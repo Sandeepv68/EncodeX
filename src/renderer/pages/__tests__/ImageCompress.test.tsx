@@ -55,6 +55,15 @@ describe('ImageCompress', () => {
     expect(screen.getByText('validation.invalidScale')).toBeInTheDocument();
   });
 
+  it('shows the selected image after choosing one via the dropzone', async () => {
+    selectFileMock.mockResolvedValue('/in/photo.png');
+    renderPage();
+    expect(screen.queryByTestId('selected-image')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('imageCompress.dropLabel'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    expect(screen.getByText('Selected image: photo.png')).toBeInTheDocument();
+  });
+
   it('picks an output file via the browse button', async () => {
     selectOutputMock.mockResolvedValue('/out/photo.jpg');
     renderPage();

@@ -24,7 +24,7 @@ export default function FileDropZone({ onFileSelect, label, accept }: Props) {
       setDragging(false);
       const file = e.dataTransfer.files[0];
       if (file) {
-        const path = (file as any).path;
+        const path = window.electronAPI.getPathForFile(file);
         log.info('File dropped:', path);
         onFileSelect(path);
       }

@@ -91,7 +91,8 @@
     "compressing": "جاري الضغط...",
     "placeholderOutput": "مسار الإخراج",
     "placeholderScale": "مثال 800x600",
-    "validationRequired": "الرجاء تحديد صورة الإدخال."
+    "validationRequired": "الرجاء تحديد صورة الإدخال.",
+    "selectedImage": "الصورة المحددة: {{file}}"
   },
   "audioExtract": {
     "title": "استخراج الصوت",

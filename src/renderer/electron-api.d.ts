@@ -1,6 +1,7 @@
 import { ConversionOptions, ConversionProgress, MediaInfo, QueueJob, PlayerFrame, LogEntry, EncoderCapabilities } from '../shared/types';
 
 export interface ElectronAPI {
+  getPathForFile(file: File): string;
   selectFile(filters?: Electron.FileFilter[]): Promise<string | null>;
   selectFiles(filters?: Electron.FileFilter[]): Promise<string[]>;
   selectOutput(): Promise<string | null>;

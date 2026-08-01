@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography, Paper } from '@mui/material';
+import { SHADOWS } from '../colors';
 
 export const PageTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 600,
@@ -18,6 +19,7 @@ export const LoadingBox = styled(Box)(({ theme }) => ({
 export const InfoPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   marginTop: theme.spacing(2),
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
 }));
 
 export const InfoTitle = styled(Typography)(({ theme }) => ({ marginBottom: theme.spacing(1) }));

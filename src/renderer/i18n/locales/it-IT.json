@@ -91,7 +91,8 @@
     "compressing": "Compressione in corso...",
     "placeholderOutput": "percorso di output",
     "placeholderScale": "es. 800x600",
-    "validationRequired": "Seleziona un'immagine di input."
+    "validationRequired": "Seleziona un'immagine di input.",
+    "selectedImage": "Immagine selezionata: {{file}}"
   },
   "audioExtract": {
     "title": "Estrai audio",

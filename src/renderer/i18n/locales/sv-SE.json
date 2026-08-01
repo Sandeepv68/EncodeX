@@ -91,7 +91,8 @@
     "compressing": "Komprimerar...",
     "placeholderOutput": "utdatasökväg",
     "placeholderScale": "t.ex. 800x600",
-    "validationRequired": "Välj en ingångsbild."
+    "validationRequired": "Välj en ingångsbild.",
+    "selectedImage": "Vald bild: {{file}}"
   },
   "audioExtract": {
     "title": "Extrahera ljud",

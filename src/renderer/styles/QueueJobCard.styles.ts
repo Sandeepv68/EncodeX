@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Box, Paper, Stack, Typography } from '@mui/material';
 import { QUEUE_STATUS } from '../../shared/media-options';
+import { SHADOWS } from '../colors';
 
 export const JobCard = styled(Paper, {
   shouldForwardProp: (prop) => prop !== '$status',
@@ -12,6 +13,7 @@ export const JobCard = styled(Paper, {
       : $status === QUEUE_STATUS.DONE
         ? theme.palette.success.main
         : theme.palette.divider,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
 }));
 
 export const CardHeaderRow = styled(Box)(({ theme }) => ({

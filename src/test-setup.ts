@@ -3,7 +3,7 @@ import { vi } from 'vitest';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => {
+    t: (key: string, opts?: Record<string, string | number>) => {
       const map: Record<string, string> = {
         'progress.time': 'Time',
         'progress.speed': 'Speed',
@@ -11,8 +11,15 @@ vi.mock('react-i18next', () => ({
         'errorBoundary.title': 'Something went wrong',
         'errorBoundary.description': 'An unexpected error occurred.',
         'errorBoundary.tryAgain': 'Try Again',
+        'imageCompress.selectedImage': 'Selected image: {{file}}',
       };
-      return map[key] || key;
+      let text = map[key] || key;
+      if (opts) {
+        for (const [k, v] of Object.entries(opts)) {
+          text = text.replace(new RegExp(`{{\\s*${k}\\s*}}`, 'g'), String(v));
+        }
+      }
+      return text;
     },
     i18n: { language: 'en', changeLanguage: vi.fn() },
   }),
@@ -23,6 +30,7 @@ const EMPTY_MEDIA_INFO = { file: '', format: '', size: 0, duration: 0, bitrate: 
 
 Object.defineProperty(globalThis, 'electronAPI', {
   value: {
+    getPathForFile: vi.fn(() => ''),
     selectFile: vi.fn().mockResolvedValue(null),
     selectFiles: vi.fn().mockResolvedValue([]),
     selectOutput: vi.fn().mockResolvedValue(null),

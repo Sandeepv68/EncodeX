@@ -91,7 +91,8 @@
     "compressing": "Стиснення...",
     "placeholderOutput": "шлях вихідного файлу",
     "placeholderScale": "напр. 800x600",
-    "validationRequired": "Виберіть вхідне зображення."
+    "validationRequired": "Виберіть вхідне зображення.",
+    "selectedImage": "Вибране зображення: {{file}}"
   },
   "audioExtract": {
     "title": "Виділити аудіо",

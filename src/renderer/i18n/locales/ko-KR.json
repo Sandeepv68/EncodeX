@@ -91,7 +91,8 @@
     "compressing": "압축 중...",
     "placeholderOutput": "출력 경로",
     "placeholderScale": "예: 800x600",
-    "validationRequired": "입력 이미지를 선택하세요."
+    "validationRequired": "입력 이미지를 선택하세요.",
+    "selectedImage": "선택한 이미지: {{file}}"
   },
   "audioExtract": {
     "title": "오디오 추출",

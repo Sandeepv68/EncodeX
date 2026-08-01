@@ -91,7 +91,8 @@
     "compressing": "Bezig met comprimeren...",
     "placeholderOutput": "uitvoerpad",
     "placeholderScale": "bijv. 800x600",
-    "validationRequired": "Selecteer een invoerafbeelding."
+    "validationRequired": "Selecteer een invoerafbeelding.",
+    "selectedImage": "Geselecteerde afbeelding: {{file}}"
   },
   "audioExtract": {
     "title": "Audio extraheren",

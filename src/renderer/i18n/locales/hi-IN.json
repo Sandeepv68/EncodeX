@@ -91,7 +91,8 @@
     "compressing": "कंप्रेस हो रहा है...",
     "placeholderOutput": "आउटपुट पथ",
     "placeholderScale": "जैसे 800x600",
-    "validationRequired": "कृपया एक इनपुट छवि चुनें."
+    "validationRequired": "कृपया एक इनपुट छवि चुनें.",
+    "selectedImage": "चयनित छवि: {{file}}"
   },
   "audioExtract": {
     "title": "ऑडियो निकालें",

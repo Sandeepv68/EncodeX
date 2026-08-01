@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IPC } from '../../shared/ipc-channels';
 
-const { contextBridgeMock, ipcRendererMock, getExposed } = vi.hoisted(() => {
+const { contextBridgeMock, ipcRendererMock, webUtilsMock, getExposed } = vi.hoisted(() => {
   const exposed: Record<string, unknown> = {};
   return {
     contextBridgeMock: {
@@ -15,6 +15,9 @@ const { contextBridgeMock, ipcRendererMock, getExposed } = vi.hoisted(() => {
       on: vi.fn(),
       removeListener: vi.fn(),
     },
+    webUtilsMock: {
+      getPathForFile: vi.fn(),
+    },
     getExposed: () => exposed,
   };
 });
@@ -22,6 +25,7 @@ const { contextBridgeMock, ipcRendererMock, getExposed } = vi.hoisted(() => {
 vi.mock('electron', () => ({
   contextBridge: contextBridgeMock,
   ipcRenderer: ipcRendererMock,
+  webUtils: webUtilsMock,
   IpcRendererEvent: class {},
 }));
 
@@ -48,6 +52,13 @@ describe('preload', () => {
     expect(api).toBeDefined();
     expect(api.convertFile).toBeTypeOf('function');
     expect(api.onLogMessage).toBeTypeOf('function');
+  });
+
+  it('getPathForFile resolves a dropped file path via webUtils', () => {
+    const file = {} as File;
+    webUtilsMock.getPathForFile.mockReturnValue('/dropped/image.png');
+    expect((api.getPathForFile as (f: File) => string)(file)).toBe('/dropped/image.png');
+    expect(webUtilsMock.getPathForFile).toHaveBeenCalledWith(file);
   });
 
   it.each([

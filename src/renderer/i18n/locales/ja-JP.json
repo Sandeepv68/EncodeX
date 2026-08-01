@@ -91,7 +91,8 @@
     "compressing": "圧縮中...",
     "placeholderOutput": "出力パス",
     "placeholderScale": "例: 800x600",
-    "validationRequired": "入力画像を選択してください。"
+    "validationRequired": "入力画像を選択してください。",
+    "selectedImage": "選択した画像: {{file}}"
   },
   "audioExtract": {
     "title": "音声抽出",

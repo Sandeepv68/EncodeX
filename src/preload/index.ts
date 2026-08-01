@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { contextBridge, ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
 import { Logger } from '../shared/logger';
 import { IPC } from '../shared/ipc-channels';
 import { ConversionOptions, ConversionProgress, QueueJob, PlayerFrame, MediaInfo, LogEntry, EncoderCapabilities } from '../shared/types';
@@ -6,6 +6,9 @@ import { ConversionOptions, ConversionProgress, QueueJob, PlayerFrame, MediaInfo
 const log = new Logger('preload');
 
 const api = {
+  getPathForFile: (file: File) => {
+    return webUtils.getPathForFile(file);
+  },
   selectFile: (filters?: Electron.FileFilter[]) => {
     log.debug('selectFile called');
     return ipcRenderer.invoke(IPC.SELECT_FILE, filters) as Promise<string | null>;
