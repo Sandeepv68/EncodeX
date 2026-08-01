@@ -5,6 +5,9 @@ export const ToggleRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(1),
+  "& .MuiTypography-root.MuiTypography-caption": {
+     fontWeight:  theme.typography.fontWeightBold,
+  }
 }));
 
 export const FieldBox = styled(Box)({ flex: 1 });
@@ -12,6 +15,7 @@ export const FieldBox = styled(Box)({ flex: 1 });
 export const FieldLabel = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(0.5),
   display: 'block',
+  fontWeight:  theme.typography.fontWeightBold,
 }));
 
 export const ActionStack = styled(Stack)({ flexWrap: 'wrap' });
