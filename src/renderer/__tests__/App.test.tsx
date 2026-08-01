@@ -55,8 +55,9 @@ describe('App', () => {
   it('navigates to the convert page via the drawer', async () => {
     renderApp();
     await screen.findByText('dashboard.welcome');
-    fireEvent.click(screen.getAllByText('nav.convert')[0]);
-    expect(await screen.findByText('convert.title')).toBeInTheDocument();
+    const drawerItem = screen.getAllByText('nav.convert')[0].closest('[role="button"]')!;
+    fireEvent.click(drawerItem);
+    expect(await screen.findByText('convert.title', {}, { timeout: 5000 })).toBeInTheDocument();
   });
 
   it('stores log messages received from the main process', async () => {

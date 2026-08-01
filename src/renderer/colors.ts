@@ -8,19 +8,19 @@ export const COLORS = {
   background: {
     light: '#f5f5f5',
     lightPaper: '#ffffff',
-    dark: '#1a1a2e',
-    darkPaper: '#1e2a4a',
-    drawerDark: '#16213e',
+    dark: '#0c0c0c',
+    darkPaper: '#1a1a1a',
+    drawerDark: '#121212',
   },
   text: {
     lightPrimary: '#1a1a2e',
     lightSecondary: '#6b6b80',
-    darkPrimary: '#e8e8e8',
-    darkSecondary: '#a0a0b0',
+    darkPrimary: '#f0f0f0',
+    darkSecondary: '#a8a8a8',
   },
   border: {
     light: '#e0e0e0',
-    dark: '#2a3a5a',
+    dark: '#2f2f2f',
   },
   tint: {
     primary15: 'rgba(15,155,142,0.15)',
