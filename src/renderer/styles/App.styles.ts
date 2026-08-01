@@ -40,7 +40,7 @@ export const MobileMenuButton = styled(IconButton)(({ theme }) => ({
   alignSelf: 'flex-start',
 }));
 
-export const RouteContent = styled(Box)({ flex: 1 });
+export const RouteContent = styled(Box)({ flex: 1, minHeight: 0 });
 
 export const PageFallback = styled(Box)(({ theme }) => ({
   display: 'flex',

@@ -9,7 +9,6 @@ import { COLORS } from '../colors';
 import {
   LogsRoot,
   LogsHeader,
-  LogsTitle,
   FilterSelect,
   LogsBody,
   NoEntriesText,
@@ -18,6 +17,7 @@ import {
   LevelSpan,
   SourceSpan,
 } from '../styles/Logs.styles';
+import { PageTitle } from '../styles/BatchQueue.styles';
 
 const LEVEL_COLORS: Record<string, string> = {
   DEBUG: COLORS.log.debug,
@@ -53,8 +53,8 @@ export default function Logs() {
 
   return (
     <LogsRoot>
+      <PageTitle variant="h5">{t('nav.logs')}</PageTitle>
       <LogsHeader>
-        <LogsTitle variant="h5">{t('nav.logs')}</LogsTitle>
         <FilterSelect size="small" value={filter} onChange={(e) => setFilter(e.target.value as string)}>
           <MenuItem value="ALL">{t('logs.levelAll')}</MenuItem>
           <MenuItem value="DEBUG">{t('logs.levelDebug')}</MenuItem>
