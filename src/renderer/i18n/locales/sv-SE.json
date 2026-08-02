@@ -72,7 +72,10 @@
     "transcoderCoreHint": "Motorn som används för konverteringen. FFmpeg är standard och mest kompatibel.",
     "encoderTypeHint": "Åsidosätter det i Inställningar valda enkodartypen för den här konverteringen. Automatisk följer värdet i Inställningar.",
     "codecCompatWarning": "Videokodeken {{codec}} kanske inte är helt kompatibel med .{{extension}}-behållaren. Föreslagen ändelse: .{{suggested}}",
-    "applySuggestedExt": "Använd .{{extension}}"
+    "applySuggestedExt": "Använd .{{extension}}",
+    "preview": "Förhandsvisning",
+    "showPreview": "Visa förhandsvisning",
+    "closePreview": "Stäng förhandsvisning"
   },
   "mediaInfo": {
     "title": "Mediainformation",

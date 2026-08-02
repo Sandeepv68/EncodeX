@@ -72,7 +72,10 @@
     "transcoderCoreHint": "कन्वर्ज़न के लिए उपयोग किया जाने वाला इंजन। FFmpeg डिफ़ॉल्ट और सबसे अधिक संगत है।",
     "encoderTypeHint": "इस कनवर्ज़न के लिए सेटिंग्स में चुने गए एन्कोडर प्रकार को ओवरराइड करता है। स्वचालित सेटिंग्स में मान का अनुसरण करता है।",
     "codecCompatWarning": "वीडियो कोडेक {{codec}} .{{extension}} कंटेनर के साथ पूरी तरह संगत नहीं हो सकता है। सुझाया गया एक्सटेंशन: .{{suggested}}",
-    "applySuggestedExt": ".{{extension}} उपयोग करें"
+    "applySuggestedExt": ".{{extension}} उपयोग करें",
+    "preview": "पूर्वावलोकन",
+    "showPreview": "पूर्वावलोकन दिखाएं",
+    "closePreview": "पूर्वावलोकन बंद करें"
   },
   "mediaInfo": {
     "title": "मीडिया जानकारी",

@@ -72,7 +72,10 @@
     "transcoderCoreHint": "O mecanismo usado para a conversão. FFmpeg é o padrão e o mais compatível.",
     "encoderTypeHint": "Substitui o tipo de codificador escolhido nas Configurações para esta conversão. Automático segue o valor das Configurações.",
     "codecCompatWarning": "O codec de vídeo {{codec}} pode não ser totalmente compatível com o contêiner .{{extension}}. Extensão sugerida: .{{suggested}}",
-    "applySuggestedExt": "Usar .{{extension}}"
+    "applySuggestedExt": "Usar .{{extension}}",
+    "preview": "Prévia",
+    "showPreview": "Mostrar prévia",
+    "closePreview": "Fechar prévia"
   },
   "mediaInfo": {
     "title": "Informações da Mídia",

@@ -72,7 +72,10 @@
     "transcoderCoreHint": "De engine die wordt gebruikt voor de conversie. FFmpeg is de standaard en meest compatibele optie.",
     "encoderTypeHint": "Overschrijft het in Instellingen gekozen encodertype voor deze conversie. Automatisch volgt de waarde in Instellingen.",
     "codecCompatWarning": "De videocodec {{codec}} is mogelijk niet volledig compatibel met de .{{extension}}-container. Voorgestelde extensie: .{{suggested}}",
-    "applySuggestedExt": "Gebruik .{{extension}}"
+    "applySuggestedExt": "Gebruik .{{extension}}",
+    "preview": "Voorbeeld",
+    "showPreview": "Voorbeeld tonen",
+    "closePreview": "Voorbeeld sluiten"
   },
   "mediaInfo": {
     "title": "Media-informatie",

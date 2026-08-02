@@ -72,7 +72,10 @@
     "transcoderCoreHint": "Le moteur utilisé pour la conversion. FFmpeg est le moteur par défaut et le plus compatible.",
     "encoderTypeHint": "Remplace le type d'encodeur choisi dans les paramètres pour cette conversion. Automatique suit la valeur définie dans les paramètres.",
     "codecCompatWarning": "Le codec vidéo {{codec}} n'est peut-être pas entièrement compatible avec le conteneur .{{extension}}. Extension suggérée : .{{suggested}}",
-    "applySuggestedExt": "Utiliser .{{extension}}"
+    "applySuggestedExt": "Utiliser .{{extension}}",
+    "preview": "Aperçu",
+    "showPreview": "Afficher l'aperçu",
+    "closePreview": "Fermer l'aperçu"
   },
   "mediaInfo": {
     "title": "Informations Média",

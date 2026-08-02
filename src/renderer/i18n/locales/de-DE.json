@@ -72,7 +72,10 @@
     "transcoderCoreHint": "Die für die Konvertierung verwendete Engine. FFmpeg ist die Standard- und kompatibelste Option.",
     "encoderTypeHint": "Überschreibt den in den Einstellungen gewählten Encoder-Typ für diese Konvertierung. Automatisch folgt dem in den Einstellungen gesetzten Wert.",
     "codecCompatWarning": "Der Videocodec {{codec}} ist möglicherweise nicht vollständig mit dem .{{extension}}-Container kompatibel. Empfohlene Endung: .{{suggested}}",
-    "applySuggestedExt": "Endung .{{extension}} verwenden"
+    "applySuggestedExt": "Endung .{{extension}} verwenden",
+    "preview": "Vorschau",
+    "showPreview": "Vorschau anzeigen",
+    "closePreview": "Vorschau schließen"
   },
   "mediaInfo": {
     "title": "Medieninformationen",

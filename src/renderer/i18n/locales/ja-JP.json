@@ -72,7 +72,10 @@
     "transcoderCoreHint": "変換に使用されるエンジン。FFmpegがデフォルトで最も互換性が高いです。",
     "encoderTypeHint": "この変換では、設定で選択したエンコーダータイプを上書きします。自動は設定の値を参照します。",
     "codecCompatWarning": "ビデオコーデック {{codec}} は .{{extension}} コンテナと完全には互換性がない可能性があります。推奨拡張子: .{{suggested}}",
-    "applySuggestedExt": ".{{extension}} を使用"
+    "applySuggestedExt": ".{{extension}} を使用",
+    "preview": "プレビュー",
+    "showPreview": "プレビューを表示",
+    "closePreview": "プレビューを閉じる"
   },
   "mediaInfo": {
     "title": "メディア情報",

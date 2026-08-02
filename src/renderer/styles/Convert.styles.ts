@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
-import { Box, Stack, Typography, Alert } from '@mui/material';
-import { COLORS } from '../colors';
+import { Box, Stack, Typography, Alert, Paper } from '@mui/material';
+import { COLORS, SHADOWS } from '../colors';
 
 export const AccelAlert = styled(Alert)(({}) => ({
   fontWeight: 500,
@@ -32,3 +32,49 @@ export const FieldLabel = styled(Typography)(({ theme }) => ({
 }));
 
 export const ActionStack = styled(Stack)({ flexWrap: 'wrap' });
+
+export const ConvertLayout = styled(Stack)(({ theme }) => ({
+  flexDirection: 'column',
+  alignItems: 'stretch',
+  gap: theme.spacing(2),
+  [theme.breakpoints.up('md')]: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+}));
+
+export const FormColumn = styled(Box)(({ theme }) => ({
+  flex: '1 1 0',
+  minWidth: 0,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+}));
+
+export const PreviewPanel = styled(Paper)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+  padding: theme.spacing(2),
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  [theme.breakpoints.up('md')]: {
+    width: 380,
+    flexShrink: 0,
+    alignSelf: 'flex-start',
+    position: 'sticky',
+    top: theme.spacing(2),
+  },
+}));
+
+export const PreviewHeader = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: theme.spacing(1),
+}));
+
+export const PreviewSectionTitle = styled(Typography)(({ theme }) => ({
+  fontWeight: theme.typography.fontWeightBold,
+  marginBottom: theme.spacing(1),
+}));

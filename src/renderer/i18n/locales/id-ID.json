@@ -72,7 +72,10 @@
     "transcoderCoreHint": "Mesin yang digunakan untuk konversi. FFmpeg adalah bawaan dan paling kompatibel.",
     "encoderTypeHint": "Menimpa jenis encoder yang dipilih di Pengaturan untuk konversi ini. Otomatis mengikuti nilai di Pengaturan.",
     "codecCompatWarning": "Codec video {{codec}} mungkin tidak sepenuhnya kompatibel dengan kontainer .{{extension}}. Ekstensi yang disarankan: .{{suggested}}",
-    "applySuggestedExt": "Gunakan .{{extension}}"
+    "applySuggestedExt": "Gunakan .{{extension}}",
+    "preview": "Pratinjau",
+    "showPreview": "Tampilkan Pratinjau",
+    "closePreview": "Tutup Pratinjau"
   },
   "mediaInfo": {
     "title": "Informasi Media",

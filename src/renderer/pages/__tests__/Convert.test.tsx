@@ -71,6 +71,19 @@ describe('Convert', () => {
     expect(useConversionStore.getState().isDirty).toBe(true);
   });
 
+  it('toggles the preview panel with the close and show buttons', async () => {
+    selectFileMock.mockResolvedValue('/in/video.mp4');
+    renderPage();
+    expect(screen.queryByText('convert.preview')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('convert.browse'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    expect(screen.getByText('convert.preview')).toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText('convert.closePreview'));
+    expect(screen.queryByText('convert.preview')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('convert.showPreview'));
+    expect(screen.getByText('convert.preview')).toBeInTheDocument();
+  });
+
   it('selects an output file via save as', async () => {
     selectOutputMock.mockResolvedValue('/out/video.mkv');
     renderPage();
