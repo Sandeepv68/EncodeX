@@ -26,24 +26,47 @@ export interface MediaStreamInfo {
   type: 'video' | 'audio' | 'subtitle';
   codec: string;
   codecLong?: string;
+  codecTag?: string;
+  profile?: string;
+  level?: number;
   width?: number;
   height?: number;
+  displayAspectRatio?: string;
   pixelFormat?: string;
+  colorRange?: string;
+  colorSpace?: string;
+  colorTransfer?: string;
+  colorPrimaries?: string;
+  fieldOrder?: string;
   frameRate?: string;
+  avgFrameRate?: string;
+  bitDepth?: number;
   bitrate?: string;
   sampleRate?: number;
+  sampleFormat?: string;
   channels?: number;
+  channelLayout?: string;
+  bitsPerSample?: number;
   duration?: number;
+  startTime?: number;
+  frameCount?: number;
   language?: string;
+  title?: string;
+  disposition?: string[];
+  tags?: Record<string, string>;
 }
 
 export interface MediaInfo {
   file: string;
   format: string;
+  formatLong?: string;
   size: number;
   duration: number;
   bitrate: string;
+  startTime?: number;
+  probeScore?: number;
   streams: MediaStreamInfo[];
+  tags?: Record<string, string>;
 }
 
 export interface QueueJob {

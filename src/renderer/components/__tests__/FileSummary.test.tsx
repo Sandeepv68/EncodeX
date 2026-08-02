@@ -36,4 +36,34 @@ describe('FileSummary', () => {
     expect(screen.getByText('0 B')).toBeInTheDocument();
     expect(screen.getByText('0.00s')).toBeInTheDocument();
   });
+
+  it('renders extended file metadata when present', () => {
+    render(
+      <FileSummary
+        info={{
+          ...info,
+          formatLong: 'MPEG-4 Part 14',
+          startTime: 0.25,
+          probeScore: 100,
+        }}
+      />,
+    );
+    expect(screen.getByText('mp4 (MPEG-4 Part 14)')).toBeInTheDocument();
+    expect(screen.getByText('0.25')).toBeInTheDocument();
+    expect(screen.getByText('100')).toBeInTheDocument();
+    expect(screen.getByText('mediaInfo.streamsCount')).toBeInTheDocument();
+  });
+
+  it('renders file tags when present', () => {
+    render(<FileSummary info={{ ...info, tags: { encoder: 'libx265', creation_time: '2024-01-01' } }} />);
+    expect(screen.getByText('mediaInfo.tags')).toBeInTheDocument();
+    expect(screen.getByText('encoder')).toBeInTheDocument();
+    expect(screen.getByText('libx265')).toBeInTheDocument();
+    expect(screen.getByText('creation_time')).toBeInTheDocument();
+  });
+
+  it('omits the tags section when there are no tags', () => {
+    render(<FileSummary info={info} />);
+    expect(screen.queryByText('mediaInfo.tags')).not.toBeInTheDocument();
+  });
 });
