@@ -196,7 +196,6 @@ export default function Convert() {
                 <FontAwesomeIcon icon={faXmark} />
               </IconButton>
             </PreviewHeader>
-            <PreviewDivider />
             {!isConverting && (
               <ErrorBoundary fallback={null}>
                 <MediaPlayer filePath={inputFile} />
