@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, CircularProgress } from '@mui/material';
 import FileDropZone from '../components/FileDropZone';
-import ErrorBanner from '../components/ErrorBanner';
 import FileSummary from '../components/FileSummary';
 import StreamDetails from '../components/StreamDetails';
 import ExifSection from '../components/ExifSection';
@@ -12,7 +11,7 @@ import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
 import { MediaInfo as MediaInfoType, ImageExifData } from '../../shared/types';
 import { isImageFile } from '../../shared/file-extensions';
-import { PageTitle, ContentBox, ErrorBox, LoadingBox, InfoPaper, InfoTitle } from '../styles/MediaInfo.styles';
+import { PageTitle, ContentBox, LoadingBox, InfoPaper, InfoTitle } from '../styles/MediaInfo.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 
@@ -23,7 +22,7 @@ export default function MediaInfo() {
   const [info, setInfo] = useState<MediaInfoType | null>(null);
   const [exif, setExif] = useState<ImageExifData | null>(null);
   const [loading, setLoading] = useState(false);
-  const { currentError, showError, clearError } = useErrorStore();
+  const showError = useErrorStore((s) => s.showError);
 
   const handleFile = async (path: string) => {
     log.info('Getting media info for:', path);
@@ -59,13 +58,6 @@ export default function MediaInfo() {
         {t('mediaInfo.title')}
       </PageTitle>
       <ContentBox>
-        {currentError && (
-          <ErrorBox>
-            <ErrorBoundary fallback={null}>
-              <ErrorBanner error={currentError} onClose={clearError} />
-            </ErrorBoundary>
-          </ErrorBox>
-        )}
         <ErrorBoundary fallback={null}>
           <FileDropZone onFileSelect={handleFile} label={t('mediaInfo.dropLabel')} />
         </ErrorBoundary>

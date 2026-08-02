@@ -64,6 +64,11 @@ describe('AudioExtract', () => {
     expect(screen.getByText('audioExtract.dropLabel')).toBeInTheDocument();
   });
 
+  it('renders an info tooltip for each field', () => {
+    renderPage();
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(4);
+  });
+
   it('shows a validation error when the output field is blurred empty', () => {
     renderPage();
     fireEvent.blur(screen.getByPlaceholderText('audioExtract.placeholderOutput'));
