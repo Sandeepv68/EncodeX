@@ -43,7 +43,7 @@ export default function ExifSection({ data }: { data: ImageExifData }) {
         <Grid container spacing={1}>
           {entries.map(([key, value]) => (
             <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={key}>
-              <FieldLabel>{t(`mediaInfo.exifKeys.${key}`, { defaultValue: key })}</FieldLabel>
+              <FieldLabel>{key}</FieldLabel>
               <EllipsisTooltip title={value}>
                 <FieldValue>{value}</FieldValue>
               </EllipsisTooltip>
@@ -57,21 +57,21 @@ export default function ExifSection({ data }: { data: ImageExifData }) {
       )}
       {data.histogram && (
         <HistogramBox>
-          <HistogramTitle variant="subtitle2">{t('mediaInfo.histogram')}</HistogramTitle>
+          <HistogramTitle variant="subtitle2">Histogram</HistogramTitle>
           <HistogramRow>
-            <HistogramLabel variant="caption">{t('mediaInfo.histogramRed')}</HistogramLabel>
+            <HistogramLabel variant="caption">Red</HistogramLabel>
             <HistogramChart id="r" data={data.histogram.r} color="#f44336" />
           </HistogramRow>
           <HistogramRow>
-            <HistogramLabel variant="caption">{t('mediaInfo.histogramGreen')}</HistogramLabel>
+            <HistogramLabel variant="caption">Green</HistogramLabel>
             <HistogramChart id="g" data={data.histogram.g} color="#4caf50" />
           </HistogramRow>
           <HistogramRow>
-            <HistogramLabel variant="caption">{t('mediaInfo.histogramBlue')}</HistogramLabel>
+            <HistogramLabel variant="caption">Blue</HistogramLabel>
             <HistogramChart id="b" data={data.histogram.b} color="#2196f3" />
           </HistogramRow>
           <HistogramRow>
-            <HistogramLabel variant="caption">{t('mediaInfo.histogramLuma')}</HistogramLabel>
+            <HistogramLabel variant="caption">Luma</HistogramLabel>
             <HistogramChart id="luma" data={data.histogram.luma} color="#9e9e9e" />
           </HistogramRow>
         </HistogramBox>
