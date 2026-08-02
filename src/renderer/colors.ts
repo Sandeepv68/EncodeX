@@ -42,6 +42,10 @@ export const COLORS = {
     background: '#000000',
     control: '#ffffff',
   },
+  alert: {
+    info: '#0288d1',
+    warning: '#ed6c02',
+  },
 } as const;
 
 export const SHADOWS = {

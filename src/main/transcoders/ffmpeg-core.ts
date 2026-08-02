@@ -11,6 +11,7 @@ import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/tra
 import { suspendProcess, resumeProcess } from '../process-utils';
 import { mapFfprobeData } from './ffprobe-mapper';
 import { getHwAccelArgs } from './hwaccel';
+import { cancelledError } from '../../shared/errors';
 
 const log = new Logger('main/transcoders/ffmpeg-core');
 
@@ -97,12 +98,21 @@ export class FfmpegCore implements ITranscoder {
         cmd.outputOptions(`${FFMPEG_FLAGS.QSCALE} ${options.qscale}`);
       }
       if (options.scale) {
-        log.debug('Scale:', options.scale);
-        cmd.size(options.scale);
+        if (options.keepAspectRatio) {
+          log.debug('Scale (keep aspect ratio):', options.scale);
+          cmd.videoFilters(`${FFMPEG_FLAGS.SCALE}${options.scale.replace(/x.*$/, ':-2')}`);
+        } else {
+          log.debug('Scale:', options.scale);
+          cmd.size(options.scale);
+        }
       }
       if (options.pixelFormat) {
         log.debug('Pixel format:', options.pixelFormat);
         cmd.outputOptions(`${FFMPEG_FLAGS.PIX_FMT} ${options.pixelFormat}`);
+      }
+      if (options.videoCodec === 'mjpeg') {
+        log.debug('Forcing full-range color for MJPEG output');
+        cmd.outputOptions(FFMPEG_FLAGS.COLOR_RANGE, FFMPEG_FLAGS.COLOR_RANGE_FULL);
       }
     }
 
@@ -173,7 +183,7 @@ export class FfmpegCore implements ITranscoder {
     cmd.on('error', (err: Error) => {
       if (this.cancelled) {
         log.info('FFmpeg process cancelled');
-        emitter.emit('end');
+        emitter.emit('error', cancelledError());
         return;
       }
       log.error('FFmpeg process error:', err);

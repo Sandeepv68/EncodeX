@@ -14,6 +14,7 @@ import {
 } from '../../shared/transcoder-constants';
 import { getFfmpegPath, getFfprobePath, buildFfmpegArgs } from './ffmpeg-utils';
 import { mapFfprobeData } from './ffprobe-mapper';
+import { cancelledError } from '../../shared/errors';
 
 const log = new Logger('main/transcoders/fftool-core');
 
@@ -109,7 +110,7 @@ export class FFToolCore implements ITranscoder {
       if (this.cancelled) {
         if (progressTimer) clearInterval(progressTimer);
         log.info('FFmpeg process cancelled');
-        emitter.emit('end');
+        emitter.emit('error', cancelledError());
         return;
       }
       log.error('FFmpeg process error:', err);
@@ -122,7 +123,7 @@ export class FFToolCore implements ITranscoder {
       if (progressTimer) clearInterval(progressTimer);
       if (this.cancelled) {
         log.info('FFmpeg process cancelled');
-        emitter.emit('end');
+        emitter.emit('error', cancelledError());
         return;
       }
       if (code === 0) {

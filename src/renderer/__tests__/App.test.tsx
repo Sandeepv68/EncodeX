@@ -5,6 +5,7 @@ import App from '../App';
 import { useErrorStore } from '../stores/errorStore';
 import { useLogStore } from '../stores/logStore';
 import { useToastStore } from '../stores/toastStore';
+import { useAudioExtractStore } from '../stores/audioExtractStore';
 import type { LogEntry } from '../../shared/types';
 
 const onLogMessageMock = vi.mocked(window.electronAPI.onLogMessage);
@@ -37,6 +38,7 @@ describe('App', () => {
     useErrorStore.setState({ currentError: null, errorHistory: [] });
     useLogStore.setState({ entries: [] });
     useToastStore.setState({ toasts: [] });
+    useAudioExtractStore.setState({ isConverting: false });
   });
 
   it('renders the dashboard on the initial route', async () => {
@@ -87,5 +89,18 @@ describe('App', () => {
     fireEvent.click(menuButton);
     fireEvent.click(screen.getAllByText('nav.convert')[0]);
     expect(await screen.findByText('convert.title')).toBeInTheDocument();
+  });
+
+  it('shows a red blip on the audio-extract nav item while an extraction is running', async () => {
+    useAudioExtractStore.setState({ isConverting: true });
+    renderApp();
+    await screen.findByText('dashboard.welcome');
+    expect(screen.getByTestId('nav-audio-extract-blip')).toBeInTheDocument();
+  });
+
+  it('hides the audio-extract blip when no extraction is running', async () => {
+    renderApp();
+    await screen.findByText('dashboard.welcome');
+    expect(screen.queryByTestId('nav-audio-extract-blip')).not.toBeInTheDocument();
   });
 });

@@ -22,15 +22,26 @@ vi.mock('fs', () => ({
 
 const { FrameDecoder } = await import('../frame-decoder');
 
-function createFakeProcess(): EventEmitter & { stdout: EventEmitter; stderr: EventEmitter; pid: number; kill: ReturnType<typeof vi.fn> } {
+function createFakeProcess(): EventEmitter & {
+  stdout: EventEmitter;
+  stderr: EventEmitter;
+  stdio: Array<null | EventEmitter>;
+  pid: number;
+  kill: ReturnType<typeof vi.fn>;
+} {
+  const stdout = new EventEmitter();
+  const stderr = new EventEmitter();
+  const audio = new EventEmitter();
   const proc = new EventEmitter() as EventEmitter & {
     stdout: EventEmitter;
     stderr: EventEmitter;
+    stdio: Array<null | EventEmitter>;
     pid: number;
     kill: ReturnType<typeof vi.fn>;
   };
-  proc.stdout = new EventEmitter();
-  proc.stderr = new EventEmitter();
+  proc.stdout = stdout;
+  proc.stderr = stderr;
+  proc.stdio = [null, stdout, stderr, audio];
   proc.pid = 1234;
   proc.kill = vi.fn();
   return proc;
@@ -75,6 +86,48 @@ describe('FrameDecoder', () => {
     decoder.open('in.mp4', 320, 240);
     const args = spawnMock.mock.calls[0][1] as string[];
     expect(args).toContain('320x240');
+  });
+
+  it('spawns ffmpeg with audio output args when audio config is provided', () => {
+    decoder.open('in.mp4', 640, 360, { sampleRate: 44100, channels: 2 });
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args).toContain('pipe:1');
+    expect(args).toContain('pipe:3');
+    expect(args).toContain('-map');
+    expect(args).toContain('0:a:0');
+    expect(args).toContain('s16le');
+    expect(args).toContain('44100');
+    const options = spawnMock.mock.calls[0][2] as { stdio: string[] };
+    expect(options.stdio).toEqual(['ignore', 'pipe', 'pipe', 'pipe']);
+  });
+
+  it('emits audio chunks decoded on the third pipe', () => {
+    const audioChunks: Array<{ buffer: Buffer; sampleRate: number; channels: number }> = [];
+    decoder.on('audio', (a: { buffer: Buffer; sampleRate: number; channels: number }) => audioChunks.push(a));
+    decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
+    const proc = spawnMock.mock.results[0].value;
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(16));
+    expect(audioChunks).toHaveLength(1);
+    expect(audioChunks[0]).toMatchObject({ sampleRate: 48000, channels: 2 });
+    expect(audioChunks[0].buffer).toHaveLength(16);
+  });
+
+  it('ignores audio data after close', () => {
+    const audioChunks: unknown[] = [];
+    decoder.on('audio', (a: unknown) => audioChunks.push(a));
+    decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
+    const proc = spawnMock.mock.results[0].value;
+    decoder.close();
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(16));
+    expect(audioChunks).toHaveLength(0);
+  });
+
+  it('reopens with audio output args after a seek', () => {
+    decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
+    decoder.seek('00:00:01');
+    const args = spawnMock.mock.calls[1][1] as string[];
+    expect(args).toContain('0:a:0');
+    expect(args).toContain('pipe:3');
   });
 
   it('decodes raw frames from stdout in order', () => {

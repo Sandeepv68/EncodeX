@@ -5,7 +5,6 @@ import { useConversionStore } from '../../stores/conversionStore';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
 import { ErrorCode } from '../../../shared/errors';
-import { COMPLETED_PROGRESS } from '../../../shared/transcoder-constants';
 import type { ConversionProgress } from '../../../shared/types';
 
 const convertFileMock = vi.mocked(window.electronAPI.convertFile);
@@ -20,6 +19,7 @@ function resetStores(): void {
   useConversionStore.setState({
     inputFile: null,
     outputFile: null,
+    outputUserSet: false,
     videoCodec: 'libx264',
     audioCodec: 'aac',
     videoBitrate: '2000k',
@@ -57,6 +57,7 @@ describe('useConversion', () => {
     });
     renderHook(() => useConversion());
     expect(onConversionProgressMock).toHaveBeenCalledOnce();
+    useConversionStore.setState({ isConverting: true });
     act(() => {
       progressCb?.({
         input: 'a',
@@ -65,6 +66,24 @@ describe('useConversion', () => {
       });
     });
     expect(useConversionStore.getState().progress).toMatchObject({ percent: 42 });
+  });
+
+  it('ignores late progress events after the job is done', () => {
+    useConversionStore.setState({ isConverting: false, progress: null });
+    let progressCb: ((data: { input: string; output: string; progress: ConversionProgress }) => void) | undefined;
+    onConversionProgressMock.mockImplementation((cb) => {
+      progressCb = cb;
+      return vi.fn();
+    });
+    renderHook(() => useConversion());
+    act(() => {
+      progressCb?.({
+        input: 'a',
+        output: 'b',
+        progress: { percent: 100, time: '00:00:01', fps: 24, speed: '1x', eta: '0', bitrate: '1000k' },
+      });
+    });
+    expect(useConversionStore.getState().progress).toBeNull();
   });
 
   it('unsubscribes from conversion progress on unmount', () => {
@@ -86,7 +105,7 @@ describe('useConversion', () => {
   });
 
   it('shows an error when no output file is selected', async () => {
-    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: null });
+    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: null, outputUserSet: true });
     const { result } = renderHook(() => useConversion());
     await act(async () => {
       await result.current.startConversion();
@@ -95,8 +114,26 @@ describe('useConversion', () => {
     expect(useErrorStore.getState().currentError?.code).toBe(ErrorCode.OUTPUT_NOT_SPECIFIED);
   });
 
+  it('auto-suggests an output file when none is user-set', () => {
+    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: null, outputUserSet: false });
+    renderHook(() => useConversion());
+    expect(useConversionStore.getState().outputFile).toBe('in_converted.mp4');
+  });
+
+  it('auto-suggests an output file preserving the input extension in copy mode', () => {
+    useConversionStore.setState({ inputFile: 'video.webm', outputFile: null, outputUserSet: false, copyMode: true });
+    renderHook(() => useConversion());
+    expect(useConversionStore.getState().outputFile).toBe('video_converted.webm');
+  });
+
+  it('does not override an output file the user set', () => {
+    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mkv', outputUserSet: true });
+    renderHook(() => useConversion());
+    expect(useConversionStore.getState().outputFile).toBe('out.mkv');
+  });
+
   it('starts a conversion with codec options and completes', async () => {
-    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mp4', transcoder: 'FFMPEG' });
+    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mp4', outputUserSet: true, transcoder: 'FFMPEG' });
     const { result } = renderHook(() => useConversion());
     await act(async () => {
       await result.current.startConversion();
@@ -118,13 +155,16 @@ describe('useConversion', () => {
       },
       'FFMPEG',
     );
-    expect(useConversionStore.getState().progress).toEqual(COMPLETED_PROGRESS);
+    expect(useConversionStore.getState().progress).toBeNull();
     expect(useConversionStore.getState().isConverting).toBe(false);
+    expect(useConversionStore.getState().inputFile).toBeNull();
+    expect(useConversionStore.getState().outputFile).toBeNull();
+    expect(useConversionStore.getState().isDirty).toBe(false);
     expect(useToastStore.getState().toasts).toHaveLength(1);
   });
 
   it('omits codec options in copy mode', async () => {
-    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mp4', copyMode: true });
+    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mp4', outputUserSet: true, copyMode: true });
     const { result } = renderHook(() => useConversion());
     await act(async () => {
       await result.current.startConversion();

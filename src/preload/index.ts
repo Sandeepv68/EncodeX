@@ -1,7 +1,18 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
 import { Logger } from '../shared/logger';
 import { IPC } from '../shared/ipc-channels';
-import { ConversionOptions, ConversionProgress, QueueJob, PlayerFrame, MediaInfo, LogEntry, EncoderCapabilities } from '../shared/types';
+import {
+  ConversionOptions,
+  ConversionProgress,
+  QueueJob,
+  PlayerFrame,
+  PlayerAudioChunk,
+  MediaInfo,
+  ImageExifData,
+  ImageFileInfo,
+  LogEntry,
+  EncoderCapabilities,
+} from '../shared/types';
 
 const log = new Logger('preload');
 
@@ -24,6 +35,22 @@ const api = {
   getMediaInfo: (filePath: string, transcoderType: string) => {
     log.info('getMediaInfo:', filePath, 'transcoder:', transcoderType);
     return ipcRenderer.invoke(IPC.GET_MEDIA_INFO, filePath, transcoderType) as Promise<MediaInfo>;
+  },
+  getImageInfo: (filePath: string) => {
+    log.info('getImageInfo:', filePath);
+    return ipcRenderer.invoke(IPC.GET_IMAGE_INFO, filePath) as Promise<ImageExifData | null>;
+  },
+  getImagePreview: (filePath: string) => {
+    log.info('getImagePreview:', filePath);
+    return ipcRenderer.invoke(IPC.GET_IMAGE_PREVIEW, filePath) as Promise<string | null>;
+  },
+  getImageFileInfo: (filePath: string) => {
+    log.info('getImageFileInfo:', filePath);
+    return ipcRenderer.invoke(IPC.GET_IMAGE_FILE_INFO, filePath) as Promise<ImageFileInfo | null>;
+  },
+  getVideoPreview: (filePath: string) => {
+    log.info('getVideoPreview:', filePath);
+    return ipcRenderer.invoke(IPC.GET_VIDEO_PREVIEW, filePath) as Promise<string | null>;
   },
   getCapabilities: () => {
     log.debug('getCapabilities called');
@@ -152,6 +179,13 @@ const api = {
     };
     ipcRenderer.on(IPC.PLAYER_FRAME, handler);
     return () => ipcRenderer.removeListener(IPC.PLAYER_FRAME, handler);
+  },
+  onPlayerAudio: (cb: (chunk: PlayerAudioChunk) => void) => {
+    const handler = (_event: IpcRendererEvent, chunk: PlayerAudioChunk) => {
+      cb(chunk);
+    };
+    ipcRenderer.on(IPC.PLAYER_AUDIO, handler);
+    return () => ipcRenderer.removeListener(IPC.PLAYER_AUDIO, handler);
   },
   onLogMessage: (cb: (entry: LogEntry) => void) => {
     const handler = (_event: IpcRendererEvent, entry: LogEntry) => {

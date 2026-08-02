@@ -66,6 +66,10 @@ describe('preload', () => {
     ['selectFiles', IPC.SELECT_FILES, [undefined]],
     ['selectOutput', IPC.SELECT_OUTPUT, []],
     ['getMediaInfo', IPC.GET_MEDIA_INFO, ['in.mp4', 'FFMPEG']],
+    ['getImageInfo', IPC.GET_IMAGE_INFO, ['in.jpg']],
+    ['getImagePreview', IPC.GET_IMAGE_PREVIEW, ['in.jpg']],
+    ['getImageFileInfo', IPC.GET_IMAGE_FILE_INFO, ['in.jpg']],
+    ['getVideoPreview', IPC.GET_VIDEO_PREVIEW, ['in.mp4']],
     ['getCapabilities', IPC.GET_CAPABILITIES, []],
     ['convertFile', IPC.CONVERT_FILE, ['in.mp4', 'out.mp4', {}, 'FFMPEG']],
     ['pauseConversion', IPC.PAUSE_CONVERSION, []],
@@ -94,6 +98,7 @@ describe('preload', () => {
     ['onQueueProgress', IPC.QUEUE_PROGRESS, { job: { id: 'id-1' }, progress: { percent: 20 } }],
     ['onQueueCancelled', IPC.QUEUE_CANCELLED, undefined],
     ['onPlayerFrame', IPC.PLAYER_FRAME, { data: new ArrayBuffer(0), width: 1, height: 1, pts: 0 }],
+    ['onPlayerAudio', IPC.PLAYER_AUDIO, { data: new ArrayBuffer(0), sampleRate: 48000, channels: 2 }],
     ['onLogMessage', IPC.LOG_MESSAGE, { timestamp: 't', level: 'INFO', text: 'hello', source: 'main' }],
     ['onWindowMaximizedChange', IPC.WINDOW_MAXIMIZED_CHANGED, true],
   ])('%s subscribes and unsubscribes on the %s channel', (method, channel, payload) => {

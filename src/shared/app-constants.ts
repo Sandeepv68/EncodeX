@@ -20,7 +20,7 @@ export const SPLASH_BACKGROUND = '#EEF4F4';
 
 export const APP_NAME = 'EncodeX';
 
-export const THEME_STORAGE_KEY = 'openconverter-theme';
+export const THEME_STORAGE_KEY = 'encodex-theme';
 
 export const ROOT_ELEMENT_ID = 'root';
 

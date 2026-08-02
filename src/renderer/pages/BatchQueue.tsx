@@ -10,6 +10,8 @@ import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { QueueJob } from '../../shared/types';
 import { useSettingsStore } from '../stores/settingsStore';
 import { PageTitle, QueuePaper, EmptyText } from '../styles/BatchQueue.styles';
+import { TitleIcon } from '../styles/PageContainer.styles';
+import { pageIcons } from '../pageIcons';
 
 export default function BatchQueue() {
   const { t } = useTranslation();
@@ -69,7 +71,10 @@ export default function BatchQueue() {
 
   return (
     <Box>
-      <PageTitle variant="h5">{t('batchQueue.title')}</PageTitle>
+      <PageTitle variant="h5">
+        <TitleIcon>{pageIcons['/batch']}</TitleIcon>
+        {t('batchQueue.title')}
+      </PageTitle>
       <BatchControls
         operationRef={operationRef}
         transcoderRef={transcoderRef}

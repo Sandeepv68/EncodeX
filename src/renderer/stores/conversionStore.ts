@@ -16,6 +16,7 @@ interface ProgressData {
 interface ConversionState {
   inputFile: string | null;
   outputFile: string | null;
+  outputUserSet: boolean;
   videoCodec: string;
   audioCodec: string;
   videoBitrate: string;
@@ -32,6 +33,7 @@ interface ConversionState {
   progress: ProgressData | null;
   setInputFile: (file: string | null) => void;
   setOutputFile: (file: string | null) => void;
+  setOutputAuto: (file: string | null) => void;
   setVideoCodec: (codec: string) => void;
   setAudioCodec: (codec: string) => void;
   setVideoBitrate: (bitrate: string) => void;
@@ -51,6 +53,7 @@ interface ConversionState {
 const INITIAL_STATE = {
   inputFile: null as string | null,
   outputFile: null as string | null,
+  outputUserSet: false,
   videoCodec: CONVERSION_DEFAULTS.VIDEO_CODEC,
   audioCodec: CONVERSION_DEFAULTS.AUDIO_CODEC,
   videoBitrate: CONVERSION_DEFAULTS.VIDEO_BITRATE,
@@ -75,6 +78,10 @@ export const useConversionStore = create<ConversionState>((set) => ({
   },
   setOutputFile: (file) => {
     log.debug('setOutputFile:', file);
+    set({ outputFile: file, outputUserSet: true, isDirty: true });
+  },
+  setOutputAuto: (file) => {
+    log.debug('setOutputAuto:', file);
     set({ outputFile: file, isDirty: true });
   },
   setVideoCodec: (codec) => {

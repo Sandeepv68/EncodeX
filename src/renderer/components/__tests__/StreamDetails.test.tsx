@@ -36,6 +36,12 @@ describe('StreamDetails', () => {
     expect(screen.getByText('mediaInfo.stream #1')).toBeInTheDocument();
   });
 
+  it('renders translated stream type chips', () => {
+    render(<StreamDetails streams={streams} />);
+    expect(screen.getByText('VIDEO')).toBeInTheDocument();
+    expect(screen.getByText('AUDIO')).toBeInTheDocument();
+  });
+
   it('renders video stream metadata', () => {
     render(<StreamDetails streams={streams} />);
     expect(screen.getByText(/h264/)).toBeInTheDocument();
@@ -51,13 +57,93 @@ describe('StreamDetails', () => {
     expect(screen.getByText(/eng/)).toBeInTheDocument();
   });
 
+  it('renders in compact layout', () => {
+    render(<StreamDetails streams={streams} compact />);
+    expect(screen.getByText('mediaInfo.stream #0')).toBeInTheDocument();
+    expect(screen.getByText(/h264/)).toBeInTheDocument();
+    expect(screen.getByText(/48000 Hz/)).toBeInTheDocument();
+  });
+
   it('renders nothing for an empty stream list besides the title', () => {
     render(<StreamDetails streams={[]} />);
-    expect(screen.getByText(/\(0\)/)).toBeInTheDocument();
+    expect(screen.getByTestId('stream-count-chip')).toHaveTextContent('0');
   });
 
   it('handles sparse stream entries without crashing', () => {
     render(<StreamDetails streams={[{ index: 0, type: 'video', codec: '' }]} />);
     expect(screen.getByText('mediaInfo.stream #0')).toBeInTheDocument();
+  });
+
+  it('renders extended stream metadata', () => {
+    const rich: MediaStreamInfo = {
+      index: 2,
+      type: 'video',
+      codec: 'hevc',
+      codecLong: 'H.265 / HEVC',
+      codecTag: 'hvc1',
+      profile: 'Main 10',
+      level: 120,
+      width: 3840,
+      height: 2160,
+      displayAspectRatio: '16:9',
+      pixelFormat: 'yuv420p10le',
+      colorSpace: 'bt2020nc',
+      colorTransfer: 'smpte2084',
+      colorPrimaries: 'bt2020',
+      colorRange: 'tv',
+      fieldOrder: 'progressive',
+      frameRate: '59.94',
+      avgFrameRate: '50.00',
+      bitDepth: 10,
+      bitrate: '25000000',
+      duration: 60,
+      startTime: 0.5,
+      frameCount: 3000,
+      title: 'Clip',
+      language: 'eng',
+    };
+    render(<StreamDetails streams={[rich]} />);
+    expect(screen.getByText(/hvc1/)).toBeInTheDocument();
+    expect(screen.getByText(/Main 10/)).toBeInTheDocument();
+    expect(screen.getByText(/16:9/)).toBeInTheDocument();
+    expect(screen.getByText(/bt2020nc/)).toBeInTheDocument();
+    expect(screen.getByText(/smpte2084/)).toBeInTheDocument();
+    expect(screen.getByText(/progressive/)).toBeInTheDocument();
+    expect(screen.getByText(/50\.00 fps/)).toBeInTheDocument();
+    expect(screen.getByText(/60\.00s/)).toBeInTheDocument();
+    expect(screen.getByText(/Clip/)).toBeInTheDocument();
+  });
+
+  it('renders disposition chips and translates stream tags', () => {
+    render(
+      <StreamDetails
+        streams={[
+          {
+            index: 0,
+            type: 'audio',
+            codec: 'aac',
+            disposition: ['default', 'forced'],
+            tags: { language: 'eng', title: 'Commentary', handler_name: 'SoundHandler', encoder: 'libx265' },
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByText('Default')).toBeInTheDocument();
+    expect(screen.getByText('Forced')).toBeInTheDocument();
+    expect(screen.getByText(/SoundHandler/)).toBeInTheDocument();
+    expect(screen.getByText(/libx265/)).toBeInTheDocument();
+  });
+
+  it('does not duplicate language and title from raw tags', () => {
+    render(
+      <StreamDetails
+        streams={[
+          { index: 0, type: 'audio', codec: 'aac', language: 'eng', title: 'Commentary', tags: { language: 'eng', title: 'Commentary' } },
+        ]}
+      />,
+    );
+    expect(screen.getByText(/Commentary/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Commentary/)).toHaveLength(1);
+    expect(screen.getAllByText(/eng/)).toHaveLength(1);
   });
 });

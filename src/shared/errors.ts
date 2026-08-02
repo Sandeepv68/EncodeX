@@ -42,6 +42,10 @@ export function createError(code: ErrorCodeType, message: string, detail?: strin
   return new AppErrorImpl(code, message, detail);
 }
 
+export function cancelledError(detail?: string): AppError {
+  return createError(ErrorCode.CANCELLED, ERROR_MESSAGES[ErrorCode.CANCELLED], detail);
+}
+
 export function isAppError(err: unknown): err is AppError {
   if (!err || typeof err !== 'object') return false;
   const obj = err as Record<string, unknown>;

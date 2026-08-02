@@ -1,4 +1,13 @@
-import { ConversionOptions, ConversionProgress, MediaInfo, QueueJob, PlayerFrame, LogEntry, EncoderCapabilities } from '../shared/types';
+import {
+  ConversionOptions,
+  ConversionProgress,
+  MediaInfo,
+  QueueJob,
+  PlayerFrame,
+  PlayerAudioChunk,
+  LogEntry,
+  EncoderCapabilities,
+} from '../shared/types';
 
 export interface ElectronAPI {
   getPathForFile(file: File): string;
@@ -30,6 +39,7 @@ export interface ElectronAPI {
   onQueueProgress(cb: (data: { job: QueueJob; progress: ConversionProgress }) => void): () => void;
   onQueueCancelled(cb: () => void): () => void;
   onPlayerFrame(cb: (frame: PlayerFrame) => void): () => void;
+  onPlayerAudio(cb: (chunk: PlayerAudioChunk) => void): () => void;
   onLogMessage(cb: (entry: LogEntry) => void): () => void;
 }
 

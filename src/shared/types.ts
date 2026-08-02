@@ -12,6 +12,7 @@ export interface ConversionOptions {
   audioBitrate?: string;
   qscale?: number;
   scale?: string;
+  keepAspectRatio?: boolean;
   pixelFormat?: string;
   startTime?: string;
   endTime?: string;
@@ -26,24 +27,66 @@ export interface MediaStreamInfo {
   type: 'video' | 'audio' | 'subtitle';
   codec: string;
   codecLong?: string;
+  codecTag?: string;
+  profile?: string;
+  level?: number;
   width?: number;
   height?: number;
+  displayAspectRatio?: string;
   pixelFormat?: string;
+  colorRange?: string;
+  colorSpace?: string;
+  colorTransfer?: string;
+  colorPrimaries?: string;
+  fieldOrder?: string;
   frameRate?: string;
+  avgFrameRate?: string;
+  bitDepth?: number;
   bitrate?: string;
   sampleRate?: number;
+  sampleFormat?: string;
   channels?: number;
+  channelLayout?: string;
+  bitsPerSample?: number;
   duration?: number;
+  startTime?: number;
+  frameCount?: number;
   language?: string;
+  title?: string;
+  disposition?: string[];
+  tags?: Record<string, string>;
 }
 
 export interface MediaInfo {
   file: string;
   format: string;
+  formatLong?: string;
   size: number;
   duration: number;
   bitrate: string;
+  startTime?: number;
+  probeScore?: number;
   streams: MediaStreamInfo[];
+  tags?: Record<string, string>;
+}
+
+export interface ImageHistogram {
+  r: number[];
+  g: number[];
+  b: number[];
+  luma: number[];
+}
+
+export interface ImageExifData {
+  file: string;
+  exif: Record<string, string>;
+  histogram: ImageHistogram | null;
+}
+
+export interface ImageFileInfo {
+  width: number | null;
+  height: number | null;
+  size: number;
 }
 
 export interface QueueJob {
@@ -72,6 +115,12 @@ export interface PlayerFrame {
   width: number;
   height: number;
   pts: number;
+}
+
+export interface PlayerAudioChunk {
+  data: ArrayBuffer;
+  sampleRate: number;
+  channels: number;
 }
 
 export enum ConversionOperation {

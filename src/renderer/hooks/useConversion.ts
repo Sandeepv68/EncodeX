@@ -4,10 +4,11 @@ import { useConversionStore } from '../stores/conversionStore';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
 import { ConversionProgress } from '../../shared/types';
-import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import { ErrorCode } from '../../shared/errors';
 import i18n from '../i18n/config';
 import { useSettingsStore } from '../stores/settingsStore';
+import { getExtension, suggestedExtensionForVideoCodec } from '../../shared/codec-containers';
+import { DEFAULT_SUFFIX } from '../../shared/media-options';
 
 const log = new Logger('renderer/hooks/useConversion');
 
@@ -19,6 +20,7 @@ export function useConversion() {
   useEffect(() => {
     log.debug('Subscribing to conversion progress');
     const cleanup = window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
+      if (!useConversionStore.getState().isConverting) return;
       store.setProgress(data.progress);
     });
     return () => {
@@ -26,6 +28,19 @@ export function useConversion() {
       cleanup?.();
     };
   }, []);
+
+  useEffect(() => {
+    const { inputFile, outputFile, videoCodec, copyMode, outputUserSet, isConverting } = store;
+    if (isConverting || !inputFile || outputUserSet) return;
+    const inputExt = getExtension(inputFile);
+    const outputExt = copyMode ? inputExt : suggestedExtensionForVideoCodec(videoCodec);
+    if (!outputExt) return;
+    const stem = inputFile.replace(/\.[^./\\]+$/, '');
+    const suggested = `${stem}${DEFAULT_SUFFIX}.${outputExt}`;
+    if (suggested === outputFile) return;
+    log.debug('Auto-suggesting output file:', suggested);
+    store.setOutputAuto(suggested);
+  }, [store.inputFile, store.outputFile, store.videoCodec, store.copyMode, store.outputUserSet, store.isConverting]);
 
   const startConversion = useCallback(async () => {
     if (!store.inputFile) {
@@ -39,6 +54,7 @@ export function useConversion() {
       return;
     }
     log.info('startConversion:', store.inputFile, '->', store.outputFile, 'copyMode:', store.copyMode);
+    useErrorStore.getState().clearError();
     store.setIsConverting(true);
     try {
       const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
@@ -60,10 +76,11 @@ export function useConversion() {
         store.transcoder,
       );
       log.info('Conversion completed successfully');
-      store.setProgress(COMPLETED_PROGRESS);
+      store.resetForm();
       useToastStore.getState().success(i18n.t('toast.conversionComplete'));
     } catch (err: unknown) {
       log.error('Conversion failed:', err);
+      store.setProgress(null);
       showError(err);
     } finally {
       store.setIsConverting(false);

@@ -1,6 +1,7 @@
 import { Component, ReactNode, ErrorInfo } from 'react';
 import { Button } from '@mui/material';
-import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faTriangleExclamation, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Logger } from '../../shared/logger';
 import i18n from '../i18n/config';
 import { FallbackBox, FallbackPaper, WarningIcon, FallbackTitle, FallbackDescription } from '../styles/ErrorBoundary.styles';
@@ -43,7 +44,11 @@ export class ErrorBoundary extends Component<Props, State> {
             <FallbackDescription variant="body2" color="text.secondary">
               {this.state.error?.message || t('errorBoundary.description')}
             </FallbackDescription>
-            <Button variant="contained" onClick={() => this.setState({ hasError: false, error: null })}>
+            <Button
+              variant="contained"
+              startIcon={<FontAwesomeIcon icon={faRotateRight} />}
+              onClick={() => this.setState({ hasError: false, error: null })}
+            >
               {t('errorBoundary.tryAgain')}
             </Button>
           </FallbackPaper>

@@ -1,5 +1,7 @@
 import { Button, Chip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ErrorBoundary } from './ErrorBoundary';
 import ProgressBar from './ProgressBar';
 import { QUEUE_STATUS } from '../../shared/media-options';
@@ -32,7 +34,7 @@ export default function QueueJobCard({ job, onRemove }: QueueJobCardProps) {
         <JobNameText variant="body2">{basename(job.input)}</JobNameText>
         <CardActionsStack direction="row" spacing={1}>
           <Chip label={job.status} size="small" color={statusColors[job.status] || 'default'} />
-          <Button size="small" color="error" onClick={() => onRemove(job.id)}>
+          <Button size="small" color="error" startIcon={<FontAwesomeIcon icon={faTrashCan} />} onClick={() => onRemove(job.id)}>
             {t('batchQueue.remove')}
           </Button>
         </CardActionsStack>

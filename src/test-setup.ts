@@ -12,8 +12,17 @@ vi.mock('react-i18next', () => ({
         'errorBoundary.description': 'An unexpected error occurred.',
         'errorBoundary.tryAgain': 'Try Again',
         'imageCompress.selectedImage': 'Selected image: {{file}}',
+        'audioExtract.selectedVideo': 'Selected video: {{file}}',
+        'mediaInfo.exifData': 'EXIF Data',
+        'mediaInfo.noExif': 'No EXIF data found',
+        'mediaInfo.tagKeys.encoder': 'Encoder',
+        'mediaInfo.dispositionFlags.default': 'Default',
+        'mediaInfo.dispositionFlags.forced': 'Forced',
+        'mediaInfo.video': 'Video',
+        'mediaInfo.audio': 'Audio',
+        'mediaInfo.subtitle': 'Subtitle',
       };
-      let text = map[key] || key;
+      let text = map[key] || (opts?.defaultValue as string | undefined) || key;
       if (opts) {
         for (const [k, v] of Object.entries(opts)) {
           text = text.replace(new RegExp(`{{\\s*${k}\\s*}}`, 'g'), String(v));
@@ -35,6 +44,10 @@ Object.defineProperty(globalThis, 'electronAPI', {
     selectFiles: vi.fn().mockResolvedValue([]),
     selectOutput: vi.fn().mockResolvedValue(null),
     getMediaInfo: vi.fn().mockResolvedValue(EMPTY_MEDIA_INFO),
+    getImageInfo: vi.fn().mockResolvedValue(null),
+    getImagePreview: vi.fn().mockResolvedValue(null),
+    getImageFileInfo: vi.fn().mockResolvedValue(null),
+    getVideoPreview: vi.fn().mockResolvedValue(null),
     getCapabilities: vi.fn().mockResolvedValue(null),
     convertFile: vi.fn().mockResolvedValue(undefined),
     pauseConversion: vi.fn().mockResolvedValue(undefined),
@@ -59,6 +72,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     onQueueProgress: vi.fn(() => vi.fn()),
     onQueueCancelled: vi.fn(() => vi.fn()),
     onPlayerFrame: vi.fn(() => vi.fn()),
+    onPlayerAudio: vi.fn(() => vi.fn()),
     onLogMessage: vi.fn(() => vi.fn()),
   },
   writable: true,

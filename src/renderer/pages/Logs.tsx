@@ -18,6 +18,8 @@ import {
   SourceSpan,
 } from '../styles/Logs.styles';
 import { PageTitle } from '../styles/BatchQueue.styles';
+import { TitleIcon } from '../styles/PageContainer.styles';
+import { pageIcons } from '../pageIcons';
 
 const LEVEL_COLORS: Record<string, string> = {
   DEBUG: COLORS.log.debug,
@@ -53,7 +55,10 @@ export default function Logs() {
 
   return (
     <LogsRoot>
-      <PageTitle variant="h5">{t('nav.logs')}</PageTitle>
+      <PageTitle variant="h5">
+        <TitleIcon>{pageIcons['/logs']}</TitleIcon>
+        {t('nav.logs')}
+      </PageTitle>
       <LogsHeader>
         <FilterSelect size="small" value={filter} onChange={(e) => setFilter(e.target.value as string)}>
           <MenuItem value="ALL">{t('logs.levelAll')}</MenuItem>

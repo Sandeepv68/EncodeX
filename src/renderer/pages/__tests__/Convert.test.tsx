@@ -71,6 +71,19 @@ describe('Convert', () => {
     expect(useConversionStore.getState().isDirty).toBe(true);
   });
 
+  it('toggles the preview panel with the close and show buttons', async () => {
+    selectFileMock.mockResolvedValue('/in/video.mp4');
+    renderPage();
+    expect(screen.queryByText('convert.preview')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('convert.browse'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    expect(screen.getByText('convert.preview')).toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText('convert.closePreview'));
+    expect(screen.queryByText('convert.preview')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('convert.showPreview'));
+    expect(screen.getByText('convert.preview')).toBeInTheDocument();
+  });
+
   it('selects an output file via save as', async () => {
     selectOutputMock.mockResolvedValue('/out/video.mkv');
     renderPage();
@@ -108,7 +121,7 @@ describe('Convert', () => {
       'FFMPEG',
     );
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'Conversion complete')).toBe(true);
-    expect(screen.getByText('100.0%')).toBeInTheDocument();
+    expect(screen.queryByText('100.0%')).not.toBeInTheDocument();
   });
 
   it('hides the codec fields and passes copy mode when lossless copy is enabled', async () => {
@@ -261,13 +274,58 @@ describe('Convert', () => {
 
   it('shows an info tooltip explaining the encoder type dropdown', async () => {
     renderPage();
-    fireEvent.mouseEnter(screen.getByTestId('info-tooltip'));
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[3]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('convert.encoderTypeHint');
   });
+
+  it('shows an info tooltip explaining every form field', async () => {
+    renderPage();
+    const triggers = screen.getAllByTestId('info-tooltip');
+    const expected = new Set([
+      'convert.inputFileHint',
+      'convert.outputFileHint',
+      'convert.losslessCopyHint',
+      'convert.encoderTypeHint',
+      'convert.videoCodecHint',
+      'convert.audioCodecHint',
+      'convert.videoBitrateHint',
+      'convert.audioBitrateHint',
+      'convert.qscaleHint',
+      'convert.scaleHint',
+      'convert.pixelFormatHint',
+      'convert.transcoderCoreHint',
+    ]);
+    const seen = new Set<string>();
+    for (let i = 0; i < triggers.length; i += 1) {
+      fireEvent.mouseEnter(triggers[i]);
+      const tooltip = await screen.findByRole('tooltip');
+      seen.add(tooltip.textContent as string);
+      fireEvent.mouseLeave(triggers[i]);
+      await waitFor(() => expect(screen.queryByRole('tooltip')).not.toBeInTheDocument());
+    }
+    expect(seen).toEqual(expected);
+  }, 20000);
 
   it('does not show the encoder type info tooltip when hardware acceleration is disabled', () => {
     useSettingsStore.setState({ hardwareAcceleration: false });
     renderPage();
-    expect(screen.queryByTestId('info-tooltip')).not.toBeInTheDocument();
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(11);
+  });
+
+  it('shows a hardware acceleration alert above the encoder type field', () => {
+    renderPage();
+    expect(screen.getByRole('alert')).toHaveTextContent('convert.hardwareAccelAlert');
+  });
+
+  it('does not show the hardware acceleration alert when hardware acceleration is disabled', () => {
+    useSettingsStore.setState({ hardwareAcceleration: false });
+    renderPage();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('does not show the hardware acceleration alert in lossless copy mode', () => {
+    useConversionStore.setState({ copyMode: true });
+    renderPage();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 });

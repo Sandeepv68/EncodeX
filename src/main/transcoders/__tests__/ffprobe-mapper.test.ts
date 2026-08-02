@@ -8,9 +8,10 @@ describe('parseRatio', () => {
     expect(parseRatio('30000/1001')).toBe('29.97');
   });
 
-  it('returns the ratio unchanged when malformed or den is zero', () => {
-    expect(parseRatio('unknown')).toBe('unknown');
-    expect(parseRatio('0/0')).toBe('0/0');
+  it('returns undefined when malformed or den is zero', () => {
+    expect(parseRatio('unknown')).toBeUndefined();
+    expect(parseRatio('0/0')).toBeUndefined();
+    expect(parseRatio('foo/bar')).toBeUndefined();
   });
 });
 
@@ -91,5 +92,103 @@ describe('mapFfprobeData', () => {
     const info = mapFfprobeData({ streams: [{}] }, 'fallback.mp4');
     expect(info.streams[0]).toMatchObject({ index: 0, type: 'video', codec: 'unknown' });
     expect(info.streams[0].frameRate).toBeUndefined();
+  });
+
+  it('maps extended video/audio metadata and tags', () => {
+    const data: ProbeData = {
+      streams: [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'hevc',
+          codec_long_name: 'H.265 / HEVC',
+          codec_tag_string: 'hvc1',
+          profile: 'Main 10',
+          level: 120,
+          width: 3840,
+          height: 2160,
+          pix_fmt: 'yuv420p10le',
+          display_aspect_ratio: '16:9',
+          color_range: 'tv',
+          color_space: 'bt2020nc',
+          color_transfer: 'smpte2084',
+          color_primaries: 'bt2020',
+          field_order: 'progressive',
+          r_frame_rate: '60000/1001',
+          avg_frame_rate: '50/1',
+          bits_per_raw_sample: 10,
+          bit_rate: '25000000',
+          duration: 60,
+          start_time: 0.5,
+          nb_frames: 3000,
+          tags: { title: 'Clip', encoder: 'libx265' },
+          disposition: { default: 1, forced: 1, dub: 0 },
+        },
+        {
+          index: 1,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          sample_fmt: 'fltp',
+          sample_rate: 48000,
+          channels: 2,
+          channel_layout: 'stereo',
+          bits_per_sample: 32,
+          bit_rate: 128000,
+          duration: 60,
+          tags: { language: 'eng', title: 'Commentary' },
+        },
+      ],
+      format: {
+        filename: 'movie.mkv',
+        format_name: 'matroska',
+        format_long_name: 'Matroska / WebM',
+        size: 150000000,
+        duration: 60,
+        bit_rate: 20000000,
+        start_time: 0.5,
+        probe_score: 100,
+        tags: { encoder: 'libx265', creation_time: '2024-01-01T00:00:00Z' },
+      },
+    };
+    const info = mapFfprobeData(data, 'fallback.mkv');
+    expect(info.formatLong).toBe('Matroska / WebM');
+    expect(info.startTime).toBe(0.5);
+    expect(info.probeScore).toBe(100);
+    expect(info.tags).toEqual({ encoder: 'libx265', creation_time: '2024-01-01T00:00:00Z' });
+    expect(info.streams[0]).toMatchObject({
+      codecTag: 'hvc1',
+      profile: 'Main 10',
+      level: 120,
+      displayAspectRatio: '16:9',
+      colorRange: 'tv',
+      colorSpace: 'bt2020nc',
+      colorTransfer: 'smpte2084',
+      colorPrimaries: 'bt2020',
+      fieldOrder: 'progressive',
+      avgFrameRate: '50.00',
+      bitDepth: 10,
+      startTime: 0.5,
+      frameCount: 3000,
+      title: 'Clip',
+      disposition: ['default', 'forced'],
+      tags: { title: 'Clip', encoder: 'libx265' },
+    });
+    expect(info.streams[1]).toMatchObject({
+      sampleFormat: 'fltp',
+      channelLayout: 'stereo',
+      bitsPerSample: 32,
+      title: 'Commentary',
+      language: 'eng',
+    });
+  });
+
+  it('omits optional metadata when absent', () => {
+    const info = mapFfprobeData({ streams: [{ codec_type: 'video', codec_name: 'h264' }], format: { format_name: 'mp4' } }, 'fallback.mp4');
+    expect(info.formatLong).toBeUndefined();
+    expect(info.probeScore).toBeUndefined();
+    expect(info.tags).toBeUndefined();
+    expect(info.streams[0].displayAspectRatio).toBeUndefined();
+    expect(info.streams[0].disposition).toBeUndefined();
+    expect(info.streams[0].tags).toBeUndefined();
   });
 });

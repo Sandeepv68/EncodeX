@@ -9,6 +9,9 @@ describe('IPC channels', () => {
     expect(IPC.SELECT_FILES).toBe('select-files');
     expect(IPC.SELECT_OUTPUT).toBe('select-output');
     expect(IPC.GET_MEDIA_INFO).toBe('get-media-info');
+    expect(IPC.GET_IMAGE_INFO).toBe('get-image-info');
+    expect(IPC.GET_IMAGE_PREVIEW).toBe('get-image-preview');
+    expect(IPC.GET_IMAGE_FILE_INFO).toBe('get-image-file-info');
     expect(IPC.CONVERT_FILE).toBe('convert-file');
     expect(IPC.CANCEL_CONVERSION).toBe('cancel-conversion');
     expect(IPC.PAUSE_CONVERSION).toBe('pause-conversion');
