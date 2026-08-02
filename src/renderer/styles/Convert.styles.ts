@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Stack, Typography, Alert, Paper } from '@mui/material';
+import { Box, Stack, Typography, Alert, Paper, Divider } from '@mui/material';
 import { COLORS, SHADOWS } from '../colors';
 
 export const AccelAlert = styled(Alert)(({}) => ({
@@ -55,6 +55,11 @@ export const PreviewHeader = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'space-between',
   gap: theme.spacing(1),
+}));
+
+export const PreviewDivider = styled(Divider)(({ theme }) => ({
+  marginLeft: -theme.spacing(2),
+  marginRight: -theme.spacing(2),
 }));
 
 export const PreviewSectionTitle = styled(Typography)(({ theme }) => ({
