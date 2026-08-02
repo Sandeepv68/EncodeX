@@ -12,6 +12,7 @@ const { ffmpegMock, setFfmpegPathMock, setFfprobePathMock, existsSyncMock, suspe
         'videoBitrate',
         'audioBitrate',
         'size',
+        'videoFilters',
         'setStartTime',
         'seekOutput',
         'duration',
@@ -196,6 +197,30 @@ describe('FfmpegCore', () => {
     core.convert('in.mp4', 'out.mp4', { videoCodec: 'libx264', pixelFormat: 'yuv420p' });
     const cmd = getCommand();
     expect(cmd.outputOptions).not.toHaveBeenCalledWith('-color_range', 'full');
+  });
+
+  it('uses the scale filter when keepAspectRatio is enabled', () => {
+    const core = new FfmpegCore();
+    core.convert('in.png', 'out.png', { scale: '1280x720', keepAspectRatio: true });
+    const cmd = getCommand();
+    expect(cmd.size).not.toHaveBeenCalled();
+    expect(cmd.videoFilters).toHaveBeenCalledWith('scale=1280:-2');
+  });
+
+  it('uses exact dimensions when keepAspectRatio is disabled', () => {
+    const core = new FfmpegCore();
+    core.convert('in.png', 'out.png', { scale: '1280x720', keepAspectRatio: false });
+    const cmd = getCommand();
+    expect(cmd.size).toHaveBeenCalledWith('1280x720');
+    expect(cmd.videoFilters).not.toHaveBeenCalled();
+  });
+
+  it('uses exact dimensions by default when keepAspectRatio is unset', () => {
+    const core = new FfmpegCore();
+    core.convert('in.png', 'out.png', { scale: '1280x720' });
+    const cmd = getCommand();
+    expect(cmd.size).toHaveBeenCalledWith('1280x720');
+    expect(cmd.videoFilters).not.toHaveBeenCalled();
   });
 
   it('emits progress with percent when provided', () => {

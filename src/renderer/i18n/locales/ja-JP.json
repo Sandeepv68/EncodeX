@@ -181,7 +181,15 @@
     "placeholderOutput": "出力パス",
     "placeholderScale": "例: 800x600",
     "validationRequired": "入力画像を選択してください。",
-    "selectedImage": "選択した画像: {{file}}"
+    "selectedImage": "選択した画像: {{file}}",
+    "inputImageHint": "圧縮する元の画像。JPEG、PNG、WebP、BMP に対応しています。",
+    "outputFileHint": "圧縮画像の保存先。拡張子は選択した形式に従います。",
+    "outputFormatHint": "画像の変換先フォーマット。JPEG はファイルが最も小さく、PNG は可逆です。",
+    "qualityHint": "圧縮品質。値が低いほどファイルは小さくなりますが、劣化が目立ちます。",
+    "scaleHint": "出力解像度のプリセット。標準サイズを選ぶか、'スケーリングなし'を選んで元のままにします。",
+    "keepAspectRatio": "縦横比を維持",
+    "keepAspectRatioHint": "有効にすると元の縦横比を維持し、無効にすると指定の解像度に引き伸ばします。",
+    "noScale": "スケーリングなし"
   },
   "audioExtract": {
     "title": "音声抽出",

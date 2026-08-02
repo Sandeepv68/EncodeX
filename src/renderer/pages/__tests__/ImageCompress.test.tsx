@@ -32,8 +32,14 @@ describe('ImageCompress', () => {
     expect(screen.getByText('imageCompress.outputFormat')).toBeInTheDocument();
     expect(screen.getByText('imageCompress.quality')).toBeInTheDocument();
     expect(screen.getByText('imageCompress.scale')).toBeInTheDocument();
+    expect(screen.getByText('imageCompress.keepAspectRatio')).toBeInTheDocument();
     expect(screen.getByText('imageCompress.compress')).toBeInTheDocument();
     expect(screen.getByText('imageCompress.dropLabel')).toBeInTheDocument();
+  });
+
+  it('shows a tooltip for each field', () => {
+    renderPage();
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(6);
   });
 
   it('shows a validation error when the output field is blurred empty', () => {
@@ -51,12 +57,42 @@ describe('ImageCompress', () => {
     expect(screen.getByText('validation.qualityRange')).toBeInTheDocument();
   });
 
-  it('shows a validation error for an invalid scale value', () => {
+  it('lets the user pick a standard scale and compress', async () => {
+    selectFileMock.mockResolvedValue('/in/photo.png');
+    convertFileMock.mockResolvedValue(undefined);
     renderPage();
-    const scale = screen.getByPlaceholderText('imageCompress.placeholderScale');
-    fireEvent.change(scale, { target: { value: 'not-a-scale' } });
-    fireEvent.blur(scale);
-    expect(screen.getByText('validation.invalidScale')).toBeInTheDocument();
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    expect(screen.getByText('imageCompress.noScale')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('1920x1080'));
+    fireEvent.click(screen.getByText('imageCompress.dropLabel'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    fireEvent.change(screen.getByPlaceholderText('imageCompress.placeholderOutput'), { target: { value: '/out/photo.jpg' } });
+    fireEvent.click(screen.getByText('imageCompress.compress'));
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+    expect(convertFileMock).toHaveBeenCalledWith(
+      '/in/photo.png',
+      '/out/photo.jpg',
+      { videoCodec: 'mjpeg', qscale: 23, scale: '1920x1080', pixelFormat: 'yuv420p', keepAspectRatio: true },
+      'FFMPEG',
+    );
+  });
+
+  it('passes keepAspectRatio: false when the toggle is switched off', async () => {
+    selectFileMock.mockResolvedValue('/in/photo.png');
+    convertFileMock.mockResolvedValue(undefined);
+    renderPage();
+    fireEvent.click(screen.getByRole('switch'));
+    fireEvent.click(screen.getByText('imageCompress.dropLabel'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    fireEvent.change(screen.getByPlaceholderText('imageCompress.placeholderOutput'), { target: { value: '/out/photo.jpg' } });
+    fireEvent.click(screen.getByText('imageCompress.compress'));
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+    expect(convertFileMock).toHaveBeenCalledWith(
+      '/in/photo.png',
+      '/out/photo.jpg',
+      { videoCodec: 'mjpeg', qscale: 23, scale: undefined, pixelFormat: 'yuv420p', keepAspectRatio: false },
+      'FFMPEG',
+    );
   });
 
   it('shows the selected image after choosing one via the dropzone', async () => {
@@ -160,7 +196,7 @@ describe('ImageCompress', () => {
     expect(convertFileMock).toHaveBeenCalledWith(
       '/in/photo.png',
       '/out/photo.jpg',
-      { videoCodec: 'mjpeg', qscale: 23, scale: undefined, pixelFormat: 'yuv420p' },
+      { videoCodec: 'mjpeg', qscale: 23, scale: undefined, pixelFormat: 'yuv420p', keepAspectRatio: true },
       'FFMPEG',
     );
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'toast.imageCompressed')).toBe(true);
@@ -213,7 +249,7 @@ describe('ImageCompress', () => {
     expect(convertFileMock).toHaveBeenCalledWith(
       '/in/photo.jpg',
       '/out/photo.png',
-      { videoCodec: 'png', qscale: 23, scale: undefined, pixelFormat: 'yuv420p' },
+      { videoCodec: 'png', qscale: 23, scale: undefined, pixelFormat: 'yuv420p', keepAspectRatio: true },
       'FFMPEG',
     );
   });

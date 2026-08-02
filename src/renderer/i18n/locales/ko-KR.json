@@ -181,7 +181,15 @@
     "placeholderOutput": "출력 경로",
     "placeholderScale": "예: 800x600",
     "validationRequired": "입력 이미지를 선택하세요.",
-    "selectedImage": "선택한 이미지: {{file}}"
+    "selectedImage": "선택한 이미지: {{file}}",
+    "inputImageHint": "압축할 원본 이미지입니다. JPEG, PNG, WebP, BMP를 지원합니다.",
+    "outputFileHint": "압축된 이미지를 저장할 위치입니다. 확장자는 선택한 형식을 따릅니다.",
+    "outputFormatHint": "이미지가 변환되는 형식입니다. JPEG는 파일이 가장 작고 PNG는 무손실입니다.",
+    "qualityHint": "압축 품질입니다. 값이 낮을수록 파일은 작아지지만 손상이 더 잘 보입니다.",
+    "scaleHint": "출력 해상도 사전 설정입니다. 표준 크기를 선택하거나 '크기 조절 안 함'을 선택해 원본을 유지합니다.",
+    "keepAspectRatio": "가로세로 비율 유지",
+    "keepAspectRatioHint": "활성화하면 원본 비율을 유지하고, 비활성화하면 정확한 해상도로 늘립니다.",
+    "noScale": "크기 조절 안 함"
   },
   "audioExtract": {
     "title": "오디오 추출",

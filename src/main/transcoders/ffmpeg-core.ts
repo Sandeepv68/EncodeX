@@ -98,8 +98,13 @@ export class FfmpegCore implements ITranscoder {
         cmd.outputOptions(`${FFMPEG_FLAGS.QSCALE} ${options.qscale}`);
       }
       if (options.scale) {
-        log.debug('Scale:', options.scale);
-        cmd.size(options.scale);
+        if (options.keepAspectRatio) {
+          log.debug('Scale (keep aspect ratio):', options.scale);
+          cmd.videoFilters(`${FFMPEG_FLAGS.SCALE}${options.scale.replace(/x.*$/, ':-2')}`);
+        } else {
+          log.debug('Scale:', options.scale);
+          cmd.size(options.scale);
+        }
       }
       if (options.pixelFormat) {
         log.debug('Pixel format:', options.pixelFormat);

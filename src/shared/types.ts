@@ -12,6 +12,7 @@ export interface ConversionOptions {
   audioBitrate?: string;
   qscale?: number;
   scale?: string;
+  keepAspectRatio?: boolean;
   pixelFormat?: string;
   startTime?: string;
   endTime?: string;

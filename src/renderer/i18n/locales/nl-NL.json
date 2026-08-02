@@ -181,7 +181,15 @@
     "placeholderOutput": "uitvoerpad",
     "placeholderScale": "bijv. 800x600",
     "validationRequired": "Selecteer een invoerafbeelding.",
-    "selectedImage": "Geselecteerde afbeelding: {{file}}"
+    "selectedImage": "Geselecteerde afbeelding: {{file}}",
+    "inputImageHint": "De bronafbeelding om te comprimeren. JPEG, PNG, WebP en BMP worden ondersteund.",
+    "outputFileHint": "Waar u de gecomprimeerde afbeelding opslaat. De extensie volgt het gekozen formaat.",
+    "outputFormatHint": "Het formaat waarnaar de afbeelding wordt geconverteerd. JPEG geeft de kleinste bestanden, PNG is verliesvrij.",
+    "qualityHint": "Compressiekwaliteit. Lagere waarden geven kleinere bestanden maar zichtbaardere artefacten.",
+    "scaleHint": "Voorinstelling uitvoerresolutie. Kies een standaardgrootte of behoud het origineel met 'Geen schaling'.",
+    "keepAspectRatio": "Beeldverhouding behouden",
+    "keepAspectRatioHint": "Ingeschakeld: de afbeelding behoudt zijn oorspronkelijke verhoudingen; uitgeschakeld: hij wordt uitgerekt naar de exacte resolutie.",
+    "noScale": "Geen schaling"
   },
   "audioExtract": {
     "title": "Audio extraheren",

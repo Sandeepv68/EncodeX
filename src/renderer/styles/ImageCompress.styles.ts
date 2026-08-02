@@ -10,6 +10,25 @@ export const FieldLabel = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+export const ToggleRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  marginTop: theme.spacing(0.5),
+  '& .MuiTypography-root.MuiTypography-caption': {
+    fontWeight: theme.typography.fontWeightBold,
+    color: theme.palette.text.secondary,
+  },
+}));
+
+export const ToggleSpacer = styled(Box)(({ theme }) => ({
+  display: 'none',
+  [theme.breakpoints.up('sm')]: {
+    display: 'block',
+    height: theme.spacing(2.5),
+  },
+}));
+
 export const PreviewBox = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(1.5),
   display: 'flex',

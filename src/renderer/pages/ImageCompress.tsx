@@ -1,29 +1,32 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, TextField, MenuItem, Button, Stack, Typography } from '@mui/material';
+import { Box, TextField, MenuItem, Button, Stack, Typography, Switch } from '@mui/material';
 import { faCompress, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FileDropZone from '../components/FileDropZone';
 import ProgressBar from '../components/ProgressBar';
 import PageContainer from '../components/PageContainer';
 import FilePathField from '../components/FilePathField';
+import InfoTooltip from '../components/InfoTooltip';
 import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
 import { ErrorCode } from '../../shared/errors';
-import { IMAGE_FORMATS, IMAGE_CODEC_MAP } from '../../shared/media-options';
+import { IMAGE_FORMATS, IMAGE_CODEC_MAP, SCALE_OPTIONS } from '../../shared/media-options';
 import { IMAGE_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { TRANSCODER_TYPES, CONVERSION_DEFAULTS, QSCALE_RANGE } from '../../shared/transcoder-constants';
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
-import { isValidScale, isInRange } from '../../shared/validation';
+import { isInRange } from '../../shared/validation';
 import { formatSize } from '../utils/formatters';
 import type { ImageFileInfo } from '../../shared/types';
 import {
   FieldBox,
   FieldLabel,
+  ToggleRow,
+  ToggleSpacer,
   PreviewBox,
   PreviewImage,
   PreviewImageBox,
@@ -53,6 +56,7 @@ export default function ImageCompress() {
   const [format, setFormat] = useState<string>(IMAGE_FORMATS[0].value);
   const [quality, setQuality] = useState<number>(CONVERSION_DEFAULTS.QSCALE);
   const [scale, setScale] = useState('');
+  const [keepAspectRatio, setKeepAspectRatio] = useState(true);
   const { progress, setProgress, isConverting, runTask } = useMediaTask();
   const { errors, setErrors, clearFieldError, setFieldError } = useFormErrors();
   const showErrorMessage = useErrorStore((s) => s.showErrorMessage);
@@ -89,7 +93,6 @@ export default function ImageCompress() {
     const next: Record<string, string> = {};
     if (!output.trim()) next.output = t('validation.outputRequired');
     if (!isInRange(quality, QSCALE_RANGE.MIN, QSCALE_RANGE.MAX)) next.quality = t('validation.qualityRange');
-    if (scale && !isValidScale(scale)) next.scale = t('validation.invalidScale');
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -113,6 +116,7 @@ export default function ImageCompress() {
           videoCodec: IMAGE_CODEC_MAP[format],
           qscale: quality,
           scale: scale || undefined,
+          keepAspectRatio,
           pixelFormat: CONVERSION_DEFAULTS.PIXEL_FORMAT,
         },
         transcoder,
@@ -127,6 +131,7 @@ export default function ImageCompress() {
       <Box>
         <FieldLabel variant="caption" color="text.secondary">
           {t('imageCompress.inputImage')}
+          <InfoTooltip title={t('imageCompress.inputImageHint')} />
         </FieldLabel>
         {!input && (
           <ErrorBoundary fallback={null}>
@@ -171,6 +176,7 @@ export default function ImageCompress() {
 
       <FilePathField
         label={t('imageCompress.outputFile')}
+        hint={t('imageCompress.outputFileHint')}
         value={output}
         placeholder={t('imageCompress.placeholderOutput')}
         buttonLabel={t('convert.browse')}
@@ -192,6 +198,7 @@ export default function ImageCompress() {
         <FieldBox>
           <FieldLabel variant="caption" color="text.secondary">
             {t('imageCompress.outputFormat')}
+            <InfoTooltip title={t('imageCompress.outputFormatHint')} />
           </FieldLabel>
           <TextField select fullWidth size="small" value={format} onChange={(e) => handleFormatChange(e.target.value)}>
             {IMAGE_FORMATS.map((f) => (
@@ -204,6 +211,7 @@ export default function ImageCompress() {
         <FieldBox>
           <FieldLabel variant="caption" color="text.secondary">
             {t('imageCompress.quality')}
+            <InfoTooltip title={t('imageCompress.qualityHint')} />
           </FieldLabel>
           <TextField
             fullWidth
@@ -224,26 +232,36 @@ export default function ImageCompress() {
         </FieldBox>
       </Stack>
 
-      <Box>
-        <FieldLabel variant="caption" color="text.secondary">
-          {t('imageCompress.scale')}
-        </FieldLabel>
-        <TextField
-          fullWidth
-          size="small"
-          error={!!errors.scale}
-          helperText={errors.scale || ' '}
-          value={scale}
-          onChange={(e) => {
-            setScale(e.target.value);
-            clearFieldError('scale');
-          }}
-          onBlur={() => {
-            if (scale && !isValidScale(scale)) setFieldError('scale', t('validation.invalidScale'));
-          }}
-          placeholder={t('imageCompress.placeholderScale')}
-        />
-      </Box>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+        <FieldBox>
+          <FieldLabel variant="caption" color="text.secondary">
+            {t('imageCompress.scale')}
+            <InfoTooltip title={t('imageCompress.scaleHint')} />
+          </FieldLabel>
+          <TextField select fullWidth size="small" value={scale} onChange={(e) => setScale(e.target.value)}>
+            <MenuItem value="">{t('imageCompress.noScale')}</MenuItem>
+            {SCALE_OPTIONS.filter((s) => s !== '').map((s) => (
+              <MenuItem key={s} value={s}>
+                {s}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FieldBox>
+        <FieldBox>
+          <ToggleSpacer />
+          <ToggleRow data-testid="keep-aspect-ratio-row">
+            <Switch
+              checked={keepAspectRatio}
+              onChange={(e) => setKeepAspectRatio(e.target.checked)}
+              size="small"
+              inputProps={{ 'aria-label': t('imageCompress.keepAspectRatio') }}
+              data-testid="keep-aspect-ratio"
+            />
+            <Typography variant="caption">{t('imageCompress.keepAspectRatio')}</Typography>
+            <InfoTooltip title={t('imageCompress.keepAspectRatioHint')} />
+          </ToggleRow>
+        </FieldBox>
+      </Stack>
 
       <Button
         variant="contained"

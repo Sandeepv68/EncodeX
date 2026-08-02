@@ -181,7 +181,15 @@
     "placeholderOutput": "Ausgabepfad",
     "placeholderScale": "z.B. 800x600",
     "validationRequired": "Bitte wählen Sie ein Eingabebild aus.",
-    "selectedImage": "Ausgewähltes Bild: {{file}}"
+    "selectedImage": "Ausgewähltes Bild: {{file}}",
+    "inputImageHint": "Das Quellbild für die Komprimierung. Unterstützt werden JPEG, PNG, WebP und BMP.",
+    "outputFileHint": "Zielort für das komprimierte Bild. Die Erweiterung folgt dem gewählten Format.",
+    "outputFormatHint": "Das Format, in das das Bild konvertiert wird. JPEG ergibt die kleinsten Dateien, PNG ist verlustfrei.",
+    "qualityHint": "Komprimierungsqualität. Niedrigere Werte ergeben kleinere Dateien, aber sichtbarere Artefakte.",
+    "scaleHint": "Voreingestellte Ausgabeauflösung. Wählen Sie eine Standardgröße oder behalten Sie das Original mit 'Keine Skalierung'.",
+    "keepAspectRatio": "Seitenverhältnis beibehalten",
+    "keepAspectRatioHint": "Wenn aktiviert, behält das Bild sein ursprüngliches Seitenverhältnis; deaktiviert wird es auf die exakte Auflösung gestreckt.",
+    "noScale": "Keine Skalierung"
   },
   "audioExtract": {
     "title": "Audio extrahieren",

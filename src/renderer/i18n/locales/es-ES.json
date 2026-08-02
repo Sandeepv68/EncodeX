@@ -181,7 +181,15 @@
     "placeholderOutput": "ruta de salida",
     "placeholderScale": "ej. 800x600",
     "validationRequired": "Seleccione una imagen de entrada.",
-    "selectedImage": "Imagen seleccionada: {{file}}"
+    "selectedImage": "Imagen seleccionada: {{file}}",
+    "inputImageHint": "La imagen de origen para comprimir. Se admiten JPEG, PNG, WebP y BMP.",
+    "outputFileHint": "Dónde guardar la imagen comprimida. La extensión sigue el formato seleccionado.",
+    "outputFormatHint": "El formato al que se convierte la imagen. JPEG genera los archivos más pequeños; PNG no tiene pérdida.",
+    "qualityHint": "Calidad de compresión. Los valores más bajos producen archivos más pequeños pero artefactos más visibles.",
+    "scaleHint": "Resolución de salida predefinida. Elija un tamaño estándar o mantenga el original seleccionando 'Sin escala'.",
+    "keepAspectRatio": "Mantener proporción",
+    "keepAspectRatioHint": "Activado: la imagen conserva sus proporciones originales; desactivado: se estira a la resolución exacta.",
+    "noScale": "Sin escala"
   },
   "audioExtract": {
     "title": "Extraer Audio",

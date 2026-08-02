@@ -181,7 +181,15 @@
     "placeholderOutput": "jalur output",
     "placeholderScale": "mis. 800x600",
     "validationRequired": "Silakan pilih gambar masukan.",
-    "selectedImage": "Gambar yang dipilih: {{file}}"
+    "selectedImage": "Gambar yang dipilih: {{file}}",
+    "inputImageHint": "Gambar sumber yang akan dikompres. JPEG, PNG, WebP, dan BMP didukung.",
+    "outputFileHint": "Tempat menyimpan gambar yang dikompres. Ekstensi mengikuti format yang dipilih.",
+    "outputFormatHint": "Format konversi gambar. JPEG menghasilkan file terkecil, PNG lossless.",
+    "qualityHint": "Kualitas kompresi. Nilai lebih rendah menghasilkan file lebih kecil tetapi artefak lebih terlihat.",
+    "scaleHint": "Prasekolah resolusi keluaran. Pilih ukuran standar atau pertahankan aslinya dengan memilih 'Tanpa penskalaan'.",
+    "keepAspectRatio": "Pertahankan rasio aspek",
+    "keepAspectRatioHint": "Saat aktif, gambar mempertahankan proporsi aslinya; saat nonaktif, gambar diregangkan ke resolusi yang tepat.",
+    "noScale": "Tanpa penskalaan"
   },
   "audioExtract": {
     "title": "Ekstrak Audio",

@@ -181,7 +181,15 @@
     "placeholderOutput": "utdatasökväg",
     "placeholderScale": "t.ex. 800x600",
     "validationRequired": "Välj en ingångsbild.",
-    "selectedImage": "Vald bild: {{file}}"
+    "selectedImage": "Vald bild: {{file}}",
+    "inputImageHint": "Källbilden som ska komprimeras. JPEG, PNG, WebP och BMP stöds.",
+    "outputFileHint": "Var den komprimerade bilden ska sparas. Filtillägget följer valt format.",
+    "outputFormatHint": "Formatet som bilden konverteras till. JPEG ger minst filstorlek, PNG är förlustfritt.",
+    "qualityHint": "Komprimeringskvalitet. Lägre värden ger mindre filer men mer synliga artefakter.",
+    "scaleHint": "Förinställd utskriftsupplösning. Välj en standardstorlek eller behåll originalet med 'Ingen skalning'.",
+    "keepAspectRatio": "Behåll bildförhållande",
+    "keepAspectRatioHint": "Aktiverad: bilden behåller sina ursprungliga proportioner; avaktiverad: den sträcks till exakt upplösning.",
+    "noScale": "Ingen skalning"
   },
   "audioExtract": {
     "title": "Extrahera ljud",
