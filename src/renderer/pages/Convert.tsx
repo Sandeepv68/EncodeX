@@ -83,6 +83,7 @@ export default function Convert() {
     setCopyMode,
     setTranscoder,
     setEncoderType,
+    setOutputFile,
     startConversion,
     pauseConversion,
     resumeConversion,
@@ -101,7 +102,12 @@ export default function Convert() {
   const outputExt = getExtension(outputFile || '');
   const suggestedOutputExt = suggestedExtensionForVideoCodec(videoCodec);
   const showCompatWarning =
-    !copyMode && !isConverting && !!outputFile && !!outputExt && outputUserSet && !isExtensionCompatibleWithVideoCodec(outputExt, videoCodec);
+    !copyMode &&
+    !isConverting &&
+    !!outputFile &&
+    !!outputExt &&
+    outputUserSet &&
+    !isExtensionCompatibleWithVideoCodec(outputExt, videoCodec);
 
   const applySuggestedExtension = () => {
     if (!outputFile) return;

@@ -5,8 +5,8 @@ export const ToggleRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(1),
-  "& .MuiTypography-root": {
+  '& .MuiTypography-root': {
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.text.secondary,
-  }
+  },
 }));

@@ -2,12 +2,12 @@ import { styled } from '@mui/material/styles';
 import { Box, Stack, Typography, Alert } from '@mui/material';
 import { COLORS } from '../colors';
 
-export const AccelAlert = styled(Alert)(({ }) => ({
+export const AccelAlert = styled(Alert)(({}) => ({
   fontWeight: 500,
   color: COLORS.alert.info,
 }));
 
-export const CompatAlert = styled(Alert)(({ }) => ({
+export const CompatAlert = styled(Alert)(({}) => ({
   fontWeight: 500,
   color: COLORS.alert.warning,
 }));

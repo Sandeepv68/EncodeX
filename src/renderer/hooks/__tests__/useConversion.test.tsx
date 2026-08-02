@@ -20,6 +20,7 @@ function resetStores(): void {
   useConversionStore.setState({
     inputFile: null,
     outputFile: null,
+    outputUserSet: false,
     videoCodec: 'libx264',
     audioCodec: 'aac',
     videoBitrate: '2000k',
@@ -86,7 +87,7 @@ describe('useConversion', () => {
   });
 
   it('shows an error when no output file is selected', async () => {
-    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: null });
+    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: null, outputUserSet: true });
     const { result } = renderHook(() => useConversion());
     await act(async () => {
       await result.current.startConversion();
@@ -95,8 +96,26 @@ describe('useConversion', () => {
     expect(useErrorStore.getState().currentError?.code).toBe(ErrorCode.OUTPUT_NOT_SPECIFIED);
   });
 
+  it('auto-suggests an output file when none is user-set', () => {
+    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: null, outputUserSet: false });
+    renderHook(() => useConversion());
+    expect(useConversionStore.getState().outputFile).toBe('in_converted.mp4');
+  });
+
+  it('auto-suggests an output file preserving the input extension in copy mode', () => {
+    useConversionStore.setState({ inputFile: 'video.webm', outputFile: null, outputUserSet: false, copyMode: true });
+    renderHook(() => useConversion());
+    expect(useConversionStore.getState().outputFile).toBe('video_converted.webm');
+  });
+
+  it('does not override an output file the user set', () => {
+    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mkv', outputUserSet: true });
+    renderHook(() => useConversion());
+    expect(useConversionStore.getState().outputFile).toBe('out.mkv');
+  });
+
   it('starts a conversion with codec options and completes', async () => {
-    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mp4', transcoder: 'FFMPEG' });
+    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mp4', outputUserSet: true, transcoder: 'FFMPEG' });
     const { result } = renderHook(() => useConversion());
     await act(async () => {
       await result.current.startConversion();
@@ -124,7 +143,7 @@ describe('useConversion', () => {
   });
 
   it('omits codec options in copy mode', async () => {
-    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mp4', copyMode: true });
+    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mp4', outputUserSet: true, copyMode: true });
     const { result } = renderHook(() => useConversion());
     await act(async () => {
       await result.current.startConversion();

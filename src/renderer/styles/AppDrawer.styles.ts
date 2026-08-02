@@ -29,5 +29,5 @@ export const NavItemIcon = styled(ListItemIcon, {
 }));
 
 export const NavItemText = styled(ListItemText)(({ theme }) => ({
-  '& .MuiListItemText-primary': { fontSize: theme.typography.pxToRem(14), fontWeight:500 , color: theme.palette.text.secondary },
+  '& .MuiListItemText-primary': { fontSize: theme.typography.pxToRem(14), fontWeight: 500, color: theme.palette.text.secondary },
 }));
