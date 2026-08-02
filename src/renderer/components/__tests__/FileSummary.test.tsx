@@ -57,7 +57,7 @@ describe('FileSummary', () => {
   it('renders file tags when present', () => {
     render(<FileSummary info={{ ...info, tags: { encoder: 'libx265', creation_time: '2024-01-01' } }} />);
     expect(screen.getByText('mediaInfo.tags')).toBeInTheDocument();
-    expect(screen.getByText('encoder')).toBeInTheDocument();
+    expect(screen.getByText('Encoder')).toBeInTheDocument();
     expect(screen.getByText('libx265')).toBeInTheDocument();
     expect(screen.getByText('creation_time')).toBeInTheDocument();
   });

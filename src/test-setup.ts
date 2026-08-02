@@ -12,8 +12,9 @@ vi.mock('react-i18next', () => ({
         'errorBoundary.description': 'An unexpected error occurred.',
         'errorBoundary.tryAgain': 'Try Again',
         'imageCompress.selectedImage': 'Selected image: {{file}}',
+        'mediaInfo.tagKeys.encoder': 'Encoder',
       };
-      let text = map[key] || key;
+      let text = map[key] || (opts?.defaultValue as string | undefined) || key;
       if (opts) {
         for (const [k, v] of Object.entries(opts)) {
           text = text.replace(new RegExp(`{{\\s*${k}\\s*}}`, 'g'), String(v));

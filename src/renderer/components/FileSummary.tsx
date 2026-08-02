@@ -54,7 +54,7 @@ export default function FileSummary({ info }: FileSummaryProps) {
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={key}>
                 <TagItem>
                   <TagKey variant="caption" color="text.secondary">
-                    {key}
+                    {t(`mediaInfo.tagKeys.${key}`, { defaultValue: key })}
                   </TagKey>
                   <Tooltip title={value} placement="top" arrow>
                     <TagValue variant="body2" noWrap>
