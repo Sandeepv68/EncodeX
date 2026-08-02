@@ -66,6 +66,7 @@ describe('preload', () => {
     ['selectFiles', IPC.SELECT_FILES, [undefined]],
     ['selectOutput', IPC.SELECT_OUTPUT, []],
     ['getMediaInfo', IPC.GET_MEDIA_INFO, ['in.mp4', 'FFMPEG']],
+    ['getImageInfo', IPC.GET_IMAGE_INFO, ['in.jpg']],
     ['getCapabilities', IPC.GET_CAPABILITIES, []],
     ['convertFile', IPC.CONVERT_FILE, ['in.mp4', 'out.mp4', {}, 'FFMPEG']],
     ['pauseConversion', IPC.PAUSE_CONVERSION, []],

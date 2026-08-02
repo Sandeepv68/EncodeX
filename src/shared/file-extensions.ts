@@ -118,3 +118,9 @@ export const FILE_FILTERS = {
 export const IMAGE_DROPZONE_ACCEPT = 'jpg,jpeg,png,webp,bmp';
 
 export const VIDEO_DROPZONE_ACCEPT = 'mp4,avi,mkv,mov,flv,wmv,webm';
+
+export function isImageFile(filePath: string): boolean {
+  const idx = filePath.lastIndexOf('.');
+  const ext = idx >= 0 ? filePath.slice(idx + 1).toLowerCase() : '';
+  return IMAGE_EXTENSIONS.includes(ext as (typeof IMAGE_EXTENSIONS)[number]);
+}

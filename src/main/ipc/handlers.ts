@@ -7,6 +7,7 @@ import { registerQueueHandlers } from './queue';
 import { registerPlayerHandlers } from './player';
 import { registerWindowHandlers } from './window';
 import { registerCapabilityHandlers } from './capabilities';
+import { registerImageHandlers } from './image';
 
 const log = new Logger('main/ipc/handlers');
 
@@ -19,4 +20,5 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   registerQueueHandlers(win, send);
   registerPlayerHandlers(win, send);
   registerWindowHandlers(win);
+  registerImageHandlers();
 }

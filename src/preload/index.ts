@@ -8,6 +8,7 @@ import {
   PlayerFrame,
   PlayerAudioChunk,
   MediaInfo,
+  ImageExifData,
   LogEntry,
   EncoderCapabilities,
 } from '../shared/types';
@@ -33,6 +34,10 @@ const api = {
   getMediaInfo: (filePath: string, transcoderType: string) => {
     log.info('getMediaInfo:', filePath, 'transcoder:', transcoderType);
     return ipcRenderer.invoke(IPC.GET_MEDIA_INFO, filePath, transcoderType) as Promise<MediaInfo>;
+  },
+  getImageInfo: (filePath: string) => {
+    log.info('getImageInfo:', filePath);
+    return ipcRenderer.invoke(IPC.GET_IMAGE_INFO, filePath) as Promise<ImageExifData | null>;
   },
   getCapabilities: () => {
     log.debug('getCapabilities called');

@@ -69,6 +69,19 @@ export interface MediaInfo {
   tags?: Record<string, string>;
 }
 
+export interface ImageHistogram {
+  r: number[];
+  g: number[];
+  b: number[];
+  luma: number[];
+}
+
+export interface ImageExifData {
+  file: string;
+  exif: Record<string, string>;
+  histogram: ImageHistogram | null;
+}
+
 export interface QueueJob {
   id: string;
   input: string;
