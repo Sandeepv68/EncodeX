@@ -18,6 +18,8 @@ export const FFMPEG_FLAGS = {
   VIDEO_FILTER: '-vf',
   SCALE: 'scale=',
   PIX_FMT: '-pix_fmt',
+  COLOR_RANGE: '-color_range',
+  COLOR_RANGE_FULL: 'full',
   START: '-ss',
   END: '-to',
   DURATION: '-t',

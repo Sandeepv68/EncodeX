@@ -105,6 +105,10 @@ export class FfmpegCore implements ITranscoder {
         log.debug('Pixel format:', options.pixelFormat);
         cmd.outputOptions(`${FFMPEG_FLAGS.PIX_FMT} ${options.pixelFormat}`);
       }
+      if (options.videoCodec === 'mjpeg') {
+        log.debug('Forcing full-range color for MJPEG output');
+        cmd.outputOptions(FFMPEG_FLAGS.COLOR_RANGE, FFMPEG_FLAGS.COLOR_RANGE_FULL);
+      }
     }
 
     if (options.startTime) {

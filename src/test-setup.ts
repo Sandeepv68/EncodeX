@@ -44,6 +44,8 @@ Object.defineProperty(globalThis, 'electronAPI', {
     selectOutput: vi.fn().mockResolvedValue(null),
     getMediaInfo: vi.fn().mockResolvedValue(EMPTY_MEDIA_INFO),
     getImageInfo: vi.fn().mockResolvedValue(null),
+    getImagePreview: vi.fn().mockResolvedValue(null),
+    getImageFileInfo: vi.fn().mockResolvedValue(null),
     getCapabilities: vi.fn().mockResolvedValue(null),
     convertFile: vi.fn().mockResolvedValue(undefined),
     pauseConversion: vi.fn().mockResolvedValue(undefined),

@@ -1,11 +1,15 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useMediaTask } from '../useMediaTask';
 import { useErrorStore } from '../../stores/errorStore';
 
+const onConversionProgressMock = vi.mocked(window.electronAPI.onConversionProgress);
+
 describe('useMediaTask', () => {
   beforeEach(() => {
     useErrorStore.setState({ currentError: null, errorHistory: [] });
+    onConversionProgressMock.mockReset();
+    onConversionProgressMock.mockReturnValue(vi.fn());
   });
 
   it('starts idle', () => {
@@ -41,5 +45,45 @@ describe('useMediaTask', () => {
       result.current.setProgress({ percent: 50, time: '00:00:01', speed: '1x', eta: '10' });
     });
     expect(result.current.progress).toEqual({ percent: 50, time: '00:00:01', speed: '1x', eta: '10' });
+  });
+
+  it('applies conversion progress events while a task is running', async () => {
+    let resolveTask: () => void = () => {};
+    let progressCb:
+      | ((data: { input: string; output: string; progress: { percent: number; time: string; speed: string; eta: string } }) => void)
+      | undefined;
+    onConversionProgressMock.mockImplementation((cb) => {
+      progressCb = cb;
+      return vi.fn();
+    });
+    const { result } = renderHook(() => useMediaTask());
+    let pending: Promise<void> | undefined;
+    act(() => {
+      pending = result.current.runTask(() => new Promise<void>((resolve) => (resolveTask = resolve)));
+    });
+    expect(result.current.isConverting).toBe(true);
+    act(() => {
+      progressCb?.({ input: 'in.png', output: 'out.jpg', progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5' } });
+    });
+    expect(result.current.progress).toEqual({ percent: 42, time: '00:00:01', speed: '1.5x', eta: '5' });
+    await act(async () => {
+      resolveTask();
+      await pending;
+    });
+  });
+
+  it('ignores conversion progress events when no task is running', () => {
+    let progressCb:
+      | ((data: { input: string; output: string; progress: { percent: number; time: string; speed: string; eta: string } }) => void)
+      | undefined;
+    onConversionProgressMock.mockImplementation((cb) => {
+      progressCb = cb;
+      return vi.fn();
+    });
+    const { result } = renderHook(() => useMediaTask());
+    act(() => {
+      progressCb?.({ input: 'in.png', output: 'out.jpg', progress: { percent: 80, time: '00:00:02', speed: '1x', eta: '1' } });
+    });
+    expect(result.current.progress).toBeNull();
   });
 });

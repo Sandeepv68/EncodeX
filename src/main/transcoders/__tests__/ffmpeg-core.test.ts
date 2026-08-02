@@ -182,6 +182,22 @@ describe('FfmpegCore', () => {
     expect(cmd.run).toHaveBeenCalled();
   });
 
+  it('forces full-range color for MJPEG output', () => {
+    const core = new FfmpegCore();
+    core.convert('in.png', 'out.jpg', { videoCodec: 'mjpeg', qscale: 23, pixelFormat: 'yuv420p' });
+    const cmd = getCommand();
+    expect(cmd.videoCodec).toHaveBeenCalledWith('mjpeg');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-pix_fmt yuv420p');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-color_range', 'full');
+  });
+
+  it('does not force color range for non-MJPEG codecs', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { videoCodec: 'libx264', pixelFormat: 'yuv420p' });
+    const cmd = getCommand();
+    expect(cmd.outputOptions).not.toHaveBeenCalledWith('-color_range', 'full');
+  });
+
   it('emits progress with percent when provided', () => {
     const core = new FfmpegCore();
     const emitter = core.convert('in.mp4', 'out.mp4', {});

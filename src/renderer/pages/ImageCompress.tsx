@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, TextField, MenuItem, Button, Stack, Typography } from '@mui/material';
-import { faCompress } from '@fortawesome/free-solid-svg-icons';
+import { faCompress, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FileDropZone from '../components/FileDropZone';
 import ProgressBar from '../components/ProgressBar';
@@ -19,7 +19,17 @@ import { TRANSCODER_TYPES, CONVERSION_DEFAULTS, QSCALE_RANGE } from '../../share
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { isValidScale, isInRange } from '../../shared/validation';
-import { FieldBox, FieldLabel } from '../styles/ImageCompress.styles';
+import { formatSize } from '../utils/formatters';
+import type { ImageFileInfo } from '../../shared/types';
+import {
+  FieldBox,
+  FieldLabel,
+  PreviewBox,
+  PreviewImage,
+  PreviewImageBox,
+  PreviewInfo,
+  PreviewCloseButton,
+} from '../styles/ImageCompress.styles';
 
 const log = new Logger('renderer/pages/ImageCompress');
 
@@ -27,17 +37,53 @@ function fileName(path: string): string {
   return path.split(/[\\/]/).pop() ?? path;
 }
 
+function withExtension(path: string, ext: string): string {
+  const slashIdx = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+  const dotIdx = path.lastIndexOf('.');
+  const base = dotIdx > slashIdx ? path.slice(0, dotIdx) : path;
+  return `${base}.${ext}`;
+}
+
 export default function ImageCompress() {
   const { t } = useTranslation();
   const [input, setInput] = useState('');
+  const [preview, setPreview] = useState<string | null>(null);
+  const [fileInfo, setFileInfo] = useState<ImageFileInfo | null>(null);
   const [output, setOutput] = useState('');
   const [format, setFormat] = useState<string>(IMAGE_FORMATS[0].value);
   const [quality, setQuality] = useState<number>(CONVERSION_DEFAULTS.QSCALE);
   const [scale, setScale] = useState('');
-  const { progress, isConverting, runTask } = useMediaTask();
+  const { progress, setProgress, isConverting, runTask } = useMediaTask();
   const { errors, setErrors, clearFieldError, setFieldError } = useFormErrors();
   const showErrorMessage = useErrorStore((s) => s.showErrorMessage);
   const transcoder = TRANSCODER_TYPES[0];
+
+  const handleFileSelect = async (path: string) => {
+    setInput(path);
+    setPreview(null);
+    setFileInfo(null);
+    if (!path) return;
+    const dataUrl = await window.electronAPI.getImagePreview(path);
+    setPreview(dataUrl);
+    const info = await window.electronAPI.getImageFileInfo(path);
+    setFileInfo(info);
+  };
+
+  const clearSelection = () => {
+    setInput('');
+    setPreview(null);
+    setFileInfo(null);
+  };
+
+  const handleFormatChange = (value: string) => {
+    setFormat(value);
+    if (output.trim()) setOutput(withExtension(output, value));
+  };
+
+  const handleOutputChange = (value: string) => {
+    setOutput(value.trim() ? withExtension(value, format) : '');
+    clearFieldError('output');
+  };
 
   const validate = (): boolean => {
     const next: Record<string, string> = {};
@@ -73,6 +119,7 @@ export default function ImageCompress() {
       );
       useToastStore.getState().success(t('toast.imageCompressed'));
     });
+    setProgress(null);
   };
 
   return (
@@ -81,13 +128,44 @@ export default function ImageCompress() {
         <FieldLabel variant="caption" color="text.secondary">
           {t('imageCompress.inputImage')}
         </FieldLabel>
-        <ErrorBoundary fallback={null}>
-          <FileDropZone onFileSelect={setInput} label={t('imageCompress.dropLabel')} accept={IMAGE_DROPZONE_ACCEPT} />
-        </ErrorBoundary>
+        {!input && (
+          <ErrorBoundary fallback={null}>
+            <FileDropZone onFileSelect={handleFileSelect} label={t('imageCompress.dropLabel')} accept={IMAGE_DROPZONE_ACCEPT} />
+          </ErrorBoundary>
+        )}
         {input && (
-          <Typography variant="body2" color="text.secondary" data-testid="selected-image">
-            {t('imageCompress.selectedImage', { file: fileName(input) })}
-          </Typography>
+          <PreviewBox data-testid="image-preview">
+            <PreviewImageBox>
+              {preview && <PreviewImage src={preview} alt={fileName(input)} />}
+              <PreviewCloseButton size="small" aria-label={t('batchQueue.remove')} data-testid="remove-image" onClick={clearSelection}>
+                <FontAwesomeIcon icon={faXmark} />
+              </PreviewCloseButton>
+            </PreviewImageBox>
+            <PreviewInfo>
+              <Typography variant="body2" color="text.secondary" data-testid="selected-image">
+                {(() => {
+                  const template = t('imageCompress.selectedImage', { file: '{{file}}' });
+                  const [before, after] = template.split('{{file}}');
+                  return (
+                    <>
+                      {before}
+                      <Box component="span" sx={{ fontWeight: 700 }}>
+                        {fileName(input)}
+                      </Box>
+                      {after}
+                    </>
+                  );
+                })()}
+              </Typography>
+              {fileInfo && (
+                <Typography variant="caption" color="text.secondary" data-testid="image-file-info">
+                  {fileInfo.width && fileInfo.height ? `${fileInfo.width} × ${fileInfo.height}` : ''}
+                  {fileInfo.width && fileInfo.height ? ' · ' : ''}
+                  {formatSize(fileInfo.size)}
+                </Typography>
+              )}
+            </PreviewInfo>
+          </PreviewBox>
         )}
       </Box>
 
@@ -96,10 +174,7 @@ export default function ImageCompress() {
         value={output}
         placeholder={t('imageCompress.placeholderOutput')}
         buttonLabel={t('convert.browse')}
-        onChange={(v) => {
-          setOutput(v);
-          clearFieldError('output');
-        }}
+        onChange={handleOutputChange}
         onBlur={() => {
           if (!output.trim()) setFieldError('output', t('validation.outputRequired'));
         }}
@@ -107,7 +182,7 @@ export default function ImageCompress() {
         onBrowse={async () => {
           const f = await window.electronAPI.selectOutput();
           if (f) {
-            setOutput(f);
+            setOutput(withExtension(f, format));
             clearFieldError('output');
           }
         }}
@@ -118,7 +193,7 @@ export default function ImageCompress() {
           <FieldLabel variant="caption" color="text.secondary">
             {t('imageCompress.outputFormat')}
           </FieldLabel>
-          <TextField select fullWidth size="small" value={format} onChange={(e) => setFormat(e.target.value)}>
+          <TextField select fullWidth size="small" value={format} onChange={(e) => handleFormatChange(e.target.value)}>
             {IMAGE_FORMATS.map((f) => (
               <MenuItem key={f.value} value={f.value}>
                 {f.label}

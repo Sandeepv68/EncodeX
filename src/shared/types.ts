@@ -82,6 +82,12 @@ export interface ImageExifData {
   histogram: ImageHistogram | null;
 }
 
+export interface ImageFileInfo {
+  width: number | null;
+  height: number | null;
+  size: number;
+}
+
 export interface QueueJob {
   id: string;
   input: string;
