@@ -201,7 +201,15 @@
     "extract": "Extraer Audio",
     "extracting": "Extrayendo...",
     "placeholderOutput": "ej. output.mp3",
-    "validationRequired": "Seleccione un archivo de vídeo."
+    "validationRequired": "Seleccione un archivo de vídeo.",
+    "selectedVideo": "Video seleccionado: {{file}}",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "cancel": "Cancelar",
+    "cancelTitle": "Cancelar extracción de audio",
+    "cancelMessage": "¿Seguro que deseas cancelar la extracción de audio?",
+    "yes": "Sí",
+    "no": "No"
   },
   "videoCut": {
     "title": "Cortar Vídeo",

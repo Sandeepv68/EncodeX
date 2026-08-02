@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   classifyVideoCodec,
   suggestedExtensionForVideoCodec,
+  suggestedExtensionForAudioCodec,
   isExtensionCompatibleWithVideoCodec,
   getExtension,
   replaceExtension,
@@ -74,6 +75,24 @@ describe('isExtensionCompatibleWithVideoCodec', () => {
   it('handles dot-prefixed and case-insensitive extensions', () => {
     expect(isExtensionCompatibleWithVideoCodec('.MP4', 'libx264')).toBe(true);
     expect(isExtensionCompatibleWithVideoCodec('WEBM', 'libvpx-vp9')).toBe(true);
+  });
+});
+
+describe('suggestedExtensionForAudioCodec', () => {
+  it('maps audio codecs to container extensions', () => {
+    expect(suggestedExtensionForAudioCodec('libmp3lame')).toBe('mp3');
+    expect(suggestedExtensionForAudioCodec('aac')).toBe('m4a');
+    expect(suggestedExtensionForAudioCodec('flac')).toBe('flac');
+    expect(suggestedExtensionForAudioCodec('libvorbis')).toBe('ogg');
+    expect(suggestedExtensionForAudioCodec('libopus')).toBe('opus');
+    expect(suggestedExtensionForAudioCodec('pcm_s16le')).toBe('wav');
+    expect(suggestedExtensionForAudioCodec('wmav2')).toBe('wma');
+  });
+
+  it('returns an empty string for unknown or missing codecs', () => {
+    expect(suggestedExtensionForAudioCodec('nonexistent')).toBe('');
+    expect(suggestedExtensionForAudioCodec(undefined)).toBe('');
+    expect(suggestedExtensionForAudioCodec('')).toBe('');
   });
 });
 

@@ -201,7 +201,15 @@
     "extract": "Виділити аудіо",
     "extracting": "Виділення...",
     "placeholderOutput": "напр. output.mp3",
-    "validationRequired": "Виберіть відеофайл."
+    "validationRequired": "Виберіть відеофайл.",
+    "selectedVideo": "Вибране відео: {{file}}",
+    "pause": "Пауза",
+    "resume": "Продовжити",
+    "cancel": "Скасувати",
+    "cancelTitle": "Скасувати вилучення аудіо",
+    "cancelMessage": "Ви впевнені, що хочете скасувати вилучення аудіо?",
+    "yes": "Так",
+    "no": "Ні"
   },
   "videoCut": {
     "title": "Обрізати відео",

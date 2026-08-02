@@ -201,7 +201,15 @@
     "extract": "Extract Audio",
     "extracting": "Extracting...",
     "placeholderOutput": "e.g. output.mp3",
-    "validationRequired": "Please select a video file."
+    "validationRequired": "Please select a video file.",
+    "selectedVideo": "Selected video: {{file}}",
+    "pause": "Pause",
+    "resume": "Resume",
+    "cancel": "Cancel",
+    "cancelTitle": "Cancel Audio Extraction",
+    "cancelMessage": "Are you sure you want to cancel the audio extraction?",
+    "yes": "Yes",
+    "no": "No"
   },
   "videoCut": {
     "title": "Cut Video",

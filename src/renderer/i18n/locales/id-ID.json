@@ -201,7 +201,15 @@
     "extract": "Ekstrak Audio",
     "extracting": "Mengekstrak...",
     "placeholderOutput": "mis. output.mp3",
-    "validationRequired": "Silakan pilih file video."
+    "validationRequired": "Silakan pilih file video.",
+    "selectedVideo": "Video terpilih: {{file}}",
+    "pause": "Jeda",
+    "resume": "Lanjutkan",
+    "cancel": "Batal",
+    "cancelTitle": "Batalkan ekstraksi audio",
+    "cancelMessage": "Apakah Anda yakin ingin membatalkan ekstraksi audio?",
+    "yes": "Ya",
+    "no": "Tidak"
   },
   "videoCut": {
     "title": "Potong Video",

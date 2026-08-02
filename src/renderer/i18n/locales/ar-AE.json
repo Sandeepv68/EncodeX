@@ -201,7 +201,15 @@
     "extract": "استخراج الصوت",
     "extracting": "جاري الاستخراج...",
     "placeholderOutput": "مثال output.mp3",
-    "validationRequired": "الرجاء تحديد ملف فيديو."
+    "validationRequired": "الرجاء تحديد ملف فيديو.",
+    "selectedVideo": "الفيديو المحدد: {{file}}",
+    "pause": "إيقاف مؤقت",
+    "resume": "استئناف",
+    "cancel": "إلغاء",
+    "cancelTitle": "إلغاء استخراج الصوت",
+    "cancelMessage": "هل تريد بالتأكيد إلغاء استخراج الصوت؟",
+    "yes": "نعم",
+    "no": "لا"
   },
   "videoCut": {
     "title": "قص الفيديو",

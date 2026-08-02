@@ -48,6 +48,10 @@ const api = {
     log.info('getImageFileInfo:', filePath);
     return ipcRenderer.invoke(IPC.GET_IMAGE_FILE_INFO, filePath) as Promise<ImageFileInfo | null>;
   },
+  getVideoPreview: (filePath: string) => {
+    log.info('getVideoPreview:', filePath);
+    return ipcRenderer.invoke(IPC.GET_VIDEO_PREVIEW, filePath) as Promise<string | null>;
+  },
   getCapabilities: () => {
     log.debug('getCapabilities called');
     return ipcRenderer.invoke(IPC.GET_CAPABILITIES) as Promise<EncoderCapabilities | null>;

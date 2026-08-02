@@ -201,7 +201,15 @@
     "extract": "Extrahera ljud",
     "extracting": "Extraherar...",
     "placeholderOutput": "t.ex. output.mp3",
-    "validationRequired": "Välj en videofil."
+    "validationRequired": "Välj en videofil.",
+    "selectedVideo": "Vald video: {{file}}",
+    "pause": "Pausa",
+    "resume": "Återuppta",
+    "cancel": "Avbryt",
+    "cancelTitle": "Avbryt ljudextrahering",
+    "cancelMessage": "Är du säker på att du vill avbryta ljudextraheringen?",
+    "yes": "Ja",
+    "no": "Nej"
   },
   "videoCut": {
     "title": "Klipp video",

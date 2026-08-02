@@ -201,7 +201,15 @@
     "extract": "Audio extraheren",
     "extracting": "Bezig met extraheren...",
     "placeholderOutput": "bijv. output.mp3",
-    "validationRequired": "Selecteer een videobestand."
+    "validationRequired": "Selecteer een videobestand.",
+    "selectedVideo": "Geselecteerde video: {{file}}",
+    "pause": "Pauzeren",
+    "resume": "Hervatten",
+    "cancel": "Annuleren",
+    "cancelTitle": "Audio-extractie annuleren",
+    "cancelMessage": "Weet je zeker dat je de audio-extractie wilt annuleren?",
+    "yes": "Ja",
+    "no": "Nee"
   },
   "videoCut": {
     "title": "Video knippen",

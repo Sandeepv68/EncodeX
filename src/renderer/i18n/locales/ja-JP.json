@@ -201,7 +201,15 @@
     "extract": "音声を抽出",
     "extracting": "抽出中...",
     "placeholderOutput": "例: output.mp3",
-    "validationRequired": "ビデオファイルを選択してください。"
+    "validationRequired": "ビデオファイルを選択してください。",
+    "selectedVideo": "選択した動画: {{file}}",
+    "pause": "一時停止",
+    "resume": "再開",
+    "cancel": "キャンセル",
+    "cancelTitle": "音声抽出をキャンセル",
+    "cancelMessage": "音声抽出をキャンセルしますか？",
+    "yes": "はい",
+    "no": "いいえ"
   },
   "videoCut": {
     "title": "動画カット",

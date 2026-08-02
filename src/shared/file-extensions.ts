@@ -124,3 +124,9 @@ export function isImageFile(filePath: string): boolean {
   const ext = idx >= 0 ? filePath.slice(idx + 1).toLowerCase() : '';
   return IMAGE_EXTENSIONS.includes(ext as (typeof IMAGE_EXTENSIONS)[number]);
 }
+
+export function isVideoFile(filePath: string): boolean {
+  const idx = filePath.lastIndexOf('.');
+  const ext = idx >= 0 ? filePath.slice(idx + 1).toLowerCase() : '';
+  return VIDEO_EXTENSIONS.includes(ext as (typeof VIDEO_EXTENSIONS)[number]);
+}

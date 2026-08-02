@@ -201,7 +201,15 @@
     "extract": "ऑडियो निकालें",
     "extracting": "निकाला जा रहा है...",
     "placeholderOutput": "जैसे output.mp3",
-    "validationRequired": "कृपया एक वीडियो फ़ाइल चुनें."
+    "validationRequired": "कृपया एक वीडियो फ़ाइल चुनें.",
+    "selectedVideo": "चयनित वीडियो: {{file}}",
+    "pause": "रोकें",
+    "resume": "जारी रखें",
+    "cancel": "रद्द करें",
+    "cancelTitle": "ऑडियो निष्कर्षण रद्द करें",
+    "cancelMessage": "क्या आप ऑडियो निष्कर्षण रद्द करना चाहते हैं?",
+    "yes": "हाँ",
+    "no": "नहीं"
   },
   "videoCut": {
     "title": "वीडियो काटें",

@@ -49,6 +49,41 @@ export function isExtensionCompatibleWithVideoCodec(extension: string, codec?: s
   return getVideoCodecContainer(codec).containers.includes(ext);
 }
 
+const AUDIO_CONTAINERS: Record<string, string> = {
+  aac: 'm4a',
+  libfdk_aac: 'm4a',
+  libmp3lame: 'mp3',
+  libshine: 'mp3',
+  libtwolame: 'mp2',
+  ac3: 'ac3',
+  eac3: 'eac3',
+  truehd: 'mka',
+  dts: 'dts',
+  mlp: 'mlp',
+  flac: 'flac',
+  alac: 'm4a',
+  libwavpack: 'wv',
+  libvorbis: 'ogg',
+  libopus: 'opus',
+  libspeex: 'spx',
+  libvo_amrwbenc: 'amr',
+  pcm_s16le: 'wav',
+  pcm_s24le: 'wav',
+  pcm_f32le: 'wav',
+  pcm_s16be: 'wav',
+  pcm_u8: 'wav',
+  pcm_alaw: 'wav',
+  pcm_mulaw: 'wav',
+  wmav1: 'wma',
+  wmav2: 'wma',
+  adpcm_ima_wav: 'wav',
+};
+
+export function suggestedExtensionForAudioCodec(codec?: string): string {
+  if (!codec) return '';
+  return AUDIO_CONTAINERS[codec] ?? '';
+}
+
 export function getExtension(path?: string): string {
   const match = /\.([^./\\]+)$/.exec(path ?? '');
   return match ? match[1].toLowerCase() : '';
