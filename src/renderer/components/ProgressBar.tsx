@@ -7,14 +7,15 @@ interface Props {
   time?: string;
   speed?: string;
   eta?: string;
+  paused?: boolean;
 }
 
-export default function ProgressBar({ percent, time, speed, eta }: Props) {
+export default function ProgressBar({ percent, time, speed, eta, paused = false }: Props) {
   const { t } = useTranslation();
   const clamped = Math.min(100, Math.max(0, percent));
   return (
     <Box>
-      <ProgressTrack variant="determinate" value={clamped} />
+      <ProgressTrack variant="determinate" value={clamped} paused={paused} />
       <ProgressInfoRow>
         <Typography variant="caption" color="text.secondary">
           {clamped.toFixed(1)}%

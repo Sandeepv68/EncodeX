@@ -1,9 +1,55 @@
-import { styled } from '@mui/material/styles';
+import { styled, keyframes, alpha } from '@mui/material/styles';
 import { Box, LinearProgress } from '@mui/material';
 
-export const ProgressTrack = styled(LinearProgress)(({ theme }) => ({
+const gradientSlide = keyframes`
+  from { transform: translateX(0); }
+  to { transform: translateX(-400px); }
+`;
+
+export const ProgressTrack = styled(LinearProgress, {
+  shouldForwardProp: (prop) => prop !== 'paused',
+})<{ paused?: boolean }>(({ theme, paused }) => ({
   height: theme.typography.pxToRem(8),
   borderRadius: theme.shape.borderRadius,
+  backgroundColor: paused ? alpha(theme.palette.warning.main, 0.3) : undefined,
+  transition: 'background-color 0.5s ease',
+  '& .MuiLinearProgress-bar': {
+    backgroundColor: 'transparent',
+    overflow: 'hidden',
+    willChange: 'transform',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      width: 'calc(100% + 400px)',
+      backgroundImage: `repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0px, rgba(255,255,255,0.18) 17.6777px, rgba(255,255,255,0) 17.6777px, rgba(255,255,255,0) 35.3553px), repeating-linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main}, ${theme.palette.success.main}, ${theme.palette.primary.main} 400px)`,
+      animation: `${gradientSlide} 8s linear infinite`,
+      pointerEvents: 'none',
+    },
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      width: 'calc(100% + 400px)',
+      backgroundImage: `repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0px, rgba(255,255,255,0.18) 17.6777px, rgba(255,255,255,0) 17.6777px, rgba(255,255,255,0) 35.3553px), repeating-linear-gradient(90deg, ${theme.palette.warning.light}, ${theme.palette.warning.main}, ${theme.palette.warning.dark}, ${theme.palette.warning.light} 400px)`,
+      animation: `${gradientSlide} 8s linear infinite`,
+      opacity: paused ? 1 : 0,
+      transition: 'opacity 0.5s ease',
+      pointerEvents: 'none',
+    },
+  },
+  '@media (prefers-reduced-motion: reduce)': {
+    '& .MuiLinearProgress-bar::before': {
+      animation: 'none',
+    },
+    '& .MuiLinearProgress-bar::after': {
+      animation: 'none',
+    },
+  },
 }));
 
 export const ProgressInfoRow = styled(Box)(({ theme }) => ({

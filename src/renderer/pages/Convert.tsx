@@ -196,11 +196,11 @@ export default function Convert() {
                 <FontAwesomeIcon icon={faXmark} />
               </IconButton>
             </PreviewHeader>
-            {!isConverting && (
+            {
               <ErrorBoundary fallback={null}>
                 <MediaPlayer filePath={inputFile} />
               </ErrorBoundary>
-            )}
+            }
             <Box>
               <PreviewSectionTitle variant="subtitle2" color="text.secondary">
                 {t('mediaInfo.fileInfo')}
@@ -475,7 +475,7 @@ export default function Convert() {
 
       {progress && (
         <ErrorBoundary fallback={null}>
-          <ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} />
+          <ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} paused={isPaused} />
         </ErrorBoundary>
       )}
       <ConfirmDialog
