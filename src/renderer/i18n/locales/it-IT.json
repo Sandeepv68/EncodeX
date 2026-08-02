@@ -142,7 +142,29 @@
       "handler_name": "Nome del gestore",
       "timecode": "Timecode",
       "location": "Posizione"
-    }
+    },
+    "dispositionFlags": {
+      "default": "Predefinito",
+      "dub": "Doppiaggio",
+      "original": "Originale",
+      "comment": "Commento",
+      "lyrics": "Testo",
+      "karaoke": "Karaoke",
+      "forced": "Forzato",
+      "hearing_impaired": "Sordità",
+      "visual_impaired": "Disabilità visiva",
+      "clean_effects": "Effetti puliti",
+      "attached_pic": "Immagine allegata",
+      "timed_thumbnails": "Miniature temporizzate",
+      "captions": "Sottotitoli",
+      "descriptions": "Descrizioni",
+      "metadata": "Metadati",
+      "dependent": "Dipendente",
+      "still_image": "Immagine fissa"
+    },
+    "video": "Video",
+    "audio": "Audio",
+    "subtitle": "Sottotitolo"
   },
   "imageCompress": {
     "title": "Comprimi immagine",

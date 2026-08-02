@@ -142,7 +142,29 @@
       "handler_name": "ハンドラー名",
       "timecode": "タイムコード",
       "location": "場所"
-    }
+    },
+    "dispositionFlags": {
+      "default": "デフォルト",
+      "dub": "吹き替え",
+      "original": "オリジナル",
+      "comment": "コメント",
+      "lyrics": "歌詞",
+      "karaoke": "カラオケ",
+      "forced": "強制",
+      "hearing_impaired": "聴覚障害者向け",
+      "visual_impaired": "視覚障害者向け",
+      "clean_effects": "クリーンエフェクト",
+      "attached_pic": "添付画像",
+      "timed_thumbnails": "タイム付きサムネイル",
+      "captions": "キャプション",
+      "descriptions": "説明",
+      "metadata": "メタデータ",
+      "dependent": "依存",
+      "still_image": "静止画像"
+    },
+    "video": "ビデオ",
+    "audio": "オーディオ",
+    "subtitle": "字幕"
   },
   "imageCompress": {
     "title": "画像圧縮",

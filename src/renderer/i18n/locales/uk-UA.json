@@ -142,7 +142,29 @@
       "handler_name": "Ім'я обробника",
       "timecode": "Таймкод",
       "location": "Розташування"
-    }
+    },
+    "dispositionFlags": {
+      "default": "За замовчуванням",
+      "dub": "Дубляж",
+      "original": "Оригінал",
+      "comment": "Коментар",
+      "lyrics": "Текст пісні",
+      "karaoke": "Караоке",
+      "forced": "Примусовий",
+      "hearing_impaired": "Порушення слуху",
+      "visual_impaired": "Порушення зору",
+      "clean_effects": "Чисті ефекти",
+      "attached_pic": "Прикріплене зображення",
+      "timed_thumbnails": "Часові мініатюри",
+      "captions": "Субтитри",
+      "descriptions": "Описи",
+      "metadata": "Метадані",
+      "dependent": "Залежний",
+      "still_image": "Нерухоме зображення"
+    },
+    "video": "Відео",
+    "audio": "Аудіо",
+    "subtitle": "Субтитри"
   },
   "imageCompress": {
     "title": "Стиснути зображення",

@@ -142,7 +142,29 @@
       "handler_name": "Hanterarnamn",
       "timecode": "Tidskod",
       "location": "Plats"
-    }
+    },
+    "dispositionFlags": {
+      "default": "Standard",
+      "dub": "Dubbning",
+      "original": "Original",
+      "comment": "Kommentar",
+      "lyrics": "Text",
+      "karaoke": "Karaoke",
+      "forced": "Tvingad",
+      "hearing_impaired": "Hörselskadad",
+      "visual_impaired": "Synskadad",
+      "clean_effects": "Rena effekter",
+      "attached_pic": "Bifogad bild",
+      "timed_thumbnails": "Tidsbestämda miniatyrer",
+      "captions": "Textning",
+      "descriptions": "Beskrivningar",
+      "metadata": "Metadata",
+      "dependent": "Beroende",
+      "still_image": "Stillbild"
+    },
+    "video": "Video",
+    "audio": "Ljud",
+    "subtitle": "Undertext"
   },
   "imageCompress": {
     "title": "Komprimera bild",

@@ -46,19 +46,25 @@ export const StreamHeaderRow = styled(Box)(({ theme }) => ({
 
 export const StreamName = styled(Typography)({ fontWeight: 600 });
 
+export const DispositionLabel = styled(Typography)(({ theme }) => ({
+  display: 'block',
+  marginTop: theme.spacing(1),
+  marginBottom: theme.spacing(0.5),
+  fontWeight: 600,
+}));
+
 export const DispositionRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexWrap: 'wrap',
   gap: theme.spacing(0.5),
-  marginTop: theme.spacing(1),
 }));
 
 export const DispositionChip = styled(Chip)(({ theme }) => ({
   borderRadius: '6px',
+  fontWeight: 600,
   fontSize: theme.typography.pxToRem(11),
-  height: theme.spacing(2.25),
-  color: theme.palette.text.secondary,
-  borderColor: theme.palette.divider,
-  backgroundColor: 'transparent',
+  minHeight: theme.spacing(2.5),
+  color: theme.palette.secondary.main,
+  backgroundColor: alpha(theme.palette.secondary.main, 0.12),
   '& .MuiChip-label': { paddingLeft: theme.spacing(1), paddingRight: theme.spacing(1) },
 }));

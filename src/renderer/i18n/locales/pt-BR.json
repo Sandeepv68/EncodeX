@@ -142,7 +142,29 @@
       "handler_name": "Nome do manipulador",
       "timecode": "Código de tempo",
       "location": "Localização"
-    }
+    },
+    "dispositionFlags": {
+      "default": "Padrão",
+      "dub": "Dublagem",
+      "original": "Original",
+      "comment": "Comentário",
+      "lyrics": "Letra",
+      "karaoke": "Karaokê",
+      "forced": "Forçado",
+      "hearing_impaired": "Deficiência auditiva",
+      "visual_impaired": "Deficiência visual",
+      "clean_effects": "Efeitos limpos",
+      "attached_pic": "Imagem anexa",
+      "timed_thumbnails": "Miniaturas temporizadas",
+      "captions": "Legendas",
+      "descriptions": "Descrições",
+      "metadata": "Metadados",
+      "dependent": "Dependente",
+      "still_image": "Imagem estática"
+    },
+    "video": "Vídeo",
+    "audio": "Áudio",
+    "subtitle": "Legenda"
   },
   "imageCompress": {
     "title": "Comprimir Imagem",

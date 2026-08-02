@@ -142,7 +142,29 @@
       "handler_name": "핸들러 이름",
       "timecode": "타임코드",
       "location": "위치"
-    }
+    },
+    "dispositionFlags": {
+      "default": "기본",
+      "dub": "더빙",
+      "original": "원본",
+      "comment": "주석",
+      "lyrics": "가사",
+      "karaoke": "노래방",
+      "forced": "강제",
+      "hearing_impaired": "청각 장애",
+      "visual_impaired": "시각 장애",
+      "clean_effects": "클린 이펙트",
+      "attached_pic": "첨부 사진",
+      "timed_thumbnails": "타임드 썸네일",
+      "captions": "자막",
+      "descriptions": "설명",
+      "metadata": "메타데이터",
+      "dependent": "종속",
+      "still_image": "정지 이미지"
+    },
+    "video": "비디오",
+    "audio": "오디오",
+    "subtitle": "자막"
   },
   "imageCompress": {
     "title": "이미지 압축",

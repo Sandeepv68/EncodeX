@@ -142,7 +142,29 @@
       "handler_name": "Handler-Name",
       "timecode": "Timecode",
       "location": "Standort"
-    }
+    },
+    "dispositionFlags": {
+      "default": "Standard",
+      "dub": "Synchro",
+      "original": "Original",
+      "comment": "Kommentar",
+      "lyrics": "Liedtext",
+      "karaoke": "Karaoke",
+      "forced": "Erzwungen",
+      "hearing_impaired": "Hörgeschädigt",
+      "visual_impaired": "Sehgeschädigt",
+      "clean_effects": "Saubere Effekte",
+      "attached_pic": "Angehängtes Bild",
+      "timed_thumbnails": "Zeitgesteuerte Vorschaubilder",
+      "captions": "Untertitel",
+      "descriptions": "Beschreibungen",
+      "metadata": "Metadaten",
+      "dependent": "Abhängig",
+      "still_image": "Standbild"
+    },
+    "video": "Video",
+    "audio": "Audio",
+    "subtitle": "Untertitel"
   },
   "imageCompress": {
     "title": "Bild komprimieren",

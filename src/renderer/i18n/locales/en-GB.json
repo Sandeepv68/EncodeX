@@ -142,7 +142,29 @@
       "handler_name": "Handler Name",
       "timecode": "Timecode",
       "location": "Location"
-    }
+    },
+    "dispositionFlags": {
+      "default": "Default",
+      "dub": "Dub",
+      "original": "Original",
+      "comment": "Comment",
+      "lyrics": "Lyrics",
+      "karaoke": "Karaoke",
+      "forced": "Forced",
+      "hearing_impaired": "Hearing Impaired",
+      "visual_impaired": "Visual Impaired",
+      "clean_effects": "Clean Effects",
+      "attached_pic": "Attached Picture",
+      "timed_thumbnails": "Timed Thumbnails",
+      "captions": "Captions",
+      "descriptions": "Descriptions",
+      "metadata": "Metadata",
+      "dependent": "Dependent",
+      "still_image": "Still Image"
+    },
+    "video": "Video",
+    "audio": "Audio",
+    "subtitle": "Subtitle"
   },
   "imageCompress": {
     "title": "Compress Image",

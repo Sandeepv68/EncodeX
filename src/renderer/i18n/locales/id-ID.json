@@ -142,7 +142,29 @@
       "handler_name": "Nama penangan",
       "timecode": "Kode waktu",
       "location": "Lokasi"
-    }
+    },
+    "dispositionFlags": {
+      "default": "Bawaan",
+      "dub": "Sulih suara",
+      "original": "Asli",
+      "comment": "Komentar",
+      "lyrics": "Lirik",
+      "karaoke": "Karaoke",
+      "forced": "Dipaksa",
+      "hearing_impaired": "Gangguan pendengaran",
+      "visual_impaired": "Gangguan penglihatan",
+      "clean_effects": "Efek bersih",
+      "attached_pic": "Gambar terlampir",
+      "timed_thumbnails": "Gambar kecil terjadwal",
+      "captions": "Keterangan",
+      "descriptions": "Deskripsi",
+      "metadata": "Metadata",
+      "dependent": "Bergantung",
+      "still_image": "Gambar diam"
+    },
+    "video": "Video",
+    "audio": "Audio",
+    "subtitle": "Subtitle"
   },
   "imageCompress": {
     "title": "Kompres Gambar",

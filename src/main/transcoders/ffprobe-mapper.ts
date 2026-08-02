@@ -50,14 +50,17 @@ export interface ProbeData {
   format?: ProbeFormat;
 }
 
-export function parseRatio(ratio: string): string {
+export function parseRatio(ratio: string): string | undefined {
   const parts = ratio.split('/');
   if (parts.length === 2) {
     const num = parseFloat(parts[0]);
     const den = parseFloat(parts[1]);
-    if (den !== 0) return (num / den).toFixed(2);
+    if (Number.isFinite(num) && Number.isFinite(den) && den !== 0) {
+      const value = num / den;
+      if (value > 0) return value.toFixed(2);
+    }
   }
-  return ratio;
+  return undefined;
 }
 
 function toNumber(value: string | number | undefined): number | undefined {

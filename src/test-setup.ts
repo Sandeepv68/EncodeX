@@ -13,6 +13,11 @@ vi.mock('react-i18next', () => ({
         'errorBoundary.tryAgain': 'Try Again',
         'imageCompress.selectedImage': 'Selected image: {{file}}',
         'mediaInfo.tagKeys.encoder': 'Encoder',
+        'mediaInfo.dispositionFlags.default': 'Default',
+        'mediaInfo.dispositionFlags.forced': 'Forced',
+        'mediaInfo.video': 'Video',
+        'mediaInfo.audio': 'Audio',
+        'mediaInfo.subtitle': 'Subtitle',
       };
       let text = map[key] || (opts?.defaultValue as string | undefined) || key;
       if (opts) {

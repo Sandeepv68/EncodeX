@@ -142,7 +142,29 @@
       "handler_name": "हैंडलर नाम",
       "timecode": "टाइमकोड",
       "location": "स्थान"
-    }
+    },
+    "dispositionFlags": {
+      "default": "डिफ़ॉल्ट",
+      "dub": "डब",
+      "original": "मूल",
+      "comment": "टिप्पणी",
+      "lyrics": "गीत",
+      "karaoke": "कराओके",
+      "forced": "अनिवार्य",
+      "hearing_impaired": "श्रवण बाधित",
+      "visual_impaired": "दृष्टि बाधित",
+      "clean_effects": "स्वच्छ प्रभाव",
+      "attached_pic": "संलग्न चित्र",
+      "timed_thumbnails": "समयबद्ध थंबनेल",
+      "captions": "कैप्शन",
+      "descriptions": "विवरण",
+      "metadata": "मेटाडेटा",
+      "dependent": "आश्रित",
+      "still_image": "स्थिर छवि"
+    },
+    "video": "वीडियो",
+    "audio": "ऑडियो",
+    "subtitle": "उपशीर्षक"
   },
   "imageCompress": {
     "title": "इमेज कंप्रेस करें",

@@ -36,6 +36,12 @@ describe('StreamDetails', () => {
     expect(screen.getByText('mediaInfo.stream #1')).toBeInTheDocument();
   });
 
+  it('renders translated stream type chips', () => {
+    render(<StreamDetails streams={streams} />);
+    expect(screen.getByText('VIDEO')).toBeInTheDocument();
+    expect(screen.getByText('AUDIO')).toBeInTheDocument();
+  });
+
   it('renders video stream metadata', () => {
     render(<StreamDetails streams={streams} />);
     expect(screen.getByText(/h264/)).toBeInTheDocument();
@@ -101,7 +107,7 @@ describe('StreamDetails', () => {
     expect(screen.getByText(/Clip/)).toBeInTheDocument();
   });
 
-  it('renders disposition chips and stream tags', () => {
+  it('renders disposition chips and translates stream tags', () => {
     render(
       <StreamDetails
         streams={[
@@ -110,13 +116,27 @@ describe('StreamDetails', () => {
             type: 'audio',
             codec: 'aac',
             disposition: ['default', 'forced'],
-            tags: { language: 'eng', title: 'Commentary' },
+            tags: { language: 'eng', title: 'Commentary', handler_name: 'SoundHandler', encoder: 'libx265' },
           },
         ]}
       />,
     );
-    expect(screen.getByText('default')).toBeInTheDocument();
-    expect(screen.getByText('forced')).toBeInTheDocument();
+    expect(screen.getByText('Default')).toBeInTheDocument();
+    expect(screen.getByText('Forced')).toBeInTheDocument();
+    expect(screen.getByText(/SoundHandler/)).toBeInTheDocument();
+    expect(screen.getByText(/libx265/)).toBeInTheDocument();
+  });
+
+  it('does not duplicate language and title from raw tags', () => {
+    render(
+      <StreamDetails
+        streams={[
+          { index: 0, type: 'audio', codec: 'aac', language: 'eng', title: 'Commentary', tags: { language: 'eng', title: 'Commentary' } },
+        ]}
+      />,
+    );
     expect(screen.getByText(/Commentary/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Commentary/)).toHaveLength(1);
+    expect(screen.getAllByText(/eng/)).toHaveLength(1);
   });
 });

@@ -142,7 +142,29 @@
       "handler_name": "اسم المعالج",
       "timecode": "رمز زمني",
       "location": "الموقع"
-    }
+    },
+    "dispositionFlags": {
+      "default": "الافتراضي",
+      "dub": "دبلجة",
+      "original": "الأصلي",
+      "comment": "تعليق",
+      "lyrics": "الكلمات",
+      "karaoke": "كاريوكي",
+      "forced": "إجباري",
+      "hearing_impaired": "ضعف السمع",
+      "visual_impaired": "ضعف البصر",
+      "clean_effects": "تأثيرات نظيفة",
+      "attached_pic": "صورة مرفقة",
+      "timed_thumbnails": "صور مصغرة زمنية",
+      "captions": "تسميات توضيحية",
+      "descriptions": "أوصاف",
+      "metadata": "بيانات وصفية",
+      "dependent": "تابع",
+      "still_image": "صورة ثابتة"
+    },
+    "video": "فيديو",
+    "audio": "صوت",
+    "subtitle": "ترجمة"
   },
   "imageCompress": {
     "title": "ضغط الصورة",

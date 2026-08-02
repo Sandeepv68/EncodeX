@@ -142,7 +142,29 @@
       "handler_name": "Handlernaam",
       "timecode": "Tijdcode",
       "location": "Locatie"
-    }
+    },
+    "dispositionFlags": {
+      "default": "Standaard",
+      "dub": "Nasynchronisatie",
+      "original": "Origineel",
+      "comment": "Opmerking",
+      "lyrics": "Songtekst",
+      "karaoke": "Karaoke",
+      "forced": "Geforceerd",
+      "hearing_impaired": "Slechthorend",
+      "visual_impaired": "Slechtziend",
+      "clean_effects": "Schone effecten",
+      "attached_pic": "Bijgevoegde afbeelding",
+      "timed_thumbnails": "Getimede miniaturen",
+      "captions": "Ondertitels",
+      "descriptions": "Beschrijvingen",
+      "metadata": "Metadata",
+      "dependent": "Afhankelijk",
+      "still_image": "Stilstaand beeld"
+    },
+    "video": "Video",
+    "audio": "Audio",
+    "subtitle": "Ondertitel"
   },
   "imageCompress": {
     "title": "Afbeelding comprimeren",

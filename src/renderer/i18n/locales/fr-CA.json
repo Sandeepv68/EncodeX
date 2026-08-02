@@ -142,7 +142,29 @@
       "handler_name": "Nom du gestionnaire",
       "timecode": "Code temporel",
       "location": "Emplacement"
-    }
+    },
+    "dispositionFlags": {
+      "default": "Par défaut",
+      "dub": "Doublage",
+      "original": "Original",
+      "comment": "Commentaire",
+      "lyrics": "Paroles",
+      "karaoke": "Karaoké",
+      "forced": "Forcé",
+      "hearing_impaired": "Malentendant",
+      "visual_impaired": "Déficient visuel",
+      "clean_effects": "Effets propres",
+      "attached_pic": "Image jointe",
+      "timed_thumbnails": "Vignettes temporelles",
+      "captions": "Sous-titres",
+      "descriptions": "Descriptions",
+      "metadata": "Métadonnées",
+      "dependent": "Dépendant",
+      "still_image": "Image fixe"
+    },
+    "video": "Vidéo",
+    "audio": "Audio",
+    "subtitle": "Sous-titre"
   },
   "imageCompress": {
     "title": "Compresser une Image",

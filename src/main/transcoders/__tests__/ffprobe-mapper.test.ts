@@ -8,9 +8,10 @@ describe('parseRatio', () => {
     expect(parseRatio('30000/1001')).toBe('29.97');
   });
 
-  it('returns the ratio unchanged when malformed or den is zero', () => {
-    expect(parseRatio('unknown')).toBe('unknown');
-    expect(parseRatio('0/0')).toBe('0/0');
+  it('returns undefined when malformed or den is zero', () => {
+    expect(parseRatio('unknown')).toBeUndefined();
+    expect(parseRatio('0/0')).toBeUndefined();
+    expect(parseRatio('foo/bar')).toBeUndefined();
   });
 });
 

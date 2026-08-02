@@ -10,6 +10,7 @@ import {
   StreamTypeChip,
   StreamCountChip,
   DispositionChip,
+  DispositionLabel,
   DispositionRow,
 } from '../styles/StreamDetails.styles';
 
@@ -17,7 +18,7 @@ export interface StreamDetailsProps {
   streams: MediaStreamInfo[];
 }
 
-function buildStreamRows(stream: MediaStreamInfo, t: (key: string) => string): [string, string][] {
+function buildStreamRows(stream: MediaStreamInfo, t: (key: string, opts?: Record<string, unknown>) => string): [string, string][] {
   const rows: [string, string][] = [];
   if (stream.codec) rows.push([t('mediaInfo.codec'), stream.codec + (stream.codecLong ? ` (${stream.codecLong})` : '')]);
   if (stream.codecTag) rows.push([t('mediaInfo.codecTag'), stream.codecTag]);
@@ -31,22 +32,23 @@ function buildStreamRows(stream: MediaStreamInfo, t: (key: string) => string): [
   if (stream.colorPrimaries) rows.push([t('mediaInfo.colorPrimaries'), stream.colorPrimaries]);
   if (stream.colorRange) rows.push([t('mediaInfo.colorRange'), stream.colorRange]);
   if (stream.fieldOrder) rows.push([t('mediaInfo.fieldOrder'), stream.fieldOrder]);
-  if (stream.bitDepth != null) rows.push([t('mediaInfo.bitDepth'), String(stream.bitDepth)]);
+  if (stream.bitDepth != null && stream.bitDepth > 0) rows.push([t('mediaInfo.bitDepth'), String(stream.bitDepth)]);
   if (stream.frameRate) rows.push([t('mediaInfo.frameRate'), `${stream.frameRate} fps`]);
   if (stream.avgFrameRate) rows.push([t('mediaInfo.avgFrameRate'), `${stream.avgFrameRate} fps`]);
   if (stream.bitrate) rows.push([t('mediaInfo.bitrate'), stream.bitrate]);
-  if (stream.sampleRate != null) rows.push([t('mediaInfo.sampleRate'), `${stream.sampleRate} Hz`]);
+  if (stream.sampleRate != null && stream.sampleRate > 0) rows.push([t('mediaInfo.sampleRate'), `${stream.sampleRate} Hz`]);
   if (stream.sampleFormat) rows.push([t('mediaInfo.sampleFormat'), stream.sampleFormat]);
-  if (stream.channels != null) rows.push([t('mediaInfo.channels'), String(stream.channels)]);
+  if (stream.channels != null && stream.channels > 0) rows.push([t('mediaInfo.channels'), String(stream.channels)]);
   if (stream.channelLayout) rows.push([t('mediaInfo.channelLayout'), stream.channelLayout]);
-  if (stream.bitsPerSample != null) rows.push([t('mediaInfo.bitsPerSample'), String(stream.bitsPerSample)]);
+  if (stream.bitsPerSample != null && stream.bitsPerSample > 0) rows.push([t('mediaInfo.bitsPerSample'), String(stream.bitsPerSample)]);
   if (stream.duration != null) rows.push([t('mediaInfo.duration'), formatDuration(stream.duration)]);
   if (stream.startTime != null) rows.push([t('mediaInfo.startTime'), String(stream.startTime)]);
-  if (stream.frameCount != null) rows.push([t('mediaInfo.frameCount'), String(stream.frameCount)]);
+  if (stream.frameCount != null && stream.frameCount > 0) rows.push([t('mediaInfo.frameCount'), String(stream.frameCount)]);
   if (stream.language) rows.push([t('mediaInfo.language'), stream.language]);
   if (stream.title) rows.push([t('mediaInfo.streamTitle'), stream.title]);
   for (const [key, value] of Object.entries(stream.tags ?? {})) {
-    rows.push([key, value]);
+    if (key === 'language' || key === 'title') continue;
+    rows.push([t(`mediaInfo.tagKeys.${key}`, { defaultValue: key }), value]);
   }
   return rows;
 }
@@ -63,7 +65,11 @@ export default function StreamDetails({ streams }: StreamDetailsProps) {
       {streams.map((stream, i) => (
         <StreamPaper key={i} variant="outlined">
           <StreamHeaderRow>
-            <StreamTypeChip label={stream.type.toUpperCase()} size="small" tone={stream.type === 'video' ? 'video' : 'audio'} />
+            <StreamTypeChip
+              label={t(`mediaInfo.${stream.type}`).toUpperCase()}
+              size="small"
+              tone={stream.type === 'video' ? 'video' : 'audio'}
+            />
             <StreamName variant="body2">
               {t('mediaInfo.stream')} #{stream.index}
             </StreamName>
@@ -78,11 +84,16 @@ export default function StreamDetails({ streams }: StreamDetailsProps) {
             ))}
           </Grid>
           {stream.disposition && stream.disposition.length > 0 && (
-            <DispositionRow>
-              {stream.disposition.map((flag) => (
-                <DispositionChip key={flag} label={flag} size="small" />
-              ))}
-            </DispositionRow>
+            <>
+              <DispositionLabel variant="caption" color="text.secondary">
+                {t('mediaInfo.disposition')}
+              </DispositionLabel>
+              <DispositionRow>
+                {stream.disposition.map((flag) => (
+                  <DispositionChip key={flag} label={t(`mediaInfo.dispositionFlags.${flag}`, { defaultValue: flag })} size="small" />
+                ))}
+              </DispositionRow>
+            </>
           )}
         </StreamPaper>
       ))}
