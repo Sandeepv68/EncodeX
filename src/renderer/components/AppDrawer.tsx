@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import { pageIcons } from '../pageIcons';
 import { useConversionStore } from '../stores/conversionStore';
+import { useAudioExtractStore } from '../stores/audioExtractStore';
 import LanguageMenu from './LanguageMenu';
 import { DrawerDivider, NavList, NavItemButton, NavItemIcon, NavItemText, NavBlip } from '../styles/AppDrawer.styles';
 
@@ -28,6 +29,7 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
   const location = useLocation();
   const { t } = useTranslation();
   const isConverting = useConversionStore((s) => s.isConverting);
+  const isExtractingAudio = useAudioExtractStore((s) => s.isConverting);
 
   return (
     <>
@@ -44,6 +46,7 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
             <NavItemIcon $active={location.pathname === item.to}>{pageIcons[item.to]}</NavItemIcon>
             <NavItemText primary={t(`nav.${navKeyMap[item.to]}`)} />
             {item.to === '/convert' && isConverting && <NavBlip aria-hidden="true" data-testid="nav-convert-blip" />}
+            {item.to === '/audio-extract' && isExtractingAudio && <NavBlip aria-hidden="true" data-testid="nav-audio-extract-blip" />}
           </NavItemButton>
         ))}
       </NavList>
