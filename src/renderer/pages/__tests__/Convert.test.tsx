@@ -121,7 +121,7 @@ describe('Convert', () => {
       'FFMPEG',
     );
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'Conversion complete')).toBe(true);
-    expect(screen.getByText('100.0%')).toBeInTheDocument();
+    expect(screen.queryByText('100.0%')).not.toBeInTheDocument();
   });
 
   it('hides the codec fields and passes copy mode when lossless copy is enabled', async () => {

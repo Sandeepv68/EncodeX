@@ -4,7 +4,6 @@ import { useConversionStore } from '../stores/conversionStore';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
 import { ConversionProgress } from '../../shared/types';
-import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import { ErrorCode } from '../../shared/errors';
 import i18n from '../i18n/config';
 import { useSettingsStore } from '../stores/settingsStore';
@@ -21,6 +20,7 @@ export function useConversion() {
   useEffect(() => {
     log.debug('Subscribing to conversion progress');
     const cleanup = window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
+      if (!useConversionStore.getState().isConverting) return;
       store.setProgress(data.progress);
     });
     return () => {
@@ -75,7 +75,7 @@ export function useConversion() {
         store.transcoder,
       );
       log.info('Conversion completed successfully');
-      store.setProgress(COMPLETED_PROGRESS);
+      store.resetForm();
       useToastStore.getState().success(i18n.t('toast.conversionComplete'));
     } catch (err: unknown) {
       log.error('Conversion failed:', err);
