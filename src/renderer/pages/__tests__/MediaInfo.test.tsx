@@ -45,7 +45,8 @@ describe('MediaInfo', () => {
     await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledWith('/media/video.mkv', 'FFMPEG'));
     expect(await screen.findByText('/media/video.mkv')).toBeInTheDocument();
     expect(screen.getByText('matroska')).toBeInTheDocument();
-    expect(screen.getByText('mediaInfo.streams (2)')).toBeInTheDocument();
+    expect(screen.getByText('mediaInfo.streams')).toBeInTheDocument();
+    expect(screen.getByTestId('stream-count-chip')).toHaveTextContent('2');
     expect(screen.getByText('VIDEO')).toBeInTheDocument();
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'toast.mediaInfoLoaded')).toBe(true);
   });

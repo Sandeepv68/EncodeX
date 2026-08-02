@@ -53,7 +53,7 @@ describe('StreamDetails', () => {
 
   it('renders nothing for an empty stream list besides the title', () => {
     render(<StreamDetails streams={[]} />);
-    expect(screen.getByText(/\(0\)/)).toBeInTheDocument();
+    expect(screen.getByTestId('stream-count-chip')).toHaveTextContent('0');
   });
 
   it('handles sparse stream entries without crashing', () => {

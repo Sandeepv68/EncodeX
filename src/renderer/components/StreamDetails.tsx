@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaStreamInfo } from '../../shared/types';
-import { StreamTitle, StreamPaper, StreamHeaderRow, StreamName, StreamTypeChip } from '../styles/StreamDetails.styles';
+import { StreamTitle, StreamPaper, StreamHeaderRow, StreamName, StreamTypeChip, StreamCountChip } from '../styles/StreamDetails.styles';
 
 export interface StreamDetailsProps {
   streams: MediaStreamInfo[];
@@ -13,7 +13,8 @@ export default function StreamDetails({ streams }: StreamDetailsProps) {
   return (
     <>
       <StreamTitle variant="h6">
-        {t('mediaInfo.streams')} ({streams.length})
+        {t('mediaInfo.streams')}
+        <StreamCountChip label={streams.length} size="small" data-testid="stream-count-chip" />
       </StreamTitle>
       {streams.map((stream, i) => (
         <StreamPaper key={i} variant="outlined">
