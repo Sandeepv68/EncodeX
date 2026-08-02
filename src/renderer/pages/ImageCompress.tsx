@@ -77,6 +77,13 @@ export default function ImageCompress() {
     setInput('');
     setPreview(null);
     setFileInfo(null);
+    setOutput('');
+    setFormat(IMAGE_FORMATS[0].value);
+    setQuality(CONVERSION_DEFAULTS.QSCALE);
+    setScale('');
+    setKeepAspectRatio(true);
+    setErrors({});
+    setProgress(null);
   };
 
   const handleFormatChange = (value: string) => {

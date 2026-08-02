@@ -150,10 +150,21 @@ describe('ImageCompress', () => {
     renderPage();
     fireEvent.click(screen.getByText('imageCompress.dropLabel'));
     await waitFor(() => expect(screen.getByTestId('image-preview')).toBeInTheDocument());
+    fireEvent.change(screen.getByPlaceholderText('imageCompress.placeholderOutput'), { target: { value: '/out/photo.png' } });
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.click(screen.getByText('WebP'));
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.click(screen.getByText('1920x1080'));
+    fireEvent.click(screen.getByRole('switch'));
+    expect(screen.getByDisplayValue('1920x1080')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('remove-image'));
     expect(screen.queryByTestId('image-preview')).not.toBeInTheDocument();
     expect(screen.queryByTestId('selected-image')).not.toBeInTheDocument();
     expect(screen.getByText('imageCompress.dropLabel')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('imageCompress.placeholderOutput')).toHaveValue('');
+    expect(screen.getAllByRole('combobox')[0]).toHaveTextContent('JPEG');
+    expect(screen.queryByDisplayValue('1920x1080')).not.toBeInTheDocument();
+    expect(screen.getByRole('switch')).toBeChecked();
   });
 
   it('rewrites the typed output extension to match the selected format', async () => {
