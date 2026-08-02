@@ -31,7 +31,7 @@ export default function ErrorSnackbar({ error, onClose }: Props) {
   if (!error) return null;
   const severity = severityMap[error.code] || 'error';
   return (
-    <Snackbar open autoHideDuration={6000} onClose={onClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+    <Snackbar open autoHideDuration={6000} onClose={onClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
       <SnackbarAlert onClose={onClose} severity={severity} variant="filled">
         <AlertMessage>{error.message}</AlertMessage>
         {error.detail && <AlertDetail>{error.detail}</AlertDetail>}

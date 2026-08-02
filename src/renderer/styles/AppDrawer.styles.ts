@@ -1,4 +1,4 @@
-import { styled } from '@mui/material/styles';
+import { styled, keyframes } from '@mui/material/styles';
 import { Divider, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { COLORS } from '../colors';
 
@@ -30,4 +30,24 @@ export const NavItemIcon = styled(ListItemIcon, {
 
 export const NavItemText = styled(ListItemText)(({ theme }) => ({
   '& .MuiListItemText-primary': { fontSize: theme.typography.pxToRem(14), fontWeight: 500, color: theme.palette.text.secondary },
+}));
+
+const blinkKeyframes = keyframes`
+  0%, 60% { opacity: 1; }
+  100% { opacity: 0.15; }
+`;
+
+const rippleKeyframes = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.45); }
+  100% { box-shadow: 0 0 0 14px rgba(231, 76, 60, 0); }
+`;
+
+export const NavBlip = styled('span')(({ theme }) => ({
+  width: theme.spacing(1),
+  height: theme.spacing(1),
+  borderRadius: '50%',
+  backgroundColor: theme.palette.error.main,
+  marginInlineStart: 'auto',
+  flexShrink: 0,
+  animation: `${blinkKeyframes} 1.2s ease-in-out infinite, ${rippleKeyframes} 1.2s ease-out infinite`,
 }));

@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import AppDrawer from '../AppDrawer';
 import { ColorModeProvider } from '../../ColorModeContext';
+import { useConversionStore } from '../../stores/conversionStore';
 
 function LocationProbe() {
   const location = useLocation();
@@ -23,6 +24,7 @@ function renderDrawer({ isMobile = false, onNavigate = vi.fn() } = {}) {
 describe('AppDrawer', () => {
   beforeEach(() => {
     localStorage.clear();
+    useConversionStore.getState().setIsConverting(false);
   });
 
   it('renders the nav items', () => {
@@ -59,5 +61,16 @@ describe('AppDrawer', () => {
     renderDrawer();
     fireEvent.click(screen.getByText('nav.settings'));
     expect(screen.getByTestId('location')).toHaveTextContent('/settings');
+  });
+
+  it('shows a blip on the convert item while a conversion is in progress', () => {
+    useConversionStore.getState().setIsConverting(true);
+    renderDrawer();
+    expect(screen.getByTestId('nav-convert-blip')).toBeInTheDocument();
+  });
+
+  it('hides the blip when no conversion is in progress', () => {
+    renderDrawer();
+    expect(screen.queryByTestId('nav-convert-blip')).not.toBeInTheDocument();
   });
 });

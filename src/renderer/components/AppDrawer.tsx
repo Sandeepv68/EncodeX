@@ -2,8 +2,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import { pageIcons } from '../pageIcons';
+import { useConversionStore } from '../stores/conversionStore';
 import LanguageMenu from './LanguageMenu';
-import { DrawerDivider, NavList, NavItemButton, NavItemIcon, NavItemText } from '../styles/AppDrawer.styles';
+import { DrawerDivider, NavList, NavItemButton, NavItemIcon, NavItemText, NavBlip } from '../styles/AppDrawer.styles';
 
 const navKeyMap: Record<string, string> = {
   '/': 'dashboard',
@@ -26,6 +27,7 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+  const isConverting = useConversionStore((s) => s.isConverting);
 
   return (
     <>
@@ -41,6 +43,7 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
           >
             <NavItemIcon $active={location.pathname === item.to}>{pageIcons[item.to]}</NavItemIcon>
             <NavItemText primary={t(`nav.${navKeyMap[item.to]}`)} />
+            {item.to === '/convert' && isConverting && <NavBlip aria-hidden="true" data-testid="nav-convert-blip" />}
           </NavItemButton>
         ))}
       </NavList>
