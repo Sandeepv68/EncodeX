@@ -57,6 +57,13 @@ describe('StreamDetails', () => {
     expect(screen.getByText(/eng/)).toBeInTheDocument();
   });
 
+  it('renders in compact layout', () => {
+    render(<StreamDetails streams={streams} compact />);
+    expect(screen.getByText('mediaInfo.stream #0')).toBeInTheDocument();
+    expect(screen.getByText(/h264/)).toBeInTheDocument();
+    expect(screen.getByText(/48000 Hz/)).toBeInTheDocument();
+  });
+
   it('renders nothing for an empty stream list besides the title', () => {
     render(<StreamDetails streams={[]} />);
     expect(screen.getByTestId('stream-count-chip')).toHaveTextContent('0');

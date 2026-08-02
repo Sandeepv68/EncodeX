@@ -212,8 +212,8 @@ export default function Convert() {
               )}
               {mediaInfo && (
                 <ErrorBoundary fallback={null}>
-                  <FileSummary info={mediaInfo} />
-                  <StreamDetails streams={mediaInfo.streams} />
+                  <FileSummary info={mediaInfo} compact />
+                  <StreamDetails streams={mediaInfo.streams} compact />
                 </ErrorBoundary>
               )}
             </Box>

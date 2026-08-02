@@ -1,7 +1,8 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaStreamInfo } from '../../shared/types';
 import { formatDuration } from '../utils/formatters';
+import { FieldLabel, FieldValue } from '../styles/InfoField.styles';
 import {
   StreamTitle,
   StreamPaper,
@@ -16,6 +17,7 @@ import {
 
 export interface StreamDetailsProps {
   streams: MediaStreamInfo[];
+  compact?: boolean;
 }
 
 function buildStreamRows(stream: MediaStreamInfo, t: (key: string, opts?: Record<string, unknown>) => string): [string, string][] {
@@ -53,8 +55,10 @@ function buildStreamRows(stream: MediaStreamInfo, t: (key: string, opts?: Record
   return rows;
 }
 
-export default function StreamDetails({ streams }: StreamDetailsProps) {
+export default function StreamDetails({ streams, compact }: StreamDetailsProps) {
   const { t } = useTranslation();
+
+  const rowSize = compact ? { xs: 12, sm: 6 } : { xs: 12, sm: 6, md: 4, lg: 3 };
 
   return (
     <>
@@ -76,10 +80,11 @@ export default function StreamDetails({ streams }: StreamDetailsProps) {
           </StreamHeaderRow>
           <Grid container spacing={0.5}>
             {buildStreamRows(stream, t).map(([label, value]) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={label}>
-                <Typography variant="caption" color="text.secondary">
-                  {label}: {value}
-                </Typography>
+              <Grid size={rowSize} key={label}>
+                <FieldLabel>{label}</FieldLabel>
+                <Tooltip title={value} placement="top" arrow>
+                  <FieldValue>{value}</FieldValue>
+                </Tooltip>
               </Grid>
             ))}
           </Grid>

@@ -62,6 +62,13 @@ describe('FileSummary', () => {
     expect(screen.getByText('creation_time')).toBeInTheDocument();
   });
 
+  it('renders in compact layout', () => {
+    render(<FileSummary info={{ ...info, formatLong: 'MPEG-4 Part 14', tags: { encoder: 'libx265' } }} compact />);
+    expect(screen.getByText('video.mp4')).toBeInTheDocument();
+    expect(screen.getByText('mp4 (MPEG-4 Part 14)')).toBeInTheDocument();
+    expect(screen.getByText('Encoder')).toBeInTheDocument();
+  });
+
   it('omits the tags section when there are no tags', () => {
     render(<FileSummary info={info} />);
     expect(screen.queryByText('mediaInfo.tags')).not.toBeInTheDocument();

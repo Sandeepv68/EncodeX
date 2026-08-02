@@ -12,7 +12,3 @@ export const TagItem = styled(Box)({
   flexDirection: 'column',
   minWidth: 0,
 });
-
-export const TagKey = styled(Typography)(({ theme }) => ({ fontWeight: 600 }));
-
-export const TagValue = styled(Typography)(({ theme }) => ({ minWidth: 0 }));
