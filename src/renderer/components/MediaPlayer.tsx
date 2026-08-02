@@ -131,12 +131,11 @@ export default function MediaPlayer({ filePath, onTimeUpdate }: Props) {
     if (!filePath) return;
     let cancelled = false;
 
-    log.info('Opening player for:', filePath);
-    window.electronAPI.playerOpen(filePath);
+    log.info('Loading player for:', filePath);
     frameBuffer.current = [];
     displayPtsRef.current = 0;
     setCurrentTime(0);
-    setIsPlaying(true);
+    setIsPlaying(false);
 
     window.electronAPI
       .getMediaInfo(filePath, 'FFMPEG')
@@ -204,20 +203,22 @@ export default function MediaPlayer({ filePath, onTimeUpdate }: Props) {
   }, [isPlaying, renderLoop]);
 
   const togglePlayback = () => {
-    if (!isPlaying && displayPtsRef.current === 0 && frameBuffer.current.length === 0) {
-      window.electronAPI.playerOpen(filePath);
-      const ctx = ensureAudioContext();
-      ctx?.resume().catch(() => {});
-      setIsPlaying(true);
+    if (isPlaying) {
+      closeAudio();
+      setIsPlaying(false);
+      window.electronAPI.playerClose();
       return;
     }
-    if (isPlaying) {
-      audioCtxRef.current?.suspend().catch(() => {});
-      setIsPlaying(false);
+    frameBuffer.current = [];
+    const resumeTime = displayPtsRef.current / DEFAULT_FPS;
+    if (resumeTime > 0) {
+      window.electronAPI.playerSeek(formatTime(resumeTime));
     } else {
-      audioCtxRef.current?.resume().catch(() => {});
-      setIsPlaying(true);
+      window.electronAPI.playerOpen(filePath);
     }
+    const ctx = ensureAudioContext();
+    ctx?.resume().catch(() => {});
+    setIsPlaying(true);
   };
 
   const handleSeek = (_: Event, value: number | number[]) => {

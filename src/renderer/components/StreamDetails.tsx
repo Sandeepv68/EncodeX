@@ -1,7 +1,7 @@
-import { Chip, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaStreamInfo } from '../../shared/types';
-import { StreamTitle, StreamPaper, StreamHeaderRow, StreamName } from '../styles/StreamDetails.styles';
+import { StreamTitle, StreamPaper, StreamHeaderRow, StreamName, StreamTypeChip } from '../styles/StreamDetails.styles';
 
 export interface StreamDetailsProps {
   streams: MediaStreamInfo[];
@@ -18,7 +18,7 @@ export default function StreamDetails({ streams }: StreamDetailsProps) {
       {streams.map((stream, i) => (
         <StreamPaper key={i} variant="outlined">
           <StreamHeaderRow>
-            <Chip label={stream.type.toUpperCase()} size="small" color={stream.type === 'video' ? 'primary' : 'warning'} />
+            <StreamTypeChip label={stream.type.toUpperCase()} size="small" tone={stream.type === 'video' ? 'video' : 'audio'} />
             <StreamName variant="body2">
               {t('mediaInfo.stream')} #{stream.index}
             </StreamName>

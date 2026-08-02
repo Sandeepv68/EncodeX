@@ -46,6 +46,7 @@ export const PreviewPanel = styled(Paper)(({ theme }) => ({
     alignSelf: 'flex-start',
     position: 'sticky',
     top: theme.spacing(2),
+    marginTop: theme.typography.pxToRem(32.02 + 16),
   },
 }));
 

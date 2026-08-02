@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import { useErrorStore } from '../stores/errorStore';
 import ErrorBanner from './ErrorBanner';
 import { ErrorBoundary } from './ErrorBoundary';

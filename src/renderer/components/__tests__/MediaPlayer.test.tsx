@@ -26,10 +26,10 @@ describe('MediaPlayer', () => {
     onPlayerAudio.mockReturnValue(vi.fn());
   });
 
-  it('opens the player and requests media info on mount', () => {
+  it('requests media info without autoplaying on mount', () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const { unmount } = render(<MediaPlayer filePath="/v.mp4" />);
-    expect(playerOpen).toHaveBeenCalledWith('/v.mp4');
+    expect(playerOpen).not.toHaveBeenCalled();
     expect(getMediaInfo).toHaveBeenCalledWith('/v.mp4', 'FFMPEG');
     expect(onPlayerFrame).toHaveBeenCalledOnce();
     expect(onPlayerAudio).toHaveBeenCalledOnce();
@@ -49,15 +49,17 @@ describe('MediaPlayer', () => {
     expect(playerClose).toHaveBeenCalled();
   });
 
-  it('pauses on canvas click and resumes by reopening the player', () => {
+  it('starts paused and toggles playback on click', () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const { container } = render(<MediaPlayer filePath="/v.mp4" />);
     const canvas = container.querySelector('canvas')!;
-    expect(container.querySelector('[data-icon="pause"]')).not.toBeNull();
-    fireEvent.click(canvas);
     expect(container.querySelector('[data-icon="play"]')).not.toBeNull();
     fireEvent.click(canvas);
-    expect(playerOpen).toHaveBeenCalledTimes(2);
+    expect(playerOpen).toHaveBeenCalledOnce();
+    expect(container.querySelector('[data-icon="pause"]')).not.toBeNull();
+    fireEvent.click(canvas);
+    expect(playerClose).toHaveBeenCalledOnce();
+    expect(container.querySelector('[data-icon="play"]')).not.toBeNull();
   });
 
   it('stops playback and closes the player', () => {

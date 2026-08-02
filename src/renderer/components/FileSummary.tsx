@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaInfo } from '../../shared/types';
 import { formatSize, formatDuration } from '../utils/formatters';
@@ -26,7 +26,15 @@ export default function FileSummary({ info }: FileSummaryProps) {
           <Typography variant="caption" color="text.secondary">
             {label}
           </Typography>
-          <Typography variant="body2">{value}</Typography>
+          {value ? (
+            <Tooltip title={value} placement="top" arrow>
+              <Typography variant="body2" noWrap sx={{ minWidth: 0 }}>
+                {value}
+              </Typography>
+            </Tooltip>
+          ) : (
+            <Typography variant="body2">{value}</Typography>
+          )}
         </Grid>
       ))}
     </SummaryGrid>
