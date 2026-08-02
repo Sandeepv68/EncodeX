@@ -1,6 +1,23 @@
 import { styled } from '@mui/material/styles';
-import { Typography, Paper } from '@mui/material';
+import { Box, Typography, Paper } from '@mui/material';
 import { SHADOWS } from '../colors';
+
+export const PageRoot = styled(Box)<{ hasAside?: boolean }>(({ theme, hasAside }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'stretch',
+  gap: theme.spacing(2),
+  ...(hasAside
+    ? {
+        [theme.breakpoints.up('md')]: {
+          flexDirection: 'row',
+          alignItems: 'flex-start',
+        },
+      }
+    : {}),
+}));
+
+export const PageBody = styled(Box)({ flex: 1, minWidth: 0 });
 
 export const PageTitle = styled(Typography)(({ theme }) => ({
   display: 'flex',
