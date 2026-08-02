@@ -11,6 +11,7 @@ import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/tra
 import { suspendProcess, resumeProcess } from '../process-utils';
 import { mapFfprobeData } from './ffprobe-mapper';
 import { getHwAccelArgs } from './hwaccel';
+import { cancelledError } from '../../shared/errors';
 
 const log = new Logger('main/transcoders/ffmpeg-core');
 
@@ -173,7 +174,7 @@ export class FfmpegCore implements ITranscoder {
     cmd.on('error', (err: Error) => {
       if (this.cancelled) {
         log.info('FFmpeg process cancelled');
-        emitter.emit('end');
+        emitter.emit('error', cancelledError());
         return;
       }
       log.error('FFmpeg process error:', err);

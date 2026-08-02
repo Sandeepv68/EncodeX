@@ -54,6 +54,7 @@ export function useConversion() {
       return;
     }
     log.info('startConversion:', store.inputFile, '->', store.outputFile, 'copyMode:', store.copyMode);
+    useErrorStore.getState().clearError();
     store.setIsConverting(true);
     try {
       const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
@@ -79,6 +80,7 @@ export function useConversion() {
       useToastStore.getState().success(i18n.t('toast.conversionComplete'));
     } catch (err: unknown) {
       log.error('Conversion failed:', err);
+      store.setProgress(null);
       showError(err);
     } finally {
       store.setIsConverting(false);

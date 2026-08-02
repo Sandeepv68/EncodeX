@@ -1,4 +1,5 @@
 import { ipcMain, BrowserWindow } from 'electron';
+import { unlink } from 'fs';
 import { createTranscoder } from '../transcoders/factory';
 import { ITranscoder } from '../transcoders/interface';
 import { Logger } from '../../shared/logger';
@@ -40,6 +41,15 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
           });
           emitter.on('error', (err: Error) => {
             log.error('CONVERT_FILE failed:', err);
+            if (output !== input) {
+              unlink(output, (unlinkErr) => {
+                if (unlinkErr && unlinkErr.code !== 'ENOENT') {
+                  log.debug('Failed to clean up partial output:', output, unlinkErr.message);
+                } else {
+                  log.debug('Removed partial output:', output);
+                }
+              });
+            }
             reject(formatError(err));
           });
           emitter.on('end', () => {

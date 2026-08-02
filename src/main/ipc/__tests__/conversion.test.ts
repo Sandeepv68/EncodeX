@@ -121,8 +121,8 @@ describe('registerConversionHandlers', () => {
     expect(transcoder.cancel).toHaveBeenCalled();
     await getHandlers()[IPC.CANCEL_CONVERSION]();
     expect(transcoder.cancel).toHaveBeenCalledTimes(1);
-    transcoder.emitter.emit('end');
-    await promise;
+    transcoder.emitter.emit('error', new Error('killed'));
+    await expect(promise).rejects.toMatchObject({ code: 'CANCELLED' });
   });
 
   it('PAUSE and RESUME are no-ops without a current transcoder', async () => {

@@ -14,6 +14,7 @@ import {
 } from '../../shared/transcoder-constants';
 import { buildFfmpegArgs } from './ffmpeg-utils';
 import { mapFfprobeData } from './ffprobe-mapper';
+import { cancelledError } from '../../shared/errors';
 
 const log = new Logger('main/transcoders/bmf-core');
 
@@ -70,7 +71,7 @@ export class BmfCore implements ITranscoder {
       proc.on('error', (err: Error) => {
         if (this.cancelled) {
           log.info('BMF process cancelled');
-          emitter.emit('end');
+          emitter.emit('error', cancelledError());
           return;
         }
         log.error('BMF process error:', err);
@@ -80,7 +81,7 @@ export class BmfCore implements ITranscoder {
         log.debug('BMF exited with code:', code);
         if (this.cancelled) {
           log.info('BMF process cancelled');
-          emitter.emit('end');
+          emitter.emit('error', cancelledError());
           return;
         }
         if (code === 0) {

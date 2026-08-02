@@ -258,7 +258,7 @@ describe('FfmpegCore', () => {
     expect(endListener).toHaveBeenCalled();
   });
 
-  it('emits end instead of error when the process was cancelled', () => {
+  it('emits a CANCELLED error when the process was cancelled', () => {
     const core = new FfmpegCore();
     const emitter = core.convert('in.mp4', 'out.mp4', {});
     const cmd = getCommand();
@@ -269,8 +269,8 @@ describe('FfmpegCore', () => {
     core.cancel();
     expect(cmd.kill).toHaveBeenCalledWith('SIGKILL');
     onHandler(cmd, 'error')(new Error('killed'));
-    expect(endListener).toHaveBeenCalled();
-    expect(errorListener).not.toHaveBeenCalled();
+    expect(endListener).not.toHaveBeenCalled();
+    expect(errorListener).toHaveBeenCalledWith(expect.objectContaining({ code: 'CANCELLED' }));
   });
 
   it('pause and resume are no-ops without a process', () => {

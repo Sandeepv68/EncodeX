@@ -105,7 +105,7 @@ describe('BmfCore', () => {
     expect(errorListener).toHaveBeenCalledWith(new Error('bmf error'));
   });
 
-  it('convert emits end instead of error after cancel', () => {
+  it('convert emits a CANCELLED error after cancel', () => {
     const core = new BmfCore();
     const emitter = core.convert('in.mp4', 'out.mp4', {});
     const endListener = vi.fn();
@@ -115,18 +115,21 @@ describe('BmfCore', () => {
     core.cancel();
     expect(getProc().kill).toHaveBeenCalledWith('SIGKILL');
     getProc().emit('error', new Error('killed'));
-    expect(endListener).toHaveBeenCalled();
-    expect(errorListener).not.toHaveBeenCalled();
+    expect(endListener).not.toHaveBeenCalled();
+    expect(errorListener).toHaveBeenCalledWith(expect.objectContaining({ code: 'CANCELLED' }));
   });
 
-  it('convert emits end when a cancelled process closes', () => {
+  it('convert emits a CANCELLED error when a cancelled process closes', () => {
     const core = new BmfCore();
     const emitter = core.convert('in.mp4', 'out.mp4', {});
     const endListener = vi.fn();
+    const errorListener = vi.fn();
     emitter.on('end', endListener);
+    emitter.on('error', errorListener);
     core.cancel();
     getProc().emit('close', 1);
-    expect(endListener).toHaveBeenCalled();
+    expect(endListener).not.toHaveBeenCalled();
+    expect(errorListener).toHaveBeenCalledWith(expect.objectContaining({ code: 'CANCELLED' }));
   });
 
   it('convert reports a spawn failure on the emitter', async () => {
