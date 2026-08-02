@@ -1,9 +1,10 @@
-import { Grid, Tooltip } from '@mui/material';
+import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaInfo } from '../../shared/types';
 import { formatSize, formatDuration } from '../utils/formatters';
 import { SummaryGrid, TagsBox, TagsTitle, TagItem } from '../styles/FileSummary.styles';
 import { FieldLabel, FieldValue } from '../styles/InfoField.styles';
+import EllipsisTooltip from './EllipsisTooltip';
 
 export interface FileSummaryProps {
   info: MediaInfo;
@@ -43,9 +44,9 @@ export default function FileSummary({ info, compact }: FileSummaryProps) {
           <Grid size={size} key={label}>
             <FieldLabel>{label}</FieldLabel>
             {value ? (
-              <Tooltip title={value} placement="top" arrow>
+              <EllipsisTooltip title={value}>
                 <FieldValue>{value}</FieldValue>
-              </Tooltip>
+              </EllipsisTooltip>
             ) : (
               <FieldValue>{value}</FieldValue>
             )}
@@ -62,9 +63,9 @@ export default function FileSummary({ info, compact }: FileSummaryProps) {
               <Grid size={tagSize} key={key}>
                 <TagItem>
                   <FieldLabel>{t(`mediaInfo.tagKeys.${key}`, { defaultValue: key })}</FieldLabel>
-                  <Tooltip title={value} placement="top" arrow>
+                  <EllipsisTooltip title={value}>
                     <FieldValue>{value}</FieldValue>
-                  </Tooltip>
+                  </EllipsisTooltip>
                 </TagItem>
               </Grid>
             ))}

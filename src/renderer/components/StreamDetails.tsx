@@ -1,8 +1,9 @@
-import { Grid, Tooltip } from '@mui/material';
+import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaStreamInfo } from '../../shared/types';
 import { formatDuration } from '../utils/formatters';
 import { FieldLabel, FieldValue } from '../styles/InfoField.styles';
+import EllipsisTooltip from './EllipsisTooltip';
 import {
   StreamTitle,
   StreamPaper,
@@ -82,9 +83,9 @@ export default function StreamDetails({ streams, compact }: StreamDetailsProps) 
             {buildStreamRows(stream, t).map(([label, value]) => (
               <Grid size={rowSize} key={label}>
                 <FieldLabel>{label}</FieldLabel>
-                <Tooltip title={value} placement="top" arrow>
+                <EllipsisTooltip title={value}>
                   <FieldValue>{value}</FieldValue>
-                </Tooltip>
+                </EllipsisTooltip>
               </Grid>
             ))}
           </Grid>
