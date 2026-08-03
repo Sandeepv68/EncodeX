@@ -10,6 +10,7 @@ import PageContainer from '../components/PageContainer';
 import FilePathField from '../components/FilePathField';
 import ConfirmDialog from '../components/ConfirmDialog';
 import AudioStreamInfo from '../components/AudioStreamInfo';
+import InfoTooltip from '../components/InfoTooltip';
 import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
@@ -105,6 +106,7 @@ export default function AudioExtract() {
       <Box>
         <FieldLabel variant="caption" color="text.secondary">
           {t('audioExtract.videoFile')}
+          <InfoTooltip title={t('audioExtract.videoFileHint')} />
         </FieldLabel>
         {!store.input && (
           <ErrorBoundary fallback={null}>
@@ -147,6 +149,7 @@ export default function AudioExtract() {
 
       <FilePathField
         label={t('audioExtract.outputFile')}
+        hint={t('audioExtract.outputFileHint')}
         value={store.output}
         placeholder={t('audioExtract.placeholderOutput')}
         buttonLabel={t('convert.browse')}
@@ -168,6 +171,7 @@ export default function AudioExtract() {
         <FieldBox>
           <FieldLabel variant="caption" color="text.secondary">
             {t('audioExtract.audioCodec')}
+            <InfoTooltip title={t('audioExtract.audioCodecHint')} />
           </FieldLabel>
           <ErrorBoundary fallback={null}>
             <CodecSelect type="audio" value={store.audioCodec} onChange={handleCodecChange} />
@@ -176,6 +180,7 @@ export default function AudioExtract() {
         <FieldBox>
           <FieldLabel variant="caption" color="text.secondary">
             {t('audioExtract.bitrate')}
+            <InfoTooltip title={t('audioExtract.bitrateHint')} />
           </FieldLabel>
           <TextField select fullWidth size="small" value={store.audioBitrate} onChange={(e) => store.setAudioBitrate(e.target.value)}>
             {BITRATE_OPTIONS.map((b) => (

@@ -7,6 +7,7 @@ interface DecoderLike extends EventEmitter {
   open: ReturnType<typeof vi.fn>;
   seek: ReturnType<typeof vi.fn>;
   close: ReturnType<typeof vi.fn>;
+  getGeneration: ReturnType<typeof vi.fn>;
 }
 
 const { ipcMainMock, getHandlers, frameDecoderInstances, FfmpegCoreMock, getInfoMock } = vi.hoisted(() => {
@@ -38,11 +39,13 @@ vi.mock('../../player/frame-decoder', () => {
       open: ReturnType<typeof vi.fn>;
       seek: ReturnType<typeof vi.fn>;
       close: ReturnType<typeof vi.fn>;
+      getGeneration: ReturnType<typeof vi.fn>;
       constructor() {
         super();
         this.open = vi.fn();
         this.seek = vi.fn();
         this.close = vi.fn();
+        this.getGeneration = vi.fn(() => 7);
         frameDecoderInstances.push(this);
       }
     },
@@ -136,6 +139,24 @@ describe('registerPlayerHandlers', () => {
     expect(decoder.seek).toHaveBeenCalledWith('00:00:05');
   });
 
+  it('PLAYER_OPEN returns the decoder generation', async () => {
+    getInfoMock.mockResolvedValueOnce({
+      file: 'v.mp4',
+      format: 'mp4',
+      size: 1,
+      duration: 10,
+      bitrate: '1',
+      streams: [{ type: 'video', width: 1280, height: 720 }],
+    });
+    const result = await getHandlers()[IPC.PLAYER_OPEN]({}, 'v.mp4');
+    expect(result).toBe(7);
+  });
+
+  it('PLAYER_SEEK returns the decoder generation', async () => {
+    const result = await getHandlers()[IPC.PLAYER_SEEK]({}, '00:00:05');
+    expect(result).toBe(7);
+  });
+
   it('PLAYER_CLOSE delegates to the decoder', async () => {
     await getHandlers()[IPC.PLAYER_CLOSE]();
     expect(decoder.close).toHaveBeenCalled();
@@ -156,13 +177,14 @@ describe('registerPlayerHandlers', () => {
   });
 
   it('forwards decoded frames to the renderer', () => {
-    const frame = { buffer: Buffer.from([1, 2, 3]), width: 2, height: 2, pts: 5 };
+    const frame = { buffer: Buffer.from([1, 2, 3]), width: 2, height: 2, pts: 5, generation: 2 };
     decoder.emit('frame', frame);
     expect(send).toHaveBeenCalledWith(IPC.PLAYER_FRAME, {
       data: frame.buffer.buffer,
       width: 2,
       height: 2,
       pts: 5,
+      generation: 2,
     });
   });
 
@@ -180,12 +202,13 @@ describe('registerPlayerHandlers', () => {
     });
     await getHandlers()[IPC.PLAYER_OPEN]({}, 'v.mp4');
     send.mockClear();
-    const chunk = { buffer: Buffer.from([1, 2, 3, 4]), sampleRate: 48000, channels: 2 };
+    const chunk = { buffer: Buffer.from([1, 2, 3, 4]), sampleRate: 48000, channels: 2, generation: 3 };
     decoder.emit('audio', chunk);
     expect(send).toHaveBeenCalledWith(IPC.PLAYER_AUDIO, {
       data: chunk.buffer.buffer,
       sampleRate: 48000,
       channels: 2,
+      generation: 3,
     });
   });
 });

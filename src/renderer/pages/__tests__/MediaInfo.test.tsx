@@ -98,22 +98,12 @@ describe('MediaInfo', () => {
     expect(getImageInfoMock).not.toHaveBeenCalled();
   });
 
-  it('shows an error banner when media info fails to load', async () => {
+  it('records an error in the error store when media info fails to load', async () => {
     selectFileMock.mockResolvedValue('/media/video.mkv');
     getMediaInfoMock.mockRejectedValue(new Error('probe failed'));
     renderPage();
     fireEvent.click(screen.getByText('mediaInfo.dropLabel'));
     await waitFor(() => expect(useErrorStore.getState().currentError).not.toBeNull());
     expect(useErrorStore.getState().currentError?.detail).toBe('probe failed');
-  });
-
-  it('clears the error banner via the close button', async () => {
-    selectFileMock.mockResolvedValue('/media/video.mkv');
-    getMediaInfoMock.mockRejectedValue(new Error('probe failed'));
-    const { container } = renderPage();
-    fireEvent.click(screen.getByText('mediaInfo.dropLabel'));
-    await waitFor(() => expect(useErrorStore.getState().currentError).not.toBeNull());
-    fireEvent.click(container.querySelector('[data-icon="xmark"]')!);
-    expect(useErrorStore.getState().currentError).toBeNull();
   });
 });

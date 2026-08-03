@@ -115,12 +115,30 @@ export interface PlayerFrame {
   width: number;
   height: number;
   pts: number;
+  generation: number;
 }
 
 export interface PlayerAudioChunk {
   data: ArrayBuffer;
   sampleRate: number;
   channels: number;
+  generation: number;
+}
+
+export interface WaveformData {
+  sampleRate: number;
+  samplesPerBucket: number;
+  buckets: Array<{ min: number; max: number }>;
+}
+
+export interface ThumbnailStrip {
+  dataUrl: string;
+  cols: number;
+  rows: number;
+  thumbWidth: number;
+  thumbHeight: number;
+  interval: number;
+  count: number;
 }
 
 export enum ConversionOperation {

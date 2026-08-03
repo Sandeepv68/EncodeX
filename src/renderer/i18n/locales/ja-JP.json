@@ -198,6 +198,10 @@
     "outputFile": "出力ファイル",
     "audioCodec": "オーディオコーデック",
     "bitrate": "ビットレート",
+    "videoFileHint": "抽出したいオーディオトラックを含むソース動画。",
+    "outputFileHint": "抽出したオーディオが保存される出力ファイル。拡張子は選択したコーデックに対応します。",
+    "audioCodecHint": "オーディオストリームのエンコードに使用するコーデック。例: AAC、MP3、Opus。",
+    "bitrateHint": "オーディオストリームの目標ビットレート。値を高くすると品質とファイルサイズが増加します。自動はソースのビットレートを維持します。",
     "extract": "音声を抽出",
     "extracting": "抽出中...",
     "placeholderOutput": "例: output.mp3",
@@ -222,12 +226,17 @@
     "endTime": "終了時間 (HH:MM:SS)",
     "useDuration": "終了時間の代わりに再生時間を使用",
     "cut": "動画をカット",
+    "generatingPreview": "プレビューを生成中...",
     "cutting": "カット中...",
     "placeholderOutput": "出力パス",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "例: 00:01:30",
     "placeholderEnd": "例: 00:01:30",
     "validationRequired": "ビデオファイルを選択してください。"
+  },
+  "videoTimeline": {
+    "zoomIn": "拡大",
+    "zoomOut": "縮小"
   },
   "batchQueue": {
     "title": "バッチキュー",

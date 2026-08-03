@@ -198,6 +198,10 @@
     "outputFile": "Ausgabedatei",
     "audioCodec": "Audio-Codec",
     "bitrate": "Bitrate",
+    "videoFileHint": "Das Quellvideo, das den Audiostream enthält, den du extrahieren möchtest.",
+    "outputFileHint": "Die Zieldatei, in der der extrahierte Ton gespeichert wird. Die Erweiterung entspricht dem gewählten Codec.",
+    "audioCodecHint": "Der Codec zum Codieren des Audio-Streams, z.B. AAC, MP3 oder Opus.",
+    "bitrateHint": "Die Ziel-Bitrate für den Audio-Stream. Höhere Werte erhöhen die Qualität und die Dateigröße. Automatisch behält die Quell-Bitrate bei.",
     "extract": "Audio extrahieren",
     "extracting": "Extrahiere...",
     "placeholderOutput": "z.B. output.mp3",
@@ -222,12 +226,17 @@
     "endTime": "Endzeit (HH:MM:SS)",
     "useDuration": "Dauer statt Endzeit verwenden",
     "cut": "Video schneiden",
+    "generatingPreview": "Vorschau wird erstellt...",
     "cutting": "Schneide...",
     "placeholderOutput": "Ausgabepfad",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "z.B. 00:01:30",
     "placeholderEnd": "z.B. 00:01:30",
     "validationRequired": "Bitte wählen Sie eine Videodatei aus."
+  },
+  "videoTimeline": {
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern"
   },
   "batchQueue": {
     "title": "Stapelwarteschlange",

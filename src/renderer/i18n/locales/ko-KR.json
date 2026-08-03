@@ -198,6 +198,10 @@
     "outputFile": "출력 파일",
     "audioCodec": "오디오 코덱",
     "bitrate": "비트레이트",
+    "videoFileHint": "추출하려는 오디오 트랙이 포함된 원본 비디오입니다.",
+    "outputFileHint": "추출된 오디오가 저장될 대상 파일입니다. 확장자는 선택한 코덱에 맞습니다.",
+    "audioCodecHint": "오디오 스트림을 인코딩하는 데 사용되는 코덱입니다. 예: AAC, MP3, Opus.",
+    "bitrateHint": "오디오 스트림의 목표 비트레이트입니다. 값이 높을수록 품질과 파일 크기가 커집니다. 자동은 소스 비트레이트를 유지합니다.",
     "extract": "오디오 추출",
     "extracting": "추출 중...",
     "placeholderOutput": "예: output.mp3",
@@ -222,12 +226,17 @@
     "endTime": "종료 시간 (HH:MM:SS)",
     "useDuration": "종료 시간 대신 재생 시간 사용",
     "cut": "비디오 자르기",
+    "generatingPreview": "미리보기 생성 중...",
     "cutting": "자르는 중...",
     "placeholderOutput": "출력 경로",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "예: 00:01:30",
     "placeholderEnd": "예: 00:01:30",
     "validationRequired": "동영상 파일을 선택하세요."
+  },
+  "videoTimeline": {
+    "zoomIn": "확대",
+    "zoomOut": "축소"
   },
   "batchQueue": {
     "title": "배치 큐",

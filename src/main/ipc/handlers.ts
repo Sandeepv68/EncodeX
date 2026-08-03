@@ -8,6 +8,7 @@ import { registerPlayerHandlers } from './player';
 import { registerWindowHandlers } from './window';
 import { registerCapabilityHandlers } from './capabilities';
 import { registerImageHandlers } from './image';
+import { registerTimelineHandlers } from './timeline';
 
 const log = new Logger('main/ipc/handlers');
 
@@ -21,4 +22,5 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   registerPlayerHandlers(win, send);
   registerWindowHandlers(win);
   registerImageHandlers();
+  registerTimelineHandlers();
 }

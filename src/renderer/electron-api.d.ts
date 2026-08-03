@@ -7,6 +7,8 @@ import {
   PlayerAudioChunk,
   LogEntry,
   EncoderCapabilities,
+  WaveformData,
+  ThumbnailStrip,
 } from '../shared/types';
 
 export interface ElectronAPI {
@@ -24,10 +26,12 @@ export interface ElectronAPI {
   queueRemove(id: string): Promise<void>;
   queueList(): Promise<QueueJob[]>;
   queueCancelAll(): Promise<void>;
-  playerOpen(filePath: string): Promise<void>;
-  playerSeek(time: string): Promise<void>;
+  playerOpen(filePath: string): Promise<number>;
+  playerSeek(time: string): Promise<number>;
   playerClose(): Promise<void>;
   playerGetFrame(): Promise<PlayerFrame | null>;
+  extractWaveform(filePath: string, duration: number): Promise<WaveformData | null>;
+  extractThumbnails(filePath: string, duration: number): Promise<ThumbnailStrip | null>;
   windowMinimize(): void;
   windowMaximizeToggle(): void;
   windowClose(): void;

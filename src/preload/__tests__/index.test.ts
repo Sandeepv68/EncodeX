@@ -83,6 +83,8 @@ describe('preload', () => {
     ['playerSeek', IPC.PLAYER_SEEK, ['00:00:01']],
     ['playerClose', IPC.PLAYER_CLOSE, []],
     ['playerGetFrame', IPC.PLAYER_GET_FRAME, []],
+    ['extractWaveform', IPC.EXTRACT_WAVEFORM, ['v.mp4', 60]],
+    ['extractThumbnails', IPC.EXTRACT_THUMBNAILS, ['v.mp4', 60]],
   ])('%s invokes the %s channel', async (method, channel, args) => {
     ipcRendererMock.invoke.mockResolvedValue('ok');
     const result = await (api[method] as (...a: unknown[]) => Promise<string>)(...args);

@@ -122,7 +122,7 @@ export class FfmpegCore implements ITranscoder {
     }
     if (options.endTime) {
       log.debug('End time:', options.endTime);
-      cmd.seekOutput(options.endTime);
+      cmd.inputOptions(FFMPEG_FLAGS.END, options.endTime);
     }
     if (options.duration) {
       log.debug('Duration:', options.duration);

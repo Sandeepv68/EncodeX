@@ -177,7 +177,7 @@ describe('FfmpegCore', () => {
     expect(cmd.size).toHaveBeenCalledWith('1280x720');
     expect(cmd.outputOptions).toHaveBeenCalledWith('-pix_fmt yuv420p');
     expect(cmd.setStartTime).toHaveBeenCalledWith('00:00:01');
-    expect(cmd.seekOutput).toHaveBeenCalledWith('00:00:05');
+    expect(cmd.inputOptions).toHaveBeenCalledWith('-to', '00:00:05');
     expect(cmd.duration).toHaveBeenCalledWith('4');
     expect(cmd.output).toHaveBeenCalledWith('out.mp4');
     expect(cmd.run).toHaveBeenCalled();

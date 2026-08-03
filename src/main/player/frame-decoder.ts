@@ -12,12 +12,14 @@ export interface DecodedFrame {
   width: number;
   height: number;
   pts: number;
+  generation: number;
 }
 
 export interface DecodedAudio {
   buffer: Buffer;
   sampleRate: number;
   channels: number;
+  generation: number;
 }
 
 export interface AudioDecodeConfig {
@@ -42,6 +44,11 @@ export class FrameDecoder extends EventEmitter {
   private inputPath = '';
   private audioSampleRate = 0;
   private audioChannels = 0;
+  private generation = 0;
+
+  getGeneration(): number {
+    return this.generation;
+  }
 
   private spawnFfmpeg(seekTo?: string, width?: number, height?: number, audio?: AudioDecodeConfig): void {
     if (width !== undefined) {
@@ -51,13 +58,16 @@ export class FrameDecoder extends EventEmitter {
     }
     this.buffer = Buffer.alloc(0);
     this.running = true;
+    const generation = ++this.generation;
 
     const ffmpegPath = getFfmpegPath();
     const args: string[] = [];
     if (seekTo) {
       args.push('-ss', seekTo);
     }
-    args.push(FFMPEG_FLAGS.REALTIME, FFMPEG_FLAGS.INPUT, this.inputPath);
+    args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.REALTIME, FFMPEG_FLAGS.INPUT, this.inputPath);
+
+    args.push('-vf', 'showinfo');
 
     if (audio) {
       this.audioSampleRate = audio.sampleRate;
@@ -103,7 +113,38 @@ export class FrameDecoder extends EventEmitter {
     log.debug('FFmpeg decoder args:', args.join(' '));
     const currentProcess = audio ? spawn(ffmpegPath, args, { stdio: ['ignore', 'pipe', 'pipe', 'pipe'] }) : spawn(ffmpegPath, args);
     this.process = currentProcess;
-    let pts = 0;
+    const pendingPts: number[] = [];
+    const pendingFrames: Buffer[] = [];
+    let stderrBuf = '';
+
+    const emitAvailable = () => {
+      if (!this.running || this.process !== currentProcess) return;
+      while (pendingFrames.length > 0 && pendingPts.length > 0) {
+        const frameData = pendingFrames.shift()!;
+        const pts = pendingPts.shift()!;
+        this.emit('frame', {
+          buffer: frameData,
+          width: this.width,
+          height: this.height,
+          pts,
+          generation,
+        } as DecodedFrame);
+      }
+    };
+
+    currentProcess.stderr?.on('data', (chunk: Buffer) => {
+      if (!this.running || this.process !== currentProcess) return;
+      stderrBuf += chunk.toString('utf8');
+      const re = /pts_time:\s*([0-9]+(?:\.[0-9]+)?)/g;
+      let lastIndex = 0;
+      let match: RegExpExecArray | null;
+      while ((match = re.exec(stderrBuf)) !== null) {
+        pendingPts.push(Number(match[1]));
+        lastIndex = re.lastIndex;
+      }
+      stderrBuf = stderrBuf.slice(lastIndex);
+      emitAvailable();
+    });
 
     currentProcess.stdout?.on('data', (chunk: Buffer) => {
       if (!this.running || this.process !== currentProcess) return;
@@ -112,14 +153,9 @@ export class FrameDecoder extends EventEmitter {
       while (this.buffer.length >= this.frameSize) {
         const frameData = this.buffer.subarray(0, this.frameSize);
         this.buffer = this.buffer.subarray(this.frameSize);
-        this.emit('frame', {
-          buffer: Buffer.from(frameData),
-          width: this.width,
-          height: this.height,
-          pts,
-        } as DecodedFrame);
-        pts++;
+        pendingFrames.push(Buffer.from(frameData));
       }
+      emitAvailable();
     });
 
     if (audio) {
@@ -129,6 +165,7 @@ export class FrameDecoder extends EventEmitter {
           buffer: Buffer.from(chunk),
           sampleRate: audio.sampleRate,
           channels: audio.channels,
+          generation,
         } as DecodedAudio);
       });
     }

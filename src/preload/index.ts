@@ -12,6 +12,8 @@ import {
   ImageFileInfo,
   LogEntry,
   EncoderCapabilities,
+  WaveformData,
+  ThumbnailStrip,
 } from '../shared/types';
 
 const log = new Logger('preload');
@@ -90,11 +92,11 @@ const api = {
   },
   playerOpen: (filePath: string) => {
     log.info('playerOpen:', filePath);
-    return ipcRenderer.invoke(IPC.PLAYER_OPEN, filePath) as Promise<void>;
+    return ipcRenderer.invoke(IPC.PLAYER_OPEN, filePath) as Promise<number>;
   },
   playerSeek: (time: string) => {
     log.debug('playerSeek:', time);
-    return ipcRenderer.invoke(IPC.PLAYER_SEEK, time) as Promise<void>;
+    return ipcRenderer.invoke(IPC.PLAYER_SEEK, time) as Promise<number>;
   },
   playerClose: () => {
     log.debug('playerClose called');
@@ -102,6 +104,14 @@ const api = {
   },
   playerGetFrame: () => {
     return ipcRenderer.invoke(IPC.PLAYER_GET_FRAME) as Promise<PlayerFrame | null>;
+  },
+  extractWaveform: (filePath: string, duration: number) => {
+    log.info('extractWaveform:', filePath, 'duration:', duration);
+    return ipcRenderer.invoke(IPC.EXTRACT_WAVEFORM, filePath, duration) as Promise<WaveformData | null>;
+  },
+  extractThumbnails: (filePath: string, duration: number) => {
+    log.info('extractThumbnails:', filePath, 'duration:', duration);
+    return ipcRenderer.invoke(IPC.EXTRACT_THUMBNAILS, filePath, duration) as Promise<ThumbnailStrip | null>;
   },
 
   windowMinimize: () => {

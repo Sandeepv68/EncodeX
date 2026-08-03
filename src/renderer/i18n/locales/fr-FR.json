@@ -198,6 +198,10 @@
     "outputFile": "Fichier de Sortie",
     "audioCodec": "Codec Audio",
     "bitrate": "Débit",
+    "videoFileHint": "La vidéo source qui contient la piste audio que vous souhaitez extraire.",
+    "outputFileHint": "Le fichier de destination où l'audio extrait sera enregistré. Son extension correspond au codec sélectionné.",
+    "audioCodecHint": "Le codec utilisé pour encoder le flux audio, p. ex. AAC, MP3 ou Opus.",
+    "bitrateHint": "Le débit cible pour le flux audio. Des valeurs plus élevées augmentent la qualité et la taille du fichier. Automatique conserve le débit source.",
     "extract": "Extraire l'Audio",
     "extracting": "Extraction en cours...",
     "placeholderOutput": "ex. output.mp3",
@@ -222,12 +226,17 @@
     "endTime": "Heure de Fin (HH:MM:SS)",
     "useDuration": "Utiliser la durée au lieu de l'heure de fin",
     "cut": "Couper la Vidéo",
+    "generatingPreview": "Génération de l'aperçu...",
     "cutting": "Coupe en cours...",
     "placeholderOutput": "chemin de sortie",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "ex. 00:01:30",
     "placeholderEnd": "ex. 00:01:30",
     "validationRequired": "Veuillez sélectionner un fichier vidéo."
+  },
+  "videoTimeline": {
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière"
   },
   "batchQueue": {
     "title": "File d'Attente",

@@ -198,6 +198,10 @@
     "outputFile": "ملف الإخراج",
     "audioCodec": "ترميز الصوت",
     "bitrate": "معدل البت",
+    "videoFileHint": "الفيديو المصدر الذي يحتوي على المسار الصوتي الذي تريد استخراجه.",
+    "outputFileHint": "ملف الوجهة حيث سيتم حفظ الصوت المستخرج. امتداده يطابق الترميز المحدد.",
+    "audioCodecHint": "الترميز المستخدم لترميز تدفق الصوت، مثل AAC أو MP3 أو Opus.",
+    "bitrateHint": "معدل البت المستهدف لتدفق الصوت. القيم الأعلى تزيد الجودة وحجم الملف. تلقائي يحافظ على معدل بت المصدر.",
     "extract": "استخراج الصوت",
     "extracting": "جاري الاستخراج...",
     "placeholderOutput": "مثال output.mp3",
@@ -222,12 +226,17 @@
     "endTime": "وقت النهاية (ساعة:دقيقة:ثانية)",
     "useDuration": "استخدام المدة بدلاً من وقت النهاية",
     "cut": "قص الفيديو",
+    "generatingPreview": "جارٍ إنشاء المعاينة...",
     "cutting": "جاري القص...",
     "placeholderOutput": "مسار الإخراج",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "مثال 00:01:30",
     "placeholderEnd": "مثال 00:01:30",
     "validationRequired": "الرجاء تحديد ملف فيديو."
+  },
+  "videoTimeline": {
+    "zoomIn": "تكبير",
+    "zoomOut": "تصغير"
   },
   "batchQueue": {
     "title": "قائمة الدفعات",

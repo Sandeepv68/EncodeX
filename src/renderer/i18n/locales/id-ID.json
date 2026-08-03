@@ -198,6 +198,10 @@
     "outputFile": "File Keluaran",
     "audioCodec": "Codec Audio",
     "bitrate": "Kecepatan bit",
+    "videoFileHint": "Video sumber yang berisi trek audio yang ingin Anda ekstrak.",
+    "outputFileHint": "File tujuan tempat audio yang diekstrak akan disimpan. Ekstensinya sesuai dengan codec yang dipilih.",
+    "audioCodecHint": "Codec yang digunakan untuk menyandikan aliran audio, mis. AAC, MP3, atau Opus.",
+    "bitrateHint": "Bitrate target untuk aliran audio. Nilai yang lebih tinggi meningkatkan kualitas dan ukuran file. Otomatis mempertahankan bitrate sumber.",
     "extract": "Ekstrak Audio",
     "extracting": "Mengekstrak...",
     "placeholderOutput": "mis. output.mp3",
@@ -222,12 +226,17 @@
     "endTime": "Waktu Selesai (HH:MM:SS)",
     "useDuration": "Gunakan durasi sebagai pengganti waktu selesai",
     "cut": "Potong Video",
+    "generatingPreview": "Membuat pratinjau...",
     "cutting": "Memotong...",
     "placeholderOutput": "jalur output",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "mis. 00:01:30",
     "placeholderEnd": "mis. 00:01:30",
     "validationRequired": "Silakan pilih file video."
+  },
+  "videoTimeline": {
+    "zoomIn": "Perbesar",
+    "zoomOut": "Perkecil"
   },
   "batchQueue": {
     "title": "Antrean Batch",

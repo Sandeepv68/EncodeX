@@ -198,6 +198,10 @@
     "outputFile": "File di output",
     "audioCodec": "Codec audio",
     "bitrate": "Velocità in bit",
+    "videoFileHint": "Il video sorgente che contiene la traccia audio che desideri estrarre.",
+    "outputFileHint": "Il file di destinazione in cui verrà salvato l'audio estratto. La sua estensione corrisponde al codec selezionato.",
+    "audioCodecHint": "Il codec utilizzato per codificare il flusso audio, ad es. AAC, MP3 o Opus.",
+    "bitrateHint": "Il bitrate target per il flusso audio. Valori più alti aumentano la qualità e la dimensione del file. Automatico mantiene il bitrate di origine.",
     "extract": "Estrai audio",
     "extracting": "Estrazione in corso...",
     "placeholderOutput": "es. output.mp3",
@@ -222,12 +226,17 @@
     "endTime": "Ora di fine (HH:MM:SS)",
     "useDuration": "Usa durata invece dell'ora di fine",
     "cut": "Taglia video",
+    "generatingPreview": "Generazione anteprima...",
     "cutting": "Taglio in corso...",
     "placeholderOutput": "percorso di output",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "es. 00:01:30",
     "placeholderEnd": "es. 00:01:30",
     "validationRequired": "Seleziona un file video."
+  },
+  "videoTimeline": {
+    "zoomIn": "Ingrandisci",
+    "zoomOut": "Riduci"
   },
   "batchQueue": {
     "title": "Coda batch",

@@ -198,6 +198,10 @@
     "outputFile": "Uitvoerbestand",
     "audioCodec": "Audiocodec",
     "bitrate": "Bitsnelheid",
+    "videoFileHint": "De bronvideo die het audiospoor bevat dat je wilt extraheren.",
+    "outputFileHint": "Het doelbestand waar de geëxtraheerde audio wordt opgeslagen. De extensie komt overeen met de gekozen codec.",
+    "audioCodecHint": "De codec die wordt gebruikt om de audiostroom te coderen, bijv. AAC, MP3 of Opus.",
+    "bitrateHint": "De doelbitrate voor de audiostroom. Hogere waarden verhogen de kwaliteit en bestandsgrootte. Automatisch behoudt de bronbitrate.",
     "extract": "Audio extraheren",
     "extracting": "Bezig met extraheren...",
     "placeholderOutput": "bijv. output.mp3",
@@ -222,12 +226,17 @@
     "endTime": "Eindtijd (HH:MM:SS)",
     "useDuration": "Duur gebruiken in plaats van eindtijd",
     "cut": "Video knippen",
+    "generatingPreview": "Voorbeeld wordt gegenereerd...",
     "cutting": "Bezig met knippen...",
     "placeholderOutput": "uitvoerpad",
     "placeholderStart": "00:00:00",
     "placeholderDuration": "bijv. 00:01:30",
     "placeholderEnd": "bijv. 00:01:30",
     "validationRequired": "Selecteer een videobestand."
+  },
+  "videoTimeline": {
+    "zoomIn": "Inzoomen",
+    "zoomOut": "Uitzoomen"
   },
   "batchQueue": {
     "title": "Batchwachtrij",

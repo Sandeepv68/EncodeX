@@ -35,11 +35,13 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
       audioConfig = null;
       decoder.open(filePath);
     }
+    return decoder.getGeneration();
   });
 
   ipcMain.handle(IPC.PLAYER_SEEK, async (_event, time: string) => {
     log.debug('PLAYER_SEEK:', time);
     decoder.seek(time);
+    return decoder.getGeneration();
   });
 
   ipcMain.handle(IPC.PLAYER_CLOSE, async () => {
@@ -67,15 +69,17 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
       width: frame.width,
       height: frame.height,
       pts: frame.pts,
+      generation: frame.generation,
     });
   });
 
-  decoder.on('audio', (chunk: { buffer: Buffer; sampleRate: number; channels: number }) => {
+  decoder.on('audio', (chunk: { buffer: Buffer; sampleRate: number; channels: number; generation: number }) => {
     if (!audioConfig) return;
     send(IPC.PLAYER_AUDIO, {
       data: chunk.buffer.buffer,
       sampleRate: chunk.sampleRate,
       channels: chunk.channels,
+      generation: chunk.generation,
     });
   });
 }
