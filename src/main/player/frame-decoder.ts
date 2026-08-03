@@ -57,7 +57,9 @@ export class FrameDecoder extends EventEmitter {
     if (seekTo) {
       args.push('-ss', seekTo);
     }
-    args.push(FFMPEG_FLAGS.REALTIME, FFMPEG_FLAGS.INPUT, this.inputPath);
+    args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.REALTIME, FFMPEG_FLAGS.INPUT, this.inputPath);
+
+    args.push('-vf', 'showinfo');
 
     if (audio) {
       this.audioSampleRate = audio.sampleRate;
@@ -103,7 +105,20 @@ export class FrameDecoder extends EventEmitter {
     log.debug('FFmpeg decoder args:', args.join(' '));
     const currentProcess = audio ? spawn(ffmpegPath, args, { stdio: ['ignore', 'pipe', 'pipe', 'pipe'] }) : spawn(ffmpegPath, args);
     this.process = currentProcess;
-    let pts = 0;
+    let pendingPts: number[] = [];
+    let stderrBuf = '';
+    let lastPts = 0;
+
+    currentProcess.stderr?.on('data', (chunk: Buffer) => {
+      if (!this.running || this.process !== currentProcess) return;
+      stderrBuf += chunk.toString('utf8');
+      const re = /pts_time:\s*([0-9]+(?:\.[0-9]+)?)/g;
+      let match: RegExpExecArray | null;
+      while ((match = re.exec(stderrBuf)) !== null) {
+        pendingPts.push(Number(match[1]));
+      }
+      if (re.lastIndex > 0) stderrBuf = stderrBuf.slice(re.lastIndex);
+    });
 
     currentProcess.stdout?.on('data', (chunk: Buffer) => {
       if (!this.running || this.process !== currentProcess) return;
@@ -112,13 +127,13 @@ export class FrameDecoder extends EventEmitter {
       while (this.buffer.length >= this.frameSize) {
         const frameData = this.buffer.subarray(0, this.frameSize);
         this.buffer = this.buffer.subarray(this.frameSize);
+        lastPts = pendingPts.length > 0 ? pendingPts.shift()! : lastPts;
         this.emit('frame', {
           buffer: Buffer.from(frameData),
           width: this.width,
           height: this.height,
-          pts,
+          pts: lastPts,
         } as DecodedFrame);
-        pts++;
       }
     });
 

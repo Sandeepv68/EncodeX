@@ -32,6 +32,7 @@ export const FFMPEG_FLAGS = {
   NO_DATA: '-dn',
   OUTPUT_PIPE: '-',
   REALTIME: '-re',
+  COPYTS: '-copyts',
 } as const;
 
 export const FFPROBE_FLAGS = {

@@ -33,6 +33,11 @@ export const DropZoneRoot = styled(Box, {
   backgroundColor: $dragging ? theme.palette.action.hover : 'transparent',
   transition: 'all 0.2s',
   animation: $dragging ? 'none' : `${borderPulse} 8s ease-in-out infinite`,
+  "& .MuiTypography-root": {
+    fontSize: theme.typography.pxToRem(12),
+    fontWeight: theme.typography.fontWeightMedium,
+    color: theme.palette.text.secondary,
+  },
 }));
 
 export const UploadIcon = styled(FontAwesomeIcon)(({ theme }) => ({
