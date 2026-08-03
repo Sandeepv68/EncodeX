@@ -80,6 +80,7 @@ export default function VideoTimeline({
   const dragRef = useRef<DragKind | null>(null);
   const prevTimeRef = useRef(currentTime);
   const [zoom, setZoomState] = useState<number>(() => initialZoom(duration));
+  const [viewState, setViewState] = useState({ scrollLeft: 0, viewportWidth: 600 });
   const prevDurationRef = useRef(duration);
   if (prevDurationRef.current !== duration) {
     prevDurationRef.current = duration;
@@ -134,6 +135,38 @@ export default function VideoTimeline({
   useEffect(() => {
     const viewport = viewportRef.current;
     if (!viewport) return;
+    const update = () => {
+      setViewState((prev) => {
+        const next = { scrollLeft: viewport.scrollLeft, viewportWidth: viewport.clientWidth };
+        if (prev.scrollLeft === next.scrollLeft && prev.viewportWidth === next.viewportWidth) return prev;
+        return next;
+      });
+    };
+    update();
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        update();
+      });
+    };
+    viewport.addEventListener('scroll', onScroll, { passive: true });
+    let observer: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(update);
+      observer.observe(viewport);
+    }
+    return () => {
+      viewport.removeEventListener('scroll', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+      observer?.disconnect();
+    };
+  }, [duration]);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
     const prev = prevTimeRef.current;
     prevTimeRef.current = currentTime;
     if (currentTime <= prev) return;
@@ -158,55 +191,78 @@ export default function VideoTimeline({
 
   const rulerEls = useMemo(() => {
     const step = TICK_STEPS.find((candidate) => candidate * zoom >= 50) ?? TICK_STEPS[TICK_STEPS.length - 1];
-    const majors: number[] = [];
-    for (let value = 0; value <= duration + 1e-9; value += step) majors.push(value);
-    let sub = 0;
-    if ((step * zoom) / 5 >= 5) sub = step / 5;
-    else if ((step * zoom) / 2 >= 5) sub = step / 2;
-    const minorEls: ReactElement[] = [];
-    if (sub > 0) {
-      for (let value = 0; value <= duration + 1e-9; value += sub) {
-        if (Math.abs(value / step - Math.round(value / step)) > 1e-9) {
-          minorEls.push(<RulerMinorTick key={`minor-${value}`} sx={{ left: value * zoom }} />);
-        }
-      }
-    }
-    const majorEls: ReactElement[] = majors.map((value) => <RulerTick key={`major-${value}`} sx={{ left: value * zoom }} />);
+    const margin = viewState.viewportWidth / zoom / 2;
+    const startTime = Math.max(0, viewState.scrollLeft / zoom - margin);
+    const endTime = Math.min(duration, (viewState.scrollLeft + viewState.viewportWidth) / zoom + margin);
+
+    const majorEls: ReactElement[] = [];
     const labelEls: ReactElement[] = [];
     let lastLabelX = -Infinity;
-    for (const value of majors) {
+    const firstMajor = Math.max(0, Math.floor(startTime / step) * step);
+    for (let value = firstMajor; value <= endTime + 1e-9; value += step) {
+      majorEls.push(<RulerTick key={`major-${value}`} sx={{ left: value * zoom }} />);
       const x = value * zoom;
-      const show = x - lastLabelX >= LABEL_MIN_GAP;
-      if (show) lastLabelX = x;
-      if (show)
+      if (x - lastLabelX >= LABEL_MIN_GAP) {
+        lastLabelX = x;
         labelEls.push(
           <RulerLabel key={`label-${value}`} sx={{ left: x }}>
             {formatClockTime(value)}
           </RulerLabel>,
         );
+      }
     }
+
+    const minorEls: ReactElement[] = [];
+    let sub = 0;
+    if ((step * zoom) / 5 >= 5) sub = step / 5;
+    else if ((step * zoom) / 2 >= 5) sub = step / 2;
+    if (sub > 0) {
+      const firstMinor = Math.max(0, Math.floor(startTime / sub) * sub);
+      for (let value = firstMinor; value <= endTime + 1e-9; value += sub) {
+        if (Math.abs(value / step - Math.round(value / step)) > 1e-9) {
+          minorEls.push(<RulerMinorTick key={`minor-${value}`} sx={{ left: value * zoom }} />);
+        }
+      }
+    }
+
     return { minorEls, majorEls, labelEls };
-  }, [duration, zoom]);
+  }, [duration, zoom, viewState.scrollLeft, viewState.viewportWidth]);
 
   const waveformBars = useMemo(() => {
     if (!waveform || waveform.buckets.length === 0 || duration <= 0) return [];
     const bucketWidth = (duration * zoom) / waveform.buckets.length;
     const barWidth = Math.max(1, bucketWidth - 1);
     const barHeight = 52;
-    return waveform.buckets.map((b, i) => {
+    const virtualize = viewState.viewportWidth > 0;
+    const bucketsPerSec = waveform.buckets.length / duration;
+    const margin = virtualize ? viewState.viewportWidth / zoom / 2 : 0;
+    const startTime = Math.max(0, viewState.scrollLeft / zoom - margin);
+    const endTime = Math.min(duration, (viewState.scrollLeft + viewState.viewportWidth) / zoom + margin);
+    const firstIdx = virtualize ? Math.max(0, Math.floor(startTime * bucketsPerSec)) : 0;
+    const lastIdx = virtualize ? Math.min(waveform.buckets.length - 1, Math.ceil(endTime * bucketsPerSec)) : waveform.buckets.length - 1;
+    const bars: ReactElement[] = [];
+    for (let i = firstIdx; i <= lastIdx; i++) {
+      const b = waveform.buckets[i];
       const topFraction = (1 - b.max) / 2;
       const heightFraction = Math.max(0, b.max - b.min) / 2;
       const height = Math.max(2, heightFraction * barHeight);
       const top = Math.max(0, Math.min(barHeight - height, topFraction * barHeight));
-      return <WaveformBar key={i} data-testid="timeline-waveform-bar" sx={{ left: i * bucketWidth, top, width: barWidth, height }} />;
-    });
-  }, [waveform, duration, zoom]);
+      bars.push(<WaveformBar key={i} data-testid="timeline-waveform-bar" sx={{ left: i * bucketWidth, top, width: barWidth, height }} />);
+    }
+    return bars;
+  }, [waveform, duration, zoom, viewState.scrollLeft, viewState.viewportWidth]);
 
   const thumbCells = useMemo(() => {
     if (!thumbnails || thumbnails.count <= 0 || duration <= 0) return [];
     const cellHeight = 52;
+    const virtualize = viewState.viewportWidth > 0;
+    const margin = virtualize ? viewState.viewportWidth / zoom / 2 : 0;
+    const startTime = Math.max(0, viewState.scrollLeft / zoom - margin);
+    const endTime = Math.min(duration, (viewState.scrollLeft + viewState.viewportWidth) / zoom + margin);
+    const firstIdx = virtualize ? Math.max(0, Math.floor(startTime / thumbnails.interval)) : 0;
+    const lastIdx = virtualize ? Math.min(thumbnails.count - 1, Math.ceil(endTime / thumbnails.interval)) : thumbnails.count - 1;
     const cells: ReactElement[] = [];
-    for (let i = 0; i < thumbnails.count; i++) {
+    for (let i = firstIdx; i <= lastIdx; i++) {
       const col = i % thumbnails.cols;
       const row = Math.floor(i / thumbnails.cols);
       const left = i * thumbnails.interval * zoom;
@@ -228,7 +284,7 @@ export default function VideoTimeline({
       );
     }
     return cells;
-  }, [thumbnails, duration, zoom]);
+  }, [thumbnails, duration, zoom, viewState.scrollLeft, viewState.viewportWidth]);
 
   const thumbMontageCss = useMemo(() => {
     if (!thumbnails) return '';
