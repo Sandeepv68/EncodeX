@@ -60,8 +60,9 @@ export const TrackLabel = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: 44,
+  width: 72,
   color: theme.palette.text.secondary,
+  gap: theme.spacing(0.25),
 }));
 
 export const Scroller = styled(Box)({

@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "Aproximar",
-    "zoomOut": "Afastar"
+    "zoomOut": "Afastar",
+    "videoTrack": "Trilha de vídeo",
+    "audioTrack": "Faixa de áudio",
+    "audioEnabled": "Incluir áudio",
+    "audioEnabledHint": "Inclua a faixa de áudio na saída do corte. Desmarque para produzir um vídeo sem som."
   },
   "batchQueue": {
     "title": "Fila em Lote",

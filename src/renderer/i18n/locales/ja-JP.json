@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "拡大",
-    "zoomOut": "縮小"
+    "zoomOut": "縮小",
+    "videoTrack": "ビデオトラック",
+    "audioTrack": "オーディオトラック",
+    "audioEnabled": "オーディオを含める",
+    "audioEnabledHint": "切り出し出力にオーディオトラックを含めます。オフにすると音声なしのビデオになります。"
   },
   "batchQueue": {
     "title": "バッチキュー",

@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "Perbesar",
-    "zoomOut": "Perkecil"
+    "zoomOut": "Perkecil",
+    "videoTrack": "Trek video",
+    "audioTrack": "Trek audio",
+    "audioEnabled": "Sertakan audio",
+    "audioEnabledHint": "Sertakan trek audio dalam keluaran pemotongan. Hapus centang untuk menghasilkan video tanpa suara."
   },
   "batchQueue": {
     "title": "Antrean Batch",

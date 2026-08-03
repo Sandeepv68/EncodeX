@@ -154,6 +154,16 @@ describe('runCli', () => {
     expect(consoleLogSpy).toHaveBeenCalledWith('\nConversion completed successfully!');
   });
 
+  it('maps the --no-audio flag to audio: false', async () => {
+    process.argv = ['node', 'C:\\project\\index.js', 'in.mp4', 'out.mp4'];
+    await runCli();
+    const action = getAction()!;
+    const promise = action('in.mp4', 'out.mp4', { transcoder: 'FFMPEG', copy: true, audio: false });
+    transcoder.emitter.emit('end');
+    await promise;
+    expect(transcoder.convert).toHaveBeenCalledWith('in.mp4', 'out.mp4', { copy: true, audio: false });
+  });
+
   it('prints progress updates to stdout', async () => {
     process.argv = ['node', 'C:\\project\\index.js', 'in.mp4', 'out.mp4'];
     await runCli();

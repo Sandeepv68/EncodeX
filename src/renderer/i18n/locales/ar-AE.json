@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "تكبير",
-    "zoomOut": "تصغير"
+    "zoomOut": "تصغير",
+    "videoTrack": "مسار الفيديو",
+    "audioTrack": "مسار الصوت",
+    "audioEnabled": "تضمين الصوت",
+    "audioEnabledHint": "تضمين المسار الصوتي في ناتج القص. ألغِ التحديد لإنتاج فيديو بدون صوت."
   },
   "batchQueue": {
     "title": "قائمة الدفعات",

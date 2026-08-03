@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "Acercar",
-    "zoomOut": "Alejar"
+    "zoomOut": "Alejar",
+    "videoTrack": "Pista de video",
+    "audioTrack": "Pista de audio",
+    "audioEnabled": "Incluir audio",
+    "audioEnabledHint": "Incluir la pista de audio en la salida del corte. Desmárcalo para producir un video sin sonido."
   },
   "batchQueue": {
     "title": "Cola de lotes",

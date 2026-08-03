@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "ज़ूम इन",
-    "zoomOut": "ज़ूम आउट"
+    "zoomOut": "ज़ूम आउट",
+    "videoTrack": "वीडियो ट्रैक",
+    "audioTrack": "ऑडियो ट्रैक",
+    "audioEnabled": "ऑडियो शामिल करें",
+    "audioEnabledHint": "कट आउटपुट में ऑडियो ट्रैक शामिल करें। बिना आवाज़ के वीडियो बनाने के लिए अनचेक करें।"
   },
   "batchQueue": {
     "title": "बैच क्यू",

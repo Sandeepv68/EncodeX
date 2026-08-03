@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, CircularProgress, Skeleton, Typography } from '@mui/material';
+import { Box, Checkbox, CircularProgress, Skeleton, Tooltip, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlassPlus, faMagnifyingGlassMinus, faVideo, faMusic } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -50,9 +50,11 @@ interface Props {
   thumbnails?: ThumbnailStrip | null;
   waveformLoading?: boolean;
   thumbnailsLoading?: boolean;
+  audioEnabled?: boolean;
   onSeek: (time: number) => void;
   onStartChange: (time: number) => void;
   onEndChange: (time: number) => void;
+  onAudioEnabledChange?: (enabled: boolean) => void;
 }
 
 type DragKind = 'playhead' | 'start' | 'end' | 'scrub';
@@ -74,9 +76,11 @@ export default function VideoTimeline({
   thumbnails = null,
   waveformLoading = false,
   thumbnailsLoading = false,
+  audioEnabled = true,
   onSeek,
   onStartChange,
   onEndChange,
+  onAudioEnabledChange,
 }: Props) {
   const { t } = useTranslation();
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -358,14 +362,33 @@ export default function VideoTimeline({
       <Box sx={{ display: 'flex' }}>
         <TrackLabelPanel>
           <Box sx={{ height: TIMELINE_LAYOUT.RULER_HEIGHT }} />
-          <TrackLabel
-            data-testid="timeline-video-label"
-            sx={{ height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT, borderBottom: 1, borderColor: 'divider' }}
-          >
-            <FontAwesomeIcon icon={faVideo} size="xs" />
-          </TrackLabel>
+          <Tooltip title={t('videoTimeline.videoTrack')} arrow placement="right">
+            <TrackLabel
+              data-testid="timeline-video-label"
+              sx={{ height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT, borderBottom: 1, borderColor: 'divider' }}
+            >
+              <FontAwesomeIcon icon={faVideo} size="xs" />
+            </TrackLabel>
+          </Tooltip>
           <TrackLabel data-testid="timeline-audio-label" sx={{ height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT }}>
-            <FontAwesomeIcon icon={faMusic} size="xs" />
+            <Tooltip title={t('videoTimeline.audioTrack')} arrow placement="right">
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <FontAwesomeIcon icon={faMusic} size="xs" />
+              </Box>
+            </Tooltip>
+            <Tooltip title={t('videoTimeline.audioEnabledHint')} arrow placement="right">
+              <Checkbox
+                size="small"
+                checked={audioEnabled}
+                onChange={(e) => onAudioEnabledChange?.(e.target.checked)}
+                slotProps={{
+                  input: {
+                    'aria-label': t('videoTimeline.audioEnabled'),
+                    'data-testid': 'timeline-audio-enabled',
+                  },
+                }}
+              />
+            </Tooltip>
           </TrackLabel>
         </TrackLabelPanel>
         <Viewport ref={viewportRef} sx={{ flex: 1, minWidth: 0 }}>

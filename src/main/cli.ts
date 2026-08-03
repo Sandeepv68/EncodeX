@@ -27,6 +27,7 @@ export async function runCli(): Promise<void> {
     .option('--end-time <time>', 'Set end time for cutting (HH:MM:SS or seconds)')
     .option('--duration <duration>', 'Set duration for cutting (HH:MM:SS or seconds)')
     .option('--copy', 'Lossless copy streams')
+    .option('--no-audio', 'Exclude the audio stream from the output')
     .option('--info', 'Show media info and exit')
     .action(async (input, output, opts) => {
       const transcoderType = (opts.transcoder as TranscoderType) || TRANSCODER_TYPES[0];
@@ -47,6 +48,7 @@ export async function runCli(): Promise<void> {
       const options: ConversionOptions = {};
 
       if (opts.copy) options.copy = true;
+      if (opts.audio === false) options.audio = false;
       if (opts.videoCodec) options.videoCodec = opts.videoCodec;
       if (opts.audioCodec) options.audioCodec = opts.audioCodec;
       if (opts.qscale) options.qscale = opts.qscale;

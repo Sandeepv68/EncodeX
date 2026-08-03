@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "Vergrößern",
-    "zoomOut": "Verkleinern"
+    "zoomOut": "Verkleinern",
+    "videoTrack": "Videospur",
+    "audioTrack": "Audiospur",
+    "audioEnabled": "Audio einbeziehen",
+    "audioEnabledHint": "Audiospur in die Ausgabe des Schnitts einbeziehen. Deaktivieren, um ein Video ohne Ton zu erzeugen."
   },
   "batchQueue": {
     "title": "Stapelwarteschlange",

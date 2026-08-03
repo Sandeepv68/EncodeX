@@ -95,6 +95,16 @@ describe('buildFfmpegArgs', () => {
     expect(args).toEqual(['-i', 'in.mp4', '-y', 'out.mp4']);
   });
 
+  it('adds -an when audio is disabled', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { copy: true, audio: false });
+    expect(args).toEqual(['-i', 'in.mp4', '-c', 'copy', '-an', '-y', 'out.mp4']);
+  });
+
+  it('does not add -an when audio is enabled or unspecified', () => {
+    expect(buildFfmpegArgs('in.mp4', 'out.mp4', { copy: true })).not.toContain('-an');
+    expect(buildFfmpegArgs('in.mp4', 'out.mp4', { copy: true, audio: true })).not.toContain('-an');
+  });
+
   it('prepends hardware acceleration flags for hardware video codecs', () => {
     const args = buildFfmpegArgs('in.mp4', 'out.mp4', { videoCodec: 'h264_nvenc' });
     expect(args.slice(0, 6)).toEqual(['-hwaccel', 'cuda', '-hwaccel_output_format', 'cuda', '-i', 'in.mp4']);

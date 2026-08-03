@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "Zoom avant",
-    "zoomOut": "Zoom arrière"
+    "zoomOut": "Zoom arrière",
+    "videoTrack": "Piste vidéo",
+    "audioTrack": "Piste audio",
+    "audioEnabled": "Inclure l'audio",
+    "audioEnabledHint": "Inclure la piste audio dans la sortie du découpage. Décochez pour produire une vidéo sans son."
   },
   "batchQueue": {
     "title": "File d'Attente",

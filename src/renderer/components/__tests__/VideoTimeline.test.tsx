@@ -281,6 +281,35 @@ describe('VideoTimeline', () => {
     expect(panel).not.toBe(viewport);
   });
 
+  it('renders the audio-enabled checkbox checked by default', () => {
+    render(
+      <VideoTimeline duration={60} currentTime={0} start={0} end={60} onSeek={vi.fn()} onStartChange={vi.fn()} onEndChange={vi.fn()} />,
+    );
+    const checkbox = screen.getByTestId('timeline-audio-enabled') as HTMLInputElement;
+    expect(checkbox).toBeInTheDocument();
+    expect(checkbox).toBeChecked();
+    expect(checkbox).toHaveAccessibleName('videoTimeline.audioEnabled');
+  });
+
+  it('toggles audio via the audio-enabled checkbox', () => {
+    const onAudioEnabledChange = vi.fn();
+    render(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={0}
+        end={60}
+        audioEnabled={true}
+        onAudioEnabledChange={onAudioEnabledChange}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByTestId('timeline-audio-enabled'));
+    expect(onAudioEnabledChange).toHaveBeenCalledWith(false);
+  });
+
   it('renders a video thumbnails track when thumbnail data is provided', () => {
     render(
       <VideoTimeline

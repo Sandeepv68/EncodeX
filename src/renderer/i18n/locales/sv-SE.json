@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "Zooma in",
-    "zoomOut": "Zooma ut"
+    "zoomOut": "Zooma ut",
+    "videoTrack": "Videospår",
+    "audioTrack": "Ljudspår",
+    "audioEnabled": "Inkludera ljud",
+    "audioEnabledHint": "Inkludera ljudspåret i klippets utdata. Avmarkera för att producera en video utan ljud."
   },
   "batchQueue": {
     "title": "Batchkö",

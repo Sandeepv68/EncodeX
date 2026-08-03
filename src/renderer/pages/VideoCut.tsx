@@ -58,6 +58,7 @@ export default function VideoCut() {
   const [useDuration, setUseDuration] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
+  const [includeAudio, setIncludeAudio] = useState(true);
   const [playhead, setPlayhead] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
   const [waveform, setWaveform] = useState<WaveformData | null>(null);
@@ -95,6 +96,7 @@ export default function VideoCut() {
     setDuration('');
     setUseDuration(false);
     setIsPaused(false);
+    setIncludeAudio(true);
     setPlayhead(0);
     setVideoDuration(0);
     setWaveform(null);
@@ -151,6 +153,7 @@ export default function VideoCut() {
     setStartTime('00:00:00');
     setEndTime('');
     setDuration('');
+    setIncludeAudio(true);
     setPlayhead(0);
     setVideoDuration(0);
     setWaveform(null);
@@ -189,6 +192,7 @@ export default function VideoCut() {
           copy: true,
           startTime,
           ...(useDuration ? { duration } : { endTime }),
+          ...(includeAudio ? {} : { audio: false }),
         },
         transcoder,
       );
@@ -251,6 +255,8 @@ export default function VideoCut() {
           thumbnails={thumbnails}
           waveformLoading={waveformLoading}
           thumbnailsLoading={thumbnailsLoading}
+          audioEnabled={includeAudio}
+          onAudioEnabledChange={setIncludeAudio}
           onSeek={handleTimelineSeek}
           onStartChange={(s) => setStartTime(secondsToTime(s))}
           onEndChange={(s) => setEndTime(secondsToTime(s))}
@@ -329,7 +335,11 @@ export default function VideoCut() {
       </Stack>
 
       <ToggleRow>
-        <Switch checked={useDuration} onChange={() => setUseDuration(!useDuration)} />
+        <Switch
+          checked={useDuration}
+          onChange={() => setUseDuration(!useDuration)}
+          slotProps={{ input: { 'aria-label': t('videoCut.useDuration') } }}
+        />
         <Typography variant="caption" color="text.secondary">
           {t('videoCut.useDuration')}
         </Typography>

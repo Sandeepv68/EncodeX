@@ -116,6 +116,11 @@ export class FfmpegCore implements ITranscoder {
       }
     }
 
+    if (options.audio === false) {
+      log.debug('Audio disabled, output will have no audio stream');
+      cmd.outputOptions(FFMPEG_FLAGS.NO_AUDIO);
+    }
+
     if (options.startTime) {
       log.debug('Start time:', options.startTime);
       cmd.setStartTime(options.startTime);
