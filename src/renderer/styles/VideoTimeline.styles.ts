@@ -111,29 +111,21 @@ export const MarkerBubble = styled(Box)(({ theme }) => {
   const bg = theme.palette.mode === 'light' ? 'rgba(97, 97, 97, 0.92)' : 'rgba(97, 97, 97, 0.9)';
   return {
     position: 'absolute',
-    bottom: 0,
+    bottom: -3,
     transform: 'translateX(-50%)',
     backgroundColor: bg,
     color: '#fff',
     fontSize: 10,
     lineHeight: 1.2,
     fontVariantNumeric: 'tabular-nums',
-    padding: theme.spacing(0.25, 0.75),
-    borderRadius: '4px 4px 0 0',
+    padding: theme.spacing(0.75, 0.75),
+    borderRadius: '8px',
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     boxShadow: theme.shadows[1],
     whiteSpace: 'nowrap',
     pointerEvents: 'none',
     zIndex: 5,
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      top: '100%',
-      left: 0,
-      right: 0,
-      height: 8,
-      borderRadius: '0 0 50% 50% / 0 0 50% 50%',
-      backgroundColor: bg,
-    },
   };
 });
 
