@@ -233,6 +233,10 @@
     "placeholderEnd": "ex. 00:01:30",
     "validationRequired": "Veuillez sélectionner un fichier vidéo."
   },
+  "videoTimeline": {
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière"
+  },
   "batchQueue": {
     "title": "File d'Attente",
     "suffix": "Suffixe",

@@ -233,6 +233,10 @@
     "placeholderEnd": "ej. 00:01:30",
     "validationRequired": "Seleccione un archivo de vídeo."
   },
+  "videoTimeline": {
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar"
+  },
   "batchQueue": {
     "title": "Cola de lotes",
     "suffix": "Sufijo",

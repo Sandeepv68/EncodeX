@@ -233,6 +233,10 @@
     "placeholderEnd": "जैसे 00:01:30",
     "validationRequired": "कृपया एक वीडियो फ़ाइल चुनें."
   },
+  "videoTimeline": {
+    "zoomIn": "ज़ूम इन",
+    "zoomOut": "ज़ूम आउट"
+  },
   "batchQueue": {
     "title": "बैच क्यू",
     "suffix": "सफ़िक्स",

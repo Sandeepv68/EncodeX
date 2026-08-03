@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EventEmitter } from 'events';
-import type { DecodedFrame } from '../frame-decoder';
+import type { DecodedFrame, DecodedAudio } from '../frame-decoder';
 
 const { spawnMock, existsSyncMock } = vi.hoisted(() => ({
   spawnMock: vi.fn(),
@@ -129,6 +129,16 @@ describe('FrameDecoder', () => {
     expect(audioChunks[0].buffer).toHaveLength(16);
   });
 
+  it('tags audio chunks with the current generation', () => {
+    const audioChunks: DecodedAudio[] = [];
+    decoder.on('audio', (a: DecodedAudio) => audioChunks.push(a));
+    decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
+    const proc = spawnMock.mock.results[0].value;
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(16));
+    expect(audioChunks[0].generation).toBe(1);
+    expect(decoder.getGeneration()).toBe(1);
+  });
+
   it('ignores audio data after close', () => {
     const audioChunks: unknown[] = [];
     decoder.on('audio', (a: unknown) => audioChunks.push(a));
@@ -177,16 +187,63 @@ describe('FrameDecoder', () => {
     expect(frames[0]).toMatchObject({ pts: 1.5 });
   });
 
-  it('keeps the previous pts when a showinfo line is missing', () => {
+  it('pairs frames with pts regardless of stream arrival order', () => {
+    const frames: Array<{ pts: number }> = [];
+    decoder.on('frame', (f: DecodedFrame) => frames.push(f));
+    decoder.open('in.mp4', 2, 2);
+    const proc = spawnMock.mock.results[0].value;
+    proc.stdout.emit('data', Buffer.alloc(12));
+    expect(frames).toHaveLength(0);
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   0 pts: 30000 pts_time:1.500000 ...\n'));
+    expect(frames).toHaveLength(1);
+    expect(frames[0]).toMatchObject({ pts: 1.5 });
+  });
+
+  it('does not re-parse pts from previously consumed stderr chunks', () => {
+    const frames: Array<{ pts: number }> = [];
+    decoder.on('frame', (f: DecodedFrame) => frames.push(f));
+    decoder.open('in.mp4', 2, 2);
+    const proc = spawnMock.mock.results[0].value;
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   0 pts: 0 pts_time:1.000000 ...\n'));
+    proc.stdout.emit('data', Buffer.alloc(12));
+    expect(frames).toHaveLength(1);
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   1 pts: 1 pts_time:2.000000 ...\n'));
+    proc.stdout.emit('data', Buffer.alloc(12));
+    expect(frames).toHaveLength(2);
+    expect(frames[0].pts).toBe(1);
+    expect(frames[1].pts).toBe(2);
+  });
+
+  it('holds a frame back until its showinfo line arrives', () => {
     const frames: Array<{ pts: number }> = [];
     decoder.on('frame', (f: DecodedFrame) => frames.push(f));
     decoder.open('in.mp4', 2, 2);
     const proc = spawnMock.mock.results[0].value;
     proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   0 pts: 0 pts_time:0.000000 ...\n'));
     proc.stdout.emit('data', Buffer.alloc(24));
-    expect(frames).toHaveLength(2);
+    expect(frames).toHaveLength(1);
     expect(frames[0].pts).toBe(0);
-    expect(frames[1].pts).toBe(0);
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   1 pts: 1 pts_time:1.000000 ...\n'));
+    expect(frames).toHaveLength(2);
+    expect(frames[1].pts).toBe(1);
+  });
+
+  it('tags frames with a generation that increments on open and seek', () => {
+    const frames: Array<{ generation: number }> = [];
+    decoder.on('frame', (f: DecodedFrame) => frames.push(f));
+    decoder.open('in.mp4', 2, 2);
+    let proc = spawnMock.mock.results[0].value;
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   0 pts: 0 pts_time:0.000000 ...\n'));
+    proc.stdout.emit('data', Buffer.alloc(12));
+    expect(frames[0].generation).toBe(1);
+    expect(decoder.getGeneration()).toBe(1);
+
+    decoder.seek('00:00:01');
+    expect(decoder.getGeneration()).toBe(2);
+    proc = spawnMock.mock.results[1].value;
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   0 pts: 0 pts_time:1.000000 ...\n'));
+    proc.stdout.emit('data', Buffer.alloc(12));
+    expect(frames[1].generation).toBe(2);
   });
 
   it('buffers partial frames across chunks', () => {
@@ -194,6 +251,7 @@ describe('FrameDecoder', () => {
     decoder.on('frame', (f: DecodedFrame) => frames.push(f));
     decoder.open('in.mp4', 2, 2);
     const proc = spawnMock.mock.results[0].value;
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   0 pts: 0 pts_time:0.000000 ...\n'));
     proc.stdout.emit('data', Buffer.alloc(6));
     expect(frames).toHaveLength(0);
     proc.stdout.emit('data', Buffer.alloc(6));

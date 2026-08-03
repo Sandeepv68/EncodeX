@@ -233,6 +233,10 @@
     "placeholderEnd": "مثال 00:01:30",
     "validationRequired": "الرجاء تحديد ملف فيديو."
   },
+  "videoTimeline": {
+    "zoomIn": "تكبير",
+    "zoomOut": "تصغير"
+  },
   "batchQueue": {
     "title": "قائمة الدفعات",
     "suffix": "اللاحقة",

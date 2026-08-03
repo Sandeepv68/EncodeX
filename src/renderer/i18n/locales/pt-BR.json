@@ -233,6 +233,10 @@
     "placeholderEnd": "ex. 00:01:30",
     "validationRequired": "Selecione um arquivo de vídeo."
   },
+  "videoTimeline": {
+    "zoomIn": "Aproximar",
+    "zoomOut": "Afastar"
+  },
   "batchQueue": {
     "title": "Fila em Lote",
     "suffix": "Sufixo",

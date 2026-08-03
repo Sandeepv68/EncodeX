@@ -10,6 +10,7 @@ const selectOutputMock = vi.mocked(window.electronAPI.selectOutput);
 const convertFileMock = vi.mocked(window.electronAPI.convertFile);
 const getMediaInfoMock = vi.mocked(window.electronAPI.getMediaInfo);
 const playerOpenMock = vi.mocked(window.electronAPI.playerOpen);
+const playerSeekMock = vi.mocked(window.electronAPI.playerSeek);
 const pauseConversionMock = vi.mocked(window.electronAPI.pauseConversion);
 const resumeConversionMock = vi.mocked(window.electronAPI.resumeConversion);
 const cancelConversionMock = vi.mocked(window.electronAPI.cancelConversion);
@@ -24,6 +25,22 @@ function deferred<T>() {
     resolve = res;
   });
   return { promise, resolve };
+}
+
+function mockRect(el: HTMLElement, left: number, width: number) {
+  Object.defineProperty(el, 'getBoundingClientRect', {
+    value: () => ({
+      left,
+      top: 0,
+      right: left + width,
+      bottom: 0,
+      width,
+      height: 0,
+      x: left,
+      y: 0,
+      toJSON: () => ({}),
+    }),
+  });
 }
 
 function renderPage() {
@@ -42,6 +59,7 @@ describe('VideoCut', () => {
     selectOutputMock.mockReset();
     convertFileMock.mockReset();
     playerOpenMock.mockClear();
+    playerSeekMock.mockClear();
     pauseConversionMock.mockClear();
     resumeConversionMock.mockClear();
     cancelConversionMock.mockClear();
@@ -158,33 +176,52 @@ describe('VideoCut', () => {
     expect(useErrorStore.getState().currentError?.detail).toBe('cut failed');
   });
 
-  it('updates the start time field when the start marker is dragged', async () => {
+  it('seeks the player when the timeline is clicked', async () => {
     getMediaInfoMock.mockResolvedValue(mediaInfo(60));
     renderPage();
     await selectVideo();
-    const endMarker = await screen.findByLabelText('cut end marker');
-    await waitFor(() => expect((endMarker as HTMLInputElement).value).toBe('60'));
-    fireEvent.keyDown(screen.getByLabelText('cut start marker'), { key: 'ArrowRight' });
+    const scroller = await screen.findByTestId('timeline-scroller');
+    mockRect(scroller, 0, 600);
+    fireEvent.pointerDown(scroller, { clientX: 300 });
+    expect(playerSeekMock).toHaveBeenCalledWith('00:00:30.000');
+  });
+
+  it('updates the start time field when the start handle is dragged', async () => {
+    getMediaInfoMock.mockResolvedValue(mediaInfo(60));
+    renderPage();
+    await selectVideo();
+    const scroller = await screen.findByTestId('timeline-scroller');
+    mockRect(scroller, 0, 600);
+    const handle = screen.getByTestId('timeline-start-handle');
+    fireEvent.pointerDown(handle, { clientX: 0 });
+    fireEvent.pointerMove(window, { clientX: 10 });
+    fireEvent.pointerUp(window);
     expect(screen.getByPlaceholderText('videoCut.placeholderStart')).toHaveValue('00:00:01');
   });
 
-  it('updates the end time field when the end marker is dragged', async () => {
+  it('updates the end time field when the end handle is dragged', async () => {
     getMediaInfoMock.mockResolvedValue(mediaInfo(60));
     renderPage();
     await selectVideo();
-    const endMarker = await screen.findByLabelText('cut end marker');
-    await waitFor(() => expect((endMarker as HTMLInputElement).value).toBe('60'));
-    fireEvent.keyDown(endMarker, { key: 'ArrowLeft' });
+    const scroller = await screen.findByTestId('timeline-scroller');
+    mockRect(scroller, 0, 600);
+    const handle = screen.getByTestId('timeline-end-handle');
+    fireEvent.pointerDown(handle, { clientX: 600 });
+    fireEvent.pointerMove(window, { clientX: 590 });
+    fireEvent.pointerUp(window);
     expect(screen.getByPlaceholderText('videoCut.placeholderEnd')).toHaveValue('00:00:59');
   });
 
-  it('does not populate the end time field when only the start marker is moved', async () => {
+  it('does not populate the end time field when only the start handle is moved', async () => {
     getMediaInfoMock.mockResolvedValue(mediaInfo(60));
     renderPage();
     await selectVideo();
-    const endMarker = await screen.findByLabelText('cut end marker');
-    await waitFor(() => expect((endMarker as HTMLInputElement).value).toBe('60'));
-    fireEvent.keyDown(screen.getByLabelText('cut start marker'), { key: 'ArrowRight' });
+    const scroller = await screen.findByTestId('timeline-scroller');
+    mockRect(scroller, 0, 600);
+    const handle = screen.getByTestId('timeline-start-handle');
+    fireEvent.pointerDown(handle, { clientX: 0 });
+    fireEvent.pointerMove(window, { clientX: 10 });
+    fireEvent.pointerUp(window);
     expect(screen.getByPlaceholderText('videoCut.placeholderStart')).toHaveValue('00:00:01');
     expect(screen.getByPlaceholderText('videoCut.placeholderEnd')).toHaveValue('');
   });

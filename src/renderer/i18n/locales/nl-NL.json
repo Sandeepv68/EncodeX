@@ -233,6 +233,10 @@
     "placeholderEnd": "bijv. 00:01:30",
     "validationRequired": "Selecteer een videobestand."
   },
+  "videoTimeline": {
+    "zoomIn": "Inzoomen",
+    "zoomOut": "Uitzoomen"
+  },
   "batchQueue": {
     "title": "Batchwachtrij",
     "suffix": "Achtervoegsel",

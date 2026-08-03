@@ -233,6 +233,10 @@
     "placeholderEnd": "例: 00:01:30",
     "validationRequired": "ビデオファイルを選択してください。"
   },
+  "videoTimeline": {
+    "zoomIn": "拡大",
+    "zoomOut": "縮小"
+  },
   "batchQueue": {
     "title": "バッチキュー",
     "suffix": "サフィックス",

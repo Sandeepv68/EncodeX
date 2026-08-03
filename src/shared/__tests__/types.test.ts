@@ -105,6 +105,7 @@ describe('PlayerFrame', () => {
       width: 640,
       height: 360,
       pts: 1000,
+      generation: 2,
     };
     expect(f.width).toBe(640);
     expect(f.height).toBe(360);

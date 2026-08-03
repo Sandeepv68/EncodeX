@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import MediaPlayer from '../MediaPlayer';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { createRef } from 'react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import MediaPlayer, { MediaPlayerHandle } from '../MediaPlayer';
 import type { MediaInfo, PlayerFrame } from '../../../shared/types';
 
 const playerOpen = vi.mocked(window.electronAPI.playerOpen);
@@ -34,6 +35,10 @@ describe('MediaPlayer', () => {
     onPlayerAudio.mockReset();
     onPlayerAudio.mockReturnValue(vi.fn());
     stubCanvasContext();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('requests media info without autoplaying on mount', () => {
@@ -83,8 +88,9 @@ describe('MediaPlayer', () => {
     expect(container.querySelector('[data-icon="play"]')).not.toBeNull();
   });
 
-  it('closes the decoder after drawing the first frame on stop', () => {
+  it('closes the decoder after drawing the first frame on stop', async () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
+    playerSeek.mockResolvedValue(2 as never);
     let frameCb: ((frame: PlayerFrame) => void) | null = null;
     onPlayerFrame.mockImplementation((cb: (frame: PlayerFrame) => void) => {
       frameCb = cb;
@@ -93,13 +99,72 @@ describe('MediaPlayer', () => {
     const { container } = render(<MediaPlayer filePath="/v.mp4" />);
     fireEvent.click(container.querySelector('[data-icon="stop"]')!);
     playerClose.mockClear();
+    await act(async () => {});
     frameCb!({
       data: new Uint8Array(4).buffer,
       width: 1,
       height: 1,
       pts: 0,
+      generation: 2,
     } as PlayerFrame);
     expect(playerClose).toHaveBeenCalledOnce();
+  });
+
+  it('ignores stale frames from an earlier generation after a seek', async () => {
+    getMediaInfo.mockResolvedValue(mediaInfo(60));
+    playerOpen.mockResolvedValue(1 as never);
+    playerSeek.mockResolvedValue(2 as never);
+    const onTimeUpdate = vi.fn();
+    const ref = createRef<MediaPlayerHandle>();
+    let frameCb: ((frame: PlayerFrame) => void) | null = null;
+    onPlayerFrame.mockImplementation((cb: (frame: PlayerFrame) => void) => {
+      frameCb = cb;
+      return vi.fn();
+    });
+    let rafCb: FrameRequestCallback | null = null;
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rafCb = cb;
+      return 1;
+    });
+    vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
+    const runRaf = () => {
+      act(() => {
+        rafCb?.call(window, 0);
+      });
+    };
+
+    const { container } = render(<MediaPlayer filePath="/v.mp4" ref={ref} onTimeUpdate={onTimeUpdate} />);
+    fireEvent.click(container.querySelector('canvas')!);
+    await act(async () => {});
+    frameCb!({
+      data: new Uint8Array(4).buffer,
+      width: 1,
+      height: 1,
+      pts: 1,
+      generation: 1,
+    } as PlayerFrame);
+    act(() => {
+      ref.current?.seekTo(5);
+    });
+    await act(async () => {});
+    frameCb!({
+      data: new Uint8Array(4).buffer,
+      width: 1,
+      height: 1,
+      pts: 1.5,
+      generation: 1,
+    } as PlayerFrame);
+    frameCb!({
+      data: new Uint8Array(4).buffer,
+      width: 1,
+      height: 1,
+      pts: 5,
+      generation: 2,
+    } as PlayerFrame);
+    runRaf();
+    expect(onTimeUpdate).toHaveBeenCalledWith(5);
+    expect(onTimeUpdate).not.toHaveBeenCalledWith(1.5);
+    expect(onTimeUpdate).not.toHaveBeenCalledWith(1);
   });
 
   it('seeks the player when the slider is committed', async () => {
@@ -121,29 +186,21 @@ describe('MediaPlayer', () => {
     expect(container.querySelector('[data-icon="volume-high"]')).not.toBeNull();
   });
 
-  it('does not render cut markers unless marker callbacks are provided', () => {
+  it('reports the duration via onDurationChange once media info is loaded', async () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
-    render(<MediaPlayer filePath="/v.mp4" />);
-    expect(screen.queryByLabelText('cut start marker')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('cut end marker')).not.toBeInTheDocument();
+    const onDurationChange = vi.fn();
+    render(<MediaPlayer filePath="/v.mp4" onDurationChange={onDurationChange} />);
+    await waitFor(() => expect(onDurationChange).toHaveBeenCalledWith(60));
   });
 
-  it('renders cut markers when callbacks are provided', () => {
+  it('exposes a seekTo handle that seeks and starts playback', () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
-    render(<MediaPlayer filePath="/v.mp4" onStartMarkerChange={() => {}} onEndMarkerChange={() => {}} />);
-    expect(screen.getByLabelText('cut start marker')).toBeInTheDocument();
-    expect(screen.getByLabelText('cut end marker')).toBeInTheDocument();
-  });
-
-  it('reports marker changes when the end marker is moved', async () => {
-    getMediaInfo.mockResolvedValue(mediaInfo(60));
-    const onStart = vi.fn();
-    const onEnd = vi.fn();
-    render(<MediaPlayer filePath="/v.mp4" startMarker={10} endMarker={40} onStartMarkerChange={onStart} onEndMarkerChange={onEnd} />);
-    const endMarker = screen.getByLabelText('cut end marker');
-    await waitFor(() => expect((endMarker as HTMLInputElement).value).toBe('40'));
-    fireEvent.keyDown(endMarker, { key: 'ArrowLeft' });
-    expect(onEnd).toHaveBeenCalledWith(39);
-    expect(onStart).not.toHaveBeenCalled();
+    const ref = createRef<MediaPlayerHandle>();
+    const { container } = render(<MediaPlayer filePath="/v.mp4" ref={ref} />);
+    act(() => {
+      ref.current?.seekTo(5);
+    });
+    expect(playerSeek).toHaveBeenCalledWith('00:00:05.000');
+    expect(container.querySelector('[data-icon="pause"]')).not.toBeNull();
   });
 });

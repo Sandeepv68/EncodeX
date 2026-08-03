@@ -90,11 +90,11 @@ const api = {
   },
   playerOpen: (filePath: string) => {
     log.info('playerOpen:', filePath);
-    return ipcRenderer.invoke(IPC.PLAYER_OPEN, filePath) as Promise<void>;
+    return ipcRenderer.invoke(IPC.PLAYER_OPEN, filePath) as Promise<number>;
   },
   playerSeek: (time: string) => {
     log.debug('playerSeek:', time);
-    return ipcRenderer.invoke(IPC.PLAYER_SEEK, time) as Promise<void>;
+    return ipcRenderer.invoke(IPC.PLAYER_SEEK, time) as Promise<number>;
   },
   playerClose: () => {
     log.debug('playerClose called');

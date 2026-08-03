@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Stack, Switch, Button, Typography, Tooltip, Box } from '@mui/material';
 import { faScissors, faPause, faPlay, faXmark, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +10,8 @@ import InfoTooltip from '../components/InfoTooltip';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { pageIcons } from '../pageIcons';
 import TimeField from '../components/TimeField';
-import MediaPlayer from '../components/MediaPlayer';
+import MediaPlayer, { MediaPlayerHandle } from '../components/MediaPlayer';
+import VideoTimeline from '../components/VideoTimeline';
 import ProgressBar from '../components/ProgressBar';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
@@ -56,6 +57,9 @@ export default function VideoCut() {
   const [useDuration, setUseDuration] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
+  const [playhead, setPlayhead] = useState(0);
+  const [videoDuration, setVideoDuration] = useState(0);
+  const mediaPlayerRef = useRef<MediaPlayerHandle>(null);
   const { progress, setProgress, isConverting, runTask } = useMediaTask();
   const { errors, setErrors, clearFieldError, setFieldError } = useFormErrors();
   const showErrorMessage = useErrorStore((s) => s.showErrorMessage);
@@ -86,6 +90,8 @@ export default function VideoCut() {
     setDuration('');
     setUseDuration(false);
     setIsPaused(false);
+    setPlayhead(0);
+    setVideoDuration(0);
     setProgress(null);
     setErrors({});
   };
@@ -95,6 +101,13 @@ export default function VideoCut() {
     setStartTime('00:00:00');
     setEndTime('');
     setDuration('');
+    setPlayhead(0);
+    setVideoDuration(0);
+  };
+
+  const handleTimelineSeek = (time: number) => {
+    setPlayhead(time);
+    mediaPlayerRef.current?.seekTo(time);
   };
 
   const handleBrowseVideo = async () => {
@@ -170,14 +183,20 @@ export default function VideoCut() {
 
       {input && (
         <ErrorBoundary fallback={null}>
-          <MediaPlayer
-            filePath={input}
-            startMarker={startSeconds}
-            endMarker={endSeconds}
-            onStartMarkerChange={(s) => setStartTime(secondsToTime(s))}
-            onEndMarkerChange={(s) => setEndTime(secondsToTime(s))}
-          />
+          <MediaPlayer ref={mediaPlayerRef} filePath={input} onTimeUpdate={setPlayhead} onDurationChange={setVideoDuration} />
         </ErrorBoundary>
+      )}
+
+      {input && (
+        <VideoTimeline
+          duration={videoDuration}
+          currentTime={playhead}
+          start={startSeconds}
+          end={endSeconds ?? videoDuration}
+          onSeek={handleTimelineSeek}
+          onStartChange={(s) => setStartTime(secondsToTime(s))}
+          onEndChange={(s) => setEndTime(secondsToTime(s))}
+        />
       )}
 
       <FilePathField

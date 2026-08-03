@@ -1,42 +1,32 @@
-import { useRef, useEffect, useCallback, useState } from 'react';
+import { useRef, useEffect, useCallback, useState, forwardRef, useImperativeHandle } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faStop, faVolumeHigh, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
 import { PlayerFrame, PlayerAudioChunk } from '../../shared/types';
-import {
-  PlayerRoot,
-  PlayerCanvas,
-  ControlsArea,
-  SeekSlider,
-  SeekArea,
-  MarkersSlider,
-  ControlButton,
-  ControlsRow,
-  TimeText,
-} from '../styles/MediaPlayer.styles';
+import { PlayerRoot, PlayerCanvas, ControlsArea, SeekSlider, ControlButton, ControlsRow, TimeText } from '../styles/MediaPlayer.styles';
+import { formatClockTime } from '../utils/formatters';
 
 const log = new Logger('renderer/components/MediaPlayer');
+
+export interface MediaPlayerHandle {
+  seekTo: (time: number) => void;
+}
 
 interface Props {
   filePath: string;
   onTimeUpdate?: (time: number) => void;
-  startMarker?: number;
-  endMarker?: number;
-  onStartMarkerChange?: (time: number) => void;
-  onEndMarkerChange?: (time: number) => void;
+  onDurationChange?: (duration: number) => void;
 }
 
 const AUDIO_LOOKAHEAD_SECONDS = 1;
 const MAX_PENDING_AUDIO_CHUNKS = 600;
 
-export default function MediaPlayer({ filePath, onTimeUpdate, startMarker, endMarker, onStartMarkerChange, onEndMarkerChange }: Props) {
+const MediaPlayer = forwardRef<MediaPlayerHandle, Props>(function MediaPlayer({ filePath, onTimeUpdate, onDurationChange }: Props, ref) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [muted, setMuted] = useState(false);
-  const [markerStart, setMarkerStart] = useState(0);
-  const [markerEnd, setMarkerEnd] = useState(0);
   const animRef = useRef<number>(0);
   const frameBuffer = useRef<Array<{ data: ImageData; pts: number }>>([]);
   const isSeeking = useRef(false);
@@ -44,6 +34,14 @@ export default function MediaPlayer({ filePath, onTimeUpdate, startMarker, endMa
   const resetToStartRef = useRef(false);
   const onTimeUpdateRef = useRef(onTimeUpdate);
   onTimeUpdateRef.current = onTimeUpdate;
+  const onDurationChangeRef = useRef(onDurationChange);
+  onDurationChangeRef.current = onDurationChange;
+  const durationRef = useRef(0);
+  const lastReportedTimeRef = useRef(-1);
+  const playBaseTimeRef = useRef(0);
+  const playStartWallRef = useRef(0);
+  const frameGenRef = useRef<number | null>(null);
+  const audioGenRef = useRef<number | null>(null);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
@@ -86,6 +84,24 @@ export default function MediaPlayer({ filePath, onTimeUpdate, startMarker, endMa
       masterGainRef.current = null;
     }
     nextStartTimeRef.current = 0;
+  }, []);
+
+  const resetPacing = useCallback((baseTime: number) => {
+    playBaseTimeRef.current = baseTime;
+    playStartWallRef.current = typeof performance !== 'undefined' ? performance.now() : 0;
+    lastReportedTimeRef.current = -1;
+  }, []);
+
+  const runPlayerCommand = useCallback((command: Promise<number>) => {
+    frameGenRef.current = null;
+    audioGenRef.current = null;
+    frameBuffer.current = [];
+    command
+      .then((gen) => {
+        frameGenRef.current = gen;
+        audioGenRef.current = gen;
+      })
+      .catch(() => {});
   }, []);
 
   const scheduleOneChunk = useCallback((chunk: PlayerAudioChunk) => {
@@ -148,21 +164,27 @@ export default function MediaPlayer({ filePath, onTimeUpdate, startMarker, endMa
     let cancelled = false;
 
     log.info('Loading player for:', filePath);
+    frameGenRef.current = null;
+    audioGenRef.current = null;
     frameBuffer.current = [];
     displayPtsRef.current = 0;
+    durationRef.current = 0;
     setCurrentTime(0);
-    setMarkerStart(0);
-    setMarkerEnd(0);
     setIsPlaying(false);
 
     window.electronAPI
       .getMediaInfo(filePath, 'FFMPEG')
       .then((info) => {
-        if (!cancelled) setDuration(info.duration);
+        if (!cancelled) {
+          durationRef.current = info.duration;
+          setDuration(info.duration);
+          onDurationChangeRef.current?.(info.duration);
+        }
       })
       .catch(() => {});
 
     const cleanupFrame = window.electronAPI.onPlayerFrame((frame: PlayerFrame) => {
+      if (frame.generation !== frameGenRef.current) return;
       const canvas = canvasRef.current;
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
@@ -190,6 +212,7 @@ export default function MediaPlayer({ filePath, onTimeUpdate, startMarker, endMa
     });
 
     const cleanupAudio = window.electronAPI.onPlayerAudio((chunk: PlayerAudioChunk) => {
+      if (chunk.generation !== audioGenRef.current) return;
       queueAudioChunk(chunk);
     });
 
@@ -204,35 +227,33 @@ export default function MediaPlayer({ filePath, onTimeUpdate, startMarker, endMa
     };
   }, [filePath, queueAudioChunk, closeAudio]);
 
-  useEffect(() => {
-    if (startMarker !== undefined) setMarkerStart(Math.max(0, startMarker));
-  }, [startMarker]);
-
-  useEffect(() => {
-    if (endMarker !== undefined) setMarkerEnd(endMarker);
-    else if (duration > 0) setMarkerEnd(duration);
-  }, [endMarker, duration]);
-
-  const handleMarkerChange = (_: Event, value: number | number[]) => {
-    const [start, end] = value as number[];
-    if (startMarker === undefined ? start !== markerStart : start !== startMarker) onStartMarkerChange?.(start);
-    if (endMarker === undefined ? end !== markerEnd : end !== endMarker) onEndMarkerChange?.(end);
-  };
-
   const renderLoop = useCallback(() => {
     if (frameBuffer.current.length > 0 && !isSeeking.current) {
       const canvas = canvasRef.current;
-      if (canvas) {
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          const frame = frameBuffer.current.shift()!;
-          canvas.width = frame.data.width;
-          canvas.height = frame.data.height;
+      const ctx = canvas?.getContext('2d');
+      if (canvas && ctx) {
+        const now = typeof performance !== 'undefined' ? performance.now() : 0;
+        const targetTime = playBaseTimeRef.current + (now - playStartWallRef.current) / 1000;
+        let frame: { data: ImageData; pts: number } | null = null;
+        while (frameBuffer.current.length > 0) {
+          const candidate = frameBuffer.current[0];
+          if (candidate.pts > targetTime) break;
+          frameBuffer.current.shift();
+          frame = candidate;
+        }
+        if (frame) {
+          if (canvas.width !== frame.data.width || canvas.height !== frame.data.height) {
+            canvas.width = frame.data.width;
+            canvas.height = frame.data.height;
+          }
           ctx.putImageData(frame.data, 0, 0);
           const time = frame.pts;
           displayPtsRef.current = time;
-          setCurrentTime(time);
-          onTimeUpdateRef.current?.(time);
+          if (Math.abs(time - lastReportedTimeRef.current) >= 0.1 || time >= durationRef.current) {
+            lastReportedTimeRef.current = time;
+            setCurrentTime(time);
+            onTimeUpdateRef.current?.(time);
+          }
         }
       }
     }
@@ -253,12 +274,12 @@ export default function MediaPlayer({ filePath, onTimeUpdate, startMarker, endMa
       return;
     }
     resetToStartRef.current = false;
-    frameBuffer.current = [];
     const resumeTime = displayPtsRef.current;
+    resetPacing(resumeTime);
     if (resumeTime > 0) {
-      window.electronAPI.playerSeek(formatTime(resumeTime));
+      runPlayerCommand(window.electronAPI.playerSeek(formatTime(resumeTime)));
     } else {
-      window.electronAPI.playerOpen(filePath);
+      runPlayerCommand(window.electronAPI.playerOpen(filePath));
     }
     const ctx = ensureAudioContext();
     ctx?.resume().catch(() => {});
@@ -274,10 +295,10 @@ export default function MediaPlayer({ filePath, onTimeUpdate, startMarker, endMa
     const time = value as number;
     isSeeking.current = false;
     resetToStartRef.current = false;
-    frameBuffer.current = [];
     displayPtsRef.current = time;
     closeAudio();
-    window.electronAPI.playerSeek(formatTime(time));
+    resetPacing(time);
+    runPlayerCommand(window.electronAPI.playerSeek(formatTime(time)));
     setIsPlaying(true);
   };
 
@@ -286,10 +307,26 @@ export default function MediaPlayer({ filePath, onTimeUpdate, startMarker, endMa
     setIsPlaying(false);
     setCurrentTime(0);
     displayPtsRef.current = 0;
-    frameBuffer.current = [];
     resetToStartRef.current = true;
-    window.electronAPI.playerSeek('00:00:00');
+    resetPacing(0);
+    runPlayerCommand(window.electronAPI.playerSeek('00:00:00'));
   };
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      seekTo: (time: number) => {
+        isSeeking.current = false;
+        resetToStartRef.current = false;
+        displayPtsRef.current = time;
+        closeAudio();
+        resetPacing(time);
+        runPlayerCommand(window.electronAPI.playerSeek(formatTime(time)));
+        setIsPlaying(true);
+      },
+    }),
+    [closeAudio, resetPacing, runPlayerCommand],
+  );
 
   const handleToggleMute = () => {
     mutedRef.current = !mutedRef.current;
@@ -306,37 +343,18 @@ export default function MediaPlayer({ filePath, onTimeUpdate, startMarker, endMa
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toFixed(3).padStart(6, '0')}`;
   }
 
-  function displayTime(t: number): string {
-    const m = Math.floor(t / 60);
-    const s = Math.floor(t % 60);
-    return `${m}:${s.toString().padStart(2, '0')}`;
-  }
-
   return (
     <PlayerRoot>
       <PlayerCanvas ref={canvasRef} onClick={togglePlayback} />
       <ControlsArea>
-        <SeekArea>
-          <SeekSlider
-            size="small"
-            min={0}
-            max={duration || 100}
-            value={currentTime}
-            onChange={handleSeek}
-            onChangeCommitted={handleSeekCommitted}
-          />
-          {(onStartMarkerChange || onEndMarkerChange) && (
-            <MarkersSlider
-              size="small"
-              min={0}
-              max={duration || 100}
-              value={[markerStart, markerEnd]}
-              disableSwap
-              getAriaLabel={(index) => (index === 0 ? 'cut start marker' : 'cut end marker')}
-              onChange={handleMarkerChange}
-            />
-          )}
-        </SeekArea>
+        <SeekSlider
+          size="small"
+          min={0}
+          max={duration || 100}
+          value={currentTime}
+          onChange={handleSeek}
+          onChangeCommitted={handleSeekCommitted}
+        />
         <ControlsRow>
           <ControlButton size="small" onClick={togglePlayback}>
             {isPlaying ? <FontAwesomeIcon icon={faPause} /> : <FontAwesomeIcon icon={faPlay} />}
@@ -348,10 +366,12 @@ export default function MediaPlayer({ filePath, onTimeUpdate, startMarker, endMa
             <FontAwesomeIcon icon={faStop} />
           </ControlButton>
           <TimeText variant="caption">
-            {displayTime(currentTime)} / {displayTime(duration)}
+            {formatClockTime(currentTime)} / {formatClockTime(duration)}
           </TimeText>
         </ControlsRow>
       </ControlsArea>
     </PlayerRoot>
   );
-}
+});
+
+export default MediaPlayer;

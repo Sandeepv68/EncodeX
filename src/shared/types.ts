@@ -115,12 +115,14 @@ export interface PlayerFrame {
   width: number;
   height: number;
   pts: number;
+  generation: number;
 }
 
 export interface PlayerAudioChunk {
   data: ArrayBuffer;
   sampleRate: number;
   channels: number;
+  generation: number;
 }
 
 export enum ConversionOperation {

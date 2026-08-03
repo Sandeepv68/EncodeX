@@ -227,11 +227,11 @@
     "outputFile": "Output File",
     "outputFileHint": "The path where the trimmed video will be saved.",
     "startTime": "Start Time (HH:MM:SS)",
-    "startTimeHint": "Where the cut segment begins. You can also drag the green marker on the player seek bar.",
+    "startTimeHint": "Where the cut segment begins. You can also drag the green trim handle on the timeline.",
     "duration": "Duration (HH:MM:SS)",
     "durationHint": "Instead of an end time, specify how long the cut segment should be.",
     "endTime": "End Time (HH:MM:SS)",
-    "endTimeHint": "Where the cut segment ends. You can also drag the red marker on the player seek bar.",
+    "endTimeHint": "Where the cut segment ends. You can also drag the red trim handle on the timeline.",
     "useDuration": "Use duration instead of end time",
     "useDurationHint": "Switch between an end time and a duration for the cut segment.",
     "cut": "Cut Video",
@@ -249,6 +249,10 @@
     "placeholderDuration": "e.g. 00:01:30",
     "placeholderEnd": "e.g. 00:01:30",
     "validationRequired": "Please select a video file."
+  },
+  "videoTimeline": {
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
   },
   "batchQueue": {
     "title": "Batch Queue",

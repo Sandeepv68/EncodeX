@@ -233,6 +233,10 @@
     "placeholderEnd": "напр. 00:01:30",
     "validationRequired": "Виберіть відеофайл."
   },
+  "videoTimeline": {
+    "zoomIn": "Збільшити",
+    "zoomOut": "Зменшити"
+  },
   "batchQueue": {
     "title": "Пакетна черга",
     "suffix": "Суфікс",

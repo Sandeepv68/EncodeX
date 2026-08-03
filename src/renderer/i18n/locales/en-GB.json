@@ -233,6 +233,10 @@
     "placeholderEnd": "e.g. 00:01:30",
     "validationRequired": "Please select a video file."
   },
+  "videoTimeline": {
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
+  },
   "batchQueue": {
     "title": "Batch Queue",
     "suffix": "Suffix",

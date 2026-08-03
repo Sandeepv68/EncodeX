@@ -233,6 +233,10 @@
     "placeholderEnd": "t.ex. 00:01:30",
     "validationRequired": "Välj en videofil."
   },
+  "videoTimeline": {
+    "zoomIn": "Zooma in",
+    "zoomOut": "Zooma ut"
+  },
   "batchQueue": {
     "title": "Batchkö",
     "suffix": "Ändelse",

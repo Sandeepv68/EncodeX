@@ -233,6 +233,10 @@
     "placeholderEnd": "mis. 00:01:30",
     "validationRequired": "Silakan pilih file video."
   },
+  "videoTimeline": {
+    "zoomIn": "Perbesar",
+    "zoomOut": "Perkecil"
+  },
   "batchQueue": {
     "title": "Antrean Batch",
     "suffix": "Akhiran",

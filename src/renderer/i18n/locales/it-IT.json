@@ -233,6 +233,10 @@
     "placeholderEnd": "es. 00:01:30",
     "validationRequired": "Seleziona un file video."
   },
+  "videoTimeline": {
+    "zoomIn": "Ingrandisci",
+    "zoomOut": "Riduci"
+  },
   "batchQueue": {
     "title": "Coda batch",
     "suffix": "Suffisso",
