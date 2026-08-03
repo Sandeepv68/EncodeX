@@ -63,7 +63,7 @@
     "jsdom": "^30.0.1",
     "playwright": "^1.62.0",
     "prettier": "^3.9.6",
-    "typescript": "^5.7.0",
+    "typescript": "^7.0.2",
     "vite": "^8.1.5",
     "vitest": "^4.1.10",
     "wait-on": "^9.1.0"
