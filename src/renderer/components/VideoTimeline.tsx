@@ -2,12 +2,14 @@ import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, CircularProgress, Skeleton, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlassPlus, faMagnifyingGlassMinus } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlassPlus, faMagnifyingGlassMinus, faVideo, faMusic } from '@fortawesome/free-solid-svg-icons';
 import {
   TimelineRoot,
   TimelineToolbar,
   TimelineTimeText,
   ZoomButton,
+  TrackLabelPanel,
+  TrackLabel,
   Viewport,
   Scroller,
   Ruler,
@@ -353,57 +355,71 @@ export default function VideoTimeline({
           </ZoomButton>
         </Box>
       </TimelineToolbar>
-      <Viewport ref={viewportRef}>
-        <Scroller
-          ref={scrollerRef}
-          data-testid="timeline-scroller"
-          style={{ width: Math.max(duration * zoom, 600) }}
-          onPointerDown={handlePointerDown}
-        >
-          <Ruler>
-            {rulerEls.minorEls}
-            {rulerEls.majorEls}
-            {rulerEls.labelEls}
-          </Ruler>
-          <Lane>
-            <VideoTrack data-testid="timeline-video-track">
-              {thumbnailsLoading ? (
-                <Skeleton
-                  variant="rectangular"
-                  data-testid="timeline-thumb-skeleton"
-                  animation="wave"
-                  sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
-                />
-              ) : (
-                <>
-                  {thumbnails && <style>{thumbMontageCss}</style>}
-                  {thumbCells}
-                </>
-              )}
-            </VideoTrack>
-            <AudioTrack data-testid="timeline-audio-track">
-              {waveformLoading ? (
-                <Skeleton
-                  variant="rectangular"
-                  data-testid="timeline-waveform-skeleton"
-                  animation="wave"
-                  sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
-                />
-              ) : (
-                waveformBars
-              )}
-            </AudioTrack>
-            <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: 0, width: startX }} />
-            <KeptRegion data-testid="timeline-kept-region" sx={{ left: startX, width: Math.max(0, endX - startX) }} />
-            <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: endX, width: Math.max(0, duration * zoom - endX) }} />
-            <TrimHandle data-kind="start" data-testid="timeline-start-handle" sx={{ left: startX }} />
-            <TrimHandle data-kind="end" data-testid="timeline-end-handle" sx={{ left: endX }} />
-          </Lane>
-          <PlayheadLine data-kind="playhead" data-testid="timeline-playhead" sx={{ left: playheadX }}>
-            <PlayheadHead />
-          </PlayheadLine>
-        </Scroller>
-      </Viewport>
+      <Box sx={{ display: 'flex' }}>
+        <TrackLabelPanel>
+          <Box sx={{ height: TIMELINE_LAYOUT.RULER_HEIGHT }} />
+          <TrackLabel
+            data-testid="timeline-video-label"
+            sx={{ height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT, borderBottom: 1, borderColor: 'divider' }}
+          >
+            <FontAwesomeIcon icon={faVideo} size="xs" />
+          </TrackLabel>
+          <TrackLabel data-testid="timeline-audio-label" sx={{ height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT }}>
+            <FontAwesomeIcon icon={faMusic} size="xs" />
+          </TrackLabel>
+        </TrackLabelPanel>
+        <Viewport ref={viewportRef} sx={{ flex: 1, minWidth: 0 }}>
+          <Scroller
+            ref={scrollerRef}
+            data-testid="timeline-scroller"
+            style={{ width: Math.max(duration * zoom, 600) }}
+            onPointerDown={handlePointerDown}
+          >
+            <Ruler>
+              {rulerEls.minorEls}
+              {rulerEls.majorEls}
+              {rulerEls.labelEls}
+            </Ruler>
+            <Lane>
+              <VideoTrack data-testid="timeline-video-track">
+                {thumbnailsLoading ? (
+                  <Skeleton
+                    variant="rectangular"
+                    data-testid="timeline-thumb-skeleton"
+                    animation="wave"
+                    sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
+                  />
+                ) : (
+                  <>
+                    {thumbnails && <style>{thumbMontageCss}</style>}
+                    {thumbCells}
+                  </>
+                )}
+              </VideoTrack>
+              <AudioTrack data-testid="timeline-audio-track">
+                {waveformLoading ? (
+                  <Skeleton
+                    variant="rectangular"
+                    data-testid="timeline-waveform-skeleton"
+                    animation="wave"
+                    sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
+                  />
+                ) : (
+                  waveformBars
+                )}
+              </AudioTrack>
+              <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: 0, width: startX }} />
+              <KeptRegion data-testid="timeline-kept-region" sx={{ left: startX, width: Math.max(0, endX - startX) }} />
+              <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: endX, width: Math.max(0, duration * zoom - endX) }} />
+              <TrimHandle data-kind="start" data-testid="timeline-start-handle" sx={{ left: startX }} />
+              <TrimHandle data-kind="end" data-testid="timeline-end-handle" sx={{ left: endX }} />
+            </Lane>
+            <PlayheadLine data-kind="playhead" data-testid="timeline-playhead" sx={{ left: playheadX }}>
+              <PlayheadHead />
+            </PlayheadLine>
+          </Scroller>
+        </Viewport>
+      </Box>
     </TimelineRoot>
   );
 }

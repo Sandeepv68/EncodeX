@@ -256,12 +256,29 @@ describe('VideoTimeline', () => {
     expect(cell).toHaveStyle({ top: '2px' });
     expect(TIMELINE_LAYOUT.TRACK_CONTENT_HEIGHT + TIMELINE_LAYOUT.TRACK_CONTENT_TOP * 2).toBe(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT);
     expect(TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT).toBe(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT);
+    const audioTrack = screen.getByTestId('timeline-audio-track');
+    expect(audioTrack).toHaveStyle({ backgroundColor: '#809dca42' });
     const kept = screen.getByTestId('timeline-kept-region');
     const dimmed = screen.getAllByTestId('timeline-dimmed-region');
     expect(kept).toHaveStyle({ top: '2px', bottom: '2px' });
     for (const region of dimmed) {
       expect(region).toHaveStyle({ top: '2px', bottom: '2px' });
     }
+  });
+
+  it('renders fixed video and audio track labels', () => {
+    render(
+      <VideoTimeline duration={60} currentTime={0} start={0} end={60} onSeek={vi.fn()} onStartChange={vi.fn()} onEndChange={vi.fn()} />,
+    );
+    const videoLabel = screen.getByTestId('timeline-video-label');
+    const audioLabel = screen.getByTestId('timeline-audio-label');
+    expect(videoLabel).toBeInTheDocument();
+    expect(audioLabel).toBeInTheDocument();
+    expect(getComputedStyle(videoLabel).height).toBe(`${TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT}px`);
+    expect(getComputedStyle(audioLabel).height).toBe(`${TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT}px`);
+    const viewport = screen.getByTestId('timeline-scroller').parentElement as HTMLElement;
+    const panel = videoLabel.parentElement as HTMLElement;
+    expect(panel).not.toBe(viewport);
   });
 
   it('renders a video thumbnails track when thumbnail data is provided', () => {

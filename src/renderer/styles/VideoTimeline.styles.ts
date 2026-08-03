@@ -47,6 +47,23 @@ export const Viewport = styled(Box)({
   },
 });
 
+export const TrackLabelPanel = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  flexShrink: 0,
+  borderRight: `1px solid ${theme.palette.divider}`,
+  backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : '#141414',
+  zIndex: 2,
+}));
+
+export const TrackLabel = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 44,
+  color: theme.palette.text.secondary,
+}));
+
 export const Scroller = styled(Box)({
   position: 'relative',
   minWidth: '100%',
@@ -123,6 +140,7 @@ export const AudioTrack = styled(Box)({
   left: 0,
   right: 0,
   height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
+  backgroundColor: '#809dca42',
   zIndex: 0,
   pointerEvents: 'none',
 });
