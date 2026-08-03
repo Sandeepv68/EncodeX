@@ -9,8 +9,8 @@ import { WaveformData, ThumbnailStrip } from '../../shared/types';
 const log = new Logger('main/timeline/timeline-media');
 
 const WAVEFORM_SAMPLE_RATE = 8000;
-const WAVEFORM_BUCKETS_PER_SECOND = 8;
-const WAVEFORM_MAX_BUCKETS = 1200;
+const WAVEFORM_BUCKETS_PER_SECOND = 40;
+const WAVEFORM_MAX_BUCKETS = 24000;
 const WAVEFORM_MIN_BUCKETS = 200;
 const WAVEFORM_SEGMENT_SECONDS = 30;
 const WAVEFORM_MIN_SEGMENTS = 12;

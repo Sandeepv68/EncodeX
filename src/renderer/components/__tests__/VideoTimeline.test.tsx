@@ -197,6 +197,33 @@ describe('VideoTimeline', () => {
     expect(screen.getAllByTestId('timeline-waveform-bar')).toHaveLength(2);
   });
 
+  it('aggregates waveform buckets into clearly separated bars when zoomed out', () => {
+    render(
+      <VideoTimeline
+        duration={300}
+        currentTime={0}
+        start={0}
+        end={300}
+        waveform={{
+          sampleRate: 8000,
+          samplesPerBucket: 1000,
+          buckets: Array.from({ length: 1200 }, () => ({ min: -1, max: 1 })),
+        }}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    const bars = screen.getAllByTestId('timeline-waveform-bar');
+    expect(bars.length).toBeGreaterThan(0);
+    expect(bars.length).toBeLessThan(1200);
+    const lefts = bars.map((bar) => Number(getComputedStyle(bar).left.replace('px', '')));
+    expect(lefts.every((x) => Number.isInteger(x))).toBe(true);
+    for (let i = 1; i < lefts.length; i++) {
+      expect(lefts[i] - lefts[i - 1]).toBeGreaterThanOrEqual(4);
+    }
+  });
+
   it('vertically aligns the waveform and thumbnail strips within their tracks', () => {
     render(
       <VideoTimeline

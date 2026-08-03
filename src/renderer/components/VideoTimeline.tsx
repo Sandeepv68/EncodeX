@@ -35,6 +35,7 @@ const MAX_ZOOM = 300;
 const ZOOM_STEP = 1.5;
 const MIN_GAP = 0.1;
 const LABEL_MIN_GAP = 56;
+const MIN_BAR_PITCH = 5;
 const THUMB_MONTAGE_CLASS = 'timeline-thumb-montage';
 const TICK_STEPS = [0.1, 0.2, 0.25, 0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600] as const;
 
@@ -231,25 +232,48 @@ export default function VideoTimeline({
 
   const waveformBars = useMemo(() => {
     if (!waveform || waveform.buckets.length === 0 || duration <= 0) return [];
-    const bucketWidth = (duration * zoom) / waveform.buckets.length;
-    const barWidth = Math.max(1, bucketWidth - 1);
+    const totalWidth = duration * zoom;
+    const bucketWidth = totalWidth / waveform.buckets.length;
+    const slotWidth = Math.max(bucketWidth, MIN_BAR_PITCH);
+    const barWidth = Math.max(2, slotWidth - 1);
     const barHeight = TIMELINE_LAYOUT.TRACK_CONTENT_HEIGHT;
     const envelopeTop = TIMELINE_LAYOUT.TRACK_CONTENT_TOP;
     const virtualize = viewState.viewportWidth > 0;
     const bucketsPerSec = waveform.buckets.length / duration;
     const margin = virtualize ? viewState.viewportWidth / zoom / 2 : 0;
-    const startTime = Math.max(0, viewState.scrollLeft / zoom - margin);
-    const endTime = Math.min(duration, (viewState.scrollLeft + viewState.viewportWidth) / zoom + margin);
-    const firstIdx = virtualize ? Math.max(0, Math.floor(startTime * bucketsPerSec)) : 0;
-    const lastIdx = virtualize ? Math.min(waveform.buckets.length - 1, Math.ceil(endTime * bucketsPerSec)) : waveform.buckets.length - 1;
+    const startTime = virtualize ? Math.max(0, viewState.scrollLeft / zoom - margin) : 0;
+    const endTime = virtualize ? Math.min(duration, (viewState.scrollLeft + viewState.viewportWidth) / zoom + margin) : duration;
+    const bucketsPerSlot = slotWidth / bucketWidth;
     const bars: ReactElement[] = [];
-    for (let i = firstIdx; i <= lastIdx; i++) {
-      const b = waveform.buckets[i];
-      const topFraction = (1 - b.max) / 2;
-      const heightFraction = Math.max(0, b.max - b.min) / 2;
+    const pushBar = (left: number, bucket: { min: number; max: number }) => {
+      const topFraction = (1 - bucket.max) / 2;
+      const heightFraction = Math.max(0, bucket.max - bucket.min) / 2;
       const height = Math.max(2, heightFraction * barHeight);
       const top = Math.max(envelopeTop, Math.min(envelopeTop + barHeight - height, envelopeTop + topFraction * barHeight));
-      bars.push(<WaveformBar key={i} data-testid="timeline-waveform-bar" sx={{ left: i * bucketWidth, top, width: barWidth, height }} />);
+      bars.push(<WaveformBar key={left} data-testid="timeline-waveform-bar" sx={{ left, top, width: barWidth, height }} />);
+    };
+
+    const firstSlot = Math.max(0, Math.floor((startTime * zoom) / slotWidth));
+    const lastSlot = Math.min(Math.ceil(totalWidth / slotWidth) - 1, Math.ceil((endTime * zoom) / slotWidth));
+    for (let slot = firstSlot; slot <= lastSlot; slot++) {
+      const left = slot * slotWidth;
+      const i0 = Math.min(waveform.buckets.length - 1, Math.max(0, Math.floor(slot * bucketsPerSlot)));
+      const i1 = Math.min(waveform.buckets.length - 1, Math.max(0, Math.ceil((slot + 1) * bucketsPerSlot) - 1));
+      if (bucketsPerSlot <= 1.001) {
+        pushBar(left, waveform.buckets[i0]);
+      } else {
+        let peakSum = 0;
+        let maxSum = 0;
+        for (let i = i0; i <= i1; i++) {
+          const b = waveform.buckets[i];
+          peakSum += (b.max - b.min) / 2;
+          maxSum += b.max;
+        }
+        const count = i1 - i0 + 1;
+        const avgMax = maxSum / count;
+        const avgPeak = peakSum / count;
+        pushBar(left, { min: avgMax - avgPeak * 2, max: avgMax });
+      }
     }
     return bars;
   }, [waveform, duration, zoom, viewState.scrollLeft, viewState.viewportWidth]);

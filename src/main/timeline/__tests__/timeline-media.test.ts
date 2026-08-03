@@ -117,12 +117,12 @@ describe('timeline-media', () => {
     expect(spawnCount).toHaveBeenCalledTimes(12);
     expect(result).not.toBeNull();
     expect(result!.sampleRate).toBe(8000);
-    expect(result!.samplesPerBucket).toBe(1000);
-    expect(result!.buckets.length).toBe(480);
+    expect(result!.samplesPerBucket).toBe(200);
+    expect(result!.buckets.length).toBe(2400);
     expect(result!.buckets[0]).toEqual({ min: -0.5, max: 0.5 });
-    expect(result!.buckets[15]).toEqual({ min: -0.5, max: 0.5 });
-    expect(result!.buckets[40]).toEqual({ min: -0.25, max: 0.25 });
-    expect(result!.buckets[55]).toEqual({ min: -0.25, max: 0.25 });
+    expect(result!.buckets[199]).toEqual({ min: -0.5, max: 0.5 });
+    expect(result!.buckets[200]).toEqual({ min: -0.25, max: 0.25 });
+    expect(result!.buckets[399]).toEqual({ min: -0.25, max: 0.25 });
     expect(spawnMock).toHaveBeenCalledWith('C:\\ffmpeg\\bin\\ffmpeg.exe', expect.arrayContaining(['-ss', '0']), expect.anything());
   });
 
