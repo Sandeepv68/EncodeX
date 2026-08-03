@@ -38,6 +38,7 @@ describe('MediaPlayer', () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     vi.restoreAllMocks();
   });
 
@@ -111,6 +112,7 @@ describe('MediaPlayer', () => {
   });
 
   it('ignores stale frames from an earlier generation after a seek', async () => {
+    vi.useFakeTimers();
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     playerOpen.mockResolvedValue(1 as never);
     playerSeek.mockResolvedValue(2 as never);
@@ -145,6 +147,9 @@ describe('MediaPlayer', () => {
     } as PlayerFrame);
     act(() => {
       ref.current?.seekTo(5);
+    });
+    act(() => {
+      vi.advanceTimersByTime(120);
     });
     await act(async () => {});
     frameCb!({
@@ -194,11 +199,16 @@ describe('MediaPlayer', () => {
   });
 
   it('exposes a seekTo handle that seeks and starts playback', () => {
+    vi.useFakeTimers();
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const ref = createRef<MediaPlayerHandle>();
     const { container } = render(<MediaPlayer filePath="/v.mp4" ref={ref} />);
     act(() => {
       ref.current?.seekTo(5);
+    });
+    expect(playerSeek).not.toHaveBeenCalled();
+    act(() => {
+      vi.advanceTimersByTime(120);
     });
     expect(playerSeek).toHaveBeenCalledWith('00:00:05.000');
     expect(container.querySelector('[data-icon="pause"]')).not.toBeNull();

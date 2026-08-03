@@ -148,6 +148,127 @@ describe('VideoTimeline', () => {
     expect(onSeek).toHaveBeenNthCalledWith(2, 45);
   });
 
+  it('tracks the cursor when dragging the end handle on a horizontally scrolled timeline', () => {
+    const onEndChange = vi.fn();
+    render(
+      <VideoTimeline
+        duration={600}
+        currentTime={0}
+        start={0}
+        end={600}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={onEndChange}
+      />,
+    );
+    const scroller = screen.getByTestId('timeline-scroller');
+    mockRect(scroller, -400, 1200);
+    const viewport = scroller.parentElement as HTMLElement;
+    Object.defineProperty(viewport, 'scrollLeft', { value: 400, configurable: true });
+    const handle = screen.getByTestId('timeline-end-handle');
+    fireEvent.pointerDown(handle, { clientX: 800 });
+    fireEvent.pointerMove(window, { clientX: 700 });
+    fireEvent.pointerUp(window);
+    expect(onEndChange).toHaveBeenCalledWith(550);
+  });
+
+  it('renders an audio waveform track when waveform data is provided', () => {
+    render(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={5}
+        end={50}
+        waveform={{
+          sampleRate: 8000,
+          samplesPerBucket: 1000,
+          buckets: [
+            { min: -1, max: 1 },
+            { min: -0.5, max: 0.5 },
+          ],
+        }}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByTestId('timeline-audio-track')).toBeInTheDocument();
+    expect(screen.getAllByTestId('timeline-waveform-bar')).toHaveLength(2);
+  });
+
+  it('renders a video thumbnails track when thumbnail data is provided', () => {
+    render(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={5}
+        end={50}
+        thumbnails={{
+          dataUrl: 'data:image/png;base64,AAAA',
+          cols: 2,
+          rows: 2,
+          thumbWidth: 160,
+          thumbHeight: 90,
+          interval: 7.5,
+          count: 3,
+        }}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByTestId('timeline-video-track')).toBeInTheDocument();
+    expect(screen.getAllByTestId('timeline-thumb')).toHaveLength(3);
+  });
+
+  it('renders skeletons in both tracks and a generating hint while loading', () => {
+    render(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={5}
+        end={50}
+        waveformLoading
+        thumbnailsLoading
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByTestId('timeline-thumb-skeleton')).toBeInTheDocument();
+    expect(screen.getByTestId('timeline-waveform-skeleton')).toBeInTheDocument();
+    expect(screen.getByTestId('timeline-generating')).toBeInTheDocument();
+    expect(screen.queryByTestId('timeline-thumb')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('timeline-waveform-bar')).not.toBeInTheDocument();
+  });
+
+  it('shows only the waveform skeleton when only the waveform is loading', () => {
+    render(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={5}
+        end={50}
+        waveformLoading
+        thumbnails={{
+          dataUrl: 'data:image/png;base64,AAAA',
+          cols: 2,
+          rows: 2,
+          thumbWidth: 160,
+          thumbHeight: 90,
+          interval: 7.5,
+          count: 2,
+        }}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByTestId('timeline-waveform-skeleton')).toBeInTheDocument();
+    expect(screen.queryByTestId('timeline-thumb-skeleton')).not.toBeInTheDocument();
+    expect(screen.getAllByTestId('timeline-thumb')).toHaveLength(2);
+  });
+
   it('zooms in and out with the zoom buttons', () => {
     render(
       <VideoTimeline duration={60} currentTime={0} start={0} end={60} onSeek={vi.fn()} onStartChange={vi.fn()} onEndChange={vi.fn()} />,

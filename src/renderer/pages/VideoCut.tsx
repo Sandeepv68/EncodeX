@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Stack, Switch, Button, Typography, Tooltip, Box } from '@mui/material';
 import { faScissors, faPause, faPlay, faXmark, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
@@ -20,6 +20,7 @@ import { useToastStore } from '../stores/toastStore';
 import { ErrorCode } from '../../shared/errors';
 import { isValidTime } from '../../shared/validation';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
+import type { WaveformData, ThumbnailStrip } from '../../shared/types';
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
@@ -59,6 +60,10 @@ export default function VideoCut() {
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
   const [playhead, setPlayhead] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
+  const [waveform, setWaveform] = useState<WaveformData | null>(null);
+  const [thumbnails, setThumbnails] = useState<ThumbnailStrip | null>(null);
+  const [waveformLoading, setWaveformLoading] = useState(false);
+  const [thumbnailsLoading, setThumbnailsLoading] = useState(false);
   const mediaPlayerRef = useRef<MediaPlayerHandle>(null);
   const { progress, setProgress, isConverting, runTask } = useMediaTask();
   const { errors, setErrors, clearFieldError, setFieldError } = useFormErrors();
@@ -92,9 +97,54 @@ export default function VideoCut() {
     setIsPaused(false);
     setPlayhead(0);
     setVideoDuration(0);
+    setWaveform(null);
+    setThumbnails(null);
+    setWaveformLoading(false);
+    setThumbnailsLoading(false);
     setProgress(null);
     setErrors({});
   };
+
+  useEffect(() => {
+    if (!input || videoDuration <= 0) return;
+    let cancelled = false;
+    setWaveform(null);
+    setThumbnails(null);
+    setWaveformLoading(true);
+    setThumbnailsLoading(true);
+
+    const timer = window.setTimeout(() => {
+      if (cancelled) return;
+      window.electronAPI
+        .extractWaveform(input, videoDuration)
+        .then((data) => {
+          if (cancelled) return;
+          setWaveform(data);
+          setWaveformLoading(false);
+        })
+        .catch((err: unknown) => {
+          log.warn('Failed to extract waveform:', err);
+          if (!cancelled) setWaveformLoading(false);
+        });
+
+      window.electronAPI
+        .extractThumbnails(input, videoDuration)
+        .then((data) => {
+          if (cancelled) return;
+          setThumbnails(data);
+          setThumbnailsLoading(false);
+        })
+        .catch((err: unknown) => {
+          log.warn('Failed to extract thumbnails:', err);
+          if (!cancelled) setThumbnailsLoading(false);
+        });
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [input, videoDuration]);
 
   const handleFileSelect = (path: string) => {
     setInput(path);
@@ -103,6 +153,10 @@ export default function VideoCut() {
     setDuration('');
     setPlayhead(0);
     setVideoDuration(0);
+    setWaveform(null);
+    setThumbnails(null);
+    setWaveformLoading(false);
+    setThumbnailsLoading(false);
   };
 
   const handleTimelineSeek = (time: number) => {
@@ -193,6 +247,10 @@ export default function VideoCut() {
           currentTime={playhead}
           start={startSeconds}
           end={endSeconds ?? videoDuration}
+          waveform={waveform}
+          thumbnails={thumbnails}
+          waveformLoading={waveformLoading}
+          thumbnailsLoading={thumbnailsLoading}
           onSeek={handleTimelineSeek}
           onStartChange={(s) => setStartTime(secondsToTime(s))}
           onEndChange={(s) => setEndTime(secondsToTime(s))}

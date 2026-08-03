@@ -226,6 +226,7 @@
     "endTime": "End Time (HH:MM:SS)",
     "useDuration": "Use duration instead of end time",
     "cut": "Cut Video",
+    "generatingPreview": "Generating preview...",
     "cutting": "Cutting...",
     "placeholderOutput": "output path",
     "placeholderStart": "00:00:00",

@@ -11,6 +11,8 @@ const convertFileMock = vi.mocked(window.electronAPI.convertFile);
 const getMediaInfoMock = vi.mocked(window.electronAPI.getMediaInfo);
 const playerOpenMock = vi.mocked(window.electronAPI.playerOpen);
 const playerSeekMock = vi.mocked(window.electronAPI.playerSeek);
+const extractWaveformMock = vi.mocked(window.electronAPI.extractWaveform);
+const extractThumbnailsMock = vi.mocked(window.electronAPI.extractThumbnails);
 const pauseConversionMock = vi.mocked(window.electronAPI.pauseConversion);
 const resumeConversionMock = vi.mocked(window.electronAPI.resumeConversion);
 const cancelConversionMock = vi.mocked(window.electronAPI.cancelConversion);
@@ -60,6 +62,8 @@ describe('VideoCut', () => {
     convertFileMock.mockReset();
     playerOpenMock.mockClear();
     playerSeekMock.mockClear();
+    extractWaveformMock.mockClear();
+    extractThumbnailsMock.mockClear();
     pauseConversionMock.mockClear();
     resumeConversionMock.mockClear();
     cancelConversionMock.mockClear();
@@ -183,7 +187,7 @@ describe('VideoCut', () => {
     const scroller = await screen.findByTestId('timeline-scroller');
     mockRect(scroller, 0, 600);
     fireEvent.pointerDown(scroller, { clientX: 300 });
-    expect(playerSeekMock).toHaveBeenCalledWith('00:00:30.000');
+    await waitFor(() => expect(playerSeekMock).toHaveBeenCalledWith('00:00:30.000'));
   });
 
   it('updates the start time field when the start handle is dragged', async () => {
@@ -224,6 +228,79 @@ describe('VideoCut', () => {
     fireEvent.pointerUp(window);
     expect(screen.getByPlaceholderText('videoCut.placeholderStart')).toHaveValue('00:00:01');
     expect(screen.getByPlaceholderText('videoCut.placeholderEnd')).toHaveValue('');
+  });
+
+  it('extracts timeline media and renders waveform and thumbnails tracks', async () => {
+    extractWaveformMock.mockResolvedValue({
+      sampleRate: 8000,
+      samplesPerBucket: 1000,
+      buckets: [
+        { min: -1, max: 1 },
+        { min: -0.5, max: 0.5 },
+      ],
+    });
+    extractThumbnailsMock.mockResolvedValue({
+      dataUrl: 'data:image/png;base64,AAAA',
+      cols: 2,
+      rows: 2,
+      thumbWidth: 160,
+      thumbHeight: 90,
+      interval: 7.5,
+      count: 3,
+    });
+    getMediaInfoMock.mockResolvedValue(mediaInfo(60));
+    renderPage();
+    await selectVideo();
+    await waitFor(() => expect(extractWaveformMock).toHaveBeenCalledWith('/in/video.mp4', 60));
+    await waitFor(() => expect(extractThumbnailsMock).toHaveBeenCalledWith('/in/video.mp4', 60));
+    await waitFor(() => expect(screen.getAllByTestId('timeline-thumb')).toHaveLength(3));
+    expect(screen.getAllByTestId('timeline-waveform-bar')).toHaveLength(2);
+    expect(screen.getByTestId('timeline-video-track')).toBeInTheDocument();
+    expect(screen.getByTestId('timeline-audio-track')).toBeInTheDocument();
+  });
+
+  it('shows loading skeletons while the preview is being generated and hides them after', async () => {
+    const waveform = deferred<{ sampleRate: number; samplesPerBucket: number; buckets: { min: number; max: number }[] }>();
+    const thumbnails = deferred<{
+      dataUrl: string;
+      cols: number;
+      rows: number;
+      thumbWidth: number;
+      thumbHeight: number;
+      interval: number;
+      count: number;
+    }>();
+    extractWaveformMock.mockReturnValue(waveform.promise);
+    extractThumbnailsMock.mockReturnValue(thumbnails.promise);
+    getMediaInfoMock.mockResolvedValue(mediaInfo(60));
+    renderPage();
+    await selectVideo();
+    await waitFor(() => expect(screen.getByTestId('timeline-generating')).toBeInTheDocument());
+    expect(screen.getByTestId('timeline-thumb-skeleton')).toBeInTheDocument();
+    expect(screen.getByTestId('timeline-waveform-skeleton')).toBeInTheDocument();
+    await act(async () => {
+      waveform.resolve({
+        sampleRate: 8000,
+        samplesPerBucket: 1000,
+        buckets: [
+          { min: -1, max: 1 },
+          { min: -0.5, max: 0.5 },
+        ],
+      });
+      thumbnails.resolve({
+        dataUrl: 'data:image/png;base64,AAAA',
+        cols: 2,
+        rows: 2,
+        thumbWidth: 160,
+        thumbHeight: 90,
+        interval: 7.5,
+        count: 2,
+      });
+    });
+    await waitFor(() => expect(screen.queryByTestId('timeline-generating')).not.toBeInTheDocument());
+    expect(screen.queryByTestId('timeline-thumb-skeleton')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('timeline-waveform-skeleton')).not.toBeInTheDocument();
+    expect(screen.getAllByTestId('timeline-thumb')).toHaveLength(2);
   });
 
   it('shows live progress while cutting and hides it when the job completes', async () => {

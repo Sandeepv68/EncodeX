@@ -226,6 +226,7 @@
     "endTime": "समाप्ति समय (HH:MM:SS)",
     "useDuration": "समाप्ति समय के बजाय अवधि का उपयोग करें",
     "cut": "वीडियो काटें",
+    "generatingPreview": "पूर्वावलोकन बना रहा है...",
     "cutting": "काटा जा रहा है...",
     "placeholderOutput": "आउटपुट पथ",
     "placeholderStart": "00:00:00",

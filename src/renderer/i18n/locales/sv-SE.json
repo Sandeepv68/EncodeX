@@ -226,6 +226,7 @@
     "endTime": "Sluttid (HH:MM:SS)",
     "useDuration": "Använd längd istället för sluttid",
     "cut": "Klipp video",
+    "generatingPreview": "Genererar förhandsvisning...",
     "cutting": "Klipper...",
     "placeholderOutput": "utdatasökväg",
     "placeholderStart": "00:00:00",

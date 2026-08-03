@@ -226,6 +226,7 @@
     "endTime": "وقت النهاية (ساعة:دقيقة:ثانية)",
     "useDuration": "استخدام المدة بدلاً من وقت النهاية",
     "cut": "قص الفيديو",
+    "generatingPreview": "جارٍ إنشاء المعاينة...",
     "cutting": "جاري القص...",
     "placeholderOutput": "مسار الإخراج",
     "placeholderStart": "00:00:00",

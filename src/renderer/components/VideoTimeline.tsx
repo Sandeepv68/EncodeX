@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
+import { Box, CircularProgress, Skeleton, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlassPlus, faMagnifyingGlassMinus } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -15,7 +15,10 @@ import {
   RulerMinorTick,
   RulerLabel,
   Lane,
-  ClipTrack,
+  VideoTrack,
+  AudioTrack,
+  ThumbCell,
+  WaveformBar,
   KeptRegion,
   DimmedRegion,
   TrimHandle,
@@ -23,6 +26,7 @@ import {
   PlayheadHead,
 } from '../styles/VideoTimeline.styles';
 import { formatClockTime } from '../utils/formatters';
+import { WaveformData, ThumbnailStrip } from '../../shared/types';
 
 const DEFAULT_TIMELINE_WIDTH = 600;
 const MIN_ZOOM = 2;
@@ -30,6 +34,7 @@ const MAX_ZOOM = 300;
 const ZOOM_STEP = 1.5;
 const MIN_GAP = 0.1;
 const LABEL_MIN_GAP = 56;
+const THUMB_MONTAGE_CLASS = 'timeline-thumb-montage';
 const TICK_STEPS = [0.1, 0.2, 0.25, 0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600] as const;
 
 interface Props {
@@ -37,6 +42,10 @@ interface Props {
   currentTime: number;
   start: number;
   end: number;
+  waveform?: WaveformData | null;
+  thumbnails?: ThumbnailStrip | null;
+  waveformLoading?: boolean;
+  thumbnailsLoading?: boolean;
   onSeek: (time: number) => void;
   onStartChange: (time: number) => void;
   onEndChange: (time: number) => void;
@@ -52,7 +61,19 @@ function initialZoom(duration: number): number {
   return clamp(DEFAULT_TIMELINE_WIDTH / Math.max(duration, 1), MIN_ZOOM, MAX_ZOOM);
 }
 
-export default function VideoTimeline({ duration, currentTime, start, end, onSeek, onStartChange, onEndChange }: Props) {
+export default function VideoTimeline({
+  duration,
+  currentTime,
+  start,
+  end,
+  waveform = null,
+  thumbnails = null,
+  waveformLoading = false,
+  thumbnailsLoading = false,
+  onSeek,
+  onStartChange,
+  onEndChange,
+}: Props) {
   const { t } = useTranslation();
   const viewportRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -69,11 +90,9 @@ export default function VideoTimeline({ duration, currentTime, start, end, onSee
 
   const timeFromEvent = (clientX: number): number => {
     const el = scrollerRef.current;
-    const viewport = viewportRef.current;
     if (!el) return 0;
     const rect = el.getBoundingClientRect();
-    const scrollLeft = viewport?.scrollLeft ?? 0;
-    return clamp((clientX - rect.left + scrollLeft) / zoom, 0, duration);
+    return clamp((clientX - rect.left) / zoom, 0, duration);
   };
 
   const onWindowPointerMove = (e: PointerEvent) => {
@@ -137,29 +156,84 @@ export default function VideoTimeline({ duration, currentTime, start, end, onSee
     }
   };
 
-  const { majors, minors, labels } = useMemo(() => {
+  const rulerEls = useMemo(() => {
     const step = TICK_STEPS.find((candidate) => candidate * zoom >= 50) ?? TICK_STEPS[TICK_STEPS.length - 1];
     const majors: number[] = [];
     for (let value = 0; value <= duration + 1e-9; value += step) majors.push(value);
     let sub = 0;
     if ((step * zoom) / 5 >= 5) sub = step / 5;
     else if ((step * zoom) / 2 >= 5) sub = step / 2;
-    const minors: number[] = [];
+    const minorEls: ReactElement[] = [];
     if (sub > 0) {
       for (let value = 0; value <= duration + 1e-9; value += sub) {
-        if (Math.abs(value / step - Math.round(value / step)) > 1e-9) minors.push(value);
+        if (Math.abs(value / step - Math.round(value / step)) > 1e-9) {
+          minorEls.push(<RulerMinorTick key={`minor-${value}`} sx={{ left: value * zoom }} />);
+        }
       }
     }
-    const labels: { value: number; x: number; show: boolean }[] = [];
+    const majorEls: ReactElement[] = majors.map((value) => <RulerTick key={`major-${value}`} sx={{ left: value * zoom }} />);
+    const labelEls: ReactElement[] = [];
     let lastLabelX = -Infinity;
     for (const value of majors) {
       const x = value * zoom;
       const show = x - lastLabelX >= LABEL_MIN_GAP;
       if (show) lastLabelX = x;
-      labels.push({ value, x, show });
+      if (show)
+        labelEls.push(
+          <RulerLabel key={`label-${value}`} sx={{ left: x }}>
+            {formatClockTime(value)}
+          </RulerLabel>,
+        );
     }
-    return { majors, minors, labels };
+    return { minorEls, majorEls, labelEls };
   }, [duration, zoom]);
+
+  const waveformBars = useMemo(() => {
+    if (!waveform || waveform.buckets.length === 0 || duration <= 0) return [];
+    const bucketWidth = (duration * zoom) / waveform.buckets.length;
+    const barWidth = Math.max(1, bucketWidth - 1);
+    const barHeight = 52;
+    return waveform.buckets.map((b, i) => {
+      const topFraction = (1 - b.max) / 2;
+      const heightFraction = Math.max(0, b.max - b.min) / 2;
+      const height = Math.max(2, heightFraction * barHeight);
+      const top = Math.max(0, Math.min(barHeight - height, topFraction * barHeight));
+      return <WaveformBar key={i} data-testid="timeline-waveform-bar" sx={{ left: i * bucketWidth, top, width: barWidth, height }} />;
+    });
+  }, [waveform, duration, zoom]);
+
+  const thumbCells = useMemo(() => {
+    if (!thumbnails || thumbnails.count <= 0 || duration <= 0) return [];
+    const cellHeight = 52;
+    const cells: ReactElement[] = [];
+    for (let i = 0; i < thumbnails.count; i++) {
+      const col = i % thumbnails.cols;
+      const row = Math.floor(i / thumbnails.cols);
+      const left = i * thumbnails.interval * zoom;
+      const width = Math.max(1, thumbnails.interval * zoom);
+      const scaleX = width / thumbnails.thumbWidth;
+      const scaleY = cellHeight / thumbnails.thumbHeight;
+      cells.push(
+        <ThumbCell
+          key={i}
+          className={THUMB_MONTAGE_CLASS}
+          data-testid="timeline-thumb"
+          sx={{
+            left,
+            width,
+            backgroundSize: `${thumbnails.cols * thumbnails.thumbWidth * scaleX}px ${thumbnails.rows * thumbnails.thumbHeight * scaleY}px`,
+            backgroundPosition: `${-(col * thumbnails.thumbWidth * scaleX)}px ${-(row * thumbnails.thumbHeight * scaleY)}px`,
+          }}
+        />,
+      );
+    }
+    return cells;
+  }, [thumbnails, duration, zoom]);
+
+  const thumbMontageCss = useMemo(() => {
+    if (!thumbnails) return '';
+    return `.${THUMB_MONTAGE_CLASS} { background-image: url("${thumbnails.dataUrl}"); background-repeat: no-repeat; }`;
+  }, [thumbnails]);
 
   if (duration <= 0) return null;
 
@@ -173,6 +247,16 @@ export default function VideoTimeline({ duration, currentTime, start, end, onSee
         <TimelineTimeText data-testid="timeline-current-time">
           {formatClockTime(currentTime)} / {formatClockTime(duration)}
         </TimelineTimeText>
+        {waveformLoading || thumbnailsLoading ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }} role="status" aria-live="polite">
+            <CircularProgress size={14} />
+            <Typography variant="caption" color="text.secondary" data-testid="timeline-generating">
+              {t('videoCut.generatingPreview')}
+            </Typography>
+          </Box>
+        ) : (
+          <Box />
+        )}
         <Box sx={{ display: 'flex', gap: 0.25 }}>
           <ZoomButton
             size="small"
@@ -195,23 +279,38 @@ export default function VideoTimeline({ duration, currentTime, start, end, onSee
           onPointerDown={handlePointerDown}
         >
           <Ruler>
-            {minors.map((value) => (
-              <RulerMinorTick key={`minor-${value}`} sx={{ left: value * zoom }} />
-            ))}
-            {majors.map((value) => (
-              <RulerTick key={`major-${value}`} sx={{ left: value * zoom }} />
-            ))}
-            {labels.map(
-              (label) =>
-                label.show && (
-                  <RulerLabel key={`label-${label.value}`} sx={{ left: label.x }}>
-                    {formatClockTime(label.value)}
-                  </RulerLabel>
-                ),
-            )}
+            {rulerEls.minorEls}
+            {rulerEls.majorEls}
+            {rulerEls.labelEls}
           </Ruler>
           <Lane>
-            <ClipTrack />
+            <VideoTrack data-testid="timeline-video-track">
+              {thumbnailsLoading ? (
+                <Skeleton
+                  variant="rectangular"
+                  data-testid="timeline-thumb-skeleton"
+                  animation="wave"
+                  sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
+                />
+              ) : (
+                <>
+                  {thumbnails && <style>{thumbMontageCss}</style>}
+                  {thumbCells}
+                </>
+              )}
+            </VideoTrack>
+            <AudioTrack data-testid="timeline-audio-track">
+              {waveformLoading ? (
+                <Skeleton
+                  variant="rectangular"
+                  data-testid="timeline-waveform-skeleton"
+                  animation="wave"
+                  sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
+                />
+              ) : (
+                waveformBars
+              )}
+            </AudioTrack>
             <DimmedRegion sx={{ left: 0, width: startX }} />
             <KeptRegion sx={{ left: startX, width: Math.max(0, endX - startX) }} />
             <DimmedRegion sx={{ left: endX, width: Math.max(0, duration * zoom - endX) }} />

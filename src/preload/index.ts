@@ -12,6 +12,8 @@ import {
   ImageFileInfo,
   LogEntry,
   EncoderCapabilities,
+  WaveformData,
+  ThumbnailStrip,
 } from '../shared/types';
 
 const log = new Logger('preload');
@@ -102,6 +104,14 @@ const api = {
   },
   playerGetFrame: () => {
     return ipcRenderer.invoke(IPC.PLAYER_GET_FRAME) as Promise<PlayerFrame | null>;
+  },
+  extractWaveform: (filePath: string, duration: number) => {
+    log.info('extractWaveform:', filePath, 'duration:', duration);
+    return ipcRenderer.invoke(IPC.EXTRACT_WAVEFORM, filePath, duration) as Promise<WaveformData | null>;
+  },
+  extractThumbnails: (filePath: string, duration: number) => {
+    log.info('extractThumbnails:', filePath, 'duration:', duration);
+    return ipcRenderer.invoke(IPC.EXTRACT_THUMBNAILS, filePath, duration) as Promise<ThumbnailStrip | null>;
   },
 
   windowMinimize: () => {

@@ -226,6 +226,7 @@
     "endTime": "終了時間 (HH:MM:SS)",
     "useDuration": "終了時間の代わりに再生時間を使用",
     "cut": "動画をカット",
+    "generatingPreview": "プレビューを生成中...",
     "cutting": "カット中...",
     "placeholderOutput": "出力パス",
     "placeholderStart": "00:00:00",

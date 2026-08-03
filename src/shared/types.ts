@@ -125,6 +125,22 @@ export interface PlayerAudioChunk {
   generation: number;
 }
 
+export interface WaveformData {
+  sampleRate: number;
+  samplesPerBucket: number;
+  buckets: Array<{ min: number; max: number }>;
+}
+
+export interface ThumbnailStrip {
+  dataUrl: string;
+  cols: number;
+  rows: number;
+  thumbWidth: number;
+  thumbHeight: number;
+  interval: number;
+  count: number;
+}
+
 export enum ConversionOperation {
   Transcode = 'transcode',
   ExtractAudio = 'extract_audio',

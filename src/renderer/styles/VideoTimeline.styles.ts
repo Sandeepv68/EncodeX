@@ -83,7 +83,7 @@ export const RulerLabel = styled(Typography)(({ theme }) => ({
 
 export const Lane = styled(Box)(({ theme }) => ({
   position: 'relative',
-  height: 72,
+  height: 116,
   backgroundColor: theme.palette.mode === 'light' ? '#ececf0' : '#15151a',
 }));
 
@@ -97,6 +97,41 @@ export const ClipTrack = styled(Box)({
   opacity: 0.3,
   borderRadius: 3,
   pointerEvents: 'none',
+});
+
+export const VideoTrack = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  height: 56,
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  zIndex: 0,
+  pointerEvents: 'none',
+}));
+
+export const AudioTrack = styled(Box)({
+  position: 'absolute',
+  top: 56,
+  left: 0,
+  right: 0,
+  height: 60,
+  zIndex: 0,
+  pointerEvents: 'none',
+});
+
+export const ThumbCell = styled(Box)({
+  position: 'absolute',
+  top: 2,
+  bottom: 2,
+  backgroundRepeat: 'no-repeat',
+});
+
+export const WaveformBar = styled(Box)({
+  position: 'absolute',
+  backgroundColor: COLORS.primary,
+  borderRadius: 1,
+  opacity: 0.75,
 });
 
 export const KeptRegion = styled(Box)({

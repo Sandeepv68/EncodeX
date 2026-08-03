@@ -226,6 +226,7 @@
     "endTime": "Waktu Selesai (HH:MM:SS)",
     "useDuration": "Gunakan durasi sebagai pengganti waktu selesai",
     "cut": "Potong Video",
+    "generatingPreview": "Membuat pratinjau...",
     "cutting": "Memotong...",
     "placeholderOutput": "jalur output",
     "placeholderStart": "00:00:00",

@@ -51,7 +51,7 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
       this.isDestroyed = vi.fn(() => false);
       this.show = vi.fn();
       this.close = vi.fn();
-      this.webContents = { send: vi.fn(), openDevTools: vi.fn() };
+      this.webContents = { send: vi.fn(), openDevTools: vi.fn(), on: vi.fn() };
       this.on = vi.fn();
       windowInstances.push(this as never);
     });

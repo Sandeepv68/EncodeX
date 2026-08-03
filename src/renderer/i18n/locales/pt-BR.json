@@ -226,6 +226,7 @@
     "endTime": "Hora de Término (HH:MM:SS)",
     "useDuration": "Usar duração em vez de hora de término",
     "cut": "Cortar Vídeo",
+    "generatingPreview": "Gerando visualização...",
     "cutting": "Cortando...",
     "placeholderOutput": "caminho de saída",
     "placeholderStart": "00:00:00",

@@ -235,6 +235,7 @@
     "useDuration": "Use duration instead of end time",
     "useDurationHint": "Switch between an end time and a duration for the cut segment.",
     "cut": "Cut Video",
+    "generatingPreview": "Generating preview...",
     "cutting": "Cutting...",
     "cutHint": "Start cutting the video using the configured start and end positions.",
     "pause": "Pause",

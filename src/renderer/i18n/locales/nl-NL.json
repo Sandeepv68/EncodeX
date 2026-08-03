@@ -226,6 +226,7 @@
     "endTime": "Eindtijd (HH:MM:SS)",
     "useDuration": "Duur gebruiken in plaats van eindtijd",
     "cut": "Video knippen",
+    "generatingPreview": "Voorbeeld wordt gegenereerd...",
     "cutting": "Bezig met knippen...",
     "placeholderOutput": "uitvoerpad",
     "placeholderStart": "00:00:00",

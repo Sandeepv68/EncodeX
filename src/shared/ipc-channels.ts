@@ -21,6 +21,8 @@ export const IPC = {
   PLAYER_CLOSE: 'player-close',
   PLAYER_GET_FRAME: 'player-get-frame',
   PLAYER_AUDIO: 'player-audio',
+  EXTRACT_WAVEFORM: 'extract-waveform',
+  EXTRACT_THUMBNAILS: 'extract-thumbnails',
 
   WINDOW_MINIMIZE: 'window-minimize',
   WINDOW_MAXIMIZE_TOGGLE: 'window-maximize-toggle',

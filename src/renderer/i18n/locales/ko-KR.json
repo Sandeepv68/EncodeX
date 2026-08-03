@@ -226,6 +226,7 @@
     "endTime": "종료 시간 (HH:MM:SS)",
     "useDuration": "종료 시간 대신 재생 시간 사용",
     "cut": "비디오 자르기",
+    "generatingPreview": "미리보기 생성 중...",
     "cutting": "자르는 중...",
     "placeholderOutput": "출력 경로",
     "placeholderStart": "00:00:00",

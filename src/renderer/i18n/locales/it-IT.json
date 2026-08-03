@@ -226,6 +226,7 @@
     "endTime": "Ora di fine (HH:MM:SS)",
     "useDuration": "Usa durata invece dell'ora di fine",
     "cut": "Taglia video",
+    "generatingPreview": "Generazione anteprima...",
     "cutting": "Taglio in corso...",
     "placeholderOutput": "percorso di output",
     "placeholderStart": "00:00:00",
