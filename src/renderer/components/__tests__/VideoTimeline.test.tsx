@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { useState } from 'react';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import VideoTimeline from '../VideoTimeline';
 import { TIMELINE_LAYOUT } from '../../styles/VideoTimeline.styles';
@@ -33,6 +34,62 @@ describe('VideoTimeline', () => {
     expect(screen.getByTestId('timeline-end-handle')).toBeInTheDocument();
     expect(screen.getByTestId('timeline-playhead')).toBeInTheDocument();
     expect(screen.getByTestId('timeline-current-time')).toHaveTextContent('00:00:10 / 00:01:00');
+  });
+
+  it('renders start and end time bubbles on the ruler aligned with the trim markers', () => {
+    render(
+      <VideoTimeline duration={60} currentTime={0} start={5} end={50} onSeek={vi.fn()} onStartChange={vi.fn()} onEndChange={vi.fn()} />,
+    );
+    const startBubble = screen.getByTestId('timeline-start-time');
+    const endBubble = screen.getByTestId('timeline-end-time');
+    expect(startBubble).toHaveTextContent('00:00:05');
+    expect(endBubble).toHaveTextContent('00:00:50');
+    expect(startBubble).toHaveStyle({ left: '50px' });
+    expect(endBubble).toHaveStyle({ left: '500px' });
+    expect(startBubble).toHaveStyle({ transform: 'translateX(-50%)' });
+  });
+
+  it('slides the bubbles as the trim markers move', () => {
+    const onStartChange = vi.fn();
+    const onEndChange = vi.fn();
+    function Harness() {
+      const [start, setStart] = useState(5);
+      const [end, setEnd] = useState(50);
+      return (
+        <VideoTimeline
+          duration={60}
+          currentTime={0}
+          start={start}
+          end={end}
+          onSeek={vi.fn()}
+          onStartChange={(v) => {
+            setStart(v);
+            onStartChange(v);
+          }}
+          onEndChange={(v) => {
+            setEnd(v);
+            onEndChange(v);
+          }}
+        />
+      );
+    }
+    render(<Harness />);
+    const scroller = screen.getByTestId('timeline-scroller');
+    mockRect(scroller, 0, 600);
+
+    const startHandle = screen.getByTestId('timeline-start-handle');
+    fireEvent.pointerDown(startHandle, { clientX: 50 });
+    fireEvent.pointerMove(window, { clientX: 200 });
+    fireEvent.pointerUp(window);
+    expect(screen.getByTestId('timeline-start-time')).toHaveTextContent('00:00:20');
+    expect(screen.getByTestId('timeline-start-time')).toHaveStyle({ left: '200px' });
+
+    const endHandle = screen.getByTestId('timeline-end-handle');
+    fireEvent.pointerDown(endHandle, { clientX: 500 });
+    fireEvent.pointerMove(window, { clientX: 400 });
+    fireEvent.pointerUp(window);
+    expect(screen.getByTestId('timeline-end-time')).toHaveTextContent('00:00:40');
+    expect(screen.getByTestId('timeline-end-time')).toHaveStyle({ left: '400px' });
   });
 
   it('renders nothing when the duration is unknown', () => {

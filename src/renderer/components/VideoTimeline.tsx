@@ -16,6 +16,7 @@ import {
   RulerTick,
   RulerMinorTick,
   RulerLabel,
+  MarkerBubble,
   Lane,
   VideoTrack,
   AudioTrack,
@@ -402,6 +403,12 @@ export default function VideoTimeline({
               {rulerEls.minorEls}
               {rulerEls.majorEls}
               {rulerEls.labelEls}
+              <MarkerBubble data-testid="timeline-start-time" sx={{ left: startX }}>
+                {formatClockTime(start)}
+              </MarkerBubble>
+              <MarkerBubble data-testid="timeline-end-time" sx={{ left: endX }}>
+                {formatClockTime(end)}
+              </MarkerBubble>
             </Ruler>
             <Lane>
               <VideoTrack data-testid="timeline-video-track">
