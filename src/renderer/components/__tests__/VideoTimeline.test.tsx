@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import VideoTimeline from '../VideoTimeline';
+import { TIMELINE_LAYOUT } from '../../styles/VideoTimeline.styles';
 
 function mockRect(el: HTMLElement, left: number, width: number) {
   Object.defineProperty(el, 'getBoundingClientRect', {
@@ -194,6 +195,46 @@ describe('VideoTimeline', () => {
     );
     expect(screen.getByTestId('timeline-audio-track')).toBeInTheDocument();
     expect(screen.getAllByTestId('timeline-waveform-bar')).toHaveLength(2);
+  });
+
+  it('vertically aligns the waveform and thumbnail strips within their tracks', () => {
+    render(
+      <VideoTimeline
+        duration={30}
+        currentTime={0}
+        start={5}
+        end={50}
+        waveform={{
+          sampleRate: 8000,
+          samplesPerBucket: 1000,
+          buckets: [{ min: -1, max: 1 }],
+        }}
+        thumbnails={{
+          dataUrl: 'data:image/png;base64,AAAA',
+          cols: 2,
+          rows: 2,
+          thumbWidth: 160,
+          thumbHeight: 90,
+          interval: 7.5,
+          count: 1,
+        }}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    const bar = screen.getAllByTestId('timeline-waveform-bar')[0];
+    const cell = screen.getAllByTestId('timeline-thumb')[0];
+    expect(bar).toHaveStyle({ top: '2px', height: `${TIMELINE_LAYOUT.TRACK_CONTENT_HEIGHT}px` });
+    expect(cell).toHaveStyle({ top: '2px' });
+    expect(TIMELINE_LAYOUT.TRACK_CONTENT_HEIGHT + TIMELINE_LAYOUT.TRACK_CONTENT_TOP * 2).toBe(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT);
+    expect(TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT).toBe(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT);
+    const kept = screen.getByTestId('timeline-kept-region');
+    const dimmed = screen.getAllByTestId('timeline-dimmed-region');
+    expect(kept).toHaveStyle({ top: '2px', bottom: '2px' });
+    for (const region of dimmed) {
+      expect(region).toHaveStyle({ top: '2px', bottom: '2px' });
+    }
   });
 
   it('renders a video thumbnails track when thumbnail data is provided', () => {

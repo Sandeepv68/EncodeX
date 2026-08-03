@@ -24,6 +24,7 @@ import {
   TrimHandle,
   PlayheadLine,
   PlayheadHead,
+  TIMELINE_LAYOUT,
 } from '../styles/VideoTimeline.styles';
 import { formatClockTime } from '../utils/formatters';
 import { WaveformData, ThumbnailStrip } from '../../shared/types';
@@ -232,7 +233,8 @@ export default function VideoTimeline({
     if (!waveform || waveform.buckets.length === 0 || duration <= 0) return [];
     const bucketWidth = (duration * zoom) / waveform.buckets.length;
     const barWidth = Math.max(1, bucketWidth - 1);
-    const barHeight = 52;
+    const barHeight = TIMELINE_LAYOUT.TRACK_CONTENT_HEIGHT;
+    const envelopeTop = TIMELINE_LAYOUT.TRACK_CONTENT_TOP;
     const virtualize = viewState.viewportWidth > 0;
     const bucketsPerSec = waveform.buckets.length / duration;
     const margin = virtualize ? viewState.viewportWidth / zoom / 2 : 0;
@@ -246,7 +248,7 @@ export default function VideoTimeline({
       const topFraction = (1 - b.max) / 2;
       const heightFraction = Math.max(0, b.max - b.min) / 2;
       const height = Math.max(2, heightFraction * barHeight);
-      const top = Math.max(0, Math.min(barHeight - height, topFraction * barHeight));
+      const top = Math.max(envelopeTop, Math.min(envelopeTop + barHeight - height, envelopeTop + topFraction * barHeight));
       bars.push(<WaveformBar key={i} data-testid="timeline-waveform-bar" sx={{ left: i * bucketWidth, top, width: barWidth, height }} />);
     }
     return bars;
@@ -254,7 +256,7 @@ export default function VideoTimeline({
 
   const thumbCells = useMemo(() => {
     if (!thumbnails || thumbnails.count <= 0 || duration <= 0) return [];
-    const cellHeight = 52;
+    const cellHeight = TIMELINE_LAYOUT.TRACK_CONTENT_HEIGHT;
     const virtualize = viewState.viewportWidth > 0;
     const margin = virtualize ? viewState.viewportWidth / zoom / 2 : 0;
     const startTime = Math.max(0, viewState.scrollLeft / zoom - margin);
@@ -367,9 +369,9 @@ export default function VideoTimeline({
                 waveformBars
               )}
             </AudioTrack>
-            <DimmedRegion sx={{ left: 0, width: startX }} />
-            <KeptRegion sx={{ left: startX, width: Math.max(0, endX - startX) }} />
-            <DimmedRegion sx={{ left: endX, width: Math.max(0, duration * zoom - endX) }} />
+            <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: 0, width: startX }} />
+            <KeptRegion data-testid="timeline-kept-region" sx={{ left: startX, width: Math.max(0, endX - startX) }} />
+            <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: endX, width: Math.max(0, duration * zoom - endX) }} />
             <TrimHandle data-kind="start" data-testid="timeline-start-handle" sx={{ left: startX }} />
             <TrimHandle data-kind="end" data-testid="timeline-end-handle" sx={{ left: endX }} />
           </Lane>

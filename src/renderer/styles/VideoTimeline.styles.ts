@@ -2,6 +2,14 @@ import { alpha, styled } from '@mui/material/styles';
 import { Box, IconButton, Typography } from '@mui/material';
 import { COLORS } from '../colors';
 
+export const TIMELINE_LAYOUT = {
+  RULER_HEIGHT: 32,
+  VIDEO_TRACK_HEIGHT: 84,
+  AUDIO_TRACK_HEIGHT: 84,
+  TRACK_CONTENT_HEIGHT: 80,
+  TRACK_CONTENT_TOP: 2,
+} as const;
+
 export const TimelineRoot = styled(Box)(({ theme }) => ({
   borderRadius: (theme.shape.borderRadius as number) * 1.5,
   border: `1px solid ${theme.palette.divider}`,
@@ -47,7 +55,7 @@ export const Scroller = styled(Box)({
 
 export const Ruler = styled(Box)(({ theme }) => ({
   position: 'relative',
-  height: 32,
+  height: TIMELINE_LAYOUT.RULER_HEIGHT,
   backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : '#141414',
   borderBottom: `1px solid ${theme.palette.divider}`,
 }));
@@ -83,8 +91,7 @@ export const RulerLabel = styled(Typography)(({ theme }) => ({
 
 export const Lane = styled(Box)(({ theme }) => ({
   position: 'relative',
-  height: 116,
-  backgroundColor: theme.palette.mode === 'light' ? '#ececf0' : '#15151a',
+  height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT + TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
 }));
 
 export const ClipTrack = styled(Box)({
@@ -104,7 +111,7 @@ export const VideoTrack = styled(Box)(({ theme }) => ({
   top: 0,
   left: 0,
   right: 0,
-  height: 56,
+  height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT,
   borderBottom: `1px solid ${theme.palette.divider}`,
   zIndex: 0,
   pointerEvents: 'none',
@@ -112,18 +119,18 @@ export const VideoTrack = styled(Box)(({ theme }) => ({
 
 export const AudioTrack = styled(Box)({
   position: 'absolute',
-  top: 56,
+  top: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT,
   left: 0,
   right: 0,
-  height: 60,
+  height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
   zIndex: 0,
   pointerEvents: 'none',
 });
 
 export const ThumbCell = styled(Box)({
   position: 'absolute',
-  top: 2,
-  bottom: 2,
+  top: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
+  bottom: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
   backgroundRepeat: 'no-repeat',
 });
 
@@ -136,21 +143,21 @@ export const WaveformBar = styled(Box)({
 
 export const KeptRegion = styled(Box)({
   position: 'absolute',
-  top: 10,
-  bottom: 10,
+  top: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
+  bottom: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
   backgroundColor: COLORS.primary,
   borderLeft: `2px solid ${COLORS.success}`,
   borderRight: `2px solid ${COLORS.error}`,
   borderRadius: 3,
   zIndex: 2,
   pointerEvents: 'none',
+  opacity: 0.5,
 });
 
 export const DimmedRegion = styled(Box)({
   position: 'absolute',
-  top: 10,
-  bottom: 10,
-  backgroundColor: 'rgba(0, 0, 0, 0.45)',
+  top: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
+  bottom: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
   zIndex: 1,
   pointerEvents: 'none',
 });
