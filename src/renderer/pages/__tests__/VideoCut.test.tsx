@@ -189,6 +189,70 @@ describe('VideoCut', () => {
     expect(screen.getByPlaceholderText('videoCut.placeholderEnd')).toHaveValue('');
   });
 
+  it('shows live progress while cutting and hides it when the job completes', async () => {
+    let resolveConvert: (value?: unknown) => void = () => {};
+    let progressCb:
+      | ((data: { input: string; output: string; progress: { percent: number; time: string; speed: string; eta: string } }) => void)
+      | undefined;
+    vi.mocked(window.electronAPI.onConversionProgress).mockImplementation((cb) => {
+      progressCb = cb;
+      return vi.fn();
+    });
+    convertFileMock.mockReturnValue(new Promise((resolve) => (resolveConvert = resolve)));
+    renderPage();
+    await selectVideo();
+    fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/cut.mp4' } });
+    fireEvent.click(screen.getByText('videoCut.cut'));
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+    expect(screen.getByText('videoCut.cutting')).toBeInTheDocument();
+    act(() => {
+      progressCb?.({
+        input: '/in/video.mp4',
+        output: '/out/cut.mp4',
+        progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5' },
+      });
+    });
+    expect(screen.getByText('42.0%')).toBeInTheDocument();
+    await act(async () => {
+      resolveConvert();
+    });
+    expect(screen.queryByText('42.0%')).not.toBeInTheDocument();
+    expect(screen.queryByText('100.0%')).not.toBeInTheDocument();
+  });
+
+  it('hides the progress bar when the cut is cancelled', async () => {
+    let resolveConvert: (value?: unknown) => void = () => {};
+    let progressCb:
+      | ((data: { input: string; output: string; progress: { percent: number; time: string; speed: string; eta: string } }) => void)
+      | undefined;
+    vi.mocked(window.electronAPI.onConversionProgress).mockImplementation((cb) => {
+      progressCb = cb;
+      return vi.fn();
+    });
+    convertFileMock.mockReturnValue(new Promise((resolve) => (resolveConvert = resolve)));
+    renderPage();
+    await selectVideo();
+    fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/cut.mp4' } });
+    fireEvent.click(screen.getByText('videoCut.cut'));
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+    act(() => {
+      progressCb?.({
+        input: '/in/video.mp4',
+        output: '/out/cut.mp4',
+        progress: { percent: 60, time: '00:00:02', speed: '1x', eta: '2' },
+      });
+    });
+    expect(screen.getByText('60.0%')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('videoCut.cancel'));
+    fireEvent.click(screen.getByText('videoCut.yes'));
+    await waitFor(() => expect(cancelConversionMock).toHaveBeenCalledOnce());
+    await act(async () => {
+      resolveConvert();
+    });
+    expect(screen.queryByText('60.0%')).not.toBeInTheDocument();
+    expect(screen.queryByText('100.0%')).not.toBeInTheDocument();
+  });
+
   it('shows pause and cancel buttons while cutting and supports pausing', async () => {
     const convert = deferred<undefined>();
     convertFileMock.mockReturnValue(convert.promise);

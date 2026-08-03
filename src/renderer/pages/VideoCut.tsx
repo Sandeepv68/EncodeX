@@ -294,7 +294,7 @@ export default function VideoCut() {
         )}
       </Stack>
 
-      {progress && (
+      {progress && isConverting && (
         <ErrorBoundary fallback={null}>
           <ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} paused={isPaused} />
         </ErrorBoundary>
