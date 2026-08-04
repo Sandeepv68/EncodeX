@@ -108,7 +108,7 @@ export const RulerLabel = styled(Typography)(({ theme }) => ({
 }));
 
 export const MarkerBubble = styled(Box)(({ theme }) => {
-  const bg = theme.palette.mode === 'light' ? 'rgba(97, 97, 97, 0.92)' : 'rgba(97, 97, 97, 0.9)';
+  const bg = theme.palette.mode === 'light' ? 'rgb(0 0 0 / 66%)' : 'rgba(97, 97, 97, 0.9)';
   return {
     position: 'absolute',
     bottom: -3,
@@ -190,7 +190,7 @@ export const KeptRegion = styled(Box)({
   borderLeft: `2px solid ${COLORS.success}`,
   borderRight: `2px solid ${COLORS.error}`,
   borderRadius: 3,
-  zIndex: 2,
+  zIndex: 3,
   pointerEvents: 'none',
   opacity: 0.5,
 });
@@ -226,6 +226,38 @@ export const TrimHandle = styled(Box)(({ theme }) => ({
     borderRadius: 1,
   },
 }));
+
+export const TrackBubbleAnchor = styled(Box)({
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  pointerEvents: 'none',
+  zIndex: 2,
+});
+
+export const TrackInfoBubble = styled(Box)(({ theme }) => {
+  const bg = theme.palette.mode === 'light' ? 'rgb(0 0 0 / 66%)' : 'rgba(33, 33, 33, 0.95)';
+  return {
+    position: 'sticky',
+    top: 0,
+    left: 0,
+    width: 'max-content',
+    maxWidth: 'min(60vw, 480px)',
+    backgroundColor: bg,
+    color: '#fff',
+    fontSize: 11,
+    lineHeight: 1.3,
+    padding: theme.spacing(0.5, 1),
+    borderBottomRightRadius: '6px',
+    boxShadow: theme.shadows[2],
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    pointerEvents: 'none',
+    zIndex: 2,
+    transition: 'opacity 120ms ease',
+  };
+});
 
 export const PlayheadLine = styled(Box)({
   position: 'absolute',

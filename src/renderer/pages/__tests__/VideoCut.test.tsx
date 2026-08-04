@@ -321,6 +321,25 @@ describe('VideoCut', () => {
     expect(screen.getAllByTestId('timeline-thumb')).toHaveLength(2);
   });
 
+  it('shows stream details in the timeline tooltip when hovering a track', async () => {
+    getMediaInfoMock.mockResolvedValue({
+      file: 'v.mp4',
+      format: 'mp4',
+      size: 0,
+      duration: 60,
+      bitrate: '5000000',
+      streams: [
+        { index: 0, type: 'video', codec: 'h264', title: 'Main', width: 1920, height: 1080, bitrate: '4500000' },
+        { index: 1, type: 'audio', codec: 'aac', channelLayout: 'stereo', sampleRate: 48000, bitrate: '128000' },
+      ],
+    });
+    renderPage();
+    await selectVideo();
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledWith('/in/video.mp4', 'FFMPEG'));
+    expect(screen.getByTestId('timeline-video-tooltip')).toHaveTextContent('Main · h264 · 1920×1080 · 4.5 Mbps');
+    expect(screen.getByTestId('timeline-audio-tooltip')).toHaveTextContent('aac · stereo · 48 kHz · 128 kbps');
+  });
+
   it('shows live progress while cutting and hides it when the job completes', async () => {
     let resolveConvert: (value?: unknown) => void = () => {};
     let progressCb:

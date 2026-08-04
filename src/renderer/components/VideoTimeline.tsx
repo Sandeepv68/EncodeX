@@ -27,10 +27,12 @@ import {
   TrimHandle,
   PlayheadLine,
   PlayheadHead,
+  TrackBubbleAnchor,
+  TrackInfoBubble,
   TIMELINE_LAYOUT,
 } from '../styles/VideoTimeline.styles';
-import { formatClockTime } from '../utils/formatters';
-import { WaveformData, ThumbnailStrip } from '../../shared/types';
+import { formatClockTime, formatStreamSummary } from '../utils/formatters';
+import { MediaStreamInfo, ThumbnailStrip, WaveformData } from '../../shared/types';
 
 const DEFAULT_TIMELINE_WIDTH = 600;
 const MIN_ZOOM = 2;
@@ -52,6 +54,8 @@ interface Props {
   waveformLoading?: boolean;
   thumbnailsLoading?: boolean;
   audioEnabled?: boolean;
+  videoStream?: MediaStreamInfo | null;
+  audioStream?: MediaStreamInfo | null;
   onSeek: (time: number) => void;
   onStartChange: (time: number) => void;
   onEndChange: (time: number) => void;
@@ -78,6 +82,8 @@ export default function VideoTimeline({
   waveformLoading = false,
   thumbnailsLoading = false,
   audioEnabled = true,
+  videoStream = null,
+  audioStream = null,
   onSeek,
   onStartChange,
   onEndChange,
@@ -441,6 +447,16 @@ export default function VideoTimeline({
               <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: 0, width: startX }} />
               <KeptRegion data-testid="timeline-kept-region" sx={{ left: startX, width: Math.max(0, endX - startX) }} />
               <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: endX, width: Math.max(0, duration * zoom - endX) }} />
+              {videoStream && (
+                <TrackBubbleAnchor sx={{ top: 0, height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT, pt: '2px' }}>
+                  <TrackInfoBubble data-testid="timeline-video-tooltip">{formatStreamSummary(videoStream)}</TrackInfoBubble>
+                </TrackBubbleAnchor>
+              )}
+              {audioStream && (
+                <TrackBubbleAnchor sx={{ top: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT, height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT, pt: '2px' }}>
+                  <TrackInfoBubble data-testid="timeline-audio-tooltip">{formatStreamSummary(audioStream)}</TrackInfoBubble>
+                </TrackBubbleAnchor>
+              )}
               <TrimHandle data-kind="start" data-testid="timeline-start-handle" sx={{ left: startX }} />
               <TrimHandle data-kind="end" data-testid="timeline-end-handle" sx={{ left: endX }} />
             </Lane>

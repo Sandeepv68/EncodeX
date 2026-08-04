@@ -451,4 +451,50 @@ describe('VideoTimeline', () => {
     fireEvent.click(screen.getByLabelText('videoTimeline.zoomOut'));
     expect(scroller.style.width).toBe('600px');
   });
+
+  it('always shows a one-line video stream bubble pinned to the top-left of the video track', () => {
+    render(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={0}
+        end={60}
+        videoStream={{ index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080, bitrate: '4500000' }}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    const bubble = screen.getByTestId('timeline-video-tooltip');
+    expect(bubble).toHaveTextContent('h264 · 1920×1080 · 4.5 Mbps');
+    expect(bubble).toHaveStyle({ position: 'sticky', left: '2px' });
+    expect(bubble.parentElement).toHaveStyle({ top: '0px', paddingTop: '2px' });
+  });
+
+  it('always shows a one-line audio stream bubble pinned to the top-left of the audio track', () => {
+    render(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={0}
+        end={60}
+        audioStream={{ index: 1, type: 'audio', codec: 'aac', channels: 2, channelLayout: 'stereo', sampleRate: 48000, bitrate: '128000' }}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    const bubble = screen.getByTestId('timeline-audio-tooltip');
+    expect(bubble).toHaveTextContent('aac · stereo · 48 kHz · 128 kbps');
+    expect(bubble).toHaveStyle({ position: 'sticky', left: '2px' });
+    expect(bubble.parentElement).toHaveStyle({ top: `${TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT}px`, paddingTop: '2px' });
+  });
+
+  it('renders no stream bubble when no stream info is provided', () => {
+    render(
+      <VideoTimeline duration={60} currentTime={0} start={0} end={60} onSeek={vi.fn()} onStartChange={vi.fn()} onEndChange={vi.fn()} />,
+    );
+    expect(screen.queryByTestId('timeline-video-tooltip')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('timeline-audio-tooltip')).not.toBeInTheDocument();
+  });
 });
