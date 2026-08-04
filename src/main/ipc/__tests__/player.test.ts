@@ -8,6 +8,7 @@ interface DecoderLike extends EventEmitter {
   seek: ReturnType<typeof vi.fn>;
   close: ReturnType<typeof vi.fn>;
   getGeneration: ReturnType<typeof vi.fn>;
+  setAudioPaused: ReturnType<typeof vi.fn>;
 }
 
 const { ipcMainMock, getHandlers, frameDecoderInstances, FfmpegCoreMock, getInfoMock } = vi.hoisted(() => {
@@ -20,6 +21,9 @@ const { ipcMainMock, getHandlers, frameDecoderInstances, FfmpegCoreMock, getInfo
   return {
     ipcMainMock: {
       handle: vi.fn((channel: string, fn: (...args: unknown[]) => unknown) => {
+        handlers[channel] = fn;
+      }),
+      on: vi.fn((channel: string, fn: (...args: unknown[]) => unknown) => {
         handlers[channel] = fn;
       }),
     },
@@ -40,12 +44,14 @@ vi.mock('../../player/frame-decoder', () => {
       seek: ReturnType<typeof vi.fn>;
       close: ReturnType<typeof vi.fn>;
       getGeneration: ReturnType<typeof vi.fn>;
+      setAudioPaused: ReturnType<typeof vi.fn>;
       constructor() {
         super();
         this.open = vi.fn();
         this.seek = vi.fn();
         this.close = vi.fn();
         this.getGeneration = vi.fn(() => 7);
+        this.setAudioPaused = vi.fn();
         frameDecoderInstances.push(this);
       }
     },
@@ -84,6 +90,32 @@ describe('registerPlayerHandlers', () => {
     });
     await getHandlers()[IPC.PLAYER_OPEN]({}, 'v.mp4');
     expect(decoder.open).toHaveBeenCalledWith('v.mp4', 1280, 720);
+  });
+
+  it('PLAYER_OPEN caps the decode resolution to keep playback smooth', async () => {
+    getInfoMock.mockResolvedValueOnce({
+      file: 'v.mp4',
+      format: 'mp4',
+      size: 1,
+      duration: 10,
+      bitrate: '1',
+      streams: [{ type: 'video', width: 3840, height: 2160 }],
+    });
+    await getHandlers()[IPC.PLAYER_OPEN]({}, 'v.mp4');
+    expect(decoder.open).toHaveBeenCalledWith('v.mp4', 1280, 720);
+  });
+
+  it('PLAYER_OPEN keeps sub-cap resolutions unchanged', async () => {
+    getInfoMock.mockResolvedValueOnce({
+      file: 'v.mp4',
+      format: 'mp4',
+      size: 1,
+      duration: 10,
+      bitrate: '1',
+      streams: [{ type: 'video', width: 640, height: 360 }],
+    });
+    await getHandlers()[IPC.PLAYER_OPEN]({}, 'v.mp4');
+    expect(decoder.open).toHaveBeenCalledWith('v.mp4', 640, 360);
   });
 
   it('PLAYER_OPEN passes the audio stream config when present', async () => {

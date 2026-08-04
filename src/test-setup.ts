@@ -61,6 +61,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     playerSeek: vi.fn().mockResolvedValue(undefined),
     playerClose: vi.fn().mockResolvedValue(undefined),
     playerGetFrame: vi.fn().mockResolvedValue(null),
+    setPlayerAudioFlow: vi.fn(),
     extractWaveform: vi.fn().mockResolvedValue(null),
     extractThumbnails: vi.fn().mockResolvedValue(null),
     windowMinimize: vi.fn(),

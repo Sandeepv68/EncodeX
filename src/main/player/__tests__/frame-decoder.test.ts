@@ -258,6 +258,23 @@ describe('FrameDecoder', () => {
     expect(frames).toHaveLength(1);
   });
 
+  it('assembles multiple frames from a single stdout chunk without quadratic copying', () => {
+    const frames: Array<{ pts: number }> = [];
+    decoder.on('frame', (f: DecodedFrame) => frames.push(f));
+    decoder.open('in.mp4', 2, 2);
+    const proc = spawnMock.mock.results[0].value;
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   0 pts: 0 pts_time:0.000000 ...\n'));
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   1 pts: 1 pts_time:1.000000 ...\n'));
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   2 pts: 2 pts_time:2.000000 ...\n'));
+    proc.stdout.emit('data', Buffer.alloc(30));
+    expect(frames).toHaveLength(2);
+    proc.stdout.emit('data', Buffer.alloc(6));
+    expect(frames).toHaveLength(3);
+    expect(frames[0].pts).toBe(0);
+    expect(frames[1].pts).toBe(1);
+    expect(frames[2].pts).toBe(2);
+  });
+
   it('ignores stdout data after close', () => {
     const frames: unknown[] = [];
     decoder.on('frame', (f: DecodedFrame) => frames.push(f));

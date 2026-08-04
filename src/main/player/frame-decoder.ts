@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess } from 'child_process';
+import { Readable } from 'stream';
 import ffmpegStatic from 'ffmpeg-static';
 import { existsSync } from 'fs';
 import { Logger } from '../../shared/logger';
@@ -27,6 +28,11 @@ export interface AudioDecodeConfig {
   channels: number;
 }
 
+export interface FrameDecoderOptions {
+  realtime?: boolean;
+  audioOnly?: boolean;
+}
+
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
@@ -39,75 +45,111 @@ export class FrameDecoder extends EventEmitter {
   private width = 0;
   private height = 0;
   private frameSize = 0;
-  private buffer = Buffer.alloc(0);
+  private frameParts: Buffer[] = [];
+  private framePartsLen = 0;
   private running = false;
   private inputPath = '';
   private audioSampleRate = 0;
   private audioChannels = 0;
   private generation = 0;
+  private options: Required<FrameDecoderOptions> = { realtime: true, audioOnly: false };
 
   getGeneration(): number {
     return this.generation;
   }
 
-  private spawnFfmpeg(seekTo?: string, width?: number, height?: number, audio?: AudioDecodeConfig): void {
+  setAudioPaused(paused: boolean): void {
+    if (paused) {
+      (this.process?.stdio?.[3] as Readable)?.pause();
+    } else {
+      (this.process?.stdio?.[3] as Readable)?.resume();
+    }
+  }
+
+  private spawnFfmpeg(seekTo?: string, width?: number, height?: number, audio?: AudioDecodeConfig, options?: FrameDecoderOptions): void {
     if (width !== undefined) {
       this.width = width;
       this.height = height ?? this.height;
       this.frameSize = this.width * this.height * 3;
     }
-    this.buffer = Buffer.alloc(0);
+    this.frameParts = [];
+    this.framePartsLen = 0;
     this.running = true;
     const generation = ++this.generation;
+    this.options = { realtime: true, audioOnly: false, ...options };
 
     const ffmpegPath = getFfmpegPath();
     const args: string[] = [];
     if (seekTo) {
       args.push('-ss', seekTo);
     }
-    args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.REALTIME, FFMPEG_FLAGS.INPUT, this.inputPath);
 
-    args.push('-vf', 'showinfo');
-
-    if (audio) {
-      this.audioSampleRate = audio.sampleRate;
-      this.audioChannels = audio.channels;
-      args.push(
-        '-map',
-        '0:v:0',
-        '-f',
-        FFMPEG_FLAGS.RAWVIDEO,
-        FFMPEG_FLAGS.PIX_FMT,
-        FFMPEG_FLAGS.PIX_FMT_RGB24,
-        '-s',
-        `${this.width}x${this.height}`,
-        FFMPEG_FLAGS.NO_AUDIO,
-        FFMPEG_FLAGS.NO_SUBTITLES,
-        FFMPEG_FLAGS.NO_DATA,
-        'pipe:1',
-        '-map',
-        '0:a:0',
-        '-f',
-        's16le',
-        '-ac',
-        String(audio.channels),
-        '-ar',
-        String(audio.sampleRate),
-        'pipe:3',
-      );
+    if (this.options.audioOnly) {
+      args.push(FFMPEG_FLAGS.INPUT, this.inputPath);
+      if (audio) {
+        this.audioSampleRate = audio.sampleRate;
+        this.audioChannels = audio.channels;
+        args.push(
+          '-map',
+          '0:a:0',
+          '-f',
+          's16le',
+          '-ac',
+          String(audio.channels),
+          '-ar',
+          String(audio.sampleRate),
+          'pipe:3',
+        );
+      }
     } else {
-      args.push(
-        '-f',
-        FFMPEG_FLAGS.RAWVIDEO,
-        FFMPEG_FLAGS.PIX_FMT,
-        FFMPEG_FLAGS.PIX_FMT_RGB24,
-        '-s',
-        `${this.width}x${this.height}`,
-        FFMPEG_FLAGS.NO_AUDIO,
-        FFMPEG_FLAGS.NO_SUBTITLES,
-        FFMPEG_FLAGS.NO_DATA,
-        FFMPEG_FLAGS.OUTPUT_PIPE,
-      );
+      if (this.options.realtime) {
+        args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.REALTIME, FFMPEG_FLAGS.INPUT, this.inputPath);
+      } else {
+        args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.INPUT, this.inputPath);
+      }
+
+      args.push('-vf', 'showinfo');
+
+      if (audio) {
+        this.audioSampleRate = audio.sampleRate;
+        this.audioChannels = audio.channels;
+        args.push(
+          '-map',
+          '0:v:0',
+          '-f',
+          FFMPEG_FLAGS.RAWVIDEO,
+          FFMPEG_FLAGS.PIX_FMT,
+          FFMPEG_FLAGS.PIX_FMT_RGB24,
+          '-s',
+          `${this.width}x${this.height}`,
+          FFMPEG_FLAGS.NO_AUDIO,
+          FFMPEG_FLAGS.NO_SUBTITLES,
+          FFMPEG_FLAGS.NO_DATA,
+          'pipe:1',
+          '-map',
+          '0:a:0',
+          '-f',
+          's16le',
+          '-ac',
+          String(audio.channels),
+          '-ar',
+          String(audio.sampleRate),
+          'pipe:3',
+        );
+      } else {
+        args.push(
+          '-f',
+          FFMPEG_FLAGS.RAWVIDEO,
+          FFMPEG_FLAGS.PIX_FMT,
+          FFMPEG_FLAGS.PIX_FMT_RGB24,
+          '-s',
+          `${this.width}x${this.height}`,
+          FFMPEG_FLAGS.NO_AUDIO,
+          FFMPEG_FLAGS.NO_SUBTITLES,
+          FFMPEG_FLAGS.NO_DATA,
+          FFMPEG_FLAGS.OUTPUT_PIPE,
+        );
+      }
     }
 
     log.debug('FFmpeg decoder args:', args.join(' '));
@@ -132,31 +174,46 @@ export class FrameDecoder extends EventEmitter {
       }
     };
 
-    currentProcess.stderr?.on('data', (chunk: Buffer) => {
-      if (!this.running || this.process !== currentProcess) return;
-      stderrBuf += chunk.toString('utf8');
-      const re = /pts_time:\s*([0-9]+(?:\.[0-9]+)?)/g;
-      let lastIndex = 0;
-      let match: RegExpExecArray | null;
-      while ((match = re.exec(stderrBuf)) !== null) {
-        pendingPts.push(Number(match[1]));
-        lastIndex = re.lastIndex;
-      }
-      stderrBuf = stderrBuf.slice(lastIndex);
-      emitAvailable();
-    });
+    if (!this.options.audioOnly) {
+      currentProcess.stderr?.on('data', (chunk: Buffer) => {
+        if (!this.running || this.process !== currentProcess) return;
+        stderrBuf += chunk.toString('utf8');
+        const re = /pts_time:\s*([0-9]+(?:\.[0-9]+)?)/g;
+        let lastIndex = 0;
+        let match: RegExpExecArray | null;
+        while ((match = re.exec(stderrBuf)) !== null) {
+          pendingPts.push(Number(match[1]));
+          lastIndex = re.lastIndex;
+        }
+        stderrBuf = stderrBuf.slice(lastIndex);
+        emitAvailable();
+      });
 
-    currentProcess.stdout?.on('data', (chunk: Buffer) => {
-      if (!this.running || this.process !== currentProcess) return;
-      this.buffer = Buffer.concat([this.buffer, chunk]);
+      currentProcess.stdout?.on('data', (chunk: Buffer) => {
+        if (!this.running || this.process !== currentProcess) return;
+        this.frameParts.push(chunk);
+        this.framePartsLen += chunk.length;
 
-      while (this.buffer.length >= this.frameSize) {
-        const frameData = this.buffer.subarray(0, this.frameSize);
-        this.buffer = this.buffer.subarray(this.frameSize);
-        pendingFrames.push(Buffer.from(frameData));
-      }
-      emitAvailable();
-    });
+        while (this.framePartsLen >= this.frameSize) {
+          const frameData = Buffer.alloc(this.frameSize);
+          let written = 0;
+          while (written < this.frameSize) {
+            const part = this.frameParts[0];
+            const take = Math.min(part.length, this.frameSize - written);
+            part.copy(frameData, written, 0, take);
+            written += take;
+            if (take === part.length) {
+              this.frameParts.shift();
+            } else {
+              this.frameParts[0] = part.subarray(take);
+            }
+          }
+          this.framePartsLen -= this.frameSize;
+          pendingFrames.push(frameData);
+        }
+        emitAvailable();
+      });
+    }
 
     if (audio) {
       currentProcess.stdio?.[3]?.on('data', (chunk: Buffer) => {
@@ -195,10 +252,11 @@ export class FrameDecoder extends EventEmitter {
     width: number = TRANSCODER_DEFAULTS.PLAYER_DEFAULT_WIDTH,
     height: number = TRANSCODER_DEFAULTS.PLAYER_DEFAULT_HEIGHT,
     audio?: AudioDecodeConfig,
+    options?: FrameDecoderOptions,
   ): void {
     this.close();
 
-    log.info('open:', input, 'resolution:', width, 'x', height, 'audio:', audio);
+    log.info('open:', input, 'resolution:', width, 'x', height, 'audio:', audio, 'options:', options);
     this.inputPath = input;
     this.width = width;
     this.height = height;
@@ -206,7 +264,7 @@ export class FrameDecoder extends EventEmitter {
     this.audioSampleRate = audio?.sampleRate ?? 0;
     this.audioChannels = audio?.channels ?? 0;
 
-    this.spawnFfmpeg(undefined, undefined, undefined, audio);
+    this.spawnFfmpeg(undefined, undefined, undefined, audio, options);
   }
 
   seek(seekTo: string): void {
@@ -218,6 +276,7 @@ export class FrameDecoder extends EventEmitter {
         undefined,
         undefined,
         this.audioSampleRate ? { sampleRate: this.audioSampleRate, channels: this.audioChannels } : undefined,
+        this.options,
       );
     }
     this.emit('seek', seekTo);
@@ -231,6 +290,7 @@ export class FrameDecoder extends EventEmitter {
       this.process = null;
       log.debug('Decoder process killed');
     }
-    this.buffer = Buffer.alloc(0);
+    this.frameParts = [];
+    this.framePartsLen = 0;
   }
 }

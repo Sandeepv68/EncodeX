@@ -19,8 +19,10 @@ interface Props {
   onMediaInfo?: (info: MediaInfo) => void;
 }
 
-const AUDIO_LOOKAHEAD_SECONDS = 1;
+const AUDIO_LOOKAHEAD_SECONDS = 2;
 const MAX_PENDING_AUDIO_CHUNKS = 600;
+const AUDIO_FLOW_HIGH = 300;
+const AUDIO_FLOW_LOW = 100;
 const SEEK_COALESCE_MS = 120;
 
 const MediaPlayer = memo(
@@ -48,6 +50,9 @@ const MediaPlayer = memo(
     const frameGenRef = useRef<number | null>(null);
     const audioGenRef = useRef<number | null>(null);
     const pendingSeekRef = useRef<{ time: number; timer: number | null }>({ time: 0, timer: null });
+    const audioAnchorCtxRef = useRef<number | null>(null);
+    const audioAnchorMediaRef = useRef(0);
+    const needsBaselineRef = useRef(false);
 
     const audioCtxRef = useRef<AudioContext | null>(null);
     const masterGainRef = useRef<GainNode | null>(null);
@@ -55,6 +60,7 @@ const MediaPlayer = memo(
     const pendingChunksRef = useRef<PlayerAudioChunk[]>([]);
     const activeSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
     const mutedRef = useRef(false);
+    const audioFlowPausedRef = useRef(false);
 
     const ensureAudioContext = useCallback((): AudioContext | null => {
       if (audioCtxRef.current) return audioCtxRef.current;
@@ -84,6 +90,9 @@ const MediaPlayer = memo(
         }
       });
       activeSourcesRef.current.clear();
+      audioAnchorCtxRef.current = null;
+      audioFlowPausedRef.current = false;
+      window.electronAPI.setPlayerAudioFlow(false);
       if (audioCtxRef.current) {
         audioCtxRef.current.close().catch(() => {});
         audioCtxRef.current = null;
@@ -92,10 +101,37 @@ const MediaPlayer = memo(
       nextStartTimeRef.current = 0;
     }, []);
 
+    const resetAudioScheduling = useCallback(() => {
+      activeSourcesRef.current.forEach((source) => {
+        try {
+          source.stop();
+        } catch {
+          /* already stopped */
+        }
+      });
+      activeSourcesRef.current.clear();
+      pendingChunksRef.current = [];
+      audioAnchorCtxRef.current = null;
+      audioFlowPausedRef.current = false;
+      window.electronAPI.setPlayerAudioFlow(false);
+      const ctx = audioCtxRef.current;
+      nextStartTimeRef.current = ctx ? ctx.currentTime + 0.05 : 0;
+    }, []);
+
+    const getMediaNow = useCallback((): number => {
+      const ctx = audioCtxRef.current;
+      if (ctx && ctx.state === 'running' && audioAnchorCtxRef.current !== null) {
+        return ctx.currentTime - audioAnchorCtxRef.current + audioAnchorMediaRef.current;
+      }
+      const now = typeof performance !== 'undefined' ? performance.now() : 0;
+      return playBaseTimeRef.current + (now - playStartWallRef.current) / 1000;
+    }, []);
+
     const resetPacing = useCallback((baseTime: number) => {
       playBaseTimeRef.current = baseTime;
       playStartWallRef.current = typeof performance !== 'undefined' ? performance.now() : 0;
       lastReportedTimeRef.current = -1;
+      needsBaselineRef.current = true;
     }, []);
 
     const runPlayerCommand = useCallback((command: Promise<number>) => {
@@ -117,18 +153,18 @@ const MediaPlayer = memo(
         pending.timer = null;
       }
       const time = pending.time;
-      closeAudio();
+      resetAudioScheduling();
       resetPacing(time);
       runPlayerCommand(window.electronAPI.playerSeek(formatTime(time)));
       setIsPlaying(true);
-    }, [closeAudio, resetPacing, runPlayerCommand]);
+    }, [resetAudioScheduling, resetPacing, runPlayerCommand]);
 
     const scheduleOneChunk = useCallback((chunk: PlayerAudioChunk) => {
       const ctx = audioCtxRef.current;
       if (!ctx || !masterGainRef.current) return;
 
-      if (nextStartTimeRef.current < ctx.currentTime - 0.25) {
-        nextStartTimeRef.current = ctx.currentTime + 0.05;
+      if (nextStartTimeRef.current < ctx.currentTime) {
+        nextStartTimeRef.current = ctx.currentTime;
       }
 
       const int16 = new Int16Array(chunk.data);
@@ -146,7 +182,11 @@ const MediaPlayer = memo(
       const source = ctx.createBufferSource();
       source.buffer = buffer;
       source.connect(masterGainRef.current);
-      const startAt = Math.max(nextStartTimeRef.current, ctx.currentTime + 0.05);
+      const startAt = nextStartTimeRef.current;
+      if (audioAnchorCtxRef.current === null) {
+        audioAnchorCtxRef.current = startAt;
+        audioAnchorMediaRef.current = playBaseTimeRef.current;
+      }
       source.start(startAt);
       nextStartTimeRef.current = startAt + buffer.duration;
       activeSourcesRef.current.add(source);
@@ -165,17 +205,29 @@ const MediaPlayer = memo(
       }
     }, [scheduleOneChunk]);
 
+    const updateAudioFlow = useCallback(() => {
+      const len = pendingChunksRef.current.length;
+      if (!audioFlowPausedRef.current && len >= AUDIO_FLOW_HIGH) {
+        audioFlowPausedRef.current = true;
+        window.electronAPI.setPlayerAudioFlow(true);
+      } else if (audioFlowPausedRef.current && len <= AUDIO_FLOW_LOW) {
+        audioFlowPausedRef.current = false;
+        window.electronAPI.setPlayerAudioFlow(false);
+      }
+    }, []);
+
     const queueAudioChunk = useCallback(
       (chunk: PlayerAudioChunk) => {
         const ctx = ensureAudioContext();
         if (!ctx) return;
         if (pendingChunksRef.current.length >= MAX_PENDING_AUDIO_CHUNKS) {
-          pendingChunksRef.current.shift();
+          return;
         }
         pendingChunksRef.current.push(chunk);
         drainAudioQueue();
+        updateAudioFlow();
       },
-      [ensureAudioContext, drainAudioQueue],
+      [ensureAudioContext, drainAudioQueue, updateAudioFlow],
     );
 
     useEffect(() => {
@@ -188,6 +240,7 @@ const MediaPlayer = memo(
       frameBuffer.current = [];
       displayPtsRef.current = 0;
       durationRef.current = 0;
+      needsBaselineRef.current = true;
       setCurrentTime(0);
       setIsPlaying(false);
 
@@ -256,8 +309,7 @@ const MediaPlayer = memo(
         const canvas = canvasRef.current;
         const ctx = canvas?.getContext('2d');
         if (canvas && ctx) {
-          const now = typeof performance !== 'undefined' ? performance.now() : 0;
-          const targetTime = playBaseTimeRef.current + (now - playStartWallRef.current) / 1000;
+          const targetTime = getMediaNow();
           let frame: { data: ImageData; pts: number } | null = null;
           while (frameBuffer.current.length > 0) {
             const candidate = frameBuffer.current[0];
@@ -266,6 +318,16 @@ const MediaPlayer = memo(
             frame = candidate;
           }
           if (frame) {
+            if (needsBaselineRef.current) {
+              needsBaselineRef.current = false;
+              const diff = frame.pts - playBaseTimeRef.current;
+              if (Math.abs(diff) > 0.05) {
+                playBaseTimeRef.current = frame.pts;
+                if (audioAnchorCtxRef.current !== null) {
+                  audioAnchorMediaRef.current += diff;
+                }
+              }
+            }
             if (canvas.width !== frame.data.width || canvas.height !== frame.data.height) {
               canvas.width = frame.data.width;
               canvas.height = frame.data.height;
@@ -282,7 +344,7 @@ const MediaPlayer = memo(
         }
       }
       animRef.current = requestAnimationFrame(renderLoop);
-    }, []);
+    }, [getMediaNow]);
 
     useEffect(() => {
       if (isPlaying) animRef.current = requestAnimationFrame(renderLoop);
@@ -320,7 +382,7 @@ const MediaPlayer = memo(
       isSeeking.current = false;
       resetToStartRef.current = false;
       displayPtsRef.current = time;
-      closeAudio();
+      resetAudioScheduling();
       resetPacing(time);
       runPlayerCommand(window.electronAPI.playerSeek(formatTime(time)));
       setIsPlaying(true);

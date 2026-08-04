@@ -8,8 +8,20 @@ import { IpcSender } from './send';
 
 const log = new Logger('main/ipc/player');
 
+function capResolution(width: number, height: number): { width: number; height: number } {
+  const maxWidth = TRANSCODER_DEFAULTS.PLAYER_PREVIEW_MAX_WIDTH;
+  const maxHeight = TRANSCODER_DEFAULTS.PLAYER_PREVIEW_MAX_HEIGHT;
+  if (width <= maxWidth && height <= maxHeight) return { width, height };
+  const scale = Math.min(maxWidth / width, maxHeight / height);
+  return {
+    width: Math.max(2, Math.round(width * scale) & ~1),
+    height: Math.max(2, Math.round(height * scale) & ~1),
+  };
+}
+
 export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): void {
   const decoder = new FrameDecoder();
+  const audioDecoder = new FrameDecoder();
   let decoderInput = '';
   let audioConfig: AudioDecodeConfig | null = null;
 
@@ -22,18 +34,22 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
       const audioStream = info.streams?.find((s) => s.type === 'audio');
       audioConfig = audioStream ? { sampleRate: audioStream.sampleRate ?? 48000, channels: audioStream.channels ?? 2 } : null;
       if (videoStream?.width && videoStream?.height) {
+        const { width, height } = capResolution(videoStream.width, videoStream.height);
+        decoder.open(filePath, width, height);
         if (audioConfig) {
-          decoder.open(filePath, videoStream.width, videoStream.height, audioConfig);
+          audioDecoder.open(filePath, 0, 0, audioConfig, { realtime: false, audioOnly: true });
         } else {
-          decoder.open(filePath, videoStream.width, videoStream.height);
+          audioDecoder.close();
         }
       } else {
         decoder.open(filePath);
+        audioDecoder.close();
       }
     } catch (err: unknown) {
       log.error('PLAYER_OPEN failed, falling back to default resolution:', err);
       audioConfig = null;
       decoder.open(filePath);
+      audioDecoder.close();
     }
     return decoder.getGeneration();
   });
@@ -41,12 +57,18 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
   ipcMain.handle(IPC.PLAYER_SEEK, async (_event, time: string) => {
     log.debug('PLAYER_SEEK:', time);
     decoder.seek(time);
+    audioDecoder.seek(time);
     return decoder.getGeneration();
   });
 
   ipcMain.handle(IPC.PLAYER_CLOSE, async () => {
     log.debug('PLAYER_CLOSE');
     decoder.close();
+    audioDecoder.close();
+  });
+
+  ipcMain.on(IPC.PLAYER_AUDIO_FLOW, (_event, paused: boolean) => {
+    audioDecoder.setAudioPaused(!!paused);
   });
 
   ipcMain.handle(IPC.PLAYER_GET_FRAME, async () => {
@@ -73,13 +95,13 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
     });
   });
 
-  decoder.on('audio', (chunk: { buffer: Buffer; sampleRate: number; channels: number; generation: number }) => {
+  audioDecoder.on('audio', (chunk: { buffer: Buffer; sampleRate: number; channels: number; generation: number }) => {
     if (!audioConfig) return;
     send(IPC.PLAYER_AUDIO, {
       data: chunk.buffer.buffer,
       sampleRate: chunk.sampleRate,
       channels: chunk.channels,
-      generation: chunk.generation,
+      generation: decoder.getGeneration(),
     });
   });
 }

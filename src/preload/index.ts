@@ -102,6 +102,9 @@ const api = {
     log.debug('playerClose called');
     return ipcRenderer.invoke(IPC.PLAYER_CLOSE) as Promise<void>;
   },
+  setPlayerAudioFlow: (paused: boolean) => {
+    ipcRenderer.send(IPC.PLAYER_AUDIO_FLOW, paused);
+  },
   playerGetFrame: () => {
     return ipcRenderer.invoke(IPC.PLAYER_GET_FRAME) as Promise<PlayerFrame | null>;
   },
