@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "Inzoomen",
-    "zoomOut": "Uitzoomen"
+    "zoomOut": "Uitzoomen",
+    "videoTrack": "Videospoor",
+    "audioTrack": "Audiospoor",
+    "audioEnabled": "Audio opnemen",
+    "audioEnabledHint": "Neem het audiospoor op in de uitvoer van de snede. Schakel uit om een video zonder geluid te produceren."
   },
   "batchQueue": {
     "title": "Batchwachtrij",

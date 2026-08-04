@@ -63,6 +63,11 @@ export function buildFfmpegArgs(input: string, output: string, options: Conversi
     }
   }
 
+  if (options.audio === false) {
+    args.push(FFMPEG_FLAGS.NO_AUDIO);
+    log.debug('Audio disabled, output will have no audio stream');
+  }
+
   if (options.startTime) {
     args.push(FFMPEG_FLAGS.START, options.startTime);
     log.debug('Start time:', options.startTime);

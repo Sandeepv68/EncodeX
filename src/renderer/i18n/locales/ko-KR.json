@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "확대",
-    "zoomOut": "축소"
+    "zoomOut": "축소",
+    "videoTrack": "비디오 트랙",
+    "audioTrack": "오디오 트랙",
+    "audioEnabled": "오디오 포함",
+    "audioEnabledHint": "컷 출력에 오디오 트랙을 포함합니다. 체크를 해제하면 소리가 없는 비디오가 생성됩니다."
   },
   "batchQueue": {
     "title": "배치 큐",

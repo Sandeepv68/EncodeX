@@ -47,6 +47,24 @@ export const Viewport = styled(Box)({
   },
 });
 
+export const TrackLabelPanel = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  flexShrink: 0,
+  borderRight: `1px solid ${theme.palette.divider}`,
+  backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : '#141414',
+  zIndex: 2,
+}));
+
+export const TrackLabel = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 72,
+  color: theme.palette.text.secondary,
+  gap: theme.spacing(0.25),
+}));
+
 export const Scroller = styled(Box)({
   position: 'relative',
   minWidth: '100%',
@@ -89,6 +107,28 @@ export const RulerLabel = styled(Typography)(({ theme }) => ({
   whiteSpace: 'nowrap',
 }));
 
+export const MarkerBubble = styled(Box)(({ theme }) => {
+  const bg = theme.palette.mode === 'light' ? 'rgb(0 0 0 / 66%)' : 'rgba(97, 97, 97, 0.9)';
+  return {
+    position: 'absolute',
+    bottom: -3,
+    transform: 'translateX(-50%)',
+    backgroundColor: bg,
+    color: '#fff',
+    fontSize: 10,
+    lineHeight: 1.2,
+    fontVariantNumeric: 'tabular-nums',
+    padding: theme.spacing(0.75, 0.75),
+    borderRadius: '8px',
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    boxShadow: theme.shadows[1],
+    whiteSpace: 'nowrap',
+    pointerEvents: 'none',
+    zIndex: 5,
+  };
+});
+
 export const Lane = styled(Box)(({ theme }) => ({
   position: 'relative',
   height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT + TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
@@ -123,6 +163,7 @@ export const AudioTrack = styled(Box)({
   left: 0,
   right: 0,
   height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
+  backgroundColor: '#809dca42',
   zIndex: 0,
   pointerEvents: 'none',
 });
@@ -149,9 +190,13 @@ export const KeptRegion = styled(Box)({
   borderLeft: `2px solid ${COLORS.success}`,
   borderRight: `2px solid ${COLORS.error}`,
   borderRadius: 3,
-  zIndex: 2,
-  pointerEvents: 'none',
+  zIndex: 3,
+  cursor: 'move',
+  pointerEvents: 'auto',
   opacity: 0.5,
+  '&:hover > .timeline-move-indicator': {
+    opacity: 1,
+  },
 });
 
 export const DimmedRegion = styled(Box)({
@@ -185,6 +230,63 @@ export const TrimHandle = styled(Box)(({ theme }) => ({
     borderRadius: 1,
   },
 }));
+
+export const TrackBubbleAnchor = styled(Box)({
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  pointerEvents: 'none',
+  zIndex: 2,
+});
+
+export const ScrollShadowAnchor = styled(Box)({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  height: TIMELINE_LAYOUT.RULER_HEIGHT + TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT + TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
+  pointerEvents: 'none',
+  zIndex: 2,
+});
+
+export const ScrollShadow = styled(Box)(({ theme }) => {
+  const light = theme.palette.mode === 'light';
+  return {
+    position: 'sticky',
+    left: 0,
+    top: 0,
+    width: 24,
+    height: '100%',
+    background: light
+      ? 'linear-gradient(to right, rgb(0 0 0 / 20%), rgba(0, 0, 0, 0))'
+      : 'linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0))',
+    borderLeft: `1px solid ${light ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.3)'}`,
+  };
+});
+
+export const TrackInfoBubble = styled(Box)(({ theme }) => {
+  const bg = theme.palette.mode === 'light' ? 'rgb(0 0 0 / 66%)' : 'rgba(33, 33, 33, 0.95)';
+  return {
+    position: 'sticky',
+    top: 0,
+    left: 0,
+    width: 'max-content',
+    maxWidth: 'min(60vw, 480px)',
+    backgroundColor: bg,
+    color: '#fff',
+    fontSize: 11,
+    lineHeight: 1.3,
+    padding: theme.spacing(0.5, 1),
+    borderBottomRightRadius: '6px',
+    boxShadow: theme.shadows[2],
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    pointerEvents: 'none',
+    zIndex: 2,
+    transition: 'opacity 120ms ease',
+  };
+});
 
 export const PlayheadLine = styled(Box)({
   position: 'absolute',

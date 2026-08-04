@@ -18,6 +18,7 @@ export interface ConversionOptions {
   endTime?: string;
   duration?: string;
   copy?: boolean;
+  audio?: boolean;
   hardwareAcceleration?: boolean;
   hwaccelMode?: HwAccelMode;
 }

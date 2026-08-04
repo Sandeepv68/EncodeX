@@ -130,7 +130,7 @@ describe('VideoCut', () => {
     const { container } = renderPage();
     await selectVideo();
     fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/cut.mp4' } });
-    fireEvent.click(container.querySelector('input[type="checkbox"]')!);
+    fireEvent.click(screen.getByRole('switch', { name: 'videoCut.useDuration' }));
     fireEvent.click(screen.getByText('videoCut.cut'));
     expect(screen.getByText('validation.durationRequired')).toBeInTheDocument();
     expect(convertFileMock).not.toHaveBeenCalled();
@@ -155,10 +155,10 @@ describe('VideoCut', () => {
 
   it('cuts with a duration when duration mode is on', async () => {
     convertFileMock.mockResolvedValue(undefined);
-    const { container } = renderPage();
+    renderPage();
     await selectVideo();
     fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/cut.mp4' } });
-    fireEvent.click(container.querySelector('input[type="checkbox"]')!);
+    fireEvent.click(screen.getByRole('switch', { name: 'videoCut.useDuration' }));
     fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderDuration'), { target: { value: '00:00:45' } });
     fireEvent.click(screen.getByText('videoCut.cut'));
     await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
@@ -166,6 +166,24 @@ describe('VideoCut', () => {
       '/in/video.mp4',
       '/out/cut.mp4',
       { copy: true, startTime: '00:00:00', duration: '00:00:45' },
+      'FFMPEG',
+    );
+  });
+
+  it('omits the audio stream when the timeline audio checkbox is unchecked', async () => {
+    convertFileMock.mockResolvedValue(undefined);
+    getMediaInfoMock.mockResolvedValue(mediaInfo(60));
+    renderPage();
+    await selectVideo();
+    fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/cut.mp4' } });
+    fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderEnd'), { target: { value: '00:01:30' } });
+    fireEvent.click(await screen.findByTestId('timeline-audio-enabled'));
+    fireEvent.click(screen.getByText('videoCut.cut'));
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+    expect(convertFileMock).toHaveBeenCalledWith(
+      '/in/video.mp4',
+      '/out/cut.mp4',
+      { copy: true, startTime: '00:00:00', endTime: '00:01:30', audio: false },
       'FFMPEG',
     );
   });
@@ -301,6 +319,25 @@ describe('VideoCut', () => {
     expect(screen.queryByTestId('timeline-thumb-skeleton')).not.toBeInTheDocument();
     expect(screen.queryByTestId('timeline-waveform-skeleton')).not.toBeInTheDocument();
     expect(screen.getAllByTestId('timeline-thumb')).toHaveLength(2);
+  });
+
+  it('shows stream details in the timeline tooltip when hovering a track', async () => {
+    getMediaInfoMock.mockResolvedValue({
+      file: 'v.mp4',
+      format: 'mp4',
+      size: 0,
+      duration: 60,
+      bitrate: '5000000',
+      streams: [
+        { index: 0, type: 'video', codec: 'h264', title: 'Main', width: 1920, height: 1080, bitrate: '4500000' },
+        { index: 1, type: 'audio', codec: 'aac', channelLayout: 'stereo', sampleRate: 48000, bitrate: '128000' },
+      ],
+    });
+    renderPage();
+    await selectVideo();
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledWith('/in/video.mp4', 'FFMPEG'));
+    expect(screen.getByTestId('timeline-video-tooltip')).toHaveTextContent('Main · h264 · 1920×1080 · 4.5 Mbps');
+    expect(screen.getByTestId('timeline-audio-tooltip')).toHaveTextContent('aac · stereo · 48 kHz · 128 kbps');
   });
 
   it('shows live progress while cutting and hides it when the job completes', async () => {

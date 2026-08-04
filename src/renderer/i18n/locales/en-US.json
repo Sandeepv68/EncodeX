@@ -253,7 +253,11 @@
   },
   "videoTimeline": {
     "zoomIn": "Zoom in",
-    "zoomOut": "Zoom out"
+    "zoomOut": "Zoom out",
+    "videoTrack": "Video track",
+    "audioTrack": "Audio track",
+    "audioEnabled": "Include audio",
+    "audioEnabledHint": "Include the audio track in the cut output. Uncheck to produce a video without sound."
   },
   "batchQueue": {
     "title": "Batch Queue",

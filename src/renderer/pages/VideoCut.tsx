@@ -20,7 +20,7 @@ import { useToastStore } from '../stores/toastStore';
 import { ErrorCode } from '../../shared/errors';
 import { isValidTime } from '../../shared/validation';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
-import type { WaveformData, ThumbnailStrip } from '../../shared/types';
+import type { MediaInfo, WaveformData, ThumbnailStrip } from '../../shared/types';
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
@@ -58,10 +58,12 @@ export default function VideoCut() {
   const [useDuration, setUseDuration] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
+  const [includeAudio, setIncludeAudio] = useState(true);
   const [playhead, setPlayhead] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
   const [waveform, setWaveform] = useState<WaveformData | null>(null);
   const [thumbnails, setThumbnails] = useState<ThumbnailStrip | null>(null);
+  const [mediaInfo, setMediaInfo] = useState<MediaInfo | null>(null);
   const [waveformLoading, setWaveformLoading] = useState(false);
   const [thumbnailsLoading, setThumbnailsLoading] = useState(false);
   const mediaPlayerRef = useRef<MediaPlayerHandle>(null);
@@ -72,6 +74,8 @@ export default function VideoCut() {
 
   const startSeconds = timeToSeconds(startTime) ?? 0;
   const endSeconds = endTime ? (timeToSeconds(endTime) ?? undefined) : undefined;
+  const videoStream = mediaInfo?.streams.find((s) => s.type === 'video') ?? null;
+  const audioStream = mediaInfo?.streams.find((s) => s.type === 'audio') ?? null;
 
   const validate = (): boolean => {
     const next: Record<string, string> = {};
@@ -95,16 +99,17 @@ export default function VideoCut() {
     setDuration('');
     setUseDuration(false);
     setIsPaused(false);
+    setIncludeAudio(true);
     setPlayhead(0);
     setVideoDuration(0);
     setWaveform(null);
     setThumbnails(null);
+    setMediaInfo(null);
     setWaveformLoading(false);
     setThumbnailsLoading(false);
     setProgress(null);
     setErrors({});
   };
-
   useEffect(() => {
     if (!input || videoDuration <= 0) return;
     let cancelled = false;
@@ -151,10 +156,12 @@ export default function VideoCut() {
     setStartTime('00:00:00');
     setEndTime('');
     setDuration('');
+    setIncludeAudio(true);
     setPlayhead(0);
     setVideoDuration(0);
     setWaveform(null);
     setThumbnails(null);
+    setMediaInfo(null);
     setWaveformLoading(false);
     setThumbnailsLoading(false);
   };
@@ -189,6 +196,7 @@ export default function VideoCut() {
           copy: true,
           startTime,
           ...(useDuration ? { duration } : { endTime }),
+          ...(includeAudio ? {} : { audio: false }),
         },
         transcoder,
       );
@@ -237,7 +245,13 @@ export default function VideoCut() {
 
       {input && (
         <ErrorBoundary fallback={null}>
-          <MediaPlayer ref={mediaPlayerRef} filePath={input} onTimeUpdate={setPlayhead} onDurationChange={setVideoDuration} />
+          <MediaPlayer
+            ref={mediaPlayerRef}
+            filePath={input}
+            onTimeUpdate={setPlayhead}
+            onDurationChange={setVideoDuration}
+            onMediaInfo={setMediaInfo}
+          />
         </ErrorBoundary>
       )}
 
@@ -251,6 +265,10 @@ export default function VideoCut() {
           thumbnails={thumbnails}
           waveformLoading={waveformLoading}
           thumbnailsLoading={thumbnailsLoading}
+          audioEnabled={includeAudio}
+          videoStream={videoStream}
+          audioStream={audioStream}
+          onAudioEnabledChange={setIncludeAudio}
           onSeek={handleTimelineSeek}
           onStartChange={(s) => setStartTime(secondsToTime(s))}
           onEndChange={(s) => setEndTime(secondsToTime(s))}
@@ -329,7 +347,11 @@ export default function VideoCut() {
       </Stack>
 
       <ToggleRow>
-        <Switch checked={useDuration} onChange={() => setUseDuration(!useDuration)} />
+        <Switch
+          checked={useDuration}
+          onChange={() => setUseDuration(!useDuration)}
+          slotProps={{ input: { 'aria-label': t('videoCut.useDuration') } }}
+        />
         <Typography variant="caption" color="text.secondary">
           {t('videoCut.useDuration')}
         </Typography>

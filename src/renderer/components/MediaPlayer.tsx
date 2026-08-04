@@ -2,7 +2,7 @@ import { useRef, useEffect, useCallback, useState, forwardRef, useImperativeHand
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faStop, faVolumeHigh, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
-import { PlayerFrame, PlayerAudioChunk } from '../../shared/types';
+import { MediaInfo, PlayerFrame, PlayerAudioChunk } from '../../shared/types';
 import { PlayerRoot, PlayerCanvas, ControlsArea, SeekSlider, ControlButton, ControlsRow, TimeText } from '../styles/MediaPlayer.styles';
 import { formatClockTime } from '../utils/formatters';
 
@@ -16,6 +16,7 @@ interface Props {
   filePath: string;
   onTimeUpdate?: (time: number) => void;
   onDurationChange?: (duration: number) => void;
+  onMediaInfo?: (info: MediaInfo) => void;
 }
 
 const AUDIO_LOOKAHEAD_SECONDS = 1;
@@ -23,7 +24,7 @@ const MAX_PENDING_AUDIO_CHUNKS = 600;
 const SEEK_COALESCE_MS = 120;
 
 const MediaPlayer = memo(
-  forwardRef<MediaPlayerHandle, Props>(function MediaPlayer({ filePath, onTimeUpdate, onDurationChange }: Props, ref) {
+  forwardRef<MediaPlayerHandle, Props>(function MediaPlayer({ filePath, onTimeUpdate, onDurationChange, onMediaInfo }: Props, ref) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -38,6 +39,8 @@ const MediaPlayer = memo(
     onTimeUpdateRef.current = onTimeUpdate;
     const onDurationChangeRef = useRef(onDurationChange);
     onDurationChangeRef.current = onDurationChange;
+    const onMediaInfoRef = useRef(onMediaInfo);
+    onMediaInfoRef.current = onMediaInfo;
     const durationRef = useRef(0);
     const lastReportedTimeRef = useRef(-1);
     const playBaseTimeRef = useRef(0);
@@ -195,6 +198,7 @@ const MediaPlayer = memo(
             durationRef.current = info.duration;
             setDuration(info.duration);
             onDurationChangeRef.current?.(info.duration);
+            onMediaInfoRef.current?.(info);
           }
         })
         .catch(() => {});

@@ -124,6 +124,23 @@ describe('FfmpegCore', () => {
     expect(cmd.inputOptions).not.toHaveBeenCalled();
   });
 
+  it('adds the no-audio output option when audio is disabled', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { copy: true, audio: false });
+    const cmd = getCommand();
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-an');
+  });
+
+  it('does not add the no-audio output option when audio is enabled or unspecified', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { copy: true });
+    core.convert('in.mp4', 'out.mp4', { copy: true, audio: true });
+    const last = getCommand();
+    const first = getCommand(0);
+    expect(first.outputOptions).not.toHaveBeenCalledWith('-an');
+    expect(last.outputOptions).not.toHaveBeenCalledWith('-an');
+  });
+
   it('applies hardware acceleration input options for hardware video codecs', () => {
     const core = new FfmpegCore();
     core.convert('in.mp4', 'out.mp4', { videoCodec: 'h264_nvenc' });

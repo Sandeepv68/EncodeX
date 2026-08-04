@@ -1,19 +1,22 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, CircularProgress, Skeleton, Typography } from '@mui/material';
+import { Box, Checkbox, CircularProgress, Skeleton, Tooltip, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlassPlus, faMagnifyingGlassMinus } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlassPlus, faMagnifyingGlassMinus, faVideo, faMusic, faGripVertical } from '@fortawesome/free-solid-svg-icons';
 import {
   TimelineRoot,
   TimelineToolbar,
   TimelineTimeText,
   ZoomButton,
+  TrackLabelPanel,
+  TrackLabel,
   Viewport,
   Scroller,
   Ruler,
   RulerTick,
   RulerMinorTick,
   RulerLabel,
+  MarkerBubble,
   Lane,
   VideoTrack,
   AudioTrack,
@@ -24,10 +27,14 @@ import {
   TrimHandle,
   PlayheadLine,
   PlayheadHead,
+  TrackBubbleAnchor,
+  TrackInfoBubble,
+  ScrollShadowAnchor,
+  ScrollShadow,
   TIMELINE_LAYOUT,
 } from '../styles/VideoTimeline.styles';
-import { formatClockTime } from '../utils/formatters';
-import { WaveformData, ThumbnailStrip } from '../../shared/types';
+import { formatClockTime, formatStreamSummary } from '../utils/formatters';
+import { MediaStreamInfo, ThumbnailStrip, WaveformData } from '../../shared/types';
 
 const DEFAULT_TIMELINE_WIDTH = 600;
 const MIN_ZOOM = 2;
@@ -48,12 +55,16 @@ interface Props {
   thumbnails?: ThumbnailStrip | null;
   waveformLoading?: boolean;
   thumbnailsLoading?: boolean;
+  audioEnabled?: boolean;
+  videoStream?: MediaStreamInfo | null;
+  audioStream?: MediaStreamInfo | null;
   onSeek: (time: number) => void;
   onStartChange: (time: number) => void;
   onEndChange: (time: number) => void;
+  onAudioEnabledChange?: (enabled: boolean) => void;
 }
 
-type DragKind = 'playhead' | 'start' | 'end' | 'scrub';
+type DragKind = 'playhead' | 'start' | 'end' | 'move' | 'scrub';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
@@ -72,14 +83,21 @@ export default function VideoTimeline({
   thumbnails = null,
   waveformLoading = false,
   thumbnailsLoading = false,
+  audioEnabled = true,
+  videoStream = null,
+  audioStream = null,
   onSeek,
   onStartChange,
   onEndChange,
+  onAudioEnabledChange,
 }: Props) {
   const { t } = useTranslation();
   const viewportRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<DragKind | null>(null);
+  const dragOriginRef = useRef(0);
+  const dragBaseStartRef = useRef(0);
+  const dragBaseEndRef = useRef(0);
   const prevTimeRef = useRef(currentTime);
   const [zoom, setZoomState] = useState<number>(() => initialZoom(duration));
   const [viewState, setViewState] = useState({ scrollLeft: 0, viewportWidth: 600 });
@@ -105,7 +123,12 @@ export default function VideoTimeline({
     const time = timeFromEvent(e.clientX);
     if (kind === 'start') s.onStartChange(clamp(time, 0, Math.max(0, s.end - MIN_GAP)));
     else if (kind === 'end') s.onEndChange(clamp(time, Math.min(s.duration, s.start + MIN_GAP), s.duration));
-    else s.onSeek(time);
+    else if (kind === 'move') {
+      const width = dragBaseEndRef.current - dragBaseStartRef.current;
+      const newStart = clamp(dragBaseStartRef.current + (time - dragOriginRef.current), 0, Math.max(0, s.duration - width));
+      s.onStartChange(newStart);
+      s.onEndChange(newStart + width);
+    } else s.onSeek(time);
   };
 
   const onWindowPointerUp = () => {
@@ -118,6 +141,11 @@ export default function VideoTimeline({
     const kind = (e.target as HTMLElement).closest('[data-kind]')?.getAttribute('data-kind') as DragKind | null;
     if (kind) {
       dragRef.current = kind;
+      if (kind === 'move') {
+        dragOriginRef.current = timeFromEvent(e.clientX);
+        dragBaseStartRef.current = stateRef.current.start;
+        dragBaseEndRef.current = stateRef.current.end;
+      }
     } else {
       dragRef.current = 'scrub';
       onSeek(timeFromEvent(e.clientX));
@@ -353,57 +381,129 @@ export default function VideoTimeline({
           </ZoomButton>
         </Box>
       </TimelineToolbar>
-      <Viewport ref={viewportRef}>
-        <Scroller
-          ref={scrollerRef}
-          data-testid="timeline-scroller"
-          style={{ width: Math.max(duration * zoom, 600) }}
-          onPointerDown={handlePointerDown}
-        >
-          <Ruler>
-            {rulerEls.minorEls}
-            {rulerEls.majorEls}
-            {rulerEls.labelEls}
-          </Ruler>
-          <Lane>
-            <VideoTrack data-testid="timeline-video-track">
-              {thumbnailsLoading ? (
-                <Skeleton
-                  variant="rectangular"
-                  data-testid="timeline-thumb-skeleton"
-                  animation="wave"
-                  sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
-                />
-              ) : (
-                <>
-                  {thumbnails && <style>{thumbMontageCss}</style>}
-                  {thumbCells}
-                </>
+      <Box sx={{ display: 'flex' }}>
+        <TrackLabelPanel>
+          <Box sx={{ height: TIMELINE_LAYOUT.RULER_HEIGHT }} />
+          <Tooltip title={t('videoTimeline.videoTrack')} arrow placement="right">
+            <TrackLabel
+              data-testid="timeline-video-label"
+              sx={{ height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT, borderBottom: 1, borderColor: 'divider' }}
+            >
+              <FontAwesomeIcon icon={faVideo} size="xs" />
+            </TrackLabel>
+          </Tooltip>
+          <TrackLabel data-testid="timeline-audio-label" sx={{ height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT }}>
+            <Tooltip title={t('videoTimeline.audioTrack')} arrow placement="right">
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <FontAwesomeIcon icon={faMusic} size="xs" />
+              </Box>
+            </Tooltip>
+            <Tooltip title={t('videoTimeline.audioEnabledHint')} arrow placement="right">
+              <Checkbox
+                size="small"
+                checked={audioEnabled}
+                onChange={(e) => onAudioEnabledChange?.(e.target.checked)}
+                slotProps={{
+                  input: {
+                    'aria-label': t('videoTimeline.audioEnabled'),
+                    'data-testid': 'timeline-audio-enabled',
+                  },
+                }}
+              />
+            </Tooltip>
+          </TrackLabel>
+        </TrackLabelPanel>
+        <Viewport ref={viewportRef} sx={{ flex: 1, minWidth: 0 }}>
+          <Scroller
+            ref={scrollerRef}
+            data-testid="timeline-scroller"
+            style={{ width: Math.max(duration * zoom, 600) }}
+            onPointerDown={handlePointerDown}
+          >
+            <Ruler>
+              {rulerEls.minorEls}
+              {rulerEls.majorEls}
+              {rulerEls.labelEls}
+              <MarkerBubble data-testid="timeline-start-time" sx={{ left: startX }}>
+                {formatClockTime(start)}
+              </MarkerBubble>
+              <MarkerBubble data-testid="timeline-end-time" sx={{ left: endX }}>
+                {formatClockTime(end)}
+              </MarkerBubble>
+            </Ruler>
+            <Lane>
+              <VideoTrack data-testid="timeline-video-track">
+                {thumbnailsLoading ? (
+                  <Skeleton
+                    variant="rectangular"
+                    data-testid="timeline-thumb-skeleton"
+                    animation="wave"
+                    sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
+                  />
+                ) : (
+                  <>
+                    {thumbnails && <style>{thumbMontageCss}</style>}
+                    {thumbCells}
+                  </>
+                )}
+              </VideoTrack>
+              <AudioTrack data-testid="timeline-audio-track">
+                {waveformLoading ? (
+                  <Skeleton
+                    variant="rectangular"
+                    data-testid="timeline-waveform-skeleton"
+                    animation="wave"
+                    sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
+                  />
+                ) : (
+                  waveformBars
+                )}
+              </AudioTrack>
+              <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: 0, width: startX }} />
+              <KeptRegion data-kind="move" data-testid="timeline-kept-region" sx={{ left: startX, width: Math.max(0, endX - startX) }}>
+                <Box
+                  className="timeline-move-indicator"
+                  data-testid="timeline-move-indicator"
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    opacity: 0,
+                    transition: 'opacity 120ms ease',
+                    pointerEvents: 'none',
+                    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+                    color: '#fff',
+                    borderRadius: '6px',
+                    padding: '6px',
+                  }}
+                >
+                  <FontAwesomeIcon icon={faGripVertical} size="xs" />
+                </Box>
+              </KeptRegion>
+              <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: endX, width: Math.max(0, duration * zoom - endX) }} />
+              {videoStream && (
+                <TrackBubbleAnchor sx={{ top: 0, height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT, pt: '2px' }}>
+                  <TrackInfoBubble data-testid="timeline-video-tooltip">{formatStreamSummary(videoStream)}</TrackInfoBubble>
+                </TrackBubbleAnchor>
               )}
-            </VideoTrack>
-            <AudioTrack data-testid="timeline-audio-track">
-              {waveformLoading ? (
-                <Skeleton
-                  variant="rectangular"
-                  data-testid="timeline-waveform-skeleton"
-                  animation="wave"
-                  sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
-                />
-              ) : (
-                waveformBars
+              {audioStream && (
+                <TrackBubbleAnchor sx={{ top: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT, height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT, pt: '2px' }}>
+                  <TrackInfoBubble data-testid="timeline-audio-tooltip">{formatStreamSummary(audioStream)}</TrackInfoBubble>
+                </TrackBubbleAnchor>
               )}
-            </AudioTrack>
-            <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: 0, width: startX }} />
-            <KeptRegion data-testid="timeline-kept-region" sx={{ left: startX, width: Math.max(0, endX - startX) }} />
-            <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: endX, width: Math.max(0, duration * zoom - endX) }} />
-            <TrimHandle data-kind="start" data-testid="timeline-start-handle" sx={{ left: startX }} />
-            <TrimHandle data-kind="end" data-testid="timeline-end-handle" sx={{ left: endX }} />
-          </Lane>
-          <PlayheadLine data-kind="playhead" data-testid="timeline-playhead" sx={{ left: playheadX }}>
-            <PlayheadHead />
-          </PlayheadLine>
-        </Scroller>
-      </Viewport>
+              <TrimHandle data-kind="start" data-testid="timeline-start-handle" sx={{ left: startX }} />
+              <TrimHandle data-kind="end" data-testid="timeline-end-handle" sx={{ left: endX }} />
+            </Lane>
+            <PlayheadLine data-kind="playhead" data-testid="timeline-playhead" sx={{ left: playheadX }}>
+              <PlayheadHead />
+            </PlayheadLine>
+            <ScrollShadowAnchor>
+              <ScrollShadow data-testid="timeline-scroll-shadow" />
+            </ScrollShadowAnchor>
+          </Scroller>
+        </Viewport>
+      </Box>
     </TimelineRoot>
   );
 }

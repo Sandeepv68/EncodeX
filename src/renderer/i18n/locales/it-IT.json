@@ -236,7 +236,11 @@
   },
   "videoTimeline": {
     "zoomIn": "Ingrandisci",
-    "zoomOut": "Riduci"
+    "zoomOut": "Riduci",
+    "videoTrack": "Traccia video",
+    "audioTrack": "Traccia audio",
+    "audioEnabled": "Includi audio",
+    "audioEnabledHint": "Includi la traccia audio nell'output del taglio. Deseleziona per produrre un video senza audio."
   },
   "batchQueue": {
     "title": "Coda batch",
