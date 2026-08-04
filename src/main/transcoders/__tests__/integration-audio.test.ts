@@ -1,13 +1,15 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { execFileSync } from 'child_process';
 import { FfmpegCore } from '../ffmpeg-core';
+import { getFfmpegPath } from '../ffmpeg-utils';
 
-const TMP = 'C:/Users/sande/AppData/Local/Temp/opencode';
+const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-integration-audio-'));
 const INPUT = path.join(TMP, 'test-with-audio.mp4');
 const OUTPUT = path.join(TMP, 'integration-cut.mp4');
-const FF = path.join(process.cwd(), 'node_modules/ffmpeg-static/ffmpeg.exe');
+const FF = getFfmpegPath();
 
 function probeStreams(file: string): string[] {
   try {
