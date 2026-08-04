@@ -232,7 +232,13 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "مثال 00:01:30",
     "placeholderEnd": "مثال 00:01:30",
-    "validationRequired": "الرجاء تحديد ملف فيديو."
+    "validationRequired": "الرجاء تحديد ملف فيديو.",
+    "preview": "معاينة",
+    "details": "تفاصيل القص",
+    "cancelJob": "إلغاء الوظيفة",
+    "jobCancelTitle": "مسح قص الفيديو",
+    "jobCancelMessage": "سيؤدي هذا إلى مسح نموذج قص الفيديو الحالي. هل أنت متأكد؟",
+    "closePreview": "إغلاق المعاينة"
   },
   "videoTimeline": {
     "zoomIn": "تكبير",

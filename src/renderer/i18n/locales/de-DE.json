@@ -232,7 +232,13 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "z.B. 00:01:30",
     "placeholderEnd": "z.B. 00:01:30",
-    "validationRequired": "Bitte wählen Sie eine Videodatei aus."
+    "validationRequired": "Bitte wählen Sie eine Videodatei aus.",
+    "preview": "Vorschau",
+    "details": "Schnittdetails",
+    "cancelJob": "Auftrag abbrechen",
+    "jobCancelTitle": "Videoschnitt löschen",
+    "jobCancelMessage": "Dadurch wird das aktuelle Video-Schnittformular gelöscht. Sind Sie sicher?",
+    "closePreview": "Vorschau schließen"
   },
   "videoTimeline": {
     "zoomIn": "Vergrößern",

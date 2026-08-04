@@ -232,7 +232,13 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "ex. 00:01:30",
     "placeholderEnd": "ex. 00:01:30",
-    "validationRequired": "Veuillez sélectionner un fichier vidéo."
+    "validationRequired": "Veuillez sélectionner un fichier vidéo.",
+    "preview": "Aperçu",
+    "details": "Détails de la découpe",
+    "cancelJob": "Annuler le travail",
+    "jobCancelTitle": "Effacer la découpe vidéo",
+    "jobCancelMessage": "Cela effacera le formulaire actuel de découpe vidéo. Êtes-vous sûr ?",
+    "closePreview": "Fermer l'aperçu"
   },
   "videoTimeline": {
     "zoomIn": "Zoom avant",

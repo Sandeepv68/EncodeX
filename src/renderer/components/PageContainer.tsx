@@ -4,10 +4,11 @@ interface Props {
   title: string;
   icon?: React.ReactNode;
   aside?: React.ReactNode;
+  paper?: boolean;
   children: React.ReactNode;
 }
 
-export default function PageContainer({ title, icon, aside, children }: Props) {
+export default function PageContainer({ title, icon, aside, paper = true, children }: Props) {
   return (
     <PageRoot hasAside={!!aside}>
       <PageBody>
@@ -15,7 +16,7 @@ export default function PageContainer({ title, icon, aside, children }: Props) {
           {icon && <TitleIcon>{icon}</TitleIcon>}
           {title}
         </PageTitle>
-        <ContentPaper>{children}</ContentPaper>
+        {paper ? <ContentPaper>{children}</ContentPaper> : children}
       </PageBody>
       {aside}
     </PageRoot>

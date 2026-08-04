@@ -232,7 +232,13 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "t.ex. 00:01:30",
     "placeholderEnd": "t.ex. 00:01:30",
-    "validationRequired": "Välj en videofil."
+    "validationRequired": "Välj en videofil.",
+    "preview": "Förhandsvisning",
+    "details": "Klippdetaljer",
+    "cancelJob": "Avbryt jobb",
+    "jobCancelTitle": "Rensa videoklipp",
+    "jobCancelMessage": "Detta rensar det aktuella videoklippformuläret. Är du säker?",
+    "closePreview": "Stäng förhandsvisning"
   },
   "videoTimeline": {
     "zoomIn": "Zooma in",
