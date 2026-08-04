@@ -19,10 +19,10 @@ interface Props {
   onMediaInfo?: (info: MediaInfo) => void;
 }
 
-const AUDIO_LOOKAHEAD_SECONDS = 2;
-const MAX_PENDING_AUDIO_CHUNKS = 600;
-const AUDIO_FLOW_HIGH = 300;
-const AUDIO_FLOW_LOW = 100;
+const AUDIO_LOOKAHEAD_SECONDS = 0.15;
+const MAX_PENDING_AUDIO_CHUNKS = 100;
+const AUDIO_FLOW_HIGH = 90;
+const AUDIO_FLOW_LOW = 10;
 const SEEK_COALESCE_MS = 120;
 
 const MediaPlayer = memo(
@@ -207,12 +207,15 @@ const MediaPlayer = memo(
 
     const updateAudioFlow = useCallback(() => {
       const len = pendingChunksRef.current.length;
-      if (!audioFlowPausedRef.current && len >= AUDIO_FLOW_HIGH) {
+      // Less aggressive flow control - only pause if really needed
+      if (!audioFlowPausedRef.current && len >= MAX_PENDING_AUDIO_CHUNKS * 0.9) {
         audioFlowPausedRef.current = true;
         window.electronAPI.setPlayerAudioFlow(true);
-      } else if (audioFlowPausedRef.current && len <= AUDIO_FLOW_LOW) {
+        log.debug('Audio flow paused at', len, 'chunks');
+      } else if (audioFlowPausedRef.current && len <= MAX_PENDING_AUDIO_CHUNKS * 0.1) {
         audioFlowPausedRef.current = false;
         window.electronAPI.setPlayerAudioFlow(false);
+        log.debug('Audio flow resumed at', len, 'chunks');
       }
     }, []);
 
@@ -305,18 +308,25 @@ const MediaPlayer = memo(
     }, [filePath, queueAudioChunk, closeAudio]);
 
     const renderLoop = useCallback(() => {
-      if (frameBuffer.current.length > 0 && !isSeeking.current) {
+      // Drain audio queue to keep it filled
+      drainAudioQueue();
+      
+      if (!isSeeking.current) {
         const canvas = canvasRef.current;
         const ctx = canvas?.getContext('2d');
         if (canvas && ctx) {
           const targetTime = getMediaNow();
           let frame: { data: ImageData; pts: number } | null = null;
+          
+          // Find the best frame to display
           while (frameBuffer.current.length > 0) {
             const candidate = frameBuffer.current[0];
             if (candidate.pts > targetTime) break;
             frameBuffer.current.shift();
             frame = candidate;
           }
+          
+          // Use frame if available, fallback to last rendered frame
           if (frame) {
             if (needsBaselineRef.current) {
               needsBaselineRef.current = false;
@@ -335,7 +345,7 @@ const MediaPlayer = memo(
             ctx.putImageData(frame.data, 0, 0);
             const time = frame.pts;
             displayPtsRef.current = time;
-            if (Math.abs(time - lastReportedTimeRef.current) >= 0.1 || time >= durationRef.current) {
+            if (Math.abs(time - lastReportedTimeRef.current) >= 0.05 || time >= durationRef.current) {
               lastReportedTimeRef.current = time;
               setCurrentTime(time);
               onTimeUpdateRef.current?.(time);
@@ -344,7 +354,7 @@ const MediaPlayer = memo(
         }
       }
       animRef.current = requestAnimationFrame(renderLoop);
-    }, [getMediaNow]);
+    }, [getMediaNow, drainAudioQueue]);
 
     useEffect(() => {
       if (isPlaying) animRef.current = requestAnimationFrame(renderLoop);

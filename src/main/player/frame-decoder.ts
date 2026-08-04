@@ -76,7 +76,7 @@ export class FrameDecoder extends EventEmitter {
     this.framePartsLen = 0;
     this.running = true;
     const generation = ++this.generation;
-    this.options = { realtime: true, audioOnly: false, ...options };
+    this.options = { realtime: false, audioOnly: false, ...options };
 
     const ffmpegPath = getFfmpegPath();
     const args: string[] = [];
@@ -158,9 +158,14 @@ export class FrameDecoder extends EventEmitter {
     const pendingPts: number[] = [];
     const pendingFrames: Buffer[] = [];
     let stderrBuf = '';
+    let lastEmitTime = Date.now();
+    let ptsExtractCount = 0;
+    let frameBufferCount = 0;
 
     const emitAvailable = () => {
       if (!this.running || this.process !== currentProcess) return;
+      
+      // Emit frames that have matching PTS
       while (pendingFrames.length > 0 && pendingPts.length > 0) {
         const frameData = pendingFrames.shift()!;
         const pts = pendingPts.shift()!;
@@ -171,6 +176,27 @@ export class FrameDecoder extends EventEmitter {
           pts,
           generation,
         } as DecodedFrame);
+        lastEmitTime = Date.now();
+      }
+      
+      // Emergency flush: if frames stuck for >200ms and we have PTS, emit without matching
+      // This handles cases where PTS extraction lags behind frame arrival
+      const now = Date.now();
+      if (pendingFrames.length > 0 && pendingPts.length === 0 && now - lastEmitTime > 200) {
+        const frameData = pendingFrames.shift()!;
+        // Use a reasonable guess: ~24fps = 0.042s per frame
+        const estimatedPts = (now / 1000);
+        this.emit('frame', {
+          buffer: frameData,
+          width: this.width,
+          height: this.height,
+          pts: estimatedPts,
+          generation,
+        } as DecodedFrame);
+        lastEmitTime = now;
+        if (pendingFrames.length > 30) {
+          log.warn(`Frame buffer overflow: ${pendingFrames.length} buffered, ${pendingPts.length} PTS values. Consider reducing output resolution or checking disk I/O.`);
+        }
       }
     };
 
@@ -178,12 +204,16 @@ export class FrameDecoder extends EventEmitter {
       currentProcess.stderr?.on('data', (chunk: Buffer) => {
         if (!this.running || this.process !== currentProcess) return;
         stderrBuf += chunk.toString('utf8');
-        const re = /pts_time:\s*([0-9]+(?:\.[0-9]+)?)/g;
+        // Match various PTS formats: "pts_time:123.456", "pts_time:123", or just "pts=" patterns
+        const re = /pts_time[=:\s]*([0-9]*\.?[0-9]+)/g;
         let lastIndex = 0;
         let match: RegExpExecArray | null;
         while ((match = re.exec(stderrBuf)) !== null) {
-          pendingPts.push(Number(match[1]));
-          lastIndex = re.lastIndex;
+          const pts = parseFloat(match[1]);
+          if (!isNaN(pts)) {
+            pendingPts.push(pts);
+            lastIndex = re.lastIndex;
+          }
         }
         stderrBuf = stderrBuf.slice(lastIndex);
         emitAvailable();
@@ -227,16 +257,21 @@ export class FrameDecoder extends EventEmitter {
       });
     }
 
-    currentProcess.stderr?.on('data', () => {});
+    // Periodic flush to ensure frames don't get stuck in the buffer
+    const flushInterval = setInterval(() => {
+      emitAvailable();
+    }, 16); // ~60fps check interval for more responsive flushing
 
     currentProcess.on('error', (err) => {
       if (this.process !== currentProcess) return;
+      clearInterval(flushInterval);
       log.error('Decoder process error:', err);
       this.emit('error', err);
     });
 
     currentProcess.on('close', (code) => {
       if (this.process !== currentProcess) return;
+      clearInterval(flushInterval);
       log.debug('Decoder process exited with code:', code);
       this.running = false;
       if (code !== 0 && code !== null) {

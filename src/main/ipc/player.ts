@@ -21,7 +21,6 @@ function capResolution(width: number, height: number): { width: number; height: 
 
 export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): void {
   const decoder = new FrameDecoder();
-  const audioDecoder = new FrameDecoder();
   let decoderInput = '';
   let audioConfig: AudioDecodeConfig | null = null;
 
@@ -35,21 +34,16 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
       audioConfig = audioStream ? { sampleRate: audioStream.sampleRate ?? 48000, channels: audioStream.channels ?? 2 } : null;
       if (videoStream?.width && videoStream?.height) {
         const { width, height } = capResolution(videoStream.width, videoStream.height);
-        decoder.open(filePath, width, height);
-        if (audioConfig) {
-          audioDecoder.open(filePath, 0, 0, audioConfig, { realtime: false, audioOnly: true });
-        } else {
-          audioDecoder.close();
-        }
+        // Use single decoder instance for both video and audio
+        decoder.open(filePath, width, height, audioConfig ?? undefined, { realtime: false, audioOnly: false });
       } else {
+        // Video-only fallback
         decoder.open(filePath);
-        audioDecoder.close();
       }
     } catch (err: unknown) {
       log.error('PLAYER_OPEN failed, falling back to default resolution:', err);
       audioConfig = null;
       decoder.open(filePath);
-      audioDecoder.close();
     }
     return decoder.getGeneration();
   });
@@ -57,18 +51,16 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
   ipcMain.handle(IPC.PLAYER_SEEK, async (_event, time: string) => {
     log.debug('PLAYER_SEEK:', time);
     decoder.seek(time);
-    audioDecoder.seek(time);
     return decoder.getGeneration();
   });
 
   ipcMain.handle(IPC.PLAYER_CLOSE, async () => {
     log.debug('PLAYER_CLOSE');
     decoder.close();
-    audioDecoder.close();
   });
 
   ipcMain.on(IPC.PLAYER_AUDIO_FLOW, (_event, paused: boolean) => {
-    audioDecoder.setAudioPaused(!!paused);
+    decoder.setAudioPaused(!!paused);
   });
 
   ipcMain.handle(IPC.PLAYER_GET_FRAME, async () => {
@@ -95,13 +87,13 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
     });
   });
 
-  audioDecoder.on('audio', (chunk: { buffer: Buffer; sampleRate: number; channels: number; generation: number }) => {
+  decoder.on('audio', (chunk: { buffer: Buffer; sampleRate: number; channels: number; generation: number }) => {
     if (!audioConfig) return;
     send(IPC.PLAYER_AUDIO, {
       data: chunk.buffer.buffer,
       sampleRate: chunk.sampleRate,
       channels: chunk.channels,
-      generation: decoder.getGeneration(),
+      generation: chunk.generation,
     });
   });
 }
