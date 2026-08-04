@@ -99,6 +99,19 @@ describe('VideoTimeline', () => {
     expect(container.querySelector('[data-testid="timeline-scroller"]')).toBeNull();
   });
 
+  it('renders a persistent shadow pinned to the left edge of the scroller', () => {
+    render(
+      <VideoTimeline duration={60} currentTime={0} start={0} end={60} onSeek={vi.fn()} onStartChange={vi.fn()} onEndChange={vi.fn()} />,
+    );
+    const shadow = screen.getByTestId('timeline-scroll-shadow');
+    expect(shadow).toHaveStyle({ position: 'sticky', left: '0px', width: '24px' });
+    expect(shadow.parentElement).toHaveStyle({
+      position: 'absolute',
+      top: '0px',
+      height: `${TIMELINE_LAYOUT.RULER_HEIGHT + TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT + TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT}px`,
+    });
+  });
+
   it('seeks when the lane is clicked', () => {
     const onSeek = vi.fn();
     render(
@@ -467,7 +480,7 @@ describe('VideoTimeline', () => {
     );
     const bubble = screen.getByTestId('timeline-video-tooltip');
     expect(bubble).toHaveTextContent('h264 · 1920×1080 · 4.5 Mbps');
-    expect(bubble).toHaveStyle({ position: 'sticky', left: '2px' });
+    expect(bubble).toHaveStyle({ position: 'sticky', left: '0px' });
     expect(bubble.parentElement).toHaveStyle({ top: '0px', paddingTop: '2px' });
   });
 
@@ -486,7 +499,7 @@ describe('VideoTimeline', () => {
     );
     const bubble = screen.getByTestId('timeline-audio-tooltip');
     expect(bubble).toHaveTextContent('aac · stereo · 48 kHz · 128 kbps');
-    expect(bubble).toHaveStyle({ position: 'sticky', left: '2px' });
+    expect(bubble).toHaveStyle({ position: 'sticky', left: '0px' });
     expect(bubble.parentElement).toHaveStyle({ top: `${TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT}px`, paddingTop: '2px' });
   });
 

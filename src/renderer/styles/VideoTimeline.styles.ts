@@ -235,6 +235,31 @@ export const TrackBubbleAnchor = styled(Box)({
   zIndex: 2,
 });
 
+export const ScrollShadowAnchor = styled(Box)({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  height: TIMELINE_LAYOUT.RULER_HEIGHT + TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT + TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
+  pointerEvents: 'none',
+  zIndex: 2,
+});
+
+export const ScrollShadow = styled(Box)(({ theme }) => {
+  const light = theme.palette.mode === 'light';
+  return {
+    position: 'sticky',
+    left: 0,
+    top: 0,
+    width: 24,
+    height: '100%',
+    background: light
+      ? 'linear-gradient(to right, rgb(0 0 0 / 20%), rgba(0, 0, 0, 0))'
+      : 'linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0))',
+    borderLeft: `1px solid ${light ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.3)'}`,
+  };
+});
+
 export const TrackInfoBubble = styled(Box)(({ theme }) => {
   const bg = theme.palette.mode === 'light' ? 'rgb(0 0 0 / 66%)' : 'rgba(33, 33, 33, 0.95)';
   return {

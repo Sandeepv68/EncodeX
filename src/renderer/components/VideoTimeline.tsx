@@ -29,6 +29,8 @@ import {
   PlayheadHead,
   TrackBubbleAnchor,
   TrackInfoBubble,
+  ScrollShadowAnchor,
+  ScrollShadow,
   TIMELINE_LAYOUT,
 } from '../styles/VideoTimeline.styles';
 import { formatClockTime, formatStreamSummary } from '../utils/formatters';
@@ -463,6 +465,9 @@ export default function VideoTimeline({
             <PlayheadLine data-kind="playhead" data-testid="timeline-playhead" sx={{ left: playheadX }}>
               <PlayheadHead />
             </PlayheadLine>
+            <ScrollShadowAnchor>
+              <ScrollShadow data-testid="timeline-scroll-shadow" />
+            </ScrollShadowAnchor>
           </Scroller>
         </Viewport>
       </Box>
