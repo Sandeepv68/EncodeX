@@ -191,8 +191,12 @@ export const KeptRegion = styled(Box)({
   borderRight: `2px solid ${COLORS.error}`,
   borderRadius: 3,
   zIndex: 3,
-  pointerEvents: 'none',
+  cursor: 'move',
+  pointerEvents: 'auto',
   opacity: 0.5,
+  '&:hover > .timeline-move-indicator': {
+    opacity: 1,
+  },
 });
 
 export const DimmedRegion = styled(Box)({

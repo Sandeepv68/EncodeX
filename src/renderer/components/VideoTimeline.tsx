@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Checkbox, CircularProgress, Skeleton, Tooltip, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlassPlus, faMagnifyingGlassMinus, faVideo, faMusic } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlassPlus, faMagnifyingGlassMinus, faVideo, faMusic, faGripVertical } from '@fortawesome/free-solid-svg-icons';
 import {
   TimelineRoot,
   TimelineToolbar,
@@ -64,7 +64,7 @@ interface Props {
   onAudioEnabledChange?: (enabled: boolean) => void;
 }
 
-type DragKind = 'playhead' | 'start' | 'end' | 'scrub';
+type DragKind = 'playhead' | 'start' | 'end' | 'move' | 'scrub';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
@@ -95,6 +95,9 @@ export default function VideoTimeline({
   const viewportRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<DragKind | null>(null);
+  const dragOriginRef = useRef(0);
+  const dragBaseStartRef = useRef(0);
+  const dragBaseEndRef = useRef(0);
   const prevTimeRef = useRef(currentTime);
   const [zoom, setZoomState] = useState<number>(() => initialZoom(duration));
   const [viewState, setViewState] = useState({ scrollLeft: 0, viewportWidth: 600 });
@@ -120,7 +123,12 @@ export default function VideoTimeline({
     const time = timeFromEvent(e.clientX);
     if (kind === 'start') s.onStartChange(clamp(time, 0, Math.max(0, s.end - MIN_GAP)));
     else if (kind === 'end') s.onEndChange(clamp(time, Math.min(s.duration, s.start + MIN_GAP), s.duration));
-    else s.onSeek(time);
+    else if (kind === 'move') {
+      const width = dragBaseEndRef.current - dragBaseStartRef.current;
+      const newStart = clamp(dragBaseStartRef.current + (time - dragOriginRef.current), 0, Math.max(0, s.duration - width));
+      s.onStartChange(newStart);
+      s.onEndChange(newStart + width);
+    } else s.onSeek(time);
   };
 
   const onWindowPointerUp = () => {
@@ -133,6 +141,11 @@ export default function VideoTimeline({
     const kind = (e.target as HTMLElement).closest('[data-kind]')?.getAttribute('data-kind') as DragKind | null;
     if (kind) {
       dragRef.current = kind;
+      if (kind === 'move') {
+        dragOriginRef.current = timeFromEvent(e.clientX);
+        dragBaseStartRef.current = stateRef.current.start;
+        dragBaseEndRef.current = stateRef.current.end;
+      }
     } else {
       dragRef.current = 'scrub';
       onSeek(timeFromEvent(e.clientX));
@@ -447,7 +460,27 @@ export default function VideoTimeline({
                 )}
               </AudioTrack>
               <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: 0, width: startX }} />
-              <KeptRegion data-testid="timeline-kept-region" sx={{ left: startX, width: Math.max(0, endX - startX) }} />
+              <KeptRegion data-kind="move" data-testid="timeline-kept-region" sx={{ left: startX, width: Math.max(0, endX - startX) }}>
+                <Box
+                  className="timeline-move-indicator"
+                  data-testid="timeline-move-indicator"
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    opacity: 0,
+                    transition: 'opacity 120ms ease',
+                    pointerEvents: 'none',
+                    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+                    color: '#fff',
+                    borderRadius: '6px',
+                    padding: '6px',
+                  }}
+                >
+                  <FontAwesomeIcon icon={faGripVertical} size="xs" />
+                </Box>
+              </KeptRegion>
               <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: endX, width: Math.max(0, duration * zoom - endX) }} />
               {videoStream && (
                 <TrackBubbleAnchor sx={{ top: 0, height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT, pt: '2px' }}>

@@ -203,6 +203,68 @@ describe('VideoTimeline', () => {
     expect(onEndChange).toHaveBeenCalledWith(10.1);
   });
 
+  it('shows a move cursor and a centered move indicator on the kept region', () => {
+    render(
+      <VideoTimeline duration={60} currentTime={0} start={10} end={40} onSeek={vi.fn()} onStartChange={vi.fn()} onEndChange={vi.fn()} />,
+    );
+    const region = screen.getByTestId('timeline-kept-region');
+    expect(region).toHaveStyle({ cursor: 'move' });
+    const indicator = screen.getByTestId('timeline-move-indicator');
+    expect(indicator).toHaveStyle({ opacity: '0' });
+    expect(indicator.parentElement).toBe(region);
+  });
+
+  it('slides the kept region when dragged', () => {
+    const onStartChange = vi.fn();
+    const onEndChange = vi.fn();
+    render(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={10}
+        end={40}
+        onSeek={vi.fn()}
+        onStartChange={onStartChange}
+        onEndChange={onEndChange}
+      />,
+    );
+    const scroller = screen.getByTestId('timeline-scroller');
+    mockRect(scroller, 0, 600);
+    const region = screen.getByTestId('timeline-kept-region');
+    fireEvent.pointerDown(region, { clientX: 250 });
+    fireEvent.pointerMove(window, { clientX: 300 });
+    fireEvent.pointerUp(window);
+    expect(onStartChange).toHaveBeenCalledWith(15);
+    expect(onEndChange).toHaveBeenCalledWith(45);
+  });
+
+  it('clamps the kept region when dragged past the timeline edges', () => {
+    const onStartChange = vi.fn();
+    const onEndChange = vi.fn();
+    render(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={10}
+        end={40}
+        onSeek={vi.fn()}
+        onStartChange={onStartChange}
+        onEndChange={onEndChange}
+      />,
+    );
+    const scroller = screen.getByTestId('timeline-scroller');
+    mockRect(scroller, 0, 600);
+    const region = screen.getByTestId('timeline-kept-region');
+    fireEvent.pointerDown(region, { clientX: 250 });
+    fireEvent.pointerMove(window, { clientX: 0 });
+    expect(onStartChange).toHaveBeenLastCalledWith(0);
+    expect(onEndChange).toHaveBeenLastCalledWith(30);
+    fireEvent.pointerMove(window, { clientX: 600 });
+    expect(onStartChange).toHaveBeenLastCalledWith(30);
+    expect(onEndChange).toHaveBeenLastCalledWith(60);
+    fireEvent.pointerUp(window);
+  });
+
   it('scrubs the playhead while dragging', () => {
     const onSeek = vi.fn();
     render(
