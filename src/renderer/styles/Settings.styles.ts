@@ -33,3 +33,79 @@ export const SettingsLabelRow = styled(Box)({ display: 'flex', alignItems: 'cent
 export const ModeSelect = styled(TextField)(({ theme }) => ({
   minWidth: theme.spacing(26),
 }));
+
+export const ThemeSettingsSection = styled(SettingsSection)({
+  flexDirection: 'column',
+  alignItems: 'stretch',
+  justifyContent: 'flex-start',
+});
+
+export const ThemeSwitcher = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: theme.spacing(1.5),
+}));
+
+export const ThemeCard = styled('button', {
+  shouldForwardProp: (prop) => prop !== '$selected',
+})<{ $selected: boolean }>(({ theme, $selected }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: theme.spacing(0.5),
+  padding: theme.spacing(1),
+  border: `2px solid ${$selected ? theme.palette.primary.main : theme.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  background: 'none',
+  cursor: 'pointer',
+  color: $selected ? theme.palette.primary.main : theme.palette.text.secondary,
+  '&:hover': {
+    borderColor: $selected ? theme.palette.primary.main : theme.palette.text.secondary,
+  },
+  '&:focus-visible': {
+    outline: `2px solid ${theme.palette.primary.main}`,
+    outlineOffset: 2,
+  },
+}));
+
+export const ThemePreview = styled(Box)(({ theme }) => ({
+  width: 132,
+  height: 88,
+  borderRadius: theme.shape.borderRadius,
+  padding: theme.spacing(1),
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(0.75),
+}));
+
+export const ThemePreviewPaper = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$color',
+})<{ $color: string }>(({ theme, $color }) => ({
+  flex: 1,
+  width: '100%',
+  borderRadius: 4,
+  backgroundColor: $color,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  gap: theme.spacing(0.5),
+  padding: theme.spacing(0.75),
+}));
+
+export const ThemePreviewTextBar = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$color' && prop !== '$width',
+})<{ $color: string; $width: string }>(({ $color, $width }) => ({
+  height: 4,
+  width: $width,
+  borderRadius: 2,
+  backgroundColor: $color,
+}));
+
+export const ThemePreviewAccentBar = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$color',
+})<{ $color: string }>(({ $color }) => ({
+  height: 10,
+  width: '100%',
+  borderRadius: 3,
+  backgroundColor: $color,
+}));

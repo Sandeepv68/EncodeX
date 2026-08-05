@@ -35,39 +35,45 @@ describe('Settings', () => {
     expect(screen.getByText('settings.theme')).toBeInTheDocument();
   });
 
-  it('lists the light themes and the dark theme in the theme dropdown', () => {
+  it('lists the light themes and the dark theme as selectable cards', () => {
     renderSettings();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
-    expect(screen.getByRole('option', { name: 'settings.themes.light' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'settings.themes.ocean' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'settings.themes.dark' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'settings.themes.light' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'settings.themes.ocean' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'settings.themes.forest' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'settings.themes.dark' })).toBeInTheDocument();
   });
 
-  it('switches the theme and persists it when a theme is selected', () => {
+  it('marks the active theme card as pressed', () => {
     renderSettings();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
-    fireEvent.click(screen.getByRole('option', { name: 'settings.themes.dark' }));
+    expect(screen.getByRole('button', { name: 'settings.themes.light' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'settings.themes.dark' })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('switches the theme and persists it when a theme card is selected', () => {
+    renderSettings();
+    fireEvent.click(screen.getByRole('button', { name: 'settings.themes.dark' }));
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('dark');
+    expect(screen.getByRole('button', { name: 'settings.themes.dark' })).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('renders the hardware acceleration row with the mode dropdown when enabled', () => {
     renderSettings();
     expect(screen.getByText('settings.hardwareAcceleration')).toBeInTheDocument();
     expect(screen.getByText('settings.hwaccelMode')).toBeInTheDocument();
-    expect(screen.getAllByRole('combobox')).toHaveLength(3);
+    expect(screen.getAllByRole('combobox')).toHaveLength(2);
   });
 
   it('hides the mode dropdown when hardware acceleration is disabled', () => {
     renderSettings();
     fireEvent.click(hwaccelSwitch());
     expect(screen.queryByText('settings.hwaccelMode')).not.toBeInTheDocument();
-    expect(screen.getAllByRole('combobox')).toHaveLength(1);
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
     expect(useSettingsStore.getState().hardwareAcceleration).toBe(false);
   });
 
   it('updates the hwaccel mode when a mode is selected', () => {
     renderSettings();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
     fireEvent.click(screen.getByRole('option', { name: 'settings.hwaccelModeEncode' }));
     expect(useSettingsStore.getState().hwaccelMode).toBe('encode');
   });
@@ -75,19 +81,19 @@ describe('Settings', () => {
   it('renders the encoder type dropdown when hardware acceleration is enabled', () => {
     renderSettings();
     expect(screen.getByText('settings.encoderType')).toBeInTheDocument();
-    expect(screen.getAllByRole('combobox')).toHaveLength(3);
+    expect(screen.getAllByRole('combobox')).toHaveLength(2);
   });
 
   it('hides the encoder type dropdown when hardware acceleration is disabled', () => {
     renderSettings();
     fireEvent.click(hwaccelSwitch());
     expect(screen.queryByText('settings.encoderType')).not.toBeInTheDocument();
-    expect(screen.getAllByRole('combobox')).toHaveLength(1);
+    expect(screen.queryAllByRole('combobox')).toHaveLength(0);
   });
 
   it('updates the encoder type when an option is selected', () => {
     renderSettings();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByRole('option', { name: 'settings.encoderTypeHardware' }));
     expect(useSettingsStore.getState().encoderType).toBe('hardware');
   });
