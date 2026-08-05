@@ -317,6 +317,8 @@
   "settings": {
     "title": "설정",
     "theme": "테마",
+    "alwaysOnTop": "항상 위에 표시",
+    "alwaysOnTopHint": "앱 창을 다른 모든 창 위에 유지합니다.",
     "hardwareAcceleration": "하드웨어 가속",
     "hwaccelMode": "가속 모드",
     "hwaccelModeAuto": "자동 (디코드 + 인코드)",

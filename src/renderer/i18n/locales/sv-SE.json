@@ -317,6 +317,8 @@
   "settings": {
     "title": "Inställningar",
     "theme": "Tema",
+    "alwaysOnTop": "Alltid överst",
+    "alwaysOnTopHint": "Håller appfönstret ovanför alla andra fönster.",
     "hardwareAcceleration": "Hårdvaruacceleration",
     "hwaccelMode": "Accelerationsläge",
     "hwaccelModeAuto": "Automatisk (avkoda + koda)",

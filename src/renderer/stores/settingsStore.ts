@@ -8,6 +8,7 @@ import { Logger } from '../../shared/logger';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { HWACCEL_DEFAULTS, HWACCEL_MODES, HWACCEL_STORAGE_KEY, ENCODER_TYPES, ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
 import type { HwAccelMode, EncoderType } from '../../shared/hwaccel-settings';
+import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY } from '../../shared/constants';
 
 const log = new Logger('renderer/stores/settingsStore');
 
@@ -44,6 +45,23 @@ function persistHwAccel(hardwareAcceleration: boolean, hwaccelMode: HwAccelMode,
 
 const stored = readStoredHwAccel();
 
+function readStoredAlwaysOnTop(): boolean {
+  try {
+    return localStorage.getItem(WINDOW_ALWAYS_ON_TOP_STORAGE_KEY) === 'true';
+  } catch (err) {
+    log.warn('Failed to read stored always-on-top setting:', err);
+    return false;
+  }
+}
+
+function persistAlwaysOnTop(flag: boolean): void {
+  try {
+    localStorage.setItem(WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, String(flag));
+  } catch (err) {
+    log.warn('Failed to persist always-on-top setting:', err);
+  }
+}
+
 interface SettingsState {
   transcoder: string;
   setTranscoder: (t: string) => void;
@@ -53,6 +71,8 @@ interface SettingsState {
   setHardwareAcceleration: (enabled: boolean) => void;
   setHwaccelMode: (mode: HwAccelMode) => void;
   setEncoderType: (type: EncoderType) => void;
+  alwaysOnTop: boolean;
+  setAlwaysOnTop: (flag: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({
@@ -84,5 +104,12 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       persistHwAccel(state.hardwareAcceleration, state.hwaccelMode, type);
       return { encoderType: type };
     });
+  },
+  alwaysOnTop: readStoredAlwaysOnTop(),
+  setAlwaysOnTop: (flag) => {
+    log.debug('setAlwaysOnTop:', flag);
+    persistAlwaysOnTop(flag);
+    window.electronAPI?.windowSetAlwaysOnTop(flag);
+    set({ alwaysOnTop: flag });
   },
 }));

@@ -317,6 +317,8 @@
   "settings": {
     "title": "सेटिंग्स",
     "theme": "थीम",
+    "alwaysOnTop": "हमेशा शीर्ष पर रखें",
+    "alwaysOnTopHint": "ऐप विंडो को अन्य सभी विंडो के ऊपर रखता है।",
     "hardwareAcceleration": "हार्डवेयर त्वरण",
     "hwaccelMode": "त्वरण मोड",
     "hwaccelModeAuto": "स्वचालित (डिकोड + एन्कोड)",

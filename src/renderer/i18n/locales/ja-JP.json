@@ -317,6 +317,8 @@
   "settings": {
     "title": "設定",
     "theme": "テーマ",
+    "alwaysOnTop": "常に最前面に表示",
+    "alwaysOnTopHint": "アプリのウィンドウを他のすべてのウィンドウの上に表示します。",
     "hardwareAcceleration": "ハードウェアアクセラレーション",
     "hwaccelMode": "アクセラレーションモード",
     "hwaccelModeAuto": "自動（デコード＋エンコード）",

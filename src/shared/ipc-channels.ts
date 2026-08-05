@@ -37,6 +37,7 @@ export const IPC = {
   WINDOW_MINIMIZE: 'window-minimize',
   WINDOW_MAXIMIZE_TOGGLE: 'window-maximize-toggle',
   WINDOW_CLOSE: 'window-close',
+  WINDOW_SET_ALWAYS_ON_TOP: 'window-set-always-on-top',
   WINDOW_MAXIMIZED_CHANGED: 'window-maximized-changed',
 
   CONVERSION_PROGRESS: 'conversion-progress',

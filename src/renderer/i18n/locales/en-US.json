@@ -334,6 +334,8 @@
   "settings": {
     "title": "Settings",
     "theme": "Theme",
+    "alwaysOnTop": "Always on top",
+    "alwaysOnTopHint": "Keeps the app window above all other windows.",
     "hardwareAcceleration": "Hardware Acceleration",
     "hwaccelMode": "Acceleration Mode",
     "hwaccelModeAuto": "Automatic (decode + encode)",

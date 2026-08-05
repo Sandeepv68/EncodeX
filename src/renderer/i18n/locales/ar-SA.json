@@ -317,6 +317,8 @@
   "settings": {
     "title": "الإعدادات",
     "theme": "السمة",
+    "alwaysOnTop": "إبقاء النافذة في المقدمة",
+    "alwaysOnTopHint": "يبقي نافذة التطبيق فوق جميع النوافذ الأخرى.",
     "hardwareAcceleration": "تسريع الأجهزة",
     "hwaccelMode": "وضع التسريع",
     "hwaccelModeAuto": "تلقائي (فك التشفير + التشفير)",

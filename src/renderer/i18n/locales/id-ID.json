@@ -317,6 +317,8 @@
   "settings": {
     "title": "Pengaturan",
     "theme": "Tema",
+    "alwaysOnTop": "Selalu di atas",
+    "alwaysOnTopHint": "Menjaga jendela aplikasi tetap di atas semua jendela lainnya.",
     "hardwareAcceleration": "Akselerasi perangkat keras",
     "hwaccelMode": "Mode akselerasi",
     "hwaccelModeAuto": "Otomatis (decode + encode)",

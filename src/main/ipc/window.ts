@@ -29,6 +29,11 @@ export function registerWindowHandlers(win: BrowserWindow): void {
     win.close();
   });
 
+  ipcMain.on(IPC.WINDOW_SET_ALWAYS_ON_TOP, (_event, flag: boolean) => {
+    log.debug('WINDOW_SET_ALWAYS_ON_TOP', { flag });
+    win.setAlwaysOnTop(Boolean(flag));
+  });
+
   win.on('maximize', () => {
     if (!win.isDestroyed()) win.webContents.send(IPC.WINDOW_MAXIMIZED_CHANGED, true);
   });

@@ -46,9 +46,11 @@ export default function Settings() {
   const hardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
   const hwaccelMode = useSettingsStore((s) => s.hwaccelMode);
   const encoderType = useSettingsStore((s) => s.encoderType);
+  const alwaysOnTop = useSettingsStore((s) => s.alwaysOnTop);
   const setHardwareAcceleration = useSettingsStore((s) => s.setHardwareAcceleration);
   const setHwaccelMode = useSettingsStore((s) => s.setHwaccelMode);
   const setEncoderType = useSettingsStore((s) => s.setEncoderType);
+  const setAlwaysOnTop = useSettingsStore((s) => s.setAlwaysOnTop);
 
   return (
     <SettingsRoot>
@@ -71,8 +73,20 @@ export default function Settings() {
         </Tooltip>
       </SettingsSection>
       <SettingsSection>
+        <SettingLabel text={t('settings.alwaysOnTop')} hint={t('settings.alwaysOnTopHint')} />
+        <Switch
+          checked={alwaysOnTop}
+          onChange={(e) => setAlwaysOnTop(e.target.checked)}
+          slotProps={{ input: { 'aria-label': t('settings.alwaysOnTop') } }}
+        />
+      </SettingsSection>
+      <SettingsSection>
         <SettingLabel text={t('settings.hardwareAcceleration')} hint={t('settings.hardwareAccelerationHint')} />
-        <Switch checked={hardwareAcceleration} onChange={(e) => setHardwareAcceleration(e.target.checked)} />
+        <Switch
+          checked={hardwareAcceleration}
+          onChange={(e) => setHardwareAcceleration(e.target.checked)}
+          slotProps={{ input: { 'aria-label': t('settings.hardwareAcceleration') } }}
+        />
       </SettingsSection>
       {hardwareAcceleration && (
         <SettingsSection>

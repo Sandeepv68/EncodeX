@@ -110,3 +110,6 @@ export const AUDIO_EXTRACT_DEFAULT_CODEC = 'libmp3lame';
 // --- i18n ---
 export const LANGUAGE_STORAGE_KEY = 'encodex-lang';
 export const DEFAULT_LANGUAGE = 'en-US';
+
+// --- Window settings ---
+export const WINDOW_ALWAYS_ON_TOP_STORAGE_KEY = 'encodex-always-on-top';

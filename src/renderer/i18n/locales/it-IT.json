@@ -317,6 +317,8 @@
   "settings": {
     "title": "Impostazioni",
     "theme": "Tema",
+    "alwaysOnTop": "Sempre in primo piano",
+    "alwaysOnTopHint": "Mantiene la finestra dell'app sopra tutte le altre finestre.",
     "hardwareAcceleration": "Accelerazione hardware",
     "hwaccelMode": "Modalità di accelerazione",
     "hwaccelModeAuto": "Automatica (decodifica + codifica)",

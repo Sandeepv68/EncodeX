@@ -131,6 +131,10 @@ const api = {
     log.debug('windowClose called');
     ipcRenderer.send(IPC.WINDOW_CLOSE);
   },
+  windowSetAlwaysOnTop: (flag: boolean) => {
+    log.debug('windowSetAlwaysOnTop called', { flag });
+    ipcRenderer.send(IPC.WINDOW_SET_ALWAYS_ON_TOP, flag);
+  },
 
   onWindowMaximizedChange: (cb: (maximized: boolean) => void) => {
     const handler = (_event: IpcRendererEvent, maximized: boolean) => {

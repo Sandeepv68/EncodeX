@@ -317,6 +317,8 @@
   "settings": {
     "title": "Instellingen",
     "theme": "Thema",
+    "alwaysOnTop": "Altijd boven",
+    "alwaysOnTopHint": "Houdt het app-venster boven alle andere vensters.",
     "hardwareAcceleration": "Hardwareversnelling",
     "hwaccelMode": "Versnellingsmodus",
     "hwaccelModeAuto": "Automatisch (decoderen + coderen)",

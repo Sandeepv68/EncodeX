@@ -36,6 +36,7 @@ export interface ElectronAPI {
   windowMinimize(): void;
   windowMaximizeToggle(): void;
   windowClose(): void;
+  windowSetAlwaysOnTop(flag: boolean): void;
   onWindowMaximizedChange(cb: (maximized: boolean) => void): () => void;
   onConversionProgress(cb: (data: { input: string; output: string; progress: ConversionProgress }) => void): () => void;
   onQueueAdded(cb: (job: QueueJob) => void): () => void;

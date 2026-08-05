@@ -67,6 +67,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     windowMinimize: vi.fn(),
     windowMaximizeToggle: vi.fn(),
     windowClose: vi.fn(),
+    windowSetAlwaysOnTop: vi.fn(),
     onWindowMaximizedChange: vi.fn(() => vi.fn()),
     onConversionProgress: vi.fn(() => vi.fn()),
     onQueueAdded: vi.fn(() => vi.fn()),
