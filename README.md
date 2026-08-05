@@ -398,6 +398,8 @@ e2e/
 
 ## Architecture
 
+> A deep dive into the application's internals — process model, IPC contract, transcoder abstraction, player, queue, and more — is available in [ARCHITECTURE.md](ARCHITECTURE.md).
+
 ### Render Tree
 
 ```
