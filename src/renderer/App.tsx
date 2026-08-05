@@ -14,6 +14,7 @@ import AppDrawer from './components/AppDrawer';
 import TitleBar from './components/TitleBar';
 import { useErrorStore } from './stores/errorStore';
 import { useLogStore } from './stores/logStore';
+import { useSettingsStore } from './stores/settingsStore';
 import { useLanguageDirection } from './useLanguageDirection';
 import {
   AppRoot,
@@ -50,6 +51,10 @@ function AppLayout() {
       useLogStore.getState().addEntry(entry);
     });
     return () => cleanup?.();
+  }, []);
+
+  useEffect(() => {
+    window.electronAPI?.windowSetAlwaysOnTop(useSettingsStore.getState().alwaysOnTop);
   }, []);
 
   const routes: { path: string; element: ReactNode }[] = [

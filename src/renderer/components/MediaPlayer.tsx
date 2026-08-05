@@ -1,10 +1,39 @@
+/**
+ * @fileoverview Video and audio media player component.
+ * Handles real-time playback with audio-video synchronization using Web Audio API.
+ */
+
 import { useRef, useEffect, useCallback, useState, forwardRef, useImperativeHandle, memo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faStop, faVolumeHigh, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
 import { MediaInfo, PlayerFrame, PlayerAudioChunk } from '../../shared/types';
+import {
+  AUDIO_LOOKAHEAD_SECONDS,
+  MAX_PENDING_AUDIO_CHUNKS,
+  SEEK_COALESCE_MS,
+  MAX_BUFFERED_FRAMES,
+  MAX_FRAME_LOOKAHEAD_S,
+  STALL_DRAW_TIMEOUT_MS,
+  AUDIO_CLOCK_FROZEN_MS,
+  AUDIO_MIN_SAMPLE_RATE,
+  AUDIO_MIN_CHANNELS,
+  PCM_MAX_AMPLITUDE,
+} from '../../shared/constants';
 import { PlayerRoot, PlayerCanvas, ControlsArea, SeekSlider, ControlButton, ControlsRow, TimeText } from '../styles/MediaPlayer.styles';
 import { formatClockTime } from '../utils/formatters';
+import {
+  LOG_AUDIO_CONTEXT_CREATED,
+  LOG_CLOSING_PLAYER,
+  LOG_FORCE_DREW_STALLED_FRAME_AT,
+  LOG_LOADING_PLAYER_FOR,
+  LOG_NO_FRAMES_RECEIVED_FOR_3S_DECODE_MAY_BE_STALLED_GENERATION,
+  LOG_PLAYER_DECODE_ERROR,
+  LOG_QUEUE_AUDIO_CHUNK_ERROR,
+  LOG_RENDER_LOOP_ERROR,
+  LOG_SCHEDULE_ONE_CHUNK_ERROR,
+  LOG_WEB_AUDIO_IS_NOT_AVAILABLE_AUDIO_PLAYBACK_DISABLED,
+} from '../../shared/log-constants';
 
 const log = new Logger('renderer/components/MediaPlayer');
 
@@ -19,10 +48,6 @@ interface Props {
   onMediaInfo?: (info: MediaInfo) => void;
 }
 
-const AUDIO_LOOKAHEAD_SECONDS = 1;
-const MAX_PENDING_AUDIO_CHUNKS = 600;
-const SEEK_COALESCE_MS = 120;
-
 const MediaPlayer = memo(
   forwardRef<MediaPlayerHandle, Props>(function MediaPlayer({ filePath, onTimeUpdate, onDurationChange, onMediaInfo }: Props, ref) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -31,7 +56,8 @@ const MediaPlayer = memo(
     const [duration, setDuration] = useState(0);
     const [muted, setMuted] = useState(false);
     const animRef = useRef<number>(0);
-    const frameBuffer = useRef<Array<{ data: ImageData; pts: number }>>([]);
+    const frameBuffer = useRef<Array<{ data: Uint8Array; width: number; height: number; pts: number }>>([]);
+    const imageDataRef = useRef<ImageData | null>(null);
     const isSeeking = useRef(false);
     const displayPtsRef = useRef(0);
     const resetToStartRef = useRef(false);
@@ -48,6 +74,9 @@ const MediaPlayer = memo(
     const frameGenRef = useRef<number | null>(null);
     const audioGenRef = useRef<number | null>(null);
     const pendingSeekRef = useRef<{ time: number; timer: number | null }>({ time: 0, timer: null });
+    const audioAnchorCtxRef = useRef<number | null>(null);
+    const audioAnchorMediaRef = useRef(0);
+    const needsBaselineRef = useRef(false);
 
     const audioCtxRef = useRef<AudioContext | null>(null);
     const masterGainRef = useRef<GainNode | null>(null);
@@ -55,12 +84,18 @@ const MediaPlayer = memo(
     const pendingChunksRef = useRef<PlayerAudioChunk[]>([]);
     const activeSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
     const mutedRef = useRef(false);
+    const lastGenRef = useRef<number | null>(null);
+    const lastDrawnWallRef = useRef(0);
+    const lastFrameArrivedWallRef = useRef(0);
+    const lastCtxTimeRef = useRef(-1);
+    const lastCtxAdvanceWallRef = useRef(0);
+    const stallWarnedGenRef = useRef<number | null>(null);
 
     const ensureAudioContext = useCallback((): AudioContext | null => {
       if (audioCtxRef.current) return audioCtxRef.current;
       const Ctor = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (!Ctor) {
-        log.warn('Web Audio is not available, audio playback disabled');
+        log.warn(LOG_WEB_AUDIO_IS_NOT_AVAILABLE_AUDIO_PLAYBACK_DISABLED);
         return null;
       }
       const ctx = new Ctor();
@@ -70,7 +105,8 @@ const MediaPlayer = memo(
       audioCtxRef.current = ctx;
       masterGainRef.current = gain;
       nextStartTimeRef.current = ctx.currentTime + 0.1;
-      log.debug('Audio context created');
+      log.debug(LOG_AUDIO_CONTEXT_CREATED);
+      ctx.resume().catch(() => {});
       return ctx;
     }, []);
 
@@ -84,6 +120,7 @@ const MediaPlayer = memo(
         }
       });
       activeSourcesRef.current.clear();
+      audioAnchorCtxRef.current = null;
       if (audioCtxRef.current) {
         audioCtxRef.current.close().catch(() => {});
         audioCtxRef.current = null;
@@ -92,22 +129,92 @@ const MediaPlayer = memo(
       nextStartTimeRef.current = 0;
     }, []);
 
+    const resetAudioScheduling = useCallback(() => {
+      activeSourcesRef.current.forEach((source) => {
+        try {
+          source.stop();
+        } catch {
+          /* already stopped */
+        }
+      });
+      activeSourcesRef.current.clear();
+      pendingChunksRef.current = [];
+      audioAnchorCtxRef.current = null;
+      const ctx = audioCtxRef.current;
+      nextStartTimeRef.current = ctx ? ctx.currentTime + 0.05 : 0;
+      if (ctx && ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+    }, []);
+
+    const getMediaNow = useCallback((): number => {
+      const ctx = audioCtxRef.current;
+      if (ctx && ctx.state === 'running' && audioAnchorCtxRef.current !== null) {
+        const now = typeof performance !== 'undefined' ? performance.now() : 0;
+        if (ctx.currentTime > lastCtxTimeRef.current) {
+          lastCtxTimeRef.current = ctx.currentTime;
+          lastCtxAdvanceWallRef.current = now;
+        }
+        if (lastCtxAdvanceWallRef.current > 0 && now - lastCtxAdvanceWallRef.current > AUDIO_CLOCK_FROZEN_MS) {
+          // Audio hardware clock stopped advancing (device glitch, stall).
+          // Keep pacing off the last-known audio time plus wall-clock elapsed,
+          // so playback continues smoothly and stays continuous with audio.
+          return (
+            lastCtxTimeRef.current - audioAnchorCtxRef.current + audioAnchorMediaRef.current + (now - lastCtxAdvanceWallRef.current) / 1000
+          );
+        }
+        return ctx.currentTime - audioAnchorCtxRef.current + audioAnchorMediaRef.current;
+      }
+      const now = typeof performance !== 'undefined' ? performance.now() : 0;
+      return playBaseTimeRef.current + (now - playStartWallRef.current) / 1000;
+    }, []);
+
     const resetPacing = useCallback((baseTime: number) => {
       playBaseTimeRef.current = baseTime;
       playStartWallRef.current = typeof performance !== 'undefined' ? performance.now() : 0;
       lastReportedTimeRef.current = -1;
+      needsBaselineRef.current = true;
     }, []);
 
     const runPlayerCommand = useCallback((command: Promise<number>) => {
       frameGenRef.current = null;
       audioGenRef.current = null;
       frameBuffer.current = [];
+      lastGenRef.current = null;
+      stallWarnedGenRef.current = null;
       command
         .then((gen) => {
           frameGenRef.current = gen;
           audioGenRef.current = gen;
         })
         .catch(() => {});
+    }, []);
+
+    type BufferedFrame = { data: Uint8Array; width: number; height: number; pts: number };
+
+    const drawFrame = useCallback((frame: BufferedFrame) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      if (canvas.width !== frame.width || canvas.height !== frame.height) {
+        canvas.width = frame.width;
+        canvas.height = frame.height;
+      }
+      let imageData = imageDataRef.current;
+      if (!imageData || imageData.width !== frame.width || imageData.height !== frame.height) {
+        imageData = ctx.createImageData(frame.width, frame.height);
+        imageDataRef.current = imageData;
+      }
+      const rgba = imageData.data;
+      const rgb = frame.data;
+      const pixelCount = frame.width * frame.height;
+      const rgba32 = new Uint32Array(rgba.buffer, rgba.byteOffset, pixelCount);
+      for (let i = 0; i < pixelCount; i++) {
+        const j = i * 3;
+        rgba32[i] = (0xff << 24) | (rgb[j + 2] << 16) | (rgb[j + 1] << 8) | rgb[j];
+      }
+      ctx.putImageData(imageData, 0, 0);
     }, []);
 
     const flushPendingSeek = useCallback(() => {
@@ -117,45 +224,60 @@ const MediaPlayer = memo(
         pending.timer = null;
       }
       const time = pending.time;
-      closeAudio();
+      resetAudioScheduling();
       resetPacing(time);
       runPlayerCommand(window.electronAPI.playerSeek(formatTime(time)));
       setIsPlaying(true);
-    }, [closeAudio, resetPacing, runPlayerCommand]);
+    }, [resetAudioScheduling, resetPacing, runPlayerCommand]);
 
     const scheduleOneChunk = useCallback((chunk: PlayerAudioChunk) => {
       const ctx = audioCtxRef.current;
       if (!ctx || !masterGainRef.current) return;
+      if (chunk.channels < AUDIO_MIN_CHANNELS || chunk.sampleRate < AUDIO_MIN_SAMPLE_RATE) return;
 
-      if (nextStartTimeRef.current < ctx.currentTime - 0.25) {
-        nextStartTimeRef.current = ctx.currentTime + 0.05;
-      }
-
-      const int16 = new Int16Array(chunk.data);
-      const frameCount = Math.floor(int16.length / chunk.channels);
-      if (frameCount <= 0) return;
-
-      const buffer = ctx.createBuffer(chunk.channels, frameCount, chunk.sampleRate);
-      for (let ch = 0; ch < chunk.channels; ch++) {
-        const channelData = buffer.getChannelData(ch);
-        for (let i = 0; i < frameCount; i++) {
-          channelData[i] = int16[i * chunk.channels + ch] / 32768;
+      try {
+        if (nextStartTimeRef.current < ctx.currentTime) {
+          nextStartTimeRef.current = ctx.currentTime;
         }
-      }
 
-      const source = ctx.createBufferSource();
-      source.buffer = buffer;
-      source.connect(masterGainRef.current);
-      const startAt = Math.max(nextStartTimeRef.current, ctx.currentTime + 0.05);
-      source.start(startAt);
-      nextStartTimeRef.current = startAt + buffer.duration;
-      activeSourcesRef.current.add(source);
-      source.onended = () => activeSourcesRef.current.delete(source);
+        const int16 = new Int16Array(chunk.data);
+        const frameCount = Math.floor(int16.length / chunk.channels);
+        if (frameCount <= 0) return;
+
+        const buffer = ctx.createBuffer(chunk.channels, frameCount, chunk.sampleRate);
+        for (let ch = 0; ch < chunk.channels; ch++) {
+          const channelData = buffer.getChannelData(ch);
+          for (let i = 0; i < frameCount; i++) {
+            channelData[i] = int16[i * chunk.channels + ch] / PCM_MAX_AMPLITUDE;
+          }
+        }
+
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(masterGainRef.current);
+        const startAt = nextStartTimeRef.current;
+        if (audioAnchorCtxRef.current === null) {
+          audioAnchorCtxRef.current = startAt;
+          audioAnchorMediaRef.current = playBaseTimeRef.current;
+        }
+        source.start(startAt);
+        nextStartTimeRef.current = startAt + buffer.duration;
+        activeSourcesRef.current.add(source);
+        source.onended = () => activeSourcesRef.current.delete(source);
+      } catch (err) {
+        log.error(LOG_SCHEDULE_ONE_CHUNK_ERROR, err);
+        nextStartTimeRef.current = ctx.currentTime;
+      }
     }, []);
 
     const drainAudioQueue = useCallback(() => {
       const ctx = audioCtxRef.current;
       if (!ctx) return;
+      // If the schedule pointer drifted far ahead of the audio clock (e.g. a
+      // suspended context resumed much later), pull it back so sound resumes.
+      if (nextStartTimeRef.current - ctx.currentTime > AUDIO_LOOKAHEAD_SECONDS * 4 && pendingChunksRef.current.length > 0) {
+        nextStartTimeRef.current = ctx.currentTime;
+      }
       let guard = 0;
       while (pendingChunksRef.current.length > 0 && guard < 200) {
         if (nextStartTimeRef.current - ctx.currentTime > AUDIO_LOOKAHEAD_SECONDS) return;
@@ -167,13 +289,23 @@ const MediaPlayer = memo(
 
     const queueAudioChunk = useCallback(
       (chunk: PlayerAudioChunk) => {
+        if (chunk.channels < AUDIO_MIN_CHANNELS || chunk.sampleRate < AUDIO_MIN_SAMPLE_RATE || chunk.data.byteLength < chunk.channels * 2) {
+          return;
+        }
         const ctx = ensureAudioContext();
         if (!ctx) return;
+        if (ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
         if (pendingChunksRef.current.length >= MAX_PENDING_AUDIO_CHUNKS) {
-          pendingChunksRef.current.shift();
+          return;
         }
         pendingChunksRef.current.push(chunk);
-        drainAudioQueue();
+        try {
+          drainAudioQueue();
+        } catch (err) {
+          log.error(LOG_QUEUE_AUDIO_CHUNK_ERROR, err);
+        }
       },
       [ensureAudioContext, drainAudioQueue],
     );
@@ -182,12 +314,19 @@ const MediaPlayer = memo(
       if (!filePath) return;
       let cancelled = false;
 
-      log.info('Loading player for:', filePath);
+      log.info(LOG_LOADING_PLAYER_FOR, filePath);
       frameGenRef.current = null;
       audioGenRef.current = null;
       frameBuffer.current = [];
       displayPtsRef.current = 0;
       durationRef.current = 0;
+      needsBaselineRef.current = true;
+      lastGenRef.current = null;
+      lastDrawnWallRef.current = 0;
+      lastFrameArrivedWallRef.current = 0;
+      lastCtxTimeRef.current = -1;
+      lastCtxAdvanceWallRef.current = 0;
+      stallWarnedGenRef.current = null;
       setCurrentTime(0);
       setIsPlaying(false);
 
@@ -205,30 +344,38 @@ const MediaPlayer = memo(
 
       const cleanupFrame = window.electronAPI.onPlayerFrame((frame: PlayerFrame) => {
         if (frame.generation !== frameGenRef.current) return;
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        const uint8 = new Uint8Array(frame.data);
-        const imageData = ctx.createImageData(frame.width, frame.height);
-        for (let i = 0; i < frame.width * frame.height; i++) {
-          imageData.data[i * 4] = uint8[i * 3];
-          imageData.data[i * 4 + 1] = uint8[i * 3 + 1];
-          imageData.data[i * 4 + 2] = uint8[i * 3 + 2];
-          imageData.data[i * 4 + 3] = 255;
-        }
 
         if (resetToStartRef.current) {
           resetToStartRef.current = false;
-          canvas.width = frame.width;
-          canvas.height = frame.height;
-          ctx.putImageData(imageData, 0, 0);
+          drawFrame({ data: new Uint8Array(frame.data), width: frame.width, height: frame.height, pts: frame.pts });
           window.electronAPI.playerClose();
           return;
         }
 
-        frameBuffer.current.push({ data: imageData, pts: frame.pts });
+        lastFrameArrivedWallRef.current = performance.now();
+
+        // Snap the playback clock to the first frame of a new decode generation.
+        // This makes files whose PTS does not start at 0 (and seeks) begin
+        // playing immediately instead of waiting for the clock to catch up.
+        if (lastGenRef.current !== frame.generation) {
+          lastGenRef.current = frame.generation;
+          if (needsBaselineRef.current) {
+            needsBaselineRef.current = false;
+            const diff = frame.pts - playBaseTimeRef.current;
+            if (Math.abs(diff) > 0.001) {
+              playBaseTimeRef.current = frame.pts;
+              if (audioAnchorCtxRef.current !== null) {
+                audioAnchorMediaRef.current += diff;
+              }
+            }
+          }
+        }
+
+        const buffer = frameBuffer.current;
+        if (buffer.length >= MAX_BUFFERED_FRAMES) {
+          buffer.shift();
+        }
+        buffer.push({ data: new Uint8Array(frame.data), width: frame.width, height: frame.height, pts: frame.pts });
       });
 
       const cleanupAudio = window.electronAPI.onPlayerAudio((chunk: PlayerAudioChunk) => {
@@ -236,9 +383,13 @@ const MediaPlayer = memo(
         queueAudioChunk(chunk);
       });
 
+      const cleanupError = window.electronAPI.onPlayerError?.((message: string) => {
+        log.error(LOG_PLAYER_DECODE_ERROR, message);
+      });
+
       return () => {
         cancelled = true;
-        log.debug('Closing player');
+        log.debug(LOG_CLOSING_PLAYER);
         if (pendingSeekRef.current.timer !== null) {
           window.clearTimeout(pendingSeekRef.current.timer);
           pendingSeekRef.current.timer = null;
@@ -246,43 +397,88 @@ const MediaPlayer = memo(
         window.electronAPI.playerClose();
         cleanupFrame();
         cleanupAudio();
+        cleanupError?.();
         cancelAnimationFrame(animRef.current);
         closeAudio();
       };
-    }, [filePath, queueAudioChunk, closeAudio]);
+    }, [filePath, queueAudioChunk, closeAudio, drawFrame]);
 
     const renderLoop = useCallback(() => {
-      if (frameBuffer.current.length > 0 && !isSeeking.current) {
-        const canvas = canvasRef.current;
-        const ctx = canvas?.getContext('2d');
-        if (canvas && ctx) {
-          const now = typeof performance !== 'undefined' ? performance.now() : 0;
-          const targetTime = playBaseTimeRef.current + (now - playStartWallRef.current) / 1000;
-          let frame: { data: ImageData; pts: number } | null = null;
-          while (frameBuffer.current.length > 0) {
-            const candidate = frameBuffer.current[0];
+      try {
+        // Drain audio queue to keep it filled
+        drainAudioQueue();
+
+        if (!isSeeking.current) {
+          const targetTime = getMediaNow();
+          let frame: BufferedFrame | null = null;
+
+          // Find the best frame to display. Frames whose PTS is absurdly far in
+          // the future (e.g. from a bad decoder estimate) are dropped instead of
+          // blocking the whole buffer forever.
+          const buffer = frameBuffer.current;
+          while (buffer.length > 0) {
+            const candidate = buffer[0];
+            if (candidate.pts > targetTime + MAX_FRAME_LOOKAHEAD_S) {
+              buffer.shift();
+              continue;
+            }
             if (candidate.pts > targetTime) break;
-            frameBuffer.current.shift();
+            buffer.shift();
             frame = candidate;
           }
-          if (frame) {
-            if (canvas.width !== frame.data.width || canvas.height !== frame.data.height) {
-              canvas.width = frame.data.width;
-              canvas.height = frame.data.height;
+
+          // Stall watchdog: if frames are buffered but none has qualified for a
+          // while (clock mismatch), force-draw the oldest and re-baseline so the
+          // video can never wedge permanently.
+          const now = performance.now();
+          if (!frame && buffer.length > 0 && now - lastDrawnWallRef.current > STALL_DRAW_TIMEOUT_MS) {
+            frame = buffer.shift()!;
+            const diff = frame.pts - playBaseTimeRef.current;
+            playBaseTimeRef.current = frame.pts;
+            if (audioAnchorCtxRef.current !== null) {
+              audioAnchorMediaRef.current += diff;
             }
-            ctx.putImageData(frame.data, 0, 0);
+            needsBaselineRef.current = false;
+            log.debug(LOG_FORCE_DREW_STALLED_FRAME_AT, frame.pts);
+          } else if (
+            frameGenRef.current !== null &&
+            !frame &&
+            buffer.length === 0 &&
+            now - lastFrameArrivedWallRef.current > 3000 &&
+            stallWarnedGenRef.current !== frameGenRef.current
+          ) {
+            stallWarnedGenRef.current = frameGenRef.current;
+            log.warn(LOG_NO_FRAMES_RECEIVED_FOR_3S_DECODE_MAY_BE_STALLED_GENERATION, frameGenRef.current, ')');
+          }
+
+          if (frame) {
+            if (needsBaselineRef.current) {
+              needsBaselineRef.current = false;
+              const diff = frame.pts - playBaseTimeRef.current;
+              if (Math.abs(diff) > 0.05) {
+                playBaseTimeRef.current = frame.pts;
+                if (audioAnchorCtxRef.current !== null) {
+                  audioAnchorMediaRef.current += diff;
+                }
+              }
+            }
+            drawFrame(frame);
+            lastDrawnWallRef.current = now;
             const time = frame.pts;
             displayPtsRef.current = time;
-            if (Math.abs(time - lastReportedTimeRef.current) >= 0.1 || time >= durationRef.current) {
+            if (Math.abs(time - lastReportedTimeRef.current) >= 0.05 || time >= durationRef.current) {
               lastReportedTimeRef.current = time;
               setCurrentTime(time);
               onTimeUpdateRef.current?.(time);
             }
           }
         }
+      } catch (err) {
+        // A single bad frame/chunk must never kill the whole playback loop.
+        log.error(LOG_RENDER_LOOP_ERROR, err);
       }
       animRef.current = requestAnimationFrame(renderLoop);
-    }, []);
+    }, [getMediaNow, drainAudioQueue, drawFrame]);
 
     useEffect(() => {
       if (isPlaying) animRef.current = requestAnimationFrame(renderLoop);
@@ -299,14 +495,14 @@ const MediaPlayer = memo(
       }
       resetToStartRef.current = false;
       const resumeTime = displayPtsRef.current;
+      const ctx = ensureAudioContext();
+      ctx?.resume().catch(() => {});
       resetPacing(resumeTime);
       if (resumeTime > 0) {
         runPlayerCommand(window.electronAPI.playerSeek(formatTime(resumeTime)));
       } else {
         runPlayerCommand(window.electronAPI.playerOpen(filePath));
       }
-      const ctx = ensureAudioContext();
-      ctx?.resume().catch(() => {});
       setIsPlaying(true);
     };
 
@@ -320,7 +516,7 @@ const MediaPlayer = memo(
       isSeeking.current = false;
       resetToStartRef.current = false;
       displayPtsRef.current = time;
-      closeAudio();
+      resetAudioScheduling();
       resetPacing(time);
       runPlayerCommand(window.electronAPI.playerSeek(formatTime(time)));
       setIsPlaying(true);

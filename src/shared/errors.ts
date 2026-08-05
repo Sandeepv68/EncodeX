@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Custom error types and error handling for the application.
+ * Defines error codes, error interfaces, and utility functions for error management.
+ */
+
+/**
+ * Application error codes for different failure scenarios.
+ * @const {Object} ErrorCode
+ */
 export const ErrorCode = {
   FILE_NOT_FOUND: 'FILE_NOT_FOUND',
   FFMPEG_NOT_FOUND: 'FFMPEG_NOT_FOUND',
@@ -17,6 +26,10 @@ export const ErrorCode = {
 
 export type ErrorCodeType = (typeof ErrorCode)[keyof typeof ErrorCode];
 
+/**
+ * Application error type combining error code, message, and details.
+ * @interface AppError
+ */
 export interface AppError {
   code: ErrorCodeType;
   message: string;

@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, IconButton, TextField, Typography } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { COLORS } from '../colors';
 
 export const SettingsRoot = styled(Box)(({ theme }) => ({ display: 'flex', flexDirection: 'column', gap: theme.spacing(2) }));
@@ -35,6 +36,10 @@ export const ThemeToggleButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.secondary,
   border: `1px solid ${COLORS.border.light}`,
   borderRadius: theme.shape.borderRadius,
+}));
+
+export const ThemeToggleIcon = styled(FontAwesomeIcon)(({ theme }) => ({
+  fontSize: theme.typography.pxToRem(20),
 }));
 
 export const ModeSelect = styled(TextField)(({ theme }) => ({

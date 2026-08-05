@@ -1,3 +1,12 @@
+/**
+ * @fileoverview IPC channel constants for inter-process communication.
+ * Defines all available channels for communication between main, preload, and renderer processes.
+ */
+
+/**
+ * Inter-process communication channel names.
+ * @const {Object} IPC
+ */
 export const IPC = {
   SELECT_FILE: 'select-file',
   SELECT_FILES: 'select-files',
@@ -21,12 +30,14 @@ export const IPC = {
   PLAYER_CLOSE: 'player-close',
   PLAYER_GET_FRAME: 'player-get-frame',
   PLAYER_AUDIO: 'player-audio',
+  PLAYER_ERROR: 'player-error',
   EXTRACT_WAVEFORM: 'extract-waveform',
   EXTRACT_THUMBNAILS: 'extract-thumbnails',
 
   WINDOW_MINIMIZE: 'window-minimize',
   WINDOW_MAXIMIZE_TOGGLE: 'window-maximize-toggle',
   WINDOW_CLOSE: 'window-close',
+  WINDOW_SET_ALWAYS_ON_TOP: 'window-set-always-on-top',
   WINDOW_MAXIMIZED_CHANGED: 'window-maximized-changed',
 
   CONVERSION_PROGRESS: 'conversion-progress',

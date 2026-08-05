@@ -1,8 +1,7 @@
 import { Collapse } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleExclamation, faTriangleExclamation, faCircleInfo, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { Logger } from '../../shared/logger';
-import { AppError, ErrorCode, ErrorCodeType } from '../../shared/errors';
+import { AppError, ErrorCode } from '../../shared/errors';
 import { COLORS } from '../colors';
 import {
   BannerRoot,
@@ -11,9 +10,8 @@ import {
   BannerMessageText,
   BannerDetailText,
   BannerCloseButton,
+  BannerCloseIcon,
 } from '../styles/ErrorBanner.styles';
-
-const log = new Logger('renderer/components/ErrorBanner');
 
 const config: Record<string, { color: string; bg: string; icon: React.ReactElement }> = {
   [ErrorCode.FILE_NOT_FOUND]: { color: COLORS.error, bg: COLORS.tint.error10, icon: <FontAwesomeIcon icon={faCircleExclamation} /> },
@@ -64,7 +62,7 @@ export default function ErrorBanner({ error, onClose }: Props) {
         </BannerMessageBox>
         {onClose && (
           <BannerCloseButton size="small" onClick={onClose} $tone={cfg.color}>
-            <FontAwesomeIcon icon={faXmark} style={{ fontSize: 20 }} />
+            <BannerCloseIcon icon={faXmark} />
           </BannerCloseButton>
         )}
       </BannerRoot>

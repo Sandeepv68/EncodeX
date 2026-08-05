@@ -5,10 +5,17 @@ import ffmpegStatic from 'ffmpeg-static';
 import { Logger } from '../shared/logger';
 import { isImageFile } from '../shared/file-extensions';
 import { ImageExifData, ImageHistogram } from '../shared/types';
+import { HISTOGRAM_BINS, HISTOGRAM_MAX_WIDTH, RGB_BYTES_PER_PIXEL, LUMA_WEIGHTS } from '../shared/constants';
+import { TRANSCODER_COMMANDS } from '../shared/transcoder-constants';
+import {
+  LOG_EXIF_PARSE_FAILED,
+  LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG,
+  LOG_HISTOGRAM_DECODE_FAILED,
+  LOG_HISTOGRAM_DECODE_FAILED_STDERR,
+  LOG_HISTOGRAM_FFMPEG_ERROR,
+} from '../shared/log-constants';
 
 const log = new Logger('main/image-info');
-
-const HISTOGRAM_MAX_WIDTH = 256;
 
 export function flattenExif(input: unknown, prefix = ''): Record<string, string> {
   const out: Record<string, string> = {};
@@ -28,20 +35,20 @@ export function flattenExif(input: unknown, prefix = ''): Record<string, string>
 }
 
 export function computeHistogram(buffer: Buffer, width: number, height: number): ImageHistogram {
-  const r = new Array(256).fill(0);
-  const g = new Array(256).fill(0);
-  const b = new Array(256).fill(0);
-  const luma = new Array(256).fill(0);
+  const r = new Array(HISTOGRAM_BINS).fill(0);
+  const g = new Array(HISTOGRAM_BINS).fill(0);
+  const b = new Array(HISTOGRAM_BINS).fill(0);
+  const luma = new Array(HISTOGRAM_BINS).fill(0);
   const total = width * height;
   for (let i = 0; i < total; i++) {
-    const idx = i * 3;
+    const idx = i * RGB_BYTES_PER_PIXEL;
     const rv = buffer[idx];
     const gv = buffer[idx + 1];
     const bv = buffer[idx + 2];
     r[rv] += 1;
     g[gv] += 1;
     b[bv] += 1;
-    luma[Math.round(0.299 * rv + 0.587 * gv + 0.114 * bv)] += 1;
+    luma[Math.round(LUMA_WEIGHTS.R * rv + LUMA_WEIGHTS.G * gv + LUMA_WEIGHTS.B * bv)] += 1;
   }
   return { r, g, b, luma };
 }
@@ -49,8 +56,8 @@ export function computeHistogram(buffer: Buffer, width: number, height: number):
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
-  log.warn('ffmpeg-static not found, falling back to system ffmpeg');
-  return 'ffmpeg';
+  log.warn(LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG);
+  return TRANSCODER_COMMANDS.FFMPEG;
 }
 
 export function decodeImageHistogram(filePath: string): Promise<{ buffer: Buffer; width: number; height: number } | null> {
@@ -79,23 +86,23 @@ export function decodeImageHistogram(filePath: string): Promise<{ buffer: Buffer
       stderr += chunk.toString();
     });
     child.on('error', (err: Error) => {
-      log.error('Histogram ffmpeg error:', err);
+      log.error(LOG_HISTOGRAM_FFMPEG_ERROR, err);
       reject(err);
     });
     child.on('close', (code) => {
       if (code !== 0) {
-        log.warn('Histogram decode failed, stderr:', stderr);
+        log.warn(LOG_HISTOGRAM_DECODE_FAILED_STDERR, stderr);
         resolve(null);
         return;
       }
       const buffer = Buffer.concat(chunks);
       const width = HISTOGRAM_MAX_WIDTH;
-      const height = Math.floor(buffer.length / (width * 3));
+      const height = Math.floor(buffer.length / (width * RGB_BYTES_PER_PIXEL));
       if (height <= 0) {
         resolve(null);
         return;
       }
-      resolve({ buffer: buffer.subarray(0, width * height * 3), width, height });
+      resolve({ buffer: buffer.subarray(0, width * height * RGB_BYTES_PER_PIXEL), width, height });
     });
   });
 }
@@ -108,7 +115,7 @@ export async function getImageInfo(filePath: string): Promise<ImageExifData | nu
     const parsed = await exifr.parse(filePath, { skipUnknown: true, reviveValues: false } as Parameters<typeof exifr.parse>[1]);
     exif = flattenExif(parsed);
   } catch (err) {
-    log.warn('EXIF parse failed:', err);
+    log.warn(LOG_EXIF_PARSE_FAILED, err);
   }
 
   let histogram: ImageHistogram | null = null;
@@ -118,7 +125,7 @@ export async function getImageInfo(filePath: string): Promise<ImageExifData | nu
       histogram = computeHistogram(decoded.buffer, decoded.width, decoded.height);
     }
   } catch (err) {
-    log.warn('Histogram decode failed:', err);
+    log.warn(LOG_HISTOGRAM_DECODE_FAILED, err);
   }
 
   if (Object.keys(exif).length === 0 && histogram === null) return null;

@@ -213,4 +213,97 @@ describe('MediaPlayer', () => {
     expect(playerSeek).toHaveBeenCalledWith('00:00:05.000');
     expect(container.querySelector('[data-icon="pause"]')).not.toBeNull();
   });
+
+  it('baselines the media clock to the first frame pts for files with a start offset', async () => {
+    vi.useFakeTimers();
+    getMediaInfo.mockResolvedValue(mediaInfo(60));
+    playerOpen.mockResolvedValue(1 as never);
+    const onTimeUpdate = vi.fn();
+    let frameCb: ((frame: PlayerFrame) => void) | null = null;
+    onPlayerFrame.mockImplementation((cb: (frame: PlayerFrame) => void) => {
+      frameCb = cb;
+      return vi.fn();
+    });
+    let rafCb: FrameRequestCallback | null = null;
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rafCb = cb;
+      return 1;
+    });
+    vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
+    const runRaf = () => {
+      act(() => {
+        rafCb?.call(window, 0);
+      });
+    };
+
+    const { container } = render(<MediaPlayer filePath="/v.mp4" onTimeUpdate={onTimeUpdate} />);
+    fireEvent.click(container.querySelector('canvas')!);
+    await act(async () => {});
+    act(() => {
+      frameCb!({
+        data: new Uint8Array(4).buffer,
+        width: 1,
+        height: 1,
+        pts: 0.6,
+        generation: 1,
+      } as PlayerFrame);
+    });
+    runRaf();
+    expect(onTimeUpdate).toHaveBeenCalledWith(0.6);
+  });
+
+  it('catches audio up to the clock after a stall instead of permanently lagging', async () => {
+    vi.useFakeTimers();
+    getMediaInfo.mockResolvedValue(mediaInfo(60));
+    playerOpen.mockResolvedValue(1 as never);
+
+    const ctx = {
+      currentTime: 0,
+      state: 'running',
+      destination: {},
+      sources: [] as Array<{ start: ReturnType<typeof vi.fn>; stop: ReturnType<typeof vi.fn>; connect: ReturnType<typeof vi.fn> }>,
+      resume: vi.fn().mockResolvedValue(undefined),
+      close: vi.fn().mockResolvedValue(undefined),
+      createGain: () => ({ gain: { value: 1 }, connect: vi.fn() }),
+      createBuffer: vi.fn((ch: number, frames: number, sr: number) => ({
+        duration: frames / sr,
+        getChannelData: () => new Float32Array(frames),
+      })),
+      createBufferSource: vi.fn(() => {
+        const source = { start: vi.fn(), stop: vi.fn(), connect: vi.fn(), onended: null };
+        ctx.sources.push(source);
+        return source;
+      }),
+    };
+    class AudioContextMock {
+      constructor() {
+        return ctx;
+      }
+    }
+    (window as unknown as { AudioContext: typeof AudioContext }).AudioContext = AudioContextMock as unknown as typeof AudioContext;
+
+    let audioCb: ((chunk: import('../../../shared/types').PlayerAudioChunk) => void) | null = null;
+    onPlayerAudio.mockImplementation((cb) => {
+      audioCb = cb;
+      return vi.fn();
+    });
+
+    const { container } = render(<MediaPlayer filePath="/v.mp4" />);
+    fireEvent.click(container.querySelector('canvas')!);
+    await act(async () => {});
+
+    const chunk = () => new Int16Array(4800).buffer;
+    ctx.currentTime = 0;
+    act(() => {
+      audioCb!({ data: chunk(), sampleRate: 48000, channels: 2, generation: 1 });
+    });
+    expect(ctx.sources[0].start).toHaveBeenCalledWith(0.1);
+
+    ctx.currentTime = 1.5;
+    act(() => {
+      audioCb!({ data: chunk(), sampleRate: 48000, channels: 2, generation: 1 });
+    });
+    const last = ctx.sources[ctx.sources.length - 1];
+    expect(last.start).toHaveBeenCalledWith(1.5);
+  });
 });

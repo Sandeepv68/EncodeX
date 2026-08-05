@@ -3,6 +3,7 @@ import { Snackbar } from '@mui/material';
 import { useToastStore } from '../stores/toastStore';
 import type { Toast } from '../stores/toastStore';
 import { ToastAlert, ToastMessage, ToastDetail } from '../styles/ToastContainer.styles';
+import { TOAST_DEFAULT_DURATION_MS } from '../../shared/constants';
 
 export default function ToastContainer() {
   const toasts = useToastStore((s) => s.toasts);
@@ -42,7 +43,7 @@ export default function ToastContainer() {
     <Snackbar
       key={active.id}
       open
-      autoHideDuration={active.duration ?? 4000}
+      autoHideDuration={active.duration ?? TOAST_DEFAULT_DURATION_MS}
       onClose={handleClose}
       TransitionProps={{ onExited: handleExited }}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}

@@ -1,12 +1,48 @@
+/**
+ * @fileoverview FFmpeg frame and audio decoder for real-time media playback.
+ * Extracts raw video frames and audio PCM samples via FFmpeg process pipes.
+ */
+
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess } from 'child_process';
 import ffmpegStatic from 'ffmpeg-static';
 import { existsSync } from 'fs';
 import { Logger } from '../../shared/logger';
-import { FFMPEG_FLAGS, KILL_SIGNAL, TRANSCODER_DEFAULTS } from '../../shared/transcoder-constants';
+import { FFMPEG_FLAGS, KILL_SIGNAL, TRANSCODER_DEFAULTS, TRANSCODER_COMMANDS } from '../../shared/transcoder-constants';
+import {
+  AUDIO_CHUNK_SECONDS,
+  FRAME_FLUSH_THRESHOLD_MS,
+  FRAME_FLUSH_INTERVAL_MS,
+  FRAME_DURATION_SMOOTHING,
+  DEFAULT_FRAME_DURATION,
+  AUDIO_TARGET_MIN_BYTES,
+  FRAME_BUFFER_OVERFLOW_WARN,
+} from '../../shared/constants';
+import {
+  LOG_AUDIO,
+  LOG_CLOSE,
+  LOG_DECODER_EXITED_WITH_NON_ZERO_CODE,
+  LOG_DECODER_PROCESS_ERROR,
+  LOG_DECODER_PROCESS_EXITED_WITH_CODE,
+  LOG_DECODER_PROCESS_KILLED,
+  LOG_FFMPEG_DECODER_ARGS,
+  LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG,
+  LOG_OPEN,
+  LOG_OPTIONS,
+  LOG_RESOLUTION,
+  LOG_SEEK,
+} from '../../shared/log-constants';
 
 const log = new Logger('main/player/frame-decoder');
 
+/**
+ * @interface DecodedFrame
+ * @property {Buffer} buffer - Raw RGB24 pixel data
+ * @property {number} width - Frame width in pixels
+ * @property {number} height - Frame height in pixels
+ * @property {number} pts - Presentation timestamp in seconds
+ * @property {number} generation - Decoder generation ID for cache invalidation
+ */
 export interface DecodedFrame {
   buffer: Buffer;
   width: number;
@@ -15,6 +51,13 @@ export interface DecodedFrame {
   generation: number;
 }
 
+/**
+ * @interface DecodedAudio
+ * @property {Buffer} buffer - Raw S16LE PCM audio data
+ * @property {number} sampleRate - Sample rate in Hz
+ * @property {number} channels - Number of audio channels
+ * @property {number} generation - Decoder generation ID for cache invalidation
+ */
 export interface DecodedAudio {
   buffer: Buffer;
   sampleRate: number;
@@ -22,16 +65,33 @@ export interface DecodedAudio {
   generation: number;
 }
 
+/**
+ * @interface AudioDecodeConfig
+ * @property {number} sampleRate - Requested audio sample rate
+ * @property {number} channels - Requested number of channels
+ */
 export interface AudioDecodeConfig {
   sampleRate: number;
   channels: number;
 }
 
+/**
+ * @interface FrameDecoderOptions
+ * @property {boolean} [realtime=true] - Enable realtime mode (-re flag)
+ * @property {boolean} [audioOnly=false] - Decode audio stream only
+ * @property {number} [fpsCap=0] - Cap decoded video frame rate (0 disables)
+ */
+export interface FrameDecoderOptions {
+  realtime?: boolean;
+  audioOnly?: boolean;
+  fpsCap?: number;
+}
+
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
-  log.warn('ffmpeg-static not found, falling back to system ffmpeg');
-  return 'ffmpeg';
+  log.warn(LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG);
+  return TRANSCODER_COMMANDS.FFMPEG;
 }
 
 export class FrameDecoder extends EventEmitter {
@@ -39,151 +99,250 @@ export class FrameDecoder extends EventEmitter {
   private width = 0;
   private height = 0;
   private frameSize = 0;
-  private buffer = Buffer.alloc(0);
+  private frameParts: Buffer[] = [];
+  private framePartsLen = 0;
   private running = false;
   private inputPath = '';
   private audioSampleRate = 0;
   private audioChannels = 0;
   private generation = 0;
+  private options: Required<FrameDecoderOptions> = { realtime: true, audioOnly: false, fpsCap: 0 };
 
   getGeneration(): number {
     return this.generation;
   }
 
-  private spawnFfmpeg(seekTo?: string, width?: number, height?: number, audio?: AudioDecodeConfig): void {
+  private spawnFfmpeg(seekTo?: string, width?: number, height?: number, audio?: AudioDecodeConfig, options?: FrameDecoderOptions): void {
     if (width !== undefined) {
       this.width = width;
       this.height = height ?? this.height;
       this.frameSize = this.width * this.height * 3;
     }
-    this.buffer = Buffer.alloc(0);
+    this.frameParts = [];
+    this.framePartsLen = 0;
     this.running = true;
     const generation = ++this.generation;
+    this.options = { realtime: true, audioOnly: false, fpsCap: 0, ...options };
 
     const ffmpegPath = getFfmpegPath();
     const args: string[] = [];
     if (seekTo) {
       args.push('-ss', seekTo);
     }
-    args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.REALTIME, FFMPEG_FLAGS.INPUT, this.inputPath);
 
-    args.push('-vf', 'showinfo');
-
-    if (audio) {
-      this.audioSampleRate = audio.sampleRate;
-      this.audioChannels = audio.channels;
-      args.push(
-        '-map',
-        '0:v:0',
-        '-f',
-        FFMPEG_FLAGS.RAWVIDEO,
-        FFMPEG_FLAGS.PIX_FMT,
-        FFMPEG_FLAGS.PIX_FMT_RGB24,
-        '-s',
-        `${this.width}x${this.height}`,
-        FFMPEG_FLAGS.NO_AUDIO,
-        FFMPEG_FLAGS.NO_SUBTITLES,
-        FFMPEG_FLAGS.NO_DATA,
-        'pipe:1',
-        '-map',
-        '0:a:0',
-        '-f',
-        's16le',
-        '-ac',
-        String(audio.channels),
-        '-ar',
-        String(audio.sampleRate),
-        'pipe:3',
-      );
+    if (this.options.audioOnly) {
+      if (this.options.realtime) {
+        args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.REALTIME, FFMPEG_FLAGS.INPUT, this.inputPath);
+      } else {
+        args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.INPUT, this.inputPath);
+      }
+      if (audio) {
+        this.audioSampleRate = audio.sampleRate;
+        this.audioChannels = audio.channels;
+        args.push('-map', '0:a:0', '-f', 's16le', '-ac', String(audio.channels), '-ar', String(audio.sampleRate), 'pipe:3');
+      }
     } else {
-      args.push(
-        '-f',
-        FFMPEG_FLAGS.RAWVIDEO,
-        FFMPEG_FLAGS.PIX_FMT,
-        FFMPEG_FLAGS.PIX_FMT_RGB24,
-        '-s',
-        `${this.width}x${this.height}`,
-        FFMPEG_FLAGS.NO_AUDIO,
-        FFMPEG_FLAGS.NO_SUBTITLES,
-        FFMPEG_FLAGS.NO_DATA,
-        FFMPEG_FLAGS.OUTPUT_PIPE,
-      );
+      if (this.options.realtime) {
+        args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.REALTIME, FFMPEG_FLAGS.INPUT, this.inputPath);
+      } else {
+        args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.INPUT, this.inputPath);
+      }
+
+      const videoFilter = this.options.fpsCap > 0 ? `fps=${this.options.fpsCap},showinfo` : 'showinfo';
+      args.push('-vf', videoFilter);
+
+      if (audio) {
+        this.audioSampleRate = audio.sampleRate;
+        this.audioChannels = audio.channels;
+        args.push(
+          '-map',
+          '0:v:0',
+          '-f',
+          FFMPEG_FLAGS.RAWVIDEO,
+          FFMPEG_FLAGS.PIX_FMT,
+          FFMPEG_FLAGS.PIX_FMT_RGB24,
+          '-s',
+          `${this.width}x${this.height}`,
+          FFMPEG_FLAGS.NO_AUDIO,
+          FFMPEG_FLAGS.NO_SUBTITLES,
+          FFMPEG_FLAGS.NO_DATA,
+          'pipe:1',
+          '-map',
+          '0:a:0',
+          '-f',
+          's16le',
+          '-ac',
+          String(audio.channels),
+          '-ar',
+          String(audio.sampleRate),
+          'pipe:3',
+        );
+      } else {
+        args.push(
+          '-f',
+          FFMPEG_FLAGS.RAWVIDEO,
+          FFMPEG_FLAGS.PIX_FMT,
+          FFMPEG_FLAGS.PIX_FMT_RGB24,
+          '-s',
+          `${this.width}x${this.height}`,
+          FFMPEG_FLAGS.NO_AUDIO,
+          FFMPEG_FLAGS.NO_SUBTITLES,
+          FFMPEG_FLAGS.NO_DATA,
+          FFMPEG_FLAGS.OUTPUT_PIPE,
+        );
+      }
     }
 
-    log.debug('FFmpeg decoder args:', args.join(' '));
+    log.debug(LOG_FFMPEG_DECODER_ARGS, args.join(' '));
     const currentProcess = audio ? spawn(ffmpegPath, args, { stdio: ['ignore', 'pipe', 'pipe', 'pipe'] }) : spawn(ffmpegPath, args);
     this.process = currentProcess;
     const pendingPts: number[] = [];
     const pendingFrames: Buffer[] = [];
     let stderrBuf = '';
+    let lastEmitTime = Date.now();
+    let lastEmittedPts = -1;
+    let avgFrameDuration = DEFAULT_FRAME_DURATION;
+
+    const emitFrame = (frameData: Buffer, pts: number) => {
+      if (lastEmittedPts >= 0 && pts > lastEmittedPts) {
+        const diff = pts - lastEmittedPts;
+        avgFrameDuration = avgFrameDuration * FRAME_DURATION_SMOOTHING + diff * (1 - FRAME_DURATION_SMOOTHING);
+      }
+      lastEmittedPts = pts;
+      this.emit('frame', {
+        buffer: frameData,
+        width: this.width,
+        height: this.height,
+        pts,
+        generation,
+      } as DecodedFrame);
+      lastEmitTime = Date.now();
+    };
 
     const emitAvailable = () => {
       if (!this.running || this.process !== currentProcess) return;
+
+      // Emit frames that have matching PTS
       while (pendingFrames.length > 0 && pendingPts.length > 0) {
         const frameData = pendingFrames.shift()!;
         const pts = pendingPts.shift()!;
-        this.emit('frame', {
-          buffer: frameData,
-          width: this.width,
-          height: this.height,
-          pts,
-          generation,
-        } as DecodedFrame);
+        emitFrame(frameData, pts);
+      }
+
+      // Emergency flush: if frames stuck for >200ms and we have no PTS, emit
+      // them with a monotonic estimate so playback never stalls permanently.
+      // The estimate is derived from the last known timestamp, never from the
+      // wall clock, so the renderer's clock matching can always catch up.
+      const now = Date.now();
+      if (pendingFrames.length > 0 && pendingPts.length === 0 && now - lastEmitTime > FRAME_FLUSH_THRESHOLD_MS) {
+        const frameData = pendingFrames.shift()!;
+        const estimatedPts = lastEmittedPts >= 0 ? lastEmittedPts + avgFrameDuration : 0;
+        emitFrame(frameData, estimatedPts);
+        if (pendingFrames.length > FRAME_BUFFER_OVERFLOW_WARN) {
+          log.warn(
+            `Frame buffer overflow: ${pendingFrames.length} buffered, ${pendingPts.length} PTS values. Consider reducing output resolution or checking disk I/O.`,
+          );
+        }
       }
     };
 
-    currentProcess.stderr?.on('data', (chunk: Buffer) => {
-      if (!this.running || this.process !== currentProcess) return;
-      stderrBuf += chunk.toString('utf8');
-      const re = /pts_time:\s*([0-9]+(?:\.[0-9]+)?)/g;
-      let lastIndex = 0;
-      let match: RegExpExecArray | null;
-      while ((match = re.exec(stderrBuf)) !== null) {
-        pendingPts.push(Number(match[1]));
-        lastIndex = re.lastIndex;
-      }
-      stderrBuf = stderrBuf.slice(lastIndex);
-      emitAvailable();
-    });
-
-    currentProcess.stdout?.on('data', (chunk: Buffer) => {
-      if (!this.running || this.process !== currentProcess) return;
-      this.buffer = Buffer.concat([this.buffer, chunk]);
-
-      while (this.buffer.length >= this.frameSize) {
-        const frameData = this.buffer.subarray(0, this.frameSize);
-        this.buffer = this.buffer.subarray(this.frameSize);
-        pendingFrames.push(Buffer.from(frameData));
-      }
-      emitAvailable();
-    });
-
-    if (audio) {
-      currentProcess.stdio?.[3]?.on('data', (chunk: Buffer) => {
+    if (!this.options.audioOnly) {
+      currentProcess.stderr?.on('data', (chunk: Buffer) => {
         if (!this.running || this.process !== currentProcess) return;
-        this.emit('audio', {
-          buffer: Buffer.from(chunk),
-          sampleRate: audio.sampleRate,
-          channels: audio.channels,
-          generation,
-        } as DecodedAudio);
+        stderrBuf += chunk.toString('utf8');
+        // Match various PTS formats: "pts_time:123.456", "pts_time:123", or just "pts=" patterns
+        const re = /pts_time[=:\s]*([0-9]*\.?[0-9]+)/g;
+        let lastIndex = 0;
+        let match: RegExpExecArray | null;
+        while ((match = re.exec(stderrBuf)) !== null) {
+          const pts = parseFloat(match[1]);
+          if (!isNaN(pts)) {
+            pendingPts.push(pts);
+            lastIndex = re.lastIndex;
+          }
+        }
+        stderrBuf = stderrBuf.slice(lastIndex);
+        emitAvailable();
+      });
+
+      currentProcess.stdout?.on('data', (chunk: Buffer) => {
+        if (!this.running || this.process !== currentProcess) return;
+        this.frameParts.push(chunk);
+        this.framePartsLen += chunk.length;
+
+        while (this.framePartsLen >= this.frameSize) {
+          const frameData = Buffer.alloc(this.frameSize);
+          let written = 0;
+          while (written < this.frameSize) {
+            const part = this.frameParts[0];
+            const take = Math.min(part.length, this.frameSize - written);
+            part.copy(frameData, written, 0, take);
+            written += take;
+            if (take === part.length) {
+              this.frameParts.shift();
+            } else {
+              this.frameParts[0] = part.subarray(take);
+            }
+          }
+          this.framePartsLen -= this.frameSize;
+          pendingFrames.push(frameData);
+        }
+        emitAvailable();
       });
     }
 
-    currentProcess.stderr?.on('data', () => {});
+    if (audio) {
+      const audioTarget = Math.max(AUDIO_TARGET_MIN_BYTES, Math.round(audio.sampleRate * audio.channels * 2 * AUDIO_CHUNK_SECONDS));
+      let audioParts: Buffer[] = [];
+      let audioPartsLen = 0;
+      currentProcess.stdio?.[3]?.on('data', (chunk: Buffer) => {
+        if (!this.running || this.process !== currentProcess) return;
+        audioParts.push(chunk);
+        audioPartsLen += chunk.length;
+        while (audioPartsLen >= audioTarget) {
+          const out = Buffer.alloc(audioTarget);
+          let written = 0;
+          while (written < audioTarget) {
+            const part = audioParts[0];
+            const take = Math.min(part.length, audioTarget - written);
+            part.copy(out, written, 0, take);
+            written += take;
+            if (take === part.length) {
+              audioParts.shift();
+            } else {
+              audioParts[0] = part.subarray(take);
+            }
+          }
+          audioPartsLen -= audioTarget;
+          this.emit('audio', {
+            buffer: out,
+            sampleRate: audio.sampleRate,
+            channels: audio.channels,
+            generation,
+          } as DecodedAudio);
+        }
+      });
+    }
+
+    // Periodic flush to ensure frames don't get stuck in the buffer
+    const flushInterval = setInterval(() => {
+      emitAvailable();
+    }, FRAME_FLUSH_INTERVAL_MS); // ~60fps check interval for more responsive flushing
 
     currentProcess.on('error', (err) => {
       if (this.process !== currentProcess) return;
-      log.error('Decoder process error:', err);
+      clearInterval(flushInterval);
+      log.error(LOG_DECODER_PROCESS_ERROR, err);
       this.emit('error', err);
     });
 
     currentProcess.on('close', (code) => {
       if (this.process !== currentProcess) return;
-      log.debug('Decoder process exited with code:', code);
+      clearInterval(flushInterval);
+      log.debug(LOG_DECODER_PROCESS_EXITED_WITH_CODE, code);
       this.running = false;
       if (code !== 0 && code !== null) {
-        log.error('Decoder exited with non-zero code:', code);
+        log.error(LOG_DECODER_EXITED_WITH_NON_ZERO_CODE, code);
         this.emit('error', new Error(`Decoder exited with code ${code}`));
       }
       this.emit('end');
@@ -195,10 +354,11 @@ export class FrameDecoder extends EventEmitter {
     width: number = TRANSCODER_DEFAULTS.PLAYER_DEFAULT_WIDTH,
     height: number = TRANSCODER_DEFAULTS.PLAYER_DEFAULT_HEIGHT,
     audio?: AudioDecodeConfig,
+    options?: FrameDecoderOptions,
   ): void {
     this.close();
 
-    log.info('open:', input, 'resolution:', width, 'x', height, 'audio:', audio);
+    log.info(LOG_OPEN, input, LOG_RESOLUTION, width, 'x', height, LOG_AUDIO, audio, LOG_OPTIONS, options);
     this.inputPath = input;
     this.width = width;
     this.height = height;
@@ -206,11 +366,11 @@ export class FrameDecoder extends EventEmitter {
     this.audioSampleRate = audio?.sampleRate ?? 0;
     this.audioChannels = audio?.channels ?? 0;
 
-    this.spawnFfmpeg(undefined, undefined, undefined, audio);
+    this.spawnFfmpeg(undefined, undefined, undefined, audio, options);
   }
 
   seek(seekTo: string): void {
-    log.debug('seek:', seekTo);
+    log.debug(LOG_SEEK, seekTo);
     this.close();
     if (this.inputPath) {
       this.spawnFfmpeg(
@@ -218,19 +378,21 @@ export class FrameDecoder extends EventEmitter {
         undefined,
         undefined,
         this.audioSampleRate ? { sampleRate: this.audioSampleRate, channels: this.audioChannels } : undefined,
+        this.options,
       );
     }
     this.emit('seek', seekTo);
   }
 
   close(): void {
-    log.debug('close');
+    log.debug(LOG_CLOSE);
     this.running = false;
     if (this.process) {
       this.process.kill(KILL_SIGNAL);
       this.process = null;
-      log.debug('Decoder process killed');
+      log.debug(LOG_DECODER_PROCESS_KILLED);
     }
-    this.buffer = Buffer.alloc(0);
+    this.frameParts = [];
+    this.framePartsLen = 0;
   }
 }

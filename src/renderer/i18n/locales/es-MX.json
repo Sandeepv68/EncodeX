@@ -232,7 +232,13 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "ej. 00:01:30",
     "placeholderEnd": "ej. 00:01:30",
-    "validationRequired": "Seleccione un archivo de vídeo."
+    "validationRequired": "Seleccione un archivo de vídeo.",
+    "preview": "Vista previa",
+    "details": "Detalles del corte",
+    "cancelJob": "Cancelar trabajo",
+    "jobCancelTitle": "Limpiar corte de vídeo",
+    "jobCancelMessage": "Esto borrará el formulario actual de corte de vídeo. ¿Estás seguro?",
+    "closePreview": "Cerrar vista previa"
   },
   "videoTimeline": {
     "zoomIn": "Acercar",
@@ -311,6 +317,8 @@
   "settings": {
     "title": "Configuración",
     "theme": "Tema",
+    "alwaysOnTop": "Siempre encima",
+    "alwaysOnTopHint": "Mantiene la ventana de la aplicación por encima de todas las demás.",
     "hardwareAcceleration": "Aceleración por hardware",
     "hwaccelMode": "Modo de aceleración",
     "hwaccelModeAuto": "Automático (decodificar + codificar)",

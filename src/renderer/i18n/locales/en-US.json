@@ -249,6 +249,12 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "e.g. 00:01:30",
     "placeholderEnd": "e.g. 00:01:30",
+    "preview": "Preview",
+    "details": "Cut Details",
+    "cancelJob": "Cancel Job",
+    "jobCancelTitle": "Clear Video Cut",
+    "jobCancelMessage": "This will clear the current video cut form. Are you sure?",
+    "closePreview": "Close Preview",
     "validationRequired": "Please select a video file."
   },
   "videoTimeline": {
@@ -328,6 +334,8 @@
   "settings": {
     "title": "Settings",
     "theme": "Theme",
+    "alwaysOnTop": "Always on top",
+    "alwaysOnTopHint": "Keeps the app window above all other windows.",
     "hardwareAcceleration": "Hardware Acceleration",
     "hwaccelMode": "Acceleration Mode",
     "hwaccelModeAuto": "Automatic (decode + encode)",

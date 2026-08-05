@@ -115,6 +115,58 @@ describe('VideoCut', () => {
     expect(screen.getByText('videoCut.changeFile')).toBeInTheDocument();
   });
 
+  it('shows the video title above the preview once a file is selected', async () => {
+    const { container } = renderPage();
+    expect(screen.queryByText('video.mp4')).not.toBeInTheDocument();
+    await selectVideo();
+    await waitFor(() => expect(container.querySelector('canvas')).toBeInTheDocument());
+    expect(screen.getByText('video.mp4')).toBeInTheDocument();
+  });
+
+  it('separates the preview section from the details section', async () => {
+    const { container } = renderPage();
+    expect(screen.queryByText('videoCut.preview')).not.toBeInTheDocument();
+    expect(screen.getByText('videoCut.details')).toBeInTheDocument();
+    await selectVideo();
+    await waitFor(() => expect(container.querySelector('canvas')).toBeInTheDocument());
+    expect(screen.getByText('videoCut.preview')).toBeInTheDocument();
+    expect(screen.getByText('videoCut.details')).toBeInTheDocument();
+  });
+
+  it('shows the cancel job button when a video is selected and clears the form on confirm', async () => {
+    const { container } = renderPage();
+    expect(screen.queryByText('videoCut.cancelJob')).not.toBeInTheDocument();
+    await selectVideo();
+    await waitFor(() => expect(container.querySelector('canvas')).toBeInTheDocument());
+    expect(screen.getByText('videoCut.cancelJob')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('videoCut.cancelJob'));
+    expect(screen.getByText('videoCut.jobCancelTitle')).toBeInTheDocument();
+    expect(screen.getByText('videoCut.jobCancelMessage')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('videoCut.yes'));
+    await waitFor(() => expect(screen.getByText('videoCut.dropLabel')).toBeInTheDocument());
+    expect(container.querySelector('canvas')).not.toBeInTheDocument();
+    expect(screen.queryByText('videoCut.cancelJob')).not.toBeInTheDocument();
+  });
+
+  it('shows the cancel job button when the form is modified without a video', () => {
+    renderPage();
+    expect(screen.queryByText('videoCut.cancelJob')).not.toBeInTheDocument();
+    fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/x.mp4' } });
+    expect(screen.getByText('videoCut.cancelJob')).toBeInTheDocument();
+  });
+
+  it('clears the form when the preview close button is clicked', async () => {
+    const { container } = renderPage();
+    await selectVideo();
+    await waitFor(() => expect(container.querySelector('canvas')).toBeInTheDocument());
+    fireEvent.click(screen.getByLabelText('videoCut.closePreview'));
+    expect(screen.getByText('videoCut.jobCancelTitle')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('videoCut.yes'));
+    await waitFor(() => expect(screen.getByText('videoCut.dropLabel')).toBeInTheDocument());
+    expect(container.querySelector('canvas')).not.toBeInTheDocument();
+    expect(screen.queryByText('videoCut.closePreview')).not.toBeInTheDocument();
+  });
+
   it('replaces the player when a different file is chosen via the change button', async () => {
     selectFileMock.mockResolvedValueOnce('/in/first.mp4').mockResolvedValueOnce('/in/second.mp4');
     const { container } = renderPage();

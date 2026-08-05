@@ -15,6 +15,7 @@ import {
   CardTitleText,
   CardBody,
 } from '../styles/Dashboard.styles';
+import { LOG_DASHBOARD_RENDERED } from '../../shared/log-constants';
 
 const log = new Logger('renderer/pages/Dashboard');
 
@@ -31,7 +32,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   useEffect(() => {
-    log.debug('Dashboard rendered');
+    log.debug(LOG_DASHBOARD_RENDERED);
   }, []);
   return (
     <Box>

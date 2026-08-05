@@ -6,3 +6,8 @@ html, body, #root {
 body {
   overflow: hidden;
 }
+
+.MuiButton-startIcon .svg-inline--fa,
+.MuiButton-endIcon .svg-inline--fa {
+  transform: translateY(0.1em);
+}

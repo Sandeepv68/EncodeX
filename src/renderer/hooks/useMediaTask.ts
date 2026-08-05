@@ -3,6 +3,7 @@ import { Logger } from '../../shared/logger';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import type { ConversionProgress } from '../../shared/types';
 import { useErrorStore } from '../stores/errorStore';
+import { LOG_SUBSCRIBING_TO_CONVERSION_PROGRESS, LOG_UNSUBSCRIBING_FROM_CONVERSION_PROGRESS } from '../../shared/log-constants';
 
 const log = new Logger('renderer/hooks/useMediaTask');
 
@@ -15,14 +16,14 @@ export function useMediaTask() {
   const showError = useErrorStore((s) => s.showError);
 
   useEffect(() => {
-    log.debug('Subscribing to conversion progress');
+    log.debug(LOG_SUBSCRIBING_TO_CONVERSION_PROGRESS);
     const cleanup = window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
       if (!isConvertingRef.current) return;
       const p = data.progress;
       setProgress({ percent: p.percent, time: p.time, speed: p.speed, eta: p.eta });
     });
     return () => {
-      log.debug('Unsubscribing from conversion progress');
+      log.debug(LOG_UNSUBSCRIBING_FROM_CONVERSION_PROGRESS);
       cleanup?.();
     };
   }, []);

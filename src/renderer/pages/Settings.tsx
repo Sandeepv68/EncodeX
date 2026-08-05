@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Tooltip, Switch, TextField, MenuItem } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Tooltip, Switch, MenuItem } from '@mui/material';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import { useColorMode } from '../ColorModeContext';
 import { useSettingsStore } from '../stores/settingsStore';
@@ -15,6 +14,7 @@ import {
   SettingsLabel,
   SettingsLabelRow,
   ThemeToggleButton,
+  ThemeToggleIcon,
   ModeSelect,
 } from '../styles/Settings.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
@@ -46,9 +46,11 @@ export default function Settings() {
   const hardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
   const hwaccelMode = useSettingsStore((s) => s.hwaccelMode);
   const encoderType = useSettingsStore((s) => s.encoderType);
+  const alwaysOnTop = useSettingsStore((s) => s.alwaysOnTop);
   const setHardwareAcceleration = useSettingsStore((s) => s.setHardwareAcceleration);
   const setHwaccelMode = useSettingsStore((s) => s.setHwaccelMode);
   const setEncoderType = useSettingsStore((s) => s.setEncoderType);
+  const setAlwaysOnTop = useSettingsStore((s) => s.setAlwaysOnTop);
 
   return (
     <SettingsRoot>
@@ -62,17 +64,25 @@ export default function Settings() {
         <SettingsLabel variant="body1">{t('settings.theme')}</SettingsLabel>
         <Tooltip title={mode === 'dark' ? t('app.switchLight') : t('app.switchDark')}>
           <ThemeToggleButton size="medium" onClick={toggleColorMode}>
-            {mode === 'dark' ? (
-              <FontAwesomeIcon icon={faSun} style={{ fontSize: 20 }} />
-            ) : (
-              <FontAwesomeIcon icon={faMoon} style={{ fontSize: 20 }} />
-            )}
+            {mode === 'dark' ? <ThemeToggleIcon icon={faSun} /> : <ThemeToggleIcon icon={faMoon} />}
           </ThemeToggleButton>
         </Tooltip>
       </SettingsSection>
       <SettingsSection>
+        <SettingLabel text={t('settings.alwaysOnTop')} hint={t('settings.alwaysOnTopHint')} />
+        <Switch
+          checked={alwaysOnTop}
+          onChange={(e) => setAlwaysOnTop(e.target.checked)}
+          slotProps={{ input: { 'aria-label': t('settings.alwaysOnTop') } }}
+        />
+      </SettingsSection>
+      <SettingsSection>
         <SettingLabel text={t('settings.hardwareAcceleration')} hint={t('settings.hardwareAccelerationHint')} />
-        <Switch checked={hardwareAcceleration} onChange={(e) => setHardwareAcceleration(e.target.checked)} />
+        <Switch
+          checked={hardwareAcceleration}
+          onChange={(e) => setHardwareAcceleration(e.target.checked)}
+          slotProps={{ input: { 'aria-label': t('settings.hardwareAcceleration') } }}
+        />
       </SettingsSection>
       {hardwareAcceleration && (
         <SettingsSection>

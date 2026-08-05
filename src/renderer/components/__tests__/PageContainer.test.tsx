@@ -19,6 +19,17 @@ describe('PageContainer', () => {
     expect(screen.getByText('hello content')).toBeInTheDocument();
   });
 
+  it('renders children without the wrapping paper when paper is false', () => {
+    const { container } = render(
+      <PageContainer title="Dashboard" paper={false}>
+        <p>bare content</p>
+      </PageContainer>,
+    );
+    const body = container.querySelector('.MuiPaper-root');
+    expect(screen.getByText('bare content')).toBeInTheDocument();
+    expect(body).toBeNull();
+  });
+
   it('does not render error UI when there is a current error', () => {
     useErrorStore.getState().showErrorMessage(ErrorCode.CONVERSION_FAILED, 'boom');
     render(

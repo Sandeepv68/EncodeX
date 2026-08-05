@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Material-UI theme configuration and customization.
+ * Defines light and dark theme palettes with custom component styling.
+ */
+
 import { createTheme } from '@mui/material/styles';
 import { COLORS } from './colors';
 

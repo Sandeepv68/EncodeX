@@ -232,7 +232,13 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "例: 00:01:30",
     "placeholderEnd": "例: 00:01:30",
-    "validationRequired": "ビデオファイルを選択してください。"
+    "validationRequired": "ビデオファイルを選択してください。",
+    "preview": "プレビュー",
+    "details": "カットの詳細",
+    "cancelJob": "ジョブをキャンセル",
+    "jobCancelTitle": "ビデオカットをクリア",
+    "jobCancelMessage": "現在のビデオカットフォームがクリアされます。よろしいですか？",
+    "closePreview": "プレビューを閉じる"
   },
   "videoTimeline": {
     "zoomIn": "拡大",
@@ -311,6 +317,8 @@
   "settings": {
     "title": "設定",
     "theme": "テーマ",
+    "alwaysOnTop": "常に最前面に表示",
+    "alwaysOnTopHint": "アプリのウィンドウを他のすべてのウィンドウの上に表示します。",
     "hardwareAcceleration": "ハードウェアアクセラレーション",
     "hwaccelMode": "アクセラレーションモード",
     "hwaccelModeAuto": "自動（デコード＋エンコード）",

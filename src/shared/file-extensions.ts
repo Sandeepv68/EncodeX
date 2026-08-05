@@ -1,3 +1,12 @@
+/**
+ * @fileoverview File type extensions mapping for different media types.
+ * Defines supported file extensions for videos, images, and audio files.
+ */
+
+/**
+ * Supported video file extensions.
+ * @const {readonly string[]} VIDEO_EXTENSIONS
+ */
 export const VIDEO_EXTENSIONS = [
   'mp4',
   'm4v',

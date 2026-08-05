@@ -232,7 +232,13 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "напр. 00:01:30",
     "placeholderEnd": "напр. 00:01:30",
-    "validationRequired": "Виберіть відеофайл."
+    "validationRequired": "Виберіть відеофайл.",
+    "preview": "Попередній перегляд",
+    "details": "Деталі обрізки",
+    "cancelJob": "Скасувати завдання",
+    "jobCancelTitle": "Очистити обрізку відео",
+    "jobCancelMessage": "Це очистить поточну форму обрізки відео. Ви впевнені?",
+    "closePreview": "Закрити попередній перегляд"
   },
   "videoTimeline": {
     "zoomIn": "Збільшити",
@@ -311,6 +317,8 @@
   "settings": {
     "title": "Налаштування",
     "theme": "Тема",
+    "alwaysOnTop": "Завжди поверх інших вікон",
+    "alwaysOnTopHint": "Тримає вікно застосунку над усіма іншими вікнами.",
     "hardwareAcceleration": "Апаратне прискорення",
     "hwaccelMode": "Режим прискорення",
     "hwaccelModeAuto": "Автоматично (декодування + кодування)",

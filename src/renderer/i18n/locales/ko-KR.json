@@ -232,7 +232,13 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "예: 00:01:30",
     "placeholderEnd": "예: 00:01:30",
-    "validationRequired": "동영상 파일을 선택하세요."
+    "validationRequired": "동영상 파일을 선택하세요.",
+    "preview": "미리보기",
+    "details": "자르기 세부 정보",
+    "cancelJob": "작업 취소",
+    "jobCancelTitle": "비디오 자르기 지우기",
+    "jobCancelMessage": "현재 비디오 자르기 양식이 지워집니다. 계속하시겠습니까?",
+    "closePreview": "미리보기 닫기"
   },
   "videoTimeline": {
     "zoomIn": "확대",
@@ -311,6 +317,8 @@
   "settings": {
     "title": "설정",
     "theme": "테마",
+    "alwaysOnTop": "항상 위에 표시",
+    "alwaysOnTopHint": "앱 창을 다른 모든 창 위에 유지합니다.",
     "hardwareAcceleration": "하드웨어 가속",
     "hwaccelMode": "가속 모드",
     "hwaccelModeAuto": "자동 (디코드 + 인코드)",

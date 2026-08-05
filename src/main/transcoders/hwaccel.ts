@@ -1,7 +1,13 @@
+/**
+ * @fileoverview Hardware acceleration detection and configuration.
+ * Detects available GPU accelerators and generates appropriate FFmpeg options.
+ */
+
 import { Logger } from '../../shared/logger';
 import { HWACCEL_DEFAULTS } from '../../shared/hwaccel-settings';
 import { isHardwareVideoCodec } from '../../shared/codec-classification';
 import type { HwAccelMode } from '../../shared/hwaccel-settings';
+import { LOG_APPLYING_HARDWARE_ACCELERATION_FLAGS_FOR } from '../../shared/log-constants';
 
 export { isHardwareVideoCodec };
 
@@ -69,6 +75,6 @@ export function getHwAccelArgs(videoCodec?: string, enabled?: boolean, mode?: Hw
       return [];
   }
 
-  log.debug('Applying hardware acceleration flags for', videoCodec, ':', flags.join(' '));
+  log.debug(LOG_APPLYING_HARDWARE_ACCELERATION_FLAGS_FOR, videoCodec, ':', flags.join(' '));
   return flags;
 }

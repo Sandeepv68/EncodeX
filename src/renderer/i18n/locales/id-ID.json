@@ -232,7 +232,13 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "mis. 00:01:30",
     "placeholderEnd": "mis. 00:01:30",
-    "validationRequired": "Silakan pilih file video."
+    "validationRequired": "Silakan pilih file video.",
+    "preview": "Pratinjau",
+    "details": "Detail potong",
+    "cancelJob": "Batalkan pekerjaan",
+    "jobCancelTitle": "Bersihkan potongan video",
+    "jobCancelMessage": "Ini akan menghapus formulir potong video saat ini. Yakin?",
+    "closePreview": "Tutup pratinjau"
   },
   "videoTimeline": {
     "zoomIn": "Perbesar",
@@ -311,6 +317,8 @@
   "settings": {
     "title": "Pengaturan",
     "theme": "Tema",
+    "alwaysOnTop": "Selalu di atas",
+    "alwaysOnTopHint": "Menjaga jendela aplikasi tetap di atas semua jendela lainnya.",
     "hardwareAcceleration": "Akselerasi perangkat keras",
     "hwaccelMode": "Mode akselerasi",
     "hwaccelModeAuto": "Otomatis (decode + encode)",

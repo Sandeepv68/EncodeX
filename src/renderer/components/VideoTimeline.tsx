@@ -35,16 +35,17 @@ import {
 } from '../styles/VideoTimeline.styles';
 import { formatClockTime, formatStreamSummary } from '../utils/formatters';
 import { MediaStreamInfo, ThumbnailStrip, WaveformData } from '../../shared/types';
-
-const DEFAULT_TIMELINE_WIDTH = 600;
-const MIN_ZOOM = 2;
-const MAX_ZOOM = 300;
-const ZOOM_STEP = 1.5;
-const MIN_GAP = 0.1;
-const LABEL_MIN_GAP = 56;
-const MIN_BAR_PITCH = 5;
-const THUMB_MONTAGE_CLASS = 'timeline-thumb-montage';
-const TICK_STEPS = [0.1, 0.2, 0.25, 0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600] as const;
+import {
+  DEFAULT_TIMELINE_WIDTH,
+  TIMELINE_MIN_ZOOM,
+  TIMELINE_MAX_ZOOM,
+  TIMELINE_ZOOM_STEP,
+  TIMELINE_MIN_GAP,
+  TIMELINE_LABEL_MIN_GAP,
+  TIMELINE_MIN_BAR_PITCH,
+  TIMELINE_THUMB_MONTAGE_CLASS,
+  TIMELINE_TICK_STEPS,
+} from '../../shared/constants';
 
 interface Props {
   duration: number;
@@ -71,7 +72,7 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 function initialZoom(duration: number): number {
-  return clamp(DEFAULT_TIMELINE_WIDTH / Math.max(duration, 1), MIN_ZOOM, MAX_ZOOM);
+  return clamp(DEFAULT_TIMELINE_WIDTH / Math.max(duration, 1), TIMELINE_MIN_ZOOM, TIMELINE_MAX_ZOOM);
 }
 
 export default function VideoTimeline({
@@ -121,8 +122,8 @@ export default function VideoTimeline({
     if (!kind) return;
     const s = stateRef.current;
     const time = timeFromEvent(e.clientX);
-    if (kind === 'start') s.onStartChange(clamp(time, 0, Math.max(0, s.end - MIN_GAP)));
-    else if (kind === 'end') s.onEndChange(clamp(time, Math.min(s.duration, s.start + MIN_GAP), s.duration));
+    if (kind === 'start') s.onStartChange(clamp(time, 0, Math.max(0, s.end - TIMELINE_MIN_GAP)));
+    else if (kind === 'end') s.onEndChange(clamp(time, Math.min(s.duration, s.start + TIMELINE_MIN_GAP), s.duration));
     else if (kind === 'move') {
       const width = dragBaseEndRef.current - dragBaseStartRef.current;
       const newStart = clamp(dragBaseStartRef.current + (time - dragOriginRef.current), 0, Math.max(0, s.duration - width));
@@ -209,7 +210,7 @@ export default function VideoTimeline({
 
   const changeZoom = (factor: number) => {
     const viewport = viewportRef.current;
-    const next = clamp(zoom * factor, MIN_ZOOM, MAX_ZOOM);
+    const next = clamp(zoom * factor, TIMELINE_MIN_ZOOM, TIMELINE_MAX_ZOOM);
     const centerTime = viewport ? (viewport.scrollLeft + viewport.clientWidth / 2) / zoom : currentTime;
     setZoomState(next);
     if (viewport && typeof requestAnimationFrame === 'function') {
@@ -220,7 +221,7 @@ export default function VideoTimeline({
   };
 
   const rulerEls = useMemo(() => {
-    const step = TICK_STEPS.find((candidate) => candidate * zoom >= 50) ?? TICK_STEPS[TICK_STEPS.length - 1];
+    const step = TIMELINE_TICK_STEPS.find((candidate) => candidate * zoom >= 50) ?? TIMELINE_TICK_STEPS[TIMELINE_TICK_STEPS.length - 1];
     const margin = viewState.viewportWidth / zoom / 2;
     const startTime = Math.max(0, viewState.scrollLeft / zoom - margin);
     const endTime = Math.min(duration, (viewState.scrollLeft + viewState.viewportWidth) / zoom + margin);
@@ -232,7 +233,7 @@ export default function VideoTimeline({
     for (let value = firstMajor; value <= endTime + 1e-9; value += step) {
       majorEls.push(<RulerTick key={`major-${value}`} sx={{ left: value * zoom }} />);
       const x = value * zoom;
-      if (x - lastLabelX >= LABEL_MIN_GAP) {
+      if (x - lastLabelX >= TIMELINE_LABEL_MIN_GAP) {
         lastLabelX = x;
         labelEls.push(
           <RulerLabel key={`label-${value}`} sx={{ left: x }}>
@@ -262,7 +263,7 @@ export default function VideoTimeline({
     if (!waveform || waveform.buckets.length === 0 || duration <= 0) return [];
     const totalWidth = duration * zoom;
     const bucketWidth = totalWidth / waveform.buckets.length;
-    const slotWidth = Math.max(bucketWidth, MIN_BAR_PITCH);
+    const slotWidth = Math.max(bucketWidth, TIMELINE_MIN_BAR_PITCH);
     const barWidth = Math.max(2, slotWidth - 1);
     const barHeight = TIMELINE_LAYOUT.TRACK_CONTENT_HEIGHT;
     const envelopeTop = TIMELINE_LAYOUT.TRACK_CONTENT_TOP;
@@ -326,7 +327,7 @@ export default function VideoTimeline({
       cells.push(
         <ThumbCell
           key={i}
-          className={THUMB_MONTAGE_CLASS}
+          className={TIMELINE_THUMB_MONTAGE_CLASS}
           data-testid="timeline-thumb"
           sx={{
             left,
@@ -342,7 +343,7 @@ export default function VideoTimeline({
 
   const thumbMontageCss = useMemo(() => {
     if (!thumbnails) return '';
-    return `.${THUMB_MONTAGE_CLASS} { background-image: url("${thumbnails.dataUrl}"); background-repeat: no-repeat; }`;
+    return `.${TIMELINE_THUMB_MONTAGE_CLASS} { background-image: url("${thumbnails.dataUrl}"); background-repeat: no-repeat; }`;
   }, [thumbnails]);
 
   if (duration <= 0) return null;
@@ -371,12 +372,17 @@ export default function VideoTimeline({
           <ZoomButton
             size="small"
             aria-label={t('videoTimeline.zoomOut')}
-            onClick={() => changeZoom(1 / ZOOM_STEP)}
-            disabled={zoom <= MIN_ZOOM}
+            onClick={() => changeZoom(1 / TIMELINE_ZOOM_STEP)}
+            disabled={zoom <= TIMELINE_MIN_ZOOM}
           >
             <FontAwesomeIcon icon={faMagnifyingGlassMinus} />
           </ZoomButton>
-          <ZoomButton size="small" aria-label={t('videoTimeline.zoomIn')} onClick={() => changeZoom(ZOOM_STEP)} disabled={zoom >= MAX_ZOOM}>
+          <ZoomButton
+            size="small"
+            aria-label={t('videoTimeline.zoomIn')}
+            onClick={() => changeZoom(TIMELINE_ZOOM_STEP)}
+            disabled={zoom >= TIMELINE_MAX_ZOOM}
+          >
             <FontAwesomeIcon icon={faMagnifyingGlassPlus} />
           </ZoomButton>
         </Box>
@@ -417,7 +423,7 @@ export default function VideoTimeline({
           <Scroller
             ref={scrollerRef}
             data-testid="timeline-scroller"
-            style={{ width: Math.max(duration * zoom, 600) }}
+            $width={Math.max(duration * zoom, DEFAULT_TIMELINE_WIDTH)}
             onPointerDown={handlePointerDown}
           >
             <Ruler>

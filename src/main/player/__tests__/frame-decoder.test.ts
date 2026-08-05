@@ -105,6 +105,47 @@ describe('FrameDecoder', () => {
     expect(args).toContain('320x240');
   });
 
+  it('paces decoding in realtime by default', () => {
+    decoder.open('in.mp4');
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args).toContain('-re');
+  });
+
+  it('omits -re when realtime pacing is disabled', () => {
+    decoder.open('in.mp4', 320, 240, undefined, { realtime: false });
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args).not.toContain('-re');
+  });
+
+  it('caps the output frame rate via the fps filter when fpsCap is set', () => {
+    decoder.open('in.mp4', 640, 360, undefined, { fpsCap: 30 });
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args).toContain('-vf');
+    expect(args[args.indexOf('-vf') + 1]).toBe('fps=30,showinfo');
+  });
+
+  it('keeps the plain showinfo filter when fpsCap is disabled', () => {
+    decoder.open('in.mp4');
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args[args.indexOf('-vf') + 1]).toBe('showinfo');
+  });
+
+  it('estimates a bounded monotonic pts when showinfo lags so frames never wedge playback', () => {
+    vi.useFakeTimers();
+    const pts: number[] = [];
+    decoder.on('frame', (f: DecodedFrame) => pts.push(f.pts));
+    decoder.open('in.mp4', 2, 2);
+    const proc = spawnMock.mock.results[0].value;
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   0 pts: 0 pts_time:1.000000 ...\n'));
+    proc.stdout.emit('data', Buffer.alloc(12));
+    expect(pts).toEqual([1]);
+    vi.advanceTimersByTime(250);
+    proc.stdout.emit('data', Buffer.alloc(12));
+    expect(pts).toHaveLength(2);
+    expect(pts[1]).toBeGreaterThanOrEqual(1);
+    expect(pts[1]).toBeLessThan(5);
+  });
+
   it('spawns ffmpeg with audio output args when audio config is provided', () => {
     decoder.open('in.mp4', 640, 360, { sampleRate: 44100, channels: 2 });
     const args = spawnMock.mock.calls[0][1] as string[];
@@ -118,15 +159,37 @@ describe('FrameDecoder', () => {
     expect(options.stdio).toEqual(['ignore', 'pipe', 'pipe', 'pipe']);
   });
 
-  it('emits audio chunks decoded on the third pipe', () => {
+  it('paces the audio-only decoder in realtime to avoid flooding the pipe', () => {
+    decoder.open('in.mp4', 640, 360, { sampleRate: 44100, channels: 2 }, { realtime: true, audioOnly: true });
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args.slice(0, 4)).toEqual(['-copyts', '-re', '-i', 'in.mp4']);
+    expect(args).not.toContain('rawvideo');
+    expect(args).toContain('pipe:3');
+  });
+
+  it('emits audio chunks decoded on the third pipe, batched to ~50ms', () => {
     const audioChunks: Array<{ buffer: Buffer; sampleRate: number; channels: number }> = [];
     decoder.on('audio', (a: { buffer: Buffer; sampleRate: number; channels: number }) => audioChunks.push(a));
     decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
     const proc = spawnMock.mock.results[0].value;
-    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(16));
+    const target = 48000 * 2 * 2 * 0.05; // 9600 bytes
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(target / 2));
+    expect(audioChunks).toHaveLength(0);
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(target / 2));
     expect(audioChunks).toHaveLength(1);
     expect(audioChunks[0]).toMatchObject({ sampleRate: 48000, channels: 2 });
-    expect(audioChunks[0].buffer).toHaveLength(16);
+    expect(audioChunks[0].buffer).toHaveLength(target);
+  });
+
+  it('splits oversized audio writes into multiple batched chunks', () => {
+    const audioChunks: DecodedAudio[] = [];
+    decoder.on('audio', (a: DecodedAudio) => audioChunks.push(a));
+    decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
+    const proc = spawnMock.mock.results[0].value;
+    const target = 48000 * 2 * 2 * 0.05;
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(target * 3));
+    expect(audioChunks).toHaveLength(3);
+    expect(audioChunks.every((a) => a.buffer.length === target)).toBe(true);
   });
 
   it('tags audio chunks with the current generation', () => {
@@ -134,7 +197,8 @@ describe('FrameDecoder', () => {
     decoder.on('audio', (a: DecodedAudio) => audioChunks.push(a));
     decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
     const proc = spawnMock.mock.results[0].value;
-    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(16));
+    const target = 48000 * 2 * 2 * 0.05;
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(target));
     expect(audioChunks[0].generation).toBe(1);
     expect(decoder.getGeneration()).toBe(1);
   });
@@ -145,7 +209,7 @@ describe('FrameDecoder', () => {
     decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
     const proc = spawnMock.mock.results[0].value;
     decoder.close();
-    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(16));
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(9600));
     expect(audioChunks).toHaveLength(0);
   });
 
@@ -256,6 +320,23 @@ describe('FrameDecoder', () => {
     expect(frames).toHaveLength(0);
     proc.stdout.emit('data', Buffer.alloc(6));
     expect(frames).toHaveLength(1);
+  });
+
+  it('assembles multiple frames from a single stdout chunk without quadratic copying', () => {
+    const frames: Array<{ pts: number }> = [];
+    decoder.on('frame', (f: DecodedFrame) => frames.push(f));
+    decoder.open('in.mp4', 2, 2);
+    const proc = spawnMock.mock.results[0].value;
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   0 pts: 0 pts_time:0.000000 ...\n'));
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   1 pts: 1 pts_time:1.000000 ...\n'));
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   2 pts: 2 pts_time:2.000000 ...\n'));
+    proc.stdout.emit('data', Buffer.alloc(30));
+    expect(frames).toHaveLength(2);
+    proc.stdout.emit('data', Buffer.alloc(6));
+    expect(frames).toHaveLength(3);
+    expect(frames[0].pts).toBe(0);
+    expect(frames[1].pts).toBe(1);
+    expect(frames[2].pts).toBe(2);
   });
 
   it('ignores stdout data after close', () => {

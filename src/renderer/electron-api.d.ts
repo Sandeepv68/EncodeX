@@ -30,11 +30,13 @@ export interface ElectronAPI {
   playerSeek(time: string): Promise<number>;
   playerClose(): Promise<void>;
   playerGetFrame(): Promise<PlayerFrame | null>;
+  onPlayerError(cb: (message: string) => void): () => void;
   extractWaveform(filePath: string, duration: number): Promise<WaveformData | null>;
   extractThumbnails(filePath: string, duration: number): Promise<ThumbnailStrip | null>;
   windowMinimize(): void;
   windowMaximizeToggle(): void;
   windowClose(): void;
+  windowSetAlwaysOnTop(flag: boolean): void;
   onWindowMaximizedChange(cb: (maximized: boolean) => void): () => void;
   onConversionProgress(cb: (data: { input: string; output: string; progress: ConversionProgress }) => void): () => void;
   onQueueAdded(cb: (job: QueueJob) => void): () => void;

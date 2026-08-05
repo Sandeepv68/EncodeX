@@ -232,7 +232,13 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "bijv. 00:01:30",
     "placeholderEnd": "bijv. 00:01:30",
-    "validationRequired": "Selecteer een videobestand."
+    "validationRequired": "Selecteer een videobestand.",
+    "preview": "Voorbeeld",
+    "details": "Snijdetails",
+    "cancelJob": "Taak annuleren",
+    "jobCancelTitle": "Video bewerking wissen",
+    "jobCancelMessage": "Dit wist het huidige videoformulier. Weet je het zeker?",
+    "closePreview": "Voorbeeld sluiten"
   },
   "videoTimeline": {
     "zoomIn": "Inzoomen",
@@ -311,6 +317,8 @@
   "settings": {
     "title": "Instellingen",
     "theme": "Thema",
+    "alwaysOnTop": "Altijd boven",
+    "alwaysOnTopHint": "Houdt het app-venster boven alle andere vensters.",
     "hardwareAcceleration": "Hardwareversnelling",
     "hwaccelMode": "Versnellingsmodus",
     "hwaccelModeAuto": "Automatisch (decoderen + coderen)",

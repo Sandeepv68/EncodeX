@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Hook for form-level error validation and display.
+ * Manages validation errors for form fields.
+ */
+
 import { useCallback, useState } from 'react';
 
 export function useFormErrors() {

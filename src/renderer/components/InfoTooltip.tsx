@@ -1,6 +1,7 @@
 import { Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { InfoIconWrapper, InfoIcon } from '../styles/InfoTooltip.styles';
 
 interface Props {
   title: string;
@@ -9,9 +10,9 @@ interface Props {
 export default function InfoTooltip({ title }: Props) {
   return (
     <Tooltip title={title}>
-      <span data-testid="info-tooltip" style={{ display: 'inline-flex', cursor: 'help', marginLeft: 4, verticalAlign: 'middle' }}>
-        <FontAwesomeIcon icon={faCircleInfo} style={{ fontSize: 14 }} />
-      </span>
+      <InfoIconWrapper data-testid="info-tooltip">
+        <InfoIcon icon={faCircleInfo} />
+      </InfoIconWrapper>
     </Tooltip>
   );
 }

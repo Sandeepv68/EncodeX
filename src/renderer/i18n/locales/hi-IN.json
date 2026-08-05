@@ -232,7 +232,13 @@
     "placeholderStart": "00:00:00",
     "placeholderDuration": "जैसे 00:01:30",
     "placeholderEnd": "जैसे 00:01:30",
-    "validationRequired": "कृपया एक वीडियो फ़ाइल चुनें."
+    "validationRequired": "कृपया एक वीडियो फ़ाइल चुनें.",
+    "preview": "पूर्वावलोकन",
+    "details": "कट विवरण",
+    "cancelJob": "कार्य रद्द करें",
+    "jobCancelTitle": "वीडियो कट साफ़ करें",
+    "jobCancelMessage": "इससे वर्तमान वीडियो कट फ़ॉर्म साफ़ हो जाएगा. क्या आप सुनिश्चित हैं?",
+    "closePreview": "पूर्वावलोकन बंद करें"
   },
   "videoTimeline": {
     "zoomIn": "ज़ूम इन",
@@ -311,6 +317,8 @@
   "settings": {
     "title": "सेटिंग्स",
     "theme": "थीम",
+    "alwaysOnTop": "हमेशा शीर्ष पर रखें",
+    "alwaysOnTopHint": "ऐप विंडो को अन्य सभी विंडो के ऊपर रखता है।",
     "hardwareAcceleration": "हार्डवेयर त्वरण",
     "hwaccelMode": "त्वरण मोड",
     "hwaccelModeAuto": "स्वचालित (डिकोड + एन्कोड)",

@@ -1,7 +1,6 @@
 import { useRef, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconButton, Tooltip, Typography, MenuItem } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { useLogStore } from '../stores/logStore';
 import { useToastStore } from '../stores/toastStore';
@@ -16,8 +15,10 @@ import {
   TimestampSpan,
   LevelSpan,
   SourceSpan,
+  LogActionIcon,
 } from '../styles/Logs.styles';
 import { PageTitle } from '../styles/BatchQueue.styles';
+import { LOG_EXPORT_FILENAME_PREFIX } from '../../shared/constants';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 
@@ -41,7 +42,7 @@ export default function Logs() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `encodex-logs-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+    a.download = `${LOG_EXPORT_FILENAME_PREFIX}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
     a.click();
     URL.revokeObjectURL(url);
     useToastStore.getState().success(t('toast.logsDownloaded'));
@@ -69,12 +70,12 @@ export default function Logs() {
         </FilterSelect>
         <Tooltip title={t('logs.clear')}>
           <IconButton size="small" onClick={clear}>
-            <FontAwesomeIcon icon={faEraser} style={{ fontSize: 20 }} />
+            <LogActionIcon icon={faEraser} />
           </IconButton>
         </Tooltip>
         <Tooltip title={t('logs.download')}>
           <IconButton size="small" onClick={downloadLogs}>
-            <FontAwesomeIcon icon={faDownload} style={{ fontSize: 20 }} />
+            <LogActionIcon icon={faDownload} />
           </IconButton>
         </Tooltip>
         <Typography variant="caption" color="text.secondary">

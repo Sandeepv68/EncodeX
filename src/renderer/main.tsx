@@ -1,3 +1,8 @@
+/**
+ * @fileoverview React application entry point.
+ * Mounts the root React component into the DOM.
+ */
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
@@ -13,6 +18,7 @@ import i18n from './i18n/config';
 import { DirectionProvider } from './i18n/DirectionProvider';
 import { useLanguageDirection } from './useLanguageDirection';
 import { useLogStore } from './stores/logStore';
+import { LOG_MOUNTING_REACT_APP } from '../shared/log-constants';
 
 const log = new Logger('renderer/main');
 
@@ -49,7 +55,7 @@ function Root() {
   );
 }
 
-log.info('Mounting React app');
+log.info(LOG_MOUNTING_REACT_APP);
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Root />

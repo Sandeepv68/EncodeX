@@ -4,10 +4,7 @@ import type { ImageExifData } from '../../shared/types';
 import { FieldLabel, FieldValue } from '../styles/InfoField.styles';
 import EllipsisTooltip from './EllipsisTooltip';
 import { ExifTitle, HistogramBox, HistogramTitle, HistogramRow, HistogramLabel } from '../styles/ExifSection.styles';
-
-const HISTOGRAM_BINS = 64;
-const HISTOGRAM_WIDTH = 160;
-const HISTOGRAM_HEIGHT = 48;
+import { EXIF_HISTOGRAM_BINS, EXIF_HISTOGRAM_WIDTH, EXIF_HISTOGRAM_HEIGHT } from '../../shared/constants';
 
 function aggregate(data: number[], bins: number): number[] {
   const agg = new Array(bins).fill(0);
@@ -19,14 +16,16 @@ function aggregate(data: number[], bins: number): number[] {
 }
 
 function HistogramChart({ id, data, color }: { id: string; data: number[]; color: string }) {
-  const agg = aggregate(data, HISTOGRAM_BINS);
+  const agg = aggregate(data, EXIF_HISTOGRAM_BINS);
   const max = Math.max(...agg, 1);
-  const barWidth = HISTOGRAM_WIDTH / HISTOGRAM_BINS;
+  const barWidth = EXIF_HISTOGRAM_WIDTH / EXIF_HISTOGRAM_BINS;
   return (
-    <svg width={HISTOGRAM_WIDTH} height={HISTOGRAM_HEIGHT} role="img" data-testid={`histogram-${id}`}>
+    <svg width={EXIF_HISTOGRAM_WIDTH} height={EXIF_HISTOGRAM_HEIGHT} role="img" data-testid={`histogram-${id}`}>
       {agg.map((value, i) => {
-        const h = (value / max) * HISTOGRAM_HEIGHT;
-        return <rect key={i} x={i * barWidth} y={HISTOGRAM_HEIGHT - h} width={Math.max(barWidth - 0.5, 0.5)} height={h} fill={color} />;
+        const h = (value / max) * EXIF_HISTOGRAM_HEIGHT;
+        return (
+          <rect key={i} x={i * barWidth} y={EXIF_HISTOGRAM_HEIGHT - h} width={Math.max(barWidth - 0.5, 0.5)} height={h} fill={color} />
+        );
       })}
     </svg>
   );

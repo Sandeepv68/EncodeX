@@ -65,11 +65,14 @@ export const TrackLabel = styled(Box)(({ theme }) => ({
   gap: theme.spacing(0.25),
 }));
 
-export const Scroller = styled(Box)({
+export const Scroller = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$width',
+})<{ $width: number }>(({ $width }) => ({
   position: 'relative',
   minWidth: '100%',
   userSelect: 'none',
-});
+  width: $width,
+}));
 
 export const Ruler = styled(Box)(({ theme }) => ({
   position: 'relative',

@@ -1,11 +1,17 @@
+/**
+ * @fileoverview FFmpeg and transcoder capability detection and reporting.
+ * Discovers available codecs, encoders, and hardware acceleration features.
+ */
+
 import { spawnSync } from 'child_process';
 import { Logger } from '../shared/logger';
 import { EncoderCapabilities } from '../shared/types';
+import { CAPABILITY_PROBE_TIMEOUT_MS } from '../shared/constants';
 import { getFfmpegPath } from './transcoders/ffmpeg-utils';
+import { LOG_DETECTED_FFMPEG_CAPABILITIES, LOG_ENCODER_CAPABILITY_PROBE_FAILED } from '../shared/log-constants';
 
 const log = new Logger('main/capabilities');
 
-const PROBE_TIMEOUT_MS = 10000;
 const ENCODER_LINE = /^([VAS])\S+\s+(\S+)/;
 
 export function parseEncoderOutput(stdout: string): Pick<EncoderCapabilities, 'videoEncoders' | 'audioEncoders'> {
@@ -32,7 +38,7 @@ function runFfmpeg(args: string[]): string {
   const ffmpegPath = getFfmpegPath();
   const result = spawnSync(ffmpegPath, args, {
     encoding: 'utf-8' as BufferEncoding,
-    timeout: PROBE_TIMEOUT_MS,
+    timeout: CAPABILITY_PROBE_TIMEOUT_MS,
     windowsHide: true,
   });
   if (result.error) throw result.error;
@@ -53,7 +59,7 @@ export function getEncoderCapabilities(force = false): EncoderCapabilities | nul
     const hwaccels = parseHwaccelOutput(hwaccelsOut);
     cached = { videoEncoders, audioEncoders, hwaccels };
     log.info(
-      'Detected ffmpeg capabilities:',
+      LOG_DETECTED_FFMPEG_CAPABILITIES,
       videoEncoders.length,
       'video encoders,',
       audioEncoders.length,
@@ -63,7 +69,7 @@ export function getEncoderCapabilities(force = false): EncoderCapabilities | nul
     );
     return cached;
   } catch (err) {
-    log.error('Encoder capability probe failed:', err);
+    log.error(LOG_ENCODER_CAPABILITY_PROBE_FAILED, err);
     return null;
   }
 }
