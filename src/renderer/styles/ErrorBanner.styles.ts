@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography, IconButton } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const BannerRoot = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$tone' && prop !== '$tint',
@@ -41,4 +42,8 @@ export const BannerCloseButton = styled(IconButton, {
 })<{ $tone: string }>(({ theme, $tone }) => ({
   color: $tone,
   marginTop: theme.spacing(-0.3),
+}));
+
+export const BannerCloseIcon = styled(FontAwesomeIcon)(({ theme }) => ({
+  fontSize: theme.typography.pxToRem(20),
 }));

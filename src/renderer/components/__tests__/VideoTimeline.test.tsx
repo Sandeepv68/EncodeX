@@ -520,11 +520,11 @@ describe('VideoTimeline', () => {
       <VideoTimeline duration={60} currentTime={0} start={0} end={60} onSeek={vi.fn()} onStartChange={vi.fn()} onEndChange={vi.fn()} />,
     );
     const scroller = screen.getByTestId('timeline-scroller');
-    expect(scroller.style.width).toBe('600px');
+    expect(getComputedStyle(scroller).width).toBe('600px');
     fireEvent.click(screen.getByLabelText('videoTimeline.zoomIn'));
-    expect(scroller.style.width).toBe('900px');
+    expect(getComputedStyle(scroller).width).toBe('900px');
     fireEvent.click(screen.getByLabelText('videoTimeline.zoomOut'));
-    expect(scroller.style.width).toBe('600px');
+    expect(getComputedStyle(scroller).width).toBe('600px');
   });
 
   it('always shows a one-line video stream bubble pinned to the top-left of the video track', () => {

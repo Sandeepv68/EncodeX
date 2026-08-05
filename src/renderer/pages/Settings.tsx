@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Tooltip, Switch, TextField, MenuItem } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Tooltip, Switch, MenuItem } from '@mui/material';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import { useColorMode } from '../ColorModeContext';
 import { useSettingsStore } from '../stores/settingsStore';
@@ -15,6 +14,7 @@ import {
   SettingsLabel,
   SettingsLabelRow,
   ThemeToggleButton,
+  ThemeToggleIcon,
   ModeSelect,
 } from '../styles/Settings.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
@@ -63,9 +63,9 @@ export default function Settings() {
         <Tooltip title={mode === 'dark' ? t('app.switchLight') : t('app.switchDark')}>
           <ThemeToggleButton size="medium" onClick={toggleColorMode}>
             {mode === 'dark' ? (
-              <FontAwesomeIcon icon={faSun} style={{ fontSize: 20 }} />
+              <ThemeToggleIcon icon={faSun} />
             ) : (
-              <FontAwesomeIcon icon={faMoon} style={{ fontSize: 20 }} />
+              <ThemeToggleIcon icon={faMoon} />
             )}
           </ThemeToggleButton>
         </Tooltip>

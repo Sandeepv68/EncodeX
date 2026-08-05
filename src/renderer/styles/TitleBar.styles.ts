@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, IconButton, Typography } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const dragRegion = { WebkitAppRegion: 'drag' } as React.CSSProperties;
 const noDragRegion = { WebkitAppRegion: 'no-drag' } as React.CSSProperties;
@@ -48,4 +49,8 @@ export const WindowCloseButton = styled(WindowControlButton)(({ theme }) => ({
     backgroundColor: theme.palette.error.main,
     color: theme.palette.error.contrastText,
   },
+}));
+
+export const WindowControlIcon = styled(FontAwesomeIcon)(({ theme }) => ({
+  fontSize: theme.typography.pxToRem(16),
 }));

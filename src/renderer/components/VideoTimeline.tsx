@@ -418,7 +418,7 @@ export default function VideoTimeline({
           <Scroller
             ref={scrollerRef}
             data-testid="timeline-scroller"
-            style={{ width: Math.max(duration * zoom, 600) }}
+            $width={Math.max(duration * zoom, DEFAULT_TIMELINE_WIDTH)}
             onPointerDown={handlePointerDown}
           >
             <Ruler>

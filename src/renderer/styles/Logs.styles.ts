@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography, Select, Paper } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { COLORS, SHADOWS } from '../colors';
 
 export const LogsRoot = styled(Box)({ display: 'flex', flexDirection: 'column', height: '100%' });
@@ -43,3 +44,7 @@ export const LevelSpan = styled('span', {
 })<{ $color: string }>(({ $color }) => ({ color: $color }));
 
 export const SourceSpan = styled('span')({ color: COLORS.log.muted });
+
+export const LogActionIcon = styled(FontAwesomeIcon)(({ theme }) => ({
+  fontSize: theme.typography.pxToRem(20),
+}));
