@@ -32,6 +32,7 @@ export const MainContent = styled('main')(({ theme }) => ({
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
+  marginBottom: theme.spacing(2),
 }));
 
 export const MobileMenuButton = styled(IconButton)(({ theme }) => ({
