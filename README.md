@@ -402,43 +402,7 @@ e2e/
 
 ### Render Tree
 
-```
-<React.StrictMode>
-  <Root>                                     ← main.tsx
-    <HashRouter>
-      <DirectionProvider direction={...}>    ← RTL/LTR Emotion cache (rtl plugin for Arabic)
-        <I18nextProvider i18n={i18n}>
-          <App>
-            <ColorModeProvider>
-              <CssBaseline />
-              <AppLayout>
-                <TitleBar />                 ← frameless window controls + always-on-top
-                <AppBody>
-                  <AppDrawer />              ← temporary (mobile) / permanent (desktop) drawer
-                  <ColumnLayout>
-                    <MainContent>
-                      <ErrorBoundary>        ← global safety net
-                        <Suspense>           ← lazy-loaded pages
-                          <Routes>
-                            <Route element={<ErrorBoundary><Page /></ErrorBoundary>} />   ← per-page isolation
-                          </Routes>
-                        </Suspense>
-                      </ErrorBoundary>
-                    </MainContent>
-                    <Footer />
-                  </ColumnLayout>
-                </AppBody>
-                <ErrorSnackbar />            ← global error toast
-                <ToastContainer />           ← info/success/warning toasts
-              </AppLayout>
-            </ColorModeProvider>
-          </App>
-        </I18nextProvider>
-      </DirectionProvider>
-    </HashRouter>
-  </Root>
-</React.StrictMode>
-```
+![EncodeX render tree](assets/render_tree.png)
 
 All nine pages (`Dashboard`, `Convert`, `MediaInfo`, `ImageCompress`, `AudioExtract`, `VideoCut`, `BatchQueue`, `Logs`, `Settings`) are code-split with `React.lazy`.
 
