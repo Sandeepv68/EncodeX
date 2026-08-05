@@ -11,7 +11,7 @@ export const TIMELINE_LAYOUT = {
 
 export const TimelineRoot = styled(Box)(({ theme }) => ({
   borderRadius: (theme.shape.borderRadius as number) * 1.5,
-  border: `1px solid ${theme.palette.divider}`,
+  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   overflow: 'hidden',
 }));
 
@@ -21,18 +21,18 @@ export const TimelineToolbar = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   gap: theme.spacing(1),
   padding: theme.spacing(0.5, 1),
-  borderBottom: `1px solid ${theme.palette.divider}`,
+  borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
 }));
 
 export const TimelineTimeText = styled(Typography)(({ theme }) => ({
-  fontSize: 12,
+  fontSize: theme.typography.pxToRem(12),
   color: theme.palette.text.secondary,
   fontVariantNumeric: 'tabular-nums',
 }));
 
 export const ZoomButton = styled(IconButton)({ padding: 4 });
 
-export const Viewport = styled(Box)({
+export const Viewport = styled(Box)(({ theme }) => ({
   position: 'relative',
   overflowX: 'auto',
   overflowY: 'hidden',
@@ -42,15 +42,15 @@ export const Viewport = styled(Box)({
   },
   '&::-webkit-scrollbar-thumb': {
     backgroundColor: 'rgba(128, 128, 128, 0.4)',
-    borderRadius: 4,
+    borderRadius: theme.typography.pxToRem(4),
   },
-});
+}));
 
 export const TrackLabelPanel = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   flexShrink: 0,
-  borderRight: `1px solid ${theme.palette.divider}`,
+  borderRight: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : '#141414',
   zIndex: 2,
 }));
@@ -77,7 +77,7 @@ export const Ruler = styled(Box)(({ theme }) => ({
   position: 'relative',
   height: TIMELINE_LAYOUT.RULER_HEIGHT,
   backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : '#141414',
-  borderBottom: `1px solid ${theme.palette.divider}`,
+  borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
 }));
 
 export const RulerTick = styled(Box)(({ theme }) => ({
@@ -101,8 +101,8 @@ export const RulerMinorTick = styled(Box)(({ theme }) => ({
 export const RulerLabel = styled(Typography)(({ theme }) => ({
   position: 'absolute',
   top: 12,
-  transform: 'translateX(3px)',
-  fontSize: 10,
+  transform: `translateX(${theme.typography.pxToRem(3)})`,
+  fontSize: theme.typography.pxToRem(10),
   lineHeight: 1.2,
   color: theme.palette.text.secondary,
   pointerEvents: 'none',
@@ -117,11 +117,11 @@ export const MarkerBubble = styled(Box)(({ theme }) => {
     transform: 'translateX(-50%)',
     backgroundColor: bg,
     color: '#fff',
-    fontSize: 10,
+    fontSize: theme.typography.pxToRem(10),
     lineHeight: 1.2,
     fontVariantNumeric: 'tabular-nums',
     padding: theme.spacing(0.75, 0.75),
-    borderRadius: '8px',
+    borderRadius: theme.typography.pxToRem(8),
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     boxShadow: theme.shadows[1],
@@ -144,7 +144,7 @@ export const ClipTrack = styled(Box)(({ theme }) => ({
   right: 0,
   backgroundColor: theme.palette.primary.main,
   opacity: 0.3,
-  borderRadius: 3,
+  borderRadius: theme.typography.pxToRem(3),
   pointerEvents: 'none',
 }));
 
@@ -154,7 +154,7 @@ export const VideoTrack = styled(Box)(({ theme }) => ({
   left: 0,
   right: 0,
   height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT,
-  borderBottom: `1px solid ${theme.palette.divider}`,
+  borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   zIndex: 0,
   pointerEvents: 'none',
 }));
@@ -180,7 +180,7 @@ export const ThumbCell = styled(Box)({
 export const WaveformBar = styled(Box)(({ theme }) => ({
   position: 'absolute',
   backgroundColor: theme.palette.primary.main,
-  borderRadius: 1,
+  borderRadius: theme.typography.pxToRem(1),
   opacity: 0.75,
 }));
 
@@ -189,9 +189,9 @@ export const KeptRegion = styled(Box)(({ theme }) => ({
   top: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
   bottom: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
   backgroundColor: theme.palette.primary.main,
-  borderLeft: `2px solid ${theme.palette.success.main}`,
-  borderRight: `2px solid ${theme.palette.error.main}`,
-  borderRadius: 3,
+  borderLeft: `${theme.typography.pxToRem(2)} solid ${theme.palette.success.main}`,
+  borderRight: `${theme.typography.pxToRem(2)} solid ${theme.palette.error.main}`,
+  borderRadius: theme.typography.pxToRem(3),
   zIndex: 3,
   cursor: 'move',
   pointerEvents: 'auto',
@@ -221,15 +221,15 @@ export const TrimHandle = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   backgroundColor: theme.palette.info.main,
-  border: '1px solid rgba(255, 255, 255, 0.85)',
-  borderRadius: 2,
-  boxShadow: '0 0 4px rgba(0, 0, 0, 0.45)',
+  border: `${theme.typography.pxToRem(1)} solid rgba(255, 255, 255, 0.85)`,
+  borderRadius: theme.typography.pxToRem(2),
+  boxShadow: `0 0 ${theme.typography.pxToRem(4)} rgba(0, 0, 0, 0.45)`,
   '&::before': {
     content: '""',
     width: 2,
     height: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 1,
+    borderRadius: theme.typography.pxToRem(1),
   },
 }));
 
@@ -262,7 +262,7 @@ export const ScrollShadow = styled(Box)(({ theme }) => {
     background: light
       ? 'linear-gradient(to right, rgb(0 0 0 / 20%), rgba(0, 0, 0, 0))'
       : 'linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0))',
-    borderLeft: `1px solid ${light ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.3)'}`,
+    borderLeft: `${theme.typography.pxToRem(1)} solid ${light ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.3)'}`,
   };
 });
 
@@ -273,13 +273,13 @@ export const TrackInfoBubble = styled(Box)(({ theme }) => {
     top: 0,
     left: 0,
     width: 'max-content',
-    maxWidth: 'min(60vw, 480px)',
+    maxWidth: `min(60vw, ${theme.typography.pxToRem(480)})`,
     backgroundColor: bg,
     color: '#fff',
-    fontSize: 11,
+    fontSize: theme.typography.pxToRem(11),
     lineHeight: 1.3,
     padding: theme.spacing(0.5, 1),
-    borderBottomRightRadius: '6px',
+    borderBottomRightRadius: theme.typography.pxToRem(6),
     boxShadow: theme.shadows[2],
     whiteSpace: 'nowrap',
     overflow: 'hidden',
@@ -307,8 +307,8 @@ export const PlayheadHead = styled(Box)(({ theme }) => ({
   left: -4,
   width: 0,
   height: 0,
-  borderLeft: '5px solid transparent',
-  borderRight: '5px solid transparent',
-  borderBottom: `8px solid ${theme.palette.error.main}`,
+  borderLeft: `${theme.typography.pxToRem(5)} solid transparent`,
+  borderRight: `${theme.typography.pxToRem(5)} solid transparent`,
+  borderBottom: `${theme.typography.pxToRem(8)} solid ${theme.palette.error.main}`,
   pointerEvents: 'none',
 }));

@@ -53,7 +53,7 @@ export const PreviewImage = styled('img')(({ theme }) => ({
   height: 96,
   objectFit: 'cover',
   borderRadius: theme.shape.borderRadius,
-  border: `1px solid ${theme.palette.divider}`,
+  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   display: 'block',
 }));
 
@@ -67,10 +67,10 @@ export const PreviewCloseButton = styled(IconButton)(({ theme }) => ({
   minWidth: 24,
   minHeight: 24,
   padding: 0,
-  fontSize: 14,
+  fontSize: theme.typography.pxToRem(14),
   color: theme.palette.error.main,
   backgroundColor: theme.palette.background.paper,
-  border: `1px solid ${theme.palette.divider}`,
+  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   '&:hover': {
     color: theme.palette.error.main,
     backgroundColor: theme.palette.error.main,
