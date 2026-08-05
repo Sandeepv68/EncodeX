@@ -45,37 +45,7 @@ The design emphasizes:
 
 ## High-Level Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         Electron Shell                              │
-│                                                                     │
-│  ┌───────────────────────┐        ┌──────────────────────────────┐  │
-│  │   MAIN PROCESS (Node) │        │     RENDERER PROCESS (React) │  │
-│  │                       │        │                              │  │
-│  │  index.ts (entry)     │  IPC   │  main.tsx (entry)            │  │
-│  │  cli.ts               │◄──────►│  App.tsx (layout + routes)   │  │
-│  │  capabilities.ts      │ invoke │  pages/* (9 lazy pages)      │  │
-│  │  ipc/                 │  +     │  hooks/*                     │  │
-│  │  transcoders/         │  send  │  stores/ (Zustand)           │  │
-│  │  player/              │        │  components/                 │  │
-│  │  queue/               │        │  i18n/                       │  │
-│  │  timeline/            │        │                              │  │
-│  │  image-*.ts           │        └───────────┬──────────────────┘  │
-│  └──────────┬────────────┘                    │                     │
-│             │                                 │                     │
-│  ┌──────────▼────────────┐        ┌───────────▼──────────────────┐  │
-│  │   PRELOAD (bridge)    │        │   FFmpeg subprocesses        │  │
-│  │   contextBridge       │        │   (spawned by main)          │  │
-│  │   electronAPI          │        │   ffmpeg / ffprobe / bmf    │  │
-│  └───────────────────────┘        └──────────────────────────────┘  │
-│                                                                     │
-│  ┌───────────────────────────────────────────────────────────────┐  │
-│  │   SHARED LAYER (src/shared) — imported by all three processes │  │
-│  │   types.ts, errors.ts, ipc-channels.ts, constants.ts,         │  │
-│  │   logger.ts, validation.ts, media-options.ts, ...             │  │
-│  └───────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────┘
-```
+![EncodeX architecture](assets/architecture.png)
 
 The renderer never spawns processes and never touches the filesystem directly. All privileged operations (file dialogs, FFmpeg execution, probing, window control) live in the main process and are reached through IPC.
 
