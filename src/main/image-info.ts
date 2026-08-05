@@ -5,10 +5,10 @@ import ffmpegStatic from 'ffmpeg-static';
 import { Logger } from '../shared/logger';
 import { isImageFile } from '../shared/file-extensions';
 import { ImageExifData, ImageHistogram } from '../shared/types';
+import { HISTOGRAM_BINS, HISTOGRAM_MAX_WIDTH, RGB_BYTES_PER_PIXEL, LUMA_WEIGHTS } from '../shared/constants';
+import { TRANSCODER_COMMANDS } from '../shared/transcoder-constants';
 
 const log = new Logger('main/image-info');
-
-const HISTOGRAM_MAX_WIDTH = 256;
 
 export function flattenExif(input: unknown, prefix = ''): Record<string, string> {
   const out: Record<string, string> = {};
@@ -28,20 +28,20 @@ export function flattenExif(input: unknown, prefix = ''): Record<string, string>
 }
 
 export function computeHistogram(buffer: Buffer, width: number, height: number): ImageHistogram {
-  const r = new Array(256).fill(0);
-  const g = new Array(256).fill(0);
-  const b = new Array(256).fill(0);
-  const luma = new Array(256).fill(0);
+  const r = new Array(HISTOGRAM_BINS).fill(0);
+  const g = new Array(HISTOGRAM_BINS).fill(0);
+  const b = new Array(HISTOGRAM_BINS).fill(0);
+  const luma = new Array(HISTOGRAM_BINS).fill(0);
   const total = width * height;
   for (let i = 0; i < total; i++) {
-    const idx = i * 3;
+    const idx = i * RGB_BYTES_PER_PIXEL;
     const rv = buffer[idx];
     const gv = buffer[idx + 1];
     const bv = buffer[idx + 2];
     r[rv] += 1;
     g[gv] += 1;
     b[bv] += 1;
-    luma[Math.round(0.299 * rv + 0.587 * gv + 0.114 * bv)] += 1;
+    luma[Math.round(LUMA_WEIGHTS.R * rv + LUMA_WEIGHTS.G * gv + LUMA_WEIGHTS.B * bv)] += 1;
   }
   return { r, g, b, luma };
 }
@@ -50,7 +50,7 @@ function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
   log.warn('ffmpeg-static not found, falling back to system ffmpeg');
-  return 'ffmpeg';
+  return TRANSCODER_COMMANDS.FFMPEG;
 }
 
 export function decodeImageHistogram(filePath: string): Promise<{ buffer: Buffer; width: number; height: number } | null> {
@@ -90,12 +90,12 @@ export function decodeImageHistogram(filePath: string): Promise<{ buffer: Buffer
       }
       const buffer = Buffer.concat(chunks);
       const width = HISTOGRAM_MAX_WIDTH;
-      const height = Math.floor(buffer.length / (width * 3));
+      const height = Math.floor(buffer.length / (width * RGB_BYTES_PER_PIXEL));
       if (height <= 0) {
         resolve(null);
         return;
       }
-      resolve({ buffer: buffer.subarray(0, width * height * 3), width, height });
+      resolve({ buffer: buffer.subarray(0, width * height * RGB_BYTES_PER_PIXEL), width, height });
     });
   });
 }

@@ -3,10 +3,9 @@ import { existsSync } from 'fs';
 import { Logger } from '../shared/logger';
 import { isImageFile } from '../shared/file-extensions';
 import { ImageFileInfo } from '../shared/types';
+import { IMAGE_HEADER_READ_SIZE } from '../shared/constants';
 
 const log = new Logger('main/image-file-info');
-
-const HEADER_READ_SIZE = 65536;
 
 function readUInt16LE(buf: Buffer, offset: number): number {
   return buf[offset] | (buf[offset + 1] << 8);
@@ -87,8 +86,8 @@ export async function getImageFileInfo(filePath: string): Promise<ImageFileInfo 
   try {
     const handle = await open(filePath, 'r');
     try {
-      const buffer = Buffer.alloc(HEADER_READ_SIZE);
-      const { bytesRead } = await handle.read(buffer, 0, HEADER_READ_SIZE, 0);
+      const buffer = Buffer.alloc(IMAGE_HEADER_READ_SIZE);
+      const { bytesRead } = await handle.read(buffer, 0, IMAGE_HEADER_READ_SIZE, 0);
       dims = readImageDimensions(buffer.subarray(0, bytesRead));
     } finally {
       await handle.close();

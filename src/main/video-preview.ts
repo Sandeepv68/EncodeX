@@ -3,16 +3,16 @@ import { existsSync } from 'fs';
 import ffmpegStatic from 'ffmpeg-static';
 import { Logger } from '../shared/logger';
 import { isVideoFile } from '../shared/file-extensions';
+import { VIDEO_PREVIEW_MAX_WIDTH, VIDEO_PREVIEW_SEEK_TIME } from '../shared/constants';
+import { TRANSCODER_COMMANDS } from '../shared/transcoder-constants';
 
 const log = new Logger('main/video-preview');
-
-const PREVIEW_MAX_WIDTH = 480;
 
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
   log.warn('ffmpeg-static not found, falling back to system ffmpeg');
-  return 'ffmpeg';
+  return TRANSCODER_COMMANDS.FFMPEG;
 }
 
 export function getVideoPreview(filePath: string): Promise<string | null> {
@@ -25,13 +25,13 @@ export function getVideoPreview(filePath: string): Promise<string | null> {
     '-v',
     'error',
     '-ss',
-    '00:00:01',
+    VIDEO_PREVIEW_SEEK_TIME,
     '-i',
     filePath,
     '-frames:v',
     '1',
     '-vf',
-    `scale=${PREVIEW_MAX_WIDTH}:-2`,
+    `scale=${VIDEO_PREVIEW_MAX_WIDTH}:-2`,
     '-f',
     'image2pipe',
     '-vcodec',

@@ -8,6 +8,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faStop, faVolumeHigh, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
 import { MediaInfo, PlayerFrame, PlayerAudioChunk } from '../../shared/types';
+import {
+  AUDIO_LOOKAHEAD_SECONDS,
+  MAX_PENDING_AUDIO_CHUNKS,
+  SEEK_COALESCE_MS,
+  MAX_BUFFERED_FRAMES,
+  MAX_FRAME_LOOKAHEAD_S,
+  STALL_DRAW_TIMEOUT_MS,
+  AUDIO_CLOCK_FROZEN_MS,
+  AUDIO_MIN_SAMPLE_RATE,
+  AUDIO_MIN_CHANNELS,
+  PCM_MAX_AMPLITUDE,
+} from '../../shared/constants';
 import { PlayerRoot, PlayerCanvas, ControlsArea, SeekSlider, ControlButton, ControlsRow, TimeText } from '../styles/MediaPlayer.styles';
 import { formatClockTime } from '../utils/formatters';
 
@@ -23,14 +35,6 @@ interface Props {
   onDurationChange?: (duration: number) => void;
   onMediaInfo?: (info: MediaInfo) => void;
 }
-
-const AUDIO_LOOKAHEAD_SECONDS = 0.75;
-const MAX_PENDING_AUDIO_CHUNKS = 200;
-const SEEK_COALESCE_MS = 120;
-const MAX_BUFFERED_FRAMES = 30;
-const MAX_FRAME_LOOKAHEAD_S = 3;
-const STALL_DRAW_TIMEOUT_MS = 400;
-const AUDIO_CLOCK_FROZEN_MS = 500;
 
 const MediaPlayer = memo(
   forwardRef<MediaPlayerHandle, Props>(function MediaPlayer({ filePath, onTimeUpdate, onDurationChange, onMediaInfo }: Props, ref) {
@@ -218,7 +222,7 @@ const MediaPlayer = memo(
     const scheduleOneChunk = useCallback((chunk: PlayerAudioChunk) => {
       const ctx = audioCtxRef.current;
       if (!ctx || !masterGainRef.current) return;
-      if (chunk.channels < 1 || chunk.sampleRate < 8000) return;
+      if (chunk.channels < AUDIO_MIN_CHANNELS || chunk.sampleRate < AUDIO_MIN_SAMPLE_RATE) return;
 
       try {
         if (nextStartTimeRef.current < ctx.currentTime) {
@@ -233,7 +237,7 @@ const MediaPlayer = memo(
         for (let ch = 0; ch < chunk.channels; ch++) {
           const channelData = buffer.getChannelData(ch);
           for (let i = 0; i < frameCount; i++) {
-            channelData[i] = int16[i * chunk.channels + ch] / 32768;
+            channelData[i] = int16[i * chunk.channels + ch] / PCM_MAX_AMPLITUDE;
           }
         }
 
@@ -274,7 +278,7 @@ const MediaPlayer = memo(
 
     const queueAudioChunk = useCallback(
       (chunk: PlayerAudioChunk) => {
-        if (chunk.channels < 1 || chunk.sampleRate < 8000 || chunk.data.byteLength < chunk.channels * 2) {
+        if (chunk.channels < AUDIO_MIN_CHANNELS || chunk.sampleRate < AUDIO_MIN_SAMPLE_RATE || chunk.data.byteLength < chunk.channels * 2) {
           return;
         }
         const ctx = ensureAudioContext();

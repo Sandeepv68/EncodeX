@@ -3,6 +3,7 @@ import { Logger } from '../shared/logger';
 import { ConversionOptions, TranscoderType } from '../shared/types';
 import { APP_NAME } from '../shared/app-constants';
 import { TRANSCODER_TYPES } from '../shared/transcoder-constants';
+import { CLI_CONVERSION_TIMEOUT_MS } from '../shared/constants';
 
 const log = new Logger('main/cli');
 
@@ -71,7 +72,7 @@ export async function runCli(): Promise<void> {
           log.warn('Conversion timed out after 300s');
           transcoder.cancel();
           reject(new Error('Conversion timed out'));
-        }, 300000);
+        }, CLI_CONVERSION_TIMEOUT_MS);
         emitter.on('progress', (progress) => {
           try {
             process.stdout.clearLine(0);

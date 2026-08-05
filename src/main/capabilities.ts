@@ -6,11 +6,11 @@
 import { spawnSync } from 'child_process';
 import { Logger } from '../shared/logger';
 import { EncoderCapabilities } from '../shared/types';
+import { CAPABILITY_PROBE_TIMEOUT_MS } from '../shared/constants';
 import { getFfmpegPath } from './transcoders/ffmpeg-utils';
 
 const log = new Logger('main/capabilities');
 
-const PROBE_TIMEOUT_MS = 10000;
 const ENCODER_LINE = /^([VAS])\S+\s+(\S+)/;
 
 export function parseEncoderOutput(stdout: string): Pick<EncoderCapabilities, 'videoEncoders' | 'audioEncoders'> {
@@ -37,7 +37,7 @@ function runFfmpeg(args: string[]): string {
   const ffmpegPath = getFfmpegPath();
   const result = spawnSync(ffmpegPath, args, {
     encoding: 'utf-8' as BufferEncoding,
-    timeout: PROBE_TIMEOUT_MS,
+    timeout: CAPABILITY_PROBE_TIMEOUT_MS,
     windowsHide: true,
   });
   if (result.error) throw result.error;

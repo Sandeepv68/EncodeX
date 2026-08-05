@@ -12,6 +12,7 @@ import { ErrorCode } from '../../shared/errors';
 import { useErrorStore } from './errorStore';
 import { useToastStore } from './toastStore';
 import i18n from '../i18n/config';
+import { AUDIO_EXTRACT_DEFAULT_CODEC } from '../../shared/constants';
 
 const log = new Logger('renderer/stores/audioExtractStore');
 
@@ -47,7 +48,7 @@ const INITIAL_STATE = {
   preview: null as string | null,
   audioStreams: [] as MediaStreamInfo[],
   output: '',
-  audioCodec: 'libmp3lame',
+  audioCodec: AUDIO_EXTRACT_DEFAULT_CODEC,
   audioBitrate: BITRATE_OPTIONS[1],
   isConverting: false,
   isPaused: false,

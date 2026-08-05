@@ -10,6 +10,7 @@ import { QueueJob, ConversionOptions, TranscoderType } from '../../shared/types'
 import { createTranscoder } from '../transcoders/factory';
 import { ITranscoder } from '../transcoders/interface';
 import { QUEUE_STATUS } from '../../shared/media-options';
+import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 
 const log = new Logger('main/queue/job-queue');
 
@@ -109,7 +110,7 @@ export class JobQueue extends EventEmitter {
       emitter.on('end', () => {
         log.info('Job completed:', nextJob.id);
         nextJob.status = QUEUE_STATUS.DONE;
-        nextJob.progress = 100;
+        nextJob.progress = COMPLETED_PROGRESS.percent;
         this.emit('statusChange', nextJob);
         this.running = false;
         this.currentJob = null;

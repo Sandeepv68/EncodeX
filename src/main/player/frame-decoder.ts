@@ -8,11 +8,18 @@ import { spawn, ChildProcess } from 'child_process';
 import ffmpegStatic from 'ffmpeg-static';
 import { existsSync } from 'fs';
 import { Logger } from '../../shared/logger';
-import { FFMPEG_FLAGS, KILL_SIGNAL, TRANSCODER_DEFAULTS } from '../../shared/transcoder-constants';
+import { FFMPEG_FLAGS, KILL_SIGNAL, TRANSCODER_DEFAULTS, TRANSCODER_COMMANDS } from '../../shared/transcoder-constants';
+import {
+  AUDIO_CHUNK_SECONDS,
+  FRAME_FLUSH_THRESHOLD_MS,
+  FRAME_FLUSH_INTERVAL_MS,
+  FRAME_DURATION_SMOOTHING,
+  DEFAULT_FRAME_DURATION,
+  AUDIO_TARGET_MIN_BYTES,
+  FRAME_BUFFER_OVERFLOW_WARN,
+} from '../../shared/constants';
 
 const log = new Logger('main/player/frame-decoder');
-
-const AUDIO_CHUNK_SECONDS = 0.05;
 
 /**
  * @interface DecodedFrame
@@ -70,7 +77,7 @@ function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
   log.warn('ffmpeg-static not found, falling back to system ffmpeg');
-  return 'ffmpeg';
+  return TRANSCODER_COMMANDS.FFMPEG;
 }
 
 export class FrameDecoder extends EventEmitter {
@@ -190,12 +197,12 @@ export class FrameDecoder extends EventEmitter {
     let stderrBuf = '';
     let lastEmitTime = Date.now();
     let lastEmittedPts = -1;
-    let avgFrameDuration = 1 / 30;
+    let avgFrameDuration = DEFAULT_FRAME_DURATION;
 
     const emitFrame = (frameData: Buffer, pts: number) => {
       if (lastEmittedPts >= 0 && pts > lastEmittedPts) {
         const diff = pts - lastEmittedPts;
-        avgFrameDuration = avgFrameDuration * 0.9 + diff * 0.1;
+        avgFrameDuration = avgFrameDuration * FRAME_DURATION_SMOOTHING + diff * (1 - FRAME_DURATION_SMOOTHING);
       }
       lastEmittedPts = pts;
       this.emit('frame', {
@@ -223,11 +230,11 @@ export class FrameDecoder extends EventEmitter {
       // The estimate is derived from the last known timestamp, never from the
       // wall clock, so the renderer's clock matching can always catch up.
       const now = Date.now();
-      if (pendingFrames.length > 0 && pendingPts.length === 0 && now - lastEmitTime > 200) {
+      if (pendingFrames.length > 0 && pendingPts.length === 0 && now - lastEmitTime > FRAME_FLUSH_THRESHOLD_MS) {
         const frameData = pendingFrames.shift()!;
         const estimatedPts = lastEmittedPts >= 0 ? lastEmittedPts + avgFrameDuration : 0;
         emitFrame(frameData, estimatedPts);
-        if (pendingFrames.length > 30) {
+        if (pendingFrames.length > FRAME_BUFFER_OVERFLOW_WARN) {
           log.warn(`Frame buffer overflow: ${pendingFrames.length} buffered, ${pendingPts.length} PTS values. Consider reducing output resolution or checking disk I/O.`);
         }
       }
@@ -279,7 +286,7 @@ export class FrameDecoder extends EventEmitter {
     }
 
     if (audio) {
-      const audioTarget = Math.max(512, Math.round(audio.sampleRate * audio.channels * 2 * AUDIO_CHUNK_SECONDS));
+      const audioTarget = Math.max(AUDIO_TARGET_MIN_BYTES, Math.round(audio.sampleRate * audio.channels * 2 * AUDIO_CHUNK_SECONDS));
       let audioParts: Buffer[] = [];
       let audioPartsLen = 0;
       currentProcess.stdio?.[3]?.on('data', (chunk: Buffer) => {
@@ -314,7 +321,7 @@ export class FrameDecoder extends EventEmitter {
     // Periodic flush to ensure frames don't get stuck in the buffer
     const flushInterval = setInterval(() => {
       emitAvailable();
-    }, 16); // ~60fps check interval for more responsive flushing
+    }, FRAME_FLUSH_INTERVAL_MS); // ~60fps check interval for more responsive flushing
 
     currentProcess.on('error', (err) => {
       if (this.process !== currentProcess) return;

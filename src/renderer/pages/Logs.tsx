@@ -18,6 +18,7 @@ import {
   SourceSpan,
 } from '../styles/Logs.styles';
 import { PageTitle } from '../styles/BatchQueue.styles';
+import { LOG_EXPORT_FILENAME_PREFIX } from '../../shared/constants';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 
@@ -41,7 +42,7 @@ export default function Logs() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `encodex-logs-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+    a.download = `${LOG_EXPORT_FILENAME_PREFIX}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
     a.click();
     URL.revokeObjectURL(url);
     useToastStore.getState().success(t('toast.logsDownloaded'));

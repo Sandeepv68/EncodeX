@@ -6,6 +6,7 @@ import { LOCALES, LOCALE_MAP, isRtlLocale } from '../i18n/localeMeta';
 import { useColorMode } from '../ColorModeContext';
 import i18n from '../i18n/config';
 import { LanguageMenuBox, LanguageButton, LanguageLabel, FlagIconWrapper, menuPaperSx } from '../styles/LanguageMenu.styles';
+import { LANGUAGE_STORAGE_KEY } from '../../shared/constants';
 
 const log = new Logger('renderer/LanguageMenu');
 
@@ -29,7 +30,7 @@ export default function LanguageMenu() {
     setDirection(dir);
     document.dir = dir;
     await i18n.changeLanguage(lng);
-    localStorage.setItem('encodex-lang', lng);
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, lng);
     setAnchor(null);
   };
 

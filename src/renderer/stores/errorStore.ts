@@ -6,6 +6,7 @@
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { AppError, createError, formatError, ErrorCode, ErrorCodeType, ERROR_MESSAGES } from '../../shared/errors';
+import { ERROR_HISTORY_MAX } from '../../shared/constants';
 
 const log = new Logger('renderer/stores/errorStore');
 
@@ -26,7 +27,7 @@ export const useErrorStore = create<ErrorState>((set) => ({
     log.error('Error shown:', appError.code, appError.message, appError.detail || '');
     set((s) => ({
       currentError: appError,
-      errorHistory: [...s.errorHistory.slice(-49), appError],
+      errorHistory: [...s.errorHistory.slice(-(ERROR_HISTORY_MAX - 1)), appError],
     }));
   },
   showErrorMessage: (code: ErrorCodeType, detail?: string) => {
@@ -34,7 +35,7 @@ export const useErrorStore = create<ErrorState>((set) => ({
     log.error('Error message shown:', code, ERROR_MESSAGES[code], detail || '');
     set((s) => ({
       currentError: appError,
-      errorHistory: [...s.errorHistory.slice(-49), appError],
+      errorHistory: [...s.errorHistory.slice(-(ERROR_HISTORY_MAX - 1)), appError],
     }));
   },
   clearError: () => {

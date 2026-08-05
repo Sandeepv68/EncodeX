@@ -20,8 +20,9 @@ import koKR from './locales/ko-KR.json';
 import idID from './locales/id-ID.json';
 import arSA from './locales/ar-SA.json';
 import arAE from './locales/ar-AE.json';
+import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from '../../shared/constants';
 
-const savedLang = localStorage.getItem('encodex-lang') || 'en-US';
+const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY) || DEFAULT_LANGUAGE;
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -47,7 +48,7 @@ i18n.use(initReactI18next).init({
     'ar-AE': { translation: arAE },
   },
   lng: savedLang,
-  fallbackLng: 'en-US',
+  fallbackLng: DEFAULT_LANGUAGE,
   interpolation: { escapeValue: false },
 });
 

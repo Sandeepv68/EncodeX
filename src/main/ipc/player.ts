@@ -11,6 +11,13 @@ import { FrameDecoder, DecodedFrame, AudioDecodeConfig } from '../player/frame-d
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import { TRANSCODER_DEFAULTS } from '../../shared/transcoder-constants';
+import {
+  AUDIO_MIN_SAMPLE_RATE,
+  AUDIO_DEFAULT_SAMPLE_RATE,
+  AUDIO_MIN_CHANNELS,
+  AUDIO_DEFAULT_CHANNELS,
+  PLAYER_MIN_DIMENSION,
+} from '../../shared/constants';
 import { IpcSender } from './send';
 
 const log = new Logger('main/ipc/player');
@@ -21,8 +28,8 @@ function capResolution(width: number, height: number): { width: number; height: 
   if (width <= maxWidth && height <= maxHeight) return { width, height };
   const scale = Math.min(maxWidth / width, maxHeight / height);
   return {
-    width: Math.max(2, Math.round(width * scale) & ~1),
-    height: Math.max(2, Math.round(height * scale) & ~1),
+    width: Math.max(PLAYER_MIN_DIMENSION, Math.round(width * scale) & ~1),
+    height: Math.max(PLAYER_MIN_DIMENSION, Math.round(height * scale) & ~1),
   };
 }
 
@@ -46,8 +53,8 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
       const audioStream = info.streams?.find((s) => s.type === 'audio');
       audioConfig = audioStream
         ? {
-            sampleRate: Math.max(8000, audioStream.sampleRate ?? 48000),
-            channels: Math.max(1, audioStream.channels ?? 2),
+            sampleRate: Math.max(AUDIO_MIN_SAMPLE_RATE, audioStream.sampleRate ?? AUDIO_DEFAULT_SAMPLE_RATE),
+            channels: Math.max(AUDIO_MIN_CHANNELS, audioStream.channels ?? AUDIO_DEFAULT_CHANNELS),
           }
         : null;
       if (videoStream?.width && videoStream?.height) {

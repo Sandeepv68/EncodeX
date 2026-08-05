@@ -7,7 +7,7 @@ import { existsSync } from 'fs';
 import ffmpegStatic from 'ffmpeg-static';
 import { Logger } from '../../shared/logger';
 import { ConversionOptions } from '../../shared/types';
-import { FFMPEG_FLAGS } from '../../shared/transcoder-constants';
+import { FFMPEG_FLAGS, TRANSCODER_COMMANDS } from '../../shared/transcoder-constants';
 import { getHwAccelArgs } from './hwaccel';
 
 const log = new Logger('main/transcoders/ffmpeg-utils');
@@ -16,7 +16,7 @@ export function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
   log.warn('ffmpeg-static not found, falling back to system ffmpeg');
-  return 'ffmpeg';
+  return TRANSCODER_COMMANDS.FFMPEG;
 }
 
 export function getFfprobePath(): string {
@@ -24,7 +24,7 @@ export function getFfprobePath(): string {
     return require('ffprobe-static').path;
   } catch {
     log.warn('ffprobe-static not found, falling back to system ffprobe');
-    return 'ffprobe';
+    return TRANSCODER_COMMANDS.FFPROBE;
   }
 }
 

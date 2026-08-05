@@ -20,6 +20,7 @@ import {
 import { buildFfmpegArgs } from './ffmpeg-utils';
 import { mapFfprobeData } from './ffprobe-mapper';
 import { cancelledError } from '../../shared/errors';
+import { ERROR_LOG_TAIL_CHARS } from '../../shared/constants';
 
 const log = new Logger('main/transcoders/bmf-core');
 
@@ -93,8 +94,8 @@ export class BmfCore implements ITranscoder {
           log.info('BMF process completed successfully');
           emitter.emit('end');
         } else {
-          log.error('BMF process failed with code:', code, 'stderr:', stderrData.slice(-200));
-          emitter.emit('error', new Error(`BMF exited with code ${code}: ${stderrData.slice(-200)}`));
+          log.error('BMF process failed with code:', code, 'stderr:', stderrData.slice(-ERROR_LOG_TAIL_CHARS));
+          emitter.emit('error', new Error(`BMF exited with code ${code}: ${stderrData.slice(-ERROR_LOG_TAIL_CHARS)}`));
         }
       });
     } catch (err) {

@@ -5,6 +5,7 @@
 
 import { exec } from 'child_process';
 import { Logger } from '../shared/logger';
+import { PROCESS_SUSPEND_SIGNAL, PROCESS_RESUME_SIGNAL } from '../shared/constants';
 
 const log = new Logger('main/process-utils');
 
@@ -38,7 +39,7 @@ export function suspendProcess(pid: number): Promise<void> {
       });
     } else {
       try {
-        process.kill(pid, 'SIGSTOP');
+        process.kill(pid, PROCESS_SUSPEND_SIGNAL);
         log.info('Process suspended:', pid);
       } catch (err) {
         log.warn('Failed to suspend process:', err);
@@ -58,7 +59,7 @@ export function resumeProcess(pid: number): Promise<void> {
       });
     } else {
       try {
-        process.kill(pid, 'SIGCONT');
+        process.kill(pid, PROCESS_RESUME_SIGNAL);
         log.info('Process resumed:', pid);
       } catch (err) {
         log.warn('Failed to resume process:', err);
