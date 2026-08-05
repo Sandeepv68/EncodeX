@@ -5,7 +5,7 @@ import { useColorMode } from '../ColorModeContext';
 import { useSettingsStore } from '../stores/settingsStore';
 import InfoTooltip from '../components/InfoTooltip';
 import { HWACCEL_MODES, ENCODER_TYPES } from '../../shared/hwaccel-settings';
-import type { HwAccelMode, EncoderType } from '../../shared/hwaccel-settings';
+import type { HwAccelMode, EncoderType } from '../../shared/types';
 import {
   SettingsRoot,
   SettingsHeader,

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { parseRatio, mapFfprobeData } from '../ffprobe-mapper';
-import type { ProbeData } from '../ffprobe-mapper';
+import type { ProbeData } from '../types';
 
 describe('parseRatio', () => {
   it('parses simple fractions', () => {

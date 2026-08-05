@@ -3,17 +3,13 @@
  * Defines hardware acceleration modes and encoder type options.
  */
 
+import type { HwAccelMode, EncoderType } from './types';
+
 /**
  * Supported hardware acceleration modes.
  * @const {readonly string[]} HWACCEL_MODES
  */
 export const HWACCEL_MODES = ['auto', 'encode'] as const;
-
-/**
- * Hardware acceleration mode type.
- * @typedef {string} HwAccelMode
- */
-export type HwAccelMode = (typeof HWACCEL_MODES)[number];
 
 /**
  * Default hardware acceleration settings.
@@ -31,11 +27,5 @@ export const HWACCEL_STORAGE_KEY = 'encodex-hwaccel';
  * @const {readonly string[]} ENCODER_TYPES
  */
 export const ENCODER_TYPES = ['auto', 'hardware', 'software'] as const;
-
-/**
- * Encoder type selection.
- * @typedef {string} EncoderType
- */
-export type EncoderType = (typeof ENCODER_TYPES)[number];
 
 export const ENCODER_TYPE_DEFAULT: EncoderType = 'auto';

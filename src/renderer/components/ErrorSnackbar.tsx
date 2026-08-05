@@ -1,6 +1,7 @@
 import { Snackbar, AlertColor } from '@mui/material';
 import { Logger } from '../../shared/logger';
-import { AppError, ErrorCode, ErrorCodeType } from '../../shared/errors';
+import { ErrorCode } from '../../shared/errors';
+import type { ErrorSnackbarProps } from './types';
 import { SnackbarAlert, AlertMessage, AlertDetail } from '../styles/ErrorSnackbar.styles';
 import { SNACKBAR_AUTO_HIDE_MS } from '../../shared/constants';
 
@@ -23,12 +24,7 @@ const severityMap: Record<string, AlertColor> = {
   [ErrorCode.UNKNOWN]: 'error',
 };
 
-interface Props {
-  error: AppError | null;
-  onClose: () => void;
-}
-
-export default function ErrorSnackbar({ error, onClose }: Props) {
+export default function ErrorSnackbar({ error, onClose }: ErrorSnackbarProps) {
   if (!error) return null;
   const severity = severityMap[error.code] || 'error';
   return (

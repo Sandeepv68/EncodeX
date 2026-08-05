@@ -7,17 +7,9 @@ import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { QueueJob } from '../../shared/types';
 import { LOG_ADD_JOB, LOG_CLEAR_JOBS, LOG_REMOVE_JOB, LOG_SET_JOBS, LOG_UPDATE_JOB } from '../../shared/log-constants';
+import type { QueueState } from './types';
 
 const log = new Logger('renderer/stores/queueStore');
-
-interface QueueState {
-  jobs: QueueJob[];
-  setJobs: (jobs: QueueJob[]) => void;
-  addJob: (job: QueueJob) => void;
-  removeJob: (id: string) => void;
-  updateJob: (job: QueueJob) => void;
-  clearJobs: () => void;
-}
 
 export const useQueueStore = create<QueueState>((set) => ({
   jobs: [],

@@ -10,7 +10,8 @@ import {
   ConversionOperation,
   FileItem,
 } from '../types';
-import { TranscoderType, TRANSCODER_TYPES } from '../transcoder-constants';
+import type { TranscoderType } from '../types';
+import { TRANSCODER_TYPES } from '../transcoder-constants';
 
 describe('TranscoderType', () => {
   it('is a union of TRANSCODER_TYPES values', () => {

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import GroupedSelect, { type GroupedOption } from '../GroupedSelect';
+import GroupedSelect from '../GroupedSelect';
+import type { GroupedOption } from '../types';
 import { faCode, faMemory } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 

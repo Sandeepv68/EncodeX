@@ -1,7 +1,8 @@
 import { Collapse } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleExclamation, faTriangleExclamation, faCircleInfo, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { AppError, ErrorCode } from '../../shared/errors';
+import { ErrorCode } from '../../shared/errors';
+import type { ErrorBannerProps } from './types';
 import { COLORS } from '../colors';
 import {
   BannerRoot,
@@ -38,12 +39,7 @@ const config: Record<string, { color: string; bg: string; icon: React.ReactEleme
   [ErrorCode.INPUT_NOT_SPECIFIED]: { color: COLORS.info, bg: COLORS.tint.info10, icon: <FontAwesomeIcon icon={faCircleInfo} /> },
 };
 
-interface Props {
-  error: AppError | null;
-  onClose?: () => void;
-}
-
-export default function ErrorBanner({ error, onClose }: Props) {
+export default function ErrorBanner({ error, onClose }: ErrorBannerProps) {
   if (!error) return null;
   const cfg = config[error.code] || config[ErrorCode.UNKNOWN];
   return (

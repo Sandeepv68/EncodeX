@@ -14,8 +14,7 @@ import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import GroupedSelect from './GroupedSelect';
 import { useCapabilities } from '../hooks/useCapabilities';
 import { isHardwareVideoCodec } from '../../shared/codec-classification';
-import type { GroupedOption } from './GroupedSelect';
-import type { EncoderType } from '../../shared/hwaccel-settings';
+import type { CodecSelectProps, GroupedOption } from './types';
 
 const groupIcons: Record<string, IconDefinition> = {
   Software: faCode,
@@ -34,14 +33,7 @@ const groupIcons: Record<string, IconDefinition> = {
   Other: faEllipsis,
 };
 
-interface Props {
-  type: 'video' | 'audio';
-  value: string;
-  onChange: (value: string) => void;
-  encoderType?: EncoderType;
-}
-
-export default function CodecSelect({ type, value, onChange, encoderType = 'auto' }: Props) {
+export default function CodecSelect({ type, value, onChange, encoderType = 'auto' }: CodecSelectProps) {
   const { videoCodecs, audioCodecs } = useCapabilities();
   const base = type === 'video' ? videoCodecs : audioCodecs;
   const filtered =

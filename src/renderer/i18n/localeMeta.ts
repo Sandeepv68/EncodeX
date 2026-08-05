@@ -1,13 +1,5 @@
-import type { ComponentType, CSSProperties } from 'react';
 import { US, GB, CA, IN, ES, MX, FR, DE, IT, NL, SE, BR, UA, JP, KR, ID, SA, AE } from 'country-flag-icons/react/3x2';
-
-export type FlagComponent = ComponentType<{ style?: CSSProperties }>;
-
-export interface LocaleMeta {
-  code: string;
-  label: string;
-  Flag: FlagComponent;
-}
+import type { FlagComponent, LocaleMeta } from './types';
 
 export const RTL_LOCALES = ['ar-SA', 'ar-AE'];
 

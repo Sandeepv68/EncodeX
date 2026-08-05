@@ -7,7 +7,8 @@ import { useRef, useEffect, useCallback, useState, forwardRef, useImperativeHand
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faStop, faVolumeHigh, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
-import { MediaInfo, PlayerFrame, PlayerAudioChunk } from '../../shared/types';
+import { PlayerFrame, PlayerAudioChunk } from '../../shared/types';
+import type { BufferedFrame, MediaPlayerHandle, MediaPlayerProps } from './types';
 import {
   AUDIO_LOOKAHEAD_SECONDS,
   MAX_PENDING_AUDIO_CHUNKS,
@@ -37,26 +38,18 @@ import {
 
 const log = new Logger('renderer/components/MediaPlayer');
 
-export interface MediaPlayerHandle {
-  seekTo: (time: number) => void;
-}
-
-interface Props {
-  filePath: string;
-  onTimeUpdate?: (time: number) => void;
-  onDurationChange?: (duration: number) => void;
-  onMediaInfo?: (info: MediaInfo) => void;
-}
-
 const MediaPlayer = memo(
-  forwardRef<MediaPlayerHandle, Props>(function MediaPlayer({ filePath, onTimeUpdate, onDurationChange, onMediaInfo }: Props, ref) {
+  forwardRef<MediaPlayerHandle, MediaPlayerProps>(function MediaPlayer(
+    { filePath, onTimeUpdate, onDurationChange, onMediaInfo }: MediaPlayerProps,
+    ref,
+  ) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [muted, setMuted] = useState(false);
     const animRef = useRef<number>(0);
-    const frameBuffer = useRef<Array<{ data: Uint8Array; width: number; height: number; pts: number }>>([]);
+    const frameBuffer = useRef<Array<BufferedFrame>>([]);
     const imageDataRef = useRef<ImageData | null>(null);
     const isSeeking = useRef(false);
     const displayPtsRef = useRef(0);
@@ -189,8 +182,6 @@ const MediaPlayer = memo(
         })
         .catch(() => {});
     }, []);
-
-    type BufferedFrame = { data: Uint8Array; width: number; height: number; pts: number };
 
     const drawFrame = useCallback((frame: BufferedFrame) => {
       const canvas = canvasRef.current;

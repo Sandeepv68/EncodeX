@@ -6,7 +6,7 @@
 import { useCallback } from 'react';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
-import { ErrorCodeType } from '../../shared/errors';
+import type { ErrorCodeType } from '../../shared/types';
 import { LOG_HANDLE_ERROR, LOG_HANDLE_ERROR_MESSAGE, LOG_WRAP_ASYNC_CALLED, LOG_WRAP_ASYNC_CAUGHT } from '../../shared/log-constants';
 
 const log = new Logger('renderer/hooks/useErrorHandler');

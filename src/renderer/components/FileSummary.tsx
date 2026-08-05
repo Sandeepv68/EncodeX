@@ -1,21 +1,11 @@
 import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaInfo } from '../../shared/types';
+import type { FileSummaryProps, SummaryRow } from './types';
 import { formatSize, formatDuration } from '../utils/formatters';
 import { SummaryGrid, TagsBox, TagsTitle, TagItem } from '../styles/FileSummary.styles';
 import { FieldLabel, FieldValue } from '../styles/InfoField.styles';
 import EllipsisTooltip from './EllipsisTooltip';
-
-export interface FileSummaryProps {
-  info: MediaInfo;
-  compact?: boolean;
-}
-
-type SummaryRow = {
-  label: string;
-  value: string;
-  size: { xs: number; sm?: number; md?: number; lg?: number };
-};
 
 export default function FileSummary({ info, compact }: FileSummaryProps) {
   const { t } = useTranslation();

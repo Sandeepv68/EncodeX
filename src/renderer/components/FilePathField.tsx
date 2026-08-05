@@ -2,21 +2,20 @@ import { Box, Button } from '@mui/material';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import InfoTooltip from './InfoTooltip';
+import type { FilePathFieldProps } from './types';
 import { FieldLabel, FieldStack, PathField } from '../styles/FilePathField.styles';
 
-interface Props {
-  label: string;
-  value: string;
-  placeholder: string;
-  buttonLabel: string;
-  onBrowse: () => void;
-  onChange?: (value: string) => void;
-  onBlur?: () => void;
-  error?: string;
-  hint?: string;
-}
-
-export default function FilePathField({ label, value, placeholder, buttonLabel, onBrowse, onChange, onBlur, error, hint }: Props) {
+export default function FilePathField({
+  label,
+  value,
+  placeholder,
+  buttonLabel,
+  onBrowse,
+  onChange,
+  onBlur,
+  error,
+  hint,
+}: FilePathFieldProps) {
   const helperText = error ? error : onChange ? ' ' : undefined;
   return (
     <Box>

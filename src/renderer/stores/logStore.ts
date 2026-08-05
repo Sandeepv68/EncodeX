@@ -6,12 +6,7 @@
 import { create } from 'zustand';
 import { LogEntry } from '../../shared/types';
 import { LOG_MAX_ENTRIES } from '../../shared/constants';
-
-interface LogState {
-  entries: LogEntry[];
-  addEntry: (entry: LogEntry) => void;
-  clear: () => void;
-}
+import type { LogState } from './types';
 
 export const useLogStore = create<LogState>((set) => ({
   entries: [],

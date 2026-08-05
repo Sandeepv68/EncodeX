@@ -7,7 +7,8 @@ import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { HWACCEL_DEFAULTS, HWACCEL_MODES, HWACCEL_STORAGE_KEY, ENCODER_TYPES, ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
-import type { HwAccelMode, EncoderType } from '../../shared/hwaccel-settings';
+import type { HwAccelMode, EncoderType } from '../../shared/types';
+import type { HwAccelStored, SettingsState } from './types';
 import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY } from '../../shared/constants';
 import {
   LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING,
@@ -22,12 +23,6 @@ import {
 } from '../../shared/log-constants';
 
 const log = new Logger('renderer/stores/settingsStore');
-
-interface HwAccelStored {
-  hardwareAcceleration: boolean;
-  hwaccelMode: HwAccelMode;
-  encoderType: EncoderType;
-}
 
 export function readStoredHwAccel(): HwAccelStored {
   try {
@@ -71,19 +66,6 @@ function persistAlwaysOnTop(flag: boolean): void {
   } catch (err) {
     log.warn(LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING, err);
   }
-}
-
-interface SettingsState {
-  transcoder: string;
-  setTranscoder: (t: string) => void;
-  hardwareAcceleration: boolean;
-  hwaccelMode: HwAccelMode;
-  encoderType: EncoderType;
-  setHardwareAcceleration: (enabled: boolean) => void;
-  setHwaccelMode: (mode: HwAccelMode) => void;
-  setEncoderType: (type: EncoderType) => void;
-  alwaysOnTop: boolean;
-  setAlwaysOnTop: (flag: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({

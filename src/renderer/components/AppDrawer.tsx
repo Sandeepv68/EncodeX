@@ -5,6 +5,7 @@ import { pageIcons } from '../pageIcons';
 import { useConversionStore } from '../stores/conversionStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import LanguageMenu from './LanguageMenu';
+import type { AppDrawerProps } from './types';
 import { DrawerDivider, NavList, NavItemButton, NavItemIcon, NavItemText, NavBlip } from '../styles/AppDrawer.styles';
 
 const navKeyMap: Record<string, string> = {
@@ -18,11 +19,6 @@ const navKeyMap: Record<string, string> = {
   '/logs': 'logs',
   '/settings': 'settings',
 };
-
-interface AppDrawerProps {
-  isMobile: boolean;
-  onNavigate: () => void;
-}
 
 export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
   const navigate = useNavigate();

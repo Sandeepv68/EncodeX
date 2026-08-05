@@ -1,18 +1,9 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import type { ConfirmDialogProps } from './types';
 
-interface Props {
-  open: boolean;
-  title: string;
-  message: string;
-  confirmLabel: string;
-  cancelLabel: string;
-  onClose: () => void;
-  onConfirm: () => void;
-}
-
-export default function ConfirmDialog({ open, title, message, confirmLabel, cancelLabel, onClose, onConfirm }: Props) {
+export default function ConfirmDialog({ open, title, message, confirmLabel, cancelLabel, onClose, onConfirm }: ConfirmDialogProps) {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>

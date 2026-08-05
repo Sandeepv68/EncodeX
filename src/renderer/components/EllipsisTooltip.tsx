@@ -1,12 +1,8 @@
 import { cloneElement, useRef, useState } from 'react';
 import { Box, Tooltip } from '@mui/material';
+import type { EllipsisTooltipProps } from './types';
 
-interface Props {
-  title: string;
-  children: React.ReactElement<{ ref?: React.Ref<HTMLElement> }>;
-}
-
-export default function EllipsisTooltip({ title, children }: Props) {
+export default function EllipsisTooltip({ title, children }: EllipsisTooltipProps) {
   const ref = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
 

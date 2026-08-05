@@ -7,7 +7,8 @@ import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { CONVERSION_DEFAULTS, TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
-import type { EncoderType } from '../../shared/hwaccel-settings';
+import type { EncoderType } from '../../shared/types';
+import type { ConversionState, ProgressData } from './types';
 import {
   LOG_RESET_FORM,
   LOG_SET_AUDIO_BITRATE,
@@ -28,50 +29,6 @@ import {
 } from '../../shared/log-constants';
 
 const log = new Logger('renderer/stores/conversionStore');
-
-interface ProgressData {
-  percent: number;
-  time: string;
-  speed: string;
-  eta: string;
-}
-
-interface ConversionState {
-  inputFile: string | null;
-  outputFile: string | null;
-  outputUserSet: boolean;
-  videoCodec: string;
-  audioCodec: string;
-  videoBitrate: string;
-  audioBitrate: string;
-  qscale: number;
-  scale: string;
-  pixelFormat: string;
-  copyMode: boolean;
-  transcoder: string;
-  encoderType: EncoderType;
-  isConverting: boolean;
-  isPaused: boolean;
-  isDirty: boolean;
-  progress: ProgressData | null;
-  setInputFile: (file: string | null) => void;
-  setOutputFile: (file: string | null) => void;
-  setOutputAuto: (file: string | null) => void;
-  setVideoCodec: (codec: string) => void;
-  setAudioCodec: (codec: string) => void;
-  setVideoBitrate: (bitrate: string) => void;
-  setAudioBitrate: (bitrate: string) => void;
-  setQscale: (q: number) => void;
-  setScale: (s: string) => void;
-  setPixelFormat: (f: string) => void;
-  setCopyMode: (c: boolean) => void;
-  setTranscoder: (t: string) => void;
-  setEncoderType: (type: EncoderType) => void;
-  setIsConverting: (v: boolean) => void;
-  setIsPaused: (v: boolean) => void;
-  setProgress: (p: ProgressData | null) => void;
-  resetForm: () => void;
-}
 
 const INITIAL_STATE = {
   inputFile: null as string | null,

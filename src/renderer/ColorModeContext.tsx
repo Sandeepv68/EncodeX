@@ -1,14 +1,8 @@
 import { createContext, useContext, useMemo, useState, ReactNode, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { THEME_STORAGE_KEY } from '../shared/app-constants';
-import { createAppTheme, ColorMode } from './theme';
-
-interface ColorModeContextValue {
-  mode: ColorMode;
-  direction: 'ltr' | 'rtl';
-  setDirection: (dir: 'ltr' | 'rtl') => void;
-  toggleColorMode: () => void;
-}
+import { createAppTheme } from './theme';
+import type { ColorMode, ColorModeContextValue } from './types';
 
 const ColorModeContext = createContext<ColorModeContextValue>({
   mode: 'light',

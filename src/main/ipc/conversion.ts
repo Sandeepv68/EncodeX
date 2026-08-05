@@ -6,12 +6,12 @@
 import { ipcMain, BrowserWindow } from 'electron';
 import { unlink } from 'fs';
 import { createTranscoder } from '../transcoders/factory';
-import { ITranscoder } from '../transcoders/interface';
+import type { ITranscoder } from '../transcoders/types';
 import { Logger } from '../../shared/logger';
 import { ConversionOptions, TranscoderType, ConversionProgress } from '../../shared/types';
 import { IPC } from '../../shared/ipc-channels';
 import { formatError } from '../../shared/errors';
-import { IpcSender } from './send';
+import type { IpcSender } from './types';
 import {
   LOG_ARROW,
   LOG_CONVERSION_CANCELLED,

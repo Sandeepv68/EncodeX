@@ -1,10 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Stack, Typography } from '@mui/material';
 import type { MediaStreamInfo } from '../../shared/types';
-
-export interface AudioStreamInfoProps {
-  streams: MediaStreamInfo[];
-}
+import type { AudioStreamInfoProps } from './types';
 
 function formatStreamLine(stream: MediaStreamInfo): string {
   const parts: string[] = [];

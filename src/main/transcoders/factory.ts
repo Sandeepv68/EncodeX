@@ -3,7 +3,7 @@ import { TranscoderType } from '../../shared/types';
 import { BmfCore } from './bmf-core';
 import { FfmpegCore } from './ffmpeg-core';
 import { FFToolCore } from './fftool-core';
-import { ITranscoder } from './interface';
+import type { ITranscoder } from './types';
 import { LOG_CREATING_TRANSCODER } from '../../shared/log-constants';
 
 const log = new Logger('main/transcoders/factory');

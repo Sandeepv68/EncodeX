@@ -5,8 +5,7 @@
 
 import { createTheme } from '@mui/material/styles';
 import { COLORS } from './colors';
-
-export type ColorMode = 'light' | 'dark';
+import type { ColorMode } from './types';
 
 const FONT_FAMILY = '"Roboto","Helvetica","Arial",sans-serif';
 

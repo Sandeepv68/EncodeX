@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AUDIO_CODECS, VIDEO_CODECS } from '../../shared/media-options';
 import type { EncoderCapabilities } from '../../shared/types';
-
-interface CodecOption {
-  value: string;
-  label: string;
-  group: string;
-}
+import type { CodecOption } from './types';
 
 let cached: EncoderCapabilities | null | undefined;
 let loadPromise: Promise<EncoderCapabilities | null> | null = null;

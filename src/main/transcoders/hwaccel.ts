@@ -6,7 +6,7 @@
 import { Logger } from '../../shared/logger';
 import { HWACCEL_DEFAULTS } from '../../shared/hwaccel-settings';
 import { isHardwareVideoCodec } from '../../shared/codec-classification';
-import type { HwAccelMode } from '../../shared/hwaccel-settings';
+import type { HwAccelMode } from '../../shared/types';
 import { LOG_APPLYING_HARDWARE_ACCELERATION_FLAGS_FOR } from '../../shared/log-constants';
 
 export { isHardwareVideoCodec };

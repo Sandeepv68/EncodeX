@@ -4,26 +4,7 @@
  */
 
 import { create } from 'zustand';
-
-export type ToastType = 'success' | 'error' | 'warning' | 'info';
-
-export interface Toast {
-  id: string;
-  type: ToastType;
-  message: string;
-  detail?: string;
-  duration?: number;
-}
-
-interface ToastState {
-  toasts: Toast[];
-  addToast: (type: ToastType, message: string, detail?: string, duration?: number) => void;
-  removeToast: (id: string) => void;
-  success: (message: string, detail?: string, duration?: number) => void;
-  error: (message: string, detail?: string, duration?: number) => void;
-  warning: (message: string, detail?: string, duration?: number) => void;
-  info: (message: string, detail?: string, duration?: number) => void;
-}
+import type { ToastType, Toast, ToastState } from './types';
 
 let counter = 0;
 
