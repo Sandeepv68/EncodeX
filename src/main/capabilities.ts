@@ -1,3 +1,8 @@
+/**
+ * @fileoverview FFmpeg and transcoder capability detection and reporting.
+ * Discovers available codecs, encoders, and hardware acceleration features.
+ */
+
 import { spawnSync } from 'child_process';
 import { Logger } from '../shared/logger';
 import { EncoderCapabilities } from '../shared/types';

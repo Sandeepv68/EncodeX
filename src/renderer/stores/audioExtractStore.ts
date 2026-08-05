@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Zustand store for audio extraction task state.
+ * Manages audio extraction operation state and settings.
+ */
+
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { BITRATE_OPTIONS } from '../../shared/media-options';

@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Zustand store for user application settings.
+ * Manages user preferences, theme, hardware acceleration, and other settings.
+ */
+
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';

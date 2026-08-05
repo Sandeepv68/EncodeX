@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Zustand store for application error state.
+ * Centralizes error management and error display across the app.
+ */
+
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { AppError, createError, formatError, ErrorCode, ErrorCodeType, ERROR_MESSAGES } from '../../shared/errors';

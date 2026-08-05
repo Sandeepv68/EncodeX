@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Main process entry point for the EncodeX Electron application.
+ * Handles window creation, IPC registration, CLI mode, and application lifecycle.
+ */
+
 import { app, BrowserWindow, Menu } from 'electron';
 import * as path from 'path';
 import { registerIpcHandlers } from './ipc/handlers';

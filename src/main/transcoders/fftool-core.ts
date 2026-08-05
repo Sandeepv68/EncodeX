@@ -1,5 +1,10 @@
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess } from 'child_process';
+/**
+ * @fileoverview FFTool-based transcoder implementation.
+ * Alternative transcoder using FFTool CLI for cross-platform support.
+ */
+
 import { Logger } from '../../shared/logger';
 import { ITranscoder } from './interface';
 import { suspendProcess, resumeProcess } from '../process-utils';

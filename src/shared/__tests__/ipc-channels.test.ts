@@ -24,6 +24,8 @@ describe('IPC channels', () => {
     expect(IPC.PLAYER_SEEK).toBe('player-seek');
     expect(IPC.PLAYER_CLOSE).toBe('player-close');
     expect(IPC.PLAYER_GET_FRAME).toBe('player-get-frame');
+    expect(IPC.PLAYER_AUDIO).toBe('player-audio');
+    expect(IPC.PLAYER_ERROR).toBe('player-error');
   });
 
   it('defines all event channels as unique strings', () => {
@@ -34,6 +36,8 @@ describe('IPC channels', () => {
     expect(IPC.QUEUE_PROGRESS).toBe('queue-progress');
     expect(IPC.QUEUE_CANCELLED).toBe('queue-cancelled');
     expect(IPC.PLAYER_FRAME).toBe('player-frame');
+    expect(IPC.PLAYER_AUDIO).toBe('player-audio');
+    expect(IPC.PLAYER_ERROR).toBe('player-error');
     expect(IPC.LOG_MESSAGE).toBe('log-message');
   });
 });

@@ -1,6 +1,10 @@
+/**
+ * @fileoverview FFmpeg frame and audio decoder for real-time media playback.
+ * Extracts raw video frames and audio PCM samples via FFmpeg process pipes.
+ */
+
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess } from 'child_process';
-import { Readable } from 'stream';
 import ffmpegStatic from 'ffmpeg-static';
 import { existsSync } from 'fs';
 import { Logger } from '../../shared/logger';
@@ -8,6 +12,14 @@ import { FFMPEG_FLAGS, KILL_SIGNAL, TRANSCODER_DEFAULTS } from '../../shared/tra
 
 const log = new Logger('main/player/frame-decoder');
 
+/**
+ * @interface DecodedFrame
+ * @property {Buffer} buffer - Raw RGB24 pixel data
+ * @property {number} width - Frame width in pixels
+ * @property {number} height - Frame height in pixels
+ * @property {number} pts - Presentation timestamp in seconds
+ * @property {number} generation - Decoder generation ID for cache invalidation
+ */
 export interface DecodedFrame {
   buffer: Buffer;
   width: number;
@@ -16,6 +28,13 @@ export interface DecodedFrame {
   generation: number;
 }
 
+/**
+ * @interface DecodedAudio
+ * @property {Buffer} buffer - Raw S16LE PCM audio data
+ * @property {number} sampleRate - Sample rate in Hz
+ * @property {number} channels - Number of audio channels
+ * @property {number} generation - Decoder generation ID for cache invalidation
+ */
 export interface DecodedAudio {
   buffer: Buffer;
   sampleRate: number;
@@ -23,14 +42,26 @@ export interface DecodedAudio {
   generation: number;
 }
 
+/**
+ * @interface AudioDecodeConfig
+ * @property {number} sampleRate - Requested audio sample rate
+ * @property {number} channels - Requested number of channels
+ */
 export interface AudioDecodeConfig {
   sampleRate: number;
   channels: number;
 }
 
+/**
+ * @interface FrameDecoderOptions
+ * @property {boolean} [realtime=true] - Enable realtime mode (-re flag)
+ * @property {boolean} [audioOnly=false] - Decode audio stream only
+ * @property {number} [fpsCap=0] - Cap decoded video frame rate (0 disables)
+ */
 export interface FrameDecoderOptions {
   realtime?: boolean;
   audioOnly?: boolean;
+  fpsCap?: number;
 }
 
 function getFfmpegPath(): string {
@@ -52,18 +83,10 @@ export class FrameDecoder extends EventEmitter {
   private audioSampleRate = 0;
   private audioChannels = 0;
   private generation = 0;
-  private options: Required<FrameDecoderOptions> = { realtime: true, audioOnly: false };
+  private options: Required<FrameDecoderOptions> = { realtime: true, audioOnly: false, fpsCap: 0 };
 
   getGeneration(): number {
     return this.generation;
-  }
-
-  setAudioPaused(paused: boolean): void {
-    if (paused) {
-      (this.process?.stdio?.[3] as Readable)?.pause();
-    } else {
-      (this.process?.stdio?.[3] as Readable)?.resume();
-    }
   }
 
   private spawnFfmpeg(seekTo?: string, width?: number, height?: number, audio?: AudioDecodeConfig, options?: FrameDecoderOptions): void {
@@ -76,7 +99,7 @@ export class FrameDecoder extends EventEmitter {
     this.framePartsLen = 0;
     this.running = true;
     const generation = ++this.generation;
-    this.options = { realtime: false, audioOnly: false, ...options };
+    this.options = { realtime: true, audioOnly: false, fpsCap: 0, ...options };
 
     const ffmpegPath = getFfmpegPath();
     const args: string[] = [];
@@ -85,7 +108,11 @@ export class FrameDecoder extends EventEmitter {
     }
 
     if (this.options.audioOnly) {
-      args.push(FFMPEG_FLAGS.INPUT, this.inputPath);
+      if (this.options.realtime) {
+        args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.REALTIME, FFMPEG_FLAGS.INPUT, this.inputPath);
+      } else {
+        args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.INPUT, this.inputPath);
+      }
       if (audio) {
         this.audioSampleRate = audio.sampleRate;
         this.audioChannels = audio.channels;
@@ -108,7 +135,8 @@ export class FrameDecoder extends EventEmitter {
         args.push(FFMPEG_FLAGS.COPYTS, FFMPEG_FLAGS.INPUT, this.inputPath);
       }
 
-      args.push('-vf', 'showinfo');
+      const videoFilter = this.options.fpsCap > 0 ? `fps=${this.options.fpsCap},showinfo` : 'showinfo';
+      args.push('-vf', videoFilter);
 
       if (audio) {
         this.audioSampleRate = audio.sampleRate;
@@ -159,41 +187,44 @@ export class FrameDecoder extends EventEmitter {
     const pendingFrames: Buffer[] = [];
     let stderrBuf = '';
     let lastEmitTime = Date.now();
-    let ptsExtractCount = 0;
-    let frameBufferCount = 0;
+    let lastEmittedPts = -1;
+    let avgFrameDuration = 1 / 30;
+
+    const emitFrame = (frameData: Buffer, pts: number) => {
+      if (lastEmittedPts >= 0 && pts > lastEmittedPts) {
+        const diff = pts - lastEmittedPts;
+        avgFrameDuration = avgFrameDuration * 0.9 + diff * 0.1;
+      }
+      lastEmittedPts = pts;
+      this.emit('frame', {
+        buffer: frameData,
+        width: this.width,
+        height: this.height,
+        pts,
+        generation,
+      } as DecodedFrame);
+      lastEmitTime = Date.now();
+    };
 
     const emitAvailable = () => {
       if (!this.running || this.process !== currentProcess) return;
-      
+
       // Emit frames that have matching PTS
       while (pendingFrames.length > 0 && pendingPts.length > 0) {
         const frameData = pendingFrames.shift()!;
         const pts = pendingPts.shift()!;
-        this.emit('frame', {
-          buffer: frameData,
-          width: this.width,
-          height: this.height,
-          pts,
-          generation,
-        } as DecodedFrame);
-        lastEmitTime = Date.now();
+        emitFrame(frameData, pts);
       }
-      
-      // Emergency flush: if frames stuck for >200ms and we have PTS, emit without matching
-      // This handles cases where PTS extraction lags behind frame arrival
+
+      // Emergency flush: if frames stuck for >200ms and we have no PTS, emit
+      // them with a monotonic estimate so playback never stalls permanently.
+      // The estimate is derived from the last known timestamp, never from the
+      // wall clock, so the renderer's clock matching can always catch up.
       const now = Date.now();
       if (pendingFrames.length > 0 && pendingPts.length === 0 && now - lastEmitTime > 200) {
         const frameData = pendingFrames.shift()!;
-        // Use a reasonable guess: ~24fps = 0.042s per frame
-        const estimatedPts = (now / 1000);
-        this.emit('frame', {
-          buffer: frameData,
-          width: this.width,
-          height: this.height,
-          pts: estimatedPts,
-          generation,
-        } as DecodedFrame);
-        lastEmitTime = now;
+        const estimatedPts = lastEmittedPts >= 0 ? lastEmittedPts + avgFrameDuration : 0;
+        emitFrame(frameData, estimatedPts);
         if (pendingFrames.length > 30) {
           log.warn(`Frame buffer overflow: ${pendingFrames.length} buffered, ${pendingPts.length} PTS values. Consider reducing output resolution or checking disk I/O.`);
         }

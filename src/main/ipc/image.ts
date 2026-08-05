@@ -1,3 +1,8 @@
+/**
+ * @fileoverview IPC handlers for image file operations.
+ * Handles image information retrieval, preview generation, and EXIF data extraction.
+ */
+
 import { ipcMain } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';

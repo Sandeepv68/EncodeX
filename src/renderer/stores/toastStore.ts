@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Zustand store for toast notification state.
+ * Manages toast messages and notifications.
+ */
+
 import { create } from 'zustand';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';

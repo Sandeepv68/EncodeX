@@ -1,3 +1,8 @@
+/**
+ * @fileoverview IPC handlers for native file and folder selection dialogs.
+ * Provides file picker functionality bridged to Electron's dialog module.
+ */
+
 import { ipcMain, dialog, BrowserWindow } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';

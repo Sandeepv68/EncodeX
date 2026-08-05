@@ -249,11 +249,6 @@ describe('MediaPlayer', () => {
       } as PlayerFrame);
     });
     runRaf();
-    expect(onTimeUpdate).not.toHaveBeenCalled();
-    act(() => {
-      vi.advanceTimersByTime(700);
-    });
-    runRaf();
     expect(onTimeUpdate).toHaveBeenCalledWith(0.6);
   });
 

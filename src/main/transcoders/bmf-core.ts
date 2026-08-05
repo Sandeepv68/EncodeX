@@ -1,5 +1,10 @@
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess, execSync } from 'child_process';
+/**
+ * @fileoverview BMF (ByteLynx Media Framework) transcoder implementation.
+ * Provides high-performance media processing using BMF bindings.
+ */
+
 import { Logger } from '../../shared/logger';
 import { ITranscoder } from './interface';
 import { suspendProcess, resumeProcess } from '../process-utils';

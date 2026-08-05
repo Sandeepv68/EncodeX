@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Hook for centralized error handling and display.
+ * Manages error toasts and notifications across the application.
+ */
+
 import { useCallback } from 'react';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';

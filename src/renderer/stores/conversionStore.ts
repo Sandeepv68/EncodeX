@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Zustand store for conversion job state management.
+ * Manages current conversion operation state and metadata.
+ */
+
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { CONVERSION_DEFAULTS, TRANSCODER_TYPES } from '../../shared/transcoder-constants';

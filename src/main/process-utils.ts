@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Process utility functions for pausing and resuming system processes.
+ * Provides cross-platform process suspension capabilities.
+ */
+
 import { exec } from 'child_process';
 import { Logger } from '../shared/logger';
 

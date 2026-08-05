@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Logger utility for structured logging across the application.
+ * Provides contextual logging with timestamps and severity levels.
+ */
+
+/**
+ * Log severity levels for filtering output.
+ * @enum LogLevel
+ */
 export enum LogLevel {
   DEBUG = 0,
   INFO = 1,

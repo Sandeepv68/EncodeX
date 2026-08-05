@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Preload script for secure IPC bridge.
+ * Exposes safe, sandboxed API for renderer process to communicate with main process.
+ */
+
 import { contextBridge, ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
 import { Logger } from '../shared/logger';
 import { IPC } from '../shared/ipc-channels';
@@ -102,9 +107,6 @@ const api = {
     log.debug('playerClose called');
     return ipcRenderer.invoke(IPC.PLAYER_CLOSE) as Promise<void>;
   },
-  setPlayerAudioFlow: (paused: boolean) => {
-    ipcRenderer.send(IPC.PLAYER_AUDIO_FLOW, paused);
-  },
   playerGetFrame: () => {
     return ipcRenderer.invoke(IPC.PLAYER_GET_FRAME) as Promise<PlayerFrame | null>;
   },
@@ -199,6 +201,13 @@ const api = {
     };
     ipcRenderer.on(IPC.PLAYER_AUDIO, handler);
     return () => ipcRenderer.removeListener(IPC.PLAYER_AUDIO, handler);
+  },
+  onPlayerError: (cb: (message: string) => void) => {
+    const handler = (_event: IpcRendererEvent, message: string) => {
+      cb(message);
+    };
+    ipcRenderer.on(IPC.PLAYER_ERROR, handler);
+    return () => ipcRenderer.removeListener(IPC.PLAYER_ERROR, handler);
   },
   onLogMessage: (cb: (entry: LogEntry) => void) => {
     const handler = (_event: IpcRendererEvent, entry: LogEntry) => {

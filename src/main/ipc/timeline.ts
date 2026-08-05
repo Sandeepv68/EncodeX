@@ -1,3 +1,8 @@
+/**
+ * @fileoverview IPC handlers for video timeline operations.
+ * Handles waveform extraction, thumbnail generation for timeline visualization.
+ */
+
 import { ipcMain } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';

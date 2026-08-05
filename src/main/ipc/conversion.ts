@@ -1,3 +1,8 @@
+/**
+ * @fileoverview IPC handlers for media file conversion operations.
+ * Manages conversion job lifecycle: start, progress tracking, cancellation, and completion.
+ */
+
 import { ipcMain, BrowserWindow } from 'electron';
 import { unlink } from 'fs';
 import { createTranscoder } from '../transcoders/factory';

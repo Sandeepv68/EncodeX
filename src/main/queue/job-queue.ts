@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Job queue for managing concurrent media conversion tasks.
+ * Handles queuing, dequeuing, and job state management.
+ */
+
 import { EventEmitter } from 'events';
 import { randomUUID } from 'crypto';
 import { Logger } from '../../shared/logger';

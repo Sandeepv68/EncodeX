@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Type definitions and interfaces for media conversion, playback, and queuing operations.
+ * Defines all core data structures used throughout the EncodeX application.
+ */
+
 import { QUEUE_STATUS, FALLBACK_VALUES } from './media-options';
 import { TRANSCODER_TYPES, TranscoderType } from './transcoder-constants';
 import { HwAccelMode } from './hwaccel-settings';
@@ -5,6 +10,10 @@ import { HwAccelMode } from './hwaccel-settings';
 export type { TranscoderType };
 export type { HwAccelMode };
 
+/**
+ * Options for media conversion and encoding operations.
+ * @interface ConversionOptions
+ */
 export interface ConversionOptions {
   videoCodec?: string;
   audioCodec?: string;
@@ -23,6 +32,10 @@ export interface ConversionOptions {
   hwaccelMode?: HwAccelMode;
 }
 
+/**
+ * Information about a media stream (audio, video, or subtitle).
+ * @interface MediaStreamInfo
+ */
 export interface MediaStreamInfo {
   index: number;
   type: 'video' | 'audio' | 'subtitle';
@@ -58,6 +71,10 @@ export interface MediaStreamInfo {
   tags?: Record<string, string>;
 }
 
+/**
+ * Complete media file information including format and stream details.
+ * @interface MediaInfo
+ */
 export interface MediaInfo {
   file: string;
   format: string;
@@ -71,6 +88,10 @@ export interface MediaInfo {
   tags?: Record<string, string>;
 }
 
+/**
+ * RGB and luminance histogram data for an image.
+ * @interface ImageHistogram
+ */
 export interface ImageHistogram {
   r: number[];
   g: number[];
@@ -78,18 +99,30 @@ export interface ImageHistogram {
   luma: number[];
 }
 
+/**
+ * EXIF metadata and histogram data extracted from an image file.
+ * @interface ImageExifData
+ */
 export interface ImageExifData {
   file: string;
   exif: Record<string, string>;
   histogram: ImageHistogram | null;
 }
 
+/**
+ * Basic information about an image file (dimensions and size).
+ * @interface ImageFileInfo
+ */
 export interface ImageFileInfo {
   width: number | null;
   height: number | null;
   size: number;
 }
 
+/**
+ * A media conversion job in the conversion queue.
+ * @interface QueueJob
+ */
 export interface QueueJob {
   id: string;
   input: string;
@@ -102,6 +135,10 @@ export interface QueueJob {
   createdAt: number;
 }
 
+/**
+ * Real-time progress information during media conversion.
+ * @interface ConversionProgress
+ */
 export interface ConversionProgress {
   percent: number;
   time: string;
@@ -111,6 +148,10 @@ export interface ConversionProgress {
   bitrate: string;
 }
 
+/**
+ * A decoded video frame for playback with presentation timestamp.
+ * @interface PlayerFrame
+ */
 export interface PlayerFrame {
   data: ArrayBuffer;
   width: number;
@@ -119,6 +160,10 @@ export interface PlayerFrame {
   generation: number;
 }
 
+/**
+ * A decoded audio chunk for playback with sample rate and channel info.
+ * @interface PlayerAudioChunk
+ */
 export interface PlayerAudioChunk {
   data: ArrayBuffer;
   sampleRate: number;
@@ -126,12 +171,20 @@ export interface PlayerAudioChunk {
   generation: number;
 }
 
+/**
+ * Waveform visualization data for audio or audio track.
+ * @interface WaveformData
+ */
 export interface WaveformData {
   sampleRate: number;
   samplesPerBucket: number;
-  buckets: Array<{ min: number; max: number }>;
+  buckets: Array<{ min: number; max: number; }>;
 }
 
+/**
+ * A grid of video thumbnail frames for timeline preview.
+ * @interface ThumbnailStrip
+ */
 export interface ThumbnailStrip {
   dataUrl: string;
   cols: number;
@@ -142,6 +195,10 @@ export interface ThumbnailStrip {
   count: number;
 }
 
+/**
+ * Types of media conversion operations supported by the application.
+ * @enum ConversionOperation
+ */
 export enum ConversionOperation {
   Transcode = 'transcode',
   ExtractAudio = 'extract_audio',

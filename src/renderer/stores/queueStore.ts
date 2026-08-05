@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Zustand store for conversion queue state management.
+ * Manages queue of conversion jobs and their statuses.
+ */
+
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { QueueJob } from '../../shared/types';

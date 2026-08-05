@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Central IPC handler registration and setup.
+ * Initializes all IPC communication channels between main and renderer processes.
+ */
+
 import { BrowserWindow } from 'electron';
 import { Logger } from '../../shared/logger';
 import { createSender } from './send';

@@ -1,3 +1,8 @@
+/**
+ * @fileoverview IPC handlers for window management operations.
+ * Handles window state changes, resizing, and other window control commands.
+ */
+
 import { BrowserWindow, ipcMain } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';

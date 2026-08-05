@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Hardware acceleration detection and configuration.
+ * Detects available GPU accelerators and generates appropriate FFmpeg options.
+ */
+
 import { Logger } from '../../shared/logger';
 import { HWACCEL_DEFAULTS } from '../../shared/hwaccel-settings';
 import { isHardwareVideoCodec } from '../../shared/codec-classification';

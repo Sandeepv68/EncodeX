@@ -105,6 +105,47 @@ describe('FrameDecoder', () => {
     expect(args).toContain('320x240');
   });
 
+  it('paces decoding in realtime by default', () => {
+    decoder.open('in.mp4');
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args).toContain('-re');
+  });
+
+  it('omits -re when realtime pacing is disabled', () => {
+    decoder.open('in.mp4', 320, 240, undefined, { realtime: false });
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args).not.toContain('-re');
+  });
+
+  it('caps the output frame rate via the fps filter when fpsCap is set', () => {
+    decoder.open('in.mp4', 640, 360, undefined, { fpsCap: 30 });
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args).toContain('-vf');
+    expect(args[args.indexOf('-vf') + 1]).toBe('fps=30,showinfo');
+  });
+
+  it('keeps the plain showinfo filter when fpsCap is disabled', () => {
+    decoder.open('in.mp4');
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args[args.indexOf('-vf') + 1]).toBe('showinfo');
+  });
+
+  it('estimates a bounded monotonic pts when showinfo lags so frames never wedge playback', () => {
+    vi.useFakeTimers();
+    const pts: number[] = [];
+    decoder.on('frame', (f: DecodedFrame) => pts.push(f.pts));
+    decoder.open('in.mp4', 2, 2);
+    const proc = spawnMock.mock.results[0].value;
+    proc.stderr.emit('data', Buffer.from('[Parsed_showinfo_0 @ 0x1] n:   0 pts: 0 pts_time:1.000000 ...\n'));
+    proc.stdout.emit('data', Buffer.alloc(12));
+    expect(pts).toEqual([1]);
+    vi.advanceTimersByTime(250);
+    proc.stdout.emit('data', Buffer.alloc(12));
+    expect(pts).toHaveLength(2);
+    expect(pts[1]).toBeGreaterThanOrEqual(1);
+    expect(pts[1]).toBeLessThan(5);
+  });
+
   it('spawns ffmpeg with audio output args when audio config is provided', () => {
     decoder.open('in.mp4', 640, 360, { sampleRate: 44100, channels: 2 });
     const args = spawnMock.mock.calls[0][1] as string[];
@@ -116,6 +157,14 @@ describe('FrameDecoder', () => {
     expect(args).toContain('44100');
     const options = spawnMock.mock.calls[0][2] as { stdio: string[] };
     expect(options.stdio).toEqual(['ignore', 'pipe', 'pipe', 'pipe']);
+  });
+
+  it('paces the audio-only decoder in realtime to avoid flooding the pipe', () => {
+    decoder.open('in.mp4', 640, 360, { sampleRate: 44100, channels: 2 }, { realtime: true, audioOnly: true });
+    const args = spawnMock.mock.calls[0][1] as string[];
+    expect(args.slice(0, 4)).toEqual(['-copyts', '-re', '-i', 'in.mp4']);
+    expect(args).not.toContain('rawvideo');
+    expect(args).toContain('pipe:3');
   });
 
   it('emits audio chunks decoded on the third pipe', () => {

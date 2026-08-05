@@ -30,7 +30,7 @@ export interface ElectronAPI {
   playerSeek(time: string): Promise<number>;
   playerClose(): Promise<void>;
   playerGetFrame(): Promise<PlayerFrame | null>;
-  setPlayerAudioFlow(paused: boolean): void;
+  onPlayerError(cb: (message: string) => void): () => void;
   extractWaveform(filePath: string, duration: number): Promise<WaveformData | null>;
   extractThumbnails(filePath: string, duration: number): Promise<ThumbnailStrip | null>;
   windowMinimize(): void;

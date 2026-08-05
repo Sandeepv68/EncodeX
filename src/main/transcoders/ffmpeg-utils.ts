@@ -1,4 +1,9 @@
 import { existsSync } from 'fs';
+/**
+ * @fileoverview FFmpeg utility functions and path resolution.
+ * Handles FFmpeg executable detection and path management.
+ */
+
 import ffmpegStatic from 'ffmpeg-static';
 import { Logger } from '../../shared/logger';
 import { ConversionOptions } from '../../shared/types';

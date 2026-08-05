@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Zustand store for application logs state.
+ * Manages application log messages and filtering.
+ */
+
 import { create } from 'zustand';
 import { LogEntry } from '../../shared/types';
 
