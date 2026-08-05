@@ -334,6 +334,16 @@
   "settings": {
     "title": "Settings",
     "theme": "Theme",
+    "themes": {
+      "light": "Light",
+      "ocean": "Ocean",
+      "sunset": "Sunset",
+      "forest": "Forest",
+      "lavender": "Lavender",
+      "rose": "Rose",
+      "slate": "Slate",
+      "dark": "Dark"
+    },
     "alwaysOnTop": "Always on top",
     "alwaysOnTopHint": "Keeps the app window above all other windows.",
     "hardwareAcceleration": "Hardware Acceleration",

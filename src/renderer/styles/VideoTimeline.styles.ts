@@ -1,6 +1,5 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box, IconButton, Typography } from '@mui/material';
-import { COLORS } from '../colors';
 
 export const TIMELINE_LAYOUT = {
   RULER_HEIGHT: 32,
@@ -137,17 +136,17 @@ export const Lane = styled(Box)(({ theme }) => ({
   height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT + TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
 }));
 
-export const ClipTrack = styled(Box)({
+export const ClipTrack = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 12,
   bottom: 12,
   left: 0,
   right: 0,
-  backgroundColor: COLORS.primary,
+  backgroundColor: theme.palette.primary.main,
   opacity: 0.3,
   borderRadius: 3,
   pointerEvents: 'none',
-});
+}));
 
 export const VideoTrack = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -178,20 +177,20 @@ export const ThumbCell = styled(Box)({
   backgroundRepeat: 'no-repeat',
 });
 
-export const WaveformBar = styled(Box)({
+export const WaveformBar = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  backgroundColor: COLORS.primary,
+  backgroundColor: theme.palette.primary.main,
   borderRadius: 1,
   opacity: 0.75,
-});
+}));
 
-export const KeptRegion = styled(Box)({
+export const KeptRegion = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
   bottom: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
-  backgroundColor: COLORS.primary,
-  borderLeft: `2px solid ${COLORS.success}`,
-  borderRight: `2px solid ${COLORS.error}`,
+  backgroundColor: theme.palette.primary.main,
+  borderLeft: `2px solid ${theme.palette.success.main}`,
+  borderRight: `2px solid ${theme.palette.error.main}`,
   borderRadius: 3,
   zIndex: 3,
   cursor: 'move',
@@ -200,7 +199,7 @@ export const KeptRegion = styled(Box)({
   '&:hover > .timeline-move-indicator': {
     opacity: 1,
   },
-});
+}));
 
 export const DimmedRegion = styled(Box)({
   position: 'absolute',
@@ -291,18 +290,18 @@ export const TrackInfoBubble = styled(Box)(({ theme }) => {
   };
 });
 
-export const PlayheadLine = styled(Box)({
+export const PlayheadLine = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
   bottom: 0,
   width: 2,
   transform: 'translateX(-50%)',
-  backgroundColor: COLORS.error,
+  backgroundColor: theme.palette.error.main,
   zIndex: 4,
   cursor: 'ew-resize',
-});
+}));
 
-export const PlayheadHead = styled(Box)({
+export const PlayheadHead = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
   left: -4,
@@ -310,6 +309,6 @@ export const PlayheadHead = styled(Box)({
   height: 0,
   borderLeft: '5px solid transparent',
   borderRight: '5px solid transparent',
-  borderBottom: `8px solid ${COLORS.error}`,
+  borderBottom: `8px solid ${theme.palette.error.main}`,
   pointerEvents: 'none',
-});
+}));

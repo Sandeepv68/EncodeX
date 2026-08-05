@@ -1,7 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, IconButton, TextField, Typography } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { COLORS } from '../colors';
+import { Box, TextField, Typography } from '@mui/material';
 
 export const SettingsRoot = styled(Box)(({ theme }) => ({ display: 'flex', flexDirection: 'column', gap: theme.spacing(2) }));
 
@@ -20,7 +18,7 @@ export const SettingsSection = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   gap: theme.spacing(2),
   padding: theme.spacing(2),
-  border: `1px solid ${COLORS.border.light}`,
+  border: `1px solid ${theme.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
   backgroundColor: theme.palette.background.paper,
 }));
@@ -31,16 +29,6 @@ export const SettingsLabel = styled(Typography)(({ theme }) => ({
 }));
 
 export const SettingsLabelRow = styled(Box)({ display: 'flex', alignItems: 'center' });
-
-export const ThemeToggleButton = styled(IconButton)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  border: `1px solid ${COLORS.border.light}`,
-  borderRadius: theme.shape.borderRadius,
-}));
-
-export const ThemeToggleIcon = styled(FontAwesomeIcon)(({ theme }) => ({
-  fontSize: theme.typography.pxToRem(20),
-}));
 
 export const ModeSelect = styled(TextField)(({ theme }) => ({
   minWidth: theme.spacing(26),

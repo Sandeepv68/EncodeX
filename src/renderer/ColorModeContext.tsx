@@ -2,13 +2,15 @@ import { createContext, useContext, useMemo, useState, ReactNode, useEffect } fr
 import { ThemeProvider } from '@mui/material/styles';
 import { THEME_STORAGE_KEY } from '../shared/app-constants';
 import { createAppTheme } from './theme';
-import type { ColorMode, ColorModeContextValue } from './types';
+import { getTheme, isThemeId } from './colors';
+import type { ColorMode, ColorModeContextValue, ThemeId } from './types';
 
 const ColorModeContext = createContext<ColorModeContextValue>({
+  themeId: 'light',
   mode: 'light',
   direction: 'ltr',
   setDirection: () => {},
-  toggleColorMode: () => {},
+  setTheme: () => {},
 });
 
 export function useColorMode() {
@@ -16,25 +18,24 @@ export function useColorMode() {
 }
 
 export function ColorModeProvider({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<ColorMode>(() => {
+  const [themeId, setThemeId] = useState<ThemeId>(() => {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
-    if (saved === 'light' || saved === 'dark') return saved;
+    if (isThemeId(saved)) return saved;
     return 'light';
   });
   const [direction, setDirection] = useState<'ltr' | 'rtl'>('ltr');
 
   useEffect(() => {
-    localStorage.setItem(THEME_STORAGE_KEY, mode);
-  }, [mode]);
+    localStorage.setItem(THEME_STORAGE_KEY, themeId);
+  }, [themeId]);
 
-  const toggleColorMode = () => {
-    setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  };
+  const mode: ColorMode = getTheme(themeId).mode;
+  const setTheme = (next: ThemeId) => setThemeId(next);
 
-  const theme = useMemo(() => createAppTheme(mode, direction), [mode, direction]);
+  const theme = useMemo(() => createAppTheme(themeId, direction), [themeId, direction]);
 
   return (
-    <ColorModeContext.Provider value={{ mode, direction, setDirection, toggleColorMode }}>
+    <ColorModeContext.Provider value={{ themeId, mode, direction, setDirection, setTheme }}>
       <ThemeProvider theme={theme}>{children}</ThemeProvider>
     </ColorModeContext.Provider>
   );

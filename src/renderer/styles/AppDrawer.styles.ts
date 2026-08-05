@@ -1,6 +1,5 @@
-import { styled, keyframes } from '@mui/material/styles';
+import { alpha, styled, keyframes } from '@mui/material/styles';
 import { Divider, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { COLORS } from '../colors';
 
 export const DrawerDivider = styled(Divider)(({ theme }) => ({
   borderColor: theme.palette.divider,
@@ -16,8 +15,8 @@ export const NavItemButton = styled(ListItemButton)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   marginBottom: theme.spacing(0.5),
   '&.Mui-selected': {
-    backgroundColor: COLORS.tint.primary15,
-    '&:hover': { backgroundColor: COLORS.tint.primary25 },
+    backgroundColor: alpha(theme.palette.primary.main, 0.15),
+    '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.25) },
   },
 }));
 

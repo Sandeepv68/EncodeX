@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { Tooltip, Switch, MenuItem } from '@mui/material';
-import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import { Switch, MenuItem } from '@mui/material';
 import { useColorMode } from '../ColorModeContext';
 import { useSettingsStore } from '../stores/settingsStore';
 import InfoTooltip from '../components/InfoTooltip';
 import { HWACCEL_MODES, ENCODER_TYPES } from '../../shared/hwaccel-settings';
+import { THEMES } from '../colors';
+import type { ThemeId } from '../types';
 import type { HwAccelMode, EncoderType } from '../../shared/types';
 import {
   SettingsRoot,
@@ -13,8 +14,6 @@ import {
   SettingsSection,
   SettingsLabel,
   SettingsLabelRow,
-  ThemeToggleButton,
-  ThemeToggleIcon,
   ModeSelect,
 } from '../styles/Settings.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
@@ -42,7 +41,7 @@ function SettingLabel({ text, hint }: { text: string; hint: string }) {
 
 export default function Settings() {
   const { t } = useTranslation();
-  const { mode, toggleColorMode } = useColorMode();
+  const { themeId, setTheme } = useColorMode();
   const hardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
   const hwaccelMode = useSettingsStore((s) => s.hwaccelMode);
   const encoderType = useSettingsStore((s) => s.encoderType);
@@ -62,11 +61,13 @@ export default function Settings() {
       </SettingsHeader>
       <SettingsSection>
         <SettingsLabel variant="body1">{t('settings.theme')}</SettingsLabel>
-        <Tooltip title={mode === 'dark' ? t('app.switchLight') : t('app.switchDark')}>
-          <ThemeToggleButton size="medium" onClick={toggleColorMode}>
-            {mode === 'dark' ? <ThemeToggleIcon icon={faSun} /> : <ThemeToggleIcon icon={faMoon} />}
-          </ThemeToggleButton>
-        </Tooltip>
+        <ModeSelect select size="small" value={themeId} onChange={(e) => setTheme(e.target.value as ThemeId)}>
+          {THEMES.map((theme) => (
+            <MenuItem key={theme.id} value={theme.id}>
+              {t(theme.labelKey)}
+            </MenuItem>
+          ))}
+        </ModeSelect>
       </SettingsSection>
       <SettingsSection>
         <SettingLabel text={t('settings.alwaysOnTop')} hint={t('settings.alwaysOnTopHint')} />

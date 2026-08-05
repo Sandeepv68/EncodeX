@@ -5,6 +5,7 @@ import { ColorModeProvider } from '../../ColorModeContext';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { HWACCEL_DEFAULTS, ENCODER_TYPE_DEFAULT } from '../../../shared/hwaccel-settings';
 import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY } from '../../../shared/constants';
+import { THEME_STORAGE_KEY } from '../../../shared/app-constants';
 
 function renderSettings() {
   return render(
@@ -34,35 +35,39 @@ describe('Settings', () => {
     expect(screen.getByText('settings.theme')).toBeInTheDocument();
   });
 
-  it('toggles the color mode when the theme button is clicked', () => {
-    const { container } = renderSettings();
-    const initialIcon = container.querySelector('[data-icon="moon"], [data-icon="sun"]');
-    expect(initialIcon).not.toBeNull();
-    const initialIconName = initialIcon!.getAttribute('data-icon');
-    const toggleButton = container.querySelector('button')!;
-    fireEvent.click(toggleButton);
-    const nextIconName = container.querySelector('[data-icon="moon"], [data-icon="sun"]')!.getAttribute('data-icon');
-    expect(nextIconName).not.toBe(initialIconName);
+  it('lists the light themes and the dark theme in the theme dropdown', () => {
+    renderSettings();
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    expect(screen.getByRole('option', { name: 'settings.themes.light' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'settings.themes.ocean' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'settings.themes.dark' })).toBeInTheDocument();
+  });
+
+  it('switches the theme and persists it when a theme is selected', () => {
+    renderSettings();
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.click(screen.getByRole('option', { name: 'settings.themes.dark' }));
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('dark');
   });
 
   it('renders the hardware acceleration row with the mode dropdown when enabled', () => {
     renderSettings();
     expect(screen.getByText('settings.hardwareAcceleration')).toBeInTheDocument();
     expect(screen.getByText('settings.hwaccelMode')).toBeInTheDocument();
-    expect(screen.getAllByRole('combobox')).toHaveLength(2);
+    expect(screen.getAllByRole('combobox')).toHaveLength(3);
   });
 
   it('hides the mode dropdown when hardware acceleration is disabled', () => {
     renderSettings();
     fireEvent.click(hwaccelSwitch());
     expect(screen.queryByText('settings.hwaccelMode')).not.toBeInTheDocument();
-    expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+    expect(screen.getAllByRole('combobox')).toHaveLength(1);
     expect(useSettingsStore.getState().hardwareAcceleration).toBe(false);
   });
 
   it('updates the hwaccel mode when a mode is selected', () => {
     renderSettings();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByRole('option', { name: 'settings.hwaccelModeEncode' }));
     expect(useSettingsStore.getState().hwaccelMode).toBe('encode');
   });
@@ -70,19 +75,19 @@ describe('Settings', () => {
   it('renders the encoder type dropdown when hardware acceleration is enabled', () => {
     renderSettings();
     expect(screen.getByText('settings.encoderType')).toBeInTheDocument();
-    expect(screen.getAllByRole('combobox')).toHaveLength(2);
+    expect(screen.getAllByRole('combobox')).toHaveLength(3);
   });
 
   it('hides the encoder type dropdown when hardware acceleration is disabled', () => {
     renderSettings();
     fireEvent.click(hwaccelSwitch());
     expect(screen.queryByText('settings.encoderType')).not.toBeInTheDocument();
-    expect(screen.queryAllByRole('combobox')).toHaveLength(0);
+    expect(screen.getAllByRole('combobox')).toHaveLength(1);
   });
 
   it('updates the encoder type when an option is selected', () => {
     renderSettings();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
     fireEvent.click(screen.getByRole('option', { name: 'settings.encoderTypeHardware' }));
     expect(useSettingsStore.getState().encoderType).toBe('hardware');
   });
