@@ -12,6 +12,24 @@ import { ConversionOptions, TranscoderType, ConversionProgress } from '../../sha
 import { IPC } from '../../shared/ipc-channels';
 import { formatError } from '../../shared/errors';
 import { IpcSender } from './send';
+import {
+  LOG_ARROW,
+  LOG_CONVERSION_CANCELLED,
+  LOG_FAILED_TO_CLEAN_UP_PARTIAL_OUTPUT,
+  LOG_IPC_CANCEL_CONVERSION_CALLED,
+  LOG_IPC_CONVERT_FILE,
+  LOG_IPC_CONVERT_FILE_COMPLETED_SUCCESSFULLY,
+  LOG_IPC_CONVERT_FILE_FAILED,
+  LOG_IPC_CONVERT_FILE_THREW,
+  LOG_IPC_GET_MEDIA_INFO,
+  LOG_IPC_GET_MEDIA_INFO_COMPLETED,
+  LOG_IPC_GET_MEDIA_INFO_FAILED,
+  LOG_IPC_PAUSE_CONVERSION_CALLED,
+  LOG_IPC_RESUME_CONVERSION_CALLED,
+  LOG_OPTIONS,
+  LOG_REMOVED_PARTIAL_OUTPUT,
+  LOG_TRANSCODER,
+} from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/conversion');
 
@@ -19,14 +37,14 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
   let currentTranscoder: ITranscoder | null = null;
 
   ipcMain.handle(IPC.GET_MEDIA_INFO, async (_event, filePath: string, transcoderType: TranscoderType) => {
-    log.info('GET_MEDIA_INFO:', filePath, 'transcoder:', transcoderType);
+    log.info(LOG_IPC_GET_MEDIA_INFO, filePath, LOG_TRANSCODER, transcoderType);
     try {
       const transcoder = createTranscoder(transcoderType);
       const info = await transcoder.getInfo(filePath);
-      log.info('GET_MEDIA_INFO completed:', info.format, info.duration.toFixed(2) + 's');
+      log.info(LOG_IPC_GET_MEDIA_INFO_COMPLETED, info.format, info.duration.toFixed(2) + 's');
       return info;
     } catch (err: unknown) {
-      log.error('GET_MEDIA_INFO failed:', err);
+      log.error(LOG_IPC_GET_MEDIA_INFO_FAILED, err);
       throw formatError(err);
     }
   });
@@ -34,7 +52,7 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
   ipcMain.handle(
     IPC.CONVERT_FILE,
     async (_event, input: string, output: string, options: ConversionOptions, transcoderType: TranscoderType) => {
-      log.info('CONVERT_FILE:', input, '->', output, 'transcoder:', transcoderType, 'options:', JSON.stringify(options));
+      log.info(LOG_IPC_CONVERT_FILE, input, LOG_ARROW, output, LOG_TRANSCODER, transcoderType, LOG_OPTIONS, JSON.stringify(options));
       try {
         const transcoder = createTranscoder(transcoderType);
         currentTranscoder = transcoder;
@@ -45,50 +63,50 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
             send(IPC.CONVERSION_PROGRESS, { input, output, progress });
           });
           emitter.on('error', (err: Error) => {
-            log.error('CONVERT_FILE failed:', err);
+            log.error(LOG_IPC_CONVERT_FILE_FAILED, err);
             if (output !== input) {
               unlink(output, (unlinkErr) => {
                 if (unlinkErr && unlinkErr.code !== 'ENOENT') {
-                  log.debug('Failed to clean up partial output:', output, unlinkErr.message);
+                  log.debug(LOG_FAILED_TO_CLEAN_UP_PARTIAL_OUTPUT, output, unlinkErr.message);
                 } else {
-                  log.debug('Removed partial output:', output);
+                  log.debug(LOG_REMOVED_PARTIAL_OUTPUT, output);
                 }
               });
             }
             reject(formatError(err));
           });
           emitter.on('end', () => {
-            log.info('CONVERT_FILE completed successfully');
+            log.info(LOG_IPC_CONVERT_FILE_COMPLETED_SUCCESSFULLY);
             resolve();
           });
         });
       } catch (err: unknown) {
-        log.error('CONVERT_FILE threw:', err);
+        log.error(LOG_IPC_CONVERT_FILE_THREW, err);
         throw formatError(err);
       }
     },
   );
 
   ipcMain.handle(IPC.PAUSE_CONVERSION, async () => {
-    log.info('PAUSE_CONVERSION called');
+    log.info(LOG_IPC_PAUSE_CONVERSION_CALLED);
     if (currentTranscoder) {
       currentTranscoder.pause();
     }
   });
 
   ipcMain.handle(IPC.RESUME_CONVERSION, async () => {
-    log.info('RESUME_CONVERSION called');
+    log.info(LOG_IPC_RESUME_CONVERSION_CALLED);
     if (currentTranscoder) {
       currentTranscoder.resume();
     }
   });
 
   ipcMain.handle(IPC.CANCEL_CONVERSION, async () => {
-    log.info('CANCEL_CONVERSION called');
+    log.info(LOG_IPC_CANCEL_CONVERSION_CALLED);
     if (currentTranscoder) {
       currentTranscoder.cancel();
       currentTranscoder = null;
-      log.info('Conversion cancelled');
+      log.info(LOG_CONVERSION_CANCELLED);
     }
   });
 }

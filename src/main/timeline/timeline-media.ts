@@ -24,6 +24,16 @@ import {
   PCM_MAX_AMPLITUDE,
 } from '../../shared/constants';
 import { TRANSCODER_COMMANDS } from '../../shared/transcoder-constants';
+import {
+  LOG_FFMPEG_SPAWN_ERROR,
+  LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG,
+  LOG_NOT_A_THUMBNAIL_ABLE_FILE,
+  LOG_NOT_A_WAVEFORM_ABLE_FILE,
+  LOG_THUMBNAIL_EXTRACTION_FAILED_NO_FRAMES_DECODED,
+  LOG_THUMBNAIL_SEGMENT_FAILED_WITH_CODE,
+  LOG_WAVEFORM_EXTRACTION_FAILED_NO_AUDIO_DECODED,
+  LOG_WAVEFORM_SEGMENT_FAILED_WITH_CODE,
+} from '../../shared/log-constants';
 
 const log = new Logger('main/timeline/timeline-media');
 
@@ -32,7 +42,7 @@ const RAW_FRAME_BYTES = THUMB_WIDTH * THUMB_HEIGHT * 3;
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
-  log.warn('ffmpeg-static not found, falling back to system ffmpeg');
+  log.warn(LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG);
   return TRANSCODER_COMMANDS.FFMPEG;
 }
 
@@ -71,7 +81,7 @@ function spawnBuffer(args: string[]): Promise<{ code: number; data: Buffer; stde
       stderr += chunk.toString();
     });
     child.on('error', (err: Error) => {
-      log.error('ffmpeg spawn error:', err);
+      log.error(LOG_FFMPEG_SPAWN_ERROR, err);
       resolve({ code: -1, data: Buffer.concat(chunks), stderr: err.message });
     });
     child.on('close', (code) => {
@@ -135,7 +145,7 @@ function encodePng(width: number, height: number, rgb: Buffer): Buffer {
 
 export function extractWaveform(filePath: string, duration: number): Promise<WaveformData | null> {
   if (!isExtractable(filePath, duration)) {
-    log.debug('Not a waveform-able file:', filePath);
+    log.debug(LOG_NOT_A_WAVEFORM_ABLE_FILE, filePath);
     return Promise.resolve(null);
   }
   const bucketCount = clamp(Math.round(duration * WAVEFORM_BUCKETS_PER_SECOND), WAVEFORM_MIN_BUCKETS, WAVEFORM_MAX_BUCKETS);
@@ -176,7 +186,7 @@ export function extractWaveform(filePath: string, duration: number): Promise<Wav
   return mapWithConcurrency(segments, WAVEFORM_PARALLEL, (segment) =>
     withSpawnSlot(() => spawnBuffer(segment.args)).then((result) => {
       if (result.code !== 0) {
-        log.warn('Waveform segment failed with code:', result.code, result.stderr);
+        log.warn(LOG_WAVEFORM_SEGMENT_FAILED_WITH_CODE, result.code, result.stderr);
         return false;
       }
       const data = result.data;
@@ -194,7 +204,7 @@ export function extractWaveform(filePath: string, duration: number): Promise<Wav
     }),
   ).then((successes) => {
     if (!successes.some(Boolean)) {
-      log.warn('Waveform extraction failed: no audio decoded');
+      log.warn(LOG_WAVEFORM_EXTRACTION_FAILED_NO_AUDIO_DECODED);
       return null;
     }
     const filled: Array<{ min: number; max: number } | null> = buckets.map((b) => (b.min <= b.max ? { min: b.min, max: b.max } : null));
@@ -253,7 +263,7 @@ function fillWaveformGaps(buckets: Array<{ min: number; max: number } | null>): 
 
 export function extractThumbnails(filePath: string, duration: number): Promise<ThumbnailStrip | null> {
   if (!isExtractable(filePath, duration)) {
-    log.debug('Not a thumbnail-able file:', filePath);
+    log.debug(LOG_NOT_A_THUMBNAIL_ABLE_FILE, filePath);
     return Promise.resolve(null);
   }
   const count = Math.max(1, Math.min(THUMB_MAX_COUNT, Math.round(duration / THUMB_INTERVAL_SECONDS)));
@@ -289,7 +299,7 @@ export function extractThumbnails(filePath: string, duration: number): Promise<T
   return mapWithConcurrency(jobs, THUMB_PARALLEL, (job) =>
     withSpawnSlot(() => spawnBuffer(job.args)).then((result) => {
       if (result.code !== 0 || result.data.length !== RAW_FRAME_BYTES) {
-        log.warn('Thumbnail segment failed with code:', result.code);
+        log.warn(LOG_THUMBNAIL_SEGMENT_FAILED_WITH_CODE, result.code);
         frames[job.index] = Buffer.alloc(RAW_FRAME_BYTES);
         return false;
       }
@@ -298,7 +308,7 @@ export function extractThumbnails(filePath: string, duration: number): Promise<T
     }),
   ).then((successes) => {
     if (!successes.some(Boolean)) {
-      log.warn('Thumbnail extraction failed: no frames decoded');
+      log.warn(LOG_THUMBNAIL_EXTRACTION_FAILED_NO_FRAMES_DECODED);
       return null;
     }
     const montage = Buffer.alloc(montageWidth * montageHeight * 3);

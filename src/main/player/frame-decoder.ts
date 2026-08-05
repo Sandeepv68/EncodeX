@@ -18,6 +18,20 @@ import {
   AUDIO_TARGET_MIN_BYTES,
   FRAME_BUFFER_OVERFLOW_WARN,
 } from '../../shared/constants';
+import {
+  LOG_AUDIO,
+  LOG_CLOSE,
+  LOG_DECODER_EXITED_WITH_NON_ZERO_CODE,
+  LOG_DECODER_PROCESS_ERROR,
+  LOG_DECODER_PROCESS_EXITED_WITH_CODE,
+  LOG_DECODER_PROCESS_KILLED,
+  LOG_FFMPEG_DECODER_ARGS,
+  LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG,
+  LOG_OPEN,
+  LOG_OPTIONS,
+  LOG_RESOLUTION,
+  LOG_SEEK,
+} from '../../shared/log-constants';
 
 const log = new Logger('main/player/frame-decoder');
 
@@ -76,7 +90,7 @@ export interface FrameDecoderOptions {
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
-  log.warn('ffmpeg-static not found, falling back to system ffmpeg');
+  log.warn(LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG);
   return TRANSCODER_COMMANDS.FFMPEG;
 }
 
@@ -125,17 +139,7 @@ export class FrameDecoder extends EventEmitter {
       if (audio) {
         this.audioSampleRate = audio.sampleRate;
         this.audioChannels = audio.channels;
-        args.push(
-          '-map',
-          '0:a:0',
-          '-f',
-          's16le',
-          '-ac',
-          String(audio.channels),
-          '-ar',
-          String(audio.sampleRate),
-          'pipe:3',
-        );
+        args.push('-map', '0:a:0', '-f', 's16le', '-ac', String(audio.channels), '-ar', String(audio.sampleRate), 'pipe:3');
       }
     } else {
       if (this.options.realtime) {
@@ -189,7 +193,7 @@ export class FrameDecoder extends EventEmitter {
       }
     }
 
-    log.debug('FFmpeg decoder args:', args.join(' '));
+    log.debug(LOG_FFMPEG_DECODER_ARGS, args.join(' '));
     const currentProcess = audio ? spawn(ffmpegPath, args, { stdio: ['ignore', 'pipe', 'pipe', 'pipe'] }) : spawn(ffmpegPath, args);
     this.process = currentProcess;
     const pendingPts: number[] = [];
@@ -235,7 +239,9 @@ export class FrameDecoder extends EventEmitter {
         const estimatedPts = lastEmittedPts >= 0 ? lastEmittedPts + avgFrameDuration : 0;
         emitFrame(frameData, estimatedPts);
         if (pendingFrames.length > FRAME_BUFFER_OVERFLOW_WARN) {
-          log.warn(`Frame buffer overflow: ${pendingFrames.length} buffered, ${pendingPts.length} PTS values. Consider reducing output resolution or checking disk I/O.`);
+          log.warn(
+            `Frame buffer overflow: ${pendingFrames.length} buffered, ${pendingPts.length} PTS values. Consider reducing output resolution or checking disk I/O.`,
+          );
         }
       }
     };
@@ -326,17 +332,17 @@ export class FrameDecoder extends EventEmitter {
     currentProcess.on('error', (err) => {
       if (this.process !== currentProcess) return;
       clearInterval(flushInterval);
-      log.error('Decoder process error:', err);
+      log.error(LOG_DECODER_PROCESS_ERROR, err);
       this.emit('error', err);
     });
 
     currentProcess.on('close', (code) => {
       if (this.process !== currentProcess) return;
       clearInterval(flushInterval);
-      log.debug('Decoder process exited with code:', code);
+      log.debug(LOG_DECODER_PROCESS_EXITED_WITH_CODE, code);
       this.running = false;
       if (code !== 0 && code !== null) {
-        log.error('Decoder exited with non-zero code:', code);
+        log.error(LOG_DECODER_EXITED_WITH_NON_ZERO_CODE, code);
         this.emit('error', new Error(`Decoder exited with code ${code}`));
       }
       this.emit('end');
@@ -352,7 +358,7 @@ export class FrameDecoder extends EventEmitter {
   ): void {
     this.close();
 
-    log.info('open:', input, 'resolution:', width, 'x', height, 'audio:', audio, 'options:', options);
+    log.info(LOG_OPEN, input, LOG_RESOLUTION, width, 'x', height, LOG_AUDIO, audio, LOG_OPTIONS, options);
     this.inputPath = input;
     this.width = width;
     this.height = height;
@@ -364,7 +370,7 @@ export class FrameDecoder extends EventEmitter {
   }
 
   seek(seekTo: string): void {
-    log.debug('seek:', seekTo);
+    log.debug(LOG_SEEK, seekTo);
     this.close();
     if (this.inputPath) {
       this.spawnFfmpeg(
@@ -379,12 +385,12 @@ export class FrameDecoder extends EventEmitter {
   }
 
   close(): void {
-    log.debug('close');
+    log.debug(LOG_CLOSE);
     this.running = false;
     if (this.process) {
       this.process.kill(KILL_SIGNAL);
       this.process = null;
-      log.debug('Decoder process killed');
+      log.debug(LOG_DECODER_PROCESS_KILLED);
     }
     this.frameParts = [];
     this.framePartsLen = 0;

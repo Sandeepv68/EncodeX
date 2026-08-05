@@ -19,6 +19,13 @@ import {
   PLAYER_MIN_DIMENSION,
 } from '../../shared/constants';
 import { IpcSender } from './send';
+import {
+  LOG_IPC_PLAYER_CLOSE,
+  LOG_IPC_PLAYER_OPEN,
+  LOG_IPC_PLAYER_OPEN_FAILED_FALLING_BACK_TO_DEFAULT_RESOLUTION,
+  LOG_IPC_PLAYER_SEEK,
+  LOG_PLAYER_DECODER_ERROR,
+} from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/player');
 
@@ -45,7 +52,7 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
   const AUDIO_OPTIONS = { realtime: true, audioOnly: true, fpsCap: 0 } as const;
 
   ipcMain.handle(IPC.PLAYER_OPEN, async (_event, filePath: string) => {
-    log.info('PLAYER_OPEN:', filePath);
+    log.info(LOG_IPC_PLAYER_OPEN, filePath);
     try {
       audioDecoder.close();
       const info = await new FfmpegCore().getInfo(filePath);
@@ -68,7 +75,7 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
         audioDecoder.open(filePath, undefined, undefined, audioConfig, AUDIO_OPTIONS);
       }
     } catch (err: unknown) {
-      log.error('PLAYER_OPEN failed, falling back to default resolution:', err);
+      log.error(LOG_IPC_PLAYER_OPEN_FAILED_FALLING_BACK_TO_DEFAULT_RESOLUTION, err);
       audioConfig = null;
       audioDecoder.close();
       videoDecoder.open(filePath);
@@ -77,14 +84,14 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
   });
 
   ipcMain.handle(IPC.PLAYER_SEEK, async (_event, time: string) => {
-    log.debug('PLAYER_SEEK:', time);
+    log.debug(LOG_IPC_PLAYER_SEEK, time);
     videoDecoder.seek(time);
     audioDecoder.seek(time);
     return ++generation;
   });
 
   ipcMain.handle(IPC.PLAYER_CLOSE, async () => {
-    log.debug('PLAYER_CLOSE');
+    log.debug(LOG_IPC_PLAYER_CLOSE);
     videoDecoder.close();
     audioDecoder.close();
   });
@@ -124,7 +131,7 @@ export function registerPlayerHandlers(_win: BrowserWindow, send: IpcSender): vo
   });
 
   const forwardError = (err: Error) => {
-    log.error('Player decoder error:', err);
+    log.error(LOG_PLAYER_DECODER_ERROR, err);
     send(IPC.PLAYER_ERROR, err.message);
   };
   videoDecoder.on('error', forwardError);

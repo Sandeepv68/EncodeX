@@ -8,6 +8,7 @@ import { Logger } from '../shared/logger';
 import { EncoderCapabilities } from '../shared/types';
 import { CAPABILITY_PROBE_TIMEOUT_MS } from '../shared/constants';
 import { getFfmpegPath } from './transcoders/ffmpeg-utils';
+import { LOG_DETECTED_FFMPEG_CAPABILITIES, LOG_ENCODER_CAPABILITY_PROBE_FAILED } from '../shared/log-constants';
 
 const log = new Logger('main/capabilities');
 
@@ -58,7 +59,7 @@ export function getEncoderCapabilities(force = false): EncoderCapabilities | nul
     const hwaccels = parseHwaccelOutput(hwaccelsOut);
     cached = { videoEncoders, audioEncoders, hwaccels };
     log.info(
-      'Detected ffmpeg capabilities:',
+      LOG_DETECTED_FFMPEG_CAPABILITIES,
       videoEncoders.length,
       'video encoders,',
       audioEncoders.length,
@@ -68,7 +69,7 @@ export function getEncoderCapabilities(force = false): EncoderCapabilities | nul
     );
     return cached;
   } catch (err) {
-    log.error('Encoder capability probe failed:', err);
+    log.error(LOG_ENCODER_CAPABILITY_PROBE_FAILED, err);
     return null;
   }
 }

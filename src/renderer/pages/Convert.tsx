@@ -44,6 +44,12 @@ import {
   suggestedExtensionForVideoCodec,
   isExtensionCompatibleWithVideoCodec,
 } from '../../shared/codec-containers';
+import {
+  LOG_ARROW,
+  LOG_FAILED_TO_LOAD_MEDIA_INFO_FOR_PREVIEW,
+  LOG_STARTING_CONVERSION,
+  LOG_VALIDATION_FAILED_NOT_STARTING_CONVERSION,
+} from '../../shared/log-constants';
 
 const log = new Logger('renderer/pages/Convert');
 
@@ -144,7 +150,7 @@ export default function Convert() {
       .then((info) => {
         if (!cancelled) setMediaInfo(info);
       })
-      .catch((err) => log.error('Failed to load media info for preview:', err))
+      .catch((err) => log.error(LOG_FAILED_TO_LOAD_MEDIA_INFO_FOR_PREVIEW, err))
       .finally(() => {
         if (!cancelled) setMediaInfoLoading(false);
       });
@@ -176,10 +182,10 @@ export default function Convert() {
 
   const handleStartConversion = () => {
     if (!validateFields()) {
-      log.warn('Validation failed, not starting conversion');
+      log.warn(LOG_VALIDATION_FAILED_NOT_STARTING_CONVERSION);
       return;
     }
-    log.info('Starting conversion:', inputFile, '->', outputFile);
+    log.info(LOG_STARTING_CONVERSION, inputFile, LOG_ARROW, outputFile);
     startConversion();
   };
 

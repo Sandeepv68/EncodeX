@@ -20,6 +20,43 @@ import {
   WaveformData,
   ThumbnailStrip,
 } from '../shared/types';
+import {
+  LOG_ARROW,
+  LOG_CANCEL_CONVERSION_CALLED,
+  LOG_CONVERT_FILE,
+  LOG_DURATION,
+  LOG_EXTRACT_THUMBNAILS,
+  LOG_EXTRACT_WAVEFORM,
+  LOG_GET_CAPABILITIES_CALLED,
+  LOG_GET_IMAGE_FILE_INFO,
+  LOG_GET_IMAGE_INFO,
+  LOG_GET_IMAGE_PREVIEW,
+  LOG_GET_MEDIA_INFO,
+  LOG_GET_VIDEO_PREVIEW,
+  LOG_ON_CONVERSION_PROGRESS,
+  LOG_ON_QUEUE_ADDED,
+  LOG_ON_QUEUE_CANCELLED,
+  LOG_ON_QUEUE_REMOVED,
+  LOG_ON_QUEUE_STATUS_CHANGE,
+  LOG_ON_WINDOW_MAXIMIZED_CHANGE,
+  LOG_PAUSE_CONVERSION_CALLED,
+  LOG_PLAYER_CLOSE_CALLED,
+  LOG_PLAYER_OPEN,
+  LOG_PLAYER_SEEK,
+  LOG_QUEUE_ADD,
+  LOG_QUEUE_CANCEL_ALL_CALLED,
+  LOG_QUEUE_LIST_CALLED,
+  LOG_QUEUE_REMOVE,
+  LOG_RESUME_CONVERSION_CALLED,
+  LOG_SELECT_FILES_CALLED,
+  LOG_SELECT_FILE_CALLED,
+  LOG_SELECT_OUTPUT_CALLED,
+  LOG_TRANSCODER,
+  LOG_WINDOW_CLOSE_CALLED,
+  LOG_WINDOW_MAXIMIZE_TOGGLE_CALLED,
+  LOG_WINDOW_MINIMIZE_CALLED,
+  LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED,
+} from '../shared/log-constants';
 
 const log = new Logger('preload');
 
@@ -28,117 +65,117 @@ const api = {
     return webUtils.getPathForFile(file);
   },
   selectFile: (filters?: Electron.FileFilter[]) => {
-    log.debug('selectFile called');
+    log.debug(LOG_SELECT_FILE_CALLED);
     return ipcRenderer.invoke(IPC.SELECT_FILE, filters) as Promise<string | null>;
   },
   selectFiles: (filters?: Electron.FileFilter[]) => {
-    log.debug('selectFiles called');
+    log.debug(LOG_SELECT_FILES_CALLED);
     return ipcRenderer.invoke(IPC.SELECT_FILES, filters) as Promise<string[]>;
   },
   selectOutput: () => {
-    log.debug('selectOutput called');
+    log.debug(LOG_SELECT_OUTPUT_CALLED);
     return ipcRenderer.invoke(IPC.SELECT_OUTPUT) as Promise<string | null>;
   },
   getMediaInfo: (filePath: string, transcoderType: string) => {
-    log.info('getMediaInfo:', filePath, 'transcoder:', transcoderType);
+    log.info(LOG_GET_MEDIA_INFO, filePath, LOG_TRANSCODER, transcoderType);
     return ipcRenderer.invoke(IPC.GET_MEDIA_INFO, filePath, transcoderType) as Promise<MediaInfo>;
   },
   getImageInfo: (filePath: string) => {
-    log.info('getImageInfo:', filePath);
+    log.info(LOG_GET_IMAGE_INFO, filePath);
     return ipcRenderer.invoke(IPC.GET_IMAGE_INFO, filePath) as Promise<ImageExifData | null>;
   },
   getImagePreview: (filePath: string) => {
-    log.info('getImagePreview:', filePath);
+    log.info(LOG_GET_IMAGE_PREVIEW, filePath);
     return ipcRenderer.invoke(IPC.GET_IMAGE_PREVIEW, filePath) as Promise<string | null>;
   },
   getImageFileInfo: (filePath: string) => {
-    log.info('getImageFileInfo:', filePath);
+    log.info(LOG_GET_IMAGE_FILE_INFO, filePath);
     return ipcRenderer.invoke(IPC.GET_IMAGE_FILE_INFO, filePath) as Promise<ImageFileInfo | null>;
   },
   getVideoPreview: (filePath: string) => {
-    log.info('getVideoPreview:', filePath);
+    log.info(LOG_GET_VIDEO_PREVIEW, filePath);
     return ipcRenderer.invoke(IPC.GET_VIDEO_PREVIEW, filePath) as Promise<string | null>;
   },
   getCapabilities: () => {
-    log.debug('getCapabilities called');
+    log.debug(LOG_GET_CAPABILITIES_CALLED);
     return ipcRenderer.invoke(IPC.GET_CAPABILITIES) as Promise<EncoderCapabilities | null>;
   },
   convertFile: (input: string, output: string, options: ConversionOptions, transcoderType: string) => {
-    log.info('convertFile:', input, '->', output, 'transcoder:', transcoderType);
+    log.info(LOG_CONVERT_FILE, input, LOG_ARROW, output, LOG_TRANSCODER, transcoderType);
     return ipcRenderer.invoke(IPC.CONVERT_FILE, input, output, options, transcoderType) as Promise<void>;
   },
   pauseConversion: () => {
-    log.info('pauseConversion called');
+    log.info(LOG_PAUSE_CONVERSION_CALLED);
     return ipcRenderer.invoke(IPC.PAUSE_CONVERSION) as Promise<void>;
   },
   resumeConversion: () => {
-    log.info('resumeConversion called');
+    log.info(LOG_RESUME_CONVERSION_CALLED);
     return ipcRenderer.invoke(IPC.RESUME_CONVERSION) as Promise<void>;
   },
   cancelConversion: () => {
-    log.info('cancelConversion called');
+    log.info(LOG_CANCEL_CONVERSION_CALLED);
     return ipcRenderer.invoke(IPC.CANCEL_CONVERSION) as Promise<void>;
   },
   queueAdd: (input: string, output: string, options: ConversionOptions, transcoder: string) => {
-    log.info('queueAdd:', input, '->', output);
+    log.info(LOG_QUEUE_ADD, input, LOG_ARROW, output);
     return ipcRenderer.invoke(IPC.QUEUE_ADD, input, output, options, transcoder) as Promise<string>;
   },
   queueRemove: (id: string) => {
-    log.info('queueRemove:', id);
+    log.info(LOG_QUEUE_REMOVE, id);
     return ipcRenderer.invoke(IPC.QUEUE_REMOVE, id) as Promise<void>;
   },
   queueList: () => {
-    log.debug('queueList called');
+    log.debug(LOG_QUEUE_LIST_CALLED);
     return ipcRenderer.invoke(IPC.QUEUE_LIST) as Promise<QueueJob[]>;
   },
   queueCancelAll: () => {
-    log.info('queueCancelAll called');
+    log.info(LOG_QUEUE_CANCEL_ALL_CALLED);
     return ipcRenderer.invoke(IPC.QUEUE_CANCEL_ALL) as Promise<void>;
   },
   playerOpen: (filePath: string) => {
-    log.info('playerOpen:', filePath);
+    log.info(LOG_PLAYER_OPEN, filePath);
     return ipcRenderer.invoke(IPC.PLAYER_OPEN, filePath) as Promise<number>;
   },
   playerSeek: (time: string) => {
-    log.debug('playerSeek:', time);
+    log.debug(LOG_PLAYER_SEEK, time);
     return ipcRenderer.invoke(IPC.PLAYER_SEEK, time) as Promise<number>;
   },
   playerClose: () => {
-    log.debug('playerClose called');
+    log.debug(LOG_PLAYER_CLOSE_CALLED);
     return ipcRenderer.invoke(IPC.PLAYER_CLOSE) as Promise<void>;
   },
   playerGetFrame: () => {
     return ipcRenderer.invoke(IPC.PLAYER_GET_FRAME) as Promise<PlayerFrame | null>;
   },
   extractWaveform: (filePath: string, duration: number) => {
-    log.info('extractWaveform:', filePath, 'duration:', duration);
+    log.info(LOG_EXTRACT_WAVEFORM, filePath, LOG_DURATION, duration);
     return ipcRenderer.invoke(IPC.EXTRACT_WAVEFORM, filePath, duration) as Promise<WaveformData | null>;
   },
   extractThumbnails: (filePath: string, duration: number) => {
-    log.info('extractThumbnails:', filePath, 'duration:', duration);
+    log.info(LOG_EXTRACT_THUMBNAILS, filePath, LOG_DURATION, duration);
     return ipcRenderer.invoke(IPC.EXTRACT_THUMBNAILS, filePath, duration) as Promise<ThumbnailStrip | null>;
   },
 
   windowMinimize: () => {
-    log.debug('windowMinimize called');
+    log.debug(LOG_WINDOW_MINIMIZE_CALLED);
     ipcRenderer.send(IPC.WINDOW_MINIMIZE);
   },
   windowMaximizeToggle: () => {
-    log.debug('windowMaximizeToggle called');
+    log.debug(LOG_WINDOW_MAXIMIZE_TOGGLE_CALLED);
     ipcRenderer.send(IPC.WINDOW_MAXIMIZE_TOGGLE);
   },
   windowClose: () => {
-    log.debug('windowClose called');
+    log.debug(LOG_WINDOW_CLOSE_CALLED);
     ipcRenderer.send(IPC.WINDOW_CLOSE);
   },
   windowSetAlwaysOnTop: (flag: boolean) => {
-    log.debug('windowSetAlwaysOnTop called', { flag });
+    log.debug(LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED, { flag });
     ipcRenderer.send(IPC.WINDOW_SET_ALWAYS_ON_TOP, flag);
   },
 
   onWindowMaximizedChange: (cb: (maximized: boolean) => void) => {
     const handler = (_event: IpcRendererEvent, maximized: boolean) => {
-      log.debug('onWindowMaximizedChange:', maximized);
+      log.debug(LOG_ON_WINDOW_MAXIMIZED_CHANGE, maximized);
       cb(maximized);
     };
     ipcRenderer.on(IPC.WINDOW_MAXIMIZED_CHANGED, handler);
@@ -147,7 +184,7 @@ const api = {
 
   onConversionProgress: (cb: (data: { input: string; output: string; progress: ConversionProgress }) => void) => {
     const handler = (_event: IpcRendererEvent, data: { input: string; output: string; progress: ConversionProgress }) => {
-      log.debug('onConversionProgress:', data.input, data.progress.percent.toFixed(1) + '%');
+      log.debug(LOG_ON_CONVERSION_PROGRESS, data.input, data.progress.percent.toFixed(1) + '%');
       cb(data);
     };
     ipcRenderer.on(IPC.CONVERSION_PROGRESS, handler);
@@ -155,7 +192,7 @@ const api = {
   },
   onQueueAdded: (cb: (job: QueueJob) => void) => {
     const handler = (_event: IpcRendererEvent, job: QueueJob) => {
-      log.info('onQueueAdded:', job.id, job.input);
+      log.info(LOG_ON_QUEUE_ADDED, job.id, job.input);
       cb(job);
     };
     ipcRenderer.on(IPC.QUEUE_ADDED, handler);
@@ -163,7 +200,7 @@ const api = {
   },
   onQueueRemoved: (cb: (id: string) => void) => {
     const handler = (_event: IpcRendererEvent, id: string) => {
-      log.info('onQueueRemoved:', id);
+      log.info(LOG_ON_QUEUE_REMOVED, id);
       cb(id);
     };
     ipcRenderer.on(IPC.QUEUE_REMOVED, handler);
@@ -171,7 +208,7 @@ const api = {
   },
   onQueueStatusChange: (cb: (job: QueueJob) => void) => {
     const handler = (_event: IpcRendererEvent, job: QueueJob) => {
-      log.debug('onQueueStatusChange:', job.id, job.status);
+      log.debug(LOG_ON_QUEUE_STATUS_CHANGE, job.id, job.status);
       cb(job);
     };
     ipcRenderer.on(IPC.QUEUE_STATUS_CHANGE, handler);
@@ -186,7 +223,7 @@ const api = {
   },
   onQueueCancelled: (cb: () => void) => {
     const handler = (_event: IpcRendererEvent) => {
-      log.info('onQueueCancelled');
+      log.info(LOG_ON_QUEUE_CANCELLED);
       cb();
     };
     ipcRenderer.on(IPC.QUEUE_CANCELLED, handler);

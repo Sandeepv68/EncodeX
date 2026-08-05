@@ -7,6 +7,7 @@ import { useColorMode } from '../ColorModeContext';
 import i18n from '../i18n/config';
 import { LanguageMenuBox, LanguageButton, LanguageLabel, FlagIconWrapper, menuPaperSx } from '../styles/LanguageMenu.styles';
 import { LANGUAGE_STORAGE_KEY } from '../../shared/constants';
+import { LOG_SWITCHING_LANGUAGE_TO } from '../../shared/log-constants';
 
 const log = new Logger('renderer/LanguageMenu');
 
@@ -25,7 +26,7 @@ export default function LanguageMenu() {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
 
   const switchLanguage = async (lng: string) => {
-    log.info('Switching language to:', lng);
+    log.info(LOG_SWITCHING_LANGUAGE_TO, lng);
     const dir = isRtlLocale(lng) ? 'rtl' : 'ltr';
     setDirection(dir);
     document.dir = dir;

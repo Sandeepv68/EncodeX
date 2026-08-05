@@ -22,6 +22,18 @@ import {
 } from '../../shared/constants';
 import { PlayerRoot, PlayerCanvas, ControlsArea, SeekSlider, ControlButton, ControlsRow, TimeText } from '../styles/MediaPlayer.styles';
 import { formatClockTime } from '../utils/formatters';
+import {
+  LOG_AUDIO_CONTEXT_CREATED,
+  LOG_CLOSING_PLAYER,
+  LOG_FORCE_DREW_STALLED_FRAME_AT,
+  LOG_LOADING_PLAYER_FOR,
+  LOG_NO_FRAMES_RECEIVED_FOR_3S_DECODE_MAY_BE_STALLED_GENERATION,
+  LOG_PLAYER_DECODE_ERROR,
+  LOG_QUEUE_AUDIO_CHUNK_ERROR,
+  LOG_RENDER_LOOP_ERROR,
+  LOG_SCHEDULE_ONE_CHUNK_ERROR,
+  LOG_WEB_AUDIO_IS_NOT_AVAILABLE_AUDIO_PLAYBACK_DISABLED,
+} from '../../shared/log-constants';
 
 const log = new Logger('renderer/components/MediaPlayer');
 
@@ -83,7 +95,7 @@ const MediaPlayer = memo(
       if (audioCtxRef.current) return audioCtxRef.current;
       const Ctor = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (!Ctor) {
-        log.warn('Web Audio is not available, audio playback disabled');
+        log.warn(LOG_WEB_AUDIO_IS_NOT_AVAILABLE_AUDIO_PLAYBACK_DISABLED);
         return null;
       }
       const ctx = new Ctor();
@@ -93,7 +105,7 @@ const MediaPlayer = memo(
       audioCtxRef.current = ctx;
       masterGainRef.current = gain;
       nextStartTimeRef.current = ctx.currentTime + 0.1;
-      log.debug('Audio context created');
+      log.debug(LOG_AUDIO_CONTEXT_CREATED);
       ctx.resume().catch(() => {});
       return ctx;
     }, []);
@@ -148,8 +160,7 @@ const MediaPlayer = memo(
           // Keep pacing off the last-known audio time plus wall-clock elapsed,
           // so playback continues smoothly and stays continuous with audio.
           return (
-            lastCtxTimeRef.current - audioAnchorCtxRef.current +
-            audioAnchorMediaRef.current + (now - lastCtxAdvanceWallRef.current) / 1000
+            lastCtxTimeRef.current - audioAnchorCtxRef.current + audioAnchorMediaRef.current + (now - lastCtxAdvanceWallRef.current) / 1000
           );
         }
         return ctx.currentTime - audioAnchorCtxRef.current + audioAnchorMediaRef.current;
@@ -254,7 +265,7 @@ const MediaPlayer = memo(
         activeSourcesRef.current.add(source);
         source.onended = () => activeSourcesRef.current.delete(source);
       } catch (err) {
-        log.error('scheduleOneChunk error:', err);
+        log.error(LOG_SCHEDULE_ONE_CHUNK_ERROR, err);
         nextStartTimeRef.current = ctx.currentTime;
       }
     }, []);
@@ -293,7 +304,7 @@ const MediaPlayer = memo(
         try {
           drainAudioQueue();
         } catch (err) {
-          log.error('queueAudioChunk error:', err);
+          log.error(LOG_QUEUE_AUDIO_CHUNK_ERROR, err);
         }
       },
       [ensureAudioContext, drainAudioQueue],
@@ -303,7 +314,7 @@ const MediaPlayer = memo(
       if (!filePath) return;
       let cancelled = false;
 
-      log.info('Loading player for:', filePath);
+      log.info(LOG_LOADING_PLAYER_FOR, filePath);
       frameGenRef.current = null;
       audioGenRef.current = null;
       frameBuffer.current = [];
@@ -373,12 +384,12 @@ const MediaPlayer = memo(
       });
 
       const cleanupError = window.electronAPI.onPlayerError?.((message: string) => {
-        log.error('Player decode error:', message);
+        log.error(LOG_PLAYER_DECODE_ERROR, message);
       });
 
       return () => {
         cancelled = true;
-        log.debug('Closing player');
+        log.debug(LOG_CLOSING_PLAYER);
         if (pendingSeekRef.current.timer !== null) {
           window.clearTimeout(pendingSeekRef.current.timer);
           pendingSeekRef.current.timer = null;
@@ -428,10 +439,16 @@ const MediaPlayer = memo(
               audioAnchorMediaRef.current += diff;
             }
             needsBaselineRef.current = false;
-            log.debug('Force-drew stalled frame at', frame.pts);
-          } else if (frameGenRef.current !== null && !frame && buffer.length === 0 && now - lastFrameArrivedWallRef.current > 3000 && stallWarnedGenRef.current !== frameGenRef.current) {
+            log.debug(LOG_FORCE_DREW_STALLED_FRAME_AT, frame.pts);
+          } else if (
+            frameGenRef.current !== null &&
+            !frame &&
+            buffer.length === 0 &&
+            now - lastFrameArrivedWallRef.current > 3000 &&
+            stallWarnedGenRef.current !== frameGenRef.current
+          ) {
             stallWarnedGenRef.current = frameGenRef.current;
-            log.warn('No frames received for 3s - decode may be stalled (generation', frameGenRef.current, ')');
+            log.warn(LOG_NO_FRAMES_RECEIVED_FOR_3S_DECODE_MAY_BE_STALLED_GENERATION, frameGenRef.current, ')');
           }
 
           if (frame) {
@@ -458,7 +475,7 @@ const MediaPlayer = memo(
         }
       } catch (err) {
         // A single bad frame/chunk must never kill the whole playback loop.
-        log.error('renderLoop error:', err);
+        log.error(LOG_RENDER_LOOP_ERROR, err);
       }
       animRef.current = requestAnimationFrame(renderLoop);
     }, [getMediaNow, drainAudioQueue, drawFrame]);

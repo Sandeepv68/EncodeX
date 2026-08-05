@@ -4,6 +4,7 @@ import { Logger } from '../shared/logger';
 import { isImageFile } from '../shared/file-extensions';
 import { ImageFileInfo } from '../shared/types';
 import { IMAGE_HEADER_READ_SIZE } from '../shared/constants';
+import { LOG_FAILED_TO_READ_IMAGE_DIMENSIONS, LOG_FAILED_TO_STAT_IMAGE_FILE, LOG_NOT_A_READABLE_IMAGE_FILE } from '../shared/log-constants';
 
 const log = new Logger('main/image-file-info');
 
@@ -72,14 +73,14 @@ export function readImageDimensions(buffer: Buffer): { width: number; height: nu
 
 export async function getImageFileInfo(filePath: string): Promise<ImageFileInfo | null> {
   if (!isImageFile(filePath) || !existsSync(filePath)) {
-    log.debug('Not a readable image file:', filePath);
+    log.debug(LOG_NOT_A_READABLE_IMAGE_FILE, filePath);
     return null;
   }
   let fileSize: number;
   try {
     fileSize = (await stat(filePath)).size;
   } catch (err) {
-    log.warn('Failed to stat image file:', err);
+    log.warn(LOG_FAILED_TO_STAT_IMAGE_FILE, err);
     return null;
   }
   let dims: { width: number; height: number } | null = null;
@@ -93,7 +94,7 @@ export async function getImageFileInfo(filePath: string): Promise<ImageFileInfo 
       await handle.close();
     }
   } catch (err) {
-    log.warn('Failed to read image dimensions:', err);
+    log.warn(LOG_FAILED_TO_READ_IMAGE_DIMENSIONS, err);
   }
   return { width: dims?.width ?? null, height: dims?.height ?? null, size: fileSize };
 }

@@ -14,11 +14,12 @@ import { registerWindowHandlers } from './window';
 import { registerCapabilityHandlers } from './capabilities';
 import { registerImageHandlers } from './image';
 import { registerTimelineHandlers } from './timeline';
+import { LOG_REGISTERING_IPC_HANDLERS } from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/handlers');
 
 export function registerIpcHandlers(win: BrowserWindow): void {
-  log.info('Registering IPC handlers');
+  log.info(LOG_REGISTERING_IPC_HANDLERS);
   const send = createSender(win);
   registerDialogHandlers(win);
   registerCapabilityHandlers();

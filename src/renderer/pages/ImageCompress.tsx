@@ -33,6 +33,14 @@ import {
   PreviewInfo,
   PreviewCloseButton,
 } from '../styles/ImageCompress.styles';
+import {
+  LOG_ARROW,
+  LOG_COMPRESSING_IMAGE,
+  LOG_FORMAT,
+  LOG_NO_INPUT_FILE_SELECTED,
+  LOG_QUALITY,
+  LOG_VALIDATION_FAILED,
+} from '../../shared/log-constants';
 
 const log = new Logger('renderer/pages/ImageCompress');
 
@@ -106,15 +114,15 @@ export default function ImageCompress() {
 
   const handleConvert = async () => {
     if (!validate()) {
-      log.warn('Validation failed');
+      log.warn(LOG_VALIDATION_FAILED);
       return;
     }
     if (!input) {
-      log.warn('No input file selected');
+      log.warn(LOG_NO_INPUT_FILE_SELECTED);
       showErrorMessage(ErrorCode.INPUT_NOT_SPECIFIED, t('imageCompress.validationRequired'));
       return;
     }
-    log.info('Compressing image:', input, '->', output, 'format:', format, 'quality:', quality);
+    log.info(LOG_COMPRESSING_IMAGE, input, LOG_ARROW, output, LOG_FORMAT, format, LOG_QUALITY, quality);
     await runTask(async () => {
       await window.electronAPI.convertFile(
         input,

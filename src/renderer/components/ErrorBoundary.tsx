@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Logger } from '../../shared/logger';
 import i18n from '../i18n/config';
 import { FallbackBox, FallbackPaper, WarningIcon, FallbackTitle, FallbackDescription } from '../styles/ErrorBoundary.styles';
+import { LOG_ERROR_BOUNDARY_CAUGHT } from '../../shared/log-constants';
 
 const log = new Logger('renderer/components/ErrorBoundary');
 
@@ -29,7 +30,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    log.error('ErrorBoundary caught:', error.message, errorInfo.componentStack);
+    log.error(LOG_ERROR_BOUNDARY_CAUGHT, error.message, errorInfo.componentStack);
   }
 
   render(): ReactNode {

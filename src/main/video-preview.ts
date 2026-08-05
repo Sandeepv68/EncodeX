@@ -5,19 +5,25 @@ import { Logger } from '../shared/logger';
 import { isVideoFile } from '../shared/file-extensions';
 import { VIDEO_PREVIEW_MAX_WIDTH, VIDEO_PREVIEW_SEEK_TIME } from '../shared/constants';
 import { TRANSCODER_COMMANDS } from '../shared/transcoder-constants';
+import {
+  LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG,
+  LOG_NOT_A_READABLE_VIDEO_FILE,
+  LOG_VIDEO_PREVIEW_EXTRACTION_FAILED_STDERR,
+  LOG_VIDEO_PREVIEW_FFMPEG_ERROR,
+} from '../shared/log-constants';
 
 const log = new Logger('main/video-preview');
 
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
-  log.warn('ffmpeg-static not found, falling back to system ffmpeg');
+  log.warn(LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG);
   return TRANSCODER_COMMANDS.FFMPEG;
 }
 
 export function getVideoPreview(filePath: string): Promise<string | null> {
   if (!isVideoFile(filePath) || !existsSync(filePath)) {
-    log.debug('Not a readable video file:', filePath);
+    log.debug(LOG_NOT_A_READABLE_VIDEO_FILE, filePath);
     return Promise.resolve(null);
   }
   const ffmpegPath = getFfmpegPath();
@@ -47,12 +53,12 @@ export function getVideoPreview(filePath: string): Promise<string | null> {
       stderr += chunk.toString();
     });
     child.on('error', (err: Error) => {
-      log.error('Video preview ffmpeg error:', err);
+      log.error(LOG_VIDEO_PREVIEW_FFMPEG_ERROR, err);
       reject(err);
     });
     child.on('close', (code) => {
       if (code !== 0 || chunks.length === 0) {
-        log.warn('Video preview extraction failed, stderr:', stderr);
+        log.warn(LOG_VIDEO_PREVIEW_EXTRACTION_FAILED_STDERR, stderr);
         resolve(null);
         return;
       }

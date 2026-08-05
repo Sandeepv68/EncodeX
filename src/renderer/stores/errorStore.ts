@@ -7,6 +7,7 @@ import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { AppError, createError, formatError, ErrorCode, ErrorCodeType, ERROR_MESSAGES } from '../../shared/errors';
 import { ERROR_HISTORY_MAX } from '../../shared/constants';
+import { LOG_ERROR_CLEARED, LOG_ERROR_HISTORY_CLEARED, LOG_ERROR_MESSAGE_SHOWN, LOG_ERROR_SHOWN } from '../../shared/log-constants';
 
 const log = new Logger('renderer/stores/errorStore');
 
@@ -24,7 +25,7 @@ export const useErrorStore = create<ErrorState>((set) => ({
   errorHistory: [],
   showError: (err: unknown) => {
     const appError = formatError(err);
-    log.error('Error shown:', appError.code, appError.message, appError.detail || '');
+    log.error(LOG_ERROR_SHOWN, appError.code, appError.message, appError.detail || '');
     set((s) => ({
       currentError: appError,
       errorHistory: [...s.errorHistory.slice(-(ERROR_HISTORY_MAX - 1)), appError],
@@ -32,18 +33,18 @@ export const useErrorStore = create<ErrorState>((set) => ({
   },
   showErrorMessage: (code: ErrorCodeType, detail?: string) => {
     const appError = createError(code, ERROR_MESSAGES[code], detail);
-    log.error('Error message shown:', code, ERROR_MESSAGES[code], detail || '');
+    log.error(LOG_ERROR_MESSAGE_SHOWN, code, ERROR_MESSAGES[code], detail || '');
     set((s) => ({
       currentError: appError,
       errorHistory: [...s.errorHistory.slice(-(ERROR_HISTORY_MAX - 1)), appError],
     }));
   },
   clearError: () => {
-    log.debug('Error cleared');
+    log.debug(LOG_ERROR_CLEARED);
     set({ currentError: null });
   },
   clearHistory: () => {
-    log.debug('Error history cleared');
+    log.debug(LOG_ERROR_HISTORY_CLEARED);
     set({ errorHistory: [] });
   },
 }));

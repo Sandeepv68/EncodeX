@@ -4,11 +4,12 @@ import { BmfCore } from './bmf-core';
 import { FfmpegCore } from './ffmpeg-core';
 import { FFToolCore } from './fftool-core';
 import { ITranscoder } from './interface';
+import { LOG_CREATING_TRANSCODER } from '../../shared/log-constants';
 
 const log = new Logger('main/transcoders/factory');
 
 export function createTranscoder(type: TranscoderType): ITranscoder {
-  log.debug('Creating transcoder:', type);
+  log.debug(LOG_CREATING_TRANSCODER, type);
   switch (type) {
     case 'FFMPEG':
       return new FfmpegCore();

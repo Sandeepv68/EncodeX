@@ -7,6 +7,13 @@ import { isImageFile } from '../shared/file-extensions';
 import { ImageExifData, ImageHistogram } from '../shared/types';
 import { HISTOGRAM_BINS, HISTOGRAM_MAX_WIDTH, RGB_BYTES_PER_PIXEL, LUMA_WEIGHTS } from '../shared/constants';
 import { TRANSCODER_COMMANDS } from '../shared/transcoder-constants';
+import {
+  LOG_EXIF_PARSE_FAILED,
+  LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG,
+  LOG_HISTOGRAM_DECODE_FAILED,
+  LOG_HISTOGRAM_DECODE_FAILED_STDERR,
+  LOG_HISTOGRAM_FFMPEG_ERROR,
+} from '../shared/log-constants';
 
 const log = new Logger('main/image-info');
 
@@ -49,7 +56,7 @@ export function computeHistogram(buffer: Buffer, width: number, height: number):
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
-  log.warn('ffmpeg-static not found, falling back to system ffmpeg');
+  log.warn(LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG);
   return TRANSCODER_COMMANDS.FFMPEG;
 }
 
@@ -79,12 +86,12 @@ export function decodeImageHistogram(filePath: string): Promise<{ buffer: Buffer
       stderr += chunk.toString();
     });
     child.on('error', (err: Error) => {
-      log.error('Histogram ffmpeg error:', err);
+      log.error(LOG_HISTOGRAM_FFMPEG_ERROR, err);
       reject(err);
     });
     child.on('close', (code) => {
       if (code !== 0) {
-        log.warn('Histogram decode failed, stderr:', stderr);
+        log.warn(LOG_HISTOGRAM_DECODE_FAILED_STDERR, stderr);
         resolve(null);
         return;
       }
@@ -108,7 +115,7 @@ export async function getImageInfo(filePath: string): Promise<ImageExifData | nu
     const parsed = await exifr.parse(filePath, { skipUnknown: true, reviveValues: false } as Parameters<typeof exifr.parse>[1]);
     exif = flattenExif(parsed);
   } catch (err) {
-    log.warn('EXIF parse failed:', err);
+    log.warn(LOG_EXIF_PARSE_FAILED, err);
   }
 
   let histogram: ImageHistogram | null = null;
@@ -118,7 +125,7 @@ export async function getImageInfo(filePath: string): Promise<ImageExifData | nu
       histogram = computeHistogram(decoded.buffer, decoded.width, decoded.height);
     }
   } catch (err) {
-    log.warn('Histogram decode failed:', err);
+    log.warn(LOG_HISTOGRAM_DECODE_FAILED, err);
   }
 
   if (Object.keys(exif).length === 0 && histogram === null) return null;

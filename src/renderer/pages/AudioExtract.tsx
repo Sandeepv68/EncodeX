@@ -29,6 +29,13 @@ import {
   PreviewInfo,
   PreviewCloseButton,
 } from '../styles/AudioExtract.styles';
+import {
+  LOG_ARROW,
+  LOG_CODEC,
+  LOG_EXTRACTING_AUDIO,
+  LOG_FAILED_TO_LOAD_MEDIA_INFO,
+  LOG_VALIDATION_FAILED,
+} from '../../shared/log-constants';
 
 const log = new Logger('renderer/pages/AudioExtract');
 
@@ -62,7 +69,7 @@ export default function AudioExtract() {
       const info = await window.electronAPI.getMediaInfo(path, 'FFMPEG');
       store.setAudioStreams(info.streams.filter((s: MediaStreamInfo) => s.type === 'audio'));
     } catch (err) {
-      log.error('Failed to load media info:', err);
+      log.error(LOG_FAILED_TO_LOAD_MEDIA_INFO, err);
     }
   };
 
@@ -94,10 +101,10 @@ export default function AudioExtract() {
 
   const handleExtract = async () => {
     if (!validate()) {
-      log.warn('Validation failed');
+      log.warn(LOG_VALIDATION_FAILED);
       return;
     }
-    log.info('Extracting audio:', store.input, '->', store.output, 'codec:', store.audioCodec);
+    log.info(LOG_EXTRACTING_AUDIO, store.input, LOG_ARROW, store.output, LOG_CODEC, store.audioCodec);
     await store.startExtract();
   };
 

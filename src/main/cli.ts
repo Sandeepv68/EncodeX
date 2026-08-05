@@ -4,6 +4,19 @@ import { ConversionOptions, TranscoderType } from '../shared/types';
 import { APP_NAME } from '../shared/app-constants';
 import { TRANSCODER_TYPES } from '../shared/transcoder-constants';
 import { CLI_CONVERSION_TIMEOUT_MS } from '../shared/constants';
+import {
+  LOG_ARROW,
+  LOG_CLI_CONVERSION_COMPLETED_SUCCESSFULLY,
+  LOG_CLI_CONVERSION_FAILED,
+  LOG_CONVERSION_TIMED_OUT_AFTER_300S,
+  LOG_GETTING_MEDIA_INFO_FOR,
+  LOG_INFO_REQUIRES_AN_INPUT_FILE,
+  LOG_OPTIONS,
+  LOG_PARSING_CLI_ARGS,
+  LOG_SHOWING_HELP,
+  LOG_STARTING_CONVERSION,
+  LOG_TRANSCODER,
+} from '../shared/log-constants';
 
 const log = new Logger('main/cli');
 
@@ -36,11 +49,11 @@ export async function runCli(): Promise<void> {
 
       if (opts.info) {
         if (!input) {
-          log.error('--info requires an input file');
+          log.error(LOG_INFO_REQUIRES_AN_INPUT_FILE);
           console.error('Error: --info requires an input file');
           throw new Error('Missing input file');
         }
-        log.info('Getting media info for:', input);
+        log.info(LOG_GETTING_MEDIA_INFO_FOR, input);
         const info = await transcoder.getInfo(input);
         console.log(JSON.stringify(info, null, 2));
         return;
@@ -61,7 +74,7 @@ export async function runCli(): Promise<void> {
       if (opts.endTime) options.endTime = opts.endTime;
       if (opts.duration) options.duration = opts.duration;
 
-      log.info('Starting conversion:', input, '->', output, 'transcoder:', transcoderType, 'options:', JSON.stringify(options));
+      log.info(LOG_STARTING_CONVERSION, input, LOG_ARROW, output, LOG_TRANSCODER, transcoderType, LOG_OPTIONS, JSON.stringify(options));
       console.log(`Starting conversion: ${input} -> ${output}`);
       console.log(`Transcoder: ${transcoderType}`);
       console.log(`Options: ${JSON.stringify(options)}`);
@@ -69,7 +82,7 @@ export async function runCli(): Promise<void> {
       await new Promise<void>((resolve, reject) => {
         const emitter = transcoder.convert(input, output, options);
         const timeout = setTimeout(() => {
-          log.warn('Conversion timed out after 300s');
+          log.warn(LOG_CONVERSION_TIMED_OUT_AFTER_300S);
           transcoder.cancel();
           reject(new Error('Conversion timed out'));
         }, CLI_CONVERSION_TIMEOUT_MS);
@@ -84,13 +97,13 @@ export async function runCli(): Promise<void> {
         });
         emitter.on('end', () => {
           clearTimeout(timeout);
-          log.info('CLI conversion completed successfully');
+          log.info(LOG_CLI_CONVERSION_COMPLETED_SUCCESSFULLY);
           console.log('\nConversion completed successfully!');
           resolve();
         });
         emitter.on('error', (err) => {
           clearTimeout(timeout);
-          log.error('CLI conversion failed:', err.message);
+          log.error(LOG_CLI_CONVERSION_FAILED, err.message);
           console.error('\nConversion failed:', err.message);
           reject(err);
         });
@@ -107,11 +120,11 @@ export async function runCli(): Promise<void> {
   const cliArgs = userArgs.filter((arg) => arg !== '--cli');
 
   if (cliArgs.includes('-h') || cliArgs.includes('--help')) {
-    log.debug('Showing help');
+    log.debug(LOG_SHOWING_HELP);
     program.outputHelp();
     return;
   }
 
-  log.info('Parsing CLI args:', cliArgs);
+  log.info(LOG_PARSING_CLI_ARGS, cliArgs);
   await program.parseAsync(cliArgs, { from: 'user' });
 }

@@ -26,6 +26,20 @@ import { useFormErrors } from '../hooks/useFormErrors';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { FieldLabel } from '../styles/FilePathField.styles';
 import { ToggleRow, SectionPaper, SectionHeader, SectionTitle, FileChip, SectionsStack, HeadingGroup } from '../styles/VideoCut.styles';
+import {
+  LOG_ARROW,
+  LOG_CANCELLING_CUT_JOB,
+  LOG_CLEARING_VIDEO_CUT_FORM,
+  LOG_CUTTING_VIDEO,
+  LOG_FAILED_TO_EXTRACT_THUMBNAILS,
+  LOG_FAILED_TO_EXTRACT_WAVEFORM,
+  LOG_NO_INPUT_FILE_SELECTED,
+  LOG_PAUSING_CUT_JOB,
+  LOG_RESUMING_CUT_JOB,
+  LOG_START,
+  LOG_USE_DURATION,
+  LOG_VALIDATION_FAILED,
+} from '../../shared/log-constants';
 
 const log = new Logger('renderer/pages/VideoCut');
 
@@ -135,7 +149,7 @@ export default function VideoCut() {
           setWaveformLoading(false);
         })
         .catch((err: unknown) => {
-          log.warn('Failed to extract waveform:', err);
+          log.warn(LOG_FAILED_TO_EXTRACT_WAVEFORM, err);
           if (!cancelled) setWaveformLoading(false);
         });
 
@@ -147,7 +161,7 @@ export default function VideoCut() {
           setThumbnailsLoading(false);
         })
         .catch((err: unknown) => {
-          log.warn('Failed to extract thumbnails:', err);
+          log.warn(LOG_FAILED_TO_EXTRACT_THUMBNAILS, err);
           if (!cancelled) setThumbnailsLoading(false);
         });
     }, 0);
@@ -186,15 +200,15 @@ export default function VideoCut() {
 
   const handleCut = async () => {
     if (!validate()) {
-      log.warn('Validation failed');
+      log.warn(LOG_VALIDATION_FAILED);
       return;
     }
     if (!input) {
-      log.warn('No input file selected');
+      log.warn(LOG_NO_INPUT_FILE_SELECTED);
       showErrorMessage(ErrorCode.INPUT_NOT_SPECIFIED, t('videoCut.validationRequired'));
       return;
     }
-    log.info('Cutting video:', input, '->', output, 'start:', startTime, 'useDuration:', useDuration);
+    log.info(LOG_CUTTING_VIDEO, input, LOG_ARROW, output, LOG_START, startTime, LOG_USE_DURATION, useDuration);
     await runTask(async () => {
       await window.electronAPI.convertFile(
         input,
@@ -212,27 +226,27 @@ export default function VideoCut() {
   };
 
   const pauseCut = async () => {
-    log.info('Pausing cut job');
+    log.info(LOG_PAUSING_CUT_JOB);
     await window.electronAPI.pauseConversion();
     setIsPaused(true);
   };
 
   const resumeCut = async () => {
-    log.info('Resuming cut job');
+    log.info(LOG_RESUMING_CUT_JOB);
     await window.electronAPI.resumeConversion();
     setIsPaused(false);
   };
 
   const handleConfirmCancel = async () => {
     setCancelConfirmOpen(false);
-    log.info('Cancelling cut job');
+    log.info(LOG_CANCELLING_CUT_JOB);
     await window.electronAPI.cancelConversion();
     resetForm();
   };
 
   const handleClearForm = () => {
     setJobCancelOpen(false);
-    log.info('Clearing video cut form');
+    log.info(LOG_CLEARING_VIDEO_CUT_FORM);
     resetForm();
   };
 
