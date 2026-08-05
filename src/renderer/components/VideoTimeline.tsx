@@ -377,7 +377,12 @@ export default function VideoTimeline({
           >
             <FontAwesomeIcon icon={faMagnifyingGlassMinus} />
           </ZoomButton>
-          <ZoomButton size="small" aria-label={t('videoTimeline.zoomIn')} onClick={() => changeZoom(TIMELINE_ZOOM_STEP)} disabled={zoom >= TIMELINE_MAX_ZOOM}>
+          <ZoomButton
+            size="small"
+            aria-label={t('videoTimeline.zoomIn')}
+            onClick={() => changeZoom(TIMELINE_ZOOM_STEP)}
+            disabled={zoom >= TIMELINE_MAX_ZOOM}
+          >
             <FontAwesomeIcon icon={faMagnifyingGlassPlus} />
           </ZoomButton>
         </Box>

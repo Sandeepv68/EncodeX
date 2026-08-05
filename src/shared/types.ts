@@ -178,7 +178,7 @@ export interface PlayerAudioChunk {
 export interface WaveformData {
   sampleRate: number;
   samplesPerBucket: number;
-  buckets: Array<{ min: number; max: number; }>;
+  buckets: Array<{ min: number; max: number }>;
 }
 
 /**

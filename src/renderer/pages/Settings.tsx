@@ -64,11 +64,7 @@ export default function Settings() {
         <SettingsLabel variant="body1">{t('settings.theme')}</SettingsLabel>
         <Tooltip title={mode === 'dark' ? t('app.switchLight') : t('app.switchDark')}>
           <ThemeToggleButton size="medium" onClick={toggleColorMode}>
-            {mode === 'dark' ? (
-              <ThemeToggleIcon icon={faSun} />
-            ) : (
-              <ThemeToggleIcon icon={faMoon} />
-            )}
+            {mode === 'dark' ? <ThemeToggleIcon icon={faSun} /> : <ThemeToggleIcon icon={faMoon} />}
           </ThemeToggleButton>
         </Tooltip>
       </SettingsSection>

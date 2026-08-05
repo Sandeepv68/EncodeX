@@ -23,7 +23,9 @@ function HistogramChart({ id, data, color }: { id: string; data: number[]; color
     <svg width={EXIF_HISTOGRAM_WIDTH} height={EXIF_HISTOGRAM_HEIGHT} role="img" data-testid={`histogram-${id}`}>
       {agg.map((value, i) => {
         const h = (value / max) * EXIF_HISTOGRAM_HEIGHT;
-        return <rect key={i} x={i * barWidth} y={EXIF_HISTOGRAM_HEIGHT - h} width={Math.max(barWidth - 0.5, 0.5)} height={h} fill={color} />;
+        return (
+          <rect key={i} x={i * barWidth} y={EXIF_HISTOGRAM_HEIGHT - h} width={Math.max(barWidth - 0.5, 0.5)} height={h} fill={color} />
+        );
       })}
     </svg>
   );
