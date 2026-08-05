@@ -45,28 +45,13 @@ The design emphasizes:
 
 ## High-Level Architecture
 
-![EncodeX architecture](assets/architecture.png)
+<p align="center"><img src="assets/architecture.png" alt="EncodeX architecture"></p>
 
 The renderer never spawns processes and never touches the filesystem directly. All privileged operations (file dialogs, FFmpeg execution, probing, window control) live in the main process and are reached through IPC.
 
 ## Technology Stack
 
-| Layer                    | Technology                                     |
-| ------------------------ | ---------------------------------------------- |
-| **UI Framework**         | React 19                                       |
-| **Component Library**    | MUI v9 (Material-UI)                           |
-| **State Management**     | Zustand 5                                      |
-| **Routing**              | react-router-dom v7 (HashRouter)               |
-| **Internationalization** | i18next 26 + react-i18next + stylis-plugin-rtl |
-| **Icons**                | Font Awesome 7 + country-flag-icons            |
-| **Desktop Shell**        | Electron 33                                    |
-| **Video Processing**     | fluent-ffmpeg + ffmpeg-static + ffprobe-static |
-| **Image Metadata**       | exifr                                          |
-| **CLI Framework**        | commander                                      |
-| **Build Tool**           | Vite 8                                         |
-| **Language**             | TypeScript 5.7                                 |
-| **Packaging**            | electron-builder 25                            |
-| **Testing**              | Vitest + @testing-library/react + jsdom + Playwright |
+<p align="center"><img src="assets/stack.png" alt="EncodeX tech stack"></p>
 
 ## Process Model
 
@@ -400,7 +385,7 @@ Image *compression itself* is just a conversion: the Image Compress page builds 
 
 ### Render tree
 
-![EncodeX render tree](assets/render_tree.png)
+<p align="center"><img src="assets/render_tree.png" alt="EncodeX render tree"></p>
 
 ### Pages
 

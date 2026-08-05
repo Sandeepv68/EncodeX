@@ -460,7 +460,7 @@ e2e/
 
 ### Render Tree
 
-![EncodeX render tree](assets/render_tree.png)
+<p align="center"><img src="assets/render_tree.png" alt="EncodeX render tree"></p>
 
 All nine pages (`Dashboard`, `Convert`, `MediaInfo`, `ImageCompress`, `AudioExtract`, `VideoCut`, `BatchQueue`, `Logs`, `Settings`) are code-split with `React.lazy`.
 
@@ -817,26 +817,7 @@ Splash window (shown while the main window loads, then closed):
 
 ## Tech Stack
 
-| Layer                    | Technology                                     |
-| ------------------------ | ---------------------------------------------- |
-| **UI Framework**         | React 19                                       |
-| **Component Library**    | MUI v9 (Material-UI)                           |
-| **State Management**     | Zustand 5                                      |
-| **Routing**              | react-router-dom v7                            |
-| **Internationalization** | i18next 26 + react-i18next + stylis-plugin-rtl |
-| **Icons**                | Font Awesome 7 + country-flag-icons            |
-| **Styling**              | Emotion (MUI default engine) + px-to-rem theme |
-| **Desktop Shell**        | Electron 33                                    |
-| **Video Processing**     | fluent-ffmpeg + ffmpeg-static + ffprobe-static |
-| **Image Metadata**       | exifr                                          |
-| **CLI Framework**        | commander                                      |
-| **Build Tool**           | Vite 8                                         |
-| **Language**             | TypeScript 5.7                                 |
-| **Packaging**            | electron-builder 25                            |
-| **Linting / Formatting** | Prettier 3                                     |
-| **Testing**              | Vitest + @testing-library/react + jsdom        |
-| **Coverage**             | @vitest/coverage-v8                            |
-| **E2E**                  | Playwright                                     |
+<p align="center"><img src="assets/stack.png" alt="EncodeX tech stack"></p>
 
 ## Contributing
 
