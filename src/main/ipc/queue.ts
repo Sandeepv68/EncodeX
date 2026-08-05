@@ -3,7 +3,7 @@ import { JobQueue } from '../queue/job-queue';
 import { Logger } from '../../shared/logger';
 import { ConversionOptions, QueueJob, TranscoderType, ConversionProgress } from '../../shared/types';
 import { IPC } from '../../shared/ipc-channels';
-import { IpcSender } from './send';
+import type { IpcSender } from './types';
 import {
   LOG_ARROW,
   LOG_IPC_QUEUE_ADD,

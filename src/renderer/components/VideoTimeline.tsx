@@ -34,7 +34,7 @@ import {
   TIMELINE_LAYOUT,
 } from '../styles/VideoTimeline.styles';
 import { formatClockTime, formatStreamSummary } from '../utils/formatters';
-import { MediaStreamInfo, ThumbnailStrip, WaveformData } from '../../shared/types';
+import type { DragKind, VideoTimelineProps } from './types';
 import {
   DEFAULT_TIMELINE_WIDTH,
   TIMELINE_MIN_ZOOM,
@@ -46,26 +46,6 @@ import {
   TIMELINE_THUMB_MONTAGE_CLASS,
   TIMELINE_TICK_STEPS,
 } from '../../shared/constants';
-
-interface Props {
-  duration: number;
-  currentTime: number;
-  start: number;
-  end: number;
-  waveform?: WaveformData | null;
-  thumbnails?: ThumbnailStrip | null;
-  waveformLoading?: boolean;
-  thumbnailsLoading?: boolean;
-  audioEnabled?: boolean;
-  videoStream?: MediaStreamInfo | null;
-  audioStream?: MediaStreamInfo | null;
-  onSeek: (time: number) => void;
-  onStartChange: (time: number) => void;
-  onEndChange: (time: number) => void;
-  onAudioEnabledChange?: (enabled: boolean) => void;
-}
-
-type DragKind = 'playhead' | 'start' | 'end' | 'move' | 'scrub';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
@@ -91,7 +71,7 @@ export default function VideoTimeline({
   onStartChange,
   onEndChange,
   onAudioEnabledChange,
-}: Props) {
+}: VideoTimelineProps) {
   const { t } = useTranslation();
   const viewportRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);

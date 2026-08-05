@@ -4,11 +4,53 @@
  */
 
 import { QUEUE_STATUS, FALLBACK_VALUES } from './media-options';
-import { TRANSCODER_TYPES, TranscoderType } from './transcoder-constants';
-import { HwAccelMode } from './hwaccel-settings';
+import { ErrorCode } from './errors';
+import { TRANSCODER_TYPES } from './transcoder-constants';
+import { HWACCEL_MODES, ENCODER_TYPES } from './hwaccel-settings';
 
-export type { TranscoderType };
-export type { HwAccelMode };
+/**
+ * Hardware acceleration mode type.
+ * @typedef {string} HwAccelMode
+ */
+export type HwAccelMode = (typeof HWACCEL_MODES)[number];
+
+/**
+ * Encoder type selection.
+ * @typedef {string} EncoderType
+ */
+export type EncoderType = (typeof ENCODER_TYPES)[number];
+
+/**
+ * Supported transcoder backend types.
+ * @typedef {string} TranscoderType
+ */
+export type TranscoderType = (typeof TRANSCODER_TYPES)[number];
+
+/**
+ * Application error codes for different failure scenarios.
+ * @typedef {string} ErrorCodeType
+ */
+export type ErrorCodeType = (typeof ErrorCode)[keyof typeof ErrorCode];
+
+/**
+ * Application error type combining error code, message, and details.
+ * @interface AppError
+ */
+export interface AppError {
+  code: ErrorCodeType;
+  message: string;
+  detail?: string;
+  timestamp: number;
+}
+
+/**
+ * Codec to container compatibility information.
+ * @interface CodecContainerInfo
+ */
+export interface CodecContainerInfo {
+  extension: string;
+  containers: string[];
+}
 
 /**
  * Options for media conversion and encoding operations.

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Snackbar } from '@mui/material';
 import { useToastStore } from '../stores/toastStore';
-import type { Toast } from '../stores/toastStore';
+import type { Toast } from '../stores/types';
 import { ToastAlert, ToastMessage, ToastDetail } from '../styles/ToastContainer.styles';
 import { TOAST_DEFAULT_DURATION_MS } from '../../shared/constants';
 

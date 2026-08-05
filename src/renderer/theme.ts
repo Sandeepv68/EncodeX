@@ -1,31 +1,25 @@
 /**
  * @fileoverview Material-UI theme configuration and customization.
- * Defines light and dark theme palettes with custom component styling.
+ * Builds a theme from a predefined palette definition (see colors.ts).
  */
 
 import { createTheme } from '@mui/material/styles';
-import { COLORS } from './colors';
-
-export type ColorMode = 'light' | 'dark';
+import { COLORS, getTheme } from './colors';
+import type { ThemeId } from './types';
 
 const FONT_FAMILY = '"Roboto","Helvetica","Arial",sans-serif';
 
-export function createAppTheme(mode: ColorMode, direction: 'ltr' | 'rtl') {
+export function createAppTheme(themeId: ThemeId, direction: 'ltr' | 'rtl') {
+  const themeDef = getTheme(themeId);
   return createTheme({
     direction,
     palette: {
-      mode,
-      primary: { main: COLORS.primary },
-      secondary: { main: COLORS.secondary },
-      ...(mode === 'dark'
-        ? {
-            background: { default: COLORS.background.dark, paper: COLORS.background.darkPaper },
-            text: { primary: COLORS.text.darkPrimary, secondary: COLORS.text.darkSecondary },
-          }
-        : {
-            background: { default: COLORS.background.light, paper: COLORS.background.lightPaper },
-            text: { primary: COLORS.text.lightPrimary, secondary: COLORS.text.lightSecondary },
-          }),
+      mode: themeDef.mode,
+      primary: { main: themeDef.primary },
+      secondary: { main: themeDef.secondary },
+      background: { default: themeDef.background.default, paper: themeDef.background.paper },
+      text: { primary: themeDef.text.primary, secondary: themeDef.text.secondary },
+      divider: themeDef.border,
       error: { main: COLORS.error },
       success: { main: COLORS.success },
       warning: { main: COLORS.warning },
@@ -36,15 +30,8 @@ export function createAppTheme(mode: ColorMode, direction: 'ltr' | 'rtl') {
       MuiDrawer: {
         styleOverrides: {
           paper: ({ theme }) => ({
-            ...(mode === 'dark'
-              ? {
-                  borderRight: `${theme.typography.pxToRem(1)} solid ${COLORS.border.dark}`,
-                  backgroundColor: COLORS.background.drawerDark,
-                }
-              : {
-                  borderRight: `${theme.typography.pxToRem(1)} solid ${COLORS.border.light}`,
-                  backgroundColor: COLORS.background.lightPaper,
-                }),
+            borderRight: `${theme.typography.pxToRem(1)} solid ${themeDef.border}`,
+            backgroundColor: themeDef.background.drawer,
           }),
         },
       },

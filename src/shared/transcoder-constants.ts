@@ -1,5 +1,6 @@
+import type { TranscoderType } from './types';
+
 export const TRANSCODER_TYPES = ['FFMPEG', 'FFTOOL', 'BMF'] as const;
-export type TranscoderType = (typeof TRANSCODER_TYPES)[number];
 
 export const TRANSCODER_LABELS: Record<TranscoderType, string> = {
   FFMPEG: 'FFmpeg (API)',

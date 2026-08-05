@@ -1,22 +1,9 @@
 import { MenuItem, TextField } from '@mui/material';
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import type { GroupedSelectProps } from './types';
 import { GroupHeader, GroupLabel, GroupHeaderIconBox } from '../styles/GroupedSelect.styles';
 
-export interface GroupedOption {
-  value: string;
-  label: string;
-  group: string;
-}
-
-interface Props {
-  value: string;
-  onChange: (value: string) => void;
-  options: readonly GroupedOption[];
-  groupIcons: Record<string, IconDefinition>;
-}
-
-export default function GroupedSelect({ value, onChange, options, groupIcons }: Props) {
+export default function GroupedSelect({ value, onChange, options, groupIcons }: GroupedSelectProps) {
   let lastGroup = '';
   const items: ReturnType<typeof MenuItem>[] = [];
   for (const opt of options) {

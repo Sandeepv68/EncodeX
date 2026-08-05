@@ -25,7 +25,7 @@ import { isInRange } from '../../shared/validation';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { useSettingsStore } from '../stores/settingsStore';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
-import type { EncoderType } from '../../shared/hwaccel-settings';
+import type { EncoderType } from '../../shared/types';
 import {
   ToggleRow,
   FieldBox,

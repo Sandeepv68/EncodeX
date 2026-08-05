@@ -4,8 +4,8 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ErrorBoundary } from './ErrorBoundary';
 import ProgressBar from './ProgressBar';
+import type { QueueJobCardProps } from './types';
 import { QUEUE_STATUS } from '../../shared/media-options';
-import type { QueueJob } from '../../shared/types';
 import { JobCard, CardHeaderRow, JobNameText, CardActionsStack, OutputText } from '../styles/QueueJobCard.styles';
 
 const statusColors: Record<string, 'default' | 'primary' | 'success' | 'error' | 'warning'> = {
@@ -14,11 +14,6 @@ const statusColors: Record<string, 'default' | 'primary' | 'success' | 'error' |
   [QUEUE_STATUS.DONE]: 'success',
   [QUEUE_STATUS.ERROR]: 'error',
 };
-
-export interface QueueJobCardProps {
-  job: QueueJob;
-  onRemove: (id: string) => void;
-}
 
 function basename(path: string): string {
   const parts = path.split(/[\\/]/);

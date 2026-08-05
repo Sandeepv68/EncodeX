@@ -5,20 +5,13 @@
 
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
-import { AppError, createError, formatError, ErrorCode, ErrorCodeType, ERROR_MESSAGES } from '../../shared/errors';
+import { createError, formatError, ErrorCode, ERROR_MESSAGES } from '../../shared/errors';
+import type { AppError, ErrorCodeType } from '../../shared/types';
+import type { ErrorState } from './types';
 import { ERROR_HISTORY_MAX } from '../../shared/constants';
 import { LOG_ERROR_CLEARED, LOG_ERROR_HISTORY_CLEARED, LOG_ERROR_MESSAGE_SHOWN, LOG_ERROR_SHOWN } from '../../shared/log-constants';
 
 const log = new Logger('renderer/stores/errorStore');
-
-interface ErrorState {
-  currentError: AppError | null;
-  errorHistory: AppError[];
-  showError: (err: unknown) => void;
-  showErrorMessage: (code: ErrorCodeType, detail?: string) => void;
-  clearError: () => void;
-  clearHistory: () => void;
-}
 
 export const useErrorStore = create<ErrorState>((set) => ({
   currentError: null,

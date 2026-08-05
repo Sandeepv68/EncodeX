@@ -1,7 +1,4 @@
-export interface CodecContainerInfo {
-  extension: string;
-  containers: string[];
-}
+import type { CodecContainerInfo } from './types';
 
 const CONTAINERS: Record<string, CodecContainerInfo> = {
   h264: { extension: 'mp4', containers: ['mp4', 'mkv', 'mov', 'm4v', 'avi', 'ts', 'm2ts', '3gp', 'flv', 'f4v', 'mpg', 'mpeg'] },

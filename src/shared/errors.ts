@@ -3,6 +3,8 @@
  * Defines error codes, error interfaces, and utility functions for error management.
  */
 
+import type { ErrorCodeType, AppError } from './types';
+
 /**
  * Application error codes for different failure scenarios.
  * @const {Object} ErrorCode
@@ -23,19 +25,6 @@ export const ErrorCode = {
   PERMISSION_DENIED: 'PERMISSION_DENIED',
   UNKNOWN: 'UNKNOWN',
 } as const;
-
-export type ErrorCodeType = (typeof ErrorCode)[keyof typeof ErrorCode];
-
-/**
- * Application error type combining error code, message, and details.
- * @interface AppError
- */
-export interface AppError {
-  code: ErrorCodeType;
-  message: string;
-  detail?: string;
-  timestamp: number;
-}
 
 export class AppErrorImpl extends Error {
   code: ErrorCodeType;

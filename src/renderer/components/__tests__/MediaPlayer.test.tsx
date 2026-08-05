@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createRef } from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import MediaPlayer, { MediaPlayerHandle } from '../MediaPlayer';
+import MediaPlayer from '../MediaPlayer';
+import type { MediaPlayerHandle } from '../types';
 import type { MediaInfo, PlayerFrame } from '../../../shared/types';
 
 const playerOpen = vi.mocked(window.electronAPI.playerOpen);

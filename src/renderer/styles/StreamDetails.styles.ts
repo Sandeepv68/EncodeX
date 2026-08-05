@@ -11,7 +11,7 @@ export const StreamTitle = styled(Typography)(({ theme }) => ({
 }));
 
 export const StreamCountChip = styled(Chip)(({ theme }) => ({
-  borderRadius: '8px',
+  borderRadius: theme.typography.pxToRem(8),
   fontWeight: 600,
   height: theme.spacing(2.5),
   color: theme.palette.text.secondary,
@@ -28,7 +28,7 @@ export const StreamPaper = styled(Paper)(({ theme }) => ({
 export const StreamTypeChip = styled(Chip)<{ tone: 'video' | 'audio' }>(({ theme, tone }) => {
   const main = tone === 'video' ? theme.palette.primary.main : theme.palette.warning.main;
   return {
-    borderRadius: '6px',
+    borderRadius: theme.typography.pxToRem(6),
     fontWeight: 600,
     color: main,
     borderColor: 'transparent',
@@ -60,7 +60,7 @@ export const DispositionRow = styled(Box)(({ theme }) => ({
 }));
 
 export const DispositionChip = styled(Chip)(({ theme }) => ({
-  borderRadius: '6px',
+  borderRadius: theme.typography.pxToRem(6),
   fontWeight: 600,
   fontSize: theme.typography.pxToRem(11),
   minHeight: theme.spacing(2.5),

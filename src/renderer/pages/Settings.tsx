@@ -1,21 +1,27 @@
 import { useTranslation } from 'react-i18next';
-import { Tooltip, Switch, MenuItem } from '@mui/material';
-import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import { Box, Switch, MenuItem } from '@mui/material';
 import { useColorMode } from '../ColorModeContext';
 import { useSettingsStore } from '../stores/settingsStore';
 import InfoTooltip from '../components/InfoTooltip';
 import { HWACCEL_MODES, ENCODER_TYPES } from '../../shared/hwaccel-settings';
-import type { HwAccelMode, EncoderType } from '../../shared/hwaccel-settings';
+import { THEMES } from '../colors';
+import type { ThemeDefinition } from '../colors';
+import type { HwAccelMode, EncoderType } from '../../shared/types';
 import {
   SettingsRoot,
   SettingsHeader,
   SettingsTitle,
   SettingsSection,
+  ThemeSettingsSection,
   SettingsLabel,
   SettingsLabelRow,
-  ThemeToggleButton,
-  ThemeToggleIcon,
   ModeSelect,
+  ThemeSwitcher,
+  ThemeCard,
+  ThemePreview,
+  ThemePreviewPaper,
+  ThemePreviewTextBar,
+  ThemePreviewAccentBar,
 } from '../styles/Settings.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
@@ -40,9 +46,22 @@ function SettingLabel({ text, hint }: { text: string; hint: string }) {
   );
 }
 
+function ThemePreviewCard({ theme }: { theme: ThemeDefinition }) {
+  return (
+    <ThemePreview style={{ backgroundColor: theme.background.default }}>
+      <ThemePreviewPaper $color={theme.background.paper}>
+        <ThemePreviewTextBar $color={theme.text.primary} $width="60%" />
+        <ThemePreviewTextBar $color={theme.text.secondary} $width="85%" />
+      </ThemePreviewPaper>
+      <ThemePreviewAccentBar $color={theme.primary} />
+      <ThemePreviewAccentBar $color={theme.secondary} />
+    </ThemePreview>
+  );
+}
+
 export default function Settings() {
   const { t } = useTranslation();
-  const { mode, toggleColorMode } = useColorMode();
+  const { themeId, setTheme } = useColorMode();
   const hardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
   const hwaccelMode = useSettingsStore((s) => s.hwaccelMode);
   const encoderType = useSettingsStore((s) => s.encoderType);
@@ -60,14 +79,20 @@ export default function Settings() {
           {t('settings.title')}
         </SettingsTitle>
       </SettingsHeader>
-      <SettingsSection>
+      <ThemeSettingsSection>
         <SettingsLabel variant="body1">{t('settings.theme')}</SettingsLabel>
-        <Tooltip title={mode === 'dark' ? t('app.switchLight') : t('app.switchDark')}>
-          <ThemeToggleButton size="medium" onClick={toggleColorMode}>
-            {mode === 'dark' ? <ThemeToggleIcon icon={faSun} /> : <ThemeToggleIcon icon={faMoon} />}
-          </ThemeToggleButton>
-        </Tooltip>
-      </SettingsSection>
+        <ThemeSwitcher>
+          {THEMES.map((theme) => {
+            const selected = theme.id === themeId;
+            return (
+              <ThemeCard key={theme.id} $selected={selected} aria-pressed={selected} onClick={() => setTheme(theme.id)}>
+                <ThemePreviewCard theme={theme} />
+                <Box component="span">{t(theme.labelKey)}</Box>
+              </ThemeCard>
+            );
+          })}
+        </ThemeSwitcher>
+      </ThemeSettingsSection>
       <SettingsSection>
         <SettingLabel text={t('settings.alwaysOnTop')} hint={t('settings.alwaysOnTopHint')} />
         <Switch

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { ErrorCode, ErrorCodeType, createError, isAppError, formatError, ERROR_MESSAGES, AppErrorImpl } from '../errors';
+import type { ErrorCodeType } from '../types';
+import { ErrorCode, createError, isAppError, formatError, ERROR_MESSAGES, AppErrorImpl } from '../errors';
 
 describe('ErrorCode', () => {
   it('has all expected error codes', () => {

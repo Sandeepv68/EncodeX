@@ -5,6 +5,7 @@ import { ColorModeProvider } from '../../ColorModeContext';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { HWACCEL_DEFAULTS, ENCODER_TYPE_DEFAULT } from '../../../shared/hwaccel-settings';
 import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY } from '../../../shared/constants';
+import { THEME_STORAGE_KEY } from '../../../shared/app-constants';
 
 function renderSettings() {
   return render(
@@ -34,15 +35,25 @@ describe('Settings', () => {
     expect(screen.getByText('settings.theme')).toBeInTheDocument();
   });
 
-  it('toggles the color mode when the theme button is clicked', () => {
-    const { container } = renderSettings();
-    const initialIcon = container.querySelector('[data-icon="moon"], [data-icon="sun"]');
-    expect(initialIcon).not.toBeNull();
-    const initialIconName = initialIcon!.getAttribute('data-icon');
-    const toggleButton = container.querySelector('button')!;
-    fireEvent.click(toggleButton);
-    const nextIconName = container.querySelector('[data-icon="moon"], [data-icon="sun"]')!.getAttribute('data-icon');
-    expect(nextIconName).not.toBe(initialIconName);
+  it('lists the light themes and the dark theme as selectable cards', () => {
+    renderSettings();
+    expect(screen.getByRole('button', { name: 'settings.themes.light' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'settings.themes.ocean' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'settings.themes.forest' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'settings.themes.dark' })).toBeInTheDocument();
+  });
+
+  it('marks the active theme card as pressed', () => {
+    renderSettings();
+    expect(screen.getByRole('button', { name: 'settings.themes.light' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'settings.themes.dark' })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('switches the theme and persists it when a theme card is selected', () => {
+    renderSettings();
+    fireEvent.click(screen.getByRole('button', { name: 'settings.themes.dark' }));
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('dark');
+    expect(screen.getByRole('button', { name: 'settings.themes.dark' })).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('renders the hardware acceleration row with the mode dropdown when enabled', () => {

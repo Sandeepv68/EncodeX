@@ -1,19 +1,12 @@
-import type { RefObject } from 'react';
 import { Button, MenuItem } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faBroom } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../shared/media-options';
-import { TRANSCODER_TYPES, type TranscoderType } from '../../shared/transcoder-constants';
+import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
+import type { TranscoderType } from '../../shared/types';
+import type { BatchControlsProps } from './types';
 import { ControlsPaper, ControlsStack, OperationSelect, TranscoderSelect, SuffixField } from '../styles/BatchControls.styles';
-
-export interface BatchControlsProps {
-  operationRef: RefObject<string>;
-  transcoderRef: RefObject<TranscoderType>;
-  suffixRef: RefObject<string>;
-  onAddFiles: () => void;
-  onCancelAll: () => void;
-}
 
 export default function BatchControls({ operationRef, transcoderRef, suffixRef, onAddFiles, onCancelAll }: BatchControlsProps) {
   const { t } = useTranslation();

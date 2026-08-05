@@ -7,7 +7,8 @@
 
 import { ipcMain, BrowserWindow } from 'electron';
 import { FfmpegCore } from '../transcoders/ffmpeg-core';
-import { FrameDecoder, DecodedFrame, AudioDecodeConfig } from '../player/frame-decoder';
+import { FrameDecoder } from '../player/frame-decoder';
+import type { DecodedFrame, AudioDecodeConfig } from '../player/types';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import { TRANSCODER_DEFAULTS } from '../../shared/transcoder-constants';
@@ -18,7 +19,7 @@ import {
   AUDIO_DEFAULT_CHANNELS,
   PLAYER_MIN_DIMENSION,
 } from '../../shared/constants';
-import { IpcSender } from './send';
+import type { IpcSender } from './types';
 import {
   LOG_IPC_PLAYER_CLOSE,
   LOG_IPC_PLAYER_OPEN,

@@ -5,7 +5,7 @@ import ffmpegStatic from 'ffmpeg-static';
 import { path as ffprobePath } from 'ffprobe-static';
 import { existsSync } from 'fs';
 import { Logger } from '../../shared/logger';
-import { ITranscoder } from './interface';
+import type { ITranscoder } from './types';
 import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/types';
 import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/transcoder-constants';
 import { suspendProcess, resumeProcess } from '../process-utils';

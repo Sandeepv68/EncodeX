@@ -11,6 +11,7 @@ import type { ConversionProgress, MediaStreamInfo } from '../../shared/types';
 import { ErrorCode } from '../../shared/errors';
 import { useErrorStore } from './errorStore';
 import { useToastStore } from './toastStore';
+import type { AudioExtractState, TaskProgress } from './types';
 import i18n from '../i18n/config';
 import { AUDIO_EXTRACT_DEFAULT_CODEC } from '../../shared/constants';
 import {
@@ -35,33 +36,6 @@ import {
 } from '../../shared/log-constants';
 
 const log = new Logger('renderer/stores/audioExtractStore');
-
-export type TaskProgress = Pick<ConversionProgress, 'percent' | 'time' | 'speed' | 'eta'>;
-
-interface AudioExtractState {
-  input: string;
-  preview: string | null;
-  audioStreams: MediaStreamInfo[];
-  output: string;
-  audioCodec: string;
-  audioBitrate: string;
-  isConverting: boolean;
-  isPaused: boolean;
-  progress: TaskProgress | null;
-  setInput: (file: string) => void;
-  setPreview: (preview: string | null) => void;
-  setAudioStreams: (streams: MediaStreamInfo[]) => void;
-  setOutput: (output: string) => void;
-  setAudioCodec: (codec: string) => void;
-  setAudioBitrate: (bitrate: string) => void;
-  setIsPaused: (v: boolean) => void;
-  setProgress: (p: TaskProgress | null) => void;
-  clearSelection: () => void;
-  startExtract: () => Promise<void>;
-  pauseExtract: () => Promise<void>;
-  resumeExtract: () => Promise<void>;
-  cancelExtract: () => Promise<void>;
-}
 
 const INITIAL_STATE = {
   input: '',

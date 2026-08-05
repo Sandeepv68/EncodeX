@@ -6,7 +6,7 @@ import { spawn, ChildProcess, execSync } from 'child_process';
  */
 
 import { Logger } from '../../shared/logger';
-import { ITranscoder } from './interface';
+import type { ITranscoder } from './types';
 import { suspendProcess, resumeProcess } from '../process-utils';
 import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/types';
 import {

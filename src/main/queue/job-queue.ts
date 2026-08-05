@@ -8,7 +8,7 @@ import { randomUUID } from 'crypto';
 import { Logger } from '../../shared/logger';
 import { QueueJob, ConversionOptions, TranscoderType } from '../../shared/types';
 import { createTranscoder } from '../transcoders/factory';
-import { ITranscoder } from '../transcoders/interface';
+import type { ITranscoder } from '../transcoders/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import {

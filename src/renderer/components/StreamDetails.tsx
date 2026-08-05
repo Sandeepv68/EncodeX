@@ -1,6 +1,7 @@
 import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaStreamInfo } from '../../shared/types';
+import type { StreamDetailsProps } from './types';
 import { formatDuration } from '../utils/formatters';
 import { FieldLabel, FieldValue } from '../styles/InfoField.styles';
 import EllipsisTooltip from './EllipsisTooltip';
@@ -15,11 +16,6 @@ import {
   DispositionLabel,
   DispositionRow,
 } from '../styles/StreamDetails.styles';
-
-export interface StreamDetailsProps {
-  streams: MediaStreamInfo[];
-  compact?: boolean;
-}
 
 function buildStreamRows(stream: MediaStreamInfo, t: (key: string, opts?: Record<string, unknown>) => string): [string, string][] {
   const rows: [string, string][] = [];
