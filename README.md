@@ -1,6 +1,10 @@
 # EncodeX
 
 A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron.
+<div align="center">
+  <img src="assets/logo.png" alt="EncodeX Logo" width="200" />
+</div>
+
 
 ## Table of Contents
 
