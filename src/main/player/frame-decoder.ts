@@ -12,6 +12,8 @@ import { FFMPEG_FLAGS, KILL_SIGNAL, TRANSCODER_DEFAULTS } from '../../shared/tra
 
 const log = new Logger('main/player/frame-decoder');
 
+const AUDIO_CHUNK_SECONDS = 0.05;
+
 /**
  * @interface DecodedFrame
  * @property {Buffer} buffer - Raw RGB24 pixel data
@@ -277,14 +279,35 @@ export class FrameDecoder extends EventEmitter {
     }
 
     if (audio) {
+      const audioTarget = Math.max(512, Math.round(audio.sampleRate * audio.channels * 2 * AUDIO_CHUNK_SECONDS));
+      let audioParts: Buffer[] = [];
+      let audioPartsLen = 0;
       currentProcess.stdio?.[3]?.on('data', (chunk: Buffer) => {
         if (!this.running || this.process !== currentProcess) return;
-        this.emit('audio', {
-          buffer: Buffer.from(chunk),
-          sampleRate: audio.sampleRate,
-          channels: audio.channels,
-          generation,
-        } as DecodedAudio);
+        audioParts.push(chunk);
+        audioPartsLen += chunk.length;
+        while (audioPartsLen >= audioTarget) {
+          const out = Buffer.alloc(audioTarget);
+          let written = 0;
+          while (written < audioTarget) {
+            const part = audioParts[0];
+            const take = Math.min(part.length, audioTarget - written);
+            part.copy(out, written, 0, take);
+            written += take;
+            if (take === part.length) {
+              audioParts.shift();
+            } else {
+              audioParts[0] = part.subarray(take);
+            }
+          }
+          audioPartsLen -= audioTarget;
+          this.emit('audio', {
+            buffer: out,
+            sampleRate: audio.sampleRate,
+            channels: audio.channels,
+            generation,
+          } as DecodedAudio);
+        }
       });
     }
 

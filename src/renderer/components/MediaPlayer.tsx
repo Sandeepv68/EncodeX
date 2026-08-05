@@ -24,8 +24,8 @@ interface Props {
   onMediaInfo?: (info: MediaInfo) => void;
 }
 
-const AUDIO_LOOKAHEAD_SECONDS = 0.15;
-const MAX_PENDING_AUDIO_CHUNKS = 100;
+const AUDIO_LOOKAHEAD_SECONDS = 0.75;
+const MAX_PENDING_AUDIO_CHUNKS = 200;
 const SEEK_COALESCE_MS = 120;
 const MAX_BUFFERED_FRAMES = 30;
 const MAX_FRAME_LOOKAHEAD_S = 3;

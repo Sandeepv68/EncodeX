@@ -167,15 +167,29 @@ describe('FrameDecoder', () => {
     expect(args).toContain('pipe:3');
   });
 
-  it('emits audio chunks decoded on the third pipe', () => {
+  it('emits audio chunks decoded on the third pipe, batched to ~50ms', () => {
     const audioChunks: Array<{ buffer: Buffer; sampleRate: number; channels: number }> = [];
     decoder.on('audio', (a: { buffer: Buffer; sampleRate: number; channels: number }) => audioChunks.push(a));
     decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
     const proc = spawnMock.mock.results[0].value;
-    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(16));
+    const target = 48000 * 2 * 2 * 0.05; // 9600 bytes
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(target / 2));
+    expect(audioChunks).toHaveLength(0);
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(target / 2));
     expect(audioChunks).toHaveLength(1);
     expect(audioChunks[0]).toMatchObject({ sampleRate: 48000, channels: 2 });
-    expect(audioChunks[0].buffer).toHaveLength(16);
+    expect(audioChunks[0].buffer).toHaveLength(target);
+  });
+
+  it('splits oversized audio writes into multiple batched chunks', () => {
+    const audioChunks: DecodedAudio[] = [];
+    decoder.on('audio', (a: DecodedAudio) => audioChunks.push(a));
+    decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
+    const proc = spawnMock.mock.results[0].value;
+    const target = 48000 * 2 * 2 * 0.05;
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(target * 3));
+    expect(audioChunks).toHaveLength(3);
+    expect(audioChunks.every((a) => a.buffer.length === target)).toBe(true);
   });
 
   it('tags audio chunks with the current generation', () => {
@@ -183,7 +197,8 @@ describe('FrameDecoder', () => {
     decoder.on('audio', (a: DecodedAudio) => audioChunks.push(a));
     decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
     const proc = spawnMock.mock.results[0].value;
-    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(16));
+    const target = 48000 * 2 * 2 * 0.05;
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(target));
     expect(audioChunks[0].generation).toBe(1);
     expect(decoder.getGeneration()).toBe(1);
   });
@@ -194,7 +209,7 @@ describe('FrameDecoder', () => {
     decoder.open('in.mp4', 2, 2, { sampleRate: 48000, channels: 2 });
     const proc = spawnMock.mock.results[0].value;
     decoder.close();
-    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(16));
+    (proc.stdio[3] as EventEmitter).emit('data', Buffer.alloc(9600));
     expect(audioChunks).toHaveLength(0);
   });
 
