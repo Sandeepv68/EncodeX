@@ -18,13 +18,13 @@
   },
   "dashboard": {
     "welcome": "Willkommen bei EncodeX",
-    "subtitle": "Einfache und benutzerfreundliche Werkzeuge zum Konvertieren, Bearbeiten und Verarbeiten von Audio- und Videodateien.",
-    "descConvert": "Codecs, Auflösung, Pixelformat ändern",
-    "descMediaInfo": "Detaillierte Stream-Informationen anzeigen",
-    "descImage": "Bilder mit Formatsteuerung komprimieren",
-    "descAudio": "Audio aus Videodateien extrahieren",
-    "descCut": "Video mit frame-genauem Player schneiden",
-    "descBatch": "Mehrere Dateien gleichzeitig verarbeiten"
+    "subtitle": "Ihr All-in-One-Werkzeug zum Konvertieren, Bearbeiten und Komprimieren von Audio-, Video- und Bilddateien.",
+    "descConvert": "Video und Audio mit Kontrolle über Codec, Auflösung und Qualität transkodieren",
+    "descMediaInfo": "Codec-, Stream- und Container-Details prüfen",
+    "descImage": "Bilder mit Format-, Qualitäts- und Größenkontrolle verkleinern",
+    "descAudio": "Saubere Audiospuren aus Videodateien extrahieren",
+    "descCut": "Video mit frame-genauem Player zuschneiden und kürzen",
+    "descBatch": "Viele Dateien auf einmal mit einer intelligenten Warteschlange konvertieren"
   },
   "convert": {
     "title": "Medien konvertieren",

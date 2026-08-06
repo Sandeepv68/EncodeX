@@ -527,6 +527,69 @@ describe('VideoTimeline', () => {
     expect(getComputedStyle(scroller).width).toBe('600px');
   });
 
+  it('uses a controlled zoom prop and reports changes via onZoomChange', () => {
+    const onZoomChange = vi.fn();
+    const { rerender } = render(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={0}
+        end={60}
+        zoom={10}
+        onZoomChange={onZoomChange}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByTestId('timeline-scroller')).toHaveStyle({ width: '600px' });
+    fireEvent.click(screen.getByLabelText('videoTimeline.zoomIn'));
+    expect(onZoomChange).toHaveBeenCalledWith(15);
+    expect(screen.getByTestId('timeline-scroller')).toHaveStyle({ width: '600px' });
+    rerender(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={0}
+        end={60}
+        zoom={15}
+        onZoomChange={onZoomChange}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByTestId('timeline-scroller')).toHaveStyle({ width: '900px' });
+  });
+
+  it('keeps a controlled zoom when the duration changes', () => {
+    const { rerender } = render(
+      <VideoTimeline
+        duration={0}
+        currentTime={0}
+        start={0}
+        end={0}
+        zoom={42}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    rerender(
+      <VideoTimeline
+        duration={60}
+        currentTime={0}
+        start={0}
+        end={60}
+        zoom={42}
+        onSeek={vi.fn()}
+        onStartChange={vi.fn()}
+        onEndChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByTestId('timeline-scroller')).toHaveStyle({ width: '2520px' });
+  });
+
   it('always shows a one-line video stream bubble pinned to the top-left of the video track', () => {
     render(
       <VideoTimeline

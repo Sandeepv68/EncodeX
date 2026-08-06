@@ -1,8 +1,48 @@
+/**
+ * @fileoverview Theme palette definitions and shared color constants.
+ *
+ * This module is the single source of truth for the color system used by the
+ * MUI theme (see theme.ts). It defines:
+ *  - `ThemeDefinition`, the shape of one selectable theme palette.
+ *  - `THEMES`, the registry of all built-in palettes (light, ocean, sunset,
+ *    forest, lavender, rose, slate, dark). Light themes all share the 'light'
+ *    color mode but differ in their accent colors, text colors, borders, and
+ *    subtle background tints; the 'dark' theme is the sole 'dark' mode entry.
+ *  - `getTheme()` / `isThemeId()` helpers to look palettes up by id and to
+ *    validate unknown ids (e.g. values read back from localStorage).
+ *  - `COLORS`, the semantic colors shared across every theme (info/error/
+ *    success/warning, log console colors, video player colors, alert colors).
+ *  - `HISTOGRAM_COLORS` / `OVERLAY_COLORS` / `TIMELINE_COLORS` /
+ *    `TITLEBAR_COLORS`, the fixed component-level colors that stay identical
+ *    across every theme.
+ *  - `SHADOWS`, the shared CSS box-shadow strings for light and dark surfaces.
+ */
+
 import type { ColorMode, ThemeId } from './types';
 
 /**
  * A theme palette definition. Light themes share the same color mode but use
  * different accent colors and subtle background tints.
+ * @interface ThemeDefinition
+ * @property {ThemeId} id - Unique identifier of the theme, used in settings
+ *   and persisted to localStorage.
+ * @property {string} labelKey - i18n key used to display the theme name in the
+ *   settings page.
+ * @property {ColorMode} mode - Underlying MUI palette mode ('light' | 'dark').
+ * @property {string} primary - Primary accent color (hex).
+ * @property {string} secondary - Secondary accent color (hex).
+ * @property {Object} background - Background color group.
+ * @property {string} background.default - Default page background color.
+ * @property {string} background.paper - Surface/paper background color.
+ * @property {string} background.drawer - Drawer (sidebar) background color.
+ * @property {Object} text - Text color group.
+ * @property {string} text.primary - Primary text color.
+ * @property {string} text.secondary - Secondary/muted text color.
+ * @property {string} border - Divider / border color for hairlines and outlines.
+ * @property {Object} tint - Translucent primary-color tints used for subtle
+ *   highlights and selected states.
+ * @property {string} tint.primary15 - Primary color at 15% opacity.
+ * @property {string} tint.primary25 - Primary color at 25% opacity.
  */
 export interface ThemeDefinition {
   id: ThemeId;
@@ -27,6 +67,12 @@ export interface ThemeDefinition {
   };
 }
 
+/**
+ * Registry of all built-in theme palettes. Seven light themes (light, ocean,
+ * sunset, forest, lavender, rose, slate) share the 'light' color mode with
+ * distinct accent/border/tint colors, plus one dark theme ('dark').
+ * @const {readonly ThemeDefinition[]} THEMES
+ */
 export const THEMES: readonly ThemeDefinition[] = [
   {
     id: 'light',
@@ -118,15 +164,56 @@ export const THEMES: readonly ThemeDefinition[] = [
   },
 ];
 
+/**
+ * Looks up a theme definition by its id.
+ * Returns the first palette (the 'light' theme) when no palette matches, so a
+ * stale or unknown id never produces undefined.
+ * @param {ThemeId} id - The theme id to look up.
+ * @returns {ThemeDefinition} The matching theme definition, or the 'light'
+ *   theme as a fallback.
+ */
 export function getTheme(id: ThemeId): ThemeDefinition {
   return THEMES.find((theme) => theme.id === id) ?? THEMES[0];
 }
 
+/**
+ * Type guard that checks whether a value (e.g. a value read from
+ * localStorage) is a valid registered theme id.
+ * @param {string | null} value - The value to test; null is rejected.
+ * @returns {boolean} True when `value` is a string matching a known theme id.
+ */
 export function isThemeId(value: string | null): value is ThemeId {
   return value !== null && THEMES.some((theme) => theme.id === value);
 }
 
-/** Semantic colors shared across all themes. */
+/**
+ * Semantic colors shared across all themes. These are fixed brand/status
+ * colors (info, error, success, warning), their 10% translucent tints, the
+ * log console palette, the video player surface colors, and alert colors.
+ * @const {Object} COLORS
+ * @property {string} info - Info status color.
+ * @property {string} error - Error status color.
+ * @property {string} success - Success status color.
+ * @property {string} warning - Warning status color.
+ * @property {Object} tint - 10% translucent tints for error/warning/info.
+ * @property {string} tint.error10 - Error color at 10% opacity.
+ * @property {string} tint.warning10 - Warning color at 10% opacity.
+ * @property {string} tint.info10 - Info color at 10% opacity.
+ * @property {Object} log - Colors for the log console view.
+ * @property {string} log.background - Log console background.
+ * @property {string} log.text - Default log text color.
+ * @property {string} log.muted - Muted log text color.
+ * @property {string} log.debug - DEBUG level log color.
+ * @property {string} log.info - INFO level log color.
+ * @property {string} log.warn - WARN level log color.
+ * @property {string} log.error - ERROR level log color.
+ * @property {Object} player - Video player surface colors.
+ * @property {string} player.background - Player backdrop color.
+ * @property {string} player.control - Player control icon color.
+ * @property {Object} alert - Material-UI alert palette colors.
+ * @property {string} alert.info - Alert info color.
+ * @property {string} alert.warning - Alert warning color.
+ */
 export const COLORS = {
   info: '#3498db',
   error: '#e74c3c',
@@ -134,6 +221,8 @@ export const COLORS = {
   warning: '#f39c12',
   tint: {
     error10: 'rgba(231,76,60,0.1)',
+    error45: 'rgba(231, 76, 60, 0.45)',
+    error0: 'rgba(231, 76, 60, 0)',
     warning10: 'rgba(243,156,18,0.1)',
     info10: 'rgba(52,152,219,0.1)',
   },
@@ -156,6 +245,85 @@ export const COLORS = {
   },
 } as const;
 
+/**
+ * Channel colors for the Red/Green/Blue/Luma histogram charts in the Media Info
+ * panel. They are intentionally fixed (material red/green/blue plus a neutral
+ * grey for luma) so the charts read the same in every theme.
+ * @const {Object} HISTOGRAM_COLORS
+ * @property {string} red - Red channel color.
+ * @property {string} green - Green channel color.
+ * @property {string} blue - Blue channel color.
+ * @property {string} luma - Luma channel color.
+ */
+export const HISTOGRAM_COLORS = {
+  red: '#f44336',
+  green: '#4caf50',
+  blue: '#2196f3',
+  luma: '#9e9e9e',
+} as const;
+
+/**
+ * Translucent black/white overlay colors shared across components that sit on
+ * top of media surfaces (timeline bubbles, trim handles, scroll shadows,
+ * progress-bar stripes, move indicators). These are fixed so overlays render
+ * identically in light and dark themes.
+ * @const {Object} OVERLAY_COLORS
+ */
+export const OVERLAY_COLORS = {
+  white: '#ffffff',
+  white85: 'rgba(255, 255, 255, 0.85)',
+  white90: 'rgba(255, 255, 255, 0.9)',
+  white30: 'rgba(255, 255, 255, 0.3)',
+  white18: 'rgba(255, 255, 255, 0.18)',
+  white0: 'rgba(255, 255, 255, 0)',
+  black66: 'rgb(0 0 0 / 66%)',
+  black70: 'rgba(0, 0, 0, 0.7)',
+  black45: 'rgba(0, 0, 0, 0.45)',
+  black25: 'rgba(0, 0, 0, 0.25)',
+  black20: 'rgb(0 0 0 / 20%)',
+  black0: 'rgba(0, 0, 0, 0)',
+} as const;
+
+/**
+ * Video-timeline surface colors that don't map to the theme palette. The
+ * light/dark background pair is shared by the track label panel and the ruler.
+ * @const {Object} TIMELINE_COLORS
+ * @property {string} scrollbarThumb - Timeline viewport scrollbar thumb color.
+ * @property {string} labelPanelBackgroundLight - Label panel/ruler background (light).
+ * @property {string} labelPanelBackgroundDark - Label panel/ruler background (dark).
+ * @property {string} audioTrack - Audio track strip background.
+ * @property {string} markerBubbleBackgroundDark - Marker bubble background (dark).
+ * @property {string} trackInfoBubbleBackgroundDark - Track info bubble background (dark).
+ */
+export const TIMELINE_COLORS = {
+  scrollbarThumb: 'rgba(128, 128, 128, 0.4)',
+  labelPanelBackgroundLight: '#fafafa',
+  labelPanelBackgroundDark: '#141414',
+  audioTrack: '#809dca42',
+  markerBubbleBackgroundDark: 'rgba(97, 97, 97, 0.9)',
+  trackInfoBubbleBackgroundDark: 'rgba(33, 33, 33, 0.95)',
+} as const;
+
+/**
+ * Fixed colors for the custom frameless-window title bar (window controls).
+ * @const {Object} TITLEBAR_COLORS
+ * @property {string} closeBackground - Close button hover background (macOS red).
+ */
+export const TITLEBAR_COLORS = {
+  closeBackground: '#d70000',
+} as const;
+
+/**
+ * Shared CSS box-shadow strings for elevated surfaces.
+ * SOFT_* are used for resting cards and panels, SOFT_HOVER_* for their hover
+ * state. Light variants target light-mode surfaces, dark variants dark-mode
+ * surfaces.
+ * @const {Object} SHADOWS
+ * @property {string} SOFT_LIGHT - Resting shadow for light surfaces.
+ * @property {string} SOFT_DARK - Resting shadow for dark surfaces.
+ * @property {string} SOFT_HOVER_LIGHT - Hover shadow for light surfaces.
+ * @property {string} SOFT_HOVER_DARK - Hover shadow for dark surfaces.
+ */
 export const SHADOWS = {
   SOFT_LIGHT: '0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 10px rgba(0, 0, 0, 0.05)',
   SOFT_DARK: '0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15)',

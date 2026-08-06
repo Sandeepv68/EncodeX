@@ -18,13 +18,13 @@
   },
   "dashboard": {
     "welcome": "Welkom bij EncodeX",
-    "subtitle": "Eenvoudige en gebruiksvriendelijke tools om audio- en videobestanden te converteren, bewerken en verwerken.",
-    "descConvert": "Wijzig codecs, resolutie, pixelformaat",
-    "descMediaInfo": "Bekijk gedetailleerde streaminformatie",
-    "descImage": "Afbeeldingen comprimeren met formaatcontrole",
-    "descAudio": "Audio extraheren uit videobestanden",
-    "descCut": "Video knippen met frame-nauwkeurige speler",
-    "descBatch": "Meerdere bestanden tegelijk verwerken"
+    "subtitle": "Uw alles-in-één-toolkit voor het converteren, bewerken en comprimeren van audio, video en afbeeldingen.",
+    "descConvert": "Transcodeer video en audio met controle over codec, resolutie en kwaliteit",
+    "descMediaInfo": "Bekijk codec-, stream- en containerdetails",
+    "descImage": "Verklein afbeeldingen met controle over formaat, kwaliteit en afmetingen",
+    "descAudio": "Haal schone audiotracks uit videobestanden",
+    "descCut": "Knip en bewerk video met een frame-nauwkeurige speler",
+    "descBatch": "Converteer veel bestanden tegelijk met een slimme wachtrij"
   },
   "convert": {
     "title": "Media converteren",

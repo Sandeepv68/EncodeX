@@ -18,13 +18,13 @@
   },
   "dashboard": {
     "welcome": "Selamat datang di EncodeX",
-    "subtitle": "Alat sederhana dan ramah pengguna untuk mengonversi, mengedit, dan memproses file audio dan video.",
-    "descConvert": "Ubah codec, resolusi, format piksel",
-    "descMediaInfo": "Lihat informasi stream detail",
-    "descImage": "Kompres gambar dengan kontrol format",
-    "descAudio": "Ekstrak audio dari file video",
-    "descCut": "Potong video dengan pemutar presisi bingkai",
-    "descBatch": "Proses beberapa file sekaligus"
+    "subtitle": "Toolkit serba bisa untuk mengonversi, mengedit, dan mengompres audio, video, dan gambar.",
+    "descConvert": "Transkode video dan audio dengan kontrol atas codec, resolusi, dan kualitas",
+    "descMediaInfo": "Periksa detail codec, stream, dan kontainer",
+    "descImage": "Perkecil gambar dengan kontrol format, kualitas, dan dimensi",
+    "descAudio": "Ekstrak trek audio yang bersih dari file video",
+    "descCut": "Pangkas dan potong video dengan pemutar presisi bingkai",
+    "descBatch": "Konversi banyak file sekaligus dengan antrean cerdas"
   },
   "convert": {
     "title": "Konversi Media",

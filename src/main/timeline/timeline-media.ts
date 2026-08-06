@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Media analysis utilities for the timeline UI.
+ * Extracts audio waveform peak data and a grid of video thumbnails from media
+ * files by shelling out to ffmpeg. Both extractors split the source file into
+ * time segments, decode each segment in parallel (bounded by a global ffmpeg
+ * concurrency semaphore), and stitch the results into a single
+ * WaveformData/ThumbnailStrip payload for the renderer. Thumbnails are packed
+ * into one PNG montage (encoded with a minimal hand-rolled PNG encoder) and
+ * shipped to the renderer as a data URL.
+ */
+
 import { spawn } from 'child_process';
 import { existsSync } from 'fs';
 import { deflateSync } from 'zlib';
@@ -37,8 +48,17 @@ import {
 
 const log = new Logger('main/timeline/timeline-media');
 
+/** Byte size of one raw RGB24 thumbnail frame (`THUMB_WIDTH * THUMB_HEIGHT * 3`). */
 const RAW_FRAME_BYTES = THUMB_WIDTH * THUMB_HEIGHT * 3;
 
+/**
+ * Resolves the ffmpeg executable path to use for segment decoding.
+ *
+ * Prefers the statically bundled ffmpeg binary from `ffmpeg-static`; falls back
+ * to the system `ffmpeg` command with a warning if the bundled binary is absent.
+ * @returns {string} Absolute path to the bundled ffmpeg binary, or `'ffmpeg'`
+ *   for the system-installed executable
+ */
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
@@ -46,18 +66,58 @@ function getFfmpegPath(): string {
   return TRANSCODER_COMMANDS.FFMPEG;
 }
 
+/**
+ * Clamps a value into the inclusive `[min, max]` range.
+ * @param {number} value - The value to clamp
+ * @param {number} min - Lower bound of the range
+ * @param {number} max - Upper bound of the range
+ * @returns {number} `min` if value < min, `max` if value > max, else `value`
+ */
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
+/**
+ * Formats a number of seconds for use in ffmpeg `-ss`/`-t` arguments.
+ *
+ * Rounds to 3 decimal places (millisecond precision) and returns the result as
+ * a string without trailing zeros, keeping generated argument lists compact.
+ * @param {number} value - Seconds to format
+ * @returns {string} Formatted seconds string, e.g. `'12.345'` or `'30'`
+ */
 function formatSeconds(value: number): string {
   return String(parseFloat(value.toFixed(3)));
 }
 
+/**
+ * Determines whether a file can have media extracted from it.
+ *
+ * A file is extractable when it is a known video file extension, exists on
+ * disk, and has a positive reported duration.
+ * @param {string} filePath - Absolute path of the candidate media file
+ * @param {number} duration - Reported duration in seconds
+ * @returns {boolean} True if the file is a video that exists with duration > 0
+ */
 function isExtractable(filePath: string, duration: number): boolean {
   return isVideoFile(filePath) && existsSync(filePath) && duration > 0;
 }
 
+/**
+ * Maps a collection of items to promises with a bounded concurrency limit.
+ *
+ * Spawns up to `limit` parallel "runner" workers that each pull the next
+ * unprocessed index in order and await `worker`; results are written into a
+ * pre-sized array so the final order matches the input order regardless of
+ * completion timing. This is used to decode waveform/thumbnail segments in
+ * parallel without flooding the machine with ffmpeg processes.
+ * @template T - The input item type
+ * @template R - The output result type
+ * @param {T[]} items - Items to process
+ * @param {number} limit - Maximum number of workers running concurrently
+ * @param {function(T, number): Promise<R>} worker - Async mapping function
+ *   receiving each item and its original index
+ * @returns {Promise<R[]>} Results in the same order as `items`
+ */
 async function mapWithConcurrency<T, R>(items: T[], limit: number, worker: (item: T, index: number) => Promise<R>): Promise<R[]> {
   const results = new Array<R>(items.length);
   let next = 0;
@@ -71,6 +131,17 @@ async function mapWithConcurrency<T, R>(items: T[], limit: number, worker: (item
   return results;
 }
 
+/**
+ * Spawns ffmpeg and collects all stdout/stderr until the process exits.
+ *
+ * Resolves (never rejects) with a record containing the exit code, the complete
+ * stdout payload as a Buffer, and the accumulated stderr text. Spawn failures
+ * (e.g. missing executable) resolve with code `-1` and the error message in
+ * stderr so callers can log and degrade gracefully.
+ * @param {string[]} args - Full ffmpeg argument list (no binary name)
+ * @returns {Promise<{code: number, data: Buffer, stderr: string}>} Exit code
+ *   (or -1 on spawn error), captured stdout bytes, and stderr text
+ */
 function spawnBuffer(args: string[]): Promise<{ code: number; data: Buffer; stderr: string }> {
   return new Promise((resolve) => {
     const child = spawn(getFfmpegPath(), args, { stdio: ['ignore', 'pipe', 'pipe'] });
@@ -90,9 +161,25 @@ function spawnBuffer(args: string[]): Promise<{ code: number; data: Buffer; stde
   });
 }
 
+/**
+ * Global ffmpeg concurrency semaphore state.
+ * `activeSpawns` counts currently running ffmpeg children; `spawnWaiters`
+ * holds resolver callbacks for calls that are waiting for a free slot.
+ */
 let activeSpawns = 0;
 const spawnWaiters: Array<() => void> = [];
 
+/**
+ * Runs a function while holding a global ffmpeg spawn slot.
+ *
+ * If the number of concurrently active ffmpeg processes has reached
+ * `MAX_CONCURRENT_FFMPEG`, the caller awaits a queued slot. Slots are released
+ * in FIFO order via a promise resolver stored in `spawnWaiters`. This keeps the
+ * total number of concurrent ffmpeg children across all extractors bounded.
+ * @template T - The return type of `fn`
+ * @param {function(): Promise<T>} fn - The work to run while holding the slot
+ * @returns {Promise<T>} The result of `fn` once a slot becomes available
+ */
 async function withSpawnSlot<T>(fn: () => Promise<T>): Promise<T> {
   if (activeSpawns >= MAX_CONCURRENT_FFMPEG) {
     await new Promise<void>((resolve) => spawnWaiters.push(resolve));
@@ -107,6 +194,12 @@ async function withSpawnSlot<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
+/**
+ * Computes the standard CRC-32 checksum of a buffer (IEEE 802.3 polynomial,
+ * reflected, initial value 0xFFFFFFFF). Used for PNG chunk validation.
+ * @param {Buffer} buf - The bytes to checksum
+ * @returns {number} Unsigned 32-bit CRC value
+ */
 function crc32(buf: Buffer): number {
   let crc = 0xffffffff;
   for (let i = 0; i < buf.length; i++) {
@@ -118,6 +211,12 @@ function crc32(buf: Buffer): number {
   return (crc ^ 0xffffffff) >>> 0;
 }
 
+/**
+ * Builds a single PNG chunk (length, type, data, CRC) for a PNG stream.
+ * @param {string} type - Four-character ASCII chunk type (e.g. 'IHDR', 'IDAT')
+ * @param {Buffer} data - Chunk payload bytes
+ * @returns {Buffer} Concatenated length + type + data + CRC32 of type+data
+ */
 function pngChunk(type: string, data: Buffer): Buffer {
   const length = Buffer.alloc(4);
   length.writeUInt32BE(data.length, 0);
@@ -127,6 +226,17 @@ function pngChunk(type: string, data: Buffer): Buffer {
   return Buffer.concat([length, typeBuf, data, crc]);
 }
 
+/**
+ * Encodes raw RGB24 pixels into a minimal valid PNG image.
+ *
+ * Produces an 8-bit RGB (color type 2) PNG containing the PNG signature,
+ * IHDR, a single zlib-deflated IDAT (with a filter byte `0` per scanline), and
+ * IEND chunks. Compression level 9 is used for the smallest thumbnail montage.
+ * @param {number} width - Image width in pixels
+ * @param {number} height - Image height in pixels
+ * @param {Buffer} rgb - Raw RGB24 pixel data, exactly `width * height * 3` bytes
+ * @returns {Buffer} Complete encoded PNG file bytes
+ */
 function encodePng(width: number, height: number, rgb: Buffer): Buffer {
   const signature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
   const ihdr = Buffer.alloc(13);
@@ -143,6 +253,27 @@ function encodePng(width: number, height: number, rgb: Buffer): Buffer {
   return Buffer.concat([signature, pngChunk('IHDR', ihdr), pngChunk('IDAT', idat), pngChunk('IEND', Buffer.alloc(0))]);
 }
 
+/**
+ * Extracts audio waveform peak data from a video file.
+ *
+ * Workflow: rejects non-video/missing files up front (returns null). Computes
+ * the number of amplitude buckets (clamped to WAVEFORM_MIN/MAX_BUCKETS) and
+ * splits the file into a clamped number of `WAVEFORM_SEGMENT_SECONDS`-long
+ * segments. Each segment is decoded concurrently (up to WAVEFORM_PARALLEL, and
+ * globally capped by MAX_CONCURRENT_FFMPEG) with a command of the form
+ * `ffmpeg -v error -ss <start> -t <span> -i <file> -vn -ac 1 -ar <rate> -f
+ * s16le pipe:1`; the returned S16LE mono samples are walked two bytes at a time
+ * to update the min/max amplitude of the bucket covering each sample's absolute
+ * time. Segments that fail or decode no data are skipped. If every segment
+ * fails, null is returned. Buckets with no samples are filled by interpolating
+ * between the nearest filled neighbors via `fillWaveformGaps`, then normalized
+ * to the [-1, 1] range by dividing by PCM_MAX_AMPLITUDE.
+ * @param {string} filePath - Absolute path of the video file
+ * @param {number} duration - Duration of the file in seconds
+ * @returns {Promise<WaveformData | null>} Waveform with sampleRate,
+ *   samplesPerBucket and normalized min/max buckets; null if the file is not
+ *   extractable or no audio could be decoded at all
+ */
 export function extractWaveform(filePath: string, duration: number): Promise<WaveformData | null> {
   if (!isExtractable(filePath, duration)) {
     log.debug(LOG_NOT_A_WAVEFORM_ABLE_FILE, filePath);
@@ -216,6 +347,21 @@ export function extractWaveform(filePath: string, duration: number): Promise<Wav
   });
 }
 
+/**
+ * Fills empty waveform buckets by interpolating from the nearest filled ones.
+ *
+ * Walks the bucket array once forward recording for each index the last filled
+ * index before it, and once backward recording the next filled index after it.
+ * For an empty bucket at index i:
+ * - if no filled buckets exist at all, a zeroed `{min:0, max:0}` bucket is used,
+ * - if only one side has a filled neighbor, that neighbor's values are copied,
+ * - if both sides have neighbors, min/max are linearly interpolated by the
+ *   normalized distance between them (`t = (i - prev) / (next - prev)`).
+ * @param {Array<{min: number, max: number} | null>} buckets - Bucket array where
+ *   null marks a bucket with no samples
+ * @returns {Array<{min: number, max: number}>} Fully populated bucket array
+ *   with the same length as the input
+ */
 function fillWaveformGaps(buckets: Array<{ min: number; max: number } | null>): Array<{ min: number; max: number }> {
   const result: Array<{ min: number; max: number }> = [];
   const lastFilled = new Array<number>(buckets.length).fill(-1);
@@ -261,6 +407,29 @@ function fillWaveformGaps(buckets: Array<{ min: number; max: number } | null>): 
   return result;
 }
 
+/**
+ * Extracts a grid of video thumbnails and packs them into a PNG montage.
+ *
+ * Workflow: rejects non-video/missing files up front (returns null). Computes
+ * the number of thumbnails as `count = clamp(round(duration / interval))` capped
+ * at THUMB_MAX_COUNT, and derives the montage dimensions from THUMB_TILE_COLS.
+ * Each thumbnail is decoded concurrently (up to THUMB_PARALLEL, globally capped
+ * by MAX_CONCURRENT_FFMPEG) with a command of the form `ffmpeg -v error -ss
+ * <start> -noaccurate_seek -i <file> -frames:v 1 -vf
+ * scale=W:H:force_original_aspect_ratio=increase,crop=W:H,setsar=1 -f rawvideo
+ * -pix_fmt rgb24 pipe:1`. A result whose exit code is non-zero or whose payload
+ * is not exactly `RAW_FRAME_BYTES` is treated as a failure: a black placeholder
+ * frame is stored and the job is marked unsuccessful. If every job fails, null
+ * is returned. On success the frames are blitted into the montage row by row,
+ * the montage is encoded to PNG via {@link encodePng}, and a ThumbnailStrip
+ * describing the grid geometry is returned.
+ * @param {string} filePath - Absolute path of the video file
+ * @param {number} duration - Duration of the file in seconds
+ * @returns {Promise<ThumbnailStrip | null>} Thumbnail strip containing a PNG
+ *   data URL and grid geometry (cols, rows, thumb dimensions, per-thumbnail
+ *   interval, count); null if the file is not extractable or no frames could be
+ *   decoded at all
+ */
 export function extractThumbnails(filePath: string, duration: number): Promise<ThumbnailStrip | null> {
   if (!isExtractable(filePath, duration)) {
     log.debug(LOG_NOT_A_THUMBNAIL_ABLE_FILE, filePath);

@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Hook orchestrating the video conversion workflow.
+ *
+ * Wires the conversion form store (useConversionStore) to the main process via
+ * `window.electronAPI`: selecting input/output files, starting, pausing,
+ * resuming and cancelling a conversion, and auto-suggesting the output path.
+ * Conversion progress events are subscribed to once per mount and forwarded to
+ * the store; errors are routed to the global error store and success is
+ * announced with a toast.
+ */
+
 import { useEffect, useCallback } from 'react';
 import { Logger } from '../../shared/logger';
 import { useConversionStore } from '../stores/conversionStore';
@@ -31,6 +42,50 @@ import {
 
 const log = new Logger('renderer/hooks/useConversion');
 
+/**
+ * React hook that drives the full conversion workflow.
+ *
+ * Returns the entire conversion store state (see ConversionState in
+ * stores/types.ts) spread together with six action callbacks, so it can be used
+ * as the single source of truth for a conversion form.
+ *
+ * Effects:
+ *  1. Progress subscription (runs once on mount): registers a listener via
+ *     `window.electronAPI?.onConversionProgress()`. Each event is forwarded to
+ *     `store.setProgress()` only while `useConversionStore.getState().isConverting`
+ *     is true, so stale events never update the UI. The listener is removed on
+ *     unmount via the returned cleanup function.
+ *  2. Auto-suggested output path (re-runs whenever inputFile, outputFile,
+ *     videoCodec, copyMode, outputUserSet or isConverting change): while no
+ *     conversion is running, an input is selected and the user has not manually
+ *     set the output, the hook computes a suggested path by stripping the input
+ *     extension and appending `DEFAULT_SUFFIX` (e.g. '_converted') plus the
+ *     extension suggested for the active video codec (or the input extension in
+ *     copy mode), and stores it via `store.setOutputAuto()`.
+ *
+ * @returns {Object} The full conversion store state spread together with the
+ *   action callbacks:
+ * @property {Object} store - Spread ConversionState from useConversionStore
+ *   (inputFile, outputFile, outputUserSet, videoCodec, audioCodec,
+ *   videoBitrate, audioBitrate, qscale, scale, pixelFormat, copyMode,
+ *   transcoder, encoderType, isConverting, isPaused, isDirty, progress, and all
+ *   setter/reset actions).
+ * @property {() => Promise<void>} startConversion - Validates that input and
+ *   output files are selected, then starts the conversion through
+ *   `window.electronAPI.convertFile()` with options built from the store and the
+ *   hardware acceleration settings; resets the form and shows a success toast on
+ *   completion, or routes the failure to the error store.
+ * @property {() => Promise<void>} pauseConversion - Asks the main process to
+ *   pause the running conversion and marks the store as paused.
+ * @property {() => Promise<void>} resumeConversion - Asks the main process to
+ *   resume the paused conversion and clears the paused flag.
+ * @property {() => Promise<void>} cancelConversion - Asks the main process to
+ *   cancel the running conversion and clears the converting flag.
+ * @property {() => Promise<void>} selectInput - Opens the native file dialog via
+ *   `window.electronAPI?.selectFile()` and stores the chosen input file.
+ * @property {() => Promise<void>} selectOutput - Opens the native save dialog via
+ *   `window.electronAPI?.selectOutput()` and stores the chosen output file.
+ */
 export function useConversion() {
   const store = useConversionStore();
   const showError = useErrorStore((s) => s.showError);

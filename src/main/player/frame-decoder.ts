@@ -1,6 +1,12 @@
 /**
  * @fileoverview FFmpeg frame and audio decoder for real-time media playback.
- * Extracts raw video frames and audio PCM samples via FFmpeg process pipes.
+ * Spawns a persistent ffmpeg child process that streams raw RGB24 video frames
+ * (pipe 1), raw S16LE PCM audio chunks (pipe 3) and `showinfo` PTS annotations
+ * (stderr). The FrameDecoder reassembles the byte streams into discrete
+ * frames/chunks, tracks presentation timestamps, and emits them as events to a
+ * playback consumer. It supports realtime playback, fps capping, audio-only
+ * decoding, and seek via process restarts with a generation counter so stale
+ * data can be discarded.
  */
 
 import { EventEmitter } from 'events';
@@ -36,6 +42,15 @@ import {
 
 const log = new Logger('main/player/frame-decoder');
 
+/**
+ * Resolves the ffmpeg executable path to use for decoding.
+ *
+ * Prefers the statically bundled ffmpeg binary shipped by `ffmpeg-static`;
+ * if that binary is missing on disk it logs a warning and falls back to the
+ * system `ffmpeg` command (see TRANSCODER_COMMANDS.FFMPEG).
+ * @returns {string} Absolute path to the bundled ffmpeg binary, or the string
+ *   `'ffmpeg'` for the system-installed executable
+ */
 function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
@@ -43,24 +58,103 @@ function getFfmpegPath(): string {
   return TRANSCODER_COMMANDS.FFMPEG;
 }
 
+/**
+ * Decodes video frames and audio from a media file via a spawned ffmpeg
+ * process, emitting the decoded data as events.
+ * @class FrameDecoder
+ * @extends EventEmitter
+ *
+ * @emits {DecodedFrame} 'frame' - A complete raw RGB24 video frame with its
+ *   width, height, presentation timestamp and decoder generation
+ * @emits {DecodedAudio} 'audio' - A fixed-size S16LE PCM audio chunk with its
+ *   sample rate, channel count and decoder generation
+ * @emits {string} 'seek' - The timestamp string a seek was issued to
+ * @emits {Error} 'error' - An ffmpeg spawn error, a non-zero exit code, or a
+ *   cancelled decode (propagated by the process 'error'/'close' handlers)
+ * @emits {void} 'end' - Emitted when the ffmpeg process exits (after any error)
+ *
+ * Internal buffering: video frames arrive as arbitrarily-sized stdout chunks
+ * that are accumulated in `frameParts` until a full frame (`width*height*3`
+ * bytes) can be assembled. Presentation timestamps are parsed out of the
+ * `showinfo` filter output on stderr into `pendingPts`. Frames are only emitted
+ * while their PTS values line up; if PTS lag behind for more than
+ * `FRAME_FLUSH_THRESHOLD_MS`, an emergency flush emits the oldest pending frame
+ * with a monotonic estimated PTS so playback never stalls permanently. Audio
+ * chunks are accumulated into a fixed target size derived from the sample rate.
+ */
 export class FrameDecoder extends EventEmitter {
+  /** The currently running ffmpeg child process, or null when idle. */
   private process: ChildProcess | null = null;
+  /** Decode width in pixels (also used to derive `frameSize`). */
   private width = 0;
+  /** Decode height in pixels. */
   private height = 0;
+  /** Byte size of one RGB24 frame (`width * height * 3`). */
   private frameSize = 0;
+  /** Pending stdout chunks not yet assembled into a full frame. */
   private frameParts: Buffer[] = [];
+  /** Total byte length of `frameParts`, tracked to avoid repeated summing. */
   private framePartsLen = 0;
+  /** Whether the current decode session is still active (stops stale handlers). */
   private running = false;
+  /** Path of the input media file currently being decoded. */
   private inputPath = '';
+  /** Sample rate of the audio stream requested for the current session. */
   private audioSampleRate = 0;
+  /** Channel count of the audio stream requested for the current session. */
   private audioChannels = 0;
+  /** Monotonic session counter; bumped on every ffmpeg spawn. */
   private generation = 0;
+  /** Effective decoder options for the current session (defaults filled in). */
   private options: Required<FrameDecoderOptions> = { realtime: true, audioOnly: false, fpsCap: 0 };
 
+  /**
+   * Returns the current decoder generation counter.
+   *
+   * Consumers use this to detect that a seek/open happened since a frame was
+   * captured and discard stale frames/audio belonging to an older session.
+   * @returns {number} The generation of the current (or latest) ffmpeg spawn
+   */
   getGeneration(): number {
     return this.generation;
   }
 
+  /**
+   * Spawns an ffmpeg process for the configured input and wires up all data
+   * handling for frames, audio, and errors.
+   *
+   * Workflow: computes the current frame size from the supplied dimensions
+   * (if given), resets the frame/audio buffers, marks the session running and
+   * increments the generation. It then assembles the ffmpeg argument list:
+   * - an optional `-ss <seekTo>` seek point,
+   * - `-copyts` plus `-re` (when realtime) and `-i <inputPath>`,
+   * - an `-vf fps=<cap>,showinfo` filter for the video pipe (fps cap optional),
+   * - a video output of raw RGB24 at `width x height` (`-an -sn -dn`) to pipe 1,
+   * - an optional second mapped audio output of S16LE PCM to pipe 3.
+   *
+   * stdout data is accumulated into frame-sized buffers (pulled off the front
+   * of `frameParts` in a byte-shifting loop) and pushed onto `pendingFrames`.
+   * stderr is scanned with a `pts_time` regex whose matches are pushed onto
+   * `pendingPts`; every data event calls `emitAvailable()` which drains matched
+   * frame/PTS pairs and, as a safety net, flushes the oldest buffered frame with
+   * an estimated PTS if frames have been stuck for `FRAME_FLUSH_THRESHOLD_MS`.
+   * A periodic `FRAME_FLUSH_INTERVAL_MS` interval keeps the buffer draining even
+   * when no new data arrives. When audio is requested, fd 3 is accumulated into
+   * fixed-size chunks (min `AUDIO_TARGET_MIN_BYTES` bytes) and emitted as
+   * `audio` events. On process 'error'/'close', the interval is cleared and
+   * `error`/`end` events are emitted. All handlers early-return when the session
+   * was superseded (stale process or `running === false`).
+   * @param {string} [seekTo] - Seek position passed to ffmpeg as `-ss`; when
+   *   undefined decoding starts from the beginning of the file
+   * @param {number} [width] - Decode width; when provided also (re)derives the
+   *   height fallback and the per-frame byte size
+   * @param {number} [height] - Decode height, only applied if `width` is given
+   * @param {AudioDecodeConfig} [audio] - Optional audio decode config; when
+   *   present enables the fd 3 PCM pipe (video pipe 1 stays active unless
+   *   audioOnly is set)
+   * @param {FrameDecoderOptions} [options] - Session options merged over the
+   *   defaults `{ realtime: true, audioOnly: false, fpsCap: 0 }`
+   */
   private spawnFfmpeg(seekTo?: string, width?: number, height?: number, audio?: AudioDecodeConfig, options?: FrameDecoderOptions): void {
     if (width !== undefined) {
       this.width = width;
@@ -298,6 +392,21 @@ export class FrameDecoder extends EventEmitter {
     });
   }
 
+  /**
+   * Opens a media file for decoding and starts the ffmpeg process.
+   *
+   * Closes any previous decode session first, then records the input path and
+   * resolution, initializes the frame size from the given dimensions, and
+   * spawns a fresh ffmpeg process with no seek point. Dimensions default to
+   * `TRANSCODER_DEFAULTS.PLAYER_DEFAULT_WIDTH`/`PLAYER_DEFAULT_HEIGHT` (640x360).
+   * @param {string} input - Absolute path of the media file to decode
+   * @param {number} [width=640] - Decode width in pixels
+   * @param {number} [height=360] - Decode height in pixels
+   * @param {AudioDecodeConfig} [audio] - Optional audio decode configuration;
+   *   enables the PCM audio pipe and `audio` events
+   * @param {FrameDecoderOptions} [options] - Optional decode options
+   *   (realtime, audioOnly, fpsCap)
+   */
   open(
     input: string,
     width: number = TRANSCODER_DEFAULTS.PLAYER_DEFAULT_WIDTH,
@@ -318,6 +427,18 @@ export class FrameDecoder extends EventEmitter {
     this.spawnFfmpeg(undefined, undefined, undefined, audio, options);
   }
 
+  /**
+   * Seeks to a given timestamp by restarting the ffmpeg process.
+   *
+   * Because ffmpeg cannot seek a live pipe without risking a corrupted stream,
+   * this closes the current process and spawns a fresh one with `-ss <seekTo>`.
+   * The previous audio decode settings and session options are carried over, so
+   * the new session behaves identically except for the start position. Emits a
+   * `seek` event once the restart is issued; the `generation` counter is bumped
+   * so consumers can drop any frames still buffered from the old session.
+   * @param {string} seekTo - Seek timestamp in ffmpeg format (e.g. `'12.5'` or
+   *   `'00:00:12.500'`), passed via `-ss`
+   */
   seek(seekTo: string): void {
     log.debug(LOG_SEEK, seekTo);
     this.close();
@@ -333,6 +454,15 @@ export class FrameDecoder extends EventEmitter {
     this.emit('seek', seekTo);
   }
 
+  /**
+   * Stops decoding and tears down the current ffmpeg process.
+   *
+   * Marks the session as not running (which makes all in-flight data handlers
+   * early-return), kills the child process with `KILL_SIGNAL` (SIGKILL), clears
+   * the process reference, and resets the frame assembly buffers. The buffered
+   * pending frames/PTS are intentionally discarded; consumers rely on the
+   * generation counter to invalidate anything already emitted.
+   */
   close(): void {
     log.debug(LOG_CLOSE);
     this.running = false;

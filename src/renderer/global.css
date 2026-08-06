@@ -1,4 +1,6 @@
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
 }
@@ -10,4 +12,8 @@ body {
 .MuiButton-startIcon .svg-inline--fa,
 .MuiButton-endIcon .svg-inline--fa {
   transform: translateY(0.1em);
+}
+
+.svg-inline--fa {
+  filter: drop-shadow(0 0.0625rem 0.125rem rgba(0, 0, 0, 0.25));
 }

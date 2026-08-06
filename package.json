@@ -95,14 +95,17 @@
         ]
       }
     ],
-    "win": {
-      "target": "nsis"
-    },
-    "mac": {
-      "target": "dmg"
-    },
-    "linux": {
-      "target": "AppImage"
-    }
+  "win": {
+    "target": "nsis",
+    "icon": "assets/icons/AppIcon.icon/Assets/icon.png"
+  },
+  "mac": {
+    "target": "dmg",
+    "icon": "assets/icons/AppIcon.icon/Assets/icon.png"
+  },
+  "linux": {
+    "target": "AppImage",
+    "icon": "assets/icons/AppIcon.icon/Assets/icon.png"
+  }
   }
 }

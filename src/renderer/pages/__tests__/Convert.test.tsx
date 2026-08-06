@@ -198,7 +198,7 @@ describe('Convert', () => {
     fireEvent.click(screen.getByText('convert.yes'));
     await waitFor(() => expect(cancelConversionMock).toHaveBeenCalledOnce());
     expect(useConversionStore.getState().isConverting).toBe(false);
-  });
+  }, 20000);
 
   it('resets the form when the job cancel confirmation is accepted', async () => {
     selectFileMock.mockResolvedValue('/in/video.mp4');

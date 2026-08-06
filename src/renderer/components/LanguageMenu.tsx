@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Language switcher menu.
+ *
+ * Renders a button showing the active locale's flag and label, which opens a
+ * popover {@link Menu} listing every available locale from LOCALES. Selecting a
+ * locale switches the app language via i18next, persists the choice to
+ * localStorage, and toggles the document text direction (RTL vs LTR) through
+ * the color mode context.
+ *
+ * The component is embedded in the navigation drawer so users can switch
+ * languages without leaving the current page.
+ */
+
 import { useState } from 'react';
 import { Menu, MenuItem, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -9,8 +22,22 @@ import { LanguageMenuBox, LanguageButton, LanguageLabel, FlagIconWrapper, menuPa
 import { LANGUAGE_STORAGE_KEY } from '../../shared/constants';
 import { LOG_SWITCHING_LANGUAGE_TO } from '../../shared/log-constants';
 
+/**
+ * Logger instance for this module, scoped to the language menu.
+ * @type {Logger}
+ */
 const log = new Logger('renderer/LanguageMenu');
 
+/**
+ * Renders the flag icon for a locale.
+ *
+ * Looks up the locale's flag component in LOCALE_MAP and renders it inside a
+ * FlagIconWrapper. Returns null when the locale is unknown or has no flag, so
+ * callers can safely render it for any locale code.
+ * @param {{ locale: string }} props - Component props.
+ * @param {string} props.locale - The locale code whose flag should be shown.
+ * @returns {JSX.Element | null} The wrapped flag icon, or null when missing.
+ */
 function FlagIcon({ locale }: { locale: string }) {
   const Flag = LOCALE_MAP[locale]?.Flag;
   return Flag ? (
@@ -20,11 +47,33 @@ function FlagIcon({ locale }: { locale: string }) {
   ) : null;
 }
 
+/**
+ * Renders the language switcher button and menu.
+ *
+ * Shows a tooltip-wrapped {@link LanguageButton} containing the current
+ * locale's {@link FlagIcon} and localized label; clicking it anchors an MUI
+ * {@link Menu} at the button. The menu lists every entry in LOCALES with its
+ * flag and label, marking the active locale as selected. Choosing an item calls
+ * {@link switchLanguage}.
+ *
+ * @returns {JSX.Element} The language button and its dropdown menu.
+ */
 export default function LanguageMenu() {
   const { t } = useTranslation();
   const { setDirection } = useColorMode();
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
 
+  /**
+   * Switches the active application language.
+   *
+   * Determines the text direction from the target locale (RTL for Arabic
+   * locales, LTR otherwise), applies it to both the color mode context and the
+   * document root, then awaits `i18n.changeLanguage`, persists the selection to
+   * localStorage under LANGUAGE_STORAGE_KEY, and finally closes the menu. The
+   * switch is logged for diagnostics.
+   * @param {string} lng - The target locale code.
+   * @returns {Promise<void>}
+   */
   const switchLanguage = async (lng: string) => {
     log.info(LOG_SWITCHING_LANGUAGE_TO, lng);
     const dir = isRtlLocale(lng) ? 'rtl' : 'ltr';
@@ -35,6 +84,14 @@ export default function LanguageMenu() {
     setAnchor(null);
   };
 
+  /**
+   * Determines whether a locale code matches the active i18n language.
+   *
+   * Compares the prefix so that regional variants (e.g. `ar-SA` matching the
+   * active `ar` language) are treated as active.
+   * @param {string} code - The locale code to test.
+   * @returns {boolean} True when the active language starts with `code`.
+   */
   const isActive = (code: string) => i18n.language.startsWith(code);
 
   return (

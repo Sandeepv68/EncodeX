@@ -1,3 +1,23 @@
+/**
+ * @fileoverview Single-file video conversion page. Lets the user pick a source
+ * file, configure codecs, bitrates, quality, scaling, pixel format, and the
+ * transcoder backend, then convert the file. Corresponds to the `/convert`
+ * route and is the destination of the Dashboard "Convert Video" feature card.
+ *
+ * Workflow: select an input file (the output path is auto-suggested unless the
+ * user sets one) -> optionally enable lossless copy mode -> configure encoding
+ * options -> start the conversion. While configured, a preview panel shows the
+ * source file in the built-in MediaPlayer next to a compact file/stream
+ * summary; the panel can be closed and reopened.
+ *
+ * State is managed by the `useConversion` hook backed by the
+ * `useConversionStore` zustand store; validation errors live in `useFormErrors`.
+ * All encoding is delegated to the main process through `window.electronAPI`
+ * (`selectFile`, `selectOutput`, `getMediaInfo`, `convertFile`,
+ * `pauseConversion`, `resumeConversion`, `cancelConversion`), with progress
+ * streamed back via `onConversionProgress`.
+ */
+
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography, TextField, MenuItem, Switch, Stack, Button, CircularProgress, IconButton } from '@mui/material';
@@ -51,14 +71,28 @@ import {
   LOG_VALIDATION_FAILED_NOT_STARTING_CONVERSION,
 } from '../../shared/log-constants';
 
+/**
+ * Logger instance scoped to this page. Reports preview media-info load
+ * failures, validation failures, and conversion starts.
+ * @const {Logger} log
+ */
 const log = new Logger('renderer/pages/Convert');
 
+/**
+ * Maps encoder types to i18n translation keys for the encoder-type selector.
+ * @const {Record<EncoderType, string>} encoderTypeLabel
+ */
 const encoderTypeLabel: Record<EncoderType, string> = {
   auto: 'settings.encoderTypeAuto',
   hardware: 'settings.encoderTypeHardware',
   software: 'settings.encoderTypeSoftware',
 };
 
+/**
+ * Maps pixel-format group names to FontAwesome icons used by the GroupedSelect
+ * pixel-format picker, giving each group a distinct visual cue.
+ * @const {Record<string, IconDefinition>} pixelGroupIcons
+ */
 const pixelGroupIcons: Record<string, IconDefinition> = {
   'YUV 8-bit': faPalette,
   'YUV 10-bit': faPalette,
@@ -72,8 +106,42 @@ const pixelGroupIcons: Record<string, IconDefinition> = {
   HDR: faSun,
 };
 
+/**
+ * Pixel-format options prepared for the GroupedSelect: every entry of
+ * PIXEL_FORMATS is spread and given a `label` equal to its `value` so the
+ * select can render the format string.
+ * @const {Array<{value: string; group: string; label: string}>} pixelFormatOptions
+ */
 const pixelFormatOptions = PIXEL_FORMATS.map((f) => ({ ...f, label: f.value }));
 
+/**
+ * Renders the single-file conversion page (`/convert`).
+ *
+ * Layout: input and output file fields (with a codec-compatibility warning when
+ * the chosen output extension clashes with the selected video codec), a
+ * lossless-copy toggle, and (when copy mode is off) hardware-acceleration-aware
+ * codec selectors, bitrate selectors, a QSCALE field, scale, and pixel format.
+ * A transcoder-core selector follows, then the action buttons and a ProgressBar
+ * while converting. Two ConfirmDialogs guard cancelling the active conversion
+ * and clearing a dirty form.
+ *
+ * Local state: `cancelConfirmOpen` and `jobCancelOpen` dialog flags,
+ * `previewOpen`, and `mediaInfo`/`mediaInfoLoading` for the preview panel. All
+ * conversion settings come from `useConversion`/`useConversionStore`; field
+ * errors come from `useFormErrors`.
+ *
+ * IPC interactions:
+ *  - `selectInput`/`selectOutput` from useConversion wrap `selectFile()` and
+ *    `selectOutput()`.
+ *  - `getMediaInfo(inputFile, 'FFMPEG')` - preview-panel file summary; failures
+ *    are logged and the panel silently stays empty.
+ *  - `startConversion`, `pauseConversion`, `resumeConversion`,
+ *    `cancelConversion` from useConversion wrap the corresponding electronAPI
+ *    calls; progress arrives through `onConversionProgress`.
+ *
+ * @returns {JSX.Element} The page content inside a PageContainer with an
+ *   optional preview aside.
+ */
 export default function Convert() {
   const { t } = useTranslation();
   const {
@@ -121,9 +189,32 @@ export default function Convert() {
   const [mediaInfoLoading, setMediaInfoLoading] = useState(false);
   const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
   const settingsEncoderType = useSettingsStore((s) => s.encoderType);
+
+  /**
+   * The encoder type actually used for codec suggestion: the page-level override
+   * when it is not 'auto', otherwise the global setting from useSettingsStore.
+   * @type {EncoderType}
+   */
   const effectiveEncoderType: EncoderType = encoderType !== 'auto' ? encoderType : settingsEncoderType;
+
+  /**
+   * Extension of the current output file (empty when no output is set).
+   * @type {string}
+   */
   const outputExt = getExtension(outputFile || '');
+
+  /**
+   * Extension suggested for the currently selected video codec.
+   * @type {string}
+   */
   const suggestedOutputExt = suggestedExtensionForVideoCodec(videoCodec);
+
+  /**
+   * Whether to show the codec/container compatibility warning. True only when
+   * copy mode is off, a conversion is not running, an output file was explicitly
+   * set by the user, and its extension is incompatible with the video codec.
+   * @type {boolean}
+   */
   const showCompatWarning =
     !copyMode &&
     !isConverting &&
@@ -132,11 +223,23 @@ export default function Convert() {
     outputUserSet &&
     !isExtensionCompatibleWithVideoCodec(outputExt, videoCodec);
 
+  /**
+   * Rewrites the current output file path to use the extension suggested for the
+   * selected video codec. Used by the compatibility-warning action button.
+   * @returns {void}
+   */
   const applySuggestedExtension = () => {
     if (!outputFile) return;
     setOutputFile(replaceExtension(outputFile, suggestedOutputExt));
   };
 
+  /**
+   * Loads media info for the preview panel whenever the input file changes and
+   * the preview is open. The request is guarded by a `cancelled` flag so a stale
+   * response after a file change is ignored. Failures are logged and swallowed;
+   * the panel simply shows no summary.
+   * @returns {() => void} Cleanup that marks the in-flight request as cancelled.
+   */
   useEffect(() => {
     if (!inputFile || !previewOpen) {
       setMediaInfo(null);

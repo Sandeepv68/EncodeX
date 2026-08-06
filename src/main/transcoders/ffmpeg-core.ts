@@ -1,3 +1,13 @@
+/**
+ * @fileoverview FFmpeg transcoder built on the fluent-ffmpeg API.
+ * Implements the ITranscoder contract using the `fluent-ffmpeg` library rather
+ * than raw CLI subprocesses. Configures the bundled ffmpeg/ffprobe binaries at
+ * module load, reads metadata through `proc.ffprobe()`, converts via a
+ * command-chain assembled from ConversionOptions (hardware acceleration,
+ * codecs, bitrates, scaling, trimming), and reports richer progress data
+ * (percent, fps, speed, ETA) than the CLI backends.
+ */
+
 import { EventEmitter } from 'events';
 import ffmpeg from 'fluent-ffmpeg';
 import type Ffmpeg from 'fluent-ffmpeg';
@@ -48,6 +58,7 @@ import {
 
 const log = new Logger('main/transcoders/ffmpeg-core');
 
+/** Absolute path of the bundled ffmpeg binary from `ffmpeg-static`. */
 const staticPath = ffmpegStatic as unknown as string;
 if (existsSync(staticPath)) {
   ffmpeg.setFfmpegPath(staticPath);
@@ -59,16 +70,51 @@ if (existsSync(ffprobePath)) {
   log.debug(LOG_FFPROBE_PATH_SET_TO, ffprobePath);
 }
 
+/**
+ * fluent-ffmpeg based transcoder backend.
+ * @class FfmpegCore
+ * @implements ITranscoder
+ *
+ * At module load, configures fluent-ffmpeg to use the bundled binaries when
+ * present. `getInfo` probes via `ffmpeg(...).ffprobe(...)`. `convert` builds a
+ * fluent-ffmpeg command chain from ConversionOptions: hardware-accelerated
+ * input options (when not in stream-copy mode), video/audio codecs, bitrates,
+ * qscale, scaling (preserving aspect ratio via `scale=W:-2` when requested),
+ * pixel format, an explicit full-range color override for mjpeg output, audio
+ * disabling, and start/end/duration trimming. Progress events are computed
+ * from fluent-ffmpeg's percent/timemark plus a wall-clock estimate of speed and
+ * ETA; when percent is unavailable it is derived from timemark over the probed
+ * source duration. Pause/resume suspend the OS process; cancel SIGKILLs it.
+ */
 export class FfmpegCore implements ITranscoder {
+  /** The active fluent-ffmpeg command, or null when idle. */
   private currentProcess: ffmpeg.FfmpegCommand | null = null;
+  /** PID of the underlying ffmpeg child process, used for suspend/resume. */
   private processPid: number | null = null;
+  /** True once cancel() has been called; maps process errors to cancelledError. */
   private cancelled = false;
+  /** Duration in seconds of the source, probed asynchronously at convert start. */
   private sourceDuration = 0;
 
+  /**
+   * Returns the backend type identifier.
+   * @returns {string} `'FFMPEG'` (from TRANSCODER_TYPES[0])
+   */
   getType(): string {
     return TRANSCODER_TYPES[0];
   }
 
+  /**
+   * Reads media metadata using fluent-ffmpeg's ffprobe integration.
+   *
+   * Probes the input with `ffmpeg(input).ffprobe(...)`. On success the raw
+   * ffprobe payload is mapped through {@link mapFfprobeData} into a MediaInfo
+   * and resolved; on failure the probe error is logged and the promise is
+   * rejected with it.
+   * @param {string} input - Absolute path of the media file to probe
+   * @returns {Promise<MediaInfo>} Resolves with mapped media information
+   * @throws {Error} Rejects with the underlying ffprobe error when probing fails
+   */
   getInfo(input: string): Promise<MediaInfo> {
     log.info(LOG_GET_INFO, input);
     return new Promise((resolve, reject) => {
@@ -85,6 +131,32 @@ export class FfmpegCore implements ITranscoder {
     });
   }
 
+  /**
+   * Starts a fluent-ffmpeg conversion and returns an EventEmitter for it.
+   *
+   * Workflow: resets the cancellation flag, kicks off an async ffprobe of the
+   * source (best-effort; failures are swallowed) to capture `sourceDuration`
+   * for percent fallback, then builds the command chain. When not in copy mode
+   * and hardware acceleration resolves, hwaccel flags are applied as input
+   * options. In copy mode `-c copy` is applied; otherwise codecs/bitrates/
+   * qscale/scale/pixel format/mjpeg color range are configured. Then optional
+   * audio disable and start/end/duration trimming are applied, the output is
+   * set, and `cmd.run()` starts the process.
+   *
+   * The emitter relays fluent-ffmpeg events: 'start' forwards the command line
+   * and records the child PID; 'codecData' records the PID and forwards the
+   * codec payload; 'progress' computes a ConversionProgress (percent from
+   * fluent-ffmpeg or timemark/sourceDuration, speed from timemark/elapsed time,
+   * ETA from percent progress or speed); 'error' emits a cancelledError when
+   * cancellation was requested (otherwise the raw error); 'end' emits after a
+   * successful run.
+   * @param {string} input - Absolute path of the input media file
+   * @param {string} output - Absolute path of the output file
+   * @param {ConversionOptions} options - Encoding options controlling the
+   *   fluent-ffmpeg command chain
+   * @returns {EventEmitter} Emitter with 'start' (string), 'codecData',
+   *   'progress' (ConversionProgress), 'end', and 'error' (Error) events
+   */
   convert(input: string, output: string, options: ConversionOptions): EventEmitter {
     log.info(LOG_CONVERT, input, LOG_ARROW, output, LOG_COPY, !!options.copy);
     this.cancelled = false;
@@ -237,6 +309,12 @@ export class FfmpegCore implements ITranscoder {
     return emitter;
   }
 
+  /**
+   * Pauses the running conversion by suspending the ffmpeg OS process.
+   *
+   * Delegates to {@link suspendProcess} with the recorded child PID (captured
+   * from the 'start'/'codecData' events); no-op when no PID is recorded.
+   */
   pause(): void {
     log.info(LOG_PAUSING_FFMPEG_PROCESS);
     if (this.processPid != null) {
@@ -244,6 +322,12 @@ export class FfmpegCore implements ITranscoder {
     }
   }
 
+  /**
+   * Resumes a previously paused conversion.
+   *
+   * Delegates to {@link resumeProcess} with the recorded child PID; no-op when
+   * no PID is recorded.
+   */
   resume(): void {
     log.info(LOG_RESUMING_FFMPEG_PROCESS);
     if (this.processPid != null) {
@@ -251,6 +335,13 @@ export class FfmpegCore implements ITranscoder {
     }
   }
 
+  /**
+   * Cancels the running conversion.
+   *
+   * Sets the `cancelled` flag (so the pending fluent-ffmpeg 'error' event maps
+   * to a cancelledError), kills the underlying ffmpeg child with SIGKILL, and
+   * clears the command reference.
+   */
   cancel(): void {
     log.info(LOG_CANCELLING_CURRENT_FFMPEG_PROCESS);
     this.cancelled = true;

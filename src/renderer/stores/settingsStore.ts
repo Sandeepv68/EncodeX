@@ -1,6 +1,25 @@
 /**
  * @fileoverview Zustand store for user application settings.
- * Manages user preferences, theme, hardware acceleration, and other settings.
+ * Manages the active transcoder backend, hardware acceleration preferences
+ * (persisted to localStorage under 'encodex-hwaccel'), and the always-on-top
+ * window flag (persisted under 'encodex-always-on-top').
+ *
+ * State held:
+ *  - transcoder: the active transcoder backend ('FFMPEG' | 'FFTOOL' | 'BMF')
+ *  - hardwareAcceleration / hwaccelMode / encoderType: hardware acceleration
+ *    preferences, initialized from the persisted snapshot
+ *  - alwaysOnTop: whether the window stays on top of other windows
+ *
+ * Behavior notes:
+ *  - Hardware acceleration setters persist the new values to localStorage
+ *    before updating state; reads validate against the known option lists and
+ *    fall back to the defaults from HWACCEL_DEFAULTS / ENCODER_TYPE_DEFAULT.
+ *  - setAlwaysOnTop persists the flag, forwards it to the main process via
+ *    window.electronAPI.windowSetAlwaysOnTop, and then updates state.
+ *
+ * Consumers:
+ *  - Settings UI panels and the conversion form (which reads the transcoder and
+ *    hardware acceleration settings)
  */
 
 import { create } from 'zustand';
@@ -22,8 +41,19 @@ import {
   LOG_SET_TRANSCODER,
 } from '../../shared/log-constants';
 
+/**
+ * Per-store logger for the settings store.
+ * @const {Logger} log
+ */
 const log = new Logger('renderer/stores/settingsStore');
 
+/**
+ * Reads and validates the persisted hardware acceleration settings from
+ * localStorage ('encodex-hwaccel'). Each field is validated against the known
+ * option lists; invalid or missing values fall back to HWACCEL_DEFAULTS /
+ * ENCODER_TYPE_DEFAULT. On storage/parse failure the defaults are returned.
+ * @returns {HwAccelStored} The validated settings snapshot.
+ */
 export function readStoredHwAccel(): HwAccelStored {
   try {
     const raw = localStorage.getItem(HWACCEL_STORAGE_KEY);
@@ -41,6 +71,15 @@ export function readStoredHwAccel(): HwAccelStored {
   return { hardwareAcceleration: HWACCEL_DEFAULTS.ENABLED, hwaccelMode: HWACCEL_DEFAULTS.MODE, encoderType: ENCODER_TYPE_DEFAULT };
 }
 
+/**
+ * Serializes the hardware acceleration settings to localStorage
+ * ('encodex-hwaccel'). Failures are logged and swallowed so a full storage
+ * quota never breaks the settings UI.
+ * @param {boolean} hardwareAcceleration - Whether hardware acceleration is enabled.
+ * @param {HwAccelMode} hwaccelMode - The acceleration mode ('auto' | 'encode').
+ * @param {EncoderType} encoderType - The encoder preference.
+ * @returns {void}
+ */
 function persistHwAccel(hardwareAcceleration: boolean, hwaccelMode: HwAccelMode, encoderType: EncoderType): void {
   try {
     localStorage.setItem(HWACCEL_STORAGE_KEY, JSON.stringify({ hardwareAcceleration, hwaccelMode, encoderType }));
@@ -49,8 +88,19 @@ function persistHwAccel(hardwareAcceleration: boolean, hwaccelMode: HwAccelMode,
   }
 }
 
+/**
+ * The validated hardware acceleration snapshot read from localStorage at
+ * module load, used to initialize the store.
+ * @type {HwAccelStored}
+ */
 const stored = readStoredHwAccel();
 
+/**
+ * Reads the persisted always-on-top flag from localStorage
+ * ('encodex-always-on-top'); a stored value of 'true' means enabled. Storage
+ * failures are logged and treated as false.
+ * @returns {boolean} True when the window should start always-on-top.
+ */
 function readStoredAlwaysOnTop(): boolean {
   try {
     return localStorage.getItem(WINDOW_ALWAYS_ON_TOP_STORAGE_KEY) === 'true';
@@ -60,6 +110,12 @@ function readStoredAlwaysOnTop(): boolean {
   }
 }
 
+/**
+ * Persists the always-on-top flag to localStorage ('encodex-always-on-top').
+ * Failures are logged and swallowed.
+ * @param {boolean} flag - The flag value to persist.
+ * @returns {void}
+ */
 function persistAlwaysOnTop(flag: boolean): void {
   try {
     localStorage.setItem(WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, String(flag));
@@ -68,8 +124,20 @@ function persistAlwaysOnTop(flag: boolean): void {
   }
 }
 
+/**
+ * Zustand store for user application settings.
+ * Holds the transcoder backend, hardware acceleration preferences (persisted to
+ * localStorage and validated at load via readStoredHwAccel), and the
+ * always-on-top flag. Implemented as a module-level singleton consumed by the
+ * settings UI and the conversion form.
+ * @const {UseBoundStore<StoreApi<SettingsState>>} useSettingsStore
+ */
 export const useSettingsStore = create<SettingsState>((set) => ({
   transcoder: TRANSCODER_TYPES[0],
+  /**
+   * Sets the active transcoder backend.
+   * @param {string} t - Transcoder identifier ('FFMPEG' | 'FFTOOL' | 'BMF').
+   */
   setTranscoder: (t) => {
     log.debug(LOG_SET_TRANSCODER, t);
     set({ transcoder: t });
@@ -77,6 +145,11 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   hardwareAcceleration: stored.hardwareAcceleration,
   hwaccelMode: stored.hwaccelMode,
   encoderType: stored.encoderType,
+  /**
+   * Enables or disables hardware acceleration and persists the change to
+   * localStorage, keeping the current mode and encoder type.
+   * @param {boolean} enabled - True to enable hardware acceleration.
+   */
   setHardwareAcceleration: (enabled) => {
     log.debug(LOG_SET_HARDWARE_ACCELERATION, enabled);
     set((state) => {
@@ -84,6 +157,11 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       return { hardwareAcceleration: enabled };
     });
   },
+  /**
+   * Sets the hardware acceleration mode and persists the change to localStorage,
+   * keeping the current enabled flag and encoder type.
+   * @param {HwAccelMode} mode - The acceleration mode ('auto' | 'encode').
+   */
   setHwaccelMode: (mode) => {
     log.debug(LOG_SET_HWACCEL_MODE, mode);
     set((state) => {
@@ -91,6 +169,12 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       return { hwaccelMode: mode };
     });
   },
+  /**
+   * Sets the encoder preference and persists the change to localStorage, keeping
+   * the current enabled flag and mode.
+   * @param {EncoderType} type - The encoder preference ('auto' | 'hardware' |
+   *   'software').
+   */
   setEncoderType: (type) => {
     log.debug(LOG_SET_ENCODER_TYPE, type);
     set((state) => {
@@ -99,6 +183,12 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     });
   },
   alwaysOnTop: readStoredAlwaysOnTop(),
+  /**
+   * Sets whether the window stays on top of other windows. Persists the flag to
+   * localStorage and forwards it to the main process via
+   * window.electronAPI.windowSetAlwaysOnTop.
+   * @param {boolean} flag - True to keep the window always-on-top.
+   */
   setAlwaysOnTop: (flag) => {
     log.debug(LOG_SET_ALWAYS_ON_TOP, flag);
     persistAlwaysOnTop(flag);

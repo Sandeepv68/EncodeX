@@ -18,13 +18,13 @@
   },
   "dashboard": {
     "welcome": "Bienvenido a EncodeX",
-    "subtitle": "Herramientas sencillas y fáciles de usar para convertir, editar y procesar archivos de audio y vídeo.",
-    "descConvert": "Cambiar códecs, resolución, formato de píxel",
-    "descMediaInfo": "Ver información detallada del flujo",
-    "descImage": "Comprimir imágenes con control de formato",
-    "descAudio": "Extraer audio de archivos de vídeo",
-    "descCut": "Cortar vídeo con reproductor de precisión",
-    "descBatch": "Procesar varios archivos a la vez"
+    "subtitle": "Tu conjunto de herramientas todo en uno para convertir, editar y comprimir audio, vídeo e imágenes.",
+    "descConvert": "Transcodifica vídeo y audio con control sobre códec, resolución y calidad",
+    "descMediaInfo": "Inspecciona los detalles de códec, flujo y contenedor",
+    "descImage": "Reduce el tamaño de las imágenes con control de formato, calidad y dimensiones",
+    "descAudio": "Extrae pistas de audio limpias de archivos de vídeo",
+    "descCut": "Recorta y corta vídeo con un reproductor preciso por fotogramas",
+    "descBatch": "Convierte muchos archivos a la vez con una cola inteligente"
   },
   "convert": {
     "title": "Convertir Multimedia",

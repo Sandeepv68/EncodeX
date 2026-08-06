@@ -1,5 +1,6 @@
 import { alpha, styled, keyframes } from '@mui/material/styles';
 import { Divider, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { COLORS } from '../colors';
 
 export const DrawerDivider = styled(Divider)(({ theme }) => ({
   borderColor: theme.palette.divider,
@@ -11,9 +12,18 @@ export const NavList = styled(List)(({ theme }) => ({
   paddingRight: theme.spacing(1),
 }));
 
+const navItemIn = keyframes`
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+`;
+
 export const NavItemButton = styled(ListItemButton)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   marginBottom: theme.spacing(0.5),
+  animation: `${navItemIn} 0.3s ease-out backwards`,
+  '@media (prefers-reduced-motion: reduce)': {
+    animation: 'none',
+  },
   '&.Mui-selected': {
     backgroundColor: alpha(theme.palette.primary.main, 0.15),
     '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.25) },
@@ -37,8 +47,8 @@ const blinkKeyframes = keyframes`
 `;
 
 const rippleKeyframes = keyframes`
-  0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.45); }
-  100% { box-shadow: 0 0 0 14px rgba(231, 76, 60, 0); }
+  0% { box-shadow: 0 0 0 0 ${COLORS.tint.error45}; }
+  100% { box-shadow: 0 0 0 14px ${COLORS.tint.error0}; }
 `;
 
 export const NavBlip = styled('span')(({ theme }) => ({

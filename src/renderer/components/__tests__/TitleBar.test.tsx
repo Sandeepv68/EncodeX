@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import TitleBar from '../TitleBar';
 
-const api = window.electronAPI as {
+const api = window.electronAPI as unknown as {
   windowMinimize: ReturnType<typeof vi.fn>;
   windowMaximizeToggle: ReturnType<typeof vi.fn>;
   windowClose: ReturnType<typeof vi.fn>;

@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Command-line interface entry point for the EncodeX main process.
+ * Parses CLI arguments with Commander and performs media conversion, media info
+ * inspection, or timeout-bounded batch conversion from a terminal.
+ *
+ * `runCli()` is invoked by the main process entry (see index.ts) whenever the
+ * app is started with `--cli`, `-h`/`--help`, or two positional arguments
+ * (input + output). It builds a `Transcoder` from the requested transcoder
+ * type, streams `progress`, `end`, and `error` events from that transcoder, and
+ * writes progress to stdout when it is a TTY.
+ *
+ * Exports:
+ *  - runCli() - parses process arguments and runs the requested CLI operation
+ *
+ * The process is ultimately exited by index.ts with `EXIT_CODES.SUCCESS` or
+ * `EXIT_CODES.ERROR` based on the promise resolution of `runCli()`.
+ */
+
 import { createTranscoder } from './transcoders/factory';
 import { Logger } from '../shared/logger';
 import { ConversionOptions, TranscoderType } from '../shared/types';
@@ -18,8 +36,40 @@ import {
   LOG_TRANSCODER,
 } from '../shared/log-constants';
 
+/**
+ * Logger instance scoped to the CLI module. Records argument parsing, help
+ * display, media-info lookups, and conversion start/completion/failure events.
+ * @const {Logger} log
+ */
 const log = new Logger('main/cli');
 
+/**
+ * Parses process arguments and executes the requested CLI operation.
+ *
+ * The CLI accepts optional `[input]` and `[output]` file arguments plus options
+ * that map onto {@link ConversionOptions}: video/audio codecs (`-v`, `-a`),
+ * qscale (`-q`), bitrates, pixel format (`--pix-fmt`), scale (`-s`), time cut
+ * points (`--start-time`, `--end-time`, `--duration`), lossless `--copy`, and
+ * `--no-audio`.
+ *
+ * Supported invocation behaviors:
+ *  - `--info`: prints the media info for the input as JSON and exits. Requires
+ *    an input file, otherwise an error is logged and thrown.
+ *  - default: runs the conversion, re-emitting `progress`, `end`, and `error`
+ *    events from the transcoder. Progress is drawn over the current terminal
+ *    line when stdout is a TTY. A hard timeout of `CLI_CONVERSION_TIMEOUT_MS`
+ *    (300 s) cancels the transcoder and rejects the operation.
+ *  - `-h` / `--help`: prints help output and returns without converting.
+ *
+ * Argument slicing strips the `--cli` marker and any script arguments so the
+ * same binary can be invoked through Electron.
+ *
+ * @returns {Promise<void>} Resolves when the CLI operation completes (info,
+ *   help, or successful conversion); rejects on errors such as a missing
+ *   `--info` input or a failed/timed-out conversion.
+ * @throws {Error} When `--info` is passed without an input file, or when a
+ *   conversion errors or exceeds the conversion timeout.
+ */
 export async function runCli(): Promise<void> {
   const { Command } = await import('commander');
   const program = new Command();
@@ -43,6 +93,28 @@ export async function runCli(): Promise<void> {
     .option('--copy', 'Lossless copy streams')
     .option('--no-audio', 'Exclude the audio stream from the output')
     .option('--info', 'Show media info and exit')
+    /**
+     * Executes the requested CLI operation from the parsed Commander arguments.
+     *
+     * When `opts.info` is set, the input file is mandatory (its absence throws),
+     * and the transcoder's media info for it is logged as pretty-printed JSON.
+     * Otherwise a `ConversionOptions` object is built from the parsed flags, a
+     * transcoder is created via {@link createTranscoder}, and the conversion is
+     * run while streaming `progress`, `end`, and `error` events. Progress is
+     * drawn over the current terminal line when stdout supports it (write
+     * failures are swallowed so non-TTY stdout does not break the conversion).
+     * A hard timeout of `CLI_CONVERSION_TIMEOUT_MS` cancels the transcoder and
+     * rejects the pending promise.
+     *
+     * @param {string} [input] - Input file path, or undefined when not supplied.
+     * @param {string} [output] - Output file path, or undefined when not supplied.
+     * @param {Record<string, unknown>} opts - Parsed Commander option values.
+     * @returns {Promise<void>} Resolves when `--info` or the conversion
+     *   completes; rejects on a missing `--info` input, a failed conversion, or
+     *   a timeout.
+     * @throws {Error} When `--info` is used without an input file, when the
+     *   conversion errors, or when it exceeds `CLI_CONVERSION_TIMEOUT_MS`.
+     */
     .action(async (input, output, opts) => {
       const transcoderType = (opts.transcoder as TranscoderType) || TRANSCODER_TYPES[0];
       const transcoder = createTranscoder(transcoderType);
@@ -86,6 +158,15 @@ export async function runCli(): Promise<void> {
           transcoder.cancel();
           reject(new Error('Conversion timed out'));
         }, CLI_CONVERSION_TIMEOUT_MS);
+        /**
+         * Re-emits the transcoder's conversion progress to the terminal.
+         *
+         * Clears and rewrites the current terminal line with the current time,
+         * speed, and ETA; write failures are swallowed so non-TTY stdout does
+         * not break the conversion.
+         * @param {ConversionProgress} progress - Latest conversion progress
+         * @returns {void}
+         */
         emitter.on('progress', (progress) => {
           try {
             process.stdout.clearLine(0);
@@ -95,12 +176,27 @@ export async function runCli(): Promise<void> {
             /* non-TTY stdout */
           }
         });
+        /**
+         * Completes the conversion promise on the transcoder's `end` event.
+         *
+         * Clears the timeout, logs the successful completion, prints a closing
+         * message, and resolves the pending promise.
+         * @returns {void}
+         */
         emitter.on('end', () => {
           clearTimeout(timeout);
           log.info(LOG_CLI_CONVERSION_COMPLETED_SUCCESSFULLY);
           console.log('\nConversion completed successfully!');
           resolve();
         });
+        /**
+         * Rejects the conversion promise on the transcoder's `error` event.
+         *
+         * Clears the timeout, logs the failure, prints an error message, and
+         * rejects the pending promise with the transcoder's error.
+         * @param {Error} err - The error reported by the transcoder
+         * @returns {void}
+         */
         emitter.on('error', (err) => {
           clearTimeout(timeout);
           log.error(LOG_CLI_CONVERSION_FAILED, err.message);
@@ -110,6 +206,16 @@ export async function runCli(): Promise<void> {
       });
     });
 
+  /**
+   * Locates the index of the bundled `index.js` script argument in
+   * `process.argv`.
+   *
+   * Walks `process.argv` backwards and returns the index of the first argument
+   * ending in `index.js`, or -1 when none matches. The found index is used to
+   * slice off Electron/Node runtime arguments so only user-supplied CLI
+   * arguments remain.
+   * @const {number} scriptIndex
+   */
   const scriptIndex = (() => {
     for (let i = process.argv.length - 1; i >= 0; i--) {
       if (process.argv[i].endsWith('index.js')) return i;

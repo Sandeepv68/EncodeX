@@ -18,13 +18,13 @@
   },
   "dashboard": {
     "welcome": "Välkommen till EncodeX",
-    "subtitle": "Enkla och användarvänliga verktyg för att konvertera, redigera och bearbeta ljud- och videofiler.",
-    "descConvert": "Ändra codecs, upplösning, pixelformat",
-    "descMediaInfo": "Visa detaljerad ströminformation",
-    "descImage": "Komprimera bilder med formatkontroll",
-    "descAudio": "Extrahera ljud från videofiler",
-    "descCut": "Klipp video med bildruteexakt spelare",
-    "descBatch": "Bearbeta flera filer samtidigt"
+    "subtitle": "Din allt-i-ett-verktygslåda för att konvertera, redigera och komprimera ljud, video och bilder.",
+    "descConvert": "Transkoda video och ljud med kontroll över codec, upplösning och kvalitet",
+    "descMediaInfo": "Inspektera codec-, ström- och behållardetaljer",
+    "descImage": "Förminska bilder med kontroll över format, kvalitet och dimensioner",
+    "descAudio": "Extrahera rena ljudspår från videofiler",
+    "descCut": "Trimma och klipp video med en bildruteexakt spelare",
+    "descBatch": "Konvertera många filer samtidigt med en smart kö"
   },
   "convert": {
     "title": "Konvertera media",

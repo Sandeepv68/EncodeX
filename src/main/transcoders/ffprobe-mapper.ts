@@ -1,6 +1,24 @@
+/**
+ * @fileoverview Maps raw ffprobe JSON output into the application's MediaInfo
+ * structure. Normalizes ffprobe's string-typed numbers/ratios/rates into the
+ * typed fields of MediaStreamInfo and MediaInfo, extracts container and stream
+ * tags, and converts disposition bitflags into a human-readable flag list.
+ * Used by all three transcoder backends so they report identical metadata.
+ */
+
 import { MediaInfo, MediaStreamInfo } from '../../shared/types';
 import type { ProbeStream, ProbeFormat, ProbeData } from './types';
 
+/**
+ * Parses an ffprobe aspect-ratio/frame-rate string like `'16/9'` or `'30000/1001'`.
+ *
+ * Splits the fraction, computes `num / den`, and returns the result rounded to
+ * 2 decimal places when both parts are finite and the denominator is non-zero
+ * and the quotient is positive; otherwise returns undefined.
+ * @param {string} ratio - Ratio string in `'num/den'` form
+ * @returns {string | undefined} Rounded ratio (e.g. `'1.78'`) or undefined if
+ *   the input is not a valid positive ratio
+ */
 export function parseRatio(ratio: string): string | undefined {
   const parts = ratio.split('/');
   if (parts.length === 2) {
@@ -14,17 +32,36 @@ export function parseRatio(ratio: string): string | undefined {
   return undefined;
 }
 
+/**
+ * Coerces an ffprobe numeric value (number or numeric string) to a number.
+ * Returns undefined for null/undefined/non-finite values.
+ * @param {string | number | undefined} value - Raw ffprobe value
+ * @returns {number | undefined} The numeric value, or undefined if invalid
+ */
 function toNumber(value: string | number | undefined): number | undefined {
   if (value == null) return undefined;
   const n = typeof value === 'number' ? value : Number(value);
   return Number.isFinite(n) ? n : undefined;
 }
 
+/**
+ * Coerces an ffprobe value to a string, or undefined for null/undefined.
+ * @param {string | number | undefined} value - Raw ffprobe value
+ * @returns {string | undefined} The string representation, or undefined
+ */
 function toStringValue(value: string | number | undefined): string | undefined {
   if (value == null) return undefined;
   return String(value);
 }
 
+/**
+ * Converts a raw ffprobe tags object into a plain string map.
+ *
+ * Stringifies every non-null value; returns undefined when tags are absent or
+ * contain no usable entries.
+ * @param {Record<string, unknown> | undefined} tags - Raw ffprobe `tags` object
+ * @returns {Record<string, string> | undefined} Tag map, or undefined if empty
+ */
 function toTags(tags: Record<string, unknown> | undefined): Record<string, string> | undefined {
   if (!tags) return undefined;
   const result: Record<string, string> = {};
@@ -34,6 +71,10 @@ function toTags(tags: Record<string, unknown> | undefined): Record<string, strin
   return Object.keys(result).length > 0 ? result : undefined;
 }
 
+/**
+ * Known ffprobe disposition flags, used to convert the disposition bitmask.
+ * @const {readonly string[]} DISPOSITION_FLAGS
+ */
 const DISPOSITION_FLAGS = [
   'default',
   'dub',
@@ -54,12 +95,36 @@ const DISPOSITION_FLAGS = [
   'still_image',
 ] as const;
 
+/**
+ * Converts a raw ffprobe disposition bitmask into a list of enabled flag names.
+ *
+ * Filters DISPOSITION_FLAGS to those whose bit in the disposition object is
+ * exactly 1; returns undefined when disposition is absent or nothing is set.
+ * @param {Record<string, number> | undefined} disposition - Raw `disposition`
+ *   object mapping flag name to 0/1
+ * @returns {string[] | undefined} Enabled flag names, or undefined if none
+ */
 function toDisposition(disposition: Record<string, number> | undefined): string[] | undefined {
   if (!disposition) return undefined;
   const flags = DISPOSITION_FLAGS.filter((flag) => disposition[flag] === 1);
   return flags.length > 0 ? flags : undefined;
 }
 
+/**
+ * Maps a raw ffprobe JSON document into the application's MediaInfo shape.
+ *
+ * Streams: each ProbeStream is normalized to a MediaStreamInfo - the codec
+ * type defaults to 'video', codec name to 'unknown', frame rates are parsed via
+ * {@link parseRatio}, numeric fields via {@link toNumber}, bitrate/sample rate
+ * fields via toStringValue, bit depth falls back from bits_per_raw_sample to
+ * bits_per_sample, and language/title are pulled from tags. Format: filename
+ * falls back to `fallbackFile`, size/duration default to 0, bitrate to 'N/A',
+ * and both stream and format tags are converted through {@link toTags}.
+ * @param {ProbeData} data - Raw ffprobe output (streams + format sections)
+ * @param {string} fallbackFile - File path to use when the format does not
+ *   report a filename
+ * @returns {MediaInfo} Fully typed media information for the probed file
+ */
 export function mapFfprobeData(data: ProbeData, fallbackFile: string): MediaInfo {
   const streams: MediaStreamInfo[] = (data.streams || []).map((s) => ({
     index: s.index ?? 0,

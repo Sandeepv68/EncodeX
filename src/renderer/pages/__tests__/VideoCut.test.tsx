@@ -3,7 +3,9 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import VideoCut from '../VideoCut';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
-import type { MediaInfo } from '../../../shared/types';
+import { useSettingsStore } from '../../stores/settingsStore';
+import { useVideoCutStore } from '../../stores/videoCutStore';
+import type { MediaInfo, ConversionProgress } from '../../../shared/types';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
 const selectOutputMock = vi.mocked(window.electronAPI.selectOutput);
@@ -69,6 +71,35 @@ describe('VideoCut', () => {
     cancelConversionMock.mockClear();
     useErrorStore.setState({ currentError: null, errorHistory: [] });
     useToastStore.setState({ toasts: [] });
+    useVideoCutStore.setState({
+      input: '',
+      output: '',
+      startTime: '00:00:00',
+      endTime: '',
+      duration: '',
+      useDuration: false,
+      includeAudio: true,
+      isCutting: false,
+      waveform: null,
+      waveformKey: null,
+      thumbnails: null,
+      thumbnailsKey: null,
+      zoom: null,
+      zoomKey: null,
+    });
+    localStorage.clear();
+  });
+
+  it('shows a hardware acceleration alert when acceleration is enabled', () => {
+    useSettingsStore.setState({ hardwareAcceleration: true });
+    renderPage();
+    expect(screen.getByRole('alert')).toHaveTextContent('convert.hardwareAccelAlert');
+  });
+
+  it('does not show the hardware acceleration alert when acceleration is disabled', () => {
+    useSettingsStore.setState({ hardwareAcceleration: false });
+    renderPage();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('renders the title, fields, dropzone, and cut button', () => {
@@ -393,10 +424,8 @@ describe('VideoCut', () => {
   });
 
   it('shows live progress while cutting and hides it when the job completes', async () => {
-    let resolveConvert: (value?: unknown) => void = () => {};
-    let progressCb:
-      | ((data: { input: string; output: string; progress: { percent: number; time: string; speed: string; eta: string } }) => void)
-      | undefined;
+    let resolveConvert: (value?: void) => void = () => {};
+    let progressCb: ((data: { input: string; output: string; progress: ConversionProgress }) => void) | undefined;
     vi.mocked(window.electronAPI.onConversionProgress).mockImplementation((cb) => {
       progressCb = cb;
       return vi.fn();
@@ -412,7 +441,7 @@ describe('VideoCut', () => {
       progressCb?.({
         input: '/in/video.mp4',
         output: '/out/cut.mp4',
-        progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5' },
+        progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5', fps: 30, bitrate: '800k' },
       });
     });
     expect(screen.getByText('42.0%')).toBeInTheDocument();
@@ -423,11 +452,24 @@ describe('VideoCut', () => {
     expect(screen.queryByText('100.0%')).not.toBeInTheDocument();
   });
 
+  it('sets the isCutting flag while the cut runs and clears it on completion', async () => {
+    const convert = deferred<undefined>();
+    convertFileMock.mockReturnValue(convert.promise);
+    renderPage();
+    await selectVideo();
+    fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/cut.mp4' } });
+    fireEvent.click(screen.getByText('videoCut.cut'));
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+    expect(useVideoCutStore.getState().isCutting).toBe(true);
+    await act(async () => {
+      convert.resolve(undefined);
+    });
+    expect(useVideoCutStore.getState().isCutting).toBe(false);
+  });
+
   it('hides the progress bar when the cut is cancelled', async () => {
-    let resolveConvert: (value?: unknown) => void = () => {};
-    let progressCb:
-      | ((data: { input: string; output: string; progress: { percent: number; time: string; speed: string; eta: string } }) => void)
-      | undefined;
+    let resolveConvert: (value?: void) => void = () => {};
+    let progressCb: ((data: { input: string; output: string; progress: ConversionProgress }) => void) | undefined;
     vi.mocked(window.electronAPI.onConversionProgress).mockImplementation((cb) => {
       progressCb = cb;
       return vi.fn();
@@ -442,7 +484,7 @@ describe('VideoCut', () => {
       progressCb?.({
         input: '/in/video.mp4',
         output: '/out/cut.mp4',
-        progress: { percent: 60, time: '00:00:02', speed: '1x', eta: '2' },
+        progress: { percent: 60, time: '00:00:02', speed: '1x', eta: '2', fps: 30, bitrate: '800k' },
       });
     });
     expect(screen.getByText('60.0%')).toBeInTheDocument();
@@ -495,5 +537,120 @@ describe('VideoCut', () => {
     await act(async () => {
       convert.resolve(undefined);
     });
+  });
+
+  it('restores the persisted draft when the page is navigated away and back', async () => {
+    selectFileMock.mockResolvedValue('/in/video.mp4');
+    const first = renderPage();
+    await selectVideo();
+    fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/cut.mp4' } });
+    fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderEnd'), { target: { value: '00:01:30' } });
+    expect(screen.getByPlaceholderText('videoCut.placeholderEnd')).toHaveValue('00:01:30');
+    first.unmount();
+
+    const second = renderPage();
+    expect(screen.getByPlaceholderText('videoCut.placeholderOutput')).toHaveValue('/out/cut.mp4');
+    expect(screen.getByPlaceholderText('videoCut.placeholderEnd')).toHaveValue('00:01:30');
+    expect(screen.getByText('video.mp4')).toBeInTheDocument();
+    second.unmount();
+  });
+
+  it('reuses the cached waveform and thumbnails when the page is navigated away and back', async () => {
+    extractWaveformMock.mockResolvedValue({
+      sampleRate: 8000,
+      samplesPerBucket: 1000,
+      buckets: [
+        { min: -1, max: 1 },
+        { min: -0.5, max: 0.5 },
+      ],
+    });
+    extractThumbnailsMock.mockResolvedValue({
+      dataUrl: 'data:image/png;base64,AAAA',
+      cols: 2,
+      rows: 2,
+      thumbWidth: 160,
+      thumbHeight: 90,
+      interval: 7.5,
+      count: 3,
+    });
+    getMediaInfoMock.mockResolvedValue(mediaInfo(60));
+    const first = renderPage();
+    await selectVideo();
+    await waitFor(() => expect(extractWaveformMock).toHaveBeenCalledOnce());
+    await waitFor(() => expect(extractThumbnailsMock).toHaveBeenCalledOnce());
+    await waitFor(() => expect(screen.getAllByTestId('timeline-thumb')).toHaveLength(3));
+    first.unmount();
+
+    const second = renderPage();
+    await waitFor(() => expect(screen.getAllByTestId('timeline-thumb')).toHaveLength(3));
+    expect(extractWaveformMock).toHaveBeenCalledTimes(1);
+    expect(extractThumbnailsMock).toHaveBeenCalledTimes(1);
+    second.unmount();
+  });
+
+  it('re-extracts the waveform and thumbnails when a different file is selected', async () => {
+    extractWaveformMock.mockResolvedValue({
+      sampleRate: 8000,
+      samplesPerBucket: 1000,
+      buckets: [
+        { min: -1, max: 1 },
+        { min: -0.5, max: 0.5 },
+      ],
+    });
+    extractThumbnailsMock.mockResolvedValue({
+      dataUrl: 'data:image/png;base64,AAAA',
+      cols: 2,
+      rows: 2,
+      thumbWidth: 160,
+      thumbHeight: 90,
+      interval: 7.5,
+      count: 3,
+    });
+    getMediaInfoMock.mockResolvedValue(mediaInfo(60));
+    selectFileMock.mockResolvedValueOnce('/in/first.mp4').mockResolvedValueOnce('/in/second.mp4');
+    const { container } = renderPage();
+    await selectVideo();
+    await waitFor(() => expect(extractWaveformMock).toHaveBeenCalledWith('/in/first.mp4', 60));
+    await waitFor(() => expect(extractThumbnailsMock).toHaveBeenCalledWith('/in/first.mp4', 60));
+    fireEvent.click(screen.getByText('videoCut.changeFile'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(extractWaveformMock).toHaveBeenCalledWith('/in/second.mp4', 60));
+    await waitFor(() => expect(extractThumbnailsMock).toHaveBeenCalledWith('/in/second.mp4', 60));
+    expect(container.querySelector('canvas')).toBeInTheDocument();
+  });
+
+  it('persists the timeline zoom when the page is navigated away and back', async () => {
+    extractWaveformMock.mockResolvedValue({
+      sampleRate: 8000,
+      samplesPerBucket: 1000,
+      buckets: [
+        { min: -1, max: 1 },
+        { min: -0.5, max: 0.5 },
+      ],
+    });
+    extractThumbnailsMock.mockResolvedValue({
+      dataUrl: 'data:image/png;base64,AAAA',
+      cols: 2,
+      rows: 2,
+      thumbWidth: 160,
+      thumbHeight: 90,
+      interval: 7.5,
+      count: 3,
+    });
+    getMediaInfoMock.mockResolvedValue(mediaInfo(60));
+    const first = renderPage();
+    await selectVideo();
+    const zoomIn = () => screen.getByLabelText('videoTimeline.zoomIn');
+    await waitFor(() => expect(zoomIn()).toBeEnabled());
+    while (!(zoomIn() as HTMLButtonElement).disabled) {
+      fireEvent.click(zoomIn());
+    }
+    expect(zoomIn()).toBeDisabled();
+    first.unmount();
+
+    const second = renderPage();
+    await screen.findByLabelText('videoTimeline.zoomIn');
+    expect(screen.getByLabelText('videoTimeline.zoomIn')).toBeDisabled();
+    second.unmount();
   });
 });

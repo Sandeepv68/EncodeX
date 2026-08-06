@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Global vitest test setup for the EncodeX renderer and main
+ * process unit tests (loaded via the `setupFiles` entry in the vitest config).
+ *
+ * Registers the @testing-library/jest-dom matchers and installs two shared
+ * test doubles: a `react-i18next` mock whose `useTranslation` hook resolves
+ * translation keys through a small inline dictionary (falling back to the key
+ * itself, interpolating `{{placeholders}}`), and a `globalThis.electronAPI`
+ * stub mirroring the preload bridge so components can be rendered without a
+ * real Electron context. Every IPC method resolves to a benign default so
+ * tests only need to override the methods they exercise.
+ */
+
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 
