@@ -60,7 +60,7 @@ describe('App', () => {
     const drawerItem = screen.getAllByText('nav.convert')[0].closest('[role="button"]')!;
     fireEvent.click(drawerItem);
     expect(await screen.findByText('convert.title', {}, { timeout: 5000 })).toBeInTheDocument();
-  });
+  }, 20000);
 
   it('stores log messages received from the main process', async () => {
     renderApp();

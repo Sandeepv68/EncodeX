@@ -1,14 +1,44 @@
-# EncodeX
-
-A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron.
 <div align="center">
   <img src="assets/logo.png" alt="EncodeX Logo" width="200" />
+  <h1>EncodeX</h1>
+  <p>A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron.</p>
 </div>
 
+<div align="center">
+
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Sandeepv68/EncodeX)
+![CI](https://img.shields.io/github/actions/workflow/status/Sandeepv68/EncodeX/ci.yml?style=for-the-badge)
+![License](https://img.shields.io/github/license/Sandeepv68/EncodeX?style=for-the-badge)
+![Release](https://img.shields.io/github/v/release/Sandeepv68/EncodeX?style=for-the-badge)
+![Stars](https://img.shields.io/github/stars/Sandeepv68/EncodeX?style=for-the-badge)
+![Forks](https://img.shields.io/github/forks/Sandeepv68/EncodeX?style=for-the-badge)
+![Watchers](https://img.shields.io/github/watchers/Sandeepv68/EncodeX?style=for-the-badge)
+![Issues](https://img.shields.io/github/issues/Sandeepv68/EncodeX?style=for-the-badge)
+![Pull Requests](https://img.shields.io/github/issues-pr/Sandeepv68/EncodeX?style=for-the-badge)
+![Last Commit](https://img.shields.io/github/last-commit/Sandeepv68/EncodeX?style=for-the-badge)
+![Contributors](https://img.shields.io/github/contributors/Sandeepv68/EncodeX?style=for-the-badge)
+![Repo Size](https://img.shields.io/github/repo-size/Sandeepv68/EncodeX?style=for-the-badge)
+![Languages](https://img.shields.io/github/languages/count/Sandeepv68/EncodeX?style=for-the-badge)
+![Top Language](https://img.shields.io/github/languages/top/Sandeepv68/EncodeX?style=for-the-badge)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Electron](https://img.shields.io/badge/Electron-47848F?style=for-the-badge&logo=electron&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![MUI](https://img.shields.io/badge/MUI-007FFF?style=for-the-badge&logo=mui&logoColor=white)
+![FFmpeg](https://img.shields.io/badge/FFmpeg-007808?style=for-the-badge&logo=ffmpeg&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js%2022-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)
+
+</div>
+
+## Introduction
+
+EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
 
 ## Table of Contents
 
+- [Introduction](#introduction)
 - [Features](#features)
   - [Media Conversion](#media-conversion)
   - [Lossless Copy](#lossless-copy)
