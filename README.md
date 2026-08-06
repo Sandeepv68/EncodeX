@@ -32,138 +32,138 @@
 
 </div>
 
-## Introduction
+## 👋 Introduction
 
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
 
-## Table of Contents
+## 📚 Table of Contents
 
-- [Introduction](#introduction)
-- [Features](#features)
-  - [Media Conversion](#media-conversion)
-  - [Lossless Copy](#lossless-copy)
-  - [Hardware Acceleration](#hardware-acceleration)
-  - [Media Information](#media-information)
-  - [Image Compression](#image-compression)
-  - [Audio Extraction](#audio-extraction)
-  - [Video Cutting](#video-cutting)
-  - [Batch Queue](#batch-queue)
-  - [Multiple Transcoder Cores](#multiple-transcoder-cores)
-  - [Settings](#settings)
-  - [Logs](#logs)
-  - [Notifications](#notifications)
-  - [Custom Window Frame](#custom-window-frame)
-  - [Dark / Light Theme](#dark--light-theme)
-  - [RTL Support](#rtl-support)
-  - [CLI Mode](#cli-mode)
-  - [Internationalization](#internationalization)
-  - [Error Handling](#error-handling)
-- [Prerequisites](#prerequisites)
-- [Install](#install)
-- [Development](#development)
-- [Build](#build)
-- [CLI Usage](#cli-usage)
-  - [CLI Options](#cli-options)
-- [Testing](#testing)
-  - [Test Suite](#test-suite)
-  - [Test Setup](#test-setup)
-  - [E2E Tests](#e2e-tests)
-- [Project Structure](#project-structure)
-- [Architecture](#architecture)
-  - [Render Tree](#render-tree)
-  - [Data Flow](#data-flow)
-  - [Error Flow](#error-flow)
-  - [Error Codes](#error-codes)
-  - [IPC Channels](#ipc-channels)
-  - [`window.electronAPI` (contextBridge API)](#windowelectronapi-contextbridge-api)
-- [Supported Media Formats](#supported-media-formats)
-  - [Video Codecs (51)](#video-codecs-51)
-  - [Audio Codecs (27)](#audio-codecs-27)
-  - [Pixel Formats (56)](#pixel-formats-56)
-  - [Input File Extensions](#input-file-extensions)
-- [Validation Utilities](#validation-utilities)
-- [Transcoder Constants](#transcoder-constants)
-- [Frame Decoder & Audio](#frame-decoder--audio)
-- [Timeline Media](#timeline-media)
-- [Job Queue](#job-queue)
-- [Configuration](#configuration)
-  - [Electron Windows](#electron-windows)
-  - [Electron Builder](#electron-builder)
-  - [Prettier](#prettier)
-- [Tech Stack](#tech-stack)
-- [Contributing](#contributing)
-- [Security](#security)
-- [License](#license)
+- [👋 Introduction](#-introduction)
+- [✨ Features](#-features)
+  - [🔄 Media Conversion](#-media-conversion)
+  - [🗂️ Lossless Copy](#-lossless-copy)
+  - [⚡ Hardware Acceleration](#-hardware-acceleration)
+  - [ℹ️ Media Information](#-media-information)
+  - [🖼️ Image Compression](#-image-compression)
+  - [🎵 Audio Extraction](#-audio-extraction)
+  - [✂️ Video Cutting](#-video-cutting)
+  - [📋 Batch Queue](#-batch-queue)
+  - [⚙️ Multiple Transcoder Cores](#-multiple-transcoder-cores)
+  - [🛠️ Settings](#-settings)
+  - [🧾 Logs](#-logs)
+  - [🔔 Notifications](#-notifications)
+  - [🖥️ Custom Window Frame](#-custom-window-frame)
+  - [🌗 Dark / Light Theme](#-dark--light-theme)
+  - [↔️ RTL Support](#-rtl-support)
+  - [⌨️ CLI Mode](#-cli-mode)
+  - [🌍 Internationalization](#-internationalization)
+  - [🛡️ Error Handling](#-error-handling)
+- [📌 Prerequisites](#-prerequisites)
+- [🚀 Install](#-install)
+- [🧑‍💻 Development](#-development)
+- [🔨 Build](#-build)
+- [💻 CLI Usage](#-cli-usage)
+  - [🚩 CLI Options](#-cli-options)
+- [🧪 Testing](#-testing)
+  - [✅ Test Suite](#-test-suite)
+  - [🛠️ Test Setup](#-test-setup)
+  - [🌐 E2E Tests](#-e2e-tests)
+- [🗂️ Project Structure](#-project-structure)
+- [🏗️ Architecture](#-architecture)
+  - [🌳 Render Tree](#-render-tree)
+  - [🔀 Data Flow](#-data-flow)
+  - [⚠️ Error Flow](#-error-flow)
+  - [🚨 Error Codes](#-error-codes)
+  - [🔌 IPC Channels](#-ipc-channels)
+  - [🧩 `window.electronAPI` (contextBridge API)](#-windowelectronapi-contextbridge-api)
+- [🎞️ Supported Media Formats](#-supported-media-formats)
+  - [🎥 Video Codecs (51)](#-video-codecs-51)
+  - [🎧 Audio Codecs (27)](#-audio-codecs-27)
+  - [🎨 Pixel Formats (56)](#-pixel-formats-56)
+  - [📁 Input File Extensions](#-input-file-extensions)
+- [✔️ Validation Utilities](#-validation-utilities-srcsharedvalidationts)
+- [🧮 Transcoder Constants](#-transcoder-constants-srcsharedtranscoder-constantsts)
+- [📼 Frame Decoder & Audio](#-frame-decoder--audio-srcmainplayerframe-decoderts)
+- [📈 Timeline Media](#-timeline-media-srcmaintimelinetimeline-mediats)
+- [📥 Job Queue](#-job-queue-srcmainqueuejob-queuets)
+- [⚙️ Configuration](#-configuration)
+  - [🪟 Electron Windows](#-electron-windows)
+  - [🧱 Electron Builder](#-electron-builder)
+  - [💅 Prettier](#-prettier)
+- [🧰 Tech Stack](#-tech-stack)
+- [🤝 Contributing](#-contributing)
+- [🔒 Security](#-security)
+- [📄 License](#-license)
 
-## Features
+## ✨ Features
 
-### Media Conversion
+### 🔄 Media Conversion
 
 Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Supports batch mode for processing multiple files sequentially.
 
-### Lossless Copy
+### 🗂️ Lossless Copy
 
 Stream-copy video or audio tracks without re-encoding (`-c copy`). Useful for fast container format changes, remuxing, or when quality preservation is critical.
 
-### Hardware Acceleration
+### ⚡ Hardware Acceleration
 
 Hardware-accelerated encoding with auto-detection of available encoder families. Supports NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, and Microsoft Media Foundation encoders. Acceleration can be toggled, with a mode selector — `auto` adds the matching FFmpeg `-hwaccel` flags for the selected hardware encoder family, `encode` relies on the encoder's own acceleration — and an encoder-type filter (`auto` / `hardware` / `software`) that narrows the video codec picker to all, GPU-only, or CPU-only encoders. Available encoders are probed from the bundled FFmpeg binary at runtime and the codec pickers are filtered to what the binary actually provides.
 
-### Media Information
+### ℹ️ Media Information
 
 Probe media files and inspect detailed per-stream information: codec, profile, level, resolution, display aspect ratio, pixel format, bit depth, color range/space/transfer/primaries, frame rate, bitrate, sample rate, sample format, channel count/layout, duration, start time, frame count, language, and tags. Works with video, audio, and subtitle streams.
 
-### Image Compression
+### 🖼️ Image Compression
 
 Compress images (JPEG, PNG, WebP, BMP, GIF, TIFF, PPM, PGM, PBM) with configurable quality scale and resolution scaling using FFmpeg's image codecs. Includes a live preview, a file-size readout, and — for JPEG/PNG/WebP inputs — a full EXIF metadata panel with RGB and luma histograms.
 
-### Audio Extraction
+### 🎵 Audio Extraction
 
 Extract audio tracks from video files. Output as AAC, MP3, AC3, FLAC, WAV, Vorbis, Opus, ALAC, or any of the 27 supported audio codecs. The source audio stream is selectable when multiple tracks are present.
 
-### Video Cutting
+### ✂️ Video Cutting
 
 Preview and cut video segments with frame-accurate start/end time or duration selection. Includes a built-in player that decodes video frames (via an FFmpeg rawvideo pipe to an HTML Canvas element) and audio (via a separate S16LE PCM pipe converted to float and fed to the Web Audio API) in lockstep, with a zoomable multi-track timeline: video thumbnail montage, audio waveform, keep/dim region shading, drag-to-trim handles, and a scrubbing playhead.
 
-### Batch Queue
+### 📋 Batch Queue
 
 Process multiple files sequentially with configurable operations (transcode, extract audio, compress image). The queue persists state across jobs with real-time progress tracking, per-job error handling, job removal, and cancel-all.
 
-### Multiple Transcoder Cores
+### ⚙️ Multiple Transcoder Cores
 
 - **FFmpeg API** — fluent-ffmpeg Node.js bindings with programmatic progress events
 - **FFmpeg CLI** — direct CLI invocation via child process, no native bindings needed
 - **BMF Framework** — BMF CLI tools for advanced pipeline scenarios (requires separate installation)
 
-### Settings
+### 🛠️ Settings
 
 Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), and window always-on-top. Preferences persist to `localStorage` and take effect on startup.
 
-### Logs
+### 🧾 Logs
 
 Live log viewer that aggregates console output from both the main and renderer processes over IPC. Supports level filtering (DEBUG/INFO/WARN/ERROR), clearing, and downloading the log as a `.txt` file.
 
-### Notifications
+### 🔔 Notifications
 
 Toast notifications (success/info/warning/error) with configurable duration for non-blocking feedback, layered on top of the global error snackbar.
 
-### Custom Window Frame
+### 🖥️ Custom Window Frame
 
 Frameless application window with a custom title bar providing minimize / maximize-toggle / close controls, a draggable region, and always-on-top support. A non-interactive splash screen is shown while the main window loads.
 
-### Dark / Light Theme
+### 🌗 Dark / Light Theme
 
 System-aware theme detection with manual toggle. Theme preference persists to `localStorage` (`encodex-theme` key).
 
-### RTL Support
+### ↔️ RTL Support
 
 Right-to-left layout support for Arabic locales (`ar-SA`, `ar-AE`). Direction toggles automatically on language switch via an Emotion RTL style plugin.
 
-### CLI Mode
+### ⌨️ CLI Mode
 
 Headless command-line interface for scripting and automation. Supports all conversion options, lossless copy, cutting, audio exclusion, and media info inspection. Auto-activates when two positional arguments are provided (or with `--cli`).
 
-### Internationalization
+### 🌍 Internationalization
 
 20 locales across 14 languages:
 
@@ -184,16 +184,16 @@ Headless command-line interface for scripting and automation. Supports all conve
 | Indonesian | `id-ID`                            |
 | Arabic     | `ar-SA`, `ar-AE`                   |
 
-### Error Handling
+### 🛡️ Error Handling
 
 Structured error system with typed error codes (`ErrorCode`), user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
 
-## Prerequisites
+## 📌 Prerequisites
 
 - [Node.js](https://nodejs.org/) 20+
 - [FFmpeg](https://ffmpeg.org/) — bundled via `ffmpeg-static`; falls back to system `ffmpeg` if the bundled binary is unavailable
 
-## Install
+## 🚀 Install
 
 ```bash
 npm install
@@ -201,7 +201,7 @@ npm install
 
 This installs all dependencies including `ffmpeg-static` and `ffprobe-static`, which download platform-specific binaries during their postinstall scripts.
 
-## Development
+## 🧑‍💻 Development
 
 ```bash
 # Start Vite dev server + tsc watch (no Electron window)
@@ -221,7 +221,7 @@ npm run dev:start
 
 `npm run electron:dev` waits for Vite to be ready, compiles both main and preload, then launches Electron with the `--dev` flag pointing at the Vite dev server URL. DevTools open automatically.
 
-## Build
+## 🔨 Build
 
 ```bash
 # Production build (renderer + main + preload)
@@ -250,7 +250,7 @@ npm run dist
 | `npm run pack`           | Build + electron-builder `--dir`                            |
 | `npm run dist`           | Build + electron-builder (NSIS/DMG/AppImage)                |
 
-## CLI Usage
+## 💻 CLI Usage
 
 Build first, then invoke the compiled CLI through Electron. CLI mode auto-activates when two positional arguments (input + output) are given, or explicitly with `--cli`:
 
@@ -270,7 +270,7 @@ npx electron . --cli input.mp4 output.mp4 --start-time 00:01:00 --end-time 00:02
 npx electron . --cli input.mp4 output.mp4 --transcoder FFTOOL
 ```
 
-### CLI Options
+### 🚩 CLI Options
 
 | Option                      | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
@@ -289,7 +289,7 @@ npx electron . --cli input.mp4 output.mp4 --transcoder FFTOOL
 | `--no-audio`                | Exclude the audio stream from the output                       |
 | `--info`                    | Print media info as JSON and exit                              |
 
-## Testing
+## 🧪 Testing
 
 ```bash
 # Run all tests
@@ -316,7 +316,7 @@ Coverage reports are generated in `coverage/`:
 - `coverage/index.html` — browsable HTML
 - `coverage/lcov.info` — LCOV for IDE integration
 
-### Test Suite
+### ✅ Test Suite
 
 The suite is run by Vitest 4 with jsdom (85 test files, 837 tests, all passing). Coverage uses the v8 provider.
 
@@ -336,7 +336,7 @@ The suite is run by Vitest 4 with jsdom (85 test files, 837 tests, all passing).
 | **Renderer utils / app** | `App.test.tsx` (8), `formatters.test.ts` (12)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | App shell routing, formatters                                                                                                        |
 | **Integration**          | `error-flow.test.ts` (7)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Full pipeline: Error → `formatError` → store → display → clear                                                                       |
 
-### Test Setup
+### 🛠️ Test Setup
 
 The test environment (`src/test-setup.ts`) provides:
 
@@ -344,7 +344,7 @@ The test environment (`src/test-setup.ts`) provides:
 - Mocked `electronAPI` on `globalThis` covering all IPC methods
 - Registers `@testing-library/jest-dom/vitest` matchers
 
-### E2E Tests
+### 🌐 E2E Tests
 
 Playwright-based end-to-end tests live in `e2e/` (node environment, 60s timeouts) and are gated behind the `E2E` env var or CI:
 
@@ -354,7 +354,7 @@ Playwright-based end-to-end tests live in `e2e/` (node environment, 60s timeouts
 | `e2e/app.spec.ts` | Electron app launch, window creation                                                        |
 | `e2e/helpers.ts`  | Test media generation and build helpers                                                     |
 
-## Project Structure
+## 🗂️ Project Structure
 
 ```
 src/
@@ -500,17 +500,17 @@ e2e/
 └── app.spec.ts                        # Electron app e2e tests
 ```
 
-## Architecture
+## 🏗️ Architecture
 
 > A deep dive into the application's internals — process model, IPC contract, transcoder abstraction, player, queue, and more — is available in [ARCHITECTURE.md](ARCHITECTURE.md).
 
-### Render Tree
+### 🌳 Render Tree
 
 <p align="center"><img src="assets/render_tree.png" alt="EncodeX render tree"></p>
 
 All nine pages (`Dashboard`, `Convert`, `MediaInfo`, `ImageCompress`, `AudioExtract`, `VideoCut`, `BatchQueue`, `Logs`, `Settings`) are code-split with `React.lazy`.
 
-### Data Flow
+### 🔀 Data Flow
 
 ```
 User Action (React page)
@@ -534,7 +534,7 @@ fluent-ffmpeg / child_process / BMF CLI (+ hwaccel flags)
 Progress events flow back via IPC callback → renderer store → UI
 ```
 
-### Error Flow
+### ⚠️ Error Flow
 
 ```
 throw new Error(...)
@@ -550,7 +550,7 @@ errorStore.showError()              ← stores in currentError + errorHistory (c
     └── ErrorBoundary               ← React crash catch-all (nested per-page + per-component)
 ```
 
-### Error Codes
+### 🚨 Error Codes
 
 The error system (`src/shared/errors.ts`) defines 14 typed error codes:
 
@@ -573,7 +573,7 @@ The error system (`src/shared/errors.ts`) defines 14 typed error codes:
 
 `formatError()` infers error codes from error messages and system error codes (e.g. `ENOENT`, `EACCES`).
 
-### IPC Channels
+### 🔌 IPC Channels
 
 All channel names are centralized in `src/shared/ipc-channels.ts`.
 
@@ -630,7 +630,7 @@ All channel names are centralized in `src/shared/ipc-channels.ts`.
 | `player-error`             | `string`                      |
 | `log-message`              | `LogEntry`                    |
 
-### `window.electronAPI` (contextBridge API)
+### 🧩 `window.electronAPI` (contextBridge API)
 
 The preload script exposes all IPC via `window.electronAPI` (typed in `src/renderer/electron-api.d.ts`):
 
@@ -675,9 +675,9 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `onPlayerError(cb) → () => void`
 - `onLogMessage(cb) → () => void`
 
-## Supported Media Formats
+## 🎞️ Supported Media Formats
 
-### Video Codecs (51)
+### 🎥 Video Codecs (51)
 
 | Group                      | Codecs                                                                                                                                                                                                                                                                                                                                     |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -689,7 +689,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 | **Apple VideoToolbox (4)** | H.264, H.265, ProRes, VP9                                                                                                                                                                                                                                                                                                                  |
 | **Media Foundation (2)**   | H.264, H.265                                                                                                                                                                                                                                                                                                                               |
 
-### Audio Codecs (27)
+### 🎧 Audio Codecs (27)
 
 | Group             | Codecs                                                    |
 | ----------------- | --------------------------------------------------------- |
@@ -701,7 +701,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 | **Windows Media** | WMA v1, WMA v2                                            |
 | **Other**         | ADPCM IMA (WAV)                                           |
 
-### Pixel Formats (56)
+### 🎨 Pixel Formats (56)
 
 | Group               | Formats                                                                                |
 | ------------------- | -------------------------------------------------------------------------------------- |
@@ -716,7 +716,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 | **Monochrome**      | gray, gray10le, gray12le, gray16le, grayf32le, ya8, ya16le                             |
 | **HDR**             | p010le, p016le, x2rgb10le                                                              |
 
-### Input File Extensions
+### 📁 Input File Extensions
 
 | Category | Extensions                                                                                                                                                                                                    |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -725,7 +725,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 | Image    | `jpg`, `jpeg`, `png`, `webp`, `bmp`, `gif`, `tiff`, `tif`, `svg`, `ico`, `heic`, `heif`, `avif`, `ppm`, `pgm`, `pbm`, `xbm`                                                                                   |
 | Subtitle | `srt`, `ass`, `ssa`, `vtt`, `sub`, `idx`, `smi`                                                                                                                                                               |
 
-## Validation Utilities (`src/shared/validation.ts`)
+## ✔️ Validation Utilities (`src/shared/validation.ts`)
 
 | Function                     | Description                | Accepted Formats                                      |
 | ---------------------------- | -------------------------- | ----------------------------------------------------- |
@@ -734,7 +734,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 | `isValidBitrate(value)`      | Validates bitrate strings  | e.g. `128k`, `1M`, `2000K`                            |
 | `isInRange(value, min, max)` | Checks numeric range       | Any finite number                                     |
 
-## Transcoder Constants (`src/shared/transcoder-constants.ts`)
+## 🧮 Transcoder Constants (`src/shared/transcoder-constants.ts`)
 
 | Constant                                          | Value                                                                                                                                                             |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -756,7 +756,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 | `CONVERSION_DEFAULTS.AUDIO_BITRATE`               | `192k`                                                                                                                                                            |
 | `QSCALE_RANGE.MIN/MAX`                            | `1` / `31`                                                                                                                                                        |
 
-## Frame Decoder & Audio (`src/main/player/frame-decoder.ts`)
+## 📼 Frame Decoder & Audio (`src/main/player/frame-decoder.ts`)
 
 The frame decoder spawns FFmpeg as a subprocess with separate video and audio output pipes:
 
@@ -770,7 +770,7 @@ FFmpeg: input (with -re realtime and -copyts)
 
 The main process splits the rawvideo stream into `width × height × 3` byte frames and emits `DecodedFrame` events, and feeds decoded PCM audio (S16LE, in 50ms chunks at the requested sample rate, default 48 kHz / 2 channels) to the renderer via the `player-audio` channel. The renderer (`MediaPlayer.tsx`) schedules frames onto an HTML Canvas and converts the PCM chunks to floats for the Web Audio API, with clock-based A/V synchronization, seek coalescing (which respawns the decoder at the new timestamp), frame-buffer overflow protection, and stall detection.
 
-## Timeline Media (`src/main/timeline/timeline-media.ts`)
+## 📈 Timeline Media (`src/main/timeline/timeline-media.ts`)
 
 Background extraction used by the Video Cut page:
 
@@ -779,7 +779,7 @@ Background extraction used by the Video Cut page:
 
 The renderer (`VideoTimeline.tsx`) renders these as a zoomable timeline with keep/dim region shading and trim handles.
 
-## Job Queue (`src/main/queue/job-queue.ts`)
+## 📥 Job Queue (`src/main/queue/job-queue.ts`)
 
 A serial batch processor built on `EventEmitter`:
 
@@ -789,9 +789,9 @@ A serial batch processor built on `EventEmitter`:
 - Emits `added`, `removed`, `statusChange`, `progress`, and `cancelled` events
 - Creates the appropriate transcoder instance per job based on `TranscoderType`
 
-## Configuration
+## ⚙️ Configuration
 
-### Electron Windows
+### 🪟 Electron Windows
 
 Main window (frameless, custom title bar):
 
@@ -827,7 +827,7 @@ Splash window (shown while the main window loads, then closed):
 }
 ```
 
-### Electron Builder
+### 🧱 Electron Builder
 
 ```typescript
 {
@@ -845,7 +845,7 @@ Splash window (shown while the main window loads, then closed):
 }
 ```
 
-### Prettier
+### 💅 Prettier
 
 ```json
 {
@@ -861,20 +861,20 @@ Splash window (shown while the main window loads, then closed):
 }
 ```
 
-## Tech Stack
+## 🧰 Tech Stack
 
 <p align="center"><img src="assets/stack.png" alt="EncodeX tech stack"></p>
 
-## Contributing
+## 🤝 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. All contributions are welcome — please open an issue first for significant changes.
 
 This project is governed by a [Code of Conduct](CODE_OF_CONDUCT.md).
 
-## Security
+## 🔒 Security
 
 Report security vulnerabilities to the project maintainers via the security advisory process. See [SECURITY.md](SECURITY.md).
 
-## License
+## 📄 License
 
 MIT
