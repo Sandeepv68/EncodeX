@@ -181,7 +181,7 @@ export const ThumbCell = styled(Box)({
 export const WaveformBar = styled(Box)(({ theme }) => ({
   position: 'absolute',
   backgroundColor: theme.palette.primary.main,
-  borderRadius: theme.typography.pxToRem(1),
+  borderRadius: theme.typography.pxToRem(999),
   opacity: 0.75,
 }));
 
