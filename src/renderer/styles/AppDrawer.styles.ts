@@ -12,9 +12,18 @@ export const NavList = styled(List)(({ theme }) => ({
   paddingRight: theme.spacing(1),
 }));
 
+const navItemIn = keyframes`
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+`;
+
 export const NavItemButton = styled(ListItemButton)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   marginBottom: theme.spacing(0.5),
+  animation: `${navItemIn} 0.3s ease-out backwards`,
+  '@media (prefers-reduced-motion: reduce)': {
+    animation: 'none',
+  },
   '&.Mui-selected': {
     backgroundColor: alpha(theme.palette.primary.main, 0.15),
     '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.25) },

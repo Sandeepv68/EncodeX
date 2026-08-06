@@ -73,10 +73,11 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
   return (
     <>
       <NavList>
-        {NAV_ITEMS.map((item) => (
+        {NAV_ITEMS.map((item, index) => (
           <NavItemButton
             key={item.to}
             selected={location.pathname === item.to}
+            sx={{ animationDelay: `${index * 0.05}s` }}
             onClick={() => {
               navigate(item.to);
               if (isMobile) onNavigate();

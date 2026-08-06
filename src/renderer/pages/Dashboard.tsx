@@ -93,9 +93,9 @@ export default function Dashboard() {
       </WelcomeTitle>
       <DashboardSubtitle color="text.secondary">{t('dashboard.subtitle')}</DashboardSubtitle>
       <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%' }}>
-        {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs' && item.to !== '/settings').map((item) => (
+        {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs' && item.to !== '/settings').map((item, index) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.to} sx={{ display: 'flex' }}>
-            <FeatureCard>
+            <FeatureCard sx={{ animationDelay: `${0.3 + index * 0.08}s` }}>
               <CardLink onClick={() => navigate(item.to)}>
                 <FeatureIconBox>{pageIcons[item.to]}</FeatureIconBox>
                 <CardBody>

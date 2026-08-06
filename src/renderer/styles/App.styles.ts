@@ -1,10 +1,15 @@
-import { styled } from '@mui/material/styles';
+import { styled, keyframes } from '@mui/material/styles';
 import { Box, Drawer, IconButton } from '@mui/material';
 import { DRAWER_WIDTH } from '../../shared/app-constants';
 
 export const AppRoot = styled(Box)({ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' });
 
 export const AppBody = styled(Box)({ display: 'flex', flex: 1, minHeight: 0 });
+
+const drawerSlideIn = keyframes`
+  from { opacity: 0; transform: translateX(-24px); }
+  to { opacity: 1; transform: translateX(0); }
+`;
 
 export const TemporaryDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': { width: theme.typography.pxToRem(DRAWER_WIDTH), boxSizing: 'border-box' },
@@ -19,6 +24,10 @@ export const PermanentDrawer = styled(Drawer)(({ theme }) => ({
     boxSizing: 'border-box',
     position: 'relative',
     height: '100%',
+    animation: `${drawerSlideIn} 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
+    '@media (prefers-reduced-motion: reduce)': {
+      animation: 'none',
+    },
   },
 }));
 
