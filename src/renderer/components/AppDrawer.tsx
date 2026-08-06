@@ -7,9 +7,10 @@
  * `location.pathname`) is highlighted as selected.
  *
  * The drawer also surfaces live activity indicators ("blips") next to the
- * Convert and Audio Extract entries while a conversion/extraction is running,
- * and ends with a divider and the {@link LanguageMenu} component so the active
- * language can be switched directly from the sidebar.
+ * Convert, Audio Extract, and Video Cut entries while a
+ * conversion/extraction/cut is running, and ends with a divider and the
+ * {@link LanguageMenu} component so the active language can be switched
+ * directly from the sidebar.
  *
  * Props (see {@link AppDrawerProps}):
  *  - isMobile: when true, tapping a nav row also fires `onNavigate` so the
@@ -23,6 +24,7 @@ import { NAV_ITEMS } from '../../shared/app-constants';
 import { pageIcons } from '../pageIcons';
 import { useConversionStore } from '../stores/conversionStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
+import { useVideoCutStore } from '../stores/videoCutStore';
 import LanguageMenu from './LanguageMenu';
 import type { AppDrawerProps } from './types';
 import { DrawerDivider, NavList, NavItemButton, NavItemIcon, NavItemText, NavBlip } from '../styles/AppDrawer.styles';
@@ -52,9 +54,10 @@ const navKeyMap: Record<string, string> = {
  * route. Clicking a row navigates to that route and, on mobile layouts, invokes
  * `onNavigate` so the parent can close the drawer. A row is marked selected
  * when its path exactly matches the current route. An animated NavBlip is
- * appended to the Convert row while `useConversionStore.isConverting` is true
- * and to the Audio Extract row while `useAudioExtractStore.isConverting` is
- * true, providing at-a-glance activity feedback.
+ * appended to the Convert row while `useConversionStore.isConverting` is true,
+ * to the Audio Extract row while `useAudioExtractStore.isConverting` is true,
+ * and to the Video Cut row while `useVideoCutStore.isCutting` is true,
+ * providing at-a-glance activity feedback.
  *
  * @param {AppDrawerProps} props - Component props.
  * @param {boolean} props.isMobile - True when the drawer is rendered in a
@@ -69,6 +72,7 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
   const { t } = useTranslation();
   const isConverting = useConversionStore((s) => s.isConverting);
   const isExtractingAudio = useAudioExtractStore((s) => s.isConverting);
+  const isCutting = useVideoCutStore((s) => s.isCutting);
 
   return (
     <>
@@ -87,6 +91,7 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
             <NavItemText primary={t(`nav.${navKeyMap[item.to]}`)} />
             {item.to === '/convert' && isConverting && <NavBlip aria-hidden="true" data-testid="nav-convert-blip" />}
             {item.to === '/audio-extract' && isExtractingAudio && <NavBlip aria-hidden="true" data-testid="nav-audio-extract-blip" />}
+            {item.to === '/video-cut' && isCutting && <NavBlip aria-hidden="true" data-testid="nav-video-cut-blip" />}
           </NavItemButton>
         ))}
       </NavList>

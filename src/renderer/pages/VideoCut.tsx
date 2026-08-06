@@ -296,6 +296,7 @@ export default function VideoCut() {
    *   cacheWaveform: (data: WaveformData | null, key?: string | null) => void;
    *   cacheThumbnails: (data: ThumbnailStrip | null, key?: string | null) => void;
    *   cacheZoom: (zoom: number | null, key?: string | null) => void;
+   *   setIsCutting: (v: boolean) => void;
    *   resetDraft: () => void;
    * }}
    */
@@ -310,6 +311,7 @@ export default function VideoCut() {
     cacheWaveform,
     cacheThumbnails,
     cacheZoom,
+    setIsCutting,
     resetForm: resetDraft,
   } = useVideoCutStore();
 
@@ -524,7 +526,9 @@ export default function VideoCut() {
    * starts the cut through `runTask`, which calls
    * `window.electronAPI.convertFile` with a stream-copy (`copy: true`) and the
    * configured cut window (start + end or duration) and optional audio removal.
-   * A success toast is shown on completion; on validation or missing-input
+   * While the task runs the store's `isCutting` flag is set so the navigation
+   * drawer can show the activity blip; it is always cleared afterwards. A
+   * success toast is shown on completion; on validation or missing-input
    * failures a warning is logged and an error message is shown.
    * @returns {Promise<void>} Resolves when the cut completes or fails.
    */
@@ -539,20 +543,25 @@ export default function VideoCut() {
       return;
     }
     log.info(LOG_CUTTING_VIDEO, input, LOG_ARROW, output, LOG_START, startTime, LOG_USE_DURATION, useDuration);
-    await runTask(async () => {
-      await window.electronAPI.convertFile(
-        input,
-        output,
-        {
-          copy: true,
-          startTime,
-          ...(useDuration ? { duration } : { endTime }),
-          ...(includeAudio ? {} : { audio: false }),
-        },
-        transcoder,
-      );
-      useToastStore.getState().success(t('toast.videoCut'));
-    });
+    setIsCutting(true);
+    try {
+      await runTask(async () => {
+        await window.electronAPI.convertFile(
+          input,
+          output,
+          {
+            copy: true,
+            startTime,
+            ...(useDuration ? { duration } : { endTime }),
+            ...(includeAudio ? {} : { audio: false }),
+          },
+          transcoder,
+        );
+        useToastStore.getState().success(t('toast.videoCut'));
+      });
+    } finally {
+      setIsCutting(false);
+    }
   };
 
   /**

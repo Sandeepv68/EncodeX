@@ -4,6 +4,7 @@ import { MemoryRouter, useLocation } from 'react-router-dom';
 import AppDrawer from '../AppDrawer';
 import { ColorModeProvider } from '../../ColorModeContext';
 import { useConversionStore } from '../../stores/conversionStore';
+import { useVideoCutStore } from '../../stores/videoCutStore';
 
 function LocationProbe() {
   const location = useLocation();
@@ -25,6 +26,7 @@ describe('AppDrawer', () => {
   beforeEach(() => {
     localStorage.clear();
     useConversionStore.getState().setIsConverting(false);
+    useVideoCutStore.getState().setIsCutting(false);
   });
 
   it('renders the nav items', () => {
@@ -72,5 +74,16 @@ describe('AppDrawer', () => {
   it('hides the blip when no conversion is in progress', () => {
     renderDrawer();
     expect(screen.queryByTestId('nav-convert-blip')).not.toBeInTheDocument();
+  });
+
+  it('shows a blip on the video-cut item while a cut is in progress', () => {
+    useVideoCutStore.getState().setIsCutting(true);
+    renderDrawer();
+    expect(screen.getByTestId('nav-video-cut-blip')).toBeInTheDocument();
+  });
+
+  it('hides the video-cut blip when no cut is in progress', () => {
+    renderDrawer();
+    expect(screen.queryByTestId('nav-video-cut-blip')).not.toBeInTheDocument();
   });
 });

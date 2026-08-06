@@ -8,6 +8,9 @@
  *  - input / output / startTime / endTime / duration / useDuration /
  *    includeAudio: the user-editable cut fields, initialized from the persisted
  *    snapshot at module load
+ *  - isCutting: a boolean mirror of the live cut task, set by the page while a
+ *    cut runs and cleared when it finishes; the navigation drawer reads it to
+ *    show the activity blip on the Video Cut entry
  *
  * Behavior notes:
  *  - Every setter persists the full draft snapshot to localStorage before
@@ -181,6 +184,7 @@ const stored = readStoredVideoCutDraft();
 export const useVideoCutStore = create<VideoCutState>((set) => ({
   ...stored,
   ...INITIAL_CACHE,
+  isCutting: false,
   /**
    * Sets the source video path and persists the draft.
    * @param {string} file - Absolute path of the source video, or '' to clear.
@@ -293,6 +297,15 @@ export const useVideoCutStore = create<VideoCutState>((set) => ({
    */
   cacheZoom: (zoom, key = null) => {
     set({ zoom, zoomKey: key });
+  },
+  /**
+   * Sets the running-cut flag. The page flips this on while a cut task runs and
+   * off when it finishes; the navigation drawer uses it to show the activity
+   * blip on the Video Cut entry.
+   * @param {boolean} v - True while a cut job is running.
+   */
+  setIsCutting: (v) => {
+    set({ isCutting: v });
   },
   /**
    * Clears every draft field and removes the persisted snapshot.

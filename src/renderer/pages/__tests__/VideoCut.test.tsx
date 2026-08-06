@@ -79,6 +79,7 @@ describe('VideoCut', () => {
       duration: '',
       useDuration: false,
       includeAudio: true,
+      isCutting: false,
       waveform: null,
       waveformKey: null,
       thumbnails: null,
@@ -449,6 +450,21 @@ describe('VideoCut', () => {
     });
     expect(screen.queryByText('42.0%')).not.toBeInTheDocument();
     expect(screen.queryByText('100.0%')).not.toBeInTheDocument();
+  });
+
+  it('sets the isCutting flag while the cut runs and clears it on completion', async () => {
+    const convert = deferred<undefined>();
+    convertFileMock.mockReturnValue(convert.promise);
+    renderPage();
+    await selectVideo();
+    fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/cut.mp4' } });
+    fireEvent.click(screen.getByText('videoCut.cut'));
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+    expect(useVideoCutStore.getState().isCutting).toBe(true);
+    await act(async () => {
+      convert.resolve(undefined);
+    });
+    expect(useVideoCutStore.getState().isCutting).toBe(false);
   });
 
   it('hides the progress bar when the cut is cancelled', async () => {

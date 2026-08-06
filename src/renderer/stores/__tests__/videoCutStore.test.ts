@@ -14,6 +14,7 @@ const DEFAULT_DRAFT = {
 
 const DEFAULT_STATE = {
   ...DEFAULT_DRAFT,
+  isCutting: false,
   waveform: null,
   waveformKey: null,
   thumbnails: null,
@@ -144,6 +145,14 @@ describe('videoCutStore', () => {
     expect(stored.waveform).toBeUndefined();
     expect(stored.thumbnails).toBeUndefined();
     expect(stored.zoom).toBeUndefined();
+  });
+
+  it('toggles the isCutting run flag', () => {
+    expect(useVideoCutStore.getState().isCutting).toBe(false);
+    useVideoCutStore.getState().setIsCutting(true);
+    expect(useVideoCutStore.getState().isCutting).toBe(true);
+    useVideoCutStore.getState().setIsCutting(false);
+    expect(useVideoCutStore.getState().isCutting).toBe(false);
   });
 });
 

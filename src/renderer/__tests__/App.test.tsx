@@ -6,6 +6,7 @@ import { useErrorStore } from '../stores/errorStore';
 import { useLogStore } from '../stores/logStore';
 import { useToastStore } from '../stores/toastStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
+import { useVideoCutStore } from '../stores/videoCutStore';
 import type { LogEntry } from '../../shared/types';
 
 const onLogMessageMock = vi.mocked(window.electronAPI.onLogMessage);
@@ -39,6 +40,7 @@ describe('App', () => {
     useLogStore.setState({ entries: [] });
     useToastStore.setState({ toasts: [] });
     useAudioExtractStore.setState({ isConverting: false });
+    useVideoCutStore.getState().setIsCutting(false);
   });
 
   it('renders the dashboard on the initial route', async () => {
@@ -102,5 +104,18 @@ describe('App', () => {
     renderApp();
     await screen.findByText('dashboard.welcome 👋');
     expect(screen.queryByTestId('nav-audio-extract-blip')).not.toBeInTheDocument();
+  });
+
+  it('shows a red blip on the video-cut nav item while a cut is running', async () => {
+    useVideoCutStore.getState().setIsCutting(true);
+    renderApp();
+    await screen.findByText('dashboard.welcome 👋');
+    expect(screen.getByTestId('nav-video-cut-blip')).toBeInTheDocument();
+  });
+
+  it('hides the video-cut blip when no cut is running', async () => {
+    renderApp();
+    await screen.findByText('dashboard.welcome 👋');
+    expect(screen.queryByTestId('nav-video-cut-blip')).not.toBeInTheDocument();
   });
 });
