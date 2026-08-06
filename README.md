@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/banner.png" alt="EncodeX Logo" width="600" />
+  <img src="assets/banner.png" alt="EncodeX Logo" width="900" />
   <h3>A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron.</h3>
 </div>
 
