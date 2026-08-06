@@ -89,7 +89,7 @@ export default function Dashboard() {
     >
       <WelcomeTitle variant="h4">
         <WelcomeIcon src={appIcon} alt="" draggable={false} />
-        {t('dashboard.welcome')}
+        {t('dashboard.welcome')} 👋
       </WelcomeTitle>
       <DashboardSubtitle color="text.secondary">{t('dashboard.subtitle')}</DashboardSubtitle>
       <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%' }}>

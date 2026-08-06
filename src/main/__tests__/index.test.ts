@@ -13,7 +13,13 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
       isDestroyed: ReturnType<typeof vi.fn>;
       show: ReturnType<typeof vi.fn>;
       close: ReturnType<typeof vi.fn>;
-      webContents: { send: ReturnType<typeof vi.fn>; openDevTools: ReturnType<typeof vi.fn>; on: ReturnType<typeof vi.fn> };
+      webContents: {
+        send: ReturnType<typeof vi.fn>;
+        openDevTools: ReturnType<typeof vi.fn>;
+        on: ReturnType<typeof vi.fn>;
+        once: ReturnType<typeof vi.fn>;
+      };
+      onceHandlers: Record<string, (...args: unknown[]) => void>;
       on: ReturnType<typeof vi.fn>;
     }> = [];
     const appMock = {
@@ -42,7 +48,13 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
       isDestroyed: ReturnType<typeof vi.fn>;
       show: ReturnType<typeof vi.fn>;
       close: ReturnType<typeof vi.fn>;
-      webContents: { send: ReturnType<typeof vi.fn>; openDevTools: ReturnType<typeof vi.fn>; on: ReturnType<typeof vi.fn> };
+      webContents: {
+        send: ReturnType<typeof vi.fn>;
+        openDevTools: ReturnType<typeof vi.fn>;
+        on: ReturnType<typeof vi.fn>;
+        once: ReturnType<typeof vi.fn>;
+      };
+      onceHandlers: Record<string, (...args: unknown[]) => void>;
       on: ReturnType<typeof vi.fn>;
     }) {
       this.loadURL = vi.fn();
@@ -51,7 +63,15 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
       this.isDestroyed = vi.fn(() => false);
       this.show = vi.fn();
       this.close = vi.fn();
-      this.webContents = { send: vi.fn(), openDevTools: vi.fn(), on: vi.fn() };
+      this.onceHandlers = {};
+      this.webContents = {
+        send: vi.fn(),
+        openDevTools: vi.fn(),
+        on: vi.fn(),
+        once: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
+          this.onceHandlers[event] = cb;
+        }),
+      };
       this.on = vi.fn();
       windowInstances.push(this as never);
     });
@@ -155,6 +175,23 @@ describe('main/index', () => {
     );
     const splash = getWindowInstances()[0];
     expect(splash.loadFile).toHaveBeenCalledWith(expect.stringContaining('splash.html'));
+  });
+
+  it('keeps the splash hidden until its content has finished loading', async () => {
+    process.argv = ['node', 'x.js'];
+    await import('../index');
+    getWhenReadyCbs()[0]();
+    expect(BrowserWindowMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        show: false,
+      }),
+    );
+    const splash = getWindowInstances()[0];
+    expect(splash.show).not.toHaveBeenCalled();
+    const didFinishLoad = splash.onceHandlers['did-finish-load'];
+    expect(didFinishLoad).toBeTypeOf('function');
+    didFinishLoad();
+    expect(splash.show).toHaveBeenCalledTimes(1);
   });
 
   it('shows the main window and closes the splash when ready', async () => {

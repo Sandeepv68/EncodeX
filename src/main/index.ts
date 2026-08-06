@@ -93,7 +93,9 @@ if (isCliMode()) {
    *
    * The splash is a small fixed-size, non-resizable, non-minimizable,
    * taskbar-hidden BrowserWindow that loads `SPLASH_HTML` from the app path
-   * with a sandboxed, context-isolated renderer. Its `closed` event clears the
+   * with a sandboxed, context-isolated renderer. It is created hidden and only
+   * shown once the page (including the banner image) has finished loading, so
+   * the user never sees an empty container. Its `closed` event clears the
    * module variable so the window reference is not leaked.
    *
    * @returns {void}
@@ -113,6 +115,7 @@ if (isCliMode()) {
       skipTaskbar: true,
       alwaysOnTop: true,
       center: true,
+      show: false,
       backgroundColor: SPLASH_BACKGROUND,
       ...(process.platform !== 'darwin' ? { icon: path.join(app.getAppPath(), APP_ICON) } : {}),
       webPreferences: {
@@ -122,6 +125,9 @@ if (isCliMode()) {
       },
     });
     splashWindow.loadFile(path.join(app.getAppPath(), SPLASH_HTML));
+    splashWindow.webContents.once('did-finish-load', () => {
+      splashWindow?.show();
+    });
     splashWindow.on('closed', () => {
       log.info(LOG_SPLASH_WINDOW_CLOSED);
       splashWindow = null;

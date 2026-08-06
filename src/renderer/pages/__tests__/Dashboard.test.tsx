@@ -20,7 +20,7 @@ function renderDashboard() {
 describe('Dashboard', () => {
   it('renders the welcome title and subtitle', () => {
     renderDashboard();
-    expect(screen.getByText('dashboard.welcome')).toBeInTheDocument();
+    expect(screen.getByText('dashboard.welcome 👋')).toBeInTheDocument();
     expect(screen.getByText('dashboard.subtitle')).toBeInTheDocument();
   });
 

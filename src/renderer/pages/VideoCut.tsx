@@ -12,11 +12,13 @@
  * together with a ProgressBar. Cancelling during a job or clearing the form is
  * guarded by `ConfirmDialog`s.
  *
- * State is entirely local to the component (`useState`): input/output paths,
- * cut window (start/end/duration + use-duration flag), audio toggle, pause and
- * confirm-dialog flags, playhead and video duration, waveform/thumbnail data and
- * their loading flags, and media info. Conversion state comes from
- * `useMediaTask`, field errors from `useFormErrors`.
+ * The cut draft (input/output paths, cut window, audio toggle) and the cached
+ * waveform/thumbnail data live in the `useVideoCutStore` (persisted draft to
+ * localStorage, media cache in memory) so they survive navigation; remaining
+ * playback/UI state is local (`useState`): pause and confirm-dialog flags,
+ * playhead and video duration, waveform/thumbnail loading flags, and media
+ * info. Conversion state comes from `useMediaTask`, field errors from
+ * `useFormErrors`.
  *
  * IPC interactions:
  *  - `selectFile(...)` - open dialog for the source video.
@@ -51,12 +53,23 @@ import { useToastStore } from '../stores/toastStore';
 import { ErrorCode } from '../../shared/errors';
 import { isValidTime } from '../../shared/validation';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
-import type { MediaInfo, WaveformData, ThumbnailStrip } from '../../shared/types';
+import type { MediaInfo } from '../../shared/types';
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { useSettingsStore } from '../stores/settingsStore';
+import { useVideoCutStore } from '../stores/videoCutStore';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { FieldLabel } from '../styles/FilePathField.styles';
-import { ToggleRow, SectionPaper, SectionHeader, SectionTitle, FileChip, SectionsStack, HeadingGroup } from '../styles/VideoCut.styles';
+import {
+  ToggleRow,
+  SectionPaper,
+  SectionHeader,
+  SectionTitle,
+  FileChip,
+  SectionsStack,
+  HeadingGroup,
+  AccelAlert,
+} from '../styles/VideoCut.styles';
 import {
   LOG_ARROW,
   LOG_CANCELLING_CUT_JOB,
@@ -154,43 +167,50 @@ function basename(filePath: string): string {
  */
 export default function VideoCut() {
   const { t } = useTranslation();
+  const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
 
   /**
    * Absolute path of the selected source video, or '' when none.
    * @type {string}
    */
-  const [input, setInput] = useState('');
+  const input = useVideoCutStore((s) => s.input);
 
   /**
    * Absolute path of the output file to write the cut clip to.
    * @type {string}
    */
-  const [output, setOutput] = useState('');
+  const output = useVideoCutStore((s) => s.output);
 
   /**
    * Cut start time as a `HH:MM:SS[.mmm]` string.
    * @type {string}
    */
-  const [startTime, setStartTime] = useState('00:00:00');
+  const startTime = useVideoCutStore((s) => s.startTime);
 
   /**
    * Cut end time, or '' when using the duration mode.
    * @type {string}
    */
-  const [endTime, setEndTime] = useState('');
+  const endTime = useVideoCutStore((s) => s.endTime);
 
   /**
    * Cut duration (used instead of end time when `useDuration` is on).
    * @type {string}
    */
-  const [duration, setDuration] = useState('');
+  const duration = useVideoCutStore((s) => s.duration);
 
   /**
    * When true, the cut window is specified by start time + duration instead of
    * start/end times.
    * @type {boolean}
    */
-  const [useDuration, setUseDuration] = useState(false);
+  const useDuration = useVideoCutStore((s) => s.useDuration);
+
+  /**
+   * Whether the audio stream is kept in the cut output.
+   * @type {boolean}
+   */
+  const includeAudio = useVideoCutStore((s) => s.includeAudio);
 
   /**
    * Whether the running cut job is paused.
@@ -211,12 +231,6 @@ export default function VideoCut() {
   const [jobCancelOpen, setJobCancelOpen] = useState(false);
 
   /**
-   * Whether the audio stream is kept in the cut output.
-   * @type {boolean}
-   */
-  const [includeAudio, setIncludeAudio] = useState(true);
-
-  /**
    * Current playhead position in seconds reported by the MediaPlayer.
    * @type {number}
    */
@@ -229,16 +243,26 @@ export default function VideoCut() {
   const [videoDuration, setVideoDuration] = useState(0);
 
   /**
-   * Waveform data for the timeline, or null until extracted.
+   * Cached waveform data for the timeline, or null until extracted. Cached in
+   * the video cut store (in memory) so it survives navigation away and back.
    * @type {WaveformData | null}
    */
-  const [waveform, setWaveform] = useState<WaveformData | null>(null);
+  const waveform = useVideoCutStore((s) => s.waveform);
 
   /**
-   * Thumbnail strip for the timeline, or null until extracted.
+   * Cached thumbnail strip for the timeline, or null until extracted. Cached in
+   * the video cut store (in memory) so it survives navigation away and back.
    * @type {ThumbnailStrip | null}
    */
-  const [thumbnails, setThumbnails] = useState<ThumbnailStrip | null>(null);
+  const thumbnails = useVideoCutStore((s) => s.thumbnails);
+
+  /**
+   * Cached timeline zoom level for the current video, or null. Cached in the
+   * video cut store (in memory) so it survives navigation away and back.
+   * @type {number | null}
+   */
+  const cachedZoom = useVideoCutStore((s) => s.zoom);
+  const cachedZoomKey = useVideoCutStore((s) => s.zoomKey);
 
   /**
    * Probed media info of the selected video (used to locate video/audio
@@ -258,6 +282,36 @@ export default function VideoCut() {
    * @type {boolean}
    */
   const [thumbnailsLoading, setThumbnailsLoading] = useState(false);
+
+  /**
+   * Draft setter/actions from the video cut store.
+   * @type {{
+   *   setInput: (file: string) => void;
+   *   setOutput: (file: string) => void;
+   *   setStartTime: (time: string) => void;
+   *   setEndTime: (time: string) => void;
+   *   setDuration: (duration: string) => void;
+   *   setUseDuration: (use: boolean) => void;
+   *   setIncludeAudio: (include: boolean) => void;
+   *   cacheWaveform: (data: WaveformData | null, key?: string | null) => void;
+   *   cacheThumbnails: (data: ThumbnailStrip | null, key?: string | null) => void;
+   *   cacheZoom: (zoom: number | null, key?: string | null) => void;
+   *   resetDraft: () => void;
+   * }}
+   */
+  const {
+    setInput,
+    setOutput,
+    setStartTime,
+    setEndTime,
+    setDuration,
+    setUseDuration,
+    setIncludeAudio,
+    cacheWaveform,
+    cacheThumbnails,
+    cacheZoom,
+    resetForm: resetDraft,
+  } = useVideoCutStore();
 
   /**
    * Imperative handle to the MediaPlayer, used to seek the player when the
@@ -331,24 +385,17 @@ export default function VideoCut() {
   /**
    * Resets every form field, media-derived state, and progress back to its
    * initial value: input/output paths, the cut window, audio toggle, pause and
-   * playhead, video duration, waveform/thumbnails and their loading flags,
-   * media info, progress, and field errors. Shared by the cancel and clear
-   * handlers.
+   * playhead, video duration, the cached waveform/thumbnails, media info,
+   * progress, and field errors. Shared by the cancel and clear handlers. The
+   * draft fields, media cache, and persisted snapshot are cleared through the
+   * store.
    * @returns {void}
    */
   const resetForm = () => {
-    setInput('');
-    setOutput('');
-    setStartTime('00:00:00');
-    setEndTime('');
-    setDuration('');
-    setUseDuration(false);
+    resetDraft();
     setIsPaused(false);
-    setIncludeAudio(true);
     setPlayhead(0);
     setVideoDuration(0);
-    setWaveform(null);
-    setThumbnails(null);
     setMediaInfo(null);
     setWaveformLoading(false);
     setThumbnailsLoading(false);
@@ -358,60 +405,79 @@ export default function VideoCut() {
 
   /**
    * Extracts the waveform and thumbnail strip for the selected video once its
-   * duration is known. Both requests are deferred to the next task via a
-   * 0ms timeout so they run after render; results are discarded if the effect
-   * is cleaned up (e.g. a new file or duration arrives), and failures are logged
-   * and only clear the respective loading flag. The timeout is cleared and a
-   * cancellation flag set on cleanup.
+   * duration is known, unless already cached in the video cut store for the same
+   * input + duration (the cache survives navigation away and back, so revisiting
+   * the page never re-extracts). Each missing item is requested in isolation, so
+   * a partial cache is completed rather than discarded. Requests are deferred to
+   * the next task via a 0ms timeout so they run after render; results are
+   * discarded if the effect is cleaned up (e.g. a new file or duration arrives),
+   * and failures are logged and only clear the respective loading flag. The
+   * timeout is cleared and a cancellation flag set on cleanup.
    * @returns {() => void} Cleanup that cancels in-flight extraction updates and
    *   clears the scheduled timer.
    */
   useEffect(() => {
     if (!input || videoDuration <= 0) return;
     let cancelled = false;
-    setWaveform(null);
-    setThumbnails(null);
-    setWaveformLoading(true);
-    setThumbnailsLoading(true);
+
+    const cacheKey = `${input}::${videoDuration}`;
+    const { waveform: cachedWaveform, waveformKey, thumbnails: cachedThumbnails, thumbnailsKey } = useVideoCutStore.getState();
+    const waveformCached = !!cachedWaveform && waveformKey === cacheKey;
+    const thumbnailsCached = !!cachedThumbnails && thumbnailsKey === cacheKey;
+    if (waveformCached && thumbnailsCached) return;
+
+    if (!waveformCached) {
+      cacheWaveform(null, null);
+      setWaveformLoading(true);
+    }
+    if (!thumbnailsCached) {
+      cacheThumbnails(null, null);
+      setThumbnailsLoading(true);
+    }
 
     const timer = window.setTimeout(() => {
       if (cancelled) return;
-      window.electronAPI
-        .extractWaveform(input, videoDuration)
-        .then((data) => {
-          if (cancelled) return;
-          setWaveform(data);
-          setWaveformLoading(false);
-        })
-        .catch((err: unknown) => {
-          log.warn(LOG_FAILED_TO_EXTRACT_WAVEFORM, err);
-          if (!cancelled) setWaveformLoading(false);
-        });
 
-      window.electronAPI
-        .extractThumbnails(input, videoDuration)
-        .then((data) => {
-          if (cancelled) return;
-          setThumbnails(data);
-          setThumbnailsLoading(false);
-        })
-        .catch((err: unknown) => {
-          log.warn(LOG_FAILED_TO_EXTRACT_THUMBNAILS, err);
-          if (!cancelled) setThumbnailsLoading(false);
-        });
+      if (!waveformCached) {
+        window.electronAPI
+          .extractWaveform(input, videoDuration)
+          .then((data) => {
+            if (cancelled) return;
+            cacheWaveform(data, cacheKey);
+            setWaveformLoading(false);
+          })
+          .catch((err: unknown) => {
+            log.warn(LOG_FAILED_TO_EXTRACT_WAVEFORM, err);
+            if (!cancelled) setWaveformLoading(false);
+          });
+      }
+
+      if (!thumbnailsCached) {
+        window.electronAPI
+          .extractThumbnails(input, videoDuration)
+          .then((data) => {
+            if (cancelled) return;
+            cacheThumbnails(data, cacheKey);
+            setThumbnailsLoading(false);
+          })
+          .catch((err: unknown) => {
+            log.warn(LOG_FAILED_TO_EXTRACT_THUMBNAILS, err);
+            if (!cancelled) setThumbnailsLoading(false);
+          });
+      }
     }, 0);
 
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [input, videoDuration]);
+  }, [input, videoDuration, cacheWaveform, cacheThumbnails]);
 
   /**
    * Handles a newly selected or dropped video file. Clears all media-derived
-   * state (start/end/duration, audio toggle, playhead, video duration, waveform,
-   * thumbnails, media info, and loading flags) and sets the new input path so
-   * the MediaPlayer reloads and the extraction effect re-runs.
+   * state (start/end/duration, audio toggle, playhead, video duration, the
+   * cached waveform/thumbnails, media info, and loading flags) and sets the new
+   * input path so the MediaPlayer reloads and the extraction effect re-runs.
    * @param {string} path - Absolute path of the selected video file.
    * @returns {void}
    */
@@ -423,8 +489,9 @@ export default function VideoCut() {
     setIncludeAudio(true);
     setPlayhead(0);
     setVideoDuration(0);
-    setWaveform(null);
-    setThumbnails(null);
+    cacheWaveform(null, null);
+    cacheThumbnails(null, null);
+    cacheZoom(null, null);
     setMediaInfo(null);
     setWaveformLoading(false);
     setThumbnailsLoading(false);
@@ -570,6 +637,8 @@ export default function VideoCut() {
               thumbnails={thumbnails}
               waveformLoading={waveformLoading}
               thumbnailsLoading={thumbnailsLoading}
+              zoom={cachedZoomKey === `${input}::${videoDuration}` ? cachedZoom : null}
+              onZoomChange={(z) => cacheZoom(z, `${input}::${videoDuration}`)}
               audioEnabled={includeAudio}
               videoStream={videoStream}
               audioStream={audioStream}
@@ -583,6 +652,8 @@ export default function VideoCut() {
 
         <SectionPaper>
           <SectionTitle variant="h6">{t('videoCut.details')}</SectionTitle>
+
+          {settingsHardwareAcceleration && <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>}
 
           <Box>
             <FieldLabel variant="caption" color="text.secondary">

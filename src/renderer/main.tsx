@@ -7,6 +7,8 @@
  *    Font Awesome SVG core stylesheet so icons render correctly.
  *  - Patches `console.log` / `console.warn` / `console.error` to mirror every
  *    message into the renderer log store (in addition to the original output).
+ *  - Registers the session cleanup that wipes transient saved data (the video
+ *    cut draft) when the window unloads, keeping only persisted preferences.
  *  - Renders the `Root` component, which wires up the HashRouter, the emotion
  *    `DirectionProvider` (RTL/LTR cache), and the i18next provider around `App`.
  *  - Mounts the whole tree under `React.StrictMode` into the `#root` element.
@@ -27,6 +29,7 @@ import i18n from './i18n/config';
 import { DirectionProvider } from './i18n/DirectionProvider';
 import { useLanguageDirection } from './useLanguageDirection';
 import { useLogStore } from './stores/logStore';
+import { setupSessionCleanup } from './sessionCleanup';
 import { LOG_MOUNTING_REACT_APP } from '../shared/log-constants';
 
 /** Logger instance used by this module. @const {Logger} */
@@ -86,6 +89,13 @@ function Root() {
 }
 
 log.info(LOG_MOUNTING_REACT_APP);
+/**
+ * Wipes transient saved data (e.g. the video cut draft) when the window
+ * unloads, keeping only the persisted preferences (theme, language,
+ * always-on-top, hardware acceleration). The returned cleanup is intentionally
+ * not stored: the listener lives for the whole renderer lifetime.
+ */
+setupSessionCleanup();
 /**
  * Creates the React root on the `#root` element and mounts the app inside
  * `React.StrictMode`.

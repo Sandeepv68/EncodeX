@@ -124,6 +124,12 @@ function initialZoom(duration: number): number {
  *   bubble.
  * @param {MediaStreamInfo | null} [props.audioStream] - Audio stream summary
  *   bubble.
+ * @param {number | null} [props.zoom] - Controlled zoom level (pixels per
+ *   second). When a number is provided the timeline is zoom-controlled by the
+ *   parent (its internal duration-based auto-fit is disabled); null keeps the
+ *   auto-fit behavior.
+ * @param {(zoom: number) => void} [props.onZoomChange] - Called with the next
+ *   zoom level when the zoom buttons are used in controlled mode.
  * @param {(time: number) => void} props.onSeek - Called when the playhead is
  *   scrubbed.
  * @param {(time: number) => void} props.onStartChange - Called when the start
@@ -146,6 +152,8 @@ export default function VideoTimeline({
   audioEnabled = true,
   videoStream = null,
   audioStream = null,
+  zoom: zoomProp = null,
+  onZoomChange,
   onSeek,
   onStartChange,
   onEndChange,
@@ -193,17 +201,34 @@ export default function VideoTimeline({
    * @type {React.MutableRefObject<number>}
    */
   const prevTimeRef = useRef(currentTime);
-  const [zoom, setZoomState] = useState<number>(() => initialZoom(duration));
+  /**
+   * Internal zoom state, used only in uncontrolled mode (when the `zoom` prop is
+   * null). Initialized to fit the full clip at the default timeline width.
+   * @type {number}
+   */
+  const [zoomState, setZoomState] = useState<number>(() => initialZoom(duration));
+  /**
+   * Whether the zoom is controlled by the parent (a numeric `zoom` prop).
+   * @type {boolean}
+   */
+  const isControlledZoom = zoomProp !== null;
+  /**
+   * Active zoom in pixels per second: the controlled prop when provided,
+   * otherwise the internal auto-fit state.
+   * @type {number}
+   */
+  const zoom = isControlledZoom ? (zoomProp as number) : zoomState;
   const [viewState, setViewState] = useState({ scrollLeft: 0, viewportWidth: 600 });
   /**
    * Previous duration, used to re-initialize the zoom whenever the clip
-   * duration changes.
+   * duration changes. Skipped in controlled mode so the parent's cached zoom is
+   * never reset.
    * @type {React.MutableRefObject<number>}
    */
   const prevDurationRef = useRef(duration);
   if (prevDurationRef.current !== duration) {
     prevDurationRef.current = duration;
-    setZoomState(initialZoom(duration));
+    if (!isControlledZoom) setZoomState(initialZoom(duration));
   }
   /**
    * Live snapshot of zoom/duration/trim points and the change callbacks, kept
@@ -365,7 +390,10 @@ export default function VideoTimeline({
 
   /**
    * Changes the zoom by a factor, clamping to the allowed range, and
-   * re-centers the viewport on the media time under the viewport's center.
+   * re-centers the viewport on the media time under the viewport's center. The
+   * internal state is always updated; when an `onZoomChange` callback is
+   * provided (controlled mode) the new value is also reported to the parent so
+   * it can be persisted.
    * @param {number} factor - Zoom multiplier (e.g. TIMELINE_ZOOM_STEP zooms
    *   in, its reciprocal zooms out).
    * @returns {void}
@@ -375,6 +403,7 @@ export default function VideoTimeline({
     const next = clamp(zoom * factor, TIMELINE_MIN_ZOOM, TIMELINE_MAX_ZOOM);
     const centerTime = viewport ? (viewport.scrollLeft + viewport.clientWidth / 2) / zoom : currentTime;
     setZoomState(next);
+    onZoomChange?.(next);
     if (viewport && typeof requestAnimationFrame === 'function') {
       requestAnimationFrame(() => {
         viewport.scrollLeft = Math.max(0, centerTime * next - viewport.clientWidth / 2);

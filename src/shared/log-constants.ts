@@ -154,6 +154,8 @@ export const LOG_EXTRACTION_COMPLETED_SUCCESSFULLY = 'Extraction completed succe
 export const LOG_EXTRACTION_FAILED = 'Extraction failed:';
 /** @const {string} Prefix when cleaning up a partial output file fails. */
 export const LOG_FAILED_TO_CLEAN_UP_PARTIAL_OUTPUT = 'Failed to clean up partial output:';
+/** @const {string} Prefix when clearing transient storage fails. */
+export const LOG_FAILED_TO_CLEAR_TRANSIENT_STORAGE = 'Failed to clear transient storage:';
 /** @const {string} Prefix when thumbnail extraction fails. */
 export const LOG_FAILED_TO_EXTRACT_THUMBNAILS = 'Failed to extract thumbnails:';
 /** @const {string} Prefix when waveform extraction fails. */
@@ -168,6 +170,8 @@ export const LOG_FAILED_TO_LOAD_MEDIA_INFO_FOR_PREVIEW = 'Failed to load media i
 export const LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING = 'Failed to persist always-on-top setting:';
 /** @const {string} Prefix when persisting hardware acceleration settings fails. */
 export const LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS = 'Failed to persist hardware acceleration settings:';
+/** @const {string} Prefix when persisting the video cut draft fails. */
+export const LOG_FAILED_TO_PERSIST_VIDEO_CUT_DRAFT = 'Failed to persist video cut draft:';
 /** @const {string} Prefix when reading image dimensions fails. */
 export const LOG_FAILED_TO_READ_IMAGE_DIMENSIONS = 'Failed to read image dimensions:';
 /** @const {string} Prefix when reading an image preview fails. */
@@ -176,6 +180,8 @@ export const LOG_FAILED_TO_READ_IMAGE_PREVIEW = 'Failed to read image preview:';
 export const LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING = 'Failed to read stored always-on-top setting:';
 /** @const {string} Prefix when reading stored hardware acceleration settings fails. */
 export const LOG_FAILED_TO_READ_STORED_HARDWARE_ACCELERATION_SETTINGS = 'Failed to read stored hardware acceleration settings:';
+/** @const {string} Prefix when reading the stored video cut draft fails. */
+export const LOG_FAILED_TO_READ_STORED_VIDEO_CUT_DRAFT = 'Failed to read stored video cut draft:';
 /** @const {string} Prefix when resuming a process fails. */
 export const LOG_FAILED_TO_RESUME_PROCESS = 'Failed to resume process:';
 /** @const {string} Prefix when statting an image file fails. */
@@ -525,6 +531,8 @@ export const LOG_SET_HWACCEL_MODE = 'setHwaccelMode:';
 export const LOG_SET_INPUT = 'setInput:';
 /** @const {string} Prefix when the input file is set. */
 export const LOG_SET_INPUT_FILE = 'setInputFile:';
+/** @const {string} Prefix when the include-audio toggle is set. */
+export const LOG_SET_INCLUDE_AUDIO = 'setIncludeAudio:';
 /** @const {string} Prefix when the converting state is set. */
 export const LOG_SET_IS_CONVERTING = 'setIsConverting:';
 /** @const {string} Prefix when the paused state is set. */
@@ -537,6 +545,16 @@ export const LOG_SET_OUTPUT = 'setOutput:';
 export const LOG_SET_OUTPUT_AUTO = 'setOutputAuto:';
 /** @const {string} Prefix when the output file is set. */
 export const LOG_SET_OUTPUT_FILE = 'setOutputFile:';
+/** @const {string} Prefix when the start time is set. */
+export const LOG_SET_START_TIME = 'setStartTime:';
+/** @const {string} Prefix when the end time is set. */
+export const LOG_SET_END_TIME = 'setEndTime:';
+/** @const {string} Prefix when the duration is set. */
+export const LOG_SET_DURATION = 'setDuration:';
+/** @const {string} Prefix when the use-duration toggle is set. */
+export const LOG_SET_USE_DURATION = 'setUseDuration:';
+/** @const {string} Prefix when the video cut form is reset. */
+export const LOG_RESET_VIDEO_CUT_FORM = 'resetVideoCutForm';
 /** @const {string} Prefix when the pixel format is set. */
 export const LOG_SET_PIXEL_FORMAT = 'setPixelFormat:';
 /** @const {string} Prefix when the preview is set. */

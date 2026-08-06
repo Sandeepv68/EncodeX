@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Box, IconButton, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { TITLEBAR_COLORS } from '../colors';
+import { TITLEBAR_COLORS, OVERLAY_COLORS } from '../colors';
 
 const dragRegion = { WebkitAppRegion: 'drag' } as React.CSSProperties;
 const noDragRegion = { WebkitAppRegion: 'no-drag' } as React.CSSProperties;
@@ -34,6 +34,7 @@ export const TitleBarIcon = styled('img')(({ theme }) => ({
   marginLeft: theme.spacing(1.5),
   marginRight: theme.spacing(1),
   borderRadius: theme.typography.pxToRem(4),
+  filter: `drop-shadow(0 ${theme.typography.pxToRem(1)} ${theme.typography.pxToRem(2)} ${OVERLAY_COLORS.black25})`,
   flexShrink: 0,
   userSelect: 'none',
   WebkitUserSelect: 'none',

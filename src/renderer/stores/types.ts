@@ -20,6 +20,7 @@
  *  - ErrorState()         - error store state + actions
  *  - TaskProgress         - progress subset surfaced for audio extraction
  *  - AudioExtractState()  - audio extraction store state + actions
+ *  - VideoCutState()      - video cut form draft store state + actions
  */
 
 import type {
@@ -31,6 +32,8 @@ import type {
   LogEntry,
   MediaStreamInfo,
   QueueJob,
+  ThumbnailStrip,
+  WaveformData,
 } from '../../shared/types';
 
 /**
@@ -350,4 +353,64 @@ export interface AudioExtractState {
   pauseExtract: () => Promise<void>;
   resumeExtract: () => Promise<void>;
   cancelExtract: () => Promise<void>;
+}
+
+/**
+ * State of the video cut form draft store.
+ * Holds the user-editable cut form fields (source/output paths, cut window,
+ * audio toggle) persisted to localStorage under VIDEO_CUT_DRAFT_STORAGE_KEY so
+ * the draft survives navigating away and back. Run state (progress, pause
+ * flags) and media-derived state (playhead, waveform, thumbnails) are NOT part
+ * of this store - they are re-derived on remount.
+ * @interface VideoCutState
+ * @property {string} input - Absolute path of the selected source video, or '' when none.
+ * @property {string} output - Absolute path of the output file, or '' when none.
+ * @property {string} startTime - Cut start time as an `HH:MM:SS[.mmm]` string.
+ * @property {string} endTime - Cut end time, or '' when using the duration mode.
+ * @property {string} duration - Cut duration (used when `useDuration` is on).
+ * @property {boolean} useDuration - Whether the cut window uses start + duration instead of start/end.
+ * @property {boolean} includeAudio - Whether the audio stream is kept in the output.
+ * @property {WaveformData | null} waveform - Cached timeline waveform, or null until extracted. Kept in memory only.
+ * @property {string | null} waveformKey - Cache key (`input::duration`) the waveform belongs to, or null.
+ * @property {ThumbnailStrip | null} thumbnails - Cached timeline thumbnail strip, or null until extracted. Kept in memory only.
+ * @property {string | null} thumbnailsKey - Cache key (`input::duration`) the thumbnails belong to, or null.
+ * @property {number | null} zoom - Cached timeline zoom level (pixels per second), or null. Kept in memory only.
+ * @property {string | null} zoomKey - Cache key (`input::duration`) the zoom belongs to, or null.
+ * @property {(file: string) => void} setInput - Sets the source video path and persists the draft.
+ * @property {(file: string) => void} setOutput - Sets the output path and persists the draft.
+ * @property {(time: string) => void} setStartTime - Sets the start time and persists the draft.
+ * @property {(time: string) => void} setEndTime - Sets the end time and persists the draft.
+ * @property {(duration: string) => void} setDuration - Sets the duration and persists the draft.
+ * @property {(use: boolean) => void} setUseDuration - Sets the use-duration flag and persists the draft.
+ * @property {(include: boolean) => void} setIncludeAudio - Sets the audio toggle and persists the draft.
+ * @property {(data: WaveformData | null, key?: string | null) => void} cacheWaveform - Caches the waveform (and its key), or clears it.
+ * @property {(data: ThumbnailStrip | null, key?: string | null) => void} cacheThumbnails - Caches the thumbnails (and their key), or clears them.
+ * @property {(zoom: number | null, key?: string | null) => void} cacheZoom - Caches the timeline zoom (and its key), or clears it.
+ * @property {() => void} resetForm - Clears every draft field, the media cache, and the persisted snapshot.
+ */
+export interface VideoCutState {
+  input: string;
+  output: string;
+  startTime: string;
+  endTime: string;
+  duration: string;
+  useDuration: boolean;
+  includeAudio: boolean;
+  waveform: WaveformData | null;
+  waveformKey: string | null;
+  thumbnails: ThumbnailStrip | null;
+  thumbnailsKey: string | null;
+  zoom: number | null;
+  zoomKey: string | null;
+  setInput: (file: string) => void;
+  setOutput: (file: string) => void;
+  setStartTime: (time: string) => void;
+  setEndTime: (time: string) => void;
+  setDuration: (duration: string) => void;
+  setUseDuration: (use: boolean) => void;
+  setIncludeAudio: (include: boolean) => void;
+  cacheWaveform: (data: WaveformData | null, key?: string | null) => void;
+  cacheThumbnails: (data: ThumbnailStrip | null, key?: string | null) => void;
+  cacheZoom: (zoom: number | null, key?: string | null) => void;
+  resetForm: () => void;
 }

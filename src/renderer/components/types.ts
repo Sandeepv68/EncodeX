@@ -284,6 +284,27 @@ export interface TimeFieldProps {
 /**
  * Props for the video cutting timeline.
  * @interface VideoTimelineProps
+ * @property {number} duration - Clip duration in seconds.
+ * @property {number} currentTime - Current playhead time in seconds.
+ * @property {number} start - Start (in) trim point in seconds.
+ * @property {number} end - End (out) trim point in seconds.
+ * @property {WaveformData | null} [waveform] - Waveform data for the audio track.
+ * @property {ThumbnailStrip | null} [thumbnails] - Thumbnail strip data for the video track.
+ * @property {boolean} [waveformLoading] - Shows a skeleton while true.
+ * @property {boolean} [thumbnailsLoading] - Shows a skeleton while true.
+ * @property {boolean} [audioEnabled] - Whether the audio track is retained in the cut.
+ * @property {MediaStreamInfo | null} [videoStream] - Video stream summary bubble.
+ * @property {MediaStreamInfo | null} [audioStream] - Audio stream summary bubble.
+ * @property {number | null} [zoom] - Controlled zoom level (pixels per second). When a
+ *   number is provided the timeline is zoom-controlled by the parent (it ignores
+ *   its internal duration-based initialization); null keeps the internal
+ *   auto-fit zoom behavior.
+ * @property {(zoom: number) => void} [onZoomChange] - Called with the next zoom level
+ *   when the zoom buttons are used (in controlled mode).
+ * @property {(time: number) => void} onSeek - Called when the playhead is scrubbed.
+ * @property {(time: number) => void} onStartChange - Called when the start trim point changes.
+ * @property {(time: number) => void} onEndChange - Called when the end trim point changes.
+ * @property {(enabled: boolean) => void} [onAudioEnabledChange] - Called when the audio-enabled checkbox is toggled.
  */
 export interface VideoTimelineProps {
   duration: number;
@@ -297,6 +318,8 @@ export interface VideoTimelineProps {
   audioEnabled?: boolean;
   videoStream?: MediaStreamInfo | null;
   audioStream?: MediaStreamInfo | null;
+  zoom?: number | null;
+  onZoomChange?: (zoom: number) => void;
   onSeek: (time: number) => void;
   onStartChange: (time: number) => void;
   onEndChange: (time: number) => void;

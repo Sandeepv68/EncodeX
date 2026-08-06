@@ -468,3 +468,10 @@ export const DEFAULT_LANGUAGE = 'en-US';
  * @const {string} WINDOW_ALWAYS_ON_TOP_STORAGE_KEY
  */
 export const WINDOW_ALWAYS_ON_TOP_STORAGE_KEY = 'encodex-always-on-top';
+
+/**
+ * localStorage key used to persist the video cut form draft so the user's
+ * unsaved cut settings survive navigation away and back.
+ * @const {string} VIDEO_CUT_DRAFT_STORAGE_KEY
+ */
+export const VIDEO_CUT_DRAFT_STORAGE_KEY = 'encodex-video-cut-draft';

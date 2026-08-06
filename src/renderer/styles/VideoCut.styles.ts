@@ -1,6 +1,11 @@
 import { styled } from '@mui/material/styles';
-import { Box, Chip, Paper, Typography } from '@mui/material';
-import { SHADOWS } from '../colors';
+import { Box, Chip, Paper, Typography, Alert } from '@mui/material';
+import { SHADOWS, COLORS } from '../colors';
+
+export const AccelAlert = styled(Alert)(({}) => ({
+  fontWeight: 500,
+  color: COLORS.alert.info,
+}));
 
 export const ToggleRow = styled(Box)(({ theme }) => ({
   display: 'flex',

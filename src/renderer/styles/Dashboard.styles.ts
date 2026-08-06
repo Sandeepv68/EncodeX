@@ -1,6 +1,6 @@
 import { styled, keyframes } from '@mui/material/styles';
 import { Box, Card, CardActionArea, CardContent, Typography } from '@mui/material';
-import { SHADOWS } from '../colors';
+import { SHADOWS, OVERLAY_COLORS } from '../colors';
 
 const fadeSlideUp = keyframes`
   from { opacity: 0; transform: translateY(12px); }
@@ -36,6 +36,7 @@ export const WelcomeIcon = styled('img')(({ theme }) => ({
   userSelect: 'none',
   WebkitUserSelect: 'none',
   pointerEvents: 'none',
+  filter: `drop-shadow(0 ${theme.typography.pxToRem(1)} ${theme.typography.pxToRem(2)} ${OVERLAY_COLORS.black25})`,
   animation: `${fadeInScale} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
   animationDelay: '0.1s',
   '@media (prefers-reduced-motion: reduce)': {
