@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Detailed media stream information panel.
+ *
+ * Renders a title with a stream count chip and one outlined card per probed
+ * stream. Each card shows the stream type and index, a responsive grid of
+ * label/value rows for every available codec, resolution, color, frame-rate,
+ * audio, timing, and metadata property, and a disposition chip row when the
+ * stream declares disposition flags.
+ *
+ * Values are localized through i18n keys and truncated with an
+ * {@link EllipsisTooltip} when they overflow. A compact prop reduces the grid
+ * to two columns per row instead of four.
+ *
+ * Props (see {@link StreamDetailsProps}):
+ *  - streams: the probed MediaStreamInfo entries to display.
+ *  - compact: when true, uses a two-column grid layout.
+ */
+
 import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaStreamInfo } from '../../shared/types';
@@ -17,6 +35,16 @@ import {
   DispositionRow,
 } from '../styles/StreamDetails.styles';
 
+/**
+ * Builds the label/value rows for a stream. Each row is pushed only when the
+ * corresponding property is present (and, for numeric properties, greater
+ * than zero where relevant). Stream tags are appended with localized tag
+ * keys, skipping the language and title tags already surfaced as rows.
+ * @param {MediaStreamInfo} stream - The stream to build rows for.
+ * @param {(key: string, opts?: Record<string, unknown>) => string} t - The
+ *   i18n translate function.
+ * @returns {Array<[string, string]>} Pairs of localized label and value.
+ */
 function buildStreamRows(stream: MediaStreamInfo, t: (key: string, opts?: Record<string, unknown>) => string): [string, string][] {
   const rows: [string, string][] = [];
   if (stream.codec) rows.push([t('mediaInfo.codec'), stream.codec + (stream.codecLong ? ` (${stream.codecLong})` : '')]);
@@ -52,9 +80,27 @@ function buildStreamRows(stream: MediaStreamInfo, t: (key: string, opts?: Record
   return rows;
 }
 
+/**
+ * Renders the stream details panel.
+ *
+ * Maps each stream to a StreamPaper card containing the type chip, name, the
+ * row grid built by {@link buildStreamRows}, and the disposition flags. Each
+ * value is rendered through an {@link EllipsisTooltip} to keep overflowing
+ * text readable.
+ * @param {StreamDetailsProps} props - Component props.
+ * @param {MediaStreamInfo[]} props.streams - The streams to display.
+ * @param {boolean} [props.compact] - When true, lays out rows in a two-column
+ *   grid.
+ * @returns {JSX.Element} The stream cards.
+ */
 export default function StreamDetails({ streams, compact }: StreamDetailsProps) {
   const { t } = useTranslation();
 
+  /**
+   * Responsive grid column spans per row: two columns per row in compact mode,
+   * four columns otherwise.
+   * @type {{ xs: number; sm: number; md?: number; lg?: number }}
+   */
   const rowSize = compact ? { xs: 12, sm: 6 } : { xs: 12, sm: 6, md: 4, lg: 3 };
 
   return (

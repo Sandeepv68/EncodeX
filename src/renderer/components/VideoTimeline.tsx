@@ -1,3 +1,29 @@
+/**
+ * @fileoverview Interactive video cutting timeline.
+ *
+ * Renders a zoomable, scrollable timeline for trimming a video. A ruler shows
+ * time ticks and start/end marker bubbles, the video track shows a thumbnail
+ * strip, and the audio track renders an amplitude waveform. The region between
+ * the start and end markers is kept, while dimmed regions highlight the
+ * portions trimmed away.
+ *
+ * The timeline supports pointer interactions: dragging the playhead scrubs,
+ * dragging the start/end handles trims, and dragging the kept region moves the
+ * whole selection. Zoom is controlled via toolbar buttons that keep the view
+ * centered on the current position, and the viewport auto-scrolls to follow
+ * the playhead during playback. Waveform bars, thumbnails, and ruler ticks are
+ * virtualized to the visible range for performance.
+ *
+ * Props (see {@link VideoTimelineProps}):
+ *  - duration: total clip duration in seconds.
+ *  - currentTime: playhead position in seconds.
+ *  - start/end: current in/out trim points in seconds.
+ *  - waveform/thumbnails: optional visualization data plus loading flags.
+ *  - audioEnabled: whether the audio track is retained in the cut.
+ *  - videoStream/audioStream: stream summaries shown in info bubbles.
+ *  - onSeek/onStartChange/onEndChange/onAudioEnabledChange: change callbacks.
+ */
+
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Checkbox, CircularProgress, Skeleton, Tooltip, Typography } from '@mui/material';
@@ -47,14 +73,66 @@ import {
   TIMELINE_TICK_STEPS,
 } from '../../shared/constants';
 
+/**
+ * Clamps a value to the inclusive [min, max] range.
+ * @param {number} value - The value to clamp.
+ * @param {number} min - Lower bound.
+ * @param {number} max - Upper bound.
+ * @returns {number} The clamped value.
+ */
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
+/**
+ * Computes the initial zoom level (pixels per second) that fits the full clip
+ * width at the default timeline width, clamped to the allowed zoom range.
+ * @param {number} duration - Clip duration in seconds.
+ * @returns {number} Initial zoom in pixels per second.
+ */
 function initialZoom(duration: number): number {
   return clamp(DEFAULT_TIMELINE_WIDTH / Math.max(duration, 1), TIMELINE_MIN_ZOOM, TIMELINE_MAX_ZOOM);
 }
 
+/**
+ * Renders the interactive video cutting timeline.
+ *
+ * Layers the ruler (top), the video thumbnail track, and the audio waveform
+ * track onto a scrollable scroller. Pointer drags are dispatched by data-kind
+ * to scrub the playhead, trim the start/end handles, or move the whole kept
+ * selection; the kept region between start/end is highlighted while the
+ * trimmed portions are dimmed. Track info bubbles summarize the video and
+ * audio streams, and an audio-enabled checkbox controls whether the audio
+ * track is kept in the cut. Returns null while the duration is not yet known
+ * (<= 0).
+ *
+ * @param {VideoTimelineProps} props - Component props.
+ * @param {number} props.duration - Clip duration in seconds.
+ * @param {number} props.currentTime - Current playhead time in seconds.
+ * @param {number} props.start - Start (in) trim point in seconds.
+ * @param {number} props.end - End (out) trim point in seconds.
+ * @param {WaveformData | null} [props.waveform] - Waveform data for the audio
+ *   track.
+ * @param {ThumbnailStrip | null} [props.thumbnails] - Thumbnail strip data for
+ *   the video track.
+ * @param {boolean} [props.waveformLoading] - Shows a skeleton while true.
+ * @param {boolean} [props.thumbnailsLoading] - Shows a skeleton while true.
+ * @param {boolean} [props.audioEnabled] - Whether the audio track is retained
+ *   in the cut.
+ * @param {MediaStreamInfo | null} [props.videoStream] - Video stream summary
+ *   bubble.
+ * @param {MediaStreamInfo | null} [props.audioStream] - Audio stream summary
+ *   bubble.
+ * @param {(time: number) => void} props.onSeek - Called when the playhead is
+ *   scrubbed.
+ * @param {(time: number) => void} props.onStartChange - Called when the start
+ *   trim point changes.
+ * @param {(time: number) => void} props.onEndChange - Called when the end trim
+ *   point changes.
+ * @param {(enabled: boolean) => void} [props.onAudioEnabledChange] - Called
+ *   when the audio-enabled checkbox is toggled.
+ * @returns {JSX.Element | null} The timeline, or null when duration <= 0.
+ */
 export default function VideoTimeline({
   duration,
   currentTime,
@@ -73,23 +151,74 @@ export default function VideoTimeline({
   onAudioEnabledChange,
 }: VideoTimelineProps) {
   const { t } = useTranslation();
+  /**
+   * Reference to the scrollable viewport element; used for scroll/zoom math
+   * and scroll listening.
+   * @type {React.RefObject<HTMLDivElement>}
+   */
   const viewportRef = useRef<HTMLDivElement>(null);
+  /**
+   * Reference to the scroller (track surface) element; used to map pointer
+   * client X coordinates to media time.
+   * @type {React.RefObject<HTMLDivElement>}
+   */
   const scrollerRef = useRef<HTMLDivElement>(null);
+  /**
+   * Kind of drag currently active (playhead, start, end, move, scrub), or null
+   * when idle.
+   * @type {React.MutableRefObject<DragKind | null>}
+   */
   const dragRef = useRef<DragKind | null>(null);
+  /**
+   * Media time at which a 'move' drag started.
+   * @type {React.MutableRefObject<number>}
+   */
   const dragOriginRef = useRef(0);
+  /**
+   * Start trim point captured when a 'move' drag began, used to compute the
+   * delta.
+   * @type {React.MutableRefObject<number>}
+   */
   const dragBaseStartRef = useRef(0);
+  /**
+   * End trim point captured when a 'move' drag began, used to compute the
+   * delta.
+   * @type {React.MutableRefObject<number>}
+   */
   const dragBaseEndRef = useRef(0);
+  /**
+   * Previous currentTime, used by the auto-scroll effect to detect forward
+   * playhead motion.
+   * @type {React.MutableRefObject<number>}
+   */
   const prevTimeRef = useRef(currentTime);
   const [zoom, setZoomState] = useState<number>(() => initialZoom(duration));
   const [viewState, setViewState] = useState({ scrollLeft: 0, viewportWidth: 600 });
+  /**
+   * Previous duration, used to re-initialize the zoom whenever the clip
+   * duration changes.
+   * @type {React.MutableRefObject<number>}
+   */
   const prevDurationRef = useRef(duration);
   if (prevDurationRef.current !== duration) {
     prevDurationRef.current = duration;
     setZoomState(initialZoom(duration));
   }
+  /**
+   * Live snapshot of zoom/duration/trim points and the change callbacks, kept
+   * in a ref so window-level pointer handlers always read current values
+   * without re-binding.
+   * @type {React.MutableRefObject<{ zoom: number; duration: number; start: number; end: number; onSeek: (time: number) => void; onStartChange: (time: number) => void; onEndChange: (time: number) => void }>}
+   */
   const stateRef = useRef({ zoom: 1, duration: 0, start: 0, end: 0, onSeek, onStartChange, onEndChange });
   stateRef.current = { zoom, duration, start, end, onSeek, onStartChange, onEndChange };
 
+  /**
+   * Converts a pointer client X position into a media time by offsetting it
+   * from the scroller's left edge and dividing by the current zoom.
+   * @param {number} clientX - Pointer X coordinate relative to the viewport.
+   * @returns {number} Time in seconds clamped to [0, duration].
+   */
   const timeFromEvent = (clientX: number): number => {
     const el = scrollerRef.current;
     if (!el) return 0;
@@ -97,6 +226,13 @@ export default function VideoTimeline({
     return clamp((clientX - rect.left) / zoom, 0, duration);
   };
 
+  /**
+   * Window-level pointermove handler active during a drag. Dispatches by drag
+   * kind: trims the start/end handles (respecting TIMELINE_MIN_GAP), shifts
+   * the whole selection for 'move', or seeks for 'playhead'/'scrub'.
+   * @param {PointerEvent} e - The window pointermove event.
+   * @returns {void}
+   */
   const onWindowPointerMove = (e: PointerEvent) => {
     const kind = dragRef.current;
     if (!kind) return;
@@ -112,12 +248,26 @@ export default function VideoTimeline({
     } else s.onSeek(time);
   };
 
+  /**
+   * Ends the active drag: clears dragRef and removes the window pointer
+   * listeners.
+   * @returns {void}
+   */
   const onWindowPointerUp = () => {
     dragRef.current = null;
     window.removeEventListener('pointermove', onWindowPointerMove);
     window.removeEventListener('pointerup', onWindowPointerUp);
   };
 
+  /**
+   * Begins a pointer interaction on the scroller. If the target has a
+   * data-kind attribute, starts a trim or move drag (capturing the move
+   * baselines); otherwise starts a scrub and seeks immediately. Attaches
+   * window pointer listeners and prevents the default text-selection
+   * behavior.
+   * @param {React.PointerEvent} e - The pointerdown event.
+   * @returns {void}
+   */
   const handlePointerDown = (e: React.PointerEvent) => {
     const kind = (e.target as HTMLElement).closest('[data-kind]')?.getAttribute('data-kind') as DragKind | null;
     if (kind) {
@@ -136,6 +286,10 @@ export default function VideoTimeline({
     window.addEventListener('pointerup', onWindowPointerUp);
   };
 
+  /**
+   * Cleanup effect that removes any window pointer listeners on unmount.
+   * @returns {void}
+   */
   useEffect(() => {
     return () => {
       window.removeEventListener('pointermove', onWindowPointerMove);
@@ -143,9 +297,20 @@ export default function VideoTimeline({
     };
   }, []);
 
+  /**
+   * Tracks the viewport's scroll position and size (via a passive scroll
+   * listener and a ResizeObserver) into viewState so the ruler, waveform,
+   * and thumbnails can virtualize to the visible range.
+   * @returns {void}
+   */
   useEffect(() => {
     const viewport = viewportRef.current;
     if (!viewport) return;
+    /**
+     * Snapshots the viewport's current scrollLeft and clientWidth into
+     * viewState, skipping redundant updates.
+     * @returns {void}
+     */
     const update = () => {
       setViewState((prev) => {
         const next = { scrollLeft: viewport.scrollLeft, viewportWidth: viewport.clientWidth };
@@ -155,6 +320,10 @@ export default function VideoTimeline({
     };
     update();
     let raf = 0;
+    /**
+     * RAF-throttled scroll handler that calls update once per scroll frame.
+     * @returns {void}
+     */
     const onScroll = () => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
@@ -175,6 +344,11 @@ export default function VideoTimeline({
     };
   }, [duration]);
 
+  /**
+   * Auto-scrolls the viewport to keep the playhead visible when currentTime
+   * advances (forward motion only), leaving a 40px gutter at the right edge.
+   * @returns {void}
+   */
   useEffect(() => {
     const viewport = viewportRef.current;
     if (!viewport) return;
@@ -188,6 +362,13 @@ export default function VideoTimeline({
     }
   }, [currentTime, zoom]);
 
+  /**
+   * Changes the zoom by a factor, clamping to the allowed range, and
+   * re-centers the viewport on the media time under the viewport's center.
+   * @param {number} factor - Zoom multiplier (e.g. TIMELINE_ZOOM_STEP zooms
+   *   in, its reciprocal zooms out).
+   * @returns {void}
+   */
   const changeZoom = (factor: number) => {
     const viewport = viewportRef.current;
     const next = clamp(zoom * factor, TIMELINE_MIN_ZOOM, TIMELINE_MAX_ZOOM);
@@ -200,6 +381,14 @@ export default function VideoTimeline({
     }
   };
 
+  /**
+   * Builds the ruler tick and label elements for the visible time range. The
+   * major tick step is chosen from TIMELINE_TICK_STEPS so ticks stay at least
+   * 50px apart; labels are dropped when they would land too close to the
+   * previous one; minor subdivisions are added only when they keep at least
+   * 5px spacing.
+   * @returns {{ minorEls: ReactElement[]; majorEls: ReactElement[]; labelEls: ReactElement[] }}
+   */
   const rulerEls = useMemo(() => {
     const step = TIMELINE_TICK_STEPS.find((candidate) => candidate * zoom >= 50) ?? TIMELINE_TICK_STEPS[TIMELINE_TICK_STEPS.length - 1];
     const margin = viewState.viewportWidth / zoom / 2;
@@ -239,6 +428,13 @@ export default function VideoTimeline({
     return { minorEls, majorEls, labelEls };
   }, [duration, zoom, viewState.scrollLeft, viewState.viewportWidth]);
 
+  /**
+   * Builds the waveform bar elements for the visible range, virtualized to
+   * the viewport. When several buckets map to one on-screen slot they are
+   * aggregated by averaging the peak and max amplitudes; each bar is
+   * positioned and sized from its min/max envelope.
+   * @returns {ReactElement[]} Array of WaveformBar elements.
+   */
   const waveformBars = useMemo(() => {
     if (!waveform || waveform.buckets.length === 0 || duration <= 0) return [];
     const totalWidth = duration * zoom;
@@ -254,6 +450,14 @@ export default function VideoTimeline({
     const endTime = virtualize ? Math.min(duration, (viewState.scrollLeft + viewState.viewportWidth) / zoom + margin) : duration;
     const bucketsPerSlot = slotWidth / bucketWidth;
     const bars: ReactElement[] = [];
+    /**
+     * Pushes a single WaveformBar element for a bucket slot at the given left
+     * offset, computing its top/height from the min/max envelope and clamping
+     * to the track content area.
+     * @param {number} left - Left offset in pixels.
+     * @param {{ min: number; max: number }} bucket - Envelope bucket to render.
+     * @returns {void}
+     */
     const pushBar = (left: number, bucket: { min: number; max: number }) => {
       const topFraction = (1 - bucket.max) / 2;
       const heightFraction = Math.max(0, bucket.max - bucket.min) / 2;
@@ -287,6 +491,12 @@ export default function VideoTimeline({
     return bars;
   }, [waveform, duration, zoom, viewState.scrollLeft, viewState.viewportWidth]);
 
+  /**
+   * Builds the thumbnail cell elements for the visible range, virtualized to
+   * the viewport. Each cell is a background-slice of the montage strip
+   * positioned and scaled to fill its time interval.
+   * @returns {ReactElement[]} Array of ThumbCell elements.
+   */
   const thumbCells = useMemo(() => {
     if (!thumbnails || thumbnails.count <= 0 || duration <= 0) return [];
     const cellHeight = TIMELINE_LAYOUT.TRACK_CONTENT_HEIGHT;
@@ -321,6 +531,11 @@ export default function VideoTimeline({
     return cells;
   }, [thumbnails, duration, zoom, viewState.scrollLeft, viewState.viewportWidth]);
 
+  /**
+   * Builds the CSS rule that attaches the thumbnail montage data URL to cells
+   * carrying the TIMELINE_THUMB_MONTAGE_CLASS.
+   * @returns {string} A CSS rule string, or '' when no thumbnails exist.
+   */
   const thumbMontageCss = useMemo(() => {
     if (!thumbnails) return '';
     return `.${TIMELINE_THUMB_MONTAGE_CLASS} { background-image: url("${thumbnails.dataUrl}"); background-repeat: no-repeat; }`;

@@ -1,6 +1,15 @@
 /**
  * @fileoverview React application entry point.
  * Mounts the root React component into the DOM.
+ *
+ * Responsibilities:
+ *  - Imports the bundled fonts (Roboto weights 300/400/500/700) and the
+ *    Font Awesome SVG core stylesheet so icons render correctly.
+ *  - Patches `console.log` / `console.warn` / `console.error` to mirror every
+ *    message into the renderer log store (in addition to the original output).
+ *  - Renders the `Root` component, which wires up the HashRouter, the emotion
+ *    `DirectionProvider` (RTL/LTR cache), and the i18next provider around `App`.
+ *  - Mounts the whole tree under `React.StrictMode` into the `#root` element.
  */
 
 import React from 'react';
@@ -20,13 +29,25 @@ import { useLanguageDirection } from './useLanguageDirection';
 import { useLogStore } from './stores/logStore';
 import { LOG_MOUNTING_REACT_APP } from '../shared/log-constants';
 
+/** Logger instance used by this module. @const {Logger} */
 const log = new Logger('renderer/main');
 
+/**
+ * Console levels that are mirrored into the log store. Maps each patched
+ * console method to the matching log level string.
+ * @const {Array<{method: 'log' | 'warn' | 'error', level: 'INFO' | 'WARN' | 'ERROR'}>}
+ */
 const levels: Array<{ method: 'log' | 'warn' | 'error'; level: 'INFO' | 'WARN' | 'ERROR' }> = [
   { method: 'log', level: 'INFO' },
   { method: 'warn', level: 'WARN' },
   { method: 'error', level: 'ERROR' },
 ];
+/**
+ * Patches the console methods listed above so every call still hits the
+ * original implementation and is also appended to the log store with a
+ * timestamp, level, serialized text, and 'renderer' as the source.
+ * @constant
+ */
 for (const { method, level } of levels) {
   const original = console[method];
   console[method] = (...args: unknown[]) => {
@@ -41,6 +62,15 @@ for (const { method, level } of levels) {
   };
 }
 
+/**
+ * Composition root that wraps the App in all global providers.
+ * Determines the text direction from the current i18n locale via
+ * `useLanguageDirection`, then provides, outermost to innermost:
+ * HashRouter -> DirectionProvider (emotion cache keyed per direction) ->
+ * I18nextProvider -> App.
+ *
+ * @returns {React.JSX.Element} The fully wrapped application tree.
+ */
 function Root() {
   const direction = useLanguageDirection();
 
@@ -56,6 +86,11 @@ function Root() {
 }
 
 log.info(LOG_MOUNTING_REACT_APP);
+/**
+ * Creates the React root on the `#root` element and mounts the app inside
+ * `React.StrictMode`.
+ * @constant
+ */
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Root />

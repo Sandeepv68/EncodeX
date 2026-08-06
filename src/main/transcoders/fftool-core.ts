@@ -1,10 +1,14 @@
-import { EventEmitter } from 'events';
-import { spawn, ChildProcess } from 'child_process';
 /**
  * @fileoverview FFTool-based transcoder implementation.
- * Alternative transcoder using FFTool CLI for cross-platform support.
+ * Alternative transcoder that drives the raw ffmpeg/ffprobe CLI subprocesses
+ * directly (as opposed to FfmpegCore's fluent-ffmpeg API). Probes metadata via
+ * a spawned ffprobe process and converts via a spawned ffmpeg process using the
+ * shared {@link buildFfmpegArgs} builder, reporting time-based progress at a
+ * fixed interval.
  */
 
+import { EventEmitter } from 'events';
+import { spawn, ChildProcess } from 'child_process';
 import { Logger } from '../../shared/logger';
 import type { ITranscoder } from './types';
 import { suspendProcess, resumeProcess } from '../process-utils';
@@ -44,15 +48,51 @@ import {
 
 const log = new Logger('main/transcoders/fftool-core');
 
+/**
+ * Raw CLI ffmpeg/ffprobe transcoder backend.
+ * @class FFToolCore
+ * @implements ITranscoder
+ *
+ * `getInfo` spawns ffprobe with `-v quiet -print_format json -show_format
+ * -show_streams` and maps the JSON through {@link mapFfprobeData}. `convert`
+ * spawns ffmpeg with args from {@link buildFfmpegArgs}; progress is derived by
+ * scanning stderr for `time=HH:MM:SS.mm` tokens and re-emitting a
+ * ConversionProgress on a `PROGRESS_INTERVAL_MS` timer (percent/eta/bitrate
+ * stay at EMPTY_PROGRESS values, speed is approximated from timemark vs elapsed
+ * wall time). Pause/resume suspend the OS process; cancel SIGKILLs it and
+ * emits a cancelledError. Distinguishes itself from the fluent-ffmpeg backend
+ * as an escape hatch when the library path misbehaves.
+ */
 export class FFToolCore implements ITranscoder {
+  /** The live ffmpeg child process, or null when idle. */
   private process: ChildProcess | null = null;
+  /** True once cancel() has been called; maps process errors to cancelledError. */
   private cancelled = false;
+  /** PID of the spawned ffmpeg process, used for suspend/resume. */
   private processPid: number | null = null;
 
+  /**
+   * Returns the backend type identifier.
+   * @returns {string} `'FFTOOL'` (from TRANSCODER_TYPES[1])
+   */
   getType(): string {
     return TRANSCODER_TYPES[1];
   }
 
+  /**
+   * Reads media metadata by spawning an ffprobe subprocess.
+   *
+   * Spawns the resolved ffprobe binary with `-v quiet -print_format json
+   * -show_format -show_streams <input>`, accumulates stdout, and on exit code 0
+   * parses the JSON and maps it through {@link mapFfprobeData}. A spawn error
+   * rejects with the raw error; a non-zero exit rejects with an
+   * `Error('ffprobe exited with code <n>')`; a JSON parse failure rejects with
+   * the parse error. No timeout is enforced here.
+   * @param {string} input - Absolute path of the media file to probe
+   * @returns {Promise<MediaInfo>} Resolves with the mapped media information
+   * @throws {Error} Rejects on spawn failure, non-zero ffprobe exit, or
+   *   malformed JSON output
+   */
   async getInfo(input: string): Promise<MediaInfo> {
     log.info(LOG_GET_INFO, input);
     const ffprobePath = getFfprobePath();
@@ -92,6 +132,27 @@ export class FFToolCore implements ITranscoder {
     });
   }
 
+  /**
+   * Starts a raw ffmpeg CLI conversion and returns an EventEmitter for it.
+   *
+   * Workflow: resets the `cancelled` flag, resolves the ffmpeg path, and builds
+   * the argument array via {@link buildFfmpegArgs}. The process is spawned with
+   * `this.process`/`this.processPid` recorded for pause/cancel. stderr is
+   * accumulated and scanned for `time=HH:MM:SS.mm` tokens; the last matched
+   * timestamp becomes `lastTime`. A `PROGRESS_INTERVAL_MS` timer emits a
+   * ConversionProgress built from `lastTime` (percent 0, EMPTY_PROGRESS
+   * fps/eta/bitrate, speed approximated as currentSeconds/elapsed). The
+   * 'error' handler clears the timer and emits a cancelledError if cancelled,
+   * else the raw error; the 'close' handler clears the timer, emits a
+   * cancelledError if cancelled, `end` on exit code 0, or an
+   * `Error('FFmpeg exited with code <n>')` otherwise.
+   * @param {string} input - Absolute path of the input media file
+   * @param {string} output - Absolute path of the output file
+   * @param {ConversionOptions} options - Encoding options forwarded to the
+   *   ffmpeg argument builder
+   * @returns {EventEmitter} Emitter with periodic 'progress' (ConversionProgress)
+   *   events plus 'end' and 'error' (Error) events
+   */
   convert(input: string, output: string, options: ConversionOptions): EventEmitter {
     log.info(LOG_CONVERT, input, LOG_ARROW, output, LOG_COPY, !!options.copy);
     this.cancelled = false;
@@ -164,6 +225,12 @@ export class FFToolCore implements ITranscoder {
     return emitter;
   }
 
+  /**
+   * Pauses the running conversion by suspending the ffmpeg OS process.
+   *
+   * Delegates to {@link suspendProcess} with the recorded PID; no-op when no
+   * PID is recorded.
+   */
   pause(): void {
     log.info(LOG_PAUSING_FFMPEG_PROCESS);
     if (this.processPid != null) {
@@ -171,6 +238,12 @@ export class FFToolCore implements ITranscoder {
     }
   }
 
+  /**
+   * Resumes a previously paused conversion.
+   *
+   * Delegates to {@link resumeProcess} with the recorded PID; no-op when no
+   * PID is recorded.
+   */
   resume(): void {
     log.info(LOG_RESUMING_FFMPEG_PROCESS);
     if (this.processPid != null) {
@@ -178,6 +251,13 @@ export class FFToolCore implements ITranscoder {
     }
   }
 
+  /**
+   * Cancels the running conversion.
+   *
+   * Sets the `cancelled` flag (making the pending error/close handlers emit a
+   * cancelledError), kills the ffmpeg child with KILL_SIGNAL (SIGKILL), and
+   * clears the process/PID references.
+   */
   cancel(): void {
     log.info(LOG_CANCELLING_CURRENT_FFMPEG_PROCESS);
     this.cancelled = true;

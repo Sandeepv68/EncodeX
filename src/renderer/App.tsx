@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Root application component and routing setup.
+ *
+ * Defines the top-level `App` component that wraps the whole UI in the color
+ * mode context (see ColorModeContext.tsx) and the MUI `CssBaseline` reset. The
+ * main layout lives in `AppLayout`, which wires up responsive navigation
+ * (temporary drawer on mobile, permanent drawer on desktop), lazy-loads every
+ * feature page, and renders the route table. Each lazy page is wrapped in its
+ * own `ErrorBoundary` so a crash in one feature never tears down the rest of
+ * the shell, and a shared `Suspense` shows a spinner while a page chunk is
+ * being fetched.
+ *
+ * Side effects performed once at mount:
+ *  - Subscribes to renderer log messages forwarded from the main process via
+ *    `window.electronAPI.onLogMessage` and appends them to the log store.
+ *  - Applies the persisted "always on top" window setting to the native window.
+ */
+
 import type { ReactNode } from 'react';
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
@@ -28,16 +46,46 @@ import {
   PageFallback,
 } from './styles/App.styles';
 
+/** Lazy-loaded Dashboard page, loaded on the '/' route. @const {React.ComponentType} */
+/** Lazy-loaded Dashboard page, loaded on the '/' route. @const {React.ComponentType} */
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+/** Lazy-loaded Convert page, loaded on the '/convert' route. @const {React.ComponentType} */
 const Convert = lazy(() => import('./pages/Convert'));
+/** Lazy-loaded MediaInfo page, loaded on the '/media-info' route. @const {React.ComponentType} */
 const MediaInfo = lazy(() => import('./pages/MediaInfo'));
+/** Lazy-loaded ImageCompress page, loaded on the '/image-compress' route. @const {React.ComponentType} */
 const ImageCompress = lazy(() => import('./pages/ImageCompress'));
+/** Lazy-loaded AudioExtract page, loaded on the '/audio-extract' route. @const {React.ComponentType} */
 const AudioExtract = lazy(() => import('./pages/AudioExtract'));
+/** Lazy-loaded VideoCut page, loaded on the '/video-cut' route. @const {React.ComponentType} */
 const VideoCut = lazy(() => import('./pages/VideoCut'));
+/** Lazy-loaded BatchQueue page, loaded on the '/batch' route. @const {React.ComponentType} */
 const BatchQueue = lazy(() => import('./pages/BatchQueue'));
+/** Lazy-loaded Logs page, loaded on the '/logs' route. @const {React.ComponentType} */
 const Logs = lazy(() => import('./pages/Logs'));
+/** Lazy-loaded Settings page, loaded on the '/settings' route. @const {React.ComponentType} */
 const Settings = lazy(() => import('./pages/Settings'));
 
+/**
+ * Main application shell rendered inside the ColorModeProvider.
+ *
+ * Builds the responsive page chrome: a native-style `TitleBar` on top, a
+ * navigation drawer on the side (a temporary/overlay drawer below the `md`
+ * breakpoint, a permanent drawer at `md` and above), and a `MainContent` area
+ * holding the routed pages plus the `Footer`. The mobile menu button (hamburger)
+ * toggles the temporary drawer on small screens.
+ *
+ * Renders the route table for every feature page, each wrapped in an
+ * `ErrorBoundary` and collectively in a `Suspense` fallback spinner. It also
+ * hosts the global `ErrorSnackbar` and `ToastContainer` so error/toast
+ * notifications are shown above all routes.
+ *
+ * On mount it subscribes to log entries pushed from the main process and
+ * applies the persisted always-on-top window flag.
+ *
+ * @returns {React.JSX.Element} The full application shell with title bar,
+ *   drawer navigation, routed content, footer, and global overlays.
+ */
 function AppLayout() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -57,6 +105,11 @@ function AppLayout() {
     window.electronAPI?.windowSetAlwaysOnTop(useSettingsStore.getState().alwaysOnTop);
   }, []);
 
+  /**
+   * Route table mapping URL paths to their lazy-loaded page elements.
+   * Keys mirror the path definitions used by AppDrawer and pageIcons.tsx.
+   * @const {Array<{path: string, element: ReactNode}>}
+   */
   const routes: { path: string; element: ReactNode }[] = [
     { path: '/', element: <Dashboard /> },
     { path: '/convert', element: <Convert /> },
@@ -123,6 +176,15 @@ function AppLayout() {
   );
 }
 
+/**
+ * Root component of the renderer.
+ *
+ * Provides the color mode/theme/direction context via `ColorModeProvider`,
+ * applies the MUI `CssBaseline` (global CSS reset and theme-aware background),
+ * and mounts the `AppLayout` shell. It takes no props.
+ *
+ * @returns {React.JSX.Element} The provider-wrapped application layout.
+ */
 export default function App() {
   return (
     <ColorModeProvider>

@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Settings page. Configures the app-wide appearance and conversion
+ * defaults. Corresponds to the `/settings` route and is reached from the
+ * navigation bar.
+ *
+ * The page groups settings into sections: a theme picker (rendered as preview
+ * cards from `THEMES`, persisted through `useColorMode`), an "always on top"
+ * switch (delegated to the window manager by the main process), and the
+ * hardware-acceleration options (enable/disable plus hwaccel mode and encoder
+ * type selects). Every persisted value lives in the `useSettingsStore` zustand
+ * store, which synchronizes it to disk and to the main process; this page only
+ * reads and writes store state and makes no direct IPC calls.
+ */
+
 import { useTranslation } from 'react-i18next';
 import { Box, Switch, MenuItem } from '@mui/material';
 import { useColorMode } from '../ColorModeContext';
@@ -26,17 +40,35 @@ import {
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 
+/**
+ * Maps each hardware-acceleration mode value to the translation key of its
+ * label, read under the `settings.` namespace.
+ * @const {Record<HwAccelMode, string>}
+ */
 const hwaccelModeLabel: Record<HwAccelMode, string> = {
   auto: 'settings.hwaccelModeAuto',
   encode: 'settings.hwaccelModeEncode',
 };
 
+/**
+ * Maps each encoder type value to the translation key of its label, read under
+ * the `settings.` namespace.
+ * @const {Record<EncoderType, string>}
+ */
 const encoderTypeLabel: Record<EncoderType, string> = {
   auto: 'settings.encoderTypeAuto',
   hardware: 'settings.encoderTypeHardware',
   software: 'settings.encoderTypeSoftware',
 };
 
+/**
+ * Renders a settings row consisting of a label and its info tooltip. Used to
+ * keep label + hint layout consistent across every settings section.
+ * @param {Object} props - Component props.
+ * @param {string} props.text - The translated label text.
+ * @param {string} props.hint - The translated hint shown in the tooltip.
+ * @returns {JSX.Element} A label row with an info tooltip.
+ */
 function SettingLabel({ text, hint }: { text: string; hint: string }) {
   return (
     <SettingsLabelRow>
@@ -46,6 +78,14 @@ function SettingLabel({ text, hint }: { text: string; hint: string }) {
   );
 }
 
+/**
+ * Renders a miniature color-swatch preview for one theme. Two text bars sit on
+ * a paper background above two accent bars taken from the theme's primary and
+ * secondary colors.
+ * @param {Object} props - Component props.
+ * @param {ThemeDefinition} props.theme - The theme whose colors are previewed.
+ * @returns {JSX.Element} The theme preview card body.
+ */
 function ThemePreviewCard({ theme }: { theme: ThemeDefinition }) {
   return (
     <ThemePreview style={{ backgroundColor: theme.background.default }}>
@@ -59,6 +99,19 @@ function ThemePreviewCard({ theme }: { theme: ThemeDefinition }) {
   );
 }
 
+/**
+ * Renders the settings page (`/settings`).
+ *
+ * Layout: a theme section whose cards call `setTheme` from `useColorMode`, and
+ * `SettingsSection`s for the "always on top" switch, the hardware-acceleration
+ * enable switch, and (only when acceleration is enabled) the hwaccel-mode and
+ * encoder-type selects. All values are bound one-way to `useSettingsStore`;
+ * store setters update persisted state and the main process automatically.
+ *
+ * No IPC calls are made directly from this page.
+ *
+ * @returns {JSX.Element} The page content.
+ */
 export default function Settings() {
   const { t } = useTranslation();
   const { themeId, setTheme } = useColorMode();

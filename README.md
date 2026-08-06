@@ -5,6 +5,7 @@ A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, 
   <img src="assets/logo.png" alt="EncodeX Logo" width="200" />
 </div>
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Sandeepv68/EncodeX)
 
 ## Table of Contents
 

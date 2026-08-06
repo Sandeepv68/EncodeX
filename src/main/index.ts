@@ -1,6 +1,18 @@
 /**
  * @fileoverview Main process entry point for the EncodeX Electron application.
  * Handles window creation, IPC registration, CLI mode, and application lifecycle.
+ *
+ * On startup, {@link isCliMode} decides between two mutually exclusive modes:
+ *
+ *  - CLI mode (started with `--cli`, `-h`/`--help`, or two positional args):
+ *    waits for `app.whenReady()`, runs {@link runCli}, and exits with
+ *    `EXIT_CODES.SUCCESS` or `EXIT_CODES.ERROR`.
+ *  - GUI mode (default): appends an `autoplay-policy` switch, creates a
+ *    frameless splash window followed by the main window, registers IPC
+ *    handlers, patches `console` methods so renderer-visible logs are forwarded
+ *    over IPC, and wires the `window-all-closed` / `activate` lifecycle events.
+ *
+ * The module has no exports; its top-level code runs once when loaded.
  */
 
 import { app, BrowserWindow, Menu } from 'electron';
@@ -28,6 +40,15 @@ import {
 
 const log = new Logger('main/index');
 
+/**
+ * Determines whether the app should start in CLI mode based on process args.
+ *
+ * Returns `true` when `--cli`, `-h`, or `--help` is present, or when at least
+ * two non-option positional arguments (input and output) follow the script
+ * path. Otherwise `false` (GUI mode).
+ *
+ * @returns {boolean} `true` if the app should run as a CLI, `false` for GUI.
+ */
 function isCliMode(): boolean {
   const argv = process.argv;
   if (argv.includes('--cli') || argv.includes('-h') || argv.includes('--help')) {
@@ -52,9 +73,22 @@ if (isCliMode()) {
   });
 } else {
   app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
+  /** The main application window, or `null` once it has been closed. @type {BrowserWindow | null} */
   let mainWindow: BrowserWindow | null = null;
+  /** The splash window shown while the app loads, or `null` once closed. @type {BrowserWindow | null} */
   let splashWindow: BrowserWindow | null = null;
 
+  /**
+   * Creates the frameless, always-on-top splash window shown while the main
+   * window loads.
+   *
+   * The splash is a small fixed-size, non-resizable, non-minimizable,
+   * taskbar-hidden BrowserWindow that loads `SPLASH_IMAGE` from the app path
+   * with a sandboxed, context-isolated renderer. Its `closed` event clears the
+   * module variable so the window reference is not leaked.
+   *
+   * @returns {void}
+   */
   function createSplashWindow(): void {
     log.info(LOG_CREATING_SPLASH_WINDOW);
     splashWindow = new BrowserWindow({
@@ -84,6 +118,19 @@ if (isCliMode()) {
     });
   }
 
+  /**
+   * Creates the main application window and wires up its IPC, console, and
+   * lifecycle handlers.
+   *
+   * The window is frameless, hidden until `ready-to-show`, and uses the preload
+   * script with context isolation enabled and node integration disabled. It
+   * registers IPC handlers via {@link registerIpcHandlers}, patches console
+   * forwarding via {@link patchConsole}, closes the splash once ready, and
+   * loads the Vite dev server in development/`--dev` mode (opening devtools)
+   * or the built renderer HTML otherwise.
+   *
+   * @returns {void}
+   */
   function createWindow(): void {
     log.info(LOG_CREATING_MAIN_WINDOW);
     Menu.setApplicationMenu(null);
@@ -146,6 +193,19 @@ if (isCliMode()) {
   });
 }
 
+/**
+ * Overrides `console.log`, `console.warn`, and `console.error` in the main
+ * process so that main-process messages are also forwarded to the renderer.
+ *
+ * Each patched method first calls the original console method, then, if the
+ * window is still alive, sends an `IPC.LOG_MESSAGE` payload with a timestamp,
+ * severity level, joined message text, and `source: 'main'` over the window's
+ * webContents. Non-string arguments are JSON-stringified.
+ *
+ * @param {BrowserWindow} win - The main window whose webContents receives the
+ *   forwarded log messages.
+ * @returns {void}
+ */
 function patchConsole(win: BrowserWindow) {
   const levels: Array<{ method: 'log' | 'warn' | 'error'; level: 'INFO' | 'WARN' | 'ERROR' }> = [
     { method: 'log', level: 'INFO' },

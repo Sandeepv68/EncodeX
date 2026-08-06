@@ -1,3 +1,18 @@
+/**
+ * @fileoverview Media information page. Lets the user drop any media file and
+ * displays technical details about it. Corresponds to the `/media-info` route
+ * and is the destination of the Dashboard "Media Info" feature card.
+ *
+ * The page is a drop zone backed by a spinner while probing. FFmpeg media info
+ * (`getMediaInfo`) is fetched for any file; for image files, EXIF and histogram
+ * data is additionally fetched via `getImageInfo`. Results are rendered by
+ * `FileSummary`, `StreamDetails`, and `ExifSection` inside an `InfoPaper`.
+ *
+ * IPC interactions:
+ *  - `getMediaInfo(path, 'FFMPEG')` - container format, duration, and streams.
+ *  - `getImageInfo(path)` - EXIF tags and histogram for image files.
+ */
+
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, CircularProgress } from '@mui/material';
@@ -22,15 +37,63 @@ import {
   LOG_MEDIA_INFO_RETRIEVED,
 } from '../../shared/log-constants';
 
+/**
+ * Logger instance scoped to this page. Reports media-info retrieval attempts,
+ * successes, and failures.
+ * @const {Logger} log
+ */
 const log = new Logger('renderer/pages/MediaInfo');
 
+/**
+ * Renders the media information page (`/media-info`).
+ *
+ * Shows a `FileDropZone` (replaced by a spinner while `loading`) and, once
+ * info is available, an `InfoPaper` with the container summary, stream details,
+ * and - for image files - the EXIF/histogram section.
+ *
+ * State managed: `info` (the FFmpeg media info), `exif` (image EXIF/histogram
+ * data, only set for image inputs), and `loading`. Errors are surfaced through
+ * `useErrorStore` and success through `useToastStore`.
+ *
+ * IPC interactions:
+ *  - `getMediaInfo(path, 'FFMPEG')` - probed container/stream data.
+ *  - `getImageInfo(path)` - image EXIF tags and histogram.
+ *
+ * @returns {JSX.Element} The page content.
+ */
 export default function MediaInfo() {
   const { t } = useTranslation();
+
+  /**
+   * Probed media info for the selected file, or null before any selection.
+   * @type {MediaInfoType | null}
+   */
   const [info, setInfo] = useState<MediaInfoType | null>(null);
+
+  /**
+   * EXIF/histogram data for image inputs, or null otherwise.
+   * @type {ImageExifData | null}
+   */
   const [exif, setExif] = useState<ImageExifData | null>(null);
+
+  /**
+   * Whether a probe request is currently in flight.
+   * @type {boolean}
+   */
   const [loading, setLoading] = useState(false);
   const showError = useErrorStore((s) => s.showError);
 
+  /**
+   * Handles a newly selected file. Probes it with FFmpeg via
+   * `window.electronAPI.getMediaInfo` and stores the result, showing a success
+   * toast. When the file is an image, `getImageInfo` is also called and its
+   * EXIF/histogram payload stored. Failures are logged and surfaced through
+   * `useErrorStore.showError`. `loading` wraps the whole sequence and is always
+   * cleared in a `finally` block.
+   * @param {string} path - Absolute path of the selected file.
+   * @returns {Promise<void>} Resolves once probing (and image info, if
+   *   applicable) settles.
+   */
   const handleFile = async (path: string) => {
     log.info(LOG_GETTING_MEDIA_INFO_FOR, path);
     setLoading(true);

@@ -1,6 +1,23 @@
 /**
  * @fileoverview Video and audio media player component.
- * Handles real-time playback with audio-video synchronization using Web Audio API.
+ *
+ * Plays back a media file in real time with audio-video synchronization
+ * driven by the Web Audio API. Decoded frames and PCM chunks stream in from
+ * the main process over IPC while this component owns the render loop, frame
+ * buffering, seek coalescing, and the audio scheduling clock.
+ *
+ * Playback is generation-based: each playerOpen/playerSeek command starts a
+ * new decode generation, and frames/chunks whose generation no longer matches
+ * the active one are discarded. The player is exposed through an imperative
+ * handle (see {@link MediaPlayerHandle}) so parents can seek it
+ * programmatically, and it is memoized to avoid re-rendering on parent state
+ * changes.
+ *
+ * Props (see {@link MediaPlayerProps}):
+ *  - filePath: absolute path of the file to load for playback.
+ *  - onTimeUpdate: called with the current playback time as frames are drawn.
+ *  - onDurationChange: called once the probed duration becomes known.
+ *  - onMediaInfo: called with the probed MediaInfo of the loaded file.
  */
 
 import { useRef, useEffect, useCallback, useState, forwardRef, useImperativeHandle, memo } from 'react';
@@ -36,54 +53,246 @@ import {
   LOG_WEB_AUDIO_IS_NOT_AVAILABLE_AUDIO_PLAYBACK_DISABLED,
 } from '../../shared/log-constants';
 
+/**
+ * Logger instance scoped to this module, used for player lifecycle, decode,
+ * audio scheduling, and render-loop diagnostics.
+ * @type {Logger}
+ */
 const log = new Logger('renderer/components/MediaPlayer');
 
 const MediaPlayer = memo(
-  forwardRef<MediaPlayerHandle, MediaPlayerProps>(function MediaPlayer(
+  forwardRef<MediaPlayerHandle, MediaPlayerProps>(
+    /**
+     * Renders the media player.
+     *
+     * Displays decoded video on a canvas, plays PCM audio through the Web
+     * Audio API, and keeps both synchronized on a single media clock. Draws
+     * buffered frames via an animation-frame render loop, schedules audio
+     * chunks slightly ahead of the audio clock, handles generation-baselined
+     * seeks, and surfaces a transport row with play/pause, mute, stop, and a
+     * seek slider.
+     *
+     * @param {MediaPlayerProps} props - Component props.
+     * @param {string} props.filePath - Absolute path of the file to load and
+     *   play.
+     * @param {(time: number) => void} [props.onTimeUpdate] - Called with the
+     *   current playback time as frames are rendered.
+     * @param {(duration: number) => void} [props.onDurationChange] - Called
+     *   with the probed duration once the file is loaded.
+     * @param {(info: MediaInfo) => void} [props.onMediaInfo] - Called with the
+     *   probed media information once available.
+     * @param {React.ForwardedRef<MediaPlayerHandle>} ref - Imperative handle
+     *   (see {@link MediaPlayerHandle}) exposing seekTo to parent components.
+     * @returns {JSX.Element} The player canvas and transport controls.
+     */
+    function MediaPlayer(
     { filePath, onTimeUpdate, onDurationChange, onMediaInfo }: MediaPlayerProps,
     ref,
   ) {
+    /**
+     * Reference to the <canvas> element decoded frames are drawn into.
+     * @type {React.RefObject<HTMLCanvasElement>}
+     */
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [muted, setMuted] = useState(false);
+    /**
+     * Holds the requestAnimationFrame id of the active render loop so it can
+     * be cancelled when playback pauses or the component unmounts.
+     * @type {React.MutableRefObject<number>}
+     */
     const animRef = useRef<number>(0);
+    /**
+     * Ring buffer of decoded frames queued for display, capped at
+     * MAX_BUFFERED_FRAMES.
+     * @type {React.MutableRefObject<Array<BufferedFrame>>}
+     */
     const frameBuffer = useRef<Array<BufferedFrame>>([]);
+    /**
+     * Cached ImageData reused across draws, recreated only when the frame
+     * dimensions change.
+     * @type {React.MutableRefObject<ImageData | null>}
+     */
     const imageDataRef = useRef<ImageData | null>(null);
+    /**
+     * True while the user is dragging the seek slider; freezes frame selection
+     * in the render loop until the seek is committed.
+     * @type {React.MutableRefObject<boolean>}
+     */
     const isSeeking = useRef(false);
+    /**
+     * PTS (seconds) of the last displayed frame; the resume point for
+     * play/pause and the pacing baseline.
+     * @type {React.MutableRefObject<number>}
+     */
     const displayPtsRef = useRef(0);
+    /**
+     * Set by handleStop so the next frame of the current generation is drawn
+     * immediately and the player then closed, ending at time zero.
+     * @type {React.MutableRefObject<boolean>}
+     */
     const resetToStartRef = useRef(false);
+    /**
+     * Latest onTimeUpdate callback, stored in a ref so the render loop never
+     * captures a stale closure.
+     * @type {React.MutableRefObject<((time: number) => void) | undefined>}
+     */
     const onTimeUpdateRef = useRef(onTimeUpdate);
     onTimeUpdateRef.current = onTimeUpdate;
+    /**
+     * Latest onDurationChange callback, stored in a ref so the load effect
+     * never captures a stale closure.
+     * @type {React.MutableRefObject<((duration: number) => void) | undefined>}
+     */
     const onDurationChangeRef = useRef(onDurationChange);
     onDurationChangeRef.current = onDurationChange;
+    /**
+     * Latest onMediaInfo callback, stored in a ref so the load effect never
+     * captures a stale closure.
+     * @type {React.MutableRefObject<((info: MediaInfo) => void) | undefined>}
+     */
     const onMediaInfoRef = useRef(onMediaInfo);
     onMediaInfoRef.current = onMediaInfo;
+    /**
+     * Current file duration in seconds, held outside React state so the
+     * render loop can read it without re-rendering.
+     * @type {React.MutableRefObject<number>}
+     */
     const durationRef = useRef(0);
+    /**
+     * Last playback time reported via onTimeUpdate; throttles updates to
+     * roughly 50ms resolution.
+     * @type {React.MutableRefObject<number>}
+     */
     const lastReportedTimeRef = useRef(-1);
+    /**
+     * Media-time baseline (seconds) of the current playback session.
+     * @type {React.MutableRefObject<number>}
+     */
     const playBaseTimeRef = useRef(0);
+    /**
+     * Wall-clock performance.now() captured when pacing was last reset; used
+     * with playBaseTimeRef to derive media time when no audio clock is active.
+     * @type {React.MutableRefObject<number>}
+     */
     const playStartWallRef = useRef(0);
+    /**
+     * Generation id of the current video decode; frames from other generations
+     * are discarded.
+     * @type {React.MutableRefObject<number | null>}
+     */
     const frameGenRef = useRef<number | null>(null);
+    /**
+     * Generation id of the current audio decode; chunks from other generations
+     * are discarded.
+     * @type {React.MutableRefObject<number | null>}
+     */
     const audioGenRef = useRef<number | null>(null);
+    /**
+     * Coalesced pending seek: the target time and the timer id scheduled to
+     * execute it after SEEK_COALESCE_MS.
+     * @type {React.MutableRefObject<{ time: number; timer: number | null }>}
+     */
     const pendingSeekRef = useRef<{ time: number; timer: number | null }>({ time: 0, timer: null });
+    /**
+     * AudioContext time at which audio playback was anchored; paired with
+     * audioAnchorMediaRef to map audio clock time to media time.
+     * @type {React.MutableRefObject<number | null>}
+     */
     const audioAnchorCtxRef = useRef<number | null>(null);
+    /**
+     * Media time corresponding to audioAnchorCtxRef.
+     * @type {React.MutableRefObject<number>}
+     */
     const audioAnchorMediaRef = useRef(0);
+    /**
+     * True until the playback clock is snapped to the PTS of the first frame
+     * of the current decode generation (after open/seek).
+     * @type {React.MutableRefObject<boolean>}
+     */
     const needsBaselineRef = useRef(false);
 
+    /**
+     * Lazily-created Web Audio AudioContext used for playback, or null when
+     * Web Audio is unavailable.
+     * @type {React.MutableRefObject<AudioContext | null>}
+     */
     const audioCtxRef = useRef<AudioContext | null>(null);
+    /**
+     * Gain node connected between all scheduled sources and the context
+     * destination; muting sets its gain to zero.
+     * @type {React.MutableRefObject<GainNode | null>}
+     */
     const masterGainRef = useRef<GainNode | null>(null);
+    /**
+     * AudioContext time at which the next scheduled chunk should start.
+     * @type {React.MutableRefObject<number>}
+     */
     const nextStartTimeRef = useRef(0);
+    /**
+     * Queue of PCM chunks decoded by the main process but not yet scheduled
+     * into the AudioContext.
+     * @type {React.MutableRefObject<PlayerAudioChunk[]>}
+     */
     const pendingChunksRef = useRef<PlayerAudioChunk[]>([]);
+    /**
+     * Set of BufferSource nodes currently scheduled; stopped and cleared on
+     * seek, stop, and unmount.
+     * @type {React.MutableRefObject<Set<AudioBufferSourceNode>>}
+     */
     const activeSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
+    /**
+     * Mirrors the muted state outside React so audio scheduling can read it
+     * synchronously.
+     * @type {React.MutableRefObject<boolean>}
+     */
     const mutedRef = useRef(false);
+    /**
+     * Last generation id for which a playback baseline was established; resets
+     * on every runPlayerCommand.
+     * @type {React.MutableRefObject<number | null>}
+     */
     const lastGenRef = useRef<number | null>(null);
+    /**
+     * Wall-clock time of the last successfully drawn frame; drives the stall
+     * watchdog.
+     * @type {React.MutableRefObject<number>}
+     */
     const lastDrawnWallRef = useRef(0);
+    /**
+     * Wall-clock time the last frame arrived from the main process; when too
+     * old, a decode stall is logged.
+     * @type {React.MutableRefObject<number>}
+     */
     const lastFrameArrivedWallRef = useRef(0);
+    /**
+     * Last observed AudioContext.currentTime; used to detect a frozen audio
+     * hardware clock.
+     * @type {React.MutableRefObject<number>}
+     */
     const lastCtxTimeRef = useRef(-1);
+    /**
+     * Wall-clock time at which lastCtxTimeRef was last seen advancing.
+     * @type {React.MutableRefObject<number>}
+     */
     const lastCtxAdvanceWallRef = useRef(0);
+    /**
+     * Generation id for which the 3s no-frames warning was already emitted, to
+     * avoid spamming the log.
+     * @type {React.MutableRefObject<number | null>}
+     */
     const stallWarnedGenRef = useRef<number | null>(null);
 
+    /**
+     * Lazily creates the Web Audio AudioContext and its master gain node on
+     * first use, preferring the standard constructor and falling back to
+     * webkitAudioContext. Logs a warning and returns null when Web Audio is
+     * unavailable so playback continues video-only.
+     * @returns {AudioContext | null} The active AudioContext, or null when
+     *   Web Audio is not available.
+     */
     const ensureAudioContext = useCallback((): AudioContext | null => {
       if (audioCtxRef.current) return audioCtxRef.current;
       const Ctor = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
@@ -103,6 +312,12 @@ const MediaPlayer = memo(
       return ctx;
     }, []);
 
+    /**
+     * Fully tears down audio playback: clears pending chunks, stops and drops
+     * all scheduled sources, clears the audio anchor, and closes the
+     * AudioContext.
+     * @returns {void}
+     */
     const closeAudio = useCallback(() => {
       pendingChunksRef.current = [];
       activeSourcesRef.current.forEach((source) => {
@@ -122,6 +337,13 @@ const MediaPlayer = memo(
       nextStartTimeRef.current = 0;
     }, []);
 
+    /**
+     * Resets the audio pipeline for a re-baseline (e.g. seek): stops in-flight
+     * sources, clears the pending queue and anchor, and moves the schedule
+     * pointer to just after the current audio time, resuming a suspended
+     * context.
+     * @returns {void}
+     */
     const resetAudioScheduling = useCallback(() => {
       activeSourcesRef.current.forEach((source) => {
         try {
@@ -140,6 +362,14 @@ const MediaPlayer = memo(
       }
     }, []);
 
+    /**
+     * Computes the current media time in seconds. When the audio clock is
+     * running and anchored, returns audio time mapped to media time; if the
+     * audio hardware clock stops advancing (frozen), paces off the last known
+     * audio time plus wall-clock elapsed so playback stays continuous.
+     * Otherwise falls back to the wall-clock baseline set by resetPacing.
+     * @returns {number} Current media time in seconds.
+     */
     const getMediaNow = useCallback((): number => {
       const ctx = audioCtxRef.current;
       if (ctx && ctx.state === 'running' && audioAnchorCtxRef.current !== null) {
@@ -162,6 +392,13 @@ const MediaPlayer = memo(
       return playBaseTimeRef.current + (now - playStartWallRef.current) / 1000;
     }, []);
 
+    /**
+     * Re-baselines the wall-clock fallback: sets the media-time baseline,
+     * captures the current wall time, and requests a re-baseline to the next
+     * arriving frame.
+     * @param {number} baseTime - Media time in seconds to treat as "now".
+     * @returns {void}
+     */
     const resetPacing = useCallback((baseTime: number) => {
       playBaseTimeRef.current = baseTime;
       playStartWallRef.current = typeof performance !== 'undefined' ? performance.now() : 0;
@@ -169,6 +406,14 @@ const MediaPlayer = memo(
       needsBaselineRef.current = true;
     }, []);
 
+    /**
+     * Starts a new decode generation from a player IPC command. Clears the
+     * frame buffer and generation trackers so stale frames/chunks are
+     * discarded, then stores the new generation id when the command resolves.
+     * @param {Promise<number>} command - A playerOpen/playerSeek promise
+     *   resolving to the new generation id.
+     * @returns {void}
+     */
     const runPlayerCommand = useCallback((command: Promise<number>) => {
       frameGenRef.current = null;
       audioGenRef.current = null;
@@ -183,6 +428,13 @@ const MediaPlayer = memo(
         .catch(() => {});
     }, []);
 
+    /**
+     * Draws a decoded RGB frame onto the canvas. Resizes the canvas and the
+     * cached ImageData when the frame dimensions change, packs the RGB bytes
+     * into 32-bit RGBA pixels, and writes the result to the canvas.
+     * @param {BufferedFrame} frame - The decoded frame to display.
+     * @returns {void}
+     */
     const drawFrame = useCallback((frame: BufferedFrame) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -208,6 +460,12 @@ const MediaPlayer = memo(
       ctx.putImageData(imageData, 0, 0);
     }, []);
 
+    /**
+     * Executes the coalesced seek stored in pendingSeekRef: cancels its timer,
+     * resets audio scheduling and pacing, issues the IPC seek, and resumes
+     * playing.
+     * @returns {void}
+     */
     const flushPendingSeek = useCallback(() => {
       const pending = pendingSeekRef.current;
       if (pending.timer !== null) {
@@ -221,6 +479,13 @@ const MediaPlayer = memo(
       setIsPlaying(true);
     }, [resetAudioScheduling, resetPacing, runPlayerCommand]);
 
+    /**
+     * Converts one PCM chunk into an AudioBuffer and schedules it at the next
+     * start time, anchoring the audio clock on the first chunk of a session.
+     * Chunks below the minimum sample rate or channel count are skipped.
+     * @param {PlayerAudioChunk} chunk - The PCM chunk to schedule.
+     * @returns {void}
+     */
     const scheduleOneChunk = useCallback((chunk: PlayerAudioChunk) => {
       const ctx = audioCtxRef.current;
       if (!ctx || !masterGainRef.current) return;
@@ -261,6 +526,12 @@ const MediaPlayer = memo(
       }
     }, []);
 
+    /**
+     * Schedules queued chunks until the schedule pointer is AUDIO_LOOKAHEAD
+     * ahead of the audio clock, pulling the pointer back if it drifted too far
+     * (e.g. after a suspended context resumed late) so sound resumes.
+     * @returns {void}
+     */
     const drainAudioQueue = useCallback(() => {
       const ctx = audioCtxRef.current;
       if (!ctx) return;
@@ -278,6 +549,13 @@ const MediaPlayer = memo(
       }
     }, [scheduleOneChunk]);
 
+    /**
+     * Accepts a PCM chunk from the main process: validates it, ensures the
+     * audio context exists and is resumed, enqueues it (bounded by
+     * MAX_PENDING_AUDIO_CHUNKS), and drains the queue to schedule playback.
+     * @param {PlayerAudioChunk} chunk - The PCM chunk to queue for playback.
+     * @returns {void}
+     */
     const queueAudioChunk = useCallback(
       (chunk: PlayerAudioChunk) => {
         if (chunk.channels < AUDIO_MIN_CHANNELS || chunk.sampleRate < AUDIO_MIN_SAMPLE_RATE || chunk.data.byteLength < chunk.channels * 2) {
@@ -301,6 +579,14 @@ const MediaPlayer = memo(
       [ensureAudioContext, drainAudioQueue],
     );
 
+    /**
+     * Loads the file for playback whenever filePath changes: resets all
+     * playback state, probes media info (reporting duration and media info via
+     * callbacks), and subscribes to the player frame, audio, and error IPC
+     * channels. The returned cleanup closes the decoder, unsubscribes from
+     * the channels, cancels the render loop, and tears down audio.
+     * @returns {() => void} Cleanup that releases the player on change/unmount.
+     */
     useEffect(() => {
       if (!filePath) return;
       let cancelled = false;
@@ -394,6 +680,14 @@ const MediaPlayer = memo(
       };
     }, [filePath, queueAudioChunk, closeAudio, drawFrame]);
 
+    /**
+     * The requestAnimationFrame render loop. Each tick drains the audio
+     * queue, picks the best buffered frame for the current media time (dropping
+     * frames too far in the future), force-draws the oldest frame when the
+     * buffer stalls, and reports throttled time updates. A single bad frame or
+     * chunk never kills the loop, and the next tick is always scheduled.
+     * @returns {void}
+     */
     const renderLoop = useCallback(() => {
       try {
         // Drain audio queue to keep it filled
@@ -471,12 +765,23 @@ const MediaPlayer = memo(
       animRef.current = requestAnimationFrame(renderLoop);
     }, [getMediaNow, drainAudioQueue, drawFrame]);
 
+    /**
+     * Starts the render loop (requestAnimationFrame) while playing and stops
+     * it otherwise; cleanup cancels any pending frame on re-render/unmount.
+     * @returns {void}
+     */
     useEffect(() => {
       if (isPlaying) animRef.current = requestAnimationFrame(renderLoop);
       else cancelAnimationFrame(animRef.current);
       return () => cancelAnimationFrame(animRef.current);
     }, [isPlaying, renderLoop]);
 
+    /**
+     * Toggles between play and pause. Pausing closes audio and the decoder;
+     * playing restores pacing and either seeks back to the resume time or
+     * opens the file from the start, then starts a new decode generation.
+     * @returns {void}
+     */
     const togglePlayback = () => {
       if (isPlaying) {
         closeAudio();
@@ -497,11 +802,26 @@ const MediaPlayer = memo(
       setIsPlaying(true);
     };
 
+    /**
+     * Seek slider drag handler: marks the player as seeking and live-updates
+     * the displayed time without touching the decoder or frame selection.
+     * @param {Event} _ - The slider event (ignored).
+     * @param {number | number[]} value - The slider position in seconds.
+     * @returns {void}
+     */
     const handleSeek = (_: Event, value: number | number[]) => {
       isSeeking.current = true;
       setCurrentTime(value as number);
     };
 
+    /**
+     * Fires when the seek slider is released: cancels the seeking flag,
+     * resets audio scheduling and pacing to the committed time, issues the
+     * IPC seek, and resumes playback.
+     * @param {React.SyntheticEvent | Event} _ - The slider event (ignored).
+     * @param {number | number[]} value - The committed position in seconds.
+     * @returns {void}
+     */
     const handleSeekCommitted = (_: React.SyntheticEvent | Event, value: number | number[]) => {
       const time = value as number;
       isSeeking.current = false;
@@ -513,6 +833,12 @@ const MediaPlayer = memo(
       setIsPlaying(true);
     };
 
+    /**
+     * Stops playback and returns to time zero: closes audio, resets state,
+     * flags resetToStartRef so the next arriving frame ends the session, and
+     * issues a seek to the start.
+     * @returns {void}
+     */
     const handleStop = () => {
       closeAudio();
       setIsPlaying(false);
@@ -523,9 +849,19 @@ const MediaPlayer = memo(
       runPlayerCommand(window.electronAPI.playerSeek('00:00:00'));
     };
 
+    /**
+     * Exposes the imperative {@link MediaPlayerHandle} to parent components.
+     * @returns {void}
+     */
     useImperativeHandle(
       ref,
       () => ({
+        /**
+         * Seeks to the given time, coalescing rapid calls into a single
+         * pending seek that flushPendingSeek executes after SEEK_COALESCE_MS.
+         * @param {number} time - Target playback time in seconds.
+         * @returns {void}
+         */
         seekTo: (time: number) => {
           isSeeking.current = false;
           resetToStartRef.current = false;
@@ -540,6 +876,11 @@ const MediaPlayer = memo(
       [flushPendingSeek],
     );
 
+    /**
+     * Toggles audio muting, mirroring the state in mutedRef and applying it to
+     * the master gain node immediately.
+     * @returns {void}
+     */
     const handleToggleMute = () => {
       mutedRef.current = !mutedRef.current;
       setMuted(mutedRef.current);
@@ -548,6 +889,12 @@ const MediaPlayer = memo(
       }
     };
 
+    /**
+     * Formats a time in seconds as an HH:MM:SS.mmm string for playerSeek IPC
+     * commands.
+     * @param {number} t - Time in seconds.
+     * @returns {string} Zero-padded timestamp, e.g. "00:01:23.456".
+     */
     function formatTime(t: number): string {
       const h = Math.floor(t / 3600);
       const m = Math.floor((t % 3600) / 60);

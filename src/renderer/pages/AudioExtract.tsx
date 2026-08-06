@@ -1,3 +1,22 @@
+/**
+ * @fileoverview Audio extraction page. Lets the user pick a video file and
+ * extract its audio track into a standalone audio file, choosing the output
+ * codec and bitrate. Corresponds to the `/audio-extract` route and is the
+ * destination of the Dashboard "Extract Audio" feature card.
+ *
+ * Workflow: drop or pick a video -> a preview thumbnail is fetched and the file
+ * is probed for its audio streams -> choose output path, audio codec, and
+ * bitrate -> click Extract. While the extraction runs a ProgressBar is shown
+ * together with pause, resume, and cancel controls.
+ *
+ * State is centralized in the `useAudioExtractStore` zustand store (input,
+ * preview, audio streams, output, codec, bitrate, converting/paused flags,
+ * progress); form-level validation errors live in `useFormErrors`. All media
+ * work is delegated to the main process through `window.electronAPI`
+ * (`getVideoPreview`, `getMediaInfo`, `selectOutput`, `convertFile`,
+ * `pauseConversion`, `resumeConversion`, `cancelConversion`).
+ */
+
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, TextField, MenuItem, Button, Stack, Typography } from '@mui/material';
@@ -37,12 +56,33 @@ import {
   LOG_VALIDATION_FAILED,
 } from '../../shared/log-constants';
 
+/**
+ * Logger instance scoped to this page. Used to report media-info load failures,
+ * validation failures, and extraction starts.
+ * @const {Logger} log
+ */
 const log = new Logger('renderer/pages/AudioExtract');
 
+/**
+ * Extracts the base file name from an absolute path, handling both `/` and `\`
+ * separators (POSIX and Windows paths).
+ * @param {string} path - The full file path to process.
+ * @returns {string} The trailing path segment, or the original `path` when no
+ *   separator is present.
+ */
 function fileName(path: string): string {
   return path.split(/[\\/]/).pop() ?? path;
 }
 
+/**
+ * Replaces the extension of a file path with the given one, preserving any
+ * directory portion. If `path` has no extension (or only directory dots), the
+ * new extension is appended. Extension detection stops at the last slash so
+ * directory names containing dots are not mangled.
+ * @param {string} path - The file path whose extension is replaced.
+ * @param {string} ext - The new extension, without a leading dot.
+ * @returns {string} The path with its extension replaced or appended.
+ */
 function withExtension(path: string, ext: string): string {
   const slashIdx = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
   const dotIdx = path.lastIndexOf('.');
@@ -50,6 +90,28 @@ function withExtension(path: string, ext: string): string {
   return `${base}.${ext}`;
 }
 
+/**
+ * Renders the audio extraction page (`/audio-extract`).
+ *
+ * Layout: a drop zone / video preview box at the top, an output file field,
+ * audio codec and bitrate selectors, and the Extract action buttons. While a
+ * conversion runs a ProgressBar is shown together with pause/resume/cancel
+ * buttons; a ConfirmDialog guards cancellation.
+ *
+ * Local state: only `cancelConfirmOpen` (whether the cancel dialog is open).
+ * Everything else lives in `useAudioExtractStore`: `input`, `preview`,
+ * `audioStreams`, `output`, `audioCodec`, `audioBitrate`, `isConverting`,
+ * `isPaused`, and `progress`. Field errors are tracked with `useFormErrors`.
+ *
+ * IPC interactions:
+ *  - `getVideoPreview(path)` - thumbnail of the selected video.
+ *  - `getMediaInfo(path, 'FFMPEG')` - lists audio streams for the stream box.
+ *  - `selectOutput()` - native save dialog for the output file.
+ *  - `convertFile(...)`, `pauseConversion()`, `resumeConversion()`,
+ *    `cancelConversion()` - run and control the extraction via the store.
+ *
+ * @returns {JSX.Element} The page content inside a PageContainer.
+ */
 export default function AudioExtract() {
   const { t } = useTranslation();
   const store = useAudioExtractStore();
@@ -58,6 +120,14 @@ export default function AudioExtract() {
 
   const suggestedExt = suggestedExtensionForAudioCodec(store.audioCodec);
 
+  /**
+   * Handles a newly selected or dropped video file. Clears the previous preview
+   * and audio stream list, then fetches a video preview thumbnail and probes the
+   * file for its audio streams via `window.electronAPI`. A failure to load
+   * media info is logged and swallowed; the page simply shows no stream details.
+   * @param {string} path - Absolute path of the selected video file.
+   * @returns {Promise<void>} Resolves once preview and stream probing settle.
+   */
   const handleFileSelect = async (path: string) => {
     store.setInput(path);
     store.setPreview(null);
@@ -73,11 +143,23 @@ export default function AudioExtract() {
     }
   };
 
+  /**
+   * Clears the current selection (input file, preview, audio streams, output)
+   * via the store and resets all field errors. Used by the preview close button.
+   * @returns {void}
+   */
   const clearSelection = () => {
     store.clearSelection();
     setErrors({});
   };
 
+  /**
+   * Updates the selected audio codec in the store. When an output file is
+   * already entered, its extension is rewritten to the extension suggested for
+   * the new codec so output path and codec stay consistent.
+   * @param {string} value - The newly selected codec name.
+   * @returns {void}
+   */
   const handleCodecChange = (value: string) => {
     store.setAudioCodec(value);
     if (!store.output.trim()) return;
@@ -85,11 +167,23 @@ export default function AudioExtract() {
     if (ext) store.setOutput(replaceExtension(store.output, ext));
   };
 
+  /**
+   * Updates the output path in the store. Non-empty values are normalized to
+   * carry the extension suggested for the active codec (via `withExtension`);
+   * empty values clear the field. The `output` field error is cleared.
+   * @param {string} value - The raw output path typed by the user.
+   * @returns {void}
+   */
   const handleOutputChange = (value: string) => {
     store.setOutput(value.trim() ? withExtension(value, suggestedExt) : '');
     clearFieldError('output');
   };
 
+  /**
+   * Validates the extraction form. Currently only requires a non-empty output
+   * path; on failure an `output` error is registered and false is returned.
+   * @returns {boolean} True when validation passes and extraction may start.
+   */
   const validate = (): boolean => {
     if (!store.output.trim()) {
       setErrors({ output: t('validation.outputRequired') });
@@ -99,6 +193,13 @@ export default function AudioExtract() {
     return true;
   };
 
+  /**
+   * Validates the form and, when valid, logs the parameters and starts the
+   * extraction through the store's `startExtract` (which calls
+   * `window.electronAPI.convertFile`). On validation failure a warning is
+   * logged and nothing is started.
+   * @returns {Promise<void>} Resolves when extraction completes or fails.
+   */
   const handleExtract = async () => {
     if (!validate()) {
       log.warn(LOG_VALIDATION_FAILED);

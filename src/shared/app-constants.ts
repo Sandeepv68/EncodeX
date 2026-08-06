@@ -1,7 +1,29 @@
+/**
+ * @fileoverview Application-level constants for window sizing, navigation, and UI shell.
+ * Values shared between the main and renderer processes: the Vite dev server URL,
+ * main/splash window dimensions, exit codes, theming, and the top-level nav items.
+ */
+
+/**
+ * Width of the persistent left navigation drawer in pixels.
+ * @const {number} DRAWER_WIDTH
+ */
 export const DRAWER_WIDTH = 220;
 
+/**
+ * URL of the Vite development server loaded while running in development mode.
+ * @const {string} DEV_SERVER_URL
+ */
 export const DEV_SERVER_URL = 'http://localhost:5173';
 
+/**
+ * Main application window size and minimum size constraints.
+ * @const {Object} WINDOW_SIZE
+ * @property {number} WIDTH - Default window width in pixels.
+ * @property {number} HEIGHT - Default window height in pixels.
+ * @property {number} MIN_WIDTH - Minimum width the window can be resized to, in pixels.
+ * @property {number} MIN_HEIGHT - Minimum height the window can be resized to, in pixels.
+ */
 export const WINDOW_SIZE = {
   WIDTH: 1280,
   HEIGHT: 800,
@@ -9,26 +31,62 @@ export const WINDOW_SIZE = {
   MIN_HEIGHT: 600,
 } as const;
 
+/**
+ * Splash screen window size shown while the app boots.
+ * @const {Object} SPLASH_SIZE
+ * @property {number} WIDTH - Splash window width in pixels.
+ * @property {number} HEIGHT - Splash window height in pixels.
+ */
 export const SPLASH_SIZE = {
   WIDTH: 600,
   HEIGHT: 600,
 } as const;
 
+/**
+ * Path to the splash screen image, relative to the packaged resources directory.
+ * @const {string} SPLASH_IMAGE
+ */
 export const SPLASH_IMAGE = 'assets/splash_screen.png';
 
+/**
+ * Background color behind the splash image while the window is loading.
+ * @const {string} SPLASH_BACKGROUND
+ */
 export const SPLASH_BACKGROUND = '#EEF4F4';
 
+/**
+ * Human-readable application name used in window titles and UI text.
+ * @const {string} APP_NAME
+ */
 export const APP_NAME = 'EncodeX';
 
+/**
+ * localStorage key used to persist the user's selected UI theme.
+ * @const {string} THEME_STORAGE_KEY
+ */
 export const THEME_STORAGE_KEY = 'encodex-theme';
 
+/**
+ * HTML element id of the root node the React application mounts into.
+ * @const {string} ROOT_ELEMENT_ID
+ */
 export const ROOT_ELEMENT_ID = 'root';
 
+/**
+ * Process exit codes returned by the main process.
+ * @const {Object} EXIT_CODES
+ * @property {number} SUCCESS - Code returned on clean shutdown.
+ * @property {number} ERROR - Code returned when the app exits with an error.
+ */
 export const EXIT_CODES = {
   SUCCESS: 0,
   ERROR: 1,
 } as const;
 
+/**
+ * Top-level sidebar navigation items; each entry maps a route path to its display label.
+ * @const {readonly {to: string; label: string}[]} NAV_ITEMS
+ */
 export const NAV_ITEMS = [
   { to: '/', label: 'Dashboard' },
   { to: '/convert', label: 'Convert' },

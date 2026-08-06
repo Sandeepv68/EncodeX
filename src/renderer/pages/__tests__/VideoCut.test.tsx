@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import VideoCut from '../VideoCut';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
-import type { MediaInfo } from '../../../shared/types';
+import type { MediaInfo, ConversionProgress } from '../../../shared/types';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
 const selectOutputMock = vi.mocked(window.electronAPI.selectOutput);
@@ -393,9 +393,9 @@ describe('VideoCut', () => {
   });
 
   it('shows live progress while cutting and hides it when the job completes', async () => {
-    let resolveConvert: (value?: unknown) => void = () => {};
+    let resolveConvert: (value?: void) => void = () => {};
     let progressCb:
-      | ((data: { input: string; output: string; progress: { percent: number; time: string; speed: string; eta: string } }) => void)
+      | ((data: { input: string; output: string; progress: ConversionProgress }) => void)
       | undefined;
     vi.mocked(window.electronAPI.onConversionProgress).mockImplementation((cb) => {
       progressCb = cb;
@@ -412,7 +412,7 @@ describe('VideoCut', () => {
       progressCb?.({
         input: '/in/video.mp4',
         output: '/out/cut.mp4',
-        progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5' },
+        progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5', fps: 30, bitrate: '800k' },
       });
     });
     expect(screen.getByText('42.0%')).toBeInTheDocument();
@@ -424,9 +424,9 @@ describe('VideoCut', () => {
   });
 
   it('hides the progress bar when the cut is cancelled', async () => {
-    let resolveConvert: (value?: unknown) => void = () => {};
+    let resolveConvert: (value?: void) => void = () => {};
     let progressCb:
-      | ((data: { input: string; output: string; progress: { percent: number; time: string; speed: string; eta: string } }) => void)
+      | ((data: { input: string; output: string; progress: ConversionProgress }) => void)
       | undefined;
     vi.mocked(window.electronAPI.onConversionProgress).mockImplementation((cb) => {
       progressCb = cb;
@@ -442,7 +442,7 @@ describe('VideoCut', () => {
       progressCb?.({
         input: '/in/video.mp4',
         output: '/out/cut.mp4',
-        progress: { percent: 60, time: '00:00:02', speed: '1x', eta: '2' },
+        progress: { percent: 60, time: '00:00:02', speed: '1x', eta: '2', fps: 30, bitrate: '800k' },
       });
     });
     expect(screen.getByText('60.0%')).toBeInTheDocument();

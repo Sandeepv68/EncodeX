@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Media file summary grid and metadata tags.
+ *
+ * Renders a responsive grid of label/value rows summarizing a probed
+ * {@link MediaInfo} object: file name, container format, size, duration,
+ * bitrate, start time, probe score, and stream count. Long values are wrapped
+ * in an {@link EllipsisTooltip} so they truncate without losing content.
+ *
+ * When the media file exposes format-level tags, they are listed below the grid
+ * in their own section with localized tag keys. A `compact` prop reduces the
+ * column sizes so the summary fits narrower layouts (e.g. the media player
+ * panel) without the full-width grid of the Media Info page.
+ *
+ * Props (see {@link FileSummaryProps}):
+ *  - info: the probed media information to display.
+ *  - compact: when true, uses tighter responsive column widths.
+ */
+
 import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaInfo } from '../../shared/types';
@@ -7,6 +25,22 @@ import { SummaryGrid, TagsBox, TagsTitle, TagItem } from '../styles/FileSummary.
 import { FieldLabel, FieldValue } from '../styles/InfoField.styles';
 import EllipsisTooltip from './EllipsisTooltip';
 
+/**
+ * Renders the media file summary grid and tags.
+ *
+ * Builds a list of {@link SummaryRow} entries from the passed {@link MediaInfo},
+ * choosing `compact` or regular responsive column sizes, and renders each row
+ * inside a {@link SummaryGrid}. Values that are present are wrapped in an
+ * {@link EllipsisTooltip} to ellipsize overflow. Any format-level `info.tags`
+ * are then rendered as a separate grid of key/value pairs with localized keys,
+ * omitted entirely when no tags exist.
+ *
+ * @param {FileSummaryProps} props - Component props.
+ * @param {MediaInfo} props.info - The probed media information to summarize.
+ * @param {boolean} [props.compact] - When true, uses tighter responsive column
+ *   widths suitable for narrow or embedded layouts.
+ * @returns {JSX.Element} The summary grid and, when present, the tags section.
+ */
 export default function FileSummary({ info, compact }: FileSummaryProps) {
   const { t } = useTranslation();
 

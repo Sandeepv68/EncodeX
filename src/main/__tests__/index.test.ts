@@ -13,7 +13,7 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
       isDestroyed: ReturnType<typeof vi.fn>;
       show: ReturnType<typeof vi.fn>;
       close: ReturnType<typeof vi.fn>;
-      webContents: { send: ReturnType<typeof vi.fn>; openDevTools: ReturnType<typeof vi.fn> };
+      webContents: { send: ReturnType<typeof vi.fn>; openDevTools: ReturnType<typeof vi.fn>; on: ReturnType<typeof vi.fn> };
       on: ReturnType<typeof vi.fn>;
     }> = [];
     const appMock = {
@@ -42,7 +42,7 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
       isDestroyed: ReturnType<typeof vi.fn>;
       show: ReturnType<typeof vi.fn>;
       close: ReturnType<typeof vi.fn>;
-      webContents: { send: ReturnType<typeof vi.fn>; openDevTools: ReturnType<typeof vi.fn> };
+      webContents: { send: ReturnType<typeof vi.fn>; openDevTools: ReturnType<typeof vi.fn>; on: ReturnType<typeof vi.fn> };
       on: ReturnType<typeof vi.fn>;
     }) {
       this.loadURL = vi.fn();
@@ -163,7 +163,7 @@ describe('main/index', () => {
     getWhenReadyCbs()[0]();
     const splash = getWindowInstances()[0];
     const win = getMainWindows()[0];
-    const readyCb = win.on.mock.calls.find(([event]) => event === 'ready-to-show')?.[1] as () => void;
+    const readyCb = win.on.mock.calls.find((call: unknown[]) => call[0] === 'ready-to-show')?.[1] as () => void;
     readyCb();
     expect(win.show).toHaveBeenCalled();
     expect(splash.close).toHaveBeenCalled();
@@ -219,7 +219,7 @@ describe('main/index', () => {
     await import('../index');
     getWhenReadyCbs()[0]();
     const win = getMainWindows()[0];
-    const closedCb = win.on.mock.calls.find(([event]) => event === 'closed')?.[1] as () => void;
+    const closedCb = win.on.mock.calls.find((call: unknown[]) => call[0] === 'closed')?.[1] as () => void;
     closedCb();
     getAppOnHandlers()['activate']();
     expect(getMainWindows()).toHaveLength(2);

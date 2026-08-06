@@ -183,7 +183,7 @@ describe('AudioExtract', () => {
   });
 
   it('shows live progress while extracting and removes it when the job completes', async () => {
-    let resolveConvert: (value?: unknown) => void = () => {};
+    let resolveConvert: (value?: void) => void = () => {};
     convertFileMock.mockReturnValue(new Promise((resolve) => (resolveConvert = resolve)));
     renderPage();
     await selectVideo();

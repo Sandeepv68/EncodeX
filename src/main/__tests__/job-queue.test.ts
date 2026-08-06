@@ -42,7 +42,7 @@ vi.mock('../transcoders/bmf-core', () => {
 const { JobQueue } = await import('../queue/job-queue');
 
 describe('JobQueue', () => {
-  let queue: JobQueue;
+  let queue: InstanceType<typeof JobQueue>;
 
   beforeEach(() => {
     queue = new JobQueue();

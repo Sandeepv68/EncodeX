@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useMediaTask } from '../useMediaTask';
 import { useErrorStore } from '../../stores/errorStore';
+import type { ConversionProgress } from '../../../shared/types';
 
 const onConversionProgressMock = vi.mocked(window.electronAPI.onConversionProgress);
 
@@ -50,7 +51,7 @@ describe('useMediaTask', () => {
   it('applies conversion progress events while a task is running', async () => {
     let resolveTask: () => void = () => {};
     let progressCb:
-      | ((data: { input: string; output: string; progress: { percent: number; time: string; speed: string; eta: string } }) => void)
+      | ((data: { input: string; output: string; progress: ConversionProgress }) => void)
       | undefined;
     onConversionProgressMock.mockImplementation((cb) => {
       progressCb = cb;
@@ -63,7 +64,7 @@ describe('useMediaTask', () => {
     });
     expect(result.current.isConverting).toBe(true);
     act(() => {
-      progressCb?.({ input: 'in.png', output: 'out.jpg', progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5' } });
+      progressCb?.({ input: 'in.png', output: 'out.jpg', progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5', fps: 30, bitrate: '800k' } });
     });
     expect(result.current.progress).toEqual({ percent: 42, time: '00:00:01', speed: '1.5x', eta: '5' });
     await act(async () => {
@@ -74,7 +75,7 @@ describe('useMediaTask', () => {
 
   it('ignores conversion progress events when no task is running', () => {
     let progressCb:
-      | ((data: { input: string; output: string; progress: { percent: number; time: string; speed: string; eta: string } }) => void)
+      | ((data: { input: string; output: string; progress: ConversionProgress }) => void)
       | undefined;
     onConversionProgressMock.mockImplementation((cb) => {
       progressCb = cb;
@@ -82,7 +83,7 @@ describe('useMediaTask', () => {
     });
     const { result } = renderHook(() => useMediaTask());
     act(() => {
-      progressCb?.({ input: 'in.png', output: 'out.jpg', progress: { percent: 80, time: '00:00:02', speed: '1x', eta: '1' } });
+      progressCb?.({ input: 'in.png', output: 'out.jpg', progress: { percent: 80, time: '00:00:02', speed: '1x', eta: '1', fps: 30, bitrate: '800k' } });
     });
     expect(result.current.progress).toBeNull();
   });

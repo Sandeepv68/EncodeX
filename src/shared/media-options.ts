@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Option lists and default values for the media conversion UI.
+ * Defines the selectable image formats, pixel formats, bitrate and scale presets,
+ * video/audio codecs, batch operation types, and queue status values shared by
+ * the main and renderer processes, together with fallback values used when media
+ * metadata is missing.
+ */
+
+/**
+ * Image formats offered by the image compression feature. Each entry maps the
+ * output extension (`value`) to the label shown in the UI.
+ * @const {readonly {value: string; label: string}[]} IMAGE_FORMATS
+ */
 export const IMAGE_FORMATS = [
   { value: 'jpg', label: 'JPEG' },
   { value: 'png', label: 'PNG' },
@@ -10,6 +23,10 @@ export const IMAGE_FORMATS = [
   { value: 'pbm', label: 'PBM' },
 ] as const;
 
+/**
+ * Maps an image extension to the FFmpeg encoder/codec name used to produce it.
+ * @const {Record<string, string>} IMAGE_CODEC_MAP
+ */
 export const IMAGE_CODEC_MAP: Record<string, string> = {
   jpg: 'mjpeg',
   jpeg: 'mjpeg',
@@ -24,6 +41,12 @@ export const IMAGE_CODEC_MAP: Record<string, string> = {
   pbm: 'pbm',
 } as const;
 
+/**
+ * Pixel formats available for video encoding, grouped by bit depth and color
+ * model for display in the UI. Each entry pairs an FFmpeg pixel format name
+ * (`value`) with its UI group label.
+ * @const {readonly {value: string; group: string}[]} PIXEL_FORMATS
+ */
 export const PIXEL_FORMATS = [
   { value: 'yuv420p', group: 'YUV 8-bit' },
   { value: 'yuv422p', group: 'YUV 8-bit' },
@@ -83,8 +106,17 @@ export const PIXEL_FORMATS = [
   { value: 'x2rgb10le', group: 'HDR' },
 ] as const;
 
+/**
+ * Audio bitrate presets. The special 'lossless' value indicates that no target
+ * bitrate should be applied to the encoder.
+ * @const {readonly string[]} BITRATE_OPTIONS
+ */
 export const BITRATE_OPTIONS = ['128k', '192k', '256k', '320k', 'lossless'] as const;
 
+/**
+ * Video bitrate presets in kbps. An empty string means the encoder default is used.
+ * @const {readonly string[]} VIDEO_BITRATE_OPTIONS
+ */
 export const VIDEO_BITRATE_OPTIONS = [
   '',
   '500k',
@@ -100,8 +132,19 @@ export const VIDEO_BITRATE_OPTIONS = [
   '40000k',
 ] as const;
 
+/**
+ * Video scale presets as WIDTHxHEIGHT. An empty string means the original
+ * resolution is kept.
+ * @const {readonly string[]} SCALE_OPTIONS
+ */
 export const SCALE_OPTIONS = ['', '3840x2160', '2560x1440', '1920x1080', '1280x720', '854x480', '640x360'] as const;
 
+/**
+ * Selectable video encoders. Each entry pairs an FFmpeg encoder name (`value`)
+ * with its UI label and the implementation/vendor group it belongs to
+ * (Software, NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, VideoToolbox, ...).
+ * @const {readonly {value: string; label: string; group: string}[]} VIDEO_CODECS
+ */
 export const VIDEO_CODECS = [
   { value: 'libx264', label: 'H.264 (libx264)', group: 'Software' },
   { value: 'libx264rgb', label: 'H.264 RGB (libx264rgb)', group: 'Software' },
@@ -156,6 +199,12 @@ export const VIDEO_CODECS = [
   { value: 'hevc_mf', label: 'H.265 (Media Foundation)', group: 'Media Foundation' },
 ] as const;
 
+/**
+ * Selectable audio encoders. Each entry pairs an FFmpeg encoder name (`value`)
+ * with its UI label and a format group (AAC/MPEG, Dolby, Lossless, Streaming,
+ * PCM, Windows Media, Other).
+ * @const {readonly {value: string; label: string; group: string}[]} AUDIO_CODECS
+ */
 export const AUDIO_CODECS = [
   { value: 'aac', label: 'AAC (native)', group: 'AAC / MPEG' },
   { value: 'libfdk_aac', label: 'AAC (FDK)', group: 'AAC / MPEG' },
@@ -186,12 +235,25 @@ export const AUDIO_CODECS = [
   { value: 'adpcm_ima_wav', label: 'ADPCM IMA (WAV)', group: 'Other' },
 ] as const;
 
+/**
+ * Batch operation types supported by the batch queue. Each entry maps the
+ * operation identifier (`value`) to its UI label.
+ * @const {readonly {value: string; label: string}[]} BATCH_OPERATIONS
+ */
 export const BATCH_OPERATIONS = [
   { value: 'transcode', label: 'Transcode' },
   { value: 'extract_audio', label: 'Extract Audio' },
   { value: 'compress_image', label: 'Compress Image' },
 ] as const;
 
+/**
+ * Lifecycle status values for batch queue jobs.
+ * @const {Object} QUEUE_STATUS
+ * @property {string} QUEUED - Job is waiting to be processed.
+ * @property {string} RUNNING - Job is currently being processed.
+ * @property {string} DONE - Job completed successfully.
+ * @property {string} ERROR - Job failed.
+ */
 export const QUEUE_STATUS = {
   QUEUED: 'queued',
   RUNNING: 'running',
@@ -199,8 +261,25 @@ export const QUEUE_STATUS = {
   ERROR: 'error',
 } as const;
 
+/**
+ * Suffix appended to auto-generated output filenames (e.g. 'movie_converted.mp4').
+ * @const {string} DEFAULT_SUFFIX
+ */
 export const DEFAULT_SUFFIX = '_converted';
 
+/**
+ * Fallback values used when media metadata is missing or unreadable, so the UI
+ * and serialized payloads always receive defined values.
+ * @const {Object} FALLBACK_VALUES
+ * @property {string} UNKNOWN_CODEC - Fallback codec name.
+ * @property {string} UNKNOWN_FORMAT - Fallback container/format name.
+ * @property {string} BITRATE_NA - Fallback bitrate display string.
+ * @property {string} DEFAULT_TIME - Fallback timestamp string.
+ * @property {number} FILE_SIZE_ZERO - Fallback file size in bytes.
+ * @property {number} DURATION_ZERO - Fallback duration in seconds.
+ * @property {number} INDEX_ZERO - Fallback stream index.
+ * @property {readonly []} STREAMS_EMPTY - Fallback empty stream list.
+ */
 export const FALLBACK_VALUES = {
   UNKNOWN_CODEC: 'unknown',
   UNKNOWN_FORMAT: 'unknown',

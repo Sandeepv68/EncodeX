@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import ImageCompress from '../ImageCompress';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
+import type { ConversionProgress } from '../../../shared/types';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
 const selectOutputMock = vi.mocked(window.electronAPI.selectOutput);
@@ -215,9 +216,9 @@ describe('ImageCompress', () => {
   });
 
   it('shows live progress while compressing and removes it when the job completes', async () => {
-    let resolveConvert: (value?: unknown) => void = () => {};
+    let resolveConvert: (value?: void) => void = () => {};
     let progressCb:
-      | ((data: { input: string; output: string; progress: { percent: number; time: string; speed: string; eta: string } }) => void)
+      | ((data: { input: string; output: string; progress: ConversionProgress }) => void)
       | undefined;
     vi.mocked(window.electronAPI.onConversionProgress).mockImplementation((cb) => {
       progressCb = cb;
@@ -236,7 +237,7 @@ describe('ImageCompress', () => {
       progressCb?.({
         input: '/in/photo.png',
         output: '/out/photo.jpg',
-        progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5' },
+        progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5', fps: 30, bitrate: '800k' },
       });
     });
     expect(screen.getByText('42.0%')).toBeInTheDocument();

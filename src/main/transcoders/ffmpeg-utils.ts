@@ -1,9 +1,12 @@
-import { existsSync } from 'fs';
 /**
- * @fileoverview FFmpeg utility functions and path resolution.
- * Handles FFmpeg executable detection and path management.
+ * @fileoverview FFmpeg utility functions and CLI argument generation.
+ * Resolves the ffmpeg/ffprobe executable paths (preferring the statically
+ * bundled binaries) and builds the raw ffmpeg command-line argument array from
+ * a ConversionOptions object. This shared builder is used by the FFToolCore and
+ * BmfCore backends so all CLI-based transcoders produce identical commands.
  */
 
+import { existsSync } from 'fs';
 import ffmpegStatic from 'ffmpeg-static';
 import { Logger } from '../../shared/logger';
 import { ConversionOptions } from '../../shared/types';
@@ -25,8 +28,21 @@ import {
   LOG_VIDEO_CODEC,
 } from '../../shared/log-constants';
 
+/**
+ * Logger instance scoped to the ffmpeg utilities module. Logs ffmpeg/ffprobe
+ * path fallbacks and each flag emitted while building ffmpeg arguments.
+ * @const {Logger} log
+ */
 const log = new Logger('main/transcoders/ffmpeg-utils');
 
+/**
+ * Resolves the ffmpeg executable path.
+ *
+ * Prefers the statically bundled ffmpeg binary from `ffmpeg-static`; if it is
+ * missing on disk, logs a warning and falls back to the system `ffmpeg` command.
+ * @returns {string} Absolute path to the bundled ffmpeg binary, or `'ffmpeg'`
+ *   for the system-installed executable
+ */
 export function getFfmpegPath(): string {
   const staticPath = ffmpegStatic as unknown as string;
   if (existsSync(staticPath)) return staticPath;
@@ -34,6 +50,15 @@ export function getFfmpegPath(): string {
   return TRANSCODER_COMMANDS.FFMPEG;
 }
 
+/**
+ * Resolves the ffprobe executable path.
+ *
+ * Attempts to require the `ffprobe-static` package to get its bundled binary
+ * path; on any failure (package missing or load error) it logs a warning and
+ * falls back to the system `ffprobe` command.
+ * @returns {string} Absolute path to the bundled ffprobe binary, or `'ffprobe'`
+ *   for the system-installed executable
+ */
 export function getFfprobePath(): string {
   try {
     return require('ffprobe-static').path;
@@ -43,6 +68,28 @@ export function getFfprobePath(): string {
   }
 }
 
+/**
+ * Builds a complete ffmpeg CLI argument array from conversion options.
+ *
+ * Argument assembly order:
+ * 1. Hardware acceleration input flags (from {@link getHwAccelArgs}), prepended
+ *    only when not in stream-copy mode (hwaccel is incompatible with `-c copy`).
+ * 2. `-i <input>` input file.
+ * 3. Copy mode: `-c copy`. Otherwise, in order: video codec (`-vcodec`), audio
+ *    codec (`-acodec`), video bitrate (`-b:v`), audio bitrate (`-b:a`), quality
+ *    scale (`-qscale:v`), a `scale=<WxH>` video filter (`-vf scale=...`), and
+ *    pixel format (`-pix_fmt`).
+ * 4. Audio disable (`-an`) when `options.audio === false`.
+ * 5. Trimming: start time (`-ss`), end time (`-to`), duration (`-t`).
+ * 6. Overwrite flag (`-y`) and the output path last.
+ *
+ * Note the scale filter is passed through verbatim (`scale=WxH`); callers
+ * wanting aspect-ratio preservation supply the `:-2` variant themselves.
+ * @param {string} input - Absolute path of the input media file
+ * @param {string} output - Absolute path of the output file
+ * @param {ConversionOptions} options - Encoding options to translate into flags
+ * @returns {string[]} Ordered array of ffmpeg arguments ready for spawn()
+ */
 export function buildFfmpegArgs(input: string, output: string, options: ConversionOptions): string[] {
   const args: string[] = [];
   if (!options.copy) {

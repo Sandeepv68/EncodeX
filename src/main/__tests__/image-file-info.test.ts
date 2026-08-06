@@ -134,7 +134,7 @@ describe('getImageFileInfo', () => {
     existsSyncMock.mockReturnValue(true);
     statMock.mockResolvedValue({ size: 2500000 });
     openMock.mockResolvedValue({ read: readMock, close: closeMock });
-    closeMock.mockResolvedValue();
+    closeMock.mockResolvedValue(undefined);
   });
 
   afterEach(() => {
