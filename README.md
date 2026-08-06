@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Sandeepv68/EncodeX)
+[![Ask DeepWiki](https://img.shields.io/badge/Ask_DeepWiki-10B981?style=for-the-badge)](https://deepwiki.com/Sandeepv68/EncodeX)
 ![CI](https://img.shields.io/github/actions/workflow/status/Sandeepv68/EncodeX/ci.yml?style=for-the-badge)
 ![License](https://img.shields.io/github/license/Sandeepv68/EncodeX?style=for-the-badge)
 ![Release](https://img.shields.io/github/v/release/Sandeepv68/EncodeX?style=for-the-badge)
