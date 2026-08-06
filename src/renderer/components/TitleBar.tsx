@@ -14,8 +14,11 @@
 import { useEffect, useState } from 'react';
 import { faMinus, faSquare, faCopy, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { APP_NAME } from '../../shared/app-constants';
+import appIcon from '../../../assets/icons/Assets.xcassets/AppIcon.appiconset/100.png';
 import {
   TitleBarRoot,
+  TitleBarBrand,
+  TitleBarIcon,
   TitleBarTitle,
   WindowControls,
   WindowControlButton,
@@ -47,7 +50,10 @@ export default function TitleBar() {
 
   return (
     <TitleBarRoot>
-      <TitleBarTitle variant="body2">{APP_NAME}</TitleBarTitle>
+      <TitleBarBrand>
+        <TitleBarIcon src={appIcon} alt="" draggable={false} />
+        <TitleBarTitle variant="body2">{APP_NAME}</TitleBarTitle>
+      </TitleBarBrand>
       <WindowControls>
         <WindowControlButton aria-label="Minimize" size="small" onClick={() => window.electronAPI.windowMinimize()}>
           <WindowControlIcon icon={faMinus} />

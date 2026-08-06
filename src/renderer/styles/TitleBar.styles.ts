@@ -18,10 +18,29 @@ export const TitleBarRoot = styled(Box)(({ theme }) => ({
   WebkitUserSelect: 'none',
 }));
 
+export const TitleBarBrand = styled(Box)({
+  ...dragRegion,
+  display: 'flex',
+  alignItems: 'center',
+  minWidth: 0,
+  overflow: 'hidden',
+});
+
+export const TitleBarIcon = styled('img')(({ theme }) => ({
+  width: theme.typography.pxToRem(20),
+  height: theme.typography.pxToRem(20),
+  marginLeft: theme.spacing(1.5),
+  marginRight: theme.spacing(1),
+  borderRadius: theme.typography.pxToRem(4),
+  flexShrink: 0,
+  userSelect: 'none',
+  WebkitUserSelect: 'none',
+  pointerEvents: 'none',
+}));
+
 export const TitleBarTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 600,
   color: theme.palette.text.secondary,
-  paddingLeft: theme.spacing(2),
   fontSize: theme.typography.pxToRem(13),
   letterSpacing: theme.typography.pxToRem(0.2),
 }));

@@ -20,7 +20,16 @@ import * as path from 'path';
 import { registerIpcHandlers } from './ipc/handlers';
 import { runCli } from './cli';
 import { Logger } from '../shared/logger';
-import { WINDOW_SIZE, DEV_SERVER_URL, APP_NAME, EXIT_CODES, SPLASH_SIZE, SPLASH_IMAGE, SPLASH_BACKGROUND } from '../shared/app-constants';
+import {
+  WINDOW_SIZE,
+  DEV_SERVER_URL,
+  APP_NAME,
+  EXIT_CODES,
+  SPLASH_SIZE,
+  SPLASH_HTML,
+  SPLASH_BACKGROUND,
+  APP_ICON,
+} from '../shared/app-constants';
 import { IPC } from '../shared/ipc-channels';
 import {
   LOG_ACTIVATE_EVENT_MAIN_WINDOW_NULL,
@@ -83,7 +92,7 @@ if (isCliMode()) {
    * window loads.
    *
    * The splash is a small fixed-size, non-resizable, non-minimizable,
-   * taskbar-hidden BrowserWindow that loads `SPLASH_IMAGE` from the app path
+   * taskbar-hidden BrowserWindow that loads `SPLASH_HTML` from the app path
    * with a sandboxed, context-isolated renderer. Its `closed` event clears the
    * module variable so the window reference is not leaked.
    *
@@ -105,13 +114,14 @@ if (isCliMode()) {
       alwaysOnTop: true,
       center: true,
       backgroundColor: SPLASH_BACKGROUND,
+      ...(process.platform !== 'darwin' ? { icon: path.join(app.getAppPath(), APP_ICON) } : {}),
       webPreferences: {
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: true,
       },
     });
-    splashWindow.loadFile(path.join(app.getAppPath(), SPLASH_IMAGE));
+    splashWindow.loadFile(path.join(app.getAppPath(), SPLASH_HTML));
     splashWindow.on('closed', () => {
       log.info(LOG_SPLASH_WINDOW_CLOSED);
       splashWindow = null;
@@ -142,6 +152,7 @@ if (isCliMode()) {
       title: APP_NAME,
       frame: false,
       show: false,
+      ...(process.platform !== 'darwin' ? { icon: path.join(app.getAppPath(), APP_ICON) } : {}),
       webPreferences: {
         preload: path.join(__dirname, '..', 'preload', 'index.js'),
         contextIsolation: true,

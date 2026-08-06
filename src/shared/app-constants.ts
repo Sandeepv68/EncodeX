@@ -38,21 +38,36 @@ export const WINDOW_SIZE = {
  * @property {number} HEIGHT - Splash window height in pixels.
  */
 export const SPLASH_SIZE = {
-  WIDTH: 600,
-  HEIGHT: 600,
+  WIDTH: 1000,
+  HEIGHT: 322,
 } as const;
 
 /**
  * Path to the splash screen image, relative to the packaged resources directory.
  * @const {string} SPLASH_IMAGE
  */
-export const SPLASH_IMAGE = 'assets/splash_screen.png';
+export const SPLASH_IMAGE = 'assets/banner.png';
+
+/**
+ * Path to the splash screen HTML page that renders {@link SPLASH_IMAGE},
+ * relative to the packaged resources directory.
+ * @const {string} SPLASH_HTML
+ */
+export const SPLASH_HTML = 'assets/splash.html';
 
 /**
  * Background color behind the splash image while the window is loading.
  * @const {string} SPLASH_BACKGROUND
  */
 export const SPLASH_BACKGROUND = '#EEF4F4';
+
+/**
+ * Path to the application icon, relative to the packaged resources directory.
+ * Used for the window icon on Windows/Linux and as the source icon for
+ * packaged builds.
+ * @const {string} APP_ICON
+ */
+export const APP_ICON = 'assets/icons/AppIcon.icon/Assets/icon.png';
 
 /**
  * Human-readable application name used in window titles and UI text.

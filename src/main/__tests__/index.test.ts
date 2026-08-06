@@ -154,7 +154,7 @@ describe('main/index', () => {
       }),
     );
     const splash = getWindowInstances()[0];
-    expect(splash.loadFile).toHaveBeenCalledWith(expect.stringContaining('splash_screen.png'));
+    expect(splash.loadFile).toHaveBeenCalledWith(expect.stringContaining('splash.html'));
   });
 
   it('shows the main window and closes the splash when ready', async () => {
