@@ -28,6 +28,7 @@ export const TitleBarBrand = styled(Box)({
 });
 
 export const TitleBarIcon = styled('img')(({ theme }) => ({
+  display: 'block',
   width: theme.typography.pxToRem(20),
   height: theme.typography.pxToRem(20),
   marginLeft: theme.spacing(1.5),
@@ -40,9 +41,12 @@ export const TitleBarIcon = styled('img')(({ theme }) => ({
 }));
 
 export const TitleBarTitle = styled(Typography)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
   fontWeight: 600,
   color: theme.palette.text.secondary,
   fontSize: theme.typography.pxToRem(13),
+  lineHeight: 1,
   letterSpacing: theme.typography.pxToRem(0.2),
 }));
 
