@@ -217,9 +217,7 @@ describe('ImageCompress', () => {
 
   it('shows live progress while compressing and removes it when the job completes', async () => {
     let resolveConvert: (value?: void) => void = () => {};
-    let progressCb:
-      | ((data: { input: string; output: string; progress: ConversionProgress }) => void)
-      | undefined;
+    let progressCb: ((data: { input: string; output: string; progress: ConversionProgress }) => void) | undefined;
     vi.mocked(window.electronAPI.onConversionProgress).mockImplementation((cb) => {
       progressCb = cb;
       return vi.fn();

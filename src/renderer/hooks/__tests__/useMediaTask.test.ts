@@ -50,9 +50,7 @@ describe('useMediaTask', () => {
 
   it('applies conversion progress events while a task is running', async () => {
     let resolveTask: () => void = () => {};
-    let progressCb:
-      | ((data: { input: string; output: string; progress: ConversionProgress }) => void)
-      | undefined;
+    let progressCb: ((data: { input: string; output: string; progress: ConversionProgress }) => void) | undefined;
     onConversionProgressMock.mockImplementation((cb) => {
       progressCb = cb;
       return vi.fn();
@@ -64,7 +62,11 @@ describe('useMediaTask', () => {
     });
     expect(result.current.isConverting).toBe(true);
     act(() => {
-      progressCb?.({ input: 'in.png', output: 'out.jpg', progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5', fps: 30, bitrate: '800k' } });
+      progressCb?.({
+        input: 'in.png',
+        output: 'out.jpg',
+        progress: { percent: 42, time: '00:00:01', speed: '1.5x', eta: '5', fps: 30, bitrate: '800k' },
+      });
     });
     expect(result.current.progress).toEqual({ percent: 42, time: '00:00:01', speed: '1.5x', eta: '5' });
     await act(async () => {
@@ -74,16 +76,18 @@ describe('useMediaTask', () => {
   });
 
   it('ignores conversion progress events when no task is running', () => {
-    let progressCb:
-      | ((data: { input: string; output: string; progress: ConversionProgress }) => void)
-      | undefined;
+    let progressCb: ((data: { input: string; output: string; progress: ConversionProgress }) => void) | undefined;
     onConversionProgressMock.mockImplementation((cb) => {
       progressCb = cb;
       return vi.fn();
     });
     const { result } = renderHook(() => useMediaTask());
     act(() => {
-      progressCb?.({ input: 'in.png', output: 'out.jpg', progress: { percent: 80, time: '00:00:02', speed: '1x', eta: '1', fps: 30, bitrate: '800k' } });
+      progressCb?.({
+        input: 'in.png',
+        output: 'out.jpg',
+        progress: { percent: 80, time: '00:00:02', speed: '1x', eta: '1', fps: 30, bitrate: '800k' },
+      });
     });
     expect(result.current.progress).toBeNull();
   });

@@ -394,9 +394,7 @@ describe('VideoCut', () => {
 
   it('shows live progress while cutting and hides it when the job completes', async () => {
     let resolveConvert: (value?: void) => void = () => {};
-    let progressCb:
-      | ((data: { input: string; output: string; progress: ConversionProgress }) => void)
-      | undefined;
+    let progressCb: ((data: { input: string; output: string; progress: ConversionProgress }) => void) | undefined;
     vi.mocked(window.electronAPI.onConversionProgress).mockImplementation((cb) => {
       progressCb = cb;
       return vi.fn();
@@ -425,9 +423,7 @@ describe('VideoCut', () => {
 
   it('hides the progress bar when the cut is cancelled', async () => {
     let resolveConvert: (value?: void) => void = () => {};
-    let progressCb:
-      | ((data: { input: string; output: string; progress: ConversionProgress }) => void)
-      | undefined;
+    let progressCb: ((data: { input: string; output: string; progress: ConversionProgress }) => void) | undefined;
     vi.mocked(window.electronAPI.onConversionProgress).mockImplementation((cb) => {
       progressCb = cb;
       return vi.fn();
