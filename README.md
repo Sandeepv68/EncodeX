@@ -1,7 +1,7 @@
 <div align="center">
   <img src="assets/logo.png" alt="EncodeX Logo" width="200" />
   <h1>EncodeX</h1>
-  <p>A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron.</p>
+  <h3>A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron.</h3>
 </div>
 
 <div align="center">
@@ -358,6 +358,7 @@ Playwright-based end-to-end tests live in `e2e/` (node environment, 60s timeouts
 
 ```
 src/
+├── test-setup.ts                      # Vitest global setup: jest-dom matchers + i18n/electronAPI mocks
 ├── main/                              # Electron main process
 │   ├── index.ts                       # Entry: CLI detection, splash + main window, console bridging
 │   ├── cli.ts                         # Commander-based CLI entry point
@@ -367,6 +368,7 @@ src/
 │   ├── image-preview.ts               # Downscaled base64 image previews
 │   ├── image-file-info.ts             # Image dimensions/size probing
 │   ├── video-preview.ts               # Single-frame video thumbnails
+│   ├── ffprobe-static.d.ts            # Module declaration for ffprobe-static
 │   ├── ipc/                           # IPC handler modules (error-wrapped)
 │   │   ├── handlers.ts                # Central registration + error wrapper
 │   │   ├── dialogs.ts                 # select-file / select-files / select-output
@@ -377,15 +379,17 @@ src/
 │   │   ├── image.ts                   # image info / preview / file info
 │   │   ├── capabilities.ts            # get-capabilities
 │   │   ├── window.ts                  # minimize / maximize / close / always-on-top
-│   │   └── send.ts                    # Event broadcast helpers
+│   │   ├── send.ts                    # Event broadcast helpers
+│   │   └── types.ts                   # Type-safe main→renderer sender signature
 │   ├── player/
-│   │   └── frame-decoder.ts           # Rawvideo frame + PCM audio pipe decoder
+│   │   ├── frame-decoder.ts           # Rawvideo frame + PCM audio pipe decoder
+│   │   └── types.ts                   # Decoded frame/audio structures + config types
 │   ├── queue/
 │   │   └── job-queue.ts               # Async serial batch queue with EventEmitter
 │   ├── timeline/
 │   │   └── timeline-media.ts          # Waveform + thumbnail-montage extraction
 │   └── transcoders/
-│       ├── interface.ts               # ITranscoder contract {getInfo, convert, cancel, getType}
+│       ├── types.ts                   # ITranscoder contract + raw ffprobe JSON shapes
 │       ├── factory.ts                 # Transcoder factory (FFMPEG | FFTOOL | BMF)
 │       ├── ffmpeg-core.ts             # fluent-ffmpeg API core
 │       ├── fftool-core.ts             # Direct CLI invocation via child_process
@@ -403,6 +407,9 @@ src/
 │   ├── theme.ts                       # MUI light/dark theme definitions
 │   ├── colors.ts                      # Shared color palette
 │   ├── electron-api.d.ts              # Global Window.electronAPI type declaration
+│   ├── mui.d.ts                       # MUI data-testid attribute augmentation
+│   ├── vite-env.d.ts                  # Vite client type reference
+│   ├── types.ts                       # Color mode / theme context types
 │   ├── global.css                     # Global styles
 │   ├── index.html                     # Vite entry HTML
 │   ├── pageIcons.tsx                  # Page → icon mapping
@@ -432,17 +439,20 @@ src/
 │   │   ├── EllipsisTooltip.tsx        # Truncated-text tooltip
 │   │   ├── Footer.tsx                 # App footer
 │   │   ├── LanguageMenu.tsx           # Locale switcher with flags
-│   │   └── PageContainer.tsx          # Shared page layout shell
+│   │   ├── PageContainer.tsx          # Shared page layout shell
+│   │   └── types.ts                   # Shared component prop shapes
 │   ├── hooks/
 │   │   ├── useConversion.ts           # Conversion orchestration hook
 │   │   ├── useErrorHandler.ts         # Error handling utilities
 │   │   ├── useFormErrors.ts           # Field-level validation errors
 │   │   ├── useCapabilities.ts         # Encoder capability fetching + filtering
-│   │   └── useMediaTask.ts            # Shared media-task lifecycle (info → run → progress)
+│   │   ├── useMediaTask.ts            # Shared media-task lifecycle (info → run → progress)
+│   │   └── types.ts                   # Codec option + progress subset types
 │   ├── i18n/
 │   │   ├── config.ts                  # i18next init with 20 locale resources
 │   │   ├── DirectionProvider.tsx      # Emotion RTL/LTR cache provider
 │   │   ├── localeMeta.ts              # Locale metadata + flags + RTL list
+│   │   ├── types.ts                   # Locale metadata + flag component types
 │   │   └── locales/                   # 20 JSON locale files
 │   ├── pages/
 │   │   ├── Dashboard.tsx              # Home / quick action cards
@@ -461,8 +471,9 @@ src/
 │   │   ├── queueStore.ts              # Batch queue job state (Zustand)
 │   │   ├── settingsStore.ts           # Settings state + localStorage persistence
 │   │   ├── logStore.ts                # Aggregated log entries (cap 2000)
-│   │   └── toastStore.ts              # Toast queue
-│   ├── styles/                        # Extracted MUI style constants per component
+│   │   ├── toastStore.ts              # Toast queue
+│   │   └── types.ts                   # Zustand store state shapes + actions
+│   ├── styles/                        # Extracted MUI style constants per component (33 modules)
 │   └── utils/
 │       └── formatters.ts              # Duration/bitrate/stream formatting helpers
 └── shared/                            # Code shared between processes
