@@ -1,5 +1,6 @@
 import { styled, keyframes, alpha } from '@mui/material/styles';
 import { Box, LinearProgress } from '@mui/material';
+import { OVERLAY_COLORS } from '../colors';
 
 const gradientSlide = keyframes`
   from { transform: translateX(0); }
@@ -24,7 +25,7 @@ export const ProgressTrack = styled(LinearProgress, {
       bottom: 0,
       left: 0,
       width: 'calc(100% + 400px)',
-      backgroundImage: `repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0px, rgba(255,255,255,0.18) 17.6777px, rgba(255,255,255,0) 17.6777px, rgba(255,255,255,0) 35.3553px), repeating-linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main}, ${theme.palette.success.main}, ${theme.palette.primary.main} 400px)`,
+      backgroundImage: `repeating-linear-gradient(45deg, ${OVERLAY_COLORS.white18} 0px, ${OVERLAY_COLORS.white18} 17.6777px, ${OVERLAY_COLORS.white0} 17.6777px, ${OVERLAY_COLORS.white0} 35.3553px), repeating-linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main}, ${theme.palette.success.main}, ${theme.palette.primary.main} 400px)`,
       animation: `${gradientSlide} 8s linear infinite`,
       pointerEvents: 'none',
     },
@@ -35,7 +36,7 @@ export const ProgressTrack = styled(LinearProgress, {
       bottom: 0,
       left: 0,
       width: 'calc(100% + 400px)',
-      backgroundImage: `repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0px, rgba(255,255,255,0.18) 17.6777px, rgba(255,255,255,0) 17.6777px, rgba(255,255,255,0) 35.3553px), repeating-linear-gradient(90deg, ${theme.palette.warning.light}, ${theme.palette.warning.main}, ${theme.palette.warning.dark}, ${theme.palette.warning.light} 400px)`,
+      backgroundImage: `repeating-linear-gradient(45deg, ${OVERLAY_COLORS.white18} 0px, ${OVERLAY_COLORS.white18} 17.6777px, ${OVERLAY_COLORS.white0} 17.6777px, ${OVERLAY_COLORS.white0} 35.3553px), repeating-linear-gradient(90deg, ${theme.palette.warning.light}, ${theme.palette.warning.main}, ${theme.palette.warning.dark}, ${theme.palette.warning.light} 400px)`,
       animation: `${gradientSlide} 8s linear infinite`,
       opacity: paused ? 1 : 0,
       transition: 'opacity 0.5s ease',

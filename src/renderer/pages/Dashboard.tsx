@@ -19,9 +19,10 @@ import { Box, Grid, Typography } from '@mui/material';
 import { Logger } from '../../shared/logger';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import { pageIcons } from '../pageIcons';
-import { TitleIcon } from '../styles/PageContainer.styles';
+import appIcon from '../../../assets/icons/Assets.xcassets/AppIcon.appiconset/100.png';
 import {
   WelcomeTitle,
+  WelcomeIcon,
   DashboardSubtitle,
   FeatureCard,
   CardLink,
@@ -76,15 +77,24 @@ export default function Dashboard() {
     log.debug(LOG_DASHBOARD_RENDERED);
   }, []);
   return (
-    <Box>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100%',
+        width: '100%',
+      }}
+    >
       <WelcomeTitle variant="h4">
-        <TitleIcon>{pageIcons['/']}</TitleIcon>
+        <WelcomeIcon src={appIcon} alt="" draggable={false} />
         {t('dashboard.welcome')}
       </WelcomeTitle>
       <DashboardSubtitle color="text.secondary">{t('dashboard.subtitle')}</DashboardSubtitle>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%' }}>
         {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs' && item.to !== '/settings').map((item) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.to} sx={{ display: 'flex' }}>
             <FeatureCard>
               <CardLink onClick={() => navigate(item.to)}>
                 <FeatureIconBox>{pageIcons[item.to]}</FeatureIconBox>
@@ -94,7 +104,7 @@ export default function Dashboard() {
                       `nav.${item.to === '/convert' ? 'convert' : item.to === '/media-info' ? 'mediaInfo' : item.to === '/image-compress' ? 'image' : item.to === '/audio-extract' ? 'audio' : item.to === '/video-cut' ? 'cut' : 'batchQueue'}`,
                     )}
                   </CardTitleText>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" color="text.secondary" sx={{ marginTop: 'auto' }}>
                     {t(`dashboard.${descKeys[item.to]}`)}
                   </Typography>
                 </CardBody>

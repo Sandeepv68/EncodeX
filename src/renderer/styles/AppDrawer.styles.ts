@@ -1,5 +1,6 @@
 import { alpha, styled, keyframes } from '@mui/material/styles';
 import { Divider, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { COLORS } from '../colors';
 
 export const DrawerDivider = styled(Divider)(({ theme }) => ({
   borderColor: theme.palette.divider,
@@ -37,8 +38,8 @@ const blinkKeyframes = keyframes`
 `;
 
 const rippleKeyframes = keyframes`
-  0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.45); }
-  100% { box-shadow: 0 0 0 14px rgba(231, 76, 60, 0); }
+  0% { box-shadow: 0 0 0 0 ${COLORS.tint.error45}; }
+  100% { box-shadow: 0 0 0 14px ${COLORS.tint.error0}; }
 `;
 
 export const NavBlip = styled('span')(({ theme }) => ({

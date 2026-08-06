@@ -1,5 +1,6 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box, IconButton, Typography } from '@mui/material';
+import { OVERLAY_COLORS, TIMELINE_COLORS } from '../colors';
 
 export const TIMELINE_LAYOUT = {
   RULER_HEIGHT: 32,
@@ -41,7 +42,7 @@ export const Viewport = styled(Box)(({ theme }) => ({
     height: 8,
   },
   '&::-webkit-scrollbar-thumb': {
-    backgroundColor: 'rgba(128, 128, 128, 0.4)',
+    backgroundColor: TIMELINE_COLORS.scrollbarThumb,
     borderRadius: theme.typography.pxToRem(4),
   },
 }));
@@ -51,7 +52,7 @@ export const TrackLabelPanel = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   flexShrink: 0,
   borderRight: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
-  backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : '#141414',
+  backgroundColor: theme.palette.mode === 'light' ? TIMELINE_COLORS.labelPanelBackgroundLight : TIMELINE_COLORS.labelPanelBackgroundDark,
   zIndex: 2,
 }));
 
@@ -76,7 +77,7 @@ export const Scroller = styled(Box, {
 export const Ruler = styled(Box)(({ theme }) => ({
   position: 'relative',
   height: TIMELINE_LAYOUT.RULER_HEIGHT,
-  backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : '#141414',
+  backgroundColor: theme.palette.mode === 'light' ? TIMELINE_COLORS.labelPanelBackgroundLight : TIMELINE_COLORS.labelPanelBackgroundDark,
   borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
 }));
 
@@ -110,13 +111,13 @@ export const RulerLabel = styled(Typography)(({ theme }) => ({
 }));
 
 export const MarkerBubble = styled(Box)(({ theme }) => {
-  const bg = theme.palette.mode === 'light' ? 'rgb(0 0 0 / 66%)' : 'rgba(97, 97, 97, 0.9)';
+  const bg = theme.palette.mode === 'light' ? OVERLAY_COLORS.black66 : TIMELINE_COLORS.markerBubbleBackgroundDark;
   return {
     position: 'absolute',
     bottom: -3,
     transform: 'translateX(-50%)',
     backgroundColor: bg,
-    color: '#fff',
+    color: OVERLAY_COLORS.white,
     fontSize: theme.typography.pxToRem(10),
     lineHeight: 1.2,
     fontVariantNumeric: 'tabular-nums',
@@ -165,7 +166,7 @@ export const AudioTrack = styled(Box)({
   left: 0,
   right: 0,
   height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
-  backgroundColor: '#809dca42',
+  backgroundColor: TIMELINE_COLORS.audioTrack,
   zIndex: 0,
   pointerEvents: 'none',
 });
@@ -221,14 +222,14 @@ export const TrimHandle = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   backgroundColor: theme.palette.info.main,
-  border: `${theme.typography.pxToRem(1)} solid rgba(255, 255, 255, 0.85)`,
+  border: `${theme.typography.pxToRem(1)} solid ${OVERLAY_COLORS.white85}`,
   borderRadius: theme.typography.pxToRem(2),
-  boxShadow: `0 0 ${theme.typography.pxToRem(4)} rgba(0, 0, 0, 0.45)`,
+  boxShadow: `0 0 ${theme.typography.pxToRem(4)} ${OVERLAY_COLORS.black45}`,
   '&::before': {
     content: '""',
     width: 2,
     height: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: OVERLAY_COLORS.white90,
     borderRadius: theme.typography.pxToRem(1),
   },
 }));
@@ -260,14 +261,14 @@ export const ScrollShadow = styled(Box)(({ theme }) => {
     width: 24,
     height: '100%',
     background: light
-      ? 'linear-gradient(to right, rgb(0 0 0 / 20%), rgba(0, 0, 0, 0))'
-      : 'linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0))',
-    borderLeft: `${theme.typography.pxToRem(1)} solid ${light ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.3)'}`,
+      ? `linear-gradient(to right, ${OVERLAY_COLORS.black20}, ${OVERLAY_COLORS.black0})`
+      : `linear-gradient(to right, ${OVERLAY_COLORS.black70}, ${OVERLAY_COLORS.black0})`,
+    borderLeft: `${theme.typography.pxToRem(1)} solid ${light ? OVERLAY_COLORS.black25 : OVERLAY_COLORS.white30}`,
   };
 });
 
 export const TrackInfoBubble = styled(Box)(({ theme }) => {
-  const bg = theme.palette.mode === 'light' ? 'rgb(0 0 0 / 66%)' : 'rgba(33, 33, 33, 0.95)';
+  const bg = theme.palette.mode === 'light' ? OVERLAY_COLORS.black66 : TIMELINE_COLORS.trackInfoBubbleBackgroundDark;
   return {
     position: 'sticky',
     top: 0,
@@ -275,7 +276,7 @@ export const TrackInfoBubble = styled(Box)(({ theme }) => {
     width: 'max-content',
     maxWidth: `min(60vw, ${theme.typography.pxToRem(480)})`,
     backgroundColor: bg,
-    color: '#fff',
+    color: OVERLAY_COLORS.white,
     fontSize: theme.typography.pxToRem(11),
     lineHeight: 1.3,
     padding: theme.spacing(0.5, 1),

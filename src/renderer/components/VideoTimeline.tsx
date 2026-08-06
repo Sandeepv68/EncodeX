@@ -59,6 +59,7 @@ import {
   ScrollShadow,
   TIMELINE_LAYOUT,
 } from '../styles/VideoTimeline.styles';
+import { OVERLAY_COLORS } from '../colors';
 import { formatClockTime, formatStreamSummary } from '../utils/formatters';
 import type { DragKind, VideoTimelineProps } from './types';
 import {
@@ -673,8 +674,8 @@ export default function VideoTimeline({
                     opacity: 0,
                     transition: 'opacity 120ms ease',
                     pointerEvents: 'none',
-                    backgroundColor: 'rgba(0, 0, 0, 0.45)',
-                    color: '#fff',
+                    backgroundColor: OVERLAY_COLORS.black45,
+                    color: OVERLAY_COLORS.white,
                     borderRadius: '6px',
                     padding: '6px',
                   }}

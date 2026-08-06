@@ -23,6 +23,7 @@ import { FieldLabel, FieldValue } from '../styles/InfoField.styles';
 import EllipsisTooltip from './EllipsisTooltip';
 import { ExifTitle, HistogramBox, HistogramTitle, HistogramRow, HistogramLabel } from '../styles/ExifSection.styles';
 import { EXIF_HISTOGRAM_BINS, EXIF_HISTOGRAM_WIDTH, EXIF_HISTOGRAM_HEIGHT } from '../../shared/constants';
+import { HISTOGRAM_COLORS } from '../colors';
 
 /**
  * Downsamples an arbitrary-length data series into `bins` buckets by summing
@@ -109,19 +110,19 @@ export default function ExifSection({ data }: { data: ImageExifData }) {
           <HistogramTitle variant="subtitle2">Histogram</HistogramTitle>
           <HistogramRow>
             <HistogramLabel variant="caption">Red</HistogramLabel>
-            <HistogramChart id="r" data={data.histogram.r} color="#f44336" />
+            <HistogramChart id="r" data={data.histogram.r} color={HISTOGRAM_COLORS.red} />
           </HistogramRow>
           <HistogramRow>
             <HistogramLabel variant="caption">Green</HistogramLabel>
-            <HistogramChart id="g" data={data.histogram.g} color="#4caf50" />
+            <HistogramChart id="g" data={data.histogram.g} color={HISTOGRAM_COLORS.green} />
           </HistogramRow>
           <HistogramRow>
             <HistogramLabel variant="caption">Blue</HistogramLabel>
-            <HistogramChart id="b" data={data.histogram.b} color="#2196f3" />
+            <HistogramChart id="b" data={data.histogram.b} color={HISTOGRAM_COLORS.blue} />
           </HistogramRow>
           <HistogramRow>
             <HistogramLabel variant="caption">Luma</HistogramLabel>
-            <HistogramChart id="luma" data={data.histogram.luma} color="#9e9e9e" />
+            <HistogramChart id="luma" data={data.histogram.luma} color={HISTOGRAM_COLORS.luma} />
           </HistogramRow>
         </HistogramBox>
       )}

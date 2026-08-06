@@ -12,6 +12,9 @@
  *    validate unknown ids (e.g. values read back from localStorage).
  *  - `COLORS`, the semantic colors shared across every theme (info/error/
  *    success/warning, log console colors, video player colors, alert colors).
+ *  - `HISTOGRAM_COLORS` / `OVERLAY_COLORS` / `TIMELINE_COLORS` /
+ *    `TITLEBAR_COLORS`, the fixed component-level colors that stay identical
+ *    across every theme.
  *  - `SHADOWS`, the shared CSS box-shadow strings for light and dark surfaces.
  */
 
@@ -218,6 +221,8 @@ export const COLORS = {
   warning: '#f39c12',
   tint: {
     error10: 'rgba(231,76,60,0.1)',
+    error45: 'rgba(231, 76, 60, 0.45)',
+    error0: 'rgba(231, 76, 60, 0)',
     warning10: 'rgba(243,156,18,0.1)',
     info10: 'rgba(52,152,219,0.1)',
   },
@@ -238,6 +243,74 @@ export const COLORS = {
     info: '#0288d1',
     warning: '#ed6c02',
   },
+} as const;
+
+/**
+ * Channel colors for the Red/Green/Blue/Luma histogram charts in the Media Info
+ * panel. They are intentionally fixed (material red/green/blue plus a neutral
+ * grey for luma) so the charts read the same in every theme.
+ * @const {Object} HISTOGRAM_COLORS
+ * @property {string} red - Red channel color.
+ * @property {string} green - Green channel color.
+ * @property {string} blue - Blue channel color.
+ * @property {string} luma - Luma channel color.
+ */
+export const HISTOGRAM_COLORS = {
+  red: '#f44336',
+  green: '#4caf50',
+  blue: '#2196f3',
+  luma: '#9e9e9e',
+} as const;
+
+/**
+ * Translucent black/white overlay colors shared across components that sit on
+ * top of media surfaces (timeline bubbles, trim handles, scroll shadows,
+ * progress-bar stripes, move indicators). These are fixed so overlays render
+ * identically in light and dark themes.
+ * @const {Object} OVERLAY_COLORS
+ */
+export const OVERLAY_COLORS = {
+  white: '#ffffff',
+  white85: 'rgba(255, 255, 255, 0.85)',
+  white90: 'rgba(255, 255, 255, 0.9)',
+  white30: 'rgba(255, 255, 255, 0.3)',
+  white18: 'rgba(255, 255, 255, 0.18)',
+  white0: 'rgba(255, 255, 255, 0)',
+  black66: 'rgb(0 0 0 / 66%)',
+  black70: 'rgba(0, 0, 0, 0.7)',
+  black45: 'rgba(0, 0, 0, 0.45)',
+  black25: 'rgba(0, 0, 0, 0.25)',
+  black20: 'rgb(0 0 0 / 20%)',
+  black0: 'rgba(0, 0, 0, 0)',
+} as const;
+
+/**
+ * Video-timeline surface colors that don't map to the theme palette. The
+ * light/dark background pair is shared by the track label panel and the ruler.
+ * @const {Object} TIMELINE_COLORS
+ * @property {string} scrollbarThumb - Timeline viewport scrollbar thumb color.
+ * @property {string} labelPanelBackgroundLight - Label panel/ruler background (light).
+ * @property {string} labelPanelBackgroundDark - Label panel/ruler background (dark).
+ * @property {string} audioTrack - Audio track strip background.
+ * @property {string} markerBubbleBackgroundDark - Marker bubble background (dark).
+ * @property {string} trackInfoBubbleBackgroundDark - Track info bubble background (dark).
+ */
+export const TIMELINE_COLORS = {
+  scrollbarThumb: 'rgba(128, 128, 128, 0.4)',
+  labelPanelBackgroundLight: '#fafafa',
+  labelPanelBackgroundDark: '#141414',
+  audioTrack: '#809dca42',
+  markerBubbleBackgroundDark: 'rgba(97, 97, 97, 0.9)',
+  trackInfoBubbleBackgroundDark: 'rgba(33, 33, 33, 0.95)',
+} as const;
+
+/**
+ * Fixed colors for the custom frameless-window title bar (window controls).
+ * @const {Object} TITLEBAR_COLORS
+ * @property {string} closeBackground - Close button hover background (macOS red).
+ */
+export const TITLEBAR_COLORS = {
+  closeBackground: '#d70000',
 } as const;
 
 /**

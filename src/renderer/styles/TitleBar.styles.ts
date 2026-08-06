@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Box, IconButton, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { TITLEBAR_COLORS } from '../colors';
 
 const dragRegion = { WebkitAppRegion: 'drag' } as React.CSSProperties;
 const noDragRegion = { WebkitAppRegion: 'no-drag' } as React.CSSProperties;
@@ -65,7 +66,7 @@ export const WindowControlButton = styled(IconButton)(({ theme }) => ({
 
 export const WindowCloseButton = styled(WindowControlButton)(({ theme }) => ({
   '&:hover': {
-    backgroundColor: theme.palette.error.main,
+    backgroundColor: TITLEBAR_COLORS.closeBackground,
     color: theme.palette.error.contrastText,
   },
 }));
