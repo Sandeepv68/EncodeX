@@ -33,10 +33,11 @@ describe('registerDialogHandlers', () => {
     vi.restoreAllMocks();
   });
 
-  it('registers SELECT_FILE, SELECT_FILES and SELECT_OUTPUT handlers', () => {
+  it('registers SELECT_FILE, SELECT_FILES, SELECT_OUTPUT and SELECT_DIRECTORY handlers', () => {
     expect(ipcMainMock.handle).toHaveBeenCalledWith(IPC.SELECT_FILE, expect.any(Function));
     expect(ipcMainMock.handle).toHaveBeenCalledWith(IPC.SELECT_FILES, expect.any(Function));
     expect(ipcMainMock.handle).toHaveBeenCalledWith(IPC.SELECT_OUTPUT, expect.any(Function));
+    expect(ipcMainMock.handle).toHaveBeenCalledWith(IPC.SELECT_DIRECTORY, expect.any(Function));
   });
 
   it('SELECT_FILE returns the selected path', async () => {
@@ -88,5 +89,19 @@ describe('registerDialogHandlers', () => {
   it('SELECT_OUTPUT returns null when cancelled', async () => {
     dialogMock.showSaveDialog.mockResolvedValue({ canceled: true, filePath: '' });
     expect(await getHandlers()[IPC.SELECT_OUTPUT]()).toBeNull();
+  });
+
+  it('SELECT_DIRECTORY returns the chosen directory', async () => {
+    dialogMock.showOpenDialog.mockResolvedValue({ canceled: false, filePaths: ['/out'] });
+    const result = await getHandlers()[IPC.SELECT_DIRECTORY]();
+    expect(result).toBe('/out');
+    expect(dialogMock.showOpenDialog).toHaveBeenCalledWith(win, {
+      properties: ['openDirectory', 'createDirectory'],
+    });
+  });
+
+  it('SELECT_DIRECTORY returns null when cancelled', async () => {
+    dialogMock.showOpenDialog.mockResolvedValue({ canceled: true, filePaths: [] });
+    expect(await getHandlers()[IPC.SELECT_DIRECTORY]()).toBeNull();
   });
 });

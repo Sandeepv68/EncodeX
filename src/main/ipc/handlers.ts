@@ -18,6 +18,7 @@ import { createSender } from './send';
 import { registerDialogHandlers } from './dialogs';
 import { registerConversionHandlers } from './conversion';
 import { registerQueueHandlers } from './queue';
+import { registerSystemHandlers } from './system';
 import { registerPlayerHandlers } from './player';
 import { registerWindowHandlers } from './window';
 import { registerCapabilityHandlers } from './capabilities';
@@ -47,6 +48,7 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   registerCapabilityHandlers();
   registerConversionHandlers(win, send);
   registerQueueHandlers(win, send);
+  registerSystemHandlers(win);
   registerPlayerHandlers(win, send);
   registerWindowHandlers(win);
   registerImageHandlers();

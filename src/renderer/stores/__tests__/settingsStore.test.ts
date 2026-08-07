@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useSettingsStore, readStoredHwAccel } from '../settingsStore';
+import { useSettingsStore, readStoredHwAccel, readStoredQueueConcurrency } from '../settingsStore';
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
 import {
   HWACCEL_DEFAULTS,
@@ -8,6 +8,7 @@ import {
   ENCODER_TYPES,
   ENCODER_TYPE_DEFAULT,
 } from '../../../shared/hwaccel-settings';
+import { QUEUE_CONCURRENCY_STORAGE_KEY, DEFAULT_QUEUE_CONCURRENCY, MAX_QUEUE_CONCURRENCY } from '../../../shared/constants';
 
 describe('settingsStore', () => {
   beforeEach(() => {
@@ -17,6 +18,7 @@ describe('settingsStore', () => {
       hardwareAcceleration: HWACCEL_DEFAULTS.ENABLED,
       hwaccelMode: HWACCEL_DEFAULTS.MODE,
       encoderType: ENCODER_TYPE_DEFAULT,
+      queueConcurrency: DEFAULT_QUEUE_CONCURRENCY,
     });
   });
 
@@ -55,6 +57,16 @@ describe('settingsStore', () => {
     const stored = JSON.parse(localStorage.getItem(HWACCEL_STORAGE_KEY) as string);
     expect(stored.encoderType).toBe('hardware');
   });
+
+  it('defaults queue concurrency to one', () => {
+    expect(useSettingsStore.getState().queueConcurrency).toBe(DEFAULT_QUEUE_CONCURRENCY);
+  });
+
+  it('setQueueConcurrency updates the value and persists it', () => {
+    useSettingsStore.getState().setQueueConcurrency(3);
+    expect(useSettingsStore.getState().queueConcurrency).toBe(3);
+    expect(localStorage.getItem(QUEUE_CONCURRENCY_STORAGE_KEY)).toBe('3');
+  });
 });
 
 describe('readStoredHwAccel', () => {
@@ -86,5 +98,35 @@ describe('readStoredHwAccel', () => {
   it('falls back to defaults for corrupted storage', () => {
     localStorage.setItem(HWACCEL_STORAGE_KEY, '{ not json');
     expect(readStoredHwAccel()).toEqual({ hardwareAcceleration: true, hwaccelMode: 'auto', encoderType: 'auto' });
+  });
+});
+
+describe('readStoredQueueConcurrency', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('returns the default when nothing is stored', () => {
+    expect(readStoredQueueConcurrency()).toBe(DEFAULT_QUEUE_CONCURRENCY);
+  });
+
+  it('reads a persisted concurrency value', () => {
+    localStorage.setItem(QUEUE_CONCURRENCY_STORAGE_KEY, '3');
+    expect(readStoredQueueConcurrency()).toBe(3);
+  });
+
+  it('clamps an out-of-range stored value to the maximum', () => {
+    localStorage.setItem(QUEUE_CONCURRENCY_STORAGE_KEY, String(MAX_QUEUE_CONCURRENCY + 10));
+    expect(readStoredQueueConcurrency()).toBe(MAX_QUEUE_CONCURRENCY);
+  });
+
+  it('clamps a stored value below one to the minimum', () => {
+    localStorage.setItem(QUEUE_CONCURRENCY_STORAGE_KEY, '0');
+    expect(readStoredQueueConcurrency()).toBe(DEFAULT_QUEUE_CONCURRENCY);
+  });
+
+  it('falls back to the default for a non-numeric value', () => {
+    localStorage.setItem(QUEUE_CONCURRENCY_STORAGE_KEY, 'abc');
+    expect(readStoredQueueConcurrency()).toBe(DEFAULT_QUEUE_CONCURRENCY);
   });
 });

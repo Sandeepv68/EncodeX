@@ -249,6 +249,10 @@ export interface ImageFileInfo {
  * @property {QUEUE_STATUS} status - Current job lifecycle status.
  * @property {number} progress - Progress percentage (0-100).
  * @property {string} [error] - Error message if the job failed.
+ * @property {number} [priority] - Scheduling priority; higher starts first.
+ *   Defaults to 0 when absent.
+ * @property {boolean} [paused] - True while the queue (and this job's active
+ *   conversion) is paused; only meaningful for RUNNING jobs.
  * @property {number} createdAt - Epoch milliseconds when the job was created.
  */
 export interface QueueJob {
@@ -260,6 +264,8 @@ export interface QueueJob {
   status: (typeof QUEUE_STATUS)[keyof typeof QUEUE_STATUS];
   progress: number;
   error?: string;
+  priority?: number;
+  paused?: boolean;
   createdAt: number;
 }
 

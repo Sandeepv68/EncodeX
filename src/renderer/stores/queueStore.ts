@@ -14,8 +14,8 @@
 
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
-import { QueueJob } from '../../shared/types';
-import { LOG_ADD_JOB, LOG_CLEAR_JOBS, LOG_REMOVE_JOB, LOG_SET_JOBS, LOG_UPDATE_JOB } from '../../shared/log-constants';
+import { QueueJob, ConversionProgress } from '../../shared/types';
+import { LOG_ADD_JOB, LOG_CLEAR_JOBS, LOG_REMOVE_JOB, LOG_SET_JOBS, LOG_UPDATE_JOB, LOG_UPDATE_PROGRESS } from '../../shared/log-constants';
 import type { QueueState } from './types';
 
 /**
@@ -33,6 +33,7 @@ const log = new Logger('renderer/stores/queueStore');
  */
 export const useQueueStore = create<QueueState>((set) => ({
   jobs: [],
+  progress: {},
   /**
    * Replaces the entire job list with the given array.
    * @param {QueueJob[]} jobs - The new job list.
@@ -55,7 +56,11 @@ export const useQueueStore = create<QueueState>((set) => ({
    */
   removeJob: (id) => {
     log.info(LOG_REMOVE_JOB, id);
-    set((s) => ({ jobs: s.jobs.filter((j: QueueJob) => j.id !== id) }));
+    set((s) => {
+      const progress = { ...s.progress };
+      delete progress[id];
+      return { jobs: s.jobs.filter((j: QueueJob) => j.id !== id), progress };
+    });
   },
   /**
    * Replaces the queue entry matching the given job's id with the provided job
@@ -69,10 +74,20 @@ export const useQueueStore = create<QueueState>((set) => ({
     }));
   },
   /**
+   * Stores the latest live progress snapshot for the job with the given id,
+   * without replacing the job record. Used to surface fps/speed/ETA captions.
+   * @param {string} id - The id of the running job.
+   * @param {ConversionProgress} data - The latest progress snapshot.
+   */
+  updateProgress: (id, data) => {
+    log.debug(LOG_UPDATE_PROGRESS, id, data.percent.toFixed(0) + '%');
+    set((s) => ({ progress: { ...s.progress, [id]: data } }));
+  },
+  /**
    * Removes all jobs from the queue.
    */
   clearJobs: () => {
     log.info(LOG_CLEAR_JOBS);
-    set({ jobs: [] });
+    set({ jobs: [], progress: {} });
   },
 }));

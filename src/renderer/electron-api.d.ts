@@ -67,6 +67,14 @@ export interface ElectronAPI {
    */
   selectOutput(): Promise<string | null>;
   /**
+   * Opens a native folder-selection dialog in the main process to choose an
+   * output directory over the `IPC.SELECT_DIRECTORY` ('select-directory')
+   * channel.
+   * @returns {Promise<string|null>} The chosen directory path, or null if the
+   *   user cancelled the dialog.
+   */
+  selectDirectory(): Promise<string | null>;
+  /**
    * Probes technical metadata (container format, streams, duration, bitrate)
    * for a media file using the requested transcoder over the
    * `IPC.GET_MEDIA_INFO` ('get-media-info') channel.
@@ -159,9 +167,12 @@ export interface ElectronAPI {
    * @param {ConversionOptions} options - Encoding options for the job.
    * @param {string} transcoder - Transcoder backend to use (one of
    *   TRANSCODER_TYPES).
+   * @param {boolean} [overwrite] - When true, an existing output file is
+   *   replaced; otherwise the main process rejects the job when the output
+   *   already exists.
    * @returns {Promise<string>} The unique id assigned to the queued job.
    */
-  queueAdd(input: string, output: string, options: ConversionOptions, transcoder: string): Promise<string>;
+  queueAdd(input: string, output: string, options: ConversionOptions, transcoder: string, overwrite?: boolean): Promise<string>;
   /**
    * Removes a job from the conversion queue by id over the `IPC.QUEUE_REMOVE`
    * ('queue-remove') channel. A currently-processing job is cancelled.
@@ -181,6 +192,65 @@ export interface ElectronAPI {
    * @returns {Promise<void>} Resolves once all jobs have been cancelled.
    */
   queueCancelAll(): Promise<void>;
+  /**
+   * Removes every completed (DONE) and failed (ERROR) job from the queue over
+   * the `IPC.QUEUE_CLEAR_COMPLETED` ('queue-clear-completed') channel.
+   * @returns {Promise<number>} The number of jobs removed.
+   */
+  queueClearCompleted(): Promise<number>;
+  /**
+   * Sets how many batch conversions run in parallel (1-4) over the
+   * `IPC.QUEUE_SET_CONCURRENCY` ('queue-set-concurrency') channel.
+   * @param {number} concurrency - The concurrency cap (1-4).
+   * @returns {Promise<void>} Resolves once the cap has been applied.
+   */
+  queueSetConcurrency(concurrency: number): Promise<void>;
+  /**
+   * Reorders a QUEUED batch job by one position over the `IPC.QUEUE_MOVE`
+   * ('queue-move') channel.
+   * @param {string} id - Id of the QUEUED job to move.
+   * @param {number} direction - -1 moves the job earlier, 1 moves it later.
+   * @returns {Promise<boolean>} Resolves true when moved, false when missing,
+   *   not queued, or at the edge.
+   */
+  queueMove(id: string, direction: number): Promise<boolean>;
+  /**
+   * Pauses the batch queue over the `IPC.QUEUE_PAUSE` ('queue-pause') channel:
+   * the main process suspends every active conversion and blocks queued jobs
+   * from starting until `queueResume` is called.
+   * @returns {Promise<void>} Resolves once the queue is paused.
+   */
+  queuePause(): Promise<void>;
+  /**
+   * Resumes a paused batch queue over the `IPC.QUEUE_RESUME` ('queue-resume')
+   * channel: the main process resumes every suspended conversion and starts
+   * queued jobs the concurrency cap allows.
+   * @returns {Promise<void>} Resolves once the queue is resumed.
+   */
+  queueResume(): Promise<void>;
+  /**
+   * Exports the current batch queue to a JSON file over the
+   * `IPC.QUEUE_EXPORT` ('queue-export') channel, using a native save dialog.
+   * @returns {Promise<number>} The number of jobs exported, or 0 if the user
+   *   cancelled the dialog.
+   */
+  queueExport(): Promise<number>;
+  /**
+   * Imports jobs from a JSON queue file over the `IPC.QUEUE_IMPORT`
+   * ('queue-import') channel, using a native open dialog.
+   * @returns {Promise<number>} The number of jobs imported, or 0 if the user
+   *   cancelled the dialog.
+   * @throws {Error} Rejects with a formatted AppError if the file is
+   *   unreadable or does not match the expected queue format.
+   */
+  queueImport(): Promise<number>;
+  /**
+   * Reveals a file (or folder) in the operating system's file manager over the
+   * `IPC.REVEAL_FILE` ('queue-reveal') channel.
+   * @param {string} filePath - Absolute path of the file or folder to reveal.
+   * @returns {Promise<void>} Resolves once the reveal request is handled.
+   */
+  revealFile(filePath: string): Promise<void>;
   /**
    * Opens a media file in the native player and starts decoding both video and
    * audio streams over the `IPC.PLAYER_OPEN` ('player-open') channel.
@@ -330,6 +400,14 @@ export interface ElectronAPI {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onQueueCancelled(cb: () => void): () => void;
+  /**
+   * Subscribes to the notification that a QUEUED job was reordered, pushed from
+   * the main process over `IPC.QUEUE_MOVED` ('queue-moved').
+   * @param {(data: { id: string; direction: number }) => void} cb - Callback
+   *   receiving the moved job id and the direction applied (-1 up, 1 down).
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onQueueMoved(cb: (data: { id: string; direction: number }) => void): () => void;
   /**
    * Subscribes to decoded video frames emitted by the native player, pushed
    * from the main process over `IPC.PLAYER_FRAME` ('player-frame'). Frames

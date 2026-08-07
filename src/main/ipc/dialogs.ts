@@ -16,6 +16,8 @@ import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import { FILE_EXTENSIONS } from '../../shared/file-extensions';
 import {
+  LOG_IPC_SELECT_DIRECTORY_CALLED,
+  LOG_IPC_SELECT_DIRECTORY_RESULT,
   LOG_IPC_SELECT_FILES_CALLED,
   LOG_IPC_SELECT_FILES_RESULT,
   LOG_IPC_SELECT_FILE_CALLED,
@@ -93,5 +95,23 @@ export function registerDialogHandlers(win: BrowserWindow): void {
     });
     log.info(LOG_IPC_SELECT_OUTPUT_RESULT, result.canceled ? 'cancelled' : result.filePath);
     return result.canceled ? null : result.filePath;
+  });
+
+  /**
+   * Handles the IPC.SELECT_DIRECTORY channel (select-directory).
+   * Opens a folder-selection dialog with the `openDirectory` property (and
+   * `createDirectory` so the user can create a new output folder). On success
+   * returns the chosen directory path; a cancelled dialog resolves with null.
+   *
+   * @returns {Promise<string | null>} The chosen directory path, or null when
+   *   the dialog was cancelled.
+   */
+  ipcMain.handle(IPC.SELECT_DIRECTORY, async () => {
+    log.debug(LOG_IPC_SELECT_DIRECTORY_CALLED);
+    const result = await dialog.showOpenDialog(win, {
+      properties: ['openDirectory', 'createDirectory'],
+    });
+    log.info(LOG_IPC_SELECT_DIRECTORY_RESULT, result.canceled ? 'cancelled' : result.filePaths[0]);
+    return result.canceled ? null : result.filePaths[0];
   });
 }

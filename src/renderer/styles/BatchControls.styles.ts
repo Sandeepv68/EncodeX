@@ -18,6 +18,14 @@ export const TranscoderSelect = styled(TextField)(({ theme }) => ({
   minWidth: theme.typography.pxToRem(110),
 }));
 
+export const ConcurrencySelect = styled(TextField)(({ theme }) => ({
+  minWidth: theme.typography.pxToRem(130),
+}));
+
 export const SuffixField = styled(TextField)(({ theme }) => ({
   minWidth: theme.typography.pxToRem(120),
+}));
+
+export const OutputDirField = styled(TextField)(({ theme }) => ({
+  minWidth: theme.typography.pxToRem(220),
 }));

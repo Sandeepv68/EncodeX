@@ -9,6 +9,7 @@ const {
   registerQueueHandlersMock,
   registerPlayerHandlersMock,
   registerWindowHandlersMock,
+  registerSystemHandlersMock,
   registerImageHandlersMock,
   registerTimelineHandlersMock,
 } = vi.hoisted(() => ({
@@ -20,6 +21,7 @@ const {
   registerQueueHandlersMock: vi.fn(),
   registerPlayerHandlersMock: vi.fn(),
   registerWindowHandlersMock: vi.fn(),
+  registerSystemHandlersMock: vi.fn(),
   registerImageHandlersMock: vi.fn(),
   registerTimelineHandlersMock: vi.fn(),
 }));
@@ -32,6 +34,7 @@ vi.mock('../conversion', () => ({ registerConversionHandlers: registerConversion
 vi.mock('../queue', () => ({ registerQueueHandlers: registerQueueHandlersMock }));
 vi.mock('../player', () => ({ registerPlayerHandlers: registerPlayerHandlersMock }));
 vi.mock('../window', () => ({ registerWindowHandlers: registerWindowHandlersMock }));
+vi.mock('../system', () => ({ registerSystemHandlers: registerSystemHandlersMock }));
 vi.mock('../image', () => ({ registerImageHandlers: registerImageHandlersMock }));
 vi.mock('../timeline', () => ({ registerTimelineHandlers: registerTimelineHandlersMock }));
 
@@ -57,6 +60,7 @@ describe('registerIpcHandlers', () => {
     expect(registerQueueHandlersMock).toHaveBeenCalledWith(win, sendSpy);
     expect(registerPlayerHandlersMock).toHaveBeenCalledWith(win, sendSpy);
     expect(registerWindowHandlersMock).toHaveBeenCalledWith(win);
+    expect(registerSystemHandlersMock).toHaveBeenCalledWith(win);
     expect(registerImageHandlersMock).toHaveBeenCalledWith();
     expect(registerTimelineHandlersMock).toHaveBeenCalledWith();
   });

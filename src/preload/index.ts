@@ -35,14 +35,14 @@
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMove`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
  *   `windowSetAlwaysOnTop`.
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
- *   `onQueueProgress`, `onQueueCancelled`, `onPlayerFrame`, `onPlayerAudio`,
+ *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
  *   `onPlayerError`, `onLogMessage`.
  */
 
@@ -79,6 +79,7 @@ import {
   LOG_ON_CONVERSION_PROGRESS,
   LOG_ON_QUEUE_ADDED,
   LOG_ON_QUEUE_CANCELLED,
+  LOG_ON_QUEUE_MOVED,
   LOG_ON_QUEUE_REMOVED,
   LOG_ON_QUEUE_STATUS_CHANGE,
   LOG_ON_WINDOW_MAXIMIZED_CHANGE,
@@ -88,9 +89,18 @@ import {
   LOG_PLAYER_SEEK,
   LOG_QUEUE_ADD,
   LOG_QUEUE_CANCEL_ALL_CALLED,
+  LOG_QUEUE_CLEAR_COMPLETED,
+  LOG_QUEUE_EXPORT,
+  LOG_QUEUE_IMPORT,
   LOG_QUEUE_LIST_CALLED,
+  LOG_QUEUE_MOVE,
+  LOG_QUEUE_PAUSE_CALLED,
   LOG_QUEUE_REMOVE,
+  LOG_QUEUE_RESUME_CALLED,
+  LOG_QUEUE_SET_CONCURRENCY,
   LOG_RESUME_CONVERSION_CALLED,
+  LOG_REVEAL_FILE,
+  LOG_SELECT_DIRECTORY_CALLED,
   LOG_SELECT_FILES_CALLED,
   LOG_SELECT_FILE_CALLED,
   LOG_SELECT_OUTPUT_CALLED,
@@ -119,14 +129,14 @@ const log = new Logger('preload');
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMove`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
  *   `windowSetAlwaysOnTop`.
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
- *   `onQueueProgress`, `onQueueCancelled`, `onPlayerFrame`, `onPlayerAudio`,
+ *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
  *   `onPlayerError`, `onLogMessage`.
  *
  * Request/response methods use `ipcRenderer.invoke` and reject with the error the main
@@ -192,6 +202,20 @@ const api = {
   selectOutput: () => {
     log.debug(LOG_SELECT_OUTPUT_CALLED);
     return ipcRenderer.invoke(IPC.SELECT_OUTPUT) as Promise<string | null>;
+  },
+  /**
+   * Opens a native folder-selection dialog in the main process to choose an
+   * output directory for batch conversions. Logs the call at debug level, then
+   * invokes the main process over the `IPC.SELECT_DIRECTORY`
+   * ('select-directory') channel.
+   *
+   * @returns {Promise<string|null>} Resolves with the absolute path of the
+   *   chosen directory, or null if the user cancelled the dialog.
+   * @throws {Error} Rejects if the dialog could not be opened in the main process.
+   */
+  selectDirectory: () => {
+    log.debug(LOG_SELECT_DIRECTORY_CALLED);
+    return ipcRenderer.invoke(IPC.SELECT_DIRECTORY) as Promise<string | null>;
   },
   /**
    * Reads detailed technical metadata (container format, streams, duration, bitrate)
@@ -341,12 +365,15 @@ const api = {
    * @param {string} output - Absolute path of the destination file.
    * @param {ConversionOptions} options - Encoding options for the job.
    * @param {string} transcoder - Transcoder backend to use (one of TRANSCODER_TYPES).
+   * @param {boolean} [overwrite] - When true, an existing output file is
+   *   replaced; otherwise the main process rejects the job when the output
+   *   already exists.
    * @returns {Promise<string>} Resolves with the unique id assigned to the queued job.
    * @throws {Error} Rejects with a formatted AppError if the job could not be added.
    */
-  queueAdd: (input: string, output: string, options: ConversionOptions, transcoder: string) => {
-    log.info(LOG_QUEUE_ADD, input, LOG_ARROW, output);
-    return ipcRenderer.invoke(IPC.QUEUE_ADD, input, output, options, transcoder) as Promise<string>;
+  queueAdd: (input: string, output: string, options: ConversionOptions, transcoder: string, overwrite?: boolean) => {
+    log.info(LOG_QUEUE_ADD, input, LOG_ARROW, output, 'overwrite:', overwrite === true);
+    return ipcRenderer.invoke(IPC.QUEUE_ADD, input, output, options, transcoder, overwrite) as Promise<string>;
   },
   /**
    * Removes a job from the conversion queue by id. If the job is currently processing
@@ -382,6 +409,106 @@ const api = {
   queueCancelAll: () => {
     log.info(LOG_QUEUE_CANCEL_ALL_CALLED);
     return ipcRenderer.invoke(IPC.QUEUE_CANCEL_ALL) as Promise<void>;
+  },
+  /**
+   * Removes every completed (DONE) and failed (ERROR) job from the queue. Logs the
+   * call at info level, then invokes the main process over the
+   * `IPC.QUEUE_CLEAR_COMPLETED` ('queue-clear-completed') channel.
+   *
+   * @returns {Promise<number>} Resolves with the number of jobs removed.
+   */
+  queueClearCompleted: () => {
+    log.info(LOG_QUEUE_CLEAR_COMPLETED);
+    return ipcRenderer.invoke(IPC.QUEUE_CLEAR_COMPLETED) as Promise<number>;
+  },
+  /**
+   * Sets how many batch conversions run in parallel (1-4). Logs the call at info
+   * level, then invokes the main process over the `IPC.QUEUE_SET_CONCURRENCY`
+   * ('queue-set-concurrency') channel.
+   *
+   * @param {number} concurrency - The concurrency cap (1-4).
+   * @returns {Promise<void>} Resolves once the cap has been applied.
+   */
+  queueSetConcurrency: (concurrency: number) => {
+    log.info(LOG_QUEUE_SET_CONCURRENCY, concurrency);
+    return ipcRenderer.invoke(IPC.QUEUE_SET_CONCURRENCY, concurrency) as Promise<void>;
+  },
+  /**
+   * Reorders a QUEUED batch job by one position relative to the other queued
+   * jobs. Logs the call at info level, then invokes the main process over the
+   * `IPC.QUEUE_MOVE` ('queue-move') channel.
+   *
+   * @param {string} id - Id of the QUEUED job to move.
+   * @param {number} direction - -1 moves the job earlier, 1 moves it later.
+   * @returns {Promise<boolean>} Resolves true when the job was moved, false
+   *   when it is missing, not queued, or already at the edge.
+   */
+  queueMove: (id: string, direction: number) => {
+    log.info(LOG_QUEUE_MOVE, id, direction);
+    return ipcRenderer.invoke(IPC.QUEUE_MOVE, id, direction) as Promise<boolean>;
+  },
+  /**
+   * Pauses the batch queue: the main process suspends every active conversion
+   * and blocks queued jobs from starting until `queueResume` is called. Logs
+   * the call at info level, then invokes the main process over the
+   * `IPC.QUEUE_PAUSE` ('queue-pause') channel.
+   *
+   * @returns {Promise<void>} Resolves once the queue is paused.
+   */
+  queuePause: () => {
+    log.info(LOG_QUEUE_PAUSE_CALLED);
+    return ipcRenderer.invoke(IPC.QUEUE_PAUSE) as Promise<void>;
+  },
+  /**
+   * Resumes a paused batch queue: the main process resumes every suspended
+   * conversion and starts queued jobs the concurrency cap allows. Logs the
+   * call at info level, then invokes the main process over the
+   * `IPC.QUEUE_RESUME` ('queue-resume') channel.
+   *
+   * @returns {Promise<void>} Resolves once the queue is resumed.
+   */
+  queueResume: () => {
+    log.info(LOG_QUEUE_RESUME_CALLED);
+    return ipcRenderer.invoke(IPC.QUEUE_RESUME) as Promise<void>;
+  },
+  /**
+   * Exports the current batch queue to a JSON file chosen with a native save
+   * dialog. Logs the call at info level, then invokes the main process over
+   * the `IPC.QUEUE_EXPORT` ('queue-export') channel.
+   *
+   * @returns {Promise<number>} Resolves with the number of jobs exported, or
+   *   0 when the dialog was cancelled.
+   * @throws {Error} Rejects if the file could not be written.
+   */
+  queueExport: () => {
+    log.info(LOG_QUEUE_EXPORT);
+    return ipcRenderer.invoke(IPC.QUEUE_EXPORT) as Promise<number>;
+  },
+  /**
+   * Imports jobs from a JSON queue file chosen with a native open dialog.
+   * Logs the call at info level, then invokes the main process over the
+   * `IPC.QUEUE_IMPORT` ('queue-import') channel.
+   *
+   * @returns {Promise<number>} Resolves with the number of jobs imported, or
+   *   0 when the dialog was cancelled.
+   * @throws {Error} Rejects with a formatted AppError if the file is
+   *   unreadable or does not match the expected queue format.
+   */
+  queueImport: () => {
+    log.info(LOG_QUEUE_IMPORT);
+    return ipcRenderer.invoke(IPC.QUEUE_IMPORT) as Promise<number>;
+  },
+  /**
+   * Reveals a file (or folder) in the operating system's file manager. Logs the
+   * call at debug level, then invokes the main process over the
+   * `IPC.REVEAL_FILE` ('queue-reveal') channel.
+   *
+   * @param {string} filePath - Absolute path of the file or folder to reveal.
+   * @returns {Promise<void>} Resolves once the reveal request has been handled.
+   */
+  revealFile: (filePath: string) => {
+    log.debug(LOG_REVEAL_FILE, filePath);
+    return ipcRenderer.invoke(IPC.REVEAL_FILE, filePath) as Promise<void>;
   },
   /**
    * Opens a media file in the native player and starts decoding both video and audio
@@ -630,6 +757,22 @@ const api = {
     };
     ipcRenderer.on(IPC.QUEUE_CANCELLED, handler);
     return () => ipcRenderer.removeListener(IPC.QUEUE_CANCELLED, handler);
+  },
+  /**
+   * Subscribes to the notification that a QUEUED job was reordered, pushed over
+   * `IPC.QUEUE_MOVED` ('queue-moved').
+   *
+   * @param {(data: { id: string; direction: number }) => void} cb - Callback
+   *   receiving the moved job id and the direction applied (-1 up, 1 down).
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onQueueMoved: (cb: (data: { id: string; direction: number }) => void) => {
+    const handler = (_event: IpcRendererEvent, data: { id: string; direction: number }) => {
+      log.debug(LOG_ON_QUEUE_MOVED, data.id, data.direction);
+      cb(data);
+    };
+    ipcRenderer.on(IPC.QUEUE_MOVED, handler);
+    return () => ipcRenderer.removeListener(IPC.QUEUE_MOVED, handler);
   },
   /**
    * Subscribes to decoded video frames emitted by the native player, pushed over
