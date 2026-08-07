@@ -7,6 +7,7 @@ import type { ReactNode, Ref, RefObject, ReactElement } from 'react';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type {
   AppError,
+  ConversionProgress,
   EncoderType,
   MediaInfo,
   MediaStreamInfo,
@@ -43,6 +44,21 @@ export interface BatchControlsProps {
   suffixRef: RefObject<string>;
   onAddFiles: () => void;
   onCancelAll: () => void;
+  onClearCompleted: () => void;
+  hasCompleted: boolean;
+  concurrency: number;
+  onConcurrencyChange: (concurrency: number) => void;
+  paused: boolean;
+  onPause: () => void;
+  onResume: () => void;
+  hasActive: boolean;
+  outputDir: string;
+  onOutputDirChange: (dir: string) => void;
+  onBrowseDir: () => void;
+  overwrite: boolean;
+  onOverwriteChange: (overwrite: boolean) => void;
+  onExport: () => void;
+  onImport: () => void;
 }
 
 /**
@@ -79,6 +95,39 @@ export interface ConfirmDialogProps {
   cancelLabel: string;
   onClose: () => void;
   onConfirm: () => void;
+}
+
+/**
+ * A single per-file selection made in the batch add review dialog.
+ * @interface QueueAddReviewSelection
+ * @property {string} file - Absolute path of the source file.
+ * @property {string} operation - The batch operation chosen for this file
+ *   (one of the BATCH_OPERATIONS values).
+ */
+export interface QueueAddReviewSelection {
+  file: string;
+  operation: string;
+}
+
+/**
+ * Props for the batch add review dialog.
+ * @interface QueueAddReviewDialogProps
+ * @property {boolean} open - Whether the dialog is shown.
+ * @property {string[]} files - Absolute paths of the files to review; each is
+ *   rendered as a row with its own operation dropdown.
+ * @property {string} defaultOperation - Operation value pre-filled on every row
+ *   (the current toolbar operation).
+ * @property {(selections: QueueAddReviewSelection[]) => void} onConfirm - Fired
+ *   with one selection per file when the user confirms.
+ * @property {() => void} onCancel - Fired when the dialog is dismissed without
+ *   confirming.
+ */
+export interface QueueAddReviewDialogProps {
+  open: boolean;
+  files: string[];
+  defaultOperation: string;
+  onConfirm: (selections: QueueAddReviewSelection[]) => void;
+  onCancel: () => void;
 }
 
 /**
@@ -252,10 +301,19 @@ export interface ProgressBarProps {
 /**
  * Props for a single job card in the batch queue.
  * @interface QueueJobCardProps
+ * @property {QueueJob} job - The conversion job to display.
+ * @property {ConversionProgress | null | undefined} [progress] - Latest live
+ *   progress snapshot (time/speed/eta captions) for the running job.
+ * @property {(id: string) => void} onRemove - Fired with the job id on remove.
+ * @property {(id: string, direction: number) => void} [onMove] - Fired with the
+ *   job id and direction (-1 up, 1 down) when a queued job is reordered.
  */
 export interface QueueJobCardProps {
   job: QueueJob;
+  progress?: ConversionProgress | null;
   onRemove: (id: string) => void;
+  onRetry?: (job: QueueJob) => void;
+  onMove?: (id: string, direction: number) => void;
 }
 
 /**

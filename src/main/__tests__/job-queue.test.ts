@@ -1,4 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
+import { randomUUID } from 'crypto';
+import { FileQueuePersistence, QUEUE_STATE_FILENAME, QUEUE_STATE_VERSION } from '../queue/persistence';
+import { QueueJob } from '../../shared/types';
 
 vi.mock('../transcoders/ffmpeg-core', () => {
   const { EventEmitter } = require('events');
@@ -7,6 +13,8 @@ vi.mock('../transcoders/ffmpeg-core', () => {
       emitter = new EventEmitter();
       convert = vi.fn(() => this.emitter);
       cancel = vi.fn();
+      pause = vi.fn();
+      resume = vi.fn();
       getInfo = vi.fn();
       getType = vi.fn().mockReturnValue('FFMPEG');
     },
@@ -20,6 +28,8 @@ vi.mock('../transcoders/fftool-core', () => {
       emitter = new EventEmitter();
       convert = vi.fn(() => this.emitter);
       cancel = vi.fn();
+      pause = vi.fn();
+      resume = vi.fn();
       getInfo = vi.fn();
       getType = vi.fn().mockReturnValue('FFTOOL');
     },
@@ -33,6 +43,8 @@ vi.mock('../transcoders/bmf-core', () => {
       emitter = new EventEmitter();
       convert = vi.fn(() => this.emitter);
       cancel = vi.fn();
+      pause = vi.fn();
+      resume = vi.fn();
       getInfo = vi.fn();
       getType = vi.fn().mockReturnValue('BMF');
     },
@@ -40,6 +52,8 @@ vi.mock('../transcoders/bmf-core', () => {
 });
 
 const { JobQueue } = await import('../queue/job-queue');
+import * as factory from '../transcoders/factory';
+import type { ITranscoder } from '../transcoders/types';
 
 describe('JobQueue', () => {
   let queue: InstanceType<typeof JobQueue>;
@@ -105,6 +119,457 @@ describe('JobQueue', () => {
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
       queue.cancelAll();
+    });
+  });
+
+  it('clears completed and errored jobs but keeps queued and running jobs', () => {
+    (queue as unknown as { queue: { id: string; status: string }[] }).queue = [
+      { id: 'done', status: 'done' },
+      { id: 'error', status: 'error' },
+      { id: 'queued', status: 'queued' },
+      { id: 'running', status: 'running' },
+    ];
+    const removed = queue.clearCompleted();
+    expect(removed).toBe(2);
+    expect(queue.getJobs().map((j) => j.id)).toEqual(['queued', 'running']);
+  });
+
+  it('emits a removed event for each cleared job', () => {
+    return new Promise<void>((resolve) => {
+      (queue as unknown as { queue: { id: string; status: string }[] }).queue = [
+        { id: 'done', status: 'done' },
+        { id: 'queued', status: 'queued' },
+      ];
+      const removedIds: string[] = [];
+      queue.on('removed', (id) => {
+        removedIds.push(id);
+        if (removedIds.length === 1) {
+          expect(removedIds).toEqual(['done']);
+          resolve();
+        }
+      });
+      queue.clearCompleted();
+    });
+  });
+
+  describe('concurrency', () => {
+    let transcoders: ITranscoder[];
+
+    beforeEach(() => {
+      transcoders = [];
+      const original = factory.createTranscoder;
+      vi.spyOn(factory, 'createTranscoder').mockImplementation((type) => {
+        const transcoder = original(type);
+        transcoders.push(transcoder);
+        return transcoder;
+      });
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('runs at most the configured number of jobs in parallel', () => {
+      queue = new JobQueue(2);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'running', 'queued']);
+      expect(transcoders).toHaveLength(2);
+    });
+
+    it('drains the queue as running jobs complete', () => {
+      queue = new JobQueue(2);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG');
+      (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'running', 'running']);
+      expect(transcoders).toHaveLength(3);
+      (transcoders[1] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
+      (transcoders[2] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'done', 'done']);
+    });
+
+    it('continues draining after a job errors', () => {
+      queue = new JobQueue(1);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'queued']);
+      (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('error', new Error('boom'));
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['error', 'running']);
+      expect((queue.getJobs()[0] as { error?: string }).error).toBe('boom');
+    });
+
+    it('starts queued jobs when the concurrency cap is raised', () => {
+      queue = new JobQueue(1);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'queued']);
+      queue.setConcurrency(2);
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'running']);
+      expect(transcoders).toHaveLength(2);
+    });
+
+    it('does not start queued jobs when the cap is lowered', () => {
+      queue = new JobQueue(2);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'running', 'queued']);
+      queue.setConcurrency(1);
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'running', 'queued']);
+    });
+
+    it('clamps the concurrency cap to at least one', () => {
+      queue = new JobQueue(2);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.setConcurrency(0);
+      queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'running', 'queued']);
+    });
+  });
+
+  describe('priority', () => {
+    let transcoders: ITranscoder[];
+
+    beforeEach(() => {
+      transcoders = [];
+      const original = factory.createTranscoder;
+      vi.spyOn(factory, 'createTranscoder').mockImplementation((type) => {
+        const transcoder = original(type);
+        transcoders.push(transcoder);
+        return transcoder;
+      });
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('starts higher-priority queued jobs before lower-priority ones', () => {
+      queue = new JobQueue(1);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG', 5);
+      queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG', 1);
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'queued', 'queued']);
+      (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'running', 'queued']);
+      expect(queue.getJobs()[1].input).toBe('b.mp4');
+      (transcoders[1] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'done', 'running']);
+    });
+
+    it('keeps FIFO order among equal-priority queued jobs', () => {
+      queue = new JobQueue(1);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG');
+      (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'running', 'queued']);
+      expect(queue.getJobs()[1].input).toBe('b.mp4');
+    });
+  });
+
+  describe('pause', () => {
+    let transcoders: ITranscoder[];
+
+    beforeEach(() => {
+      transcoders = [];
+      const original = factory.createTranscoder;
+      vi.spyOn(factory, 'createTranscoder').mockImplementation((type) => {
+        const transcoder = original(type);
+        transcoders.push(transcoder);
+        return transcoder;
+      });
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('starts false and reflects the paused state', () => {
+      expect(queue.isPaused()).toBe(false);
+      queue.pause();
+      expect(queue.isPaused()).toBe(true);
+      queue.resume();
+      expect(queue.isPaused()).toBe(false);
+    });
+
+    it('pauses every active transcoder and marks running jobs paused', () => {
+      queue = new JobQueue(1);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.pause();
+      expect(transcoders[0].pause).toHaveBeenCalledOnce();
+      expect(transcoders[0].resume).not.toHaveBeenCalled();
+      expect(queue.getJobs().map((j) => (j as { paused?: boolean }).paused)).toEqual([true, undefined]);
+    });
+
+    it('does not start queued jobs while paused', () => {
+      queue = new JobQueue(1);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.pause();
+      (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'queued']);
+      expect(transcoders).toHaveLength(1);
+    });
+
+    it('resumes active transcoders and drains the queue', () => {
+      queue = new JobQueue(1);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.pause();
+      (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'queued']);
+      queue.resume();
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'running']);
+      expect(transcoders).toHaveLength(2);
+    });
+
+    it('resume clears the paused flag on running jobs', () => {
+      queue = new JobQueue(1);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.pause();
+      expect((queue.getJobs()[0] as { paused?: boolean }).paused).toBe(true);
+      queue.resume();
+      expect((queue.getJobs()[0] as { paused?: boolean }).paused).toBe(false);
+    });
+
+    it('is idempotent for repeated pause and resume calls', () => {
+      queue = new JobQueue(1);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.pause();
+      queue.pause();
+      expect(transcoders[0].pause).toHaveBeenCalledOnce();
+      queue.resume();
+      queue.resume();
+      expect(transcoders[0].resume).toHaveBeenCalledOnce();
+    });
+
+    it('cancelAll resets the paused state', () => {
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.pause();
+      expect(queue.isPaused()).toBe(true);
+      queue.cancelAll();
+      expect(queue.isPaused()).toBe(false);
+    });
+  });
+
+  describe('moveJob', () => {
+    function seedJobs(jobs: { id: string; status: string }[]): void {
+      (queue as unknown as { queue: { id: string; status: string }[] }).queue = jobs;
+    }
+
+    it('moves a queued job up among queued jobs only', () => {
+      seedJobs([
+        { id: 'running', status: 'running' },
+        { id: 'q1', status: 'queued' },
+        { id: 'done', status: 'done' },
+        { id: 'q2', status: 'queued' },
+      ]);
+      expect(queue.moveJob('q2', -1)).toBe(true);
+      expect(queue.getJobs().map((j) => j.id)).toEqual(['running', 'q2', 'done', 'q1']);
+    });
+
+    it('moves a queued job down among queued jobs only', () => {
+      seedJobs([
+        { id: 'running', status: 'running' },
+        { id: 'q1', status: 'queued' },
+        { id: 'done', status: 'done' },
+        { id: 'q2', status: 'queued' },
+      ]);
+      expect(queue.moveJob('q1', 1)).toBe(true);
+      expect(queue.getJobs().map((j) => j.id)).toEqual(['running', 'q2', 'done', 'q1']);
+    });
+
+    it('returns false for missing, non-queued, and edge jobs', () => {
+      seedJobs([
+        { id: 'q1', status: 'queued' },
+        { id: 'running', status: 'running' },
+        { id: 'q2', status: 'queued' },
+      ]);
+      expect(queue.moveJob('missing', -1)).toBe(false);
+      expect(queue.moveJob('running', -1)).toBe(false);
+      expect(queue.moveJob('q1', -1)).toBe(false);
+      expect(queue.moveJob('q2', 1)).toBe(false);
+      expect(queue.getJobs().map((j) => j.id)).toEqual(['q1', 'running', 'q2']);
+    });
+
+    it('emits a moved event when a job is reordered', () => {
+      return new Promise<void>((resolve) => {
+        seedJobs([
+          { id: 'q1', status: 'queued' },
+          { id: 'q2', status: 'queued' },
+        ]);
+        queue.on('moved', (payload: { id: string; direction: number }) => {
+          expect(payload).toEqual({ id: 'q2', direction: -1 });
+          resolve();
+        });
+        queue.moveJob('q2', -1);
+      });
+    });
+  });
+
+  describe('persistence', () => {
+    let tempDir: string;
+    let persistence: FileQueuePersistence;
+    let snapshotPath: string;
+
+    beforeEach(() => {
+      tempDir = path.join(os.tmpdir(), 'encodex-queue-test-' + randomUUID());
+      fs.mkdirSync(tempDir, { recursive: true });
+      persistence = new FileQueuePersistence(tempDir);
+      snapshotPath = path.join(tempDir, QUEUE_STATE_FILENAME);
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+      try {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      } catch {
+        // Best-effort cleanup.
+      }
+    });
+
+    function writeSnapshot(jobs: QueueJob[]): void {
+      persistence.save({ version: QUEUE_STATE_VERSION, concurrency: 1, jobs });
+    }
+
+    it('starts empty when no snapshot exists', () => {
+      queue = new JobQueue({ persistence });
+      expect(queue.getJobs()).toEqual([]);
+    });
+
+    it('starts empty when the snapshot file is corrupt', () => {
+      fs.writeFileSync(snapshotPath, '{not json', 'utf8');
+      queue = new JobQueue({ persistence });
+      expect(queue.getJobs()).toEqual([]);
+    });
+
+    it('remaps RUNNING jobs to QUEUED and resets their progress on restore', () => {
+      writeSnapshot([
+        { id: 'a', input: 'a.mp4', output: 'a_out.mp4', options: {}, transcoder: 'FFMPEG', status: 'running', progress: 45, createdAt: 1 },
+        { id: 'b', input: 'b.mp4', output: 'b_out.mp4', options: {}, transcoder: 'FFMPEG', status: 'done', progress: 100, createdAt: 2 },
+        { id: 'c', input: 'c.mp4', output: 'c_out.mp4', options: {}, transcoder: 'FFMPEG', status: 'queued', progress: 0, createdAt: 3 },
+      ] as QueueJob[]);
+      queue = new JobQueue({ persistence });
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'done', 'queued']);
+      expect(queue.getJobs()[0].progress).toBe(0);
+      expect(queue.getJobs()[1].progress).toBe(100);
+    });
+
+    it('restored RUNNING jobs begin processing again on construction', () => {
+      const transcoders: ITranscoder[] = [];
+      const original = factory.createTranscoder;
+      vi.spyOn(factory, 'createTranscoder').mockImplementation((type) => {
+        const transcoder = original(type);
+        transcoders.push(transcoder);
+        return transcoder;
+      });
+      writeSnapshot([
+        { id: 'a', input: 'a.mp4', output: 'a_out.mp4', options: {}, transcoder: 'FFMPEG', status: 'running', progress: 50, createdAt: 1 },
+      ] as QueueJob[]);
+      queue = new JobQueue({ persistence });
+      expect(transcoders).toHaveLength(1);
+      expect(queue.getJobs()[0].status).toBe('running');
+    });
+
+    it('restores the saved concurrency cap', () => {
+      persistence.save({
+        version: QUEUE_STATE_VERSION,
+        concurrency: 2,
+        jobs: [
+          {
+            id: 'a',
+            input: 'a.mp4',
+            output: 'a_out.mp4',
+            options: {},
+            transcoder: 'FFMPEG',
+            status: 'running',
+            progress: 10,
+            createdAt: 1,
+          },
+          {
+            id: 'b',
+            input: 'b.mp4',
+            output: 'b_out.mp4',
+            options: {},
+            transcoder: 'FFMPEG',
+            status: 'running',
+            progress: 20,
+            createdAt: 2,
+          },
+        ] as QueueJob[],
+      });
+      const transcoders: ITranscoder[] = [];
+      const original = factory.createTranscoder;
+      vi.spyOn(factory, 'createTranscoder').mockImplementation((type) => {
+        const transcoder = original(type);
+        transcoders.push(transcoder);
+        return transcoder;
+      });
+      queue = new JobQueue({ persistence });
+      expect(transcoders).toHaveLength(2);
+      expect(queue.getJobs().every((j) => j.status === 'running')).toBe(true);
+    });
+
+    it('flushState writes the current jobs to disk', () => {
+      queue = new JobQueue({ persistence });
+      queue.addJob('in.mp4', 'out.mp4', { videoCodec: 'libx264' }, 'FFMPEG');
+      queue.flushState();
+      const snapshot = JSON.parse(fs.readFileSync(snapshotPath, 'utf8')) as { version: number; concurrency: number; jobs: QueueJob[] };
+      expect(snapshot.version).toBe(QUEUE_STATE_VERSION);
+      expect(snapshot.concurrency).toBe(1);
+      expect(snapshot.jobs).toHaveLength(1);
+      expect(snapshot.jobs[0].input).toBe('in.mp4');
+      expect(snapshot.jobs[0].options).toEqual({ videoCodec: 'libx264' });
+    });
+
+    it('debounces writes after a mutation', async () => {
+      queue = new JobQueue({ persistence, persistDelayMs: 20 });
+      queue.addJob('in.mp4', 'out.mp4', {}, 'FFMPEG');
+      expect(fs.existsSync(snapshotPath)).toBe(false);
+      await new Promise((resolve) => setTimeout(resolve, 60));
+      expect(fs.existsSync(snapshotPath)).toBe(true);
+      const snapshot = JSON.parse(fs.readFileSync(snapshotPath, 'utf8')) as { jobs: QueueJob[] };
+      expect(snapshot.jobs).toHaveLength(1);
+    });
+
+    it('persists status transitions after a job completes', () => {
+      queue = new JobQueue({ persistence });
+      queue.addJob('in.mp4', 'out.mp4', {}, 'FFMPEG');
+      const transcoder = (queue as unknown as { activeJobs: Map<string, { emitter: NodeJS.EventEmitter }> }).activeJobs.get(
+        queue.getJobs()[0].id,
+      );
+      transcoder!.emitter.emit('end');
+      queue.flushState();
+      const snapshot = JSON.parse(fs.readFileSync(snapshotPath, 'utf8')) as { jobs: QueueJob[] };
+      expect(snapshot.jobs[0].status).toBe('done');
+      expect(snapshot.jobs[0].progress).toBe(100);
+    });
+
+    it('cancelAll clears the persisted snapshot file', () => {
+      queue = new JobQueue({ persistence });
+      queue.addJob('in.mp4', 'out.mp4', {}, 'FFMPEG');
+      queue.flushState();
+      expect(fs.existsSync(snapshotPath)).toBe(true);
+      queue.cancelAll();
+      expect(fs.existsSync(snapshotPath)).toBe(false);
+    });
+
+    it('a restored queue can be re-persisted after another addJob', () => {
+      writeSnapshot([
+        { id: 'a', input: 'a.mp4', output: 'a_out.mp4', options: {}, transcoder: 'FFMPEG', status: 'done', progress: 100, createdAt: 1 },
+      ] as QueueJob[]);
+      queue = new JobQueue({ persistence });
+      queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.flushState();
+      const snapshot = JSON.parse(fs.readFileSync(snapshotPath, 'utf8')) as { jobs: QueueJob[] };
+      expect(snapshot.jobs.map((j) => j.id)).toHaveLength(2);
+      expect(snapshot.jobs.map((j) => j.input)).toEqual(['a.mp4', 'b.mp4']);
     });
   });
 });

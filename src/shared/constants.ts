@@ -469,6 +469,25 @@ export const DEFAULT_LANGUAGE = 'en-US';
  */
 export const WINDOW_ALWAYS_ON_TOP_STORAGE_KEY = 'encodex-always-on-top';
 
+// --- Batch queue ---
+/**
+ * localStorage key used to persist the batch queue concurrency (1-4).
+ * @const {string} QUEUE_CONCURRENCY_STORAGE_KEY
+ */
+export const QUEUE_CONCURRENCY_STORAGE_KEY = 'encodex-queue-concurrency';
+
+/**
+ * Default batch queue concurrency (number of jobs run in parallel).
+ * @const {number} DEFAULT_QUEUE_CONCURRENCY
+ */
+export const DEFAULT_QUEUE_CONCURRENCY = 1;
+
+/**
+ * Upper bound for the batch queue concurrency setting.
+ * @const {number} MAX_QUEUE_CONCURRENCY
+ */
+export const MAX_QUEUE_CONCURRENCY = 4;
+
 /**
  * localStorage key used to persist the video cut form draft so the user's
  * unsaved cut settings survive navigation away and back.

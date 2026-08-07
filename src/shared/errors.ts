@@ -20,6 +20,8 @@ import type { ErrorCodeType, AppError } from './types';
  * @property {string} BMF_NOT_AVAILABLE - The BMF framework is not available.
  * @property {string} OUTPUT_NOT_SPECIFIED - No output file was provided.
  * @property {string} INPUT_NOT_SPECIFIED - No input file was provided.
+ * @property {string} OUTPUT_EXISTS - The output file already exists and overwrite is disabled.
+ * @property {string} INVALID_QUEUE_FILE - An imported queue file is missing, corrupt, or unsupported.
  * @property {string} PERMISSION_DENIED - Access to the file or directory was denied.
  * @property {string} UNKNOWN - An unrecognized error occurred.
  */
@@ -36,6 +38,8 @@ export const ErrorCode = {
   BMF_NOT_AVAILABLE: 'BMF_NOT_AVAILABLE',
   OUTPUT_NOT_SPECIFIED: 'OUTPUT_NOT_SPECIFIED',
   INPUT_NOT_SPECIFIED: 'INPUT_NOT_SPECIFIED',
+  OUTPUT_EXISTS: 'OUTPUT_EXISTS',
+  INVALID_QUEUE_FILE: 'INVALID_QUEUE_FILE',
   PERMISSION_DENIED: 'PERMISSION_DENIED',
   UNKNOWN: 'UNKNOWN',
 } as const;
@@ -95,6 +99,27 @@ export function cancelledError(detail?: string): AppError {
 }
 
 /**
+ * Creates an AppError representing an output file that already exists while
+ * overwrite is disabled. Uses the canonical 'OUTPUT_EXISTS' message from
+ * ERROR_MESSAGES.
+ * @param {string} [detail] - Optional detail identifying the existing output.
+ * @returns {AppError} An OUTPUT_EXISTS AppError instance.
+ */
+export function outputExistsError(detail?: string): AppError {
+  return createError(ErrorCode.OUTPUT_EXISTS, ERROR_MESSAGES[ErrorCode.OUTPUT_EXISTS], detail);
+}
+
+/**
+ * Creates an AppError representing an unreadable or invalid queue export file.
+ * Uses the canonical 'INVALID_QUEUE_FILE' message from ERROR_MESSAGES.
+ * @param {string} [detail] - Optional detail about why the file was rejected.
+ * @returns {AppError} An INVALID_QUEUE_FILE AppError instance.
+ */
+export function invalidQueueFileError(detail?: string): AppError {
+  return createError(ErrorCode.INVALID_QUEUE_FILE, ERROR_MESSAGES[ErrorCode.INVALID_QUEUE_FILE], detail);
+}
+
+/**
  * Type guard that checks whether an unknown value is an AppError.
  * A value is considered an AppError when it is a non-null object with string
  * `code`, string `message`, and numeric `timestamp` properties.
@@ -126,6 +151,8 @@ export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
   BMF_NOT_AVAILABLE: 'BMF framework is not installed. Please install BMF CLI tools or use a different transcoder.',
   OUTPUT_NOT_SPECIFIED: 'Please specify an output file before starting the conversion.',
   INPUT_NOT_SPECIFIED: 'Please select an input file before starting the conversion.',
+  OUTPUT_EXISTS: 'The output file already exists. Enable overwrite to replace it.',
+  INVALID_QUEUE_FILE: 'The queue file could not be read. It may be corrupted or in an unsupported format.',
   PERMISSION_DENIED: 'Permission denied. The application may not have access to the selected file or directory.',
   UNKNOWN: 'An unexpected error occurred. Please try again.',
 };
@@ -173,9 +200,11 @@ function inferErrorCode(message: string, err?: unknown): ErrorCodeType {
     return ErrorCode.FILE_NOT_FOUND;
   }
   if (errCode === 'EACCES' || m.includes('permission denied') || m.includes('eacces')) return ErrorCode.PERMISSION_DENIED;
+  if (m.includes('already exists') || m.includes('output exists')) return ErrorCode.OUTPUT_EXISTS;
   if (m.includes('bmf') && (m.includes('not available') || m.includes('not installed'))) return ErrorCode.BMF_NOT_AVAILABLE;
   if (m.includes('cancelled') || m.includes('cancel') || m.includes('killed') || m.includes('sigkill')) return ErrorCode.CANCELLED;
   if (m.includes('probe') || m.includes('could not read')) return ErrorCode.PROBE_FAILED;
+  if (m.includes('queue file') || m.includes('unsupported format')) return ErrorCode.INVALID_QUEUE_FILE;
   if (m.includes('format') || m.includes('unsupported')) return ErrorCode.INVALID_FORMAT;
   if (m.includes('queue')) return ErrorCode.QUEUE_ERROR;
   if (m.includes('player') || m.includes('decoder')) return ErrorCode.PLAYER_ERROR;

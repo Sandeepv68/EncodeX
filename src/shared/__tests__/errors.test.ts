@@ -1,6 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import type { ErrorCodeType } from '../types';
-import { ErrorCode, createError, isAppError, formatError, ERROR_MESSAGES, AppErrorImpl } from '../errors';
+import {
+  ErrorCode,
+  createError,
+  isAppError,
+  formatError,
+  ERROR_MESSAGES,
+  AppErrorImpl,
+  outputExistsError,
+  invalidQueueFileError,
+} from '../errors';
 
 describe('ErrorCode', () => {
   it('has all expected error codes', () => {
@@ -17,7 +26,27 @@ describe('ErrorCode', () => {
     expect(ErrorCode.OUTPUT_NOT_SPECIFIED).toBe('OUTPUT_NOT_SPECIFIED');
     expect(ErrorCode.INPUT_NOT_SPECIFIED).toBe('INPUT_NOT_SPECIFIED');
     expect(ErrorCode.PERMISSION_DENIED).toBe('PERMISSION_DENIED');
+    expect(ErrorCode.OUTPUT_EXISTS).toBe('OUTPUT_EXISTS');
+    expect(ErrorCode.INVALID_QUEUE_FILE).toBe('INVALID_QUEUE_FILE');
     expect(ErrorCode.UNKNOWN).toBe('UNKNOWN');
+  });
+});
+
+describe('outputExistsError', () => {
+  it('creates an OUTPUT_EXISTS AppError with the canonical message', () => {
+    const err = outputExistsError('/out/video.mp4');
+    expect(err.code).toBe(ErrorCode.OUTPUT_EXISTS);
+    expect(err.message).toBe(ERROR_MESSAGES.OUTPUT_EXISTS);
+    expect(err.detail).toBe('/out/video.mp4');
+  });
+});
+
+describe('invalidQueueFileError', () => {
+  it('creates an INVALID_QUEUE_FILE AppError with the canonical message', () => {
+    const err = invalidQueueFileError('ENOENT');
+    expect(err.code).toBe(ErrorCode.INVALID_QUEUE_FILE);
+    expect(err.message).toBe(ERROR_MESSAGES.INVALID_QUEUE_FILE);
+    expect(err.detail).toBe('ENOENT');
   });
 });
 
@@ -148,13 +177,23 @@ describe('formatError', () => {
   });
 
   it('formats invalid format errors', () => {
-    const result = formatError(new Error('unsupported format'));
+    const result = formatError(new Error('invalid format'));
     expect(result.code).toBe(ErrorCode.INVALID_FORMAT);
+  });
+
+  it('formats invalid queue file errors', () => {
+    const result = formatError(new Error('queue file could not be read'));
+    expect(result.code).toBe(ErrorCode.INVALID_QUEUE_FILE);
   });
 
   it('formats queue errors', () => {
     const result = formatError(new Error('queue processing error'));
     expect(result.code).toBe(ErrorCode.QUEUE_ERROR);
+  });
+
+  it('formats existing-output errors', () => {
+    const result = formatError(new Error('output file already exists'));
+    expect(result.code).toBe(ErrorCode.OUTPUT_EXISTS);
   });
 
   it('formats player errors', () => {

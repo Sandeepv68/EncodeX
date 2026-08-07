@@ -168,6 +168,8 @@ export const LOG_FAILED_TO_LOAD_MEDIA_INFO = 'Failed to load media info:';
 export const LOG_FAILED_TO_LOAD_MEDIA_INFO_FOR_PREVIEW = 'Failed to load media info for preview:';
 /** @const {string} Prefix when persisting the always-on-top setting fails. */
 export const LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING = 'Failed to persist always-on-top setting:';
+/** @const {string} Prefix when persisting the batch queue concurrency fails. */
+export const LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY = 'Failed to persist queue concurrency:';
 /** @const {string} Prefix when persisting hardware acceleration settings fails. */
 export const LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS = 'Failed to persist hardware acceleration settings:';
 /** @const {string} Prefix when persisting the video cut draft fails. */
@@ -178,6 +180,8 @@ export const LOG_FAILED_TO_READ_IMAGE_DIMENSIONS = 'Failed to read image dimensi
 export const LOG_FAILED_TO_READ_IMAGE_PREVIEW = 'Failed to read image preview:';
 /** @const {string} Prefix when reading the stored always-on-top setting fails. */
 export const LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING = 'Failed to read stored always-on-top setting:';
+/** @const {string} Prefix when reading the stored queue concurrency fails. */
+export const LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY = 'Failed to read stored queue concurrency:';
 /** @const {string} Prefix when reading stored hardware acceleration settings fails. */
 export const LOG_FAILED_TO_READ_STORED_HARDWARE_ACCELERATION_SETTINGS = 'Failed to read stored hardware acceleration settings:';
 /** @const {string} Prefix when reading the stored video cut draft fails. */
@@ -332,10 +336,26 @@ export const LOG_IPC_PLAYER_SEEK = 'PLAYER_SEEK:';
 export const LOG_IPC_QUEUE_ADD = 'QUEUE_ADD:';
 /** @const {string} Logged when the QUEUE_CANCEL_ALL IPC message is received. */
 export const LOG_IPC_QUEUE_CANCEL_ALL_CALLED = 'QUEUE_CANCEL_ALL called';
+/** @const {string} Logged when the QUEUE_CLEAR_COMPLETED IPC message is received. */
+export const LOG_IPC_QUEUE_CLEAR_COMPLETED_CALLED = 'QUEUE_CLEAR_COMPLETED called';
+/** @const {string} Logged when the QUEUE_EXPORT IPC message is received. */
+export const LOG_IPC_QUEUE_EXPORT_CALLED = 'QUEUE_EXPORT called';
+/** @const {string} Logged when the QUEUE_IMPORT IPC message is received. */
+export const LOG_IPC_QUEUE_IMPORT_CALLED = 'QUEUE_IMPORT called';
+/** @const {string} Prefix when the QUEUE_SET_CONCURRENCY IPC message is received. */
+export const LOG_IPC_QUEUE_SET_CONCURRENCY = 'QUEUE_SET_CONCURRENCY:';
+/** @const {string} Prefix when the QUEUE_MOVE IPC message is received. */
+export const LOG_IPC_QUEUE_MOVE = 'QUEUE_MOVE:';
+/** @const {string} Logged when the QUEUE_PAUSE IPC message is received. */
+export const LOG_IPC_QUEUE_PAUSE_CALLED = 'QUEUE_PAUSE called';
+/** @const {string} Logged when the QUEUE_RESUME IPC message is received. */
+export const LOG_IPC_QUEUE_RESUME_CALLED = 'QUEUE_RESUME called';
 /** @const {string} Prefix when the QUEUE_LIST IPC message is received. */
 export const LOG_IPC_QUEUE_LIST = 'QUEUE_LIST:';
 /** @const {string} Prefix when the QUEUE_REMOVE IPC message is received. */
 export const LOG_IPC_QUEUE_REMOVE = 'QUEUE_REMOVE:';
+/** @const {string} Prefix when the REVEAL_FILE IPC message is received. */
+export const LOG_IPC_REVEAL_FILE = 'REVEAL_FILE:';
 /** @const {string} Logged when the RESUME_CONVERSION IPC message is received. */
 export const LOG_IPC_RESUME_CONVERSION_CALLED = 'RESUME_CONVERSION called';
 /** @const {string} Logged when the SELECT_FILE IPC message is received. */
@@ -350,6 +370,10 @@ export const LOG_IPC_SELECT_FILES_RESULT = 'SELECT_FILES result:';
 export const LOG_IPC_SELECT_OUTPUT_CALLED = 'SELECT_OUTPUT called';
 /** @const {string} Prefix when logging the SELECT_OUTPUT result. */
 export const LOG_IPC_SELECT_OUTPUT_RESULT = 'SELECT_OUTPUT result:';
+/** @const {string} Logged when the SELECT_DIRECTORY IPC message is received. */
+export const LOG_IPC_SELECT_DIRECTORY_CALLED = 'SELECT_DIRECTORY called';
+/** @const {string} Prefix when logging the SELECT_DIRECTORY result. */
+export const LOG_IPC_SELECT_DIRECTORY_RESULT = 'SELECT_DIRECTORY result:';
 /** @const {string} Logged when the WINDOW_CLOSE IPC message is received. */
 export const LOG_IPC_WINDOW_CLOSE = 'WINDOW_CLOSE';
 /** @const {string} Logged when the WINDOW_MAXIMIZE_TOGGLE IPC message is received. */
@@ -397,6 +421,8 @@ export const LOG_ON_CONVERSION_PROGRESS = 'onConversionProgress:';
 export const LOG_ON_QUEUE_ADDED = 'onQueueAdded:';
 /** @const {string} Logged when a queue-cancelled event is received. */
 export const LOG_ON_QUEUE_CANCELLED = 'onQueueCancelled';
+/** @const {string} Prefix when a queue-moved event is received. */
+export const LOG_ON_QUEUE_MOVED = 'onQueueMoved:';
 /** @const {string} Prefix when a queue-removed event is received. */
 export const LOG_ON_QUEUE_REMOVED = 'onQueueRemoved:';
 /** @const {string} Prefix when a queue status-change event is received. */
@@ -455,16 +481,50 @@ export const LOG_QUEUE_AUDIO_CHUNK_ERROR = 'queueAudioChunk error:';
 export const LOG_QUEUE_CANCEL_ALL_CALLED = 'queueCancelAll called';
 /** @const {string} Logged when the queue is cancelled. */
 export const LOG_QUEUE_CANCELLED = 'Queue cancelled';
+/** @const {string} Prefix when completed jobs are cleared. */
+export const LOG_QUEUE_CLEAR_COMPLETED = 'queueClearCompleted:';
+/** @const {string} Prefix when the queue concurrency is set. */
+export const LOG_QUEUE_SET_CONCURRENCY = 'setConcurrency:';
+/** @const {string} Prefix when the queue is paused. */
+export const LOG_QUEUE_PAUSE = 'pause:';
+/** @const {string} Prefix when the queue is resumed. */
+export const LOG_QUEUE_RESUME = 'resume:';
+/** @const {string} Logged when queuePause is invoked. */
+export const LOG_QUEUE_PAUSE_CALLED = 'queuePause called';
+/** @const {string} Logged when queueResume is invoked. */
+export const LOG_QUEUE_RESUME_CALLED = 'queueResume called';
+/** @const {string} Prefix when a queued job is reordered. */
+export const LOG_QUEUE_MOVE = 'moveJob:';
+/** @const {string} Logged when a move targets a job that is not queued. */
+export const LOG_QUEUE_MOVE_SKIPPED = 'moveJob skipped: not queued:';
+/** @const {string} Logged when a move would go past the start or end. */
+export const LOG_QUEUE_MOVE_AT_EDGE = 'moveJob at queue edge:';
 /** @const {string} Prefix when a queue job is added. */
 export const LOG_QUEUE_JOB_ADDED = 'Queue job added:';
 /** @const {string} Prefix when a queue job is removed. */
 export const LOG_QUEUE_JOB_REMOVED = 'Queue job removed:';
 /** @const {string} Prefix when a queue job status changes. */
 export const LOG_QUEUE_JOB_STATUS_CHANGE = 'Queue job status change:';
+/** @const {string} Prefix when queueExport is invoked. */
+export const LOG_QUEUE_EXPORT = 'queueExport:';
+/** @const {string} Prefix when queueImport is invoked. */
+export const LOG_QUEUE_IMPORT = 'queueImport:';
+/** @const {string} Prefix when the queue is exported to a file. */
+export const LOG_QUEUE_EXPORTED = 'Exported queue:';
+/** @const {string} Prefix when jobs are imported from a queue file. */
+export const LOG_QUEUE_IMPORTED = 'Imported queue:';
 /** @const {string} Logged when queueList is invoked. */
 export const LOG_QUEUE_LIST_CALLED = 'queueList called';
 /** @const {string} Prefix when queueRemove is invoked. */
 export const LOG_QUEUE_REMOVE = 'queueRemove:';
+/** @const {string} Prefix when the persisted queue snapshot is restored. */
+export const LOG_QUEUE_STATE_RESTORED = 'Restored queue state:';
+/** @const {string} Prefix when the queue snapshot is saved to disk. */
+export const LOG_QUEUE_STATE_SAVED = 'Saved queue state:';
+/** @const {string} Logged when the persisted queue snapshot is cleared. */
+export const LOG_QUEUE_STATE_CLEARED = 'Cleared queue state';
+/** @const {string} Prefix when revealFile is invoked. */
+export const LOG_REVEAL_FILE = 'revealFile:';
 /** @const {string} Prefix when logging the queue size. */
 export const LOG_QUEUE_SIZE = 'Queue size:';
 /** @const {string} Logged when IPC handlers are being registered. */
@@ -509,10 +569,14 @@ export const LOG_SELECT_INPUT_FAILED = 'selectInput failed:';
 export const LOG_SELECT_OUTPUT = 'selectOutput:';
 /** @const {string} Logged when selectOutput is invoked (renderer). */
 export const LOG_SELECT_OUTPUT_CALLED = 'selectOutput called';
+/** @const {string} Logged when selectDirectory is invoked (renderer). */
+export const LOG_SELECT_DIRECTORY_CALLED = 'selectDirectory called';
 /** @const {string} Prefix when selectOutput fails. */
 export const LOG_SELECT_OUTPUT_FAILED = 'selectOutput failed:';
 /** @const {string} Prefix when setAlwaysOnTop is invoked. */
 export const LOG_SET_ALWAYS_ON_TOP = 'setAlwaysOnTop:';
+/** @const {string} Prefix when setQueueConcurrency is invoked. */
+export const LOG_SET_QUEUE_CONCURRENCY = 'setQueueConcurrency:';
 /** @const {string} Prefix when the audio bitrate is set. */
 export const LOG_SET_AUDIO_BITRATE = 'setAudioBitrate:';
 /** @const {string} Prefix when the audio codec is set. */
@@ -611,6 +675,8 @@ export const LOG_UNSUBSCRIBING_FROM_CONVERSION_PROGRESS = 'Unsubscribing from co
 export const LOG_UNSUPPORTED_IMAGE_MIME_TYPE = 'Unsupported image mime type:';
 /** @const {string} Prefix when updateJob is invoked. */
 export const LOG_UPDATE_JOB = 'updateJob:';
+/** @const {string} Prefix when live per-job progress is updated. */
+export const LOG_UPDATE_PROGRESS = 'updateProgress:';
 /** @const {string} Prefix when a duration is being used. */
 export const LOG_USE_DURATION = 'useDuration:';
 /** @const {string} Logged when using stream copy mode. */

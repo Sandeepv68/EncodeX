@@ -71,6 +71,8 @@ export interface HwAccelStored {
  * @property {(type: EncoderType) => void} setEncoderType - Sets the encoder preference and persists the change.
  * @property {boolean} alwaysOnTop - Whether the window should stay on top of other windows.
  * @property {(flag: boolean) => void} setAlwaysOnTop - Sets always-on-top and persists it via localStorage + electronAPI.
+ * @property {number} queueConcurrency - Number of batch jobs run in parallel (1-4).
+ * @property {(concurrency: number) => void} setQueueConcurrency - Sets the batch concurrency, persists it, and forwards it to the main process.
  */
 export interface SettingsState {
   transcoder: string;
@@ -83,6 +85,8 @@ export interface SettingsState {
   setEncoderType: (type: EncoderType) => void;
   alwaysOnTop: boolean;
   setAlwaysOnTop: (flag: boolean) => void;
+  queueConcurrency: number;
+  setQueueConcurrency: (concurrency: number) => void;
 }
 
 /**
@@ -140,20 +144,28 @@ export interface ToastState {
  * State of the conversion queue store.
  * Holds the ordered list of pending/completed conversion jobs (QueueJob) and
  * the actions for bulk-setting, adding, removing, updating, and clearing them.
+ * Live per-job progress snapshots (ConversionProgress) are kept separately so
+ * the queue list can render fps/speed/ETA without replacing job records.
  * @interface QueueState
  * @property {QueueJob[]} jobs - The list of conversion jobs in the queue.
+ * @property {Record<string, ConversionProgress>} progress - Live progress
+ *   snapshots keyed by job id (percent, time, fps, speed, eta, bitrate).
  * @property {(jobs: QueueJob[]) => void} setJobs - Replaces the entire job list.
  * @property {(job: QueueJob) => void} addJob - Appends a job to the end of the queue.
  * @property {(id: string) => void} removeJob - Removes the job with the given id.
  * @property {(job: QueueJob) => void} updateJob - Replaces the job matching job.id (no-op if not found).
+ * @property {(id: string, data: ConversionProgress) => void} updateProgress -
+ *   Stores the latest progress snapshot for the job with the given id.
  * @property {() => void} clearJobs - Removes all jobs from the queue.
  */
 export interface QueueState {
   jobs: QueueJob[];
+  progress: Record<string, ConversionProgress>;
   setJobs: (jobs: QueueJob[]) => void;
   addJob: (job: QueueJob) => void;
   removeJob: (id: string) => void;
   updateJob: (job: QueueJob) => void;
+  updateProgress: (id: string, data: ConversionProgress) => void;
   clearJobs: () => void;
 }
 

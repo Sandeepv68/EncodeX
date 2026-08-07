@@ -31,3 +31,28 @@ export const OutputText = styled(Typography)(({ theme }) => ({
   display: 'block',
   marginBottom: theme.spacing(0.5),
 }));
+
+export const DetailsBox = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+  padding: theme.spacing(1),
+  borderTop: `1px solid ${theme.palette.divider}`,
+}));
+
+export const DetailsLabel = styled(Typography)(({ theme }) => ({
+  display: 'block',
+  fontWeight: 600,
+  marginBottom: theme.spacing(0.5),
+}));
+
+export const OptionsGrid = styled(Box)({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+  gap: '2px 16px',
+  marginBottom: 4,
+});
+
+export const OptionRow = styled(Stack)({
+  flexDirection: 'row',
+  alignItems: 'center',
+  columnGap: 4,
+});

@@ -11,6 +11,7 @@
  * @property {string} SELECT_FILE - Open a single-file selection dialog.
  * @property {string} SELECT_FILES - Open a multi-file selection dialog.
  * @property {string} SELECT_OUTPUT - Choose an output file location.
+ * @property {string} SELECT_DIRECTORY - Choose an output directory.
  * @property {string} GET_MEDIA_INFO - Probe a media file for format and stream info.
  * @property {string} GET_IMAGE_INFO - Read image dimensions and format info.
  * @property {string} GET_IMAGE_PREVIEW - Generate a preview of an image.
@@ -25,6 +26,14 @@
  * @property {string} QUEUE_REMOVE - Remove a job from the batch queue.
  * @property {string} QUEUE_LIST - List all batch queue jobs.
  * @property {string} QUEUE_CANCEL_ALL - Cancel every queued and running job.
+ * @property {string} QUEUE_CLEAR_COMPLETED - Remove every done and errored job.
+ * @property {string} QUEUE_SET_CONCURRENCY - Set the number of jobs run in parallel.
+ * @property {string} QUEUE_MOVE - Reorder a queued job by one position.
+ * @property {string} QUEUE_PAUSE - Pause the queue and all active conversions.
+ * @property {string} QUEUE_RESUME - Resume a paused queue and start queued jobs.
+ * @property {string} QUEUE_EXPORT - Export the queue to a JSON file.
+ * @property {string} QUEUE_IMPORT - Import a JSON queue file.
+ * @property {string} REVEAL_FILE - Reveal a file in the OS file manager.
  * @property {string} PLAYER_OPEN - Open a video in the player.
  * @property {string} PLAYER_SEEK - Seek the player to a timestamp.
  * @property {string} PLAYER_CLOSE - Close the player.
@@ -44,6 +53,7 @@
  * @property {string} QUEUE_STATUS_CHANGE - Notify of a queue job status change.
  * @property {string} QUEUE_PROGRESS - Push per-job progress updates.
  * @property {string} QUEUE_CANCELLED - Notify that the queue was cancelled.
+ * @property {string} QUEUE_MOVED - Notify that a queued job was reordered.
  * @property {string} PLAYER_FRAME - Push a decoded frame to the renderer player.
  * @property {string} LOG_MESSAGE - Forward a log entry to the renderer.
  */
@@ -51,6 +61,7 @@ export const IPC = {
   SELECT_FILE: 'select-file',
   SELECT_FILES: 'select-files',
   SELECT_OUTPUT: 'select-output',
+  SELECT_DIRECTORY: 'select-directory',
   GET_MEDIA_INFO: 'get-media-info',
   GET_IMAGE_INFO: 'get-image-info',
   GET_IMAGE_PREVIEW: 'get-image-preview',
@@ -65,6 +76,14 @@ export const IPC = {
   QUEUE_REMOVE: 'queue-remove',
   QUEUE_LIST: 'queue-list',
   QUEUE_CANCEL_ALL: 'queue-cancel-all',
+  QUEUE_CLEAR_COMPLETED: 'queue-clear-completed',
+  QUEUE_SET_CONCURRENCY: 'queue-set-concurrency',
+  QUEUE_MOVE: 'queue-move',
+  QUEUE_PAUSE: 'queue-pause',
+  QUEUE_RESUME: 'queue-resume',
+  QUEUE_EXPORT: 'queue-export',
+  QUEUE_IMPORT: 'queue-import',
+  REVEAL_FILE: 'queue-reveal',
   PLAYER_OPEN: 'player-open',
   PLAYER_SEEK: 'player-seek',
   PLAYER_CLOSE: 'player-close',
@@ -86,6 +105,7 @@ export const IPC = {
   QUEUE_STATUS_CHANGE: 'queue-status-change',
   QUEUE_PROGRESS: 'queue-progress',
   QUEUE_CANCELLED: 'queue-cancelled',
+  QUEUE_MOVED: 'queue-moved',
   PLAYER_FRAME: 'player-frame',
   LOG_MESSAGE: 'log-message',
 } as const;

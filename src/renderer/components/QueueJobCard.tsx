@@ -3,8 +3,9 @@
  *
  * Renders one conversion job as an outlined card showing the input filename,
  * its queue status as a colored chip, the output path, an in-card progress
- * bar while running, and any error text. A remove button lets the user drop
- * the job from the queue.
+ * bar while running, and any error text. Per-job actions include removing the
+ * job, revealing its output in the OS file manager, copying the output path,
+ * reordering queued jobs (up/down arrows), and (for failed jobs) retrying.
  *
  * Status colors map QUEUE_STATUS values to MUI chip colors (queued = warning,
  * running = primary, done = success, error = error). The progress bar is
@@ -13,18 +14,48 @@
  *
  * Props (see {@link QueueJobCardProps}):
  *  - job: the QueueJob to display.
+ *  - progress: optional live ConversionProgress snapshot (time/speed/eta).
  *  - onRemove: callback invoked with the job id when the user removes it.
+ *  - onMove: callback invoked with the job id and direction (-1 up, 1 down)
+ *    when a queued job's reorder arrow is clicked.
+ *
+ * Every card has a chevron toggle that expands an MUI Collapse panel with the
+ * full error (when present), a compact summary of the encoding options
+ * (codecs, bitrates, scale, hwaccel, ...), the transcoder, and the creation
+ * timestamp.
  */
 
-import { Button, Chip, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Button, Chip, Collapse, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTrashCan,
+  faRotateRight,
+  faFolderOpen,
+  faCopy,
+  faArrowUp,
+  faArrowDown,
+  faChevronUp,
+  faChevronDown,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ErrorBoundary } from './ErrorBoundary';
 import ProgressBar from './ProgressBar';
 import type { QueueJobCardProps } from './types';
+import type { ConversionOptions } from '../../shared/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
-import { JobCard, CardHeaderRow, JobNameText, CardActionsStack, OutputText } from '../styles/QueueJobCard.styles';
+import { useToastStore } from '../stores/toastStore';
+import {
+  JobCard,
+  CardHeaderRow,
+  JobNameText,
+  CardActionsStack,
+  OutputText,
+  DetailsBox,
+  DetailsLabel,
+  OptionsGrid,
+  OptionRow,
+} from '../styles/QueueJobCard.styles';
 
 /**
  * Maps QUEUE_STATUS values to MUI Chip color props used for the status chip.
@@ -61,8 +92,65 @@ function basename(path: string): string {
  *   id when the remove button is clicked.
  * @returns {JSX.Element} The job card.
  */
-export default function QueueJobCard({ job, onRemove }: QueueJobCardProps) {
+export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove }: QueueJobCardProps) {
   const { t } = useTranslation();
+
+  /**
+   * True while the expandable details panel is shown.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
+  const [expanded, setExpanded] = useState(false);
+
+  /**
+   * Builds the compact label/value rows summarizing a job's encoding options.
+   * Only options that are actually set on the job are listed, so the summary
+   * stays short; booleans render as Yes/No.
+   * @param {ConversionOptions} options - The job's conversion options.
+   * @returns {{label: string, value: string}[]} The ordered summary rows.
+   */
+  const buildOptionRows = (options: ConversionOptions): { label: string; value: string }[] => {
+    const rows: { label: string; value: string }[] = [];
+    const yes = t('batchQueue.yes');
+    const no = t('batchQueue.no');
+    if (options.videoCodec) rows.push({ label: t('batchQueue.optionVideoCodec'), value: options.videoCodec });
+    if (options.audioCodec) rows.push({ label: t('batchQueue.optionAudioCodec'), value: options.audioCodec });
+    if (options.videoBitrate) rows.push({ label: t('batchQueue.optionVideoBitrate'), value: options.videoBitrate });
+    if (options.audioBitrate) rows.push({ label: t('batchQueue.optionAudioBitrate'), value: options.audioBitrate });
+    if (options.qscale !== undefined) rows.push({ label: t('batchQueue.optionQscale'), value: String(options.qscale) });
+    if (options.scale) rows.push({ label: t('batchQueue.optionScale'), value: options.scale });
+    if (options.pixelFormat) rows.push({ label: t('batchQueue.optionPixelFormat'), value: options.pixelFormat });
+    if (options.startTime || options.endTime) {
+      rows.push({ label: t('batchQueue.optionTrim'), value: [options.startTime, options.endTime].filter(Boolean).join(' \u2192 ') });
+    }
+    if (options.duration) rows.push({ label: t('batchQueue.optionDuration'), value: options.duration });
+    if (options.copy !== undefined) rows.push({ label: t('batchQueue.optionCopy'), value: options.copy ? yes : no });
+    if (options.audio !== undefined) rows.push({ label: t('batchQueue.optionAudio'), value: options.audio ? yes : no });
+    if (options.hardwareAcceleration !== undefined) {
+      rows.push({ label: t('batchQueue.optionHwaccel'), value: options.hardwareAcceleration ? yes : no });
+    }
+    if (options.hwaccelMode) rows.push({ label: t('batchQueue.optionHwaccelMode'), value: options.hwaccelMode });
+    return rows;
+  };
+
+  /**
+   * Reveals the job's output file in the OS file manager via the main process.
+   * @returns {Promise<void>} Resolves once the reveal request is issued.
+   */
+  const handleReveal = async () => {
+    await window.electronAPI.revealFile(job.output);
+  };
+
+  /**
+   * Copies the job's output path to the clipboard and confirms via a toast.
+   * @returns {Promise<void>} Resolves once the path is copied (or fails).
+   */
+  const handleCopyPath = async () => {
+    await navigator.clipboard.writeText(job.output);
+    useToastStore.getState().success(t('toast.pathCopied'));
+  };
+
+  const optionRows = buildOptionRows(job.options);
+  const detailsLabel = expanded ? t('batchQueue.collapseDetails') : t('batchQueue.expandDetails');
 
   return (
     <JobCard $status={job.status} variant="outlined">
@@ -70,6 +158,40 @@ export default function QueueJobCard({ job, onRemove }: QueueJobCardProps) {
         <JobNameText variant="body2">{basename(job.input)}</JobNameText>
         <CardActionsStack direction="row" spacing={1}>
           <Chip label={job.status} size="small" color={statusColors[job.status] || 'default'} />
+          {job.status === QUEUE_STATUS.QUEUED && onMove && (
+            <>
+              <Tooltip title={t('batchQueue.moveUp')}>
+                <IconButton size="small" aria-label={t('batchQueue.moveUp')} onClick={() => onMove(job.id, -1)}>
+                  <FontAwesomeIcon icon={faArrowUp} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('batchQueue.moveDown')}>
+                <IconButton size="small" aria-label={t('batchQueue.moveDown')} onClick={() => onMove(job.id, 1)}>
+                  <FontAwesomeIcon icon={faArrowDown} />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
+          {job.status === QUEUE_STATUS.ERROR && onRetry && (
+            <Button size="small" startIcon={<FontAwesomeIcon icon={faRotateRight} />} onClick={() => onRetry(job)}>
+              {t('batchQueue.retry')}
+            </Button>
+          )}
+          <Tooltip title={t('batchQueue.revealInFolder')}>
+            <IconButton size="small" aria-label={t('batchQueue.revealInFolder')} onClick={handleReveal}>
+              <FontAwesomeIcon icon={faFolderOpen} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t('batchQueue.copyPath')}>
+            <IconButton size="small" aria-label={t('batchQueue.copyPath')} onClick={handleCopyPath}>
+              <FontAwesomeIcon icon={faCopy} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={detailsLabel}>
+            <IconButton size="small" aria-label={detailsLabel} aria-expanded={expanded} onClick={() => setExpanded((prev) => !prev)}>
+              <FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} />
+            </IconButton>
+          </Tooltip>
           <Button size="small" color="error" startIcon={<FontAwesomeIcon icon={faTrashCan} />} onClick={() => onRemove(job.id)}>
             {t('batchQueue.remove')}
           </Button>
@@ -80,14 +202,57 @@ export default function QueueJobCard({ job, onRemove }: QueueJobCardProps) {
       </OutputText>
       {job.status === QUEUE_STATUS.RUNNING && (
         <ErrorBoundary fallback={null}>
-          <ProgressBar percent={job.progress} />
+          <ProgressBar percent={job.progress} time={progress?.time} speed={progress?.speed} eta={progress?.eta} paused={job.paused} />
         </ErrorBoundary>
       )}
-      {job.error && (
+      {job.error && !expanded && (
         <Typography variant="caption" color="error">
           {job.error}
         </Typography>
       )}
+      <Collapse in={expanded}>
+        {expanded && (
+          <DetailsBox>
+            {job.error && (
+              <>
+                <DetailsLabel variant="caption" color="text.secondary">
+                  {t('batchQueue.detailsError')}
+                </DetailsLabel>
+                <Typography variant="caption" color="error">
+                  {job.error}
+                </Typography>
+              </>
+            )}
+            {optionRows.length > 0 && (
+              <>
+                <DetailsLabel variant="caption" color="text.secondary">
+                  {t('batchQueue.detailsOptions')}
+                </DetailsLabel>
+                <OptionsGrid>
+                  {optionRows.map((row) => (
+                    <OptionRow key={row.label}>
+                      <Typography variant="caption" color="text.secondary">
+                        {row.label}:
+                      </Typography>
+                      <Typography variant="caption">{row.value}</Typography>
+                    </OptionRow>
+                  ))}
+                  <OptionRow>
+                    <Typography variant="caption" color="text.secondary">
+                      {t('batchQueue.detailsTranscoder')}:
+                    </Typography>
+                    <Typography variant="caption">{job.transcoder}</Typography>
+                  </OptionRow>
+                </OptionsGrid>
+              </>
+            )}
+            <DetailsLabel variant="caption" color="text.secondary">
+              {t('batchQueue.detailsCreatedAt')}
+            </DetailsLabel>
+            <Typography variant="caption">{new Date(job.createdAt).toLocaleString()}</Typography>
+          </DetailsBox>
+        )}
+      </Collapse>
     </JobCard>
   );
 }

@@ -1,14 +1,16 @@
 /**
  * @fileoverview Zustand store for user application settings.
  * Manages the active transcoder backend, hardware acceleration preferences
- * (persisted to localStorage under 'encodex-hwaccel'), and the always-on-top
- * window flag (persisted under 'encodex-always-on-top').
+ * (persisted to localStorage under 'encodex-hwaccel'), the always-on-top
+ * window flag (persisted under 'encodex-always-on-top'), and the batch queue
+ * concurrency (persisted under 'encodex-queue-concurrency').
  *
  * State held:
  *  - transcoder: the active transcoder backend ('FFMPEG' | 'FFTOOL' | 'BMF')
  *  - hardwareAcceleration / hwaccelMode / encoderType: hardware acceleration
  *    preferences, initialized from the persisted snapshot
  *  - alwaysOnTop: whether the window stays on top of other windows
+ *  - queueConcurrency: batch jobs run in parallel (1-4)
  *
  * Behavior notes:
  *  - Hardware acceleration setters persist the new values to localStorage
@@ -16,6 +18,8 @@
  *    fall back to the defaults from HWACCEL_DEFAULTS / ENCODER_TYPE_DEFAULT.
  *  - setAlwaysOnTop persists the flag, forwards it to the main process via
  *    window.electronAPI.windowSetAlwaysOnTop, and then updates state.
+ *  - setQueueConcurrency persists the value, forwards it to the main process
+ *    via window.electronAPI.queueSetConcurrency, and then updates state.
  *
  * Consumers:
  *  - Settings UI panels and the conversion form (which reads the transcoder and
@@ -28,16 +32,24 @@ import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { HWACCEL_DEFAULTS, HWACCEL_MODES, HWACCEL_STORAGE_KEY, ENCODER_TYPES, ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
 import type { HwAccelMode, EncoderType } from '../../shared/types';
 import type { HwAccelStored, SettingsState } from './types';
-import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY } from '../../shared/constants';
+import {
+  WINDOW_ALWAYS_ON_TOP_STORAGE_KEY,
+  QUEUE_CONCURRENCY_STORAGE_KEY,
+  DEFAULT_QUEUE_CONCURRENCY,
+  MAX_QUEUE_CONCURRENCY,
+} from '../../shared/constants';
 import {
   LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING,
   LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS,
+  LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY,
   LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING,
   LOG_FAILED_TO_READ_STORED_HARDWARE_ACCELERATION_SETTINGS,
+  LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY,
   LOG_SET_ALWAYS_ON_TOP,
   LOG_SET_ENCODER_TYPE,
   LOG_SET_HARDWARE_ACCELERATION,
   LOG_SET_HWACCEL_MODE,
+  LOG_SET_QUEUE_CONCURRENCY,
   LOG_SET_TRANSCODER,
 } from '../../shared/log-constants';
 
@@ -125,11 +137,47 @@ function persistAlwaysOnTop(flag: boolean): void {
 }
 
 /**
+ * Reads the persisted batch queue concurrency from localStorage
+ * ('encodex-queue-concurrency'); the value is clamped to 1..MAX_QUEUE_CONCURRENCY
+ * and defaults to DEFAULT_QUEUE_CONCURRENCY when missing or unparsable. Storage
+ * failures are logged and treated as the default.
+ * @returns {number} The validated concurrency value (1-4).
+ */
+export function readStoredQueueConcurrency(): number {
+  try {
+    const raw = localStorage.getItem(QUEUE_CONCURRENCY_STORAGE_KEY);
+    if (raw) {
+      const parsed = Number.parseInt(raw, 10);
+      if (Number.isInteger(parsed)) {
+        return Math.min(Math.max(parsed, 1), MAX_QUEUE_CONCURRENCY);
+      }
+    }
+  } catch (err) {
+    log.warn(LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY, err);
+  }
+  return DEFAULT_QUEUE_CONCURRENCY;
+}
+
+/**
+ * Persists the batch queue concurrency to localStorage
+ * ('encodex-queue-concurrency'). Failures are logged and swallowed.
+ * @param {number} concurrency - The concurrency value to persist.
+ * @returns {void}
+ */
+function persistQueueConcurrency(concurrency: number): void {
+  try {
+    localStorage.setItem(QUEUE_CONCURRENCY_STORAGE_KEY, String(concurrency));
+  } catch (err) {
+    log.warn(LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY, err);
+  }
+}
+
+/**
  * Zustand store for user application settings.
  * Holds the transcoder backend, hardware acceleration preferences (persisted to
- * localStorage and validated at load via readStoredHwAccel), and the
- * always-on-top flag. Implemented as a module-level singleton consumed by the
- * settings UI and the conversion form.
+ * localStorage and validated at load via readStoredHwAccel), the always-on-top
+ * flag, and the batch queue concurrency cap. Implemented as a module-level
+ * singleton consumed by the settings UI and the conversion form.
  * @const {UseBoundStore<StoreApi<SettingsState>>} useSettingsStore
  */
 export const useSettingsStore = create<SettingsState>((set) => ({
@@ -194,5 +242,17 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     persistAlwaysOnTop(flag);
     window.electronAPI?.windowSetAlwaysOnTop(flag);
     set({ alwaysOnTop: flag });
+  },
+  queueConcurrency: readStoredQueueConcurrency(),
+  /**
+   * Sets the batch queue concurrency. Persists the value to localStorage and
+   * forwards it to the main process via window.electronAPI.queueSetConcurrency.
+   * @param {number} concurrency - Number of jobs to run in parallel (1-4).
+   */
+  setQueueConcurrency: (concurrency) => {
+    log.debug(LOG_SET_QUEUE_CONCURRENCY, concurrency);
+    persistQueueConcurrency(concurrency);
+    window.electronAPI?.queueSetConcurrency(concurrency);
+    set({ queueConcurrency: concurrency });
   },
 }));

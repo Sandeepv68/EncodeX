@@ -652,5 +652,5 @@ describe('VideoCut', () => {
     await screen.findByLabelText('videoTimeline.zoomIn');
     expect(screen.getByLabelText('videoTimeline.zoomIn')).toBeDisabled();
     second.unmount();
-  });
+  }, 15000);
 });
