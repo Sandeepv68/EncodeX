@@ -100,8 +100,9 @@ const restrictToVerticalAxis: Modifier = ({ transform }) => ({ ...transform, x: 
  * Drag-and-drop reordering is powered by @dnd-kit: the visible card stack is a
  * SortableContext, the drop computes the dragged job's target position within
  * the QUEUED subsequence via `computeQueuedTargetPosition`, and the reorder is
- * committed by calling `queueMoveTo`. The store then mirrors the authoritative
- * main-process order through the `onQueueMoved` subscription.
+ * committed by reordering the store optimistically (so the card snaps to its
+ * new slot on release) and calling `queueMoveTo`. The `onQueueMoved` echo then
+ * confirms the authoritative main-process order (an idempotent no-op here).
  *
  * @returns {JSX.Element} The page content.
  */
@@ -701,9 +702,10 @@ export default function BatchQueue() {
 
   /**
    * Commits a drag-and-drop reorder: reorders the visible list, derives the
-   * dragged job's target position within the QUEUED subsequence, and tells the
-   * main process to apply it (`queueMoveTo`). The store updates through the
-   * `onQueueMoved` echo. Drops that land on the same card are no-ops.
+   * dragged job's target position within the QUEUED subsequence, applies it to
+   * the store immediately (so the card snaps to its slot on release), and tells
+   * the main process to commit it (`queueMoveTo`). The `onQueueMoved` echo is
+   * an idempotent confirmation. Drops that land on the same card are no-ops.
    * @param {DragEndEvent} event - The dnd-kit drag end event.
    * @returns {void}
    */
@@ -720,6 +722,10 @@ export default function BatchQueue() {
     if (from === -1 || to === -1) return;
     const newVisibleIds = arrayMove(visibleIds, from, to);
     const toPosition = computeQueuedTargetPosition(jobs, activeId, newVisibleIds);
+    useQueueStore.setState((state) => {
+      const reordered = reorderJob(state.jobs, activeId, toPosition);
+      return reordered === state.jobs ? {} : { jobs: reordered };
+    });
     window.electronAPI.queueMoveTo(activeId, toPosition);
   };
 
@@ -826,7 +832,12 @@ export default function BatchQueue() {
                 ))}
               </Stack>
             </SortableContext>
-            <DragOverlay>
+            <DragOverlay
+              dropAnimation={{
+                duration: 200,
+                easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+              }}
+            >
               {activeJob && (
                 <JobCard $status={activeJob.status} $dragOverlay variant="outlined">
                   <QueueJobCardContent job={activeJob} onRemove={() => {}} dragOverlay />

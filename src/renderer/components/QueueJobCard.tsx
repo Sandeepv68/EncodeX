@@ -352,7 +352,7 @@ export function QueueJobCardContent({
  * @returns {JSX.Element} The sortable job card.
  */
 export default function QueueJobCard({ job, progress, onRemove, onRetry }: QueueJobCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({
     id: job.id,
     disabled: job.status !== QUEUE_STATUS.QUEUED,
   });
@@ -364,8 +364,9 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry }: Queue
       variant="outlined"
       style={{
         transform: CSS.Transform.toString(transform),
-        transition,
+        transition: isDragging ? undefined : 'transform 250ms cubic-bezier(0.25, 1, 0.5, 1)',
         opacity: isDragging ? 0 : undefined,
+        willChange: 'transform',
       }}
     >
       <QueueJobCardContent job={job} progress={progress} onRemove={onRemove} onRetry={onRetry} handleProps={{ attributes, listeners }} />
