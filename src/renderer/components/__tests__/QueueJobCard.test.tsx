@@ -6,6 +6,8 @@ import { QUEUE_STATUS } from '../../../shared/media-options';
 import type { QueueJob } from '../../../shared/types';
 
 const revealFileMock = vi.mocked(window.electronAPI.revealFile);
+const getVideoPreviewMock = vi.mocked(window.electronAPI.getVideoPreview);
+const getImagePreviewMock = vi.mocked(window.electronAPI.getImagePreview);
 
 function makeJob(overrides: Partial<QueueJob> = {}): QueueJob {
   return {
@@ -232,5 +234,28 @@ describe('QueueJobCard', () => {
     render(<QueueJobCard job={makeJob({ options: { startTime: '00:01:00', endTime: '00:02:00' } })} onRemove={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
     expect(screen.getByText('00:01:00 \u2192 00:02:00')).toBeInTheDocument();
+  });
+
+  it('renders a video thumbnail fetched from the video preview API', async () => {
+    getVideoPreviewMock.mockResolvedValue('data:image/png;base64,VIDEO');
+    render(<QueueJobCard job={makeJob({ input: 'C:/videos/clip.mp4' })} onRemove={() => {}} />);
+    expect(getVideoPreviewMock).toHaveBeenCalledWith('C:/videos/clip.mp4');
+    const img = await screen.findByTestId('queue-job-thumbnail');
+    expect(img).toHaveAttribute('src', 'data:image/png;base64,VIDEO');
+    expect(img).toHaveAttribute('alt', '');
+  });
+
+  it('renders an image thumbnail fetched from the image preview API', async () => {
+    getImagePreviewMock.mockResolvedValue('data:image/png;base64,IMAGE');
+    render(<QueueJobCard job={makeJob({ input: 'C:/pics/photo.png' })} onRemove={() => {}} />);
+    expect(getImagePreviewMock).toHaveBeenCalledWith('C:/pics/photo.png');
+    expect(await screen.findByTestId('queue-job-thumbnail')).toHaveAttribute('src', 'data:image/png;base64,IMAGE');
+  });
+
+  it('does not load a thumbnail for audio jobs', async () => {
+    render(<QueueJobCard job={makeJob({ input: 'C:/music/track.mp3' })} onRemove={() => {}} />);
+    expect(screen.queryByTestId('queue-job-thumbnail')).not.toBeInTheDocument();
+    expect(getVideoPreviewMock).not.toHaveBeenCalled();
+    expect(getImagePreviewMock).not.toHaveBeenCalled();
   });
 });

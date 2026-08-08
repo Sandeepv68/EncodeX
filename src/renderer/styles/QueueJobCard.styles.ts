@@ -23,6 +23,24 @@ export const CardHeaderRow = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(0.5),
 }));
 
+export const TitleBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  minWidth: 0,
+  flex: 1,
+}));
+
+export const ThumbImg = styled('img')(({ theme }) => ({
+  width: theme.typography.pxToRem(40),
+  height: theme.typography.pxToRem(40),
+  borderRadius: theme.shape.borderRadius,
+  objectFit: 'cover',
+  flexShrink: 0,
+  border: `1px solid ${theme.palette.divider}`,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+}));
+
 export const JobNameText = styled(Typography)({
   fontWeight: 600,
   flex: '1 1 0',

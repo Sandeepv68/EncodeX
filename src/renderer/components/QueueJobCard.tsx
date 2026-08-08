@@ -1,11 +1,12 @@
 /**
  * @fileoverview Single job card in the batch queue list.
  *
- * Renders one conversion job as an outlined card showing the input filename,
- * its queue status as a colored chip, the output path, an in-card progress
- * bar while running, and any error text. Per-job actions include removing the
- * job, revealing its output in the OS file manager, copying the output path,
- * reordering queued jobs (up/down arrows), and (for failed jobs) retrying.
+ * Renders one conversion job as an outlined card showing the input filename
+ * (with a preview thumbnail for image/video inputs), its queue status as a
+ * colored chip, the output path, an in-card progress bar while running, and
+ * any error text. Per-job actions include removing the job, revealing its
+ * output in the OS file manager, copying the output path, reordering queued
+ * jobs (up/down arrows), and (for failed jobs) retrying.
  *
  * Status colors map QUEUE_STATUS values to MUI chip colors (queued = warning,
  * running = primary, done = success, error = error). The progress bar is
@@ -25,7 +26,7 @@
  * timestamp.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Collapse, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import {
@@ -44,10 +45,13 @@ import ProgressBar from './ProgressBar';
 import type { QueueJobCardProps } from './types';
 import type { ConversionOptions } from '../../shared/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
+import { isImageFile, isVideoFile } from '../../shared/file-extensions';
 import { useToastStore } from '../stores/toastStore';
 import {
   JobCard,
   CardHeaderRow,
+  TitleBox,
+  ThumbImg,
   JobNameText,
   StatusChip,
   CardActionsStack,
@@ -84,8 +88,9 @@ function basename(path: string): string {
  * Renders a single batch queue job card.
  *
  * Shows the input file's basename (see {@link basename}) and a status chip in
- * the header row, the output path below, a {@link ProgressBar} while the job
- * is running, and the error message when the job failed.
+ * the header row (with a preview thumbnail for image/video inputs), the output
+ * path below, a {@link ProgressBar} while the job is running, and the error
+ * message when the job failed.
  * @param {QueueJobCardProps} props - Component props.
  * @param {QueueJob} props.job - The conversion job to display.
  * @param {(id: string) => void} props.onRemove - Callback fired with the job's
@@ -100,6 +105,40 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
    * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
    */
   const [expanded, setExpanded] = useState(false);
+
+  /**
+   * Data URL of the job's media thumbnail (preview frame for video, scaled
+   * image preview for images), or null while loading/for unsupported files.
+   * @type {[string | null, React.Dispatch<React.SetStateAction<string | null>>]}
+   */
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
+
+  /**
+   * On mount, fetches a thumbnail for the job's input via the image/video
+   * preview IPC channels (audio files have no preview). Failures and null
+   * results keep the card thumbnail-less; the state is only updated when a
+   * preview actually arrives so cards can render without any async churn.
+   * @returns {void}
+   */
+  useEffect(() => {
+    let cancelled = false;
+    const loadThumbnail = async () => {
+      try {
+        const dataUrl = isImageFile(job.input)
+          ? await window.electronAPI.getImagePreview(job.input)
+          : isVideoFile(job.input)
+            ? await window.electronAPI.getVideoPreview(job.input)
+            : null;
+        if (!cancelled && dataUrl) setThumbnail(dataUrl);
+      } catch {
+        if (!cancelled) setThumbnail(null);
+      }
+    };
+    loadThumbnail();
+    return () => {
+      cancelled = true;
+    };
+  }, [job.input]);
 
   /**
    * Builds the compact label/value rows summarizing a job's encoding options.
@@ -155,9 +194,12 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
   return (
     <JobCard $status={job.status} variant="outlined">
       <CardHeaderRow>
-        <Tooltip title={job.input} arrow>
-          <JobNameText variant="body2">{basename(job.input)}</JobNameText>
-        </Tooltip>
+        <TitleBox>
+          {thumbnail && <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />}
+          <Tooltip title={job.input} arrow>
+            <JobNameText variant="body2">{basename(job.input)}</JobNameText>
+          </Tooltip>
+        </TitleBox>
         <CardActionsStack direction="row" spacing={1}>
           <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
           {job.status === QUEUE_STATUS.QUEUED && onMove && (
