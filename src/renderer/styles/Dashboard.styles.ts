@@ -1,9 +1,10 @@
 import { styled, keyframes } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import { Box, Card, CardActionArea, CardContent, Typography } from '@mui/material';
 import { SHADOWS, OVERLAY_COLORS } from '../colors';
 
-const fadeSlideUp = keyframes`
-  from { opacity: 0; transform: translateY(12px); }
+const fadeSlideUp = (theme: Theme) => keyframes`
+  from { opacity: 0; transform: translateY(${theme.typography.pxToRem(12)}); }
   to { opacity: 1; transform: translateY(0); }
 `;
 
@@ -20,7 +21,7 @@ export const WelcomeTitle = styled(Typography)(({ theme }) => ({
   color: theme.palette.primary.main,
   fontWeight: 700,
   marginBottom: theme.spacing(1),
-  animation: `${fadeSlideUp} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
+  animation: `${fadeSlideUp(theme)} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
   animationDelay: '0.05s',
   '@media (prefers-reduced-motion: reduce)': {
     animation: 'none',
@@ -32,7 +33,7 @@ export const WelcomeIcon = styled('img')(({ theme }) => ({
   height: theme.typography.pxToRem(128),
   marginBottom: theme.spacing(1),
   borderRadius: theme.typography.pxToRem(10),
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
   userSelect: 'none',
   WebkitUserSelect: 'none',
   pointerEvents: 'none',
@@ -48,7 +49,7 @@ export const DashboardSubtitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(3),
   textAlign: 'center',
   maxWidth: theme.typography.pxToRem(560),
-  animation: `${fadeSlideUp} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
+  animation: `${fadeSlideUp(theme)} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
   animationDelay: '0.18s',
   '@media (prefers-reduced-motion: reduce)': {
     animation: 'none',
@@ -62,16 +63,16 @@ export const FeatureCard = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: `${theme.typography.pxToRem(1)} solid`,
   borderColor: theme.palette.divider,
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
   transition: 'box-shadow 0.2s, border-color 0.2s, transform 0.2s',
-  animation: `${fadeSlideUp} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
+  animation: `${fadeSlideUp(theme)} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
   '@media (prefers-reduced-motion: reduce)': {
     animation: 'none',
   },
   '&:hover': {
     borderColor: theme.palette.primary.main,
     transform: `translateY(${theme.typography.pxToRem(-2)})`,
-    boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_HOVER_DARK : SHADOWS.SOFT_HOVER_LIGHT,
+    boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
   },
 }));
 

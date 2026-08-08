@@ -1,7 +1,7 @@
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { QUEUE_STATUS } from '../../shared/media-options';
-import { SHADOWS } from '../colors';
+import { SHADOWS, OVERLAY_COLORS } from '../colors';
 
 export const JobCard = styled(Paper, {
   shouldForwardProp: (prop) => prop !== '$status' && prop !== '$dragOverlay',
@@ -14,7 +14,7 @@ export const JobCard = styled(Paper, {
       : $status === QUEUE_STATUS.DONE
         ? theme.palette.success.main
         : theme.palette.divider,
-  boxShadow: $dragOverlay ? theme.shadows[8] : theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: $dragOverlay ? theme.shadows[8] : theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
 export const CardBody = styled(Stack)({
@@ -54,7 +54,7 @@ export const JobNameText = styled(Typography)({
 export const StatusChip = styled(Chip)(({ theme }) => ({
   borderRadius: theme.spacing(0.75),
   height: theme.typography.pxToRem(28),
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
   '& .MuiChip-label': {
     textTransform: 'uppercase',
     fontWeight: theme.typography.fontWeightBold,
@@ -82,7 +82,7 @@ export const CardActionsStack = styled(Stack)({ flexWrap: 'nowrap', alignItems: 
 export const DragHandleButton = styled(IconButton)(({ theme }) => ({
   cursor: 'grab',
   color: theme.palette.text.secondary,
-  borderRadius: 4,
+  borderRadius: theme.typography.pxToRem(4),
   padding: theme.spacing(0.5),
   '&:hover': {
     color: theme.palette.text.primary,
@@ -91,15 +91,15 @@ export const DragHandleButton = styled(IconButton)(({ theme }) => ({
     cursor: 'grabbing',
   },
   '& .MuiTouchRipple-child': {
-    borderRadius: 4,
+    borderRadius: theme.typography.pxToRem(4),
   },
 }));
 
 export const DetailsBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1.5),
-  borderTop: `1px solid ${theme.palette.divider}`,
-  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)',
-  boxShadow: theme.palette.mode === 'dark' ? 'inset 0 6px 4px -2px rgba(0, 0, 0, 0.35)' : 'inset 0 6px 4px -2px rgba(0, 0, 0, 0.1)',
+  borderTop: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+  backgroundColor: theme.palette.mode === 'dark' ? OVERLAY_COLORS.white02 : OVERLAY_COLORS.black02,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).INSET_DARK : SHADOWS(theme).INSET_LIGHT,
 }));
 
 export const DetailsLabel = styled(Typography)(({ theme }) => ({
@@ -108,15 +108,15 @@ export const DetailsLabel = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(0.5),
 }));
 
-export const OptionsGrid = styled(Box)({
+export const OptionsGrid = styled(Box)(({ theme }) => ({
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-  gap: '2px 16px',
-  marginBottom: 4,
-});
+  gridTemplateColumns: `repeat(auto-fill, minmax(${theme.typography.pxToRem(220)}, 1fr))`,
+  gap: `${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(16)}`,
+  marginBottom: theme.typography.pxToRem(4),
+}));
 
-export const OptionRow = styled(Stack)({
+export const OptionRow = styled(Stack)(({ theme }) => ({
   flexDirection: 'row',
   alignItems: 'center',
-  columnGap: 4,
-});
+  columnGap: theme.typography.pxToRem(4),
+}));

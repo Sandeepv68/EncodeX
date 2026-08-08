@@ -1,4 +1,5 @@
 import { alpha, styled, keyframes } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import { Divider, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { COLORS } from '../colors';
 
@@ -12,15 +13,15 @@ export const NavList = styled(List)(({ theme }) => ({
   paddingRight: theme.spacing(1),
 }));
 
-const navItemIn = keyframes`
-  from { opacity: 0; transform: translateX(-8px); }
+const navItemIn = (theme: Theme) => keyframes`
+  from { opacity: 0; transform: translateX(${theme.typography.pxToRem(-8)}); }
   to { opacity: 1; transform: translateX(0); }
 `;
 
 export const NavItemButton = styled(ListItemButton)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   marginBottom: theme.spacing(0.5),
-  animation: `${navItemIn} 0.3s ease-out backwards`,
+  animation: `${navItemIn(theme)} 0.3s ease-out backwards`,
   '@media (prefers-reduced-motion: reduce)': {
     animation: 'none',
   },
@@ -46,9 +47,9 @@ const blinkKeyframes = keyframes`
   100% { opacity: 0.15; }
 `;
 
-const rippleKeyframes = keyframes`
+const rippleKeyframes = (theme: Theme) => keyframes`
   0% { box-shadow: 0 0 0 0 ${COLORS.tint.error45}; }
-  100% { box-shadow: 0 0 0 14px ${COLORS.tint.error0}; }
+  100% { box-shadow: 0 0 0 ${theme.typography.pxToRem(14)} ${COLORS.tint.error0}; }
 `;
 
 export const NavBlip = styled('span')(({ theme }) => ({
@@ -58,7 +59,7 @@ export const NavBlip = styled('span')(({ theme }) => ({
   backgroundColor: theme.palette.error.main,
   marginInlineStart: 'auto',
   flexShrink: 0,
-  animation: `${blinkKeyframes} 1.2s ease-in-out infinite, ${rippleKeyframes} 1.2s ease-out infinite`,
+  animation: `${blinkKeyframes} 1.2s ease-in-out infinite, ${rippleKeyframes(theme)} 1.2s ease-out infinite`,
 }));
 
 export const NavCountBadge = styled('span')(({ theme }) => ({
@@ -76,5 +77,5 @@ export const NavCountBadge = styled('span')(({ theme }) => ({
   boxSizing: 'border-box',
   marginInlineStart: 'auto',
   flexShrink: 0,
-  animation: `${blinkKeyframes} 1.2s ease-in-out infinite, ${rippleKeyframes} 1.2s ease-out infinite`,
+  animation: `${blinkKeyframes} 1.2s ease-in-out infinite, ${rippleKeyframes(theme)} 1.2s ease-out infinite`,
 }));

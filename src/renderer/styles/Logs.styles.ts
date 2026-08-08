@@ -12,7 +12,7 @@ export const LogsHeader = styled(Paper)(({ theme }) => ({
   marginBottom: theme.spacing(1),
   flexShrink: 0,
   padding: theme.spacing(1.5),
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
 export const FilterSelect = styled(Select)(({ theme }) => ({ minWidth: theme.typography.pxToRem(100) }));

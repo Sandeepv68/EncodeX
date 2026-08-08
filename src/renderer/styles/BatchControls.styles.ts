@@ -4,13 +4,13 @@ import { SHADOWS } from '../colors';
 
 export const ControlsPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
 export const ControlsStack = styled(Stack)({ flexWrap: 'wrap' });
 
 export const OutlinedIconButton = styled(IconButton)(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
+  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
   '&:hover': {
     borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[500] : theme.palette.grey[600],

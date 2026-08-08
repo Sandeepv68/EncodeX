@@ -56,7 +56,7 @@ export const TitleBarBetaBadge = styled(Typography)(({ theme }) => ({
   padding: `${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)}`,
   borderRadius: theme.typography.pxToRem(4),
   backgroundColor: COLORS.info,
-  color: '#ffffff',
+  color: OVERLAY_COLORS.white,
   fontSize: theme.typography.pxToRem(10),
   fontWeight: 600,
   lineHeight: 1.2,

@@ -39,9 +39,9 @@ export const PreviewPanel = styled(Paper)(({ theme }) => ({
   flexDirection: 'column',
   gap: theme.spacing(2),
   padding: theme.spacing(2),
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
   [theme.breakpoints.up('md')]: {
-    width: 380,
+    width: theme.typography.pxToRem(380),
     flexShrink: 0,
     alignSelf: 'flex-start',
     position: 'sticky',

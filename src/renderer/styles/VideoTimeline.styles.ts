@@ -31,7 +31,7 @@ export const TimelineTimeText = styled(Typography)(({ theme }) => ({
   fontVariantNumeric: 'tabular-nums',
 }));
 
-export const ZoomButton = styled(IconButton)({ padding: 4 });
+export const ZoomButton = styled(IconButton)(({ theme }) => ({ padding: theme.typography.pxToRem(4) }));
 
 export const Viewport = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -39,7 +39,7 @@ export const Viewport = styled(Box)(({ theme }) => ({
   overflowY: 'hidden',
   cursor: 'pointer',
   '&::-webkit-scrollbar': {
-    height: 8,
+    height: theme.typography.pxToRem(8),
   },
   '&::-webkit-scrollbar-thumb': {
     backgroundColor: TIMELINE_COLORS.scrollbarThumb,
@@ -60,7 +60,7 @@ export const TrackLabel = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: 72,
+  width: theme.typography.pxToRem(72),
   color: theme.palette.text.secondary,
   gap: theme.spacing(0.25),
 }));
@@ -76,7 +76,7 @@ export const Scroller = styled(Box, {
 
 export const Ruler = styled(Box)(({ theme }) => ({
   position: 'relative',
-  height: TIMELINE_LAYOUT.RULER_HEIGHT,
+  height: theme.typography.pxToRem(TIMELINE_LAYOUT.RULER_HEIGHT),
   backgroundColor: theme.palette.mode === 'light' ? TIMELINE_COLORS.labelPanelBackgroundLight : TIMELINE_COLORS.labelPanelBackgroundDark,
   borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
 }));
@@ -84,8 +84,8 @@ export const Ruler = styled(Box)(({ theme }) => ({
 export const RulerTick = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
-  width: 1,
-  height: 10,
+  width: theme.typography.pxToRem(1),
+  height: theme.typography.pxToRem(10),
   backgroundColor: theme.palette.text.secondary,
   pointerEvents: 'none',
 }));
@@ -93,15 +93,15 @@ export const RulerTick = styled(Box)(({ theme }) => ({
 export const RulerMinorTick = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
-  width: 1,
-  height: 5,
+  width: theme.typography.pxToRem(1),
+  height: theme.typography.pxToRem(5),
   backgroundColor: alpha(theme.palette.text.secondary, 0.5),
   pointerEvents: 'none',
 }));
 
 export const RulerLabel = styled(Typography)(({ theme }) => ({
   position: 'absolute',
-  top: 12,
+  top: theme.typography.pxToRem(12),
   transform: `translateX(${theme.typography.pxToRem(3)})`,
   fontSize: theme.typography.pxToRem(10),
   lineHeight: 1.2,
@@ -114,7 +114,7 @@ export const MarkerBubble = styled(Box)(({ theme }) => {
   const bg = theme.palette.mode === 'light' ? OVERLAY_COLORS.black66 : TIMELINE_COLORS.markerBubbleBackgroundDark;
   return {
     position: 'absolute',
-    bottom: -3,
+    bottom: theme.typography.pxToRem(-3),
     transform: 'translateX(-50%)',
     backgroundColor: bg,
     color: OVERLAY_COLORS.white,
@@ -134,13 +134,13 @@ export const MarkerBubble = styled(Box)(({ theme }) => {
 
 export const Lane = styled(Box)(({ theme }) => ({
   position: 'relative',
-  height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT + TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
+  height: theme.typography.pxToRem(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT + TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT),
 }));
 
 export const ClipTrack = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  top: 12,
-  bottom: 12,
+  top: theme.typography.pxToRem(12),
+  bottom: theme.typography.pxToRem(12),
   left: 0,
   right: 0,
   backgroundColor: theme.palette.primary.main,
@@ -154,29 +154,29 @@ export const VideoTrack = styled(Box)(({ theme }) => ({
   top: 0,
   left: 0,
   right: 0,
-  height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT,
+  height: theme.typography.pxToRem(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT),
   borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   zIndex: 0,
   pointerEvents: 'none',
 }));
 
-export const AudioTrack = styled(Box)({
+export const AudioTrack = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  top: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT,
+  top: theme.typography.pxToRem(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT),
   left: 0,
   right: 0,
-  height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
+  height: theme.typography.pxToRem(TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT),
   backgroundColor: TIMELINE_COLORS.audioTrack,
   zIndex: 0,
   pointerEvents: 'none',
-});
+}));
 
-export const ThumbCell = styled(Box)({
+export const ThumbCell = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  top: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
-  bottom: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
+  top: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
+  bottom: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
   backgroundRepeat: 'no-repeat',
-});
+}));
 
 export const WaveformBar = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -187,8 +187,8 @@ export const WaveformBar = styled(Box)(({ theme }) => ({
 
 export const KeptRegion = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  top: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
-  bottom: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
+  top: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
+  bottom: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
   backgroundColor: theme.palette.primary.main,
   borderLeft: `${theme.typography.pxToRem(2)} solid ${theme.palette.success.main}`,
   borderRight: `${theme.typography.pxToRem(2)} solid ${theme.palette.error.main}`,
@@ -202,19 +202,19 @@ export const KeptRegion = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const DimmedRegion = styled(Box)({
+export const DimmedRegion = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  top: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
-  bottom: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
+  top: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
+  bottom: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
   zIndex: 1,
   pointerEvents: 'none',
-});
+}));
 
 export const TrimHandle = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  top: 6,
-  bottom: 6,
-  width: 10,
+  top: theme.typography.pxToRem(6),
+  bottom: theme.typography.pxToRem(6),
+  width: theme.typography.pxToRem(10),
   transform: 'translateX(-50%)',
   cursor: 'ew-resize',
   zIndex: 3,
@@ -227,8 +227,8 @@ export const TrimHandle = styled(Box)(({ theme }) => ({
   boxShadow: `0 0 ${theme.typography.pxToRem(4)} ${OVERLAY_COLORS.black45}`,
   '&::before': {
     content: '""',
-    width: 2,
-    height: 20,
+    width: theme.typography.pxToRem(2),
+    height: theme.typography.pxToRem(20),
     backgroundColor: OVERLAY_COLORS.white90,
     borderRadius: theme.typography.pxToRem(1),
   },
@@ -242,15 +242,15 @@ export const TrackBubbleAnchor = styled(Box)({
   zIndex: 2,
 });
 
-export const ScrollShadowAnchor = styled(Box)({
+export const ScrollShadowAnchor = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
   left: 0,
   right: 0,
-  height: TIMELINE_LAYOUT.RULER_HEIGHT + TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT + TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT,
+  height: theme.typography.pxToRem(TIMELINE_LAYOUT.RULER_HEIGHT + TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT + TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT),
   pointerEvents: 'none',
   zIndex: 2,
-});
+}));
 
 export const ScrollShadow = styled(Box)(({ theme }) => {
   const light = theme.palette.mode === 'light';
@@ -258,7 +258,7 @@ export const ScrollShadow = styled(Box)(({ theme }) => {
     position: 'sticky',
     left: 0,
     top: 0,
-    width: 24,
+    width: theme.typography.pxToRem(24),
     height: '100%',
     background: light
       ? `linear-gradient(to right, ${OVERLAY_COLORS.black20}, ${OVERLAY_COLORS.black0})`
@@ -295,7 +295,7 @@ export const PlayheadLine = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
   bottom: 0,
-  width: 2,
+  width: theme.typography.pxToRem(2),
   transform: 'translateX(-50%)',
   backgroundColor: theme.palette.error.main,
   zIndex: 4,
@@ -305,7 +305,7 @@ export const PlayheadLine = styled(Box)(({ theme }) => ({
 export const PlayheadHead = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
-  left: -4,
+  left: theme.typography.pxToRem(-4),
   width: 0,
   height: 0,
   borderLeft: `${theme.typography.pxToRem(5)} solid transparent`,

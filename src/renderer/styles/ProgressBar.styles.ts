@@ -1,10 +1,11 @@
 import { styled, keyframes, alpha } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import { Box, LinearProgress } from '@mui/material';
 import { OVERLAY_COLORS, SHADOWS } from '../colors';
 
-const gradientSlide = keyframes`
+const gradientSlide = (theme: Theme) => keyframes`
   from { transform: translateX(0); }
-  to { transform: translateX(-400px); }
+  to { transform: translateX(${theme.typography.pxToRem(-400)}); }
 `;
 
 export const ProgressTrack = styled(LinearProgress, {
@@ -12,7 +13,7 @@ export const ProgressTrack = styled(LinearProgress, {
 })<{ paused?: boolean; shadowed?: boolean }>(({ theme, paused, shadowed }) => ({
   height: theme.typography.pxToRem(8),
   borderRadius: theme.shape.borderRadius,
-  boxShadow: shadowed ? (theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT) : undefined,
+  boxShadow: shadowed ? (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT) : undefined,
   backgroundColor: paused ? alpha(theme.palette.warning.main, 0.3) : undefined,
   transition: 'background-color 0.5s ease',
   '& .MuiLinearProgress-bar': {
@@ -25,9 +26,9 @@ export const ProgressTrack = styled(LinearProgress, {
       top: 0,
       bottom: 0,
       left: 0,
-      width: 'calc(100% + 400px)',
-      backgroundImage: `repeating-linear-gradient(45deg, ${OVERLAY_COLORS.white18} 0px, ${OVERLAY_COLORS.white18} 17.6777px, ${OVERLAY_COLORS.white0} 17.6777px, ${OVERLAY_COLORS.white0} 35.3553px), repeating-linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main}, ${theme.palette.success.main}, ${theme.palette.primary.main} 400px)`,
-      animation: `${gradientSlide} 8s linear infinite`,
+      width: `calc(100% + ${theme.typography.pxToRem(400)})`,
+      backgroundImage: `repeating-linear-gradient(45deg, ${OVERLAY_COLORS.white18} ${theme.typography.pxToRem(0)}, ${OVERLAY_COLORS.white18} ${theme.typography.pxToRem(17.6777)}, ${OVERLAY_COLORS.white0} ${theme.typography.pxToRem(17.6777)}, ${OVERLAY_COLORS.white0} ${theme.typography.pxToRem(35.3553)}), repeating-linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main}, ${theme.palette.success.main}, ${theme.palette.primary.main} ${theme.typography.pxToRem(400)})`,
+      animation: `${gradientSlide(theme)} 8s linear infinite`,
       pointerEvents: 'none',
     },
     '&::after': {
@@ -36,9 +37,9 @@ export const ProgressTrack = styled(LinearProgress, {
       top: 0,
       bottom: 0,
       left: 0,
-      width: 'calc(100% + 400px)',
-      backgroundImage: `repeating-linear-gradient(45deg, ${OVERLAY_COLORS.white18} 0px, ${OVERLAY_COLORS.white18} 17.6777px, ${OVERLAY_COLORS.white0} 17.6777px, ${OVERLAY_COLORS.white0} 35.3553px), repeating-linear-gradient(90deg, ${theme.palette.warning.light}, ${theme.palette.warning.main}, ${theme.palette.warning.dark}, ${theme.palette.warning.light} 400px)`,
-      animation: `${gradientSlide} 8s linear infinite`,
+      width: `calc(100% + ${theme.typography.pxToRem(400)})`,
+      backgroundImage: `repeating-linear-gradient(45deg, ${OVERLAY_COLORS.white18} ${theme.typography.pxToRem(0)}, ${OVERLAY_COLORS.white18} ${theme.typography.pxToRem(17.6777)}, ${OVERLAY_COLORS.white0} ${theme.typography.pxToRem(17.6777)}, ${OVERLAY_COLORS.white0} ${theme.typography.pxToRem(35.3553)}), repeating-linear-gradient(90deg, ${theme.palette.warning.light}, ${theme.palette.warning.main}, ${theme.palette.warning.dark}, ${theme.palette.warning.light} ${theme.typography.pxToRem(400)})`,
+      animation: `${gradientSlide(theme)} 8s linear infinite`,
       opacity: paused ? 1 : 0,
       transition: 'opacity 0.5s ease',
       pointerEvents: 'none',

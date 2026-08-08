@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Typography, Stack, Box, Chip, TextField, Alert } from '@mui/material';
-import { COLORS, SHADOWS } from '../colors';
+import { COLORS, OVERLAY_COLORS, SHADOWS } from '../colors';
 
 export const PageTitle = styled(Typography)(({ theme }) => ({
   display: 'flex',
@@ -12,7 +12,7 @@ export const PageTitle = styled(Typography)(({ theme }) => ({
 export const AccelAlert = styled(Alert)(({ theme }) => ({
   fontWeight: 500,
   color: COLORS.alert.info,
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
 export const EmptyText = styled(Typography)(({ theme }) => ({
@@ -33,14 +33,14 @@ export const FilterRow = styled(Stack)(({ theme }) => ({
 export const FilterChip = styled(Chip)(({ theme }) => ({
   borderRadius: theme.spacing(0.75),
   height: theme.typography.pxToRem(28),
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
 export const SearchField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-root': {
     height: theme.typography.pxToRem(28),
     fontSize: theme.typography.pxToRem(13),
-    boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+    boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
   },
   '& .MuiOutlinedInput-input': {
     padding: `0 ${theme.spacing(1)}`,
@@ -54,6 +54,6 @@ export const DropOverlay = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)',
+  background: theme.palette.mode === 'dark' ? OVERLAY_COLORS.black70 : OVERLAY_COLORS.white70,
   pointerEvents: 'none',
 }));
