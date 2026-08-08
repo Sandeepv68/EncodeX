@@ -311,7 +311,10 @@
     "optionCopy": "نسخ التدفقات",
     "optionAudio": "الصوت",
     "optionHwaccel": "تسريع الأجهزة",
-    "optionHwaccelMode": "وضع تسريع الأجهزة"
+    "optionHwaccelMode": "وضع تسريع الأجهزة",
+    "encodingOptions": "خيارات الترميز",
+    "container": "الحاوية",
+    "containerAuto": "تلقائي (المصدر)"
   },
   "progress": {
     "time": "الوقت",

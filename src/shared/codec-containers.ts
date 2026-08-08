@@ -124,6 +124,14 @@ const AUDIO_CONTAINERS: Record<string, string> = {
 };
 
 /**
+ * Every distinct container extension that the supported audio encoders can be
+ * muxed into, for offering an audio container picker. Derived from the unique
+ * values of AUDIO_CONTAINERS.
+ * @const {readonly string[]} AUDIO_CONTAINER_EXTENSIONS
+ */
+export const AUDIO_CONTAINER_EXTENSIONS: readonly string[] = [...new Set(Object.values(AUDIO_CONTAINERS))];
+
+/**
  * Suggests the default output file extension for an audio encoder.
  * @param {string} [codec] - The FFmpeg audio encoder name (e.g. 'libmp3lame').
  * @returns {string} The preferred extension without a leading dot (e.g. 'mp3'),

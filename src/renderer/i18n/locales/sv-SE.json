@@ -311,7 +311,10 @@
     "optionCopy": "Kopiera strömmar",
     "optionAudio": "Ljud",
     "optionHwaccel": "HW-accel",
-    "optionHwaccelMode": "HW-accel-läge"
+    "optionHwaccelMode": "HW-accel-läge",
+    "encodingOptions": "Kodningsalternativ",
+    "container": "Container",
+    "containerAuto": "Automatisk (källa)"
   },
   "progress": {
     "time": "Tid",

@@ -93,7 +93,16 @@ describe('BatchQueue', () => {
       expect(queueAddMock).toHaveBeenCalledWith(
         '/in/video.mp4',
         '/in/video_converted.mp4',
-        { videoCodec: 'libx264', audioCodec: 'aac', hardwareAcceleration: true, hwaccelMode: 'auto' },
+        {
+          videoCodec: 'libx264',
+          audioCodec: 'aac',
+          videoBitrate: undefined,
+          audioBitrate: undefined,
+          scale: undefined,
+          pixelFormat: 'yuv420p',
+          hardwareAcceleration: true,
+          hwaccelMode: 'auto',
+        },
         'FFMPEG',
         false,
       ),
@@ -124,7 +133,16 @@ describe('BatchQueue', () => {
       expect(queueAddMock).toHaveBeenCalledWith(
         '/in/video.mp4',
         '/in/video_converted.mp4',
-        { videoCodec: undefined, audioCodec: 'aac', hardwareAcceleration: true, hwaccelMode: 'auto' },
+        {
+          videoCodec: undefined,
+          audioCodec: 'aac',
+          videoBitrate: undefined,
+          audioBitrate: undefined,
+          scale: undefined,
+          pixelFormat: undefined,
+          hardwareAcceleration: true,
+          hwaccelMode: 'auto',
+        },
         'FFMPEG',
         false,
       ),
@@ -143,10 +161,49 @@ describe('BatchQueue', () => {
       expect(queueAddMock).toHaveBeenCalledWith(
         '/in/photo.png',
         '/in/photo_converted.png',
-        { videoCodec: 'libx264', audioCodec: undefined, hardwareAcceleration: true, hwaccelMode: 'auto' },
+        {
+          videoCodec: 'libx264',
+          audioCodec: undefined,
+          videoBitrate: undefined,
+          audioBitrate: undefined,
+          scale: undefined,
+          pixelFormat: undefined,
+          hardwareAcceleration: true,
+          hwaccelMode: 'auto',
+        },
         'FFMPEG',
         false,
       ),
+    );
+  });
+
+  it('uses the chosen container as the output extension for transcode jobs', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/video.mp4']);
+    queueAddMock.mockResolvedValue('job-3');
+    renderPage();
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
+    fireEvent.click(screen.getByText('mkv'));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() =>
+      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_converted.mkv', expect.any(Object), 'FFMPEG', false),
+    );
+  });
+
+  it('clears a container that is incompatible with the selected video codec', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/video.mkv']);
+    queueAddMock.mockResolvedValue('job-3');
+    renderPage();
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
+    fireEvent.click(screen.getByText('mp4'));
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[3]);
+    fireEvent.click(screen.getByText('Theora (libtheora)'));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() =>
+      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mkv', '/in/video_converted.mkv', expect.any(Object), 'FFMPEG', false),
     );
   });
 

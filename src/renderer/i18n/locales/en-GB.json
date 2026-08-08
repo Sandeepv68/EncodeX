@@ -311,7 +311,10 @@
     "optionCopy": "Copy streams",
     "optionAudio": "Audio",
     "optionHwaccel": "HW accel",
-    "optionHwaccelMode": "HW accel mode"
+    "optionHwaccelMode": "HW accel mode",
+    "encodingOptions": "Encoding options",
+    "container": "Container",
+    "containerAuto": "Auto (source)"
   },
   "progress": {
     "time": "Time",

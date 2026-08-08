@@ -311,7 +311,10 @@
     "optionCopy": "Streams kopieren",
     "optionAudio": "Audio",
     "optionHwaccel": "HW-Beschleunigung",
-    "optionHwaccelMode": "HW-Beschleunigungsmodus"
+    "optionHwaccelMode": "HW-Beschleunigungsmodus",
+    "encodingOptions": "Kodierungsoptionen",
+    "container": "Container",
+    "containerAuto": "Automatisch (Quelle)"
   },
   "progress": {
     "time": "Zeit",

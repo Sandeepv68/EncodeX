@@ -6,7 +6,8 @@ import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../../shared/media-options'
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
 
 function renderControls(hasCompleted = false, concurrency = 1, opts: { paused?: boolean; hasActive?: boolean } = {}) {
-  const operationRef = { current: BATCH_OPERATIONS[0].value } as RefObject<string>;
+  const operation = BATCH_OPERATIONS[0].value;
+  const onOperationChange = vi.fn();
   const transcoderRef = { current: TRANSCODER_TYPES[0] } as RefObject<(typeof TRANSCODER_TYPES)[number]>;
   const suffixRef = { current: DEFAULT_SUFFIX } as RefObject<string>;
   const onAddFiles = vi.fn();
@@ -22,7 +23,8 @@ function renderControls(hasCompleted = false, concurrency = 1, opts: { paused?: 
   const onImport = vi.fn();
   render(
     <BatchControls
-      operationRef={operationRef}
+      operation={operation}
+      onOperationChange={onOperationChange}
       transcoderRef={transcoderRef}
       suffixRef={suffixRef}
       onAddFiles={onAddFiles}
@@ -45,7 +47,8 @@ function renderControls(hasCompleted = false, concurrency = 1, opts: { paused?: 
     />,
   );
   return {
-    operationRef,
+    operation,
+    onOperationChange,
     transcoderRef,
     suffixRef,
     onAddFiles,
@@ -83,11 +86,11 @@ describe('BatchControls', () => {
     expect(onConcurrencyChange).toHaveBeenCalledWith(3);
   });
 
-  it('updates the operation ref when a different operation is chosen', () => {
-    const { operationRef } = renderControls();
+  it('fires onOperationChange when a different operation is chosen', () => {
+    const { onOperationChange } = renderControls();
     fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
     fireEvent.click(screen.getByText('batchQueue.operationExtractAudio'));
-    expect(operationRef.current).toBe('extract_audio');
+    expect(onOperationChange).toHaveBeenCalledWith('extract_audio');
   });
 
   it('updates the transcoder ref when a different transcoder is chosen', () => {

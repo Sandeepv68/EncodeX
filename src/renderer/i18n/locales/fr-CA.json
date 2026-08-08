@@ -311,7 +311,10 @@
     "optionCopy": "Copier les flux",
     "optionAudio": "Audio",
     "optionHwaccel": "Accél. matérielle",
-    "optionHwaccelMode": "Mode d'accél. matérielle"
+    "optionHwaccelMode": "Mode d'accél. matérielle",
+    "encodingOptions": "Options d'encodage",
+    "container": "Conteneur",
+    "containerAuto": "Automatique (source)"
   },
   "progress": {
     "time": "Temps",

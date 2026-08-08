@@ -311,7 +311,10 @@
     "optionCopy": "Salin aliran",
     "optionAudio": "Audio",
     "optionHwaccel": "Percepatan HW",
-    "optionHwaccelMode": "Mode percepatan HW"
+    "optionHwaccelMode": "Mode percepatan HW",
+    "encodingOptions": "Opsi Penyandian",
+    "container": "Kontainer",
+    "containerAuto": "Otomatis (sumber)"
   },
   "progress": {
     "time": "Waktu",

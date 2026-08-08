@@ -311,7 +311,10 @@
     "optionCopy": "스트림 복사",
     "optionAudio": "오디오",
     "optionHwaccel": "HW 가속",
-    "optionHwaccelMode": "HW 가속 모드"
+    "optionHwaccelMode": "HW 가속 모드",
+    "encodingOptions": "인코딩 옵션",
+    "container": "컨테이너",
+    "containerAuto": "자동 (소스)"
   },
   "progress": {
     "time": "시간",

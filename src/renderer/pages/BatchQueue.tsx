@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Stack, Typography } from '@mui/material';
 import BatchControls from '../components/BatchControls';
+import BatchEncodingPanel from '../components/BatchEncodingPanel';
 import QueueJobCard from '../components/QueueJobCard';
 import QueueAddReviewDialog from '../components/QueueAddReviewDialog';
 import { useQueueStore } from '../stores/queueStore';
@@ -28,6 +29,7 @@ import { useToastStore } from '../stores/toastStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX, QUEUE_STATUS } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { isImageFile } from '../../shared/file-extensions';
+import { getVideoCodecContainer } from '../../shared/codec-containers';
 import { estimateRemaining, formatEstimate } from '../../shared/estimate';
 import { QueueJob } from '../../shared/types';
 import { useSettingsStore } from '../stores/settingsStore';
@@ -61,10 +63,11 @@ function normalizePath(path: string): string {
 /**
  * Renders the batch conversion queue page (`/batch`).
  *
- * Holds the batch configuration in refs (`videoCodec`, `audioCodec`,
- * `transcoder`, `operation`, `suffix`) that are bound to `BatchControls`, so
- * its inputs never trigger re-renders on every change. The visible job list is
- * read from `useQueueStore`.
+ * Holds the batch configuration as controlled state (`operation`, `videoCodec`,
+ * `audioCodec`, `container`, bitrates, `scale`, `pixelFormat`) bound to the
+ * `BatchControls` toolbar and the `BatchEncodingPanel`, plus refs for the
+ * transcoder and output suffix that never need to re-render. The visible job
+ * list is read from `useQueueStore`.
  *
  * Side-effects on mount: the full job list is fetched with `queueList()`, and
  * the `onQueueAdded`, `onQueueRemoved`, and `onQueueStatusChange`
@@ -139,17 +142,68 @@ export default function BatchQueue() {
 
   /**
    * Video codec applied to jobs created under operations that keep video
-   * ('transcode' and 'extract_audio'); not part of the queued options otherwise.
-   * @type {React.MutableRefObject<string>}
+   * ('transcode'); not part of the queued options otherwise. Selectable via the
+   * encoding options panel.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const videoCodecRef = useRef('libx264');
+  const [videoCodec, setVideoCodec] = useState('libx264');
 
   /**
    * Audio codec applied to jobs created under 'transcode' and 'extract_audio'
-   * operations.
+   * operations. Selectable via the encoding options panel.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [audioCodec, setAudioCodec] = useState('aac');
+
+  /**
+   * Batch operation currently selected (one of BATCH_OPERATIONS values, e.g.
+   * 'transcode', 'extract_audio', ...). Determines which codecs and encoding
+   * controls are applied to the queued jobs.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [operation, setOperation] = useState<string>(BATCH_OPERATIONS[0].value);
+
+  /**
+   * Ref mirroring the current operation so the window drop handler, which is
+   * registered once, always sees the latest value.
    * @type {React.MutableRefObject<string>}
    */
-  const audioCodecRef = useRef('aac');
+  const operationRef = useRef(operation);
+  operationRef.current = operation;
+
+  /**
+   * Output container/extension applied to transcode and extract-audio jobs;
+   * empty means the source file's extension is kept.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [container, setContainer] = useState('');
+
+  /**
+   * Target video bitrate for transcode jobs (e.g. '2000k'); empty means the
+   * encoder default is used.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [videoBitrate, setVideoBitrate] = useState('');
+
+  /**
+   * Target audio bitrate for transcode and extract-audio jobs (e.g. '192k');
+   * empty means the encoder default is used.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [audioBitrate, setAudioBitrate] = useState('');
+
+  /**
+   * Output resolution as WIDTHxHEIGHT for transcode jobs; empty keeps the
+   * source resolution.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [scale, setScale] = useState('');
+
+  /**
+   * Output pixel format (e.g. 'yuv420p') for transcode jobs.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [pixelFormat, setPixelFormat] = useState('yuv420p');
 
   /**
    * Transcoder backend used for every job added from this page. Initialized to
@@ -157,14 +211,6 @@ export default function BatchQueue() {
    * @type {React.MutableRefObject<string>}
    */
   const transcoderRef = useRef(TRANSCODER_TYPES[0]);
-
-  /**
-   * Batch operation currently selected (one of BATCH_OPERATIONS values, e.g.
-   * 'transcode', 'copy', 'extract_audio', ...). Determines which codecs are
-   * included in the queued options.
-   * @type {React.MutableRefObject<string>}
-   */
-  const operationRef = useRef<string>(BATCH_OPERATIONS[0].value);
 
   /**
    * Suffix inserted into every generated output file name (e.g. `_converted`),
@@ -349,14 +395,14 @@ export default function BatchQueue() {
 
   /**
    * Builds the queued ConversionOptions for a batch operation from the page's
-   * codec refs and the hardware-acceleration settings. 'transcode' keeps video
-   * and audio codecs; 'extract_audio' keeps only audio; 'compress_image' keeps
-   * only video.
+   * encoding state and the hardware-acceleration settings. 'transcode' keeps
+   * video and audio codecs plus video/audio bitrate, scale, and pixel format;
+   * 'extract_audio' keeps only audio (with audio bitrate); 'compress_image'
+   * keeps only video.
    * @param {string} operation - The batch operation value.
    * @param {{hardwareAcceleration: boolean, hwaccelMode: string}} hw - Current
    *   hardware-acceleration settings.
-   * @returns {{videoCodec?: string, audioCodec?: string, hardwareAcceleration: boolean, hwaccelMode: string}}
-   *   The options payload for the job.
+   * @returns {Object} The options payload for the job.
    */
   const buildOptions = (
     operation: string,
@@ -364,11 +410,19 @@ export default function BatchQueue() {
   ): {
     videoCodec?: string;
     audioCodec?: string;
+    videoBitrate?: string;
+    audioBitrate?: string;
+    scale?: string;
+    pixelFormat?: string;
     hardwareAcceleration: boolean;
     hwaccelMode: string;
   } => ({
-    videoCodec: operation === 'extract_audio' ? undefined : videoCodecRef.current,
-    audioCodec: operation === 'transcode' || operation === 'extract_audio' ? audioCodecRef.current : undefined,
+    videoCodec: operation === 'extract_audio' ? undefined : videoCodec,
+    audioCodec: operation === 'transcode' || operation === 'extract_audio' ? audioCodec : undefined,
+    videoBitrate: operation === 'transcode' ? videoBitrate || undefined : undefined,
+    audioBitrate: operation === 'transcode' || operation === 'extract_audio' ? audioBitrate || undefined : undefined,
+    scale: operation === 'transcode' ? scale || undefined : undefined,
+    pixelFormat: operation === 'transcode' ? pixelFormat : undefined,
     hardwareAcceleration: hw.hardwareAcceleration,
     hwaccelMode: hw.hwaccelMode,
   });
@@ -398,7 +452,7 @@ export default function BatchQueue() {
         continue;
       }
       queuedInputs.add(normalized);
-      const ext = file.split('.').pop();
+      const ext = expectsImage || !container ? file.split('.').pop() : container;
       const outFile =
         outputDir.length > 0
           ? `${outputDir.replace(/\\/g, '/').replace(/\/+$/, '')}/${basename(file.substring(0, file.lastIndexOf('.')))}${suffixRef.current}.${ext}`
@@ -515,6 +569,20 @@ export default function BatchQueue() {
   };
 
   /**
+   * Applies a new video codec selection and clears the chosen container when it
+   * is no longer compatible with that codec, so jobs never mux into a container
+   * the encoder cannot write.
+   * @param {string} codec - The newly selected video encoder name.
+   * @returns {void}
+   */
+  const handleVideoCodecChange = (codec: string) => {
+    setVideoCodec(codec);
+    if (container && !getVideoCodecContainer(codec).containers.includes(container)) {
+      setContainer('');
+    }
+  };
+
+  /**
    * Pauses the main-process queue (suspending active conversions and blocking
    * queued jobs) and reflects the paused state in the toolbar.
    * @returns {Promise<void>} Resolves once the pause request is handled.
@@ -576,7 +644,8 @@ export default function BatchQueue() {
 
       <Stack spacing={2}>
         <BatchControls
-          operationRef={operationRef}
+          operation={operation}
+          onOperationChange={setOperation}
           transcoderRef={transcoderRef}
           suffixRef={suffixRef}
           onAddFiles={handleAddFiles}
@@ -596,6 +665,24 @@ export default function BatchQueue() {
           onOverwriteChange={setOverwrite}
           onExport={handleExport}
           onImport={handleImport}
+        />
+
+        <BatchEncodingPanel
+          operation={operation}
+          videoCodec={videoCodec}
+          audioCodec={audioCodec}
+          container={container}
+          videoBitrate={videoBitrate}
+          audioBitrate={audioBitrate}
+          scale={scale}
+          pixelFormat={pixelFormat}
+          onVideoCodecChange={handleVideoCodecChange}
+          onAudioCodecChange={setAudioCodec}
+          onContainerChange={setContainer}
+          onVideoBitrateChange={setVideoBitrate}
+          onAudioBitrateChange={setAudioBitrate}
+          onScaleChange={setScale}
+          onPixelFormatChange={setPixelFormat}
         />
 
         {jobs.length > 0 && (
@@ -653,7 +740,7 @@ export default function BatchQueue() {
       <QueueAddReviewDialog
         open={reviewFiles !== null}
         files={reviewFiles ?? []}
-        defaultOperation={operationRef.current}
+        defaultOperation={operation}
         onConfirm={handleReviewConfirm}
         onCancel={handleReviewCancel}
       />

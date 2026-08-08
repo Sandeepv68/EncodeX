@@ -311,7 +311,10 @@
     "optionCopy": "Streams kopiëren",
     "optionAudio": "Audio",
     "optionHwaccel": "HW-versnelling",
-    "optionHwaccelMode": "HW-versnellingsmodus"
+    "optionHwaccelMode": "HW-versnellingsmodus",
+    "encodingOptions": "Coderingsopties",
+    "container": "Container",
+    "containerAuto": "Automatisch (bron)"
   },
   "progress": {
     "time": "Tijd",

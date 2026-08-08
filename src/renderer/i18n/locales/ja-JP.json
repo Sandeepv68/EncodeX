@@ -311,7 +311,10 @@
     "optionCopy": "ストリームをコピー",
     "optionAudio": "オーディオ",
     "optionHwaccel": "HWアクセラレーション",
-    "optionHwaccelMode": "HWアクセラレーションモード"
+    "optionHwaccelMode": "HWアクセラレーションモード",
+    "encodingOptions": "エンコードオプション",
+    "container": "コンテナ",
+    "containerAuto": "自動（元の形式）"
   },
   "progress": {
     "time": "時間",

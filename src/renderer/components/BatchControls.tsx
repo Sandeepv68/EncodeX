@@ -18,7 +18,8 @@
  * jobs, disabled via `hasCompleted`) callbacks respectively.
  *
  * Props (see {@link BatchControlsProps}):
- *  - operationRef: ref receiving the selected batch operation value.
+ *  - operation: selected batch operation value.
+ *  - onOperationChange: fired with the newly selected operation value.
  *  - transcoderRef: ref receiving the selected TranscoderType.
  *  - suffixRef: ref receiving the current output-name suffix text.
  *  - onAddFiles / onCancelAll / onClearCompleted: action callbacks for the buttons.
@@ -72,13 +73,14 @@ import {
  * Renders the batch queue configuration toolbar.
  *
  * Builds a horizontal stack of MUI controls inside a paper surface. The
- * operation and transcoder selects use their first BATCH_OPERATIONS /
- * TRANSCODER_TYPES entry as the default and push every change into the
- * corresponding ref. The suffix field defaults to DEFAULT_SUFFIX. The action
+ * operation select is controlled via `operation`/`onOperationChange`; the
+ * transcoder and suffix selects use their first TRANSCODER_TYPES entry /
+ * DEFAULT_SUFFIX as the default and push every change into the corresponding
+ * ref. The action
  * buttons (icon-only, wrapped in tooltips) delegate to the parent callbacks.
  * @param {BatchControlsProps} props - Component props.
- * @param {React.RefObject<string>} props.operationRef - Ref written with the
- *   selected operation value ('transcode' | 'extract_audio' | 'compress_image').
+ * @param {string} props.operation - The selected batch operation value
+ *   ('transcode' | 'extract_audio' | 'compress_image').
  * @param {React.RefObject<TranscoderType>} props.transcoderRef - Ref written
  *   with the selected transcoder backend.
  * @param {React.RefObject<string>} props.suffixRef - Ref written with the
@@ -111,7 +113,8 @@ import {
  * @returns {JSX.Element} The controls paper.
  */
 export default function BatchControls({
-  operationRef,
+  operation,
+  onOperationChange,
   transcoderRef,
   suffixRef,
   onAddFiles,
@@ -150,9 +153,9 @@ export default function BatchControls({
         <OperationSelect
           select
           size="small"
-          defaultValue={BATCH_OPERATIONS[0].value}
+          value={operation}
           onChange={(e) => {
-            operationRef.current = e.target.value;
+            onOperationChange(e.target.value);
           }}
         >
           {BATCH_OPERATIONS.map((o) => (

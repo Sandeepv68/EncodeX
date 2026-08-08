@@ -311,7 +311,10 @@
     "optionCopy": "स्ट्रीम कॉपी करें",
     "optionAudio": "ऑडियो",
     "optionHwaccel": "HW त्वरण",
-    "optionHwaccelMode": "HW त्वरण मोड"
+    "optionHwaccelMode": "HW त्वरण मोड",
+    "encodingOptions": "एन्कोडिंग विकल्प",
+    "container": "कंटेनर",
+    "containerAuto": "स्वचालित (स्रोत)"
   },
   "progress": {
     "time": "समय",

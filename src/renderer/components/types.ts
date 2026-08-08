@@ -39,7 +39,8 @@ export interface AudioStreamInfoProps {
  * @interface BatchControlsProps
  */
 export interface BatchControlsProps {
-  operationRef: RefObject<string>;
+  operation: string;
+  onOperationChange: (operation: string) => void;
   transcoderRef: RefObject<TranscoderType>;
   suffixRef: RefObject<string>;
   onAddFiles: () => void;
@@ -70,6 +71,46 @@ export interface BufferedFrame {
   width: number;
   height: number;
   pts: number;
+}
+
+/**
+ * Props for the batch encoding options panel.
+ * @interface BatchEncodingPanelProps
+ * @property {string} operation - The selected batch operation value; the panel
+ *   shows video controls only for 'transcode' and hides entirely for
+ *   'compress_image'.
+ * @property {string} videoCodec - Selected video encoder name.
+ * @property {string} audioCodec - Selected audio encoder name.
+ * @property {string} container - Selected output container extension; '' means
+ *   keep the source file's extension.
+ * @property {string} videoBitrate - Target video bitrate ('' = encoder default).
+ * @property {string} audioBitrate - Target audio bitrate ('' = encoder default).
+ * @property {string} scale - Output resolution as WIDTHxHEIGHT ('' = original).
+ * @property {string} pixelFormat - Output pixel format (e.g. 'yuv420p').
+ * @property {(value: string) => void} onVideoCodecChange - Fired on video codec change.
+ * @property {(value: string) => void} onAudioCodecChange - Fired on audio codec change.
+ * @property {(value: string) => void} onContainerChange - Fired on container change.
+ * @property {(value: string) => void} onVideoBitrateChange - Fired on video bitrate change.
+ * @property {(value: string) => void} onAudioBitrateChange - Fired on audio bitrate change.
+ * @property {(value: string) => void} onScaleChange - Fired on scale change.
+ * @property {(value: string) => void} onPixelFormatChange - Fired on pixel format change.
+ */
+export interface BatchEncodingPanelProps {
+  operation: string;
+  videoCodec: string;
+  audioCodec: string;
+  container: string;
+  videoBitrate: string;
+  audioBitrate: string;
+  scale: string;
+  pixelFormat: string;
+  onVideoCodecChange: (value: string) => void;
+  onAudioCodecChange: (value: string) => void;
+  onContainerChange: (value: string) => void;
+  onVideoBitrateChange: (value: string) => void;
+  onAudioBitrateChange: (value: string) => void;
+  onScaleChange: (value: string) => void;
+  onPixelFormatChange: (value: string) => void;
 }
 
 /**

@@ -311,7 +311,10 @@
     "optionCopy": "Копіювати потоки",
     "optionAudio": "Аудіо",
     "optionHwaccel": "Апаратне прискорення",
-    "optionHwaccelMode": "Режим апаратного прискорення"
+    "optionHwaccelMode": "Режим апаратного прискорення",
+    "encodingOptions": "Параметри кодування",
+    "container": "Контейнер",
+    "containerAuto": "Автоматично (джерело)"
   },
   "progress": {
     "time": "Час",

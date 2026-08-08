@@ -311,7 +311,10 @@
     "optionCopy": "Copiar fluxos",
     "optionAudio": "Áudio",
     "optionHwaccel": "Acel. HW",
-    "optionHwaccelMode": "Modo de acel. HW"
+    "optionHwaccelMode": "Modo de acel. HW",
+    "encodingOptions": "Opções de Codificação",
+    "container": "Contêiner",
+    "containerAuto": "Automático (origem)"
   },
   "progress": {
     "time": "Tempo",
