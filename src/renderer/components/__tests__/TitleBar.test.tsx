@@ -10,8 +10,7 @@ const api = window.electronAPI as unknown as {
   onWindowMaximizedChange: ReturnType<typeof vi.fn>;
 };
 
-const isPrerelease = (version: string): boolean =>
-  /^[0-9]+\.[0-9]+\.[0-9]+(-|$)/.test(version) && version.includes('-');
+const isPrerelease = (version: string): boolean => /^[0-9]+\.[0-9]+\.[0-9]+(-|$)/.test(version) && version.includes('-');
 
 describe('TitleBar', () => {
   beforeEach(() => {
