@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Stack, Typography } from '@mui/material';
 import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
-import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent, Modifier } from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import BatchControls from '../components/BatchControls';
 import BatchEncodingPanel from '../components/BatchEncodingPanel';
@@ -64,6 +64,13 @@ function basename(path: string): string {
 function normalizePath(path: string): string {
   return path.replace(/\\/g, '/').toLowerCase();
 }
+
+/**
+ * Restricts the dragged card to vertical movement only, so reordering a queued
+ * job cannot shift the card sideways while it is being dragged.
+ * @type {Modifier}
+ */
+const restrictToVerticalAxis: Modifier = ({ transform }) => ({ ...transform, x: 0 });
 
 /**
  * Renders the batch conversion queue page (`/batch`).
@@ -136,7 +143,7 @@ export default function BatchQueue() {
    * coordinate getter so sortable reordering stays keyboard accessible.
    */
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 2 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
@@ -801,6 +808,7 @@ export default function BatchQueue() {
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
+            modifiers={[restrictToVerticalAxis]}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
             onDragCancel={() => setActiveDragId(null)}
@@ -818,7 +826,7 @@ export default function BatchQueue() {
                 ))}
               </Stack>
             </SortableContext>
-            <DragOverlay dropAnimation={null}>
+            <DragOverlay>
               {activeJob && (
                 <JobCard $status={activeJob.status} $dragOverlay variant="outlined">
                   <QueueJobCardContent job={activeJob} onRemove={() => {}} dragOverlay />

@@ -34,7 +34,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Collapse, IconButton, Tooltip, Typography } from '@mui/material';
+import { Collapse, Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -50,6 +50,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ErrorBoundary } from './ErrorBoundary';
+import EllipsisTooltip from './EllipsisTooltip';
 import ProgressBar from './ProgressBar';
 import type { QueueJobCardProps } from './types';
 import type { ConversionOptions } from '../../shared/types';
@@ -224,9 +225,11 @@ export function QueueJobCardContent({
         {thumbnail && <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />}
         <CardContent>
           <CardHeaderRow>
-            <Tooltip title={job.input} arrow>
-              <JobNameText variant="body2">{basename(job.input)}</JobNameText>
-            </Tooltip>
+            <Box sx={{ flex: '1 1 0', minWidth: 0 }}>
+              <EllipsisTooltip title={job.input}>
+                <JobNameText variant="body2">{basename(job.input)}</JobNameText>
+              </EllipsisTooltip>
+            </Box>
             <CardActionsStack direction="row" spacing={1}>
               {job.status === QUEUE_STATUS.QUEUED && handleProps && !dragOverlay && (
                 <Tooltip title={t('batchQueue.dragHandle')}>

@@ -15,7 +15,6 @@ export const JobCard = styled(Paper, {
         ? theme.palette.success.main
         : theme.palette.divider,
   boxShadow: $dragOverlay ? theme.shadows[8] : theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
-  transform: $dragOverlay ? 'rotate(1.5deg)' : undefined,
 }));
 
 export const CardBody = styled(Stack)({
@@ -83,11 +82,16 @@ export const CardActionsStack = styled(Stack)({ flexWrap: 'nowrap', alignItems: 
 export const DragHandleButton = styled(IconButton)(({ theme }) => ({
   cursor: 'grab',
   color: theme.palette.text.secondary,
+  borderRadius: 4,
+  padding: theme.spacing(0.5),
   '&:hover': {
     color: theme.palette.text.primary,
   },
   '&:active': {
     cursor: 'grabbing',
+  },
+  '& .MuiTouchRipple-child': {
+    borderRadius: 4,
   },
 }));
 

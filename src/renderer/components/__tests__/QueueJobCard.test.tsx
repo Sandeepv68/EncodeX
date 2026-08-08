@@ -136,7 +136,15 @@ describe('QueueJobCard', () => {
     expect(screen.getByText('clip.mp4')).toBeInTheDocument();
   });
 
-  it('shows a tooltip with the full input path when the filename is hovered', async () => {
+  it('does not show a tooltip when the filename fits without truncation', () => {
+    renderCard(<QueueJobCard job={makeJob()} onRemove={() => {}} />);
+    fireEvent.mouseOver(screen.getByText('clip.mp4'));
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
+  it('shows a tooltip with the full input path only when the filename is truncated', async () => {
+    Object.defineProperty(HTMLElement.prototype, 'scrollWidth', { configurable: true, get: () => 500 });
+    Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => 100 });
     renderCard(<QueueJobCard job={makeJob()} onRemove={() => {}} />);
     fireEvent.mouseOver(screen.getByText('clip.mp4'));
     expect(await screen.findByRole('tooltip')).toHaveTextContent('C:/videos/clip.mp4');
