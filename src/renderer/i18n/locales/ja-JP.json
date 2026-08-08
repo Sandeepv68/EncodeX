@@ -114,7 +114,7 @@
     "channelLayout": "チャンネルレイアウト",
     "bitsPerSample": "サンプルあたりのビット数",
     "frameCount": "フレーム数",
-    "streamタイトル": "Title",
+    "streamTitle": "タイトル",
     "disposition": "ディスポジション",
     "tags": "タグ",
     "tagKeys": {
@@ -238,7 +238,24 @@
     "cancelJob": "ジョブをキャンセル",
     "jobCancelTitle": "ビデオカットをクリア",
     "jobCancelMessage": "現在のビデオカットフォームがクリアされます。よろしいですか？",
-    "closePreview": "プレビューを閉じる"
+    "closePreview": "プレビューを閉じる",
+    "videoFileHint": "ビデオファイルをここにドロップするか、クリックしてコンピューターから選択します。",
+    "dropLabel": "ビデオファイルをここにドロップするか、クリックして参照",
+    "changeFile": "ビデオを変更",
+    "changeFileHint": "別のビデオファイルを選択してください。",
+    "outputFileHint": "トリミングしたビデオが保存されるパス。",
+    "startTimeHint": "切り取りセグメントの開始位置。タイムラインの緑のトリムハンドルをドラッグすることもできます。",
+    "durationHint": "終了時刻の代わりに、切り取りセグメントの長さを指定します。",
+    "endTimeHint": "切り取りセグメントの終了位置。タイムラインの赤いトリムハンドルをドラッグすることもできます。",
+    "useDurationHint": "切り取りセグメントの終了時刻と長さを切り替えます。",
+    "cutHint": "設定した開始位置と終了位置でビデオの切り取りを開始します。",
+    "pause": "一時停止",
+    "resume": "再開",
+    "cancel": "キャンセル",
+    "cancelTitle": "ビデオ切り取りをキャンセル",
+    "cancelMessage": "ビデオの切り取りをキャンセルしますか？フォームはクリアされます。",
+    "yes": "はい",
+    "no": "いいえ"
   },
   "videoTimeline": {
     "zoomIn": "拡大",
@@ -276,6 +293,7 @@
     "pause": "一時停止",
     "resume": "再開",
     "dragHandle": "ドラッグして並べ替え",
+    "badgeCount": "バッチキューのジョブが{{count}}件",
     "operationTranscode": "トランスコード",
     "operationExtractAudio": "音声を抽出する",
     "operationCompressImage": "画像を圧縮する",
@@ -368,7 +386,8 @@
     "logsDownloaded": "ログをダウンロードしました",
     "mediaInfoLoaded": "メディア情報を読み込みました",
     "languageChanged": "言語を{{language}}に変更しました",
-    "cancelled": "キャンセル"
+    "cancelled": "キャンセル",
+    "pathCopied": "出力パスをクリップボードにコピーしました"
   },
   "settings": {
     "title": "設定",
@@ -385,6 +404,16 @@
     "encoderTypeSoftware": "ソフトウェア",
     "hardwareAccelerationHint": "GPU（NVIDIA NVENC、Intel QSV、AMD AMF）を使用して動画のエンコードとデコードを行います。ソフトウェアのみのエンコードにする場合はオフにします。",
     "hwaccelModeHint": "自動: GPUがデコードとエンコードの両方を行います（最速ですが、互換性がない場合があります）。エンコードのみ: GPUがエンコードし、CPUがデコードします（最も安全）。",
-    "encoderTypeHint": "動画コーデックの一覧をフィルタリングします。自動は利用可能なすべてのエンコーダー、ハードウェアはGPUエンコーダーのみ、ソフトウェアはCPUエンコーダーのみを表示します。"
+    "encoderTypeHint": "動画コーデックの一覧をフィルタリングします。自動は利用可能なすべてのエンコーダー、ハードウェアはGPUエンコーダーのみ、ソフトウェアはCPUエンコーダーのみを表示します。",
+    "themes": {
+      "light": "ライト",
+      "ocean": "オーシャン",
+      "sunset": "サンセット",
+      "forest": "フォレスト",
+      "lavender": "ラベンダー",
+      "rose": "ローズ",
+      "slate": "スレート",
+      "dark": "ダーク"
+    }
   }
 }

@@ -114,7 +114,7 @@
     "channelLayout": "Disposition des Canaux",
     "bitsPerSample": "Bits par Échantillon",
     "frameCount": "Nombre d'Images",
-    "streamTitre": "Title",
+    "streamTitle": "Titre",
     "disposition": "Disposition",
     "tags": "Balises",
     "tagKeys": {
@@ -238,7 +238,24 @@
     "cancelJob": "Annuler le travail",
     "jobCancelTitle": "Effacer la découpe vidéo",
     "jobCancelMessage": "Cela effacera le formulaire actuel de découpe vidéo. Êtes-vous sûr ?",
-    "closePreview": "Fermer l'aperçu"
+    "closePreview": "Fermer l'aperçu",
+    "videoFileHint": "Déposez un fichier vidéo ici ou cliquez pour parcourir votre ordinateur.",
+    "dropLabel": "Déposez un fichier vidéo ici ou cliquez pour parcourir",
+    "changeFile": "Changer la vidéo",
+    "changeFileHint": "Sélectionnez un autre fichier vidéo.",
+    "outputFileHint": "Le chemin où la vidéo découpée sera enregistrée.",
+    "startTimeHint": "Où commence le segment coupé. Vous pouvez aussi faire glisser la poignée de coupe verte sur la ligne de temps.",
+    "durationHint": "Au lieu d’une heure de fin, précisez la durée du segment coupé.",
+    "endTimeHint": "Où se termine le segment coupé. Vous pouvez aussi faire glisser la poignée de coupe rouge sur la ligne de temps.",
+    "useDurationHint": "Alternez entre une heure de fin et une durée pour le segment coupé.",
+    "cutHint": "Commencez à couper la vidéo avec les positions de début et de fin configurées.",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "cancel": "Annuler",
+    "cancelTitle": "Annuler la coupe vidéo",
+    "cancelMessage": "Voulez-vous vraiment annuler la coupe vidéo ? Le formulaire sera effacé.",
+    "yes": "Oui",
+    "no": "Non"
   },
   "videoTimeline": {
     "zoomIn": "Zoom avant",
@@ -276,6 +293,7 @@
     "pause": "Pause",
     "resume": "Reprendre",
     "dragHandle": "Glisser pour réordonner",
+    "badgeCount": "{{count}} tâches dans la file d'attente",
     "operationTranscode": "Transcoder",
     "operationExtractAudio": "Extraire l'audio",
     "operationCompressImage": "Compresser l'image",
@@ -368,7 +386,8 @@
     "logsDownloaded": "Journaux téléchargés",
     "mediaInfoLoaded": "Informations média chargées",
     "languageChanged": "Langue changée en {{language}}",
-    "cancelled": "Annulé"
+    "cancelled": "Annulé",
+    "pathCopied": "Chemin de sortie copié dans le presse-papiers"
   },
   "settings": {
     "title": "Paramètres",
@@ -385,6 +404,16 @@
     "encoderTypeSoftware": "Logiciel",
     "hardwareAccelerationHint": "Utilise votre GPU (NVIDIA NVENC, Intel QSV, AMD AMF) pour l'encodage et le décodage vidéo. Désactivez pour un encodage logiciel uniquement.",
     "hwaccelModeHint": "Automatique : le GPU décode et encode (le plus rapide, pas toujours compatible). Encodage seul : le GPU encode, le CPU décode (le plus sûr).",
-    "encoderTypeHint": "Filtre la liste des codecs vidéo. Automatique affiche tous les encodeurs disponibles, Matériel uniquement ceux du GPU, Logiciel uniquement ceux du CPU."
+    "encoderTypeHint": "Filtre la liste des codecs vidéo. Automatique affiche tous les encodeurs disponibles, Matériel uniquement ceux du GPU, Logiciel uniquement ceux du CPU.",
+    "themes": {
+      "light": "Clair",
+      "ocean": "Océan",
+      "sunset": "Coucher de soleil",
+      "forest": "Forêt",
+      "lavender": "Lavande",
+      "rose": "Rose",
+      "slate": "Ardoise",
+      "dark": "Sombre"
+    }
   }
 }

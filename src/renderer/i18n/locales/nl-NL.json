@@ -114,7 +114,7 @@
     "channelLayout": "Kanaallay-out",
     "bitsPerSample": "Bits per Sample",
     "frameCount": "Aantal Frames",
-    "streamTitel": "Title",
+    "streamTitle": "Titel",
     "disposition": "Dispositie",
     "tags": "Tags",
     "tagKeys": {
@@ -238,7 +238,24 @@
     "cancelJob": "Taak annuleren",
     "jobCancelTitle": "Video bewerking wissen",
     "jobCancelMessage": "Dit wist het huidige videoformulier. Weet je het zeker?",
-    "closePreview": "Voorbeeld sluiten"
+    "closePreview": "Voorbeeld sluiten",
+    "videoFileHint": "Sleep hier een videobestand neer of klik om uw computer te doorzoeken.",
+    "dropLabel": "Zet hier een videobestand neer of klik om te bladeren",
+    "changeFile": "Video wijzigen",
+    "changeFileHint": "Selecteer een ander videobestand.",
+    "outputFileHint": "Het pad waar de bijgesneden video wordt opgeslagen.",
+    "startTimeHint": "Waar het knipsegment begint. U kunt ook de groene knipgreep op de tijdlijn slepen.",
+    "durationHint": "Geef in plaats van een eindtijd aan hoe lang het knipsegment moet zijn.",
+    "endTimeHint": "Waar het knipsegment eindigt. U kunt ook de rode knipgreep op de tijdlijn slepen.",
+    "useDurationHint": "Schakel tussen een eindtijd en een duur voor het knipsegment.",
+    "cutHint": "Begin met het knippen van de video met de geconfigureerde start- en eindposities.",
+    "pause": "Pauzeren",
+    "resume": "Hervatten",
+    "cancel": "Annuleren",
+    "cancelTitle": "Videoknip annuleren",
+    "cancelMessage": "Weet u zeker dat u de videoknip wilt annuleren? Het formulier wordt gewist.",
+    "yes": "Ja",
+    "no": "Nee"
   },
   "videoTimeline": {
     "zoomIn": "Inzoomen",
@@ -276,6 +293,7 @@
     "pause": "Pauzeren",
     "resume": "Hervatten",
     "dragHandle": "Sleep om te herschikken",
+    "badgeCount": "{{count}} taken in de batchwachtrij",
     "operationTranscode": "Transcoderen",
     "operationExtractAudio": "Audio extraheren",
     "operationCompressImage": "Comprimeer afbeelding",
@@ -368,7 +386,8 @@
     "logsDownloaded": "Logs gedownload",
     "mediaInfoLoaded": "Mediainfo geladen",
     "languageChanged": "Taal gewijzigd naar {{language}}",
-    "cancelled": "Geannuleerd"
+    "cancelled": "Geannuleerd",
+    "pathCopied": "Uitvoerpad gekopieerd naar klembord"
   },
   "settings": {
     "title": "Instellingen",
@@ -385,6 +404,16 @@
     "encoderTypeSoftware": "Software",
     "hardwareAccelerationHint": "Gebruikt uw GPU (NVIDIA NVENC, Intel QSV, AMD AMF) voor video-encoding en -decoding. Schakel uit voor alleen software-encoding.",
     "hwaccelModeHint": "Automatisch: de GPU doet zowel decoderen als encoderen (snelst, niet altijd compatibel). Alleen encoderen: de GPU encodeert, de CPU decodeert (veiligst).",
-    "encoderTypeHint": "Filtert de videocodeclijst. Automatisch toont alle beschikbare encoders, Hardware alleen GPU-encoders, Software alleen CPU-encoders."
+    "encoderTypeHint": "Filtert de videocodeclijst. Automatisch toont alle beschikbare encoders, Hardware alleen GPU-encoders, Software alleen CPU-encoders.",
+    "themes": {
+      "light": "Licht",
+      "ocean": "Oceaan",
+      "sunset": "Zonsondergang",
+      "forest": "Bos",
+      "lavender": "Lavendel",
+      "rose": "Roos",
+      "slate": "Leisteen",
+      "dark": "Donker"
+    }
   }
 }

@@ -293,6 +293,7 @@
     "pause": "Pause",
     "resume": "Resume",
     "dragHandle": "Drag to reorder",
+    "badgeCount": "{{count}} jobs in the batch queue",
     "operationTranscode": "Transcode",
     "operationExtractAudio": "Extract Audio",
     "operationCompressImage": "Compress Image",

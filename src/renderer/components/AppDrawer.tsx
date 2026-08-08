@@ -8,10 +8,10 @@
  *
  * The drawer also surfaces live activity indicators ("blips") next to the
  * Convert, Audio Extract, and Video Cut entries while a
- * conversion/extraction/cut is running, and next to the Batch Queue entry while
- * a queued job is actively being processed, then ends with a divider and the
- * {@link LanguageMenu} component so the active language can be switched
- * directly from the sidebar.
+ * conversion/extraction/cut is running, and a count badge next to the Batch
+ * Queue entry showing the number of jobs currently in the queue, then ends with
+ * a divider and the {@link LanguageMenu} component so the active language can
+ * be switched directly from the sidebar.
  *
  * Props (see {@link AppDrawerProps}):
  *  - isMobile: when true, tapping a nav row also fires `onNavigate` so the
@@ -27,10 +27,9 @@ import { useConversionStore } from '../stores/conversionStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
 import { useQueueStore } from '../stores/queueStore';
-import { QUEUE_STATUS } from '../../shared/media-options';
 import LanguageMenu from './LanguageMenu';
 import type { AppDrawerProps } from './types';
-import { DrawerDivider, NavList, NavItemButton, NavItemIcon, NavItemText, NavBlip } from '../styles/AppDrawer.styles';
+import { DrawerDivider, NavList, NavItemButton, NavItemIcon, NavItemText, NavBlip, NavCountBadge } from '../styles/AppDrawer.styles';
 
 /**
  * Maps route paths from NAV_ITEMS to the i18n translation keys used for the
@@ -59,8 +58,8 @@ const navKeyMap: Record<string, string> = {
  * when its path exactly matches the current route. An animated NavBlip is
  * appended to the Convert row while `useConversionStore.isConverting` is true,
  * to the Audio Extract row while `useAudioExtractStore.isConverting` is true,
- * to the Video Cut row while `useVideoCutStore.isCutting` is true, and to the
- * Batch Queue row while the queue has a RUNNING job,
+ * to the Video Cut row while `useVideoCutStore.isCutting` is true, and a red
+ * count badge to the Batch Queue row while the queue holds at least one job,
  * providing at-a-glance activity feedback.
  *
  * @param {AppDrawerProps} props - Component props.
@@ -77,7 +76,7 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
   const isConverting = useConversionStore((s) => s.isConverting);
   const isExtractingAudio = useAudioExtractStore((s) => s.isConverting);
   const isCutting = useVideoCutStore((s) => s.isCutting);
-  const hasRunningJob = useQueueStore((s) => s.jobs.some((job) => job.status === QUEUE_STATUS.RUNNING));
+  const batchJobCount = useQueueStore((s) => s.jobs.length);
 
   return (
     <>
@@ -97,7 +96,11 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
             {item.to === '/convert' && isConverting && <NavBlip aria-hidden="true" data-testid="nav-convert-blip" />}
             {item.to === '/audio-extract' && isExtractingAudio && <NavBlip aria-hidden="true" data-testid="nav-audio-extract-blip" />}
             {item.to === '/video-cut' && isCutting && <NavBlip aria-hidden="true" data-testid="nav-video-cut-blip" />}
-            {item.to === '/batch' && hasRunningJob && <NavBlip aria-hidden="true" data-testid="nav-batch-blip" />}
+            {item.to === '/batch' && batchJobCount > 0 && (
+              <NavCountBadge data-testid="nav-batch-blip" aria-label={t('batchQueue.badgeCount', { count: batchJobCount })}>
+                {batchJobCount}
+              </NavCountBadge>
+            )}
           </NavItemButton>
         ))}
       </NavList>

@@ -114,7 +114,7 @@
     "channelLayout": "Kanallayout",
     "bitsPerSample": "Bits pro Sample",
     "frameCount": "Anzahl der Frames",
-    "streamTitel": "Title",
+    "streamTitle": "Titel",
     "disposition": "Disposition",
     "tags": "Tags",
     "tagKeys": {
@@ -238,7 +238,24 @@
     "cancelJob": "Auftrag abbrechen",
     "jobCancelTitle": "Videoschnitt löschen",
     "jobCancelMessage": "Dadurch wird das aktuelle Video-Schnittformular gelöscht. Sind Sie sicher?",
-    "closePreview": "Vorschau schließen"
+    "closePreview": "Vorschau schließen",
+    "videoFileHint": "Videodatei hier ablegen oder klicken zum Durchsuchen Ihres Computers.",
+    "dropLabel": "Videodatei hier ablegen oder klicken zum Durchsuchen",
+    "changeFile": "Video ändern",
+    "changeFileHint": "Wählen Sie eine andere Videodatei.",
+    "outputFileHint": "Der Pfad, unter dem das zugeschnittene Video gespeichert wird.",
+    "startTimeHint": "Wo das Schnittsegment beginnt. Sie können auch den grünen Trimmgriff auf der Zeitachse ziehen.",
+    "durationHint": "Geben Sie statt einer Endzeit an, wie lang das Schnittsegment sein soll.",
+    "endTimeHint": "Wo das Schnittsegment endet. Sie können auch den roten Trimmgriff auf der Zeitachse ziehen.",
+    "useDurationHint": "Wechseln Sie zwischen Endzeit und Dauer für das Schnittsegment.",
+    "cutHint": "Schneiden Sie das Video mit den konfigurierten Start- und Endpositionen.",
+    "pause": "Pause",
+    "resume": "Fortsetzen",
+    "cancel": "Abbrechen",
+    "cancelTitle": "Video-Schnitt abbrechen",
+    "cancelMessage": "Möchten Sie den Video-Schnitt wirklich abbrechen? Das Formular wird geleert.",
+    "yes": "Ja",
+    "no": "Nein"
   },
   "videoTimeline": {
     "zoomIn": "Vergrößern",
@@ -276,6 +293,7 @@
     "pause": "Pausieren",
     "resume": "Fortsetzen",
     "dragHandle": "Zum Neuanordnen ziehen",
+    "badgeCount": "{{count}} Aufträge in der Stapelwarteschlange",
     "operationTranscode": "Transkodieren",
     "operationExtractAudio": "Audio extrahieren",
     "operationCompressImage": "Bild komprimieren",
@@ -368,7 +386,8 @@
     "logsDownloaded": "Protokolle heruntergeladen",
     "mediaInfoLoaded": "Medieninformationen geladen",
     "languageChanged": "Sprache geändert zu {{language}}",
-    "cancelled": "Abgebrochen"
+    "cancelled": "Abgebrochen",
+    "pathCopied": "Ausgabepfad in die Zwischenablage kopiert"
   },
   "settings": {
     "title": "Einstellungen",
@@ -385,6 +404,16 @@
     "encoderTypeSoftware": "Software",
     "hardwareAccelerationHint": "Verwendet Ihre GPU (NVIDIA NVENC, Intel QSV, AMD AMF) für Video-Encoding und -Decoding. Deaktivieren für reines Software-Encoding.",
     "hwaccelModeHint": "Automatisch: Die GPU übernimmt Encoding und Decoding (am schnellsten, nicht immer kompatibel). Nur Encodieren: Die GPU encodiert, die CPU decodiert (am sichersten).",
-    "encoderTypeHint": "Filtert die Videocodec-Liste. Automatisch zeigt alle verfügbaren Encoder, Hardware nur GPU-Encoder, Software nur CPU-Encoder."
+    "encoderTypeHint": "Filtert die Videocodec-Liste. Automatisch zeigt alle verfügbaren Encoder, Hardware nur GPU-Encoder, Software nur CPU-Encoder.",
+    "themes": {
+      "light": "Hell",
+      "ocean": "Ozean",
+      "sunset": "Sonnenuntergang",
+      "forest": "Wald",
+      "lavender": "Lavendel",
+      "rose": "Rose",
+      "slate": "Schiefer",
+      "dark": "Dunkel"
+    }
   }
 }

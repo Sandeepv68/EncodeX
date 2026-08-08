@@ -90,7 +90,7 @@ describe('AppDrawer', () => {
     expect(screen.queryByTestId('nav-video-cut-blip')).not.toBeInTheDocument();
   });
 
-  it('shows a blip on the batch item while a queued job is running', () => {
+  it('shows the batch queue job count in the nav badge', () => {
     useQueueStore.getState().setJobs([
       {
         id: '1',
@@ -102,24 +102,33 @@ describe('AppDrawer', () => {
         progress: 50,
         createdAt: 1,
       },
-    ]);
-    renderDrawer();
-    expect(screen.getByTestId('nav-batch-blip')).toBeInTheDocument();
-  });
-
-  it('hides the batch blip when no queued job is running', () => {
-    useQueueStore.getState().setJobs([
       {
-        id: '1',
-        input: 'in.mp4',
-        output: 'out.mp4',
+        id: '2',
+        input: 'in2.mp4',
+        output: 'out2.mp4',
         options: {},
         transcoder: 'FFMPEG',
         status: QUEUE_STATUS.QUEUED,
         progress: 0,
-        createdAt: 1,
+        createdAt: 2,
+      },
+      {
+        id: '3',
+        input: 'in3.mp4',
+        output: 'out3.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.DONE,
+        progress: 100,
+        createdAt: 3,
       },
     ]);
+    renderDrawer();
+    expect(screen.getByTestId('nav-batch-blip')).toHaveTextContent('3');
+  });
+
+  it('hides the batch count badge when the queue is empty', () => {
+    useQueueStore.getState().setJobs([]);
     renderDrawer();
     expect(screen.queryByTestId('nav-batch-blip')).not.toBeInTheDocument();
   });

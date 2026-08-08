@@ -60,3 +60,21 @@ export const NavBlip = styled('span')(({ theme }) => ({
   flexShrink: 0,
   animation: `${blinkKeyframes} 1.2s ease-in-out infinite, ${rippleKeyframes} 1.2s ease-out infinite`,
 }));
+
+export const NavCountBadge = styled('span')(({ theme }) => ({
+  minWidth: theme.spacing(2.5),
+  height: theme.spacing(2.5),
+  paddingInline: theme.spacing(0.75),
+  borderRadius: theme.spacing(1.25),
+  backgroundColor: theme.palette.error.main,
+  color: theme.palette.error.contrastText,
+  fontSize: theme.typography.pxToRem(11),
+  fontWeight: 700,
+  lineHeight: `${theme.spacing(2.5)}`,
+  textAlign: 'center',
+  display: 'inline-block',
+  boxSizing: 'border-box',
+  marginInlineStart: 'auto',
+  flexShrink: 0,
+  animation: `${blinkKeyframes} 1.2s ease-in-out infinite, ${rippleKeyframes} 1.2s ease-out infinite`,
+}));
