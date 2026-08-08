@@ -11,6 +11,7 @@ function renderPanel(props: Partial<ComponentProps<typeof BatchEncodingPanel>> =
     container: '',
     videoBitrate: '',
     audioBitrate: '',
+    quality: '',
     scale: '',
     pixelFormat: 'yuv420p',
     onVideoCodecChange: vi.fn(),
@@ -18,6 +19,7 @@ function renderPanel(props: Partial<ComponentProps<typeof BatchEncodingPanel>> =
     onContainerChange: vi.fn(),
     onVideoBitrateChange: vi.fn(),
     onAudioBitrateChange: vi.fn(),
+    onQualityChange: vi.fn(),
     onScaleChange: vi.fn(),
     onPixelFormatChange: vi.fn(),
     ...props,
@@ -72,8 +74,27 @@ describe('BatchEncodingPanel', () => {
     expect(screen.queryByText('convert.scale')).not.toBeInTheDocument();
   });
 
-  it('renders nothing for the compress image operation', () => {
-    const { container } = renderPanel({ operation: 'compress_image' });
-    expect(container).toBeEmptyDOMElement();
+  it('renders image controls for the compress image operation', () => {
+    renderPanel({ operation: 'compress_image' });
+    expect(screen.getByText('imageCompress.outputFormat')).toBeInTheDocument();
+    expect(screen.getByText('imageCompress.quality')).toBeInTheDocument();
+    expect(screen.getByText('imageCompress.scale')).toBeInTheDocument();
+    expect(screen.getAllByRole('combobox')).toHaveLength(2);
+    expect(screen.queryByText('convert.videoCodec')).not.toBeInTheDocument();
+    expect(screen.queryByText('convert.audioCodec')).not.toBeInTheDocument();
+  });
+
+  it('fires onQualityChange when the compress image quality changes', () => {
+    const { props } = renderPanel({ operation: 'compress_image' });
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '20' } });
+    expect(props.onQualityChange).toHaveBeenCalledWith('20');
+  });
+
+  it('lists the image formats for the compress image operation', () => {
+    renderPanel({ operation: 'compress_image' });
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
+    expect(screen.getByText('JPEG')).toBeInTheDocument();
+    expect(screen.getByText('WebP')).toBeInTheDocument();
   });
 });

@@ -193,8 +193,15 @@ export default function BatchQueue() {
   const [audioBitrate, setAudioBitrate] = useState('');
 
   /**
-   * Output resolution as WIDTHxHEIGHT for transcode jobs; empty keeps the
-   * source resolution.
+   * Image compression quality (qscale, 1-31) for compress_image jobs; empty
+   * means the encoder default is used.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [quality, setQuality] = useState('');
+
+  /**
+   * Output resolution as WIDTHxHEIGHT for transcode and compress_image jobs;
+   * empty keeps the source resolution.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
   const [scale, setScale] = useState('');
@@ -398,7 +405,7 @@ export default function BatchQueue() {
    * encoding state and the hardware-acceleration settings. 'transcode' keeps
    * video and audio codecs plus video/audio bitrate, scale, and pixel format;
    * 'extract_audio' keeps only audio (with audio bitrate); 'compress_image'
-   * keeps only video.
+   * keeps only image encoding (qscale and scale, no video/audio codecs).
    * @param {string} operation - The batch operation value.
    * @param {{hardwareAcceleration: boolean, hwaccelMode: string}} hw - Current
    *   hardware-acceleration settings.
@@ -412,16 +419,18 @@ export default function BatchQueue() {
     audioCodec?: string;
     videoBitrate?: string;
     audioBitrate?: string;
+    qscale?: number;
     scale?: string;
     pixelFormat?: string;
     hardwareAcceleration: boolean;
     hwaccelMode: string;
   } => ({
-    videoCodec: operation === 'extract_audio' ? undefined : videoCodec,
+    videoCodec: operation === 'transcode' ? videoCodec : undefined,
     audioCodec: operation === 'transcode' || operation === 'extract_audio' ? audioCodec : undefined,
     videoBitrate: operation === 'transcode' ? videoBitrate || undefined : undefined,
     audioBitrate: operation === 'transcode' || operation === 'extract_audio' ? audioBitrate || undefined : undefined,
-    scale: operation === 'transcode' ? scale || undefined : undefined,
+    qscale: operation === 'compress_image' && quality ? Number(quality) : undefined,
+    scale: operation === 'transcode' || operation === 'compress_image' ? scale || undefined : undefined,
     pixelFormat: operation === 'transcode' ? pixelFormat : undefined,
     hardwareAcceleration: hw.hardwareAcceleration,
     hwaccelMode: hw.hwaccelMode,
@@ -452,7 +461,7 @@ export default function BatchQueue() {
         continue;
       }
       queuedInputs.add(normalized);
-      const ext = expectsImage || !container ? file.split('.').pop() : container;
+      const ext = !container ? file.split('.').pop() : container;
       const outFile =
         outputDir.length > 0
           ? `${outputDir.replace(/\\/g, '/').replace(/\/+$/, '')}/${basename(file.substring(0, file.lastIndexOf('.')))}${suffixRef.current}.${ext}`
@@ -569,6 +578,19 @@ export default function BatchQueue() {
   };
 
   /**
+   * Applies a new batch operation and resets the container/format selection.
+   * The container state has different semantics per operation (video/audio
+   * containers vs image formats), so a stale value must not leak across
+   * switches.
+   * @param {string} value - The newly selected batch operation value.
+   * @returns {void}
+   */
+  const handleOperationChange = (value: string) => {
+    setOperation(value);
+    setContainer('');
+  };
+
+  /**
    * Applies a new video codec selection and clears the chosen container when it
    * is no longer compatible with that codec, so jobs never mux into a container
    * the encoder cannot write.
@@ -645,7 +667,7 @@ export default function BatchQueue() {
       <Stack spacing={2}>
         <BatchControls
           operation={operation}
-          onOperationChange={setOperation}
+          onOperationChange={handleOperationChange}
           transcoderRef={transcoderRef}
           suffixRef={suffixRef}
           onAddFiles={handleAddFiles}
@@ -674,6 +696,7 @@ export default function BatchQueue() {
           container={container}
           videoBitrate={videoBitrate}
           audioBitrate={audioBitrate}
+          quality={quality}
           scale={scale}
           pixelFormat={pixelFormat}
           onVideoCodecChange={handleVideoCodecChange}
@@ -681,6 +704,7 @@ export default function BatchQueue() {
           onContainerChange={setContainer}
           onVideoBitrateChange={setVideoBitrate}
           onAudioBitrateChange={setAudioBitrate}
+          onQualityChange={setQuality}
           onScaleChange={setScale}
           onPixelFormatChange={setPixelFormat}
         />

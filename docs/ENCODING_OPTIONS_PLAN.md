@@ -25,7 +25,8 @@
 2. **Separate "Encoding options" panel**: a second `Paper` rendered below `BatchControls` in the page `<Stack spacing={2}>`, shown per operation.
 3. **Container default = "Auto (source)"** (`''`): output extension unchanged unless the user picks a container explicitly.
 4. **Controlled state** replaces `operationRef`/`videoCodecRef`/`audioCodecRef` so the panel can react to codec changes (container list) and the page can conditionally render per operation.
-5. **compress_image** keeps current behavior (panel hidden; jobs still pass the default video codec) — out of scope to fix the pre-existing image-quirk.
+5. **compress_image** shows image options (output format, quality, scale). The format reuses the `container` state (chosen extension replaces the source extension) and quality maps to `qscale`. Compress_image no longer passes the default `videoCodec` — ffmpeg infers the image encoder from the output extension.
+6. **Switching operations resets the container** (`handleOperationChange` → `setContainer('')`), since the value has different semantics per operation (video/audio containers vs image formats).
 
 ## Implementation Steps
 
@@ -50,15 +51,16 @@
   - `operation` (default `BATCH_OPERATIONS[0].value`)
   - `videoCodec` (default `'libx264'`), `audioCodec` (default `'aac'`)
   - `container` (default `''` = keep source), `videoBitrate`/`audioBitrate` (default `''`), `scale` (default `''`), `pixelFormat` (default `'yuv420p'`)
-- [x] `buildOptions` additionally emits `videoBitrate`/`audioBitrate`/`scale`/`pixelFormat` (transcode: all; extract_audio: audio bitrate only; compress_image: none beyond today).
-- [x] `enqueueSelections` output extension: `const ext = expectsImage || !container ? file.split('.').pop() : container;` so a chosen container replaces the source extension.
+- [x] `buildOptions` additionally emits `videoBitrate`/`audioBitrate`/`scale`/`pixelFormat` (transcode: all; extract_audio: audio bitrate only) plus `qscale`/`scale` for compress_image; compress_image drops the video codec so ffmpeg picks the image encoder from the output extension.
+- [x] `enqueueSelections` output extension: `const ext = !container ? file.split('.').pop() : container;` so a chosen container/format replaces the source extension (any operation).
 - [x] Add `handleVideoCodecChange`: on video-codec change, reset `container` to `''` when it is no longer in `getVideoCodecContainer(v).containers`.
+- [x] Add `handleOperationChange`: switches the operation and resets `container` to `''` (container/format semantics differ per operation).
 
 ### Step 5 — `BatchEncodingPanel` component (+ styles)
 
 - [x] New `src/renderer/components/BatchEncodingPanel.tsx` + `BatchEncodingPanel.styles.ts` (Paper mirroring `ControlsPaper`).
-- [x] New `BatchEncodingPanelProps` in `src/renderer/components/types.ts` (controlled: operation + the 7 encoding values + their setters).
-- [x] Renders `null` for `compress_image`.
+- [x] New `BatchEncodingPanelProps` in `src/renderer/components/types.ts` (controlled: operation + the encoding values incl. `quality` + their setters).
+- [x] `compress_image` renders image controls: output format (reuses `container`/`IMAGE_FORMATS`), quality (number input, `QSCALE_RANGE`), and scale.
 - [x] `transcode`: Video codec (`CodecSelect` type=video), Audio codec (`CodecSelect` type=audio), Container select ("Auto (source)" + `getVideoCodecContainer(videoCodec).containers`), Video bitrate, Audio bitrate, Scale, Pixel format (`GroupedSelect` with a local `pixelGroupIcons` map).
 - [x] `extract_audio`: Audio codec, Container select (audio list — new exported `AUDIO_CONTAINER_EXTENSIONS` in `codec-containers.ts`), Audio bitrate.
 - [x] Render panel in `BatchQueue.tsx` inside the `<Stack spacing={2}>` after `<BatchControls>`.

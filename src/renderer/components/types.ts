@@ -77,14 +77,15 @@ export interface BufferedFrame {
  * Props for the batch encoding options panel.
  * @interface BatchEncodingPanelProps
  * @property {string} operation - The selected batch operation value; the panel
- *   shows video controls only for 'transcode' and hides entirely for
- *   'compress_image'.
+ *   shows video controls for 'transcode', audio controls for 'extract_audio',
+ *   and image controls (format/quality/scale) for 'compress_image'.
  * @property {string} videoCodec - Selected video encoder name.
  * @property {string} audioCodec - Selected audio encoder name.
- * @property {string} container - Selected output container extension; '' means
- *   keep the source file's extension.
+ * @property {string} container - Selected output container/format extension; ''
+ *   means keep the source file's extension.
  * @property {string} videoBitrate - Target video bitrate ('' = encoder default).
  * @property {string} audioBitrate - Target audio bitrate ('' = encoder default).
+ * @property {string} quality - Image compression quality 1-31 ('' = encoder default).
  * @property {string} scale - Output resolution as WIDTHxHEIGHT ('' = original).
  * @property {string} pixelFormat - Output pixel format (e.g. 'yuv420p').
  * @property {(value: string) => void} onVideoCodecChange - Fired on video codec change.
@@ -92,6 +93,7 @@ export interface BufferedFrame {
  * @property {(value: string) => void} onContainerChange - Fired on container change.
  * @property {(value: string) => void} onVideoBitrateChange - Fired on video bitrate change.
  * @property {(value: string) => void} onAudioBitrateChange - Fired on audio bitrate change.
+ * @property {(value: string) => void} onQualityChange - Fired on quality change.
  * @property {(value: string) => void} onScaleChange - Fired on scale change.
  * @property {(value: string) => void} onPixelFormatChange - Fired on pixel format change.
  */
@@ -102,6 +104,7 @@ export interface BatchEncodingPanelProps {
   container: string;
   videoBitrate: string;
   audioBitrate: string;
+  quality: string;
   scale: string;
   pixelFormat: string;
   onVideoCodecChange: (value: string) => void;
@@ -109,6 +112,7 @@ export interface BatchEncodingPanelProps {
   onContainerChange: (value: string) => void;
   onVideoBitrateChange: (value: string) => void;
   onAudioBitrateChange: (value: string) => void;
+  onQualityChange: (value: string) => void;
   onScaleChange: (value: string) => void;
   onPixelFormatChange: (value: string) => void;
 }

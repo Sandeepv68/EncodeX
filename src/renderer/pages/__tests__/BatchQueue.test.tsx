@@ -162,10 +162,44 @@ describe('BatchQueue', () => {
         '/in/photo.png',
         '/in/photo_converted.png',
         {
-          videoCodec: 'libx264',
+          videoCodec: undefined,
           audioCodec: undefined,
           videoBitrate: undefined,
           audioBitrate: undefined,
+          qscale: undefined,
+          scale: undefined,
+          pixelFormat: undefined,
+          hardwareAcceleration: true,
+          hwaccelMode: 'auto',
+        },
+        'FFMPEG',
+        false,
+      ),
+    );
+  });
+
+  it('compresses images with the chosen format and quality', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/photo.png']);
+    queueAddMock.mockResolvedValue('job-3');
+    renderPage();
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.click(screen.getByText('batchQueue.operationCompressImage'));
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[3]);
+    fireEvent.click(screen.getByText('WebP'));
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '15' } });
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() =>
+      expect(queueAddMock).toHaveBeenCalledWith(
+        '/in/photo.png',
+        '/in/photo_converted.webp',
+        {
+          videoCodec: undefined,
+          audioCodec: undefined,
+          videoBitrate: undefined,
+          audioBitrate: undefined,
+          qscale: 15,
           scale: undefined,
           pixelFormat: undefined,
           hardwareAcceleration: true,
