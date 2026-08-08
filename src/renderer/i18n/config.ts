@@ -37,12 +37,31 @@ import heIL from './locales/he-IL.json';
 import arSA from './locales/ar-SA.json';
 import arAE from './locales/ar-AE.json';
 import arJO from './locales/ar-JO.json';
+import ptPT from './locales/pt-PT.json';
+import neNP from './locales/ne-NP.json';
+import kmKH from './locales/km-KH.json';
+import viVN from './locales/vi-VN.json';
+import loLA from './locales/lo-LA.json';
+import zhTW from './locales/zh-TW.json';
+import enNZ from './locales/en-NZ.json';
+import miNZ from './locales/mi-NZ.json';
+import esAR from './locales/es-AR.json';
+import esCL from './locales/es-CL.json';
+import isIS from './locales/is-IS.json';
+import klGL from './locales/kl-GL.json';
+import enIE from './locales/en-IE.json';
+import gaIE from './locales/ga-IE.json';
+import fiFI from './locales/fi-FI.json';
+import daDK from './locales/da-DK.json';
+import nlBE from './locales/nl-BE.json';
+import frBE from './locales/fr-BE.json';
+import deBE from './locales/de-BE.json';
 import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from '../../shared/constants';
 
 /**
  * @fileoverview i18next configuration and initialization for the renderer.
  *
- * Bootstraps the global i18next instance with 37 built-in locale resources
+ * Bootstraps the global i18next instance with 56 built-in locale resources
  * (loaded from the JSON files in ./locales), a persisted language preference
  * read from localStorage (key 'encodex-lang'), and DEFAULT_LANGUAGE ('en-US')
  * as the fallback. The configured instance is exported as the default module
@@ -103,6 +122,25 @@ i18n.use(initReactI18next).init({
     'ar-SA': { translation: arSA },
     'ar-AE': { translation: arAE },
     'ar-JO': { translation: arJO },
+    'pt-PT': { translation: ptPT },
+    'ne-NP': { translation: neNP },
+    'km-KH': { translation: kmKH },
+    'vi-VN': { translation: viVN },
+    'lo-LA': { translation: loLA },
+    'zh-TW': { translation: zhTW },
+    'en-NZ': { translation: enNZ },
+    'mi-NZ': { translation: miNZ },
+    'es-AR': { translation: esAR },
+    'es-CL': { translation: esCL },
+    'is-IS': { translation: isIS },
+    'kl-GL': { translation: klGL },
+    'en-IE': { translation: enIE },
+    'ga-IE': { translation: gaIE },
+    'fi-FI': { translation: fiFI },
+    'da-DK': { translation: daDK },
+    'nl-BE': { translation: nlBE },
+    'fr-BE': { translation: frBE },
+    'de-BE': { translation: deBE },
   },
   lng: savedLang,
   fallbackLng: DEFAULT_LANGUAGE,

@@ -164,20 +164,20 @@ Headless command-line interface for scripting and automation. Supports all conve
 
 ### 🌍 Internationalization
 
-37 locales across 25 languages:
+56 locales across 35 languages:
 
 | Language    | Locales                                    |
 | ----------- | ------------------------------------------ |
-| English     | `en-US`, `en-GB`, `en-IN`, `en-CA`, `en-AU`, `en-SG`, `en-ZA` |
-| Spanish     | `es-ES`, `es-MX`                           |
-| French      | `fr-FR`, `fr-CA`                           |
+| English     | `en-US`, `en-GB`, `en-IN`, `en-CA`, `en-AU`, `en-SG`, `en-ZA`, `en-NZ`, `en-IE` |
+| Spanish     | `es-ES`, `es-MX`, `es-AR`, `es-CL`         |
+| French      | `fr-FR`, `fr-CA`, `fr-BE`                  |
 | Hindi       | `hi-IN`                                    |
-| German      | `de-DE`                                    |
+| German      | `de-DE`, `de-BE`                           |
 | Italian     | `it-IT`                                    |
-| Dutch       | `nl-NL`                                    |
+| Dutch       | `nl-NL`, `nl-BE`                           |
 | Swedish     | `sv-SE`                                    |
 | Norwegian   | `nb-NO`                                    |
-| Portuguese  | `pt-BR`                                    |
+| Portuguese  | `pt-BR`, `pt-PT`                           |
 | Ukrainian   | `uk-UA`                                    |
 | Russian     | `ru-RU`                                    |
 | Polish      | `pl-PL`                                    |
@@ -185,7 +185,7 @@ Headless command-line interface for scripting and automation. Supports all conve
 | Sinhala     | `si-LK`                                    |
 | Mongolian   | `mn-MN`                                    |
 | Malay       | `ms-MY`, `ms-SG`                           |
-| Chinese     | `zh-SG`                                    |
+| Chinese     | `zh-SG`, `zh-TW`                           |
 | Japanese    | `ja-JP`                                    |
 | Korean      | `ko-KR`                                    |
 | Indonesian  | `id-ID`                                    |
@@ -193,6 +193,16 @@ Headless command-line interface for scripting and automation. Supports all conve
 | Afrikaans   | `af-ZA`                                    |
 | Hebrew      | `he-IL`                                    |
 | Arabic      | `ar-SA`, `ar-AE`, `ar-JO`                  |
+| Nepali      | `ne-NP`                                    |
+| Khmer       | `km-KH`                                    |
+| Vietnamese  | `vi-VN`                                    |
+| Lao         | `lo-LA`                                    |
+| Māori       | `mi-NZ`                                    |
+| Icelandic   | `is-IS`                                    |
+| Greenlandic | `kl-GL`                                    |
+| Irish       | `ga-IE`                                    |
+| Finnish     | `fi-FI`                                    |
+| Danish      | `da-DK`                                    |
 
 ### 🛡️ Error Handling
 

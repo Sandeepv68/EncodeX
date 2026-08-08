@@ -34,6 +34,18 @@ describe('LanguageMenu', () => {
     expect(screen.getByText('עברית (Israel)')).toBeInTheDocument();
     expect(screen.getByText('العربية (Saudi Arabia)')).toBeInTheDocument();
     expect(screen.getByText('العربية (Jordan)')).toBeInTheDocument();
+    expect(screen.getByText('Português (Portugal)')).toBeInTheDocument();
+    expect(screen.getByText('नेपाली (Nepal)')).toBeInTheDocument();
+    expect(screen.getByText('ភាសាខ្មែរ (Cambodia)')).toBeInTheDocument();
+    expect(screen.getByText('Tiếng Việt (Vietnam)')).toBeInTheDocument();
+    expect(screen.getByText('ລາວ (Laos)')).toBeInTheDocument();
+    expect(screen.getByText('中文 (Taiwan)')).toBeInTheDocument();
+    expect(screen.getByText('Māori (New Zealand)')).toBeInTheDocument();
+    expect(screen.getByText('Íslenska (Iceland)')).toBeInTheDocument();
+    expect(screen.getByText('Kalaallisut (Greenland)')).toBeInTheDocument();
+    expect(screen.getByText('Gaeilge (Ireland)')).toBeInTheDocument();
+    expect(screen.getByText('Suomi (Finland)')).toBeInTheDocument();
+    expect(screen.getByText('Dansk (Danmark)')).toBeInTheDocument();
   });
 
   it('switches the language and persists the selection', async () => {
