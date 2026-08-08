@@ -21,7 +21,7 @@
  * reuse the shared {@link CodecSelect} / {@link GroupedSelect} components.
  */
 
-import { MenuItem, TextField } from '@mui/material';
+import { Box, MenuItem, TextField } from '@mui/material';
 import { faPalette, faBrush, faDroplet, faSun } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useTranslation } from 'react-i18next';
@@ -96,8 +96,14 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
         {t('batchQueue.encodingOptions')}
       </EncodingTitle>
       <EncodingStack direction="row" spacing={1} useFlexGap>
-        {props.operation === 'transcode' && <CodecSelect type="video" value={props.videoCodec} onChange={props.onVideoCodecChange} />}
-        <CodecSelect type="audio" value={props.audioCodec} onChange={props.onAudioCodecChange} />
+        {props.operation === 'transcode' && (
+          <Box sx={{ width: 200 }}>
+            <CodecSelect type="video" value={props.videoCodec} onChange={props.onVideoCodecChange} />
+          </Box>
+        )}
+        <Box sx={{ width: 200 }}>
+          <CodecSelect type="audio" value={props.audioCodec} onChange={props.onAudioCodecChange} />
+        </Box>
         <TextField
           select
           size="small"
@@ -168,12 +174,14 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 </MenuItem>
               ))}
             </TextField>
-            <GroupedSelect
-              value={props.pixelFormat}
-              onChange={props.onPixelFormatChange}
-              options={pixelFormatOptions}
-              groupIcons={pixelGroupIcons}
-            />
+            <Box sx={{ width: 180 }}>
+              <GroupedSelect
+                value={props.pixelFormat}
+                onChange={props.onPixelFormatChange}
+                options={pixelFormatOptions}
+                groupIcons={pixelGroupIcons}
+              />
+            </Box>
           </>
         )}
       </EncodingStack>
