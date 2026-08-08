@@ -46,7 +46,7 @@ export const TitleBarTitle = styled(Typography)(({ theme }) => ({
   alignItems: 'center',
   fontWeight: 600,
   color: theme.palette.text.secondary,
-  fontSize: theme.typography.pxToRem(13),
+  fontSize: theme.typography.pxToRem(16),
   lineHeight: 1,
   letterSpacing: theme.typography.pxToRem(0.2),
 }));
