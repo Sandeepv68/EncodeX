@@ -8,7 +8,8 @@
  *
  * The drawer also surfaces live activity indicators ("blips") next to the
  * Convert, Audio Extract, and Video Cut entries while a
- * conversion/extraction/cut is running, and ends with a divider and the
+ * conversion/extraction/cut is running, and next to the Batch Queue entry while
+ * a queued job is actively being processed, then ends with a divider and the
  * {@link LanguageMenu} component so the active language can be switched
  * directly from the sidebar.
  *
@@ -25,6 +26,8 @@ import { pageIcons } from '../pageIcons';
 import { useConversionStore } from '../stores/conversionStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
+import { useQueueStore } from '../stores/queueStore';
+import { QUEUE_STATUS } from '../../shared/media-options';
 import LanguageMenu from './LanguageMenu';
 import type { AppDrawerProps } from './types';
 import { DrawerDivider, NavList, NavItemButton, NavItemIcon, NavItemText, NavBlip } from '../styles/AppDrawer.styles';
@@ -56,7 +59,8 @@ const navKeyMap: Record<string, string> = {
  * when its path exactly matches the current route. An animated NavBlip is
  * appended to the Convert row while `useConversionStore.isConverting` is true,
  * to the Audio Extract row while `useAudioExtractStore.isConverting` is true,
- * and to the Video Cut row while `useVideoCutStore.isCutting` is true,
+ * to the Video Cut row while `useVideoCutStore.isCutting` is true, and to the
+ * Batch Queue row while the queue has a RUNNING job,
  * providing at-a-glance activity feedback.
  *
  * @param {AppDrawerProps} props - Component props.
@@ -73,6 +77,7 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
   const isConverting = useConversionStore((s) => s.isConverting);
   const isExtractingAudio = useAudioExtractStore((s) => s.isConverting);
   const isCutting = useVideoCutStore((s) => s.isCutting);
+  const hasRunningJob = useQueueStore((s) => s.jobs.some((job) => job.status === QUEUE_STATUS.RUNNING));
 
   return (
     <>
@@ -92,6 +97,7 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
             {item.to === '/convert' && isConverting && <NavBlip aria-hidden="true" data-testid="nav-convert-blip" />}
             {item.to === '/audio-extract' && isExtractingAudio && <NavBlip aria-hidden="true" data-testid="nav-audio-extract-blip" />}
             {item.to === '/video-cut' && isCutting && <NavBlip aria-hidden="true" data-testid="nav-video-cut-blip" />}
+            {item.to === '/batch' && hasRunningJob && <NavBlip aria-hidden="true" data-testid="nav-batch-blip" />}
           </NavItemButton>
         ))}
       </NavList>
