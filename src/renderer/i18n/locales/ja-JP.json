@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "ライトモードに切り替え",
     "switchDark": "ダークモードに切り替え",
-    "language": "言語"
+    "language": "言語",
+    "searchLanguage": "言語を検索"
   },
   "nav": {
     "dashboard": "ダッシュボード",

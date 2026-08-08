@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Overschakelen naar lichte modus",
     "switchDark": "Overschakelen naar donkere modus",
-    "language": "Taal"
+    "language": "Taal",
+    "searchLanguage": "Talen zoeken"
   },
   "nav": {
     "dashboard": "Dashboard",

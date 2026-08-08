@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "සැහැල්ලු ප්‍රකාරයට මාරු වන්න",
     "switchDark": "අඳුරු ප්‍රකාරයට මාරු වන්න",
-    "language": "භාෂාව"
+    "language": "භාෂාව",
+    "searchLanguage": "භාෂා සොයන්න"
   },
   "nav": {
     "dashboard": "උපකරණ පුවරුව",

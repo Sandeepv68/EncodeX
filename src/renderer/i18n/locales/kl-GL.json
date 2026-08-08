@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Qaallariarsorneq toqqaarlugu",
     "switchDark": "Tarraa-mut nuullugu",
-    "language": "Oqaatsit"
+    "language": "Oqaatsit",
+    "searchLanguage": "Oqaatsit ujaruk"
   },
   "nav": {
     "dashboard": "Oqarfigissaaneq",

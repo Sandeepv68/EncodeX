@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Mudar para o Modo Claro",
     "switchDark": "Mudar para o Modo Escuro",
-    "language": "Idioma"
+    "language": "Idioma",
+    "searchLanguage": "Pesquisar idiomas"
   },
   "nav": {
     "dashboard": "Painel",

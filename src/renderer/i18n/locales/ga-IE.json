@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Athraigh go mód geal",
     "switchDark": "Athraigh go mód dorcha",
-    "language": "Teanga"
+    "language": "Teanga",
+    "searchLanguage": "Cuardaigh teangacha"
   },
   "nav": {
     "dashboard": "Deais",

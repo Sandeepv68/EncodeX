@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Przełącz na jasny motyw",
     "switchDark": "Przełącz na ciemny motyw",
-    "language": "Język"
+    "language": "Język",
+    "searchLanguage": "Szukaj języków"
   },
   "nav": {
     "dashboard": "Pulpit",

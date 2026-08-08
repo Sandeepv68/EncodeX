@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Växla till ljust läge",
     "switchDark": "Växla till mörkt läge",
-    "language": "Språk"
+    "language": "Språk",
+    "searchLanguage": "Sök språk"
   },
   "nav": {
     "dashboard": "Instrumentpanel",

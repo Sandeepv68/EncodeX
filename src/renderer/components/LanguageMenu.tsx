@@ -11,14 +11,24 @@
  * languages without leaving the current page.
  */
 
-import { useState } from 'react';
-import { Menu, MenuItem, Tooltip } from '@mui/material';
+import { useMemo, useState } from 'react';
+import { Box, InputAdornment, Menu, MenuItem, TextField, Tooltip } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { Logger } from '../../shared/logger';
 import { LOCALES, LOCALE_MAP, isRtlLocale } from '../i18n/localeMeta';
 import { useColorMode } from '../ColorModeContext';
 import i18n from '../i18n/config';
-import { LanguageMenuBox, LanguageButton, LanguageLabel, FlagIconWrapper, menuPaperSx } from '../styles/LanguageMenu.styles';
+import {
+  LanguageMenuBox,
+  LanguageButton,
+  LanguageLabel,
+  FlagIconWrapper,
+  menuPaperSx,
+  menuSearchBoxSx,
+  menuListSx,
+} from '../styles/LanguageMenu.styles';
 import { LANGUAGE_STORAGE_KEY } from '../../shared/constants';
 import { LOG_SWITCHING_LANGUAGE_TO } from '../../shared/log-constants';
 
@@ -62,6 +72,26 @@ export default function LanguageMenu() {
   const { t } = useTranslation();
   const { setDirection } = useColorMode();
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const [query, setQuery] = useState('');
+
+  /**
+   * Closes the menu and clears the search query.
+   */
+  const closeMenu = () => {
+    setAnchor(null);
+    setQuery('');
+  };
+
+  /**
+   * The locales matching the search query, by code or display label.
+   * Returns every locale when the query is empty.
+   * @type {LocaleMeta[]}
+   */
+  const filteredLocales = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return LOCALES;
+    return LOCALES.filter(({ code, label }) => code.toLowerCase().includes(q) || label.toLowerCase().includes(q));
+  }, [query]);
 
   /**
    * Switches the active application language.
@@ -81,7 +111,7 @@ export default function LanguageMenu() {
     document.dir = dir;
     await i18n.changeLanguage(lng);
     localStorage.setItem(LANGUAGE_STORAGE_KEY, lng);
-    setAnchor(null);
+    closeMenu();
   };
 
   /**
@@ -104,12 +134,39 @@ export default function LanguageMenu() {
           </LanguageButton>
         </Tooltip>
       </LanguageMenuBox>
-      <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={() => setAnchor(null)} slotProps={{ paper: { sx: menuPaperSx } }}>
-        {LOCALES.map(({ code, label }) => (
-          <MenuItem key={code} selected={isActive(code)} onClick={() => switchLanguage(code)}>
-            <FlagIcon locale={code} /> {label}
-          </MenuItem>
-        ))}
+      <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={closeMenu} disableAutoFocusItem slotProps={{ paper: { sx: menuPaperSx } }}>
+        <Box sx={menuSearchBoxSx}>
+          <TextField
+            fullWidth
+            size="small"
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                closeMenu();
+              }
+              e.stopPropagation();
+            }}
+            placeholder={t('app.searchLanguage')}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <FontAwesomeIcon icon={faMagnifyingGlass} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+        </Box>
+        <Box sx={menuListSx}>
+          {filteredLocales.map(({ code, label }) => (
+            <MenuItem key={code} selected={isActive(code)} onClick={() => switchLanguage(code)}>
+              <FlagIcon locale={code} /> {label}
+            </MenuItem>
+          ))}
+        </Box>
       </Menu>
     </>
   );

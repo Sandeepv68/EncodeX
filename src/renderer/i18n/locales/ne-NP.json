@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "हल्का मोडमा स्विच गर्नुहोस्",
     "switchDark": "गाढा मोडमा स्विच गर्नुहोस्",
-    "language": "भाषा"
+    "language": "भाषा",
+    "searchLanguage": "भाषाहरू खोज्नुहोस्"
   },
   "nav": {
     "dashboard": "ड्यासबोर्ड",

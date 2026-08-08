@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Zum hellen Modus wechseln",
     "switchDark": "Zum dunklen Modus wechseln",
-    "language": "Sprache"
+    "language": "Sprache",
+    "searchLanguage": "Sprachen suchen"
   },
   "nav": {
     "dashboard": "Armaturenbrett",

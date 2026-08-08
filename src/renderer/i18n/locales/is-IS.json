@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Skipta yfir í ljósa stillingu",
     "switchDark": "Skipta yfir í dökka stillingu",
-    "language": "Tungumál"
+    "language": "Tungumál",
+    "searchLanguage": "Leita að tungumálum"
   },
   "nav": {
     "dashboard": "Mælaborð",

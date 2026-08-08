@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Перемкнути на світлу тему",
     "switchDark": "Перемкнути на темну тему",
-    "language": "Мова"
+    "language": "Мова",
+    "searchLanguage": "Пошук мов"
   },
   "nav": {
     "dashboard": "Панель керування",

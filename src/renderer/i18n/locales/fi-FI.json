@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Vaihda vaaleaan tilaan",
     "switchDark": "Vaihda tummaan tilaan",
-    "language": "Kieli"
+    "language": "Kieli",
+    "searchLanguage": "Hae kieliä"
   },
   "nav": {
     "dashboard": "Hallintapaneeli",

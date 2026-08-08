@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Переключить на светлую тему",
     "switchDark": "Переключить на тёмную тему",
-    "language": "Язык"
+    "language": "Язык",
+    "searchLanguage": "Поиск языков"
   },
   "nav": {
     "dashboard": "Главная",

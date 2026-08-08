@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "ປ່ຽນໄປໂໝດສະຫວ່າງ",
     "switchDark": "ປ່ຽນໄປໂໝດມືດ",
-    "language": "ພາສາ"
+    "language": "ພາສາ",
+    "searchLanguage": "ຄົ້ນຫາພາສາ"
   },
   "nav": {
     "dashboard": "ໜ້າຄຸມຄອງ",

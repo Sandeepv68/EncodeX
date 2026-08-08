@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Гэрэл горим руу шилжих",
     "switchDark": "Харанхуй горим руу шилжих",
-    "language": "Хэл"
+    "language": "Хэл",
+    "searchLanguage": "Хэл хайх"
   },
   "nav": {
     "dashboard": "Хянах самбар",

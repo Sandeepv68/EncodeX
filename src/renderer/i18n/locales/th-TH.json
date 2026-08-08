@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "สลับเป็นโหมดสว่าง",
     "switchDark": "สลับเป็นโหมดมืด",
-    "language": "ภาษา"
+    "language": "ภาษา",
+    "searchLanguage": "ค้นหาภาษา"
   },
   "nav": {
     "dashboard": "แดชบอร์ด",

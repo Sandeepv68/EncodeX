@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Chuyển sang chế độ sáng",
     "switchDark": "Chuyển sang chế độ tối",
-    "language": "Ngôn ngữ"
+    "language": "Ngôn ngữ",
+    "searchLanguage": "Tìm kiếm ngôn ngữ"
   },
   "nav": {
     "dashboard": "Bảng điều khiển",

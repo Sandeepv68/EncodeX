@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "라이트 모드로 전환",
     "switchDark": "다크 모드로 전환",
-    "language": "언어"
+    "language": "언어",
+    "searchLanguage": "언어 검색"
   },
   "nav": {
     "dashboard": "대시보드",

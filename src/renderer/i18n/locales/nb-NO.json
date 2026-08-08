@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Bytt til lys modus",
     "switchDark": "Bytt til mørk modus",
-    "language": "Språk"
+    "language": "Språk",
+    "searchLanguage": "Søk språk"
   },
   "nav": {
     "dashboard": "Startside",

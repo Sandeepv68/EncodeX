@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Tukar ke Mod Terang",
     "switchDark": "Tukar ke Mod Gelap",
-    "language": "Bahasa"
+    "language": "Bahasa",
+    "searchLanguage": "Cari bahasa"
   },
   "nav": {
     "dashboard": "Papan Pemuka",

@@ -18,6 +18,7 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, opts?: Record<string, string | number>) => {
       const map: Record<string, string> = {
+        'app.searchLanguage': 'Search languages',
         'progress.time': 'Time',
         'progress.speed': 'Speed',
         'progress.eta': 'ETA',

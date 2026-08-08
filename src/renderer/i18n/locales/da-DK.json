@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Skift til lys tilstand",
     "switchDark": "Skift til mørk tilstand",
-    "language": "Sprog"
+    "language": "Sprog",
+    "searchLanguage": "Søg sprog"
   },
   "nav": {
     "dashboard": "Dashboard",

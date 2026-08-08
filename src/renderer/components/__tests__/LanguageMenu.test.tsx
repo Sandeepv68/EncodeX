@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import LanguageMenu from '../LanguageMenu';
 import { ColorModeProvider } from '../../ColorModeContext';
 
@@ -58,5 +59,52 @@ describe('LanguageMenu', () => {
     const option = await screen.findByText('Español (México)');
     fireEvent.click(option);
     await waitFor(() => expect(localStorage.getItem('encodex-lang')).toBe('es-MX'));
+  });
+
+  it('filters the language list by search query', async () => {
+    render(
+      <ColorModeProvider>
+        <LanguageMenu />
+      </ColorModeProvider>,
+    );
+    fireEvent.click(screen.getByRole('button'));
+    const search = await screen.findByPlaceholderText('Search languages');
+    fireEvent.change(search, { target: { value: 'portug' } });
+    await waitFor(() => {
+      expect(screen.getByText('Português (Brasil)')).toBeInTheDocument();
+      expect(screen.getByText('Português (Portugal)')).toBeInTheDocument();
+      expect(screen.queryByText('हिन्दी (India)')).not.toBeInTheDocument();
+    });
+  });
+
+  it('allows typing any query into the search field without selecting a locale', async () => {
+    const user = userEvent.setup();
+    render(
+      <ColorModeProvider>
+        <LanguageMenu />
+      </ColorModeProvider>,
+    );
+    fireEvent.click(screen.getByRole('button'));
+    const search = await screen.findByPlaceholderText('Search languages');
+    await user.type(search, 'port');
+    expect(search).toHaveValue('port');
+    expect(screen.getByText('Português (Brasil)')).toBeInTheDocument();
+    expect(screen.getByText('Português (Portugal)')).toBeInTheDocument();
+    expect(screen.queryByText('हिन्दी (India)')).not.toBeInTheDocument();
+  });
+
+  it('clears the search query when the menu closes', async () => {
+    render(
+      <ColorModeProvider>
+        <LanguageMenu />
+      </ColorModeProvider>,
+    );
+    fireEvent.click(screen.getByRole('button'));
+    const search = await screen.findByPlaceholderText('Search languages');
+    fireEvent.change(search, { target: { value: 'xyz' } });
+    await waitFor(() => expect(screen.queryByText('English (India)')).not.toBeInTheDocument());
+    fireEvent.keyDown(screen.getByRole('presentation').firstElementChild as HTMLElement, { key: 'Escape' });
+    fireEvent.click(screen.getByRole('button'));
+    expect(await screen.findByText('English (India)')).toBeInTheDocument();
   });
 });

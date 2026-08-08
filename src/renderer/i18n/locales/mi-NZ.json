@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Huri ki te aratau māmā",
     "switchDark": "Huri ki te aratau pōuri",
-    "language": "Reo"
+    "language": "Reo",
+    "searchLanguage": "Rapua ngā reo"
   },
   "nav": {
     "dashboard": "Papa Whakahaere",

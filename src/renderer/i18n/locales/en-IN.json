@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Switch to Light Mode",
     "switchDark": "Switch to Dark Mode",
-    "language": "Language"
+    "language": "Language",
+    "searchLanguage": "Search languages"
   },
   "nav": {
     "dashboard": "Dashboard",

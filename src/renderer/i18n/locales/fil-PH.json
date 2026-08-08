@@ -3,7 +3,8 @@
     "name": "EncodeX",
     "switchLight": "Lumipat sa Light Mode",
     "switchDark": "Lumipat sa Dark Mode",
-    "language": "Wika"
+    "language": "Wika",
+    "searchLanguage": "Maghanap ng wika"
   },
   "nav": {
     "dashboard": "Dashboard",
