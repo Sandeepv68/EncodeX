@@ -26,6 +26,19 @@ describe('useLanguageDirection', () => {
     expect(document.dir).toBe('rtl');
   });
 
+  it('treats Hebrew and the other Arabic locales as RTL', async () => {
+    i18n.language = 'en-US';
+    const { result } = renderHook(() => useLanguageDirection());
+    await act(async () => {
+      await i18n.changeLanguage('he-IL');
+    });
+    expect(result.current).toBe('rtl');
+    await act(async () => {
+      await i18n.changeLanguage('ar-JO');
+    });
+    expect(result.current).toBe('rtl');
+  });
+
   it('switches back to ltr when moving away from an RTL locale', async () => {
     i18n.language = 'ar-SA';
     const { result } = renderHook(() => useLanguageDirection());

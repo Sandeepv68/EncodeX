@@ -1,4 +1,36 @@
-import { US, GB, CA, IN, ES, MX, FR, DE, IT, NL, SE, BR, UA, JP, KR, ID, SA, AE } from 'country-flag-icons/react/3x2';
+import {
+  US,
+  GB,
+  CA,
+  IN,
+  AU,
+  SG,
+  ZA,
+  ES,
+  MX,
+  FR,
+  DE,
+  IT,
+  NL,
+  SE,
+  NO,
+  BR,
+  UA,
+  RU,
+  PL,
+  TH,
+  LK,
+  MN,
+  MY,
+  JP,
+  KR,
+  ID,
+  PH,
+  IL,
+  SA,
+  AE,
+  JO,
+} from 'country-flag-icons/react/3x2';
 import type { FlagComponent, LocaleMeta } from './types';
 
 /**
@@ -16,7 +48,7 @@ import type { FlagComponent, LocaleMeta } from './types';
  * BCP-47 locale codes that require right-to-left text layout.
  * @type {string[]}
  */
-export const RTL_LOCALES = ['ar-SA', 'ar-AE'];
+export const RTL_LOCALES = ['ar-SA', 'ar-AE', 'ar-JO', 'he-IL'];
 
 /**
  * The locales offered in the language picker, in display order.
@@ -30,6 +62,9 @@ export const LOCALES: LocaleMeta[] = [
   { code: 'en-US', label: 'English (US)', Flag: US },
   { code: 'en-GB', label: 'English (UK)', Flag: GB },
   { code: 'en-CA', label: 'English (Canada)', Flag: CA },
+  { code: 'en-AU', label: 'English (Australia)', Flag: AU },
+  { code: 'en-SG', label: 'English (Singapore)', Flag: SG },
+  { code: 'en-ZA', label: 'English (South Africa)', Flag: ZA },
   { code: 'es-ES', label: 'Español (España)', Flag: ES },
   { code: 'es-MX', label: 'Español (México)', Flag: MX },
   { code: 'fr-FR', label: 'Français (France)', Flag: FR },
@@ -38,13 +73,27 @@ export const LOCALES: LocaleMeta[] = [
   { code: 'it-IT', label: 'Italiano (Italy)', Flag: IT },
   { code: 'nl-NL', label: 'Nederlands (Netherlands)', Flag: NL },
   { code: 'sv-SE', label: 'Svenska (Sweden)', Flag: SE },
+  { code: 'nb-NO', label: 'Norsk (Norge)', Flag: NO },
   { code: 'pt-BR', label: 'Português (Brasil)', Flag: BR },
   { code: 'uk-UA', label: 'Українська (Ukraine)', Flag: UA },
+  { code: 'ru-RU', label: 'Русский (Russia)', Flag: RU },
+  { code: 'pl-PL', label: 'Polski (Polska)', Flag: PL },
+  { code: 'th-TH', label: 'ไทย (Thailand)', Flag: TH },
+  { code: 'si-LK', label: 'සිංහල (Sri Lanka)', Flag: LK },
+  { code: 'mn-MN', label: 'Монгол (Mongolia)', Flag: MN },
+  { code: 'ms-MY', label: 'Bahasa Melayu (Malaysia)', Flag: MY },
+  { code: 'ms-SG', label: 'Bahasa Melayu (Singapore)', Flag: SG },
+  { code: 'zh-SG', label: '中文 (Singapore)', Flag: SG },
   { code: 'ja-JP', label: '日本語 (Japan)', Flag: JP },
   { code: 'ko-KR', label: '한국어 (South Korea)', Flag: KR },
   { code: 'id-ID', label: 'Bahasa Indonesia (Indonesia)', Flag: ID },
+  { code: 'fil-PH', label: 'Filipino (Philippines)', Flag: PH },
+  { code: 'tl-PH', label: 'Tagalog (Philippines)', Flag: PH },
+  { code: 'af-ZA', label: 'Afrikaans (South Africa)', Flag: ZA },
+  { code: 'he-IL', label: 'עברית (Israel)', Flag: IL },
   { code: 'ar-SA', label: 'العربية (Saudi Arabia)', Flag: SA },
   { code: 'ar-AE', label: 'العربية (UAE)', Flag: AE },
+  { code: 'ar-JO', label: 'العربية (Jordan)', Flag: JO },
 ];
 
 /**

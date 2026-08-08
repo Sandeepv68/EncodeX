@@ -156,7 +156,7 @@ System-aware theme detection with manual toggle. Theme preference persists to `l
 
 ### ↔️ RTL Support
 
-Right-to-left layout support for Arabic locales (`ar-SA`, `ar-AE`). Direction toggles automatically on language switch via an Emotion RTL style plugin.
+Right-to-left layout support for Arabic and Hebrew locales (`ar-SA`, `ar-AE`, `ar-JO`, `he-IL`). Direction toggles automatically on language switch via an Emotion RTL style plugin.
 
 ### ⌨️ CLI Mode
 
@@ -164,24 +164,35 @@ Headless command-line interface for scripting and automation. Supports all conve
 
 ### 🌍 Internationalization
 
-20 locales across 14 languages:
+37 locales across 25 languages:
 
-| Language   | Locales                            |
-| ---------- | ---------------------------------- |
-| English    | `en-US`, `en-GB`, `en-IN`, `en-CA` |
-| Spanish    | `es-ES`, `es-MX`                   |
-| French     | `fr-FR`, `fr-CA`                   |
-| Hindi      | `hi-IN`                            |
-| German     | `de-DE`                            |
-| Italian    | `it-IT`                            |
-| Dutch      | `nl-NL`                            |
-| Swedish    | `sv-SE`                            |
-| Portuguese | `pt-BR`                            |
-| Ukrainian  | `uk-UA`                            |
-| Japanese   | `ja-JP`                            |
-| Korean     | `ko-KR`                            |
-| Indonesian | `id-ID`                            |
-| Arabic     | `ar-SA`, `ar-AE`                   |
+| Language    | Locales                                    |
+| ----------- | ------------------------------------------ |
+| English     | `en-US`, `en-GB`, `en-IN`, `en-CA`, `en-AU`, `en-SG`, `en-ZA` |
+| Spanish     | `es-ES`, `es-MX`                           |
+| French      | `fr-FR`, `fr-CA`                           |
+| Hindi       | `hi-IN`                                    |
+| German      | `de-DE`                                    |
+| Italian     | `it-IT`                                    |
+| Dutch       | `nl-NL`                                    |
+| Swedish     | `sv-SE`                                    |
+| Norwegian   | `nb-NO`                                    |
+| Portuguese  | `pt-BR`                                    |
+| Ukrainian   | `uk-UA`                                    |
+| Russian     | `ru-RU`                                    |
+| Polish      | `pl-PL`                                    |
+| Thai        | `th-TH`                                    |
+| Sinhala     | `si-LK`                                    |
+| Mongolian   | `mn-MN`                                    |
+| Malay       | `ms-MY`, `ms-SG`                           |
+| Chinese     | `zh-SG`                                    |
+| Japanese    | `ja-JP`                                    |
+| Korean      | `ko-KR`                                    |
+| Indonesian  | `id-ID`                                    |
+| Filipino    | `fil-PH`, `tl-PH`                          |
+| Afrikaans   | `af-ZA`                                    |
+| Hebrew      | `he-IL`                                    |
+| Arabic      | `ar-SA`, `ar-AE`, `ar-JO`                  |
 
 ### 🛡️ Error Handling
 

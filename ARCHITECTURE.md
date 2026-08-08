@@ -131,7 +131,7 @@ src/
 │   ├── electron-api.d.ts              # Global Window.electronAPI type declaration
 │   ├── components/                    # Shared UI components (25+)
 │   ├── hooks/                         # useConversion, useErrorHandler, useFormErrors, ...
-│   ├── i18n/                          # i18next config, RTL provider, 20 locales
+│   ├── i18n/                          # i18next config, RTL provider, 37 locales
 │   ├── pages/                         # 9 code-split page components
 │   ├── stores/                        # Zustand stores (7)
 │   ├── styles/                        # Extracted MUI style constants per component
@@ -461,8 +461,8 @@ The Logs page (`pages/Logs.tsx`) aggregates both sources with level filtering (D
 
 ## Internationalization & RTL
 
-- i18next is initialized in `renderer/i18n/config.ts` with 20 locales across 14 languages.
-- `DirectionProvider` (Emotion cache with `stylis-plugin-rtl`) flips the layout to RTL for Arabic locales (`ar-SA`, `ar-AE`).
+- i18next is initialized in `renderer/i18n/config.ts` with 37 locales across 25 languages.
+- `DirectionProvider` (Emotion cache with `stylis-plugin-rtl`) flips the layout to RTL for Arabic and Hebrew locales (`ar-SA`, `ar-AE`, `ar-JO`, `he-IL`).
 - `useLanguageDirection` detects the current locale's direction; the app's direction is derived from it and toggles automatically on language switch.
 - `localeMeta.ts` holds locale metadata and flags for the `LanguageMenu`.
 
