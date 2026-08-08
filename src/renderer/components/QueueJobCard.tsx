@@ -51,7 +51,6 @@ import {
   JobNameText,
   StatusChip,
   CardActionsStack,
-  OutputText,
   DetailsBox,
   DetailsLabel,
   OptionsGrid,
@@ -160,7 +159,7 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
           <JobNameText variant="body2">{basename(job.input)}</JobNameText>
         </Tooltip>
         <CardActionsStack direction="row" spacing={1}>
-          <StatusChip label={job.status} color={statusColors[job.status] || 'default'} />
+          <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
           {job.status === QUEUE_STATUS.QUEUED && onMove && (
             <>
               <Tooltip title={t('batchQueue.moveUp')}>
@@ -204,9 +203,6 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
           </Tooltip>
         </CardActionsStack>
       </CardHeaderRow>
-      <OutputText variant="caption" color="text.secondary">
-        {job.output}
-      </OutputText>
       {job.status === QUEUE_STATUS.RUNNING && (
         <ErrorBoundary fallback={null}>
           <ProgressBar percent={job.progress} time={progress?.time} speed={progress?.speed} eta={progress?.eta} paused={job.paused} />
@@ -220,6 +216,10 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
       <Collapse in={expanded}>
         {expanded && (
           <DetailsBox>
+            <DetailsLabel variant="caption" color="text.secondary">
+              {t('batchQueue.detailsOutput')}
+            </DetailsLabel>
+            <Typography variant="caption">{job.output}</Typography>
             {job.error && (
               <>
                 <DetailsLabel variant="caption" color="text.secondary">

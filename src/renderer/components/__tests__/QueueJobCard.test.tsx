@@ -30,15 +30,19 @@ describe('QueueJobCard', () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
-  it('renders the file basename and output path', () => {
+  it('renders the file basename and output path inside the details', () => {
     render(<QueueJobCard job={makeJob()} onRemove={() => {}} />);
     expect(screen.getByText('clip.mp4')).toBeInTheDocument();
+    expect(screen.queryByText('C:/videos/clip_out.mp4')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
+    expect(screen.getByText('batchQueue.detailsOutput')).toBeInTheDocument();
     expect(screen.getByText('C:/videos/clip_out.mp4')).toBeInTheDocument();
   });
 
   it('renders the status chip', () => {
     render(<QueueJobCard job={makeJob({ status: QUEUE_STATUS.DONE })} onRemove={() => {}} />);
     expect(screen.getByText(QUEUE_STATUS.DONE)).toBeInTheDocument();
+    expect(screen.getByText(QUEUE_STATUS.DONE).closest('.MuiChip-root')).toHaveClass('MuiChip-colorSuccess');
   });
 
   it('calls onRemove with the job id', () => {
@@ -184,6 +188,8 @@ describe('QueueJobCard', () => {
       />,
     );
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
+    expect(screen.getByText('batchQueue.detailsOutput')).toBeInTheDocument();
+    expect(screen.getByText('C:/videos/clip_out.mp4')).toBeInTheDocument();
     expect(screen.getByText('batchQueue.detailsOptions')).toBeInTheDocument();
     expect(screen.getByText('libx264')).toBeInTheDocument();
     expect(screen.getByText('aac')).toBeInTheDocument();

@@ -310,6 +310,7 @@
     "expandDetails": "Show details",
     "collapseDetails": "Hide details",
     "detailsError": "Error details",
+    "detailsOutput": "Output",
     "detailsOptions": "Options",
     "detailsTranscoder": "Transcoder",
     "detailsCreatedAt": "Added",

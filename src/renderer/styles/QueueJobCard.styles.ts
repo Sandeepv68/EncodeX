@@ -1,4 +1,4 @@
-import { styled } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { SHADOWS } from '../colors';
@@ -25,6 +25,7 @@ export const CardHeaderRow = styled(Box)(({ theme }) => ({
 
 export const JobNameText = styled(Typography)({
   fontWeight: 600,
+  flex: '1 1 0',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
@@ -35,14 +36,29 @@ export const StatusChip = styled(Chip)(({ theme }) => ({
   borderRadius: theme.spacing(0.75),
   height: theme.typography.pxToRem(28),
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  '& .MuiChip-label': {
+    textTransform: 'uppercase',
+    fontWeight: theme.typography.fontWeightBold,
+    fontSize: theme.typography.pxToRem(11),
+  },
+  '&.MuiChip-colorPrimary': {
+    backgroundColor: alpha(theme.palette.primary.main, 0.18),
+  },
+  '&.MuiChip-colorSuccess': {
+    backgroundColor: alpha(theme.palette.success.main, 0.18),
+  },
+  '&.MuiChip-colorWarning': {
+    backgroundColor: alpha(theme.palette.warning.main, 0.18),
+  },
+  '&.MuiChip-colorError': {
+    backgroundColor: alpha(theme.palette.error.main, 0.18),
+  },
+  '&.MuiChip-colorDefault': {
+    backgroundColor: theme.palette.action.hover,
+  },
 }));
 
-export const CardActionsStack = styled(Stack)({ flexWrap: 'wrap', alignItems: 'center' });
-
-export const OutputText = styled(Typography)(({ theme }) => ({
-  display: 'block',
-  marginBottom: theme.spacing(0.5),
-}));
+export const CardActionsStack = styled(Stack)({ flexWrap: 'nowrap', alignItems: 'center', flexShrink: 0 });
 
 export const DetailsBox = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(1),
