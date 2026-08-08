@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Paper, Stack, TextField } from '@mui/material';
+import { IconButton, Paper, Stack, TextField } from '@mui/material';
 import { SHADOWS } from '../colors';
 
 export const ControlsPaper = styled(Paper)(({ theme }) => ({
@@ -9,6 +9,14 @@ export const ControlsPaper = styled(Paper)(({ theme }) => ({
 }));
 
 export const ControlsStack = styled(Stack)({ flexWrap: 'wrap' });
+
+export const OutlinedIconButton = styled(IconButton)(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  '&:hover': {
+    borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[500] : theme.palette.grey[600],
+  },
+}));
 
 export const OperationSelect = styled(TextField)(({ theme }) => ({
   minWidth: theme.typography.pxToRem(140),

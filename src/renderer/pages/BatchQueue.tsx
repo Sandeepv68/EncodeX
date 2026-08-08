@@ -32,7 +32,7 @@ import { estimateRemaining, formatEstimate } from '../../shared/estimate';
 import { QueueJob } from '../../shared/types';
 import { useSettingsStore } from '../stores/settingsStore';
 import type { QueueAddReviewSelection } from '../components/types';
-import { PageTitle, QueuePaper, EmptyText, StatsRow, FilterRow, DropOverlay } from '../styles/BatchQueue.styles';
+import { PageTitle, QueuePaper, EmptyText, FilterRow, DropOverlay } from '../styles/BatchQueue.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 
@@ -596,29 +596,27 @@ export default function BatchQueue() {
       />
 
       {jobs.length > 0 && (
-        <StatsRow variant="body2">
-          {t('batchQueue.stats', {
-            queued: jobs.filter((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED).length,
-            running: jobs.filter((job: QueueJob) => job.status === QUEUE_STATUS.RUNNING).length,
-            done: jobs.filter((job: QueueJob) => job.status === QUEUE_STATUS.DONE).length,
-            failed: jobs.filter((job: QueueJob) => job.status === QUEUE_STATUS.ERROR).length,
-          })}
-          {remainingSeconds !== null && ` \u00b7 ${t('batchQueue.etaEstimate', { eta: formatEstimate(remainingSeconds) })}`}
-        </StatsRow>
-      )}
-
-      {jobs.length > 0 && (
         <FilterRow>
-          {['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR].map((value) => (
-            <Chip
-              key={value}
-              size="small"
-              label={value === 'all' ? t('batchQueue.filters.all') : t(`batchQueue.filters.${value}`)}
-              color={filter === value ? 'primary' : 'default'}
-              onClick={() => setFilter(value)}
-            />
-          ))}
+          {['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR].map((value) => {
+            const count = value === 'all' ? jobs.length : jobs.filter((job: QueueJob) => job.status === value).length;
+            const labelKey = value === 'all' ? 'all' : value === QUEUE_STATUS.ERROR ? 'failed' : value;
+            const label = t(`batchQueue.filters.${labelKey}`);
+            return (
+              <Chip
+                key={value}
+                size="small"
+                label={`${label} (${count})`}
+                color={filter === value ? 'primary' : 'default'}
+                onClick={() => setFilter(value)}
+              />
+            );
+          })}
           <TextField size="small" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('batchQueue.search')} />
+          {remainingSeconds !== null && (
+            <Typography variant="body2" color="text.secondary" sx={{ marginLeft: 'auto' }}>
+              {t('batchQueue.etaEstimate', { eta: formatEstimate(remainingSeconds) })}
+            </Typography>
+          )}
         </FilterRow>
       )}
 

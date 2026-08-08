@@ -65,12 +65,12 @@ function renderControls(hasCompleted = false, concurrency = 1, opts: { paused?: 
 describe('BatchControls', () => {
   it('renders the operation, transcoder, suffix, concurrency and action buttons', () => {
     renderControls();
-    expect(screen.getByText('batchQueue.addFiles')).toBeInTheDocument();
-    expect(screen.getByText('batchQueue.cancelAll')).toBeInTheDocument();
-    expect(screen.getByText('batchQueue.pause')).toBeInTheDocument();
-    expect(screen.getByText('batchQueue.clearCompleted')).toBeInTheDocument();
-    expect(screen.getByText('batchQueue.exportQueue')).toBeInTheDocument();
-    expect(screen.getByText('batchQueue.importQueue')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'batchQueue.addFiles' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'batchQueue.cancelAll' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'batchQueue.pause' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'batchQueue.clearCompleted' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'batchQueue.exportQueue' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'batchQueue.importQueue' })).toBeInTheDocument();
     expect(screen.getByPlaceholderText('batchQueue.suffix')).toBeInTheDocument();
     expect(screen.getAllByText('batchQueue.concurrency').length).toBeGreaterThan(0);
     expect(screen.getAllByRole('combobox')).toHaveLength(3);
@@ -105,35 +105,35 @@ describe('BatchControls', () => {
 
   it('fires onAddFiles when the add files button is clicked', () => {
     const { onAddFiles } = renderControls();
-    fireEvent.click(screen.getByText('batchQueue.addFiles'));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     expect(onAddFiles).toHaveBeenCalledOnce();
   });
 
   it('fires onCancelAll when the cancel all button is clicked', () => {
     const { onCancelAll } = renderControls();
-    fireEvent.click(screen.getByText('batchQueue.cancelAll'));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.cancelAll' }));
     expect(onCancelAll).toHaveBeenCalledOnce();
   });
 
   it('disables the clear completed button when no jobs are completed', () => {
     renderControls(false);
-    expect(screen.getByText('batchQueue.clearCompleted')).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'batchQueue.clearCompleted' })).toBeDisabled();
   });
 
   it('enables the clear completed button when completed jobs exist', () => {
     renderControls(true);
-    expect(screen.getByText('batchQueue.clearCompleted')).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'batchQueue.clearCompleted' })).toBeEnabled();
   });
 
   it('fires onClearCompleted when the clear completed button is clicked', () => {
     const { onClearCompleted } = renderControls(true);
-    fireEvent.click(screen.getByText('batchQueue.clearCompleted'));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.clearCompleted' }));
     expect(onClearCompleted).toHaveBeenCalledOnce();
   });
 
   it('renders a Pause button that fires onPause', () => {
     const { onPause } = renderControls(false, 1, { hasActive: true });
-    const pause = screen.getByText('batchQueue.pause');
+    const pause = screen.getByRole('button', { name: 'batchQueue.pause' });
     expect(pause).toBeEnabled();
     fireEvent.click(pause);
     expect(onPause).toHaveBeenCalledOnce();
@@ -141,13 +141,13 @@ describe('BatchControls', () => {
 
   it('disables the Pause button when no jobs are queued or running', () => {
     renderControls(false, 1, { hasActive: false });
-    expect(screen.getByText('batchQueue.pause')).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'batchQueue.pause' })).toBeDisabled();
   });
 
   it('renders a Resume button instead of Pause when paused and fires onResume', () => {
     const { onResume } = renderControls(false, 1, { paused: true });
-    expect(screen.queryByText('batchQueue.pause')).not.toBeInTheDocument();
-    const resume = screen.getByText('batchQueue.resume');
+    expect(screen.queryByRole('button', { name: 'batchQueue.pause' })).not.toBeInTheDocument();
+    const resume = screen.getByRole('button', { name: 'batchQueue.resume' });
     fireEvent.click(resume);
     expect(onResume).toHaveBeenCalledOnce();
   });
@@ -155,12 +155,12 @@ describe('BatchControls', () => {
   it('renders the output directory field and browse button', () => {
     renderControls();
     expect(screen.getByPlaceholderText('batchQueue.outputDirPlaceholder')).toBeInTheDocument();
-    expect(screen.getByText('batchQueue.browse')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'batchQueue.browse' })).toBeInTheDocument();
   });
 
   it('fires onBrowseDir when the browse button is clicked', () => {
     const { onBrowseDir } = renderControls();
-    fireEvent.click(screen.getByText('batchQueue.browse'));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.browse' }));
     expect(onBrowseDir).toHaveBeenCalledOnce();
   });
 
@@ -178,13 +178,13 @@ describe('BatchControls', () => {
 
   it('fires onExport when the export button is clicked', () => {
     const { onExport } = renderControls();
-    fireEvent.click(screen.getByText('batchQueue.exportQueue'));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.exportQueue' }));
     expect(onExport).toHaveBeenCalledOnce();
   });
 
   it('fires onImport when the import button is clicked', () => {
     const { onImport } = renderControls();
-    fireEvent.click(screen.getByText('batchQueue.importQueue'));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.importQueue' }));
     expect(onImport).toHaveBeenCalledOnce();
   });
 });

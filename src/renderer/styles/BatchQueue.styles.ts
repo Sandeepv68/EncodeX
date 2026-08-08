@@ -22,11 +22,6 @@ export const EmptyText = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-export const StatsRow = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(1),
-  color: theme.palette.text.secondary,
-}));
-
 export const FilterRow = styled(Stack)(({ theme }) => ({
   flexDirection: 'row',
   alignItems: 'center',

@@ -4,7 +4,9 @@
  * Renders the toolbar of the Batch Queue page: an operation type selector
  * (transcode / extract audio / compress image), a transcoder backend selector
  * (from TRANSCODER_TYPES), a suffix text field used to build auto-generated
- * output names, and "Add Files" / "Cancel All" action buttons.
+ * output names, and the action buttons. Every action is an icon-only
+ * `OutlinedIconButton` wrapped in an MUI `Tooltip` so its label (and the
+ * button's accessible name) comes from the tooltip text.
  *
  * The three configuration controls are uncontrolled inputs that write their
  * current value into mutable refs (`operationRef`, `transcoderRef`,
@@ -37,7 +39,7 @@
  *    JSON queue file via the main process.
  */
 
-import { Button, Checkbox, FormControlLabel, MenuItem } from '@mui/material';
+import { Checkbox, FormControlLabel, MenuItem, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
@@ -63,6 +65,7 @@ import {
   ConcurrencySelect,
   SuffixField,
   OutputDirField,
+  OutlinedIconButton,
 } from '../styles/BatchControls.styles';
 
 /**
@@ -71,8 +74,8 @@ import {
  * Builds a horizontal stack of MUI controls inside a paper surface. The
  * operation and transcoder selects use their first BATCH_OPERATIONS /
  * TRANSCODER_TYPES entry as the default and push every change into the
- * corresponding ref. The suffix field defaults to DEFAULT_SUFFIX. The two
- * outlined buttons (plus icon / broom icon) delegate to the parent callbacks.
+ * corresponding ref. The suffix field defaults to DEFAULT_SUFFIX. The action
+ * buttons (icon-only, wrapped in tooltips) delegate to the parent callbacks.
  * @param {BatchControlsProps} props - Component props.
  * @param {React.RefObject<string>} props.operationRef - Ref written with the
  *   selected operation value ('transcode' | 'extract_audio' | 'compress_image').
@@ -188,9 +191,11 @@ export default function BatchControls({
           }}
           placeholder={t('batchQueue.outputDirPlaceholder')}
         />
-        <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faFolderOpen} />} onClick={onBrowseDir}>
-          {t('batchQueue.browse')}
-        </Button>
+        <Tooltip title={t('batchQueue.browse')}>
+          <OutlinedIconButton size="small" aria-label={t('batchQueue.browse')} onClick={onBrowseDir}>
+            <FontAwesomeIcon icon={faFolderOpen} />
+          </OutlinedIconButton>
+        </Tooltip>
         <FormControlLabel
           control={
             <Checkbox
@@ -218,30 +223,44 @@ export default function BatchControls({
             </MenuItem>
           ))}
         </ConcurrencySelect>
-        <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faPlus} />} onClick={onAddFiles}>
-          {t('batchQueue.addFiles')}
-        </Button>
-        <Button variant="outlined" color="error" startIcon={<FontAwesomeIcon icon={faBroom} />} onClick={onCancelAll}>
-          {t('batchQueue.cancelAll')}
-        </Button>
+        <Tooltip title={t('batchQueue.addFiles')}>
+          <OutlinedIconButton size="small" aria-label={t('batchQueue.addFiles')} onClick={onAddFiles}>
+            <FontAwesomeIcon icon={faPlus} />
+          </OutlinedIconButton>
+        </Tooltip>
+        <Tooltip title={t('batchQueue.cancelAll')}>
+          <OutlinedIconButton size="small" color="error" aria-label={t('batchQueue.cancelAll')} onClick={onCancelAll}>
+            <FontAwesomeIcon icon={faBroom} />
+          </OutlinedIconButton>
+        </Tooltip>
         {paused ? (
-          <Button variant="outlined" color="success" startIcon={<FontAwesomeIcon icon={faPlay} />} onClick={onResume}>
-            {t('batchQueue.resume')}
-          </Button>
+          <Tooltip title={t('batchQueue.resume')}>
+            <OutlinedIconButton size="small" color="success" aria-label={t('batchQueue.resume')} onClick={onResume}>
+              <FontAwesomeIcon icon={faPlay} />
+            </OutlinedIconButton>
+          </Tooltip>
         ) : (
-          <Button variant="outlined" color="warning" startIcon={<FontAwesomeIcon icon={faPause} />} onClick={onPause} disabled={!hasActive}>
-            {t('batchQueue.pause')}
-          </Button>
+          <Tooltip title={t('batchQueue.pause')}>
+            <OutlinedIconButton size="small" color="warning" aria-label={t('batchQueue.pause')} onClick={onPause} disabled={!hasActive}>
+              <FontAwesomeIcon icon={faPause} />
+            </OutlinedIconButton>
+          </Tooltip>
         )}
-        <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faCheckDouble} />} onClick={onClearCompleted} disabled={!hasCompleted}>
-          {t('batchQueue.clearCompleted')}
-        </Button>
-        <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faFileExport} />} onClick={onExport}>
-          {t('batchQueue.exportQueue')}
-        </Button>
-        <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faFileImport} />} onClick={onImport}>
-          {t('batchQueue.importQueue')}
-        </Button>
+        <Tooltip title={t('batchQueue.clearCompleted')}>
+          <OutlinedIconButton size="small" aria-label={t('batchQueue.clearCompleted')} onClick={onClearCompleted} disabled={!hasCompleted}>
+            <FontAwesomeIcon icon={faCheckDouble} />
+          </OutlinedIconButton>
+        </Tooltip>
+        <Tooltip title={t('batchQueue.exportQueue')}>
+          <OutlinedIconButton size="small" aria-label={t('batchQueue.exportQueue')} onClick={onExport}>
+            <FontAwesomeIcon icon={faFileExport} />
+          </OutlinedIconButton>
+        </Tooltip>
+        <Tooltip title={t('batchQueue.importQueue')}>
+          <OutlinedIconButton size="small" aria-label={t('batchQueue.importQueue')} onClick={onImport}>
+            <FontAwesomeIcon icon={faFileImport} />
+          </OutlinedIconButton>
+        </Tooltip>
       </ControlsStack>
     </ControlsPaper>
   );
