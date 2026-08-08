@@ -358,57 +358,84 @@ describe('JobQueue', () => {
     });
   });
 
-  describe('moveJob', () => {
+  describe('moveJobTo', () => {
     function seedJobs(jobs: { id: string; status: string }[]): void {
       (queue as unknown as { queue: { id: string; status: string }[] }).queue = jobs;
     }
 
-    it('moves a queued job up among queued jobs only', () => {
+    it('moves a queued job earlier among queued jobs only', () => {
+      seedJobs([
+        { id: 'running', status: 'running' },
+        { id: 'q1', status: 'queued' },
+        { id: 'done', status: 'done' },
+        { id: 'q2', status: 'queued' },
+        { id: 'q3', status: 'queued' },
+      ]);
+      expect(queue.moveJobTo('q3', 0)).toBe(true);
+      expect(queue.getJobs().map((j) => j.id)).toEqual(['running', 'q3', 'done', 'q1', 'q2']);
+    });
+
+    it('moves a queued job later among queued jobs only', () => {
       seedJobs([
         { id: 'running', status: 'running' },
         { id: 'q1', status: 'queued' },
         { id: 'done', status: 'done' },
         { id: 'q2', status: 'queued' },
       ]);
-      expect(queue.moveJob('q2', -1)).toBe(true);
+      expect(queue.moveJobTo('q1', 1)).toBe(true);
       expect(queue.getJobs().map((j) => j.id)).toEqual(['running', 'q2', 'done', 'q1']);
     });
 
-    it('moves a queued job down among queued jobs only', () => {
+    it('moves a queued job to the middle of the queued subsequence', () => {
       seedJobs([
-        { id: 'running', status: 'running' },
         { id: 'q1', status: 'queued' },
-        { id: 'done', status: 'done' },
         { id: 'q2', status: 'queued' },
+        { id: 'q3', status: 'queued' },
+        { id: 'q4', status: 'queued' },
       ]);
-      expect(queue.moveJob('q1', 1)).toBe(true);
-      expect(queue.getJobs().map((j) => j.id)).toEqual(['running', 'q2', 'done', 'q1']);
+      expect(queue.moveJobTo('q1', 2)).toBe(true);
+      expect(queue.getJobs().map((j) => j.id)).toEqual(['q2', 'q3', 'q1', 'q4']);
     });
 
-    it('returns false for missing, non-queued, and edge jobs', () => {
+    it('clamps target positions to the queued range', () => {
+      seedJobs([
+        { id: 'q1', status: 'queued' },
+        { id: 'q2', status: 'queued' },
+      ]);
+      expect(queue.moveJobTo('q1', 99)).toBe(true);
+      expect(queue.getJobs().map((j) => j.id)).toEqual(['q2', 'q1']);
+      seedJobs([
+        { id: 'q1', status: 'queued' },
+        { id: 'q2', status: 'queued' },
+      ]);
+      expect(queue.moveJobTo('q2', -5)).toBe(true);
+      expect(queue.getJobs().map((j) => j.id)).toEqual(['q2', 'q1']);
+    });
+
+    it('returns false for missing, non-queued, and no-op jobs', () => {
       seedJobs([
         { id: 'q1', status: 'queued' },
         { id: 'running', status: 'running' },
         { id: 'q2', status: 'queued' },
       ]);
-      expect(queue.moveJob('missing', -1)).toBe(false);
-      expect(queue.moveJob('running', -1)).toBe(false);
-      expect(queue.moveJob('q1', -1)).toBe(false);
-      expect(queue.moveJob('q2', 1)).toBe(false);
+      expect(queue.moveJobTo('missing', 0)).toBe(false);
+      expect(queue.moveJobTo('running', 0)).toBe(false);
+      expect(queue.moveJobTo('q1', 0)).toBe(false);
       expect(queue.getJobs().map((j) => j.id)).toEqual(['q1', 'running', 'q2']);
     });
 
-    it('emits a moved event when a job is reordered', () => {
+    it('emits a moved event with the target position', () => {
       return new Promise<void>((resolve) => {
         seedJobs([
           { id: 'q1', status: 'queued' },
           { id: 'q2', status: 'queued' },
+          { id: 'q3', status: 'queued' },
         ]);
-        queue.on('moved', (payload: { id: string; direction: number }) => {
-          expect(payload).toEqual({ id: 'q2', direction: -1 });
+        queue.on('moved', (payload: { id: string; toPosition: number }) => {
+          expect(payload).toEqual({ id: 'q3', toPosition: 0 });
           resolve();
         });
-        queue.moveJob('q2', -1);
+        queue.moveJobTo('q3', 0);
       });
     });
   });

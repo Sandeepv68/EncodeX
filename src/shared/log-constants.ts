@@ -344,8 +344,8 @@ export const LOG_IPC_QUEUE_EXPORT_CALLED = 'QUEUE_EXPORT called';
 export const LOG_IPC_QUEUE_IMPORT_CALLED = 'QUEUE_IMPORT called';
 /** @const {string} Prefix when the QUEUE_SET_CONCURRENCY IPC message is received. */
 export const LOG_IPC_QUEUE_SET_CONCURRENCY = 'QUEUE_SET_CONCURRENCY:';
-/** @const {string} Prefix when the QUEUE_MOVE IPC message is received. */
-export const LOG_IPC_QUEUE_MOVE = 'QUEUE_MOVE:';
+/** @const {string} Prefix when the QUEUE_MOVE_TO IPC message is received. */
+export const LOG_IPC_QUEUE_MOVE_TO = 'QUEUE_MOVE_TO:';
 /** @const {string} Logged when the QUEUE_PAUSE IPC message is received. */
 export const LOG_IPC_QUEUE_PAUSE_CALLED = 'QUEUE_PAUSE called';
 /** @const {string} Logged when the QUEUE_RESUME IPC message is received. */
@@ -494,11 +494,11 @@ export const LOG_QUEUE_PAUSE_CALLED = 'queuePause called';
 /** @const {string} Logged when queueResume is invoked. */
 export const LOG_QUEUE_RESUME_CALLED = 'queueResume called';
 /** @const {string} Prefix when a queued job is reordered. */
-export const LOG_QUEUE_MOVE = 'moveJob:';
+export const LOG_QUEUE_MOVE_TO = 'moveJobTo:';
 /** @const {string} Logged when a move targets a job that is not queued. */
-export const LOG_QUEUE_MOVE_SKIPPED = 'moveJob skipped: not queued:';
-/** @const {string} Logged when a move would go past the start or end. */
-export const LOG_QUEUE_MOVE_AT_EDGE = 'moveJob at queue edge:';
+export const LOG_QUEUE_MOVE_SKIPPED = 'moveJobTo skipped: not queued:';
+/** @const {string} Logged when a move target is clamped or unchanged. */
+export const LOG_QUEUE_MOVE_TO_CLAMPED = 'moveJobTo clamped/unchanged:';
 /** @const {string} Prefix when a queue job is added. */
 export const LOG_QUEUE_JOB_ADDED = 'Queue job added:';
 /** @const {string} Prefix when a queue job is removed. */

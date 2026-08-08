@@ -20,9 +20,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Stack, Typography } from '@mui/material';
+import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import BatchControls from '../components/BatchControls';
 import BatchEncodingPanel from '../components/BatchEncodingPanel';
-import QueueJobCard from '../components/QueueJobCard';
+import QueueJobCard, { QueueJobCardContent } from '../components/QueueJobCard';
 import QueueAddReviewDialog from '../components/QueueAddReviewDialog';
 import { useQueueStore } from '../stores/queueStore';
 import { useToastStore } from '../stores/toastStore';
@@ -34,6 +37,8 @@ import { estimateRemaining, formatEstimate } from '../../shared/estimate';
 import { QueueJob } from '../../shared/types';
 import { useSettingsStore } from '../stores/settingsStore';
 import type { QueueAddReviewSelection } from '../components/types';
+import { computeQueuedTargetPosition, reorderJob } from '../utils/queue-reorder';
+import { JobCard } from '../styles/QueueJobCard.styles';
 import { PageTitle, EmptyText, FilterRow, FilterChip, SearchField, DropOverlay, AccelAlert } from '../styles/BatchQueue.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
@@ -80,9 +85,16 @@ function normalizePath(path: string): string {
  *  - `queueRemove(id)` - remove/cancel a single job (per QueueJobCard).
  *  - `queueCancelAll()` - cancel every queued job.
  *  - `queueClearCompleted()` - drop every done and errored job.
- *  - `queueMove(id, direction)` - reorder a queued job (via QueueJobCard arrows).
+ *  - `queueMoveTo(id, toPosition)` - reorder a queued job via drag-and-drop
+ *    (per QueueJobCard's grip handle).
  *  - `queueList()` / `onQueueAdded` / `onQueueRemoved` / `onQueueStatusChange` /
  *    `onQueueMoved` - keep the in-memory job list in sync with the main process.
+ *
+ * Drag-and-drop reordering is powered by @dnd-kit: the visible card stack is a
+ * SortableContext, the drop computes the dragged job's target position within
+ * the QUEUED subsequence via `computeQueuedTargetPosition`, and the reorder is
+ * committed by calling `queueMoveTo`. The store then mirrors the authoritative
+ * main-process order through the `onQueueMoved` subscription.
  *
  * @returns {JSX.Element} The page content.
  */
@@ -110,6 +122,23 @@ export default function BatchQueue() {
    * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
    */
   const [dragging, setDragging] = useState(false);
+
+  /**
+   * Id of the job currently being drag-reordered (null when idle). Drives the
+   * DragOverlay preview while a queued job is lifted.
+   * @type {[string | null, React.Dispatch<React.SetStateAction<string | null>>]}
+   */
+  const [activeDragId, setActiveDragId] = useState<string | null>(null);
+
+  /**
+   * dnd-kit sensors: a pointer sensor that needs a small move before a drag
+   * starts (so card clicks still work), and a keyboard sensor with vertical-list
+   * coordinate getter so sortable reordering stays keyboard accessible.
+   */
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   /**
    * True while the main-process queue is paused (active conversions suspended,
@@ -305,27 +334,15 @@ export default function BatchQueue() {
 
   /**
    * Subscribes to `onQueueMoved` events and mirrors the main-process reorder in
-   * the local store by swapping the moved job with its adjacent QUEUED
-   * neighbour (non-queued jobs keep their slots). Returns the unsubscribe.
+   * the local store by repositioning the moved job within the QUEUED
+   * subsequence (non-queued jobs keep their slots). Returns the unsubscribe.
    * @returns {() => void}
    */
   useEffect(() => {
-    return window.electronAPI?.onQueueMoved(({ id, direction }) => {
+    return window.electronAPI?.onQueueMoved(({ id, toPosition }) => {
       useQueueStore.setState((state) => {
-        const queuedIndexes = state.jobs
-          .map((job: QueueJob, index: number) => (job.status === QUEUE_STATUS.QUEUED ? index : -1))
-          .filter((index: number) => index !== -1);
-        const currentPos = queuedIndexes.findIndex((index: number) => state.jobs[index].id === id);
-        if (currentPos === -1) return {};
-        const targetPos = currentPos + direction;
-        if (targetPos < 0 || targetPos >= queuedIndexes.length) return {};
-        const jobs = [...state.jobs];
-        const from = queuedIndexes[currentPos];
-        const to = queuedIndexes[targetPos];
-        const moved = jobs[from];
-        jobs[from] = jobs[to];
-        jobs[to] = moved;
-        return { jobs };
+        const jobs = reorderJob(state.jobs, id, toPosition);
+        return jobs === state.jobs ? {} : { jobs };
       });
     });
   }, []);
@@ -657,6 +674,50 @@ export default function BatchQueue() {
 
   const remainingSeconds = estimateRemaining(jobs, progress);
 
+  /**
+   * Jobs shown after applying the active status filter and search term. Their
+   * order mirrors the store's queue order (filtering preserves relative order).
+   * @type {QueueJob[]}
+   */
+  const visibleJobs = jobs
+    .filter((job: QueueJob) => filter === 'all' || job.status === filter)
+    .filter((job: QueueJob) => !search || basename(job.input).toLowerCase().includes(search.toLowerCase()));
+
+  /**
+   * Records which job is being dragged so the DragOverlay can preview it.
+   * @param {DragStartEvent} event - The dnd-kit drag start event.
+   * @returns {void}
+   */
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDragId(String(event.active.id));
+  };
+
+  /**
+   * Commits a drag-and-drop reorder: reorders the visible list, derives the
+   * dragged job's target position within the QUEUED subsequence, and tells the
+   * main process to apply it (`queueMoveTo`). The store updates through the
+   * `onQueueMoved` echo. Drops that land on the same card are no-ops.
+   * @param {DragEndEvent} event - The dnd-kit drag end event.
+   * @returns {void}
+   */
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveDragId(null);
+    if (!over) return;
+    const activeId = String(active.id);
+    const overId = String(over.id);
+    if (activeId === overId) return;
+    const visibleIds = visibleJobs.map((job: QueueJob) => job.id);
+    const from = visibleIds.indexOf(activeId);
+    const to = visibleIds.indexOf(overId);
+    if (from === -1 || to === -1) return;
+    const newVisibleIds = arrayMove(visibleIds, from, to);
+    const toPosition = computeQueuedTargetPosition(jobs, activeId, newVisibleIds);
+    window.electronAPI.queueMoveTo(activeId, toPosition);
+  };
+
+  const activeJob = activeDragId ? jobs.find((job: QueueJob) => job.id === activeDragId) : null;
+
   return (
     <Box>
       <PageTitle variant="h5">
@@ -737,21 +798,34 @@ export default function BatchQueue() {
         {jobs.length === 0 ? (
           <EmptyText color="text.secondary">{t('batchQueue.empty')}</EmptyText>
         ) : (
-          <Stack spacing={2}>
-            {jobs
-              .filter((job: QueueJob) => filter === 'all' || job.status === filter)
-              .filter((job: QueueJob) => !search || basename(job.input).toLowerCase().includes(search.toLowerCase()))
-              .map((job: QueueJob) => (
-                <QueueJobCard
-                  key={job.id}
-                  job={job}
-                  progress={progress[job.id]}
-                  onRemove={(id) => window.electronAPI.queueRemove(id)}
-                  onRetry={handleRetry}
-                  onMove={(id, direction) => window.electronAPI.queueMove(id, direction)}
-                />
-              ))}
-          </Stack>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragCancel={() => setActiveDragId(null)}
+          >
+            <SortableContext items={visibleJobs.map((job: QueueJob) => job.id)} strategy={verticalListSortingStrategy}>
+              <Stack spacing={2}>
+                {visibleJobs.map((job: QueueJob) => (
+                  <QueueJobCard
+                    key={job.id}
+                    job={job}
+                    progress={progress[job.id]}
+                    onRemove={(id) => window.electronAPI.queueRemove(id)}
+                    onRetry={handleRetry}
+                  />
+                ))}
+              </Stack>
+            </SortableContext>
+            <DragOverlay dropAnimation={null}>
+              {activeJob && (
+                <JobCard $status={activeJob.status} $dragOverlay variant="outlined">
+                  <QueueJobCardContent job={activeJob} onRemove={() => {}} dragOverlay />
+                </JobCard>
+              )}
+            </DragOverlay>
+          </DndContext>
         )}
       </Stack>
 

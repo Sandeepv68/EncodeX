@@ -5,20 +5,27 @@
  * (with a preview thumbnail for image/video inputs), its queue status as a
  * colored chip, the output path, an in-card progress bar while running, and
  * any error text. Per-job actions include removing the job, revealing its
- * output in the OS file manager, copying the output path, reordering queued
- * jobs (up/down arrows), and (for failed jobs) retrying.
+ * output in the OS file manager, copying the output path, drag-and-drop
+ * reordering of queued jobs (via a grip handle), and (for failed jobs)
+ * retrying.
  *
  * Status colors map QUEUE_STATUS values to MUI chip colors (queued = warning,
  * running = primary, done = success, error = error). The progress bar is
  * wrapped in an ErrorBoundary so a renderer failure in one card never breaks
  * the queue list.
  *
+ * The default export wires the card into @dnd-kit's sortable context so QUEUED
+ * jobs can be reordered by dragging the grip handle (non-queued jobs are not
+ * draggable). The exported {@link QueueJobCardContent} is the presentational
+ * body reused by the drag overlay preview.
+ *
  * Props (see {@link QueueJobCardProps}):
  *  - job: the QueueJob to display.
  *  - progress: optional live ConversionProgress snapshot (time/speed/eta).
  *  - onRemove: callback invoked with the job id when the user removes it.
- *  - onMove: callback invoked with the job id and direction (-1 up, 1 down)
- *    when a queued job's reorder arrow is clicked.
+ *  - onRetry: callback invoked with the failed job when retrying.
+ *  - dragOverlay: renders a static clone for the drag overlay (no sortable
+ *    wiring, no drag handle).
  *
  * Every card has a chevron toggle that expands an MUI Collapse panel with the
  * full error (when present), a compact summary of the encoding options
@@ -29,13 +36,15 @@
 import { useEffect, useState } from 'react';
 import { Collapse, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import type { DraggableAttributes, SyntheticListenerMap } from '@dnd-kit/core';
 import {
   faTrashCan,
   faRotateRight,
   faFolderOpen,
   faCopy,
-  faArrowUp,
-  faArrowDown,
+  faGripVertical,
   faChevronUp,
   faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
@@ -56,6 +65,7 @@ import {
   JobNameText,
   StatusChip,
   CardActionsStack,
+  DragHandleButton,
   DetailsBox,
   DetailsLabel,
   OptionsGrid,
@@ -86,19 +96,35 @@ function basename(path: string): string {
 }
 
 /**
- * Renders a single batch queue job card.
- *
- * Shows the input file's basename (see {@link basename}) and a status chip in
- * the header row (with a preview thumbnail for image/video inputs), the output
- * path below, a {@link ProgressBar} while the job is running, and the error
- * message when the job failed.
- * @param {QueueJobCardProps} props - Component props.
- * @param {QueueJob} props.job - The conversion job to display.
- * @param {(id: string) => void} props.onRemove - Callback fired with the job's
- *   id when the remove button is clicked.
- * @returns {JSX.Element} The job card.
+ * Handle props forwarded from {@link QueueJobCard} to the presentational body.
+ * @interface DragHandleProps
+ * @property {DraggableAttributes} attributes - dnd-kit attributes for the handle.
+ * @property {SyntheticListenerMap | undefined} listeners - dnd-kit pointer/keyboard
+ *   listeners for the handle.
  */
-export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove }: QueueJobCardProps) {
+interface DragHandleProps {
+  attributes: DraggableAttributes;
+  listeners: SyntheticListenerMap | undefined;
+}
+
+/**
+ * Presentational body of a batch queue job card.
+ *
+ * Renders everything except the sortable wiring: thumbnail, header row
+ * (filename, status chip, drag handle, actions), progress bar, error text, and
+ * the expandable details panel. Shared between the live card and the drag
+ * overlay clone (see {@link QueueJobCard}).
+ * @param {QueueJobCardProps & { handleProps?: DragHandleProps }} props - Props.
+ * @returns {JSX.Element} The card body.
+ */
+export function QueueJobCardContent({
+  job,
+  progress,
+  onRemove,
+  onRetry,
+  dragOverlay,
+  handleProps,
+}: QueueJobCardProps & { handleProps?: DragHandleProps }) {
   const { t } = useTranslation();
 
   /**
@@ -193,7 +219,7 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
   const detailsLabel = expanded ? t('batchQueue.collapseDetails') : t('batchQueue.expandDetails');
 
   return (
-    <JobCard $status={job.status} variant="outlined">
+    <>
       <CardBody>
         {thumbnail && <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />}
         <CardContent>
@@ -202,21 +228,19 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
               <JobNameText variant="body2">{basename(job.input)}</JobNameText>
             </Tooltip>
             <CardActionsStack direction="row" spacing={1}>
-              <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
-              {job.status === QUEUE_STATUS.QUEUED && onMove && (
-                <>
-                  <Tooltip title={t('batchQueue.moveUp')}>
-                    <IconButton size="small" aria-label={t('batchQueue.moveUp')} onClick={() => onMove(job.id, -1)}>
-                      <FontAwesomeIcon icon={faArrowUp} />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title={t('batchQueue.moveDown')}>
-                    <IconButton size="small" aria-label={t('batchQueue.moveDown')} onClick={() => onMove(job.id, 1)}>
-                      <FontAwesomeIcon icon={faArrowDown} />
-                    </IconButton>
-                  </Tooltip>
-                </>
+              {job.status === QUEUE_STATUS.QUEUED && handleProps && !dragOverlay && (
+                <Tooltip title={t('batchQueue.dragHandle')}>
+                  <DragHandleButton
+                    size="small"
+                    aria-label={t('batchQueue.dragHandle')}
+                    {...handleProps.attributes}
+                    {...handleProps.listeners}
+                  >
+                    <FontAwesomeIcon icon={faGripVertical} />
+                  </DragHandleButton>
+                </Tooltip>
               )}
+              <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
               {job.status === QUEUE_STATUS.ERROR && onRetry && (
                 <Tooltip title={t('batchQueue.retry')}>
                   <IconButton size="small" aria-label={t('batchQueue.retry')} onClick={() => onRetry(job)}>
@@ -310,6 +334,38 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
           <Typography variant="caption">{new Date(job.createdAt).toLocaleString()}</Typography>
         </DetailsBox>
       </Collapse>
+    </>
+  );
+}
+
+/**
+ * Renders a single batch queue job card as a dnd-kit sortable item.
+ *
+ * QUEUED jobs expose a grip handle that starts a drag (pointer or keyboard);
+ * non-queued jobs are sortable items but not draggable, so they act as static
+ * drop targets. While dragging, the source card is faded out and the floating
+ * preview is provided by the parent's DragOverlay.
+ * @param {QueueJobCardProps} props - Component props.
+ * @returns {JSX.Element} The sortable job card.
+ */
+export default function QueueJobCard({ job, progress, onRemove, onRetry }: QueueJobCardProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: job.id,
+    disabled: job.status !== QUEUE_STATUS.QUEUED,
+  });
+
+  return (
+    <JobCard
+      ref={setNodeRef}
+      $status={job.status}
+      variant="outlined"
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0 : undefined,
+      }}
+    >
+      <QueueJobCardContent job={job} progress={progress} onRemove={onRemove} onRetry={onRetry} handleProps={{ attributes, listeners }} />
     </JobCard>
   );
 }

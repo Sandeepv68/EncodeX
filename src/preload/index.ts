@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @fileoverview Preload script for the EncodeX application that acts as the secure,
  * sandboxed bridge between the renderer process and the main process.
  *
@@ -35,7 +35,7 @@
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMove`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
@@ -93,7 +93,7 @@ import {
   LOG_QUEUE_EXPORT,
   LOG_QUEUE_IMPORT,
   LOG_QUEUE_LIST_CALLED,
-  LOG_QUEUE_MOVE,
+  LOG_QUEUE_MOVE_TO,
   LOG_QUEUE_PAUSE_CALLED,
   LOG_QUEUE_REMOVE,
   LOG_QUEUE_RESUME_CALLED,
@@ -129,7 +129,7 @@ const log = new Logger('preload');
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMove`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
@@ -434,18 +434,18 @@ const api = {
     return ipcRenderer.invoke(IPC.QUEUE_SET_CONCURRENCY, concurrency) as Promise<void>;
   },
   /**
-   * Reorders a QUEUED batch job by one position relative to the other queued
-   * jobs. Logs the call at info level, then invokes the main process over the
-   * `IPC.QUEUE_MOVE` ('queue-move') channel.
+   * Reorders a QUEUED batch job to a target position within the QUEUED
+   * subsequence. Logs the call at info level, then invokes the main process
+   * over the `IPC.QUEUE_MOVE_TO` ('queue-move-to') channel.
    *
    * @param {string} id - Id of the QUEUED job to move.
-   * @param {number} direction - -1 moves the job earlier, 1 moves it later.
+   * @param {number} toPosition - Target index within the QUEUED subsequence.
    * @returns {Promise<boolean>} Resolves true when the job was moved, false
-   *   when it is missing, not queued, or already at the edge.
+   *   when it is missing, not queued, or already at the target position.
    */
-  queueMove: (id: string, direction: number) => {
-    log.info(LOG_QUEUE_MOVE, id, direction);
-    return ipcRenderer.invoke(IPC.QUEUE_MOVE, id, direction) as Promise<boolean>;
+  queueMoveTo: (id: string, toPosition: number) => {
+    log.info(LOG_QUEUE_MOVE_TO, id, toPosition);
+    return ipcRenderer.invoke(IPC.QUEUE_MOVE_TO, id, toPosition) as Promise<boolean>;
   },
   /**
    * Pauses the batch queue: the main process suspends every active conversion
@@ -762,13 +762,14 @@ const api = {
    * Subscribes to the notification that a QUEUED job was reordered, pushed over
    * `IPC.QUEUE_MOVED` ('queue-moved').
    *
-   * @param {(data: { id: string; direction: number }) => void} cb - Callback
-   *   receiving the moved job id and the direction applied (-1 up, 1 down).
+   * @param {(data: { id: string; toPosition: number }) => void} cb - Callback
+   *   receiving the moved job id and its new index within the QUEUED
+   *   subsequence.
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
-  onQueueMoved: (cb: (data: { id: string; direction: number }) => void) => {
-    const handler = (_event: IpcRendererEvent, data: { id: string; direction: number }) => {
-      log.debug(LOG_ON_QUEUE_MOVED, data.id, data.direction);
+  onQueueMoved: (cb: (data: { id: string; toPosition: number }) => void) => {
+    const handler = (_event: IpcRendererEvent, data: { id: string; toPosition: number }) => {
+      log.debug(LOG_ON_QUEUE_MOVED, data.id, data.toPosition);
       cb(data);
     };
     ipcRenderer.on(IPC.QUEUE_MOVED, handler);

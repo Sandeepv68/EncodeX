@@ -8,7 +8,7 @@ interface FakeJobQueue {
   cancelAll: ReturnType<typeof vi.fn>;
   clearCompleted: ReturnType<typeof vi.fn>;
   setConcurrency: ReturnType<typeof vi.fn>;
-  moveJob: ReturnType<typeof vi.fn>;
+  moveJobTo: ReturnType<typeof vi.fn>;
   pause: ReturnType<typeof vi.fn>;
   resume: ReturnType<typeof vi.fn>;
   getConcurrency: ReturnType<typeof vi.fn>;
@@ -69,7 +69,7 @@ vi.mock('../../queue/job-queue', () => {
       cancelAll: ReturnType<typeof vi.fn>;
       clearCompleted: ReturnType<typeof vi.fn>;
       setConcurrency: ReturnType<typeof vi.fn>;
-      moveJob: ReturnType<typeof vi.fn>;
+      moveJobTo: ReturnType<typeof vi.fn>;
       pause: ReturnType<typeof vi.fn>;
       resume: ReturnType<typeof vi.fn>;
       getConcurrency: ReturnType<typeof vi.fn>;
@@ -81,7 +81,7 @@ vi.mock('../../queue/job-queue', () => {
         this.cancelAll = vi.fn();
         this.clearCompleted = vi.fn();
         this.setConcurrency = vi.fn();
-        this.moveJob = vi.fn();
+        this.moveJobTo = vi.fn();
         this.pause = vi.fn();
         this.resume = vi.fn();
         this.getConcurrency = vi.fn();
@@ -160,10 +160,10 @@ describe('registerQueueHandlers', () => {
     expect(jobQueue.setConcurrency).toHaveBeenCalledWith(3);
   });
 
-  it('QUEUE_MOVE delegates to moveJob and returns the result', async () => {
-    jobQueue.moveJob.mockReturnValue(true);
-    const result = await getHandlers()[IPC.QUEUE_MOVE]({}, 'id-1', -1);
-    expect(jobQueue.moveJob).toHaveBeenCalledWith('id-1', -1);
+  it('QUEUE_MOVE_TO delegates to moveJobTo and returns the result', async () => {
+    jobQueue.moveJobTo.mockReturnValue(true);
+    const result = await getHandlers()[IPC.QUEUE_MOVE_TO]({}, 'id-1', 2);
+    expect(jobQueue.moveJobTo).toHaveBeenCalledWith('id-1', 2);
     expect(result).toBe(true);
   });
 
@@ -258,7 +258,7 @@ describe('registerQueueHandlers', () => {
     expect(send).toHaveBeenCalledWith(IPC.QUEUE_PROGRESS, { job, progress });
     jobQueue.emit('cancelled');
     expect(send).toHaveBeenCalledWith(IPC.QUEUE_CANCELLED);
-    jobQueue.emit('moved', { id: 'id-1', direction: -1 });
-    expect(send).toHaveBeenCalledWith(IPC.QUEUE_MOVED, { id: 'id-1', direction: -1 });
+    jobQueue.emit('moved', { id: 'id-1', toPosition: 2 });
+    expect(send).toHaveBeenCalledWith(IPC.QUEUE_MOVED, { id: 'id-1', toPosition: 2 });
   });
 });

@@ -2,7 +2,7 @@
  * @fileoverview IPC handlers for the batch conversion job queue.
  * Registers handlers for the QUEUE_ADD, QUEUE_REMOVE, QUEUE_LIST,
  * QUEUE_CANCEL_ALL, QUEUE_CLEAR_COMPLETED, QUEUE_SET_CONCURRENCY,
- * QUEUE_MOVE, QUEUE_PAUSE and QUEUE_RESUME channels and forwards the
+ * QUEUE_MOVE_TO, QUEUE_PAUSE and QUEUE_RESUME channels and forwards the
  * JobQueue's lifecycle events to the renderer on the QUEUE_ADDED,
  * QUEUE_REMOVED, QUEUE_STATUS_CHANGE, QUEUE_PROGRESS, QUEUE_CANCELLED and
  * QUEUE_MOVED channels. One JobQueue
@@ -30,7 +30,7 @@ import {
   LOG_IPC_QUEUE_EXPORT_CALLED,
   LOG_IPC_QUEUE_IMPORT_CALLED,
   LOG_IPC_QUEUE_LIST,
-  LOG_IPC_QUEUE_MOVE,
+  LOG_IPC_QUEUE_MOVE_TO,
   LOG_IPC_QUEUE_PAUSE_CALLED,
   LOG_IPC_QUEUE_REMOVE,
   LOG_IPC_QUEUE_RESUME_CALLED,
@@ -156,19 +156,18 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
   });
 
   /**
-   * Handles the IPC.QUEUE_MOVE channel (queue-move).
-   * Reorders a QUEUED job by one position (direction -1 moves it earlier, 1
-   * moves it later) relative to the other queued jobs. Non-queued jobs are
-   * left in place.
+   * Handles the IPC.QUEUE_MOVE_TO channel (queue-move-to).
+   * Reorders a QUEUED job to a target position within the QUEUED subsequence
+   * (clamped). Non-queued jobs are left in place.
    *
    * @param {string} id - Id of the QUEUED job to move.
-   * @param {number} direction - -1 to move up, 1 to move down.
+   * @param {number} toPosition - Target index within the QUEUED subsequence.
    * @returns {Promise<boolean>} True when the job was moved, false when the
-   *   job is missing, not queued, or already at the edge.
+   *   job is missing, not queued, or already at the target position.
    */
-  ipcMain.handle(IPC.QUEUE_MOVE, async (_event, id: string, direction: number) => {
-    log.info(LOG_IPC_QUEUE_MOVE, id, direction);
-    return jobQueue.moveJob(id, direction);
+  ipcMain.handle(IPC.QUEUE_MOVE_TO, async (_event, id: string, toPosition: number) => {
+    log.info(LOG_IPC_QUEUE_MOVE_TO, id, toPosition);
+    return jobQueue.moveJobTo(id, toPosition);
   });
 
   /**
@@ -306,13 +305,13 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
   });
 
   /**
-   * Pushes IPC.QUEUE_MOVED with the moved job id and direction so the renderer
-   * can mirror the reorder.
-   * @param {{id: string, direction: number}} payload - The reordered job id
-   *   and the direction applied (-1 up, 1 down).
+   * Pushes IPC.QUEUE_MOVED with the moved job id and its new position within
+   * the QUEUED subsequence so the renderer can mirror the reorder.
+   * @param {{id: string, toPosition: number}} payload - The reordered job id
+   *   and its new index within the QUEUED subsequence.
    * @returns {void} Nothing is returned.
    */
-  jobQueue.on('moved', ({ id, direction }: { id: string; direction: number }) => {
-    send(IPC.QUEUE_MOVED, { id, direction });
+  jobQueue.on('moved', ({ id, toPosition }: { id: string; toPosition: number }) => {
+    send(IPC.QUEUE_MOVED, { id, toPosition });
   });
 }

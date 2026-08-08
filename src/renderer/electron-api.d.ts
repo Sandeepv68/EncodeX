@@ -206,14 +206,14 @@ export interface ElectronAPI {
    */
   queueSetConcurrency(concurrency: number): Promise<void>;
   /**
-   * Reorders a QUEUED batch job by one position over the `IPC.QUEUE_MOVE`
-   * ('queue-move') channel.
+   * Reorders a QUEUED batch job to a target position within the QUEUED
+   * subsequence over the `IPC.QUEUE_MOVE_TO` ('queue-move-to') channel.
    * @param {string} id - Id of the QUEUED job to move.
-   * @param {number} direction - -1 moves the job earlier, 1 moves it later.
+   * @param {number} toPosition - Target index within the QUEUED subsequence.
    * @returns {Promise<boolean>} Resolves true when moved, false when missing,
-   *   not queued, or at the edge.
+   *   not queued, or already at the target position.
    */
-  queueMove(id: string, direction: number): Promise<boolean>;
+  queueMoveTo(id: string, toPosition: number): Promise<boolean>;
   /**
    * Pauses the batch queue over the `IPC.QUEUE_PAUSE` ('queue-pause') channel:
    * the main process suspends every active conversion and blocks queued jobs
@@ -403,11 +403,11 @@ export interface ElectronAPI {
   /**
    * Subscribes to the notification that a QUEUED job was reordered, pushed from
    * the main process over `IPC.QUEUE_MOVED` ('queue-moved').
-   * @param {(data: { id: string; direction: number }) => void} cb - Callback
-   *   receiving the moved job id and the direction applied (-1 up, 1 down).
+   * @param {(data: { id: string; toPosition: number }) => void} cb - Callback
+   *   receiving the moved job id and its new index within the QUEUED subsequence.
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
-  onQueueMoved(cb: (data: { id: string; direction: number }) => void): () => void;
+  onQueueMoved(cb: (data: { id: string; toPosition: number }) => void): () => void;
   /**
    * Subscribes to decoded video frames emitted by the native player, pushed
    * from the main process over `IPC.PLAYER_FRAME` ('player-frame'). Frames

@@ -1,11 +1,11 @@
 import { styled, alpha } from '@mui/material/styles';
-import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
+import { Box, Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { SHADOWS } from '../colors';
 
 export const JobCard = styled(Paper, {
-  shouldForwardProp: (prop) => prop !== '$status',
-})<{ $status: string }>(({ theme, $status }) => ({
+  shouldForwardProp: (prop) => prop !== '$status' && prop !== '$dragOverlay',
+})<{ $status: string; $dragOverlay?: boolean }>(({ theme, $status, $dragOverlay }) => ({
   padding: 0,
   overflow: 'hidden',
   borderColor:
@@ -14,7 +14,8 @@ export const JobCard = styled(Paper, {
       : $status === QUEUE_STATUS.DONE
         ? theme.palette.success.main
         : theme.palette.divider,
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: $dragOverlay ? theme.shadows[8] : theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  transform: $dragOverlay ? 'rotate(1.5deg)' : undefined,
 }));
 
 export const CardBody = styled(Stack)({
@@ -78,6 +79,17 @@ export const StatusChip = styled(Chip)(({ theme }) => ({
 }));
 
 export const CardActionsStack = styled(Stack)({ flexWrap: 'nowrap', alignItems: 'center', flexShrink: 0 });
+
+export const DragHandleButton = styled(IconButton)(({ theme }) => ({
+  cursor: 'grab',
+  color: theme.palette.text.secondary,
+  '&:hover': {
+    color: theme.palette.text.primary,
+  },
+  '&:active': {
+    cursor: 'grabbing',
+  },
+}));
 
 export const DetailsBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1.5),

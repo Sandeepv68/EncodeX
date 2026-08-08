@@ -32,9 +32,9 @@ import {
   LOG_PROCESS_NEXT_NO_QUEUED_JOBS,
   LOG_PROCESS_NEXT_STARTING_JOB,
   LOG_QUEUE_CLEAR_COMPLETED,
-  LOG_QUEUE_MOVE,
-  LOG_QUEUE_MOVE_AT_EDGE,
+  LOG_QUEUE_MOVE_TO,
   LOG_QUEUE_MOVE_SKIPPED,
+  LOG_QUEUE_MOVE_TO_CLAMPED,
   LOG_QUEUE_PAUSE,
   LOG_QUEUE_RESUME,
   LOG_QUEUE_SET_CONCURRENCY,
@@ -81,8 +81,8 @@ export interface JobQueueOptions {
  *   (explicitly via removeJob or implicitly via cancelJob)
  * @emits {Object} 'statusChange' - Fired with `{ job }` when a job transitions
  *   between QUEUED / RUNNING / DONE / ERROR
- * @emits {Object} 'moved' - Fired with `{ id, direction }` after a QUEUED job
- *   is reordered via moveJob
+ * @emits {Object} 'moved' - Fired with `{ id, toPosition }` after a QUEUED job
+ *   is reordered via moveJobTo
  * @emits {Object} 'progress' - Fired with `{ job, progress }` while a job runs;
  *   `progress` is a ConversionProgress from the underlying transcoder
  * @emits {void} 'cancelled' - Fired after cancelAll() clears the queue
@@ -397,37 +397,38 @@ export class JobQueue extends EventEmitter {
   }
 
   /**
-   * Moves a QUEUED job one position up (`direction` -1) or down (`direction`
-   * 1) relative to the other QUEUED jobs, preserving the slots of non-queued
-   * (running/done/errored) jobs. Jobs without a matching id, non-queued jobs,
-   * and edge moves are no-ops that return `false`.
+   * Moves a QUEUED job to a target position within the QUEUED subsequence,
+   * preserving the slots of non-queued (running/done/errored) jobs. The target
+   * is clamped to `[0, queuedCount - 1]`; jobs without a matching id, non-queued
+   * jobs, and no-op moves return `false`.
    *
-   * On success a `moved` event is emitted with `{ id, direction }` so the
-   * renderer can mirror the reorder. This is the MVP replacement for
-   * drag-and-drop reordering.
+   * On success a `moved` event is emitted with `{ id, toPosition }` so the
+   * renderer can mirror the reorder. Used by the batch queue drag-and-drop
+   * reordering (position-based, unlike the old one-step arrow buttons).
    * @param {string} id - The id of the QUEUED job to move.
-   * @param {number} direction - -1 to move earlier, 1 to move later.
+   * @param {number} toPosition - Target index within the QUEUED subsequence.
    * @returns {boolean} True when the job was moved.
    */
-  moveJob(id: string, direction: number): boolean {
+  moveJobTo(id: string, toPosition: number): boolean {
     const queuedIndexes = this.queue.map((job, index) => (job.status === QUEUE_STATUS.QUEUED ? index : -1)).filter((index) => index !== -1);
-    const currentPos = queuedIndexes.findIndex((index) => this.queue[index].id === id);
-    if (currentPos === -1) {
+    const fromPos = queuedIndexes.findIndex((index) => this.queue[index].id === id);
+    if (fromPos === -1) {
       log.debug(LOG_QUEUE_MOVE_SKIPPED, id);
       return false;
     }
-    const targetPos = currentPos + direction;
-    if (targetPos < 0 || targetPos >= queuedIndexes.length) {
-      log.debug(LOG_QUEUE_MOVE_AT_EDGE, id, direction);
+    const toPos = Math.max(0, Math.min(Math.floor(toPosition), queuedIndexes.length - 1));
+    if (toPos === fromPos) {
+      log.debug(LOG_QUEUE_MOVE_TO_CLAMPED, id, toPos);
       return false;
     }
-    const from = queuedIndexes[currentPos];
-    const to = queuedIndexes[targetPos];
-    const moved = this.queue[from];
-    this.queue[from] = this.queue[to];
-    this.queue[to] = moved;
-    log.info(LOG_QUEUE_MOVE, id, direction);
-    this.emit('moved', { id, direction });
+    const ordered = queuedIndexes.map((index) => this.queue[index]);
+    const [moved] = ordered.splice(fromPos, 1);
+    ordered.splice(toPos, 0, moved);
+    queuedIndexes.forEach((index, k) => {
+      this.queue[index] = ordered[k];
+    });
+    log.info(LOG_QUEUE_MOVE_TO, id, toPos);
+    this.emit('moved', { id, toPosition: toPos });
     this.schedulePersist();
     return true;
   }

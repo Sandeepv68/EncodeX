@@ -455,7 +455,7 @@ describe('BatchQueue', () => {
     );
   });
 
-  it('mirrors main-process job moves by swapping adjacent queued jobs', async () => {
+  it('mirrors main-process job moves by repositioning the queued job', async () => {
     queueListMock.mockResolvedValue([
       job({ id: 'job-1', status: 'running' }),
       job({ id: 'job-2', status: 'queued' }),
@@ -465,7 +465,7 @@ describe('BatchQueue', () => {
     await screen.findAllByText(/video\.mp4/);
     const onMoved = onQueueMovedMock.mock.calls[0][0];
     act(() => {
-      onMoved({ id: 'job-3', direction: -1 });
+      onMoved({ id: 'job-3', toPosition: 0 });
     });
     expect(useQueueStore.getState().jobs.map((j) => j.id)).toEqual(['job-1', 'job-3', 'job-2']);
   });
@@ -476,7 +476,7 @@ describe('BatchQueue', () => {
     await screen.findAllByText(/video\.mp4/);
     const onMoved = onQueueMovedMock.mock.calls[0][0];
     act(() => {
-      onMoved({ id: 'missing', direction: -1 });
+      onMoved({ id: 'missing', toPosition: 0 });
     });
     expect(useQueueStore.getState().jobs.map((j) => j.id)).toEqual(['job-2', 'job-3']);
   });

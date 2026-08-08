@@ -352,15 +352,17 @@ export interface ProgressBarProps {
  * @property {ConversionProgress | null | undefined} [progress] - Latest live
  *   progress snapshot (time/speed/eta captions) for the running job.
  * @property {(id: string) => void} onRemove - Fired with the job id on remove.
- * @property {(id: string, direction: number) => void} [onMove] - Fired with the
- *   job id and direction (-1 up, 1 down) when a queued job is reordered.
+ * @property {(job: QueueJob) => void} [onRetry] - Fired with the failed job when
+ *   the retry action is used.
+ * @property {boolean} [dragOverlay] - When true the card is rendered as a static
+ *   clone for the drag overlay (no sortable wiring, no drag handle).
  */
 export interface QueueJobCardProps {
   job: QueueJob;
   progress?: ConversionProgress | null;
   onRemove: (id: string) => void;
   onRetry?: (job: QueueJob) => void;
-  onMove?: (id: string, direction: number) => void;
+  dragOverlay?: boolean;
 }
 
 /**
