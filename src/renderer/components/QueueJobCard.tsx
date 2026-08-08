@@ -26,7 +26,7 @@
  */
 
 import { useState } from 'react';
-import { Button, Chip, Collapse, IconButton, Tooltip, Typography } from '@mui/material';
+import { Collapse, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import {
   faTrashCan,
@@ -49,6 +49,7 @@ import {
   JobCard,
   CardHeaderRow,
   JobNameText,
+  StatusChip,
   CardActionsStack,
   OutputText,
   DetailsBox,
@@ -155,9 +156,11 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
   return (
     <JobCard $status={job.status} variant="outlined">
       <CardHeaderRow>
-        <JobNameText variant="body2">{basename(job.input)}</JobNameText>
+        <Tooltip title={job.input} arrow>
+          <JobNameText variant="body2">{basename(job.input)}</JobNameText>
+        </Tooltip>
         <CardActionsStack direction="row" spacing={1}>
-          <Chip label={job.status} size="small" color={statusColors[job.status] || 'default'} />
+          <StatusChip label={job.status} color={statusColors[job.status] || 'default'} />
           {job.status === QUEUE_STATUS.QUEUED && onMove && (
             <>
               <Tooltip title={t('batchQueue.moveUp')}>
@@ -173,9 +176,11 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
             </>
           )}
           {job.status === QUEUE_STATUS.ERROR && onRetry && (
-            <Button size="small" startIcon={<FontAwesomeIcon icon={faRotateRight} />} onClick={() => onRetry(job)}>
-              {t('batchQueue.retry')}
-            </Button>
+            <Tooltip title={t('batchQueue.retry')}>
+              <IconButton size="small" aria-label={t('batchQueue.retry')} onClick={() => onRetry(job)}>
+                <FontAwesomeIcon icon={faRotateRight} />
+              </IconButton>
+            </Tooltip>
           )}
           <Tooltip title={t('batchQueue.revealInFolder')}>
             <IconButton size="small" aria-label={t('batchQueue.revealInFolder')} onClick={handleReveal}>
@@ -192,9 +197,11 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
               <FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} />
             </IconButton>
           </Tooltip>
-          <Button size="small" color="error" startIcon={<FontAwesomeIcon icon={faTrashCan} />} onClick={() => onRemove(job.id)}>
-            {t('batchQueue.remove')}
-          </Button>
+          <Tooltip title={t('batchQueue.remove')}>
+            <IconButton size="small" color="error" aria-label={t('batchQueue.remove')} onClick={() => onRemove(job.id)}>
+              <FontAwesomeIcon icon={faTrashCan} />
+            </IconButton>
+          </Tooltip>
         </CardActionsStack>
       </CardHeaderRow>
       <OutputText variant="caption" color="text.secondary">

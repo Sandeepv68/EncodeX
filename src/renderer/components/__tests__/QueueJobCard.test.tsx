@@ -89,25 +89,31 @@ describe('QueueJobCard', () => {
 
   it('renders a retry button for errored jobs when onRetry is provided', () => {
     render(<QueueJobCard job={makeJob({ status: QUEUE_STATUS.ERROR })} onRemove={() => {}} onRetry={() => {}} />);
-    expect(screen.getByText('batchQueue.retry')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'batchQueue.retry' })).toBeInTheDocument();
   });
 
   it('calls onRetry with the full job when retry is clicked', () => {
     const onRetry = vi.fn();
     const failedJob = makeJob({ status: QUEUE_STATUS.ERROR });
     render(<QueueJobCard job={failedJob} onRemove={() => {}} onRetry={onRetry} />);
-    fireEvent.click(screen.getByText('batchQueue.retry'));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.retry' }));
     expect(onRetry).toHaveBeenCalledWith(failedJob);
   });
 
   it('omits the retry button for errored jobs without an onRetry handler', () => {
     render(<QueueJobCard job={makeJob({ status: QUEUE_STATUS.ERROR })} onRemove={() => {}} />);
-    expect(screen.queryByText('batchQueue.retry')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'batchQueue.retry' })).not.toBeInTheDocument();
   });
 
   it('falls back to the full path when no directory separator is present', () => {
     render(<QueueJobCard job={makeJob({ input: 'clip.mp4' })} onRemove={() => {}} />);
     expect(screen.getByText('clip.mp4')).toBeInTheDocument();
+  });
+
+  it('shows a tooltip with the full input path when the filename is hovered', async () => {
+    render(<QueueJobCard job={makeJob()} onRemove={() => {}} />);
+    fireEvent.mouseOver(screen.getByText('clip.mp4'));
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('C:/videos/clip.mp4');
   });
 
   it('reveals the output file in the OS file manager', async () => {

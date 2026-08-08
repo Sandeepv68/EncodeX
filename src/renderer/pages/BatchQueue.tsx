@@ -19,7 +19,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Chip, Stack, TextField, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import BatchControls from '../components/BatchControls';
 import QueueJobCard from '../components/QueueJobCard';
 import QueueAddReviewDialog from '../components/QueueAddReviewDialog';
@@ -32,7 +32,7 @@ import { estimateRemaining, formatEstimate } from '../../shared/estimate';
 import { QueueJob } from '../../shared/types';
 import { useSettingsStore } from '../stores/settingsStore';
 import type { QueueAddReviewSelection } from '../components/types';
-import { PageTitle, QueuePaper, EmptyText, FilterRow, DropOverlay } from '../styles/BatchQueue.styles';
+import { PageTitle, EmptyText, FilterRow, FilterChip, SearchField, DropOverlay, AccelAlert } from '../styles/BatchQueue.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 
@@ -87,6 +87,7 @@ export default function BatchQueue() {
   const { t } = useTranslation();
   const { jobs, progress, addJob, removeJob, updateJob, updateProgress, clearJobs } = useQueueStore();
   const queueConcurrency = useSettingsStore((s) => s.queueConcurrency);
+  const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
 
   /**
    * Active status filter ('all' shows every job; otherwise one of QUEUE_STATUS).
@@ -572,59 +573,60 @@ export default function BatchQueue() {
         <TitleIcon>{pageIcons['/batch']}</TitleIcon>
         {t('batchQueue.title')}
       </PageTitle>
-      <BatchControls
-        operationRef={operationRef}
-        transcoderRef={transcoderRef}
-        suffixRef={suffixRef}
-        onAddFiles={handleAddFiles}
-        onCancelAll={handleCancelAll}
-        onClearCompleted={handleClearCompleted}
-        hasCompleted={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)}
-        concurrency={queueConcurrency}
-        onConcurrencyChange={handleConcurrencyChange}
-        paused={paused}
-        onPause={handlePause}
-        onResume={handleResume}
-        hasActive={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING)}
-        outputDir={outputDir}
-        onOutputDirChange={setOutputDir}
-        onBrowseDir={handleBrowseDir}
-        overwrite={overwrite}
-        onOverwriteChange={setOverwrite}
-        onExport={handleExport}
-        onImport={handleImport}
-      />
 
-      {jobs.length > 0 && (
-        <FilterRow>
-          {['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR].map((value) => {
-            const count = value === 'all' ? jobs.length : jobs.filter((job: QueueJob) => job.status === value).length;
-            const labelKey = value === 'all' ? 'all' : value === QUEUE_STATUS.ERROR ? 'failed' : value;
-            const label = t(`batchQueue.filters.${labelKey}`);
-            return (
-              <Chip
-                key={value}
-                size="small"
-                label={`${label} (${count})`}
-                color={filter === value ? 'primary' : 'default'}
-                onClick={() => setFilter(value)}
-              />
-            );
-          })}
-          <TextField size="small" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('batchQueue.search')} />
-          {remainingSeconds !== null && (
-            <Typography variant="body2" color="text.secondary" sx={{ marginLeft: 'auto' }}>
-              {t('batchQueue.etaEstimate', { eta: formatEstimate(remainingSeconds) })}
-            </Typography>
-          )}
-        </FilterRow>
-      )}
+      <Stack spacing={2}>
+        <BatchControls
+          operationRef={operationRef}
+          transcoderRef={transcoderRef}
+          suffixRef={suffixRef}
+          onAddFiles={handleAddFiles}
+          onCancelAll={handleCancelAll}
+          onClearCompleted={handleClearCompleted}
+          hasCompleted={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)}
+          concurrency={queueConcurrency}
+          onConcurrencyChange={handleConcurrencyChange}
+          paused={paused}
+          onPause={handlePause}
+          onResume={handleResume}
+          hasActive={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING)}
+          outputDir={outputDir}
+          onOutputDirChange={setOutputDir}
+          onBrowseDir={handleBrowseDir}
+          overwrite={overwrite}
+          onOverwriteChange={setOverwrite}
+          onExport={handleExport}
+          onImport={handleImport}
+        />
 
-      <QueuePaper>
+        {jobs.length > 0 && (
+          <FilterRow>
+            {['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR].map((value) => {
+              const count = value === 'all' ? jobs.length : jobs.filter((job: QueueJob) => job.status === value).length;
+              const labelKey = value === 'all' ? 'all' : value === QUEUE_STATUS.ERROR ? 'failed' : value;
+              const label = t(`batchQueue.filters.${labelKey}`);
+              return (
+                <FilterChip
+                  key={value}
+                  size="small"
+                  label={`${label} (${count})`}
+                  color={filter === value ? 'primary' : 'default'}
+                  onClick={() => setFilter(value)}
+                />
+              );
+            })}
+            <SearchField size="small" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('batchQueue.search')} />
+            {remainingSeconds !== null && (
+              <Typography variant="body2" color="text.secondary" sx={{ marginLeft: 'auto' }}>
+                {t('batchQueue.etaEstimate', { eta: formatEstimate(remainingSeconds) })}
+              </Typography>
+            )}
+          </FilterRow>
+        )}
+        {settingsHardwareAcceleration && <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>}
         {jobs.length === 0 ? (
           <EmptyText color="text.secondary">{t('batchQueue.empty')}</EmptyText>
         ) : (
-          <Stack spacing={1}>
+          <Stack spacing={2}>
             {jobs
               .filter((job: QueueJob) => filter === 'all' || job.status === filter)
               .filter((job: QueueJob) => !search || basename(job.input).toLowerCase().includes(search.toLowerCase()))
@@ -640,7 +642,7 @@ export default function BatchQueue() {
               ))}
           </Stack>
         )}
-      </QueuePaper>
+      </Stack>
 
       {dragging && (
         <DropOverlay>

@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
-import { Typography, Paper, Stack, Box } from '@mui/material';
-import { SHADOWS } from '../colors';
+import { Typography, Stack, Box, Chip, TextField, Alert } from '@mui/material';
+import { COLORS, SHADOWS } from '../colors';
 
 export const PageTitle = styled(Typography)(({ theme }) => ({
   display: 'flex',
@@ -9,8 +9,9 @@ export const PageTitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-export const QueuePaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
+export const AccelAlert = styled(Alert)(({ theme }) => ({
+  fontWeight: 500,
+  color: COLORS.alert.info,
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
 }));
 
@@ -27,7 +28,23 @@ export const FilterRow = styled(Stack)(({ theme }) => ({
   alignItems: 'center',
   flexWrap: 'wrap',
   gap: theme.spacing(1),
-  marginBottom: theme.spacing(1),
+}));
+
+export const FilterChip = styled(Chip)(({ theme }) => ({
+  borderRadius: theme.spacing(0.75),
+  height: theme.typography.pxToRem(28),
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+}));
+
+export const SearchField = styled(TextField)(({ theme }) => ({
+  '& .MuiInputBase-root': {
+    height: theme.typography.pxToRem(28),
+    fontSize: theme.typography.pxToRem(13),
+    boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  },
+  '& .MuiOutlinedInput-input': {
+    padding: `0 ${theme.spacing(1)}`,
+  },
 }));
 
 export const DropOverlay = styled(Box)(({ theme }) => ({

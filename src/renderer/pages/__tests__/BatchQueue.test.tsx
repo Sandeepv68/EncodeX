@@ -45,7 +45,7 @@ describe('BatchQueue', () => {
     vi.clearAllMocks();
     useQueueStore.setState({ jobs: [] });
     useToastStore.setState({ toasts: [] });
-    useSettingsStore.setState({ queueConcurrency: 1 });
+    useSettingsStore.setState({ queueConcurrency: 1, hardwareAcceleration: true });
   });
 
   it('loads the queued jobs on mount', async () => {
@@ -66,6 +66,20 @@ describe('BatchQueue', () => {
     queueListMock.mockResolvedValue([]);
     renderPage();
     expect(screen.getByText('batchQueue.empty')).toBeInTheDocument();
+  });
+
+  it('shows a hardware acceleration alert when acceleration is enabled', () => {
+    useSettingsStore.setState({ hardwareAcceleration: true });
+    queueListMock.mockResolvedValue([]);
+    renderPage();
+    expect(screen.getByRole('alert')).toHaveTextContent('convert.hardwareAccelAlert');
+  });
+
+  it('does not show the hardware acceleration alert when acceleration is disabled', () => {
+    useSettingsStore.setState({ hardwareAcceleration: false });
+    queueListMock.mockResolvedValue([]);
+    renderPage();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('adds files with a transcode operation and the default suffix', async () => {
@@ -150,7 +164,7 @@ describe('BatchQueue', () => {
     queueRemoveMock.mockResolvedValue(undefined);
     renderPage();
     await screen.findByText(/video\.mp4/);
-    fireEvent.click(screen.getByText('batchQueue.remove'));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.remove' }));
     expect(queueRemoveMock).toHaveBeenCalledWith('job-9');
   });
 
@@ -202,7 +216,7 @@ describe('BatchQueue', () => {
     queueRemoveMock.mockResolvedValue(undefined);
     renderPage();
     await screen.findByText(/video\.mp4/);
-    fireEvent.click(screen.getByText('batchQueue.retry'));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.retry' }));
     await waitFor(() => expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/out/video_converted.mp4', {}, 'FFMPEG', true));
     expect(queueRemoveMock).toHaveBeenCalledWith('job-1');
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'toast.jobAdded')).toBe(true);
