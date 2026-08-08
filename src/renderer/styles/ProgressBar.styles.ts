@@ -1,6 +1,6 @@
 import { styled, keyframes, alpha } from '@mui/material/styles';
 import { Box, LinearProgress } from '@mui/material';
-import { OVERLAY_COLORS } from '../colors';
+import { OVERLAY_COLORS, SHADOWS } from '../colors';
 
 const gradientSlide = keyframes`
   from { transform: translateX(0); }
@@ -8,10 +8,11 @@ const gradientSlide = keyframes`
 `;
 
 export const ProgressTrack = styled(LinearProgress, {
-  shouldForwardProp: (prop) => prop !== 'paused',
-})<{ paused?: boolean }>(({ theme, paused }) => ({
+  shouldForwardProp: (prop) => prop !== 'paused' && prop !== 'shadowed',
+})<{ paused?: boolean; shadowed?: boolean }>(({ theme, paused, shadowed }) => ({
   height: theme.typography.pxToRem(8),
   borderRadius: theme.shape.borderRadius,
+  boxShadow: shadowed ? (theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT) : undefined,
   backgroundColor: paused ? alpha(theme.palette.warning.main, 0.3) : undefined,
   transition: 'background-color 0.5s ease',
   '& .MuiLinearProgress-bar': {

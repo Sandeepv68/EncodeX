@@ -248,7 +248,14 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
           </CardHeaderRow>
           {job.status === QUEUE_STATUS.RUNNING && (
             <ErrorBoundary fallback={null}>
-              <ProgressBar percent={job.progress} time={progress?.time} speed={progress?.speed} eta={progress?.eta} paused={job.paused} />
+              <ProgressBar
+                percent={job.progress}
+                time={progress?.time}
+                speed={progress?.speed}
+                eta={progress?.eta}
+                paused={job.paused}
+                shadowed
+              />
             </ErrorBoundary>
           )}
           {job.error && !expanded && (

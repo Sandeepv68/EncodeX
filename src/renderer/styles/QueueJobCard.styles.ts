@@ -29,7 +29,7 @@ export const CardContent = styled(Box)(({ theme }) => ({
 }));
 
 export const ThumbImg = styled('img')(({ theme }) => ({
-  width: theme.typography.pxToRem(72),
+  width: theme.typography.pxToRem(112),
   alignSelf: 'stretch',
   objectFit: 'cover',
   flexShrink: 0,
@@ -82,6 +82,8 @@ export const CardActionsStack = styled(Stack)({ flexWrap: 'nowrap', alignItems: 
 export const DetailsBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1.5),
   borderTop: `1px solid ${theme.palette.divider}`,
+  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)',
+  boxShadow: theme.palette.mode === 'dark' ? 'inset 0 6px 4px -2px rgba(0, 0, 0, 0.35)' : 'inset 0 6px 4px -2px rgba(0, 0, 0, 0.1)',
 }));
 
 export const DetailsLabel = styled(Typography)(({ theme }) => ({

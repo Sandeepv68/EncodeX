@@ -341,6 +341,8 @@ export interface ProgressBarProps {
   speed?: string;
   eta?: string;
   paused?: boolean;
+  /** When true, the progress track is rendered with a soft resting shadow. */
+  shadowed?: boolean;
 }
 
 /**
