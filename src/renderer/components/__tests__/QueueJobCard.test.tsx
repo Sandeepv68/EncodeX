@@ -35,7 +35,7 @@ describe('QueueJobCard', () => {
   it('renders the file basename and output path inside the details', () => {
     render(<QueueJobCard job={makeJob()} onRemove={() => {}} />);
     expect(screen.getByText('clip.mp4')).toBeInTheDocument();
-    expect(screen.queryByText('C:/videos/clip_out.mp4')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'batchQueue.expandDetails' })).toHaveAttribute('aria-expanded', 'false');
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
     expect(screen.getByText('batchQueue.detailsOutput')).toBeInTheDocument();
     expect(screen.getByText('C:/videos/clip_out.mp4')).toBeInTheDocument();
@@ -90,7 +90,8 @@ describe('QueueJobCard', () => {
 
   it('renders the error text when present', () => {
     render(<QueueJobCard job={makeJob({ error: 'something broke' })} onRemove={() => {}} />);
-    expect(screen.getByText('something broke')).toBeInTheDocument();
+    const inlineErrors = screen.getAllByText('something broke').filter((el) => el.closest('.MuiCollapse-root') === null);
+    expect(inlineErrors).toHaveLength(1);
   });
 
   it('renders a retry button for errored jobs when onRetry is provided', () => {
@@ -216,8 +217,9 @@ describe('QueueJobCard', () => {
 
   it('shows the full error under a label when expanded and inline when collapsed', () => {
     render(<QueueJobCard job={makeJob({ error: 'something broke' })} onRemove={() => {}} />);
-    expect(screen.getByText('something broke')).toBeInTheDocument();
-    expect(screen.queryByText('batchQueue.detailsError')).not.toBeInTheDocument();
+    const inlineErrors = screen.getAllByText('something broke').filter((el) => el.closest('.MuiCollapse-root') === null);
+    expect(inlineErrors).toHaveLength(1);
+    expect(screen.getByText('batchQueue.detailsError')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
     expect(screen.getByText('batchQueue.detailsError')).toBeInTheDocument();
     expect(screen.getAllByText('something broke')).toHaveLength(1);

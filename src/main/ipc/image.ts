@@ -106,8 +106,8 @@ export function registerImageHandlers(): void {
 
   /**
    * Handles the IPC.GET_VIDEO_PREVIEW channel (get-video-preview).
-   * Extracts a single frame near the start of the video (1 second in,
-   * scaled to a max width of 480px) as a PNG data-URL.
+   * Extracts a single frame 10 seconds into the video (scaled to a max width
+   * of 480px) as a PNG data-URL, skipping past the usually blank opening.
    *
    * @param {string} filePath - Absolute path of the video file.
    * @returns {Promise<string | null>} PNG data-URL of the preview frame, or

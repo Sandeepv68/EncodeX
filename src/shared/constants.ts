@@ -68,10 +68,12 @@ export const CLI_CONVERSION_TIMEOUT_MS = 300000;
 export const VIDEO_PREVIEW_MAX_WIDTH = 480;
 
 /**
- * Timestamp used when extracting the video preview frame.
+ * Timestamp used when extracting the video preview frame. Deliberately past
+ * the opening so the thumbnail does not capture the (often blank or intro)
+ * first seconds of the video.
  * @const {string} VIDEO_PREVIEW_SEEK_TIME
  */
-export const VIDEO_PREVIEW_SEEK_TIME = '00:00:01';
+export const VIDEO_PREVIEW_SEEK_TIME = '00:00:10';
 
 // --- Waveform extraction ---
 /**

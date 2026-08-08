@@ -256,55 +256,53 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
               {job.error}
             </Typography>
           )}
-          <Collapse in={expanded}>
-            {expanded && (
-              <DetailsBox>
-                <DetailsLabel variant="caption" color="text.secondary">
-                  {t('batchQueue.detailsOutput')}
-                </DetailsLabel>
-                <Typography variant="caption">{job.output}</Typography>
-                {job.error && (
-                  <>
-                    <DetailsLabel variant="caption" color="text.secondary">
-                      {t('batchQueue.detailsError')}
-                    </DetailsLabel>
-                    <Typography variant="caption" color="error">
-                      {job.error}
-                    </Typography>
-                  </>
-                )}
-                {optionRows.length > 0 && (
-                  <>
-                    <DetailsLabel variant="caption" color="text.secondary">
-                      {t('batchQueue.detailsOptions')}
-                    </DetailsLabel>
-                    <OptionsGrid>
-                      {optionRows.map((row) => (
-                        <OptionRow key={row.label}>
-                          <Typography variant="caption" color="text.secondary">
-                            {row.label}:
-                          </Typography>
-                          <Typography variant="caption">{row.value}</Typography>
-                        </OptionRow>
-                      ))}
-                      <OptionRow>
-                        <Typography variant="caption" color="text.secondary">
-                          {t('batchQueue.detailsTranscoder')}:
-                        </Typography>
-                        <Typography variant="caption">{job.transcoder}</Typography>
-                      </OptionRow>
-                    </OptionsGrid>
-                  </>
-                )}
-                <DetailsLabel variant="caption" color="text.secondary">
-                  {t('batchQueue.detailsCreatedAt')}
-                </DetailsLabel>
-                <Typography variant="caption">{new Date(job.createdAt).toLocaleString()}</Typography>
-              </DetailsBox>
-            )}
-          </Collapse>
         </CardContent>
       </CardBody>
+      <Collapse in={expanded}>
+        <DetailsBox>
+          <DetailsLabel variant="caption" color="text.secondary">
+            {t('batchQueue.detailsOutput')}
+          </DetailsLabel>
+          <Typography variant="caption">{job.output}</Typography>
+          {job.error && (
+            <>
+              <DetailsLabel variant="caption" color="text.secondary">
+                {t('batchQueue.detailsError')}
+              </DetailsLabel>
+              <Typography variant="caption" color="error">
+                {job.error}
+              </Typography>
+            </>
+          )}
+          {optionRows.length > 0 && (
+            <>
+              <DetailsLabel variant="caption" color="text.secondary">
+                {t('batchQueue.detailsOptions')}
+              </DetailsLabel>
+              <OptionsGrid>
+                {optionRows.map((row) => (
+                  <OptionRow key={row.label}>
+                    <Typography variant="caption" color="text.secondary">
+                      {row.label}:
+                    </Typography>
+                    <Typography variant="caption">{row.value}</Typography>
+                  </OptionRow>
+                ))}
+                <OptionRow>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('batchQueue.detailsTranscoder')}:
+                  </Typography>
+                  <Typography variant="caption">{job.transcoder}</Typography>
+                </OptionRow>
+              </OptionsGrid>
+            </>
+          )}
+          <DetailsLabel variant="caption" color="text.secondary">
+            {t('batchQueue.detailsCreatedAt')}
+          </DetailsLabel>
+          <Typography variant="caption">{new Date(job.createdAt).toLocaleString()}</Typography>
+        </DetailsBox>
+      </Collapse>
     </JobCard>
   );
 }

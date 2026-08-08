@@ -1,7 +1,7 @@
 /**
  * @fileoverview Video frame preview extraction for the Electron main process.
  *
- * Uses FFmpeg to seek to `VIDEO_PREVIEW_SEEK_TIME` (1 s) into a video file,
+ * Uses FFmpeg to seek to `VIDEO_PREVIEW_SEEK_TIME` (10 s) into a video file,
  * decode a single frame scaled to `VIDEO_PREVIEW_MAX_WIDTH` (480 px) wide, and
  * re-encode it as a PNG. The PNG bytes are returned as a base64
  * `data:image/png` URL so the sandboxed renderer can render the thumbnail

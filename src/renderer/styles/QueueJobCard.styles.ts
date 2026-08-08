@@ -6,7 +6,8 @@ import { SHADOWS } from '../colors';
 export const JobCard = styled(Paper, {
   shouldForwardProp: (prop) => prop !== '$status',
 })<{ $status: string }>(({ theme, $status }) => ({
-  padding: theme.spacing(1.5),
+  padding: 0,
+  overflow: 'hidden',
   borderColor:
     $status === QUEUE_STATUS.ERROR
       ? theme.palette.error.main
@@ -16,25 +17,22 @@ export const JobCard = styled(Paper, {
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
 }));
 
-export const CardBody = styled(Stack)(({ theme }) => ({
+export const CardBody = styled(Stack)({
   flexDirection: 'row',
   alignItems: 'stretch',
-  gap: theme.spacing(1.5),
-}));
+});
 
-export const CardContent = styled(Box)({
+export const CardContent = styled(Box)(({ theme }) => ({
   flex: 1,
   minWidth: 0,
-});
+  padding: theme.spacing(1.5),
+}));
 
 export const ThumbImg = styled('img')(({ theme }) => ({
   width: theme.typography.pxToRem(72),
   alignSelf: 'stretch',
-  borderRadius: theme.shape.borderRadius,
   objectFit: 'cover',
   flexShrink: 0,
-  border: `1px solid ${theme.palette.divider}`,
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
 }));
 
 export const CardHeaderRow = styled(Box)(({ theme }) => ({
@@ -82,8 +80,7 @@ export const StatusChip = styled(Chip)(({ theme }) => ({
 export const CardActionsStack = styled(Stack)({ flexWrap: 'nowrap', alignItems: 'center', flexShrink: 0 });
 
 export const DetailsBox = styled(Box)(({ theme }) => ({
-  marginTop: theme.spacing(1),
-  padding: theme.spacing(1),
+  padding: theme.spacing(1.5),
   borderTop: `1px solid ${theme.palette.divider}`,
 }));
 
