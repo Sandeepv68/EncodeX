@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Box, IconButton, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { TITLEBAR_COLORS, OVERLAY_COLORS } from '../colors';
+import { TITLEBAR_COLORS, OVERLAY_COLORS, COLORS } from '../colors';
 
 const dragRegion = { WebkitAppRegion: 'drag' } as React.CSSProperties;
 const noDragRegion = { WebkitAppRegion: 'no-drag' } as React.CSSProperties;
@@ -49,6 +49,23 @@ export const TitleBarTitle = styled(Typography)(({ theme }) => ({
   fontSize: theme.typography.pxToRem(13),
   lineHeight: 1,
   letterSpacing: theme.typography.pxToRem(0.2),
+}));
+
+export const TitleBarBetaBadge = styled(Typography)(({ theme }) => ({
+  marginLeft: theme.spacing(1),
+  padding: `${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)}`,
+  borderRadius: theme.typography.pxToRem(4),
+  backgroundColor: COLORS.info,
+  color: '#ffffff',
+  fontSize: theme.typography.pxToRem(10),
+  fontWeight: 600,
+  lineHeight: 1.2,
+  letterSpacing: theme.typography.pxToRem(0.4),
+  textTransform: 'uppercase',
+  userSelect: 'none',
+  WebkitUserSelect: 'none',
+  pointerEvents: 'none',
+  flexShrink: 0,
 }));
 
 export const WindowControls = styled(Box)({

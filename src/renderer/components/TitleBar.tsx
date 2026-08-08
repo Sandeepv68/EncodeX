@@ -14,17 +14,28 @@
 import { useEffect, useState } from 'react';
 import { faMinus, faSquare, faCopy, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { APP_NAME } from '../../shared/app-constants';
+import pkg from '../../../package.json';
 import appIcon from '../../../assets/icons/Assets.xcassets/AppIcon.appiconset/100.png';
 import {
   TitleBarRoot,
   TitleBarBrand,
   TitleBarIcon,
   TitleBarTitle,
+  TitleBarBetaBadge,
   WindowControls,
   WindowControlButton,
   WindowCloseButton,
   WindowControlIcon,
 } from '../styles/TitleBar.styles';
+
+/**
+ * Reports whether a SemVer version string is a pre-release (e.g. "1.0.0-beta.0").
+ * @param {string} version - The version string to inspect.
+ * @returns {boolean} True when the version carries a pre-release identifier.
+ */
+function isPrerelease(version: string): boolean {
+  return /^[0-9]+\.[0-9]+\.[0-9]+(-|$)/.test(version) && version.includes('-');
+}
 
 /**
  * Renders the custom window title bar.
@@ -53,6 +64,7 @@ export default function TitleBar() {
       <TitleBarBrand>
         <TitleBarIcon src={appIcon} alt="" draggable={false} />
         <TitleBarTitle variant="body2">{APP_NAME}</TitleBarTitle>
+        {isPrerelease(pkg.version) && <TitleBarBetaBadge variant="caption">Beta</TitleBarBetaBadge>}
       </TitleBarBrand>
       <WindowControls>
         <WindowControlButton aria-label="Minimize" size="small" onClick={() => window.electronAPI.windowMinimize()}>

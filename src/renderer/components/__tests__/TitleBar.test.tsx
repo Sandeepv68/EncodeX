@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
+import pkg from '../../../../package.json';
 import TitleBar from '../TitleBar';
 
 const api = window.electronAPI as unknown as {
@@ -9,6 +10,9 @@ const api = window.electronAPI as unknown as {
   onWindowMaximizedChange: ReturnType<typeof vi.fn>;
 };
 
+const isPrerelease = (version: string): boolean =>
+  /^[0-9]+\.[0-9]+\.[0-9]+(-|$)/.test(version) && version.includes('-');
+
 describe('TitleBar', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -17,6 +21,15 @@ describe('TitleBar', () => {
   it('renders the app name', () => {
     render(<TitleBar />);
     expect(screen.getByText('EncodeX')).toBeInTheDocument();
+  });
+
+  it('shows the Beta badge only for pre-release versions', () => {
+    render(<TitleBar />);
+    if (isPrerelease(pkg.version)) {
+      expect(screen.getByText('Beta')).toBeInTheDocument();
+    } else {
+      expect(screen.queryByText('Beta')).not.toBeInTheDocument();
+    }
   });
 
   it('minimizes the window when the minimize button is clicked', () => {
