@@ -16,29 +16,32 @@ export const JobCard = styled(Paper, {
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
 }));
 
-export const CardHeaderRow = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: theme.spacing(0.5),
+export const CardBody = styled(Stack)(({ theme }) => ({
+  flexDirection: 'row',
+  alignItems: 'stretch',
+  gap: theme.spacing(1.5),
 }));
 
-export const TitleBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: theme.spacing(1),
-  minWidth: 0,
+export const CardContent = styled(Box)({
   flex: 1,
-}));
+  minWidth: 0,
+});
 
 export const ThumbImg = styled('img')(({ theme }) => ({
-  width: theme.typography.pxToRem(40),
-  height: theme.typography.pxToRem(40),
+  width: theme.typography.pxToRem(72),
+  alignSelf: 'stretch',
   borderRadius: theme.shape.borderRadius,
   objectFit: 'cover',
   flexShrink: 0,
   border: `1px solid ${theme.palette.divider}`,
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+}));
+
+export const CardHeaderRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: theme.spacing(0.5),
 }));
 
 export const JobNameText = styled(Typography)({

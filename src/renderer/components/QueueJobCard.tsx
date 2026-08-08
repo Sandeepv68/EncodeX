@@ -49,9 +49,10 @@ import { isImageFile, isVideoFile } from '../../shared/file-extensions';
 import { useToastStore } from '../stores/toastStore';
 import {
   JobCard,
-  CardHeaderRow,
-  TitleBox,
+  CardBody,
+  CardContent,
   ThumbImg,
+  CardHeaderRow,
   JobNameText,
   StatusChip,
   CardActionsStack,
@@ -193,115 +194,117 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
 
   return (
     <JobCard $status={job.status} variant="outlined">
-      <CardHeaderRow>
-        <TitleBox>
-          {thumbnail && <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />}
-          <Tooltip title={job.input} arrow>
-            <JobNameText variant="body2">{basename(job.input)}</JobNameText>
-          </Tooltip>
-        </TitleBox>
-        <CardActionsStack direction="row" spacing={1}>
-          <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
-          {job.status === QUEUE_STATUS.QUEUED && onMove && (
-            <>
-              <Tooltip title={t('batchQueue.moveUp')}>
-                <IconButton size="small" aria-label={t('batchQueue.moveUp')} onClick={() => onMove(job.id, -1)}>
-                  <FontAwesomeIcon icon={faArrowUp} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={t('batchQueue.moveDown')}>
-                <IconButton size="small" aria-label={t('batchQueue.moveDown')} onClick={() => onMove(job.id, 1)}>
-                  <FontAwesomeIcon icon={faArrowDown} />
-                </IconButton>
-              </Tooltip>
-            </>
-          )}
-          {job.status === QUEUE_STATUS.ERROR && onRetry && (
-            <Tooltip title={t('batchQueue.retry')}>
-              <IconButton size="small" aria-label={t('batchQueue.retry')} onClick={() => onRetry(job)}>
-                <FontAwesomeIcon icon={faRotateRight} />
-              </IconButton>
+      <CardBody>
+        {thumbnail && <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />}
+        <CardContent>
+          <CardHeaderRow>
+            <Tooltip title={job.input} arrow>
+              <JobNameText variant="body2">{basename(job.input)}</JobNameText>
             </Tooltip>
+            <CardActionsStack direction="row" spacing={1}>
+              <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
+              {job.status === QUEUE_STATUS.QUEUED && onMove && (
+                <>
+                  <Tooltip title={t('batchQueue.moveUp')}>
+                    <IconButton size="small" aria-label={t('batchQueue.moveUp')} onClick={() => onMove(job.id, -1)}>
+                      <FontAwesomeIcon icon={faArrowUp} />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={t('batchQueue.moveDown')}>
+                    <IconButton size="small" aria-label={t('batchQueue.moveDown')} onClick={() => onMove(job.id, 1)}>
+                      <FontAwesomeIcon icon={faArrowDown} />
+                    </IconButton>
+                  </Tooltip>
+                </>
+              )}
+              {job.status === QUEUE_STATUS.ERROR && onRetry && (
+                <Tooltip title={t('batchQueue.retry')}>
+                  <IconButton size="small" aria-label={t('batchQueue.retry')} onClick={() => onRetry(job)}>
+                    <FontAwesomeIcon icon={faRotateRight} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <Tooltip title={t('batchQueue.revealInFolder')}>
+                <IconButton size="small" aria-label={t('batchQueue.revealInFolder')} onClick={handleReveal}>
+                  <FontAwesomeIcon icon={faFolderOpen} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('batchQueue.copyPath')}>
+                <IconButton size="small" aria-label={t('batchQueue.copyPath')} onClick={handleCopyPath}>
+                  <FontAwesomeIcon icon={faCopy} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={detailsLabel}>
+                <IconButton size="small" aria-label={detailsLabel} aria-expanded={expanded} onClick={() => setExpanded((prev) => !prev)}>
+                  <FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('batchQueue.remove')}>
+                <IconButton size="small" color="error" aria-label={t('batchQueue.remove')} onClick={() => onRemove(job.id)}>
+                  <FontAwesomeIcon icon={faTrashCan} />
+                </IconButton>
+              </Tooltip>
+            </CardActionsStack>
+          </CardHeaderRow>
+          {job.status === QUEUE_STATUS.RUNNING && (
+            <ErrorBoundary fallback={null}>
+              <ProgressBar percent={job.progress} time={progress?.time} speed={progress?.speed} eta={progress?.eta} paused={job.paused} />
+            </ErrorBoundary>
           )}
-          <Tooltip title={t('batchQueue.revealInFolder')}>
-            <IconButton size="small" aria-label={t('batchQueue.revealInFolder')} onClick={handleReveal}>
-              <FontAwesomeIcon icon={faFolderOpen} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={t('batchQueue.copyPath')}>
-            <IconButton size="small" aria-label={t('batchQueue.copyPath')} onClick={handleCopyPath}>
-              <FontAwesomeIcon icon={faCopy} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={detailsLabel}>
-            <IconButton size="small" aria-label={detailsLabel} aria-expanded={expanded} onClick={() => setExpanded((prev) => !prev)}>
-              <FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={t('batchQueue.remove')}>
-            <IconButton size="small" color="error" aria-label={t('batchQueue.remove')} onClick={() => onRemove(job.id)}>
-              <FontAwesomeIcon icon={faTrashCan} />
-            </IconButton>
-          </Tooltip>
-        </CardActionsStack>
-      </CardHeaderRow>
-      {job.status === QUEUE_STATUS.RUNNING && (
-        <ErrorBoundary fallback={null}>
-          <ProgressBar percent={job.progress} time={progress?.time} speed={progress?.speed} eta={progress?.eta} paused={job.paused} />
-        </ErrorBoundary>
-      )}
-      {job.error && !expanded && (
-        <Typography variant="caption" color="error">
-          {job.error}
-        </Typography>
-      )}
-      <Collapse in={expanded}>
-        {expanded && (
-          <DetailsBox>
-            <DetailsLabel variant="caption" color="text.secondary">
-              {t('batchQueue.detailsOutput')}
-            </DetailsLabel>
-            <Typography variant="caption">{job.output}</Typography>
-            {job.error && (
-              <>
+          {job.error && !expanded && (
+            <Typography variant="caption" color="error">
+              {job.error}
+            </Typography>
+          )}
+          <Collapse in={expanded}>
+            {expanded && (
+              <DetailsBox>
                 <DetailsLabel variant="caption" color="text.secondary">
-                  {t('batchQueue.detailsError')}
+                  {t('batchQueue.detailsOutput')}
                 </DetailsLabel>
-                <Typography variant="caption" color="error">
-                  {job.error}
-                </Typography>
-              </>
-            )}
-            {optionRows.length > 0 && (
-              <>
-                <DetailsLabel variant="caption" color="text.secondary">
-                  {t('batchQueue.detailsOptions')}
-                </DetailsLabel>
-                <OptionsGrid>
-                  {optionRows.map((row) => (
-                    <OptionRow key={row.label}>
-                      <Typography variant="caption" color="text.secondary">
-                        {row.label}:
-                      </Typography>
-                      <Typography variant="caption">{row.value}</Typography>
-                    </OptionRow>
-                  ))}
-                  <OptionRow>
-                    <Typography variant="caption" color="text.secondary">
-                      {t('batchQueue.detailsTranscoder')}:
+                <Typography variant="caption">{job.output}</Typography>
+                {job.error && (
+                  <>
+                    <DetailsLabel variant="caption" color="text.secondary">
+                      {t('batchQueue.detailsError')}
+                    </DetailsLabel>
+                    <Typography variant="caption" color="error">
+                      {job.error}
                     </Typography>
-                    <Typography variant="caption">{job.transcoder}</Typography>
-                  </OptionRow>
-                </OptionsGrid>
-              </>
+                  </>
+                )}
+                {optionRows.length > 0 && (
+                  <>
+                    <DetailsLabel variant="caption" color="text.secondary">
+                      {t('batchQueue.detailsOptions')}
+                    </DetailsLabel>
+                    <OptionsGrid>
+                      {optionRows.map((row) => (
+                        <OptionRow key={row.label}>
+                          <Typography variant="caption" color="text.secondary">
+                            {row.label}:
+                          </Typography>
+                          <Typography variant="caption">{row.value}</Typography>
+                        </OptionRow>
+                      ))}
+                      <OptionRow>
+                        <Typography variant="caption" color="text.secondary">
+                          {t('batchQueue.detailsTranscoder')}:
+                        </Typography>
+                        <Typography variant="caption">{job.transcoder}</Typography>
+                      </OptionRow>
+                    </OptionsGrid>
+                  </>
+                )}
+                <DetailsLabel variant="caption" color="text.secondary">
+                  {t('batchQueue.detailsCreatedAt')}
+                </DetailsLabel>
+                <Typography variant="caption">{new Date(job.createdAt).toLocaleString()}</Typography>
+              </DetailsBox>
             )}
-            <DetailsLabel variant="caption" color="text.secondary">
-              {t('batchQueue.detailsCreatedAt')}
-            </DetailsLabel>
-            <Typography variant="caption">{new Date(job.createdAt).toLocaleString()}</Typography>
-          </DetailsBox>
-        )}
-      </Collapse>
+          </Collapse>
+        </CardContent>
+      </CardBody>
     </JobCard>
   );
 }
