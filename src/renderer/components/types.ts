@@ -39,7 +39,8 @@ export interface AudioStreamInfoProps {
  * @interface BatchControlsProps
  */
 export interface BatchControlsProps {
-  operationRef: RefObject<string>;
+  operation: string;
+  onOperationChange: (operation: string) => void;
   transcoderRef: RefObject<TranscoderType>;
   suffixRef: RefObject<string>;
   onAddFiles: () => void;
@@ -70,6 +71,50 @@ export interface BufferedFrame {
   width: number;
   height: number;
   pts: number;
+}
+
+/**
+ * Props for the batch encoding options panel.
+ * @interface BatchEncodingPanelProps
+ * @property {string} operation - The selected batch operation value; the panel
+ *   shows video controls for 'transcode', audio controls for 'extract_audio',
+ *   and image controls (format/quality/scale) for 'compress_image'.
+ * @property {string} videoCodec - Selected video encoder name.
+ * @property {string} audioCodec - Selected audio encoder name.
+ * @property {string} container - Selected output container/format extension; ''
+ *   means keep the source file's extension.
+ * @property {string} videoBitrate - Target video bitrate ('' = encoder default).
+ * @property {string} audioBitrate - Target audio bitrate ('' = encoder default).
+ * @property {string} quality - Image compression quality 1-31 ('' = encoder default).
+ * @property {string} scale - Output resolution as WIDTHxHEIGHT ('' = original).
+ * @property {string} pixelFormat - Output pixel format (e.g. 'yuv420p').
+ * @property {(value: string) => void} onVideoCodecChange - Fired on video codec change.
+ * @property {(value: string) => void} onAudioCodecChange - Fired on audio codec change.
+ * @property {(value: string) => void} onContainerChange - Fired on container change.
+ * @property {(value: string) => void} onVideoBitrateChange - Fired on video bitrate change.
+ * @property {(value: string) => void} onAudioBitrateChange - Fired on audio bitrate change.
+ * @property {(value: string) => void} onQualityChange - Fired on quality change.
+ * @property {(value: string) => void} onScaleChange - Fired on scale change.
+ * @property {(value: string) => void} onPixelFormatChange - Fired on pixel format change.
+ */
+export interface BatchEncodingPanelProps {
+  operation: string;
+  videoCodec: string;
+  audioCodec: string;
+  container: string;
+  videoBitrate: string;
+  audioBitrate: string;
+  quality: string;
+  scale: string;
+  pixelFormat: string;
+  onVideoCodecChange: (value: string) => void;
+  onAudioCodecChange: (value: string) => void;
+  onContainerChange: (value: string) => void;
+  onVideoBitrateChange: (value: string) => void;
+  onAudioBitrateChange: (value: string) => void;
+  onQualityChange: (value: string) => void;
+  onScaleChange: (value: string) => void;
+  onPixelFormatChange: (value: string) => void;
 }
 
 /**
@@ -296,6 +341,8 @@ export interface ProgressBarProps {
   speed?: string;
   eta?: string;
   paused?: boolean;
+  /** When true, the progress track is rendered with a soft resting shadow. */
+  shadowed?: boolean;
 }
 
 /**
@@ -305,15 +352,17 @@ export interface ProgressBarProps {
  * @property {ConversionProgress | null | undefined} [progress] - Latest live
  *   progress snapshot (time/speed/eta captions) for the running job.
  * @property {(id: string) => void} onRemove - Fired with the job id on remove.
- * @property {(id: string, direction: number) => void} [onMove] - Fired with the
- *   job id and direction (-1 up, 1 down) when a queued job is reordered.
+ * @property {(job: QueueJob) => void} [onRetry] - Fired with the failed job when
+ *   the retry action is used.
+ * @property {boolean} [dragOverlay] - When true the card is rendered as a static
+ *   clone for the drag overlay (no sortable wiring, no drag handle).
  */
 export interface QueueJobCardProps {
   job: QueueJob;
   progress?: ConversionProgress | null;
   onRemove: (id: string) => void;
   onRetry?: (job: QueueJob) => void;
-  onMove?: (id: string, direction: number) => void;
+  dragOverlay?: boolean;
 }
 
 /**

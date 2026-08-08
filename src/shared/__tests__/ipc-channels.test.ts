@@ -23,7 +23,7 @@ describe('IPC channels', () => {
     expect(IPC.QUEUE_CANCEL_ALL).toBe('queue-cancel-all');
     expect(IPC.QUEUE_CLEAR_COMPLETED).toBe('queue-clear-completed');
     expect(IPC.QUEUE_SET_CONCURRENCY).toBe('queue-set-concurrency');
-    expect(IPC.QUEUE_MOVE).toBe('queue-move');
+    expect(IPC.QUEUE_MOVE_TO).toBe('queue-move-to');
     expect(IPC.QUEUE_PAUSE).toBe('queue-pause');
     expect(IPC.QUEUE_RESUME).toBe('queue-resume');
     expect(IPC.QUEUE_EXPORT).toBe('queue-export');

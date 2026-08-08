@@ -15,10 +15,12 @@
  *  - `HISTOGRAM_COLORS` / `OVERLAY_COLORS` / `TIMELINE_COLORS` /
  *    `TITLEBAR_COLORS`, the fixed component-level colors that stay identical
  *    across every theme.
- *  - `SHADOWS`, the shared CSS box-shadow strings for light and dark surfaces.
+ *  - `SHADOWS(theme)`, the shared CSS box-shadow factory for light and dark
+ *    surfaces, sized with `theme.typography.pxToRem()`.
  */
 
 import type { ColorMode, ThemeId } from './types';
+import type { Theme } from '@mui/material/styles';
 
 /**
  * A theme palette definition. Light themes share the same color mode but use
@@ -273,14 +275,17 @@ export const OVERLAY_COLORS = {
   white: '#ffffff',
   white85: 'rgba(255, 255, 255, 0.85)',
   white90: 'rgba(255, 255, 255, 0.9)',
+  white70: 'rgba(255, 255, 255, 0.7)',
   white30: 'rgba(255, 255, 255, 0.3)',
   white18: 'rgba(255, 255, 255, 0.18)',
+  white02: 'rgba(255, 255, 255, 0.02)',
   white0: 'rgba(255, 255, 255, 0)',
   black66: 'rgb(0 0 0 / 66%)',
   black70: 'rgba(0, 0, 0, 0.7)',
   black45: 'rgba(0, 0, 0, 0.45)',
   black25: 'rgba(0, 0, 0, 0.25)',
   black20: 'rgb(0 0 0 / 20%)',
+  black02: 'rgba(0, 0, 0, 0.02)',
   black0: 'rgba(0, 0, 0, 0)',
 } as const;
 
@@ -314,19 +319,26 @@ export const TITLEBAR_COLORS = {
 } as const;
 
 /**
- * Shared CSS box-shadow strings for elevated surfaces.
+ * Factory for shared CSS box-shadow strings on elevated surfaces, sized with
+ * `theme.typography.pxToRem()` so they scale with the root font size.
  * SOFT_* are used for resting cards and panels, SOFT_HOVER_* for their hover
- * state. Light variants target light-mode surfaces, dark variants dark-mode
- * surfaces.
- * @const {Object} SHADOWS
+ * state, and INSET_* for inner recessed surfaces. Light variants target
+ * light-mode surfaces, dark variants dark-mode surfaces.
+ * @function SHADOWS
+ * @param {Theme} theme - The MUI theme used to convert px to rem.
+ * @returns {Object} Box-shadow strings keyed by surface variant.
  * @property {string} SOFT_LIGHT - Resting shadow for light surfaces.
  * @property {string} SOFT_DARK - Resting shadow for dark surfaces.
  * @property {string} SOFT_HOVER_LIGHT - Hover shadow for light surfaces.
  * @property {string} SOFT_HOVER_DARK - Hover shadow for dark surfaces.
+ * @property {string} INSET_LIGHT - Inner recessed shadow for light surfaces.
+ * @property {string} INSET_DARK - Inner recessed shadow for dark surfaces.
  */
-export const SHADOWS = {
-  SOFT_LIGHT: '0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 10px rgba(0, 0, 0, 0.05)',
-  SOFT_DARK: '0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15)',
-  SOFT_HOVER_LIGHT: '0 2px 4px rgba(0, 0, 0, 0.05), 0 6px 18px rgba(0, 0, 0, 0.08)',
-  SOFT_HOVER_DARK: '0 2px 4px rgba(0, 0, 0, 0.25), 0 4px 14px rgba(0, 0, 0, 0.2)',
-} as const;
+export const SHADOWS = (theme: Theme) => ({
+  SOFT_LIGHT: `${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(1)} ${theme.typography.pxToRem(2)} rgba(0, 0, 0, 0.04), ${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(10)} rgba(0, 0, 0, 0.05)`,
+  SOFT_DARK: `${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(1)} ${theme.typography.pxToRem(2)} rgba(0, 0, 0, 0.2), ${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(8)} rgba(0, 0, 0, 0.15)`,
+  SOFT_HOVER_LIGHT: `${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(4)} rgba(0, 0, 0, 0.05), ${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(6)} ${theme.typography.pxToRem(18)} rgba(0, 0, 0, 0.08)`,
+  SOFT_HOVER_DARK: `${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(4)} rgba(0, 0, 0, 0.25), ${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(4)} ${theme.typography.pxToRem(14)} rgba(0, 0, 0, 0.2)`,
+  INSET_LIGHT: `inset ${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(6)} ${theme.typography.pxToRem(4)} ${theme.typography.pxToRem(-2)} rgba(0, 0, 0, 0.1)`,
+  INSET_DARK: `inset ${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(6)} ${theme.typography.pxToRem(4)} ${theme.typography.pxToRem(-2)} rgba(0, 0, 0, 0.35)`,
+});

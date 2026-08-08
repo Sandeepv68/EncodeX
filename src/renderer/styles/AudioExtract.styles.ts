@@ -30,8 +30,8 @@ export const PreviewInfo = styled(Box)(({ theme }) => ({
 }));
 
 export const PreviewImage = styled('img')(({ theme }) => ({
-  width: 160,
-  height: 90,
+  width: theme.typography.pxToRem(160),
+  height: theme.typography.pxToRem(90),
   objectFit: 'cover',
   borderRadius: theme.shape.borderRadius,
   border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
@@ -40,13 +40,13 @@ export const PreviewImage = styled('img')(({ theme }) => ({
 
 export const PreviewCloseButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',
-  top: -8,
-  right: -8,
+  top: theme.typography.pxToRem(-8),
+  right: theme.typography.pxToRem(-8),
   zIndex: 1,
-  width: 24,
-  height: 24,
-  minWidth: 24,
-  minHeight: 24,
+  width: theme.typography.pxToRem(24),
+  height: theme.typography.pxToRem(24),
+  minWidth: theme.typography.pxToRem(24),
+  minHeight: theme.typography.pxToRem(24),
   padding: 0,
   fontSize: theme.typography.pxToRem(14),
   color: theme.palette.error.main,

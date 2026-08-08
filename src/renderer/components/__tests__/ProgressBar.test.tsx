@@ -27,4 +27,10 @@ describe('ProgressBar', () => {
     render(<ProgressBar percent={150} />);
     expect(screen.getByText('100.0%')).toBeInTheDocument();
   });
+
+  it('renders the track when shadowed is enabled', () => {
+    render(<ProgressBar percent={50} shadowed />);
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(screen.getByText('50.0%')).toBeInTheDocument();
+  });
 });

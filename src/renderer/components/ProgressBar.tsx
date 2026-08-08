@@ -15,6 +15,7 @@
  *  - speed: optional processing speed string.
  *  - eta: optional remaining-time string (suppressed when '0').
  *  - paused: when true, styles the track as paused.
+ *  - shadowed: when true, renders the track with a soft resting shadow.
  */
 
 import { useTranslation } from 'react-i18next';
@@ -38,14 +39,16 @@ import { ProgressTrack, ProgressInfoRow } from '../styles/ProgressBar.styles';
  * @param {string} [props.eta] - Optional remaining-time string; suppressed when
  *   it is '0'.
  * @param {boolean} [props.paused] - When true, the track is styled as paused.
+ * @param {boolean} [props.shadowed] - When true, the track is rendered with a
+ *   soft resting shadow.
  * @returns {JSX.Element} The progress track and info row.
  */
-export default function ProgressBar({ percent, time, speed, eta, paused = false }: ProgressBarProps) {
+export default function ProgressBar({ percent, time, speed, eta, paused = false, shadowed = false }: ProgressBarProps) {
   const { t } = useTranslation();
   const clamped = Math.min(100, Math.max(0, percent));
   return (
     <Box>
-      <ProgressTrack variant="determinate" value={clamped} paused={paused} />
+      <ProgressTrack variant="determinate" value={clamped} paused={paused} shadowed={shadowed} />
       <ProgressInfoRow>
         <Typography variant="caption" color="text.secondary">
           {clamped.toFixed(1)}%

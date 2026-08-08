@@ -26,12 +26,12 @@ export const PageTitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-export const TitleIcon = styled('span')({
+export const TitleIcon = styled('span')(({ theme }) => ({
   display: 'inline-flex',
   alignItems: 'center',
   lineHeight: 1,
-  marginRight: 8,
-});
+  marginRight: theme.typography.pxToRem(8),
+}));
 
 export const ContentPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -40,5 +40,5 @@ export const ContentPaper = styled(Paper)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing(2),
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));

@@ -43,4 +43,14 @@ export const FlagIconWrapper = styled('span')(({ theme }) => ({
   '& svg': { width: '100%', height: '100%' },
 }));
 
-export const menuPaperSx: SxProps<Theme> = (theme) => ({ maxHeight: theme.typography.pxToRem(320) });
+export const menuPaperSx: SxProps<Theme> = (theme) => ({ maxHeight: theme.typography.pxToRem(400) });
+
+export const menuSearchBoxSx: SxProps<Theme> = (theme) => ({
+  padding: theme.spacing(1),
+  paddingBottom: theme.spacing(0.5),
+});
+
+export const menuListSx: SxProps<Theme> = (theme) => ({
+  maxHeight: theme.typography.pxToRem(320),
+  overflowY: 'auto',
+});

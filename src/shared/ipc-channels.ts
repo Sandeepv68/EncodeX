@@ -28,7 +28,7 @@
  * @property {string} QUEUE_CANCEL_ALL - Cancel every queued and running job.
  * @property {string} QUEUE_CLEAR_COMPLETED - Remove every done and errored job.
  * @property {string} QUEUE_SET_CONCURRENCY - Set the number of jobs run in parallel.
- * @property {string} QUEUE_MOVE - Reorder a queued job by one position.
+ * @property {string} QUEUE_MOVE_TO - Reorder a queued job to a target position.
  * @property {string} QUEUE_PAUSE - Pause the queue and all active conversions.
  * @property {string} QUEUE_RESUME - Resume a paused queue and start queued jobs.
  * @property {string} QUEUE_EXPORT - Export the queue to a JSON file.
@@ -54,6 +54,8 @@
  * @property {string} QUEUE_PROGRESS - Push per-job progress updates.
  * @property {string} QUEUE_CANCELLED - Notify that the queue was cancelled.
  * @property {string} QUEUE_MOVED - Notify that a queued job was reordered.
+ *   Payload: `{ id, toPosition }` where `toPosition` is the job's new index
+ *   within the QUEUED subsequence.
  * @property {string} PLAYER_FRAME - Push a decoded frame to the renderer player.
  * @property {string} LOG_MESSAGE - Forward a log entry to the renderer.
  */
@@ -78,7 +80,7 @@ export const IPC = {
   QUEUE_CANCEL_ALL: 'queue-cancel-all',
   QUEUE_CLEAR_COMPLETED: 'queue-clear-completed',
   QUEUE_SET_CONCURRENCY: 'queue-set-concurrency',
-  QUEUE_MOVE: 'queue-move',
+  QUEUE_MOVE_TO: 'queue-move-to',
   QUEUE_PAUSE: 'queue-pause',
   QUEUE_RESUME: 'queue-resume',
   QUEUE_EXPORT: 'queue-export',

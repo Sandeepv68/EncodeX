@@ -21,7 +21,7 @@ export const LoadingBox = styled(Box)(({ theme }) => ({
 export const InfoPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   marginTop: theme.spacing(2),
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS.SOFT_DARK : SHADOWS.SOFT_LIGHT,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
 export const InfoTitle = styled(Typography)(({ theme }) => ({ marginBottom: theme.spacing(1) }));

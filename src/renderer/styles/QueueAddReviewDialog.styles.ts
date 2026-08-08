@@ -1,8 +1,8 @@
 import { styled } from '@mui/material/styles';
 import { Stack, TextField, Typography } from '@mui/material';
 
-export const ReviewList = styled(Stack)(() => ({
-  maxHeight: 320,
+export const ReviewList = styled(Stack)(({ theme }) => ({
+  maxHeight: theme.typography.pxToRem(320),
   overflowY: 'auto',
 }));
 

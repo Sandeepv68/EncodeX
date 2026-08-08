@@ -1,23 +1,31 @@
 /**
  * @fileoverview Single job card in the batch queue list.
  *
- * Renders one conversion job as an outlined card showing the input filename,
- * its queue status as a colored chip, the output path, an in-card progress
- * bar while running, and any error text. Per-job actions include removing the
- * job, revealing its output in the OS file manager, copying the output path,
- * reordering queued jobs (up/down arrows), and (for failed jobs) retrying.
+ * Renders one conversion job as an outlined card showing the input filename
+ * (with a preview thumbnail for image/video inputs), its queue status as a
+ * colored chip, the output path, an in-card progress bar while running, and
+ * any error text. Per-job actions include removing the job, revealing its
+ * output in the OS file manager, copying the output path, drag-and-drop
+ * reordering of queued jobs (via a grip handle), and (for failed jobs)
+ * retrying.
  *
  * Status colors map QUEUE_STATUS values to MUI chip colors (queued = warning,
  * running = primary, done = success, error = error). The progress bar is
  * wrapped in an ErrorBoundary so a renderer failure in one card never breaks
  * the queue list.
  *
+ * The default export wires the card into @dnd-kit's sortable context so QUEUED
+ * jobs can be reordered by dragging the grip handle (non-queued jobs are not
+ * draggable). The exported {@link QueueJobCardContent} is the presentational
+ * body reused by the drag overlay preview.
+ *
  * Props (see {@link QueueJobCardProps}):
  *  - job: the QueueJob to display.
  *  - progress: optional live ConversionProgress snapshot (time/speed/eta).
  *  - onRemove: callback invoked with the job id when the user removes it.
- *  - onMove: callback invoked with the job id and direction (-1 up, 1 down)
- *    when a queued job's reorder arrow is clicked.
+ *  - onRetry: callback invoked with the failed job when retrying.
+ *  - dragOverlay: renders a static clone for the drag overlay (no sortable
+ *    wiring, no drag handle).
  *
  * Every card has a chevron toggle that expands an MUI Collapse panel with the
  * full error (when present), a compact summary of the encoding options
@@ -25,32 +33,40 @@
  * timestamp.
  */
 
-import { useState } from 'react';
-import { Button, Chip, Collapse, IconButton, Tooltip, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Collapse, Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import type { DraggableAttributes, SyntheticListenerMap } from '@dnd-kit/core';
 import {
   faTrashCan,
   faRotateRight,
   faFolderOpen,
   faCopy,
-  faArrowUp,
-  faArrowDown,
+  faGripVertical,
   faChevronUp,
   faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ErrorBoundary } from './ErrorBoundary';
+import EllipsisTooltip from './EllipsisTooltip';
 import ProgressBar from './ProgressBar';
 import type { QueueJobCardProps } from './types';
 import type { ConversionOptions } from '../../shared/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
+import { isImageFile, isVideoFile } from '../../shared/file-extensions';
 import { useToastStore } from '../stores/toastStore';
 import {
   JobCard,
+  CardBody,
+  CardContent,
+  ThumbImg,
   CardHeaderRow,
   JobNameText,
+  StatusChip,
   CardActionsStack,
-  OutputText,
+  DragHandleButton,
   DetailsBox,
   DetailsLabel,
   OptionsGrid,
@@ -81,18 +97,35 @@ function basename(path: string): string {
 }
 
 /**
- * Renders a single batch queue job card.
- *
- * Shows the input file's basename (see {@link basename}) and a status chip in
- * the header row, the output path below, a {@link ProgressBar} while the job
- * is running, and the error message when the job failed.
- * @param {QueueJobCardProps} props - Component props.
- * @param {QueueJob} props.job - The conversion job to display.
- * @param {(id: string) => void} props.onRemove - Callback fired with the job's
- *   id when the remove button is clicked.
- * @returns {JSX.Element} The job card.
+ * Handle props forwarded from {@link QueueJobCard} to the presentational body.
+ * @interface DragHandleProps
+ * @property {DraggableAttributes} attributes - dnd-kit attributes for the handle.
+ * @property {SyntheticListenerMap | undefined} listeners - dnd-kit pointer/keyboard
+ *   listeners for the handle.
  */
-export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove }: QueueJobCardProps) {
+interface DragHandleProps {
+  attributes: DraggableAttributes;
+  listeners: SyntheticListenerMap | undefined;
+}
+
+/**
+ * Presentational body of a batch queue job card.
+ *
+ * Renders everything except the sortable wiring: thumbnail, header row
+ * (filename, status chip, drag handle, actions), progress bar, error text, and
+ * the expandable details panel. Shared between the live card and the drag
+ * overlay clone (see {@link QueueJobCard}).
+ * @param {QueueJobCardProps & { handleProps?: DragHandleProps }} props - Props.
+ * @returns {JSX.Element} The card body.
+ */
+export function QueueJobCardContent({
+  job,
+  progress,
+  onRemove,
+  onRetry,
+  dragOverlay,
+  handleProps,
+}: QueueJobCardProps & { handleProps?: DragHandleProps }) {
   const { t } = useTranslation();
 
   /**
@@ -100,6 +133,40 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
    * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
    */
   const [expanded, setExpanded] = useState(false);
+
+  /**
+   * Data URL of the job's media thumbnail (preview frame for video, scaled
+   * image preview for images), or null while loading/for unsupported files.
+   * @type {[string | null, React.Dispatch<React.SetStateAction<string | null>>]}
+   */
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
+
+  /**
+   * On mount, fetches a thumbnail for the job's input via the image/video
+   * preview IPC channels (audio files have no preview). Failures and null
+   * results keep the card thumbnail-less; the state is only updated when a
+   * preview actually arrives so cards can render without any async churn.
+   * @returns {void}
+   */
+  useEffect(() => {
+    let cancelled = false;
+    const loadThumbnail = async () => {
+      try {
+        const dataUrl = isImageFile(job.input)
+          ? await window.electronAPI.getImagePreview(job.input)
+          : isVideoFile(job.input)
+            ? await window.electronAPI.getVideoPreview(job.input)
+            : null;
+        if (!cancelled && dataUrl) setThumbnail(dataUrl);
+      } catch {
+        if (!cancelled) setThumbnail(null);
+      }
+    };
+    loadThumbnail();
+    return () => {
+      cancelled = true;
+    };
+  }, [job.input]);
 
   /**
    * Builds the compact label/value rows summarizing a job's encoding options.
@@ -153,106 +220,156 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onMove 
   const detailsLabel = expanded ? t('batchQueue.collapseDetails') : t('batchQueue.expandDetails');
 
   return (
-    <JobCard $status={job.status} variant="outlined">
-      <CardHeaderRow>
-        <JobNameText variant="body2">{basename(job.input)}</JobNameText>
-        <CardActionsStack direction="row" spacing={1}>
-          <Chip label={job.status} size="small" color={statusColors[job.status] || 'default'} />
-          {job.status === QUEUE_STATUS.QUEUED && onMove && (
+    <>
+      <CardBody>
+        {thumbnail && <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />}
+        <CardContent>
+          <CardHeaderRow>
+            <Box sx={{ flex: '1 1 0', minWidth: 0 }}>
+              <EllipsisTooltip title={job.input}>
+                <JobNameText variant="body2">{basename(job.input)}</JobNameText>
+              </EllipsisTooltip>
+            </Box>
+            <CardActionsStack direction="row" spacing={1}>
+              {job.status === QUEUE_STATUS.QUEUED && handleProps && !dragOverlay && (
+                <Tooltip title={t('batchQueue.dragHandle')}>
+                  <DragHandleButton
+                    size="small"
+                    aria-label={t('batchQueue.dragHandle')}
+                    {...handleProps.attributes}
+                    {...handleProps.listeners}
+                  >
+                    <FontAwesomeIcon icon={faGripVertical} />
+                  </DragHandleButton>
+                </Tooltip>
+              )}
+              <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
+              {job.status === QUEUE_STATUS.ERROR && onRetry && (
+                <Tooltip title={t('batchQueue.retry')}>
+                  <IconButton size="small" aria-label={t('batchQueue.retry')} onClick={() => onRetry(job)}>
+                    <FontAwesomeIcon icon={faRotateRight} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <Tooltip title={t('batchQueue.revealInFolder')}>
+                <IconButton size="small" aria-label={t('batchQueue.revealInFolder')} onClick={handleReveal}>
+                  <FontAwesomeIcon icon={faFolderOpen} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('batchQueue.copyPath')}>
+                <IconButton size="small" aria-label={t('batchQueue.copyPath')} onClick={handleCopyPath}>
+                  <FontAwesomeIcon icon={faCopy} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={detailsLabel}>
+                <IconButton size="small" aria-label={detailsLabel} aria-expanded={expanded} onClick={() => setExpanded((prev) => !prev)}>
+                  <FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('batchQueue.remove')}>
+                <IconButton size="small" color="error" aria-label={t('batchQueue.remove')} onClick={() => onRemove(job.id)}>
+                  <FontAwesomeIcon icon={faTrashCan} />
+                </IconButton>
+              </Tooltip>
+            </CardActionsStack>
+          </CardHeaderRow>
+          {job.status === QUEUE_STATUS.RUNNING && (
+            <ErrorBoundary fallback={null}>
+              <ProgressBar
+                percent={job.progress}
+                time={progress?.time}
+                speed={progress?.speed}
+                eta={progress?.eta}
+                paused={job.paused}
+                shadowed
+              />
+            </ErrorBoundary>
+          )}
+          {job.error && !expanded && (
+            <Typography variant="caption" color="error">
+              {job.error}
+            </Typography>
+          )}
+        </CardContent>
+      </CardBody>
+      <Collapse in={expanded}>
+        <DetailsBox>
+          <DetailsLabel variant="caption" color="text.secondary">
+            {t('batchQueue.detailsOutput')}
+          </DetailsLabel>
+          <Typography variant="caption">{job.output}</Typography>
+          {job.error && (
             <>
-              <Tooltip title={t('batchQueue.moveUp')}>
-                <IconButton size="small" aria-label={t('batchQueue.moveUp')} onClick={() => onMove(job.id, -1)}>
-                  <FontAwesomeIcon icon={faArrowUp} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={t('batchQueue.moveDown')}>
-                <IconButton size="small" aria-label={t('batchQueue.moveDown')} onClick={() => onMove(job.id, 1)}>
-                  <FontAwesomeIcon icon={faArrowDown} />
-                </IconButton>
-              </Tooltip>
+              <DetailsLabel variant="caption" color="text.secondary">
+                {t('batchQueue.detailsError')}
+              </DetailsLabel>
+              <Typography variant="caption" color="error">
+                {job.error}
+              </Typography>
             </>
           )}
-          {job.status === QUEUE_STATUS.ERROR && onRetry && (
-            <Button size="small" startIcon={<FontAwesomeIcon icon={faRotateRight} />} onClick={() => onRetry(job)}>
-              {t('batchQueue.retry')}
-            </Button>
-          )}
-          <Tooltip title={t('batchQueue.revealInFolder')}>
-            <IconButton size="small" aria-label={t('batchQueue.revealInFolder')} onClick={handleReveal}>
-              <FontAwesomeIcon icon={faFolderOpen} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={t('batchQueue.copyPath')}>
-            <IconButton size="small" aria-label={t('batchQueue.copyPath')} onClick={handleCopyPath}>
-              <FontAwesomeIcon icon={faCopy} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={detailsLabel}>
-            <IconButton size="small" aria-label={detailsLabel} aria-expanded={expanded} onClick={() => setExpanded((prev) => !prev)}>
-              <FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} />
-            </IconButton>
-          </Tooltip>
-          <Button size="small" color="error" startIcon={<FontAwesomeIcon icon={faTrashCan} />} onClick={() => onRemove(job.id)}>
-            {t('batchQueue.remove')}
-          </Button>
-        </CardActionsStack>
-      </CardHeaderRow>
-      <OutputText variant="caption" color="text.secondary">
-        {job.output}
-      </OutputText>
-      {job.status === QUEUE_STATUS.RUNNING && (
-        <ErrorBoundary fallback={null}>
-          <ProgressBar percent={job.progress} time={progress?.time} speed={progress?.speed} eta={progress?.eta} paused={job.paused} />
-        </ErrorBoundary>
-      )}
-      {job.error && !expanded && (
-        <Typography variant="caption" color="error">
-          {job.error}
-        </Typography>
-      )}
-      <Collapse in={expanded}>
-        {expanded && (
-          <DetailsBox>
-            {job.error && (
-              <>
-                <DetailsLabel variant="caption" color="text.secondary">
-                  {t('batchQueue.detailsError')}
-                </DetailsLabel>
-                <Typography variant="caption" color="error">
-                  {job.error}
-                </Typography>
-              </>
-            )}
-            {optionRows.length > 0 && (
-              <>
-                <DetailsLabel variant="caption" color="text.secondary">
-                  {t('batchQueue.detailsOptions')}
-                </DetailsLabel>
-                <OptionsGrid>
-                  {optionRows.map((row) => (
-                    <OptionRow key={row.label}>
-                      <Typography variant="caption" color="text.secondary">
-                        {row.label}:
-                      </Typography>
-                      <Typography variant="caption">{row.value}</Typography>
-                    </OptionRow>
-                  ))}
-                  <OptionRow>
+          {optionRows.length > 0 && (
+            <>
+              <DetailsLabel variant="caption" color="text.secondary">
+                {t('batchQueue.detailsOptions')}
+              </DetailsLabel>
+              <OptionsGrid>
+                {optionRows.map((row) => (
+                  <OptionRow key={row.label}>
                     <Typography variant="caption" color="text.secondary">
-                      {t('batchQueue.detailsTranscoder')}:
+                      {row.label}:
                     </Typography>
-                    <Typography variant="caption">{job.transcoder}</Typography>
+                    <Typography variant="caption">{row.value}</Typography>
                   </OptionRow>
-                </OptionsGrid>
-              </>
-            )}
-            <DetailsLabel variant="caption" color="text.secondary">
-              {t('batchQueue.detailsCreatedAt')}
-            </DetailsLabel>
-            <Typography variant="caption">{new Date(job.createdAt).toLocaleString()}</Typography>
-          </DetailsBox>
-        )}
+                ))}
+                <OptionRow>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('batchQueue.detailsTranscoder')}:
+                  </Typography>
+                  <Typography variant="caption">{job.transcoder}</Typography>
+                </OptionRow>
+              </OptionsGrid>
+            </>
+          )}
+          <DetailsLabel variant="caption" color="text.secondary">
+            {t('batchQueue.detailsCreatedAt')}
+          </DetailsLabel>
+          <Typography variant="caption">{new Date(job.createdAt).toLocaleString()}</Typography>
+        </DetailsBox>
       </Collapse>
+    </>
+  );
+}
+
+/**
+ * Renders a single batch queue job card as a dnd-kit sortable item.
+ *
+ * QUEUED jobs expose a grip handle that starts a drag (pointer or keyboard);
+ * non-queued jobs are sortable items but not draggable, so they act as static
+ * drop targets. While dragging, the source card is faded out and the floating
+ * preview is provided by the parent's DragOverlay.
+ * @param {QueueJobCardProps} props - Component props.
+ * @returns {JSX.Element} The sortable job card.
+ */
+export default function QueueJobCard({ job, progress, onRemove, onRetry }: QueueJobCardProps) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({
+    id: job.id,
+    disabled: job.status !== QUEUE_STATUS.QUEUED,
+  });
+
+  return (
+    <JobCard
+      ref={setNodeRef}
+      $status={job.status}
+      variant="outlined"
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition: isDragging ? undefined : 'transform 250ms cubic-bezier(0.25, 1, 0.5, 1)',
+        opacity: isDragging ? 0 : undefined,
+        willChange: 'transform',
+      }}
+    >
+      <QueueJobCardContent job={job} progress={progress} onRemove={onRemove} onRetry={onRetry} handleProps={{ attributes, listeners }} />
     </JobCard>
   );
 }

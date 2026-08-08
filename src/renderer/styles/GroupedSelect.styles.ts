@@ -5,7 +5,7 @@ export const GroupHeader = styled(MenuItem)(({ theme }) => ({
   fontWeight: 700,
   opacity: '1 !important',
   cursor: 'default',
-  fontSize: '0.8rem',
+  fontSize: theme.typography.pxToRem(12.8),
   backgroundColor: theme.palette.action.selected,
   color: theme.palette.primary.main,
   paddingTop: theme.spacing(0.75),
