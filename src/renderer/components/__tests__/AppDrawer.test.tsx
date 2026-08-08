@@ -91,39 +91,35 @@ describe('AppDrawer', () => {
   });
 
   it('shows a blip on the batch item while a queued job is running', () => {
-    useQueueStore
-      .getState()
-      .setJobs([
-        {
-          id: '1',
-          input: 'in.mp4',
-          output: 'out.mp4',
-          options: {},
-          transcoder: 'FFMPEG',
-          status: QUEUE_STATUS.RUNNING,
-          progress: 50,
-          createdAt: 1,
-        },
-      ]);
+    useQueueStore.getState().setJobs([
+      {
+        id: '1',
+        input: 'in.mp4',
+        output: 'out.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.RUNNING,
+        progress: 50,
+        createdAt: 1,
+      },
+    ]);
     renderDrawer();
     expect(screen.getByTestId('nav-batch-blip')).toBeInTheDocument();
   });
 
   it('hides the batch blip when no queued job is running', () => {
-    useQueueStore
-      .getState()
-      .setJobs([
-        {
-          id: '1',
-          input: 'in.mp4',
-          output: 'out.mp4',
-          options: {},
-          transcoder: 'FFMPEG',
-          status: QUEUE_STATUS.QUEUED,
-          progress: 0,
-          createdAt: 1,
-        },
-      ]);
+    useQueueStore.getState().setJobs([
+      {
+        id: '1',
+        input: 'in.mp4',
+        output: 'out.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.QUEUED,
+        progress: 0,
+        createdAt: 1,
+      },
+    ]);
     renderDrawer();
     expect(screen.queryByTestId('nav-batch-blip')).not.toBeInTheDocument();
   });
