@@ -21,7 +21,7 @@
  * reuse the shared {@link CodecSelect} / {@link GroupedSelect} components.
  */
 
-import { Box, MenuItem, TextField } from '@mui/material';
+import { MenuItem, TextField } from '@mui/material';
 import { faPalette, faBrush, faDroplet, faSun } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +30,7 @@ import { AUDIO_CONTAINER_EXTENSIONS, getVideoCodecContainer } from '../../shared
 import CodecSelect from './CodecSelect';
 import GroupedSelect from './GroupedSelect';
 import type { BatchEncodingPanelProps } from './types';
-import { EncodingPaper, EncodingStack, EncodingTitle } from '../styles/BatchEncodingPanel.styles';
+import { EncodingPaper, EncodingStack, EncodingTitle, FieldBox, FieldLabel } from '../styles/BatchEncodingPanel.styles';
 
 /**
  * Pixel-format options prepared for the GroupedSelect: every entry of
@@ -97,91 +97,102 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
       </EncodingTitle>
       <EncodingStack direction="row" spacing={1} useFlexGap>
         {props.operation === 'transcode' && (
-          <Box sx={{ width: 200 }}>
+          <FieldBox sx={{ width: 200 }}>
+            <FieldLabel>{t('convert.videoCodec')}</FieldLabel>
             <CodecSelect type="video" value={props.videoCodec} onChange={props.onVideoCodecChange} />
-          </Box>
+          </FieldBox>
         )}
-        <Box sx={{ width: 200 }}>
+        <FieldBox sx={{ width: 200 }}>
+          <FieldLabel>{t('convert.audioCodec')}</FieldLabel>
           <CodecSelect type="audio" value={props.audioCodec} onChange={props.onAudioCodecChange} />
-        </Box>
-        <TextField
-          select
-          size="small"
-          label={t('batchQueue.container')}
-          value={props.container}
-          onChange={(e) => {
-            props.onContainerChange(e.target.value);
-          }}
-          sx={{ minWidth: 140 }}
-        >
-          <MenuItem value="">{t('batchQueue.containerAuto')}</MenuItem>
-          {containerOptions.map((container) => (
-            <MenuItem key={container} value={container}>
-              {container}
-            </MenuItem>
-          ))}
-        </TextField>
-        {props.operation === 'transcode' && (
+        </FieldBox>
+        <FieldBox sx={{ width: 160 }}>
+          <FieldLabel>{t('batchQueue.container')}</FieldLabel>
           <TextField
             select
+            fullWidth
             size="small"
-            label={t('convert.videoBitrate')}
-            value={props.videoBitrate}
+            value={props.container}
             onChange={(e) => {
-              props.onVideoBitrateChange(e.target.value);
+              props.onContainerChange(e.target.value);
             }}
-            sx={{ minWidth: 120 }}
           >
-            {VIDEO_BITRATE_OPTIONS.map((b) => (
-              <MenuItem key={b} value={b}>
-                {b || 'Auto'}
+            <MenuItem value="">{t('batchQueue.containerAuto')}</MenuItem>
+            {containerOptions.map((container) => (
+              <MenuItem key={container} value={container}>
+                {container}
               </MenuItem>
             ))}
           </TextField>
-        )}
-        <TextField
-          select
-          size="small"
-          label={t('convert.audioBitrate')}
-          value={props.audioBitrate}
-          onChange={(e) => {
-            props.onAudioBitrateChange(e.target.value);
-          }}
-          sx={{ minWidth: 120 }}
-        >
-          <MenuItem value="">{t('status.auto')}</MenuItem>
-          {BITRATE_OPTIONS.map((b) => (
-            <MenuItem key={b} value={b}>
-              {b}
-            </MenuItem>
-          ))}
-        </TextField>
+        </FieldBox>
         {props.operation === 'transcode' && (
-          <>
+          <FieldBox sx={{ width: 130 }}>
+            <FieldLabel>{t('convert.videoBitrate')}</FieldLabel>
             <TextField
               select
+              fullWidth
               size="small"
-              label={t('convert.scale')}
-              value={props.scale}
+              value={props.videoBitrate}
               onChange={(e) => {
-                props.onScaleChange(e.target.value);
+                props.onVideoBitrateChange(e.target.value);
               }}
-              sx={{ minWidth: 120 }}
             >
-              {SCALE_OPTIONS.map((s) => (
-                <MenuItem key={s} value={s}>
-                  {s || t('status.none')}
+              {VIDEO_BITRATE_OPTIONS.map((b) => (
+                <MenuItem key={b} value={b}>
+                  {b || 'Auto'}
                 </MenuItem>
               ))}
             </TextField>
-            <Box sx={{ width: 180 }}>
+          </FieldBox>
+        )}
+        <FieldBox sx={{ width: 130 }}>
+          <FieldLabel>{t('convert.audioBitrate')}</FieldLabel>
+          <TextField
+            select
+            fullWidth
+            size="small"
+            value={props.audioBitrate}
+            onChange={(e) => {
+              props.onAudioBitrateChange(e.target.value);
+            }}
+          >
+            <MenuItem value="">{t('status.auto')}</MenuItem>
+            {BITRATE_OPTIONS.map((b) => (
+              <MenuItem key={b} value={b}>
+                {b}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FieldBox>
+        {props.operation === 'transcode' && (
+          <>
+            <FieldBox sx={{ width: 130 }}>
+              <FieldLabel>{t('convert.scale')}</FieldLabel>
+              <TextField
+                select
+                fullWidth
+                size="small"
+                value={props.scale}
+                onChange={(e) => {
+                  props.onScaleChange(e.target.value);
+                }}
+              >
+                {SCALE_OPTIONS.map((s) => (
+                  <MenuItem key={s} value={s}>
+                    {s || t('status.none')}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FieldBox>
+            <FieldBox sx={{ width: 180 }}>
+              <FieldLabel>{t('convert.pixelFormat')}</FieldLabel>
               <GroupedSelect
                 value={props.pixelFormat}
                 onChange={props.onPixelFormatChange}
                 options={pixelFormatOptions}
                 groupIcons={pixelGroupIcons}
               />
-            </Box>
+            </FieldBox>
           </>
         )}
       </EncodingStack>

@@ -182,7 +182,7 @@ describe('BatchQueue', () => {
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
     queueAddMock.mockResolvedValue('job-3');
     renderPage();
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[5]);
     fireEvent.click(screen.getByText('mkv'));
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -196,7 +196,7 @@ describe('BatchQueue', () => {
     selectFilesMock.mockResolvedValue(['/in/video.mkv']);
     queueAddMock.mockResolvedValue('job-3');
     renderPage();
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[5]);
     fireEvent.click(screen.getByText('mp4'));
     fireEvent.mouseDown(screen.getAllByRole('combobox')[3]);
     fireEvent.click(screen.getByText('Theora (libtheora)'));

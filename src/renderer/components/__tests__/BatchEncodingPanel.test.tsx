@@ -35,15 +35,15 @@ describe('BatchEncodingPanel', () => {
   it('renders all seven controls for the transcode operation', () => {
     renderPanel();
     expect(screen.getAllByRole('combobox')).toHaveLength(7);
-    expect(screen.getByRole('combobox', { name: 'convert.videoBitrate' })).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: 'convert.audioBitrate' })).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: 'convert.scale' })).toBeInTheDocument();
+    expect(screen.getByText('convert.videoBitrate')).toBeInTheDocument();
+    expect(screen.getByText('convert.audioBitrate')).toBeInTheDocument();
+    expect(screen.getByText('convert.scale')).toBeInTheDocument();
     expect(screen.getByText('yuv420p')).toBeInTheDocument();
   });
 
   it('lists the container options compatible with the selected video codec', () => {
     renderPanel();
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
     expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
     expect(screen.getByText('mp4')).toBeInTheDocument();
     expect(screen.getByText('mkv')).toBeInTheDocument();
@@ -52,7 +52,7 @@ describe('BatchEncodingPanel', () => {
 
   it('fires onContainerChange when a container is chosen', () => {
     const { props } = renderPanel();
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
     fireEvent.click(screen.getByText('mkv'));
     expect(props.onContainerChange).toHaveBeenCalledWith('mkv');
   });
@@ -67,9 +67,9 @@ describe('BatchEncodingPanel', () => {
   it('renders only audio controls for the extract audio operation', () => {
     renderPanel({ operation: 'extract_audio' });
     expect(screen.getAllByRole('combobox')).toHaveLength(3);
-    expect(screen.getByRole('combobox', { name: 'convert.audioBitrate' })).toBeInTheDocument();
-    expect(screen.queryByRole('combobox', { name: 'convert.videoBitrate' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('combobox', { name: 'convert.scale' })).not.toBeInTheDocument();
+    expect(screen.getByText('convert.audioBitrate')).toBeInTheDocument();
+    expect(screen.queryByText('convert.videoBitrate')).not.toBeInTheDocument();
+    expect(screen.queryByText('convert.scale')).not.toBeInTheDocument();
   });
 
   it('renders nothing for the compress image operation', () => {
