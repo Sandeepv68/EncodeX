@@ -73,6 +73,7 @@ const log = new Logger('renderer/stores/audioExtractStore');
  * @property {string} output - Empty output path.
  * @property {string} audioCodec - AUDIO_EXTRACT_DEFAULT_CODEC ('libmp3lame').
  * @property {string} audioBitrate - BITRATE_OPTIONS[1] ('192k').
+ * @property {boolean} isDirty - No user edits yet.
  * @property {boolean} isConverting - Not converting.
  * @property {boolean} isPaused - Not paused.
  * @property {TaskProgress | null} progress - No progress.
@@ -84,6 +85,7 @@ const INITIAL_STATE = {
   output: '',
   audioCodec: AUDIO_EXTRACT_DEFAULT_CODEC,
   audioBitrate: BITRATE_OPTIONS[1],
+  isDirty: false,
   isConverting: false,
   isPaused: false,
   progress: null as TaskProgress | null,
@@ -104,7 +106,7 @@ export const useAudioExtractStore = create<AudioExtractState>((set, get) => ({
    */
   setInput: (file) => {
     log.debug(LOG_SET_INPUT, file);
-    set({ input: file });
+    set({ input: file, isDirty: true });
   },
   /**
    * Sets the preview data URL, or clears it when null.
@@ -128,7 +130,7 @@ export const useAudioExtractStore = create<AudioExtractState>((set, get) => ({
    */
   setOutput: (output) => {
     log.debug(LOG_SET_OUTPUT, output);
-    set({ output });
+    set({ output, isDirty: true });
   },
   /**
    * Sets the audio encoder used for extraction.
@@ -136,7 +138,7 @@ export const useAudioExtractStore = create<AudioExtractState>((set, get) => ({
    */
   setAudioCodec: (codec) => {
     log.debug(LOG_SET_AUDIO_CODEC, codec);
-    set({ audioCodec: codec });
+    set({ audioCodec: codec, isDirty: true });
   },
   /**
    * Sets the target audio bitrate.
@@ -144,7 +146,7 @@ export const useAudioExtractStore = create<AudioExtractState>((set, get) => ({
    */
   setAudioBitrate: (bitrate) => {
     log.debug(LOG_SET_AUDIO_BITRATE, bitrate);
-    set({ audioBitrate: bitrate });
+    set({ audioBitrate: bitrate, isDirty: true });
   },
   /**
    * Sets whether the extraction is paused.
@@ -161,11 +163,12 @@ export const useAudioExtractStore = create<AudioExtractState>((set, get) => ({
   setProgress: (p) => set({ progress: p }),
   /**
    * Clears the input, preview, audio streams, and output fields.
+   * Resets the dirty flag so the form no longer counts as pending work.
    * Keeps the codec/bitrate settings and run state untouched.
    */
   clearSelection: () => {
     log.info(LOG_CLEAR_SELECTION);
-    set({ input: '', preview: null, audioStreams: [], output: '' });
+    set({ input: '', preview: null, audioStreams: [], output: '', isDirty: false });
   },
   /**
    * Validates and starts an audio extraction.

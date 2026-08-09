@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Fechar o EncodeX?",
-    "message": "Uma ou mais tarefas ainda estão em andamento. Fechar agora vai cancelá-las.",
+    "message": "Há tarefas em andamento ou alterações não salvas. Fechar agora vai cancelá-las.",
     "confirmLabel": "Fechar mesmo assim",
     "cancelLabel": "Cancelar"
   },

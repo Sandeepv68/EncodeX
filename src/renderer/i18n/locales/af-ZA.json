@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Maak EncodeX toe?",
-    "message": "Een of meer take is nog besig. As u nou toemaak, sal hulle gekanselleer word.",
+    "message": "Daar is take aan die gang of ongestoorde veranderinge. As u nou toemaak, sal hulle gekanselleer word.",
     "confirmLabel": "Maak tog toe",
     "cancelLabel": "Kanselleer"
   },

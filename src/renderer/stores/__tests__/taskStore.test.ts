@@ -3,7 +3,7 @@ import { useTaskStore } from '../taskStore';
 
 describe('taskStore', () => {
   beforeEach(() => {
-    useTaskStore.setState({ isConverting: false });
+    useTaskStore.setState({ isConverting: false, hasPendingWork: false });
   });
 
   it('starts with no active media task', () => {
@@ -19,5 +19,16 @@ describe('taskStore', () => {
     useTaskStore.getState().setIsConverting(true);
     useTaskStore.getState().setIsConverting(false);
     expect(useTaskStore.getState().isConverting).toBe(false);
+  });
+
+  it('starts with no pending work', () => {
+    expect(useTaskStore.getState().hasPendingWork).toBe(false);
+  });
+
+  it('setHasPendingWork(true) marks pending work and setHasPendingWork(false) clears it', () => {
+    useTaskStore.getState().setHasPendingWork(true);
+    expect(useTaskStore.getState().hasPendingWork).toBe(true);
+    useTaskStore.getState().setHasPendingWork(false);
+    expect(useTaskStore.getState().hasPendingWork).toBe(false);
   });
 });

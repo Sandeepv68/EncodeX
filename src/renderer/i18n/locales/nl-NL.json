@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "EncodeX sluiten?",
-    "message": "Er lopen nog een of meer taken. Sluiten nu annuleert ze.",
+    "message": "Er zijn taken in uitvoering of niet-opgeslagen wijzigingen. Sluiten nu annuleert ze.",
     "confirmLabel": "Toch sluiten",
     "cancelLabel": "Annuleren"
   },

@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Lukke EncodeX?",
-    "message": "Én eller flere jobber kjører fortsatt. Lukking nå vil avbryte dem.",
+    "message": "Det er jobber som kjører eller ulagrede endringer. Lukking nå vil avbryte dem.",
     "confirmLabel": "Lukk likevel",
     "cancelLabel": "Avbryt"
   },

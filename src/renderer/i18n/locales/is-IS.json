@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Loka EncodeX?",
-    "message": "Eitt eða fleiri verk er enn í gangi. Að loka nú mun aflýsa þeim.",
+    "message": "Verk í gangi eða óvistaðar breytingar. Að loka nú mun aflýsa þeim.",
     "confirmLabel": "Loka samt",
     "cancelLabel": "Hætta við"
   },

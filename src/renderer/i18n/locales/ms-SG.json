@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Tutup EncodeX?",
-    "message": "Satu atau lebih tugasan masih berjalan. Menutup sekarang akan membatalkannya.",
+    "message": "Terdapat tugasan yang sedang berjalan atau perubahan yang belum disimpan. Menutup sekarang akan membatalkannya.",
     "confirmLabel": "Tetap tutup",
     "cancelLabel": "Batal"
   },

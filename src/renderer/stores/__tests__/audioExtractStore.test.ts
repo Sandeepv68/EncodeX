@@ -18,6 +18,7 @@ function resetStore(): void {
     output: '',
     audioCodec: 'libmp3lame',
     audioBitrate: '192k',
+    isDirty: false,
     isConverting: false,
     isPaused: false,
     progress: null,
@@ -52,6 +53,7 @@ describe('audioExtractStore', () => {
     expect(state.output).toBe('');
     expect(state.audioCodec).toBe('libmp3lame');
     expect(state.audioBitrate).toBe('192k');
+    expect(state.isDirty).toBe(false);
     expect(state.isConverting).toBe(false);
     expect(state.isPaused).toBe(false);
     expect(state.progress).toBeNull();
@@ -74,12 +76,28 @@ describe('audioExtractStore', () => {
     expect(state.audioBitrate).toBe('320k');
   });
 
-  it('clearSelection resets input, preview, streams, and output', () => {
+  it('marks the form dirty when the user edits input, output, codec, or bitrate', () => {
+    const s = useAudioExtractStore.getState();
+    s.setInput('in.mp4');
+    expect(useAudioExtractStore.getState().isDirty).toBe(true);
+    useAudioExtractStore.setState({ isDirty: false });
+    s.setOutput('out.mp3');
+    expect(useAudioExtractStore.getState().isDirty).toBe(true);
+    useAudioExtractStore.setState({ isDirty: false });
+    s.setAudioCodec('flac');
+    expect(useAudioExtractStore.getState().isDirty).toBe(true);
+    useAudioExtractStore.setState({ isDirty: false });
+    s.setAudioBitrate('320k');
+    expect(useAudioExtractStore.getState().isDirty).toBe(true);
+  });
+
+  it('clearSelection resets input, preview, streams, output, and the dirty flag', () => {
     useAudioExtractStore.setState({
       input: 'in.mp4',
       preview: 'data:image/png;base64,AQID',
       audioStreams: [{ index: 1, type: 'audio', codec: 'aac' }],
       output: 'out.mp3',
+      isDirty: true,
     });
     useAudioExtractStore.getState().clearSelection();
     const state = useAudioExtractStore.getState();
@@ -87,6 +105,7 @@ describe('audioExtractStore', () => {
     expect(state.preview).toBeNull();
     expect(state.audioStreams).toEqual([]);
     expect(state.output).toBe('');
+    expect(state.isDirty).toBe(false);
   });
 
   it('updates progress from conversion events while extracting', () => {

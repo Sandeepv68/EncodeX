@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useVideoCutStore, readStoredVideoCutDraft } from '../videoCutStore';
+import { useVideoCutStore, readStoredVideoCutDraft, isVideoCutDirty } from '../videoCutStore';
 import { VIDEO_CUT_DRAFT_STORAGE_KEY } from '../../../shared/constants';
 
 const DEFAULT_DRAFT = {
@@ -153,6 +153,24 @@ describe('videoCutStore', () => {
     expect(useVideoCutStore.getState().isCutting).toBe(true);
     useVideoCutStore.getState().setIsCutting(false);
     expect(useVideoCutStore.getState().isCutting).toBe(false);
+  });
+});
+
+describe('isVideoCutDirty', () => {
+  it('returns false for the blank form', () => {
+    expect(isVideoCutDirty(DEFAULT_DRAFT)).toBe(false);
+  });
+
+  it.each([
+    ['input', { input: '/in/video.mp4' }],
+    ['output', { output: '/out/cut.mp4' }],
+    ['startTime', { startTime: '00:00:05' }],
+    ['endTime', { endTime: '00:01:30' }],
+    ['duration', { duration: '00:00:45' }],
+    ['useDuration', { useDuration: true }],
+    ['includeAudio off', { includeAudio: false }],
+  ])('returns true when %s is set', (_label, override) => {
+    expect(isVideoCutDirty({ ...DEFAULT_DRAFT, ...override })).toBe(true);
   });
 });
 

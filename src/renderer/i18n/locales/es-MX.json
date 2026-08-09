@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "¿Cerrar EncodeX?",
-    "message": "Todavía hay uno o más trabajos en curso. Si cierras ahora, se cancelarán.",
+    "message": "Hay trabajos en curso o cambios sin guardar. Si cierras ahora, se cancelarán.",
     "confirmLabel": "Cerrar de todos modos",
     "cancelLabel": "Cancelar"
   },

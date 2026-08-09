@@ -56,6 +56,11 @@ Queue jobs with status `QUEUED` or `RUNNING` count because closing would cancel 
 active work. Paused conversions still count (they are recoverable only while the app stays
 open).
 
+> Extension (see `CLOSE_CONFIRMATION_EXTENSION_PLAN.md`): the guard now also blocks closing on
+> "ready" or "dirty" forms — Convert `isDirty`, Audio Extract `isDirty`, Video Cut
+> `isVideoCutDirty(state)`, and Image Compress `useTaskStore.hasPendingWork` — in addition to
+> the in-progress checks above.
+
 ## Close lifecycle
 
 1. Any close path (title-bar X → `WINDOW_CLOSE` → `win.close()`, Alt+F4, taskbar) fires the

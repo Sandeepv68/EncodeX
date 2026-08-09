@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Luk EncodeX?",
-    "message": "En eller flere opgaver kører stadig. Lukker du nu, annulleres de.",
+    "message": "Der er opgaver i gang eller ugemte ændringer. Lukker du nu, annulleres de.",
     "confirmLabel": "Luk alligevel",
     "cancelLabel": "Annuller"
   },

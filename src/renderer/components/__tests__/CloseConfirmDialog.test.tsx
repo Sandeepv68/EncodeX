@@ -3,7 +3,7 @@ import { render, screen, act, fireEvent, waitFor } from '@testing-library/react'
 import CloseConfirmDialog from '../CloseConfirmDialog';
 import { useConversionStore } from '../../stores/conversionStore';
 import { useAudioExtractStore } from '../../stores/audioExtractStore';
-import { useVideoCutStore } from '../../stores/videoCutStore';
+import { useVideoCutStore, isVideoCutDirty } from '../../stores/videoCutStore';
 import { useTaskStore } from '../../stores/taskStore';
 import { useQueueStore } from '../../stores/queueStore';
 import { QUEUE_STATUS } from '../../../shared/media-options';
@@ -35,10 +35,26 @@ describe('CloseConfirmDialog', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     onCloseRequestedMock.mockReturnValue(vi.fn());
-    useConversionStore.setState({ isConverting: false });
-    useAudioExtractStore.setState({ isConverting: false });
-    useVideoCutStore.setState({ isCutting: false });
-    useTaskStore.setState({ isConverting: false });
+    useConversionStore.setState({ isConverting: false, isDirty: false });
+    useAudioExtractStore.setState({
+      isConverting: false,
+      isDirty: false,
+      input: '',
+      output: '',
+      audioCodec: 'libmp3lame',
+      audioBitrate: '192k',
+    });
+    useVideoCutStore.setState({
+      isCutting: false,
+      input: '',
+      output: '',
+      startTime: '00:00:00',
+      endTime: '',
+      duration: '',
+      useDuration: false,
+      includeAudio: true,
+    });
+    useTaskStore.setState({ isConverting: false, hasPendingWork: false });
     useQueueStore.setState({ jobs: [] });
   });
 
@@ -64,11 +80,27 @@ describe('CloseConfirmDialog', () => {
     triggerCloseRequested();
     expect(windowCloseConfirmedMock).not.toHaveBeenCalled();
     expect(screen.getByText('Close EncodeX?')).toBeInTheDocument();
-    expect(screen.getByText('One or more jobs are still in progress. Closing now will cancel them.')).toBeInTheDocument();
+    expect(screen.getByText('There are jobs in progress or unsaved changes. Closing now will cancel them.')).toBeInTheDocument();
+  });
+
+  it('opens the dialog when the Convert page has unsaved form changes', () => {
+    useConversionStore.setState({ isConverting: false, isDirty: true });
+    render(<CloseConfirmDialog />);
+    triggerCloseRequested();
+    expect(windowCloseConfirmedMock).not.toHaveBeenCalled();
+    expect(screen.getByText('Close EncodeX?')).toBeInTheDocument();
   });
 
   it('opens the dialog when a media task (image compress / video cut) is running', () => {
     useTaskStore.setState({ isConverting: true });
+    render(<CloseConfirmDialog />);
+    triggerCloseRequested();
+    expect(windowCloseConfirmedMock).not.toHaveBeenCalled();
+    expect(screen.getByText('Close EncodeX?')).toBeInTheDocument();
+  });
+
+  it('opens the dialog when the Image Compress page holds pending work', () => {
+    useTaskStore.setState({ isConverting: false, hasPendingWork: true });
     render(<CloseConfirmDialog />);
     triggerCloseRequested();
     expect(windowCloseConfirmedMock).not.toHaveBeenCalled();
@@ -83,8 +115,25 @@ describe('CloseConfirmDialog', () => {
     expect(screen.getByText('Close EncodeX?')).toBeInTheDocument();
   });
 
+  it('opens the dialog when the Audio Extract page has a configured/edited form', () => {
+    useAudioExtractStore.setState({ isConverting: false, isDirty: true });
+    render(<CloseConfirmDialog />);
+    triggerCloseRequested();
+    expect(windowCloseConfirmedMock).not.toHaveBeenCalled();
+    expect(screen.getByText('Close EncodeX?')).toBeInTheDocument();
+  });
+
   it('opens the dialog when the Video Cut page is cutting', () => {
     useVideoCutStore.setState({ isCutting: true });
+    render(<CloseConfirmDialog />);
+    triggerCloseRequested();
+    expect(windowCloseConfirmedMock).not.toHaveBeenCalled();
+    expect(screen.getByText('Close EncodeX?')).toBeInTheDocument();
+  });
+
+  it('opens the dialog when the Video Cut page holds a configured draft', () => {
+    useVideoCutStore.setState({ isCutting: false, input: '/in/video.mp4', output: '/out/cut.mp4' });
+    expect(isVideoCutDirty(useVideoCutStore.getState())).toBe(true);
     render(<CloseConfirmDialog />);
     triggerCloseRequested();
     expect(windowCloseConfirmedMock).not.toHaveBeenCalled();

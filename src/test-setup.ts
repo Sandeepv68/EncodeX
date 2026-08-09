@@ -45,7 +45,7 @@ vi.mock('react-i18next', () => ({
         'mediaInfo.audio': 'Audio',
         'mediaInfo.subtitle': 'Subtitle',
         'closeConfirm.title': 'Close EncodeX?',
-        'closeConfirm.message': 'One or more jobs are still in progress. Closing now will cancel them.',
+        'closeConfirm.message': 'There are jobs in progress or unsaved changes. Closing now will cancel them.',
         'closeConfirm.confirmLabel': 'Close Anyway',
         'closeConfirm.cancelLabel': 'Cancel',
       };

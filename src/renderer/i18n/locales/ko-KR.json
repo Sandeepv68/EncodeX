@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "EncodeX를 닫을까요?",
-    "message": "진행 중인 작업이 아직 있습니다. 지금 닫으면 취소됩니다.",
+    "message": "진행 중인 작업 또는 저장되지 않은 변경 사항이 있습니다. 지금 닫으면 취소됩니다.",
     "confirmLabel": "닫기",
     "cancelLabel": "취소"
   },

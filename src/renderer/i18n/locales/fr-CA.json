@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Fermer EncodeX ?",
-    "message": "Une ou plusieurs tâches sont encore en cours. Les fermer maintenant les annulera.",
+    "message": "Il y a des tâches en cours ou des modifications non enregistrées. Les fermer maintenant les annulera.",
     "confirmLabel": "Fermer quand même",
     "cancelLabel": "Annuler"
   },

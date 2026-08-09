@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "關閉 EncodeX？",
-    "message": "仍有一個或多個任務正在進行。現在關閉將取消它們。",
+    "message": "有任務正在進行或未儲存的變更。現在關閉將取消它們。",
     "confirmLabel": "仍然關閉",
     "cancelLabel": "取消"
   },

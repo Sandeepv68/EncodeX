@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Stänga EncodeX?",
-    "message": "Ett eller flera jobb körs fortfarande. Stänger du nu avbryts de.",
+    "message": "Det finns jobb som körs eller osparade ändringar. Stänger du nu avbryts de.",
     "confirmLabel": "Stäng ändå",
     "cancelLabel": "Avbryt"
   },

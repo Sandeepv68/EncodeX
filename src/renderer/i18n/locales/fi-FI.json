@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Sulje EncodeX?",
-    "message": "Yksi tai useampi työ on vielä käynnissä. Sulkeutuminen peruuttaa ne.",
+    "message": "Käynnissä on töitä tai tallentamattomia muutoksia. Sulkeutuminen peruuttaa ne.",
     "confirmLabel": "Sulje silti",
     "cancelLabel": "Peruuta"
   },

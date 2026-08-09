@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "关闭 EncodeX？",
-    "message": "仍有一个或多个任务正在进行。现在关闭将取消它们。",
+    "message": "有任务正在进行或有未保存的更改。现在关闭将取消它们。",
     "confirmLabel": "仍然关闭",
     "cancelLabel": "取消"
   },

@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Close EncodeX?",
-    "message": "One or more jobs are still in progress. Closing now will cancel them.",
+    "message": "There are jobs in progress or unsaved changes. Closing now will cancel them.",
     "confirmLabel": "Close Anyway",
     "cancelLabel": "Cancel"
   },

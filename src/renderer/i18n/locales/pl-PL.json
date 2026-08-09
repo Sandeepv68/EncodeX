@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Zamknąć EncodeX?",
-    "message": "Jedno lub więcej zadań nadal działa. Zamknięcie teraz anuluje je.",
+    "message": "W trakcie są zadania lub niezapisane zmiany. Zamknięcie teraz anuluje je.",
     "confirmLabel": "Zamknij mimo to",
     "cancelLabel": "Anuluj"
   },

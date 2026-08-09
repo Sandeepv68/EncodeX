@@ -23,7 +23,7 @@
  *  - `onConversionProgress` - feeds the progress bar (via `useMediaTask`).
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, TextField, MenuItem, Button, Stack, Typography, Switch } from '@mui/material';
 import { faCompress, faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -38,6 +38,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
+import { useTaskStore } from '../stores/taskStore';
 import { ErrorCode } from '../../shared/errors';
 import { IMAGE_FORMATS, IMAGE_CODEC_MAP, SCALE_OPTIONS } from '../../shared/media-options';
 import { IMAGE_DROPZONE_ACCEPT } from '../../shared/file-extensions';
@@ -176,6 +177,18 @@ export default function ImageCompress() {
   const { progress, setProgress, isConverting, runTask } = useMediaTask();
   const { errors, setErrors, clearFieldError, setFieldError } = useFormErrors();
   const showErrorMessage = useErrorStore((s) => s.showErrorMessage);
+  const setHasPendingWork = useTaskStore((s) => s.setHasPendingWork);
+
+  /**
+   * Publishes the local form's pending-work flag to the global task store so
+   * the close-confirmation dialog can detect a configured-but-unstarted job.
+   * @returns {void}
+   */
+  useEffect(() => {
+    return () => {
+      setHasPendingWork(false);
+    };
+  }, [setHasPendingWork]);
 
   /**
    * Transcoder backend used for every conversion from this page, fixed to the
@@ -196,6 +209,7 @@ export default function ImageCompress() {
     setPreview(null);
     setFileInfo(null);
     if (!path) return;
+    setHasPendingWork(true);
     const dataUrl = await window.electronAPI.getImagePreview(path);
     setPreview(dataUrl);
     const info = await window.electronAPI.getImageFileInfo(path);
@@ -220,6 +234,7 @@ export default function ImageCompress() {
     setKeepAspectRatio(true);
     setErrors({});
     setProgress(null);
+    setHasPendingWork(false);
   };
 
   /**

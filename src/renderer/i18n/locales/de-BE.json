@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "EncodeX schließen?",
-    "message": "Es laufen noch ein oder mehrere Aufträge. Beim Schließen werden sie abgebrochen.",
+    "message": "Es laufen Aufträge oder es gibt ungespeicherte Änderungen. Beim Schließen werden sie abgebrochen.",
     "confirmLabel": "Trotzdem schließen",
     "cancelLabel": "Abbrechen"
   },

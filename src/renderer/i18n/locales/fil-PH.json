@@ -29,7 +29,7 @@
   },
   "closeConfirm": {
     "title": "Isara ang EncodeX?",
-    "message": "May isa o higit pang trabaho na ginagawa pa. Makukansela ang mga ito kung isasara ngayon.",
+    "message": "May mga trabahong kasalukuyang ginagawa o mga pagbabagong hindi pa nai-save. Makukansela ang mga ito kung isasara ngayon.",
     "confirmLabel": "Isara pa rin",
     "cancelLabel": "Kanselahin"
   },
