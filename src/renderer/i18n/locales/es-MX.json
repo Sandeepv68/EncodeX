@@ -279,6 +279,7 @@
     "stats": "{{queued}} en cola, {{running}} en ejecución, {{done}} completados, {{failed}} con error",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Lote finalizado: {{done}} con éxito, {{failed}} con error",
+    "notificationTitle": "Lote de EncodeX finalizado",
     "filters": {
       "all": "Todos",
       "queued": "En cola",

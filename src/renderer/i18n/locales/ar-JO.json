@@ -279,6 +279,7 @@
     "stats": "{{queued}} في الانتظار، {{running}} قيد التشغيل، {{done}} مكتمل، {{failed}} فشل",
     "etaEstimate": "الوقت المتبقي ~{{eta}}",
     "finished": "اكتملت الدفعة: {{done}} نجحت، {{failed}} فشلت",
+    "notificationTitle": "اكتملت دفعة EncodeX",
     "filters": {
       "all": "الكل",
       "queued": "في الانتظار",

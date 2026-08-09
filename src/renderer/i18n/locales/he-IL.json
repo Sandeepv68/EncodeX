@@ -279,6 +279,7 @@
     "stats": "{{queued}} בהמתנה, {{running}} בפעולה, {{done}} הושלמו, {{failed}} נכשלו",
     "etaEstimate": "זמן משוער ~{{eta}}",
     "finished": "האצווה הסתיימה: {{done}} הצליחו, {{failed}} נכשלו",
+    "notificationTitle": "אצוות EncodeX הסתיימה",
     "filters": {
       "all": "הכל",
       "queued": "בהמתנה",

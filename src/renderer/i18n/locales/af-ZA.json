@@ -279,6 +279,7 @@
     "stats": "{{queued}} in wag, {{running}} loop, {{done}} klaar, {{failed}} misluk",
     "etaEstimate": "GTT ~{{eta}}",
     "finished": "Groep klaar: {{done}} geslaag, {{failed}} misluk",
+    "notificationTitle": "EncodeX-groep klaar",
     "filters": {
       "all": "Alles",
       "queued": "In wag",

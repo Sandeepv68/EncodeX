@@ -279,6 +279,7 @@
     "stats": "{{queued}} w kolejce, {{running}} w trakcie, {{done}} ukończonych, {{failed}} nieudanych",
     "etaEstimate": "Pozostało ~{{eta}}",
     "finished": "Przetwarzanie wsadowe zakończone: {{done}} powodzeń, {{failed}} niepowodzeń",
+    "notificationTitle": "Przetwarzanie wsadowe EncodeX zakończone",
     "filters": {
       "all": "Wszystkie",
       "queued": "W kolejce",

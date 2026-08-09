@@ -279,6 +279,7 @@
     "stats": "{{queued}} em fila, {{running}} em execução, {{done}} concluídos, {{failed}} com falha",
     "etaEstimate": "PTA ~{{eta}}",
     "finished": "Lote concluído: {{done}} com sucesso, {{failed}} com falha",
+    "notificationTitle": "Lote EncodeX concluído",
     "filters": {
       "all": "Todos",
       "queued": "Em fila",

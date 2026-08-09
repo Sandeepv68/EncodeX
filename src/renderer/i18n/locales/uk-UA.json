@@ -279,6 +279,7 @@
     "stats": "{{queued}} у черзі, {{running}} виконуються, {{done}} завершено, {{failed}} з помилками",
     "etaEstimate": "Залишилося ~{{eta}}",
     "finished": "Пакет завершено: {{done}} успішно, {{failed}} з помилками",
+    "notificationTitle": "Пакет EncodeX завершено",
     "filters": {
       "all": "Усі",
       "queued": "У черзі",

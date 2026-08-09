@@ -279,6 +279,7 @@
     "stats": "{{queued}} 대기 중, {{running}} 실행 중, {{done}} 완료, {{failed}} 실패",
     "etaEstimate": "예상 ~{{eta}}",
     "finished": "배치 완료: {{done}} 성공, {{failed}} 실패",
+    "notificationTitle": "EncodeX 배치 완료",
     "filters": {
       "all": "전체",
       "queued": "대기 중",

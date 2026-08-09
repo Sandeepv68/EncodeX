@@ -279,6 +279,7 @@
     "stats": "{{queued}} 排队中，{{running}} 运行中，{{done}} 已完成，{{failed}} 已失败",
     "etaEstimate": "预计 ~{{eta}}",
     "finished": "批量处理完成：{{done}} 成功，{{failed}} 失败",
+    "notificationTitle": "EncodeX 批次完成",
     "filters": {
       "all": "全部",
       "queued": "排队中",

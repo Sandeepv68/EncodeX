@@ -279,6 +279,7 @@
     "stats": "{{queued}} дараалалд, {{running}} ажиллаж, {{done}} дууссан, {{failed}} бүтэлгүйтсэн",
     "etaEstimate": "Ойролцоогоор ~{{eta}}",
     "finished": "Багц дууслаа: {{done}} амжилттай, {{failed}} бүтэлгүйтсэн",
+    "notificationTitle": "EncodeX багц дууссан",
     "filters": {
       "all": "Бүгд",
       "queued": "Дараалалд",

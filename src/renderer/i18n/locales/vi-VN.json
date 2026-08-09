@@ -279,6 +279,7 @@
     "stats": "{{queued}} trong hàng đợi, {{running}} đang chạy, {{done}} hoàn thành, {{failed}} thất bại",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Hàng loạt đã kết thúc: {{done}} thành công, {{failed}} thất bại",
+    "notificationTitle": "Đã hoàn tất hàng loạt EncodeX",
     "filters": {
       "all": "Tất cả",
       "queued": "Trong hàng đợi",

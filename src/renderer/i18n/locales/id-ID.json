@@ -279,6 +279,7 @@
     "stats": "{{queued}} antre, {{running}} berjalan, {{done}} selesai, {{failed}} gagal",
     "etaEstimate": "Perkiraan ~{{eta}}",
     "finished": "Batch selesai: {{done}} berhasil, {{failed}} gagal",
+    "notificationTitle": "Batch EncodeX selesai",
     "filters": {
       "all": "Semua",
       "queued": "Antre",

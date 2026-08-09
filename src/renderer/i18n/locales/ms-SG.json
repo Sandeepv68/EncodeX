@@ -279,6 +279,7 @@
     "stats": "{{queued}} beratur, {{running}} berjalan, {{done}} selesai, {{failed}} gagal",
     "etaEstimate": "KTA ~{{eta}}",
     "finished": "Kelompok selesai: {{done}} berjaya, {{failed}} gagal",
+    "notificationTitle": "Kelompok EncodeX selesai",
     "filters": {
       "all": "Semua",
       "queued": "Beratur",

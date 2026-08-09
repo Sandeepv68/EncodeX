@@ -279,6 +279,7 @@
     "stats": "{{queued}} í bið, {{running}} í vinnslu, {{done}} lokið, {{failed}} mistókst",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Runu lokið: {{done}} tókst, {{failed}} mistókst",
+    "notificationTitle": "EncodeX runu lokið",
     "filters": {
       "all": "Allt",
       "queued": "Í bið",

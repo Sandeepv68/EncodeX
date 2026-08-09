@@ -279,6 +279,7 @@
     "stats": "{{queued}} sa scuaine, {{running}} ag rith, {{done}} déanta, {{failed}} ar theip",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Bhaisc críochnaithe: {{done}} rathúil, {{failed}} ar theip",
+    "notificationTitle": "Bhaisc EncodeX críochnaithe",
     "filters": {
       "all": "Uile",
       "queued": "Sa scuaine",

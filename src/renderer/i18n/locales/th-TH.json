@@ -279,6 +279,7 @@
     "stats": "รอคิว {{queued}} กำลังทำงาน {{running}} เสร็จ {{done}} ล้มเหลว {{failed}}",
     "etaEstimate": "เหลืออีกประมาณ {{eta}}",
     "finished": "ประมวลผลเสร็จ: สำเร็จ {{done}} ล้มเหลว {{failed}}",
+    "notificationTitle": "ชุดงาน EncodeX เสร็จสิ้น",
     "filters": {
       "all": "ทั้งหมด",
       "queued": "รอคิว",

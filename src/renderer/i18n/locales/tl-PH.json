@@ -279,6 +279,7 @@
     "stats": "{{queued}} naka-queue, {{running}} tumatakbo, {{done}} tapos, {{failed}} nabigo",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Natapos ang batch: {{done}} nagtagumpay, {{failed}} nabigo",
+    "notificationTitle": "Natapos ang batch ng EncodeX",
     "filters": {
       "all": "Lahat",
       "queued": "Naka-queue",

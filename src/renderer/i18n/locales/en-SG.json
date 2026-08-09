@@ -279,6 +279,7 @@
     "stats": "{{queued}} queued, {{running}} running, {{done}} done, {{failed}} failed",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Batch finished: {{done}} succeeded, {{failed}} failed",
+    "notificationTitle": "EncodeX batch finished",
     "filters": {
       "all": "All",
       "queued": "Queued",

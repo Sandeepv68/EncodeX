@@ -279,6 +279,7 @@
     "stats": "{{queued}} i kö, {{running}} körs, {{done}} klara, {{failed}} misslyckade",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Batch klar: {{done}} lyckades, {{failed}} misslyckades",
+    "notificationTitle": "EncodeX-batch klar",
     "filters": {
       "all": "Alla",
       "queued": "I kö",

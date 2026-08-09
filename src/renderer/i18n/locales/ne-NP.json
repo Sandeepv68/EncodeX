@@ -279,6 +279,7 @@
     "stats": "{{queued}} कतारमा, {{running}} चल्दै, {{done}} सम्पन्न, {{failed}} असफल",
     "etaEstimate": "अनुमानित ~{{eta}}",
     "finished": "ब्याच सम्पन्न: {{done}} सफल, {{failed}} असफल",
+    "notificationTitle": "EncodeX ब्याच समाप्त भयो",
     "filters": {
       "all": "सबै",
       "queued": "कतारमा",

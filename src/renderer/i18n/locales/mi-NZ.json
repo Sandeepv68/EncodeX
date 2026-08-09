@@ -279,6 +279,7 @@
     "stats": "{{queued}} i te rārangi, {{running}} e rere ana, {{done}} oti, {{failed}} i rahua",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Kua oti te putunga: {{done}} angitu, {{failed}} i rahua",
+    "notificationTitle": "Kua oti te putunga EncodeX",
     "filters": {
       "all": "Katoa",
       "queued": "I te rārangi",

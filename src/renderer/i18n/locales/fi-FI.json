@@ -279,6 +279,7 @@
     "stats": "{{queued}} jonossa, {{running}} käynnissä, {{done}} valmis, {{failed}} epäonnistunut",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Erä valmistui: {{done}} onnistui, {{failed}} epäonnistui",
+    "notificationTitle": "EncodeX-erä valmistui",
     "filters": {
       "all": "Kaikki",
       "queued": "Jonossa",

@@ -279,6 +279,7 @@
     "stats": "{{queued}} 佇列中，{{running}} 執行中，{{done}} 已完成，{{failed}} 已失敗",
     "etaEstimate": "預計 ~{{eta}}",
     "finished": "批次處理完成：{{done}} 成功，{{failed}} 失敗",
+    "notificationTitle": "EncodeX 批次完成",
     "filters": {
       "all": "全部",
       "queued": "佇列中",

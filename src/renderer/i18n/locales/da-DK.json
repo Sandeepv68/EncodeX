@@ -279,6 +279,7 @@
     "stats": "{{queued}} i kø, {{running}} kører, {{done}} færdig, {{failed}} mislykkedes",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Batch færdig: {{done}} lykkedes, {{failed}} mislykkedes",
+    "notificationTitle": "EncodeX-batch færdig",
     "filters": {
       "all": "Alle",
       "queued": "I kø",

@@ -279,6 +279,7 @@
     "stats": "{{queued}} in Warteschlange, {{running}} laufen, {{done}} fertig, {{failed}} fehlgeschlagen",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Stapel abgeschlossen: {{done}} erfolgreich, {{failed}} fehlgeschlagen",
+    "notificationTitle": "EncodeX-Stapel abgeschlossen",
     "filters": {
       "all": "Alle",
       "queued": "In Warteschlange",

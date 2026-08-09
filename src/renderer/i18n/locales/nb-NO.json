@@ -279,6 +279,7 @@
     "stats": "{{queued}} i kø, {{running}} kjører, {{done}} ferdige, {{failed}} mislyktes",
     "etaEstimate": "Gjenstår ~{{eta}}",
     "finished": "Batch fullført: {{done}} vellykket, {{failed}} mislyktes",
+    "notificationTitle": "EncodeX-batch fullført",
     "filters": {
       "all": "Alle",
       "queued": "I kø",

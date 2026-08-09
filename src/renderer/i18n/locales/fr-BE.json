@@ -279,6 +279,7 @@
     "stats": "{{queued}} en file, {{running}} en cours, {{done}} terminés, {{failed}} en échec",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Lot terminé : {{done}} réussi, {{failed}} en échec",
+    "notificationTitle": "Lot EncodeX terminé",
     "filters": {
       "all": "Tous",
       "queued": "En file",

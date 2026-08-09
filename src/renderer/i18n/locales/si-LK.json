@@ -279,6 +279,7 @@
     "stats": "{{queued}} පෝලිමේ, {{running}} ක්‍රියාත්මක, {{done}} නිම, {{failed}} අසාර්ථක",
     "etaEstimate": "ආසන්න ~{{eta}}",
     "finished": "කණ්ඩායම නිම: {{done}} සාර්ථක, {{failed}} අසාර්ථක",
+    "notificationTitle": "EncodeX කාණ්ඩය අවසන්",
     "filters": {
       "all": "සියල්ල",
       "queued": "පෝලිමේ",

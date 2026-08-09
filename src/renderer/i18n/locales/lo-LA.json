@@ -279,6 +279,7 @@
     "stats": "{{queued}} ໃນຄິວ, {{running}} ກຳລັງແລ່ນ, {{done}} ສຳເລັດ, {{failed}} ລົ້ມເຫຼວ",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "ຊຸດສຳເລັດ: {{done}} ສຳເລັດ, {{failed}} ລົ້ມເຫຼວ",
+    "notificationTitle": "ຊຸດ EncodeX ສຳເລັດ",
     "filters": {
       "all": "ທັງໝົດ",
       "queued": "ໃນຄິວ",

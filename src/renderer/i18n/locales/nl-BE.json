@@ -279,6 +279,7 @@
     "stats": "{{queued}} in wachtrij, {{running}} actief, {{done}} klaar, {{failed}} mislukt",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Batch voltooid: {{done}} geslaagd, {{failed}} mislukt",
+    "notificationTitle": "EncodeX-batch voltooid",
     "filters": {
       "all": "Alle",
       "queued": "In wachtrij",

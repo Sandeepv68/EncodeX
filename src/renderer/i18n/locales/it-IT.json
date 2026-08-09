@@ -279,6 +279,7 @@
     "stats": "{{queued}} in coda, {{running}} in esecuzione, {{done}} completati, {{failed}} non riusciti",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Lotto completato: {{done}} riusciti, {{failed}} non riusciti",
+    "notificationTitle": "Lotto EncodeX completato",
     "filters": {
       "all": "Tutti",
       "queued": "In coda",

@@ -279,6 +279,7 @@
     "stats": "{{queued}} ikiuttat, {{running}} inissisimanitut, {{done}} naammassineqartoq, {{failed}} kinguneqanngitsut",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Batch naammassineqarpoq: {{done}} naammassineqartoq, {{failed}} kinguneqanngitsut",
+    "notificationTitle": "EncodeX batch naammassineqarpoq",
     "filters": {
       "all": "Tamarmik",
       "queued": "Ikiuttat",

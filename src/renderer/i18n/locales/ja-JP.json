@@ -279,6 +279,7 @@
     "stats": "{{queued}} 待機中、{{running}} 実行中、{{done}} 完了、{{failed}} 失敗",
     "etaEstimate": "残り約{{eta}}",
     "finished": "バッチ完了: {{done}} 成功、{{failed}} 失敗",
+    "notificationTitle": "EncodeX バッチ完了",
     "filters": {
       "all": "すべて",
       "queued": "待機中",

@@ -279,6 +279,7 @@
     "stats": "{{queued}} ក្នុងជួរ, {{running}} កំពុងដំណើរការ, {{done}} បានបញ្ចប់, {{failed}} បរាជ័យ",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "ដុំបានបញ្ចប់: {{done}} ជោគជ័យ, {{failed}} បរាជ័យ",
+    "notificationTitle": "បាច EncodeX បាណប្បាប",
     "filters": {
       "all": "ទាំងអស់",
       "queued": "ក្នុងជួរ",
