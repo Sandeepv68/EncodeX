@@ -31,6 +31,9 @@ import { IPC } from '../../../shared/ipc-channels';
 describe('registerSystemHandlers', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // The launch-at-login handler is a no-op on Linux (no login-items API),
+    // but CI runs on ubuntu-latest, so pin the platform for these tests.
+    vi.spyOn(process, 'platform', 'get').mockReturnValue('win32');
   });
 
   afterEach(() => {
@@ -63,5 +66,12 @@ describe('registerSystemHandlers', () => {
     registerSystemHandlers({} as never);
     getOnHandlers()[IPC.SET_LAUNCH_AT_LOGIN]({}, false);
     expect(appMock.setLoginItemSettings).toHaveBeenCalledWith({ openAtLogin: false });
+  });
+
+  it('SET_LAUNCH_AT_LOGIN is ignored on Linux', () => {
+    vi.spyOn(process, 'platform', 'get').mockReturnValue('linux');
+    registerSystemHandlers({} as never);
+    getOnHandlers()[IPC.SET_LAUNCH_AT_LOGIN]({}, true);
+    expect(appMock.setLoginItemSettings).not.toHaveBeenCalled();
   });
 });
