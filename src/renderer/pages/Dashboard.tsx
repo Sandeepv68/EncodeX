@@ -8,6 +8,10 @@
  * the page icon from `pageIcons` and translated title/description text keyed by
  * route through `descKeys`.
  *
+ * The welcome icon is resolved through `resolveDashboardAppIcon`, which swaps
+ * the default app icon for a festival logo when a seasonal easter-egg window is
+ * active.
+ *
  * Side effects: logs `LOG_DASHBOARD_RENDERED` once on mount for debugging.
  * No IPC calls are made from this page.
  */
@@ -19,14 +23,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import { Logger } from '../../shared/logger';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import { pageIcons } from '../pageIcons';
-import appIcon from '../../../assets/icons/Assets.xcassets/AppIcon.appiconset/1024.png';
-// import appIcon from '../../../assets/easter_eggs/encodex_logo_diwali.png';
-// import appIcon from '../../../assets/easter_eggs/encodex_logo_christmas.png';
-// import appIcon from '../../../assets/easter_eggs/encodex_logo_easter.png';
-// import appIcon from '../../../assets/easter_eggs/encodex_logo_holi.png';
-// import appIcon from '../../../assets/easter_eggs/encodex_logo_halloween.png';
-// import appIcon from '../../../assets/easter_eggs/encodex_logo_july4th.png';
-// import appIcon from '../../../assets/easter_eggs/encodex_logo_new_year.png';
+import { resolveDashboardAppIcon } from '../utils/easter-egg-assets';
 
 import {
   WelcomeTitle,
@@ -76,6 +73,7 @@ const descKeys: Record<string, string> = {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const appIcon = resolveDashboardAppIcon(new Date());
 
   /**
    * Emits a debug log marker once when the page is mounted.
