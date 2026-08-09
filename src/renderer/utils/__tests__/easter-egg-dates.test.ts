@@ -45,9 +45,9 @@ describe('getFestivalDate', () => {
     expect(getFestivalDate('holi', 2027)).toEqual(d(2027, 3, 22));
   });
 
-  it('returns null for lunar festivals outside the table', () => {
-    expect(getFestivalDate('diwali', 2020)).toBeNull();
-    expect(getFestivalDate('holi', 2036)).toBeNull();
+  it('computes lunar festivals for years outside the table', () => {
+    expect(getFestivalDate('diwali', 2020)).toEqual(d(2020, 11, 14));
+    expect(getFestivalDate('holi', 2036)).toEqual(d(2036, 3, 13));
   });
 });
 
@@ -107,7 +107,7 @@ describe('getActiveFestival lunar and computed windows', () => {
     expect(getActiveFestival(d(2026, 4, 1))).toBeNull();
   });
 
-  it('resolves a missing lunar year to no festival', () => {
+  it('stays null when outside every festival window', () => {
     expect(getActiveFestival(d(2020, 11, 8))).toBeNull();
   });
 });

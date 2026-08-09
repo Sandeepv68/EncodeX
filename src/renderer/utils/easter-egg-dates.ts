@@ -11,12 +11,16 @@
  *  - Fixed calendar dates (Christmas, Halloween, July 4th, New Year).
  *  - Easter, via the Gregorian computus algorithm (Meeus).
  *  - Diwali and Holi, which follow the Hindu lunar calendar, via a per-year
- *    table. Years missing from the table are skipped so the feature degrades
- *    gracefully instead of guessing.
+ *    table for 2026-2035. Years outside the table are resolved by an
+ *    astronomical fallback in {@link ./lunar-calendar} that is accurate to
+ *    within one day of any panchang, so the feature never silently drops a
+ *    lunar festival.
  *
  * When two festival windows overlap, the festival that appears first in
  * {@link FESTIVAL_ORDER} wins.
  */
+
+import { diwaliDate, holiDate } from './lunar-calendar';
 
 /**
  * Identifier for every festival that has a seasonal logo.
@@ -119,18 +123,22 @@ export function easterDate(year: number): Date {
 /**
  * Resolves the date a festival falls on for a given year.
  * Fixed-date festivals use the calendar, Easter is computed, and lunar
- * festivals are looked up in {@link LUNAR_FESTIVAL_DATES}.
+ * festivals are looked up in {@link LUNAR_FESTIVAL_DATES} first and computed
+ * astronomically via {@link ./lunar-calendar} for years missing from the
+ * table.
  * @param {FestivalId} id - The festival to resolve.
  * @param {number} year - The Gregorian year.
  * @returns {Date | null} The festival date, or null when it cannot be resolved
- * for that year (e.g. a lunar festival outside the lookup table).
+ * for that year.
  */
 export function getFestivalDate(id: FestivalId, year: number): Date | null {
   const fixed = FIXED_FESTIVAL_DATES[id];
   if (fixed) return new Date(year, fixed.month - 1, fixed.day);
   if (id === 'easter') return easterDate(year);
   const lunar = LUNAR_FESTIVAL_DATES[id]?.[year];
-  return lunar ? new Date(year, lunar.month - 1, lunar.day) : null;
+  if (lunar) return new Date(year, lunar.month - 1, lunar.day);
+  const computed = id === 'diwali' ? diwaliDate(year) : id === 'holi' ? holiDate(year) : null;
+  return computed ? new Date(year, computed.month - 1, computed.day) : null;
 }
 
 /**
