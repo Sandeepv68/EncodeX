@@ -294,6 +294,7 @@
     "concurrency": "Parallelle jobber",
     "pause": "Pause",
     "resume": "Fortsett",
+    "paused": "Pauset",
     "dragHandle": "Dra for å endre rekkefølge",
     "badgeCount": "{{count}} jobber i batchkøen",
     "operationTranscode": "Transkoder",

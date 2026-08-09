@@ -294,6 +294,7 @@
     "concurrency": "Równoległe zadania",
     "pause": "Pauza",
     "resume": "Wznów",
+    "paused": "Wstrzymano",
     "dragHandle": "Przeciągnij, aby zmienić kolejność",
     "badgeCount": "{{count}} zadań w kolejce wsadowej",
     "operationTranscode": "Transkodowanie",

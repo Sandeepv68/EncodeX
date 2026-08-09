@@ -294,6 +294,7 @@
     "concurrency": "平行工作",
     "pause": "暫停",
     "resume": "繼續",
+    "paused": "已暫停",
     "dragHandle": "拖曳以重新排序",
     "badgeCount": "批次佇列中有 {{count}} 個工作",
     "operationTranscode": "轉換",

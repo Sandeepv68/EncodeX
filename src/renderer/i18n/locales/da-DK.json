@@ -294,6 +294,7 @@
     "concurrency": "Samtidige job",
     "pause": "Sæt på pause",
     "resume": "Fortsæt",
+    "paused": "Sat på pause",
     "dragHandle": "Træk for at omarrangere",
     "badgeCount": "{{count}} job i batchkøen",
     "operationTranscode": "Transkod",

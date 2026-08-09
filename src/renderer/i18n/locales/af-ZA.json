@@ -294,6 +294,7 @@
     "concurrency": "Parallelle take",
     "pause": "Rus",
     "resume": "Hervat",
+    "paused": "Gepouseer",
     "dragHandle": "Sleep om te herrangskik",
     "badgeCount": "{{count}} take in die groepwaglys",
     "operationTranscode": "Transkodeer",

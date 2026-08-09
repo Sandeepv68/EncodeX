@@ -294,6 +294,7 @@
     "concurrency": "Parallel jobs",
     "pause": "Pause",
     "resume": "Resume",
+    "paused": "Paused",
     "dragHandle": "Drag to reorder",
     "badgeCount": "{{count}} jobs in the batch queue",
     "operationTranscode": "Transcode",

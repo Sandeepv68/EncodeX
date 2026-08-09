@@ -77,6 +77,9 @@ export const StatusChip = styled(Chip)(({ theme }) => ({
   '&.MuiChip-colorError': {
     backgroundColor: alpha(theme.palette.error.main, 0.18),
   },
+  '&.MuiChip-colorInfo': {
+    backgroundColor: alpha(theme.palette.info.main, 0.18),
+  },
   '&.MuiChip-colorDefault': {
     backgroundColor: theme.palette.action.hover,
   },

@@ -294,6 +294,7 @@
     "concurrency": "Ngā Mahi Whakarara",
     "pause": "Tārea",
     "resume": "Haere tonu",
+    "paused": "Kua tārewa",
     "dragHandle": "Tōia hei whakarārangi anō",
     "badgeCount": "{{count}} mahi i te rārangi tukinotanga",
     "operationTranscode": "Whakawhitiwaehere",

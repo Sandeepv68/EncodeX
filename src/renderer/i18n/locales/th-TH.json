@@ -294,6 +294,7 @@
     "concurrency": "งานแบบขนาน",
     "pause": "หยุดชั่วคราว",
     "resume": "ดำเนินการต่อ",
+    "paused": "หยุดชั่วคราว",
     "dragHandle": "ลากเพื่อจัดเรียงใหม่",
     "badgeCount": "{{count}} งานในคิว",
     "operationTranscode": "ทรานส์โค้ด",

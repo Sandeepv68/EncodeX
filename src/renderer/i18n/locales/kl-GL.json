@@ -294,6 +294,7 @@
     "concurrency": "Concurrency",
     "pause": "Unartak",
     "resume": "Saqqummersaruk",
+    "paused": "Unartoq",
     "dragHandle": "Drag-immik allanngortit",
     "badgeCount": "{{count}} suliassat ikiuttut",
     "operationTranscode": "Transcode",

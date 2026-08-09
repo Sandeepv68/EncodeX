@@ -294,6 +294,7 @@
     "concurrency": "משימות מקבילות",
     "pause": "השהיה",
     "resume": "המשך",
+    "paused": "מושהה",
     "dragHandle": "גרור כדי לסדר מחדש",
     "badgeCount": "{{count}} משימות בתור האצווה",
     "operationTranscode": "המרה",

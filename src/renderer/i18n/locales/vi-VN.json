@@ -294,6 +294,7 @@
     "concurrency": "Tác vụ song song",
     "pause": "Tạm dừng",
     "resume": "Tiếp tục",
+    "paused": "Đã tạm dừng",
     "dragHandle": "Kéo để sắp xếp lại",
     "badgeCount": "{{count}} tác vụ trong hàng đợi hàng loạt",
     "operationTranscode": "Transcode",

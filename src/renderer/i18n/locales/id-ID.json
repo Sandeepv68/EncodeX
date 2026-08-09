@@ -294,6 +294,7 @@
     "concurrency": "Tugas paralel",
     "pause": "Jeda",
     "resume": "Lanjutkan",
+    "paused": "Dijeda",
     "dragHandle": "Seret untuk mengurutkan ulang",
     "badgeCount": "{{count}} pekerjaan dalam antrean batch",
     "operationTranscode": "Transkode",

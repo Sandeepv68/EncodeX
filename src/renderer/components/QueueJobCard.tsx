@@ -10,9 +10,10 @@
  * retrying.
  *
  * Status colors map QUEUE_STATUS values to MUI chip colors (queued = warning,
- * running = primary, done = success, error = error). The progress bar is
- * wrapped in an ErrorBoundary so a renderer failure in one card never breaks
- * the queue list.
+ * running = primary, done = success, error = error). A running job whose queue
+ * is paused additionally shows a warning "paused" chip next to the status chip.
+ * The progress bar is wrapped in an ErrorBoundary so a renderer failure in one
+ * card never breaks the queue list.
  *
  * The default export wires the card into @dnd-kit's sortable context so QUEUED
  * jobs can be reordered by dragging the grip handle (non-queued jobs are not
@@ -282,7 +283,7 @@ export function QueueJobCardContent({
               </EllipsisTooltip>
             </Box>
             <CardActionsStack direction="row" spacing={1}>
-              {job.status === QUEUE_STATUS.QUEUED && handleProps && !dragOverlay && (
+              {job.status === QUEUE_STATUS.QUEUED && handleProps && !dragOverlay && !expanded && (
                 <Tooltip title={t('batchQueue.dragHandle')}>
                   <DragHandleButton
                     size="small"
@@ -295,6 +296,9 @@ export function QueueJobCardContent({
                 </Tooltip>
               )}
               <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
+              {job.status === QUEUE_STATUS.RUNNING && job.paused && (
+                <StatusChip label={t('batchQueue.paused')} color="info" variant="outlined" data-testid="queue-job-paused-badge" />
+              )}
               {job.status === QUEUE_STATUS.ERROR && onRetry && (
                 <Tooltip title={t('batchQueue.retry')}>
                   <IconButton size="small" aria-label={t('batchQueue.retry')} onClick={() => onRetry(job)}>

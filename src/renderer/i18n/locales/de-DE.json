@@ -294,6 +294,7 @@
     "concurrency": "Parallele Aufgaben",
     "pause": "Pausieren",
     "resume": "Fortsetzen",
+    "paused": "Pausiert",
     "dragHandle": "Zum Neuanordnen ziehen",
     "badgeCount": "{{count}} Aufträge in der Stapelwarteschlange",
     "operationTranscode": "Transkodieren",

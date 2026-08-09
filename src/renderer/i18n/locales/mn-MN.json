@@ -294,6 +294,7 @@
     "concurrency": "Зэрэгцээ ажлууд",
     "pause": "Түр зогсоох",
     "resume": "Үргэлжлүүлэх",
+    "paused": "Түр зогссон",
     "dragHandle": "Дараалал өөрчлөхийн тулд чирнэ үү",
     "badgeCount": "Багц дараалалд {{count}} ажил",
     "operationTranscode": "Транскод",

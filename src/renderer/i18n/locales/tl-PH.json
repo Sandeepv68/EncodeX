@@ -294,6 +294,7 @@
     "concurrency": "Mga parallel job",
     "pause": "I-pause",
     "resume": "Ipagpatuloy",
+    "paused": "Naka-pause",
     "dragHandle": "I-drag para i-reorder",
     "badgeCount": "{{count}} job sa batch queue",
     "operationTranscode": "Transcode",

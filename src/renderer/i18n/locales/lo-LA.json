@@ -294,6 +294,7 @@
     "concurrency": "ວຽກພ້ອມກັນ",
     "pause": "ຢຸດຊົ່ວຄາວ",
     "resume": "ສືບຕໍ່",
+    "paused": "ຖືກຢຸດຊົ່ວຄາວ",
     "dragHandle": "ລາກເພື່ອຈັດລຳດັບ",
     "badgeCount": "{{count}} ວຽກໃນຄິວຫຼາຍອັນ",
     "operationTranscode": "Transcode",

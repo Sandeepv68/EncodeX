@@ -294,6 +294,7 @@
     "concurrency": "Parallelle taken",
     "pause": "Pauzeren",
     "resume": "Hervatten",
+    "paused": "Gepauzeerd",
     "dragHandle": "Sleep om te herschikken",
     "badgeCount": "{{count}} taken in de batchwachtrij",
     "operationTranscode": "Transcoderen",

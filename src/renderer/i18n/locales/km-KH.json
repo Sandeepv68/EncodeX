@@ -294,6 +294,7 @@
     "concurrency": "កិច្ចការស្របគ្នា",
     "pause": "ផ្អាក",
     "resume": "បន្ត",
+    "paused": "បានផ្អាក",
     "dragHandle": "អូសដើម្បីរៀបចំឡើងវិញ",
     "badgeCount": "{{count}} កិច្ចការក្នុងជួរដេកដុំ",
     "operationTranscode": "Transcode",

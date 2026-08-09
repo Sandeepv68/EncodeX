@@ -294,6 +294,7 @@
     "concurrency": "并行任务",
     "pause": "暂停",
     "resume": "继续",
+    "paused": "已暂停",
     "dragHandle": "拖动以重新排序",
     "badgeCount": "批量队列中有 {{count}} 个任务",
     "operationTranscode": "转码",

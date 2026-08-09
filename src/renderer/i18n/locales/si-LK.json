@@ -294,6 +294,7 @@
     "concurrency": "සමාන්තර කාර්යයන්",
     "pause": "විරාමය",
     "resume": "නැවත ආරම්භ කරන්න",
+    "paused": "විරාමය",
     "dragHandle": "නැවත ඇණවුම් කිරීමට ඇදගෙන යන්න",
     "badgeCount": "කණ්ඩායම් පෝලිමේ {{count}} කාර්යයන්",
     "operationTranscode": "ට්‍රාන්ස්කෝඩ්",

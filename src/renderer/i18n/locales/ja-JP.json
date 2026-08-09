@@ -294,6 +294,7 @@
     "concurrency": "並行ジョブ",
     "pause": "一時停止",
     "resume": "再開",
+    "paused": "一時停止中",
     "dragHandle": "ドラッグして並べ替え",
     "badgeCount": "バッチキューのジョブが{{count}}件",
     "operationTranscode": "トランスコード",

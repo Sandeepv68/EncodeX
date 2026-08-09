@@ -294,6 +294,7 @@
     "concurrency": "Poist Chomhthráthacha",
     "pause": "Sos",
     "resume": "Atosaigh",
+    "paused": "Ar sos",
     "dragHandle": "Tarraing chun athordú",
     "badgeCount": "{{count}} post sa scuaine bhaisc",
     "operationTranscode": "Traschódú",

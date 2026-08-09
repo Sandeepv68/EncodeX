@@ -294,6 +294,7 @@
     "concurrency": "Samanaikaiset työt",
     "pause": "Keskeytä",
     "resume": "Jatka",
+    "paused": "Tauolla",
     "dragHandle": "Vedä järjestääksesi uudelleen",
     "badgeCount": "{{count}} työtä eräjonossa",
     "operationTranscode": "Transkoodaus",

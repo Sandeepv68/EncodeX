@@ -294,6 +294,7 @@
     "concurrency": "Parallella jobb",
     "pause": "Pausa",
     "resume": "Återuppta",
+    "paused": "Pausad",
     "dragHandle": "Dra för att sortera om",
     "badgeCount": "{{count}} jobb i batchkön",
     "operationTranscode": "Omkoda",

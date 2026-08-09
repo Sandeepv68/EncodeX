@@ -294,6 +294,7 @@
     "concurrency": "Tâches en parallèle",
     "pause": "Pause",
     "resume": "Reprendre",
+    "paused": "En pause",
     "dragHandle": "Glisser pour réordonner",
     "badgeCount": "{{count}} tâches dans la file d'attente",
     "operationTranscode": "Transcoder",

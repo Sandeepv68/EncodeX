@@ -294,6 +294,7 @@
     "concurrency": "Samhliða verk",
     "pause": "Gera hlé",
     "resume": "Halda áfram",
+    "paused": "Í bið",
     "dragHandle": "Dragðu til að endurraða",
     "badgeCount": "{{count}} verk í runubraut",
     "operationTranscode": "Umkóða",

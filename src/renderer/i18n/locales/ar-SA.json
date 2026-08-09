@@ -294,6 +294,7 @@
     "concurrency": "مهام متوازية",
     "pause": "إيقاف مؤقت",
     "resume": "استئناف",
+    "paused": "إيقاف مؤقت",
     "dragHandle": "اسحب لإعادة الترتيب",
     "badgeCount": "{{count}} مهام في قائمة الدفعات",
     "operationTranscode": "تحويل الشفرة",

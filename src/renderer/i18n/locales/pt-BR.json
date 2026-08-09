@@ -294,6 +294,7 @@
     "concurrency": "Trabalhos em paralelo",
     "pause": "Pausar",
     "resume": "Retomar",
+    "paused": "Em pausa",
     "dragHandle": "Arraste para reordenar",
     "badgeCount": "{{count}} trabalhos na fila em lote",
     "operationTranscode": "Transcodificar",

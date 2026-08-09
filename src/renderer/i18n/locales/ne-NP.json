@@ -294,6 +294,7 @@
     "concurrency": "समानान्तर कामहरू",
     "pause": "रोक्नुहोस्",
     "resume": "जारी राख्नुहोस्",
+    "paused": "रोकिएको",
     "dragHandle": "पुनः क्रमबद्ध गर्न तान्नुहोस्",
     "badgeCount": "ब्याच कतारमा {{count}} कामहरू",
     "operationTranscode": "ट्रान्सकोड",

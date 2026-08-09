@@ -80,6 +80,16 @@ describe('QueueJobCard', () => {
     expect(screen.getByText('50.0%')).toBeInTheDocument();
   });
 
+  it('renders a paused badge when a running job is paused', () => {
+    renderCard(<QueueJobCard job={makeJob({ status: QUEUE_STATUS.RUNNING, paused: true })} onRemove={() => {}} />);
+    expect(screen.getByTestId('queue-job-paused-badge')).toHaveTextContent('batchQueue.paused');
+  });
+
+  it('does not render a paused badge when a running job is not paused', () => {
+    renderCard(<QueueJobCard job={makeJob({ status: QUEUE_STATUS.RUNNING, paused: false })} onRemove={() => {}} />);
+    expect(screen.queryByTestId('queue-job-paused-badge')).not.toBeInTheDocument();
+  });
+
   it('renders live time/speed/eta captions from the progress snapshot', () => {
     render(
       <QueueJobCard

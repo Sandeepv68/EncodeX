@@ -294,6 +294,7 @@
     "concurrency": "병렬 작업",
     "pause": "일시 정지",
     "resume": "재개",
+    "paused": "일시정지됨",
     "dragHandle": "드래그하여 재정렬",
     "badgeCount": "배치 큐에 작업 {{count}}개",
     "operationTranscode": "트랜스코드",
