@@ -56,6 +56,11 @@ export const StatusChip = styled(Chip)(({ theme }) => ({
   height: theme.typography.pxToRem(28),
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
   '& .MuiChip-label': {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    lineHeight: 1,
     textTransform: 'uppercase',
     fontWeight: theme.typography.fontWeightBold,
     fontSize: theme.typography.pxToRem(11),
