@@ -27,6 +27,12 @@
     "descCut": "Trimma och klipp video med en bildruteexakt spelare",
     "descBatch": "Konvertera många filer samtidigt med en smart kö"
   },
+  "closeConfirm": {
+    "title": "Stänga EncodeX?",
+    "message": "Ett eller flera jobb körs fortfarande. Stänger du nu avbryts de.",
+    "confirmLabel": "Stäng ändå",
+    "cancelLabel": "Avbryt"
+  },
   "convert": {
     "title": "Konvertera media",
     "inputFile": "Indatafil",

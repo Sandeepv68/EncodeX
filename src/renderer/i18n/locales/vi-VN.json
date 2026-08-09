@@ -27,6 +27,12 @@
     "descCut": "Cắt video với độ chính xác theo khung hình",
     "descBatch": "Chuyển đổi nhiều tệp cùng lúc với hàng đợi thông minh"
   },
+  "closeConfirm": {
+    "title": "Đóng EncodeX?",
+    "message": "Một hoặc nhiều công việc vẫn đang chạy. Đóng ngay bây giờ sẽ hủy chúng.",
+    "confirmLabel": "Vẫn đóng",
+    "cancelLabel": "Hủy"
+  },
   "convert": {
     "title": "Chuyển đổi phương tiện",
     "inputFile": "Tệp đầu vào",

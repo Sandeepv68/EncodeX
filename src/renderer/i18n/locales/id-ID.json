@@ -27,6 +27,12 @@
     "descCut": "Pangkas dan potong video dengan pemutar presisi bingkai",
     "descBatch": "Konversi banyak file sekaligus dengan antrean cerdas"
   },
+  "closeConfirm": {
+    "title": "Tutup EncodeX?",
+    "message": "Satu atau lebih pekerjaan masih berjalan. Menutup sekarang akan membatalkannya.",
+    "confirmLabel": "Tetap tutup",
+    "cancelLabel": "Batal"
+  },
   "convert": {
     "title": "Konversi Media",
     "inputFile": "File Masukan",

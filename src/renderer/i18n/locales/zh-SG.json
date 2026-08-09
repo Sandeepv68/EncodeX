@@ -27,6 +27,12 @@
     "descCut": "使用帧精确的播放器来修剪和剪切视频",
     "descBatch": "通过智能队列一次转换多个文件"
   },
+  "closeConfirm": {
+    "title": "关闭 EncodeX？",
+    "message": "仍有一个或多个任务正在进行。现在关闭将取消它们。",
+    "confirmLabel": "仍然关闭",
+    "cancelLabel": "取消"
+  },
   "convert": {
     "title": "转换媒体",
     "inputFile": "输入文件",

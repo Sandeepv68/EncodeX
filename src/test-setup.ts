@@ -44,6 +44,10 @@ vi.mock('react-i18next', () => ({
         'mediaInfo.video': 'Video',
         'mediaInfo.audio': 'Audio',
         'mediaInfo.subtitle': 'Subtitle',
+        'closeConfirm.title': 'Close EncodeX?',
+        'closeConfirm.message': 'One or more jobs are still in progress. Closing now will cancel them.',
+        'closeConfirm.confirmLabel': 'Close Anyway',
+        'closeConfirm.cancelLabel': 'Cancel',
       };
       let text = map[key] || (opts?.defaultValue as string | undefined) || key;
       if (opts) {
@@ -101,6 +105,8 @@ Object.defineProperty(globalThis, 'electronAPI', {
     windowMinimize: vi.fn(),
     windowMaximizeToggle: vi.fn(),
     windowClose: vi.fn(),
+    windowCloseConfirmed: vi.fn(),
+    onWindowCloseRequested: vi.fn(() => vi.fn()),
     windowSetAlwaysOnTop: vi.fn(),
     setLaunchAtLogin: vi.fn(),
     onWindowMaximizedChange: vi.fn(() => vi.fn()),

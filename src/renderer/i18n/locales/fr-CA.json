@@ -27,6 +27,12 @@
     "descCut": "Rognez et coupez la vidéo avec un lecteur précis au frame près",
     "descBatch": "Convertissez plusieurs fichiers à la fois avec une file d'attente intelligente"
   },
+  "closeConfirm": {
+    "title": "Fermer EncodeX ?",
+    "message": "Une ou plusieurs tâches sont encore en cours. Les fermer maintenant les annulera.",
+    "confirmLabel": "Fermer quand même",
+    "cancelLabel": "Annuler"
+  },
   "convert": {
     "title": "Convertir un Média",
     "inputFile": "Fichier d'Entrée",

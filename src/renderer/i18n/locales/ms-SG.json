@@ -27,6 +27,12 @@
     "descCut": "Pangkas dan potong video dengan pemain tepat bingkai",
     "descBatch": "Tukar banyak fail sekaligus dengan baris giliran pintar"
   },
+  "closeConfirm": {
+    "title": "Tutup EncodeX?",
+    "message": "Satu atau lebih tugasan masih berjalan. Menutup sekarang akan membatalkannya.",
+    "confirmLabel": "Tetap tutup",
+    "cancelLabel": "Batal"
+  },
   "convert": {
     "title": "Tukar Media",
     "inputFile": "Fail Input",

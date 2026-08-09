@@ -27,6 +27,12 @@
     "descCut": "프레임 정확도 플레이어로 비디오 다듬기 및 자르기",
     "descBatch": "스마트 큐로 여러 파일을 한 번에 변환"
   },
+  "closeConfirm": {
+    "title": "EncodeX를 닫을까요?",
+    "message": "진행 중인 작업이 아직 있습니다. 지금 닫으면 취소됩니다.",
+    "confirmLabel": "닫기",
+    "cancelLabel": "취소"
+  },
   "convert": {
     "title": "미디어 변환",
     "inputFile": "입력 파일",

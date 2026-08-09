@@ -27,6 +27,12 @@
     "descCut": "Przycinaj i tnij wideo z dokładnym do klatki odtwarzaczem",
     "descBatch": "Konwertuj wiele plików naraz dzięki inteligentnej kolejce"
   },
+  "closeConfirm": {
+    "title": "Zamknąć EncodeX?",
+    "message": "Jedno lub więcej zadań nadal działa. Zamknięcie teraz anuluje je.",
+    "confirmLabel": "Zamknij mimo to",
+    "cancelLabel": "Anuluj"
+  },
   "convert": {
     "title": "Konwertuj multimedia",
     "inputFile": "Plik wejściowy",

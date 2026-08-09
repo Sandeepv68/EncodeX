@@ -47,6 +47,8 @@
  * @property {string} WINDOW_MINIMIZE - Minimize the main window.
  * @property {string} WINDOW_MAXIMIZE_TOGGLE - Toggle the window maximize state.
  * @property {string} WINDOW_CLOSE - Close the main window.
+ * @property {string} WINDOW_CLOSE_REQUESTED - Ask the renderer to verify active jobs before closing.
+ * @property {string} WINDOW_CONFIRM_CLOSE - Confirm the close after active-job verification.
  * @property {string} WINDOW_SET_ALWAYS_ON_TOP - Set the always-on-top window flag.
  * @property {string} WINDOW_MAXIMIZED_CHANGED - Notify that the maximize state changed.
  * @property {string} CONVERSION_PROGRESS - Push conversion progress updates.
@@ -102,6 +104,8 @@ export const IPC = {
   WINDOW_MINIMIZE: 'window-minimize',
   WINDOW_MAXIMIZE_TOGGLE: 'window-maximize-toggle',
   WINDOW_CLOSE: 'window-close',
+  WINDOW_CLOSE_REQUESTED: 'window-close-requested',
+  WINDOW_CONFIRM_CLOSE: 'window-confirm-close',
   WINDOW_SET_ALWAYS_ON_TOP: 'window-set-always-on-top',
   WINDOW_MAXIMIZED_CHANGED: 'window-maximized-changed',
 

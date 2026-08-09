@@ -27,6 +27,12 @@
     "descCut": "Trim and cut video with a frame-accurate player",
     "descBatch": "Convert many files at once with a smart queue"
   },
+  "closeConfirm": {
+    "title": "Close EncodeX?",
+    "message": "One or more jobs are still in progress. Closing now will cancel them.",
+    "confirmLabel": "Close Anyway",
+    "cancelLabel": "Cancel"
+  },
   "convert": {
     "title": "Convert Media",
     "inputFile": "Input File",

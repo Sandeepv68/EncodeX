@@ -27,6 +27,12 @@
     "descCut": "Gearr físeáin le cruinneas fráma",
     "descBatch": "Tiontaigh comhaid iolracha ag an am céanna le scuaine chliste"
   },
+  "closeConfirm": {
+    "title": "Dún EncodeX?",
+    "message": "Tá post amháin nó níos mó fós ar siúl. Déanfar iad a chealú má dhúnann tú anois.",
+    "confirmLabel": "Dún ar aon nós",
+    "cancelLabel": "Cealaigh"
+  },
   "convert": {
     "title": "Tiontaigh Meán",
     "inputFile": "Comhad Ionchuir",

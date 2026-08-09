@@ -27,6 +27,12 @@
     "descCut": "Snoei en sny video met 'n raam-akkurate speler",
     "descBatch": "Skakel baie lêers gelyktydig om met 'n slim waglys"
   },
+  "closeConfirm": {
+    "title": "Maak EncodeX toe?",
+    "message": "Een of meer take is nog besig. As u nou toemaak, sal hulle gekanselleer word.",
+    "confirmLabel": "Maak tog toe",
+    "cancelLabel": "Kanselleer"
+  },
   "convert": {
     "title": "Skakel Media Om",
     "inputFile": "Invoerlêer",

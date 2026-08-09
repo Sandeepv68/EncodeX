@@ -27,6 +27,12 @@
     "descCut": "Ritaglia e taglia video con un player frame-accurato",
     "descBatch": "Converti molti file in una volta con una coda intelligente"
   },
+  "closeConfirm": {
+    "title": "Chiudere EncodeX?",
+    "message": "Uno o più lavori sono ancora in corso. Chiudendo ora verranno annullati.",
+    "confirmLabel": "Chiudi comunque",
+    "cancelLabel": "Annulla"
+  },
   "convert": {
     "title": "Converti file",
     "inputFile": "File di input",

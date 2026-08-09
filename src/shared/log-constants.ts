@@ -388,6 +388,10 @@ export const LOG_IPC_SELECT_DIRECTORY_CALLED = 'SELECT_DIRECTORY called';
 export const LOG_IPC_SELECT_DIRECTORY_RESULT = 'SELECT_DIRECTORY result:';
 /** @const {string} Logged when the WINDOW_CLOSE IPC message is received. */
 export const LOG_IPC_WINDOW_CLOSE = 'WINDOW_CLOSE';
+/** @const {string} Logged when the WINDOW_CONFIRM_CLOSE IPC message is received. */
+export const LOG_IPC_WINDOW_CONFIRM_CLOSE = 'WINDOW_CONFIRM_CLOSE';
+/** @const {string} Logged when the WINDOW_CLOSE_REQUESTED message is sent to the renderer. */
+export const LOG_IPC_WINDOW_CLOSE_REQUESTED = 'WINDOW_CLOSE_REQUESTED';
 /** @const {string} Logged when the WINDOW_MAXIMIZE_TOGGLE IPC message is received. */
 export const LOG_IPC_WINDOW_MAXIMIZE_TOGGLE = 'WINDOW_MAXIMIZE_TOGGLE';
 /** @const {string} Logged when the WINDOW_MINIMIZE IPC message is received. */
@@ -623,6 +627,10 @@ export const LOG_SET_INPUT_FILE = 'setInputFile:';
 export const LOG_SET_INCLUDE_AUDIO = 'setIncludeAudio:';
 /** @const {string} Prefix when the converting state is set. */
 export const LOG_SET_IS_CONVERTING = 'setIsConverting:';
+/** @const {string} Prefix when a media task starts. */
+export const LOG_MEDIA_TASK_STARTED = 'Media task started';
+/** @const {string} Prefix when a media task finishes. */
+export const LOG_MEDIA_TASK_FINISHED = 'Media task finished';
 /** @const {string} Prefix when the paused state is set. */
 export const LOG_SET_IS_PAUSED = 'setIsPaused:';
 /** @const {string} Prefix when the job list is set. */
@@ -725,6 +733,10 @@ export const LOG_WAVEFORM_SEGMENT_FAILED_WITH_CODE = 'Waveform segment failed wi
 export const LOG_WEB_AUDIO_IS_NOT_AVAILABLE_AUDIO_PLAYBACK_DISABLED = 'Web Audio is not available, audio playback disabled';
 /** @const {string} Logged when windowClose is invoked. */
 export const LOG_WINDOW_CLOSE_CALLED = 'windowClose called';
+/** @const {string} Logged when windowCloseConfirmed is invoked. */
+export const LOG_WINDOW_CONFIRM_CLOSE_CALLED = 'windowCloseConfirmed called';
+/** @const {string} Logged when a window close request is received from the main process. */
+export const LOG_ON_WINDOW_CLOSE_REQUESTED = 'onWindowCloseRequested';
 /** @const {string} Logged when windowMaximizeToggle is invoked. */
 export const LOG_WINDOW_MAXIMIZE_TOGGLE_CALLED = 'windowMaximizeToggle called';
 /** @const {string} Logged when windowMinimize is invoked. */

@@ -107,6 +107,8 @@ import {
   LOG_SELECT_OUTPUT_CALLED,
   LOG_TRANSCODER,
   LOG_WINDOW_CLOSE_CALLED,
+  LOG_WINDOW_CONFIRM_CLOSE_CALLED,
+  LOG_ON_WINDOW_CLOSE_REQUESTED,
   LOG_WINDOW_MAXIMIZE_TOGGLE_CALLED,
   LOG_WINDOW_MINIMIZE_CALLED,
   LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED,
@@ -643,6 +645,38 @@ const api = {
   windowClose: () => {
     log.debug(LOG_WINDOW_CLOSE_CALLED);
     ipcRenderer.send(IPC.WINDOW_CLOSE);
+  },
+  /**
+   * Confirms that the window may close after the renderer verified no jobs are
+   * in progress (or the user chose to close anyway). Fire-and-forget: logs the
+   * call at debug level and sends `IPC.WINDOW_CONFIRM_CLOSE`
+   * ('window-confirm-close') via `ipcRenderer.send`. The main process marks the
+   * close as confirmed and re-invokes the window close.
+   *
+   * @returns {void}
+   */
+  windowCloseConfirmed: () => {
+    log.debug(LOG_WINDOW_CONFIRM_CLOSE_CALLED);
+    ipcRenderer.send(IPC.WINDOW_CONFIRM_CLOSE);
+  },
+  /**
+   * Subscribes to window close requests pushed by the main process over
+   * `IPC.WINDOW_CLOSE_REQUESTED` ('window-close-requested'). The main process
+   * sends this whenever a close is attempted, asking the renderer to verify
+   * whether any jobs are still in progress. The renderer should either close
+   * immediately (via `windowCloseConfirmed`) or ask the user for confirmation.
+   * Logs each request at info level.
+   *
+   * @param {() => void} cb - Callback invoked when a close request arrives.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onWindowCloseRequested: (cb: () => void) => {
+    const handler = (_event: IpcRendererEvent) => {
+      log.info(LOG_ON_WINDOW_CLOSE_REQUESTED);
+      cb();
+    };
+    ipcRenderer.on(IPC.WINDOW_CLOSE_REQUESTED, handler);
+    return () => ipcRenderer.removeListener(IPC.WINDOW_CLOSE_REQUESTED, handler);
   },
   /**
    * Sets whether the application window should stay on top of other windows.

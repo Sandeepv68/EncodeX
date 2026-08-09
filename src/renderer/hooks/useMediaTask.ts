@@ -17,6 +17,7 @@ import { Logger } from '../../shared/logger';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import type { ConversionProgress } from '../../shared/types';
 import { useErrorStore } from '../stores/errorStore';
+import { useTaskStore } from '../stores/taskStore';
 import { LOG_SUBSCRIBING_TO_CONVERSION_PROGRESS, LOG_UNSUBSCRIBING_FROM_CONVERSION_PROGRESS } from '../../shared/log-constants';
 import type { TaskProgress } from './types';
 
@@ -55,7 +56,9 @@ const log = new Logger('renderer/hooks/useMediaTask');
  *   the progress state, exposed so callers can update progress themselves.
  * @property {boolean} isConverting - True while a task is running.
  * @property {(task: () => Promise<void>) => Promise<void>} runTask - Runs a task
- *   with the shared lifecycle, setting progress to 100% on success.
+ *   with the shared lifecycle, setting progress to 100% on success. The running
+ *   state is mirrored into the global task store so cross-cutting features
+ *   (e.g. the close-confirmation dialog) can detect in-progress jobs.
  */
 export function useMediaTask() {
   const [progress, setProgress] = useState<TaskProgress | null>(null);
@@ -80,6 +83,7 @@ export function useMediaTask() {
     async (task: () => Promise<void>) => {
       isConvertingRef.current = true;
       setIsConverting(true);
+      useTaskStore.getState().setIsConverting(true);
       try {
         await task();
         setProgress(COMPLETED_PROGRESS);
@@ -88,6 +92,7 @@ export function useMediaTask() {
       } finally {
         isConvertingRef.current = false;
         setIsConverting(false);
+        useTaskStore.getState().setIsConverting(false);
       }
     },
     [showError],

@@ -338,6 +338,23 @@ export interface ElectronAPI {
    */
   windowClose(): void;
   /**
+   * Confirms that the window may close after the renderer verified no jobs are
+   * in progress (or the user chose to close anyway). Fire-and-forget over the
+   * `IPC.WINDOW_CONFIRM_CLOSE` ('window-confirm-close') channel; the main
+   * process marks the close as confirmed and completes the window teardown.
+   * @returns {void}
+   */
+  windowCloseConfirmed(): void;
+  /**
+   * Subscribes to window close requests pushed from the main process over
+   * `IPC.WINDOW_CLOSE_REQUESTED` ('window-close-requested'). The main process
+   * sends this whenever a close is attempted, asking the renderer to verify
+   * whether any jobs are still in progress.
+   * @param {() => void} cb - Callback invoked when a close request arrives.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onWindowCloseRequested(cb: () => void): () => void;
+  /**
    * Sets whether the application window should stay on top of other windows.
    * Fire-and-forget over the `IPC.WINDOW_SET_ALWAYS_ON_TOP`
    * ('window-set-always-on-top') channel.

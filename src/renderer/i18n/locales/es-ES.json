@@ -27,6 +27,12 @@
     "descCut": "Recorta y corta vídeo con un reproductor preciso por fotogramas",
     "descBatch": "Convierte muchos archivos a la vez con una cola inteligente"
   },
+  "closeConfirm": {
+    "title": "¿Cerrar EncodeX?",
+    "message": "Todavía hay uno o más trabajos en curso. Si cierras ahora, se cancelarán.",
+    "confirmLabel": "Cerrar de todos modos",
+    "cancelLabel": "Cancelar"
+  },
   "convert": {
     "title": "Convertir Multimedia",
     "inputFile": "Archivo de Entrada",

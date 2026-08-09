@@ -27,6 +27,12 @@
     "descCut": "Video nakassat frame-nut naliginissaanut naapertuuttumik",
     "descBatch": "Assersuutit arlallit ataatsimut allanngortit"
   },
+  "closeConfirm": {
+    "title": "EncodeX qummassava?",
+    "message": "Suliassaq marluk ingerlanneqarpoq. Matuigaanni unitsippaat.",
+    "confirmLabel": "Qummassaaq",
+    "cancelLabel": "Naamik"
+  },
   "convert": {
     "title": "Media allanngortit",
     "inputFile": "Iserneqassaaq",

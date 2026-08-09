@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useMediaTask } from '../useMediaTask';
 import { useErrorStore } from '../../stores/errorStore';
+import { useTaskStore } from '../../stores/taskStore';
 import type { ConversionProgress } from '../../../shared/types';
 
 const onConversionProgressMock = vi.mocked(window.electronAPI.onConversionProgress);
@@ -9,6 +10,7 @@ const onConversionProgressMock = vi.mocked(window.electronAPI.onConversionProgre
 describe('useMediaTask', () => {
   beforeEach(() => {
     useErrorStore.setState({ currentError: null, errorHistory: [] });
+    useTaskStore.setState({ isConverting: false });
     onConversionProgressMock.mockReset();
     onConversionProgressMock.mockReturnValue(vi.fn());
   });
@@ -25,6 +27,7 @@ describe('useMediaTask', () => {
       await result.current.runTask(async () => {});
     });
     expect(result.current.isConverting).toBe(false);
+    expect(useTaskStore.getState().isConverting).toBe(false);
     expect(result.current.progress).toEqual({ percent: 100, time: 'Done', speed: '-', eta: '0' });
   });
 
@@ -37,6 +40,7 @@ describe('useMediaTask', () => {
     });
     expect(useErrorStore.getState().currentError?.detail).toBe('boom');
     expect(result.current.isConverting).toBe(false);
+    expect(useTaskStore.getState().isConverting).toBe(false);
     expect(result.current.progress).toBeNull();
   });
 
@@ -61,6 +65,7 @@ describe('useMediaTask', () => {
       pending = result.current.runTask(() => new Promise<void>((resolve) => (resolveTask = resolve)));
     });
     expect(result.current.isConverting).toBe(true);
+    expect(useTaskStore.getState().isConverting).toBe(true);
     act(() => {
       progressCb?.({
         input: 'in.png',
@@ -73,6 +78,7 @@ describe('useMediaTask', () => {
       resolveTask();
       await pending;
     });
+    expect(useTaskStore.getState().isConverting).toBe(false);
   });
 
   it('ignores conversion progress events when no task is running', () => {

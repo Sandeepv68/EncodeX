@@ -27,6 +27,12 @@
     "descCut": "フレーム精度のプレーヤーで動画をトリム・カット",
     "descBatch": "スマートなキューで多数のファイルをまとめて変換"
   },
+  "closeConfirm": {
+    "title": "EncodeX を閉じますか?",
+    "message": "進行中のジョブがまだあります。今閉じるとキャンセルされます。",
+    "confirmLabel": "閉じる",
+    "cancelLabel": "キャンセル"
+  },
   "convert": {
     "title": "メディア変換",
     "inputFile": "入力ファイル",

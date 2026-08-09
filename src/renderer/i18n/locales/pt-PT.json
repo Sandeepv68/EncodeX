@@ -27,6 +27,12 @@
     "descCut": "Aparar e cortar vídeo com um leitor preciso ao frame",
     "descBatch": "Converta vários ficheiros de uma vez com uma fila inteligente"
   },
+  "closeConfirm": {
+    "title": "Fechar o EncodeX?",
+    "message": "Uma ou mais tarefas ainda estão em andamento. Fechar agora vai cancelá-las.",
+    "confirmLabel": "Fechar mesmo assim",
+    "cancelLabel": "Cancelar"
+  },
   "convert": {
     "title": "Converter Mídia",
     "inputFile": "Ficheiro de Entrada",

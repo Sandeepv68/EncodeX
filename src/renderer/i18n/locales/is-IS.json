@@ -27,6 +27,12 @@
     "descCut": "Klippa myndbönd með ramma-nákvæmni",
     "descBatch": "Umbreyta mörgum skrám samtímis með snjallri braut"
   },
+  "closeConfirm": {
+    "title": "Loka EncodeX?",
+    "message": "Eitt eða fleiri verk er enn í gangi. Að loka nú mun aflýsa þeim.",
+    "confirmLabel": "Loka samt",
+    "cancelLabel": "Hætta við"
+  },
   "convert": {
     "title": "Umbreyta miðli",
     "inputFile": "Inntaksskrá",

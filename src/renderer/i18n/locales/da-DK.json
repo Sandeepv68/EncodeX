@@ -27,6 +27,12 @@
     "descCut": "Klip videoer med frame-præcision",
     "descBatch": "Konverter flere filer på én gang med en intelligent kø"
   },
+  "closeConfirm": {
+    "title": "Luk EncodeX?",
+    "message": "En eller flere opgaver kører stadig. Lukker du nu, annulleres de.",
+    "confirmLabel": "Luk alligevel",
+    "cancelLabel": "Annuller"
+  },
   "convert": {
     "title": "Konverter medie",
     "inputFile": "Inputfil",

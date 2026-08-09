@@ -27,6 +27,12 @@
     "descCut": "Knip en bewerk video met een frame-nauwkeurige speler",
     "descBatch": "Converteer veel bestanden tegelijk met een slimme wachtrij"
   },
+  "closeConfirm": {
+    "title": "EncodeX sluiten?",
+    "message": "Er lopen nog een of meer taken. Sluiten nu annuleert ze.",
+    "confirmLabel": "Toch sluiten",
+    "cancelLabel": "Annuleren"
+  },
   "convert": {
     "title": "Media converteren",
     "inputFile": "Invoerbestand",

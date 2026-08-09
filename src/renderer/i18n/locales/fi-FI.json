@@ -27,6 +27,12 @@
     "descCut": "Leikkaa videoita kehyksen tarkkuudella",
     "descBatch": "Muunna useita tiedostoja kerralla älykkäällä jonolla"
   },
+  "closeConfirm": {
+    "title": "Sulje EncodeX?",
+    "message": "Yksi tai useampi työ on vielä käynnissä. Sulkeutuminen peruuttaa ne.",
+    "confirmLabel": "Sulje silti",
+    "cancelLabel": "Peruuta"
+  },
   "convert": {
     "title": "Muunna media",
     "inputFile": "Lähdetiedosto",

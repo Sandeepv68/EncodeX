@@ -27,6 +27,7 @@ import { ColorModeProvider } from './ColorModeContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import ErrorSnackbar from './components/ErrorSnackbar';
 import ToastContainer from './components/ToastContainer';
+import CloseConfirmDialog from './components/CloseConfirmDialog';
 import Footer from './components/Footer';
 import AppDrawer from './components/AppDrawer';
 import TitleBar from './components/TitleBar';
@@ -76,9 +77,10 @@ const Settings = lazy(() => import('./pages/Settings'));
  * toggles the temporary drawer on small screens.
  *
  * Renders the route table for every feature page, each wrapped in an
- * `ErrorBoundary` and collectively in a `Suspense` fallback spinner. It also
- * hosts the global `ErrorSnackbar` and `ToastContainer` so error/toast
- * notifications are shown above all routes.
+ *  `ErrorBoundary` and collectively in a `Suspense` fallback spinner. It also
+ *  hosts the global `ErrorSnackbar`, `ToastContainer`, and `CloseConfirmDialog`
+ *  so error/toast notifications and the close-with-active-jobs confirmation
+ *  are shown above all routes.
  *
  * On mount it subscribes to log entries pushed from the main process and
  * applies the persisted always-on-top and launch-at-login window flags.
@@ -173,6 +175,7 @@ function AppLayout() {
       </AppBody>
       <ErrorSnackbar error={currentError} onClose={clearError} />
       <ToastContainer />
+      <CloseConfirmDialog />
     </AppRoot>
   );
 }

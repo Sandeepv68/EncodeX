@@ -27,6 +27,12 @@
     "descCut": "使用幀精確的播放器修剪和剪輯影片",
     "descBatch": "透過智慧佇列一次轉換多個檔案"
   },
+  "closeConfirm": {
+    "title": "關閉 EncodeX？",
+    "message": "仍有一個或多個任務正在進行。現在關閉將取消它們。",
+    "confirmLabel": "仍然關閉",
+    "cancelLabel": "取消"
+  },
   "convert": {
     "title": "轉換媒體",
     "inputFile": "輸入檔案",

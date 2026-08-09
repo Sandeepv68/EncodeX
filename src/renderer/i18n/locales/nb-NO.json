@@ -27,6 +27,12 @@
     "descCut": "Trim og klipp video med en rammenøyaktig spiller",
     "descBatch": "Konverter mange filer samtidig med en smart kø"
   },
+  "closeConfirm": {
+    "title": "Lukke EncodeX?",
+    "message": "Én eller flere jobber kjører fortsatt. Lukking nå vil avbryte dem.",
+    "confirmLabel": "Lukk likevel",
+    "cancelLabel": "Avbryt"
+  },
   "convert": {
     "title": "Konverter media",
     "inputFile": "Inndatafil",

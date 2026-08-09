@@ -27,6 +27,12 @@
     "descCut": "Tapahia te ataata me te tika ki te āma",
     "descBatch": "Huripokia ngā kōnae maha i te wā kotahi me te rārangi mōhio"
   },
+  "closeConfirm": {
+    "title": "Katia te EncodeX?",
+    "message": "Kei te haere tonu tētahi, ētahi rānei mahi. Ka whakakorehia ina katia ināianei.",
+    "confirmLabel": "Katia tonu",
+    "cancelLabel": "Whakakore"
+  },
   "convert": {
     "title": "Huripokia te Pāpāho",
     "inputFile": "Kōnae Whakauru",

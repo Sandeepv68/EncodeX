@@ -27,6 +27,12 @@
     "descCut": "Video mit frame-genauem Player zuschneiden und kürzen",
     "descBatch": "Viele Dateien auf einmal mit einer intelligenten Warteschlange konvertieren"
   },
+  "closeConfirm": {
+    "title": "EncodeX schließen?",
+    "message": "Es laufen noch ein oder mehrere Aufträge. Beim Schließen werden sie abgebrochen.",
+    "confirmLabel": "Trotzdem schließen",
+    "cancelLabel": "Abbrechen"
+  },
   "convert": {
     "title": "Medien konvertieren",
     "inputFile": "Eingabedatei",
