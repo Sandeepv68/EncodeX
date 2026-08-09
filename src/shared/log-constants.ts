@@ -176,6 +176,8 @@ export const LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY = 'Failed to persist queue 
 export const LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS = 'Failed to persist hardware acceleration settings:';
 /** @const {string} Prefix when persisting the video cut draft fails. */
 export const LOG_FAILED_TO_PERSIST_VIDEO_CUT_DRAFT = 'Failed to persist video cut draft:';
+
+export const LOG_FAILED_TO_PERSIST_BATCH_CONFIG = 'Failed to persist batch config:';
 /** @const {string} Prefix when reading image dimensions fails. */
 export const LOG_FAILED_TO_READ_IMAGE_DIMENSIONS = 'Failed to read image dimensions:';
 /** @const {string} Prefix when reading an image preview fails. */
@@ -190,6 +192,8 @@ export const LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY = 'Failed to read store
 export const LOG_FAILED_TO_READ_STORED_HARDWARE_ACCELERATION_SETTINGS = 'Failed to read stored hardware acceleration settings:';
 /** @const {string} Prefix when reading the stored video cut draft fails. */
 export const LOG_FAILED_TO_READ_STORED_VIDEO_CUT_DRAFT = 'Failed to read stored video cut draft:';
+
+export const LOG_FAILED_TO_READ_STORED_BATCH_CONFIG = 'Failed to read stored batch config:';
 /** @const {string} Prefix when resuming a process fails. */
 export const LOG_FAILED_TO_RESUME_PROCESS = 'Failed to resume process:';
 /** @const {string} Prefix when statting an image file fails. */
@@ -356,6 +360,8 @@ export const LOG_IPC_QUEUE_PAUSE_CALLED = 'QUEUE_PAUSE called';
 export const LOG_IPC_QUEUE_RESUME_CALLED = 'QUEUE_RESUME called';
 /** @const {string} Prefix when the QUEUE_LIST IPC message is received. */
 export const LOG_IPC_QUEUE_LIST = 'QUEUE_LIST:';
+/** @const {string} Logged when the QUEUE_GET_STATE IPC message is received. */
+export const LOG_IPC_QUEUE_GET_STATE = 'QUEUE_GET_STATE called';
 /** @const {string} Prefix when the QUEUE_REMOVE IPC message is received. */
 export const LOG_IPC_QUEUE_REMOVE = 'QUEUE_REMOVE:';
 /** @const {string} Prefix when the REVEAL_FILE IPC message is received. */
@@ -521,6 +527,8 @@ export const LOG_QUEUE_EXPORTED = 'Exported queue:';
 export const LOG_QUEUE_IMPORTED = 'Imported queue:';
 /** @const {string} Logged when queueList is invoked. */
 export const LOG_QUEUE_LIST_CALLED = 'queueList called';
+/** @const {string} Logged when queueGetState is invoked. */
+export const LOG_QUEUE_GET_STATE_CALLED = 'queueGetState called';
 /** @const {string} Prefix when queueRemove is invoked. */
 export const LOG_QUEUE_REMOVE = 'queueRemove:';
 /** @const {string} Prefix when the persisted queue snapshot is restored. */

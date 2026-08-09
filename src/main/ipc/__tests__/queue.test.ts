@@ -12,6 +12,7 @@ interface FakeJobQueue {
   pause: ReturnType<typeof vi.fn>;
   resume: ReturnType<typeof vi.fn>;
   getConcurrency: ReturnType<typeof vi.fn>;
+  isPaused: ReturnType<typeof vi.fn>;
   emit: (ev: string, ...args: unknown[]) => void;
 }
 
@@ -73,6 +74,7 @@ vi.mock('../../queue/job-queue', () => {
       pause: ReturnType<typeof vi.fn>;
       resume: ReturnType<typeof vi.fn>;
       getConcurrency: ReturnType<typeof vi.fn>;
+      isPaused: ReturnType<typeof vi.fn>;
       constructor() {
         super();
         this.addJob = vi.fn();
@@ -85,6 +87,7 @@ vi.mock('../../queue/job-queue', () => {
         this.pause = vi.fn();
         this.resume = vi.fn();
         this.getConcurrency = vi.fn();
+        this.isPaused = vi.fn();
         jobQueueInstances.push(this as never);
       }
     },
@@ -141,6 +144,12 @@ describe('registerQueueHandlers', () => {
   it('QUEUE_LIST returns the jobs', async () => {
     jobQueue.getJobs.mockReturnValue([{ id: 'id-1' }]);
     expect(await getHandlers()[IPC.QUEUE_LIST]()).toEqual([{ id: 'id-1' }]);
+  });
+
+  it('QUEUE_GET_STATE returns the paused flag and concurrency', async () => {
+    jobQueue.isPaused.mockReturnValue(true);
+    jobQueue.getConcurrency.mockReturnValue(2);
+    expect(await getHandlers()[IPC.QUEUE_GET_STATE]()).toEqual({ paused: true, concurrency: 2 });
   });
 
   it('QUEUE_CANCEL_ALL delegates to cancelAll', async () => {

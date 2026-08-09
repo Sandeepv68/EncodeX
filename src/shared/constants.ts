@@ -497,6 +497,14 @@ export const DEFAULT_QUEUE_CONCURRENCY = 1;
 export const MAX_QUEUE_CONCURRENCY = 4;
 
 /**
+ * localStorage key used to persist the last-used batch encoding configuration
+ * (operation, codecs, container, bitrates, quality, scale, pixel format) so
+ * re-entering the Batch Queue page restores the previous session's settings.
+ * @const {string} BATCH_CONFIG_STORAGE_KEY
+ */
+export const BATCH_CONFIG_STORAGE_KEY = 'encodex-batch-config';
+
+/**
  * localStorage key used to persist the video cut form draft so the user's
  * unsaved cut settings survive navigation away and back.
  * @const {string} VIDEO_CUT_DRAFT_STORAGE_KEY

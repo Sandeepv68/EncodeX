@@ -187,6 +187,13 @@ export interface ElectronAPI {
    */
   queueList(): Promise<QueueJob[]>;
   /**
+   * Reads the queue's runtime state over the `IPC.QUEUE_GET_STATE`
+   * ('queue-get-state') channel.
+   * @returns {Promise<{paused: boolean, concurrency: number}>} Whether the
+   *   queue is paused and the parallel-job cap.
+   */
+  queueGetState(): Promise<{ paused: boolean; concurrency: number }>;
+  /**
    * Cancels every job in the conversion queue over the `IPC.QUEUE_CANCEL_ALL`
    * ('queue-cancel-all') channel.
    * @returns {Promise<void>} Resolves once all jobs have been cancelled.

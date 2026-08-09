@@ -132,6 +132,60 @@ const AUDIO_CONTAINERS: Record<string, string> = {
 export const AUDIO_CONTAINER_EXTENSIONS: readonly string[] = [...new Set(Object.values(AUDIO_CONTAINERS))];
 
 /**
+ * Maps an FFmpeg audio encoder name to the container extensions it can be
+ * muxed into, driving the audio container picker so only compatible choices are
+ * offered. Each list always includes the encoder's preferred extension (from
+ * AUDIO_CONTAINERS) plus a conservative set of widely compatible muxers. The
+ * lists are a UI suggestion, not an exhaustive FFmpeg guarantee.
+ * @type {Record<string, string[]>}
+ */
+const AUDIO_CODEC_CONTAINERS: Record<string, string[]> = {
+  aac: ['m4a', 'aac', 'mp4', 'mkv'],
+  libfdk_aac: ['m4a', 'aac', 'mp4', 'mkv'],
+  libmp3lame: ['mp3', 'mkv', 'mp4'],
+  libshine: ['mp3', 'mkv', 'mp4'],
+  libtwolame: ['mp2'],
+  ac3: ['ac3', 'mkv', 'mp4'],
+  eac3: ['eac3', 'mkv', 'mp4'],
+  truehd: ['mka', 'mkv'],
+  dts: ['dts', 'mkv'],
+  mlp: ['mlp', 'mkv'],
+  flac: ['flac', 'ogg', 'mka', 'mkv'],
+  alac: ['m4a', 'mp4', 'mkv'],
+  libwavpack: ['wv', 'mkv'],
+  libvorbis: ['ogg', 'ogv', 'mkv'],
+  libopus: ['opus', 'ogg', 'mkv', 'mp4'],
+  libspeex: ['spx', 'ogg'],
+  libvo_amrwbenc: ['amr', 'mp4'],
+  pcm_s16le: ['wav', 'mkv'],
+  pcm_s24le: ['wav', 'mkv'],
+  pcm_f32le: ['wav', 'mkv'],
+  pcm_s16be: ['wav'],
+  pcm_u8: ['wav'],
+  pcm_alaw: ['wav'],
+  pcm_mulaw: ['wav'],
+  wmav1: ['wma', 'asf'],
+  wmav2: ['wma', 'asf'],
+  adpcm_ima_wav: ['wav'],
+};
+
+/**
+ * Returns the container extensions compatible with the given audio encoder.
+ * Unknown or empty codecs fall back to the full AUDIO_CONTAINER_EXTENSIONS list;
+ * a codec that is known but has no curated list falls back to its preferred
+ * extension only.
+ * @param {string} [codec] - The FFmpeg audio encoder name (e.g. 'libmp3lame').
+ * @returns {string[]} The container extensions the codec can be muxed into.
+ */
+export function getAudioCodecContainers(codec?: string): string[] {
+  if (!codec) return [...AUDIO_CONTAINER_EXTENSIONS];
+  const curated = AUDIO_CODEC_CONTAINERS[codec];
+  if (curated) return [...curated];
+  const preferred = AUDIO_CONTAINERS[codec];
+  return preferred ? [preferred] : [];
+}
+
+/**
  * Suggests the default output file extension for an audio encoder.
  * @param {string} [codec] - The FFmpeg audio encoder name (e.g. 'libmp3lame').
  * @returns {string} The preferred extension without a leading dot (e.g. 'mp3'),

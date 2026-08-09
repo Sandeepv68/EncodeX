@@ -25,6 +25,7 @@
  * @property {string} QUEUE_ADD - Add a job to the batch queue.
  * @property {string} QUEUE_REMOVE - Remove a job from the batch queue.
  * @property {string} QUEUE_LIST - List all batch queue jobs.
+ * @property {string} QUEUE_GET_STATE - Read the queue's paused flag and concurrency.
  * @property {string} QUEUE_CANCEL_ALL - Cancel every queued and running job.
  * @property {string} QUEUE_CLEAR_COMPLETED - Remove every done and errored job.
  * @property {string} QUEUE_SET_CONCURRENCY - Set the number of jobs run in parallel.
@@ -78,6 +79,7 @@ export const IPC = {
   QUEUE_ADD: 'queue-add',
   QUEUE_REMOVE: 'queue-remove',
   QUEUE_LIST: 'queue-list',
+  QUEUE_GET_STATE: 'queue-get-state',
   QUEUE_CANCEL_ALL: 'queue-cancel-all',
   QUEUE_CLEAR_COMPLETED: 'queue-clear-completed',
   QUEUE_SET_CONCURRENCY: 'queue-set-concurrency',

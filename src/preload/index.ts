@@ -35,7 +35,7 @@
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
@@ -93,6 +93,7 @@ import {
   LOG_QUEUE_EXPORT,
   LOG_QUEUE_IMPORT,
   LOG_QUEUE_LIST_CALLED,
+  LOG_QUEUE_GET_STATE_CALLED,
   LOG_QUEUE_MOVE_TO,
   LOG_QUEUE_PAUSE_CALLED,
   LOG_QUEUE_REMOVE,
@@ -130,7 +131,7 @@ const log = new Logger('preload');
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
@@ -399,6 +400,18 @@ const api = {
   queueList: () => {
     log.debug(LOG_QUEUE_LIST_CALLED);
     return ipcRenderer.invoke(IPC.QUEUE_LIST) as Promise<QueueJob[]>;
+  },
+  /**
+   * Reads the queue's runtime state (paused flag and concurrency cap). Logs the
+   * call at debug level, then invokes the main process over the
+   * `IPC.QUEUE_GET_STATE` ('queue-get-state') channel.
+   *
+   * @returns {Promise<{paused: boolean, concurrency: number}>} Resolves with
+   *   whether the queue is paused and the parallel-job cap.
+   */
+  queueGetState: () => {
+    log.debug(LOG_QUEUE_GET_STATE_CALLED);
+    return ipcRenderer.invoke(IPC.QUEUE_GET_STATE) as Promise<{ paused: boolean; concurrency: number }>;
   },
   /**
    * Cancels every job in the conversion queue. Logs the call at info level, then

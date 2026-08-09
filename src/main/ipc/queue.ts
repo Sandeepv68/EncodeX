@@ -1,7 +1,7 @@
 /**
  * @fileoverview IPC handlers for the batch conversion job queue.
  * Registers handlers for the QUEUE_ADD, QUEUE_REMOVE, QUEUE_LIST,
- * QUEUE_CANCEL_ALL, QUEUE_CLEAR_COMPLETED, QUEUE_SET_CONCURRENCY,
+ * QUEUE_GET_STATE, QUEUE_CANCEL_ALL, QUEUE_CLEAR_COMPLETED, QUEUE_SET_CONCURRENCY,
  * QUEUE_MOVE_TO, QUEUE_PAUSE and QUEUE_RESUME channels and forwards the
  * JobQueue's lifecycle events to the renderer on the QUEUE_ADDED,
  * QUEUE_REMOVED, QUEUE_STATUS_CHANGE, QUEUE_PROGRESS, QUEUE_CANCELLED and
@@ -28,6 +28,7 @@ import {
   LOG_IPC_QUEUE_CANCEL_ALL_CALLED,
   LOG_IPC_QUEUE_CLEAR_COMPLETED_CALLED,
   LOG_IPC_QUEUE_EXPORT_CALLED,
+  LOG_IPC_QUEUE_GET_STATE,
   LOG_IPC_QUEUE_IMPORT_CALLED,
   LOG_IPC_QUEUE_LIST,
   LOG_IPC_QUEUE_MOVE_TO,
@@ -116,6 +117,19 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
     const jobs = jobQueue.getJobs();
     log.debug(LOG_IPC_QUEUE_LIST, jobs.length, 'jobs');
     return jobs;
+  });
+
+  /**
+   * Handles the IPC.QUEUE_GET_STATE channel (queue-get-state).
+   * Returns a snapshot of the queue's runtime state: whether it is paused
+   * (active conversions suspended, queued jobs blocked) and the concurrency cap.
+   *
+   * @returns {Promise<{paused: boolean, concurrency: number}>} The paused flag
+   *   and the parallel-job cap.
+   */
+  ipcMain.handle(IPC.QUEUE_GET_STATE, async () => {
+    log.debug(LOG_IPC_QUEUE_GET_STATE);
+    return { paused: jobQueue.isPaused(), concurrency: jobQueue.getConcurrency() };
   });
 
   /**

@@ -74,6 +74,22 @@ describe('BatchEncodingPanel', () => {
     expect(screen.queryByText('convert.scale')).not.toBeInTheDocument();
   });
 
+  it('lists only containers compatible with the selected audio codec', () => {
+    renderPanel({ operation: 'extract_audio', audioCodec: 'aac' });
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
+    expect(screen.getByText('m4a')).toBeInTheDocument();
+    expect(screen.queryByText('mp3')).not.toBeInTheDocument();
+  });
+
+  it('shows mp3 containers for the libmp3lame audio codec', () => {
+    renderPanel({ operation: 'extract_audio', audioCodec: 'libmp3lame' });
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
+    expect(screen.getByText('mp3')).toBeInTheDocument();
+    expect(screen.queryByText('m4a')).not.toBeInTheDocument();
+  });
+
   it('renders image controls for the compress image operation', () => {
     renderPanel({ operation: 'compress_image' });
     expect(screen.getByText('imageCompress.outputFormat')).toBeInTheDocument();
