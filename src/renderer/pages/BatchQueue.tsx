@@ -26,6 +26,7 @@ import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSo
 import BatchControls from '../components/BatchControls';
 import BatchEncodingPanel from '../components/BatchEncodingPanel';
 import QueueJobCard, { QueueJobCardContent } from '../components/QueueJobCard';
+import QueueDropArea from '../components/QueueDropArea';
 import QueueAddReviewDialog from '../components/QueueAddReviewDialog';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useQueueStore } from '../stores/queueStore';
@@ -1016,17 +1017,19 @@ export default function BatchQueue() {
             onDragCancel={() => setActiveDragId(null)}
           >
             <SortableContext items={visibleJobs.map((job: QueueJob) => job.id)} strategy={verticalListSortingStrategy}>
-              <Stack spacing={2}>
-                {visibleJobs.map((job: QueueJob) => (
-                  <QueueJobCard
-                    key={job.id}
-                    job={job}
-                    progress={progress[job.id]}
-                    onRemove={(id) => window.electronAPI.queueRemove(id)}
-                    onRetry={handleRetry}
-                  />
-                ))}
-              </Stack>
+              <QueueDropArea>
+                <Stack spacing={2}>
+                  {visibleJobs.map((job: QueueJob) => (
+                    <QueueJobCard
+                      key={job.id}
+                      job={job}
+                      progress={progress[job.id]}
+                      onRemove={(id) => window.electronAPI.queueRemove(id)}
+                      onRetry={handleRetry}
+                    />
+                  ))}
+                </Stack>
+              </QueueDropArea>
             </SortableContext>
             <DragOverlay
               dropAnimation={{
