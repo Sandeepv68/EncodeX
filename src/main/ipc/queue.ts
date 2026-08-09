@@ -9,7 +9,8 @@
  * instance (src/main/queue/job-queue.ts) is created per registration call and
  * executes conversions in the main process, running up to the configured
  * concurrency of jobs at a time and processing the next queued job on
- * completion.
+ * completion. When the application quits (`will-quit`), the persisted queue
+ * snapshot is deleted so the next launch starts with an empty queue.
  */
 
 import { ipcMain, BrowserWindow, app, dialog } from 'electron';
@@ -48,6 +49,38 @@ import {
 const log = new Logger('main/ipc/queue');
 
 /**
+ * The queue persistence adapter created by the most recent
+ * {@link registerQueueHandlers} call. Holds the `queue-state.json` snapshot so
+ * it can be cleared when the application quits.
+ * @type {FileQueuePersistence | null}
+ */
+let persistedQueue: FileQueuePersistence | null = null;
+
+/**
+ * True once the app-level `will-quit` listener that clears the persisted
+ * snapshot has been registered. registerQueueHandlers runs once per window
+ * creation (including macOS window re-creates), so the listener is attached at
+ * most once per process.
+ * @type {boolean}
+ */
+let willQuitHandlerRegistered = false;
+
+/**
+ * Registers an app `will-quit` listener that deletes the persisted queue
+ * snapshot. Attached at most once per process: on a confirmed app close the
+ * `queue-state.json` file is dropped, so the next launch starts with an empty
+ * queue - matching the renderer's localStorage cleanup on window close.
+ * @returns {void}
+ */
+function registerWillQuitQueueClear(): void {
+  if (willQuitHandlerRegistered) return;
+  willQuitHandlerRegistered = true;
+  app.on('will-quit', () => {
+    persistedQueue?.clear();
+  });
+}
+
+/**
  * Normalizes a file path for duplicate comparison: lowercases and unifies
  * Windows backslashes with POSIX forward slashes. Mirrors the renderer's
  * add-time dedupe so an imported queue skips the same jobs the batch page
@@ -69,8 +102,13 @@ function normalizePath(path: string): string {
  * @returns {void} Nothing is returned.
  */
 export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void {
+  /** The queue persistence adapter; the will-quit clear targets its snapshot. */
+  const persistence = new FileQueuePersistence(app.getPath('userData'));
+  persistedQueue = persistence;
+  registerWillQuitQueueClear();
+
   /** The job queue backing these handlers; one instance per registration call. */
-  const jobQueue = new JobQueue({ persistence: new FileQueuePersistence(app.getPath('userData')) });
+  const jobQueue = new JobQueue({ persistence });
 
   /**
    * Handles the IPC.QUEUE_ADD channel (queue-add).

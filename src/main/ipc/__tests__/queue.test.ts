@@ -16,8 +16,19 @@ interface FakeJobQueue {
   emit: (ev: string, ...args: unknown[]) => void;
 }
 
-const { ipcMainMock, dialogMock, getHandlers, jobQueueInstances, existsSyncMock, readFileSyncMock, writeFileSyncMock } = vi.hoisted(() => {
+const {
+  ipcMainMock,
+  dialogMock,
+  getHandlers,
+  jobQueueInstances,
+  existsSyncMock,
+  readFileSyncMock,
+  writeFileSyncMock,
+  unlinkSyncMock,
+  appEventHandlers,
+} = vi.hoisted(() => {
   const handlers: Record<string, (...args: unknown[]) => unknown> = {};
+  const appEventHandlers: Record<string, () => void> = {};
   return {
     ipcMainMock: {
       handle: vi.fn((channel: string, fn: (...args: unknown[]) => unknown) => {
@@ -32,6 +43,8 @@ const { ipcMainMock, dialogMock, getHandlers, jobQueueInstances, existsSyncMock,
     existsSyncMock: vi.fn(() => false),
     readFileSyncMock: vi.fn(),
     writeFileSyncMock: vi.fn(),
+    unlinkSyncMock: vi.fn(),
+    appEventHandlers,
     getHandlers: () => handlers,
   };
 });
@@ -40,7 +53,12 @@ vi.mock('electron', () => ({
   ipcMain: ipcMainMock,
   BrowserWindow: class {},
   dialog: dialogMock,
-  app: { getPath: () => 'C:/temp/encodex-user-data' },
+  app: {
+    getPath: () => 'C:/temp/encodex-user-data',
+    on: vi.fn((event: string, callback: () => void) => {
+      appEventHandlers[event] = callback;
+    }),
+  },
 }));
 
 vi.mock('fs', () => ({
@@ -48,14 +66,14 @@ vi.mock('fs', () => ({
   readFileSync: readFileSyncMock,
   writeFileSync: writeFileSyncMock,
   mkdirSync: vi.fn(),
-  unlinkSync: vi.fn(),
+  unlinkSync: unlinkSyncMock,
   rmSync: vi.fn(),
   default: {
     existsSync: existsSyncMock,
     readFileSync: readFileSyncMock,
     writeFileSync: writeFileSyncMock,
     mkdirSync: vi.fn(),
-    unlinkSync: vi.fn(),
+    unlinkSync: unlinkSyncMock,
     rmSync: vi.fn(),
   },
 }));
@@ -311,5 +329,19 @@ describe('registerQueueHandlers', () => {
     expect(send).toHaveBeenCalledWith(IPC.QUEUE_CANCELLED);
     jobQueue.emit('moved', { id: 'id-1', toPosition: 2 });
     expect(send).toHaveBeenCalledWith(IPC.QUEUE_MOVED, { id: 'id-1', toPosition: 2 });
+  });
+
+  it('deletes the persisted queue snapshot when the app quits', () => {
+    const quitHandler = appEventHandlers['will-quit'];
+    expect(quitHandler).toBeTypeOf('function');
+    quitHandler();
+    expect(unlinkSyncMock).toHaveBeenCalledWith(expect.stringMatching(/queue-state\.json$/));
+  });
+
+  it('keeps clearing the persisted queue snapshot after a window re-create', () => {
+    registerQueueHandlers({} as never, send);
+    const quitHandler = appEventHandlers['will-quit'];
+    quitHandler();
+    expect(unlinkSyncMock).toHaveBeenCalledWith(expect.stringMatching(/queue-state\.json$/));
   });
 });
