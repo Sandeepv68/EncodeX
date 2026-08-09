@@ -26,13 +26,14 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Checkbox, CircularProgress, Skeleton, Tooltip, Typography } from '@mui/material';
+import { Box, Checkbox, CircularProgress, Skeleton, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlassPlus, faMagnifyingGlassMinus, faVideo, faMusic, faGripVertical } from '@fortawesome/free-solid-svg-icons';
 import {
   TimelineRoot,
   TimelineToolbar,
   TimelineTimeText,
+  PreviewBadge,
   ZoomButton,
   TrackLabelPanel,
   TrackLabel,
@@ -584,12 +585,16 @@ export default function VideoTimeline({
           {formatClockTime(currentTime)} / {formatClockTime(duration)}
         </TimelineTimeText>
         {waveformLoading || thumbnailsLoading ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }} role="status" aria-live="polite">
-            <CircularProgress size={14} />
-            <Typography variant="caption" color="text.secondary" data-testid="timeline-generating">
-              {t('videoCut.generatingPreview')}
-            </Typography>
-          </Box>
+          <PreviewBadge
+            size="small"
+            variant="outlined"
+            color="warning"
+            icon={<CircularProgress size={12} color="inherit" />}
+            label={t('videoCut.generatingPreview')}
+            data-testid="timeline-generating"
+            role="status"
+            aria-live="polite"
+          />
         ) : (
           <Box />
         )}

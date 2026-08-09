@@ -1,5 +1,5 @@
 import { alpha, styled } from '@mui/material/styles';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, Chip, IconButton, Typography } from '@mui/material';
 import { OVERLAY_COLORS, TIMELINE_COLORS } from '../colors';
 
 export const TIMELINE_LAYOUT = {
@@ -29,6 +29,23 @@ export const TimelineTimeText = styled(Typography)(({ theme }) => ({
   fontSize: theme.typography.pxToRem(12),
   color: theme.palette.text.secondary,
   fontVariantNumeric: 'tabular-nums',
+}));
+
+export const PreviewBadge = styled(Chip)(({ theme }) => ({
+  borderRadius: theme.spacing(0.75),
+  height: theme.typography.pxToRem(20),
+  '& .MuiChip-label': {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    lineHeight: 1,
+    fontWeight: theme.typography.fontWeightBold,
+    fontSize: theme.typography.pxToRem(11),
+  },
+  '&.MuiChip-colorWarning': {
+    backgroundColor: alpha(theme.palette.warning.main, 0.18),
+  },
 }));
 
 export const ZoomButton = styled(IconButton)(({ theme }) => ({ padding: theme.typography.pxToRem(4) }));
