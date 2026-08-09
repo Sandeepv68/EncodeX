@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "Kei Runga Ake Tonu",
     "alwaysOnTopHint": "Kia noho te matapihi o te taupānga ki runga ake o ngā matapihi katoa.",
+    "launchAtLogin": "Whakarewa i te tīmatanga",
+    "launchAtLoginHint": "Ka tīmata aunoatia a EncodeX ina takiuru koe ki tō rorohiko.",
     "hardwareAcceleration": "Whakatere Marohi",
     "hwaccelMode": "Aratau Whakatere",
     "hwaccelModeAuto": "Aunoa (decoder + encoder)",

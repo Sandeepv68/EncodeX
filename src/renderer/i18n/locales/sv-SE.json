@@ -395,6 +395,8 @@
     "theme": "Tema",
     "alwaysOnTop": "Alltid överst",
     "alwaysOnTopHint": "Håller appfönstret ovanför alla andra fönster.",
+    "launchAtLogin": "Starta vid inloggning",
+    "launchAtLoginHint": "Startar EncodeX automatiskt när du loggar in på datorn.",
     "hardwareAcceleration": "Hårdvaruacceleration",
     "hwaccelMode": "Accelerationsläge",
     "hwaccelModeAuto": "Automatisk (avkoda + koda)",

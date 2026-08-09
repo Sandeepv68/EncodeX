@@ -340,6 +340,14 @@ export interface ElectronAPI {
    */
   windowSetAlwaysOnTop(flag: boolean): void;
   /**
+   * Adds or removes the app from the operating system's login items (launch at
+   * startup). Fire-and-forget over the `IPC.SET_LAUNCH_AT_LOGIN`
+   * ('set-launch-at-login') channel.
+   * @param {boolean} enabled - true to start the app at login, false to remove it.
+   * @returns {void}
+   */
+  setLaunchAtLogin(enabled: boolean): void;
+  /**
    * Subscribes to window maximized / un-maximized state changes pushed from the
    * main process over `IPC.WINDOW_MAXIMIZED_CHANGED`
    * ('window-maximized-changed').

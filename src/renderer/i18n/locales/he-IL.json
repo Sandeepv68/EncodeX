@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "תמיד בראש",
     "alwaysOnTopHint": "שומר על חלון האפליקציה מעל כל החלונות האחרים.",
+    "launchAtLogin": "הפעלה בעת התחברות",
+    "launchAtLoginHint": "מפעיל את EncodeX אוטומטית בעת התחברות למחשב שלך.",
     "hardwareAcceleration": "האצת חומרה",
     "hwaccelMode": "מצב האצה",
     "hwaccelModeAuto": "אוטומטי (פענוח + קידוד)",

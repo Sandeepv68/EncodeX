@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "Altyd bo",
     "alwaysOnTopHint": "Hou die app-venster bo alle ander vensters.",
+    "launchAtLogin": "Begin by opstart",
+    "launchAtLoginHint": "Begin EncodeX outomaties wanneer jy by jou rekenaar aanmeld.",
     "hardwareAcceleration": "Hardewareversnelling",
     "hwaccelMode": "Versnellingsmodus",
     "hwaccelModeAuto": "Outomaties (dekodeer + enkodeer)",

@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "Sentiasa di atas",
     "alwaysOnTopHint": "Mengekalkan tetingkap aplikasi di atas semua tetingkap lain.",
+    "launchAtLogin": "Lancar semasa permulaan",
+    "launchAtLoginHint": "Memulakan EncodeX secara automatik apabila anda log masuk ke komputer anda.",
     "hardwareAcceleration": "Pecutan Perkakasan",
     "hwaccelMode": "Mod Pecutan",
     "hwaccelModeAuto": "Automatik (nyahkod + kod)",

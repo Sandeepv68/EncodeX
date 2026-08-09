@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "Luôn ở trên cùng",
     "alwaysOnTopHint": "Giữ cửa sổ ứng dụng phía trên tất cả các cửa sổ khác.",
+    "launchAtLogin": "Khởi chạy khi khởi động",
+    "launchAtLoginHint": "Tự động khởi chạy EncodeX khi bạn đăng nhập vào máy tính.",
     "hardwareAcceleration": "Tăng tốc phần cứng",
     "hwaccelMode": "Chế độ tăng tốc",
     "hwaccelModeAuto": "Tự động (giải mã + mã hóa)",

@@ -39,7 +39,7 @@
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
- *   `windowSetAlwaysOnTop`.
+ *   `windowSetAlwaysOnTop`, `setLaunchAtLogin`.
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
  *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
@@ -109,6 +109,7 @@ import {
   LOG_WINDOW_MAXIMIZE_TOGGLE_CALLED,
   LOG_WINDOW_MINIMIZE_CALLED,
   LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED,
+  LOG_SET_LAUNCH_AT_LOGIN_CALLED,
 } from '../shared/log-constants';
 
 /**
@@ -133,7 +134,7 @@ const log = new Logger('preload');
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
- *   `windowSetAlwaysOnTop`.
+ *   `windowSetAlwaysOnTop`, `setLaunchAtLogin`.
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
  *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
@@ -642,6 +643,19 @@ const api = {
   windowSetAlwaysOnTop: (flag: boolean) => {
     log.debug(LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED, { flag });
     ipcRenderer.send(IPC.WINDOW_SET_ALWAYS_ON_TOP, flag);
+  },
+  /**
+   * Adds or removes the app from the operating system's login items (launch at
+   * startup). Fire-and-forget: logs the call at debug level and sends
+   * `IPC.SET_LAUNCH_AT_LOGIN` ('set-launch-at-login') with the flag via
+   * `ipcRenderer.send`.
+   *
+   * @param {boolean} enabled - true to start the app at login, false to remove it.
+   * @returns {void}
+   */
+  setLaunchAtLogin: (enabled: boolean) => {
+    log.debug(LOG_SET_LAUNCH_AT_LOGIN_CALLED, { enabled });
+    ipcRenderer.send(IPC.SET_LAUNCH_AT_LOGIN, enabled);
   },
 
   /**

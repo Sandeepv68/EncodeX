@@ -81,7 +81,7 @@ const Settings = lazy(() => import('./pages/Settings'));
  * notifications are shown above all routes.
  *
  * On mount it subscribes to log entries pushed from the main process and
- * applies the persisted always-on-top window flag.
+ * applies the persisted always-on-top and launch-at-login window flags.
  *
  * @returns {React.JSX.Element} The full application shell with title bar,
  *   drawer navigation, routed content, footer, and global overlays.
@@ -103,6 +103,7 @@ function AppLayout() {
 
   useEffect(() => {
     window.electronAPI?.windowSetAlwaysOnTop(useSettingsStore.getState().alwaysOnTop);
+    window.electronAPI?.setLaunchAtLogin(useSettingsStore.getState().launchAtLogin);
   }, []);
 
   /**

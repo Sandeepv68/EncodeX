@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "Always on top",
     "alwaysOnTopHint": "App window-ip allat qaammaanni atugassaa.",
+    "launchAtLogin": "Aallartiffimmi aallartikkit",
+    "launchAtLoginHint": "EncodeX-imik nammineq aallartippaa, komputerimut iseriaruit.",
     "hardwareAcceleration": "Hardware acceleration",
     "hwaccelMode": "Acceleration mode",
     "hwaccelModeAuto": "Automatisk (decoder + encoder)",

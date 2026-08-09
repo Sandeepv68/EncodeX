@@ -395,6 +395,8 @@
     "theme": "السمة",
     "alwaysOnTop": "إبقاء النافذة في المقدمة",
     "alwaysOnTopHint": "يبقي نافذة التطبيق فوق جميع النوافذ الأخرى.",
+    "launchAtLogin": "التشغيل عند بدء التشغيل",
+    "launchAtLoginHint": "يبدأ تشغيل EncodeX تلقائيًا عند تسجيل الدخول إلى جهاز الكمبيوتر الخاص بك.",
     "hardwareAcceleration": "تسريع الأجهزة",
     "hwaccelMode": "وضع التسريع",
     "hwaccelModeAuto": "تلقائي (فك التشفير + التشفير)",

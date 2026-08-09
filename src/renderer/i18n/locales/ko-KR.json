@@ -395,6 +395,8 @@
     "theme": "테마",
     "alwaysOnTop": "항상 위에 표시",
     "alwaysOnTopHint": "앱 창을 다른 모든 창 위에 유지합니다.",
+    "launchAtLogin": "시작할 때 실행",
+    "launchAtLoginHint": "컴퓨터에 로그인하면 EncodeX가 자동으로 시작됩니다.",
     "hardwareAcceleration": "하드웨어 가속",
     "hwaccelMode": "가속 모드",
     "hwaccelModeAuto": "자동 (디코드 + 인코드)",

@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "ຢູ່ເທິງສຸດສະເໝີ",
     "alwaysOnTopHint": "ຮັກສາປ່ອງຢ້ຽມແອັບຯໃຫ້ຢູ່ເທິງປ່ອງຢ້ຽມອື່ນໆທັງໝົດ.",
+    "launchAtLogin": "ເປີດໃຊ້ເມື່ອເລີ່ມຕົ້ນ",
+    "launchAtLoginHint": "ຈະເປີດໃຊ້ EncodeX ອັດຕະໂນມັດ ເມື່ອທ່ານເຂົ້າສູ່ລະບົບຄອມພິວເຕີຂອງທ່ານ.",
     "hardwareAcceleration": "ການເລັ່ງຮາດແວ",
     "hwaccelMode": "ໂໝດການເລັ່ງ",
     "hwaccelModeAuto": "ອັດຕະໂນມັດ (decoder + encoder)",

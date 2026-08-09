@@ -137,4 +137,12 @@ describe('preload', () => {
     (api[method] as () => void)();
     expect(ipcRendererMock.send).toHaveBeenCalledWith(channel);
   });
+
+  it.each([
+    ['windowSetAlwaysOnTop', IPC.WINDOW_SET_ALWAYS_ON_TOP, true],
+    ['setLaunchAtLogin', IPC.SET_LAUNCH_AT_LOGIN, true],
+  ])('%s sends the %s channel with the flag', (method, channel, flag) => {
+    (api[method] as (flag: boolean) => void)(flag);
+    expect(ipcRendererMock.send).toHaveBeenCalledWith(channel, flag);
+  });
 });

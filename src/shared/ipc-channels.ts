@@ -34,6 +34,7 @@
  * @property {string} QUEUE_EXPORT - Export the queue to a JSON file.
  * @property {string} QUEUE_IMPORT - Import a JSON queue file.
  * @property {string} REVEAL_FILE - Reveal a file in the OS file manager.
+ * @property {string} SET_LAUNCH_AT_LOGIN - Set whether the app launches at OS startup.
  * @property {string} PLAYER_OPEN - Open a video in the player.
  * @property {string} PLAYER_SEEK - Seek the player to a timestamp.
  * @property {string} PLAYER_CLOSE - Close the player.
@@ -86,6 +87,7 @@ export const IPC = {
   QUEUE_EXPORT: 'queue-export',
   QUEUE_IMPORT: 'queue-import',
   REVEAL_FILE: 'queue-reveal',
+  SET_LAUNCH_AT_LOGIN: 'set-launch-at-login',
   PLAYER_OPEN: 'player-open',
   PLAYER_SEEK: 'player-seek',
   PLAYER_CLOSE: 'player-close',

@@ -395,6 +395,8 @@
     "theme": "Tema",
     "alwaysOnTop": "Sempre in primo piano",
     "alwaysOnTopHint": "Mantiene la finestra dell'app sopra tutte le altre finestre.",
+    "launchAtLogin": "Avvia all'avvio",
+    "launchAtLoginHint": "Avvia EncodeX automaticamente quando accedi al computer.",
     "hardwareAcceleration": "Accelerazione hardware",
     "hwaccelMode": "Modalità di accelerazione",
     "hwaccelModeAuto": "Automatica (decodifica + codifica)",

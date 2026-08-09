@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "Ar Barr i gcónaí",
     "alwaysOnTopHint": "Coinníonn fuinneog an aip os cionn na bhfuinneoga eile go léir.",
+    "launchAtLogin": "Seol ag am tosaithe",
+    "launchAtLoginHint": "Cuireann sé tús le EncodeX go huathoibríoch nuair a logálann tú isteach ar do ríomhaire.",
     "hardwareAcceleration": "Luasghéarú Crua-earraí",
     "hwaccelMode": "Mód Luasghéaraithe",
     "hwaccelModeAuto": "Uathoibríoch (díchódóir + ionchódóir)",

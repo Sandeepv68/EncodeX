@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "永遠在上方",
     "alwaysOnTopHint": "保持應用程式視窗位於所有其他視窗之上。",
+    "launchAtLogin": "登入時啟動",
+    "launchAtLoginHint": "登入電腦時自動啟動 EncodeX。",
     "hardwareAcceleration": "硬體加速",
     "hwaccelMode": "加速模式",
     "hwaccelModeAuto": "自動（解碼 + 編碼）",

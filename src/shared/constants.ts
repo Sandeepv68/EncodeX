@@ -471,6 +471,12 @@ export const DEFAULT_LANGUAGE = 'en-US';
  */
 export const WINDOW_ALWAYS_ON_TOP_STORAGE_KEY = 'encodex-always-on-top';
 
+/**
+ * localStorage key used to persist the launch-at-login preference.
+ * @const {string} LAUNCH_AT_LOGIN_STORAGE_KEY
+ */
+export const LAUNCH_AT_LOGIN_STORAGE_KEY = 'encodex-launch-at-login';
+
 // --- Batch queue ---
 /**
  * localStorage key used to persist the batch queue concurrency (1-4).

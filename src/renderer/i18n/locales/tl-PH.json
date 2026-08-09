@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "Palaging nasa itaas",
     "alwaysOnTopHint": "Pinapanatili ang app window sa itaas ng lahat ng iba pang window.",
+    "launchAtLogin": "Ilunsad sa pagsisimula",
+    "launchAtLoginHint": "Awtomatikong sisimulan ang EncodeX kapag nag-sign in ka sa iyong computer.",
     "hardwareAcceleration": "Hardware Acceleration",
     "hwaccelMode": "Mode ng Acceleration",
     "hwaccelModeAuto": "Automatic (decode + encode)",

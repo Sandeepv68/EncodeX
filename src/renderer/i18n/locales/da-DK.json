@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "Altid øverst",
     "alwaysOnTopHint": "Holder app-vinduet over alle andre vinduer.",
+    "launchAtLogin": "Start ved opstart",
+    "launchAtLoginHint": "Starter EncodeX automatisk, når du logger på din computer.",
     "hardwareAcceleration": "Hardwareacceleration",
     "hwaccelMode": "Accelerationstilstand",
     "hwaccelModeAuto": "Automatisk (dekoder + encoder)",

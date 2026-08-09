@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useSettingsStore, readStoredHwAccel, readStoredQueueConcurrency } from '../settingsStore';
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
 import {
@@ -8,7 +8,12 @@ import {
   ENCODER_TYPES,
   ENCODER_TYPE_DEFAULT,
 } from '../../../shared/hwaccel-settings';
-import { QUEUE_CONCURRENCY_STORAGE_KEY, DEFAULT_QUEUE_CONCURRENCY, MAX_QUEUE_CONCURRENCY } from '../../../shared/constants';
+import {
+  QUEUE_CONCURRENCY_STORAGE_KEY,
+  DEFAULT_QUEUE_CONCURRENCY,
+  MAX_QUEUE_CONCURRENCY,
+  LAUNCH_AT_LOGIN_STORAGE_KEY,
+} from '../../../shared/constants';
 
 describe('settingsStore', () => {
   beforeEach(() => {
@@ -18,6 +23,8 @@ describe('settingsStore', () => {
       hardwareAcceleration: HWACCEL_DEFAULTS.ENABLED,
       hwaccelMode: HWACCEL_DEFAULTS.MODE,
       encoderType: ENCODER_TYPE_DEFAULT,
+      alwaysOnTop: false,
+      launchAtLogin: false,
       queueConcurrency: DEFAULT_QUEUE_CONCURRENCY,
     });
   });
@@ -60,6 +67,22 @@ describe('settingsStore', () => {
 
   it('defaults queue concurrency to one', () => {
     expect(useSettingsStore.getState().queueConcurrency).toBe(DEFAULT_QUEUE_CONCURRENCY);
+  });
+
+  it('defaults launch-at-login to false', () => {
+    expect(useSettingsStore.getState().launchAtLogin).toBe(false);
+  });
+
+  it('setLaunchAtLogin updates the value and persists it', () => {
+    const spy = vi.fn();
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, setLaunchAtLogin: spy },
+      writable: true,
+    });
+    useSettingsStore.getState().setLaunchAtLogin(true);
+    expect(useSettingsStore.getState().launchAtLogin).toBe(true);
+    expect(localStorage.getItem(LAUNCH_AT_LOGIN_STORAGE_KEY)).toBe('true');
+    expect(spy).toHaveBeenCalledWith(true);
   });
 
   it('setQueueConcurrency updates the value and persists it', () => {

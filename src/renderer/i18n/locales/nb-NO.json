@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "Alltid på topp",
     "alwaysOnTopHint": "Holder appvinduet over alle andre vinduer.",
+    "launchAtLogin": "Start ved oppstart",
+    "launchAtLoginHint": "Starter EncodeX automatisk når du logger på datamaskinen din.",
     "hardwareAcceleration": "Maskinvareakselerasjon",
     "hwaccelMode": "Akselerasjonsmodus",
     "hwaccelModeAuto": "Automatisk (dekoding + koding)",

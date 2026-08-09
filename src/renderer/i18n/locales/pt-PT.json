@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "Sempre no topo",
     "alwaysOnTopHint": "Mantém a janela da aplicação acima de todas as outras janelas.",
+    "launchAtLogin": "Iniciar no arranque",
+    "launchAtLoginHint": "Inicia o EncodeX automaticamente quando inicia sessão no seu computador.",
     "hardwareAcceleration": "Aceleração de Hardware",
     "hwaccelMode": "Modo de Aceleração",
     "hwaccelModeAuto": "Automático (descodificar + codificar)",

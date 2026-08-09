@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "सधैं माथि",
     "alwaysOnTopHint": "एप विन्डोलाई अन्य सबै विन्डोहरूभन्दा माथि राख्छ।",
+    "launchAtLogin": "स्टार्टअपमा लन्च गर्नुहोस्",
+    "launchAtLoginHint": "तपाईं आफ्नो कम्प्युटरमा साइन इन गर्दा EncodeX स्वचालित रूपमा सुरु हुन्छ।",
     "hardwareAcceleration": "हार्डवेयर एक्सेलेरेसन",
     "hwaccelMode": "एक्सेलेरेसन मोड",
     "hwaccelModeAuto": "स्वचालित (डिकोड + एन्कोड)",

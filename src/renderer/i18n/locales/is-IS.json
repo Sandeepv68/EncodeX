@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "Alltaf ofan á",
     "alwaysOnTopHint": "Heldur app-glugganum fyrir ofan alla aðra glugga.",
+    "launchAtLogin": "Ræsa við innskráningu",
+    "launchAtLoginHint": "Ræsir EncodeX sjálfkrafa þegar þú skráir þig inn á tölvuna þína.",
     "hardwareAcceleration": "Vélbúnaðarhröðun",
     "hwaccelMode": "Hröðunarstilling",
     "hwaccelModeAuto": "Sjálfvirkt (afkóðari + kóðari)",

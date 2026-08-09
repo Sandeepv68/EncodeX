@@ -71,6 +71,8 @@ export interface HwAccelStored {
  * @property {(type: EncoderType) => void} setEncoderType - Sets the encoder preference and persists the change.
  * @property {boolean} alwaysOnTop - Whether the window should stay on top of other windows.
  * @property {(flag: boolean) => void} setAlwaysOnTop - Sets always-on-top and persists it via localStorage + electronAPI.
+ * @property {boolean} launchAtLogin - Whether the app should launch at OS startup.
+ * @property {(enabled: boolean) => void} setLaunchAtLogin - Sets launch-at-login, persists it, and forwards it to the main process.
  * @property {number} queueConcurrency - Number of batch jobs run in parallel (1-4).
  * @property {(concurrency: number) => void} setQueueConcurrency - Sets the batch concurrency, persists it, and forwards it to the main process.
  */
@@ -85,6 +87,8 @@ export interface SettingsState {
   setEncoderType: (type: EncoderType) => void;
   alwaysOnTop: boolean;
   setAlwaysOnTop: (flag: boolean) => void;
+  launchAtLogin: boolean;
+  setLaunchAtLogin: (enabled: boolean) => void;
   queueConcurrency: number;
   setQueueConcurrency: (concurrency: number) => void;
 }

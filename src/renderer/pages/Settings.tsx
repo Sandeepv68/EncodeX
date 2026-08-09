@@ -5,11 +5,11 @@
  *
  * The page groups settings into sections: a theme picker (rendered as preview
  * cards from `THEMES`, persisted through `useColorMode`), an "always on top"
- * switch (delegated to the window manager by the main process), and the
- * hardware-acceleration options (enable/disable plus hwaccel mode and encoder
- * type selects). Every persisted value lives in the `useSettingsStore` zustand
- * store, which synchronizes it to disk and to the main process; this page only
- * reads and writes store state and makes no direct IPC calls.
+ * switch and a "launch at startup" switch (delegated to the main process), and
+ * the hardware-acceleration options (enable/disable plus hwaccel mode and
+ * encoder type selects). Every persisted value lives in the `useSettingsStore`
+ * zustand store, which synchronizes it to disk and to the main process; this
+ * page only reads and writes store state and makes no direct IPC calls.
  */
 
 import { useTranslation } from 'react-i18next';
@@ -103,10 +103,11 @@ function ThemePreviewCard({ theme }: { theme: ThemeDefinition }) {
  * Renders the settings page (`/settings`).
  *
  * Layout: a theme section whose cards call `setTheme` from `useColorMode`, and
- * `SettingsSection`s for the "always on top" switch, the hardware-acceleration
- * enable switch, and (only when acceleration is enabled) the hwaccel-mode and
- * encoder-type selects. All values are bound one-way to `useSettingsStore`;
- * store setters update persisted state and the main process automatically.
+ * `SettingsSection`s for the "always on top" and "launch at startup" switches,
+ * the hardware-acceleration enable switch, and (only when acceleration is
+ * enabled) the hwaccel-mode and encoder-type selects. All values are bound
+ * one-way to `useSettingsStore`; store setters update persisted state and the
+ * main process automatically.
  *
  * No IPC calls are made directly from this page.
  *
@@ -119,10 +120,12 @@ export default function Settings() {
   const hwaccelMode = useSettingsStore((s) => s.hwaccelMode);
   const encoderType = useSettingsStore((s) => s.encoderType);
   const alwaysOnTop = useSettingsStore((s) => s.alwaysOnTop);
+  const launchAtLogin = useSettingsStore((s) => s.launchAtLogin);
   const setHardwareAcceleration = useSettingsStore((s) => s.setHardwareAcceleration);
   const setHwaccelMode = useSettingsStore((s) => s.setHwaccelMode);
   const setEncoderType = useSettingsStore((s) => s.setEncoderType);
   const setAlwaysOnTop = useSettingsStore((s) => s.setAlwaysOnTop);
+  const setLaunchAtLogin = useSettingsStore((s) => s.setLaunchAtLogin);
 
   return (
     <SettingsRoot>
@@ -152,6 +155,14 @@ export default function Settings() {
           checked={alwaysOnTop}
           onChange={(e) => setAlwaysOnTop(e.target.checked)}
           slotProps={{ input: { 'aria-label': t('settings.alwaysOnTop') } }}
+        />
+      </SettingsSection>
+      <SettingsSection>
+        <SettingLabel text={t('settings.launchAtLogin')} hint={t('settings.launchAtLoginHint')} />
+        <Switch
+          checked={launchAtLogin}
+          onChange={(e) => setLaunchAtLogin(e.target.checked)}
+          slotProps={{ input: { 'aria-label': t('settings.launchAtLogin') } }}
         />
       </SettingsSection>
       <SettingsSection>

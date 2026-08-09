@@ -405,6 +405,8 @@
     },
     "alwaysOnTop": "始终置顶",
     "alwaysOnTopHint": "保持应用窗口位于所有其他窗口之上。",
+    "launchAtLogin": "启动时运行",
+    "launchAtLoginHint": "登录计算机时自动启动 EncodeX。",
     "hardwareAcceleration": "硬件加速",
     "hwaccelMode": "加速模式",
     "hwaccelModeAuto": "自动（解码 + 编码）",

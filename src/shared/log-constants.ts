@@ -168,6 +168,8 @@ export const LOG_FAILED_TO_LOAD_MEDIA_INFO = 'Failed to load media info:';
 export const LOG_FAILED_TO_LOAD_MEDIA_INFO_FOR_PREVIEW = 'Failed to load media info for preview:';
 /** @const {string} Prefix when persisting the always-on-top setting fails. */
 export const LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING = 'Failed to persist always-on-top setting:';
+/** @const {string} Prefix when persisting the launch-at-login setting fails. */
+export const LOG_FAILED_TO_PERSIST_LAUNCH_AT_LOGIN_SETTING = 'Failed to persist launch-at-login setting:';
 /** @const {string} Prefix when persisting the batch queue concurrency fails. */
 export const LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY = 'Failed to persist queue concurrency:';
 /** @const {string} Prefix when persisting hardware acceleration settings fails. */
@@ -180,6 +182,8 @@ export const LOG_FAILED_TO_READ_IMAGE_DIMENSIONS = 'Failed to read image dimensi
 export const LOG_FAILED_TO_READ_IMAGE_PREVIEW = 'Failed to read image preview:';
 /** @const {string} Prefix when reading the stored always-on-top setting fails. */
 export const LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING = 'Failed to read stored always-on-top setting:';
+/** @const {string} Prefix when reading the stored launch-at-login setting fails. */
+export const LOG_FAILED_TO_READ_STORED_LAUNCH_AT_LOGIN_SETTING = 'Failed to read stored launch-at-login setting:';
 /** @const {string} Prefix when reading the stored queue concurrency fails. */
 export const LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY = 'Failed to read stored queue concurrency:';
 /** @const {string} Prefix when reading stored hardware acceleration settings fails. */
@@ -356,6 +360,8 @@ export const LOG_IPC_QUEUE_LIST = 'QUEUE_LIST:';
 export const LOG_IPC_QUEUE_REMOVE = 'QUEUE_REMOVE:';
 /** @const {string} Prefix when the REVEAL_FILE IPC message is received. */
 export const LOG_IPC_REVEAL_FILE = 'REVEAL_FILE:';
+/** @const {string} Prefix when the SET_LAUNCH_AT_LOGIN IPC message is received. */
+export const LOG_IPC_SET_LAUNCH_AT_LOGIN = 'SET_LAUNCH_AT_LOGIN:';
 /** @const {string} Logged when the RESUME_CONVERSION IPC message is received. */
 export const LOG_IPC_RESUME_CONVERSION_CALLED = 'RESUME_CONVERSION called';
 /** @const {string} Logged when the SELECT_FILE IPC message is received. */
@@ -575,6 +581,8 @@ export const LOG_SELECT_DIRECTORY_CALLED = 'selectDirectory called';
 export const LOG_SELECT_OUTPUT_FAILED = 'selectOutput failed:';
 /** @const {string} Prefix when setAlwaysOnTop is invoked. */
 export const LOG_SET_ALWAYS_ON_TOP = 'setAlwaysOnTop:';
+/** @const {string} Prefix when setLaunchAtLogin is invoked. */
+export const LOG_SET_LAUNCH_AT_LOGIN = 'setLaunchAtLogin:';
 /** @const {string} Prefix when setQueueConcurrency is invoked. */
 export const LOG_SET_QUEUE_CONCURRENCY = 'setQueueConcurrency:';
 /** @const {string} Prefix when the audio bitrate is set. */
@@ -707,6 +715,8 @@ export const LOG_WINDOW_MAXIMIZE_TOGGLE_CALLED = 'windowMaximizeToggle called';
 export const LOG_WINDOW_MINIMIZE_CALLED = 'windowMinimize called';
 /** @const {string} Logged when windowSetAlwaysOnTop is invoked. */
 export const LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED = 'windowSetAlwaysOnTop called';
+/** @const {string} Logged when setLaunchAtLogin is invoked. */
+export const LOG_SET_LAUNCH_AT_LOGIN_CALLED = 'setLaunchAtLogin called';
 /** @const {string} Logged when wrapAsync is invoked. */
 export const LOG_WRAP_ASYNC_CALLED = 'wrapAsync called';
 /** @const {string} Prefix when wrapAsync catches an error. */
