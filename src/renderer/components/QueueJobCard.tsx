@@ -47,6 +47,7 @@ import { Collapse, Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useDndContext } from '@dnd-kit/core';
 import type { DraggableAttributes } from '@dnd-kit/core';
 import {
   faTrashCan,
@@ -406,6 +407,8 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry }: Queue
     id: job.id,
     disabled: job.status !== QUEUE_STATUS.QUEUED,
   });
+  const { active } = useDndContext();
+  const isDragActive = Boolean(active);
 
   return (
     <JobCard
@@ -414,9 +417,9 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry }: Queue
       variant="outlined"
       style={{
         transform: CSS.Transform.toString(transform),
-        transition: isDragging ? undefined : 'transform 250ms cubic-bezier(0.25, 1, 0.5, 1)',
+        transition: isDragActive && !isDragging ? 'transform 250ms cubic-bezier(0.25, 1, 0.5, 1)' : undefined,
         opacity: isDragging ? 0 : undefined,
-        willChange: 'transform',
+        willChange: isDragActive ? 'transform' : undefined,
       }}
     >
       <QueueJobCardContent job={job} progress={progress} onRemove={onRemove} onRetry={onRetry} handleProps={{ attributes, listeners }} />
