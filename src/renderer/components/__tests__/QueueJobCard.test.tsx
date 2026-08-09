@@ -5,6 +5,7 @@ import { DndContext } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import QueueJobCard from '../QueueJobCard';
 import { useToastStore } from '../../stores/toastStore';
+import { clearPreviewCache } from '../../utils/preview-cache';
 import { QUEUE_STATUS } from '../../../shared/media-options';
 import type { QueueJob } from '../../../shared/types';
 
@@ -45,6 +46,7 @@ function renderCard(ui: ReactElement) {
 describe('QueueJobCard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    clearPreviewCache();
     useToastStore.setState({ toasts: [] });
   });
 
@@ -270,6 +272,21 @@ describe('QueueJobCard', () => {
     expect(screen.queryByTestId('queue-job-thumbnail')).not.toBeInTheDocument();
     expect(getVideoPreviewMock).not.toHaveBeenCalled();
     expect(getImagePreviewMock).not.toHaveBeenCalled();
+  });
+
+  it('does not regenerate a thumbnail when the card remounts (e.g. navigation or drag overlay)', async () => {
+    getVideoPreviewMock.mockResolvedValue('data:image/png;base64,VIDEO');
+    const job = makeJob({ input: 'C:/videos/persist.mp4' });
+
+    const first = renderCard(<QueueJobCard job={job} onRemove={() => {}} />);
+    expect(await first.findByTestId('queue-job-thumbnail')).toHaveAttribute('src', 'data:image/png;base64,VIDEO');
+    expect(getVideoPreviewMock).toHaveBeenCalledTimes(1);
+
+    first.unmount();
+
+    const second = renderCard(<QueueJobCard job={job} onRemove={() => {}} />);
+    expect(second.getByTestId('queue-job-thumbnail')).toHaveAttribute('src', 'data:image/png;base64,VIDEO');
+    expect(getVideoPreviewMock).toHaveBeenCalledTimes(1);
   });
 
   it('defers the thumbnail preview until the card scrolls into view', async () => {

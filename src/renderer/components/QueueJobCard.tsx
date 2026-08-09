@@ -35,7 +35,11 @@
  * Thumbnails are lazy: the expensive preview IPC call (which spawns ffmpeg for
  * videos) is deferred until the card scrolls near the viewport via an
  * IntersectionObserver, so large queues only pay for previews the user can
- * actually see.
+ * actually see. Once a thumbnail is generated it is cached per input path for
+ * the whole session (see {@link getPreviewThumbnail}) and re-seeded
+ * synchronously on remount (see {@link getResolvedPreviewThumbnail}), so
+ * remounting a card — during drags, reordering, or page navigation — shows the
+ * thumbnail instantly and never regenerates it.
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -60,8 +64,8 @@ import ProgressBar from './ProgressBar';
 import type { QueueJobCardProps } from './types';
 import type { ConversionOptions } from '../../shared/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
-import { isImageFile, isVideoFile } from '../../shared/file-extensions';
 import { useToastStore } from '../stores/toastStore';
+import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
 import {
   JobCard,
   CardBody,
@@ -142,9 +146,12 @@ export function QueueJobCardContent({
   /**
    * Data URL of the job's media thumbnail (preview frame for video, scaled
    * image preview for images), or null while loading/for unsupported files.
+   * Seeded from the renderer's session preview cache so a remounted card
+   * (navigation, drag overlay, reorder) shows an already-generated thumbnail
+   * instantly instead of waiting for an async fetch.
    * @type {[string | null, React.Dispatch<React.SetStateAction<string | null>>]}
    */
-  const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const [thumbnail, setThumbnail] = useState<string | null>(() => getResolvedPreviewThumbnail(job.input));
 
   /**
    * True once the card has scrolled near the viewport, at which point the
@@ -192,26 +199,18 @@ export function QueueJobCardContent({
 
   /**
    * On mount (or once the card scrolls into view), fetches a thumbnail for the
-   * job's input via the image/video preview IPC channels (audio files have no
-   * preview). Failures and null results keep the card thumbnail-less; the state
-   * is only updated when a preview actually arrives so cards can render without
-   * any async churn.
+   * job's input via the session-scoped preview cache (audio files have no
+   * preview). The cache guarantees each input path is sent to the image/video
+   * preview IPC at most once per session, so remounts, drag-overlay clones, and
+   * page navigation reuse the generated thumbnail instead of regenerating it.
    * @returns {void}
    */
   useEffect(() => {
     if (!thumbnailInView) return;
     let cancelled = false;
     const loadThumbnail = async () => {
-      try {
-        const dataUrl = isImageFile(job.input)
-          ? await window.electronAPI.getImagePreview(job.input)
-          : isVideoFile(job.input)
-            ? await window.electronAPI.getVideoPreview(job.input)
-            : null;
-        if (!cancelled && dataUrl) setThumbnail(dataUrl);
-      } catch {
-        if (!cancelled) setThumbnail(null);
-      }
+      const dataUrl = await getPreviewThumbnail(job.input);
+      if (!cancelled && dataUrl) setThumbnail(dataUrl);
     };
     loadThumbnail();
     return () => {

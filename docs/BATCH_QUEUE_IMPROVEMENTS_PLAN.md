@@ -184,7 +184,19 @@ Status: `[x]`
       the card scrolls within 300px of the viewport, so large queues never
       spawn preview work for off-screen cards. (True windowed virtualization
       would require a new dependency and was deliberately kept out of scope.)
-      Files: `src/renderer/components/QueueJobCard.tsx`.
+      Generated thumbnails are persisted: the renderer keeps a per-session
+      cache (`src/renderer/utils/preview-cache.ts`) that stores resolved values
+      and seeds a remounted card's initial render (`getResolvedPreviewThumbnail`
+      → `useState` initializer) so navigation, drag overlays, and reordering
+      show an existing thumbnail instantly with no async gap; the main-process
+      preview IPC handlers back it with a disk cache (`src/main/preview-cache.ts`,
+      `userData/previews/`) keyed by source path and validated by file size +
+      integer-ms mtime, so a thumbnail is generated once per source file and
+      survives renderer reloads and app restarts. Cache hits/misses/write
+      failures are logged (`LOG_PREVIEW_CACHE_*`) for diagnosis. Files:
+      `src/renderer/components/QueueJobCard.tsx`,
+      `src/renderer/utils/preview-cache.ts`, `src/main/preview-cache.ts`,
+      `src/main/ipc/image.ts`.
 - [x] Native OS completion notification when a batch finishes: the renderer
       raises an HTML5 `Notification` (surfaced as a system notification in
       Electron) with the batch summary next to the existing toast; permission

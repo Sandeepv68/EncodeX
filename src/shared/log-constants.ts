@@ -471,6 +471,14 @@ export const LOG_PLAYER_DECODER_ERROR = 'Player decoder error:';
 export const LOG_PLAYER_OPEN = 'playerOpen:';
 /** @const {string} Prefix when playerSeek is invoked. */
 export const LOG_PLAYER_SEEK = 'playerSeek:';
+/** @const {string} Prefix when the preview cache is served from disk. */
+export const LOG_PREVIEW_CACHE_HIT = 'preview cache hit:';
+/** @const {string} Prefix when the preview cache misses and generates a preview. */
+export const LOG_PREVIEW_CACHE_MISS = 'preview cache miss:';
+/** @const {string} Prefix when a cached preview is rejected because the source file changed. */
+export const LOG_PREVIEW_CACHE_STAT_MISMATCH = 'preview cache source changed:';
+/** @const {string} Prefix when persisting a generated preview to disk fails. */
+export const LOG_PREVIEW_CACHE_WRITE_FAILED = 'preview cache write failed:';
 /** @const {string} Logged when processNext is called while already running. */
 export const LOG_PROCESS_NEXT_ALREADY_RUNNING = 'processNext: already running';
 /** @const {string} Logged when processNext finds no queued jobs. */
