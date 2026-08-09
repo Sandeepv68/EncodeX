@@ -168,6 +168,29 @@ function persistDraft(draft: {
 }
 
 /**
+ * Reports whether a video cut draft differs from the blank form, i.e. holds
+ * pending (ready or edited) work. Any non-default field makes the draft dirty:
+ * a selected source or output file, a start/end/duration, duration mode, or the
+ * audio toggle flipped off. Used by the close-confirmation dialog so a
+ * configured cut form blocks closing even when no cut is running.
+ * @param {Pick<VideoCutState, 'input' | 'output' | 'startTime' | 'endTime' | 'duration' | 'useDuration' | 'includeAudio'>} state - The draft fields (or full store state).
+ * @returns {boolean} True when the form holds configured/edited work.
+ */
+export function isVideoCutDirty(
+  state: Pick<VideoCutState, 'input' | 'output' | 'startTime' | 'endTime' | 'duration' | 'useDuration' | 'includeAudio'>,
+): boolean {
+  return (
+    state.input !== '' ||
+    state.output !== '' ||
+    state.startTime !== '00:00:00' ||
+    state.endTime !== '' ||
+    state.duration !== '' ||
+    state.useDuration ||
+    !state.includeAudio
+  );
+}
+
+/**
  * The validated draft snapshot read from localStorage at module load, used to
  * initialize the store.
  * @const {Pick<VideoCutState, 'input' | 'output' | 'startTime' | 'endTime' | 'duration' | 'useDuration' | 'includeAudio'>} stored

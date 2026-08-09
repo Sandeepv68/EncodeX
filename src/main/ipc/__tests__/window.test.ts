@@ -26,7 +26,11 @@ function createWindowMock() {
     close: vi.fn(),
     isDestroyed: vi.fn(() => false),
     on: vi.fn(),
-    webContents: { send: vi.fn() },
+    webContents: {
+      send: vi.fn(),
+      isDestroyed: vi.fn(() => false),
+      isCrashed: vi.fn(() => false),
+    },
   };
 }
 
@@ -78,6 +82,50 @@ describe('registerWindowHandlers', () => {
     const win = createWindowMock();
     registerWindowHandlers(win as never);
     getOnHandlers()[IPC.WINDOW_CLOSE]();
+    expect(win.close).toHaveBeenCalled();
+  });
+
+  it('intercepts the close event and requests confirmation', () => {
+    const win = createWindowMock();
+    registerWindowHandlers(win as never);
+    const closeHandler = win.on.mock.calls.find(([event]) => event === 'close')?.[1] as (event: { preventDefault: () => void }) => void;
+    const event = { preventDefault: vi.fn() };
+    closeHandler(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(win.webContents.send).toHaveBeenCalledWith(IPC.WINDOW_CLOSE_REQUESTED);
+  });
+
+  it('WINDOW_CONFIRM_CLOSE marks the close as confirmed and re-invokes close', () => {
+    const win = createWindowMock();
+    registerWindowHandlers(win as never);
+    getOnHandlers()[IPC.WINDOW_CONFIRM_CLOSE]();
+    expect(win.close).toHaveBeenCalled();
+    const closeHandler = win.on.mock.calls.find(([event]) => event === 'close')?.[1] as (event: { preventDefault: () => void }) => void;
+    const event = { preventDefault: vi.fn() };
+    closeHandler(event);
+    expect(event.preventDefault).not.toHaveBeenCalled();
+    expect(win.webContents.send).not.toHaveBeenCalled();
+  });
+
+  it('closes directly when the renderer webContents is destroyed', () => {
+    const win = createWindowMock();
+    win.webContents.isDestroyed.mockReturnValue(true);
+    registerWindowHandlers(win as never);
+    const closeHandler = win.on.mock.calls.find(([event]) => event === 'close')?.[1] as (event: { preventDefault: () => void }) => void;
+    const event = { preventDefault: vi.fn() };
+    closeHandler(event);
+    expect(event.preventDefault).not.toHaveBeenCalled();
+    expect(win.close).toHaveBeenCalled();
+  });
+
+  it('closes directly when the renderer webContents is crashed', () => {
+    const win = createWindowMock();
+    win.webContents.isCrashed.mockReturnValue(true);
+    registerWindowHandlers(win as never);
+    const closeHandler = win.on.mock.calls.find(([event]) => event === 'close')?.[1] as (event: { preventDefault: () => void }) => void;
+    const event = { preventDefault: vi.fn() };
+    closeHandler(event);
+    expect(event.preventDefault).not.toHaveBeenCalled();
     expect(win.close).toHaveBeenCalled();
   });
 

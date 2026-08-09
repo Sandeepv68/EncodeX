@@ -13,11 +13,12 @@
  * Every control is controlled through props (values plus `on*Change`
  * callbacks) so the parent page owns the state. The container/format select
  * offers an "Auto (source)" entry (`''`) plus the options matching the
- * operation — video containers via
- * `getVideoCodecContainer(videoCodec).containers`, audio containers via the
- * static `AUDIO_CONTAINER_EXTENSIONS` list, and image formats via the shared
- * `IMAGE_FORMATS` list. Codec and pixel-format pickers reuse the shared
- * {@link CodecSelect} / {@link GroupedSelect} components.
+ *  operation — video containers via
+ * `getVideoCodecContainer(videoCodec).containers`, audio containers via
+ * `getAudioCodecContainers(audioCodec)` (filtered to the selected codec), and
+ * image formats via the shared `IMAGE_FORMATS` list. Codec and pixel-format
+ * pickers reuse the shared {@link CodecSelect} / {@link GroupedSelect}
+ * components.
  */
 
 import { MenuItem, TextField } from '@mui/material';
@@ -26,7 +27,7 @@ import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useTranslation } from 'react-i18next';
 import { BITRATE_OPTIONS, IMAGE_FORMATS, PIXEL_FORMATS, SCALE_OPTIONS, VIDEO_BITRATE_OPTIONS } from '../../shared/media-options';
 import { QSCALE_RANGE } from '../../shared/transcoder-constants';
-import { AUDIO_CONTAINER_EXTENSIONS, getVideoCodecContainer } from '../../shared/codec-containers';
+import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
 import CodecSelect from './CodecSelect';
 import GroupedSelect from './GroupedSelect';
 import type { BatchEncodingPanelProps } from './types';
@@ -92,7 +93,7 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
   const showAudio = props.operation === 'transcode' || props.operation === 'extract_audio';
   const showImage = props.operation === 'compress_image';
 
-  const containerOptions = showVideo ? getVideoCodecContainer(props.videoCodec).containers : AUDIO_CONTAINER_EXTENSIONS;
+  const containerOptions = showVideo ? getVideoCodecContainer(props.videoCodec).containers : getAudioCodecContainers(props.audioCodec);
 
   return (
     <EncodingPaper>

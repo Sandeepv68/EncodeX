@@ -1,10 +1,23 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { clearTransientStorage, setupSessionCleanup } from '../sessionCleanup';
 import { THEME_STORAGE_KEY } from '../../shared/app-constants';
-import { LANGUAGE_STORAGE_KEY, VIDEO_CUT_DRAFT_STORAGE_KEY, WINDOW_ALWAYS_ON_TOP_STORAGE_KEY } from '../../shared/constants';
+import {
+  LANGUAGE_STORAGE_KEY,
+  LAUNCH_AT_LOGIN_STORAGE_KEY,
+  QUEUE_CONCURRENCY_STORAGE_KEY,
+  VIDEO_CUT_DRAFT_STORAGE_KEY,
+  WINDOW_ALWAYS_ON_TOP_STORAGE_KEY,
+} from '../../shared/constants';
 import { HWACCEL_STORAGE_KEY } from '../../shared/hwaccel-settings';
 
-const PREFERENCE_KEYS = [THEME_STORAGE_KEY, LANGUAGE_STORAGE_KEY, WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, HWACCEL_STORAGE_KEY];
+const PREFERENCE_KEYS = [
+  THEME_STORAGE_KEY,
+  LANGUAGE_STORAGE_KEY,
+  WINDOW_ALWAYS_ON_TOP_STORAGE_KEY,
+  HWACCEL_STORAGE_KEY,
+  LAUNCH_AT_LOGIN_STORAGE_KEY,
+  QUEUE_CONCURRENCY_STORAGE_KEY,
+];
 
 const seedStorage = () => {
   PREFERENCE_KEYS.forEach((key, i) => localStorage.setItem(key, `value-${i}`));

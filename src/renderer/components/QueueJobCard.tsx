@@ -10,9 +10,10 @@
  * retrying.
  *
  * Status colors map QUEUE_STATUS values to MUI chip colors (queued = warning,
- * running = primary, done = success, error = error). The progress bar is
- * wrapped in an ErrorBoundary so a renderer failure in one card never breaks
- * the queue list.
+ * running = primary, done = success, error = error). A running job whose queue
+ * is paused additionally shows a warning "paused" chip next to the status chip.
+ * The progress bar is wrapped in an ErrorBoundary so a renderer failure in one
+ * card never breaks the queue list.
  *
  * The default export wires the card into @dnd-kit's sortable context so QUEUED
  * jobs can be reordered by dragging the grip handle (non-queued jobs are not
@@ -31,14 +32,24 @@
  * full error (when present), a compact summary of the encoding options
  * (codecs, bitrates, scale, hwaccel, ...), the transcoder, and the creation
  * timestamp.
+ *
+ * Thumbnails are lazy: the expensive preview IPC call (which spawns ffmpeg for
+ * videos) is deferred until the card scrolls near the viewport via an
+ * IntersectionObserver, so large queues only pay for previews the user can
+ * actually see. Once a thumbnail is generated it is cached per input path for
+ * the whole session (see {@link getPreviewThumbnail}) and re-seeded
+ * synchronously on remount (see {@link getResolvedPreviewThumbnail}), so
+ * remounting a card — during drags, reordering, or page navigation — shows the
+ * thumbnail instantly and never regenerates it.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Collapse, Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { DraggableAttributes, SyntheticListenerMap } from '@dnd-kit/core';
+import { useDndContext } from '@dnd-kit/core';
+import type { DraggableAttributes } from '@dnd-kit/core';
 import {
   faTrashCan,
   faRotateRight,
@@ -55,8 +66,8 @@ import ProgressBar from './ProgressBar';
 import type { QueueJobCardProps } from './types';
 import type { ConversionOptions } from '../../shared/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
-import { isImageFile, isVideoFile } from '../../shared/file-extensions';
 import { useToastStore } from '../stores/toastStore';
+import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
 import {
   JobCard,
   CardBody,
@@ -100,12 +111,12 @@ function basename(path: string): string {
  * Handle props forwarded from {@link QueueJobCard} to the presentational body.
  * @interface DragHandleProps
  * @property {DraggableAttributes} attributes - dnd-kit attributes for the handle.
- * @property {SyntheticListenerMap | undefined} listeners - dnd-kit pointer/keyboard
- *   listeners for the handle.
+ * @property {ReturnType<typeof useSortable>['listeners']} listeners - dnd-kit
+ *   pointer/keyboard listeners for the handle.
  */
 interface DragHandleProps {
   attributes: DraggableAttributes;
-  listeners: SyntheticListenerMap | undefined;
+  listeners: ReturnType<typeof useSortable>['listeners'];
 }
 
 /**
@@ -137,36 +148,77 @@ export function QueueJobCardContent({
   /**
    * Data URL of the job's media thumbnail (preview frame for video, scaled
    * image preview for images), or null while loading/for unsupported files.
+   * Seeded from the renderer's session preview cache so a remounted card
+   * (navigation, drag overlay, reorder) shows an already-generated thumbnail
+   * instantly instead of waiting for an async fetch.
    * @type {[string | null, React.Dispatch<React.SetStateAction<string | null>>]}
    */
-  const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const [thumbnail, setThumbnail] = useState<string | null>(() => getResolvedPreviewThumbnail(job.input));
 
   /**
-   * On mount, fetches a thumbnail for the job's input via the image/video
-   * preview IPC channels (audio files have no preview). Failures and null
-   * results keep the card thumbnail-less; the state is only updated when a
-   * preview actually arrives so cards can render without any async churn.
+   * True once the card has scrolled near the viewport, at which point the
+   * thumbnail preview is actually fetched. Cards far off-screen stay lazy so a
+   * large queue never spawns preview work the user cannot see.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
+  const [thumbnailInView, setThumbnailInView] = useState(false);
+
+  /**
+   * Anchor whose visibility drives the lazy thumbnail load.
+   * @type {React.RefObject<HTMLDivElement | null>}
+   */
+  const thumbnailAnchorRef = useRef<HTMLDivElement | null>(null);
+
+  /**
+   * Marks the card as visible when its thumbnail anchor enters (or gets within
+   * a generous margin of) the viewport. In test environments without an
+   * IntersectionObserver the card is treated as immediately visible so previews
+   * load unconditionally. Once observed, the observer disconnects.
    * @returns {void}
    */
   useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') {
+      setThumbnailInView(true);
+      return;
+    }
+    const node = thumbnailAnchorRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setThumbnailInView(true);
+            observer.disconnect();
+            break;
+          }
+        }
+      },
+      { rootMargin: '300px' },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  /**
+   * On mount (or once the card scrolls into view), fetches a thumbnail for the
+   * job's input via the session-scoped preview cache (audio files have no
+   * preview). The cache guarantees each input path is sent to the image/video
+   * preview IPC at most once per session, so remounts, drag-overlay clones, and
+   * page navigation reuse the generated thumbnail instead of regenerating it.
+   * @returns {void}
+   */
+  useEffect(() => {
+    if (!thumbnailInView) return;
     let cancelled = false;
     const loadThumbnail = async () => {
-      try {
-        const dataUrl = isImageFile(job.input)
-          ? await window.electronAPI.getImagePreview(job.input)
-          : isVideoFile(job.input)
-            ? await window.electronAPI.getVideoPreview(job.input)
-            : null;
-        if (!cancelled && dataUrl) setThumbnail(dataUrl);
-      } catch {
-        if (!cancelled) setThumbnail(null);
-      }
+      const dataUrl = await getPreviewThumbnail(job.input);
+      if (!cancelled && dataUrl) setThumbnail(dataUrl);
     };
     loadThumbnail();
     return () => {
       cancelled = true;
     };
-  }, [job.input]);
+  }, [thumbnailInView, job.input]);
 
   /**
    * Builds the compact label/value rows summarizing a job's encoding options.
@@ -221,7 +273,7 @@ export function QueueJobCardContent({
 
   return (
     <>
-      <CardBody>
+      <CardBody ref={thumbnailAnchorRef}>
         {thumbnail && <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />}
         <CardContent>
           <CardHeaderRow>
@@ -231,7 +283,7 @@ export function QueueJobCardContent({
               </EllipsisTooltip>
             </Box>
             <CardActionsStack direction="row" spacing={1}>
-              {job.status === QUEUE_STATUS.QUEUED && handleProps && !dragOverlay && (
+              {job.status === QUEUE_STATUS.QUEUED && handleProps && !dragOverlay && !expanded && (
                 <Tooltip title={t('batchQueue.dragHandle')}>
                   <DragHandleButton
                     size="small"
@@ -244,6 +296,9 @@ export function QueueJobCardContent({
                 </Tooltip>
               )}
               <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
+              {job.status === QUEUE_STATUS.RUNNING && job.paused && (
+                <StatusChip label={t('batchQueue.paused')} color="info" variant="outlined" data-testid="queue-job-paused-badge" />
+              )}
               {job.status === QUEUE_STATUS.ERROR && onRetry && (
                 <Tooltip title={t('batchQueue.retry')}>
                   <IconButton size="small" aria-label={t('batchQueue.retry')} onClick={() => onRetry(job)}>
@@ -356,6 +411,8 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry }: Queue
     id: job.id,
     disabled: job.status !== QUEUE_STATUS.QUEUED,
   });
+  const { active } = useDndContext();
+  const isDragActive = Boolean(active);
 
   return (
     <JobCard
@@ -364,9 +421,9 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry }: Queue
       variant="outlined"
       style={{
         transform: CSS.Transform.toString(transform),
-        transition: isDragging ? undefined : 'transform 250ms cubic-bezier(0.25, 1, 0.5, 1)',
+        transition: isDragActive && !isDragging ? 'transform 250ms cubic-bezier(0.25, 1, 0.5, 1)' : undefined,
         opacity: isDragging ? 0 : undefined,
-        willChange: 'transform',
+        willChange: isDragActive ? 'transform' : undefined,
       }}
     >
       <QueueJobCardContent job={job} progress={progress} onRemove={onRemove} onRetry={onRetry} handleProps={{ attributes, listeners }} />

@@ -27,6 +27,12 @@
     "descCut": "Trimma och klipp video med en bildruteexakt spelare",
     "descBatch": "Konvertera många filer samtidigt med en smart kö"
   },
+  "closeConfirm": {
+    "title": "Stänga EncodeX?",
+    "message": "Det finns jobb som körs eller osparade ändringar. Stänger du nu avbryts de.",
+    "confirmLabel": "Stäng ändå",
+    "cancelLabel": "Avbryt"
+  },
   "convert": {
     "title": "Konvertera media",
     "inputFile": "Indatafil",
@@ -272,6 +278,12 @@
     "addFiles": "Lägg till filer",
     "cancelAll": "Avbryt alla",
     "empty": "Kön är tom. Lägg till filer för att påbörja batchbearbetning.",
+    "cancelAllTitle": "Avbryt alla jobb",
+    "cancelAllMessage": "Detta avbryter alla jobb i kön och jobb som körs. Är du säker?",
+    "confirmCancelAll": "Ja, avbryt alla",
+    "dialogCancel": "Avbryt",
+    "enqueued": "{{count}} fil(er) har lagts till i kön",
+    "noResults": "Inga jobb matchar det aktuella filtret eller sökningen",
     "remove": "Ta bort",
     "retry": "Försök igen",
     "revealInFolder": "Visa i mapp",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} i kö, {{running}} körs, {{done}} klara, {{failed}} misslyckade",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Batch klar: {{done}} lyckades, {{failed}} misslyckades",
+    "notificationTitle": "EncodeX-batch klar",
     "filters": {
       "all": "Alla",
       "queued": "I kö",
@@ -293,6 +306,7 @@
     "concurrency": "Parallella jobb",
     "pause": "Pausa",
     "resume": "Återuppta",
+    "paused": "Pausad",
     "dragHandle": "Dra för att sortera om",
     "badgeCount": "{{count}} jobb i batchkön",
     "operationTranscode": "Omkoda",
@@ -395,6 +409,8 @@
     "theme": "Tema",
     "alwaysOnTop": "Alltid överst",
     "alwaysOnTopHint": "Håller appfönstret ovanför alla andra fönster.",
+    "launchAtLogin": "Starta vid inloggning",
+    "launchAtLoginHint": "Startar EncodeX automatiskt när du loggar in på datorn.",
     "hardwareAcceleration": "Hårdvaruacceleration",
     "hwaccelMode": "Accelerationsläge",
     "hwaccelModeAuto": "Automatisk (avkoda + koda)",

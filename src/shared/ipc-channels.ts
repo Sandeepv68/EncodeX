@@ -25,6 +25,7 @@
  * @property {string} QUEUE_ADD - Add a job to the batch queue.
  * @property {string} QUEUE_REMOVE - Remove a job from the batch queue.
  * @property {string} QUEUE_LIST - List all batch queue jobs.
+ * @property {string} QUEUE_GET_STATE - Read the queue's paused flag and concurrency.
  * @property {string} QUEUE_CANCEL_ALL - Cancel every queued and running job.
  * @property {string} QUEUE_CLEAR_COMPLETED - Remove every done and errored job.
  * @property {string} QUEUE_SET_CONCURRENCY - Set the number of jobs run in parallel.
@@ -34,6 +35,7 @@
  * @property {string} QUEUE_EXPORT - Export the queue to a JSON file.
  * @property {string} QUEUE_IMPORT - Import a JSON queue file.
  * @property {string} REVEAL_FILE - Reveal a file in the OS file manager.
+ * @property {string} SET_LAUNCH_AT_LOGIN - Set whether the app launches at OS startup.
  * @property {string} PLAYER_OPEN - Open a video in the player.
  * @property {string} PLAYER_SEEK - Seek the player to a timestamp.
  * @property {string} PLAYER_CLOSE - Close the player.
@@ -45,6 +47,8 @@
  * @property {string} WINDOW_MINIMIZE - Minimize the main window.
  * @property {string} WINDOW_MAXIMIZE_TOGGLE - Toggle the window maximize state.
  * @property {string} WINDOW_CLOSE - Close the main window.
+ * @property {string} WINDOW_CLOSE_REQUESTED - Ask the renderer to verify active jobs before closing.
+ * @property {string} WINDOW_CONFIRM_CLOSE - Confirm the close after active-job verification.
  * @property {string} WINDOW_SET_ALWAYS_ON_TOP - Set the always-on-top window flag.
  * @property {string} WINDOW_MAXIMIZED_CHANGED - Notify that the maximize state changed.
  * @property {string} CONVERSION_PROGRESS - Push conversion progress updates.
@@ -77,6 +81,7 @@ export const IPC = {
   QUEUE_ADD: 'queue-add',
   QUEUE_REMOVE: 'queue-remove',
   QUEUE_LIST: 'queue-list',
+  QUEUE_GET_STATE: 'queue-get-state',
   QUEUE_CANCEL_ALL: 'queue-cancel-all',
   QUEUE_CLEAR_COMPLETED: 'queue-clear-completed',
   QUEUE_SET_CONCURRENCY: 'queue-set-concurrency',
@@ -86,6 +91,7 @@ export const IPC = {
   QUEUE_EXPORT: 'queue-export',
   QUEUE_IMPORT: 'queue-import',
   REVEAL_FILE: 'queue-reveal',
+  SET_LAUNCH_AT_LOGIN: 'set-launch-at-login',
   PLAYER_OPEN: 'player-open',
   PLAYER_SEEK: 'player-seek',
   PLAYER_CLOSE: 'player-close',
@@ -98,6 +104,8 @@ export const IPC = {
   WINDOW_MINIMIZE: 'window-minimize',
   WINDOW_MAXIMIZE_TOGGLE: 'window-maximize-toggle',
   WINDOW_CLOSE: 'window-close',
+  WINDOW_CLOSE_REQUESTED: 'window-close-requested',
+  WINDOW_CONFIRM_CLOSE: 'window-confirm-close',
   WINDOW_SET_ALWAYS_ON_TOP: 'window-set-always-on-top',
   WINDOW_MAXIMIZED_CHANGED: 'window-maximized-changed',
 

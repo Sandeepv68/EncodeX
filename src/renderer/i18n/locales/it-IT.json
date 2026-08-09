@@ -27,6 +27,12 @@
     "descCut": "Ritaglia e taglia video con un player frame-accurato",
     "descBatch": "Converti molti file in una volta con una coda intelligente"
   },
+  "closeConfirm": {
+    "title": "Chiudere EncodeX?",
+    "message": "Ci sono lavori in corso o modifiche non salvate. Chiudendo ora verranno annullati.",
+    "confirmLabel": "Chiudi comunque",
+    "cancelLabel": "Annulla"
+  },
   "convert": {
     "title": "Converti file",
     "inputFile": "File di input",
@@ -272,6 +278,12 @@
     "addFiles": "Aggiungi file",
     "cancelAll": "Annulla tutto",
     "empty": "La coda è vuota. Aggiungi file per iniziare l'elaborazione batch.",
+    "cancelAllTitle": "Annulla tutti i lavori",
+    "cancelAllMessage": "Questa operazione annullerà tutti i lavori in coda e quelli in esecuzione. Sei sicuro?",
+    "confirmCancelAll": "Sì, annulla tutti",
+    "dialogCancel": "Annulla",
+    "enqueued": "Aggiunti {{count}} file alla coda",
+    "noResults": "Nessun lavoro corrisponde al filtro o alla ricerca corrente",
     "remove": "Rimuovi",
     "retry": "Riprova",
     "revealInFolder": "Mostra nella cartella",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} in coda, {{running}} in esecuzione, {{done}} completati, {{failed}} non riusciti",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Lotto completato: {{done}} riusciti, {{failed}} non riusciti",
+    "notificationTitle": "Lotto EncodeX completato",
     "filters": {
       "all": "Tutti",
       "queued": "In coda",
@@ -293,6 +306,7 @@
     "concurrency": "Operazioni in parallelo",
     "pause": "Pausa",
     "resume": "Riprendi",
+    "paused": "In pausa",
     "dragHandle": "Trascina per riordinare",
     "badgeCount": "{{count}} lavori nella coda batch",
     "operationTranscode": "Transcodificare",
@@ -395,6 +409,8 @@
     "theme": "Tema",
     "alwaysOnTop": "Sempre in primo piano",
     "alwaysOnTopHint": "Mantiene la finestra dell'app sopra tutte le altre finestre.",
+    "launchAtLogin": "Avvia all'avvio",
+    "launchAtLoginHint": "Avvia EncodeX automaticamente quando accedi al computer.",
     "hardwareAcceleration": "Accelerazione hardware",
     "hwaccelMode": "Modalità di accelerazione",
     "hwaccelModeAuto": "Automatica (decodifica + codifica)",

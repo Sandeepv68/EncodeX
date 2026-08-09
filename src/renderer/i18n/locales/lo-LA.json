@@ -27,6 +27,12 @@
     "descCut": "ຕັດວິດີໂອດ້ວຍຄວາມແມ່ນຍຳໃນລະດັບເຟຣມ",
     "descBatch": "ແປງຫຼາຍໄຟລ໌ພ້ອມກັນດ້ວຍຄິວອັດສະລິຍະ"
   },
+  "closeConfirm": {
+    "title": "ປິດ EncodeX?",
+    "message": "ມີວຽກກຳລັງດຳເນີນຢູ່ ຫຼື ການປ່ຽນແປງທີ່ຍັງບໍ່ໄດ້ບັນທຶກ. ການປິດດຽວນີ້ຈະຍົກເລີກພວກມັນ.",
+    "confirmLabel": "ປິດເລີຍ",
+    "cancelLabel": "ຍົກເລີກ"
+  },
   "convert": {
     "title": "ແປງສື່",
     "inputFile": "ໄຟລ໌ນຳເຂົ້າ",
@@ -272,6 +278,12 @@
     "addFiles": "ເພີ່ມໄຟລ໌",
     "cancelAll": "ຍົກເລີກທັງໝົດ",
     "empty": "ຄິວຫວ່າງ. ເພີ່ມໄຟລ໌ເພື່ອເລີ່ມປະມວນຜົນຫຼາຍອັນ.",
+    "cancelAllTitle": "ຍົກເລີກວຽກທັງໝົດ",
+    "cancelAllMessage": "ອັນນີ້ຈະຍົກເລີກວຽກທີ່ລໍຖ້າຢູ່ໃນຄິວ ແລະວຽກທີ່ກຳລັງແລ່ນທັງໝົດ. ທ່ານແນ່ໃຈບໍ່?",
+    "confirmCancelAll": "ແມ່ນແລ້ວ, ຍົກເລີກທັງໝົດ",
+    "dialogCancel": "ຍົກເລີກ",
+    "enqueued": "ເພີ່ມ {{count}} ໄຟລ໌ໃສ່ຄິວແລ້ວ",
+    "noResults": "ບໍ່ມີວຽກທີ່ກົງກັບຕົວກອງ ຫຼືການຊອກຫາປັດຈຸບັນ",
     "remove": "ເອົາອອກ",
     "retry": "ລອງໃໝ່",
     "revealInFolder": "ສະແດງໃນໂຟນເດີ",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} ໃນຄິວ, {{running}} ກຳລັງແລ່ນ, {{done}} ສຳເລັດ, {{failed}} ລົ້ມເຫຼວ",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "ຊຸດສຳເລັດ: {{done}} ສຳເລັດ, {{failed}} ລົ້ມເຫຼວ",
+    "notificationTitle": "ຊຸດ EncodeX ສຳເລັດ",
     "filters": {
       "all": "ທັງໝົດ",
       "queued": "ໃນຄິວ",
@@ -293,6 +306,7 @@
     "concurrency": "ວຽກພ້ອມກັນ",
     "pause": "ຢຸດຊົ່ວຄາວ",
     "resume": "ສືບຕໍ່",
+    "paused": "ຖືກຢຸດຊົ່ວຄາວ",
     "dragHandle": "ລາກເພື່ອຈັດລຳດັບ",
     "badgeCount": "{{count}} ວຽກໃນຄິວຫຼາຍອັນ",
     "operationTranscode": "Transcode",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "ຢູ່ເທິງສຸດສະເໝີ",
     "alwaysOnTopHint": "ຮັກສາປ່ອງຢ້ຽມແອັບຯໃຫ້ຢູ່ເທິງປ່ອງຢ້ຽມອື່ນໆທັງໝົດ.",
+    "launchAtLogin": "ເປີດໃຊ້ເມື່ອເລີ່ມຕົ້ນ",
+    "launchAtLoginHint": "ຈະເປີດໃຊ້ EncodeX ອັດຕະໂນມັດ ເມື່ອທ່ານເຂົ້າສູ່ລະບົບຄອມພິວເຕີຂອງທ່ານ.",
     "hardwareAcceleration": "ການເລັ່ງຮາດແວ",
     "hwaccelMode": "ໂໝດການເລັ່ງ",
     "hwaccelModeAuto": "ອັດຕະໂນມັດ (decoder + encoder)",

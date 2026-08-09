@@ -27,6 +27,12 @@
     "descCut": "Pangkas dan potong video dengan pemutar presisi bingkai",
     "descBatch": "Konversi banyak file sekaligus dengan antrean cerdas"
   },
+  "closeConfirm": {
+    "title": "Tutup EncodeX?",
+    "message": "Ada pekerjaan yang sedang berjalan atau perubahan yang belum disimpan. Menutup sekarang akan membatalkannya.",
+    "confirmLabel": "Tetap tutup",
+    "cancelLabel": "Batal"
+  },
   "convert": {
     "title": "Konversi Media",
     "inputFile": "File Masukan",
@@ -272,6 +278,12 @@
     "addFiles": "Tambah File",
     "cancelAll": "Batalkan Semua",
     "empty": "Antrean kosong. Tambahkan file untuk memulai pemrosesan batch.",
+    "cancelAllTitle": "Batalkan semua tugas",
+    "cancelAllMessage": "Ini akan membatalkan semua tugas yang mengantre dan yang sedang berjalan. Anda yakin?",
+    "confirmCancelAll": "Ya, batalkan semua",
+    "dialogCancel": "Batal",
+    "enqueued": "{{count}} berkas ditambahkan ke antrean",
+    "noResults": "Tidak ada tugas yang cocok dengan filter atau pencarian saat ini",
     "remove": "Hapus",
     "retry": "Coba lagi",
     "revealInFolder": "Tampilkan di folder",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} antre, {{running}} berjalan, {{done}} selesai, {{failed}} gagal",
     "etaEstimate": "Perkiraan ~{{eta}}",
     "finished": "Batch selesai: {{done}} berhasil, {{failed}} gagal",
+    "notificationTitle": "Batch EncodeX selesai",
     "filters": {
       "all": "Semua",
       "queued": "Antre",
@@ -293,6 +306,7 @@
     "concurrency": "Tugas paralel",
     "pause": "Jeda",
     "resume": "Lanjutkan",
+    "paused": "Dijeda",
     "dragHandle": "Seret untuk mengurutkan ulang",
     "badgeCount": "{{count}} pekerjaan dalam antrean batch",
     "operationTranscode": "Transkode",
@@ -395,6 +409,8 @@
     "theme": "Tema",
     "alwaysOnTop": "Selalu di atas",
     "alwaysOnTopHint": "Menjaga jendela aplikasi tetap di atas semua jendela lainnya.",
+    "launchAtLogin": "Luncurkan saat startup",
+    "launchAtLoginHint": "Menjalankan EncodeX secara otomatis saat Anda masuk ke komputer.",
     "hardwareAcceleration": "Akselerasi perangkat keras",
     "hwaccelMode": "Mode akselerasi",
     "hwaccelModeAuto": "Otomatis (decode + encode)",

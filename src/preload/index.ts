@@ -35,11 +35,11 @@
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
- *   `windowSetAlwaysOnTop`.
+ *   `windowSetAlwaysOnTop`, `setLaunchAtLogin`.
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
  *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
@@ -93,6 +93,7 @@ import {
   LOG_QUEUE_EXPORT,
   LOG_QUEUE_IMPORT,
   LOG_QUEUE_LIST_CALLED,
+  LOG_QUEUE_GET_STATE_CALLED,
   LOG_QUEUE_MOVE_TO,
   LOG_QUEUE_PAUSE_CALLED,
   LOG_QUEUE_REMOVE,
@@ -106,9 +107,12 @@ import {
   LOG_SELECT_OUTPUT_CALLED,
   LOG_TRANSCODER,
   LOG_WINDOW_CLOSE_CALLED,
+  LOG_WINDOW_CONFIRM_CLOSE_CALLED,
+  LOG_ON_WINDOW_CLOSE_REQUESTED,
   LOG_WINDOW_MAXIMIZE_TOGGLE_CALLED,
   LOG_WINDOW_MINIMIZE_CALLED,
   LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED,
+  LOG_SET_LAUNCH_AT_LOGIN_CALLED,
 } from '../shared/log-constants';
 
 /**
@@ -129,11 +133,11 @@ const log = new Logger('preload');
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
- *   `windowSetAlwaysOnTop`.
+ *   `windowSetAlwaysOnTop`, `setLaunchAtLogin`.
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
  *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
@@ -400,6 +404,18 @@ const api = {
     return ipcRenderer.invoke(IPC.QUEUE_LIST) as Promise<QueueJob[]>;
   },
   /**
+   * Reads the queue's runtime state (paused flag and concurrency cap). Logs the
+   * call at debug level, then invokes the main process over the
+   * `IPC.QUEUE_GET_STATE` ('queue-get-state') channel.
+   *
+   * @returns {Promise<{paused: boolean, concurrency: number}>} Resolves with
+   *   whether the queue is paused and the parallel-job cap.
+   */
+  queueGetState: () => {
+    log.debug(LOG_QUEUE_GET_STATE_CALLED);
+    return ipcRenderer.invoke(IPC.QUEUE_GET_STATE) as Promise<{ paused: boolean; concurrency: number }>;
+  },
+  /**
    * Cancels every job in the conversion queue. Logs the call at info level, then
    * invokes the main process over the `IPC.QUEUE_CANCEL_ALL` ('queue-cancel-all')
    * channel.
@@ -631,6 +647,38 @@ const api = {
     ipcRenderer.send(IPC.WINDOW_CLOSE);
   },
   /**
+   * Confirms that the window may close after the renderer verified no jobs are
+   * in progress (or the user chose to close anyway). Fire-and-forget: logs the
+   * call at debug level and sends `IPC.WINDOW_CONFIRM_CLOSE`
+   * ('window-confirm-close') via `ipcRenderer.send`. The main process marks the
+   * close as confirmed and re-invokes the window close.
+   *
+   * @returns {void}
+   */
+  windowCloseConfirmed: () => {
+    log.debug(LOG_WINDOW_CONFIRM_CLOSE_CALLED);
+    ipcRenderer.send(IPC.WINDOW_CONFIRM_CLOSE);
+  },
+  /**
+   * Subscribes to window close requests pushed by the main process over
+   * `IPC.WINDOW_CLOSE_REQUESTED` ('window-close-requested'). The main process
+   * sends this whenever a close is attempted, asking the renderer to verify
+   * whether any jobs are still in progress. The renderer should either close
+   * immediately (via `windowCloseConfirmed`) or ask the user for confirmation.
+   * Logs each request at info level.
+   *
+   * @param {() => void} cb - Callback invoked when a close request arrives.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onWindowCloseRequested: (cb: () => void) => {
+    const handler = (_event: IpcRendererEvent) => {
+      log.info(LOG_ON_WINDOW_CLOSE_REQUESTED);
+      cb();
+    };
+    ipcRenderer.on(IPC.WINDOW_CLOSE_REQUESTED, handler);
+    return () => ipcRenderer.removeListener(IPC.WINDOW_CLOSE_REQUESTED, handler);
+  },
+  /**
    * Sets whether the application window should stay on top of other windows.
    * Fire-and-forget: logs the call at debug level and sends
    * `IPC.WINDOW_SET_ALWAYS_ON_TOP` ('window-set-always-on-top') with the flag via
@@ -642,6 +690,19 @@ const api = {
   windowSetAlwaysOnTop: (flag: boolean) => {
     log.debug(LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED, { flag });
     ipcRenderer.send(IPC.WINDOW_SET_ALWAYS_ON_TOP, flag);
+  },
+  /**
+   * Adds or removes the app from the operating system's login items (launch at
+   * startup). Fire-and-forget: logs the call at debug level and sends
+   * `IPC.SET_LAUNCH_AT_LOGIN` ('set-launch-at-login') with the flag via
+   * `ipcRenderer.send`.
+   *
+   * @param {boolean} enabled - true to start the app at login, false to remove it.
+   * @returns {void}
+   */
+  setLaunchAtLogin: (enabled: boolean) => {
+    log.debug(LOG_SET_LAUNCH_AT_LOGIN_CALLED, { enabled });
+    ipcRenderer.send(IPC.SET_LAUNCH_AT_LOGIN, enabled);
   },
 
   /**

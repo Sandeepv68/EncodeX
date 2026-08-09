@@ -27,6 +27,12 @@
     "descCut": "Snoei en sny video met 'n raam-akkurate speler",
     "descBatch": "Skakel baie lêers gelyktydig om met 'n slim waglys"
   },
+  "closeConfirm": {
+    "title": "Maak EncodeX toe?",
+    "message": "Daar is take aan die gang of ongestoorde veranderinge. As u nou toemaak, sal hulle gekanselleer word.",
+    "confirmLabel": "Maak tog toe",
+    "cancelLabel": "Kanselleer"
+  },
   "convert": {
     "title": "Skakel Media Om",
     "inputFile": "Invoerlêer",
@@ -272,6 +278,12 @@
     "addFiles": "Voeg Lêers By",
     "cancelAll": "Kanselleer Alles",
     "empty": "Waglys is leeg. Voeg lêers by om groepprosessering te begin.",
+    "cancelAllTitle": "Kanselleer alle take",
+    "cancelAllMessage": "Dit sal alle take in die tou en lopende take kanselleer. Is jy seker?",
+    "confirmCancelAll": "Ja, kanselleer alles",
+    "dialogCancel": "Kanselleer",
+    "enqueued": "{{count}} lêer(s) by die tou gevoeg",
+    "noResults": "Geen take pas by die huidige filter of soektog nie",
     "remove": "Verwyder",
     "retry": "Probeer Weer",
     "revealInFolder": "Wys in gids",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} in wag, {{running}} loop, {{done}} klaar, {{failed}} misluk",
     "etaEstimate": "GTT ~{{eta}}",
     "finished": "Groep klaar: {{done}} geslaag, {{failed}} misluk",
+    "notificationTitle": "EncodeX-groep klaar",
     "filters": {
       "all": "Alles",
       "queued": "In wag",
@@ -293,6 +306,7 @@
     "concurrency": "Parallelle take",
     "pause": "Rus",
     "resume": "Hervat",
+    "paused": "Gepouseer",
     "dragHandle": "Sleep om te herrangskik",
     "badgeCount": "{{count}} take in die groepwaglys",
     "operationTranscode": "Transkodeer",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "Altyd bo",
     "alwaysOnTopHint": "Hou die app-venster bo alle ander vensters.",
+    "launchAtLogin": "Begin by opstart",
+    "launchAtLoginHint": "Begin EncodeX outomaties wanneer jy by jou rekenaar aanmeld.",
     "hardwareAcceleration": "Hardewareversnelling",
     "hwaccelMode": "Versnellingsmodus",
     "hwaccelModeAuto": "Outomaties (dekodeer + enkodeer)",

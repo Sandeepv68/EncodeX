@@ -4,7 +4,7 @@ import Settings from '../Settings';
 import { ColorModeProvider } from '../../ColorModeContext';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { HWACCEL_DEFAULTS, ENCODER_TYPE_DEFAULT } from '../../../shared/hwaccel-settings';
-import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY } from '../../../shared/constants';
+import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, LAUNCH_AT_LOGIN_STORAGE_KEY } from '../../../shared/constants';
 import { THEME_STORAGE_KEY } from '../../../shared/app-constants';
 
 function renderSettings() {
@@ -23,11 +23,13 @@ describe('Settings', () => {
       hwaccelMode: HWACCEL_DEFAULTS.MODE,
       encoderType: ENCODER_TYPE_DEFAULT,
       alwaysOnTop: false,
+      launchAtLogin: false,
     });
   });
 
   const hwaccelSwitch = () => screen.getByRole('switch', { name: 'settings.hardwareAcceleration' });
   const alwaysOnTopSwitch = () => screen.getByRole('switch', { name: 'settings.alwaysOnTop' });
+  const launchAtLoginSwitch = () => screen.getByRole('switch', { name: 'settings.launchAtLogin' });
 
   it('renders the settings title and theme row', () => {
     renderSettings();
@@ -100,27 +102,27 @@ describe('Settings', () => {
 
   it('shows info tooltips on the hardware acceleration settings', async () => {
     renderSettings();
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(4);
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[1]);
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(5);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[2]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.hardwareAccelerationHint');
   });
 
   it('shows an info tooltip for the mode setting', async () => {
     renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[2]);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[3]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.hwaccelModeHint');
   });
 
   it('shows an info tooltip for the encoder type setting', async () => {
     renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[3]);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[4]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.encoderTypeHint');
   });
 
   it('keeps the hardware acceleration tooltip when disabled but hides the others', () => {
     renderSettings();
     fireEvent.click(hwaccelSwitch());
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(2);
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(3);
   });
 
   it('renders the always-on-top row', () => {
@@ -146,5 +148,30 @@ describe('Settings', () => {
     renderSettings();
     fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[0]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.alwaysOnTopHint');
+  });
+
+  it('renders the launch-at-startup row', () => {
+    renderSettings();
+    expect(screen.getByText('settings.launchAtLogin')).toBeInTheDocument();
+    expect(launchAtLoginSwitch()).toBeInTheDocument();
+  });
+
+  it('toggles launch at startup and notifies the main process', () => {
+    const spy = vi.fn();
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, setLaunchAtLogin: spy },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(launchAtLoginSwitch());
+    expect(useSettingsStore.getState().launchAtLogin).toBe(true);
+    expect(spy).toHaveBeenCalledWith(true);
+    expect(localStorage.getItem(LAUNCH_AT_LOGIN_STORAGE_KEY)).toBe('true');
+  });
+
+  it('shows an info tooltip for the launch-at-startup setting', async () => {
+    renderSettings();
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[1]);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.launchAtLoginHint');
   });
 });

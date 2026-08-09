@@ -26,17 +26,26 @@ import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSo
 import BatchControls from '../components/BatchControls';
 import BatchEncodingPanel from '../components/BatchEncodingPanel';
 import QueueJobCard, { QueueJobCardContent } from '../components/QueueJobCard';
+import QueueDropArea from '../components/QueueDropArea';
 import QueueAddReviewDialog from '../components/QueueAddReviewDialog';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { useQueueStore } from '../stores/queueStore';
 import { useToastStore } from '../stores/toastStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX, QUEUE_STATUS } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
-import { isImageFile } from '../../shared/file-extensions';
-import { getVideoCodecContainer } from '../../shared/codec-containers';
+import { FILE_FILTERS, MEDIA_INPUT_EXTENSIONS, isImageFile } from '../../shared/file-extensions';
+import {
+  getAudioCodecContainers,
+  getVideoCodecContainer,
+  suggestedExtensionForAudioCodec,
+  suggestedExtensionForVideoCodec,
+} from '../../shared/codec-containers';
 import { estimateRemaining, formatEstimate } from '../../shared/estimate';
 import { QueueJob } from '../../shared/types';
 import { useSettingsStore } from '../stores/settingsStore';
+import { readStoredBatchConfig, persistBatchConfig, type BatchConfig } from '../stores/batchConfig';
 import type { QueueAddReviewSelection } from '../components/types';
+import type { HwAccelMode } from '../../shared/types';
 import { computeQueuedTargetPosition, reorderJob } from '../utils/queue-reorder';
 import { JobCard } from '../styles/QueueJobCard.styles';
 import { PageTitle, EmptyText, FilterRow, FilterChip, SearchField, DropOverlay, AccelAlert } from '../styles/BatchQueue.styles';
@@ -56,6 +65,42 @@ function basename(path: string): string {
 }
 
 /**
+ * Shows a native OS notification (via the HTML5 Notification API, which
+ * Electron's renderer surfaces as a real system notification). Permission is
+ * requested once when the browser has not yet decided; failures and
+ * unavailable notification support are swallowed so they can never break the
+ * UI. The OS notification complements the in-app batch-finished toast.
+ * @param {string} title - The notification title.
+ * @param {string} body - The notification body text.
+ * @returns {void}
+ */
+function showNativeCompletionNotification(title: string, body: string): void {
+  try {
+    if (typeof Notification === 'undefined') return;
+    const show = () => {
+      try {
+        new Notification(title, { body });
+      } catch {
+        // Notification construction failed; the in-app toast still informs.
+      }
+    };
+    if (Notification.permission === 'granted') {
+      show();
+    } else if (Notification.permission === 'default' && typeof Notification.requestPermission === 'function') {
+      Notification.requestPermission()
+        .then((permission: string) => {
+          if (permission === 'granted') show();
+        })
+        .catch(() => {
+          // Permission request failed; fall back to the toast alone.
+        });
+    }
+  } catch {
+    // Notification support missing entirely; fall back to the toast alone.
+  }
+}
+
+/**
  * Normalizes a file path for duplicate comparison: lowercases and unifies
  * Windows backslashes with POSIX forward slashes.
  * @param {string} path - The file path to normalize.
@@ -63,6 +108,42 @@ function basename(path: string): string {
  */
 function normalizePath(path: string): string {
   return path.replace(/\\/g, '/').toLowerCase();
+}
+
+/**
+ * Extracts the directory portion of a file path, handling both Windows
+ * backslashes and POSIX forward slashes. The trailing separator is removed.
+ * @param {string} file - The file path to process.
+ * @returns {string} The directory path, or '' when the path has no separators.
+ */
+function getSourceDir(file: string): string {
+  const idx = Math.max(file.lastIndexOf('/'), file.lastIndexOf('\\'));
+  return idx >= 0 ? file.slice(0, idx) : '';
+}
+
+/**
+ * Extracts the basename stem (filename without its final extension). A leading
+ * dot is not treated as an extension separator, so dotfiles (`.env`) keep their
+ * whole name as the stem.
+ * @param {string} file - The file path to process.
+ * @returns {string} The basename without its extension.
+ */
+function getSourceStem(file: string): string {
+  const base = basename(file);
+  const dotIdx = base.lastIndexOf('.');
+  return dotIdx > 0 ? base.slice(0, dotIdx) : base;
+}
+
+/**
+ * Extracts the lowercase file extension from a path. Dotfiles (`.env`) have no
+ * extension because a leading dot is not an extension separator.
+ * @param {string} file - The file path to process.
+ * @returns {string} The extension without a leading dot, or '' when there is none.
+ */
+function getSourceExtension(file: string): string {
+  const base = basename(file);
+  const dotIdx = base.lastIndexOf('.');
+  return dotIdx > 0 ? base.slice(dotIdx + 1).toLowerCase() : '';
 }
 
 /**
@@ -156,6 +237,13 @@ export default function BatchQueue() {
   const [paused, setPaused] = useState(false);
 
   /**
+   * True while the Cancel All confirmation dialog is open; the destructive
+   * queue-clear only runs after the user confirms.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
+  const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
+
+  /**
    * Optional output folder for newly added jobs. When empty, outputs are
    * written next to their source files (source-adjacent naming).
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
@@ -178,19 +266,27 @@ export default function BatchQueue() {
   const [reviewFiles, setReviewFiles] = useState<string[] | null>(null);
 
   /**
+   * Last-used batch encoding configuration read from localStorage once on
+   * mount, used to seed every encoding `useState` below so the page restores
+   * the previous session's settings.
+   * @type {[BatchConfig, React.Dispatch<React.SetStateAction<BatchConfig>>]}
+   */
+  const [initialConfig] = useState<BatchConfig>(readStoredBatchConfig);
+
+  /**
    * Video codec applied to jobs created under operations that keep video
    * ('transcode'); not part of the queued options otherwise. Selectable via the
    * encoding options panel.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const [videoCodec, setVideoCodec] = useState('libx264');
+  const [videoCodec, setVideoCodec] = useState(initialConfig.videoCodec);
 
   /**
    * Audio codec applied to jobs created under 'transcode' and 'extract_audio'
    * operations. Selectable via the encoding options panel.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const [audioCodec, setAudioCodec] = useState('aac');
+  const [audioCodec, setAudioCodec] = useState(initialConfig.audioCodec);
 
   /**
    * Batch operation currently selected (one of BATCH_OPERATIONS values, e.g.
@@ -198,7 +294,7 @@ export default function BatchQueue() {
    * controls are applied to the queued jobs.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const [operation, setOperation] = useState<string>(BATCH_OPERATIONS[0].value);
+  const [operation, setOperation] = useState<string>(initialConfig.operation);
 
   /**
    * Ref mirroring the current operation so the window drop handler, which is
@@ -213,41 +309,41 @@ export default function BatchQueue() {
    * empty means the source file's extension is kept.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const [container, setContainer] = useState('');
+  const [container, setContainer] = useState(initialConfig.container);
 
   /**
    * Target video bitrate for transcode jobs (e.g. '2000k'); empty means the
    * encoder default is used.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const [videoBitrate, setVideoBitrate] = useState('');
+  const [videoBitrate, setVideoBitrate] = useState(initialConfig.videoBitrate);
 
   /**
    * Target audio bitrate for transcode and extract-audio jobs (e.g. '192k');
    * empty means the encoder default is used.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const [audioBitrate, setAudioBitrate] = useState('');
+  const [audioBitrate, setAudioBitrate] = useState(initialConfig.audioBitrate);
 
   /**
    * Image compression quality (qscale, 1-31) for compress_image jobs; empty
    * means the encoder default is used.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const [quality, setQuality] = useState('');
+  const [quality, setQuality] = useState(initialConfig.quality);
 
   /**
    * Output resolution as WIDTHxHEIGHT for transcode and compress_image jobs;
    * empty keeps the source resolution.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const [scale, setScale] = useState('');
+  const [scale, setScale] = useState(initialConfig.scale);
 
   /**
    * Output pixel format (e.g. 'yuv420p') for transcode jobs.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const [pixelFormat, setPixelFormat] = useState('yuv420p');
+  const [pixelFormat, setPixelFormat] = useState(initialConfig.pixelFormat);
 
   /**
    * Transcoder backend used for every job added from this page. Initialized to
@@ -293,6 +389,25 @@ export default function BatchQueue() {
   useEffect(() => {
     window.electronAPI?.queueList().then((jobs: QueueJob[]) => useQueueStore.getState().setJobs(jobs));
   }, []);
+
+  /**
+   * On mount, reads the queue's paused state from the main process so the
+   * toolbar reflects a queue that was already paused before the page opened.
+   * @returns {void}
+   */
+  useEffect(() => {
+    window.electronAPI?.queueGetState().then((state: { paused: boolean }) => setPaused(state.paused));
+  }, []);
+
+  /**
+   * Persists the current batch encoding configuration to localStorage whenever
+   * any encoding control changes, so re-entering the page restores the last
+   * session's settings.
+   * @returns {void}
+   */
+  useEffect(() => {
+    persistBatchConfig({ operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat });
+  }, [operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat]);
 
   /**
    * On mount, pushes the persisted concurrency cap to the main process so the
@@ -357,8 +472,9 @@ export default function BatchQueue() {
 
   /**
    * When the running count drops from >0 to 0 and at least one job finished
-   * during this session, shows a batch-completion toast summarizing the run,
-   * then resets the per-run tracking.
+   * during this session, shows a batch-completion toast summarizing the run and
+   * raises a native OS notification with the same summary, then resets the
+   * per-run tracking.
    * @returns {void}
    */
   useEffect(() => {
@@ -369,7 +485,9 @@ export default function BatchQueue() {
       const outcomes = [...finishedRef.current.values()];
       const doneCount = outcomes.filter((outcome) => outcome === 'done').length;
       const failedCount = outcomes.filter((outcome) => outcome === 'error').length;
-      useToastStore.getState().success(t('batchQueue.finished', { done: doneCount, failed: failedCount }));
+      const message = t('batchQueue.finished', { done: doneCount, failed: failedCount });
+      useToastStore.getState().success(message);
+      showNativeCompletionNotification(t('batchQueue.notificationTitle'), message);
       finishedRef.current.clear();
     }
   }, [jobs, t]);
@@ -432,13 +550,13 @@ export default function BatchQueue() {
    * 'extract_audio' keeps only audio (with audio bitrate); 'compress_image'
    * keeps only image encoding (qscale and scale, no video/audio codecs).
    * @param {string} operation - The batch operation value.
-   * @param {{hardwareAcceleration: boolean, hwaccelMode: string}} hw - Current
+   * @param {{hardwareAcceleration: boolean, hwaccelMode: HwAccelMode}} hw - Current
    *   hardware-acceleration settings.
    * @returns {Object} The options payload for the job.
    */
   const buildOptions = (
     operation: string,
-    hw: { hardwareAcceleration: boolean; hwaccelMode: string },
+    hw: { hardwareAcceleration: boolean; hwaccelMode: HwAccelMode },
   ): {
     videoCodec?: string;
     audioCodec?: string;
@@ -448,7 +566,7 @@ export default function BatchQueue() {
     scale?: string;
     pixelFormat?: string;
     hardwareAcceleration: boolean;
-    hwaccelMode: string;
+    hwaccelMode: HwAccelMode;
   } => ({
     videoCodec: operation === 'transcode' ? videoCodec : undefined,
     audioCodec: operation === 'transcode' || operation === 'extract_audio' ? audioCodec : undefined,
@@ -462,46 +580,90 @@ export default function BatchQueue() {
   });
 
   /**
+   * Derives the output path for a source file: the configured output folder
+   * (or the source's own directory), the source stem, the configured suffix,
+   * and an extension chosen from the selected container, the audio codec's
+   * suggested extension (extract-audio), the source extension, or the video
+   * codec's suggested extension (transcode) as a last resort.
+   * @param {string} file - Absolute path of the source file.
+   * @param {string} operation - The batch operation value.
+   * @param {string} sourceExt - Lowercased source extension ('' for dotfiles).
+   * @returns {string} The output file path.
+   */
+  const buildOutputPath = (file: string, operation: string, sourceExt: string): string => {
+    const sourceDir = outputDir.length > 0 ? outputDir.replace(/\\/g, '/').replace(/\/+$/, '') : getSourceDir(file).replace(/\\/g, '/');
+    const stem = getSourceStem(file);
+    let ext = container;
+    if (!ext) {
+      if (operation === 'extract_audio') ext = suggestedExtensionForAudioCodec(audioCodec) || sourceExt;
+      else if (operation === 'transcode') ext = sourceExt || suggestedExtensionForVideoCodec(videoCodec);
+      else ext = sourceExt;
+    }
+    if (!ext) ext = 'mp4';
+    return `${sourceDir ? sourceDir + '/' : ''}${stem}${suffixRef.current}.${ext}`;
+  };
+
+  /**
    * Enqueues every given selection as a batch job using its per-file operation,
    * the shared suffix/transcoder/codec refs, and the hardware-acceleration
    * settings. The output path for each file is derived by inserting the
-   * configured suffix before the original extension, inside the optional output
-   * folder when one is set. A success toast is shown per enqueued file. Files
-   * whose extension does not fit their operation (images for compress-image,
-   * non-images otherwise) and files already present in the queue are skipped
-   * and reported in a single warning toast.
+   * configured suffix before the chosen extension, inside the optional output
+   * folder when one is set.
+   *
+   * Selections are validated and de-duplicated before any IPC call: files whose
+   * extension does not fit their operation (images for compress-image,
+   * non-images otherwise), files outside the supported media-extension set,
+   * files whose input+output pair is already queued, and files whose computed
+   * output path is already claimed by another queued or batched job are skipped
+   * and reported by name in a single warning toast. Every successfully enqueued
+   * file is summarized in one success toast instead of one toast per file.
    * @param {QueueAddReviewSelection[]} selections - One entry per source file
    *   with its chosen operation.
-   * @returns {void}
+   * @returns {Promise<void>} Resolves once every enqueue request settled.
    */
-  const enqueueSelections = (selections: QueueAddReviewSelection[]) => {
+  const enqueueSelections = async (selections: QueueAddReviewSelection[]) => {
     const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
-    const queuedInputs = new Set(useQueueStore.getState().jobs.map((job: QueueJob) => normalizePath(job.input)));
-    let skipped = 0;
+    const currentJobs = useQueueStore.getState().jobs;
+    const existingKeys = new Set(currentJobs.map((job: QueueJob) => `${normalizePath(job.input)}|${normalizePath(job.output)}`));
+    const existingOutputs = new Set(currentJobs.map((job: QueueJob) => normalizePath(job.output)));
+    const skippedNames: string[] = [];
+    let added = 0;
+    const enqueues: Promise<void>[] = [];
     for (const { file, operation } of selections) {
       const normalized = normalizePath(file);
       const expectsImage = operation === 'compress_image';
-      if (expectsImage !== isImageFile(file) || queuedInputs.has(normalized)) {
-        skipped += 1;
+      const sourceExt = getSourceExtension(file);
+      const isMedia = MEDIA_INPUT_EXTENSIONS.includes(sourceExt as (typeof MEDIA_INPUT_EXTENSIONS)[number]);
+      if (expectsImage !== isImageFile(file) || !isMedia) {
+        skippedNames.push(basename(file));
         continue;
       }
-      queuedInputs.add(normalized);
-      const ext = !container ? file.split('.').pop() : container;
-      const outFile =
-        outputDir.length > 0
-          ? `${outputDir.replace(/\\/g, '/').replace(/\/+$/, '')}/${basename(file.substring(0, file.lastIndexOf('.')))}${suffixRef.current}.${ext}`
-          : `${file.substring(0, file.lastIndexOf('.'))}${suffixRef.current}.${ext}`;
-      window.electronAPI
-        .queueAdd(file, outFile, buildOptions(operation, { hardwareAcceleration, hwaccelMode }), transcoderRef.current, overwrite)
-        .then(() => {
-          useToastStore.getState().success(t('toast.jobAdded'));
-        })
-        .catch((err: unknown) => {
-          useToastStore.getState().error(err instanceof Error ? err.message : String(err));
-        });
+      const outFile = buildOutputPath(file, operation, sourceExt);
+      const key = `${normalized}|${normalizePath(outFile)}`;
+      if (existingKeys.has(key) || existingOutputs.has(normalizePath(outFile))) {
+        skippedNames.push(basename(file));
+        continue;
+      }
+      existingKeys.add(key);
+      existingOutputs.add(normalizePath(outFile));
+      const options = buildOptions(operation, { hardwareAcceleration, hwaccelMode });
+      enqueues.push(
+        window.electronAPI
+          .queueAdd(file, outFile, options, transcoderRef.current, overwrite)
+          .then(() => {
+            added += 1;
+          })
+          .catch((err: unknown) => {
+            useToastStore.getState().error(err instanceof Error ? err.message : String(err));
+          }),
+      );
     }
-    if (skipped > 0) {
-      useToastStore.getState().warning(t('batchQueue.skippedDuplicates', { count: skipped }));
+    await Promise.all(enqueues);
+    if (added > 0) {
+      useToastStore.getState().success(t('batchQueue.enqueued', { count: added }));
+    }
+    if (skippedNames.length > 0) {
+      useToastStore.getState().warning(t('batchQueue.skippedDuplicates', { count: skippedNames.length, names: skippedNames.join(', ') }));
     }
   };
 
@@ -514,12 +676,15 @@ export default function BatchQueue() {
   enqueueSelectionsRef.current = enqueueSelections;
 
   /**
-   * Opens a multi-file selection dialog; every chosen file is staged for the
-   * per-file review dialog rather than enqueued immediately.
+   * Opens a multi-file selection dialog restricted to supported media
+   * extensions; every chosen file is staged for the per-file review dialog
+   * rather than enqueued immediately.
    * @returns {Promise<void>} Resolves once the file picker closes.
    */
   const handleAddFiles = async () => {
-    const files = await window.electronAPI.selectFiles();
+    const files = await window.electronAPI.selectFiles([
+      { name: FILE_FILTERS.MEDIA_FILES.name, extensions: [...FILE_FILTERS.MEDIA_FILES.extensions] },
+    ]);
     if (!files || files.length === 0) return;
     setReviewFiles(files);
   };
@@ -546,15 +711,20 @@ export default function BatchQueue() {
 
   /**
    * Re-enqueues a previously failed job with its original options, then drops
-   * the errored entry from the queue so the retried job starts fresh.
+   * the errored entry from the queue so the retried job starts fresh. Failures
+   * surface as an error toast instead of an unhandled rejection.
    * @param {QueueJob} failedJob - The errored job to retry.
    * @returns {Promise<void>} Resolves once the retry has been enqueued.
    */
   const handleRetry = async (failedJob: QueueJob) => {
-    await window.electronAPI.queueAdd(failedJob.input, failedJob.output, failedJob.options, failedJob.transcoder, true);
-    removeJob(failedJob.id);
-    window.electronAPI.queueRemove(failedJob.id);
-    useToastStore.getState().success(t('toast.jobAdded'));
+    try {
+      await window.electronAPI.queueAdd(failedJob.input, failedJob.output, failedJob.options, failedJob.transcoder, true);
+      removeJob(failedJob.id);
+      window.electronAPI.queueRemove(failedJob.id);
+      useToastStore.getState().success(t('toast.jobAdded'));
+    } catch (err) {
+      useToastStore.getState().error(err instanceof Error ? err.message : String(err));
+    }
   };
 
   /**
@@ -568,11 +738,22 @@ export default function BatchQueue() {
   };
 
   /**
-   * Cancels every job in the queue via `window.electronAPI.queueCancelAll`,
-   * clears the local job list, and shows an info toast.
+   * Opens the Cancel All confirmation dialog. The destructive queue clear is
+   * deferred to `handleCancelAllConfirm`.
+   * @returns {void}
+   */
+  const handleCancelAll = () => {
+    setCancelConfirmOpen(true);
+  };
+
+  /**
+   * Cancels every job in the queue via `window.electronAPI.queueCancelAll`
+   * after the user confirmed the dialog, clears the local job list, and shows
+   * an info toast.
    * @returns {Promise<void>} Resolves once the cancel request has been handled.
    */
-  const handleCancelAll = async () => {
+  const handleCancelAllConfirm = async () => {
+    setCancelConfirmOpen(false);
     await window.electronAPI.queueCancelAll();
     clearJobs();
     useToastStore.getState().info(t('toast.allCancelled'));
@@ -625,6 +806,20 @@ export default function BatchQueue() {
   const handleVideoCodecChange = (codec: string) => {
     setVideoCodec(codec);
     if (container && !getVideoCodecContainer(codec).containers.includes(container)) {
+      setContainer('');
+    }
+  };
+
+  /**
+   * Applies a new audio codec selection and clears the chosen container when it
+   * is no longer compatible with that codec, so extract-audio jobs never mux
+   * into a container the encoder cannot write.
+   * @param {string} codec - The newly selected audio encoder name.
+   * @returns {void}
+   */
+  const handleAudioCodecChange = (codec: string) => {
+    setAudioCodec(codec);
+    if (container && !getAudioCodecContainers(codec).includes(container)) {
       setContainer('');
     }
   };
@@ -774,7 +969,7 @@ export default function BatchQueue() {
           scale={scale}
           pixelFormat={pixelFormat}
           onVideoCodecChange={handleVideoCodecChange}
-          onAudioCodecChange={setAudioCodec}
+          onAudioCodecChange={handleAudioCodecChange}
           onContainerChange={setContainer}
           onVideoBitrateChange={setVideoBitrate}
           onAudioBitrateChange={setAudioBitrate}
@@ -810,6 +1005,8 @@ export default function BatchQueue() {
         {settingsHardwareAcceleration && <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>}
         {jobs.length === 0 ? (
           <EmptyText color="text.secondary">{t('batchQueue.empty')}</EmptyText>
+        ) : visibleJobs.length === 0 ? (
+          <EmptyText color="text.secondary">{t('batchQueue.noResults')}</EmptyText>
         ) : (
           <DndContext
             sensors={sensors}
@@ -820,17 +1017,19 @@ export default function BatchQueue() {
             onDragCancel={() => setActiveDragId(null)}
           >
             <SortableContext items={visibleJobs.map((job: QueueJob) => job.id)} strategy={verticalListSortingStrategy}>
-              <Stack spacing={2}>
-                {visibleJobs.map((job: QueueJob) => (
-                  <QueueJobCard
-                    key={job.id}
-                    job={job}
-                    progress={progress[job.id]}
-                    onRemove={(id) => window.electronAPI.queueRemove(id)}
-                    onRetry={handleRetry}
-                  />
-                ))}
-              </Stack>
+              <QueueDropArea>
+                <Stack spacing={2}>
+                  {visibleJobs.map((job: QueueJob) => (
+                    <QueueJobCard
+                      key={job.id}
+                      job={job}
+                      progress={progress[job.id]}
+                      onRemove={(id) => window.electronAPI.queueRemove(id)}
+                      onRetry={handleRetry}
+                    />
+                  ))}
+                </Stack>
+              </QueueDropArea>
             </SortableContext>
             <DragOverlay
               dropAnimation={{
@@ -860,6 +1059,16 @@ export default function BatchQueue() {
         defaultOperation={operation}
         onConfirm={handleReviewConfirm}
         onCancel={handleReviewCancel}
+      />
+
+      <ConfirmDialog
+        open={cancelConfirmOpen}
+        title={t('batchQueue.cancelAllTitle')}
+        message={t('batchQueue.cancelAllMessage')}
+        confirmLabel={t('batchQueue.confirmCancelAll')}
+        cancelLabel={t('batchQueue.dialogCancel')}
+        onClose={() => setCancelConfirmOpen(false)}
+        onConfirm={handleCancelAllConfirm}
       />
     </Box>
   );

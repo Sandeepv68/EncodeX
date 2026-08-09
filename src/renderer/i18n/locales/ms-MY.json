@@ -27,6 +27,12 @@
     "descCut": "Pangkas dan potong video dengan pemain tepat bingkai",
     "descBatch": "Tukar banyak fail sekaligus dengan baris giliran pintar"
   },
+  "closeConfirm": {
+    "title": "Tutup EncodeX?",
+    "message": "Terdapat tugasan yang sedang berjalan atau perubahan yang belum disimpan. Menutup sekarang akan membatalkannya.",
+    "confirmLabel": "Tetap tutup",
+    "cancelLabel": "Batal"
+  },
   "convert": {
     "title": "Tukar Media",
     "inputFile": "Fail Input",
@@ -272,6 +278,12 @@
     "addFiles": "Tambah Fail",
     "cancelAll": "Batal Semua",
     "empty": "Baris giliran kosong. Tambah fail untuk memulakan pemprosesan kelompok.",
+    "cancelAllTitle": "Batalkan semua tugasan",
+    "cancelAllMessage": "Ini akan membatalkan semua tugasan yang beratur dan yang sedang berjalan. Anda pasti?",
+    "confirmCancelAll": "Ya, batalkan semua",
+    "dialogCancel": "Batal",
+    "enqueued": "{{count}} fail ditambahkan ke baris gilir",
+    "noResults": "Tiada tugasan sepadan dengan penapis atau carian semasa",
     "remove": "Alih Keluar",
     "retry": "Cuba Semula",
     "revealInFolder": "Dedahkan dalam folder",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} beratur, {{running}} berjalan, {{done}} selesai, {{failed}} gagal",
     "etaEstimate": "KTA ~{{eta}}",
     "finished": "Kelompok selesai: {{done}} berjaya, {{failed}} gagal",
+    "notificationTitle": "Kelompok EncodeX selesai",
     "filters": {
       "all": "Semua",
       "queued": "Beratur",
@@ -293,6 +306,7 @@
     "concurrency": "Tugas selari",
     "pause": "Jeda",
     "resume": "Sambung",
+    "paused": "Dijeda",
     "dragHandle": "Seret untuk menyusun semula",
     "badgeCount": "{{count}} tugas dalam baris giliran kelompok",
     "operationTranscode": "Transkod",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "Sentiasa di atas",
     "alwaysOnTopHint": "Mengekalkan tetingkap aplikasi di atas semua tetingkap lain.",
+    "launchAtLogin": "Lancar semasa permulaan",
+    "launchAtLoginHint": "Memulakan EncodeX secara automatik apabila anda log masuk ke komputer anda.",
     "hardwareAcceleration": "Pecutan Perkakasan",
     "hwaccelMode": "Mod Pecutan",
     "hwaccelModeAuto": "Automatik (nyahkod + kod)",

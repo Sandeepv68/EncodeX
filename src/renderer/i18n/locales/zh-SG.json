@@ -27,6 +27,12 @@
     "descCut": "使用帧精确的播放器来修剪和剪切视频",
     "descBatch": "通过智能队列一次转换多个文件"
   },
+  "closeConfirm": {
+    "title": "关闭 EncodeX？",
+    "message": "有任务正在进行或有未保存的更改。现在关闭将取消它们。",
+    "confirmLabel": "仍然关闭",
+    "cancelLabel": "取消"
+  },
   "convert": {
     "title": "转换媒体",
     "inputFile": "输入文件",
@@ -272,6 +278,12 @@
     "addFiles": "添加文件",
     "cancelAll": "全部取消",
     "empty": "队列为空。添加文件以开始批量处理。",
+    "cancelAllTitle": "取消所有任务",
+    "cancelAllMessage": "这将取消队列中的所有任务以及正在运行的任务。您确定吗？",
+    "confirmCancelAll": "是，全部取消",
+    "dialogCancel": "取消",
+    "enqueued": "已将 {{count}} 个文件添加到队列",
+    "noResults": "没有任务与当前筛选器或搜索匹配",
     "remove": "移除",
     "retry": "重试",
     "revealInFolder": "在文件夹中显示",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} 排队中，{{running}} 运行中，{{done}} 已完成，{{failed}} 已失败",
     "etaEstimate": "预计 ~{{eta}}",
     "finished": "批量处理完成：{{done}} 成功，{{failed}} 失败",
+    "notificationTitle": "EncodeX 批次完成",
     "filters": {
       "all": "全部",
       "queued": "排队中",
@@ -293,6 +306,7 @@
     "concurrency": "并行任务",
     "pause": "暂停",
     "resume": "继续",
+    "paused": "已暂停",
     "dragHandle": "拖动以重新排序",
     "badgeCount": "批量队列中有 {{count}} 个任务",
     "operationTranscode": "转码",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "始终置顶",
     "alwaysOnTopHint": "保持应用窗口位于所有其他窗口之上。",
+    "launchAtLogin": "启动时运行",
+    "launchAtLoginHint": "登录计算机时自动启动 EncodeX。",
     "hardwareAcceleration": "硬件加速",
     "hwaccelMode": "加速模式",
     "hwaccelModeAuto": "自动（解码 + 编码）",

@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import type { ReactElement } from 'react';
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import QueueJobCard from '../QueueJobCard';
 import { useToastStore } from '../../stores/toastStore';
+import { clearPreviewCache } from '../../utils/preview-cache';
 import { QUEUE_STATUS } from '../../../shared/media-options';
 import type { QueueJob } from '../../../shared/types';
 
@@ -45,6 +46,7 @@ function renderCard(ui: ReactElement) {
 describe('QueueJobCard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    clearPreviewCache();
     useToastStore.setState({ toasts: [] });
   });
 
@@ -76,6 +78,16 @@ describe('QueueJobCard', () => {
   it('renders progress for running jobs', () => {
     renderCard(<QueueJobCard job={makeJob({ status: QUEUE_STATUS.RUNNING, progress: 50 })} onRemove={() => {}} />);
     expect(screen.getByText('50.0%')).toBeInTheDocument();
+  });
+
+  it('renders a paused badge when a running job is paused', () => {
+    renderCard(<QueueJobCard job={makeJob({ status: QUEUE_STATUS.RUNNING, paused: true })} onRemove={() => {}} />);
+    expect(screen.getByTestId('queue-job-paused-badge')).toHaveTextContent('batchQueue.paused');
+  });
+
+  it('does not render a paused badge when a running job is not paused', () => {
+    renderCard(<QueueJobCard job={makeJob({ status: QUEUE_STATUS.RUNNING, paused: false })} onRemove={() => {}} />);
+    expect(screen.queryByTestId('queue-job-paused-badge')).not.toBeInTheDocument();
   });
 
   it('renders live time/speed/eta captions from the progress snapshot', () => {
@@ -270,5 +282,44 @@ describe('QueueJobCard', () => {
     expect(screen.queryByTestId('queue-job-thumbnail')).not.toBeInTheDocument();
     expect(getVideoPreviewMock).not.toHaveBeenCalled();
     expect(getImagePreviewMock).not.toHaveBeenCalled();
+  });
+
+  it('does not regenerate a thumbnail when the card remounts (e.g. navigation or drag overlay)', async () => {
+    getVideoPreviewMock.mockResolvedValue('data:image/png;base64,VIDEO');
+    const job = makeJob({ input: 'C:/videos/persist.mp4' });
+
+    const first = renderCard(<QueueJobCard job={job} onRemove={() => {}} />);
+    expect(await first.findByTestId('queue-job-thumbnail')).toHaveAttribute('src', 'data:image/png;base64,VIDEO');
+    expect(getVideoPreviewMock).toHaveBeenCalledTimes(1);
+
+    first.unmount();
+
+    const second = renderCard(<QueueJobCard job={job} onRemove={() => {}} />);
+    expect(second.getByTestId('queue-job-thumbnail')).toHaveAttribute('src', 'data:image/png;base64,VIDEO');
+    expect(getVideoPreviewMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('defers the thumbnail preview until the card scrolls into view', async () => {
+    let observerCallback: IntersectionObserverCallback | null = null;
+    function FakeIntersectionObserver(this: unknown, cb: IntersectionObserverCallback) {
+      observerCallback = cb;
+    }
+    FakeIntersectionObserver.prototype.observe = vi.fn();
+    FakeIntersectionObserver.prototype.unobserve = vi.fn();
+    FakeIntersectionObserver.prototype.disconnect = vi.fn();
+    vi.stubGlobal('IntersectionObserver', FakeIntersectionObserver);
+
+    getVideoPreviewMock.mockResolvedValue('data:image/png;base64,VIDEO');
+    renderCard(<QueueJobCard job={makeJob({ input: 'C:/videos/clip.mp4' })} onRemove={() => {}} />);
+    expect(getVideoPreviewMock).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('queue-job-thumbnail')).not.toBeInTheDocument();
+
+    act(() => {
+      observerCallback?.([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+    });
+    expect(getVideoPreviewMock).toHaveBeenCalledWith('C:/videos/clip.mp4');
+    const img = await screen.findByTestId('queue-job-thumbnail');
+    expect(img).toHaveAttribute('src', 'data:image/png;base64,VIDEO');
+    vi.unstubAllGlobals();
   });
 });

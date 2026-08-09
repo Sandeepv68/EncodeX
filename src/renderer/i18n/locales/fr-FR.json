@@ -27,6 +27,12 @@
     "descCut": "Rognez et coupez la vidéo avec un lecteur précis au frame près",
     "descBatch": "Convertissez plusieurs fichiers à la fois avec une file d'attente intelligente"
   },
+  "closeConfirm": {
+    "title": "Fermer EncodeX ?",
+    "message": "Il y a des tâches en cours ou des modifications non enregistrées. Les fermer maintenant les annulera.",
+    "confirmLabel": "Fermer quand même",
+    "cancelLabel": "Annuler"
+  },
   "convert": {
     "title": "Convertir un Média",
     "inputFile": "Fichier d'Entrée",
@@ -272,6 +278,12 @@
     "addFiles": "Ajouter des Fichiers",
     "cancelAll": "Tout Annuler",
     "empty": "La file d'attente est vide. Ajoutez des fichiers pour commencer le traitement par lots.",
+    "cancelAllTitle": "Annuler tous les travaux",
+    "cancelAllMessage": "Cela annulera tous les travaux en file d'attente et en cours. Êtes-vous sûr ?",
+    "confirmCancelAll": "Oui, tout annuler",
+    "dialogCancel": "Annuler",
+    "enqueued": "{{count}} fichier(s) ajouté(s) à la file d'attente",
+    "noResults": "Aucun travail ne correspond au filtre ou à la recherche actuelle",
     "remove": "Supprimer",
     "retry": "Réessayer",
     "revealInFolder": "Afficher dans le dossier",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} en file, {{running}} en cours, {{done}} terminés, {{failed}} en échec",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Lot terminé : {{done}} réussi, {{failed}} en échec",
+    "notificationTitle": "Lot EncodeX terminé",
     "filters": {
       "all": "Tous",
       "queued": "En file",
@@ -293,6 +306,7 @@
     "concurrency": "Tâches en parallèle",
     "pause": "Pause",
     "resume": "Reprendre",
+    "paused": "En pause",
     "dragHandle": "Glisser pour réordonner",
     "badgeCount": "{{count}} tâches dans la file d'attente",
     "operationTranscode": "Transcoder",
@@ -395,6 +409,8 @@
     "theme": "Thème",
     "alwaysOnTop": "Toujours au premier plan",
     "alwaysOnTopHint": "Gardez la fenêtre de l'application au-dessus de toutes les autres fenêtres.",
+    "launchAtLogin": "Lancer au démarrage",
+    "launchAtLoginHint": "Démarre EncodeX automatiquement lorsque vous vous connectez à votre ordinateur.",
     "hardwareAcceleration": "Accélération matérielle",
     "hwaccelMode": "Mode d'accélération",
     "hwaccelModeAuto": "Automatique (décoder + encoder)",

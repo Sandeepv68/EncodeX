@@ -168,24 +168,32 @@ export const LOG_FAILED_TO_LOAD_MEDIA_INFO = 'Failed to load media info:';
 export const LOG_FAILED_TO_LOAD_MEDIA_INFO_FOR_PREVIEW = 'Failed to load media info for preview:';
 /** @const {string} Prefix when persisting the always-on-top setting fails. */
 export const LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING = 'Failed to persist always-on-top setting:';
+/** @const {string} Prefix when persisting the launch-at-login setting fails. */
+export const LOG_FAILED_TO_PERSIST_LAUNCH_AT_LOGIN_SETTING = 'Failed to persist launch-at-login setting:';
 /** @const {string} Prefix when persisting the batch queue concurrency fails. */
 export const LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY = 'Failed to persist queue concurrency:';
 /** @const {string} Prefix when persisting hardware acceleration settings fails. */
 export const LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS = 'Failed to persist hardware acceleration settings:';
 /** @const {string} Prefix when persisting the video cut draft fails. */
 export const LOG_FAILED_TO_PERSIST_VIDEO_CUT_DRAFT = 'Failed to persist video cut draft:';
+
+export const LOG_FAILED_TO_PERSIST_BATCH_CONFIG = 'Failed to persist batch config:';
 /** @const {string} Prefix when reading image dimensions fails. */
 export const LOG_FAILED_TO_READ_IMAGE_DIMENSIONS = 'Failed to read image dimensions:';
 /** @const {string} Prefix when reading an image preview fails. */
 export const LOG_FAILED_TO_READ_IMAGE_PREVIEW = 'Failed to read image preview:';
 /** @const {string} Prefix when reading the stored always-on-top setting fails. */
 export const LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING = 'Failed to read stored always-on-top setting:';
+/** @const {string} Prefix when reading the stored launch-at-login setting fails. */
+export const LOG_FAILED_TO_READ_STORED_LAUNCH_AT_LOGIN_SETTING = 'Failed to read stored launch-at-login setting:';
 /** @const {string} Prefix when reading the stored queue concurrency fails. */
 export const LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY = 'Failed to read stored queue concurrency:';
 /** @const {string} Prefix when reading stored hardware acceleration settings fails. */
 export const LOG_FAILED_TO_READ_STORED_HARDWARE_ACCELERATION_SETTINGS = 'Failed to read stored hardware acceleration settings:';
 /** @const {string} Prefix when reading the stored video cut draft fails. */
 export const LOG_FAILED_TO_READ_STORED_VIDEO_CUT_DRAFT = 'Failed to read stored video cut draft:';
+
+export const LOG_FAILED_TO_READ_STORED_BATCH_CONFIG = 'Failed to read stored batch config:';
 /** @const {string} Prefix when resuming a process fails. */
 export const LOG_FAILED_TO_RESUME_PROCESS = 'Failed to resume process:';
 /** @const {string} Prefix when statting an image file fails. */
@@ -352,10 +360,14 @@ export const LOG_IPC_QUEUE_PAUSE_CALLED = 'QUEUE_PAUSE called';
 export const LOG_IPC_QUEUE_RESUME_CALLED = 'QUEUE_RESUME called';
 /** @const {string} Prefix when the QUEUE_LIST IPC message is received. */
 export const LOG_IPC_QUEUE_LIST = 'QUEUE_LIST:';
+/** @const {string} Logged when the QUEUE_GET_STATE IPC message is received. */
+export const LOG_IPC_QUEUE_GET_STATE = 'QUEUE_GET_STATE called';
 /** @const {string} Prefix when the QUEUE_REMOVE IPC message is received. */
 export const LOG_IPC_QUEUE_REMOVE = 'QUEUE_REMOVE:';
 /** @const {string} Prefix when the REVEAL_FILE IPC message is received. */
 export const LOG_IPC_REVEAL_FILE = 'REVEAL_FILE:';
+/** @const {string} Prefix when the SET_LAUNCH_AT_LOGIN IPC message is received. */
+export const LOG_IPC_SET_LAUNCH_AT_LOGIN = 'SET_LAUNCH_AT_LOGIN:';
 /** @const {string} Logged when the RESUME_CONVERSION IPC message is received. */
 export const LOG_IPC_RESUME_CONVERSION_CALLED = 'RESUME_CONVERSION called';
 /** @const {string} Logged when the SELECT_FILE IPC message is received. */
@@ -376,6 +388,10 @@ export const LOG_IPC_SELECT_DIRECTORY_CALLED = 'SELECT_DIRECTORY called';
 export const LOG_IPC_SELECT_DIRECTORY_RESULT = 'SELECT_DIRECTORY result:';
 /** @const {string} Logged when the WINDOW_CLOSE IPC message is received. */
 export const LOG_IPC_WINDOW_CLOSE = 'WINDOW_CLOSE';
+/** @const {string} Logged when the WINDOW_CONFIRM_CLOSE IPC message is received. */
+export const LOG_IPC_WINDOW_CONFIRM_CLOSE = 'WINDOW_CONFIRM_CLOSE';
+/** @const {string} Logged when the WINDOW_CLOSE_REQUESTED message is sent to the renderer. */
+export const LOG_IPC_WINDOW_CLOSE_REQUESTED = 'WINDOW_CLOSE_REQUESTED';
 /** @const {string} Logged when the WINDOW_MAXIMIZE_TOGGLE IPC message is received. */
 export const LOG_IPC_WINDOW_MAXIMIZE_TOGGLE = 'WINDOW_MAXIMIZE_TOGGLE';
 /** @const {string} Logged when the WINDOW_MINIMIZE IPC message is received. */
@@ -459,6 +475,14 @@ export const LOG_PLAYER_DECODER_ERROR = 'Player decoder error:';
 export const LOG_PLAYER_OPEN = 'playerOpen:';
 /** @const {string} Prefix when playerSeek is invoked. */
 export const LOG_PLAYER_SEEK = 'playerSeek:';
+/** @const {string} Prefix when the preview cache is served from disk. */
+export const LOG_PREVIEW_CACHE_HIT = 'preview cache hit:';
+/** @const {string} Prefix when the preview cache misses and generates a preview. */
+export const LOG_PREVIEW_CACHE_MISS = 'preview cache miss:';
+/** @const {string} Prefix when a cached preview is rejected because the source file changed. */
+export const LOG_PREVIEW_CACHE_STAT_MISMATCH = 'preview cache source changed:';
+/** @const {string} Prefix when persisting a generated preview to disk fails. */
+export const LOG_PREVIEW_CACHE_WRITE_FAILED = 'preview cache write failed:';
 /** @const {string} Logged when processNext is called while already running. */
 export const LOG_PROCESS_NEXT_ALREADY_RUNNING = 'processNext: already running';
 /** @const {string} Logged when processNext finds no queued jobs. */
@@ -515,6 +539,8 @@ export const LOG_QUEUE_EXPORTED = 'Exported queue:';
 export const LOG_QUEUE_IMPORTED = 'Imported queue:';
 /** @const {string} Logged when queueList is invoked. */
 export const LOG_QUEUE_LIST_CALLED = 'queueList called';
+/** @const {string} Logged when queueGetState is invoked. */
+export const LOG_QUEUE_GET_STATE_CALLED = 'queueGetState called';
 /** @const {string} Prefix when queueRemove is invoked. */
 export const LOG_QUEUE_REMOVE = 'queueRemove:';
 /** @const {string} Prefix when the persisted queue snapshot is restored. */
@@ -575,6 +601,8 @@ export const LOG_SELECT_DIRECTORY_CALLED = 'selectDirectory called';
 export const LOG_SELECT_OUTPUT_FAILED = 'selectOutput failed:';
 /** @const {string} Prefix when setAlwaysOnTop is invoked. */
 export const LOG_SET_ALWAYS_ON_TOP = 'setAlwaysOnTop:';
+/** @const {string} Prefix when setLaunchAtLogin is invoked. */
+export const LOG_SET_LAUNCH_AT_LOGIN = 'setLaunchAtLogin:';
 /** @const {string} Prefix when setQueueConcurrency is invoked. */
 export const LOG_SET_QUEUE_CONCURRENCY = 'setQueueConcurrency:';
 /** @const {string} Prefix when the audio bitrate is set. */
@@ -599,6 +627,10 @@ export const LOG_SET_INPUT_FILE = 'setInputFile:';
 export const LOG_SET_INCLUDE_AUDIO = 'setIncludeAudio:';
 /** @const {string} Prefix when the converting state is set. */
 export const LOG_SET_IS_CONVERTING = 'setIsConverting:';
+/** @const {string} Prefix when a media task starts. */
+export const LOG_MEDIA_TASK_STARTED = 'Media task started';
+/** @const {string} Prefix when a media task finishes. */
+export const LOG_MEDIA_TASK_FINISHED = 'Media task finished';
 /** @const {string} Prefix when the paused state is set. */
 export const LOG_SET_IS_PAUSED = 'setIsPaused:';
 /** @const {string} Prefix when the job list is set. */
@@ -701,12 +733,18 @@ export const LOG_WAVEFORM_SEGMENT_FAILED_WITH_CODE = 'Waveform segment failed wi
 export const LOG_WEB_AUDIO_IS_NOT_AVAILABLE_AUDIO_PLAYBACK_DISABLED = 'Web Audio is not available, audio playback disabled';
 /** @const {string} Logged when windowClose is invoked. */
 export const LOG_WINDOW_CLOSE_CALLED = 'windowClose called';
+/** @const {string} Logged when windowCloseConfirmed is invoked. */
+export const LOG_WINDOW_CONFIRM_CLOSE_CALLED = 'windowCloseConfirmed called';
+/** @const {string} Logged when a window close request is received from the main process. */
+export const LOG_ON_WINDOW_CLOSE_REQUESTED = 'onWindowCloseRequested';
 /** @const {string} Logged when windowMaximizeToggle is invoked. */
 export const LOG_WINDOW_MAXIMIZE_TOGGLE_CALLED = 'windowMaximizeToggle called';
 /** @const {string} Logged when windowMinimize is invoked. */
 export const LOG_WINDOW_MINIMIZE_CALLED = 'windowMinimize called';
 /** @const {string} Logged when windowSetAlwaysOnTop is invoked. */
 export const LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED = 'windowSetAlwaysOnTop called';
+/** @const {string} Logged when setLaunchAtLogin is invoked. */
+export const LOG_SET_LAUNCH_AT_LOGIN_CALLED = 'setLaunchAtLogin called';
 /** @const {string} Logged when wrapAsync is invoked. */
 export const LOG_WRAP_ASYNC_CALLED = 'wrapAsync called';
 /** @const {string} Prefix when wrapAsync catches an error. */

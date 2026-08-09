@@ -27,6 +27,12 @@
     "descCut": "Klip videoer med frame-præcision",
     "descBatch": "Konverter flere filer på én gang med en intelligent kø"
   },
+  "closeConfirm": {
+    "title": "Luk EncodeX?",
+    "message": "Der er opgaver i gang eller ugemte ændringer. Lukker du nu, annulleres de.",
+    "confirmLabel": "Luk alligevel",
+    "cancelLabel": "Annuller"
+  },
   "convert": {
     "title": "Konverter medie",
     "inputFile": "Inputfil",
@@ -272,6 +278,12 @@
     "addFiles": "Tilføj filer",
     "cancelAll": "Annuller alle",
     "empty": "Køen er tom. Tilføj filer for at starte batchbehandling.",
+    "cancelAllTitle": "Annuller alle job",
+    "cancelAllMessage": "Dette annullerer alle job i køen og job, der kører. Er du sikker?",
+    "confirmCancelAll": "Ja, annuller alle",
+    "dialogCancel": "Annuller",
+    "enqueued": "Tilføjede {{count}} fil(er) til køen",
+    "noResults": "Ingen job matcher den aktuelle filtrering eller søgning",
     "remove": "Fjern",
     "retry": "Prøv igen",
     "revealInFolder": "Vis i mappe",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} i kø, {{running}} kører, {{done}} færdig, {{failed}} mislykkedes",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Batch færdig: {{done}} lykkedes, {{failed}} mislykkedes",
+    "notificationTitle": "EncodeX-batch færdig",
     "filters": {
       "all": "Alle",
       "queued": "I kø",
@@ -293,6 +306,7 @@
     "concurrency": "Samtidige job",
     "pause": "Sæt på pause",
     "resume": "Fortsæt",
+    "paused": "Sat på pause",
     "dragHandle": "Træk for at omarrangere",
     "badgeCount": "{{count}} job i batchkøen",
     "operationTranscode": "Transkod",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "Altid øverst",
     "alwaysOnTopHint": "Holder app-vinduet over alle andre vinduer.",
+    "launchAtLogin": "Start ved opstart",
+    "launchAtLoginHint": "Starter EncodeX automatisk, når du logger på din computer.",
     "hardwareAcceleration": "Hardwareacceleration",
     "hwaccelMode": "Accelerationstilstand",
     "hwaccelModeAuto": "Automatisk (dekoder + encoder)",

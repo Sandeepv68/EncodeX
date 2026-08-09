@@ -27,6 +27,12 @@
     "descCut": "Gearr físeáin le cruinneas fráma",
     "descBatch": "Tiontaigh comhaid iolracha ag an am céanna le scuaine chliste"
   },
+  "closeConfirm": {
+    "title": "Dún EncodeX?",
+    "message": "Tá poist ar siúl nó athruithe gan sábháil. Déanfar iad a chealú má dhúnann tú anois.",
+    "confirmLabel": "Dún ar aon nós",
+    "cancelLabel": "Cealaigh"
+  },
   "convert": {
     "title": "Tiontaigh Meán",
     "inputFile": "Comhad Ionchuir",
@@ -272,6 +278,12 @@
     "addFiles": "Cuir Comhaid Leis",
     "cancelAll": "Cealaigh Uile",
     "empty": "Tá an scuaine folamh. Cuir comhaid leis chun próiseáil baisc a thosú.",
+    "cancelAllTitle": "Cealaigh na poist go léir",
+    "cancelAllMessage": "Cealóidh sé seo na poist go léir atá ar an scuaine agus i mbun rith. An bhfuil tú cinnte?",
+    "confirmCancelAll": "Sea, cealaigh uile",
+    "dialogCancel": "Cealaigh",
+    "enqueued": "Cuireadh {{count}} comhad leis an scuaine",
+    "noResults": "Ní oireann aon phost don scagaire nó don chuardach reatha",
     "remove": "Bain",
     "retry": "Bain Triail As Arís",
     "revealInFolder": "Taispeáin san Fhillteán",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} sa scuaine, {{running}} ag rith, {{done}} déanta, {{failed}} ar theip",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Bhaisc críochnaithe: {{done}} rathúil, {{failed}} ar theip",
+    "notificationTitle": "Bhaisc EncodeX críochnaithe",
     "filters": {
       "all": "Uile",
       "queued": "Sa scuaine",
@@ -293,6 +306,7 @@
     "concurrency": "Poist Chomhthráthacha",
     "pause": "Sos",
     "resume": "Atosaigh",
+    "paused": "Ar sos",
     "dragHandle": "Tarraing chun athordú",
     "badgeCount": "{{count}} post sa scuaine bhaisc",
     "operationTranscode": "Traschódú",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "Ar Barr i gcónaí",
     "alwaysOnTopHint": "Coinníonn fuinneog an aip os cionn na bhfuinneoga eile go léir.",
+    "launchAtLogin": "Seol ag am tosaithe",
+    "launchAtLoginHint": "Cuireann sé tús le EncodeX go huathoibríoch nuair a logálann tú isteach ar do ríomhaire.",
     "hardwareAcceleration": "Luasghéarú Crua-earraí",
     "hwaccelMode": "Mód Luasghéaraithe",
     "hwaccelModeAuto": "Uathoibríoch (díchódóir + ionchódóir)",

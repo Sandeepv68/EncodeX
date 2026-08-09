@@ -27,6 +27,12 @@
     "descCut": "קיצוץ וחיתוך וידאו עם נגן ברמת דיוק של פריים",
     "descBatch": "המרת קבצים רבים בבת אחת עם תור חכם"
   },
+  "closeConfirm": {
+    "title": "לסגור את EncodeX?",
+    "message": "יש משימות בפעולה או שינויים שלא נשמרו. הסגירה תבטל אותם.",
+    "confirmLabel": "סגור בכל זאת",
+    "cancelLabel": "ביטול"
+  },
   "convert": {
     "title": "המרת מדיה",
     "inputFile": "קובץ קלט",
@@ -272,6 +278,12 @@
     "addFiles": "הוסף קבצים",
     "cancelAll": "בטל הכל",
     "empty": "התור ריק. הוסף קבצים כדי להתחיל בעיבוד אצווה.",
+    "cancelAllTitle": "ביטול כל המטלות",
+    "cancelAllMessage": "פעולה זו תבטל את כל המטלות שממתינות בתור ואת המטלות שפועלות כעת. האם אתה בטוח?",
+    "confirmCancelAll": "כן, בטל הכל",
+    "dialogCancel": "ביטול",
+    "enqueued": "נוספו {{count}} קבצים לתור",
+    "noResults": "אין מטלות שתואמות למסנן או לחיפוש הנוכחי",
     "remove": "הסר",
     "retry": "נסה שוב",
     "revealInFolder": "הצג בתיקייה",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} בהמתנה, {{running}} בפעולה, {{done}} הושלמו, {{failed}} נכשלו",
     "etaEstimate": "זמן משוער ~{{eta}}",
     "finished": "האצווה הסתיימה: {{done}} הצליחו, {{failed}} נכשלו",
+    "notificationTitle": "אצוות EncodeX הסתיימה",
     "filters": {
       "all": "הכל",
       "queued": "בהמתנה",
@@ -293,6 +306,7 @@
     "concurrency": "משימות מקבילות",
     "pause": "השהיה",
     "resume": "המשך",
+    "paused": "מושהה",
     "dragHandle": "גרור כדי לסדר מחדש",
     "badgeCount": "{{count}} משימות בתור האצווה",
     "operationTranscode": "המרה",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "תמיד בראש",
     "alwaysOnTopHint": "שומר על חלון האפליקציה מעל כל החלונות האחרים.",
+    "launchAtLogin": "הפעלה בעת התחברות",
+    "launchAtLoginHint": "מפעיל את EncodeX אוטומטית בעת התחברות למחשב שלך.",
     "hardwareAcceleration": "האצת חומרה",
     "hwaccelMode": "מצב האצה",
     "hwaccelModeAuto": "אוטומטי (פענוח + קידוד)",

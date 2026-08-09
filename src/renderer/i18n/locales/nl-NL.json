@@ -27,6 +27,12 @@
     "descCut": "Knip en bewerk video met een frame-nauwkeurige speler",
     "descBatch": "Converteer veel bestanden tegelijk met een slimme wachtrij"
   },
+  "closeConfirm": {
+    "title": "EncodeX sluiten?",
+    "message": "Er zijn taken in uitvoering of niet-opgeslagen wijzigingen. Sluiten nu annuleert ze.",
+    "confirmLabel": "Toch sluiten",
+    "cancelLabel": "Annuleren"
+  },
   "convert": {
     "title": "Media converteren",
     "inputFile": "Invoerbestand",
@@ -272,6 +278,12 @@
     "addFiles": "Bestanden toevoegen",
     "cancelAll": "Alles annuleren",
     "empty": "Wachtrij is leeg. Voeg bestanden toe om batchverwerking te starten.",
+    "cancelAllTitle": "Alle taken annuleren",
+    "cancelAllMessage": "Hiermee worden alle taken in de wachtrij en lopende taken geannuleerd. Weet u het zeker?",
+    "confirmCancelAll": "Ja, alles annuleren",
+    "dialogCancel": "Annuleren",
+    "enqueued": "{{count}} bestand(en) toegevoegd aan de wachtrij",
+    "noResults": "Geen taken komen overeen met het huidige filter of de zoekopdracht",
     "remove": "Verwijderen",
     "retry": "Opnieuw proberen",
     "revealInFolder": "In map tonen",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} in wachtrij, {{running}} actief, {{done}} klaar, {{failed}} mislukt",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Batch voltooid: {{done}} geslaagd, {{failed}} mislukt",
+    "notificationTitle": "EncodeX-batch voltooid",
     "filters": {
       "all": "Alle",
       "queued": "In wachtrij",
@@ -293,6 +306,7 @@
     "concurrency": "Parallelle taken",
     "pause": "Pauzeren",
     "resume": "Hervatten",
+    "paused": "Gepauzeerd",
     "dragHandle": "Sleep om te herschikken",
     "badgeCount": "{{count}} taken in de batchwachtrij",
     "operationTranscode": "Transcoderen",
@@ -395,6 +409,8 @@
     "theme": "Thema",
     "alwaysOnTop": "Altijd boven",
     "alwaysOnTopHint": "Houdt het app-venster boven alle andere vensters.",
+    "launchAtLogin": "Starten bij opstarten",
+    "launchAtLoginHint": "Start EncodeX automatisch wanneer u zich aanmeldt bij uw computer.",
     "hardwareAcceleration": "Hardwareversnelling",
     "hwaccelMode": "Versnellingsmodus",
     "hwaccelModeAuto": "Automatisch (decoderen + coderen)",

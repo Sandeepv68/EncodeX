@@ -187,6 +187,13 @@ export interface ElectronAPI {
    */
   queueList(): Promise<QueueJob[]>;
   /**
+   * Reads the queue's runtime state over the `IPC.QUEUE_GET_STATE`
+   * ('queue-get-state') channel.
+   * @returns {Promise<{paused: boolean, concurrency: number}>} Whether the
+   *   queue is paused and the parallel-job cap.
+   */
+  queueGetState(): Promise<{ paused: boolean; concurrency: number }>;
+  /**
    * Cancels every job in the conversion queue over the `IPC.QUEUE_CANCEL_ALL`
    * ('queue-cancel-all') channel.
    * @returns {Promise<void>} Resolves once all jobs have been cancelled.
@@ -331,6 +338,23 @@ export interface ElectronAPI {
    */
   windowClose(): void;
   /**
+   * Confirms that the window may close after the renderer verified no jobs are
+   * in progress (or the user chose to close anyway). Fire-and-forget over the
+   * `IPC.WINDOW_CONFIRM_CLOSE` ('window-confirm-close') channel; the main
+   * process marks the close as confirmed and completes the window teardown.
+   * @returns {void}
+   */
+  windowCloseConfirmed(): void;
+  /**
+   * Subscribes to window close requests pushed from the main process over
+   * `IPC.WINDOW_CLOSE_REQUESTED` ('window-close-requested'). The main process
+   * sends this whenever a close is attempted, asking the renderer to verify
+   * whether any jobs are still in progress.
+   * @param {() => void} cb - Callback invoked when a close request arrives.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onWindowCloseRequested(cb: () => void): () => void;
+  /**
    * Sets whether the application window should stay on top of other windows.
    * Fire-and-forget over the `IPC.WINDOW_SET_ALWAYS_ON_TOP`
    * ('window-set-always-on-top') channel.
@@ -339,6 +363,14 @@ export interface ElectronAPI {
    * @returns {void}
    */
   windowSetAlwaysOnTop(flag: boolean): void;
+  /**
+   * Adds or removes the app from the operating system's login items (launch at
+   * startup). Fire-and-forget over the `IPC.SET_LAUNCH_AT_LOGIN`
+   * ('set-launch-at-login') channel.
+   * @param {boolean} enabled - true to start the app at login, false to remove it.
+   * @returns {void}
+   */
+  setLaunchAtLogin(enabled: boolean): void;
   /**
    * Subscribes to window maximized / un-maximized state changes pushed from the
    * main process over `IPC.WINDOW_MAXIMIZED_CHANGED`

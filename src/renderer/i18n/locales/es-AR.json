@@ -27,6 +27,12 @@
     "descCut": "Recorta y corta vídeo con un reproductor preciso por fotogramas",
     "descBatch": "Convierte muchos archivos a la vez con una cola inteligente"
   },
+  "closeConfirm": {
+    "title": "¿Cerrar EncodeX?",
+    "message": "Hay trabajos en curso o cambios sin guardar. Si cierras ahora, se cancelarán.",
+    "confirmLabel": "Cerrar de todos modos",
+    "cancelLabel": "Cancelar"
+  },
   "convert": {
     "title": "Convertir Multimedia",
     "inputFile": "Archivo de Entrada",
@@ -272,6 +278,12 @@
     "addFiles": "Añadir Archivos",
     "cancelAll": "Cancelar Todo",
     "empty": "La cola está vacía. Añada archivos para comenzar el procesamiento por lotes.",
+    "cancelAllTitle": "Cancelar todos los trabajos",
+    "cancelAllMessage": "Esto cancelará todos los trabajos en cola y los que están en ejecución. ¿Está seguro?",
+    "confirmCancelAll": "Sí, cancelar todos",
+    "dialogCancel": "Cancelar",
+    "enqueued": "Se agregaron {{count}} archivo(s) a la cola",
+    "noResults": "Ningún trabajo coincide con el filtro o la búsqueda actual",
     "remove": "Eliminar",
     "retry": "Reintentar",
     "revealInFolder": "Mostrar en carpeta",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} en cola, {{running}} en ejecución, {{done}} completados, {{failed}} con error",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Lote finalizado: {{done}} con éxito, {{failed}} con error",
+    "notificationTitle": "Lote de EncodeX finalizado",
     "filters": {
       "all": "Todos",
       "queued": "En cola",
@@ -293,6 +306,7 @@
     "concurrency": "Trabajos en paralelo",
     "pause": "Pausar",
     "resume": "Reanudar",
+    "paused": "En pausa",
     "dragHandle": "Arrastrar para reordenar",
     "badgeCount": "{{count}} trabajos en la cola de lotes",
     "operationTranscode": "Transcodificar",
@@ -395,6 +409,8 @@
     "theme": "Tema",
     "alwaysOnTop": "Siempre encima",
     "alwaysOnTopHint": "Mantiene la ventana de la aplicación por encima de todas las demás.",
+    "launchAtLogin": "Iniciar al iniciar sesión",
+    "launchAtLoginHint": "Inicia EncodeX automáticamente cuando inicias sesión en tu computadora.",
     "hardwareAcceleration": "Aceleración por hardware",
     "hwaccelMode": "Modo de aceleración",
     "hwaccelModeAuto": "Automático (decodificar + codificar)",

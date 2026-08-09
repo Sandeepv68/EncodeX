@@ -44,6 +44,10 @@ vi.mock('react-i18next', () => ({
         'mediaInfo.video': 'Video',
         'mediaInfo.audio': 'Audio',
         'mediaInfo.subtitle': 'Subtitle',
+        'closeConfirm.title': 'Close EncodeX?',
+        'closeConfirm.message': 'There are jobs in progress or unsaved changes. Closing now will cancel them.',
+        'closeConfirm.confirmLabel': 'Close Anyway',
+        'closeConfirm.cancelLabel': 'Cancel',
       };
       let text = map[key] || (opts?.defaultValue as string | undefined) || key;
       if (opts) {
@@ -80,6 +84,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     queueAdd: vi.fn().mockResolvedValue(''),
     queueRemove: vi.fn().mockResolvedValue(undefined),
     queueList: vi.fn().mockResolvedValue([]),
+    queueGetState: vi.fn().mockResolvedValue({ paused: false, concurrency: 1 }),
     queueCancelAll: vi.fn().mockResolvedValue(undefined),
     queueClearCompleted: vi.fn().mockResolvedValue(0),
     queueSetConcurrency: vi.fn().mockResolvedValue(undefined),
@@ -100,7 +105,10 @@ Object.defineProperty(globalThis, 'electronAPI', {
     windowMinimize: vi.fn(),
     windowMaximizeToggle: vi.fn(),
     windowClose: vi.fn(),
+    windowCloseConfirmed: vi.fn(),
+    onWindowCloseRequested: vi.fn(() => vi.fn()),
     windowSetAlwaysOnTop: vi.fn(),
+    setLaunchAtLogin: vi.fn(),
     onWindowMaximizedChange: vi.fn(() => vi.fn()),
     onConversionProgress: vi.fn(() => vi.fn()),
     onQueueAdded: vi.fn(() => vi.fn()),

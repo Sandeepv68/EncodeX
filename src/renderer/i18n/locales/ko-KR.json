@@ -27,6 +27,12 @@
     "descCut": "프레임 정확도 플레이어로 비디오 다듬기 및 자르기",
     "descBatch": "스마트 큐로 여러 파일을 한 번에 변환"
   },
+  "closeConfirm": {
+    "title": "EncodeX를 닫을까요?",
+    "message": "진행 중인 작업 또는 저장되지 않은 변경 사항이 있습니다. 지금 닫으면 취소됩니다.",
+    "confirmLabel": "닫기",
+    "cancelLabel": "취소"
+  },
   "convert": {
     "title": "미디어 변환",
     "inputFile": "입력 파일",
@@ -272,6 +278,12 @@
     "addFiles": "파일 추가",
     "cancelAll": "모두 취소",
     "empty": "큐가 비어 있습니다. 파일을 추가하여 배치 처리를 시작하세요.",
+    "cancelAllTitle": "모든 작업 취소",
+    "cancelAllMessage": "대기 중인 작업과 실행 중인 작업이 모두 취소됩니다. 계속하시겠습니까?",
+    "confirmCancelAll": "예, 모두 취소",
+    "dialogCancel": "취소",
+    "enqueued": "{{count}}개의 파일을 큐에 추가했습니다",
+    "noResults": "현재 필터 또는 검색과 일치하는 작업이 없습니다",
     "remove": "제거",
     "retry": "다시 시도",
     "revealInFolder": "폴더에 표시",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} 대기 중, {{running}} 실행 중, {{done}} 완료, {{failed}} 실패",
     "etaEstimate": "예상 ~{{eta}}",
     "finished": "배치 완료: {{done}} 성공, {{failed}} 실패",
+    "notificationTitle": "EncodeX 배치 완료",
     "filters": {
       "all": "전체",
       "queued": "대기 중",
@@ -293,6 +306,7 @@
     "concurrency": "병렬 작업",
     "pause": "일시 정지",
     "resume": "재개",
+    "paused": "일시정지됨",
     "dragHandle": "드래그하여 재정렬",
     "badgeCount": "배치 큐에 작업 {{count}}개",
     "operationTranscode": "트랜스코드",
@@ -395,6 +409,8 @@
     "theme": "테마",
     "alwaysOnTop": "항상 위에 표시",
     "alwaysOnTopHint": "앱 창을 다른 모든 창 위에 유지합니다.",
+    "launchAtLogin": "시작할 때 실행",
+    "launchAtLoginHint": "컴퓨터에 로그인하면 EncodeX가 자동으로 시작됩니다.",
     "hardwareAcceleration": "하드웨어 가속",
     "hwaccelMode": "가속 모드",
     "hwaccelModeAuto": "자동 (디코드 + 인코드)",

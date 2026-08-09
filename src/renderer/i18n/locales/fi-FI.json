@@ -27,6 +27,12 @@
     "descCut": "Leikkaa videoita kehyksen tarkkuudella",
     "descBatch": "Muunna useita tiedostoja kerralla älykkäällä jonolla"
   },
+  "closeConfirm": {
+    "title": "Sulje EncodeX?",
+    "message": "Käynnissä on töitä tai tallentamattomia muutoksia. Sulkeutuminen peruuttaa ne.",
+    "confirmLabel": "Sulje silti",
+    "cancelLabel": "Peruuta"
+  },
   "convert": {
     "title": "Muunna media",
     "inputFile": "Lähdetiedosto",
@@ -272,6 +278,12 @@
     "addFiles": "Lisää tiedostoja",
     "cancelAll": "Peruuta kaikki",
     "empty": "Jono on tyhjä. Lisää tiedostoja aloittaaksesi eräkäsittelyn.",
+    "cancelAllTitle": "Peruuta kaikki työt",
+    "cancelAllMessage": "Tämä peruuttaa kaikki jonossa olevat ja käynnissä olevat työt. Oletko varma?",
+    "confirmCancelAll": "Kyllä, peruuta kaikki",
+    "dialogCancel": "Peruuta",
+    "enqueued": "Lisättiin {{count}} tiedosto(a) jonoon",
+    "noResults": "Mikään työ ei vastaa nykyistä suodatinta tai hakua",
     "remove": "Poista",
     "retry": "Yritä uudelleen",
     "revealInFolder": "Näytä kansiossa",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} jonossa, {{running}} käynnissä, {{done}} valmis, {{failed}} epäonnistunut",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Erä valmistui: {{done}} onnistui, {{failed}} epäonnistui",
+    "notificationTitle": "EncodeX-erä valmistui",
     "filters": {
       "all": "Kaikki",
       "queued": "Jonossa",
@@ -293,6 +306,7 @@
     "concurrency": "Samanaikaiset työt",
     "pause": "Keskeytä",
     "resume": "Jatka",
+    "paused": "Tauolla",
     "dragHandle": "Vedä järjestääksesi uudelleen",
     "badgeCount": "{{count}} työtä eräjonossa",
     "operationTranscode": "Transkoodaus",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "Aina päällimmäisenä",
     "alwaysOnTopHint": "Pitää sovellusikkunan kaikkien muiden ikkunoiden yläpuolella.",
+    "launchAtLogin": "Käynnistä kirjautumisen yhteydessä",
+    "launchAtLoginHint": "Käynnistää EncodeX:n automaattisesti, kun kirjaudut tietokoneellesi.",
     "hardwareAcceleration": "Laitteistokiihdytys",
     "hwaccelMode": "Kiihdytystila",
     "hwaccelModeAuto": "Automaattinen (dekooderi + koodaaja)",

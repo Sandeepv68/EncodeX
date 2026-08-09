@@ -1,7 +1,7 @@
 /**
  * @fileoverview IPC handlers for the batch conversion job queue.
  * Registers handlers for the QUEUE_ADD, QUEUE_REMOVE, QUEUE_LIST,
- * QUEUE_CANCEL_ALL, QUEUE_CLEAR_COMPLETED, QUEUE_SET_CONCURRENCY,
+ * QUEUE_GET_STATE, QUEUE_CANCEL_ALL, QUEUE_CLEAR_COMPLETED, QUEUE_SET_CONCURRENCY,
  * QUEUE_MOVE_TO, QUEUE_PAUSE and QUEUE_RESUME channels and forwards the
  * JobQueue's lifecycle events to the renderer on the QUEUE_ADDED,
  * QUEUE_REMOVED, QUEUE_STATUS_CHANGE, QUEUE_PROGRESS, QUEUE_CANCELLED and
@@ -9,7 +9,8 @@
  * instance (src/main/queue/job-queue.ts) is created per registration call and
  * executes conversions in the main process, running up to the configured
  * concurrency of jobs at a time and processing the next queued job on
- * completion.
+ * completion. When the application quits (`will-quit`), the persisted queue
+ * snapshot is deleted so the next launch starts with an empty queue.
  */
 
 import { ipcMain, BrowserWindow, app, dialog } from 'electron';
@@ -28,6 +29,7 @@ import {
   LOG_IPC_QUEUE_CANCEL_ALL_CALLED,
   LOG_IPC_QUEUE_CLEAR_COMPLETED_CALLED,
   LOG_IPC_QUEUE_EXPORT_CALLED,
+  LOG_IPC_QUEUE_GET_STATE,
   LOG_IPC_QUEUE_IMPORT_CALLED,
   LOG_IPC_QUEUE_LIST,
   LOG_IPC_QUEUE_MOVE_TO,
@@ -47,6 +49,50 @@ import {
 const log = new Logger('main/ipc/queue');
 
 /**
+ * The queue persistence adapter created by the most recent
+ * {@link registerQueueHandlers} call. Holds the `queue-state.json` snapshot so
+ * it can be cleared when the application quits.
+ * @type {FileQueuePersistence | null}
+ */
+let persistedQueue: FileQueuePersistence | null = null;
+
+/**
+ * True once the app-level `will-quit` listener that clears the persisted
+ * snapshot has been registered. registerQueueHandlers runs once per window
+ * creation (including macOS window re-creates), so the listener is attached at
+ * most once per process.
+ * @type {boolean}
+ */
+let willQuitHandlerRegistered = false;
+
+/**
+ * Registers an app `will-quit` listener that deletes the persisted queue
+ * snapshot. Attached at most once per process: on a confirmed app close the
+ * `queue-state.json` file is dropped, so the next launch starts with an empty
+ * queue - matching the renderer's localStorage cleanup on window close.
+ * @returns {void}
+ */
+function registerWillQuitQueueClear(): void {
+  if (willQuitHandlerRegistered) return;
+  willQuitHandlerRegistered = true;
+  app.on('will-quit', () => {
+    persistedQueue?.clear();
+  });
+}
+
+/**
+ * Normalizes a file path for duplicate comparison: lowercases and unifies
+ * Windows backslashes with POSIX forward slashes. Mirrors the renderer's
+ * add-time dedupe so an imported queue skips the same jobs the batch page
+ * would.
+ * @param {string} path - The file path to normalize.
+ * @returns {string} The normalized path.
+ */
+function normalizePath(path: string): string {
+  return path.replace(/\\/g, '/').toLowerCase();
+}
+
+/**
  * Registers the job-queue IPC handlers for the given window.
  *
  * @param {BrowserWindow} win - The BrowserWindow associated with the
@@ -56,8 +102,13 @@ const log = new Logger('main/ipc/queue');
  * @returns {void} Nothing is returned.
  */
 export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void {
+  /** The queue persistence adapter; the will-quit clear targets its snapshot. */
+  const persistence = new FileQueuePersistence(app.getPath('userData'));
+  persistedQueue = persistence;
+  registerWillQuitQueueClear();
+
   /** The job queue backing these handlers; one instance per registration call. */
-  const jobQueue = new JobQueue({ persistence: new FileQueuePersistence(app.getPath('userData')) });
+  const jobQueue = new JobQueue({ persistence });
 
   /**
    * Handles the IPC.QUEUE_ADD channel (queue-add).
@@ -116,6 +167,19 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
     const jobs = jobQueue.getJobs();
     log.debug(LOG_IPC_QUEUE_LIST, jobs.length, 'jobs');
     return jobs;
+  });
+
+  /**
+   * Handles the IPC.QUEUE_GET_STATE channel (queue-get-state).
+   * Returns a snapshot of the queue's runtime state: whether it is paused
+   * (active conversions suspended, queued jobs blocked) and the concurrency cap.
+   *
+   * @returns {Promise<{paused: boolean, concurrency: number}>} The paused flag
+   *   and the parallel-job cap.
+   */
+  ipcMain.handle(IPC.QUEUE_GET_STATE, async () => {
+    log.debug(LOG_IPC_QUEUE_GET_STATE);
+    return { paused: jobQueue.isPaused(), concurrency: jobQueue.getConcurrency() };
   });
 
   /**
@@ -221,11 +285,14 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
    * Handles the IPC.QUEUE_IMPORT channel (queue-import).
    * Shows an open dialog for a JSON queue file, parses and validates it, then
    * applies the recorded concurrency cap and enqueues every job via
-   * `jobQueue.addJob`. An unreadable or structurally invalid file rejects with
+   * `jobQueue.addJob`. Jobs whose `input|output` pair is already queued, or
+   * whose output path is already claimed by an existing job, are skipped so
+   * importing a queue never duplicates work (mirrors the batch page's
+   * add-time dedupe). An unreadable or structurally invalid file rejects with
    * an INVALID_QUEUE_FILE AppError.
    *
-   * @returns {Promise<number>} The number of jobs imported, or 0 when the
-   *   dialog was cancelled.
+   * @returns {Promise<number>} The number of jobs actually imported (excluding
+   *   skipped duplicates), or 0 when the dialog was cancelled.
    * @throws {AppError} INVALID_QUEUE_FILE when the selected file cannot be
    *   read or does not match the expected export format.
    */
@@ -245,11 +312,21 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
     const snapshot = parseQueueExport(raw);
     if (!snapshot) throw invalidQueueFileError();
     jobQueue.setConcurrency(snapshot.concurrency);
+    const existingKeys = new Set(jobQueue.getJobs().map((job: QueueJob) => `${normalizePath(job.input)}|${normalizePath(job.output)}`));
+    const existingOutputs = new Set(jobQueue.getJobs().map((job: QueueJob) => normalizePath(job.output)));
+    let imported = 0;
     for (const job of snapshot.jobs) {
+      const key = `${normalizePath(job.input)}|${normalizePath(job.output)}`;
+      if (existingKeys.has(key) || existingOutputs.has(normalizePath(job.output))) {
+        continue;
+      }
+      existingKeys.add(key);
+      existingOutputs.add(normalizePath(job.output));
       jobQueue.addJob(job.input, job.output, job.options, job.transcoder);
+      imported += 1;
     }
-    log.info(LOG_QUEUE_IMPORTED, snapshot.jobs.length, 'jobs');
-    return snapshot.jobs.length;
+    log.info(LOG_QUEUE_IMPORTED, imported, 'jobs');
+    return imported;
   });
 
   /**

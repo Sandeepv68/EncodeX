@@ -27,6 +27,12 @@
     "descCut": "フレーム精度のプレーヤーで動画をトリム・カット",
     "descBatch": "スマートなキューで多数のファイルをまとめて変換"
   },
+  "closeConfirm": {
+    "title": "EncodeX を閉じますか?",
+    "message": "進行中のジョブまたは保存されていない変更があります。今閉じるとキャンセルされます。",
+    "confirmLabel": "閉じる",
+    "cancelLabel": "キャンセル"
+  },
   "convert": {
     "title": "メディア変換",
     "inputFile": "入力ファイル",
@@ -272,6 +278,12 @@
     "addFiles": "ファイルを追加",
     "cancelAll": "すべてキャンセル",
     "empty": "キューは空です。ファイルを追加してバッチ処理を開始してください。",
+    "cancelAllTitle": "すべてのジョブをキャンセル",
+    "cancelAllMessage": "キュー内のジョブと実行中のジョブがすべてキャンセルされます。よろしいですか？",
+    "confirmCancelAll": "はい、すべてキャンセル",
+    "dialogCancel": "キャンセル",
+    "enqueued": "{{count}} 件のファイルをキューに追加しました",
+    "noResults": "現在のフィルターまたは検索に一致するジョブはありません",
     "remove": "削除",
     "retry": "再試行",
     "revealInFolder": "フォルダーに表示",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} 待機中、{{running}} 実行中、{{done}} 完了、{{failed}} 失敗",
     "etaEstimate": "残り約{{eta}}",
     "finished": "バッチ完了: {{done}} 成功、{{failed}} 失敗",
+    "notificationTitle": "EncodeX バッチ完了",
     "filters": {
       "all": "すべて",
       "queued": "待機中",
@@ -293,6 +306,7 @@
     "concurrency": "並行ジョブ",
     "pause": "一時停止",
     "resume": "再開",
+    "paused": "一時停止中",
     "dragHandle": "ドラッグして並べ替え",
     "badgeCount": "バッチキューのジョブが{{count}}件",
     "operationTranscode": "トランスコード",
@@ -395,6 +409,8 @@
     "theme": "テーマ",
     "alwaysOnTop": "常に最前面に表示",
     "alwaysOnTopHint": "アプリのウィンドウを他のすべてのウィンドウの上に表示します。",
+    "launchAtLogin": "サインイン時に起動",
+    "launchAtLoginHint": "コンピューターにサインインすると、EncodeX を自動的に起動します。",
     "hardwareAcceleration": "ハードウェアアクセラレーション",
     "hwaccelMode": "アクセラレーションモード",
     "hwaccelModeAuto": "自動（デコード＋エンコード）",

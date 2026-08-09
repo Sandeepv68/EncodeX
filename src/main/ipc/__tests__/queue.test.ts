@@ -12,11 +12,23 @@ interface FakeJobQueue {
   pause: ReturnType<typeof vi.fn>;
   resume: ReturnType<typeof vi.fn>;
   getConcurrency: ReturnType<typeof vi.fn>;
+  isPaused: ReturnType<typeof vi.fn>;
   emit: (ev: string, ...args: unknown[]) => void;
 }
 
-const { ipcMainMock, dialogMock, getHandlers, jobQueueInstances, existsSyncMock, readFileSyncMock, writeFileSyncMock } = vi.hoisted(() => {
+const {
+  ipcMainMock,
+  dialogMock,
+  getHandlers,
+  jobQueueInstances,
+  existsSyncMock,
+  readFileSyncMock,
+  writeFileSyncMock,
+  unlinkSyncMock,
+  appEventHandlers,
+} = vi.hoisted(() => {
   const handlers: Record<string, (...args: unknown[]) => unknown> = {};
+  const appEventHandlers: Record<string, () => void> = {};
   return {
     ipcMainMock: {
       handle: vi.fn((channel: string, fn: (...args: unknown[]) => unknown) => {
@@ -31,6 +43,8 @@ const { ipcMainMock, dialogMock, getHandlers, jobQueueInstances, existsSyncMock,
     existsSyncMock: vi.fn(() => false),
     readFileSyncMock: vi.fn(),
     writeFileSyncMock: vi.fn(),
+    unlinkSyncMock: vi.fn(),
+    appEventHandlers,
     getHandlers: () => handlers,
   };
 });
@@ -39,7 +53,12 @@ vi.mock('electron', () => ({
   ipcMain: ipcMainMock,
   BrowserWindow: class {},
   dialog: dialogMock,
-  app: { getPath: () => 'C:/temp/encodex-user-data' },
+  app: {
+    getPath: () => 'C:/temp/encodex-user-data',
+    on: vi.fn((event: string, callback: () => void) => {
+      appEventHandlers[event] = callback;
+    }),
+  },
 }));
 
 vi.mock('fs', () => ({
@@ -47,14 +66,14 @@ vi.mock('fs', () => ({
   readFileSync: readFileSyncMock,
   writeFileSync: writeFileSyncMock,
   mkdirSync: vi.fn(),
-  unlinkSync: vi.fn(),
+  unlinkSync: unlinkSyncMock,
   rmSync: vi.fn(),
   default: {
     existsSync: existsSyncMock,
     readFileSync: readFileSyncMock,
     writeFileSync: writeFileSyncMock,
     mkdirSync: vi.fn(),
-    unlinkSync: vi.fn(),
+    unlinkSync: unlinkSyncMock,
     rmSync: vi.fn(),
   },
 }));
@@ -73,6 +92,7 @@ vi.mock('../../queue/job-queue', () => {
       pause: ReturnType<typeof vi.fn>;
       resume: ReturnType<typeof vi.fn>;
       getConcurrency: ReturnType<typeof vi.fn>;
+      isPaused: ReturnType<typeof vi.fn>;
       constructor() {
         super();
         this.addJob = vi.fn();
@@ -85,6 +105,7 @@ vi.mock('../../queue/job-queue', () => {
         this.pause = vi.fn();
         this.resume = vi.fn();
         this.getConcurrency = vi.fn();
+        this.isPaused = vi.fn();
         jobQueueInstances.push(this as never);
       }
     },
@@ -141,6 +162,12 @@ describe('registerQueueHandlers', () => {
   it('QUEUE_LIST returns the jobs', async () => {
     jobQueue.getJobs.mockReturnValue([{ id: 'id-1' }]);
     expect(await getHandlers()[IPC.QUEUE_LIST]()).toEqual([{ id: 'id-1' }]);
+  });
+
+  it('QUEUE_GET_STATE returns the paused flag and concurrency', async () => {
+    jobQueue.isPaused.mockReturnValue(true);
+    jobQueue.getConcurrency.mockReturnValue(2);
+    expect(await getHandlers()[IPC.QUEUE_GET_STATE]()).toEqual({ paused: true, concurrency: 2 });
   });
 
   it('QUEUE_CANCEL_ALL delegates to cancelAll', async () => {
@@ -215,12 +242,54 @@ describe('registerQueueHandlers', () => {
         ],
       }),
     );
+    jobQueue.getJobs.mockReturnValue([]);
     jobQueue.addJob.mockReturnValue('imported-1');
     const result = await getHandlers()[IPC.QUEUE_IMPORT]();
     expect(result).toBe(2);
     expect(jobQueue.setConcurrency).toHaveBeenCalledWith(2);
     expect(jobQueue.addJob).toHaveBeenNthCalledWith(1, 'in.mp4', 'out.mp4', { videoCodec: 'libx264' }, 'FFMPEG');
     expect(jobQueue.addJob).toHaveBeenNthCalledWith(2, 'b.png', 'c.png', {}, 'FFMPEG');
+  });
+
+  it('QUEUE_IMPORT skips jobs whose input/output pair is already queued', async () => {
+    dialogMock.showOpenDialog.mockResolvedValue({ canceled: false, filePaths: ['C:/tmp/queue.json'] });
+    readFileSyncMock.mockReturnValue(
+      JSON.stringify({
+        version: 1,
+        concurrency: 2,
+        jobs: [
+          { input: 'in.mp4', output: 'out.mp4', options: { videoCodec: 'libx264' }, transcoder: 'FFMPEG' },
+          { input: 'b.png', output: 'c.png', options: {}, transcoder: 'FFMPEG' },
+          { input: 'fresh.mp4', output: 'fresh_out.mp4', options: {}, transcoder: 'FFMPEG' },
+        ],
+      }),
+    );
+    jobQueue.getJobs.mockReturnValue([
+      { id: 'id-1', input: 'in.mp4', output: 'out.mp4', options: {}, transcoder: 'FFMPEG', status: 'queued' },
+      { id: 'id-2', input: 'x.mkv', output: 'c.png', options: {}, transcoder: 'FFMPEG', status: 'queued' },
+    ]);
+    jobQueue.addJob.mockReturnValue('imported-1');
+    const result = await getHandlers()[IPC.QUEUE_IMPORT]();
+    expect(result).toBe(1);
+    expect(jobQueue.addJob).toHaveBeenCalledTimes(1);
+    expect(jobQueue.addJob).toHaveBeenCalledWith('fresh.mp4', 'fresh_out.mp4', {}, 'FFMPEG');
+  });
+
+  it('QUEUE_IMPORT skips jobs colliding on an existing output path', async () => {
+    dialogMock.showOpenDialog.mockResolvedValue({ canceled: false, filePaths: ['C:/tmp/queue.json'] });
+    readFileSyncMock.mockReturnValue(
+      JSON.stringify({
+        version: 1,
+        concurrency: 1,
+        jobs: [{ input: 'other.mp4', output: 'taken.mp4', options: {}, transcoder: 'FFMPEG' }],
+      }),
+    );
+    jobQueue.getJobs.mockReturnValue([
+      { id: 'id-1', input: 'in.mp4', output: 'taken.mp4', options: {}, transcoder: 'FFMPEG', status: 'queued' },
+    ]);
+    const result = await getHandlers()[IPC.QUEUE_IMPORT]();
+    expect(result).toBe(0);
+    expect(jobQueue.addJob).not.toHaveBeenCalled();
   });
 
   it('QUEUE_IMPORT returns 0 without reading when the dialog is cancelled', async () => {
@@ -260,5 +329,19 @@ describe('registerQueueHandlers', () => {
     expect(send).toHaveBeenCalledWith(IPC.QUEUE_CANCELLED);
     jobQueue.emit('moved', { id: 'id-1', toPosition: 2 });
     expect(send).toHaveBeenCalledWith(IPC.QUEUE_MOVED, { id: 'id-1', toPosition: 2 });
+  });
+
+  it('deletes the persisted queue snapshot when the app quits', () => {
+    const quitHandler = appEventHandlers['will-quit'];
+    expect(quitHandler).toBeTypeOf('function');
+    quitHandler();
+    expect(unlinkSyncMock).toHaveBeenCalledWith(expect.stringMatching(/queue-state\.json$/));
+  });
+
+  it('keeps clearing the persisted queue snapshot after a window re-create', () => {
+    registerQueueHandlers({} as never, send);
+    const quitHandler = appEventHandlers['will-quit'];
+    quitHandler();
+    expect(unlinkSyncMock).toHaveBeenCalledWith(expect.stringMatching(/queue-state\.json$/));
   });
 });

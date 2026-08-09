@@ -5,8 +5,11 @@ import { useQueueStore } from '../../stores/queueStore';
 import { useToastStore } from '../../stores/toastStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import type { QueueJob } from '../../../shared/types';
+import { FILE_FILTERS } from '../../../shared/file-extensions';
+import { BATCH_CONFIG_STORAGE_KEY } from '../../../shared/constants';
 
 const queueListMock = vi.mocked(window.electronAPI.queueList);
+const queueGetStateMock = vi.mocked(window.electronAPI.queueGetState);
 const selectFilesMock = vi.mocked(window.electronAPI.selectFiles);
 const selectDirectoryMock = vi.mocked(window.electronAPI.selectDirectory);
 const queueAddMock = vi.mocked(window.electronAPI.queueAdd);
@@ -43,6 +46,7 @@ function renderPage() {
 describe('BatchQueue', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     useQueueStore.setState({ jobs: [] });
     useToastStore.setState({ toasts: [] });
     useSettingsStore.setState({ queueConcurrency: 1, hardwareAcceleration: true });
@@ -107,7 +111,7 @@ describe('BatchQueue', () => {
         false,
       ),
     );
-    expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'toast.jobAdded')).toBe(true);
+    expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'batchQueue.enqueued')).toBe(true);
   });
 
   it('adds multiple files and maps each output path', async () => {
@@ -132,7 +136,7 @@ describe('BatchQueue', () => {
     await waitFor(() =>
       expect(queueAddMock).toHaveBeenCalledWith(
         '/in/video.mp4',
-        '/in/video_converted.mp4',
+        '/in/video_converted.m4a',
         {
           videoCodec: undefined,
           audioCodec: 'aac',
@@ -259,15 +263,26 @@ describe('BatchQueue', () => {
     expect(queueRemoveMock).toHaveBeenCalledWith('job-9');
   });
 
-  it('cancels all jobs and clears the list', async () => {
+  it('cancels all jobs after confirmation and clears the list', async () => {
     queueListMock.mockResolvedValue([job()]);
     queueCancelAllMock.mockResolvedValue(undefined);
     renderPage();
     await screen.findByText(/video\.mp4/);
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.cancelAll' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'batchQueue.confirmCancelAll' }));
     await waitFor(() => expect(queueCancelAllMock).toHaveBeenCalledOnce());
     expect(useQueueStore.getState().jobs).toHaveLength(0);
     expect(useToastStore.getState().toasts.some((t) => t.type === 'info' && t.message === 'toast.allCancelled')).toBe(true);
+  });
+
+  it('does not cancel anything when the cancel-all dialog is dismissed', async () => {
+    queueListMock.mockResolvedValue([job()]);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.cancelAll' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'batchQueue.dialogCancel' }));
+    expect(queueCancelAllMock).not.toHaveBeenCalled();
+    expect(useQueueStore.getState().jobs).toHaveLength(1);
   });
 
   it('clears done and errored jobs but keeps queued jobs', async () => {
@@ -361,6 +376,32 @@ describe('BatchQueue', () => {
     );
   });
 
+  it('raises a native OS notification when the batch finishes', async () => {
+    const notificationCtor = vi.fn();
+    class FakeNotification {
+      static permission = 'granted';
+      static requestPermission = vi.fn();
+      constructor(title: string, options?: { body?: string }) {
+        notificationCtor(title, options);
+      }
+    }
+    vi.stubGlobal('Notification', FakeNotification);
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'running' })]);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    const onStatusChange = onQueueStatusChangeMock.mock.calls[0][0];
+    act(() => {
+      onStatusChange(job({ id: 'job-1', status: 'running' }));
+    });
+    act(() => {
+      onStatusChange(job({ id: 'job-1', status: 'done' }));
+    });
+    expect(notificationCtor).toHaveBeenCalledWith('batchQueue.notificationTitle', {
+      body: 'Batch finished: 1 succeeded, 0 failed',
+    });
+    vi.unstubAllGlobals();
+  });
+
   it('filters jobs by status chip', async () => {
     queueListMock.mockResolvedValue([
       job({ id: 'job-1', status: 'queued' }),
@@ -411,7 +452,7 @@ describe('BatchQueue', () => {
   });
 
   it('skips duplicate files already in the queue', async () => {
-    queueListMock.mockResolvedValue([job({ id: 'job-1' })]);
+    queueListMock.mockResolvedValue([job({ id: 'job-1', output: '/in/video_converted.mp4' })]);
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
     queueAddMock.mockResolvedValue('job-9');
     renderPage();
@@ -649,5 +690,129 @@ describe('BatchQueue', () => {
     renderPage();
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.importQueue' }));
     await waitFor(() => expect(useToastStore.getState().toasts.some((toast) => toast.type === 'error')).toBe(true));
+  });
+
+  it('skips non-media files with a warning toast', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/video.mp4', '/in/notes.txt']);
+    queueAddMock.mockResolvedValue('job-9');
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() => expect(queueAddMock).toHaveBeenCalledTimes(1));
+    expect(
+      useToastStore.getState().toasts.some((toast) => toast.type === 'warning' && toast.message === 'batchQueue.skippedDuplicates'),
+    ).toBe(true);
+  });
+
+  it('allows re-adding the same input when the computed output differs from an existing job', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', output: '/out/video_converted.mp4' })]);
+    selectFilesMock.mockResolvedValue(['/in/video.mp4']);
+    queueAddMock.mockResolvedValue('job-2');
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() =>
+      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_converted.mp4', expect.any(Object), 'FFMPEG', false),
+    );
+  });
+
+  it('skips selections whose output path would overwrite an already-claimed output', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectDirectoryMock.mockResolvedValue('/out');
+    selectFilesMock.mockResolvedValue(['/a/video.mp4', '/b/video.mp4']);
+    queueAddMock.mockResolvedValue('job-9');
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.browse' }));
+    await waitFor(() => expect(selectDirectoryMock).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() => expect(queueAddMock).toHaveBeenCalledTimes(1));
+    expect(queueAddMock).toHaveBeenCalledWith('/a/video.mp4', '/out/video_converted.mp4', expect.any(Object), 'FFMPEG', false);
+    expect(
+      useToastStore.getState().toasts.some((toast) => toast.type === 'warning' && toast.message === 'batchQueue.skippedDuplicates'),
+    ).toBe(true);
+  });
+
+  it('shows a single success toast and per-file error toasts when some enqueues fail', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/one.mp4', '/in/two.mp4', '/in/three.mp4']);
+    queueAddMock.mockResolvedValueOnce('job-1').mockResolvedValueOnce('job-2').mockRejectedValueOnce(new Error('boom'));
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() => expect(queueAddMock).toHaveBeenCalledTimes(3));
+    const toasts = useToastStore.getState().toasts;
+    expect(toasts.some((t) => t.type === 'success' && t.message === 'batchQueue.enqueued')).toBe(true);
+    expect(toasts.some((t) => t.type === 'error')).toBe(true);
+  });
+
+  it('shows an error toast when retrying a failed job fails', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'error', error: 'boom' })]);
+    queueAddMock.mockRejectedValue(new Error('retry failed'));
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.retry' }));
+    await waitFor(() =>
+      expect(useToastStore.getState().toasts.some((toast) => toast.type === 'error' && toast.message === 'retry failed')).toBe(true),
+    );
+  });
+
+  it('shows a no-results message when the active filter matches nothing', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'done' })]);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByText('Failed (0)'));
+    expect(screen.getByText('batchQueue.noResults')).toBeInTheDocument();
+  });
+
+  it('skips dotfiles that carry no supported extension', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/.env']);
+    queueAddMock.mockResolvedValue('job-9');
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() => expect(queueAddMock).not.toHaveBeenCalled());
+    expect(useToastStore.getState().toasts.some((toast) => toast.type === 'warning')).toBe(true);
+  });
+
+  it('reflects an already-paused queue reported by the main process on mount', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'running' })]);
+    queueGetStateMock.mockResolvedValue({ paused: true, concurrency: 1 });
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    expect(await screen.findByRole('button', { name: 'batchQueue.resume' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'batchQueue.pause' })).not.toBeInTheDocument();
+  });
+
+  it('restricts the file picker to supported media files', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue([]);
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    await waitFor(() => expect(selectFilesMock).toHaveBeenCalledWith([FILE_FILTERS.MEDIA_FILES]));
+  });
+
+  it('restores the last-used encoding configuration from storage on mount', async () => {
+    localStorage.setItem(
+      BATCH_CONFIG_STORAGE_KEY,
+      JSON.stringify({
+        operation: 'compress_image',
+        videoCodec: 'libx264',
+        audioCodec: 'aac',
+        container: 'webp',
+        videoBitrate: '2000k',
+        audioBitrate: '192k',
+        quality: '15',
+        scale: '1280x720',
+        pixelFormat: 'yuv420p',
+      }),
+    );
+    queueListMock.mockResolvedValue([]);
+    renderPage();
+    expect(screen.getByText('batchQueue.operationCompressImage')).toBeInTheDocument();
+    expect(screen.getByText('WebP')).toBeInTheDocument();
   });
 });

@@ -27,6 +27,12 @@
     "descCut": "Trim and cut video with a frame-accurate player",
     "descBatch": "Convert many files at once with a smart queue"
   },
+  "closeConfirm": {
+    "title": "Close EncodeX?",
+    "message": "There are jobs in progress or unsaved changes. Closing now will cancel them.",
+    "confirmLabel": "Close Anyway",
+    "cancelLabel": "Cancel"
+  },
   "convert": {
     "title": "Convert Media",
     "inputFile": "Input File",
@@ -272,6 +278,12 @@
     "addFiles": "Add Files",
     "cancelAll": "Cancel All",
     "empty": "Queue is empty. Add files to begin batch processing.",
+    "cancelAllTitle": "Cancel All Jobs",
+    "cancelAllMessage": "This will cancel all queued and running jobs. Are you sure?",
+    "confirmCancelAll": "Yes, Cancel All",
+    "dialogCancel": "Cancel",
+    "enqueued": "Added {{count}} file(s) to the queue",
+    "noResults": "No jobs match the current filter or search",
     "remove": "Remove",
     "retry": "Retry",
     "revealInFolder": "Reveal in folder",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} queued, {{running}} running, {{done}} done, {{failed}} failed",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Batch finished: {{done}} succeeded, {{failed}} failed",
+    "notificationTitle": "EncodeX batch finished",
     "filters": {
       "all": "All",
       "queued": "Queued",
@@ -293,6 +306,7 @@
     "concurrency": "Parallel jobs",
     "pause": "Pause",
     "resume": "Resume",
+    "paused": "Paused",
     "dragHandle": "Drag to reorder",
     "badgeCount": "{{count}} jobs in the batch queue",
     "operationTranscode": "Transcode",
@@ -395,6 +409,8 @@
     "theme": "Theme",
     "alwaysOnTop": "Always on top",
     "alwaysOnTopHint": "Keeps the app window above all other windows.",
+    "launchAtLogin": "Launch at startup",
+    "launchAtLoginHint": "Starts EncodeX automatically when you sign in to your computer.",
     "hardwareAcceleration": "Hardware Acceleration",
     "hwaccelMode": "Acceleration Mode",
     "hwaccelModeAuto": "Automatic (decode + encode)",

@@ -27,6 +27,12 @@
     "descCut": "I-trim at i-cut ang video gamit ang frame-accurate na player",
     "descBatch": "I-convert ang maraming file nang sabay-sabay gamit ang smart queue"
   },
+  "closeConfirm": {
+    "title": "Isara ang EncodeX?",
+    "message": "May mga trabahong kasalukuyang ginagawa o mga pagbabagong hindi pa nai-save. Makukansela ang mga ito kung isasara ngayon.",
+    "confirmLabel": "Isara pa rin",
+    "cancelLabel": "Kanselahin"
+  },
   "convert": {
     "title": "I-convert ang Media",
     "inputFile": "Input File",
@@ -272,6 +278,12 @@
     "addFiles": "Magdagdag ng mga File",
     "cancelAll": "Kanselahin Lahat",
     "empty": "Walang laman ang queue. Magdagdag ng mga file para simulan ang batch processing.",
+    "cancelAllTitle": "Kanselahin ang lahat ng trabaho",
+    "cancelAllMessage": "Ikakansela nito ang lahat ng naka-pila at tumatakbong trabaho. Sigurado ka ba?",
+    "confirmCancelAll": "Oo, kanselahin ang lahat",
+    "dialogCancel": "Kanselahin",
+    "enqueued": "{{count}} file ang idinagdag sa queue",
+    "noResults": "Walang trabahong tumutugma sa kasalukuyang filter o paghahanap",
     "remove": "Alisin",
     "retry": "Subukan Muli",
     "revealInFolder": "Ipakita sa folder",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} naka-queue, {{running}} tumatakbo, {{done}} tapos, {{failed}} nabigo",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Natapos ang batch: {{done}} nagtagumpay, {{failed}} nabigo",
+    "notificationTitle": "Natapos ang batch ng EncodeX",
     "filters": {
       "all": "Lahat",
       "queued": "Naka-queue",
@@ -293,6 +306,7 @@
     "concurrency": "Mga parallel job",
     "pause": "I-pause",
     "resume": "Ipagpatuloy",
+    "paused": "Naka-pause",
     "dragHandle": "I-drag para i-reorder",
     "badgeCount": "{{count}} job sa batch queue",
     "operationTranscode": "Transcode",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "Palaging nasa itaas",
     "alwaysOnTopHint": "Pinapanatili ang app window sa itaas ng lahat ng iba pang window.",
+    "launchAtLogin": "Ilunsad sa pagsisimula",
+    "launchAtLoginHint": "Awtomatikong sisimulan ang EncodeX kapag nag-sign in ka sa iyong computer.",
     "hardwareAcceleration": "Hardware Acceleration",
     "hwaccelMode": "Mode ng Acceleration",
     "hwaccelModeAuto": "Automatic (decode + encode)",

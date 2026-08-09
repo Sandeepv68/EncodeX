@@ -27,6 +27,12 @@
     "descCut": "Trim og klipp video med en rammenøyaktig spiller",
     "descBatch": "Konverter mange filer samtidig med en smart kø"
   },
+  "closeConfirm": {
+    "title": "Lukke EncodeX?",
+    "message": "Det er jobber som kjører eller ulagrede endringer. Lukking nå vil avbryte dem.",
+    "confirmLabel": "Lukk likevel",
+    "cancelLabel": "Avbryt"
+  },
   "convert": {
     "title": "Konverter media",
     "inputFile": "Inndatafil",
@@ -272,6 +278,12 @@
     "addFiles": "Legg til filer",
     "cancelAll": "Avbryt alle",
     "empty": "Køen er tom. Legg til filer for å starte batchbehandling.",
+    "cancelAllTitle": "Avbryt alle jobber",
+    "cancelAllMessage": "Dette vil avbryte alle jobber i køen og jobber som kjører. Er du sikker?",
+    "confirmCancelAll": "Ja, avbryt alle",
+    "dialogCancel": "Avbryt",
+    "enqueued": "La til {{count}} fil(er) i køen",
+    "noResults": "Ingen jobber samsvarer med gjeldende filter eller søk",
     "remove": "Fjern",
     "retry": "Prøv igjen",
     "revealInFolder": "Vis i mappe",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} i kø, {{running}} kjører, {{done}} ferdige, {{failed}} mislyktes",
     "etaEstimate": "Gjenstår ~{{eta}}",
     "finished": "Batch fullført: {{done}} vellykket, {{failed}} mislyktes",
+    "notificationTitle": "EncodeX-batch fullført",
     "filters": {
       "all": "Alle",
       "queued": "I kø",
@@ -293,6 +306,7 @@
     "concurrency": "Parallelle jobber",
     "pause": "Pause",
     "resume": "Fortsett",
+    "paused": "Pauset",
     "dragHandle": "Dra for å endre rekkefølge",
     "badgeCount": "{{count}} jobber i batchkøen",
     "operationTranscode": "Transkoder",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "Alltid på topp",
     "alwaysOnTopHint": "Holder appvinduet over alle andre vinduer.",
+    "launchAtLogin": "Start ved oppstart",
+    "launchAtLoginHint": "Starter EncodeX automatisk når du logger på datamaskinen din.",
     "hardwareAcceleration": "Maskinvareakselerasjon",
     "hwaccelMode": "Akselerasjonsmodus",
     "hwaccelModeAuto": "Automatisk (dekoding + koding)",

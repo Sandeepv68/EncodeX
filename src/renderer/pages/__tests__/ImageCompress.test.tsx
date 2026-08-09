@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import ImageCompress from '../ImageCompress';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
+import { useTaskStore } from '../../stores/taskStore';
 import type { ConversionProgress } from '../../../shared/types';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
@@ -24,6 +25,7 @@ describe('ImageCompress', () => {
     getImageFileInfoMock.mockReset();
     useErrorStore.setState({ currentError: null, errorHistory: [] });
     useToastStore.setState({ toasts: [] });
+    useTaskStore.setState({ isConverting: false, hasPendingWork: false });
   });
 
   it('renders the title, fields, and compress button', () => {
@@ -103,6 +105,33 @@ describe('ImageCompress', () => {
     fireEvent.click(screen.getByText('imageCompress.dropLabel'));
     await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
     expect(screen.getByText('photo.png')).toBeInTheDocument();
+  });
+
+  it('publishes pending work to the task store when an image is selected', async () => {
+    selectFileMock.mockResolvedValue('/in/photo.png');
+    renderPage();
+    expect(useTaskStore.getState().hasPendingWork).toBe(false);
+    fireEvent.click(screen.getByText('imageCompress.dropLabel'));
+    await waitFor(() => expect(useTaskStore.getState().hasPendingWork).toBe(true));
+  });
+
+  it('clears pending work when the selection is removed', async () => {
+    selectFileMock.mockResolvedValue('/in/photo.png');
+    getImagePreviewMock.mockResolvedValue('data:image/png;base64,AQID');
+    renderPage();
+    fireEvent.click(screen.getByText('imageCompress.dropLabel'));
+    await waitFor(() => expect(useTaskStore.getState().hasPendingWork).toBe(true));
+    fireEvent.click(screen.getByTestId('remove-image'));
+    expect(useTaskStore.getState().hasPendingWork).toBe(false);
+  });
+
+  it('clears pending work when the page unmounts', async () => {
+    selectFileMock.mockResolvedValue('/in/photo.png');
+    const { unmount } = renderPage();
+    fireEvent.click(screen.getByText('imageCompress.dropLabel'));
+    await waitFor(() => expect(useTaskStore.getState().hasPendingWork).toBe(true));
+    unmount();
+    expect(useTaskStore.getState().hasPendingWork).toBe(false);
   });
 
   it('shows an image preview with the file name when an image is selected', async () => {

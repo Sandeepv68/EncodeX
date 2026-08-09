@@ -27,6 +27,12 @@
     "descCut": "Video nakassat frame-nut naliginissaanut naapertuuttumik",
     "descBatch": "Assersuutit arlallit ataatsimut allanngortit"
   },
+  "closeConfirm": {
+    "title": "EncodeX qummassava?",
+    "message": "Suliat ingerlanneqarput imaluunniit allannguutit toqutsakkat. Matuigaanni unitsippaat.",
+    "confirmLabel": "Qummassaaq",
+    "cancelLabel": "Naamik"
+  },
   "convert": {
     "title": "Media allanngortit",
     "inputFile": "Iserneqassaaq",
@@ -272,6 +278,12 @@
     "addFiles": "Filiussat ilannguk",
     "cancelAll": "Tamaasa piumasuunngikkit",
     "empty": "Ilerleq ilaanaqanngilaq. Filiussat ilannguk, aallartitsissut.",
+    "cancelAllTitle": "Suliat tamaat piumasuunngikkit",
+    "cancelAllMessage": "Una ikiartortarfiit aammalu ingerlanerit tamaat piumasuussavaa. Nalunngilaa?",
+    "confirmCancelAll": "Aap, tamaat piumasuunngikkit",
+    "dialogCancel": "Piumasuunngikkit",
+    "enqueued": "Filiussat {{count}} ikerlamut ilanngunneqarput",
+    "noResults": "Suliaq aallaavigisat sakkortuusaannut naleqqiuttutunngilaq",
     "remove": "Piiaruk",
     "retry": "Tusaajak",
     "revealInFolder": "Folder-mi takuuk",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} ikiuttat, {{running}} inissisimanitut, {{done}} naammassineqartoq, {{failed}} kinguneqanngitsut",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Batch naammassineqarpoq: {{done}} naammassineqartoq, {{failed}} kinguneqanngitsut",
+    "notificationTitle": "EncodeX batch naammassineqarpoq",
     "filters": {
       "all": "Tamarmik",
       "queued": "Ikiuttat",
@@ -293,6 +306,7 @@
     "concurrency": "Concurrency",
     "pause": "Unartak",
     "resume": "Saqqummersaruk",
+    "paused": "Unartoq",
     "dragHandle": "Drag-immik allanngortit",
     "badgeCount": "{{count}} suliassat ikiuttut",
     "operationTranscode": "Transcode",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "Always on top",
     "alwaysOnTopHint": "App window-ip allat qaammaanni atugassaa.",
+    "launchAtLogin": "Aallartiffimmi aallartikkit",
+    "launchAtLoginHint": "EncodeX-imik nammineq aallartippaa, komputerimut iseriaruit.",
     "hardwareAcceleration": "Hardware acceleration",
     "hwaccelMode": "Acceleration mode",
     "hwaccelModeAuto": "Automatisk (decoder + encoder)",

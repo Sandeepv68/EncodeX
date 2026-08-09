@@ -114,6 +114,7 @@ describe('preload', () => {
     ['onPlayerError', IPC.PLAYER_ERROR, 'decoder crashed'],
     ['onLogMessage', IPC.LOG_MESSAGE, { timestamp: 't', level: 'INFO', text: 'hello', source: 'main' }],
     ['onWindowMaximizedChange', IPC.WINDOW_MAXIMIZED_CHANGED, true],
+    ['onWindowCloseRequested', IPC.WINDOW_CLOSE_REQUESTED, undefined],
   ])('%s subscribes and unsubscribes on the %s channel', (method, channel, payload) => {
     const cb = vi.fn();
     const unsubscribe = (api[method] as (cb: (data: unknown) => void) => () => void)(cb);
@@ -133,8 +134,17 @@ describe('preload', () => {
     ['windowMinimize', IPC.WINDOW_MINIMIZE],
     ['windowMaximizeToggle', IPC.WINDOW_MAXIMIZE_TOGGLE],
     ['windowClose', IPC.WINDOW_CLOSE],
+    ['windowCloseConfirmed', IPC.WINDOW_CONFIRM_CLOSE],
   ])('%s sends the %s channel', (method, channel) => {
     (api[method] as () => void)();
     expect(ipcRendererMock.send).toHaveBeenCalledWith(channel);
+  });
+
+  it.each([
+    ['windowSetAlwaysOnTop', IPC.WINDOW_SET_ALWAYS_ON_TOP, true],
+    ['setLaunchAtLogin', IPC.SET_LAUNCH_AT_LOGIN, true],
+  ])('%s sends the %s channel with the flag', (method, channel, flag) => {
+    (api[method] as (flag: boolean) => void)(flag);
+    expect(ipcRendererMock.send).toHaveBeenCalledWith(channel, flag);
   });
 });

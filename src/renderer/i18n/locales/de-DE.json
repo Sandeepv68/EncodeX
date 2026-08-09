@@ -27,6 +27,12 @@
     "descCut": "Video mit frame-genauem Player zuschneiden und kürzen",
     "descBatch": "Viele Dateien auf einmal mit einer intelligenten Warteschlange konvertieren"
   },
+  "closeConfirm": {
+    "title": "EncodeX schließen?",
+    "message": "Es laufen Aufträge oder es gibt ungespeicherte Änderungen. Beim Schließen werden sie abgebrochen.",
+    "confirmLabel": "Trotzdem schließen",
+    "cancelLabel": "Abbrechen"
+  },
   "convert": {
     "title": "Medien konvertieren",
     "inputFile": "Eingabedatei",
@@ -272,6 +278,12 @@
     "addFiles": "Dateien hinzufügen",
     "cancelAll": "Alle abbrechen",
     "empty": "Warteschlange ist leer. Fügen Sie Dateien hinzu, um die Stapelverarbeitung zu starten.",
+    "cancelAllTitle": "Alle Aufgaben abbrechen",
+    "cancelAllMessage": "Dadurch werden alle Aufgaben in der Warteschlange und alle laufenden Aufgaben abgebrochen. Sind Sie sicher?",
+    "confirmCancelAll": "Ja, alle abbrechen",
+    "dialogCancel": "Abbrechen",
+    "enqueued": "{{count}} Datei(en) zur Warteschlange hinzugefügt",
+    "noResults": "Keine Aufgaben entsprechen dem aktuellen Filter oder der Suche",
     "remove": "Entfernen",
     "retry": "Erneut versuchen",
     "revealInFolder": "Im Ordner anzeigen",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} in Warteschlange, {{running}} laufen, {{done}} fertig, {{failed}} fehlgeschlagen",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Stapel abgeschlossen: {{done}} erfolgreich, {{failed}} fehlgeschlagen",
+    "notificationTitle": "EncodeX-Stapel abgeschlossen",
     "filters": {
       "all": "Alle",
       "queued": "In Warteschlange",
@@ -293,6 +306,7 @@
     "concurrency": "Parallele Aufgaben",
     "pause": "Pausieren",
     "resume": "Fortsetzen",
+    "paused": "Pausiert",
     "dragHandle": "Zum Neuanordnen ziehen",
     "badgeCount": "{{count}} Aufträge in der Stapelwarteschlange",
     "operationTranscode": "Transkodieren",
@@ -395,6 +409,8 @@
     "theme": "Design",
     "alwaysOnTop": "Immer im Vordergrund",
     "alwaysOnTopHint": "Hält das App-Fenster über allen anderen Fenstern.",
+    "launchAtLogin": "Beim Start ausführen",
+    "launchAtLoginHint": "Startet EncodeX automatisch, wenn Sie sich an Ihrem Computer anmelden.",
     "hardwareAcceleration": "Hardwarebeschleunigung",
     "hwaccelMode": "Beschleunigungsmodus",
     "hwaccelModeAuto": "Automatisch (Decodieren + Encodieren)",

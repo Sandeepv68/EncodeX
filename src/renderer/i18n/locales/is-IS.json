@@ -27,6 +27,12 @@
     "descCut": "Klippa myndbönd með ramma-nákvæmni",
     "descBatch": "Umbreyta mörgum skrám samtímis með snjallri braut"
   },
+  "closeConfirm": {
+    "title": "Loka EncodeX?",
+    "message": "Verk í gangi eða óvistaðar breytingar. Að loka nú mun aflýsa þeim.",
+    "confirmLabel": "Loka samt",
+    "cancelLabel": "Hætta við"
+  },
   "convert": {
     "title": "Umbreyta miðli",
     "inputFile": "Inntaksskrá",
@@ -272,6 +278,12 @@
     "addFiles": "Bæta við skrám",
     "cancelAll": "Hætta við allt",
     "empty": "Brautin er tóm. Bættu við skrám til að hefja runuvinnslu.",
+    "cancelAllTitle": "Hætta við öllum verkum",
+    "cancelAllMessage": "Þetta mun hætta við öll verkefni í biðröð og þau sem eru í gangi. Ertu viss?",
+    "confirmCancelAll": "Já, hætta við allt",
+    "dialogCancel": "Hætta við",
+    "enqueued": "{{count}} skrá(r) bætt við biðröð",
+    "noResults": "Engin verkefni passa við núverandi síu eða leit",
     "remove": "Fjarlægja",
     "retry": "Reyna aftur",
     "revealInFolder": "Sýna í möppu",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} í bið, {{running}} í vinnslu, {{done}} lokið, {{failed}} mistókst",
     "etaEstimate": "ETA ~{{eta}}",
     "finished": "Runu lokið: {{done}} tókst, {{failed}} mistókst",
+    "notificationTitle": "EncodeX runu lokið",
     "filters": {
       "all": "Allt",
       "queued": "Í bið",
@@ -293,6 +306,7 @@
     "concurrency": "Samhliða verk",
     "pause": "Gera hlé",
     "resume": "Halda áfram",
+    "paused": "Í bið",
     "dragHandle": "Dragðu til að endurraða",
     "badgeCount": "{{count}} verk í runubraut",
     "operationTranscode": "Umkóða",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "Alltaf ofan á",
     "alwaysOnTopHint": "Heldur app-glugganum fyrir ofan alla aðra glugga.",
+    "launchAtLogin": "Ræsa við innskráningu",
+    "launchAtLoginHint": "Ræsir EncodeX sjálfkrafa þegar þú skráir þig inn á tölvuna þína.",
     "hardwareAcceleration": "Vélbúnaðarhröðun",
     "hwaccelMode": "Hröðunarstilling",
     "hwaccelModeAuto": "Sjálfvirkt (afkóðari + kóðari)",

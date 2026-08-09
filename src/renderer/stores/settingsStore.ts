@@ -2,7 +2,8 @@
  * @fileoverview Zustand store for user application settings.
  * Manages the active transcoder backend, hardware acceleration preferences
  * (persisted to localStorage under 'encodex-hwaccel'), the always-on-top
- * window flag (persisted under 'encodex-always-on-top'), and the batch queue
+ * window flag (persisted under 'encodex-always-on-top'), the launch-at-login
+ * preference (persisted under 'encodex-launch-at-login'), and the batch queue
  * concurrency (persisted under 'encodex-queue-concurrency').
  *
  * State held:
@@ -10,6 +11,7 @@
  *  - hardwareAcceleration / hwaccelMode / encoderType: hardware acceleration
  *    preferences, initialized from the persisted snapshot
  *  - alwaysOnTop: whether the window stays on top of other windows
+ *  - launchAtLogin: whether the app launches at OS startup
  *  - queueConcurrency: batch jobs run in parallel (1-4)
  *
  * Behavior notes:
@@ -18,6 +20,8 @@
  *    fall back to the defaults from HWACCEL_DEFAULTS / ENCODER_TYPE_DEFAULT.
  *  - setAlwaysOnTop persists the flag, forwards it to the main process via
  *    window.electronAPI.windowSetAlwaysOnTop, and then updates state.
+ *  - setLaunchAtLogin persists the flag, forwards it to the main process via
+ *    window.electronAPI.setLaunchAtLogin, and then updates state.
  *  - setQueueConcurrency persists the value, forwards it to the main process
  *    via window.electronAPI.queueSetConcurrency, and then updates state.
  *
@@ -35,20 +39,24 @@ import type { HwAccelStored, SettingsState } from './types';
 import {
   WINDOW_ALWAYS_ON_TOP_STORAGE_KEY,
   QUEUE_CONCURRENCY_STORAGE_KEY,
+  LAUNCH_AT_LOGIN_STORAGE_KEY,
   DEFAULT_QUEUE_CONCURRENCY,
   MAX_QUEUE_CONCURRENCY,
 } from '../../shared/constants';
 import {
   LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING,
   LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS,
+  LOG_FAILED_TO_PERSIST_LAUNCH_AT_LOGIN_SETTING,
   LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY,
   LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING,
   LOG_FAILED_TO_READ_STORED_HARDWARE_ACCELERATION_SETTINGS,
+  LOG_FAILED_TO_READ_STORED_LAUNCH_AT_LOGIN_SETTING,
   LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY,
   LOG_SET_ALWAYS_ON_TOP,
   LOG_SET_ENCODER_TYPE,
   LOG_SET_HARDWARE_ACCELERATION,
   LOG_SET_HWACCEL_MODE,
+  LOG_SET_LAUNCH_AT_LOGIN,
   LOG_SET_QUEUE_CONCURRENCY,
   LOG_SET_TRANSCODER,
 } from '../../shared/log-constants';
@@ -133,6 +141,35 @@ function persistAlwaysOnTop(flag: boolean): void {
     localStorage.setItem(WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, String(flag));
   } catch (err) {
     log.warn(LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING, err);
+  }
+}
+
+/**
+ * Reads the persisted launch-at-login flag from localStorage
+ * ('encodex-launch-at-login'); a stored value of 'true' means enabled. Storage
+ * failures are logged and treated as false.
+ * @returns {boolean} True when the app should launch at OS startup.
+ */
+function readStoredLaunchAtLogin(): boolean {
+  try {
+    return localStorage.getItem(LAUNCH_AT_LOGIN_STORAGE_KEY) === 'true';
+  } catch (err) {
+    log.warn(LOG_FAILED_TO_READ_STORED_LAUNCH_AT_LOGIN_SETTING, err);
+    return false;
+  }
+}
+
+/**
+ * Persists the launch-at-login flag to localStorage
+ * ('encodex-launch-at-login'). Failures are logged and swallowed.
+ * @param {boolean} enabled - The flag value to persist.
+ * @returns {void}
+ */
+function persistLaunchAtLogin(enabled: boolean): void {
+  try {
+    localStorage.setItem(LAUNCH_AT_LOGIN_STORAGE_KEY, String(enabled));
+  } catch (err) {
+    log.warn(LOG_FAILED_TO_PERSIST_LAUNCH_AT_LOGIN_SETTING, err);
   }
 }
 
@@ -242,6 +279,20 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     persistAlwaysOnTop(flag);
     window.electronAPI?.windowSetAlwaysOnTop(flag);
     set({ alwaysOnTop: flag });
+  },
+  launchAtLogin: readStoredLaunchAtLogin(),
+  /**
+   * Sets whether the app launches at OS startup. Persists the flag to
+   * localStorage and forwards it to the main process via
+   * window.electronAPI.setLaunchAtLogin, which adds or removes the app from the
+   * OS login items.
+   * @param {boolean} enabled - True to launch the app at startup.
+   */
+  setLaunchAtLogin: (enabled) => {
+    log.debug(LOG_SET_LAUNCH_AT_LOGIN, enabled);
+    persistLaunchAtLogin(enabled);
+    window.electronAPI?.setLaunchAtLogin(enabled);
+    set({ launchAtLogin: enabled });
   },
   queueConcurrency: readStoredQueueConcurrency(),
   /**

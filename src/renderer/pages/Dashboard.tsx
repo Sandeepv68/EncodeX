@@ -19,7 +19,15 @@ import { Box, Grid, Typography } from '@mui/material';
 import { Logger } from '../../shared/logger';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import { pageIcons } from '../pageIcons';
-import appIcon from '../../../assets/icons/Assets.xcassets/AppIcon.appiconset/100.png';
+import appIcon from '../../../assets/icons/Assets.xcassets/AppIcon.appiconset/1024.png';
+// import appIcon from '../../../assets/easter_eggs/encodex_logo_diwali.png';
+// import appIcon from '../../../assets/easter_eggs/encodex_logo_christmas.png';
+// import appIcon from '../../../assets/easter_eggs/encodex_logo_easter.png';
+// import appIcon from '../../../assets/easter_eggs/encodex_logo_holi.png';
+// import appIcon from '../../../assets/easter_eggs/encodex_logo_halloween.png';
+// import appIcon from '../../../assets/easter_eggs/encodex_logo_july4th.png';
+// import appIcon from '../../../assets/easter_eggs/encodex_logo_new_year.png';
+
 import {
   WelcomeTitle,
   WelcomeIcon,

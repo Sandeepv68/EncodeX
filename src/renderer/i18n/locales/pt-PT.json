@@ -27,6 +27,12 @@
     "descCut": "Aparar e cortar vídeo com um leitor preciso ao frame",
     "descBatch": "Converta vários ficheiros de uma vez com uma fila inteligente"
   },
+  "closeConfirm": {
+    "title": "Fechar o EncodeX?",
+    "message": "Há tarefas em andamento ou alterações não salvas. Fechar agora vai cancelá-las.",
+    "confirmLabel": "Fechar mesmo assim",
+    "cancelLabel": "Cancelar"
+  },
   "convert": {
     "title": "Converter Mídia",
     "inputFile": "Ficheiro de Entrada",
@@ -272,6 +278,12 @@
     "addFiles": "Adicionar Ficheiros",
     "cancelAll": "Cancelar Tudo",
     "empty": "A fila está vazia. Adicione ficheiros para iniciar o processamento em lote.",
+    "cancelAllTitle": "Cancelar todos os trabalhos",
+    "cancelAllMessage": "Isto cancelará todos os trabalhos na fila e os trabalhos em execução. Tem a certeza?",
+    "confirmCancelAll": "Sim, cancelar todos",
+    "dialogCancel": "Cancelar",
+    "enqueued": "{{count}} ficheiro(s) adicionado(s) à fila",
+    "noResults": "Nenhum trabalho corresponde ao filtro ou à pesquisa atual",
     "remove": "Remover",
     "retry": "Tentar Novamente",
     "revealInFolder": "Revelar na pasta",
@@ -279,6 +291,7 @@
     "stats": "{{queued}} em fila, {{running}} em execução, {{done}} concluídos, {{failed}} com falha",
     "etaEstimate": "PTA ~{{eta}}",
     "finished": "Lote concluído: {{done}} com sucesso, {{failed}} com falha",
+    "notificationTitle": "Lote EncodeX concluído",
     "filters": {
       "all": "Todos",
       "queued": "Em fila",
@@ -293,6 +306,7 @@
     "concurrency": "Tarefas em paralelo",
     "pause": "Pausa",
     "resume": "Retomar",
+    "paused": "Em pausa",
     "dragHandle": "Arraste para reordenar",
     "badgeCount": "{{count}} tarefas na fila em lote",
     "operationTranscode": "Transcodificar",
@@ -405,6 +419,8 @@
     },
     "alwaysOnTop": "Sempre no topo",
     "alwaysOnTopHint": "Mantém a janela da aplicação acima de todas as outras janelas.",
+    "launchAtLogin": "Iniciar no arranque",
+    "launchAtLoginHint": "Inicia o EncodeX automaticamente quando inicia sessão no seu computador.",
     "hardwareAcceleration": "Aceleração de Hardware",
     "hwaccelMode": "Modo de Aceleração",
     "hwaccelModeAuto": "Automático (descodificar + codificar)",

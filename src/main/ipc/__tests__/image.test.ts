@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import * as os from 'os';
 import { IPC } from '../../../shared/ipc-channels';
 
 const { ipcMainMock, getHandlers, getImageInfoMock, getImagePreviewMock, getImageFileInfoMock } = vi.hoisted(() => {
@@ -16,7 +17,11 @@ const { ipcMainMock, getHandlers, getImageInfoMock, getImagePreviewMock, getImag
   };
 });
 
-vi.mock('electron', () => ({ ipcMain: ipcMainMock, BrowserWindow: class {} }));
+vi.mock('electron', () => ({
+  ipcMain: ipcMainMock,
+  BrowserWindow: class {},
+  app: { getPath: () => os.tmpdir() },
+}));
 vi.mock('../../image-info', () => ({ getImageInfo: getImageInfoMock }));
 vi.mock('../../image-preview', () => ({ getImagePreview: getImagePreviewMock }));
 vi.mock('../../image-file-info', () => ({ getImageFileInfo: getImageFileInfoMock }));
