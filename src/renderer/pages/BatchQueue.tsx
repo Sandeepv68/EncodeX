@@ -64,6 +64,42 @@ function basename(path: string): string {
 }
 
 /**
+ * Shows a native OS notification (via the HTML5 Notification API, which
+ * Electron's renderer surfaces as a real system notification). Permission is
+ * requested once when the browser has not yet decided; failures and
+ * unavailable notification support are swallowed so they can never break the
+ * UI. The OS notification complements the in-app batch-finished toast.
+ * @param {string} title - The notification title.
+ * @param {string} body - The notification body text.
+ * @returns {void}
+ */
+function showNativeCompletionNotification(title: string, body: string): void {
+  try {
+    if (typeof Notification === 'undefined') return;
+    const show = () => {
+      try {
+        new Notification(title, { body });
+      } catch {
+        // Notification construction failed; the in-app toast still informs.
+      }
+    };
+    if (Notification.permission === 'granted') {
+      show();
+    } else if (Notification.permission === 'default' && typeof Notification.requestPermission === 'function') {
+      Notification.requestPermission()
+        .then((permission: string) => {
+          if (permission === 'granted') show();
+        })
+        .catch(() => {
+          // Permission request failed; fall back to the toast alone.
+        });
+    }
+  } catch {
+    // Notification support missing entirely; fall back to the toast alone.
+  }
+}
+
+/**
  * Normalizes a file path for duplicate comparison: lowercases and unifies
  * Windows backslashes with POSIX forward slashes.
  * @param {string} path - The file path to normalize.
@@ -435,8 +471,9 @@ export default function BatchQueue() {
 
   /**
    * When the running count drops from >0 to 0 and at least one job finished
-   * during this session, shows a batch-completion toast summarizing the run,
-   * then resets the per-run tracking.
+   * during this session, shows a batch-completion toast summarizing the run and
+   * raises a native OS notification with the same summary, then resets the
+   * per-run tracking.
    * @returns {void}
    */
   useEffect(() => {
@@ -447,7 +484,9 @@ export default function BatchQueue() {
       const outcomes = [...finishedRef.current.values()];
       const doneCount = outcomes.filter((outcome) => outcome === 'done').length;
       const failedCount = outcomes.filter((outcome) => outcome === 'error').length;
-      useToastStore.getState().success(t('batchQueue.finished', { done: doneCount, failed: failedCount }));
+      const message = t('batchQueue.finished', { done: doneCount, failed: failedCount });
+      useToastStore.getState().success(message);
+      showNativeCompletionNotification(t('batchQueue.notificationTitle'), message);
       finishedRef.current.clear();
     }
   }, [jobs, t]);

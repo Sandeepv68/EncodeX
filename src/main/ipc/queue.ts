@@ -48,6 +48,18 @@ import {
 const log = new Logger('main/ipc/queue');
 
 /**
+ * Normalizes a file path for duplicate comparison: lowercases and unifies
+ * Windows backslashes with POSIX forward slashes. Mirrors the renderer's
+ * add-time dedupe so an imported queue skips the same jobs the batch page
+ * would.
+ * @param {string} path - The file path to normalize.
+ * @returns {string} The normalized path.
+ */
+function normalizePath(path: string): string {
+  return path.replace(/\\/g, '/').toLowerCase();
+}
+
+/**
  * Registers the job-queue IPC handlers for the given window.
  *
  * @param {BrowserWindow} win - The BrowserWindow associated with the
@@ -235,11 +247,14 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
    * Handles the IPC.QUEUE_IMPORT channel (queue-import).
    * Shows an open dialog for a JSON queue file, parses and validates it, then
    * applies the recorded concurrency cap and enqueues every job via
-   * `jobQueue.addJob`. An unreadable or structurally invalid file rejects with
+   * `jobQueue.addJob`. Jobs whose `input|output` pair is already queued, or
+   * whose output path is already claimed by an existing job, are skipped so
+   * importing a queue never duplicates work (mirrors the batch page's
+   * add-time dedupe). An unreadable or structurally invalid file rejects with
    * an INVALID_QUEUE_FILE AppError.
    *
-   * @returns {Promise<number>} The number of jobs imported, or 0 when the
-   *   dialog was cancelled.
+   * @returns {Promise<number>} The number of jobs actually imported (excluding
+   *   skipped duplicates), or 0 when the dialog was cancelled.
    * @throws {AppError} INVALID_QUEUE_FILE when the selected file cannot be
    *   read or does not match the expected export format.
    */
@@ -259,11 +274,21 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
     const snapshot = parseQueueExport(raw);
     if (!snapshot) throw invalidQueueFileError();
     jobQueue.setConcurrency(snapshot.concurrency);
+    const existingKeys = new Set(jobQueue.getJobs().map((job: QueueJob) => `${normalizePath(job.input)}|${normalizePath(job.output)}`));
+    const existingOutputs = new Set(jobQueue.getJobs().map((job: QueueJob) => normalizePath(job.output)));
+    let imported = 0;
     for (const job of snapshot.jobs) {
+      const key = `${normalizePath(job.input)}|${normalizePath(job.output)}`;
+      if (existingKeys.has(key) || existingOutputs.has(normalizePath(job.output))) {
+        continue;
+      }
+      existingKeys.add(key);
+      existingOutputs.add(normalizePath(job.output));
       jobQueue.addJob(job.input, job.output, job.options, job.transcoder);
+      imported += 1;
     }
-    log.info(LOG_QUEUE_IMPORTED, snapshot.jobs.length, 'jobs');
-    return snapshot.jobs.length;
+    log.info(LOG_QUEUE_IMPORTED, imported, 'jobs');
+    return imported;
   });
 
   /**

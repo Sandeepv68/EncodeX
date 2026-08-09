@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import type { ReactElement } from 'react';
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -270,5 +270,29 @@ describe('QueueJobCard', () => {
     expect(screen.queryByTestId('queue-job-thumbnail')).not.toBeInTheDocument();
     expect(getVideoPreviewMock).not.toHaveBeenCalled();
     expect(getImagePreviewMock).not.toHaveBeenCalled();
+  });
+
+  it('defers the thumbnail preview until the card scrolls into view', async () => {
+    let observerCallback: IntersectionObserverCallback | null = null;
+    function FakeIntersectionObserver(this: unknown, cb: IntersectionObserverCallback) {
+      observerCallback = cb;
+    }
+    FakeIntersectionObserver.prototype.observe = vi.fn();
+    FakeIntersectionObserver.prototype.unobserve = vi.fn();
+    FakeIntersectionObserver.prototype.disconnect = vi.fn();
+    vi.stubGlobal('IntersectionObserver', FakeIntersectionObserver);
+
+    getVideoPreviewMock.mockResolvedValue('data:image/png;base64,VIDEO');
+    renderCard(<QueueJobCard job={makeJob({ input: 'C:/videos/clip.mp4' })} onRemove={() => {}} />);
+    expect(getVideoPreviewMock).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('queue-job-thumbnail')).not.toBeInTheDocument();
+
+    act(() => {
+      observerCallback?.([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+    });
+    expect(getVideoPreviewMock).toHaveBeenCalledWith('C:/videos/clip.mp4');
+    const img = await screen.findByTestId('queue-job-thumbnail');
+    expect(img).toHaveAttribute('src', 'data:image/png;base64,VIDEO');
+    vi.unstubAllGlobals();
   });
 });

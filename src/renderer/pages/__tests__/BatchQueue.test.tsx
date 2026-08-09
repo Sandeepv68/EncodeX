@@ -376,6 +376,32 @@ describe('BatchQueue', () => {
     );
   });
 
+  it('raises a native OS notification when the batch finishes', async () => {
+    const notificationCtor = vi.fn();
+    class FakeNotification {
+      static permission = 'granted';
+      static requestPermission = vi.fn();
+      constructor(title: string, options?: { body?: string }) {
+        notificationCtor(title, options);
+      }
+    }
+    vi.stubGlobal('Notification', FakeNotification);
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'running' })]);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    const onStatusChange = onQueueStatusChangeMock.mock.calls[0][0];
+    act(() => {
+      onStatusChange(job({ id: 'job-1', status: 'running' }));
+    });
+    act(() => {
+      onStatusChange(job({ id: 'job-1', status: 'done' }));
+    });
+    expect(notificationCtor).toHaveBeenCalledWith('batchQueue.notificationTitle', {
+      body: 'Batch finished: 1 succeeded, 0 failed',
+    });
+    vi.unstubAllGlobals();
+  });
+
   it('filters jobs by status chip', async () => {
     queueListMock.mockResolvedValue([
       job({ id: 'job-1', status: 'queued' }),

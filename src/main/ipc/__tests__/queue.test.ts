@@ -224,12 +224,54 @@ describe('registerQueueHandlers', () => {
         ],
       }),
     );
+    jobQueue.getJobs.mockReturnValue([]);
     jobQueue.addJob.mockReturnValue('imported-1');
     const result = await getHandlers()[IPC.QUEUE_IMPORT]();
     expect(result).toBe(2);
     expect(jobQueue.setConcurrency).toHaveBeenCalledWith(2);
     expect(jobQueue.addJob).toHaveBeenNthCalledWith(1, 'in.mp4', 'out.mp4', { videoCodec: 'libx264' }, 'FFMPEG');
     expect(jobQueue.addJob).toHaveBeenNthCalledWith(2, 'b.png', 'c.png', {}, 'FFMPEG');
+  });
+
+  it('QUEUE_IMPORT skips jobs whose input/output pair is already queued', async () => {
+    dialogMock.showOpenDialog.mockResolvedValue({ canceled: false, filePaths: ['C:/tmp/queue.json'] });
+    readFileSyncMock.mockReturnValue(
+      JSON.stringify({
+        version: 1,
+        concurrency: 2,
+        jobs: [
+          { input: 'in.mp4', output: 'out.mp4', options: { videoCodec: 'libx264' }, transcoder: 'FFMPEG' },
+          { input: 'b.png', output: 'c.png', options: {}, transcoder: 'FFMPEG' },
+          { input: 'fresh.mp4', output: 'fresh_out.mp4', options: {}, transcoder: 'FFMPEG' },
+        ],
+      }),
+    );
+    jobQueue.getJobs.mockReturnValue([
+      { id: 'id-1', input: 'in.mp4', output: 'out.mp4', options: {}, transcoder: 'FFMPEG', status: 'queued' },
+      { id: 'id-2', input: 'x.mkv', output: 'c.png', options: {}, transcoder: 'FFMPEG', status: 'queued' },
+    ]);
+    jobQueue.addJob.mockReturnValue('imported-1');
+    const result = await getHandlers()[IPC.QUEUE_IMPORT]();
+    expect(result).toBe(1);
+    expect(jobQueue.addJob).toHaveBeenCalledTimes(1);
+    expect(jobQueue.addJob).toHaveBeenCalledWith('fresh.mp4', 'fresh_out.mp4', {}, 'FFMPEG');
+  });
+
+  it('QUEUE_IMPORT skips jobs colliding on an existing output path', async () => {
+    dialogMock.showOpenDialog.mockResolvedValue({ canceled: false, filePaths: ['C:/tmp/queue.json'] });
+    readFileSyncMock.mockReturnValue(
+      JSON.stringify({
+        version: 1,
+        concurrency: 1,
+        jobs: [{ input: 'other.mp4', output: 'taken.mp4', options: {}, transcoder: 'FFMPEG' }],
+      }),
+    );
+    jobQueue.getJobs.mockReturnValue([
+      { id: 'id-1', input: 'in.mp4', output: 'taken.mp4', options: {}, transcoder: 'FFMPEG', status: 'queued' },
+    ]);
+    const result = await getHandlers()[IPC.QUEUE_IMPORT]();
+    expect(result).toBe(0);
+    expect(jobQueue.addJob).not.toHaveBeenCalled();
   });
 
   it('QUEUE_IMPORT returns 0 without reading when the dialog is cancelled', async () => {

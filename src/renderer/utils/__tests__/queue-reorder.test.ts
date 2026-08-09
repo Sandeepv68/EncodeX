@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { computeQueuedTargetPosition, reorderJob } from '../queue-reorder';
 import type { QueueJob } from '../../../shared/types';
 
-function job(id: string, status: string): QueueJob {
+function job(id: string, status: QueueJob['status']): QueueJob {
   return {
     id,
     input: `${id}.mp4`,

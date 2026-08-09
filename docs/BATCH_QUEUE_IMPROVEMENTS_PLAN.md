@@ -177,8 +177,24 @@ blank list; dotfiles (`.env`) derive bogus outputs like `/_converted.hidden`.
 ---
 
 ## P3 — Deferred (not in this pass)
-Status: `[-]`
+Status: `[x]`
 
-- [ ] Lazy thumbnail rendering for large queues (virtualization).
-- [ ] Native OS completion notification when a batch finishes.
-- [ ] Import/export consistency: reuse `enqueueSelections`-style dedupe on import.
+- [x] Lazy thumbnail rendering for large queues: thumbnails (and the expensive
+      ffmpeg preview IPC call) are deferred via an IntersectionObserver until
+      the card scrolls within 300px of the viewport, so large queues never
+      spawn preview work for off-screen cards. (True windowed virtualization
+      would require a new dependency and was deliberately kept out of scope.)
+      Files: `src/renderer/components/QueueJobCard.tsx`.
+- [x] Native OS completion notification when a batch finishes: the renderer
+      raises an HTML5 `Notification` (surfaced as a system notification in
+      Electron) with the batch summary next to the existing toast; permission
+      is requested once when undecided and all failures are swallowed.
+      Files: `src/renderer/pages/BatchQueue.tsx`,
+      `src/renderer/i18n/locales/en-US.json` (`batchQueue.notificationTitle`).
+- [x] Import/export consistency: the main-process `QUEUE_IMPORT` handler skips
+      jobs whose `input|output` pair is already queued or whose output path is
+      already claimed (same normalization as the batch page), returning only
+      the count of genuinely new jobs. Files: `src/main/ipc/queue.ts`.
+
+**Checkpoint:** `npm run test:unit -- QueueJobCard BatchQueue` + main
+`queue.test.ts` green.

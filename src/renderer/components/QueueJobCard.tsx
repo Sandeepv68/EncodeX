@@ -31,14 +31,19 @@
  * full error (when present), a compact summary of the encoding options
  * (codecs, bitrates, scale, hwaccel, ...), the transcoder, and the creation
  * timestamp.
+ *
+ * Thumbnails are lazy: the expensive preview IPC call (which spawns ffmpeg for
+ * videos) is deferred until the card scrolls near the viewport via an
+ * IntersectionObserver, so large queues only pay for previews the user can
+ * actually see.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Collapse, Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { DraggableAttributes, SyntheticListenerMap } from '@dnd-kit/core';
+import type { DraggableAttributes } from '@dnd-kit/core';
 import {
   faTrashCan,
   faRotateRight,
@@ -100,12 +105,12 @@ function basename(path: string): string {
  * Handle props forwarded from {@link QueueJobCard} to the presentational body.
  * @interface DragHandleProps
  * @property {DraggableAttributes} attributes - dnd-kit attributes for the handle.
- * @property {SyntheticListenerMap | undefined} listeners - dnd-kit pointer/keyboard
- *   listeners for the handle.
+ * @property {ReturnType<typeof useSortable>['listeners']} listeners - dnd-kit
+ *   pointer/keyboard listeners for the handle.
  */
 interface DragHandleProps {
   attributes: DraggableAttributes;
-  listeners: SyntheticListenerMap | undefined;
+  listeners: ReturnType<typeof useSortable>['listeners'];
 }
 
 /**
@@ -142,13 +147,59 @@ export function QueueJobCardContent({
   const [thumbnail, setThumbnail] = useState<string | null>(null);
 
   /**
-   * On mount, fetches a thumbnail for the job's input via the image/video
-   * preview IPC channels (audio files have no preview). Failures and null
-   * results keep the card thumbnail-less; the state is only updated when a
-   * preview actually arrives so cards can render without any async churn.
+   * True once the card has scrolled near the viewport, at which point the
+   * thumbnail preview is actually fetched. Cards far off-screen stay lazy so a
+   * large queue never spawns preview work the user cannot see.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
+  const [thumbnailInView, setThumbnailInView] = useState(false);
+
+  /**
+   * Anchor whose visibility drives the lazy thumbnail load.
+   * @type {React.RefObject<HTMLDivElement | null>}
+   */
+  const thumbnailAnchorRef = useRef<HTMLDivElement | null>(null);
+
+  /**
+   * Marks the card as visible when its thumbnail anchor enters (or gets within
+   * a generous margin of) the viewport. In test environments without an
+   * IntersectionObserver the card is treated as immediately visible so previews
+   * load unconditionally. Once observed, the observer disconnects.
    * @returns {void}
    */
   useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') {
+      setThumbnailInView(true);
+      return;
+    }
+    const node = thumbnailAnchorRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setThumbnailInView(true);
+            observer.disconnect();
+            break;
+          }
+        }
+      },
+      { rootMargin: '300px' },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  /**
+   * On mount (or once the card scrolls into view), fetches a thumbnail for the
+   * job's input via the image/video preview IPC channels (audio files have no
+   * preview). Failures and null results keep the card thumbnail-less; the state
+   * is only updated when a preview actually arrives so cards can render without
+   * any async churn.
+   * @returns {void}
+   */
+  useEffect(() => {
+    if (!thumbnailInView) return;
     let cancelled = false;
     const loadThumbnail = async () => {
       try {
@@ -166,7 +217,7 @@ export function QueueJobCardContent({
     return () => {
       cancelled = true;
     };
-  }, [job.input]);
+  }, [thumbnailInView, job.input]);
 
   /**
    * Builds the compact label/value rows summarizing a job's encoding options.
@@ -221,7 +272,7 @@ export function QueueJobCardContent({
 
   return (
     <>
-      <CardBody>
+      <CardBody ref={thumbnailAnchorRef}>
         {thumbnail && <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />}
         <CardContent>
           <CardHeaderRow>
