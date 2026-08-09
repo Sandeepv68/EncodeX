@@ -29,8 +29,8 @@ export const WelcomeTitle = styled(Typography)(({ theme }) => ({
 }));
 
 export const WelcomeIcon = styled('img')(({ theme }) => ({
-  width: theme.typography.pxToRem(128),
-  height: theme.typography.pxToRem(128),
+  width: theme.typography.pxToRem(200),
+  height: theme.typography.pxToRem(200),
   marginBottom: theme.spacing(1),
   borderRadius: theme.typography.pxToRem(10),
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,

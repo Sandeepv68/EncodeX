@@ -19,7 +19,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import { Logger } from '../../shared/logger';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import { pageIcons } from '../pageIcons';
-import appIcon from '../../../assets/icons/Assets.xcassets/AppIcon.appiconset/100.png';
+import appIcon from '../../../assets/icons/Assets.xcassets/AppIcon.appiconset/1024.png';
 import {
   WelcomeTitle,
   WelcomeIcon,
