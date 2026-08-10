@@ -141,7 +141,13 @@ export default function Settings() {
           {THEMES.map((theme) => {
             const selected = theme.id === themeId;
             return (
-              <ThemeCard key={theme.id} $selected={selected} aria-pressed={selected} onClick={() => setTheme(theme.id)}>
+              <ThemeCard
+                key={theme.id}
+                $selected={selected}
+                aria-pressed={selected}
+                data-testid={`settings-theme-${theme.id}`}
+                onClick={() => setTheme(theme.id)}
+              >
                 <ThemePreviewCard theme={theme} />
                 <Box component="span">{t(theme.labelKey)}</Box>
               </ThemeCard>
@@ -154,7 +160,7 @@ export default function Settings() {
         <Switch
           checked={alwaysOnTop}
           onChange={(e) => setAlwaysOnTop(e.target.checked)}
-          slotProps={{ input: { 'aria-label': t('settings.alwaysOnTop') } }}
+          slotProps={{ input: { 'aria-label': t('settings.alwaysOnTop'), 'data-testid': 'settings-always-on-top' } }}
         />
       </SettingsSection>
       <SettingsSection>
@@ -162,7 +168,7 @@ export default function Settings() {
         <Switch
           checked={launchAtLogin}
           onChange={(e) => setLaunchAtLogin(e.target.checked)}
-          slotProps={{ input: { 'aria-label': t('settings.launchAtLogin') } }}
+          slotProps={{ input: { 'aria-label': t('settings.launchAtLogin'), 'data-testid': 'settings-launch-at-login' } }}
         />
       </SettingsSection>
       <SettingsSection>
@@ -170,13 +176,19 @@ export default function Settings() {
         <Switch
           checked={hardwareAcceleration}
           onChange={(e) => setHardwareAcceleration(e.target.checked)}
-          slotProps={{ input: { 'aria-label': t('settings.hardwareAcceleration') } }}
+          slotProps={{ input: { 'aria-label': t('settings.hardwareAcceleration'), 'data-testid': 'settings-hardware-acceleration' } }}
         />
       </SettingsSection>
       {hardwareAcceleration && (
         <SettingsSection>
           <SettingLabel text={t('settings.hwaccelMode')} hint={t('settings.hwaccelModeHint')} />
-          <ModeSelect select size="small" value={hwaccelMode} onChange={(e) => setHwaccelMode(e.target.value as HwAccelMode)}>
+          <ModeSelect
+            select
+            size="small"
+            data-testid="settings-hwaccel-mode"
+            value={hwaccelMode}
+            onChange={(e) => setHwaccelMode(e.target.value as HwAccelMode)}
+          >
             {HWACCEL_MODES.map((m) => (
               <MenuItem key={m} value={m}>
                 {t(hwaccelModeLabel[m])}
@@ -188,7 +200,13 @@ export default function Settings() {
       {hardwareAcceleration && (
         <SettingsSection>
           <SettingLabel text={t('settings.encoderType')} hint={t('settings.encoderTypeHint')} />
-          <ModeSelect select size="small" value={encoderType} onChange={(e) => setEncoderType(e.target.value as EncoderType)}>
+          <ModeSelect
+            select
+            size="small"
+            data-testid="settings-encoder-type"
+            value={encoderType}
+            onChange={(e) => setEncoderType(e.target.value as EncoderType)}
+          >
             {ENCODER_TYPES.map((type) => (
               <MenuItem key={type} value={type}>
                 {t(encoderTypeLabel[type])}

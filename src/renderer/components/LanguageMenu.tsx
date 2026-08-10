@@ -128,7 +128,7 @@ export default function LanguageMenu() {
     <>
       <LanguageMenuBox>
         <Tooltip title={t('app.language')}>
-          <LanguageButton type="button" onClick={(e) => setAnchor(e.currentTarget)}>
+          <LanguageButton type="button" data-testid="language-menu-button" onClick={(e) => setAnchor(e.currentTarget)}>
             <FlagIcon locale={i18n.language} />
             <LanguageLabel variant="caption">{LOCALE_MAP[i18n.language]?.label || i18n.language}</LanguageLabel>
           </LanguageButton>

@@ -29,6 +29,17 @@ import {
 const log = new Logger('main/ipc/dialogs');
 
 /**
+ * Returns a preset path that replaces a native dialog while the real-backend
+ * e2e tier runs. Inert outside of tests: every check requires E2E_REAL === '1'
+ * and the matching E2E_REAL_* variable, so production behavior is unchanged.
+ */
+function realTierPreset(envKey: string): string | null {
+  if (process.env.E2E_REAL !== '1') return null;
+  const value = process.env[envKey];
+  return value && value.length > 0 ? value : null;
+}
+
+/**
  * Registers the native file/folder dialog IPC handlers for the given window.
  *
  * @param {BrowserWindow} win - The BrowserWindow the dialogs are attached to
@@ -49,6 +60,8 @@ export function registerDialogHandlers(win: BrowserWindow): void {
    */
   ipcMain.handle(IPC.SELECT_FILE, async (_event, filters?: Electron.FileFilter[]) => {
     log.debug(LOG_IPC_SELECT_FILE_CALLED, { filters });
+    const preset = realTierPreset('E2E_REAL_INPUT_FILE');
+    if (preset) return preset;
     const result = await dialog.showOpenDialog(win, {
       properties: ['openFile'],
       filters: filters || [{ name: 'Media Files', extensions: [...FILE_EXTENSIONS.MEDIA_INPUT] }],
@@ -90,6 +103,8 @@ export function registerDialogHandlers(win: BrowserWindow): void {
    */
   ipcMain.handle(IPC.SELECT_OUTPUT, async () => {
     log.debug(LOG_IPC_SELECT_OUTPUT_CALLED);
+    const preset = realTierPreset('E2E_REAL_OUTPUT_FILE');
+    if (preset) return preset;
     const result = await dialog.showSaveDialog(win, {
       filters: [{ name: 'Media Files', extensions: [...FILE_EXTENSIONS.MEDIA_OUTPUT] }],
     });

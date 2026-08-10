@@ -60,7 +60,7 @@ The renderer never spawns processes and never touches the filesystem directly. A
 Node.js environment. Owns the application lifecycle and all privileged capabilities:
 
 - Creates the splash and main `BrowserWindow`s and registers IPC handlers (`index.ts`).
-- Hosts the CLI entry point (`cli.ts`).
+- Hosts the CLI entry point (`cli/`).
 - Resolves the FFmpeg/FFprobe binary path and probes encoder capabilities (`capabilities.ts`, `process-utils.ts`).
 - Implements the transcoder cores (`transcoders/`).
 - Runs the serial batch queue (`queue/job-queue.ts`).
@@ -87,7 +87,15 @@ Pure TypeScript, imported by all three processes. Contains the IPC channel regis
 src/
 ├── main/                              # Electron main process
 │   ├── index.ts                       # Entry: CLI detection, splash + main window, console bridging
-│   ├── cli.ts                         # Commander-based CLI entry point
+│   ├── cli/                           # Commander-based CLI entry (subcommands)
+│   │   ├── cli.ts                      # Entry: legacy shim, subcommand dispatch, exit codes
+│   │   ├── cli-options.ts              # Shared global options + CliExitError
+│   │   ├── cli-ui.ts                   # Colors, spinners, progress bars, tables
+│   │   ├── cli-util.ts                 # Glob expansion, output derivation, formatting
+│   │   ├── cli-convert.ts              # convert subcommand
+│   │   ├── cli-info.ts                 # info + capabilities subcommands
+│   │   ├── cli-compress.ts             # compress + extract-audio subcommands
+│   │   └── cli-batch.ts                # batch subcommand (JobQueue + MultiBar)
 │   ├── capabilities.ts                # Encoder probing (ffmpeg -encoders / -hwaccels)
 │   ├── process-utils.ts               # Child-process helpers (spawn, suspend, resume, kill)
 │   ├── image-info.ts                  # EXIF extraction + RGB/luma histogram via ffmpeg
@@ -187,12 +195,13 @@ The FFmpeg path is resolved with a consistent fallback chain (see `transcoders/f
 
 ## CLI Mode
 
-`src/main/cli.ts` uses **commander**. When `runCli()` executes:
+`src/main/cli/cli.ts` uses **commander** with subcommands. When `runCli()` executes:
 
-1. It parses positional `[input]`/`[output]` and options such as `--transcoder`, `-v/--video-codec`, `-a/--audio-codec`, `--copy`, `--info`, `--start-time`, etc.
-2. For `--info` it calls `transcoder.getInfo(input)` and prints JSON.
-3. Otherwise it builds a `ConversionOptions` object and calls `transcoder.convert(input, output, options)`.
-4. Progress is printed to `stdout` (with a 300 s watchdog timeout), and the process exits with the app's exit code on completion or failure.
+1. A legacy shim maps flat usage (`encodex in.mp4 out.mp4` → `convert`, `encodex --info in.mp4` → `info`) onto the matching subcommand.
+2. Each subcommand parses its own options plus shared globals (`--transcoder`, `--theme`, `--verbose`, `--quiet`, `--no-color`, `--json`, `--timeout`).
+3. `info`/`capabilities` print human tables by default and JSON with `--json`.
+4. `convert`/`compress`/`extract-audio`/`batch` build a `ConversionOptions` object and call `transcoder.convert(...)` (batch drives an in-memory `JobQueue` with a `MultiBar`).
+5. Progress goes to `stdout` (with a watchdog timeout), status/success lines honor `--json`/`--quiet`/`--verbose` routing, and the process exits via `mapCliErrorToExitCode` (usage=2, cancelled=3, not-found=4, timeout=5, success=0).
 
 The CLI reuses the exact same transcoder pipeline as the GUI — there is no separate encoding path to maintain.
 
@@ -482,7 +491,7 @@ The Logs page (`pages/Logs.tsx`) aggregates both sources with level filtering (D
 
 ## Testing Strategy
 
-The suite is run by Vitest with jsdom (85 test files, 837 tests), plus Playwright e2e.
+The suite is run by Vitest (105 test files, 1254 tests), plus Playwright e2e.
 
 | Layer                 | What's covered                                                              |
 | --------------------- | --------------------------------------------------------------------------- |
@@ -494,7 +503,7 @@ The suite is run by Vitest with jsdom (85 test files, 837 tests), plus Playwrigh
 | **Preload**           | Full `electronAPI` bridge surface, every IPC method                          |
 | **Renderer**          | Components, hooks, pages, stores, utils, app shell routing                   |
 | **Integration**       | Full Error → `formatError` → store → display → clear pipeline                 |
-| **E2E**               | CLI mode (`--help`, `--info`, real conversions via FFMPEG/FFTOOL), app launch |
+| **E2E**               | CLI mode (`--help`, subcommands, legacy flat syntax, real conversions via FFMPEG/FFTOOL), app launch |
 
 Tests use `src/test-setup.ts`, which mocks `useTranslation` and `electronAPI` on `globalThis` and registers `jest-dom` matchers. E2E specs in `e2e/` run against a built app and are gated behind the `E2E` env var or CI.
 

@@ -28,6 +28,7 @@ export const LOG_AUDIO_CODEC = 'Audio codec:';
 export const LOG_AUDIO_CONTEXT_CREATED = 'Audio context created';
 /** @const {string} Logged when audio output is disabled and the output will have no audio stream. */
 export const LOG_AUDIO_DISABLED_OUTPUT_WILL_HAVE_NO_AUDIO_STREAM = 'Audio disabled, output will have no audio stream';
+export const LOG_VIDEO_DISABLED_OUTPUT_WILL_HAVE_NO_VIDEO_STREAM = 'Video disabled, output will have no video stream';
 /** @const {string} Prefix when auto-suggesting an output file path. */
 export const LOG_AUTO_SUGGESTING_OUTPUT_FILE = 'Auto-suggesting output file:';
 /** @const {string} Prefix when logging a BMF CLI command. */

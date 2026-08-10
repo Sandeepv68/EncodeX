@@ -40,7 +40,7 @@ import { FieldBox, FieldLabel } from '../styles/TimeField.styles';
  * @param {() => void} [props.onBlur] - Optional blur handler.
  * @returns {JSX.Element} The labeled time input field.
  */
-export default function TimeField({ label, value, placeholder, error, hint, onChange, onBlur }: TimeFieldProps) {
+export default function TimeField({ label, value, placeholder, error, hint, testId, onChange, onBlur }: TimeFieldProps) {
   return (
     <FieldBox>
       <FieldLabel variant="caption" color="text.secondary">
@@ -50,6 +50,7 @@ export default function TimeField({ label, value, placeholder, error, hint, onCh
       <TextField
         fullWidth
         size="small"
+        data-testid={testId}
         error={!!error}
         helperText={error || ' '}
         value={value}

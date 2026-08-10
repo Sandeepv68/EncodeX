@@ -47,6 +47,7 @@ export const TRANSCODER_LABELS: Record<TranscoderType, string> = {
  * @property {string} RAWVIDEO - Value selecting the rawvideo decoder.
  * @property {string} PIX_FMT_RGB24 - Pixel format value for 24-bit RGB.
  * @property {string} NO_AUDIO - Flag disabling the audio stream (-an).
+ * @property {string} NO_VIDEO - Flag disabling the video stream (-vn).
  * @property {string} NO_SUBTITLES - Flag disabling subtitle streams (-sn).
  * @property {string} NO_DATA - Flag disabling data streams (-dn).
  * @property {string} OUTPUT_PIPE - Output target meaning stdout (pipe) ('-').
@@ -74,6 +75,7 @@ export const FFMPEG_FLAGS = {
   RAWVIDEO: 'rawvideo',
   PIX_FMT_RGB24: 'rgb24',
   NO_AUDIO: '-an',
+  NO_VIDEO: '-vn',
   NO_SUBTITLES: '-sn',
   NO_DATA: '-dn',
   OUTPUT_PIPE: '-',

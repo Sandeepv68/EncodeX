@@ -275,29 +275,74 @@ npm run dist
 Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode auto-activates when two positional arguments (input + output) are given, or explicitly with `--cli`:
 
 ```bash
+# Convert a file (subcommand form)
+encodex convert input.mp4 output.avi --video-codec libx265 --audio-codec aac
+
+# Convert a file (legacy flat form — still works)
 encodex input.mp4 output.avi --video-codec libx265 --audio-codec aac
 
+# Show media info as a human table
+encodex info input.mp4
+
 # Show media info as JSON
-encodex --cli input.mp4 --info
+encodex info input.mp4 --json
+
+# List transcoder capabilities
+encodex capabilities
+encodex capabilities --json
 
 # Lossless copy to different container
-encodex input.mkv output.mp4 --copy
+encodex convert input.mkv output.mp4 --copy
 
 # Cut a segment
-encodex input.mp4 output.mp4 --start-time 00:01:00 --end-time 00:02:30
+encodex convert input.mp4 output.mp4 --start-time 00:01:00 --end-time 00:02:30
+
+# Compress an image
+encodex compress photo.png -f jpg -q 30
+
+# Extract audio (mp3 by default)
+encodex extract-audio input.mp4
+
+# Batch-convert several files / globs
+encodex batch 'videos/**/*.mov' -j 2 --out-dir converted
 
 # Use a specific transcoder core
-encodex input.mp4 output.mp4 --transcoder FFTOOL
+encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 ```
+
+Legacy flat usage (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) is shimmed into the matching subcommand automatically.
 
 To make `encodex` available globally, run `npm link` from the project root (or `npm install -g .`). The raw `npx electron . --cli ...` form still works as an alternative.
 
 ### 🚩 CLI Options
 
+#### Subcommands
+
+| Subcommand         | Description                                                       |
+| ------------------ | ----------------------------------------------------------------- |
+| `convert`          | Convert media (default when no subcommand matches)                |
+| `info`             | Show media info (human table, or `--json` for machine output)     |
+| `capabilities`     | List available transcoder capabilities (table or `--json`)        |
+| `compress`         | Compress an image                                                 |
+| `extract-audio`    | Extract the audio stream (default codec `libmp3lame`)             |
+| `batch`            | Convert multiple inputs (files, globs, or directories) with a queue |
+
+#### Global options
+
 | Option                      | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
 | `--transcoder <type>`       | Transcoder core: `FFMPEG`, `FFTOOL`, `BMF` (default: `FFMPEG`) |
 | `--theme <id>`              | Logo color theme: `light`, `ocean`, `sunset`, `forest`, `lavender`, `rose`, `slate`, `dark` (default: `light`) |
+| `-v, --verbose`             | Verbose logging (routes status to stderr)                      |
+| `-q, --quiet`               | Suppress status output                                         |
+| `--no-color`                | Disable ANSI colors                                            |
+| `--json`                    | Machine-readable JSON output (status routed to stderr)         |
+| `--timeout <ms>`            | Overall CLI timeout (default: none)                            |
+
+#### Convert options
+
+| Option                      | Description                                                    |
+| --------------------------- | -------------------------------------------------------------- |
 | `-v, --video-codec <codec>` | Video codec (e.g. `libx264`, `libx265`, `copy`)                |
 | `-a, --audio-codec <codec>` | Audio codec (e.g. `aac`, `libmp3lame`, `copy`)                 |
 | `-q, --qscale <qscale>`     | Quality scale (0–31)                                           |
@@ -310,7 +355,38 @@ To make `encodex` available globally, run `npm link` from the project root (or `
 | `--duration <time>`         | Duration                                                       |
 | `--copy`                    | Lossless stream copy                                           |
 | `--no-audio`                | Exclude the audio stream from the output                       |
-| `--info`                    | Print media info as JSON and exit                              |
+| `--no-video`                | Exclude the video stream from the output (audio-only)          |
+| `--keep-aspect-ratio`       | Preserve aspect ratio when scaling                             |
+| `--hwaccel / --no-hwaccel`  | Toggle hardware acceleration                                   |
+| `--hwaccel-mode <auto|encode>` | Hardware acceleration mode (default: `auto`)                 |
+
+#### Compress options
+
+| Option                      | Description                                                    |
+| --------------------------- | -------------------------------------------------------------- |
+| `-f, --format <format>`     | Output format (defaults from output extension)                 |
+| `-q, --quality <q>`         | Compression quality 1–100                                      |
+| `-s, --scale <WxH>`         | Output resolution                                              |
+| `--keep-aspect-ratio`       | Preserve aspect ratio when scaling                             |
+| `--pix-fmt <format>`        | Pixel format                                                   |
+
+#### Extract-audio options
+
+| Option                      | Description                                                    |
+| --------------------------- | -------------------------------------------------------------- |
+| `-a, --audio-codec <codec>` | Audio codec (default: `libmp3lame`)                            |
+| `--bitrate-audio <bitrate>` | Audio bitrate (e.g. `192k`)                                    |
+| `--start-time <time>`       | Start time                                                     |
+| `--end-time <time>`         | End time                                                       |
+| `--duration <time>`         | Duration                                                       |
+
+#### Batch options
+
+| Option                      | Description                                                    |
+| --------------------------- | -------------------------------------------------------------- |
+| `-j, --concurrency <1-4>`   | Parallel jobs (default: 1, clamped 1–4)                        |
+| `--out-dir <dir>`           | Output directory for converted files                           |
+| `--suffix <s>`              | Suffix appended to derived output names (default: `_converted`) |
 
 ## 🧪 Testing
 
@@ -341,12 +417,12 @@ Coverage reports are generated in `coverage/`:
 
 ### ✅ Test Suite
 
-The suite is run by Vitest 4 with jsdom (85 test files, 837 tests, all passing). Coverage uses the v8 provider.
+The suite is run by Vitest 4 (105 test files, 1254 tests, all passing). Coverage uses the v8 provider.
 
 | Area                     | Files (tests)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | What's Covered                                                                                                                       |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
 | **Shared**               | `errors.test.ts` (30), `constants.test.ts` (27), `codec-containers.test.ts` (15), `validation.test.ts` (15), `types.test.ts` (10), `logger.test.ts` (6), `ipc-channels.test.ts` (2)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Error normalization, all shared constants, codec/container mapping, validation helpers, type contracts, logger, IPC channel registry |
-| **Main**                 | `cli.test.ts` (11), `index.test.ts` (11), `capabilities.test.ts` (10), `job-queue.test.ts` (7), `process-utils.test.ts` (7), `image-file-info.test.ts` (14), `image-info.test.ts` (12), `image-preview.test.ts` (6), `video-preview.test.ts` (6)                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | CLI parsing, window lifecycle, encoder probing, queue semantics, process utilities, image/video preview generation                   |
+| **Main**                 | `cli.test.ts` (17), `cli/cli-cli.test.ts` (9), `cli/cli-options.test.ts` (13), `cli/cli-convert.test.ts` (11), `cli/cli-compress.test.ts` (6), `cli/cli-util.test.ts` (24), `index.test.ts` (11), `capabilities.test.ts` (10), `job-queue.test.ts` (7), `process-utils.test.ts` (7), `image-file-info.test.ts` (14), `image-info.test.ts` (12), `image-preview.test.ts` (6), `video-preview.test.ts` (6)                                                                                                                                                                                                                                                                                                                                                                           | CLI parsing, window lifecycle, encoder probing, queue semantics, process utilities, image/video preview generation                   |
 | **Main transcoders**     | `ffmpeg-core.test.ts` (25), `hwaccel.test.ts` (14), `ffmpeg-utils.test.ts` (13), `fftool-core.test.ts` (12), `bmf-core.test.ts` (11), `ffprobe-mapper.test.ts` (7), `factory.test.ts` (3), `interface.test.ts` (1), `integration-audio.test.ts` (1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                | All three cores, hardware-acceleration flag building, ffprobe mapping, factory dispatch, transcoder interface contract               |
 | **Main IPC**             | `player.test.ts` (16), `image.test.ts` (9), `dialogs.test.ts` (8), `conversion.test.ts` (7), `window.test.ts` (8), `queue.test.ts` (5), `timeline.test.ts` (4), `send.test.ts` (2), `handlers.test.ts` (1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Per-channel IPC handlers, event broadcasting, error wrapping                                                                         |
 | **Main player**          | `frame-decoder.test.ts` (32)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Rawvideo frame decoding, audio pipe, buffering                                                                                       |
@@ -373,7 +449,7 @@ Playwright-based end-to-end tests live in `e2e/` (node environment, 60s timeouts
 
 | File              | What's Covered                                                                              |
 | ----------------- | ------------------------------------------------------------------------------------------- |
-| `e2e/cli.spec.ts` | CLI mode: `--help`/`-h`, invalid input, `--info`, real conversion via `FFMPEG` and `FFTOOL` |
+| `e2e/cli.spec.ts` | CLI mode: `--help`/`-h`, subcommands (`info`, `convert`, `compress`, `extract-audio`, `capabilities`), legacy flat syntax, real conversion via `FFMPEG` and `FFTOOL` |
 | `e2e/app.spec.ts` | Electron app launch, window creation                                                        |
 | `e2e/helpers.ts`  | Test media generation and build helpers                                                     |
 
@@ -384,7 +460,15 @@ src/
 ├── test-setup.ts                      # Vitest global setup: jest-dom matchers + i18n/electronAPI mocks
 ├── main/                              # Electron main process
 │   ├── index.ts                       # Entry: CLI detection, splash + main window, console bridging
-│   ├── cli.ts                         # Commander-based CLI entry point
+│   ├── cli/                            # Commander-based CLI entry (subcommands)
+│   │   ├── cli.ts                       # Entry: legacy shim, subcommand dispatch, exit codes
+│   │   ├── cli-options.ts               # Shared global options + CliExitError
+│   │   ├── cli-ui.ts                    # Colors, spinners, progress bars, tables
+│   │   ├── cli-util.ts                  # Glob expansion, output derivation, formatting
+│   │   ├── cli-convert.ts               # convert subcommand
+│   │   ├── cli-info.ts                  # info + capabilities subcommands
+│   │   ├── cli-compress.ts              # compress + extract-audio subcommands
+│   │   └── cli-batch.ts                 # batch subcommand (JobQueue + MultiBar)
 │   ├── capabilities.ts                # Encoder probing (ffmpeg -encoders / -hwaccels)
 │   ├── process-utils.ts               # Child-process helpers (spawn, suspend, resume, kill)
 │   ├── image-info.ts                  # EXIF extraction + RGB/luma histogram via ffmpeg

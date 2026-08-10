@@ -84,6 +84,7 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
         {NAV_ITEMS.map((item, index) => (
           <NavItemButton
             key={item.to}
+            data-testid={`nav-item-${item.to === '/' ? 'dashboard' : item.to.slice(1)}`}
             selected={location.pathname === item.to}
             sx={{ animationDelay: `${index * 0.05}s` }}
             onClick={() => {

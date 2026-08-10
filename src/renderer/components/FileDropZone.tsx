@@ -99,6 +99,7 @@ export default function FileDropZone({ onFileSelect, label, accept }: FileDropZo
   return (
     <DropZoneRoot
       $dragging={dragging}
+      data-testid="file-drop-zone"
       onDrop={handleDrop}
       onDragOver={(e) => {
         e.preventDefault();

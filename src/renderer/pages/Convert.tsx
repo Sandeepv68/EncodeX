@@ -337,6 +337,7 @@ export default function Convert() {
         placeholder={t('convert.noFile')}
         buttonLabel={t('convert.browse')}
         onBrowse={selectInput}
+        testId="convert-input"
       />
 
       {inputFile && !previewOpen && (
@@ -357,6 +358,7 @@ export default function Convert() {
         placeholder={t('convert.noOutput')}
         buttonLabel={t('convert.saveAs')}
         onBrowse={selectOutput}
+        testId="convert-output"
       />
 
       {showCompatWarning && (
@@ -373,7 +375,7 @@ export default function Convert() {
       )}
 
       <ToggleRow>
-        <Switch checked={copyMode} onChange={(e) => setCopyMode(e.target.checked)} />
+        <Switch data-testid="convert-copy-switch" checked={copyMode} onChange={(e) => setCopyMode(e.target.checked)} />
         <Typography variant="caption" color="text.secondary">
           {t('convert.losslessCopy')}
         </Typography>
@@ -394,6 +396,7 @@ export default function Convert() {
                   select
                   fullWidth
                   size="small"
+                  data-testid="convert-encoder-type"
                   value={encoderType}
                   onChange={(e) => setEncoderType(e.target.value as EncoderType)}
                 >
@@ -419,6 +422,7 @@ export default function Convert() {
                   value={videoCodec}
                   onChange={setVideoCodec}
                   encoderType={settingsHardwareAcceleration ? effectiveEncoderType : 'auto'}
+                  testId="convert-video-codec"
                 />
               </ErrorBoundary>
             </FieldBox>
@@ -428,7 +432,7 @@ export default function Convert() {
                 <InfoTooltip title={t('convert.audioCodecHint')} />
               </FieldLabel>
               <ErrorBoundary fallback={null}>
-                <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} />
+                <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} testId="convert-audio-codec" />
               </ErrorBoundary>
             </FieldBox>
           </Stack>
@@ -443,6 +447,7 @@ export default function Convert() {
                 select
                 fullWidth
                 size="small"
+                data-testid="convert-video-bitrate"
                 value={videoBitrate}
                 onChange={(e) => {
                   setVideoBitrate(e.target.value);
@@ -465,6 +470,7 @@ export default function Convert() {
                 select
                 fullWidth
                 size="small"
+                data-testid="convert-audio-bitrate"
                 value={audioBitrate}
                 onChange={(e) => {
                   setAudioBitrate(e.target.value);
@@ -491,6 +497,7 @@ export default function Convert() {
                 fullWidth
                 size="small"
                 type="number"
+                data-testid="convert-qscale"
                 error={!!errors.qscale}
                 helperText={errors.qscale || ' '}
                 value={qscale}
@@ -513,6 +520,7 @@ export default function Convert() {
                 select
                 fullWidth
                 size="small"
+                data-testid="convert-scale"
                 value={scale}
                 onChange={(e) => {
                   setScale(e.target.value);
@@ -531,7 +539,13 @@ export default function Convert() {
                 {t('convert.pixelFormat')}
                 <InfoTooltip title={t('convert.pixelFormatHint')} />
               </FieldLabel>
-              <GroupedSelect value={pixelFormat} onChange={setPixelFormat} options={pixelFormatOptions} groupIcons={pixelGroupIcons} />
+              <GroupedSelect
+                testId="convert-pixel-format"
+                value={pixelFormat}
+                onChange={setPixelFormat}
+                options={pixelFormatOptions}
+                groupIcons={pixelGroupIcons}
+              />
             </FieldBox>
           </Stack>
         </>
@@ -542,7 +556,14 @@ export default function Convert() {
           {t('convert.transcoderCore')}
           <InfoTooltip title={t('convert.transcoderCoreHint')} />
         </FieldLabel>
-        <TextField select fullWidth size="small" value={transcoder} onChange={(e) => setTranscoder(e.target.value)}>
+        <TextField
+          select
+          fullWidth
+          size="small"
+          data-testid="convert-transcoder"
+          value={transcoder}
+          onChange={(e) => setTranscoder(e.target.value)}
+        >
           {TRANSCODER_TYPES.map((tc) => (
             <MenuItem key={tc} value={tc}>
               {TRANSCODER_LABELS[tc]}
@@ -554,6 +575,7 @@ export default function Convert() {
       <ActionStack direction="row" spacing={1} useFlexGap>
         <Button
           variant="contained"
+          data-testid="convert-start"
           startIcon={<FontAwesomeIcon icon={faPlay} />}
           onClick={handleStartConversion}
           disabled={!inputFile || !outputFile || isConverting}
@@ -561,22 +583,46 @@ export default function Convert() {
           {isConverting ? t('convert.converting') : t('convert.startConversion')}
         </Button>
         {isConverting && !isPaused && (
-          <Button variant="contained" color="warning" startIcon={<FontAwesomeIcon icon={faPause} />} onClick={pauseConversion}>
+          <Button
+            variant="contained"
+            color="warning"
+            data-testid="convert-pause"
+            startIcon={<FontAwesomeIcon icon={faPause} />}
+            onClick={pauseConversion}
+          >
             {t('convert.pause')}
           </Button>
         )}
         {isConverting && isPaused && (
-          <Button variant="contained" color="success" startIcon={<FontAwesomeIcon icon={faPlay} />} onClick={resumeConversion}>
+          <Button
+            variant="contained"
+            color="success"
+            data-testid="convert-resume"
+            startIcon={<FontAwesomeIcon icon={faPlay} />}
+            onClick={resumeConversion}
+          >
             {t('convert.resume')}
           </Button>
         )}
         {isConverting && (
-          <Button variant="contained" color="error" startIcon={<FontAwesomeIcon icon={faXmark} />} onClick={handleCancelClick}>
+          <Button
+            variant="contained"
+            color="error"
+            data-testid="convert-cancel"
+            startIcon={<FontAwesomeIcon icon={faXmark} />}
+            onClick={handleCancelClick}
+          >
             {t('convert.cancel')}
           </Button>
         )}
         {isDirty && !isConverting && (
-          <Button variant="outlined" color="error" startIcon={<FontAwesomeIcon icon={faXmark} />} onClick={() => setJobCancelOpen(true)}>
+          <Button
+            variant="outlined"
+            color="error"
+            data-testid="convert-cancel-job"
+            startIcon={<FontAwesomeIcon icon={faXmark} />}
+            onClick={() => setJobCancelOpen(true)}
+          >
             {t('convert.cancelJob')}
           </Button>
         )}

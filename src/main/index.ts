@@ -4,9 +4,10 @@
  *
  * On startup, {@link isCliMode} decides between two mutually exclusive modes:
  *
- *  - CLI mode (started with `--cli`, `-h`/`--help`, or two positional args):
- *    waits for `app.whenReady()`, runs {@link runCli}, and exits with
- *    `EXIT_CODES.SUCCESS` or `EXIT_CODES.ERROR`.
+ *  - CLI mode (started with `--cli`, `-h`/`--help`, a subcommand, or two
+ *    positional args):
+ *    waits for `app.whenReady()`, runs {@link runCli}, and exits with the
+ *    mapped exit code.
  *  - GUI mode (default): appends an `autoplay-policy` switch, creates a
  *    frameless splash window followed by the main window, registers IPC
  *    handlers, patches `console` methods so renderer-visible logs are forwarded
@@ -18,7 +19,7 @@
 import { app, BrowserWindow, Menu } from 'electron';
 import * as path from 'path';
 import { registerIpcHandlers } from './ipc/handlers';
-import { runCli } from './cli';
+import { runCli, mapCliErrorToExitCode } from './cli/cli';
 import { Logger } from '../shared/logger';
 import {
   WINDOW_SIZE,
@@ -31,6 +32,7 @@ import {
   APP_ICON,
 } from '../shared/app-constants';
 import { IPC } from '../shared/ipc-channels';
+import { CLI_SUBCOMMANDS } from '../shared/constants';
 import {
   LOG_ACTIVATE_EVENT_MAIN_WINDOW_NULL,
   LOG_ALL_WINDOWS_CLOSED_PLATFORM,
@@ -50,17 +52,37 @@ import {
 const log = new Logger('main/index');
 
 /**
+ * Resolves the preload script path.
+ *
+ * In e2e test mode (`ENCODEX_TEST_MODE=1`) the mock preload
+ * (e2e/mocks/preload.js) is loaded instead of the real bridge so specs can
+ * drive `window.electronAPI` deterministically. The branch is inert outside of
+ * e2e runs.
+ *
+ * @returns {string} Absolute path of the preload script to use.
+ */
+function resolvePreloadPath(): string {
+  if (process.env.ENCODEX_TEST_MODE === '1') {
+    return path.join(__dirname, '..', '..', 'e2e', 'mocks', 'preload.js');
+  }
+  return path.join(__dirname, '..', 'preload', 'index.js');
+}
+
+/**
  * Determines whether the app should start in CLI mode based on process args.
  *
- * Returns `true` when `--cli`, `-h`, or `--help` is present, or when at least
- * two non-option positional arguments (input and output) follow the script
- * path. Otherwise `false` (GUI mode).
+ * Returns `true` when `--cli`, `-h`, `--help`, or a CLI subcommand name is
+ * present, or when at least two non-option positional arguments (input and
+ * output) follow the script path. Otherwise `false` (GUI mode).
  *
  * @returns {boolean} `true` if the app should run as a CLI, `false` for GUI.
  */
 function isCliMode(): boolean {
   const argv = process.argv;
   if (argv.includes('--cli') || argv.includes('-h') || argv.includes('--help')) {
+    return true;
+  }
+  if (argv.some((arg) => (CLI_SUBCOMMANDS as readonly string[]).includes(arg as never))) {
     return true;
   }
   const args = argv.slice(2).filter((a) => !a.startsWith('-'));
@@ -77,7 +99,7 @@ if (isCliMode()) {
       })
       .catch((err) => {
         log.error(LOG_CLI_FAILED, err);
-        app.exit(EXIT_CODES.ERROR);
+        app.exit(mapCliErrorToExitCode(err));
       });
   });
 } else {
@@ -160,7 +182,7 @@ if (isCliMode()) {
       show: false,
       ...(process.platform !== 'darwin' ? { icon: path.join(app.getAppPath(), APP_ICON) } : {}),
       webPreferences: {
-        preload: path.join(__dirname, '..', 'preload', 'index.js'),
+        preload: resolvePreloadPath(),
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: false,

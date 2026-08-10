@@ -92,10 +92,18 @@ export const ROOT_ELEMENT_ID = 'root';
  * @const {Object} EXIT_CODES
  * @property {number} SUCCESS - Code returned on clean shutdown.
  * @property {number} ERROR - Code returned when the app exits with an error.
+ * @property {number} USAGE - CLI exit code for invalid/incomplete arguments.
+ * @property {number} CANCELLED - CLI exit code for a user-cancelled conversion.
+ * @property {number} NOT_FOUND - CLI exit code when FFmpeg/FFprobe is missing.
+ * @property {number} TIMEOUT - CLI exit code when a conversion exceeds its timeout.
  */
 export const EXIT_CODES = {
   SUCCESS: 0,
   ERROR: 1,
+  USAGE: 2,
+  CANCELLED: 3,
+  NOT_FOUND: 4,
+  TIMEOUT: 5,
 } as const;
 
 /**
