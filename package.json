@@ -23,7 +23,7 @@
     "test:watch": "vitest",
     "test:unit": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:integration": "vitest run --config vitest.integration.config.ts 2>/dev/null || echo 'No integration tests found'",
+    "test:integration": "vitest run --config vitest.integration.config.ts --passWithNoTests",
     "test:e2e": "npm run build && vitest run --config e2e/vitest.e2e.config.ts",
     "test:e2e:open": "npm run build && set E2E=true&& vitest run --config e2e/vitest.e2e.config.ts",
     "pack": "npm run build && electron-builder --dir",

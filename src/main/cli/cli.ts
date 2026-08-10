@@ -47,18 +47,28 @@ function getUserArgs(): string[] {
 }
 
 /**
+ * Aliases for CLI subcommands, resolved like the canonical names when
+ * detecting whether an invocation already names a subcommand.
+ * @const {readonly string[]} CLI_ALIASES
+ */
+const CLI_ALIASES = ['c', 'audio'] as const;
+
+/**
  * Converts legacy flat CLI usage into the equivalent subcommand form.
  *
  *  - `encodex in.mp4 out.mp4` / `encodex in.mp4 -v libx264` → `convert …`
  *  - `encodex --info in.mp4` → `info in.mp4`
  *
- * Invocations that already name a subcommand are returned unchanged.
+ * Invocations that already name a subcommand (or an alias) are returned
+ * unchanged.
  * @param {string[]} args - Raw user arguments.
  * @returns {string[]} Arguments in subcommand form.
  */
 export function applyLegacyShim(args: string[]): string[] {
   if (args.length === 0) return args;
-  const hasSubcommand = args.some((arg) => (CLI_SUBCOMMANDS as readonly string[]).includes(arg as never));
+  const hasSubcommand = args.some(
+    (arg) => (CLI_SUBCOMMANDS as readonly string[]).includes(arg as never) || (CLI_ALIASES as readonly string[]).includes(arg as never),
+  );
   if (hasSubcommand) return args;
   if (args.includes('--info')) {
     return ['info', ...args.filter((arg) => arg !== '--info')];
@@ -141,12 +151,7 @@ export async function runCli(): Promise<void> {
   const { Command } = await import('commander');
   const program = new Command();
 
-  program
-    .name(APP_NAME)
-    .description('Multimedia conversion tool')
-    .showHelpAfterError()
-    .showSuggestionAfterError()
-    .exitOverride();
+  program.name(APP_NAME).description('Multimedia conversion tool').showHelpAfterError().showSuggestionAfterError().exitOverride();
 
   addGlobalOptions(program);
 

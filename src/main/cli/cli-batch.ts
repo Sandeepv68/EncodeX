@@ -15,7 +15,7 @@ import { suggestedExtensionForVideoCodec } from '../../shared/codec-containers';
 import { createError, ErrorCode } from '../../shared/errors';
 import { createMultiBar, status, success, warn, cliConfig } from './cli-ui';
 import { expandInputs, deriveOutputPath, getInputExtension } from './cli-util';
-import { buildConversionOptions, resolveOutputPath } from './cli-convert';
+import { buildConversionOptions } from './cli-convert';
 import type { ConvertCliFlags } from './cli-convert';
 import { resolveTranscoderType, transcoderLabel, CliExitError } from './cli-options';
 import type { ConversionOptions, ConversionProgress, QueueJob } from '../../shared/types';
@@ -61,11 +61,11 @@ export async function runBatch(params: RunBatchParams): Promise<void> {
   const suffix = params.suffix ?? DEFAULT_SUFFIX;
 
   const outputFor = (file: string): string => {
+    const outputExt = batchOutputExtension(file, options);
     if (params.outputDir) {
-      const outputExt = batchOutputExtension(file, options);
       return deriveOutputPath(file, { outputDir: params.outputDir, suffix, outputExt });
     }
-    return resolveOutputPath(file, params.flags, options);
+    return deriveOutputPath(file, { suffix, outputExt });
   };
 
   if (!cliConfig.quiet) {
@@ -160,9 +160,9 @@ export async function runBatch(params: RunBatchParams): Promise<void> {
 
 /**
  * Derives the output extension for a batch job, mirroring the single-conversion
- * naming in {@link resolveOutputPath}: copy mode and audio-only jobs keep the
- * source extension, otherwise the codec's suggested container extension is used
- * with the source extension as a fallback.
+ * naming in {@link resolveOutputPath resolveOutputPath}: copy mode and audio-only
+ * jobs keep the source extension, otherwise the codec's suggested container
+ * extension is used with the source extension as a fallback.
  * @param {string} file - Input file path.
  * @param {ConversionOptions} options - Built conversion options.
  * @returns {string} The output extension (without dot).

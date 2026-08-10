@@ -17,6 +17,12 @@ describe('applyLegacyShim', () => {
     expect(applyLegacyShim(['batch', '*.mp4'])).toEqual(['batch', '*.mp4']);
   });
 
+  it('leaves subcommand aliases unchanged', () => {
+    expect(applyLegacyShim(['c', 'in.mp4', 'out.mp4'])).toEqual(['c', 'in.mp4', 'out.mp4']);
+    expect(applyLegacyShim(['audio', 'in.mp4'])).toEqual(['audio', 'in.mp4']);
+    expect(applyLegacyShim(['audio', 'in.mp4', '-o', 'out.mp3'])).toEqual(['audio', 'in.mp4', '-o', 'out.mp3']);
+  });
+
   it('prepends convert for legacy positional usage', () => {
     expect(applyLegacyShim(['in.mp4', 'out.mp4'])).toEqual(['convert', 'in.mp4', 'out.mp4']);
     expect(applyLegacyShim(['in.mp4'])).toEqual(['convert', 'in.mp4']);

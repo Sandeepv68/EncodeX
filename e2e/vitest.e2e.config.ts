@@ -12,6 +12,7 @@ export default defineConfig({
     environment: 'node',
     include: ['e2e/**/*.spec.ts'],
     exclude: ['node_modules', 'dist'],
+    env: { E2E: 'true' },
     testTimeout: 60000,
     hookTimeout: 60000,
     setupFiles: [],
