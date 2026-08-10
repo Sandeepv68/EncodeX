@@ -3,6 +3,9 @@
   "version": "1.0.0-beta.0",
   "description": "Multimedia converter built on FFmpeg, React, TypeScript, and Electron",
   "main": "dist/main/index.js",
+  "bin": {
+    "encodex": "bin/encodex.js"
+  },
   "scripts": {
     "dev": "concurrently -k \"npm run dev:renderer\" \"npm run dev:main\"",
     "dev:renderer": "vite",

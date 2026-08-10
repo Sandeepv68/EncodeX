@@ -8,6 +8,7 @@ const { CommandMock, createTranscoderMock, getAction, outputHelpMock, parseAsync
   class Command {
     name = vi.fn(() => this);
     description = vi.fn(() => this);
+    configureOutput = vi.fn(() => this);
     argument = vi.fn(() => this);
     option = vi.fn(() => this);
     action = vi.fn((fn: typeof actionHandler) => {

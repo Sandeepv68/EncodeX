@@ -17,6 +17,7 @@
  */
 
 import { createTranscoder } from './transcoders/factory';
+import { getCliLogo, printCliLogo, CLI_THEME_IDS, DEFAULT_CLI_THEME, isCliThemeId, CliThemeId } from './cli-logo';
 import { Logger } from '../shared/logger';
 import { ConversionOptions, TranscoderType } from '../shared/types';
 import { APP_NAME } from '../shared/app-constants';
@@ -71,15 +72,49 @@ const log = new Logger('main/cli');
  *   conversion errors or exceeds the conversion timeout.
  */
 export async function runCli(): Promise<void> {
+  /**
+   * Locates the index of the bundled `index.js` script argument in
+   * `process.argv`.
+   *
+   * Walks `process.argv` backwards and returns the index of the first argument
+   * ending in `index.js`, or -1 when none matches. The found index is used to
+   * slice off Electron/Node runtime arguments so only user-supplied CLI
+   * arguments remain.
+   * @const {number} scriptIndex
+   */
+  const scriptIndex = (() => {
+    for (let i = process.argv.length - 1; i >= 0; i--) {
+      if (process.argv[i].endsWith('index.js')) return i;
+    }
+    return -1;
+  })();
+  const userArgs = scriptIndex >= 0 ? process.argv.slice(scriptIndex + 1) : process.argv.slice(2);
+  const cliArgs = userArgs.filter((arg) => arg !== '--cli');
+
+  /**
+   * Resolves the `--theme` option value from the raw CLI arguments so the logo
+   * can be colored before Commander finishes parsing. Supports both `--theme
+   * <id>` and `--theme=<id>`; unknown ids fall back to the default theme.
+   * @const {CliThemeId} themeId
+   */
+  const themeId: CliThemeId = (() => {
+    const flagIndex = cliArgs.indexOf('--theme');
+    const equalsArg = cliArgs.find((arg) => arg.startsWith('--theme='));
+    const value = flagIndex >= 0 ? cliArgs[flagIndex + 1] : equalsArg?.slice('--theme='.length);
+    return isCliThemeId(value) ? value : DEFAULT_CLI_THEME;
+  })();
+
   const { Command } = await import('commander');
   const program = new Command();
 
   program
     .name(APP_NAME)
-    .description('EncodeX - Multimedia conversion tool')
+    .configureOutput({ getOutHasColors: () => true })
+    .description(`${getCliLogo(themeId)}\nEncodeX - Multimedia conversion tool`)
     .argument('[input]', 'Input file')
     .argument('[output]', 'Output file')
     .option('--transcoder <type>', `Set transcoder type (${TRANSCODER_TYPES.join(', ')})`, TRANSCODER_TYPES[0])
+    .option('--theme <id>', `Logo color theme (${CLI_THEME_IDS.join(', ')})`)
     .option('-v, --video-codec <codec>', 'Set video codec (could set copy)')
     .option('-q, --qscale <qscale>', 'Set qscale for video codec', parseInt)
     .option('-a, --audio-codec <codec>', 'Set audio codec (could set copy)')
@@ -206,30 +241,13 @@ export async function runCli(): Promise<void> {
       });
     });
 
-  /**
-   * Locates the index of the bundled `index.js` script argument in
-   * `process.argv`.
-   *
-   * Walks `process.argv` backwards and returns the index of the first argument
-   * ending in `index.js`, or -1 when none matches. The found index is used to
-   * slice off Electron/Node runtime arguments so only user-supplied CLI
-   * arguments remain.
-   * @const {number} scriptIndex
-   */
-  const scriptIndex = (() => {
-    for (let i = process.argv.length - 1; i >= 0; i--) {
-      if (process.argv[i].endsWith('index.js')) return i;
-    }
-    return -1;
-  })();
-  const userArgs = scriptIndex >= 0 ? process.argv.slice(scriptIndex + 1) : process.argv.slice(2);
-  const cliArgs = userArgs.filter((arg) => arg !== '--cli');
-
   if (cliArgs.includes('-h') || cliArgs.includes('--help')) {
     log.debug(LOG_SHOWING_HELP);
     program.outputHelp();
     return;
   }
+
+  printCliLogo(themeId);
 
   log.info(LOG_PARSING_CLI_ARGS, cliArgs);
   await program.parseAsync(cliArgs, { from: 'user' });

@@ -272,29 +272,32 @@ npm run dist
 
 ## 💻 CLI Usage
 
-Build first, then invoke the compiled CLI through Electron. CLI mode auto-activates when two positional arguments (input + output) are given, or explicitly with `--cli`:
+Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode auto-activates when two positional arguments (input + output) are given, or explicitly with `--cli`:
 
 ```bash
-npx electron . --cli input.mp4 output.avi --video-codec libx265 --audio-codec aac
+encodex input.mp4 output.avi --video-codec libx265 --audio-codec aac
 
 # Show media info as JSON
-npx electron . --cli input.mp4 --info
+encodex --cli input.mp4 --info
 
 # Lossless copy to different container
-npx electron . --cli input.mkv output.mp4 --copy
+encodex input.mkv output.mp4 --copy
 
 # Cut a segment
-npx electron . --cli input.mp4 output.mp4 --start-time 00:01:00 --end-time 00:02:30
+encodex input.mp4 output.mp4 --start-time 00:01:00 --end-time 00:02:30
 
 # Use a specific transcoder core
-npx electron . --cli input.mp4 output.mp4 --transcoder FFTOOL
+encodex input.mp4 output.mp4 --transcoder FFTOOL
 ```
+
+To make `encodex` available globally, run `npm link` from the project root (or `npm install -g .`). The raw `npx electron . --cli ...` form still works as an alternative.
 
 ### 🚩 CLI Options
 
 | Option                      | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
 | `--transcoder <type>`       | Transcoder core: `FFMPEG`, `FFTOOL`, `BMF` (default: `FFMPEG`) |
+| `--theme <id>`              | Logo color theme: `light`, `ocean`, `sunset`, `forest`, `lavender`, `rose`, `slate`, `dark` (default: `light`) |
 | `-v, --video-codec <codec>` | Video codec (e.g. `libx264`, `libx265`, `copy`)                |
 | `-a, --audio-codec <codec>` | Audio codec (e.g. `aac`, `libmp3lame`, `copy`)                 |
 | `-q, --qscale <qscale>`     | Quality scale (0–31)                                           |
