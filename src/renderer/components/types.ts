@@ -126,6 +126,7 @@ export interface CodecSelectProps {
   value: string;
   onChange: (value: string) => void;
   encoderType?: EncoderType;
+  testId?: string;
 }
 
 /**
@@ -250,6 +251,7 @@ export interface FilePathFieldProps {
   onBlur?: () => void;
   error?: string;
   hint?: string;
+  testId?: string;
 }
 
 /**
@@ -290,6 +292,7 @@ export interface GroupedSelectProps {
   onChange: (value: string) => void;
   options: readonly GroupedOption[];
   groupIcons: Record<string, IconDefinition>;
+  testId?: string;
 }
 
 /**
@@ -384,6 +387,7 @@ export interface TimeFieldProps {
   placeholder?: string;
   error?: string;
   hint?: string;
+  testId?: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
 }

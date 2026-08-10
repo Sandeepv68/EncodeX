@@ -675,7 +675,7 @@ export default function VideoCut() {
               </ErrorBoundary>
             ) : (
               <Tooltip title={t('videoCut.changeFileHint')} arrow>
-                <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faFolderOpen} />} onClick={handleBrowseVideo}>
+                <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faFolderOpen} />} onClick={handleBrowseVideo} data-testid="video-cut-change">
                   {t('videoCut.changeFile')}
                 </Button>
               </Tooltip>
@@ -688,6 +688,7 @@ export default function VideoCut() {
             value={output}
             placeholder={t('videoCut.placeholderOutput')}
             buttonLabel={t('convert.browse')}
+            testId="video-cut-output"
             onChange={(v) => {
               setOutput(v);
               clearFieldError('output');
@@ -711,6 +712,7 @@ export default function VideoCut() {
               hint={t('videoCut.startTimeHint')}
               value={startTime}
               placeholder={t('videoCut.placeholderStart')}
+              testId="video-cut-start"
               error={errors.startTime}
               onChange={(v) => {
                 setStartTime(v);
@@ -726,6 +728,7 @@ export default function VideoCut() {
                 hint={t('videoCut.durationHint')}
                 value={duration}
                 placeholder={t('videoCut.placeholderDuration')}
+                testId="video-cut-duration"
                 error={errors.duration}
                 onChange={(v) => {
                   setDuration(v);
@@ -741,6 +744,7 @@ export default function VideoCut() {
                 hint={t('videoCut.endTimeHint')}
                 value={endTime}
                 placeholder={t('videoCut.placeholderEnd')}
+                testId="video-cut-end"
                 error={errors.endTime}
                 onChange={(v) => {
                   setEndTime(v);
@@ -757,7 +761,7 @@ export default function VideoCut() {
             <Switch
               checked={useDuration}
               onChange={() => setUseDuration(!useDuration)}
-              slotProps={{ input: { 'aria-label': t('videoCut.useDuration') } }}
+              slotProps={{ input: { 'aria-label': t('videoCut.useDuration'), 'data-testid': 'video-cut-use-duration' } }}
             />
             <Typography variant="caption" color="text.secondary">
               {t('videoCut.useDuration')}
@@ -773,18 +777,19 @@ export default function VideoCut() {
                   startIcon={<FontAwesomeIcon icon={faScissors} />}
                   onClick={handleCut}
                   disabled={!input || !output || isConverting}
+                  data-testid="video-cut-cut"
                 >
                   {isConverting ? t('videoCut.cutting') : t('videoCut.cut')}
                 </Button>
               </span>
             </Tooltip>
             {isConverting && !isPaused && (
-              <Button variant="contained" color="warning" startIcon={<FontAwesomeIcon icon={faPause} />} onClick={pauseCut}>
+              <Button variant="contained" color="warning" startIcon={<FontAwesomeIcon icon={faPause} />} onClick={pauseCut} data-testid="video-cut-pause">
                 {t('videoCut.pause')}
               </Button>
             )}
             {isConverting && isPaused && (
-              <Button variant="contained" color="success" startIcon={<FontAwesomeIcon icon={faPlay} />} onClick={resumeCut}>
+              <Button variant="contained" color="success" startIcon={<FontAwesomeIcon icon={faPlay} />} onClick={resumeCut} data-testid="video-cut-resume">
                 {t('videoCut.resume')}
               </Button>
             )}
@@ -794,6 +799,7 @@ export default function VideoCut() {
                 color="error"
                 startIcon={<FontAwesomeIcon icon={faXmark} />}
                 onClick={() => setCancelConfirmOpen(true)}
+                data-testid="video-cut-cancel"
               >
                 {t('videoCut.cancel')}
               </Button>
@@ -804,6 +810,7 @@ export default function VideoCut() {
                 color="error"
                 startIcon={<FontAwesomeIcon icon={faXmark} />}
                 onClick={() => setJobCancelOpen(true)}
+                data-testid="video-cut-cancel-job"
               >
                 {t('videoCut.cancelJob')}
               </Button>

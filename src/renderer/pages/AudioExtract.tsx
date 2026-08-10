@@ -262,6 +262,7 @@ export default function AudioExtract() {
         placeholder={t('audioExtract.placeholderOutput')}
         buttonLabel={t('convert.browse')}
         onChange={handleOutputChange}
+        testId="audio-extract-output"
         onBlur={() => {
           if (!store.output.trim()) setFieldError('output', t('validation.outputRequired'));
         }}
@@ -282,7 +283,7 @@ export default function AudioExtract() {
             <InfoTooltip title={t('audioExtract.audioCodecHint')} />
           </FieldLabel>
           <ErrorBoundary fallback={null}>
-            <CodecSelect type="audio" value={store.audioCodec} onChange={handleCodecChange} />
+            <CodecSelect type="audio" value={store.audioCodec} onChange={handleCodecChange} testId="audio-extract-codec" />
           </ErrorBoundary>
         </FieldBox>
         <FieldBox>
@@ -290,7 +291,7 @@ export default function AudioExtract() {
             {t('audioExtract.bitrate')}
             <InfoTooltip title={t('audioExtract.bitrateHint')} />
           </FieldLabel>
-          <TextField select fullWidth size="small" value={store.audioBitrate} onChange={(e) => store.setAudioBitrate(e.target.value)}>
+          <TextField select fullWidth size="small" value={store.audioBitrate} onChange={(e) => store.setAudioBitrate(e.target.value)} data-testid="audio-extract-bitrate">
             {BITRATE_OPTIONS.map((b) => (
               <MenuItem key={b} value={b}>
                 {b}
@@ -306,6 +307,7 @@ export default function AudioExtract() {
           startIcon={<FontAwesomeIcon icon={faMusic} />}
           onClick={handleExtract}
           disabled={!store.input || !store.output || store.isConverting}
+          data-testid="audio-extract-extract"
         >
           {store.isConverting ? t('audioExtract.extracting') : t('audioExtract.extract')}
         </Button>

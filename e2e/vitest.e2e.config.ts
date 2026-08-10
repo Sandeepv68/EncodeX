@@ -12,9 +12,11 @@ export default defineConfig({
     environment: 'node',
     include: ['e2e/**/*.spec.ts'],
     exclude: ['node_modules', 'dist'],
-    env: { E2E: 'true' },
+    env: { E2E: 'true', ENCODEX_TEST_MODE: '1' },
     testTimeout: 60000,
     hookTimeout: 60000,
     setupFiles: [],
+    fileParallelism: false,
+    ...(process.env.CI ? { retry: 2 } : {}),
   },
 });

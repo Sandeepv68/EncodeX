@@ -43,7 +43,7 @@ import { GroupHeader, GroupLabel, GroupHeaderIconBox } from '../styles/GroupedSe
  *   name to the FontAwesome icon shown in its header.
  * @returns {JSX.Element} The select field with grouped items.
  */
-export default function GroupedSelect({ value, onChange, options, groupIcons }: GroupedSelectProps) {
+export default function GroupedSelect({ value, onChange, options, groupIcons, testId }: GroupedSelectProps) {
   let lastGroup = '';
   const items: ReturnType<typeof MenuItem>[] = [];
   for (const opt of options) {
@@ -66,7 +66,7 @@ export default function GroupedSelect({ value, onChange, options, groupIcons }: 
     );
   }
   return (
-    <TextField select fullWidth size="small" value={value} onChange={(e) => onChange(e.target.value)}>
+    <TextField select fullWidth size="small" data-testid={testId} value={value} onChange={(e) => onChange(e.target.value)}>
       {items}
     </TextField>
   );

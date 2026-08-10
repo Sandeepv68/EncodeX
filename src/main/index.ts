@@ -52,6 +52,23 @@ import {
 const log = new Logger('main/index');
 
 /**
+ * Resolves the preload script path.
+ *
+ * In e2e test mode (`ENCODEX_TEST_MODE=1`) the mock preload
+ * (e2e/mocks/preload.js) is loaded instead of the real bridge so specs can
+ * drive `window.electronAPI` deterministically. The branch is inert outside of
+ * e2e runs.
+ *
+ * @returns {string} Absolute path of the preload script to use.
+ */
+function resolvePreloadPath(): string {
+  if (process.env.ENCODEX_TEST_MODE === '1') {
+    return path.join(__dirname, '..', '..', 'e2e', 'mocks', 'preload.js');
+  }
+  return path.join(__dirname, '..', 'preload', 'index.js');
+}
+
+/**
  * Determines whether the app should start in CLI mode based on process args.
  *
  * Returns `true` when `--cli`, `-h`, `--help`, or a CLI subcommand name is
@@ -165,7 +182,7 @@ if (isCliMode()) {
       show: false,
       ...(process.platform !== 'darwin' ? { icon: path.join(app.getAppPath(), APP_ICON) } : {}),
       webPreferences: {
-        preload: path.join(__dirname, '..', 'preload', 'index.js'),
+        preload: resolvePreloadPath(),
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: false,

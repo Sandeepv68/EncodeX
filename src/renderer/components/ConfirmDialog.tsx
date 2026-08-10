@@ -39,16 +39,16 @@ import type { ConfirmDialogProps } from './types';
  */
 export default function ConfirmDialog({ open, title, message, confirmLabel, cancelLabel, onClose, onConfirm }: ConfirmDialogProps) {
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} slotProps={{ paper: { 'data-testid': 'confirm-dialog' } }}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button startIcon={<FontAwesomeIcon icon={faXmark} />} onClick={onClose}>
+        <Button startIcon={<FontAwesomeIcon icon={faXmark} />} onClick={onClose} data-testid="confirm-cancel">
           {cancelLabel}
         </Button>
-        <Button startIcon={<FontAwesomeIcon icon={faCheck} />} onClick={onConfirm} color="error" variant="contained">
+        <Button startIcon={<FontAwesomeIcon icon={faCheck} />} onClick={onConfirm} color="error" variant="contained" data-testid="confirm-confirm">
           {confirmLabel}
         </Button>
       </DialogActions>

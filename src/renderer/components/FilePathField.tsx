@@ -62,10 +62,11 @@ export default function FilePathField({
   onBlur,
   error,
   hint,
+  testId,
 }: FilePathFieldProps) {
   const helperText = error ? error : onChange ? ' ' : undefined;
   return (
-    <Box>
+    <Box data-testid={testId}>
       <FieldLabel variant="caption" color="text.secondary">
         {label}
         {hint && <InfoTooltip title={hint} />}

@@ -126,7 +126,7 @@ export default function Logs() {
         {t('nav.logs')}
       </PageTitle>
       <LogsHeader>
-        <FilterSelect size="small" value={filter} onChange={(e) => setFilter(e.target.value as string)}>
+        <FilterSelect size="small" value={filter} onChange={(e) => setFilter(e.target.value as string)} data-testid="logs-filter">
           <MenuItem value="ALL">{t('logs.levelAll')}</MenuItem>
           <MenuItem value="DEBUG">{t('logs.levelDebug')}</MenuItem>
           <MenuItem value="INFO">{t('logs.levelInfo')}</MenuItem>
@@ -134,12 +134,12 @@ export default function Logs() {
           <MenuItem value="ERROR">{t('logs.levelError')}</MenuItem>
         </FilterSelect>
         <Tooltip title={t('logs.clear')}>
-          <IconButton size="small" onClick={clear}>
+          <IconButton size="small" onClick={clear} data-testid="logs-clear">
             <LogActionIcon icon={faEraser} />
           </IconButton>
         </Tooltip>
         <Tooltip title={t('logs.download')}>
-          <IconButton size="small" onClick={downloadLogs}>
+          <IconButton size="small" onClick={downloadLogs} data-testid="logs-download">
             <LogActionIcon icon={faDownload} />
           </IconButton>
         </Tooltip>

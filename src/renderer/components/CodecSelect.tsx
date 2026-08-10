@@ -76,7 +76,7 @@ const groupIcons: Record<string, IconDefinition> = {
  *   or 'software' restricts video codecs to that category, 'auto' shows all.
  * @returns {JSX.Element} The grouped select control.
  */
-export default function CodecSelect({ type, value, onChange, encoderType = 'auto' }: CodecSelectProps) {
+export default function CodecSelect({ type, value, onChange, encoderType = 'auto', testId }: CodecSelectProps) {
   const { videoCodecs, audioCodecs } = useCapabilities();
   const base = type === 'video' ? videoCodecs : audioCodecs;
   const filtered =
@@ -85,5 +85,5 @@ export default function CodecSelect({ type, value, onChange, encoderType = 'auto
       : base;
   const codecs: GroupedOption[] =
     value && !filtered.some((c) => c.value === value) ? [{ value, label: value, group: 'Other' }, ...filtered] : filtered;
-  return <GroupedSelect value={value} onChange={onChange} options={codecs} groupIcons={groupIcons} />;
+  return <GroupedSelect testId={testId} value={value} onChange={onChange} options={codecs} groupIcons={groupIcons} />;
 }
