@@ -182,7 +182,13 @@ export default function Settings() {
       {hardwareAcceleration && (
         <SettingsSection>
           <SettingLabel text={t('settings.hwaccelMode')} hint={t('settings.hwaccelModeHint')} />
-          <ModeSelect select size="small" data-testid="settings-hwaccel-mode" value={hwaccelMode} onChange={(e) => setHwaccelMode(e.target.value as HwAccelMode)}>
+          <ModeSelect
+            select
+            size="small"
+            data-testid="settings-hwaccel-mode"
+            value={hwaccelMode}
+            onChange={(e) => setHwaccelMode(e.target.value as HwAccelMode)}
+          >
             {HWACCEL_MODES.map((m) => (
               <MenuItem key={m} value={m}>
                 {t(hwaccelModeLabel[m])}
@@ -194,7 +200,13 @@ export default function Settings() {
       {hardwareAcceleration && (
         <SettingsSection>
           <SettingLabel text={t('settings.encoderType')} hint={t('settings.encoderTypeHint')} />
-          <ModeSelect select size="small" data-testid="settings-encoder-type" value={encoderType} onChange={(e) => setEncoderType(e.target.value as EncoderType)}>
+          <ModeSelect
+            select
+            size="small"
+            data-testid="settings-encoder-type"
+            value={encoderType}
+            onChange={(e) => setEncoderType(e.target.value as EncoderType)}
+          >
             {ENCODER_TYPES.map((type) => (
               <MenuItem key={type} value={type}>
                 {t(encoderTypeLabel[type])}

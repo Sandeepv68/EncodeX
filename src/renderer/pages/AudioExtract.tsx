@@ -291,7 +291,14 @@ export default function AudioExtract() {
             {t('audioExtract.bitrate')}
             <InfoTooltip title={t('audioExtract.bitrateHint')} />
           </FieldLabel>
-          <TextField select fullWidth size="small" value={store.audioBitrate} onChange={(e) => store.setAudioBitrate(e.target.value)} data-testid="audio-extract-bitrate">
+          <TextField
+            select
+            fullWidth
+            size="small"
+            value={store.audioBitrate}
+            onChange={(e) => store.setAudioBitrate(e.target.value)}
+            data-testid="audio-extract-bitrate"
+          >
             {BITRATE_OPTIONS.map((b) => (
               <MenuItem key={b} value={b}>
                 {b}

@@ -48,7 +48,13 @@ export default function ConfirmDialog({ open, title, message, confirmLabel, canc
         <Button startIcon={<FontAwesomeIcon icon={faXmark} />} onClick={onClose} data-testid="confirm-cancel">
           {cancelLabel}
         </Button>
-        <Button startIcon={<FontAwesomeIcon icon={faCheck} />} onClick={onConfirm} color="error" variant="contained" data-testid="confirm-confirm">
+        <Button
+          startIcon={<FontAwesomeIcon icon={faCheck} />}
+          onClick={onConfirm}
+          color="error"
+          variant="contained"
+          data-testid="confirm-confirm"
+        >
           {confirmLabel}
         </Button>
       </DialogActions>

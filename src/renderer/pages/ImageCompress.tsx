@@ -388,7 +388,14 @@ export default function ImageCompress() {
             {t('imageCompress.outputFormat')}
             <InfoTooltip title={t('imageCompress.outputFormatHint')} />
           </FieldLabel>
-          <TextField select fullWidth size="small" value={format} onChange={(e) => handleFormatChange(e.target.value)} data-testid="image-compress-format">
+          <TextField
+            select
+            fullWidth
+            size="small"
+            value={format}
+            onChange={(e) => handleFormatChange(e.target.value)}
+            data-testid="image-compress-format"
+          >
             {IMAGE_FORMATS.map((f) => (
               <MenuItem key={f.value} value={f.value}>
                 {f.label}
@@ -427,7 +434,14 @@ export default function ImageCompress() {
             {t('imageCompress.scale')}
             <InfoTooltip title={t('imageCompress.scaleHint')} />
           </FieldLabel>
-          <TextField select fullWidth size="small" value={scale} onChange={(e) => setScale(e.target.value)} data-testid="image-compress-scale">
+          <TextField
+            select
+            fullWidth
+            size="small"
+            value={scale}
+            onChange={(e) => setScale(e.target.value)}
+            data-testid="image-compress-scale"
+          >
             <MenuItem value="">{t('imageCompress.noScale')}</MenuItem>
             {SCALE_OPTIONS.filter((s) => s !== '').map((s) => (
               <MenuItem key={s} value={s}>

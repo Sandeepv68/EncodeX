@@ -539,7 +539,13 @@ export default function Convert() {
                 {t('convert.pixelFormat')}
                 <InfoTooltip title={t('convert.pixelFormatHint')} />
               </FieldLabel>
-              <GroupedSelect testId="convert-pixel-format" value={pixelFormat} onChange={setPixelFormat} options={pixelFormatOptions} groupIcons={pixelGroupIcons} />
+              <GroupedSelect
+                testId="convert-pixel-format"
+                value={pixelFormat}
+                onChange={setPixelFormat}
+                options={pixelFormatOptions}
+                groupIcons={pixelGroupIcons}
+              />
             </FieldBox>
           </Stack>
         </>
@@ -550,7 +556,14 @@ export default function Convert() {
           {t('convert.transcoderCore')}
           <InfoTooltip title={t('convert.transcoderCoreHint')} />
         </FieldLabel>
-        <TextField select fullWidth size="small" data-testid="convert-transcoder" value={transcoder} onChange={(e) => setTranscoder(e.target.value)}>
+        <TextField
+          select
+          fullWidth
+          size="small"
+          data-testid="convert-transcoder"
+          value={transcoder}
+          onChange={(e) => setTranscoder(e.target.value)}
+        >
           {TRANSCODER_TYPES.map((tc) => (
             <MenuItem key={tc} value={tc}>
               {TRANSCODER_LABELS[tc]}
@@ -592,12 +605,24 @@ export default function Convert() {
           </Button>
         )}
         {isConverting && (
-          <Button variant="contained" color="error" data-testid="convert-cancel" startIcon={<FontAwesomeIcon icon={faXmark} />} onClick={handleCancelClick}>
+          <Button
+            variant="contained"
+            color="error"
+            data-testid="convert-cancel"
+            startIcon={<FontAwesomeIcon icon={faXmark} />}
+            onClick={handleCancelClick}
+          >
             {t('convert.cancel')}
           </Button>
         )}
         {isDirty && !isConverting && (
-          <Button variant="outlined" color="error" data-testid="convert-cancel-job" startIcon={<FontAwesomeIcon icon={faXmark} />} onClick={() => setJobCancelOpen(true)}>
+          <Button
+            variant="outlined"
+            color="error"
+            data-testid="convert-cancel-job"
+            startIcon={<FontAwesomeIcon icon={faXmark} />}
+            onClick={() => setJobCancelOpen(true)}
+          >
             {t('convert.cancelJob')}
           </Button>
         )}

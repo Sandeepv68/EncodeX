@@ -675,7 +675,12 @@ export default function VideoCut() {
               </ErrorBoundary>
             ) : (
               <Tooltip title={t('videoCut.changeFileHint')} arrow>
-                <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faFolderOpen} />} onClick={handleBrowseVideo} data-testid="video-cut-change">
+                <Button
+                  variant="outlined"
+                  startIcon={<FontAwesomeIcon icon={faFolderOpen} />}
+                  onClick={handleBrowseVideo}
+                  data-testid="video-cut-change"
+                >
                   {t('videoCut.changeFile')}
                 </Button>
               </Tooltip>
@@ -784,12 +789,24 @@ export default function VideoCut() {
               </span>
             </Tooltip>
             {isConverting && !isPaused && (
-              <Button variant="contained" color="warning" startIcon={<FontAwesomeIcon icon={faPause} />} onClick={pauseCut} data-testid="video-cut-pause">
+              <Button
+                variant="contained"
+                color="warning"
+                startIcon={<FontAwesomeIcon icon={faPause} />}
+                onClick={pauseCut}
+                data-testid="video-cut-pause"
+              >
                 {t('videoCut.pause')}
               </Button>
             )}
             {isConverting && isPaused && (
-              <Button variant="contained" color="success" startIcon={<FontAwesomeIcon icon={faPlay} />} onClick={resumeCut} data-testid="video-cut-resume">
+              <Button
+                variant="contained"
+                color="success"
+                startIcon={<FontAwesomeIcon icon={faPlay} />}
+                onClick={resumeCut}
+                data-testid="video-cut-resume"
+              >
                 {t('videoCut.resume')}
               </Button>
             )}
