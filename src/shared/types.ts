@@ -78,6 +78,7 @@ export interface CodecContainerInfo {
  * @property {string} [duration] - Maximum output duration.
  * @property {boolean} [copy] - Whether to stream-copy the original streams instead of re-encoding.
  * @property {boolean} [audio] - Whether the output includes an audio stream.
+ * @property {boolean} [video] - Whether the output includes a video stream.
  * @property {boolean} [hardwareAcceleration] - Whether hardware acceleration is enabled.
  * @property {HwAccelMode} [hwaccelMode] - Hardware acceleration mode to use.
  */
@@ -95,6 +96,7 @@ export interface ConversionOptions {
   duration?: string;
   copy?: boolean;
   audio?: boolean;
+  video?: boolean;
   hardwareAcceleration?: boolean;
   hwaccelMode?: HwAccelMode;
 }

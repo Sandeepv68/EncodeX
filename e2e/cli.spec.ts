@@ -49,7 +49,7 @@ function spawnElectron(args: string[], timeout: number): Promise<{ status: numbe
   });
 }
 
-describe.runIf(IS_E2E)('CLI mode (--cli)', () => {
+describe.runIf(IS_E2E)('CLI mode (subcommands)', () => {
   let testMedia: string;
 
   beforeAll(() => {
@@ -67,10 +67,13 @@ describe.runIf(IS_E2E)('CLI mode (--cli)', () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('EncodeX');
     expect(result.stdout).toContain('Usage');
+    expect(result.stdout).toContain('convert');
+    expect(result.stdout).toContain('info');
+    expect(result.stdout).toContain('capabilities');
+    expect(result.stdout).toContain('compress');
+    expect(result.stdout).toContain('extract-audio');
+    expect(result.stdout).toContain('batch');
     expect(result.stdout).toContain('--transcoder');
-    expect(result.stdout).toContain('--video-codec');
-    expect(result.stdout).toContain('--audio-codec');
-    expect(result.stdout).toContain('--info');
   });
 
   it('should show help text with -h flag', async () => {
@@ -80,10 +83,27 @@ describe.runIf(IS_E2E)('CLI mode (--cli)', () => {
     expect(result.stdout).toContain('EncodeX');
   });
 
-  it('should exit with error for invalid input', async () => {
-    const result = await spawnElectron(['nonexistent-file.mp4', 'output.mp4'], 15000);
+  it('should show subcommand help for convert', async () => {
+    const result = await spawnElectron(['convert', '--help'], 15000);
 
-    expect(result.status).not.toBe(0);
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('convert');
+    expect(result.stdout).toContain('--video-codec');
+    expect(result.stdout).toContain('--audio-codec');
+    expect(result.stdout).toContain('--info');
+  });
+
+  it('should exit with usage error for an unknown flag', async () => {
+    const result = await spawnElectron(['--bogus-flag'], 15000);
+
+    expect(result.status).toBe(2);
+    expect(result.stderr).toBeTruthy();
+  });
+
+  it('should exit with not-found error for invalid input', async () => {
+    const result = await spawnElectron(['convert', 'nonexistent-file.mp4', 'output.mp4'], 15000);
+
+    expect(result.status).toBe(4);
     expect(result.stderr).toBeTruthy();
   });
 
@@ -95,42 +115,91 @@ describe.runIf(IS_E2E)('CLI mode (--cli)', () => {
     expect(result.stdout).toContain('Usage');
   });
 
-  it('should show media info with --info flag', async () => {
-    const result = await spawnElectron(['--cli', '--info', testMedia, 'output.mp4'], 30000);
+  it('should show media info as JSON with info --json', async () => {
+    const result = await spawnElectron(['--cli', 'info', '--json', testMedia], 30000);
 
     expect(result.status).toBe(0);
-    expect(result.stdout).toContain('format');
-    expect(result.stdout).toContain('streams');
+    expect(result.stdout).toContain('"file"');
+    expect(result.stdout).toContain('"streams"');
+  });
+
+  it('should show media info as a human table by default', async () => {
+    const result = await spawnElectron(['--cli', 'info', testMedia], 30000);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Format');
+    expect(result.stdout).toContain('Duration');
   });
 
   it('should convert a file successfully', async () => {
     const outputPath = path.join(path.dirname(testMedia), 'converted-output.mp4');
 
-    const result = await spawnElectron(['--cli', testMedia, outputPath], 60000);
+    const result = await spawnElectron(['--cli', 'convert', testMedia, outputPath], 60000);
 
     expect(result.status).toBe(0);
     expect(fs.existsSync(outputPath)).toBe(true);
     expect(fs.statSync(outputPath).size).toBeGreaterThan(0);
-    expect(result.stdout).toContain('completed');
+    expect(result.stdout).toContain('Converted');
   });
 
   it('should convert with custom transcoder options', async () => {
     const outputPath = path.join(path.dirname(testMedia), 'custom-output.mp4');
 
-    const result = await spawnElectron(['--cli', '--transcoder', 'FFMPEG', '-v', 'libx264', '-a', 'aac', '--pix-fmt', 'yuv420p', testMedia, outputPath], 60000);
+    const result = await spawnElectron(['--cli', '--transcoder', 'FFMPEG', 'convert', '-v', 'libx264', '-a', 'aac', '--pix-fmt', 'yuv420p', testMedia, outputPath], 60000);
 
     expect(result.status).toBe(0);
     expect(fs.existsSync(outputPath)).toBe(true);
-    expect(result.stdout).toContain('completed');
+    expect(result.stdout).toContain('Converted');
+  });
+
+  it('should convert with the legacy flat syntax', async () => {
+    const outputPath = path.join(path.dirname(testMedia), 'legacy-output.mp4');
+
+    const result = await spawnElectron(['--cli', testMedia, outputPath], 60000);
+
+    expect(result.status).toBe(0);
+    expect(fs.existsSync(outputPath)).toBe(true);
+    expect(result.stdout).toContain('Converted');
   });
 
   it('should convert with FFTOOL transcoder', async () => {
     const outputPath = path.join(path.dirname(testMedia), 'fftool-output.mp4');
 
-    const result = await spawnElectron(['--cli', '--transcoder', 'FFTOOL', testMedia, outputPath], 60000);
+    const result = await spawnElectron(['--cli', '--transcoder', 'FFTOOL', 'convert', testMedia, outputPath], 60000);
 
     expect(result.status).toBe(0);
     expect(fs.existsSync(outputPath)).toBe(true);
-    expect(result.stdout).toContain('completed');
+    expect(result.stdout).toContain('Converted');
+  });
+
+  it('should compress an image', async () => {
+    const pngPath = path.join(path.dirname(testMedia), 'sample.png');
+    const outputPath = path.join(path.dirname(testMedia), 'sample_compressed.jpg');
+
+    if (!fs.existsSync(pngPath)) {
+      const { spawnSync } = await import('child_process');
+      spawnSync('ffmpeg', ['-f', 'lavfi', '-i', 'color=c=red:s=64x64', '-y', pngPath], { stdio: 'ignore' });
+    }
+
+    const result = await spawnElectron(['--cli', 'compress', pngPath, '-f', 'jpg'], 60000);
+
+    expect(result.status).toBe(0);
+    expect(fs.existsSync(outputPath)).toBe(true);
+  });
+
+  it('should extract audio from a media file', async () => {
+    const outputPath = path.join(path.dirname(testMedia), 'test-input.mp3');
+
+    const result = await spawnElectron(['--cli', 'extract-audio', testMedia], 60000);
+
+    expect(result.status).toBe(0);
+    expect(fs.existsSync(outputPath)).toBe(true);
+  });
+
+  it('should list capabilities', async () => {
+    const result = await spawnElectron(['--cli', 'capabilities'], 30000);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Video encoders');
   });
 });

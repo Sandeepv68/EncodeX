@@ -26,6 +26,7 @@ import {
   LOG_START_TIME,
   LOG_VIDEO_BITRATE,
   LOG_VIDEO_CODEC,
+  LOG_VIDEO_DISABLED_OUTPUT_WILL_HAVE_NO_VIDEO_STREAM,
 } from '../../shared/log-constants';
 
 /**
@@ -133,6 +134,11 @@ export function buildFfmpegArgs(input: string, output: string, options: Conversi
   if (options.audio === false) {
     args.push(FFMPEG_FLAGS.NO_AUDIO);
     log.debug(LOG_AUDIO_DISABLED_OUTPUT_WILL_HAVE_NO_AUDIO_STREAM);
+  }
+
+  if (options.video === false) {
+    args.push(FFMPEG_FLAGS.NO_VIDEO);
+    log.debug(LOG_VIDEO_DISABLED_OUTPUT_WILL_HAVE_NO_VIDEO_STREAM);
   }
 
   if (options.startTime) {

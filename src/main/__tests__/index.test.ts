@@ -88,7 +88,10 @@ const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindow
   });
 
 vi.mock('electron', () => ({ app: appMock, BrowserWindow: BrowserWindowMock, Menu: menuMock }));
-vi.mock('../cli', () => ({ runCli: runCliMock }));
+vi.mock('../cli/cli', () => ({
+  runCli: runCliMock,
+  mapCliErrorToExitCode: (err: unknown) => (err instanceof Error && err.message === 'usage' ? 2 : 1),
+}));
 vi.mock('../ipc/handlers', () => ({ registerIpcHandlers: registerIpcHandlersMock }));
 
 const ORIGINAL_ARGV = process.argv;

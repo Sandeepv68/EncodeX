@@ -60,6 +60,38 @@ export const CAPABILITY_PROBE_TIMEOUT_MS = 10000;
  */
 export const CLI_CONVERSION_TIMEOUT_MS = 300000;
 
+/**
+ * Names of the CLI subcommands exposed by the headless interface. Used by the
+ * main-process entry to detect CLI mode when the first positional argument is
+ * one of these names (in addition to the `--cli` flag and positional pairs).
+ * @const {readonly string[]} CLI_SUBCOMMANDS
+ */
+export const CLI_SUBCOMMANDS = ['convert', 'info', 'capabilities', 'batch', 'compress', 'extract-audio'] as const;
+
+/**
+ * Exit code used when the CLI receives invalid or incomplete arguments.
+ * @const {number} CLI_EXIT_USAGE
+ */
+export const CLI_EXIT_USAGE = 2;
+
+/**
+ * Exit code used when a CLI conversion is cancelled by the user.
+ * @const {number} CLI_EXIT_CANCELLED
+ */
+export const CLI_EXIT_CANCELLED = 3;
+
+/**
+ * Exit code used when the required FFmpeg/FFprobe binary cannot be located.
+ * @const {number} CLI_EXIT_NOT_FOUND
+ */
+export const CLI_EXIT_NOT_FOUND = 4;
+
+/**
+ * Exit code used when a CLI conversion exceeds its timeout.
+ * @const {number} CLI_EXIT_TIMEOUT
+ */
+export const CLI_EXIT_TIMEOUT = 5;
+
 // --- Video preview ---
 /**
  * Maximum width in pixels of extracted video preview frames.

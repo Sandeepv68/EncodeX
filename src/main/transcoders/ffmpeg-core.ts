@@ -54,6 +54,7 @@ import {
   LOG_USING_STREAM_COPY_MODE,
   LOG_VIDEO_BITRATE,
   LOG_VIDEO_CODEC,
+  LOG_VIDEO_DISABLED_OUTPUT_WILL_HAVE_NO_VIDEO_STREAM,
 } from '../../shared/log-constants';
 
 const log = new Logger('main/transcoders/ffmpeg-core');
@@ -224,6 +225,11 @@ export class FfmpegCore implements ITranscoder {
     if (options.audio === false) {
       log.debug(LOG_AUDIO_DISABLED_OUTPUT_WILL_HAVE_NO_AUDIO_STREAM);
       cmd.outputOptions(FFMPEG_FLAGS.NO_AUDIO);
+    }
+
+    if (options.video === false) {
+      log.debug(LOG_VIDEO_DISABLED_OUTPUT_WILL_HAVE_NO_VIDEO_STREAM);
+      cmd.outputOptions(FFMPEG_FLAGS.NO_VIDEO);
     }
 
     if (options.startTime) {

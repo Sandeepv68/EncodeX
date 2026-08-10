@@ -1,213 +1,177 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { EventEmitter } from 'events';
 
-const { CommandMock, createTranscoderMock, getAction, outputHelpMock, parseAsyncMock } = vi.hoisted(() => {
-  let actionHandler: ((input?: string, output?: string, opts?: Record<string, unknown>) => Promise<void>) | undefined;
-  const outputHelpMock = vi.fn();
-  const parseAsyncMock = vi.fn();
-  class Command {
-    name = vi.fn(() => this);
-    description = vi.fn(() => this);
-    configureOutput = vi.fn(() => this);
-    argument = vi.fn(() => this);
-    option = vi.fn(() => this);
-    action = vi.fn((fn: typeof actionHandler) => {
-      actionHandler = fn;
-      return this;
-    });
-    outputHelp = outputHelpMock;
-    parseAsync = parseAsyncMock;
-  }
+const {
+  runConvertMock,
+  createCliTranscoderMock,
+  runInfoMock,
+  runCapabilitiesMock,
+  runCompressMock,
+  runExtractAudioMock,
+  runBatchMock,
+  fakeTranscoder,
+} = vi.hoisted(() => {
+  const fakeTranscoder = { getType: vi.fn(() => 'FFMPEG') };
   return {
-    CommandMock: Command,
-    createTranscoderMock: vi.fn(),
-    getAction: () => actionHandler,
-    outputHelpMock,
-    parseAsyncMock,
+    runConvertMock: vi.fn().mockResolvedValue(undefined),
+    createCliTranscoderMock: vi.fn(() => fakeTranscoder),
+    runInfoMock: vi.fn().mockResolvedValue(undefined),
+    runCapabilitiesMock: vi.fn().mockResolvedValue(undefined),
+    runCompressMock: vi.fn().mockResolvedValue(undefined),
+    runExtractAudioMock: vi.fn().mockResolvedValue(undefined),
+    runBatchMock: vi.fn().mockResolvedValue(undefined),
+    fakeTranscoder,
   };
 });
 
-vi.mock('commander', () => ({ Command: CommandMock }));
-vi.mock('../transcoders/factory', () => ({ createTranscoder: createTranscoderMock }));
+vi.mock('../cli/cli-convert', () => ({
+  runConvert: runConvertMock,
+  createCliTranscoder: createCliTranscoderMock,
+}));
+vi.mock('../cli/cli-info', () => ({ runInfo: runInfoMock, runCapabilities: runCapabilitiesMock }));
+vi.mock('../cli/cli-compress', () => ({ runCompress: runCompressMock, runExtractAudio: runExtractAudioMock }));
+vi.mock('../cli/cli-batch', () => ({ runBatch: runBatchMock }));
 
-const { runCli } = await import('../cli');
-
-interface FakeTranscoder {
-  emitter: EventEmitter;
-  getInfo: ReturnType<typeof vi.fn>;
-  convert: ReturnType<typeof vi.fn>;
-  cancel: ReturnType<typeof vi.fn>;
-  pause: ReturnType<typeof vi.fn>;
-  resume: ReturnType<typeof vi.fn>;
-}
-
-function makeTranscoder(): FakeTranscoder {
-  const emitter = new EventEmitter();
-  return {
-    emitter,
-    getInfo: vi.fn().mockResolvedValue({ file: 'in', format: 'mp4', size: 1, duration: 10, bitrate: '1', streams: [] }),
-    convert: vi.fn(() => emitter),
-    cancel: vi.fn(),
-    pause: vi.fn(),
-    resume: vi.fn(),
-  };
-}
+const { runCli, mapCliErrorToExitCode } = await import('../cli/cli');
+const { CliExitError } = await import('../cli/cli-options');
 
 const ORIGINAL_ARGV = process.argv;
 
-describe('runCli', () => {
-  let consoleLogSpy: ReturnType<typeof vi.spyOn>;
-  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
-  let transcoder: FakeTranscoder;
-  let clearLineSpy: ReturnType<typeof vi.fn>;
+describe('runCli (subcommand entry)', () => {
+  let stdoutWriteSpy: ReturnType<typeof vi.fn>;
+  let stderrWriteSpy: ReturnType<typeof vi.fn>;
+
+  function setArgs(args: string[]): void {
+    process.argv = ['node', 'C:\\project\\index.js', ...args];
+  }
 
   beforeEach(() => {
     vi.clearAllMocks();
-    parseAsyncMock.mockResolvedValue(undefined);
-    transcoder = makeTranscoder();
-    createTranscoderMock.mockReturnValue(transcoder);
-    consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const stdout = process.stdout as unknown as { clearLine: () => boolean; cursorTo: () => boolean; write: (s: string) => boolean };
-    if (typeof stdout.clearLine !== 'function') {
-      stdout.clearLine = vi.fn(() => true);
-    }
-    if (typeof stdout.cursorTo !== 'function') {
-      stdout.cursorTo = vi.fn(() => true);
-    }
-    clearLineSpy = vi.mocked(stdout.clearLine);
-    vi.spyOn(stdout, 'write').mockImplementation(() => true);
+    stdoutWriteSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+    stderrWriteSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+    runConvertMock.mockResolvedValue(undefined);
+    runInfoMock.mockResolvedValue(undefined);
+    runCapabilitiesMock.mockResolvedValue(undefined);
+    runCompressMock.mockResolvedValue(undefined);
+    runExtractAudioMock.mockResolvedValue(undefined);
+    runBatchMock.mockResolvedValue(undefined);
+    createCliTranscoderMock.mockReturnValue(fakeTranscoder);
   });
 
   afterEach(() => {
     process.argv = ORIGINAL_ARGV;
-    vi.useRealTimers();
+    stdoutWriteSpy.mockRestore();
+    stderrWriteSpy.mockRestore();
     vi.restoreAllMocks();
   });
 
-  it('shows help and skips parsing when --help is passed', async () => {
-    process.argv = ['node', 'C:\\project\\index.js', '--help'];
+  it('dispatches the convert subcommand with positional args', async () => {
+    setArgs(['convert', 'in.mp4', 'out.mp4']);
     await runCli();
-    expect(outputHelpMock).toHaveBeenCalled();
-    expect(parseAsyncMock).not.toHaveBeenCalled();
+    expect(createCliTranscoderMock).toHaveBeenCalledWith('FFMPEG');
+    expect(runConvertMock).toHaveBeenCalledWith(expect.objectContaining({ input: 'in.mp4', output: 'out.mp4', themeId: 'light' }));
   });
 
-  it('parses positional args after the script path', async () => {
-    process.argv = ['node', 'C:\\project\\index.js', 'in.mp4', 'out.mp4'];
+  it('resolves the transcoder global from before or after the subcommand', async () => {
+    setArgs(['--transcoder', 'FFTOOL', 'info', 'in.mp4']);
     await runCli();
-    expect(parseAsyncMock).toHaveBeenCalledWith(['in.mp4', 'out.mp4'], { from: 'user' });
+    expect(createCliTranscoderMock).toHaveBeenCalledWith('FFTOOL');
+
+    createCliTranscoderMock.mockClear();
+    setArgs(['info', 'in.mp4', '--transcoder', 'BMF']);
+    await runCli();
+    expect(createCliTranscoderMock).toHaveBeenCalledWith('BMF');
   });
 
-  it('strips the --cli flag before parsing', async () => {
-    process.argv = ['node', 'x.js', '--cli', 'in.mp4', 'out.mp4'];
+  it('prefers an explicitly set transcoder over the default', async () => {
+    setArgs(['--transcoder', 'FFTOOL', 'info', 'in.mp4', '--transcoder', 'BMF']);
     await runCli();
-    expect(parseAsyncMock).toHaveBeenCalledWith(['in.mp4', 'out.mp4'], { from: 'user' });
+    expect(createCliTranscoderMock).toHaveBeenCalledWith('BMF');
   });
 
-  it('rejects when --info is used without an input file', async () => {
-    process.argv = ['node', 'C:\\project\\index.js', '--info'];
+  it('shims legacy positional usage into the convert subcommand', async () => {
+    setArgs(['in.mp4', 'out.mp4']);
     await runCli();
-    const action = getAction()!;
-    await expect(action(undefined, undefined, { info: true, transcoder: 'FFMPEG' })).rejects.toThrow('Missing input file');
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error: --info requires an input file');
+    expect(runConvertMock).toHaveBeenCalledWith(expect.objectContaining({ input: 'in.mp4', output: 'out.mp4' }));
   });
 
-  it('prints media info when --info is used with an input', async () => {
-    process.argv = ['node', 'C:\\project\\index.js', '--info', 'in.mp4'];
+  it('shims legacy --info into the info subcommand', async () => {
+    setArgs(['--info', 'in.mp4']);
     await runCli();
-    const action = getAction()!;
-    await action('in.mp4', undefined, { info: true, transcoder: 'FFMPEG' });
-    expect(transcoder.getInfo).toHaveBeenCalledWith('in.mp4');
-    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('"format"'));
+    expect(runInfoMock).toHaveBeenCalledWith(fakeTranscoder, 'in.mp4', false, 'light');
   });
 
-  it('converts with mapped options and resolves on end', async () => {
-    process.argv = ['node', 'C:\\project\\index.js', 'in.mp4', 'out.mp4'];
+  it('routes convert --info to the info handler', async () => {
+    setArgs(['convert', '--info', 'in.mp4']);
     await runCli();
-    const action = getAction()!;
-    const promise = action('in.mp4', 'out.mp4', {
-      transcoder: 'FFMPEG',
-      copy: true,
-      videoCodec: 'libx264',
-      audioCodec: 'aac',
-      bitrateVideo: '1000k',
-      bitrateAudio: '128k',
-      pixFmt: 'yuv420p',
-      scale: '1280x720',
-      startTime: '00:00:01',
-      endTime: '00:00:10',
-      duration: '5',
-    });
-    transcoder.emitter.emit('end');
-    await promise;
-    expect(transcoder.convert).toHaveBeenCalledWith('in.mp4', 'out.mp4', {
-      copy: true,
-      videoCodec: 'libx264',
-      audioCodec: 'aac',
-      videoBitrate: '1000k',
-      audioBitrate: '128k',
-      pixelFormat: 'yuv420p',
-      scale: '1280x720',
-      startTime: '00:00:01',
-      endTime: '00:00:10',
-      duration: '5',
-    });
-    expect(consoleLogSpy).toHaveBeenCalledWith('\nConversion completed successfully!');
+    expect(runInfoMock).toHaveBeenCalledWith(fakeTranscoder, 'in.mp4', false, 'light');
+    expect(runConvertMock).not.toHaveBeenCalled();
   });
 
-  it('maps the --no-audio flag to audio: false', async () => {
-    process.argv = ['node', 'C:\\project\\index.js', 'in.mp4', 'out.mp4'];
+  it('runs the info subcommand with JSON when --json is passed before it', async () => {
+    setArgs(['--json', 'info', 'in.mp4']);
     await runCli();
-    const action = getAction()!;
-    const promise = action('in.mp4', 'out.mp4', { transcoder: 'FFMPEG', copy: true, audio: false });
-    transcoder.emitter.emit('end');
-    await promise;
-    expect(transcoder.convert).toHaveBeenCalledWith('in.mp4', 'out.mp4', { copy: true, audio: false });
+    expect(runInfoMock).toHaveBeenCalledWith(fakeTranscoder, 'in.mp4', true, 'light');
   });
 
-  it('prints progress updates to stdout', async () => {
-    process.argv = ['node', 'C:\\project\\index.js', 'in.mp4', 'out.mp4'];
+  it('runs the capabilities subcommand', async () => {
+    setArgs(['capabilities']);
     await runCli();
-    const action = getAction()!;
-    const promise = action('in.mp4', 'out.mp4', { transcoder: 'FFMPEG' });
-    transcoder.emitter.emit('progress', { percent: 50, time: '00:00:05', speed: '2x', eta: '10' });
-    transcoder.emitter.emit('end');
-    await promise;
-    expect(process.stdout.write).toHaveBeenCalledWith('Progress: 00:00:05 | Speed: 2x | ETA: 10s');
+    expect(runCapabilitiesMock).toHaveBeenCalledWith(false, 'light');
   });
 
-  it('tolerates a non-TTY stdout', async () => {
-    clearLineSpy.mockImplementation(() => {
-      throw new Error('no tty');
-    });
-    process.argv = ['node', 'C:\\project\\index.js', 'in.mp4', 'out.mp4'];
+  it('runs the compress subcommand with its flags', async () => {
+    setArgs(['compress', 'photo.png', '--format', 'webp']);
     await runCli();
-    const action = getAction()!;
-    const promise = action('in.mp4', 'out.mp4', { transcoder: 'FFMPEG' });
-    transcoder.emitter.emit('progress', { percent: 10, time: '00:00:01', speed: '1x', eta: '9' });
-    transcoder.emitter.emit('end');
-    await promise;
+    expect(runCompressMock).toHaveBeenCalledWith(
+      'photo.png',
+      expect.objectContaining({ format: 'webp' }),
+      fakeTranscoder,
+      expect.any(Number),
+      'light',
+    );
   });
 
-  it('rejects and logs when the conversion errors', async () => {
-    process.argv = ['node', 'C:\\project\\index.js', 'in.mp4', 'out.mp4'];
+  it('runs the extract-audio subcommand with its flags', async () => {
+    setArgs(['extract-audio', 'video.mkv']);
     await runCli();
-    const action = getAction()!;
-    const promise = action('in.mp4', 'out.mp4', { transcoder: 'FFMPEG' });
-    transcoder.emitter.emit('error', new Error('failed'));
-    await expect(promise).rejects.toThrow('failed');
-    expect(consoleErrorSpy).toHaveBeenCalledWith('\nConversion failed:', 'failed');
+    expect(runExtractAudioMock).toHaveBeenCalledWith('video.mkv', expect.objectContaining({}), fakeTranscoder, expect.any(Number), 'light');
   });
 
-  it('cancels and rejects when the conversion times out', async () => {
-    vi.useFakeTimers();
-    process.argv = ['node', 'C:\\project\\index.js', 'in.mp4', 'out.mp4'];
+  it('runs the batch subcommand with collected inputs', async () => {
+    setArgs(['batch', 'a.mp4', 'b.mp4']);
     await runCli();
-    const action = getAction()!;
-    const promise = action('in.mp4', 'out.mp4', { transcoder: 'FFMPEG' });
-    const expectation = expect(promise).rejects.toThrow('Conversion timed out');
-    await vi.advanceTimersByTimeAsync(300000);
-    expect(transcoder.cancel).toHaveBeenCalled();
-    await expectation;
+    expect(runBatchMock).toHaveBeenCalledWith(expect.objectContaining({ inputs: ['a.mp4', 'b.mp4'], transcoder: 'FFMPEG' }));
+  });
+
+  it('prints help and skips dispatch for a bare invocation', async () => {
+    setArgs([]);
+    await runCli();
+    expect(runConvertMock).not.toHaveBeenCalled();
+    expect(stdoutWriteSpy).toHaveBeenCalledWith(expect.stringContaining('Usage'));
+  });
+
+  it('returns successfully when --help is passed', async () => {
+    setArgs(['--help']);
+    await expect(runCli()).resolves.toBeUndefined();
+    expect(stdoutWriteSpy).toHaveBeenCalledWith(expect.stringContaining('Usage'));
+  });
+
+  it('rejects with a usage CliExitError for unknown options', async () => {
+    setArgs(['--bogus']);
+    await expect(runCli()).rejects.toMatchObject({ name: 'CliExitError', exitCode: 2 });
+  });
+
+  it('rejects with a usage CliExitError when convert lacks an input', async () => {
+    setArgs(['convert']);
+    await expect(runCli()).rejects.toMatchObject({ name: 'CliExitError', exitCode: 2 });
+  });
+
+  it('rejects with a usage CliExitError for convert --info without input', async () => {
+    setArgs(['convert', '--info']);
+    await expect(runCli()).rejects.toMatchObject({ name: 'CliExitError', exitCode: 2 });
+  });
+
+  it('exposes CliExitError exit codes through mapCliErrorToExitCode', () => {
+    expect(mapCliErrorToExitCode(new CliExitError('x', 7))).toBe(7);
   });
 });
