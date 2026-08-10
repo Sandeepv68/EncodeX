@@ -99,9 +99,11 @@ e2e/
 
 ### Phase 5 — Real tier + CI
 - [x] `real-convert.spec.ts` — real conversion of generated media → output exists.
-- [x] `.github/workflows/e2e.yml` — unit + integration + Tier A + Tier B on
-      `windows-latest` (taskkill-based `closeApp`), node 20.
-- [x] Verify full suite runs green.
+- [x] Verify full suite runs green (local; CI verified via the existing workflow).
+- [x] `.github/workflows/ci.yml` — format-check, build, unit (coverage),
+      integration, Tier A e2e (`xvfb-run --auto-servernum`) and a
+      `test-e2e-real` job running the real conversion, all on `ubuntu-latest`,
+      node 22.
 
 ## Risks
 
@@ -124,4 +126,4 @@ e2e/
 | 2. Shell + navigation | Done |
 | 3. Per-page specs | Done (109 tests across 10 files) |
 | 4. Selector hardening | Done |
-| 5. Real tier + CI | Done (real-convert 1 test; workflow wired) |
+| 5. Real tier + CI | Done (real-convert in CI via `test-e2e-real` job) |

@@ -34,8 +34,9 @@ Write and stabilize E2E specs for the EncodeX renderer against a mocked main-pro
       `testId` prop; selectors must append ` input` for MUI TextField roots.
 - [x] **Phase 5 — real convert + CI**: `real-convert.spec.ts` (1 test, ~3.5s) drives a real
       preload + real ffmpeg conversion of a generated 1s testsrc clip via inert `E2E_REAL_*`
-      dialog presets in `src/main/ipc/dialogs.ts`; `.github/workflows/e2e.yml` wires
-      unit → integration → Tier A → Tier B on `windows-latest`; full suite verified green.
+      dialog presets in `src/main/ipc/dialogs.ts`; full suite verified green. CI runs via
+      `.github/workflows/ci.yml` (ubuntu-latest: format-check, build, unit w/ coverage,
+      integration, Tier A e2e under xvfb, and a `test-e2e-real` job running the real tier).
 - **Known gaps**: none — all Phase 3 sub-items are covered (mocked 109/109 + real 1/1, 0 orphans).
 
 ## Key invariants (established during stabilization)

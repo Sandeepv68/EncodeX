@@ -75,9 +75,12 @@ describe('expandInputs', () => {
   });
 
   it('expands a home-directory prefix', () => {
-    const file = path.join(dir, 'a.mp4');
+    const homeDir = fs.mkdtempSync(path.join(os.homedir(), 'encodex-cli-util-home-'));
+    const file = path.join(homeDir, 'a.mp4');
+    fs.writeFileSync(file, 'a');
     const result = expandInputs([`~${file.slice(os.homedir().length)}`]);
     expect(result).toEqual([file]);
+    fs.rmSync(homeDir, { recursive: true, force: true });
   });
 });
 
