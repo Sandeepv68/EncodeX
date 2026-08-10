@@ -64,7 +64,7 @@ describe.runIf(IS_E2E)('Convert page', () => {
     await expect.poll(() => session.page.locator('[data-testid="convert-output"] input').inputValue()).toBe('/custom/out.mp4');
   });
 
-  it('changes codec, bitrate, scale and transcoder options', async () => {
+  it('changes codec, bitrate, scale, pixel format and transcoder options', async () => {
     await mockApi.setSelectFile(session.page, INPUT);
     await session.page.locator('[data-testid="convert-input"] button').click();
     await expect.poll(() => session.page.locator('[data-testid="convert-output"] input').inputValue()).toBe(OUTPUT);
@@ -72,11 +72,13 @@ describe.runIf(IS_E2E)('Convert page', () => {
     await selectOption(session.page, 'convert-video-codec', 'libx265');
     await selectOption(session.page, 'convert-video-bitrate', '4000k');
     await selectOption(session.page, 'convert-scale', '1280x720');
+    await selectOption(session.page, 'convert-pixel-format', 'yuv420p10le');
     await selectOption(session.page, 'convert-transcoder', 'FFMPEG');
 
     await expect.poll(() => comboboxText(session.page, 'convert-video-codec')).toContain('libx265');
     await expect.poll(() => comboboxText(session.page, 'convert-video-bitrate')).toContain('4000k');
     await expect.poll(() => comboboxText(session.page, 'convert-scale')).toContain('1280x720');
+    await expect.poll(() => comboboxText(session.page, 'convert-pixel-format')).toContain('yuv420p10le');
     await expect.poll(() => comboboxText(session.page, 'convert-transcoder')).toContain('FFmpeg');
   });
 

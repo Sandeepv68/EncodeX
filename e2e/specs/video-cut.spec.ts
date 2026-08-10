@@ -96,6 +96,34 @@ describe.runIf(IS_E2E)('Video Cut page', () => {
     await expect.poll(() => page.locator('[data-testid="video-cut-duration"] input').inputValue()).toBe('00:00:15');
   });
 
+  it('scrubs the playhead and drags the start handle on the timeline', async () => {
+    const { page } = session;
+    await selectVideo(page);
+    const scroller = page.locator('[data-testid="timeline-scroller"]');
+    const box = await scroller.boundingBox();
+    const startHandle = page.locator('[data-testid="timeline-start-handle"]');
+    const endHandle = page.locator('[data-testid="timeline-end-handle"]');
+    await startHandle.waitFor({ timeout: 10000 });
+    await endHandle.waitFor({ timeout: 10000 });
+    const startBox = await startHandle.boundingBox();
+    const endBox = await endHandle.boundingBox();
+    const zoom = (endBox.x - startBox.x) / 60;
+
+    const dragX = startBox.x + startBox.width - 1;
+    await page.mouse.move(dragX, startBox.y + startBox.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 10 * zoom, startBox.y + startBox.height / 2, { steps: 8 });
+    await page.mouse.up();
+
+    await expect.poll(() => page.locator('[data-testid="video-cut-start"] input').inputValue()).toBe('00:00:10');
+    await expect.poll(() => page.locator('[data-testid="timeline-start-time"]').innerText()).toContain('00:00:10');
+
+    await page.mouse.move(box.x + 5 * zoom, startBox.y + startBox.height / 2);
+    await page.mouse.down();
+    await page.mouse.up();
+    await expect.poll(() => page.locator('[data-testid="timeline-current-time"]').innerText()).toContain('00:00:05');
+  });
+
   it('cuts the clip and shows a success toast', async () => {
     const { page } = session;
     await selectVideo(page);

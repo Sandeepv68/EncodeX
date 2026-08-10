@@ -56,6 +56,25 @@ describe.runIf(IS_E2E)('Image Compress page', () => {
       .toContain('WebP');
   });
 
+  it('changes quality and scale', async () => {
+    await mockApi.setSelectFile(session.page, '/media/photo.png');
+    await mockApi.setImagePreview(session.page, 'data:image/png;base64,AAAA');
+    await mockApi.setImageFileInfo(session.page, { width: 800, height: 600, size: 100000 });
+    await session.page.locator('[data-testid="file-drop-zone"]').click();
+    await session.page.locator('[data-testid="image-compress-quality"] input').waitFor({ timeout: 10000 });
+
+    await session.page.locator('[data-testid="image-compress-quality"] input').fill('85');
+    await expect.poll(() => session.page.locator('[data-testid="image-compress-quality"] input').inputValue()).toBe('85');
+
+    await session.page.locator('[data-testid="image-compress-scale"] [role="combobox"]').click();
+    const scaleOption = session.page.locator('[role="option"][data-value="1280x720"]');
+    await scaleOption.waitFor({ timeout: 5000 });
+    await scaleOption.click();
+    await expect
+      .poll(() => session.page.locator('[data-testid="image-compress-scale"] [role="combobox"]').innerText())
+      .toContain('1280x720');
+  });
+
   it('compresses an image and shows a success toast', async () => {
     await mockApi.setSelectFile(session.page, '/media/photo.png');
     await mockApi.setImagePreview(session.page, 'data:image/png;base64,AAAA');

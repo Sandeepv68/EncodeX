@@ -119,4 +119,65 @@ describe.runIf(IS_E2E)('Batch Queue page', () => {
     await expect.poll(() => page.getByText('clip_a.mp4').count()).toBe(0);
     await expect.poll(() => page.getByText('clip_d.mp4').count()).toBeGreaterThan(0);
   });
+
+  it('removes a single job with the Remove button', async () => {
+    const { page } = session;
+    await seedJobs(page, [
+      makeJob({}),
+      makeJob({ id: 'job-2', input: '/media/clip_b.mp4', output: '/media/clip_b_converted.mp4' }),
+    ]);
+    await expect.poll(() => page.getByRole('button', { name: 'Remove' }).count()).toBe(2);
+
+    await page.getByRole('button', { name: 'Remove' }).first().click();
+    await expect.poll(() => page.getByRole('button', { name: 'Remove' }).count()).toBe(1);
+    await expect.poll(() => page.getByText('clip_a.mp4').count()).toBe(0);
+    await expect.poll(() => page.getByText('clip_b.mp4').count()).toBeGreaterThan(0);
+  });
+
+  it('reorders queued jobs with the drag handle', async () => {
+    const { page } = session;
+    await seedJobs(page, [
+      makeJob({ id: 'job-a', input: '/media/clip_a.mp4' }),
+      makeJob({ id: 'job-b', input: '/media/clip_b.mp4' }),
+    ]);
+    await expect.poll(() => page.getByRole('button', { name: 'Drag to reorder' }).count()).toBe(2);
+
+    await page.getByRole('button', { name: 'Drag to reorder' }).first().focus();
+    await page.keyboard.press('Space');
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Space');
+
+    await expect
+      .poll(async () => {
+        const a = await page.getByText('clip_a.mp4').boundingBox();
+        const b = await page.getByText('clip_b.mp4').boundingBox();
+        return (a?.y ?? 0) > (b?.y ?? 0);
+      })
+      .toBe(true);
+  });
+
+  it('cancels or confirms the window close while jobs are queued', async () => {
+    const { page } = session;
+    await seedJobs(page, [makeJob({})]);
+    await expect.poll(() => page.getByRole('button', { name: 'Remove' }).count()).toBe(1);
+
+    await mockApi.emit(page, 'window-close-requested', {});
+    await page.locator('[data-testid="confirm-dialog"]').waitFor({ timeout: 10000 });
+    await page.locator('[data-testid="confirm-cancel"]').click();
+    await expect.poll(() => page.locator('[data-testid="confirm-dialog"]').count()).toBe(0);
+    await expect.poll(() => mockApi.get(page).then((s) => s.windowCalls)).not.toContain('close-confirmed');
+    await expect.poll(() => page.getByRole('button', { name: 'Remove' }).count()).toBe(1);
+
+    await mockApi.emit(page, 'window-close-requested', {});
+    await page.locator('[data-testid="confirm-dialog"]').waitFor({ timeout: 10000 });
+    await page.locator('[data-testid="confirm-confirm"]').click();
+    await expect.poll(() => mockApi.get(page).then((s) => s.windowCalls)).toContain('close-confirmed');
+  });
+
+  it('confirms the window close immediately when no work is pending', async () => {
+    const { page } = session;
+    await mockApi.emit(page, 'window-close-requested', {});
+    await expect.poll(() => page.locator('[data-testid="confirm-dialog"]').count()).toBe(0);
+    await expect.poll(() => mockApi.get(page).then((s) => s.windowCalls)).toContain('close-confirmed');
+  });
 });

@@ -1,11 +1,21 @@
-import { defineConfig, mergeConfig } from 'vitest/config';
-import base from './vitest.e2e.config';
+import { defineConfig } from 'vitest/config';
+import path from 'path';
 
-export default defineConfig(
-  mergeConfig(base, {
-    test: {
-      include: ['e2e/specs/real-convert.spec.ts'],
-      env: { E2E: 'true', E2E_REAL: 'true', ENCODEX_TEST_MODE: '1' },
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@shared': path.resolve(__dirname, '..', 'src/shared'),
     },
-  }),
-);
+  },
+  test: {
+    globals: true,
+    environment: 'node',
+    include: ['e2e/specs/real-convert.spec.ts'],
+    exclude: ['node_modules', 'dist'],
+    env: { E2E: 'true', E2E_REAL: '1', ENCODEX_TEST_MODE: '' },
+    testTimeout: 120000,
+    hookTimeout: 120000,
+    setupFiles: [],
+    fileParallelism: false,
+  },
+});

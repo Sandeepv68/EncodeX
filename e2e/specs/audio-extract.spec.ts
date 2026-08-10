@@ -67,6 +67,19 @@ describe.runIf(IS_E2E)('Audio Extract page', () => {
     await expect.poll(() => session.page.locator('[data-testid="audio-extract-codec"] [role="combobox"]').innerText()).toContain('MP3');
   });
 
+  it('changes the audio bitrate', async () => {
+    await mockApi.setSelectFile(session.page, '/media/video.mp4');
+    await mockApi.setMediaInfo(session.page, VIDEO_INFO);
+    await session.page.locator('[data-testid="file-drop-zone"]').click();
+    await session.page.locator('[data-testid="audio-extract-bitrate"] [role="combobox"]').waitFor({ timeout: 10000 });
+
+    await session.page.locator('[data-testid="audio-extract-bitrate"] [role="combobox"]').click();
+    const option = session.page.locator('[role="option"][data-value="320k"]');
+    await option.waitFor({ timeout: 5000 });
+    await option.click();
+    await expect.poll(() => session.page.locator('[data-testid="audio-extract-bitrate"] [role="combobox"]').innerText()).toContain('320k');
+  });
+
   it('extracts audio and shows a success toast', async () => {
     await mockApi.setSelectFile(session.page, '/media/video.mp4');
     await mockApi.setMediaInfo(session.page, VIDEO_INFO);

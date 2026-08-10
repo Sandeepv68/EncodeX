@@ -23,16 +23,18 @@ export interface LaunchOptions {
   mock?: boolean;
   /** Extra args passed to the Electron executable. */
   args?: string[];
+  /** Extra environment variables merged into the child process env. */
+  env?: NodeJS.ProcessEnv;
 }
 
-export function buildEnv(mock: boolean): NodeJS.ProcessEnv {
+export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = { ...process.env };
   if (mock) {
     env.ENCODEX_TEST_MODE = '1';
   } else {
     delete env.ENCODEX_TEST_MODE;
   }
-  return env;
+  return { ...env, ...extra };
 }
 
 /** Creates a throwaway Chromium/Electron user data directory for isolation. */
@@ -46,7 +48,7 @@ export function createUserDataDir(): string {
  * one exposing `window.electronAPI`).
  */
 export async function launchApp(options: LaunchOptions = {}): Promise<AppSession> {
-  const { mock = true, args = [] } = options;
+  const { mock = true, args = [], env = {} } = options;
   ensureBuildExists();
 
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -57,7 +59,7 @@ export async function launchApp(options: LaunchOptions = {}): Promise<AppSession
   const app = await _electron.launch({
     args: [getBuildPaths().mainEntry, `--user-data-dir=${userDataDir}`, ...args],
     cwd: getBuildPaths().root,
-    env: buildEnv(mock),
+    env: buildEnv(mock, env),
   });
 
   await app.firstWindow();
