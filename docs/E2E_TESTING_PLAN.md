@@ -39,6 +39,7 @@ A real `contextBridge.exposeInMainWorld` object cannot be cleanly redefined from
 ```
 e2e/
   vitest.e2e.config.ts      # env E2E=true, ENCODEX_TEST_MODE=1, retries, screenshots
+  vitest.e2e.real.config.ts # Tier B: standalone config, env E2E_REAL=true, no test mode
   helpers.ts                # existing media generators / build checks
   fixtures/app.ts           # launch/teardown helper (one Electron per spec file)
   mocks/
@@ -76,18 +77,16 @@ e2e/
 
 ### Phase 3 — Per-page feature specs (Tier A)
 - [x] **Convert** — browse/select, output select, codec/bitrate/scale/transcoder,
-      copy mode, start → progress → completion toast, pause/resume/cancel.
-      (pix-fmt option not asserted explicitly.)
+      pixel format, copy mode, start → progress → completion toast, pause/resume/cancel.
 - [x] **MediaInfo** — select file → video/audio stream sections + EXIF.
-- [x] **ImageCompress** — select image, preview/info, format, compress → result.
-      (quality/scale not changed in a test.)
-- [x] **AudioExtract** — select video, codec, extract, derived output.
-      (bitrate not changed in a test.)
-- [x] **VideoCut** — select video, timeline loads, duration field, cut, progress,
-      cancel + cancel-job. (No timeline drag/scrub test yet.)
-- [x] **Batch** — add files, queue events, progress, cancel-all, status filter.
-      (reorder, single-job remove, and close-with-active-jobs confirmation
-      not yet covered.)
+- [x] **ImageCompress** — select image, preview/info, format, quality/scale,
+      compress → result.
+- [x] **AudioExtract** — select video, codec, bitrate, extract, derived output.
+- [x] **VideoCut** — select video, timeline loads, duration field, timeline
+      drag/scrub, cut, progress, cancel + cancel-job.
+- [x] **Batch** — add files, queue events, progress, cancel-all, status filter,
+      single-job remove, keyboard drag-handle reorder, close-with-active-jobs
+      confirmation.
 - [x] **Logs** — pushed `onLogMessage` entries render in the panel, filter, clear,
       download.
 - [x] **Settings** — theme switching, always-on-top, launch-at-login, hwaccel
@@ -99,18 +98,21 @@ e2e/
       `ConfirmDialog`).
 
 ### Phase 5 — Real tier + CI
-- [ ] `real-convert.spec.ts` — real conversion of generated media → output exists.
-- [ ] `.github/workflows/e2e.yml` — build, xvfb (Linux), `test:e2e`.
-- [ ] Verify full suite runs green.
+- [x] `real-convert.spec.ts` — real conversion of generated media → output exists.
+- [x] `.github/workflows/e2e.yml` — unit + integration + Tier A + Tier B on
+      `windows-latest` (taskkill-based `closeApp`), node 20.
+- [x] Verify full suite runs green.
 
 ## Risks
 
 - **i18n** — selectors must not depend on translated text (Phase 4).
 - **Launch cost** — reuse one Electron instance per spec; limit workers.
-- **Native dialogs** — Tier A never opens them (mocked); Tier B uses generated
-  files with no dialog interaction.
+- **Native dialogs** — Tier A never opens them (mocked); Tier B bypasses them via
+  inert `E2E_REAL_*` env presets in `src/main/ipc/dialogs.ts` (no dialog interaction).
 - **MUI dropdowns / timeline** — need stable selectors; timeline drag needs
   `mouse.move` steps.
+- **OneDrive sync** — intermittently reverts files mid-session; verify with
+  `git status`/file reads before assuming state.
 
 ---
 
@@ -120,6 +122,6 @@ e2e/
 | --- | --- |
 | 1. Infrastructure | Done |
 | 2. Shell + navigation | Done |
-| 3. Per-page specs | Done (see known gaps above) |
+| 3. Per-page specs | Done (109 tests across 10 files) |
 | 4. Selector hardening | Done |
-| 5. Real tier + CI | Not started |
+| 5. Real tier + CI | Done (real-convert 1 test; workflow wired) |
