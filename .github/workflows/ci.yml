@@ -56,7 +56,7 @@ jobs:
           path: dist/
 
   test-unit:
-    name: Stage IV - Test : Unit Tests
+    name: "Stage IV - Test : Unit Tests"
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -74,7 +74,7 @@ jobs:
           path: coverage/
 
   test-integration:
-    name: Stage IV - Test : Integration Tests
+    name: "Stage IV - Test : Integration Tests"
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -87,7 +87,7 @@ jobs:
       - run: npm run test:integration
 
   test-e2e:
-    name: Stage V - Test : E2E Automation tests
+    name: "Stage V - Test : E2E Automation tests"
     needs: [test-unit, test-integration]
     runs-on: ubuntu-latest
     steps:
@@ -103,7 +103,7 @@ jobs:
         run: xvfb-run --auto-servernum npm run test:e2e
 
   test-e2e-real:
-    name: Stage V - Test : E2E Production Scenario
+    name: "Stage V - Test : E2E Production Scenario"
     needs: [test-unit, test-integration]
     runs-on: ubuntu-latest
     steps:
