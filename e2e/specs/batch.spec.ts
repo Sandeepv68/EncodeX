@@ -142,9 +142,23 @@ describe.runIf(IS_E2E)('Batch Queue page', () => {
     ]);
     await expect.poll(() => page.getByRole('button', { name: 'Drag to reorder' }).count()).toBe(2);
 
-    await page.getByRole('button', { name: 'Drag to reorder' }).first().focus();
+    const handle = page.getByRole('button', { name: 'Drag to reorder' }).first();
+    await handle.focus();
     await page.keyboard.press('Space');
-    await page.keyboard.press('ArrowDown');
+
+    // dnd-kit's keyboard sensor attaches its document keydown listener on a
+    // timer once the drag starts, so an ArrowDown dispatched immediately can be
+    // dropped on slow runners. Wait for the drag to activate, then re-press
+    // ArrowDown until the sibling card actually shifts up (proof the move
+    // registered) before dropping.
+    await expect.poll(() => handle.getAttribute('aria-pressed'), { timeout: 10000 }).toBe('true');
+    const bBefore = (await page.getByText('clip_b.mp4').boundingBox())?.y ?? 0;
+    const deadline = Date.now() + 10000;
+    while (Date.now() < deadline) {
+      await page.keyboard.press('ArrowDown');
+      const b = await page.getByText('clip_b.mp4').boundingBox();
+      if (b && b.y < bBefore - 10) break;
+    }
     await page.keyboard.press('Space');
 
     await expect
