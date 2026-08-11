@@ -56,9 +56,7 @@ export const DropZoneRoot = styled(Box, {
   '&:hover': {
     boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
     transform: 'translateY(-2px)',
-    ...(!$dragging
-      ? { animation: `${borderPulse} 8s ease-in-out infinite, ${backgroundPulse} 8s ease-in-out infinite` }
-      : {}),
+    ...(!$dragging ? { animation: `${borderPulse} 8s ease-in-out infinite, ${backgroundPulse} 8s ease-in-out infinite` } : {}),
   },
   '& svg': {
     transition: 'color 0.2s ease',
