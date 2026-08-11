@@ -20,7 +20,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, TextField, MenuItem, Switch, Stack, Button, CircularProgress, IconButton, InputAdornment } from '@mui/material';
+import { Box, Typography, TextField, MenuItem, Switch, Stack, Button, CircularProgress, IconButton, InputAdornment, Divider } from '@mui/material';
 import { faPalette, faBrush, faDroplet, faSun, faPlay, faPause, faXmark, faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -55,8 +55,9 @@ import {
   PreviewHeader,
   PreviewDivider,
   PreviewSectionTitle,
+  PageSection,
 } from '../styles/Convert.styles';
-import { FieldBox, FieldLabel, ToggleRow, SectionCard, SectionTitle } from '../styles/form.styles';
+import { FieldBox, FieldLabel, ToggleRow, SectionTitle } from '../styles/form.styles';
 import {
   getExtension,
   replaceExtension,
@@ -330,7 +331,7 @@ export default function Convert() {
         ) : undefined
       }
     >
-      <SectionCard>
+      <PageSection>
         <SectionTitle variant="h6">{t('convert.sourceFiles')}</SectionTitle>
 
         <FilePathField
@@ -378,9 +379,11 @@ export default function Convert() {
             {t('convert.codecCompatWarning', { codec: videoCodec, extension: outputExt, suggested: suggestedOutputExt })}
           </CompatAlert>
         )}
-      </SectionCard>
+      </PageSection>
 
-      <SectionCard>
+      <Divider />
+
+      <PageSection>
         <SectionTitle variant="h6">{t('convert.encoding')}</SectionTitle>
 
         <ToggleRow>
@@ -564,9 +567,11 @@ export default function Convert() {
             </Stack>
           </>
         )}
-      </SectionCard>
+      </PageSection>
 
-      <SectionCard>
+      <Divider />
+
+      <PageSection>
         <SectionTitle variant="h6">{t('convert.advanced')}</SectionTitle>
 
         <Box>
@@ -589,7 +594,7 @@ export default function Convert() {
             ))}
           </TextField>
         </Box>
-      </SectionCard>
+      </PageSection>
 
       <ActionStack direction="row" spacing={1} useFlexGap>
         <Button

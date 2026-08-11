@@ -2,6 +2,13 @@ import { styled } from '@mui/material/styles';
 import { Box, Stack, Typography, Alert, Paper, Divider } from '@mui/material';
 import { COLORS, SHADOWS } from '../colors';
 
+/** Unboxed form section: heading + fields stacked with the card gap. @const PageSection */
+export const PageSection = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+}));
+
 export const AccelAlert = styled(Alert)(({}) => ({
   fontWeight: 500,
   color: COLORS.alert.info,

@@ -24,6 +24,7 @@
 import { createTheme } from '@mui/material/styles';
 import { COLORS, getTheme, SHADOWS } from './colors';
 import type { ThemeId } from './types';
+import SelectArrowIcon from './components/SelectArrowIcon';
 
 /**
  * Font stack used for every MUI typography variant.
@@ -173,11 +174,28 @@ export function createAppTheme(themeId: ThemeId, direction: 'ltr' | 'rtl') {
           }),
         },
       },
+      MuiSelect: {
+        defaultProps: {
+          IconComponent: SelectArrowIcon,
+        },
+        styleOverrides: {
+          icon: ({ theme }) => ({
+            color: themeDef.text.secondary,
+            fontSize: theme.typography.pxToRem(12),
+            transition: 'transform 160ms ease',
+          }),
+          iconOpen: {
+            transform: 'rotate(180deg)',
+          },
+        },
+      },
       MuiMenuItem: {
         styleOverrides: {
           root: ({ theme }) => ({
             borderRadius: theme.typography.pxToRem(8),
             margin: `${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)}`,
+            // Reserve room for the selected-item check so labels don't overlap it.
+            paddingInlineEnd: theme.typography.pxToRem(36),
             '&:hover': {
               backgroundColor: themeDef.tint.primary15,
             },
@@ -185,6 +203,17 @@ export function createAppTheme(themeId: ThemeId, direction: 'ltr' | 'rtl') {
               backgroundColor: themeDef.tint.primary15,
               color: themeDef.primary,
               '&:hover': { backgroundColor: themeDef.tint.primary25 },
+            },
+            '&.Mui-selected::after': {
+              content: '"\u2713"',
+              position: 'absolute',
+              insetInlineEnd: theme.typography.pxToRem(14),
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: themeDef.primary,
+              fontSize: theme.typography.pxToRem(14),
+              fontWeight: theme.typography.fontWeightBold,
+              lineHeight: 1,
             },
           }),
         },
