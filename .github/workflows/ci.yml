@@ -15,7 +15,7 @@ env:
 
 jobs:
   format-check:
-    name: Format Check
+    name: Stage I - Check code formatting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +27,8 @@ jobs:
       - run: npm run format:check
 
   validate-locales:
-    name: Validate Locales
+    name: Stage II - Validate locales
+    needs: [format-check]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,8 +39,8 @@ jobs:
       - run: npm run validate:locales
 
   build:
-    name: Build
-    needs: [format-check]
+    name: Stage III - Run production build
+    needs: [format-check, validate-locales]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +56,7 @@ jobs:
           path: dist/
 
   test-unit:
-    name: Unit Tests
+    name: Stage IV - Test : Unit Tests
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -73,7 +74,7 @@ jobs:
           path: coverage/
 
   test-integration:
-    name: Integration Tests
+    name: Stage IV - Test : Integration Tests
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -86,7 +87,7 @@ jobs:
       - run: npm run test:integration
 
   test-e2e:
-    name: E2E Tests
+    name: Stage V - Test : E2E Automation tests
     needs: [test-unit, test-integration]
     runs-on: ubuntu-latest
     steps:
@@ -102,7 +103,7 @@ jobs:
         run: xvfb-run --auto-servernum npm run test:e2e
 
   test-e2e-real:
-    name: E2E Real Conversion
+    name: Stage V - Test : E2E Production Scenario
     needs: [test-unit, test-integration]
     runs-on: ubuntu-latest
     steps:

@@ -54,7 +54,9 @@ left missing/untranslated and no stray keys are added.
   - `actions/setup-node@v4` (Node 22, npm cache)
   - `run: npm run validate:locales`
 - `npm ci` is intentionally skipped (the script is dependency-free, so the job is fast).
-- Runs in parallel with `format-check` (no `needs`).
+- Sequencing: `validate-locales` has `needs: [format-check]`, and `build` has
+  `needs: [format-check, validate-locales]` — so the pipeline only proceeds past
+  `format-check` -> `validate-locales` -> `build` (and the downstream test jobs).
 
 ### 4. Verify
 
