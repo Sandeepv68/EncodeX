@@ -255,6 +255,7 @@
     "jobCancelMessage": "Esto borrará el formulario actual de corte de vídeo. ¿Estás seguro?",
     "closePreview": "Cerrar vista previa",
     "videoFileHint": "Arrastre un archivo de video aquí o haga clic para explorar su computadora.",
+    "videoFiles": "Archivos de video",
     "dropLabel": "Suelte un archivo de video aquí o haga clic para explorar",
     "changeFile": "Cambiar video",
     "changeFileHint": "Seleccione otro archivo de video.",

@@ -237,6 +237,7 @@
     "browse": "Bla gjennom",
     "dropLabel": "Slipp en videofil her eller klikk for å bla",
     "videoFileHint": "Dra og slipp en videofil her eller klikk for å bla gjennom datamaskinen din.",
+    "videoFiles": "Videofiler",
     "changeFile": "Bytt video",
     "changeFileHint": "Velg en annen videofil.",
     "outputFile": "Utdatafil",

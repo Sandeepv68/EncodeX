@@ -255,6 +255,7 @@
     "jobCancelMessage": "Ini akan menghapus formulir potong video saat ini. Yakin?",
     "closePreview": "Tutup pratinjau",
     "videoFileHint": "Seret dan lepas file video di sini atau klik untuk menjelajahi komputer Anda.",
+    "videoFiles": "File Video",
     "dropLabel": "Lepas file video di sini atau klik untuk menjelajah",
     "changeFile": "Ganti Video",
     "changeFileHint": "Pilih file video lain.",

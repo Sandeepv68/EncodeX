@@ -237,6 +237,7 @@
     "browse": "Browse",
     "dropLabel": "Drop a video file here or click to browse",
     "videoFileHint": "Drag and drop a video file here or click to browse your computer.",
+    "videoFiles": "Video Files",
     "changeFile": "Change Video",
     "changeFileHint": "Select a different video file.",
     "outputFile": "Output File",

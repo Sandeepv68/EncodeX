@@ -255,6 +255,7 @@
     "jobCancelMessage": "Isso limpará o formulário atual de corte de vídeo. Tem certeza?",
     "closePreview": "Fechar visualização",
     "videoFileHint": "Arraste um arquivo de vídeo aqui ou clique para navegar pelo seu computador.",
+    "videoFiles": "Arquivos de Vídeo",
     "dropLabel": "Solte um arquivo de vídeo aqui ou clique para navegar",
     "changeFile": "Alterar vídeo",
     "changeFileHint": "Selecione outro arquivo de vídeo.",

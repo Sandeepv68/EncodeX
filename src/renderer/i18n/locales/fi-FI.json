@@ -237,6 +237,7 @@
     "browse": "Selaa",
     "dropLabel": "Pudota videotiedosto tähän tai napsauta selataksesi",
     "videoFileHint": "Vedä ja pudota videotiedosto tähän tai napsauta selataksesi tietokonettasi.",
+    "videoFiles": "Videotiedostot",
     "changeFile": "Vaihda video",
     "changeFileHint": "Valitse toinen videotiedosto.",
     "outputFile": "Kohdetiedosto",

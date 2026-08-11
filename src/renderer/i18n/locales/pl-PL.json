@@ -237,6 +237,7 @@
     "browse": "Przeglądaj",
     "dropLabel": "Upuść plik wideo tutaj lub kliknij, aby przeglądać",
     "videoFileHint": "Przeciągnij i upuść plik wideo tutaj lub kliknij, aby przeglądać komputer.",
+    "videoFiles": "Pliki wideo",
     "changeFile": "Zmień wideo",
     "changeFileHint": "Wybierz inny plik wideo.",
     "outputFile": "Plik wyjściowy",

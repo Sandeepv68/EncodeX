@@ -255,6 +255,7 @@
     "jobCancelMessage": "Detta rensar det aktuella videoklippformuläret. Är du säker?",
     "closePreview": "Stäng förhandsvisning",
     "videoFileHint": "Dra och släpp en videofil här eller klicka för att bläddra på datorn.",
+    "videoFiles": "Videofiler",
     "dropLabel": "Släpp en videofil här eller klicka för att bläddra",
     "changeFile": "Byt video",
     "changeFileHint": "Välj en annan videofil.",

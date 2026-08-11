@@ -255,6 +255,7 @@
     "jobCancelMessage": "Questo cancellerà il modulo di taglio video corrente. Sei sicuro?",
     "closePreview": "Chiudi anteprima",
     "videoFileHint": "Trascina qui un file video o fai clic per sfogliare il tuo computer.",
+    "videoFiles": "File video",
     "dropLabel": "Rilascia qui un file video o fai clic per sfogliare",
     "changeFile": "Cambia video",
     "changeFileHint": "Seleziona un altro file video.",

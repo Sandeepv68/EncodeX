@@ -237,6 +237,7 @@
     "browse": "Mag-browse",
     "dropLabel": "I-drop ang video file dito o i-click para mag-browse",
     "videoFileHint": "I-drag at i-drop ang video file dito o i-click para mag-browse sa iyong computer.",
+    "videoFiles": "Video Files",
     "changeFile": "Palitan ang Video",
     "changeFileHint": "Pumili ng ibang video file.",
     "outputFile": "Output File",

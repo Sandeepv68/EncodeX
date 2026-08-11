@@ -237,6 +237,7 @@
     "browse": "Duyệt",
     "dropLabel": "Thả tệp video vào đây hoặc nhấp để duyệt",
     "videoFileHint": "Kéo và thả tệp video vào đây hoặc nhấp để duyệt máy tính của bạn.",
+    "videoFiles": "Tệp video",
     "changeFile": "Đổi video",
     "changeFileHint": "Chọn một tệp video khác.",
     "outputFile": "Tệp đầu ra",

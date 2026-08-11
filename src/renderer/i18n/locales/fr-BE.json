@@ -255,6 +255,7 @@
     "jobCancelMessage": "Cela effacera le formulaire actuel de découpe vidéo. Êtes-vous sûr ?",
     "closePreview": "Fermer l'aperçu",
     "videoFileHint": "Déposez un fichier vidéo ici ou cliquez pour parcourir votre ordinateur.",
+    "videoFiles": "Fichiers Vidéo",
     "dropLabel": "Déposez un fichier vidéo ici ou cliquez pour parcourir",
     "changeFile": "Changer la vidéo",
     "changeFileHint": "Sélectionnez un autre fichier vidéo.",

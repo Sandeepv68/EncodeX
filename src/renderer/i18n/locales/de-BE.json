@@ -255,6 +255,7 @@
     "jobCancelMessage": "Dadurch wird das aktuelle Video-Schnittformular gelöscht. Sind Sie sicher?",
     "closePreview": "Vorschau schließen",
     "videoFileHint": "Videodatei hier ablegen oder klicken zum Durchsuchen Ihres Computers.",
+    "videoFiles": "Videodateien",
     "dropLabel": "Videodatei hier ablegen oder klicken zum Durchsuchen",
     "changeFile": "Video ändern",
     "changeFileHint": "Wählen Sie eine andere Videodatei.",

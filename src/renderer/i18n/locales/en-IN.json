@@ -255,6 +255,7 @@
     "jobCancelMessage": "This will clear the current video cut form. Are you sure?",
     "closePreview": "Close Preview",
     "videoFileHint": "Drag and drop a video file here or click to browse your computer.",
+    "videoFiles": "Video Files",
     "dropLabel": "Drop a video file here or click to browse",
     "changeFile": "Change Video",
     "changeFileHint": "Select a different video file.",

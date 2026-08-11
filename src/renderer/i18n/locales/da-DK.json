@@ -237,6 +237,7 @@
     "browse": "Gennemse",
     "dropLabel": "Smid videofilen her, eller klik for at gennemse",
     "videoFileHint": "Træk og slip en videofil her, eller klik for at gennemse din computer.",
+    "videoFiles": "Videofiler",
     "changeFile": "Skift video",
     "changeFileHint": "Vælg en anden videofil.",
     "outputFile": "Outputfil",

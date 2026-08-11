@@ -237,6 +237,7 @@
     "browse": "浏览",
     "dropLabel": "将视频文件拖放到此处或点击浏览",
     "videoFileHint": "将视频文件拖放到此处，或点击浏览您的电脑。",
+    "videoFiles": "视频文件",
     "changeFile": "更改视频",
     "changeFileHint": "选择其他视频文件。",
     "outputFile": "输出文件",

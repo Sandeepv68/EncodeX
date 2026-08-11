@@ -237,6 +237,7 @@
     "browse": "Procurar",
     "dropLabel": "Largue um ficheiro de vídeo aqui ou clique para procurar",
     "videoFileHint": "Arraste e largue um ficheiro de vídeo aqui ou clique para procurar no seu computador.",
+    "videoFiles": "Ficheiros de Vídeo",
     "changeFile": "Alterar Vídeo",
     "changeFileHint": "Selecione outro ficheiro de vídeo.",
     "outputFile": "Ficheiro de Saída",
