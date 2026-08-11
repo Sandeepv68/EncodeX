@@ -22,18 +22,17 @@
  *  - hint: optional text shown in an info tooltip next to the label.
  */
 
-import { Box, Button } from '@mui/material';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import InfoTooltip from './InfoTooltip';
+import FormField from './FormField';
 import type { FilePathFieldProps } from './types';
-import { FieldLabel, FieldStack, PathField } from '../styles/FilePathField.styles';
+import { FieldStack, PathField, BrowseButton } from '../styles/FilePathField.styles';
 
 /**
  * Renders the labeled file path input with a browse button.
  *
- * Composes a caption {@link FieldLabel} (with an {@link InfoTooltip} when a
- * `hint` is given), a {@link PathField} input, and a browse {@link Button}.
+ * Composes a {@link FormField} (caption label with an {@link InfoTooltip} when
+ * a `hint` is given), a {@link PathField} input, and a browse {@link BrowseButton}.
  * The input is read-only when no `onChange` is supplied, in which case the
  * `error` string becomes the helper text; when editable, a single space is used
  * as helper text so the layout does not shift when errors later appear.
@@ -62,31 +61,34 @@ export default function FilePathField({
   onBlur,
   error,
   hint,
+  required,
   testId,
 }: FilePathFieldProps) {
   const helperText = error ? error : onChange ? ' ' : undefined;
   return (
-    <Box data-testid={testId}>
-      <FieldLabel variant="caption" color="text.secondary">
-        {label}
-        {hint && <InfoTooltip title={hint} />}
-      </FieldLabel>
-      <FieldStack direction="row" spacing={1} useFlexGap>
-        <PathField
-          fullWidth
-          size="small"
-          error={!!error}
-          helperText={helperText}
-          value={value}
-          placeholder={placeholder}
-          onChange={onChange ? (e) => onChange(e.target.value) : undefined}
-          onBlur={onBlur}
-          slotProps={onChange ? undefined : { input: { readOnly: true } }}
-        />
-        <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faFolderOpen} />} onClick={onBrowse}>
-          {buttonLabel}
-        </Button>
-      </FieldStack>
-    </Box>
+    <FormField label={label} hint={hint} required={required} error={error} helperText={helperText} testId={testId}>
+      {(id) => (
+        <FieldStack direction={{ xs: 'column', sm: 'row' }} spacing={1} useFlexGap>
+          <PathField
+            id={id}
+            fullWidth
+            size="small"
+            data-testid={testId}
+            error={!!error}
+            value={value}
+            placeholder={placeholder}
+            onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+            onBlur={onBlur}
+            slotProps={{
+              input: onChange ? undefined : { readOnly: true },
+              htmlInput: required ? { 'aria-required': 'true' } : undefined,
+            }}
+          />
+          <BrowseButton variant="outlined" startIcon={<FontAwesomeIcon icon={faFolderOpen} />} onClick={onBrowse}>
+            {buttonLabel}
+          </BrowseButton>
+        </FieldStack>
+      )}
+    </FormField>
   );
 }

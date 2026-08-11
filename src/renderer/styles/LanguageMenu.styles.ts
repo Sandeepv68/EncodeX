@@ -17,8 +17,7 @@ export const LanguageButton = styled('button')(({ theme }) => ({
   cursor: 'pointer',
   color: theme.palette.text.secondary,
   backgroundColor: 'transparent',
-  paddingLeft: theme.spacing(1),
-  paddingRight: theme.spacing(1),
+  paddingInline: theme.spacing(1),
   paddingTop: theme.spacing(0.5),
   paddingBottom: theme.spacing(0.5),
   borderRadius: theme.shape.borderRadius,
@@ -38,7 +37,7 @@ export const FlagIconWrapper = styled('span')(({ theme }) => ({
   display: 'inline-flex',
   width: theme.typography.pxToRem(20),
   height: theme.typography.pxToRem(15),
-  marginRight: theme.typography.pxToRem(8),
+  marginInlineEnd: theme.typography.pxToRem(8),
   verticalAlign: 'middle',
   '& svg': { width: '100%', height: '100%' },
 }));

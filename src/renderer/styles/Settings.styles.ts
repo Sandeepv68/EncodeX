@@ -32,6 +32,17 @@ export const SettingsLabelRow = styled(Box)({ display: 'flex', alignItems: 'cent
 
 export const ModeSelect = styled(TextField)(({ theme }) => ({
   minWidth: theme.spacing(26),
+  [theme.breakpoints.down('sm')]: {
+    minWidth: 0,
+    width: '100%',
+  },
+}));
+
+export const ModeSettingsSection = styled(SettingsSection)(({ theme }) => ({
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  },
 }));
 
 export const ThemeSettingsSection = styled(SettingsSection)({

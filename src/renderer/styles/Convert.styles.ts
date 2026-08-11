@@ -12,25 +12,6 @@ export const CompatAlert = styled(Alert)(({}) => ({
   color: COLORS.alert.warning,
 }));
 
-export const ToggleRow = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: theme.spacing(1),
-  '& .MuiTypography-root.MuiTypography-caption': {
-    fontWeight: theme.typography.fontWeightBold,
-    color: theme.palette.text.secondary,
-  },
-}));
-
-export const FieldBox = styled(Box)({ flex: 1 });
-
-export const FieldLabel = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(0.5),
-  display: 'block',
-  fontWeight: theme.typography.fontWeightBold,
-  color: theme.palette.text.secondary,
-}));
-
 export const ActionStack = styled(Stack)({ flexWrap: 'wrap' });
 
 export const PreviewPanel = styled(Paper)(({ theme }) => ({
@@ -58,8 +39,7 @@ export const PreviewHeader = styled(Box)(({ theme }) => ({
 }));
 
 export const PreviewDivider = styled(Divider)(({ theme }) => ({
-  marginLeft: -theme.spacing(2),
-  marginRight: -theme.spacing(2),
+  marginInline: -theme.spacing(2),
 }));
 
 export const PreviewSectionTitle = styled(Typography)(({ theme }) => ({

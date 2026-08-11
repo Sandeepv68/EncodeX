@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 export const InfoIconWrapper = styled('span')(({ theme }) => ({
   display: 'inline-flex',
   cursor: 'help',
-  marginLeft: theme.spacing(0.5),
+  marginInlineStart: theme.spacing(0.5),
   verticalAlign: 'middle',
 }));
 

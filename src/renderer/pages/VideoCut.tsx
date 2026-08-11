@@ -56,20 +56,12 @@ import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import type { MediaInfo } from '../../shared/types';
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { focusFirstError } from '../utils/focusFirstError';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
-import { FieldLabel } from '../styles/FilePathField.styles';
-import {
-  ToggleRow,
-  SectionPaper,
-  SectionHeader,
-  SectionTitle,
-  FileChip,
-  SectionsStack,
-  HeadingGroup,
-  AccelAlert,
-} from '../styles/VideoCut.styles';
+import { SectionHeader, FileChip, SectionsStack, HeadingGroup, AccelAlert } from '../styles/VideoCut.styles';
+import { FieldLabel, ToggleRow, SectionCard, SectionTitle } from '../styles/form.styles';
 import {
   LOG_ARROW,
   LOG_CANCELLING_CUT_JOB,
@@ -141,9 +133,9 @@ function basename(filePath: string): string {
 /**
  * Renders the video cutting page (`/video-cut`).
  *
- * Layout: when a video is selected, a preview `SectionPaper` hosts the
+ * Layout: when a video is selected, a preview `SectionCard` hosts the
  * `MediaPlayer` and the `VideoTimeline` (with cut markers, waveform, thumbnail
- * strip, and an audio toggle). A second `SectionPaper` holds the file drop zone
+ * strip, and an audio toggle). A second `SectionCard` holds the file drop zone
  * / change-file button, the output path field, start/end-or-duration time
  * fields, the use-duration switch, and the Cut/pause/resume/cancel buttons.
  * While converting, a ProgressBar is shown. Two `ConfirmDialog`s guard job
@@ -381,6 +373,14 @@ export default function VideoCut() {
       next.endTime = t('validation.invalidTime');
     }
     setErrors(next);
+    if (Object.keys(next).length > 0) {
+      focusFirstError(next, ['output', 'startTime', 'duration', 'endTime'], {
+        output: 'video-cut-output',
+        startTime: 'video-cut-start',
+        duration: 'video-cut-duration',
+        endTime: 'video-cut-end',
+      });
+    }
     return Object.keys(next).length === 0;
   };
 
@@ -614,7 +614,7 @@ export default function VideoCut() {
     <PageContainer title={t('videoCut.title')} icon={pageIcons['/video-cut']} paper={false}>
       <SectionsStack>
         {input && (
-          <SectionPaper>
+          <SectionCard>
             <SectionHeader>
               <HeadingGroup>
                 <SectionTitle variant="h6">{t('videoCut.preview')}</SectionTitle>
@@ -656,16 +656,16 @@ export default function VideoCut() {
               onStartChange={(s) => setStartTime(secondsToTime(s))}
               onEndChange={(s) => setEndTime(secondsToTime(s))}
             />
-          </SectionPaper>
+          </SectionCard>
         )}
 
-        <SectionPaper>
+        <SectionCard>
           <SectionTitle variant="h6">{t('videoCut.details')}</SectionTitle>
 
           {settingsHardwareAcceleration && <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>}
 
           <Box>
-            <FieldLabel variant="caption" color="text.secondary">
+            <FieldLabel>
               {t('videoCut.videoFile')}
               <InfoTooltip title={t('videoCut.videoFileHint')} />
             </FieldLabel>
@@ -690,6 +690,7 @@ export default function VideoCut() {
           <FilePathField
             label={t('videoCut.outputFile')}
             hint={t('videoCut.outputFileHint')}
+            required
             value={output}
             placeholder={t('videoCut.placeholderOutput')}
             buttonLabel={t('convert.browse')}
@@ -715,6 +716,7 @@ export default function VideoCut() {
             <TimeField
               label={t('videoCut.startTime')}
               hint={t('videoCut.startTimeHint')}
+              formatHint={t('videoCut.timeFormatHint')}
               value={startTime}
               placeholder={t('videoCut.placeholderStart')}
               testId="video-cut-start"
@@ -731,6 +733,7 @@ export default function VideoCut() {
               <TimeField
                 label={t('videoCut.duration')}
                 hint={t('videoCut.durationHint')}
+                formatHint={t('videoCut.timeFormatHint')}
                 value={duration}
                 placeholder={t('videoCut.placeholderDuration')}
                 testId="video-cut-duration"
@@ -747,6 +750,7 @@ export default function VideoCut() {
               <TimeField
                 label={t('videoCut.endTime')}
                 hint={t('videoCut.endTimeHint')}
+                formatHint={t('videoCut.timeFormatHint')}
                 value={endTime}
                 placeholder={t('videoCut.placeholderEnd')}
                 testId="video-cut-end"
@@ -839,7 +843,7 @@ export default function VideoCut() {
               <ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} paused={isPaused} />
             </ErrorBoundary>
           )}
-        </SectionPaper>
+        </SectionCard>
       </SectionsStack>
 
       <ConfirmDialog

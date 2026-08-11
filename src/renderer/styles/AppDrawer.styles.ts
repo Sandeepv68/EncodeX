@@ -9,8 +9,7 @@ export const DrawerDivider = styled(Divider)(({ theme }) => ({
 
 export const NavList = styled(List)(({ theme }) => ({
   flex: 1,
-  paddingLeft: theme.spacing(1),
-  paddingRight: theme.spacing(1),
+  paddingInline: theme.spacing(1),
 }));
 
 const navItemIn = (theme: Theme) => keyframes`

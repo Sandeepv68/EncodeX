@@ -40,7 +40,7 @@
  *    JSON queue file via the main process.
  */
 
-import { Checkbox, FormControlLabel, MenuItem, Tooltip } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Grid, MenuItem, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
@@ -60,7 +60,6 @@ import type { TranscoderType } from '../../shared/types';
 import type { BatchControlsProps } from './types';
 import {
   ControlsPaper,
-  ControlsStack,
   OperationSelect,
   TranscoderSelect,
   ConcurrencySelect,
@@ -72,7 +71,7 @@ import {
 /**
  * Renders the batch queue configuration toolbar.
  *
- * Builds a horizontal stack of MUI controls inside a paper surface. The
+ * Builds a responsive grid of MUI controls inside a paper surface. The
  * operation select is controlled via `operation`/`onOperationChange`; the
  * transcoder and suffix selects use their first TRANSCODER_TYPES entry /
  * DEFAULT_SUFFIX as the default and push every change into the corresponding
@@ -149,122 +148,150 @@ export default function BatchControls({
 
   return (
     <ControlsPaper>
-      <ControlsStack direction="row" spacing={1} useFlexGap>
-        <OperationSelect
-          select
-          size="small"
-          value={operation}
-          onChange={(e) => {
-            onOperationChange(e.target.value);
-          }}
-        >
-          {BATCH_OPERATIONS.map((o) => (
-            <MenuItem key={o.value} value={o.value}>
-              {operationLabels[o.value]}
-            </MenuItem>
-          ))}
-        </OperationSelect>
-        <TranscoderSelect
-          select
-          size="small"
-          defaultValue={TRANSCODER_TYPES[0]}
-          onChange={(e) => {
-            transcoderRef.current = e.target.value as TranscoderType;
-          }}
-        >
-          {TRANSCODER_TYPES.map((codec) => (
-            <MenuItem key={codec} value={codec}>
-              {codec}
-            </MenuItem>
-          ))}
-        </TranscoderSelect>
-        <SuffixField
-          size="small"
-          defaultValue={DEFAULT_SUFFIX}
-          onChange={(e) => {
-            suffixRef.current = e.target.value;
-          }}
-          placeholder={t('batchQueue.suffix')}
-        />
-        <OutputDirField
-          size="small"
-          value={outputDir}
-          onChange={(e) => {
-            onOutputDirChange(e.target.value);
-          }}
-          placeholder={t('batchQueue.outputDirPlaceholder')}
-        />
-        <Tooltip title={t('batchQueue.browse')}>
-          <OutlinedIconButton size="small" aria-label={t('batchQueue.browse')} onClick={onBrowseDir}>
-            <FontAwesomeIcon icon={faFolderOpen} />
-          </OutlinedIconButton>
-        </Tooltip>
-        <FormControlLabel
-          control={
-            <Checkbox
-              size="small"
-              checked={overwrite}
-              onChange={(e) => {
-                onOverwriteChange(e.target.checked);
-              }}
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+          <OperationSelect
+            select
+            fullWidth
+            size="small"
+            value={operation}
+            onChange={(e) => {
+              onOperationChange(e.target.value);
+            }}
+          >
+            {BATCH_OPERATIONS.map((o) => (
+              <MenuItem key={o.value} value={o.value}>
+                {operationLabels[o.value]}
+              </MenuItem>
+            ))}
+          </OperationSelect>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+          <TranscoderSelect
+            select
+            fullWidth
+            size="small"
+            defaultValue={TRANSCODER_TYPES[0]}
+            onChange={(e) => {
+              transcoderRef.current = e.target.value as TranscoderType;
+            }}
+          >
+            {TRANSCODER_TYPES.map((codec) => (
+              <MenuItem key={codec} value={codec}>
+                {codec}
+              </MenuItem>
+            ))}
+          </TranscoderSelect>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+          <SuffixField
+            fullWidth
+            size="small"
+            defaultValue={DEFAULT_SUFFIX}
+            onChange={(e) => {
+              suffixRef.current = e.target.value;
+            }}
+            placeholder={t('batchQueue.suffix')}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+          <ConcurrencySelect
+            select
+            fullWidth
+            size="small"
+            label={t('batchQueue.concurrency')}
+            value={concurrency}
+            onChange={(e) => {
+              onConcurrencyChange(Number(e.target.value));
+            }}
+          >
+            {Array.from({ length: MAX_QUEUE_CONCURRENCY }, (_, i) => i + 1).map((n) => (
+              <MenuItem key={n} value={n}>
+                {n}
+              </MenuItem>
+            ))}
+          </ConcurrencySelect>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 9, md: 10 }}>
+          <OutputDirField
+            fullWidth
+            size="small"
+            value={outputDir}
+            onChange={(e) => {
+              onOutputDirChange(e.target.value);
+            }}
+            placeholder={t('batchQueue.outputDirPlaceholder')}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 3, md: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Tooltip title={t('batchQueue.browse')}>
+              <OutlinedIconButton size="small" aria-label={t('batchQueue.browse')} onClick={onBrowseDir}>
+                <FontAwesomeIcon icon={faFolderOpen} />
+              </OutlinedIconButton>
+            </Tooltip>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  size="small"
+                  checked={overwrite}
+                  onChange={(e) => {
+                    onOverwriteChange(e.target.checked);
+                  }}
+                />
+              }
+              label={t('batchQueue.overwrite')}
             />
-          }
-          label={t('batchQueue.overwrite')}
-        />
-        <ConcurrencySelect
-          select
-          size="small"
-          label={t('batchQueue.concurrency')}
-          value={concurrency}
-          onChange={(e) => {
-            onConcurrencyChange(Number(e.target.value));
-          }}
-        >
-          {Array.from({ length: MAX_QUEUE_CONCURRENCY }, (_, i) => i + 1).map((n) => (
-            <MenuItem key={n} value={n}>
-              {n}
-            </MenuItem>
-          ))}
-        </ConcurrencySelect>
-        <Tooltip title={t('batchQueue.addFiles')}>
-          <OutlinedIconButton size="small" aria-label={t('batchQueue.addFiles')} onClick={onAddFiles}>
-            <FontAwesomeIcon icon={faPlus} />
-          </OutlinedIconButton>
-        </Tooltip>
-        <Tooltip title={t('batchQueue.cancelAll')}>
-          <OutlinedIconButton size="small" color="error" aria-label={t('batchQueue.cancelAll')} onClick={onCancelAll}>
-            <FontAwesomeIcon icon={faBroom} />
-          </OutlinedIconButton>
-        </Tooltip>
-        {paused ? (
-          <Tooltip title={t('batchQueue.resume')}>
-            <OutlinedIconButton size="small" color="success" aria-label={t('batchQueue.resume')} onClick={onResume}>
-              <FontAwesomeIcon icon={faPlay} />
-            </OutlinedIconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title={t('batchQueue.pause')}>
-            <OutlinedIconButton size="small" color="warning" aria-label={t('batchQueue.pause')} onClick={onPause} disabled={!hasActive}>
-              <FontAwesomeIcon icon={faPause} />
-            </OutlinedIconButton>
-          </Tooltip>
-        )}
-        <Tooltip title={t('batchQueue.clearCompleted')}>
-          <OutlinedIconButton size="small" aria-label={t('batchQueue.clearCompleted')} onClick={onClearCompleted} disabled={!hasCompleted}>
-            <FontAwesomeIcon icon={faCheckDouble} />
-          </OutlinedIconButton>
-        </Tooltip>
-        <Tooltip title={t('batchQueue.exportQueue')}>
-          <OutlinedIconButton size="small" aria-label={t('batchQueue.exportQueue')} onClick={onExport}>
-            <FontAwesomeIcon icon={faFileExport} />
-          </OutlinedIconButton>
-        </Tooltip>
-        <Tooltip title={t('batchQueue.importQueue')}>
-          <OutlinedIconButton size="small" aria-label={t('batchQueue.importQueue')} onClick={onImport}>
-            <FontAwesomeIcon icon={faFileImport} />
-          </OutlinedIconButton>
-        </Tooltip>
-      </ControlsStack>
+          </Box>
+        </Grid>
+        <Grid size={12}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1 }}>
+            <Tooltip title={t('batchQueue.addFiles')}>
+              <OutlinedIconButton size="small" aria-label={t('batchQueue.addFiles')} onClick={onAddFiles}>
+                <FontAwesomeIcon icon={faPlus} />
+              </OutlinedIconButton>
+            </Tooltip>
+            <Tooltip title={t('batchQueue.cancelAll')}>
+              <OutlinedIconButton size="small" color="error" aria-label={t('batchQueue.cancelAll')} onClick={onCancelAll}>
+                <FontAwesomeIcon icon={faBroom} />
+              </OutlinedIconButton>
+            </Tooltip>
+            {paused ? (
+              <Tooltip title={t('batchQueue.resume')}>
+                <OutlinedIconButton size="small" color="success" aria-label={t('batchQueue.resume')} onClick={onResume}>
+                  <FontAwesomeIcon icon={faPlay} />
+                </OutlinedIconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title={t('batchQueue.pause')}>
+                <OutlinedIconButton size="small" color="warning" aria-label={t('batchQueue.pause')} onClick={onPause} disabled={!hasActive}>
+                  <FontAwesomeIcon icon={faPause} />
+                </OutlinedIconButton>
+              </Tooltip>
+            )}
+            <Tooltip title={t('batchQueue.clearCompleted')}>
+              <OutlinedIconButton
+                size="small"
+                aria-label={t('batchQueue.clearCompleted')}
+                onClick={onClearCompleted}
+                disabled={!hasCompleted}
+              >
+                <FontAwesomeIcon icon={faCheckDouble} />
+              </OutlinedIconButton>
+            </Tooltip>
+            <Tooltip title={t('batchQueue.exportQueue')}>
+              <OutlinedIconButton size="small" aria-label={t('batchQueue.exportQueue')} onClick={onExport}>
+                <FontAwesomeIcon icon={faFileExport} />
+              </OutlinedIconButton>
+            </Tooltip>
+            <Tooltip title={t('batchQueue.importQueue')}>
+              <OutlinedIconButton size="small" aria-label={t('batchQueue.importQueue')} onClick={onImport}>
+                <FontAwesomeIcon icon={faFileImport} />
+              </OutlinedIconButton>
+            </Tooltip>
+          </Box>
+        </Grid>
+      </Grid>
     </ControlsPaper>
   );
 }

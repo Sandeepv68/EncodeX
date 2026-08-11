@@ -34,20 +34,14 @@ import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { focusFirstError } from '../utils/focusFirstError';
 import { BITRATE_OPTIONS } from '../../shared/media-options';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { replaceExtension, suggestedExtensionForAudioCodec } from '../../shared/codec-containers';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import type { MediaStreamInfo } from '../../shared/types';
-import {
-  FieldBox,
-  FieldLabel,
-  PreviewBox,
-  PreviewImage,
-  PreviewImageBox,
-  PreviewInfo,
-  PreviewCloseButton,
-} from '../styles/AudioExtract.styles';
+import MediaPreview from '../components/MediaPreview';
+import { FieldBox, FieldLabel } from '../styles/form.styles';
 import {
   LOG_ARROW,
   LOG_CODEC,
@@ -185,12 +179,11 @@ export default function AudioExtract() {
    * @returns {boolean} True when validation passes and extraction may start.
    */
   const validate = (): boolean => {
-    if (!store.output.trim()) {
-      setErrors({ output: t('validation.outputRequired') });
-      return false;
-    }
-    setErrors({});
-    return true;
+    const next: Record<string, string> = {};
+    if (!store.output.trim()) next.output = t('validation.outputRequired');
+    setErrors(next);
+    if (Object.keys(next).length > 0) focusFirstError(next, ['output'], { output: 'audio-extract-output' });
+    return Object.keys(next).length === 0;
   };
 
   /**
@@ -212,7 +205,7 @@ export default function AudioExtract() {
   return (
     <PageContainer title={t('audioExtract.title')} icon={pageIcons['/audio-extract']}>
       <Box>
-        <FieldLabel variant="caption" color="text.secondary">
+        <FieldLabel>
           {t('audioExtract.videoFile')}
           <InfoTooltip title={t('audioExtract.videoFileHint')} />
         </FieldLabel>
@@ -222,42 +215,43 @@ export default function AudioExtract() {
           </ErrorBoundary>
         )}
         {store.input && (
-          <PreviewBox data-testid="video-preview">
-            <PreviewImageBox>
-              {store.preview && <PreviewImage src={store.preview} alt={fileName(store.input)} />}
-              <PreviewCloseButton size="small" aria-label={t('batchQueue.remove')} data-testid="remove-video" onClick={clearSelection}>
-                <FontAwesomeIcon icon={faXmark} />
-              </PreviewCloseButton>
-            </PreviewImageBox>
-            <PreviewInfo>
-              <Typography variant="body2" color="text.secondary" data-testid="selected-video">
-                {(() => {
-                  const template = t('audioExtract.selectedVideo', { file: '{{file}}' });
-                  const [before, after] = template.split('{{file}}');
-                  return (
-                    <>
-                      {before}
-                      <Box component="span" sx={{ fontWeight: 700 }}>
-                        {fileName(store.input)}
-                      </Box>
-                      {after}
-                    </>
-                  );
-                })()}
-              </Typography>
-              {store.audioStreams.length > 0 && (
-                <ErrorBoundary fallback={null}>
-                  <AudioStreamInfo streams={store.audioStreams} />
-                </ErrorBoundary>
-              )}
-            </PreviewInfo>
-          </PreviewBox>
+          <MediaPreview
+            imageSrc={store.preview}
+            alt={fileName(store.input)}
+            removeLabel={t('batchQueue.remove')}
+            testId="video-preview"
+            removeTestId="remove-video"
+            variant="wide"
+            onRemove={clearSelection}
+          >
+            <Typography variant="body2" color="text.secondary" data-testid="selected-video">
+              {(() => {
+                const template = t('audioExtract.selectedVideo', { file: '{{file}}' });
+                const [before, after] = template.split('{{file}}');
+                return (
+                  <>
+                    {before}
+                    <Box component="span" sx={{ fontWeight: 700 }}>
+                      {fileName(store.input)}
+                    </Box>
+                    {after}
+                  </>
+                );
+              })()}
+            </Typography>
+            {store.audioStreams.length > 0 && (
+              <ErrorBoundary fallback={null}>
+                <AudioStreamInfo streams={store.audioStreams} />
+              </ErrorBoundary>
+            )}
+          </MediaPreview>
         )}
       </Box>
 
       <FilePathField
         label={t('audioExtract.outputFile')}
         hint={t('audioExtract.outputFileHint')}
+        required
         value={store.output}
         placeholder={t('audioExtract.placeholderOutput')}
         buttonLabel={t('convert.browse')}
@@ -278,7 +272,7 @@ export default function AudioExtract() {
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
         <FieldBox>
-          <FieldLabel variant="caption" color="text.secondary">
+          <FieldLabel>
             {t('audioExtract.audioCodec')}
             <InfoTooltip title={t('audioExtract.audioCodecHint')} />
           </FieldLabel>
@@ -287,7 +281,7 @@ export default function AudioExtract() {
           </ErrorBoundary>
         </FieldBox>
         <FieldBox>
-          <FieldLabel variant="caption" color="text.secondary">
+          <FieldLabel>
             {t('audioExtract.bitrate')}
             <InfoTooltip title={t('audioExtract.bitrateHint')} />
           </FieldLabel>

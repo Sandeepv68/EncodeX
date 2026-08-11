@@ -996,7 +996,7 @@ export default function BatchQueue() {
             })}
             <SearchField size="small" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('batchQueue.search')} />
             {remainingSeconds !== null && (
-              <Typography variant="body2" color="text.secondary" sx={{ marginLeft: 'auto' }}>
+              <Typography variant="body2" color="text.secondary" sx={{ marginInlineStart: 'auto' }}>
                 {t('batchQueue.etaEstimate', { eta: formatEstimate(remainingSeconds) })}
               </Typography>
             )}

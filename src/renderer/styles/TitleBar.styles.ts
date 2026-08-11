@@ -31,8 +31,8 @@ export const TitleBarIcon = styled('img')(({ theme }) => ({
   display: 'block',
   width: theme.typography.pxToRem(20),
   height: theme.typography.pxToRem(20),
-  marginLeft: theme.spacing(1.5),
-  marginRight: theme.spacing(1),
+  marginInlineStart: theme.spacing(1.5),
+  marginInlineEnd: theme.spacing(1),
   borderRadius: theme.typography.pxToRem(4),
   filter: `drop-shadow(0 ${theme.typography.pxToRem(1)} ${theme.typography.pxToRem(2)} ${OVERLAY_COLORS.black25})`,
   flexShrink: 0,
@@ -52,7 +52,7 @@ export const TitleBarTitle = styled(Typography)(({ theme }) => ({
 }));
 
 export const TitleBarBetaBadge = styled(Typography)(({ theme }) => ({
-  marginLeft: theme.spacing(1),
+  marginInlineStart: theme.spacing(1),
   padding: `${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)}`,
   borderRadius: theme.typography.pxToRem(4),
   backgroundColor: COLORS.info,

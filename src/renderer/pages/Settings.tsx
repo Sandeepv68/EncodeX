@@ -30,6 +30,7 @@ import {
   SettingsLabel,
   SettingsLabelRow,
   ModeSelect,
+  ModeSettingsSection,
   ThemeSwitcher,
   ThemeCard,
   ThemePreview,
@@ -37,6 +38,7 @@ import {
   ThemePreviewTextBar,
   ThemePreviewAccentBar,
 } from '../styles/Settings.styles';
+import { ToggleRow } from '../styles/form.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 
@@ -156,31 +158,37 @@ export default function Settings() {
         </ThemeSwitcher>
       </ThemeSettingsSection>
       <SettingsSection>
-        <SettingLabel text={t('settings.alwaysOnTop')} hint={t('settings.alwaysOnTopHint')} />
-        <Switch
-          checked={alwaysOnTop}
-          onChange={(e) => setAlwaysOnTop(e.target.checked)}
-          slotProps={{ input: { 'aria-label': t('settings.alwaysOnTop'), 'data-testid': 'settings-always-on-top' } }}
-        />
+        <ToggleRow>
+          <Switch
+            checked={alwaysOnTop}
+            onChange={(e) => setAlwaysOnTop(e.target.checked)}
+            slotProps={{ input: { 'aria-label': t('settings.alwaysOnTop'), 'data-testid': 'settings-always-on-top' } }}
+          />
+          <SettingLabel text={t('settings.alwaysOnTop')} hint={t('settings.alwaysOnTopHint')} />
+        </ToggleRow>
       </SettingsSection>
       <SettingsSection>
-        <SettingLabel text={t('settings.launchAtLogin')} hint={t('settings.launchAtLoginHint')} />
-        <Switch
-          checked={launchAtLogin}
-          onChange={(e) => setLaunchAtLogin(e.target.checked)}
-          slotProps={{ input: { 'aria-label': t('settings.launchAtLogin'), 'data-testid': 'settings-launch-at-login' } }}
-        />
+        <ToggleRow>
+          <Switch
+            checked={launchAtLogin}
+            onChange={(e) => setLaunchAtLogin(e.target.checked)}
+            slotProps={{ input: { 'aria-label': t('settings.launchAtLogin'), 'data-testid': 'settings-launch-at-login' } }}
+          />
+          <SettingLabel text={t('settings.launchAtLogin')} hint={t('settings.launchAtLoginHint')} />
+        </ToggleRow>
       </SettingsSection>
       <SettingsSection>
-        <SettingLabel text={t('settings.hardwareAcceleration')} hint={t('settings.hardwareAccelerationHint')} />
-        <Switch
-          checked={hardwareAcceleration}
-          onChange={(e) => setHardwareAcceleration(e.target.checked)}
-          slotProps={{ input: { 'aria-label': t('settings.hardwareAcceleration'), 'data-testid': 'settings-hardware-acceleration' } }}
-        />
+        <ToggleRow>
+          <Switch
+            checked={hardwareAcceleration}
+            onChange={(e) => setHardwareAcceleration(e.target.checked)}
+            slotProps={{ input: { 'aria-label': t('settings.hardwareAcceleration'), 'data-testid': 'settings-hardware-acceleration' } }}
+          />
+          <SettingLabel text={t('settings.hardwareAcceleration')} hint={t('settings.hardwareAccelerationHint')} />
+        </ToggleRow>
       </SettingsSection>
       {hardwareAcceleration && (
-        <SettingsSection>
+        <ModeSettingsSection>
           <SettingLabel text={t('settings.hwaccelMode')} hint={t('settings.hwaccelModeHint')} />
           <ModeSelect
             select
@@ -195,10 +203,10 @@ export default function Settings() {
               </MenuItem>
             ))}
           </ModeSelect>
-        </SettingsSection>
+        </ModeSettingsSection>
       )}
       {hardwareAcceleration && (
-        <SettingsSection>
+        <ModeSettingsSection>
           <SettingLabel text={t('settings.encoderType')} hint={t('settings.encoderTypeHint')} />
           <ModeSelect
             select
@@ -213,7 +221,7 @@ export default function Settings() {
               </MenuItem>
             ))}
           </ModeSelect>
-        </SettingsSection>
+        </ModeSettingsSection>
       )}
     </SettingsRoot>
   );

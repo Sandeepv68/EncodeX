@@ -238,6 +238,34 @@ export interface FileDropZoneProps {
 }
 
 /**
+ * Props for the shared labeled form field wrapper.
+ * @interface FormFieldProps
+ * @property {string} label - Field label text rendered as a real `<label>`.
+ * @property {string} [hint] - Optional tooltip text shown next to the label.
+ * @property {boolean} [required] - When true an `aria-hidden` required marker
+ *   (`*`) is rendered after the label without breaking exact text queries.
+ * @property {string} [error] - Optional error message shown as an error helper
+ *   line below the control.
+ * @property {string} [helperText] - Optional helper text shown below the control
+ *   (a single space can be used to reserve a helper line).
+ * @property {string} [htmlFor] - Optional explicit control id; defaults to a
+ *   `useId`-generated id used for label↔input association.
+ * @property {string} [testId] - Test id applied to the wrapping box.
+ * @property {(id: string) => ReactNode} children - Render-prop receiving the
+ *   control id so the caller can wire `id` onto the actual input.
+ */
+export interface FormFieldProps {
+  label: string;
+  hint?: string;
+  required?: boolean;
+  error?: string;
+  helperText?: string;
+  htmlFor?: string;
+  testId?: string;
+  children: (id: string) => ReactNode;
+}
+
+/**
  * Props for the file path input with browse button.
  * @interface FilePathFieldProps
  */
@@ -251,7 +279,33 @@ export interface FilePathFieldProps {
   onBlur?: () => void;
   error?: string;
   hint?: string;
+  required?: boolean;
   testId?: string;
+}
+
+/**
+ * Props for the shared media preview thumbnail box.
+ * @interface MediaPreviewProps
+ * @property {string | null} imageSrc - Data URL of the preview thumbnail, or
+ *   null while loading (no `<img>` is rendered then).
+ * @property {string} alt - Alt text for the preview image (the source file name).
+ * @property {string} removeLabel - Accessible label for the remove button.
+ * @property {string} testId - Test id applied to the wrapping preview box.
+ * @property {string} removeTestId - Test id applied to the remove button.
+ * @property {'square' | 'wide'} [variant] - Aspect of the thumbnail: 'square'
+ *   (96x96, used for images) or 'wide' (160x90, used for videos).
+ * @property {() => void} onRemove - Fired when the remove button is clicked.
+ * @property {ReactNode} children - Info content rendered beside the thumbnail.
+ */
+export interface MediaPreviewProps {
+  imageSrc: string | null;
+  alt: string;
+  removeLabel: string;
+  testId: string;
+  removeTestId: string;
+  variant?: 'square' | 'wide';
+  onRemove: () => void;
+  children: ReactNode;
 }
 
 /**
@@ -387,6 +441,8 @@ export interface TimeFieldProps {
   placeholder?: string;
   error?: string;
   hint?: string;
+  formatHint?: string;
+  required?: boolean;
   testId?: string;
   onChange: (value: string) => void;
   onBlur?: () => void;

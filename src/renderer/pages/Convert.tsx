@@ -20,7 +20,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, TextField, MenuItem, Switch, Stack, Button, CircularProgress, IconButton } from '@mui/material';
+import { Box, Typography, TextField, MenuItem, Switch, Stack, Button, CircularProgress, IconButton, InputAdornment } from '@mui/material';
 import { faPalette, faBrush, faDroplet, faSun, faPlay, faPause, faXmark, faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -43,13 +43,11 @@ import { TRANSCODER_TYPES, TRANSCODER_LABELS, CONVERSION_DEFAULTS, QSCALE_RANGE 
 import { MediaInfo as MediaInfoType } from '../../shared/types';
 import { isInRange } from '../../shared/validation';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { focusFirstError } from '../utils/focusFirstError';
 import { useSettingsStore } from '../stores/settingsStore';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import type { EncoderType } from '../../shared/types';
 import {
-  ToggleRow,
-  FieldBox,
-  FieldLabel,
   ActionStack,
   AccelAlert,
   CompatAlert,
@@ -58,6 +56,7 @@ import {
   PreviewDivider,
   PreviewSectionTitle,
 } from '../styles/Convert.styles';
+import { FieldBox, FieldLabel, ToggleRow, SectionCard, SectionTitle } from '../styles/form.styles';
 import {
   getExtension,
   replaceExtension,
@@ -266,6 +265,7 @@ export default function Convert() {
     const next: Record<string, string> = {};
     if (!isInRange(qscale, QSCALE_RANGE.MIN, QSCALE_RANGE.MAX)) next.qscale = t('validation.qscaleRange');
     setErrors(next);
+    if (Object.keys(next).length > 0) focusFirstError(next, ['qscale'], { qscale: 'convert-qscale' });
     return Object.keys(next).length === 0;
   };
 
@@ -330,247 +330,266 @@ export default function Convert() {
         ) : undefined
       }
     >
-      <FilePathField
-        label={t('convert.inputFile')}
-        hint={t('convert.inputFileHint')}
-        value={inputFile || ''}
-        placeholder={t('convert.noFile')}
-        buttonLabel={t('convert.browse')}
-        onBrowse={selectInput}
-        testId="convert-input"
-      />
+      <SectionCard>
+        <SectionTitle variant="h6">{t('convert.sourceFiles')}</SectionTitle>
 
-      {inputFile && !previewOpen && (
-        <Button
-          variant="outlined"
-          startIcon={<FontAwesomeIcon icon={faEye} />}
-          onClick={() => setPreviewOpen(true)}
-          sx={{ alignSelf: 'flex-start' }}
-        >
-          {t('convert.showPreview')}
-        </Button>
-      )}
+        <FilePathField
+          label={t('convert.inputFile')}
+          hint={t('convert.inputFileHint')}
+          required
+          value={inputFile || ''}
+          placeholder={t('convert.noFile')}
+          buttonLabel={t('convert.browse')}
+          onBrowse={selectInput}
+          testId="convert-input"
+        />
 
-      <FilePathField
-        label={t('convert.outputFile')}
-        hint={t('convert.outputFileHint')}
-        value={outputFile || ''}
-        placeholder={t('convert.noOutput')}
-        buttonLabel={t('convert.saveAs')}
-        onBrowse={selectOutput}
-        testId="convert-output"
-      />
+        {inputFile && !previewOpen && (
+          <Button
+            variant="outlined"
+            startIcon={<FontAwesomeIcon icon={faEye} />}
+            onClick={() => setPreviewOpen(true)}
+            sx={{ alignSelf: 'flex-start' }}
+          >
+            {t('convert.showPreview')}
+          </Button>
+        )}
 
-      {showCompatWarning && (
-        <CompatAlert
-          severity="warning"
-          action={
-            <Button size="small" color="inherit" onClick={applySuggestedExtension}>
-              {t('convert.applySuggestedExt', { extension: suggestedOutputExt })}
-            </Button>
-          }
-        >
-          {t('convert.codecCompatWarning', { codec: videoCodec, extension: outputExt, suggested: suggestedOutputExt })}
-        </CompatAlert>
-      )}
+        <FilePathField
+          label={t('convert.outputFile')}
+          hint={t('convert.outputFileHint')}
+          required
+          value={outputFile || ''}
+          placeholder={t('convert.noOutput')}
+          buttonLabel={t('convert.saveAs')}
+          onBrowse={selectOutput}
+          testId="convert-output"
+        />
 
-      <ToggleRow>
-        <Switch data-testid="convert-copy-switch" checked={copyMode} onChange={(e) => setCopyMode(e.target.checked)} />
-        <Typography variant="caption" color="text.secondary">
-          {t('convert.losslessCopy')}
-        </Typography>
-        <InfoTooltip title={t('convert.losslessCopyHint')} />
-      </ToggleRow>
+        {showCompatWarning && (
+          <CompatAlert
+            severity="warning"
+            action={
+              <Button size="small" color="inherit" onClick={applySuggestedExtension}>
+                {t('convert.applySuggestedExt', { extension: suggestedOutputExt })}
+              </Button>
+            }
+          >
+            {t('convert.codecCompatWarning', { codec: videoCodec, extension: outputExt, suggested: suggestedOutputExt })}
+          </CompatAlert>
+        )}
+      </SectionCard>
 
-      {!copyMode && (
-        <>
-          {settingsHardwareAcceleration && (
-            <>
-              <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>
+      <SectionCard>
+        <SectionTitle variant="h6">{t('convert.encoding')}</SectionTitle>
+
+        <ToggleRow>
+          <Switch data-testid="convert-copy-switch" checked={copyMode} onChange={(e) => setCopyMode(e.target.checked)} />
+          <Typography variant="caption" color="text.secondary">
+            {t('convert.losslessCopy')}
+          </Typography>
+          <InfoTooltip title={t('convert.losslessCopyHint')} />
+        </ToggleRow>
+
+        {!copyMode && (
+          <>
+            {settingsHardwareAcceleration && (
+              <>
+                <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>
+                <FieldBox>
+                  <FieldLabel>
+                    {t('settings.encoderType')}
+                    <InfoTooltip title={t('convert.encoderTypeHint')} />
+                  </FieldLabel>
+                  <TextField
+                    select
+                    fullWidth
+                    size="small"
+                    data-testid="convert-encoder-type"
+                    value={encoderType}
+                    onChange={(e) => setEncoderType(e.target.value as EncoderType)}
+                  >
+                    {ENCODER_TYPES.map((type) => (
+                      <MenuItem key={type} value={type}>
+                        {t(encoderTypeLabel[type])}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </FieldBox>
+              </>
+            )}
+
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <FieldBox>
-                <FieldLabel variant="caption" color="text.secondary">
-                  {t('settings.encoderType')}
-                  <InfoTooltip title={t('convert.encoderTypeHint')} />
+                <FieldLabel>
+                  {t('convert.videoCodec')}
+                  <InfoTooltip title={t('convert.videoCodecHint')} />
+                </FieldLabel>
+                <ErrorBoundary fallback={null}>
+                  <CodecSelect
+                    type="video"
+                    value={videoCodec}
+                    onChange={setVideoCodec}
+                    encoderType={settingsHardwareAcceleration ? effectiveEncoderType : 'auto'}
+                    testId="convert-video-codec"
+                  />
+                </ErrorBoundary>
+              </FieldBox>
+              <FieldBox>
+                <FieldLabel>
+                  {t('convert.audioCodec')}
+                  <InfoTooltip title={t('convert.audioCodecHint')} />
+                </FieldLabel>
+                <ErrorBoundary fallback={null}>
+                  <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} testId="convert-audio-codec" />
+                </ErrorBoundary>
+              </FieldBox>
+            </Stack>
+
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <FieldBox>
+                <FieldLabel>
+                  {t('convert.videoBitrate')}
+                  <InfoTooltip title={t('convert.videoBitrateHint')} />
                 </FieldLabel>
                 <TextField
                   select
                   fullWidth
                   size="small"
-                  data-testid="convert-encoder-type"
-                  value={encoderType}
-                  onChange={(e) => setEncoderType(e.target.value as EncoderType)}
+                  data-testid="convert-video-bitrate"
+                  value={videoBitrate}
+                  onChange={(e) => {
+                    setVideoBitrate(e.target.value);
+                    clearFieldError('videoBitrate');
+                  }}
                 >
-                  {ENCODER_TYPES.map((type) => (
-                    <MenuItem key={type} value={type}>
-                      {t(encoderTypeLabel[type])}
+                  {VIDEO_BITRATE_OPTIONS.map((b) => (
+                    <MenuItem key={b} value={b}>
+                      {b || 'Auto'}
                     </MenuItem>
                   ))}
                 </TextField>
               </FieldBox>
-            </>
-          )}
+              <FieldBox>
+                <FieldLabel>
+                  {t('convert.audioBitrate')}
+                  <InfoTooltip title={t('convert.audioBitrateHint')} />
+                </FieldLabel>
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  data-testid="convert-audio-bitrate"
+                  value={audioBitrate}
+                  onChange={(e) => {
+                    setAudioBitrate(e.target.value);
+                    clearFieldError('audioBitrate');
+                  }}
+                >
+                  <MenuItem value="">{t('status.auto')}</MenuItem>
+                  {BITRATE_OPTIONS.map((b) => (
+                    <MenuItem key={b} value={b}>
+                      {b}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </FieldBox>
+            </Stack>
 
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <FieldBox>
-              <FieldLabel variant="caption" color="text.secondary">
-                {t('convert.videoCodec')}
-                <InfoTooltip title={t('convert.videoCodecHint')} />
-              </FieldLabel>
-              <ErrorBoundary fallback={null}>
-                <CodecSelect
-                  type="video"
-                  value={videoCodec}
-                  onChange={setVideoCodec}
-                  encoderType={settingsHardwareAcceleration ? effectiveEncoderType : 'auto'}
-                  testId="convert-video-codec"
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <FieldBox>
+                <FieldLabel>
+                  {t('convert.qscale')}
+                  <InfoTooltip title={t('convert.qscaleHint')} />
+                </FieldLabel>
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="number"
+                  data-testid="convert-qscale"
+                  error={!!errors.qscale}
+                  helperText={errors.qscale || t('convert.qscaleRangeCaption')}
+                  value={qscale}
+                  onChange={(e) => {
+                    setQscale(parseInt(e.target.value) || CONVERSION_DEFAULTS.QSCALE);
+                    clearFieldError('qscale');
+                  }}
+                  onBlur={() => {
+                    if (!isInRange(qscale, QSCALE_RANGE.MIN, QSCALE_RANGE.MAX)) setFieldError('qscale', t('validation.qscaleRange'));
+                  }}
+                  slotProps={{
+                    htmlInput: { min: QSCALE_RANGE.MIN, max: QSCALE_RANGE.MAX },
+                    input: {
+                      endAdornment: <InputAdornment position="end">/ {QSCALE_RANGE.MAX}</InputAdornment>,
+                    },
+                  }}
                 />
-              </ErrorBoundary>
-            </FieldBox>
-            <FieldBox>
-              <FieldLabel variant="caption" color="text.secondary">
-                {t('convert.audioCodec')}
-                <InfoTooltip title={t('convert.audioCodecHint')} />
-              </FieldLabel>
-              <ErrorBoundary fallback={null}>
-                <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} testId="convert-audio-codec" />
-              </ErrorBoundary>
-            </FieldBox>
-          </Stack>
+              </FieldBox>
+              <FieldBox>
+                <FieldLabel>
+                  {t('convert.scale')}
+                  <InfoTooltip title={t('convert.scaleHint')} />
+                </FieldLabel>
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  data-testid="convert-scale"
+                  value={scale}
+                  onChange={(e) => {
+                    setScale(e.target.value);
+                    clearFieldError('scale');
+                  }}
+                >
+                  {SCALE_OPTIONS.map((s) => (
+                    <MenuItem key={s} value={s}>
+                      {s || t('status.none')}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </FieldBox>
+              <FieldBox>
+                <FieldLabel>
+                  {t('convert.pixelFormat')}
+                  <InfoTooltip title={t('convert.pixelFormatHint')} />
+                </FieldLabel>
+                <GroupedSelect
+                  testId="convert-pixel-format"
+                  value={pixelFormat}
+                  onChange={setPixelFormat}
+                  options={pixelFormatOptions}
+                  groupIcons={pixelGroupIcons}
+                />
+              </FieldBox>
+            </Stack>
+          </>
+        )}
+      </SectionCard>
 
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <FieldBox>
-              <FieldLabel variant="caption" color="text.secondary">
-                {t('convert.videoBitrate')}
-                <InfoTooltip title={t('convert.videoBitrateHint')} />
-              </FieldLabel>
-              <TextField
-                select
-                fullWidth
-                size="small"
-                data-testid="convert-video-bitrate"
-                value={videoBitrate}
-                onChange={(e) => {
-                  setVideoBitrate(e.target.value);
-                  clearFieldError('videoBitrate');
-                }}
-              >
-                {VIDEO_BITRATE_OPTIONS.map((b) => (
-                  <MenuItem key={b} value={b}>
-                    {b || 'Auto'}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
-            <FieldBox>
-              <FieldLabel variant="caption" color="text.secondary">
-                {t('convert.audioBitrate')}
-                <InfoTooltip title={t('convert.audioBitrateHint')} />
-              </FieldLabel>
-              <TextField
-                select
-                fullWidth
-                size="small"
-                data-testid="convert-audio-bitrate"
-                value={audioBitrate}
-                onChange={(e) => {
-                  setAudioBitrate(e.target.value);
-                  clearFieldError('audioBitrate');
-                }}
-              >
-                <MenuItem value="">{t('status.auto')}</MenuItem>
-                {BITRATE_OPTIONS.map((b) => (
-                  <MenuItem key={b} value={b}>
-                    {b}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
-          </Stack>
+      <SectionCard>
+        <SectionTitle variant="h6">{t('convert.advanced')}</SectionTitle>
 
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <FieldBox>
-              <FieldLabel variant="caption" color="text.secondary">
-                {t('convert.qscale')}
-                <InfoTooltip title={t('convert.qscaleHint')} />
-              </FieldLabel>
-              <TextField
-                fullWidth
-                size="small"
-                type="number"
-                data-testid="convert-qscale"
-                error={!!errors.qscale}
-                helperText={errors.qscale || ' '}
-                value={qscale}
-                onChange={(e) => {
-                  setQscale(parseInt(e.target.value) || CONVERSION_DEFAULTS.QSCALE);
-                  clearFieldError('qscale');
-                }}
-                onBlur={() => {
-                  if (!isInRange(qscale, QSCALE_RANGE.MIN, QSCALE_RANGE.MAX)) setFieldError('qscale', t('validation.qscaleRange'));
-                }}
-                slotProps={{ htmlInput: { min: QSCALE_RANGE.MIN, max: QSCALE_RANGE.MAX } }}
-              />
-            </FieldBox>
-            <FieldBox>
-              <FieldLabel variant="caption" color="text.secondary">
-                {t('convert.scale')}
-                <InfoTooltip title={t('convert.scaleHint')} />
-              </FieldLabel>
-              <TextField
-                select
-                fullWidth
-                size="small"
-                data-testid="convert-scale"
-                value={scale}
-                onChange={(e) => {
-                  setScale(e.target.value);
-                  clearFieldError('scale');
-                }}
-              >
-                {SCALE_OPTIONS.map((s) => (
-                  <MenuItem key={s} value={s}>
-                    {s || t('status.none')}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
-            <FieldBox>
-              <FieldLabel variant="caption" color="text.secondary">
-                {t('convert.pixelFormat')}
-                <InfoTooltip title={t('convert.pixelFormatHint')} />
-              </FieldLabel>
-              <GroupedSelect
-                testId="convert-pixel-format"
-                value={pixelFormat}
-                onChange={setPixelFormat}
-                options={pixelFormatOptions}
-                groupIcons={pixelGroupIcons}
-              />
-            </FieldBox>
-          </Stack>
-        </>
-      )}
-
-      <Box>
-        <FieldLabel variant="caption" color="text.secondary">
-          {t('convert.transcoderCore')}
-          <InfoTooltip title={t('convert.transcoderCoreHint')} />
-        </FieldLabel>
-        <TextField
-          select
-          fullWidth
-          size="small"
-          data-testid="convert-transcoder"
-          value={transcoder}
-          onChange={(e) => setTranscoder(e.target.value)}
-        >
-          {TRANSCODER_TYPES.map((tc) => (
-            <MenuItem key={tc} value={tc}>
-              {TRANSCODER_LABELS[tc]}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Box>
+        <Box>
+          <FieldLabel>
+            {t('convert.transcoderCore')}
+            <InfoTooltip title={t('convert.transcoderCoreHint')} />
+          </FieldLabel>
+          <TextField
+            select
+            fullWidth
+            size="small"
+            data-testid="convert-transcoder"
+            value={transcoder}
+            onChange={(e) => setTranscoder(e.target.value)}
+          >
+            {TRANSCODER_TYPES.map((tc) => (
+              <MenuItem key={tc} value={tc}>
+                {TRANSCODER_LABELS[tc]}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Box>
+      </SectionCard>
 
       <ActionStack direction="row" spacing={1} useFlexGap>
         <Button

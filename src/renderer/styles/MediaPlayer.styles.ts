@@ -17,8 +17,7 @@ export const PlayerCanvas = styled('canvas')(({ theme }) => ({
 }));
 
 export const ControlsArea = styled(Box)(({ theme }) => ({
-  paddingLeft: theme.spacing(2),
-  paddingRight: theme.spacing(2),
+  paddingInline: theme.spacing(2),
   paddingBottom: theme.spacing(1.5),
   paddingTop: theme.spacing(0.5),
 }));
@@ -33,4 +32,4 @@ export const ControlsRow = styled('div')(({ theme }) => ({
   gap: theme.spacing(0.5),
 }));
 
-export const TimeText = styled(Typography)({ color: COLORS.player.control, marginLeft: 'auto' });
+export const TimeText = styled(Typography)({ color: COLORS.player.control, marginInlineStart: 'auto' });
