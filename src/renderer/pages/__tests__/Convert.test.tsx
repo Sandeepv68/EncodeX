@@ -65,9 +65,9 @@ describe('Convert', () => {
   it('selects an input file and renders the media player', async () => {
     selectFileMock.mockResolvedValue('/in/video.mp4');
     renderPage();
-    fireEvent.click(screen.getByText('convert.browse'));
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
     await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
-    expect(screen.getByPlaceholderText('convert.noFile')).toHaveValue('/in/video.mp4');
+    expect(screen.getByTestId('convert-input-file')).toHaveTextContent('video.mp4');
     expect(useConversionStore.getState().isDirty).toBe(true);
   });
 
@@ -75,7 +75,7 @@ describe('Convert', () => {
     selectFileMock.mockResolvedValue('/in/video.mp4');
     renderPage();
     expect(screen.queryByText('convert.preview')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByText('convert.browse'));
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
     await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
     expect(screen.getByText('convert.preview')).toBeInTheDocument();
     fireEvent.click(screen.getByLabelText('convert.closePreview'));
@@ -97,7 +97,7 @@ describe('Convert', () => {
     selectOutputMock.mockResolvedValue('/out/video.mkv');
     convertFileMock.mockResolvedValue(undefined);
     renderPage();
-    fireEvent.click(screen.getByText('convert.browse'));
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
     await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
     fireEvent.click(screen.getByText('convert.saveAs'));
     await waitFor(() => expect(selectOutputMock).toHaveBeenCalledOnce());
@@ -132,7 +132,7 @@ describe('Convert', () => {
     expect(screen.getByText('convert.videoCodec')).toBeInTheDocument();
     toggleCopy(container);
     expect(screen.queryByText('convert.videoCodec')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByText('convert.browse'));
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
     await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
     fireEvent.click(screen.getByText('convert.saveAs'));
     await waitFor(() => expect(selectOutputMock).toHaveBeenCalledOnce());
@@ -165,7 +165,7 @@ describe('Convert', () => {
     fireEvent.change(qscale, { target: { value: '999' } });
     fireEvent.blur(qscale);
     expect(screen.getByText('validation.qscaleRange')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('convert.browse'));
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
     await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
     fireEvent.click(screen.getByText('convert.saveAs'));
     await waitFor(() => expect(selectOutputMock).toHaveBeenCalledOnce());
@@ -181,7 +181,7 @@ describe('Convert', () => {
     resumeConversionMock.mockResolvedValue(undefined);
     cancelConversionMock.mockResolvedValue(undefined);
     renderPage();
-    fireEvent.click(screen.getByText('convert.browse'));
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
     await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
     fireEvent.click(screen.getByText('convert.saveAs'));
     await waitFor(() => expect(selectOutputMock).toHaveBeenCalledOnce());
@@ -204,7 +204,7 @@ describe('Convert', () => {
     selectFileMock.mockResolvedValue('/in/video.mp4');
     selectOutputMock.mockResolvedValue('/out/video.mkv');
     renderPage();
-    fireEvent.click(screen.getByText('convert.browse'));
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
     await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
     fireEvent.click(screen.getByText('convert.saveAs'));
     await waitFor(() => expect(selectOutputMock).toHaveBeenCalledOnce());
@@ -220,7 +220,7 @@ describe('Convert', () => {
     selectOutputMock.mockResolvedValue('/out/video.mkv');
     convertFileMock.mockRejectedValue(new Error('encode failed'));
     renderPage();
-    fireEvent.click(screen.getByText('convert.browse'));
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
     await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
     fireEvent.click(screen.getByText('convert.saveAs'));
     await waitFor(() => expect(selectOutputMock).toHaveBeenCalledOnce());

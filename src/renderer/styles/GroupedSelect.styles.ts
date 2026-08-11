@@ -12,6 +12,13 @@ export const GroupHeader = styled(MenuItem)(({ theme }) => ({
   paddingBottom: theme.spacing(0.75),
   borderBottom: `${theme.typography.pxToRem(1)} solid`,
   borderColor: theme.palette.divider,
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected,
+  },
+  '&.Mui-selected, &.Mui-selected:hover': {
+    backgroundColor: theme.palette.action.selected,
+    color: theme.palette.primary.main,
+  },
 }));
 
 export const GroupLabel = styled(Box)(({ theme }) => ({

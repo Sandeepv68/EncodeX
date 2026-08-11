@@ -94,7 +94,7 @@ export const FeatureIconBox = styled(Box)(({ theme }) => ({
 
 export const CardTitleText = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(0.5),
-  textAlign: 'left',
+  textAlign: 'start',
 }));
 
 export const CardBody = styled(CardContent)({

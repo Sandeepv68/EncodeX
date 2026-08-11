@@ -21,7 +21,7 @@
  * components.
  */
 
-import { MenuItem, TextField } from '@mui/material';
+import { Grid, MenuItem, TextField, InputAdornment } from '@mui/material';
 import { faPalette, faBrush, faDroplet, faSun } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,7 @@ import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/co
 import CodecSelect from './CodecSelect';
 import GroupedSelect from './GroupedSelect';
 import type { BatchEncodingPanelProps } from './types';
-import { EncodingPaper, EncodingStack, EncodingTitle, FieldBox, FieldLabel } from '../styles/BatchEncodingPanel.styles';
+import { EncodingPaper, EncodingTitle, FieldBox, FieldLabel } from '../styles/BatchEncodingPanel.styles';
 
 /**
  * Pixel-format options prepared for the GroupedSelect: every entry of
@@ -62,7 +62,8 @@ const pixelGroupIcons: Record<string, IconDefinition> = {
 /**
  * Renders the batch encoding options panel.
  *
- * Builds a wrapping row of MUI controls inside a paper surface, with the set of
+ * Builds a responsive grid of MUI controls inside a paper surface (each field
+ * an equal-width cell that stacks on small screens), with the set of
  * controls depending on the operation (see the file header). All values are
  * controlled via props.
  * @param {BatchEncodingPanelProps} props - Component props.
@@ -100,149 +101,173 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
       <EncodingTitle variant="subtitle2" color="text.secondary">
         {t('batchQueue.encodingOptions')}
       </EncodingTitle>
-      <EncodingStack direction="row" spacing={1} useFlexGap>
+      <Grid container spacing={2}>
         {showVideo && (
-          <FieldBox sx={{ width: 200 }}>
-            <FieldLabel>{t('convert.videoCodec')}</FieldLabel>
-            <CodecSelect type="video" value={props.videoCodec} onChange={props.onVideoCodecChange} />
-          </FieldBox>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>{t('convert.videoCodec')}</FieldLabel>
+              <CodecSelect type="video" value={props.videoCodec} onChange={props.onVideoCodecChange} />
+            </FieldBox>
+          </Grid>
         )}
         {showAudio && (
-          <FieldBox sx={{ width: 200 }}>
-            <FieldLabel>{t('convert.audioCodec')}</FieldLabel>
-            <CodecSelect type="audio" value={props.audioCodec} onChange={props.onAudioCodecChange} />
-          </FieldBox>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>{t('convert.audioCodec')}</FieldLabel>
+              <CodecSelect type="audio" value={props.audioCodec} onChange={props.onAudioCodecChange} />
+            </FieldBox>
+          </Grid>
         )}
         {showAudio && (
-          <FieldBox sx={{ width: 160 }}>
-            <FieldLabel>{t('batchQueue.container')}</FieldLabel>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              value={props.container}
-              onChange={(e) => {
-                props.onContainerChange(e.target.value);
-              }}
-            >
-              <MenuItem value="">{t('batchQueue.containerAuto')}</MenuItem>
-              {containerOptions.map((container) => (
-                <MenuItem key={container} value={container}>
-                  {container}
-                </MenuItem>
-              ))}
-            </TextField>
-          </FieldBox>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>{t('batchQueue.container')}</FieldLabel>
+              <TextField
+                select
+                fullWidth
+                size="small"
+                value={props.container}
+                onChange={(e) => {
+                  props.onContainerChange(e.target.value);
+                }}
+              >
+                <MenuItem value="">{t('batchQueue.containerAuto')}</MenuItem>
+                {containerOptions.map((container) => (
+                  <MenuItem key={container} value={container}>
+                    {container}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FieldBox>
+          </Grid>
         )}
         {showImage && (
-          <FieldBox sx={{ width: 160 }}>
-            <FieldLabel>{t('imageCompress.outputFormat')}</FieldLabel>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              value={props.container}
-              onChange={(e) => {
-                props.onContainerChange(e.target.value);
-              }}
-            >
-              <MenuItem value="">{t('batchQueue.containerAuto')}</MenuItem>
-              {IMAGE_FORMATS.map((f) => (
-                <MenuItem key={f.value} value={f.value}>
-                  {f.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </FieldBox>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>{t('imageCompress.outputFormat')}</FieldLabel>
+              <TextField
+                select
+                fullWidth
+                size="small"
+                value={props.container}
+                onChange={(e) => {
+                  props.onContainerChange(e.target.value);
+                }}
+              >
+                <MenuItem value="">{t('batchQueue.containerAuto')}</MenuItem>
+                {IMAGE_FORMATS.map((f) => (
+                  <MenuItem key={f.value} value={f.value}>
+                    {f.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FieldBox>
+          </Grid>
         )}
         {showVideo && (
-          <FieldBox sx={{ width: 130 }}>
-            <FieldLabel>{t('convert.videoBitrate')}</FieldLabel>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              value={props.videoBitrate}
-              onChange={(e) => {
-                props.onVideoBitrateChange(e.target.value);
-              }}
-            >
-              {VIDEO_BITRATE_OPTIONS.map((b) => (
-                <MenuItem key={b} value={b}>
-                  {b || 'Auto'}
-                </MenuItem>
-              ))}
-            </TextField>
-          </FieldBox>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>{t('convert.videoBitrate')}</FieldLabel>
+              <TextField
+                select
+                fullWidth
+                size="small"
+                value={props.videoBitrate}
+                onChange={(e) => {
+                  props.onVideoBitrateChange(e.target.value);
+                }}
+              >
+                {VIDEO_BITRATE_OPTIONS.map((b) => (
+                  <MenuItem key={b} value={b}>
+                    {b || 'Auto'}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FieldBox>
+          </Grid>
         )}
         {showAudio && (
-          <FieldBox sx={{ width: 130 }}>
-            <FieldLabel>{t('convert.audioBitrate')}</FieldLabel>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              value={props.audioBitrate}
-              onChange={(e) => {
-                props.onAudioBitrateChange(e.target.value);
-              }}
-            >
-              <MenuItem value="">{t('status.auto')}</MenuItem>
-              {BITRATE_OPTIONS.map((b) => (
-                <MenuItem key={b} value={b}>
-                  {b}
-                </MenuItem>
-              ))}
-            </TextField>
-          </FieldBox>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>{t('convert.audioBitrate')}</FieldLabel>
+              <TextField
+                select
+                fullWidth
+                size="small"
+                value={props.audioBitrate}
+                onChange={(e) => {
+                  props.onAudioBitrateChange(e.target.value);
+                }}
+              >
+                <MenuItem value="">{t('status.auto')}</MenuItem>
+                {BITRATE_OPTIONS.map((b) => (
+                  <MenuItem key={b} value={b}>
+                    {b}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FieldBox>
+          </Grid>
         )}
         {showImage && (
-          <FieldBox sx={{ width: 100 }}>
-            <FieldLabel>{t('imageCompress.quality')}</FieldLabel>
-            <TextField
-              fullWidth
-              size="small"
-              type="number"
-              value={props.quality}
-              onChange={(e) => {
-                props.onQualityChange(e.target.value);
-              }}
-              slotProps={{ htmlInput: { min: QSCALE_RANGE.MIN, max: QSCALE_RANGE.MAX } }}
-            />
-          </FieldBox>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>{t('imageCompress.quality')}</FieldLabel>
+              <TextField
+                fullWidth
+                size="small"
+                type="number"
+                value={props.quality}
+                onChange={(e) => {
+                  props.onQualityChange(e.target.value);
+                }}
+                helperText={t('imageCompress.qualityRangeCaption')}
+                slotProps={{
+                  htmlInput: { min: QSCALE_RANGE.MIN, max: QSCALE_RANGE.MAX },
+                  input: {
+                    endAdornment: <InputAdornment position="end">/ {QSCALE_RANGE.MAX}</InputAdornment>,
+                  },
+                }}
+              />
+            </FieldBox>
+          </Grid>
         )}
         {(showVideo || showImage) && (
-          <FieldBox sx={{ width: 130 }}>
-            <FieldLabel>{showVideo ? t('convert.scale') : t('imageCompress.scale')}</FieldLabel>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              value={props.scale}
-              onChange={(e) => {
-                props.onScaleChange(e.target.value);
-              }}
-            >
-              {SCALE_OPTIONS.map((s) => (
-                <MenuItem key={s} value={s}>
-                  {s || t('status.none')}
-                </MenuItem>
-              ))}
-            </TextField>
-          </FieldBox>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>{showVideo ? t('convert.scale') : t('imageCompress.scale')}</FieldLabel>
+              <TextField
+                select
+                fullWidth
+                size="small"
+                value={props.scale}
+                onChange={(e) => {
+                  props.onScaleChange(e.target.value);
+                }}
+              >
+                {SCALE_OPTIONS.map((s) => (
+                  <MenuItem key={s} value={s}>
+                    {s || t('status.none')}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FieldBox>
+          </Grid>
         )}
         {showVideo && (
-          <FieldBox sx={{ width: 180 }}>
-            <FieldLabel>{t('convert.pixelFormat')}</FieldLabel>
-            <GroupedSelect
-              value={props.pixelFormat}
-              onChange={props.onPixelFormatChange}
-              options={pixelFormatOptions}
-              groupIcons={pixelGroupIcons}
-            />
-          </FieldBox>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>{t('convert.pixelFormat')}</FieldLabel>
+              <GroupedSelect
+                value={props.pixelFormat}
+                onChange={props.onPixelFormatChange}
+                options={pixelFormatOptions}
+                groupIcons={pixelGroupIcons}
+              />
+            </FieldBox>
+          </Grid>
         )}
-      </EncodingStack>
+      </Grid>
     </EncodingPaper>
   );
 }

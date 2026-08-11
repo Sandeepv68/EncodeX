@@ -19,6 +19,7 @@
     "dev:start": "tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && concurrently -k \"npm run dev:renderer\" \"electron .\"",
     "format": "prettier --write \"src/**/*.{ts,tsx,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
+    "validate:locales": "node scripts/validate-locales.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:unit": "vitest run",

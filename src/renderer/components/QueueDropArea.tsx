@@ -67,8 +67,7 @@ export default function QueueDropArea({ children }: { children: ReactNode }) {
           sx={{
             position: 'absolute',
             zIndex: 2,
-            left: 0,
-            right: 0,
+            insetInline: 0,
             top: indicatorTop,
             height: INDICATOR_HEIGHT,
             backgroundColor: theme.palette.primary.main,

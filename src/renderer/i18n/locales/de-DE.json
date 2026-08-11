@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Medien konvertieren",
+    "sourceFiles": "Quelldateien",
+    "encoding": "Kodierung",
+    "advanced": "Erweitert",
     "inputFile": "Eingabedatei",
     "outputFile": "Ausgabedatei",
     "noFile": "Keine Datei ausgewählt",
@@ -67,6 +70,9 @@
     "no": "Nein",
     "hardwareAccelAlert": "Die Hardware-Beschleunigung ist aktiviert. Die Videocodierung verwendet bei Kompatibilität Ihre GPU.",
     "inputFileHint": "Die Quell-Mediendatei, die konvertiert werden soll. Gängige Formate sind MP4, MKV, MOV, AVI, MP3 und WAV.",
+    "dropLabel": "Mediendatei hier ablegen oder klicken zum Durchsuchen",
+    "changeFile": "Datei ändern",
+    "changeFileHint": "Wählen Sie eine andere Mediendatei.",
     "outputFileHint": "Der Zielpfad, in dem die konvertierte Datei gespeichert wird.",
     "losslessCopyHint": "Kopiert die Streams ohne Neucodierung. Schnell und verlustfrei, erfordert aber, dass der Ausgabe-Container die Quell-Codecs unterstützt.",
     "videoCodecHint": "Der Codec zum Codieren des Video-Streams, z.B. H.264, H.265 oder VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Die Ziel-Bitrate für den Video-Stream. Höhere Werte erhöhen die Qualität und die Dateigröße. Automatisch behält die Quell-Bitrate bei.",
     "audioBitrateHint": "Die Ziel-Bitrate für den Audio-Stream. Höhere Werte erhöhen die Qualität und die Dateigröße. Automatisch behält die Quell-Bitrate bei.",
     "qscaleHint": "Konstante Qualitätsskala von 1 (beste Qualität, größte Datei) bis 31 (schlechteste Qualität, kleinste Datei).",
+    "qscaleRangeCaption": "1 – 31 (niedriger = bessere Qualität)",
     "scaleHint": "Skaliert das Video auf die angegebene Breite und Höhe, z.B. 1280x720. Leer lässt die Originalauflösung unverändert.",
     "pixelFormatHint": "Das Farbformat des codierten Videos, z.B. yuv420p für 8 Bit oder yuv420p10le für 10 Bit. Für beste Kompatibilität am besten an die Quelle anpassen.",
     "transcoderCoreHint": "Die für die Konvertierung verwendete Engine. FFmpeg ist die Standard- und kompatibelste Option.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Zielort für das komprimierte Bild. Die Erweiterung folgt dem gewählten Format.",
     "outputFormatHint": "Das Format, in das das Bild konvertiert wird. JPEG ergibt die kleinsten Dateien, PNG ist verlustfrei.",
     "qualityHint": "Komprimierungsqualität. Niedrigere Werte ergeben kleinere Dateien, aber sichtbarere Artefakte.",
+    "qualityRangeCaption": "1 – 31 (niedriger = kleinere Datei)",
     "scaleHint": "Voreingestellte Ausgabeauflösung. Wählen Sie eine Standardgröße oder behalten Sie das Original mit 'Keine Skalierung'.",
     "keepAspectRatio": "Seitenverhältnis beibehalten",
     "keepAspectRatioHint": "Wenn aktiviert, behält das Bild sein ursprüngliches Seitenverhältnis; deaktiviert wird es auf die exakte Auflösung gestreckt.",
@@ -247,6 +255,7 @@
     "jobCancelMessage": "Dadurch wird das aktuelle Video-Schnittformular gelöscht. Sind Sie sicher?",
     "closePreview": "Vorschau schließen",
     "videoFileHint": "Videodatei hier ablegen oder klicken zum Durchsuchen Ihres Computers.",
+    "videoFiles": "Videodateien",
     "dropLabel": "Videodatei hier ablegen oder klicken zum Durchsuchen",
     "changeFile": "Video ändern",
     "changeFileHint": "Wählen Sie eine andere Videodatei.",
@@ -255,6 +264,7 @@
     "durationHint": "Geben Sie statt einer Endzeit an, wie lang das Schnittsegment sein soll.",
     "endTimeHint": "Wo das Schnittsegment endet. Sie können auch den roten Trimmgriff auf der Zeitachse ziehen.",
     "useDurationHint": "Wechseln Sie zwischen Endzeit und Dauer für das Schnittsegment.",
+    "timeFormatHint": "Format: HH:MM:SS (oder Sekunden)",
     "cutHint": "Schneiden Sie das Video mit den konfigurierten Start- und Endpositionen.",
     "pause": "Pause",
     "resume": "Fortsetzen",
@@ -359,7 +369,8 @@
     "description": "Ein unerwarteter Fehler ist aufgetreten."
   },
   "fileDropZone": {
-    "defaultLabel": "Datei hier ablegen oder klicken zum Durchsuchen"
+    "defaultLabel": "Datei hier ablegen oder klicken zum Durchsuchen",
+    "dropHint": "Per Drag & Drop ablegen oder klicken zum Durchsuchen"
   },
   "validation": {
     "outputRequired": "Ausgabedatei ist erforderlich",

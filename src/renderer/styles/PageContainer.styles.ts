@@ -30,7 +30,7 @@ export const TitleIcon = styled('span')(({ theme }) => ({
   display: 'inline-flex',
   alignItems: 'center',
   lineHeight: 1,
-  marginRight: theme.typography.pxToRem(8),
+  marginInlineEnd: theme.typography.pxToRem(8),
 }));
 
 export const ContentPaper = styled(Paper)(({ theme }) => ({

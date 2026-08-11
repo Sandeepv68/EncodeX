@@ -45,6 +45,16 @@ import type { Theme } from '@mui/material/styles';
  *   highlights and selected states.
  * @property {string} tint.primary15 - Primary color at 15% opacity.
  * @property {string} tint.primary25 - Primary color at 25% opacity.
+ * @property {Object} input - Derived input/control tokens.
+ * @property {string} input.surface - Input field background (resting).
+ * @property {string} input.surfaceHover - Input field background on hover.
+ * @property {string} input.border - Input outline color (resting).
+ * @property {string} input.borderFocus - Input outline color on hover/focus.
+ * @property {string} focusRing - Translucent primary-tinted focus ring.
+ * @property {string} surfaceSubtle - Subtle tinted panel background.
+ * @property {Object} menu - Dropdown/popover surface styling.
+ * @property {string} menu.surface - Dropdown menu background.
+ * @property {string} menu.shadow - Dropdown menu shadow.
  */
 export interface ThemeDefinition {
   id: ThemeId;
@@ -67,6 +77,28 @@ export interface ThemeDefinition {
     primary15: string;
     primary25: string;
   };
+  /** Derived input/control tokens so every theme gets a coherent modern look. */
+  input: {
+    /** Input field background (resting state). */
+    surface: string;
+    /** Input field background on hover. */
+    surfaceHover: string;
+    /** Input outline color (resting state). */
+    border: string;
+    /** Input outline color on hover/focus. */
+    borderFocus: string;
+  };
+  /** Translucent primary-tinted focus ring around focused controls. */
+  focusRing: string;
+  /** Subtle tinted panel background for section headers and chips. */
+  surfaceSubtle: string;
+  /** Dropdown / popover surface styling. */
+  menu: {
+    /** Dropdown menu background. */
+    surface: string;
+    /** Dropdown menu shadow. */
+    shadow: string;
+  };
 }
 
 /**
@@ -86,6 +118,15 @@ export const THEMES: readonly ThemeDefinition[] = [
     text: { primary: '#1a1a2e', secondary: '#6b6b80' },
     border: '#e0e0e0',
     tint: { primary15: 'rgba(15,155,142,0.15)', primary25: 'rgba(15,155,142,0.25)' },
+    input: {
+      surface: '#fbfcfd',
+      surfaceHover: '#f4f7f7',
+      border: '#cfd6da',
+      borderFocus: '#0f9b8e',
+    },
+    focusRing: 'rgba(15,155,142,0.18)',
+    surfaceSubtle: 'rgba(15,155,142,0.06)',
+    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
   },
   {
     id: 'ocean',
@@ -97,6 +138,15 @@ export const THEMES: readonly ThemeDefinition[] = [
     text: { primary: '#10243f', secondary: '#546e7a' },
     border: '#d5e1ef',
     tint: { primary15: 'rgba(25,118,210,0.15)', primary25: 'rgba(25,118,210,0.25)' },
+    input: {
+      surface: '#f7fafd',
+      surfaceHover: '#eef4fb',
+      border: '#c3d3e4',
+      borderFocus: '#1976d2',
+    },
+    focusRing: 'rgba(25,118,210,0.18)',
+    surfaceSubtle: 'rgba(25,118,210,0.06)',
+    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
   },
   {
     id: 'sunset',
@@ -108,6 +158,15 @@ export const THEMES: readonly ThemeDefinition[] = [
     text: { primary: '#3a2416', secondary: '#7a6a5d' },
     border: '#f0e0d0',
     tint: { primary15: 'rgba(230,81,0,0.15)', primary25: 'rgba(230,81,0,0.25)' },
+    input: {
+      surface: '#fdf9f5',
+      surfaceHover: '#faf1e8',
+      border: '#e6d3c0',
+      borderFocus: '#e65100',
+    },
+    focusRing: 'rgba(230,81,0,0.18)',
+    surfaceSubtle: 'rgba(230,81,0,0.06)',
+    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
   },
   {
     id: 'forest',
@@ -119,6 +178,15 @@ export const THEMES: readonly ThemeDefinition[] = [
     text: { primary: '#16281a', secondary: '#546e57' },
     border: '#d9e6d7',
     tint: { primary15: 'rgba(46,125,50,0.15)', primary25: 'rgba(46,125,50,0.25)' },
+    input: {
+      surface: '#f7faf6',
+      surfaceHover: '#eff6ed',
+      border: '#cfe0cc',
+      borderFocus: '#2e7d32',
+    },
+    focusRing: 'rgba(46,125,50,0.18)',
+    surfaceSubtle: 'rgba(46,125,50,0.06)',
+    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
   },
   {
     id: 'lavender',
@@ -130,6 +198,15 @@ export const THEMES: readonly ThemeDefinition[] = [
     text: { primary: '#241338', secondary: '#6b5f7a' },
     border: '#e4d9ef',
     tint: { primary15: 'rgba(123,31,162,0.15)', primary25: 'rgba(123,31,162,0.25)' },
+    input: {
+      surface: '#faf8fc',
+      surfaceHover: '#f4eef8',
+      border: '#dcd2e6',
+      borderFocus: '#7b1fa2',
+    },
+    focusRing: 'rgba(123,31,162,0.18)',
+    surfaceSubtle: 'rgba(123,31,162,0.06)',
+    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
   },
   {
     id: 'rose',
@@ -141,6 +218,15 @@ export const THEMES: readonly ThemeDefinition[] = [
     text: { primary: '#33121f', secondary: '#7d6a72' },
     border: '#f0dbe4',
     tint: { primary15: 'rgba(194,24,91,0.15)', primary25: 'rgba(194,24,91,0.25)' },
+    input: {
+      surface: '#fdf8fa',
+      surfaceHover: '#f9eef3',
+      border: '#e6ccd8',
+      borderFocus: '#c2185b',
+    },
+    focusRing: 'rgba(194,24,91,0.18)',
+    surfaceSubtle: 'rgba(194,24,91,0.06)',
+    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
   },
   {
     id: 'slate',
@@ -152,6 +238,15 @@ export const THEMES: readonly ThemeDefinition[] = [
     text: { primary: '#1c2830', secondary: '#60757f' },
     border: '#dbe2e6',
     tint: { primary15: 'rgba(69,90,100,0.15)', primary25: 'rgba(69,90,100,0.25)' },
+    input: {
+      surface: '#f6f8f9',
+      surfaceHover: '#eef1f3',
+      border: '#c9d3d9',
+      borderFocus: '#455a64',
+    },
+    focusRing: 'rgba(69,90,100,0.18)',
+    surfaceSubtle: 'rgba(69,90,100,0.06)',
+    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
   },
   {
     id: 'dark',
@@ -163,6 +258,15 @@ export const THEMES: readonly ThemeDefinition[] = [
     text: { primary: '#f0f0f0', secondary: '#a8a8a8' },
     border: '#2f2f2f',
     tint: { primary15: 'rgba(15,155,142,0.15)', primary25: 'rgba(15,155,142,0.25)' },
+    input: {
+      surface: '#212121',
+      surfaceHover: '#2a2a2a',
+      border: '#3a3a3a',
+      borderFocus: '#0f9b8e',
+    },
+    focusRing: 'rgba(15,155,142,0.25)',
+    surfaceSubtle: 'rgba(255, 255, 255, 0.04)',
+    menu: { surface: '#262626', shadow: '0 8px 28px rgba(0, 0, 0, 0.5)' },
   },
 ];
 

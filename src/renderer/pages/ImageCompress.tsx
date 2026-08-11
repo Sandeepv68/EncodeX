@@ -25,8 +25,8 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, TextField, MenuItem, Button, Stack, Typography, Switch } from '@mui/material';
-import { faCompress, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { Box, TextField, MenuItem, Button, Stack, Typography, Switch, InputAdornment } from '@mui/material';
+import { faCompress } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FileDropZone from '../components/FileDropZone';
 import ProgressBar from '../components/ProgressBar';
@@ -45,20 +45,13 @@ import { IMAGE_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { TRANSCODER_TYPES, CONVERSION_DEFAULTS, QSCALE_RANGE } from '../../shared/transcoder-constants';
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { focusFirstError } from '../utils/focusFirstError';
 import { isInRange } from '../../shared/validation';
 import { formatSize } from '../utils/formatters';
 import type { ImageFileInfo } from '../../shared/types';
-import {
-  FieldBox,
-  FieldLabel,
-  ToggleRow,
-  ToggleSpacer,
-  PreviewBox,
-  PreviewImage,
-  PreviewImageBox,
-  PreviewInfo,
-  PreviewCloseButton,
-} from '../styles/ImageCompress.styles';
+import { ToggleSpacer } from '../styles/ImageCompress.styles';
+import MediaPreview from '../components/MediaPreview';
+import { FieldBox, FieldLabel, ToggleRow } from '../styles/form.styles';
 import {
   LOG_ARROW,
   LOG_COMPRESSING_IMAGE,
@@ -272,6 +265,9 @@ export default function ImageCompress() {
     if (!output.trim()) next.output = t('validation.outputRequired');
     if (!isInRange(quality, QSCALE_RANGE.MIN, QSCALE_RANGE.MAX)) next.quality = t('validation.qualityRange');
     setErrors(next);
+    if (Object.keys(next).length > 0) {
+      focusFirstError(next, ['output', 'quality'], { output: 'image-compress-output', quality: 'image-compress-quality' });
+    }
     return Object.keys(next).length === 0;
   };
 
@@ -316,7 +312,7 @@ export default function ImageCompress() {
   return (
     <PageContainer title={t('imageCompress.title')} icon={pageIcons['/image-compress']}>
       <Box>
-        <FieldLabel variant="caption" color="text.secondary">
+        <FieldLabel>
           {t('imageCompress.inputImage')}
           <InfoTooltip title={t('imageCompress.inputImageHint')} />
         </FieldLabel>
@@ -326,44 +322,45 @@ export default function ImageCompress() {
           </ErrorBoundary>
         )}
         {input && (
-          <PreviewBox data-testid="image-preview">
-            <PreviewImageBox>
-              {preview && <PreviewImage src={preview} alt={fileName(input)} />}
-              <PreviewCloseButton size="small" aria-label={t('batchQueue.remove')} data-testid="remove-image" onClick={clearSelection}>
-                <FontAwesomeIcon icon={faXmark} />
-              </PreviewCloseButton>
-            </PreviewImageBox>
-            <PreviewInfo>
-              <Typography variant="body2" color="text.secondary" data-testid="selected-image">
-                {(() => {
-                  const template = t('imageCompress.selectedImage', { file: '{{file}}' });
-                  const [before, after] = template.split('{{file}}');
-                  return (
-                    <>
-                      {before}
-                      <Box component="span" sx={{ fontWeight: 700 }}>
-                        {fileName(input)}
-                      </Box>
-                      {after}
-                    </>
-                  );
-                })()}
+          <MediaPreview
+            imageSrc={preview}
+            alt={fileName(input)}
+            removeLabel={t('batchQueue.remove')}
+            testId="image-preview"
+            removeTestId="remove-image"
+            variant="square"
+            onRemove={clearSelection}
+          >
+            <Typography variant="body2" color="text.secondary" data-testid="selected-image">
+              {(() => {
+                const template = t('imageCompress.selectedImage', { file: '{{file}}' });
+                const [before, after] = template.split('{{file}}');
+                return (
+                  <>
+                    {before}
+                    <Box component="span" sx={{ fontWeight: 700 }}>
+                      {fileName(input)}
+                    </Box>
+                    {after}
+                  </>
+                );
+              })()}
+            </Typography>
+            {fileInfo && (
+              <Typography variant="caption" color="text.secondary" data-testid="image-file-info">
+                {fileInfo.width && fileInfo.height ? `${fileInfo.width} × ${fileInfo.height}` : ''}
+                {fileInfo.width && fileInfo.height ? ' · ' : ''}
+                {formatSize(fileInfo.size)}
               </Typography>
-              {fileInfo && (
-                <Typography variant="caption" color="text.secondary" data-testid="image-file-info">
-                  {fileInfo.width && fileInfo.height ? `${fileInfo.width} × ${fileInfo.height}` : ''}
-                  {fileInfo.width && fileInfo.height ? ' · ' : ''}
-                  {formatSize(fileInfo.size)}
-                </Typography>
-              )}
-            </PreviewInfo>
-          </PreviewBox>
+            )}
+          </MediaPreview>
         )}
       </Box>
 
       <FilePathField
         label={t('imageCompress.outputFile')}
         hint={t('imageCompress.outputFileHint')}
+        required
         value={output}
         placeholder={t('imageCompress.placeholderOutput')}
         buttonLabel={t('convert.browse')}
@@ -384,7 +381,7 @@ export default function ImageCompress() {
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
         <FieldBox>
-          <FieldLabel variant="caption" color="text.secondary">
+          <FieldLabel>
             {t('imageCompress.outputFormat')}
             <InfoTooltip title={t('imageCompress.outputFormatHint')} />
           </FieldLabel>
@@ -404,7 +401,7 @@ export default function ImageCompress() {
           </TextField>
         </FieldBox>
         <FieldBox>
-          <FieldLabel variant="caption" color="text.secondary">
+          <FieldLabel>
             {t('imageCompress.quality')}
             <InfoTooltip title={t('imageCompress.qualityHint')} />
           </FieldLabel>
@@ -414,7 +411,7 @@ export default function ImageCompress() {
             type="number"
             data-testid="image-compress-quality"
             error={!!errors.quality}
-            helperText={errors.quality || ' '}
+            helperText={errors.quality || t('imageCompress.qualityRangeCaption')}
             value={quality}
             onChange={(e) => {
               setQuality(parseInt(e.target.value) || CONVERSION_DEFAULTS.QSCALE);
@@ -423,14 +420,19 @@ export default function ImageCompress() {
             onBlur={() => {
               if (!isInRange(quality, QSCALE_RANGE.MIN, QSCALE_RANGE.MAX)) setFieldError('quality', t('validation.qualityRange'));
             }}
-            slotProps={{ htmlInput: { min: QSCALE_RANGE.MIN, max: QSCALE_RANGE.MAX } }}
+            slotProps={{
+              htmlInput: { min: QSCALE_RANGE.MIN, max: QSCALE_RANGE.MAX },
+              input: {
+                endAdornment: <InputAdornment position="end">/ {QSCALE_RANGE.MAX}</InputAdornment>,
+              },
+            }}
           />
         </FieldBox>
       </Stack>
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
         <FieldBox>
-          <FieldLabel variant="caption" color="text.secondary">
+          <FieldLabel>
             {t('imageCompress.scale')}
             <InfoTooltip title={t('imageCompress.scaleHint')} />
           </FieldLabel>
@@ -452,7 +454,7 @@ export default function ImageCompress() {
         </FieldBox>
         <FieldBox>
           <ToggleSpacer />
-          <ToggleRow data-testid="keep-aspect-ratio-row">
+          <ToggleRow data-testid="keep-aspect-ratio-row" sx={{ mt: 0.5 }}>
             <Switch
               checked={keepAspectRatio}
               onChange={(e) => setKeepAspectRatio(e.target.checked)}

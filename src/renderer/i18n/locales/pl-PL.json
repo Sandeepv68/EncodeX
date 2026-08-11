@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Konwertuj multimedia",
+    "sourceFiles": "Pliki źródłowe",
+    "encoding": "Kodowanie",
+    "advanced": "Zaawansowane",
     "inputFile": "Plik wejściowy",
     "outputFile": "Plik wyjściowy",
     "noFile": "Nie wybrano pliku",
@@ -67,6 +70,9 @@
     "no": "Nie",
     "hardwareAccelAlert": "Sprzętowe przyspieszanie jest włączone. Kodowanie wideo będzie korzystać z GPU, gdy jest to kompatybilne.",
     "inputFileHint": "Źródłowy plik multimediów do konwersji. Typowe formaty obejmują MP4, MKV, MOV, AVI, MP3 i WAV.",
+    "dropLabel": "Upuść plik multimedialny tutaj lub kliknij, aby przeglądać",
+    "changeFile": "Zmień plik",
+    "changeFileHint": "Wybierz inny plik multimedialny.",
     "outputFileHint": "Ścieżka docelowa, pod którą zostanie zapisany przekonwertowany plik.",
     "losslessCopyHint": "Kopiuje strumienie bez ponownego kodowania. Szybko i bezstratnie, ale wymaga, aby kontener wyjściowy obsługiwał kodeki źródłowe.",
     "videoCodecHint": "Kodek używany do kodowania strumienia wideo, np. H.264, H.265 lub VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Docelowy bitrate strumienia wideo. Wyższe wartości zwiększają jakość i rozmiar pliku. Auto zachowuje bitrate źródła.",
     "audioBitrateHint": "Docelowy bitrate strumienia audio. Wyższe wartości zwiększają jakość i rozmiar pliku. Auto zachowuje bitrate źródła.",
     "qscaleHint": "Stała jakość w skali od 1 (najlepsza jakość, największy plik) do 31 (najgorsza jakość, najmniejszy plik).",
+    "qscaleRangeCaption": "1 – 31 (niżej = lepsza jakość)",
     "scaleHint": "Zmienia rozmiar wideo na podaną szerokość i wysokość, np. 1280x720. Puste pole zachowuje oryginalną rozdzielczość.",
     "pixelFormatHint": "Format kolorów zakodowanego wideo, np. yuv420p dla 8-bit lub yuv420p10le dla 10-bit. Dopasuj do źródła, aby uzyskać najlepszą kompatybilność.",
     "transcoderCoreHint": "Silnik używany do konwersji. FFmpeg jest domyślny i najbardziej kompatybilny.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Gdzie zapisać skompresowany obraz. Rozszerzenie odpowiada wybranemu formatowi.",
     "outputFormatHint": "Format, do którego konwertowany jest obraz. JPEG daje najmniejsze pliki, PNG jest bezstratny.",
     "qualityHint": "Jakość kompresji. Niższe wartości dają mniejsze pliki, ale bardziej widoczne artefakty.",
+    "qualityRangeCaption": "1 – 31 (niżej = mniejszy plik)",
     "scaleHint": "Ustawienie rozdzielczości wyjściowej. Wybierz standardowy rozmiar lub zachowaj oryginał, wybierając „Bez skalowania”.",
     "keepAspectRatio": "Zachowaj proporcje",
     "keepAspectRatioHint": "Po włączeniu obraz zachowuje oryginalne proporcje; po wyłączeniu jest rozciągany do dokładnej rozdzielczości.",
@@ -229,6 +237,7 @@
     "browse": "Przeglądaj",
     "dropLabel": "Upuść plik wideo tutaj lub kliknij, aby przeglądać",
     "videoFileHint": "Przeciągnij i upuść plik wideo tutaj lub kliknij, aby przeglądać komputer.",
+    "videoFiles": "Pliki wideo",
     "changeFile": "Zmień wideo",
     "changeFileHint": "Wybierz inny plik wideo.",
     "outputFile": "Plik wyjściowy",
@@ -241,6 +250,7 @@
     "endTimeHint": "Gdzie kończy się przecinany fragment. Możesz też przeciągać czerwony uchwyt przycinania na osi czasu.",
     "useDuration": "Użyj czasu trwania zamiast czasu zakończenia",
     "useDurationHint": "Przełączaj między czasem zakończenia a czasem trwania przecinanego fragmentu.",
+    "timeFormatHint": "Format: HH:MM:SS (lub w sekundach)",
     "cut": "Przytnij wideo",
     "generatingPreview": "Generowanie podglądu...",
     "cutting": "Przycinanie...",
@@ -359,7 +369,8 @@
     "description": "Wystąpił nieoczekiwany błąd."
   },
   "fileDropZone": {
-    "defaultLabel": "Upuść plik tutaj lub kliknij, aby przeglądać"
+    "defaultLabel": "Upuść plik tutaj lub kliknij, aby przeglądać",
+    "dropHint": "Przeciągnij i upuść lub kliknij, aby przeglądać"
   },
   "validation": {
     "outputRequired": "Plik wyjściowy jest wymagany",

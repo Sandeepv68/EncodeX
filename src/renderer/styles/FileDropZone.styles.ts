@@ -1,6 +1,7 @@
 import { styled, keyframes } from '@mui/material/styles';
 import { Box } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { SHADOWS } from '../colors';
 
 const borderPulse = keyframes`
   0%, 100% {
@@ -33,10 +34,33 @@ export const DropZoneRoot = styled(Box, {
   backgroundColor: $dragging ? theme.palette.action.hover : 'transparent',
   transition: 'all 0.2s',
   animation: $dragging ? 'none' : `${borderPulse} 8s ease-in-out infinite`,
+  '&:hover': {
+    boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
+    transform: 'translateY(-2px)',
+  },
+  '& svg': {
+    transition: 'color 0.2s ease',
+  },
+  '&:hover svg': {
+    color: theme.palette.primary.main,
+  },
+  ...($dragging
+    ? {
+        '& svg': {
+          color: theme.palette.primary.main,
+        },
+      }
+    : {}),
   '& .MuiTypography-root': {
     fontSize: theme.typography.pxToRem(12),
     fontWeight: theme.typography.fontWeightMedium,
     color: theme.palette.text.secondary,
+  },
+  '& .MuiTypography-caption': {
+    fontSize: theme.typography.pxToRem(11),
+    fontWeight: theme.typography.fontWeightRegular,
+    color: theme.palette.text.disabled,
+    marginTop: theme.spacing(0.5),
   },
 }));
 

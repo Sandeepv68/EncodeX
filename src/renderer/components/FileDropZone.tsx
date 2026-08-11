@@ -110,6 +110,9 @@ export default function FileDropZone({ onFileSelect, label, accept }: FileDropZo
     >
       <UploadIcon icon={faCloudArrowUp} />
       <Typography color="text.secondary">{resolvedLabel}</Typography>
+      <Typography variant="caption" color="text.secondary">
+        {t('fileDropZone.dropHint')}
+      </Typography>
     </DropZoneRoot>
   );
 }

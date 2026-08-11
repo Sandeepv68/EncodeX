@@ -1,16 +1,20 @@
 import { styled } from '@mui/material/styles';
-import { Stack, TextField, Typography } from '@mui/material';
+import { Button, Stack, TextField } from '@mui/material';
 
-export const FieldLabel = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(0.5),
-  display: 'block',
-  fontWeight: theme.typography.fontWeightBold,
-  color: theme.palette.text.secondary,
+export const FieldStack = styled(Stack)(({ theme }) => ({
+  alignItems: 'center',
+  flexWrap: 'wrap',
+  [theme.breakpoints.down('sm')]: {
+    alignItems: 'stretch',
+  },
 }));
-
-export const FieldStack = styled(Stack)({ flexWrap: 'wrap', alignItems: 'flex-start' });
 
 export const PathField = styled(TextField)(({ theme }) => ({
   minWidth: theme.typography.pxToRem(200),
   flex: 1,
+}));
+
+export const BrowseButton = styled(Button)(({ theme }) => ({
+  height: theme.typography.pxToRem(36),
+  flexShrink: 0,
 }));

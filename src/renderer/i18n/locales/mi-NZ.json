@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Huripokia te Pāpāho",
+    "sourceFiles": "Ngā Kōnae Puna",
+    "encoding": "Whakawaeheretanga",
+    "advanced": "Matatau",
     "inputFile": "Kōnae Whakauru",
     "outputFile": "Kōnae Putanga",
     "noFile": "Kāore anō kia tīpakohia he kōnae",
@@ -67,6 +70,9 @@
     "no": "Kāo",
     "hardwareAccelAlert": "Kua whakahohehia te whakatere marohi. Mā te whakawaehere ataata e whakamahi tō GPU inā hototahi.",
     "inputFileHint": "Te kōnae pāpāho puna hei huripoka. Ko ngā hōputu noa ko MP4, MKV, MOV, AVI, MP3 me WAV.",
+    "dropLabel": "Whakatakotoria he kōnae pāpāho ki konei, ka pāwhiri rānei ki te tirotiro",
+    "changeFile": "Huri i te Kōnāe",
+    "changeFileHint": "Tīpakohia he kōnāe pāpāho kē.",
     "outputFileHint": "Te ara whāinga e tiakina ai te kōnae kua huripokahia.",
     "losslessCopyHint": "Kapehia ngā ia kāore he whakawaehere anō. Tere, kore-ngaro, engari me tautoko te ipu putanga i te codec puna.",
     "videoCodecHint": "Ko te codec e whakamahia ana hei whakawaehere i te ia ataata, hei tauira. H.264, H.265, VP9 rānei.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Te pāraurau whāinga mō te ia ataata. Ko ngā uara teitei ake ka whakapiki i te kounga me te rahi kōnae. Ka pupuri te aunoa i te pāraurau puna.",
     "audioBitrateHint": "Te pāraurau whāinga mō te ia oro. Ko ngā uara teitei ake ka whakapiki i te kounga me te rahi kōnae. Ka pupuri te aunoa i te pāraurau puna.",
     "qscaleHint": "Tauine kounga pūmau mai i te 1 (te kounga pai rawa, te kōnae nui rawa) ki te 31 (te kounga kino rawa, te kōnae iti rawa).",
+    "qscaleRangeCaption": "1 – 31 (iti ake = te kounga pai ake)",
     "scaleHint": "Tauritehia te ataata ki te whānui me te teitei kua hōmai, hei tauira. 1280x720. Waiho mākūkā hei pupuri i te mārama taketake.",
     "pixelFormatHint": "Te hōputu tae o te ataata kua whakawaeheretia, hei tauira. yuv420p mō te 8-bit, yuv420p10le rānei mō te 10-bit. Honoa ki te puna mō te hototahitanga pai rawa.",
     "transcoderCoreHint": "Te pūkaha e whakamahia ana mō te huripoka. Ko FFmpeg te kōwhiringa taunoa, ā, he tino hototahi.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Te wāhi hei tiaki i te whakaahua kua kōmitimiti. Ka whai te toronga i te hōputu kua tīpakohia.",
     "outputFormatHint": "Te hōputu e huri ai te whakaahua. Ka hoatu e te JPEG te kōnae iti rawa, ko te PNG kore-ngaro.",
     "qualityHint": "Kounga kōmitimiti. Ko ngā uara iti ake ka hoatu kōnae iti engari he maha ake ngā mōkito e kitea ana.",
+    "qualityRangeCaption": "1 – 31 (iti ake = te kōnae iti ake)",
     "scaleHint": "Ngā taunoa mārama putanga. Tīpakoa he rahinga paerewa, ka pupuri rānei i te taketake mā te 'Kāore he Huringa Tauine'.",
     "keepAspectRatio": "Pupuri i te Ōwehenga Āhua",
     "keepAspectRatioHint": "Ina whakahohe, ka pupuri te whakaahua i tōna ōwehenga taketake; ina whakamomoe, ka torona ki te mārama tika.",
@@ -229,6 +237,7 @@
     "browse": "Tirotiro",
     "dropLabel": "Whakatakotoria he kōnae ataata ki konei, ka pāwhiri rānei ki te tirotiro",
     "videoFileHint": "Tōia ka whakatakoto i tētahi kōnae ataata ki konei, ka pāwhiri rānei ki te tirotiro i tō rorohiko.",
+    "videoFiles": "Ngā Kōnae Ataata",
     "changeFile": "Huri i te Ataata",
     "changeFileHint": "Tīpakoa he kōnae ataata kē.",
     "outputFile": "Kōnae Putanga",
@@ -241,6 +250,7 @@
     "endTimeHint": "Te wāhi e mutu ai te wāhanga tapahi. Ka taea hoki e koe te tō i te kakau tapahi whero i te raina wā.",
     "useDuration": "Whakamahia te Roa, kaua te Wā Mutunga",
     "useDurationHint": "Huri i waenga i te wā mutunga me te roa mō te wāhanga tapahi.",
+    "timeFormatHint": "Hōputu: HH:MM:SS (he hēkona rānei)",
     "cut": "Tapahia te Ataata",
     "generatingPreview": "E hanga tirohi ana...",
     "cutting": "E tapahi ana...",
@@ -359,7 +369,8 @@
     "description": "I puta he hapa ohorere."
   },
   "fileDropZone": {
-    "defaultLabel": "Whakatakotoria ngā kōnae ki konei, ka pāwhiri rānei ki te tirotiro"
+    "defaultLabel": "Whakatakotoria ngā kōnae ki konei, ka pāwhiri rānei ki te tirotiro",
+    "dropHint": "Tōkia ka whakatakoto, ka pāwhiri rānei ki te tirotiro"
   },
   "validation": {
     "outputRequired": "E hiahiatia ana he kōnae putanga",

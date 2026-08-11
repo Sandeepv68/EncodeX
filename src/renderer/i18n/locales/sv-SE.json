@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Konvertera media",
+    "sourceFiles": "Källfiler",
+    "encoding": "Kodning",
+    "advanced": "Avancerat",
     "inputFile": "Indatafil",
     "outputFile": "Utdatafil",
     "noFile": "Ingen fil vald",
@@ -67,6 +70,9 @@
     "no": "Nej",
     "hardwareAccelAlert": "Hårdvaruacceleration är aktiverad. Videokodning använder din GPU när det är kompatibelt.",
     "inputFileHint": "Källfilen som ska konverteras. Vanliga format inkluderar MP4, MKV, MOV, AVI, MP3 och WAV.",
+    "dropLabel": "Släpp en mediafil här eller klicka för att bläddra",
+    "changeFile": "Byt fil",
+    "changeFileHint": "Välj en annan mediafil.",
     "outputFileHint": "Målbanan där den konverterade filen sparas.",
     "losslessCopyHint": "Kopierar strömmarna utan omkodning. Snabbt och förlustfritt, men kräver att utdatabehållaren stödjer källcodecarna.",
     "videoCodecHint": "Codecen som används för att koda videoströmmen, t.ex. H.264, H.265 eller VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Målbithastigheten för videoströmmen. Högre värden ökar kvaliteten och filstorleken. Automatisk behåller källans bithastighet.",
     "audioBitrateHint": "Målbithastigheten för ljudströmmen. Högre värden ökar kvaliteten och filstorleken. Automatisk behåller källans bithastighet.",
     "qscaleHint": "Konstant kvalitetsskala från 1 (bästa kvalitet, största filen) till 31 (sämsta kvalitet, minsta filen).",
+    "qscaleRangeCaption": "1 – 31 (lägre = bättre kvalitet)",
     "scaleHint": "Skalar om videon till angiven bredd och höjd, t.ex. 1280x720. Tom behåller den ursprungliga upplösningen.",
     "pixelFormatHint": "Färgformatet för den kodade videon, t.ex. yuv420p för 8-bit eller yuv420p10le för 10-bit. Matcha källan för bästa kompatibilitet.",
     "transcoderCoreHint": "Motorn som används för konverteringen. FFmpeg är standard och mest kompatibel.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Var den komprimerade bilden ska sparas. Filtillägget följer valt format.",
     "outputFormatHint": "Formatet som bilden konverteras till. JPEG ger minst filstorlek, PNG är förlustfritt.",
     "qualityHint": "Komprimeringskvalitet. Lägre värden ger mindre filer men mer synliga artefakter.",
+    "qualityRangeCaption": "1 – 31 (lägre = mindre fil)",
     "scaleHint": "Förinställd utskriftsupplösning. Välj en standardstorlek eller behåll originalet med 'Ingen skalning'.",
     "keepAspectRatio": "Behåll bildförhållande",
     "keepAspectRatioHint": "Aktiverad: bilden behåller sina ursprungliga proportioner; avaktiverad: den sträcks till exakt upplösning.",
@@ -247,6 +255,7 @@
     "jobCancelMessage": "Detta rensar det aktuella videoklippformuläret. Är du säker?",
     "closePreview": "Stäng förhandsvisning",
     "videoFileHint": "Dra och släpp en videofil här eller klicka för att bläddra på datorn.",
+    "videoFiles": "Videofiler",
     "dropLabel": "Släpp en videofil här eller klicka för att bläddra",
     "changeFile": "Byt video",
     "changeFileHint": "Välj en annan videofil.",
@@ -255,6 +264,7 @@
     "durationHint": "Ange istället för en sluttid hur långt klippsegmentet ska vara.",
     "endTimeHint": "Var klippsegmentet slutar. Du kan också dra det röda trimhandtaget på tidslinjen.",
     "useDurationHint": "Växla mellan en sluttid och en längd för klippsegmentet.",
+    "timeFormatHint": "Format: HH:MM:SS (eller sekunder)",
     "cutHint": "Börja klippa videon med de konfigurerade start- och slutpositionerna.",
     "pause": "Pausa",
     "resume": "Återuppta",
@@ -359,7 +369,8 @@
     "description": "Ett oväntat fel inträffade."
   },
   "fileDropZone": {
-    "defaultLabel": "Släpp fil här eller klicka för att bläddra"
+    "defaultLabel": "Släpp fil här eller klicka för att bläddra",
+    "dropHint": "Dra och släpp, eller klicka för att bläddra"
   },
   "validation": {
     "outputRequired": "Utdatafil krävs",

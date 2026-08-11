@@ -1,15 +1,7 @@
 import { styled } from '@mui/material/styles';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 
-export const FieldBox = styled(Box)({ flex: 1 });
-
-export const FieldLabel = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(0.5),
-  display: 'block',
-  fontWeight: theme.typography.fontWeightBold,
-  color: theme.palette.text.secondary,
-}));
-
+/** Wrapper for the shared media preview thumbnail + info row. @const PreviewBox */
 export const PreviewBox = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(1.5),
   display: 'flex',
@@ -17,11 +9,13 @@ export const PreviewBox = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1.5),
 }));
 
+/** Positioned container that holds the preview image and its remove button. @const PreviewImageBox */
 export const PreviewImageBox = styled(Box)({
   position: 'relative',
   flexShrink: 0,
 });
 
+/** Column that stacks the file name, dimensions/size, and stream details. @const PreviewInfo */
 export const PreviewInfo = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -29,19 +23,21 @@ export const PreviewInfo = styled(Box)(({ theme }) => ({
   minWidth: 0,
 }));
 
-export const PreviewImage = styled('img')(({ theme }) => ({
-  width: theme.typography.pxToRem(160),
-  height: theme.typography.pxToRem(90),
+/** Preview thumbnail; square (images) or wide (videos) via the `variant` prop. @const PreviewImage */
+export const PreviewImage = styled('img')<{ variant?: 'square' | 'wide' }>(({ theme, variant }) => ({
+  width: theme.typography.pxToRem(variant === 'wide' ? 160 : 96),
+  height: theme.typography.pxToRem(variant === 'wide' ? 90 : 96),
   objectFit: 'cover',
   borderRadius: theme.shape.borderRadius,
   border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   display: 'block',
 }));
 
+/** Round remove button floating on the preview thumbnail corner. @const PreviewCloseButton */
 export const PreviewCloseButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',
   top: theme.typography.pxToRem(-8),
-  right: theme.typography.pxToRem(-8),
+  insetInlineEnd: theme.typography.pxToRem(-8),
   zIndex: 1,
   width: theme.typography.pxToRem(24),
   height: theme.typography.pxToRem(24),

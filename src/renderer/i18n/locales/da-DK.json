@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Konverter medie",
+    "sourceFiles": "Kilderfiler",
+    "encoding": "Kodning",
+    "advanced": "Avanceret",
     "inputFile": "Inputfil",
     "outputFile": "Outputfil",
     "noFile": "Ingen fil valgt",
@@ -67,6 +70,9 @@
     "no": "Nej",
     "hardwareAccelAlert": "Hardwareacceleration er aktiveret. Videokodning vil bruge dit GPU, når det er kompatibelt.",
     "inputFileHint": "Kildemediefilen, der skal konverteres. Almindelige formater inkluderer MP4, MKV, MOV, AVI, MP3 og WAV.",
+    "dropLabel": "Smid mediefilen her, eller klik for at gennemse",
+    "changeFile": "Skift fil",
+    "changeFileHint": "Vælg en anden mediafil.",
     "outputFileHint": "Destinationsstien, hvor den konverterede fil gemmes.",
     "losslessCopyHint": "Kopier streams uden genkodning. Hurtigt og tabsfrit, men kræver, at outputcontaineren understøtter kildecodec'en.",
     "videoCodecHint": "Codec'en, der bruges til at kode videostreamen, fx H.264, H.265 eller VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Målbithastigheden for videostreamen. Højere værdier øger kvalitet og filstørrelse. Automatisk bevarer kildebithastigheden.",
     "audioBitrateHint": "Målbithastigheden for lydstreamen. Højere værdier øger kvalitet og filstørrelse. Automatisk bevarer kildebithastigheden.",
     "qscaleHint": "Fast kvalitetsskala fra 1 (bedste kvalitet, største fil) til 31 (dårligste kvalitet, mindste fil).",
+    "qscaleRangeCaption": "1 – 31 (lavere = bedre kvalitet)",
     "scaleHint": "Ændr størrelsen på videoen til den givne bredde og højde, fx 1280x720. Tom bevarer den oprindelige opløsning.",
     "pixelFormatHint": "Farveformatet for den kodede video, fx yuv420p for 8-bit eller yuv420p10le for 10-bit. Match kilden for bedst kompatibilitet.",
     "transcoderCoreHint": "Motoren, der bruges til konvertering. FFmpeg er standard og mest kompatibel.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Hvor det komprimerede billede gemmes. Filtypenavnet følger det valgte format.",
     "outputFormatHint": "Formatet, som billedet konverteres til. JPEG giver den mindste fil, PNG er tabsfri.",
     "qualityHint": "Komprimeringskvalitet. Lavere værdier giver mindre filer, men flere synlige artefakter.",
+    "qualityRangeCaption": "1 – 31 (lavere = mindre fil)",
     "scaleHint": "Forudindstillinger for outputopløsning. Vælg en standardstørrelse eller behold originalen med 'Ingen skalering'.",
     "keepAspectRatio": "Bevar billedformat",
     "keepAspectRatioHint": "Når til, bevarer billedet sit oprindelige billedformat; når fra, strækkes det til den nøjagtige opløsning.",
@@ -229,6 +237,7 @@
     "browse": "Gennemse",
     "dropLabel": "Smid videofilen her, eller klik for at gennemse",
     "videoFileHint": "Træk og slip en videofil her, eller klik for at gennemse din computer.",
+    "videoFiles": "Videofiler",
     "changeFile": "Skift video",
     "changeFileHint": "Vælg en anden videofil.",
     "outputFile": "Outputfil",
@@ -241,6 +250,7 @@
     "endTimeHint": "Hvor klippet slutter. Du kan også trække det røde klippehåndtag på tidslinjen.",
     "useDuration": "Brug varighed i stedet for sluttid",
     "useDurationHint": "Skift mellem sluttid og varighed for klippet.",
+    "timeFormatHint": "Format: HH:MM:SS (eller sekunder)",
     "cut": "Klip video",
     "generatingPreview": "Genererer forhåndsvisning...",
     "cutting": "Klipper...",
@@ -359,7 +369,8 @@
     "description": "Der opstod en uventet fejl."
   },
   "fileDropZone": {
-    "defaultLabel": "Smid filer her, eller klik for at gennemse"
+    "defaultLabel": "Smid filer her, eller klik for at gennemse",
+    "dropHint": "Træk og slip, eller klik for at gennemse"
   },
   "validation": {
     "outputRequired": "Outputfil påkrævet",

@@ -16,7 +16,7 @@ export const StreamCountChip = styled(Chip)(({ theme }) => ({
   height: theme.spacing(2.5),
   color: theme.palette.text.secondary,
   backgroundColor: alpha(theme.palette.text.secondary, 0.12),
-  '& .MuiChip-label': { paddingLeft: theme.spacing(1), paddingRight: theme.spacing(1) },
+  '& .MuiChip-label': { paddingInline: theme.spacing(1) },
 }));
 
 export const StreamPaper = styled(Paper)(({ theme }) => ({
@@ -33,7 +33,7 @@ export const StreamTypeChip = styled(Chip)<{ tone: 'video' | 'audio' }>(({ theme
     color: main,
     borderColor: 'transparent',
     backgroundColor: alpha(main, 0.12),
-    '& .MuiChip-label': { paddingLeft: theme.spacing(1), paddingRight: theme.spacing(1) },
+    '& .MuiChip-label': { paddingInline: theme.spacing(1) },
   };
 });
 
@@ -66,5 +66,5 @@ export const DispositionChip = styled(Chip)(({ theme }) => ({
   minHeight: theme.spacing(2.5),
   color: theme.palette.secondary.main,
   backgroundColor: alpha(theme.palette.secondary.main, 0.12),
-  '& .MuiChip-label': { paddingLeft: theme.spacing(1), paddingRight: theme.spacing(1) },
+  '& .MuiChip-label': { paddingInline: theme.spacing(1) },
 }));
