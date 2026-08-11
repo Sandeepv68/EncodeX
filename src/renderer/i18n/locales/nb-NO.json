@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Batchkø",
+    "operation": "Operation",
     "suffix": "Suffiks",
     "addFiles": "Legg til filer",
     "cancelAll": "Avbryt alle",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Trekk ut lyd",
     "operationCompressImage": "Komprimer bilde",
     "outputDirPlaceholder": "Utdatamappe (valgfritt)",
+    "outputDir": "Output folder",
     "browse": "Bla gjennom",
     "overwrite": "Overskriv eksisterende filer",
     "reviewTitle": "Gjennomgå filer før de legges til",

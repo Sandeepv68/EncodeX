@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Пакетна черга",
+    "operation": "Operation",
     "suffix": "Суфікс",
     "addFiles": "Додати файли",
     "cancelAll": "Скасувати все",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Витяг аудіо",
     "operationCompressImage": "Стиснути зображення",
     "outputDirPlaceholder": "Вихідна папка (необов'язково)",
+    "outputDir": "Output folder",
     "browse": "Огляд",
     "overwrite": "Перезаписувати наявні файли",
     "reviewTitle": "Перегляньте файли перед додаванням",

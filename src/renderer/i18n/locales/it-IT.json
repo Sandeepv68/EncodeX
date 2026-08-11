@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Coda batch",
+    "operation": "Operation",
     "suffix": "Suffisso",
     "addFiles": "Aggiungi file",
     "cancelAll": "Annulla tutto",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Estrai audio",
     "operationCompressImage": "Comprimi immagine",
     "outputDirPlaceholder": "Cartella di output (facoltativa)",
+    "outputDir": "Output folder",
     "browse": "Sfoglia",
     "overwrite": "Sovrascrivi file esistenti",
     "reviewTitle": "Rivedi i file prima di aggiungerli",

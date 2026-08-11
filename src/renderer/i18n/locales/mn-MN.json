@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Багц дараалал",
+    "operation": "Operation",
     "suffix": "Дагавар",
     "addFiles": "Файл нэмэх",
     "cancelAll": "Бүгдийг цуцлах",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Аудио задлах",
     "operationCompressImage": "Зураг шахах",
     "outputDirPlaceholder": "Гаралтын хавтас (заавал биш)",
+    "outputDir": "Output folder",
     "browse": "Хайх",
     "overwrite": "Одоо байгаа файлуудыг дарж бичих",
     "reviewTitle": "Нэмэхээс өмнө файлуудыг шалгах",

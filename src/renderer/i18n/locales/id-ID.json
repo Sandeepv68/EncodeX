@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Antrean Batch",
+    "operation": "Operation",
     "suffix": "Akhiran",
     "addFiles": "Tambah File",
     "cancelAll": "Batalkan Semua",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Ekstrak Audio",
     "operationCompressImage": "Kompres Gambar",
     "outputDirPlaceholder": "Folder keluaran (opsional)",
+    "outputDir": "Output folder",
     "browse": "Jelajah",
     "overwrite": "Timpa file yang ada",
     "reviewTitle": "Tinjau file sebelum menambahkan",

@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Stapelwarteschlange",
+    "operation": "Operation",
     "suffix": "Suffix",
     "addFiles": "Dateien hinzufügen",
     "cancelAll": "Alle abbrechen",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Audio extrahieren",
     "operationCompressImage": "Bild komprimieren",
     "outputDirPlaceholder": "Ausgabeordner (optional)",
+    "outputDir": "Output folder",
     "browse": "Durchsuchen",
     "overwrite": "Vorhandene Dateien überschreiben",
     "reviewTitle": "Dateien vor dem Hinzufügen überprüfen",

@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Cola de lotes",
+    "operation": "Operation",
     "suffix": "Sufijo",
     "addFiles": "Agregar archivos",
     "cancelAll": "Cancelar todo",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Extraer audio",
     "operationCompressImage": "Comprimir imagen",
     "outputDirPlaceholder": "Carpeta de salida (opcional)",
+    "outputDir": "Output folder",
     "browse": "Examinar",
     "overwrite": "Sobrescribir archivos existentes",
     "reviewTitle": "Revisar archivos antes de agregar",

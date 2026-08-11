@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Kolejka wsadowa",
+    "operation": "Operation",
     "suffix": "Przyrostek",
     "addFiles": "Dodaj pliki",
     "cancelAll": "Anuluj wszystko",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Wyodrębnij audio",
     "operationCompressImage": "Kompresuj obraz",
     "outputDirPlaceholder": "Folder wyjściowy (opcjonalnie)",
+    "outputDir": "Output folder",
     "browse": "Przeglądaj",
     "overwrite": "Nadpisuj istniejące pliki",
     "reviewTitle": "Sprawdź pliki przed dodaniem",

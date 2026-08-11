@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Eräjono",
+    "operation": "Operation",
     "suffix": "Pääte",
     "addFiles": "Lisää tiedostoja",
     "cancelAll": "Peruuta kaikki",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Pura ääni",
     "operationCompressImage": "Pakkaa kuva",
     "outputDirPlaceholder": "Kohdekansio (valinnainen)",
+    "outputDir": "Output folder",
     "browse": "Selaa",
     "overwrite": "Kirjoita olemassa olevien tiedostojen päälle",
     "reviewTitle": "Tarkista tiedostot ennen lisäämistä",

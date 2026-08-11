@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "قائمة الدفعات",
+    "operation": "Operation",
     "suffix": "اللاحقة",
     "addFiles": "إضافة ملفات",
     "cancelAll": "إلغاء الكل",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "استخراج الصوت",
     "operationCompressImage": "ضغط الصورة",
     "outputDirPlaceholder": "مجلد الإخراج (اختياري)",
+    "outputDir": "Output folder",
     "browse": "استعراض",
     "overwrite": "الكتابة فوق الملفات الموجودة",
     "reviewTitle": "مراجعة الملفات قبل الإضافة",

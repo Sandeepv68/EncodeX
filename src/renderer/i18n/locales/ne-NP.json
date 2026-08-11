@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "ब्याच कतार",
+    "operation": "Operation",
     "suffix": "प्रत्यय",
     "addFiles": "फाइलहरू थप्नुहोस्",
     "cancelAll": "सबै रद्द गर्नुहोस्",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "अडियो निकाल्नुहोस्",
     "operationCompressImage": "तस्बिर कम्प्रेस गर्नुहोस्",
     "outputDirPlaceholder": "आउटपुट फोल्डर (वैकल्पिक)",
+    "outputDir": "Output folder",
     "browse": "ब्राउज गर्नुहोस्",
     "overwrite": "अवस्थित फाइलहरू ओभरराइट गर्नुहोस्",
     "reviewTitle": "थप्नु अघि फाइलहरू समीक्षा गर्नुहोस्",

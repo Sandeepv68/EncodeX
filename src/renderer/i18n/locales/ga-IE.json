@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Scuaine Bhaisc",
+    "operation": "Operation",
     "suffix": "Iarmhír",
     "addFiles": "Cuir Comhaid Leis",
     "cancelAll": "Cealaigh Uile",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Bain Fuaim",
     "operationCompressImage": "Comhbhrúigh Íomhá",
     "outputDirPlaceholder": "Fillteán aschuir (roghnach)",
+    "outputDir": "Output folder",
     "browse": "Brabhsáil",
     "overwrite": "Scríobh thar comhaid reatha",
     "reviewTitle": "Athbhreithnigh Comhaid sula gcuirtear Leis",

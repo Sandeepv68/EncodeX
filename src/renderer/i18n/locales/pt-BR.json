@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Fila em Lote",
+    "operation": "Operation",
     "suffix": "Sufixo",
     "addFiles": "Adicionar Arquivos",
     "cancelAll": "Cancelar Tudo",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Extrair áudio",
     "operationCompressImage": "Compactar imagem",
     "outputDirPlaceholder": "Pasta de saída (opcional)",
+    "outputDir": "Output folder",
     "browse": "Procurar",
     "overwrite": "Sobrescrever arquivos existentes",
     "reviewTitle": "Revisar arquivos antes de adicionar",

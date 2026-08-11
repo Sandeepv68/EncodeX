@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "File d'Attente",
+    "operation": "Operation",
     "suffix": "Suffixe",
     "addFiles": "Ajouter des Fichiers",
     "cancelAll": "Tout Annuler",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Extraire l'audio",
     "operationCompressImage": "Compresser l'image",
     "outputDirPlaceholder": "Dossier de sortie (optionnel)",
+    "outputDir": "Output folder",
     "browse": "Parcourir",
     "overwrite": "Écraser les fichiers existants",
     "reviewTitle": "Vérifier les fichiers avant l'ajout",

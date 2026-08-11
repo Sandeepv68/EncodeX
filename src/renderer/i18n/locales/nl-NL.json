@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Batchwachtrij",
+    "operation": "Operation",
     "suffix": "Achtervoegsel",
     "addFiles": "Bestanden toevoegen",
     "cancelAll": "Alles annuleren",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Audio extraheren",
     "operationCompressImage": "Comprimeer afbeelding",
     "outputDirPlaceholder": "Uitvoermap (optioneel)",
+    "outputDir": "Output folder",
     "browse": "Bladeren",
     "overwrite": "Bestaande bestanden overschrijven",
     "reviewTitle": "Bestanden controleren vóór toevoegen",

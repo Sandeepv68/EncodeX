@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "කණ්ඩායම් පෝලිම",
+    "operation": "Operation",
     "suffix": "ප්‍රත්‍යය",
     "addFiles": "ගොනු එකතු කරන්න",
     "cancelAll": "සියල්ල අවලංගු කරන්න",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "ශ්‍රව්‍ය උපුටා ගන්න",
     "operationCompressImage": "රූපය සම්පීඩනය කරන්න",
     "outputDirPlaceholder": "ප්‍රතිදාන ෆෝල්ඩරය (අවශ්‍ය නම්)",
+    "outputDir": "Output folder",
     "browse": "බ්‍රවුස් කරන්න",
     "overwrite": "පවතින ගොනු උඩ ලියන්න",
     "reviewTitle": "එකතු කිරීමට පෙර ගොනු සමාලෝචනය කරන්න",

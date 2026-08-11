@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Runubraut",
+    "operation": "Operation",
     "suffix": "Viðskeyti",
     "addFiles": "Bæta við skrám",
     "cancelAll": "Hætta við allt",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Draga út hljóð",
     "operationCompressImage": "Þjappa mynd",
     "outputDirPlaceholder": "Úttaksmappa (valfrjálst)",
+    "outputDir": "Output folder",
     "browse": "Fletta",
     "overwrite": "Skrifa yfir núverandi skrár",
     "reviewTitle": "Skoða skrár áður en bætt er við",

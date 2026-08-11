@@ -74,9 +74,12 @@ describe('BatchControls', () => {
     expect(screen.getByRole('button', { name: 'batchQueue.clearCompleted' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'batchQueue.exportQueue' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'batchQueue.importQueue' })).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('batchQueue.suffix')).toBeInTheDocument();
+    expect(screen.getByLabelText('batchQueue.suffix')).toBeInTheDocument();
     expect(screen.getAllByText('batchQueue.concurrency').length).toBeGreaterThan(0);
     expect(screen.getAllByRole('combobox')).toHaveLength(3);
+    expect(screen.getByRole('combobox', { name: 'batchQueue.operation' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'batchQueue.detailsTranscoder' })).toBeInTheDocument();
+    expect(screen.getByLabelText('batchQueue.outputDir')).toBeInTheDocument();
   });
 
   it('fires onConcurrencyChange when a different concurrency is chosen', () => {
@@ -102,7 +105,7 @@ describe('BatchControls', () => {
 
   it('updates the suffix ref when the suffix field changes', () => {
     const { suffixRef } = renderControls();
-    fireEvent.change(screen.getByPlaceholderText('batchQueue.suffix'), { target: { value: '_bak' } });
+    fireEvent.change(screen.getByLabelText('batchQueue.suffix'), { target: { value: '_bak' } });
     expect(suffixRef.current).toBe('_bak');
   });
 

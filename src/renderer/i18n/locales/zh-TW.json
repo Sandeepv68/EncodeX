@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "批次佇列",
+    "operation": "Operation",
     "suffix": "後綴",
     "addFiles": "新增檔案",
     "cancelAll": "全部取消",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "擷取音訊",
     "operationCompressImage": "壓縮圖片",
     "outputDirPlaceholder": "輸出資料夾（選用）",
+    "outputDir": "Output folder",
     "browse": "瀏覽",
     "overwrite": "覆寫現有檔案",
     "reviewTitle": "新增前檢查檔案",

@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "बैच क्यू",
+    "operation": "Operation",
     "suffix": "सफ़िक्स",
     "addFiles": "फ़ाइलें जोड़ें",
     "cancelAll": "सभी रद्द करें",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "ऑडियो निकालें",
     "operationCompressImage": "छवि संपीड़ित करें",
     "outputDirPlaceholder": "आउटपुट फ़ोल्डर (वैकल्पिक)",
+    "outputDir": "Output folder",
     "browse": "ब्राउज़ करें",
     "overwrite": "मौजूदा फ़ाइलें अधिलेखित करें",
     "reviewTitle": "जोड़ने से पहले फ़ाइलों की समीक्षा करें",

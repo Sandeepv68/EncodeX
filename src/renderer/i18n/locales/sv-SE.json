@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Batchkö",
+    "operation": "Operation",
     "suffix": "Ändelse",
     "addFiles": "Lägg till filer",
     "cancelAll": "Avbryt alla",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Extrahera ljud",
     "operationCompressImage": "Komprimera bild",
     "outputDirPlaceholder": "Utdata-mapp (valfritt)",
+    "outputDir": "Output folder",
     "browse": "Bläddra",
     "overwrite": "Skriv över befintliga filer",
     "reviewTitle": "Granska filer innan du lägger till",

@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "バッチキュー",
+    "operation": "Operation",
     "suffix": "サフィックス",
     "addFiles": "ファイルを追加",
     "cancelAll": "すべてキャンセル",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "音声を抽出する",
     "operationCompressImage": "画像を圧縮する",
     "outputDirPlaceholder": "出力フォルダー（省略可）",
+    "outputDir": "Output folder",
     "browse": "参照",
     "overwrite": "既存ファイルを上書き",
     "reviewTitle": "追加前にファイルを確認",

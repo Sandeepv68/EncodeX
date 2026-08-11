@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Ilerleq",
+    "operation": "Operation",
     "suffix": "Suffix",
     "addFiles": "Filiussat ilannguk",
     "cancelAll": "Tamaasa piumasuunngikkit",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Nipilersorneq nuiaatit",
     "operationCompressImage": "Assersuut qitornaqqusaat",
     "outputDirPlaceholder": "Aniffik folder (toqqaartumik)",
+    "outputDir": "Output folder",
     "browse": "Sallugu",
     "overwrite": "Filiussat naapittut atorsinnaanngitsut",
     "reviewTitle": "Filiussat takusaat, ilanngussanngikkaluarlugit",

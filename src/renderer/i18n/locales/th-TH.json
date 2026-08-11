@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "คิวงาน",
+    "operation": "Operation",
     "suffix": "คำต่อท้าย",
     "addFiles": "เพิ่มไฟล์",
     "cancelAll": "ยกเลิกทั้งหมด",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "แยกเสียง",
     "operationCompressImage": "บีบอัดรูปภาพ",
     "outputDirPlaceholder": "โฟลเดอร์เอาต์พุต (ไม่บังคับ)",
+    "outputDir": "Output folder",
     "browse": "เรียกดู",
     "overwrite": "เขียนทับไฟล์ที่มีอยู่",
     "reviewTitle": "ตรวจสอบไฟล์ก่อนเพิ่ม",

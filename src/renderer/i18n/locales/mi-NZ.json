@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Rārangi Tukinotanga",
+    "operation": "Operation",
     "suffix": "Kūmuri",
     "addFiles": "Tāpiri Kōnae",
     "cancelAll": "Whakakore Katoa",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Tohaina te Oro",
     "operationCompressImage": "Kōmitimiti Whakaahua",
     "outputDirPlaceholder": "Kōpaki putanga (kōwhiringa)",
+    "outputDir": "Output folder",
     "browse": "Tirotiro",
     "overwrite": "Tuhia ki runga i ngā kōnae o nāianei",
     "reviewTitle": "Arotake Kōnae i mua i te Tāpiri",

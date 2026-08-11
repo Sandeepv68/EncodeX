@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Пакетная очередь",
+    "operation": "Operation",
     "suffix": "Суффикс",
     "addFiles": "Добавить файлы",
     "cancelAll": "Отменить всё",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Извлечь аудио",
     "operationCompressImage": "Сжать изображение",
     "outputDirPlaceholder": "Папка вывода (необязательно)",
+    "outputDir": "Output folder",
     "browse": "Обзор",
     "overwrite": "Перезаписывать существующие файлы",
     "reviewTitle": "Проверьте файлы перед добавлением",

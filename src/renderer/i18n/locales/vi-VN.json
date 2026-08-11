@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Hàng đợi hàng loạt",
+    "operation": "Operation",
     "suffix": "Hậu tố",
     "addFiles": "Thêm tệp",
     "cancelAll": "Hủy tất cả",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Trích xuất âm thanh",
     "operationCompressImage": "Nén hình ảnh",
     "outputDirPlaceholder": "Thư mục đầu ra (tùy chọn)",
+    "outputDir": "Output folder",
     "browse": "Duyệt",
     "overwrite": "Ghi đè tệp hiện có",
     "reviewTitle": "Xem xét tệp trước khi thêm",

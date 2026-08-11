@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "תור אצווה",
+    "operation": "Operation",
     "suffix": "סיומת",
     "addFiles": "הוסף קבצים",
     "cancelAll": "בטל הכל",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "חילוץ אודיו",
     "operationCompressImage": "דחיסת תמונה",
     "outputDirPlaceholder": "תיקיית פלט (אופציונלי)",
+    "outputDir": "Output folder",
     "browse": "עיון",
     "overwrite": "החלף קבצים קיימים",
     "reviewTitle": "בדוק קבצים לפני ההוספה",

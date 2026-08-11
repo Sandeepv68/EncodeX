@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "ຄິວງານຫຼາຍອັນ",
+    "operation": "Operation",
     "suffix": "ຄຳຕໍ່ທ້າຍ",
     "addFiles": "ເພີ່ມໄຟລ໌",
     "cancelAll": "ຍົກເລີກທັງໝົດ",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "ດຶງສຽງ",
     "operationCompressImage": "ບີບອັດຮູບພາບ",
     "outputDirPlaceholder": "ໂຟນເດີຜົນສົ່ງອອກ (ທາງເລືອກ)",
+    "outputDir": "Output folder",
     "browse": "ຊອກຫາ",
     "overwrite": "ຂຽນທັບໄຟລ໌ທີ່ມີຢູ່",
     "reviewTitle": "ກວດສອບໄຟລ໌ກ່ອນເພີ່ມ",

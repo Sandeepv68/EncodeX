@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "배치 큐",
+    "operation": "Operation",
     "suffix": "접미사",
     "addFiles": "파일 추가",
     "cancelAll": "모두 취소",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "오디오 추출",
     "operationCompressImage": "이미지 압축",
     "outputDirPlaceholder": "출력 폴더 (선택 사항)",
+    "outputDir": "Output folder",
     "browse": "찾아보기",
     "overwrite": "기존 파일 덮어쓰기",
     "reviewTitle": "추가하기 전에 파일 검토",

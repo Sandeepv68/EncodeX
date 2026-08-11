@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Baris Giliran Kelompok",
+    "operation": "Operation",
     "suffix": "Akhiran",
     "addFiles": "Tambah Fail",
     "cancelAll": "Batal Semua",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "Ekstrak Audio",
     "operationCompressImage": "Mampat Imej",
     "outputDirPlaceholder": "Folder output (pilihan)",
+    "outputDir": "Output folder",
     "browse": "Semak Imbas",
     "overwrite": "Tindih fail sedia ada",
     "reviewTitle": "Semak fail sebelum menambah",

@@ -58,6 +58,7 @@ import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { MAX_QUEUE_CONCURRENCY } from '../../shared/constants';
 import type { TranscoderType } from '../../shared/types';
 import type { BatchControlsProps } from './types';
+import { FieldBox, FieldLabel } from '../styles/form.styles';
 import {
   ControlsPaper,
   OperationSelect,
@@ -71,12 +72,13 @@ import {
 /**
  * Renders the batch queue configuration toolbar.
  *
- * Builds a responsive grid of MUI controls inside a paper surface. The
- * operation select is controlled via `operation`/`onOperationChange`; the
- * transcoder and suffix selects use their first TRANSCODER_TYPES entry /
- * DEFAULT_SUFFIX as the default and push every change into the corresponding
- * ref. The action
- * buttons (icon-only, wrapped in tooltips) delegate to the parent callbacks.
+ * Builds a responsive grid of MUI controls inside a paper surface. The action
+ * buttons (icon-only, wrapped in tooltips) sit in the top row and delegate to
+ * the parent callbacks. Below them every configuration field carries its own
+ * `FieldLabel` (from the shared form styles): the operation select is
+ * controlled via `operation`/`onOperationChange`; the transcoder and suffix
+ * selects use their first TRANSCODER_TYPES entry / DEFAULT_SUFFIX as the
+ * default and push every change into the corresponding ref.
  * @param {BatchControlsProps} props - Component props.
  * @param {string} props.operation - The selected batch operation value
  *   ('transcode' | 'extract_audio' | 'compress_image').
@@ -149,101 +151,6 @@ export default function BatchControls({
   return (
     <ControlsPaper>
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-          <OperationSelect
-            select
-            fullWidth
-            size="small"
-            value={operation}
-            onChange={(e) => {
-              onOperationChange(e.target.value);
-            }}
-          >
-            {BATCH_OPERATIONS.map((o) => (
-              <MenuItem key={o.value} value={o.value}>
-                {operationLabels[o.value]}
-              </MenuItem>
-            ))}
-          </OperationSelect>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-          <TranscoderSelect
-            select
-            fullWidth
-            size="small"
-            defaultValue={TRANSCODER_TYPES[0]}
-            onChange={(e) => {
-              transcoderRef.current = e.target.value as TranscoderType;
-            }}
-          >
-            {TRANSCODER_TYPES.map((codec) => (
-              <MenuItem key={codec} value={codec}>
-                {codec}
-              </MenuItem>
-            ))}
-          </TranscoderSelect>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-          <SuffixField
-            fullWidth
-            size="small"
-            defaultValue={DEFAULT_SUFFIX}
-            onChange={(e) => {
-              suffixRef.current = e.target.value;
-            }}
-            placeholder={t('batchQueue.suffix')}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-          <ConcurrencySelect
-            select
-            fullWidth
-            size="small"
-            label={t('batchQueue.concurrency')}
-            value={concurrency}
-            onChange={(e) => {
-              onConcurrencyChange(Number(e.target.value));
-            }}
-          >
-            {Array.from({ length: MAX_QUEUE_CONCURRENCY }, (_, i) => i + 1).map((n) => (
-              <MenuItem key={n} value={n}>
-                {n}
-              </MenuItem>
-            ))}
-          </ConcurrencySelect>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 9, md: 10 }}>
-          <OutputDirField
-            fullWidth
-            size="small"
-            value={outputDir}
-            onChange={(e) => {
-              onOutputDirChange(e.target.value);
-            }}
-            placeholder={t('batchQueue.outputDirPlaceholder')}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 3, md: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Tooltip title={t('batchQueue.browse')}>
-              <OutlinedIconButton size="small" aria-label={t('batchQueue.browse')} onClick={onBrowseDir}>
-                <FontAwesomeIcon icon={faFolderOpen} />
-              </OutlinedIconButton>
-            </Tooltip>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  size="small"
-                  checked={overwrite}
-                  onChange={(e) => {
-                    onOverwriteChange(e.target.checked);
-                  }}
-                />
-              }
-              label={t('batchQueue.overwrite')}
-            />
-          </Box>
-        </Grid>
         <Grid size={12}>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1 }}>
             <Tooltip title={t('batchQueue.addFiles')}>
@@ -289,6 +196,122 @@ export default function BatchControls({
                 <FontAwesomeIcon icon={faFileImport} />
               </OutlinedIconButton>
             </Tooltip>
+          </Box>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+          <FieldBox>
+            <FieldLabel>{t('batchQueue.operation')}</FieldLabel>
+            <OperationSelect
+              id="batch-operation"
+              select
+              fullWidth
+              size="small"
+              slotProps={{ input: { 'aria-label': t('batchQueue.operation') } }}
+              value={operation}
+              onChange={(e) => {
+                onOperationChange(e.target.value);
+              }}
+            >
+              {BATCH_OPERATIONS.map((o) => (
+                <MenuItem key={o.value} value={o.value}>
+                  {operationLabels[o.value]}
+                </MenuItem>
+              ))}
+            </OperationSelect>
+          </FieldBox>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+          <FieldBox>
+            <FieldLabel>{t('batchQueue.detailsTranscoder')}</FieldLabel>
+            <TranscoderSelect
+              id="batch-transcoder"
+              select
+              fullWidth
+              size="small"
+              slotProps={{ input: { 'aria-label': t('batchQueue.detailsTranscoder') } }}
+              defaultValue={TRANSCODER_TYPES[0]}
+              onChange={(e) => {
+                transcoderRef.current = e.target.value as TranscoderType;
+              }}
+            >
+              {TRANSCODER_TYPES.map((codec) => (
+                <MenuItem key={codec} value={codec}>
+                  {codec}
+                </MenuItem>
+              ))}
+            </TranscoderSelect>
+          </FieldBox>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+          <FieldBox>
+            <FieldLabel htmlFor="batch-suffix">{t('batchQueue.suffix')}</FieldLabel>
+            <SuffixField
+              id="batch-suffix"
+              fullWidth
+              size="small"
+              defaultValue={DEFAULT_SUFFIX}
+              onChange={(e) => {
+                suffixRef.current = e.target.value;
+              }}
+            />
+          </FieldBox>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+          <FieldBox>
+            <FieldLabel>{t('batchQueue.concurrency')}</FieldLabel>
+            <ConcurrencySelect
+              id="batch-concurrency"
+              select
+              fullWidth
+              size="small"
+              slotProps={{ input: { 'aria-label': t('batchQueue.concurrency') } }}
+              value={concurrency}
+              onChange={(e) => {
+                onConcurrencyChange(Number(e.target.value));
+              }}
+            >
+              {Array.from({ length: MAX_QUEUE_CONCURRENCY }, (_, i) => i + 1).map((n) => (
+                <MenuItem key={n} value={n}>
+                  {n}
+                </MenuItem>
+              ))}
+            </ConcurrencySelect>
+          </FieldBox>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 9, md: 10 }}>
+          <FieldBox>
+            <FieldLabel htmlFor="batch-output-dir">{t('batchQueue.outputDir')}</FieldLabel>
+            <OutputDirField
+              id="batch-output-dir"
+              fullWidth
+              size="small"
+              value={outputDir}
+              onChange={(e) => {
+                onOutputDirChange(e.target.value);
+              }}
+              placeholder={t('batchQueue.outputDirPlaceholder')}
+            />
+          </FieldBox>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 3, md: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, marginTop: 'auto' }}>
+            <Tooltip title={t('batchQueue.browse')}>
+              <OutlinedIconButton size="small" aria-label={t('batchQueue.browse')} onClick={onBrowseDir}>
+                <FontAwesomeIcon icon={faFolderOpen} />
+              </OutlinedIconButton>
+            </Tooltip>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  size="small"
+                  checked={overwrite}
+                  onChange={(e) => {
+                    onOverwriteChange(e.target.checked);
+                  }}
+                />
+              }
+              label={t('batchQueue.overwrite')}
+            />
           </Box>
         </Grid>
       </Grid>

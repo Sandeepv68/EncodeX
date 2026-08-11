@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "Batch Queue",
+    "operation": "Operation",
     "suffix": "Suffix",
     "addFiles": "Magdagdag ng mga File",
     "cancelAll": "Kanselahin Lahat",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "I-extract ang Audio",
     "operationCompressImage": "I-compress ang Larawan",
     "outputDirPlaceholder": "Output folder (opsyonal)",
+    "outputDir": "Output folder",
     "browse": "Mag-browse",
     "overwrite": "I-overwrite ang mga umiiral na file",
     "reviewTitle": "Suriin ang mga file bago idagdag",

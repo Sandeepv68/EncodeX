@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "ជួរដេកដំណើរការដុំ",
+    "operation": "Operation",
     "suffix": "បច្ច័យ",
     "addFiles": "បន្ថែមឯកសារ",
     "cancelAll": "បោះបង់ទាំងអស់",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "ទាញយកសំឡេង",
     "operationCompressImage": "បង្ហាប់រូបភាព",
     "outputDirPlaceholder": "ថតទិន្នផល (ស្រេចចិត្ត)",
+    "outputDir": "Output folder",
     "browse": "រកមើល",
     "overwrite": "សរសេរជាន់លើឯកសារដែលមានស្រាប់",
     "reviewTitle": "ពិនិត្យឯកសារមុនពេលបន្ថែម",

@@ -284,6 +284,7 @@
   },
   "batchQueue": {
     "title": "批量队列",
+    "operation": "Operation",
     "suffix": "后缀",
     "addFiles": "添加文件",
     "cancelAll": "全部取消",
@@ -323,6 +324,7 @@
     "operationExtractAudio": "提取音频",
     "operationCompressImage": "压缩图像",
     "outputDirPlaceholder": "输出文件夹（可选）",
+    "outputDir": "Output folder",
     "browse": "浏览",
     "overwrite": "覆盖现有文件",
     "reviewTitle": "添加前检查文件",
