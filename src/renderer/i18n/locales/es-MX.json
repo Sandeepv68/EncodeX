@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Convertir medio",
+    "sourceFiles": "Archivos de origen",
+    "encoding": "Codificación",
+    "advanced": "Avanzado",
     "inputFile": "Archivo de entrada",
     "outputFile": "Archivo de salida",
     "noFile": "Ningún archivo seleccionado",
@@ -67,6 +70,9 @@
     "no": "No",
     "hardwareAccelAlert": "La aceleración de hardware está habilitada. La codificación de vídeo usará tu GPU cuando sea compatible.",
     "inputFileHint": "El archivo multimedia de origen que se va a convertir. Los formatos comunes incluyen MP4, MKV, MOV, AVI, MP3 y WAV.",
+    "dropLabel": "Suelta un archivo multimedia aquí o haz clic para examinar",
+    "changeFile": "Cambiar archivo",
+    "changeFileHint": "Seleccione otro archivo multimedia.",
     "outputFileHint": "La ruta de destino donde se guardará el archivo convertido.",
     "losslessCopyHint": "Copia los flujos sin recodificar. Rápido y sin pérdida, pero requiere que el contenedor de salida admita los códecs de origen.",
     "videoCodecHint": "El códec utilizado para codificar el flujo de vídeo, p. ej. H.264, H.265 o VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "La tasa de bits objetivo para el flujo de vídeo. Valores más altos aumentan la calidad y el tamaño del archivo. Automático mantiene la tasa de bits de origen.",
     "audioBitrateHint": "La tasa de bits objetivo para el flujo de audio. Valores más altos aumentan la calidad y el tamaño del archivo. Automático mantiene la tasa de bits de origen.",
     "qscaleHint": "Escala de calidad constante de 1 (mejor calidad, archivo más grande) a 31 (peor calidad, archivo más pequeño).",
+    "qscaleRangeCaption": "1 – 31 (más bajo = mejor calidad)",
     "scaleHint": "Redimensiona el vídeo al ancho y alto indicados, p. ej. 1280x720. Vacío conserva la resolución original.",
     "pixelFormatHint": "El formato de color del vídeo codificado, p. ej. yuv420p para 8 bits o yuv420p10le para 10 bits. Coincida con el origen para una mejor compatibilidad.",
     "transcoderCoreHint": "El motor utilizado para la conversión. FFmpeg es el predeterminado y el más compatible.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Dónde guardar la imagen comprimida. La extensión sigue el formato seleccionado.",
     "outputFormatHint": "El formato al que se convierte la imagen. JPEG genera los archivos más pequeños; PNG no tiene pérdida.",
     "qualityHint": "Calidad de compresión. Los valores más bajos producen archivos más pequeños pero artefactos más visibles.",
+    "qualityRangeCaption": "1 – 31 (más bajo = archivo más pequeño)",
     "scaleHint": "Resolución de salida predefinida. Elija un tamaño estándar o mantenga el original seleccionando 'Sin escala'.",
     "keepAspectRatio": "Mantener proporción",
     "keepAspectRatioHint": "Activado: la imagen conserva sus proporciones originales; desactivado: se estira a la resolución exacta.",
@@ -255,6 +263,7 @@
     "durationHint": "En lugar de una hora de fin, especifique la duración del segmento de corte.",
     "endTimeHint": "Dónde termina el segmento de corte. También puede arrastrar el control de recorte rojo en la línea de tiempo.",
     "useDurationHint": "Cambie entre una hora de fin y una duración para el segmento de corte.",
+    "timeFormatHint": "Formato: HH:MM:SS (o en segundos)",
     "cutHint": "Empiece a cortar el video con las posiciones de inicio y fin configuradas.",
     "pause": "Pausa",
     "resume": "Reanudar",
@@ -359,7 +368,8 @@
     "description": "Ocurrió un error inesperado."
   },
   "fileDropZone": {
-    "defaultLabel": "Suelta el archivo aquí o haz clic para examinar"
+    "defaultLabel": "Suelta el archivo aquí o haz clic para examinar",
+    "dropHint": "Arrastra y suelta, o haz clic para examinar"
   },
   "validation": {
     "outputRequired": "El archivo de salida es obligatorio",

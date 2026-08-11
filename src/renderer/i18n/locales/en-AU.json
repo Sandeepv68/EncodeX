@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Convert Media",
+    "sourceFiles": "Source Files",
+    "encoding": "Encoding",
+    "advanced": "Advanced",
     "inputFile": "Input File",
     "outputFile": "Output File",
     "noFile": "No file selected",
@@ -67,6 +70,9 @@
     "no": "No",
     "hardwareAccelAlert": "Hardware acceleration is enabled. Video encoding will use your GPU when compatible.",
     "inputFileHint": "The source media file to convert. Common formats include MP4, MKV, MOV, AVI, MP3, and WAV.",
+    "dropLabel": "Drop a media file here or click to browse",
+    "changeFile": "Change File",
+    "changeFileHint": "Select a different media file.",
     "outputFileHint": "The destination path where the converted file will be saved.",
     "losslessCopyHint": "Copies the streams without re-encoding. Fast and lossless, but requires the output container to support the source codecs.",
     "videoCodecHint": "The codec used to encode the video stream, e.g. H.264, H.265, or VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "The target bitrate for the video stream. Higher values increase quality and file size. Auto keeps the source bitrate.",
     "audioBitrateHint": "The target bitrate for the audio stream. Higher values increase quality and file size. Auto keeps the source bitrate.",
     "qscaleHint": "Constant-quality scale from 1 (best quality, largest file) to 31 (worst quality, smallest file).",
+    "qscaleRangeCaption": "1 – 31 (lower = better quality)",
     "scaleHint": "Resizes the video to the given width and height, e.g. 1280x720. Empty keeps the original resolution.",
     "pixelFormatHint": "The color format of the encoded video, e.g. yuv420p for 8-bit or yuv420p10le for 10-bit. Match the source for best compatibility.",
     "transcoderCoreHint": "The engine used for the conversion. FFmpeg is the default and most compatible.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Where to save the compressed image. The extension follows the selected format.",
     "outputFormatHint": "The format the image is converted to. JPEG gives the smallest files, PNG is lossless.",
     "qualityHint": "Compression quality. Lower values give smaller files but more visible artifacts.",
+    "qualityRangeCaption": "1 – 31 (lower = smaller file)",
     "scaleHint": "Output resolution preset. Pick a standard size or keep the original by selecting 'No scaling'.",
     "keepAspectRatio": "Keep aspect ratio",
     "keepAspectRatioHint": "When enabled the image keeps its original proportions; when disabled it is stretched to the exact resolution.",
@@ -241,6 +249,7 @@
     "endTimeHint": "Where the cut segment ends. You can also drag the red trim handle on the timeline.",
     "useDuration": "Use duration instead of end time",
     "useDurationHint": "Switch between an end time and a duration for the cut segment.",
+    "timeFormatHint": "Format: HH:MM:SS (or seconds)",
     "cut": "Cut Video",
     "generatingPreview": "Generating preview...",
     "cutting": "Cutting...",
@@ -359,7 +368,8 @@
     "description": "An unexpected error occurred."
   },
   "fileDropZone": {
-    "defaultLabel": "Drop file here or click to browse"
+    "defaultLabel": "Drop file here or click to browse",
+    "dropHint": "Drag & drop, or click to browse"
   },
   "validation": {
     "outputRequired": "Output file is required",

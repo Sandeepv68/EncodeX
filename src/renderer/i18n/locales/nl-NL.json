@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Media converteren",
+    "sourceFiles": "Bronbestanden",
+    "encoding": "Codering",
+    "advanced": "Geavanceerd",
     "inputFile": "Invoerbestand",
     "outputFile": "Uitvoerbestand",
     "noFile": "Geen bestand geselecteerd",
@@ -67,6 +70,9 @@
     "no": "Nee",
     "hardwareAccelAlert": "Hardwareversnelling is ingeschakeld. Videocodering gebruikt uw GPU wanneer compatibel.",
     "inputFileHint": "Het bronbestand dat u wilt converteren. Veelvoorkomende formaten zijn MP4, MKV, MOV, AVI, MP3 en WAV.",
+    "dropLabel": "Sleep een mediabestand hierheen of klik om te bladeren",
+    "changeFile": "Bestand wijzigen",
+    "changeFileHint": "Selecteer een ander mediabestand.",
     "outputFileHint": "Het doelpad waar het geconverteerde bestand wordt opgeslagen.",
     "losslessCopyHint": "Kopieert de streams zonder hercodering. Snel en verliesvrij, maar de uitvoercontainer moet de broncodecs ondersteunen.",
     "videoCodecHint": "De codec die wordt gebruikt om de videostream te coderen, bijv. H.264, H.265 of VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "De doelbitrate voor de videostream. Hogere waarden verhogen de kwaliteit en bestandsgrootte. Automatisch behoudt de bronbitrate.",
     "audioBitrateHint": "De doelbitrate voor de audiostroom. Hogere waarden verhogen de kwaliteit en bestandsgrootte. Automatisch behoudt de bronbitrate.",
     "qscaleHint": "Constante kwaliteitsschaal van 1 (beste kwaliteit, grootste bestand) tot 31 (slechtste kwaliteit, kleinste bestand).",
+    "qscaleRangeCaption": "1 – 31 (lager = betere kwaliteit)",
     "scaleHint": "Schakelt het videoformaat naar de opgegeven breedte en hoogte, bijv. 1280x720. Leeg behoudt de oorspronkelijke resolutie.",
     "pixelFormatHint": "Het kleurformaat van de gecodeerde video, bijv. yuv420p voor 8-bits of yuv420p10le voor 10-bits. Stem af op de bron voor de beste compatibiliteit.",
     "transcoderCoreHint": "De engine die wordt gebruikt voor de conversie. FFmpeg is de standaard en meest compatibele optie.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Waar u de gecomprimeerde afbeelding opslaat. De extensie volgt het gekozen formaat.",
     "outputFormatHint": "Het formaat waarnaar de afbeelding wordt geconverteerd. JPEG geeft de kleinste bestanden, PNG is verliesvrij.",
     "qualityHint": "Compressiekwaliteit. Lagere waarden geven kleinere bestanden maar zichtbaardere artefacten.",
+    "qualityRangeCaption": "1 – 31 (lager = kleiner bestand)",
     "scaleHint": "Voorinstelling uitvoerresolutie. Kies een standaardgrootte of behoud het origineel met 'Geen schaling'.",
     "keepAspectRatio": "Beeldverhouding behouden",
     "keepAspectRatioHint": "Ingeschakeld: de afbeelding behoudt zijn oorspronkelijke verhoudingen; uitgeschakeld: hij wordt uitgerekt naar de exacte resolutie.",
@@ -255,6 +263,7 @@
     "durationHint": "Geef in plaats van een eindtijd aan hoe lang het knipsegment moet zijn.",
     "endTimeHint": "Waar het knipsegment eindigt. U kunt ook de rode knipgreep op de tijdlijn slepen.",
     "useDurationHint": "Schakel tussen een eindtijd en een duur voor het knipsegment.",
+    "timeFormatHint": "Formaat: HH:MM:SS (of in seconden)",
     "cutHint": "Begin met het knippen van de video met de geconfigureerde start- en eindposities.",
     "pause": "Pauzeren",
     "resume": "Hervatten",
@@ -359,7 +368,8 @@
     "description": "Er is een onverwachte fout opgetreden."
   },
   "fileDropZone": {
-    "defaultLabel": "Sleep bestand hierheen of klik om te bladeren"
+    "defaultLabel": "Sleep bestand hierheen of klik om te bladeren",
+    "dropHint": "Sleep en zet neer, of klik om te bladeren"
   },
   "validation": {
     "outputRequired": "Uitvoerbestand is vereist",

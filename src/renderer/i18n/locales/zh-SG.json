@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "转换媒体",
+    "sourceFiles": "源文件",
+    "encoding": "编码",
+    "advanced": "高级",
     "inputFile": "输入文件",
     "outputFile": "输出文件",
     "noFile": "未选择文件",
@@ -67,6 +70,9 @@
     "no": "否",
     "hardwareAccelAlert": "硬件加速已启用。兼容时将使用您的 GPU 进行视频编码。",
     "inputFileHint": "要转换的源媒体文件。常见格式包括 MP4、MKV、MOV、AVI、MP3 和 WAV。",
+    "dropLabel": "将媒体文件拖放到此处或点击浏览",
+    "changeFile": "更改文件",
+    "changeFileHint": "选择其他媒体文件。",
     "outputFileHint": "转换后的文件将保存到的目标路径。",
     "losslessCopyHint": "在不重新编码的情况下复制流。快速且无损，但要求输出容器支持源编码器。",
     "videoCodecHint": "用于对视频流进行编码的编码器，例如 H.264、H.265 或 VP9。",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "视频流的目标比特率。值越高，质量和文件大小越大。自动保留源比特率。",
     "audioBitrateHint": "音频流的目标比特率。值越高，质量和文件大小越大。自动保留源比特率。",
     "qscaleHint": "恒定质量标度，从 1（质量最佳、文件最大）到 31（质量最差、文件最小）。",
+    "qscaleRangeCaption": "1 – 31（越低 = 质量越好）",
     "scaleHint": "将视频调整为给定的宽度和高度，例如 1280x720。留空则保持原始分辨率。",
     "pixelFormatHint": "编码视频的颜色格式，例如 8 位的 yuv420p 或 10 位的 yuv420p10le。为获得最佳兼容性，请与源匹配。",
     "transcoderCoreHint": "用于转换的引擎。FFmpeg 是默认且最兼容的。",
@@ -193,6 +200,7 @@
     "outputFileHint": "压缩图像的保存位置。扩展名取决于所选格式。",
     "outputFormatHint": "图像转换成的格式。JPEG 生成的文件最小，PNG 无损。",
     "qualityHint": "压缩质量。值越低，文件越小，但伪影越明显。",
+    "qualityRangeCaption": "1 – 31（越低 = 文件越小）",
     "scaleHint": "输出分辨率预设。选择标准尺寸，或选择“不缩放”以保持原始尺寸。",
     "keepAspectRatio": "保持宽高比",
     "keepAspectRatioHint": "启用后，图像保持原始比例；禁用后，图像被拉伸到精确分辨率。",
@@ -241,6 +249,7 @@
     "endTimeHint": "剪切片段的结束位置。您也可以在时间轴上拖动红色修剪手柄。",
     "useDuration": "使用时长代替结束时间",
     "useDurationHint": "在剪切片段的结束时间和时长之间切换。",
+    "timeFormatHint": "格式：HH:MM:SS（或按秒）",
     "cut": "剪切视频",
     "generatingPreview": "正在生成预览...",
     "cutting": "剪切中...",
@@ -359,7 +368,8 @@
     "description": "发生意外错误。"
   },
   "fileDropZone": {
-    "defaultLabel": "将文件拖放到此处或点击浏览"
+    "defaultLabel": "将文件拖放到此处或点击浏览",
+    "dropHint": "拖拽到此处或点击浏览"
   },
   "validation": {
     "outputRequired": "需要输出文件",

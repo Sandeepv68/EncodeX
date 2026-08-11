@@ -43,8 +43,10 @@ describe.runIf(IS_REAL)('Real conversion (Tier B)', () => {
   it('converts a real media file through the real preload and ffmpeg', async () => {
     const { page } = session;
 
-    await page.locator('[data-testid="convert-input"] button').click();
-    await expect.poll(() => page.locator('[data-testid="convert-input"] input').inputValue(), { timeout: 30000 }).toBe(inputPath);
+    await page.locator('[data-testid="file-drop-zone"]').click();
+    await expect
+      .poll(() => page.locator('[data-testid="convert-input-file"]').textContent(), { timeout: 30000 })
+      .toContain('input.mp4');
 
     await page.locator('[data-testid="convert-output"] button').click();
     await expect.poll(() => page.locator('[data-testid="convert-output"] input').inputValue(), { timeout: 30000 }).toBe(outputPath);

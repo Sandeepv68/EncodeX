@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Media allanngortit",
+    "sourceFiles": "Filiussat aallutit",
+    "encoding": "Encoding",
+    "advanced": "Advanced",
     "inputFile": "Iserneqassaaq",
     "outputFile": "Anineqassaaq",
     "noFile": "Iserniarfik takussaaqanngilaq",
@@ -67,6 +70,9 @@
     "no": "Naamik",
     "hardwareAccelAlert": "Hardware acceleration naatsumik assigisaanngitsumik atornerlunneqarsimavoq. Video encoding GPU-at atortussaavaa.",
     "inputFileHint": "Allanngortitsinermut atornegassaaq media iserniarfik. Formatit tamanut atornerlunneqartut MP4, MKV, MOV, AVI, MP3 aamma WAV.",
+    "dropLabel": "Media iserniarfik maani ilissi, imaluunnit sallullugu",
+    "changeFile": "Iserniarfik allanngortit",
+    "changeFileHint": "Media iserniarfiussaq allanngortit.",
     "outputFileHint": "Naggataaneersog allanngortitaq sumunngaannaq allattorneqassaaq.",
     "losslessCopyHint": "Stream-it copy-kooruk end-to-end-uunngitsumik. Sukkasoq aamma naggarsunngitsoq, kisianni container-ip output-ini codec-ip iserniartikkat tamaat tiguneqarsinnaasa.",
     "videoCodecHint": "Video stream-ip encoding-iani atorneqartoq codec, soqquit. H.264, H.265 imaluunnit VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Video stream-imut bitrate kissaatigineqartoq. Ukiortup qaammartuisa annertussuseri pissaaserusutip kilsalu filiussutip annertusarpaat. Aapimmiit bitrate iserniartikkat toqqaartitsissut.",
     "audioBitrateHint": "Nipilersorneq stream-imut bitrate kissaatigineqartoq. Ukiortup qaammartuisa annertussuseri pissaaserusutip kilsalu filiussutip annertusarpaat. Aapimmiit bitrate iserniartikkat toqqaartitsissut.",
     "qscaleHint": "Pissaaserusup nailersuutaa 1 (pissaaserusup pingaarnerpaa, filiusoq annertunerpaaq) tikillugu 31 (pissaaserusup mikinerpaa, filiusoq mikinerpaaq).",
+    "qscaleRangeCaption": "1 – 31 (annikinnerusaaq = pissaaserusup pingaarnerpaa)",
     "scaleHint": "Video-ip annertussusaa takorneqartut iluini allanngortit, soqquit. 1280x720. Sunaungaluunngit killilersugaanngikkuniit uppløsning-ip isertup toqqarneqartussanngortit.",
     "pixelFormatHint": "Video encoding-ip qallunaaq siulleq 8-bit-imut yuv420p imaluunnit 10-bit-imut yuv420p10le. Naligiilluarit isertumut.",
     "transcoderCoreHint": "Allanngortitsinermi atorneqartoq qitornaqqusaat. FFmpeg toqqarneqarnerusutut.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Assersuut qitornaqqusaat sumunngaannaq allattorneqassaaq. Filiussutip format-ip annertussusaanut naapertuuttu.",
     "outputFormatHint": "Format assersuutip allanngortinneqassaaq. JPEG filiusoq mikinerpaaq, PNG naggarsunngitsoq.",
     "qualityHint": "Qitornaqqusaatip pissaaserusaa. Ukiortup qaammartuisa filiusutit mikinerpaat, kisianni artifact-it takussaatissanik amerlanerusunik.",
+    "qualityRangeCaption": "1 – 31 (annikinnerusaaq = filiusoq mikinerpaaq)",
     "scaleHint": "Output resolution preset-it. Standard-size toqqaruk imaluunnit original-ip toqqarneqartussatut, 'No scaling' toqqarlugu.",
     "keepAspectRatio": "Aspect ratio toqqaruk",
     "keepAspectRatioHint": "Assersuut aspect ratio-ip toqqaartumik toqqarneqartussatut; sunaungaluunngit aallartitsiffik, resolution-imut naapertuuttumik qaffoq.",
@@ -241,6 +249,7 @@
     "endTimeHint": "Nakassat sumiiffiup nalliinera. Time line-miit qaartorujussuaq.",
     "useDuration": "Duration atoruk",
     "useDurationHint": "Nakassat end time-imik imaluunnit duration-imik.",
+    "timeFormatHint": "Format: HH:MM:SS (imaluunniit sekundit)",
     "cut": "Video nakassat",
     "generatingPreview": "Preview-ip pilerstornera...",
     "cutting": "Nakassatut...",
@@ -359,7 +368,8 @@
     "description": "Utoqqaatsutut pisoqartarpoq."
   },
   "fileDropZone": {
-    "defaultLabel": "Filiussat maani ilissit, imaluunnit sallullugit"
+    "defaultLabel": "Filiussat maani ilissit, imaluunnit sallullugit",
+    "dropHint": "Seeraq ilissit, imaluunniit sallullugit"
   },
   "validation": {
     "outputRequired": "Anineqassaaq filiussaq pisariaqarpoq",

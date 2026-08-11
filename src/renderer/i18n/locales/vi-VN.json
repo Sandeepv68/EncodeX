@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Chuyển đổi phương tiện",
+    "sourceFiles": "Tệp nguồn",
+    "encoding": "Mã hóa",
+    "advanced": "Nâng cao",
     "inputFile": "Tệp đầu vào",
     "outputFile": "Tệp đầu ra",
     "noFile": "Chưa chọn tệp",
@@ -67,6 +70,9 @@
     "no": "Không",
     "hardwareAccelAlert": "Tăng tốc phần cứng đã được bật. Mã hóa video sẽ sử dụng GPU của bạn khi tương thích.",
     "inputFileHint": "Tệp phương tiện nguồn cần chuyển đổi. Các định dạng phổ biến bao gồm MP4, MKV, MOV, AVI, MP3 và WAV.",
+    "dropLabel": "Thả tệp phương tiện vào đây hoặc nhấp để duyệt",
+    "changeFile": "Đổi tệp",
+    "changeFileHint": "Chọn một tệp phương tiện khác.",
     "outputFileHint": "Đường dẫn đích nơi tệp đã chuyển đổi sẽ được lưu.",
     "losslessCopyHint": "Sao chép các luồng mà không mã hóa lại. Nhanh và không mất dữ liệu, nhưng yêu cầu container đầu ra phải hỗ trợ codec nguồn.",
     "videoCodecHint": "Codec dùng để mã hóa luồng video, vd. H.264, H.265 hoặc VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Bitrate mục tiêu cho luồng video. Giá trị cao hơn tăng chất lượng và kích thước tệp. Tự động giữ bitrate nguồn.",
     "audioBitrateHint": "Bitrate mục tiêu cho luồng âm thanh. Giá trị cao hơn tăng chất lượng và kích thước tệp. Tự động giữ bitrate nguồn.",
     "qscaleHint": "Thang chất lượng cố định từ 1 (chất lượng tốt nhất, tệp lớn nhất) đến 31 (chất lượng kém nhất, tệp nhỏ nhất).",
+    "qscaleRangeCaption": "1 – 31 (thấp hơn = chất lượng tốt hơn)",
     "scaleHint": "Thay đổi kích thước video theo chiều rộng và chiều cao đã cho, vd. 1280x720. Để trống giữ nguyên độ phân giải gốc.",
     "pixelFormatHint": "Định dạng màu của video được mã hóa, vd. yuv420p cho 8-bit hoặc yuv420p10le cho 10-bit. Khớp nguồn để tương thích tốt nhất.",
     "transcoderCoreHint": "Công cụ dùng cho quá trình chuyển đổi. FFmpeg là mặc định và tương thích nhất.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Nơi lưu hình ảnh đã nén. Phần mở rộng theo định dạng đã chọn.",
     "outputFormatHint": "Định dạng mà hình ảnh được chuyển đổi sang. JPEG cho tệp nhỏ nhất, PNG không mất dữ liệu.",
     "qualityHint": "Chất lượng nén. Giá trị thấp hơn cho tệp nhỏ hơn nhưng nhiều hiện vật dễ thấy hơn.",
+    "qualityRangeCaption": "1 – 31 (thấp hơn = tệp nhỏ hơn)",
     "scaleHint": "Đặt trước độ phân giải đầu ra. Chọn kích thước chuẩn hoặc giữ nguyên bản bằng 'Không thay đổi tỷ lệ'.",
     "keepAspectRatio": "Giữ tỷ lệ khung hình",
     "keepAspectRatioHint": "Khi bật, hình ảnh giữ tỷ lệ ban đầu; khi tắt, nó được kéo dãn đến độ phân giải chính xác.",
@@ -241,6 +249,7 @@
     "endTimeHint": "Nơi đoạn cắt kết thúc. Bạn cũng có thể kéo tay cầm cắt màu đỏ trên dòng thời gian.",
     "useDuration": "Dùng thời lượng thay cho thời gian kết thúc",
     "useDurationHint": "Chuyển đổi giữa thời gian kết thúc và thời lượng cho đoạn cắt.",
+    "timeFormatHint": "Định dạng: HH:MM:SS (hoặc theo giây)",
     "cut": "Cắt video",
     "generatingPreview": "Đang tạo xem trước...",
     "cutting": "Đang cắt...",
@@ -359,7 +368,8 @@
     "description": "Đã xảy ra lỗi không mong muốn."
   },
   "fileDropZone": {
-    "defaultLabel": "Thả tệp vào đây hoặc nhấp để duyệt"
+    "defaultLabel": "Thả tệp vào đây hoặc nhấp để duyệt",
+    "dropHint": "Kéo và thả, hoặc nhấp để duyệt"
   },
   "validation": {
     "outputRequired": "Cần có tệp đầu ra",

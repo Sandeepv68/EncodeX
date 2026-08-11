@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Konverter media",
+    "sourceFiles": "Kilderfiler",
+    "encoding": "Koding",
+    "advanced": "Avansert",
     "inputFile": "Inndatafil",
     "outputFile": "Utdatafil",
     "noFile": "Ingen fil valgt",
@@ -67,6 +70,9 @@
     "no": "Nei",
     "hardwareAccelAlert": "Maskinvareakselerasjon er aktivert. Videokoding vil bruke GPU-en din når det er kompatibelt.",
     "inputFileHint": "Kildekodefilen som skal konverteres. Vanlige formater inkluderer MP4, MKV, MOV, AVI, MP3 og WAV.",
+    "dropLabel": "Slipp en mediafil her eller klikk for å bla",
+    "changeFile": "Bytt fil",
+    "changeFileHint": "Velg en annen mediafil.",
     "outputFileHint": "Destinasjonsstien der den konverterte filen vil bli lagret.",
     "losslessCopyHint": "Kopierer strømmene uten nykoding. Raskt og tapfritt, men krever at utdatabeholderen støtter kildekodekene.",
     "videoCodecHint": "Kodeken som brukes til å kode videostrømmen, f.eks. H.264, H.265 eller VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Målbitraten for videostrømmen. Høyere verdier øker kvaliteten og filstørrelsen. Auto beholder kildebitraten.",
     "audioBitrateHint": "Målbitraten for lydstrømmen. Høyere verdier øker kvaliteten og filstørrelsen. Auto beholder kildebitraten.",
     "qscaleHint": "Konstant kvalitetsskala fra 1 (best kvalitet, størst fil) til 31 (dårligst kvalitet, minst fil).",
+    "qscaleRangeCaption": "1 – 31 (lavere = bedre kvalitet)",
     "scaleHint": "Endrer størrelsen på videoen til gitt bredde og høyde, f.eks. 1280x720. Tomt beholder originaloppløsningen.",
     "pixelFormatHint": "Fargeformatet til den kodede videoen, f.eks. yuv420p for 8-bit eller yuv420p10le for 10-bit. Velg kildens format for best kompatibilitet.",
     "transcoderCoreHint": "Motoren som brukes til konverteringen. FFmpeg er standard og mest kompatibel.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Hvor det komprimerte bildet skal lagres. Utvidelsen følger det valgte formatet.",
     "outputFormatHint": "Formatet bildet konverteres til. JPEG gir de minste filene, PNG er tapfritt.",
     "qualityHint": "Komprimeringskvalitet. Lavere verdier gir mindre filer, men mer synlige artefakter.",
+    "qualityRangeCaption": "1 – 31 (lavere = mindre fil)",
     "scaleHint": "Forhåndsinnstilling for utdataoppløsning. Velg en standardstørrelse eller behold originalen ved å velge «Ingen skalering».",
     "keepAspectRatio": "Behold sideforhold",
     "keepAspectRatioHint": "Når aktivert beholder bildet sine opprinnelige proporsjoner; når deaktivert strekkes det til nøyaktig oppløsning.",
@@ -241,6 +249,7 @@
     "endTimeHint": "Hvor klippsegmentet slutter. Du kan også dra i det røde trimhåndtaket på tidslinjen.",
     "useDuration": "Bruk varighet i stedet for slutttid",
     "useDurationHint": "Bytt mellom slutttid og varighet for klippsegmentet.",
+    "timeFormatHint": "Format: HH:MM:SS (eller sekunder)",
     "cut": "Klipp video",
     "generatingPreview": "Genererer forhåndsvisning...",
     "cutting": "Klipper...",
@@ -359,7 +368,8 @@
     "description": "En uventet feil oppstod."
   },
   "fileDropZone": {
-    "defaultLabel": "Slipp fil her eller klikk for å bla"
+    "defaultLabel": "Slipp fil her eller klikk for å bla",
+    "dropHint": "Dra og slipp, eller klikk for å bla"
   },
   "validation": {
     "outputRequired": "Utdatafil kreves",

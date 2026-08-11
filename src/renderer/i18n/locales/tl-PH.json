@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "I-convert ang Media",
+    "sourceFiles": "Mga source file",
+    "encoding": "Encoding",
+    "advanced": "Advanced",
     "inputFile": "Input File",
     "outputFile": "Output File",
     "noFile": "Walang napiling file",
@@ -67,6 +70,9 @@
     "no": "Hindi",
     "hardwareAccelAlert": "Pinagana ang hardware acceleration. Gagamitin ng video encoding ang iyong GPU kapag compatible.",
     "inputFileHint": "Ang source media file na i-convert. Kasama sa karaniwang format ang MP4, MKV, MOV, AVI, MP3, at WAV.",
+    "dropLabel": "I-drop ang media file dito o i-click para mag-browse",
+    "changeFile": "Palitan ang File",
+    "changeFileHint": "Pumili ng ibang media file.",
     "outputFileHint": "Ang destinasyong path kung saan mai-save ang na-convert na file.",
     "losslessCopyHint": "Kinokopya ang mga stream nang walang re-encoding. Mabilis at lossless, ngunit nangangailangan ng output container na sumusuporta sa mga source codec.",
     "videoCodecHint": "Ang codec na ginamit para i-encode ang video stream, hal. H.264, H.265, o VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Ang target na bitrate para sa video stream. Ang mas mataas na value ay nagpapataas ng kalidad at laki ng file. Pinapanatili ng Auto ang source bitrate.",
     "audioBitrateHint": "Ang target na bitrate para sa audio stream. Ang mas mataas na value ay nagpapataas ng kalidad at laki ng file. Pinapanatili ng Auto ang source bitrate.",
     "qscaleHint": "Constant-quality scale mula 1 (pinakamagandang kalidad, pinakamalaking file) hanggang 31 (pinakamasamang kalidad, pinakamaliit na file).",
+    "qscaleRangeCaption": "1 – 31 (mas mababa = mas magandang kalidad)",
     "scaleHint": "Ini-resize ang video sa ibinigay na lapad at taas, hal. 1280x720. Ang walang laman ay pinapanatili ang orihinal na resolution.",
     "pixelFormatHint": "Ang color format ng na-encode na video, hal. yuv420p para sa 8-bit o yuv420p10le para sa 10-bit. Itugma sa source para sa pinakamahusay na compatibility.",
     "transcoderCoreHint": "Ang engine na ginamit para sa conversion. Ang FFmpeg ang default at pinaka-compatible.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Kung saan mai-save ang na-compress na larawan. Sinusundan ng extension ang napiling format.",
     "outputFormatHint": "Ang format kung saan kino-convert ang larawan. Ang JPEG ay nagbibigay ng pinakamaliit na file, ang PNG ay lossless.",
     "qualityHint": "Kalidad ng compression. Ang mas mababang value ay nagbibigay ng mas maliliit na file ngunit mas nakikitang artifacts.",
+    "qualityRangeCaption": "1 – 31 (mas mababa = mas maliit na file)",
     "scaleHint": "Preset ng output resolution. Pumili ng karaniwang laki o panatilihin ang orihinal sa pamamagitan ng pagpili ng 'Walang scaling'.",
     "keepAspectRatio": "Panatilihin ang aspect ratio",
     "keepAspectRatioHint": "Kapag pinagana, pinapanatili ng larawan ang orihinal nitong proporsyon; kapag hindi pinagana, ini-stretch ito sa eksaktong resolution.",
@@ -241,6 +249,7 @@
     "endTimeHint": "Kung saan nagtatapos ang cut segment. Maaari mo ring i-drag ang pulang trim handle sa timeline.",
     "useDuration": "Gamitin ang tagal sa halip na end time",
     "useDurationHint": "Magpalipat-lipat sa pagitan ng end time at tagal para sa cut segment.",
+    "timeFormatHint": "Format: HH:MM:SS (o sa mga segundo)",
     "cut": "I-cut ang Video",
     "generatingPreview": "Ginagawa ang preview...",
     "cutting": "Kino-cut...",
@@ -359,7 +368,8 @@
     "description": "May naganap na hindi inaasahang error."
   },
   "fileDropZone": {
-    "defaultLabel": "I-drop ang file dito o i-click para mag-browse"
+    "defaultLabel": "I-drop ang file dito o i-click para mag-browse",
+    "dropHint": "I-drag at i-drop, o i-click para mag-browse"
   },
   "validation": {
     "outputRequired": "Kinakailangan ang output file",

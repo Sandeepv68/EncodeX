@@ -43,21 +43,21 @@ describe.runIf(IS_E2E)('Convert page', () => {
   });
 
   it('renders the convert page with input/output fields and a disabled start button', async () => {
-    await expect.poll(() => session.page.locator('[data-testid="convert-input"] input').inputValue()).toBe('');
+    await expect.poll(() => session.page.locator('[data-testid="file-drop-zone"]').count()).toBe(1);
     await expect.poll(() => session.page.locator('[data-testid="convert-start"]').isDisabled()).toBe(true);
   });
 
   it('selects an input file and auto-suggests the output path', async () => {
     await mockApi.setSelectFile(session.page, INPUT);
-    await session.page.locator('[data-testid="convert-input"] button').click();
-    await expect.poll(() => session.page.locator('[data-testid="convert-input"] input').inputValue()).toBe(INPUT);
+    await session.page.locator('[data-testid="file-drop-zone"]').click();
+    await expect.poll(() => session.page.locator('[data-testid="convert-input-file"]').textContent()).toContain('video.mp4');
     await expect.poll(() => session.page.locator('[data-testid="convert-output"] input').inputValue()).toBe(OUTPUT);
     await expect.poll(() => session.page.locator('[data-testid="convert-start"]').isEnabled()).toBe(true);
   });
 
   it('selects an explicit output file with Save As', async () => {
     await mockApi.setSelectFile(session.page, INPUT);
-    await session.page.locator('[data-testid="convert-input"] button').click();
+    await session.page.locator('[data-testid="file-drop-zone"]').click();
     await expect.poll(() => session.page.locator('[data-testid="convert-output"] input').inputValue()).toBe(OUTPUT);
     await mockApi.setSelectOutput(session.page, '/custom/out.mp4');
     await session.page.locator('[data-testid="convert-output"] button').click();
@@ -66,7 +66,7 @@ describe.runIf(IS_E2E)('Convert page', () => {
 
   it('changes codec, bitrate, scale, pixel format and transcoder options', async () => {
     await mockApi.setSelectFile(session.page, INPUT);
-    await session.page.locator('[data-testid="convert-input"] button').click();
+    await session.page.locator('[data-testid="file-drop-zone"]').click();
     await expect.poll(() => session.page.locator('[data-testid="convert-output"] input').inputValue()).toBe(OUTPUT);
 
     await selectOption(session.page, 'convert-video-codec', 'libx265');
@@ -84,7 +84,7 @@ describe.runIf(IS_E2E)('Convert page', () => {
 
   it('hides encoding options when lossless copy mode is enabled', async () => {
     await mockApi.setSelectFile(session.page, INPUT);
-    await session.page.locator('[data-testid="convert-input"] button').click();
+    await session.page.locator('[data-testid="file-drop-zone"]').click();
     await expect.poll(() => session.page.locator('[data-testid="convert-video-codec"]').count()).toBe(1);
 
     await session.page.locator('[data-testid="convert-copy-switch"] input').click();
@@ -94,7 +94,7 @@ describe.runIf(IS_E2E)('Convert page', () => {
 
   it('runs a conversion to completion and shows a success toast', async () => {
     await mockApi.setSelectFile(session.page, INPUT);
-    await session.page.locator('[data-testid="convert-input"] button').click();
+    await session.page.locator('[data-testid="file-drop-zone"]').click();
     await expect.poll(() => session.page.locator('[data-testid="convert-output"] input').inputValue()).toBe(OUTPUT);
 
     await session.page.locator('[data-testid="convert-start"]').click();
@@ -106,7 +106,7 @@ describe.runIf(IS_E2E)('Convert page', () => {
   it('shows live progress while a conversion runs', async () => {
     await mockApi.setConvertBehavior(session.page, 'hold');
     await mockApi.setSelectFile(session.page, INPUT);
-    await session.page.locator('[data-testid="convert-input"] button').click();
+    await session.page.locator('[data-testid="file-drop-zone"]').click();
     await expect.poll(() => session.page.locator('[data-testid="convert-output"] input').inputValue()).toBe(OUTPUT);
 
     await session.page.locator('[data-testid="convert-start"]').click();
@@ -125,7 +125,7 @@ describe.runIf(IS_E2E)('Convert page', () => {
   it('pauses and resumes a running conversion', async () => {
     await mockApi.setConvertBehavior(session.page, 'hold');
     await mockApi.setSelectFile(session.page, INPUT);
-    await session.page.locator('[data-testid="convert-input"] button').click();
+    await session.page.locator('[data-testid="file-drop-zone"]').click();
     await expect.poll(() => session.page.locator('[data-testid="convert-output"] input').inputValue()).toBe(OUTPUT);
 
     await session.page.locator('[data-testid="convert-start"]').click();
@@ -143,7 +143,7 @@ describe.runIf(IS_E2E)('Convert page', () => {
   it('cancels a running conversion via the confirmation dialog', async () => {
     await mockApi.setConvertBehavior(session.page, 'hold');
     await mockApi.setSelectFile(session.page, INPUT);
-    await session.page.locator('[data-testid="convert-input"] button').click();
+    await session.page.locator('[data-testid="file-drop-zone"]').click();
     await expect.poll(() => session.page.locator('[data-testid="convert-output"] input').inputValue()).toBe(OUTPUT);
 
     await session.page.locator('[data-testid="convert-start"]').click();

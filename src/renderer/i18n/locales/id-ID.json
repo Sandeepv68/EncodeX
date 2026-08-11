@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Konversi Media",
+    "sourceFiles": "File Sumber",
+    "encoding": "Penyandian",
+    "advanced": "Lanjutan",
     "inputFile": "File Masukan",
     "outputFile": "File Keluaran",
     "noFile": "Tidak ada file dipilih",
@@ -67,6 +70,9 @@
     "no": "Tidak",
     "hardwareAccelAlert": "Akselerasi perangkat keras diaktifkan. Pengodean video akan menggunakan GPU Anda jika kompatibel.",
     "inputFileHint": "File media sumber yang akan dikonversi. Format umum meliputi MP4, MKV, MOV, AVI, MP3, dan WAV.",
+    "dropLabel": "Letakkan file media di sini atau klik untuk menjelajah",
+    "changeFile": "Ganti File",
+    "changeFileHint": "Pilih file media lain.",
     "outputFileHint": "Lokasi tujuan tempat file hasil konversi akan disimpan.",
     "losslessCopyHint": "Menyalin aliran tanpa pengkodean ulang. Cepat dan lossless, tetapi kontainer keluaran harus mendukung codec sumber.",
     "videoCodecHint": "Codec yang digunakan untuk menyandikan aliran video, mis. H.264, H.265, atau VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Bitrate target untuk aliran video. Nilai yang lebih tinggi meningkatkan kualitas dan ukuran file. Otomatis mempertahankan bitrate sumber.",
     "audioBitrateHint": "Bitrate target untuk aliran audio. Nilai yang lebih tinggi meningkatkan kualitas dan ukuran file. Otomatis mempertahankan bitrate sumber.",
     "qscaleHint": "Skala kualitas tetap dari 1 (kualitas terbaik, file terbesar) hingga 31 (kualitas terburuk, file terkecil).",
+    "qscaleRangeCaption": "1 – 31 (lebih rendah = kualitas lebih baik)",
     "scaleHint": "Mengubah ukuran video ke lebar dan tinggi yang ditentukan, mis. 1280x720. Kosong mempertahankan resolusi asli.",
     "pixelFormatHint": "Format warna video yang disandikan, mis. yuv420p untuk 8-bit atau yuv420p10le untuk 10-bit. Samakan dengan sumber untuk kompatibilitas terbaik.",
     "transcoderCoreHint": "Mesin yang digunakan untuk konversi. FFmpeg adalah bawaan dan paling kompatibel.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Tempat menyimpan gambar yang dikompres. Ekstensi mengikuti format yang dipilih.",
     "outputFormatHint": "Format konversi gambar. JPEG menghasilkan file terkecil, PNG lossless.",
     "qualityHint": "Kualitas kompresi. Nilai lebih rendah menghasilkan file lebih kecil tetapi artefak lebih terlihat.",
+    "qualityRangeCaption": "1 – 31 (lebih rendah = file lebih kecil)",
     "scaleHint": "Prasekolah resolusi keluaran. Pilih ukuran standar atau pertahankan aslinya dengan memilih 'Tanpa penskalaan'.",
     "keepAspectRatio": "Pertahankan rasio aspek",
     "keepAspectRatioHint": "Saat aktif, gambar mempertahankan proporsi aslinya; saat nonaktif, gambar diregangkan ke resolusi yang tepat.",
@@ -255,6 +263,7 @@
     "durationHint": "Alih-alih waktu akhir, tentukan berapa lama segmen potongan seharusnya.",
     "endTimeHint": "Tempat segmen potongan berakhir. Anda juga dapat menyeret gagang trim merah di garis waktu.",
     "useDurationHint": "Beralih antara waktu akhir dan durasi untuk segmen potongan.",
+    "timeFormatHint": "Format: HH:MM:SS (atau dalam detik)",
     "cutHint": "Mulai memotong video menggunakan posisi awal dan akhir yang dikonfigurasi.",
     "pause": "Jeda",
     "resume": "Lanjutkan",
@@ -359,7 +368,8 @@
     "description": "Terjadi kesalahan yang tidak terduga."
   },
   "fileDropZone": {
-    "defaultLabel": "Letakkan file di sini atau klik untuk menjelajah"
+    "defaultLabel": "Letakkan file di sini atau klik untuk menjelajah",
+    "dropHint": "Seret dan lepas, atau klik untuk menjelajah"
   },
   "validation": {
     "outputRequired": "File keluaran diperlukan",

@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Skakel Media Om",
+    "sourceFiles": "Bronlêers",
+    "encoding": "Enkodering",
+    "advanced": "Gevorderd",
     "inputFile": "Invoerlêer",
     "outputFile": "Uitvoerlêer",
     "noFile": "Geen lêer gekies nie",
@@ -67,6 +70,9 @@
     "no": "Nee",
     "hardwareAccelAlert": "Hardewareversnelling is geaktiveer. Video-enkodering sal jou GPU gebruik wanneer versoenbaar.",
     "inputFileHint": "Die bronmedialêer om om te skakel. Algemene formate sluit MP4, MKV, MOV, AVI, MP3 en WAV in.",
+    "dropLabel": "Los 'n medialêer hier of klik om te blaai",
+    "changeFile": "Verander lêer",
+    "changeFileHint": "Kies 'n ander medialêer.",
     "outputFileHint": "Die bestemmingspad waar die omgeskakelde lêer gestoor sal word.",
     "losslessCopyHint": "Kopieer die strome sonder her-enkodering. Vinnig en verliesloos, maar vereis dat die uitvoerhouer die bronkodeks ondersteun.",
     "videoCodecHint": "Die kodek wat gebruik word om die videostroom te enkodeer, bv. H.264, H.265 of VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Die teiken-bitrate vir die videostroom. Hoër waardes verhoog kwaliteit en lêergrootte. Auto behou die bron-bitrate.",
     "audioBitrateHint": "Die teiken-bitrate vir die klankstroom. Hoër waardes verhoog kwaliteit en lêergrootte. Auto behou die bron-bitrate.",
     "qscaleHint": "Konstante-kwaliteitskaal van 1 (beste kwaliteit, grootste lêer) tot 31 (swakste kwaliteit, kleinste lêer).",
+    "qscaleRangeCaption": "1 – 31 (laer = beter kwaliteit)",
     "scaleHint": "Verander die grootte van die video na die gegewe breedte en hoogte, bv. 1280x720. Leeg behou die oorspronklike resolusie.",
     "pixelFormatHint": "Die kleurformaat van die geënkodeerde video, bv. yuv420p vir 8-bis of yuv420p10le vir 10-bis. Pas die bron vir beste versoenbaarheid.",
     "transcoderCoreHint": "Die enjin wat vir die omskakeling gebruik word. FFmpeg is die standaard en mees versoenbaar.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Waar om die gekomprimeerde beeld te stoor. Die uitbreiding volg die gekose formaat.",
     "outputFormatHint": "Die formaat waarna die beeld omgeskakel word. JPEG gee die kleinste lêers, PNG is verliesloos.",
     "qualityHint": "Kompressiekwaliteit. Laer waardes gee kleiner lêers maar meer sigbare artefakte.",
+    "qualityRangeCaption": "1 – 31 (laer = kleiner lêer)",
     "scaleHint": "Uitsetresolusie-voorkoms. Kies 'n standaardgrootte of behou die oorspronklike deur 'Geen skaling' te kies.",
     "keepAspectRatio": "Behou aspekverhouding",
     "keepAspectRatioHint": "Wanneer geaktiveer behou die beeld sy oorspronklike proporsies; wanneer gedeaktiveer word dit tot die presiese resolusie gerek.",
@@ -241,6 +249,7 @@
     "endTimeHint": "Waar die snysegment eindig. Jy kan ook die rooi snoeihandvatsel op die tydlyn sleep.",
     "useDuration": "Gebruik duur in plaas van eindtyd",
     "useDurationHint": "Wissel tussen 'n eindtyd en 'n duur vir die snysegment.",
+    "timeFormatHint": "Formaat: HH:MM:SS (of sekondes)",
     "cut": "Sny Video",
     "generatingPreview": "Genereer voorskou...",
     "cutting": "Sny...",
@@ -359,7 +368,8 @@
     "description": "'n Onverwagte fout het voorgekom."
   },
   "fileDropZone": {
-    "defaultLabel": "Los lêer hier of klik om te blaai"
+    "defaultLabel": "Los lêer hier of klik om te blaai",
+    "dropHint": "Sleep en los, of klik om te blaai"
   },
   "validation": {
     "outputRequired": "Uitvoerlêer word vereis",

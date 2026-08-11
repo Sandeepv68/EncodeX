@@ -20,8 +20,21 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, TextField, MenuItem, Switch, Stack, Button, CircularProgress, IconButton, InputAdornment, Divider } from '@mui/material';
-import { faPalette, faBrush, faDroplet, faSun, faPlay, faPause, faXmark, faEye } from '@fortawesome/free-solid-svg-icons';
+import {
+  Box,
+  Typography,
+  TextField,
+  MenuItem,
+  Switch,
+  Stack,
+  Button,
+  CircularProgress,
+  IconButton,
+  InputAdornment,
+  Divider,
+  Tooltip,
+} from '@mui/material';
+import { faPalette, faBrush, faDroplet, faSun, faPlay, faPause, faXmark, faEye, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Logger } from '../../shared/logger';
@@ -31,6 +44,7 @@ import ProgressBar from '../components/ProgressBar';
 import MediaPlayer from '../components/MediaPlayer';
 import PageContainer from '../components/PageContainer';
 import FilePathField from '../components/FilePathField';
+import FileDropZone from '../components/FileDropZone';
 import ConfirmDialog from '../components/ConfirmDialog';
 import FileSummary from '../components/FileSummary';
 import StreamDetails from '../components/StreamDetails';
@@ -39,6 +53,7 @@ import GroupedSelect from '../components/GroupedSelect';
 import InfoTooltip from '../components/InfoTooltip';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { PIXEL_FORMATS, VIDEO_BITRATE_OPTIONS, SCALE_OPTIONS, BITRATE_OPTIONS } from '../../shared/media-options';
+import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { TRANSCODER_TYPES, TRANSCODER_LABELS, CONVERSION_DEFAULTS, QSCALE_RANGE } from '../../shared/transcoder-constants';
 import { MediaInfo as MediaInfoType } from '../../shared/types';
 import { isInRange } from '../../shared/validation';
@@ -79,6 +94,17 @@ import {
 const log = new Logger('renderer/pages/Convert');
 
 /**
+ * Extracts the base file name from an absolute path, handling both `/` and `\`
+ * separators (POSIX and Windows paths).
+ * @param {string} path - The full file path to process.
+ * @returns {string} The trailing path segment, or the original `path` when no
+ *   separator is present.
+ */
+function fileName(path: string): string {
+  return path.split(/[\\/]/).pop() ?? path;
+}
+
+/**
  * Maps encoder types to i18n translation keys for the encoder-type selector.
  * @const {Record<EncoderType, string>} encoderTypeLabel
  */
@@ -117,8 +143,9 @@ const pixelFormatOptions = PIXEL_FORMATS.map((f) => ({ ...f, label: f.value }));
 /**
  * Renders the single-file conversion page (`/convert`).
  *
- * Layout: input and output file fields (with a codec-compatibility warning when
- * the chosen output extension clashes with the selected video codec), a
+ * Layout: a drag-and-drop input zone (with a change button once a source is
+ * chosen) and an output file field (with a codec-compatibility warning when the
+ * chosen output extension clashes with the selected video codec), a
  * lossless-copy toggle, and (when copy mode is off) hardware-acceleration-aware
  * codec selectors, bitrate selectors, a QSCALE field, scale, and pixel format.
  * A transcoder-core selector follows, then the action buttons and a ProgressBar
@@ -178,6 +205,7 @@ export default function Convert() {
     cancelConversion,
     selectInput,
     selectOutput,
+    setInputFile,
     isDirty,
     resetForm,
   } = useConversion();
@@ -334,16 +362,34 @@ export default function Convert() {
       <PageSection>
         <SectionTitle variant="h6">{t('convert.sourceFiles')}</SectionTitle>
 
-        <FilePathField
-          label={t('convert.inputFile')}
-          hint={t('convert.inputFileHint')}
-          required
-          value={inputFile || ''}
-          placeholder={t('convert.noFile')}
-          buttonLabel={t('convert.browse')}
-          onBrowse={selectInput}
-          testId="convert-input"
-        />
+        <Box>
+          <FieldLabel>
+            {t('convert.inputFile')}
+            <InfoTooltip title={t('convert.inputFileHint')} />
+          </FieldLabel>
+          {!inputFile ? (
+            <ErrorBoundary fallback={null}>
+              <FileDropZone onFileSelect={setInputFile} label={t('convert.dropLabel')} accept={VIDEO_DROPZONE_ACCEPT} />
+            </ErrorBoundary>
+          ) : (
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }} useFlexGap>
+              <Typography variant="body2" color="text.secondary" data-testid="convert-input-file" sx={{ wordBreak: 'break-all' }}>
+                {fileName(inputFile)}
+              </Typography>
+              <Tooltip title={t('convert.changeFileHint')} arrow>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<FontAwesomeIcon icon={faFolderOpen} />}
+                  onClick={selectInput}
+                  data-testid="convert-change-input"
+                >
+                  {t('convert.changeFile')}
+                </Button>
+              </Tooltip>
+            </Stack>
+          )}
+        </Box>
 
         {inputFile && !previewOpen && (
           <Button

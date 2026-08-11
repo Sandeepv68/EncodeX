@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Tukar Media",
+    "sourceFiles": "Fail Sumber",
+    "encoding": "Pengekodan",
+    "advanced": "Lanjutan",
     "inputFile": "Fail Input",
     "outputFile": "Fail Output",
     "noFile": "Tiada fail dipilih",
@@ -67,6 +70,9 @@
     "no": "Tidak",
     "hardwareAccelAlert": "Pecutan perkakasan diaktifkan. Pengekodan video akan menggunakan GPU anda apabila serasi.",
     "inputFileHint": "Fail media sumber untuk ditukar. Format biasa termasuk MP4, MKV, MOV, AVI, MP3 dan WAV.",
+    "dropLabel": "Lepaskan fail media di sini atau klik untuk semak imbas",
+    "changeFile": "Tukar Fail",
+    "changeFileHint": "Pilih fail media yang berbeza.",
     "outputFileHint": "Laluan destinasi tempat fail yang ditukar akan disimpan.",
     "losslessCopyHint": "Menyalin strim tanpa pengekodan semula. Pantas dan tanpa kehilangan, tetapi memerlukan kontena output menyokong codec sumber.",
     "videoCodecHint": "Codec yang digunakan untuk mengekod strim video, cth. H.264, H.265 atau VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Kadar bit sasaran untuk strim video. Nilai lebih tinggi meningkatkan kualiti dan saiz fail. Auto mengekalkan kadar bit sumber.",
     "audioBitrateHint": "Kadar bit sasaran untuk strim audio. Nilai lebih tinggi meningkatkan kualiti dan saiz fail. Auto mengekalkan kadar bit sumber.",
     "qscaleHint": "Skala kualiti malar daripada 1 (kualiti terbaik, fail terbesar) hingga 31 (kualiti terburuk, fail terkecil).",
+    "qscaleRangeCaption": "1 – 31 (lebih rendah = kualiti lebih baik)",
     "scaleHint": "Mengubah saiz video kepada lebar dan tinggi yang diberikan, cth. 1280x720. Kosong mengekalkan resolusi asal.",
     "pixelFormatHint": "Format warna video yang dikodkan, cth. yuv420p untuk 8-bit atau yuv420p10le untuk 10-bit. Padankan dengan sumber untuk keserasian terbaik.",
     "transcoderCoreHint": "Enjin yang digunakan untuk penukaran. FFmpeg ialah lalai dan paling serasi.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Tempat menyimpan imej yang dimampatkan. Pelanjutan mengikuti format yang dipilih.",
     "outputFormatHint": "Format yang imej ditukar kepadanya. JPEG memberikan fail terkecil, PNG tanpa kehilangan.",
     "qualityHint": "Kualiti mampatan. Nilai lebih rendah memberikan fail lebih kecil tetapi artifak lebih ketara.",
+    "qualityRangeCaption": "1 – 31 (lebih rendah = fail lebih kecil)",
     "scaleHint": "Praset resolusi output. Pilih saiz standard atau kekalkan asal dengan memilih 'Tiada penskalaan'.",
     "keepAspectRatio": "Kekalkan nisbah aspek",
     "keepAspectRatioHint": "Apabila didayakan, imej mengekalkan perkadaran asalnya; apabila dilumpuhkan, ia diregangkan kepada resolusi tepat.",
@@ -241,6 +249,7 @@
     "endTimeHint": "Tempat segmen potongan berakhir. Anda juga boleh menyeret pemegang pangkas merah pada garis masa.",
     "useDuration": "Guna tempoh dan bukannya masa tamat",
     "useDurationHint": "Tukar antara masa tamat dan tempoh untuk segmen potongan.",
+    "timeFormatHint": "Format: HH:MM:SS (atau dalam saat)",
     "cut": "Potong Video",
     "generatingPreview": "Menjana pratonton...",
     "cutting": "Memotong...",
@@ -359,7 +368,8 @@
     "description": "Ralat yang tidak dijangka berlaku."
   },
   "fileDropZone": {
-    "defaultLabel": "Lepaskan fail di sini atau klik untuk semak imbas"
+    "defaultLabel": "Lepaskan fail di sini atau klik untuk semak imbas",
+    "dropHint": "Seret dan lepas, atau klik untuk semak imbas"
   },
   "validation": {
     "outputRequired": "Fail output diperlukan",

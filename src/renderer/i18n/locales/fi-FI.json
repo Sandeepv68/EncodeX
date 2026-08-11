@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Muunna media",
+    "sourceFiles": "Lähdetiedostot",
+    "encoding": "Koodaus",
+    "advanced": "Lisäasetukset",
     "inputFile": "Lähdetiedosto",
     "outputFile": "Kohdetiedosto",
     "noFile": "Tiedostoa ei ole valittu",
@@ -67,6 +70,9 @@
     "no": "Ei",
     "hardwareAccelAlert": "Laitteistokiihdytys on käytössä. Videon koodaus käyttää GPU:tasi, kun se on yhteensopiva.",
     "inputFileHint": "Lähdemediatiedosto, joka muunnetaan. Yleisiä formaatteja ovat MP4, MKV, MOV, AVI, MP3 ja WAV.",
+    "dropLabel": "Pudota mediatiedosto tähän tai napsauta selataksesi",
+    "changeFile": "Vaihda tiedosto",
+    "changeFileHint": "Valitse toinen mediatiedosto.",
     "outputFileHint": "Kohdepolku, johon muunnettu tiedosto tallennetaan.",
     "losslessCopyHint": "Kopioi virrat ilman uudelleenkoodausta. Nopea ja häviötön, mutta edellyttää, että kohdesäiliö tukee lähdecodecta.",
     "videoCodecHint": "Codec, jolla videovirta koodataan, esim. H.264, H.265 tai VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Videovirran kohdebittinopeus. Suuremmat arvot lisäävät laatua ja tiedostokokoa. Automaattinen säilyttää lähdebittinopeuden.",
     "audioBitrateHint": "Äänivirran kohdebittinopeus. Suuremmat arvot lisäävät laatua ja tiedostokokoa. Automaattinen säilyttää lähdebittinopeuden.",
     "qscaleHint": "Kiinteä laatuporras 1:stä (paras laatu, suurin tiedosto) 31:een (huonoin laatu, pienin tiedosto).",
+    "qscaleRangeCaption": "1 – 31 (alempi = parempi laatu)",
     "scaleHint": "Muuta videon koko annettuun leveyteen ja korkeuteen, esim. 1280x720. Tyhjä säilyttää alkuperäisen tarkkuuden.",
     "pixelFormatHint": "Koodatun videon värimuoto, esim. yuv420p 8-bittiselle tai yuv420p10le 10-bittiselle. Yhdistä lähteeseen parhaan yhteensopivuuden saavuttamiseksi.",
     "transcoderCoreHint": "Muunnoksessa käytetty moottori. FFmpeg on oletus ja yhteensopivin.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Paikka, johon pakattu kuva tallennetaan. Tunniste seuraa valittua formaattia.",
     "outputFormatHint": "Formaatti, johon kuva muunnetaan. JPEG antaa pienimmän tiedoston, PNG on häviötön.",
     "qualityHint": "Pakkaustaso. Pienemmät arvot antavat pienempiä tiedostoja mutta enemmän näkyviä häiriöitä.",
+    "qualityRangeCaption": "1 – 31 (alempi = pienempi tiedosto)",
     "scaleHint": "Kohdetarkkuuden esiasetukset. Valitse vakiokoko tai säilytä alkuperäinen valitsemalla 'Ei skaalausta'.",
     "keepAspectRatio": "Säilytä kuvasuhde",
     "keepAspectRatioHint": "Kun päällä, kuva säilyttää alkuperäisen kuvasuhteen; kun pois, se venytetään tarkkaan tarkkuuteen.",
@@ -241,6 +249,7 @@
     "endTimeHint": "Kohta, johon leike päättyy. Voit myös vetää punaista leikkeen kahvaa aikajanalla.",
     "useDuration": "Käytä kestoa loppuajan sijaan",
     "useDurationHint": "Vaihda loppuajan ja keston välillä leikkeelle.",
+    "timeFormatHint": "Muoto: HH:MM:SS (tai sekunteina)",
     "cut": "Leikkaa video",
     "generatingPreview": "Luodaan esikatselua...",
     "cutting": "Leikataan...",
@@ -359,7 +368,8 @@
     "description": "Tapahtui odottamaton virhe."
   },
   "fileDropZone": {
-    "defaultLabel": "Pudota tiedostot tähän tai napsauta selataksesi"
+    "defaultLabel": "Pudota tiedostot tähän tai napsauta selataksesi",
+    "dropHint": "Vedä ja pudota, tai napsauta selataksesi"
   },
   "validation": {
     "outputRequired": "Kohdetiedosto vaaditaan",

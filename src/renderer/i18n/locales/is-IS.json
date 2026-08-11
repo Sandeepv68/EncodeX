@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Umbreyta miðli",
+    "sourceFiles": "Frumskrár",
+    "encoding": "Kóðun",
+    "advanced": "Ítarlegt",
     "inputFile": "Inntaksskrá",
     "outputFile": "Úttaksskrá",
     "noFile": "Engin skrá valin",
@@ -67,6 +70,9 @@
     "no": "Nei",
     "hardwareAccelAlert": "Vélbúnaðarhröðun er virk. Myndbandskóðun mun nota GPU-ið þitt þegar það er samhæft.",
     "inputFileHint": "Frummiðilsskráin sem á að umbreyta. Algeng snið eru MP4, MKV, MOV, AVI, MP3 og WAV.",
+    "dropLabel": "Slepptu miðilsskrá hér eða smelltu til að fletta",
+    "changeFile": "Skipta um skrá",
+    "changeFileHint": "Veldu aðra miðilsskrá.",
     "outputFileHint": "Markleiðin þar sem umbreyttu skrána verður vistað.",
     "losslessCopyHint": "Afrita strauma án endurkóðunar. Hratt og tapgjaldslaust, en krefst þess að úttaksgámurinn styðji frumcodec-ið.",
     "videoCodecHint": "Codec-ið sem notað er til að kóða myndbandsstrauminn, t.d. H.264, H.265 eða VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "Markbithraði fyrir myndbandsstrauminn. Hærri gildi auka gæði og skráarstærð. Sjálfvirkt heldur bithraða frumskrárinnar.",
     "audioBitrateHint": "Markbithraði fyrir hljóðstrauminn. Hærri gildi auka gæði og skráarstærð. Sjálfvirkt heldur bithraða frumskrárinnar.",
     "qscaleHint": "Fastur gæðakvarði frá 1 (bestu gæði, stærsta skráin) til 31 (verstu gæði, minnsta skráin).",
+    "qscaleRangeCaption": "1 – 31 (lægra = betri gæði)",
     "scaleHint": "Breytir stærð myndbandsins í tiltekna breidd og hæð, t.d. 1280x720. Tómt heldur upprunalegu upplausninni.",
     "pixelFormatHint": "Litasnið hins kóðaða myndbands, t.d. yuv420p fyrir 8-bita eða yuv420p10le fyrir 10-bita. Samsvörun við frumskrá fyrir bestu samhæfni.",
     "transcoderCoreHint": "Vélin sem notuð er við umbreytingu. FFmpeg er sjálfgefið og best samhæft.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Þar sem þjöppuðu myndin verður vistuð. Viðskeytið fylgir valda sniðinu.",
     "outputFormatHint": "Sniðið sem myndin er breytt í. JPEG gefur minnstu skrána, PNG er tapgjaldslaust.",
     "qualityHint": "Þjöppunargæði. Lægri gildi gefa minni skrár en fleiri sýnilegir gallar.",
+    "qualityRangeCaption": "1 – 31 (lægra = minni skrá)",
     "scaleHint": "Úttakupplausnarforstillingar. Veldu staðlaða stærð eða haltu frumritinu með 'Engin skalahreyfing'.",
     "keepAspectRatio": "Halda hlutföllum",
     "keepAspectRatioHint": "Þegar virkt heldur myndin upprunalegum hlutföllum; þegar slökkt er, er hún teygð í nákvæmu upplausnina.",
@@ -241,6 +249,7 @@
     "endTimeHint": "Þar sem klippan endar. Þú getur einnig dregið í rauða klippfang á tímalínunni.",
     "useDuration": "Nota lengd í stað endatíma",
     "useDurationHint": "Skiptir milli endatíma og lengdar fyrir klippuna.",
+    "timeFormatHint": "Snið: HH:MM:SS (eða sekúndur)",
     "cut": "Klippa myndband",
     "generatingPreview": "Bý til forskoðun...",
     "cutting": "Klippi...",
@@ -359,7 +368,8 @@
     "description": "Óvænt villa átti sér stað."
   },
   "fileDropZone": {
-    "defaultLabel": "Slepptu skrám hér eða smelltu til að fletta"
+    "defaultLabel": "Slepptu skrám hér eða smelltu til að fletta",
+    "dropHint": "Dragðu og slepptu, eða smelltu til að fletta"
   },
   "validation": {
     "outputRequired": "Úttaksskrá er nauðsynleg",

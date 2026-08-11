@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "미디어 변환",
+    "sourceFiles": "소스 파일",
+    "encoding": "인코딩",
+    "advanced": "고급",
     "inputFile": "입력 파일",
     "outputFile": "출력 파일",
     "noFile": "선택된 파일 없음",
@@ -67,6 +70,9 @@
     "no": "아니요",
     "hardwareAccelAlert": "하드웨어 가속이 활성화되었습니다. 호환되는 경우 비디오 인코딩에서 GPU를 사용합니다.",
     "inputFileHint": "변환할 소스 미디어 파일입니다. 일반적인 형식으로 MP4, MKV, MOV, AVI, MP3, WAV가 있습니다.",
+    "dropLabel": "미디어 파일을 여기에 드롭하거나 클릭하여 찾아보기",
+    "changeFile": "파일 변경",
+    "changeFileHint": "다른 미디어 파일을 선택하세요.",
     "outputFileHint": "변환된 파일이 저장될 대상 경로입니다.",
     "losslessCopyHint": "재인코딩 없이 스트림을 복사합니다. 빠르고 무손실이지만 출력 컨테이너가 소스 코덱을 지원해야 합니다.",
     "videoCodecHint": "비디오 스트림을 인코딩하는 데 사용되는 코덱입니다. 예: H.264, H.265, VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "비디오 스트림의 목표 비트레이트입니다. 값이 높을수록 품질과 파일 크기가 커집니다. 자동은 소스 비트레이트를 유지합니다.",
     "audioBitrateHint": "오디오 스트림의 목표 비트레이트입니다. 값이 높을수록 품질과 파일 크기가 커집니다. 자동은 소스 비트레이트를 유지합니다.",
     "qscaleHint": "1(최고 품질, 가장 큰 파일)부터 31(최저 품질, 가장 작은 파일)까지의 고정 품질 척도입니다.",
+    "qscaleRangeCaption": "1 – 31 (낮을수록 = 품질 향상)",
     "scaleHint": "지정된 너비와 높이로 비디오 크기를 조정합니다. 예: 1280x720. 비워 두면 원본 해상도를 유지합니다.",
     "pixelFormatHint": "인코딩된 비디오의 색상 형식입니다. 예: 8비트는 yuv420p, 10비트는 yuv420p10le. 최상의 호환성을 위해 소스와 일치시키세요.",
     "transcoderCoreHint": "변환에 사용되는 엔진입니다. FFmpeg가 기본값이며 가장 호환성이 좋습니다.",
@@ -193,6 +200,7 @@
     "outputFileHint": "압축된 이미지를 저장할 위치입니다. 확장자는 선택한 형식을 따릅니다.",
     "outputFormatHint": "이미지가 변환되는 형식입니다. JPEG는 파일이 가장 작고 PNG는 무손실입니다.",
     "qualityHint": "압축 품질입니다. 값이 낮을수록 파일은 작아지지만 손상이 더 잘 보입니다.",
+    "qualityRangeCaption": "1 – 31 (낮을수록 = 파일 크기 감소)",
     "scaleHint": "출력 해상도 사전 설정입니다. 표준 크기를 선택하거나 '크기 조절 안 함'을 선택해 원본을 유지합니다.",
     "keepAspectRatio": "가로세로 비율 유지",
     "keepAspectRatioHint": "활성화하면 원본 비율을 유지하고, 비활성화하면 정확한 해상도로 늘립니다.",
@@ -255,6 +263,7 @@
     "durationHint": "종료 시간 대신 컷 세그먼트의 길이를 지정하세요.",
     "endTimeHint": "컷 세그먼트가 끝나는 위치입니다. 타임라인의 빨간색 트림 핸들을 드래그할 수도 있습니다.",
     "useDurationHint": "컷 세그먼트의 종료 시간과 길이를 전환합니다.",
+    "timeFormatHint": "형식: HH:MM:SS (또는 초 단위)",
     "cutHint": "설정한 시작 및 끝 위치로 비디오 자르기를 시작합니다.",
     "pause": "일시 정지",
     "resume": "재개",
@@ -359,7 +368,8 @@
     "description": "예상치 못한 오류가 발생했습니다."
   },
   "fileDropZone": {
-    "defaultLabel": "파일을 여기에 드롭하거나 클릭하여 찾아보기"
+    "defaultLabel": "파일을 여기에 드롭하거나 클릭하여 찾아보기",
+    "dropHint": "드래그 앤 드롭하거나 클릭하여 찾아보기"
   },
   "validation": {
     "outputRequired": "출력 파일이 필요합니다",

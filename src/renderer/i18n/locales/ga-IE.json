@@ -35,6 +35,9 @@
   },
   "convert": {
     "title": "Tiontaigh Meán",
+    "sourceFiles": "Comhaid Foinse",
+    "encoding": "Códú",
+    "advanced": "Ardcheann",
     "inputFile": "Comhad Ionchuir",
     "outputFile": "Comhad Aschuir",
     "noFile": "Níor roghnaíodh comhad",
@@ -67,6 +70,9 @@
     "no": "Ní hea",
     "hardwareAccelAlert": "Tá luasghéarú crua-earraí cumasaithe. Úsáidfidh códú físeáin do GPU nuair a bheidh sé ag luí.",
     "inputFileHint": "An comhad meán foinse le tiontú. I measc na bhformáidí coitianta tá MP4, MKV, MOV, AVI, MP3 agus WAV.",
+    "dropLabel": "Caith comhad meán anseo nó cliceáil chun brabhsáil",
+    "changeFile": "Athraigh Comhad",
+    "changeFileHint": "Roghnaigh comhad meán eile.",
     "outputFileHint": "An cosán ceann scríbe ina sábhálfar an comhad tiontaithe.",
     "losslessCopyHint": "Cóipeáil sruthanna gan athchódú. Tapa agus gan chaillteanas, ach éilíonn sé go dtacaíonn an coimeádán aschuir le codec na foinse.",
     "videoCodecHint": "An codec a úsáidtear chun an sruth físeáin a chódú, m.sh. H.264, H.265 nó VP9.",
@@ -74,6 +80,7 @@
     "videoBitrateHint": "An giotáráta sprice don sruth físeáin. Méadaíonn luachanna níos airde cáilíocht agus méid comhaid. Coinníonn Uathoibríoch giotáráta na foinse.",
     "audioBitrateHint": "An giotáráta sprice don sruth fuaime. Méadaíonn luachanna níos airde cáilíocht agus méid comhaid. Coinníonn Uathoibríoch giotáráta na foinse.",
     "qscaleHint": "Scála cáilíochta seasta ó 1 (an cháilíocht is fearr, an comhad is mó) go 31 (an cháilíocht is measa, an comhad is lú).",
+    "qscaleRangeCaption": "1 – 31 (níos ísle = caighdeán níos fearr)",
     "scaleHint": "Athraigh méid an fhíseáin go dtí an leithead agus an airde a thugtar, m.sh. 1280x720. Fág bán chun an taifeach bunaidh a choinneáil.",
     "pixelFormatHint": "Formáid datha an fhíseáin chódaithe, m.sh. yuv420p le haghaidh 8-giotán nó yuv420p10le le haghaidh 10-ngiotán. Meaitseáil an fhoinse le haghaidh an chomhoiriúnacht is fearr.",
     "transcoderCoreHint": "An t-inneall a úsáidtear don tiontú. Is é FFmpeg an réamhshocrú agus an ceann is comhoiriúnaí.",
@@ -193,6 +200,7 @@
     "outputFileHint": "Áit ina sábhálfar an íomhá chomhbhrúite. Leanann an iarmhír an fhormáid roghnaithe.",
     "outputFormatHint": "An fhormáid a thiontaítear an íomhá go dtí. Tugann JPEG an comhad is lú, tá PNG gan chaillteanas.",
     "qualityHint": "Cáilíocht chomhbhrúite. Tugann luachanna níos ísle comhaid níos lú ach níos mó dearmad infheicthe.",
+    "qualityRangeCaption": "1 – 31 (níos ísle = comhad níos lú)",
     "scaleHint": "Réamhshocruithe taifeach aschuir. Roghnaigh méid caighdeánach nó coinnigh an bunleagan le 'Gan Scálú'.",
     "keepAspectRatio": "Coinnigh Cóimheas Gné",
     "keepAspectRatioHint": "Nuair atá sé ar siúl, coinníonn an íomhá a cóimheas gné bunaidh; nuair atá sé as, síneann sí go dtí an taifeach cruinn.",
@@ -241,6 +249,7 @@
     "endTimeHint": "Áit a gcríochnaíonn an sliocht. Is féidir leat an láimhseáil ghearrtha dhearg a tharraingt ar an amlíne freisin.",
     "useDuration": "Úsáid Fad in ionad Am Deiridh",
     "useDurationHint": "Athraigh idir am deiridh agus fad don sliocht.",
+    "timeFormatHint": "Formáid: HH:MM:SS (nó i soicindí)",
     "cut": "Gearr Físeán",
     "generatingPreview": "Ag giniúint réamhamhairc...",
     "cutting": "Ag gearradh...",
@@ -359,7 +368,8 @@
     "description": "Tharla earráid gan choinne."
   },
   "fileDropZone": {
-    "defaultLabel": "Scaoil comhaid anseo nó cliceáil chun brabhsáil"
+    "defaultLabel": "Scaoil comhaid anseo nó cliceáil chun brabhsáil",
+    "dropHint": "Tarraing agus scaoil, nó cliceáil chun brabhsáil"
   },
   "validation": {
     "outputRequired": "Comhad aschuir ag teastáil",
