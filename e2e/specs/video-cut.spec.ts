@@ -90,7 +90,7 @@ describe.runIf(IS_E2E)('Video Cut page', () => {
     const { page } = session;
     await selectVideo(page);
     await page.locator('[data-testid="video-cut-use-duration"]').click();
-    await page.locator('[data-testid="video-cut-duration"]').waitFor({ timeout: 10000 });
+    await page.locator('[data-testid="video-cut-duration"] input').waitFor({ timeout: 10000 });
     await expect.poll(() => page.locator('[data-testid="video-cut-end"]').count()).toBe(0);
     await page.locator('[data-testid="video-cut-duration"] input').fill('00:00:15');
     await expect.poll(() => page.locator('[data-testid="video-cut-duration"] input').inputValue()).toBe('00:00:15');

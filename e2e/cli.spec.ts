@@ -25,10 +25,10 @@ const EXIT = {
 
 function electronArgs(scriptArgs: string[]): string[] {
   const baseArgs = [path.join(getBuildPaths().root, 'dist', 'main', 'index.js'), ...scriptArgs];
-  if (process.env.CI || process.platform === 'linux') {
-    return ['--no-sandbox', '--disable-gpu', ...baseArgs];
-  }
-  return baseArgs;
+  // CLI mode never touches the GPU; disabling it avoids random access-violation
+  // crashes (0xC0000005) from Chromium's GPU process when many short-lived
+  // Electron instances are spawned in sequence on Windows.
+  return ['--no-sandbox', '--disable-gpu', ...baseArgs];
 }
 
 function spawnElectron(args: string[], timeout: number): Promise<{ status: number | null; stdout: string; stderr: string }> {
