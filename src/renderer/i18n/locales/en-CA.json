@@ -327,7 +327,7 @@
     "outputDir": "Output folder",
     "browse": "Browse",
     "overwrite": "Overwrite existing files",
-    "whenDone": "When done",
+    "whenDone": "Action when done",
     "whenDoneAction": "Action",
     "whenDoneShutdown": "Shutdown",
     "whenDoneSleep": "Sleep",
