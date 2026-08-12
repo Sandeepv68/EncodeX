@@ -29,6 +29,7 @@
  * @property {string} QUEUE_CANCEL_ALL - Cancel every queued and running job.
  * @property {string} QUEUE_CLEAR_COMPLETED - Remove every done and errored job.
  * @property {string} QUEUE_SET_CONCURRENCY - Set the number of jobs run in parallel.
+ * @property {string} QUEUE_SET_WHEN_DONE - Set the power action to run when the queue drains.
  * @property {string} QUEUE_MOVE_TO - Reorder a queued job to a target position.
  * @property {string} QUEUE_PAUSE - Pause the queue and all active conversions.
  * @property {string} QUEUE_RESUME - Resume a paused queue and start queued jobs.
@@ -85,6 +86,7 @@ export const IPC = {
   QUEUE_CANCEL_ALL: 'queue-cancel-all',
   QUEUE_CLEAR_COMPLETED: 'queue-clear-completed',
   QUEUE_SET_CONCURRENCY: 'queue-set-concurrency',
+  QUEUE_SET_WHEN_DONE: 'queue-set-when-done',
   QUEUE_MOVE_TO: 'queue-move-to',
   QUEUE_PAUSE: 'queue-pause',
   QUEUE_RESUME: 'queue-resume',

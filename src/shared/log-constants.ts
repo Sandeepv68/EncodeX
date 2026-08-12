@@ -173,6 +173,8 @@ export const LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING = 'Failed to persist al
 export const LOG_FAILED_TO_PERSIST_LAUNCH_AT_LOGIN_SETTING = 'Failed to persist launch-at-login setting:';
 /** @const {string} Prefix when persisting the batch queue concurrency fails. */
 export const LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY = 'Failed to persist queue concurrency:';
+/** @const {string} Prefix when persisting the when-done config fails. */
+export const LOG_FAILED_TO_PERSIST_WHEN_DONE_CONFIG = 'Failed to persist when-done config:';
 /** @const {string} Prefix when persisting hardware acceleration settings fails. */
 export const LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS = 'Failed to persist hardware acceleration settings:';
 /** @const {string} Prefix when persisting the video cut draft fails. */
@@ -189,6 +191,8 @@ export const LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING = 'Failed to read s
 export const LOG_FAILED_TO_READ_STORED_LAUNCH_AT_LOGIN_SETTING = 'Failed to read stored launch-at-login setting:';
 /** @const {string} Prefix when reading the stored queue concurrency fails. */
 export const LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY = 'Failed to read stored queue concurrency:';
+/** @const {string} Prefix when reading the stored when-done config fails. */
+export const LOG_FAILED_TO_READ_STORED_WHEN_DONE_CONFIG = 'Failed to read stored when-done config:';
 /** @const {string} Prefix when reading stored hardware acceleration settings fails. */
 export const LOG_FAILED_TO_READ_STORED_HARDWARE_ACCELERATION_SETTINGS = 'Failed to read stored hardware acceleration settings:';
 /** @const {string} Prefix when reading the stored video cut draft fails. */
@@ -353,6 +357,8 @@ export const LOG_IPC_QUEUE_EXPORT_CALLED = 'QUEUE_EXPORT called';
 export const LOG_IPC_QUEUE_IMPORT_CALLED = 'QUEUE_IMPORT called';
 /** @const {string} Prefix when the QUEUE_SET_CONCURRENCY IPC message is received. */
 export const LOG_IPC_QUEUE_SET_CONCURRENCY = 'QUEUE_SET_CONCURRENCY:';
+/** @const {string} Prefix when the QUEUE_SET_WHEN_DONE IPC message is received. */
+export const LOG_IPC_QUEUE_SET_WHEN_DONE = 'QUEUE_SET_WHEN_DONE:';
 /** @const {string} Prefix when the QUEUE_MOVE_TO IPC message is received. */
 export const LOG_IPC_QUEUE_MOVE_TO = 'QUEUE_MOVE_TO:';
 /** @const {string} Logged when the QUEUE_PAUSE IPC message is received. */
@@ -506,10 +512,14 @@ export const LOG_QUEUE_AUDIO_CHUNK_ERROR = 'queueAudioChunk error:';
 export const LOG_QUEUE_CANCEL_ALL_CALLED = 'queueCancelAll called';
 /** @const {string} Logged when the queue is cancelled. */
 export const LOG_QUEUE_CANCELLED = 'Queue cancelled';
+/** @const {string} Logged when the queue fully drains after at least one completion. */
+export const LOG_QUEUE_DRAINED = 'Queue drained';
 /** @const {string} Prefix when completed jobs are cleared. */
 export const LOG_QUEUE_CLEAR_COMPLETED = 'queueClearCompleted:';
 /** @const {string} Prefix when the queue concurrency is set. */
 export const LOG_QUEUE_SET_CONCURRENCY = 'setConcurrency:';
+/** @const {string} Prefix when the when-done config is set. */
+export const LOG_QUEUE_SET_WHEN_DONE = 'setWhenDone:';
 /** @const {string} Prefix when the queue is paused. */
 export const LOG_QUEUE_PAUSE = 'pause:';
 /** @const {string} Prefix when the queue is resumed. */
@@ -606,6 +616,8 @@ export const LOG_SET_ALWAYS_ON_TOP = 'setAlwaysOnTop:';
 export const LOG_SET_LAUNCH_AT_LOGIN = 'setLaunchAtLogin:';
 /** @const {string} Prefix when setQueueConcurrency is invoked. */
 export const LOG_SET_QUEUE_CONCURRENCY = 'setQueueConcurrency:';
+/** @const {string} Prefix when setWhenDone is invoked. */
+export const LOG_SET_WHEN_DONE = 'setWhenDone:';
 /** @const {string} Prefix when the audio bitrate is set. */
 export const LOG_SET_AUDIO_BITRATE = 'setAudioBitrate:';
 /** @const {string} Prefix when the audio codec is set. */
@@ -732,6 +744,16 @@ export const LOG_WAVEFORM_EXTRACTION_FAILED_NO_AUDIO_DECODED = 'Waveform extract
 export const LOG_WAVEFORM_SEGMENT_FAILED_WITH_CODE = 'Waveform segment failed with code:';
 /** @const {string} Logged when Web Audio is unavailable and audio playback is disabled. */
 export const LOG_WEB_AUDIO_IS_NOT_AVAILABLE_AUDIO_PLAYBACK_DISABLED = 'Web Audio is not available, audio playback disabled';
+/** @const {string} Logged when the batch queue drains and the when-done power action is armed. */
+export const LOG_WHEN_DONE_QUEUE_DRAINED = 'When done: queue drained, scheduling action';
+/** @const {string} Logged when a when-done power action is skipped because it is disabled. */
+export const LOG_WHEN_DONE_SKIPPED_DISABLED = 'When done: skipped (disabled)';
+/** @const {string} Prefix when a when-done power action is executed. */
+export const LOG_WHEN_DONE_EXECUTING = 'When done: executing';
+/** @const {string} Prefix when a when-done power action cannot run on the current platform. */
+export const LOG_WHEN_DONE_UNSUPPORTED_PLATFORM = 'When done: unsupported platform';
+/** @const {string} Prefix when spawning a when-done power command fails. */
+export const LOG_WHEN_DONE_SPAWN_FAILED = 'When done: spawn failed';
 /** @const {string} Logged when windowClose is invoked. */
 export const LOG_WINDOW_CLOSE_CALLED = 'windowClose called';
 /** @const {string} Logged when windowCloseConfirmed is invoked. */

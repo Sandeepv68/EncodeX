@@ -2,8 +2,8 @@
  * @fileoverview IPC handlers for the batch conversion job queue.
  * Registers handlers for the QUEUE_ADD, QUEUE_REMOVE, QUEUE_LIST,
  * QUEUE_GET_STATE, QUEUE_CANCEL_ALL, QUEUE_CLEAR_COMPLETED, QUEUE_SET_CONCURRENCY,
- * QUEUE_MOVE_TO, QUEUE_PAUSE and QUEUE_RESUME channels and forwards the
- * JobQueue's lifecycle events to the renderer on the QUEUE_ADDED,
+ * QUEUE_SET_WHEN_DONE, QUEUE_MOVE_TO, QUEUE_PAUSE and QUEUE_RESUME channels and
+ * forwards the JobQueue's lifecycle events to the renderer on the QUEUE_ADDED,
  * QUEUE_REMOVED, QUEUE_STATUS_CHANGE, QUEUE_PROGRESS, QUEUE_CANCELLED and
  * QUEUE_MOVED channels. One JobQueue
  * instance (src/main/queue/job-queue.ts) is created per registration call and
@@ -11,6 +11,13 @@
  * concurrency of jobs at a time and processing the next queued job on
  * completion. When the application quits (`will-quit`), the persisted queue
  * snapshot is deleted so the next launch starts with an empty queue.
+ *
+ * When-done power action: the QUEUE_SET_WHEN_DONE handler records a
+ * WhenDoneConfig (enabled, action, force) pushed by the renderer settings
+ * store. When the queue emits its `drained` event (a batch finished naturally)
+ * and the config is enabled, the corresponding OS power action is scheduled
+ * after WHEN_DONE_ACTION_DELAY_MS via performPowerAction; adding a new job
+ * within that grace period cancels the pending action.
  */
 
 import { ipcMain, BrowserWindow, app, dialog } from 'electron';
@@ -18,9 +25,11 @@ import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { JobQueue } from '../queue/job-queue';
 import { FileQueuePersistence } from '../queue/persistence';
 import { buildQueueExport, parseQueueExport } from '../queue/queue-transfer';
+import { performPowerAction } from '../power-actions';
 import { Logger } from '../../shared/logger';
-import { ConversionOptions, QueueJob, TranscoderType, ConversionProgress } from '../../shared/types';
+import { ConversionOptions, QueueJob, TranscoderType, ConversionProgress, WhenDoneConfig } from '../../shared/types';
 import { IPC } from '../../shared/ipc-channels';
+import { WHEN_DONE_ACTION_DELAY_MS } from '../../shared/constants';
 import { invalidQueueFileError, outputExistsError } from '../../shared/errors';
 import type { IpcSender } from './types';
 import {
@@ -37,6 +46,7 @@ import {
   LOG_IPC_QUEUE_REMOVE,
   LOG_IPC_QUEUE_RESUME_CALLED,
   LOG_IPC_QUEUE_SET_CONCURRENCY,
+  LOG_IPC_QUEUE_SET_WHEN_DONE,
   LOG_QUEUE_CANCELLED,
   LOG_QUEUE_EXPORTED,
   LOG_QUEUE_IMPORTED,
@@ -44,6 +54,8 @@ import {
   LOG_QUEUE_JOB_REMOVED,
   LOG_QUEUE_JOB_STATUS_CHANGE,
   LOG_TRANSCODER,
+  LOG_WHEN_DONE_QUEUE_DRAINED,
+  LOG_WHEN_DONE_SKIPPED_DISABLED,
 } from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/queue');
@@ -64,6 +76,35 @@ let persistedQueue: FileQueuePersistence | null = null;
  * @type {boolean}
  */
 let willQuitHandlerRegistered = false;
+
+/**
+ * The most recently configured when-done power action config (or null when the
+ * renderer has never pushed one). Lives at module level so it survives window
+ * re-creates; the renderer settings store re-pushes it on every mount.
+ * @type {WhenDoneConfig | null}
+ */
+let whenDoneConfig: WhenDoneConfig | null = null;
+
+/**
+ * Pending timeout scheduled when the queue drains with a when-done action
+ * armed. Cancelled when a new job is added within the grace period, and reset
+ * before executing so a fresh drain schedules a fresh action.
+ * @type {NodeJS.Timeout | null}
+ */
+let whenDoneTimer: NodeJS.Timeout | null = null;
+
+/**
+ * Cancels any pending when-done power action. Called when a new job enters the
+ * queue after a drain: the batch is being extended, so an imminent shutdown
+ * must not fire while the new work is still running.
+ * @returns {void}
+ */
+function clearWhenDoneTimer(): void {
+  if (whenDoneTimer) {
+    clearTimeout(whenDoneTimer);
+    whenDoneTimer = null;
+  }
+}
 
 /**
  * Registers an app `will-quit` listener that deletes the persisted queue
@@ -220,6 +261,21 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
   });
 
   /**
+   * Handles the IPC.QUEUE_SET_WHEN_DONE channel (queue-set-when-done).
+   * Records the renderer's when-done config (enabled, action, force). The
+   * config is applied app-wide for the next queue drain; nothing runs until
+   * the queue emits `drained` while enabled.
+   *
+   * @param {WhenDoneConfig} config - Whether to act, which power action to run,
+   *   and whether open processes should be force-closed.
+   * @returns {Promise<void>} Resolves once the config is recorded.
+   */
+  ipcMain.handle(IPC.QUEUE_SET_WHEN_DONE, async (_event, config: WhenDoneConfig) => {
+    log.info(LOG_IPC_QUEUE_SET_WHEN_DONE, JSON.stringify(config));
+    whenDoneConfig = config;
+  });
+
+  /**
    * Handles the IPC.QUEUE_MOVE_TO channel (queue-move-to).
    * Reorders a QUEUED job to a target position within the QUEUED subsequence
    * (clamped). Non-queued jobs are left in place.
@@ -336,6 +392,7 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
    */
   jobQueue.on('added', (job: QueueJob) => {
     log.info(LOG_QUEUE_JOB_ADDED, job.id, job.input);
+    clearWhenDoneTimer();
     send(IPC.QUEUE_ADDED, job);
   });
 
@@ -390,5 +447,29 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
    */
   jobQueue.on('moved', ({ id, toPosition }: { id: string; toPosition: number }) => {
     send(IPC.QUEUE_MOVED, { id, toPosition });
+  });
+
+  /**
+   * Triggers the when-done power action once the queue naturally drains.
+   * Fired by JobQueue only after a real completion (never on cancellation or
+   * a no-op). When the when-done config is enabled, the OS power action is
+   * scheduled after WHEN_DONE_ACTION_DELAY_MS so the user has a short grace
+   * period to cancel it by adding a new job (the `added` listener clears the
+   * pending timer). The timeout is unref'd so it cannot keep the app alive.
+   * @returns {void} Nothing is returned.
+   */
+  jobQueue.on('drained', () => {
+    const config = whenDoneConfig;
+    if (!config?.enabled) {
+      log.debug(LOG_WHEN_DONE_SKIPPED_DISABLED);
+      return;
+    }
+    clearWhenDoneTimer();
+    log.info(LOG_WHEN_DONE_QUEUE_DRAINED, config.action);
+    whenDoneTimer = setTimeout(() => {
+      whenDoneTimer = null;
+      performPowerAction(config.action, config.force);
+    }, WHEN_DONE_ACTION_DELAY_MS);
+    whenDoneTimer.unref();
   });
 }

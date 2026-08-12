@@ -82,6 +82,7 @@ describe('preload', () => {
     ['queueCancelAll', IPC.QUEUE_CANCEL_ALL, []],
     ['queueClearCompleted', IPC.QUEUE_CLEAR_COMPLETED, []],
     ['queueSetConcurrency', IPC.QUEUE_SET_CONCURRENCY, [3]],
+    ['queueSetWhenDone', IPC.QUEUE_SET_WHEN_DONE, [{ enabled: true, action: 'shutdown', force: false }]],
     ['queueMoveTo', IPC.QUEUE_MOVE_TO, ['id-1', 2]],
     ['queuePause', IPC.QUEUE_PAUSE, []],
     ['queueResume', IPC.QUEUE_RESUME, []],

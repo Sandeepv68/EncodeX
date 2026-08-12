@@ -5,7 +5,11 @@ import BatchControls from '../BatchControls';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
 
-function renderControls(hasCompleted = false, concurrency = 1, opts: { paused?: boolean; hasActive?: boolean } = {}) {
+function renderControls(
+  hasCompleted = false,
+  concurrency = 1,
+  opts: { paused?: boolean; hasActive?: boolean; whenDone?: { enabled: boolean; action: string; force: boolean } } = {},
+) {
   const operation = BATCH_OPERATIONS[0].value;
   const onOperationChange = vi.fn();
   const transcoderRef = { current: TRANSCODER_TYPES[0] } as RefObject<(typeof TRANSCODER_TYPES)[number]>;
@@ -19,6 +23,8 @@ function renderControls(hasCompleted = false, concurrency = 1, opts: { paused?: 
   const onOutputDirChange = vi.fn();
   const onBrowseDir = vi.fn();
   const onOverwriteChange = vi.fn();
+  const whenDone = opts.whenDone ?? { enabled: false, action: 'shutdown', force: false };
+  const onWhenDoneChange = vi.fn();
   const onExport = vi.fn();
   const onImport = vi.fn();
   render(
@@ -42,6 +48,8 @@ function renderControls(hasCompleted = false, concurrency = 1, opts: { paused?: 
       onBrowseDir={onBrowseDir}
       overwrite={false}
       onOverwriteChange={onOverwriteChange}
+      whenDone={whenDone}
+      onWhenDoneChange={onWhenDoneChange}
       onExport={onExport}
       onImport={onImport}
     />,
@@ -60,6 +68,8 @@ function renderControls(hasCompleted = false, concurrency = 1, opts: { paused?: 
     onOutputDirChange,
     onBrowseDir,
     onOverwriteChange,
+    whenDone,
+    onWhenDoneChange,
     onExport,
     onImport,
   };
@@ -192,5 +202,37 @@ describe('BatchControls', () => {
     const { onImport } = renderControls();
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.importQueue' }));
     expect(onImport).toHaveBeenCalledOnce();
+  });
+
+  it('hides the when-done action select and force checkbox while disabled', () => {
+    renderControls(false, 1, { whenDone: { enabled: false, action: 'shutdown', force: false } });
+    expect(screen.getByLabelText('batchQueue.whenDone')).toBeInTheDocument();
+    expect(screen.queryByLabelText('batchQueue.whenDoneAction')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('batchQueue.whenDoneForce')).not.toBeInTheDocument();
+  });
+
+  it('fires onWhenDoneChange with enabled true when the when-done checkbox is toggled on', () => {
+    const { onWhenDoneChange } = renderControls(false, 1, { whenDone: { enabled: false, action: 'shutdown', force: false } });
+    fireEvent.click(screen.getByLabelText('batchQueue.whenDone'));
+    expect(onWhenDoneChange).toHaveBeenCalledWith({ enabled: true, action: 'shutdown', force: false });
+  });
+
+  it('reveals the action select and force checkbox when enabled', () => {
+    renderControls(false, 1, { whenDone: { enabled: true, action: 'shutdown', force: false } });
+    expect(screen.getByRole('combobox', { name: 'batchQueue.whenDoneAction' })).toBeInTheDocument();
+    expect(screen.getByLabelText('batchQueue.whenDoneForce')).toBeInTheDocument();
+  });
+
+  it('fires onWhenDoneChange with the new action when a different action is chosen', () => {
+    const { onWhenDoneChange } = renderControls(false, 1, { whenDone: { enabled: true, action: 'shutdown', force: false } });
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.whenDoneAction' }));
+    fireEvent.click(screen.getByText('batchQueue.whenDoneSleep'));
+    expect(onWhenDoneChange).toHaveBeenCalledWith({ enabled: true, action: 'sleep', force: false });
+  });
+
+  it('fires onWhenDoneChange with force true when the force checkbox is toggled', () => {
+    const { onWhenDoneChange } = renderControls(false, 1, { whenDone: { enabled: true, action: 'shutdown', force: false } });
+    fireEvent.click(screen.getByLabelText('batchQueue.whenDoneForce'));
+    expect(onWhenDoneChange).toHaveBeenCalledWith({ enabled: true, action: 'shutdown', force: true });
   });
 });

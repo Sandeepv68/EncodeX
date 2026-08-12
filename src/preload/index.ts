@@ -35,7 +35,7 @@
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueSetWhenDone`, `queueMoveTo`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
@@ -62,6 +62,7 @@ import {
   EncoderCapabilities,
   WaveformData,
   ThumbnailStrip,
+  WhenDoneConfig,
 } from '../shared/types';
 import {
   LOG_ARROW,
@@ -99,6 +100,7 @@ import {
   LOG_QUEUE_REMOVE,
   LOG_QUEUE_RESUME_CALLED,
   LOG_QUEUE_SET_CONCURRENCY,
+  LOG_QUEUE_SET_WHEN_DONE,
   LOG_RESUME_CONVERSION_CALLED,
   LOG_REVEAL_FILE,
   LOG_SELECT_DIRECTORY_CALLED,
@@ -133,7 +135,7 @@ const log = new Logger('preload');
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueMoveTo`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueSetWhenDone`, `queueMoveTo`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
@@ -448,6 +450,22 @@ const api = {
   queueSetConcurrency: (concurrency: number) => {
     log.info(LOG_QUEUE_SET_CONCURRENCY, concurrency);
     return ipcRenderer.invoke(IPC.QUEUE_SET_CONCURRENCY, concurrency) as Promise<void>;
+  },
+  /**
+   * Sets the when-done power action config for the batch queue. Logs the call
+   * at info level, then invokes the main process over the
+   * `IPC.QUEUE_SET_WHEN_DONE` ('queue-set-when-done') channel. The main
+   * process records the config and runs the power action when the queue
+   * drains while it is enabled.
+   *
+   * @param {WhenDoneConfig} config - Whether to act when the queue drains,
+   *   which power action to run, and whether open processes should be
+   *   force-closed.
+   * @returns {Promise<void>} Resolves once the config has been recorded.
+   */
+  queueSetWhenDone: (config: WhenDoneConfig) => {
+    log.info(LOG_QUEUE_SET_WHEN_DONE, JSON.stringify(config));
+    return ipcRenderer.invoke(IPC.QUEUE_SET_WHEN_DONE, config) as Promise<void>;
   },
   /**
    * Reorders a QUEUED batch job to a target position within the QUEUED

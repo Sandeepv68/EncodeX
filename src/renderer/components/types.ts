@@ -15,6 +15,7 @@ import type {
   ThumbnailStrip,
   TranscoderType,
   WaveformData,
+  WhenDoneConfig,
 } from '../../shared/types';
 
 /**
@@ -58,6 +59,8 @@ export interface BatchControlsProps {
   onBrowseDir: () => void;
   overwrite: boolean;
   onOverwriteChange: (overwrite: boolean) => void;
+  whenDone: WhenDoneConfig;
+  onWhenDoneChange: (config: WhenDoneConfig) => void;
   onExport: () => void;
   onImport: () => void;
 }

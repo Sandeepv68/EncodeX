@@ -34,3 +34,7 @@ export const SuffixField = styled(TextField)(({ theme }) => ({
 export const OutputDirField = styled(TextField)(({ theme }) => ({
   minWidth: theme.typography.pxToRem(220),
 }));
+
+export const WhenDoneSelect = styled(TextField)(({ theme }) => ({
+  minWidth: theme.typography.pxToRem(130),
+}));

@@ -87,6 +87,10 @@ const api = {
     state.queueState.concurrency = concurrency;
     return Promise.resolve();
   },
+  queueSetWhenDone: (config) => {
+    state.queueState.whenDone = config;
+    return Promise.resolve();
+  },
   queueMoveTo: (id, toPosition) => {
     emit('queue-moved', { id, toPosition });
     return Promise.resolve(true);

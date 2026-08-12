@@ -34,6 +34,10 @@
  *  - onBrowseDir: fired by the Browse button next to the output folder field.
  *  - overwrite / onOverwriteChange: controlled toggle allowing existing output
  *    files to be replaced when adding jobs.
+ *  - whenDone / onWhenDoneChange: controlled "when done" power-action config;
+ *    when enabled, an action dropdown (shutdown/sleep/hibernate) and a
+ *    force-quit checkbox are revealed. The main process performs the selected
+ *    action once the queue drains.
  *  - onExport: fired by the Export button; the parent writes the queue to a
  *    JSON file via the main process.
  *  - onImport: fired by the Import button; the parent reads and enqueues a
@@ -55,8 +59,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
-import { MAX_QUEUE_CONCURRENCY } from '../../shared/constants';
-import type { TranscoderType } from '../../shared/types';
+import { MAX_QUEUE_CONCURRENCY, WHEN_DONE_ACTIONS } from '../../shared/constants';
+import type { TranscoderType, WhenDoneAction, WhenDoneConfig } from '../../shared/types';
 import type { BatchControlsProps } from './types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import {
@@ -66,6 +70,7 @@ import {
   ConcurrencySelect,
   SuffixField,
   OutputDirField,
+  WhenDoneSelect,
   OutlinedIconButton,
 } from '../styles/BatchControls.styles';
 
@@ -109,6 +114,11 @@ import {
  *   replaced when adding jobs.
  * @param {(overwrite: boolean) => void} props.onOverwriteChange - Fired with
  *   the new value when the overwrite toggle changes.
+ * @param {WhenDoneConfig} props.whenDone - Current "when done" power-action
+ *   config ({enabled, action, force}).
+ * @param {(config: WhenDoneConfig) => void} props.onWhenDoneChange - Fired with
+ *   the merged config when the "when done" checkbox, action dropdown, or force
+ *   checkbox changes.
  * @param {() => void} props.onExport - Fired by the Export button.
  * @param {() => void} props.onImport - Fired by the Import button.
  * @returns {JSX.Element} The controls paper.
@@ -133,6 +143,8 @@ export default function BatchControls({
   onBrowseDir,
   overwrite,
   onOverwriteChange,
+  whenDone,
+  onWhenDoneChange,
   onExport,
   onImport,
 }: BatchControlsProps) {
@@ -146,6 +158,16 @@ export default function BatchControls({
     transcode: t('batchQueue.operationTranscode'),
     extract_audio: t('batchQueue.operationExtractAudio'),
     compress_image: t('batchQueue.operationCompressImage'),
+  };
+
+  /**
+   * Localized display labels keyed by when-done power action value.
+   * @const {Record<WhenDoneAction, string>} whenDoneActionLabels
+   */
+  const whenDoneActionLabels: Record<WhenDoneAction, string> = {
+    shutdown: t('batchQueue.whenDoneShutdown'),
+    sleep: t('batchQueue.whenDoneSleep'),
+    hibernate: t('batchQueue.whenDoneHibernate'),
   };
 
   return (
@@ -278,29 +300,28 @@ export default function BatchControls({
             </ConcurrencySelect>
           </FieldBox>
         </Grid>
-        <Grid size={{ xs: 12, sm: 9, md: 10 }}>
-          <FieldBox>
-            <FieldLabel htmlFor="batch-output-dir">{t('batchQueue.outputDir')}</FieldLabel>
-            <OutputDirField
-              id="batch-output-dir"
-              fullWidth
-              size="small"
-              value={outputDir}
-              onChange={(e) => {
-                onOutputDirChange(e.target.value);
-              }}
-              placeholder={t('batchQueue.outputDirPlaceholder')}
-            />
-          </FieldBox>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 3, md: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, marginTop: 'auto' }}>
+        <Grid size={12}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: 1 }}>
+            <FieldBox sx={{ flex: '0 0 16.6667%', minWidth: 0 }}>
+              <FieldLabel htmlFor="batch-output-dir">{t('batchQueue.outputDir')}</FieldLabel>
+              <OutputDirField
+                id="batch-output-dir"
+                fullWidth
+                size="small"
+                value={outputDir}
+                onChange={(e) => {
+                  onOutputDirChange(e.target.value);
+                }}
+                placeholder={t('batchQueue.outputDirPlaceholder')}
+              />
+            </FieldBox>
             <Tooltip title={t('batchQueue.browse')}>
               <OutlinedIconButton size="small" aria-label={t('batchQueue.browse')} onClick={onBrowseDir}>
                 <FontAwesomeIcon icon={faFolderOpen} />
               </OutlinedIconButton>
             </Tooltip>
             <FormControlLabel
+              sx={{ whiteSpace: 'nowrap', ml: 1 }}
               control={
                 <Checkbox
                   size="small"
@@ -312,6 +333,55 @@ export default function BatchControls({
               }
               label={t('batchQueue.overwrite')}
             />
+            <FormControlLabel
+              sx={{ whiteSpace: 'nowrap', ml: 1 }}
+              control={
+                <Checkbox
+                  size="small"
+                  checked={whenDone.enabled}
+                  onChange={(e) => {
+                    onWhenDoneChange({ ...whenDone, enabled: e.target.checked });
+                  }}
+                />
+              }
+              label={t('batchQueue.whenDone')}
+            />
+            {whenDone.enabled && (
+              <>
+                <FieldBox sx={{ flex: '0 0 auto' }}>
+                  <FieldLabel htmlFor="batch-when-done-action">{t('batchQueue.whenDoneAction')}</FieldLabel>
+                  <WhenDoneSelect
+                    id="batch-when-done-action"
+                    select
+                    size="small"
+                    slotProps={{ input: { 'aria-label': t('batchQueue.whenDoneAction') } }}
+                    value={whenDone.action}
+                    onChange={(e) => {
+                      onWhenDoneChange({ ...whenDone, action: e.target.value as WhenDoneAction });
+                    }}
+                  >
+                    {WHEN_DONE_ACTIONS.map((a) => (
+                      <MenuItem key={a} value={a}>
+                        {whenDoneActionLabels[a]}
+                      </MenuItem>
+                    ))}
+                  </WhenDoneSelect>
+                </FieldBox>
+                <FormControlLabel
+                  sx={{ whiteSpace: 'nowrap' }}
+                  control={
+                    <Checkbox
+                      size="small"
+                      checked={whenDone.force}
+                      onChange={(e) => {
+                        onWhenDoneChange({ ...whenDone, force: e.target.checked });
+                      }}
+                    />
+                  }
+                  label={t('batchQueue.whenDoneForce')}
+                />
+              </>
+            )}
           </Box>
         </Grid>
       </Grid>

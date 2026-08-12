@@ -14,6 +14,7 @@ import { EventEmitter } from 'events';
 import { randomUUID } from 'crypto';
 import { Logger } from '../../shared/logger';
 import { QueueJob, ConversionOptions, TranscoderType } from '../../shared/types';
+import { ErrorCode } from '../../shared/errors';
 import { createTranscoder } from '../transcoders/factory';
 import type { ITranscoder } from '../transcoders/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
@@ -32,6 +33,7 @@ import {
   LOG_PROCESS_NEXT_NO_QUEUED_JOBS,
   LOG_PROCESS_NEXT_STARTING_JOB,
   LOG_QUEUE_CLEAR_COMPLETED,
+  LOG_QUEUE_DRAINED,
   LOG_QUEUE_MOVE_TO,
   LOG_QUEUE_MOVE_SKIPPED,
   LOG_QUEUE_MOVE_TO_CLAMPED,
@@ -86,6 +88,9 @@ export interface JobQueueOptions {
  * @emits {Object} 'progress' - Fired with `{ job, progress }` while a job runs;
  *   `progress` is a ConversionProgress from the underlying transcoder
  * @emits {void} 'cancelled' - Fired after cancelAll() clears the queue
+ * @emits {void} 'drained' - Fired once the queue fully drains after at least
+ *   one job reached a terminal state (DONE or non-cancelled ERROR) and no
+ *   queued or active jobs remain. Cancellations never emit it.
  *
  * Concurrency model: `processNext()` is the only place jobs are started. It
  * starts new QUEUED jobs while fewer than `concurrency` conversions are in
@@ -111,6 +116,11 @@ export class JobQueue extends EventEmitter {
   private readonly persistDelayMs: number;
   /** Pending debounced persistence timer, or null when none is scheduled. */
   private persistTimer: NodeJS.Timeout | null = null;
+  /** True once at least one job reached a terminal state (DONE or non-cancelled
+   * ERROR) since the last 'drained' emission or queue reset. Gates the
+   * 'drained' event so it only fires for natural completions, never for
+   * cancels or no-ops. */
+  private jobCompletedSinceLastDrain = false;
 
   /**
    * Creates a queue that runs up to `concurrency` conversions in parallel.
@@ -370,6 +380,7 @@ export class JobQueue extends EventEmitter {
     this.activeJobs.clear();
     this.queue = [];
     this.paused = false;
+    this.jobCompletedSinceLastDrain = false;
     if (this.persistTimer) {
       clearTimeout(this.persistTimer);
       this.persistTimer = null;
@@ -446,6 +457,23 @@ export class JobQueue extends EventEmitter {
   }
 
   /**
+   * Emits the `drained` event when the queue has fully drained since the last
+   * natural completion. Called from `processNext` whenever no QUEUED jobs
+   * remain: if the active set is empty and at least one job reached a terminal
+   * state since the last drain (or reset), the flag is cleared and `drained`
+   * is emitted. Cancellations reset the flag and never trigger it, so a
+   * cancel-all or single-job cancel cannot arm the "when done" power action.
+   * @returns {void}
+   */
+  private emitDrainedIfIdle(): void {
+    if (this.activeJobs.size === 0 && this.jobCompletedSinceLastDrain) {
+      this.jobCompletedSinceLastDrain = false;
+      log.info(LOG_QUEUE_DRAINED);
+      this.emit('drained');
+    }
+  }
+
+  /**
    * Starts queued jobs until the concurrency cap is reached.
    *
    * While fewer than `concurrency` conversions are in flight, takes the next
@@ -462,6 +490,7 @@ export class JobQueue extends EventEmitter {
       const queued = this.queue.filter((j) => j.status === QUEUE_STATUS.QUEUED);
       if (queued.length === 0) {
         log.debug(LOG_PROCESS_NEXT_NO_QUEUED_JOBS);
+        this.emitDrainedIfIdle();
         return;
       }
       const maxPriority = Math.max(...queued.map((j) => j.priority ?? 0));
@@ -503,21 +532,27 @@ export class JobQueue extends EventEmitter {
         this.emit('progress', { job: nextJob, progress });
       });
       emitter.on('error', (err) => {
-        this.activeJobs.delete(nextJob.id);
+        const wasActive = this.activeJobs.delete(nextJob.id);
         log.error(LOG_JOB_FAILED, nextJob.id, err.message);
         nextJob.status = QUEUE_STATUS.ERROR;
         nextJob.error = err.message;
         this.schedulePersist();
         this.emit('statusChange', nextJob);
+        if (wasActive && err.code !== ErrorCode.CANCELLED) {
+          this.jobCompletedSinceLastDrain = true;
+        }
         this.processNext();
       });
       emitter.on('end', () => {
-        this.activeJobs.delete(nextJob.id);
+        const wasActive = this.activeJobs.delete(nextJob.id);
         log.info(LOG_JOB_COMPLETED, nextJob.id);
         nextJob.status = QUEUE_STATUS.DONE;
         nextJob.progress = COMPLETED_PROGRESS.percent;
         this.schedulePersist();
         this.emit('statusChange', nextJob);
+        if (wasActive) {
+          this.jobCompletedSinceLastDrain = true;
+        }
         this.processNext();
       });
     } catch (err: unknown) {
@@ -527,6 +562,7 @@ export class JobQueue extends EventEmitter {
       nextJob.error = err instanceof Error ? err.message : String(err);
       this.schedulePersist();
       this.emit('statusChange', nextJob);
+      this.jobCompletedSinceLastDrain = true;
       this.processNext();
     }
   }

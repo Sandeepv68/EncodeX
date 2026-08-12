@@ -3,8 +3,9 @@
  * Manages the active transcoder backend, hardware acceleration preferences
  * (persisted to localStorage under 'encodex-hwaccel'), the always-on-top
  * window flag (persisted under 'encodex-always-on-top'), the launch-at-login
- * preference (persisted under 'encodex-launch-at-login'), and the batch queue
- * concurrency (persisted under 'encodex-queue-concurrency').
+ * preference (persisted under 'encodex-launch-at-login'), the batch queue
+ * concurrency (persisted under 'encodex-queue-concurrency'), and the batch
+ * queue "when done" power-action config (persisted under 'encodex-when-done').
  *
  * State held:
  *  - transcoder: the active transcoder backend ('FFMPEG' | 'FFTOOL' | 'BMF')
@@ -13,6 +14,7 @@
  *  - alwaysOnTop: whether the window stays on top of other windows
  *  - launchAtLogin: whether the app launches at OS startup
  *  - queueConcurrency: batch jobs run in parallel (1-4)
+ *  - whenDone: {enabled, action, force} power action for when the batch queue drains
  *
  * Behavior notes:
  *  - Hardware acceleration setters persist the new values to localStorage
@@ -24,6 +26,8 @@
  *    window.electronAPI.setLaunchAtLogin, and then updates state.
  *  - setQueueConcurrency persists the value, forwards it to the main process
  *    via window.electronAPI.queueSetConcurrency, and then updates state.
+ *  - setWhenDone persists the config, forwards it to the main process via
+ *    window.electronAPI.queueSetWhenDone, and then updates state.
  *
  * Consumers:
  *  - Settings UI panels and the conversion form (which reads the transcoder and
@@ -34,24 +38,29 @@ import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { HWACCEL_DEFAULTS, HWACCEL_MODES, HWACCEL_STORAGE_KEY, ENCODER_TYPES, ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
-import type { HwAccelMode, EncoderType } from '../../shared/types';
+import type { HwAccelMode, EncoderType, WhenDoneAction } from '../../shared/types';
 import type { HwAccelStored, SettingsState } from './types';
 import {
   WINDOW_ALWAYS_ON_TOP_STORAGE_KEY,
   QUEUE_CONCURRENCY_STORAGE_KEY,
   LAUNCH_AT_LOGIN_STORAGE_KEY,
+  WHEN_DONE_STORAGE_KEY,
   DEFAULT_QUEUE_CONCURRENCY,
   MAX_QUEUE_CONCURRENCY,
+  DEFAULT_WHEN_DONE_ACTION,
+  WHEN_DONE_ACTIONS,
 } from '../../shared/constants';
 import {
   LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING,
   LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS,
   LOG_FAILED_TO_PERSIST_LAUNCH_AT_LOGIN_SETTING,
   LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY,
+  LOG_FAILED_TO_PERSIST_WHEN_DONE_CONFIG,
   LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING,
   LOG_FAILED_TO_READ_STORED_HARDWARE_ACCELERATION_SETTINGS,
   LOG_FAILED_TO_READ_STORED_LAUNCH_AT_LOGIN_SETTING,
   LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY,
+  LOG_FAILED_TO_READ_STORED_WHEN_DONE_CONFIG,
   LOG_SET_ALWAYS_ON_TOP,
   LOG_SET_ENCODER_TYPE,
   LOG_SET_HARDWARE_ACCELERATION,
@@ -59,6 +68,7 @@ import {
   LOG_SET_LAUNCH_AT_LOGIN,
   LOG_SET_QUEUE_CONCURRENCY,
   LOG_SET_TRANSCODER,
+  LOG_SET_WHEN_DONE,
 } from '../../shared/log-constants';
 
 /**
@@ -210,6 +220,50 @@ function persistQueueConcurrency(concurrency: number): void {
 }
 
 /**
+ * Reads the persisted when-done config from localStorage
+ * ('encodex-when-done') and validates it field-by-field: `enabled` must be a
+ * boolean, `action` must be one of the known WhenDoneAction values, and
+ * `force` must be a boolean. Invalid or missing fields fall back to the
+ * defaults (disabled, DEFAULT_WHEN_DONE_ACTION, force off). Storage failures
+ * are logged and treated as the defaults.
+ * @returns {{enabled: boolean, action: WhenDoneAction, force: boolean}} The
+ *   validated when-done config snapshot.
+ */
+export function readStoredWhenDone(): { enabled: boolean; action: WhenDoneAction; force: boolean } {
+  try {
+    const raw = localStorage.getItem(WHEN_DONE_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<{ enabled: boolean; action: WhenDoneAction; force: boolean }>;
+      const action =
+        parsed.action && (WHEN_DONE_ACTIONS as readonly string[]).includes(parsed.action) ? parsed.action : DEFAULT_WHEN_DONE_ACTION;
+      return {
+        enabled: typeof parsed.enabled === 'boolean' ? parsed.enabled : false,
+        action,
+        force: typeof parsed.force === 'boolean' ? parsed.force : false,
+      };
+    }
+  } catch (err) {
+    log.warn(LOG_FAILED_TO_READ_STORED_WHEN_DONE_CONFIG, err);
+  }
+  return { enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false };
+}
+
+/**
+ * Persists the when-done config to localStorage ('encodex-when-done'). Failures
+ * are logged and swallowed.
+ * @param {{enabled: boolean, action: WhenDoneAction, force: boolean}} config -
+ *   The when-done config to persist.
+ * @returns {void}
+ */
+function persistWhenDone(config: { enabled: boolean; action: WhenDoneAction; force: boolean }): void {
+  try {
+    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify(config));
+  } catch (err) {
+    log.warn(LOG_FAILED_TO_PERSIST_WHEN_DONE_CONFIG, err);
+  }
+}
+
+/**
  * Zustand store for user application settings.
  * Holds the transcoder backend, hardware acceleration preferences (persisted to
  * localStorage and validated at load via readStoredHwAccel), the always-on-top
@@ -305,5 +359,21 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     persistQueueConcurrency(concurrency);
     window.electronAPI?.queueSetConcurrency(concurrency);
     set({ queueConcurrency: concurrency });
+  },
+  whenDone: readStoredWhenDone(),
+  /**
+   * Sets the batch queue when-done config. Persists it to localStorage and
+   * forwards it to the main process via window.electronAPI.queueSetWhenDone,
+   * which performs the selected power action once the queue drains while the
+   * feature is enabled.
+   * @param {{enabled: boolean, action: WhenDoneAction, force: boolean}} config -
+   *   Whether to act when the queue drains, which power action to run, and
+   *   whether open processes should be force-closed.
+   */
+  setWhenDone: (config) => {
+    log.debug(LOG_SET_WHEN_DONE, JSON.stringify(config));
+    persistWhenDone(config);
+    window.electronAPI?.queueSetWhenDone(config);
+    set({ whenDone: config });
   },
 }));
