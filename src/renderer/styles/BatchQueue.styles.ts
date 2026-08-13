@@ -34,6 +34,19 @@ export const FilterChip = styled(Chip)(({ theme }) => ({
   borderRadius: theme.spacing(0.75),
   height: theme.typography.pxToRem(28),
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+  border: `${theme.typography.pxToRem(1)} solid transparent`,
+  '&.MuiChip-colorPrimary': {
+    borderColor: theme.palette.primary.main,
+    '& .MuiChip-label': {
+      color: theme.palette.primary.main,
+    },
+    '&:hover': {
+      borderColor: theme.palette.primary.main,
+      '& .MuiChip-label': {
+        color: theme.palette.primary.main,
+      },
+    },
+  },
 }));
 
 export const SearchField = styled(TextField)(({ theme }) => ({
