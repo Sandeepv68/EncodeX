@@ -128,7 +128,12 @@ export default function LanguageMenu({ condensed = false }: { condensed?: boolea
     <>
       <LanguageMenuBox>
         <Tooltip title={t('app.language')}>
-          <LanguageButton type="button" $condensed={condensed} data-testid="language-menu-button" onClick={(e) => setAnchor(e.currentTarget)}>
+          <LanguageButton
+            type="button"
+            $condensed={condensed}
+            data-testid="language-menu-button"
+            onClick={(e) => setAnchor(e.currentTarget)}
+          >
             <FlagIcon locale={i18n.language} condensed={condensed} />
             {!condensed && <LanguageLabel variant="caption">{LOCALE_MAP[i18n.language]?.label || i18n.language}</LanguageLabel>}
           </LanguageButton>
