@@ -317,6 +317,7 @@
     "skippedDuplicates": "Hopper over {{count}} fil(er) – duplikater eller ikke støttet for denne operasjonen",
     "clearCompleted": "Fjern fullførte",
     "concurrency": "Parallelle jobber",
+    "start": "Start",
     "pause": "Pause",
     "resume": "Fortsett",
     "paused": "Pauset",

@@ -317,6 +317,7 @@
     "skippedDuplicates": "{{count}} bestand(en) overgeslagen: duplicaat of niet ondersteund voor deze bewerking",
     "clearCompleted": "Voltooide wissen",
     "concurrency": "Parallelle taken",
+    "start": "Starten",
     "pause": "Pauzeren",
     "resume": "Hervatten",
     "paused": "Gepauzeerd",

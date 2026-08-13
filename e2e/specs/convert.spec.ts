@@ -6,7 +6,7 @@ import { mockApi, emitConversionProgress } from '../mocks/control';
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
 
 const INPUT = '/media/video.mp4';
-const OUTPUT = '/media/video_converted.mp4';
+const OUTPUT = '/media/video_encodex_converted.mp4';
 
 async function selectOption(page: Page, testId: string, value: string) {
   await page.locator(`[data-testid="${testId}"] [role="combobox"]`).click();

@@ -317,6 +317,7 @@
     "skippedDuplicates": "Sprang {{count}} filer over - dubletter eller ikke understøttet for denne handling",
     "clearCompleted": "Ryd fuldførte",
     "concurrency": "Samtidige job",
+    "start": "Start",
     "pause": "Sæt på pause",
     "resume": "Fortsæt",
     "paused": "Sat på pause",

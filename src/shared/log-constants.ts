@@ -524,10 +524,14 @@ export const LOG_QUEUE_SET_WHEN_DONE = 'setWhenDone:';
 export const LOG_QUEUE_PAUSE = 'pause:';
 /** @const {string} Prefix when the queue is resumed. */
 export const LOG_QUEUE_RESUME = 'resume:';
+/** @const {string} Prefix when the queue is started. */
+export const LOG_QUEUE_START = 'start:';
 /** @const {string} Logged when queuePause is invoked. */
 export const LOG_QUEUE_PAUSE_CALLED = 'queuePause called';
 /** @const {string} Logged when queueResume is invoked. */
 export const LOG_QUEUE_RESUME_CALLED = 'queueResume called';
+/** @const {string} Logged when queueStart is invoked. */
+export const LOG_QUEUE_START_CALLED = 'queueStart called';
 /** @const {string} Prefix when a queued job is reordered. */
 export const LOG_QUEUE_MOVE_TO = 'moveJobTo:';
 /** @const {string} Logged when a move targets a job that is not queued. */

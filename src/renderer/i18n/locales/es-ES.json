@@ -317,6 +317,7 @@
     "skippedDuplicates": "{{count}} archivo(s) omitido(s): duplicado o no compatible con esta operación",
     "clearCompleted": "Limpiar completados",
     "concurrency": "Trabajos en paralelo",
+    "start": "Iniciar",
     "pause": "Pausar",
     "resume": "Reanudar",
     "paused": "En pausa",

@@ -317,6 +317,7 @@
     "skippedDuplicates": "{{count}} file dilewati — duplikat atau tidak didukung untuk operasi ini",
     "clearCompleted": "Bersihkan selesai",
     "concurrency": "Tugas paralel",
+    "start": "Mulai",
     "pause": "Jeda",
     "resume": "Lanjutkan",
     "paused": "Dijeda",

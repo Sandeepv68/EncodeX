@@ -317,6 +317,7 @@
     "skippedDuplicates": "Melangkau {{count}} fail - pendua atau tidak disokong untuk operasi ini",
     "clearCompleted": "Kosongkan selesai",
     "concurrency": "Tugas selari",
+    "start": "Mulakan",
     "pause": "Jeda",
     "resume": "Sambung",
     "paused": "Dijeda",

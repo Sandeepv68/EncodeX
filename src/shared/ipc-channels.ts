@@ -31,6 +31,7 @@
  * @property {string} QUEUE_SET_CONCURRENCY - Set the number of jobs run in parallel.
  * @property {string} QUEUE_SET_WHEN_DONE - Set the power action to run when the queue drains.
  * @property {string} QUEUE_MOVE_TO - Reorder a queued job to a target position.
+ * @property {string} QUEUE_START - Start processing the queued jobs.
  * @property {string} QUEUE_PAUSE - Pause the queue and all active conversions.
  * @property {string} QUEUE_RESUME - Resume a paused queue and start queued jobs.
  * @property {string} QUEUE_EXPORT - Export the queue to a JSON file.
@@ -88,6 +89,7 @@ export const IPC = {
   QUEUE_SET_CONCURRENCY: 'queue-set-concurrency',
   QUEUE_SET_WHEN_DONE: 'queue-set-when-done',
   QUEUE_MOVE_TO: 'queue-move-to',
+  QUEUE_START: 'queue-start',
   QUEUE_PAUSE: 'queue-pause',
   QUEUE_RESUME: 'queue-resume',
   QUEUE_EXPORT: 'queue-export',

@@ -262,10 +262,10 @@ export const QUEUE_STATUS = {
 } as const;
 
 /**
- * Suffix appended to auto-generated output filenames (e.g. 'movie_converted.mp4').
+ * Suffix appended to auto-generated output filenames (e.g. 'movie_encodex_converted.mp4').
  * @const {string} DEFAULT_SUFFIX
  */
-export const DEFAULT_SUFFIX = '_converted';
+export const DEFAULT_SUFFIX = '_encodex_converted';
 
 /**
  * Fallback values used when media metadata is missing or unreadable, so the UI

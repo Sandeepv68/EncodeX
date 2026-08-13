@@ -247,6 +247,13 @@ export interface ElectronAPI {
    */
   queueResume(): Promise<void>;
   /**
+   * Starts processing the batch queue over the `IPC.QUEUE_START`
+   * ('queue-start') channel: the main process begins running the QUEUED jobs
+   * up to the concurrency cap.
+   * @returns {Promise<void>} Resolves once processing is kicked off.
+   */
+  queueStart(): Promise<void>;
+  /**
    * Exports the current batch queue to a JSON file over the
    * `IPC.QUEUE_EXPORT` ('queue-export') channel, using a native save dialog.
    * @returns {Promise<number>} The number of jobs exported, or 0 if the user

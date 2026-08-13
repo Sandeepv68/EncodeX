@@ -317,6 +317,7 @@
     "skippedDuplicates": "{{count}} fil(er) hoppades över: dubblett eller stöds inte för den här åtgärden",
     "clearCompleted": "Rensa slutförda",
     "concurrency": "Parallella jobb",
+    "start": "Starta",
     "pause": "Pausa",
     "resume": "Återuppta",
     "paused": "Pausad",

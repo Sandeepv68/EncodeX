@@ -8,7 +8,13 @@ import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
 function renderControls(
   hasCompleted = false,
   concurrency = 1,
-  opts: { paused?: boolean; hasActive?: boolean; whenDone?: { enabled: boolean; action: string; force: boolean } } = {},
+  opts: {
+    paused?: boolean;
+    hasRunning?: boolean;
+    hasQueued?: boolean;
+    hasActive?: boolean;
+    whenDone?: { enabled: boolean; action: string; force: boolean };
+  } = {},
 ) {
   const operation = BATCH_OPERATIONS[0].value;
   const onOperationChange = vi.fn();
@@ -20,6 +26,7 @@ function renderControls(
   const onConcurrencyChange = vi.fn();
   const onPause = vi.fn();
   const onResume = vi.fn();
+  const onStart = vi.fn();
   const onOutputDirChange = vi.fn();
   const onBrowseDir = vi.fn();
   const onOverwriteChange = vi.fn();
@@ -42,6 +49,9 @@ function renderControls(
       paused={opts.paused ?? false}
       onPause={onPause}
       onResume={onResume}
+      hasRunning={opts.hasRunning ?? false}
+      hasQueued={opts.hasQueued ?? false}
+      onStart={onStart}
       hasActive={opts.hasActive ?? false}
       outputDir=""
       onOutputDirChange={onOutputDirChange}
@@ -65,6 +75,7 @@ function renderControls(
     onConcurrencyChange,
     onPause,
     onResume,
+    onStart,
     onOutputDirChange,
     onBrowseDir,
     onOverwriteChange,
@@ -80,7 +91,7 @@ describe('BatchControls', () => {
     renderControls();
     expect(screen.getByRole('button', { name: 'batchQueue.addFiles' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'batchQueue.cancelAll' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'batchQueue.pause' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'batchQueue.start' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'batchQueue.clearCompleted' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'batchQueue.exportQueue' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'batchQueue.importQueue' })).toBeInTheDocument();
@@ -147,8 +158,9 @@ describe('BatchControls', () => {
     expect(onClearCompleted).toHaveBeenCalledOnce();
   });
 
-  it('renders a Pause button that fires onPause', () => {
-    const { onPause } = renderControls(false, 1, { hasActive: true });
+  it('renders a Pause button when jobs are running that fires onPause', () => {
+    const { onPause } = renderControls(false, 1, { hasRunning: true, hasActive: true });
+    expect(screen.queryByRole('button', { name: 'batchQueue.start' })).not.toBeInTheDocument();
     const pause = screen.getByRole('button', { name: 'batchQueue.pause' });
     expect(pause).toBeEnabled();
     fireEvent.click(pause);
@@ -156,13 +168,28 @@ describe('BatchControls', () => {
   });
 
   it('disables the Pause button when no jobs are queued or running', () => {
-    renderControls(false, 1, { hasActive: false });
+    renderControls(false, 1, { hasRunning: true, hasActive: false });
     expect(screen.getByRole('button', { name: 'batchQueue.pause' })).toBeDisabled();
   });
 
-  it('renders a Resume button instead of Pause when paused and fires onResume', () => {
+  it('renders a Start button when nothing is running and fires onStart', () => {
+    const { onStart } = renderControls(false, 1, { hasQueued: true });
+    expect(screen.queryByRole('button', { name: 'batchQueue.pause' })).not.toBeInTheDocument();
+    const start = screen.getByRole('button', { name: 'batchQueue.start' });
+    expect(start).toBeEnabled();
+    fireEvent.click(start);
+    expect(onStart).toHaveBeenCalledOnce();
+  });
+
+  it('disables the Start button when no jobs are queued', () => {
+    renderControls(false, 1, { hasQueued: false });
+    expect(screen.getByRole('button', { name: 'batchQueue.start' })).toBeDisabled();
+  });
+
+  it('renders a Resume button instead of Start/Pause when paused and fires onResume', () => {
     const { onResume } = renderControls(false, 1, { paused: true });
     expect(screen.queryByRole('button', { name: 'batchQueue.pause' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'batchQueue.start' })).not.toBeInTheDocument();
     const resume = screen.getByRole('button', { name: 'batchQueue.resume' });
     fireEvent.click(resume);
     expect(onResume).toHaveBeenCalledOnce();

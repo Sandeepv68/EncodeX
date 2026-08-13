@@ -317,6 +317,7 @@
     "skippedDuplicates": "Scipeáil {{count}} comhad - dúblach nó gan tacaíocht don oibríocht seo",
     "clearCompleted": "Glan Críochnaithe",
     "concurrency": "Poist Chomhthráthacha",
+    "start": "Tosaigh",
     "pause": "Sos",
     "resume": "Atosaigh",
     "paused": "Ar sos",

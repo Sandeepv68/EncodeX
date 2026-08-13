@@ -317,6 +317,7 @@
     "skippedDuplicates": "{{count}}개 파일을 건너뜀 — 중복이거나 이 작업에서 지원되지 않음",
     "clearCompleted": "완료 지우기",
     "concurrency": "병렬 작업",
+    "start": "시작",
     "pause": "일시 정지",
     "resume": "재개",
     "paused": "일시정지됨",

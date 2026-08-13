@@ -317,6 +317,7 @@
     "skippedDuplicates": "已跳过 {{count}} 个文件 - 重复或不受此操作支持",
     "clearCompleted": "清除已完成",
     "concurrency": "并行任务",
+    "start": "开始",
     "pause": "暂停",
     "resume": "继续",
     "paused": "已暂停",

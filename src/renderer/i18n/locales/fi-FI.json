@@ -317,6 +317,7 @@
     "skippedDuplicates": "Ohitettu {{count}} tiedostoa - kaksoiskappaleita tai ei tueta tälle toiminnolle",
     "clearCompleted": "Tyhjennä valmiit",
     "concurrency": "Samanaikaiset työt",
+    "start": "Käynnistä",
     "pause": "Keskeytä",
     "resume": "Jatka",
     "paused": "Tauolla",

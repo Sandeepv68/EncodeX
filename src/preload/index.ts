@@ -35,7 +35,7 @@
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueSetWhenDone`, `queueMoveTo`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueSetWhenDone`, `queueMoveTo`, `queueStart`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
@@ -101,6 +101,7 @@ import {
   LOG_QUEUE_RESUME_CALLED,
   LOG_QUEUE_SET_CONCURRENCY,
   LOG_QUEUE_SET_WHEN_DONE,
+  LOG_QUEUE_START_CALLED,
   LOG_RESUME_CONVERSION_CALLED,
   LOG_REVEAL_FILE,
   LOG_SELECT_DIRECTORY_CALLED,
@@ -135,7 +136,7 @@ const log = new Logger('preload');
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueSetWhenDone`, `queueMoveTo`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueSetWhenDone`, `queueMoveTo`, `queueStart`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
@@ -504,6 +505,18 @@ const api = {
   queueResume: () => {
     log.info(LOG_QUEUE_RESUME_CALLED);
     return ipcRenderer.invoke(IPC.QUEUE_RESUME) as Promise<void>;
+  },
+  /**
+   * Starts processing the batch queue: the main process begins running the
+   * QUEUED jobs up to the concurrency cap. Logs the call at info level, then
+   * invokes the main process over the `IPC.QUEUE_START` ('queue-start')
+   * channel.
+   *
+   * @returns {Promise<void>} Resolves once processing is kicked off.
+   */
+  queueStart: () => {
+    log.info(LOG_QUEUE_START_CALLED);
+    return ipcRenderer.invoke(IPC.QUEUE_START) as Promise<void>;
   },
   /**
    * Exports the current batch queue to a JSON file chosen with a native save

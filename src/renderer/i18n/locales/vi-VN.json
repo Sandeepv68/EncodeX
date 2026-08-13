@@ -317,6 +317,7 @@
     "skippedDuplicates": "Bỏ qua {{count}} tệp - trùng lặp hoặc không được hỗ trợ cho thao tác này",
     "clearCompleted": "Xóa các mục đã hoàn thành",
     "concurrency": "Tác vụ song song",
+    "start": "Bắt đầu",
     "pause": "Tạm dừng",
     "resume": "Tiếp tục",
     "paused": "Đã tạm dừng",

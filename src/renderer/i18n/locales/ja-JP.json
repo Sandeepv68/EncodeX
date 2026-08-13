@@ -317,6 +317,7 @@
     "skippedDuplicates": "{{count}} 件のファイルをスキップしました — 重複、またはこの操作でサポートされていません",
     "clearCompleted": "完了をクリア",
     "concurrency": "並行ジョブ",
+    "start": "開始",
     "pause": "一時停止",
     "resume": "再開",
     "paused": "一時停止中",

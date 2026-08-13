@@ -19,6 +19,7 @@ const queueClearCompletedMock = vi.mocked(window.electronAPI.queueClearCompleted
 const queueSetConcurrencyMock = vi.mocked(window.electronAPI.queueSetConcurrency);
 const queuePauseMock = vi.mocked(window.electronAPI.queuePause);
 const queueResumeMock = vi.mocked(window.electronAPI.queueResume);
+const queueStartMock = vi.mocked(window.electronAPI.queueStart);
 const queueExportMock = vi.mocked(window.electronAPI.queueExport);
 const queueImportMock = vi.mocked(window.electronAPI.queueImport);
 const onQueueProgressMock = vi.mocked(window.electronAPI.onQueueProgress);
@@ -29,7 +30,7 @@ function job(overrides: Partial<QueueJob> = {}): QueueJob {
   return {
     id: 'job-1',
     input: '/in/video.mp4',
-    output: '/out/video_converted.mp4',
+    output: '/out/video_encodex_converted.mp4',
     options: {},
     status: 'queued',
     progress: 0,
@@ -96,7 +97,7 @@ describe('BatchQueue', () => {
     await waitFor(() =>
       expect(queueAddMock).toHaveBeenCalledWith(
         '/in/video.mp4',
-        '/in/video_converted.mp4',
+        '/in/video_encodex_converted.mp4',
         {
           videoCodec: 'libx264',
           audioCodec: 'aac',
@@ -121,8 +122,8 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
     await waitFor(() => expect(queueAddMock).toHaveBeenCalledTimes(2));
-    expect(queueAddMock).toHaveBeenCalledWith('/a/one.mkv', '/a/one_converted.mkv', expect.any(Object), 'FFMPEG', false);
-    expect(queueAddMock).toHaveBeenCalledWith('/a/two.mkv', '/a/two_converted.mkv', expect.any(Object), 'FFMPEG', false);
+    expect(queueAddMock).toHaveBeenCalledWith('/a/one.mkv', '/a/one_encodex_converted.mkv', expect.any(Object), 'FFMPEG', false);
+    expect(queueAddMock).toHaveBeenCalledWith('/a/two.mkv', '/a/two_encodex_converted.mkv', expect.any(Object), 'FFMPEG', false);
   });
 
   it('adds files with the extract audio operation dropping the video codec', async () => {
@@ -136,7 +137,7 @@ describe('BatchQueue', () => {
     await waitFor(() =>
       expect(queueAddMock).toHaveBeenCalledWith(
         '/in/video.mp4',
-        '/in/video_converted.m4a',
+        '/in/video_encodex_converted.m4a',
         {
           videoCodec: undefined,
           audioCodec: 'aac',
@@ -164,7 +165,7 @@ describe('BatchQueue', () => {
     await waitFor(() =>
       expect(queueAddMock).toHaveBeenCalledWith(
         '/in/photo.png',
-        '/in/photo_converted.png',
+        '/in/photo_encodex_converted.png',
         {
           videoCodec: undefined,
           audioCodec: undefined,
@@ -197,7 +198,7 @@ describe('BatchQueue', () => {
     await waitFor(() =>
       expect(queueAddMock).toHaveBeenCalledWith(
         '/in/photo.png',
-        '/in/photo_converted.webp',
+        '/in/photo_encodex_converted.webp',
         {
           videoCodec: undefined,
           audioCodec: undefined,
@@ -225,7 +226,7 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
     await waitFor(() =>
-      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_converted.mkv', expect.any(Object), 'FFMPEG', false),
+      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_encodex_converted.mkv', expect.any(Object), 'FFMPEG', false),
     );
   });
 
@@ -241,7 +242,7 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
     await waitFor(() =>
-      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mkv', '/in/video_converted.mkv', expect.any(Object), 'FFMPEG', false),
+      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mkv', '/in/video_encodex_converted.mkv', expect.any(Object), 'FFMPEG', false),
     );
   });
 
@@ -323,7 +324,7 @@ describe('BatchQueue', () => {
     renderPage();
     await screen.findByText(/video\.mp4/);
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.retry' }));
-    await waitFor(() => expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/out/video_converted.mp4', {}, 'FFMPEG', true));
+    await waitFor(() => expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/out/video_encodex_converted.mp4', {}, 'FFMPEG', true));
     expect(queueRemoveMock).toHaveBeenCalledWith('job-1');
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'toast.jobAdded')).toBe(true);
   });
@@ -420,7 +421,7 @@ describe('BatchQueue', () => {
   it('filters jobs by search term on the input basename', async () => {
     queueListMock.mockResolvedValue([
       job({ id: 'job-1' }),
-      job({ id: 'job-2', input: '/in/photo.png', output: '/out/photo_converted.png' }),
+      job({ id: 'job-2', input: '/in/photo.png', output: '/out/photo_encodex_converted.png' }),
     ]);
     renderPage();
     await screen.findByText(/video\.mp4/);
@@ -439,7 +440,13 @@ describe('BatchQueue', () => {
     const file = new File(['x'], 'dropped.mp4');
     fireEvent.drop(window, { dataTransfer: { files: [file] } });
     await waitFor(() =>
-      expect(queueAddMock).toHaveBeenCalledWith('/in/dropped.mp4', '/in/dropped_converted.mp4', expect.any(Object), 'FFMPEG', false),
+      expect(queueAddMock).toHaveBeenCalledWith(
+        '/in/dropped.mp4',
+        '/in/dropped_encodex_converted.mp4',
+        expect.any(Object),
+        'FFMPEG',
+        false,
+      ),
     );
   });
 
@@ -452,7 +459,7 @@ describe('BatchQueue', () => {
   });
 
   it('skips duplicate files already in the queue', async () => {
-    queueListMock.mockResolvedValue([job({ id: 'job-1', output: '/in/video_converted.mp4' })]);
+    queueListMock.mockResolvedValue([job({ id: 'job-1', output: '/in/video_encodex_converted.mp4' })]);
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
     queueAddMock.mockResolvedValue('job-9');
     renderPage();
@@ -492,7 +499,7 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
     await waitFor(() =>
-      expect(queueAddMock).toHaveBeenCalledWith('/in/photo.png', '/in/photo_converted.png', expect.any(Object), 'FFMPEG', false),
+      expect(queueAddMock).toHaveBeenCalledWith('/in/photo.png', '/in/photo_encodex_converted.png', expect.any(Object), 'FFMPEG', false),
     );
   });
 
@@ -546,11 +553,22 @@ describe('BatchQueue', () => {
     expect(screen.getByRole('button', { name: 'batchQueue.pause' })).toBeInTheDocument();
   });
 
-  it('disables the pause button when no jobs are queued or running', async () => {
+  it('disables the start button when no jobs are queued or running', async () => {
     queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'done' })]);
     renderPage();
     await screen.findByText(/video\.mp4/);
-    expect(screen.getByRole('button', { name: 'batchQueue.pause' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'batchQueue.start' })).toBeDisabled();
+  });
+
+  it('starts the queue via queueStart when queued jobs are waiting', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'queued' })]);
+    queueStartMock.mockResolvedValue(undefined);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    const start = screen.getByRole('button', { name: 'batchQueue.start' });
+    expect(start).toBeEnabled();
+    fireEvent.click(start);
+    await waitFor(() => expect(queueStartMock).toHaveBeenCalledOnce());
   });
 
   it('writes outputs into the chosen directory when a directory is browsed', async () => {
@@ -564,7 +582,7 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
     await waitFor(() =>
-      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/out/video_converted.mp4', expect.any(Object), 'FFMPEG', false),
+      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/out/video_encodex_converted.mp4', expect.any(Object), 'FFMPEG', false),
     );
   });
 
@@ -579,7 +597,7 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
     await waitFor(() =>
-      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_converted.mp4', expect.any(Object), 'FFMPEG', false),
+      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_encodex_converted.mp4', expect.any(Object), 'FFMPEG', false),
     );
   });
 
@@ -592,7 +610,7 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
     await waitFor(() =>
-      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_converted.mp4', expect.any(Object), 'FFMPEG', true),
+      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_encodex_converted.mp4', expect.any(Object), 'FFMPEG', true),
     );
   });
 
@@ -632,9 +650,9 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByText('batchQueue.operationCompressImage'));
     fireEvent.click(screen.getByText('batchQueue.reviewAdd'));
     await waitFor(() =>
-      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_converted.mp4', expect.any(Object), 'FFMPEG', false),
+      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_encodex_converted.mp4', expect.any(Object), 'FFMPEG', false),
     );
-    expect(queueAddMock).toHaveBeenCalledWith('/in/photo.png', '/in/photo_converted.png', expect.any(Object), 'FFMPEG', false);
+    expect(queueAddMock).toHaveBeenCalledWith('/in/photo.png', '/in/photo_encodex_converted.png', expect.any(Object), 'FFMPEG', false);
   });
 
   it('cancelling the review dialog enqueues nothing and closes it', async () => {
@@ -706,7 +724,7 @@ describe('BatchQueue', () => {
   });
 
   it('allows re-adding the same input when the computed output differs from an existing job', async () => {
-    queueListMock.mockResolvedValue([job({ id: 'job-1', output: '/out/video_converted.mp4' })]);
+    queueListMock.mockResolvedValue([job({ id: 'job-1', output: '/out/video_encodex_converted.mp4' })]);
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
     queueAddMock.mockResolvedValue('job-2');
     renderPage();
@@ -714,7 +732,7 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
     await waitFor(() =>
-      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_converted.mp4', expect.any(Object), 'FFMPEG', false),
+      expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_encodex_converted.mp4', expect.any(Object), 'FFMPEG', false),
     );
   });
 
@@ -729,7 +747,7 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
     await waitFor(() => expect(queueAddMock).toHaveBeenCalledTimes(1));
-    expect(queueAddMock).toHaveBeenCalledWith('/a/video.mp4', '/out/video_converted.mp4', expect.any(Object), 'FFMPEG', false);
+    expect(queueAddMock).toHaveBeenCalledWith('/a/video.mp4', '/out/video_encodex_converted.mp4', expect.any(Object), 'FFMPEG', false);
     expect(
       useToastStore.getState().toasts.some((toast) => toast.type === 'warning' && toast.message === 'batchQueue.skippedDuplicates'),
     ).toBe(true);

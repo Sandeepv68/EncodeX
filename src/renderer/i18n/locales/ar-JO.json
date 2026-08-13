@@ -317,6 +317,7 @@
     "skippedDuplicates": "تم تخطي {{count}} ملف — مكرر أو غير مدعوم لهذه العملية",
     "clearCompleted": "مسح المكتملة",
     "concurrency": "مهام متوازية",
+    "start": "ابدأ",
     "pause": "إيقاف مؤقت",
     "resume": "استئناف",
     "paused": "إيقاف مؤقت",

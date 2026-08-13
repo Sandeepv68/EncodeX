@@ -55,6 +55,9 @@ export interface BatchControlsProps {
   paused: boolean;
   onPause: () => void;
   onResume: () => void;
+  hasRunning: boolean;
+  hasQueued: boolean;
+  onStart: () => void;
   hasActive: boolean;
   outputDir: string;
   onOutputDirChange: (dir: string) => void;

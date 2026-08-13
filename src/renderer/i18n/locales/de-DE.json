@@ -317,6 +317,7 @@
     "skippedDuplicates": "{{count}} Datei(en) übersprungen – Duplikat oder für diesen Vorgang nicht unterstützt",
     "clearCompleted": "Abgeschlossene löschen",
     "concurrency": "Parallele Aufgaben",
+    "start": "Starten",
     "pause": "Pausieren",
     "resume": "Fortsetzen",
     "paused": "Pausiert",

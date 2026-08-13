@@ -17,6 +17,7 @@ interface FakeJobQueue {
   moveJobTo: ReturnType<typeof vi.fn>;
   pause: ReturnType<typeof vi.fn>;
   resume: ReturnType<typeof vi.fn>;
+  start: ReturnType<typeof vi.fn>;
   getConcurrency: ReturnType<typeof vi.fn>;
   isPaused: ReturnType<typeof vi.fn>;
   emit: (ev: string, ...args: unknown[]) => void;
@@ -97,6 +98,7 @@ vi.mock('../../queue/job-queue', () => {
       moveJobTo: ReturnType<typeof vi.fn>;
       pause: ReturnType<typeof vi.fn>;
       resume: ReturnType<typeof vi.fn>;
+      start: ReturnType<typeof vi.fn>;
       getConcurrency: ReturnType<typeof vi.fn>;
       isPaused: ReturnType<typeof vi.fn>;
       constructor() {
@@ -110,6 +112,7 @@ vi.mock('../../queue/job-queue', () => {
         this.moveJobTo = vi.fn();
         this.pause = vi.fn();
         this.resume = vi.fn();
+        this.start = vi.fn();
         this.getConcurrency = vi.fn();
         this.isPaused = vi.fn();
         jobQueueInstances.push(this as never);
@@ -208,6 +211,11 @@ describe('registerQueueHandlers', () => {
   it('QUEUE_RESUME delegates to resume', async () => {
     await getHandlers()[IPC.QUEUE_RESUME]();
     expect(jobQueue.resume).toHaveBeenCalledOnce();
+  });
+
+  it('QUEUE_START delegates to start', async () => {
+    await getHandlers()[IPC.QUEUE_START]();
+    expect(jobQueue.start).toHaveBeenCalledOnce();
   });
 
   it('QUEUE_EXPORT writes a portable snapshot and returns the job count', async () => {

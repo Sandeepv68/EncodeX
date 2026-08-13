@@ -317,6 +317,7 @@
     "skippedDuplicates": "已略過 {{count}} 個檔案 - 重複或不受此操作支援",
     "clearCompleted": "清除已完成",
     "concurrency": "平行工作",
+    "start": "開始",
     "pause": "暫停",
     "resume": "繼續",
     "paused": "已暫停",

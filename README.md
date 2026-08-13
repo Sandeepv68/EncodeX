@@ -386,7 +386,7 @@ To make `encodex` available globally, run `npm link` from the project root (or `
 | --------------------------- | -------------------------------------------------------------- |
 | `-j, --concurrency <1-4>`   | Parallel jobs (default: 1, clamped 1–4)                        |
 | `--out-dir <dir>`           | Output directory for converted files                           |
-| `--suffix <s>`              | Suffix appended to derived output names (default: `_converted`) |
+| `--suffix <s>`              | Suffix appended to derived output names (default: `_encodex_converted`) |
 
 ## 🧪 Testing
 

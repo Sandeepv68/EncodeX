@@ -317,6 +317,7 @@
     "skippedDuplicates": "Pominięto {{count}} plik(i) – duplikaty lub nieobsługiwane dla tej operacji",
     "clearCompleted": "Wyczyść ukończone",
     "concurrency": "Równoległe zadania",
+    "start": "Uruchom",
     "pause": "Pauza",
     "resume": "Wznów",
     "paused": "Wstrzymano",

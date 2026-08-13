@@ -317,6 +317,7 @@
     "skippedDuplicates": "Lumaktaw sa {{count}} file - duplicate o hindi suportado para sa operasyong ito",
     "clearCompleted": "I-clear ang natapos",
     "concurrency": "Mga parallel job",
+    "start": "Simulan",
     "pause": "I-pause",
     "resume": "Ipagpatuloy",
     "paused": "Naka-pause",

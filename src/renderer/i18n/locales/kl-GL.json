@@ -317,6 +317,7 @@
     "skippedDuplicates": "Filiussat {{count}} piiarneqarput - duplicate-ut imaluunnit unioqquttuut",
     "clearCompleted": "Naammassineqartut piiaruk",
     "concurrency": "Concurrency",
+    "start": "Aallartit",
     "pause": "Unartak",
     "resume": "Saqqummersaruk",
     "paused": "Unartoq",

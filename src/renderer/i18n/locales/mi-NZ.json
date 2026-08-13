@@ -317,6 +317,7 @@
     "skippedDuplicates": "I pekea {{count}} kōnae - tāruarua, kāore rānei e tautokohia mō tēnei mahi",
     "clearCompleted": "Mukua ngā Mea Oti",
     "concurrency": "Ngā Mahi Whakarara",
+    "start": "Tīmata",
     "pause": "Tārea",
     "resume": "Haere tonu",
     "paused": "Kua tārewa",

@@ -355,7 +355,7 @@ export default function BatchQueue() {
   const transcoderRef = useRef(TRANSCODER_TYPES[0]);
 
   /**
-   * Suffix inserted into every generated output file name (e.g. `_converted`),
+   * Suffix inserted into every generated output file name (e.g. `_encodex_converted`),
    * producing `name<suffix>.ext` next to the source file.
    * @type {React.MutableRefObject<string>}
    */
@@ -413,8 +413,8 @@ export default function BatchQueue() {
 
   /**
    * On mount, pushes the persisted concurrency cap to the main process so the
-   * queue processes at most that many jobs in parallel, and starts any jobs the
-   * cap allows that were still queued from a previous session.
+   * queue processes at most that many jobs in parallel. Queued jobs are not
+   * started by this - the batch only begins when the user presses Start.
    * @returns {void}
    */
   useEffect(() => {
@@ -857,6 +857,17 @@ export default function BatchQueue() {
   };
 
   /**
+   * Starts processing the queued batch in the main process (a no-op when the
+   * queue is already running or has nothing queued) and clears any paused
+   * toolbar state.
+   * @returns {Promise<void>} Resolves once the start request is handled.
+   */
+  const handleStart = async () => {
+    await window.electronAPI.queueStart();
+    setPaused(false);
+  };
+
+  /**
    * Exports the current queue to a JSON file via the native save dialog. When
    * at least one job was written, shows a success toast; a cancelled dialog
    * (count 0) is silently ignored.
@@ -960,6 +971,9 @@ export default function BatchQueue() {
           paused={paused}
           onPause={handlePause}
           onResume={handleResume}
+          hasRunning={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.RUNNING)}
+          hasQueued={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
+          onStart={handleStart}
           hasActive={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING)}
           outputDir={outputDir}
           onOutputDirChange={setOutputDir}

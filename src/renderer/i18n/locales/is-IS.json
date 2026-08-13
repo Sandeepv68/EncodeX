@@ -317,6 +317,7 @@
     "skippedDuplicates": "Sleppt {{count}} skrám - tvöfaldar eða ekki studdar fyrir þessa aðgerð",
     "clearCompleted": "Hreinsa lokið",
     "concurrency": "Samhliða verk",
+    "start": "Byrja",
     "pause": "Gera hlé",
     "resume": "Halda áfram",
     "paused": "Í bið",
