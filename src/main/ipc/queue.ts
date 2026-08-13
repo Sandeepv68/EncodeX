@@ -2,10 +2,10 @@
  * @fileoverview IPC handlers for the batch conversion job queue.
  * Registers handlers for the QUEUE_ADD, QUEUE_REMOVE, QUEUE_LIST,
  * QUEUE_GET_STATE, QUEUE_CANCEL_ALL, QUEUE_CLEAR_COMPLETED, QUEUE_SET_CONCURRENCY,
- * QUEUE_SET_WHEN_DONE, QUEUE_MOVE_TO, QUEUE_PAUSE and QUEUE_RESUME channels and
- * forwards the JobQueue's lifecycle events to the renderer on the QUEUE_ADDED,
- * QUEUE_REMOVED, QUEUE_STATUS_CHANGE, QUEUE_PROGRESS, QUEUE_CANCELLED and
- * QUEUE_MOVED channels. One JobQueue
+ * QUEUE_SET_WHEN_DONE, QUEUE_MOVE_TO, QUEUE_START, QUEUE_PAUSE and QUEUE_RESUME
+ * channels and forwards the JobQueue's lifecycle events to the renderer on the
+ * QUEUE_ADDED, QUEUE_REMOVED, QUEUE_STATUS_CHANGE, QUEUE_PROGRESS, QUEUE_CANCELLED
+ * and QUEUE_MOVED channels. One JobQueue
  * instance (src/main/queue/job-queue.ts) is created per registration call and
  * executes conversions in the main process, running up to the configured
  * concurrency of jobs at a time and processing the next queued job on
@@ -47,6 +47,7 @@ import {
   LOG_IPC_QUEUE_RESUME_CALLED,
   LOG_IPC_QUEUE_SET_CONCURRENCY,
   LOG_IPC_QUEUE_SET_WHEN_DONE,
+  LOG_QUEUE_START_CALLED,
   LOG_QUEUE_CANCELLED,
   LOG_QUEUE_EXPORTED,
   LOG_QUEUE_IMPORTED,
@@ -156,8 +157,9 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
    * Enqueues a new conversion job. When `overwrite` is not true and the output
    * path already exists on disk, the request is rejected with an
    * OUTPUT_EXISTS AppError so the renderer can surface it. Otherwise the job
-   * is queued, processing is kicked off (if idle), and a QUEUE_ADDED event
-   * with the full job is pushed.
+   * is queued and a QUEUE_ADDED event with the full job is pushed. The job
+   * stays QUEUED until the user starts the batch (QUEUE_START) or a running
+   * queue frees a slot - adding files never starts processing automatically.
    *
    * @param {string} input - Absolute path of the source media file.
    * @param {string} output - Absolute path of the destination file.
@@ -249,8 +251,9 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
 
   /**
    * Handles the IPC.QUEUE_SET_CONCURRENCY channel (queue-set-concurrency).
-   * Updates how many queued jobs run in parallel (1-4) and starts any jobs
-   * that the new cap allows.
+   * Updates how many queued jobs run in parallel (1-4). If the queue is
+   * already running, jobs that the new cap allows are started to refill the
+   * freed slots; a stopped queue is never started by this handler.
    *
    * @param {number} concurrency - The concurrency cap (1-4).
    * @returns {Promise<void>} Resolves once the cap is applied.
@@ -288,6 +291,18 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
   ipcMain.handle(IPC.QUEUE_MOVE_TO, async (_event, id: string, toPosition: number) => {
     log.info(LOG_IPC_QUEUE_MOVE_TO, id, toPosition);
     return jobQueue.moveJobTo(id, toPosition);
+  });
+
+  /**
+   * Handles the IPC.QUEUE_START channel (queue-start).
+   * Starts processing the queued jobs, running them up to the concurrency
+   * cap. No-op when the queue is already running or has nothing queued.
+   *
+   * @returns {Promise<void>} Resolves once processing is kicked off.
+   */
+  ipcMain.handle(IPC.QUEUE_START, async () => {
+    log.info(LOG_QUEUE_START_CALLED);
+    jobQueue.start();
   });
 
   /**

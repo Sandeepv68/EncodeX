@@ -59,7 +59,7 @@ const log = new Logger('renderer/hooks/useConversion');
  *     videoCodec, copyMode, outputUserSet or isConverting change): while no
  *     conversion is running, an input is selected and the user has not manually
  *     set the output, the hook computes a suggested path by stripping the input
- *     extension and appending `DEFAULT_SUFFIX` (e.g. '_converted') plus the
+ *     extension and appending `DEFAULT_SUFFIX` (e.g. '_encodex_converted') plus the
  *     extension suggested for the active video codec (or the input extension in
  *     copy mode), and stores it via `store.setOutputAuto()`.
  *

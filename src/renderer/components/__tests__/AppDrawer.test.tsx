@@ -13,11 +13,11 @@ function LocationProbe() {
   return <span data-testid="location">{location.pathname}</span>;
 }
 
-function renderDrawer({ isMobile = false, onNavigate = vi.fn() } = {}) {
+function renderDrawer({ isMobile = false, condensed = false, onNavigate = vi.fn(), onToggleCondense = vi.fn() } = {}) {
   return render(
     <MemoryRouter initialEntries={['/convert']}>
       <ColorModeProvider>
-        <AppDrawer isMobile={isMobile} onNavigate={onNavigate} />
+        <AppDrawer isMobile={isMobile} condensed={condensed} onToggleCondense={onToggleCondense} onNavigate={onNavigate} />
         <LocationProbe />
       </ColorModeProvider>
     </MemoryRouter>,
@@ -131,5 +131,57 @@ describe('AppDrawer', () => {
     useQueueStore.getState().setJobs([]);
     renderDrawer();
     expect(screen.queryByTestId('nav-batch-blip')).not.toBeInTheDocument();
+  });
+
+  it('shows the condense button on desktop', () => {
+    renderDrawer();
+    expect(screen.getByTestId('drawer-condense-button')).toBeInTheDocument();
+  });
+
+  it('hides the condense button on mobile', () => {
+    renderDrawer({ isMobile: true });
+    expect(screen.queryByTestId('drawer-condense-button')).not.toBeInTheDocument();
+  });
+
+  it('calls onToggleCondense when the condense button is clicked', () => {
+    const onToggleCondense = vi.fn();
+    renderDrawer({ onToggleCondense });
+    fireEvent.click(screen.getByTestId('drawer-condense-button'));
+    expect(onToggleCondense).toHaveBeenCalledOnce();
+  });
+
+  it('hides the nav labels when condensed', () => {
+    renderDrawer({ condensed: true });
+    expect(screen.queryByText('nav.convert')).not.toBeInTheDocument();
+    expect(screen.queryByText('nav.dashboard')).not.toBeInTheDocument();
+  });
+
+  it('still navigates from the icon when condensed', () => {
+    renderDrawer({ condensed: true });
+    fireEvent.click(screen.getByTestId('nav-item-dashboard'));
+    expect(screen.getByTestId('location')).toHaveTextContent('/');
+  });
+
+  it('shows the blip on the condensed convert item while a conversion is in progress', () => {
+    useConversionStore.getState().setIsConverting(true);
+    renderDrawer({ condensed: true });
+    expect(screen.getByTestId('nav-convert-blip')).toBeInTheDocument();
+  });
+
+  it('shows the batch count badge on the condensed batch item', () => {
+    useQueueStore.getState().setJobs([
+      {
+        id: '1',
+        input: 'in.mp4',
+        output: 'out.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.RUNNING,
+        progress: 50,
+        createdAt: 1,
+      },
+    ]);
+    renderDrawer({ condensed: true });
+    expect(screen.getByTestId('nav-batch-blip')).toHaveTextContent('1');
   });
 });

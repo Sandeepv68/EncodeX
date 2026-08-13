@@ -246,8 +246,8 @@ describe('runBatch (real FFmpeg)', () => {
       themeId: theme,
     });
 
-    expect(fs.existsSync(path.join(outDir, 'input_converted.mkv'))).toBe(true);
-    expect(fs.existsSync(path.join(outDir, 'second_converted.mkv'))).toBe(true);
+    expect(fs.existsSync(path.join(outDir, 'input_encodex_converted.mkv'))).toBe(true);
+    expect(fs.existsSync(path.join(outDir, 'second_encodex_converted.mkv'))).toBe(true);
   });
 
   it('applies a custom suffix to outputs with and without --output-dir', async () => {

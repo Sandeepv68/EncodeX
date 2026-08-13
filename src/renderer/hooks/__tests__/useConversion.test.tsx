@@ -117,13 +117,13 @@ describe('useConversion', () => {
   it('auto-suggests an output file when none is user-set', () => {
     useConversionStore.setState({ inputFile: 'in.mp4', outputFile: null, outputUserSet: false });
     renderHook(() => useConversion());
-    expect(useConversionStore.getState().outputFile).toBe('in_converted.mp4');
+    expect(useConversionStore.getState().outputFile).toBe('in_encodex_converted.mp4');
   });
 
   it('auto-suggests an output file preserving the input extension in copy mode', () => {
     useConversionStore.setState({ inputFile: 'video.webm', outputFile: null, outputUserSet: false, copyMode: true });
     renderHook(() => useConversion());
-    expect(useConversionStore.getState().outputFile).toBe('video_converted.webm');
+    expect(useConversionStore.getState().outputFile).toBe('video_encodex_converted.webm');
   });
 
   it('does not override an output file the user set', () => {

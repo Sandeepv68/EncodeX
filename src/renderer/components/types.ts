@@ -25,6 +25,8 @@ import type {
 export interface AppDrawerProps {
   isMobile: boolean;
   onNavigate: () => void;
+  condensed: boolean;
+  onToggleCondense: () => void;
 }
 
 /**
@@ -53,6 +55,9 @@ export interface BatchControlsProps {
   paused: boolean;
   onPause: () => void;
   onResume: () => void;
+  hasRunning: boolean;
+  hasQueued: boolean;
+  onStart: () => void;
   hasActive: boolean;
   outputDir: string;
   onOutputDirChange: (dir: string) => void;

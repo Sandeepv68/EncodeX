@@ -39,6 +39,7 @@ import {
   LOG_QUEUE_MOVE_TO_CLAMPED,
   LOG_QUEUE_PAUSE,
   LOG_QUEUE_RESUME,
+  LOG_QUEUE_START,
   LOG_QUEUE_SET_CONCURRENCY,
   LOG_QUEUE_SIZE,
   LOG_QUEUE_STATE_CLEARED,
@@ -99,6 +100,13 @@ export interface JobQueueOptions {
  * (first QUEUED entries). Every progress, error, and completion handler
  * removes the finished job from the active set and calls `processNext()`
  * again, which drains the queue until no QUEUED jobs remain.
+ *
+ * Explicit start: jobs added via `addJob()` (and jobs restored from a
+ * persisted snapshot) are left QUEUED until {@link start} is called - nothing
+ * starts automatically. `processNext()` is invoked only by `start()`, by
+ * `resume()` after a pause, and by the in-flight completion/error handlers so
+ * a running queue drains. Changing the concurrency cap refills currently
+ * active slots but never starts a stopped queue.
  */
 export class JobQueue extends EventEmitter {
   /** Backing store of all known jobs (queued, running, done, or errored). */
@@ -126,8 +134,9 @@ export class JobQueue extends EventEmitter {
    * Creates a queue that runs up to `concurrency` conversions in parallel.
    * When a persistence adapter is provided, a previously saved snapshot is
    * loaded immediately: RUNNING jobs are remapped to QUEUED (progress reset)
-   * so they re-run on launch, DONE/ERROR entries are preserved, the saved
-   * concurrency cap is restored, and queued jobs begin processing.
+   * so they re-run on launch, DONE/ERROR entries are preserved, and the saved
+   * concurrency cap is restored. Nothing starts automatically - call
+   * {@link start} to process the restored QUEUED jobs.
    * @param {number | JobQueueOptions} [options=1] - Concurrency cap as a bare
    *   number, or a full {@link JobQueueOptions} object.
    */
@@ -145,9 +154,9 @@ export class JobQueue extends EventEmitter {
    *
    * RUNNING jobs are downgraded to QUEUED (with progress reset) so they are
    * re-run on launch; DONE/ERROR jobs are kept as-is; the saved concurrency
-   * cap is applied (clamped); and `processNext()` starts processing restored
-   * QUEUED jobs. No events are emitted: the renderer performs a fresh
-   * `queueList()` on mount.
+   * cap is applied (clamped). No events are emitted: the renderer performs a
+   * fresh `queueList()` on mount. Restored jobs stay QUEUED until {@link start}
+   * is called.
    * @returns {void}
    */
   private loadPersistedState(): void {
@@ -164,7 +173,6 @@ export class JobQueue extends EventEmitter {
       this.queue.push(job);
     }
     log.info(LOG_QUEUE_STATE_RESTORED, this.queue.length, 'jobs');
-    this.processNext();
   }
 
   /**
@@ -215,7 +223,9 @@ export class JobQueue extends EventEmitter {
   }
 
   /**
-   * Updates the concurrency cap and starts any now-possible queued jobs.
+   * Updates the concurrency cap. If the queue is currently running (at least
+   * one active conversion), now-possible queued jobs are started to refill the
+   * freed slots; a stopped queue is never started by this method.
    * The value is clamped to 1-4.
    * @param {number} concurrency - The new cap (1-4).
    * @returns {void}
@@ -224,7 +234,9 @@ export class JobQueue extends EventEmitter {
     this.concurrency = Math.min(Math.max(concurrency, 1), MAX_QUEUE_CONCURRENCY);
     log.info(LOG_QUEUE_SET_CONCURRENCY, this.concurrency);
     this.schedulePersist();
-    this.processNext();
+    if (this.activeJobs.size > 0) {
+      this.processNext();
+    }
   }
 
   /**
@@ -290,13 +302,14 @@ export class JobQueue extends EventEmitter {
   }
 
   /**
-   * Adds a new conversion job to the queue and starts processing.
+   * Adds a new conversion job to the queue without starting it.
    *
    * Creates a job with a random UUID, the given input/output/options, the
    * requested transcoder backend, initial status QUEUED, progress 0, and the
-   * current timestamp. The job is pushed to the back of the queue, an `added`
-   * event is emitted, and `processNext()` is invoked (a no-op when the
-   * concurrency cap is already reached).
+   * current timestamp. The job is pushed to the back of the queue and an
+   * `added` event is emitted. The job stays QUEUED until {@link start} is
+   * called (or, if the queue is already running, until a slot frees up) - it
+   * is never started automatically by adding files.
    * @param {string} input - Absolute path of the input media file
    * @param {string} output - Absolute path where the converted file is written
    * @param {ConversionOptions} options - Encoding/decoding options for the job
@@ -323,8 +336,21 @@ export class JobQueue extends EventEmitter {
     log.debug(LOG_QUEUE_SIZE, this.queue.length);
     this.emit('added', job);
     this.schedulePersist();
-    this.processNext();
     return id;
+  }
+
+  /**
+   * Starts processing the queued jobs.
+   *
+   * Marks the queue as not paused and invokes `processNext()`, which begins
+   * running QUEUED jobs up to the concurrency cap. No-op when the queue is
+   * already running or when there is nothing queued.
+   * @returns {void}
+   */
+  start(): void {
+    log.info(LOG_QUEUE_START);
+    this.paused = false;
+    this.processNext();
   }
 
   /**

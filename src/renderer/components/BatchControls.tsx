@@ -25,8 +25,11 @@
  *  - onAddFiles / onCancelAll / onClearCompleted: action callbacks for the buttons.
  *  - hasCompleted: true when the queue contains done or errored jobs.
  *  - concurrency / onConcurrencyChange: controlled parallel-job count (1-4).
- *  - paused: true while the queue is paused (shows Resume instead of Pause).
+ *  - paused: true while the queue is paused (shows Resume instead of Start/Pause).
  *  - onPause / onResume: fired by the pause/resume toggle button.
+ *  - hasRunning: true when the queue has in-flight conversions; shows Pause.
+ *  - hasQueued: true when the queue has jobs waiting to run; enables Start.
+ *  - onStart: fired by the Start button that begins processing queued jobs.
  *  - hasActive: true when the queue contains queued or running jobs; the
  *    pause button is disabled when false (nothing to pause).
  *  - outputDir / onOutputDirChange: controlled output-folder field; empty
@@ -102,6 +105,12 @@ import {
  * @param {boolean} props.paused - True while the queue is paused.
  * @param {() => void} props.onPause - Fired by the Pause button.
  * @param {() => void} props.onResume - Fired by the Resume button.
+ * @param {boolean} props.hasRunning - True when in-flight conversions exist; the
+ *   toolbar shows Pause instead of Start.
+ * @param {boolean} props.hasQueued - True when queued jobs are waiting to run;
+ *   the Start button is disabled when false.
+ * @param {() => void} props.onStart - Fired by the Start button to begin
+ *   processing the queued jobs.
  * @param {boolean} props.hasActive - True when queued or running jobs exist;
  *   the pause button is disabled when false.
  * @param {string} props.outputDir - Current output folder; empty means
@@ -137,6 +146,9 @@ export default function BatchControls({
   paused,
   onPause,
   onResume,
+  hasRunning,
+  hasQueued,
+  onStart,
   hasActive,
   outputDir,
   onOutputDirChange,
@@ -191,10 +203,16 @@ export default function BatchControls({
                   <FontAwesomeIcon icon={faPlay} />
                 </OutlinedIconButton>
               </Tooltip>
-            ) : (
+            ) : hasRunning ? (
               <Tooltip title={t('batchQueue.pause')}>
                 <OutlinedIconButton size="small" color="warning" aria-label={t('batchQueue.pause')} onClick={onPause} disabled={!hasActive}>
                   <FontAwesomeIcon icon={faPause} />
+                </OutlinedIconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title={t('batchQueue.start')}>
+                <OutlinedIconButton size="small" color="success" aria-label={t('batchQueue.start')} onClick={onStart} disabled={!hasQueued}>
+                  <FontAwesomeIcon icon={faPlay} />
                 </OutlinedIconButton>
               </Tooltip>
             )}

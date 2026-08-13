@@ -4,7 +4,9 @@
     "switchLight": "Skipta yfir í ljósa stillingu",
     "switchDark": "Skipta yfir í dökka stillingu",
     "language": "Tungumál",
-    "searchLanguage": "Leita að tungumálum"
+    "searchLanguage": "Leita að tungumálum",
+    "condense": "Þjappa hliðarstiku",
+    "expand": "Stækka hliðarstiku"
   },
   "nav": {
     "dashboard": "Mælaborð",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "Sleppt {{count}} skrám - tvöfaldar eða ekki studdar fyrir þessa aðgerð",
     "clearCompleted": "Hreinsa lokið",
     "concurrency": "Samhliða verk",
+    "start": "Byrja",
     "pause": "Gera hlé",
     "resume": "Halda áfram",
     "paused": "Í bið",

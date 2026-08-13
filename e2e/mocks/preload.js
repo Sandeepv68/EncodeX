@@ -103,6 +103,10 @@ const api = {
     state.queueState.paused = false;
     return Promise.resolve();
   },
+  queueStart: () => {
+    state.queueState.paused = false;
+    return Promise.resolve();
+  },
   queueExport: () => Promise.resolve(state.queueJobs.length),
   queueImport: () => Promise.resolve(0),
   revealFile: (filePath) => {

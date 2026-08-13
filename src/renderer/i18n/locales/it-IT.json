@@ -4,7 +4,9 @@
     "switchLight": "Passa alla modalità chiara",
     "switchDark": "Passa alla modalità scura",
     "language": "Lingua",
-    "searchLanguage": "Cerca lingue"
+    "searchLanguage": "Cerca lingue",
+    "condense": "Comprimi la barra laterale",
+    "expand": "Espandi la barra laterale"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "{{count}} file saltati: duplicato o non supportato per questa operazione",
     "clearCompleted": "Cancella completati",
     "concurrency": "Operazioni in parallelo",
+    "start": "Avvia",
     "pause": "Pausa",
     "resume": "Riprendi",
     "paused": "In pausa",

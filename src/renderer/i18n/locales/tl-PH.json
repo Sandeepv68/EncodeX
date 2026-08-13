@@ -4,7 +4,9 @@
     "switchLight": "Lumipat sa Light Mode",
     "switchDark": "Lumipat sa Dark Mode",
     "language": "Wika",
-    "searchLanguage": "Maghanap ng wika"
+    "searchLanguage": "Maghanap ng wika",
+    "condense": "Paliitin ang sidebar",
+    "expand": "Palakihin ang sidebar"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "Lumaktaw sa {{count}} file - duplicate o hindi suportado para sa operasyong ito",
     "clearCompleted": "I-clear ang natapos",
     "concurrency": "Mga parallel job",
+    "start": "Simulan",
     "pause": "I-pause",
     "resume": "Ipagpatuloy",
     "paused": "Naka-pause",

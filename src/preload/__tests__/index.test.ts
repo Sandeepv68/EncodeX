@@ -86,6 +86,7 @@ describe('preload', () => {
     ['queueMoveTo', IPC.QUEUE_MOVE_TO, ['id-1', 2]],
     ['queuePause', IPC.QUEUE_PAUSE, []],
     ['queueResume', IPC.QUEUE_RESUME, []],
+    ['queueStart', IPC.QUEUE_START, []],
     ['queueExport', IPC.QUEUE_EXPORT, []],
     ['queueImport', IPC.QUEUE_IMPORT, []],
     ['revealFile', IPC.REVEAL_FILE, ['/out/clip.mp4']],

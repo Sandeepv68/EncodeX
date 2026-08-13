@@ -1,7 +1,7 @@
 import { styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { Box, Drawer, IconButton } from '@mui/material';
-import { DRAWER_WIDTH } from '../../shared/app-constants';
+import { DRAWER_WIDTH, DRAWER_WIDTH_CONDENSED } from '../../shared/app-constants';
 
 export const AppRoot = styled(Box)({ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' });
 
@@ -16,21 +16,29 @@ export const TemporaryDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': { width: theme.typography.pxToRem(DRAWER_WIDTH), boxSizing: 'border-box' },
 }));
 
-export const PermanentDrawer = styled(Drawer)(({ theme }) => ({
-  width: theme.typography.pxToRem(DRAWER_WIDTH),
-  flexShrink: 0,
-  height: '100%',
-  '& .MuiDrawer-paper': {
-    width: theme.typography.pxToRem(DRAWER_WIDTH),
-    boxSizing: 'border-box',
-    position: 'relative',
+export const PermanentDrawer = styled(Drawer, {
+  shouldForwardProp: (prop) => prop !== '$condensed',
+})<{ $condensed: boolean }>(({ theme, $condensed }) => {
+  const width = $condensed ? DRAWER_WIDTH_CONDENSED : DRAWER_WIDTH;
+  return {
+    width: theme.typography.pxToRem(width),
+    flexShrink: 0,
     height: '100%',
-    animation: `${drawerSlideIn(theme)} 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
-    '@media (prefers-reduced-motion: reduce)': {
-      animation: 'none',
+    transition: 'width 0.2s ease',
+    '& .MuiDrawer-paper': {
+      width: theme.typography.pxToRem(width),
+      boxSizing: 'border-box',
+      position: 'relative',
+      height: '100%',
+      transition: 'width 0.2s ease',
+      animation: `${drawerSlideIn(theme)} 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
+      '@media (prefers-reduced-motion: reduce)': {
+        animation: 'none',
+        transition: 'none',
+      },
     },
-  },
-}));
+  };
+});
 
 export const ColumnLayout = styled(Box)({ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 });
 

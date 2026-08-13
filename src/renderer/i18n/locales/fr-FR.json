@@ -4,7 +4,9 @@
     "switchLight": "Passer en mode clair",
     "switchDark": "Passer en mode sombre",
     "language": "Langue",
-    "searchLanguage": "Rechercher des langues"
+    "searchLanguage": "Rechercher des langues",
+    "condense": "Réduire la barre latérale",
+    "expand": "Agrandir la barre latérale"
   },
   "nav": {
     "dashboard": "Tableau de Bord",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "{{count}} fichier(s) ignoré(s) : doublon ou non pris en charge pour cette opération",
     "clearCompleted": "Effacer les terminés",
     "concurrency": "Tâches en parallèle",
+    "start": "Démarrer",
     "pause": "Pause",
     "resume": "Reprendre",
     "paused": "En pause",

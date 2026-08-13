@@ -4,7 +4,9 @@
     "switchLight": "מעבר למצב בהיר",
     "switchDark": "מעבר למצב כהה",
     "language": "שפה",
-    "searchLanguage": "חיפוש שפות"
+    "searchLanguage": "חיפוש שפות",
+    "condense": "כווץ את סרגל הצד",
+    "expand": "הרחב את סרגל הצד"
   },
   "nav": {
     "dashboard": "לוח בקרה",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "דילגו על {{count}} קובץ(ים) - כפולים או לא נתמכים עבור פעולה זו",
     "clearCompleted": "נקה הושלמו",
     "concurrency": "משימות מקבילות",
+    "start": "התחל",
     "pause": "השהיה",
     "resume": "המשך",
     "paused": "מושהה",

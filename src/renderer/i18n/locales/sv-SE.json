@@ -4,7 +4,9 @@
     "switchLight": "Växla till ljust läge",
     "switchDark": "Växla till mörkt läge",
     "language": "Språk",
-    "searchLanguage": "Sök språk"
+    "searchLanguage": "Sök språk",
+    "condense": "Komprimera sidofältet",
+    "expand": "Expandera sidofältet"
   },
   "nav": {
     "dashboard": "Instrumentpanel",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "{{count}} fil(er) hoppades över: dubblett eller stöds inte för den här åtgärden",
     "clearCompleted": "Rensa slutförda",
     "concurrency": "Parallella jobb",
+    "start": "Starta",
     "pause": "Pausa",
     "resume": "Återuppta",
     "paused": "Pausad",

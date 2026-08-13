@@ -4,7 +4,9 @@
     "switchLight": "ライトモードに切り替え",
     "switchDark": "ダークモードに切り替え",
     "language": "言語",
-    "searchLanguage": "言語を検索"
+    "searchLanguage": "言語を検索",
+    "condense": "サイドバーを折りたたむ",
+    "expand": "サイドバーを展開する"
   },
   "nav": {
     "dashboard": "ダッシュボード",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "{{count}} 件のファイルをスキップしました — 重複、またはこの操作でサポートされていません",
     "clearCompleted": "完了をクリア",
     "concurrency": "並行ジョブ",
+    "start": "開始",
     "pause": "一時停止",
     "resume": "再開",
     "paused": "一時停止中",

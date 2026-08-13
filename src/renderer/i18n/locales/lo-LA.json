@@ -4,7 +4,9 @@
     "switchLight": "ປ່ຽນໄປໂໝດສະຫວ່າງ",
     "switchDark": "ປ່ຽນໄປໂໝດມືດ",
     "language": "ພາສາ",
-    "searchLanguage": "ຄົ້ນຫາພາສາ"
+    "searchLanguage": "ຄົ້ນຫາພາສາ",
+    "condense": "ຫຍໍ້ແຖບຂ້າງ",
+    "expand": "ຂະຫຍາຍແຖບຂ້າງ"
   },
   "nav": {
     "dashboard": "ໜ້າຄຸມຄອງ",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "ຂ້າມ {{count}} ໄຟລ໌ - ຊ້ຳກັນ ຫຼື ບໍ່ຮອງຮັບສຳລັບການດຳເນີນການນີ້",
     "clearCompleted": "ລຶບອັນທີ່ສຳເລັດ",
     "concurrency": "ວຽກພ້ອມກັນ",
+    "start": "ເລີ່ມ",
     "pause": "ຢຸດຊົ່ວຄາວ",
     "resume": "ສືບຕໍ່",
     "paused": "ຖືກຢຸດຊົ່ວຄາວ",

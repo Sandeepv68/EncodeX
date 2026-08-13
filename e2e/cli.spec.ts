@@ -469,8 +469,8 @@ describe.runIf(IS_E2E)('CLI mode (subcommands)', () => {
 
   describe('batch', () => {
     it('should convert multiple files with derived outputs', async () => {
-      const outputA = path.join(batchDir, 'alpha_converted.mkv');
-      const outputB = path.join(batchDir, 'beta_converted.mkv');
+      const outputA = path.join(batchDir, 'alpha_encodex_converted.mkv');
+      const outputB = path.join(batchDir, 'beta_encodex_converted.mkv');
 
       const result = await runCli(['batch', batchA, batchB], 120000);
 
@@ -482,8 +482,8 @@ describe.runIf(IS_E2E)('CLI mode (subcommands)', () => {
 
     it('should convert glob patterns into --output-dir with --concurrency', async () => {
       const globPattern = path.join(batchDir, '*.mp4');
-      const outputA = path.join(batchOut, 'alpha_converted.mkv');
-      const outputB = path.join(batchOut, 'beta_converted.mkv');
+      const outputA = path.join(batchOut, 'alpha_encodex_converted.mkv');
+      const outputB = path.join(batchOut, 'beta_encodex_converted.mkv');
 
       const result = await runCli(['batch', globPattern, '--output-dir', batchOut, '--concurrency', '2'], 120000);
 

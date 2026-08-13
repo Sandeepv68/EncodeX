@@ -4,7 +4,9 @@
     "switchLight": "Przełącz na jasny motyw",
     "switchDark": "Przełącz na ciemny motyw",
     "language": "Język",
-    "searchLanguage": "Szukaj języków"
+    "searchLanguage": "Szukaj języków",
+    "condense": "Zwiń pasek boczny",
+    "expand": "Rozwiń pasek boczny"
   },
   "nav": {
     "dashboard": "Pulpit",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "Pominięto {{count}} plik(i) – duplikaty lub nieobsługiwane dla tej operacji",
     "clearCompleted": "Wyczyść ukończone",
     "concurrency": "Równoległe zadania",
+    "start": "Uruchom",
     "pause": "Pauza",
     "resume": "Wznów",
     "paused": "Wstrzymano",

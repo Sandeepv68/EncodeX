@@ -4,7 +4,9 @@
     "switchLight": "Alternar para Modo Claro",
     "switchDark": "Alternar para Modo Escuro",
     "language": "Idioma",
-    "searchLanguage": "Pesquisar idiomas"
+    "searchLanguage": "Pesquisar idiomas",
+    "condense": "Recolher a barra lateral",
+    "expand": "Expandir a barra lateral"
   },
   "nav": {
     "dashboard": "Painel",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "{{count}} arquivo(s) ignorado(s): duplicado ou não suportado para esta operação",
     "clearCompleted": "Limpar concluídos",
     "concurrency": "Trabalhos em paralelo",
+    "start": "Iniciar",
     "pause": "Pausar",
     "resume": "Retomar",
     "paused": "Em pausa",

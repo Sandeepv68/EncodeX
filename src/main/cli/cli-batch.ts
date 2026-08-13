@@ -26,7 +26,7 @@ import type { CliThemeId } from '../cli-logo';
  * @interface RunBatchParams
  * @property {string[]} inputs - Input file paths or glob patterns.
  * @property {string} [outputDir] - Directory to write outputs into (`--output-dir`).
- * @property {string} [suffix] - Suffix appended to each output stem (default `_converted`).
+ * @property {string} [suffix] - Suffix appended to each output stem (default `_encodex_converted`).
  * @property {ConvertCliFlags} flags - Conversion flags shared by every job.
  * @property {string} transcoder - Raw `--transcoder` backend value.
  * @property {number} [concurrency] - Max parallel conversions (default {@link MAX_QUEUE_CONCURRENCY}).
@@ -142,6 +142,8 @@ export async function runBatch(params: RunBatchParams): Promise<void> {
     const id = queue.addJob(file, output, options, transcoderType);
     bars.set(id, createBatchBar(multibar, path.basename(file)));
   }
+
+  queue.start();
 
   const onSigint = (): void => queue.cancelAll();
   process.once('SIGINT', onSigint);

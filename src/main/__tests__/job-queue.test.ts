@@ -67,13 +67,20 @@ describe('JobQueue', () => {
     expect(queue.getJobs()).toEqual([]);
   });
 
-  it('adds a job and returns an id', () => {
+  it('adds a job as queued without starting it and returns an id', () => {
     const id = queue.addJob('in.mp4', 'out.mp4', {}, 'FFMPEG');
     expect(id).toBeDefined();
     expect(typeof id).toBe('string');
     expect(queue.getJobs()).toHaveLength(1);
     expect(queue.getJobs()[0].input).toBe('in.mp4');
     expect(queue.getJobs()[0].output).toBe('out.mp4');
+    expect(queue.getJobs()[0].status).toBe('queued');
+  });
+
+  it('start begins processing the queued jobs', () => {
+    queue.addJob('in.mp4', 'out.mp4', {}, 'FFMPEG');
+    expect(queue.getJobs()[0].status).toBe('queued');
+    queue.start();
     expect(queue.getJobs()[0].status).toBe('running');
   });
 
@@ -175,6 +182,7 @@ describe('JobQueue', () => {
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
       queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG');
+      queue.start();
       expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'running', 'queued']);
       expect(transcoders).toHaveLength(2);
     });
@@ -184,6 +192,7 @@ describe('JobQueue', () => {
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
       queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG');
+      queue.start();
       (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
       expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'running', 'running']);
       expect(transcoders).toHaveLength(3);
@@ -196,6 +205,7 @@ describe('JobQueue', () => {
       queue = new JobQueue(1);
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.start();
       expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'queued']);
       (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('error', new Error('boom'));
       expect(queue.getJobs().map((j) => j.status)).toEqual(['error', 'running']);
@@ -206,6 +216,7 @@ describe('JobQueue', () => {
       queue = new JobQueue(1);
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.start();
       expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'queued']);
       queue.setConcurrency(2);
       expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'running']);
@@ -217,6 +228,7 @@ describe('JobQueue', () => {
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
       queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG');
+      queue.start();
       expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'running', 'queued']);
       queue.setConcurrency(1);
       expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'running', 'queued']);
@@ -226,6 +238,7 @@ describe('JobQueue', () => {
       queue = new JobQueue(2);
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.start();
       queue.setConcurrency(0);
       queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG');
       expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'running', 'queued']);
@@ -254,12 +267,14 @@ describe('JobQueue', () => {
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG', 5);
       queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG', 1);
-      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'queued', 'queued']);
-      (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
-      expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'running', 'queued']);
+      queue.start();
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['queued', 'running', 'queued']);
       expect(queue.getJobs()[1].input).toBe('b.mp4');
+      (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['queued', 'done', 'running']);
+      expect(queue.getJobs()[2].input).toBe('c.mp4');
       (transcoders[1] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
-      expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'done', 'running']);
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'done', 'done']);
     });
 
     it('keeps FIFO order among equal-priority queued jobs', () => {
@@ -267,6 +282,7 @@ describe('JobQueue', () => {
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
       queue.addJob('c.mp4', 'c_out.mp4', {}, 'FFMPEG');
+      queue.start();
       (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
       expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'running', 'queued']);
       expect(queue.getJobs()[1].input).toBe('b.mp4');
@@ -302,6 +318,7 @@ describe('JobQueue', () => {
       queue = new JobQueue(1);
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.start();
       queue.pause();
       expect(transcoders[0].pause).toHaveBeenCalledOnce();
       expect(transcoders[0].resume).not.toHaveBeenCalled();
@@ -312,6 +329,7 @@ describe('JobQueue', () => {
       queue = new JobQueue(1);
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.start();
       queue.pause();
       (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
       expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'queued']);
@@ -322,6 +340,7 @@ describe('JobQueue', () => {
       queue = new JobQueue(1);
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
       queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+      queue.start();
       queue.pause();
       (transcoders[0] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
       expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'queued']);
@@ -333,6 +352,7 @@ describe('JobQueue', () => {
     it('resume clears the paused flag on running jobs', () => {
       queue = new JobQueue(1);
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.start();
       queue.pause();
       expect((queue.getJobs()[0] as { paused?: boolean }).paused).toBe(true);
       queue.resume();
@@ -342,6 +362,7 @@ describe('JobQueue', () => {
     it('is idempotent for repeated pause and resume calls', () => {
       queue = new JobQueue(1);
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.start();
       queue.pause();
       queue.pause();
       expect(transcoders[0].pause).toHaveBeenCalledOnce();
@@ -484,12 +505,12 @@ describe('JobQueue', () => {
         { id: 'c', input: 'c.mp4', output: 'c_out.mp4', options: {}, transcoder: 'FFMPEG', status: 'queued', progress: 0, createdAt: 3 },
       ] as QueueJob[]);
       queue = new JobQueue({ persistence });
-      expect(queue.getJobs().map((j) => j.status)).toEqual(['running', 'done', 'queued']);
+      expect(queue.getJobs().map((j) => j.status)).toEqual(['queued', 'done', 'queued']);
       expect(queue.getJobs()[0].progress).toBe(0);
       expect(queue.getJobs()[1].progress).toBe(100);
     });
 
-    it('restored RUNNING jobs begin processing again on construction', () => {
+    it('restored RUNNING jobs stay queued until start is called', () => {
       const transcoders: ITranscoder[] = [];
       const original = factory.createTranscoder;
       vi.spyOn(factory, 'createTranscoder').mockImplementation((type) => {
@@ -501,6 +522,9 @@ describe('JobQueue', () => {
         { id: 'a', input: 'a.mp4', output: 'a_out.mp4', options: {}, transcoder: 'FFMPEG', status: 'running', progress: 50, createdAt: 1 },
       ] as QueueJob[]);
       queue = new JobQueue({ persistence });
+      expect(transcoders).toHaveLength(0);
+      expect(queue.getJobs()[0].status).toBe('queued');
+      queue.start();
       expect(transcoders).toHaveLength(1);
       expect(queue.getJobs()[0].status).toBe('running');
     });
@@ -540,6 +564,7 @@ describe('JobQueue', () => {
         return transcoder;
       });
       queue = new JobQueue({ persistence });
+      queue.start();
       expect(transcoders).toHaveLength(2);
       expect(queue.getJobs().every((j) => j.status === 'running')).toBe(true);
     });
@@ -569,6 +594,7 @@ describe('JobQueue', () => {
     it('persists status transitions after a job completes', () => {
       queue = new JobQueue({ persistence });
       queue.addJob('in.mp4', 'out.mp4', {}, 'FFMPEG');
+      queue.start();
       const transcoder = (queue as unknown as { activeJobs: Map<string, { emitter: NodeJS.EventEmitter }> }).activeJobs.get(
         queue.getJobs()[0].id,
       );
@@ -634,6 +660,7 @@ describe('JobQueue', () => {
           resolve();
         });
         queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+        queue.start();
         finish(0);
       });
     });
@@ -647,6 +674,7 @@ describe('JobQueue', () => {
           if (drains === 1) {
             expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'done']);
             queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+            queue.start();
             finish(2);
           } else if (drains === 2) {
             expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'done', 'done']);
@@ -655,6 +683,7 @@ describe('JobQueue', () => {
         });
         queue.addJob('a1.mp4', 'a1_out.mp4', {}, 'FFMPEG');
         queue.addJob('a2.mp4', 'a2_out.mp4', {}, 'FFMPEG');
+        queue.start();
         finish(0);
         finish(1);
       });
@@ -668,6 +697,7 @@ describe('JobQueue', () => {
           resolve();
         });
         queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+        queue.start();
         failWith(0, new Error('boom'));
       });
     });
@@ -677,6 +707,7 @@ describe('JobQueue', () => {
       const drained = vi.fn();
       queue.on('drained', drained);
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.start();
       queue.cancelAll();
       failWith(0, cancelledError());
       expect(drained).not.toHaveBeenCalled();
@@ -687,6 +718,7 @@ describe('JobQueue', () => {
       const drained = vi.fn();
       queue.on('drained', drained);
       queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.start();
       queue.cancelAll();
       failWith(0, cancelledError());
       expect(drained).not.toHaveBeenCalled();
@@ -702,9 +734,11 @@ describe('JobQueue', () => {
           resolve();
         });
         queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+        queue.start();
         queue.cancelAll();
         failWith(0, cancelledError());
         queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+        queue.start();
         finish(1);
         expect(drains).toBe(1);
       });

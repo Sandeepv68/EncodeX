@@ -4,7 +4,9 @@
     "switchLight": "Vaihda vaaleaan tilaan",
     "switchDark": "Vaihda tummaan tilaan",
     "language": "Kieli",
-    "searchLanguage": "Hae kieliä"
+    "searchLanguage": "Hae kieliä",
+    "condense": "Tiivistä sivupalkki",
+    "expand": "Laajenna sivupalkki"
   },
   "nav": {
     "dashboard": "Hallintapaneeli",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "Ohitettu {{count}} tiedostoa - kaksoiskappaleita tai ei tueta tälle toiminnolle",
     "clearCompleted": "Tyhjennä valmiit",
     "concurrency": "Samanaikaiset työt",
+    "start": "Käynnistä",
     "pause": "Keskeytä",
     "resume": "Jatka",
     "paused": "Tauolla",

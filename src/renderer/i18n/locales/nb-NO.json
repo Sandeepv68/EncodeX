@@ -4,7 +4,9 @@
     "switchLight": "Bytt til lys modus",
     "switchDark": "Bytt til mørk modus",
     "language": "Språk",
-    "searchLanguage": "Søk språk"
+    "searchLanguage": "Søk språk",
+    "condense": "Kollaps sidepanelet",
+    "expand": "Utvid sidepanelet"
   },
   "nav": {
     "dashboard": "Startside",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "Hopper over {{count}} fil(er) – duplikater eller ikke støttet for denne operasjonen",
     "clearCompleted": "Fjern fullførte",
     "concurrency": "Parallelle jobber",
+    "start": "Start",
     "pause": "Pause",
     "resume": "Fortsett",
     "paused": "Pauset",

@@ -48,10 +48,10 @@ const log = new Logger('renderer/LanguageMenu');
  * @param {string} props.locale - The locale code whose flag should be shown.
  * @returns {JSX.Element | null} The wrapped flag icon, or null when missing.
  */
-function FlagIcon({ locale }: { locale: string }) {
+function FlagIcon({ locale, condensed = false }: { locale: string; condensed?: boolean }) {
   const Flag = LOCALE_MAP[locale]?.Flag;
   return Flag ? (
-    <FlagIconWrapper>
+    <FlagIconWrapper $condensed={condensed}>
       <Flag />
     </FlagIconWrapper>
   ) : null;
@@ -68,7 +68,7 @@ function FlagIcon({ locale }: { locale: string }) {
  *
  * @returns {JSX.Element} The language button and its dropdown menu.
  */
-export default function LanguageMenu() {
+export default function LanguageMenu({ condensed = false }: { condensed?: boolean }) {
   const { t } = useTranslation();
   const { setDirection } = useColorMode();
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
@@ -128,9 +128,14 @@ export default function LanguageMenu() {
     <>
       <LanguageMenuBox>
         <Tooltip title={t('app.language')}>
-          <LanguageButton type="button" data-testid="language-menu-button" onClick={(e) => setAnchor(e.currentTarget)}>
-            <FlagIcon locale={i18n.language} />
-            <LanguageLabel variant="caption">{LOCALE_MAP[i18n.language]?.label || i18n.language}</LanguageLabel>
+          <LanguageButton
+            type="button"
+            $condensed={condensed}
+            data-testid="language-menu-button"
+            onClick={(e) => setAnchor(e.currentTarget)}
+          >
+            <FlagIcon locale={i18n.language} condensed={condensed} />
+            {!condensed && <LanguageLabel variant="caption">{LOCALE_MAP[i18n.language]?.label || i18n.language}</LanguageLabel>}
           </LanguageButton>
         </Tooltip>
       </LanguageMenuBox>

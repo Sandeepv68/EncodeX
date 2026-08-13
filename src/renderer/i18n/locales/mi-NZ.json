@@ -4,7 +4,9 @@
     "switchLight": "Huri ki te aratau māmā",
     "switchDark": "Huri ki te aratau pōuri",
     "language": "Reo",
-    "searchLanguage": "Rapua ngā reo"
+    "searchLanguage": "Rapua ngā reo",
+    "condense": "Whakaiti te pae taha",
+    "expand": "Whakanui te pae taha"
   },
   "nav": {
     "dashboard": "Papa Whakahaere",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "I pekea {{count}} kōnae - tāruarua, kāore rānei e tautokohia mō tēnei mahi",
     "clearCompleted": "Mukua ngā Mea Oti",
     "concurrency": "Ngā Mahi Whakarara",
+    "start": "Tīmata",
     "pause": "Tārea",
     "resume": "Haere tonu",
     "paused": "Kua tārewa",

@@ -4,7 +4,9 @@
     "switchLight": "Skift til lys tilstand",
     "switchDark": "Skift til mørk tilstand",
     "language": "Sprog",
-    "searchLanguage": "Søg sprog"
+    "searchLanguage": "Søg sprog",
+    "condense": "Kollaps sidepanelet",
+    "expand": "Udvid sidepanelet"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "Sprang {{count}} filer over - dubletter eller ikke understøttet for denne handling",
     "clearCompleted": "Ryd fuldførte",
     "concurrency": "Samtidige job",
+    "start": "Start",
     "pause": "Sæt på pause",
     "resume": "Fortsæt",
     "paused": "Sat på pause",

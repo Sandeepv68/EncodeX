@@ -4,7 +4,9 @@
     "switchLight": "التبديل إلى الوضع الفاتح",
     "switchDark": "التبديل إلى الوضع الداكن",
     "language": "اللغة",
-    "searchLanguage": "ابحث عن اللغات"
+    "searchLanguage": "ابحث عن اللغات",
+    "condense": "طي الشريط الجانبي",
+    "expand": "توسيع الشريط الجانبي"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "تم تخطي {{count}} ملف — مكرر أو غير مدعوم لهذه العملية",
     "clearCompleted": "مسح المكتملة",
     "concurrency": "مهام متوازية",
+    "start": "ابدأ",
     "pause": "إيقاف مؤقت",
     "resume": "استئناف",
     "paused": "إيقاف مؤقت",

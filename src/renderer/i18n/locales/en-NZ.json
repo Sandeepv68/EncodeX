@@ -4,7 +4,9 @@
     "switchLight": "Switch to Light Mode",
     "switchDark": "Switch to Dark Mode",
     "language": "Language",
-    "searchLanguage": "Search languages"
+    "searchLanguage": "Search languages",
+    "condense": "Condense sidebar",
+    "expand": "Expand sidebar"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "Skipped {{count}} file(s) - duplicate or unsupported for this operation",
     "clearCompleted": "Clear completed",
     "concurrency": "Parallel jobs",
+    "start": "Start",
     "pause": "Pause",
     "resume": "Resume",
     "paused": "Paused",

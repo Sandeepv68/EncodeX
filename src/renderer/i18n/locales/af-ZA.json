@@ -4,7 +4,9 @@
     "switchLight": "Skakel oor na Ligte Modus",
     "switchDark": "Skakel oor na Donker Modus",
     "language": "Taal",
-    "searchLanguage": "Soek tale"
+    "searchLanguage": "Soek tale",
+    "condense": "Vou sybalk in",
+    "expand": "Brei sybalk uit"
   },
   "nav": {
     "dashboard": "Paneelbord",
@@ -315,6 +317,7 @@
     "skippedDuplicates": "{{count}} lêer(s) oorgeslaan - duplikaat of onondersteun vir hierdie bewerking",
     "clearCompleted": "Maak voltooide skoon",
     "concurrency": "Parallelle take",
+    "start": "Begin",
     "pause": "Rus",
     "resume": "Hervat",
     "paused": "Gepouseer",
