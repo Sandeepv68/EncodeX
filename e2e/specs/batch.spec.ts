@@ -156,6 +156,12 @@ describe.runIf(IS_E2E)('Batch Queue page', () => {
     const deadline = Date.now() + 10000;
     while (Date.now() < deadline) {
       await page.keyboard.press('ArrowDown');
+      // dnd-kit animates the sibling card into its new slot over a 250ms
+      // transform transition, and its drop-sensor `over` state only becomes
+      // stable once that animation has finished. Dropping mid-animation can
+      // read a stale `over` and silently no-op the reorder, so let the move
+      // fully settle before confirming it registered.
+      await page.waitForTimeout(350);
       const b = await page.getByText('clip_b.mp4').boundingBox();
       if (b && b.y < bBefore - 10) break;
     }
