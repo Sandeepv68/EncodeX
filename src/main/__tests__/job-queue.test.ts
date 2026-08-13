@@ -4,6 +4,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { randomUUID } from 'crypto';
 import { FileQueuePersistence, QUEUE_STATE_FILENAME, QUEUE_STATE_VERSION } from '../queue/persistence';
+import { cancelledError } from '../../shared/errors';
 import { QueueJob } from '../../shared/types';
 
 vi.mock('../transcoders/ffmpeg-core', () => {
@@ -597,6 +598,116 @@ describe('JobQueue', () => {
       const snapshot = JSON.parse(fs.readFileSync(snapshotPath, 'utf8')) as { jobs: QueueJob[] };
       expect(snapshot.jobs.map((j) => j.id)).toHaveLength(2);
       expect(snapshot.jobs.map((j) => j.input)).toEqual(['a.mp4', 'b.mp4']);
+    });
+  });
+
+  describe('drained', () => {
+    let transcoders: ITranscoder[];
+
+    beforeEach(() => {
+      transcoders = [];
+      const original = factory.createTranscoder;
+      vi.spyOn(factory, 'createTranscoder').mockImplementation((type) => {
+        const transcoder = original(type);
+        transcoders.push(transcoder);
+        return transcoder;
+      });
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    function finish(index: number): void {
+      (transcoders[index] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
+    }
+
+    function failWith(index: number, err: Error): void {
+      (transcoders[index] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('error', err);
+    }
+
+    it('emits drained once when the last job completes naturally', () => {
+      return new Promise<void>((resolve) => {
+        queue = new JobQueue(1);
+        queue.on('drained', () => {
+          expect(queue.getJobs().map((j) => j.status)).toEqual(['done']);
+          resolve();
+        });
+        queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+        finish(0);
+      });
+    });
+
+    it('emits drained after a batch of jobs finishes, and again on the next batch', () => {
+      return new Promise<void>((resolve) => {
+        let drains = 0;
+        queue = new JobQueue(2);
+        queue.on('drained', () => {
+          drains += 1;
+          if (drains === 1) {
+            expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'done']);
+            queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+            finish(2);
+          } else if (drains === 2) {
+            expect(queue.getJobs().map((j) => j.status)).toEqual(['done', 'done', 'done']);
+            resolve();
+          }
+        });
+        queue.addJob('a1.mp4', 'a1_out.mp4', {}, 'FFMPEG');
+        queue.addJob('a2.mp4', 'a2_out.mp4', {}, 'FFMPEG');
+        finish(0);
+        finish(1);
+      });
+    });
+
+    it('emits drained when a job errors (non-cancelled) and none remain', () => {
+      return new Promise<void>((resolve) => {
+        queue = new JobQueue(1);
+        queue.on('drained', () => {
+          expect(queue.getJobs().map((j) => j.status)).toEqual(['error']);
+          resolve();
+        });
+        queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+        failWith(0, new Error('boom'));
+      });
+    });
+
+    it('does not emit drained when every job was cancelled', () => {
+      queue = new JobQueue(1);
+      const drained = vi.fn();
+      queue.on('drained', drained);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.cancelAll();
+      failWith(0, cancelledError());
+      expect(drained).not.toHaveBeenCalled();
+    });
+
+    it('does not emit drained after cancelAll even when an active job errors', () => {
+      queue = new JobQueue(1);
+      const drained = vi.fn();
+      queue.on('drained', drained);
+      queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+      queue.cancelAll();
+      failWith(0, cancelledError());
+      expect(drained).not.toHaveBeenCalled();
+    });
+
+    it('emits drained for a new batch added after a cancelled batch', () => {
+      return new Promise<void>((resolve) => {
+        queue = new JobQueue(1);
+        let drains = 0;
+        queue.on('drained', () => {
+          drains += 1;
+          expect(queue.getJobs().map((j) => j.status)).toEqual(['done']);
+          resolve();
+        });
+        queue.addJob('a.mp4', 'a_out.mp4', {}, 'FFMPEG');
+        queue.cancelAll();
+        failWith(0, cancelledError());
+        queue.addJob('b.mp4', 'b_out.mp4', {}, 'FFMPEG');
+        finish(1);
+        expect(drains).toBe(1);
+      });
     });
   });
 });

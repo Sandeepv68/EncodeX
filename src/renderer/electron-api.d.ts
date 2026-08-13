@@ -213,6 +213,17 @@ export interface ElectronAPI {
    */
   queueSetConcurrency(concurrency: number): Promise<void>;
   /**
+   * Sets the when-done power action config for the batch queue over the
+   * `IPC.QUEUE_SET_WHEN_DONE` ('queue-set-when-done') channel. The main
+   * process records the config and runs the power action when the queue
+   * drains while it is enabled.
+   * @param {WhenDoneConfig} config - Whether to act when the queue drains,
+   *   which power action to run, and whether open processes should be
+   *   force-closed.
+   * @returns {Promise<void>} Resolves once the config has been recorded.
+   */
+  queueSetWhenDone(config: WhenDoneConfig): Promise<void>;
+  /**
    * Reorders a QUEUED batch job to a target position within the QUEUED
    * subsequence over the `IPC.QUEUE_MOVE_TO` ('queue-move-to') channel.
    * @param {string} id - Id of the QUEUED job to move.

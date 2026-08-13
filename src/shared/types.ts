@@ -416,3 +416,31 @@ export interface EncoderCapabilities {
   audioEncoders: string[];
   hwaccels: string[];
 }
+
+/**
+ * Power action performed automatically when the batch queue finishes.
+ * @typedef {string} WhenDoneAction
+ * @property {'shutdown'} shutdown - Turn the computer off.
+ * @property {'sleep'} sleep - Suspend the computer (sleep).
+ * @property {'hibernate'} hibernate - Hibernate the computer.
+ */
+export type WhenDoneAction = 'shutdown' | 'sleep' | 'hibernate';
+
+/**
+ * Configuration for the batch queue "when done" power action.
+ * Shared by the renderer settings store (persisted to localStorage) and the
+ * main-process queue IPC layer, which performs the action once the queue
+ * drains. `force` closes applications that would otherwise block the action
+ * (only honored on platforms that support it, e.g. Windows `shutdown /f`).
+ * @interface WhenDoneConfig
+ * @property {boolean} enabled - Whether the power action is armed and should
+ *   fire after the batch finishes.
+ * @property {WhenDoneAction} action - The power action to perform.
+ * @property {boolean} force - Whether open processes should be force-closed
+ *   when performing the action.
+ */
+export interface WhenDoneConfig {
+  enabled: boolean;
+  action: WhenDoneAction;
+  force: boolean;
+}

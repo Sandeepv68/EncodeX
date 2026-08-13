@@ -1,4 +1,4 @@
-import { styled, keyframes } from '@mui/material/styles';
+import { alpha, styled, keyframes } from '@mui/material/styles';
 import { Box } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SHADOWS } from '../colors';
@@ -18,6 +18,21 @@ const borderPulse = keyframes`
   }
 `;
 
+const backgroundPulse = keyframes`
+  0%, 100% {
+    background-color: var(--dropzone-bg-base);
+  }
+  25% {
+    background-color: var(--dropzone-bg-a);
+  }
+  50% {
+    background-color: var(--dropzone-bg-b);
+  }
+  75% {
+    background-color: var(--dropzone-bg-c);
+  }
+`;
+
 export const DropZoneRoot = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$dragging',
 })<{ $dragging: boolean }>(({ theme, $dragging }) => ({
@@ -27,16 +42,21 @@ export const DropZoneRoot = styled(Box, {
   '--dropzone-border-a': theme.palette.primary.main,
   '--dropzone-border-b': theme.palette.secondary.main,
   '--dropzone-border-c': theme.palette.info.main,
+  '--dropzone-bg-base': alpha(theme.palette.primary.main, 0.06),
+  '--dropzone-bg-a': alpha(theme.palette.primary.main, 0.12),
+  '--dropzone-bg-b': alpha(theme.palette.secondary.main, 0.12),
+  '--dropzone-bg-c': alpha(theme.palette.info.main, 0.12),
   borderRadius: (theme.shape.borderRadius as number) * 2,
   padding: theme.spacing(4),
   textAlign: 'center',
   cursor: 'pointer',
-  backgroundColor: $dragging ? theme.palette.action.hover : 'transparent',
+  backgroundColor: $dragging ? theme.palette.action.hover : alpha(theme.palette.primary.main, 0.06),
   transition: 'all 0.2s',
   animation: $dragging ? 'none' : `${borderPulse} 8s ease-in-out infinite`,
   '&:hover': {
     boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
     transform: 'translateY(-2px)',
+    ...(!$dragging ? { animation: `${borderPulse} 8s ease-in-out infinite, ${backgroundPulse} 8s ease-in-out infinite` } : {}),
   },
   '& svg': {
     transition: 'color 0.2s ease',

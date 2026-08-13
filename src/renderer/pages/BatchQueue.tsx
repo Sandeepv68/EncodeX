@@ -191,6 +191,8 @@ export default function BatchQueue() {
   const { t } = useTranslation();
   const { jobs, progress, addJob, removeJob, updateJob, updateProgress, clearJobs } = useQueueStore();
   const queueConcurrency = useSettingsStore((s) => s.queueConcurrency);
+  const whenDone = useSettingsStore((s) => s.whenDone);
+  const setWhenDone = useSettingsStore((s) => s.setWhenDone);
   const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
 
   /**
@@ -417,6 +419,16 @@ export default function BatchQueue() {
    */
   useEffect(() => {
     window.electronAPI?.queueSetConcurrency(useSettingsStore.getState().queueConcurrency);
+  }, []);
+
+  /**
+   * On mount, pushes the persisted when-done config to the main process so the
+   * power action armed for a previous session is still recorded (and performs
+   * its action when the queue drains while enabled).
+   * @returns {void}
+   */
+  useEffect(() => {
+    window.electronAPI?.queueSetWhenDone(useSettingsStore.getState().whenDone);
   }, []);
 
   /**
@@ -954,6 +966,8 @@ export default function BatchQueue() {
           onBrowseDir={handleBrowseDir}
           overwrite={overwrite}
           onOverwriteChange={setOverwrite}
+          whenDone={whenDone}
+          onWhenDoneChange={setWhenDone}
           onExport={handleExport}
           onImport={handleImport}
         />

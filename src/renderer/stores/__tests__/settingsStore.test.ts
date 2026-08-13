@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useSettingsStore, readStoredHwAccel, readStoredQueueConcurrency } from '../settingsStore';
+import { useSettingsStore, readStoredHwAccel, readStoredQueueConcurrency, readStoredWhenDone } from '../settingsStore';
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
 import {
   HWACCEL_DEFAULTS,
@@ -13,6 +13,8 @@ import {
   DEFAULT_QUEUE_CONCURRENCY,
   MAX_QUEUE_CONCURRENCY,
   LAUNCH_AT_LOGIN_STORAGE_KEY,
+  WHEN_DONE_STORAGE_KEY,
+  DEFAULT_WHEN_DONE_ACTION,
 } from '../../../shared/constants';
 
 describe('settingsStore', () => {
@@ -26,6 +28,7 @@ describe('settingsStore', () => {
       alwaysOnTop: false,
       launchAtLogin: false,
       queueConcurrency: DEFAULT_QUEUE_CONCURRENCY,
+      whenDone: { enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false },
     });
   });
 
@@ -90,6 +93,27 @@ describe('settingsStore', () => {
     expect(useSettingsStore.getState().queueConcurrency).toBe(3);
     expect(localStorage.getItem(QUEUE_CONCURRENCY_STORAGE_KEY)).toBe('3');
   });
+
+  it('defaults the when-done config to disabled with the default action', () => {
+    expect(useSettingsStore.getState().whenDone).toEqual({
+      enabled: false,
+      action: DEFAULT_WHEN_DONE_ACTION,
+      force: false,
+    });
+  });
+
+  it('setWhenDone updates the value, persists it, and forwards it to the main process', () => {
+    const spy = vi.fn();
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, queueSetWhenDone: spy },
+      writable: true,
+    });
+    const config = { enabled: true, action: 'sleep' as const, force: true };
+    useSettingsStore.getState().setWhenDone(config);
+    expect(useSettingsStore.getState().whenDone).toEqual(config);
+    expect(JSON.parse(localStorage.getItem(WHEN_DONE_STORAGE_KEY) as string)).toEqual(config);
+    expect(spy).toHaveBeenCalledWith(config);
+  });
 });
 
 describe('readStoredHwAccel', () => {
@@ -151,5 +175,32 @@ describe('readStoredQueueConcurrency', () => {
   it('falls back to the default for a non-numeric value', () => {
     localStorage.setItem(QUEUE_CONCURRENCY_STORAGE_KEY, 'abc');
     expect(readStoredQueueConcurrency()).toBe(DEFAULT_QUEUE_CONCURRENCY);
+  });
+});
+
+describe('readStoredWhenDone', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('returns the defaults when nothing is stored', () => {
+    expect(readStoredWhenDone()).toEqual({ enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false });
+  });
+
+  it('reads a persisted when-done config', () => {
+    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify({ enabled: true, action: 'hibernate', force: true }));
+    expect(readStoredWhenDone()).toEqual({ enabled: true, action: 'hibernate', force: true });
+  });
+
+  it('falls back to the default action for an unknown action', () => {
+    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify({ enabled: true, action: 'bogus', force: false }));
+    const stored = readStoredWhenDone();
+    expect(stored.enabled).toBe(true);
+    expect(stored.action).toBe(DEFAULT_WHEN_DONE_ACTION);
+  });
+
+  it('falls back to defaults for corrupted storage', () => {
+    localStorage.setItem(WHEN_DONE_STORAGE_KEY, '{ not json');
+    expect(readStoredWhenDone()).toEqual({ enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false });
   });
 });

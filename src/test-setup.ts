@@ -88,6 +88,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     queueCancelAll: vi.fn().mockResolvedValue(undefined),
     queueClearCompleted: vi.fn().mockResolvedValue(0),
     queueSetConcurrency: vi.fn().mockResolvedValue(undefined),
+    queueSetWhenDone: vi.fn().mockResolvedValue(undefined),
     queueMoveTo: vi.fn().mockResolvedValue(true),
     queuePause: vi.fn().mockResolvedValue(undefined),
     queueResume: vi.fn().mockResolvedValue(undefined),

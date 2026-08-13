@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IPC } from '../../../shared/ipc-channels';
+import { WHEN_DONE_ACTION_DELAY_MS } from '../../../shared/constants';
+import { performPowerAction } from '../../power-actions';
+
+vi.mock('../../power-actions', () => ({
+  performPowerAction: vi.fn(),
+}));
 
 interface FakeJobQueue {
   addJob: ReturnType<typeof vi.fn>;
@@ -343,5 +349,43 @@ describe('registerQueueHandlers', () => {
     const quitHandler = appEventHandlers['will-quit'];
     quitHandler();
     expect(unlinkSyncMock).toHaveBeenCalledWith(expect.stringMatching(/queue-state\.json$/));
+  });
+
+  it('QUEUE_SET_WHEN_DONE records the config and runs the action after the delay on drain', async () => {
+    vi.useFakeTimers();
+    try {
+      await getHandlers()[IPC.QUEUE_SET_WHEN_DONE]({}, { enabled: true, action: 'shutdown', force: true });
+      jobQueue.emit('drained');
+      expect(performPowerAction).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(WHEN_DONE_ACTION_DELAY_MS);
+      expect(performPowerAction).toHaveBeenCalledWith('shutdown', true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('QUEUE_SET_WHEN_DONE with enabled false never runs the power action', async () => {
+    vi.useFakeTimers();
+    try {
+      await getHandlers()[IPC.QUEUE_SET_WHEN_DONE]({}, { enabled: false, action: 'sleep', force: false });
+      jobQueue.emit('drained');
+      vi.advanceTimersByTime(WHEN_DONE_ACTION_DELAY_MS);
+      expect(performPowerAction).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('adding a job after a drain cancels the pending power action', async () => {
+    vi.useFakeTimers();
+    try {
+      await getHandlers()[IPC.QUEUE_SET_WHEN_DONE]({}, { enabled: true, action: 'hibernate', force: false });
+      jobQueue.emit('drained');
+      jobQueue.emit('added', { id: 'x' });
+      vi.advanceTimersByTime(WHEN_DONE_ACTION_DELAY_MS);
+      expect(performPowerAction).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

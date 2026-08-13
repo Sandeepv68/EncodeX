@@ -34,6 +34,7 @@ import type {
   QueueJob,
   ThumbnailStrip,
   WaveformData,
+  WhenDoneConfig,
 } from '../../shared/types';
 
 /**
@@ -75,6 +76,8 @@ export interface HwAccelStored {
  * @property {(enabled: boolean) => void} setLaunchAtLogin - Sets launch-at-login, persists it, and forwards it to the main process.
  * @property {number} queueConcurrency - Number of batch jobs run in parallel (1-4).
  * @property {(concurrency: number) => void} setQueueConcurrency - Sets the batch concurrency, persists it, and forwards it to the main process.
+ * @property {WhenDoneConfig} whenDone - When-done power action config for the batch queue (enabled, action, force).
+ * @property {(config: WhenDoneConfig) => void} setWhenDone - Sets the when-done config, persists it, and forwards it to the main process.
  */
 export interface SettingsState {
   transcoder: string;
@@ -91,6 +94,8 @@ export interface SettingsState {
   setLaunchAtLogin: (enabled: boolean) => void;
   queueConcurrency: number;
   setQueueConcurrency: (concurrency: number) => void;
+  whenDone: WhenDoneConfig;
+  setWhenDone: (config: WhenDoneConfig) => void;
 }
 
 /**

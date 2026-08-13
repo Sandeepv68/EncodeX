@@ -31,7 +31,8 @@ import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/co
 import CodecSelect from './CodecSelect';
 import GroupedSelect from './GroupedSelect';
 import type { BatchEncodingPanelProps } from './types';
-import { EncodingPaper, EncodingTitle, FieldBox, FieldLabel } from '../styles/BatchEncodingPanel.styles';
+import { FieldBox, FieldLabel } from '../styles/form.styles';
+import { EncodingPaper, EncodingTitle } from '../styles/BatchEncodingPanel.styles';
 
 /**
  * Pixel-format options prepared for the GroupedSelect: every entry of
