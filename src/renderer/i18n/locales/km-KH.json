@@ -4,7 +4,9 @@
     "switchLight": "ប្តូរទៅរបៀបភ្លឺ",
     "switchDark": "ប្តូរទៅរបៀបងងឹត",
     "language": "ភាសា",
-    "searchLanguage": "ស្វែងរកភាសា"
+    "searchLanguage": "ស្វែងរកភាសា",
+    "condense": "បង្រួមរបារចំហៀង",
+    "expand": "ពង្រីករបារចំហៀង"
   },
   "nav": {
     "dashboard": "ផ្ទាំងគ្រប់គ្រង",

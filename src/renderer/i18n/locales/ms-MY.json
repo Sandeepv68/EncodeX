@@ -4,7 +4,9 @@
     "switchLight": "Tukar ke Mod Terang",
     "switchDark": "Tukar ke Mod Gelap",
     "language": "Bahasa",
-    "searchLanguage": "Cari bahasa"
+    "searchLanguage": "Cari bahasa",
+    "condense": "Ciutkan bar sisi",
+    "expand": "Kembangkan bar sisi"
   },
   "nav": {
     "dashboard": "Papan Pemuka",

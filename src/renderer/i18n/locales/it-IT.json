@@ -4,7 +4,9 @@
     "switchLight": "Passa alla modalità chiara",
     "switchDark": "Passa alla modalità scura",
     "language": "Lingua",
-    "searchLanguage": "Cerca lingue"
+    "searchLanguage": "Cerca lingue",
+    "condense": "Comprimi la barra laterale",
+    "expand": "Espandi la barra laterale"
   },
   "nav": {
     "dashboard": "Dashboard",

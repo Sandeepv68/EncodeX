@@ -4,7 +4,9 @@
     "switchLight": "Qaallariarsorneq toqqaarlugu",
     "switchDark": "Tarraa-mut nuullugu",
     "language": "Oqaatsit",
-    "searchLanguage": "Oqaatsit ujaruk"
+    "searchLanguage": "Oqaatsit ujaruk",
+    "condense": "Mikissusaruk sidelinje",
+    "expand": "Annertusaruk sidelinje"
   },
   "nav": {
     "dashboard": "Oqarfigissaaneq",

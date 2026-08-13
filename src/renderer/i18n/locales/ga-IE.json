@@ -4,7 +4,9 @@
     "switchLight": "Athraigh go mód geal",
     "switchDark": "Athraigh go mód dorcha",
     "language": "Teanga",
-    "searchLanguage": "Cuardaigh teangacha"
+    "searchLanguage": "Cuardaigh teangacha",
+    "condense": "Crap an barra taoibh",
+    "expand": "Leathnaigh an barra taoibh"
   },
   "nav": {
     "dashboard": "Deais",

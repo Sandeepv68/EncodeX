@@ -4,7 +4,9 @@
     "switchLight": "Beralih ke Mode Terang",
     "switchDark": "Beralih ke Mode Gelap",
     "language": "Bahasa",
-    "searchLanguage": "Cari bahasa"
+    "searchLanguage": "Cari bahasa",
+    "condense": "Ciutkan sidebar",
+    "expand": "Kembangkan sidebar"
   },
   "nav": {
     "dashboard": "Dasbor",

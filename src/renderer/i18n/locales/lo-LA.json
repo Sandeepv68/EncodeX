@@ -4,7 +4,9 @@
     "switchLight": "ປ່ຽນໄປໂໝດສະຫວ່າງ",
     "switchDark": "ປ່ຽນໄປໂໝດມືດ",
     "language": "ພາສາ",
-    "searchLanguage": "ຄົ້ນຫາພາສາ"
+    "searchLanguage": "ຄົ້ນຫາພາສາ",
+    "condense": "ຫຍໍ້ແຖບຂ້າງ",
+    "expand": "ຂະຫຍາຍແຖບຂ້າງ"
   },
   "nav": {
     "dashboard": "ໜ້າຄຸມຄອງ",

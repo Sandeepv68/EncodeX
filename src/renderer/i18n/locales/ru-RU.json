@@ -4,7 +4,9 @@
     "switchLight": "Переключить на светлую тему",
     "switchDark": "Переключить на тёмную тему",
     "language": "Язык",
-    "searchLanguage": "Поиск языков"
+    "searchLanguage": "Поиск языков",
+    "condense": "Свернуть боковую панель",
+    "expand": "Развернуть боковую панель"
   },
   "nav": {
     "dashboard": "Главная",

@@ -4,7 +4,9 @@
     "switchLight": "切换到浅色模式",
     "switchDark": "切换到深色模式",
     "language": "语言",
-    "searchLanguage": "搜索语言"
+    "searchLanguage": "搜索语言",
+    "condense": "收起侧边栏",
+    "expand": "展开侧边栏"
   },
   "nav": {
     "dashboard": "仪表板",

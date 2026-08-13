@@ -4,7 +4,9 @@
     "switchLight": "Växla till ljust läge",
     "switchDark": "Växla till mörkt läge",
     "language": "Språk",
-    "searchLanguage": "Sök språk"
+    "searchLanguage": "Sök språk",
+    "condense": "Komprimera sidofältet",
+    "expand": "Expandera sidofältet"
   },
   "nav": {
     "dashboard": "Instrumentpanel",

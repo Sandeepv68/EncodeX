@@ -4,7 +4,9 @@
     "switchLight": "Huri ki te aratau māmā",
     "switchDark": "Huri ki te aratau pōuri",
     "language": "Reo",
-    "searchLanguage": "Rapua ngā reo"
+    "searchLanguage": "Rapua ngā reo",
+    "condense": "Whakaiti te pae taha",
+    "expand": "Whakanui te pae taha"
   },
   "nav": {
     "dashboard": "Papa Whakahaere",

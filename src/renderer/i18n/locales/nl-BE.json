@@ -4,7 +4,9 @@
     "switchLight": "Overschakelen naar lichte modus",
     "switchDark": "Overschakelen naar donkere modus",
     "language": "Taal",
-    "searchLanguage": "Talen zoeken"
+    "searchLanguage": "Talen zoeken",
+    "condense": "Zijbalk samenvouwen",
+    "expand": "Zijbalk uitvouwen"
   },
   "nav": {
     "dashboard": "Dashboard",

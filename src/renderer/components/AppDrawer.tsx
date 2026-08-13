@@ -6,12 +6,14 @@
  * a localized label; the currently active route (matched against
  * `location.pathname`) is highlighted as selected.
  *
- * The drawer also surfaces live activity indicators ("blips") next to the
- * Convert, Audio Extract, and Video Cut entries while a
- * conversion/extraction/cut is running, and a count badge next to the Batch
- * Queue entry showing the number of jobs currently in the queue, then ends with
- * a divider and the {@link LanguageMenu} component so the active language can
- * be switched directly from the sidebar.
+ * The drawer also surfaces live activity indicators ("blips") on the Convert,
+ * Audio Extract, and Video Cut rows while a conversion/extraction/cut is
+ * running, plus a count badge on the Batch Queue row showing the number of jobs
+ * currently in the queue. Each indicator sits at the end of its row in the
+ * expanded drawer and becomes a corner badge on the nav icon when condensed. It
+ * ends with a divider and a footer holding the {@link LanguageMenu} component
+ * and (on desktop) the drawer condense toggle so the active language can be
+ * switched and the sidebar collapsed from the same spot.
  *
  * Props (see {@link AppDrawerProps}):
  *  - isMobile: when true, tapping a nav row also fires `onNavigate` so the
@@ -21,6 +23,9 @@
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Tooltip } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import { pageIcons } from '../pageIcons';
 import { useConversionStore } from '../stores/conversionStore';
@@ -29,7 +34,17 @@ import { useVideoCutStore } from '../stores/videoCutStore';
 import { useQueueStore } from '../stores/queueStore';
 import LanguageMenu from './LanguageMenu';
 import type { AppDrawerProps } from './types';
-import { DrawerDivider, NavList, NavItemButton, NavItemIcon, NavItemText, NavBlip, NavCountBadge } from '../styles/AppDrawer.styles';
+import {
+  DrawerDivider,
+  NavList,
+  NavFooter,
+  CondenseButton,
+  NavItemButton,
+  NavItemIcon,
+  NavItemText,
+  NavBlip,
+  NavCountBadge,
+} from '../styles/AppDrawer.styles';
 
 /**
  * Maps route paths from NAV_ITEMS to the i18n translation keys used for the
@@ -69,7 +84,7 @@ const navKeyMap: Record<string, string> = {
  *   navigation on mobile.
  * @returns {JSX.Element} The navigation list, divider, and language menu.
  */
-export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
+export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNavigate }: AppDrawerProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -84,6 +99,7 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
         {NAV_ITEMS.map((item, index) => (
           <NavItemButton
             key={item.to}
+            $condensed={condensed}
             data-testid={`nav-item-${item.to === '/' ? 'dashboard' : item.to.slice(1)}`}
             selected={location.pathname === item.to}
             sx={{ animationDelay: `${index * 0.05}s` }}
@@ -92,13 +108,23 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
               if (isMobile) onNavigate();
             }}
           >
-            <NavItemIcon $active={location.pathname === item.to}>{pageIcons[item.to]}</NavItemIcon>
-            <NavItemText primary={t(`nav.${navKeyMap[item.to]}`)} />
-            {item.to === '/convert' && isConverting && <NavBlip aria-hidden="true" data-testid="nav-convert-blip" />}
-            {item.to === '/audio-extract' && isExtractingAudio && <NavBlip aria-hidden="true" data-testid="nav-audio-extract-blip" />}
-            {item.to === '/video-cut' && isCutting && <NavBlip aria-hidden="true" data-testid="nav-video-cut-blip" />}
+            <NavItemIcon $active={location.pathname === item.to} $condensed={condensed}>
+              {pageIcons[item.to]}
+            </NavItemIcon>
+            {!condensed && <NavItemText primary={t(`nav.${navKeyMap[item.to]}`)} />}
+            {item.to === '/convert' && isConverting && <NavBlip $condensed={condensed} aria-hidden="true" data-testid="nav-convert-blip" />}
+            {item.to === '/audio-extract' && isExtractingAudio && (
+              <NavBlip $condensed={condensed} aria-hidden="true" data-testid="nav-audio-extract-blip" />
+            )}
+            {item.to === '/video-cut' && isCutting && (
+              <NavBlip $condensed={condensed} aria-hidden="true" data-testid="nav-video-cut-blip" />
+            )}
             {item.to === '/batch' && batchJobCount > 0 && (
-              <NavCountBadge data-testid="nav-batch-blip" aria-label={t('batchQueue.badgeCount', { count: batchJobCount })}>
+              <NavCountBadge
+                $condensed={condensed}
+                data-testid="nav-batch-blip"
+                aria-label={t('batchQueue.badgeCount', { count: batchJobCount })}
+              >
                 {batchJobCount}
               </NavCountBadge>
             )}
@@ -106,7 +132,20 @@ export default function AppDrawer({ isMobile, onNavigate }: AppDrawerProps) {
         ))}
       </NavList>
       <DrawerDivider />
-      <LanguageMenu />
+      <NavFooter>
+        {!isMobile && (
+          <Tooltip title={t(condensed ? 'app.expand' : 'app.condense')}>
+            <CondenseButton
+              data-testid="drawer-condense-button"
+              aria-label={t(condensed ? 'app.expand' : 'app.condense')}
+              onClick={onToggleCondense}
+            >
+              <FontAwesomeIcon icon={condensed ? faChevronRight : faChevronLeft} />
+            </CondenseButton>
+          </Tooltip>
+        )}
+        <LanguageMenu condensed={condensed} />
+      </NavFooter>
     </>
   );
 }

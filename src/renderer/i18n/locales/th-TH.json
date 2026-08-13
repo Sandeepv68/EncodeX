@@ -4,7 +4,9 @@
     "switchLight": "สลับเป็นโหมดสว่าง",
     "switchDark": "สลับเป็นโหมดมืด",
     "language": "ภาษา",
-    "searchLanguage": "ค้นหาภาษา"
+    "searchLanguage": "ค้นหาภาษา",
+    "condense": "ย่อแถบด้านข้าง",
+    "expand": "ขยายแถบด้านข้าง"
   },
   "nav": {
     "dashboard": "แดชบอร์ด",

@@ -4,7 +4,9 @@
     "switchLight": "라이트 모드로 전환",
     "switchDark": "다크 모드로 전환",
     "language": "언어",
-    "searchLanguage": "언어 검색"
+    "searchLanguage": "언어 검색",
+    "condense": "사이드바 접기",
+    "expand": "사이드바 펼치기"
   },
   "nav": {
     "dashboard": "대시보드",

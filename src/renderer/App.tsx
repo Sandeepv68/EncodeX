@@ -93,6 +93,7 @@ function AppLayout() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { currentError, clearError } = useErrorStore();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [drawerCondensed, setDrawerCondensed] = useState(false);
 
   useLanguageDirection();
 
@@ -128,6 +129,8 @@ function AppLayout() {
   const drawerContent = (
     <AppDrawer
       isMobile={isMobile}
+      condensed={drawerCondensed}
+      onToggleCondense={() => setDrawerCondensed((prev) => !prev)}
       onNavigate={() => {
         setMobileOpen(false);
       }}
@@ -143,7 +146,9 @@ function AppLayout() {
             {drawerContent}
           </TemporaryDrawer>
         ) : (
-          <PermanentDrawer variant="permanent">{drawerContent}</PermanentDrawer>
+          <PermanentDrawer $condensed={drawerCondensed} variant="permanent">
+            {drawerContent}
+          </PermanentDrawer>
         )}
         <ColumnLayout>
           <MainContent>

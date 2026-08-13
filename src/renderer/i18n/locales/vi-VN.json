@@ -4,7 +4,9 @@
     "switchLight": "Chuyển sang chế độ sáng",
     "switchDark": "Chuyển sang chế độ tối",
     "language": "Ngôn ngữ",
-    "searchLanguage": "Tìm kiếm ngôn ngữ"
+    "searchLanguage": "Tìm kiếm ngôn ngữ",
+    "condense": "Thu gọn thanh bên",
+    "expand": "Mở rộng thanh bên"
   },
   "nav": {
     "dashboard": "Bảng điều khiển",

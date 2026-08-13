@@ -25,6 +25,8 @@ import type {
 export interface AppDrawerProps {
   isMobile: boolean;
   onNavigate: () => void;
+  condensed: boolean;
+  onToggleCondense: () => void;
 }
 
 /**

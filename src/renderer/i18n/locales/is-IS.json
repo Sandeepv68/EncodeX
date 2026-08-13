@@ -4,7 +4,9 @@
     "switchLight": "Skipta yfir í ljósa stillingu",
     "switchDark": "Skipta yfir í dökka stillingu",
     "language": "Tungumál",
-    "searchLanguage": "Leita að tungumálum"
+    "searchLanguage": "Leita að tungumálum",
+    "condense": "Þjappa hliðarstiku",
+    "expand": "Stækka hliðarstiku"
   },
   "nav": {
     "dashboard": "Mælaborð",

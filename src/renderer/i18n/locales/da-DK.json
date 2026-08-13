@@ -4,7 +4,9 @@
     "switchLight": "Skift til lys tilstand",
     "switchDark": "Skift til mørk tilstand",
     "language": "Sprog",
-    "searchLanguage": "Søg sprog"
+    "searchLanguage": "Søg sprog",
+    "condense": "Kollaps sidepanelet",
+    "expand": "Udvid sidepanelet"
   },
   "nav": {
     "dashboard": "Dashboard",

@@ -4,7 +4,9 @@
     "switchLight": "ライトモードに切り替え",
     "switchDark": "ダークモードに切り替え",
     "language": "言語",
-    "searchLanguage": "言語を検索"
+    "searchLanguage": "言語を検索",
+    "condense": "サイドバーを折りたたむ",
+    "expand": "サイドバーを展開する"
   },
   "nav": {
     "dashboard": "ダッシュボード",

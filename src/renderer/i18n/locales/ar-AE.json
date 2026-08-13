@@ -4,7 +4,9 @@
     "switchLight": "التبديل إلى الوضع الفاتح",
     "switchDark": "التبديل إلى الوضع الداكن",
     "language": "اللغة",
-    "searchLanguage": "ابحث عن اللغات"
+    "searchLanguage": "ابحث عن اللغات",
+    "condense": "طي الشريط الجانبي",
+    "expand": "توسيع الشريط الجانبي"
   },
   "nav": {
     "dashboard": "لوحة التحكم",

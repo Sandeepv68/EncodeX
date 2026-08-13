@@ -4,7 +4,9 @@
     "switchLight": "Vaihda vaaleaan tilaan",
     "switchDark": "Vaihda tummaan tilaan",
     "language": "Kieli",
-    "searchLanguage": "Hae kieliä"
+    "searchLanguage": "Hae kieliä",
+    "condense": "Tiivistä sivupalkki",
+    "expand": "Laajenna sivupalkki"
   },
   "nav": {
     "dashboard": "Hallintapaneeli",

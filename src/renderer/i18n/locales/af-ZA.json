@@ -4,7 +4,9 @@
     "switchLight": "Skakel oor na Ligte Modus",
     "switchDark": "Skakel oor na Donker Modus",
     "language": "Taal",
-    "searchLanguage": "Soek tale"
+    "searchLanguage": "Soek tale",
+    "condense": "Vou sybalk in",
+    "expand": "Brei sybalk uit"
   },
   "nav": {
     "dashboard": "Paneelbord",

@@ -4,7 +4,9 @@
     "switchLight": "Bytt til lys modus",
     "switchDark": "Bytt til mørk modus",
     "language": "Språk",
-    "searchLanguage": "Søk språk"
+    "searchLanguage": "Søk språk",
+    "condense": "Kollaps sidepanelet",
+    "expand": "Utvid sidepanelet"
   },
   "nav": {
     "dashboard": "Startside",

@@ -4,7 +4,9 @@
     "switchLight": "Alternar para Modo Claro",
     "switchDark": "Alternar para Modo Escuro",
     "language": "Idioma",
-    "searchLanguage": "Pesquisar idiomas"
+    "searchLanguage": "Pesquisar idiomas",
+    "condense": "Recolher a barra lateral",
+    "expand": "Expandir a barra lateral"
   },
   "nav": {
     "dashboard": "Painel",

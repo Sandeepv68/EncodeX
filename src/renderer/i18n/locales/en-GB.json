@@ -4,7 +4,9 @@
     "switchLight": "Switch to Light Mode",
     "switchDark": "Switch to Dark Mode",
     "language": "Language",
-    "searchLanguage": "Search languages"
+    "searchLanguage": "Search languages",
+    "condense": "Condense sidebar",
+    "expand": "Expand sidebar"
   },
   "nav": {
     "dashboard": "Dashboard",

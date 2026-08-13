@@ -11,6 +11,13 @@
 export const DRAWER_WIDTH = 220;
 
 /**
+ * Width of the persistent navigation drawer when condensed to an icon-only
+ * sidebar in pixels.
+ * @const {number} DRAWER_WIDTH_CONDENSED
+ */
+export const DRAWER_WIDTH_CONDENSED = 72;
+
+/**
  * URL of the Vite development server loaded while running in development mode.
  * @const {string} DEV_SERVER_URL
  */

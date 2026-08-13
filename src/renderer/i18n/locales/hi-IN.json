@@ -4,7 +4,9 @@
     "switchLight": "लाइट मोड पर स्विच करें",
     "switchDark": "डार्क मोड पर स्विच करें",
     "language": "भाषा",
-    "searchLanguage": "भाषाएँ खोजें"
+    "searchLanguage": "भाषाएँ खोजें",
+    "condense": "साइडबार सिकोड़ें",
+    "expand": "साइडबार बड़ा करें"
   },
   "nav": {
     "dashboard": "डैशबोर्ड",

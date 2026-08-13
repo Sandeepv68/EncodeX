@@ -4,7 +4,9 @@
     "switchLight": "Гэрэл горим руу шилжих",
     "switchDark": "Харанхуй горим руу шилжих",
     "language": "Хэл",
-    "searchLanguage": "Хэл хайх"
+    "searchLanguage": "Хэл хайх",
+    "condense": "Хажуугийн самбарыг хумих",
+    "expand": "Хажуугийн самбарыг дэлгэх"
   },
   "nav": {
     "dashboard": "Хянах самбар",

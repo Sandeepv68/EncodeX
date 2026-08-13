@@ -4,7 +4,9 @@
     "switchLight": "සැහැල්ලු ප්‍රකාරයට මාරු වන්න",
     "switchDark": "අඳුරු ප්‍රකාරයට මාරු වන්න",
     "language": "භාෂාව",
-    "searchLanguage": "භාෂා සොයන්න"
+    "searchLanguage": "භාෂා සොයන්න",
+    "condense": "පැති තීරුව හකුළන්න",
+    "expand": "පැති තීරුව විහිදුවන්න"
   },
   "nav": {
     "dashboard": "උපකරණ පුවරුව",

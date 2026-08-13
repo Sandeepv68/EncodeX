@@ -4,7 +4,9 @@
     "switchLight": "Przełącz na jasny motyw",
     "switchDark": "Przełącz na ciemny motyw",
     "language": "Język",
-    "searchLanguage": "Szukaj języków"
+    "searchLanguage": "Szukaj języków",
+    "condense": "Zwiń pasek boczny",
+    "expand": "Rozwiń pasek boczny"
   },
   "nav": {
     "dashboard": "Pulpit",

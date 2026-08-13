@@ -4,13 +4,17 @@ import type { SxProps } from '@mui/material';
 import { Box, Typography } from '@mui/material';
 
 export const LanguageMenuBox = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(1),
+  height: '100%',
   display: 'flex',
+  alignItems: 'center',
   justifyContent: 'center',
-  height: theme.typography.pxToRem(47),
+  padding: theme.spacing(0.5),
+  boxSizing: 'border-box',
 }));
 
-export const LanguageButton = styled('button')(({ theme }) => ({
+export const LanguageButton = styled('button', {
+  shouldForwardProp: (prop) => prop !== '$condensed',
+})<{ $condensed: boolean }>(({ theme, $condensed }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(0.5),
@@ -23,6 +27,11 @@ export const LanguageButton = styled('button')(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   border: `${theme.typography.pxToRem(1)} solid transparent`,
   fontFamily: 'inherit',
+  ...($condensed && {
+    justifyContent: 'center',
+    paddingInline: 0,
+    width: '100%',
+  }),
   '&:hover': { borderColor: theme.palette.divider },
 }));
 
@@ -33,13 +42,18 @@ export const LanguageLabel = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
 }));
 
-export const FlagIconWrapper = styled('span')(({ theme }) => ({
+export const FlagIconWrapper = styled('span', {
+  shouldForwardProp: (prop) => prop !== '$condensed',
+})<{ $condensed: boolean }>(({ theme, $condensed }) => ({
   display: 'inline-flex',
   width: theme.typography.pxToRem(20),
   height: theme.typography.pxToRem(15),
   marginInlineEnd: theme.typography.pxToRem(8),
   verticalAlign: 'middle',
   '& svg': { width: '100%', height: '100%' },
+  ...($condensed && {
+    marginInlineEnd: 0,
+  }),
 }));
 
 export const menuPaperSx: SxProps<Theme> = (theme) => ({ maxHeight: theme.typography.pxToRem(400) });

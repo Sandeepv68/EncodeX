@@ -4,7 +4,9 @@
     "switchLight": "Lumipat sa Light Mode",
     "switchDark": "Lumipat sa Dark Mode",
     "language": "Wika",
-    "searchLanguage": "Maghanap ng wika"
+    "searchLanguage": "Maghanap ng wika",
+    "condense": "Paliitin ang sidebar",
+    "expand": "Palakihin ang sidebar"
   },
   "nav": {
     "dashboard": "Dashboard",
