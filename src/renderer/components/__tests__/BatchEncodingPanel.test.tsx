@@ -1,7 +1,8 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import type { ComponentProps } from 'react';
 import BatchEncodingPanel from '../BatchEncodingPanel';
+import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
 
 function renderPanel(props: Partial<ComponentProps<typeof BatchEncodingPanel>> = {}) {
   const all: ComponentProps<typeof BatchEncodingPanel> = {
@@ -29,9 +30,51 @@ function renderPanel(props: Partial<ComponentProps<typeof BatchEncodingPanel>> =
 }
 
 describe('BatchEncodingPanel', () => {
+  beforeEach(() => {
+    useDismissedAlertsStore.setState({ dismissed: [] });
+  });
+
   it('renders the encoding options title', () => {
     renderPanel();
     expect(screen.getByText('batchQueue.encodingOptions')).toBeInTheDocument();
+  });
+
+  it('shows the options-editable alert when queued jobs allow editing', () => {
+    renderPanel({ optionsEditable: true });
+    expect(screen.getByText('batchQueue.optionsEditableAlert')).toBeInTheDocument();
+    expect(screen.queryByText('batchQueue.optionsLockedAlert')).not.toBeInTheDocument();
+  });
+
+  it('shows the options-locked alert while the batch is running', () => {
+    renderPanel({ optionsLocked: true });
+    expect(screen.getByText('batchQueue.optionsLockedAlert')).toBeInTheDocument();
+    expect(screen.queryByText('batchQueue.optionsEditableAlert')).not.toBeInTheDocument();
+  });
+
+  it('shows no option alert by default', () => {
+    renderPanel();
+    expect(screen.queryByText('batchQueue.optionsEditableAlert')).not.toBeInTheDocument();
+    expect(screen.queryByText('batchQueue.optionsLockedAlert')).not.toBeInTheDocument();
+  });
+
+  it('dismisses the options-editable alert via its close button', () => {
+    renderPanel({ optionsEditable: true });
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByText('batchQueue.optionsEditableAlert')).not.toBeInTheDocument();
+  });
+
+  it('dismisses the options-locked alert via its close button', () => {
+    renderPanel({ optionsLocked: true });
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByText('batchQueue.optionsLockedAlert')).not.toBeInTheDocument();
+  });
+
+  it('re-shows the locked alert after the editable alert was dismissed', () => {
+    const { props, rerender } = renderPanel({ optionsEditable: true });
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByText('batchQueue.optionsEditableAlert')).not.toBeInTheDocument();
+    rerender(<BatchEncodingPanel {...props} optionsEditable={false} optionsLocked />);
+    expect(screen.getByText('batchQueue.optionsLockedAlert')).toBeInTheDocument();
   });
 
   it('renders all seven controls for the transcode operation', () => {

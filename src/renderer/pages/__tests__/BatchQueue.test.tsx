@@ -4,6 +4,7 @@ import BatchQueue from '../BatchQueue';
 import { useQueueStore } from '../../stores/queueStore';
 import { useToastStore } from '../../stores/toastStore';
 import { useSettingsStore } from '../../stores/settingsStore';
+import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
 import type { QueueJob } from '../../../shared/types';
 import { FILE_FILTERS } from '../../../shared/file-extensions';
 import { BATCH_CONFIG_STORAGE_KEY } from '../../../shared/constants';
@@ -52,6 +53,7 @@ describe('BatchQueue', () => {
     useQueueStore.setState({ jobs: [] });
     useToastStore.setState({ toasts: [] });
     useSettingsStore.setState({ queueConcurrency: 1, hardwareAcceleration: true });
+    useDismissedAlertsStore.setState({ dismissed: [] });
   });
 
   it('loads the queued jobs on mount', async () => {
@@ -85,6 +87,15 @@ describe('BatchQueue', () => {
     useSettingsStore.setState({ hardwareAcceleration: false });
     queueListMock.mockResolvedValue([]);
     renderPage();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('dismisses the hardware acceleration alert via its close button', () => {
+    useSettingsStore.setState({ hardwareAcceleration: true });
+    queueListMock.mockResolvedValue([]);
+    renderPage();
+    expect(screen.getByRole('alert')).toHaveTextContent('convert.hardwareAccelAlert');
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 

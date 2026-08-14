@@ -70,6 +70,12 @@ export interface BatchControlsProps {
   onWhenDoneChange: (config: WhenDoneConfig) => void;
   onExport: () => void;
   onImport: () => void;
+  /**
+   * Whether the hardware-acceleration info alert should be shown inside the
+   * controls box. Dismissal state is tracked by the shared dismissed-alerts
+   * store.
+   */
+  hardwareAccelAlert?: boolean;
 }
 
 /**
@@ -98,6 +104,10 @@ export interface BufferedFrame {
  * @property {string} quality - Image compression quality 1-31 ('' = encoder default).
  * @property {string} scale - Output resolution as WIDTHxHEIGHT ('' = original).
  * @property {string} pixelFormat - Output pixel format (e.g. 'yuv420p').
+ * @property {boolean} [optionsLocked] - Whether the batch is running, locking the
+ *   options; shows the options-locked warning alert inside the panel.
+ * @property {boolean} [optionsEditable] - Whether queued jobs allow their options
+ *   to be changed; shows the options-editable info alert inside the panel.
  * @property {(value: string) => void} onVideoCodecChange - Fired on video codec change.
  * @property {(value: string) => void} onAudioCodecChange - Fired on audio codec change.
  * @property {(value: string) => void} onContainerChange - Fired on container change.
@@ -117,6 +127,8 @@ export interface BatchEncodingPanelProps {
   quality: string;
   scale: string;
   pixelFormat: string;
+  optionsLocked?: boolean;
+  optionsEditable?: boolean;
   onVideoCodecChange: (value: string) => void;
   onAudioCodecChange: (value: string) => void;
   onContainerChange: (value: string) => void;

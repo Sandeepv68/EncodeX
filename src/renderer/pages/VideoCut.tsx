@@ -58,6 +58,7 @@ import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { focusFirstError } from '../utils/focusFirstError';
 import { useSettingsStore } from '../stores/settingsStore';
+import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { SectionHeader, FileChip, SectionsStack, HeadingGroup, AccelAlert } from '../styles/VideoCut.styles';
@@ -209,6 +210,7 @@ export default function VideoCut() {
    * @type {boolean}
    */
   const [isPaused, setIsPaused] = useState(false);
+  const accelAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL));
 
   /**
    * Whether the "cancel running job" confirmation dialog is open.
@@ -666,7 +668,14 @@ export default function VideoCut() {
             {t('videoCut.details')}
           </SectionTitle>
 
-          {settingsHardwareAcceleration && <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>}
+          {settingsHardwareAcceleration && !accelAlertDismissed && (
+            <AccelAlert
+              severity="info"
+              onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL)}
+            >
+              {t('convert.hardwareAccelAlert')}
+            </AccelAlert>
+          )}
 
           <Box>
             <FieldLabel>

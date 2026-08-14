@@ -45,6 +45,8 @@
  *    JSON file via the main process.
  *  - onImport: fired by the Import button; the parent reads and enqueues a
  *    JSON queue file via the main process.
+ *  - hardwareAccelAlert: optional; when true and not dismissed this session,
+ *    renders the hardware-acceleration info alert inside the controls box.
  */
 
 import { Box, Checkbox, FormControlLabel, Grid, MenuItem, Tooltip } from '@mui/material';
@@ -65,7 +67,9 @@ import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { MAX_QUEUE_CONCURRENCY, WHEN_DONE_ACTIONS } from '../../shared/constants';
 import type { TranscoderType, WhenDoneAction, WhenDoneConfig } from '../../shared/types';
 import type { BatchControlsProps } from './types';
+import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
+import { AccelAlert } from '../styles/BatchQueue.styles';
 import {
   ControlsPaper,
   OperationSelect,
@@ -130,6 +134,8 @@ import {
  *   checkbox changes.
  * @param {() => void} props.onExport - Fired by the Export button.
  * @param {() => void} props.onImport - Fired by the Import button.
+ * @param {boolean} [props.hardwareAccelAlert=false] - When true and not already
+ *   dismissed, shows the hardware-acceleration info alert inside the box.
  * @returns {JSX.Element} The controls paper.
  */
 export default function BatchControls({
@@ -159,8 +165,11 @@ export default function BatchControls({
   onWhenDoneChange,
   onExport,
   onImport,
+  hardwareAccelAlert,
 }: BatchControlsProps) {
   const { t } = useTranslation();
+
+  const accelAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL));
 
   /**
    * Localized display labels keyed by batch operation value.
@@ -184,6 +193,15 @@ export default function BatchControls({
 
   return (
     <ControlsPaper>
+      {hardwareAccelAlert && !accelAlertDismissed && (
+        <AccelAlert
+          severity="info"
+          sx={{ marginBottom: 2 }}
+          onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL)}
+        >
+          {t('convert.hardwareAccelAlert')}
+        </AccelAlert>
+      )}
       <Grid container spacing={2}>
         <Grid size={12}>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1 }}>

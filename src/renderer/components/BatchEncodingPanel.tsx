@@ -31,9 +31,11 @@ import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/co
 import CodecSelect from './CodecSelect';
 import GroupedSelect from './GroupedSelect';
 import { useFieldId } from '../hooks/useFieldId';
+import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import type { BatchEncodingPanelProps } from './types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import { EncodingPaper, EncodingTitle } from '../styles/BatchEncodingPanel.styles';
+import { AccelAlert, LockedAlert } from '../styles/BatchQueue.styles';
 
 /**
  * Pixel-format options prepared for the GroupedSelect: every entry of
@@ -92,6 +94,9 @@ const pixelGroupIcons: Record<string, IconDefinition> = {
 export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
   const { t } = useTranslation();
 
+  const lockedAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.OPTIONS_LOCKED));
+  const editableAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.OPTIONS_EDITABLE));
+
   const showVideo = props.operation === 'transcode';
   const showAudio = props.operation === 'transcode' || props.operation === 'extract_audio';
   const showImage = props.operation === 'compress_image';
@@ -105,6 +110,24 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
       <EncodingTitle variant="subtitle2" color="text.secondary">
         {t('batchQueue.encodingOptions')}
       </EncodingTitle>
+      {props.optionsLocked && !lockedAlertDismissed && (
+        <LockedAlert
+          severity="warning"
+          sx={{ marginBottom: 2 }}
+          onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.OPTIONS_LOCKED)}
+        >
+          {t('batchQueue.optionsLockedAlert')}
+        </LockedAlert>
+      )}
+      {!props.optionsLocked && props.optionsEditable && !editableAlertDismissed && (
+        <AccelAlert
+          severity="info"
+          sx={{ marginBottom: 2 }}
+          onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.OPTIONS_EDITABLE)}
+        >
+          {t('batchQueue.optionsEditableAlert')}
+        </AccelAlert>
+      )}
       <Grid container spacing={2}>
         {showVideo && (
           <Grid size={{ xs: 12, sm: 6, lg: 4 }}>

@@ -4,6 +4,7 @@ import VideoCut from '../VideoCut';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
 import { useSettingsStore } from '../../stores/settingsStore';
+import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
 import { useVideoCutStore } from '../../stores/videoCutStore';
 import type { MediaInfo, ConversionProgress } from '../../../shared/types';
 
@@ -71,6 +72,7 @@ describe('VideoCut', () => {
     cancelConversionMock.mockClear();
     useErrorStore.setState({ currentError: null, errorHistory: [] });
     useToastStore.setState({ toasts: [] });
+    useDismissedAlertsStore.setState({ dismissed: [] });
     useVideoCutStore.setState({
       input: '',
       output: '',
@@ -99,6 +101,14 @@ describe('VideoCut', () => {
   it('does not show the hardware acceleration alert when acceleration is disabled', () => {
     useSettingsStore.setState({ hardwareAcceleration: false });
     renderPage();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('dismisses the hardware acceleration alert via its close button', () => {
+    useSettingsStore.setState({ hardwareAcceleration: true });
+    renderPage();
+    expect(screen.getByRole('alert')).toHaveTextContent('convert.hardwareAccelAlert');
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 

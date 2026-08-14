@@ -60,6 +60,7 @@ import { isInRange } from '../../shared/validation';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { focusFirstError } from '../utils/focusFirstError';
 import { useSettingsStore } from '../stores/settingsStore';
+import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { useFieldId } from '../hooks/useFieldId';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import type { EncoderType } from '../../shared/types';
@@ -219,6 +220,8 @@ export default function Convert() {
   const [mediaInfoLoading, setMediaInfoLoading] = useState(false);
   const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
   const settingsEncoderType = useSettingsStore((s) => s.encoderType);
+  const accelAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL));
+  const compatAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.COMPAT));
 
   /**
    * The encoder type actually used for codec suggestion: the page-level override
@@ -417,9 +420,10 @@ export default function Convert() {
           testId="convert-output"
         />
 
-        {showCompatWarning && (
+        {showCompatWarning && !compatAlertDismissed && (
           <CompatAlert
             severity="warning"
+            onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.COMPAT)}
             action={
               <Button size="small" color="inherit" onClick={applySuggestedExtension}>
                 {t('convert.applySuggestedExt', { extension: suggestedOutputExt })}
@@ -453,9 +457,14 @@ export default function Convert() {
 
         {!copyMode && (
           <>
-            {settingsHardwareAcceleration && (
+            {settingsHardwareAcceleration && !accelAlertDismissed && (
               <>
-                <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>
+                <AccelAlert
+                  severity="info"
+                  onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL)}
+                >
+                  {t('convert.hardwareAccelAlert')}
+                </AccelAlert>
                 <FieldBox>
                   <FieldLabel>
                     {t('settings.encoderType')}

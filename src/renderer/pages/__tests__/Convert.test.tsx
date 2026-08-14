@@ -5,6 +5,7 @@ import { useConversionStore } from '../../stores/conversionStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
+import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../../stores/dismissedAlertsStore';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
@@ -71,6 +72,7 @@ describe('Convert', () => {
     useSettingsStore.setState({ hardwareAcceleration: true, hwaccelMode: 'auto', encoderType: 'auto' });
     useErrorStore.setState({ currentError: null, errorHistory: [] });
     useToastStore.setState({ toasts: [] });
+    useDismissedAlertsStore.setState({ dismissed: [] });
   });
 
   it('renders the title, fields, and start button', () => {
@@ -345,6 +347,19 @@ describe('Convert', () => {
 
   it('does not show the hardware acceleration alert when hardware acceleration is disabled', () => {
     useSettingsStore.setState({ hardwareAcceleration: false });
+    renderPage();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('dismisses the hardware acceleration alert via its close button', () => {
+    renderPage();
+    expect(screen.getByRole('alert')).toHaveTextContent('convert.hardwareAccelAlert');
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('keeps the hardware acceleration alert hidden when dismissed on another page', () => {
+    useDismissedAlertsStore.setState({ dismissed: [DISMISSED_ALERT_KEYS.HARDWARE_ACCEL] });
     renderPage();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });

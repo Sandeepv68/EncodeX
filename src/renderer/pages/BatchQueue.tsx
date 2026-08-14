@@ -57,8 +57,6 @@ import {
   FilterChip,
   SearchField,
   DropOverlay,
-  AccelAlert,
-  LockedAlert,
 } from '../styles/BatchQueue.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
@@ -1085,6 +1083,7 @@ export default function BatchQueue() {
           onWhenDoneChange={setWhenDone}
           onExport={handleExport}
           onImport={handleImport}
+          hardwareAccelAlert={settingsHardwareAcceleration}
         />
 
         <BatchEncodingPanel
@@ -1097,6 +1096,8 @@ export default function BatchQueue() {
           quality={quality}
           scale={scale}
           pixelFormat={pixelFormat}
+          optionsLocked={batchStarted}
+          optionsEditable={!batchStarted && jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
           onVideoCodecChange={handleVideoCodecChange}
           onAudioCodecChange={handleAudioCodecChange}
           onContainerChange={setContainer}
@@ -1138,13 +1139,6 @@ export default function BatchQueue() {
             )}
           </FilterRow>
         )}
-        {settingsHardwareAcceleration && <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>}
-        {(jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED) || batchStarted) &&
-          (batchStarted ? (
-            <LockedAlert severity="warning">{t('batchQueue.optionsLockedAlert')}</LockedAlert>
-          ) : (
-            <AccelAlert severity="info">{t('batchQueue.optionsEditableAlert')}</AccelAlert>
-          ))}
         {jobs.length === 0 ? (
           <EmptyText color="text.secondary">{t('batchQueue.empty')}</EmptyText>
         ) : visibleJobs.length === 0 ? (
