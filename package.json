@@ -34,6 +34,7 @@
     "test:e2e:real": "npm run build && vitest run --config e2e/vitest.e2e.real.config.ts",
     "test:e2e:ci": "vitest run --config e2e/vitest.e2e.config.ts",
     "test:e2e:real:ci": "vitest run --config e2e/vitest.e2e.real.config.ts",
+    "fetch:binaries": "node scripts/fetch-media-binaries.mjs",
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder"
   },
@@ -121,15 +122,18 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "assets/icons/AppIcon.icon/Assets/icon.png"
+      "icon": "assets/icons/AppIcon.icon/Assets/icon.png",
+      "artifactName": "${productName}-${version}-${arch}-setup.${ext}"
     },
     "mac": {
       "target": "dmg",
-      "icon": "assets/icons/AppIcon.icon/Assets/icon.png"
+      "icon": "assets/icons/AppIcon.icon/Assets/icon.png",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "linux": {
       "target": "AppImage",
-      "icon": "assets/icons/AppIcon.icon/Assets/icon.png"
+      "icon": "assets/icons/AppIcon.icon/Assets/icon.png",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
     }
   }
 }

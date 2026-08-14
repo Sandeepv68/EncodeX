@@ -13,17 +13,43 @@ env:
 
 jobs:
   package:
-    name: Package - ${{ matrix.os }}
+    name: Package - ${{ matrix.os }} (${{ matrix.arch }})
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu
-            runner: ubuntu-latest
           - os: windows
             runner: windows-latest
+            target: nsis
+            arch: x64
+          - os: windows
+            runner: windows-latest
+            target: nsis
+            arch: ia32
+          - os: windows
+            runner: windows-latest
+            target: nsis
+            arch: arm64
           - os: macos
             runner: macos-latest
+            target: dmg
+            arch: x64
+          - os: macos
+            runner: macos-latest
+            target: dmg
+            arch: arm64
+          - os: ubuntu
+            runner: ubuntu-latest
+            target: appimage
+            arch: x64
+          - os: ubuntu
+            runner: ubuntu-latest
+            target: appimage
+            arch: arm64
+          - os: ubuntu
+            runner: ubuntu-latest
+            target: appimage
+            arch: armv7l
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
     steps:
@@ -33,12 +59,14 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - name: Build installers
-        run: npm run dist
+      - name: Fetch media binaries for ${{ matrix.os }} ${{ matrix.arch }}
+        run: node scripts/fetch-media-binaries.mjs --platform=${{ matrix.os }} --arch=${{ matrix.arch }}
+      - name: Build ${{ matrix.arch }} ${{ matrix.target }} installer
+        run: npm run dist -- --${{ matrix.target }} --${{ matrix.arch }}
       - name: Upload installers
         uses: actions/upload-artifact@v4
         with:
-          name: release-${{ matrix.os }}
+          name: release-${{ matrix.os }}-${{ matrix.arch }}
           path: release/
           if-no-files-found: error
 

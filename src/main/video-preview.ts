@@ -16,13 +16,11 @@
 
 import { spawn } from 'child_process';
 import { existsSync } from 'fs';
-import ffmpegStatic from 'ffmpeg-static';
 import { Logger } from '../shared/logger';
+import { getFfmpegPath } from './media-binaries';
 import { isVideoFile } from '../shared/file-extensions';
 import { VIDEO_PREVIEW_MAX_WIDTH, VIDEO_PREVIEW_SEEK_TIME } from '../shared/constants';
-import { TRANSCODER_COMMANDS } from '../shared/transcoder-constants';
 import {
-  LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG,
   LOG_NOT_A_READABLE_VIDEO_FILE,
   LOG_VIDEO_PREVIEW_EXTRACTION_FAILED_STDERR,
   LOG_VIDEO_PREVIEW_FFMPEG_ERROR,
@@ -34,20 +32,6 @@ import {
  * @const {Logger} log
  */
 const log = new Logger('main/video-preview');
-
-/**
- * Resolves the FFmpeg binary path, preferring the bundled `ffmpeg-static`
- * binary and falling back to the system `ffmpeg` command.
- *
- * @returns {string} Absolute path to the static ffmpeg executable, or the
- *   plain `ffmpeg` command name when the static binary does not exist.
- */
-function getFfmpegPath(): string {
-  const staticPath = ffmpegStatic as unknown as string;
-  if (existsSync(staticPath)) return staticPath;
-  log.warn(LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG);
-  return TRANSCODER_COMMANDS.FFMPEG;
-}
 
 /**
  * Extracts a single PNG preview frame from a video file and returns it as a

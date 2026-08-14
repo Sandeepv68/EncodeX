@@ -12,8 +12,8 @@
 import { spawn } from 'child_process';
 import { existsSync } from 'fs';
 import { deflateSync } from 'zlib';
-import ffmpegStatic from 'ffmpeg-static';
 import { Logger } from '../../shared/logger';
+import { getFfmpegPath } from '../media-binaries';
 import { isVideoFile } from '../../shared/file-extensions';
 import { WaveformData, ThumbnailStrip } from '../../shared/types';
 import {
@@ -34,10 +34,8 @@ import {
   MAX_CONCURRENT_FFMPEG,
   PCM_MAX_AMPLITUDE,
 } from '../../shared/constants';
-import { TRANSCODER_COMMANDS } from '../../shared/transcoder-constants';
 import {
   LOG_FFMPEG_SPAWN_ERROR,
-  LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG,
   LOG_NOT_A_THUMBNAIL_ABLE_FILE,
   LOG_NOT_A_WAVEFORM_ABLE_FILE,
   LOG_THUMBNAIL_EXTRACTION_FAILED_NO_FRAMES_DECODED,
@@ -50,21 +48,6 @@ const log = new Logger('main/timeline/timeline-media');
 
 /** Byte size of one raw RGB24 thumbnail frame (`THUMB_WIDTH * THUMB_HEIGHT * 3`). */
 const RAW_FRAME_BYTES = THUMB_WIDTH * THUMB_HEIGHT * 3;
-
-/**
- * Resolves the ffmpeg executable path to use for segment decoding.
- *
- * Prefers the statically bundled ffmpeg binary from `ffmpeg-static`; falls back
- * to the system `ffmpeg` command with a warning if the bundled binary is absent.
- * @returns {string} Absolute path to the bundled ffmpeg binary, or `'ffmpeg'`
- *   for the system-installed executable
- */
-function getFfmpegPath(): string {
-  const staticPath = ffmpegStatic as unknown as string;
-  if (existsSync(staticPath)) return staticPath;
-  log.warn(LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG);
-  return TRANSCODER_COMMANDS.FFMPEG;
-}
 
 /**
  * Clamps a value into the inclusive `[min, max]` range.
