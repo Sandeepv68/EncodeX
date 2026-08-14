@@ -55,6 +55,19 @@ describe.runIf(IS_E2E)('Convert page', () => {
     await expect.poll(() => session.page.locator('[data-testid="convert-start"]').isEnabled()).toBe(true);
   });
 
+  it('focuses the file drop zone from the keyboard and activates it with Enter', async () => {
+    await mockApi.setSelectFile(session.page, INPUT);
+    const zone = session.page.locator('[data-testid="file-drop-zone"]');
+    await zone.focus();
+    await expect
+      .poll(() =>
+        session.page.evaluate(() => document.activeElement?.getAttribute('data-testid') ?? null),
+      )
+      .toBe('file-drop-zone');
+    await session.page.keyboard.press('Enter');
+    await expect.poll(() => session.page.locator('[data-testid="convert-input-file"]').textContent()).toContain('video.mp4');
+  });
+
   it('selects an explicit output file with Save As', async () => {
     await mockApi.setSelectFile(session.page, INPUT);
     await session.page.locator('[data-testid="file-drop-zone"]').click();

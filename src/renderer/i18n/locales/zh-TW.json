@@ -284,6 +284,16 @@
     "audioEnabled": "包含音訊",
     "audioEnabledHint": "在剪輯輸出中包含音訊軌。取消勾選以產生沒有聲音的影片。"
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "批次佇列",
     "operation": "操作",
@@ -370,6 +380,7 @@
     "containerAuto": "自動（來源）"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "時間",
     "speed": "速度",
     "eta": "預計剩餘時間"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "清除",
     "download": "下載為 TXT",
+    "filter": "Filter by level",
     "levelAll": "全部",
     "levelDebug": "偵錯",
     "levelInfo": "資訊",

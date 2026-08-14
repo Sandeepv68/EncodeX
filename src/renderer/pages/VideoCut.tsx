@@ -617,7 +617,9 @@ export default function VideoCut() {
           <SectionCard>
             <SectionHeader>
               <HeadingGroup>
-                <SectionTitle variant="h6">{t('videoCut.preview')}</SectionTitle>
+                <SectionTitle variant="h6" component="h2">
+                  {t('videoCut.preview')}
+                </SectionTitle>
                 <FileChip size="small" label={basename(input)} title={input} />
               </HeadingGroup>
               {!isConverting && (
@@ -660,7 +662,9 @@ export default function VideoCut() {
         )}
 
         <SectionCard>
-          <SectionTitle variant="h6">{t('videoCut.details')}</SectionTitle>
+          <SectionTitle variant="h6" component="h2">
+            {t('videoCut.details')}
+          </SectionTitle>
 
           {settingsHardwareAcceleration && <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>}
 

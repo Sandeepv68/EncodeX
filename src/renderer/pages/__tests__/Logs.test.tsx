@@ -4,6 +4,7 @@ import Logs from '../Logs';
 import { useLogStore } from '../../stores/logStore';
 import { useToastStore } from '../../stores/toastStore';
 import type { LogEntry } from '../../../shared/types';
+import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 function entry(overrides: Partial<LogEntry>): LogEntry {
   return {
@@ -23,6 +24,12 @@ describe('Logs', () => {
     vi.restoreAllMocks();
   });
 
+  it('has no axe violations', async () => {
+    useLogStore.setState({ entries: [entry({ level: 'INFO', text: 'first line', source: 'main' })] });
+    const { container } = render(<Logs />);
+    await assertNoAxeViolations(container);
+  });
+
   it('shows the empty message when there are no entries', () => {
     render(<Logs />);
     expect(screen.getByText('logs.noEntries')).toBeInTheDocument();
@@ -36,6 +43,12 @@ describe('Logs', () => {
     expect(screen.getByText(/first line/)).toBeInTheDocument();
     expect(screen.getByText(/boom/)).toBeInTheDocument();
     expect(screen.getByText('logs.entryCount')).toBeInTheDocument();
+  });
+
+  it('renders the level as text so it is not color-only', () => {
+    useLogStore.setState({ entries: [entry({ level: 'WARN', text: 'warning line', source: 'main' })] });
+    render(<Logs />);
+    expect(screen.getByText('[WARN]')).toBeInTheDocument();
   });
 
   it('filters entries by the selected level', () => {
@@ -69,6 +82,17 @@ describe('Logs', () => {
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:fake');
     expect(clickSpy).toHaveBeenCalledOnce();
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'toast.logsDownloaded')).toBe(true);
+  });
+
+  it('exposes accessible names for the clear and download buttons', () => {
+    render(<Logs />);
+    expect(screen.getByRole('button', { name: 'logs.clear' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'logs.download' })).toBeInTheDocument();
+  });
+
+  it('labels the filter select for screen readers', () => {
+    render(<Logs />);
+    expect(screen.getByRole('combobox', { name: 'logs.filter' })).toBeInTheDocument();
   });
 
   it('falls back to the default color for unknown levels', () => {

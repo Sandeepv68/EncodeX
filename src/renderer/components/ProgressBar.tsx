@@ -46,9 +46,10 @@ import { ProgressTrack, ProgressInfoRow } from '../styles/ProgressBar.styles';
 export default function ProgressBar({ percent, time, speed, eta, paused = false, shadowed = false }: ProgressBarProps) {
   const { t } = useTranslation();
   const clamped = Math.min(100, Math.max(0, percent));
+  const completed = clamped >= 100;
   return (
     <Box>
-      <ProgressTrack variant="determinate" value={clamped} paused={paused} shadowed={shadowed} />
+      <ProgressTrack variant="determinate" value={clamped} paused={paused} shadowed={shadowed} aria-label={t('progress.title')} />
       <ProgressInfoRow>
         <Typography variant="caption" color="text.secondary">
           {clamped.toFixed(1)}%
@@ -69,6 +70,23 @@ export default function ProgressBar({ percent, time, speed, eta, paused = false,
           </Typography>
         )}
       </ProgressInfoRow>
+      {completed && (
+        <Box
+          role="status"
+          aria-live="polite"
+          sx={{
+            position: 'absolute',
+            width: 1,
+            height: 1,
+            margin: -1,
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {t('toast.conversionComplete')}
+        </Box>
+      )}
     </Box>
   );
 }

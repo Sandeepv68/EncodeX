@@ -54,4 +54,16 @@ describe('FormField', () => {
     fireEvent.click(screen.getByText('Output'));
     expect(child).toHaveBeenCalled();
   });
+
+  it('renders the hint as a focusable, named tooltip trigger', () => {
+    render(
+      <FormField label="Output" hint="Explains the field">
+        {(id) => <input id={id} type="text" />}
+      </FormField>,
+    );
+    const trigger = screen.getByTestId('info-tooltip');
+    expect(trigger).toHaveAttribute('tabindex', '0');
+    expect(trigger).toHaveAttribute('role', 'button');
+    expect(trigger).toHaveAccessibleName('Explains the field');
+  });
 });

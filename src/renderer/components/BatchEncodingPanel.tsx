@@ -30,6 +30,7 @@ import { QSCALE_RANGE } from '../../shared/transcoder-constants';
 import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
 import CodecSelect from './CodecSelect';
 import GroupedSelect from './GroupedSelect';
+import { useFieldId } from '../hooks/useFieldId';
 import type { BatchEncodingPanelProps } from './types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import { EncodingPaper, EncodingTitle } from '../styles/BatchEncodingPanel.styles';
@@ -97,6 +98,8 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
 
   const containerOptions = showVideo ? getVideoCodecContainer(props.videoCodec).containers : getAudioCodecContainers(props.audioCodec);
 
+  const qualityId = useFieldId();
+
   return (
     <EncodingPaper>
       <EncodingTitle variant="subtitle2" color="text.secondary">
@@ -107,7 +110,7 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
           <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
             <FieldBox>
               <FieldLabel>{t('convert.videoCodec')}</FieldLabel>
-              <CodecSelect type="video" value={props.videoCodec} onChange={props.onVideoCodecChange} />
+              <CodecSelect ariaLabel={t('convert.videoCodec')} type="video" value={props.videoCodec} onChange={props.onVideoCodecChange} />
             </FieldBox>
           </Grid>
         )}
@@ -115,7 +118,7 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
           <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
             <FieldBox>
               <FieldLabel>{t('convert.audioCodec')}</FieldLabel>
-              <CodecSelect type="audio" value={props.audioCodec} onChange={props.onAudioCodecChange} />
+              <CodecSelect ariaLabel={t('convert.audioCodec')} type="audio" value={props.audioCodec} onChange={props.onAudioCodecChange} />
             </FieldBox>
           </Grid>
         )}
@@ -127,6 +130,7 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 select
                 fullWidth
                 size="small"
+                slotProps={{ htmlInput: { 'aria-label': t('batchQueue.container') } }}
                 value={props.container}
                 onChange={(e) => {
                   props.onContainerChange(e.target.value);
@@ -150,6 +154,7 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 select
                 fullWidth
                 size="small"
+                slotProps={{ htmlInput: { 'aria-label': t('imageCompress.outputFormat') } }}
                 value={props.container}
                 onChange={(e) => {
                   props.onContainerChange(e.target.value);
@@ -173,6 +178,7 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 select
                 fullWidth
                 size="small"
+                slotProps={{ htmlInput: { 'aria-label': t('convert.videoBitrate') } }}
                 value={props.videoBitrate}
                 onChange={(e) => {
                   props.onVideoBitrateChange(e.target.value);
@@ -195,6 +201,7 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 select
                 fullWidth
                 size="small"
+                slotProps={{ htmlInput: { 'aria-label': t('convert.audioBitrate') } }}
                 value={props.audioBitrate}
                 onChange={(e) => {
                   props.onAudioBitrateChange(e.target.value);
@@ -213,11 +220,12 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
         {showImage && (
           <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
             <FieldBox>
-              <FieldLabel>{t('imageCompress.quality')}</FieldLabel>
+              <FieldLabel htmlFor={qualityId}>{t('imageCompress.quality')}</FieldLabel>
               <TextField
                 fullWidth
                 size="small"
                 type="number"
+                id={qualityId}
                 value={props.quality}
                 onChange={(e) => {
                   props.onQualityChange(e.target.value);
@@ -241,6 +249,7 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 select
                 fullWidth
                 size="small"
+                slotProps={{ htmlInput: { 'aria-label': showVideo ? t('convert.scale') : t('imageCompress.scale') } }}
                 value={props.scale}
                 onChange={(e) => {
                   props.onScaleChange(e.target.value);
@@ -260,6 +269,7 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
             <FieldBox>
               <FieldLabel>{t('convert.pixelFormat')}</FieldLabel>
               <GroupedSelect
+                ariaLabel={t('convert.pixelFormat')}
                 value={props.pixelFormat}
                 onChange={props.onPixelFormatChange}
                 options={pixelFormatOptions}

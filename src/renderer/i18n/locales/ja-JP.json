@@ -284,6 +284,16 @@
     "audioEnabled": "オーディオを含める",
     "audioEnabledHint": "切り出し出力にオーディオトラックを含めます。オフにすると音声なしのビデオになります。"
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "バッチキュー",
     "operation": "操作",
@@ -370,6 +380,7 @@
     "containerAuto": "自動（元の形式）"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "時間",
     "speed": "速度",
     "eta": "残り時間"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "クリア",
     "download": "TXTとしてダウンロード",
+    "filter": "Filter by level",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

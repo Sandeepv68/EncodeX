@@ -284,6 +284,16 @@
     "audioEnabled": "Include audio",
     "audioEnabledHint": "Include the audio track in the cut output. Uncheck to produce a video without sound."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Batch Queue",
     "operation": "Operation",
@@ -370,6 +380,7 @@
     "containerAuto": "Auto (source)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Time",
     "speed": "Speed",
     "eta": "ETA"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Clear",
     "download": "Download as TXT",
+    "filter": "Filter by level",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

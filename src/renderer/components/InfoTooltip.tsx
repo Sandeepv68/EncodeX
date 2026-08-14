@@ -30,8 +30,8 @@ import { InfoIconWrapper, InfoIcon } from '../styles/InfoTooltip.styles';
 export default function InfoTooltip({ title }: InfoTooltipProps) {
   return (
     <Tooltip title={title}>
-      <InfoIconWrapper data-testid="info-tooltip">
-        <InfoIcon icon={faCircleInfo} />
+      <InfoIconWrapper role="button" tabIndex={0} aria-label={title} data-testid="info-tooltip">
+        <InfoIcon icon={faCircleInfo} aria-hidden="true" />
       </InfoIconWrapper>
     </Tooltip>
   );

@@ -284,6 +284,16 @@
     "audioEnabled": "Incluir áudio",
     "audioEnabledHint": "Inclua a faixa de áudio no resultado do corte. Desmarque para produzir um vídeo sem som."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Fila em Lote",
     "operation": "Operação",
@@ -370,6 +380,7 @@
     "containerAuto": "Automático (origem)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Tempo",
     "speed": "Velocidade",
     "eta": "PTA"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Limpar",
     "download": "Transferir como TXT",
+    "filter": "Filter by level",
     "levelAll": "TODOS",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

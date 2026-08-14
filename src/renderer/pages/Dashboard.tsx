@@ -93,7 +93,7 @@ export default function Dashboard() {
         width: '100%',
       }}
     >
-      <WelcomeTitle variant="h4">
+      <WelcomeTitle variant="h4" component="h1">
         <WelcomeIcon src={appIcon} alt="" draggable={false} />
         {t('dashboard.welcome')} 👋
       </WelcomeTitle>
@@ -105,7 +105,7 @@ export default function Dashboard() {
               <CardLink onClick={() => navigate(item.to)}>
                 <FeatureIconBox>{pageIcons[item.to]}</FeatureIconBox>
                 <CardBody>
-                  <CardTitleText variant="h6">
+                  <CardTitleText variant="h6" component="h2">
                     {t(
                       `nav.${item.to === '/convert' ? 'convert' : item.to === '/media-info' ? 'mediaInfo' : item.to === '/image-compress' ? 'image' : item.to === '/audio-extract' ? 'audio' : item.to === '/video-cut' ? 'cut' : 'batchQueue'}`,
                     )}

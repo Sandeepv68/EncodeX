@@ -284,6 +284,16 @@
     "audioEnabled": "Isama ang audio",
     "audioEnabledHint": "Isama ang audio track sa cut output. Alisan ng check para makagawa ng video na walang tunog."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Batch Queue",
     "operation": "Operasyon",
@@ -370,6 +380,7 @@
     "containerAuto": "Auto (source)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Oras",
     "speed": "Bilis",
     "eta": "ETA"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "I-clear",
     "download": "I-download bilang TXT",
+    "filter": "Filter by level",
     "levelAll": "LAHAT",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

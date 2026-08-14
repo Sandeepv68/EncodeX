@@ -284,6 +284,16 @@
     "audioEnabled": "Inkludera ljud",
     "audioEnabledHint": "Inkludera ljudspåret i klippets utdata. Avmarkera för att producera en video utan ljud."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Batchkö",
     "operation": "Operation",
@@ -370,6 +380,7 @@
     "containerAuto": "Automatisk (källa)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Tid",
     "speed": "Hastighet",
     "eta": "BPT"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Rensa",
     "download": "Ladda ner som TXT",
+    "filter": "Filter by level",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

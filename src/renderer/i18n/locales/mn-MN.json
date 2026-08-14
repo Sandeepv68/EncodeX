@@ -284,6 +284,16 @@
     "audioEnabled": "Аудио оруулах",
     "audioEnabledHint": "Тайралтын гаралтад аудио трекийг оруулах. Дуугүй видео гаргахын тулд сонголтыг арилгана."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Багц дараалал",
     "operation": "Үйлдэл",
@@ -370,6 +380,7 @@
     "containerAuto": "Авто (эх)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Хугацаа",
     "speed": "Хурд",
     "eta": "Үлдсэн"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Цэвэрлэх",
     "download": "TXT-ээр татах",
+    "filter": "Filter by level",
     "levelAll": "БҮГД",
     "levelDebug": "ДЕБАГ",
     "levelInfo": "МЭДЭЭ",

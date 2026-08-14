@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Settings from '../Settings';
 import { ColorModeProvider } from '../../ColorModeContext';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { HWACCEL_DEFAULTS, ENCODER_TYPE_DEFAULT } from '../../../shared/hwaccel-settings';
 import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, LAUNCH_AT_LOGIN_STORAGE_KEY } from '../../../shared/constants';
 import { THEME_STORAGE_KEY } from '../../../shared/app-constants';
+import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 function renderSettings() {
   return render(
@@ -25,6 +27,17 @@ describe('Settings', () => {
       alwaysOnTop: false,
       launchAtLogin: false,
     });
+  });
+
+  it('has no axe violations', async () => {
+    const { container } = renderSettings();
+    await assertNoAxeViolations(container);
+  });
+
+  it('names the hwaccel mode and encoder type selects', () => {
+    renderSettings();
+    expect(screen.getByRole('combobox', { name: 'settings.hwaccelMode' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'settings.encoderType' })).toBeInTheDocument();
   });
 
   const hwaccelSwitch = () => screen.getByRole('switch', { name: 'settings.hardwareAcceleration' });
@@ -56,6 +69,15 @@ describe('Settings', () => {
     fireEvent.click(screen.getByRole('button', { name: 'settings.themes.dark' }));
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('dark');
     expect(screen.getByRole('button', { name: 'settings.themes.dark' })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('switches the theme when a card is activated from the keyboard', async () => {
+    const user = userEvent.setup();
+    renderSettings();
+    const forest = screen.getByRole('button', { name: 'settings.themes.forest' });
+    forest.focus();
+    await user.keyboard(' ');
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('forest');
   });
 
   it('renders the hardware acceleration row with the mode dropdown when enabled', () => {

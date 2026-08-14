@@ -132,7 +132,7 @@ export default function Settings() {
   return (
     <SettingsRoot>
       <SettingsHeader>
-        <SettingsTitle variant="h5">
+        <SettingsTitle variant="h5" component="h1">
           <TitleIcon>{pageIcons['/settings']}</TitleIcon>
           {t('settings.title')}
         </SettingsTitle>
@@ -194,6 +194,7 @@ export default function Settings() {
             select
             size="small"
             data-testid="settings-hwaccel-mode"
+            slotProps={{ htmlInput: { 'aria-label': t('settings.hwaccelMode') } }}
             value={hwaccelMode}
             onChange={(e) => setHwaccelMode(e.target.value as HwAccelMode)}
           >
@@ -212,6 +213,7 @@ export default function Settings() {
             select
             size="small"
             data-testid="settings-encoder-type"
+            slotProps={{ htmlInput: { 'aria-label': t('settings.encoderType') } }}
             value={encoderType}
             onChange={(e) => setEncoderType(e.target.value as EncoderType)}
           >

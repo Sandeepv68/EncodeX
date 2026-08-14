@@ -284,6 +284,16 @@
     "audioEnabled": "오디오 포함",
     "audioEnabledHint": "컷 출력에 오디오 트랙을 포함합니다. 체크를 해제하면 소리가 없는 비디오가 생성됩니다."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "배치 큐",
     "operation": "작업",
@@ -370,6 +380,7 @@
     "containerAuto": "자동 (소스)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "시간",
     "speed": "속도",
     "eta": "예상 완료 시간"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "지우기",
     "download": "TXT로 다운로드",
+    "filter": "Filter by level",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

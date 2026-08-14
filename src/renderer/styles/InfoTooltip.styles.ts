@@ -6,6 +6,11 @@ export const InfoIconWrapper = styled('span')(({ theme }) => ({
   cursor: 'help',
   marginInlineStart: theme.spacing(0.5),
   verticalAlign: 'middle',
+  borderRadius: '50%',
+  '&:focus-visible': {
+    outline: `${theme.typography.pxToRem(2)} solid ${theme.palette.primary.main}`,
+    outlineOffset: 2,
+  },
 }));
 
 export const InfoIcon = styled(FontAwesomeIcon)(({ theme }) => ({

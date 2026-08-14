@@ -105,7 +105,7 @@ export default function StreamDetails({ streams, compact }: StreamDetailsProps) 
 
   return (
     <>
-      <StreamTitle variant="h6">
+      <StreamTitle variant="h6" component="h2">
         {t('mediaInfo.streams')}
         <StreamCountChip label={streams.length} size="small" data-testid="stream-count-chip" />
       </StreamTitle>

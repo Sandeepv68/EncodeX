@@ -284,6 +284,16 @@
     "audioEnabled": "Inkluder lyd",
     "audioEnabledHint": "Inkluder lydsporet i klipoutputtet. Fjern markeringen for at oprette en video uden lyd."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Batchkø",
     "operation": "Operation",
@@ -370,6 +380,7 @@
     "containerAuto": "Automatisk (kilde)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Tid",
     "speed": "Hastighed",
     "eta": "ETA"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Ryd",
     "download": "Download som TXT",
+    "filter": "Filter by level",
     "levelAll": "Alle",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

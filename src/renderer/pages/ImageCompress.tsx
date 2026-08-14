@@ -51,6 +51,7 @@ import { formatSize } from '../utils/formatters';
 import type { ImageFileInfo } from '../../shared/types';
 import { ToggleSpacer } from '../styles/ImageCompress.styles';
 import MediaPreview from '../components/MediaPreview';
+import { useFieldId } from '../hooks/useFieldId';
 import { FieldBox, FieldLabel, ToggleRow } from '../styles/form.styles';
 import {
   LOG_ARROW,
@@ -118,6 +119,7 @@ function withExtension(path: string, ext: string): string {
  */
 export default function ImageCompress() {
   const { t } = useTranslation();
+  const qualityId = useFieldId();
 
   /**
    * Absolute path of the currently selected input image, or '' when none.
@@ -392,6 +394,7 @@ export default function ImageCompress() {
             value={format}
             onChange={(e) => handleFormatChange(e.target.value)}
             data-testid="image-compress-format"
+            slotProps={{ htmlInput: { 'aria-label': t('imageCompress.outputFormat') } }}
           >
             {IMAGE_FORMATS.map((f) => (
               <MenuItem key={f.value} value={f.value}>
@@ -401,7 +404,7 @@ export default function ImageCompress() {
           </TextField>
         </FieldBox>
         <FieldBox>
-          <FieldLabel>
+          <FieldLabel htmlFor={qualityId}>
             {t('imageCompress.quality')}
             <InfoTooltip title={t('imageCompress.qualityHint')} />
           </FieldLabel>
@@ -409,6 +412,7 @@ export default function ImageCompress() {
             fullWidth
             size="small"
             type="number"
+            id={qualityId}
             data-testid="image-compress-quality"
             error={!!errors.quality}
             helperText={errors.quality || t('imageCompress.qualityRangeCaption')}
@@ -443,6 +447,7 @@ export default function ImageCompress() {
             value={scale}
             onChange={(e) => setScale(e.target.value)}
             data-testid="image-compress-scale"
+            slotProps={{ htmlInput: { 'aria-label': t('imageCompress.scale') } }}
           >
             <MenuItem value="">{t('imageCompress.noScale')}</MenuItem>
             {SCALE_OPTIONS.filter((s) => s !== '').map((s) => (

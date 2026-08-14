@@ -17,14 +17,14 @@
  *  - children: the element to measure; its ref is forwarded internally.
  */
 
-import { cloneElement, useRef, useState } from 'react';
+import { cloneElement, useCallback, useEffect, useRef, useState } from 'react';
 import { Box, Tooltip } from '@mui/material';
 import type { EllipsisTooltipProps } from './types';
 
 /**
  * Renders an overflow-aware tooltip wrapper.
  *
- * Attaches mouse enter/leave handlers that drive the local `open` state based
+ * Attaches mouse enter/focus handlers that drive the local `open` state based
  * on whether the child content overflows its box. The tooltip renders above
  * the child, pointing at it via `placement="top"` with an arrow.
  * @param {EllipsisTooltipProps} props - Component props.
@@ -35,7 +35,32 @@ import type { EllipsisTooltipProps } from './types';
  */
 export default function EllipsisTooltip({ title, children }: EllipsisTooltipProps) {
   const ref = useRef<HTMLElement>(null);
+  const [overflowing, setOverflowing] = useState(false);
   const [open, setOpen] = useState(false);
+
+  /**
+   * Measures whether the child's content currently overflows its box and
+   * returns whether it does. Called on mount, resize, mouse-enter, and focus so
+   * the tooltip stays accurate as the layout changes.
+   * @returns {boolean} True when the content is visually truncated.
+   */
+  const measure = useCallback((): boolean => {
+    const el = ref.current;
+    const isOverflowing = !!el && el.scrollWidth > el.clientWidth + 1;
+    setOverflowing(isOverflowing);
+    return isOverflowing;
+  }, []);
+
+  /**
+   * Re-measures on mount and on window resize so the focusable state tracks
+   * the current layout (e.g. after fonts load or the panel is resized).
+   * @returns {void}
+   */
+  useEffect(() => {
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [measure]);
 
   /**
    * Opens the tooltip only when the measured element actually overflows.
@@ -45,16 +70,21 @@ export default function EllipsisTooltip({ title, children }: EllipsisTooltipProp
    * @returns {void}
    */
   const handleEnter = () => {
-    const el = ref.current;
-    if (el && el.scrollWidth > el.clientWidth + 1) {
+    if (measure()) {
       setOpen(true);
     }
   };
 
-  const child = cloneElement(children, { ref });
+  const child = cloneElement(children, { ref, tabIndex: overflowing ? 0 : -1 });
 
   return (
-    <Box onMouseEnter={handleEnter} onMouseLeave={() => setOpen(false)} sx={{ minWidth: 0 }}>
+    <Box
+      onMouseEnter={handleEnter}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={handleEnter}
+      onBlur={() => setOpen(false)}
+      sx={{ minWidth: 0 }}
+    >
       <Tooltip title={title} placement="top" arrow open={open} onClose={() => setOpen(false)}>
         {child}
       </Tooltip>

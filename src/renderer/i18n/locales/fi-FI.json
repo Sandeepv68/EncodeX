@@ -284,6 +284,16 @@
     "audioEnabled": "Sisällytä ääni",
     "audioEnabledHint": "Sisällytä ääniraita leikkauksen tulosteeseen. Poista valinta luodaksesi videon ilman ääntä."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Eräjono",
     "operation": "Toiminto",
@@ -370,6 +380,7 @@
     "containerAuto": "Automaattinen (lähde)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Aika",
     "speed": "Nopeus",
     "eta": "ETA"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Tyhjennä",
     "download": "Lataa TXT-muodossa",
+    "filter": "Filter by level",
     "levelAll": "Kaikki",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

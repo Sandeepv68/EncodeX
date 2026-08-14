@@ -4,6 +4,7 @@ import type { RefObject } from 'react';
 import BatchControls from '../BatchControls';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
+import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 function renderControls(
   hasCompleted = false,
@@ -34,7 +35,7 @@ function renderControls(
   const onWhenDoneChange = vi.fn();
   const onExport = vi.fn();
   const onImport = vi.fn();
-  render(
+  const renderResult = render(
     <BatchControls
       operation={operation}
       onOperationChange={onOperationChange}
@@ -65,6 +66,7 @@ function renderControls(
     />,
   );
   return {
+    renderResult,
     operation,
     onOperationChange,
     transcoderRef,
@@ -87,6 +89,11 @@ function renderControls(
 }
 
 describe('BatchControls', () => {
+  it('has no axe violations', async () => {
+    const { renderResult } = renderControls();
+    await assertNoAxeViolations(renderResult.container);
+  });
+
   it('renders the operation, transcoder, suffix, concurrency and action buttons', () => {
     renderControls();
     expect(screen.getByRole('button', { name: 'batchQueue.addFiles' })).toBeInTheDocument();

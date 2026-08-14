@@ -1,8 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ProgressBar from '../ProgressBar';
+import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 describe('ProgressBar', () => {
+  it('has no axe violations', async () => {
+    const { container } = render(<ProgressBar percent={42} />);
+    await assertNoAxeViolations(container);
+  });
   it('renders progress with percentage (1 decimal)', () => {
     render(<ProgressBar percent={50} time="00:00:30" speed="1.5x" eta="30" />);
     expect(screen.getByText('50.0%')).toBeInTheDocument();
@@ -32,5 +37,23 @@ describe('ProgressBar', () => {
     render(<ProgressBar percent={50} shadowed />);
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
     expect(screen.getByText('50.0%')).toBeInTheDocument();
+  });
+
+  it('exposes the progressbar with an accessible name and value', () => {
+    render(<ProgressBar percent={42} />);
+    const bar = screen.getByRole('progressbar');
+    expect(bar).toHaveAccessibleName('progress.title');
+    expect(bar).toHaveAttribute('aria-valuemin', '0');
+    expect(bar).toHaveAttribute('aria-valuemax', '100');
+    expect(bar).toHaveAttribute('aria-valuenow', '42');
+  });
+
+  it('announces completion via a live region at 100%', () => {
+    const { rerender } = render(<ProgressBar percent={75} />);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    rerender(<ProgressBar percent={100} />);
+    const status = screen.getByRole('status');
+    expect(status).toHaveAttribute('aria-live', 'polite');
+    expect(status).toHaveTextContent('toast.conversionComplete');
   });
 });

@@ -284,6 +284,16 @@
     "audioEnabled": "अडियो समावेश गर्नुहोस्",
     "audioEnabledHint": "कट आउटपुटमा अडियो ट्र्याक समावेश गर्नुहोस्। आवाज बिना भिडियो बनाउन अनचेक गर्नुहोस्।"
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "ब्याच कतार",
     "operation": "अपरेशन",
@@ -370,6 +380,7 @@
     "containerAuto": "स्वचालित (स्रोत)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "समय",
     "speed": "गति",
     "eta": "अनुमानित समय"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "खाली गर्नुहोस्",
     "download": "TXT को रूपमा डाउनलोड गर्नुहोस्",
+    "filter": "Filter by level",
     "levelAll": "सबै",
     "levelDebug": "डिबग",
     "levelInfo": "जानकारी",

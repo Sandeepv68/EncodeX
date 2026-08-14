@@ -284,6 +284,16 @@
     "audioEnabled": "ऑडियो शामिल करें",
     "audioEnabledHint": "कट आउटपुट में ऑडियो ट्रैक शामिल करें। बिना आवाज़ के वीडियो बनाने के लिए अनचेक करें।"
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "बैच क्यू",
     "operation": "ऑपरेशन",
@@ -370,6 +380,7 @@
     "containerAuto": "स्वचालित (स्रोत)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "समय",
     "speed": "गति",
     "eta": "अनुमानित समय"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "साफ़ करें",
     "download": "TXT के रूप में डाउनलोड करें",
+    "filter": "Filter by level",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

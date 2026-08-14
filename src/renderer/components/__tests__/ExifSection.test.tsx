@@ -42,6 +42,14 @@ describe('ExifSection', () => {
     expect(screen.getByTestId('histogram-luma')).toBeInTheDocument();
   });
 
+  it('names each histogram chart for screen readers', () => {
+    render(<ExifSection data={DATA_WITH_HISTOGRAM} />);
+    expect(screen.getByRole('img', { name: 'Red' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Green' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Blue' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Luma' })).toBeInTheDocument();
+  });
+
   it('hides the histogram section when there is no histogram data', () => {
     render(<ExifSection data={{ file: 'photo.jpg', exif: { Make: 'Canon' }, histogram: null }} />);
     expect(screen.queryByTestId('histogram-r')).not.toBeInTheDocument();

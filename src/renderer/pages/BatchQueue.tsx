@@ -951,7 +951,7 @@ export default function BatchQueue() {
 
   return (
     <Box>
-      <PageTitle variant="h5">
+      <PageTitle variant="h5" component="h1">
         <TitleIcon>{pageIcons['/batch']}</TitleIcon>
         {t('batchQueue.title')}
       </PageTitle>
@@ -1018,11 +1018,18 @@ export default function BatchQueue() {
                   size="small"
                   label={`${label} (${count})`}
                   color={filter === value ? 'primary' : 'default'}
+                  aria-pressed={filter === value}
                   onClick={() => setFilter(value)}
                 />
               );
             })}
-            <SearchField size="small" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('batchQueue.search')} />
+            <SearchField
+              size="small"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t('batchQueue.search')}
+              slotProps={{ htmlInput: { 'aria-label': t('batchQueue.search') } }}
+            />
             {remainingSeconds !== null && (
               <Typography variant="body2" color="text.secondary" sx={{ marginInlineStart: 'auto' }}>
                 {t('batchQueue.etaEstimate', { eta: formatEstimate(remainingSeconds) })}

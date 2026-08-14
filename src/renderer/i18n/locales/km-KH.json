@@ -284,6 +284,16 @@
     "audioEnabled": "រួមបញ្ចូលសំឡេង",
     "audioEnabledHint": "រួមបញ្ចូលបទសំឡេងនៅក្នុងទិន្នផលកាត់។ ដោះធីកដើម្បីបង្កើតវីដេអូដោយគ្មានសំឡេង។"
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "ជួរដេកដំណើរការដុំ",
     "operation": "ប្រតិបត្តិការ",
@@ -370,6 +380,7 @@
     "containerAuto": "ស្វ័យប្រវត្តិ (ប្រភព)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "ពេលវេលា",
     "speed": "ល្បឿន",
     "eta": "ETA"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "សម្អាត",
     "download": "ទាញយកជា TXT",
+    "filter": "Filter by level",
     "levelAll": "ទាំងអស់",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

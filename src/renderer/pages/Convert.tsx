@@ -60,6 +60,7 @@ import { isInRange } from '../../shared/validation';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { focusFirstError } from '../utils/focusFirstError';
 import { useSettingsStore } from '../stores/settingsStore';
+import { useFieldId } from '../hooks/useFieldId';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import type { EncoderType } from '../../shared/types';
 import {
@@ -171,6 +172,7 @@ const pixelFormatOptions = PIXEL_FORMATS.map((f) => ({ ...f, label: f.value }));
  */
 export default function Convert() {
   const { t } = useTranslation();
+  const qscaleId = useFieldId();
   const {
     inputFile,
     outputFile,
@@ -360,7 +362,9 @@ export default function Convert() {
       }
     >
       <PageSection>
-        <SectionTitle variant="h6">{t('convert.sourceFiles')}</SectionTitle>
+        <SectionTitle variant="h6" component="h2">
+          {t('convert.sourceFiles')}
+        </SectionTitle>
 
         <Box>
           <FieldLabel>
@@ -430,10 +434,17 @@ export default function Convert() {
       <Divider />
 
       <PageSection>
-        <SectionTitle variant="h6">{t('convert.encoding')}</SectionTitle>
+        <SectionTitle variant="h6" component="h2">
+          {t('convert.encoding')}
+        </SectionTitle>
 
         <ToggleRow>
-          <Switch data-testid="convert-copy-switch" checked={copyMode} onChange={(e) => setCopyMode(e.target.checked)} />
+          <Switch
+            data-testid="convert-copy-switch"
+            checked={copyMode}
+            onChange={(e) => setCopyMode(e.target.checked)}
+            slotProps={{ input: { 'aria-label': t('convert.losslessCopy') } }}
+          />
           <Typography variant="caption" color="text.secondary">
             {t('convert.losslessCopy')}
           </Typography>
@@ -455,6 +466,7 @@ export default function Convert() {
                     fullWidth
                     size="small"
                     data-testid="convert-encoder-type"
+                    slotProps={{ htmlInput: { 'aria-label': t('settings.encoderType') } }}
                     value={encoderType}
                     onChange={(e) => setEncoderType(e.target.value as EncoderType)}
                   >
@@ -480,6 +492,7 @@ export default function Convert() {
                     value={videoCodec}
                     onChange={setVideoCodec}
                     encoderType={settingsHardwareAcceleration ? effectiveEncoderType : 'auto'}
+                    ariaLabel={t('convert.videoCodec')}
                     testId="convert-video-codec"
                   />
                 </ErrorBoundary>
@@ -490,7 +503,13 @@ export default function Convert() {
                   <InfoTooltip title={t('convert.audioCodecHint')} />
                 </FieldLabel>
                 <ErrorBoundary fallback={null}>
-                  <CodecSelect type="audio" value={audioCodec} onChange={setAudioCodec} testId="convert-audio-codec" />
+                  <CodecSelect
+                    type="audio"
+                    value={audioCodec}
+                    onChange={setAudioCodec}
+                    ariaLabel={t('convert.audioCodec')}
+                    testId="convert-audio-codec"
+                  />
                 </ErrorBoundary>
               </FieldBox>
             </Stack>
@@ -506,6 +525,7 @@ export default function Convert() {
                   fullWidth
                   size="small"
                   data-testid="convert-video-bitrate"
+                  slotProps={{ htmlInput: { 'aria-label': t('convert.videoBitrate') } }}
                   value={videoBitrate}
                   onChange={(e) => {
                     setVideoBitrate(e.target.value);
@@ -529,6 +549,7 @@ export default function Convert() {
                   fullWidth
                   size="small"
                   data-testid="convert-audio-bitrate"
+                  slotProps={{ htmlInput: { 'aria-label': t('convert.audioBitrate') } }}
                   value={audioBitrate}
                   onChange={(e) => {
                     setAudioBitrate(e.target.value);
@@ -547,7 +568,7 @@ export default function Convert() {
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <FieldBox>
-                <FieldLabel>
+                <FieldLabel htmlFor={qscaleId}>
                   {t('convert.qscale')}
                   <InfoTooltip title={t('convert.qscaleHint')} />
                 </FieldLabel>
@@ -555,6 +576,7 @@ export default function Convert() {
                   fullWidth
                   size="small"
                   type="number"
+                  id={qscaleId}
                   data-testid="convert-qscale"
                   error={!!errors.qscale}
                   helperText={errors.qscale || t('convert.qscaleRangeCaption')}
@@ -584,6 +606,7 @@ export default function Convert() {
                   fullWidth
                   size="small"
                   data-testid="convert-scale"
+                  slotProps={{ htmlInput: { 'aria-label': t('convert.scale') } }}
                   value={scale}
                   onChange={(e) => {
                     setScale(e.target.value);
@@ -604,6 +627,7 @@ export default function Convert() {
                 </FieldLabel>
                 <GroupedSelect
                   testId="convert-pixel-format"
+                  ariaLabel={t('convert.pixelFormat')}
                   value={pixelFormat}
                   onChange={setPixelFormat}
                   options={pixelFormatOptions}
@@ -618,7 +642,9 @@ export default function Convert() {
       <Divider />
 
       <PageSection>
-        <SectionTitle variant="h6">{t('convert.advanced')}</SectionTitle>
+        <SectionTitle variant="h6" component="h2">
+          {t('convert.advanced')}
+        </SectionTitle>
 
         <Box>
           <FieldLabel>
@@ -630,6 +656,7 @@ export default function Convert() {
             fullWidth
             size="small"
             data-testid="convert-transcoder"
+            slotProps={{ htmlInput: { 'aria-label': t('convert.transcoderCore') } }}
             value={transcoder}
             onChange={(e) => setTranscoder(e.target.value)}
           >

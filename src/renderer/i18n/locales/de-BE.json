@@ -284,6 +284,16 @@
     "audioEnabled": "Audio einbeziehen",
     "audioEnabledHint": "Audiospur in die Ausgabe des Schnitts einbeziehen. Deaktivieren, um ein Video ohne Ton zu erzeugen."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Stapelwarteschlange",
     "operation": "Vorgang",
@@ -370,6 +380,7 @@
     "containerAuto": "Automatisch (Quelle)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Zeit",
     "speed": "Geschwindigkeit",
     "eta": "VZR"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Leeren",
     "download": "Als TXT herunterladen",
+    "filter": "Filter by level",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

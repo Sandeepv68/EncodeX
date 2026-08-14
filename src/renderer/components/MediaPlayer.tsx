@@ -21,6 +21,7 @@
  */
 
 import { useRef, useEffect, useCallback, useState, forwardRef, useImperativeHandle, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faStop, faVolumeHigh, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
@@ -86,6 +87,7 @@ const MediaPlayer = memo(
      * @returns {JSX.Element} The player canvas and transport controls.
      */
     function MediaPlayer({ filePath, onTimeUpdate, onDurationChange, onMediaInfo }: MediaPlayerProps, ref) {
+      const { t } = useTranslation();
       /**
        * Reference to the <canvas> element decoded frames are drawn into.
        * @type {React.RefObject<HTMLCanvasElement>}
@@ -917,15 +919,16 @@ const MediaPlayer = memo(
               value={currentTime}
               onChange={handleSeek}
               onChangeCommitted={handleSeekCommitted}
+              aria-label={t('player.seek')}
             />
             <ControlsRow>
-              <ControlButton size="small" onClick={togglePlayback}>
+              <ControlButton size="small" onClick={togglePlayback} aria-label={isPlaying ? t('player.pause') : t('player.play')}>
                 {isPlaying ? <FontAwesomeIcon icon={faPause} /> : <FontAwesomeIcon icon={faPlay} />}
               </ControlButton>
-              <ControlButton size="small" onClick={handleToggleMute} aria-label={muted ? 'unmute' : 'mute'}>
+              <ControlButton size="small" onClick={handleToggleMute} aria-label={muted ? t('player.unmute') : t('player.mute')}>
                 {muted ? <FontAwesomeIcon icon={faVolumeXmark} /> : <FontAwesomeIcon icon={faVolumeHigh} />}
               </ControlButton>
-              <ControlButton size="small" onClick={handleStop}>
+              <ControlButton size="small" onClick={handleStop} aria-label={t('player.stop')}>
                 <FontAwesomeIcon icon={faStop} />
               </ControlButton>
               <TimeText variant="caption">

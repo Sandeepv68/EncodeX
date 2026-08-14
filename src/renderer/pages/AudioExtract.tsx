@@ -277,7 +277,13 @@ export default function AudioExtract() {
             <InfoTooltip title={t('audioExtract.audioCodecHint')} />
           </FieldLabel>
           <ErrorBoundary fallback={null}>
-            <CodecSelect type="audio" value={store.audioCodec} onChange={handleCodecChange} testId="audio-extract-codec" />
+            <CodecSelect
+              type="audio"
+              value={store.audioCodec}
+              onChange={handleCodecChange}
+              ariaLabel={t('audioExtract.audioCodec')}
+              testId="audio-extract-codec"
+            />
           </ErrorBoundary>
         </FieldBox>
         <FieldBox>
@@ -292,6 +298,7 @@ export default function AudioExtract() {
             value={store.audioBitrate}
             onChange={(e) => store.setAudioBitrate(e.target.value)}
             data-testid="audio-extract-bitrate"
+            slotProps={{ htmlInput: { 'aria-label': t('audioExtract.bitrate') } }}
           >
             {BITRATE_OPTIONS.map((b) => (
               <MenuItem key={b} value={b}>

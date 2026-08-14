@@ -284,6 +284,16 @@
     "audioEnabled": "包含音频",
     "audioEnabledHint": "在剪切输出中包含音频轨道。取消选中以生成没有声音的视频。"
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "批量队列",
     "operation": "操作",
@@ -370,6 +380,7 @@
     "containerAuto": "自动（源）"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "时间",
     "speed": "速度",
     "eta": "预计剩余时间"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "清除",
     "download": "下载为 TXT",
+    "filter": "Filter by level",
     "levelAll": "全部",
     "levelDebug": "调试",
     "levelInfo": "信息",

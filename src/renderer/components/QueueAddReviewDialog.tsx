@@ -98,6 +98,7 @@ export default function QueueAddReviewDialog({ open, files, defaultOperation, on
                 select
                 size="small"
                 value={selections[file] ?? defaultOperation}
+                slotProps={{ input: { 'aria-label': `${basename(file)} ${t('batchQueue.operation')}` } }}
                 onChange={(e) => {
                   setSelections((prev) => ({ ...prev, [file]: e.target.value }));
                 }}

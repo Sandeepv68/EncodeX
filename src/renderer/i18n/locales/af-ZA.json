@@ -284,6 +284,16 @@
     "audioEnabled": "Sluit klank in",
     "audioEnabledHint": "Sluit die klanksnit by die snyuitset in. Ontmerk om 'n video sonder klank te produseer."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Groepwaglys",
     "operation": "Bewerking",
@@ -370,6 +380,7 @@
     "containerAuto": "Auto (bron)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Tyd",
     "speed": "Spoed",
     "eta": "GTT"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Maak skoon",
     "download": "Laai Af as TXT",
+    "filter": "Filter by level",
     "levelAll": "ALLES",
     "levelDebug": "ONTT",
     "levelInfo": "INLIG",

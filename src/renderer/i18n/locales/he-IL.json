@@ -284,6 +284,16 @@
     "audioEnabled": "כלול אודיו",
     "audioEnabledHint": "כלול את רצועת האודיו בפלט החיתוך. בטל סימון כדי ליצור וידאו ללא קול."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "תור אצווה",
     "operation": "פעולה",
@@ -370,6 +380,7 @@
     "containerAuto": "אוטומטי (מקור)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "זמן",
     "speed": "מהירות",
     "eta": "זמן משוער"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "נקה",
     "download": "הורד כקובץ TXT",
+    "filter": "Filter by level",
     "levelAll": "הכל",
     "levelDebug": "דיבאג",
     "levelInfo": "מידע",

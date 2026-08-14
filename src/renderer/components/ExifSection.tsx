@@ -53,16 +53,17 @@ function aggregate(data: number[], bins: number): number[] {
  * `img` role and a test id of `histogram-<id>`.
  * @param {Object} props - Component props.
  * @param {string} props.id - Channel identifier used in the test id.
+ * @param {string} props.label - Accessible name for the chart.
  * @param {number[]} props.data - The channel's source histogram counts.
  * @param {string} props.color - Fill color for the bars.
  * @returns {JSX.Element} The SVG histogram chart.
  */
-function HistogramChart({ id, data, color }: { id: string; data: number[]; color: string }) {
+function HistogramChart({ id, label, data, color }: { id: string; label: string; data: number[]; color: string }) {
   const agg = aggregate(data, EXIF_HISTOGRAM_BINS);
   const max = Math.max(...agg, 1);
   const barWidth = EXIF_HISTOGRAM_WIDTH / EXIF_HISTOGRAM_BINS;
   return (
-    <svg width={EXIF_HISTOGRAM_WIDTH} height={EXIF_HISTOGRAM_HEIGHT} role="img" data-testid={`histogram-${id}`}>
+    <svg width={EXIF_HISTOGRAM_WIDTH} height={EXIF_HISTOGRAM_HEIGHT} role="img" aria-label={label} data-testid={`histogram-${id}`}>
       {agg.map((value, i) => {
         const h = (value / max) * EXIF_HISTOGRAM_HEIGHT;
         return (
@@ -88,7 +89,9 @@ export default function ExifSection({ data }: { data: ImageExifData }) {
 
   return (
     <Box>
-      <ExifTitle variant="h6">{t('mediaInfo.exifData')}</ExifTitle>
+      <ExifTitle variant="h6" component="h2">
+        {t('mediaInfo.exifData')}
+      </ExifTitle>
       {entries.length > 0 ? (
         <Grid container spacing={1}>
           {entries.map(([key, value]) => (
@@ -110,19 +113,19 @@ export default function ExifSection({ data }: { data: ImageExifData }) {
           <HistogramTitle variant="subtitle2">Histogram</HistogramTitle>
           <HistogramRow>
             <HistogramLabel variant="caption">Red</HistogramLabel>
-            <HistogramChart id="r" data={data.histogram.r} color={HISTOGRAM_COLORS.red} />
+            <HistogramChart id="r" label="Red" data={data.histogram.r} color={HISTOGRAM_COLORS.red} />
           </HistogramRow>
           <HistogramRow>
             <HistogramLabel variant="caption">Green</HistogramLabel>
-            <HistogramChart id="g" data={data.histogram.g} color={HISTOGRAM_COLORS.green} />
+            <HistogramChart id="g" label="Green" data={data.histogram.g} color={HISTOGRAM_COLORS.green} />
           </HistogramRow>
           <HistogramRow>
             <HistogramLabel variant="caption">Blue</HistogramLabel>
-            <HistogramChart id="b" data={data.histogram.b} color={HISTOGRAM_COLORS.blue} />
+            <HistogramChart id="b" label="Blue" data={data.histogram.b} color={HISTOGRAM_COLORS.blue} />
           </HistogramRow>
           <HistogramRow>
             <HistogramLabel variant="caption">Luma</HistogramLabel>
-            <HistogramChart id="luma" data={data.histogram.luma} color={HISTOGRAM_COLORS.luma} />
+            <HistogramChart id="luma" label="Luma" data={data.histogram.luma} color={HISTOGRAM_COLORS.luma} />
           </HistogramRow>
         </HistogramBox>
       )}

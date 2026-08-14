@@ -284,6 +284,16 @@
     "audioEnabled": "ශ්‍රව්‍ය ඇතුළත් කරන්න",
     "audioEnabledHint": "කැපීමේ ප්‍රතිදානයට ශ්‍රව්‍ය ධාවන පථය ඇතුළත් කරන්න. ශබ්දය නැති වීඩියෝවක් සෑදීමට සලකුණු ඉවත් කරන්න."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "කණ්ඩායම් පෝලිම",
     "operation": "මෙහෙයුම",
@@ -370,6 +380,7 @@
     "containerAuto": "ස්වයංක්‍රීය (මූලාශ්‍රය)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "වේලාව",
     "speed": "වේගය",
     "eta": "ඉතිරි"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "හිස් කරන්න",
     "download": "TXT ලෙස බාගන්න",
+    "filter": "Filter by level",
     "levelAll": "සියල්ල",
     "levelDebug": "දෝෂ නිරාකරණය",
     "levelInfo": "තොරතුරු",

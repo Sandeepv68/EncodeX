@@ -113,4 +113,22 @@ describe('BatchEncodingPanel', () => {
     expect(screen.getByText('JPEG')).toBeInTheDocument();
     expect(screen.getByText('WebP')).toBeInTheDocument();
   });
+
+  it('names each control via its field label', () => {
+    renderPanel();
+    expect(screen.getByRole('combobox', { name: 'convert.videoCodec' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.audioCodec' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.videoBitrate' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.audioBitrate' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.scale' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.pixelFormat' })).toBeInTheDocument();
+  });
+
+  it('names the image and quality controls for compress_image', () => {
+    renderPanel({ operation: 'compress_image' });
+    expect(screen.getByRole('combobox', { name: 'imageCompress.outputFormat' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'imageCompress.scale' })).toBeInTheDocument();
+    expect(screen.getByLabelText('imageCompress.quality')).toBeInTheDocument();
+  });
 });

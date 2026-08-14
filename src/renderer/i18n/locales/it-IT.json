@@ -284,6 +284,16 @@
     "audioEnabled": "Includi audio",
     "audioEnabledHint": "Includi la traccia audio nell'output del taglio. Deseleziona per produrre un video senza audio."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Coda batch",
     "operation": "Operazione",
@@ -370,6 +380,7 @@
     "containerAuto": "Automatico (origine)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Tempo",
     "speed": "Velocità",
     "eta": "PRE"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Cancella",
     "download": "Scarica come TXT",
+    "filter": "Filter by level",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

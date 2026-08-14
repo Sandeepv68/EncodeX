@@ -24,6 +24,12 @@ describe('QueueAddReviewDialog', () => {
     expect(screen.getAllByText('batchQueue.operationTranscode')).toHaveLength(2);
   });
 
+  it('names each operation select with its file and label', () => {
+    render(<QueueAddReviewDialog {...props()} />);
+    expect(screen.getByRole('combobox', { name: 'one.mp4 batchQueue.operation' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'two.mkv batchQueue.operation' })).toBeInTheDocument();
+  });
+
   it('is hidden when open is false', () => {
     render(<QueueAddReviewDialog {...props({ open: false })} />);
     expect(screen.queryByText('batchQueue.reviewTitle')).not.toBeInTheDocument();

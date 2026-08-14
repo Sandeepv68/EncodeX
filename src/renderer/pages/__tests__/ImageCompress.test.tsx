@@ -37,7 +37,14 @@ describe('ImageCompress', () => {
     expect(screen.getByText('imageCompress.scale')).toBeInTheDocument();
     expect(screen.getByText('imageCompress.keepAspectRatio')).toBeInTheDocument();
     expect(screen.getByText('imageCompress.compress')).toBeInTheDocument();
-    expect(screen.getByText('imageCompress.dropLabel')).toBeInTheDocument();
+  });
+
+  it('names the compress controls for screen readers', () => {
+    renderPage();
+    expect(screen.getByRole('combobox', { name: 'imageCompress.outputFormat' })).toBeInTheDocument();
+    expect(screen.getByLabelText('imageCompress.quality')).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'imageCompress.scale' })).toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: 'imageCompress.keepAspectRatio' })).toBeInTheDocument();
   });
 
   it('shows a tooltip for each field', () => {

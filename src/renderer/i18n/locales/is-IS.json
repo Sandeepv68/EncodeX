@@ -284,6 +284,16 @@
     "audioEnabled": "Inniheldur hljóð",
     "audioEnabledHint": "Taktu hljóðráðið með í klippuúttakinu. Hakaðu af til að búa til myndband án hljóðs."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Runubraut",
     "operation": "Aðgerð",
@@ -370,6 +380,7 @@
     "containerAuto": "Sjálfvirkt (frumrit)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Tími",
     "speed": "Hraði",
     "eta": "ETA"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Hreinsa",
     "download": "Sækja sem TXT",
+    "filter": "Filter by level",
     "levelAll": "Allt",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

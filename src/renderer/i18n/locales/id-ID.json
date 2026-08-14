@@ -284,6 +284,16 @@
     "audioEnabled": "Sertakan audio",
     "audioEnabledHint": "Sertakan trek audio dalam keluaran pemotongan. Hapus centang untuk menghasilkan video tanpa suara."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Antrean Batch",
     "operation": "Operasi",
@@ -370,6 +380,7 @@
     "containerAuto": "Otomatis (sumber)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Waktu",
     "speed": "Kecepatan",
     "eta": "Perkiraan Selesai"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Hapus",
     "download": "Unduh sebagai TXT",
+    "filter": "Filter by level",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

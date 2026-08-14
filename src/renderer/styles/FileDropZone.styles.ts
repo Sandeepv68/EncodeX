@@ -1,5 +1,4 @@
 import { alpha, styled, keyframes } from '@mui/material/styles';
-import { Box } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SHADOWS } from '../colors';
 
@@ -33,7 +32,7 @@ const backgroundPulse = keyframes`
   }
 `;
 
-export const DropZoneRoot = styled(Box, {
+export const DropZoneRoot = styled('button', {
   shouldForwardProp: (prop) => prop !== '$dragging',
 })<{ $dragging: boolean }>(({ theme, $dragging }) => ({
   border: `${theme.typography.pxToRem(2)} dashed`,
@@ -48,7 +47,10 @@ export const DropZoneRoot = styled(Box, {
   '--dropzone-bg-c': alpha(theme.palette.info.main, 0.12),
   borderRadius: (theme.shape.borderRadius as number) * 2,
   padding: theme.spacing(4),
+  width: '100%',
   textAlign: 'center',
+  font: 'inherit',
+  color: 'inherit',
   cursor: 'pointer',
   backgroundColor: $dragging ? theme.palette.action.hover : alpha(theme.palette.primary.main, 0.06),
   transition: 'all 0.2s',
@@ -58,10 +60,19 @@ export const DropZoneRoot = styled(Box, {
     transform: 'translateY(-2px)',
     ...(!$dragging ? { animation: `${borderPulse} 8s ease-in-out infinite, ${backgroundPulse} 8s ease-in-out infinite` } : {}),
   },
+  '&:focus-visible': {
+    outline: 'none',
+    borderColor: theme.palette.primary.main,
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    boxShadow: `0 0 0 ${theme.typography.pxToRem(4)} ${alpha(theme.palette.primary.main, 0.35)}`,
+  },
   '& svg': {
     transition: 'color 0.2s ease',
   },
   '&:hover svg': {
+    color: theme.palette.primary.main,
+  },
+  '&:focus-visible svg': {
     color: theme.palette.primary.main,
   },
   ...($dragging

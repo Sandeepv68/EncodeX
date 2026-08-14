@@ -44,7 +44,7 @@ export default function PageContainer({ title, icon, aside, paper = true, childr
   return (
     <PageRoot hasAside={!!aside}>
       <PageBody>
-        <PageTitle variant="h5">
+        <PageTitle variant="h5" component="h1">
           {icon && <TitleIcon>{icon}</TitleIcon>}
           {title}
         </PageTitle>

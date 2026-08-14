@@ -284,6 +284,16 @@
     "audioEnabled": "تضمين الصوت",
     "audioEnabledHint": "تضمين المسار الصوتي في ناتج القص. ألغِ التحديد لإنتاج فيديو بدون صوت."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "قائمة الدفعات",
     "operation": "العملية",
@@ -370,6 +380,7 @@
     "containerAuto": "تلقائي (المصدر)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "الوقت",
     "speed": "السرعة",
     "eta": "الوقت المتبقي"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "مسح",
     "download": "قم بالتنزيل بصيغة TXT",
+    "filter": "Filter by level",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

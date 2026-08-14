@@ -123,7 +123,7 @@ export default function MediaInfo() {
 
   return (
     <Box>
-      <PageTitle variant="h5">
+      <PageTitle variant="h5" component="h1">
         <TitleIcon>{pageIcons['/media-info']}</TitleIcon>
         {t('mediaInfo.title')}
       </PageTitle>
@@ -139,7 +139,9 @@ export default function MediaInfo() {
         {info && (
           <ErrorBoundary fallback={null}>
             <InfoPaper>
-              <InfoTitle variant="h6">{t('mediaInfo.fileInfo')}</InfoTitle>
+              <InfoTitle variant="h6" component="h2">
+                {t('mediaInfo.fileInfo')}
+              </InfoTitle>
               <FileSummary info={info} />
               <StreamDetails streams={info.streams} />
               {exif && <ExifSection data={exif} />}

@@ -37,4 +37,28 @@ describe('EllipsisTooltip', () => {
     fireEvent.mouseOver(value);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('a very long value that overflows');
   });
+
+  it('makes truncated content keyboard-focusable and reveals the tooltip on focus', async () => {
+    mockOverflow();
+    render(
+      <EllipsisTooltip title="a very long value that overflows">
+        <span>a very long value that overflows</span>
+      </EllipsisTooltip>,
+    );
+    const value = screen.getByText('a very long value that overflows');
+    expect(value).toHaveAttribute('tabindex', '0');
+    value.focus();
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('a very long value that overflows');
+  });
+
+  it('keeps non-truncated content out of the tab order', () => {
+    Object.defineProperty(HTMLElement.prototype, 'scrollWidth', { configurable: true, get: () => 0 });
+    Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => 100 });
+    render(
+      <EllipsisTooltip title="short">
+        <span>short</span>
+      </EllipsisTooltip>,
+    );
+    expect(screen.getByText('short')).toHaveAttribute('tabindex', '-1');
+  });
 });

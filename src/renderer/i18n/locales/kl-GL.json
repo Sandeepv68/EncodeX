@@ -284,6 +284,16 @@
     "audioEnabled": "Nipilersorneq ilanngullugu",
     "audioEnabledHint": "Nakassat output-imut nipilersorneq track ilanngullugu. Video nipilersornartumik atorunnaaruk."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Ilerleq",
     "operation": "Suliniut",
@@ -370,6 +380,7 @@
     "containerAuto": "Automatisk (iserniarfik)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Nalliinera",
     "speed": "Sukkassuseq",
     "eta": "ETA"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Piiaruk",
     "download": "TXT-mik nuiaatit",
+    "filter": "Filter by level",
     "levelAll": "Tamarmik",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

@@ -345,6 +345,15 @@ describe('BatchQueue', () => {
     expect(screen.getByText('Failed (1)')).toBeInTheDocument();
   });
 
+  it('labels the search field and filter chips for screen readers', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1' }), job({ id: 'job-2', status: 'error', error: 'boom' })]);
+    renderPage();
+    await screen.findAllByText(/video\.mp4/);
+    expect(screen.getByRole('textbox', { name: 'Search files...' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'All (2)' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Failed (1)' })).toHaveAttribute('aria-pressed', 'false');
+  });
+
   it('shows a best-effort ETA on the right side of the filter row while jobs are running', async () => {
     queueListMock.mockResolvedValue([
       job({ id: 'job-1', status: 'running' }),

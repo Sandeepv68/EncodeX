@@ -134,6 +134,8 @@ export interface CodecSelectProps {
   value: string;
   onChange: (value: string) => void;
   encoderType?: EncoderType;
+  id?: string;
+  ariaLabel?: string;
   testId?: string;
 }
 
@@ -354,6 +356,8 @@ export interface GroupedSelectProps {
   onChange: (value: string) => void;
   options: readonly GroupedOption[];
   groupIcons: Record<string, IconDefinition>;
+  id?: string;
+  ariaLabel?: string;
   testId?: string;
 }
 

@@ -98,8 +98,10 @@ export default function FileDropZone({ onFileSelect, label, accept }: FileDropZo
 
   return (
     <DropZoneRoot
+      type="button"
       $dragging={dragging}
       data-testid="file-drop-zone"
+      aria-label={resolvedLabel}
       onDrop={handleDrop}
       onDragOver={(e) => {
         e.preventDefault();

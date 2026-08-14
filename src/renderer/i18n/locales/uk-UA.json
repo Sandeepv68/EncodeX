@@ -284,6 +284,16 @@
     "audioEnabled": "Включити аудіо",
     "audioEnabledHint": "Включити аудіодоріжку в результат обрізання. Зніміть позначку, щоб отримати відео без звуку."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Пакетна черга",
     "operation": "Операція",
@@ -370,6 +380,7 @@
     "containerAuto": "Автоматично (джерело)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Час",
     "speed": "Швидкість",
     "eta": "Залишилось"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Очистити",
     "download": "Завантажити як TXT",
+    "filter": "Filter by level",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

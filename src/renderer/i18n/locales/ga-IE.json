@@ -284,6 +284,16 @@
     "audioEnabled": "Ionchuimsigh Fuaim",
     "audioEnabledHint": "Ionchuimsigh an rian fuaime san aschur gearrtha. Díthiceáil chun físeán gan fuaim a chruthú."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Scuaine Bhaisc",
     "operation": "Oibríocht",
@@ -370,6 +380,7 @@
     "containerAuto": "Uathoibríoch (foinse)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Am",
     "speed": "Luas",
     "eta": "ETA"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Glan",
     "download": "Íoslódáil mar TXT",
+    "filter": "Filter by level",
     "levelAll": "Uile",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

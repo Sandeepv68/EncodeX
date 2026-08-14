@@ -5,6 +5,7 @@ import { useConversionStore } from '../../stores/conversionStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
+import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
 const selectOutputMock = vi.mocked(window.electronAPI.selectOutput);
@@ -22,6 +23,31 @@ function toggleCopy(container: HTMLElement) {
 }
 
 describe('Convert', () => {
+  it('names all encoding controls for screen readers', () => {
+    renderPage();
+    expect(screen.getByRole('switch', { name: 'convert.losslessCopy' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'settings.encoderType' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.videoCodec' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.audioCodec' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.videoBitrate' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.audioBitrate' })).toBeInTheDocument();
+    expect(screen.getByLabelText('convert.qscale')).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.scale' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.pixelFormat' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.transcoderCore' })).toBeInTheDocument();
+  });
+  it('uses a single h1 page title with h2 sections', () => {
+    renderPage();
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('heading', { level: 1, name: 'convert.title' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'convert.sourceFiles' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'convert.encoding' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'convert.advanced' })).toBeInTheDocument();
+  });
+  it('has no axe violations', async () => {
+    const { container } = renderPage();
+    await assertNoAxeViolations(container);
+  });
   beforeEach(() => {
     vi.clearAllMocks();
     useConversionStore.setState({

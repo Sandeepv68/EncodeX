@@ -64,6 +64,12 @@ describe('AudioExtract', () => {
     expect(screen.getByText('audioExtract.dropLabel')).toBeInTheDocument();
   });
 
+  it('names the codec and bitrate controls for screen readers', () => {
+    renderPage();
+    expect(screen.getByRole('combobox', { name: 'audioExtract.audioCodec' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'audioExtract.bitrate' })).toBeInTheDocument();
+  });
+
   it('renders an info tooltip for each field', () => {
     renderPage();
     expect(screen.getAllByTestId('info-tooltip')).toHaveLength(4);

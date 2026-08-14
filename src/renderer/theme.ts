@@ -200,8 +200,8 @@ export function createAppTheme(themeId: ThemeId, direction: 'ltr' | 'rtl') {
               backgroundColor: themeDef.tint.primary15,
             },
             '&.Mui-selected': {
-              backgroundColor: themeDef.tint.primary15,
-              color: themeDef.primary,
+              backgroundColor: themeDef.tint.primary25,
+              color: themeDef.text.primary,
               '&:hover': { backgroundColor: themeDef.tint.primary25 },
             },
             '&.Mui-selected::after': {

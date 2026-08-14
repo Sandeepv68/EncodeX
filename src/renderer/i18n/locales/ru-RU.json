@@ -284,6 +284,16 @@
     "audioEnabled": "Включить аудио",
     "audioEnabledHint": "Включает аудиодорожку в выходной файл обрезки. Снимите флажок, чтобы получить видео без звука."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "Пакетная очередь",
     "operation": "Операция",
@@ -370,6 +380,7 @@
     "containerAuto": "Авто (источник)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "Время",
     "speed": "Скорость",
     "eta": "Осталось"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "Очистить",
     "download": "Скачать как TXT",
+    "filter": "Filter by level",
     "levelAll": "ВСЕ",
     "levelDebug": "ОТЛАДКА",
     "levelInfo": "ИНФО",

@@ -284,6 +284,16 @@
     "audioEnabled": "รวมเสียง",
     "audioEnabledHint": "รวมแทร็กเสียงในเอาต์พุตการตัด ยกเลิกการเลือกเพื่อสร้างวิดีโอที่ไม่มีเสียง"
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "คิวงาน",
     "operation": "การดำเนินการ",
@@ -370,6 +380,7 @@
     "containerAuto": "อัตโนมัติ (ต้นทาง)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "เวลา",
     "speed": "ความเร็ว",
     "eta": "เหลืออีก"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "ล้าง",
     "download": "ดาวน์โหลดเป็น TXT",
+    "filter": "Filter by level",
     "levelAll": "ทั้งหมด",
     "levelDebug": "ดีบัก",
     "levelInfo": "ข้อมูล",

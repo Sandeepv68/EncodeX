@@ -4,6 +4,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import MediaPlayer from '../MediaPlayer';
 import type { MediaPlayerHandle } from '../types';
 import type { MediaInfo, PlayerFrame } from '../../../shared/types';
+import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 const playerOpen = vi.mocked(window.electronAPI.playerOpen);
 const getMediaInfo = vi.mocked(window.electronAPI.getMediaInfo);
@@ -41,6 +42,12 @@ describe('MediaPlayer', () => {
   afterEach(() => {
     vi.useRealTimers();
     vi.restoreAllMocks();
+  });
+
+  it('has no axe violations', async () => {
+    getMediaInfo.mockResolvedValue(mediaInfo(60));
+    const { container } = render(<MediaPlayer filePath="/v.mp4" />);
+    await assertNoAxeViolations(container);
   });
 
   it('requests media info without autoplaying on mount', () => {
@@ -186,10 +193,18 @@ describe('MediaPlayer', () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const { container } = render(<MediaPlayer filePath="/v.mp4" />);
     expect(container.querySelector('[data-icon="volume-high"]')).not.toBeNull();
-    fireEvent.click(container.querySelector('button[aria-label="mute"]')!);
+    fireEvent.click(container.querySelector('button[aria-label="player.mute"]')!);
     expect(container.querySelector('[data-icon="volume-xmark"]')).not.toBeNull();
-    fireEvent.click(container.querySelector('button[aria-label="unmute"]')!);
+    fireEvent.click(container.querySelector('button[aria-label="player.unmute"]')!);
     expect(container.querySelector('[data-icon="volume-high"]')).not.toBeNull();
+  });
+
+  it('exposes accessible names for the transport controls and seek slider', () => {
+    getMediaInfo.mockResolvedValue(mediaInfo(60));
+    render(<MediaPlayer filePath="/v.mp4" />);
+    expect(screen.getByRole('button', { name: 'player.play' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'player.stop' })).toBeInTheDocument();
+    expect(screen.getByRole('slider', { name: 'player.seek' })).toBeInTheDocument();
   });
 
   it('reports the duration via onDurationChange once media info is loaded', async () => {

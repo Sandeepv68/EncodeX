@@ -284,6 +284,16 @@
     "audioEnabled": "ລວມສຽງ",
     "audioEnabledHint": "ລວມແຖບສຽງໃນຜົນສົ່ງອອກທີ່ຕັດ. ຍົກເລີກໝາຍເພື່ອສ້າງວິດີໂອທີ່ບໍ່ມີສຽງ."
   },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "seek": "Seek",
+    "playbackTime": "Playback time",
+    "videoPlayer": "Video player"
+  },
   "batchQueue": {
     "title": "ຄິວງານຫຼາຍອັນ",
     "operation": "ການດຳເນີນການ",
@@ -370,6 +380,7 @@
     "containerAuto": "ອັດຕະໂນມັດ (ແຫຼ່ງ)"
   },
   "progress": {
+    "title": "Conversion progress",
     "time": "ເວລາ",
     "speed": "ຄວາມໄວ",
     "eta": "ETA"
@@ -397,6 +408,7 @@
   "logs": {
     "clear": "ລຶບ",
     "download": "ດາວໂຫຼດເປັນ TXT",
+    "filter": "Filter by level",
     "levelAll": "ທັງໝົດ",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
