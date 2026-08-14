@@ -2,7 +2,7 @@ import { alpha, styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { Box, Divider, IconButton, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { COLORS } from '../colors';
-import { DRAWER_WIDTH_CONDENSED } from '../../shared/app-constants';
+import { DRAWER_WIDTH_CONDENSED, FOOTER_HEIGHT } from '../../shared/app-constants';
 
 /**
  * Minimum width of a nav icon slot. The condensed drawer is
@@ -27,7 +27,8 @@ export const NavFooter = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   gap: theme.spacing(1),
-  height: theme.typography.pxToRem(52),
+  height: theme.typography.pxToRem(FOOTER_HEIGHT),
+  boxSizing: 'border-box',
 }));
 
 export const CondenseButton = styled(IconButton)(({ theme }) => ({

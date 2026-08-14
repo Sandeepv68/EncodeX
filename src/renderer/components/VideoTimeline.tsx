@@ -683,7 +683,7 @@ export default function VideoTimeline({
                   </>
                 )}
               </VideoTrack>
-              <AudioTrack data-testid="timeline-audio-track">
+              <AudioTrack data-testid="timeline-audio-track" $width={Math.max(0, duration * zoom)}>
                 {waveformLoading ? (
                   <Skeleton
                     variant="rectangular"

@@ -400,7 +400,7 @@ export const OVERLAY_COLORS = {
  * @property {string} scrollbarThumb - Timeline viewport scrollbar thumb color.
  * @property {string} labelPanelBackgroundLight - Label panel/ruler background (light).
  * @property {string} labelPanelBackgroundDark - Label panel/ruler background (dark).
- * @property {string} audioTrack - Audio track strip background.
+ * @property {string} audioTrack - Audio track strip background gradient.
  * @property {string} markerBubbleBackgroundDark - Marker bubble background (dark).
  * @property {string} trackInfoBubbleBackgroundDark - Track info bubble background (dark).
  */
@@ -408,7 +408,7 @@ export const TIMELINE_COLORS = {
   scrollbarThumb: 'rgba(128, 128, 128, 0.4)',
   labelPanelBackgroundLight: '#fafafa',
   labelPanelBackgroundDark: '#141414',
-  audioTrack: '#809dca42',
+  audioTrack: 'linear-gradient(180deg, rgba(128, 157, 202, 0.45) 0%, rgba(128, 157, 202, 0.1) 100%)',
   markerBubbleBackgroundDark: 'rgba(97, 97, 97, 0.9)',
   trackInfoBubbleBackgroundDark: 'rgba(33, 33, 33, 0.95)',
 } as const;

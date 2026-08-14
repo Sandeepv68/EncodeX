@@ -177,13 +177,15 @@ export const VideoTrack = styled(Box)(({ theme }) => ({
   pointerEvents: 'none',
 }));
 
-export const AudioTrack = styled(Box)(({ theme }) => ({
+export const AudioTrack = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$width',
+})<{ $width: number }>(({ theme, $width }) => ({
   position: 'absolute',
   top: theme.typography.pxToRem(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT),
   left: 0,
-  right: 0,
+  width: $width,
   height: theme.typography.pxToRem(TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT),
-  backgroundColor: TIMELINE_COLORS.audioTrack,
+  background: TIMELINE_COLORS.audioTrack,
   zIndex: 0,
   pointerEvents: 'none',
 }));
