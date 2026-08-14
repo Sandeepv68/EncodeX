@@ -285,14 +285,14 @@
     "audioEnabledHint": "Ionchuimsigh an rian fuaime san aschur gearrtha. Díthiceáil chun físeán gan fuaim a chruthú."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
+    "play": "Seinn",
+    "pause": "Sos",
     "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "mute": "Balbhaigh",
+    "unmute": "Díbhhalbhaigh",
+    "seek": "Cuardaigh",
+    "playbackTime": "Am seinnte",
+    "videoPlayer": "Seinnteoir físeáin"
   },
   "batchQueue": {
     "title": "Scuaine Bhaisc",
@@ -373,14 +373,25 @@
     "optionDuration": "Fad",
     "optionCopy": "Cóipeáil Sruth",
     "optionAudio": "Fuaim",
-    "optionHwaccel": "HW accel",
+    "optionHwaccel": "Luasghéarú crua-earraí",
     "optionHwaccelMode": "Mód HW accel",
     "encodingOptions": "Roghanna Códaithe",
     "container": "Coimeádán",
-    "containerAuto": "Uathoibríoch (foinse)"
+    "containerAuto": "Uathoibríoch (foinse)",
+    "optionsEditableAlert": "Is féidir roghanna a athrú fad is atá poist sa scuaine.",
+    "optionsLockedAlert": "Tá roghanna faoi ghlas agus an bhaisc á rith.",
+    "editOptions": "Cuir roghanna in eagar",
+    "optionsLocked": "Tá roghanna faoi ghlas agus an bhaisc á rith",
+    "jobCustomized": "Úsáideann an post seo roghanna saincheaptha",
+    "editOptionsTitle": "Cuir roghanna in eagar do {{file}}",
+    "editOptionsSave": "Sábháil athruithe",
+    "optionsUpdated": "Roghanna an phoist nuashonraithe",
+    "outputCollision": "Tá post eile sa scuaine ag úsáid an chosáin aschuir seo cheana.",
+    "outputCollisionSkipped": "Scipeáladh {{count}} phost – scríobhfaidh an t-aschur nua thar comhad poist eile ({{names}})",
+    "optionsUpdateFailed": "Ní féidir an post seo a chur in eagar níos mó."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Dul chun cinn an chomhshó",
     "time": "Am",
     "speed": "Luas",
     "eta": "ETA"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Glan",
     "download": "Íoslódáil mar TXT",
-    "filter": "Filter by level",
+    "filter": "Scag de réir leibhéil",
     "levelAll": "Uile",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

@@ -137,7 +137,7 @@
       "major_brand": "Hovedbrand",
       "minor_version": "Minorversion",
       "compatible_brands": "Kompatible brands",
-      "encoder": "Encoder",
+      "encoder": "Koder",
       "creation_time": "Oprettelsestid",
       "title": "Titel",
       "artist": "Kunstner",
@@ -285,18 +285,18 @@
     "audioEnabledHint": "Inkluder lydsporet i klipoutputtet. Fjern markeringen for at oprette en video uden lyd."
   },
   "player": {
-    "play": "Play",
+    "play": "Afspil",
     "pause": "Pause",
     "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "mute": "Slå lyd fra",
+    "unmute": "Slå lyd til",
+    "seek": "Søg",
+    "playbackTime": "Afspilningstid",
+    "videoPlayer": "Videoafspiller"
   },
   "batchQueue": {
     "title": "Batchkø",
-    "operation": "Operation",
+    "operation": "Handling",
     "suffix": "Suffiks",
     "addFiles": "Tilføj filer",
     "cancelAll": "Annuller alle",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "HW-accel-tilstand",
     "encodingOptions": "Kodningsindstillinger",
     "container": "Container",
-    "containerAuto": "Automatisk (kilde)"
+    "containerAuto": "Automatisk (kilde)",
+    "optionsEditableAlert": "Indstillingerne kan stadig ændres, så længe der er jobs i køen.",
+    "optionsLockedAlert": "Indstillingerne er låst, mens batchen kører.",
+    "editOptions": "Rediger indstillinger",
+    "optionsLocked": "Indstillingerne er låst, mens batchen kører",
+    "jobCustomized": "Dette job bruger brugerdefinerede indstillinger",
+    "editOptionsTitle": "Rediger indstillinger for {{file}}",
+    "editOptionsSave": "Gem ændringer",
+    "optionsUpdated": "Jobindstillinger opdateret",
+    "outputCollision": "Et andet job i køen bruger allerede denne outputsti.",
+    "outputCollisionSkipped": "{{count}} job(s) sprunget over – den nye output vil overskrive et andet jobs fil ({{names}})",
+    "optionsUpdateFailed": "Dette job kan ikke længere redigeres."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Konverteringsforløb",
     "time": "Tid",
     "speed": "Hastighed",
     "eta": "ETA"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Ryd",
     "download": "Download som TXT",
-    "filter": "Filter by level",
+    "filter": "Filtrer efter niveau",
     "levelAll": "Alle",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

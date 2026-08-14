@@ -132,7 +132,7 @@
     "frameCount": "Número de Quadros",
     "streamTitle": "Título",
     "disposition": "Disposição",
-    "tags": "Tags",
+    "tags": "Etiquetas",
     "tagKeys": {
       "major_brand": "Marca principal",
       "minor_version": "Versão secundária",
@@ -285,14 +285,14 @@
     "audioEnabledHint": "Inclua a faixa de áudio na saída do corte. Desmarque para produzir um vídeo sem som."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Reproduzir",
+    "pause": "Pausar",
+    "stop": "Parar",
+    "mute": "Silenciar",
+    "unmute": "Reativar som",
+    "seek": "Buscar",
+    "playbackTime": "Tempo de reprodução",
+    "videoPlayer": "Player de vídeo"
   },
   "batchQueue": {
     "title": "Fila em Lote",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "Modo de acel. HW",
     "encodingOptions": "Opções de Codificação",
     "container": "Contêiner",
-    "containerAuto": "Automático (origem)"
+    "containerAuto": "Automático (origem)",
+    "optionsEditableAlert": "As opções ainda podem ser alteradas enquanto houver tarefas na fila.",
+    "optionsLockedAlert": "As opções estão bloqueadas enquanto o lote está sendo executado.",
+    "editOptions": "Editar opções",
+    "optionsLocked": "As opções estão bloqueadas enquanto o lote está sendo executado",
+    "jobCustomized": "Esta tarefa usa opções personalizadas",
+    "editOptionsTitle": "Editar opções de {{file}}",
+    "editOptionsSave": "Salvar alterações",
+    "optionsUpdated": "Opções da tarefa atualizadas",
+    "outputCollision": "Outra tarefa na fila já usa esse caminho de saída.",
+    "outputCollisionSkipped": "{{count}} tarefa(s) ignorada(s) – a nova saída sobrescreveria o arquivo de outra tarefa ({{names}})",
+    "optionsUpdateFailed": "Esta tarefa não pode mais ser editada."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Progresso da conversão",
     "time": "Tempo",
     "speed": "Velocidade",
     "eta": "PRE"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Limpar",
     "download": "Baixar como TXT",
-    "filter": "Filter by level",
+    "filter": "Filtrar por nível",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "Desenvolvido por"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automático",
     "none": "Nenhum"
   },
   "toast": {

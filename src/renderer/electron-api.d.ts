@@ -233,6 +233,17 @@ export interface ElectronAPI {
    */
   queueMoveTo(id: string, toPosition: number): Promise<boolean>;
   /**
+   * Replaces the encoding options (and optionally the output path) of a QUEUED
+   * batch job over the `IPC.QUEUE_UPDATE_OPTIONS` ('queue-update-options')
+   * channel. Jobs that are running or already completed are left untouched.
+   * @param {string} id - Id of the QUEUED job to update.
+   * @param {ConversionOptions} options - The full replacement options object.
+   * @param {string} [output] - Optional new absolute output path.
+   * @returns {Promise<boolean>} Resolves true when the job was updated, false
+   *   when the id is unknown or the job is no longer QUEUED.
+   */
+  queueUpdateOptions(id: string, options: ConversionOptions, output?: string): Promise<boolean>;
+  /**
    * Pauses the batch queue over the `IPC.QUEUE_PAUSE` ('queue-pause') channel:
    * the main process suspends every active conversion and blocks queued jobs
    * from starting until `queueResume` is called.

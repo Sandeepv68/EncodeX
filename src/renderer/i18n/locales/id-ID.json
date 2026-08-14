@@ -116,7 +116,7 @@
     "startTime": "Waktu Mulai",
     "probeScore": "Skor Pemeriksaan",
     "profile": "Profil",
-    "level": "Level",
+    "level": "Tingkat",
     "aspectRatio": "Rasio Aspek",
     "colorSpace": "Ruang Warna",
     "colorTransfer": "Transfer Warna",
@@ -180,7 +180,7 @@
     },
     "video": "Video",
     "audio": "Audio",
-    "subtitle": "Subtitle",
+    "subtitle": "Subjudul",
     "exifData": "Data EXIF",
     "noExif": "Tidak ada data EXIF ditemukan"
   },
@@ -285,14 +285,14 @@
     "audioEnabledHint": "Sertakan trek audio dalam keluaran pemotongan. Hapus centang untuk menghasilkan video tanpa suara."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Putar",
+    "pause": "Jeda",
+    "stop": "Berhenti",
+    "mute": "Bisukan",
+    "unmute": "Nyalakan suara",
+    "seek": "Cari",
+    "playbackTime": "Waktu pemutaran",
+    "videoPlayer": "Pemutar video"
   },
   "batchQueue": {
     "title": "Antrean Batch",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "Mode percepatan HW",
     "encodingOptions": "Opsi Penyandian",
     "container": "Kontainer",
-    "containerAuto": "Otomatis (sumber)"
+    "containerAuto": "Otomatis (sumber)",
+    "optionsEditableAlert": "Opsi masih dapat diubah selama ada pekerjaan dalam antrean.",
+    "optionsLockedAlert": "Opsi terkunci selama batch berjalan.",
+    "editOptions": "Edit opsi",
+    "optionsLocked": "Opsi terkunci selama batch berjalan",
+    "jobCustomized": "Pekerjaan ini menggunakan opsi khusus",
+    "editOptionsTitle": "Edit opsi untuk {{file}}",
+    "editOptionsSave": "Simpan perubahan",
+    "optionsUpdated": "Opsi pekerjaan diperbarui",
+    "outputCollision": "Pekerjaan lain dalam antrean sudah menggunakan jalur keluaran tersebut.",
+    "outputCollisionSkipped": "{{count}} pekerjaan dilewati – keluaran baru akan menimpa file pekerjaan lain ({{names}})",
+    "optionsUpdateFailed": "Pekerjaan ini tidak dapat diedit lagi."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Progres konversi",
     "time": "Waktu",
     "speed": "Kecepatan",
     "eta": "Perkiraan Selesai"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Hapus",
     "download": "Unduh sebagai TXT",
-    "filter": "Filter by level",
+    "filter": "Saring berdasarkan tingkat",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "Didukung oleh"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Otomatis",
     "none": "Tidak ada"
   },
   "toast": {

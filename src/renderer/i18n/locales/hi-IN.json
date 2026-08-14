@@ -285,14 +285,14 @@
     "audioEnabledHint": "कट आउटपुट में ऑडियो ट्रैक शामिल करें। बिना आवाज़ के वीडियो बनाने के लिए अनचेक करें।"
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "चलाएं",
+    "pause": "विराम",
+    "stop": "बंद करें",
+    "mute": "म्यूट करें",
+    "unmute": "आवाज़ चालू करें",
+    "seek": "खोजें",
+    "playbackTime": "प्लेबैक समय",
+    "videoPlayer": "वीडियो प्लेयर"
   },
   "batchQueue": {
     "title": "बैच क्यू",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "HW त्वरण मोड",
     "encodingOptions": "एन्कोडिंग विकल्प",
     "container": "कंटेनर",
-    "containerAuto": "स्वचालित (स्रोत)"
+    "containerAuto": "स्वचालित (स्रोत)",
+    "optionsEditableAlert": "जब तक कार्य कतार में हैं, तब तक विकल्प बदले जा सकते हैं।",
+    "optionsLockedAlert": "बैच चलने के दौरान विकल्प लॉक हैं।",
+    "editOptions": "विकल्प संपादित करें",
+    "optionsLocked": "बैच चलने के दौरान विकल्प लॉक हैं",
+    "jobCustomized": "इस कार्य में कस्टम विकल्प उपयोग होते हैं",
+    "editOptionsTitle": "{{file}} के लिए विकल्प संपादित करें",
+    "editOptionsSave": "परिवर्तन सहेजें",
+    "optionsUpdated": "कार्य विकल्प अपडेट हो गए",
+    "outputCollision": "एक अन्य कतार वाला कार्य पहले से इस आउटपुट पथ का उपयोग करता है।",
+    "outputCollisionSkipped": "{{count}} कार्य छोड़े गए – नया आउटपुट किसी अन्य कार्य की फ़ाइल को अधिलेखित करेगा ({{names}})",
+    "optionsUpdateFailed": "यह कार्य अब संपादित नहीं किया जा सकता।"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "रूपांतरण प्रगति",
     "time": "समय",
     "speed": "गति",
     "eta": "अनुमानित समय"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "साफ़ करें",
     "download": "TXT के रूप में डाउनलोड करें",
-    "filter": "Filter by level",
+    "filter": "स्तर के अनुसार फ़िल्टर करें",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "द्वारा संचालित"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "स्वचालित",
     "none": "कोई नहीं"
   },
   "toast": {

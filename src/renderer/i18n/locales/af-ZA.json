@@ -16,7 +16,7 @@
     "audio": "Klank",
     "cut": "Sny",
     "batchQueue": "Groepwaglys",
-    "logs": "Logs",
+    "logs": "Logboeke",
     "settings": "Instellings"
   },
   "dashboard": {
@@ -277,7 +277,7 @@
     "validationRequired": "Kies asseblief 'n videolêer."
   },
   "videoTimeline": {
-    "zoomIn": "Zoom in",
+    "zoomIn": "Inzoem",
     "zoomOut": "Zoom uit",
     "videoTrack": "Videosnit",
     "audioTrack": "Klanksnit",
@@ -285,14 +285,14 @@
     "audioEnabledHint": "Sluit die klanksnit by die snyuitset in. Ontmerk om 'n video sonder klank te produseer."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
+    "play": "Speel",
+    "pause": "Pouse",
     "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "mute": "Demp",
+    "unmute": "Klank aan",
+    "seek": "Soek",
+    "playbackTime": "Speeltyd",
+    "videoPlayer": "Videospeler"
   },
   "batchQueue": {
     "title": "Groepwaglys",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "HW-versnelling-modus",
     "encodingOptions": "Enkoderingsopsies",
     "container": "Houer",
-    "containerAuto": "Auto (bron)"
+    "containerAuto": "Auto (bron)",
+    "optionsEditableAlert": "Opsies kan steeds verander word terwyl take in die tou staan.",
+    "optionsLockedAlert": "Opsies is gesluit terwyl die bondel loop.",
+    "editOptions": "Redigeer opsies",
+    "optionsLocked": "Opsies is gesluit terwyl die bondel loop",
+    "jobCustomized": "Hierdie taak gebruik pasgemaakte opsies",
+    "editOptionsTitle": "Redigeer opsies vir {{file}}",
+    "editOptionsSave": "Stoor veranderinge",
+    "optionsUpdated": "Taakopsies opgedateer",
+    "outputCollision": "Nog 'n taak in die tou gebruik reeds hierdie uitsetpad.",
+    "outputCollisionSkipped": "{{count}} taak/take oorgeslaan – die nuwe uitset sal 'n ander taak se lêer oorskryf ({{names}})",
+    "optionsUpdateFailed": "Hierdie taak kan nie meer geredigeer word nie."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Omskakelingsvordering",
     "time": "Tyd",
     "speed": "Spoed",
     "eta": "GTT"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Maak skoon",
     "download": "Laai Af as TXT",
-    "filter": "Filter by level",
+    "filter": "Filtreer per vlak",
     "levelAll": "ALLES",
     "levelDebug": "ONTT",
     "levelInfo": "INLIG",
@@ -422,7 +433,7 @@
     "poweredBy": "Aangedryf deur"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Outomaties",
     "none": "Geen"
   },
   "toast": {

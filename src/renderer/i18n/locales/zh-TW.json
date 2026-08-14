@@ -285,14 +285,14 @@
     "audioEnabledHint": "在剪輯輸出中包含音訊軌。取消勾選以產生沒有聲音的影片。"
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "播放",
+    "pause": "暫停",
+    "stop": "停止",
+    "mute": "靜音",
+    "unmute": "取消靜音",
+    "seek": "搜尋",
+    "playbackTime": "播放時間",
+    "videoPlayer": "影片播放器"
   },
   "batchQueue": {
     "title": "批次佇列",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "硬體加速模式",
     "encodingOptions": "編碼選項",
     "container": "容器",
-    "containerAuto": "自動（來源）"
+    "containerAuto": "自動（來源）",
+    "optionsEditableAlert": "佇列中還有工作時，仍可變更選項。",
+    "optionsLockedAlert": "批次執行時選項會被鎖定。",
+    "editOptions": "編輯選項",
+    "optionsLocked": "批次執行時選項會被鎖定",
+    "jobCustomized": "此工作使用自訂選項",
+    "editOptionsTitle": "編輯 {{file}} 的選項",
+    "editOptionsSave": "儲存變更",
+    "optionsUpdated": "工作選項已更新",
+    "outputCollision": "佇列中的另一個工作已使用該輸出路徑。",
+    "outputCollisionSkipped": "已略過 {{count}} 個工作 – 新的輸出將覆寫另一個工作的檔案 ({{names}})",
+    "optionsUpdateFailed": "此工作已無法編輯。"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "轉換進度",
     "time": "時間",
     "speed": "速度",
     "eta": "預計剩餘時間"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "清除",
     "download": "下載為 TXT",
-    "filter": "Filter by level",
+    "filter": "依層級篩選",
     "levelAll": "全部",
     "levelDebug": "偵錯",
     "levelInfo": "資訊",

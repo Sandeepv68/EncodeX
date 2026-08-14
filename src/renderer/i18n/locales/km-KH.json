@@ -137,7 +137,7 @@
       "major_brand": "ម៉ាកចម្បង",
       "minor_version": "កំណែតូច",
       "compatible_brands": "ម៉ាកឆបគ្នា",
-      "encoder": "Encoder",
+      "encoder": "អង់កូដឺរ",
       "creation_time": "ពេលបង្កើត",
       "title": "ចំណងជើង",
       "artist": "សិល្បករ",
@@ -156,7 +156,7 @@
       "lyrics": "អត្ថបទចម្រៀង",
       "language": "ភាសា",
       "handler_name": "ឈ្មោះកម្មវិធីគ្រប់គ្រង",
-      "timecode": "Timecode",
+      "timecode": "លេខកូដពេលវេលា",
       "location": "ទីតាំង"
     },
     "dispositionFlags": {
@@ -285,14 +285,14 @@
     "audioEnabledHint": "រួមបញ្ចូលបទសំឡេងនៅក្នុងទិន្នផលកាត់។ ដោះធីកដើម្បីបង្កើតវីដេអូដោយគ្មានសំឡេង។"
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "ចាក់",
+    "pause": "ផ្អាក",
+    "stop": "បញ្ឈប់",
+    "mute": "បិទសំឡេង",
+    "unmute": "បើកសំឡេង",
+    "seek": "ស្វែងរក",
+    "playbackTime": "ពេលចាក់",
+    "videoPlayer": "អ្នកចាក់វីដេអូ"
   },
   "batchQueue": {
     "title": "ជួរដេកដំណើរការដុំ",
@@ -333,7 +333,7 @@
     "paused": "បានផ្អាក",
     "dragHandle": "អូសដើម្បីរៀបចំឡើងវិញ",
     "badgeCount": "{{count}} កិច្ចការក្នុងជួរដេកដុំ",
-    "operationTranscode": "Transcode",
+    "operationTranscode": "បម្លែង",
     "operationExtractAudio": "ទាញយកសំឡេង",
     "operationCompressImage": "បង្ហាប់រូបភាព",
     "outputDirPlaceholder": "ថតទិន្នផល (ស្រេចចិត្ត)",
@@ -358,7 +358,7 @@
     "detailsError": "ព័ត៌មានលម្អិតនៃកំហុស",
     "detailsOutput": "ទិន្នផល",
     "detailsOptions": "ជម្រើស",
-    "detailsTranscoder": "Transcoder",
+    "detailsTranscoder": "ឧបករណ៍បម្លែងកូដ",
     "detailsCreatedAt": "បានបន្ថែម",
     "yes": "បាទ",
     "no": "ទេ",
@@ -373,14 +373,25 @@
     "optionDuration": "រយៈពេល",
     "optionCopy": "ចម្លងស្ទ្រីម",
     "optionAudio": "សំឡេង",
-    "optionHwaccel": "HW accel",
+    "optionHwaccel": "ការពន្លឿនផ្នែករឹង",
     "optionHwaccelMode": "របៀប HW accel",
     "encodingOptions": "ជម្រើសអ៊ិនកូដ",
-    "container": "Container",
-    "containerAuto": "ស្វ័យប្រវត្តិ (ប្រភព)"
+    "container": "កុងតឺន័រ",
+    "containerAuto": "ស្វ័យប្រវត្តិ (ប្រភព)",
+    "optionsEditableAlert": "នៅតែអាចផ្លាស់ប្តូរជម្រើសបាន នៅពេលដែលកិច្ចការនៅក្នុងជួររង់ចាំ។",
+    "optionsLockedAlert": "ជម្រើសត្រូវបានចាក់សោ នៅពេលដែលបាចកំពុងដំណើរការ។",
+    "editOptions": "កែសម្រួលជម្រើស",
+    "optionsLocked": "ជម្រើសត្រូវបានចាក់សោ នៅពេលដែលបាចកំពុងដំណើរការ",
+    "jobCustomized": "កិច្ចការនេះប្រើជម្រើសផ្ទាល់ខ្លួន",
+    "editOptionsTitle": "កែសម្រួលជម្រើសសម្រាប់ {{file}}",
+    "editOptionsSave": "រក្សាទុកការផ្លាស់ប្តូរ",
+    "optionsUpdated": "បានធ្វើបច្ចុប្បន្នភាពជម្រើសកិច្ចការ",
+    "outputCollision": "កិច្ចការផ្សេងទៀតក្នុងជួររង់ចាំបានប្រើផ្លូវលទ្ធផលនេះរួចហើយ។",
+    "outputCollisionSkipped": "បានរំលង {{count}} កិច្ចការ – លទ្ធផលថ្មីនឹងសរសេរជាន់លើឯកសាររបស់កិច្ចការផ្សេងទៀត ({{names}})",
+    "optionsUpdateFailed": "កិច្ចការនេះមិនអាចកែសម្រួលបានទៀតទេ។"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "វឌ្ឍនភាពបម្លែង",
     "time": "ពេលវេលា",
     "speed": "ល្បឿន",
     "eta": "ETA"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "សម្អាត",
     "download": "ទាញយកជា TXT",
-    "filter": "Filter by level",
+    "filter": "ច្រោះតាមកម្រិត",
     "levelAll": "ទាំងអស់",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

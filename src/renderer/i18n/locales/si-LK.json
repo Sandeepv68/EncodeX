@@ -285,14 +285,14 @@
     "audioEnabledHint": "කැපීමේ ප්‍රතිදානයට ශ්‍රව්‍ය ධාවන පථය ඇතුළත් කරන්න. ශබ්දය නැති වීඩියෝවක් සෑදීමට සලකුණු ඉවත් කරන්න."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "ධාවනය කරන්න",
+    "pause": "විරාමය",
+    "stop": "නවත්වන්න",
+    "mute": "නිශ්ශබ්ද කරන්න",
+    "unmute": "නිශ්ශබ්දතාව ඉවත් කරන්න",
+    "seek": "සොයන්න",
+    "playbackTime": "ධාවන කාලය",
+    "videoPlayer": "වීඩියෝ ප්ලේයරය"
   },
   "batchQueue": {
     "title": "කණ්ඩායම් පෝලිම",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "දෘඪාංග ත්වරණ ප්‍රකාරය",
     "encodingOptions": "කේතන විකල්ප",
     "container": "බහාලුම",
-    "containerAuto": "ස්වයංක්‍රීය (මූලාශ්‍රය)"
+    "containerAuto": "ස්වයංක්‍රීය (මූලාශ්‍රය)",
+    "optionsEditableAlert": "කාර්යයන් පෝලිමේ ඇති තාක් විකල්ප වෙනස් කළ හැකිය.",
+    "optionsLockedAlert": "කණ්ඩායම ක්රියාත්මක වන විට විකල්ප අගුළු දමා ඇත.",
+    "editOptions": "විකල්ප සංස්කරණය කරන්න",
+    "optionsLocked": "කණ්ඩායම ක්රියාත්මක වන විට විකල්ප අගුළු දමා ඇත",
+    "jobCustomized": "මෙම කාර්යය අභිරුචි විකල්ප භාවිතා කරයි",
+    "editOptionsTitle": "{{file}} සඳහා විකල්ප සංස්කරණය කරන්න",
+    "editOptionsSave": "වෙනස්කම් සුරකින්න",
+    "optionsUpdated": "කාර්ය විකල්ප යාවත්කාලීන කරන ලදී",
+    "outputCollision": "පෝලිමේ ඇති වෙනත් කාර්යයක් දැනටමත් එම ප්රතිදාන මාර්ගය භාවිතා කරයි.",
+    "outputCollisionSkipped": "කාර්යයන් {{count}}ක් මඟ හැරියේය – නව ප්රතිදානය වෙනත් කාර්යයක ගොනුව මත ලිවීමට ඉඩ ඇත ({{names}})",
+    "optionsUpdateFailed": "මෙම කාර්යය තවදුරටත් සංස්කරණය කළ නොහැක."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "පරිවර්තන ප්රගතිය",
     "time": "වේලාව",
     "speed": "වේගය",
     "eta": "ඉතිරි"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "හිස් කරන්න",
     "download": "TXT ලෙස බාගන්න",
-    "filter": "Filter by level",
+    "filter": "මට්ටම අනුව පෙරීම",
     "levelAll": "සියල්ල",
     "levelDebug": "දෝෂ නිරාකරණය",
     "levelInfo": "තොරතුරු",

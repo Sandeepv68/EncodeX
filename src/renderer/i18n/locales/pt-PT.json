@@ -102,8 +102,8 @@
     "size": "Tamanho",
     "duration": "Duração",
     "bitrate": "Bitrate",
-    "streams": "Streams",
-    "stream": "Stream",
+    "streams": "Fluxos",
+    "stream": "Fluxo",
     "codec": "Codec",
     "resolution": "Resolução",
     "pixelFormat": "Formato de Pixel",
@@ -285,14 +285,14 @@
     "audioEnabledHint": "Inclua a faixa de áudio no resultado do corte. Desmarque para produzir um vídeo sem som."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Reproduzir",
+    "pause": "Pausa",
+    "stop": "Parar",
+    "mute": "Silenciar",
+    "unmute": "Reativar som",
+    "seek": "Procurar",
+    "playbackTime": "Tempo de reprodução",
+    "videoPlayer": "Leitor de vídeo"
   },
   "batchQueue": {
     "title": "Fila em Lote",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "Modo de acel. HW",
     "encodingOptions": "Opções de Codificação",
     "container": "Contentor",
-    "containerAuto": "Automático (origem)"
+    "containerAuto": "Automático (origem)",
+    "optionsEditableAlert": "As opções ainda podem ser alteradas enquanto houver tarefas na fila.",
+    "optionsLockedAlert": "As opções estão bloqueadas enquanto o lote está a ser executado.",
+    "editOptions": "Editar opções",
+    "optionsLocked": "As opções estão bloqueadas enquanto o lote está a ser executado",
+    "jobCustomized": "Esta tarefa utiliza opções personalizadas",
+    "editOptionsTitle": "Editar opções para {{file}}",
+    "editOptionsSave": "Guardar alterações",
+    "optionsUpdated": "Opções da tarefa atualizadas",
+    "outputCollision": "Outra tarefa na fila já utiliza esse caminho de saída.",
+    "outputCollisionSkipped": "{{count}} tarefa(s) ignorada(s) – a nova saída sobrescreveria o ficheiro de outra tarefa ({{names}})",
+    "optionsUpdateFailed": "Esta tarefa já não pode ser editada."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Progresso da conversão",
     "time": "Tempo",
     "speed": "Velocidade",
     "eta": "PTA"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Limpar",
     "download": "Transferir como TXT",
-    "filter": "Filter by level",
+    "filter": "Filtrar por nível",
     "levelAll": "TODOS",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

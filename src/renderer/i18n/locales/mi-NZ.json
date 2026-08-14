@@ -285,14 +285,14 @@
     "audioEnabledHint": "Whakaurua te ara oro ki te putanga tapahi. Whakamomoehia hei hanga ataata kāore he oro."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Purei",
+    "pause": "Tārewa",
+    "stop": "Whakamutu",
+    "mute": "Whakamutua te reo",
+    "unmute": "Whakahokia te reo",
+    "seek": "Rapua",
+    "playbackTime": "Te wā purei",
+    "videoPlayer": "Pūrere whakaata ataata"
   },
   "batchQueue": {
     "title": "Rārangi Tukinotanga",
@@ -373,14 +373,25 @@
     "optionDuration": "Roa",
     "optionCopy": "Kape Ia",
     "optionAudio": "Oro",
-    "optionHwaccel": "HW accel",
+    "optionHwaccel": "Whakatere mārōtanga",
     "optionHwaccelMode": "Aratau HW accel",
     "encodingOptions": "Ngā Kōwhiringa Whakawaehere",
     "container": "Ipu",
-    "containerAuto": "Aunoa (puna)"
+    "containerAuto": "Aunoa (puna)",
+    "optionsEditableAlert": "Ka taea tonu te huri i ngā kōwhiringa i te wā e tū ana ngā mahi ki te tūtira.",
+    "optionsLockedAlert": "Ka kati ngā kōwhiringa i te wā e mahi ana te huinga.",
+    "editOptions": "Whakatikahia ngā kōwhiringa",
+    "optionsLocked": "Ka kati ngā kōwhiringa i te wā e mahi ana te huinga",
+    "jobCustomized": "Ka whakamahi tēnei mahi i ngā kōwhiringa ake",
+    "editOptionsTitle": "Whakatikahia ngā kōwhiringa mō {{file}}",
+    "editOptionsSave": "Tiakina ngā panonitanga",
+    "optionsUpdated": "Kua whakahōutia ngā kōwhiringa o te mahi",
+    "outputCollision": "Kua whakamahia kētia taua ara putanga e tētahi atu mahi i te tūtira.",
+    "outputCollisionSkipped": "Kua pekehia {{count}} mahi – ka tuhia e te putanga hou ki runga i te kōnae o tētahi atu mahi ({{names}})",
+    "optionsUpdateFailed": "Kāore e taea te whakatika i tēnei mahi."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Te ahunga whakamua o te hurihanga",
     "time": "Wā",
     "speed": "Tere",
     "eta": "ETA"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Mukua",
     "download": "Tango hei TXT",
-    "filter": "Filter by level",
+    "filter": "Tātari mā te taumata",
     "levelAll": "Katoa",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

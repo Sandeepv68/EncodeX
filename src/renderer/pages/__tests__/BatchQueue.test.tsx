@@ -22,6 +22,7 @@ const queueResumeMock = vi.mocked(window.electronAPI.queueResume);
 const queueStartMock = vi.mocked(window.electronAPI.queueStart);
 const queueExportMock = vi.mocked(window.electronAPI.queueExport);
 const queueImportMock = vi.mocked(window.electronAPI.queueImport);
+const queueUpdateOptionsMock = vi.mocked(window.electronAPI.queueUpdateOptions);
 const onQueueProgressMock = vi.mocked(window.electronAPI.onQueueProgress);
 const onQueueStatusChangeMock = vi.mocked(window.electronAPI.onQueueStatusChange);
 const onQueueMovedMock = vi.mocked(window.electronAPI.onQueueMoved);
@@ -841,5 +842,170 @@ describe('BatchQueue', () => {
     renderPage();
     expect(screen.getByText('batchQueue.operationCompressImage')).toBeInTheDocument();
     expect(screen.getByText('WebP')).toBeInTheDocument();
+  });
+
+  it('shows the options-editable alert when queued jobs exist and none are running', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } })]);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    expect(screen.getByText('batchQueue.optionsEditableAlert')).toBeInTheDocument();
+    expect(screen.queryByText('batchQueue.optionsLockedAlert')).not.toBeInTheDocument();
+  });
+
+  it('shows the options-locked alert once a job is running', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'running' }), job({ id: 'job-2', status: 'queued' })]);
+    renderPage();
+    await screen.findAllByText(/video\.mp4/);
+    expect(screen.getByText('batchQueue.optionsLockedAlert')).toBeInTheDocument();
+    expect(screen.queryByText('batchQueue.optionsEditableAlert')).not.toBeInTheDocument();
+  });
+
+  it('propagates a container change to every queued job', async () => {
+    queueListMock.mockResolvedValue([
+      job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } }),
+      job({
+        id: 'job-2',
+        input: '/in/two.mp4',
+        output: '/out/two_encodex_converted.mp4',
+        options: { videoCodec: 'libx264', audioCodec: 'aac' },
+      }),
+    ]);
+    queueUpdateOptionsMock.mockResolvedValue(true);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
+    fireEvent.click(screen.getByText('mkv'));
+    await waitFor(() => expect(queueUpdateOptionsMock).toHaveBeenCalledTimes(2));
+    expect(queueUpdateOptionsMock).toHaveBeenCalledWith(
+      'job-1',
+      expect.objectContaining({ videoCodec: 'libx264', audioCodec: 'aac', pixelFormat: 'yuv420p' }),
+      '/out/video_encodex_converted.mkv',
+    );
+    expect(queueUpdateOptionsMock).toHaveBeenCalledWith(
+      'job-2',
+      expect.objectContaining({ videoCodec: 'libx264', audioCodec: 'aac' }),
+      '/out/two_encodex_converted.mkv',
+    );
+  });
+
+  it('does not propagate panel changes once the batch is running', async () => {
+    queueListMock.mockResolvedValue([
+      job({ id: 'job-1', status: 'running', options: { videoCodec: 'libx264', audioCodec: 'aac' } }),
+      job({ id: 'job-2', status: 'queued', options: { videoCodec: 'libx264', audioCodec: 'aac' } }),
+    ]);
+    queueUpdateOptionsMock.mockResolvedValue(true);
+    renderPage();
+    await screen.findAllByText(/video\.mp4/);
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
+    fireEvent.click(screen.getByText('mkv'));
+    expect(queueUpdateOptionsMock).not.toHaveBeenCalled();
+  });
+
+  it('skips a queued job whose recomputed output would collide with another job', async () => {
+    queueListMock.mockResolvedValue([
+      job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } }),
+      job({
+        id: 'job-2',
+        input: '/in/two.mp4',
+        output: '/out/video_encodex_converted.mkv',
+        options: { videoCodec: 'libx264', audioCodec: 'aac' },
+      }),
+    ]);
+    queueUpdateOptionsMock.mockResolvedValue(true);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
+    fireEvent.click(screen.getByText('mkv'));
+    await waitFor(() =>
+      expect(
+        useToastStore.getState().toasts.some((toast) => toast.type === 'warning' && toast.message === 'batchQueue.outputCollisionSkipped'),
+      ).toBe(true),
+    );
+    expect(queueUpdateOptionsMock).toHaveBeenCalledTimes(1);
+    expect(queueUpdateOptionsMock).toHaveBeenCalledWith('job-2', expect.any(Object), '/out/video_encodex_converted.mkv');
+    expect(queueUpdateOptionsMock).not.toHaveBeenCalledWith('job-1', expect.any(Object), '/out/video_encodex_converted.mkv');
+  });
+
+  it('opens the per-job dialog and saves the edited options', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } })]);
+    queueUpdateOptionsMock.mockResolvedValue(true);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.editOptions' }));
+    expect(await screen.findByText('Edit options for video.mp4')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    await waitFor(() =>
+      expect(queueUpdateOptionsMock).toHaveBeenCalledWith(
+        'job-1',
+        expect.objectContaining({ videoCodec: 'libx264', audioCodec: 'aac' }),
+        '/out/video_encodex_converted.mp4',
+      ),
+    );
+    expect(useToastStore.getState().toasts.some((toast) => toast.type === 'success' && toast.message === 'batchQueue.optionsUpdated')).toBe(
+      true,
+    );
+  });
+
+  it('rejects a per-job edit whose output would collide with another job', async () => {
+    queueListMock.mockResolvedValue([
+      job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } }),
+      job({
+        id: 'job-2',
+        input: '/in/two.mp4',
+        output: '/out/video_encodex_converted.mp4',
+        options: { videoCodec: 'libx264', audioCodec: 'aac' },
+      }),
+    ]);
+    queueUpdateOptionsMock.mockResolvedValue(true);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getAllByRole('button', { name: 'batchQueue.editOptions' })[0]);
+    expect(await screen.findByText('Edit options for video.mp4')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    await waitFor(() =>
+      expect(
+        useToastStore.getState().toasts.some((toast) => toast.type === 'warning' && toast.message === 'batchQueue.outputCollision'),
+      ).toBe(true),
+    );
+    expect(queueUpdateOptionsMock).not.toHaveBeenCalled();
+    expect(screen.getByText('Edit options for video.mp4')).toBeInTheDocument();
+  });
+
+  it('does not propagate to jobs customized through the per-job dialog', async () => {
+    queueListMock.mockResolvedValue([
+      job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } }),
+      job({
+        id: 'job-2',
+        input: '/in/two.mp4',
+        output: '/out/two_encodex_converted.mp4',
+        options: { videoCodec: 'libx264', audioCodec: 'aac' },
+      }),
+    ]);
+    queueUpdateOptionsMock.mockResolvedValue(true);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getAllByRole('button', { name: 'batchQueue.editOptions' })[0]);
+    expect(await screen.findByText('Edit options for video.mp4')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    await waitFor(() => expect(queueUpdateOptionsMock).toHaveBeenCalled());
+    queueUpdateOptionsMock.mockClear();
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
+    fireEvent.click(screen.getByText('mkv'));
+    await waitFor(() =>
+      expect(queueUpdateOptionsMock).toHaveBeenCalledWith(
+        'job-2',
+        expect.objectContaining({ videoCodec: 'libx264', audioCodec: 'aac' }),
+        '/out/two_encodex_converted.mkv',
+      ),
+    );
+    expect(queueUpdateOptionsMock).not.toHaveBeenCalledWith('job-1', expect.any(Object), '/out/video_encodex_converted.mkv');
+  });
+
+  it('disables the per-job edit action once the batch is running', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'running' }), job({ id: 'job-2', status: 'queued' })]);
+    renderPage();
+    await screen.findAllByText(/video\.mp4/);
+    expect(screen.getAllByRole('button', { name: 'batchQueue.editOptions' })).toHaveLength(1);
+    expect(screen.getByRole('button', { name: 'batchQueue.editOptions' })).toBeDisabled();
   });
 });

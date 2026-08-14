@@ -285,14 +285,14 @@
     "audioEnabledHint": "Sertakan trek audio dalam output potongan. Nyahtanda untuk menghasilkan video tanpa bunyi."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Main",
+    "pause": "Jeda",
+    "stop": "Henti",
+    "mute": "Senyapkan",
+    "unmute": "Nyahsenyapkan",
+    "seek": "Cari",
+    "playbackTime": "Masa main",
+    "videoPlayer": "Pemain video"
   },
   "batchQueue": {
     "title": "Baris Giliran Kelompok",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "Mod pecutan perkakasan",
     "encodingOptions": "Pilihan pengekodan",
     "container": "Kontena",
-    "containerAuto": "Auto (sumber)"
+    "containerAuto": "Auto (sumber)",
+    "optionsEditableAlert": "Pilihan masih boleh diubah selagi ada kerja dalam baris giliran.",
+    "optionsLockedAlert": "Pilihan dikunci semasa kumpulan berjalan.",
+    "editOptions": "Edit pilihan",
+    "optionsLocked": "Pilihan dikunci semasa kumpulan berjalan",
+    "jobCustomized": "Kerja ini menggunakan pilihan tersuai",
+    "editOptionsTitle": "Edit pilihan untuk {{file}}",
+    "editOptionsSave": "Simpan perubahan",
+    "optionsUpdated": "Pilihan kerja dikemas kini",
+    "outputCollision": "Kerja lain dalam baris giliran sudah menggunakan laluan output itu.",
+    "outputCollisionSkipped": "{{count}} kerja dilangkau – output baharu akan menimpa fail kerja lain ({{names}})",
+    "optionsUpdateFailed": "Kerja ini tidak boleh diedit lagi."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Kemajuan penukaran",
     "time": "Masa",
     "speed": "Kelajuan",
     "eta": "KTA"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Kosongkan",
     "download": "Muat Turun sebagai TXT",
-    "filter": "Filter by level",
+    "filter": "Tapis mengikut tahap",
     "levelAll": "SEMUA",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "Dikuasakan oleh"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automatik",
     "none": "Tiada"
   },
   "toast": {

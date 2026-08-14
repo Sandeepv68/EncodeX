@@ -285,14 +285,14 @@
     "audioEnabledHint": "Neem het audiospoor op in de uitvoer van de snede. Schakel uit om een video zonder geluid te produceren."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Afspelen",
+    "pause": "Pauze",
+    "stop": "Stoppen",
+    "mute": "Dempen",
+    "unmute": "Geluid aanzetten",
+    "seek": "Zoeken",
+    "playbackTime": "Afspeeltijd",
+    "videoPlayer": "Videospeler"
   },
   "batchQueue": {
     "title": "Batchwachtrij",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "HW-versnellingsmodus",
     "encodingOptions": "Coderingsopties",
     "container": "Container",
-    "containerAuto": "Automatisch (bron)"
+    "containerAuto": "Automatisch (bron)",
+    "optionsEditableAlert": "Opties kunnen nog worden gewijzigd zolang er taken in de wachtrij staan.",
+    "optionsLockedAlert": "Opties zijn vergrendeld terwijl de batch wordt uitgevoerd.",
+    "editOptions": "Opties bewerken",
+    "optionsLocked": "Opties zijn vergrendeld terwijl de batch wordt uitgevoerd",
+    "jobCustomized": "Deze taak gebruikt aangepaste opties",
+    "editOptionsTitle": "Opties bewerken voor {{file}}",
+    "editOptionsSave": "Wijzigingen opslaan",
+    "optionsUpdated": "Taakopties bijgewerkt",
+    "outputCollision": "Een andere taak in de wachtrij gebruikt dit uitvoerpad al.",
+    "outputCollisionSkipped": "{{count}} taak/taken overgeslagen – de nieuwe uitvoer overschrijft het bestand van een andere taak ({{names}})",
+    "optionsUpdateFailed": "Deze taak kan niet meer worden bewerkt."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Conversievoortgang",
     "time": "Tijd",
     "speed": "Snelheid",
     "eta": "VER"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Wissen",
     "download": "Downloaden als TXT",
-    "filter": "Filter by level",
+    "filter": "Filteren op niveau",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "Mogelijk gemaakt door"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automatisch",
     "none": "Geen"
   },
   "toast": {

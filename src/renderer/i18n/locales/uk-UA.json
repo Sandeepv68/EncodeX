@@ -285,14 +285,14 @@
     "audioEnabledHint": "Включити аудіодоріжку в результат обрізання. Зніміть позначку, щоб отримати відео без звуку."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Відтворити",
+    "pause": "Пауза",
+    "stop": "Зупинити",
+    "mute": "Вимкнути звук",
+    "unmute": "Увімкнути звук",
+    "seek": "Шукати",
+    "playbackTime": "Час відтворення",
+    "videoPlayer": "Відеоплеєр"
   },
   "batchQueue": {
     "title": "Пакетна черга",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "Режим апаратного прискорення",
     "encodingOptions": "Параметри кодування",
     "container": "Контейнер",
-    "containerAuto": "Автоматично (джерело)"
+    "containerAuto": "Автоматично (джерело)",
+    "optionsEditableAlert": "Параметри можна змінювати, поки завдання в черзі.",
+    "optionsLockedAlert": "Параметри заблоковано, поки виконується пакет.",
+    "editOptions": "Змінити параметри",
+    "optionsLocked": "Параметри заблоковано, поки виконується пакет",
+    "jobCustomized": "Для цього завдання використовуються власні параметри",
+    "editOptionsTitle": "Змінити параметри для {{file}}",
+    "editOptionsSave": "Зберегти зміни",
+    "optionsUpdated": "Параметри завдання оновлено",
+    "outputCollision": "Інше завдання в черзі вже використовує цей шлях виводу.",
+    "outputCollisionSkipped": "Пропущено завдань: {{count}} – новий результат перезапише файл іншого завдання ({{names}})",
+    "optionsUpdateFailed": "Це завдання більше не можна змінити."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Хід конвертації",
     "time": "Час",
     "speed": "Швидкість",
     "eta": "Залишилось"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Очистити",
     "download": "Завантажити як TXT",
-    "filter": "Filter by level",
+    "filter": "Фільтр за рівнем",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "Працює на"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Авто",
     "none": "Немає"
   },
   "toast": {

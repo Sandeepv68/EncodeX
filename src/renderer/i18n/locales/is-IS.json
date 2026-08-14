@@ -285,14 +285,14 @@
     "audioEnabledHint": "Taktu hljóðráðið með í klippuúttakinu. Hakaðu af til að búa til myndband án hljóðs."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Spila",
+    "pause": "Í bið",
+    "stop": "Stoppa",
+    "mute": "Slökkva á hljóði",
+    "unmute": "Kveikja á hljóði",
+    "seek": "Leita",
+    "playbackTime": "Spilunartími",
+    "videoPlayer": "Videóspilari"
   },
   "batchQueue": {
     "title": "Runubraut",
@@ -358,7 +358,7 @@
     "detailsError": "Villulýsing",
     "detailsOutput": "Úttak",
     "detailsOptions": "Valkostir",
-    "detailsTranscoder": "Transcoder",
+    "detailsTranscoder": "Kóðunarbreytir",
     "detailsCreatedAt": "Bætt við",
     "yes": "Já",
     "no": "Nei",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "HW-accel-stilling",
     "encodingOptions": "Kóðunarvalkostir",
     "container": "Gámur",
-    "containerAuto": "Sjálfvirkt (frumrit)"
+    "containerAuto": "Sjálfvirkt (frumrit)",
+    "optionsEditableAlert": "Hægt er að breyta valkostum meðan verk eru í biðröð.",
+    "optionsLockedAlert": "Valkostir eru læstir meðan runan er í gangi.",
+    "editOptions": "Breyta valkostum",
+    "optionsLocked": "Valkostir eru læstir meðan runan er í gangi",
+    "jobCustomized": "Þetta verk notar sérsniðna valkosti",
+    "editOptionsTitle": "Breyta valkostum fyrir {{file}}",
+    "editOptionsSave": "Vista breytingar",
+    "optionsUpdated": "Valkostir verks uppfærðir",
+    "outputCollision": "Annað verk í biðröð notar þessa úttaksleið nú þegar.",
+    "outputCollisionSkipped": "{{count}} verk á hoppað yfir – nýja úttakið mun skrifa yfir skrá annars verks ({{names}})",
+    "optionsUpdateFailed": "Ekki er lengur hægt að breyta þessu verki."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Framvinda umbreytingar",
     "time": "Tími",
     "speed": "Hraði",
     "eta": "ETA"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Hreinsa",
     "download": "Sækja sem TXT",
-    "filter": "Filter by level",
+    "filter": "Sía eftir stigi",
     "levelAll": "Allt",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",

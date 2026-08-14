@@ -285,14 +285,14 @@
     "audioEnabledHint": "Incluir la pista de audio en la salida del corte. Desmárcalo para producir un video sin sonido."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Reproducir",
+    "pause": "Pausa",
+    "stop": "Detener",
+    "mute": "Silenciar",
+    "unmute": "Reactivar sonido",
+    "seek": "Buscar",
+    "playbackTime": "Tiempo de reproducción",
+    "videoPlayer": "Reproductor de video"
   },
   "batchQueue": {
     "title": "Cola de lotes",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "Modo de acel. HW",
     "encodingOptions": "Opciones de codificación",
     "container": "Contenedor",
-    "containerAuto": "Automático (origen)"
+    "containerAuto": "Automático (origen)",
+    "optionsEditableAlert": "Los ajustes aún se pueden cambiar mientras haya tareas en cola.",
+    "optionsLockedAlert": "Los ajustes están bloqueados mientras se ejecuta el lote.",
+    "editOptions": "Editar ajustes",
+    "optionsLocked": "Los ajustes están bloqueados mientras se ejecuta el lote",
+    "jobCustomized": "Esta tarea usa ajustes personalizados",
+    "editOptionsTitle": "Editar ajustes de {{file}}",
+    "editOptionsSave": "Guardar cambios",
+    "optionsUpdated": "Ajustes de la tarea actualizados",
+    "outputCollision": "Otra tarea en cola ya utiliza esa ruta de salida.",
+    "outputCollisionSkipped": "{{count}} tarea(s) omitida(s): la nueva salida sobrescribiría el archivo de otra tarea ({{names}})",
+    "optionsUpdateFailed": "Esta tarea ya no se puede editar."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Progreso de la conversión",
     "time": "Tiempo",
     "speed": "Velocidad",
     "eta": "ETA"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Limpiar",
     "download": "Descargar como TXT",
-    "filter": "Filter by level",
+    "filter": "Filtrar por nivel",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "Con la tecnología de"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automático",
     "none": "Ninguno"
   },
   "toast": {

@@ -285,14 +285,14 @@
     "audioEnabledHint": "在剪切输出中包含音频轨道。取消选中以生成没有声音的视频。"
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "播放",
+    "pause": "暂停",
+    "stop": "停止",
+    "mute": "静音",
+    "unmute": "取消静音",
+    "seek": "搜索",
+    "playbackTime": "播放时间",
+    "videoPlayer": "视频播放器"
   },
   "batchQueue": {
     "title": "批量队列",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "硬件加速模式",
     "encodingOptions": "编码选项",
     "container": "容器",
-    "containerAuto": "自动（源）"
+    "containerAuto": "自动（源）",
+    "optionsEditableAlert": "队列中还有任务时，仍可更改选项。",
+    "optionsLockedAlert": "批处理运行时选项被锁定。",
+    "editOptions": "编辑选项",
+    "optionsLocked": "批处理运行时选项被锁定",
+    "jobCustomized": "此任务使用自定义选项",
+    "editOptionsTitle": "编辑 {{file}} 的选项",
+    "editOptionsSave": "保存更改",
+    "optionsUpdated": "任务选项已更新",
+    "outputCollision": "队列中的另一个任务已使用该输出路径。",
+    "outputCollisionSkipped": "已跳过 {{count}} 个任务 – 新输出将覆盖另一个任务的文件 ({{names}})",
+    "optionsUpdateFailed": "此任务不再可编辑。"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "转换进度",
     "time": "时间",
     "speed": "速度",
     "eta": "预计剩余时间"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "清除",
     "download": "下载为 TXT",
-    "filter": "Filter by level",
+    "filter": "按级别筛选",
     "levelAll": "全部",
     "levelDebug": "调试",
     "levelInfo": "信息",

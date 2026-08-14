@@ -285,14 +285,14 @@
     "audioEnabledHint": "Inclure la piste audio dans la sortie du découpage. Décochez pour produire une vidéo sans son."
   },
   "player": {
-    "play": "Play",
+    "play": "Lire",
     "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "stop": "Arrêter",
+    "mute": "Couper le son",
+    "unmute": "Réactiver le son",
+    "seek": "Rechercher",
+    "playbackTime": "Temps de lecture",
+    "videoPlayer": "Lecteur vidéo"
   },
   "batchQueue": {
     "title": "File d'Attente",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "Mode d'accél. matérielle",
     "encodingOptions": "Options d'encodage",
     "container": "Conteneur",
-    "containerAuto": "Automatique (source)"
+    "containerAuto": "Automatique (source)",
+    "optionsEditableAlert": "Les options peuvent encore être modifiées tant que des tâches sont en file d'attente.",
+    "optionsLockedAlert": "Les options sont verrouillées pendant que le lot est en cours d'exécution.",
+    "editOptions": "Modifier les options",
+    "optionsLocked": "Les options sont verrouillées pendant que le lot est en cours d'exécution",
+    "jobCustomized": "Cette tâche utilise des options personnalisées",
+    "editOptionsTitle": "Modifier les options de {{file}}",
+    "editOptionsSave": "Enregistrer les modifications",
+    "optionsUpdated": "Options de la tâche mises à jour",
+    "outputCollision": "Une autre tâche en file d'attente utilise déjà ce chemin de sortie.",
+    "outputCollisionSkipped": "{{count}} tâche(s) ignorée(s) – la nouvelle sortie écraserait le fichier d'une autre tâche ({{names}})",
+    "optionsUpdateFailed": "Cette tâche ne peut plus être modifiée."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Progression de la conversion",
     "time": "Temps",
     "speed": "Vitesse",
     "eta": "Estimation"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Effacer",
     "download": "Télécharger au format TXT",
-    "filter": "Filter by level",
+    "filter": "Filtrer par niveau",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "Propulsé par"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automatique",
     "none": "Aucun"
   },
   "toast": {

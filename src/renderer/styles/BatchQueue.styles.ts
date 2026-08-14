@@ -16,6 +16,12 @@ export const AccelAlert = styled(Alert)(({ theme }) => ({
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
+export const LockedAlert = styled(Alert)(({ theme }) => ({
+  fontWeight: 500,
+  color: COLORS.alert.warning,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+}));
+
 export const EmptyText = styled(Typography)(({ theme }) => ({
   textAlign: 'center',
   paddingTop: theme.spacing(4),

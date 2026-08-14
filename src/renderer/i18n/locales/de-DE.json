@@ -285,14 +285,14 @@
     "audioEnabledHint": "Audiospur in die Ausgabe des Schnitts einbeziehen. Deaktivieren, um ein Video ohne Ton zu erzeugen."
   },
   "player": {
-    "play": "Play",
+    "play": "Wiedergabe",
     "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "stop": "Stopp",
+    "mute": "Stumm",
+    "unmute": "Stummschaltung aufheben",
+    "seek": "Suchen",
+    "playbackTime": "Wiedergabezeit",
+    "videoPlayer": "Videoplayer"
   },
   "batchQueue": {
     "title": "Stapelwarteschlange",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "HW-Beschleunigungsmodus",
     "encodingOptions": "Kodierungsoptionen",
     "container": "Container",
-    "containerAuto": "Automatisch (Quelle)"
+    "containerAuto": "Automatisch (Quelle)",
+    "optionsEditableAlert": "Optionen können noch geändert werden, solange Aufträge in der Warteschlange sind.",
+    "optionsLockedAlert": "Optionen sind gesperrt, während der Batch läuft.",
+    "editOptions": "Optionen bearbeiten",
+    "optionsLocked": "Optionen sind gesperrt, während der Batch läuft",
+    "jobCustomized": "Dieser Auftrag verwendet benutzerdefinierte Optionen",
+    "editOptionsTitle": "Optionen für {{file}} bearbeiten",
+    "editOptionsSave": "Änderungen speichern",
+    "optionsUpdated": "Auftragsoptionen aktualisiert",
+    "outputCollision": "Ein anderer Auftrag in der Warteschlange verwendet diesen Ausgabepfad bereits.",
+    "outputCollisionSkipped": "{{count}} Auftrag(e) übersprungen – die neue Ausgabe würde die Datei eines anderen Auftrags überschreiben ({{names}})",
+    "optionsUpdateFailed": "Dieser Auftrag kann nicht mehr bearbeitet werden."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Konvertierungsfortschritt",
     "time": "Zeit",
     "speed": "Geschwindigkeit",
     "eta": "VZR"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Leeren",
     "download": "Als TXT herunterladen",
-    "filter": "Filter by level",
+    "filter": "Nach Ebene filtern",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "Unterstützt von"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automatisch",
     "none": "Keine"
   },
   "toast": {

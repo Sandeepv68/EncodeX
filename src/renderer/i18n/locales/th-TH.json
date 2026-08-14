@@ -285,14 +285,14 @@
     "audioEnabledHint": "รวมแทร็กเสียงในเอาต์พุตการตัด ยกเลิกการเลือกเพื่อสร้างวิดีโอที่ไม่มีเสียง"
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "เล่น",
+    "pause": "หยุดชั่วคราว",
+    "stop": "หยุด",
+    "mute": "ปิดเสียง",
+    "unmute": "เปิดเสียง",
+    "seek": "ค้นหา",
+    "playbackTime": "เวลาการเล่น",
+    "videoPlayer": "เครื่องเล่นวิดีโอ"
   },
   "batchQueue": {
     "title": "คิวงาน",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "โหมดการเร่งด้วยฮาร์ดแวร์",
     "encodingOptions": "ตัวเลือกการเข้ารหัส",
     "container": "คอนเทนเนอร์",
-    "containerAuto": "อัตโนมัติ (ต้นทาง)"
+    "containerAuto": "อัตโนมัติ (ต้นทาง)",
+    "optionsEditableAlert": "ตัวเลือกยังสามารถเปลี่ยนแปลงได้ในขณะที่งานยังอยู่ในคิว",
+    "optionsLockedAlert": "ตัวเลือกถูกล็อกในขณะที่ชุดงานกำลังทำงาน",
+    "editOptions": "แก้ไขตัวเลือก",
+    "optionsLocked": "ตัวเลือกถูกล็อกในขณะที่ชุดงานกำลังทำงาน",
+    "jobCustomized": "งานนี้ใช้ตัวเลือกที่กำหนดเอง",
+    "editOptionsTitle": "แก้ไขตัวเลือกสำหรับ {{file}}",
+    "editOptionsSave": "บันทึกการเปลี่ยนแปลง",
+    "optionsUpdated": "อัปเดตตัวเลือกของงานแล้ว",
+    "outputCollision": "งานอื่นในคิวใช้พาธเอาต์พุตนี้อยู่แล้ว",
+    "outputCollisionSkipped": "ข้าม {{count}} งาน – เอาต์พุตใหม่จะเขียนทับไฟล์ของงานอื่น ({{names}})",
+    "optionsUpdateFailed": "ไม่สามารถแก้ไขงานนี้ได้อีกต่อไป"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "ความคืบหน้าการแปลง",
     "time": "เวลา",
     "speed": "ความเร็ว",
     "eta": "เหลืออีก"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "ล้าง",
     "download": "ดาวน์โหลดเป็น TXT",
-    "filter": "Filter by level",
+    "filter": "กรองตามระดับ",
     "levelAll": "ทั้งหมด",
     "levelDebug": "ดีบัก",
     "levelInfo": "ข้อมูล",

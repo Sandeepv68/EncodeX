@@ -285,14 +285,14 @@
     "audioEnabledHint": "Includi la traccia audio nell'output del taglio. Deseleziona per produrre un video senza audio."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Riproduci",
+    "pause": "Pausa",
+    "stop": "Ferma",
+    "mute": "Disattiva audio",
+    "unmute": "Attiva audio",
+    "seek": "Cerca",
+    "playbackTime": "Tempo di riproduzione",
+    "videoPlayer": "Lettore video"
   },
   "batchQueue": {
     "title": "Coda batch",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "Modalità accel. HW",
     "encodingOptions": "Opzioni di codifica",
     "container": "Contenitore",
-    "containerAuto": "Automatico (origine)"
+    "containerAuto": "Automatico (origine)",
+    "optionsEditableAlert": "Le opzioni possono ancora essere modificate mentre ci sono lavori in coda.",
+    "optionsLockedAlert": "Le opzioni sono bloccate mentre il batch è in esecuzione.",
+    "editOptions": "Modifica opzioni",
+    "optionsLocked": "Le opzioni sono bloccate mentre il batch è in esecuzione",
+    "jobCustomized": "Questo lavoro usa opzioni personalizzate",
+    "editOptionsTitle": "Modifica le opzioni per {{file}}",
+    "editOptionsSave": "Salva modifiche",
+    "optionsUpdated": "Opzioni del lavoro aggiornate",
+    "outputCollision": "Un altro lavoro in coda usa già questo percorso di output.",
+    "outputCollisionSkipped": "{{count}} lavoro/i saltato/i – la nuova uscita sovrascriverebbe il file di un altro lavoro ({{names}})",
+    "optionsUpdateFailed": "Questo lavoro non può più essere modificato."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Avanzamento conversione",
     "time": "Tempo",
     "speed": "Velocità",
     "eta": "PRE"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Cancella",
     "download": "Scarica come TXT",
-    "filter": "Filter by level",
+    "filter": "Filtra per livello",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "Con tecnologia"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automatico",
     "none": "Nessuno"
   },
   "toast": {

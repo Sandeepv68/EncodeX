@@ -285,14 +285,14 @@
     "audioEnabledHint": "切り出し出力にオーディオトラックを含めます。オフにすると音声なしのビデオになります。"
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "再生",
+    "pause": "一時停止",
+    "stop": "停止",
+    "mute": "ミュート",
+    "unmute": "ミュート解除",
+    "seek": "シーク",
+    "playbackTime": "再生時間",
+    "videoPlayer": "ビデオプレーヤー"
   },
   "batchQueue": {
     "title": "バッチキュー",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "HWアクセラレーションモード",
     "encodingOptions": "エンコードオプション",
     "container": "コンテナ",
-    "containerAuto": "自動（元の形式）"
+    "containerAuto": "自動（元の形式）",
+    "optionsEditableAlert": "キューにジョブがある間は、オプションを変更できます。",
+    "optionsLockedAlert": "バッチ実行中はオプションがロックされます。",
+    "editOptions": "オプションを編集",
+    "optionsLocked": "バッチ実行中はオプションがロックされます",
+    "jobCustomized": "このジョブはカスタムオプションを使用します",
+    "editOptionsTitle": "{{file}} のオプションを編集",
+    "editOptionsSave": "変更を保存",
+    "optionsUpdated": "ジョブのオプションを更新しました",
+    "outputCollision": "キュー内の別のジョブがすでにこの出力パスを使用しています。",
+    "outputCollisionSkipped": "{{count}} 件のジョブをスキップしました – 新しい出力は別のジョブのファイルを上書きします ({{names}})",
+    "optionsUpdateFailed": "このジョブは編集できなくなりました。"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "変換の進行状況",
     "time": "時間",
     "speed": "速度",
     "eta": "残り時間"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "クリア",
     "download": "TXTとしてダウンロード",
-    "filter": "Filter by level",
+    "filter": "レベルでフィルター",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -419,10 +430,10 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Powered by"
+    "poweredBy": "技術提供"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "自動",
     "none": "なし"
   },
   "toast": {

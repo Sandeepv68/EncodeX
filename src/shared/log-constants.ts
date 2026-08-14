@@ -361,6 +361,8 @@ export const LOG_IPC_QUEUE_SET_CONCURRENCY = 'QUEUE_SET_CONCURRENCY:';
 export const LOG_IPC_QUEUE_SET_WHEN_DONE = 'QUEUE_SET_WHEN_DONE:';
 /** @const {string} Prefix when the QUEUE_MOVE_TO IPC message is received. */
 export const LOG_IPC_QUEUE_MOVE_TO = 'QUEUE_MOVE_TO:';
+/** @const {string} Prefix when the QUEUE_UPDATE_OPTIONS IPC message is received. */
+export const LOG_IPC_QUEUE_UPDATE_OPTIONS = 'QUEUE_UPDATE_OPTIONS:';
 /** @const {string} Logged when the QUEUE_PAUSE IPC message is received. */
 export const LOG_IPC_QUEUE_PAUSE_CALLED = 'QUEUE_PAUSE called';
 /** @const {string} Logged when the QUEUE_RESUME IPC message is received. */
@@ -536,6 +538,10 @@ export const LOG_QUEUE_START_CALLED = 'queueStart called';
 export const LOG_QUEUE_MOVE_TO = 'moveJobTo:';
 /** @const {string} Logged when a move targets a job that is not queued. */
 export const LOG_QUEUE_MOVE_SKIPPED = 'moveJobTo skipped: not queued:';
+/** @const {string} Prefix when a queued job's options are updated. */
+export const LOG_QUEUE_UPDATE_OPTIONS = 'updateJobOptions:';
+/** @const {string} Logged when updateJobOptions targets a job that is not queued. */
+export const LOG_QUEUE_UPDATE_OPTIONS_SKIPPED = 'updateJobOptions skipped: not queued:';
 /** @const {string} Logged when a move target is clamped or unchanged. */
 export const LOG_QUEUE_MOVE_TO_CLAMPED = 'moveJobTo clamped/unchanged:';
 /** @const {string} Prefix when a queue job is added. */

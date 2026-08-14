@@ -285,14 +285,14 @@
     "audioEnabledHint": "تضمين المسار الصوتي في ناتج القص. ألغِ التحديد لإنتاج فيديو بدون صوت."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "تشغيل",
+    "pause": "إيقاف مؤقت",
+    "stop": "إيقاف",
+    "mute": "كتم الصوت",
+    "unmute": "إلغاء كتم الصوت",
+    "seek": "تقديم",
+    "playbackTime": "وقت التشغيل",
+    "videoPlayer": "مشغل الفيديو"
   },
   "batchQueue": {
     "title": "قائمة الدفعات",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "وضع تسريع الأجهزة",
     "encodingOptions": "خيارات الترميز",
     "container": "الحاوية",
-    "containerAuto": "تلقائي (المصدر)"
+    "containerAuto": "تلقائي (المصدر)",
+    "optionsEditableAlert": "لا يزال من الممكن تغيير الخيارات أثناء وجود المهام في قائمة الانتظار.",
+    "optionsLockedAlert": "الخيارات مقفلة أثناء تشغيل الدفعة.",
+    "editOptions": "تحرير الخيارات",
+    "optionsLocked": "الخيارات مقفلة أثناء تشغيل الدفعة",
+    "jobCustomized": "تستخدم هذه المهمة خيارات مخصصة",
+    "editOptionsTitle": "تحرير خيارات {{file}}",
+    "editOptionsSave": "حفظ التغييرات",
+    "optionsUpdated": "تم تحديث خيارات المهمة",
+    "outputCollision": "توجد مهمة أخرى في قائمة الانتظار تستخدم مسار الإخراج هذا بالفعل.",
+    "outputCollisionSkipped": "تم تخطي {{count}} مهمة – سيحل الناتج الجديد محل ملف مهمة أخرى ({{names}})",
+    "optionsUpdateFailed": "لم يعد من الممكن تحرير هذه المهمة."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "تقدم التحويل",
     "time": "الوقت",
     "speed": "السرعة",
     "eta": "الوقت المتبقي"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "مسح",
     "download": "قم بالتنزيل بصيغة TXT",
-    "filter": "Filter by level",
+    "filter": "تصفية حسب المستوى",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "مدعوم بواسطة"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "تلقائي",
     "none": "لا شيء"
   },
   "toast": {

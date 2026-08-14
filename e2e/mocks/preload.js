@@ -95,6 +95,15 @@ const api = {
     emit('queue-moved', { id, toPosition });
     return Promise.resolve(true);
   },
+  queueUpdateOptions: (id, options, output) => {
+    const job = state.queueJobs.find((j) => j.id === id);
+    if (!job) return Promise.resolve(false);
+    if (job.status !== 'queued') return Promise.resolve(false);
+    job.options = { ...options };
+    if (output) job.output = output;
+    emit('queue-status-change', job);
+    return Promise.resolve(true);
+  },
   queuePause: () => {
     state.queueState.paused = true;
     return Promise.resolve();

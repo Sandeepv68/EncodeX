@@ -377,7 +377,18 @@
     "optionHwaccelMode": "HW accel mode",
     "encodingOptions": "Encoding options",
     "container": "Container",
-    "containerAuto": "Auto (source)"
+    "containerAuto": "Auto (source)",
+    "optionsEditableAlert": "Options can still be changed while jobs are queued.",
+    "optionsLockedAlert": "Options are locked while the batch is running.",
+    "editOptions": "Edit options",
+    "optionsLocked": "Options are locked while the batch is running",
+    "jobCustomized": "This job uses custom options",
+    "editOptionsTitle": "Edit options for {{file}}",
+    "editOptionsSave": "Save changes",
+    "optionsUpdated": "Job options updated",
+    "outputCollision": "Another queued job already uses that output path.",
+    "outputCollisionSkipped": "Skipped {{count}} job(s) - the new output would overwrite another job's file ({{names}})",
+    "optionsUpdateFailed": "This job is no longer editable."
   },
   "progress": {
     "title": "Conversion progress",

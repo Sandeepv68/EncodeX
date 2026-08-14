@@ -58,7 +58,7 @@
     "startConversion": "Starta konvertering",
     "converting": "Konverterar...",
     "pause": "Pausa",
-    "resume": "Resume",
+    "resume": "Återuppta",
     "cancel": "Avbryt",
     "placeholderBitrate": "t.ex. 2000k",
     "placeholderAudioBitrate": "t.ex. 192k",
@@ -285,18 +285,18 @@
     "audioEnabledHint": "Inkludera ljudspåret i klippets utdata. Avmarkera för att producera en video utan ljud."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Spela upp",
+    "pause": "Pausa",
+    "stop": "Stoppa",
+    "mute": "Ljud av",
+    "unmute": "Ljud på",
+    "seek": "Sök",
+    "playbackTime": "Uppspelningstid",
+    "videoPlayer": "Videospelare"
   },
   "batchQueue": {
     "title": "Batchkö",
-    "operation": "Operation",
+    "operation": "Åtgärd",
     "suffix": "Ändelse",
     "addFiles": "Lägg till filer",
     "cancelAll": "Avbryt alla",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "HW-accel-läge",
     "encodingOptions": "Kodningsalternativ",
     "container": "Container",
-    "containerAuto": "Automatisk (källa)"
+    "containerAuto": "Automatisk (källa)",
+    "optionsEditableAlert": "Alternativen kan fortfarande ändras medan det finns jobb i kön.",
+    "optionsLockedAlert": "Alternativen är låsta medan batchen körs.",
+    "editOptions": "Redigera alternativ",
+    "optionsLocked": "Alternativen är låsta medan batchen körs",
+    "jobCustomized": "Det här jobbet använder anpassade alternativ",
+    "editOptionsTitle": "Redigera alternativ för {{file}}",
+    "editOptionsSave": "Spara ändringar",
+    "optionsUpdated": "Jobbalternativen har uppdaterats",
+    "outputCollision": "Ett annat jobb i kön använder redan den här utdatasökvägen.",
+    "outputCollisionSkipped": "{{count}} jobb hoppades över – den nya utdatan skriver över ett annat jobbs fil ({{names}})",
+    "optionsUpdateFailed": "Det här jobbet kan inte längre redigeras."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Konverteringsförlopp",
     "time": "Tid",
     "speed": "Hastighet",
     "eta": "BPT"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Rensa",
     "download": "Ladda ner som TXT",
-    "filter": "Filter by level",
+    "filter": "Filtrera efter nivå",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +433,7 @@
     "poweredBy": "Drivs av"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automatiskt",
     "none": "Ingen"
   },
   "toast": {

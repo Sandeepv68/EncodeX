@@ -285,14 +285,14 @@
     "audioEnabledHint": "컷 출력에 오디오 트랙을 포함합니다. 체크를 해제하면 소리가 없는 비디오가 생성됩니다."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "재생",
+    "pause": "일시 정지",
+    "stop": "정지",
+    "mute": "음소거",
+    "unmute": "음소거 해제",
+    "seek": "검색",
+    "playbackTime": "재생 시간",
+    "videoPlayer": "비디오 플레이어"
   },
   "batchQueue": {
     "title": "배치 큐",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "HW 가속 모드",
     "encodingOptions": "인코딩 옵션",
     "container": "컨테이너",
-    "containerAuto": "자동 (소스)"
+    "containerAuto": "자동 (소스)",
+    "optionsEditableAlert": "작업이 대기열에 있는 동안 옵션을 변경할 수 있습니다.",
+    "optionsLockedAlert": "배치가 실행되는 동안 옵션이 잠깁니다.",
+    "editOptions": "옵션 편집",
+    "optionsLocked": "배치가 실행되는 동안 옵션이 잠깁니다",
+    "jobCustomized": "이 작업은 사용자 지정 옵션을 사용합니다",
+    "editOptionsTitle": "{{file}} 옵션 편집",
+    "editOptionsSave": "변경 사항 저장",
+    "optionsUpdated": "작업 옵션이 업데이트되었습니다",
+    "outputCollision": "다른 대기열 작업이 이미 해당 출력 경로를 사용 중입니다.",
+    "outputCollisionSkipped": "작업 {{count}}개를 건너뜀 – 새 출력이 다른 작업의 파일을 덮어씁니다 ({{names}})",
+    "optionsUpdateFailed": "이 작업은 더 이상 편집할 수 없습니다."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "변환 진행률",
     "time": "시간",
     "speed": "속도",
     "eta": "예상 완료 시간"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "지우기",
     "download": "TXT로 다운로드",
-    "filter": "Filter by level",
+    "filter": "수준별 필터",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -419,10 +430,10 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Powered by"
+    "poweredBy": "제공"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "자동",
     "none": "없음"
   },
   "toast": {

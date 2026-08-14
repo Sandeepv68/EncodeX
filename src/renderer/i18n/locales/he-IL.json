@@ -285,14 +285,14 @@
     "audioEnabledHint": "כלול את רצועת האודיו בפלט החיתוך. בטל סימון כדי ליצור וידאו ללא קול."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "נגן",
+    "pause": "השהה",
+    "stop": "עצור",
+    "mute": "השתק",
+    "unmute": "בטל השתקה",
+    "seek": "חיפוש",
+    "playbackTime": "זמן נגינה",
+    "videoPlayer": "נגן וידאו"
   },
   "batchQueue": {
     "title": "תור אצווה",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "מצב האצת חומרה",
     "encodingOptions": "אפשרויות קידוד",
     "container": "מכל",
-    "containerAuto": "אוטומטי (מקור)"
+    "containerAuto": "אוטומטי (מקור)",
+    "optionsEditableAlert": "עדיין ניתן לשנות את האפשרויות כל עוד יש משימות בתור.",
+    "optionsLockedAlert": "האפשרויות נעולות בזמן שהאצווה פועלת.",
+    "editOptions": "עריכת אפשרויות",
+    "optionsLocked": "האפשרויות נעולות בזמן שהאצווה פועלת",
+    "jobCustomized": "משימה זו משתמשת באפשרויות מותאמות אישית",
+    "editOptionsTitle": "עריכת אפשרויות עבור {{file}}",
+    "editOptionsSave": "שמור שינויים",
+    "optionsUpdated": "אפשרויות המשימה עודכנו",
+    "outputCollision": "משימה אחרת בתור כבר משתמשת בנתיב הפלט הזה.",
+    "outputCollisionSkipped": "דולגו {{count}} משימות – הפלט החדש ידרוס את הקובץ של משימה אחרת ({{names}})",
+    "optionsUpdateFailed": "לא ניתן עוד לערוך משימה זו."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "התקדמות ההמרה",
     "time": "זמן",
     "speed": "מהירות",
     "eta": "זמן משוער"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "נקה",
     "download": "הורד כקובץ TXT",
-    "filter": "Filter by level",
+    "filter": "סינון לפי רמה",
     "levelAll": "הכל",
     "levelDebug": "דיבאג",
     "levelInfo": "מידע",

@@ -28,6 +28,7 @@ import BatchEncodingPanel from '../components/BatchEncodingPanel';
 import QueueJobCard, { QueueJobCardContent } from '../components/QueueJobCard';
 import QueueDropArea from '../components/QueueDropArea';
 import QueueAddReviewDialog from '../components/QueueAddReviewDialog';
+import QueueJobOptionsDialog from '../components/QueueJobOptionsDialog';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useQueueStore } from '../stores/queueStore';
 import { useToastStore } from '../stores/toastStore';
@@ -46,9 +47,19 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { readStoredBatchConfig, persistBatchConfig, type BatchConfig } from '../stores/batchConfig';
 import type { QueueAddReviewSelection } from '../components/types';
 import type { HwAccelMode } from '../../shared/types';
+import { buildBatchOptions, inferJobOperation, recomputeJobOutput } from '../utils/batch-options';
 import { computeQueuedTargetPosition, reorderJob } from '../utils/queue-reorder';
 import { JobCard } from '../styles/QueueJobCard.styles';
-import { PageTitle, EmptyText, FilterRow, FilterChip, SearchField, DropOverlay, AccelAlert } from '../styles/BatchQueue.styles';
+import {
+  PageTitle,
+  EmptyText,
+  FilterRow,
+  FilterChip,
+  SearchField,
+  DropOverlay,
+  AccelAlert,
+  LockedAlert,
+} from '../styles/BatchQueue.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 
@@ -348,6 +359,37 @@ export default function BatchQueue() {
   const [pixelFormat, setPixelFormat] = useState(initialConfig.pixelFormat);
 
   /**
+   * True while any job is RUNNING. Options editing (global propagation and the
+   * per-job dialog) is disabled once a batch has started, because the running
+   * jobs are already executing with the options they were given.
+   * @type {boolean}
+   */
+  const batchStarted = jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.RUNNING);
+
+  /**
+   * Ids of jobs whose options were customized via the per-job dialog. Global
+   * panel propagation skips these so an explicit edit is never overwritten.
+   * @type {[Set<string>, React.Dispatch<React.SetStateAction<Set<string>>>]}
+   */
+  const [customizedIds, setCustomizedIds] = useState<Set<string>>(new Set());
+
+  /**
+   * Ref mirroring `customizedIds` so the propagation effect (which must not
+   * depend on the set, or it would re-run on every customization) sees the
+   * latest customized ids.
+   * @type {React.MutableRefObject<Set<string>>}
+   */
+  const customizedIdsRef = useRef<Set<string>>(new Set());
+
+  /**
+   * Job whose options are being edited in the per-job dialog, or null when the
+   * dialog is closed. Setting a job opens the dialog; saving or cancelling
+   * resets it to null.
+   * @type {[QueueJob | null, React.Dispatch<React.SetStateAction<QueueJob | null>>]}
+   */
+  const [editJob, setEditJob] = useState<QueueJob | null>(null);
+
+  /**
    * Transcoder backend used for every job added from this page. Initialized to
    * the first entry of TRANSCODER_TYPES and selectable via BatchControls.
    * @type {React.MutableRefObject<string>}
@@ -410,6 +452,48 @@ export default function BatchQueue() {
   useEffect(() => {
     persistBatchConfig({ operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat });
   }, [operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat]);
+
+  /**
+   * Propagates the panel's encoding fields to every queued job that has not
+   * been customized through the per-job dialog. Skipped entirely once the batch
+   * has started (running jobs must keep the options they were given), and
+   * customized jobs are excluded so an explicit per-job edit is never
+   * overwritten. Each job keeps the operation it was created under (recovered
+   * from its options) and its output extension is recomputed when the selected
+   * container is compatible. A job whose recomputed output would collide with
+   * another job's output is skipped and reported in a single warning toast.
+   * @returns {void}
+   */
+  useEffect(() => {
+    if (batchStarted) return;
+    const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
+    const customized = customizedIdsRef.current;
+    const currentJobs = useQueueStore.getState().jobs;
+    const claimedBy = new Map<string, string>();
+    for (const job of currentJobs) claimedBy.set(normalizePath(job.output), job.id);
+    const skippedNames: string[] = [];
+    for (const job of currentJobs) {
+      if (job.status !== QUEUE_STATUS.QUEUED) continue;
+      if (customized.has(job.id)) continue;
+      const options = buildBatchOptions(
+        inferJobOperation(job.options),
+        { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat },
+        { hardwareAcceleration, hwaccelMode },
+      );
+      const output = recomputeJobOutput(job, container);
+      const ownedBy = claimedBy.get(normalizePath(output));
+      if (ownedBy && ownedBy !== job.id) {
+        skippedNames.push(basename(job.input));
+        continue;
+      }
+      window.electronAPI?.queueUpdateOptions(job.id, options, output);
+    }
+    if (skippedNames.length > 0) {
+      useToastStore
+        .getState()
+        .warning(t('batchQueue.outputCollisionSkipped', { count: skippedNames.length, names: skippedNames.join(', ') }));
+    }
+  }, [videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat, batchStarted]);
 
   /**
    * On mount, pushes the persisted concurrency cap to the main process so the
@@ -556,51 +640,15 @@ export default function BatchQueue() {
   }, []);
 
   /**
-   * Builds the queued ConversionOptions for a batch operation from the page's
-   * encoding state and the hardware-acceleration settings. 'transcode' keeps
-   * video and audio codecs plus video/audio bitrate, scale, and pixel format;
-   * 'extract_audio' keeps only audio (with audio bitrate); 'compress_image'
-   * keeps only image encoding (qscale and scale, no video/audio codecs).
+   * Builds the output path for a new batch job: the source directory (or the
+   * configured output folder), the source stem with the configured suffix, and
+   * the chosen extension. The extension defaults to the source extension (or
+   * the codec-suggested one) when no container/format is selected, falling back
+   * to 'mp4'.
+   * @param {string} file - The source file path.
    * @param {string} operation - The batch operation value.
-   * @param {{hardwareAcceleration: boolean, hwaccelMode: HwAccelMode}} hw - Current
-   *   hardware-acceleration settings.
-   * @returns {Object} The options payload for the job.
-   */
-  const buildOptions = (
-    operation: string,
-    hw: { hardwareAcceleration: boolean; hwaccelMode: HwAccelMode },
-  ): {
-    videoCodec?: string;
-    audioCodec?: string;
-    videoBitrate?: string;
-    audioBitrate?: string;
-    qscale?: number;
-    scale?: string;
-    pixelFormat?: string;
-    hardwareAcceleration: boolean;
-    hwaccelMode: HwAccelMode;
-  } => ({
-    videoCodec: operation === 'transcode' ? videoCodec : undefined,
-    audioCodec: operation === 'transcode' || operation === 'extract_audio' ? audioCodec : undefined,
-    videoBitrate: operation === 'transcode' ? videoBitrate || undefined : undefined,
-    audioBitrate: operation === 'transcode' || operation === 'extract_audio' ? audioBitrate || undefined : undefined,
-    qscale: operation === 'compress_image' && quality ? Number(quality) : undefined,
-    scale: operation === 'transcode' || operation === 'compress_image' ? scale || undefined : undefined,
-    pixelFormat: operation === 'transcode' ? pixelFormat : undefined,
-    hardwareAcceleration: hw.hardwareAcceleration,
-    hwaccelMode: hw.hwaccelMode,
-  });
-
-  /**
-   * Derives the output path for a source file: the configured output folder
-   * (or the source's own directory), the source stem, the configured suffix,
-   * and an extension chosen from the selected container, the audio codec's
-   * suggested extension (extract-audio), the source extension, or the video
-   * codec's suggested extension (transcode) as a last resort.
-   * @param {string} file - Absolute path of the source file.
-   * @param {string} operation - The batch operation value.
-   * @param {string} sourceExt - Lowercased source extension ('' for dotfiles).
-   * @returns {string} The output file path.
+   * @param {string} sourceExt - The source file's extension.
+   * @returns {string} The computed output path.
    */
   const buildOutputPath = (file: string, operation: string, sourceExt: string): string => {
     const sourceDir = outputDir.length > 0 ? outputDir.replace(/\\/g, '/').replace(/\/+$/, '') : getSourceDir(file).replace(/\\/g, '/');
@@ -658,7 +706,11 @@ export default function BatchQueue() {
       }
       existingKeys.add(key);
       existingOutputs.add(normalizePath(outFile));
-      const options = buildOptions(operation, { hardwareAcceleration, hwaccelMode });
+      const options = buildBatchOptions(
+        operation,
+        { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat },
+        { hardwareAcceleration, hwaccelMode },
+      );
       enqueues.push(
         window.electronAPI
           .queueAdd(file, outFile, options, transcoderRef.current, overwrite)
@@ -782,6 +834,55 @@ export default function BatchQueue() {
       .getState()
       .jobs.filter((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)
       .forEach((job: QueueJob) => removeJob(job.id));
+  };
+
+  /**
+   * Opens the per-job options dialog for a queued job (a no-op once the batch
+   * has started; the edit button is hidden then, so this is defensive).
+   * @param {QueueJob} job - The job whose options should be edited.
+   * @returns {void}
+   */
+  const handleEditOptions = (job: QueueJob) => {
+    if (batchStarted) return;
+    setEditJob(job);
+  };
+
+  /**
+   * Persists a per-job options edit: rejects outputs that collide with another
+   * job's output path (the dialog stays open with a warning), applies the
+   * change via `queueUpdateOptions`, marks the job as customized so global
+   * propagation skips it, and closes the dialog. A failed update (job left the
+   * QUEUED state between opening the dialog and saving) surfaces an error toast.
+   * @param {QueueJob} job - The edited job.
+   * @param {object} options - The built conversion options.
+   * @param {string} output - The recomputed output path.
+   * @returns {Promise<void>} Resolves once the update request settled.
+   */
+  const handleEditSave = async (job: QueueJob, options: QueueJob['options'], output: string) => {
+    const collides = useQueueStore
+      .getState()
+      .jobs.some((other: QueueJob) => other.id !== job.id && normalizePath(other.output) === normalizePath(output));
+    if (collides) {
+      useToastStore.getState().warning(t('batchQueue.outputCollision'));
+      return;
+    }
+    try {
+      const updated = await window.electronAPI.queueUpdateOptions(job.id, options, output);
+      if (!updated) {
+        useToastStore.getState().error(t('batchQueue.optionsUpdateFailed'));
+        return;
+      }
+      setCustomizedIds((prev) => {
+        const next = new Set(prev);
+        next.add(job.id);
+        customizedIdsRef.current = next;
+        return next;
+      });
+      useToastStore.getState().success(t('batchQueue.optionsUpdated'));
+      setEditJob(null);
+    } catch (err) {
+      useToastStore.getState().error(err instanceof Error ? err.message : String(err));
+    }
   };
 
   /**
@@ -1038,6 +1139,12 @@ export default function BatchQueue() {
           </FilterRow>
         )}
         {settingsHardwareAcceleration && <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>}
+        {(jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED) || batchStarted) &&
+          (batchStarted ? (
+            <LockedAlert severity="warning">{t('batchQueue.optionsLockedAlert')}</LockedAlert>
+          ) : (
+            <AccelAlert severity="info">{t('batchQueue.optionsEditableAlert')}</AccelAlert>
+          ))}
         {jobs.length === 0 ? (
           <EmptyText color="text.secondary">{t('batchQueue.empty')}</EmptyText>
         ) : visibleJobs.length === 0 ? (
@@ -1061,6 +1168,9 @@ export default function BatchQueue() {
                       progress={progress[job.id]}
                       onRemove={(id) => window.electronAPI.queueRemove(id)}
                       onRetry={handleRetry}
+                      onEditOptions={handleEditOptions}
+                      editLocked={batchStarted}
+                      customized={customizedIds.has(job.id)}
                     />
                   ))}
                 </Stack>
@@ -1104,6 +1214,15 @@ export default function BatchQueue() {
         cancelLabel={t('batchQueue.dialogCancel')}
         onClose={() => setCancelConfirmOpen(false)}
         onConfirm={handleCancelAllConfirm}
+      />
+
+      <QueueJobOptionsDialog
+        key={editJob?.id ?? 'none'}
+        open={editJob !== null}
+        job={editJob}
+        defaults={{ videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat }}
+        onSave={handleEditSave}
+        onClose={() => setEditJob(null)}
       />
     </Box>
   );

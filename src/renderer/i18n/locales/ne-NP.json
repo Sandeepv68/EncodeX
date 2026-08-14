@@ -285,14 +285,14 @@
     "audioEnabledHint": "कट आउटपुटमा अडियो ट्र्याक समावेश गर्नुहोस्। आवाज बिना भिडियो बनाउन अनचेक गर्नुहोस्।"
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "चलाउनुहोस्",
+    "pause": "पज",
+    "stop": "रोक्नुहोस्",
+    "mute": "म्युट गर्नुहोस्",
+    "unmute": "आवाज सुनाउनुहोस्",
+    "seek": "खोज्नुहोस्",
+    "playbackTime": "प्लेब्याक समय",
+    "videoPlayer": "भिडियो प्लेयर"
   },
   "batchQueue": {
     "title": "ब्याच कतार",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "HW एक्सेल मोड",
     "encodingOptions": "एन्कोडिङ विकल्पहरू",
     "container": "कन्टेनर",
-    "containerAuto": "स्वचालित (स्रोत)"
+    "containerAuto": "स्वचालित (स्रोत)",
+    "optionsEditableAlert": "कतारमा कामहरू हुँदासम्म विकल्पहरू परिवर्तन गर्न सकिन्छ।",
+    "optionsLockedAlert": "ब्याच चलिरहँदा विकल्पहरू लक हुन्छन्।",
+    "editOptions": "विकल्पहरू सम्पादन गर्नुहोस्",
+    "optionsLocked": "ब्याच चलिरहँदा विकल्पहरू लक हुन्छन्",
+    "jobCustomized": "यो कामले अनुकूलित विकल्पहरू प्रयोग गर्दछ",
+    "editOptionsTitle": "{{file}} का लागि विकल्पहरू सम्पादन गर्नुहोस्",
+    "editOptionsSave": "परिवर्तनहरू सुरक्षित गर्नुहोस्",
+    "optionsUpdated": "कामका विकल्पहरू अद्यावधिक भए",
+    "outputCollision": "कतारको अर्को कामले पहिले नै त्यो आउटपुट पथ प्रयोग गरिसकेको छ।",
+    "outputCollisionSkipped": "{{count}} काम छोडियो – नयाँ आउटपुटले अर्को कामको फाइल अधिलेखन गर्नेछ ({{names}})",
+    "optionsUpdateFailed": "यो काम अब सम्पादनयोग्य छैन।"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "रूपान्तरण प्रगति",
     "time": "समय",
     "speed": "गति",
     "eta": "अनुमानित समय"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "खाली गर्नुहोस्",
     "download": "TXT को रूपमा डाउनलोड गर्नुहोस्",
-    "filter": "Filter by level",
+    "filter": "स्तर अनुसार फिल्टर गर्नुहोस्",
     "levelAll": "सबै",
     "levelDebug": "डिबग",
     "levelInfo": "जानकारी",

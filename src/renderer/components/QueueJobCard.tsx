@@ -58,6 +58,8 @@ import {
   faGripVertical,
   faChevronUp,
   faChevronDown,
+  faPencil,
+  faSliders,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ErrorBoundary } from './ErrorBoundary';
@@ -134,6 +136,9 @@ export function QueueJobCardContent({
   progress,
   onRemove,
   onRetry,
+  onEditOptions,
+  editLocked,
+  customized,
   dragOverlay,
   handleProps,
 }: QueueJobCardProps & { handleProps?: DragHandleProps }) {
@@ -295,6 +300,27 @@ export function QueueJobCardContent({
                   </DragHandleButton>
                 </Tooltip>
               )}
+              {job.status === QUEUE_STATUS.QUEUED && onEditOptions && (
+                <Tooltip title={editLocked ? t('batchQueue.optionsLocked') : t('batchQueue.editOptions')}>
+                  <span>
+                    <IconButton
+                      size="small"
+                      aria-label={t('batchQueue.editOptions')}
+                      disabled={editLocked}
+                      onClick={() => onEditOptions(job)}
+                    >
+                      <FontAwesomeIcon icon={faPencil} />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              )}
+              {customized && (
+                <Tooltip title={t('batchQueue.jobCustomized')}>
+                  <IconButton size="small" aria-label={t('batchQueue.jobCustomized')} color="primary" sx={{ pointerEvents: 'none' }}>
+                    <FontAwesomeIcon icon={faSliders} />
+                  </IconButton>
+                </Tooltip>
+              )}
               <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
               {job.status === QUEUE_STATUS.RUNNING && job.paused && (
                 <StatusChip label={t('batchQueue.paused')} color="info" variant="outlined" data-testid="queue-job-paused-badge" />
@@ -406,7 +432,7 @@ export function QueueJobCardContent({
  * @param {QueueJobCardProps} props - Component props.
  * @returns {JSX.Element} The sortable job card.
  */
-export default function QueueJobCard({ job, progress, onRemove, onRetry }: QueueJobCardProps) {
+export default function QueueJobCard({ job, progress, onRemove, onRetry, onEditOptions, editLocked, customized }: QueueJobCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({
     id: job.id,
     disabled: job.status !== QUEUE_STATUS.QUEUED,
@@ -426,7 +452,16 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry }: Queue
         willChange: isDragActive ? 'transform' : undefined,
       }}
     >
-      <QueueJobCardContent job={job} progress={progress} onRemove={onRemove} onRetry={onRetry} handleProps={{ attributes, listeners }} />
+      <QueueJobCardContent
+        job={job}
+        progress={progress}
+        onRemove={onRemove}
+        onRetry={onRetry}
+        onEditOptions={onEditOptions}
+        editLocked={editLocked}
+        customized={customized}
+        handleProps={{ attributes, listeners }}
+      />
     </JobCard>
   );
 }

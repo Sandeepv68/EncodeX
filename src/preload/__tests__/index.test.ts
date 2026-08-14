@@ -84,6 +84,8 @@ describe('preload', () => {
     ['queueSetConcurrency', IPC.QUEUE_SET_CONCURRENCY, [3]],
     ['queueSetWhenDone', IPC.QUEUE_SET_WHEN_DONE, [{ enabled: true, action: 'shutdown', force: false }]],
     ['queueMoveTo', IPC.QUEUE_MOVE_TO, ['id-1', 2]],
+    ['queueUpdateOptions', IPC.QUEUE_UPDATE_OPTIONS, ['id-1', { videoCodec: 'libx265' }, '/tmp/new.mp4']],
+    ['queueUpdateOptions', IPC.QUEUE_UPDATE_OPTIONS, ['id-1', { videoCodec: 'libx265' }, undefined]],
     ['queuePause', IPC.QUEUE_PAUSE, []],
     ['queueResume', IPC.QUEUE_RESUME, []],
     ['queueStart', IPC.QUEUE_START, []],

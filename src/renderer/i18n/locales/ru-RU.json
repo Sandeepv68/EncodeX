@@ -285,14 +285,14 @@
     "audioEnabledHint": "Включает аудиодорожку в выходной файл обрезки. Снимите флажок, чтобы получить видео без звука."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Воспроизвести",
+    "pause": "Пауза",
+    "stop": "Остановить",
+    "mute": "Отключить звук",
+    "unmute": "Включить звук",
+    "seek": "Искать",
+    "playbackTime": "Время воспроизведения",
+    "videoPlayer": "Видеоплеер"
   },
   "batchQueue": {
     "title": "Пакетная очередь",
@@ -377,10 +377,21 @@
     "optionHwaccelMode": "Режим аппаратного ускорения",
     "encodingOptions": "Параметры кодирования",
     "container": "Контейнер",
-    "containerAuto": "Авто (источник)"
+    "containerAuto": "Авто (источник)",
+    "optionsEditableAlert": "Параметры можно изменить, пока задания находятся в очереди.",
+    "optionsLockedAlert": "Параметры заблокированы, пока выполняется пакет.",
+    "editOptions": "Изменить параметры",
+    "optionsLocked": "Параметры заблокированы, пока выполняется пакет",
+    "jobCustomized": "Для этого задания используются свои параметры",
+    "editOptionsTitle": "Изменить параметры для {{file}}",
+    "editOptionsSave": "Сохранить изменения",
+    "optionsUpdated": "Параметры задания обновлены",
+    "outputCollision": "Другое задание в очереди уже использует этот путь вывода.",
+    "outputCollisionSkipped": "Пропущено заданий: {{count}} – новый результат перезапишет файл другого задания ({{names}})",
+    "optionsUpdateFailed": "Это задание больше нельзя изменить."
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Ход конвертации",
     "time": "Время",
     "speed": "Скорость",
     "eta": "Осталось"
@@ -408,7 +419,7 @@
   "logs": {
     "clear": "Очистить",
     "download": "Скачать как TXT",
-    "filter": "Filter by level",
+    "filter": "Фильтр по уровню",
     "levelAll": "ВСЕ",
     "levelDebug": "ОТЛАДКА",
     "levelInfo": "ИНФО",
