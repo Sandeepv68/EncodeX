@@ -50,6 +50,7 @@
  */
 
 import { Box, Checkbox, FormControlLabel, Grid, MenuItem, Tooltip } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
@@ -138,6 +139,20 @@ import {
  *   dismissed, shows the hardware-acceleration info alert inside the box.
  * @returns {JSX.Element} The controls paper.
  */
+
+/**
+ * Top margin that vertically aligns a label-less control (icon button or
+ * checkbox) with the input of a labeled FieldBox. Labeled fields are taller
+ * than the controls because of the FieldLabel caption above the input; nudging
+ * the label-less siblings down by the caption block height centers them on the
+ * field instead of the whole label+field block.
+ * @param {Theme} theme - The MUI theme (provides spacing/typography units).
+ * @returns {string} A CSS calc() expression matching the FieldLabel height.
+ */
+function unlabeledControlOffset(theme: Theme): string {
+  return `calc(${theme.spacing(0.5)} + ${theme.typography.pxToRem(12)} * 1.2)`;
+}
+
 export default function BatchControls({
   operation,
   onOperationChange,
@@ -337,8 +352,8 @@ export default function BatchControls({
           </FieldBox>
         </Grid>
         <Grid size={12}>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: 1 }}>
-            <FieldBox sx={{ flex: '0 0 16.6667%', minWidth: 0 }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1 }}>
+            <FieldBox sx={{ flex: '0 0 16.6667%', minWidth: 220 }}>
               <FieldLabel htmlFor="batch-output-dir">{t('batchQueue.outputDir')}</FieldLabel>
               <OutputDirField
                 id="batch-output-dir"
@@ -352,12 +367,12 @@ export default function BatchControls({
               />
             </FieldBox>
             <Tooltip title={t('batchQueue.browse')}>
-              <OutlinedIconButton size="small" aria-label={t('batchQueue.browse')} onClick={onBrowseDir}>
+              <OutlinedIconButton size="small" aria-label={t('batchQueue.browse')} onClick={onBrowseDir} sx={{ mt: unlabeledControlOffset }}>
                 <FontAwesomeIcon icon={faFolderOpen} />
               </OutlinedIconButton>
             </Tooltip>
             <FormControlLabel
-              sx={{ whiteSpace: 'nowrap', ml: 1 }}
+              sx={{ whiteSpace: 'nowrap', ml: 1, mt: unlabeledControlOffset }}
               control={
                 <Checkbox
                   size="small"
@@ -370,7 +385,7 @@ export default function BatchControls({
               label={t('batchQueue.overwrite')}
             />
             <FormControlLabel
-              sx={{ whiteSpace: 'nowrap', ml: 1 }}
+              sx={{ whiteSpace: 'nowrap', ml: 1, mt: unlabeledControlOffset }}
               control={
                 <Checkbox
                   size="small"
@@ -404,7 +419,7 @@ export default function BatchControls({
                   </WhenDoneSelect>
                 </FieldBox>
                 <FormControlLabel
-                  sx={{ whiteSpace: 'nowrap' }}
+                  sx={{ whiteSpace: 'nowrap', mt: unlabeledControlOffset }}
                   control={
                     <Checkbox
                       size="small"
