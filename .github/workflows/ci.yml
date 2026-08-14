@@ -180,7 +180,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: dist-ubuntu
-          path: .
+          path: dist
       - run: npm ci
       - name: Install xvfb
         run: sudo apt-get update && sudo apt-get install -y xvfb
@@ -201,7 +201,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: dist-ubuntu
-          path: .
+          path: dist
       - run: npm ci
       - name: Install xvfb
         run: sudo apt-get update && sudo apt-get install -y xvfb
