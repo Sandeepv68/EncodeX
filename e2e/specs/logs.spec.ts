@@ -73,8 +73,6 @@ describe.runIf(IS_E2E)('Logs page', () => {
     await expect.poll(() => page.getByText('export me').count()).toBeGreaterThan(0);
 
     await page.locator('[data-testid="logs-download"]').click();
-    await expect
-      .poll(() => page.locator('[role="alert"]').filter({ hasText: 'Logs downloaded' }).count())
-      .toBeGreaterThan(0);
+    await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'Logs downloaded' }).count()).toBeGreaterThan(0);
   });
 });

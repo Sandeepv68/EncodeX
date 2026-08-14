@@ -3,20 +3,33 @@ name: CI
 on:
   push:
     branches: [main, master]
+    paths-ignore:
+      - 'docs/**'
+      - 'assets/**'
+      - '*.md'
   pull_request:
     branches: [main, master]
+    paths-ignore:
+      - 'docs/**'
+      - 'assets/**'
+      - '*.md'
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 env:
   NODE_VERSION: 22
 
 jobs:
   format-check:
-    name: Stage I - Check code formatting
+    name: Check - Code formatting
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,22 +39,76 @@ jobs:
       - run: npm ci
       - run: npm run format:check
 
-  validate-locales:
-    name: Stage II - Validate locales
-    needs: [format-check]
+  lint:
+    name: Check - ESLint (a11y)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  typecheck:
+    name: Check - TypeScript typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+
+  validate-locales:
+    name: Check - Validate locales
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
       - run: npm run validate:locales
 
-  build:
-    name: Stage III - Run production build
-    needs: [format-check, validate-locales]
+  audit:
+    name: Check - Dependency audit
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Non-blocking until electron-builder is upgraded (see
+    # docs/ci-improvements-plan.md, Open Item O1). Flip continue-on-error
+    # to false once `npm audit --audit-level=high` exits 0.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: npm audit
+        run: npm audit --audit-level=high
+
+  build:
+    name: Build - ${{ matrix.os }}
+    needs: [format-check, lint, typecheck, validate-locales]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu
+            runner: ubuntu-latest
+          - os: windows
+            runner: windows-latest
+          - os: macos
+            runner: macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -51,14 +118,17 @@ jobs:
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-artifact@v4
+        if: matrix.os == 'ubuntu'
         with:
-          name: dist
-          path: dist/
+          name: dist-ubuntu
+          path: dist
+          if-no-files-found: error
 
   test-unit:
-    name: "Stage IV - Test : Unit Tests"
-    needs: [build]
+    name: Test - Unit Tests (coverage)
+    needs: [format-check, lint, typecheck, validate-locales]
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -72,11 +142,21 @@ jobs:
         with:
           name: coverage
           path: coverage/
+          if-no-files-found: warn
+      - name: Upload coverage to Codecov
+        if: env.CODECOV_TOKEN != ''
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage/lcov.info
+          fail_ci_if_error: false
 
   test-integration:
-    name: "Stage IV - Test : Integration Tests"
-    needs: [build]
+    name: Test - Integration Tests
+    needs: [format-check, lint, typecheck, validate-locales]
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -87,33 +167,43 @@ jobs:
       - run: npm run test:integration
 
   test-e2e:
-    name: "Stage V - Test : E2E Automation tests"
-    needs: [test-unit, test-integration]
+    name: Test - E2E Automation
+    needs: [build, test-unit, test-integration]
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-ubuntu
+          path: .
       - run: npm ci
       - name: Install xvfb
         run: sudo apt-get update && sudo apt-get install -y xvfb
       - name: Run e2e tests
-        run: xvfb-run --auto-servernum npm run test:e2e
+        run: xvfb-run --auto-servernum npm run test:e2e:ci
 
   test-e2e-real:
-    name: "Stage V - Test : E2E Production Scenario"
-    needs: [test-unit, test-integration]
+    name: Test - E2E Production Scenario
+    needs: [build, test-unit, test-integration]
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-ubuntu
+          path: .
       - run: npm ci
       - name: Install xvfb
         run: sudo apt-get update && sudo apt-get install -y xvfb
       - name: Run real conversion e2e
-        run: xvfb-run --auto-servernum npm run test:e2e:real
+        run: xvfb-run --auto-servernum npm run test:e2e:real:ci

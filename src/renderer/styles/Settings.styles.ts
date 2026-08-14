@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, TextField, Typography } from '@mui/material';
+import type { ElementType } from 'react';
 
 export const SettingsRoot = styled(Box)(({ theme }) => ({ display: 'flex', flexDirection: 'column', gap: theme.spacing(2) }));
 
@@ -10,7 +11,7 @@ export const SettingsHeader = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(1),
 }));
 
-export const SettingsTitle = styled(Typography)({ display: 'flex', alignItems: 'center', fontWeight: 600 });
+export const SettingsTitle = styled(Typography)<{ component?: ElementType }>({ display: 'flex', alignItems: 'center', fontWeight: 600 });
 
 export const SettingsSection = styled(Box)(({ theme }) => ({
   display: 'flex',

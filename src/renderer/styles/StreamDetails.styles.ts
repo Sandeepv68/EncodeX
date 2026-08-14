@@ -1,7 +1,8 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Chip, Paper, Typography } from '@mui/material';
+import type { ElementType } from 'react';
 
-export const StreamTitle = styled(Typography)(({ theme }) => ({
+export const StreamTitle = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   marginBottom: theme.spacing(1),
   fontSize: theme.typography.pxToRem(14),
   fontWeight: 600,

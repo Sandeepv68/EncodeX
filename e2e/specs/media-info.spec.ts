@@ -56,9 +56,7 @@ describe.runIf(IS_E2E)('Media Info page', () => {
     await expect.poll(() => session.page.locator('body').textContent()).toContain('video.mp4');
     await expect.poll(() => session.page.locator('body').textContent()).toContain('h264');
     await expect.poll(() => session.page.locator('body').textContent()).toContain('aac');
-    await expect
-      .poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Media info loaded' }).count())
-      .toBeGreaterThan(0);
+    await expect.poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Media info loaded' }).count()).toBeGreaterThan(0);
   });
 
   it('analyzes an image and renders EXIF data', async () => {

@@ -60,9 +60,7 @@ describe.runIf(IS_E2E)('Convert page', () => {
     const zone = session.page.locator('[data-testid="file-drop-zone"]');
     await zone.focus();
     await expect
-      .poll(() =>
-        session.page.evaluate(() => document.activeElement?.getAttribute('data-testid') ?? null),
-      )
+      .poll(() => session.page.evaluate(() => document.activeElement?.getAttribute('data-testid') ?? null))
       .toBe('file-drop-zone');
     await session.page.keyboard.press('Enter');
     await expect.poll(() => session.page.locator('[data-testid="convert-input-file"]').textContent()).toContain('video.mp4');
@@ -111,9 +109,7 @@ describe.runIf(IS_E2E)('Convert page', () => {
     await expect.poll(() => session.page.locator('[data-testid="convert-output"] input').inputValue()).toBe(OUTPUT);
 
     await session.page.locator('[data-testid="convert-start"]').click();
-    await expect
-      .poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Conversion complete' }).count())
-      .toBeGreaterThan(0);
+    await expect.poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Conversion complete' }).count()).toBeGreaterThan(0);
   });
 
   it('shows live progress while a conversion runs', async () => {
@@ -129,9 +125,7 @@ describe.runIf(IS_E2E)('Convert page', () => {
     await expect.poll(() => session.page.locator('body').textContent()).toContain('42.5%');
 
     await mockApi.resolveConvert(session.page);
-    await expect
-      .poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Conversion complete' }).count())
-      .toBeGreaterThan(0);
+    await expect.poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Conversion complete' }).count()).toBeGreaterThan(0);
     await expect.poll(() => session.page.locator('[data-testid="convert-pause"]').count()).toBe(0);
   });
 

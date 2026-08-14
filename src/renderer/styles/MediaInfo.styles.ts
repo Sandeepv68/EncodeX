@@ -1,8 +1,9 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography, Paper } from '@mui/material';
+import type { ElementType } from 'react';
 import { SHADOWS } from '../colors';
 
-export const PageTitle = styled(Typography)(({ theme }) => ({
+export const PageTitle = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   fontWeight: 600,
@@ -24,4 +25,4 @@ export const InfoPaper = styled(Paper)(({ theme }) => ({
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
-export const InfoTitle = styled(Typography)(({ theme }) => ({ marginBottom: theme.spacing(1) }));
+export const InfoTitle = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({ marginBottom: theme.spacing(1) }));

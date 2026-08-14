@@ -75,7 +75,10 @@ export default function EllipsisTooltip({ title, children }: EllipsisTooltipProp
     }
   };
 
-  const child = cloneElement(children, { ref, tabIndex: overflowing ? 0 : -1 });
+  const child = cloneElement(
+    children as React.ReactElement<Partial<{ ref?: React.Ref<HTMLElement> } & React.HTMLAttributes<HTMLElement>>>,
+    { ref, tabIndex: overflowing ? 0 : -1 },
+  );
 
   return (
     <Box

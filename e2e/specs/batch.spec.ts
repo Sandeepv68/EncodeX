@@ -64,9 +64,7 @@ describe.runIf(IS_E2E)('Batch Queue page', () => {
     await expect.poll(() => page.getByRole('button', { name: 'Remove' }).count()).toBe(2);
     await expect.poll(() => page.getByText('clip_a.mp4').count()).toBeGreaterThan(0);
     await expect.poll(() => page.getByText('clip_b.mp4').count()).toBeGreaterThan(0);
-    await expect
-      .poll(() => page.locator('[role="alert"]').filter({ hasText: 'Added 2 file(s) to the queue' }).count())
-      .toBeGreaterThan(0);
+    await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'Added 2 file(s) to the queue' }).count()).toBeGreaterThan(0);
   });
 
   it('renders jobs pushed through queue-added events', async () => {
@@ -101,9 +99,7 @@ describe.runIf(IS_E2E)('Batch Queue page', () => {
     await page.locator('[data-testid="confirm-confirm"]').click();
 
     await expect.poll(() => page.getByRole('button', { name: 'Remove' }).count()).toBe(0);
-    await expect
-      .poll(() => page.locator('[role="alert"]').filter({ hasText: 'All jobs cancelled' }).count())
-      .toBeGreaterThan(0);
+    await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'All jobs cancelled' }).count()).toBeGreaterThan(0);
   });
 
   it('filters the job list by status', async () => {
@@ -122,10 +118,7 @@ describe.runIf(IS_E2E)('Batch Queue page', () => {
 
   it('removes a single job with the Remove button', async () => {
     const { page } = session;
-    await seedJobs(page, [
-      makeJob({}),
-      makeJob({ id: 'job-2', input: '/media/clip_b.mp4', output: '/media/clip_b_converted.mp4' }),
-    ]);
+    await seedJobs(page, [makeJob({}), makeJob({ id: 'job-2', input: '/media/clip_b.mp4', output: '/media/clip_b_converted.mp4' })]);
     await expect.poll(() => page.getByRole('button', { name: 'Remove' }).count()).toBe(2);
 
     await page.getByRole('button', { name: 'Remove' }).first().click();
@@ -136,10 +129,7 @@ describe.runIf(IS_E2E)('Batch Queue page', () => {
 
   it('reorders queued jobs with the drag handle', async () => {
     const { page } = session;
-    await seedJobs(page, [
-      makeJob({ id: 'job-a', input: '/media/clip_a.mp4' }),
-      makeJob({ id: 'job-b', input: '/media/clip_b.mp4' }),
-    ]);
+    await seedJobs(page, [makeJob({ id: 'job-a', input: '/media/clip_a.mp4' }), makeJob({ id: 'job-b', input: '/media/clip_b.mp4' })]);
     await expect.poll(() => page.getByRole('button', { name: 'Drag to reorder' }).count()).toBe(2);
 
     const handle = page.getByRole('button', { name: 'Drag to reorder' }).first();

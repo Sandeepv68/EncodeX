@@ -1,7 +1,8 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography } from '@mui/material';
+import type { ElementType } from 'react';
 
-export const ExifTitle = styled(Typography)(({ theme }) => ({
+export const ExifTitle = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   fontSize: theme.typography.pxToRem(14),
   fontWeight: 600,
   marginBottom: theme.spacing(1),

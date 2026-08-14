@@ -129,9 +129,7 @@ describe.runIf(IS_E2E)('Video Cut page', () => {
     await selectVideo(page);
     await setOutput(page);
     await page.locator('[data-testid="video-cut-cut"]').click();
-    await expect
-      .poll(() => page.locator('[role="alert"]').filter({ hasText: 'Video cut successfully' }).count())
-      .toBeGreaterThan(0);
+    await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'Video cut successfully' }).count()).toBeGreaterThan(0);
   });
 
   it('shows live progress and cancels the running cut via the confirm dialog', async () => {

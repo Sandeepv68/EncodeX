@@ -1,6 +1,7 @@
 import { styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { Box, Card, CardActionArea, CardContent, Typography } from '@mui/material';
+import type { ElementType } from 'react';
 import { SHADOWS, OVERLAY_COLORS } from '../colors';
 
 const fadeSlideUp = (theme: Theme) => keyframes`
@@ -13,7 +14,7 @@ const fadeInScale = keyframes`
   to { opacity: 1; transform: scale(1); }
 `;
 
-export const WelcomeTitle = styled(Typography)(({ theme }) => ({
+export const WelcomeTitle = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -92,7 +93,7 @@ export const FeatureIconBox = styled(Box)(({ theme }) => ({
   justifyContent: 'flex-start',
 }));
 
-export const CardTitleText = styled(Typography)(({ theme }) => ({
+export const CardTitleText = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   marginBottom: theme.spacing(0.5),
   textAlign: 'start',
 }));

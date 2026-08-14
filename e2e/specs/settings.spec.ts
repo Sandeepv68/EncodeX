@@ -55,9 +55,7 @@ describe.runIf(IS_E2E)('Settings page', () => {
     const { page } = session;
     await page.locator('[data-testid="settings-always-on-top"]').click();
     await expect.poll(() => page.locator('[data-testid="settings-always-on-top"]').isChecked()).toBe(true);
-    await expect
-      .poll(() => mockApi.get(page).then((s) => s.windowCalls))
-      .toContain('always-on-top:true');
+    await expect.poll(() => mockApi.get(page).then((s) => s.windowCalls)).toContain('always-on-top:true');
   });
 
   it('toggles launch at startup and forwards it to the main process', async () => {

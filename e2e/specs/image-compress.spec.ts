@@ -51,9 +51,7 @@ describe.runIf(IS_E2E)('Image Compress page', () => {
     const formatOption = session.page.locator('[role="option"]').filter({ hasText: 'WebP' }).first();
     await formatOption.waitFor({ timeout: 5000 });
     await formatOption.click();
-    await expect
-      .poll(() => session.page.locator('[data-testid="image-compress-format"] [role="combobox"]').innerText())
-      .toContain('WebP');
+    await expect.poll(() => session.page.locator('[data-testid="image-compress-format"] [role="combobox"]').innerText()).toContain('WebP');
   });
 
   it('changes quality and scale', async () => {

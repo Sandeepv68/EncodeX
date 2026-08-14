@@ -28,6 +28,12 @@ export default defineConfig({
         'src/renderer/global.css',
         'src/renderer/main.tsx',
       ],
+      thresholds: {
+        statements: 85,
+        branches: 75,
+        functions: 80,
+        lines: 85,
+      },
     },
   },
 });

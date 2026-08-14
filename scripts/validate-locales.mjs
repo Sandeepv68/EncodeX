@@ -92,6 +92,4 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log(
-  `Locale validation passed: ${files.length - 1} locale(s) match ${BASE_LOCALE} key parity`,
-);
+console.log(`Locale validation passed: ${files.length - 1} locale(s) match ${BASE_LOCALE} key parity`);

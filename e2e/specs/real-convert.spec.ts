@@ -44,9 +44,7 @@ describe.runIf(IS_REAL)('Real conversion (Tier B)', () => {
     const { page } = session;
 
     await page.locator('[data-testid="file-drop-zone"]').click();
-    await expect
-      .poll(() => page.locator('[data-testid="convert-input-file"]').textContent(), { timeout: 30000 })
-      .toContain('input.mp4');
+    await expect.poll(() => page.locator('[data-testid="convert-input-file"]').textContent(), { timeout: 30000 }).toContain('input.mp4');
 
     await page.locator('[data-testid="convert-output"] button').click();
     await expect.poll(() => page.locator('[data-testid="convert-output"] input').inputValue(), { timeout: 30000 }).toBe(outputPath);

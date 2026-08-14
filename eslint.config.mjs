@@ -16,9 +16,7 @@ function asWarn(value) {
   return Array.isArray(value) ? ['warn', ...value.slice(1)] : 'warn';
 }
 
-const jsxA11yWarn = Object.fromEntries(
-  Object.entries(jsxA11y.configs.recommended.rules).map(([rule, value]) => [rule, asWarn(value)]),
-);
+const jsxA11yWarn = Object.fromEntries(Object.entries(jsxA11y.configs.recommended.rules).map(([rule, value]) => [rule, asWarn(value)]));
 
 export default [
   {

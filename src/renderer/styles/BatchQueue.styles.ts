@@ -1,8 +1,9 @@
 import { styled } from '@mui/material/styles';
 import { Typography, Stack, Box, Chip, TextField, Alert } from '@mui/material';
+import type { ElementType } from 'react';
 import { COLORS, OVERLAY_COLORS, SHADOWS } from '../colors';
 
-export const PageTitle = styled(Typography)(({ theme }) => ({
+export const PageTitle = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   fontWeight: 600,

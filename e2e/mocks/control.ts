@@ -57,8 +57,7 @@ export const mockApi = {
   resolveConvert: (page: Page) => invoke(page, 'resolveConvert', []),
   rejectConvert: (page: Page) => invoke(page, 'rejectConvert', []),
   setQueueJobs: (page: Page, v: QueueJob[]) => invoke(page, 'setQueueJobs', [v]),
-  setQueueState: (page: Page, v: Partial<{ paused: boolean; concurrency: number }>) =>
-    invoke(page, 'setQueueState', [v]),
+  setQueueState: (page: Page, v: Partial<{ paused: boolean; concurrency: number }>) => invoke(page, 'setQueueState', [v]),
   setPlayerFrame: (page: Page, v: PlayerFrame | null) => invoke(page, 'setPlayerFrame', [v]),
   setWaveform: (page: Page, v: WaveformData | null) => invoke(page, 'setWaveform', [v]),
   setThumbnails: (page: Page, v: ThumbnailStrip | null) => invoke(page, 'setThumbnails', [v]),
@@ -71,12 +70,7 @@ export const mockApi = {
  * Emits a conversion-progress event shaped like the real `onConversionProgress`
  * subscription payload: `{ input, output, progress }`.
  */
-export function emitConversionProgress(
-  page: Page,
-  input: string,
-  output: string,
-  progress: Partial<ConversionProgress>,
-) {
+export function emitConversionProgress(page: Page, input: string, output: string, progress: Partial<ConversionProgress>) {
   return mockApi.emit(page, 'conversion-progress', {
     input,
     output,

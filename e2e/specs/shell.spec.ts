@@ -73,17 +73,13 @@ describe.runIf(IS_E2E)('Shell', () => {
   });
 
   it('has a functioning contextBridge', async () => {
-    const isFunction = await session.page.evaluate(
-      () => typeof (window as any).electronAPI.selectFile === 'function',
-    );
+    const isFunction = await session.page.evaluate(() => typeof (window as any).electronAPI.selectFile === 'function');
     expect(isFunction).toBe(true);
   });
 
   it('shows all 9 drawer navigation items', async () => {
     for (const [id] of NAV_ROUTES) {
-      await expect
-        .poll(() => session.page.locator(`[data-testid="nav-item-${id}"]`).count())
-        .toBe(1);
+      await expect.poll(() => session.page.locator(`[data-testid="nav-item-${id}"]`).count()).toBe(1);
     }
   });
 
@@ -96,9 +92,7 @@ describe.runIf(IS_E2E)('Shell', () => {
   });
 
   it('does not show the error boundary on initial load', async () => {
-    const hasError = await session.page.evaluate(
-      () => document.body.textContent?.includes('Something went wrong') ?? false,
-    );
+    const hasError = await session.page.evaluate(() => document.body.textContent?.includes('Something went wrong') ?? false);
     expect(hasError).toBe(false);
   });
 

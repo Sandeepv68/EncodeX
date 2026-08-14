@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography, Paper } from '@mui/material';
+import type { ElementType } from 'react';
 import { SHADOWS } from '../colors';
 
 export const PageRoot = styled(Box)<{ hasAside?: boolean }>(({ theme, hasAside }) => ({
@@ -19,7 +20,7 @@ export const PageRoot = styled(Box)<{ hasAside?: boolean }>(({ theme, hasAside }
 
 export const PageBody = styled(Box)({ flex: 1, minWidth: 0 });
 
-export const PageTitle = styled(Typography)(({ theme }) => ({
+export const PageTitle = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   fontWeight: 600,

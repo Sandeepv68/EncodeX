@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, Paper, Typography } from '@mui/material';
+import type { ElementType } from 'react';
 import { SHADOWS } from '../colors';
 
 /** Flex-growing wrapper for a single labeled form field. @const FieldBox */
@@ -48,7 +49,7 @@ export const SectionCard = styled(Paper)(({ theme }) => ({
 }));
 
 /** Bold section heading rendered inside a SectionCard. @const SectionTitle */
-export const SectionTitle = styled(Typography)(({ theme }) => ({
+export const SectionTitle = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   fontWeight: theme.typography.fontWeightBold,
 }));
 
