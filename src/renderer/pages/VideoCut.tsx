@@ -61,7 +61,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
-import { SectionHeader, FileChip, SectionsStack, HeadingGroup, AccelAlert } from '../styles/VideoCut.styles';
+import { SectionHeader, FileChip, SectionsStack, HeadingGroup, AccelAlert, ActionRow } from '../styles/VideoCut.styles';
 import { FieldLabel, ToggleRow, SectionCard, SectionTitle } from '../styles/form.styles';
 import {
   LOG_ARROW,
@@ -669,10 +669,7 @@ export default function VideoCut() {
           </SectionTitle>
 
           {settingsHardwareAcceleration && !accelAlertDismissed && (
-            <AccelAlert
-              severity="info"
-              onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL)}
-            >
+            <AccelAlert severity="info" onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL)}>
               {t('convert.hardwareAccelAlert')}
             </AccelAlert>
           )}
@@ -791,7 +788,7 @@ export default function VideoCut() {
             <InfoTooltip title={t('videoCut.useDurationHint')} />
           </ToggleRow>
 
-          <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+          <ActionRow direction="row" spacing={1} useFlexGap>
             <Tooltip title={t('videoCut.cutHint')} arrow>
               <span>
                 <Button
@@ -849,7 +846,7 @@ export default function VideoCut() {
                 {t('videoCut.cancelJob')}
               </Button>
             )}
-          </Stack>
+          </ActionRow>
 
           {progress && isConverting && (
             <ErrorBoundary fallback={null}>

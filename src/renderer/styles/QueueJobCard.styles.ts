@@ -51,6 +51,17 @@ export const JobNameText = styled(Typography)({
   minWidth: 0,
 });
 
+/** Wrapper letting the job name shrink inside the header row. @const JobTitleWrapper */
+export const JobTitleWrapper = styled(Box)({
+  flex: '1 1 0',
+  minWidth: 0,
+});
+
+/** Non-interactive "customized" indicator icon. @const CustomizedIconButton */
+export const CustomizedIconButton = styled(IconButton)({
+  pointerEvents: 'none',
+});
+
 export const StatusChip = styled(Chip)(({ theme }) => ({
   borderRadius: theme.spacing(0.75),
   height: theme.typography.pxToRem(28),

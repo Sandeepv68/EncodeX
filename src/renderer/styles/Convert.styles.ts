@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Stack, Typography, Alert, Paper, Divider } from '@mui/material';
+import { Box, Stack, Typography, Alert, Paper, Divider, Button } from '@mui/material';
 import { COLORS, SHADOWS } from '../colors';
 
 /** Unboxed form section: heading + fields stacked with the card gap. @const PageSection */
@@ -20,6 +20,28 @@ export const CompatAlert = styled(Alert)(({}) => ({
 }));
 
 export const ActionStack = styled(Stack)({ flexWrap: 'wrap' });
+
+/** Centered loading-spinner container in the media-info preview. @const LoadingBox */
+export const LoadingBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  padding: theme.spacing(2),
+}));
+
+/** Selected input file shown beside the "change file" button. @const SelectedFileRow */
+export const SelectedFileRow = styled(Stack)({
+  alignItems: 'center',
+});
+
+/** Selected input file path, allowed to break onto multiple lines. @const SelectedFileName */
+export const SelectedFileName = styled(Typography)({
+  wordBreak: 'break-all',
+});
+
+/** "Show Preview" button aligned to the start of the section. @const ShowPreviewButton */
+export const ShowPreviewButton = styled(Button)({
+  alignSelf: 'flex-start',
+});
 
 export const PreviewPanel = styled(Paper)(({ theme }) => ({
   width: '100%',

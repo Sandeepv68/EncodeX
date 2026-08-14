@@ -42,6 +42,7 @@ import { useAudioExtractStore } from '../stores/audioExtractStore';
 import type { MediaStreamInfo } from '../../shared/types';
 import MediaPreview from '../components/MediaPreview';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
+import { SelectedFileName, ActionRow } from '../styles/AudioExtract.styles';
 import {
   LOG_ARROW,
   LOG_CODEC,
@@ -231,9 +232,7 @@ export default function AudioExtract() {
                 return (
                   <>
                     {before}
-                    <Box component="span" sx={{ fontWeight: 700 }}>
-                      {fileName(store.input)}
-                    </Box>
+                    <SelectedFileName component="span">{fileName(store.input)}</SelectedFileName>
                     {after}
                   </>
                 );
@@ -309,7 +308,7 @@ export default function AudioExtract() {
         </FieldBox>
       </Stack>
 
-      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+      <ActionRow direction="row" spacing={1} useFlexGap>
         <Button
           variant="contained"
           startIcon={<FontAwesomeIcon icon={faMusic} />}
@@ -339,7 +338,7 @@ export default function AudioExtract() {
             {t('audioExtract.cancel')}
           </Button>
         )}
-      </Stack>
+      </ActionRow>
 
       {store.progress && (
         <ErrorBoundary fallback={null}>

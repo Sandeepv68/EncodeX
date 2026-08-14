@@ -37,6 +37,11 @@ export const FilterRow = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
+/** ETA caption pushed to the far right of the filter row. @const FilterEta */
+export const FilterEta = styled(Typography)({
+  marginInlineStart: 'auto',
+});
+
 export const FilterChip = styled(Chip)(({ theme }) => ({
   borderRadius: theme.spacing(0.75),
   height: theme.typography.pxToRem(28),

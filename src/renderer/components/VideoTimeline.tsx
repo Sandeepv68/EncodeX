@@ -26,7 +26,7 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Checkbox, CircularProgress, Skeleton, Tooltip } from '@mui/material';
+import { Box, Checkbox, CircularProgress, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlassPlus, faMagnifyingGlassMinus, faVideo, faMusic, faGripVertical } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -35,8 +35,16 @@ import {
   TimelineTimeText,
   PreviewBadge,
   ZoomButton,
+  ZoomControls,
   TrackLabelPanel,
   TrackLabel,
+  VideoTrackLabel,
+  AudioTrackLabel,
+  TrackRow,
+  RulerSpacer,
+  TrackIconBox,
+  TrackSkeleton,
+  MoveIndicator,
   Viewport,
   Scroller,
   Ruler,
@@ -60,7 +68,6 @@ import {
   ScrollShadow,
   TIMELINE_LAYOUT,
 } from '../styles/VideoTimeline.styles';
-import { OVERLAY_COLORS } from '../colors';
 import { formatClockTime, formatStreamSummary } from '../utils/formatters';
 import type { DragKind, VideoTimelineProps } from './types';
 import {
@@ -598,7 +605,7 @@ export default function VideoTimeline({
         ) : (
           <Box />
         )}
-        <Box sx={{ display: 'flex', gap: 0.25 }}>
+        <ZoomControls>
           <ZoomButton
             size="small"
             aria-label={t('videoTimeline.zoomOut')}
@@ -615,24 +622,21 @@ export default function VideoTimeline({
           >
             <FontAwesomeIcon icon={faMagnifyingGlassPlus} />
           </ZoomButton>
-        </Box>
+        </ZoomControls>
       </TimelineToolbar>
-      <Box sx={{ display: 'flex' }}>
+      <TrackRow>
         <TrackLabelPanel>
-          <Box sx={{ height: TIMELINE_LAYOUT.RULER_HEIGHT }} />
+          <RulerSpacer />
           <Tooltip title={t('videoTimeline.videoTrack')} arrow placement="right">
-            <TrackLabel
-              data-testid="timeline-video-label"
-              sx={{ height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT, borderBottom: 1, borderColor: 'divider' }}
-            >
+            <VideoTrackLabel data-testid="timeline-video-label">
               <FontAwesomeIcon icon={faVideo} size="xs" />
-            </TrackLabel>
+            </VideoTrackLabel>
           </Tooltip>
-          <TrackLabel data-testid="timeline-audio-label" sx={{ height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT }}>
+          <AudioTrackLabel data-testid="timeline-audio-label">
             <Tooltip title={t('videoTimeline.audioTrack')} arrow placement="right">
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <TrackIconBox>
                 <FontAwesomeIcon icon={faMusic} size="xs" />
-              </Box>
+              </TrackIconBox>
             </Tooltip>
             <Tooltip title={t('videoTimeline.audioEnabledHint')} arrow placement="right">
               <Checkbox
@@ -647,9 +651,9 @@ export default function VideoTimeline({
                 }}
               />
             </Tooltip>
-          </TrackLabel>
+          </AudioTrackLabel>
         </TrackLabelPanel>
-        <Viewport ref={viewportRef} sx={{ flex: 1, minWidth: 0 }}>
+        <Viewport ref={viewportRef}>
           <Scroller
             ref={scrollerRef}
             data-testid="timeline-scroller"
@@ -670,12 +674,7 @@ export default function VideoTimeline({
             <Lane>
               <VideoTrack data-testid="timeline-video-track">
                 {thumbnailsLoading ? (
-                  <Skeleton
-                    variant="rectangular"
-                    data-testid="timeline-thumb-skeleton"
-                    animation="wave"
-                    sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
-                  />
+                  <TrackSkeleton variant="rectangular" data-testid="timeline-thumb-skeleton" animation="wave" />
                 ) : (
                   <>
                     {thumbnails && <style>{thumbMontageCss}</style>}
@@ -685,37 +684,16 @@ export default function VideoTimeline({
               </VideoTrack>
               <AudioTrack data-testid="timeline-audio-track" $width={Math.max(0, duration * zoom)}>
                 {waveformLoading ? (
-                  <Skeleton
-                    variant="rectangular"
-                    data-testid="timeline-waveform-skeleton"
-                    animation="wave"
-                    sx={{ position: 'absolute', top: 2, bottom: 2, left: 0, right: 0, borderRadius: 1 }}
-                  />
+                  <TrackSkeleton variant="rectangular" data-testid="timeline-waveform-skeleton" animation="wave" />
                 ) : (
                   waveformBars
                 )}
               </AudioTrack>
               <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: 0, width: startX }} />
               <KeptRegion data-kind="move" data-testid="timeline-kept-region" sx={{ left: startX, width: Math.max(0, endX - startX) }}>
-                <Box
-                  className="timeline-move-indicator"
-                  data-testid="timeline-move-indicator"
-                  sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    opacity: 0,
-                    transition: 'opacity 120ms ease',
-                    pointerEvents: 'none',
-                    backgroundColor: OVERLAY_COLORS.black45,
-                    color: OVERLAY_COLORS.white,
-                    borderRadius: '6px',
-                    padding: '6px',
-                  }}
-                >
+                <MoveIndicator className="timeline-move-indicator" data-testid="timeline-move-indicator">
                   <FontAwesomeIcon icon={faGripVertical} size="xs" />
-                </Box>
+                </MoveIndicator>
               </KeptRegion>
               <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: endX, width: Math.max(0, duration * zoom - endX) }} />
               {videoStream && (
@@ -739,7 +717,7 @@ export default function VideoTimeline({
             </ScrollShadowAnchor>
           </Scroller>
         </Viewport>
-      </Box>
+      </TrackRow>
     </TimelineRoot>
   );
 }

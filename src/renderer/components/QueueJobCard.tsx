@@ -44,7 +44,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { Collapse, Box, IconButton, Tooltip, Typography } from '@mui/material';
+import { Collapse, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -77,6 +77,8 @@ import {
   ThumbImg,
   CardHeaderRow,
   JobNameText,
+  JobTitleWrapper,
+  CustomizedIconButton,
   StatusChip,
   CardActionsStack,
   DragHandleButton,
@@ -282,11 +284,11 @@ export function QueueJobCardContent({
         {thumbnail && <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />}
         <CardContent>
           <CardHeaderRow>
-            <Box sx={{ flex: '1 1 0', minWidth: 0 }}>
+            <JobTitleWrapper>
               <EllipsisTooltip title={job.input}>
                 <JobNameText variant="body2">{basename(job.input)}</JobNameText>
               </EllipsisTooltip>
-            </Box>
+            </JobTitleWrapper>
             <CardActionsStack direction="row" spacing={1}>
               {job.status === QUEUE_STATUS.QUEUED && handleProps && !dragOverlay && !expanded && (
                 <Tooltip title={t('batchQueue.dragHandle')}>
@@ -316,9 +318,9 @@ export function QueueJobCardContent({
               )}
               {customized && (
                 <Tooltip title={t('batchQueue.jobCustomized')}>
-                  <IconButton size="small" aria-label={t('batchQueue.jobCustomized')} color="primary" sx={{ pointerEvents: 'none' }}>
+                  <CustomizedIconButton size="small" aria-label={t('batchQueue.jobCustomized')} color="primary">
                     <FontAwesomeIcon icon={faSliders} />
-                  </IconButton>
+                  </CustomizedIconButton>
                 </Tooltip>
               )}
               <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />

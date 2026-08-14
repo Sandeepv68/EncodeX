@@ -18,8 +18,9 @@
  */
 
 import { cloneElement, useCallback, useEffect, useRef, useState } from 'react';
-import { Box, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import type { EllipsisTooltipProps } from './types';
+import { TooltipWrapper } from '../styles/EllipsisTooltip.styles';
 
 /**
  * Renders an overflow-aware tooltip wrapper.
@@ -81,16 +82,10 @@ export default function EllipsisTooltip({ title, children }: EllipsisTooltipProp
   );
 
   return (
-    <Box
-      onMouseEnter={handleEnter}
-      onMouseLeave={() => setOpen(false)}
-      onFocus={handleEnter}
-      onBlur={() => setOpen(false)}
-      sx={{ minWidth: 0 }}
-    >
+    <TooltipWrapper onMouseEnter={handleEnter} onMouseLeave={() => setOpen(false)} onFocus={handleEnter} onBlur={() => setOpen(false)}>
       <Tooltip title={title} placement="top" arrow open={open} onClose={() => setOpen(false)}>
         {child}
       </Tooltip>
-    </Box>
+    </TooltipWrapper>
   );
 }

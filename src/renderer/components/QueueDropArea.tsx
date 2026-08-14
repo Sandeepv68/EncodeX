@@ -15,11 +15,9 @@
 
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
-import { Box } from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { useDndContext } from '@dnd-kit/core';
-
-const INDICATOR_HEIGHT = 3;
+import { INDICATOR_HEIGHT, DropAreaRoot, DragFrame, ContentLayer, DropIndicator } from '../styles/QueueDropArea.styles';
 
 /**
  * Overlay that highlights the reorder drop area and the current insertion gap.
@@ -47,36 +45,10 @@ export default function QueueDropArea({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Box ref={containerRef} sx={{ position: 'relative' }}>
-      {isDragActive && (
-        <Box
-          sx={{
-            position: 'absolute',
-            inset: 0,
-            zIndex: 0,
-            borderRadius: theme.typography.pxToRem(2),
-            border: `1px dashed ${alpha(theme.palette.primary.main, 0.5)}`,
-            backgroundColor: alpha(theme.palette.primary.main, 0.06),
-            pointerEvents: 'none',
-          }}
-        />
-      )}
-      <Box sx={{ position: 'relative', zIndex: 1 }}>{children}</Box>
-      {indicatorTop !== null && (
-        <Box
-          sx={{
-            position: 'absolute',
-            zIndex: 2,
-            insetInline: 0,
-            top: indicatorTop,
-            height: INDICATOR_HEIGHT,
-            backgroundColor: theme.palette.primary.main,
-            borderRadius: INDICATOR_HEIGHT / 2,
-            boxShadow: `0 0 ${theme.typography.pxToRem(6)} ${alpha(theme.palette.primary.main, 0.6)}`,
-            pointerEvents: 'none',
-          }}
-        />
-      )}
-    </Box>
+    <DropAreaRoot ref={containerRef}>
+      {isDragActive && <DragFrame />}
+      <ContentLayer>{children}</ContentLayer>
+      {indicatorTop !== null && <DropIndicator sx={{ top: indicatorTop }} />}
+    </DropAreaRoot>
   );
 }

@@ -68,6 +68,10 @@ import {
   ActionStack,
   AccelAlert,
   CompatAlert,
+  LoadingBox,
+  SelectedFileRow,
+  SelectedFileName,
+  ShowPreviewButton,
   PreviewPanel,
   PreviewHeader,
   PreviewDivider,
@@ -349,9 +353,9 @@ export default function Convert() {
                 {t('mediaInfo.fileInfo')}
               </PreviewSectionTitle>
               {mediaInfoLoading && !mediaInfo && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                <LoadingBox>
                   <CircularProgress size={24} />
-                </Box>
+                </LoadingBox>
               )}
               {mediaInfo && (
                 <ErrorBoundary fallback={null}>
@@ -379,10 +383,10 @@ export default function Convert() {
               <FileDropZone onFileSelect={setInputFile} label={t('convert.dropLabel')} accept={VIDEO_DROPZONE_ACCEPT} />
             </ErrorBoundary>
           ) : (
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }} useFlexGap>
-              <Typography variant="body2" color="text.secondary" data-testid="convert-input-file" sx={{ wordBreak: 'break-all' }}>
+            <SelectedFileRow direction="row" spacing={1} useFlexGap>
+              <SelectedFileName variant="body2" color="text.secondary" data-testid="convert-input-file">
                 {fileName(inputFile)}
-              </Typography>
+              </SelectedFileName>
               <Tooltip title={t('convert.changeFileHint')} arrow>
                 <Button
                   variant="outlined"
@@ -394,19 +398,14 @@ export default function Convert() {
                   {t('convert.changeFile')}
                 </Button>
               </Tooltip>
-            </Stack>
+            </SelectedFileRow>
           )}
         </Box>
 
         {inputFile && !previewOpen && (
-          <Button
-            variant="outlined"
-            startIcon={<FontAwesomeIcon icon={faEye} />}
-            onClick={() => setPreviewOpen(true)}
-            sx={{ alignSelf: 'flex-start' }}
-          >
+          <ShowPreviewButton variant="outlined" startIcon={<FontAwesomeIcon icon={faEye} />} onClick={() => setPreviewOpen(true)}>
             {t('convert.showPreview')}
-          </Button>
+          </ShowPreviewButton>
         )}
 
         <FilePathField
@@ -459,10 +458,7 @@ export default function Convert() {
           <>
             {settingsHardwareAcceleration && !accelAlertDismissed && (
               <>
-                <AccelAlert
-                  severity="info"
-                  onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL)}
-                >
+                <AccelAlert severity="info" onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL)}>
                   {t('convert.hardwareAccelAlert')}
                 </AccelAlert>
                 <FieldBox>

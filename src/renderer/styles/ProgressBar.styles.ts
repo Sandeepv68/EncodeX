@@ -60,3 +60,14 @@ export const ProgressInfoRow = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   marginTop: theme.spacing(0.5),
 }));
+
+/** Visually hidden completion announcement for screen readers. @const SrOnlyStatus */
+export const SrOnlyStatus = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  width: theme.typography.pxToRem(1),
+  height: theme.typography.pxToRem(1),
+  margin: theme.spacing(-1),
+  overflow: 'hidden',
+  clip: 'rect(0, 0, 0, 0)',
+  whiteSpace: 'nowrap',
+}));

@@ -34,8 +34,7 @@ import { useFieldId } from '../hooks/useFieldId';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import type { BatchEncodingPanelProps } from './types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
-import { EncodingPaper, EncodingTitle } from '../styles/BatchEncodingPanel.styles';
-import { AccelAlert, LockedAlert } from '../styles/BatchQueue.styles';
+import { EncodingPaper, EncodingTitle, OptionsLockedAlert, OptionsEditableAlert } from '../styles/BatchEncodingPanel.styles';
 
 /**
  * Pixel-format options prepared for the GroupedSelect: every entry of
@@ -111,22 +110,20 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
         {t('batchQueue.encodingOptions')}
       </EncodingTitle>
       {props.optionsLocked && !lockedAlertDismissed && (
-        <LockedAlert
+        <OptionsLockedAlert
           severity="warning"
-          sx={{ marginBottom: 2 }}
           onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.OPTIONS_LOCKED)}
         >
           {t('batchQueue.optionsLockedAlert')}
-        </LockedAlert>
+        </OptionsLockedAlert>
       )}
       {!props.optionsLocked && props.optionsEditable && !editableAlertDismissed && (
-        <AccelAlert
+        <OptionsEditableAlert
           severity="info"
-          sx={{ marginBottom: 2 }}
           onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.OPTIONS_EDITABLE)}
         >
           {t('batchQueue.optionsEditableAlert')}
-        </AccelAlert>
+        </OptionsEditableAlert>
       )}
       <Grid container spacing={2}>
         {showVideo && (

@@ -49,10 +49,10 @@ import { focusFirstError } from '../utils/focusFirstError';
 import { isInRange } from '../../shared/validation';
 import { formatSize } from '../utils/formatters';
 import type { ImageFileInfo } from '../../shared/types';
-import { ToggleSpacer } from '../styles/ImageCompress.styles';
+import { ToggleSpacer, SelectedImageName, AspectRatioRow } from '../styles/ImageCompress.styles';
 import MediaPreview from '../components/MediaPreview';
 import { useFieldId } from '../hooks/useFieldId';
-import { FieldBox, FieldLabel, ToggleRow } from '../styles/form.styles';
+import { FieldBox, FieldLabel } from '../styles/form.styles';
 import {
   LOG_ARROW,
   LOG_COMPRESSING_IMAGE,
@@ -340,9 +340,7 @@ export default function ImageCompress() {
                 return (
                   <>
                     {before}
-                    <Box component="span" sx={{ fontWeight: 700 }}>
-                      {fileName(input)}
-                    </Box>
+                    <SelectedImageName component="span">{fileName(input)}</SelectedImageName>
                     {after}
                   </>
                 );
@@ -459,7 +457,7 @@ export default function ImageCompress() {
         </FieldBox>
         <FieldBox>
           <ToggleSpacer />
-          <ToggleRow data-testid="keep-aspect-ratio-row" sx={{ mt: 0.5 }}>
+          <AspectRatioRow data-testid="keep-aspect-ratio-row">
             <Switch
               checked={keepAspectRatio}
               onChange={(e) => setKeepAspectRatio(e.target.checked)}
@@ -469,7 +467,7 @@ export default function ImageCompress() {
             />
             <Typography variant="caption">{t('imageCompress.keepAspectRatio')}</Typography>
             <InfoTooltip title={t('imageCompress.keepAspectRatioHint')} />
-          </ToggleRow>
+          </AspectRatioRow>
         </FieldBox>
       </Stack>
 

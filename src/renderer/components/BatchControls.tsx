@@ -49,8 +49,7 @@
  *    renders the hardware-acceleration info alert inside the controls box.
  */
 
-import { Box, Checkbox, FormControlLabel, Grid, MenuItem, Tooltip } from '@mui/material';
-import type { Theme } from '@mui/material/styles';
+import { Checkbox, Grid, MenuItem, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
@@ -70,7 +69,6 @@ import type { TranscoderType, WhenDoneAction, WhenDoneConfig } from '../../share
 import type { BatchControlsProps } from './types';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
-import { AccelAlert } from '../styles/BatchQueue.styles';
 import {
   ControlsPaper,
   OperationSelect,
@@ -80,6 +78,13 @@ import {
   OutputDirField,
   WhenDoneSelect,
   OutlinedIconButton,
+  ToolbarAlert,
+  ToolbarRow,
+  OutputDirFieldBox,
+  WhenDoneFieldBox,
+  BrowseButton,
+  AlignedCheckbox,
+  ForceCheckbox,
 } from '../styles/BatchControls.styles';
 
 /**
@@ -140,19 +145,6 @@ import {
  * @returns {JSX.Element} The controls paper.
  */
 
-/**
- * Top margin that vertically aligns a label-less control (icon button or
- * checkbox) with the input of a labeled FieldBox. Labeled fields are taller
- * than the controls because of the FieldLabel caption above the input; nudging
- * the label-less siblings down by the caption block height centers them on the
- * field instead of the whole label+field block.
- * @param {Theme} theme - The MUI theme (provides spacing/typography units).
- * @returns {string} A CSS calc() expression matching the FieldLabel height.
- */
-function unlabeledControlOffset(theme: Theme): string {
-  return `calc(${theme.spacing(0.5)} + ${theme.typography.pxToRem(12)} * 1.2)`;
-}
-
 export default function BatchControls({
   operation,
   onOperationChange,
@@ -209,17 +201,13 @@ export default function BatchControls({
   return (
     <ControlsPaper>
       {hardwareAccelAlert && !accelAlertDismissed && (
-        <AccelAlert
-          severity="info"
-          sx={{ marginBottom: 2 }}
-          onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL)}
-        >
+        <ToolbarAlert severity="info" onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL)}>
           {t('convert.hardwareAccelAlert')}
-        </AccelAlert>
+        </ToolbarAlert>
       )}
       <Grid container spacing={2}>
         <Grid size={12}>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1 }}>
+          <ToolbarRow>
             <Tooltip title={t('batchQueue.addFiles')}>
               <OutlinedIconButton size="small" aria-label={t('batchQueue.addFiles')} onClick={onAddFiles}>
                 <FontAwesomeIcon icon={faPlus} />
@@ -269,7 +257,7 @@ export default function BatchControls({
                 <FontAwesomeIcon icon={faFileImport} />
               </OutlinedIconButton>
             </Tooltip>
-          </Box>
+          </ToolbarRow>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
           <FieldBox>
@@ -352,8 +340,8 @@ export default function BatchControls({
           </FieldBox>
         </Grid>
         <Grid size={12}>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1 }}>
-            <FieldBox sx={{ flex: '0 0 16.6667%', minWidth: 220 }}>
+          <ToolbarRow>
+            <OutputDirFieldBox>
               <FieldLabel htmlFor="batch-output-dir">{t('batchQueue.outputDir')}</FieldLabel>
               <OutputDirField
                 id="batch-output-dir"
@@ -365,14 +353,13 @@ export default function BatchControls({
                 }}
                 placeholder={t('batchQueue.outputDirPlaceholder')}
               />
-            </FieldBox>
+            </OutputDirFieldBox>
             <Tooltip title={t('batchQueue.browse')}>
-              <OutlinedIconButton size="small" aria-label={t('batchQueue.browse')} onClick={onBrowseDir} sx={{ mt: unlabeledControlOffset }}>
+              <BrowseButton size="small" aria-label={t('batchQueue.browse')} onClick={onBrowseDir}>
                 <FontAwesomeIcon icon={faFolderOpen} />
-              </OutlinedIconButton>
+              </BrowseButton>
             </Tooltip>
-            <FormControlLabel
-              sx={{ whiteSpace: 'nowrap', ml: 1, mt: unlabeledControlOffset }}
+            <AlignedCheckbox
               control={
                 <Checkbox
                   size="small"
@@ -384,8 +371,7 @@ export default function BatchControls({
               }
               label={t('batchQueue.overwrite')}
             />
-            <FormControlLabel
-              sx={{ whiteSpace: 'nowrap', ml: 1, mt: unlabeledControlOffset }}
+            <AlignedCheckbox
               control={
                 <Checkbox
                   size="small"
@@ -399,7 +385,7 @@ export default function BatchControls({
             />
             {whenDone.enabled && (
               <>
-                <FieldBox sx={{ flex: '0 0 auto' }}>
+                <WhenDoneFieldBox>
                   <FieldLabel htmlFor="batch-when-done-action">{t('batchQueue.whenDoneAction')}</FieldLabel>
                   <WhenDoneSelect
                     id="batch-when-done-action"
@@ -417,9 +403,8 @@ export default function BatchControls({
                       </MenuItem>
                     ))}
                   </WhenDoneSelect>
-                </FieldBox>
-                <FormControlLabel
-                  sx={{ whiteSpace: 'nowrap', mt: unlabeledControlOffset }}
+                </WhenDoneFieldBox>
+                <ForceCheckbox
                   control={
                     <Checkbox
                       size="small"
@@ -433,7 +418,7 @@ export default function BatchControls({
                 />
               </>
             )}
-          </Box>
+          </ToolbarRow>
         </Grid>
       </Grid>
     </ControlsPaper>

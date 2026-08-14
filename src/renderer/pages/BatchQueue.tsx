@@ -50,14 +50,7 @@ import type { HwAccelMode } from '../../shared/types';
 import { buildBatchOptions, inferJobOperation, recomputeJobOutput } from '../utils/batch-options';
 import { computeQueuedTargetPosition, reorderJob } from '../utils/queue-reorder';
 import { JobCard } from '../styles/QueueJobCard.styles';
-import {
-  PageTitle,
-  EmptyText,
-  FilterRow,
-  FilterChip,
-  SearchField,
-  DropOverlay,
-} from '../styles/BatchQueue.styles';
+import { PageTitle, EmptyText, FilterRow, FilterChip, FilterEta, SearchField, DropOverlay } from '../styles/BatchQueue.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 
@@ -1133,9 +1126,9 @@ export default function BatchQueue() {
               slotProps={{ htmlInput: { 'aria-label': t('batchQueue.search') } }}
             />
             {remainingSeconds !== null && (
-              <Typography variant="body2" color="text.secondary" sx={{ marginInlineStart: 'auto' }}>
+              <FilterEta variant="body2" color="text.secondary">
                 {t('batchQueue.etaEstimate', { eta: formatEstimate(remainingSeconds) })}
-              </Typography>
+              </FilterEta>
             )}
           </FilterRow>
         )}

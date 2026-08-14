@@ -1,6 +1,6 @@
 import { styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
-import { Box, Card, CardActionArea, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardActionArea, CardContent, Grid, Typography } from '@mui/material';
 import type { ElementType } from 'react';
 import { SHADOWS, OVERLAY_COLORS } from '../colors';
 
@@ -104,4 +104,30 @@ export const CardBody = styled(CardContent)({
   flexDirection: 'column',
   alignItems: 'flex-start',
   flexGrow: 1,
+});
+
+/** Full-viewport centered column holding the dashboard content. @const DashboardRoot */
+export const DashboardRoot = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '100%',
+  width: '100%',
+});
+
+/** Feature-card grid centered across the full width. @const FeatureGrid */
+export const FeatureGrid = styled(Grid)({
+  justifyContent: 'center',
+  width: '100%',
+});
+
+/** Single feature-card grid cell stretched so cards equalize. @const FeatureGridItem */
+export const FeatureGridItem = styled(Grid)({
+  display: 'flex',
+});
+
+/** Card description pinned to the bottom of the card body. @const CardDescription */
+export const CardDescription = styled(Typography)({
+  marginTop: 'auto',
 });
