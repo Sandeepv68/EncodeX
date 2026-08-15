@@ -14,7 +14,7 @@ export const DragFrame = styled(Box)(({ theme }) => ({
   inset: 0,
   zIndex: 0,
   borderRadius: theme.typography.pxToRem(2),
-  border: `1px dashed ${alpha(theme.palette.primary.main, 0.5)}`,
+  border: `${theme.typography.pxToRem(1)} dashed ${alpha(theme.palette.primary.main, 0.5)}`,
   backgroundColor: alpha(theme.palette.primary.main, 0.06),
   pointerEvents: 'none',
 }));

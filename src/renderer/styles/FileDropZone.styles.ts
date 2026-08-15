@@ -57,7 +57,7 @@ export const DropZoneRoot = styled('button', {
   animation: $dragging ? 'none' : `${borderPulse} 8s ease-in-out infinite`,
   '&:hover': {
     boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
-    transform: 'translateY(-2px)',
+    transform: `translateY(${theme.typography.pxToRem(-2)})`,
     ...(!$dragging ? { animation: `${borderPulse} 8s ease-in-out infinite, ${backgroundPulse} 8s ease-in-out infinite` } : {}),
   },
   '&:focus-visible': {

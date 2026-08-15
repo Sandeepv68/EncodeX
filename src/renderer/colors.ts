@@ -54,7 +54,6 @@ import type { Theme } from '@mui/material/styles';
  * @property {string} surfaceSubtle - Subtle tinted panel background.
  * @property {Object} menu - Dropdown/popover surface styling.
  * @property {string} menu.surface - Dropdown menu background.
- * @property {string} menu.shadow - Dropdown menu shadow.
  */
 export interface ThemeDefinition {
   id: ThemeId;
@@ -96,8 +95,6 @@ export interface ThemeDefinition {
   menu: {
     /** Dropdown menu background. */
     surface: string;
-    /** Dropdown menu shadow. */
-    shadow: string;
   };
 }
 
@@ -126,7 +123,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     },
     focusRing: 'rgba(15,155,142,0.4)',
     surfaceSubtle: 'rgba(15,155,142,0.06)',
-    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
+    menu: { surface: '#ffffff' },
   },
   {
     id: 'ocean',
@@ -146,7 +143,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     },
     focusRing: 'rgba(25,118,210,0.4)',
     surfaceSubtle: 'rgba(25,118,210,0.06)',
-    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
+    menu: { surface: '#ffffff' },
   },
   {
     id: 'sunset',
@@ -166,7 +163,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     },
     focusRing: 'rgba(230,81,0,0.4)',
     surfaceSubtle: 'rgba(230,81,0,0.06)',
-    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
+    menu: { surface: '#ffffff' },
   },
   {
     id: 'forest',
@@ -186,7 +183,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     },
     focusRing: 'rgba(46,125,50,0.4)',
     surfaceSubtle: 'rgba(46,125,50,0.06)',
-    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
+    menu: { surface: '#ffffff' },
   },
   {
     id: 'lavender',
@@ -206,7 +203,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     },
     focusRing: 'rgba(123,31,162,0.4)',
     surfaceSubtle: 'rgba(123,31,162,0.06)',
-    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
+    menu: { surface: '#ffffff' },
   },
   {
     id: 'rose',
@@ -226,7 +223,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     },
     focusRing: 'rgba(194,24,91,0.4)',
     surfaceSubtle: 'rgba(194,24,91,0.06)',
-    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
+    menu: { surface: '#ffffff' },
   },
   {
     id: 'slate',
@@ -246,7 +243,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     },
     focusRing: 'rgba(69,90,100,0.4)',
     surfaceSubtle: 'rgba(69,90,100,0.06)',
-    menu: { surface: '#ffffff', shadow: '0 6px 24px rgba(0, 0, 0, 0.12)' },
+    menu: { surface: '#ffffff' },
   },
   {
     id: 'dark',
@@ -266,7 +263,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     },
     focusRing: 'rgba(15,155,142,0.25)',
     surfaceSubtle: 'rgba(255, 255, 255, 0.04)',
-    menu: { surface: '#262626', shadow: '0 8px 28px rgba(0, 0, 0, 0.5)' },
+    menu: { surface: '#262626' },
   },
 ];
 
@@ -426,8 +423,8 @@ export const TITLEBAR_COLORS = {
  * Factory for shared CSS box-shadow strings on elevated surfaces, sized with
  * `theme.typography.pxToRem()` so they scale with the root font size.
  * SOFT_* are used for resting cards and panels, SOFT_HOVER_* for their hover
- * state, and INSET_* for inner recessed surfaces. Light variants target
- * light-mode surfaces, dark variants dark-mode surfaces.
+ * state, INSET_* for inner recessed surfaces, and MENU_* for dropdown menus.
+ * Light variants target light-mode surfaces, dark variants dark-mode surfaces.
  * @function SHADOWS
  * @param {Theme} theme - The MUI theme used to convert px to rem.
  * @returns {Object} Box-shadow strings keyed by surface variant.
@@ -437,6 +434,8 @@ export const TITLEBAR_COLORS = {
  * @property {string} SOFT_HOVER_DARK - Hover shadow for dark surfaces.
  * @property {string} INSET_LIGHT - Inner recessed shadow for light surfaces.
  * @property {string} INSET_DARK - Inner recessed shadow for dark surfaces.
+ * @property {string} MENU_LIGHT - Dropdown menu shadow for light themes.
+ * @property {string} MENU_DARK - Dropdown menu shadow for dark themes.
  */
 export const SHADOWS = (theme: Theme) => ({
   SOFT_LIGHT: `${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(1)} ${theme.typography.pxToRem(2)} rgba(0, 0, 0, 0.04), ${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(10)} rgba(0, 0, 0, 0.05)`,
@@ -445,4 +444,6 @@ export const SHADOWS = (theme: Theme) => ({
   SOFT_HOVER_DARK: `${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(4)} rgba(0, 0, 0, 0.25), ${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(4)} ${theme.typography.pxToRem(14)} rgba(0, 0, 0, 0.2)`,
   INSET_LIGHT: `inset ${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(6)} ${theme.typography.pxToRem(4)} ${theme.typography.pxToRem(-2)} rgba(0, 0, 0, 0.1)`,
   INSET_DARK: `inset ${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(6)} ${theme.typography.pxToRem(4)} ${theme.typography.pxToRem(-2)} rgba(0, 0, 0, 0.35)`,
+  MENU_LIGHT: `${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(6)} ${theme.typography.pxToRem(24)} rgba(0, 0, 0, 0.12)`,
+  MENU_DARK: `${theme.typography.pxToRem(0)} ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(28)} rgba(0, 0, 0, 0.5)`,
 });

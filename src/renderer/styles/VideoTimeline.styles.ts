@@ -128,7 +128,7 @@ export const TrackSkeleton = styled(Skeleton)(({ theme }) => ({
 }));
 
 /** Centered grip icon revealed on hover over the kept region. @const MoveIndicator */
-export const MoveIndicator = styled(Box)({
+export const MoveIndicator = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -138,9 +138,9 @@ export const MoveIndicator = styled(Box)({
   pointerEvents: 'none',
   backgroundColor: OVERLAY_COLORS.black45,
   color: OVERLAY_COLORS.white,
-  borderRadius: '6px',
-  padding: '6px',
-});
+  borderRadius: theme.typography.pxToRem(6),
+  padding: theme.typography.pxToRem(6),
+}));
 
 export const Scroller = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$width',
@@ -313,13 +313,14 @@ export const TrimHandle = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const TrackBubbleAnchor = styled(Box)({
+export const TrackBubbleAnchor = styled(Box)(({ theme }) => ({
   position: 'absolute',
   left: 0,
   right: 0,
+  paddingTop: theme.typography.pxToRem(2),
   pointerEvents: 'none',
   zIndex: 2,
-});
+}));
 
 export const ScrollShadowAnchor = styled(Box)(({ theme }) => ({
   position: 'absolute',

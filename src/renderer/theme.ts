@@ -168,7 +168,7 @@ export function createAppTheme(themeId: ThemeId, direction: 'ltr' | 'rtl') {
           paper: ({ theme }) => ({
             borderRadius: theme.typography.pxToRem(10),
             backgroundColor: themeDef.menu.surface,
-            boxShadow: themeDef.menu.shadow,
+            boxShadow: themeDef.mode === 'dark' ? SHADOWS(theme).MENU_DARK : SHADOWS(theme).MENU_LIGHT,
             border: `${theme.typography.pxToRem(1)} solid ${themeDef.border}`,
             padding: theme.typography.pxToRem(6),
           }),
