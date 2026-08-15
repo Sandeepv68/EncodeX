@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Stack, Typography, Collapse, IconButton, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCompress, faExpand } from '@fortawesome/free-solid-svg-icons';
+import { faListOl, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent, DragStartEvent, Modifier } from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -1105,7 +1105,7 @@ export default function BatchQueue() {
             data-testid="batch-queue-condense"
           >
             <CondenseIcon $rotated={condensed}>
-              <FontAwesomeIcon icon={condensed ? faExpand : faCompress} />
+              <FontAwesomeIcon icon={condensed ? faLayerGroup : faListOl} />
             </CondenseIcon>
           </IconButton>
         </Tooltip>
