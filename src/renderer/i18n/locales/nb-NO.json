@@ -388,7 +388,9 @@
     "optionsUpdated": "Jobbalternativer oppdatert",
     "outputCollision": "En annen jobb i køen bruker allerede denne utdatabanen.",
     "outputCollisionSkipped": "{{count}} jobb(er) hoppet over – den nye utdataen vil overskrive en annen jobbs fil ({{names}})",
-    "optionsUpdateFailed": "Denne jobben kan ikke lenger redigeres."
+    "optionsUpdateFailed": "Denne jobben kan ikke lenger redigeres.",
+    "condense": "Kollaps",
+    "expand": "Utvid"
   },
   "progress": {
     "title": "Konverteringsfremdrift",

@@ -388,7 +388,9 @@
     "optionsUpdated": "Suliassap peqqussaatii nutarterneqarput",
     "outputCollision": "Suliassaq allak qaangernaveeraq anisittarfik taanna atuartarpoq.",
     "outputCollisionSkipped": "{{count}} suliassat qaangernaqaatsut – anisitaq nutaaq suliassaq allap allaffia qulaallugu allassaaq ({{names}})",
-    "optionsUpdateFailed": "Una sulineq allanngortinneqarsinnaanngilaq."
+    "optionsUpdateFailed": "Una sulineq allanngortinneqarsinnaanngilaq.",
+    "condense": "Mikissusaruk",
+    "expand": "Annertusaruk"
   },
   "progress": {
     "title": "Allanngortitsineq ingerlanera",

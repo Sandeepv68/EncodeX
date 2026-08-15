@@ -388,7 +388,9 @@
     "optionsUpdated": "Auftragsoptionen aktualisiert",
     "outputCollision": "Ein anderer Auftrag in der Warteschlange verwendet diesen Ausgabepfad bereits.",
     "outputCollisionSkipped": "{{count}} Auftrag(e) übersprungen – die neue Ausgabe würde die Datei eines anderen Auftrags überschreiben ({{names}})",
-    "optionsUpdateFailed": "Dieser Auftrag kann nicht mehr bearbeitet werden."
+    "optionsUpdateFailed": "Dieser Auftrag kann nicht mehr bearbeitet werden.",
+    "condense": "Einklappen",
+    "expand": "Ausklappen"
   },
   "progress": {
     "title": "Konvertierungsfortschritt",

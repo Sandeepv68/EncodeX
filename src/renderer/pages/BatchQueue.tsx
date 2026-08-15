@@ -19,7 +19,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, Collapse, IconButton, Tooltip } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCompress, faExpand } from '@fortawesome/free-solid-svg-icons';
 import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent, DragStartEvent, Modifier } from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -50,7 +52,17 @@ import type { HwAccelMode } from '../../shared/types';
 import { buildBatchOptions, inferJobOperation, recomputeJobOutput } from '../utils/batch-options';
 import { computeQueuedTargetPosition, reorderJob } from '../utils/queue-reorder';
 import { JobCard } from '../styles/QueueJobCard.styles';
-import { PageTitle, EmptyText, FilterRow, FilterChip, FilterEta, SearchField, DropOverlay } from '../styles/BatchQueue.styles';
+import {
+  PageTitle,
+  EmptyText,
+  FilterRow,
+  FilterChip,
+  FilterEta,
+  SearchField,
+  DropOverlay,
+  AnimatedSection,
+  CondenseIcon,
+} from '../styles/BatchQueue.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 
@@ -202,6 +214,42 @@ export default function BatchQueue() {
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
   const [filter, setFilter] = useState('all');
+
+  /**
+   * True while the page is condensed: the batch controls and the encoding
+   * options panel are collapsed so the page shows only the queue. Seeded from
+   * localStorage and persisted there so the preference survives navigation.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
+  const [condensed, setCondensed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('encodex-batch-condensed') === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  /**
+   * True once the collapse animation of the controls/options sections has fully
+   * completed. Removes the section wrappers from the layout (display: none) so
+   * a condensed page leaves no leftover empty space behind; reset back to false
+   * the moment the expand animation starts so the sections can grow back.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
+  const [sectionsGone, setSectionsGone] = useState(false);
+
+  /**
+   * Persists the condensed preference to localStorage whenever it changes.
+   * Failures are swallowed so a storage error can never break the page.
+   * @returns {void}
+   */
+  useEffect(() => {
+    try {
+      localStorage.setItem('encodex-batch-condensed', condensed ? '1' : '0');
+    } catch {
+      // Storage unavailable; the preference simply will not persist.
+    }
+  }, [condensed]);
 
   /**
    * Filename search term; jobs whose input basename includes it (case-insensitive)
@@ -1046,60 +1094,83 @@ export default function BatchQueue() {
       <PageTitle variant="h5" component="h1">
         <TitleIcon>{pageIcons['/batch']}</TitleIcon>
         {t('batchQueue.title')}
+        <Tooltip title={condensed ? t('batchQueue.expand') : t('batchQueue.condense')} placement="left">
+          <IconButton
+            size="small"
+            aria-label={condensed ? t('batchQueue.expand') : t('batchQueue.condense')}
+            aria-expanded={!condensed}
+            aria-controls="batch-controls-section encoding-options-section"
+            onClick={() => setCondensed((prev) => !prev)}
+            sx={{ marginInlineStart: 'auto' }}
+            data-testid="batch-queue-condense"
+          >
+            <CondenseIcon $rotated={condensed}>
+              <FontAwesomeIcon icon={condensed ? faExpand : faCompress} />
+            </CondenseIcon>
+          </IconButton>
+        </Tooltip>
       </PageTitle>
 
       <Stack spacing={2}>
-        <BatchControls
-          operation={operation}
-          onOperationChange={handleOperationChange}
-          transcoderRef={transcoderRef}
-          suffixRef={suffixRef}
-          onAddFiles={handleAddFiles}
-          onCancelAll={handleCancelAll}
-          onClearCompleted={handleClearCompleted}
-          hasCompleted={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)}
-          concurrency={queueConcurrency}
-          onConcurrencyChange={handleConcurrencyChange}
-          paused={paused}
-          onPause={handlePause}
-          onResume={handleResume}
-          hasRunning={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.RUNNING)}
-          hasQueued={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
-          onStart={handleStart}
-          hasActive={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING)}
-          outputDir={outputDir}
-          onOutputDirChange={setOutputDir}
-          onBrowseDir={handleBrowseDir}
-          overwrite={overwrite}
-          onOverwriteChange={setOverwrite}
-          whenDone={whenDone}
-          onWhenDoneChange={setWhenDone}
-          onExport={handleExport}
-          onImport={handleImport}
-          hardwareAccelAlert={settingsHardwareAcceleration}
-        />
+        <AnimatedSection id="batch-controls-section" $hidden={condensed} $gone={sectionsGone} aria-hidden={condensed}>
+          <Collapse in={!condensed} onEntering={() => setSectionsGone(false)} onExited={() => setSectionsGone(true)}>
+            <BatchControls
+              operation={operation}
+              onOperationChange={handleOperationChange}
+              transcoderRef={transcoderRef}
+              suffixRef={suffixRef}
+              onAddFiles={handleAddFiles}
+              onCancelAll={handleCancelAll}
+              onClearCompleted={handleClearCompleted}
+              hasCompleted={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)}
+              concurrency={queueConcurrency}
+              onConcurrencyChange={handleConcurrencyChange}
+              paused={paused}
+              onPause={handlePause}
+              onResume={handleResume}
+              hasRunning={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.RUNNING)}
+              hasQueued={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
+              onStart={handleStart}
+              hasActive={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING)}
+              outputDir={outputDir}
+              onOutputDirChange={setOutputDir}
+              onBrowseDir={handleBrowseDir}
+              overwrite={overwrite}
+              onOverwriteChange={setOverwrite}
+              whenDone={whenDone}
+              onWhenDoneChange={setWhenDone}
+              onExport={handleExport}
+              onImport={handleImport}
+              hardwareAccelAlert={settingsHardwareAcceleration}
+            />
+          </Collapse>
+        </AnimatedSection>
 
-        <BatchEncodingPanel
-          operation={operation}
-          videoCodec={videoCodec}
-          audioCodec={audioCodec}
-          container={container}
-          videoBitrate={videoBitrate}
-          audioBitrate={audioBitrate}
-          quality={quality}
-          scale={scale}
-          pixelFormat={pixelFormat}
-          optionsLocked={batchStarted}
-          optionsEditable={!batchStarted && jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
-          onVideoCodecChange={handleVideoCodecChange}
-          onAudioCodecChange={handleAudioCodecChange}
-          onContainerChange={setContainer}
-          onVideoBitrateChange={setVideoBitrate}
-          onAudioBitrateChange={setAudioBitrate}
-          onQualityChange={setQuality}
-          onScaleChange={setScale}
-          onPixelFormatChange={setPixelFormat}
-        />
+        <AnimatedSection id="encoding-options-section" $hidden={condensed} $gone={sectionsGone} aria-hidden={condensed}>
+          <Collapse in={!condensed} onEntering={() => setSectionsGone(false)} onExited={() => setSectionsGone(true)}>
+            <BatchEncodingPanel
+              operation={operation}
+              videoCodec={videoCodec}
+              audioCodec={audioCodec}
+              container={container}
+              videoBitrate={videoBitrate}
+              audioBitrate={audioBitrate}
+              quality={quality}
+              scale={scale}
+              pixelFormat={pixelFormat}
+              optionsLocked={batchStarted}
+              optionsEditable={!batchStarted && jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
+              onVideoCodecChange={handleVideoCodecChange}
+              onAudioCodecChange={handleAudioCodecChange}
+              onContainerChange={setContainer}
+              onVideoBitrateChange={setVideoBitrate}
+              onAudioBitrateChange={setAudioBitrate}
+              onQualityChange={setQuality}
+              onScaleChange={setScale}
+              onPixelFormatChange={setPixelFormat}
+            />
+          </Collapse>
+        </AnimatedSection>
 
         {jobs.length > 0 && (
           <FilterRow>

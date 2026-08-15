@@ -388,7 +388,9 @@
     "optionsUpdated": "Ajustes de la tarea actualizados",
     "outputCollision": "Otra tarea en cola ya utiliza esa ruta de salida.",
     "outputCollisionSkipped": "{{count}} tarea(s) omitida(s): la nueva salida sobrescribiría el archivo de otra tarea ({{names}})",
-    "optionsUpdateFailed": "Esta tarea ya no se puede editar."
+    "optionsUpdateFailed": "Esta tarea ya no se puede editar.",
+    "condense": "Contraer",
+    "expand": "Expandir"
   },
   "progress": {
     "title": "Progreso de la conversión",

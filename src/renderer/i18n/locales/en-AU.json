@@ -388,7 +388,9 @@
     "optionsUpdated": "Job options updated",
     "outputCollision": "Another queued job already uses that output path.",
     "outputCollisionSkipped": "Skipped {{count}} job(s) - the new output would overwrite another job's file ({{names}})",
-    "optionsUpdateFailed": "This job is no longer editable."
+    "optionsUpdateFailed": "This job is no longer editable.",
+    "condense": "Condense",
+    "expand": "Expand"
   },
   "progress": {
     "title": "Conversion progress",

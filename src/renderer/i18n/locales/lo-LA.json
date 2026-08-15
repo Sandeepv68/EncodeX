@@ -388,7 +388,9 @@
     "optionsUpdated": "ອັບເດດຕົວເລືອກວຽກແລ້ວ",
     "outputCollision": "ວຽກອື່ນໃນຄິວໄດ້ໃຊ້ເສັ້ນທາງຜົນຜະລິດນີ້ແລ້ວ.",
     "outputCollisionSkipped": "ຂ້າມວຽກ {{count}} ວຽກ – ຜົນຜະລິດໃໝ່ຈະຂຽນທັບໄຟລ໌ຂອງວຽກອື່ນ ({{names}})",
-    "optionsUpdateFailed": "ບໍ່ສາມາດແກ້ໄຂວຽກນີ້ໄດ້ອີກຕໍ່ໄປ."
+    "optionsUpdateFailed": "ບໍ່ສາມາດແກ້ໄຂວຽກນີ້ໄດ້ອີກຕໍ່ໄປ.",
+    "condense": "ຫຍໍ້",
+    "expand": "ຂະຫຍາຍ"
   },
   "progress": {
     "title": "ຄວາມຄືບໜ້າການແປງ",

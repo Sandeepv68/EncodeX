@@ -388,7 +388,9 @@
     "optionsUpdated": "אפשרויות המשימה עודכנו",
     "outputCollision": "משימה אחרת בתור כבר משתמשת בנתיב הפלט הזה.",
     "outputCollisionSkipped": "דולגו {{count}} משימות – הפלט החדש ידרוס את הקובץ של משימה אחרת ({{names}})",
-    "optionsUpdateFailed": "לא ניתן עוד לערוך משימה זו."
+    "optionsUpdateFailed": "לא ניתן עוד לערוך משימה זו.",
+    "condense": "כווץ",
+    "expand": "הרחב"
   },
   "progress": {
     "title": "התקדמות ההמרה",

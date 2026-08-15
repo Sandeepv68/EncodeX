@@ -388,7 +388,9 @@
     "optionsUpdated": "Đã cập nhật tùy chọn công việc",
     "outputCollision": "Một công việc đang chờ khác đã sử dụng đường dẫn đầu ra này.",
     "outputCollisionSkipped": "Đã bỏ qua {{count}} công việc – đầu ra mới sẽ ghi đè lên tệp của công việc khác ({{names}})",
-    "optionsUpdateFailed": "Không còn có thể sửa công việc này."
+    "optionsUpdateFailed": "Không còn có thể sửa công việc này.",
+    "condense": "Thu gọn",
+    "expand": "Mở rộng"
   },
   "progress": {
     "title": "Tiến trình chuyển đổi",

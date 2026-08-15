@@ -388,7 +388,9 @@
     "optionsUpdated": "작업 옵션이 업데이트되었습니다",
     "outputCollision": "다른 대기열 작업이 이미 해당 출력 경로를 사용 중입니다.",
     "outputCollisionSkipped": "작업 {{count}}개를 건너뜀 – 새 출력이 다른 작업의 파일을 덮어씁니다 ({{names}})",
-    "optionsUpdateFailed": "이 작업은 더 이상 편집할 수 없습니다."
+    "optionsUpdateFailed": "이 작업은 더 이상 편집할 수 없습니다.",
+    "condense": "접기",
+    "expand": "펼치기"
   },
   "progress": {
     "title": "변환 진행률",

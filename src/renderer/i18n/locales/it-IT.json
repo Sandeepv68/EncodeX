@@ -388,7 +388,9 @@
     "optionsUpdated": "Opzioni del lavoro aggiornate",
     "outputCollision": "Un altro lavoro in coda usa già questo percorso di output.",
     "outputCollisionSkipped": "{{count}} lavoro/i saltato/i – la nuova uscita sovrascriverebbe il file di un altro lavoro ({{names}})",
-    "optionsUpdateFailed": "Questo lavoro non può più essere modificato."
+    "optionsUpdateFailed": "Questo lavoro non può più essere modificato.",
+    "condense": "Comprimi",
+    "expand": "Espandi"
   },
   "progress": {
     "title": "Avanzamento conversione",

@@ -388,7 +388,9 @@
     "optionsUpdated": "تم تحديث خيارات المهمة",
     "outputCollision": "توجد مهمة أخرى في قائمة الانتظار تستخدم مسار الإخراج هذا بالفعل.",
     "outputCollisionSkipped": "تم تخطي {{count}} مهمة – سيحل الناتج الجديد محل ملف مهمة أخرى ({{names}})",
-    "optionsUpdateFailed": "لم يعد من الممكن تحرير هذه المهمة."
+    "optionsUpdateFailed": "لم يعد من الممكن تحرير هذه المهمة.",
+    "condense": "طي",
+    "expand": "توسيع"
   },
   "progress": {
     "title": "تقدم التحويل",

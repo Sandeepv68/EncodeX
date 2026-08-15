@@ -388,7 +388,9 @@
     "optionsUpdated": "Jobindstillinger opdateret",
     "outputCollision": "Et andet job i køen bruger allerede denne outputsti.",
     "outputCollisionSkipped": "{{count}} job(s) sprunget over – den nye output vil overskrive et andet jobs fil ({{names}})",
-    "optionsUpdateFailed": "Dette job kan ikke længere redigeres."
+    "optionsUpdateFailed": "Dette job kan ikke længere redigeres.",
+    "condense": "Kollaps",
+    "expand": "Udvid"
   },
   "progress": {
     "title": "Konverteringsforløb",

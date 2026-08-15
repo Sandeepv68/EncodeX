@@ -388,7 +388,9 @@
     "optionsUpdated": "Opções da tarefa atualizadas",
     "outputCollision": "Outra tarefa na fila já usa esse caminho de saída.",
     "outputCollisionSkipped": "{{count}} tarefa(s) ignorada(s) – a nova saída sobrescreveria o arquivo de outra tarefa ({{names}})",
-    "optionsUpdateFailed": "Esta tarefa não pode mais ser editada."
+    "optionsUpdateFailed": "Esta tarefa não pode mais ser editada.",
+    "condense": "Recolher",
+    "expand": "Expandir"
   },
   "progress": {
     "title": "Progresso da conversão",

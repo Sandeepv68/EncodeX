@@ -388,7 +388,9 @@
     "optionsUpdated": "Pilihan kerja dikemas kini",
     "outputCollision": "Kerja lain dalam baris giliran sudah menggunakan laluan output itu.",
     "outputCollisionSkipped": "{{count}} kerja dilangkau – output baharu akan menimpa fail kerja lain ({{names}})",
-    "optionsUpdateFailed": "Kerja ini tidak boleh diedit lagi."
+    "optionsUpdateFailed": "Kerja ini tidak boleh diedit lagi.",
+    "condense": "Ciutkan",
+    "expand": "Kembangkan"
   },
   "progress": {
     "title": "Kemajuan penukaran",

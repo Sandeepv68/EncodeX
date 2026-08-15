@@ -388,7 +388,9 @@
     "optionsUpdated": "Valkostir verks uppfærðir",
     "outputCollision": "Annað verk í biðröð notar þessa úttaksleið nú þegar.",
     "outputCollisionSkipped": "{{count}} verk á hoppað yfir – nýja úttakið mun skrifa yfir skrá annars verks ({{names}})",
-    "optionsUpdateFailed": "Ekki er lengur hægt að breyta þessu verki."
+    "optionsUpdateFailed": "Ekki er lengur hægt að breyta þessu verki.",
+    "condense": "Þjappa",
+    "expand": "Stækka"
   },
   "progress": {
     "title": "Framvinda umbreytingar",

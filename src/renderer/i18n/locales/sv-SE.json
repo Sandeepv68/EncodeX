@@ -388,7 +388,9 @@
     "optionsUpdated": "Jobbalternativen har uppdaterats",
     "outputCollision": "Ett annat jobb i kön använder redan den här utdatasökvägen.",
     "outputCollisionSkipped": "{{count}} jobb hoppades över – den nya utdatan skriver över ett annat jobbs fil ({{names}})",
-    "optionsUpdateFailed": "Det här jobbet kan inte längre redigeras."
+    "optionsUpdateFailed": "Det här jobbet kan inte längre redigeras.",
+    "condense": "Komprimera",
+    "expand": "Expandera"
   },
   "progress": {
     "title": "Konverteringsförlopp",

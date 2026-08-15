@@ -388,7 +388,9 @@
     "optionsUpdated": "Tehtävän vaihtoehdot päivitetty",
     "outputCollision": "Toinen jonossa oleva tehtävä käyttää jo tätä tulostiedostoa.",
     "outputCollisionSkipped": "Ohitettiin {{count}} tehtävä(t) – uusi tulos kirjoittaisi toisen tehtävän tiedoston päälle ({{names}})",
-    "optionsUpdateFailed": "Tätä tehtävää ei voi enää muokata."
+    "optionsUpdateFailed": "Tätä tehtävää ei voi enää muokata.",
+    "condense": "Tiivistä",
+    "expand": "Laajenna"
   },
   "progress": {
     "title": "Muunnoksen edistyminen",

@@ -1019,4 +1019,37 @@ describe('BatchQueue', () => {
     expect(screen.getAllByRole('button', { name: 'batchQueue.editOptions' })).toHaveLength(1);
     expect(screen.getByRole('button', { name: 'batchQueue.editOptions' })).toBeDisabled();
   });
+
+  it('renders a title-level toggle that condenses the page to the queue', () => {
+    queueListMock.mockResolvedValue([]);
+    renderPage();
+    const toggle = screen.getByTestId('batch-queue-condense');
+    const controls = document.getElementById('batch-controls-section');
+    const encoding = document.getElementById('encoding-options-section');
+    expect(controls).not.toBeNull();
+    expect(encoding).not.toBeNull();
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(controls).toHaveAttribute('aria-hidden', 'false');
+    expect(encoding).toHaveAttribute('aria-hidden', 'false');
+
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(controls).toHaveAttribute('aria-hidden', 'true');
+    expect(encoding).toHaveAttribute('aria-hidden', 'true');
+
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(controls).toHaveAttribute('aria-hidden', 'false');
+    expect(encoding).toHaveAttribute('aria-hidden', 'false');
+  });
+
+  it('swaps the toggle label and persists the condensed preference', () => {
+    queueListMock.mockResolvedValue([]);
+    renderPage();
+    const toggle = screen.getByTestId('batch-queue-condense');
+    expect(toggle).toHaveAttribute('aria-label', 'batchQueue.condense');
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-label', 'batchQueue.expand');
+    expect(localStorage.getItem('encodex-batch-condensed')).toBe('1');
+  });
 });

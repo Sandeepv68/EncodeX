@@ -388,7 +388,9 @@
     "optionsUpdated": "Options de la tâche mises à jour",
     "outputCollision": "Une autre tâche en file d'attente utilise déjà ce chemin de sortie.",
     "outputCollisionSkipped": "{{count}} tâche(s) ignorée(s) – la nouvelle sortie écraserait le fichier d'une autre tâche ({{names}})",
-    "optionsUpdateFailed": "Cette tâche ne peut plus être modifiée."
+    "optionsUpdateFailed": "Cette tâche ne peut plus être modifiée.",
+    "condense": "Réduire",
+    "expand": "Agrandir"
   },
   "progress": {
     "title": "Progression de la conversion",

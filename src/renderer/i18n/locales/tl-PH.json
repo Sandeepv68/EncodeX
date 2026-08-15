@@ -388,7 +388,9 @@
     "optionsUpdated": "Na-update ang mga opsyon ng trabaho",
     "outputCollision": "May ibang trabaho sa pila na gumagamit na ng landas ng output na iyon.",
     "outputCollisionSkipped": "Nilaktawan ang {{count}} trabaho – ang bagong output ay mag-o-overwrite sa file ng ibang trabaho ({{names}})",
-    "optionsUpdateFailed": "Hindi na ma-edit ang trabahong ito."
+    "optionsUpdateFailed": "Hindi na ma-edit ang trabahong ito.",
+    "condense": "Paliitin",
+    "expand": "Palakihin"
   },
   "progress": {
     "title": "Pag-unlad ng conversion",

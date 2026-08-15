@@ -388,7 +388,9 @@
     "optionsUpdated": "Taakopties bijgewerkt",
     "outputCollision": "Een andere taak in de wachtrij gebruikt dit uitvoerpad al.",
     "outputCollisionSkipped": "{{count}} taak/taken overgeslagen – de nieuwe uitvoer overschrijft het bestand van een andere taak ({{names}})",
-    "optionsUpdateFailed": "Deze taak kan niet meer worden bewerkt."
+    "optionsUpdateFailed": "Deze taak kan niet meer worden bewerkt.",
+    "condense": "Samenvouwen",
+    "expand": "Uitvouwen"
   },
   "progress": {
     "title": "Conversievoortgang",

@@ -388,7 +388,9 @@
     "optionsUpdated": "อัปเดตตัวเลือกของงานแล้ว",
     "outputCollision": "งานอื่นในคิวใช้พาธเอาต์พุตนี้อยู่แล้ว",
     "outputCollisionSkipped": "ข้าม {{count}} งาน – เอาต์พุตใหม่จะเขียนทับไฟล์ของงานอื่น ({{names}})",
-    "optionsUpdateFailed": "ไม่สามารถแก้ไขงานนี้ได้อีกต่อไป"
+    "optionsUpdateFailed": "ไม่สามารถแก้ไขงานนี้ได้อีกต่อไป",
+    "condense": "ย่อ",
+    "expand": "ขยาย"
   },
   "progress": {
     "title": "ความคืบหน้าการแปลง",

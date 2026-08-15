@@ -388,7 +388,9 @@
     "optionsUpdated": "Zaktualizowano opcje zadania",
     "outputCollision": "Inne zadanie w kolejce już używa tej ścieżki wyjścia.",
     "outputCollisionSkipped": "Pominięto {{count}} zadań – nowe wyjście nadpisze plik innego zadania ({{names}})",
-    "optionsUpdateFailed": "To zadanie nie może być już edytowane."
+    "optionsUpdateFailed": "To zadanie nie może być już edytowane.",
+    "condense": "Zwiń",
+    "expand": "Rozwiń"
   },
   "progress": {
     "title": "Postęp konwersji",

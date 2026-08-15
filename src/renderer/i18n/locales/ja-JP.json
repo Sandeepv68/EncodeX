@@ -388,7 +388,9 @@
     "optionsUpdated": "ジョブのオプションを更新しました",
     "outputCollision": "キュー内の別のジョブがすでにこの出力パスを使用しています。",
     "outputCollisionSkipped": "{{count}} 件のジョブをスキップしました – 新しい出力は別のジョブのファイルを上書きします ({{names}})",
-    "optionsUpdateFailed": "このジョブは編集できなくなりました。"
+    "optionsUpdateFailed": "このジョブは編集できなくなりました。",
+    "condense": "折りたたむ",
+    "expand": "展開する"
   },
   "progress": {
     "title": "変換の進行状況",
