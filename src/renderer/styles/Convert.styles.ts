@@ -28,9 +28,10 @@ export const LoadingBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-/** Selected input file shown beside the "change file" button. @const SelectedFileRow */
+/** Selected input file shown beside the "change file" and "show preview" buttons. @const SelectedFileRow */
 export const SelectedFileRow = styled(Stack)({
   alignItems: 'center',
+  flexWrap: 'wrap',
 });
 
 /** Selected input file path, allowed to break onto multiple lines. @const SelectedFileName */
@@ -38,10 +39,8 @@ export const SelectedFileName = styled(Typography)({
   wordBreak: 'break-all',
 });
 
-/** "Show Preview" button aligned to the start of the section. @const ShowPreviewButton */
-export const ShowPreviewButton = styled(Button)({
-  alignSelf: 'flex-start',
-});
+/** "Show Preview" button shown inline beside the "change file" button. @const ShowPreviewButton */
+export const ShowPreviewButton = styled(Button)({});
 
 export const PreviewPanel = styled(Paper)(({ theme }) => ({
   width: '100%',

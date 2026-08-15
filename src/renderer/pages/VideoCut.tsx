@@ -850,7 +850,7 @@ export default function VideoCut() {
 
           {progress && isConverting && (
             <ErrorBoundary fallback={null}>
-              <ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} paused={isPaused} />
+              <ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} paused={isPaused} shadowed />
             </ErrorBoundary>
           )}
         </SectionCard>

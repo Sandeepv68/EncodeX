@@ -398,15 +398,14 @@ export default function Convert() {
                   {t('convert.changeFile')}
                 </Button>
               </Tooltip>
+              {!previewOpen && (
+                <ShowPreviewButton variant="outlined" size="small" startIcon={<FontAwesomeIcon icon={faEye} />} onClick={() => setPreviewOpen(true)}>
+                  {t('convert.showPreview')}
+                </ShowPreviewButton>
+              )}
             </SelectedFileRow>
           )}
         </Box>
-
-        {inputFile && !previewOpen && (
-          <ShowPreviewButton variant="outlined" startIcon={<FontAwesomeIcon icon={faEye} />} onClick={() => setPreviewOpen(true)}>
-            {t('convert.showPreview')}
-          </ShowPreviewButton>
-        )}
 
         <FilePathField
           label={t('convert.outputFile')}
