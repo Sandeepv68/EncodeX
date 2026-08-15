@@ -20,6 +20,7 @@
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"e2e/**/*.{ts,tsx}\" \"scripts/**/*.{ts,tsx,mjs,js}\" \"*.{ts,mjs,js}\" \"bin/**/*.js\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"e2e/**/*.{ts,tsx}\" \"scripts/**/*.{ts,tsx,mjs,js}\" \"*.{ts,mjs,js}\" \"bin/**/*.js\"",
     "lint": "eslint src/renderer",
+    "lint:px": "eslint -c scripts/eslint.px.config.mjs src/renderer",
     "validate:locales": "node scripts/validate-locales.mjs",
     "typecheck:renderer": "tsc -p tsconfig.renderer.json --noEmit",
     "typecheck:main": "tsc -p tsconfig.main.json --noEmit",

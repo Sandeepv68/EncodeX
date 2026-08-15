@@ -52,6 +52,19 @@ jobs:
       - run: npm ci
       - run: npm run lint
 
+  lint-px:
+    name: Check - No hardcoded px
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:px
+
   typecheck:
     name: Check - TypeScript typecheck
     runs-on: ubuntu-latest
@@ -96,7 +109,7 @@ jobs:
 
   build:
     name: Build - ${{ matrix.os }}
-    needs: [format-check, lint, typecheck, validate-locales]
+    needs: [format-check, lint, lint-px, typecheck, validate-locales]
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     strategy:
@@ -126,7 +139,7 @@ jobs:
 
   test-unit:
     name: Test - Unit Tests (coverage)
-    needs: [format-check, lint, typecheck, validate-locales]
+    needs: [format-check, lint, lint-px, typecheck, validate-locales]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -154,7 +167,7 @@ jobs:
 
   test-integration:
     name: Test - Integration Tests
-    needs: [format-check, lint, typecheck, validate-locales]
+    needs: [format-check, lint, lint-px, typecheck, validate-locales]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
