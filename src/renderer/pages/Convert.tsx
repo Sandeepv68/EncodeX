@@ -399,7 +399,12 @@ export default function Convert() {
                 </Button>
               </Tooltip>
               {!previewOpen && (
-                <ShowPreviewButton variant="outlined" size="small" startIcon={<FontAwesomeIcon icon={faEye} />} onClick={() => setPreviewOpen(true)}>
+                <ShowPreviewButton
+                  variant="outlined"
+                  size="small"
+                  startIcon={<FontAwesomeIcon icon={faEye} />}
+                  onClick={() => setPreviewOpen(true)}
+                >
                   {t('convert.showPreview')}
                 </ShowPreviewButton>
               )}
