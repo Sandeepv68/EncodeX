@@ -458,6 +458,14 @@ export const SNACKBAR_AUTO_HIDE_MS = 6000;
  */
 export const TOAST_DEFAULT_DURATION_MS = 4000;
 
+/**
+ * Height in pixels (before rem scaling) of the custom application title bar.
+ * Top-anchored overlays such as the toast and error snackbars are offset by
+ * this amount so they render below the title bar instead of underneath it.
+ * @const {number} TITLE_BAR_HEIGHT
+ */
+export const TITLE_BAR_HEIGHT = 36;
+
 // --- Stores ---
 /**
  * Maximum number of log entries kept in the in-memory log store.
