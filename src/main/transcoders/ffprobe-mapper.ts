@@ -150,7 +150,7 @@ export function mapFfprobeData(data: ProbeData, fallbackFile: string): MediaInfo
     sampleRate: toNumber(s.sample_rate),
     sampleFormat: s.sample_fmt,
     channels: s.channels,
-    channelLayout: s.channel_layout,
+    channelLayout: typeof s.channel_layout === 'string' ? s.channel_layout : undefined,
     bitsPerSample: toNumber(s.bits_per_sample),
     duration: toNumber(s.duration),
     startTime: toNumber(s.start_time),

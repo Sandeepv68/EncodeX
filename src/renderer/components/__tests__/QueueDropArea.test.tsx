@@ -63,9 +63,7 @@ describe('QueueDropArea', () => {
     );
 
     expect(root.children).toHaveLength(3);
-    expect(getComputedStyle(root.lastElementChild as HTMLElement).top).toBe(
-      `${100 - GAP / 2 - INDICATOR_HEIGHT / 2}px`,
-    );
+    expect(getComputedStyle(root.lastElementChild as HTMLElement).top).toBe(`${100 - GAP / 2 - INDICATOR_HEIGHT / 2}px`);
   });
 
   it('positions the indicator in the gap after the hovered card', () => {
@@ -80,9 +78,7 @@ describe('QueueDropArea', () => {
     );
 
     expect(root.children).toHaveLength(3);
-    expect(getComputedStyle(root.lastElementChild as HTMLElement).top).toBe(
-      `${150 + GAP / 2 - INDICATOR_HEIGHT / 2}px`,
-    );
+    expect(getComputedStyle(root.lastElementChild as HTMLElement).top).toBe(`${150 + GAP / 2 - INDICATOR_HEIGHT / 2}px`);
   });
 
   it('skips the indicator when the active item has no translated rect', () => {
@@ -115,9 +111,7 @@ describe('QueueDropArea', () => {
       </QueueDropArea>,
     );
 
-    expect(getComputedStyle(root.lastElementChild as HTMLElement).top).toBe(
-      `${100 - containerTop - GAP / 2 - INDICATOR_HEIGHT / 2}px`,
-    );
+    expect(getComputedStyle(root.lastElementChild as HTMLElement).top).toBe(`${100 - containerTop - GAP / 2 - INDICATOR_HEIGHT / 2}px`);
 
     spy.mockRestore();
   });

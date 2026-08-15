@@ -125,6 +125,10 @@ export const NavBlip = styled('span', {
   backgroundColor: theme.palette.error.main,
   marginInlineStart: 'auto',
   flexShrink: 0,
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  boxSizing: 'border-box',
   animation: `${blinkKeyframes} 1.2s ease-in-out infinite, ${rippleKeyframes(theme)} 1.2s ease-out infinite`,
   ...($condensed && {
     position: 'absolute',

@@ -74,6 +74,7 @@ import {
   JobCard,
   CardBody,
   CardContent,
+  ThumbWrap,
   ThumbImg,
   CardHeaderRow,
   JobNameText,
@@ -281,7 +282,11 @@ export function QueueJobCardContent({
   return (
     <>
       <CardBody ref={thumbnailAnchorRef}>
-        {thumbnail && <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />}
+        {thumbnail && (
+          <ThumbWrap>
+            <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />
+          </ThumbWrap>
+        )}
         <CardContent>
           <CardHeaderRow>
             <JobTitleWrapper>
