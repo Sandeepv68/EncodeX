@@ -27,7 +27,8 @@
     "descImage": "Verklein afbeeldingen met controle over formaat, kwaliteit en afmetingen",
     "descAudio": "Haal schone audiotracks uit videobestanden",
     "descCut": "Knip en bewerk video met een frame-nauwkeurige speler",
-    "descBatch": "Converteer veel bestanden tegelijk met een slimme wachtrij"
+    "descBatch": "Converteer veel bestanden tegelijk met een slimme wachtrij",
+    "shortcutsFooter": "Druk op {{shortcut}} voor sneltoetsen"
   },
   "closeConfirm": {
     "title": "EncodeX sluiten?",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "Neem het audiospoor op in de uitvoer van de snede. Schakel uit om een video zonder geluid te produceren."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Afspelen",
+    "pause": "Pauze",
+    "stop": "Stoppen",
+    "mute": "Dempen",
+    "unmute": "Geluid aanzetten",
+    "seek": "Zoeken",
+    "playbackTime": "Afspeeltijd",
+    "videoPlayer": "Videospeler"
   },
   "batchQueue": {
     "title": "Batchwachtrij",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "HW-versnellingsmodus",
     "encodingOptions": "Coderingsopties",
     "container": "Container",
-    "containerAuto": "Automatisch (bron)"
+    "containerAuto": "Automatisch (bron)",
+    "optionsEditableAlert": "Opties kunnen nog worden gewijzigd zolang er taken in de wachtrij staan.",
+    "optionsLockedAlert": "Opties zijn vergrendeld terwijl de batch wordt uitgevoerd.",
+    "editOptions": "Opties bewerken",
+    "optionsLocked": "Opties zijn vergrendeld terwijl de batch wordt uitgevoerd",
+    "jobCustomized": "Deze taak gebruikt aangepaste opties",
+    "editOptionsTitle": "Opties bewerken voor {{file}}",
+    "editOptionsSave": "Wijzigingen opslaan",
+    "optionsUpdated": "Taakopties bijgewerkt",
+    "outputCollision": "Een andere taak in de wachtrij gebruikt dit uitvoerpad al.",
+    "outputCollisionSkipped": "{{count}} taak/taken overgeslagen – de nieuwe uitvoer overschrijft het bestand van een andere taak ({{names}})",
+    "optionsUpdateFailed": "Deze taak kan niet meer worden bewerkt.",
+    "condense": "Samenvouwen",
+    "expand": "Uitvouwen"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Conversievoortgang",
     "time": "Tijd",
     "speed": "Snelheid",
     "eta": "VER"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Wissen",
     "download": "Downloaden als TXT",
-    "filter": "Filter by level",
+    "filter": "Filteren op niveau",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +436,7 @@
     "poweredBy": "Mogelijk gemaakt door"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automatisch",
     "none": "Geen"
   },
   "toast": {
@@ -465,6 +479,102 @@
       "rose": "Roos",
       "slate": "Leisteen",
       "dark": "Donker"
+    }
+  },
+  "shortcuts": {
+    "title": "Sneltoetsen",
+    "close": "Sluiten",
+    "sections": {
+      "global": "Algemeen",
+      "convert": "Converteren",
+      "mediaInfo": "Mediainfo",
+      "imageCompress": "Afbeelding comprimeren",
+      "audioExtract": "Audio extraheren",
+      "videoCut": "Video knippen",
+      "batchQueue": "Batchwachtrij",
+      "logs": "Logs",
+      "dashboard": "Dashboard"
+    },
+    "global": {
+      "help": "Sneltoetsen weergeven",
+      "navDashboard": "Naar Dashboard",
+      "navConvert": "Naar Converteren",
+      "navMediaInfo": "Naar Mediainfo",
+      "navImage": "Naar Afbeelding",
+      "navAudio": "Naar Audio",
+      "navCut": "Naar Knippen",
+      "navBatchQueue": "Naar Batchwachtrij",
+      "navLogs": "Naar Logs",
+      "navSettings": "Naar Instellingen",
+      "themeToggle": "Thema wisselen"
+    },
+    "convert": {
+      "input": "Invoerbestand kiezen",
+      "output": "Uitvoerbestand kiezen",
+      "start": "Conversie starten",
+      "pause": "Conversie pauzeren of hervatten",
+      "cancel": "Conversie annuleren",
+      "clear": "Conversietaak wissen",
+      "lossless": "Verliesvrije kopie schakelen",
+      "preview": "Voorbeeld tonen of verbergen"
+    },
+    "mediaInfo": {
+      "open": "Kies een bestand om te inspecteren"
+    },
+    "imageCompress": {
+      "input": "Invoerafbeelding kiezen",
+      "output": "Uitvoerbestand kiezen",
+      "compress": "Afbeelding comprimeren",
+      "aspect": "Beeldverhouding behouden schakelen"
+    },
+    "audioExtract": {
+      "input": "Invoervideo kiezen",
+      "output": "Uitvoerbestand kiezen",
+      "extract": "Audio extraheren",
+      "pause": "Extractie pauzeren of hervatten",
+      "cancel": "Extractie annuleren"
+    },
+    "videoCut": {
+      "open": "Video kiezen of wijzigen",
+      "output": "Uitvoerbestand kiezen",
+      "cut": "Video knippen",
+      "pause": "Knippen pauzeren of hervatten",
+      "cancel": "Knippen annuleren",
+      "clear": "Knipformulier wissen",
+      "useDuration": "Duur gebruiken schakelen",
+      "includeAudio": "Audio opnemen schakelen",
+      "playPause": "Voorbeeld afspelen of pauzeren",
+      "mute": "Geluid van voorbeeld dempen of herstellen",
+      "seekBack": "5 seconden terugspoelen",
+      "seekForward": "5 seconden vooruitspoelen"
+    },
+    "batchQueue": {
+      "add": "Bestanden toevoegen",
+      "start": "Batch starten",
+      "pause": "Wachtrij pauzeren of hervatten",
+      "cancelAll": "Alle taken annuleren",
+      "clearCompleted": "Voltooide taken wissen",
+      "export": "Wachtrij exporteren",
+      "import": "Wachtrij importeren",
+      "condense": "Bediening samenvouwen of uitvouwen",
+      "focusSearch": "Zoekveld focussen",
+      "filterAll": "Filter: alle",
+      "filterQueued": "Filter: in wachtrij",
+      "filterRunning": "Filter: actief",
+      "filterDone": "Filter: voltooid",
+      "filterFailed": "Filter: mislukt"
+    },
+    "logs": {
+      "clear": "Logs wissen",
+      "download": "Logs downloaden"
+    },
+    "dashboard": {
+      "convert": "Converteren openen",
+      "mediaInfo": "Mediainfo openen",
+      "image": "Afbeelding openen",
+      "audio": "Audio openen",
+      "cut": "Knippen openen",
+      "batch": "Batchwachtrij openen"
     }
   }
 }

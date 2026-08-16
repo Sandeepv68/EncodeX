@@ -187,6 +187,44 @@ describe('QueueJobCard', () => {
     expect(screen.queryByRole('button', { name: 'batchQueue.dragHandle' })).not.toBeInTheDocument();
   });
 
+  it('renders an edit-options button for queued jobs when onEditOptions is provided', () => {
+    renderCard(<QueueJobCard job={makeJob()} onRemove={() => {}} onEditOptions={() => {}} />);
+    expect(screen.getByRole('button', { name: 'batchQueue.editOptions' })).toBeInTheDocument();
+  });
+
+  it('omits the edit-options button when no onEditOptions handler is given', () => {
+    renderCard(<QueueJobCard job={makeJob()} onRemove={() => {}} />);
+    expect(screen.queryByRole('button', { name: 'batchQueue.editOptions' })).not.toBeInTheDocument();
+  });
+
+  it('omits the edit-options button for non-queued jobs', () => {
+    renderCard(<QueueJobCard job={makeJob({ status: QUEUE_STATUS.DONE })} onRemove={() => {}} onEditOptions={() => {}} />);
+    expect(screen.queryByRole('button', { name: 'batchQueue.editOptions' })).not.toBeInTheDocument();
+  });
+
+  it('calls onEditOptions with the full job when edit is clicked', () => {
+    const onEditOptions = vi.fn();
+    const queuedJob = makeJob();
+    renderCard(<QueueJobCard job={queuedJob} onRemove={() => {}} onEditOptions={onEditOptions} />);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.editOptions' }));
+    expect(onEditOptions).toHaveBeenCalledWith(queuedJob);
+  });
+
+  it('disables the edit-options button when the batch is locked', () => {
+    renderCard(<QueueJobCard job={makeJob()} onRemove={() => {}} onEditOptions={() => {}} editLocked />);
+    expect(screen.getByRole('button', { name: 'batchQueue.editOptions' })).toBeDisabled();
+  });
+
+  it('renders a customized marker when the job has custom options', () => {
+    renderCard(<QueueJobCard job={makeJob()} onRemove={() => {}} customized />);
+    expect(screen.getByRole('button', { name: 'batchQueue.jobCustomized' })).toBeInTheDocument();
+  });
+
+  it('omits the customized marker by default', () => {
+    renderCard(<QueueJobCard job={makeJob()} onRemove={() => {}} />);
+    expect(screen.queryByRole('button', { name: 'batchQueue.jobCustomized' })).not.toBeInTheDocument();
+  });
+
   it('renders a details toggle button that starts collapsed', () => {
     renderCard(<QueueJobCard job={makeJob()} onRemove={() => {}} />);
     const toggle = screen.getByRole('button', { name: 'batchQueue.expandDetails' });

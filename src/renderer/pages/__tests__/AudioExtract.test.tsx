@@ -263,4 +263,19 @@ describe('AudioExtract', () => {
     await waitFor(() => expect(useErrorStore.getState().currentError).not.toBeNull());
     expect(useErrorStore.getState().currentError?.detail).toBe('encoder crashed');
   });
+
+  it('extracts audio with Ctrl+Enter', async () => {
+    convertFileMock.mockResolvedValue(undefined);
+    renderPage();
+    await selectVideo();
+    fireEvent.change(screen.getByPlaceholderText('audioExtract.placeholderOutput'), { target: { value: '/out/audio.mp3' } });
+    fireEvent.keyDown(window, { code: 'Enter', key: 'Enter', ctrlKey: true });
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+  });
+
+  it('opens the file picker with Ctrl+O', async () => {
+    renderPage();
+    fireEvent.keyDown(window, { code: 'KeyO', key: 'o', ctrlKey: true });
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+  });
 });

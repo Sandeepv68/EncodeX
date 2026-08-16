@@ -13,10 +13,11 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Snackbar } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useToastStore } from '../stores/toastStore';
 import type { Toast } from '../stores/types';
 import { ToastAlert, ToastMessage, ToastDetail } from '../styles/ToastContainer.styles';
-import { TOAST_DEFAULT_DURATION_MS } from '../../shared/constants';
+import { TOAST_DEFAULT_DURATION_MS, TITLE_BAR_HEIGHT } from '../../shared/constants';
 
 /**
  * Renders the active toast from the toast queue.
@@ -29,6 +30,7 @@ import { TOAST_DEFAULT_DURATION_MS } from '../../shared/constants';
  * @returns {JSX.Element | null} The Snackbar with the active toast, or null.
  */
 export default function ToastContainer() {
+  const theme = useTheme();
   const toasts = useToastStore((s) => s.toasts);
   const removeToast = useToastStore((s) => s.removeToast);
   const [active, setActive] = useState<Toast | null>(null);
@@ -93,7 +95,10 @@ export default function ToastContainer() {
       open
       autoHideDuration={active.duration ?? TOAST_DEFAULT_DURATION_MS}
       onClose={handleClose}
-      slotProps={{ transition: { onExited: handleExited } }}
+      slotProps={{
+        root: { style: { top: `calc(${theme.typography.pxToRem(TITLE_BAR_HEIGHT)} + ${theme.spacing(1)})` } },
+        transition: { onExited: handleExited },
+      }}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
       <ToastAlert onClose={handleClose} severity={active.type} variant="filled">

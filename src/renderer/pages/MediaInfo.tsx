@@ -21,6 +21,8 @@ import FileSummary from '../components/FileSummary';
 import StreamDetails from '../components/StreamDetails';
 import ExifSection from '../components/ExifSection';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { useHotkeys } from '../hooks/useHotkeys';
+import { openFileDialog } from '../utils/fileDialog';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
@@ -120,6 +122,21 @@ export default function MediaInfo() {
       setLoading(false);
     }
   };
+
+  /**
+   * Registers the page keyboard shortcut: Ctrl+O opens the native file dialog
+   * (no accept filter, matching the drop zone) and probes the chosen file.
+   * @returns {void}
+   */
+  useHotkeys([
+    {
+      id: 'mediaInfo.open',
+      handler: async () => {
+        const file = await openFileDialog();
+        if (file) handleFile(file);
+      },
+    },
+  ]);
 
   return (
     <Box>

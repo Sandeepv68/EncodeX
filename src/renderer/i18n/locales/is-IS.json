@@ -27,7 +27,8 @@
     "descImage": "Þjappa myndir með stjórn á sniði, gæðum og stærð",
     "descAudio": "Draga hreint hljóð út úr myndbandsskrám",
     "descCut": "Klippa myndbönd með ramma-nákvæmni",
-    "descBatch": "Umbreyta mörgum skrám samtímis með snjallri braut"
+    "descBatch": "Umbreyta mörgum skrám samtímis með snjallri braut",
+    "shortcutsFooter": "Ýttu á {{shortcut}} fyrir flýtilykla"
   },
   "closeConfirm": {
     "title": "Loka EncodeX?",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "Taktu hljóðráðið með í klippuúttakinu. Hakaðu af til að búa til myndband án hljóðs."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Spila",
+    "pause": "Í bið",
+    "stop": "Stoppa",
+    "mute": "Slökkva á hljóði",
+    "unmute": "Kveikja á hljóði",
+    "seek": "Leita",
+    "playbackTime": "Spilunartími",
+    "videoPlayer": "Videóspilari"
   },
   "batchQueue": {
     "title": "Runubraut",
@@ -358,7 +359,7 @@
     "detailsError": "Villulýsing",
     "detailsOutput": "Úttak",
     "detailsOptions": "Valkostir",
-    "detailsTranscoder": "Transcoder",
+    "detailsTranscoder": "Kóðunarbreytir",
     "detailsCreatedAt": "Bætt við",
     "yes": "Já",
     "no": "Nei",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "HW-accel-stilling",
     "encodingOptions": "Kóðunarvalkostir",
     "container": "Gámur",
-    "containerAuto": "Sjálfvirkt (frumrit)"
+    "containerAuto": "Sjálfvirkt (frumrit)",
+    "optionsEditableAlert": "Hægt er að breyta valkostum meðan verk eru í biðröð.",
+    "optionsLockedAlert": "Valkostir eru læstir meðan runan er í gangi.",
+    "editOptions": "Breyta valkostum",
+    "optionsLocked": "Valkostir eru læstir meðan runan er í gangi",
+    "jobCustomized": "Þetta verk notar sérsniðna valkosti",
+    "editOptionsTitle": "Breyta valkostum fyrir {{file}}",
+    "editOptionsSave": "Vista breytingar",
+    "optionsUpdated": "Valkostir verks uppfærðir",
+    "outputCollision": "Annað verk í biðröð notar þessa úttaksleið nú þegar.",
+    "outputCollisionSkipped": "{{count}} verk á hoppað yfir – nýja úttakið mun skrifa yfir skrá annars verks ({{names}})",
+    "optionsUpdateFailed": "Ekki er lengur hægt að breyta þessu verki.",
+    "condense": "Þjappa",
+    "expand": "Stækka"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Framvinda umbreytingar",
     "time": "Tími",
     "speed": "Hraði",
     "eta": "ETA"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Hreinsa",
     "download": "Sækja sem TXT",
-    "filter": "Filter by level",
+    "filter": "Sía eftir stigi",
     "levelAll": "Allt",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -466,5 +480,101 @@
     "hardwareAccelerationHint": "Notaðu GPU-ið þitt (NVIDIA NVENC, Intel QSV, AMD AMF) til kóðunar og afkóðunar myndbanda. Slökktu fyrir eingöngu hugbúnaðarkóðun.",
     "hwaccelModeHint": "Sjálfvirkt: GPU-ið afkóðar og kóðar (hraðast, ekki alltaf samhæft). Aðeins kóðari: GPU-ið kóðar og örgjörvinn afkóðar (öruggast).",
     "encoderTypeHint": "Síar myndbandscodec-listann. Sjálfvirkt sýnir alla kóðara, Vélbúnaður sýnir aðeins GPU-kóðara, Hugbúnaður sýnir aðeins CPU-kóðara."
+  },
+  "shortcuts": {
+    "title": "Flýtilyklar",
+    "close": "Loka",
+    "sections": {
+      "global": "Almennt",
+      "convert": "Umbreyta",
+      "mediaInfo": "Miðlunaupplýsingar",
+      "imageCompress": "Þjappa mynd",
+      "audioExtract": "Draga út hljóð",
+      "videoCut": "Klippa myndband",
+      "batchQueue": "Runubíðröð",
+      "logs": "Annálar",
+      "dashboard": "Mælaborð"
+    },
+    "global": {
+      "help": "Sýna flýtilykla",
+      "navDashboard": "Fara á mælaborð",
+      "navConvert": "Fara í Umbreyta",
+      "navMediaInfo": "Fara í miðlunaupplýsingar",
+      "navImage": "Fara í Mynd",
+      "navAudio": "Fara í Hljóð",
+      "navCut": "Fara í Klippa",
+      "navBatchQueue": "Fara í runubíðröð",
+      "navLogs": "Fara í annála",
+      "navSettings": "Fara í stillingar",
+      "themeToggle": "Skipta um þema"
+    },
+    "convert": {
+      "input": "Veldu inntaksskrá",
+      "output": "Veldu úttaksskrá",
+      "start": "Byrja umbreytingu",
+      "pause": "Gera hlé á eða halda áfram umbreytingu",
+      "cancel": "Hætta við umbreytingu",
+      "clear": "Hreinsa umbreytingarverk",
+      "lossless": "Skipta um tapfrjálsa afritun",
+      "preview": "Sýna eða fela forskoðun"
+    },
+    "mediaInfo": {
+      "open": "Veldu skrá til að skoða"
+    },
+    "imageCompress": {
+      "input": "Veldu inntaksmynd",
+      "output": "Veldu úttaksskrá",
+      "compress": "Þjappa mynd",
+      "aspect": "Skipta um varðveita hlutfall"
+    },
+    "audioExtract": {
+      "input": "Veldu inntaksmyndband",
+      "output": "Veldu úttaksskrá",
+      "extract": "Draga út hljóð",
+      "pause": "Gera hlé á eða halda áfram útdrætti",
+      "cancel": "Hætta við útdrátt"
+    },
+    "videoCut": {
+      "open": "Veldu eða skiptu um myndband",
+      "output": "Veldu úttaksskrá",
+      "cut": "Klippa myndband",
+      "pause": "Gera hlé á eða halda áfram klippingu",
+      "cancel": "Hætta við klippingu",
+      "clear": "Hreinsa klippingarform",
+      "useDuration": "Skipta um nota lengd",
+      "includeAudio": "Skipta um hafa hljóð með",
+      "playPause": "Spila eða gera hlé á forskoðun",
+      "mute": "Slökkva eða kveikja á hljóði forskoðunar",
+      "seekBack": "Leita 5 sekúndur aftur",
+      "seekForward": "Leita 5 sekúndur fram"
+    },
+    "batchQueue": {
+      "add": "Bæta við skráum",
+      "start": "Byrja runu",
+      "pause": "Gera hlé á eða halda áfram bíðröð",
+      "cancelAll": "Hætta við öll verk",
+      "clearCompleted": "Hreinsa lokið verk",
+      "export": "Flytja út bíðröð",
+      "import": "Flytja inn bíðröð",
+      "condense": "Þjappa eða stækka stjórntæki",
+      "focusSearch": "Einbeita leitarreit",
+      "filterAll": "Sía: allt",
+      "filterQueued": "Sía: í bíðröð",
+      "filterRunning": "Sía: keyrir",
+      "filterDone": "Sía: lokið",
+      "filterFailed": "Sía: mistókst"
+    },
+    "logs": {
+      "clear": "Hreinsa annála",
+      "download": "Sækja annála"
+    },
+    "dashboard": {
+      "convert": "Opna Umbreyta",
+      "mediaInfo": "Opna miðlunaupplýsingar",
+      "image": "Opna Mynd",
+      "audio": "Opna Hljóð",
+      "cut": "Opna Klippa",
+      "batch": "Opna runubíðröð"
+    }
   }
 }

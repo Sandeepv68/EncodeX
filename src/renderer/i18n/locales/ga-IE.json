@@ -27,7 +27,8 @@
     "descImage": "Comhbhrúigh íomhánna le smacht ar fhormáid, cáilíocht agus méid",
     "descAudio": "Bain fuaim ghlan as comhaid físeáin",
     "descCut": "Gearr físeáin le cruinneas fráma",
-    "descBatch": "Tiontaigh comhaid iolracha ag an am céanna le scuaine chliste"
+    "descBatch": "Tiontaigh comhaid iolracha ag an am céanna le scuaine chliste",
+    "shortcutsFooter": "Brúigh {{shortcut}} le haghaidh aicearraí méarchláir"
   },
   "closeConfirm": {
     "title": "Dún EncodeX?",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "Ionchuimsigh an rian fuaime san aschur gearrtha. Díthiceáil chun físeán gan fuaim a chruthú."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
+    "play": "Seinn",
+    "pause": "Sos",
     "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "mute": "Balbhaigh",
+    "unmute": "Díbhhalbhaigh",
+    "seek": "Cuardaigh",
+    "playbackTime": "Am seinnte",
+    "videoPlayer": "Seinnteoir físeáin"
   },
   "batchQueue": {
     "title": "Scuaine Bhaisc",
@@ -373,14 +374,27 @@
     "optionDuration": "Fad",
     "optionCopy": "Cóipeáil Sruth",
     "optionAudio": "Fuaim",
-    "optionHwaccel": "HW accel",
+    "optionHwaccel": "Luasghéarú crua-earraí",
     "optionHwaccelMode": "Mód HW accel",
     "encodingOptions": "Roghanna Códaithe",
     "container": "Coimeádán",
-    "containerAuto": "Uathoibríoch (foinse)"
+    "containerAuto": "Uathoibríoch (foinse)",
+    "optionsEditableAlert": "Is féidir roghanna a athrú fad is atá poist sa scuaine.",
+    "optionsLockedAlert": "Tá roghanna faoi ghlas agus an bhaisc á rith.",
+    "editOptions": "Cuir roghanna in eagar",
+    "optionsLocked": "Tá roghanna faoi ghlas agus an bhaisc á rith",
+    "jobCustomized": "Úsáideann an post seo roghanna saincheaptha",
+    "editOptionsTitle": "Cuir roghanna in eagar do {{file}}",
+    "editOptionsSave": "Sábháil athruithe",
+    "optionsUpdated": "Roghanna an phoist nuashonraithe",
+    "outputCollision": "Tá post eile sa scuaine ag úsáid an chosáin aschuir seo cheana.",
+    "outputCollisionSkipped": "Scipeáladh {{count}} phost – scríobhfaidh an t-aschur nua thar comhad poist eile ({{names}})",
+    "optionsUpdateFailed": "Ní féidir an post seo a chur in eagar níos mó.",
+    "condense": "Crap",
+    "expand": "Leathnaigh"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Dul chun cinn an chomhshó",
     "time": "Am",
     "speed": "Luas",
     "eta": "ETA"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Glan",
     "download": "Íoslódáil mar TXT",
-    "filter": "Filter by level",
+    "filter": "Scag de réir leibhéil",
     "levelAll": "Uile",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -466,5 +480,101 @@
     "hardwareAccelerationHint": "Úsáid do GPU (NVIDIA NVENC, Intel QSV, AMD AMF) le haghaidh códú agus díchódú físeáin. Múch le haghaidh códú bogearraí amháin.",
     "hwaccelModeHint": "Uathoibríoch: déanann an GPU díchódú agus códú araon (is tapúla, ní i gcónaí comhoiriúnach). Ionchódóir amháin: GPU ag códú agus LAP ag díchódú (is sábháilte).",
     "encoderTypeHint": "Scag an liosta codec físeáin. Taispeánann Uathoibríoch na hionchódóirí uile, taispeánann Crua-earraí ionchódóirí GPU amháin, taispeánann Bogearraí ionchódóirí LAP amháin."
+  },
+  "shortcuts": {
+    "title": "Aicearraí Méarchláir",
+    "close": "Dún",
+    "sections": {
+      "global": "Domhanda",
+      "convert": "Tiontaigh",
+      "mediaInfo": "Eolas Meán",
+      "imageCompress": "Comhbhrú Íomhá",
+      "audioExtract": "Bain Fuaim Amach",
+      "videoCut": "Gearr Físeán",
+      "batchQueue": "Scuaine Baisc",
+      "logs": "Logaí",
+      "dashboard": "Deais"
+    },
+    "global": {
+      "help": "Taispeáin aicearraí méarchláir",
+      "navDashboard": "Téigh go dtí an Deais",
+      "navConvert": "Téigh go Tiontaigh",
+      "navMediaInfo": "Téigh go dtí Eolas Meán",
+      "navImage": "Téigh go hÍomhá",
+      "navAudio": "Téigh go Fuaim",
+      "navCut": "Téigh go Gearr",
+      "navBatchQueue": "Téigh go dtí an Scuaine Baisc",
+      "navLogs": "Téigh go Logaí",
+      "navSettings": "Téigh go Socruithe",
+      "themeToggle": "Scaip téama"
+    },
+    "convert": {
+      "input": "Roghnaigh comhad ionchuir",
+      "output": "Roghnaigh comhad aschuir",
+      "start": "Tosaigh an tiontú",
+      "pause": "Cuir an tiontú ar sos nó atosaigh é",
+      "cancel": "Cealaigh an tiontú",
+      "clear": "Glan post tiontaithe",
+      "lossless": "Scaip cóip gan chailliúint",
+      "preview": "Taispeáin nó folaigh réamhamharc"
+    },
+    "mediaInfo": {
+      "open": "Roghnaigh comhad le scrúdú"
+    },
+    "imageCompress": {
+      "input": "Roghnaigh íomhá ionchuir",
+      "output": "Roghnaigh comhad aschuir",
+      "compress": "Comhbhrúigh íomhá",
+      "aspect": "Scaip coinnigh cóimheas gné"
+    },
+    "audioExtract": {
+      "input": "Roghnaigh físeán ionchuir",
+      "output": "Roghnaigh comhad aschuir",
+      "extract": "Bain fuaim amach",
+      "pause": "Cuir an eastóscadh ar sos nó atosaigh é",
+      "cancel": "Cealaigh an t-eastóscadh"
+    },
+    "videoCut": {
+      "open": "Roghnaigh nó athraigh físeán",
+      "output": "Roghnaigh comhad aschuir",
+      "cut": "Gearr físeán",
+      "pause": "Cuir an gearradh ar sos nó atosaigh é",
+      "cancel": "Cealaigh an gearradh",
+      "clear": "Glan foirm an ghearrtha",
+      "useDuration": "Scaip úsáid fad",
+      "includeAudio": "Scaip cuir fuaim san áireamh",
+      "playPause": "Seinn nó cuir réamhamharc ar sos",
+      "mute": "Balbhaigh nó díbhhalbhaigh réamhamharc",
+      "seekBack": "Cuardaigh siar 5 soicind",
+      "seekForward": "Cuardaigh ar aghaidh 5 soicind"
+    },
+    "batchQueue": {
+      "add": "Cuir comhaid leis",
+      "start": "Tosaigh baisce",
+      "pause": "Cuir an scuaine ar sos nó atosaigh í",
+      "cancelAll": "Cealaigh na poist go léir",
+      "clearCompleted": "Glan poist críochnaithe",
+      "export": "Easpórtáil scuaine",
+      "import": "Iompórtáil scuaine",
+      "condense": "Comhdhlúthaigh nó leathnaigh rialuithe",
+      "focusSearch": "Dírigh ar réimse cuardaigh",
+      "filterAll": "Scag: uile",
+      "filterQueued": "Scag: i scuaine",
+      "filterRunning": "Scag: ar siúl",
+      "filterDone": "Scag: déanta",
+      "filterFailed": "Scag: theip"
+    },
+    "logs": {
+      "clear": "Glan logaí",
+      "download": "Íoslódáil logaí"
+    },
+    "dashboard": {
+      "convert": "Oscail Tiontaigh",
+      "mediaInfo": "Oscail Eolas Meán",
+      "image": "Oscail Íomhá",
+      "audio": "Oscail Fuaim",
+      "cut": "Oscail Gearr",
+      "batch": "Oscail an Scuaine Baisc"
+    }
   }
 }

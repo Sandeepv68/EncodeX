@@ -27,7 +27,8 @@
     "descImage": "Förminska bilder med kontroll över format, kvalitet och dimensioner",
     "descAudio": "Extrahera rena ljudspår från videofiler",
     "descCut": "Trimma och klipp video med en bildruteexakt spelare",
-    "descBatch": "Konvertera många filer samtidigt med en smart kö"
+    "descBatch": "Konvertera många filer samtidigt med en smart kö",
+    "shortcutsFooter": "Tryck på {{shortcut}} för kortkommandon"
   },
   "closeConfirm": {
     "title": "Stänga EncodeX?",
@@ -58,7 +59,7 @@
     "startConversion": "Starta konvertering",
     "converting": "Konverterar...",
     "pause": "Pausa",
-    "resume": "Resume",
+    "resume": "Återuppta",
     "cancel": "Avbryt",
     "placeholderBitrate": "t.ex. 2000k",
     "placeholderAudioBitrate": "t.ex. 192k",
@@ -285,18 +286,18 @@
     "audioEnabledHint": "Inkludera ljudspåret i klippets utdata. Avmarkera för att producera en video utan ljud."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Spela upp",
+    "pause": "Pausa",
+    "stop": "Stoppa",
+    "mute": "Ljud av",
+    "unmute": "Ljud på",
+    "seek": "Sök",
+    "playbackTime": "Uppspelningstid",
+    "videoPlayer": "Videospelare"
   },
   "batchQueue": {
     "title": "Batchkö",
-    "operation": "Operation",
+    "operation": "Åtgärd",
     "suffix": "Ändelse",
     "addFiles": "Lägg till filer",
     "cancelAll": "Avbryt alla",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "HW-accel-läge",
     "encodingOptions": "Kodningsalternativ",
     "container": "Container",
-    "containerAuto": "Automatisk (källa)"
+    "containerAuto": "Automatisk (källa)",
+    "optionsEditableAlert": "Alternativen kan fortfarande ändras medan det finns jobb i kön.",
+    "optionsLockedAlert": "Alternativen är låsta medan batchen körs.",
+    "editOptions": "Redigera alternativ",
+    "optionsLocked": "Alternativen är låsta medan batchen körs",
+    "jobCustomized": "Det här jobbet använder anpassade alternativ",
+    "editOptionsTitle": "Redigera alternativ för {{file}}",
+    "editOptionsSave": "Spara ändringar",
+    "optionsUpdated": "Jobbalternativen har uppdaterats",
+    "outputCollision": "Ett annat jobb i kön använder redan den här utdatasökvägen.",
+    "outputCollisionSkipped": "{{count}} jobb hoppades över – den nya utdatan skriver över ett annat jobbs fil ({{names}})",
+    "optionsUpdateFailed": "Det här jobbet kan inte längre redigeras.",
+    "condense": "Komprimera",
+    "expand": "Expandera"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Konverteringsförlopp",
     "time": "Tid",
     "speed": "Hastighet",
     "eta": "BPT"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Rensa",
     "download": "Ladda ner som TXT",
-    "filter": "Filter by level",
+    "filter": "Filtrera efter nivå",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +436,7 @@
     "poweredBy": "Drivs av"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automatiskt",
     "none": "Ingen"
   },
   "toast": {
@@ -465,6 +479,102 @@
       "rose": "Ros",
       "slate": "Skiffer",
       "dark": "Mörk"
+    }
+  },
+  "shortcuts": {
+    "title": "Kortkommandon",
+    "close": "Stäng",
+    "sections": {
+      "global": "Allmänt",
+      "convert": "Konvertera",
+      "mediaInfo": "Mediainformation",
+      "imageCompress": "Bildkomprimering",
+      "audioExtract": "Ljudextraktion",
+      "videoCut": "Klipp video",
+      "batchQueue": "Batchkö",
+      "logs": "Loggar",
+      "dashboard": "Instrumentpanel"
+    },
+    "global": {
+      "help": "Visa kortkommandon",
+      "navDashboard": "Gå till instrumentpanelen",
+      "navConvert": "Gå till Konvertera",
+      "navMediaInfo": "Gå till mediainformation",
+      "navImage": "Gå till Bild",
+      "navAudio": "Gå till Ljud",
+      "navCut": "Gå till Klipp",
+      "navBatchQueue": "Gå till batchkön",
+      "navLogs": "Gå till loggar",
+      "navSettings": "Gå till inställningar",
+      "themeToggle": "Växla tema"
+    },
+    "convert": {
+      "input": "Välj indatafil",
+      "output": "Välj utdatafil",
+      "start": "Starta konvertering",
+      "pause": "Pausa eller återuppta konvertering",
+      "cancel": "Avbryt konvertering",
+      "clear": "Rensa konverteringsjobb",
+      "lossless": "Växla förlustfri kopiering",
+      "preview": "Visa eller dölj förhandsvisning"
+    },
+    "mediaInfo": {
+      "open": "Välj en fil att inspektera"
+    },
+    "imageCompress": {
+      "input": "Välj indatabild",
+      "output": "Välj utdatafil",
+      "compress": "Komprimera bild",
+      "aspect": "Växla behåll bildförhållande"
+    },
+    "audioExtract": {
+      "input": "Välj indatavideo",
+      "output": "Välj utdatafil",
+      "extract": "Extrahera ljud",
+      "pause": "Pausa eller återuppta extraktion",
+      "cancel": "Avbryt extraktion"
+    },
+    "videoCut": {
+      "open": "Välj eller byt video",
+      "output": "Välj utdatafil",
+      "cut": "Klipp video",
+      "pause": "Pausa eller återuppta klippning",
+      "cancel": "Avbryt klippning",
+      "clear": "Rensa klippformulär",
+      "useDuration": "Växla använd varaktighet",
+      "includeAudio": "Växla inkludera ljud",
+      "playPause": "Spela upp eller pausa förhandsvisning",
+      "mute": "Tysta eller återställ ljud i förhandsvisning",
+      "seekBack": "Spola tillbaka 5 sekunder",
+      "seekForward": "Spola framåt 5 sekunder"
+    },
+    "batchQueue": {
+      "add": "Lägg till filer",
+      "start": "Starta batch",
+      "pause": "Pausa eller återuppta kön",
+      "cancelAll": "Avbryt alla jobb",
+      "clearCompleted": "Rensa slutförda jobb",
+      "export": "Exportera kö",
+      "import": "Importera kö",
+      "condense": "Fäll ihop eller expandera kontroller",
+      "focusSearch": "Fokusera sökfältet",
+      "filterAll": "Filter: alla",
+      "filterQueued": "Filter: i kö",
+      "filterRunning": "Filter: körs",
+      "filterDone": "Filter: klara",
+      "filterFailed": "Filter: misslyckade"
+    },
+    "logs": {
+      "clear": "Rensa loggar",
+      "download": "Ladda ner loggar"
+    },
+    "dashboard": {
+      "convert": "Öppna Konvertera",
+      "mediaInfo": "Öppna mediainformation",
+      "image": "Öppna Bild",
+      "audio": "Öppna Ljud",
+      "cut": "Öppna Klipp",
+      "batch": "Öppna batchkön"
     }
   }
 }

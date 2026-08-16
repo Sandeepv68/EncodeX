@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Chip, Alert } from '@mui/material';
+import { Box, Chip, Alert, Stack } from '@mui/material';
 import { COLORS } from '../colors';
 
 export const AccelAlert = styled(Alert)(({}) => ({
@@ -36,3 +36,8 @@ export const FileChip = styled(Chip)(({ theme }) => ({
     minWidth: 0,
   },
 }));
+
+/** Cut action buttons row that wraps onto new lines on narrow screens. @const ActionRow */
+export const ActionRow = styled(Stack)({
+  flexWrap: 'wrap',
+});

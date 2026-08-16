@@ -94,7 +94,7 @@ export function formatStreamSummary(stream: MediaStreamInfo): string {
     if (stream.frameRate) parts.push(`${stream.frameRate} fps`);
     if (stream.bitrate) parts.push(formatBitrate(stream.bitrate));
   } else if (stream.type === 'audio') {
-    const layout = stream.channelLayout?.trim();
+    const layout = typeof stream.channelLayout === 'string' ? stream.channelLayout.trim() : undefined;
     if (layout) parts.push(layout);
     else if (stream.channels != null && stream.channels > 0) parts.push(`${stream.channels} ch`);
     if (stream.sampleRate != null && stream.sampleRate > 0) parts.push(`${Math.round(stream.sampleRate / 1000)} kHz`);

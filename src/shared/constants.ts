@@ -318,6 +318,13 @@ export const MAX_PENDING_AUDIO_CHUNKS = 200;
 export const SEEK_COALESCE_MS = 120;
 
 /**
+ * Step size in seconds applied by the keyboard seek shortcuts (arrow keys) in
+ * the media player.
+ * @const {number} SEEK_KEY_STEP_SECONDS
+ */
+export const SEEK_KEY_STEP_SECONDS = 5;
+
+/**
  * Maximum number of video frames buffered ahead of the playback position.
  * @const {number} MAX_BUFFERED_FRAMES
  */
@@ -457,6 +464,14 @@ export const SNACKBAR_AUTO_HIDE_MS = 6000;
  * @const {number} TOAST_DEFAULT_DURATION_MS
  */
 export const TOAST_DEFAULT_DURATION_MS = 4000;
+
+/**
+ * Height in pixels (before rem scaling) of the custom application title bar.
+ * Top-anchored overlays such as the toast and error snackbars are offset by
+ * this amount so they render below the title bar instead of underneath it.
+ * @const {number} TITLE_BAR_HEIGHT
+ */
+export const TITLE_BAR_HEIGHT = 36;
 
 // --- Stores ---
 /**

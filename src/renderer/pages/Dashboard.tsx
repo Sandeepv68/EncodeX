@@ -19,11 +19,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Typography } from '@mui/material';
 import { Logger } from '../../shared/logger';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import { pageIcons } from '../pageIcons';
 import { resolveDashboardAppIcon } from '../utils/easter-egg-assets';
+import { useHotkeys } from '../hooks/useHotkeys';
+import { SHORTCUTS, SHORTCUT_BY_ID, formatShortcut } from '../constants/shortcuts';
 
 import {
   WelcomeTitle,
@@ -34,6 +35,11 @@ import {
   FeatureIconBox,
   CardTitleText,
   CardBody,
+  DashboardRoot,
+  FeatureGrid,
+  FeatureGridItem,
+  CardDescription,
+  DashboardFooter,
 } from '../styles/Dashboard.styles';
 import { LOG_DASHBOARD_RENDERED } from '../../shared/log-constants';
 
@@ -82,25 +88,29 @@ export default function Dashboard() {
   useEffect(() => {
     log.debug(LOG_DASHBOARD_RENDERED);
   }, []);
+
+  /**
+   * Registers the dashboard keyboard shortcuts (1-6), one per feature card,
+   * navigating to each spec's target route.
+   * @returns {void}
+   */
+  useHotkeys(
+    SHORTCUTS.filter((spec) => spec.section === 'dashboard' && spec.to).map((spec) => ({
+      id: spec.id,
+      handler: () => navigate(spec.to!),
+    })),
+  );
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100%',
-        width: '100%',
-      }}
-    >
+    <DashboardRoot>
       <WelcomeTitle variant="h4" component="h1">
         <WelcomeIcon src={appIcon} alt="" draggable={false} />
         {t('dashboard.welcome')} 👋
       </WelcomeTitle>
       <DashboardSubtitle color="text.secondary">{t('dashboard.subtitle')}</DashboardSubtitle>
-      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%' }}>
+      <FeatureGrid container spacing={2}>
         {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs' && item.to !== '/settings').map((item, index) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.to} sx={{ display: 'flex' }}>
+          <FeatureGridItem size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
             <FeatureCard sx={{ animationDelay: `${0.3 + index * 0.08}s` }}>
               <CardLink onClick={() => navigate(item.to)}>
                 <FeatureIconBox>{pageIcons[item.to]}</FeatureIconBox>
@@ -110,15 +120,18 @@ export default function Dashboard() {
                       `nav.${item.to === '/convert' ? 'convert' : item.to === '/media-info' ? 'mediaInfo' : item.to === '/image-compress' ? 'image' : item.to === '/audio-extract' ? 'audio' : item.to === '/video-cut' ? 'cut' : 'batchQueue'}`,
                     )}
                   </CardTitleText>
-                  <Typography variant="body2" color="text.secondary" sx={{ marginTop: 'auto' }}>
+                  <CardDescription variant="body2" color="text.secondary">
                     {t(`dashboard.${descKeys[item.to]}`)}
-                  </Typography>
+                  </CardDescription>
                 </CardBody>
               </CardLink>
             </FeatureCard>
-          </Grid>
+          </FeatureGridItem>
         ))}
-      </Grid>
-    </Box>
+      </FeatureGrid>
+      <DashboardFooter variant="caption" color="text.secondary" data-testid="dashboard-shortcuts-hint">
+        {t('dashboard.shortcutsFooter', { shortcut: formatShortcut(SHORTCUT_BY_ID['global.help'].keys) })}
+      </DashboardFooter>
+    </DashboardRoot>
   );
 }

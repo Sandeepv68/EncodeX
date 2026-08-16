@@ -12,7 +12,7 @@
  */
 
 import { useMemo, useState } from 'react';
-import { Box, InputAdornment, Menu, MenuItem, TextField, Tooltip } from '@mui/material';
+import { InputAdornment, Menu, MenuItem, TextField, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
@@ -25,9 +25,9 @@ import {
   LanguageButton,
   LanguageLabel,
   FlagIconWrapper,
+  SearchBox,
+  LocaleList,
   menuPaperSx,
-  menuSearchBoxSx,
-  menuListSx,
 } from '../styles/LanguageMenu.styles';
 import { LANGUAGE_STORAGE_KEY } from '../../shared/constants';
 import { LOG_SWITCHING_LANGUAGE_TO } from '../../shared/log-constants';
@@ -140,7 +140,7 @@ export default function LanguageMenu({ condensed = false }: { condensed?: boolea
         </Tooltip>
       </LanguageMenuBox>
       <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={closeMenu} disableAutoFocusItem slotProps={{ paper: { sx: menuPaperSx } }}>
-        <Box sx={menuSearchBoxSx}>
+        <SearchBox>
           <TextField
             fullWidth
             size="small"
@@ -164,14 +164,14 @@ export default function LanguageMenu({ condensed = false }: { condensed?: boolea
               },
             }}
           />
-        </Box>
-        <Box sx={menuListSx}>
+        </SearchBox>
+        <LocaleList>
           {filteredLocales.map(({ code, label }) => (
             <MenuItem key={code} selected={isActive(code)} onClick={() => switchLanguage(code)}>
               <FlagIcon locale={code} /> {label}
             </MenuItem>
           ))}
-        </Box>
+        </LocaleList>
       </Menu>
     </>
   );

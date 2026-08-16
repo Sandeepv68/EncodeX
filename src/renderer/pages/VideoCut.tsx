@@ -56,11 +56,14 @@ import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import type { MediaInfo } from '../../shared/types';
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { useHotkeys } from '../hooks/useHotkeys';
+import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { focusFirstError } from '../utils/focusFirstError';
 import { useSettingsStore } from '../stores/settingsStore';
+import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
-import { SectionHeader, FileChip, SectionsStack, HeadingGroup, AccelAlert } from '../styles/VideoCut.styles';
+import { SectionHeader, FileChip, SectionsStack, HeadingGroup, AccelAlert, ActionRow } from '../styles/VideoCut.styles';
 import { FieldLabel, ToggleRow, SectionCard, SectionTitle } from '../styles/form.styles';
 import {
   LOG_ARROW,
@@ -209,6 +212,7 @@ export default function VideoCut() {
    * @type {boolean}
    */
   const [isPaused, setIsPaused] = useState(false);
+  const accelAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL));
 
   /**
    * Whether the "cancel running job" confirmation dialog is open.
@@ -610,6 +614,34 @@ export default function VideoCut() {
     resetForm();
   };
 
+  /**
+   * Registers the page keyboard shortcuts (Ctrl+O open, Ctrl+Shift+S output,
+   * Ctrl+Enter cut, Ctrl+Shift+P pause, Ctrl+Shift+C cancel, Ctrl+Shift+X
+   * clear, U use duration, A include audio). The playback keys (Space, M, ←/→)
+   * are registered by the MediaPlayer itself. Bindings mirror the enabled state
+   * of the equivalent on-page controls.
+   * @returns {void}
+   */
+  useHotkeys([
+    { id: 'videoCut.open', handler: () => handleBrowseVideo() },
+    {
+      id: 'videoCut.output',
+      handler: async () => {
+        const f = await window.electronAPI.selectOutput();
+        if (f) {
+          setOutput(f);
+          clearFieldError('output');
+        }
+      },
+    },
+    { id: 'videoCut.cut', handler: () => handleCut(), enabled: !!input && !!output && !isConverting },
+    { id: 'videoCut.pause', handler: () => pauseCut(), enabled: isConverting && !isPaused },
+    { id: 'videoCut.cancel', handler: () => setCancelConfirmOpen(true), enabled: isConverting },
+    { id: 'videoCut.clear', handler: () => setJobCancelOpen(true), enabled: isDirty && !isConverting },
+    { id: 'videoCut.useDuration', handler: () => setUseDuration(!useDuration) },
+    { id: 'videoCut.includeAudio', handler: () => setIncludeAudio(!includeAudio) },
+  ]);
+
   return (
     <PageContainer title={t('videoCut.title')} icon={pageIcons['/video-cut']} paper={false}>
       <SectionsStack>
@@ -666,7 +698,11 @@ export default function VideoCut() {
             {t('videoCut.details')}
           </SectionTitle>
 
-          {settingsHardwareAcceleration && <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>}
+          {settingsHardwareAcceleration && !accelAlertDismissed && (
+            <AccelAlert severity="info" onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL)}>
+              {t('convert.hardwareAccelAlert')}
+            </AccelAlert>
+          )}
 
           <Box>
             <FieldLabel>
@@ -782,8 +818,8 @@ export default function VideoCut() {
             <InfoTooltip title={t('videoCut.useDurationHint')} />
           </ToggleRow>
 
-          <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
-            <Tooltip title={t('videoCut.cutHint')} arrow>
+          <ActionRow direction="row" spacing={1} useFlexGap>
+            <Tooltip title={shortcutHint(t, 'videoCut.cutHint', SHORTCUT_BY_ID['videoCut.cut'].keys)} arrow>
               <span>
                 <Button
                   variant="contained"
@@ -840,11 +876,18 @@ export default function VideoCut() {
                 {t('videoCut.cancelJob')}
               </Button>
             )}
-          </Stack>
+          </ActionRow>
 
           {progress && isConverting && (
             <ErrorBoundary fallback={null}>
-              <ProgressBar percent={progress.percent} time={progress.time} speed={progress.speed} eta={progress.eta} paused={isPaused} />
+              <ProgressBar
+                percent={progress.percent}
+                time={progress.time}
+                speed={progress.speed}
+                eta={progress.eta}
+                paused={isPaused}
+                shadowed
+              />
             </ErrorBoundary>
           )}
         </SectionCard>

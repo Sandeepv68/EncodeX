@@ -27,7 +27,8 @@
     "descImage": "Nén hình ảnh với kiểm soát định dạng, chất lượng và kích thước",
     "descAudio": "Trích xuất âm thanh sạch từ tệp video",
     "descCut": "Cắt video với độ chính xác theo khung hình",
-    "descBatch": "Chuyển đổi nhiều tệp cùng lúc với hàng đợi thông minh"
+    "descBatch": "Chuyển đổi nhiều tệp cùng lúc với hàng đợi thông minh",
+    "shortcutsFooter": "Nhấn {{shortcut}} để xem phím tắt"
   },
   "closeConfirm": {
     "title": "Đóng EncodeX?",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "Bao gồm rãnh âm thanh trong đầu ra cắt. Bỏ chọn để tạo video không có âm thanh."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Phát",
+    "pause": "Tạm dừng",
+    "stop": "Dừng",
+    "mute": "Tắt tiếng",
+    "unmute": "Bật tiếng",
+    "seek": "Tìm",
+    "playbackTime": "Thời gian phát",
+    "videoPlayer": "Trình phát video"
   },
   "batchQueue": {
     "title": "Hàng đợi hàng loạt",
@@ -333,7 +334,7 @@
     "paused": "Đã tạm dừng",
     "dragHandle": "Kéo để sắp xếp lại",
     "badgeCount": "{{count}} tác vụ trong hàng đợi hàng loạt",
-    "operationTranscode": "Transcode",
+    "operationTranscode": "Chuyển mã",
     "operationExtractAudio": "Trích xuất âm thanh",
     "operationCompressImage": "Nén hình ảnh",
     "outputDirPlaceholder": "Thư mục đầu ra (tùy chọn)",
@@ -358,7 +359,7 @@
     "detailsError": "Chi tiết lỗi",
     "detailsOutput": "Đầu ra",
     "detailsOptions": "Tùy chọn",
-    "detailsTranscoder": "Transcoder",
+    "detailsTranscoder": "Trình chuyển mã",
     "detailsCreatedAt": "Đã thêm",
     "yes": "Có",
     "no": "Không",
@@ -373,14 +374,27 @@
     "optionDuration": "Thời lượng",
     "optionCopy": "Sao chép luồng",
     "optionAudio": "Âm thanh",
-    "optionHwaccel": "HW accel",
+    "optionHwaccel": "Tăng tốc phần cứng",
     "optionHwaccelMode": "Chế độ HW accel",
     "encodingOptions": "Tùy chọn mã hóa",
-    "container": "Container",
-    "containerAuto": "Tự động (nguồn)"
+    "container": "Vùng chứa",
+    "containerAuto": "Tự động (nguồn)",
+    "optionsEditableAlert": "Các tùy chọn vẫn có thể được thay đổi khi công việc đang chờ trong hàng đợi.",
+    "optionsLockedAlert": "Các tùy chọn bị khóa khi hàng đợi đang chạy.",
+    "editOptions": "Sửa tùy chọn",
+    "optionsLocked": "Các tùy chọn bị khóa khi hàng đợi đang chạy",
+    "jobCustomized": "Công việc này sử dụng tùy chọn tùy chỉnh",
+    "editOptionsTitle": "Sửa tùy chọn cho {{file}}",
+    "editOptionsSave": "Lưu thay đổi",
+    "optionsUpdated": "Đã cập nhật tùy chọn công việc",
+    "outputCollision": "Một công việc đang chờ khác đã sử dụng đường dẫn đầu ra này.",
+    "outputCollisionSkipped": "Đã bỏ qua {{count}} công việc – đầu ra mới sẽ ghi đè lên tệp của công việc khác ({{names}})",
+    "optionsUpdateFailed": "Không còn có thể sửa công việc này.",
+    "condense": "Thu gọn",
+    "expand": "Mở rộng"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Tiến trình chuyển đổi",
     "time": "Thời gian",
     "speed": "Tốc độ",
     "eta": "ETA"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Xóa",
     "download": "Tải xuống dưới dạng TXT",
-    "filter": "Filter by level",
+    "filter": "Lọc theo cấp độ",
     "levelAll": "Tất cả",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -466,5 +480,101 @@
     "hardwareAccelerationHint": "Sử dụng GPU của bạn (NVIDIA NVENC, Intel QSV, AMD AMF) để mã hóa và giải mã video. Tắt để chỉ mã hóa bằng phần mềm.",
     "hwaccelModeHint": "Tự động: GPU thực hiện cả giải mã và mã hóa (nhanh nhất, không phải lúc nào cũng tương thích). Chỉ mã hóa: GPU mã hóa và CPU giải mã (an toàn nhất).",
     "encoderTypeHint": "Lọc danh sách codec video. Tự động hiển thị tất cả bộ mã hóa, Phần cứng chỉ hiển thị bộ mã hóa GPU, Phần mềm chỉ hiển thị bộ mã hóa CPU."
+  },
+  "shortcuts": {
+    "title": "Phím tắt",
+    "close": "Đóng",
+    "sections": {
+      "global": "Chung",
+      "convert": "Chuyển đổi",
+      "mediaInfo": "Thông tin phương tiện",
+      "imageCompress": "Nén ảnh",
+      "audioExtract": "Trích xuất âm thanh",
+      "videoCut": "Cắt video",
+      "batchQueue": "Hàng đợi hàng loạt",
+      "logs": "Nhật ký",
+      "dashboard": "Bảng điều khiển"
+    },
+    "global": {
+      "help": "Hiển thị phím tắt",
+      "navDashboard": "Đi tới Bảng điều khiển",
+      "navConvert": "Đi tới Chuyển đổi",
+      "navMediaInfo": "Đi tới Thông tin phương tiện",
+      "navImage": "Đi tới Ảnh",
+      "navAudio": "Đi tới Âm thanh",
+      "navCut": "Đi tới Cắt",
+      "navBatchQueue": "Đi tới Hàng đợi hàng loạt",
+      "navLogs": "Đi tới Nhật ký",
+      "navSettings": "Đi tới Cài đặt",
+      "themeToggle": "Chuyển đổi chủ đề"
+    },
+    "convert": {
+      "input": "Chọn tệp đầu vào",
+      "output": "Chọn tệp đầu ra",
+      "start": "Bắt đầu chuyển đổi",
+      "pause": "Tạm dừng hoặc tiếp tục chuyển đổi",
+      "cancel": "Hủy chuyển đổi",
+      "clear": "Xóa công việc chuyển đổi",
+      "lossless": "Bật/tắt sao chép không mất dữ liệu",
+      "preview": "Hiển thị hoặc ẩn bản xem trước"
+    },
+    "mediaInfo": {
+      "open": "Chọn tệp để kiểm tra"
+    },
+    "imageCompress": {
+      "input": "Chọn ảnh đầu vào",
+      "output": "Chọn tệp đầu ra",
+      "compress": "Nén ảnh",
+      "aspect": "Bật/tắt giữ tỷ lệ khung hình"
+    },
+    "audioExtract": {
+      "input": "Chọn video đầu vào",
+      "output": "Chọn tệp đầu ra",
+      "extract": "Trích xuất âm thanh",
+      "pause": "Tạm dừng hoặc tiếp tục trích xuất",
+      "cancel": "Hủy trích xuất"
+    },
+    "videoCut": {
+      "open": "Chọn hoặc đổi video",
+      "output": "Chọn tệp đầu ra",
+      "cut": "Cắt video",
+      "pause": "Tạm dừng hoặc tiếp tục cắt",
+      "cancel": "Hủy cắt",
+      "clear": "Xóa biểu mẫu cắt",
+      "useDuration": "Bật/tắt sử dụng thời lượng",
+      "includeAudio": "Bật/tắt bao gồm âm thanh",
+      "playPause": "Phát hoặc tạm dừng bản xem trước",
+      "mute": "Tắt/bật tiếng bản xem trước",
+      "seekBack": "Lùi lại 5 giây",
+      "seekForward": "Tiến tới 5 giây"
+    },
+    "batchQueue": {
+      "add": "Thêm tệp",
+      "start": "Bắt đầu hàng loạt",
+      "pause": "Tạm dừng hoặc tiếp tục hàng đợi",
+      "cancelAll": "Hủy tất cả công việc",
+      "clearCompleted": "Xóa công việc đã hoàn thành",
+      "export": "Xuất hàng đợi",
+      "import": "Nhập hàng đợi",
+      "condense": "Thu gọn hoặc mở rộng điều khiển",
+      "focusSearch": "Tập trung vào ô tìm kiếm",
+      "filterAll": "Lọc: tất cả",
+      "filterQueued": "Lọc: đang chờ",
+      "filterRunning": "Lọc: đang chạy",
+      "filterDone": "Lọc: hoàn thành",
+      "filterFailed": "Lọc: thất bại"
+    },
+    "logs": {
+      "clear": "Xóa nhật ký",
+      "download": "Tải xuống nhật ký"
+    },
+    "dashboard": {
+      "convert": "Mở Chuyển đổi",
+      "mediaInfo": "Mở Thông tin phương tiện",
+      "image": "Mở Ảnh",
+      "audio": "Mở Âm thanh",
+      "cut": "Mở Cắt",
+      "batch": "Mở Hàng đợi hàng loạt"
+    }
   }
 }

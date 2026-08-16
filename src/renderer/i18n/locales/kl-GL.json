@@ -27,7 +27,8 @@
     "descImage": "Assersuutit qitornaqquk format-imik, pissaaserusumik aamma annertussusermik",
     "descAudio": "Video-mit nipilersorneq pillaartorujussuaq nuiaatit",
     "descCut": "Video nakassat frame-nut naliginissaanut naapertuuttumik",
-    "descBatch": "Assersuutit arlallit ataatsimut allanngortit"
+    "descBatch": "Assersuutit arlallit ataatsimut allanngortit",
+    "shortcutsFooter": "Tastaturikkumut aaliangersakkanut {{shortcut}} atuartit"
   },
   "closeConfirm": {
     "title": "EncodeX qummassava?",
@@ -38,8 +39,8 @@
   "convert": {
     "title": "Media allanngortit",
     "sourceFiles": "Filiussat aallutit",
-    "encoding": "Encoding",
-    "advanced": "Advanced",
+    "encoding": "Enkodiginneq",
+    "advanced": "Siuariaq",
     "inputFile": "Iserneqassaaq",
     "outputFile": "Anineqassaaq",
     "noFile": "Iserniarfik takussaaqanngilaq",
@@ -115,7 +116,7 @@
     "streamsCount": "Stream-ip amerlassusaa",
     "startTime": "Aallartittup nalliinera",
     "probeScore": "Probe score",
-    "profile": "Profile",
+    "profile": "Profil",
     "level": "Qaffasissuseq",
     "aspectRatio": "Aspect ratio",
     "colorSpace": "Color space",
@@ -137,7 +138,7 @@
       "major_brand": "Major brand",
       "minor_version": "Minor version",
       "compatible_brands": "Compatible brands",
-      "encoder": "Encoder",
+      "encoder": "Enkoderi",
       "creation_time": "Pilerstornermi nalliinera",
       "title": "Titl",
       "artist": "Nalunaaq",
@@ -146,23 +147,23 @@
       "genre": "Genre",
       "date": "Ulloq",
       "comment": "Oqaaseqatigiissut",
-      "copyright": "Copyright",
+      "copyright": "Piginnaaneq",
       "description": "Pissusianik",
       "composer": "Nalunaaq",
       "performer": "Performer",
       "publisher": "Publisher",
       "track": "Track",
-      "disc": "Disc",
+      "disc": "Diskki",
       "lyrics": "Erinarsugassiaq",
       "language": "Oqaatsit",
       "handler_name": "Handler-ip ateqa",
-      "timecode": "Timecode",
+      "timecode": "Timekode",
       "location": "Sumiiffik"
     },
     "dispositionFlags": {
-      "default": "Default",
+      "default": "Nammineq",
       "dub": "Dub",
-      "original": "Original",
+      "original": "Opriginali",
       "comment": "Oqaaseqatigiissut",
       "lyrics": "Erinarsugassiaq",
       "karaoke": "Karaoke",
@@ -173,7 +174,7 @@
       "attached_pic": "Attached picture",
       "timed_thumbnails": "Timed thumbnails",
       "captions": "Captions",
-      "descriptions": "Descriptions",
+      "descriptions": "Nassuiaatit",
       "metadata": "Metadata",
       "dependent": "Dependent",
       "still_image": "Still image"
@@ -285,14 +286,14 @@
     "audioEnabledHint": "Nakassat output-imut nipilersorneq track ilanngullugu. Video nipilersornartumik atorunnaaruk."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Aallaruk",
+    "pause": "Unniffik",
+    "stop": "Unnuk",
+    "mute": "Nipiliilluni",
+    "unmute": "Nipiliartitsinneq",
+    "seek": "Ujarleruk",
+    "playbackTime": "Aallarneq nalunaaqutaat",
+    "videoPlayer": "Video aallartitsivik"
   },
   "batchQueue": {
     "title": "Ilerleq",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "HW accel mode",
     "encodingOptions": "Encoding options",
     "container": "Container",
-    "containerAuto": "Automatisk (iserniarfik)"
+    "containerAuto": "Automatisk (iserniarfik)",
+    "optionsEditableAlert": "Suli aallaqqinneqartut nakkutilinneqartut peqqussaatit allanngortinneqarsinnaasarput.",
+    "optionsLockedAlert": "Batch suliaqartillugu peqqussaatit matuneqarput.",
+    "editOptions": "Peqqussaatit allanngoruk",
+    "optionsLocked": "Batch suliaqartillugu peqqussaatit matuneqarput",
+    "jobCustomized": "Una sulineq atuartitsissutinik peqqussaanik atuartarpoq",
+    "editOptionsTitle": "Peqqussaatit allanngoruk {{file}}-mut",
+    "editOptionsSave": "Allannguutit toqqoruk",
+    "optionsUpdated": "Suliassap peqqussaatii nutarterneqarput",
+    "outputCollision": "Suliassaq allak qaangernaveeraq anisittarfik taanna atuartarpoq.",
+    "outputCollisionSkipped": "{{count}} suliassat qaangernaqaatsut – anisitaq nutaaq suliassaq allap allaffia qulaallugu allassaaq ({{names}})",
+    "optionsUpdateFailed": "Una sulineq allanngortinneqarsinnaanngilaq.",
+    "condense": "Mikissusaruk",
+    "expand": "Annertusaruk"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Allanngortitsineq ingerlanera",
     "time": "Nalliinera",
     "speed": "Sukkassuseq",
     "eta": "ETA"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Piiaruk",
     "download": "TXT-mik nuiaatit",
-    "filter": "Filter by level",
+    "filter": "Saggaassaq kisimik",
     "levelAll": "Tamarmik",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -440,7 +454,7 @@
   },
   "settings": {
     "title": "Inissiissutit",
-    "theme": "Theme",
+    "theme": "Silaarsuup ilusaa",
     "themes": {
       "light": "Qaallariarneq",
       "ocean": "Ikaasuaq",
@@ -451,7 +465,7 @@
       "slate": "Slate",
       "dark": "Tarraa"
     },
-    "alwaysOnTop": "Always on top",
+    "alwaysOnTop": "Sulleq qulaallugu",
     "alwaysOnTopHint": "App window-ip allat qaammaanni atugassaa.",
     "launchAtLogin": "Aallartiffimmi aallartikkit",
     "launchAtLoginHint": "EncodeX-imik nammineq aallartippaa, komputerimut iseriaruit.",
@@ -466,5 +480,101 @@
     "hardwareAccelerationHint": "GPU-at (NVIDIA NVENC, Intel QSV, AMD AMF) encoding-imut aamma decoding-imut atoruk. Software encoding-imut qaamaassuut.",
     "hwaccelModeHint": "Automatisk: GPU decoding aamma encoding (sukkanerpaaq, kisianni tamanut naapertuunngilaq). Encoder taamaallaat: GPU encoding, CPU decoding (sikkerpaaq).",
     "encoderTypeHint": "Video codec list-ip filter-imikkut. Automatisk-imi encoder-it tamarmik, Hardware-imi GPU encoder-it taamaallaat, Software-imi CPU encoder-it taamaallaat."
+  },
+  "shortcuts": {
+    "title": "Tastaturimi aaliangersagat",
+    "close": "Matiqqut",
+    "sections": {
+      "global": "Tamarmik",
+      "convert": "Allanngoruk",
+      "mediaInfo": "Medianik paasissutissat",
+      "imageCompress": "Assak komprimikkit",
+      "audioExtract": "Nipit anisuukkit",
+      "videoCut": "Video nakkaruk",
+      "batchQueue": "Qatamut ikinngut",
+      "logs": "Logit",
+      "dashboard": "Dashboardi"
+    },
+    "global": {
+      "help": "Tastaturimi aaliangersagat takukkit",
+      "navDashboard": "Dashboardimut ingerla",
+      "navConvert": "Allanngornermut ingerla",
+      "navMediaInfo": "Medianik paasissutissanut ingerla",
+      "navImage": "Assamut ingerla",
+      "navAudio": "Nipimut ingerla",
+      "navCut": "Nakkarneqarneranut ingerla",
+      "navBatchQueue": "Qatamut ikinngummut ingerla",
+      "navLogs": "Logimut ingerla",
+      "navSettings": "Inissiissutinut ingerla",
+      "themeToggle": "Tema allanngoruk"
+    },
+    "convert": {
+      "input": "Iterfiussaq qineruk",
+      "output": "Anisuussaq qineruk",
+      "start": "Allanngornerup aallartinnera",
+      "pause": "Allanngornerup unnerstaanera imaluunniit qangaaniunngitsumik piareersarnera",
+      "cancel": "Allanngornerup peeteqqinnera",
+      "clear": "Allanngornerup suliaa piiaruk",
+      "lossless": "Akkulikkanik kopereraq allanngoruk",
+      "preview": "Takuussinerup takunneqarnera imaluunniit peeteqqinnera"
+    },
+    "mediaInfo": {
+      "open": "Sulissutigineqassatut qinersuk"
+    },
+    "imageCompress": {
+      "input": "Iterfiussaq assak qineruk",
+      "output": "Anisuussaq qineruk",
+      "compress": "Assak komprimik",
+      "aspect": "Assigiissitaqarsimaanerup ikiunneqarnera allanngoruk"
+    },
+    "audioExtract": {
+      "input": "Iterfiussaq videot qineruk",
+      "output": "Anisuussaq qineruk",
+      "extract": "Nipit anisuukkit",
+      "pause": "Anisuussinerup unnerstaanera imaluunniit qangaaniunngitsumik piareersarnera",
+      "cancel": "Anisuussinerup peeteqqinnera"
+    },
+    "videoCut": {
+      "open": "Video qineruk imaluunniit allanngoruk",
+      "output": "Anisuussaq qineruk",
+      "cut": "Video nakkaruk",
+      "pause": "Nakkarneqarnerup unnerstaanera imaluunniit qangaaniunngitsumik piareersarnera",
+      "cancel": "Nakkarneqarnerup peeteqqinnera",
+      "clear": "Nakkarneqarnerup allattorfiata piiarnera",
+      "useDuration": "Atorunnaarsitsineq atoruk",
+      "includeAudio": "Nipit ilanngussigineqarnerat allanngoruk",
+      "playPause": "Takuussineq annertunngileruk imaluunniit unnerstuk",
+      "mute": "Nipilersuutip tussiaata allanngornera",
+      "seekBack": "5 sekundit qaqugukkoorneruqu",
+      "seekForward": "5 sekundit siunertuqu"
+    },
+    "batchQueue": {
+      "add": "Filinit ilanngukkit",
+      "start": "Qata aallartik",
+      "pause": "Ikinngummik unnerstaat imaluunniit qangaaniunngitsumik piareersaar",
+      "cancelAll": "Suliaassat tamarmik peeteqqigit",
+      "clearCompleted": "Naggatigilersukkanit suliaat piiaruk",
+      "export": "Ikinngummik anisutit",
+      "import": "Ikinngummik asersuutigit",
+      "condense": "Ajussarutit ikiliugit imaluunniit annertusaruk",
+      "focusSearch": "Qinersivik qinersinernut isiginnaaruk",
+      "filterAll": "Missileriiffik: tamarmik",
+      "filterQueued": "Missileriiffik: ikinngummi",
+      "filterRunning": "Missileriiffik: ingerlanneqarpoq",
+      "filterDone": "Missileriiffik: naggatigilersukkat",
+      "filterFailed": "Missileriiffik: pineriarneqarput"
+    },
+    "logs": {
+      "clear": "Logit piiaruk",
+      "download": "Logit igaaruk"
+    },
+    "dashboard": {
+      "convert": "Allanngornerit matoqqigit",
+      "mediaInfo": "Medianik paasissutissat matoqqigit",
+      "image": "Assak matoqqigit",
+      "audio": "Nipit matoqqigit",
+      "cut": "Nakkarneqarnerit matoqqigit",
+      "batch": "Qatamut ikinngut matoqqigit"
+    }
   }
 }

@@ -19,6 +19,7 @@ import { IconButton, Tooltip, Typography, MenuItem } from '@mui/material';
 import { faEraser, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { useLogStore } from '../stores/logStore';
 import { useToastStore } from '../stores/toastStore';
+import { useHotkeys } from '../hooks/useHotkeys';
 import { COLORS } from '../colors';
 import {
   LogsRoot,
@@ -118,6 +119,16 @@ export default function Logs() {
    * @type {Array<import('../../shared/types').LogEntry>}
    */
   const filtered = useMemo(() => (filter === 'ALL' ? entries : entries.filter((e) => e.level === filter)), [entries, filter]);
+
+  /**
+   * Registers the page keyboard shortcuts (Ctrl+L clear, Ctrl+Shift+D download).
+   * Bindings mirror the enabled state of the equivalent on-page buttons.
+   * @returns {void}
+   */
+  useHotkeys([
+    { id: 'logs.clear', handler: () => clear(), enabled: entries.length > 0 },
+    { id: 'logs.download', handler: () => downloadLogs(), enabled: filtered.length > 0 },
+  ]);
 
   return (
     <LogsRoot>

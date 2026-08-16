@@ -35,7 +35,7 @@
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueSetWhenDone`, `queueMoveTo`, `queueStart`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueSetWhenDone`, `queueMoveTo`, `queueUpdateOptions`, `queueStart`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
@@ -96,6 +96,7 @@ import {
   LOG_QUEUE_LIST_CALLED,
   LOG_QUEUE_GET_STATE_CALLED,
   LOG_QUEUE_MOVE_TO,
+  LOG_QUEUE_UPDATE_OPTIONS,
   LOG_QUEUE_PAUSE_CALLED,
   LOG_QUEUE_REMOVE,
   LOG_QUEUE_RESUME_CALLED,
@@ -136,7 +137,7 @@ const log = new Logger('preload');
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
  *   `cancelConversion`.
- * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueSetWhenDone`, `queueMoveTo`, `queueStart`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
+ * - Batch queue: `queueAdd`, `queueRemove`, `queueList`, `queueGetState`, `queueCancelAll`, `queueClearCompleted`, `queueSetConcurrency`, `queueSetWhenDone`, `queueMoveTo`, `queueUpdateOptions`, `queueStart`, `queuePause`, `queueResume`, `queueExport`, `queueImport`.
  * - Media player: `playerOpen`, `playerSeek`, `playerClose`, `playerGetFrame`.
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
@@ -481,6 +482,22 @@ const api = {
   queueMoveTo: (id: string, toPosition: number) => {
     log.info(LOG_QUEUE_MOVE_TO, id, toPosition);
     return ipcRenderer.invoke(IPC.QUEUE_MOVE_TO, id, toPosition) as Promise<boolean>;
+  },
+  /**
+   * Replaces the encoding options (and optionally the output path) of a QUEUED
+   * batch job. Jobs that are running or already completed are left untouched.
+   * Logs the call at info level, then invokes the main process over the
+   * `IPC.QUEUE_UPDATE_OPTIONS` ('queue-update-options') channel.
+   *
+   * @param {string} id - Id of the QUEUED job to update.
+   * @param {ConversionOptions} options - The full replacement options object.
+   * @param {string} [output] - Optional new absolute output path.
+   * @returns {Promise<boolean>} Resolves true when the job was updated, false
+   *   when the id is unknown or the job is no longer QUEUED.
+   */
+  queueUpdateOptions: (id: string, options: ConversionOptions, output?: string) => {
+    log.info(LOG_QUEUE_UPDATE_OPTIONS, id);
+    return ipcRenderer.invoke(IPC.QUEUE_UPDATE_OPTIONS, id, options, output) as Promise<boolean>;
   },
   /**
    * Pauses the batch queue: the main process suspends every active conversion

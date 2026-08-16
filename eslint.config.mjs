@@ -6,10 +6,19 @@
  * stays out of the way: `main`/`preload`, `e2e`, and build output are not
  * linted, and every `jsx-a11y` rule is set to `warn` so it never blocks a
  * build. Run it with `npm run lint`.
+ *
+ * A local `no-hardcoded-px` rule (see eslint-rules/no-hardcoded-px.mjs) is
+ * enforced as an error on renderer sources: hardcoded `px` units must use
+ * `theme.typography.pxToRem()` instead. A `no-hardcoded-colors` rule (see
+ * eslint-rules/no-hardcoded-colors.mjs) likewise forbids inline color codes,
+ * which must reference the constants in `src/renderer/colors.ts`. Test files
+ * are exempt because they legitimately assert computed pixel values.
  */
 
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import tsParser from '@typescript-eslint/parser';
+import noHardcodedPx from './eslint-rules/no-hardcoded-px.mjs';
+import noHardcodedColors from './eslint-rules/no-hardcoded-colors.mjs';
 
 /** Downscales a rule's severity to 'warn' while preserving its options. */
 function asWarn(value) {
@@ -26,6 +35,12 @@ export default [
     files: ['src/renderer/**/*.{ts,tsx}'],
     plugins: {
       'jsx-a11y': jsxA11y,
+      encodex: {
+        rules: {
+          'no-hardcoded-px': noHardcodedPx,
+          'no-hardcoded-colors': noHardcodedColors,
+        },
+      },
     },
     languageOptions: {
       parser: tsParser,
@@ -35,6 +50,23 @@ export default [
         ecmaFeatures: { jsx: true },
       },
     },
-    rules: jsxA11yWarn,
+    rules: {
+      ...jsxA11yWarn,
+      'encodex/no-hardcoded-px': 'error',
+      'encodex/no-hardcoded-colors': 'error',
+    },
+  },
+  {
+    files: ['src/renderer/colors.ts'],
+    rules: {
+      'encodex/no-hardcoded-colors': 'off',
+    },
+  },
+  {
+    files: ['src/renderer/**/*.{test,spec}.{ts,tsx}', 'src/renderer/**/__tests__/**/*.{ts,tsx}'],
+    rules: {
+      'encodex/no-hardcoded-px': 'off',
+      'encodex/no-hardcoded-colors': 'off',
+    },
   },
 ];

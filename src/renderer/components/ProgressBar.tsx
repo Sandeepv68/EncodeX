@@ -21,7 +21,7 @@
 import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import type { ProgressBarProps } from './types';
-import { ProgressTrack, ProgressInfoRow } from '../styles/ProgressBar.styles';
+import { ProgressTrack, ProgressInfoRow, SrOnlyStatus } from '../styles/ProgressBar.styles';
 
 /**
  * Renders the progress bar with info captions.
@@ -71,21 +71,9 @@ export default function ProgressBar({ percent, time, speed, eta, paused = false,
         )}
       </ProgressInfoRow>
       {completed && (
-        <Box
-          role="status"
-          aria-live="polite"
-          sx={{
-            position: 'absolute',
-            width: 1,
-            height: 1,
-            margin: -1,
-            overflow: 'hidden',
-            clip: 'rect(0, 0, 0, 0)',
-            whiteSpace: 'nowrap',
-          }}
-        >
+        <SrOnlyStatus role="status" aria-live="polite">
           {t('toast.conversionComplete')}
-        </Box>
+        </SrOnlyStatus>
       )}
     </Box>
   );

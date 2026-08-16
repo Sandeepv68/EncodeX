@@ -27,7 +27,8 @@
     "descImage": "Zmniejszaj obrazy, kontrolując format, jakość i wymiary",
     "descAudio": "Wyodrębniaj czyste ścieżki audio z plików wideo",
     "descCut": "Przycinaj i tnij wideo z dokładnym do klatki odtwarzaczem",
-    "descBatch": "Konwertuj wiele plików naraz dzięki inteligentnej kolejce"
+    "descBatch": "Konwertuj wiele plików naraz dzięki inteligentnej kolejce",
+    "shortcutsFooter": "Naciśnij {{shortcut}}, aby wyświetlić skróty klawiszowe"
   },
   "closeConfirm": {
     "title": "Zamknąć EncodeX?",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "Dołącz ścieżkę audio do wyniku przycinania. Odznacz, aby uzyskać wideo bez dźwięku."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Odtwarzaj",
+    "pause": "Pauza",
+    "stop": "Zatrzymaj",
+    "mute": "Wycisz",
+    "unmute": "Włącz dźwięk",
+    "seek": "Szukaj",
+    "playbackTime": "Czas odtwarzania",
+    "videoPlayer": "Odtwarzacz wideo"
   },
   "batchQueue": {
     "title": "Kolejka wsadowa",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "Tryb przyspieszania sprzętowego",
     "encodingOptions": "Opcje kodowania",
     "container": "Kontener",
-    "containerAuto": "Auto (źródło)"
+    "containerAuto": "Auto (źródło)",
+    "optionsEditableAlert": "Opcje można nadal zmieniać, dopóki w kolejce są zadania.",
+    "optionsLockedAlert": "Opcje są zablokowane, dopóki wsad jest uruchomiony.",
+    "editOptions": "Edytuj opcje",
+    "optionsLocked": "Opcje są zablokowane, dopóki wsad jest uruchomiony",
+    "jobCustomized": "To zadanie korzysta z własnych opcji",
+    "editOptionsTitle": "Edytuj opcje dla {{file}}",
+    "editOptionsSave": "Zapisz zmiany",
+    "optionsUpdated": "Zaktualizowano opcje zadania",
+    "outputCollision": "Inne zadanie w kolejce już używa tej ścieżki wyjścia.",
+    "outputCollisionSkipped": "Pominięto {{count}} zadań – nowe wyjście nadpisze plik innego zadania ({{names}})",
+    "optionsUpdateFailed": "To zadanie nie może być już edytowane.",
+    "condense": "Zwiń",
+    "expand": "Rozwiń"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Postęp konwersji",
     "time": "Czas",
     "speed": "Prędkość",
     "eta": "Pozostało"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Wyczyść",
     "download": "Pobierz jako TXT",
-    "filter": "Filter by level",
+    "filter": "Filtruj według poziomu",
     "levelAll": "WSZYSTKIE",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +436,7 @@
     "poweredBy": "Obsługiwane przez"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automatycznie",
     "none": "Brak"
   },
   "toast": {
@@ -466,5 +480,101 @@
     "hardwareAccelerationHint": "Używa GPU (NVIDIA NVENC, Intel QSV, AMD AMF) do kodowania i dekodowania wideo. Wyłącz dla kodowania tylko programowego.",
     "hwaccelModeHint": "Automatycznie: GPU wykonuje zarówno dekodowanie, jak i kodowanie (najszybciej, nie zawsze kompatybilne). Tylko kodowanie: GPU koduje, a CPU dekoduje (najbezpieczniej).",
     "encoderTypeHint": "Filtruje listę kodeków wideo. Automatycznie pokazuje wszystkie dostępne kodery, Sprzętowy tylko kodery GPU, Programowy tylko kodery CPU."
+  },
+  "shortcuts": {
+    "title": "Skróty klawiszowe",
+    "close": "Zamknij",
+    "sections": {
+      "global": "Ogólne",
+      "convert": "Konwertuj",
+      "mediaInfo": "Informacje o mediach",
+      "imageCompress": "Kompresja obrazu",
+      "audioExtract": "Wyodrębnianie dźwięku",
+      "videoCut": "Przytnij wideo",
+      "batchQueue": "Kolejka wsadowa",
+      "logs": "Dzienniki",
+      "dashboard": "Pulpit"
+    },
+    "global": {
+      "help": "Pokaż skróty klawiszowe",
+      "navDashboard": "Przejdź do Pulpitu",
+      "navConvert": "Przejdź do Konwertuj",
+      "navMediaInfo": "Przejdź do informacji o mediach",
+      "navImage": "Przejdź do Obraz",
+      "navAudio": "Przejdź do Dźwięk",
+      "navCut": "Przejdź do Przytnij",
+      "navBatchQueue": "Przejdź do kolejki wsadowej",
+      "navLogs": "Przejdź do Dzienniki",
+      "navSettings": "Przejdź do Ustawienia",
+      "themeToggle": "Przełącz motyw"
+    },
+    "convert": {
+      "input": "Wybierz plik wejściowy",
+      "output": "Wybierz plik wyjściowy",
+      "start": "Rozpocznij konwersję",
+      "pause": "Wstrzymaj lub wznów konwersję",
+      "cancel": "Anuluj konwersję",
+      "clear": "Wyczyść zadanie konwersji",
+      "lossless": "Przełącz kopię bezstratną",
+      "preview": "Pokaż lub ukryj podgląd"
+    },
+    "mediaInfo": {
+      "open": "Wybierz plik do sprawdzenia"
+    },
+    "imageCompress": {
+      "input": "Wybierz obraz wejściowy",
+      "output": "Wybierz plik wyjściowy",
+      "compress": "Skompresuj obraz",
+      "aspect": "Przełącz zachowanie proporcji"
+    },
+    "audioExtract": {
+      "input": "Wybierz wideo wejściowe",
+      "output": "Wybierz plik wyjściowy",
+      "extract": "Wyodrębnij dźwięk",
+      "pause": "Wstrzymaj lub wznów wyodrębnianie",
+      "cancel": "Anuluj wyodrębnianie"
+    },
+    "videoCut": {
+      "open": "Wybierz lub zmień wideo",
+      "output": "Wybierz plik wyjściowy",
+      "cut": "Przytnij wideo",
+      "pause": "Wstrzymaj lub wznów przycinanie",
+      "cancel": "Anuluj przycinanie",
+      "clear": "Wyczyść formularz przycinania",
+      "useDuration": "Przełącz użycie czasu trwania",
+      "includeAudio": "Przełącz uwzględnianie dźwięku",
+      "playPause": "Odtwórz lub wstrzymaj podgląd",
+      "mute": "Wycisz lub włącz dźwięk podglądu",
+      "seekBack": "Przewiń 5 sekund wstecz",
+      "seekForward": "Przewiń 5 sekund do przodu"
+    },
+    "batchQueue": {
+      "add": "Dodaj pliki",
+      "start": "Rozpocznij wsad",
+      "pause": "Wstrzymaj lub wznów kolejkę",
+      "cancelAll": "Anuluj wszystkie zadania",
+      "clearCompleted": "Wyczyść ukończone zadania",
+      "export": "Eksportuj kolejkę",
+      "import": "Importuj kolejkę",
+      "condense": "Zwiń lub rozwiń kontrolki",
+      "focusSearch": "Skoncentruj się na polu wyszukiwania",
+      "filterAll": "Filtr: wszystkie",
+      "filterQueued": "Filtr: w kolejce",
+      "filterRunning": "Filtr: w trakcie",
+      "filterDone": "Filtr: ukończone",
+      "filterFailed": "Filtr: nieudane"
+    },
+    "logs": {
+      "clear": "Wyczyść dzienniki",
+      "download": "Pobierz dzienniki"
+    },
+    "dashboard": {
+      "convert": "Otwórz Konwertuj",
+      "mediaInfo": "Otwórz informacje o mediach",
+      "image": "Otwórz Obraz",
+      "audio": "Otwórz Dźwięk",
+      "cut": "Otwórz Przytnij",
+      "batch": "Otwórz kolejkę wsadową"
+    }
   }
 }

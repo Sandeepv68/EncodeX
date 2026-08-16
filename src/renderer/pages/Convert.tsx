@@ -39,6 +39,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Logger } from '../../shared/logger';
 import { useConversion } from '../hooks/useConversion';
+import { useHotkeys } from '../hooks/useHotkeys';
+import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import CodecSelect from '../components/CodecSelect';
 import ProgressBar from '../components/ProgressBar';
 import MediaPlayer from '../components/MediaPlayer';
@@ -60,6 +62,7 @@ import { isInRange } from '../../shared/validation';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { focusFirstError } from '../utils/focusFirstError';
 import { useSettingsStore } from '../stores/settingsStore';
+import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { useFieldId } from '../hooks/useFieldId';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import type { EncoderType } from '../../shared/types';
@@ -67,6 +70,10 @@ import {
   ActionStack,
   AccelAlert,
   CompatAlert,
+  LoadingBox,
+  SelectedFileRow,
+  SelectedFileName,
+  ShowPreviewButton,
   PreviewPanel,
   PreviewHeader,
   PreviewDivider,
@@ -219,6 +226,8 @@ export default function Convert() {
   const [mediaInfoLoading, setMediaInfoLoading] = useState(false);
   const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
   const settingsEncoderType = useSettingsStore((s) => s.encoderType);
+  const accelAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL));
+  const compatAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.COMPAT));
 
   /**
    * The encoder type actually used for codec suggestion: the page-level override
@@ -323,6 +332,28 @@ export default function Convert() {
     startConversion();
   };
 
+  /**
+   * Registers the page keyboard shortcuts (Ctrl+O input, Ctrl+Shift+S output,
+   * Ctrl+Enter start, Ctrl+Shift+P pause, Ctrl+Shift+C cancel, Ctrl+Shift+X
+   * clear job, L lossless copy, P preview). Bindings mirror the enabled state of
+   * the equivalent on-page controls.
+   * @returns {void}
+   */
+  useHotkeys([
+    { id: 'convert.input', handler: () => selectInput() },
+    { id: 'convert.output', handler: () => selectOutput() },
+    {
+      id: 'convert.start',
+      handler: () => handleStartConversion(),
+      enabled: !!inputFile && !!outputFile && !isConverting,
+    },
+    { id: 'convert.pause', handler: () => pauseConversion(), enabled: isConverting && !isPaused },
+    { id: 'convert.cancel', handler: () => handleCancelClick(), enabled: isConverting },
+    { id: 'convert.clear', handler: () => setJobCancelOpen(true), enabled: isDirty && !isConverting },
+    { id: 'convert.lossless', handler: () => setCopyMode(!copyMode) },
+    { id: 'convert.preview', handler: () => setPreviewOpen(true), enabled: !!inputFile && !previewOpen },
+  ]);
+
   return (
     <PageContainer
       title={t('convert.title')}
@@ -346,9 +377,9 @@ export default function Convert() {
                 {t('mediaInfo.fileInfo')}
               </PreviewSectionTitle>
               {mediaInfoLoading && !mediaInfo && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                <LoadingBox>
                   <CircularProgress size={24} />
-                </Box>
+                </LoadingBox>
               )}
               {mediaInfo && (
                 <ErrorBoundary fallback={null}>
@@ -376,10 +407,10 @@ export default function Convert() {
               <FileDropZone onFileSelect={setInputFile} label={t('convert.dropLabel')} accept={VIDEO_DROPZONE_ACCEPT} />
             </ErrorBoundary>
           ) : (
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }} useFlexGap>
-              <Typography variant="body2" color="text.secondary" data-testid="convert-input-file" sx={{ wordBreak: 'break-all' }}>
+            <SelectedFileRow direction="row" spacing={1} useFlexGap>
+              <SelectedFileName variant="body2" color="text.secondary" data-testid="convert-input-file">
                 {fileName(inputFile)}
-              </Typography>
+              </SelectedFileName>
               <Tooltip title={t('convert.changeFileHint')} arrow>
                 <Button
                   variant="outlined"
@@ -391,20 +422,19 @@ export default function Convert() {
                   {t('convert.changeFile')}
                 </Button>
               </Tooltip>
-            </Stack>
+              {!previewOpen && (
+                <ShowPreviewButton
+                  variant="outlined"
+                  size="small"
+                  startIcon={<FontAwesomeIcon icon={faEye} />}
+                  onClick={() => setPreviewOpen(true)}
+                >
+                  {t('convert.showPreview')}
+                </ShowPreviewButton>
+              )}
+            </SelectedFileRow>
           )}
         </Box>
-
-        {inputFile && !previewOpen && (
-          <Button
-            variant="outlined"
-            startIcon={<FontAwesomeIcon icon={faEye} />}
-            onClick={() => setPreviewOpen(true)}
-            sx={{ alignSelf: 'flex-start' }}
-          >
-            {t('convert.showPreview')}
-          </Button>
-        )}
 
         <FilePathField
           label={t('convert.outputFile')}
@@ -417,9 +447,10 @@ export default function Convert() {
           testId="convert-output"
         />
 
-        {showCompatWarning && (
+        {showCompatWarning && !compatAlertDismissed && (
           <CompatAlert
             severity="warning"
+            onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.COMPAT)}
             action={
               <Button size="small" color="inherit" onClick={applySuggestedExtension}>
                 {t('convert.applySuggestedExt', { extension: suggestedOutputExt })}
@@ -453,9 +484,11 @@ export default function Convert() {
 
         {!copyMode && (
           <>
-            {settingsHardwareAcceleration && (
+            {settingsHardwareAcceleration && !accelAlertDismissed && (
               <>
-                <AccelAlert severity="info">{t('convert.hardwareAccelAlert')}</AccelAlert>
+                <AccelAlert severity="info" onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL)}>
+                  {t('convert.hardwareAccelAlert')}
+                </AccelAlert>
                 <FieldBox>
                   <FieldLabel>
                     {t('settings.encoderType')}
@@ -670,15 +703,19 @@ export default function Convert() {
       </PageSection>
 
       <ActionStack direction="row" spacing={1} useFlexGap>
-        <Button
-          variant="contained"
-          data-testid="convert-start"
-          startIcon={<FontAwesomeIcon icon={faPlay} />}
-          onClick={handleStartConversion}
-          disabled={!inputFile || !outputFile || isConverting}
-        >
-          {isConverting ? t('convert.converting') : t('convert.startConversion')}
-        </Button>
+        <Tooltip title={shortcutHint(t, 'convert.startConversion', SHORTCUT_BY_ID['convert.start'].keys)} arrow>
+          <span>
+            <Button
+              variant="contained"
+              data-testid="convert-start"
+              startIcon={<FontAwesomeIcon icon={faPlay} />}
+              onClick={handleStartConversion}
+              disabled={!inputFile || !outputFile || isConverting}
+            >
+              {isConverting ? t('convert.converting') : t('convert.startConversion')}
+            </Button>
+          </span>
+        </Tooltip>
         {isConverting && !isPaused && (
           <Button
             variant="contained"

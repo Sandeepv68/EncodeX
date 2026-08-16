@@ -27,7 +27,8 @@
     "descImage": "Reduza o tamanho das imagens com controle de formato, qualidade e dimensões",
     "descAudio": "Extraia faixas de áudio limpas de arquivos de vídeo",
     "descCut": "Corte e edite vídeo com player preciso por quadros",
-    "descBatch": "Converta vários arquivos de uma vez com uma fila inteligente"
+    "descBatch": "Converta vários arquivos de uma vez com uma fila inteligente",
+    "shortcutsFooter": "Pressione {{shortcut}} para atalhos de teclado"
   },
   "closeConfirm": {
     "title": "Fechar o EncodeX?",
@@ -132,7 +133,7 @@
     "frameCount": "Número de Quadros",
     "streamTitle": "Título",
     "disposition": "Disposição",
-    "tags": "Tags",
+    "tags": "Etiquetas",
     "tagKeys": {
       "major_brand": "Marca principal",
       "minor_version": "Versão secundária",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "Inclua a faixa de áudio na saída do corte. Desmarque para produzir um vídeo sem som."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Reproduzir",
+    "pause": "Pausar",
+    "stop": "Parar",
+    "mute": "Silenciar",
+    "unmute": "Reativar som",
+    "seek": "Buscar",
+    "playbackTime": "Tempo de reprodução",
+    "videoPlayer": "Player de vídeo"
   },
   "batchQueue": {
     "title": "Fila em Lote",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "Modo de acel. HW",
     "encodingOptions": "Opções de Codificação",
     "container": "Contêiner",
-    "containerAuto": "Automático (origem)"
+    "containerAuto": "Automático (origem)",
+    "optionsEditableAlert": "As opções ainda podem ser alteradas enquanto houver tarefas na fila.",
+    "optionsLockedAlert": "As opções estão bloqueadas enquanto o lote está sendo executado.",
+    "editOptions": "Editar opções",
+    "optionsLocked": "As opções estão bloqueadas enquanto o lote está sendo executado",
+    "jobCustomized": "Esta tarefa usa opções personalizadas",
+    "editOptionsTitle": "Editar opções de {{file}}",
+    "editOptionsSave": "Salvar alterações",
+    "optionsUpdated": "Opções da tarefa atualizadas",
+    "outputCollision": "Outra tarefa na fila já usa esse caminho de saída.",
+    "outputCollisionSkipped": "{{count}} tarefa(s) ignorada(s) – a nova saída sobrescreveria o arquivo de outra tarefa ({{names}})",
+    "optionsUpdateFailed": "Esta tarefa não pode mais ser editada.",
+    "condense": "Recolher",
+    "expand": "Expandir"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Progresso da conversão",
     "time": "Tempo",
     "speed": "Velocidade",
     "eta": "PRE"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Limpar",
     "download": "Baixar como TXT",
-    "filter": "Filter by level",
+    "filter": "Filtrar por nível",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +436,7 @@
     "poweredBy": "Desenvolvido por"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automático",
     "none": "Nenhum"
   },
   "toast": {
@@ -465,6 +479,102 @@
       "rose": "Rosa",
       "slate": "Ardósia",
       "dark": "Escuro"
+    }
+  },
+  "shortcuts": {
+    "title": "Atalhos de teclado",
+    "close": "Fechar",
+    "sections": {
+      "global": "Global",
+      "convert": "Converter",
+      "mediaInfo": "Informações de mídia",
+      "imageCompress": "Comprimir imagem",
+      "audioExtract": "Extrair áudio",
+      "videoCut": "Cortar vídeo",
+      "batchQueue": "Fila de lote",
+      "logs": "Registros",
+      "dashboard": "Painel"
+    },
+    "global": {
+      "help": "Mostrar atalhos de teclado",
+      "navDashboard": "Ir para o Painel",
+      "navConvert": "Ir para Converter",
+      "navMediaInfo": "Ir para Informações de mídia",
+      "navImage": "Ir para Imagem",
+      "navAudio": "Ir para Áudio",
+      "navCut": "Ir para Cortar",
+      "navBatchQueue": "Ir para a Fila de lote",
+      "navLogs": "Ir para Registros",
+      "navSettings": "Ir para Configurações",
+      "themeToggle": "Alternar tema"
+    },
+    "convert": {
+      "input": "Escolher arquivo de entrada",
+      "output": "Escolher arquivo de saída",
+      "start": "Iniciar conversão",
+      "pause": "Pausar ou retomar a conversão",
+      "cancel": "Cancelar conversão",
+      "clear": "Limpar tarefa de conversão",
+      "lossless": "Alternar cópia sem perdas",
+      "preview": "Mostrar ou ocultar a pré-visualização"
+    },
+    "mediaInfo": {
+      "open": "Escolher um arquivo para inspecionar"
+    },
+    "imageCompress": {
+      "input": "Escolher imagem de entrada",
+      "output": "Escolher arquivo de saída",
+      "compress": "Comprimir imagem",
+      "aspect": "Alternar manter proporção"
+    },
+    "audioExtract": {
+      "input": "Escolher vídeo de entrada",
+      "output": "Escolher arquivo de saída",
+      "extract": "Extrair áudio",
+      "pause": "Pausar ou retomar a extração",
+      "cancel": "Cancelar extração"
+    },
+    "videoCut": {
+      "open": "Escolher ou alterar vídeo",
+      "output": "Escolher arquivo de saída",
+      "cut": "Cortar vídeo",
+      "pause": "Pausar ou retomar o corte",
+      "cancel": "Cancelar corte",
+      "clear": "Limpar formulário de corte",
+      "useDuration": "Alternar usar duração",
+      "includeAudio": "Alternar incluir áudio",
+      "playPause": "Reproduzir ou pausar a pré-visualização",
+      "mute": "Ativar ou desativar o som da pré-visualização",
+      "seekBack": "Recuar 5 segundos",
+      "seekForward": "Avançar 5 segundos"
+    },
+    "batchQueue": {
+      "add": "Adicionar arquivos",
+      "start": "Iniciar lote",
+      "pause": "Pausar ou retomar a fila",
+      "cancelAll": "Cancelar todas as tarefas",
+      "clearCompleted": "Limpar tarefas concluídas",
+      "export": "Exportar fila",
+      "import": "Importar fila",
+      "condense": "Recolher ou expandir controles",
+      "focusSearch": "Focar o campo de pesquisa",
+      "filterAll": "Filtrar: todos",
+      "filterQueued": "Filtrar: na fila",
+      "filterRunning": "Filtrar: em execução",
+      "filterDone": "Filtrar: concluídos",
+      "filterFailed": "Filtrar: com falhas"
+    },
+    "logs": {
+      "clear": "Limpar registros",
+      "download": "Baixar registros"
+    },
+    "dashboard": {
+      "convert": "Abrir Converter",
+      "mediaInfo": "Abrir Informações de mídia",
+      "image": "Abrir Imagem",
+      "audio": "Abrir Áudio",
+      "cut": "Abrir Cortar",
+      "batch": "Abrir a Fila de lote"
     }
   }
 }
