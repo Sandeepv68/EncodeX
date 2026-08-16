@@ -27,7 +27,8 @@
     "descImage": "Reduce el tamaño de las imágenes con control de formato, calidad y dimensiones",
     "descAudio": "Extrae pistas de audio limpias de archivos de vídeo",
     "descCut": "Recorta y corta vídeo con un reproductor preciso por fotogramas",
-    "descBatch": "Convierte muchos archivos a la vez con una cola inteligente"
+    "descBatch": "Convierte muchos archivos a la vez con una cola inteligente",
+    "shortcutsFooter": "Pulsa {{shortcut}} para los atajos de teclado"
   },
   "closeConfirm": {
     "title": "¿Cerrar EncodeX?",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "Incluir la pista de audio en la salida del corte. Desmárcalo para producir un vídeo sin sonido."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Reproducir",
+    "pause": "Pausa",
+    "stop": "Detener",
+    "mute": "Silenciar",
+    "unmute": "Reactivar sonido",
+    "seek": "Buscar",
+    "playbackTime": "Tiempo de reproducción",
+    "videoPlayer": "Reproductor de video"
   },
   "batchQueue": {
     "title": "Cola de Lotes",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "Modo de acel. HW",
     "encodingOptions": "Opciones de codificación",
     "container": "Contenedor",
-    "containerAuto": "Automático (origen)"
+    "containerAuto": "Automático (origen)",
+    "optionsEditableAlert": "Los ajustes aún se pueden cambiar mientras haya tareas en cola.",
+    "optionsLockedAlert": "Los ajustes están bloqueados mientras se ejecuta el lote.",
+    "editOptions": "Editar ajustes",
+    "optionsLocked": "Los ajustes están bloqueados mientras se ejecuta el lote",
+    "jobCustomized": "Esta tarea usa ajustes personalizados",
+    "editOptionsTitle": "Editar ajustes de {{file}}",
+    "editOptionsSave": "Guardar cambios",
+    "optionsUpdated": "Ajustes de la tarea actualizados",
+    "outputCollision": "Otra tarea en cola ya utiliza esa ruta de salida.",
+    "outputCollisionSkipped": "{{count}} tarea(s) omitida(s): la nueva salida sobrescribiría el archivo de otra tarea ({{names}})",
+    "optionsUpdateFailed": "Esta tarea ya no se puede editar.",
+    "condense": "Contraer",
+    "expand": "Expandir"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Progreso de la conversión",
     "time": "Tiempo",
     "speed": "Velocidad",
     "eta": "Tiempo Restante"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Limpiar",
     "download": "Descargar como TXT",
-    "filter": "Filter by level",
+    "filter": "Filtrar por nivel",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +436,7 @@
     "poweredBy": "Con la tecnología de"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automático",
     "none": "Ninguno"
   },
   "toast": {
@@ -465,6 +479,102 @@
       "rose": "Rosa",
       "slate": "Pizarra",
       "dark": "Oscuro"
+    }
+  },
+  "shortcuts": {
+    "title": "Atajos de teclado",
+    "close": "Cerrar",
+    "sections": {
+      "global": "Global",
+      "convert": "Convertir",
+      "mediaInfo": "Información multimedia",
+      "imageCompress": "Comprimir imagen",
+      "audioExtract": "Extraer audio",
+      "videoCut": "Recortar vídeo",
+      "batchQueue": "Cola de lote",
+      "logs": "Registros",
+      "dashboard": "Panel"
+    },
+    "global": {
+      "help": "Mostrar atajos de teclado",
+      "navDashboard": "Ir al Panel",
+      "navConvert": "Ir a Convertir",
+      "navMediaInfo": "Ir a Información multimedia",
+      "navImage": "Ir a Imagen",
+      "navAudio": "Ir a Audio",
+      "navCut": "Ir a Recortar",
+      "navBatchQueue": "Ir a la Cola de lote",
+      "navLogs": "Ir a Registros",
+      "navSettings": "Ir a Configuración",
+      "themeToggle": "Cambiar tema"
+    },
+    "convert": {
+      "input": "Elegir archivo de entrada",
+      "output": "Elegir archivo de salida",
+      "start": "Iniciar conversión",
+      "pause": "Pausar o reanudar la conversión",
+      "cancel": "Cancelar conversión",
+      "clear": "Limpiar trabajo de conversión",
+      "lossless": "Alternar copia sin pérdida",
+      "preview": "Mostrar u ocultar la vista previa"
+    },
+    "mediaInfo": {
+      "open": "Elegir un archivo para inspeccionar"
+    },
+    "imageCompress": {
+      "input": "Elegir imagen de entrada",
+      "output": "Elegir archivo de salida",
+      "compress": "Comprimir imagen",
+      "aspect": "Alternar mantener relación de aspecto"
+    },
+    "audioExtract": {
+      "input": "Elegir vídeo de entrada",
+      "output": "Elegir archivo de salida",
+      "extract": "Extraer audio",
+      "pause": "Pausar o reanudar la extracción",
+      "cancel": "Cancelar extracción"
+    },
+    "videoCut": {
+      "open": "Elegir o cambiar vídeo",
+      "output": "Elegir archivo de salida",
+      "cut": "Recortar vídeo",
+      "pause": "Pausar o reanudar el recorte",
+      "cancel": "Cancelar recorte",
+      "clear": "Limpiar formulario de recorte",
+      "useDuration": "Alternar usar duración",
+      "includeAudio": "Alternar incluir audio",
+      "playPause": "Reproducir o pausar la vista previa",
+      "mute": "Silenciar o activar el sonido de la vista previa",
+      "seekBack": "Retroceder 5 segundos",
+      "seekForward": "Avanzar 5 segundos"
+    },
+    "batchQueue": {
+      "add": "Añadir archivos",
+      "start": "Iniciar lote",
+      "pause": "Pausar o reanudar la cola",
+      "cancelAll": "Cancelar todos los trabajos",
+      "clearCompleted": "Limpiar trabajos completados",
+      "export": "Exportar cola",
+      "import": "Importar cola",
+      "condense": "Contraer o expandir controles",
+      "focusSearch": "Enfocar campo de búsqueda",
+      "filterAll": "Filtrar: todos",
+      "filterQueued": "Filtrar: en cola",
+      "filterRunning": "Filtrar: en ejecución",
+      "filterDone": "Filtrar: completados",
+      "filterFailed": "Filtrar: fallidos"
+    },
+    "logs": {
+      "clear": "Limpiar registros",
+      "download": "Descargar registros"
+    },
+    "dashboard": {
+      "convert": "Abrir Convertir",
+      "mediaInfo": "Abrir Información multimedia",
+      "image": "Abrir Imagen",
+      "audio": "Abrir Audio",
+      "cut": "Abrir Recortar",
+      "batch": "Abrir la Cola de lote"
     }
   }
 }

@@ -18,12 +18,12 @@
 
 import type { ReactNode } from 'react';
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { ColorModeProvider } from './ColorModeContext';
+import { ColorModeProvider, useColorMode } from './ColorModeContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import ErrorSnackbar from './components/ErrorSnackbar';
 import ToastContainer from './components/ToastContainer';
@@ -31,6 +31,10 @@ import CloseConfirmDialog from './components/CloseConfirmDialog';
 import Footer from './components/Footer';
 import AppDrawer from './components/AppDrawer';
 import TitleBar from './components/TitleBar';
+import ShortcutsHelpDialog from './components/ShortcutsHelpDialog';
+import { useHotkeys } from './hooks/useHotkeys';
+import { SHORTCUTS } from './constants/shortcuts';
+import { THEMES } from './colors';
 import { useErrorStore } from './stores/errorStore';
 import { useLogStore } from './stores/logStore';
 import { useSettingsStore } from './stores/settingsStore';
@@ -94,6 +98,9 @@ function AppLayout() {
   const { currentError, clearError } = useErrorStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [drawerCondensed, setDrawerCondensed] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const navigate = useNavigate();
+  const { themeId, setTheme } = useColorMode();
 
   useLanguageDirection();
 
@@ -108,6 +115,31 @@ function AppLayout() {
     window.electronAPI?.windowSetAlwaysOnTop(useSettingsStore.getState().alwaysOnTop);
     window.electronAPI?.setLaunchAtLogin(useSettingsStore.getState().launchAtLogin);
   }, []);
+
+  /**
+   * Global navigation shortcuts (Alt+1..9) derived from the shortcut registry,
+   * navigating to each spec's target route and closing the mobile drawer.
+   * @const {Array<{id: string; handler: () => void}>}
+   */
+  const navBindings = SHORTCUTS.filter((spec) => spec.section === 'global' && spec.to).map((spec) => ({
+    id: spec.id,
+    handler: () => {
+      navigate(spec.to!);
+      setMobileOpen(false);
+    },
+  }));
+
+  useHotkeys([
+    { id: 'global.help', handler: () => setHelpOpen(true) },
+    ...navBindings,
+    {
+      id: 'global.themeToggle',
+      handler: () => {
+        const index = THEMES.findIndex((candidate) => candidate.id === themeId);
+        setTheme(THEMES[(index + 1) % THEMES.length].id);
+      },
+    },
+  ]);
 
   /**
    * Route table mapping URL paths to their lazy-loaded page elements.
@@ -181,6 +213,7 @@ function AppLayout() {
       <ErrorSnackbar error={currentError} onClose={clearError} />
       <ToastContainer />
       <CloseConfirmDialog />
+      <ShortcutsHelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
     </AppRoot>
   );
 }

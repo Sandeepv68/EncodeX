@@ -125,7 +125,7 @@ src/
 │       ├── ffmpeg-core.ts             # fluent-ffmpeg API core
 │       ├── fftool-core.ts             # Direct CLI invocation via child_process
 │       ├── bmf-core.ts                # BMF framework CLI wrapper
-│       ├── ffmpeg-utils.ts            # Shared command/flag builders + binary resolution
+│       ├── ffmpeg-utils.ts            # Shared command/flag builders
 │       ├── ffprobe-mapper.ts          # ffprobe JSON → MediaInfo normalization
 │       └── hwaccel.ts                 # Hardware-acceleration filter/flag resolution
 ├── preload/
@@ -175,14 +175,15 @@ Three TypeScript projects plus Vite produce three output folders:
 
 `npm run build` runs all three in sequence. The main process loads the preload from `dist/preload/index.js` and the renderer from `dist/renderer/index.html` (production) or the Vite dev server (development, `--dev` flag or `NODE_ENV=development`).
 
-Electron-builder packages the app for Windows (NSIS), macOS (DMG), and Linux (AppImage), bundling `ffmpeg-static` and `ffprobe-static` as `extraResources` so the binaries travel with the app.
+Electron-builder packages the app for Windows (NSIS), macOS (DMG), and Linux (AppImage), bundling `ffmpeg-static` and `ffprobe-static` as `extraResources` so the binaries travel with the app. The CI release workflow downloads the prebuilt binaries for each target platform/arch via `scripts/fetch-media-binaries.mjs`.
 
 ### Binary Resolution
 
-The FFmpeg path is resolved with a consistent fallback chain (see `transcoders/ffmpeg-utils.ts`, mirrored in `frame-decoder.ts` and `timeline-media.ts`):
+All FFmpeg/FFprobe binary resolution is centralized in `src/main/media-binaries.ts` (`getFfmpegPath` / `getFfprobePath`), consumed by every transcoder, the frame decoder, timeline media, image/video preview, and the CLI. The fallback chain is:
 
-1. The bundled binary from `ffmpeg-static` / `ffprobe-static` (if the file exists).
-2. The system command (`ffmpeg` / `ffprobe`) from `PATH`.
+1. **Packaged app**: the binaries bundled as `extraResources` under the Electron `resources` directory (`resources/ffmpeg-static/…` and `resources/ffprobe-static/…`, the latter using the platform/arch-specific subpath).
+2. **Unpackaged (dev/CLI/tests)**: the installed `node_modules/ffmpeg-static` and `node_modules/ffprobe-static` binaries (resolved via the `import` key on each package's `exports` map so it also works from ESM).
+3. The system command (`ffmpeg` / `ffprobe`) from `PATH`.
 
 ## Startup Sequence
 

@@ -27,7 +27,8 @@
     "descImage": "फ़ॉर्मैट, क्वालिटी और आयाम नियंत्रण के साथ इमेज का आकार घटाएँ",
     "descAudio": "वीडियो फ़ाइलों से साफ़ ऑडियो ट्रैक निकालें",
     "descCut": "फ़्रेम-सटीक प्लेयर से वीडियो ट्रिम और काटें",
-    "descBatch": "स्मार्ट क्यू के साथ एक साथ कई फ़ाइलें कन्वर्ट करें"
+    "descBatch": "स्मार्ट क्यू के साथ एक साथ कई फ़ाइलें कन्वर्ट करें",
+    "shortcutsFooter": "कीबोर्ड शॉर्टकट के लिए {{shortcut}} दबाएँ"
   },
   "closeConfirm": {
     "title": "EncodeX बंद करें?",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "कट आउटपुट में ऑडियो ट्रैक शामिल करें। बिना आवाज़ के वीडियो बनाने के लिए अनचेक करें।"
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "चलाएं",
+    "pause": "विराम",
+    "stop": "बंद करें",
+    "mute": "म्यूट करें",
+    "unmute": "आवाज़ चालू करें",
+    "seek": "खोजें",
+    "playbackTime": "प्लेबैक समय",
+    "videoPlayer": "वीडियो प्लेयर"
   },
   "batchQueue": {
     "title": "बैच क्यू",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "HW त्वरण मोड",
     "encodingOptions": "एन्कोडिंग विकल्प",
     "container": "कंटेनर",
-    "containerAuto": "स्वचालित (स्रोत)"
+    "containerAuto": "स्वचालित (स्रोत)",
+    "optionsEditableAlert": "जब तक कार्य कतार में हैं, तब तक विकल्प बदले जा सकते हैं।",
+    "optionsLockedAlert": "बैच चलने के दौरान विकल्प लॉक हैं।",
+    "editOptions": "विकल्प संपादित करें",
+    "optionsLocked": "बैच चलने के दौरान विकल्प लॉक हैं",
+    "jobCustomized": "इस कार्य में कस्टम विकल्प उपयोग होते हैं",
+    "editOptionsTitle": "{{file}} के लिए विकल्प संपादित करें",
+    "editOptionsSave": "परिवर्तन सहेजें",
+    "optionsUpdated": "कार्य विकल्प अपडेट हो गए",
+    "outputCollision": "एक अन्य कतार वाला कार्य पहले से इस आउटपुट पथ का उपयोग करता है।",
+    "outputCollisionSkipped": "{{count}} कार्य छोड़े गए – नया आउटपुट किसी अन्य कार्य की फ़ाइल को अधिलेखित करेगा ({{names}})",
+    "optionsUpdateFailed": "यह कार्य अब संपादित नहीं किया जा सकता।",
+    "condense": "सिकोड़ें",
+    "expand": "बड़ा करें"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "रूपांतरण प्रगति",
     "time": "समय",
     "speed": "गति",
     "eta": "अनुमानित समय"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "साफ़ करें",
     "download": "TXT के रूप में डाउनलोड करें",
-    "filter": "Filter by level",
+    "filter": "स्तर के अनुसार फ़िल्टर करें",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +436,7 @@
     "poweredBy": "द्वारा संचालित"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "स्वचालित",
     "none": "कोई नहीं"
   },
   "toast": {
@@ -465,6 +479,102 @@
       "rose": "रोज़",
       "slate": "स्लेट",
       "dark": "डार्क"
+    }
+  },
+  "shortcuts": {
+    "title": "कीबोर्ड शॉर्टकट",
+    "close": "बंद करें",
+    "sections": {
+      "global": "वैश्विक",
+      "convert": "कन्वर्ट करें",
+      "mediaInfo": "मीडिया जानकारी",
+      "imageCompress": "इमेज कंप्रेस",
+      "audioExtract": "ऑडियो निकालें",
+      "videoCut": "वीडियो काटें",
+      "batchQueue": "बैच कतार",
+      "logs": "लॉग",
+      "dashboard": "डैशबोर्ड"
+    },
+    "global": {
+      "help": "कीबोर्ड शॉर्टकट दिखाएँ",
+      "navDashboard": "डैशबोर्ड पर जाएँ",
+      "navConvert": "कन्वर्ट पर जाएँ",
+      "navMediaInfo": "मीडिया जानकारी पर जाएँ",
+      "navImage": "इमेज पर जाएँ",
+      "navAudio": "ऑडियो पर जाएँ",
+      "navCut": "काटें पर जाएँ",
+      "navBatchQueue": "बैच कतार पर जाएँ",
+      "navLogs": "लॉग पर जाएँ",
+      "navSettings": "सेटिंग्स पर जाएँ",
+      "themeToggle": "थीम बदलें"
+    },
+    "convert": {
+      "input": "इनपुट फ़ाइल चुनें",
+      "output": "आउटपुट फ़ाइल चुनें",
+      "start": "कन्वर्ज़न शुरू करें",
+      "pause": "कन्वर्ज़न रोकें या फिर से शुरू करें",
+      "cancel": "कन्वर्ज़न रद्द करें",
+      "clear": "कन्वर्ज़न कार्य साफ़ करें",
+      "lossless": "लॉसलेस कॉपी टॉगल करें",
+      "preview": "पूर्वावलोकन दिखाएँ या छिपाएँ"
+    },
+    "mediaInfo": {
+      "open": "जाँचने के लिए फ़ाइल चुनें"
+    },
+    "imageCompress": {
+      "input": "इनपुट इमेज चुनें",
+      "output": "आउटपुट फ़ाइल चुनें",
+      "compress": "इमेज कंप्रेस करें",
+      "aspect": "अनुपात बनाए रखें टॉगल करें"
+    },
+    "audioExtract": {
+      "input": "इनपुट वीडियो चुनें",
+      "output": "आउटपुट फ़ाइल चुनें",
+      "extract": "ऑडियो निकालें",
+      "pause": "निकालना रोकें या फिर से शुरू करें",
+      "cancel": "निकालना रद्द करें"
+    },
+    "videoCut": {
+      "open": "वीडियो चुनें या बदलें",
+      "output": "आउटपुट फ़ाइल चुनें",
+      "cut": "वीडियो काटें",
+      "pause": "काटना रोकें या फिर से शुरू करें",
+      "cancel": "काटना रद्द करें",
+      "clear": "काटने का फ़ॉर्म साफ़ करें",
+      "useDuration": "अवधि का उपयोग टॉगल करें",
+      "includeAudio": "ऑडियो शामिल करना टॉगल करें",
+      "playPause": "पूर्वावलोकन चलाएँ या रोकें",
+      "mute": "पूर्वावलोकन म्यूट या अनम्यूट करें",
+      "seekBack": "5 सेकंड पीछे जाएँ",
+      "seekForward": "5 सेकंड आगे जाएँ"
+    },
+    "batchQueue": {
+      "add": "फ़ाइलें जोड़ें",
+      "start": "बैच शुरू करें",
+      "pause": "कतार रोकें या फिर से शुरू करें",
+      "cancelAll": "सभी कार्य रद्द करें",
+      "clearCompleted": "पूर्ण किए गए कार्य साफ़ करें",
+      "export": "कतार निर्यात करें",
+      "import": "कतार आयात करें",
+      "condense": "नियंत्रण संक्षिप्त या विस्तृत करें",
+      "focusSearch": "खोज क्षेत्र पर फ़ोकस करें",
+      "filterAll": "फ़िल्टर: सभी",
+      "filterQueued": "फ़िल्टर: कतार में",
+      "filterRunning": "फ़िल्टर: चालू",
+      "filterDone": "फ़िल्टर: पूर्ण",
+      "filterFailed": "फ़िल्टर: विफल"
+    },
+    "logs": {
+      "clear": "लॉग साफ़ करें",
+      "download": "लॉग डाउनलोड करें"
+    },
+    "dashboard": {
+      "convert": "कन्वर्ट खोलें",
+      "mediaInfo": "मीडिया जानकारी खोलें",
+      "image": "इमेज खोलें",
+      "audio": "ऑडियो खोलें",
+      "cut": "काटें खोलें",
+      "batch": "बैच कतार खोलें"
     }
   }
 }

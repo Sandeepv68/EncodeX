@@ -11,10 +11,8 @@
 import { EventEmitter } from 'events';
 import ffmpeg from 'fluent-ffmpeg';
 import type Ffmpeg from 'fluent-ffmpeg';
-import ffmpegStatic from 'ffmpeg-static';
-import { path as ffprobePath } from 'ffprobe-static';
-import { existsSync } from 'fs';
 import { Logger } from '../../shared/logger';
+import { getFfmpegPath, getFfprobePath } from '../media-binaries';
 import type { ITranscoder } from './types';
 import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/types';
 import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/transcoder-constants';
@@ -59,17 +57,13 @@ import {
 
 const log = new Logger('main/transcoders/ffmpeg-core');
 
-/** Absolute path of the bundled ffmpeg binary from `ffmpeg-static`. */
-const staticPath = ffmpegStatic as unknown as string;
-if (existsSync(staticPath)) {
-  ffmpeg.setFfmpegPath(staticPath);
-  log.debug(LOG_FFMPEG_PATH_SET_TO, staticPath);
-}
+const ffmpegPath = getFfmpegPath();
+ffmpeg.setFfmpegPath(ffmpegPath);
+log.debug(LOG_FFMPEG_PATH_SET_TO, ffmpegPath);
 
-if (existsSync(ffprobePath)) {
-  ffmpeg.setFfprobePath(ffprobePath);
-  log.debug(LOG_FFPROBE_PATH_SET_TO, ffprobePath);
-}
+const ffprobePath = getFfprobePath();
+ffmpeg.setFfprobePath(ffprobePath);
+log.debug(LOG_FFPROBE_PATH_SET_TO, ffprobePath);
 
 /**
  * fluent-ffmpeg based transcoder backend.

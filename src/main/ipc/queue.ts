@@ -47,6 +47,7 @@ import {
   LOG_IPC_QUEUE_RESUME_CALLED,
   LOG_IPC_QUEUE_SET_CONCURRENCY,
   LOG_IPC_QUEUE_SET_WHEN_DONE,
+  LOG_IPC_QUEUE_UPDATE_OPTIONS,
   LOG_QUEUE_START_CALLED,
   LOG_QUEUE_CANCELLED,
   LOG_QUEUE_EXPORTED,
@@ -291,6 +292,22 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
   ipcMain.handle(IPC.QUEUE_MOVE_TO, async (_event, id: string, toPosition: number) => {
     log.info(LOG_IPC_QUEUE_MOVE_TO, id, toPosition);
     return jobQueue.moveJobTo(id, toPosition);
+  });
+
+  /**
+   * Handles the IPC.QUEUE_UPDATE_OPTIONS channel (queue-update-options).
+   * Replaces the encoding options (and optionally the output path) of a QUEUED
+   * job. Jobs that are running or already completed are left untouched.
+   *
+   * @param {string} id - Id of the QUEUED job to update.
+   * @param {ConversionOptions} options - The full replacement options object.
+   * @param {string} [output] - Optional new absolute output path.
+   * @returns {Promise<boolean>} True when the job was updated, false when the
+   *   id is unknown or the job is no longer QUEUED.
+   */
+  ipcMain.handle(IPC.QUEUE_UPDATE_OPTIONS, async (_event, id: string, options: ConversionOptions, output?: string) => {
+    log.info(LOG_IPC_QUEUE_UPDATE_OPTIONS, id);
+    return jobQueue.updateJobOptions(id, options, output);
   });
 
   /**

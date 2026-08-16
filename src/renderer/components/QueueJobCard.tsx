@@ -44,7 +44,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { Collapse, Box, IconButton, Tooltip, Typography } from '@mui/material';
+import { Collapse, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -58,6 +58,8 @@ import {
   faGripVertical,
   faChevronUp,
   faChevronDown,
+  faPencil,
+  faSliders,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ErrorBoundary } from './ErrorBoundary';
@@ -72,9 +74,12 @@ import {
   JobCard,
   CardBody,
   CardContent,
+  ThumbWrap,
   ThumbImg,
   CardHeaderRow,
   JobNameText,
+  JobTitleWrapper,
+  CustomizedIconButton,
   StatusChip,
   CardActionsStack,
   DragHandleButton,
@@ -134,6 +139,9 @@ export function QueueJobCardContent({
   progress,
   onRemove,
   onRetry,
+  onEditOptions,
+  editLocked,
+  customized,
   dragOverlay,
   handleProps,
 }: QueueJobCardProps & { handleProps?: DragHandleProps }) {
@@ -274,14 +282,18 @@ export function QueueJobCardContent({
   return (
     <>
       <CardBody ref={thumbnailAnchorRef}>
-        {thumbnail && <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />}
+        {thumbnail && (
+          <ThumbWrap>
+            <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />
+          </ThumbWrap>
+        )}
         <CardContent>
           <CardHeaderRow>
-            <Box sx={{ flex: '1 1 0', minWidth: 0 }}>
+            <JobTitleWrapper>
               <EllipsisTooltip title={job.input}>
                 <JobNameText variant="body2">{basename(job.input)}</JobNameText>
               </EllipsisTooltip>
-            </Box>
+            </JobTitleWrapper>
             <CardActionsStack direction="row" spacing={1}>
               {job.status === QUEUE_STATUS.QUEUED && handleProps && !dragOverlay && !expanded && (
                 <Tooltip title={t('batchQueue.dragHandle')}>
@@ -293,6 +305,27 @@ export function QueueJobCardContent({
                   >
                     <FontAwesomeIcon icon={faGripVertical} />
                   </DragHandleButton>
+                </Tooltip>
+              )}
+              {job.status === QUEUE_STATUS.QUEUED && onEditOptions && (
+                <Tooltip title={editLocked ? t('batchQueue.optionsLocked') : t('batchQueue.editOptions')}>
+                  <span>
+                    <IconButton
+                      size="small"
+                      aria-label={t('batchQueue.editOptions')}
+                      disabled={editLocked}
+                      onClick={() => onEditOptions(job)}
+                    >
+                      <FontAwesomeIcon icon={faPencil} />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              )}
+              {customized && (
+                <Tooltip title={t('batchQueue.jobCustomized')}>
+                  <CustomizedIconButton size="small" aria-label={t('batchQueue.jobCustomized')} color="primary">
+                    <FontAwesomeIcon icon={faSliders} />
+                  </CustomizedIconButton>
                 </Tooltip>
               )}
               <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
@@ -406,7 +439,7 @@ export function QueueJobCardContent({
  * @param {QueueJobCardProps} props - Component props.
  * @returns {JSX.Element} The sortable job card.
  */
-export default function QueueJobCard({ job, progress, onRemove, onRetry }: QueueJobCardProps) {
+export default function QueueJobCard({ job, progress, onRemove, onRetry, onEditOptions, editLocked, customized }: QueueJobCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({
     id: job.id,
     disabled: job.status !== QUEUE_STATUS.QUEUED,
@@ -426,7 +459,16 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry }: Queue
         willChange: isDragActive ? 'transform' : undefined,
       }}
     >
-      <QueueJobCardContent job={job} progress={progress} onRemove={onRemove} onRetry={onRetry} handleProps={{ attributes, listeners }} />
+      <QueueJobCardContent
+        job={job}
+        progress={progress}
+        onRemove={onRemove}
+        onRetry={onRetry}
+        onEditOptions={onEditOptions}
+        editLocked={editLocked}
+        customized={customized}
+        handleProps={{ attributes, listeners }}
+      />
     </JobCard>
   );
 }

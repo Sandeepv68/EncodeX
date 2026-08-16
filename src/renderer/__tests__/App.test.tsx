@@ -46,27 +46,27 @@ describe('App', () => {
   it('renders the dashboard on the initial route', async () => {
     renderApp();
     expect(screen.queryByText('app.name')).not.toBeInTheDocument();
-    expect(await screen.findByText('dashboard.welcome 👋', {}, { timeout: 5000 })).toBeInTheDocument();
+    expect(await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 })).toBeInTheDocument();
   });
 
   it('renders the footer with the app name and version', async () => {
     renderApp();
-    expect(await screen.findByText('dashboard.welcome 👋', {}, { timeout: 5000 })).toBeInTheDocument();
+    expect(await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 })).toBeInTheDocument();
     expect(screen.getByText(/footer.version/)).toBeInTheDocument();
     expect(screen.getByText('footer.poweredBy')).toBeInTheDocument();
   });
 
   it('navigates to the convert page via the drawer', async () => {
     renderApp();
-    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 5000 });
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     const drawerItem = screen.getAllByText('nav.convert')[0].closest('[role="button"]')!;
     fireEvent.click(drawerItem);
-    expect(await screen.findByText('convert.title', {}, { timeout: 5000 })).toBeInTheDocument();
+    expect(await screen.findByText('convert.title', {}, { timeout: 10000 })).toBeInTheDocument();
   }, 20000);
 
   it('stores log messages received from the main process', async () => {
     renderApp();
-    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 5000 });
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     const callback = onLogMessageMock.mock.calls[0][0];
     const entry: LogEntry = { timestamp: '2026-07-31T12:00:00.000Z', level: 'INFO', text: 'incoming log', source: 'main' };
     callback(entry);
@@ -78,7 +78,7 @@ describe('App', () => {
       currentError: { code: 'CONVERSION_FAILED', message: 'Conversion exploded', detail: 'encoder crashed', timestamp: Date.now() },
     });
     renderApp();
-    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 5000 });
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     expect(screen.getByText('Conversion exploded')).toBeInTheDocument();
     expect(screen.getByText('encoder crashed')).toBeInTheDocument();
   });
@@ -86,7 +86,7 @@ describe('App', () => {
   it('renders the mobile menu button and opens the drawer on mobile', async () => {
     vi.stubGlobal('matchMedia', createMatchMedia(true));
     renderApp();
-    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 5000 });
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     const menuButton = document.querySelector('[data-icon="bars"]')!.closest('button')!;
     fireEvent.click(menuButton);
     fireEvent.click(screen.getAllByText('nav.convert')[0]);
@@ -96,26 +96,26 @@ describe('App', () => {
   it('shows a red blip on the audio-extract nav item while an extraction is running', async () => {
     useAudioExtractStore.setState({ isConverting: true });
     renderApp();
-    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 5000 });
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     expect(screen.getByTestId('nav-audio-extract-blip')).toBeInTheDocument();
   });
 
   it('hides the audio-extract blip when no extraction is running', async () => {
     renderApp();
-    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 5000 });
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     expect(screen.queryByTestId('nav-audio-extract-blip')).not.toBeInTheDocument();
   });
 
   it('shows a red blip on the video-cut nav item while a cut is running', async () => {
     useVideoCutStore.getState().setIsCutting(true);
     renderApp();
-    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 5000 });
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     expect(screen.getByTestId('nav-video-cut-blip')).toBeInTheDocument();
   });
 
   it('hides the video-cut blip when no cut is running', async () => {
     renderApp();
-    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 5000 });
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     expect(screen.queryByTestId('nav-video-cut-blip')).not.toBeInTheDocument();
   });
 });

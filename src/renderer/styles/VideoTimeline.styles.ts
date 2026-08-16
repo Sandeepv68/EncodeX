@@ -1,5 +1,5 @@
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Chip, IconButton, Typography } from '@mui/material';
+import { Box, Chip, IconButton, Skeleton, Typography } from '@mui/material';
 import { OVERLAY_COLORS, TIMELINE_COLORS } from '../colors';
 
 export const TIMELINE_LAYOUT = {
@@ -50,8 +50,16 @@ export const PreviewBadge = styled(Chip)(({ theme }) => ({
 
 export const ZoomButton = styled(IconButton)(({ theme }) => ({ padding: theme.typography.pxToRem(4) }));
 
+/** Zoom-in/zoom-out buttons clustered in the toolbar. @const ZoomControls */
+export const ZoomControls = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing(0.25),
+}));
+
 export const Viewport = styled(Box)(({ theme }) => ({
   position: 'relative',
+  flex: 1,
+  minWidth: 0,
   overflowX: 'auto',
   overflowY: 'hidden',
   cursor: 'pointer',
@@ -80,6 +88,58 @@ export const TrackLabel = styled(Box)(({ theme }) => ({
   width: theme.typography.pxToRem(72),
   color: theme.palette.text.secondary,
   gap: theme.spacing(0.25),
+}));
+
+/** Video-track label taller than the base label with a bottom divider. @const VideoTrackLabel */
+export const VideoTrackLabel = styled(TrackLabel)(({ theme }) => ({
+  height: theme.typography.pxToRem(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT),
+  borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+}));
+
+/** Audio-track label taller than the base label. @const AudioTrackLabel */
+export const AudioTrackLabel = styled(TrackLabel)(({ theme }) => ({
+  height: theme.typography.pxToRem(TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT),
+}));
+
+/** Toolbar row under the timeline: labels panel plus scrollable viewport. @const TrackRow */
+export const TrackRow = styled(Box)({
+  display: 'flex',
+});
+
+/** Empty spacer matching the ruler height inside the labels panel. @const RulerSpacer */
+export const RulerSpacer = styled(Box)(({ theme }) => ({
+  height: theme.typography.pxToRem(TIMELINE_LAYOUT.RULER_HEIGHT),
+}));
+
+/** Icon centered inside a track label. @const TrackIconBox */
+export const TrackIconBox = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+});
+
+/** Loading skeleton inset to the track content area. @const TrackSkeleton */
+export const TrackSkeleton = styled(Skeleton)(({ theme }) => ({
+  position: 'absolute',
+  top: theme.typography.pxToRem(2),
+  bottom: theme.typography.pxToRem(2),
+  left: 0,
+  right: 0,
+  borderRadius: theme.shape.borderRadius,
+}));
+
+/** Centered grip icon revealed on hover over the kept region. @const MoveIndicator */
+export const MoveIndicator = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  opacity: 0,
+  transition: 'opacity 120ms ease',
+  pointerEvents: 'none',
+  backgroundColor: OVERLAY_COLORS.black45,
+  color: OVERLAY_COLORS.white,
+  borderRadius: theme.typography.pxToRem(6),
+  padding: theme.typography.pxToRem(6),
 }));
 
 export const Scroller = styled(Box, {
@@ -177,13 +237,15 @@ export const VideoTrack = styled(Box)(({ theme }) => ({
   pointerEvents: 'none',
 }));
 
-export const AudioTrack = styled(Box)(({ theme }) => ({
+export const AudioTrack = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$width',
+})<{ $width: number }>(({ theme, $width }) => ({
   position: 'absolute',
   top: theme.typography.pxToRem(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT),
   left: 0,
-  right: 0,
+  width: $width,
   height: theme.typography.pxToRem(TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT),
-  backgroundColor: TIMELINE_COLORS.audioTrack,
+  background: TIMELINE_COLORS.audioTrack,
   zIndex: 0,
   pointerEvents: 'none',
 }));
@@ -251,13 +313,14 @@ export const TrimHandle = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const TrackBubbleAnchor = styled(Box)({
+export const TrackBubbleAnchor = styled(Box)(({ theme }) => ({
   position: 'absolute',
   left: 0,
   right: 0,
+  paddingTop: theme.typography.pxToRem(2),
   pointerEvents: 'none',
   zIndex: 2,
-});
+}));
 
 export const ScrollShadowAnchor = styled(Box)(({ theme }) => ({
   position: 'absolute',

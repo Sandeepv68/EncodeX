@@ -67,10 +67,25 @@ beforeAll(() => {
   }
 });
 
-afterAll(() => {
-  fs.rmSync(tmpDir, { recursive: true, force: true });
-  vi.restoreAllMocks();
+afterAll(async () => {
+  try {
+    await removeDir(tmpDir);
+  } finally {
+    vi.restoreAllMocks();
+  }
 });
+
+async function removeDir(dir: string): Promise<void> {
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    try {
+      fs.rmSync(dir, { recursive: true, force: true });
+      return;
+    } catch (err) {
+      if (attempt === 9) throw err;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100 * (attempt + 1)));
+  }
+}
 
 describe('runConvert (real FFmpeg)', () => {
   it('converts an mp4 to a new output file with the FFMPEG backend', async () => {

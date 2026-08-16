@@ -27,7 +27,8 @@
     "descImage": "Perkecil gambar dengan kontrol format, kualitas, dan dimensi",
     "descAudio": "Ekstrak trek audio yang bersih dari file video",
     "descCut": "Pangkas dan potong video dengan pemutar presisi bingkai",
-    "descBatch": "Konversi banyak file sekaligus dengan antrean cerdas"
+    "descBatch": "Konversi banyak file sekaligus dengan antrean cerdas",
+    "shortcutsFooter": "Tekan {{shortcut}} untuk pintasan keyboard"
   },
   "closeConfirm": {
     "title": "Tutup EncodeX?",
@@ -116,7 +117,7 @@
     "startTime": "Waktu Mulai",
     "probeScore": "Skor Pemeriksaan",
     "profile": "Profil",
-    "level": "Level",
+    "level": "Tingkat",
     "aspectRatio": "Rasio Aspek",
     "colorSpace": "Ruang Warna",
     "colorTransfer": "Transfer Warna",
@@ -180,7 +181,7 @@
     },
     "video": "Video",
     "audio": "Audio",
-    "subtitle": "Subtitle",
+    "subtitle": "Subjudul",
     "exifData": "Data EXIF",
     "noExif": "Tidak ada data EXIF ditemukan"
   },
@@ -285,14 +286,14 @@
     "audioEnabledHint": "Sertakan trek audio dalam keluaran pemotongan. Hapus centang untuk menghasilkan video tanpa suara."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Putar",
+    "pause": "Jeda",
+    "stop": "Berhenti",
+    "mute": "Bisukan",
+    "unmute": "Nyalakan suara",
+    "seek": "Cari",
+    "playbackTime": "Waktu pemutaran",
+    "videoPlayer": "Pemutar video"
   },
   "batchQueue": {
     "title": "Antrean Batch",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "Mode percepatan HW",
     "encodingOptions": "Opsi Penyandian",
     "container": "Kontainer",
-    "containerAuto": "Otomatis (sumber)"
+    "containerAuto": "Otomatis (sumber)",
+    "optionsEditableAlert": "Opsi masih dapat diubah selama ada pekerjaan dalam antrean.",
+    "optionsLockedAlert": "Opsi terkunci selama batch berjalan.",
+    "editOptions": "Edit opsi",
+    "optionsLocked": "Opsi terkunci selama batch berjalan",
+    "jobCustomized": "Pekerjaan ini menggunakan opsi khusus",
+    "editOptionsTitle": "Edit opsi untuk {{file}}",
+    "editOptionsSave": "Simpan perubahan",
+    "optionsUpdated": "Opsi pekerjaan diperbarui",
+    "outputCollision": "Pekerjaan lain dalam antrean sudah menggunakan jalur keluaran tersebut.",
+    "outputCollisionSkipped": "{{count}} pekerjaan dilewati – keluaran baru akan menimpa file pekerjaan lain ({{names}})",
+    "optionsUpdateFailed": "Pekerjaan ini tidak dapat diedit lagi.",
+    "condense": "Ciutkan",
+    "expand": "Kembangkan"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Progres konversi",
     "time": "Waktu",
     "speed": "Kecepatan",
     "eta": "Perkiraan Selesai"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Hapus",
     "download": "Unduh sebagai TXT",
-    "filter": "Filter by level",
+    "filter": "Saring berdasarkan tingkat",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +436,7 @@
     "poweredBy": "Didukung oleh"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Otomatis",
     "none": "Tidak ada"
   },
   "toast": {
@@ -465,6 +479,102 @@
       "rose": "Mawar",
       "slate": "Batu tulis",
       "dark": "Gelap"
+    }
+  },
+  "shortcuts": {
+    "title": "Pintasan Keyboard",
+    "close": "Tutup",
+    "sections": {
+      "global": "Umum",
+      "convert": "Konversi",
+      "mediaInfo": "Info Media",
+      "imageCompress": "Kompres Gambar",
+      "audioExtract": "Ekstrak Audio",
+      "videoCut": "Potong Video",
+      "batchQueue": "Antrean Batch",
+      "logs": "Log",
+      "dashboard": "Dasbor"
+    },
+    "global": {
+      "help": "Tampilkan pintasan keyboard",
+      "navDashboard": "Buka Dasbor",
+      "navConvert": "Buka Konversi",
+      "navMediaInfo": "Buka Info Media",
+      "navImage": "Buka Gambar",
+      "navAudio": "Buka Audio",
+      "navCut": "Buka Potong",
+      "navBatchQueue": "Buka Antrean Batch",
+      "navLogs": "Buka Log",
+      "navSettings": "Buka Pengaturan",
+      "themeToggle": "Ganti tema"
+    },
+    "convert": {
+      "input": "Pilih berkas masukan",
+      "output": "Pilih berkas keluaran",
+      "start": "Mulai konversi",
+      "pause": "Jeda atau lanjutkan konversi",
+      "cancel": "Batalkan konversi",
+      "clear": "Bersihkan tugas konversi",
+      "lossless": "Alihkan salinan tanpa kehilangan",
+      "preview": "Tampilkan atau sembunyikan pratinjau"
+    },
+    "mediaInfo": {
+      "open": "Pilih berkas untuk diperiksa"
+    },
+    "imageCompress": {
+      "input": "Pilih gambar masukan",
+      "output": "Pilih berkas keluaran",
+      "compress": "Kompres gambar",
+      "aspect": "Alihkan pertahankan rasio aspek"
+    },
+    "audioExtract": {
+      "input": "Pilih video masukan",
+      "output": "Pilih berkas keluaran",
+      "extract": "Ekstrak audio",
+      "pause": "Jeda atau lanjutkan ekstraksi",
+      "cancel": "Batalkan ekstraksi"
+    },
+    "videoCut": {
+      "open": "Pilih atau ganti video",
+      "output": "Pilih berkas keluaran",
+      "cut": "Potong video",
+      "pause": "Jeda atau lanjutkan pemotongan",
+      "cancel": "Batalkan pemotongan",
+      "clear": "Bersihkan formulir potong",
+      "useDuration": "Alihkan gunakan durasi",
+      "includeAudio": "Alihkan sertakan audio",
+      "playPause": "Putar atau jeda pratinjau",
+      "mute": "Bisukan atau aktifkan suara pratinjau",
+      "seekBack": "Mundur 5 detik",
+      "seekForward": "Maju 5 detik"
+    },
+    "batchQueue": {
+      "add": "Tambahkan berkas",
+      "start": "Mulai batch",
+      "pause": "Jeda atau lanjutkan antrean",
+      "cancelAll": "Batalkan semua tugas",
+      "clearCompleted": "Bersihkan tugas yang selesai",
+      "export": "Ekspor antrean",
+      "import": "Impor antrean",
+      "condense": "Ciutkan atau perluas kontrol",
+      "focusSearch": "Fokus pada kolom pencarian",
+      "filterAll": "Filter: semua",
+      "filterQueued": "Filter: mengantre",
+      "filterRunning": "Filter: berjalan",
+      "filterDone": "Filter: selesai",
+      "filterFailed": "Filter: gagal"
+    },
+    "logs": {
+      "clear": "Bersihkan log",
+      "download": "Unduh log"
+    },
+    "dashboard": {
+      "convert": "Buka Konversi",
+      "mediaInfo": "Buka Info Media",
+      "image": "Buka Gambar",
+      "audio": "Buka Audio",
+      "cut": "Buka Potong",
+      "batch": "Buka Antrean Batch"
     }
   }
 }

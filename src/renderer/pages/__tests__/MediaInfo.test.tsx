@@ -106,4 +106,21 @@ describe('MediaInfo', () => {
     await waitFor(() => expect(useErrorStore.getState().currentError).not.toBeNull());
     expect(useErrorStore.getState().currentError?.detail).toBe('probe failed');
   });
+
+  it('opens the file picker with Ctrl+O', async () => {
+    selectFileMock.mockResolvedValue('/media/video.mkv');
+    getMediaInfoMock.mockResolvedValue(SAMPLE_INFO);
+    renderPage();
+    fireEvent.keyDown(window, { code: 'KeyO', key: 'o', ctrlKey: true });
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledWith('/media/video.mkv', 'FFMPEG'));
+    expect(await screen.findByText('/media/video.mkv')).toBeInTheDocument();
+  });
+
+  it('does nothing on Ctrl+O when the file dialog is cancelled', async () => {
+    selectFileMock.mockResolvedValue(null);
+    renderPage();
+    fireEvent.keyDown(window, { code: 'KeyO', key: 'o', ctrlKey: true });
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalled());
+    expect(getMediaInfoMock).not.toHaveBeenCalled();
+  });
 });

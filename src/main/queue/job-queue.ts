@@ -37,6 +37,8 @@ import {
   LOG_QUEUE_MOVE_TO,
   LOG_QUEUE_MOVE_SKIPPED,
   LOG_QUEUE_MOVE_TO_CLAMPED,
+  LOG_QUEUE_UPDATE_OPTIONS,
+  LOG_QUEUE_UPDATE_OPTIONS_SKIPPED,
   LOG_QUEUE_PAUSE,
   LOG_QUEUE_RESUME,
   LOG_QUEUE_START,
@@ -467,6 +469,38 @@ export class JobQueue extends EventEmitter {
     log.info(LOG_QUEUE_MOVE_TO, id, toPos);
     this.emit('moved', { id, toPosition: toPos });
     this.schedulePersist();
+    return true;
+  }
+
+  /**
+   * Replaces the encoding options (and optionally the output path) of a QUEUED
+   * job.
+   *
+   * Only jobs that are still waiting (status QUEUED) can be edited - a job that
+   * is RUNNING is handed to the transcoder with a fixed output, and DONE/ERROR
+   * jobs are terminal. On success the job's `options` are replaced wholesale
+   * (and `output` when given), the mutation is persisted, and a `statusChange`
+   * event is emitted so the renderer's store refresh picks up the new values.
+   * @param {string} id - The id of the QUEUED job to update.
+   * @param {ConversionOptions} options - The full replacement options object.
+   * @param {string} [output] - Optional new absolute output path; when omitted
+   *   the job keeps its current output.
+   * @returns {boolean} True when the job was updated, false when the id is
+   *   unknown or the job is no longer QUEUED.
+   */
+  updateJobOptions(id: string, options: ConversionOptions, output?: string): boolean {
+    log.info(LOG_QUEUE_UPDATE_OPTIONS, id);
+    const job = this.queue.find((j) => j.id === id);
+    if (!job || job.status !== QUEUE_STATUS.QUEUED) {
+      log.debug(LOG_QUEUE_UPDATE_OPTIONS_SKIPPED, id);
+      return false;
+    }
+    job.options = { ...options };
+    if (output) {
+      job.output = output;
+    }
+    this.schedulePersist();
+    this.emit('statusChange', job);
     return true;
   }
 

@@ -15,6 +15,7 @@ interface FakeJobQueue {
   clearCompleted: ReturnType<typeof vi.fn>;
   setConcurrency: ReturnType<typeof vi.fn>;
   moveJobTo: ReturnType<typeof vi.fn>;
+  updateJobOptions: ReturnType<typeof vi.fn>;
   pause: ReturnType<typeof vi.fn>;
   resume: ReturnType<typeof vi.fn>;
   start: ReturnType<typeof vi.fn>;
@@ -96,6 +97,7 @@ vi.mock('../../queue/job-queue', () => {
       clearCompleted: ReturnType<typeof vi.fn>;
       setConcurrency: ReturnType<typeof vi.fn>;
       moveJobTo: ReturnType<typeof vi.fn>;
+      updateJobOptions: ReturnType<typeof vi.fn>;
       pause: ReturnType<typeof vi.fn>;
       resume: ReturnType<typeof vi.fn>;
       start: ReturnType<typeof vi.fn>;
@@ -110,6 +112,7 @@ vi.mock('../../queue/job-queue', () => {
         this.clearCompleted = vi.fn();
         this.setConcurrency = vi.fn();
         this.moveJobTo = vi.fn();
+        this.updateJobOptions = vi.fn();
         this.pause = vi.fn();
         this.resume = vi.fn();
         this.start = vi.fn();
@@ -201,6 +204,21 @@ describe('registerQueueHandlers', () => {
     const result = await getHandlers()[IPC.QUEUE_MOVE_TO]({}, 'id-1', 2);
     expect(jobQueue.moveJobTo).toHaveBeenCalledWith('id-1', 2);
     expect(result).toBe(true);
+  });
+
+  it('QUEUE_UPDATE_OPTIONS delegates to updateJobOptions and returns the result', async () => {
+    jobQueue.updateJobOptions.mockReturnValue(true);
+    const options = { videoCodec: 'libx265' };
+    const result = await getHandlers()[IPC.QUEUE_UPDATE_OPTIONS]({}, 'id-1', options, '/tmp/new.mp4');
+    expect(jobQueue.updateJobOptions).toHaveBeenCalledWith('id-1', options, '/tmp/new.mp4');
+    expect(result).toBe(true);
+  });
+
+  it('QUEUE_UPDATE_OPTIONS forwards without an output when none is given', async () => {
+    jobQueue.updateJobOptions.mockReturnValue(false);
+    const result = await getHandlers()[IPC.QUEUE_UPDATE_OPTIONS]({}, 'id-1', { videoCodec: 'libx265' });
+    expect(jobQueue.updateJobOptions).toHaveBeenCalledWith('id-1', { videoCodec: 'libx265' }, undefined);
+    expect(result).toBe(false);
   });
 
   it('QUEUE_PAUSE delegates to pause', async () => {

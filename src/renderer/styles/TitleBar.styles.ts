@@ -2,14 +2,15 @@ import { styled } from '@mui/material/styles';
 import { Box, IconButton, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TITLEBAR_COLORS, OVERLAY_COLORS, COLORS } from '../colors';
+import { TITLE_BAR_HEIGHT } from '../../shared/constants';
 
 const dragRegion = { WebkitAppRegion: 'drag' } as React.CSSProperties;
 const noDragRegion = { WebkitAppRegion: 'no-drag' } as React.CSSProperties;
 
 export const TitleBarRoot = styled(Box)(({ theme }) => ({
   ...dragRegion,
-  height: theme.typography.pxToRem(36),
-  minHeight: theme.typography.pxToRem(36),
+  height: theme.typography.pxToRem(TITLE_BAR_HEIGHT),
+  minHeight: theme.typography.pxToRem(TITLE_BAR_HEIGHT),
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',

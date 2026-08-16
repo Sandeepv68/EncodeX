@@ -462,6 +462,72 @@ describe('JobQueue', () => {
     });
   });
 
+  describe('updateJobOptions', () => {
+    function seedJobs(jobs: { id: string; status: string }[]): void {
+      (queue as unknown as { queue: { id: string; status: string }[] }).queue = jobs;
+    }
+
+    it('replaces the options of a queued job and returns true', () => {
+      seedJobs([{ id: 'q1', status: 'queued' }]);
+      expect(queue.updateJobOptions('q1', { videoCodec: 'libx265', audioCodec: 'aac' })).toBe(true);
+      expect(queue.getJobs()[0].options).toEqual({ videoCodec: 'libx265', audioCodec: 'aac' });
+    });
+
+    it('replaces the output path when one is provided', () => {
+      seedJobs([{ id: 'q1', status: 'queued' }]);
+      expect(queue.updateJobOptions('q1', { videoCodec: 'libx264' }, '/tmp/new_out.mp4')).toBe(true);
+      expect(queue.getJobs()[0].output).toBe('/tmp/new_out.mp4');
+      expect(queue.getJobs()[0].options).toEqual({ videoCodec: 'libx264' });
+    });
+
+    it('keeps the current output path when none is provided', () => {
+      seedJobs([{ id: 'q1', status: 'queued', output: '/tmp/original.mp4' } as unknown as { id: string; status: string }]);
+      queue.updateJobOptions('q1', { videoCodec: 'libx264' });
+      expect(queue.getJobs()[0].output).toBe('/tmp/original.mp4');
+    });
+
+    it('returns false and leaves the job untouched for missing, running, done, and errored jobs', () => {
+      seedJobs([
+        { id: 'running', status: 'running' },
+        { id: 'done', status: 'done' },
+        { id: 'error', status: 'error' },
+      ]);
+      expect(queue.updateJobOptions('missing', {})).toBe(false);
+      expect(queue.updateJobOptions('running', { videoCodec: 'libx265' })).toBe(false);
+      expect(queue.updateJobOptions('done', { videoCodec: 'libx265' })).toBe(false);
+      expect(queue.updateJobOptions('error', { videoCodec: 'libx265' })).toBe(false);
+      expect(queue.getJobs().map((j) => j.options)).toEqual([undefined, undefined, undefined]);
+    });
+
+    it('emits a statusChange event with the updated job', () => {
+      return new Promise<void>((resolve) => {
+        seedJobs([{ id: 'q1', status: 'queued' }]);
+        queue.on('statusChange', (job) => {
+          expect(job.id).toBe('q1');
+          expect(job.options).toEqual({ videoCodec: 'libx264' });
+          resolve();
+        });
+        queue.updateJobOptions('q1', { videoCodec: 'libx264' });
+      });
+    });
+
+    it('persists the updated options', () => {
+      const tempDir = path.join(os.tmpdir(), 'encodex-queue-test-' + randomUUID());
+      fs.mkdirSync(tempDir, { recursive: true });
+      const filePersistence = new FileQueuePersistence(tempDir);
+      try {
+        queue = new JobQueue({ persistence: filePersistence });
+        const id = queue.addJob('in.mp4', 'out.mp4', { videoCodec: 'libx264' }, 'FFMPEG');
+        expect(queue.updateJobOptions(id, { videoCodec: 'libx265' })).toBe(true);
+        queue.flushState();
+        const snapshot = JSON.parse(fs.readFileSync(path.join(tempDir, QUEUE_STATE_FILENAME), 'utf8')) as { jobs: QueueJob[] };
+        expect(snapshot.jobs[0].options).toEqual({ videoCodec: 'libx265' });
+      } finally {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
+    });
+  });
+
   describe('persistence', () => {
     let tempDir: string;
     let persistence: FileQueuePersistence;

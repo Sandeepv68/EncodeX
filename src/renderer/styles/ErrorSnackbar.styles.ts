@@ -1,7 +1,10 @@
 import { styled } from '@mui/material/styles';
 import { Alert } from '@mui/material';
 
-export const SnackbarAlert = styled(Alert)(({ theme }) => ({ maxWidth: theme.typography.pxToRem(600) }));
+export const SnackbarAlert = styled(Alert)(({ theme }) => ({
+  maxWidth: theme.typography.pxToRem(600),
+  color: theme.palette.common.white,
+}));
 
 export const AlertMessage = styled('div')(({ theme }) => ({
   fontWeight: 600,

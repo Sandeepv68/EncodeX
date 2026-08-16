@@ -16,6 +16,12 @@ export const AccelAlert = styled(Alert)(({ theme }) => ({
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
+export const LockedAlert = styled(Alert)(({ theme }) => ({
+  fontWeight: 500,
+  color: COLORS.alert.warning,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+}));
+
 export const EmptyText = styled(Typography)(({ theme }) => ({
   textAlign: 'center',
   paddingTop: theme.spacing(4),
@@ -30,6 +36,11 @@ export const FilterRow = styled(Stack)(({ theme }) => ({
   flexWrap: 'wrap',
   gap: theme.spacing(1),
 }));
+
+/** ETA caption pushed to the far right of the filter row. @const FilterEta */
+export const FilterEta = styled(Typography)({
+  marginInlineStart: 'auto',
+});
 
 export const FilterChip = styled(Chip)(({ theme }) => ({
   borderRadius: theme.spacing(0.75),
@@ -59,6 +70,33 @@ export const SearchField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-input': {
     padding: `0 ${theme.spacing(1)}`,
   },
+}));
+
+/**
+ * Wraps a collapsible section of the batch queue page (the batch controls and
+ * the encoding options panel). While the page is condensed, the section fades
+ * out in step with the height collapse driven by the MUI `Collapse` it wraps.
+ * Once the collapse animation has fully completed it is removed from the
+ * layout (`$gone`) so the condensed page leaves no empty space behind.
+ * @param {boolean} [$hidden] - True while the page is condensed (opacity 0).
+ * @param {boolean} [$gone] - True once collapse finished (display none).
+ */
+export const AnimatedSection = styled(Box)<{ $hidden?: boolean; $gone?: boolean }>(({ theme, $hidden, $gone }) => ({
+  display: $gone ? 'none' : undefined,
+  opacity: $hidden ? 0 : 1,
+  transition: `opacity ${theme.transitions.duration.standard}ms ease-in-out`,
+}));
+
+/**
+ * The condense/expand toggle icon. Rotates 180 degrees when the page switches
+ * between the condensed and full layouts so the button reads as an animated
+ * physical control.
+ * @param {boolean} [$rotated] - True while the page is condensed.
+ */
+export const CondenseIcon = styled('span')<{ $rotated?: boolean }>(({ $rotated }) => ({
+  display: 'inline-flex',
+  transition: 'transform 250ms ease-in-out',
+  transform: $rotated ? 'rotate(180deg)' : 'rotate(0deg)',
 }));
 
 export const DropOverlay = styled(Box)(({ theme }) => ({

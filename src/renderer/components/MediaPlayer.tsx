@@ -27,6 +27,8 @@ import { faPlay, faPause, faStop, faVolumeHigh, faVolumeXmark } from '@fortaweso
 import { Logger } from '../../shared/logger';
 import { PlayerFrame, PlayerAudioChunk } from '../../shared/types';
 import type { BufferedFrame, MediaPlayerHandle, MediaPlayerProps } from './types';
+import { useHotkeys } from '../hooks/useHotkeys';
+import { SEEK_KEY_STEP_SECONDS } from '../../shared/constants';
 import {
   AUDIO_LOOKAHEAD_SECONDS,
   MAX_PENDING_AUDIO_CHUNKS,
@@ -856,30 +858,35 @@ const MediaPlayer = memo(
       };
 
       /**
+       * Seeks to the given time, coalescing rapid calls into a single pending
+       * seek that flushPendingSeek executes after SEEK_COALESCE_MS.
+       * @param {number} time - Target playback time in seconds.
+       * @returns {void}
+       */
+      const seekTo = useCallback(
+        (time: number) => {
+          isSeeking.current = false;
+          resetToStartRef.current = false;
+          displayPtsRef.current = time;
+          const pending = pendingSeekRef.current;
+          pending.time = time;
+          if (pending.timer === null) {
+            pending.timer = window.setTimeout(flushPendingSeek, SEEK_COALESCE_MS);
+          }
+        },
+        [flushPendingSeek],
+      );
+
+      /**
        * Exposes the imperative {@link MediaPlayerHandle} to parent components.
        * @returns {void}
        */
       useImperativeHandle(
         ref,
         () => ({
-          /**
-           * Seeks to the given time, coalescing rapid calls into a single
-           * pending seek that flushPendingSeek executes after SEEK_COALESCE_MS.
-           * @param {number} time - Target playback time in seconds.
-           * @returns {void}
-           */
-          seekTo: (time: number) => {
-            isSeeking.current = false;
-            resetToStartRef.current = false;
-            displayPtsRef.current = time;
-            const pending = pendingSeekRef.current;
-            pending.time = time;
-            if (pending.timer === null) {
-              pending.timer = window.setTimeout(flushPendingSeek, SEEK_COALESCE_MS);
-            }
-          },
+          seekTo,
         }),
-        [flushPendingSeek],
+        [seekTo],
       );
 
       /**
@@ -894,6 +901,32 @@ const MediaPlayer = memo(
           masterGainRef.current.gain.value = mutedRef.current ? 0 : 1;
         }
       };
+
+      /**
+       * Registers the player keyboard shortcuts (Space/M/←/→) while this
+       * component is mounted. Arrow keys hold-to-repeat seek in ±5s steps.
+       * @returns {void}
+       */
+      useHotkeys([
+        {
+          id: 'videoCut.playPause',
+          handler: () => togglePlayback(),
+        },
+        {
+          id: 'videoCut.mute',
+          handler: () => handleToggleMute(),
+        },
+        {
+          id: 'videoCut.seekBack',
+          handler: () => seekTo(Math.max(0, currentTime - SEEK_KEY_STEP_SECONDS)),
+          allowRepeat: true,
+        },
+        {
+          id: 'videoCut.seekForward',
+          handler: () => seekTo(Math.min(duration, currentTime + SEEK_KEY_STEP_SECONDS)),
+          allowRepeat: true,
+        },
+      ]);
 
       /**
        * Formats a time in seconds as an HH:MM:SS.mmm string for playerSeek IPC

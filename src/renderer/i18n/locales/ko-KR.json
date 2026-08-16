@@ -27,7 +27,8 @@
     "descImage": "형식, 품질, 크기를 제어하며 이미지 용량 줄이기",
     "descAudio": "비디오 파일에서 깨끗한 오디오 트랙 추출",
     "descCut": "프레임 정확도 플레이어로 비디오 다듬기 및 자르기",
-    "descBatch": "스마트 큐로 여러 파일을 한 번에 변환"
+    "descBatch": "스마트 큐로 여러 파일을 한 번에 변환",
+    "shortcutsFooter": "키보드 단축키 보기: {{shortcut}}"
   },
   "closeConfirm": {
     "title": "EncodeX를 닫을까요?",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "컷 출력에 오디오 트랙을 포함합니다. 체크를 해제하면 소리가 없는 비디오가 생성됩니다."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "재생",
+    "pause": "일시 정지",
+    "stop": "정지",
+    "mute": "음소거",
+    "unmute": "음소거 해제",
+    "seek": "검색",
+    "playbackTime": "재생 시간",
+    "videoPlayer": "비디오 플레이어"
   },
   "batchQueue": {
     "title": "배치 큐",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "HW 가속 모드",
     "encodingOptions": "인코딩 옵션",
     "container": "컨테이너",
-    "containerAuto": "자동 (소스)"
+    "containerAuto": "자동 (소스)",
+    "optionsEditableAlert": "작업이 대기열에 있는 동안 옵션을 변경할 수 있습니다.",
+    "optionsLockedAlert": "배치가 실행되는 동안 옵션이 잠깁니다.",
+    "editOptions": "옵션 편집",
+    "optionsLocked": "배치가 실행되는 동안 옵션이 잠깁니다",
+    "jobCustomized": "이 작업은 사용자 지정 옵션을 사용합니다",
+    "editOptionsTitle": "{{file}} 옵션 편집",
+    "editOptionsSave": "변경 사항 저장",
+    "optionsUpdated": "작업 옵션이 업데이트되었습니다",
+    "outputCollision": "다른 대기열 작업이 이미 해당 출력 경로를 사용 중입니다.",
+    "outputCollisionSkipped": "작업 {{count}}개를 건너뜀 – 새 출력이 다른 작업의 파일을 덮어씁니다 ({{names}})",
+    "optionsUpdateFailed": "이 작업은 더 이상 편집할 수 없습니다.",
+    "condense": "접기",
+    "expand": "펼치기"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "변환 진행률",
     "time": "시간",
     "speed": "속도",
     "eta": "예상 완료 시간"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "지우기",
     "download": "TXT로 다운로드",
-    "filter": "Filter by level",
+    "filter": "수준별 필터",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -419,10 +433,10 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Powered by"
+    "poweredBy": "제공"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "자동",
     "none": "없음"
   },
   "toast": {
@@ -465,6 +479,102 @@
       "rose": "로즈",
       "slate": "슬레이트",
       "dark": "다크"
+    }
+  },
+  "shortcuts": {
+    "title": "키보드 단축키",
+    "close": "닫기",
+    "sections": {
+      "global": "전역",
+      "convert": "변환",
+      "mediaInfo": "미디어 정보",
+      "imageCompress": "이미지 압축",
+      "audioExtract": "오디오 추출",
+      "videoCut": "동영상 자르기",
+      "batchQueue": "배치 큐",
+      "logs": "로그",
+      "dashboard": "대시보드"
+    },
+    "global": {
+      "help": "키보드 단축키 표시",
+      "navDashboard": "대시보드로 이동",
+      "navConvert": "변환으로 이동",
+      "navMediaInfo": "미디어 정보로 이동",
+      "navImage": "이미지로 이동",
+      "navAudio": "오디오로 이동",
+      "navCut": "자르기로 이동",
+      "navBatchQueue": "배치 큐로 이동",
+      "navLogs": "로그로 이동",
+      "navSettings": "설정으로 이동",
+      "themeToggle": "테마 전환"
+    },
+    "convert": {
+      "input": "입력 파일 선택",
+      "output": "출력 파일 선택",
+      "start": "변환 시작",
+      "pause": "변환 일시 중지 또는 재개",
+      "cancel": "변환 취소",
+      "clear": "변환 작업 지우기",
+      "lossless": "무손실 복사 전환",
+      "preview": "미리 보기 표시 또는 숨기기"
+    },
+    "mediaInfo": {
+      "open": "검사할 파일 선택"
+    },
+    "imageCompress": {
+      "input": "입력 이미지 선택",
+      "output": "출력 파일 선택",
+      "compress": "이미지 압축",
+      "aspect": "가로세로 비율 유지 전환"
+    },
+    "audioExtract": {
+      "input": "입력 동영상 선택",
+      "output": "출력 파일 선택",
+      "extract": "오디오 추출",
+      "pause": "추출 일시 중지 또는 재개",
+      "cancel": "추출 취소"
+    },
+    "videoCut": {
+      "open": "동영상 선택 또는 변경",
+      "output": "출력 파일 선택",
+      "cut": "동영상 자르기",
+      "pause": "자르기 일시 중지 또는 재개",
+      "cancel": "자르기 취소",
+      "clear": "자르기 양식 지우기",
+      "useDuration": "기간 사용 전환",
+      "includeAudio": "오디오 포함 전환",
+      "playPause": "미리 보기 재생 또는 일시 중지",
+      "mute": "미리 보기 음소거 전환",
+      "seekBack": "5초 뒤로",
+      "seekForward": "5초 앞으로"
+    },
+    "batchQueue": {
+      "add": "파일 추가",
+      "start": "배치 시작",
+      "pause": "큐 일시 중지 또는 재개",
+      "cancelAll": "모든 작업 취소",
+      "clearCompleted": "완료된 작업 지우기",
+      "export": "큐 내보내기",
+      "import": "큐 가져오기",
+      "condense": "컨트롤 접기 또는 펼치기",
+      "focusSearch": "검색 필드에 초점",
+      "filterAll": "필터: 전체",
+      "filterQueued": "필터: 대기 중",
+      "filterRunning": "필터: 실행 중",
+      "filterDone": "필터: 완료",
+      "filterFailed": "필터: 실패"
+    },
+    "logs": {
+      "clear": "로그 지우기",
+      "download": "로그 다운로드"
+    },
+    "dashboard": {
+      "convert": "변환 열기",
+      "mediaInfo": "미디어 정보 열기",
+      "image": "이미지 열기",
+      "audio": "오디오 열기",
+      "cut": "자르기 열기",
+      "batch": "배치 큐 열기"
     }
   }
 }

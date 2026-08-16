@@ -27,7 +27,8 @@
     "descImage": "تقليل حجم الصور مع التحكم في التنسيق والجودة والأبعاد",
     "descAudio": "استخراج مسارات صوتية نقية من ملفات الفيديو",
     "descCut": "قص واقتطاع الفيديو مع مشغل دقيق الإطارات",
-    "descBatch": "تحويل ملفات متعددة في وقت واحد مع قائمة انتظار ذكية"
+    "descBatch": "تحويل ملفات متعددة في وقت واحد مع قائمة انتظار ذكية",
+    "shortcutsFooter": "اضغط {{shortcut}} لاختصارات لوحة المفاتيح"
   },
   "closeConfirm": {
     "title": "إغلاق EncodeX؟",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "تضمين المسار الصوتي في ناتج القص. ألغِ التحديد لإنتاج فيديو بدون صوت."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "تشغيل",
+    "pause": "إيقاف مؤقت",
+    "stop": "إيقاف",
+    "mute": "كتم الصوت",
+    "unmute": "إلغاء كتم الصوت",
+    "seek": "تقديم",
+    "playbackTime": "وقت التشغيل",
+    "videoPlayer": "مشغل الفيديو"
   },
   "batchQueue": {
     "title": "قائمة الدفعات",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "وضع تسريع الأجهزة",
     "encodingOptions": "خيارات الترميز",
     "container": "الحاوية",
-    "containerAuto": "تلقائي (المصدر)"
+    "containerAuto": "تلقائي (المصدر)",
+    "optionsEditableAlert": "لا يزال من الممكن تغيير الخيارات أثناء وجود المهام في قائمة الانتظار.",
+    "optionsLockedAlert": "الخيارات مقفلة أثناء تشغيل الدفعة.",
+    "editOptions": "تحرير الخيارات",
+    "optionsLocked": "الخيارات مقفلة أثناء تشغيل الدفعة",
+    "jobCustomized": "تستخدم هذه المهمة خيارات مخصصة",
+    "editOptionsTitle": "تحرير خيارات {{file}}",
+    "editOptionsSave": "حفظ التغييرات",
+    "optionsUpdated": "تم تحديث خيارات المهمة",
+    "outputCollision": "توجد مهمة أخرى في قائمة الانتظار تستخدم مسار الإخراج هذا بالفعل.",
+    "outputCollisionSkipped": "تم تخطي {{count}} مهمة – سيحل الناتج الجديد محل ملف مهمة أخرى ({{names}})",
+    "optionsUpdateFailed": "لم يعد من الممكن تحرير هذه المهمة.",
+    "condense": "طي",
+    "expand": "توسيع"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "تقدم التحويل",
     "time": "الوقت",
     "speed": "السرعة",
     "eta": "الوقت المتبقي"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "مسح",
     "download": "قم بالتنزيل بصيغة TXT",
-    "filter": "Filter by level",
+    "filter": "تصفية حسب المستوى",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +436,7 @@
     "poweredBy": "مدعوم بواسطة"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "تلقائي",
     "none": "لا شيء"
   },
   "toast": {
@@ -465,6 +479,102 @@
       "rose": "وردة",
       "slate": "أردواز",
       "dark": "داكن"
+    }
+  },
+  "shortcuts": {
+    "title": "اختصارات لوحة المفاتيح",
+    "close": "إغلاق",
+    "sections": {
+      "global": "عام",
+      "convert": "تحويل",
+      "mediaInfo": "معلومات الوسائط",
+      "imageCompress": "ضغط الصور",
+      "audioExtract": "استخراج الصوت",
+      "videoCut": "قص الفيديو",
+      "batchQueue": "قائمة الدفعة",
+      "logs": "السجلات",
+      "dashboard": "لوحة المعلومات"
+    },
+    "global": {
+      "help": "عرض اختصارات لوحة المفاتيح",
+      "navDashboard": "الانتقال إلى لوحة المعلومات",
+      "navConvert": "الانتقال إلى التحويل",
+      "navMediaInfo": "الانتقال إلى معلومات الوسائط",
+      "navImage": "الانتقال إلى الصور",
+      "navAudio": "الانتقال إلى الصوت",
+      "navCut": "الانتقال إلى القص",
+      "navBatchQueue": "الانتقال إلى قائمة الدفعة",
+      "navLogs": "الانتقال إلى السجلات",
+      "navSettings": "الانتقال إلى الإعدادات",
+      "themeToggle": "تبديل السمة"
+    },
+    "convert": {
+      "input": "اختيار ملف الإدخال",
+      "output": "اختيار ملف الإخراج",
+      "start": "بدء التحويل",
+      "pause": "إيقاف التحويل مؤقتًا أو استئنافه",
+      "cancel": "إلغاء التحويل",
+      "clear": "مسح مهمة التحويل",
+      "lossless": "تبديل النسخ بدون فقدان",
+      "preview": "إظهار أو إخفاء المعاينة"
+    },
+    "mediaInfo": {
+      "open": "اختيار ملف لفحصه"
+    },
+    "imageCompress": {
+      "input": "اختيار صورة الإدخال",
+      "output": "اختيار ملف الإخراج",
+      "compress": "ضغط الصورة",
+      "aspect": "تبديل الحفاظ على نسبة الأبعاد"
+    },
+    "audioExtract": {
+      "input": "اختيار فيديو الإدخال",
+      "output": "اختيار ملف الإخراج",
+      "extract": "استخراج الصوت",
+      "pause": "إيقاف الاستخراج مؤقتًا أو استئنافه",
+      "cancel": "إلغاء الاستخراج"
+    },
+    "videoCut": {
+      "open": "اختيار الفيديو أو تغييره",
+      "output": "اختيار ملف الإخراج",
+      "cut": "قص الفيديو",
+      "pause": "إيقاف القص مؤقتًا أو استئنافه",
+      "cancel": "إلغاء القص",
+      "clear": "مسح نموذج القص",
+      "useDuration": "تبديل استخدام المدة",
+      "includeAudio": "تبديل تضمين الصوت",
+      "playPause": "تشغيل المعاينة أو إيقافها مؤقتًا",
+      "mute": "كتم المعاينة أو إلغاء الكتم",
+      "seekBack": "التراجع 5 ثوانٍ",
+      "seekForward": "التقدم 5 ثوانٍ"
+    },
+    "batchQueue": {
+      "add": "إضافة ملفات",
+      "start": "بدء الدفعة",
+      "pause": "إيقاف القائمة مؤقتًا أو استئنافها",
+      "cancelAll": "إلغاء جميع المهام",
+      "clearCompleted": "مسح المهام المكتملة",
+      "export": "تصدير القائمة",
+      "import": "استيراد القائمة",
+      "condense": "طي عناصر التحكم أو توسيعها",
+      "focusSearch": "التركيز على حقل البحث",
+      "filterAll": "تصفية: الكل",
+      "filterQueued": "تصفية: في الانتظار",
+      "filterRunning": "تصفية: قيد التشغيل",
+      "filterDone": "تصفية: مكتمل",
+      "filterFailed": "تصفية: فاشل"
+    },
+    "logs": {
+      "clear": "مسح السجلات",
+      "download": "تنزيل السجلات"
+    },
+    "dashboard": {
+      "convert": "فتح التحويل",
+      "mediaInfo": "فتح معلومات الوسائط",
+      "image": "فتح الصور",
+      "audio": "فتح الصوت",
+      "cut": "فتح القص",
+      "batch": "فتح قائمة الدفعة"
     }
   }
 }

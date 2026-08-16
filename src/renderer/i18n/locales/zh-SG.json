@@ -27,7 +27,8 @@
     "descImage": "控制格式、质量和尺寸来缩小图像",
     "descAudio": "从视频文件中提取纯净的音频轨道",
     "descCut": "使用帧精确的播放器来修剪和剪切视频",
-    "descBatch": "通过智能队列一次转换多个文件"
+    "descBatch": "通过智能队列一次转换多个文件",
+    "shortcutsFooter": "按 {{shortcut}} 查看键盘快捷键"
   },
   "closeConfirm": {
     "title": "关闭 EncodeX？",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "在剪切输出中包含音频轨道。取消选中以生成没有声音的视频。"
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "播放",
+    "pause": "暂停",
+    "stop": "停止",
+    "mute": "静音",
+    "unmute": "取消静音",
+    "seek": "搜索",
+    "playbackTime": "播放时间",
+    "videoPlayer": "视频播放器"
   },
   "batchQueue": {
     "title": "批量队列",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "硬件加速模式",
     "encodingOptions": "编码选项",
     "container": "容器",
-    "containerAuto": "自动（源）"
+    "containerAuto": "自动（源）",
+    "optionsEditableAlert": "队列中还有任务时，仍可更改选项。",
+    "optionsLockedAlert": "批处理运行时选项被锁定。",
+    "editOptions": "编辑选项",
+    "optionsLocked": "批处理运行时选项被锁定",
+    "jobCustomized": "此任务使用自定义选项",
+    "editOptionsTitle": "编辑 {{file}} 的选项",
+    "editOptionsSave": "保存更改",
+    "optionsUpdated": "任务选项已更新",
+    "outputCollision": "队列中的另一个任务已使用该输出路径。",
+    "outputCollisionSkipped": "已跳过 {{count}} 个任务 – 新输出将覆盖另一个任务的文件 ({{names}})",
+    "optionsUpdateFailed": "此任务不再可编辑。",
+    "condense": "收起",
+    "expand": "展开"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "转换进度",
     "time": "时间",
     "speed": "速度",
     "eta": "预计剩余时间"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "清除",
     "download": "下载为 TXT",
-    "filter": "Filter by level",
+    "filter": "按级别筛选",
     "levelAll": "全部",
     "levelDebug": "调试",
     "levelInfo": "信息",
@@ -466,5 +480,101 @@
     "hardwareAccelerationHint": "使用您的 GPU（NVIDIA NVENC、Intel QSV、AMD AMF）进行视频编码和解码。关闭以仅使用软件编码。",
     "hwaccelModeHint": "自动：GPU 同时执行解码和编码（最快，并非总是兼容）。仅编码：GPU 编码，CPU 解码（最安全）。",
     "encoderTypeHint": "过滤视频编码器列表。自动显示所有可用的编码器，硬件仅显示 GPU 编码器，软件仅显示 CPU 编码器。"
+  },
+  "shortcuts": {
+    "title": "键盘快捷键",
+    "close": "关闭",
+    "sections": {
+      "global": "全局",
+      "convert": "转换",
+      "mediaInfo": "媒体信息",
+      "imageCompress": "图片压缩",
+      "audioExtract": "音频提取",
+      "videoCut": "视频裁剪",
+      "batchQueue": "批量队列",
+      "logs": "日志",
+      "dashboard": "仪表板"
+    },
+    "global": {
+      "help": "显示键盘快捷键",
+      "navDashboard": "转到仪表板",
+      "navConvert": "转到转换",
+      "navMediaInfo": "转到媒体信息",
+      "navImage": "转到图片",
+      "navAudio": "转到音频",
+      "navCut": "转到裁剪",
+      "navBatchQueue": "转到批量队列",
+      "navLogs": "转到日志",
+      "navSettings": "转到设置",
+      "themeToggle": "切换主题"
+    },
+    "convert": {
+      "input": "选择输入文件",
+      "output": "选择输出文件",
+      "start": "开始转换",
+      "pause": "暂停或继续转换",
+      "cancel": "取消转换",
+      "clear": "清除转换任务",
+      "lossless": "切换无损复制",
+      "preview": "显示或隐藏预览"
+    },
+    "mediaInfo": {
+      "open": "选择要检查的文件"
+    },
+    "imageCompress": {
+      "input": "选择输入图片",
+      "output": "选择输出文件",
+      "compress": "压缩图片",
+      "aspect": "切换保持宽高比"
+    },
+    "audioExtract": {
+      "input": "选择输入视频",
+      "output": "选择输出文件",
+      "extract": "提取音频",
+      "pause": "暂停或继续提取",
+      "cancel": "取消提取"
+    },
+    "videoCut": {
+      "open": "选择或更改视频",
+      "output": "选择输出文件",
+      "cut": "裁剪视频",
+      "pause": "暂停或继续裁剪",
+      "cancel": "取消裁剪",
+      "clear": "清除裁剪表单",
+      "useDuration": "切换使用时长",
+      "includeAudio": "切换包含音频",
+      "playPause": "播放或暂停预览",
+      "mute": "切换预览静音",
+      "seekBack": "后退 5 秒",
+      "seekForward": "前进 5 秒"
+    },
+    "batchQueue": {
+      "add": "添加文件",
+      "start": "开始批量处理",
+      "pause": "暂停或继续队列",
+      "cancelAll": "取消所有任务",
+      "clearCompleted": "清除已完成的任务",
+      "export": "导出队列",
+      "import": "导入队列",
+      "condense": "折叠或展开控件",
+      "focusSearch": "聚焦搜索框",
+      "filterAll": "筛选：全部",
+      "filterQueued": "筛选：排队中",
+      "filterRunning": "筛选：运行中",
+      "filterDone": "筛选：已完成",
+      "filterFailed": "筛选：失败"
+    },
+    "logs": {
+      "clear": "清除日志",
+      "download": "下载日志"
+    },
+    "dashboard": {
+      "convert": "打开转换",
+      "mediaInfo": "打开媒体信息",
+      "image": "打开图片",
+      "audio": "打开音频",
+      "cut": "打开裁剪",
+      "batch": "打开批量队列"
+    }
   }
 }

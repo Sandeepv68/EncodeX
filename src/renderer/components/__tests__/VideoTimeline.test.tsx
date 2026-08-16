@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import VideoTimeline from '../VideoTimeline';
 import { TIMELINE_LAYOUT } from '../../styles/VideoTimeline.styles';
+import { TIMELINE_COLORS } from '../../colors';
 
 function mockRect(el: HTMLElement, left: number, width: number) {
   Object.defineProperty(el, 'getBoundingClientRect', {
@@ -389,7 +390,7 @@ describe('VideoTimeline', () => {
     expect(TIMELINE_LAYOUT.TRACK_CONTENT_HEIGHT + TIMELINE_LAYOUT.TRACK_CONTENT_TOP * 2).toBe(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT);
     expect(TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT).toBe(TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT);
     const audioTrack = screen.getByTestId('timeline-audio-track');
-    expect(audioTrack).toHaveStyle({ backgroundColor: '#809dca42' });
+    expect(audioTrack).toHaveStyle({ background: TIMELINE_COLORS.audioTrack });
     const kept = screen.getByTestId('timeline-kept-region');
     const dimmed = screen.getAllByTestId('timeline-dimmed-region');
     expect(kept).toHaveStyle({ top: '2px', bottom: '2px' });

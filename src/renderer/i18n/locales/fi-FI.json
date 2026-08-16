@@ -27,7 +27,8 @@
     "descImage": "Pakkaa kuvia muoto-, laatu- ja kokokontrolleilla",
     "descAudio": "Pura puhdasta ääntä videotiedostoista",
     "descCut": "Leikkaa videoita kehyksen tarkkuudella",
-    "descBatch": "Muunna useita tiedostoja kerralla älykkäällä jonolla"
+    "descBatch": "Muunna useita tiedostoja kerralla älykkäällä jonolla",
+    "shortcutsFooter": "Paina {{shortcut}} näppäimistöoikoteitä varten"
   },
   "closeConfirm": {
     "title": "Sulje EncodeX?",
@@ -143,7 +144,7 @@
       "artist": "Artisti",
       "album": "Albumi",
       "album_artist": "Albumin artisti",
-      "genre": "Genre",
+      "genre": "Lajityyppi",
       "date": "Päivämäärä",
       "comment": "Kommentti",
       "copyright": "Tekijänoikeus",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "Sisällytä ääniraita leikkauksen tulosteeseen. Poista valinta luodaksesi videon ilman ääntä."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "Toista",
+    "pause": "Keskeytä",
+    "stop": "Pysäytä",
+    "mute": "Mykistä",
+    "unmute": "Poista mykistys",
+    "seek": "Hae",
+    "playbackTime": "Toistoaika",
+    "videoPlayer": "Videosoitin"
   },
   "batchQueue": {
     "title": "Eräjono",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "HW-kiihdytystila",
     "encodingOptions": "Koodausasetukset",
     "container": "Säiliö",
-    "containerAuto": "Automaattinen (lähde)"
+    "containerAuto": "Automaattinen (lähde)",
+    "optionsEditableAlert": "Vaihtoehtoja voi muuttaa, kun jonossa on tehtäviä.",
+    "optionsLockedAlert": "Vaihtoehdot ovat lukittuja, kun erä on käynnissä.",
+    "editOptions": "Muokkaa vaihtoehtoja",
+    "optionsLocked": "Vaihtoehdot ovat lukittuja, kun erä on käynnissä",
+    "jobCustomized": "Tämä tehtävä käyttää mukautettuja vaihtoehtoja",
+    "editOptionsTitle": "Muokkaa vaihtoehtoja: {{file}}",
+    "editOptionsSave": "Tallenna muutokset",
+    "optionsUpdated": "Tehtävän vaihtoehdot päivitetty",
+    "outputCollision": "Toinen jonossa oleva tehtävä käyttää jo tätä tulostiedostoa.",
+    "outputCollisionSkipped": "Ohitettiin {{count}} tehtävä(t) – uusi tulos kirjoittaisi toisen tehtävän tiedoston päälle ({{names}})",
+    "optionsUpdateFailed": "Tätä tehtävää ei voi enää muokata.",
+    "condense": "Tiivistä",
+    "expand": "Laajenna"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Muunnoksen edistyminen",
     "time": "Aika",
     "speed": "Nopeus",
     "eta": "ETA"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Tyhjennä",
     "download": "Lataa TXT-muodossa",
-    "filter": "Filter by level",
+    "filter": "Suodata tason mukaan",
     "levelAll": "Kaikki",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -466,5 +480,101 @@
     "hardwareAccelerationHint": "Käytä GPU:tasi (NVIDIA NVENC, Intel QSV, AMD AMF) videon koodaamiseen ja dekoodaamiseen. Poista käytöstä vain ohjelmistokoodausta varten.",
     "hwaccelModeHint": "Automaattinen: GPU dekoodaa ja koodaa (nopein, ei aina yhteensopiva). Vain koodaus: GPU koodaa ja CPU dekoodaa (turvallisin).",
     "encoderTypeHint": "Suodata videocodec-listaa. Automaattinen näyttää kaikki koodaajat, Laitteisto vain GPU-koodaajat, Ohjelmisto vain CPU-koodaajat."
+  },
+  "shortcuts": {
+    "title": "Näppäimistöoikotiet",
+    "close": "Sulje",
+    "sections": {
+      "global": "Yleiset",
+      "convert": "Muunna",
+      "mediaInfo": "Mediatiedot",
+      "imageCompress": "Kuvan pakkaus",
+      "audioExtract": "Äänen erottaminen",
+      "videoCut": "Videon leikkaus",
+      "batchQueue": "Eräjono",
+      "logs": "Lokit",
+      "dashboard": "Kojelauta"
+    },
+    "global": {
+      "help": "Näytä näppäimistöoikotiet",
+      "navDashboard": "Siirry kojelautaan",
+      "navConvert": "Siirry muunnokseen",
+      "navMediaInfo": "Siirry mediatietoihin",
+      "navImage": "Siirry kuvaan",
+      "navAudio": "Siirry ääneen",
+      "navCut": "Siirry leikkaukseen",
+      "navBatchQueue": "Siirry eräjonoon",
+      "navLogs": "Siirry lokiin",
+      "navSettings": "Siirry asetuksiin",
+      "themeToggle": "Vaihda teemaa"
+    },
+    "convert": {
+      "input": "Valitse syötetiedosto",
+      "output": "Valitse tulostiedosto",
+      "start": "Aloita muunnos",
+      "pause": "Keskeytä tai jatka muunnosta",
+      "cancel": "Peruuta muunnos",
+      "clear": "Tyhjennä muunnostyö",
+      "lossless": "Vaihda häviötön kopiointi",
+      "preview": "Näytä tai piilota esikatselu"
+    },
+    "mediaInfo": {
+      "open": "Valitse tarkasteltava tiedosto"
+    },
+    "imageCompress": {
+      "input": "Valitse syötekuva",
+      "output": "Valitse tulostiedosto",
+      "compress": "Pakkaa kuva",
+      "aspect": "Vaihda mittasuhteiden säilytys"
+    },
+    "audioExtract": {
+      "input": "Valitse syötevideotiedosto",
+      "output": "Valitse tulostiedosto",
+      "extract": "Erota ääni",
+      "pause": "Keskeytä tai jatka erottamista",
+      "cancel": "Peruuta erottaminen"
+    },
+    "videoCut": {
+      "open": "Valitse tai vaihda video",
+      "output": "Valitse tulostiedosto",
+      "cut": "Leikkaa video",
+      "pause": "Keskeytä tai jatka leikkausta",
+      "cancel": "Peruuta leikkaus",
+      "clear": "Tyhjennä leikkauslomake",
+      "useDuration": "Vaihda keston käyttö",
+      "includeAudio": "Vaihda äänen sisällyttäminen",
+      "playPause": "Toista tai keskeytä esikatselu",
+      "mute": "Mykistä tai poista mykistys",
+      "seekBack": "Siirry 5 sekuntia taaksepäin",
+      "seekForward": "Siirry 5 sekuntia eteenpäin"
+    },
+    "batchQueue": {
+      "add": "Lisää tiedostoja",
+      "start": "Aloita erä",
+      "pause": "Keskeytä tai jatka jonoa",
+      "cancelAll": "Peruuta kaikki työt",
+      "clearCompleted": "Tyhjennä valmistuneet työt",
+      "export": "Vie jono",
+      "import": "Tuo jono",
+      "condense": "Tiivistä tai laajenna säätimiä",
+      "focusSearch": "Kohdista hakukenttään",
+      "filterAll": "Suodata: kaikki",
+      "filterQueued": "Suodata: jonossa",
+      "filterRunning": "Suodata: käynnissä",
+      "filterDone": "Suodata: valmis",
+      "filterFailed": "Suodata: epäonnistunut"
+    },
+    "logs": {
+      "clear": "Tyhjennä lokit",
+      "download": "Lataa lokit"
+    },
+    "dashboard": {
+      "convert": "Avaa Muunna",
+      "mediaInfo": "Avaa Mediatiedot",
+      "image": "Avaa Kuva",
+      "audio": "Avaa Ääni",
+      "cut": "Avaa Leikkaus",
+      "batch": "Avaa Eräjono"
+    }
   }
 }

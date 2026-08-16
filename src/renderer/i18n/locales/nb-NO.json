@@ -27,7 +27,8 @@
     "descImage": "Krymp bilder med kontroll over format, kvalitet og dimensjoner",
     "descAudio": "Trekk ut rene lydspor fra videofiler",
     "descCut": "Trim og klipp video med en rammenøyaktig spiller",
-    "descBatch": "Konverter mange filer samtidig med en smart kø"
+    "descBatch": "Konverter mange filer samtidig med en smart kø",
+    "shortcutsFooter": "Trykk {{shortcut}} for tastatursnarveier"
   },
   "closeConfirm": {
     "title": "Lukke EncodeX?",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "Inkluder lydsporet i klipputdataen. Fjern merket for å lage en video uten lyd."
   },
   "player": {
-    "play": "Play",
+    "play": "Spill av",
     "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "stop": "Stopp",
+    "mute": "Demp",
+    "unmute": "Opphev demping",
+    "seek": "Søk",
+    "playbackTime": "Avspillingstid",
+    "videoPlayer": "Videospiller"
   },
   "batchQueue": {
     "title": "Batchkø",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "Akselerasjonsmodus",
     "encodingOptions": "Kodingsalternativer",
     "container": "Beholder",
-    "containerAuto": "Auto (kilde)"
+    "containerAuto": "Auto (kilde)",
+    "optionsEditableAlert": "Alternativene kan fortsatt endres mens det er jobber i kø.",
+    "optionsLockedAlert": "Alternativene er låst mens batchen kjører.",
+    "editOptions": "Rediger alternativer",
+    "optionsLocked": "Alternativene er låst mens batchen kjører",
+    "jobCustomized": "Denne jobben bruker egendefinerte alternativer",
+    "editOptionsTitle": "Rediger alternativer for {{file}}",
+    "editOptionsSave": "Lagre endringer",
+    "optionsUpdated": "Jobbalternativer oppdatert",
+    "outputCollision": "En annen jobb i køen bruker allerede denne utdatabanen.",
+    "outputCollisionSkipped": "{{count}} jobb(er) hoppet over – den nye utdataen vil overskrive en annen jobbs fil ({{names}})",
+    "optionsUpdateFailed": "Denne jobben kan ikke lenger redigeres.",
+    "condense": "Kollaps",
+    "expand": "Utvid"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "Konverteringsfremdrift",
     "time": "Tid",
     "speed": "Hastighet",
     "eta": "Gjenstår"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "Tøm",
     "download": "Last ned som TXT",
-    "filter": "Filter by level",
+    "filter": "Filtrer etter nivå",
     "levelAll": "ALLE",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -422,7 +436,7 @@
     "poweredBy": "Drevet av"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Automatisk",
     "none": "Ingen"
   },
   "toast": {
@@ -466,5 +480,101 @@
     "hardwareAccelerationHint": "Bruker GPU-en din (NVIDIA NVENC, Intel QSV, AMD AMF) til videokoding og -dekoding. Slå av for ren programvarekoding.",
     "hwaccelModeHint": "Automatisk: GPU-en utfører både dekoding og koding (raskest, ikke alltid kompatibelt). Kun koding: GPU-en koder og CPU-en dekoder (sikrest).",
     "encoderTypeHint": "Filtrerer videokodeklisten. Automatisk viser alle tilgjengelige kodere, Maskinvare viser kun GPU-kodere, Programvare viser kun CPU-kodere."
+  },
+  "shortcuts": {
+    "title": "Tastatursnarveier",
+    "close": "Lukk",
+    "sections": {
+      "global": "Global",
+      "convert": "Konverter",
+      "mediaInfo": "Medieinformasjon",
+      "imageCompress": "Bildekomprimering",
+      "audioExtract": "Lyduttrekk",
+      "videoCut": "Klipp video",
+      "batchQueue": "Batch-kø",
+      "logs": "Logger",
+      "dashboard": "Dashbord"
+    },
+    "global": {
+      "help": "Vis tastatursnarveier",
+      "navDashboard": "Gå til Dashbord",
+      "navConvert": "Gå til Konverter",
+      "navMediaInfo": "Gå til Medieinformasjon",
+      "navImage": "Gå til Bilde",
+      "navAudio": "Gå til Lyd",
+      "navCut": "Gå til Klipp",
+      "navBatchQueue": "Gå til Batch-kø",
+      "navLogs": "Gå til Logger",
+      "navSettings": "Gå til Innstillinger",
+      "themeToggle": "Bytt tema"
+    },
+    "convert": {
+      "input": "Velg inndatafil",
+      "output": "Velg utdatafil",
+      "start": "Start konvertering",
+      "pause": "Sett konvertering på pause eller fortsett",
+      "cancel": "Avbryt konvertering",
+      "clear": "Tøm konverteringsjobb",
+      "lossless": "Slå tapsfri kopiering av/på",
+      "preview": "Vis eller skjul forhåndsvisning"
+    },
+    "mediaInfo": {
+      "open": "Velg en fil å inspisere"
+    },
+    "imageCompress": {
+      "input": "Velg inndatabilde",
+      "output": "Velg utdatafil",
+      "compress": "Komprimer bilde",
+      "aspect": "Slå bevar sideforhold av/på"
+    },
+    "audioExtract": {
+      "input": "Velg inndatavideo",
+      "output": "Velg utdatafil",
+      "extract": "Trekk ut lyd",
+      "pause": "Sett uttrekk på pause eller fortsett",
+      "cancel": "Avbryt uttrekk"
+    },
+    "videoCut": {
+      "open": "Velg eller bytt video",
+      "output": "Velg utdatafil",
+      "cut": "Klipp video",
+      "pause": "Sett klipping på pause eller fortsett",
+      "cancel": "Avbryt klipping",
+      "clear": "Tøm klippeskjema",
+      "useDuration": "Slå bruk varighet av/på",
+      "includeAudio": "Slå inkluder lyd av/på",
+      "playPause": "Spill eller sett forhåndsvisning på pause",
+      "mute": "Slå av/på lyd i forhåndsvisning",
+      "seekBack": "Spol 5 sekunder tilbake",
+      "seekForward": "Spol 5 sekunder frem"
+    },
+    "batchQueue": {
+      "add": "Legg til filer",
+      "start": "Start batch",
+      "pause": "Sett kø på pause eller fortsett",
+      "cancelAll": "Avbryt alle jobber",
+      "clearCompleted": "Tøm fullførte jobber",
+      "export": "Eksporter kø",
+      "import": "Importer kø",
+      "condense": "Slå sammen eller utvid kontroller",
+      "focusSearch": "Fokuser søkefelt",
+      "filterAll": "Filter: alle",
+      "filterQueued": "Filter: i kø",
+      "filterRunning": "Filter: kjører",
+      "filterDone": "Filter: fullført",
+      "filterFailed": "Filter: mislyktes"
+    },
+    "logs": {
+      "clear": "Tøm logger",
+      "download": "Last ned logger"
+    },
+    "dashboard": {
+      "convert": "Åpne Konverter",
+      "mediaInfo": "Åpne Medieinformasjon",
+      "image": "Åpne Bilde",
+      "audio": "Åpne Lyd",
+      "cut": "Åpne Klipp",
+      "batch": "Åpne Batch-kø"
+    }
   }
 }

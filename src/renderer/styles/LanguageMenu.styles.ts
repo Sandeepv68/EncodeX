@@ -58,12 +58,14 @@ export const FlagIconWrapper = styled('span', {
 
 export const menuPaperSx: SxProps<Theme> = (theme) => ({ maxHeight: theme.typography.pxToRem(400) });
 
-export const menuSearchBoxSx: SxProps<Theme> = (theme) => ({
+/** Search-field wrapper inside the language menu. @const SearchBox */
+export const SearchBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1),
   paddingBottom: theme.spacing(0.5),
-});
+}));
 
-export const menuListSx: SxProps<Theme> = (theme) => ({
+/** Scrollable locale list inside the language menu. @const LocaleList */
+export const LocaleList = styled(Box)(({ theme }) => ({
   maxHeight: theme.typography.pxToRem(320),
   overflowY: 'auto',
-});
+}));

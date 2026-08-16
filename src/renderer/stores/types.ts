@@ -13,6 +13,7 @@
  *  - ToastType            - union of toast severities
  *  - Toast()              - a single toast notification
  *  - ToastState()         - toast store state + actions
+ *  - DismissedAlertsState() - dismissed alert banner state + actions
  *  - QueueState()         - conversion queue store state + actions
  *  - LogState()           - log store state + actions
  *  - ProgressData()       - progress subset tracked during conversion
@@ -147,6 +148,23 @@ export interface ToastState {
   error: (message: string, detail?: string, duration?: number) => void;
   warning: (message: string, detail?: string, duration?: number) => void;
   info: (message: string, detail?: string, duration?: number) => void;
+}
+
+/**
+ * State of the dismissed-alerts store.
+ * Remembers which inline alert banners the user has dismissed so they do not
+ * reappear on page navigation. Held in memory only (not persisted to
+ * localStorage), so dismissals survive navigating between pages but are reset
+ * when the app closes.
+ * @interface DismissedAlertsState
+ * @property {string[]} dismissed - Alert keys the user has dismissed this session.
+ * @property {(key: string) => boolean} isDismissed - Whether the alert with the given key has been dismissed.
+ * @property {(key: string) => void} dismiss - Marks the alert with the given key as dismissed.
+ */
+export interface DismissedAlertsState {
+  dismissed: string[];
+  isDismissed: (key: string) => boolean;
+  dismiss: (key: string) => void;
 }
 
 /**

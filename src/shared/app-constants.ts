@@ -18,6 +18,13 @@ export const DRAWER_WIDTH = 220;
 export const DRAWER_WIDTH_CONDENSED = 72;
 
 /**
+ * Height of the bottom footer bars. Shared by the main layout footer and the
+ * navigation drawer footer so their heights stay in sync.
+ * @const {number} FOOTER_HEIGHT
+ */
+export const FOOTER_HEIGHT = 52;
+
+/**
  * URL of the Vite development server loaded while running in development mode.
  * @const {string} DEV_SERVER_URL
  */

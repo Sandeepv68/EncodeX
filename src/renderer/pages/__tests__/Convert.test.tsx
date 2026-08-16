@@ -5,6 +5,7 @@ import { useConversionStore } from '../../stores/conversionStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
+import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../../stores/dismissedAlertsStore';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
@@ -71,6 +72,7 @@ describe('Convert', () => {
     useSettingsStore.setState({ hardwareAcceleration: true, hwaccelMode: 'auto', encoderType: 'auto' });
     useErrorStore.setState({ currentError: null, errorHistory: [] });
     useToastStore.setState({ toasts: [] });
+    useDismissedAlertsStore.setState({ dismissed: [] });
   });
 
   it('renders the title, fields, and start button', () => {
@@ -349,9 +351,51 @@ describe('Convert', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
+  it('dismisses the hardware acceleration alert via its close button', () => {
+    renderPage();
+    expect(screen.getByRole('alert')).toHaveTextContent('convert.hardwareAccelAlert');
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('keeps the hardware acceleration alert hidden when dismissed on another page', () => {
+    useDismissedAlertsStore.setState({ dismissed: [DISMISSED_ALERT_KEYS.HARDWARE_ACCEL] });
+    renderPage();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
   it('does not show the hardware acceleration alert in lossless copy mode', () => {
     useConversionStore.setState({ copyMode: true });
     renderPage();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('starts a conversion with Ctrl+Enter', async () => {
+    selectFileMock.mockResolvedValue('/in/video.mp4');
+    selectOutputMock.mockResolvedValue('/out/video.mkv');
+    convertFileMock.mockResolvedValue(undefined);
+    renderPage();
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByText('convert.saveAs'));
+    await waitFor(() => expect(selectOutputMock).toHaveBeenCalledOnce());
+    fireEvent.keyDown(window, { code: 'Enter', key: 'Enter', ctrlKey: true });
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+  });
+
+  it('does not start a conversion with Ctrl+Enter while no input is selected', () => {
+    renderPage();
+    fireEvent.keyDown(window, { code: 'Enter', key: 'Enter', ctrlKey: true });
+    expect(convertFileMock).not.toHaveBeenCalled();
+  });
+
+  it('toggles lossless copy with L', async () => {
+    selectFileMock.mockResolvedValue('/in/video.mp4');
+    renderPage();
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    expect(screen.getByRole('switch', { name: 'convert.losslessCopy' })).not.toBeChecked();
+    fireEvent.keyDown(window, { code: 'KeyL', key: 'l' });
+    expect(screen.getByRole('switch', { name: 'convert.losslessCopy' })).toBeChecked();
   });
 });

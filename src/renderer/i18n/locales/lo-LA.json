@@ -27,7 +27,8 @@
     "descImage": "ບີບອັດຮູບພາບດ້ວຍການຄວບຄຸມຮູບແບບ, ຄຸນນະພາບ ແລະ ຂະໜາດ",
     "descAudio": "ດຶງສຽງທີ່ສະອາດອອກຈາກໄຟລ໌ວິດີໂອ",
     "descCut": "ຕັດວິດີໂອດ້ວຍຄວາມແມ່ນຍຳໃນລະດັບເຟຣມ",
-    "descBatch": "ແປງຫຼາຍໄຟລ໌ພ້ອມກັນດ້ວຍຄິວອັດສະລິຍະ"
+    "descBatch": "ແປງຫຼາຍໄຟລ໌ພ້ອມກັນດ້ວຍຄິວອັດສະລິຍະ",
+    "shortcutsFooter": "ກົດ {{shortcut}} ສຳລັບປຸ່ມລັດແປ້ນພິມ"
   },
   "closeConfirm": {
     "title": "ປິດ EncodeX?",
@@ -137,7 +138,7 @@
       "major_brand": "ຍີ່ຫໍ້ຫຼັກ",
       "minor_version": "ເວີຊັນຮອງ",
       "compatible_brands": "ຍີ່ຫໍ້ທີ່ເຂົ້າກັນໄດ້",
-      "encoder": "Encoder",
+      "encoder": "ເອນໂຄເດີ",
       "creation_time": "ເວລາສ້າງ",
       "title": "ຫົວຂໍ້",
       "artist": "ສິລະປິນ",
@@ -156,7 +157,7 @@
       "lyrics": "ເນື້ອເພງ",
       "language": "ພາສາ",
       "handler_name": "ຊື່ Handler",
-      "timecode": "Timecode",
+      "timecode": "ໄທມໂຄດ",
       "location": "ສະຖານທີ່"
     },
     "dispositionFlags": {
@@ -174,7 +175,7 @@
       "timed_thumbnails": "ຮູບຫຍໍ້ຕາມເວລາ",
       "captions": "ຄຳບັນຍາຍ",
       "descriptions": "ຄຳອະທິບາຍ",
-      "metadata": "Metadata",
+      "metadata": "ເມຕາດາຕ້າ",
       "dependent": "ຂຶ້ນກັບ",
       "still_image": "ຮູບນິ່ງ"
     },
@@ -285,14 +286,14 @@
     "audioEnabledHint": "ລວມແຖບສຽງໃນຜົນສົ່ງອອກທີ່ຕັດ. ຍົກເລີກໝາຍເພື່ອສ້າງວິດີໂອທີ່ບໍ່ມີສຽງ."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "ຫຼິ້ນ",
+    "pause": "ຢຸດຊົ່ວຄາວ",
+    "stop": "ຢຸດ",
+    "mute": "ປິດສຽງ",
+    "unmute": "ເປີດສຽງ",
+    "seek": "ຊອກຫາ",
+    "playbackTime": "ເວລາການຫຼິ້ນ",
+    "videoPlayer": "ເຄື່ອງຫຼິ້ນວິດີໂອ"
   },
   "batchQueue": {
     "title": "ຄິວງານຫຼາຍອັນ",
@@ -333,7 +334,7 @@
     "paused": "ຖືກຢຸດຊົ່ວຄາວ",
     "dragHandle": "ລາກເພື່ອຈັດລຳດັບ",
     "badgeCount": "{{count}} ວຽກໃນຄິວຫຼາຍອັນ",
-    "operationTranscode": "Transcode",
+    "operationTranscode": "ປ່ຽນຮູບແບບ",
     "operationExtractAudio": "ດຶງສຽງ",
     "operationCompressImage": "ບີບອັດຮູບພາບ",
     "outputDirPlaceholder": "ໂຟນເດີຜົນສົ່ງອອກ (ທາງເລືອກ)",
@@ -358,7 +359,7 @@
     "detailsError": "ລາຍລະອຽດຂໍ້ຜິດພາດ",
     "detailsOutput": "ຜົນສົ່ງອອກ",
     "detailsOptions": "ທາງເລືອກ",
-    "detailsTranscoder": "Transcoder",
+    "detailsTranscoder": "ຕົວແປງລະຫັດ",
     "detailsCreatedAt": "ເພີ່ມເມື່ອ",
     "yes": "ແມ່ນ",
     "no": "ບໍ່",
@@ -373,14 +374,27 @@
     "optionDuration": "ໄລຍະເວລາ",
     "optionCopy": "ສຳເນົາສາຍສົ່ງ",
     "optionAudio": "ສຽງ",
-    "optionHwaccel": "HW accel",
+    "optionHwaccel": "ການເລັ່ງຮາດແວ",
     "optionHwaccelMode": "ໂໝດ HW accel",
     "encodingOptions": "ຕົວເລືອກການເຂົ້າລະຫັດ",
-    "container": "Container",
-    "containerAuto": "ອັດຕະໂນມັດ (ແຫຼ່ງ)"
+    "container": "ຄອນເທນເນີ",
+    "containerAuto": "ອັດຕະໂນມັດ (ແຫຼ່ງ)",
+    "optionsEditableAlert": "ຍັງສາມາດປ່ຽນຕົວເລືອກໄດ້ ໃນຂະນະທີ່ວຽກຢູ່ໃນຄິວ.",
+    "optionsLockedAlert": "ຕົວເລືອກຖືກລັອກ ໃນຂະນະທີ່ຊຸດກຳລັງແລ່ນ.",
+    "editOptions": "ແກ້ໄຂຕົວເລືອກ",
+    "optionsLocked": "ຕົວເລືອກຖືກລັອກ ໃນຂະນະທີ່ຊຸດກຳລັງແລ່ນ",
+    "jobCustomized": "ວຽກນີ້ໃຊ້ຕົວເລືອກທີ່ກຳນົດເອງ",
+    "editOptionsTitle": "ແກ້ໄຂຕົວເລືອກສຳລັບ {{file}}",
+    "editOptionsSave": "ບັນທຶກການປ່ຽນແປງ",
+    "optionsUpdated": "ອັບເດດຕົວເລືອກວຽກແລ້ວ",
+    "outputCollision": "ວຽກອື່ນໃນຄິວໄດ້ໃຊ້ເສັ້ນທາງຜົນຜະລິດນີ້ແລ້ວ.",
+    "outputCollisionSkipped": "ຂ້າມວຽກ {{count}} ວຽກ – ຜົນຜະລິດໃໝ່ຈະຂຽນທັບໄຟລ໌ຂອງວຽກອື່ນ ({{names}})",
+    "optionsUpdateFailed": "ບໍ່ສາມາດແກ້ໄຂວຽກນີ້ໄດ້ອີກຕໍ່ໄປ.",
+    "condense": "ຫຍໍ້",
+    "expand": "ຂະຫຍາຍ"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "ຄວາມຄືບໜ້າການແປງ",
     "time": "ເວລາ",
     "speed": "ຄວາມໄວ",
     "eta": "ETA"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "ລຶບ",
     "download": "ດາວໂຫຼດເປັນ TXT",
-    "filter": "Filter by level",
+    "filter": "ກັ່ນຕອງຕາມລະດັບ",
     "levelAll": "ທັງໝົດ",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
@@ -466,5 +480,101 @@
     "hardwareAccelerationHint": "ໃຊ້ GPU ຂອງທ່ານ (NVIDIA NVENC, Intel QSV, AMD AMF) ສຳລັບການເຂົ້າລະຫັດ ແລະ ຖອດລະຫັດວິດີໂອ. ປິດເພື່ອໃຊ້ການເຂົ້າລະຫັດຊອບແວເທົ່ານັ້ນ.",
     "hwaccelModeHint": "ອັດຕະໂນມັດ: GPU ເຮັດທັງຖອດລະຫັດ ແລະ ເຂົ້າລະຫັດ (ໄວທີ່ສຸດ, ບໍ່ເຂົ້າກັນໄດ້ສະເໝີ). ພຽງ encoder: GPU ເຂົ້າລະຫັດ ແລະ CPU ຖອດລະຫັດ (ປອດໄພທີ່ສຸດ).",
     "encoderTypeHint": "ກັ່ນກອງລາຍຊື່ codec ວິດີໂອ. ອັດຕະໂນມັດສະແດງ encoder ທີ່ມີທັງໝົດ, ຮາດແວສະແດງພຽງ encoder GPU, ຊອບແວສະແດງພຽງ encoder CPU."
+  },
+  "shortcuts": {
+    "title": "ປຸ່ມລັດແປ້ນພິມ",
+    "close": "ປິດ",
+    "sections": {
+      "global": "ທົ່ວໄປ",
+      "convert": "ປ່ຽນຮູບແບບ",
+      "mediaInfo": "ຂໍ້ມູນສື່",
+      "imageCompress": "ບີບອັດຮູບ",
+      "audioExtract": "ສະກັດສຽງ",
+      "videoCut": "ຕັດວິດີໂອ",
+      "batchQueue": "ຄິວຊຸດວຽກ",
+      "logs": "ບັນທຶກ",
+      "dashboard": "ແດັດບອດ"
+    },
+    "global": {
+      "help": "ສະແດງປຸ່ມລັດແປ້ນພິມ",
+      "navDashboard": "ໄປທີ່ແດັດບອດ",
+      "navConvert": "ໄປທີ່ການປ່ຽນຮູບແບບ",
+      "navMediaInfo": "ໄປທີ່ຂໍ້ມູນສື່",
+      "navImage": "ໄປທີ່ຮູບ",
+      "navAudio": "ໄປທີ່ສຽງ",
+      "navCut": "ໄປທີ່ການຕັດ",
+      "navBatchQueue": "ໄປທີ່ຄິວຊຸດວຽກ",
+      "navLogs": "ໄປທີ່ບັນທຶກ",
+      "navSettings": "ໄປທີ່ການຕັ້ງຄ່າ",
+      "themeToggle": "ປ່ຽນຮູບແບບ"
+    },
+    "convert": {
+      "input": "ເລືອກໄຟລ໌ປ້ອນເຂົ້າ",
+      "output": "ເລືອກໄຟລ໌ຜົນອອກ",
+      "start": "ເລີ່ມການປ່ຽນຮູບແບບ",
+      "pause": "ຢຸດຊົ່ວຄາວ ຫຼື ດຳເນີນຕໍ່",
+      "cancel": "ຍົກເລີກການປ່ຽນຮູບແບບ",
+      "clear": "ລຶບລ້າງວຽກປ່ຽນຮູບແບບ",
+      "lossless": "ສະຫຼັບການສຳເນົາແບບບໍ່ສູນເສຍ",
+      "preview": "ສະແດງ ຫຼື ເຊື່ອງຕົວຢ່າງ"
+    },
+    "mediaInfo": {
+      "open": "ເລືອກໄຟລ໌ເພື່ອກວດສອບ"
+    },
+    "imageCompress": {
+      "input": "ເລືອກຮູບປ້ອນເຂົ້າ",
+      "output": "ເລືອກໄຟລ໌ຜົນອອກ",
+      "compress": "ບີບອັດຮູບ",
+      "aspect": "ສະຫຼັບການຮັກສາອັດຕາສ່ວນ"
+    },
+    "audioExtract": {
+      "input": "ເລືອກວິດີໂອປ້ອນເຂົ້າ",
+      "output": "ເລືອກໄຟລ໌ຜົນອອກ",
+      "extract": "ສະກັດສຽງ",
+      "pause": "ຢຸດຊົ່ວຄາວ ຫຼື ດຳເນີນຕໍ່",
+      "cancel": "ຍົກເລີກການສະກັດ"
+    },
+    "videoCut": {
+      "open": "ເລືອກ ຫຼື ປ່ຽນວິດີໂອ",
+      "output": "ເລືອກໄຟລ໌ຜົນອອກ",
+      "cut": "ຕັດວິດີໂອ",
+      "pause": "ຢຸດຊົ່ວຄາວ ຫຼື ດຳເນີນຕໍ່",
+      "cancel": "ຍົກເລີກການຕັດ",
+      "clear": "ລຶບລ້າງແບບຟອມຕັດ",
+      "useDuration": "ສະຫຼັບການໃຊ້ໄລຍະເວລາ",
+      "includeAudio": "ສະຫຼັບການລວມສຽງ",
+      "playPause": "ຫຼິ້ນ ຫຼື ຢຸດຊົ່ວຄາວຕົວຢ່າງ",
+      "mute": "ປິດສຽງ ຫຼື ເປີດສຽງຕົວຢ່າງ",
+      "seekBack": "ຍ້ອນກັບ 5 ວິນາທີ",
+      "seekForward": "ກ້າວໄປຂ້າງໜ້າ 5 ວິນາທີ"
+    },
+    "batchQueue": {
+      "add": "ເພີ່ມໄຟລ໌",
+      "start": "ເລີ່ມຊຸດວຽກ",
+      "pause": "ຢຸດຊົ່ວຄາວ ຫຼື ດຳເນີນຕໍ່ຄິວ",
+      "cancelAll": "ຍົກເລີກວຽກທັງໝົດ",
+      "clearCompleted": "ລຶບລ້າງວຽກທີ່ສຳເລັດ",
+      "export": "ສົ່ງອອກຄິວ",
+      "import": "ນຳເຂົ້າຄິວ",
+      "condense": "ຫຍໍ້ ຫຼື ຂະຫຍາຍຕົວຄວບຄຸມ",
+      "focusSearch": "ໃສ່ຈຸດສຸມທີ່ຊ່ອງຄົ້ນຫາ",
+      "filterAll": "ຕົວກັ່ນ: ທັງໝົດ",
+      "filterQueued": "ຕົວກັ່ນ: ລໍຖ້າ",
+      "filterRunning": "ຕົວກັ່ນ: ກຳລັງເຮັດວຽກ",
+      "filterDone": "ຕົວກັ່ນ: ສຳເລັດ",
+      "filterFailed": "ຕົວກັ່ນ: ລົ້ມເຫຼວ"
+    },
+    "logs": {
+      "clear": "ລຶບລ້າງບັນທຶກ",
+      "download": "ດາວໂຫຼດບັນທຶກ"
+    },
+    "dashboard": {
+      "convert": "ເປີດການປ່ຽນຮູບແບບ",
+      "mediaInfo": "ເປີດຂໍ້ມູນສື່",
+      "image": "ເປີດຮູບ",
+      "audio": "ເປີດສຽງ",
+      "cut": "ເປີດການຕັດ",
+      "batch": "ເປີດຄິວຊຸດວຽກ"
+    }
   }
 }

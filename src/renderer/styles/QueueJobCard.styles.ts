@@ -28,12 +28,35 @@ export const CardContent = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1.5),
 }));
 
-export const ThumbImg = styled('img')(({ theme }) => ({
+/**
+ * Fixed-width thumbnail column. Its own height never influences the card's
+ * height (it has no in-flow content), so it is stretched by the flex row to
+ * match the card content column instead of the other way around. This keeps a
+ * tall/vertical video preview from inflating the card.
+ * @const ThumbWrap
+ */
+export const ThumbWrap = styled(Box)(({ theme }) => ({
+  position: 'relative',
   width: theme.typography.pxToRem(112),
-  alignSelf: 'stretch',
-  objectFit: 'cover',
   flexShrink: 0,
+  alignSelf: 'stretch',
+  overflow: 'hidden',
 }));
+
+/**
+ * Fills the {@link ThumbWrap} column exactly, cropping via `objectFit: cover`
+ * so the preview always matches the card height regardless of aspect ratio.
+ * @const ThumbImg
+ */
+export const ThumbImg = styled('img')({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  display: 'block',
+});
 
 export const CardHeaderRow = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -49,6 +72,17 @@ export const JobNameText = styled(Typography)({
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
   minWidth: 0,
+});
+
+/** Wrapper letting the job name shrink inside the header row. @const JobTitleWrapper */
+export const JobTitleWrapper = styled(Box)({
+  flex: '1 1 0',
+  minWidth: 0,
+});
+
+/** Non-interactive "customized" indicator icon. @const CustomizedIconButton */
+export const CustomizedIconButton = styled(IconButton)({
+  pointerEvents: 'none',
 });
 
 export const StatusChip = styled(Chip)(({ theme }) => ({

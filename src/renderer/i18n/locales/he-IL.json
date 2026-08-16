@@ -27,7 +27,8 @@
     "descImage": "הקטנת תמונות עם שליטה בפורמט, איכות ומידות",
     "descAudio": "חילוץ רצועות אודיו נקיות מקבצי וידאו",
     "descCut": "קיצוץ וחיתוך וידאו עם נגן ברמת דיוק של פריים",
-    "descBatch": "המרת קבצים רבים בבת אחת עם תור חכם"
+    "descBatch": "המרת קבצים רבים בבת אחת עם תור חכם",
+    "shortcutsFooter": "לחץ על {{shortcut}} לקבלת קיצורי מקלדת"
   },
   "closeConfirm": {
     "title": "לסגור את EncodeX?",
@@ -285,14 +286,14 @@
     "audioEnabledHint": "כלול את רצועת האודיו בפלט החיתוך. בטל סימון כדי ליצור וידאו ללא קול."
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "stop": "Stop",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "play": "נגן",
+    "pause": "השהה",
+    "stop": "עצור",
+    "mute": "השתק",
+    "unmute": "בטל השתקה",
+    "seek": "חיפוש",
+    "playbackTime": "זמן נגינה",
+    "videoPlayer": "נגן וידאו"
   },
   "batchQueue": {
     "title": "תור אצווה",
@@ -377,10 +378,23 @@
     "optionHwaccelMode": "מצב האצת חומרה",
     "encodingOptions": "אפשרויות קידוד",
     "container": "מכל",
-    "containerAuto": "אוטומטי (מקור)"
+    "containerAuto": "אוטומטי (מקור)",
+    "optionsEditableAlert": "עדיין ניתן לשנות את האפשרויות כל עוד יש משימות בתור.",
+    "optionsLockedAlert": "האפשרויות נעולות בזמן שהאצווה פועלת.",
+    "editOptions": "עריכת אפשרויות",
+    "optionsLocked": "האפשרויות נעולות בזמן שהאצווה פועלת",
+    "jobCustomized": "משימה זו משתמשת באפשרויות מותאמות אישית",
+    "editOptionsTitle": "עריכת אפשרויות עבור {{file}}",
+    "editOptionsSave": "שמור שינויים",
+    "optionsUpdated": "אפשרויות המשימה עודכנו",
+    "outputCollision": "משימה אחרת בתור כבר משתמשת בנתיב הפלט הזה.",
+    "outputCollisionSkipped": "דולגו {{count}} משימות – הפלט החדש ידרוס את הקובץ של משימה אחרת ({{names}})",
+    "optionsUpdateFailed": "לא ניתן עוד לערוך משימה זו.",
+    "condense": "כווץ",
+    "expand": "הרחב"
   },
   "progress": {
-    "title": "Conversion progress",
+    "title": "התקדמות ההמרה",
     "time": "זמן",
     "speed": "מהירות",
     "eta": "זמן משוער"
@@ -408,7 +422,7 @@
   "logs": {
     "clear": "נקה",
     "download": "הורד כקובץ TXT",
-    "filter": "Filter by level",
+    "filter": "סינון לפי רמה",
     "levelAll": "הכל",
     "levelDebug": "דיבאג",
     "levelInfo": "מידע",
@@ -466,5 +480,101 @@
     "hardwareAccelerationHint": "משתמש בכרטיס המסך שלך (NVIDIA NVENC, Intel QSV, AMD AMF) לקידוד ולפענוח וידאו. כבה עבור קידוד תוכנה בלבד.",
     "hwaccelModeHint": "אוטומטי: כרטיס המסך מבצע גם פענוח וגם קידוד (המהיר ביותר, לא תמיד נתמך). קידוד בלבד: כרטיס המסך מקודד והמעבד מפענח (הבטוח ביותר).",
     "encoderTypeHint": "מסנן את רשימת קודקי הווידאו. אוטומטי מציג את כל המקודדים הזמינים, חומרה מציג רק מקודדי כרטיס מסך, תוכנה מציג רק מקודדי מעבד."
+  },
+  "shortcuts": {
+    "title": "קיצורי מקלדת",
+    "close": "סגור",
+    "sections": {
+      "global": "כללי",
+      "convert": "המרה",
+      "mediaInfo": "מידע מדיה",
+      "imageCompress": "דחיסת תמונה",
+      "audioExtract": "חילוץ אודיו",
+      "videoCut": "חיתוך וידאו",
+      "batchQueue": "תור אצווה",
+      "logs": "יומנים",
+      "dashboard": "לוח בקרה"
+    },
+    "global": {
+      "help": "הצג קיצורי מקלדת",
+      "navDashboard": "עבור ללוח הבקרה",
+      "navConvert": "עבור להמרה",
+      "navMediaInfo": "עבור למידע מדיה",
+      "navImage": "עבור לתמונה",
+      "navAudio": "עבור לאודיו",
+      "navCut": "עבור לחיתוך",
+      "navBatchQueue": "עבור לתור האצווה",
+      "navLogs": "עבור ליומנים",
+      "navSettings": "עבור להגדרות",
+      "themeToggle": "החלף ערכת נושא"
+    },
+    "convert": {
+      "input": "בחר קובץ קלט",
+      "output": "בחר קובץ פלט",
+      "start": "התחל המרה",
+      "pause": "השהה או המשך המרה",
+      "cancel": "בטל המרה",
+      "clear": "נקה עבודת המרה",
+      "lossless": "החלף העתקה ללא אובדן",
+      "preview": "הצג או הסתר תצוגה מקדימה"
+    },
+    "mediaInfo": {
+      "open": "בחר קובץ לבדיקה"
+    },
+    "imageCompress": {
+      "input": "בחר תמונת קלט",
+      "output": "בחר קובץ פלט",
+      "compress": "דחס תמונה",
+      "aspect": "החלף שמירת יחס גובה-רוחב"
+    },
+    "audioExtract": {
+      "input": "בחר סרטון קלט",
+      "output": "בחר קובץ פלט",
+      "extract": "חלץ אודיו",
+      "pause": "השהה או המשך חילוץ",
+      "cancel": "בטל חילוץ"
+    },
+    "videoCut": {
+      "open": "בחר או החלף סרטון",
+      "output": "בחר קובץ פלט",
+      "cut": "חתוך סרטון",
+      "pause": "השהה או המשך חיתוך",
+      "cancel": "בטל חיתוך",
+      "clear": "נקה טופס חיתוך",
+      "useDuration": "החלף שימוש במשך",
+      "includeAudio": "החלף הכללת אודיו",
+      "playPause": "נגן או השהה תצוגה מקדימה",
+      "mute": "השתק או בטל השתקה בתצוגה המקדימה",
+      "seekBack": "חזור 5 שניות אחורה",
+      "seekForward": "דלג 5 שניות קדימה"
+    },
+    "batchQueue": {
+      "add": "הוסף קבצים",
+      "start": "התחל אצווה",
+      "pause": "השהה או המשך תור",
+      "cancelAll": "בטל את כל העבודות",
+      "clearCompleted": "נקה עבודות שהושלמו",
+      "export": "ייצא תור",
+      "import": "ייבא תור",
+      "condense": "כווץ או הרחב פקדים",
+      "focusSearch": "רכז פוקוס בשדה החיפוש",
+      "filterAll": "סינון: הכל",
+      "filterQueued": "סינון: ממתין",
+      "filterRunning": "סינון: רץ",
+      "filterDone": "סינון: הושלם",
+      "filterFailed": "סינון: נכשל"
+    },
+    "logs": {
+      "clear": "נקה יומנים",
+      "download": "הורד יומנים"
+    },
+    "dashboard": {
+      "convert": "פתח המרה",
+      "mediaInfo": "פתח מידע מדיה",
+      "image": "פתח תמונה",
+      "audio": "פתח אודיו",
+      "cut": "פתח חיתוך",
+      "batch": "פתח תור אצווה"
+    }
   }
 }

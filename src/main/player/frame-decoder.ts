@@ -11,10 +11,9 @@
 
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess } from 'child_process';
-import ffmpegStatic from 'ffmpeg-static';
-import { existsSync } from 'fs';
 import { Logger } from '../../shared/logger';
-import { FFMPEG_FLAGS, KILL_SIGNAL, TRANSCODER_DEFAULTS, TRANSCODER_COMMANDS } from '../../shared/transcoder-constants';
+import { getFfmpegPath } from '../media-binaries';
+import { FFMPEG_FLAGS, KILL_SIGNAL, TRANSCODER_DEFAULTS } from '../../shared/transcoder-constants';
 import {
   AUDIO_CHUNK_SECONDS,
   FRAME_FLUSH_THRESHOLD_MS,
@@ -33,7 +32,6 @@ import {
   LOG_DECODER_PROCESS_EXITED_WITH_CODE,
   LOG_DECODER_PROCESS_KILLED,
   LOG_FFMPEG_DECODER_ARGS,
-  LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG,
   LOG_OPEN,
   LOG_OPTIONS,
   LOG_RESOLUTION,
@@ -41,22 +39,6 @@ import {
 } from '../../shared/log-constants';
 
 const log = new Logger('main/player/frame-decoder');
-
-/**
- * Resolves the ffmpeg executable path to use for decoding.
- *
- * Prefers the statically bundled ffmpeg binary shipped by `ffmpeg-static`;
- * if that binary is missing on disk it logs a warning and falls back to the
- * system `ffmpeg` command (see TRANSCODER_COMMANDS.FFMPEG).
- * @returns {string} Absolute path to the bundled ffmpeg binary, or the string
- *   `'ffmpeg'` for the system-installed executable
- */
-function getFfmpegPath(): string {
-  const staticPath = ffmpegStatic as unknown as string;
-  if (existsSync(staticPath)) return staticPath;
-  log.warn(LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG);
-  return TRANSCODER_COMMANDS.FFMPEG;
-}
 
 /**
  * Decodes video frames and audio from a media file via a spawned ffmpeg

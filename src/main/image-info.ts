@@ -5,8 +5,8 @@
  * Uses `exifr` to parse EXIF, XMP, IPTC, and other metadata blocks into a flat
  * `Record<string, string>`, and uses FFmpeg to decode a downscaled raw RGB
  * frame whose pixel values feed an `{ r, g, b, luma }` histogram. The FFmpeg
- * binary is resolved from the bundled `ffmpeg-static` package, falling back to
- * the system `ffmpeg` command when the static binary is missing.
+ * binary is resolved via {@link getFfmpegPath} (bundled static binary when
+ * available, otherwise the system `ffmpeg` command).
  *
  * Exports:
  *  - flattenExif()          - converts nested EXIF objects into flat strings
@@ -19,17 +19,14 @@
  */
 
 import { spawn } from 'child_process';
-import { existsSync } from 'fs';
 import exifr from 'exifr';
-import ffmpegStatic from 'ffmpeg-static';
 import { Logger } from '../shared/logger';
+import { getFfmpegPath } from './media-binaries';
 import { isImageFile } from '../shared/file-extensions';
 import { ImageExifData, ImageHistogram } from '../shared/types';
 import { HISTOGRAM_BINS, HISTOGRAM_MAX_WIDTH, RGB_BYTES_PER_PIXEL, LUMA_WEIGHTS } from '../shared/constants';
-import { TRANSCODER_COMMANDS } from '../shared/transcoder-constants';
 import {
   LOG_EXIF_PARSE_FAILED,
-  LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG,
   LOG_HISTOGRAM_DECODE_FAILED,
   LOG_HISTOGRAM_DECODE_FAILED_STDERR,
   LOG_HISTOGRAM_FFMPEG_ERROR,
@@ -105,20 +102,6 @@ export function computeHistogram(buffer: Buffer, width: number, height: number):
     luma[Math.round(LUMA_WEIGHTS.R * rv + LUMA_WEIGHTS.G * gv + LUMA_WEIGHTS.B * bv)] += 1;
   }
   return { r, g, b, luma };
-}
-
-/**
- * Resolves the FFmpeg binary path, preferring the bundled `ffmpeg-static`
- * binary and falling back to the system `ffmpeg` command.
- *
- * @returns {string} Absolute path to the static ffmpeg executable, or the
- *   plain `ffmpeg` command name when the static binary does not exist.
- */
-function getFfmpegPath(): string {
-  const staticPath = ffmpegStatic as unknown as string;
-  if (existsSync(staticPath)) return staticPath;
-  log.warn(LOG_FFMPEG_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFMPEG);
-  return TRANSCODER_COMMANDS.FFMPEG;
 }
 
 /**

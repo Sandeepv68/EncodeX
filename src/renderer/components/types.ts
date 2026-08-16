@@ -7,6 +7,7 @@ import type { ReactNode, Ref, RefObject, ReactElement } from 'react';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type {
   AppError,
+  ConversionOptions,
   ConversionProgress,
   EncoderType,
   MediaInfo,
@@ -17,6 +18,7 @@ import type {
   WaveformData,
   WhenDoneConfig,
 } from '../../shared/types';
+import type { BatchEncodingValues } from '../utils/batch-options';
 
 /**
  * Props for the application navigation drawer.
@@ -68,6 +70,12 @@ export interface BatchControlsProps {
   onWhenDoneChange: (config: WhenDoneConfig) => void;
   onExport: () => void;
   onImport: () => void;
+  /**
+   * Whether the hardware-acceleration info alert should be shown inside the
+   * controls box. Dismissal state is tracked by the shared dismissed-alerts
+   * store.
+   */
+  hardwareAccelAlert?: boolean;
 }
 
 /**
@@ -96,6 +104,10 @@ export interface BufferedFrame {
  * @property {string} quality - Image compression quality 1-31 ('' = encoder default).
  * @property {string} scale - Output resolution as WIDTHxHEIGHT ('' = original).
  * @property {string} pixelFormat - Output pixel format (e.g. 'yuv420p').
+ * @property {boolean} [optionsLocked] - Whether the batch is running, locking the
+ *   options; shows the options-locked warning alert inside the panel.
+ * @property {boolean} [optionsEditable] - Whether queued jobs allow their options
+ *   to be changed; shows the options-editable info alert inside the panel.
  * @property {(value: string) => void} onVideoCodecChange - Fired on video codec change.
  * @property {(value: string) => void} onAudioCodecChange - Fired on audio codec change.
  * @property {(value: string) => void} onContainerChange - Fired on container change.
@@ -115,6 +127,8 @@ export interface BatchEncodingPanelProps {
   quality: string;
   scale: string;
   pixelFormat: string;
+  optionsLocked?: boolean;
+  optionsEditable?: boolean;
   onVideoCodecChange: (value: string) => void;
   onAudioCodecChange: (value: string) => void;
   onContainerChange: (value: string) => void;
@@ -423,6 +437,12 @@ export interface ProgressBarProps {
  * @property {(id: string) => void} onRemove - Fired with the job id on remove.
  * @property {(job: QueueJob) => void} [onRetry] - Fired with the failed job when
  *   the retry action is used.
+ * @property {(job: QueueJob) => void} [onEditOptions] - Fired with the QUEUED job
+ *   when the edit-options action is used.
+ * @property {boolean} [editLocked] - When true the edit-options action is
+ *   disabled (the batch is already running) and a tooltip explains why.
+ * @property {boolean} [customized] - When true the card shows a small marker
+ *   indicating the job's options differ from the current panel values.
  * @property {boolean} [dragOverlay] - When true the card is rendered as a static
  *   clone for the drag overlay (no sortable wiring, no drag handle).
  */
@@ -431,7 +451,31 @@ export interface QueueJobCardProps {
   progress?: ConversionProgress | null;
   onRemove: (id: string) => void;
   onRetry?: (job: QueueJob) => void;
+  onEditOptions?: (job: QueueJob) => void;
+  editLocked?: boolean;
+  customized?: boolean;
   dragOverlay?: boolean;
+}
+
+/**
+ * Props for the per-job encoding options dialog.
+ * @interface QueueJobOptionsDialogProps
+ * @property {boolean} open - Whether the dialog is shown.
+ * @property {QueueJob | null} job - The job being edited; null hides the dialog.
+ * @property {BatchEncodingValues} defaults - The page's current encoding field
+ *   values, used to seed any field the job's options do not carry.
+ * @property {(job: QueueJob, options: ConversionOptions, output: string) => void}
+ *   onSave - Fired with the job, the built options, and the recomputed output
+ *   path when the user confirms.
+ * @property {() => void} onClose - Fired when the dialog is dismissed without
+ *   saving.
+ */
+export interface QueueJobOptionsDialogProps {
+  open: boolean;
+  job: QueueJob | null;
+  defaults: BatchEncodingValues;
+  onSave: (job: QueueJob, options: ConversionOptions, output: string) => void;
+  onClose: () => void;
 }
 
 /**

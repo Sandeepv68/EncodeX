@@ -1,7 +1,8 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import type { RefObject } from 'react';
 import BatchControls from '../BatchControls';
+import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
@@ -15,6 +16,7 @@ function renderControls(
     hasQueued?: boolean;
     hasActive?: boolean;
     whenDone?: { enabled: boolean; action: string; force: boolean };
+    hardwareAccelAlert?: boolean;
   } = {},
 ) {
   const operation = BATCH_OPERATIONS[0].value;
@@ -63,6 +65,7 @@ function renderControls(
       onWhenDoneChange={onWhenDoneChange}
       onExport={onExport}
       onImport={onImport}
+      hardwareAccelAlert={opts.hardwareAccelAlert ?? false}
     />,
   );
   return {
@@ -89,6 +92,10 @@ function renderControls(
 }
 
 describe('BatchControls', () => {
+  beforeEach(() => {
+    useDismissedAlertsStore.setState({ dismissed: [] });
+  });
+
   it('has no axe violations', async () => {
     const { renderResult } = renderControls();
     await assertNoAxeViolations(renderResult.container);
@@ -268,5 +275,21 @@ describe('BatchControls', () => {
     const { onWhenDoneChange } = renderControls(false, 1, { whenDone: { enabled: true, action: 'shutdown', force: false } });
     fireEvent.click(screen.getByLabelText('batchQueue.whenDoneForce'));
     expect(onWhenDoneChange).toHaveBeenCalledWith({ enabled: true, action: 'shutdown', force: true });
+  });
+
+  it('shows the hardware acceleration alert when hardware acceleration is enabled', () => {
+    renderControls(false, 1, { hardwareAccelAlert: true });
+    expect(screen.getByRole('alert')).toHaveTextContent('convert.hardwareAccelAlert');
+  });
+
+  it('does not show the hardware acceleration alert by default', () => {
+    renderControls();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('dismisses the hardware acceleration alert via its close button', () => {
+    renderControls(false, 1, { hardwareAccelAlert: true });
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 });
