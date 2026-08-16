@@ -140,7 +140,7 @@ describe('Convert', () => {
     expect(toggleExpanded).toHaveTextContent('convert.viewLess');
     expect(toggleExpanded).toHaveAttribute('aria-expanded', 'true');
     fireEvent.click(toggleExpanded);
-    expect(screen.queryByText('mediaInfo.streams')).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText('mediaInfo.streams')).not.toBeInTheDocument());
   });
 
   it('selects an output file via save as', async () => {

@@ -33,6 +33,7 @@ import {
   InputAdornment,
   Divider,
   Tooltip,
+  Collapse,
 } from '@mui/material';
 import {
   faPalette,
@@ -45,7 +46,6 @@ import {
   faEye,
   faFolderOpen,
   faChevronDown,
-  faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -405,18 +405,29 @@ export default function Convert() {
                       variant="text"
                       color="primary"
                       data-testid="convert-toggle-streams"
-                      endIcon={<FontAwesomeIcon icon={streamsExpanded ? faChevronUp : faChevronDown} />}
+                      endIcon={
+                        <Box
+                          component="span"
+                          sx={(theme) => ({
+                            display: 'inline-flex',
+                            transform: streamsExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                            transition: theme.transitions.create('transform', { duration: theme.transitions.duration.short }),
+                          })}
+                        >
+                          <FontAwesomeIcon icon={faChevronDown} />
+                        </Box>
+                      }
                       onClick={() => setStreamsExpanded((v) => !v)}
                       aria-expanded={streamsExpanded}
                     >
                       {streamsExpanded ? t('convert.viewLess') : t('convert.viewMore')}
                     </Button>
                   </Stack>
-                  {streamsExpanded && (
+                  <Collapse in={streamsExpanded} unmountOnExit>
                     <ErrorBoundary fallback={null}>
                       <StreamDetails streams={mediaInfo.streams} compact />
                     </ErrorBoundary>
-                  )}
+                  </Collapse>
                 </>
               )}
             </Box>
