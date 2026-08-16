@@ -102,4 +102,23 @@ describe('Logs', () => {
     expect(screen.getByText(/trace line/)).toBeInTheDocument();
     expect(screen.getByText(/\[TRACE\]/)).toBeInTheDocument();
   });
+
+  it('clears the entries with Ctrl+L', () => {
+    useLogStore.setState({ entries: [entry({ text: 'clear me' })] });
+    render(<Logs />);
+    expect(screen.getByText(/clear me/)).toBeInTheDocument();
+    fireEvent.keyDown(window, { code: 'KeyL', key: 'l', ctrlKey: true });
+    expect(useLogStore.getState().entries).toHaveLength(0);
+    expect(screen.getByText('logs.noEntries')).toBeInTheDocument();
+  });
+
+  it('downloads the logs with Ctrl+Shift+D', () => {
+    useLogStore.setState({ entries: [entry({ text: 'download via shortcut' })] });
+    const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:fake');
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    render(<Logs />);
+    fireEvent.keyDown(window, { code: 'KeyD', key: 'd', ctrlKey: true, shiftKey: true });
+    expect(createObjectURL).toHaveBeenCalledOnce();
+    expect(clickSpy).toHaveBeenCalledOnce();
+  });
 });

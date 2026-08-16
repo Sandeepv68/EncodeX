@@ -27,7 +27,8 @@
     "descImage": "Kōmitimiti ngā whakaahua me te whakahaere i te hōputu, te kounga me te rahinga",
     "descAudio": "Tohaina te oro mā mai i ngā kōnae ataata",
     "descCut": "Tapahia te ataata me te tika ki te āma",
-    "descBatch": "Huripokia ngā kōnae maha i te wā kotahi me te rārangi mōhio"
+    "descBatch": "Huripokia ngā kōnae maha i te wā kotahi me te rārangi mōhio",
+    "shortcutsFooter": "Pēhia {{shortcut}} mō ngā poto aratohu papapātuhi"
   },
   "closeConfirm": {
     "title": "Katia te EncodeX?",
@@ -479,5 +480,101 @@
     "hardwareAccelerationHint": "Whakamahia tō GPU (NVIDIA NVENC, Intel QSV, AMD AMF) mō te whakawaehere me te whakawehikore ataata. Whakamomoehia mō te whakawaehere pūmanawa anake.",
     "hwaccelModeHint": "Aunoa: ka mahi te GPU i te whakawehikore me te whakawaehere (tere rawa, kāore e hototahi tonu). Encoder anake: ko te GPU te whakawaehere, ko te CPU te whakawehikore (haumaru rawa).",
     "encoderTypeHint": "Tātari i te rārangi codec ataata. Ka whakaatu te Aunoa i ngā encoder katoa, ka whakaatu te Marohi i ngā encoder GPU anake, ka whakaatu te Pūmanawa i ngā encoder CPU anake."
+  },
+  "shortcuts": {
+    "title": "Ngā Poto Aratohu Papapātuhi",
+    "close": "Katia",
+    "sections": {
+      "global": "Whānui",
+      "convert": "Hurihuri",
+      "mediaInfo": "Pārongo Pāpāho",
+      "imageCompress": "Kōmitimiti Pikitia",
+      "audioExtract": "Tāngohia te Oro",
+      "videoCut": "Tapahia te Ataata",
+      "batchQueue": "Rārangi Tuinga",
+      "logs": "Ngā Rauemi Kōrero",
+      "dashboard": "Papa Whakahaere"
+    },
+    "global": {
+      "help": "Whakaatuhia ngā poto aratohu papapātuhi",
+      "navDashboard": "Haere ki te Papa Whakahaere",
+      "navConvert": "Haere ki te Hurihuri",
+      "navMediaInfo": "Haere ki ngā Pārongo Pāpāho",
+      "navImage": "Haere ki te Pikitia",
+      "navAudio": "Haere ki te Oro",
+      "navCut": "Haere ki te Tapahia",
+      "navBatchQueue": "Haere ki te Rārangi Tuinga",
+      "navLogs": "Haere ki ngā Rauemi Kōrero",
+      "navSettings": "Haere ki ngā Tautuhinga",
+      "themeToggle": "Hurihia te kaupapa"
+    },
+    "convert": {
+      "input": "Whiriwhiria te kōnae whakauru",
+      "output": "Whiriwhiria te kōnae putanga",
+      "start": "Tīmatahia te hurihanga",
+      "pause": "Whakamutua mo te wā, ka tīmari rānei anō",
+      "cancel": "Whakakorehia te hurihanga",
+      "clear": "Horoi te mahi hurihanga",
+      "lossless": "Whakawhiti te kape kore-mate",
+      "preview": "Whakaatuhia, ka huna rānei te tirohanga"
+    },
+    "mediaInfo": {
+      "open": "Whiriwhiria he kōnae hei tirotiro"
+    },
+    "imageCompress": {
+      "input": "Whiriwhiria te pikitia whakauru",
+      "output": "Whiriwhiria te kōnae putanga",
+      "compress": "Kōmitimiti te pikitia",
+      "aspect": "Whakawhiti te pupuri i te ōwehenga"
+    },
+    "audioExtract": {
+      "input": "Whiriwhiria te ataata whakauru",
+      "output": "Whiriwhiria te kōnae putanga",
+      "extract": "Tāngohia te oro",
+      "pause": "Whakamutua mo te wā, ka tīmari rānei anō",
+      "cancel": "Whakakorehia te tāngohanga"
+    },
+    "videoCut": {
+      "open": "Whiriwhiria, ka huri rānei te ataata",
+      "output": "Whiriwhiria te kōnae putanga",
+      "cut": "Tapahia te ataata",
+      "pause": "Whakamutua mo te wā, ka tīmari rānei anō te tapahi",
+      "cancel": "Whakakorehia te tapahi",
+      "clear": "Horoi te puka tapahi",
+      "useDuration": "Whakawhiti te whakamahi roanga",
+      "includeAudio": "Whakawhiti te whakauru oro",
+      "playPause": "Purei, whakamutu rānei mo te wā te tirohanga",
+      "mute": "Whakakī, whakaora rānei te oro o te tirohanga",
+      "seekBack": "Hoki 5 hēkona",
+      "seekForward": "Haere whakamua 5 hēkona"
+    },
+    "batchQueue": {
+      "add": "Tāpiritia ngā kōnae",
+      "start": "Tīmatahia te tuinga",
+      "pause": "Whakamutua mo te wā, ka tīmari rānei anō te rārangi",
+      "cancelAll": "Whakakorehia ngā mahi katoa",
+      "clearCompleted": "Horoi ngā mahi oti",
+      "export": "Kaweake te rārangi",
+      "import": "Kawemai te rārangi",
+      "condense": "Whakaiti, ka whakawhānui rānei ngā mana whakahaere",
+      "focusSearch": "Arotahi ki te pouaka rapu",
+      "filterAll": "Tātari: katoa",
+      "filterQueued": "Tātari: kei te rārangi",
+      "filterRunning": "Tātari: kei te rere",
+      "filterDone": "Tātari: kua oti",
+      "filterFailed": "Tātari: i rahua"
+    },
+    "logs": {
+      "clear": "Horoi ngā rauemi kōrero",
+      "download": "Tangohia ngā rauemi kōrero"
+    },
+    "dashboard": {
+      "convert": "Uakina te Hurihuri",
+      "mediaInfo": "Uakina ngā Pārongo Pāpāho",
+      "image": "Uakina te Pikitia",
+      "audio": "Uakina te Oro",
+      "cut": "Uakina te Tapahia",
+      "batch": "Uakina te Rārangi Tuinga"
+    }
   }
 }

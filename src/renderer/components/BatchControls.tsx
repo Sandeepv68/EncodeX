@@ -62,6 +62,7 @@ import {
   faFileImport,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
+import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { MAX_QUEUE_CONCURRENCY, WHEN_DONE_ACTIONS } from '../../shared/constants';
@@ -208,7 +209,7 @@ export default function BatchControls({
       <Grid container spacing={2}>
         <Grid size={12}>
           <ToolbarRow>
-            <Tooltip title={t('batchQueue.addFiles')}>
+            <Tooltip title={shortcutHint(t, 'batchQueue.addFiles', SHORTCUT_BY_ID['batchQueue.add'].keys)}>
               <OutlinedIconButton size="small" aria-label={t('batchQueue.addFiles')} onClick={onAddFiles}>
                 <FontAwesomeIcon icon={faPlus} />
               </OutlinedIconButton>
@@ -231,7 +232,7 @@ export default function BatchControls({
                 </OutlinedIconButton>
               </Tooltip>
             ) : (
-              <Tooltip title={t('batchQueue.start')}>
+              <Tooltip title={shortcutHint(t, 'batchQueue.start', SHORTCUT_BY_ID['batchQueue.start'].keys)}>
                 <OutlinedIconButton size="small" color="success" aria-label={t('batchQueue.start')} onClick={onStart} disabled={!hasQueued}>
                   <FontAwesomeIcon icon={faPlay} />
                 </OutlinedIconButton>

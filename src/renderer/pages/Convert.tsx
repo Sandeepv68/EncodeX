@@ -39,6 +39,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Logger } from '../../shared/logger';
 import { useConversion } from '../hooks/useConversion';
+import { useHotkeys } from '../hooks/useHotkeys';
+import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import CodecSelect from '../components/CodecSelect';
 import ProgressBar from '../components/ProgressBar';
 import MediaPlayer from '../components/MediaPlayer';
@@ -329,6 +331,28 @@ export default function Convert() {
     log.info(LOG_STARTING_CONVERSION, inputFile, LOG_ARROW, outputFile);
     startConversion();
   };
+
+  /**
+   * Registers the page keyboard shortcuts (Ctrl+O input, Ctrl+Shift+S output,
+   * Ctrl+Enter start, Ctrl+Shift+P pause, Ctrl+Shift+C cancel, Ctrl+Shift+X
+   * clear job, L lossless copy, P preview). Bindings mirror the enabled state of
+   * the equivalent on-page controls.
+   * @returns {void}
+   */
+  useHotkeys([
+    { id: 'convert.input', handler: () => selectInput() },
+    { id: 'convert.output', handler: () => selectOutput() },
+    {
+      id: 'convert.start',
+      handler: () => handleStartConversion(),
+      enabled: !!inputFile && !!outputFile && !isConverting,
+    },
+    { id: 'convert.pause', handler: () => pauseConversion(), enabled: isConverting && !isPaused },
+    { id: 'convert.cancel', handler: () => handleCancelClick(), enabled: isConverting },
+    { id: 'convert.clear', handler: () => setJobCancelOpen(true), enabled: isDirty && !isConverting },
+    { id: 'convert.lossless', handler: () => setCopyMode(!copyMode) },
+    { id: 'convert.preview', handler: () => setPreviewOpen(true), enabled: !!inputFile && !previewOpen },
+  ]);
 
   return (
     <PageContainer
@@ -679,15 +703,19 @@ export default function Convert() {
       </PageSection>
 
       <ActionStack direction="row" spacing={1} useFlexGap>
-        <Button
-          variant="contained"
-          data-testid="convert-start"
-          startIcon={<FontAwesomeIcon icon={faPlay} />}
-          onClick={handleStartConversion}
-          disabled={!inputFile || !outputFile || isConverting}
-        >
-          {isConverting ? t('convert.converting') : t('convert.startConversion')}
-        </Button>
+        <Tooltip title={shortcutHint(t, 'convert.startConversion', SHORTCUT_BY_ID['convert.start'].keys)} arrow>
+          <span>
+            <Button
+              variant="contained"
+              data-testid="convert-start"
+              startIcon={<FontAwesomeIcon icon={faPlay} />}
+              onClick={handleStartConversion}
+              disabled={!inputFile || !outputFile || isConverting}
+            >
+              {isConverting ? t('convert.converting') : t('convert.startConversion')}
+            </Button>
+          </span>
+        </Tooltip>
         {isConverting && !isPaused && (
           <Button
             variant="contained"

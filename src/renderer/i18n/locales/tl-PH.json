@@ -27,7 +27,8 @@
     "descImage": "Paliitin ang mga larawan na may kontrol sa format, kalidad, at dimensyon",
     "descAudio": "I-extract ang malinis na audio track mula sa mga video file",
     "descCut": "I-trim at i-cut ang video gamit ang frame-accurate na player",
-    "descBatch": "I-convert ang maraming file nang sabay-sabay gamit ang smart queue"
+    "descBatch": "I-convert ang maraming file nang sabay-sabay gamit ang smart queue",
+    "shortcutsFooter": "Pindutin ang {{shortcut}} para sa mga keyboard shortcut"
   },
   "closeConfirm": {
     "title": "Isara ang EncodeX?",
@@ -479,5 +480,101 @@
     "hardwareAccelerationHint": "Ginagamit ang iyong GPU (NVIDIA NVENC, Intel QSV, AMD AMF) para sa video encoding at decoding. I-off para sa software-only encoding.",
     "hwaccelModeHint": "Automatic: ginagawa ng GPU ang parehong decoding at encoding (pinakamabilis, hindi palaging compatible). Encode lang: ang GPU ay nag-encode at ang CPU ay nag-decode (pinakaligtas).",
     "encoderTypeHint": "Sinasala ang listahan ng video codec. Ipinapakita ng Automatic ang lahat ng available na encoder, ipinapakita ng Hardware ang mga GPU encoder lang, ipinapakita ng Software ang mga CPU encoder lang."
+  },
+  "shortcuts": {
+    "title": "Mga Keyboard Shortcut",
+    "close": "Isara",
+    "sections": {
+      "global": "Pangkalahatan",
+      "convert": "I-convert",
+      "mediaInfo": "Impormasyon ng Media",
+      "imageCompress": "I-compress ang Larawan",
+      "audioExtract": "I-extract ang Audio",
+      "videoCut": "I-cut ang Video",
+      "batchQueue": "Batch Queue",
+      "logs": "Mga Log",
+      "dashboard": "Dashboard"
+    },
+    "global": {
+      "help": "Ipakita ang mga keyboard shortcut",
+      "navDashboard": "Pumunta sa Dashboard",
+      "navConvert": "Pumunta sa I-convert",
+      "navMediaInfo": "Pumunta sa Impormasyon ng Media",
+      "navImage": "Pumunta sa Larawan",
+      "navAudio": "Pumunta sa Audio",
+      "navCut": "Pumunta sa I-cut",
+      "navBatchQueue": "Pumunta sa Batch Queue",
+      "navLogs": "Pumunta sa Mga Log",
+      "navSettings": "Pumunta sa Mga Setting",
+      "themeToggle": "I-toggle ang tema"
+    },
+    "convert": {
+      "input": "Pumili ng input file",
+      "output": "Pumili ng output file",
+      "start": "Simulan ang conversion",
+      "pause": "I-pause o ipagpatuloy ang conversion",
+      "cancel": "Kanselahin ang conversion",
+      "clear": "I-clear ang conversion job",
+      "lossless": "I-toggle ang lossless copy",
+      "preview": "Ipakita o itago ang preview"
+    },
+    "mediaInfo": {
+      "open": "Pumili ng file na i-inspeksyunin"
+    },
+    "imageCompress": {
+      "input": "Pumili ng input image",
+      "output": "Pumili ng output file",
+      "compress": "I-compress ang larawan",
+      "aspect": "I-toggle ang pagpapanatili ng aspect ratio"
+    },
+    "audioExtract": {
+      "input": "Pumili ng input video",
+      "output": "Pumili ng output file",
+      "extract": "I-extract ang audio",
+      "pause": "I-pause o ipagpatuloy ang extraction",
+      "cancel": "Kanselahin ang extraction"
+    },
+    "videoCut": {
+      "open": "Pumili o palitan ang video",
+      "output": "Pumili ng output file",
+      "cut": "I-cut ang video",
+      "pause": "I-pause o ipagpatuloy ang pag-cut",
+      "cancel": "Kanselahin ang pag-cut",
+      "clear": "I-clear ang cut form",
+      "useDuration": "I-toggle ang paggamit ng duration",
+      "includeAudio": "I-toggle ang pagsasama ng audio",
+      "playPause": "I-play o i-pause ang preview",
+      "mute": "I-mute o i-unmute ang preview",
+      "seekBack": "Bumalik ng 5 segundo",
+      "seekForward": "Sumulong ng 5 segundo"
+    },
+    "batchQueue": {
+      "add": "Magdagdag ng mga file",
+      "start": "Simulan ang batch",
+      "pause": "I-pause o ipagpatuloy ang queue",
+      "cancelAll": "Kanselahin ang lahat ng job",
+      "clearCompleted": "I-clear ang mga natapos na job",
+      "export": "I-export ang queue",
+      "import": "I-import ang queue",
+      "condense": "I-condense o palawakin ang mga kontrol",
+      "focusSearch": "I-focus ang search field",
+      "filterAll": "Filter: lahat",
+      "filterQueued": "Filter: nakapila",
+      "filterRunning": "Filter: tumatakbo",
+      "filterDone": "Filter: tapos",
+      "filterFailed": "Filter: nabigo"
+    },
+    "logs": {
+      "clear": "I-clear ang mga log",
+      "download": "I-download ang mga log"
+    },
+    "dashboard": {
+      "convert": "Buksan ang I-convert",
+      "mediaInfo": "Buksan ang Impormasyon ng Media",
+      "image": "Buksan ang Larawan",
+      "audio": "Buksan ang Audio",
+      "cut": "Buksan ang I-cut",
+      "batch": "Buksan ang Batch Queue"
+    }
   }
 }

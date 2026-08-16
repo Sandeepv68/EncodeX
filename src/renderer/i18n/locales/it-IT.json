@@ -27,7 +27,8 @@
     "descImage": "Riduci le immagini con controllo di formato, qualità e dimensioni",
     "descAudio": "Estrai tracce audio pulite dai file video",
     "descCut": "Ritaglia e taglia video con un player frame-accurato",
-    "descBatch": "Converti molti file in una volta con una coda intelligente"
+    "descBatch": "Converti molti file in una volta con una coda intelligente",
+    "shortcutsFooter": "Premi {{shortcut}} per le scorciatoie da tastiera"
   },
   "closeConfirm": {
     "title": "Chiudere EncodeX?",
@@ -478,6 +479,102 @@
       "rose": "Rosa",
       "slate": "Ardesia",
       "dark": "Scuro"
+    }
+  },
+  "shortcuts": {
+    "title": "Scorciatoie da tastiera",
+    "close": "Chiudi",
+    "sections": {
+      "global": "Generale",
+      "convert": "Converti",
+      "mediaInfo": "Informazioni multimediali",
+      "imageCompress": "Comprimi immagine",
+      "audioExtract": "Estrai audio",
+      "videoCut": "Taglia video",
+      "batchQueue": "Coda batch",
+      "logs": "Registri",
+      "dashboard": "Dashboard"
+    },
+    "global": {
+      "help": "Mostra scorciatoie da tastiera",
+      "navDashboard": "Vai alla dashboard",
+      "navConvert": "Vai a Converti",
+      "navMediaInfo": "Vai a informazioni multimediali",
+      "navImage": "Vai a Immagine",
+      "navAudio": "Vai a Audio",
+      "navCut": "Vai a Taglia",
+      "navBatchQueue": "Vai alla coda batch",
+      "navLogs": "Vai ai registri",
+      "navSettings": "Vai alle impostazioni",
+      "themeToggle": "Cambia tema"
+    },
+    "convert": {
+      "input": "Scegli file di input",
+      "output": "Scegli file di output",
+      "start": "Avvia conversione",
+      "pause": "Metti in pausa o riprendi la conversione",
+      "cancel": "Annulla conversione",
+      "clear": "Azzera il lavoro di conversione",
+      "lossless": "Attiva/disattiva copia senza perdita",
+      "preview": "Mostra o nascondi anteprima"
+    },
+    "mediaInfo": {
+      "open": "Scegli un file da ispezionare"
+    },
+    "imageCompress": {
+      "input": "Scegli immagine di input",
+      "output": "Scegli file di output",
+      "compress": "Comprimi immagine",
+      "aspect": "Attiva/disattiva mantieni proporzioni"
+    },
+    "audioExtract": {
+      "input": "Scegli video di input",
+      "output": "Scegli file di output",
+      "extract": "Estrai audio",
+      "pause": "Metti in pausa o riprendi l’estrazione",
+      "cancel": "Annulla estrazione"
+    },
+    "videoCut": {
+      "open": "Scegli o cambia video",
+      "output": "Scegli file di output",
+      "cut": "Taglia video",
+      "pause": "Metti in pausa o riprendi il taglio",
+      "cancel": "Annulla taglio",
+      "clear": "Azzera il modulo di taglio",
+      "useDuration": "Attiva/disattiva usa durata",
+      "includeAudio": "Attiva/disattiva includi audio",
+      "playPause": "Riproduci o metti in pausa l’anteprima",
+      "mute": "Attiva/disattiva audio dell’anteprima",
+      "seekBack": "Indietro di 5 secondi",
+      "seekForward": "Avanti di 5 secondi"
+    },
+    "batchQueue": {
+      "add": "Aggiungi file",
+      "start": "Avvia batch",
+      "pause": "Metti in pausa o riprendi la coda",
+      "cancelAll": "Annulla tutti i lavori",
+      "clearCompleted": "Azzera lavori completati",
+      "export": "Esporta coda",
+      "import": "Importa coda",
+      "condense": "Comprimi o espandi i controlli",
+      "focusSearch": "Concentrati sul campo di ricerca",
+      "filterAll": "Filtra: tutti",
+      "filterQueued": "Filtra: in coda",
+      "filterRunning": "Filtra: in esecuzione",
+      "filterDone": "Filtra: completati",
+      "filterFailed": "Filtra: non riusciti"
+    },
+    "logs": {
+      "clear": "Azzera registri",
+      "download": "Scarica registri"
+    },
+    "dashboard": {
+      "convert": "Apri Converti",
+      "mediaInfo": "Apri informazioni multimediali",
+      "image": "Apri Immagine",
+      "audio": "Apri Audio",
+      "cut": "Apri Taglia",
+      "batch": "Apri la coda batch"
     }
   }
 }

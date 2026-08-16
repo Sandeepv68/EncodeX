@@ -1052,4 +1052,38 @@ describe('BatchQueue', () => {
     expect(toggle).toHaveAttribute('aria-label', 'batchQueue.expand');
     expect(localStorage.getItem('encodex-batch-condensed')).toBe('1');
   });
+
+  it('opens the add-files review dialog with Ctrl+O', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/video.mp4']);
+    renderPage();
+    fireEvent.keyDown(window, { code: 'KeyO', key: 'o', ctrlKey: true });
+    expect(await screen.findByText('batchQueue.reviewTitle')).toBeInTheDocument();
+  });
+
+  it('focuses the search field with F', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1' })]);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.keyDown(window, { code: 'KeyF', key: 'f' });
+    expect(screen.getByRole('textbox', { name: 'Search files...' })).toHaveFocus();
+  });
+
+  it('condenses the page with C', async () => {
+    queueListMock.mockResolvedValue([]);
+    renderPage();
+    const toggle = screen.getByTestId('batch-queue-condense');
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    fireEvent.keyDown(window, { code: 'KeyC', key: 'c' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('switches to the running filter with 3', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'running' })]);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.keyDown(window, { code: 'Digit3', key: '3' });
+    expect(screen.getByRole('button', { name: 'Running (1)' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'All (1)' })).toHaveAttribute('aria-pressed', 'false');
+  });
 });

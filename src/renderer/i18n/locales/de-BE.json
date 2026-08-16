@@ -27,7 +27,8 @@
     "descImage": "Bilder mit Format-, Qualitäts- und Größenkontrolle verkleinern",
     "descAudio": "Saubere Audiospuren aus Videodateien extrahieren",
     "descCut": "Video mit frame-genauem Player zuschneiden und kürzen",
-    "descBatch": "Viele Dateien auf einmal mit einer intelligenten Warteschlange konvertieren"
+    "descBatch": "Viele Dateien auf einmal mit einer intelligenten Warteschlange konvertieren",
+    "shortcutsFooter": "Drücken Sie {{shortcut}} für Tastenkombinationen"
   },
   "closeConfirm": {
     "title": "EncodeX schließen?",
@@ -478,6 +479,102 @@
       "rose": "Rose",
       "slate": "Schiefer",
       "dark": "Dunkel"
+    }
+  },
+  "shortcuts": {
+    "title": "Tastenkombinationen",
+    "close": "Schließen",
+    "sections": {
+      "global": "Global",
+      "convert": "Konvertieren",
+      "mediaInfo": "Medieninfo",
+      "imageCompress": "Bild komprimieren",
+      "audioExtract": "Audio extrahieren",
+      "videoCut": "Video schneiden",
+      "batchQueue": "Stapelwarteschlange",
+      "logs": "Protokolle",
+      "dashboard": "Dashboard"
+    },
+    "global": {
+      "help": "Tastenkombinationen anzeigen",
+      "navDashboard": "Zum Dashboard",
+      "navConvert": "Zum Konvertieren",
+      "navMediaInfo": "Zur Medieninfo",
+      "navImage": "Zum Bild",
+      "navAudio": "Zum Audio",
+      "navCut": "Zum Schneiden",
+      "navBatchQueue": "Zur Stapelwarteschlange",
+      "navLogs": "Zu den Protokollen",
+      "navSettings": "Zu den Einstellungen",
+      "themeToggle": "Design umschalten"
+    },
+    "convert": {
+      "input": "Eingabedatei wählen",
+      "output": "Ausgabedatei wählen",
+      "start": "Konvertierung starten",
+      "pause": "Konvertierung pausieren oder fortsetzen",
+      "cancel": "Konvertierung abbrechen",
+      "clear": "Konvertierungsjob leeren",
+      "lossless": "Verlustfreie Kopie umschalten",
+      "preview": "Vorschau anzeigen oder ausblenden"
+    },
+    "mediaInfo": {
+      "open": "Eine Datei zur Prüfung wählen"
+    },
+    "imageCompress": {
+      "input": "Eingabebild wählen",
+      "output": "Ausgabedatei wählen",
+      "compress": "Bild komprimieren",
+      "aspect": "Seitenverhältnis beibehalten umschalten"
+    },
+    "audioExtract": {
+      "input": "Eingabevideo wählen",
+      "output": "Ausgabedatei wählen",
+      "extract": "Audio extrahieren",
+      "pause": "Extraktion pausieren oder fortsetzen",
+      "cancel": "Extraktion abbrechen"
+    },
+    "videoCut": {
+      "open": "Video wählen oder ändern",
+      "output": "Ausgabedatei wählen",
+      "cut": "Video schneiden",
+      "pause": "Schnitt pausieren oder fortsetzen",
+      "cancel": "Schnitt abbrechen",
+      "clear": "Schnittformular leeren",
+      "useDuration": "Dauer verwenden umschalten",
+      "includeAudio": "Audio einbeziehen umschalten",
+      "playPause": "Vorschau abspielen oder pausieren",
+      "mute": "Vorschau stummschalten oder Ton aktivieren",
+      "seekBack": "5 Sekunden zurück",
+      "seekForward": "5 Sekunden vor"
+    },
+    "batchQueue": {
+      "add": "Dateien hinzufügen",
+      "start": "Stapel starten",
+      "pause": "Warteschlange pausieren oder fortsetzen",
+      "cancelAll": "Alle Aufträge abbrechen",
+      "clearCompleted": "Abgeschlossene Aufträge entfernen",
+      "export": "Warteschlange exportieren",
+      "import": "Warteschlange importieren",
+      "condense": "Steuerelemente einklappen oder erweitern",
+      "focusSearch": "Suchfeld fokussieren",
+      "filterAll": "Filter: alle",
+      "filterQueued": "Filter: wartend",
+      "filterRunning": "Filter: läuft",
+      "filterDone": "Filter: fertig",
+      "filterFailed": "Filter: fehlgeschlagen"
+    },
+    "logs": {
+      "clear": "Protokolle leeren",
+      "download": "Protokolle herunterladen"
+    },
+    "dashboard": {
+      "convert": "Konvertieren öffnen",
+      "mediaInfo": "Medieninfo öffnen",
+      "image": "Bild öffnen",
+      "audio": "Audio öffnen",
+      "cut": "Schneiden öffnen",
+      "batch": "Stapelwarteschlange öffnen"
     }
   }
 }

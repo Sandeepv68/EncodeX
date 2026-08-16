@@ -27,7 +27,8 @@
     "descImage": "Kecilkan imej dengan kawalan format, kualiti dan dimensi",
     "descAudio": "Ekstrak trek audio yang bersih daripada fail video",
     "descCut": "Pangkas dan potong video dengan pemain tepat bingkai",
-    "descBatch": "Tukar banyak fail sekaligus dengan baris giliran pintar"
+    "descBatch": "Tukar banyak fail sekaligus dengan baris giliran pintar",
+    "shortcutsFooter": "Tekan {{shortcut}} untuk pintasan papan kekunci"
   },
   "closeConfirm": {
     "title": "Tutup EncodeX?",
@@ -479,5 +480,101 @@
     "hardwareAccelerationHint": "Menggunakan GPU anda (NVIDIA NVENC, Intel QSV, AMD AMF) untuk pengekodan dan penyahkodan video. Matikan untuk pengekodan perisian sahaja.",
     "hwaccelModeHint": "Automatik: GPU melakukan kedua-dua penyahkodan dan pengekodan (paling pantas, tidak selalu serasi). Kod sahaja: GPU mengekod dan CPU menyahkod (paling selamat).",
     "encoderTypeHint": "Menapis senarai codec video. Automatik menunjukkan semua pengekod tersedia, Perkakasan menunjukkan pengekod GPU sahaja, Perisian menunjukkan pengekod CPU sahaja."
+  },
+  "shortcuts": {
+    "title": "Pintasan Papan Kekunci",
+    "close": "Tutup",
+    "sections": {
+      "global": "Umum",
+      "convert": "Tukar",
+      "mediaInfo": "Maklumat Media",
+      "imageCompress": "Mampat Imej",
+      "audioExtract": "Ekstrak Audio",
+      "videoCut": "Potong Video",
+      "batchQueue": "Giliran Kelompok",
+      "logs": "Log",
+      "dashboard": "Papan Pemuka"
+    },
+    "global": {
+      "help": "Papar pintasan papan kekunci",
+      "navDashboard": "Pergi ke Papan Pemuka",
+      "navConvert": "Pergi ke Tukar",
+      "navMediaInfo": "Pergi ke Maklumat Media",
+      "navImage": "Pergi ke Imej",
+      "navAudio": "Pergi ke Audio",
+      "navCut": "Pergi ke Potong",
+      "navBatchQueue": "Pergi ke Giliran Kelompok",
+      "navLogs": "Pergi ke Log",
+      "navSettings": "Pergi ke Tetapan",
+      "themeToggle": "Tukar tema"
+    },
+    "convert": {
+      "input": "Pilih fail input",
+      "output": "Pilih fail output",
+      "start": "Mulakan penukaran",
+      "pause": "Jeda atau sambung semula penukaran",
+      "cancel": "Batalkan penukaran",
+      "clear": "Kosongkan kerja penukaran",
+      "lossless": "Togol salinan tanpa kerugian",
+      "preview": "Papar atau sembunyikan pratonton"
+    },
+    "mediaInfo": {
+      "open": "Pilih fail untuk diperiksa"
+    },
+    "imageCompress": {
+      "input": "Pilih imej input",
+      "output": "Pilih fail output",
+      "compress": "Mampat imej",
+      "aspect": "Togol kekalkan nisbah bidang"
+    },
+    "audioExtract": {
+      "input": "Pilih video input",
+      "output": "Pilih fail output",
+      "extract": "Ekstrak audio",
+      "pause": "Jeda atau sambung semula pengekstrakan",
+      "cancel": "Batalkan pengekstrakan"
+    },
+    "videoCut": {
+      "open": "Pilih atau tukar video",
+      "output": "Pilih fail output",
+      "cut": "Potong video",
+      "pause": "Jeda atau sambung semula pemotongan",
+      "cancel": "Batalkan pemotongan",
+      "clear": "Kosongkan borang potong",
+      "useDuration": "Togol guna tempoh",
+      "includeAudio": "Togol sertakan audio",
+      "playPause": "Main atau jeda pratonton",
+      "mute": "Redam atau nyahredam pratonton",
+      "seekBack": "Undur 5 saat",
+      "seekForward": "Maju 5 saat"
+    },
+    "batchQueue": {
+      "add": "Tambah fail",
+      "start": "Mulakan kelompok",
+      "pause": "Jeda atau sambung semula giliran",
+      "cancelAll": "Batalkan semua kerja",
+      "clearCompleted": "Kosongkan kerja selesai",
+      "export": "Eksport giliran",
+      "import": "Import giliran",
+      "condense": "Ringkaskan atau luaskan kawalan",
+      "focusSearch": "Fokus pada medan carian",
+      "filterAll": "Tapis: semua",
+      "filterQueued": "Tapis: beratur",
+      "filterRunning": "Tapis: berjalan",
+      "filterDone": "Tapis: selesai",
+      "filterFailed": "Tapis: gagal"
+    },
+    "logs": {
+      "clear": "Kosongkan log",
+      "download": "Muat turun log"
+    },
+    "dashboard": {
+      "convert": "Buka Tukar",
+      "mediaInfo": "Buka Maklumat Media",
+      "image": "Buka Imej",
+      "audio": "Buka Audio",
+      "cut": "Buka Potong",
+      "batch": "Buka Giliran Kelompok"
+    }
   }
 }

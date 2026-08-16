@@ -32,6 +32,7 @@ import QueueDropArea from '../components/QueueDropArea';
 import QueueAddReviewDialog from '../components/QueueAddReviewDialog';
 import QueueJobOptionsDialog from '../components/QueueJobOptionsDialog';
 import ConfirmDialog from '../components/ConfirmDialog';
+import { useHotkeys } from '../hooks/useHotkeys';
 import { useQueueStore } from '../stores/queueStore';
 import { useToastStore } from '../stores/toastStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX, QUEUE_STATUS } from '../../shared/media-options';
@@ -257,6 +258,13 @@ export default function BatchQueue() {
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
   const [search, setSearch] = useState('');
+
+  /**
+   * Ref to the queue search input, so the page's "focus search" shortcut (F)
+   * can move focus into it.
+   * @type {React.MutableRefObject<HTMLInputElement | null>}
+   */
+  const searchRef = useRef<HTMLInputElement>(null);
 
   /**
    * True while the user is dragging files over the window; shows the drop overlay.
@@ -1038,6 +1046,37 @@ export default function BatchQueue() {
     }
   };
 
+  const hasQueued = jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED);
+  const hasRunning = jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.RUNNING);
+  const hasActive = hasQueued || hasRunning;
+  const hasCompleted = jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR);
+
+  /**
+   * Registers the page keyboard shortcuts (Ctrl+O add files, Ctrl+Enter start,
+   * Ctrl+Shift+P pause, Ctrl+Shift+C cancel all, Ctrl+Shift+X clear completed,
+   * Ctrl+E export, Ctrl+I import, C condense, F focus search, 1-5 status
+   * filters). Bindings mirror the enabled state of the equivalent on-page
+   * controls; bare-key bindings (C/F/1-5) are ignored while the focus is inside
+   * the search input or another interactive control.
+   * @returns {void}
+   */
+  useHotkeys([
+    { id: 'batchQueue.add', handler: () => handleAddFiles() },
+    { id: 'batchQueue.start', handler: () => handleStart(), enabled: hasQueued && !paused },
+    { id: 'batchQueue.pause', handler: () => handlePause(), enabled: hasActive && !paused },
+    { id: 'batchQueue.cancelAll', handler: () => handleCancelAll(), enabled: hasActive },
+    { id: 'batchQueue.clearCompleted', handler: () => handleClearCompleted(), enabled: hasCompleted },
+    { id: 'batchQueue.export', handler: () => handleExport(), enabled: jobs.length > 0 },
+    { id: 'batchQueue.import', handler: () => handleImport() },
+    { id: 'batchQueue.condense', handler: () => setCondensed((prev) => !prev) },
+    { id: 'batchQueue.focusSearch', handler: () => searchRef.current?.focus() },
+    { id: 'batchQueue.filterAll', handler: () => setFilter('all'), enabled: jobs.length > 0 },
+    { id: 'batchQueue.filterQueued', handler: () => setFilter(QUEUE_STATUS.QUEUED), enabled: jobs.length > 0 },
+    { id: 'batchQueue.filterRunning', handler: () => setFilter(QUEUE_STATUS.RUNNING), enabled: jobs.length > 0 },
+    { id: 'batchQueue.filterDone', handler: () => setFilter(QUEUE_STATUS.DONE), enabled: jobs.length > 0 },
+    { id: 'batchQueue.filterFailed', handler: () => setFilter(QUEUE_STATUS.ERROR), enabled: jobs.length > 0 },
+  ]);
+
   const remainingSeconds = estimateRemaining(jobs, progress);
 
   /**
@@ -1194,7 +1233,7 @@ export default function BatchQueue() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('batchQueue.search')}
-              slotProps={{ htmlInput: { 'aria-label': t('batchQueue.search') } }}
+              slotProps={{ htmlInput: { 'aria-label': t('batchQueue.search'), ref: searchRef } }}
             />
             {remainingSeconds !== null && (
               <FilterEta variant="body2" color="text.secondary">

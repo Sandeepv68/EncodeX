@@ -23,6 +23,8 @@ import { Logger } from '../../shared/logger';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import { pageIcons } from '../pageIcons';
 import { resolveDashboardAppIcon } from '../utils/easter-egg-assets';
+import { useHotkeys } from '../hooks/useHotkeys';
+import { SHORTCUTS, SHORTCUT_BY_ID, formatShortcut } from '../constants/shortcuts';
 
 import {
   WelcomeTitle,
@@ -37,6 +39,7 @@ import {
   FeatureGrid,
   FeatureGridItem,
   CardDescription,
+  DashboardFooter,
 } from '../styles/Dashboard.styles';
 import { LOG_DASHBOARD_RENDERED } from '../../shared/log-constants';
 
@@ -85,6 +88,19 @@ export default function Dashboard() {
   useEffect(() => {
     log.debug(LOG_DASHBOARD_RENDERED);
   }, []);
+
+  /**
+   * Registers the dashboard keyboard shortcuts (1-6), one per feature card,
+   * navigating to each spec's target route.
+   * @returns {void}
+   */
+  useHotkeys(
+    SHORTCUTS.filter((spec) => spec.section === 'dashboard' && spec.to).map((spec) => ({
+      id: spec.id,
+      handler: () => navigate(spec.to!),
+    })),
+  );
+
   return (
     <DashboardRoot>
       <WelcomeTitle variant="h4" component="h1">
@@ -113,6 +129,9 @@ export default function Dashboard() {
           </FeatureGridItem>
         ))}
       </FeatureGrid>
+      <DashboardFooter variant="caption" color="text.secondary" data-testid="dashboard-shortcuts-hint">
+        {t('dashboard.shortcutsFooter', { shortcut: formatShortcut(SHORTCUT_BY_ID['global.help'].keys) })}
+      </DashboardFooter>
     </DashboardRoot>
   );
 }

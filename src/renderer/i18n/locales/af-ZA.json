@@ -27,7 +27,8 @@
     "descImage": "Verklein beelde met beheer oor formaat, kwaliteit en afmetings",
     "descAudio": "Onthou skoon klanksnitte uit videolêers",
     "descCut": "Snoei en sny video met 'n raam-akkurate speler",
-    "descBatch": "Skakel baie lêers gelyktydig om met 'n slim waglys"
+    "descBatch": "Skakel baie lêers gelyktydig om met 'n slim waglys",
+    "shortcutsFooter": "Druk {{shortcut}} vir sleutelbordkortpaaie"
   },
   "closeConfirm": {
     "title": "Maak EncodeX toe?",
@@ -479,5 +480,101 @@
     "hardwareAccelerationHint": "Gebruik jou GPU (NVIDIA NVENC, Intel QSV, AMD AMF) vir video-enkodering en -dekodering. Skakel af vir sagteware-alleen-enkodering.",
     "hwaccelModeHint": "Outomaties: die GPU doen beide dekodering en enkodering (vinnigste, nie altyd versoenbaar nie). Slegs enkodeer: die GPU enkodeer en die CPU dekodeer (veiligste).",
     "encoderTypeHint": "Filtreer die video-kodeklys. Outomaties wys alle beskikbare enkodeerders, Hardeware wys slegs GPU-enkodeerders, Sagteware wys slegs CPU-enkodeerders."
+  },
+  "shortcuts": {
+    "title": "Sleutelbordkortpaaie",
+    "close": "Maak toe",
+    "sections": {
+      "global": "Algemeen",
+      "convert": "Omskakel",
+      "mediaInfo": "Mediainligting",
+      "imageCompress": "Beeldkompres",
+      "audioExtract": "Oudiotrekking",
+      "videoCut": "Video knip",
+      "batchQueue": "Bondtou",
+      "logs": "Logs",
+      "dashboard": "Paneelbord"
+    },
+    "global": {
+      "help": "Wys sleutelbordkortpaaie",
+      "navDashboard": "Gaan na Paneelbord",
+      "navConvert": "Gaan na Omskakel",
+      "navMediaInfo": "Gaan na Mediainligting",
+      "navImage": "Gaan na Beeld",
+      "navAudio": "Gaan na Oudio",
+      "navCut": "Gaan na Knip",
+      "navBatchQueue": "Gaan na Bondtou",
+      "navLogs": "Gaan na Logs",
+      "navSettings": "Gaan na Instellings",
+      "themeToggle": "Skakel tema"
+    },
+    "convert": {
+      "input": "Kies invoerlêer",
+      "output": "Kies uitvoerlêer",
+      "start": "Begin omskakeling",
+      "pause": "Sit omskakeling pouse of hervat",
+      "cancel": "Kanselleer omskakeling",
+      "clear": "Maak omskakelingstaak skoon",
+      "lossless": "Skakel verliesvrye kopie aan/af",
+      "preview": "Wys of verberg voorskou"
+    },
+    "mediaInfo": {
+      "open": "Kies 'n lêer om te ondersoek"
+    },
+    "imageCompress": {
+      "input": "Kies invoerbeeld",
+      "output": "Kies uitvoerlêer",
+      "compress": "Komprimeer beeld",
+      "aspect": "Skakel behou aspekverhouding aan/af"
+    },
+    "audioExtract": {
+      "input": "Kies invoervideo",
+      "output": "Kies uitvoerlêer",
+      "extract": "Trek oudio uit",
+      "pause": "Sit uitrekking pouse of hervat",
+      "cancel": "Kanselleer uitrekking"
+    },
+    "videoCut": {
+      "open": "Kies of verander video",
+      "output": "Kies uitvoerlêer",
+      "cut": "Knip video",
+      "pause": "Sit knip pouse of hervat",
+      "cancel": "Kanselleer knip",
+      "clear": "Maak knipvorm skoon",
+      "useDuration": "Skakel gebruik duur aan/af",
+      "includeAudio": "Skakel sluit oudio in aan/af",
+      "playPause": "Speel of pouse voorskou",
+      "mute": "Demper of ontdemper voorskou",
+      "seekBack": "Spoel 5 sekondes terug",
+      "seekForward": "Spoel 5 sekondes vorentoe"
+    },
+    "batchQueue": {
+      "add": "Voeg lêers by",
+      "start": "Begin bond",
+      "pause": "Sit tou pouse of hervat",
+      "cancelAll": "Kanselleer alle take",
+      "clearCompleted": "Maak voltooide take skoon",
+      "export": "Voer tou uit",
+      "import": "Voer tou in",
+      "condense": "Condenseer of brei beheer uit",
+      "focusSearch": "Fokus soekveld",
+      "filterAll": "Filter: alles",
+      "filterQueued": "Filter: in tou",
+      "filterRunning": "Filter: loop",
+      "filterDone": "Filter: klaar",
+      "filterFailed": "Filter: misluk"
+    },
+    "logs": {
+      "clear": "Maak logs skoon",
+      "download": "Laai logs af"
+    },
+    "dashboard": {
+      "convert": "Maak Omskakel oop",
+      "mediaInfo": "Maak Mediainligting oop",
+      "image": "Maak Beeld oop",
+      "audio": "Maak Oudio oop",
+      "cut": "Maak Knip oop",
+      "batch": "Maak Bondtou oop"
+    }
   }
 }

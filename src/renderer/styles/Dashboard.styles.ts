@@ -131,3 +131,9 @@ export const FeatureGridItem = styled(Grid)({
 export const CardDescription = styled(Typography)({
   marginTop: 'auto',
 });
+
+/** Footer hint row listing the shortcuts-help chord. @const DashboardFooter */
+export const DashboardFooter = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+  textAlign: 'center',
+}));

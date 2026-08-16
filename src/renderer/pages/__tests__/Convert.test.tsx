@@ -369,4 +369,33 @@ describe('Convert', () => {
     renderPage();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
+
+  it('starts a conversion with Ctrl+Enter', async () => {
+    selectFileMock.mockResolvedValue('/in/video.mp4');
+    selectOutputMock.mockResolvedValue('/out/video.mkv');
+    convertFileMock.mockResolvedValue(undefined);
+    renderPage();
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByText('convert.saveAs'));
+    await waitFor(() => expect(selectOutputMock).toHaveBeenCalledOnce());
+    fireEvent.keyDown(window, { code: 'Enter', key: 'Enter', ctrlKey: true });
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+  });
+
+  it('does not start a conversion with Ctrl+Enter while no input is selected', () => {
+    renderPage();
+    fireEvent.keyDown(window, { code: 'Enter', key: 'Enter', ctrlKey: true });
+    expect(convertFileMock).not.toHaveBeenCalled();
+  });
+
+  it('toggles lossless copy with L', async () => {
+    selectFileMock.mockResolvedValue('/in/video.mp4');
+    renderPage();
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    expect(screen.getByRole('switch', { name: 'convert.losslessCopy' })).not.toBeChecked();
+    fireEvent.keyDown(window, { code: 'KeyL', key: 'l' });
+    expect(screen.getByRole('switch', { name: 'convert.losslessCopy' })).toBeChecked();
+  });
 });

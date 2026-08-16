@@ -19,7 +19,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, TextField, MenuItem, Button, Stack, Typography } from '@mui/material';
+import { Box, TextField, MenuItem, Button, Stack, Typography, Tooltip } from '@mui/material';
 import { faMusic, faPause, faPlay, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CodecSelect from '../components/CodecSelect';
@@ -34,7 +34,10 @@ import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { useHotkeys } from '../hooks/useHotkeys';
+import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { focusFirstError } from '../utils/focusFirstError';
+import { openFileDialog } from '../utils/fileDialog';
 import { BITRATE_OPTIONS } from '../../shared/media-options';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { replaceExtension, suggestedExtensionForAudioCodec } from '../../shared/codec-containers';
@@ -203,6 +206,35 @@ export default function AudioExtract() {
     await store.startExtract();
   };
 
+  /**
+   * Registers the page keyboard shortcuts (Ctrl+O input, Ctrl+Shift+S output,
+   * Ctrl+Enter extract, Ctrl+Shift+P pause, Ctrl+Shift+C cancel). Bindings
+   * mirror the enabled state of the equivalent on-page controls.
+   * @returns {void}
+   */
+  useHotkeys([
+    {
+      id: 'audioExtract.input',
+      handler: async () => {
+        const file = await openFileDialog(VIDEO_DROPZONE_ACCEPT);
+        if (file) handleFileSelect(file);
+      },
+    },
+    {
+      id: 'audioExtract.output',
+      handler: async () => {
+        const f = await window.electronAPI.selectOutput();
+        if (f) {
+          store.setOutput(withExtension(f, suggestedExt));
+          clearFieldError('output');
+        }
+      },
+    },
+    { id: 'audioExtract.extract', handler: () => handleExtract(), enabled: !!store.input && !!store.output && !store.isConverting },
+    { id: 'audioExtract.pause', handler: () => store.pauseExtract(), enabled: store.isConverting && !store.isPaused },
+    { id: 'audioExtract.cancel', handler: () => setCancelConfirmOpen(true), enabled: store.isConverting },
+  ]);
+
   return (
     <PageContainer title={t('audioExtract.title')} icon={pageIcons['/audio-extract']}>
       <Box>
@@ -309,15 +341,19 @@ export default function AudioExtract() {
       </Stack>
 
       <ActionRow direction="row" spacing={1} useFlexGap>
-        <Button
-          variant="contained"
-          startIcon={<FontAwesomeIcon icon={faMusic} />}
-          onClick={handleExtract}
-          disabled={!store.input || !store.output || store.isConverting}
-          data-testid="audio-extract-extract"
-        >
-          {store.isConverting ? t('audioExtract.extracting') : t('audioExtract.extract')}
-        </Button>
+        <Tooltip title={shortcutHint(t, 'audioExtract.extract', SHORTCUT_BY_ID['audioExtract.extract'].keys)} arrow>
+          <span>
+            <Button
+              variant="contained"
+              startIcon={<FontAwesomeIcon icon={faMusic} />}
+              onClick={handleExtract}
+              disabled={!store.input || !store.output || store.isConverting}
+              data-testid="audio-extract-extract"
+            >
+              {store.isConverting ? t('audioExtract.extracting') : t('audioExtract.extract')}
+            </Button>
+          </span>
+        </Tooltip>
         {store.isConverting && !store.isPaused && (
           <Button variant="contained" color="warning" startIcon={<FontAwesomeIcon icon={faPause} />} onClick={() => store.pauseExtract()}>
             {t('audioExtract.pause')}

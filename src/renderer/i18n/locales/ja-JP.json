@@ -27,7 +27,8 @@
     "descImage": "形式、品質、寸法を制御して画像を縮小",
     "descAudio": "動画ファイルからクリーンな音声トラックを抽出",
     "descCut": "フレーム精度のプレーヤーで動画をトリム・カット",
-    "descBatch": "スマートなキューで多数のファイルをまとめて変換"
+    "descBatch": "スマートなキューで多数のファイルをまとめて変換",
+    "shortcutsFooter": "キーボードショートカットには {{shortcut}} を押してください"
   },
   "closeConfirm": {
     "title": "EncodeX を閉じますか?",
@@ -478,6 +479,102 @@
       "rose": "ローズ",
       "slate": "スレート",
       "dark": "ダーク"
+    }
+  },
+  "shortcuts": {
+    "title": "キーボードショートカット",
+    "close": "閉じる",
+    "sections": {
+      "global": "全般",
+      "convert": "変換",
+      "mediaInfo": "メディア情報",
+      "imageCompress": "画像圧縮",
+      "audioExtract": "音声抽出",
+      "videoCut": "動画カット",
+      "batchQueue": "バッチキュー",
+      "logs": "ログ",
+      "dashboard": "ダッシュボード"
+    },
+    "global": {
+      "help": "キーボードショートカットを表示",
+      "navDashboard": "ダッシュボードへ移動",
+      "navConvert": "変換へ移動",
+      "navMediaInfo": "メディア情報へ移動",
+      "navImage": "画像へ移動",
+      "navAudio": "音声へ移動",
+      "navCut": "カットへ移動",
+      "navBatchQueue": "バッチキューへ移動",
+      "navLogs": "ログへ移動",
+      "navSettings": "設定へ移動",
+      "themeToggle": "テーマを切り替え"
+    },
+    "convert": {
+      "input": "入力ファイルを選択",
+      "output": "出力ファイルを選択",
+      "start": "変換を開始",
+      "pause": "変換を一時停止または再開",
+      "cancel": "変換をキャンセル",
+      "clear": "変換ジョブをクリア",
+      "lossless": "ロスレスコピーを切り替え",
+      "preview": "プレビューを表示または非表示"
+    },
+    "mediaInfo": {
+      "open": "検査するファイルを選択"
+    },
+    "imageCompress": {
+      "input": "入力画像を選択",
+      "output": "出力ファイルを選択",
+      "compress": "画像を圧縮",
+      "aspect": "縦横比を維持を切り替え"
+    },
+    "audioExtract": {
+      "input": "入力動画を選択",
+      "output": "出力ファイルを選択",
+      "extract": "音声を抽出",
+      "pause": "抽出を一時停止または再開",
+      "cancel": "抽出をキャンセル"
+    },
+    "videoCut": {
+      "open": "動画を選択または変更",
+      "output": "出力ファイルを選択",
+      "cut": "動画をカット",
+      "pause": "カットを一時停止または再開",
+      "cancel": "カットをキャンセル",
+      "clear": "カットフォームをクリア",
+      "useDuration": "時間を指定を切り替え",
+      "includeAudio": "音声を含めるを切り替え",
+      "playPause": "プレビューを再生または一時停止",
+      "mute": "プレビューのミュートを切り替え",
+      "seekBack": "5秒戻る",
+      "seekForward": "5秒進む"
+    },
+    "batchQueue": {
+      "add": "ファイルを追加",
+      "start": "バッチを開始",
+      "pause": "キューを一時停止または再開",
+      "cancelAll": "すべてのジョブをキャンセル",
+      "clearCompleted": "完了したジョブをクリア",
+      "export": "キューをエクスポート",
+      "import": "キューをインポート",
+      "condense": "コントロールを折りたたむまたは展開",
+      "focusSearch": "検索フィールドにフォーカス",
+      "filterAll": "フィルター: すべて",
+      "filterQueued": "フィルター: 待機中",
+      "filterRunning": "フィルター: 実行中",
+      "filterDone": "フィルター: 完了",
+      "filterFailed": "フィルター: 失敗"
+    },
+    "logs": {
+      "clear": "ログをクリア",
+      "download": "ログをダウンロード"
+    },
+    "dashboard": {
+      "convert": "変換を開く",
+      "mediaInfo": "メディア情報を開く",
+      "image": "画像を開く",
+      "audio": "音声を開く",
+      "cut": "カットを開く",
+      "batch": "バッチキューを開く"
     }
   }
 }

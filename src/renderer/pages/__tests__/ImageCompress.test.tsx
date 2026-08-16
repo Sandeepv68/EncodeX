@@ -311,4 +311,24 @@ describe('ImageCompress', () => {
     await waitFor(() => expect(useErrorStore.getState().currentError).not.toBeNull());
     expect(useErrorStore.getState().currentError?.detail).toBe('compression failed');
   });
+
+  it('compresses with Ctrl+Enter', async () => {
+    selectFileMock.mockResolvedValue('/in/photo.png');
+    convertFileMock.mockResolvedValue(undefined);
+    renderPage();
+    fireEvent.click(screen.getByText('imageCompress.dropLabel'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    fireEvent.change(screen.getByPlaceholderText('imageCompress.placeholderOutput'), { target: { value: '/out/photo.jpg' } });
+    fireEvent.keyDown(window, { code: 'Enter', key: 'Enter', ctrlKey: true });
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+  });
+
+  it('does not compress with Ctrl+Enter while an output is missing', async () => {
+    selectFileMock.mockResolvedValue('/in/photo.png');
+    renderPage();
+    fireEvent.click(screen.getByText('imageCompress.dropLabel'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    fireEvent.keyDown(window, { code: 'Enter', key: 'Enter', ctrlKey: true });
+    expect(convertFileMock).not.toHaveBeenCalled();
+  });
 });

@@ -318,6 +318,13 @@ export const MAX_PENDING_AUDIO_CHUNKS = 200;
 export const SEEK_COALESCE_MS = 120;
 
 /**
+ * Step size in seconds applied by the keyboard seek shortcuts (arrow keys) in
+ * the media player.
+ * @const {number} SEEK_KEY_STEP_SECONDS
+ */
+export const SEEK_KEY_STEP_SECONDS = 5;
+
+/**
  * Maximum number of video frames buffered ahead of the playback position.
  * @const {number} MAX_BUFFERED_FRAMES
  */

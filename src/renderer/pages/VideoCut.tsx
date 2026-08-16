@@ -56,6 +56,8 @@ import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import type { MediaInfo } from '../../shared/types';
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { useHotkeys } from '../hooks/useHotkeys';
+import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { focusFirstError } from '../utils/focusFirstError';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
@@ -612,6 +614,34 @@ export default function VideoCut() {
     resetForm();
   };
 
+  /**
+   * Registers the page keyboard shortcuts (Ctrl+O open, Ctrl+Shift+S output,
+   * Ctrl+Enter cut, Ctrl+Shift+P pause, Ctrl+Shift+C cancel, Ctrl+Shift+X
+   * clear, U use duration, A include audio). The playback keys (Space, M, ←/→)
+   * are registered by the MediaPlayer itself. Bindings mirror the enabled state
+   * of the equivalent on-page controls.
+   * @returns {void}
+   */
+  useHotkeys([
+    { id: 'videoCut.open', handler: () => handleBrowseVideo() },
+    {
+      id: 'videoCut.output',
+      handler: async () => {
+        const f = await window.electronAPI.selectOutput();
+        if (f) {
+          setOutput(f);
+          clearFieldError('output');
+        }
+      },
+    },
+    { id: 'videoCut.cut', handler: () => handleCut(), enabled: !!input && !!output && !isConverting },
+    { id: 'videoCut.pause', handler: () => pauseCut(), enabled: isConverting && !isPaused },
+    { id: 'videoCut.cancel', handler: () => setCancelConfirmOpen(true), enabled: isConverting },
+    { id: 'videoCut.clear', handler: () => setJobCancelOpen(true), enabled: isDirty && !isConverting },
+    { id: 'videoCut.useDuration', handler: () => setUseDuration(!useDuration) },
+    { id: 'videoCut.includeAudio', handler: () => setIncludeAudio(!includeAudio) },
+  ]);
+
   return (
     <PageContainer title={t('videoCut.title')} icon={pageIcons['/video-cut']} paper={false}>
       <SectionsStack>
@@ -789,7 +819,7 @@ export default function VideoCut() {
           </ToggleRow>
 
           <ActionRow direction="row" spacing={1} useFlexGap>
-            <Tooltip title={t('videoCut.cutHint')} arrow>
+            <Tooltip title={shortcutHint(t, 'videoCut.cutHint', SHORTCUT_BY_ID['videoCut.cut'].keys)} arrow>
               <span>
                 <Button
                   variant="contained"

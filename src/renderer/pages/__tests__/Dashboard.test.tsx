@@ -53,4 +53,27 @@ describe('Dashboard', () => {
     expect(screen.getByText('dashboard.descConvert')).toBeInTheDocument();
     expect(screen.getByText('dashboard.descBatch')).toBeInTheDocument();
   });
+
+  it('navigates to the convert page when 1 is pressed', () => {
+    renderDashboard();
+    fireEvent.keyDown(window, { code: 'Digit1', key: '1' });
+    expect(screen.getByTestId('location')).toHaveTextContent('/convert');
+  });
+
+  it('navigates to the audio extract page when 4 is pressed', () => {
+    renderDashboard();
+    fireEvent.keyDown(window, { code: 'Digit4', key: '4' });
+    expect(screen.getByTestId('location')).toHaveTextContent('/audio-extract');
+  });
+
+  it('navigates to the batch queue page when 6 is pressed', () => {
+    renderDashboard();
+    fireEvent.keyDown(window, { code: 'Digit6', key: '6' });
+    expect(screen.getByTestId('location')).toHaveTextContent('/batch');
+  });
+
+  it('renders the keyboard-shortcuts footer hint', () => {
+    renderDashboard();
+    expect(screen.getByTestId('dashboard-shortcuts-hint')).toHaveTextContent('dashboard.shortcutsFooter');
+  });
 });

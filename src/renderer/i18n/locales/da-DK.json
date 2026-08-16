@@ -27,7 +27,8 @@
     "descImage": "Komprimer billeder med kontrol over format, kvalitet og størrelse",
     "descAudio": "Uddrag ren lyd fra videofiler",
     "descCut": "Klip videoer med frame-præcision",
-    "descBatch": "Konverter flere filer på én gang med en intelligent kø"
+    "descBatch": "Konverter flere filer på én gang med en intelligent kø",
+    "shortcutsFooter": "Tryk på {{shortcut}} for tastaturgenveje"
   },
   "closeConfirm": {
     "title": "Luk EncodeX?",
@@ -479,5 +480,101 @@
     "hardwareAccelerationHint": "Brug dit GPU (NVIDIA NVENC, Intel QSV, AMD AMF) til videokodning og -afkodning. Sluk for kun softwarekodning.",
     "hwaccelModeHint": "Automatisk: GPU afkoder og koder (hurtigst, ikke altid kompatibelt). Kun encoder: GPU koder, og CPU afkoder (sikrest).",
     "encoderTypeHint": "Filtrer videocodec-listen. Automatisk viser alle encodere, Hardware kun GPU-encodere, Software kun CPU-encodere."
+  },
+  "shortcuts": {
+    "title": "Tastaturgenveje",
+    "close": "Luk",
+    "sections": {
+      "global": "Global",
+      "convert": "Konverter",
+      "mediaInfo": "Medieoplysninger",
+      "imageCompress": "Billedkomprimering",
+      "audioExtract": "Lydudtrækning",
+      "videoCut": "Klip video",
+      "batchQueue": "Batch-kø",
+      "logs": "Logs",
+      "dashboard": "Dashboard"
+    },
+    "global": {
+      "help": "Vis tastaturgenveje",
+      "navDashboard": "Gå til Dashboard",
+      "navConvert": "Gå til Konverter",
+      "navMediaInfo": "Gå til Medieoplysninger",
+      "navImage": "Gå til Billede",
+      "navAudio": "Gå til Lyd",
+      "navCut": "Gå til Klip",
+      "navBatchQueue": "Gå til Batch-kø",
+      "navLogs": "Gå til Logs",
+      "navSettings": "Gå til Indstillinger",
+      "themeToggle": "Skift tema"
+    },
+    "convert": {
+      "input": "Vælg inputfil",
+      "output": "Vælg outputfil",
+      "start": "Start konvertering",
+      "pause": "Sæt konvertering på pause eller genoptag",
+      "cancel": "Annuller konvertering",
+      "clear": "Ryd konverteringsjob",
+      "lossless": "Slå tabsfri kopiering til/fra",
+      "preview": "Vis eller skjul forhåndsvisning"
+    },
+    "mediaInfo": {
+      "open": "Vælg en fil at inspicere"
+    },
+    "imageCompress": {
+      "input": "Vælg inputbillede",
+      "output": "Vælg outputfil",
+      "compress": "Komprimér billede",
+      "aspect": "Slå bevar billedforhold til/fra"
+    },
+    "audioExtract": {
+      "input": "Vælg inputvideo",
+      "output": "Vælg outputfil",
+      "extract": "Udtræk lyd",
+      "pause": "Sæt udtrækning på pause eller genoptag",
+      "cancel": "Annuller udtrækning"
+    },
+    "videoCut": {
+      "open": "Vælg eller skift video",
+      "output": "Vælg outputfil",
+      "cut": "Klip video",
+      "pause": "Sæt klip på pause eller genoptag",
+      "cancel": "Annuller klip",
+      "clear": "Ryd klipformular",
+      "useDuration": "Slå brug af varighed til/fra",
+      "includeAudio": "Slå inkluder lyd til/fra",
+      "playPause": "Afspil eller sæt forhåndsvisning på pause",
+      "mute": "Slå lyd fra/til i forhåndsvisning",
+      "seekBack": "Søg 5 sekunder tilbage",
+      "seekForward": "Søg 5 sekunder frem"
+    },
+    "batchQueue": {
+      "add": "Tilføj filer",
+      "start": "Start batch",
+      "pause": "Sæt kø på pause eller genoptag",
+      "cancelAll": "Annuller alle job",
+      "clearCompleted": "Ryd fuldførte job",
+      "export": "Eksportér kø",
+      "import": "Importér kø",
+      "condense": "Sammenlæg eller udvid kontroller",
+      "focusSearch": "Fokuser søgefelt",
+      "filterAll": "Filter: alle",
+      "filterQueued": "Filter: i kø",
+      "filterRunning": "Filter: kører",
+      "filterDone": "Filter: fuldført",
+      "filterFailed": "Filter: fejlet"
+    },
+    "logs": {
+      "clear": "Ryd logs",
+      "download": "Download logs"
+    },
+    "dashboard": {
+      "convert": "Åbn Konverter",
+      "mediaInfo": "Åbn Medieoplysninger",
+      "image": "Åbn Billede",
+      "audio": "Åbn Lyd",
+      "cut": "Åbn Klip",
+      "batch": "Åbn Batch-kø"
+    }
   }
 }

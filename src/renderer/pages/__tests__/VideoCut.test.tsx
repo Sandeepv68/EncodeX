@@ -263,6 +263,22 @@ describe('VideoCut', () => {
     );
   });
 
+  it('cuts with Ctrl+Enter', async () => {
+    convertFileMock.mockResolvedValue(undefined);
+    renderPage();
+    await selectVideo();
+    fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/cut.mp4' } });
+    fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderEnd'), { target: { value: '00:01:30' } });
+    fireEvent.keyDown(window, { code: 'Enter', key: 'Enter', ctrlKey: true });
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+    expect(convertFileMock).toHaveBeenCalledWith(
+      '/in/video.mp4',
+      '/out/cut.mp4',
+      { copy: true, startTime: '00:00:00', endTime: '00:01:30' },
+      'FFMPEG',
+    );
+  });
+
   it('omits the audio stream when the timeline audio checkbox is unchecked', async () => {
     convertFileMock.mockResolvedValue(undefined);
     getMediaInfoMock.mockResolvedValue(mediaInfo(60));

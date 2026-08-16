@@ -27,7 +27,8 @@
     "descImage": "Reduza imagens com controlo do formato, qualidade e dimensões",
     "descAudio": "Extraia faixas de áudio limpas de ficheiros de vídeo",
     "descCut": "Aparar e cortar vídeo com um leitor preciso ao frame",
-    "descBatch": "Converta vários ficheiros de uma vez com uma fila inteligente"
+    "descBatch": "Converta vários ficheiros de uma vez com uma fila inteligente",
+    "shortcutsFooter": "Pressione {{shortcut}} para atalhos de teclado"
   },
   "closeConfirm": {
     "title": "Fechar o EncodeX?",
@@ -479,5 +480,101 @@
     "hardwareAccelerationHint": "Usa a sua GPU (NVIDIA NVENC, Intel QSV, AMD AMF) para codificar e descodificar vídeo. Desative para codificação apenas por software.",
     "hwaccelModeHint": "Automático: a GPU faz a descodificação e a codificação (mais rápido, nem sempre compatível). Apenas codificar: a GPU codifica e a CPU descodifica (mais seguro).",
     "encoderTypeHint": "Filtra a lista de codecs de vídeo. Automático mostra todos os codificadores disponíveis, Hardware mostra apenas os de GPU, Software mostra apenas os de CPU."
+  },
+  "shortcuts": {
+    "title": "Atalhos de teclado",
+    "close": "Fechar",
+    "sections": {
+      "global": "Global",
+      "convert": "Converter",
+      "mediaInfo": "Informações de mídia",
+      "imageCompress": "Comprimir imagem",
+      "audioExtract": "Extrair áudio",
+      "videoCut": "Cortar vídeo",
+      "batchQueue": "Fila de lote",
+      "logs": "Registos",
+      "dashboard": "Painel"
+    },
+    "global": {
+      "help": "Mostrar atalhos de teclado",
+      "navDashboard": "Ir para o Painel",
+      "navConvert": "Ir para Converter",
+      "navMediaInfo": "Ir para Informações de mídia",
+      "navImage": "Ir para Imagem",
+      "navAudio": "Ir para Áudio",
+      "navCut": "Ir para Cortar",
+      "navBatchQueue": "Ir para a Fila de lote",
+      "navLogs": "Ir para Registos",
+      "navSettings": "Ir para Definições",
+      "themeToggle": "Alternar tema"
+    },
+    "convert": {
+      "input": "Escolher ficheiro de entrada",
+      "output": "Escolher ficheiro de saída",
+      "start": "Iniciar conversão",
+      "pause": "Pausar ou retomar a conversão",
+      "cancel": "Cancelar conversão",
+      "clear": "Limpar tarefa de conversão",
+      "lossless": "Alternar cópia sem perdas",
+      "preview": "Mostrar ou ocultar a pré-visualização"
+    },
+    "mediaInfo": {
+      "open": "Escolher um ficheiro para inspecionar"
+    },
+    "imageCompress": {
+      "input": "Escolher imagem de entrada",
+      "output": "Escolher ficheiro de saída",
+      "compress": "Comprimir imagem",
+      "aspect": "Alternar manter proporção"
+    },
+    "audioExtract": {
+      "input": "Escolher vídeo de entrada",
+      "output": "Escolher ficheiro de saída",
+      "extract": "Extrair áudio",
+      "pause": "Pausar ou retomar a extração",
+      "cancel": "Cancelar extração"
+    },
+    "videoCut": {
+      "open": "Escolher ou alterar vídeo",
+      "output": "Escolher ficheiro de saída",
+      "cut": "Cortar vídeo",
+      "pause": "Pausar ou retomar o corte",
+      "cancel": "Cancelar corte",
+      "clear": "Limpar formulário de corte",
+      "useDuration": "Alternar usar duração",
+      "includeAudio": "Alternar incluir áudio",
+      "playPause": "Reproduzir ou pausar a pré-visualização",
+      "mute": "Ativar ou desativar o som da pré-visualização",
+      "seekBack": "Recuar 5 segundos",
+      "seekForward": "Avançar 5 segundos"
+    },
+    "batchQueue": {
+      "add": "Adicionar ficheiros",
+      "start": "Iniciar lote",
+      "pause": "Pausar ou retomar a fila",
+      "cancelAll": "Cancelar todas as tarefas",
+      "clearCompleted": "Limpar tarefas concluídas",
+      "export": "Exportar fila",
+      "import": "Importar fila",
+      "condense": "Recolher ou expandir controlos",
+      "focusSearch": "Focar o campo de pesquisa",
+      "filterAll": "Filtrar: todos",
+      "filterQueued": "Filtrar: na fila",
+      "filterRunning": "Filtrar: em execução",
+      "filterDone": "Filtrar: concluídos",
+      "filterFailed": "Filtrar: com falhas"
+    },
+    "logs": {
+      "clear": "Limpar registos",
+      "download": "Descarregar registos"
+    },
+    "dashboard": {
+      "convert": "Abrir Converter",
+      "mediaInfo": "Abrir Informações de mídia",
+      "image": "Abrir Imagem",
+      "audio": "Abrir Áudio",
+      "cut": "Abrir Cortar",
+      "batch": "Abrir a Fila de lote"
+    }
   }
 }

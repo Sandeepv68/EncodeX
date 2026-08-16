@@ -25,7 +25,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, TextField, MenuItem, Button, Stack, Typography, Switch, InputAdornment } from '@mui/material';
+import { Box, TextField, MenuItem, Button, Stack, Typography, Switch, InputAdornment, Tooltip } from '@mui/material';
 import { faCompress } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FileDropZone from '../components/FileDropZone';
@@ -45,7 +45,10 @@ import { IMAGE_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { TRANSCODER_TYPES, CONVERSION_DEFAULTS, QSCALE_RANGE } from '../../shared/transcoder-constants';
 import { useMediaTask } from '../hooks/useMediaTask';
 import { useFormErrors } from '../hooks/useFormErrors';
+import { useHotkeys } from '../hooks/useHotkeys';
+import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { focusFirstError } from '../utils/focusFirstError';
+import { openFileDialog } from '../utils/fileDialog';
 import { isInRange } from '../../shared/validation';
 import { formatSize } from '../utils/formatters';
 import type { ImageFileInfo } from '../../shared/types';
@@ -311,6 +314,34 @@ export default function ImageCompress() {
     setProgress(null);
   };
 
+  /**
+   * Registers the page keyboard shortcuts (Ctrl+O input, Ctrl+Shift+S output,
+   * Ctrl+Enter compress, K keep aspect ratio). Bindings mirror the enabled
+   * state of the equivalent on-page controls.
+   * @returns {void}
+   */
+  useHotkeys([
+    {
+      id: 'imageCompress.input',
+      handler: async () => {
+        const file = await openFileDialog(IMAGE_DROPZONE_ACCEPT);
+        if (file) handleFileSelect(file);
+      },
+    },
+    {
+      id: 'imageCompress.output',
+      handler: async () => {
+        const f = await window.electronAPI.selectOutput();
+        if (f) {
+          setOutput(withExtension(f, format));
+          clearFieldError('output');
+        }
+      },
+    },
+    { id: 'imageCompress.compress', handler: () => handleConvert(), enabled: !!input && !!output && !isConverting },
+    { id: 'imageCompress.aspect', handler: () => setKeepAspectRatio(!keepAspectRatio) },
+  ]);
+
   return (
     <PageContainer title={t('imageCompress.title')} icon={pageIcons['/image-compress']}>
       <Box>
@@ -471,15 +502,19 @@ export default function ImageCompress() {
         </FieldBox>
       </Stack>
 
-      <Button
-        variant="contained"
-        startIcon={<FontAwesomeIcon icon={faCompress} />}
-        onClick={handleConvert}
-        disabled={!input || !output || isConverting}
-        data-testid="image-compress-compress"
-      >
-        {isConverting ? t('imageCompress.compressing') : t('imageCompress.compress')}
-      </Button>
+      <Tooltip title={shortcutHint(t, 'imageCompress.compress', SHORTCUT_BY_ID['imageCompress.compress'].keys)} arrow>
+        <span>
+          <Button
+            variant="contained"
+            startIcon={<FontAwesomeIcon icon={faCompress} />}
+            onClick={handleConvert}
+            disabled={!input || !output || isConverting}
+            data-testid="image-compress-compress"
+          >
+            {isConverting ? t('imageCompress.compressing') : t('imageCompress.compress')}
+          </Button>
+        </span>
+      </Tooltip>
       {progress && (
         <ErrorBoundary fallback={null}>
           <ProgressBar percent={progress.percent} />

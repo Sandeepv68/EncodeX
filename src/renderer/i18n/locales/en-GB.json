@@ -27,7 +27,8 @@
     "descImage": "Shrink images with format, quality, and dimension control",
     "descAudio": "Extract clean audio tracks from video files",
     "descCut": "Trim and cut video with a frame-accurate player",
-    "descBatch": "Convert many files at once with a smart queue"
+    "descBatch": "Convert many files at once with a smart queue",
+    "shortcutsFooter": "Press {{shortcut}} for keyboard shortcuts"
   },
   "closeConfirm": {
     "title": "Close EncodeX?",
@@ -478,6 +479,102 @@
       "rose": "Rose",
       "slate": "Slate",
       "dark": "Dark"
+    }
+  },
+  "shortcuts": {
+    "title": "Keyboard Shortcuts",
+    "close": "Close",
+    "sections": {
+      "global": "Global",
+      "convert": "Convert",
+      "mediaInfo": "Media Info",
+      "imageCompress": "Image Compress",
+      "audioExtract": "Audio Extract",
+      "videoCut": "Video Cut",
+      "batchQueue": "Batch Queue",
+      "logs": "Logs",
+      "dashboard": "Dashboard"
+    },
+    "global": {
+      "help": "Show keyboard shortcuts",
+      "navDashboard": "Go to Dashboard",
+      "navConvert": "Go to Convert",
+      "navMediaInfo": "Go to Media Info",
+      "navImage": "Go to Image",
+      "navAudio": "Go to Audio",
+      "navCut": "Go to Cut",
+      "navBatchQueue": "Go to Batch Queue",
+      "navLogs": "Go to Logs",
+      "navSettings": "Go to Settings",
+      "themeToggle": "Toggle theme"
+    },
+    "convert": {
+      "input": "Choose input file",
+      "output": "Choose output file",
+      "start": "Start conversion",
+      "pause": "Pause or resume conversion",
+      "cancel": "Cancel conversion",
+      "clear": "Clear conversion job",
+      "lossless": "Toggle lossless copy",
+      "preview": "Show or hide preview"
+    },
+    "mediaInfo": {
+      "open": "Choose a file to inspect"
+    },
+    "imageCompress": {
+      "input": "Choose input image",
+      "output": "Choose output file",
+      "compress": "Compress image",
+      "aspect": "Toggle keep aspect ratio"
+    },
+    "audioExtract": {
+      "input": "Choose input video",
+      "output": "Choose output file",
+      "extract": "Extract audio",
+      "pause": "Pause or resume extraction",
+      "cancel": "Cancel extraction"
+    },
+    "videoCut": {
+      "open": "Choose or change video",
+      "output": "Choose output file",
+      "cut": "Cut video",
+      "pause": "Pause or resume cut",
+      "cancel": "Cancel cut",
+      "clear": "Clear cut form",
+      "useDuration": "Toggle use duration",
+      "includeAudio": "Toggle include audio",
+      "playPause": "Play or pause preview",
+      "mute": "Mute or unmute preview",
+      "seekBack": "Seek back 5 seconds",
+      "seekForward": "Seek forward 5 seconds"
+    },
+    "batchQueue": {
+      "add": "Add files",
+      "start": "Start batch",
+      "pause": "Pause or resume queue",
+      "cancelAll": "Cancel all jobs",
+      "clearCompleted": "Clear completed jobs",
+      "export": "Export queue",
+      "import": "Import queue",
+      "condense": "Condense or expand controls",
+      "focusSearch": "Focus search field",
+      "filterAll": "Filter: all",
+      "filterQueued": "Filter: queued",
+      "filterRunning": "Filter: running",
+      "filterDone": "Filter: done",
+      "filterFailed": "Filter: failed"
+    },
+    "logs": {
+      "clear": "Clear logs",
+      "download": "Download logs"
+    },
+    "dashboard": {
+      "convert": "Open Convert",
+      "mediaInfo": "Open Media Info",
+      "image": "Open Image",
+      "audio": "Open Audio",
+      "cut": "Open Cut",
+      "batch": "Open Batch Queue"
     }
   }
 }

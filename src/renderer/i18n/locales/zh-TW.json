@@ -27,7 +27,8 @@
     "descImage": "控制格式、品質和尺寸來縮小圖片",
     "descAudio": "從影片檔案中擷取乾淨的音訊軌",
     "descCut": "使用幀精確的播放器修剪和剪輯影片",
-    "descBatch": "透過智慧佇列一次轉換多個檔案"
+    "descBatch": "透過智慧佇列一次轉換多個檔案",
+    "shortcutsFooter": "按 {{shortcut}} 查看鍵盤快速鍵"
   },
   "closeConfirm": {
     "title": "關閉 EncodeX？",
@@ -479,5 +480,101 @@
     "hardwareAccelerationHint": "使用您的 GPU（NVIDIA NVENC、Intel QSV、AMD AMF）進行影片編碼和解碼。關閉以僅使用軟體編碼。",
     "hwaccelModeHint": "自動：GPU 同時執行解碼和編碼（最快，並非總是相容）。僅編碼：GPU 編碼，CPU 解碼（最安全）。",
     "encoderTypeHint": "篩選影片編解碼器清單。自動顯示所有可用的編碼器，硬體僅顯示 GPU 編碼器，軟體僅顯示 CPU 編碼器。"
+  },
+  "shortcuts": {
+    "title": "鍵盤快速鍵",
+    "close": "關閉",
+    "sections": {
+      "global": "全域",
+      "convert": "轉換",
+      "mediaInfo": "媒體資訊",
+      "imageCompress": "圖片壓縮",
+      "audioExtract": "音訊提取",
+      "videoCut": "視訊裁剪",
+      "batchQueue": "批次佇列",
+      "logs": "記錄",
+      "dashboard": "儀表板"
+    },
+    "global": {
+      "help": "顯示鍵盤快速鍵",
+      "navDashboard": "移至儀表板",
+      "navConvert": "移至轉換",
+      "navMediaInfo": "移至媒體資訊",
+      "navImage": "移至圖片",
+      "navAudio": "移至音訊",
+      "navCut": "移至裁剪",
+      "navBatchQueue": "移至批次佇列",
+      "navLogs": "移至記錄",
+      "navSettings": "移至設定",
+      "themeToggle": "切換主題"
+    },
+    "convert": {
+      "input": "選擇輸入檔案",
+      "output": "選擇輸出檔案",
+      "start": "開始轉換",
+      "pause": "暫停或繼續轉換",
+      "cancel": "取消轉換",
+      "clear": "清除轉換任務",
+      "lossless": "切換無損複製",
+      "preview": "顯示或隱藏預覽"
+    },
+    "mediaInfo": {
+      "open": "選擇要檢查的檔案"
+    },
+    "imageCompress": {
+      "input": "選擇輸入圖片",
+      "output": "選擇輸出檔案",
+      "compress": "壓縮圖片",
+      "aspect": "切換保持寬高比"
+    },
+    "audioExtract": {
+      "input": "選擇輸入視訊",
+      "output": "選擇輸出檔案",
+      "extract": "提取音訊",
+      "pause": "暫停或繼續提取",
+      "cancel": "取消提取"
+    },
+    "videoCut": {
+      "open": "選擇或變更視訊",
+      "output": "選擇輸出檔案",
+      "cut": "裁剪視訊",
+      "pause": "暫停或繼續裁剪",
+      "cancel": "取消裁剪",
+      "clear": "清除裁剪表單",
+      "useDuration": "切換使用時長",
+      "includeAudio": "切換包含音訊",
+      "playPause": "播放或暫停預覽",
+      "mute": "切換預覽靜音",
+      "seekBack": "後退 5 秒",
+      "seekForward": "前進 5 秒"
+    },
+    "batchQueue": {
+      "add": "新增檔案",
+      "start": "開始批次處理",
+      "pause": "暫停或繼續佇列",
+      "cancelAll": "取消所有任務",
+      "clearCompleted": "清除已完成的任務",
+      "export": "匯出佇列",
+      "import": "匯入佇列",
+      "condense": "摺疊或展開控制項",
+      "focusSearch": "聚焦搜尋欄位",
+      "filterAll": "篩選：全部",
+      "filterQueued": "篩選：排隊中",
+      "filterRunning": "篩選：執行中",
+      "filterDone": "篩選：已完成",
+      "filterFailed": "篩選：失敗"
+    },
+    "logs": {
+      "clear": "清除記錄",
+      "download": "下載記錄"
+    },
+    "dashboard": {
+      "convert": "開啟轉換",
+      "mediaInfo": "開啟媒體資訊",
+      "image": "開啟圖片",
+      "audio": "開啟音訊",
+      "cut": "開啟裁剪",
+      "batch": "開啟批次佇列"
+    }
   }
 }
