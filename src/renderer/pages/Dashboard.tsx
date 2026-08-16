@@ -39,6 +39,7 @@ import {
   FeatureGrid,
   FeatureGridItem,
   CardDescription,
+  CardBackgroundSvg,
   DashboardFooter,
 } from '../styles/Dashboard.styles';
 import { LOG_DASHBOARD_RENDERED } from '../../shared/log-constants';
@@ -62,6 +63,65 @@ const descKeys: Record<string, string> = {
   '/video-cut': 'descCut',
   '/batch': 'descBatch',
 };
+
+/** One cluster of concentric rings. @interface RingGroup */
+interface RingGroup {
+  /** Stable key for the cluster within the card. */
+  id: number;
+  /** Horizontal center of the rings in viewBox units. */
+  cx: number;
+  /** Vertical center of the rings in viewBox units. */
+  cy: number;
+  /** Radii of the concentric circles, smallest first. */
+  radii: number[];
+}
+
+/** Hashes a string into a 32-bit seed for the deterministic PRNG. @function hashSeed */
+function hashSeed(value: string): number {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+/** Mulberry32 PRNG; returns a function yielding floats in [0, 1). @function mulberry32 */
+function mulberry32(seed: number): () => number {
+  let a = seed;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * Builds a deterministic set of concentric-ring clusters for a card, seeded by
+ * its route key so the same card always gets the same background while
+ * different cards get different placements.
+ * @param {string} key - Route key used to seed the randomness.
+ * @returns {RingGroup[]} Ring clusters to render in the card background.
+ */
+function buildCardRings(key: string): RingGroup[] {
+  const rand = mulberry32(hashSeed(key));
+  const groupCount = 2 + Math.floor(rand() * 3);
+  const groups: RingGroup[] = [];
+  for (let i = 0; i < groupCount; i += 1) {
+    const cx = 20 + Math.round(rand() * 160);
+    const cy = 20 + Math.round(rand() * 160);
+    const ringCount = 3 + Math.floor(rand() * 3);
+    const base = 10 + rand() * 12;
+    const step = 9 + rand() * 6;
+    const radii: number[] = [];
+    for (let r = 0; r < ringCount; r += 1) {
+      radii.push(Math.round(base + r * step));
+    }
+    groups.push({ id: i, cx, cy, radii });
+  }
+  return groups;
+}
 
 /**
  * Renders the Dashboard page (`/`).
@@ -111,7 +171,16 @@ export default function Dashboard() {
       <FeatureGrid container spacing={2}>
         {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs' && item.to !== '/settings').map((item, index) => (
           <FeatureGridItem size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
-            <FeatureCard sx={{ animationDelay: `${0.3 + index * 0.08}s` }}>
+            <FeatureCard gradientAngle={index * 60} sx={{ animationDelay: `${0.3 + index * 0.08}s` }}>
+              <CardBackgroundSvg aria-hidden="true" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
+                {buildCardRings(item.to).map((ring) => (
+                  <g key={ring.id} fill="none" stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke">
+                    {ring.radii.map((r) => (
+                      <circle key={r} cx={ring.cx} cy={ring.cy} r={r} />
+                    ))}
+                  </g>
+                ))}
+              </CardBackgroundSvg>
               <CardLink onClick={() => navigate(item.to)}>
                 <FeatureIconBox>{pageIcons[item.to]}</FeatureIconBox>
                 <CardBody>
