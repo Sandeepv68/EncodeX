@@ -107,6 +107,15 @@ export const VIDEO_PREVIEW_MAX_WIDTH = 480;
  */
 export const VIDEO_PREVIEW_SEEK_TIME = '00:00:10';
 
+/**
+ * Timestamp used when retrying preview extraction after the primary seek
+ * produced no frame. Videos shorter than {@link VIDEO_PREVIEW_SEEK_TIME}
+ * (e.g. clips under 10 seconds) yield no output when ffmpeg seeks past the
+ * end of the file, so the extraction is retried from the start of the video.
+ * @const {string} VIDEO_PREVIEW_FALLBACK_SEEK_TIME
+ */
+export const VIDEO_PREVIEW_FALLBACK_SEEK_TIME = '00:00:00';
+
 // --- Waveform extraction ---
 /**
  * Sample rate in Hz at which audio is decoded for waveform extraction.

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import AppDrawer from '../AppDrawer';
 import { ColorModeProvider } from '../../ColorModeContext';
@@ -94,7 +94,7 @@ describe('AppDrawer', () => {
     expect(screen.queryByTestId('nav-video-cut-blip')).not.toBeInTheDocument();
   });
 
-  it('shows the batch queue job count in the nav badge', () => {
+  it('counts only active (queued/running) jobs in the batch nav badge', () => {
     useQueueStore.getState().setJobs([
       {
         id: '1',
@@ -128,7 +128,84 @@ describe('AppDrawer', () => {
       },
     ]);
     renderDrawer();
+    expect(screen.getByTestId('nav-batch-blip')).toHaveTextContent('2');
+  });
+
+  it('decrements the batch badge as jobs finish', () => {
+    const running = {
+      id: 'a',
+      input: 'a.mp4',
+      output: 'out-a.mp4',
+      options: {},
+      transcoder: 'FFMPEG' as const,
+      status: QUEUE_STATUS.RUNNING,
+      progress: 100,
+      createdAt: 1,
+    };
+    const queuedB = {
+      id: 'b',
+      input: 'b.mp4',
+      output: 'out-b.mp4',
+      options: {},
+      transcoder: 'FFMPEG' as const,
+      status: QUEUE_STATUS.QUEUED,
+      progress: 0,
+      createdAt: 2,
+    };
+    const queuedC = {
+      id: 'c',
+      input: 'c.mp4',
+      output: 'out-c.mp4',
+      options: {},
+      transcoder: 'FFMPEG' as const,
+      status: QUEUE_STATUS.QUEUED,
+      progress: 0,
+      createdAt: 3,
+    };
+    useQueueStore.getState().setJobs([running, queuedB, queuedC]);
+    renderDrawer();
     expect(screen.getByTestId('nav-batch-blip')).toHaveTextContent('3');
+    act(() => {
+      useQueueStore.getState().updateJob({ ...running, status: QUEUE_STATUS.DONE });
+      useQueueStore.getState().updateJob({ ...queuedB, status: QUEUE_STATUS.RUNNING, progress: 0 });
+    });
+    expect(screen.getByTestId('nav-batch-blip')).toHaveTextContent('2');
+    act(() => {
+      useQueueStore.getState().updateJob({ ...queuedB, status: QUEUE_STATUS.DONE });
+      useQueueStore.getState().updateJob({ ...queuedC, status: QUEUE_STATUS.RUNNING, progress: 0 });
+    });
+    expect(screen.getByTestId('nav-batch-blip')).toHaveTextContent('1');
+    act(() => {
+      useQueueStore.getState().updateJob({ ...queuedC, status: QUEUE_STATUS.DONE });
+    });
+    expect(screen.queryByTestId('nav-batch-blip')).not.toBeInTheDocument();
+  });
+
+  it('hides the batch count badge when only completed jobs remain', () => {
+    useQueueStore.getState().setJobs([
+      {
+        id: '1',
+        input: 'in.mp4',
+        output: 'out.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.DONE,
+        progress: 100,
+        createdAt: 1,
+      },
+      {
+        id: '2',
+        input: 'in2.mp4',
+        output: 'out2.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.ERROR,
+        progress: 0,
+        createdAt: 2,
+      },
+    ]);
+    renderDrawer();
+    expect(screen.queryByTestId('nav-batch-blip')).not.toBeInTheDocument();
   });
 
   it('hides the batch count badge when the queue is empty', () => {
@@ -292,6 +369,108 @@ describe('AppDrawer', () => {
     const pileThumbs = within(pile).getAllByTestId('nav-job-popover-pile-thumb');
     expect(pileThumbs).toHaveLength(1);
     expect(pileThumbs[0]).toHaveAttribute('title', 'queued.mp4');
+  });
+
+  it('does not open the batch popover when only finished jobs remain', () => {
+    useQueueStore.getState().setJobs([
+      {
+        id: 'job-1',
+        input: '/in/done.mp4',
+        output: '/out/done.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.DONE,
+        progress: 100,
+        createdAt: 1,
+      },
+    ]);
+    renderDrawer();
+    fireEvent.mouseEnter(screen.getByTestId('nav-item-batch'));
+    expect(screen.queryByTestId('nav-job-popover')).not.toBeInTheDocument();
+  });
+
+  it('shows the next queued job (not the finished one) in the batch popover while nothing is running', () => {
+    useQueueStore.getState().setJobs([
+      {
+        id: 'job-1',
+        input: '/in/done.mp4',
+        output: '/out/done.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.DONE,
+        progress: 100,
+        createdAt: 1,
+      },
+      {
+        id: 'job-2',
+        input: '/in/next.mp4',
+        output: '/out/next.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.QUEUED,
+        progress: 0,
+        createdAt: 2,
+      },
+    ]);
+    renderDrawer();
+    fireEvent.mouseEnter(screen.getByTestId('nav-item-batch'));
+    const popover = screen.getByTestId('nav-job-popover');
+    expect(popover).toHaveTextContent('next.mp4');
+    expect(popover).not.toHaveTextContent('done.mp4');
+    expect(within(popover).getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('switches the batch popover to the next running job when the current one finishes', () => {
+    useQueueStore.getState().setJobs([
+      {
+        id: 'job-1',
+        input: '/in/first.mp4',
+        output: '/out/first.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.RUNNING,
+        progress: 100,
+        createdAt: 1,
+      },
+      {
+        id: 'job-2',
+        input: '/in/second.mp4',
+        output: '/out/second.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.QUEUED,
+        progress: 0,
+        createdAt: 2,
+      },
+    ]);
+    renderDrawer();
+    fireEvent.mouseEnter(screen.getByTestId('nav-item-batch'));
+    expect(screen.getByTestId('nav-job-popover')).toHaveTextContent('first.mp4');
+    act(() => {
+      useQueueStore.getState().updateJob({
+        id: 'job-1',
+        input: '/in/first.mp4',
+        output: '/out/first.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.DONE,
+        progress: 100,
+        createdAt: 1,
+      });
+      useQueueStore.getState().updateJob({
+        id: 'job-2',
+        input: '/in/second.mp4',
+        output: '/out/second.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.RUNNING,
+        progress: 0,
+        createdAt: 2,
+      });
+    });
+    const popover = screen.getByTestId('nav-job-popover');
+    expect(popover).toHaveTextContent('second.mp4');
+    expect(popover).not.toHaveTextContent('first.mp4');
   });
 
   it('closes the popover after the pointer leaves the nav row', async () => {

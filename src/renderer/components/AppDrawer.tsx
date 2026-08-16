@@ -9,11 +9,12 @@
  * The drawer also surfaces live activity indicators ("blips") on the Convert,
  * Audio Extract, and Video Cut rows while a conversion/extraction/cut is
  * running, plus a count badge on the Batch Queue row showing the number of jobs
- * currently in the queue. Each indicator sits at the end of its row in the
- * expanded drawer and becomes a corner badge on the nav icon when condensed. It
- * ends with a divider and a footer holding the {@link LanguageMenu} component
- * and (on desktop) the drawer condense toggle so the active language can be
- * switched and the sidebar collapsed from the same spot.
+ * still outstanding (queued or running). Each indicator sits at the end of its
+ * row in the expanded drawer and becomes a corner badge on the nav icon when
+ * condensed. It ends with a divider and a footer holding the
+ * {@link LanguageMenu} component and (on desktop) the drawer condense toggle so
+ * the active language can be switched and the sidebar collapsed from the same
+ * spot.
  *
  * Props (see {@link AppDrawerProps}):
  *  - isMobile: when true, tapping a nav row also fires `onNavigate` so the
@@ -37,6 +38,7 @@ import { useQueueStore } from '../stores/queueStore';
 import LanguageMenu from './LanguageMenu';
 import NavJobPopover from './NavJobPopover';
 import type { AppDrawerProps, NavBlipId, NavJobPopoverContent } from './types';
+import type { QueueJob } from '../../shared/types';
 import {
   DrawerDivider,
   NavList,
@@ -87,6 +89,19 @@ function basenameOf(filePath: string | null): string {
 }
 
 /**
+ * Returns true while a queue job still represents outstanding work (waiting or
+ * running). Completed (DONE) and failed (ERROR) jobs are excluded: they remain
+ * in the list for review, but the nav badge, blip, and popover reflect only the
+ * remaining work so they shrink as jobs finish and disappear once the batch
+ * drains.
+ * @param {QueueJob} job - The queue job to classify.
+ * @returns {boolean} True for QUEUED or RUNNING jobs.
+ */
+function isJobActive(job: QueueJob): boolean {
+  return job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING;
+}
+
+/**
  * Renders the application navigation drawer.
  *
  * Iterates over the shared NAV_ITEMS table, producing a NavItemButton per
@@ -96,8 +111,10 @@ function basenameOf(filePath: string | null): string {
  * appended to the Convert row while `useConversionStore.isConverting` is true,
  * to the Audio Extract row while `useAudioExtractStore.isConverting` is true,
  * to the Video Cut row while `useVideoCutStore.isCutting` is true, and a red
- * count badge to the Batch Queue row while the queue holds at least one job,
- * providing at-a-glance activity feedback.
+ * count badge to the Batch Queue row while the queue holds at least one active
+ * (queued or running) job, providing at-a-glance activity feedback. The badge
+ * counts only outstanding work, so it decrements as jobs finish and disappears
+ * once the batch drains (completed jobs stay in the list for review).
  *
  * @param {AppDrawerProps} props - Component props.
  * @param {boolean} props.isMobile - True when the drawer is rendered in a
@@ -123,7 +140,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   const cutProgress = useVideoCutStore((s) => s.progress);
   const queueJobs = useQueueStore((s) => s.jobs);
   const queueProgress = useQueueStore((s) => s.progress);
-  const batchJobCount = queueJobs.length;
+  const batchJobCount = queueJobs.filter(isJobActive).length;
 
   const [popoverBlip, setPopoverBlip] = useState<NavBlipId>(null);
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
@@ -247,8 +264,8 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
           : null;
       case 'batch': {
         if (batchJobCount === 0) return null;
-        const running = queueJobs.find((j) => j.status === QUEUE_STATUS.RUNNING) ?? queueJobs[0];
-        const snapshot = running ? queueProgress[running.id] : undefined;
+        const active = queueJobs.find((j) => j.status === QUEUE_STATUS.RUNNING) ?? queueJobs.find(isJobActive);
+        const snapshot = active ? queueProgress[active.id] : undefined;
         return {
           title: t('nav.batchQueue'),
           status: t('batchQueue.stats', {
@@ -257,17 +274,17 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
             done: queueJobs.filter((j) => j.status === QUEUE_STATUS.DONE).length,
             failed: queueJobs.filter((j) => j.status === QUEUE_STATUS.ERROR).length,
           }),
-          fileName: running ? basenameOf(running.input) : '',
-          progress: running
+          fileName: active ? basenameOf(active.input) : '',
+          progress: active
             ? {
-                percent: running.progress,
+                percent: active.progress,
                 time: snapshot?.time ?? '',
                 speed: snapshot?.speed ?? '',
                 eta: snapshot?.eta ?? '',
               }
             : null,
-          paused: running?.paused,
-          input: running?.input ?? '',
+          paused: active?.paused,
+          input: active?.input ?? '',
           pendingThumbnails: queueJobs.filter((j) => j.status === QUEUE_STATUS.QUEUED).map((j) => j.input),
         };
       }

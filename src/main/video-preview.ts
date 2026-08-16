@@ -10,6 +10,11 @@
  * Exports:
  *  - getVideoPreview() - extracts and encodes one preview frame as a data URL
  *
+ * When the primary seek produces no frame — which happens for videos shorter
+ * than the 10 s seek point, since ffmpeg exits 0 with empty output after
+ * seeking past the end — the extraction is retried from the start of the video
+ * (`VIDEO_PREVIEW_FALLBACK_SEEK_TIME`) so short clips still get a thumbnail.
+ *
  * Invalid, missing, or undecodable files resolve to `null` (after logging)
  * rather than rejecting, so the UI can fall back to a placeholder.
  */
@@ -19,12 +24,29 @@ import { existsSync } from 'fs';
 import { Logger } from '../shared/logger';
 import { getFfmpegPath } from './media-binaries';
 import { isVideoFile } from '../shared/file-extensions';
-import { VIDEO_PREVIEW_MAX_WIDTH, VIDEO_PREVIEW_SEEK_TIME } from '../shared/constants';
+import { VIDEO_PREVIEW_FALLBACK_SEEK_TIME, VIDEO_PREVIEW_MAX_WIDTH, VIDEO_PREVIEW_SEEK_TIME } from '../shared/constants';
 import {
   LOG_NOT_A_READABLE_VIDEO_FILE,
   LOG_VIDEO_PREVIEW_EXTRACTION_FAILED_STDERR,
   LOG_VIDEO_PREVIEW_FFMPEG_ERROR,
 } from '../shared/log-constants';
+
+/**
+ * Outcome of a single ffmpeg preview-extraction run.
+ * @interface PreviewAttempt
+ * @property {string | null} dataUrl - Base64 PNG data URL, or `null` when the
+ *   run exited non-zero or produced no frame bytes.
+ * @property {number | null} code - Exit code of the ffmpeg process (`null` when
+ *   `close` fired without a code, e.g. the process was killed).
+ * @property {string} stderr - Captured stderr text (may be empty when the
+ *   failure produced no diagnostics, e.g. `-v error` suppresses the empty
+ *   output warning for short videos).
+ */
+interface PreviewAttempt {
+  dataUrl: string | null;
+  code: number | null;
+  stderr: string;
+}
 
 /**
  * Logger instance scoped to the video preview module. Logs ffmpeg path
@@ -34,35 +56,25 @@ import {
 const log = new Logger('main/video-preview');
 
 /**
- * Extracts a single PNG preview frame from a video file and returns it as a
- * base64 data URL.
+ * Runs a single ffmpeg frame-extraction attempt for a video file.
  *
- * Returns a resolved `null` (with a debug log) when the path is not a
- * recognized video file or does not exist. Otherwise ffmpeg is spawned with
- * `-ss <SEEK_TIME> -frames:v 1 -vf scale=<maxWidth>:-2 -f image2pipe -vcodec
- * png`, seeking before the input so decoding starts near the target time.
- *
- * If ffmpeg cannot spawn, the promise rejects with the spawn error. If ffmpeg
- * exits non-zero or produces no PNG bytes, the failure is logged and the
- * promise resolves to `null`.
+ * Spawns ffmpeg with `-ss <seekTime> -frames:v 1 -vf scale=<maxWidth>:-2 -f
+ * image2pipe -vcodec png`, seeking before the input so decoding starts near
+ * the target time. The resolved {@link PreviewAttempt} reports the exit code,
+ * any stderr, and the PNG data URL when a frame was actually produced.
  *
  * @param {string} filePath - Path to the video file to preview.
- * @returns {Promise<string | null>} A `data:image/png;base64,...` URL, or
- *   `null` when the file is invalid, missing, or the frame could not be
- *   decoded.
+ * @param {string} seekTime - FFmpeg timestamp to seek to before decoding.
+ * @returns {Promise<PreviewAttempt>} The outcome of the attempt.
  * @throws {Error} When the ffmpeg process fails to spawn.
  */
-export function getVideoPreview(filePath: string): Promise<string | null> {
-  if (!isVideoFile(filePath) || !existsSync(filePath)) {
-    log.debug(LOG_NOT_A_READABLE_VIDEO_FILE, filePath);
-    return Promise.resolve(null);
-  }
+function extractPreviewFrame(filePath: string, seekTime: string): Promise<PreviewAttempt> {
   const ffmpegPath = getFfmpegPath();
   const args = [
     '-v',
     'error',
     '-ss',
-    VIDEO_PREVIEW_SEEK_TIME,
+    seekTime,
     '-i',
     filePath,
     '-frames:v',
@@ -88,13 +100,48 @@ export function getVideoPreview(filePath: string): Promise<string | null> {
       reject(err);
     });
     child.on('close', (code) => {
-      if (code !== 0 || chunks.length === 0) {
-        log.warn(LOG_VIDEO_PREVIEW_EXTRACTION_FAILED_STDERR, stderr);
-        resolve(null);
-        return;
-      }
-      const data = Buffer.concat(chunks);
-      resolve(`data:image/png;base64,${data.toString('base64')}`);
+      const dataUrl = code === 0 && chunks.length > 0 ? `data:image/png;base64,${Buffer.concat(chunks).toString('base64')}` : null;
+      resolve({ dataUrl, code: code ?? null, stderr });
+    });
+  });
+}
+
+/**
+ * Extracts a single PNG preview frame from a video file and returns it as a
+ * base64 data URL.
+ *
+ * Returns a resolved `null` (with a debug log) when the path is not a
+ * recognized video file or does not exist. Otherwise the frame is sought at
+ * {@link VIDEO_PREVIEW_SEEK_TIME}; when that attempt produces no frame —
+ * typical for videos shorter than the seek point — the extraction is retried
+ * once from the start of the video.
+ *
+ * If ffmpeg cannot spawn, the promise rejects with the spawn error. If both
+ * attempts fail, the failure (file path, exit codes, stderr) is logged and the
+ * promise resolves to `null`.
+ *
+ * @param {string} filePath - Path to the video file to preview.
+ * @returns {Promise<string | null>} A `data:image/png;base64,...` URL, or
+ *   `null` when the file is invalid, missing, or the frame could not be
+ *   decoded.
+ * @throws {Error} When the ffmpeg process fails to spawn.
+ */
+export function getVideoPreview(filePath: string): Promise<string | null> {
+  if (!isVideoFile(filePath) || !existsSync(filePath)) {
+    log.debug(LOG_NOT_A_READABLE_VIDEO_FILE, filePath);
+    return Promise.resolve(null);
+  }
+  return extractPreviewFrame(filePath, VIDEO_PREVIEW_SEEK_TIME).then((attempt) => {
+    if (attempt.dataUrl) return attempt.dataUrl;
+    return extractPreviewFrame(filePath, VIDEO_PREVIEW_FALLBACK_SEEK_TIME).then((retry) => {
+      if (retry.dataUrl) return retry.dataUrl;
+      log.warn(
+        LOG_VIDEO_PREVIEW_EXTRACTION_FAILED_STDERR,
+        `file=${filePath} firstExit=${attempt.code} retryExit=${retry.code}`,
+        `firstStderr=${attempt.stderr || '(empty)'}`,
+        `retryStderr=${retry.stderr || '(empty)'}`,
+      );
+      return null;
     });
   });
 }
