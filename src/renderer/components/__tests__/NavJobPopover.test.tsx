@@ -109,12 +109,12 @@ describe('NavJobPopover', () => {
   });
 
   it('truncates the pile and shows the remaining count', () => {
-    const inputs = Array.from({ length: 7 }, (_, i) => `C:/videos/job${i}.mp4`);
+    const inputs = Array.from({ length: 11 }, (_, i) => `C:/videos/job${i}.mp4`);
     render(
       <Host
         content={{
           title: 'Batch Queue',
-          status: '7 queued, 0 running, 0 done, 0 failed',
+          status: '11 queued, 0 running, 0 done, 0 failed',
           fileName: '',
           progress: null,
           pendingThumbnails: inputs,
@@ -122,8 +122,8 @@ describe('NavJobPopover', () => {
       />,
     );
     const pile = screen.getByTestId('nav-job-popover-pile');
-    expect(within(pile).getAllByTestId('nav-job-popover-pile-thumb')).toHaveLength(5);
-    expect(screen.getByTestId('nav-job-popover-pile-count')).toHaveTextContent('+2');
+    expect(within(pile).getAllByTestId('nav-job-popover-pile-thumb')).toHaveLength(8);
+    expect(screen.getByTestId('nav-job-popover-pile-count')).toHaveTextContent('+3');
   });
 
   it('renders no pile when there are no pending thumbnails', () => {

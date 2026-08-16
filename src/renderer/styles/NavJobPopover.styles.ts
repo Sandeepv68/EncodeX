@@ -4,6 +4,7 @@
 
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
+import { SHADOWS } from '../colors';
 
 /**
  * Small rounded thumbnail of the in-progress job's source file, rendered beside
@@ -18,6 +19,7 @@ export const PopoverThumb = styled('img')(({ theme }) => ({
   objectFit: 'cover',
   display: 'block',
   borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
 /**
@@ -50,13 +52,14 @@ export const PopoverPileThumb = styled(Box, { shouldForwardProp: (prop) => prop 
     width: theme.typography.pxToRem(32),
     height: theme.typography.pxToRem(32),
     flexShrink: 0,
-    borderRadius: 1,
+    borderRadius: theme.shape.borderRadius,
     border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
     backgroundColor: $src ? undefined : theme.palette.action.hover,
     backgroundImage: $src ? `url(${$src})` : undefined,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     marginLeft: `-${theme.typography.pxToRem(10)}`,
+    boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
     '&:first-of-type': { marginLeft: 0 },
   }),
 );

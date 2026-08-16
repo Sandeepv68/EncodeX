@@ -87,11 +87,48 @@ function Thumbnail({ input }: { input?: string }) {
 }
 
 /**
- * Number of pending-job thumbnails shown in the pile before it is truncated
- * with a "+N" count badge.
- * @const {number} PILE_MAX_VISIBLE
+ * Fixed width of the popover card in theme px units; must match the paper `sx`
+ * width below. The pending-job pile is sized against the resulting content width
+ * so it fills the available space on the card.
+ * @const {number} POPOVER_PAPER_WIDTH
  */
-const PILE_MAX_VISIBLE = 5;
+const POPOVER_PAPER_WIDTH = 260;
+
+/**
+ * Horizontal padding of the popover card in theme spacing units; must match the
+ * paper `sx` `p` value below.
+ * @const {number} POPOVER_PAPER_PADDING
+ */
+const POPOVER_PAPER_PADDING = 2;
+
+/**
+ * Width of one pile slot in px and the overlap to the previous slot; must match
+ * `PopoverPileThumb` (32px slot, 10px overlap => 22px consumed per extra slot).
+ * @const {number} PILE_SLOT_WIDTH
+ * @const {number} PILE_SLOT_STEP
+ */
+const PILE_SLOT_WIDTH = 32;
+const PILE_SLOT_STEP = PILE_SLOT_WIDTH - 10;
+
+/**
+ * Horizontal space reserved for the "+N" count badge, in px, so a truncated pile
+ * never overflows the card edge.
+ * @const {number} PILE_COUNT_RESERVE
+ */
+const PILE_COUNT_RESERVE = 40;
+
+/**
+ * Largest number of pending-job thumbnails that fit on one row of the card. The
+ * card content width is the fixed paper width minus its horizontal padding
+ * (2 units of the 8px theme spacing); past the first slot each thumbnail
+ * consumes only the non-overlapped step, and room for the "+N" badge is
+ * reserved up front so the pile fills the row without overflowing.
+ * @const {number} PILE_CAPACITY
+ */
+const PILE_CAPACITY = Math.max(
+  1,
+  Math.floor((POPOVER_PAPER_WIDTH - POPOVER_PAPER_PADDING * 8 * 2 - PILE_SLOT_WIDTH - PILE_COUNT_RESERVE) / PILE_SLOT_STEP) + 1,
+);
 
 /**
  * One slot in the overlapping pending-job thumbnail pile: a fixed-size rounded
@@ -139,9 +176,9 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
           onMouseLeave,
           'data-testid': 'nav-job-popover',
           sx: (theme) => ({
-            width: 260,
+            width: POPOVER_PAPER_WIDTH,
             maxWidth: `calc(100vw - ${theme.typography.pxToRem(32)})`,
-            p: 2,
+            p: POPOVER_PAPER_PADDING,
             ml: 1,
             borderRadius: 2,
             pointerEvents: 'auto',
@@ -185,6 +222,7 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
                 eta={content.progress.eta}
                 paused={content.paused}
                 minimal
+                shadowed
               />
             ) : (
               <Typography variant="caption" color="text.secondary">
@@ -194,12 +232,12 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
           </Box>
           {content.pendingThumbnails && content.pendingThumbnails.length > 0 && (
             <Box data-testid="nav-job-popover-pile" sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-              {content.pendingThumbnails.slice(0, PILE_MAX_VISIBLE).map((input) => (
+              {content.pendingThumbnails.slice(0, PILE_CAPACITY).map((input) => (
                 <PileThumb key={input} input={input} />
               ))}
-              {content.pendingThumbnails.length > PILE_MAX_VISIBLE && (
+              {content.pendingThumbnails.length > PILE_CAPACITY && (
                 <Typography variant="caption" color="text.secondary" data-testid="nav-job-popover-pile-count" sx={{ ml: 1 }}>
-                  +{content.pendingThumbnails.length - PILE_MAX_VISIBLE}
+                  +{content.pendingThumbnails.length - PILE_CAPACITY}
                 </Typography>
               )}
             </Box>
