@@ -93,7 +93,9 @@
     "applySuggestedExt": "ໃຊ້ .{{extension}}",
     "preview": "ເບິ່ງຕົວຢ່າງ",
     "showPreview": "ສະແດງຕົວຢ່າງ",
-    "closePreview": "ປິດຕົວຢ່າງ"
+    "closePreview": "ປິດຕົວຢ່າງ",
+    "viewMore": "ເບິ່ງເພີ່ມເຕີມ",
+    "viewLess": "ເບິ່ງໜ້ອຍລົງ"
   },
   "mediaInfo": {
     "title": "ຂໍ້ມູນສື່",

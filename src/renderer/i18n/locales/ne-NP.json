@@ -93,7 +93,9 @@
     "applySuggestedExt": ".{{extension}} प्रयोग गर्नुहोस्",
     "preview": "पूर्वावलोकन",
     "showPreview": "पूर्वावलोकन देखाउनुहोस्",
-    "closePreview": "पूर्वावलोकन बन्द गर्नुहोस्"
+    "closePreview": "पूर्वावलोकन बन्द गर्नुहोस्",
+    "viewMore": "थप हेर्नुहोस्",
+    "viewLess": "कम हेर्नुहोस्"
   },
   "mediaInfo": {
     "title": "मिडिया जानकारी",

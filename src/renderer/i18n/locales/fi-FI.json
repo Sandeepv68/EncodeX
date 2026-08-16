@@ -93,7 +93,9 @@
     "applySuggestedExt": "Käytä .{{extension}}",
     "preview": "Esikatselu",
     "showPreview": "Näytä esikatselu",
-    "closePreview": "Sulje esikatselu"
+    "closePreview": "Sulje esikatselu",
+    "viewMore": "Näytä lisää",
+    "viewLess": "Näytä vähemmän"
   },
   "mediaInfo": {
     "title": "Mediatiedot",

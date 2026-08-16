@@ -34,7 +34,19 @@ import {
   Divider,
   Tooltip,
 } from '@mui/material';
-import { faPalette, faBrush, faDroplet, faSun, faPlay, faPause, faXmark, faEye, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPalette,
+  faBrush,
+  faDroplet,
+  faSun,
+  faPlay,
+  faPause,
+  faXmark,
+  faEye,
+  faFolderOpen,
+  faChevronDown,
+  faChevronUp,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Logger } from '../../shared/logger';
@@ -222,6 +234,7 @@ export default function Convert() {
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
   const [jobCancelOpen, setJobCancelOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(true);
+  const [streamsExpanded, setStreamsExpanded] = useState(false);
   const [mediaInfo, setMediaInfo] = useState<MediaInfoType | null>(null);
   const [mediaInfoLoading, setMediaInfoLoading] = useState(false);
   const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
@@ -382,10 +395,29 @@ export default function Convert() {
                 </LoadingBox>
               )}
               {mediaInfo && (
-                <ErrorBoundary fallback={null}>
-                  <FileSummary info={mediaInfo} compact />
-                  <StreamDetails streams={mediaInfo.streams} compact />
-                </ErrorBoundary>
+                <>
+                  <ErrorBoundary fallback={null}>
+                    <FileSummary info={mediaInfo} compact />
+                  </ErrorBoundary>
+                  <Stack direction="row" sx={{ justifyContent: 'center' }}>
+                    <Button
+                      size="small"
+                      variant="text"
+                      color="primary"
+                      data-testid="convert-toggle-streams"
+                      endIcon={<FontAwesomeIcon icon={streamsExpanded ? faChevronUp : faChevronDown} />}
+                      onClick={() => setStreamsExpanded((v) => !v)}
+                      aria-expanded={streamsExpanded}
+                    >
+                      {streamsExpanded ? t('convert.viewLess') : t('convert.viewMore')}
+                    </Button>
+                  </Stack>
+                  {streamsExpanded && (
+                    <ErrorBoundary fallback={null}>
+                      <StreamDetails streams={mediaInfo.streams} compact />
+                    </ErrorBoundary>
+                  )}
+                </>
               )}
             </Box>
           </PreviewPanel>

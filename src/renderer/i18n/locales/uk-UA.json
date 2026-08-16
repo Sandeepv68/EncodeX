@@ -93,7 +93,9 @@
     "applySuggestedExt": "Використати .{{extension}}",
     "preview": "Попередній перегляд",
     "showPreview": "Показати попередній перегляд",
-    "closePreview": "Закрити попередній перегляд"
+    "closePreview": "Закрити попередній перегляд",
+    "viewMore": "Показати більше",
+    "viewLess": "Показати менше"
   },
   "mediaInfo": {
     "title": "Інформація про медіа",

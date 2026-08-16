@@ -93,7 +93,9 @@
     "applySuggestedExt": "Использовать .{{extension}}",
     "preview": "Предпросмотр",
     "showPreview": "Показать предпросмотр",
-    "closePreview": "Закрыть предпросмотр"
+    "closePreview": "Закрыть предпросмотр",
+    "viewMore": "Показать больше",
+    "viewLess": "Показать меньше"
   },
   "mediaInfo": {
     "title": "Информация о медиа",

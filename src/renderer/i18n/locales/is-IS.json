@@ -93,7 +93,9 @@
     "applySuggestedExt": "Nota .{{extension}}",
     "preview": "Forskoðun",
     "showPreview": "Sýna forskoðun",
-    "closePreview": "Loka forskoðun"
+    "closePreview": "Loka forskoðun",
+    "viewMore": "Sýna meira",
+    "viewLess": "Sýna minna"
   },
   "mediaInfo": {
     "title": "Miðlaupplýsingar",

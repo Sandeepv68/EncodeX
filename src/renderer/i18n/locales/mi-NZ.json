@@ -93,7 +93,9 @@
     "applySuggestedExt": "Whakamahia te .{{extension}}",
     "preview": "Tirohi",
     "showPreview": "Whakaatu Tirohi",
-    "closePreview": "Kati Tirohi"
+    "closePreview": "Kati Tirohi",
+    "viewMore": "Tirohia kia nui ake",
+    "viewLess": "Tirohia kia iti iho"
   },
   "mediaInfo": {
     "title": "Pārongo Pāpāho",

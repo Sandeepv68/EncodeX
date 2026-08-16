@@ -93,7 +93,9 @@
     "applySuggestedExt": ".{{extension}} 사용",
     "preview": "미리보기",
     "showPreview": "미리보기 표시",
-    "closePreview": "미리보기 닫기"
+    "closePreview": "미리보기 닫기",
+    "viewMore": "더 보기",
+    "viewLess": "덜 보기"
   },
   "mediaInfo": {
     "title": "미디어 정보",

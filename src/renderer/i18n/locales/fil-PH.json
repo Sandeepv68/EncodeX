@@ -93,7 +93,9 @@
     "applySuggestedExt": "Gamitin ang .{{extension}}",
     "preview": "Silip",
     "showPreview": "Ipakita ang Preview",
-    "closePreview": "Isara ang Preview"
+    "closePreview": "Isara ang Preview",
+    "viewMore": "Ipakita pa",
+    "viewLess": "Ipakita nang mas kaunti"
   },
   "mediaInfo": {
     "title": "Impormasyon ng Media",

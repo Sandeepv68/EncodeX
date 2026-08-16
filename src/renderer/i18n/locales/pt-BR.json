@@ -93,7 +93,9 @@
     "applySuggestedExt": "Usar .{{extension}}",
     "preview": "Prévia",
     "showPreview": "Mostrar prévia",
-    "closePreview": "Fechar prévia"
+    "closePreview": "Fechar prévia",
+    "viewMore": "Ver mais",
+    "viewLess": "Ver menos"
   },
   "mediaInfo": {
     "title": "Informações da Mídia",

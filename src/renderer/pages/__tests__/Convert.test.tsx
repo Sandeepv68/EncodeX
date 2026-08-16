@@ -14,6 +14,7 @@ const convertFileMock = vi.mocked(window.electronAPI.convertFile);
 const pauseConversionMock = vi.mocked(window.electronAPI.pauseConversion);
 const resumeConversionMock = vi.mocked(window.electronAPI.resumeConversion);
 const cancelConversionMock = vi.mocked(window.electronAPI.cancelConversion);
+const getMediaInfoMock = vi.mocked(window.electronAPI.getMediaInfo);
 
 function renderPage() {
   return render(<Convert />);
@@ -110,6 +111,36 @@ describe('Convert', () => {
     expect(screen.queryByText('convert.preview')).not.toBeInTheDocument();
     fireEvent.click(screen.getByText('convert.showPreview'));
     expect(screen.getByText('convert.preview')).toBeInTheDocument();
+  });
+
+  it('hides the stream details behind the view more toggle in the preview', async () => {
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/video.mp4',
+      format: 'mp4',
+      size: 1048576,
+      duration: 65,
+      bitrate: '1024k',
+      streams: [
+        { index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080, pixelFormat: 'yuv420p', frameRate: '30', bitrate: '900k' },
+        { index: 1, type: 'audio', codec: 'aac', sampleRate: 48000, channels: 2, bitrate: '128k' },
+      ],
+    });
+    selectFileMock.mockResolvedValue('/in/video.mp4');
+    renderPage();
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
+    await waitFor(() => expect(screen.getByTestId('convert-toggle-streams')).toBeInTheDocument());
+    expect(screen.queryByText('mediaInfo.streams')).not.toBeInTheDocument();
+    const toggle = screen.getByTestId('convert-toggle-streams');
+    expect(toggle).toHaveTextContent('convert.viewMore');
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(toggle);
+    expect(screen.getByText('mediaInfo.streams')).toBeInTheDocument();
+    expect(screen.getByTestId('stream-count-chip')).toHaveTextContent('2');
+    const toggleExpanded = screen.getByTestId('convert-toggle-streams');
+    expect(toggleExpanded).toHaveTextContent('convert.viewLess');
+    expect(toggleExpanded).toHaveAttribute('aria-expanded', 'true');
+    fireEvent.click(toggleExpanded);
+    expect(screen.queryByText('mediaInfo.streams')).not.toBeInTheDocument();
   });
 
   it('selects an output file via save as', async () => {

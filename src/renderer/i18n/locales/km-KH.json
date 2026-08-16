@@ -93,7 +93,9 @@
     "applySuggestedExt": "ប្រើ .{{extension}}",
     "preview": "មើលជាមុន",
     "showPreview": "បង្ហាញការមើលជាមុន",
-    "closePreview": "បិទការមើលជាមុន"
+    "closePreview": "បិទការមើលជាមុន",
+    "viewMore": "មើលបន្ថែម",
+    "viewLess": "មើលតិច"
   },
   "mediaInfo": {
     "title": "ព័ត៌មានមេឌៀ",

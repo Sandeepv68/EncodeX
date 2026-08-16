@@ -93,7 +93,9 @@
     "applySuggestedExt": "השתמש ב-.{{extension}}",
     "preview": "תצוגה מקדימה",
     "showPreview": "הצג תצוגה מקדימה",
-    "closePreview": "סגור תצוגה מקדימה"
+    "closePreview": "סגור תצוגה מקדימה",
+    "viewMore": "הצג עוד",
+    "viewLess": "הצג פחות"
   },
   "mediaInfo": {
     "title": "מידע מדיה",

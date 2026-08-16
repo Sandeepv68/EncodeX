@@ -93,7 +93,9 @@
     "applySuggestedExt": "Bruk .{{extension}}",
     "preview": "Forhåndsvisning",
     "showPreview": "Vis forhåndsvisning",
-    "closePreview": "Lukk forhåndsvisning"
+    "closePreview": "Lukk forhåndsvisning",
+    "viewMore": "Vis mer",
+    "viewLess": "Vis mindre"
   },
   "mediaInfo": {
     "title": "Mediainformasjon",

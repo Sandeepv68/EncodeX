@@ -93,7 +93,9 @@
     "applySuggestedExt": "Usa .{{extension}}",
     "preview": "Anteprima",
     "showPreview": "Mostra anteprima",
-    "closePreview": "Chiudi anteprima"
+    "closePreview": "Chiudi anteprima",
+    "viewMore": "Mostra di più",
+    "viewLess": "Mostra di meno"
   },
   "mediaInfo": {
     "title": "Informazioni file",

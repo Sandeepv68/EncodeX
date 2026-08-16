@@ -93,7 +93,9 @@
     "applySuggestedExt": "使用 .{{extension}}",
     "preview": "预览",
     "showPreview": "显示预览",
-    "closePreview": "关闭预览"
+    "closePreview": "关闭预览",
+    "viewMore": "查看更多",
+    "viewLess": "显示更少"
   },
   "mediaInfo": {
     "title": "媒体信息",

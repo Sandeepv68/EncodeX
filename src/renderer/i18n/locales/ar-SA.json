@@ -93,7 +93,9 @@
     "applySuggestedExt": "استخدام .{{extension}}",
     "preview": "معاينة",
     "showPreview": "إظهار المعاينة",
-    "closePreview": "إغلاق المعاينة"
+    "closePreview": "إغلاق المعاينة",
+    "viewMore": "عرض المزيد",
+    "viewLess": "عرض أقل"
   },
   "mediaInfo": {
     "title": "معلومات الوسائط",

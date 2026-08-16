@@ -93,7 +93,9 @@
     "applySuggestedExt": "Använd .{{extension}}",
     "preview": "Förhandsvisning",
     "showPreview": "Visa förhandsvisning",
-    "closePreview": "Stäng förhandsvisning"
+    "closePreview": "Stäng förhandsvisning",
+    "viewMore": "Visa mer",
+    "viewLess": "Visa mindre"
   },
   "mediaInfo": {
     "title": "Mediainformation",

@@ -93,7 +93,9 @@
     "applySuggestedExt": "Użyj .{{extension}}",
     "preview": "Podgląd",
     "showPreview": "Pokaż podgląd",
-    "closePreview": "Zamknij podgląd"
+    "closePreview": "Zamknij podgląd",
+    "viewMore": "Pokaż więcej",
+    "viewLess": "Pokaż mniej"
   },
   "mediaInfo": {
     "title": "Informacje o multimediach",

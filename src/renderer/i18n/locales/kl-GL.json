@@ -93,7 +93,9 @@
     "applySuggestedExt": ".{{extension}}-mik atoruk",
     "preview": "Takussaalillugu",
     "showPreview": "Takussaalillugu takut",
-    "closePreview": "Takussaalillugu matu"
+    "closePreview": "Takussaalillugu matu",
+    "viewMore": "Amerlanerusut takukkit",
+    "viewLess": "Ikittut takukkit"
   },
   "mediaInfo": {
     "title": "Mediami Pissusianik",

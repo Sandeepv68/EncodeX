@@ -93,7 +93,9 @@
     "applySuggestedExt": ".{{extension}} භාවිතා කරන්න",
     "preview": "පෙරදසුන",
     "showPreview": "පෙරදසුන පෙන්වන්න",
-    "closePreview": "පෙරදසුන වසන්න"
+    "closePreview": "පෙරදසුන වසන්න",
+    "viewMore": "තවත් බලන්න",
+    "viewLess": "අඩුවෙන් බලන්න"
   },
   "mediaInfo": {
     "title": "මාධ්‍ය තොරතුරු",
