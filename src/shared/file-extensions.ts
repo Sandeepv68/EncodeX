@@ -184,9 +184,11 @@ export const IMAGE_DROPZONE_ACCEPT = 'jpg,jpeg,png,webp,bmp';
 
 /**
  * Comma-separated accept string for video dropzones (HTML drag-and-drop / file input).
+ * Derived from VIDEO_EXTENSIONS so the native file dialog filter and the
+ * drag-and-drop accept list always cover every supported video format.
  * @const {string} VIDEO_DROPZONE_ACCEPT
  */
-export const VIDEO_DROPZONE_ACCEPT = 'mp4,avi,mkv,mov,flv,wmv,webm';
+export const VIDEO_DROPZONE_ACCEPT = VIDEO_EXTENSIONS.join(',');
 
 /**
  * Determines whether a path points to an image file by inspecting its extension.
