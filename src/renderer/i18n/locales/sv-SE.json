@@ -17,7 +17,15 @@
     "cut": "Klipp",
     "batchQueue": "Batchkö",
     "logs": "Loggar",
-    "settings": "Inställningar"
+    "settings": "Inställningar",
+    "about": "Om",
+    "blip": {
+      "converting": "Konverterar",
+      "extracting": "Extraherar ljud",
+      "cutting": "Klipper video",
+      "paused": "Pausad",
+      "starting": "Startar"
+    }
   },
   "dashboard": {
     "welcome": "Välkommen till EncodeX",
@@ -92,7 +100,9 @@
     "applySuggestedExt": "Använd .{{extension}}",
     "preview": "Förhandsvisning",
     "showPreview": "Visa förhandsvisning",
-    "closePreview": "Stäng förhandsvisning"
+    "closePreview": "Stäng förhandsvisning",
+    "viewMore": "Visa mer",
+    "viewLess": "Visa mindre"
   },
   "mediaInfo": {
     "title": "Mediainformation",
@@ -576,5 +586,24 @@
       "cut": "Öppna Klipp",
       "batch": "Öppna batchkön"
     }
+  },
+  "about": {
+    "title": "Om EncodeX",
+    "subtitle": "Ett gratis och öppen källkod-verktyg för multimedia byggt på FFmpeg. Konvertera, inspektera, komprimera, extrahera, klipp och batchbearbeta ljud, video och bilder — allt på ett ställe.",
+    "description": "EncodeX är ett plattformsoberoende multimediaverktyg som för FFmpegs kraft till ett modernt, intuitivt skrivbordsgränssnitt. Konvertera ljud, video och bilder mellan format med detaljerad kontroll över codecs, bitrate, upplösning, pixelformat och kvalitet; kopiera spår förlustfritt för omedelbar remuxning; extrahera ljud från video; och klipp video med en ramexakt förhandsvisningsspelare. Hårdvaruaccelererad kodning stöds på NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox och Microsoft Media Foundation, med tillgängliga encoderfamiljer som automatiskt upptäcks från den medföljande FFmpeg-binärfilen vid körning. Batchjobb körs genom en beständig kö med realtidsförlopp, och ett headless CLI-läge exponerar samma funktioner för skript och automatisering.",
+    "logoAlt": "EncodeX-logotyp",
+    "featuresTitle": "Vad du kan göra",
+    "version": "Version",
+    "builtWith": "Byggt med",
+    "authorTitle": "Författare och feedback",
+    "author": "Författare",
+    "repository": "Repository",
+    "feedback": "Hittade du en bugg eller har du ett förslag?",
+    "reportIssue": "Öppna en issue på GitHub",
+    "licenseTitle": "Licens",
+    "licenseName": "MIT-licens",
+    "copyright": "Upphovsrätt © 2026 EncodeX",
+    "licenseSummary": "Utgiven under MIT-licensen. Fritt att använda, kopiera, modifiera, slå samman, publicera, distribuera, underlicensiera och sälja — även kommersiellt — förutsatt att upphovsrättsmeddelandet och tillståndsmeddelandet ingår i alla kopior eller väsentliga delar av programvaran. Programvaran tillhandahålls \"i befintligt skick\", utan någon som helst garanti.",
+    "acknowledgements": "Gjort med ❤️ för öppen källkod — drivs av FFmpeg-projektet och communityn."
   }
 }

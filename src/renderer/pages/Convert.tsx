@@ -33,8 +33,20 @@ import {
   InputAdornment,
   Divider,
   Tooltip,
+  Collapse,
 } from '@mui/material';
-import { faPalette, faBrush, faDroplet, faSun, faPlay, faPause, faXmark, faEye, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPalette,
+  faBrush,
+  faDroplet,
+  faSun,
+  faPlay,
+  faPause,
+  faXmark,
+  faEye,
+  faFolderOpen,
+  faChevronDown,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Logger } from '../../shared/logger';
@@ -222,6 +234,7 @@ export default function Convert() {
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
   const [jobCancelOpen, setJobCancelOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(true);
+  const [streamsExpanded, setStreamsExpanded] = useState(false);
   const [mediaInfo, setMediaInfo] = useState<MediaInfoType | null>(null);
   const [mediaInfoLoading, setMediaInfoLoading] = useState(false);
   const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
@@ -382,10 +395,40 @@ export default function Convert() {
                 </LoadingBox>
               )}
               {mediaInfo && (
-                <ErrorBoundary fallback={null}>
-                  <FileSummary info={mediaInfo} compact />
-                  <StreamDetails streams={mediaInfo.streams} compact />
-                </ErrorBoundary>
+                <>
+                  <ErrorBoundary fallback={null}>
+                    <FileSummary info={mediaInfo} compact />
+                  </ErrorBoundary>
+                  <Stack direction="row" sx={{ justifyContent: 'center' }}>
+                    <Button
+                      size="small"
+                      variant="text"
+                      color="primary"
+                      data-testid="convert-toggle-streams"
+                      endIcon={
+                        <Box
+                          component="span"
+                          sx={(theme) => ({
+                            display: 'inline-flex',
+                            transform: streamsExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                            transition: theme.transitions.create('transform', { duration: theme.transitions.duration.short }),
+                          })}
+                        >
+                          <FontAwesomeIcon icon={faChevronDown} />
+                        </Box>
+                      }
+                      onClick={() => setStreamsExpanded((v) => !v)}
+                      aria-expanded={streamsExpanded}
+                    >
+                      {streamsExpanded ? t('convert.viewLess') : t('convert.viewMore')}
+                    </Button>
+                  </Stack>
+                  <Collapse in={streamsExpanded} unmountOnExit>
+                    <ErrorBoundary fallback={null}>
+                      <StreamDetails streams={mediaInfo.streams} compact />
+                    </ErrorBoundary>
+                  </Collapse>
+                </>
               )}
             </Box>
           </PreviewPanel>

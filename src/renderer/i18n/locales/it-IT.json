@@ -17,7 +17,15 @@
     "cut": "Taglia",
     "batchQueue": "Coda batch",
     "logs": "Registri",
-    "settings": "Impostazioni"
+    "settings": "Impostazioni",
+    "about": "Informazioni",
+    "blip": {
+      "converting": "Conversione in corso",
+      "extracting": "Estrazione audio",
+      "cutting": "Taglio video",
+      "paused": "In pausa",
+      "starting": "Avvio"
+    }
   },
   "dashboard": {
     "welcome": "Benvenuto in EncodeX",
@@ -92,7 +100,9 @@
     "applySuggestedExt": "Usa .{{extension}}",
     "preview": "Anteprima",
     "showPreview": "Mostra anteprima",
-    "closePreview": "Chiudi anteprima"
+    "closePreview": "Chiudi anteprima",
+    "viewMore": "Mostra di più",
+    "viewLess": "Mostra di meno"
   },
   "mediaInfo": {
     "title": "Informazioni file",
@@ -576,5 +586,24 @@
       "cut": "Apri Taglia",
       "batch": "Apri la coda batch"
     }
+  },
+  "about": {
+    "title": "Informazioni su EncodeX",
+    "subtitle": "Una suite multimediale gratuita e open source basata su FFmpeg. Converti, ispeziona, comprimi, estrai, taglia ed elabora in batch audio, video e immagini — tutto in un unico posto.",
+    "description": "EncodeX è una suite multimediale multipiattaforma che porta la potenza di FFmpeg in un'interfaccia desktop moderna e intuitiva. Converti audio, video e immagini tra formati con controllo granulare su codec, bitrate, risoluzione, formato pixel e qualità; copia le tracce senza perdite per un remux immediato; estrai l'audio dai video; e taglia i video con un player di anteprima preciso per fotogramma. L'encoding accelerato via hardware è supportato su NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox e Microsoft Media Foundation, con le famiglie di encoder disponibili rilevate automaticamente dal binario FFmpeg incluso in fase di esecuzione. I lavori in batch passano attraverso una coda persistente con progressi in tempo reale, e una modalità CLI headless espone le stesse funzionalità per scripting e automazione.",
+    "logoAlt": "Logo EncodeX",
+    "featuresTitle": "Cosa puoi fare",
+    "version": "Versione",
+    "builtWith": "Realizzato con",
+    "authorTitle": "Autore e feedback",
+    "author": "Autore",
+    "repository": "Repository",
+    "feedback": "Hai trovato un bug o hai un suggerimento?",
+    "reportIssue": "Apri un problema su GitHub",
+    "licenseTitle": "Licenza",
+    "licenseName": "Licenza MIT",
+    "copyright": "Copyright © 2026 EncodeX",
+    "licenseSummary": "Rilasciato con licenza MIT. Libero da usare, copiare, modificare, unire, pubblicare, distribuire, sublicenziare e vendere — anche a scopo commerciale — a condizione che l'avviso di copyright e l'avviso di autorizzazione siano inclusi in tutte le copie o parti sostanziali del software. Il software è fornito \"così com'è\", senza alcuna garanzia.",
+    "acknowledgements": "Fatto con ❤️ per l’open source — realizzato dal progetto FFmpeg e dalla community."
   }
 }

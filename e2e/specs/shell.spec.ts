@@ -14,6 +14,7 @@ const NAV_ROUTES = [
   ['batch', '/batch'],
   ['logs', '/logs'],
   ['settings', '/settings'],
+  ['about', '/about'],
 ] as const;
 
 describe.runIf(IS_E2E)('Shell', () => {
@@ -77,7 +78,7 @@ describe.runIf(IS_E2E)('Shell', () => {
     expect(isFunction).toBe(true);
   });
 
-  it('shows all 9 drawer navigation items', async () => {
+  it('shows all 10 drawer navigation items', async () => {
     for (const [id] of NAV_ROUTES) {
       await expect.poll(() => session.page.locator(`[data-testid="nav-item-${id}"]`).count()).toBe(1);
     }

@@ -308,6 +308,7 @@ export default function VideoCut() {
     cacheThumbnails,
     cacheZoom,
     setIsCutting,
+    setProgress: setCutProgress,
     resetForm: resetDraft,
   } = useVideoCutStore();
 
@@ -478,6 +479,17 @@ export default function VideoCut() {
       window.clearTimeout(timer);
     };
   }, [input, videoDuration, cacheWaveform, cacheThumbnails]);
+
+  /**
+   * Mirrors the page-local cut progress into the video cut store while a cut
+   * task is running so the navigation drawer's blip popover can surface it, and
+   * clears it the moment the task is no longer running. The store write happens
+   * via getState() so the effect does not re-subscribe to the whole store.
+   * @returns {void}
+   */
+  useEffect(() => {
+    setCutProgress(isConverting ? progress : null);
+  }, [isConverting, progress, setCutProgress]);
 
   /**
    * Handles a newly selected or dropped video file. Clears all media-derived

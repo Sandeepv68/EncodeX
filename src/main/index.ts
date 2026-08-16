@@ -16,7 +16,7 @@
  * The module has no exports; its top-level code runs once when loaded.
  */
 
-import { app, BrowserWindow, Menu } from 'electron';
+import { app, BrowserWindow, Menu, shell } from 'electron';
 import * as path from 'path';
 import { registerIpcHandlers } from './ipc/handlers';
 import { runCli, mapCliErrorToExitCode } from './cli/cli';
@@ -191,6 +191,19 @@ if (isCliMode()) {
 
     registerIpcHandlers(mainWindow);
     patchConsole(mainWindow);
+
+    /**
+     * Routes external http(s) links opened from the renderer (e.g. the GitHub
+     * links on the About page) to the system browser instead of navigating the
+     * app window. All new windows are denied; allowed URLs are opened via
+     * Electron's `shell.openExternal`.
+     */
+    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+      if (url.startsWith('https://') || url.startsWith('http://')) {
+        void shell.openExternal(url);
+      }
+      return { action: 'deny' };
+    });
 
     mainWindow.on('ready-to-show', () => {
       log.info(LOG_MAIN_WINDOW_READY_SHOWING);

@@ -17,7 +17,15 @@
     "cut": "Knippen",
     "batchQueue": "Batchwachtrij",
     "logs": "Logboeken",
-    "settings": "Instellingen"
+    "settings": "Instellingen",
+    "about": "Over",
+    "blip": {
+      "converting": "Bezig met converteren",
+      "extracting": "Audio extraheren",
+      "cutting": "Video knippen",
+      "paused": "Gepauzeerd",
+      "starting": "Starten"
+    }
   },
   "dashboard": {
     "welcome": "Welkom bij EncodeX",
@@ -92,7 +100,9 @@
     "applySuggestedExt": "Gebruik .{{extension}}",
     "preview": "Voorbeeld",
     "showPreview": "Voorbeeld tonen",
-    "closePreview": "Voorbeeld sluiten"
+    "closePreview": "Voorbeeld sluiten",
+    "viewMore": "Meer tonen",
+    "viewLess": "Minder tonen"
   },
   "mediaInfo": {
     "title": "Media-informatie",
@@ -576,5 +586,24 @@
       "cut": "Knippen openen",
       "batch": "Batchwachtrij openen"
     }
+  },
+  "about": {
+    "title": "Over EncodeX",
+    "subtitle": "Een gratis en open-source multimediakit gebouwd op FFmpeg. Converteer, inspecteer, comprimeer, extraheer, knip en verwerk audio, video en afbeeldingen in batches — allemaal op één plek.",
+    "description": "EncodeX is een platformonafhankelijke multimediakit die de kracht van FFmpeg naar een moderne, intuïtieve desktopinterface brengt. Converteer audio, video en afbeeldingen tussen formaten met fijnmazige controle over codecs, bitrate, resolutie, pixelformaat en kwaliteit; kopieer sporen verliesvrij voor direct remuxen; extraheer audio uit video; en knip video met een frame-nauwkeurige voorbeeldspeler. Hardwareversnelde encoding wordt ondersteund op NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox en Microsoft Media Foundation, waarbij beschikbare encoderfamilies tijdens het draaien automatisch worden gedetecteerd uit het meegeleverde FFmpeg-binaire bestand. Batchtaken lopen via een persistente wachtrij met realtime voortgang, en een headless CLI-modus stelt dezelfde mogelijkheden beschikbaar voor scripting en automatisering.",
+    "logoAlt": "EncodeX-logo",
+    "featuresTitle": "Wat je kunt doen",
+    "version": "Versie",
+    "builtWith": "Gebouwd met",
+    "authorTitle": "Auteur en feedback",
+    "author": "Auteur",
+    "repository": "Repository",
+    "feedback": "Een bug gevonden of een suggestie?",
+    "reportIssue": "Open een issue op GitHub",
+    "licenseTitle": "Licentie",
+    "licenseName": "MIT-licentie",
+    "copyright": "Copyright © 2026 EncodeX",
+    "licenseSummary": "Uitgebracht onder de MIT-licentie. Vrij te gebruiken, kopiëren, wijzigen, samenvoegen, publiceren, distribueren, onderlicentiëren en verkopen — ook commercieel — op voorwaarde dat de copyrightmelding en de toestemmingsmelding in alle kopieën of substantiële delen van de software worden opgenomen. De software wordt \"as is\" geleverd, zonder enige garantie.",
+    "acknowledgements": "Gemaakt met ❤️ voor open source — mogelijk gemaakt door het FFmpeg-project en de community."
   }
 }

@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import AppDrawer from '../AppDrawer';
 import { ColorModeProvider } from '../../ColorModeContext';
 import { useConversionStore } from '../../stores/conversionStore';
+import { useAudioExtractStore } from '../../stores/audioExtractStore';
 import { useVideoCutStore } from '../../stores/videoCutStore';
 import { useQueueStore } from '../../stores/queueStore';
 import { QUEUE_STATUS } from '../../../shared/media-options';
@@ -27,6 +28,9 @@ function renderDrawer({ isMobile = false, condensed = false, onNavigate = vi.fn(
 describe('AppDrawer', () => {
   beforeEach(() => {
     localStorage.clear();
+    useConversionStore.getState().resetForm();
+    useAudioExtractStore.getState().clearSelection();
+    useVideoCutStore.getState().resetForm();
     useConversionStore.getState().setIsConverting(false);
     useVideoCutStore.getState().setIsCutting(false);
     useQueueStore.getState().setJobs([]);
@@ -183,5 +187,121 @@ describe('AppDrawer', () => {
     ]);
     renderDrawer({ condensed: true });
     expect(screen.getByTestId('nav-batch-blip')).toHaveTextContent('1');
+  });
+
+  it('opens the convert job popover on hover with file name and progress', () => {
+    useConversionStore.getState().setIsConverting(true);
+    useConversionStore.getState().setInputFile('/in/video.mp4');
+    useConversionStore.getState().setProgress({ percent: 42, time: '00:00:30', speed: '2.5x', eta: '12' });
+    renderDrawer();
+    fireEvent.mouseEnter(screen.getByTestId('nav-item-convert'));
+    const popover = screen.getByTestId('nav-job-popover');
+    expect(popover).toBeInTheDocument();
+    expect(popover).toHaveTextContent('nav.convert');
+    expect(popover).toHaveTextContent('Converting');
+    expect(popover).toHaveTextContent('video.mp4');
+    expect(within(popover).getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('does not open a popover on hover of a row without a live blip', () => {
+    renderDrawer();
+    fireEvent.mouseEnter(screen.getByTestId('nav-item-dashboard'));
+    expect(screen.queryByTestId('nav-job-popover')).not.toBeInTheDocument();
+  });
+
+  it('marks the convert popover as paused while the job is paused', () => {
+    useConversionStore.getState().setIsConverting(true);
+    useConversionStore.getState().setIsPaused(true);
+    useConversionStore.getState().setInputFile('/in/video.mp4');
+    useConversionStore.getState().setProgress({ percent: 20, time: '00:00:10', speed: '1x', eta: '50' });
+    renderDrawer();
+    fireEvent.focus(screen.getByTestId('nav-item-convert'));
+    expect(screen.getByTestId('nav-job-popover')).toHaveTextContent('Paused');
+  });
+
+  it('opens the audio-extract popover on hover of its nav item', () => {
+    useAudioExtractStore.setState({
+      isConverting: true,
+      input: '/in/song.mp4',
+      progress: { percent: 7, time: '00:00:05', speed: '3x', eta: '99' },
+    });
+    renderDrawer();
+    fireEvent.mouseEnter(screen.getByTestId('nav-item-audio-extract'));
+    const popover = screen.getByTestId('nav-job-popover');
+    expect(popover).toHaveTextContent('nav.audio');
+    expect(popover).toHaveTextContent('Extracting audio');
+    expect(popover).toHaveTextContent('song.mp4');
+    expect(within(popover).getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('opens the video-cut popover on hover of its nav item', () => {
+    useVideoCutStore.getState().setIsCutting(true);
+    useVideoCutStore.getState().setInput('/in/clip.mkv');
+    useVideoCutStore.getState().setProgress({ percent: 63, time: '00:01:00', speed: '2x', eta: '8' });
+    renderDrawer();
+    fireEvent.mouseEnter(screen.getByTestId('nav-item-video-cut'));
+    const popover = screen.getByTestId('nav-job-popover');
+    expect(popover).toHaveTextContent('nav.cut');
+    expect(popover).toHaveTextContent('Cutting video');
+    expect(popover).toHaveTextContent('clip.mkv');
+    expect(within(popover).getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('shows the batch queue summary and running job progress in its popover', () => {
+    useQueueStore.getState().setJobs([
+      {
+        id: 'job-1',
+        input: '/in/run.mp4',
+        output: '/out/run.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.RUNNING,
+        progress: 55,
+        createdAt: 1,
+      },
+      {
+        id: 'job-2',
+        input: '/in/queued.mp4',
+        output: '/out/queued.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.QUEUED,
+        progress: 0,
+        createdAt: 2,
+      },
+      {
+        id: 'job-3',
+        input: '/in/done.mp4',
+        output: '/out/done.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.DONE,
+        progress: 100,
+        createdAt: 3,
+      },
+    ]);
+    useQueueStore.getState().updateProgress('job-1', { percent: 55, time: '00:00:20', fps: 30, speed: '3.0x', eta: '5', bitrate: '1500k' });
+    renderDrawer();
+    fireEvent.mouseEnter(screen.getByTestId('nav-item-batch'));
+    const popover = screen.getByTestId('nav-job-popover');
+    expect(popover).toHaveTextContent('nav.batchQueue');
+    expect(popover).toHaveTextContent('1 queued, 1 running, 1 done, 0 failed');
+    expect(popover).toHaveTextContent('run.mp4');
+    expect(within(popover).getByRole('progressbar')).toBeInTheDocument();
+    const pile = within(popover).getByTestId('nav-job-popover-pile');
+    const pileThumbs = within(pile).getAllByTestId('nav-job-popover-pile-thumb');
+    expect(pileThumbs).toHaveLength(1);
+    expect(pileThumbs[0]).toHaveAttribute('title', 'queued.mp4');
+  });
+
+  it('closes the popover after the pointer leaves the nav row', async () => {
+    useConversionStore.getState().setIsConverting(true);
+    useConversionStore.getState().setInputFile('/in/video.mp4');
+    useConversionStore.getState().setProgress({ percent: 50, time: '00:00:20', speed: '2x', eta: '10' });
+    renderDrawer();
+    fireEvent.mouseEnter(screen.getByTestId('nav-item-convert'));
+    expect(screen.getByTestId('nav-job-popover')).toBeInTheDocument();
+    fireEvent.mouseLeave(screen.getByTestId('nav-item-convert'));
+    await waitFor(() => expect(screen.queryByTestId('nav-job-popover')).not.toBeInTheDocument(), { timeout: 1000 });
   });
 });

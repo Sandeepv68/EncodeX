@@ -17,7 +17,15 @@
     "cut": "Couper",
     "batchQueue": "File d'Attente",
     "logs": "Journaux",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "about": "À propos",
+    "blip": {
+      "converting": "Conversion en cours",
+      "extracting": "Extraction audio",
+      "cutting": "Découpage vidéo",
+      "paused": "En pause",
+      "starting": "Démarrage"
+    }
   },
   "dashboard": {
     "welcome": "Bienvenue sur EncodeX",
@@ -92,7 +100,9 @@
     "applySuggestedExt": "Utiliser .{{extension}}",
     "preview": "Aperçu",
     "showPreview": "Afficher l'aperçu",
-    "closePreview": "Fermer l'aperçu"
+    "closePreview": "Fermer l'aperçu",
+    "viewMore": "Voir plus",
+    "viewLess": "Voir moins"
   },
   "mediaInfo": {
     "title": "Informations Média",
@@ -576,5 +586,24 @@
       "cut": "Ouvrir Couper",
       "batch": "Ouvrir la file d'attente"
     }
+  },
+  "about": {
+    "title": "À propos d'EncodeX",
+    "subtitle": "Une boîte à outils multimédia gratuite et open source basée sur FFmpeg. Convertissez, inspectez, compressez, extrayez, coupez et traitez par lots l'audio, la vidéo et les images — le tout au même endroit.",
+    "description": "EncodeX est une boîte à outils multimédia multiplateforme qui apporte la puissance de FFmpeg dans une interface de bureau moderne et intuitive. Convertissez de l'audio, de la vidéo et des images entre différents formats avec un contrôle précis des codecs, du débit, de la résolution, du format de pixel et de la qualité ; copiez les pistes sans perte pour un remux instantané ; extrayez l'audio d'une vidéo ; et coupez la vidéo avec un lecteur d'aperçu précis au niveau de la trame. L'encodage accéléré par le matériel est pris en charge via NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox et Microsoft Media Foundation, les familles d'encodeurs disponibles étant détectées automatiquement à partir du binaire FFmpeg fourni au moment de l'exécution. Les tâches par lots passent par une file d'attente persistante avec une progression en temps réel, et un mode CLI sans interface expose les mêmes capacités pour le scripting et l'automatisation.",
+    "logoAlt": "Logo d'EncodeX",
+    "featuresTitle": "Ce que vous pouvez faire",
+    "version": "Version",
+    "builtWith": "Conçu avec",
+    "authorTitle": "Auteur et commentaires",
+    "author": "Auteur",
+    "repository": "Dépôt",
+    "feedback": "Vous avez trouvé un bug ou avez une suggestion ?",
+    "reportIssue": "Ouvrir un problème sur GitHub",
+    "licenseTitle": "Licence",
+    "licenseName": "Licence MIT",
+    "copyright": "Droits d'auteur © 2026 EncodeX",
+    "licenseSummary": "Publié sous la licence MIT. Libre d'utiliser, copier, modifier, fusionner, publier, distribuer, sous-licencier et vendre — y compris à des fins commerciales — à condition que l'avis de droits d'auteur et l'avis d'autorisation soient inclus dans toutes les copies ou parties substantielles du logiciel. Le logiciel est fourni \"tel quel\", sans garantie d'aucune sorte.",
+    "acknowledgements": "Fait avec ❤️ pour l’open source — propulsé par le projet FFmpeg et la communauté."
   }
 }

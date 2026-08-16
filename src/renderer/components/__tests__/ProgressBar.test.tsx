@@ -39,6 +39,15 @@ describe('ProgressBar', () => {
     expect(screen.getByText('50.0%')).toBeInTheDocument();
   });
 
+  it('omits the percentage and detail captions in minimal mode', () => {
+    render(<ProgressBar percent={42} time="00:00:30" speed="1.5x" eta="30" minimal />);
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(screen.queryByText('42.0%')).not.toBeInTheDocument();
+    expect(screen.queryByText(/00:00:30/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/1.5x/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/30s/)).not.toBeInTheDocument();
+  });
+
   it('exposes the progressbar with an accessible name and value', () => {
     render(<ProgressBar percent={42} />);
     const bar = screen.getByRole('progressbar');

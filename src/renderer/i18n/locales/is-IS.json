@@ -17,7 +17,15 @@
     "cut": "Klippa",
     "batchQueue": "Runubraut",
     "logs": "Annálar",
-    "settings": "Stillingar"
+    "settings": "Stillingar",
+    "about": "Um",
+    "blip": {
+      "converting": "Breyti",
+      "extracting": "Dreg út hljóð",
+      "cutting": "Klippi myndband",
+      "paused": "Í bið",
+      "starting": "Byrjar"
+    }
   },
   "dashboard": {
     "welcome": "Velkomin í EncodeX",
@@ -92,7 +100,9 @@
     "applySuggestedExt": "Nota .{{extension}}",
     "preview": "Forskoðun",
     "showPreview": "Sýna forskoðun",
-    "closePreview": "Loka forskoðun"
+    "closePreview": "Loka forskoðun",
+    "viewMore": "Sýna meira",
+    "viewLess": "Sýna minna"
   },
   "mediaInfo": {
     "title": "Miðlaupplýsingar",
@@ -576,5 +586,24 @@
       "cut": "Opna Klippa",
       "batch": "Opna runubíðröð"
     }
+  },
+  "about": {
+    "title": "Um EncodeX",
+    "subtitle": "Frítt og opið margmiðlunarverkfærasett byggt á FFmpeg. Breyttu, skoðaðu, þjappaðu, dregðu út, klipptu og keyrðu hljóð, myndbönd og myndir í hópum — allt á einum stað.",
+    "description": "EncodeX er þverpalla margmiðlunarverkfærasett sem færir kraft FFmpeg í nútímalegt og leiðandi skjáborðsviðmót. Breyttu hljóði, myndbandi og myndum á milli sniða með nákvæmri stjórn á codec-tækni, bithraða, upplausn, pixlasniði og gæðum; afritaðu lög tapslaust fyrir samstundis remuxun; dregðu hljóð út úr myndbandi; og klipptu myndband með rammanákvæmum forskoðunarspilara. Vélbúnaðarhraðaðri kóðun er stutt í NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox og Microsoft Media Foundation, með sjálfvirkri greiningu á tiltækum kóðunarfjölskyldum úr meðfylgjandi FFmpeg-skrá við keyrslu. Hópverk keyra í gegnum varanlegan biðraða með rauntímaframvindu og headless-CLI-hamur opnar sömu möguleika fyrir skriftur og sjálfvirkni.",
+    "logoAlt": "EncodeX-lógó",
+    "featuresTitle": "Hvað þú getur gert",
+    "version": "Útgáfa",
+    "builtWith": "Búið til með",
+    "authorTitle": "Höfundur og endurgjöf",
+    "author": "Höfundur",
+    "repository": "Geymsla",
+    "feedback": "Fannstu villu eða hefurðu tillögu?",
+    "reportIssue": "Opnaðu mál á GitHub",
+    "licenseTitle": "Leyfi",
+    "licenseName": "MIT-leyfi",
+    "copyright": "Höfundarréttur © 2026 EncodeX",
+    "licenseSummary": "Gefið út undir MIT-leyfinu. Frjálst að nota, afrita, breyta, sameina, birta, dreifa, undirleyfa og selja — þar með talið í atvinnuskyni — að því tilskildu að höfundarréttartilkynningin og leyfistilkynningin séu innifalin í öllum afritum eða verulegum hlutum hugbúnaðarins. Hugbúnaðurinn er veittur \"eins og hann er\", án nokkurrar ábyrgðar.",
+    "acknowledgements": "Búið til með ❤️ fyrir opinn hugbúnað — knúið af FFmpeg-verkefninu og samfélaginu."
   }
 }

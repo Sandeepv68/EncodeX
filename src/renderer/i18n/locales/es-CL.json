@@ -17,7 +17,15 @@
     "cut": "Cortar",
     "batchQueue": "Cola de Lotes",
     "logs": "Registros",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "about": "Acerca de",
+    "blip": {
+      "converting": "Convirtiendo",
+      "extracting": "Extrayendo audio",
+      "cutting": "Cortando video",
+      "paused": "En pausa",
+      "starting": "Iniciando"
+    }
   },
   "dashboard": {
     "welcome": "Bienvenido a EncodeX",
@@ -92,7 +100,9 @@
     "applySuggestedExt": "Usar .{{extension}}",
     "preview": "Vista previa",
     "showPreview": "Mostrar vista previa",
-    "closePreview": "Cerrar vista previa"
+    "closePreview": "Cerrar vista previa",
+    "viewMore": "Ver más",
+    "viewLess": "Ver menos"
   },
   "mediaInfo": {
     "title": "Información Multimedia",
@@ -576,5 +586,24 @@
       "cut": "Abrir Recortar",
       "batch": "Abrir la Cola de lote"
     }
+  },
+  "about": {
+    "title": "Acerca de EncodeX",
+    "subtitle": "Un conjunto de herramientas multimedia gratuito y de código abierto basado en FFmpeg. Convierte, inspecciona, comprime, extrae, corta y procesa por lotes audio, vídeo e imágenes, todo en un solo lugar.",
+    "description": "EncodeX es un conjunto de herramientas multimedia multiplataforma que lleva el poder de FFmpeg a una interfaz de escritorio moderna e intuitiva. Convierte audio, vídeo e imágenes entre formatos con un control preciso de códecs, tasa de bits, resolución, formato de píxeles y calidad; copia pistas sin pérdida para un remuxing instantáneo; extrae audio de vídeo; y corta vídeo con un reproductor de vista previa preciso por fotogramas. La codificación acelerada por hardware es compatible con NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox y Microsoft Media Foundation, con detección automática de las familias de codificadores disponibles a partir del binario de FFmpeg incluido en tiempo de ejecución. Los trabajos por lotes se ejecutan a través de una cola persistente con progreso en tiempo real, y un modo CLI sin interfaz gráfica expone las mismas capacidades para scripting y automatización.",
+    "logoAlt": "Logotipo de EncodeX",
+    "featuresTitle": "Lo que puedes hacer",
+    "version": "Versión",
+    "builtWith": "Hecho con",
+    "authorTitle": "Autor y comentarios",
+    "author": "Autor",
+    "repository": "Repositorio",
+    "feedback": "¿Encontraste un error o tienes una sugerencia?",
+    "reportIssue": "Abre un issue en GitHub",
+    "licenseTitle": "Licencia",
+    "licenseName": "Licencia MIT",
+    "copyright": "Derechos de autor © 2026 EncodeX",
+    "licenseSummary": "Publicado bajo la Licencia MIT. Libre de usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar y vender, incluso con fines comerciales, siempre que el aviso de derechos de autor y el aviso de permiso se incluyan en todas las copias o partes sustanciales del software. El software se proporciona \"tal cual\", sin garantía de ningún tipo.",
+    "acknowledgements": "Hecho con ❤️ para el código abierto — impulsado por el proyecto FFmpeg y la comunidad."
   }
 }

@@ -379,6 +379,7 @@ export const OVERLAY_COLORS = {
   white70: 'rgba(255, 255, 255, 0.7)',
   white30: 'rgba(255, 255, 255, 0.3)',
   white18: 'rgba(255, 255, 255, 0.18)',
+  white03: 'rgba(255, 255, 255, 0.03)',
   white02: 'rgba(255, 255, 255, 0.02)',
   white0: 'rgba(255, 255, 255, 0)',
   black66: 'rgb(0 0 0 / 66%)',
@@ -386,6 +387,7 @@ export const OVERLAY_COLORS = {
   black45: 'rgba(0, 0, 0, 0.45)',
   black25: 'rgba(0, 0, 0, 0.25)',
   black20: 'rgb(0 0 0 / 20%)',
+  black04: 'rgba(0, 0, 0, 0.04)',
   black02: 'rgba(0, 0, 0, 0.02)',
   black0: 'rgba(0, 0, 0, 0)',
 } as const;

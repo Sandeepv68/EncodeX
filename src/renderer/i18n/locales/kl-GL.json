@@ -17,7 +17,15 @@
     "cut": "Nakassat",
     "batchQueue": "Ilerleq",
     "logs": "Allaaserisat",
-    "settings": "Inissiissutit"
+    "settings": "Inissiissutit",
+    "about": "About",
+    "blip": {
+      "converting": "Allannguineqartuarpoq",
+      "extracting": "Nipaatit (audio) aniat",
+      "cutting": "Ulluliorneq (video)",
+      "paused": "Unnerseqsimavoq",
+      "starting": "Aallartippoq"
+    }
   },
   "dashboard": {
     "welcome": "EncodeX-imut tikilluaritsi",
@@ -92,7 +100,9 @@
     "applySuggestedExt": ".{{extension}}-mik atoruk",
     "preview": "Takussaalillugu",
     "showPreview": "Takussaalillugu takut",
-    "closePreview": "Takussaalillugu matu"
+    "closePreview": "Takussaalillugu matu",
+    "viewMore": "Amerlanerusut takukkit",
+    "viewLess": "Ikittut takukkit"
   },
   "mediaInfo": {
     "title": "Mediami Pissusianik",
@@ -576,5 +586,24 @@
       "cut": "Nakkarneqarnerit matoqqigit",
       "batch": "Qatamut ikinngut matoqqigit"
     }
+  },
+  "about": {
+    "title": "EncodeX pillugu",
+    "subtitle": "FFmpeg-mi tunngaveqartumik akisiutissaqanngitsumik aamma open source-imik multimedia-sakkutissat. Nipit, videot aamma assit allanngortikkit, misissoruk, komprimeruk, anitseruk, qimassoruk aamma batch-imik suliarisinnassavai — tamarmik ataatsimi.",
+    "description": "EncodeX multimedia-toolkit cross-platform-uvoq FFmpeg-ip sunniutaanik moderni, intuitivi desktop-interface-mut atuutsiissutigineqartoq. Nipit, videot aamma assit formatinik allanngortinneqarsinnaapput codec-it, bitrate, resolution, pixel-format aamma kvalitet-imik nakussagaqarneq annertusisumik; track-it anngunnaateqanngitsumik kopioruk remux-tassamut; video-miit nipit anitseruk; aamma video qimassoruk frame-akkuratungasutigut preview-player-ikkut. Hardware-accelerated encoding NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox aamma Microsoft Media Foundation-i tersorsimavaa, encoderit atorneqarsinnaasut runtime-mi FFmpeg-binærimiit automatisk-iusumik takuneqartut. Batch-jobsit queue-persistent-imikkut suliffigineqarput progress-real-time-ikkut, aamma headless-CLI-mode-ip taamaattumik piginnaasaatit scripting-imi aamma automation-imi atuutsinneqarput.",
+    "logoAlt": "EncodeX-logo",
+    "featuresTitle": "Qanoq pisinnaavit",
+    "version": "Version",
+    "builtWith": "Sananeqarsimavoq",
+    "authorTitle": "Allaaserisoq aamma feedback",
+    "author": "Allaaserisoq",
+    "repository": "Repository",
+    "feedback": "Bug-eq takua imaluunniit isumassarsiaqarpit?",
+    "reportIssue": "GitHub-mi issue-eq ammaruk",
+    "licenseTitle": "Lisenssi",
+    "licenseName": "MIT-lisenssi",
+    "copyright": "Copyright © 2026 EncodeX",
+    "licenseSummary": "MIT-lisenssimiit saqqummiunneqarpoq. Atoruk, kopioruk, allanngoruk, merge-ioruk, publish-ioruk, distribute-ioruk, sublicense-ioruk aamma sell-ioruk — commercial-imullu — copyright-notice-q aamma permission-notice-q software-p copies-iniit annerpaaniit ilaanniit ilanngullugit. Software-q \"as is\"-imik tunitinneqarpoq, warranty-tanngitsumik.",
+    "acknowledgements": "Made with ❤️ for open source — powered by the FFmpeg project and the community."
   }
 }

@@ -50,6 +50,11 @@ vi.mock('react-i18next', () => ({
         'closeConfirm.message': 'There are jobs in progress or unsaved changes. Closing now will cancel them.',
         'closeConfirm.confirmLabel': 'Close Anyway',
         'closeConfirm.cancelLabel': 'Cancel',
+        'nav.blip.converting': 'Converting',
+        'nav.blip.extracting': 'Extracting audio',
+        'nav.blip.cutting': 'Cutting video',
+        'nav.blip.paused': 'Paused',
+        'nav.blip.starting': 'Starting',
       };
       let text = map[key] || (opts?.defaultValue as string | undefined) || key;
       if (opts) {

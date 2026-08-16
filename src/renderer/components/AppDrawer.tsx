@@ -21,19 +21,22 @@
  *  - onNavigate: callback invoked after a successful navigate on mobile.
  */
 
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { NAV_ITEMS } from '../../shared/app-constants';
+import { QUEUE_STATUS } from '../../shared/media-options';
 import { pageIcons } from '../pageIcons';
 import { useConversionStore } from '../stores/conversionStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
 import { useQueueStore } from '../stores/queueStore';
 import LanguageMenu from './LanguageMenu';
-import type { AppDrawerProps } from './types';
+import NavJobPopover from './NavJobPopover';
+import type { AppDrawerProps, NavBlipId, NavJobPopoverContent } from './types';
 import {
   DrawerDivider,
   NavList,
@@ -62,7 +65,26 @@ const navKeyMap: Record<string, string> = {
   '/batch': 'batchQueue',
   '/logs': 'logs',
   '/settings': 'settings',
+  '/about': 'about',
 };
+
+/**
+ * Delay (ms) after the pointer leaves the nav row or popover card before the
+ * popover closes, so moving between the two does not cause flicker.
+ * @const {number} POPOVER_CLOSE_DELAY_MS
+ */
+const POPOVER_CLOSE_DELAY_MS = 150;
+
+/**
+ * Extracts the file name portion of an absolute path without a Node `path`
+ * import, handling both forward and Windows back slashes.
+ * @param {string | null} filePath - Absolute file path, or null.
+ * @returns {string} The basename, or '' when the path is empty.
+ */
+function basenameOf(filePath: string | null): string {
+  if (!filePath) return '';
+  return filePath.split(/[\\/]/).pop() ?? '';
+}
 
 /**
  * Renders the application navigation drawer.
@@ -89,9 +111,170 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   const location = useLocation();
   const { t } = useTranslation();
   const isConverting = useConversionStore((s) => s.isConverting);
+  const convertInput = useConversionStore((s) => s.inputFile);
+  const convertProgress = useConversionStore((s) => s.progress);
+  const convertPaused = useConversionStore((s) => s.isPaused);
   const isExtractingAudio = useAudioExtractStore((s) => s.isConverting);
+  const audioInput = useAudioExtractStore((s) => s.input);
+  const audioProgress = useAudioExtractStore((s) => s.progress);
+  const audioPaused = useAudioExtractStore((s) => s.isPaused);
   const isCutting = useVideoCutStore((s) => s.isCutting);
-  const batchJobCount = useQueueStore((s) => s.jobs.length);
+  const cutInput = useVideoCutStore((s) => s.input);
+  const cutProgress = useVideoCutStore((s) => s.progress);
+  const queueJobs = useQueueStore((s) => s.jobs);
+  const queueProgress = useQueueStore((s) => s.progress);
+  const batchJobCount = queueJobs.length;
+
+  const [popoverBlip, setPopoverBlip] = useState<NavBlipId>(null);
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
+  const closeTimer = useRef<number | null>(null);
+
+  const cancelPendingClose = () => {
+    if (closeTimer.current !== null) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+
+  const scheduleClose = () => {
+    cancelPendingClose();
+    closeTimer.current = window.setTimeout(() => {
+      setPopoverBlip(null);
+      setPopoverAnchor(null);
+    }, POPOVER_CLOSE_DELAY_MS);
+  };
+
+  const closePopover = () => {
+    cancelPendingClose();
+    setPopoverBlip(null);
+    setPopoverAnchor(null);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+    };
+  }, []);
+
+  /**
+   * Returns the visible activity blip id for a nav route, or null when that
+   * page currently has no job to surface. Guards the popover so it only opens
+   * while the corresponding blip is actually rendered.
+   * @param {string} to - The route path from NAV_ITEMS.
+   * @returns {NavBlipId} The visible blip id, or null.
+   */
+  const blipForRoute = (to: string): NavBlipId => {
+    switch (to) {
+      case '/convert':
+        return isConverting ? 'convert' : null;
+      case '/audio-extract':
+        return isExtractingAudio ? 'audio' : null;
+      case '/video-cut':
+        return isCutting ? 'cut' : null;
+      case '/batch':
+        return batchJobCount > 0 ? 'batch' : null;
+      default:
+        return null;
+    }
+  };
+
+  /**
+   * Opens the job popover for the nav row under the pointer/focus when that row
+   * carries a live blip; otherwise closes any open popover immediately.
+   *
+   * Focus restores that come back from a MUI Modal overlay (e.g. dismissing the
+   * window-close confirm dialog, which the dialog's focus trap sends back to the
+   * previously focused nav row) are ignored: reopening the popover there would
+   * leave its invisible Modal mounted forever (nothing ever blurs the row again)
+   * and keep the app hidden from the accessibility tree.
+   * @param {React.MouseEvent<HTMLElement> | React.FocusEvent<HTMLElement>} e - The mouse/focus event.
+   * @param {string} to - The route path of the hovered/focused row.
+   * @returns {void}
+   */
+  const openPopover = (e: React.MouseEvent<HTMLElement> | React.FocusEvent<HTMLElement>, to: string) => {
+    const blip = blipForRoute(to);
+    if (!blip) {
+      closePopover();
+      return;
+    }
+    if (e.type === 'focus' && e.relatedTarget instanceof Element && e.relatedTarget.closest('.MuiModal-root') !== null) {
+      return;
+    }
+    cancelPendingClose();
+    setPopoverBlip(blip);
+    setPopoverAnchor(e.currentTarget);
+  };
+
+  /**
+   * Resolves the popover content for the active blip from the relevant store.
+   * Returns null (nothing to render) when the blip is not set or its job has
+   * already finished.
+   * @returns {NavJobPopoverContent | null} The popover content, or null.
+   */
+  const popoverContent: NavJobPopoverContent | null = (() => {
+    switch (popoverBlip) {
+      case 'convert':
+        return isConverting
+          ? {
+              title: t('nav.convert'),
+              status: t('nav.blip.converting'),
+              fileName: basenameOf(convertInput),
+              progress: convertProgress,
+              paused: convertPaused,
+              input: convertInput ?? '',
+            }
+          : null;
+      case 'audio':
+        return isExtractingAudio
+          ? {
+              title: t('nav.audio'),
+              status: t('nav.blip.extracting'),
+              fileName: basenameOf(audioInput),
+              progress: audioProgress,
+              paused: audioPaused,
+              input: audioInput ?? '',
+            }
+          : null;
+      case 'cut':
+        return isCutting
+          ? {
+              title: t('nav.cut'),
+              status: t('nav.blip.cutting'),
+              fileName: basenameOf(cutInput),
+              progress: cutProgress,
+              input: cutInput ?? '',
+            }
+          : null;
+      case 'batch': {
+        if (batchJobCount === 0) return null;
+        const running = queueJobs.find((j) => j.status === QUEUE_STATUS.RUNNING) ?? queueJobs[0];
+        const snapshot = running ? queueProgress[running.id] : undefined;
+        return {
+          title: t('nav.batchQueue'),
+          status: t('batchQueue.stats', {
+            queued: queueJobs.filter((j) => j.status === QUEUE_STATUS.QUEUED).length,
+            running: queueJobs.filter((j) => j.status === QUEUE_STATUS.RUNNING).length,
+            done: queueJobs.filter((j) => j.status === QUEUE_STATUS.DONE).length,
+            failed: queueJobs.filter((j) => j.status === QUEUE_STATUS.ERROR).length,
+          }),
+          fileName: running ? basenameOf(running.input) : '',
+          progress: running
+            ? {
+                percent: running.progress,
+                time: snapshot?.time ?? '',
+                speed: snapshot?.speed ?? '',
+                eta: snapshot?.eta ?? '',
+              }
+            : null,
+          paused: running?.paused,
+          input: running?.input ?? '',
+          pendingThumbnails: queueJobs.filter((j) => j.status === QUEUE_STATUS.QUEUED).map((j) => j.input),
+        };
+      }
+      default:
+        return null;
+    }
+  })();
 
   return (
     <>
@@ -103,7 +286,12 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
             data-testid={`nav-item-${item.to === '/' ? 'dashboard' : item.to.slice(1)}`}
             selected={location.pathname === item.to}
             sx={{ animationDelay: `${index * 0.05}s` }}
+            onMouseEnter={(e) => openPopover(e, item.to)}
+            onMouseLeave={scheduleClose}
+            onFocus={(e) => openPopover(e, item.to)}
+            onBlur={scheduleClose}
             onClick={() => {
+              closePopover();
               navigate(item.to);
               if (isMobile) onNavigate();
             }}
@@ -146,6 +334,14 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
         )}
         <LanguageMenu condensed={condensed} />
       </NavFooter>
+      <NavJobPopover
+        active={popoverBlip}
+        anchorEl={popoverAnchor}
+        onClose={closePopover}
+        content={popoverContent}
+        onMouseEnter={cancelPendingClose}
+        onMouseLeave={scheduleClose}
+      />
     </>
   );
 }

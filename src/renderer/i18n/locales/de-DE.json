@@ -17,7 +17,15 @@
     "cut": "Schneiden",
     "batchQueue": "Stapelwarteschlange",
     "logs": "Protokolle",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "about": "Über",
+    "blip": {
+      "converting": "Konvertiere",
+      "extracting": "Audio extrahieren",
+      "cutting": "Video schneiden",
+      "paused": "Pausiert",
+      "starting": "Starte"
+    }
   },
   "dashboard": {
     "welcome": "Willkommen bei EncodeX",
@@ -92,7 +100,9 @@
     "applySuggestedExt": "Endung .{{extension}} verwenden",
     "preview": "Vorschau",
     "showPreview": "Vorschau anzeigen",
-    "closePreview": "Vorschau schließen"
+    "closePreview": "Vorschau schließen",
+    "viewMore": "Mehr anzeigen",
+    "viewLess": "Weniger anzeigen"
   },
   "mediaInfo": {
     "title": "Medieninformationen",
@@ -576,5 +586,24 @@
       "cut": "Schneiden öffnen",
       "batch": "Stapelwarteschlange öffnen"
     }
+  },
+  "about": {
+    "title": "Über EncodeX",
+    "subtitle": "Ein kostenloses Open-Source-Multimedia-Toolkit auf Basis von FFmpeg. Konvertieren, prüfen, komprimieren, extrahieren, schneiden und Stapelverarbeitung für Audio, Video und Bilder – alles an einem Ort.",
+    "description": "EncodeX ist ein plattformübergreifendes Multimedia-Toolkit, das die Leistungsfähigkeit von FFmpeg in eine moderne, intuitive Desktop-Oberfläche bringt. Konvertieren Sie Audio, Video und Bilder zwischen Formaten mit präziser Kontrolle über Codecs, Bitrate, Auflösung, Pixelformat und Qualität; kopieren Sie Spuren verlustfrei für sofortiges Remuxing; extrahieren Sie Audio aus Video; und schneiden Sie Video mit einem frame-genauen Vorschauplayer. Hardwarebeschleunigte Kodierung wird über NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox und Microsoft Media Foundation unterstützt, wobei die verfügbaren Encoder-Familien zur Laufzeit automatisch aus der gebündelten FFmpeg-Binärdatei erkannt werden. Stapelaufträge laufen über eine dauerhafte Warteschlange mit Echtzeit-Fortschritt, und ein Headless-CLI-Modus stellt dieselben Funktionen für Skripting und Automatisierung bereit.",
+    "logoAlt": "EncodeX-Logo",
+    "featuresTitle": "Was Sie tun können",
+    "version": "Version",
+    "builtWith": "Erstellt mit",
+    "authorTitle": "Autor & Feedback",
+    "author": "Autor",
+    "repository": "Repository",
+    "feedback": "Einen Fehler gefunden oder einen Vorschlag?",
+    "reportIssue": "Ein Issue auf GitHub eröffnen",
+    "licenseTitle": "Lizenz",
+    "licenseName": "MIT-Lizenz",
+    "copyright": "Urheberrecht © 2026 EncodeX",
+    "licenseSummary": "Veröffentlicht unter der MIT-Lizenz. Frei zu verwenden, kopieren, modifizieren, zusammenführen, veröffentlichen, verteilen, unterlizenzieren und verkaufen – auch kommerziell – vorausgesetzt, der Urheberrechtshinweis und der Genehmigungshinweis sind in allen Kopien oder wesentlichen Teilen der Software enthalten. Die Software wird \"wie sie ist\" bereitgestellt, ohne jegliche Garantie.",
+    "acknowledgements": "Mit ❤️ für Open Source gemacht — ermöglicht durch das FFmpeg-Projekt und die Community."
   }
 }

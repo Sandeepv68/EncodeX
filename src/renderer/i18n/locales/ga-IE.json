@@ -17,7 +17,15 @@
     "cut": "Gearr",
     "batchQueue": "Scuaine Bhaisc",
     "logs": "Logaí",
-    "settings": "Socruithe"
+    "settings": "Socruithe",
+    "about": "Faoi",
+    "blip": {
+      "converting": "Ag tiontú",
+      "extracting": "Ag eastóscadh fuaime",
+      "cutting": "Ag gearradh físeáin",
+      "paused": "Ar sos",
+      "starting": "Ag tosú"
+    }
   },
   "dashboard": {
     "welcome": "Fáilte go EncodeX",
@@ -92,7 +100,9 @@
     "applySuggestedExt": "Úsáid .{{extension}}",
     "preview": "Réamhamharc",
     "showPreview": "Taispeáin Réamhamharc",
-    "closePreview": "Dún Réamhamharc"
+    "closePreview": "Dún Réamhamharc",
+    "viewMore": "Féach níos mó",
+    "viewLess": "Féach níos lú"
   },
   "mediaInfo": {
     "title": "Faisnéis Meán",
@@ -576,5 +586,24 @@
       "cut": "Oscail Gearr",
       "batch": "Oscail an Scuaine Baisc"
     }
+  },
+  "about": {
+    "title": "Maidir le EncodeX",
+    "subtitle": "Fo-ordlíne il-mheán saor in aisce agus foinse oscailte atá tógtha ar FFmpeg. Tiontaigh, scrúdaigh, comhbhrúigh, bain, gearr agus próiseáil uathchruaill fhuaim, físeán agus íomhánna — go léir in áit amháin.",
+    "description": "Is fo-ordlíne il-mheán trasardáin é EncodeX a thugann cumhacht FFmpeg chuig comhéadan deisce nua-aimseartha agus iomasach. Tiontaigh fuaim, físeán agus íomhánna idir formáidí le smacht gránach ar codecs, ráta giotán, taifeach, formáid picteilín agus cáilíocht; cóipeáil rianta gan chailliúint le haghaidh remuxing láithreach; bain fuaim as físeán; agus gearr físeán le seinnteoir réamhamhairc cruinn-fhráma. Tacaítear le hionchódú luasghéaraithe crua-earraí ar fud NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox agus Microsoft Media Foundation, agus aithnítear na teaghlaigh ionchódóra atá ar fáil go huathoibríoch ón dénártha FFmpeg a sheoltar leis an aip ag am rite. Ritheann poist uathchruaill trí scuaine sheasmhach le dul chun cinn fíor-ama, agus nochtann mód CLI gan cheann na cumais chéanna le haghaidh scriptiú agus uathoibriú.",
+    "logoAlt": "Lógó EncodeX",
+    "featuresTitle": "Cad is féidir leat a dhéanamh",
+    "version": "Leagan",
+    "builtWith": "Tógtha le",
+    "authorTitle": "Údar agus aiseolas",
+    "author": "Údar",
+    "repository": "Stór",
+    "feedback": "Fuair tú fabht nó an bhfuil moladh agat?",
+    "reportIssue": "Oscail saincheist ar GitHub",
+    "licenseTitle": "Ceadúnas",
+    "licenseName": "Ceadúnas MIT",
+    "copyright": "Cóipcheart © 2026 EncodeX",
+    "licenseSummary": "Scaoileadh faoin gCeadúnas MIT. Saor le húsáid, cóipeáil, mionathrú, cónascadh, foilsiú, dáileadh, fo-cheadúnú agus díol — lena n-áirítear ar bhonn tráchtála — ar an gcoinníoll go gcuirtear an fógra cóipchirt agus an fógra ceadúnais san áireamh i ngach cóip nó i gcuid shuntasach den bhogearra. Soláthraítear an bogearra \"mar atá\", gan baránta de chineál ar bith.",
+    "acknowledgements": "Déanta le ❤️ don fhoinse oscailte — á chumhachtú ag tionscadal FFmpeg agus an pobal."
   }
 }

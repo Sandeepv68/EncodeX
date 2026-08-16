@@ -21,6 +21,74 @@ import type {
 import type { BatchEncodingValues } from '../utils/batch-options';
 
 /**
+ * Which navigation blip the job popover currently describes.
+ * @typedef {null | 'convert' | 'audio' | 'cut' | 'batch'} NavBlipId
+ */
+export type NavBlipId = null | 'convert' | 'audio' | 'cut' | 'batch';
+
+/**
+ * Progress subset rendered inside the navigation job popover, matching the
+ * shared ProgressData / TaskProgress shapes used by the conversion stores.
+ * @interface NavJobProgress
+ * @property {number} percent - Completion percentage (clamped to 0-100 by ProgressBar).
+ * @property {string} time - Current output timestamp.
+ * @property {string} speed - Speed relative to realtime (e.g. '3.5x').
+ * @property {string} eta - Estimated remaining time.
+ */
+export interface NavJobProgress {
+  percent: number;
+  time: string;
+  speed: string;
+  eta: string;
+}
+
+/**
+ * Resolved content for the navigation job popover, computed by the caller
+ * (AppDrawer) from the active blip's store so the popover stays presentational.
+ * @interface NavJobPopoverContent
+ * @property {string} title - Localized page label (e.g. 'Convert').
+ * @property {string} status - Localized status line (e.g. 'Converting' or a queue summary).
+ * @property {string} fileName - Source file basename, or '' when none is available.
+ * @property {NavJobProgress | null} progress - Live job progress, or null when the
+ *   job is starting.
+ * @property {boolean} [paused] - Whether the running job is paused.
+ */
+export interface NavJobPopoverContent {
+  title: string;
+  status: string;
+  fileName: string;
+  progress: NavJobProgress | null;
+  paused?: boolean;
+  /** Absolute path of the job's input file, used to resolve its thumbnail. */
+  input?: string;
+  /** Absolute input paths of further pending jobs, shown as an overlapping
+   *  thumbnail pile below the progress bar (batch queue only). */
+  pendingThumbnails?: string[];
+}
+
+/**
+ * Props for the navigation blip job popover.
+ * @interface NavJobPopoverProps
+ * @property {NavBlipId} active - The active blip id, or null when closed.
+ * @property {HTMLElement | null} anchorEl - The nav row the popover pins to.
+ * @property {() => void} onClose - Closes the popover (Escape / focus-out).
+ * @property {NavJobPopoverContent | null} content - Resolved popover content, or
+ *   null when nothing should render.
+ * @property {() => void} [onMouseEnter] - Forwarded to the popover paper; the
+ *   host uses it to cancel a pending close while the cursor rests on the card.
+ * @property {() => void} [onMouseLeave] - Forwarded to the popover paper; the
+ *   host uses it to schedule a close when the cursor leaves the card.
+ */
+export interface NavJobPopoverProps {
+  active: NavBlipId;
+  anchorEl: HTMLElement | null;
+  onClose: () => void;
+  content: NavJobPopoverContent | null;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+}
+
+/**
  * Props for the application navigation drawer.
  * @interface AppDrawerProps
  */
@@ -426,6 +494,9 @@ export interface ProgressBarProps {
   paused?: boolean;
   /** When true, the progress track is rendered with a soft resting shadow. */
   shadowed?: boolean;
+  /** When true, only the progress track is rendered without the percentage
+   *  and time/speed/ETA detail row. */
+  minimal?: boolean;
 }
 
 /**

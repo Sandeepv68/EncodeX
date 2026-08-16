@@ -17,7 +17,15 @@
     "cut": "Tapahia",
     "batchQueue": "Rārangi Tukinotanga",
     "logs": "Rārangi Kōrero",
-    "settings": "Tautuhinga"
+    "settings": "Tautuhinga",
+    "about": "Mō",
+    "blip": {
+      "converting": "Ke te hurihuri",
+      "extracting": "Ke tango ororongo",
+      "cutting": "Ke tapahi ataata",
+      "paused": "Kua tārea",
+      "starting": "Ke tīmata"
+    }
   },
   "dashboard": {
     "welcome": "Nau mai, haere mai ki EncodeX",
@@ -92,7 +100,9 @@
     "applySuggestedExt": "Whakamahia te .{{extension}}",
     "preview": "Tirohi",
     "showPreview": "Whakaatu Tirohi",
-    "closePreview": "Kati Tirohi"
+    "closePreview": "Kati Tirohi",
+    "viewMore": "Tirohia kia nui ake",
+    "viewLess": "Tirohia kia iti iho"
   },
   "mediaInfo": {
     "title": "Pārongo Pāpāho",
@@ -576,5 +586,24 @@
       "cut": "Uakina te Tapahia",
       "batch": "Uakina te Rārangi Tuinga"
     }
+  },
+  "about": {
+    "title": "Mō EncodeX",
+    "subtitle": "He kete taputapu maha-kārienatia utu kore, puna tuwhera hoki i hangaia ki runga i te FFmpeg. Hurihia, tirohia, whakakōmitimiti, tangohia, tapahia, ā, tukatukahia ōpaki ngā ororongo, kiriata me ngā whakaahua — katoa i te wāhi kotahi.",
+    "description": "He kete taputapu maha-kārienatia a EncodeX e kawe ana i te mana o FFmpeg ki tētahi atanga papamahi hou, māmā hoki. Hurihia ngā ororongo, kiriata me ngā whakaahua i waenga i ngā hōputu me te mana tino pai ki runga i ngā codec, reiti-bit, taumira, hōputu pika me te kounga; kapehia ngā hukihuki kāore e ngaro te kounga mō te remux hohoro; tangohia ngā ororongo i te kiriata; ā, tapahia te kiriata me tētahi pūrere tirohi-houkura tika-tonu ki te āputa. Ka tautokona te whakawaehere whakatere-pūtoro i runga i te NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox me Microsoft Media Foundation, me ngā whānau whakawaehere e wātea ana e kitea āunoa ana i te FFmpeg binary i tāpiritia i te wā mahi. Ka rere ngā mahi ōpaki i tētahi tūtira pūmau me te ahunga whakamua wā-tūturu, ā, ka whakaatu te aratau CLI matakore i ngā pūkenga ōrite mō te tuhituhi hōtuhi me te aunoatanga.",
+    "logoAlt": "Pīni EncodeX",
+    "featuresTitle": "He aha āu mahi",
+    "version": "Putanga",
+    "builtWith": "Hangaia ki te",
+    "authorTitle": "Kaituhi me ngā urupare",
+    "author": "Kaituhi",
+    "repository": "Pūranga",
+    "feedback": "Kua kitea he pōhēhē, he whakaaro anō rānei?",
+    "reportIssue": "Whakatuwheratia he take ki GitHub",
+    "licenseTitle": "Raihana",
+    "licenseName": "Raihana MIT",
+    "copyright": "Manatāpapa © 2026 EncodeX",
+    "licenseSummary": "Kua puta i raro i te Raihana MIT. Noa atu te whakamahi, te kape, te whakarerekē, te whakakotahi, te whakaputa, te tohatoha, te raihana-iti me te hoko — tae atu ki te tauhokohoko — engari me whakauru ngā pānui manatāpapa me ngā pānui whakaaetanga ki ngā kape katoa, ki ngā wāhanga matua rānei o te pūmanawa. Ka tukua te pūmanawa \"pēnei tonu\", kāore he whakapūmau o tētahi momo.",
+    "acknowledgements": "He mea hanga ki te ❤️ mō te puna waehere tuwhera — nā te kaupapa FFmpeg me te hapori i whakahaere."
   }
 }

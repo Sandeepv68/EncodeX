@@ -15,6 +15,7 @@
  *  - '/batch'         -> faListCheck (batch queue)
  *  - '/logs'          -> faFileLines (log console)
  *  - '/settings'      -> faGear (settings)
+ *  - '/about'         -> faCircleQuestion (about)
  */
 
 import type { ReactNode } from 'react';
@@ -29,6 +30,7 @@ import {
   faListCheck,
   faFileLines,
   faGear,
+  faCircleQuestion,
 } from '@fortawesome/free-solid-svg-icons';
 
 /**
@@ -46,4 +48,5 @@ export const pageIcons: Record<string, ReactNode> = {
   '/batch': <FontAwesomeIcon icon={faListCheck} />,
   '/logs': <FontAwesomeIcon icon={faFileLines} />,
   '/settings': <FontAwesomeIcon icon={faGear} />,
+  '/about': <FontAwesomeIcon icon={faCircleQuestion} />,
 };
