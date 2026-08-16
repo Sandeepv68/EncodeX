@@ -289,6 +289,16 @@ export const LOG_HISTOGRAM_DECODE_FAILED = 'Histogram decode failed:';
 export const LOG_HISTOGRAM_DECODE_FAILED_STDERR = 'Histogram decode failed, stderr:';
 /** @const {string} Prefix when the histogram ffmpeg run errors. */
 export const LOG_HISTOGRAM_FFMPEG_ERROR = 'Histogram ffmpeg error:';
+/** @const {string} Prefix when a hotkey fires (matched chord, enabled binding). */
+export const LOG_HOTKEY_MATCHED = 'Hotkey matched:';
+/** @const {string} Prefix when a hotkey is skipped because the binding is disabled. */
+export const LOG_HOTKEY_SKIPPED_DISABLED = 'Hotkey skipped (disabled):';
+/** @const {string} Prefix when a hotkey is skipped because the target is interactive. */
+export const LOG_HOTKEY_SKIPPED_INTERACTIVE = 'Hotkey skipped (interactive target):';
+/** @const {string} Prefix when a hotkey is skipped because the key is auto-repeating. */
+export const LOG_HOTKEY_SKIPPED_REPEAT = 'Hotkey skipped (auto-repeat):';
+/** @const {string} Prefix when a binding id has no matching shortcut spec in the registry. */
+export const LOG_HOTKEY_UNKNOWN_ID = 'Hotkey unknown id:';
 /** @const {string} Prefix when image info has been retrieved. */
 export const LOG_IMAGE_INFO_RETRIEVED = 'Image info retrieved:';
 /** @const {string} Logged when '--info' is used without an input file. */

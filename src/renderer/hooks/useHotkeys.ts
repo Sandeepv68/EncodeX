@@ -28,7 +28,21 @@
  */
 
 import { useEffect, useRef } from 'react';
+import { Logger } from '../../shared/logger';
+import {
+  LOG_HOTKEY_MATCHED,
+  LOG_HOTKEY_SKIPPED_DISABLED,
+  LOG_HOTKEY_SKIPPED_INTERACTIVE,
+  LOG_HOTKEY_SKIPPED_REPEAT,
+  LOG_HOTKEY_UNKNOWN_ID,
+} from '../../shared/log-constants';
 import { SHORTCUT_BY_ID, parseShortcut, shortcutMatches, type ParsedShortcut } from '../constants/shortcuts';
+
+/**
+ * Logger instance scoped to the useHotkeys module.
+ * @type {Logger}
+ */
+const log = new Logger('renderer/hooks/useHotkeys');
 
 /**
  * One shortcut binding registered by a component.
@@ -141,13 +155,26 @@ export function useHotkeys(bindings: readonly HotkeyBinding[]): void {
      */
     const onKeyDown = (event: KeyboardEvent) => {
       for (const binding of bindingsRef.current) {
-        if (binding.enabled === false) continue;
-        if (event.repeat && !binding.allowRepeat) continue;
         const spec = SHORTCUT_BY_ID[binding.id];
-        if (!spec) continue;
+        if (!spec) {
+          log.warn(LOG_HOTKEY_UNKNOWN_ID, binding.id);
+          continue;
+        }
         const parsed = getParsed(spec.keys);
         if (!shortcutMatches(parsed, event)) continue;
-        if (!parsed.primary && !parsed.alt && isInteractiveTarget(event.target)) continue;
+        if (binding.enabled === false) {
+          log.debug(LOG_HOTKEY_SKIPPED_DISABLED, binding.id, spec.keys);
+          continue;
+        }
+        if (event.repeat && !binding.allowRepeat) {
+          log.debug(LOG_HOTKEY_SKIPPED_REPEAT, binding.id, spec.keys);
+          continue;
+        }
+        if (!parsed.primary && !parsed.alt && isInteractiveTarget(event.target)) {
+          log.debug(LOG_HOTKEY_SKIPPED_INTERACTIVE, binding.id, spec.keys, event.code);
+          continue;
+        }
+        log.debug(LOG_HOTKEY_MATCHED, binding.id, spec.keys);
         event.preventDefault();
         binding.handler(event);
         break;
