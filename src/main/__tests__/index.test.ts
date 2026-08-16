@@ -2,92 +2,108 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DEV_SERVER_URL, EXIT_CODES, WINDOW_SIZE, SPLASH_SIZE } from '../../shared/app-constants';
 import { IPC } from '../../shared/ipc-channels';
 
-const { appMock, getWhenReadyCbs, getAppOnHandlers, BrowserWindowMock, getWindowInstances, runCliMock, registerIpcHandlersMock, menuMock } =
-  vi.hoisted(() => {
-    const whenReadyCbs: Array<() => void> = [];
-    const appOnHandlers: Record<string, (...args: unknown[]) => void> = {};
-    const windowInstances: Array<{
-      loadURL: ReturnType<typeof vi.fn>;
-      loadFile: ReturnType<typeof vi.fn>;
+const {
+  appMock,
+  getWhenReadyCbs,
+  getAppOnHandlers,
+  BrowserWindowMock,
+  getWindowInstances,
+  runCliMock,
+  registerIpcHandlersMock,
+  menuMock,
+  shellMock,
+} = vi.hoisted(() => {
+  const whenReadyCbs: Array<() => void> = [];
+  const appOnHandlers: Record<string, (...args: unknown[]) => void> = {};
+  const windowInstances: Array<{
+    loadURL: ReturnType<typeof vi.fn>;
+    loadFile: ReturnType<typeof vi.fn>;
+    openDevTools: ReturnType<typeof vi.fn>;
+    isDestroyed: ReturnType<typeof vi.fn>;
+    show: ReturnType<typeof vi.fn>;
+    close: ReturnType<typeof vi.fn>;
+    webContents: {
+      send: ReturnType<typeof vi.fn>;
       openDevTools: ReturnType<typeof vi.fn>;
-      isDestroyed: ReturnType<typeof vi.fn>;
-      show: ReturnType<typeof vi.fn>;
-      close: ReturnType<typeof vi.fn>;
-      webContents: {
-        send: ReturnType<typeof vi.fn>;
-        openDevTools: ReturnType<typeof vi.fn>;
-        on: ReturnType<typeof vi.fn>;
-        once: ReturnType<typeof vi.fn>;
-      };
-      onceHandlers: Record<string, (...args: unknown[]) => void>;
+      setWindowOpenHandler: ReturnType<typeof vi.fn>;
       on: ReturnType<typeof vi.fn>;
-    }> = [];
-    const appMock = {
-      whenReady: vi.fn(() => ({
-        then: (cb: () => void) => {
-          whenReadyCbs.push(cb);
-        },
-      })),
-      getAppPath: vi.fn(() => 'C:\\project'),
-      exit: vi.fn(),
-      quit: vi.fn(),
-      commandLine: {
-        appendSwitch: vi.fn(),
+      once: ReturnType<typeof vi.fn>;
+    };
+    onceHandlers: Record<string, (...args: unknown[]) => void>;
+    on: ReturnType<typeof vi.fn>;
+  }> = [];
+  const appMock = {
+    whenReady: vi.fn(() => ({
+      then: (cb: () => void) => {
+        whenReadyCbs.push(cb);
       },
-      on: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
-        appOnHandlers[event] = cb;
+    })),
+    getAppPath: vi.fn(() => 'C:\\project'),
+    exit: vi.fn(),
+    quit: vi.fn(),
+    commandLine: {
+      appendSwitch: vi.fn(),
+    },
+    on: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
+      appOnHandlers[event] = cb;
+    }),
+  };
+  const menuMock = {
+    setApplicationMenu: vi.fn(),
+  };
+  const shellMock = {
+    openExternal: vi.fn(),
+  };
+  const BrowserWindowMock = vi.fn(function (this: {
+    loadURL: ReturnType<typeof vi.fn>;
+    loadFile: ReturnType<typeof vi.fn>;
+    openDevTools: ReturnType<typeof vi.fn>;
+    isDestroyed: ReturnType<typeof vi.fn>;
+    show: ReturnType<typeof vi.fn>;
+    close: ReturnType<typeof vi.fn>;
+    webContents: {
+      send: ReturnType<typeof vi.fn>;
+      openDevTools: ReturnType<typeof vi.fn>;
+      setWindowOpenHandler: ReturnType<typeof vi.fn>;
+      on: ReturnType<typeof vi.fn>;
+      once: ReturnType<typeof vi.fn>;
+    };
+    onceHandlers: Record<string, (...args: unknown[]) => void>;
+    on: ReturnType<typeof vi.fn>;
+  }) {
+    this.loadURL = vi.fn();
+    this.loadFile = vi.fn();
+    this.openDevTools = vi.fn();
+    this.isDestroyed = vi.fn(() => false);
+    this.show = vi.fn();
+    this.close = vi.fn();
+    this.onceHandlers = {};
+    this.webContents = {
+      send: vi.fn(),
+      openDevTools: vi.fn(),
+      setWindowOpenHandler: vi.fn(),
+      on: vi.fn(),
+      once: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
+        this.onceHandlers[event] = cb;
       }),
     };
-    const menuMock = {
-      setApplicationMenu: vi.fn(),
-    };
-    const BrowserWindowMock = vi.fn(function (this: {
-      loadURL: ReturnType<typeof vi.fn>;
-      loadFile: ReturnType<typeof vi.fn>;
-      openDevTools: ReturnType<typeof vi.fn>;
-      isDestroyed: ReturnType<typeof vi.fn>;
-      show: ReturnType<typeof vi.fn>;
-      close: ReturnType<typeof vi.fn>;
-      webContents: {
-        send: ReturnType<typeof vi.fn>;
-        openDevTools: ReturnType<typeof vi.fn>;
-        on: ReturnType<typeof vi.fn>;
-        once: ReturnType<typeof vi.fn>;
-      };
-      onceHandlers: Record<string, (...args: unknown[]) => void>;
-      on: ReturnType<typeof vi.fn>;
-    }) {
-      this.loadURL = vi.fn();
-      this.loadFile = vi.fn();
-      this.openDevTools = vi.fn();
-      this.isDestroyed = vi.fn(() => false);
-      this.show = vi.fn();
-      this.close = vi.fn();
-      this.onceHandlers = {};
-      this.webContents = {
-        send: vi.fn(),
-        openDevTools: vi.fn(),
-        on: vi.fn(),
-        once: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
-          this.onceHandlers[event] = cb;
-        }),
-      };
-      this.on = vi.fn();
-      windowInstances.push(this as never);
-    });
-    return {
-      appMock,
-      BrowserWindowMock: BrowserWindowMock,
-      getWhenReadyCbs: () => whenReadyCbs,
-      getAppOnHandlers: () => appOnHandlers,
-      getWindowInstances: () => windowInstances,
-      runCliMock: vi.fn(),
-      registerIpcHandlersMock: vi.fn(),
-      menuMock,
-    };
+    this.on = vi.fn();
+    windowInstances.push(this as never);
   });
+  return {
+    appMock,
+    BrowserWindowMock: BrowserWindowMock,
+    getWhenReadyCbs: () => whenReadyCbs,
+    getAppOnHandlers: () => appOnHandlers,
+    getWindowInstances: () => windowInstances,
+    runCliMock: vi.fn(),
+    registerIpcHandlersMock: vi.fn(),
+    menuMock,
+    shellMock,
+  };
+});
 
-vi.mock('electron', () => ({ app: appMock, BrowserWindow: BrowserWindowMock, Menu: menuMock }));
+vi.mock('electron', () => ({ app: appMock, BrowserWindow: BrowserWindowMock, Menu: menuMock, shell: shellMock }));
 vi.mock('../cli/cli', () => ({
   runCli: runCliMock,
   mapCliErrorToExitCode: (err: unknown) => (err instanceof Error && err.message === 'usage' ? 2 : 1),
@@ -217,6 +233,18 @@ describe('main/index', () => {
     const win = getMainWindows()[0];
     expect(win.loadURL).toHaveBeenCalledWith(DEV_SERVER_URL);
     expect(win.webContents.openDevTools).toHaveBeenCalled();
+  });
+
+  it('opens external http(s) links in the system browser and denies new windows', async () => {
+    process.argv = ['node', 'x.js'];
+    await import('../index');
+    getWhenReadyCbs()[0]();
+    const win = getMainWindows()[0];
+    const handler = win.webContents.setWindowOpenHandler.mock.calls[0][0] as (details: { url: string }) => { action: string };
+    expect(handler({ url: 'https://github.com/Sandeepv68/EncodeX' })).toEqual({ action: 'deny' });
+    expect(shellMock.openExternal).toHaveBeenCalledWith('https://github.com/Sandeepv68/EncodeX');
+    handler({ url: 'javascript:alert(1)' });
+    expect(shellMock.openExternal).toHaveBeenCalledTimes(1);
   });
 
   it('patches console to forward log messages to the window', async () => {

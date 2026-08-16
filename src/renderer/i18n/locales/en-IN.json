@@ -17,7 +17,8 @@
     "cut": "Cut",
     "batchQueue": "Batch Queue",
     "logs": "Logs",
-    "settings": "Settings"
+    "settings": "Settings",
+    "about": "About"
   },
   "dashboard": {
     "welcome": "Welcome to EncodeX",
@@ -576,5 +577,24 @@
       "cut": "Open Cut",
       "batch": "Open Batch Queue"
     }
+  },
+  "about": {
+    "title": "About EncodeX",
+    "subtitle": "A free and open-source multimedia toolkit built on FFmpeg. Convert, inspect, compress, extract, cut, and batch-process audio, video, and images — all in one place.",
+    "description": "EncodeX is a cross-platform multimedia toolkit that brings the power of FFmpeg to a modern, intuitive desktop interface. Convert audio, video, and images between formats with granular control over codecs, bitrate, resolution, pixel format, and quality; stream-copy tracks losslessly for instant remuxing; extract audio from video; and cut video with a frame-accurate preview player. Hardware-accelerated encoding is supported across NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, and Microsoft Media Foundation, with available encoder families auto-detected from the bundled FFmpeg binary at runtime. Batch jobs run through a persistent queue with real-time progress, and a headless CLI mode exposes the same capabilities for scripting and automation.",
+    "logoAlt": "EncodeX logo",
+    "featuresTitle": "What you can do",
+    "version": "Version",
+    "builtWith": "Built with",
+    "authorTitle": "Author & feedback",
+    "author": "Author",
+    "repository": "Repository",
+    "feedback": "Found a bug or have a suggestion?",
+    "reportIssue": "Open an issue on GitHub",
+    "licenseTitle": "License",
+    "licenseName": "MIT License",
+    "copyright": "Copyright © 2026 EncodeX",
+    "licenseSummary": "Released under the MIT License. Free to use, copy, modify, merge, publish, distribute, sublicense, and sell — including commercially — provided the copyright notice and permission notice are included in all copies or substantial portions of the software. The software is provided \"as is\", without warranty of any kind.",
+    "acknowledgements": "Made with ❤️ for open source — powered by the FFmpeg project and the community."
   }
 }

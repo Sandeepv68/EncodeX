@@ -17,7 +17,8 @@
     "cut": "Cortar",
     "batchQueue": "Fila em Lote",
     "logs": "Registros",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "about": "Sobre"
   },
   "dashboard": {
     "welcome": "Bem-vindo ao EncodeX",
@@ -576,5 +577,24 @@
       "cut": "Abrir Cortar",
       "batch": "Abrir a Fila de lote"
     }
+  },
+  "about": {
+    "title": "Sobre o EncodeX",
+    "subtitle": "Um conjunto de ferramentas multimídia gratuito e de código aberto construído sobre o FFmpeg. Converta, inspecione, comprima, extraia, corte e processe em lote áudio, vídeo e imagens — tudo em um só lugar.",
+    "description": "O EncodeX é um conjunto de ferramentas multimídia multiplataforma que leva o poder do FFmpeg a uma interface de desktop moderna e intuitiva. Converta áudio, vídeo e imagens entre formatos com controle detalhado de codecs, bitrate, resolução, formato de pixel e qualidade; copie faixas sem perda para remuxagem instantânea; extraia áudio de vídeo; e corte vídeo com um player de pré-visualização preciso por quadro. A codificação acelerada por hardware é suportada em NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox e Microsoft Media Foundation, com as famílias de codificadores disponíveis detectadas automaticamente a partir do binário FFmpeg incluído em tempo de execução. Os trabalhos em lote passam por uma fila persistente com progresso em tempo real, e um modo CLI headless expõe as mesmas capacidades para scripts e automação.",
+    "logoAlt": "Logotipo do EncodeX",
+    "featuresTitle": "O que você pode fazer",
+    "version": "Versão",
+    "builtWith": "Construído com",
+    "authorTitle": "Autor e feedback",
+    "author": "Autor",
+    "repository": "Repositório",
+    "feedback": "Encontrou um bug ou tem uma sugestão?",
+    "reportIssue": "Abra um issue no GitHub",
+    "licenseTitle": "Licença",
+    "licenseName": "Licença MIT",
+    "copyright": "Copyright © 2026 EncodeX",
+    "licenseSummary": "Publicado sob a Licença MIT. Livre para usar, copiar, modificar, mesclar, publicar, distribuir, sublicenciar e vender — inclusive comercialmente — desde que o aviso de direitos autorais e o aviso de permissão sejam incluídos em todas as cópias ou partes substanciais do software. O software é fornecido \"como está\", sem garantia de qualquer tipo.",
+    "acknowledgements": "Feito com ❤️ para código aberto — desenvolvido pelo projeto FFmpeg e pela comunidade."
   }
 }

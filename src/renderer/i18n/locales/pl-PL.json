@@ -17,7 +17,8 @@
     "cut": "Przytnij",
     "batchQueue": "Kolejka wsadowa",
     "logs": "Dzienniki",
-    "settings": "Ustawienia"
+    "settings": "Ustawienia",
+    "about": "O programie"
   },
   "dashboard": {
     "welcome": "Witamy w EncodeX",
@@ -576,5 +577,24 @@
       "cut": "Otwórz Przytnij",
       "batch": "Otwórz kolejkę wsadową"
     }
+  },
+  "about": {
+    "title": "O EncodeX",
+    "subtitle": "Darmowy zestaw narzędzi multimedialnych o otwartym kodzie źródłowym, zbudowany na FFmpeg. Konwertuj, sprawdzaj, kompresuj, wyodrębniaj, tnij i przetwarzaj partiami audio, wideo i obrazy — wszystko w jednym miejscu.",
+    "description": "EncodeX to wieloplatformowy zestaw narzędzi multimedialnych, który przenosi moc FFmpeg do nowoczesnego, intuicyjnego interfejsu graficznego. Konwertuj audio, wideo i obrazy między formatami z precyzyjną kontrolą kodeków, przepływności, rozdzielczości, formatu pikseli i jakości; kopiuj ścieżki bezstratnie, aby natychmiast przeprowadzić remuxing; wyodrębniaj audio z wideo; oraz tnij wideo z odtwarzaczem podglądu precyzyjnym co do klatki. Enkodowanie przyspieszane sprzętowo jest obsługiwane na NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox i Microsoft Media Foundation, a dostępne rodziny enkoderów są automatycznie wykrywane z dołączonego pliku FFmpeg w czasie działania. Zadania wsadowe działają przez trwałą kolejkę z postępem w czasie rzeczywistym, a tryb CLI bez interfejsu udostępnia te same możliwości do skryptów i automatyzacji.",
+    "logoAlt": "Logo EncodeX",
+    "featuresTitle": "Co możesz zrobić",
+    "version": "Wersja",
+    "builtWith": "Zbudowane z",
+    "authorTitle": "Autor i opinie",
+    "author": "Autor",
+    "repository": "Repozytorium",
+    "feedback": "Znalazłeś błąd lub masz sugestię?",
+    "reportIssue": "Otwórz zgłoszenie na GitHub",
+    "licenseTitle": "Licencja",
+    "licenseName": "Licencja MIT",
+    "copyright": "Prawa autorskie © 2026 EncodeX",
+    "licenseSummary": "Opublikowane na licencji MIT. Wolno używać, kopiować, modyfikować, scalać, publikować, rozpowszechniać, sublicencjonować i sprzedawać — także komercyjnie — pod warunkiem dołączenia informacji o prawach autorskich i informacji o zezwoleniu do wszystkich kopii lub istotnych części oprogramowania. Oprogramowanie jest dostarczane \"tak jak jest\", bez jakiejkolwiek gwarancji.",
+    "acknowledgements": "Zrobione z ❤️ dla open source — napędzane przez projekt FFmpeg i społeczność."
   }
 }

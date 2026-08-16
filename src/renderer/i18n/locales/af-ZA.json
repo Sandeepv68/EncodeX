@@ -17,7 +17,8 @@
     "cut": "Sny",
     "batchQueue": "Groepwaglys",
     "logs": "Logboeke",
-    "settings": "Instellings"
+    "settings": "Instellings",
+    "about": "Oor"
   },
   "dashboard": {
     "welcome": "Welkom by EncodeX",
@@ -576,5 +577,24 @@
       "cut": "Maak Knip oop",
       "batch": "Maak Bondtou oop"
     }
+  },
+  "about": {
+    "title": "Oor EncodeX",
+    "subtitle": "'n Gratis, oopbron multimediastel gebou op FFmpeg. Skakel klank, video en beelde om, inspekteer, komprimeer, onttrek, knip en verwerk in bondels — alles op een plek.",
+    "description": "EncodeX is 'n platformonafhanklike multimediastel wat die krag van FFmpeg na 'n moderne, intuïtiewe rekenaarkoppelvlak bring. Skakel klank, video en beelde tussen formate om met fyn beheer oor codecs, bitrate, resolusie, pixelformaat en kwaliteit; kopieer strome verliesloos vir onmiddellike remuxing; onttrek klank uit video; en knip video met 'n raam-akkurate voorskouspeler. Hardeware-versnelde enkodering word ondersteun oor NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox en Microsoft Media Foundation, met beskikbare enkodeerderfamilies wat outomaties opgespoor word uit die gebundelde FFmpeg-binêre by looptyd. Bondelwerks take loop deur 'n volgehoue ry met intydse vordering, en 'n koplose CLI-modus stel dieselfde vermoëns beskikbaar vir skrifte en outomatisering.",
+    "logoAlt": "EncodeX-logo",
+    "featuresTitle": "Wat jy kan doen",
+    "version": "Weergawe",
+    "builtWith": "Gebou met",
+    "authorTitle": "Skrywer & terugvoer",
+    "author": "Skrywer",
+    "repository": "Bewaarplek",
+    "feedback": "'n Fout gevind of 'n voorstel?",
+    "reportIssue": "Maak 'n probleem op GitHub oop",
+    "licenseTitle": "Lisensie",
+    "licenseName": "MIT-lisensie",
+    "copyright": "Kopiereg © 2026 EncodeX",
+    "licenseSummary": "Vrygestel onder die MIT-lisensie. Vry om te gebruik, kopieer, wysig, saamsmelt, publiseer, versprei, sublisensieer en verkoop — insluitend kommersieel — mits die kopieregkennisgewing en toestemmingskennisgewing in alle kopieë of wesenlike dele van die sagteware ingesluit word. Die sagteware word verskaf \"soos is\", sonder enige waarborg.",
+    "acknowledgements": "Gemaak met ❤️ vir oopbron — aangedryf deur die FFmpeg-projek en die gemeenskap."
   }
 }

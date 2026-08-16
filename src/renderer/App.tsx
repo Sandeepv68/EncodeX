@@ -70,6 +70,8 @@ const BatchQueue = lazy(() => import('./pages/BatchQueue'));
 const Logs = lazy(() => import('./pages/Logs'));
 /** Lazy-loaded Settings page, loaded on the '/settings' route. @const {React.ComponentType} */
 const Settings = lazy(() => import('./pages/Settings'));
+/** Lazy-loaded About page, loaded on the '/about' route. @const {React.ComponentType} */
+const About = lazy(() => import('./pages/About'));
 
 /**
  * Main application shell rendered inside the ColorModeProvider.
@@ -156,6 +158,7 @@ function AppLayout() {
     { path: '/batch', element: <BatchQueue /> },
     { path: '/logs', element: <Logs /> },
     { path: '/settings', element: <Settings /> },
+    { path: '/about', element: <About /> },
   ];
 
   const drawerContent = (

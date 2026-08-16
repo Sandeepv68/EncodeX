@@ -134,4 +134,5 @@ export const NAV_ITEMS = [
   { to: '/batch', label: 'Batch Queue' },
   { to: '/logs', label: 'Logs' },
   { to: '/settings', label: 'Settings' },
+  { to: '/about', label: 'About' },
 ] as const;

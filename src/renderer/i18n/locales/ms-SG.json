@@ -17,7 +17,8 @@
     "cut": "Potong",
     "batchQueue": "Baris Giliran Kelompok",
     "logs": "Log",
-    "settings": "Tetapan"
+    "settings": "Tetapan",
+    "about": "Perihal"
   },
   "dashboard": {
     "welcome": "Selamat Datang ke EncodeX",
@@ -576,5 +577,24 @@
       "cut": "Buka Potong",
       "batch": "Buka Giliran Kelompok"
     }
+  },
+  "about": {
+    "title": "Tentang EncodeX",
+    "subtitle": "Kit alat multimedia percuma dan sumber terbuka yang dibina di atas FFmpeg. Tukar, periksa, mampat, ekstrak, potong dan proses audio, video dan imej secara kelompok — semuanya di satu tempat.",
+    "description": "EncodeX ialah kit alat multimedia merentas platform yang membawa kuasa FFmpeg ke antara muka desktop yang moden dan intuitif. Tukar audio, video dan imej antara format dengan kawalan terperinci ke atas codec, bitrate, resolusi, format piksel dan kualiti; salin trek tanpa kehilangan kualiti untuk remux serta-merta; ekstrak audio daripada video; dan potong video dengan pemain pratonton tepat-frama. Pengekodan dipercepat perkakasan disokong merentas NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox dan Microsoft Media Foundation, dengan keluarga pengekod yang tersedia dikesan secara automatik daripada binari FFmpeg yang disertakan pada masa jalan. Kerja kelompok berjalan melalui baris gilir berterusan dengan kemajuan masa nyata, dan mod CLI tanpa kepala mendedahkan keupayaan yang sama untuk skrip dan automasi.",
+    "logoAlt": "Logo EncodeX",
+    "featuresTitle": "Apa yang anda boleh lakukan",
+    "version": "Versi",
+    "builtWith": "Dibina dengan",
+    "authorTitle": "Penulis & maklum balas",
+    "author": "Penulis",
+    "repository": "Repositori",
+    "feedback": "Menemui pepijat atau ada cadangan?",
+    "reportIssue": "Buka isu di GitHub",
+    "licenseTitle": "Lesen",
+    "licenseName": "Lesen MIT",
+    "copyright": "Hak cipta © 2026 EncodeX",
+    "licenseSummary": "Dikeluarkan di bawah Lesen MIT. Bebas untuk digunakan, disalin, diubah suai, digabung, diterbitkan, diedarkan, dilesenkan semula dan dijual — termasuk secara komersial — dengan syarat notis hak cipta dan notis kebenaran disertakan dalam semua salinan atau bahagian penting perisian. Perisian disediakan \"seadanya\", tanpa sebarang waranti.",
+    "acknowledgements": "Dibuat dengan ❤️ untuk sumber terbuka — didorong oleh projek FFmpeg dan komuniti."
   }
 }

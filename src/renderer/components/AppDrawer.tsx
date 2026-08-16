@@ -62,6 +62,7 @@ const navKeyMap: Record<string, string> = {
   '/batch': 'batchQueue',
   '/logs': 'logs',
   '/settings': 'settings',
+  '/about': 'about',
 };
 
 /**

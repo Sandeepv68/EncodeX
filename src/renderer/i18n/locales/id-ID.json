@@ -17,7 +17,8 @@
     "cut": "Potong",
     "batchQueue": "Antrean Batch",
     "logs": "Log",
-    "settings": "Pengaturan"
+    "settings": "Pengaturan",
+    "about": "Tentang"
   },
   "dashboard": {
     "welcome": "Selamat datang di EncodeX",
@@ -576,5 +577,24 @@
       "cut": "Buka Potong",
       "batch": "Buka Antrean Batch"
     }
+  },
+  "about": {
+    "title": "Tentang EncodeX",
+    "subtitle": "Toolkit multimedia gratis dan sumber terbuka yang dibangun di atas FFmpeg. Konversi, periksa, kompres, ekstrak, potong, dan proses batch audio, video, dan gambar — semuanya di satu tempat.",
+    "description": "EncodeX adalah toolkit multimedia lintas platform yang menghadirkan kekuatan FFmpeg ke dalam antarmuka desktop yang modern dan intuitif. Konversi audio, video, dan gambar antar format dengan kontrol terperinci atas codec, bitrate, resolusi, format piksel, dan kualitas; salin trek tanpa kehilangan kualitas untuk remuxing instan; ekstrak audio dari video; dan potong video dengan pemutar pratinjau akurat per frame. Enkode yang dipercepat perangkat keras didukung di NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, dan Microsoft Media Foundation, dengan keluarga encoder yang tersedia terdeteksi otomatis dari biner FFmpeg yang disertakan saat runtime. Pekerjaan batch berjalan melalui antrean persisten dengan progres real-time, dan mode CLI headless mengekspos kemampuan yang sama untuk scripting dan otomatisasi.",
+    "logoAlt": "Logo EncodeX",
+    "featuresTitle": "Apa yang dapat Anda lakukan",
+    "version": "Versi",
+    "builtWith": "Dibangun dengan",
+    "authorTitle": "Penulis & umpan balik",
+    "author": "Penulis",
+    "repository": "Repositori",
+    "feedback": "Menemukan bug atau punya saran?",
+    "reportIssue": "Buka issue di GitHub",
+    "licenseTitle": "Lisensi",
+    "licenseName": "Lisensi MIT",
+    "copyright": "Hak cipta © 2026 EncodeX",
+    "licenseSummary": "Dirilis di bawah Lisensi MIT. Bebas digunakan, disalin, dimodifikasi, digabung, diterbitkan, didistribusikan, dilisensikan kembali, dan dijual — termasuk secara komersial — dengan ketentuan pemberitahuan hak cipta dan pemberitahuan izin disertakan dalam semua salinan atau bagian substansial dari perangkat lunak. Perangkat lunak disediakan \"apa adanya\", tanpa jaminan apa pun.",
+    "acknowledgements": "Dibuat dengan ❤️ untuk sumber terbuka — didukung oleh proyek FFmpeg dan komunitas."
   }
 }

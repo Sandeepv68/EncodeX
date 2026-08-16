@@ -17,7 +17,8 @@
     "cut": "Klip",
     "batchQueue": "Batchkø",
     "logs": "Logfiler",
-    "settings": "Indstillinger"
+    "settings": "Indstillinger",
+    "about": "Om"
   },
   "dashboard": {
     "welcome": "Velkommen til EncodeX",
@@ -576,5 +577,24 @@
       "cut": "Åbn Klip",
       "batch": "Åbn Batch-kø"
     }
+  },
+  "about": {
+    "title": "Om EncodeX",
+    "subtitle": "Et gratis og open source-multimedieværktøj bygget på FFmpeg. Konvertér, inspicér, komprimér, udtræk, klip, og batchbehandl lyd, video og billeder — alt sammen ét sted.",
+    "description": "EncodeX er et tværplatforms-multimedieværktøj, der bringer FFmpegs kraft til en moderne, intuitiv desktopgrænseflade. Konvertér lyd, video og billeder mellem formater med præcis kontrol over codecs, bitrate, opløsning, pixelformat og kvalitet; kopiér spor tabsfrit for øjeblikkelig remuxing; udtræk lyd fra video; og klip video med en frame-nøjagtig preview-afspiller. Hardwareaccelereret kodning understøttes på tværs af NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox og Microsoft Media Foundation, og de tilgængelige encoder-familier registreres automatisk fra den medfølgende FFmpeg-binærfil ved kørsel. Batchjobs kører gennem en vedvarende kø med realtidsfremskridt, og en headless CLI-tilstand udstiller de samme funktioner til scripting og automatisering.",
+    "logoAlt": "EncodeX-logo",
+    "featuresTitle": "Hvad du kan gøre",
+    "version": "Version",
+    "builtWith": "Bygget med",
+    "authorTitle": "Forfatter & feedback",
+    "author": "Forfatter",
+    "repository": "Repository",
+    "feedback": "Fandt du en fejl, eller har du et forslag?",
+    "reportIssue": "Åbn et issue på GitHub",
+    "licenseTitle": "Licens",
+    "licenseName": "MIT-licens",
+    "copyright": "Ophavsret © 2026 EncodeX",
+    "licenseSummary": "Udgivet under MIT-licensen. Frit at bruge, kopiere, ændre, flette, udgive, distribuere, underlicensere og sælge — også kommercielt — forudsat at ophavsretsmeddelelsen og tilladelsesmeddelelsen medtages i alle kopier eller væsentlige dele af softwaren. Softwaren leveres \"som den er\", uden garanti af nogen art.",
+    "acknowledgements": "Lavet med ❤️ til open source — drevet af FFmpeg-projektet og fællesskabet."
   }
 }

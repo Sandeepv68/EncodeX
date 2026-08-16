@@ -17,7 +17,8 @@
     "cut": "Gupitin",
     "batchQueue": "Pila ng Batch",
     "logs": "Mga Log",
-    "settings": "Mga Setting"
+    "settings": "Mga Setting",
+    "about": "Tungkol sa"
   },
   "dashboard": {
     "welcome": "Maligayang Pagdating sa EncodeX",
@@ -576,5 +577,24 @@
       "cut": "Buksan ang I-cut",
       "batch": "Buksan ang Batch Queue"
     }
+  },
+  "about": {
+    "title": "Tungkol sa EncodeX",
+    "subtitle": "Isang libre at open-source na toolkit para sa multimedia na binuo sa FFmpeg. I-convert, siyasatin, i-compress, kunin, gupitin, at i-batch ang pagproseso ng audio, video, at mga larawan — lahat sa isang lugar.",
+    "description": "Ang EncodeX ay isang cross-platform na multimedia toolkit na nagdadala ng kapangyarihan ng FFmpeg sa isang moderno at intuitive na desktop interface. I-convert ang audio, video, at mga larawan sa pagitan ng mga format na may malawakang kontrol sa mga codec, bitrate, resolution, pixel format, at kalidad; kopyahin ang mga track nang walang anumang kalidad na nawawala para sa agarang remuxing; kunin ang audio mula sa video; at gupitin ang video gamit ang isang frame-accurate na preview player. Ang hardware-accelerated encoding ay sinusuportahan sa NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, at Microsoft Media Foundation, na may mga available na encoder family na awtomatikong nakikita mula sa bundled na FFmpeg binary sa runtime. Ang mga batch job ay dumadaloy sa isang persistent na queue na may real-time na progress, at ang headless CLI mode ay nagbibigay ng parehong mga kakayahan para sa scripting at automation.",
+    "logoAlt": "Logo ng EncodeX",
+    "featuresTitle": "Kung ano ang magagawa mo",
+    "version": "Bersyon",
+    "builtWith": "Binuo gamit ang",
+    "authorTitle": "May-akda at feedback",
+    "author": "May-akda",
+    "repository": "Repository",
+    "feedback": "Nakahanap ka ng bug o may mungkahi ka?",
+    "reportIssue": "Magbukas ng issue sa GitHub",
+    "licenseTitle": "Lisensya",
+    "licenseName": "Lisensyang MIT",
+    "copyright": "Copyright © 2026 EncodeX",
+    "licenseSummary": "Inilabas sa ilalim ng MIT License. Malayang gamitin, kopyahin, baguhin, pagsamahin, i-publish, ipamahagi, i-sublicense, at ibenta — kabilang ang komersyal — basta't kasama ang copyright notice at permission notice sa lahat ng kopya o malaking bahagi ng software. Ang software ay ibinibigay \"as is\", nang walang anumang warranty.",
+    "acknowledgements": "Ginawa nang may ❤️ para sa open source — pinapagana ng proyektong FFmpeg at ng komunidad."
   }
 }

@@ -17,7 +17,8 @@
     "cut": "剪輯",
     "batchQueue": "批次佇列",
     "logs": "記錄",
-    "settings": "設定"
+    "settings": "設定",
+    "about": "關於"
   },
   "dashboard": {
     "welcome": "歡迎使用 EncodeX",
@@ -576,5 +577,24 @@
       "cut": "開啟裁剪",
       "batch": "開啟批次佇列"
     }
+  },
+  "about": {
+    "title": "關於 EncodeX",
+    "subtitle": "一個基於 FFmpeg 建置的免費開放原始碼多媒體工具包。轉換、檢查、壓縮、擷取、剪輯以及批次處理音訊、視訊和圖片——全部集中在一個地方。",
+    "description": "EncodeX 是一個跨平台的多媒體工具包，將 FFmpeg 的強大功能帶到現代、直覺的桌面介面中。在編解碼器、位元率、解析度、像素格式和品質方面進行精細控制，在格式之間轉換音訊、視訊和圖片；無損複製音軌以即時重新封裝；從視訊中擷取音訊；並使用幀精確的預覽播放器剪輯視訊。支援 NVIDIA NVENC、Intel QSV、AMD AMF、VAAPI、Apple VideoToolbox 和 Microsoft Media Foundation 的硬體加速編碼，並在執行階段從隨附的 FFmpeg 二進位檔案中自動偵測可用的編碼器系列。批次任務透過持久佇列執行並即時顯示進度，無頭 CLI 模式則為指令碼撰寫和自動化提供相同的功能。",
+    "logoAlt": "EncodeX 標誌",
+    "featuresTitle": "你可以做什麼",
+    "version": "版本",
+    "builtWith": "基於",
+    "authorTitle": "作者與意見回饋",
+    "author": "作者",
+    "repository": "存放庫",
+    "feedback": "發現錯誤或有建議？",
+    "reportIssue": "在 GitHub 上開啟 Issue",
+    "licenseTitle": "授權條款",
+    "licenseName": "MIT 授權條款",
+    "copyright": "版權所有 © 2026 EncodeX",
+    "licenseSummary": "以 MIT 授權條款發布。可以自由使用、複製、修改、合併、發布、散布、再授權和販售——包括商業用途——前提是軟體的所有副本或實質部分中都包含版權聲明和許可聲明。本軟體按「原樣」提供，不附帶任何形式的保證。",
+    "acknowledgements": "為開源傾注 ❤️ — 由 FFmpeg 專案與社群共同驅動。"
   }
 }

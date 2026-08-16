@@ -17,7 +17,8 @@
     "cut": "Leikkaa",
     "batchQueue": "Eräjono",
     "logs": "Lokit",
-    "settings": "Asetukset"
+    "settings": "Asetukset",
+    "about": "Tietoja"
   },
   "dashboard": {
     "welcome": "Tervetuloa EncodeX:ään",
@@ -576,5 +577,24 @@
       "cut": "Avaa Leikkaus",
       "batch": "Avaa Eräjono"
     }
+  },
+  "about": {
+    "title": "Tietoja EncodeX:stä",
+    "subtitle": "Ilmainen ja avoimen lähdekoodin multimediatyökalupakki, joka on rakennettu FFmpegin varaan. Muunna, tarkastele, pakkaa, poimi, leikkaa ja käsittele eräajona ääntä, videota ja kuvia – kaikki yhdessä paikassa.",
+    "description": "EncodeX on alustariippumaton multimediatyökalupakki, joka tuo FFmpegin tehon moderniin ja intuitiiviseen työpöytäkäyttöliittymään. Muunna ääntä, videota ja kuvia formaatista toiseen tarkalla säädöllä koodekkien, bittinopeuden, resoluution, pikseliformaatin ja laadun suhteen; kopioi raidat häviöttömästi välitöntä remuxausta varten; poimi ääni videosta; ja leikkaa videota ruuduntarkalla esikatselusoittimella. Laitteistokiihdytettyä koodausta tuetaan NVIDIA NVENC:n, Intel QSV:n, AMD AMF:n, VAAPI:n, Apple VideoToolboxin ja Microsoft Media Foundationin kautta, ja käytettävissä olevat kooderiperheet tunnistetaan automaattisesti mukana tulevasta FFmpeg-ajotiedostosta suorituksen aikana. Erätyöt kulkevat pysyvän jonon läpi reaaliaikaisella etenemisellä, ja headless-CLI-tila tarjoaa samat ominaisuudet komentosarjoihin ja automaatioon.",
+    "logoAlt": "EncodeX-logo",
+    "featuresTitle": "Mitä voit tehdä",
+    "version": "Versio",
+    "builtWith": "Rakennettu",
+    "authorTitle": "Tekijä & palaute",
+    "author": "Tekijä",
+    "repository": "Säilö",
+    "feedback": "Löysitkö virheen tai onko sinulla ehdotus?",
+    "reportIssue": "Avaa issue GitHubissa",
+    "licenseTitle": "Lisenssi",
+    "licenseName": "MIT-lisenssi",
+    "copyright": "Tekijänoikeus © 2026 EncodeX",
+    "licenseSummary": "Julkaistu MIT-lisenssillä. Vapaasti käytettävissä, kopioitavissa, muokattavissa, yhdistettävissä, julkaistavissa, jaettavissa, alilisensoitavissa ja myytävissä – myös kaupallisesti – edellyttäen, että tekijänoikeusilmoitus ja käyttölupailmoitus sisältyvät kaikkiin kopioihin tai olennaisiin osiin ohjelmistosta. Ohjelmisto toimitetaan \"sellaisenaan\" ilman minkäänlaista takuuta.",
+    "acknowledgements": "Tehty ❤️:llä avoimen lähdekoodin puolesta — FFmpeg-projektin ja yhteisön voimin."
   }
 }

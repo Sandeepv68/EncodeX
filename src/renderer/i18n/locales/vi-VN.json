@@ -17,7 +17,8 @@
     "cut": "Cắt",
     "batchQueue": "Hàng đợi hàng loạt",
     "logs": "Nhật ký",
-    "settings": "Cài đặt"
+    "settings": "Cài đặt",
+    "about": "Giới thiệu"
   },
   "dashboard": {
     "welcome": "Chào mừng đến với EncodeX",
@@ -576,5 +577,24 @@
       "cut": "Mở Cắt",
       "batch": "Mở Hàng đợi hàng loạt"
     }
+  },
+  "about": {
+    "title": "Giới thiệu về EncodeX",
+    "subtitle": "Bộ công cụ đa phương tiện miễn phí và mã nguồn mở được xây dựng trên FFmpeg. Chuyển đổi, kiểm tra, nén, trích xuất, cắt và xử lý hàng loạt âm thanh, video và hình ảnh — tất cả ở một nơi.",
+    "description": "EncodeX là bộ công cụ đa phương tiện đa nền tảng mang sức mạnh của FFmpeg đến giao diện máy tính hiện đại và trực quan. Chuyển đổi âm thanh, video và hình ảnh giữa các định dạng với khả năng kiểm soát chi tiết codec, bitrate, độ phân giải, định dạng pixel và chất lượng; sao chép các track không mất chất lượng để remux tức thì; trích xuất âm thanh từ video; và cắt video bằng trình phát xem trước chính xác đến từng khung hình. Mã hóa tăng tốc phần cứng được hỗ trợ trên NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox và Microsoft Media Foundation, với các họ bộ mã hóa khả dụng được tự động phát hiện từ tệp FFmpeg đi kèm trong thời gian chạy. Các tác vụ hàng loạt chạy qua hàng đợi liên tục với tiến trình theo thời gian thực, và chế độ CLI không giao diện hiển thị các khả năng tương tự cho việc viết kịch bản và tự động hóa.",
+    "logoAlt": "Logo EncodeX",
+    "featuresTitle": "Những điều bạn có thể làm",
+    "version": "Phiên bản",
+    "builtWith": "Xây dựng bằng",
+    "authorTitle": "Tác giả và phản hồi",
+    "author": "Tác giả",
+    "repository": "Kho lưu trữ",
+    "feedback": "Tìm thấy lỗi hoặc có đề xuất nào không?",
+    "reportIssue": "Mở issue trên GitHub",
+    "licenseTitle": "Giấy phép",
+    "licenseName": "Giấy phép MIT",
+    "copyright": "Bản quyền © 2026 EncodeX",
+    "licenseSummary": "Phát hành theo Giấy phép MIT. Được tự do sử dụng, sao chép, sửa đổi, hợp nhất, xuất bản, phân phối, cấp phép lại và bán — kể cả mục đích thương mại — với điều kiện thông báo bản quyền và thông báo cấp phép được bao gồm trong tất cả các bản sao hoặc phần quan trọng của phần mềm. Phần mềm được cung cấp \"nguyên trạng\", không có bất kỳ bảo hành nào.",
+    "acknowledgements": "Làm bằng ❤️ cho mã nguồn mở — được hỗ trợ bởi dự án FFmpeg và cộng đồng."
   }
 }
