@@ -18,7 +18,14 @@
     "batchQueue": "คิวงาน",
     "logs": "บันทึก",
     "settings": "การตั้งค่า",
-    "about": "เกี่ยวกับ"
+    "about": "เกี่ยวกับ",
+    "blip": {
+      "converting": "กำลังแปลง",
+      "extracting": "กำลังแยกเสียง",
+      "cutting": "กำลังตัดวิดีโอ",
+      "paused": "หยุดชั่วคราว",
+      "starting": "กำลังเริ่มต้น"
+    }
   },
   "dashboard": {
     "welcome": "ยินดีต้อนรับสู่ EncodeX",

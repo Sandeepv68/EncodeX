@@ -18,7 +18,14 @@
     "batchQueue": "ब्याच कतार",
     "logs": "लगहरू",
     "settings": "सेटिङहरू",
-    "about": "बारेमा"
+    "about": "बारेमा",
+    "blip": {
+      "converting": "रूपान्तरण गर्दै",
+      "extracting": "अडियो निकाल्दै",
+      "cutting": "भिडियो काट्दै",
+      "paused": "रोकिएको",
+      "starting": "सुरु हुँदै"
+    }
   },
   "dashboard": {
     "welcome": "EncodeX मा स्वागत छ",

@@ -18,7 +18,14 @@
     "batchQueue": "배치 큐",
     "logs": "로그",
     "settings": "설정",
-    "about": "소개"
+    "about": "소개",
+    "blip": {
+      "converting": "변환 중",
+      "extracting": "오디오 추출 중",
+      "cutting": "비디오 자르는 중",
+      "paused": "일시 중지됨",
+      "starting": "시작 중"
+    }
   },
   "dashboard": {
     "welcome": "EncodeX에 오신 것을 환영합니다",

@@ -18,7 +18,14 @@
     "batchQueue": "批量队列",
     "logs": "日志",
     "settings": "设置",
-    "about": "关于"
+    "about": "关于",
+    "blip": {
+      "converting": "转换中",
+      "extracting": "正在提取音频",
+      "cutting": "正在剪切视频",
+      "paused": "已暂停",
+      "starting": "正在开始"
+    }
   },
   "dashboard": {
     "welcome": "欢迎使用 EncodeX",

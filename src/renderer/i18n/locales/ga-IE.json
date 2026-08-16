@@ -18,7 +18,14 @@
     "batchQueue": "Scuaine Bhaisc",
     "logs": "Logaí",
     "settings": "Socruithe",
-    "about": "Faoi"
+    "about": "Faoi",
+    "blip": {
+      "converting": "Ag tiontú",
+      "extracting": "Ag eastóscadh fuaime",
+      "cutting": "Ag gearradh físeáin",
+      "paused": "Ar sos",
+      "starting": "Ag tosú"
+    }
   },
   "dashboard": {
     "welcome": "Fáilte go EncodeX",

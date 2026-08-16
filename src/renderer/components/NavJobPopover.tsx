@@ -1,0 +1,211 @@
+/**
+ * @fileoverview Hover/focus popover for the navigation drawer activity blips.
+ *
+ * Renders a compact card (via MUI Popover) describing the in-progress job on a
+ * nav page: the page title, a localized status line (with an optional paused
+ * tag), the source file basename, and a live progress bar. When the job's input
+ * path is supplied in `content.input`, a small thumbnail of the source file is
+ * lazily resolved through the shared preview cache and shown beside the text.
+ * It is fully presentational - the host (AppDrawer) resolves the content from
+ * the relevant store and hands it in via the `content` prop - so the popover
+ * can be reused and unit-tested in isolation.
+ *
+ * The popover is anchored to the nav row and is left-open while the pointer
+ * rests on the row or the card: the host drives `open` via the `active` prop
+ * and forwards `onMouseEnter` / `onMouseLeave` to the paper so the close can be
+ * deferred while the cursor is over the card. Escape and focus-out close it
+ * through `onClose`.
+ *
+ * The full-screen Modal overlay MUI Popover mounts while open would otherwise
+ * sit above the nav rows and steal their hover and click events (flickering the
+ * popover and blocking navigation), so the overlay root and backdrop are set to
+ * `pointer-events: none`; only the paper card itself stays interactive.
+ *
+ * Props (see {@link NavJobPopoverProps}):
+ *  - active: the blip id the popover is open for, or null when closed.
+ *  - anchorEl: the nav row element the popover pins to.
+ *  - onClose: closes the popover.
+ *  - content: resolved title / status / fileName / progress / input, or null.
+ *  - onMouseEnter / onMouseLeave: forwarded to the popover paper.
+ */
+
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Box, Popover, Typography } from '@mui/material';
+import ProgressBar from './ProgressBar';
+import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
+import type { NavJobPopoverProps } from './types';
+import { PopoverArrow, PopoverPileThumb, PopoverThumb } from '../styles/NavJobPopover.styles';
+
+/**
+ * Lazily resolves a preview data URL for an input path through the shared
+ * preview cache: a previously generated thumbnail (e.g. from the batch queue
+ * card) seeds the first render synchronously, otherwise the image/video preview
+ * IPC is called once per path. Audio files and other sources without a usable
+ * preview resolve to `null`.
+ * @param {string} [input] - Absolute input path, or undefined when unknown.
+ * @returns {string | null} The preview data URL, or null.
+ */
+function usePreviewSrc(input?: string): string | null {
+  const [src, setSrc] = useState<string | null>(null);
+  useEffect(() => {
+    if (!input) {
+      setSrc(null);
+      return;
+    }
+    let cancelled = false;
+    setSrc(getResolvedPreviewThumbnail(input));
+    getPreviewThumbnail(input).then((dataUrl) => {
+      if (!cancelled) setSrc(dataUrl);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [input]);
+  return src;
+}
+
+/**
+ * Extracts the file name portion of an absolute path, handling both forward and
+ * Windows back slashes (no Node `path` import in the renderer).
+ * @param {string} filePath - Absolute file path.
+ * @returns {string} The basename, or '' when the path is empty.
+ */
+function basename(filePath: string): string {
+  return filePath.split(/[\\/]/).pop() ?? '';
+}
+
+/**
+ * Lazy-loaded thumbnail of the job's source file.
+ * @param {string} [input] - Absolute input path, or undefined when unknown.
+ * @returns {JSX.Element | null} The thumbnail image, or null.
+ */
+function Thumbnail({ input }: { input?: string }) {
+  const src = usePreviewSrc(input);
+  if (!src) return null;
+  return <PopoverThumb src={src} alt="" data-testid="nav-job-popover-thumbnail" />;
+}
+
+/**
+ * Number of pending-job thumbnails shown in the pile before it is truncated
+ * with a "+N" count badge.
+ * @const {number} PILE_MAX_VISIBLE
+ */
+const PILE_MAX_VISIBLE = 5;
+
+/**
+ * One slot in the overlapping pending-job thumbnail pile: a fixed-size rounded
+ * box that holds the resolved preview (or a neutral placeholder while loading /
+ * when the file has no usable preview), overlapping the previous slot.
+ * @param {{ input: string }} props - The pending job's input path.
+ * @returns {JSX.Element} The pile thumbnail slot.
+ */
+function PileThumb({ input }: { input: string }) {
+  const src = usePreviewSrc(input);
+  return <PopoverPileThumb $src={src} data-testid="nav-job-popover-pile-thumb" title={basename(input)} />;
+}
+
+/**
+ * Renders the navigation job popover card.
+ *
+ * When `active` and `content` are set, mounts a Popover anchored below/right of
+ * the nav row showing the job status and a determinate progress bar (or a
+ * localized "starting" caption while progress is not yet available). A paused
+ * job is annotated with the localized paused label and passed through to the
+ * ProgressBar for paused styling. `data-testid="nav-job-popover"` marks the
+ * card for tests.
+ *
+ * @param {NavJobPopoverProps} props - Component props.
+ * @returns {JSX.Element | null} The popover, or null when closed.
+ */
+export default function NavJobPopover({ active, anchorEl, onClose, content, onMouseEnter, onMouseLeave }: NavJobPopoverProps) {
+  const { t } = useTranslation();
+  const open = active !== null && Boolean(anchorEl) && Boolean(content);
+
+  return (
+    <Popover
+      open={open}
+      anchorEl={anchorEl}
+      onClose={onClose}
+      disableAutoFocus
+      disableEnforceFocus
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+      slotProps={{
+        root: { style: { pointerEvents: 'none' } },
+        backdrop: { style: { pointerEvents: 'none' } },
+        paper: {
+          onMouseEnter,
+          onMouseLeave,
+          'data-testid': 'nav-job-popover',
+          sx: (theme) => ({
+            width: 260,
+            maxWidth: `calc(100vw - ${theme.typography.pxToRem(32)})`,
+            p: 2,
+            ml: 1,
+            borderRadius: 2,
+            pointerEvents: 'auto',
+            overflow: 'visible',
+          }),
+        },
+      }}
+    >
+      {content && (
+        <>
+          <PopoverArrow data-testid="nav-job-popover-arrow" />
+          <Typography variant="subtitle2" component="div" sx={{ mb: 1 }}>
+            {content.title}
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
+            <Thumbnail input={content.input} />
+            <Box sx={{ minWidth: 0, flex: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+                <Typography variant="caption" color="text.secondary" noWrap>
+                  {content.status}
+                </Typography>
+                {content.paused && (
+                  <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                    {t('nav.blip.paused')}
+                  </Typography>
+                )}
+              </Box>
+              {content.fileName && (
+                <Typography variant="caption" color="text.secondary" title={content.fileName} noWrap sx={{ display: 'block', mt: 0.25 }}>
+                  {content.fileName}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+          <Box sx={{ mt: 1 }}>
+            {content.progress ? (
+              <ProgressBar
+                percent={content.progress.percent}
+                time={content.progress.time}
+                speed={content.progress.speed}
+                eta={content.progress.eta}
+                paused={content.paused}
+                minimal
+              />
+            ) : (
+              <Typography variant="caption" color="text.secondary">
+                {t('nav.blip.starting')}
+              </Typography>
+            )}
+          </Box>
+          {content.pendingThumbnails && content.pendingThumbnails.length > 0 && (
+            <Box data-testid="nav-job-popover-pile" sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+              {content.pendingThumbnails.slice(0, PILE_MAX_VISIBLE).map((input) => (
+                <PileThumb key={input} input={input} />
+              ))}
+              {content.pendingThumbnails.length > PILE_MAX_VISIBLE && (
+                <Typography variant="caption" color="text.secondary" data-testid="nav-job-popover-pile-count" sx={{ ml: 1 }}>
+                  +{content.pendingThumbnails.length - PILE_MAX_VISIBLE}
+                </Typography>
+              )}
+            </Box>
+          )}
+        </>
+      )}
+    </Popover>
+  );
+}

@@ -18,7 +18,14 @@
     "batchQueue": "Coda batch",
     "logs": "Registri",
     "settings": "Impostazioni",
-    "about": "Informazioni"
+    "about": "Informazioni",
+    "blip": {
+      "converting": "Conversione in corso",
+      "extracting": "Estrazione audio",
+      "cutting": "Taglio video",
+      "paused": "In pausa",
+      "starting": "Avvio"
+    }
   },
   "dashboard": {
     "welcome": "Benvenuto in EncodeX",

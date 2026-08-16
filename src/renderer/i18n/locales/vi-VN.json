@@ -18,7 +18,14 @@
     "batchQueue": "Hàng đợi hàng loạt",
     "logs": "Nhật ký",
     "settings": "Cài đặt",
-    "about": "Giới thiệu"
+    "about": "Giới thiệu",
+    "blip": {
+      "converting": "Đang chuyển đổi",
+      "extracting": "Đang tách âm thanh",
+      "cutting": "Đang cắt video",
+      "paused": "Tạm dừng",
+      "starting": "Đang bắt đầu"
+    }
   },
   "dashboard": {
     "welcome": "Chào mừng đến với EncodeX",

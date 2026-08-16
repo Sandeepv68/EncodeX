@@ -18,7 +18,14 @@
     "batchQueue": "Fila em Lote",
     "logs": "Registros",
     "settings": "Configurações",
-    "about": "Sobre"
+    "about": "Sobre",
+    "blip": {
+      "converting": "Convertendo",
+      "extracting": "Extraindo áudio",
+      "cutting": "Cortando vídeo",
+      "paused": "Em pausa",
+      "starting": "Iniciando"
+    }
   },
   "dashboard": {
     "welcome": "Bem-vindo ao EncodeX",

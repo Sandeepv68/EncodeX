@@ -18,7 +18,14 @@
     "batchQueue": "Batchwachtrij",
     "logs": "Logboeken",
     "settings": "Instellingen",
-    "about": "Over"
+    "about": "Over",
+    "blip": {
+      "converting": "Bezig met converteren",
+      "extracting": "Audio extraheren",
+      "cutting": "Video knippen",
+      "paused": "Gepauzeerd",
+      "starting": "Starten"
+    }
   },
   "dashboard": {
     "welcome": "Welkom bij EncodeX",

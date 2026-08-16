@@ -18,7 +18,14 @@
     "batchQueue": "Ilerleq",
     "logs": "Allaaserisat",
     "settings": "Inissiissutit",
-    "about": "About"
+    "about": "About",
+    "blip": {
+      "converting": "Allannguineqartuarpoq",
+      "extracting": "Nipaatit (audio) aniat",
+      "cutting": "Ulluliorneq (video)",
+      "paused": "Unnerseqsimavoq",
+      "starting": "Aallartippoq"
+    }
   },
   "dashboard": {
     "welcome": "EncodeX-imut tikilluaritsi",

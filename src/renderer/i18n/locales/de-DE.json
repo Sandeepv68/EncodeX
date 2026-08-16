@@ -18,7 +18,14 @@
     "batchQueue": "Stapelwarteschlange",
     "logs": "Protokolle",
     "settings": "Einstellungen",
-    "about": "Über"
+    "about": "Über",
+    "blip": {
+      "converting": "Konvertiere",
+      "extracting": "Audio extrahieren",
+      "cutting": "Video schneiden",
+      "paused": "Pausiert",
+      "starting": "Starte"
+    }
   },
   "dashboard": {
     "welcome": "Willkommen bei EncodeX",

@@ -18,7 +18,14 @@
     "batchQueue": "批次佇列",
     "logs": "記錄",
     "settings": "設定",
-    "about": "關於"
+    "about": "關於",
+    "blip": {
+      "converting": "轉換中",
+      "extracting": "正在擷取音訊",
+      "cutting": "正在剪輯影片",
+      "paused": "已暫停",
+      "starting": "正在開始"
+    }
   },
   "dashboard": {
     "welcome": "歡迎使用 EncodeX",

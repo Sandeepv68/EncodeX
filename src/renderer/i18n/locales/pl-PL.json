@@ -18,7 +18,14 @@
     "batchQueue": "Kolejka wsadowa",
     "logs": "Dzienniki",
     "settings": "Ustawienia",
-    "about": "O programie"
+    "about": "O programie",
+    "blip": {
+      "converting": "Konwertowanie",
+      "extracting": "Wyodrębnianie dźwięku",
+      "cutting": "Przycinanie wideo",
+      "paused": "Wstrzymano",
+      "starting": "Uruchamianie"
+    }
   },
   "dashboard": {
     "welcome": "Witamy w EncodeX",

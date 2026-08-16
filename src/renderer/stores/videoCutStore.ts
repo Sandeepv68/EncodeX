@@ -11,6 +11,8 @@
  *  - isCutting: a boolean mirror of the live cut task, set by the page while a
  *    cut runs and cleared when it finishes; the navigation drawer reads it to
  *    show the activity blip on the Video Cut entry
+ *  - progress: the live cut progress (TaskProgress), written by the page and
+ *    surfaced by the navigation drawer's blip popover
  *
  * Behavior notes:
  *  - Every setter persists the full draft snapshot to localStorage before
@@ -208,6 +210,7 @@ export const useVideoCutStore = create<VideoCutState>((set) => ({
   ...stored,
   ...INITIAL_CACHE,
   isCutting: false,
+  progress: null,
   /**
    * Sets the source video path and persists the draft.
    * @param {string} file - Absolute path of the source video, or '' to clear.
@@ -330,6 +333,13 @@ export const useVideoCutStore = create<VideoCutState>((set) => ({
   setIsCutting: (v) => {
     set({ isCutting: v });
   },
+  /**
+   * Sets the live cut progress (or null to clear it). Written by the page while
+   * a cut task runs so the navigation drawer's popover can surface it; cleared
+   * when the task finishes or is cancelled.
+   * @param {TaskProgress | null} p - Progress data, or null when idle/complete.
+   */
+  setProgress: (p) => set({ progress: p }),
   /**
    * Clears every draft field and removes the persisted snapshot.
    * @returns {void}

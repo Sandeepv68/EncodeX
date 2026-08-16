@@ -18,7 +18,14 @@
     "batchQueue": "Batchkö",
     "logs": "Loggar",
     "settings": "Inställningar",
-    "about": "Om"
+    "about": "Om",
+    "blip": {
+      "converting": "Konverterar",
+      "extracting": "Extraherar ljud",
+      "cutting": "Klipper video",
+      "paused": "Pausad",
+      "starting": "Startar"
+    }
   },
   "dashboard": {
     "welcome": "Välkommen till EncodeX",

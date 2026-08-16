@@ -18,7 +18,14 @@
     "batchQueue": "ຄິວງານຫຼາຍອັນ",
     "logs": "ບັນທຶກ",
     "settings": "ການຕັ້ງຄ່າ",
-    "about": "ກ່ຽວກັບ"
+    "about": "ກ່ຽວກັບ",
+    "blip": {
+      "converting": "ກຳລັງແປງ",
+      "extracting": "ກຳລັງດຶງສຽງ",
+      "cutting": "ກຳລັງຕັດວິດີໂອ",
+      "paused": "ຖືກຢຸດຊົ່ວຄາວ",
+      "starting": "ກຳລັງເລີ່ມຕົ້ນ"
+    }
   },
   "dashboard": {
     "welcome": "ຍິນດີຕ້ອນຮັບສູ່ EncodeX",

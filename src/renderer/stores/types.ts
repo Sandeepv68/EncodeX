@@ -413,6 +413,7 @@ export interface AudioExtractState {
  * @property {boolean} useDuration - Whether the cut window uses start + duration instead of start/end.
  * @property {boolean} includeAudio - Whether the audio stream is kept in the output.
  * @property {boolean} isCutting - Whether a cut job is currently running (mirrors the live cut task; drives the nav blip).
+ * @property {TaskProgress | null} progress - Live cut progress, or null when idle.
  * @property {WaveformData | null} waveform - Cached timeline waveform, or null until extracted. Kept in memory only.
  * @property {string | null} waveformKey - Cache key (`input::duration`) the waveform belongs to, or null.
  * @property {ThumbnailStrip | null} thumbnails - Cached timeline thumbnail strip, or null until extracted. Kept in memory only.
@@ -430,6 +431,7 @@ export interface AudioExtractState {
  * @property {(data: ThumbnailStrip | null, key?: string | null) => void} cacheThumbnails - Caches the thumbnails (and their key), or clears them.
  * @property {(zoom: number | null, key?: string | null) => void} cacheZoom - Caches the timeline zoom (and its key), or clears it.
  * @property {(v: boolean) => void} setIsCutting - Sets the running-cut flag.
+ * @property {(p: TaskProgress | null) => void} setProgress - Sets the live cut progress (or null to clear).
  * @property {() => void} resetForm - Clears every draft field, the media cache, and the persisted snapshot.
  */
 export interface VideoCutState {
@@ -441,6 +443,7 @@ export interface VideoCutState {
   useDuration: boolean;
   includeAudio: boolean;
   isCutting: boolean;
+  progress: TaskProgress | null;
   waveform: WaveformData | null;
   waveformKey: string | null;
   thumbnails: ThumbnailStrip | null;
@@ -458,5 +461,6 @@ export interface VideoCutState {
   cacheThumbnails: (data: ThumbnailStrip | null, key?: string | null) => void;
   cacheZoom: (zoom: number | null, key?: string | null) => void;
   setIsCutting: (v: boolean) => void;
+  setProgress: (p: TaskProgress | null) => void;
   resetForm: () => void;
 }

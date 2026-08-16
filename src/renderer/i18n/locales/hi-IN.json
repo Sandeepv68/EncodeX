@@ -18,7 +18,14 @@
     "batchQueue": "बैच क्यू",
     "logs": "लॉग्स",
     "settings": "सेटिंग्स",
-    "about": "परिचय"
+    "about": "परिचय",
+    "blip": {
+      "converting": "कनवर्ट हो रहा है",
+      "extracting": "ऑडियो निकाला जा रहा है",
+      "cutting": "वीडियो काटा जा रहा है",
+      "paused": "विराम दिया गया",
+      "starting": "शुरू हो रहा है"
+    }
   },
   "dashboard": {
     "welcome": "EncodeX में आपका स्वागत है",

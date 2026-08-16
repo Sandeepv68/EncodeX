@@ -18,7 +18,14 @@
     "batchQueue": "File d'Attente",
     "logs": "Journaux",
     "settings": "Paramètres",
-    "about": "À propos"
+    "about": "À propos",
+    "blip": {
+      "converting": "Conversion en cours",
+      "extracting": "Extraction audio",
+      "cutting": "Découpage vidéo",
+      "paused": "En pause",
+      "starting": "Démarrage"
+    }
   },
   "dashboard": {
     "welcome": "Bienvenue sur EncodeX",

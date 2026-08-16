@@ -18,7 +18,14 @@
     "batchQueue": "කණ්ඩායම් පෝලිම",
     "logs": "ලොග",
     "settings": "සැකසුම්",
-    "about": "පිළිබඳ"
+    "about": "පිළිබඳ",
+    "blip": {
+      "converting": "පරිවර්තනය වෙමින්",
+      "extracting": "ශ්රව්ය උපුටා ගනිමින්",
+      "cutting": "වීඩියෝව කපමින්",
+      "paused": "විරාමය",
+      "starting": "ආරම්භ වෙමින්"
+    }
   },
   "dashboard": {
     "welcome": "EncodeX වෙත සාදරයෙන් පිළිගනිමු",

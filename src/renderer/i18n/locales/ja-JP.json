@@ -18,7 +18,14 @@
     "batchQueue": "バッチキュー",
     "logs": "ログ",
     "settings": "設定",
-    "about": "このアプリについて"
+    "about": "このアプリについて",
+    "blip": {
+      "converting": "変換中",
+      "extracting": "音声を抽出中",
+      "cutting": "動画をカット中",
+      "paused": "一時停止中",
+      "starting": "開始中"
+    }
   },
   "dashboard": {
     "welcome": "EncodeX へようこそ",

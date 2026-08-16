@@ -18,7 +18,14 @@
     "batchQueue": "תור אצווה",
     "logs": "יומנים",
     "settings": "הגדרות",
-    "about": "אודות"
+    "about": "אודות",
+    "blip": {
+      "converting": "ממיר",
+      "extracting": "חילוץ אודיו",
+      "cutting": "חיתוך וידאו",
+      "paused": "הושהה",
+      "starting": "מתחיל"
+    }
   },
   "dashboard": {
     "welcome": "ברוכים הבאים ל-EncodeX",

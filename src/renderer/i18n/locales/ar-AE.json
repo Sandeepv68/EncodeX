@@ -18,7 +18,14 @@
     "batchQueue": "قائمة الدفعات",
     "logs": "السجلات",
     "settings": "الإعدادات",
-    "about": "حول"
+    "about": "حول",
+    "blip": {
+      "converting": "جارٍ التحويل",
+      "extracting": "استخراج الصوت",
+      "cutting": "قص الفيديو",
+      "paused": "متوقف مؤقتًا",
+      "starting": "جارٍ البدء"
+    }
   },
   "dashboard": {
     "welcome": "مرحباً بك في EncodeX",

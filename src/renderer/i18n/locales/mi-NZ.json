@@ -18,7 +18,14 @@
     "batchQueue": "Rārangi Tukinotanga",
     "logs": "Rārangi Kōrero",
     "settings": "Tautuhinga",
-    "about": "Mō"
+    "about": "Mō",
+    "blip": {
+      "converting": "Ke te hurihuri",
+      "extracting": "Ke tango ororongo",
+      "cutting": "Ke tapahi ataata",
+      "paused": "Kua tārea",
+      "starting": "Ke tīmata"
+    }
   },
   "dashboard": {
     "welcome": "Nau mai, haere mai ki EncodeX",

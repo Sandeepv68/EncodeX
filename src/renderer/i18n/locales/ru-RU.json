@@ -18,7 +18,14 @@
     "batchQueue": "Пакетная очередь",
     "logs": "Журналы",
     "settings": "Настройки",
-    "about": "О программе"
+    "about": "О программе",
+    "blip": {
+      "converting": "Преобразование",
+      "extracting": "Извлечение аудио",
+      "cutting": "Резка видео",
+      "paused": "Пауза",
+      "starting": "Запуск"
+    }
   },
   "dashboard": {
     "welcome": "Добро пожаловать в EncodeX",

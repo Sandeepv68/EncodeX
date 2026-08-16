@@ -18,7 +18,14 @@
     "batchQueue": "Eräjono",
     "logs": "Lokit",
     "settings": "Asetukset",
-    "about": "Tietoja"
+    "about": "Tietoja",
+    "blip": {
+      "converting": "Muunnetaan",
+      "extracting": "Puretaan ääntä",
+      "cutting": "Leikataan videota",
+      "paused": "Keskeytetty",
+      "starting": "Käynnistetään"
+    }
   },
   "dashboard": {
     "welcome": "Tervetuloa EncodeX:ään",

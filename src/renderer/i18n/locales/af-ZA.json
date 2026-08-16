@@ -18,7 +18,14 @@
     "batchQueue": "Groepwaglys",
     "logs": "Logboeke",
     "settings": "Instellings",
-    "about": "Oor"
+    "about": "Oor",
+    "blip": {
+      "converting": "Besig om om te skakel",
+      "extracting": "Onttrek klank",
+      "cutting": "Sny video",
+      "paused": "Gepauseer",
+      "starting": "Begin"
+    }
   },
   "dashboard": {
     "welcome": "Welkom by EncodeX",

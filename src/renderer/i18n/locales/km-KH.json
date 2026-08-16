@@ -18,7 +18,14 @@
     "batchQueue": "ជួរដេកដំណើរការដុំ",
     "logs": "កំណត់ហេតុ",
     "settings": "ការកំណត់",
-    "about": "អំពី"
+    "about": "អំពី",
+    "blip": {
+      "converting": "កំពុងបម្លែង",
+      "extracting": "កំពុងទាញយកសំឡេង",
+      "cutting": "កំពុងកាត់វីដេអូ",
+      "paused": "បានផ្អាក",
+      "starting": "កំពុងចាប់ផ្តើម"
+    }
   },
   "dashboard": {
     "welcome": "សូមស្វាគមន៍មកកាន់ EncodeX",

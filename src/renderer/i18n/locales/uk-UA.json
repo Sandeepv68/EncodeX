@@ -18,7 +18,14 @@
     "batchQueue": "Пакетна черга",
     "logs": "Логи",
     "settings": "Налаштування",
-    "about": "Про програму"
+    "about": "Про програму",
+    "blip": {
+      "converting": "Конвертація",
+      "extracting": "Витягнення аудіо",
+      "cutting": "Обрізання відео",
+      "paused": "На паузі",
+      "starting": "Запуск"
+    }
   },
   "dashboard": {
     "welcome": "Ласкаво просимо до EncodeX",
