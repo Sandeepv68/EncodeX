@@ -181,19 +181,28 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   /**
    * Opens the job popover for the nav row under the pointer/focus when that row
    * carries a live blip; otherwise closes any open popover immediately.
+   *
+   * Focus restores that come back from a MUI Modal overlay (e.g. dismissing the
+   * window-close confirm dialog, which the dialog's focus trap sends back to the
+   * previously focused nav row) are ignored: reopening the popover there would
+   * leave its invisible Modal mounted forever (nothing ever blurs the row again)
+   * and keep the app hidden from the accessibility tree.
    * @param {React.MouseEvent<HTMLElement> | React.FocusEvent<HTMLElement>} e - The mouse/focus event.
    * @param {string} to - The route path of the hovered/focused row.
    * @returns {void}
    */
   const openPopover = (e: React.MouseEvent<HTMLElement> | React.FocusEvent<HTMLElement>, to: string) => {
     const blip = blipForRoute(to);
-    if (blip) {
-      cancelPendingClose();
-      setPopoverBlip(blip);
-      setPopoverAnchor(e.currentTarget);
-    } else {
+    if (!blip) {
       closePopover();
+      return;
     }
+    if (e.type === 'focus' && e.relatedTarget instanceof Element && e.relatedTarget.closest('.MuiModal-root') !== null) {
+      return;
+    }
+    cancelPendingClose();
+    setPopoverBlip(blip);
+    setPopoverAnchor(e.currentTarget);
   };
 
   /**
