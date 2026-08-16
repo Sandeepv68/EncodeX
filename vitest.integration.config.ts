@@ -9,6 +9,9 @@ export default defineConfig({
   },
   test: {
     globals: true,
+    env: {
+      LOG_LEVEL: 'WARN',
+    },
     environment: 'node',
     include: ['src/**/*.integration.{test,spec}.{ts,tsx}'],
     exclude: ['node_modules', 'dist'],

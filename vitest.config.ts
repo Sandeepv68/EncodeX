@@ -10,18 +10,16 @@ export default defineConfig({
   test: {
     globals: true,
     testTimeout: 30000,
+    env: {
+      LOG_LEVEL: 'WARN',
+    },
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     exclude: ['node_modules', 'dist'],
     css: true,
     pool: 'forks',
-    poolOptions: {
-      forks: {
-        maxForks: 6,
-        minForks: 1,
-      },
-    },
+    maxWorkers: 6,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],

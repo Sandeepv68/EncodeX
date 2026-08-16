@@ -65,6 +65,8 @@ beforeAll(() => {
   if (videoOk !== 0 || imageOk !== 0 || !fs.existsSync(videoPath) || !fs.existsSync(imagePath)) {
     throw new Error('Failed to generate test media with ffmpeg-static');
   }
+
+  configureCliOutput({ quiet: true });
 });
 
 afterAll(async () => {
@@ -183,7 +185,12 @@ describe('runInfo / runCapabilities (real FFmpeg)', () => {
     const transcoder = createCliTranscoder('FFMPEG');
     const stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
 
-    await runInfo(transcoder, videoPath, false, theme);
+    configureCliOutput({ quiet: false });
+    try {
+      await runInfo(transcoder, videoPath, false, theme);
+    } finally {
+      configureCliOutput({ quiet: true });
+    }
 
     const written = stdoutSpy.mock.calls.map(([chunk]) => String(chunk)).join('');
     stdoutSpy.mockRestore();
