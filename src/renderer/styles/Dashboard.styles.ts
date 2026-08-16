@@ -135,5 +135,17 @@ export const CardDescription = styled(Typography)({
 /** Footer hint row listing the shortcuts-help chord. @const DashboardFooter */
 export const DashboardFooter = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(3),
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   textAlign: 'center',
+  padding: `${theme.spacing(0.75)} ${theme.spacing(1.5)}`,
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: theme.palette.background.paper,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+  animation: `${fadeSlideUp(theme)} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
+  animationDelay: '0.9s',
+  '@media (prefers-reduced-motion: reduce)': {
+    animation: 'none',
+  },
 }));
