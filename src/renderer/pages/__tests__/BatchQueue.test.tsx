@@ -622,6 +622,39 @@ describe('BatchQueue', () => {
     );
   });
 
+  it('restores a persisted output folder and overwrite toggle on mount', async () => {
+    localStorage.setItem(BATCH_CONFIG_STORAGE_KEY, JSON.stringify({ outputDir: '/restored', overwrite: true }));
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/video.mp4']);
+    queueAddMock.mockResolvedValue('job-9');
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() =>
+      expect(queueAddMock).toHaveBeenCalledWith(
+        '/in/video.mp4',
+        '/restored/video_encodex_converted.mp4',
+        expect.any(Object),
+        'FFMPEG',
+        true,
+      ),
+    );
+  });
+
+  it('persists the chosen output folder and overwrite toggle', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectDirectoryMock.mockResolvedValue('/out');
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.browse' }));
+    await waitFor(() => expect(selectDirectoryMock).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByLabelText('batchQueue.overwrite'));
+    await waitFor(() => {
+      const stored = JSON.parse(localStorage.getItem(BATCH_CONFIG_STORAGE_KEY) ?? '{}');
+      expect(stored.outputDir).toBe('/out');
+      expect(stored.overwrite).toBe(true);
+    });
+  });
+
   it('passes overwrite true when the overwrite checkbox is enabled', async () => {
     queueListMock.mockResolvedValue([]);
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);

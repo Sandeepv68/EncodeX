@@ -232,6 +232,7 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
           <Box sx={{ mt: 1 }}>
             {content.progress ? (
               <ProgressBar
+                key={content.jobId ?? content.input}
                 percent={content.progress.percent}
                 time={content.progress.time}
                 speed={content.progress.speed}

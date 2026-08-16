@@ -285,6 +285,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
             : null,
           paused: active?.paused,
           input: active?.input ?? '',
+          jobId: active?.id,
           pendingThumbnails: queueJobs.filter((j) => j.status === QUEUE_STATUS.QUEUED).map((j) => j.input),
         };
       }

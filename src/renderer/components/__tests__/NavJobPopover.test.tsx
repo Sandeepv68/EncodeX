@@ -130,4 +130,45 @@ describe('NavJobPopover', () => {
     render(<Host content={{ title: 'Convert', status: 'Converting', fileName: 'clip.mp4', progress: null }} />);
     expect(screen.queryByTestId('nav-job-popover-pile')).not.toBeInTheDocument();
   });
+
+  it('remounts the progress bar when the displayed job changes so it resets to zero', () => {
+    const content: NavJobPopoverContent = {
+      title: 'Batch Queue',
+      status: 'Converting',
+      fileName: 'a.mp4',
+      progress: { percent: 100, time: 'Done', speed: '-', eta: '0' },
+      input: 'C:/videos/a.mp4',
+      jobId: 'job-a',
+    };
+    const { rerender } = render(<Host content={content} />);
+    const doneBar = screen.getByRole('progressbar');
+
+    rerender(
+      <Host
+        content={{
+          ...content,
+          fileName: 'b.mp4',
+          input: 'C:/videos/b.mp4',
+          jobId: 'job-b',
+          progress: { percent: 0, time: '00:00:00', speed: '0x', eta: '-' },
+        }}
+      />,
+    );
+    expect(screen.getByRole('progressbar')).not.toBe(doneBar);
+  });
+
+  it('keeps the same progress bar node while the same job progresses', () => {
+    const content: NavJobPopoverContent = {
+      title: 'Batch Queue',
+      status: 'Converting',
+      fileName: 'a.mp4',
+      progress: { percent: 20, time: '00:00:05', speed: '1x', eta: '20' },
+      jobId: 'job-a',
+    };
+    const { rerender } = render(<Host content={content} />);
+    const bar = screen.getByRole('progressbar');
+
+    rerender(<Host content={{ ...content, progress: { percent: 50, time: '00:00:10', speed: '1x', eta: '10' } }} />);
+    expect(screen.getByRole('progressbar')).toBe(bar);
+  });
 });

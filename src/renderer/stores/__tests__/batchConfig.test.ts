@@ -22,17 +22,24 @@ describe('batchConfig', () => {
       quality: '15',
       scale: '1280x720',
       pixelFormat: 'yuv420p',
+      outputDir: 'C:/Users/me/Videos/Out',
+      overwrite: true,
     };
     persistBatchConfig(config);
     expect(readStoredBatchConfig()).toEqual(config);
   });
 
   it('falls back to defaults for invalid entries', () => {
-    localStorage.setItem(BATCH_CONFIG_STORAGE_KEY, JSON.stringify({ operation: 'bogus', videoCodec: 'nope', container: 'x' }));
+    localStorage.setItem(
+      BATCH_CONFIG_STORAGE_KEY,
+      JSON.stringify({ operation: 'bogus', videoCodec: 'nope', container: 'x', outputDir: 42, overwrite: 'yes' }),
+    );
     const result = readStoredBatchConfig();
     expect(result.operation).toBe(DEFAULT_BATCH_CONFIG.operation);
     expect(result.videoCodec).toBe(DEFAULT_BATCH_CONFIG.videoCodec);
     expect(result.container).toBe('x');
+    expect(result.outputDir).toBe(DEFAULT_BATCH_CONFIG.outputDir);
+    expect(result.overwrite).toBe(DEFAULT_BATCH_CONFIG.overwrite);
   });
 
   it('returns defaults when the stored value is malformed', () => {

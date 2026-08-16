@@ -304,18 +304,28 @@ export default function BatchQueue() {
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
 
   /**
+   * Last-used batch configuration read from localStorage once on mount, used to
+   * seed every `useState` below (encoding fields, output folder and overwrite
+   * toggle) so the page restores the previous session's settings.
+   * @type {[BatchConfig, React.Dispatch<React.SetStateAction<BatchConfig>>]}
+   */
+  const [initialConfig] = useState<BatchConfig>(readStoredBatchConfig);
+
+  /**
    * Optional output folder for newly added jobs. When empty, outputs are
-   * written next to their source files (source-adjacent naming).
+   * written next to their source files (source-adjacent naming). Restored from
+   * the persisted batch config so the folder survives page re-entry.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const [outputDir, setOutputDir] = useState('');
+  const [outputDir, setOutputDir] = useState(initialConfig.outputDir);
 
   /**
    * Whether newly added jobs may replace existing output files. When false,
-   * the main process rejects a job whose output already exists.
+   * the main process rejects a job whose output already exists. Restored from
+   * the persisted batch config so the toggle survives page re-entry.
    * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
    */
-  const [overwrite, setOverwrite] = useState(false);
+  const [overwrite, setOverwrite] = useState(initialConfig.overwrite);
 
   /**
    * Files pending review in the add-files dialog, or null when the dialog is
@@ -324,14 +334,6 @@ export default function BatchQueue() {
    * @type {[string[] | null, React.Dispatch<React.SetStateAction<string[] | null>>]}
    */
   const [reviewFiles, setReviewFiles] = useState<string[] | null>(null);
-
-  /**
-   * Last-used batch encoding configuration read from localStorage once on
-   * mount, used to seed every encoding `useState` below so the page restores
-   * the previous session's settings.
-   * @type {[BatchConfig, React.Dispatch<React.SetStateAction<BatchConfig>>]}
-   */
-  const [initialConfig] = useState<BatchConfig>(readStoredBatchConfig);
 
   /**
    * Video codec applied to jobs created under operations that keep video
@@ -491,14 +493,26 @@ export default function BatchQueue() {
   }, []);
 
   /**
-   * Persists the current batch encoding configuration to localStorage whenever
-   * any encoding control changes, so re-entering the page restores the last
-   * session's settings.
+   * Persists the current batch configuration (encoding fields plus the output
+   * folder and overwrite toggle) to localStorage whenever any of those controls
+   * change, so re-entering the page restores the last session's settings.
    * @returns {void}
    */
   useEffect(() => {
-    persistBatchConfig({ operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat });
-  }, [operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat]);
+    persistBatchConfig({
+      operation,
+      videoCodec,
+      audioCodec,
+      container,
+      videoBitrate,
+      audioBitrate,
+      quality,
+      scale,
+      pixelFormat,
+      outputDir,
+      overwrite,
+    });
+  }, [operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat, outputDir, overwrite]);
 
   /**
    * Propagates the panel's encoding fields to every queued job that has not

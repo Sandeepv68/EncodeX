@@ -26,6 +26,10 @@ import { AUDIO_CODECS, BATCH_OPERATIONS, VIDEO_CODECS } from '../../shared/media
  * @property {string} quality - Image compression quality 1-31 ('' = auto).
  * @property {string} scale - Output resolution ('' = original).
  * @property {string} pixelFormat - Output pixel format.
+ * @property {string} outputDir - Optional output folder for new jobs; '' means
+ *   outputs are written next to their source files.
+ * @property {boolean} overwrite - Whether new jobs may replace existing output
+ *   files.
  */
 export interface BatchConfig {
   operation: string;
@@ -37,6 +41,8 @@ export interface BatchConfig {
   quality: string;
   scale: string;
   pixelFormat: string;
+  outputDir: string;
+  overwrite: boolean;
 }
 
 /**
@@ -54,6 +60,8 @@ export const DEFAULT_BATCH_CONFIG: BatchConfig = {
   quality: '',
   scale: '',
   pixelFormat: 'yuv420p',
+  outputDir: '',
+  overwrite: false,
 };
 
 /**
@@ -75,6 +83,7 @@ export function readStoredBatchConfig(): BatchConfig {
   const isCodec = (value: unknown, list: readonly { value: string }[]): value is string =>
     typeof value === 'string' && list.some((entry) => entry.value === value);
   const isString = (value: unknown): value is string => typeof value === 'string';
+  const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
   try {
     const raw = localStorage.getItem(BATCH_CONFIG_STORAGE_KEY);
     if (raw) {
@@ -89,6 +98,8 @@ export function readStoredBatchConfig(): BatchConfig {
         quality: isString(parsed.quality) ? parsed.quality : DEFAULT_BATCH_CONFIG.quality,
         scale: isString(parsed.scale) ? parsed.scale : DEFAULT_BATCH_CONFIG.scale,
         pixelFormat: isString(parsed.pixelFormat) ? parsed.pixelFormat : DEFAULT_BATCH_CONFIG.pixelFormat,
+        outputDir: isString(parsed.outputDir) ? parsed.outputDir : DEFAULT_BATCH_CONFIG.outputDir,
+        overwrite: isBoolean(parsed.overwrite) ? parsed.overwrite : DEFAULT_BATCH_CONFIG.overwrite,
       };
     }
   } catch (err) {
