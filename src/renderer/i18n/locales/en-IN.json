@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "Skipped {{count}} job(s) - the new output would overwrite another job's file ({{names}})",
     "optionsUpdateFailed": "This job is no longer editable.",
     "condense": "Condense",
-    "expand": "Expand"
+    "expand": "Expand",
+    "clearAll": "Clear All"
   },
   "progress": {
     "title": "Conversion progress",

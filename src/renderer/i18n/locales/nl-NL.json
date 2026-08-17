@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} taak/taken overgeslagen – de nieuwe uitvoer overschrijft het bestand van een andere taak ({{names}})",
     "optionsUpdateFailed": "Deze taak kan niet meer worden bewerkt.",
     "condense": "Samenvouwen",
-    "expand": "Uitvouwen"
+    "expand": "Uitvouwen",
+    "clearAll": "Alles wissen"
   },
   "progress": {
     "title": "Conversievoortgang",

@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} pekerjaan dilewati – keluaran baru akan menimpa file pekerjaan lain ({{names}})",
     "optionsUpdateFailed": "Pekerjaan ini tidak dapat diedit lagi.",
     "condense": "Ciutkan",
-    "expand": "Kembangkan"
+    "expand": "Kembangkan",
+    "clearAll": "Hapus Semua"
   },
   "progress": {
     "title": "Progres konversi",

@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "تم تخطي {{count}} مهمة – سيحل الناتج الجديد محل ملف مهمة أخرى ({{names}})",
     "optionsUpdateFailed": "لم يعد من الممكن تحرير هذه المهمة.",
     "condense": "طي",
-    "expand": "توسيع"
+    "expand": "توسيع",
+    "clearAll": "مسح الكل"
   },
   "progress": {
     "title": "تقدم التحويل",

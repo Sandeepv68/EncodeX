@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "Scipeáladh {{count}} phost – scríobhfaidh an t-aschur nua thar comhad poist eile ({{names}})",
     "optionsUpdateFailed": "Ní féidir an post seo a chur in eagar níos mó.",
     "condense": "Crap",
-    "expand": "Leathnaigh"
+    "expand": "Leathnaigh",
+    "clearAll": "Glan Uile"
   },
   "progress": {
     "title": "Dul chun cinn an chomhshó",

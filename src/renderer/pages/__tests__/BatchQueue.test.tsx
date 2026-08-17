@@ -382,6 +382,30 @@ describe('BatchQueue', () => {
     expect(screen.getByText(/ETA ~2m 15s/)).toBeInTheDocument();
   });
 
+  it('shows a Clear All button when every job has finished', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'done' }), job({ id: 'job-2', status: 'error', error: 'boom' })]);
+    renderPage();
+    await screen.findAllByText(/video\.mp4/);
+    expect(screen.getByRole('button', { name: 'batchQueue.clearAll' })).toBeInTheDocument();
+  });
+
+  it('does not show Clear All when jobs are still queued or running', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'running' }), job({ id: 'job-2', status: 'queued' })]);
+    renderPage();
+    await screen.findAllByText(/video\.mp4/);
+    expect(screen.queryByRole('button', { name: 'batchQueue.clearAll' })).not.toBeInTheDocument();
+  });
+
+  it('calls queueClearCompleted when Clear All is clicked', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'done' }), job({ id: 'job-2', status: 'done' })]);
+    queueClearCompletedMock.mockResolvedValue(2);
+    renderPage();
+    await screen.findAllByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.clearAll' }));
+    await waitFor(() => expect(queueClearCompletedMock).toHaveBeenCalledOnce());
+    expect(useQueueStore.getState().jobs).toHaveLength(0);
+  });
+
   it('shows a batch-finished toast when the running count drops to zero', async () => {
     queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'running' })]);
     renderPage();

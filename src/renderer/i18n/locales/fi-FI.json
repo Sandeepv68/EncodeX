@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "Ohitettiin {{count}} tehtävä(t) – uusi tulos kirjoittaisi toisen tehtävän tiedoston päälle ({{names}})",
     "optionsUpdateFailed": "Tätä tehtävää ei voi enää muokata.",
     "condense": "Tiivistä",
-    "expand": "Laajenna"
+    "expand": "Laajenna",
+    "clearAll": "Tyhjennä kaikki"
   },
   "progress": {
     "title": "Muunnoksen edistyminen",

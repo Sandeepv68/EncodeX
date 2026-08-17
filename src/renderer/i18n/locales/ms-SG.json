@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} kerja dilangkau – output baharu akan menimpa fail kerja lain ({{names}})",
     "optionsUpdateFailed": "Kerja ini tidak boleh diedit lagi.",
     "condense": "Ciutkan",
-    "expand": "Kembangkan"
+    "expand": "Kembangkan",
+    "clearAll": "Padam Semua"
   },
   "progress": {
     "title": "Kemajuan penukaran",

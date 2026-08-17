@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} tâche(s) ignorée(s) – la nouvelle sortie écraserait le fichier d'une autre tâche ({{names}})",
     "optionsUpdateFailed": "Cette tâche ne peut plus être modifiée.",
     "condense": "Réduire",
-    "expand": "Agrandir"
+    "expand": "Agrandir",
+    "clearAll": "Tout effacer"
   },
   "progress": {
     "title": "Progression de la conversion",

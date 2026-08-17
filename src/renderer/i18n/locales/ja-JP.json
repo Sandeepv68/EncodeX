@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} 件のジョブをスキップしました – 新しい出力は別のジョブのファイルを上書きします ({{names}})",
     "optionsUpdateFailed": "このジョブは編集できなくなりました。",
     "condense": "折りたたむ",
-    "expand": "展開する"
+    "expand": "展開する",
+    "clearAll": "すべてクリア"
   },
   "progress": {
     "title": "変換の進行状況",

@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} tarefa(s) ignorada(s) – a nova saída sobrescreveria o ficheiro de outra tarefa ({{names}})",
     "optionsUpdateFailed": "Esta tarefa já não pode ser editada.",
     "condense": "Recolher",
-    "expand": "Expandir"
+    "expand": "Expandir",
+    "clearAll": "Limpar tudo"
   },
   "progress": {
     "title": "Progresso da conversão",

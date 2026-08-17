@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "ข้าม {{count}} งาน – เอาต์พุตใหม่จะเขียนทับไฟล์ของงานอื่น ({{names}})",
     "optionsUpdateFailed": "ไม่สามารถแก้ไขงานนี้ได้อีกต่อไป",
     "condense": "ย่อ",
-    "expand": "ขยาย"
+    "expand": "ขยาย",
+    "clearAll": "ล้างทั้งหมด"
   },
   "progress": {
     "title": "ความคืบหน้าการแปลง",

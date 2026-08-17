@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Stack, Typography, Collapse, IconButton, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListOl, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
+import { faListOl, faLayerGroup, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent, DragStartEvent, Modifier } from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -1101,6 +1101,14 @@ export default function BatchQueue() {
   const remainingSeconds = estimateRemaining(jobs, progress);
 
   /**
+   * True when every job in the batch has finished (done or failed) and there
+   * are no queued or running jobs left. Drives the "Clear All" button in the
+   * filter row.
+   * @type {boolean}
+   */
+  const allDone = jobs.length > 0 && !hasActive && hasCompleted;
+
+  /**
    * Jobs shown after applying the active status filter and search term. Their
    * order mirrors the store's queue order (filtering preserves relative order).
    * @type {QueueJob[]}
@@ -1260,6 +1268,15 @@ export default function BatchQueue() {
               <FilterEta variant="body2" color="text.secondary">
                 {t('batchQueue.etaEstimate', { eta: formatEstimate(remainingSeconds) })}
               </FilterEta>
+            )}
+            {allDone && (
+              <Box sx={{ marginInlineStart: 'auto' }}>
+                <Tooltip title={t('batchQueue.clearAll')}>
+                  <IconButton size="small" color="error" aria-label={t('batchQueue.clearAll')} onClick={handleClearCompleted}>
+                    <FontAwesomeIcon icon={faTrashCan} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             )}
           </FilterRow>
         )}

@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "Kua pekehia {{count}} mahi – ka tuhia e te putanga hou ki runga i te kōnae o tētahi atu mahi ({{names}})",
     "optionsUpdateFailed": "Kāore e taea te whakatika i tēnei mahi.",
     "condense": "Whakaiti",
-    "expand": "Whakanui"
+    "expand": "Whakanui",
+    "clearAll": "Whakangaroa katoa"
   },
   "progress": {
     "title": "Te ahunga whakamua o te hurihanga",

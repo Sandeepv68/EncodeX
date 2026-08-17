@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "Pominięto {{count}} zadań – nowe wyjście nadpisze plik innego zadania ({{names}})",
     "optionsUpdateFailed": "To zadanie nie może być już edytowane.",
     "condense": "Zwiń",
-    "expand": "Rozwiń"
+    "expand": "Rozwiń",
+    "clearAll": "Wyczyść wszystko"
   },
   "progress": {
     "title": "Postęp konwersji",

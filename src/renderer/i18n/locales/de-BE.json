@@ -402,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} Auftrag(e) übersprungen – die neue Ausgabe würde die Datei eines anderen Auftrags überschreiben ({{names}})",
     "optionsUpdateFailed": "Dieser Auftrag kann nicht mehr bearbeitet werden.",
     "condense": "Einklappen",
-    "expand": "Ausklappen"
+    "expand": "Ausklappen",
+    "clearAll": "Alle löschen"
   },
   "progress": {
     "title": "Konvertierungsfortschritt",
