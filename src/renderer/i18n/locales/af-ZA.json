@@ -24,7 +24,8 @@
       "extracting": "Onttrek klank",
       "cutting": "Sny video",
       "paused": "Gepauseer",
-      "starting": "Begin"
+      "starting": "Begin",
+      "parallel": "{{count}} gelyktydig"
     }
   },
   "dashboard": {

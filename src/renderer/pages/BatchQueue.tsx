@@ -50,7 +50,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { readStoredBatchConfig, persistBatchConfig, type BatchConfig } from '../stores/batchConfig';
 import type { QueueAddReviewSelection } from '../components/types';
 import type { HwAccelMode } from '../../shared/types';
-import { buildBatchOptions, inferJobOperation, recomputeJobOutput } from '../utils/batch-options';
+import { buildBatchOptions, inferJobOperation, recomputeJobOutput, recomputeJobOutputDir } from '../utils/batch-options';
 import { computeQueuedTargetPosition, reorderJob } from '../utils/queue-reorder';
 import { JobCard } from '../styles/QueueJobCard.styles';
 import {
@@ -515,21 +515,26 @@ export default function BatchQueue() {
   }, [operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat, outputDir, overwrite]);
 
   /**
-   * Propagates the panel's encoding fields to every queued job that has not
-   * been customized through the per-job dialog. Skipped entirely once the batch
-   * has started (running jobs must keep the options they were given), and
-   * customized jobs are excluded so an explicit per-job edit is never
-   * overwritten. Each job keeps the operation it was created under (recovered
-   * from its options) and its output extension is recomputed when the selected
-   * container is compatible. A job whose recomputed output would collide with
-   * another job's output is skipped and reported in a single warning toast.
+   * Propagates the panel's encoding fields and the output folder to every queued
+   * job that has not been customized through the per-job dialog. Skipped
+   * entirely once the batch has started (running jobs must keep the options they
+   * were given), and customized jobs are excluded so an explicit per-job edit is
+   * never overwritten. Each job keeps the operation it was created under
+   * (recovered from its options), its parent directory is updated to the current
+   * output folder when the folder setting changes, and its output extension is
+   * recomputed when the selected container is compatible. A job whose recomputed
+   * output would collide with another job's output is skipped and reported in a
+   * single warning toast.
    * @returns {void}
    */
+  const prevOutputDirRef = useRef(outputDir);
   useEffect(() => {
     if (batchStarted) return;
     const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
     const customized = customizedIdsRef.current;
     const currentJobs = useQueueStore.getState().jobs;
+    const dirChanged = prevOutputDirRef.current !== outputDir;
+    prevOutputDirRef.current = outputDir;
     const claimedBy = new Map<string, string>();
     for (const job of currentJobs) claimedBy.set(normalizePath(job.output), job.id);
     const skippedNames: string[] = [];
@@ -541,7 +546,9 @@ export default function BatchQueue() {
         { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat },
         { hardwareAcceleration, hwaccelMode },
       );
-      const output = recomputeJobOutput(job, container);
+      let output = job.output;
+      if (dirChanged) output = recomputeJobOutputDir(job, outputDir);
+      output = recomputeJobOutput({ ...job, output }, container);
       const ownedBy = claimedBy.get(normalizePath(output));
       if (ownedBy && ownedBy !== job.id) {
         skippedNames.push(basename(job.input));
@@ -554,7 +561,7 @@ export default function BatchQueue() {
         .getState()
         .warning(t('batchQueue.outputCollisionSkipped', { count: skippedNames.length, names: skippedNames.join(', ') }));
     }
-  }, [videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat, batchStarted]);
+  }, [videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat, outputDir, batchStarted]);
 
   /**
    * On mount, pushes the persisted concurrency cap to the main process so the

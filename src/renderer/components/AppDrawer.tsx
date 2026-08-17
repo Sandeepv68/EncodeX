@@ -35,6 +35,7 @@ import { useConversionStore } from '../stores/conversionStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
 import { useQueueStore } from '../stores/queueStore';
+import { useSettingsStore } from '../stores/settingsStore';
 import LanguageMenu from './LanguageMenu';
 import NavJobPopover from './NavJobPopover';
 import type { AppDrawerProps, NavBlipId, NavJobPopoverContent } from './types';
@@ -141,6 +142,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   const queueJobs = useQueueStore((s) => s.jobs);
   const queueProgress = useQueueStore((s) => s.progress);
   const batchJobCount = queueJobs.filter(isJobActive).length;
+  const queueConcurrency = useSettingsStore((s) => s.queueConcurrency);
 
   const [popoverBlip, setPopoverBlip] = useState<NavBlipId>(null);
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
@@ -286,6 +288,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
           paused: active?.paused,
           input: active?.input ?? '',
           jobId: active?.id,
+          parallel: queueConcurrency > 1 ? queueConcurrency : undefined,
           pendingThumbnails: queueJobs.filter((j) => j.status === QUEUE_STATUS.QUEUED).map((j) => j.input),
         };
       }

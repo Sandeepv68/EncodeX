@@ -24,7 +24,8 @@
       "extracting": "ກຳລັງດຶງສຽງ",
       "cutting": "ກຳລັງຕັດວິດີໂອ",
       "paused": "ຖືກຢຸດຊົ່ວຄາວ",
-      "starting": "ກຳລັງເລີ່ມຕົ້ນ"
+      "starting": "ກຳລັງເລີ່ມຕົ້ນ",
+      "parallel": "{{count}} ໃນລະບຽບ"
     }
   },
   "dashboard": {

@@ -24,7 +24,8 @@
       "extracting": "กำลังแยกเสียง",
       "cutting": "กำลังตัดวิดีโอ",
       "paused": "หยุดชั่วคราว",
-      "starting": "กำลังเริ่มต้น"
+      "starting": "กำลังเริ่มต้น",
+      "parallel": "{{count}} พร้อมกัน"
     }
   },
   "dashboard": {

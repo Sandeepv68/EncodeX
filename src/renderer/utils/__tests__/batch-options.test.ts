@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { buildBatchOptions, inferJobOperation, recomputeJobOutput, type BatchEncodingValues } from '../batch-options';
+import {
+  buildBatchOptions,
+  inferJobOperation,
+  recomputeJobOutput,
+  recomputeJobOutputDir,
+  type BatchEncodingValues,
+} from '../batch-options';
 import type { QueueJob } from '../../../shared/types';
 
 const VALUES: BatchEncodingValues = {
@@ -152,5 +158,32 @@ describe('recomputeJobOutput', () => {
   it('handles Windows-style output paths and leading-dot containers', () => {
     const job = makeJob({ output: 'C:\\in\\video_encodex_converted.mp4', options: { videoCodec: 'libx264' } });
     expect(recomputeJobOutput(job, '.mkv')).toBe('C:\\in\\video_encodex_converted.mkv');
+  });
+});
+
+describe('recomputeJobOutputDir', () => {
+  it('moves the output into the given directory', () => {
+    const job = makeJob({ output: '/in/video_encodex_converted.mp4' });
+    expect(recomputeJobOutputDir(job, '/out')).toBe('/out/video_encodex_converted.mp4');
+  });
+
+  it('moves the output back to source-adjacent when outputDir is empty', () => {
+    const job = makeJob({ output: '/out/video_encodex_converted.mp4' });
+    expect(recomputeJobOutputDir(job, '')).toBe('/in/video_encodex_converted.mp4');
+  });
+
+  it('returns the same path when the directory already matches', () => {
+    const job = makeJob({ output: '/in/video_encodex_converted.mp4' });
+    expect(recomputeJobOutputDir(job, '')).toBe('/in/video_encodex_converted.mp4');
+  });
+
+  it('normalises Windows backslash separators in outputDir', () => {
+    const job = makeJob({ input: 'C:\\in\\video.mp4', output: 'C:\\out\\video_encodex_converted.mp4' });
+    expect(recomputeJobOutputDir(job, 'C:\\new-out')).toBe('C:/new-out/video_encodex_converted.mp4');
+  });
+
+  it('strips trailing slashes from outputDir', () => {
+    const job = makeJob({ output: '/in/video_encodex_converted.mp4' });
+    expect(recomputeJobOutputDir(job, '/out/')).toBe('/out/video_encodex_converted.mp4');
   });
 });

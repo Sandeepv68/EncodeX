@@ -24,7 +24,8 @@
       "extracting": "अडियो निकाल्दै",
       "cutting": "भिडियो काट्दै",
       "paused": "रोकिएको",
-      "starting": "सुरु हुँदै"
+      "starting": "सुरु हुँदै",
+      "parallel": "{{count}} समानान्तर"
     }
   },
   "dashboard": {

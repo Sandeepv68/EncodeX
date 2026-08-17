@@ -24,7 +24,8 @@
       "extracting": "Kinukuha ang audio",
       "cutting": "Kinukut ang video",
       "paused": "Naka-pause",
-      "starting": "Sinisimulan"
+      "starting": "Sinisimulan",
+      "parallel": "{{count}} sabay-sabay"
     }
   },
   "dashboard": {

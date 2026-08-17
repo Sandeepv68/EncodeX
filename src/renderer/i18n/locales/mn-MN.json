@@ -24,7 +24,8 @@
       "extracting": "Аудио гаргаж байна",
       "cutting": "Видео тайрч байна",
       "paused": "Түр зогссон",
-      "starting": "Эхэлж байна"
+      "starting": "Эхэлж байна",
+      "parallel": "{{count}} зэрэгцээ"
     }
   },
   "dashboard": {

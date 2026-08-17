@@ -24,7 +24,8 @@
       "extracting": "חילוץ אודיו",
       "cutting": "חיתוך וידאו",
       "paused": "הושהה",
-      "starting": "מתחיל"
+      "starting": "מתחיל",
+      "parallel": "{{count}} מקבילים"
     }
   },
   "dashboard": {

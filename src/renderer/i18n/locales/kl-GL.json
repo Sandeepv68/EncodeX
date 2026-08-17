@@ -24,7 +24,8 @@
       "extracting": "Nipaatit (audio) aniat",
       "cutting": "Ulluliorneq (video)",
       "paused": "Unnerseqsimavoq",
-      "starting": "Aallartippoq"
+      "starting": "Aallartippoq",
+      "parallel": "{{count}} paasisuutigalugu"
     }
   },
   "dashboard": {

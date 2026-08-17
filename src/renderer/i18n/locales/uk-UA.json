@@ -24,7 +24,8 @@
       "extracting": "Витягнення аудіо",
       "cutting": "Обрізання відео",
       "paused": "На паузі",
-      "starting": "Запуск"
+      "starting": "Запуск",
+      "parallel": "{{count}} паралельно"
     }
   },
   "dashboard": {

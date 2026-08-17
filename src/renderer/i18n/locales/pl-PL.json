@@ -24,7 +24,8 @@
       "extracting": "Wyodrębnianie dźwięku",
       "cutting": "Przycinanie wideo",
       "paused": "Wstrzymano",
-      "starting": "Uruchamianie"
+      "starting": "Uruchamianie",
+      "parallel": "{{count}} równolegle"
     }
   },
   "dashboard": {

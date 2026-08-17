@@ -65,6 +65,9 @@ export interface NavJobPopoverContent {
    *  it resets to zero (fresh start) when the displayed job changes instead of
    *  animating backward from a finished job's 100%. Falls back to `input`. */
   jobId?: string;
+  /** Configured batch concurrency when greater than 1, shown as a small badge
+   *  so the user can see at a glance that several jobs run in parallel. */
+  parallel?: number;
   /** Absolute input paths of further pending jobs, shown as an overlapping
    *  thumbnail pile below the progress bar (batch queue only). */
   pendingThumbnails?: string[];

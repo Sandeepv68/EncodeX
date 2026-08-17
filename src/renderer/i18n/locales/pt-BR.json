@@ -24,7 +24,8 @@
       "extracting": "Extraindo áudio",
       "cutting": "Cortando vídeo",
       "paused": "Em pausa",
-      "starting": "Iniciando"
+      "starting": "Iniciando",
+      "parallel": "{{count}} em paralelo"
     }
   },
   "dashboard": {

@@ -171,4 +171,33 @@ describe('NavJobPopover', () => {
     rerender(<Host content={{ ...content, progress: { percent: 50, time: '00:00:10', speed: '1x', eta: '10' } }} />);
     expect(screen.getByRole('progressbar')).toBe(bar);
   });
+
+  it('shows the parallel badge when concurrency is greater than 1', () => {
+    render(
+      <Host
+        content={{
+          title: 'Batch Queue',
+          status: '2 queued, 1 running, 0 done, 0 failed',
+          fileName: 'video.mp4',
+          progress: { percent: 50, time: '00:00:20', speed: '2x', eta: '10' },
+          parallel: 2,
+        }}
+      />,
+    );
+    expect(screen.getByText('×2')).toBeInTheDocument();
+  });
+
+  it('does not show the parallel badge when concurrency is 1', () => {
+    render(
+      <Host
+        content={{
+          title: 'Batch Queue',
+          status: '1 queued, 0 running, 0 done, 0 failed',
+          fileName: 'video.mp4',
+          progress: null,
+        }}
+      />,
+    );
+    expect(screen.queryByText('×1')).not.toBeInTheDocument();
+  });
 });

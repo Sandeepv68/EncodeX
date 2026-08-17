@@ -24,7 +24,8 @@
       "extracting": "استخراج الصوت",
       "cutting": "قص الفيديو",
       "paused": "متوقف مؤقتًا",
-      "starting": "جارٍ البدء"
+      "starting": "جارٍ البدء",
+      "parallel": "{{count}} متزامن"
     }
   },
   "dashboard": {

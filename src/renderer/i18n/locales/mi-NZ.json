@@ -24,7 +24,8 @@
       "extracting": "Ke tango ororongo",
       "cutting": "Ke tapahi ataata",
       "paused": "Kua tārea",
-      "starting": "Ke tīmata"
+      "starting": "Ke tīmata",
+      "parallel": "{{count}} tūtahi"
     }
   },
   "dashboard": {

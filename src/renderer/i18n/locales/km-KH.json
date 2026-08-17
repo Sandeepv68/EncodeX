@@ -24,7 +24,8 @@
       "extracting": "កំពុងទាញយកសំឡេង",
       "cutting": "កំពុងកាត់វីដេអូ",
       "paused": "បានផ្អាក",
-      "starting": "កំពុងចាប់ផ្តើម"
+      "starting": "កំពុងចាប់ផ្តើម",
+      "parallel": "{{count}} ស្របគ្នា"
     }
   },
   "dashboard": {

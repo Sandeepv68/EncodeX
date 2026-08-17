@@ -4,8 +4,30 @@
 
 import { styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { alpha, Box } from '@mui/material';
 import { SHADOWS } from '../colors';
+
+/**
+ * Small non-animated badge shown in the popover when the batch queue is
+ * configured to run more than one job in parallel, making the concurrency
+ * setting visible at a glance.
+ * @const PopoverParallelBadge
+ */
+export const PopoverParallelBadge = styled(Box)(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minWidth: theme.spacing(2.5),
+  height: theme.spacing(2.5),
+  paddingInline: theme.spacing(0.75),
+  borderRadius: theme.spacing(1.25),
+  backgroundColor: alpha(theme.palette.warning.main, theme.palette.mode === 'dark' ? 0.12 : 0.08),
+  color: theme.palette.warning.main,
+  fontSize: theme.typography.pxToRem(11),
+  fontWeight: 700,
+  lineHeight: 1,
+  flexShrink: 0,
+}));
 
 /**
  * Entrance animation for the popover's main thumbnail. Replays whenever the

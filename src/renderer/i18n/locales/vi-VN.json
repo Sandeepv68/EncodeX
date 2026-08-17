@@ -24,7 +24,8 @@
       "extracting": "Đang tách âm thanh",
       "cutting": "Đang cắt video",
       "paused": "Tạm dừng",
-      "starting": "Đang bắt đầu"
+      "starting": "Đang bắt đầu",
+      "parallel": "{{count}} song song"
     }
   },
   "dashboard": {

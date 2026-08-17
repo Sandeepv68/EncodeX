@@ -24,7 +24,8 @@
       "extracting": "Mengekstrak audio",
       "cutting": "Memotong video",
       "paused": "Dijeda",
-      "starting": "Memulai"
+      "starting": "Memulai",
+      "parallel": "{{count}} paralel"
     }
   },
   "dashboard": {

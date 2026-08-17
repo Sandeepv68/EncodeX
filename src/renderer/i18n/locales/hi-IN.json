@@ -24,7 +24,8 @@
       "extracting": "ऑडियो निकाला जा रहा है",
       "cutting": "वीडियो काटा जा रहा है",
       "paused": "विराम दिया गया",
-      "starting": "शुरू हो रहा है"
+      "starting": "शुरू हो रहा है",
+      "parallel": "{{count}} समानांतर"
     }
   },
   "dashboard": {

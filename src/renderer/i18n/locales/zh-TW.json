@@ -24,7 +24,8 @@
       "extracting": "正在擷取音訊",
       "cutting": "正在剪輯影片",
       "paused": "已暫停",
-      "starting": "正在開始"
+      "starting": "正在開始",
+      "parallel": "{{count}} 並行"
     }
   },
   "dashboard": {

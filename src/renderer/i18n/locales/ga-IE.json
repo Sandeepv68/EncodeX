@@ -24,7 +24,8 @@
       "extracting": "Ag eastóscadh fuaime",
       "cutting": "Ag gearradh físeáin",
       "paused": "Ar sos",
-      "starting": "Ag tosú"
+      "starting": "Ag tosú",
+      "parallel": "{{count}} comhthrách"
     }
   },
   "dashboard": {

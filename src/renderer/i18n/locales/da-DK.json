@@ -24,7 +24,8 @@
       "extracting": "Udtrækker lyd",
       "cutting": "Klipper video",
       "paused": "Pause",
-      "starting": "Starter"
+      "starting": "Starter",
+      "parallel": "{{count}} parallelt"
     }
   },
   "dashboard": {

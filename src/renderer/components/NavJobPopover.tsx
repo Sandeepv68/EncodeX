@@ -35,7 +35,7 @@ import { Box, Popover, Typography } from '@mui/material';
 import ProgressBar from './ProgressBar';
 import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
 import type { NavJobPopoverProps } from './types';
-import { PopoverArrow, PopoverPileThumb, PopoverThumb } from '../styles/NavJobPopover.styles';
+import { PopoverArrow, PopoverParallelBadge, PopoverPileThumb, PopoverThumb } from '../styles/NavJobPopover.styles';
 
 /**
  * Lazily resolves a preview data URL for an input path through the shared
@@ -216,11 +216,19 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
                 <Typography variant="caption" color="text.secondary" noWrap>
                   {content.status}
                 </Typography>
-                {content.paused && (
-                  <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                    {t('nav.blip.paused')}
-                  </Typography>
-                )}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
+                  {content.parallel && content.parallel > 1 && (
+                    <PopoverParallelBadge title={t('nav.blip.parallel', { count: content.parallel })}>
+                      {'\u00d7'}
+                      {content.parallel}
+                    </PopoverParallelBadge>
+                  )}
+                  {content.paused && (
+                    <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                      {t('nav.blip.paused')}
+                    </Typography>
+                  )}
+                </Box>
               </Box>
               {content.fileName && (
                 <Typography variant="caption" color="text.secondary" title={content.fileName} noWrap sx={{ display: 'block', mt: 0.25 }}>

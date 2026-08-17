@@ -1119,4 +1119,17 @@ describe('BatchQueue', () => {
     expect(screen.getByRole('button', { name: 'Running (1)' })).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByRole('button', { name: 'All (1)' })).toHaveAttribute('aria-pressed', 'false');
   });
+
+  it('recomputes queued jobs output paths when the output directory changes', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', input: '/in/video.mp4', output: '/in/video_encodex_converted.mp4' })]);
+    queueUpdateOptionsMock.mockResolvedValue(true);
+    selectDirectoryMock.mockResolvedValue('/new-out');
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.browse' }));
+    await waitFor(() => expect(selectDirectoryMock).toHaveBeenCalledOnce());
+    await waitFor(() =>
+      expect(queueUpdateOptionsMock).toHaveBeenCalledWith('job-1', expect.any(Object), '/new-out/video_encodex_converted.mp4'),
+    );
+  });
 });

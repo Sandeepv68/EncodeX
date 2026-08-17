@@ -24,7 +24,8 @@
       "extracting": "Dreg út hljóð",
       "cutting": "Klippi myndband",
       "paused": "Í bið",
-      "starting": "Byrjar"
+      "starting": "Byrjar",
+      "parallel": "{{count}} samtímis"
     }
   },
   "dashboard": {

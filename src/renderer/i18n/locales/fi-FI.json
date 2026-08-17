@@ -24,7 +24,8 @@
       "extracting": "Puretaan ääntä",
       "cutting": "Leikataan videota",
       "paused": "Keskeytetty",
-      "starting": "Käynnistetään"
+      "starting": "Käynnistetään",
+      "parallel": "{{count}} rinnakkain"
     }
   },
   "dashboard": {

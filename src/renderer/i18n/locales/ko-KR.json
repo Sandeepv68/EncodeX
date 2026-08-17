@@ -24,7 +24,8 @@
       "extracting": "오디오 추출 중",
       "cutting": "비디오 자르는 중",
       "paused": "일시 중지됨",
-      "starting": "시작 중"
+      "starting": "시작 중",
+      "parallel": "{{count}} 병렬"
     }
   },
   "dashboard": {
