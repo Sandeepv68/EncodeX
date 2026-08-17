@@ -90,6 +90,15 @@ export const APP_ICON = 'assets/icons/icon.ico';
 export const APP_NAME = 'EncodeX';
 
 /**
+ * Unique application user model ID used by Windows to identify the app in the
+ * taskbar and notification area. Must match the {@link BUILD_APP_ID} used by
+ * electron-builder so Windows caches the correct icon per-app instead of
+ * falling back to the default Electron icon.
+ * @const {string} APP_USER_MODEL_ID
+ */
+export const APP_USER_MODEL_ID = 'com.openconverter.app';
+
+/**
  * localStorage key used to persist the user's selected UI theme.
  * @const {string} THEME_STORAGE_KEY
  */

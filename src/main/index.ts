@@ -17,7 +17,6 @@
  */
 
 import { app, BrowserWindow, Menu, nativeImage, shell } from 'electron';
-import * as fs from 'fs';
 import * as path from 'path';
 import { registerIpcHandlers } from './ipc/handlers';
 import { runCli, mapCliErrorToExitCode } from './cli/cli';
@@ -26,6 +25,7 @@ import {
   WINDOW_SIZE,
   DEV_SERVER_URL,
   APP_NAME,
+  APP_USER_MODEL_ID,
   EXIT_CODES,
   SPLASH_SIZE,
   SPLASH_HTML,
@@ -104,6 +104,9 @@ if (isCliMode()) {
       });
   });
 } else {
+  if (process.platform === 'win32') {
+    app.setAppUserModelId(APP_USER_MODEL_ID);
+  }
   app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
   /** The main application window, or `null` once it has been closed. @type {BrowserWindow | null} */
   let mainWindow: BrowserWindow | null = null;
@@ -127,9 +130,7 @@ if (isCliMode()) {
 
   function loadAppIcon(): Electron.NativeImage {
     if (!appIcon) {
-      const iconPath = path.join(app.getAppPath(), APP_ICON);
-      const iconBuffer = fs.readFileSync(iconPath);
-      appIcon = nativeImage.createFromBuffer(iconBuffer);
+      appIcon = nativeImage.createFromPath(path.join(app.getAppPath(), APP_ICON));
     }
     return appIcon;
   }
