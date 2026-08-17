@@ -7,3 +7,6 @@ release/
 .DS_Store
 Thumbs.db
 e2e-media-*/
+perf/results/
+perf/fixtures/*.mp4
+perf/fixtures/perf-*/

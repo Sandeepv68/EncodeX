@@ -192,6 +192,29 @@ jobs:
       - run: npm ci
       - run: npm run test:integration
 
+  test-perf:
+    name: Test - Performance Benchmarks
+    needs: [format-check, lint, lint-px, lint-colors, typecheck, validate-locales]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Generate test media fixtures
+        run: npm run perf:generate-media
+      - name: Run performance tests
+        run: npm run perf
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: perf-results
+          path: perf/results/
+          if-no-files-found: warn
+
   test-e2e:
     name: Test - E2E Automation
     needs: [build, test-unit, test-integration]
