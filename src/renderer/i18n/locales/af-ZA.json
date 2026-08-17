@@ -24,7 +24,8 @@
       "extracting": "Onttrek klank",
       "cutting": "Sny video",
       "paused": "Gepauseer",
-      "starting": "Begin"
+      "starting": "Begin",
+      "parallel": "{{count}} gelyktydig"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} taak/take oorgeslaan – die nuwe uitset sal 'n ander taak se lêer oorskryf ({{names}})",
     "optionsUpdateFailed": "Hierdie taak kan nie meer geredigeer word nie.",
     "condense": "Vou in",
-    "expand": "Brei uit"
+    "expand": "Brei uit",
+    "clearAll": "Maak alles skoon"
   },
   "progress": {
     "title": "Omskakelingsvordering",

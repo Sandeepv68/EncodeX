@@ -24,7 +24,8 @@
       "extracting": "Estrazione audio",
       "cutting": "Taglio video",
       "paused": "In pausa",
-      "starting": "Avvio"
+      "starting": "Avvio",
+      "parallel": "{{count}} in parallelo"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} lavoro/i saltato/i – la nuova uscita sovrascriverebbe il file di un altro lavoro ({{names}})",
     "optionsUpdateFailed": "Questo lavoro non può più essere modificato.",
     "condense": "Comprimi",
-    "expand": "Espandi"
+    "expand": "Espandi",
+    "clearAll": "Pulisci tutto"
   },
   "progress": {
     "title": "Avanzamento conversione",

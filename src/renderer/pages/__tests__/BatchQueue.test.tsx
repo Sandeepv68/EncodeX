@@ -382,6 +382,30 @@ describe('BatchQueue', () => {
     expect(screen.getByText(/ETA ~2m 15s/)).toBeInTheDocument();
   });
 
+  it('shows a Clear All button when every job has finished', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'done' }), job({ id: 'job-2', status: 'error', error: 'boom' })]);
+    renderPage();
+    await screen.findAllByText(/video\.mp4/);
+    expect(screen.getByRole('button', { name: 'batchQueue.clearAll' })).toBeInTheDocument();
+  });
+
+  it('does not show Clear All when jobs are still queued or running', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'running' }), job({ id: 'job-2', status: 'queued' })]);
+    renderPage();
+    await screen.findAllByText(/video\.mp4/);
+    expect(screen.queryByRole('button', { name: 'batchQueue.clearAll' })).not.toBeInTheDocument();
+  });
+
+  it('calls queueClearCompleted when Clear All is clicked', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'done' }), job({ id: 'job-2', status: 'done' })]);
+    queueClearCompletedMock.mockResolvedValue(2);
+    renderPage();
+    await screen.findAllByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.clearAll' }));
+    await waitFor(() => expect(queueClearCompletedMock).toHaveBeenCalledOnce());
+    expect(useQueueStore.getState().jobs).toHaveLength(0);
+  });
+
   it('shows a batch-finished toast when the running count drops to zero', async () => {
     queueListMock.mockResolvedValue([job({ id: 'job-1', status: 'running' })]);
     renderPage();
@@ -620,6 +644,39 @@ describe('BatchQueue', () => {
     await waitFor(() =>
       expect(queueAddMock).toHaveBeenCalledWith('/in/video.mp4', '/in/video_encodex_converted.mp4', expect.any(Object), 'FFMPEG', false),
     );
+  });
+
+  it('restores a persisted output folder and overwrite toggle on mount', async () => {
+    localStorage.setItem(BATCH_CONFIG_STORAGE_KEY, JSON.stringify({ outputDir: '/restored', overwrite: true }));
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/video.mp4']);
+    queueAddMock.mockResolvedValue('job-9');
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() =>
+      expect(queueAddMock).toHaveBeenCalledWith(
+        '/in/video.mp4',
+        '/restored/video_encodex_converted.mp4',
+        expect.any(Object),
+        'FFMPEG',
+        true,
+      ),
+    );
+  });
+
+  it('persists the chosen output folder and overwrite toggle', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectDirectoryMock.mockResolvedValue('/out');
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.browse' }));
+    await waitFor(() => expect(selectDirectoryMock).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByLabelText('batchQueue.overwrite'));
+    await waitFor(() => {
+      const stored = JSON.parse(localStorage.getItem(BATCH_CONFIG_STORAGE_KEY) ?? '{}');
+      expect(stored.outputDir).toBe('/out');
+      expect(stored.overwrite).toBe(true);
+    });
   });
 
   it('passes overwrite true when the overwrite checkbox is enabled', async () => {
@@ -1085,5 +1142,18 @@ describe('BatchQueue', () => {
     fireEvent.keyDown(window, { code: 'Digit3', key: '3' });
     expect(screen.getByRole('button', { name: 'Running (1)' })).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByRole('button', { name: 'All (1)' })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('recomputes queued jobs output paths when the output directory changes', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', input: '/in/video.mp4', output: '/in/video_encodex_converted.mp4' })]);
+    queueUpdateOptionsMock.mockResolvedValue(true);
+    selectDirectoryMock.mockResolvedValue('/new-out');
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.browse' }));
+    await waitFor(() => expect(selectDirectoryMock).toHaveBeenCalledOnce());
+    await waitFor(() =>
+      expect(queueUpdateOptionsMock).toHaveBeenCalledWith('job-1', expect.any(Object), '/new-out/video_encodex_converted.mp4'),
+    );
   });
 });

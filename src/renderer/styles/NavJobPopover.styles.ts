@@ -2,9 +2,43 @@
  * @fileoverview Styles for the navigation blip job popover card.
  */
 
-import { styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { styled, keyframes } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
+import { alpha, Box } from '@mui/material';
 import { SHADOWS } from '../colors';
+
+/**
+ * Small non-animated badge shown in the popover when the batch queue is
+ * configured to run more than one job in parallel, making the concurrency
+ * setting visible at a glance.
+ * @const PopoverParallelBadge
+ */
+export const PopoverParallelBadge = styled(Box)(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minWidth: theme.spacing(2.5),
+  height: theme.spacing(2.5),
+  paddingInline: theme.spacing(0.75),
+  borderRadius: theme.spacing(1.25),
+  backgroundColor: alpha(theme.palette.warning.main, theme.palette.mode === 'dark' ? 0.12 : 0.08),
+  color: theme.palette.warning.main,
+  fontSize: theme.typography.pxToRem(11),
+  fontWeight: 700,
+  lineHeight: 1,
+  flexShrink: 0,
+}));
+
+/**
+ * Entrance animation for the popover's main thumbnail. Replays whenever the
+ * running job changes (the thumbnail is keyed by input path), so the finished
+ * job's thumbnail is visually replaced by the next job's with a soft fade/zoom.
+ * @const {Keyframes} thumbnailSwapIn
+ */
+const thumbnailSwapIn = keyframes`
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+`;
 
 /**
  * Small rounded thumbnail of the in-progress job's source file, rendered beside
@@ -20,6 +54,10 @@ export const PopoverThumb = styled('img')(({ theme }) => ({
   display: 'block',
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+  animation: `${thumbnailSwapIn} 0.3s ease-out backwards`,
+  '@media (prefers-reduced-motion: reduce)': {
+    animation: 'none',
+  },
 }));
 
 /**
@@ -42,24 +80,43 @@ export const PopoverArrow = styled(Box)(({ theme }) => ({
 }));
 
 /**
+ * Entrance animation for a pile slot. Newly mounted slots (a queued job sliding
+ * into view as the batch advances) fade in from the right with a slight settle.
+ * @const {Keyframes} pileSlotIn
+ */
+const pileSlotIn = (theme: Theme) => keyframes`
+  from { opacity: 0; transform: translateX(${theme.typography.pxToRem(10)}); }
+  to { opacity: 1; transform: translateX(0); }
+`;
+
+/**
  * One slot in the overlapping pending-job thumbnail pile: a fixed-size rounded
  * box holding the resolved preview (`$src`) or a neutral placeholder while
  * loading / when the file has no usable preview, overlapping the previous slot.
+ * The entrance animation is staggered per slot via `$delay`, so as the running
+ * job finishes and the pile advances, the next queued thumbnails slide in one
+ * after the other. Slots are keyed by input path, so already-visible slots are
+ * preserved and do not replay their animation.
  * @const PopoverPileThumb
  */
-export const PopoverPileThumb = styled(Box, { shouldForwardProp: (prop) => prop !== '$src' })<{ $src?: string | null }>(
-  ({ theme, $src }) => ({
-    width: theme.typography.pxToRem(32),
-    height: theme.typography.pxToRem(32),
-    flexShrink: 0,
-    borderRadius: theme.shape.borderRadius,
-    border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
-    backgroundColor: $src ? undefined : theme.palette.action.hover,
-    backgroundImage: $src ? `url(${$src})` : undefined,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    marginLeft: `-${theme.typography.pxToRem(10)}`,
-    boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
-    '&:first-of-type': { marginLeft: 0 },
-  }),
-);
+export const PopoverPileThumb = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$src' && prop !== '$delay',
+})<{ $src?: string | null; $delay?: number }>(({ theme, $src, $delay }) => ({
+  width: theme.typography.pxToRem(32),
+  height: theme.typography.pxToRem(32),
+  flexShrink: 0,
+  borderRadius: theme.shape.borderRadius,
+  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+  backgroundColor: $src ? undefined : theme.palette.action.hover,
+  backgroundImage: $src ? `url(${$src})` : undefined,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  marginLeft: `-${theme.typography.pxToRem(10)}`,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+  animation: `${pileSlotIn(theme)} 0.25s ease-out backwards`,
+  animationDelay: `${$delay ?? 0}ms`,
+  '@media (prefers-reduced-motion: reduce)': {
+    animation: 'none',
+  },
+  '&:first-of-type': { marginLeft: 0 },
+}));

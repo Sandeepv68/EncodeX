@@ -24,7 +24,8 @@
       "extracting": "חילוץ אודיו",
       "cutting": "חיתוך וידאו",
       "paused": "הושהה",
-      "starting": "מתחיל"
+      "starting": "מתחיל",
+      "parallel": "{{count}} מקבילים"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "דולגו {{count}} משימות – הפלט החדש ידרוס את הקובץ של משימה אחרת ({{names}})",
     "optionsUpdateFailed": "לא ניתן עוד לערוך משימה זו.",
     "condense": "כווץ",
-    "expand": "הרחב"
+    "expand": "הרחב",
+    "clearAll": "נקה הכל"
   },
   "progress": {
     "title": "התקדמות ההמרה",

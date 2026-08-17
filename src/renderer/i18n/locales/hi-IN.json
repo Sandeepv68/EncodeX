@@ -24,7 +24,8 @@
       "extracting": "ऑडियो निकाला जा रहा है",
       "cutting": "वीडियो काटा जा रहा है",
       "paused": "विराम दिया गया",
-      "starting": "शुरू हो रहा है"
+      "starting": "शुरू हो रहा है",
+      "parallel": "{{count}} समानांतर"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} कार्य छोड़े गए – नया आउटपुट किसी अन्य कार्य की फ़ाइल को अधिलेखित करेगा ({{names}})",
     "optionsUpdateFailed": "यह कार्य अब संपादित नहीं किया जा सकता।",
     "condense": "सिकोड़ें",
-    "expand": "बड़ा करें"
+    "expand": "बड़ा करें",
+    "clearAll": "सभी साफ़ करें"
   },
   "progress": {
     "title": "रूपांतरण प्रगति",

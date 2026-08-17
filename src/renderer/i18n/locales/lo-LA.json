@@ -24,7 +24,8 @@
       "extracting": "ກຳລັງດຶງສຽງ",
       "cutting": "ກຳລັງຕັດວິດີໂອ",
       "paused": "ຖືກຢຸດຊົ່ວຄາວ",
-      "starting": "ກຳລັງເລີ່ມຕົ້ນ"
+      "starting": "ກຳລັງເລີ່ມຕົ້ນ",
+      "parallel": "{{count}} ໃນລະບຽບ"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "ຂ້າມວຽກ {{count}} ວຽກ – ຜົນຜະລິດໃໝ່ຈະຂຽນທັບໄຟລ໌ຂອງວຽກອື່ນ ({{names}})",
     "optionsUpdateFailed": "ບໍ່ສາມາດແກ້ໄຂວຽກນີ້ໄດ້ອີກຕໍ່ໄປ.",
     "condense": "ຫຍໍ້",
-    "expand": "ຂະຫຍາຍ"
+    "expand": "ຂະຫຍາຍ",
+    "clearAll": "ລ້າງທັງໝົດ"
   },
   "progress": {
     "title": "ຄວາມຄືບໜ້າການແປງ",

@@ -24,7 +24,8 @@
       "extracting": "กำลังแยกเสียง",
       "cutting": "กำลังตัดวิดีโอ",
       "paused": "หยุดชั่วคราว",
-      "starting": "กำลังเริ่มต้น"
+      "starting": "กำลังเริ่มต้น",
+      "parallel": "{{count}} พร้อมกัน"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "ข้าม {{count}} งาน – เอาต์พุตใหม่จะเขียนทับไฟล์ของงานอื่น ({{names}})",
     "optionsUpdateFailed": "ไม่สามารถแก้ไขงานนี้ได้อีกต่อไป",
     "condense": "ย่อ",
-    "expand": "ขยาย"
+    "expand": "ขยาย",
+    "clearAll": "ล้างทั้งหมด"
   },
   "progress": {
     "title": "ความคืบหน้าการแปลง",

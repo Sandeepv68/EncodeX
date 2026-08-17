@@ -24,7 +24,8 @@
       "extracting": "Извлечение аудио",
       "cutting": "Резка видео",
       "paused": "Пауза",
-      "starting": "Запуск"
+      "starting": "Запуск",
+      "parallel": "{{count}} параллельно"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "Пропущено заданий: {{count}} – новый результат перезапишет файл другого задания ({{names}})",
     "optionsUpdateFailed": "Это задание больше нельзя изменить.",
     "condense": "Свернуть",
-    "expand": "Развернуть"
+    "expand": "Развернуть",
+    "clearAll": "Очистить все"
   },
   "progress": {
     "title": "Ход конвертации",

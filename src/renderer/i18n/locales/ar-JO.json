@@ -24,7 +24,8 @@
       "extracting": "استخراج الصوت",
       "cutting": "قص الفيديو",
       "paused": "متوقف مؤقتًا",
-      "starting": "جارٍ البدء"
+      "starting": "جارٍ البدء",
+      "parallel": "{{count}} متزامن"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "تم تخطي {{count}} مهمة – سيحل الناتج الجديد محل ملف مهمة أخرى ({{names}})",
     "optionsUpdateFailed": "لم يعد من الممكن تحرير هذه المهمة.",
     "condense": "طي",
-    "expand": "توسيع"
+    "expand": "توسيع",
+    "clearAll": "مسح الكل"
   },
   "progress": {
     "title": "تقدم التحويل",

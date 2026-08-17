@@ -24,7 +24,8 @@
       "extracting": "अडियो निकाल्दै",
       "cutting": "भिडियो काट्दै",
       "paused": "रोकिएको",
-      "starting": "सुरु हुँदै"
+      "starting": "सुरु हुँदै",
+      "parallel": "{{count}} समानान्तर"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} काम छोडियो – नयाँ आउटपुटले अर्को कामको फाइल अधिलेखन गर्नेछ ({{names}})",
     "optionsUpdateFailed": "यो काम अब सम्पादनयोग्य छैन।",
     "condense": "साँघुरो बनाउनुहोस्",
-    "expand": "फराकिलो बनाउनुहोस्"
+    "expand": "फराकिलो बनाउनुहोस्",
+    "clearAll": "सबै मेटाउनुहोस्"
   },
   "progress": {
     "title": "रूपान्तरण प्रगति",

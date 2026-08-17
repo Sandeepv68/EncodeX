@@ -24,7 +24,8 @@
       "extracting": "音声を抽出中",
       "cutting": "動画をカット中",
       "paused": "一時停止中",
-      "starting": "開始中"
+      "starting": "開始中",
+      "parallel": "{{count}} 並列"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} 件のジョブをスキップしました – 新しい出力は別のジョブのファイルを上書きします ({{names}})",
     "optionsUpdateFailed": "このジョブは編集できなくなりました。",
     "condense": "折りたたむ",
-    "expand": "展開する"
+    "expand": "展開する",
+    "clearAll": "すべてクリア"
   },
   "progress": {
     "title": "変換の進行状況",

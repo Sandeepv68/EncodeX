@@ -24,7 +24,8 @@
       "extracting": "Аудио гаргаж байна",
       "cutting": "Видео тайрч байна",
       "paused": "Түр зогссон",
-      "starting": "Эхэлж байна"
+      "starting": "Эхэлж байна",
+      "parallel": "{{count}} зэрэгцээ"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} ажлыг алгассан – шинэ гаралт өөр ажлын файлыг дарж бичих болно ({{names}})",
     "optionsUpdateFailed": "Энэ ажлыг цаашид засах боломжгүй.",
     "condense": "Хумих",
-    "expand": "Дэлгэх"
+    "expand": "Дэлгэх",
+    "clearAll": "Бүгдийг арилгах"
   },
   "progress": {
     "title": "Хөрвүүлэлтийн явц",

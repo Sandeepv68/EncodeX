@@ -24,7 +24,8 @@
       "extracting": "Витягнення аудіо",
       "cutting": "Обрізання відео",
       "paused": "На паузі",
-      "starting": "Запуск"
+      "starting": "Запуск",
+      "parallel": "{{count}} паралельно"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "Пропущено завдань: {{count}} – новий результат перезапише файл іншого завдання ({{names}})",
     "optionsUpdateFailed": "Це завдання більше не можна змінити.",
     "condense": "Згорнути",
-    "expand": "Розгорнути"
+    "expand": "Розгорнути",
+    "clearAll": "Очистити все"
   },
   "progress": {
     "title": "Хід конвертації",

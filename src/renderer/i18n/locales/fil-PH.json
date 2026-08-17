@@ -24,7 +24,8 @@
       "extracting": "Kinukuha ang audio",
       "cutting": "Kinukut ang video",
       "paused": "Naka-pause",
-      "starting": "Sinisimulan"
+      "starting": "Sinisimulan",
+      "parallel": "{{count}} sabay-sabay"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "Nilaktawan ang {{count}} trabaho – ang bagong output ay mag-o-overwrite sa file ng ibang trabaho ({{names}})",
     "optionsUpdateFailed": "Hindi na ma-edit ang trabahong ito.",
     "condense": "Paliitin",
-    "expand": "Palakihin"
+    "expand": "Palakihin",
+    "clearAll": "I-clear lahat"
   },
   "progress": {
     "title": "Pag-unlad ng conversion",

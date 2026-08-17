@@ -24,7 +24,8 @@
       "extracting": "正在提取音频",
       "cutting": "正在剪切视频",
       "paused": "已暂停",
-      "starting": "正在开始"
+      "starting": "正在开始",
+      "parallel": "{{count}} 并行"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "已跳过 {{count}} 个任务 – 新输出将覆盖另一个任务的文件 ({{names}})",
     "optionsUpdateFailed": "此任务不再可编辑。",
     "condense": "收起",
-    "expand": "展开"
+    "expand": "展开",
+    "clearAll": "清除全部"
   },
   "progress": {
     "title": "转换进度",

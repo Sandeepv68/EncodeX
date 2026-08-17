@@ -24,7 +24,8 @@
       "extracting": "Extraindo áudio",
       "cutting": "Cortando vídeo",
       "paused": "Em pausa",
-      "starting": "Iniciando"
+      "starting": "Iniciando",
+      "parallel": "{{count}} em paralelo"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} tarefa(s) ignorada(s) – a nova saída sobrescreveria o arquivo de outra tarefa ({{names}})",
     "optionsUpdateFailed": "Esta tarefa não pode mais ser editada.",
     "condense": "Recolher",
-    "expand": "Expandir"
+    "expand": "Expandir",
+    "clearAll": "Limpar tudo"
   },
   "progress": {
     "title": "Progresso da conversão",

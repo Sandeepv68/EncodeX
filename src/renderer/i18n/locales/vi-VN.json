@@ -24,7 +24,8 @@
       "extracting": "Đang tách âm thanh",
       "cutting": "Đang cắt video",
       "paused": "Tạm dừng",
-      "starting": "Đang bắt đầu"
+      "starting": "Đang bắt đầu",
+      "parallel": "{{count}} song song"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "Đã bỏ qua {{count}} công việc – đầu ra mới sẽ ghi đè lên tệp của công việc khác ({{names}})",
     "optionsUpdateFailed": "Không còn có thể sửa công việc này.",
     "condense": "Thu gọn",
-    "expand": "Mở rộng"
+    "expand": "Mở rộng",
+    "clearAll": "Xóa tất cả"
   },
   "progress": {
     "title": "Tiến trình chuyển đổi",

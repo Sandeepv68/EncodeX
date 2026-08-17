@@ -24,7 +24,8 @@
       "extracting": "正在擷取音訊",
       "cutting": "正在剪輯影片",
       "paused": "已暫停",
-      "starting": "正在開始"
+      "starting": "正在開始",
+      "parallel": "{{count}} 並行"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "已略過 {{count}} 個工作 – 新的輸出將覆寫另一個工作的檔案 ({{names}})",
     "optionsUpdateFailed": "此工作已無法編輯。",
     "condense": "收起",
-    "expand": "展開"
+    "expand": "展開",
+    "clearAll": "全部清除"
   },
   "progress": {
     "title": "轉換進度",

@@ -131,3 +131,44 @@ export function recomputeJobOutput(job: QueueJob, container: string): string {
   if (base === job.output) return job.output;
   return `${base}.${ext}`;
 }
+
+/**
+ * Extracts the directory portion of a file path, handling both Windows
+ * backslashes and POSIX forward slashes. The trailing separator is removed.
+ * @param {string} file - The file path to process.
+ * @returns {string} The directory path, or '' when the path has no separators.
+ */
+function getSourceDir(file: string): string {
+  const idx = Math.max(file.lastIndexOf('/'), file.lastIndexOf('\\'));
+  return idx >= 0 ? file.slice(0, idx) : '';
+}
+
+/**
+ * Extracts the basename of a file path, handling both Windows backslashes and
+ * POSIX forward slashes.
+ * @param {string} filePath - The file path to process.
+ * @returns {string} The trailing path segment, or the original path when it
+ *   has no separators.
+ */
+function basename(filePath: string): string {
+  const parts = filePath.split(/[\\/]/);
+  return parts[parts.length - 1] || filePath;
+}
+
+/**
+ * Moves a queued job's output path into the given output directory (or back to
+ * source-adjacent when the directory is empty). The job's output basename
+ * (filename including extension and suffix) is preserved; only the parent
+ * directory changes. Used when the batch output folder setting changes so
+ * queued jobs follow the new directory before the batch starts.
+ * @param {QueueJob} job - The queued job whose output should be recomputed.
+ * @param {string} outputDir - The new output folder; empty means source-adjacent.
+ * @returns {string} The updated output path, or the job's current output when
+ *   the target directory already matches.
+ */
+export function recomputeJobOutputDir(job: QueueJob, outputDir: string): string {
+  const targetDir = outputDir.length > 0 ? outputDir.replace(/\\/g, '/').replace(/\/+$/, '') : getSourceDir(job.input).replace(/\\/g, '/');
+  const currentDir = getSourceDir(job.output).replace(/\\/g, '/');
+  if (targetDir === currentDir) return job.output;
+  return `${targetDir}/${basename(job.output)}`;
+}

@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Stack, Typography, Collapse, IconButton, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListOl, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
+import { faListOl, faLayerGroup, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent, DragStartEvent, Modifier } from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -50,7 +50,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { readStoredBatchConfig, persistBatchConfig, type BatchConfig } from '../stores/batchConfig';
 import type { QueueAddReviewSelection } from '../components/types';
 import type { HwAccelMode } from '../../shared/types';
-import { buildBatchOptions, inferJobOperation, recomputeJobOutput } from '../utils/batch-options';
+import { buildBatchOptions, inferJobOperation, recomputeJobOutput, recomputeJobOutputDir } from '../utils/batch-options';
 import { computeQueuedTargetPosition, reorderJob } from '../utils/queue-reorder';
 import { JobCard } from '../styles/QueueJobCard.styles';
 import {
@@ -304,18 +304,28 @@ export default function BatchQueue() {
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
 
   /**
+   * Last-used batch configuration read from localStorage once on mount, used to
+   * seed every `useState` below (encoding fields, output folder and overwrite
+   * toggle) so the page restores the previous session's settings.
+   * @type {[BatchConfig, React.Dispatch<React.SetStateAction<BatchConfig>>]}
+   */
+  const [initialConfig] = useState<BatchConfig>(readStoredBatchConfig);
+
+  /**
    * Optional output folder for newly added jobs. When empty, outputs are
-   * written next to their source files (source-adjacent naming).
+   * written next to their source files (source-adjacent naming). Restored from
+   * the persisted batch config so the folder survives page re-entry.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const [outputDir, setOutputDir] = useState('');
+  const [outputDir, setOutputDir] = useState(initialConfig.outputDir);
 
   /**
    * Whether newly added jobs may replace existing output files. When false,
-   * the main process rejects a job whose output already exists.
+   * the main process rejects a job whose output already exists. Restored from
+   * the persisted batch config so the toggle survives page re-entry.
    * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
    */
-  const [overwrite, setOverwrite] = useState(false);
+  const [overwrite, setOverwrite] = useState(initialConfig.overwrite);
 
   /**
    * Files pending review in the add-files dialog, or null when the dialog is
@@ -324,14 +334,6 @@ export default function BatchQueue() {
    * @type {[string[] | null, React.Dispatch<React.SetStateAction<string[] | null>>]}
    */
   const [reviewFiles, setReviewFiles] = useState<string[] | null>(null);
-
-  /**
-   * Last-used batch encoding configuration read from localStorage once on
-   * mount, used to seed every encoding `useState` below so the page restores
-   * the previous session's settings.
-   * @type {[BatchConfig, React.Dispatch<React.SetStateAction<BatchConfig>>]}
-   */
-  const [initialConfig] = useState<BatchConfig>(readStoredBatchConfig);
 
   /**
    * Video codec applied to jobs created under operations that keep video
@@ -491,31 +493,48 @@ export default function BatchQueue() {
   }, []);
 
   /**
-   * Persists the current batch encoding configuration to localStorage whenever
-   * any encoding control changes, so re-entering the page restores the last
-   * session's settings.
+   * Persists the current batch configuration (encoding fields plus the output
+   * folder and overwrite toggle) to localStorage whenever any of those controls
+   * change, so re-entering the page restores the last session's settings.
    * @returns {void}
    */
   useEffect(() => {
-    persistBatchConfig({ operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat });
-  }, [operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat]);
+    persistBatchConfig({
+      operation,
+      videoCodec,
+      audioCodec,
+      container,
+      videoBitrate,
+      audioBitrate,
+      quality,
+      scale,
+      pixelFormat,
+      outputDir,
+      overwrite,
+    });
+  }, [operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat, outputDir, overwrite]);
 
   /**
-   * Propagates the panel's encoding fields to every queued job that has not
-   * been customized through the per-job dialog. Skipped entirely once the batch
-   * has started (running jobs must keep the options they were given), and
-   * customized jobs are excluded so an explicit per-job edit is never
-   * overwritten. Each job keeps the operation it was created under (recovered
-   * from its options) and its output extension is recomputed when the selected
-   * container is compatible. A job whose recomputed output would collide with
-   * another job's output is skipped and reported in a single warning toast.
+   * Propagates the panel's encoding fields and the output folder to every queued
+   * job that has not been customized through the per-job dialog. Skipped
+   * entirely once the batch has started (running jobs must keep the options they
+   * were given), and customized jobs are excluded so an explicit per-job edit is
+   * never overwritten. Each job keeps the operation it was created under
+   * (recovered from its options), its parent directory is updated to the current
+   * output folder when the folder setting changes, and its output extension is
+   * recomputed when the selected container is compatible. A job whose recomputed
+   * output would collide with another job's output is skipped and reported in a
+   * single warning toast.
    * @returns {void}
    */
+  const prevOutputDirRef = useRef(outputDir);
   useEffect(() => {
     if (batchStarted) return;
     const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
     const customized = customizedIdsRef.current;
     const currentJobs = useQueueStore.getState().jobs;
+    const dirChanged = prevOutputDirRef.current !== outputDir;
+    prevOutputDirRef.current = outputDir;
     const claimedBy = new Map<string, string>();
     for (const job of currentJobs) claimedBy.set(normalizePath(job.output), job.id);
     const skippedNames: string[] = [];
@@ -527,7 +546,9 @@ export default function BatchQueue() {
         { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat },
         { hardwareAcceleration, hwaccelMode },
       );
-      const output = recomputeJobOutput(job, container);
+      let output = job.output;
+      if (dirChanged) output = recomputeJobOutputDir(job, outputDir);
+      output = recomputeJobOutput({ ...job, output }, container);
       const ownedBy = claimedBy.get(normalizePath(output));
       if (ownedBy && ownedBy !== job.id) {
         skippedNames.push(basename(job.input));
@@ -540,7 +561,7 @@ export default function BatchQueue() {
         .getState()
         .warning(t('batchQueue.outputCollisionSkipped', { count: skippedNames.length, names: skippedNames.join(', ') }));
     }
-  }, [videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat, batchStarted]);
+  }, [videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat, outputDir, batchStarted]);
 
   /**
    * On mount, pushes the persisted concurrency cap to the main process so the
@@ -1080,6 +1101,14 @@ export default function BatchQueue() {
   const remainingSeconds = estimateRemaining(jobs, progress);
 
   /**
+   * True when every job in the batch has finished (done or failed) and there
+   * are no queued or running jobs left. Drives the "Clear All" button in the
+   * filter row.
+   * @type {boolean}
+   */
+  const allDone = jobs.length > 0 && !hasActive && hasCompleted;
+
+  /**
    * Jobs shown after applying the active status filter and search term. Their
    * order mirrors the store's queue order (filtering preserves relative order).
    * @type {QueueJob[]}
@@ -1239,6 +1268,15 @@ export default function BatchQueue() {
               <FilterEta variant="body2" color="text.secondary">
                 {t('batchQueue.etaEstimate', { eta: formatEstimate(remainingSeconds) })}
               </FilterEta>
+            )}
+            {allDone && (
+              <Box sx={{ marginInlineStart: 'auto' }}>
+                <Tooltip title={t('batchQueue.clearAll')}>
+                  <IconButton size="small" color="error" aria-label={t('batchQueue.clearAll')} onClick={handleClearCompleted}>
+                    <FontAwesomeIcon icon={faTrashCan} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             )}
           </FilterRow>
         )}

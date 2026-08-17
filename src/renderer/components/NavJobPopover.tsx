@@ -35,7 +35,7 @@ import { Box, Popover, Typography } from '@mui/material';
 import ProgressBar from './ProgressBar';
 import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
 import type { NavJobPopoverProps } from './types';
-import { PopoverArrow, PopoverPileThumb, PopoverThumb } from '../styles/NavJobPopover.styles';
+import { PopoverArrow, PopoverParallelBadge, PopoverPileThumb, PopoverThumb } from '../styles/NavJobPopover.styles';
 
 /**
  * Lazily resolves a preview data URL for an input path through the shared
@@ -43,11 +43,15 @@ import { PopoverArrow, PopoverPileThumb, PopoverThumb } from '../styles/NavJobPo
  * card) seeds the first render synchronously, otherwise the image/video preview
  * IPC is called once per path. Audio files and other sources without a usable
  * preview resolve to `null`.
+ *
+ * Callers key this hook's component by the input path so that changing the
+ * running job fully remounts the thumbnail (replaying its swap animation)
+ * instead of briefly showing the previous file's preview against the new one.
  * @param {string} [input] - Absolute input path, or undefined when unknown.
  * @returns {string | null} The preview data URL, or null.
  */
 function usePreviewSrc(input?: string): string | null {
-  const [src, setSrc] = useState<string | null>(null);
+  const [src, setSrc] = useState<string | null>(() => (input ? getResolvedPreviewThumbnail(input) : null));
   useEffect(() => {
     if (!input) {
       setSrc(null);
@@ -111,6 +115,13 @@ const PILE_SLOT_WIDTH = 32;
 const PILE_SLOT_STEP = PILE_SLOT_WIDTH - 10;
 
 /**
+ * Delay in ms added per pile slot position for the entrance animation, so pile
+ * thumbnails slide in one after the other rather than all at once.
+ * @const {number} PILE_SLOT_STAGGER_MS
+ */
+const PILE_SLOT_STAGGER_MS = 40;
+
+/**
  * Horizontal space reserved for the "+N" count badge, in px, so a truncated pile
  * never overflows the card edge.
  * @const {number} PILE_COUNT_RESERVE
@@ -133,13 +144,18 @@ const PILE_CAPACITY = Math.max(
 /**
  * One slot in the overlapping pending-job thumbnail pile: a fixed-size rounded
  * box that holds the resolved preview (or a neutral placeholder while loading /
- * when the file has no usable preview), overlapping the previous slot.
- * @param {{ input: string }} props - The pending job's input path.
+ * when the file has no usable preview), overlapping the previous slot. The
+ * slot's entrance animation is staggered by its pile position (`index`) so new
+ * thumbnails slide in one after the other as the batch advances.
+ * @param {{ input: string, index: number }} props - The pending job's input
+ *   path and its position in the pile.
  * @returns {JSX.Element} The pile thumbnail slot.
  */
-function PileThumb({ input }: { input: string }) {
+function PileThumb({ input, index }: { input: string; index: number }) {
   const src = usePreviewSrc(input);
-  return <PopoverPileThumb $src={src} data-testid="nav-job-popover-pile-thumb" title={basename(input)} />;
+  return (
+    <PopoverPileThumb $src={src} $delay={index * PILE_SLOT_STAGGER_MS} data-testid="nav-job-popover-pile-thumb" title={basename(input)} />
+  );
 }
 
 /**
@@ -194,17 +210,25 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
             {content.title}
           </Typography>
           <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
-            <Thumbnail input={content.input} />
+            <Thumbnail key={content.input} input={content.input} />
             <Box sx={{ minWidth: 0, flex: 1 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                 <Typography variant="caption" color="text.secondary" noWrap>
                   {content.status}
                 </Typography>
-                {content.paused && (
-                  <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                    {t('nav.blip.paused')}
-                  </Typography>
-                )}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
+                  {content.parallel && content.parallel > 1 && (
+                    <PopoverParallelBadge title={t('nav.blip.parallel', { count: content.parallel })}>
+                      {'\u00d7'}
+                      {content.parallel}
+                    </PopoverParallelBadge>
+                  )}
+                  {content.paused && (
+                    <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                      {t('nav.blip.paused')}
+                    </Typography>
+                  )}
+                </Box>
               </Box>
               {content.fileName && (
                 <Typography variant="caption" color="text.secondary" title={content.fileName} noWrap sx={{ display: 'block', mt: 0.25 }}>
@@ -216,6 +240,7 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
           <Box sx={{ mt: 1 }}>
             {content.progress ? (
               <ProgressBar
+                key={content.jobId ?? content.input}
                 percent={content.progress.percent}
                 time={content.progress.time}
                 speed={content.progress.speed}
@@ -232,8 +257,8 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
           </Box>
           {content.pendingThumbnails && content.pendingThumbnails.length > 0 && (
             <Box data-testid="nav-job-popover-pile" sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-              {content.pendingThumbnails.slice(0, PILE_CAPACITY).map((input) => (
-                <PileThumb key={input} input={input} />
+              {content.pendingThumbnails.slice(0, PILE_CAPACITY).map((input, index) => (
+                <PileThumb key={input} input={input} index={index} />
               ))}
               {content.pendingThumbnails.length > PILE_CAPACITY && (
                 <Typography variant="caption" color="text.secondary" data-testid="nav-job-popover-pile-count" sx={{ ml: 1 }}>

@@ -24,7 +24,8 @@
       "extracting": "Dreg út hljóð",
       "cutting": "Klippi myndband",
       "paused": "Í bið",
-      "starting": "Byrjar"
+      "starting": "Byrjar",
+      "parallel": "{{count}} samtímis"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} verk á hoppað yfir – nýja úttakið mun skrifa yfir skrá annars verks ({{names}})",
     "optionsUpdateFailed": "Ekki er lengur hægt að breyta þessu verki.",
     "condense": "Þjappa",
-    "expand": "Stækka"
+    "expand": "Stækka",
+    "clearAll": "Hreinsa allt"
   },
   "progress": {
     "title": "Framvinda umbreytingar",

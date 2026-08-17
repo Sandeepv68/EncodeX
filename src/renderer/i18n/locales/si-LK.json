@@ -24,7 +24,8 @@
       "extracting": "ශ්රව්ය උපුටා ගනිමින්",
       "cutting": "වීඩියෝව කපමින්",
       "paused": "විරාමය",
-      "starting": "ආරම්භ වෙමින්"
+      "starting": "ආරම්භ වෙමින්",
+      "parallel": "{{count}} සමාන්තර"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "කාර්යයන් {{count}}ක් මඟ හැරියේය – නව ප්රතිදානය වෙනත් කාර්යයක ගොනුව මත ලිවීමට ඉඩ ඇත ({{names}})",
     "optionsUpdateFailed": "මෙම කාර්යය තවදුරටත් සංස්කරණය කළ නොහැක.",
     "condense": "හකුළන්න",
-    "expand": "විහිදුවන්න"
+    "expand": "විහිදුවන්න",
+    "clearAll": "සියල්ල ඉවත් කරන්න"
   },
   "progress": {
     "title": "පරිවර්තන ප්රගතිය",

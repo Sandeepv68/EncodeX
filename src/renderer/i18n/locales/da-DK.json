@@ -24,7 +24,8 @@
       "extracting": "Udtrækker lyd",
       "cutting": "Klipper video",
       "paused": "Pause",
-      "starting": "Starter"
+      "starting": "Starter",
+      "parallel": "{{count}} parallelt"
     }
   },
   "dashboard": {
@@ -401,7 +402,8 @@
     "outputCollisionSkipped": "{{count}} job(s) sprunget over – den nye output vil overskrive et andet jobs fil ({{names}})",
     "optionsUpdateFailed": "Dette job kan ikke længere redigeres.",
     "condense": "Kollaps",
-    "expand": "Udvid"
+    "expand": "Udvid",
+    "clearAll": "Ryd alle"
   },
   "progress": {
     "title": "Konverteringsforløb",

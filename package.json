@@ -37,6 +37,11 @@
     "test:e2e:ci": "vitest run --config e2e/vitest.e2e.config.ts --silent",
     "test:e2e:real:ci": "vitest run --config e2e/vitest.e2e.real.config.ts --silent",
     "fetch:binaries": "node scripts/fetch-media-binaries.mjs",
+    "perf": "vitest run --config perf/vitest.perf.config.ts",
+    "perf:phase1": "vitest run --config perf/vitest.perf.config.ts -- perf/conversion-benchmark.perf.test.ts perf/queue-concurrency.perf.test.ts perf/startup.perf.test.ts",
+    "perf:phase2": "vitest run --config perf/vitest.perf.config.ts -- perf/process-lifecycle.perf.test.ts perf/memory-leak.perf.test.ts perf/large-file.perf.test.ts",
+    "perf:phase3": "vitest run --config perf/vitest.perf.config.ts -- perf/ipc-overhead.perf.test.ts perf/cli-batch.perf.test.ts perf/extraction.perf.test.ts",
+    "perf:generate-media": "node perf/fixtures/generate-media.cjs",
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder"
   },
