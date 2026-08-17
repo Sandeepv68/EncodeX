@@ -16,7 +16,7 @@
  * The module has no exports; its top-level code runs once when loaded.
  */
 
-import { app, BrowserWindow, Menu, shell } from 'electron';
+import { app, BrowserWindow, Menu, nativeImage, shell } from 'electron';
 import * as path from 'path';
 import { registerIpcHandlers } from './ipc/handlers';
 import { runCli, mapCliErrorToExitCode } from './cli/cli';
@@ -122,6 +122,18 @@ if (isCliMode()) {
    *
    * @returns {void}
    */
+  let appIcon: Electron.NativeImage | null = null;
+
+  function loadAppIcon(): Electron.NativeImage {
+    if (!appIcon) {
+      const iconPath = path.join(app.getAppPath(), APP_ICON);
+      log.info('Loading app icon from:', iconPath, 'exists:', require('fs').existsSync(iconPath));
+      appIcon = nativeImage.createFromPath(iconPath);
+      log.info('Icon loaded, isEmpty:', appIcon.isEmpty(), 'size:', appIcon.getSize());
+    }
+    return appIcon;
+  }
+
   function createSplashWindow(): void {
     log.info(LOG_CREATING_SPLASH_WINDOW);
     splashWindow = new BrowserWindow({
@@ -139,7 +151,7 @@ if (isCliMode()) {
       center: true,
       show: false,
       backgroundColor: SPLASH_BACKGROUND,
-      ...(process.platform !== 'darwin' ? { icon: path.join(app.getAppPath(), APP_ICON) } : {}),
+      ...(process.platform !== 'darwin' ? { icon: loadAppIcon() } : {}),
       webPreferences: {
         contextIsolation: true,
         nodeIntegration: false,
@@ -180,7 +192,7 @@ if (isCliMode()) {
       title: APP_NAME,
       frame: false,
       show: false,
-      ...(process.platform !== 'darwin' ? { icon: path.join(app.getAppPath(), APP_ICON) } : {}),
+      ...(process.platform !== 'darwin' ? { icon: loadAppIcon() } : {}),
       webPreferences: {
         preload: resolvePreloadPath(),
         contextIsolation: true,
@@ -188,6 +200,10 @@ if (isCliMode()) {
         sandbox: false,
       },
     });
+
+    if (process.platform !== 'darwin') {
+      mainWindow.setIcon(loadAppIcon());
+    }
 
     registerIpcHandlers(mainWindow);
     patchConsole(mainWindow);
