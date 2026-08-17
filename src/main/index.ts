@@ -17,6 +17,7 @@
  */
 
 import { app, BrowserWindow, Menu, nativeImage, shell } from 'electron';
+import * as fs from 'fs';
 import * as path from 'path';
 import { registerIpcHandlers } from './ipc/handlers';
 import { runCli, mapCliErrorToExitCode } from './cli/cli';
@@ -127,9 +128,8 @@ if (isCliMode()) {
   function loadAppIcon(): Electron.NativeImage {
     if (!appIcon) {
       const iconPath = path.join(app.getAppPath(), APP_ICON);
-      log.info('Loading app icon from:', iconPath, 'exists:', require('fs').existsSync(iconPath));
-      appIcon = nativeImage.createFromPath(iconPath);
-      log.info('Icon loaded, isEmpty:', appIcon.isEmpty(), 'size:', appIcon.getSize());
+      const iconBuffer = fs.readFileSync(iconPath);
+      appIcon = nativeImage.createFromBuffer(iconBuffer);
     }
     return appIcon;
   }
@@ -223,6 +223,9 @@ if (isCliMode()) {
 
     mainWindow.on('ready-to-show', () => {
       log.info(LOG_MAIN_WINDOW_READY_SHOWING);
+      if (process.platform !== 'darwin') {
+        mainWindow?.setIcon(loadAppIcon());
+      }
       mainWindow?.show();
       if (splashWindow && !splashWindow.isDestroyed()) {
         splashWindow.close();

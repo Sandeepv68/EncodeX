@@ -81,7 +81,7 @@ export const SPLASH_BACKGROUND = '#EEF4F4';
  * packaged builds.
  * @const {string} APP_ICON
  */
-export const APP_ICON = 'assets/icons/AppIcon.icon/Assets/icon.png';
+export const APP_ICON = 'assets/icons/icon.ico';
 
 /**
  * Human-readable application name used in window titles and UI text.
