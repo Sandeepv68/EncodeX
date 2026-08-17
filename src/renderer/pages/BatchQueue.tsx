@@ -37,6 +37,7 @@ import { useQueueStore } from '../stores/queueStore';
 import { useToastStore } from '../stores/toastStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX, QUEUE_STATUS } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
+import { analytics } from '../../shared/analytics/analytics';
 import { FILE_FILTERS, MEDIA_INPUT_EXTENSIONS, isImageFile } from '../../shared/file-extensions';
 import {
   getAudioCodecContainers,
@@ -814,6 +815,7 @@ export default function BatchQueue() {
    * @returns {Promise<void>} Resolves once the file picker closes.
    */
   const handleAddFiles = async () => {
+    analytics.featureUsed('batch_add_files');
     const files = await window.electronAPI.selectFiles([
       { name: FILE_FILTERS.MEDIA_FILES.name, extensions: [...FILE_FILTERS.MEDIA_FILES.extensions] },
     ]);
@@ -849,6 +851,7 @@ export default function BatchQueue() {
    * @returns {Promise<void>} Resolves once the retry has been enqueued.
    */
   const handleRetry = async (failedJob: QueueJob) => {
+    analytics.featureUsed('batch_retry');
     try {
       await window.electronAPI.queueAdd(failedJob.input, failedJob.output, failedJob.options, failedJob.transcoder, true);
       removeJob(failedJob.id);
@@ -885,6 +888,7 @@ export default function BatchQueue() {
    * @returns {Promise<void>} Resolves once the cancel request has been handled.
    */
   const handleCancelAllConfirm = async () => {
+    analytics.featureUsed('batch_cancel_all');
     setCancelConfirmOpen(false);
     await window.electronAPI.queueCancelAll();
     clearJobs();
@@ -1043,6 +1047,7 @@ export default function BatchQueue() {
    * @returns {Promise<void>} Resolves once the export request is handled.
    */
   const handleExport = async () => {
+    analytics.featureUsed('batch_export');
     const count = await window.electronAPI.queueExport();
     if (count > 0) {
       useToastStore.getState().success(t('batchQueue.exported', { count }));
@@ -1057,6 +1062,7 @@ export default function BatchQueue() {
    * @returns {Promise<void>} Resolves once the import request is handled.
    */
   const handleImport = async () => {
+    analytics.featureUsed('batch_import');
     try {
       const count = await window.electronAPI.queueImport();
       if (count > 0) {

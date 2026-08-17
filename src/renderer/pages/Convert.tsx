@@ -50,6 +50,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Logger } from '../../shared/logger';
+import { analytics } from '../../shared/analytics/analytics';
 import { useConversion } from '../hooks/useConversion';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
@@ -241,6 +242,11 @@ export default function Convert() {
   const settingsEncoderType = useSettingsStore((s) => s.encoderType);
   const accelAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL));
   const compatAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.COMPAT));
+
+  const handleFileSelect = (file: string) => {
+    analytics.featureUsed('convert');
+    setInputFile(file);
+  };
 
   /**
    * The encoder type actually used for codec suggestion: the page-level override
@@ -447,7 +453,7 @@ export default function Convert() {
           </FieldLabel>
           {!inputFile ? (
             <ErrorBoundary fallback={null}>
-              <FileDropZone onFileSelect={setInputFile} label={t('convert.dropLabel')} accept={VIDEO_DROPZONE_ACCEPT} />
+              <FileDropZone onFileSelect={handleFileSelect} label={t('convert.dropLabel')} accept={VIDEO_DROPZONE_ACCEPT} />
             </ErrorBoundary>
           ) : (
             <SelectedFileRow direction="row" spacing={1} useFlexGap>
@@ -459,7 +465,10 @@ export default function Convert() {
                   variant="outlined"
                   size="small"
                   startIcon={<FontAwesomeIcon icon={faFolderOpen} />}
-                  onClick={selectInput}
+                  onClick={() => {
+                    analytics.featureUsed('convert');
+                    selectInput();
+                  }}
                   data-testid="convert-change-input"
                 >
                   {t('convert.changeFile')}

@@ -124,27 +124,27 @@ describe('Settings', () => {
 
   it('shows info tooltips on the hardware acceleration settings', async () => {
     renderSettings();
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(5);
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[2]);
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(6);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[3]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.hardwareAccelerationHint');
   });
 
   it('shows an info tooltip for the mode setting', async () => {
     renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[3]);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[4]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.hwaccelModeHint');
   });
 
   it('shows an info tooltip for the encoder type setting', async () => {
     renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[4]);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[5]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.encoderTypeHint');
   });
 
   it('keeps the hardware acceleration tooltip when disabled but hides the others', () => {
     renderSettings();
     fireEvent.click(hwaccelSwitch());
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(3);
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(4);
   });
 
   it('renders the always-on-top row', () => {

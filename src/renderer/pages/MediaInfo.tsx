@@ -24,6 +24,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { openFileDialog } from '../utils/fileDialog';
 import { Logger } from '../../shared/logger';
+import { analytics } from '../../shared/analytics/analytics';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
 import { MediaInfo as MediaInfoType, ImageExifData } from '../../shared/types';
@@ -98,6 +99,7 @@ export default function MediaInfo() {
    */
   const handleFile = async (path: string) => {
     log.info(LOG_GETTING_MEDIA_INFO_FOR, path);
+    analytics.featureUsed('media_info');
     setLoading(true);
     setExif(null);
     try {

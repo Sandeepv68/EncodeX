@@ -36,6 +36,7 @@ import InfoTooltip from '../components/InfoTooltip';
 import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
+import { analytics } from '../../shared/analytics/analytics';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
 import { useTaskStore } from '../stores/taskStore';
@@ -203,6 +204,7 @@ export default function ImageCompress() {
    * @returns {Promise<void>} Resolves once preview and file info settle.
    */
   const handleFileSelect = async (path: string) => {
+    analytics.featureUsed('image_compress');
     setInput(path);
     setPreview(null);
     setFileInfo(null);

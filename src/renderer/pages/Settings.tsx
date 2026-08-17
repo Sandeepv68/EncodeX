@@ -128,6 +128,8 @@ export default function Settings() {
   const setEncoderType = useSettingsStore((s) => s.setEncoderType);
   const setAlwaysOnTop = useSettingsStore((s) => s.setAlwaysOnTop);
   const setLaunchAtLogin = useSettingsStore((s) => s.setLaunchAtLogin);
+  const analyticsEnabled = useSettingsStore((s) => s.analyticsEnabled);
+  const setAnalyticsEnabled = useSettingsStore((s) => s.setAnalyticsEnabled);
 
   return (
     <SettingsRoot>
@@ -175,6 +177,16 @@ export default function Settings() {
             slotProps={{ input: { 'aria-label': t('settings.launchAtLogin'), 'data-testid': 'settings-launch-at-login' } }}
           />
           <SettingLabel text={t('settings.launchAtLogin')} hint={t('settings.launchAtLoginHint')} />
+        </ToggleRow>
+      </SettingsSection>
+      <SettingsSection>
+        <ToggleRow>
+          <Switch
+            checked={analyticsEnabled}
+            onChange={(e) => setAnalyticsEnabled(e.target.checked)}
+            slotProps={{ input: { 'aria-label': 'Analytics', 'data-testid': 'settings-analytics' } }}
+          />
+          <SettingLabel text="Usage Analytics" hint="Help improve EncodeX by sending anonymous usage data" />
         </ToggleRow>
       </SettingsSection>
       <SettingsSection>

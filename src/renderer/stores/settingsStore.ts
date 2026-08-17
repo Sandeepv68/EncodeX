@@ -50,6 +50,9 @@ import {
   DEFAULT_WHEN_DONE_ACTION,
   WHEN_DONE_ACTIONS,
 } from '../../shared/constants';
+import { ANALYTICS_STORAGE_KEY, DEFAULT_ANALYTICS_ENABLED } from '../../shared/analytics/analytics-constants';
+import { setAnalyticsEnabled as setAnalyticsEnabledFlag } from '../../shared/analytics/provider';
+import { analytics } from '../../shared/analytics/analytics';
 import {
   LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING,
   LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS,
@@ -124,6 +127,9 @@ function persistHwAccel(hardwareAcceleration: boolean, hwaccelMode: HwAccelMode,
  * @type {HwAccelStored}
  */
 const stored = readStoredHwAccel();
+
+// Sync the analytics enabled flag from localStorage at module load time
+setAnalyticsEnabledFlag(readStoredAnalyticsEnabled());
 
 /**
  * Reads the persisted always-on-top flag from localStorage
@@ -220,6 +226,34 @@ function persistQueueConcurrency(concurrency: number): void {
 }
 
 /**
+ * Reads the persisted analytics opt-in preference from localStorage
+ * ('encodex-analytics-enabled'); a stored value of 'false' means disabled.
+ * Storage failures are logged and treated as enabled (the default).
+ * @returns {boolean} True when analytics is enabled.
+ */
+function readStoredAnalyticsEnabled(): boolean {
+  try {
+    return localStorage.getItem(ANALYTICS_STORAGE_KEY) !== 'false';
+  } catch {
+    return DEFAULT_ANALYTICS_ENABLED;
+  }
+}
+
+/**
+ * Persists the analytics opt-in preference to localStorage
+ * ('encodex-analytics-enabled'). Failures are logged and swallowed.
+ * @param {boolean} enabled - Whether analytics tracking is enabled.
+ * @returns {void}
+ */
+function persistAnalyticsEnabled(enabled: boolean): void {
+  try {
+    localStorage.setItem(ANALYTICS_STORAGE_KEY, String(enabled));
+  } catch {
+    // storage failure is non-critical
+  }
+}
+
+/**
  * Reads the persisted when-done config from localStorage
  * ('encodex-when-done') and validates it field-by-field: `enabled` must be a
  * boolean, `action` must be one of the known WhenDoneAction values, and
@@ -279,6 +313,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
    */
   setTranscoder: (t) => {
     log.debug(LOG_SET_TRANSCODER, t);
+    analytics.settingChanged('transcoder', t);
     set({ transcoder: t });
   },
   hardwareAcceleration: stored.hardwareAcceleration,
@@ -291,6 +326,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
    */
   setHardwareAcceleration: (enabled) => {
     log.debug(LOG_SET_HARDWARE_ACCELERATION, enabled);
+    analytics.settingChanged('hardwareAcceleration', String(enabled));
     set((state) => {
       persistHwAccel(enabled, state.hwaccelMode, state.encoderType);
       return { hardwareAcceleration: enabled };
@@ -303,6 +339,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
    */
   setHwaccelMode: (mode) => {
     log.debug(LOG_SET_HWACCEL_MODE, mode);
+    analytics.settingChanged('hwaccelMode', mode);
     set((state) => {
       persistHwAccel(state.hardwareAcceleration, mode, state.encoderType);
       return { hwaccelMode: mode };
@@ -316,6 +353,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
    */
   setEncoderType: (type) => {
     log.debug(LOG_SET_ENCODER_TYPE, type);
+    analytics.settingChanged('encoderType', type);
     set((state) => {
       persistHwAccel(state.hardwareAcceleration, state.hwaccelMode, type);
       return { encoderType: type };
@@ -330,6 +368,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
    */
   setAlwaysOnTop: (flag) => {
     log.debug(LOG_SET_ALWAYS_ON_TOP, flag);
+    analytics.settingChanged('alwaysOnTop', String(flag));
     persistAlwaysOnTop(flag);
     window.electronAPI?.windowSetAlwaysOnTop(flag);
     set({ alwaysOnTop: flag });
@@ -344,6 +383,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
    */
   setLaunchAtLogin: (enabled) => {
     log.debug(LOG_SET_LAUNCH_AT_LOGIN, enabled);
+    analytics.settingChanged('launchAtLogin', String(enabled));
     persistLaunchAtLogin(enabled);
     window.electronAPI?.setLaunchAtLogin(enabled);
     set({ launchAtLogin: enabled });
@@ -356,6 +396,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
    */
   setQueueConcurrency: (concurrency) => {
     log.debug(LOG_SET_QUEUE_CONCURRENCY, concurrency);
+    analytics.settingChanged('queueConcurrency', String(concurrency));
     persistQueueConcurrency(concurrency);
     window.electronAPI?.queueSetConcurrency(concurrency);
     set({ queueConcurrency: concurrency });
@@ -372,8 +413,25 @@ export const useSettingsStore = create<SettingsState>((set) => ({
    */
   setWhenDone: (config) => {
     log.debug(LOG_SET_WHEN_DONE, JSON.stringify(config));
+    analytics.settingChanged('whenDone', `${config.action}:${config.enabled}`);
     persistWhenDone(config);
     window.electronAPI?.queueSetWhenDone(config);
     set({ whenDone: config });
+  },
+  analyticsEnabled: readStoredAnalyticsEnabled(),
+  /**
+   * Enables or disables analytics tracking. Persists the preference to
+   * localStorage and updates the provider-level enabled flag so subsequent
+   * track calls are gated.
+   * @param {boolean} enabled - True to enable analytics, false to disable.
+   */
+  setAnalyticsEnabled: (enabled) => {
+    log.debug('setAnalyticsEnabled', enabled);
+    persistAnalyticsEnabled(enabled);
+    setAnalyticsEnabledFlag(enabled);
+    set({ analyticsEnabled: enabled });
+    if (enabled) {
+      analytics.settingChanged('analytics', 'enabled');
+    }
   },
 }));

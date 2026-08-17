@@ -97,6 +97,8 @@ export interface SettingsState {
   setQueueConcurrency: (concurrency: number) => void;
   whenDone: WhenDoneConfig;
   setWhenDone: (config: WhenDoneConfig) => void;
+  analyticsEnabled: boolean;
+  setAnalyticsEnabled: (enabled: boolean) => void;
 }
 
 /**

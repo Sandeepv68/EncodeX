@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { Logger } from '../../shared/logger';
+import { analytics } from '../../shared/analytics/analytics';
 import { LOCALES, LOCALE_MAP, isRtlLocale } from '../i18n/localeMeta';
 import { useColorMode } from '../ColorModeContext';
 import i18n from '../i18n/config';
@@ -106,6 +107,7 @@ export default function LanguageMenu({ condensed = false }: { condensed?: boolea
    */
   const switchLanguage = async (lng: string) => {
     log.info(LOG_SWITCHING_LANGUAGE_TO, lng);
+    analytics.settingChanged('language', lng);
     const dir = isRtlLocale(lng) ? 'rtl' : 'ltr';
     setDirection(dir);
     document.dir = dir;

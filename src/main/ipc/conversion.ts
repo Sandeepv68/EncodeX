@@ -19,6 +19,7 @@ import { Logger } from '../../shared/logger';
 import { ConversionOptions, TranscoderType, ConversionProgress } from '../../shared/types';
 import { IPC } from '../../shared/ipc-channels';
 import { formatError } from '../../shared/errors';
+import { analytics } from '../../shared/analytics/analytics';
 import type { IpcSender } from './types';
 import {
   LOG_ARROW,
@@ -118,6 +119,9 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
       try {
         const transcoder = createTranscoder(transcoderType);
         currentTranscoder = transcoder;
+        const inputFormat = input.split('.').pop() ?? 'unknown';
+        analytics.conversionStarted(options.videoCodec ?? 'unknown', inputFormat);
+        const startTime = Date.now();
         const emitter = transcoder.convert(input, output, options);
 
         return await new Promise<void>((resolve, reject) => {
@@ -126,6 +130,8 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
           });
           emitter.on('error', (err: Error) => {
             log.error(LOG_IPC_CONVERT_FILE_FAILED, err);
+            const appError = formatError(err);
+            analytics.conversionFailed(appError.code, options.videoCodec ?? 'unknown');
             if (output !== input) {
               unlink(output, (unlinkErr) => {
                 if (unlinkErr && unlinkErr.code !== 'ENOENT') {
@@ -135,10 +141,11 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
                 }
               });
             }
-            reject(formatError(err));
+            reject(appError);
           });
           emitter.on('end', () => {
             log.info(LOG_IPC_CONVERT_FILE_COMPLETED_SUCCESSFULLY);
+            analytics.conversionCompleted(options.videoCodec ?? 'unknown', (Date.now() - startTime) / 1000);
             resolve();
           });
         });
@@ -187,6 +194,7 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
   ipcMain.handle(IPC.CANCEL_CONVERSION, async () => {
     log.info(LOG_IPC_CANCEL_CONVERSION_CALLED);
     if (currentTranscoder) {
+      analytics.conversionCancelled('unknown');
       currentTranscoder.cancel();
       currentTranscoder = null;
       log.info(LOG_CONVERSION_CANCELLED);

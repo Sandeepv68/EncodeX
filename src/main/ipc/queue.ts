@@ -31,6 +31,7 @@ import { ConversionOptions, QueueJob, TranscoderType, ConversionProgress, WhenDo
 import { IPC } from '../../shared/ipc-channels';
 import { WHEN_DONE_ACTION_DELAY_MS } from '../../shared/constants';
 import { invalidQueueFileError, outputExistsError } from '../../shared/errors';
+import { analytics } from '../../shared/analytics/analytics';
 import type { IpcSender } from './types';
 import {
   LOG_ARROW,
@@ -61,6 +62,9 @@ import {
 } from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/queue');
+
+/** Timestamp when the batch was last started, used to compute batch duration. */
+let batchStartTime = 0;
 
 /**
  * The queue persistence adapter created by the most recent
@@ -319,6 +323,9 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
    */
   ipcMain.handle(IPC.QUEUE_START, async () => {
     log.info(LOG_QUEUE_START_CALLED);
+    const queuedJobs = jobQueue.getJobs().filter((j: QueueJob) => j.status === 'queued');
+    batchStartTime = Date.now();
+    analytics.batchStarted(queuedJobs.length);
     jobQueue.start();
   });
 
@@ -491,6 +498,9 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
    * @returns {void} Nothing is returned.
    */
   jobQueue.on('drained', () => {
+    const durationSec = batchStartTime > 0 ? (Date.now() - batchStartTime) / 1000 : 0;
+    batchStartTime = 0;
+    analytics.batchCompleted(jobQueue.getJobs().length, durationSec);
     const config = whenDoneConfig;
     if (!config?.enabled) {
       log.debug(LOG_WHEN_DONE_SKIPPED_DISABLED);

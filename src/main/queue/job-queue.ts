@@ -13,6 +13,7 @@
 import { EventEmitter } from 'events';
 import { randomUUID } from 'crypto';
 import { Logger } from '../../shared/logger';
+import { analytics } from '../../shared/analytics/analytics';
 import { QueueJob, ConversionOptions, TranscoderType } from '../../shared/types';
 import { ErrorCode } from '../../shared/errors';
 import { createTranscoder } from '../transcoders/factory';
@@ -594,6 +595,7 @@ export class JobQueue extends EventEmitter {
       emitter.on('error', (err) => {
         const wasActive = this.activeJobs.delete(nextJob.id);
         log.error(LOG_JOB_FAILED, nextJob.id, err.message);
+        analytics.errorOccurred('QUEUE_JOB_FAILED', err.message.substring(0, 100));
         nextJob.status = QUEUE_STATUS.ERROR;
         nextJob.error = err.message;
         this.schedulePersist();
@@ -617,7 +619,9 @@ export class JobQueue extends EventEmitter {
       });
     } catch (err: unknown) {
       this.activeJobs.delete(nextJob.id);
+      const message = err instanceof Error ? err.message : String(err);
       log.error(LOG_JOB_THREW_ON_START, nextJob.id, err);
+      analytics.errorOccurred('QUEUE_JOB_START_FAILED', message.substring(0, 100));
       nextJob.status = QUEUE_STATUS.ERROR;
       nextJob.error = err instanceof Error ? err.message : String(err);
       this.schedulePersist();

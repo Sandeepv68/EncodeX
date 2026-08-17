@@ -19,6 +19,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { THEME_STORAGE_KEY } from '../shared/app-constants';
 import { createAppTheme } from './theme';
 import { getTheme, isThemeId } from './colors';
+import { analytics } from '../shared/analytics/analytics';
 import type { ColorMode, ColorModeContextValue, ThemeId } from './types';
 
 /**
@@ -76,7 +77,10 @@ export function ColorModeProvider({ children }: { children: ReactNode }) {
 
   /** Light/dark mode derived from the active theme definition. @type {ColorMode} */
   const mode: ColorMode = getTheme(themeId).mode;
-  const setTheme = (next: ThemeId) => setThemeId(next);
+  const setTheme = (next: ThemeId) => {
+    analytics.settingChanged('theme', next);
+    setThemeId(next);
+  };
 
   const theme = useMemo(() => createAppTheme(themeId, direction), [themeId, direction]);
 

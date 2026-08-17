@@ -18,9 +18,16 @@
 
 import { app, BrowserWindow, Menu, nativeImage, shell } from 'electron';
 import * as path from 'path';
+
+// Load .env into process.env for the main process (Vite only loads .env for the renderer)
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require('dotenv').config();
 import { registerIpcHandlers } from './ipc/handlers';
 import { runCli, mapCliErrorToExitCode } from './cli/cli';
 import { Logger } from '../shared/logger';
+import { AptabaseMainProvider } from '../shared/analytics/aptabase-main';
+import { setAnalyticsProvider, setAnalyticsEnabled } from '../shared/analytics/provider';
+import { analytics } from '../shared/analytics/analytics';
 import {
   WINDOW_SIZE,
   DEV_SERVER_URL,
@@ -49,6 +56,8 @@ import {
   LOG_SPLASH_WINDOW_CLOSED,
   LOG_STARTING_IN_CLI_MODE_ARGV,
 } from '../shared/log-constants';
+
+import pkg from '../../package.json';
 
 const log = new Logger('main/index');
 
@@ -107,6 +116,19 @@ if (isCliMode()) {
   if (process.platform === 'win32') {
     app.setAppUserModelId(APP_USER_MODEL_ID);
   }
+
+  // Initialize analytics provider for the main process
+  const aptabaseKey = process.env.APTABASE_APP_KEY;
+  if (aptabaseKey) {
+    const provider = new AptabaseMainProvider();
+    setAnalyticsProvider(provider);
+    provider.initialize({
+      appKey: aptabaseKey,
+      appVersion: pkg.version,
+      isDebug: !app.isPackaged,
+    });
+  }
+
   app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
   /** The main application window, or `null` once it has been closed. @type {BrowserWindow | null} */
   let mainWindow: BrowserWindow | null = null;
@@ -250,6 +272,7 @@ if (isCliMode()) {
 
   app.whenReady().then(() => {
     log.info(LOG_APP_READY_CREATING_SPLASH_AND_MAIN_WINDOWS);
+    analytics.appStarted();
     createSplashWindow();
     createWindow();
   });
@@ -257,6 +280,10 @@ if (isCliMode()) {
   app.on('window-all-closed', () => {
     log.info(LOG_ALL_WINDOWS_CLOSED_PLATFORM, process.platform);
     if (process.platform !== 'darwin') app.quit();
+  });
+
+  app.on('will-quit', () => {
+    analytics.appQuit();
   });
 
   app.on('activate', () => {

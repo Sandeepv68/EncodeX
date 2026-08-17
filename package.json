@@ -46,6 +46,7 @@
     "dist": "npm run build && electron-builder"
   },
   "dependencies": {
+    "@aptabase/electron": "^0.3.1",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",

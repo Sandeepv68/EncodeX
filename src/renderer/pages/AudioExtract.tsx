@@ -33,6 +33,7 @@ import InfoTooltip from '../components/InfoTooltip';
 import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
+import { analytics } from '../../shared/analytics/analytics';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
@@ -127,6 +128,7 @@ export default function AudioExtract() {
    * @returns {Promise<void>} Resolves once preview and stream probing settle.
    */
   const handleFileSelect = async (path: string) => {
+    analytics.featureUsed('audio_extract');
     store.setInput(path);
     store.setPreview(null);
     store.setAudioStreams([]);

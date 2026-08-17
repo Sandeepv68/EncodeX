@@ -24,6 +24,8 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { Logger } from '../shared/logger';
+import { AptabaseRendererProvider } from '../shared/analytics/aptabase-renderer';
+import { setAnalyticsProvider } from '../shared/analytics/provider';
 import App from './App';
 import i18n from './i18n/config';
 import { DirectionProvider } from './i18n/DirectionProvider';
@@ -89,6 +91,18 @@ function Root() {
 }
 
 log.info(LOG_MOUNTING_REACT_APP);
+
+// Initialize renderer analytics provider
+const aptabaseKey = import.meta.env.VITE_APTABASE_APP_KEY;
+if (aptabaseKey) {
+  const rendererProvider = new AptabaseRendererProvider();
+  setAnalyticsProvider(rendererProvider);
+  rendererProvider.initialize({
+    appKey: aptabaseKey,
+    appVersion: import.meta.env.VITE_APP_VERSION || 'unknown',
+    isDebug: import.meta.env.DEV,
+  });
+}
 /**
  * Wipes transient saved data (e.g. the video cut draft) when the window
  * unloads, keeping only the persisted preferences (theme, language,

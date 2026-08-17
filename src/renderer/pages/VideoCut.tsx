@@ -48,6 +48,7 @@ import VideoTimeline from '../components/VideoTimeline';
 import ProgressBar from '../components/ProgressBar';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
+import { analytics } from '../../shared/analytics/analytics';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
 import { ErrorCode } from '../../shared/errors';
@@ -500,6 +501,7 @@ export default function VideoCut() {
    * @returns {void}
    */
   const handleFileSelect = (path: string) => {
+    analytics.featureUsed('video_cut');
     setInput(path);
     setStartTime('00:00:00');
     setEndTime('');

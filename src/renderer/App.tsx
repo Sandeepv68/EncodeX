@@ -18,7 +18,7 @@
 
 import type { ReactNode } from 'react';
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -39,6 +39,7 @@ import { useErrorStore } from './stores/errorStore';
 import { useLogStore } from './stores/logStore';
 import { useSettingsStore } from './stores/settingsStore';
 import { useLanguageDirection } from './useLanguageDirection';
+import { analytics } from '../shared/analytics/analytics';
 import {
   AppRoot,
   AppBody,
@@ -72,6 +73,19 @@ const Logs = lazy(() => import('./pages/Logs'));
 const Settings = lazy(() => import('./pages/Settings'));
 /** Lazy-loaded About page, loaded on the '/about' route. @const {React.ComponentType} */
 const About = lazy(() => import('./pages/About'));
+
+/**
+ * Tracks screen/page navigation events for analytics.
+ * Renders nothing; side-effect only via useEffect.
+ * @returns {null}
+ */
+function ScreenTracker() {
+  const location = useLocation();
+  useEffect(() => {
+    analytics.screenView(location.pathname);
+  }, [location.pathname]);
+  return null;
+}
 
 /**
  * Main application shell rendered inside the ColorModeProvider.
@@ -174,6 +188,7 @@ function AppLayout() {
 
   return (
     <AppRoot>
+      <ScreenTracker />
       <TitleBar />
       <AppBody>
         {isMobile ? (

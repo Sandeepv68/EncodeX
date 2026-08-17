@@ -107,7 +107,7 @@ vi.mock('../../queue/job-queue', () => {
         super();
         this.addJob = vi.fn();
         this.cancelJob = vi.fn();
-        this.getJobs = vi.fn();
+        this.getJobs = vi.fn(() => []);
         this.cancelAll = vi.fn();
         this.clearCompleted = vi.fn();
         this.setConcurrency = vi.fn();

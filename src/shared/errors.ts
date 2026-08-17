@@ -4,6 +4,7 @@
  */
 
 import type { ErrorCodeType, AppError } from './types';
+import { analytics } from './analytics/analytics';
 
 /**
  * Application error codes for different failure scenarios.
@@ -169,15 +170,23 @@ export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
  * @returns {AppError} A normalized AppError instance.
  */
 export function formatError(err: unknown): AppError {
-  if (isAppError(err)) return err;
+  if (isAppError(err)) {
+    return err;
+  }
   if (err && typeof err === 'object') {
     const msg = 'message' in err ? (err as Record<string, unknown>).message : undefined;
     const message = typeof msg === 'string' ? msg : 'Unknown error';
     const code = inferErrorCode(message, err);
+    if (code !== ErrorCode.CANCELLED) {
+      analytics.errorOccurred(code, message.substring(0, 100));
+    }
     return createError(code, ERROR_MESSAGES[code], message);
   }
   const strMessage = String(err);
   const code = inferErrorCode(strMessage);
+  if (code !== ErrorCode.CANCELLED) {
+    analytics.errorOccurred(code, strMessage.substring(0, 100));
+  }
   return createError(code, ERROR_MESSAGES[code], strMessage);
 }
 
