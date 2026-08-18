@@ -149,9 +149,7 @@ if (isCliMode()) {
    * @returns {void}
    */
   function getIconPath(): string {
-    return app.isPackaged
-      ? path.join(process.resourcesPath, path.basename(APP_ICON))
-      : path.join(app.getAppPath(), APP_ICON);
+    return app.isPackaged ? path.join(process.resourcesPath, path.basename(APP_ICON)) : path.join(app.getAppPath(), APP_ICON);
   }
 
   function createSplashWindow(): void {

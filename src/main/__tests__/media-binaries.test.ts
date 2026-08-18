@@ -9,7 +9,7 @@ vi.mock('fs', () => ({
 }));
 
 vi.mock('ffmpeg-static', () => ({ default: 'C:/static/ffmpeg.exe' }));
-vi.mock('ffprobe-static', () => ({ path: 'C:/static/ffprobe.exe' }));
+vi.mock('ffprobe-static', () => ({ default: { path: 'C:/static/ffprobe.exe' } }));
 vi.mock('electron', () => ({ app: { isPackaged: true } }));
 
 const { getFfmpegPath, getFfprobePath } = await import('../media-binaries');

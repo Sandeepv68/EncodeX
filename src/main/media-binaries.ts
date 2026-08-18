@@ -17,6 +17,8 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { app } from 'electron';
+import ffmpegStatic from 'ffmpeg-static';
+import ffprobeStatic from 'ffprobe-static';
 import { Logger } from '../shared/logger';
 import { TRANSCODER_COMMANDS } from '../shared/transcoder-constants';
 import {
@@ -80,8 +82,7 @@ export function getFfmpegPath(): string {
     return TRANSCODER_COMMANDS.FFMPEG;
   }
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const staticPath = (require('ffmpeg-static') as string) ?? '';
+    const staticPath = (ffmpegStatic as string) ?? '';
     if (staticPath && existsSync(staticPath)) return staticPath;
   } catch {
     // ffmpeg-static is only available in development (node_modules)
@@ -115,8 +116,7 @@ export function getFfprobePath(): string {
     return TRANSCODER_COMMANDS.FFPROBE;
   }
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const staticPath = (require('ffprobe-static') as { path: string }).path ?? '';
+    const staticPath = (ffprobeStatic as { path: string }).path ?? '';
     if (staticPath && existsSync(staticPath)) return staticPath;
   } catch {
     // ffprobe-static is only available in development (node_modules)

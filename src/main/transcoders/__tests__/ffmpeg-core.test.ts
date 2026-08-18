@@ -44,7 +44,7 @@ vi.mock('fluent-ffmpeg', () => {
 });
 
 vi.mock('ffmpeg-static', () => ({ default: 'C:\\ffmpeg.exe' }));
-vi.mock('ffprobe-static', () => ({ path: 'C:\\ffprobe.exe' }));
+vi.mock('ffprobe-static', () => ({ default: { path: 'C:\\ffprobe.exe' } }));
 vi.mock('fs', () => ({
   existsSync: existsSyncMock,
   default: { existsSync: existsSyncMock },
