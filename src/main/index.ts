@@ -16,7 +16,7 @@
  * The module has no exports; its top-level code runs once when loaded.
  */
 
-import { app, BrowserWindow, Menu, nativeImage, shell } from 'electron';
+import { app, BrowserWindow, Menu, shell } from 'electron';
 import * as path from 'path';
 
 // Load .env into process.env for the main process (Vite only loads .env for the renderer)
@@ -148,39 +148,10 @@ if (isCliMode()) {
    *
    * @returns {void}
    */
-  let appIcon: Electron.NativeImage | null = null;
-
-  function loadAppIcon(): Electron.NativeImage {
-    if (!appIcon) {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const fs = require('fs');
-      const iconFileName = path.basename(APP_ICON);
-      const candidates: string[] = [];
-      if (process.resourcesPath) {
-        candidates.push(path.join(process.resourcesPath, iconFileName));
-      }
-      candidates.push(path.join(app.getAppPath(), APP_ICON));
-      for (const iconPath of candidates) {
-        try {
-          const buffer = fs.readFileSync(iconPath) as Buffer;
-          if (buffer.length > 0) {
-            const img = nativeImage.createFromBuffer(buffer);
-            if (!img.isEmpty()) {
-              appIcon = img;
-              log.info(`[icon] loaded from ${iconPath} size=${JSON.stringify(img.getSize())}`);
-              break;
-            }
-          }
-        } catch {
-          // try next candidate
-        }
-      }
-      if (!appIcon || appIcon.isEmpty()) {
-        log.warn('[icon] failed to load icon from all candidate paths');
-        appIcon = nativeImage.createEmpty();
-      }
-    }
-    return appIcon;
+  function getIconPath(): string {
+    return app.isPackaged
+      ? path.join(process.resourcesPath, path.basename(APP_ICON))
+      : path.join(app.getAppPath(), APP_ICON);
   }
 
   function createSplashWindow(): void {
@@ -200,7 +171,7 @@ if (isCliMode()) {
       center: true,
       show: false,
       backgroundColor: SPLASH_BACKGROUND,
-      ...(process.platform !== 'darwin' ? { icon: loadAppIcon() } : {}),
+      ...(process.platform !== 'darwin' ? { icon: getIconPath() } : {}),
       webPreferences: {
         contextIsolation: true,
         nodeIntegration: false,
@@ -241,7 +212,7 @@ if (isCliMode()) {
       title: APP_NAME,
       frame: false,
       show: false,
-      ...(process.platform !== 'darwin' ? { icon: loadAppIcon() } : {}),
+      ...(process.platform !== 'darwin' ? { icon: getIconPath() } : {}),
       webPreferences: {
         preload: resolvePreloadPath(),
         contextIsolation: true,
@@ -249,6 +220,10 @@ if (isCliMode()) {
         sandbox: false,
       },
     });
+
+    if (process.platform !== 'darwin') {
+      mainWindow.setIcon(getIconPath());
+    }
 
     registerIpcHandlers(mainWindow);
     patchConsole(mainWindow);
@@ -269,10 +244,7 @@ if (isCliMode()) {
     mainWindow.on('ready-to-show', () => {
       log.info(LOG_MAIN_WINDOW_READY_SHOWING);
       if (process.platform !== 'darwin') {
-        const icon = loadAppIcon();
-        if (!icon.isEmpty()) {
-          mainWindow?.setIcon(icon);
-        }
+        mainWindow?.setIcon(getIconPath());
       }
       mainWindow?.show();
       if (splashWindow && !splashWindow.isDestroyed()) {
