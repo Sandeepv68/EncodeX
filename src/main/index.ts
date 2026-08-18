@@ -152,7 +152,33 @@ if (isCliMode()) {
 
   function loadAppIcon(): Electron.NativeImage {
     if (!appIcon) {
-      appIcon = nativeImage.createFromPath(path.join(app.getAppPath(), APP_ICON));
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const fs = require('fs');
+      const iconFileName = path.basename(APP_ICON);
+      const candidates: string[] = [];
+      if (process.resourcesPath) {
+        candidates.push(path.join(process.resourcesPath, iconFileName));
+      }
+      candidates.push(path.join(app.getAppPath(), APP_ICON));
+      for (const iconPath of candidates) {
+        try {
+          const buffer = fs.readFileSync(iconPath) as Buffer;
+          if (buffer.length > 0) {
+            const img = nativeImage.createFromBuffer(buffer);
+            if (!img.isEmpty()) {
+              appIcon = img;
+              log.info(`[icon] loaded from ${iconPath} size=${JSON.stringify(img.getSize())}`);
+              break;
+            }
+          }
+        } catch {
+          // try next candidate
+        }
+      }
+      if (!appIcon || appIcon.isEmpty()) {
+        log.warn('[icon] failed to load icon from all candidate paths');
+        appIcon = nativeImage.createEmpty();
+      }
     }
     return appIcon;
   }
@@ -224,10 +250,6 @@ if (isCliMode()) {
       },
     });
 
-    if (process.platform !== 'darwin') {
-      mainWindow.setIcon(loadAppIcon());
-    }
-
     registerIpcHandlers(mainWindow);
     patchConsole(mainWindow);
 
@@ -247,7 +269,10 @@ if (isCliMode()) {
     mainWindow.on('ready-to-show', () => {
       log.info(LOG_MAIN_WINDOW_READY_SHOWING);
       if (process.platform !== 'darwin') {
-        mainWindow?.setIcon(loadAppIcon());
+        const icon = loadAppIcon();
+        if (!icon.isEmpty()) {
+          mainWindow?.setIcon(icon);
+        }
       }
       mainWindow?.show();
       if (splashWindow && !splashWindow.isDestroyed()) {

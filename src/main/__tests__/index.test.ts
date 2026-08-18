@@ -41,6 +41,8 @@ const {
     getAppPath: vi.fn(() => 'C:\\project'),
     exit: vi.fn(),
     quit: vi.fn(),
+    isPackaged: false,
+    setAppUserModelId: vi.fn(),
     commandLine: {
       appendSwitch: vi.fn(),
     },
@@ -61,6 +63,7 @@ const {
     isDestroyed: ReturnType<typeof vi.fn>;
     show: ReturnType<typeof vi.fn>;
     close: ReturnType<typeof vi.fn>;
+    setIcon: ReturnType<typeof vi.fn>;
     webContents: {
       send: ReturnType<typeof vi.fn>;
       openDevTools: ReturnType<typeof vi.fn>;
@@ -77,6 +80,7 @@ const {
     this.isDestroyed = vi.fn(() => false);
     this.show = vi.fn();
     this.close = vi.fn();
+    this.setIcon = vi.fn();
     this.onceHandlers = {};
     this.webContents = {
       send: vi.fn(),
@@ -103,7 +107,17 @@ const {
   };
 });
 
-vi.mock('electron', () => ({ app: appMock, BrowserWindow: BrowserWindowMock, Menu: menuMock, shell: shellMock }));
+vi.mock('electron', () => ({
+  app: appMock,
+  BrowserWindow: BrowserWindowMock,
+  Menu: menuMock,
+  shell: shellMock,
+  nativeImage: {
+    createFromPath: vi.fn(() => ({ isEmpty: () => false, getSize: () => ({ width: 256, height: 256 }) })),
+    createFromBuffer: vi.fn(() => ({ isEmpty: () => false, getSize: () => ({ width: 256, height: 256 }) })),
+    createEmpty: vi.fn(() => ({ isEmpty: () => true, getSize: () => ({ width: 0, height: 0 }) })),
+  },
+}));
 vi.mock('../cli/cli', () => ({
   runCli: runCliMock,
   mapCliErrorToExitCode: (err: unknown) => (err instanceof Error && err.message === 'usage' ? 2 : 1),
