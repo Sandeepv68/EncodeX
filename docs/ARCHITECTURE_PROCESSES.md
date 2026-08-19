@@ -1,6 +1,6 @@
-# Processes, Build System & Startup
+# ⚙️ Processes, Build System & Startup
 
-## Process Model
+## 🏗️ Process Model
 
 ### Main Process (`src/main/`)
 
@@ -28,7 +28,7 @@ Browser environment served by Vite in development and loaded from `dist/renderer
 
 Pure TypeScript, imported by all three processes. Contains the IPC channel registry, domain types, error system, logger, constants, codec lists, validation helpers, and log message constants. Because `package.json` does not use separate package boundaries, this directory is referenced via relative imports from each process root.
 
-## Build System
+## 🔨 Build System
 
 Three TypeScript projects plus Vite produce three output folders:
 
@@ -50,7 +50,7 @@ All FFmpeg/FFprobe binary resolution is centralized in `src/main/media-binaries.
 2. **Unpackaged (dev/CLI/tests)**: the installed `node_modules/ffmpeg-static` and `node_modules/ffprobe-static` binaries (resolved via the `import` key on each package's `exports` map so it also works from ESM).
 3. The system command (`ffmpeg` / `ffprobe`) from `PATH`.
 
-## Startup Sequence
+## 🚀 Startup Sequence
 
 1. `main/index.ts` runs. It inspects `process.argv` in `isCliMode()`.
 2. **CLI mode** (explicit `--cli`/`--help`, or >=2 positional args): registers no windows. On `app.whenReady()`, it calls `runCli()` and exits with `SUCCESS` or `ERROR` codes.
@@ -59,7 +59,7 @@ All FFmpeg/FFprobe binary resolution is centralized in `src/main/media-binaries.
 5. The main window is shown on `ready-to-show`, at which point the splash is closed.
 6. In production the renderer is loaded from `dist/renderer/index.html`; in development from `http://localhost:5173` with DevTools open.
 
-## CLI Mode
+## 💻 CLI Mode
 
 `src/main/cli/cli.ts` uses **commander** with subcommands. When `runCli()` executes:
 
@@ -71,7 +71,7 @@ All FFmpeg/FFprobe binary resolution is centralized in `src/main/media-binaries.
 
 The CLI reuses the exact same transcoder pipeline as the GUI — there is no separate encoding path to maintain.
 
-## Shared Code Layer
+## 🧩 Shared Code Layer
 
 The single most important architectural decision is that all cross-process contracts live in `src/shared/`:
 

@@ -1,6 +1,6 @@
-# Renderer, State & Subsystems
+# 🖥️ Renderer, State & Subsystems
 
-## Renderer Architecture
+## 🌳 Renderer Architecture
 
 ### Render tree
 
@@ -27,7 +27,7 @@ All ten pages are code-split with `React.lazy` and loaded under a per-page `Erro
 - `useFormErrors` — field-level validation errors.
 - `useCapabilities` — fetches encoder capabilities and applies encoder-type / hwaccel filters to the codec pickers.
 
-## State Management
+## 📦 State Management
 
 Zustand stores in `src/renderer/stores/`:
 
@@ -44,7 +44,7 @@ Zustand stores in `src/renderer/stores/`:
 
 Stores are the single place UI state changes; components subscribe with `useXStore(selector)`.
 
-## Batch Queue
+## 📋 Batch Queue
 
 `src/main/queue/job-queue.ts` is a serial FIFO processor extending `EventEmitter`:
 
@@ -54,7 +54,7 @@ Stores are the single place UI state changes; components subscribe with `useXSto
 
 The IPC layer (`ipc/queue.ts`) simply forwards queue events to the renderer over `queue-added`, `queue-removed`, `queue-status-change`, `queue-progress`, and `queue-cancelled`, and the `queueStore` mirrors them into React state.
 
-## Video Player
+## 🎬 Video Player
 
 The Video Cut page's player is built on `FrameDecoder` (`src/main/player/frame-decoder.ts`), which spawns FFmpeg with two output pipes:
 
@@ -71,7 +71,7 @@ FFmpeg: input (with -re realtime and -copyts)
 - `ipc/player.ts` runs **two** decoders (video + audio) so backpressure on one stream cannot stall the other, caps the decode resolution, and forwards frames/chunks over `player-frame` / `player-audio`.
 - The renderer (`components/MediaPlayer.tsx`) blits frames to an HTML Canvas and feeds float-converted PCM to the Web Audio API with clock-based A/V synchronization, seek coalescing, and stall detection.
 
-## Timeline Media
+## 📈 Timeline Media
 
 `timeline/timeline-media.ts` powers the zoomable timeline on the Video Cut page:
 
@@ -80,7 +80,7 @@ FFmpeg: input (with -re realtime and -copyts)
 
 The renderer (`components/VideoTimeline.tsx`) renders waveform + montage as a zoomable, scrubbable strip with keep/dim shading and drag-to-trim handles.
 
-## Image Processing
+## 🖼️ Image Processing
 
 `src/main/image-*.ts` handle the Image Compress page:
 
@@ -91,7 +91,7 @@ The renderer (`components/VideoTimeline.tsx`) renders waveform + montage as a zo
 
 Image *compression itself* is just a conversion: the Image Compress page builds a `ConversionOptions` (codec, qscale, scale) and runs it through the same transcoder pipeline used for video/audio, restricted to image codecs.
 
-## Error Handling
+## 🛡️ Error Handling
 
 The error system (`src/shared/errors.ts`) defines 16 typed codes — `FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `FFPROBE_NOT_FOUND`, `CONVERSION_FAILED`, `INVALID_FORMAT`, `PROBE_FAILED`, `QUEUE_ERROR`, `PLAYER_ERROR`, `CANCELLED`, `BMF_NOT_AVAILABLE`, `OUTPUT_NOT_SPECIFIED`, `INPUT_NOT_SPECIFIED`, `OUTPUT_EXISTS`, `INVALID_QUEUE_FILE`, `PERMISSION_DENIED`, `UNKNOWN` — each with a default user-facing message.
 
@@ -114,7 +114,7 @@ errorStore.showError()              <- stores in currentError + errorHistory (ca
 
 IPC handlers wrap every operation in `try/catch` and rethrow `formatError(err)`, so error codes survive the process boundary and the renderer always receives a typed `AppError`.
 
-## Logging
+## 🧾 Logging
 
 A timestamped `Logger` (`src/shared/logger.ts`) is used in all processes. Both the main process (`patchConsole` in `index.ts`) and the renderer (`main.tsx`) patch `console.*` to forward entries into the shared log system:
 
@@ -123,20 +123,20 @@ A timestamped `Logger` (`src/shared/logger.ts`) is used in all processes. Both t
 
 The Logs page (`pages/Logs.tsx`) aggregates both sources with level filtering (DEBUG/INFO/WARN/ERROR), clearing, and `.txt` download. Every log line is generated from a shared template constant (`log-constants.ts`) so strings stay consistent and searchable.
 
-## Internationalization & RTL
+## 🌍 Internationalization & RTL
 
 - i18next is initialized in `renderer/i18n/config.ts` with 56 locales across 35 languages.
 - `DirectionProvider` (Emotion cache with `stylis-plugin-rtl`) flips the layout to RTL for Arabic and Hebrew locales (`ar-SA`, `ar-AE`, `ar-JO`, `he-IL`).
 - `useLanguageDirection` detects the current locale's direction; the app's direction is derived from it and toggles automatically on language switch.
 - `localeMeta.ts` holds locale metadata and flags for the `LanguageMenu`.
 
-## Theming
+## 🌗 Theming
 
 - `ColorModeContext` provides a system-aware dark/light mode with a manual toggle; the preference persists to `localStorage` under the `encodex-theme` key.
 - `theme.ts` defines the MUI light/dark themes; `colors.ts` holds the shared palette.
 - Styling uses Emotion (MUI's default engine) with per-component style constants extracted into `renderer/styles/`.
 
-## Key Data Flow Reference
+## 🔀 Key Data Flow Reference
 
 ### Conversion (GUI)
 

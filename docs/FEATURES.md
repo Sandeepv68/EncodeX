@@ -1,8 +1,8 @@
-# Features
+# ✨ Features
 
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
 
-## Feature Overview
+## 🔄 Feature Overview
 
 ### Media Conversion
 
@@ -116,7 +116,7 @@ Custom update manager that checks GitHub Releases for new versions, notifies the
 
 Structured error system with typed error codes (`ErrorCode`), user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
 
-## Supported Media Formats
+## 🎞️ Supported Media Formats
 
 ### Video Codecs (51)
 
@@ -166,7 +166,7 @@ Structured error system with typed error codes (`ErrorCode`), user-facing locali
 | Image    | `jpg`, `jpeg`, `png`, `webp`, `bmp`, `gif`, `tiff`, `tif`, `svg`, `ico`, `heic`, `heif`, `avif`, `ppm`, `pgm`, `pbm`, `xbm`                                                                                   |
 | Subtitle | `srt`, `ass`, `ssa`, `vtt`, `sub`, `idx`, `smi`                                                                                                                                                               |
 
-## Validation Utilities
+## ✔️ Validation Utilities
 
 | Function                     | Description                | Accepted Formats                                      |
 | ---------------------------- | -------------------------- | ----------------------------------------------------- |
@@ -175,7 +175,7 @@ Structured error system with typed error codes (`ErrorCode`), user-facing locali
 | `isValidBitrate(value)`      | Validates bitrate strings  | e.g. `128k`, `1M`, `2000K`                            |
 | `isInRange(value, min, max)` | Checks numeric range       | Any finite number                                     |
 
-## Transcoder Constants
+## 🧮 Transcoder Constants
 
 | Constant                                          | Value                                                                                                                                                             |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |

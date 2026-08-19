@@ -1,8 +1,8 @@
-# IPC Channels & electronAPI
+# 🔌 IPC Channels & electronAPI
 
 All channel names are centralized in `src/shared/ipc-channels.ts`.
 
-## Requests (invoke from renderer)
+## 📥 Requests (invoke from renderer)
 
 | Channel               | Arguments                                | Returns                       |
 | --------------------- | ---------------------------------------- | ----------------------------- |
@@ -49,7 +49,7 @@ All channel names are centralized in `src/shared/ipc-channels.ts`.
 | `cancel-download`     | —                                        | `void`                        |
 | `open-release-notes`  | `url`                                    | `void`                        |
 
-## Send-only (renderer to main)
+## 📤 Send-only (renderer to main)
 
 | Channel                    | Payload   |
 | -------------------------- | --------- |
@@ -59,7 +59,7 @@ All channel names are centralized in `src/shared/ipc-channels.ts`.
 | `window-confirm-close`     | —         |
 | `window-set-always-on-top` | `boolean` |
 
-## Events (main to renderer)
+## 📡 Events (main to renderer)
 
 | Channel                    | Payload                       |
 | -------------------------- | ----------------------------- |
@@ -82,7 +82,7 @@ All channel names are centralized in `src/shared/ipc-channels.ts`.
 | `update-downloaded`        | `string` (installer path)     |
 | `update-error`             | `string` (error message)      |
 
-## `window.electronAPI` (contextBridge API)
+## 🧩 `window.electronAPI` (contextBridge API)
 
 The preload script exposes all IPC via `window.electronAPI` (typed in `src/renderer/electron-api.d.ts`):
 

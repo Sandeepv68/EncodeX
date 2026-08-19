@@ -1,6 +1,6 @@
-# Testing
+# 🧪 Testing
 
-## Commands
+## 📋 Commands
 
 ```bash
 # Run all tests
@@ -27,7 +27,7 @@ Coverage reports are generated in `coverage/`:
 - `coverage/index.html` — browsable HTML
 - `coverage/lcov.info` — LCOV for IDE integration
 
-## Test Suite
+## ✅ Test Suite
 
 The suite is run by Vitest 4 (122 test files, 1573 tests, all passing). Coverage uses the v8 provider.
 
@@ -48,7 +48,7 @@ The suite is run by Vitest 4 (122 test files, 1573 tests, all passing). Coverage
 | **Renderer app / misc**  | `App.test.tsx`, `colors.test.ts`, `sessionCleanup.test.ts`, `constants/shortcuts.test.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | App shell routing, color palette, session cleanup, keyboard shortcuts                                                                |
 | **Integration**          | `error-flow.test.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Full pipeline: Error → `formatError` → store → display → clear                                                                       |
 
-## Test Setup
+## 🛠️ Test Setup
 
 The test environment (`src/test-setup.ts`) provides:
 
@@ -56,7 +56,7 @@ The test environment (`src/test-setup.ts`) provides:
 - Mocked `electronAPI` on `globalThis` covering all IPC methods
 - Registers `@testing-library/jest-dom/vitest` matchers
 
-## E2E Tests
+## 🌐 E2E Tests
 
 Playwright-based end-to-end tests live in `e2e/` (node environment, 60s timeouts) and are gated behind the `E2E` env var or CI:
 
