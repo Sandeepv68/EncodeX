@@ -57,9 +57,17 @@ export async function launchApp(options: LaunchOptions = {}): Promise<AppSession
   const userDataDir = createUserDataDir();
 
   const app = await _electron.launch({
-    args: [getBuildPaths().mainEntry, `--user-data-dir=${userDataDir}`, ...args],
+    args: ['--no-sandbox', '--disable-gpu', getBuildPaths().mainEntry, `--user-data-dir=${userDataDir}`, ...args],
     cwd: getBuildPaths().root,
     env: buildEnv(mock, env),
+  });
+
+  // Pipe Electron stderr so [MOCK-PRELOAD] markers and errors are visible
+  app.process().stderr?.on('data', (chunk: Buffer) => {
+    const text = chunk.toString();
+    if (text.includes('[MOCK-PRELOAD]') || text.includes('Error') || text.includes('error')) {
+      process.stderr.write(`[ELECTRON STDERR] ${text}`);
+    }
   });
 
   await app.firstWindow();
@@ -81,7 +89,23 @@ export async function getMainWindow(app: ElectronApplication): Promise<Page> {
     }
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
-  throw new Error('Main window (with electronAPI) was not found');
+  // Collect diagnostics from all windows before throwing
+  const diagnostics: unknown[] = [];
+  for (const win of app.windows()) {
+    try {
+      const info = await win.evaluate(() => ({
+        electronAPI: typeof (window as any).electronAPI,
+        title: document.title,
+        url: location.href,
+      }));
+      diagnostics.push(info);
+    } catch (err: unknown) {
+      diagnostics.push({ error: String(err) });
+    }
+  }
+  throw new Error(
+    `Main window (with electronAPI) was not found. Window diagnostics: ${JSON.stringify(diagnostics)}`,
+  );
 }
 
 /** Best-effort close that also force-kills the app process and cleans temp data. */

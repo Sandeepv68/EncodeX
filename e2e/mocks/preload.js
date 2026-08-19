@@ -12,6 +12,7 @@
  */
 
 const { contextBridge } = require('electron');
+process.stderr.write(`[MOCK-PRELOAD] loaded from ${__filename}, cwd=${process.cwd()}\n`);
 const { state, subscribe, emit } = require('./main-store');
 
 const noop = () => {};
@@ -270,3 +271,4 @@ const api = {
 api.windowClose = api.windowClose || noop;
 
 contextBridge.exposeInMainWorld('electronAPI', api);
+process.stderr.write('[MOCK-PRELOAD] electronAPI exposed successfully\n');
