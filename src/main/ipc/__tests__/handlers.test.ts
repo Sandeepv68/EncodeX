@@ -12,6 +12,7 @@ const {
   registerSystemHandlersMock,
   registerImageHandlersMock,
   registerTimelineHandlersMock,
+  registerUpdaterHandlersMock,
 } = vi.hoisted(() => ({
   sendSpy: vi.fn(),
   createSenderMock: vi.fn(),
@@ -24,9 +25,10 @@ const {
   registerSystemHandlersMock: vi.fn(),
   registerImageHandlersMock: vi.fn(),
   registerTimelineHandlersMock: vi.fn(),
+  registerUpdaterHandlersMock: vi.fn(),
 }));
 
-vi.mock('electron', () => ({ BrowserWindow: class {} }));
+vi.mock('electron', () => ({ BrowserWindow: class {}, ipcMain: { handle: vi.fn() } }));
 vi.mock('../send', () => ({ createSender: createSenderMock }));
 vi.mock('../dialogs', () => ({ registerDialogHandlers: registerDialogHandlersMock }));
 vi.mock('../capabilities', () => ({ registerCapabilityHandlers: registerCapabilityHandlersMock }));
@@ -37,6 +39,7 @@ vi.mock('../window', () => ({ registerWindowHandlers: registerWindowHandlersMock
 vi.mock('../system', () => ({ registerSystemHandlers: registerSystemHandlersMock }));
 vi.mock('../image', () => ({ registerImageHandlers: registerImageHandlersMock }));
 vi.mock('../timeline', () => ({ registerTimelineHandlers: registerTimelineHandlersMock }));
+vi.mock('../updater', () => ({ registerUpdaterHandlers: registerUpdaterHandlersMock }));
 
 const { registerIpcHandlers } = await import('../handlers');
 
@@ -63,5 +66,6 @@ describe('registerIpcHandlers', () => {
     expect(registerSystemHandlersMock).toHaveBeenCalledWith(win);
     expect(registerImageHandlersMock).toHaveBeenCalledWith();
     expect(registerTimelineHandlersMock).toHaveBeenCalledWith();
+    expect(registerUpdaterHandlersMock).toHaveBeenCalledWith(win);
   });
 });
