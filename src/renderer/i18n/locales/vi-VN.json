@@ -606,6 +606,24 @@
     "licenseName": "Giấy phép MIT",
     "copyright": "Bản quyền © 2026 EncodeX",
     "licenseSummary": "Phát hành theo Giấy phép MIT. Được tự do sử dụng, sao chép, sửa đổi, hợp nhất, xuất bản, phân phối, cấp phép lại và bán — kể cả mục đích thương mại — với điều kiện thông báo bản quyền và thông báo cấp phép được bao gồm trong tất cả các bản sao hoặc phần quan trọng của phần mềm. Phần mềm được cung cấp \"nguyên trạng\", không có bất kỳ bảo hành nào.",
-    "acknowledgements": "Làm bằng ❤️ cho mã nguồn mở — được hỗ trợ bởi dự án FFmpeg và cộng đồng."
+    "acknowledgements": "Làm bằng ❤️ cho mã nguồn mở — được hỗ trợ bởi dự án FFmpeg và cộng đồng.",
+    "checkForUpdates": "Kiểm tra cập nhật"
+  },
+  "update": {
+    "title": "Cập nhật",
+    "checking": "Đang kiểm tra cập nhật...",
+    "upToDate": "Bạn đã là phiên bản mới nhất!",
+    "newVersionAvailable": "Có phiên bản mới:",
+    "viewReleaseNotes": "Xem ghi chú phát hành",
+    "download": "Tải xuống",
+    "downloading": "Đang tải cập nhật...",
+    "cancelDownload": "Hủy tải xuống",
+    "readyToInstall": "Đã tải cập nhật và sẵn sàng cài đặt. Ứng dụng sẽ khởi động lại để áp dụng cập nhật.",
+    "installRestart": "Cài đặt và khởi động lại",
+    "later": "Sau",
+    "cancel": "Hủy",
+    "close": "Đóng",
+    "retry": "Thử lại",
+    "error": "Đã xảy ra lỗi khi kiểm tra cập nhật."
   }
 }

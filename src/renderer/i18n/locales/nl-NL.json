@@ -606,6 +606,24 @@
     "licenseName": "MIT-licentie",
     "copyright": "Copyright © 2026 EncodeX",
     "licenseSummary": "Uitgebracht onder de MIT-licentie. Vrij te gebruiken, kopiëren, wijzigen, samenvoegen, publiceren, distribueren, onderlicentiëren en verkopen — ook commercieel — op voorwaarde dat de copyrightmelding en de toestemmingsmelding in alle kopieën of substantiële delen van de software worden opgenomen. De software wordt \"as is\" geleverd, zonder enige garantie.",
-    "acknowledgements": "Gemaakt met ❤️ voor open source — mogelijk gemaakt door het FFmpeg-project en de community."
+    "acknowledgements": "Gemaakt met ❤️ voor open source — mogelijk gemaakt door het FFmpeg-project en de community.",
+    "checkForUpdates": "Controleren op updates"
+  },
+  "update": {
+    "title": "Update",
+    "checking": "Controleren op updates...",
+    "upToDate": "U bent up-to-date!",
+    "newVersionAvailable": "Een nieuwe versie is beschikbaar:",
+    "viewReleaseNotes": "Bekijk uitgavemeldingen",
+    "download": "Downloaden",
+    "downloading": "Update downloaden...",
+    "cancelDownload": "Download annuleren",
+    "readyToInstall": "Update gedownload en gereed om te installeren. De app wordt opnieuw gestart om de update toe te passen.",
+    "installRestart": "Installeren en opnieuw starten",
+    "later": "Later",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "retry": "Opnieuw proberen",
+    "error": "Er is een fout opgetreden bij het controleren op updates."
   }
 }

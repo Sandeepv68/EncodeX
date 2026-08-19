@@ -606,6 +606,24 @@
     "licenseName": "Lisensyang MIT",
     "copyright": "Copyright © 2026 EncodeX",
     "licenseSummary": "Inilabas sa ilalim ng MIT License. Malayang gamitin, kopyahin, baguhin, pagsamahin, i-publish, ipamahagi, i-sublicense, at ibenta — kabilang ang komersyal — basta't kasama ang copyright notice at permission notice sa lahat ng kopya o malaking bahagi ng software. Ang software ay ibinibigay \"as is\", nang walang anumang warranty.",
-    "acknowledgements": "Ginawa nang may ❤️ para sa open source — pinapagana ng proyektong FFmpeg at ng komunidad."
+    "acknowledgements": "Ginawa nang may ❤️ para sa open source — pinapagana ng proyektong FFmpeg at ng komunidad.",
+    "checkForUpdates": "Maghanap ng mga update"
+  },
+  "update": {
+    "title": "Update",
+    "checking": "Siniting ang mga update...",
+    "upToDate": "Nasa latest ka na!",
+    "newVersionAvailable": "May bagong bersyon na available:",
+    "viewReleaseNotes": "Tingnan ang release notes",
+    "download": "I-download",
+    "downloading": "Dina-download ang update...",
+    "cancelDownload": "Kanselahin ang download",
+    "readyToInstall": "Na-download na ang update at handa nang i-install. Restart ang app para ma-apply ang update.",
+    "installRestart": "I-install at i-restart",
+    "later": "Mamaya",
+    "cancel": "Kanselahin",
+    "close": "Isara",
+    "retry": "Subukan muli",
+    "error": "Nagkaroon ng error habang sinisiting ang mga update."
   }
 }

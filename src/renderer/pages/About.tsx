@@ -14,12 +14,15 @@
  */
 
 import { useTranslation } from 'react-i18next';
-import { Divider, Link, Typography } from '@mui/material';
+import { Divider, Link, Typography, Button } from '@mui/material';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PageContainer from '../components/PageContainer';
 import { pageIcons } from '../pageIcons';
 import pkg from '../../../package.json';
 import appLogo from '../../../assets/banner.png';
 import { AboutLogo, AboutFeatureList, AboutFeatureItem, AboutMetaRow, AboutMetaLabel } from '../styles/About.styles';
+import { useUpdateStore } from '../stores/updateStore';
 
 /**
  * Translation keys of the feature bullets, reused from the dashboard card
@@ -76,6 +79,12 @@ const LICENSE_URL = `${REPOSITORY_URL}/blob/main/LICENSE`;
  */
 export default function About() {
   const { t } = useTranslation();
+  const { openDialog, checkForUpdates } = useUpdateStore();
+
+  const handleCheckForUpdates = () => {
+    openDialog();
+    checkForUpdates();
+  };
 
   return (
     <PageContainer title={t('about.title')} icon={pageIcons['/about']}>
@@ -99,6 +108,16 @@ export default function About() {
       <AboutMetaRow>
         <AboutMetaLabel variant="body2">{t('about.version')}</AboutMetaLabel>
         <Typography variant="body2">{pkg.version}</Typography>
+      </AboutMetaRow>
+      <AboutMetaRow>
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<FontAwesomeIcon icon={faArrowUp} />}
+          onClick={handleCheckForUpdates}
+        >
+          {t('about.checkForUpdates')}
+        </Button>
       </AboutMetaRow>
       <AboutMetaRow>
         <AboutMetaLabel variant="body2">{t('about.builtWith')}</AboutMetaLabel>

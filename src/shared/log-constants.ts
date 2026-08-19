@@ -792,3 +792,29 @@ export const LOG_SET_LAUNCH_AT_LOGIN_CALLED = 'setLaunchAtLogin called';
 export const LOG_WRAP_ASYNC_CALLED = 'wrapAsync called';
 /** @const {string} Prefix when wrapAsync catches an error. */
 export const LOG_WRAP_ASYNC_CAUGHT = 'wrapAsync caught:';
+/** @const {string} Logged when an update check is initiated. */
+export const LOG_UPDATER_CHECKING = 'Checking for updates:';
+/** @const {string} Logged when an update is available. */
+export const LOG_UPDATER_AVAILABLE = 'Update available:';
+/** @const {string} Logged when the app is up to date. */
+export const LOG_UPDATER_NOT_AVAILABLE = 'App is up to date';
+/** @const {string} Logged when an update download starts. */
+export const LOG_UPDATER_DOWNLOADING = 'Downloading update:';
+/** @const {string} Logged when an update download completes. */
+export const LOG_UPDATER_DOWNLOADED = 'Update downloaded:';
+/** @const {string} Logged when an update install is triggered. */
+export const LOG_UPDATER_INSTALLING = 'Installing update:';
+/** @const {string} Logged when an update operation fails. */
+export const LOG_UPDATER_ERROR = 'Updater error:';
+/** @const {string} Logged when the update download is cancelled. */
+export const LOG_UPDATER_CANCELLED = 'Update download cancelled';
+/** @const {string} Logged when the release notes page is opened. */
+export const LOG_UPDATER_OPEN_RELEASE_NOTES = 'Opening release notes:';
+/** @const {string} Prefix for IPC update check handler. */
+export const LOG_IPC_CHECK_FOR_UPDATES = 'IPC check-for-updates:';
+/** @const {string} Prefix for IPC download update handler. */
+export const LOG_IPC_DOWNLOAD_UPDATE = 'IPC download-update:';
+/** @const {string} Prefix for IPC install update handler. */
+export const LOG_IPC_INSTALL_UPDATE = 'IPC install-update:';
+/** @const {string} Prefix for IPC cancel download handler. */
+export const LOG_IPC_CANCEL_DOWNLOAD = 'IPC cancel-download:';

@@ -606,6 +606,24 @@
     "licenseName": "MIT License",
     "copyright": "Copyright © 2026 EncodeX",
     "licenseSummary": "Released under the MIT License. Free to use, copy, modify, merge, publish, distribute, sublicense, and sell — including commercially — provided the copyright notice and permission notice are included in all copies or substantial portions of the software. The software is provided \"as is\", without warranty of any kind.",
-    "acknowledgements": "Made with ❤️ for open source — powered by the FFmpeg project and the community."
+    "acknowledgements": "Made with ❤️ for open source — powered by the FFmpeg project and the community.",
+    "checkForUpdates": "Check for Updates"
+  },
+  "update": {
+    "title": "Update",
+    "checking": "Checking for updates...",
+    "upToDate": "You're up to date!",
+    "newVersionAvailable": "A new version is available:",
+    "viewReleaseNotes": "View release notes",
+    "download": "Download",
+    "downloading": "Downloading update...",
+    "cancelDownload": "Cancel Download",
+    "readyToInstall": "Update downloaded and ready to install. The app will restart to apply the update.",
+    "installRestart": "Install & Restart",
+    "later": "Later",
+    "cancel": "Cancel",
+    "close": "Close",
+    "retry": "Retry",
+    "error": "An error occurred while checking for updates."
   }
 }

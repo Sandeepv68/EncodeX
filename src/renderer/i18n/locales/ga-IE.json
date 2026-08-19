@@ -606,6 +606,24 @@
     "licenseName": "Ceadúnas MIT",
     "copyright": "Cóipcheart © 2026 EncodeX",
     "licenseSummary": "Scaoileadh faoin gCeadúnas MIT. Saor le húsáid, cóipeáil, mionathrú, cónascadh, foilsiú, dáileadh, fo-cheadúnú agus díol — lena n-áirítear ar bhonn tráchtála — ar an gcoinníoll go gcuirtear an fógra cóipchirt agus an fógra ceadúnais san áireamh i ngach cóip nó i gcuid shuntasach den bhogearra. Soláthraítear an bogearra \"mar atá\", gan baránta de chineál ar bith.",
-    "acknowledgements": "Déanta le ❤️ don fhoinse oscailte — á chumhachtú ag tionscadal FFmpeg agus an pobal."
+    "acknowledgements": "Déanta le ❤️ don fhoinse oscailte — á chumhachtú ag tionscadal FFmpeg agus an pobal.",
+    "checkForUpdates": "Seiceáil le haghaidh nuashonruithe"
+  },
+  "update": {
+    "title": "Nuashonrú",
+    "checking": "Ag seiceáil le haghaidh nuashonruithe...",
+    "upToDate": "Tá tú cothrom le dáta!",
+    "newVersionAvailable": "Tá leagan nua ar fáil:",
+    "viewReleaseNotes": "Féachannaigh nótaí scaoilte",
+    "download": "Íoslódáil",
+    "downloading": "Ag íoslódáil nuashonraithe...",
+    "cancelDownload": "Cuir íoslódáil ar ceal",
+    "readyToInstall": "Nuashonrú íoslódáilte agus réidh le suiteáil. Atosófar an aip chun an nuashonrú a chur i bhfeidhm.",
+    "installRestart": "Suiteáil agus atosaigh",
+    "later": "Níos déanaí",
+    "cancel": "Cealaigh",
+    "close": "Dún",
+    "retry": "Déan iarracht arís",
+    "error": "Tharla earráid agus na nuashonruithe á seiceáil."
   }
 }

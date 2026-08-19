@@ -606,6 +606,24 @@
     "licenseName": "MIT ライセンス",
     "copyright": "Copyright © 2026 EncodeX",
     "licenseSummary": "MIT ライセンスのもとで公開されています。著作権表示と許可表示をすべてのコピーまたはソフトウェアの重要な部分に含めることを条件に、商用を含む使用、複製、改変、結合、公開、配布、サブライセンス、販売を自由に行えます。本ソフトウェアは「現状のまま」提供され、いかなる保証もありません。",
-    "acknowledgements": "オープンソースへの ❤️ を込めて — FFmpeg プロジェクトとコミュニティによって支えられています。"
+    "acknowledgements": "オープンソースへの ❤️ を込めて — FFmpeg プロジェクトとコミュニティによって支えられています。",
+    "checkForUpdates": "アップデートを確認"
+  },
+  "update": {
+    "title": "アップデート",
+    "checking": "アップデートを確認中...",
+    "upToDate": "最新の状態です！",
+    "newVersionAvailable": "新しいバージョンがあります:",
+    "viewReleaseNotes": "リリースノートを表示",
+    "download": "ダウンロード",
+    "downloading": "アップデートをダウンロード中...",
+    "cancelDownload": "ダウンロードをキャンセル",
+    "readyToInstall": "アップデートのダウンロードが完了し、インストール準備ができました。アップデートを適用するためにアプリが再起動します。",
+    "installRestart": "インストールして再起動",
+    "later": "後で",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "retry": "再試行",
+    "error": "アップデートの確認中にエラーが発生しました。"
   }
 }

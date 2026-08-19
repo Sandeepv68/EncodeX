@@ -32,6 +32,7 @@ import Footer from './components/Footer';
 import AppDrawer from './components/AppDrawer';
 import TitleBar from './components/TitleBar';
 import ShortcutsHelpDialog from './components/ShortcutsHelpDialog';
+import UpdateDialog from './components/UpdateDialog';
 import { useHotkeys } from './hooks/useHotkeys';
 import { SHORTCUTS } from './constants/shortcuts';
 import { THEMES } from './colors';
@@ -216,6 +217,7 @@ function AppLayout() {
       <ErrorSnackbar error={currentError} onClose={clearError} />
       <ToastContainer />
       <CloseConfirmDialog />
+      <UpdateDialog />
       <ShortcutsHelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
     </AppRoot>
   );
