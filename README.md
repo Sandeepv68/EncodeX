@@ -31,40 +31,40 @@
 
 </div>
 
-## Introduction
+## 👋 Introduction
 
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
 
-## Features
+## ✨ Features
 
-- **Media Conversion** — 51 video codecs, 27 audio codecs, 56 pixel formats with codec/bitrate/scale/quality controls
-- **Hardware Acceleration** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation
-- **Video Cutting** — Frame-accurate trimming with a built-in player (rawvideo + PCM pipes, Canvas + Web Audio) and zoomable timeline (waveform + thumbnail montage)
-- **Batch Queue** — Serial FIFO processor with real-time progress, per-job errors, cancel-all, status filters
-- **Image Compression** — JPEG/PNG/WebP/BMP/GIF/TIFF with quality/scale, EXIF viewer, RGB/luma histograms
-- **Audio Extraction** — Any of 27 audio codecs from any video file
-- **Media Info** — Full per-stream probe: codec, profile, resolution, color metadata, frame rate, etc.
-- **CLI Mode** — Headless scripting with subcommands (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `batch`)
-- **3 Transcoder Cores** — FFmpeg API (fluent-ffmpeg), FFmpeg CLI (child_process), BMF Framework
-- **56 Locales** — 35 languages with RTL support (Arabic, Hebrew)
-- **In-App Updates** — Checks GitHub Releases, downloads platform installer, real-time progress
-- **Error Handling** — 16 typed error codes, global snackbar, inline banners, React error boundaries
-- **Dark/Light Theme** — System-aware with manual toggle, persistent preferences
+- **🔄 Media Conversion** — 51 video codecs, 27 audio codecs, 56 pixel formats with codec/bitrate/scale/quality controls
+- **⚡ Hardware Acceleration** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation
+- **✂️ Video Cutting** — Frame-accurate trimming with a built-in player (rawvideo + PCM pipes, Canvas + Web Audio) and zoomable timeline (waveform + thumbnail montage)
+- **📋 Batch Queue** — Serial FIFO processor with real-time progress, per-job errors, cancel-all, status filters
+- **🖼️ Image Compression** — JPEG/PNG/WebP/BMP/GIF/TIFF with quality/scale, EXIF viewer, RGB/luma histograms
+- **🎵 Audio Extraction** — Any of 27 audio codecs from any video file
+- **ℹ️ Media Info** — Full per-stream probe: codec, profile, resolution, color metadata, frame rate, etc.
+- **⌨️ CLI Mode** — Headless scripting with subcommands (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `batch`)
+- **⚙️ 3 Transcoder Cores** — FFmpeg API (fluent-ffmpeg), FFmpeg CLI (child_process), BMF Framework
+- **🌍 56 Locales** — 35 languages with RTL support (Arabic, Hebrew)
+- **🔄 In-App Updates** — Checks GitHub Releases, downloads platform installer, real-time progress
+- **🛡️ Error Handling** — 16 typed error codes, global snackbar, inline banners, React error boundaries
+- **🌗 Dark/Light Theme** — System-aware with manual toggle, persistent preferences
 
 See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, supported formats, and codec lists.
 
-## Prerequisites
+## 📌 Prerequisites
 
 - [Node.js](https://nodejs.org/) 20+
 - [FFmpeg](https://ffmpeg.org/) — bundled via `ffmpeg-static`; falls back to system `ffmpeg` if the bundled binary is unavailable
 
-## Install
+## 🚀 Install
 
 ```bash
 npm install
 ```
 
-## Development
+## 🧑‍💻 Development
 
 ```bash
 # Start Vite dev server + tsc watch (no Electron window)
@@ -84,7 +84,7 @@ npm run dev:start
 
 `npm run electron:dev` waits for Vite to be ready, compiles both main and preload, then launches Electron with the `--dev` flag pointing at the Vite dev server URL. DevTools open automatically.
 
-## Build
+## 🔨 Build
 
 ```bash
 # Production build (renderer + main + preload)
@@ -113,7 +113,7 @@ npm run dist
 | `npm run pack`           | Build + electron-builder `--dir`                            |
 | `npm run dist`           | Build + electron-builder (NSIS/DMG/AppImage)                |
 
-## CLI Usage
+## 💻 CLI Usage
 
 Build first, then invoke via `encodex`:
 
@@ -127,7 +127,7 @@ encodex batch 'videos/**/*.mov' -j 2 --out-dir converted
 
 See [docs/CLI.md](docs/CLI.md) for all subcommands, options, and examples.
 
-## Testing
+## 🧪 Testing
 
 ```bash
 npm test           # Run all 122 test files / 1573 tests
@@ -140,7 +140,7 @@ npm run test:e2e   # Requires build
 
 See [docs/TESTING.md](docs/TESTING.md) for the full test suite breakdown, test setup, and E2E specs.
 
-## Documentation
+## 📚 Documentation
 
 | Document | Description |
 | -------- | ----------- |
@@ -155,20 +155,20 @@ See [docs/TESTING.md](docs/TESTING.md) for the full test suite breakdown, test s
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting |
 | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Code of conduct |
 
-## Tech Stack
+## 🧰 Tech Stack
 
 <p align="center"><img src="assets/stack.png" alt="EncodeX tech stack"></p>
 
-## Contributing
+## 🤝 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. All contributions are welcome — please open an issue first for significant changes.
 
 This project is governed by a [Code of Conduct](CODE_OF_CONDUCT.md).
 
-## Security
+## 🔒 Security
 
 Report security vulnerabilities to the project maintainers via the security advisory process. See [SECURITY.md](SECURITY.md).
 
-## License
+## 📄 License
 
 MIT

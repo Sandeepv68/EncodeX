@@ -1,15 +1,15 @@
-# Update Manager - Implementation Plan
+# 🔄 Update Manager - Implementation Plan
 
 > **Status: IMPLEMENTED** — All files created and wired up. Tests passing (unit, e2e).
 > See below for the original plan and implementation notes.
 
-## Overview
+## 📖 Overview
 
 Implement a custom in-app update manager (Option C) that checks GitHub Releases
 for new versions, notifies the user, downloads the platform-specific installer
 in-app with progress reporting, and launches the installer on completion.
 
-## Architecture
+## 🏗️ Architecture
 
 ```
 GitHub Releases API
@@ -25,7 +25,7 @@ GitHub Releases API
   [renderer/components/UpdateDialog.tsx]  MUI Dialog with progress bar
 ```
 
-## Files to Create
+## 📁 Files to Create
 
 | File | Purpose |
 |------|---------|
@@ -35,7 +35,7 @@ GitHub Releases API
 | `src/renderer/components/UpdateDialog.tsx` | Modal dialog showing update status, download progress, and install button |
 | `src/renderer/styles/UpdateDialog.styles.ts` | Styled components for the update dialog |
 
-## Files to Modify
+## 📝 Files to Modify
 
 | File | Change |
 |------|--------|
@@ -51,7 +51,7 @@ GitHub Releases API
 | `e2e/mocks/preload.js` | Add update API methods to mock preload |
 | `e2e/mocks/main-store.js` | No changes needed (update state is ephemeral) |
 
-## IPC Channels
+## 🔌 IPC Channels
 
 | Channel | Direction | Purpose |
 |---------|-----------|---------|
@@ -66,13 +66,13 @@ GitHub Releases API
 | `update-downloaded` | main -> renderer | Notify download completed |
 | `update-error` | main -> renderer | Push update error |
 
-## Version Comparison
+## 🔢 Version Comparison
 
 - Simple semver comparison: split on `.`, compare numerically.
 - Strips pre-release suffixes (e.g. `-beta.0`) for comparison.
 - Returns true if remote version is strictly greater than local.
 
-## Asset Selection Logic
+## 🎯 Asset Selection Logic
 
 1. Filter release assets by platform extension:
    - `win32` -> `.exe`
@@ -84,7 +84,7 @@ GitHub Releases API
    - `ia32` -> filename contains `ia32`
 3. Fall back to first platform-matched asset if arch match fails.
 
-## Download Flow
+## 📥 Download Flow
 
 1. Renderer calls `download-update` IPC.
 2. Main process downloads to `app.getPath('temp')/EncodeX-updater/`.
@@ -93,7 +93,7 @@ GitHub Releases API
 5. Renderer shows "Install & Restart" button.
 6. On click, main process launches installer via `shell.openPath()` + `app.quit()`.
 
-## UI States
+## 🖼️ UI States
 
 | State | Dialog Shows |
 |-------|-------------|
@@ -105,7 +105,7 @@ GitHub Releases API
 | `downloaded` | "Update ready to install" + Install & Restart button |
 | `error` | Error message + Retry / Close buttons |
 
-## Testing Strategy
+## 🧪 Testing Strategy
 
 - Unit: version comparison function, asset selection function.
 - Manual: publish a test tag/release higher than `1.0.0-beta.0` and verify

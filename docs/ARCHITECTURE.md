@@ -1,10 +1,10 @@
-# EncodeX Architecture
+# 🏗️ EncodeX Architecture
 
 This document describes the internal architecture of **EncodeX**, a cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron. It is intended for developers who want to understand how the pieces fit together before contributing.
 
 <p align="center"><img src="../assets/architecture.png" alt="EncodeX architecture"></p>
 
-## Design Principles
+## 🧩 Design Principles
 
 The renderer never spawns processes and never touches the filesystem directly. All privileged operations (file dialogs, FFmpeg execution, probing, window control) live in the main process and are reached through IPC.
 
@@ -14,7 +14,7 @@ The renderer never spawns processes and never touches the filesystem directly. A
 - **Shared types and constants** — `src/shared/` is imported by all three processes so interfaces stay in sync by construction.
 - **Progressive enhancement of the UI** — pages are code-split with `React.lazy`, state lives in Zustand stores, and long-running jobs stream progress back over IPC events.
 
-## Deep Dives
+## 🔍 Deep Dives
 
 The full architecture is split into focused documents:
 
@@ -24,7 +24,7 @@ The full architecture is split into focused documents:
 | [Transcoder Abstraction & Conversion](ARCHITECTURE_TRANSCODERS.md) | `ITranscoder` interface, FfmpegCore / FFToolCore / BmfCore, shared flag building, hardware acceleration, media probing, conversion flow |
 | [Renderer, State & Subsystems](ARCHITECTURE_RENDERER.md) | Render tree, pages, hooks, Zustand stores, batch queue, video player, timeline media, image processing, error handling, logging, i18n, theming, data flow reference |
 
-## Additional Documentation
+## 📚 Additional Documentation
 
 | Document | Topics |
 | -------- | ------ |

@@ -1,6 +1,6 @@
-# Transcoder Abstraction & Conversion
+# 🔄 Transcoder Abstraction & Conversion
 
-## Transcoder Abstraction
+## 🏭 Transcoder Abstraction
 
 All media backends conform to `ITranscoder` (`src/main/transcoders/interface.ts`):
 
@@ -41,7 +41,7 @@ export interface ITranscoder {
 
 `ffmpeg-utils.ts` is the single place that translates `ConversionOptions` into raw FFmpeg CLI arguments, so FFTool and BMF cores can never drift from each other. `ffprobe-mapper.ts` normalizes raw ffprobe JSON into the typed `MediaInfo` shape used across the app.
 
-## Hardware Acceleration
+## ⚡ Hardware Acceleration
 
 `transcoders/hwaccel.ts` resolves FFmpeg `-hwaccel` flags for a chosen codec. It maps encoder suffixes to families:
 
@@ -53,11 +53,11 @@ export interface ITranscoder {
 
 Flags are only produced when acceleration is enabled **and** the mode is `auto`; in `encode` mode the encoder's own hardware path is used without extra flags. Available encoders and hwaccels are discovered at runtime by `capabilities.ts` (spawning `ffmpeg -hide_banner -encoders` and `-hwaccels`, cached after first probe), and the renderer filters the codec pickers to what the bundled binary actually provides.
 
-## Media Probing
+## 🔍 Media Probing
 
 `getInfo()` (through any core) shells out to ffprobe and returns a `MediaInfo` object. `ffprobe-mapper.ts` normalizes per-stream data — codec, profile, level, resolution, DAR, pixel format, bit depth, color metadata, frame rate, bitrate, sample rate, sample format, channels/layout, duration, start time, frame count, language, and tags — into the `MediaStreamInfo` interface consumed by the Media Info page and used internally for player resolution and queue logic.
 
-## Conversion Flow
+## 🔄 Conversion Flow
 
 The complete end-to-end path for a GUI conversion:
 

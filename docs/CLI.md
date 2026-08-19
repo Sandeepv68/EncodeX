@@ -1,4 +1,4 @@
-# CLI Usage
+# 💻 CLI Usage
 
 Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode auto-activates when two positional arguments (input + output) are given, or explicitly with `--cli`:
 
@@ -42,7 +42,7 @@ Legacy flat usage (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) is shimmed
 
 To make `encodex` available globally, run `npm link` from the project root (or `npm install -g .`). The raw `npx electron . --cli ...` form still works as an alternative.
 
-## Subcommands
+## 📋 Subcommands
 
 | Subcommand         | Description                                                       |
 | ------------------ | ----------------------------------------------------------------- |
@@ -53,7 +53,7 @@ To make `encodex` available globally, run `npm link` from the project root (or `
 | `extract-audio`    | Extract the audio stream (default codec `libmp3lame`)             |
 | `batch`            | Convert multiple inputs (files, globs, or directories) with a queue |
 
-## Global Options
+## ⚙️ Global Options
 
 | Option                      | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
@@ -65,7 +65,7 @@ To make `encodex` available globally, run `npm link` from the project root (or `
 | `--json`                    | Machine-readable JSON output (status routed to stderr)         |
 | `--timeout <ms>`            | Overall CLI timeout (default: none)                            |
 
-## Convert Options
+## 🔄 Convert Options
 
 | Option                      | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
@@ -86,7 +86,7 @@ To make `encodex` available globally, run `npm link` from the project root (or `
 | `--hwaccel / --no-hwaccel`  | Toggle hardware acceleration                                   |
 | `--hwaccel-mode <auto\\|encode>` | Hardware acceleration mode (default: `auto`)             |
 
-## Compress Options
+## 🖼️ Compress Options
 
 | Option                      | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
@@ -96,7 +96,7 @@ To make `encodex` available globally, run `npm link` from the project root (or `
 | `--keep-aspect-ratio`       | Preserve aspect ratio when scaling                             |
 | `--pix-fmt <format>`        | Pixel format                                                   |
 
-## Extract-audio Options
+## 🎵 Extract-audio Options
 
 | Option                      | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
@@ -106,7 +106,7 @@ To make `encodex` available globally, run `npm link` from the project root (or `
 | `--end-time <time>`         | End time                                                       |
 | `--duration <time>`         | Duration                                                       |
 
-## Batch Options
+## 📋 Batch Options
 
 | Option                      | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
