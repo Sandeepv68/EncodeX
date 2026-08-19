@@ -1,5 +1,8 @@
 # Update Manager - Implementation Plan
 
+> **Status: IMPLEMENTED** — All files created and wired up. Tests passing (unit, e2e).
+> See below for the original plan and implementation notes.
+
 ## Overview
 
 Implement a custom in-app update manager (Option C) that checks GitHub Releases
@@ -44,6 +47,9 @@ GitHub Releases API
 | `src/renderer/electron-api.d.ts` | Declare update API types on `ElectronAPI` |
 | `src/renderer/pages/About.tsx` | Add "Check for updates" button |
 | `src/renderer/App.tsx` | Mount `UpdateDialog` globally |
+| `src/test-setup.ts` | Add update API mocks to global electronAPI stub |
+| `e2e/mocks/preload.js` | Add update API methods to mock preload |
+| `e2e/mocks/main-store.js` | No changes needed (update state is ephemeral) |
 
 ## IPC Channels
 
