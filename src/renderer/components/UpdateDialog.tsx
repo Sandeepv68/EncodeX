@@ -37,8 +37,20 @@ import { UpdateDialogContent, UpdateVersionText, UpdateReleaseNotes, UpdateStatu
  */
 export default function UpdateDialog() {
   const { t } = useTranslation();
-  const { status, info, progress, errorMessage, dialogOpen, closeDialog, checkForUpdates, downloadUpdate, cancelDownload, installUpdate, openReleaseNotes, reset } =
-    useUpdateStore();
+  const {
+    status,
+    info,
+    progress,
+    errorMessage,
+    dialogOpen,
+    closeDialog,
+    checkForUpdates,
+    downloadUpdate,
+    cancelDownload,
+    installUpdate,
+    openReleaseNotes,
+    reset,
+  } = useUpdateStore();
 
   const handleClose = () => {
     if (status === 'downloading') return;
@@ -52,9 +64,7 @@ export default function UpdateDialog() {
 
   return (
     <Dialog open={dialogOpen} onClose={handleClose} maxWidth="sm" fullWidth slotProps={{ paper: { 'data-testid': 'update-dialog' } }}>
-      <DialogTitle>
-        {t('update.title')}
-      </DialogTitle>
+      <DialogTitle>{t('update.title')}</DialogTitle>
       <DialogContent>
         <UpdateDialogContent>
           {status === 'idle' || status === 'checking' ? (
@@ -66,17 +76,9 @@ export default function UpdateDialog() {
             <UpdateStatusMessage>{t('update.upToDate')}</UpdateStatusMessage>
           ) : status === 'available' && info ? (
             <>
-              <Typography variant="body1">
-                {t('update.newVersionAvailable')}
-              </Typography>
-              <UpdateVersionText variant="h6">
-                v{info.version}
-              </UpdateVersionText>
-              {info.releaseNotes && (
-                <UpdateReleaseNotes>
-                  {info.releaseNotes}
-                </UpdateReleaseNotes>
-              )}
+              <Typography variant="body1">{t('update.newVersionAvailable')}</Typography>
+              <UpdateVersionText variant="h6">v{info.version}</UpdateVersionText>
+              {info.releaseNotes && <UpdateReleaseNotes>{info.releaseNotes}</UpdateReleaseNotes>}
               <Link
                 component="button"
                 variant="body2"
@@ -89,16 +91,10 @@ export default function UpdateDialog() {
             </>
           ) : status === 'downloading' ? (
             <>
-              <Typography variant="body1">
-                {t('update.downloading')}
-              </Typography>
+              <Typography variant="body1">{t('update.downloading')}</Typography>
               {progress && (
                 <>
-                  <LinearProgress
-                    variant="determinate"
-                    value={progress.percent}
-                    sx={{ height: 8, borderRadius: 4 }}
-                  />
+                  <LinearProgress variant="determinate" value={progress.percent} sx={{ height: 8, borderRadius: 4 }} />
                   <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
                     {progress.percent}% — {formatBytes(progress.transferred)} / {formatBytes(progress.total)}
                   </Typography>
@@ -106,13 +102,9 @@ export default function UpdateDialog() {
               )}
             </>
           ) : status === 'downloaded' ? (
-            <UpdateStatusMessage>
-              {t('update.readyToInstall')}
-            </UpdateStatusMessage>
+            <UpdateStatusMessage>{t('update.readyToInstall')}</UpdateStatusMessage>
           ) : status === 'error' ? (
-            <UpdateStatusMessage color="error">
-              {errorMessage || t('update.error')}
-            </UpdateStatusMessage>
+            <UpdateStatusMessage color="error">{errorMessage || t('update.error')}</UpdateStatusMessage>
           ) : null}
         </UpdateDialogContent>
       </DialogContent>
@@ -130,11 +122,7 @@ export default function UpdateDialog() {
             <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
               {t('update.later')}
             </Button>
-            <Button
-              variant="contained"
-              onClick={downloadUpdate}
-              startIcon={<FontAwesomeIcon icon={faDownload} />}
-            >
+            <Button variant="contained" onClick={downloadUpdate} startIcon={<FontAwesomeIcon icon={faDownload} />}>
               {t('update.download')}
             </Button>
           </>
@@ -147,11 +135,7 @@ export default function UpdateDialog() {
             <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
               {t('update.later')}
             </Button>
-            <Button
-              variant="contained"
-              onClick={installUpdate}
-              startIcon={<FontAwesomeIcon icon={faCircleCheck} />}
-            >
+            <Button variant="contained" onClick={installUpdate} startIcon={<FontAwesomeIcon icon={faCircleCheck} />}>
               {t('update.installRestart')}
             </Button>
           </>

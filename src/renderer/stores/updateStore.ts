@@ -76,25 +76,30 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
   function subscribeToEvents(): void {
     if (unsubAvailable) return;
 
-    unsubAvailable = window.electronAPI?.onUpdateAvailable((info) => {
-      set({ status: 'available', info, progress: null, errorMessage: null });
-    }) || null;
+    unsubAvailable =
+      window.electronAPI?.onUpdateAvailable((info) => {
+        set({ status: 'available', info, progress: null, errorMessage: null });
+      }) || null;
 
-    unsubNotAvailable = window.electronAPI?.onUpdateNotAvailable(() => {
-      set({ status: 'not-available', errorMessage: null });
-    }) || null;
+    unsubNotAvailable =
+      window.electronAPI?.onUpdateNotAvailable(() => {
+        set({ status: 'not-available', errorMessage: null });
+      }) || null;
 
-    unsubProgress = window.electronAPI?.onUpdateProgress((progress) => {
-      set({ progress });
-    }) || null;
+    unsubProgress =
+      window.electronAPI?.onUpdateProgress((progress) => {
+        set({ progress });
+      }) || null;
 
-    unsubDownloaded = window.electronAPI?.onUpdateDownloaded((installerPath) => {
-      set({ status: 'downloaded', installerPath, progress: null });
-    }) || null;
+    unsubDownloaded =
+      window.electronAPI?.onUpdateDownloaded((installerPath) => {
+        set({ status: 'downloaded', installerPath, progress: null });
+      }) || null;
 
-    unsubError = window.electronAPI?.onUpdateError((message) => {
-      set({ status: 'error', errorMessage: message, progress: null });
-    }) || null;
+    unsubError =
+      window.electronAPI?.onUpdateError((message) => {
+        set({ status: 'error', errorMessage: message, progress: null });
+      }) || null;
   }
 
   subscribeToEvents();

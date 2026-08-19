@@ -110,12 +110,7 @@ export default function About() {
         <Typography variant="body2">{pkg.version}</Typography>
       </AboutMetaRow>
       <AboutMetaRow>
-        <Button
-          variant="outlined"
-          size="small"
-          startIcon={<FontAwesomeIcon icon={faArrowUp} />}
-          onClick={handleCheckForUpdates}
-        >
+        <Button variant="outlined" size="small" startIcon={<FontAwesomeIcon icon={faArrowUp} />} onClick={handleCheckForUpdates}>
           {t('about.checkForUpdates')}
         </Button>
       </AboutMetaRow>
