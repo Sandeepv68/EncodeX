@@ -606,6 +606,24 @@
     "licenseName": "MIT-lisenssi",
     "copyright": "Tekijänoikeus © 2026 EncodeX",
     "licenseSummary": "Julkaistu MIT-lisenssillä. Vapaasti käytettävissä, kopioitavissa, muokattavissa, yhdistettävissä, julkaistavissa, jaettavissa, alilisensoitavissa ja myytävissä – myös kaupallisesti – edellyttäen, että tekijänoikeusilmoitus ja käyttölupailmoitus sisältyvät kaikkiin kopioihin tai olennaisiin osiin ohjelmistosta. Ohjelmisto toimitetaan \"sellaisenaan\" ilman minkäänlaista takuuta.",
-    "acknowledgements": "Tehty ❤️:llä avoimen lähdekoodin puolesta — FFmpeg-projektin ja yhteisön voimin."
+    "acknowledgements": "Tehty ❤️:llä avoimen lähdekoodin puolesta — FFmpeg-projektin ja yhteisön voimin.",
+    "checkForUpdates": "Tarkista päivitykset"
+  },
+  "update": {
+    "title": "Päivitys",
+    "checking": "Tarkistetaan päivityksiä...",
+    "upToDate": "Olet ajan tasalla!",
+    "newVersionAvailable": "Uusi versio on saatavilla:",
+    "viewReleaseNotes": "Näytä julkaisumuistiinpanot",
+    "download": "Lataa",
+    "downloading": "Ladataan päivitystä...",
+    "cancelDownload": "Peruuta lataus",
+    "readyToInstall": "Päivitys ladattu ja valmis asennettavaksi. Sovellus käynnistetään uudelleen päivityksen toteuttamiseksi.",
+    "installRestart": "Asenna ja käynnistä uudelleen",
+    "later": "Myöhemmin",
+    "cancel": "Peruuta",
+    "close": "Sulje",
+    "retry": "Yritä uudelleen",
+    "error": "Päivitysten tarkistuksessa tapahtui virhe."
   }
 }

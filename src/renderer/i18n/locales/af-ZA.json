@@ -606,6 +606,24 @@
     "licenseName": "MIT-lisensie",
     "copyright": "Kopiereg © 2026 EncodeX",
     "licenseSummary": "Vrygestel onder die MIT-lisensie. Vry om te gebruik, kopieer, wysig, saamsmelt, publiseer, versprei, sublisensieer en verkoop — insluitend kommersieel — mits die kopieregkennisgewing en toestemmingskennisgewing in alle kopieë of wesenlike dele van die sagteware ingesluit word. Die sagteware word verskaf \"soos is\", sonder enige waarborg.",
-    "acknowledgements": "Gemaak met ❤️ vir oopbron — aangedryf deur die FFmpeg-projek en die gemeenskap."
+    "acknowledgements": "Gemaak met ❤️ vir oopbron — aangedryf deur die FFmpeg-projek en die gemeenskap.",
+    "checkForUpdates": "Kontroleer vir opdaterings"
+  },
+  "update": {
+    "title": "Opdatering",
+    "checking": "Kontroleer vir opdaterings...",
+    "upToDate": "Jy is op datum!",
+    "newVersionAvailable": "'n Nuwe weergawe is beskikbaar:",
+    "viewReleaseNotes": "Bekyk vrystellingsnotas",
+    "download": "Aflaai",
+    "downloading": "Aflaai van opdatering...",
+    "cancelDownload": "Kanselleer aflaai",
+    "readyToInstall": "Opdatering afgelaai en gereed om te installeer. Die toepassing sal herbegin om die opdatering toe te pas.",
+    "installRestart": "Installeer en herbegin",
+    "later": "Later",
+    "cancel": "Kanselleer",
+    "close": "Maak toe",
+    "retry": "Herprobeer",
+    "error": "'n Fout het voorgekom tydens die opdateringsoektog."
   }
 }

@@ -22,6 +22,8 @@ import {
   ThumbnailStrip,
   ImageExifData,
   ImageFileInfo,
+  UpdateInfo,
+  UpdateProgress,
 } from '../shared/types';
 
 /**
@@ -497,6 +499,16 @@ export interface ElectronAPI {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onLogMessage(cb: (entry: LogEntry) => void): () => void;
+  checkForUpdates(): Promise<void>;
+  downloadUpdate(): Promise<void>;
+  installUpdate(installerPath: string): Promise<void>;
+  cancelDownload(): Promise<void>;
+  openReleaseNotes(url: string): Promise<void>;
+  onUpdateAvailable(cb: (info: UpdateInfo) => void): () => void;
+  onUpdateNotAvailable(cb: () => void): () => void;
+  onUpdateProgress(cb: (progress: UpdateProgress) => void): () => void;
+  onUpdateDownloaded(cb: (installerPath: string) => void): () => void;
+  onUpdateError(cb: (message: string) => void): () => void;
 }
 
 /**

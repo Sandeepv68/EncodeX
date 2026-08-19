@@ -177,6 +177,18 @@ const api = {
   onPlayerAudio: (cb) => subscribe('player-audio', cb),
   onLogMessage: (cb) => subscribe('log-message', cb),
 
+  // --- Update manager ----------------------------------------------------------
+  checkForUpdates: () => Promise.resolve(),
+  downloadUpdate: () => Promise.resolve(),
+  installUpdate: () => Promise.resolve(),
+  cancelDownload: () => Promise.resolve(),
+  openReleaseNotes: () => Promise.resolve(),
+  onUpdateAvailable: (cb) => subscribe('update-available', cb),
+  onUpdateNotAvailable: (cb) => subscribe('update-not-available', cb),
+  onUpdateProgress: (cb) => subscribe('update-progress', cb),
+  onUpdateDownloaded: (cb) => subscribe('update-downloaded', cb),
+  onUpdateError: (cb) => subscribe('update-error', cb),
+
   /**
    * Test-only control surface. Absent from the real preload; used by
    * e2e/specs/*.spec.ts via e2e/mocks/control.ts.

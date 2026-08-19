@@ -606,6 +606,24 @@
     "licenseName": "Raihana MIT",
     "copyright": "Manatāpapa © 2026 EncodeX",
     "licenseSummary": "Kua puta i raro i te Raihana MIT. Noa atu te whakamahi, te kape, te whakarerekē, te whakakotahi, te whakaputa, te tohatoha, te raihana-iti me te hoko — tae atu ki te tauhokohoko — engari me whakauru ngā pānui manatāpapa me ngā pānui whakaaetanga ki ngā kape katoa, ki ngā wāhanga matua rānei o te pūmanawa. Ka tukua te pūmanawa \"pēnei tonu\", kāore he whakapūmau o tētahi momo.",
-    "acknowledgements": "He mea hanga ki te ❤️ mō te puna waehere tuwhera — nā te kaupapa FFmpeg me te hapori i whakahaere."
+    "acknowledgements": "He mea hanga ki te ❤️ mō te puna waehere tuwhera — nā te kaupapa FFmpeg me te hapori i whakahaere.",
+    "checkForUpdates": "Tirohia nga whakahou"
+  },
+  "update": {
+    "title": "Whakahou",
+    "checking": "E tirohia ana nga whakahou...",
+    "upToDate": "Kua hou tonu koe!",
+    "newVersionAvailable": "Kua taea te whakahou hou:",
+    "viewReleaseNotes": "Tirohia nga tuhinga whakarewa",
+    "download": "Tikiake",
+    "downloading": "E tikiahia ana te whakahou...",
+    "cancelDownload": "Whakakorehia te tikiake",
+    "readyToInstall": "Kua tikiake te whakahou kua ready te tuku. Ka tiimata anotia te tono hei whakatinana i te whakahou.",
+    "installRestart": "Tukua me te tiimata anotia",
+    "later": "Tonoa",
+    "cancel": "Whakakorehia",
+    "close": "Katihia",
+    "retry": "Hoamata",
+    "error": "Kua pahae he hea i te tirohanga whakahou."
   }
 }

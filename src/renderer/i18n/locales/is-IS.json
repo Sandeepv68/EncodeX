@@ -606,6 +606,24 @@
     "licenseName": "MIT-leyfi",
     "copyright": "Höfundarréttur © 2026 EncodeX",
     "licenseSummary": "Gefið út undir MIT-leyfinu. Frjálst að nota, afrita, breyta, sameina, birta, dreifa, undirleyfa og selja — þar með talið í atvinnuskyni — að því tilskildu að höfundarréttartilkynningin og leyfistilkynningin séu innifalin í öllum afritum eða verulegum hlutum hugbúnaðarins. Hugbúnaðurinn er veittur \"eins og hann er\", án nokkurrar ábyrgðar.",
-    "acknowledgements": "Búið til með ❤️ fyrir opinn hugbúnað — knúið af FFmpeg-verkefninu og samfélaginu."
+    "acknowledgements": "Búið til með ❤️ fyrir opinn hugbúnað — knúið af FFmpeg-verkefninu og samfélaginu.",
+    "checkForUpdates": "Leita að uppfærslum"
+  },
+  "update": {
+    "title": "Uppfærsla",
+    "checking": "Leita að uppfærslum...",
+    "upToDate": "Þú ert uppfærð/ur!",
+    "newVersionAvailable": "Nýtt útgáfa er tiltæk:",
+    "viewReleaseNotes": "Skoða útgáfunárásir",
+    "download": "Hala niður",
+    "downloading": "Hala niður uppfærslu...",
+    "cancelDownload": "Hætta við niðurhal",
+    "readyToInstall": "Uppfærsla hefur verið halað niður og er tilbúin til uppsetningar. Forritið endurræst til að beita uppfærslunni.",
+    "installRestart": "Setja upp og endurræsa",
+    "later": "Seinna",
+    "cancel": "Hætta við",
+    "close": "Loka",
+    "retry": "Reyna aftur",
+    "error": "Villa kom upp við leit að uppfærslum."
   }
 }

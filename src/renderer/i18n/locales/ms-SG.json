@@ -606,6 +606,24 @@
     "licenseName": "Lesen MIT",
     "copyright": "Hak cipta © 2026 EncodeX",
     "licenseSummary": "Dikeluarkan di bawah Lesen MIT. Bebas untuk digunakan, disalin, diubah suai, digabung, diterbitkan, diedarkan, dilesenkan semula dan dijual — termasuk secara komersial — dengan syarat notis hak cipta dan notis kebenaran disertakan dalam semua salinan atau bahagian penting perisian. Perisian disediakan \"seadanya\", tanpa sebarang waranti.",
-    "acknowledgements": "Dibuat dengan ❤️ untuk sumber terbuka — didorong oleh projek FFmpeg dan komuniti."
+    "acknowledgements": "Dibuat dengan ❤️ untuk sumber terbuka — didorong oleh projek FFmpeg dan komuniti.",
+    "checkForUpdates": "Semak kemas kini"
+  },
+  "update": {
+    "title": "Kemas kini",
+    "checking": "Menyemak kemas kini...",
+    "upToDate": "Anda sudah terkini!",
+    "newVersionAvailable": "Versi baharu tersedia:",
+    "viewReleaseNotes": "Lihat nota keluaran",
+    "download": "Muat turun",
+    "downloading": "Memuat turun kemas kini...",
+    "cancelDownload": "Batalkan muat turun",
+    "readyToInstall": "Kemas kini dimuat turun dan sedia dipasang. Apl akan dimulakan semula untuk menggunakan kemas kini.",
+    "installRestart": "Pasang dan mulakan semula",
+    "later": "Nanti",
+    "cancel": "Batal",
+    "close": "Tutup",
+    "retry": "Cuba lagi",
+    "error": "Ralat berlaku semasa menyemak kemas kini."
   }
 }

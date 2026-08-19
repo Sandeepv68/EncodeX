@@ -606,6 +606,24 @@
     "licenseName": "MIT 라이선스",
     "copyright": "저작권 © 2026 EncodeX",
     "licenseSummary": "MIT 라이선스로 배포됩니다. 저작권 고지와 허가 고지가 소프트웨어의 모든 사본 또는 실질적인 부분에 포함되는 조건으로, 상업적 이용을 포함한 사용, 복사, 수정, 병합, 게시, 배포, 서브라이선스, 판매가 자유롭습니다. 본 소프트웨어는 어떤 종류의 보증도 없이 \"있는 그대로\" 제공됩니다.",
-    "acknowledgements": "오픈 소스에 대한 ❤️와 함께 만들어졌습니다 — FFmpeg 프로젝트와 커뮤니티가 함께하고 있습니다."
+    "acknowledgements": "오픈 소스에 대한 ❤️와 함께 만들어졌습니다 — FFmpeg 프로젝트와 커뮤니티가 함께하고 있습니다.",
+    "checkForUpdates": "업데이트 확인"
+  },
+  "update": {
+    "title": "업데이트",
+    "checking": "업데이트 확인 중...",
+    "upToDate": "최신 버전입니다!",
+    "newVersionAvailable": "새로운 버전이 있습니다:",
+    "viewReleaseNotes": "릴리스 노트 보기",
+    "download": "다운로드",
+    "downloading": "업데이트 다운로드 중...",
+    "cancelDownload": "다운로드 취소",
+    "readyToInstall": "업데이트가 다운로드되어 설치 준비가 완료되었습니다. 업데이트를 적용하려면 앱이 다시 시작됩니다.",
+    "installRestart": "설치 및 다시 시작",
+    "later": "나중에",
+    "cancel": "취소",
+    "close": "닫기",
+    "retry": "재시도",
+    "error": "업데이트 확인 중 오류가 발생했습니다."
   }
 }

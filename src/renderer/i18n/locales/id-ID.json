@@ -606,6 +606,24 @@
     "licenseName": "Lisensi MIT",
     "copyright": "Hak cipta © 2026 EncodeX",
     "licenseSummary": "Dirilis di bawah Lisensi MIT. Bebas digunakan, disalin, dimodifikasi, digabung, diterbitkan, didistribusikan, dilisensikan kembali, dan dijual — termasuk secara komersial — dengan ketentuan pemberitahuan hak cipta dan pemberitahuan izin disertakan dalam semua salinan atau bagian substansial dari perangkat lunak. Perangkat lunak disediakan \"apa adanya\", tanpa jaminan apa pun.",
-    "acknowledgements": "Dibuat dengan ❤️ untuk sumber terbuka — didukung oleh proyek FFmpeg dan komunitas."
+    "acknowledgements": "Dibuat dengan ❤️ untuk sumber terbuka — didukung oleh proyek FFmpeg dan komunitas.",
+    "checkForUpdates": "Periksa pembaruan"
+  },
+  "update": {
+    "title": "Pembaruan",
+    "checking": "Memeriksa pembaruan...",
+    "upToDate": "Anda sudah menggunakan versi terbaru!",
+    "newVersionAvailable": "Versi baru tersedia:",
+    "viewReleaseNotes": "Lihat catatan rilis",
+    "download": "Unduh",
+    "downloading": "Mengunduh pembaruan...",
+    "cancelDownload": "Batalkan unduhan",
+    "readyToInstall": "Pembaruan terunduh dan siap diinstal. Aplikasi akan dimulai ulang untuk menerapkan pembaruan.",
+    "installRestart": "Instal dan mulai ulang",
+    "later": "Nanti",
+    "cancel": "Batal",
+    "close": "Tutup",
+    "retry": "Coba lagi",
+    "error": "Terjadi kesalahan saat memeriksa pembaruan."
   }
 }

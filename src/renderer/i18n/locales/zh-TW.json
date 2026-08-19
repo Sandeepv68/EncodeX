@@ -606,6 +606,24 @@
     "licenseName": "MIT 授權條款",
     "copyright": "版權所有 © 2026 EncodeX",
     "licenseSummary": "以 MIT 授權條款發布。可以自由使用、複製、修改、合併、發布、散布、再授權和販售——包括商業用途——前提是軟體的所有副本或實質部分中都包含版權聲明和許可聲明。本軟體按「原樣」提供，不附帶任何形式的保證。",
-    "acknowledgements": "為開源傾注 ❤️ — 由 FFmpeg 專案與社群共同驅動。"
+    "acknowledgements": "為開源傾注 ❤️ — 由 FFmpeg 專案與社群共同驅動。",
+    "checkForUpdates": "檢查更新"
+  },
+  "update": {
+    "title": "更新",
+    "checking": "正在檢查更新...",
+    "upToDate": "您已是最新版本！",
+    "newVersionAvailable": "有新版本可用：",
+    "viewReleaseNotes": "查看發行說明",
+    "download": "下載",
+    "downloading": "正在下載更新...",
+    "cancelDownload": "取消下載",
+    "readyToInstall": "更新已下載並準備安裝。應用程式將重新啟動以套用更新。",
+    "installRestart": "安裝並重新啟動",
+    "later": "稍後",
+    "cancel": "取消",
+    "close": "關閉",
+    "retry": "重試",
+    "error": "檢查更新時發生錯誤。"
   }
 }

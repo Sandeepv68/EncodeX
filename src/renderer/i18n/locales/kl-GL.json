@@ -606,6 +606,24 @@
     "licenseName": "MIT-lisenssi",
     "copyright": "Copyright © 2026 EncodeX",
     "licenseSummary": "MIT-lisenssimiit saqqummiunneqarpoq. Atoruk, kopioruk, allanngoruk, merge-ioruk, publish-ioruk, distribute-ioruk, sublicense-ioruk aamma sell-ioruk — commercial-imullu — copyright-notice-q aamma permission-notice-q software-p copies-iniit annerpaaniit ilaanniit ilanngullugit. Software-q \"as is\"-imik tunitinneqarpoq, warranty-tanngitsumik.",
-    "acknowledgements": "Made with ❤️ for open source — powered by the FFmpeg project and the community."
+    "acknowledgements": "Made with ❤️ for open source — powered by the FFmpeg project and the community.",
+    "checkForUpdates": "Uppdateringer niunneq"
+  },
+  "update": {
+    "title": "Oppdatering",
+    "checking": "Uppdateringer niunneq...",
+    "upToDate": "Illit iniartugetsut peerneq!",
+    "newVersionAvailable": "Naatsorsueqarsinnaanngivipput:",
+    "viewReleaseNotes": "Nalersinnaanermut qanoq",
+    "download": "Downloaad",
+    "downloading": "Oppdateringer downloaad...",
+    "cancelDownload": "Download ajuffissit",
+    "readyToInstall": "Oppdateringen er downloaditulerlutik illitillugu appi taarnerpaat. Appi niqinerpat updatingmik.",
+    "installRestart": "Installerlugtilliuguappoorsinnaatigut",
+    "later": "Siammarpassusa",
+    "cancel": "Ajuffissit",
+    "close": "Kingullugu",
+    "retry": "Mallaaritseq",
+    "error": "Toqqinnerpaat updatingmik imai eqqinnaanermik."
   }
 }

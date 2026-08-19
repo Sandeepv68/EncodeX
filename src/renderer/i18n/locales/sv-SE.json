@@ -606,6 +606,24 @@
     "licenseName": "MIT-licens",
     "copyright": "Upphovsrätt © 2026 EncodeX",
     "licenseSummary": "Utgiven under MIT-licensen. Fritt att använda, kopiera, modifiera, slå samman, publicera, distribuera, underlicensiera och sälja — även kommersiellt — förutsatt att upphovsrättsmeddelandet och tillståndsmeddelandet ingår i alla kopior eller väsentliga delar av programvaran. Programvaran tillhandahålls \"i befintligt skick\", utan någon som helst garanti.",
-    "acknowledgements": "Gjort med ❤️ för öppen källkod — drivs av FFmpeg-projektet och communityn."
+    "acknowledgements": "Gjort med ❤️ för öppen källkod — drivs av FFmpeg-projektet och communityn.",
+    "checkForUpdates": "Sök efter uppdateringar"
+  },
+  "update": {
+    "title": "Uppdatering",
+    "checking": "Söker efter uppdateringar...",
+    "upToDate": "Du har den senaste versionen!",
+    "newVersionAvailable": "En ny version är tillgänglig:",
+    "viewReleaseNotes": "Visa utgåvnas anteckningar",
+    "download": "Ladda ner",
+    "downloading": "Laddar ner uppdatering...",
+    "cancelDownload": "Avbryt nedladdning",
+    "readyToInstall": "Uppdateringen har laddats ner och är klar att installera. Appen startas om för att tillämpa uppdateringen.",
+    "installRestart": "Installera och starta om",
+    "later": "Senare",
+    "cancel": "Avbryt",
+    "close": "Stäng",
+    "retry": "Försök igen",
+    "error": "Ett fel inträffade vid sökning efter uppdateringar."
   }
 }

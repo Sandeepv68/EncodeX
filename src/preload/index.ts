@@ -63,6 +63,8 @@ import {
   WaveformData,
   ThumbnailStrip,
   WhenDoneConfig,
+  UpdateInfo,
+  UpdateProgress,
 } from '../shared/types';
 import {
   LOG_ARROW,
@@ -117,6 +119,11 @@ import {
   LOG_WINDOW_MINIMIZE_CALLED,
   LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED,
   LOG_SET_LAUNCH_AT_LOGIN_CALLED,
+  LOG_IPC_CHECK_FOR_UPDATES,
+  LOG_IPC_DOWNLOAD_UPDATE,
+  LOG_IPC_INSTALL_UPDATE,
+  LOG_IPC_CANCEL_DOWNLOAD,
+  LOG_UPDATER_OPEN_RELEASE_NOTES,
 } from '../shared/log-constants';
 
 /**
@@ -946,6 +953,62 @@ const api = {
     };
     ipcRenderer.on(IPC.LOG_MESSAGE, handler);
     return () => ipcRenderer.removeListener(IPC.LOG_MESSAGE, handler);
+  },
+
+  checkForUpdates: () => {
+    log.debug(LOG_IPC_CHECK_FOR_UPDATES);
+    return ipcRenderer.invoke(IPC.CHECK_FOR_UPDATES) as Promise<void>;
+  },
+  downloadUpdate: () => {
+    log.debug(LOG_IPC_DOWNLOAD_UPDATE);
+    return ipcRenderer.invoke(IPC.DOWNLOAD_UPDATE) as Promise<void>;
+  },
+  installUpdate: (installerPath: string) => {
+    log.debug(LOG_IPC_INSTALL_UPDATE, installerPath);
+    return ipcRenderer.invoke(IPC.INSTALL_UPDATE, installerPath) as Promise<void>;
+  },
+  cancelDownload: () => {
+    log.debug(LOG_IPC_CANCEL_DOWNLOAD);
+    return ipcRenderer.invoke(IPC.CANCEL_DOWNLOAD) as Promise<void>;
+  },
+  openReleaseNotes: (url: string) => {
+    log.debug(LOG_UPDATER_OPEN_RELEASE_NOTES, url);
+    return ipcRenderer.invoke(IPC.OPEN_RELEASE_NOTES, url) as Promise<void>;
+  },
+  onUpdateAvailable: (cb: (info: UpdateInfo) => void) => {
+    const handler = (_event: IpcRendererEvent, info: UpdateInfo) => {
+      cb(info);
+    };
+    ipcRenderer.on(IPC.UPDATE_AVAILABLE, handler);
+    return () => ipcRenderer.removeListener(IPC.UPDATE_AVAILABLE, handler);
+  },
+  onUpdateNotAvailable: (cb: () => void) => {
+    const handler = (_event: IpcRendererEvent) => {
+      cb();
+    };
+    ipcRenderer.on(IPC.UPDATE_NOT_AVAILABLE, handler);
+    return () => ipcRenderer.removeListener(IPC.UPDATE_NOT_AVAILABLE, handler);
+  },
+  onUpdateProgress: (cb: (progress: UpdateProgress) => void) => {
+    const handler = (_event: IpcRendererEvent, progress: UpdateProgress) => {
+      cb(progress);
+    };
+    ipcRenderer.on(IPC.UPDATE_PROGRESS, handler);
+    return () => ipcRenderer.removeListener(IPC.UPDATE_PROGRESS, handler);
+  },
+  onUpdateDownloaded: (cb: (installerPath: string) => void) => {
+    const handler = (_event: IpcRendererEvent, installerPath: string) => {
+      cb(installerPath);
+    };
+    ipcRenderer.on(IPC.UPDATE_DOWNLOADED, handler);
+    return () => ipcRenderer.removeListener(IPC.UPDATE_DOWNLOADED, handler);
+  },
+  onUpdateError: (cb: (message: string) => void) => {
+    const handler = (_event: IpcRendererEvent, message: string) => {
+      cb(message);
+    };
+    ipcRenderer.on(IPC.UPDATE_ERROR, handler);
+    return () => ipcRenderer.removeListener(IPC.UPDATE_ERROR, handler);
   },
 };
 

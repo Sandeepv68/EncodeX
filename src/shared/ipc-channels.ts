@@ -125,4 +125,15 @@ export const IPC = {
   QUEUE_MOVED: 'queue-moved',
   PLAYER_FRAME: 'player-frame',
   LOG_MESSAGE: 'log-message',
+
+  CHECK_FOR_UPDATES: 'check-for-updates',
+  DOWNLOAD_UPDATE: 'download-update',
+  INSTALL_UPDATE: 'install-update',
+  CANCEL_DOWNLOAD: 'cancel-download',
+  OPEN_RELEASE_NOTES: 'open-release-notes',
+  UPDATE_AVAILABLE: 'update-available',
+  UPDATE_NOT_AVAILABLE: 'update-not-available',
+  UPDATE_PROGRESS: 'update-progress',
+  UPDATE_DOWNLOADED: 'update-downloaded',
+  UPDATE_ERROR: 'update-error',
 } as const;

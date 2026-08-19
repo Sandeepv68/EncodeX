@@ -444,3 +444,44 @@ export interface WhenDoneConfig {
   action: WhenDoneAction;
   force: boolean;
 }
+
+/**
+ * A GitHub Release asset matched to the current platform/architecture.
+ * @interface UpdateAsset
+ * @property {string} name - The asset filename (e.g. 'EncodeX-1.1.0-x64-setup.exe').
+ * @property {string} url - The direct browser_download_url for the asset.
+ * @property {number} size - File size in bytes.
+ */
+export interface UpdateAsset {
+  name: string;
+  url: string;
+  size: number;
+}
+
+/**
+ * Information about an available update returned by the update check.
+ * @interface UpdateInfo
+ * @property {string} version - The latest release version (e.g. '1.1.0').
+ * @property {string} releaseNotes - Markdown release notes body.
+ * @property {string} releaseUrl - URL of the GitHub release page.
+ * @property {UpdateAsset} asset - The matched platform-specific installer asset.
+ */
+export interface UpdateInfo {
+  version: string;
+  releaseNotes: string;
+  releaseUrl: string;
+  asset: UpdateAsset;
+}
+
+/**
+ * Download progress reported during an in-app update download.
+ * @interface UpdateProgress
+ * @property {number} percent - Download progress percentage (0-100).
+ * @property {number} transferred - Bytes downloaded so far.
+ * @property {number} total - Total file size in bytes.
+ */
+export interface UpdateProgress {
+  percent: number;
+  transferred: number;
+  total: number;
+}
