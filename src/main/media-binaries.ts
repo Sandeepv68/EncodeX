@@ -26,21 +26,7 @@ import {
   LOG_FFPROBE_STATIC_NOT_FOUND_FALLING_BACK_TO_SYSTEM_FFPROBE,
 } from '../shared/log-constants';
 
-/**
- * Logger instance scoped to the media binary resolver. Logs fallbacks from a
- * missing bundled binary to the system-installed command.
- * @const {Logger} log
- */
 const log = new Logger('main/media-binaries');
-
-/**
- * Process-shaped object that additionally exposes the Electron-only fields
- * read by this module (`resourcesPath`).
- * @interface ElectronProcess
- * @extends NodeJS.Process
- * @property {string} resourcesPath - Directory holding the app's unpacked
- *   extra resources in a packaged build
- */
 
 /**
  * Detects whether the app is running from an installed package.
