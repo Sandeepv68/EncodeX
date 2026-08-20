@@ -40,14 +40,17 @@ jobs:
             arch: arm64
           - os: ubuntu
             runner: ubuntu-latest
+            builder-os: linux
             target: appimage
             arch: x64
           - os: ubuntu
             runner: ubuntu-latest
+            builder-os: linux
             target: appimage
             arch: arm64
           - os: ubuntu
             runner: ubuntu-latest
+            builder-os: linux
             target: appimage
             arch: armv7l
     runs-on: ${{ matrix.runner }}
@@ -62,7 +65,7 @@ jobs:
       - name: Fetch media binaries for ${{ matrix.os }} ${{ matrix.arch }}
         run: node scripts/fetch-media-binaries.mjs --platform=${{ matrix.os }} --arch=${{ matrix.arch }}
       - name: Build ${{ matrix.arch }} ${{ matrix.target }} installer
-        run: npm run dist -- --${{ matrix.os }} ${{ matrix.target }} --${{ matrix.arch }} --publish never
+        run: npm run dist -- --${{ matrix.builder-os || matrix.os }} ${{ matrix.target }} --${{ matrix.arch }} --publish never
       - name: Upload installers
         uses: actions/upload-artifact@v4
         with:
