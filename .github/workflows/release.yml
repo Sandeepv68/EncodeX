@@ -75,7 +75,6 @@ jobs:
             release/*.dmg
             release/*.AppImage
             release/*.blockmap
-            release/*.yml
             release/*.zip
             release/*.tar.gz
           if-no-files-found: error
