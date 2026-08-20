@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Con tecnologia"
+    "poweredBy": "Con tecnologia",
+    "checkingForUpdates": "Verifica aggiornamenti...",
+    "updateAvailable": "Aggiornamento disponibile: v{{version}}"
   },
   "status": {
     "auto": "Automatico",
@@ -462,7 +464,9 @@
     "mediaInfoLoaded": "Info media caricate",
     "languageChanged": "Lingua cambiata in {{language}}",
     "cancelled": "Annullato",
-    "pathCopied": "Percorso di output copiato negli appunti"
+    "pathCopied": "Percorso di output copiato negli appunti",
+    "updateAvailable": "Aggiornamento disponibile: v{{version}}",
+    "updateNow": "Aggiorna ora"
   },
   "settings": {
     "title": "Impostazioni",

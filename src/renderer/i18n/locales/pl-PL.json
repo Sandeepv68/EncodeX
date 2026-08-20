@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Obsługiwane przez"
+    "poweredBy": "Obsługiwane przez",
+    "checkingForUpdates": "Sprawdzanie aktualizacji...",
+    "updateAvailable": "Dostępna aktualizacja: v{{version}}"
   },
   "status": {
     "auto": "Automatycznie",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Dzienniki pobrane",
     "mediaInfoLoaded": "Informacje o multimediach załadowane",
     "languageChanged": "Język zmieniony na {{language}}",
-    "cancelled": "Anulowano"
+    "cancelled": "Anulowano",
+    "updateAvailable": "Dostępna aktualizacja: v{{version}}",
+    "updateNow": "Zaktualizuj teraz"
   },
   "settings": {
     "title": "Ustawienia",

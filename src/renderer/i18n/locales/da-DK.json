@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Drevet af"
+    "poweredBy": "Drevet af",
+    "checkingForUpdates": "Tjekker for opdateringer...",
+    "updateAvailable": "Opdatering tilgængelig: v{{version}}"
   },
   "status": {
     "auto": "Automatisk",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Logfiler downloadet",
     "mediaInfoLoaded": "Medieoplysninger indlæst",
     "languageChanged": "Sprog ændret til {{language}}",
-    "cancelled": "Annulleret"
+    "cancelled": "Annulleret",
+    "updateAvailable": "Opdatering tilgængelig: v{{version}}",
+    "updateNow": "Opdater nu"
   },
   "settings": {
     "title": "Indstillinger",

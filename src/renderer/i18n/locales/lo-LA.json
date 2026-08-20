@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "ຂັບເຄື່ອນໂດຍ"
+    "poweredBy": "ຂັບເຄື່ອນໂດຍ",
+    "checkingForUpdates": "ກຳລັງກວດສອບການອັບເດດ...",
+    "updateAvailable": "ມີການອັບເດດ: v{{version}}"
   },
   "status": {
     "auto": "ອັດຕະໂນມັດ",
@@ -462,7 +464,9 @@
     "logsDownloaded": "ດາວໂຫຼດບັນທຶກແລ້ວ",
     "mediaInfoLoaded": "ໂຫຼດຂໍ້ມູນສື່ແລ້ວ",
     "languageChanged": "ປ່ຽນພາສາເປັນ {{language}} ແລ້ວ",
-    "cancelled": "ຍົກເລີກແລ້ວ"
+    "cancelled": "ຍົກເລີກແລ້ວ",
+    "updateAvailable": "ມີການອັບເດດ: v{{version}}",
+    "updateNow": "ອັບເດດຕອນນີ້"
   },
   "settings": {
     "title": "ການຕັ້ງຄ່າ",

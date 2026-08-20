@@ -117,7 +117,7 @@ function fetchLatestRelease(): Promise<{
   body: string;
   html_url: string;
   assets: Array<{ name: string; browser_download_url: string; size: number }>;
-}> {
+} | null> {
   return new Promise((resolve, reject) => {
     const req = https.get(
       RELEASES_API_URL,
@@ -128,6 +128,10 @@ function fetchLatestRelease(): Promise<{
         },
       },
       (res) => {
+        if (res.statusCode === 404) {
+          resolve(null);
+          return;
+        }
         if (res.statusCode !== 200) {
           reject(new Error(`GitHub API returned status ${res.statusCode}`));
           return;
@@ -163,6 +167,10 @@ export async function checkForUpdate(): Promise<UpdateInfo | null> {
   log.info(LOG_UPDATER_CHECKING, 'current:', currentVersion);
 
   const release = await fetchLatestRelease();
+  if (!release) {
+    log.info(LOG_UPDATER_NOT_AVAILABLE);
+    return null;
+  }
   const remoteVersion = release.tag_name.replace(/^v/, '');
 
   if (compareVersions(remoteVersion, currentVersion) <= 0) {

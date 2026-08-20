@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Powered by"
+    "poweredBy": "Powered by",
+    "checkingForUpdates": "Checking for updates...",
+    "updateAvailable": "Update available: v{{version}}"
   },
   "status": {
     "auto": "Auto",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Logs downloaded",
     "mediaInfoLoaded": "Media info loaded",
     "languageChanged": "Language changed to {{language}}",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "updateAvailable": "Update available: v{{version}}",
+    "updateNow": "Update Now"
   },
   "settings": {
     "title": "Settings",

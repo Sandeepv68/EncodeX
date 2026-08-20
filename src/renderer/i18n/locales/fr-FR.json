@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Propulsé par"
+    "poweredBy": "Propulsé par",
+    "checkingForUpdates": "Vérification des mises à jour...",
+    "updateAvailable": "Mise à jour disponible : v{{version}}"
   },
   "status": {
     "auto": "Automatique",
@@ -462,7 +464,9 @@
     "mediaInfoLoaded": "Informations média chargées",
     "languageChanged": "Langue changée en {{language}}",
     "cancelled": "Annulé",
-    "pathCopied": "Chemin de sortie copié dans le presse-papiers"
+    "pathCopied": "Chemin de sortie copié dans le presse-papiers",
+    "updateAvailable": "Mise à jour disponible : v{{version}}",
+    "updateNow": "Mettre à jour"
   },
   "settings": {
     "title": "Paramètres",

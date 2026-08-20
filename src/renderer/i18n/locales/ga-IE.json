@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Á thiomáint ag"
+    "poweredBy": "Á thiomáint ag",
+    "checkingForUpdates": "Ag seiceáil le haghaidh nuashonruithe...",
+    "updateAvailable": "Nuashonrú ar fáil: v{{version}}"
   },
   "status": {
     "auto": "Uathoibríoch",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Íoslódáladh na logaí",
     "mediaInfoLoaded": "Lódáladh faisnéis na meán",
     "languageChanged": "Athraíodh an teanga go {{language}}",
-    "cancelled": "Cealaithe"
+    "cancelled": "Cealaithe",
+    "updateAvailable": "Nuashonrú ar fáil: v{{version}}",
+    "updateNow": "Nuashonraigh anois"
   },
   "settings": {
     "title": "Socruithe",

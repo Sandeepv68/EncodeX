@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Kynt undir"
+    "poweredBy": "Kynt undir",
+    "checkingForUpdates": "Athuga uppfærslur...",
+    "updateAvailable": "Uppfærsla tiltæk: v{{version}}"
   },
   "status": {
     "auto": "Sjálfvirkt",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Annálar sóttir",
     "mediaInfoLoaded": "Miðlaupplýsingar hlaðnar",
     "languageChanged": "Tungumáli var skipt í {{language}}",
-    "cancelled": "Hætt við"
+    "cancelled": "Hætt við",
+    "updateAvailable": "Uppfærsla tiltæk: v{{version}}",
+    "updateNow": "Uppfæra núna"
   },
   "settings": {
     "title": "Stillingar",

@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "ขับเคลื่อนโดย"
+    "poweredBy": "ขับเคลื่อนโดย",
+    "checkingForUpdates": "กำลังตรวจสอบการอัปเดต...",
+    "updateAvailable": "มีการอัปเดต: v{{version}}"
   },
   "status": {
     "auto": "อัตโนมัติ",
@@ -462,7 +464,9 @@
     "logsDownloaded": "ดาวน์โหลดบันทึกแล้ว",
     "mediaInfoLoaded": "โหลดข้อมูลสื่อแล้ว",
     "languageChanged": "เปลี่ยนภาษาเป็น {{language}}",
-    "cancelled": "ยกเลิกแล้ว"
+    "cancelled": "ยกเลิกแล้ว",
+    "updateAvailable": "มีการอัปเดต: v{{version}}",
+    "updateNow": "อัปเดตตอนนี้"
   },
   "settings": {
     "title": "การตั้งค่า",

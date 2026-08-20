@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "බල ගැන්වෙන්නේ"
+    "poweredBy": "බල ගැන්වෙන්නේ",
+    "checkingForUpdates": "යාවත්කාලීන පරීක්ෂා කරමින්...",
+    "updateAvailable": "යාවත්කාලීනයක් ඇත: v{{version}}"
   },
   "status": {
     "auto": "ස්වයංක්‍රීය",
@@ -462,7 +464,9 @@
     "logsDownloaded": "ලොග බාගත කරන ලදී",
     "mediaInfoLoaded": "මාධ්‍ය තොරතුරු පූරණය විය",
     "languageChanged": "භාෂාව {{language}} ලෙස වෙනස් කරන ලදී",
-    "cancelled": "අවලංගු කරන ලදී"
+    "cancelled": "අවලංගු කරන ලදී",
+    "updateAvailable": "යාවත්කාලීනයක් ඇත: v{{version}}",
+    "updateNow": "දැන් යාවත්කාලීන කරන්න"
   },
   "settings": {
     "title": "සැකසුම්",

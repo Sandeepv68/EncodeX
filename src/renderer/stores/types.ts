@@ -125,6 +125,7 @@ export interface Toast {
   message: string;
   detail?: string;
   duration?: number;
+  action?: { label: string; onClick: () => void };
 }
 
 /**
@@ -142,12 +143,12 @@ export interface Toast {
  */
 export interface ToastState {
   toasts: Toast[];
-  addToast: (type: ToastType, message: string, detail?: string, duration?: number) => void;
+  addToast: (type: ToastType, message: string, detail?: string, duration?: number, action?: { label: string; onClick: () => void }) => void;
   removeToast: (id: string) => void;
-  success: (message: string, detail?: string, duration?: number) => void;
-  error: (message: string, detail?: string, duration?: number) => void;
-  warning: (message: string, detail?: string, duration?: number) => void;
-  info: (message: string, detail?: string, duration?: number) => void;
+  success: (message: string, detail?: string, duration?: number, action?: { label: string; onClick: () => void }) => void;
+  error: (message: string, detail?: string, duration?: number, action?: { label: string; onClick: () => void }) => void;
+  warning: (message: string, detail?: string, duration?: number, action?: { label: string; onClick: () => void }) => void;
+  info: (message: string, detail?: string, duration?: number, action?: { label: string; onClick: () => void }) => void;
 }
 
 /**

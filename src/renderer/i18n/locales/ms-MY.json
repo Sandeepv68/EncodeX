@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Dikuasakan oleh"
+    "poweredBy": "Dikuasakan oleh",
+    "checkingForUpdates": "Menyemak kemas kini...",
+    "updateAvailable": "Kemas kini tersedia: v{{version}}"
   },
   "status": {
     "auto": "Automatik",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Log dimuat turun",
     "mediaInfoLoaded": "Maklumat media dimuat",
     "languageChanged": "Bahasa ditukar kepada {{language}}",
-    "cancelled": "Dibatalkan"
+    "cancelled": "Dibatalkan",
+    "updateAvailable": "Kemas kini tersedia: v{{version}}",
+    "updateNow": "Kemas kini sekarang"
   },
   "settings": {
     "title": "Tetapan",

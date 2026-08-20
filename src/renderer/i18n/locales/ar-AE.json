@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "مدعوم بواسطة"
+    "poweredBy": "مدعوم بواسطة",
+    "checkingForUpdates": "جارٍ التحقق من التحديثات...",
+    "updateAvailable": "تحديث متاح: v{{version}}"
   },
   "status": {
     "auto": "تلقائي",
@@ -462,7 +464,9 @@
     "mediaInfoLoaded": "تم تحميل معلومات الوسائط",
     "languageChanged": "تم تغيير اللغة إلى {{language}}",
     "cancelled": "تم الإلغاء",
-    "pathCopied": "تم نسخ مسار الإخراج إلى الحافظة"
+    "pathCopied": "تم نسخ مسار الإخراج إلى الحافظة",
+    "updateAvailable": "تحديث متاح: v{{version}}",
+    "updateNow": "تحديث الآن"
   },
   "settings": {
     "title": "الإعدادات",

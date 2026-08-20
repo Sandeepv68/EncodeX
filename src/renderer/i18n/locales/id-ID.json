@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Didukung oleh"
+    "poweredBy": "Didukung oleh",
+    "checkingForUpdates": "Memeriksa pembaruan...",
+    "updateAvailable": "Pembaruan tersedia: v{{version}}"
   },
   "status": {
     "auto": "Otomatis",
@@ -462,7 +464,9 @@
     "mediaInfoLoaded": "Info media dimuat",
     "languageChanged": "Bahasa diubah menjadi {{language}}",
     "cancelled": "Dibatalkan",
-    "pathCopied": "Jalur output disalin ke clipboard"
+    "pathCopied": "Jalur output disalin ke clipboard",
+    "updateAvailable": "Pembaruan tersedia: v{{version}}",
+    "updateNow": "Perbarui sekarang"
   },
   "settings": {
     "title": "Pengaturan",

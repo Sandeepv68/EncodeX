@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "技術提供"
+    "poweredBy": "技術提供",
+    "checkingForUpdates": "更新を確認中...",
+    "updateAvailable": "アップデートがあります: v{{version}}"
   },
   "status": {
     "auto": "自動",
@@ -462,7 +464,9 @@
     "mediaInfoLoaded": "メディア情報を読み込みました",
     "languageChanged": "言語を{{language}}に変更しました",
     "cancelled": "キャンセル",
-    "pathCopied": "出力パスをクリップボードにコピーしました"
+    "pathCopied": "出力パスをクリップボードにコピーしました",
+    "updateAvailable": "アップデートがあります: v{{version}}",
+    "updateNow": "今すぐ更新"
   },
   "settings": {
     "title": "設定",

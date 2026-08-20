@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Працює на"
+    "poweredBy": "Працює на",
+    "checkingForUpdates": "Перевірка оновлень...",
+    "updateAvailable": "Доступне оновлення: v{{version}}"
   },
   "status": {
     "auto": "Авто",
@@ -462,7 +464,9 @@
     "mediaInfoLoaded": "Інформацію про медіа завантажено",
     "languageChanged": "Мову змінено на {{language}}",
     "cancelled": "Скасовано",
-    "pathCopied": "Шлях виведення скопійовано в буфер обміну"
+    "pathCopied": "Шлях виведення скопійовано в буфер обміну",
+    "updateAvailable": "Доступне оновлення: v{{version}}",
+    "updateNow": "Оновити зараз"
   },
   "settings": {
     "title": "Налаштування",

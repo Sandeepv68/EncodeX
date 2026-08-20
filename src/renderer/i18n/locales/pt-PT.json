@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Desenvolvido por"
+    "poweredBy": "Desenvolvido por",
+    "checkingForUpdates": "A verificar atualizações...",
+    "updateAvailable": "Atualização disponível: v{{version}}"
   },
   "status": {
     "auto": "Automático",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Registos transferidos",
     "mediaInfoLoaded": "Informações da mídia carregadas",
     "languageChanged": "Idioma alterado para {{language}}",
-    "cancelled": "Cancelado"
+    "cancelled": "Cancelado",
+    "updateAvailable": "Atualização disponível: v{{version}}",
+    "updateNow": "Atualizar agora"
   },
   "settings": {
     "title": "Definições",

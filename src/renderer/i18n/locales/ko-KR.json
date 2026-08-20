@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "제공"
+    "poweredBy": "제공",
+    "checkingForUpdates": "업데이트 확인 중...",
+    "updateAvailable": "업데이트 가능: v{{version}}"
   },
   "status": {
     "auto": "자동",
@@ -462,7 +464,9 @@
     "mediaInfoLoaded": "미디어 정보가 로드되었습니다",
     "languageChanged": "언어가 {{language}}(으)로 변경되었습니다",
     "cancelled": "취소됨",
-    "pathCopied": "출력 경로가 클립보드에 복사되었습니다"
+    "pathCopied": "출력 경로가 클립보드에 복사되었습니다",
+    "updateAvailable": "업데이트 가능: v{{version}}",
+    "updateNow": "지금 업데이트"
   },
   "settings": {
     "title": "설정",

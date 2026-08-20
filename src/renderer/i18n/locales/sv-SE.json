@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Drivs av"
+    "poweredBy": "Drivs av",
+    "checkingForUpdates": "Söker efter uppdateringar...",
+    "updateAvailable": "Uppdatering tillgänglig: v{{version}}"
   },
   "status": {
     "auto": "Automatiskt",
@@ -462,7 +464,9 @@
     "mediaInfoLoaded": "Mediainfo inläst",
     "languageChanged": "Språk ändrat till {{language}}",
     "cancelled": "Avbruten",
-    "pathCopied": "Utmatningssökvägen kopierad till urklipp"
+    "pathCopied": "Utmatningssökvägen kopierad till urklipp",
+    "updateAvailable": "Uppdatering tillgänglig: v{{version}}",
+    "updateNow": "Uppdatera nu"
   },
   "settings": {
     "title": "Inställningar",

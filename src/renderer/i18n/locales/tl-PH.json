@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Pinapatakbo ng"
+    "poweredBy": "Pinapatakbo ng",
+    "checkingForUpdates": "Tinitingnan ang mga update...",
+    "updateAvailable": "May bagong update: v{{version}}"
   },
   "status": {
     "auto": "Auto",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Na-download ang logs",
     "mediaInfoLoaded": "Na-load ang impormasyon ng media",
     "languageChanged": "Pinalitan ang wika sa {{language}}",
-    "cancelled": "Kinansela"
+    "cancelled": "Kinansela",
+    "updateAvailable": "May bagong update: v{{version}}",
+    "updateNow": "I-update na"
   },
   "settings": {
     "title": "Mga Setting",
