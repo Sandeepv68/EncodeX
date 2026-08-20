@@ -58,7 +58,30 @@ See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, support
 - [Node.js](https://nodejs.org/) 20+
 - [FFmpeg](https://ffmpeg.org/) — bundled via `ffmpeg-static`; falls back to system `ffmpeg` if the bundled binary is unavailable
 
-## 🚀 Install
+## 📥 Downloads
+
+Pre-built installers are available on the [Releases](https://github.com/Sandeepv68/EncodeX/releases) page.
+
+### macOS
+
+> EncodeX is not code-signed (no Apple Developer account). macOS Gatekeeper will block the app on first open.
+
+**Option 1 — Right-click to open:**
+
+1. Right-click (or Control-click) the EncodeX app and select **Open**
+2. Click **Open** in the confirmation dialog
+
+**Option 2 — Remove quarantine via Terminal:**
+
+```bash
+xattr -cr /Applications/EncodeX.app
+```
+
+### Windows / Linux
+
+Download the `.exe` (Windows) or `.AppImage` (Linux) installer from the [Releases](https://github.com/Sandeepv68/EncodeX/releases) page and run it.
+
+## 🚀 Install (from source)
 
 ```bash
 npm install
