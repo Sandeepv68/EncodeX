@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useToastStore } from '../toastStore';
 
 describe('toastStore', () => {
@@ -21,6 +21,19 @@ describe('toastStore', () => {
     expect(toasts[0].duration).toBe(3000);
   });
 
+  it('addToast stores action when provided', () => {
+    const onClick = vi.fn();
+    useToastStore.getState().addToast('info', 'Update', undefined, undefined, { label: 'Update Now', onClick });
+    const toast = useToastStore.getState().toasts[0];
+    expect(toast.action).toEqual({ label: 'Update Now', onClick });
+  });
+
+  it('addToast sets action to undefined when not provided', () => {
+    useToastStore.getState().addToast('info', 'No action');
+    const toast = useToastStore.getState().toasts[0];
+    expect(toast.action).toBeUndefined();
+  });
+
   it('appends multiple toasts in order', () => {
     useToastStore.getState().addToast('info', 'one');
     useToastStore.getState().addToast('warning', 'two');
@@ -41,5 +54,12 @@ describe('toastStore', () => {
     warning('warn');
     info('note');
     expect(useToastStore.getState().toasts.map((t) => t.type)).toEqual(['success', 'error', 'warning', 'info']);
+  });
+
+  it('convenience helpers pass action through', () => {
+    const onClick = vi.fn();
+    useToastStore.getState().info('msg', undefined, 5000, { label: 'Go', onClick });
+    const toast = useToastStore.getState().toasts[0];
+    expect(toast.action).toEqual({ label: 'Go', onClick });
   });
 });

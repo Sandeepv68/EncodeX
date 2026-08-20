@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Pissusianit"
+    "poweredBy": "Pissusianit",
+    "checkingForUpdates": "Kontrollerit minusqaat...",
+    "updateAvailable": "Minusqaat princessaluarpoq: v{{version}}"
   },
   "status": {
     "auto": "Automatisk",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Allaaserisat nuiaatinneqarput",
     "mediaInfoLoaded": "Media info ilaneqarpoq",
     "languageChanged": "Oqaatsit {{language}}-imut allanngortinneqarput",
-    "cancelled": "Piumasuunngineqarpoq"
+    "cancelled": "Piumasuunngineqarpoq",
+    "updateAvailable": "Minusqaat princessaluarpoq: v{{version}}",
+    "updateNow": "Minusqigivit nuannillit"
   },
   "settings": {
     "title": "Inissiissutit",

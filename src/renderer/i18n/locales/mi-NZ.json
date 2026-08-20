@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Hangaia e"
+    "poweredBy": "Hangaia e",
+    "checkingForUpdates": "E tiaki ana i nga whakamāoritanga...",
+    "updateAvailable": "Kei te wātea he whakamāoritanga: v{{version}}"
   },
   "status": {
     "auto": "Aunoa",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Kua tangohia ngā rārangi kōrero",
     "mediaInfoLoaded": "Kua utaina ngā pārongo pāpāho",
     "languageChanged": "Kua huri te reo ki {{language}}",
-    "cancelled": "Kua whakakore"
+    "cancelled": "Kua whakakore",
+    "updateAvailable": "Kei te wātea he whakamāoritanga: v{{version}}",
+    "updateNow": "Whakamāoritia ināianei"
   },
   "settings": {
     "title": "Tautuhinga",

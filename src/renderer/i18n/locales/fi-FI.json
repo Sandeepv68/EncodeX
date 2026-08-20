@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Voimanlähteenä"
+    "poweredBy": "Voimanlähteenä",
+    "checkingForUpdates": "Tarkistetaan päivityksiä...",
+    "updateAvailable": "Päivitys saatavilla: v{{version}}"
   },
   "status": {
     "auto": "Automaattinen",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Lokit ladattu",
     "mediaInfoLoaded": "Mediatiedot ladattu",
     "languageChanged": "Kieli vaihdettu {{language}}-kieleksi",
-    "cancelled": "Peruutettu"
+    "cancelled": "Peruutettu",
+    "updateAvailable": "Päivitys saatavilla: v{{version}}",
+    "updateNow": "Päivitä nyt"
   },
   "settings": {
     "title": "Asetukset",

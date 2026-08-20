@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Работает на"
+    "poweredBy": "Работает на",
+    "checkingForUpdates": "Проверка обновлений...",
+    "updateAvailable": "Доступно обновление: v{{version}}"
   },
   "status": {
     "auto": "Авто",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Журналы скачаны",
     "mediaInfoLoaded": "Информация о медиа загружена",
     "languageChanged": "Язык изменён на {{language}}",
-    "cancelled": "Отменено"
+    "cancelled": "Отменено",
+    "updateAvailable": "Доступно обновление: v{{version}}",
+    "updateNow": "Обновить сейчас"
   },
   "settings": {
     "title": "Настройки",

@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Được hỗ trợ bởi"
+    "poweredBy": "Được hỗ trợ bởi",
+    "checkingForUpdates": "Đang kiểm tra bản cập nhật...",
+    "updateAvailable": "Có bản cập nhật: v{{version}}"
   },
   "status": {
     "auto": "Tự động",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Nhật ký đã được tải xuống",
     "mediaInfoLoaded": "Thông tin phương tiện đã được tải",
     "languageChanged": "Ngôn ngữ đã được chuyển sang {{language}}",
-    "cancelled": "Đã hủy"
+    "cancelled": "Đã hủy",
+    "updateAvailable": "Có bản cập nhật: v{{version}}",
+    "updateNow": "Cập nhật ngay"
   },
   "settings": {
     "title": "Cài đặt",

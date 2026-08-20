@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import { FOOTER_HEIGHT } from '../../shared/app-constants';
 
 export const FooterBox = styled('footer')(({ theme }) => ({
@@ -19,6 +19,12 @@ export const FooterBox = styled('footer')(({ theme }) => ({
 
 export const FooterVersionText = styled(Typography)({ fontWeight: 'bold' });
 
+export const FooterLeft = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.75),
+}));
+
 export const FooterRight = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -26,3 +32,19 @@ export const FooterRight = styled(Box)(({ theme }) => ({
 }));
 
 export const FfmpegBanner = styled('img')(({ theme }) => ({ height: theme.typography.pxToRem(30) }));
+
+export const UpdateLoader = styled(CircularProgress)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  width: theme.typography.pxToRem(14),
+  height: theme.typography.pxToRem(14),
+}));
+
+export const UpdateLink = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  color: theme.palette.primary.main,
+  cursor: 'pointer',
+  fontSize: theme.typography.pxToRem(11),
+  '&:hover': {
+    textDecoration: 'underline',
+  },
+}));

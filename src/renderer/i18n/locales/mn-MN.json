@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Идэвхжүүлсэн"
+    "poweredBy": "Идэвхжүүлсэн",
+    "checkingForUpdates": "Шинэчлэлт шалгаж байна...",
+    "updateAvailable": "Шинэчлэлт боломжтой: v{{version}}"
   },
   "status": {
     "auto": "Авто",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Лог татагдсан",
     "mediaInfoLoaded": "Медиа мэдээлэл ачаалагдсан",
     "languageChanged": "Хэл {{language}} болж өөрчлөгдсөн",
-    "cancelled": "Цуцлагдсан"
+    "cancelled": "Цуцлагдсан",
+    "updateAvailable": "Шинэчлэлт боломжтой: v{{version}}",
+    "updateNow": "Одоо шинэчлэх"
   },
   "settings": {
     "title": "Тохиргоо",

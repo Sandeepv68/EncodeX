@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "מופעל על ידי"
+    "poweredBy": "מופעל על ידי",
+    "checkingForUpdates": "בודק עדכונים...",
+    "updateAvailable": "עדכון זמין: v{{version}}"
   },
   "status": {
     "auto": "אוטומטי",
@@ -462,7 +464,9 @@
     "logsDownloaded": "היומנים הורדו",
     "mediaInfoLoaded": "מידע המדיה נטען",
     "languageChanged": "השפה שונתה ל-{{language}}",
-    "cancelled": "בוטל"
+    "cancelled": "בוטל",
+    "updateAvailable": "עדכון זמין: v{{version}}",
+    "updateNow": "עדכן עכשיו"
   },
   "settings": {
     "title": "הגדרות",

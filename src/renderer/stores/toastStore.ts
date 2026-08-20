@@ -45,9 +45,9 @@ export const useToastStore = create<ToastState>((set, get) => ({
    * @param {string} [detail] - Optional secondary detail line.
    * @param {number} [duration] - Optional display duration in milliseconds.
    */
-  addToast: (type, message, detail, duration) => {
+  addToast: (type, message, detail, duration, action) => {
     const id = `toast-${++counter}`;
-    const toast: Toast = { id, type, message, detail, duration };
+    const toast: Toast = { id, type, message, detail, duration, action };
     set((s) => ({ toasts: [...s.toasts, toast] }));
   },
   /**
@@ -63,26 +63,26 @@ export const useToastStore = create<ToastState>((set, get) => ({
    * @param {string} [detail] - Optional secondary detail line.
    * @param {number} [duration] - Optional display duration in milliseconds.
    */
-  success: (message, detail, duration) => get().addToast('success', message, detail, duration),
+  success: (message, detail, duration, action) => get().addToast('success', message, detail, duration, action),
   /**
    * Adds an 'error' toast.
    * @param {string} message - The main toast text.
    * @param {string} [detail] - Optional secondary detail line.
    * @param {number} [duration] - Optional display duration in milliseconds.
    */
-  error: (message, detail, duration) => get().addToast('error', message, detail, duration),
+  error: (message, detail, duration, action) => get().addToast('error', message, detail, duration, action),
   /**
    * Adds a 'warning' toast.
    * @param {string} message - The main toast text.
    * @param {string} [detail] - Optional secondary detail line.
    * @param {number} [duration] - Optional display duration in milliseconds.
    */
-  warning: (message, detail, duration) => get().addToast('warning', message, detail, duration),
+  warning: (message, detail, duration, action) => get().addToast('warning', message, detail, duration, action),
   /**
    * Adds an 'info' toast.
    * @param {string} message - The main toast text.
    * @param {string} [detail] - Optional secondary detail line.
    * @param {number} [duration] - Optional display duration in milliseconds.
    */
-  info: (message, detail, duration) => get().addToast('info', message, detail, duration),
+  info: (message, detail, duration, action) => get().addToast('info', message, detail, duration, action),
 }));

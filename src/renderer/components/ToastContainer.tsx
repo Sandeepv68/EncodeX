@@ -12,7 +12,7 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { Snackbar } from '@mui/material';
+import { Snackbar, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useToastStore } from '../stores/toastStore';
 import type { Toast } from '../stores/types';
@@ -101,7 +101,26 @@ export default function ToastContainer() {
       }}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
-      <ToastAlert onClose={handleClose} severity={active.type} variant="filled">
+      <ToastAlert
+        onClose={handleClose}
+        severity={active.type}
+        variant="filled"
+        action={
+          active.action && (
+            <Button
+              color="inherit"
+              size="small"
+              onClick={() => {
+                active.action!.onClick();
+                handleClose();
+              }}
+              sx={{ fontWeight: 600 }}
+            >
+              {active.action.label}
+            </Button>
+          )
+        }
+      >
         <ToastMessage>{active.message}</ToastMessage>
         {active.detail && <ToastDetail>{active.detail}</ToastDetail>}
       </ToastAlert>

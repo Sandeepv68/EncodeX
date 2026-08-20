@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "由以下技術提供支援"
+    "poweredBy": "由以下技術提供支援",
+    "checkingForUpdates": "正在檢查更新...",
+    "updateAvailable": "有可用更新: v{{version}}"
   },
   "status": {
     "auto": "自動",
@@ -462,7 +464,9 @@
     "logsDownloaded": "記錄已下載",
     "mediaInfoLoaded": "媒體資訊已載入",
     "languageChanged": "語言已變更為 {{language}}",
-    "cancelled": "已取消"
+    "cancelled": "已取消",
+    "updateAvailable": "有可用更新: v{{version}}",
+    "updateNow": "立即更新"
   },
   "settings": {
     "title": "設定",

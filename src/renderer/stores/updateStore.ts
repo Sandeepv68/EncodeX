@@ -104,6 +104,10 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
 
   subscribeToEvents();
 
+  setTimeout(() => {
+    get().checkForUpdates();
+  }, 3000);
+
   return {
     status: 'idle',
     info: null,

@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Mogelijk gemaakt door"
+    "poweredBy": "Mogelijk gemaakt door",
+    "checkingForUpdates": "Controleren op updates...",
+    "updateAvailable": "Update beschikbaar: v{{version}}"
   },
   "status": {
     "auto": "Automatisch",
@@ -462,7 +464,9 @@
     "mediaInfoLoaded": "Mediainfo geladen",
     "languageChanged": "Taal gewijzigd naar {{language}}",
     "cancelled": "Geannuleerd",
-    "pathCopied": "Uitvoerpad gekopieerd naar klembord"
+    "pathCopied": "Uitvoerpad gekopieerd naar klembord",
+    "updateAvailable": "Update beschikbaar: v{{version}}",
+    "updateNow": "Nu bijwerken"
   },
   "settings": {
     "title": "Instellingen",

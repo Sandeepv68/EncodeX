@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "Aangedryf deur"
+    "poweredBy": "Aangedryf deur",
+    "checkingForUpdates": "Kontroleer vir opdaterings...",
+    "updateAvailable": "Opdatering beskikbaar: v{{version}}"
   },
   "status": {
     "auto": "Outomaties",
@@ -462,7 +464,9 @@
     "logsDownloaded": "Logs afgelaai",
     "mediaInfoLoaded": "Media-inligting gelaai",
     "languageChanged": "Taal verander na {{language}}",
-    "cancelled": "Gekanselleer"
+    "cancelled": "Gekanselleer",
+    "updateAvailable": "Opdatering beskikbaar: v{{version}}",
+    "updateNow": "Dateer nou op"
   },
   "settings": {
     "title": "Instellings",

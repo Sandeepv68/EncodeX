@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "ដំណើរការដោយ"
+    "poweredBy": "ដំណើរការដោយ",
+    "checkingForUpdates": "កំពុងពិនិត្យមើលការធ្វើបច្ចុប្បន្នភាព...",
+    "updateAvailable": "មានការធ្វើបច្ចុប្បន្នភាព: v{{version}}"
   },
   "status": {
     "auto": "ស្វ័យប្រវត្តិ",
@@ -462,7 +464,9 @@
     "logsDownloaded": "កំណត់ហេតុត្រូវបានទាញយក",
     "mediaInfoLoaded": "ព័ត៌មានមេឌៀត្រូវបានផ្ទុក",
     "languageChanged": "ភាសាត្រូវបានប្តូរទៅ {{language}}",
-    "cancelled": "បានបោះបង់"
+    "cancelled": "បានបោះបង់",
+    "updateAvailable": "មានការធ្វើបច្ចុប្បន្នភាព: v{{version}}",
+    "updateNow": "ធ្វើបច្ចុប្បន្នភាពឥឡូវនេះ"
   },
   "settings": {
     "title": "ការកំណត់",

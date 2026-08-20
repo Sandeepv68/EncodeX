@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "द्वारा संचालित"
+    "poweredBy": "द्वारा संचालित",
+    "checkingForUpdates": "अपडेट जाँच गर्दैछ...",
+    "updateAvailable": "अपडेट उपलब्ध: v{{version}}"
   },
   "status": {
     "auto": "स्वचालित",
@@ -462,7 +464,9 @@
     "logsDownloaded": "लगहरू डाउनलोड गरियो",
     "mediaInfoLoaded": "मिडिया जानकारी लोड भयो",
     "languageChanged": "भाषा {{language}} मा परिवर्तन भयो",
-    "cancelled": "रद्द गरियो"
+    "cancelled": "रद्द गरियो",
+    "updateAvailable": "अपडेट उपलब्ध: v{{version}}",
+    "updateNow": "अहिले अपडेट गर्नुहोस्"
   },
   "settings": {
     "title": "सेटिङहरू",

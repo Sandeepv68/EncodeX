@@ -445,7 +445,9 @@
   },
   "footer": {
     "version": "v{{version}}",
-    "poweredBy": "द्वारा संचालित"
+    "poweredBy": "द्वारा संचालित",
+    "checkingForUpdates": "अपडेट की जाँच हो रही है...",
+    "updateAvailable": "अपडेट उपलब्ध: v{{version}}"
   },
   "status": {
     "auto": "स्वचालित",
@@ -462,7 +464,9 @@
     "mediaInfoLoaded": "मीडिया जानकारी लोड हुई",
     "languageChanged": "भाषा बदलकर {{language}} की गई",
     "cancelled": "रद्द",
-    "pathCopied": "आउटपुट पथ क्लिपबोर्ड पर कॉपी हो गया"
+    "pathCopied": "आउटपुट पथ क्लिपबोर्ड पर कॉपी हो गया",
+    "updateAvailable": "अपडेट उपलब्ध: v{{version}}",
+    "updateNow": "अभी अपडेट करें"
   },
   "settings": {
     "title": "सेटिंग्स",
