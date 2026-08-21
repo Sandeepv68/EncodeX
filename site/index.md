@@ -38,15 +38,37 @@ features:
 
 ---
 
-## Sound Familiar? <a id="sound-familiar"></a>
+## Sound Familiar?
 
 You're not alone. These are the everyday file problems EncodeX was built to solve:
 
-- 📱 **"This video won't play on my phone!"** — Your camera, a friend, or a website gave you a file your device doesn't understand. EncodeX translates it into one that plays everywhere.
-- 📧 **"The file is too big to email."** — Email and messaging apps have size limits. EncodeX shrinks files down to fit, with barely any difference you can see or hear.
-- 🎵 **"I only want the audio from this video."** — A lecture, an interview, a song from a concert recording. EncodeX pulls the sound out and hands you a music file.
-- ⏱️ **"This video is 40 minutes long but I only need 2."** — Trim it down in seconds. No editing skills required — if you can drag a slider, you can do this.
-- 😩 **"Other apps want a subscription for this?"** — EncodeX is genuinely free. No accounts, no subscriptions, no watermarks stamped on your files.
+<div class="card-grid">
+  <div class="card">
+    <span class="card-emoji">📱</span>
+    <p class="card-head">"This video won't play on my phone!"</p>
+    <p>Your camera, a friend, or a website gave you a file your device doesn't understand. EncodeX translates it into one that plays everywhere.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">📧</span>
+    <p class="card-head">"The file is too big to email."</p>
+    <p>Email and messaging apps have size limits. EncodeX shrinks files down to fit, with barely any difference you can see or hear.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎵</span>
+    <p class="card-head">"I only want the audio from this video."</p>
+    <p>A lecture, an interview, a song from a concert recording. EncodeX pulls the sound out and hands you a music file.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⏱️</span>
+    <p class="card-head">"This video is 40 minutes long but I only need 2."</p>
+    <p>Trim it down in seconds. No editing skills required — if you can drag a slider, you can do this.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">😩</span>
+    <p class="card-head">"Other apps want a subscription for this?"</p>
+    <p>EncodeX is genuinely free. No accounts, no subscriptions, no watermarks stamped on your files.</p>
+  </div>
+</div>
 
 ## See It In Action
 
@@ -56,29 +78,30 @@ One clean home screen. Every tool one click away. If you can use a web browser, 
 
 ## What Can It Do For You?
 
-### 🎬 Play Anything, Anywhere
+<div class="card wide">
+  <h3>🎬 Play Anything, Anywhere</h3>
+  <p>Convert videos between every popular type — MP4, MKV, AVI, MOV, WebM and more. Take a video from your computer to your phone, to your TV, to grandma's ancient laptop. Just pick the device you want to watch it on, and EncodeX handles the rest.</p>
+</div>
 
-Convert videos between every popular type — MP4, MKV, AVI, MOV, WebM and more. Take a video from your computer to your phone, to your TV, to grandma's ancient laptop. Just pick the device you want to watch it on, and EncodeX handles the rest.
+<div class="card wide">
+  <h3>🎧 Turn Videos Into Music</h3>
+  <p>Drop in any video, get out an MP3. Great for lectures and study material you'd rather listen to on the go, podcasts and interviews saved as audio, or that rare song that only exists in a concert video.</p>
+</div>
 
-### 🎧 Turn Videos Into Music
+<div class="card wide">
+  <h3>✂️ Keep Only the Good Parts</h3>
+  <p>Watch the video inside EncodeX, drag two handles to mark the part you want, hit save. The timeline even shows little picture previews and sound waves so you can find the exact moment — like finding a scene by flipping through a photo album.</p>
+</div>
 
-Drop in any video, get out an MP3. Great for:
+<div class="card wide">
+  <h3>🖼️ Make Photos Lighter</h3>
+  <p>Shrink photos so they send faster, upload quicker, and take up less space on your drive — with a live preview showing exactly how the smaller version will look before you save anything.</p>
+</div>
 
-- Lectures and study material you'd rather listen to on the go
-- Podcasts and interviews saved as audio
-- That rare song that only exists in a concert video
-
-### ✂️ Keep Only the Good Parts
-
-Watch the video inside EncodeX, drag two handles to mark the part you want, hit save. The timeline even shows little picture previews and sound waves so you can find the exact moment — like finding a scene by flipping through a photo album.
-
-### 🖼️ Make Photos Lighter
-
-Shrink photos so they send faster, upload quicker, and take up less space on your drive — with a live preview showing exactly how the smaller version will look before you save anything.
-
-### 📦 Handle the Whole Folder at Once
-
-Got 30 videos from your phone, or 100 photos from an event? Drag them all in at once. EncodeX lines them up and works through them one by one while you grab a coffee. Come back to everything done — it can even shut your computer down automatically when it finishes.
+<div class="card wide">
+  <h3>📦 Handle the Whole Folder at Once</h3>
+  <p>Got 30 videos from your phone, or 100 photos from an event? Drag them all in at once. EncodeX lines them up and works through them one by one while you grab a coffee. Come back to everything done — it can even shut your computer down automatically when it finishes.</p>
+</div>
 
 ## Why People Love EncodeX
 
@@ -86,25 +109,71 @@ Got 30 videos from your phone, or 100 photos from an event? Drag them all in at 
 EncodeX is open-source software built by a community of volunteers. There is no paid version you'll be nagged to upgrade to, because there's nothing to upgrade — everything is included.
 :::
 
-- 🔒 **Your files stay yours.** Everything happens on your own computer. Nothing is uploaded anywhere, ever. No accounts, no sign-ups, no tracking.
-- 🚫 **No watermarks.** Your converted files come out clean, without logos stamped across them.
-- 🌍 **Speaks your language.** Available in 35+ languages, from Spanish and Hindi to Arabic and Japanese.
-- 🌙 **Easy on the eyes.** Light and dark modes that follow your system automatically.
-- 🪶 **No clutter.** One window, clear buttons, plain-language options. Nothing to learn, nothing to configure.
-- 🔄 **Stays up to date by itself.** When there's a new version, EncodeX offers to update itself — you don't have to download anything again.
+<div class="card-grid">
+  <div class="card">
+    <span class="card-emoji">🔒</span>
+    <p class="card-head">Your files stay yours</p>
+    <p>Everything happens on your own computer. Nothing is uploaded anywhere, ever. No accounts, no sign-ups, no tracking.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🚫</span>
+    <p class="card-head">No watermarks</p>
+    <p>Your converted files come out clean, without logos stamped across them.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🌍</span>
+    <p class="card-head">Speaks your language</p>
+    <p>Available in 35+ languages, from Spanish and Hindi to Arabic and Japanese.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🌙</span>
+    <p class="card-head">Easy on the eyes</p>
+    <p>Light and dark modes that follow your system automatically.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🪶</span>
+    <p class="card-head">No clutter</p>
+    <p>One window, clear buttons, plain-language options. Nothing to learn, nothing to configure.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🔄</span>
+    <p class="card-head">Stays up to date by itself</p>
+    <p>When there's a new version, EncodeX offers to update itself — you don't have to download anything again.</p>
+  </div>
+</div>
 
 ## Who Is It For?
 
-| | |
-|---|---|
-| 👨‍👩‍👧 **Families** | Make home videos play on the TV, shrink photos before sharing them in the family group chat |
-| 🎓 **Students** | Turn recorded lectures into audio notes, trim long recordings down to what matters |
-| 🎥 **Content creators** | Prepare clips in the right format, cut highlights, extract sounds |
-| 💼 **Offices** | Batch-convert training videos and documents-heavy media folders overnight |
-| 🧓 **Everyone else** | If "file format" sounds like jargon to you — this app was made exactly for you |
+<div class="card-grid">
+  <div class="card">
+    <span class="card-emoji">👨‍👩‍👧</span>
+    <p class="card-head">Families</p>
+    <p>Make home videos play on the TV, shrink photos before sharing them in the family group chat.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎓</span>
+    <p class="card-head">Students</p>
+    <p>Turn recorded lectures into audio notes, trim long recordings down to what matters.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎥</span>
+    <p class="card-head">Content creators</p>
+    <p>Prepare clips in the right format, cut highlights, extract sounds.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">💼</span>
+    <p class="card-head">Offices</p>
+    <p>Batch-convert training videos and media-heavy folders overnight.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🧓</span>
+    <p class="card-head">Everyone else</p>
+    <p>If "file format" sounds like jargon to you — this app was made exactly for you.</p>
+  </div>
+</div>
 
-## Ready to Try It?
-
-It takes about two minutes to install, and it's free forever.
-
-**[⬇️ Download EncodeX Now](/download)** · [Take the Full Tour](/features)
+<div class="cta-card">
+  <h2>Ready to Try It?</h2>
+  <p>It takes about two minutes to install, and it's free forever.</p>
+  <p><strong><a href="/download">⬇️ Download EncodeX Now</a></strong> · <a href="/features">Take the Full Tour</a></p>
+</div>

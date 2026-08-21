@@ -61,10 +61,6 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/Sandeepv68/EncodeX' },
     ],
-    footer: {
-      message: 'Made with \u2764\uFE0F — Released under the MIT License.',
-      copyright: `Copyright \u00a9 ${new Date().getFullYear()} EncodeX Contributors`,
-    },
     search: {
       provider: 'local',
     },
