@@ -24,7 +24,11 @@ export default defineConfig({
       {
         text: 'Docs',
         items: [
-          { text: 'Architecture', link: '/docs/architecture' },
+          { text: 'Architecture Overview', link: '/docs/architecture' },
+          { text: 'Processes & Startup', link: '/docs/architecture-processes' },
+          { text: 'Transcoders', link: '/docs/architecture-transcoders' },
+          { text: 'Renderer & State', link: '/docs/architecture-renderer' },
+          { text: 'Feature Reference', link: '/docs/features-reference' },
           { text: 'CLI Usage', link: '/docs/cli' },
           { text: 'IPC Channels', link: '/docs/ipc' },
           { text: 'Testing', link: '/docs/testing' },
@@ -38,9 +42,18 @@ export default defineConfig({
     sidebar: {
       '/docs/': [
         {
-          text: 'Documentation',
+          text: 'Architecture',
           items: [
-            { text: 'Architecture', link: '/docs/architecture' },
+            { text: 'Overview', link: '/docs/architecture' },
+            { text: 'Processes & Startup', link: '/docs/architecture-processes' },
+            { text: 'Transcoders', link: '/docs/architecture-transcoders' },
+            { text: 'Renderer & State', link: '/docs/architecture-renderer' },
+          ],
+        },
+        {
+          text: 'Reference',
+          items: [
+            { text: 'Feature Reference', link: '/docs/features-reference' },
             { text: 'CLI Usage', link: '/docs/cli' },
             { text: 'IPC Channels', link: '/docs/ipc' },
             { text: 'Testing', link: '/docs/testing' },

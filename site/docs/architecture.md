@@ -20,16 +20,21 @@ The full architecture is split into focused documents:
 
 | Document | Topics |
 |----------|--------|
-| [Processes, Build System & Startup](/docs/architecture#processes-build-system-startup) | Process model (main/preload/renderer/shared), build system, binary resolution, startup sequence, CLI mode |
-| [Transcoder Abstraction & Conversion](/docs/architecture#transcoder-abstraction-conversion) | `ITranscoder` interface, FfmpegCore / FFToolCore / BmfCore, shared flag building, hardware acceleration |
-| [Renderer, State & Subsystems](/docs/architecture#renderer-state-subsystems) | Render tree, pages, hooks, Zustand stores, batch queue, video player, timeline media, image processing |
+| [Processes, Build System & Startup](/docs/architecture-processes) | Process model (main/preload/renderer/shared), build system, binary resolution, startup sequence, CLI mode, shared code layer |
+| [Transcoder Abstraction & Conversion](/docs/architecture-transcoders) | `ITranscoder` interface, FfmpegCore / FFToolCore / BmfCore, shared flag building, hardware acceleration, media probing, conversion flow |
+| [Renderer, State & Subsystems](/docs/architecture-renderer) | Render tree, pages, hooks, Zustand stores, batch queue, video player, timeline media, image processing, error handling, logging, i18n, theming, data flow reference |
 
 ## Additional Documentation
 
 | Document | Topics |
 |----------|--------|
+| [Feature Reference](/docs/features-reference) | Features, supported media formats, codec tables, validation utilities |
 | [CLI Usage](/docs/cli) | CLI usage, subcommands, all option tables |
 | [IPC Channels](/docs/ipc) | IPC channels (request/send-only/events), electronAPI bridge |
 | [Testing](/docs/testing) | Test suite (123 files, 1603 tests), test setup, E2E specs |
 | [Project Structure](/docs/project-structure) | Full directory tree with annotations |
 | [Update Manager](/docs/update-manager) | In-app update manager implementation |
+
+## Repository
+
+The complete source of truth lives in the repo's [`docs/` folder](https://github.com/Sandeepv68/EncodeX/tree/main/docs). For a project overview, install steps, and contributing guide, see the [README on GitHub](https://github.com/Sandeepv68/EncodeX).
