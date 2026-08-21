@@ -1,0 +1,59 @@
+name: Deploy Site
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'site/**'
+      - 'scripts/generate-blog.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: 22
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Copy images to site/public/images
+        run: |
+          cp assets/banner.png site/public/images/banner.png 2>/dev/null || true
+          cp assets/icons/AppIcon.icon/Assets/icon.png site/public/images/icon.png 2>/dev/null || true
+          cp assets/stack.png site/public/images/stack.png 2>/dev/null || true
+      - name: Generate blog posts from releases
+        run: node scripts/generate-blog.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build site
+        run: npm run docs:build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/.vitepress/dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
