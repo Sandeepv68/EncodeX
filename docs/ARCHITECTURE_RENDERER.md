@@ -46,11 +46,11 @@ Stores are the single place UI state changes; components subscribe with `useXSto
 
 ## 📋 Batch Queue
 
-`src/main/queue/job-queue.ts` is a serial FIFO processor extending `EventEmitter`:
+`src/main/queue/job-queue.ts` is a concurrency-capped FIFO processor extending `EventEmitter`:
 
 - `addJob` assigns a `randomUUID`, pushes a `QueueJob` (status `QUEUED`, progress 0), emits `added`, and kicks `processNext()`.
-- `processNext()` is guarded by a `running` flag so only one job executes at a time. It flips the job to `RUNNING`, creates a transcoder, wires `progress`/`error`/`end`, and on terminal states resets state and calls `processNext()` to advance the queue.
-- `cancelJob` cancels the active job's transcoder (if it is the current job) and removes it; `cancelAll` cancels the current transcoder, clears the queue, and emits `cancelled`.
+- `processNext()` is the only place jobs are started: it launches new `QUEUED` jobs while fewer than `concurrency` conversions are in flight (tracked by `activeJobs`), so at most `concurrency` (1–4) jobs run in parallel. Each started job flips to `RUNNING`, gets a transcoder from the factory, and has `progress`/`error`/`end` wired; on terminal states the job's slot is released and `processNext()` refills it. Changing the concurrency cap mid-run refills currently queued slots.
+- `cancelJob` cancels a job's transcoder and removes it; `cancelAll` cancels every active transcoder, clears the queue, and emits `cancelled`. The queue also supports pause/resume, move-to reordering, option editing for queued jobs, export/import, clear-completed, when-done power actions, and durable persistence to `queue-state.json` (`src/main/queue/persistence.ts`).
 
 The IPC layer (`ipc/queue.ts`) simply forwards queue events to the renderer over `queue-added`, `queue-removed`, `queue-status-change`, `queue-progress`, and `queue-cancelled`, and the `queueStore` mirrors them into React state.
 

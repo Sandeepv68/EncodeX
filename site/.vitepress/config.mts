@@ -3,14 +3,15 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'EncodeX',
   description: 'A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron',
-  base: '/EncodeX/',
+  base: '/',
   head: [
-    ['link', { rel: 'icon', href: '/EncodeX/images/icon.png' }],
+    ['link', { rel: 'icon', href: '/images/icon.png' }],
     ['meta', { name: 'theme-color', content: '#47848F' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'EncodeX' }],
     ['meta', { property: 'og:description', content: 'A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron' }],
-    ['meta', { property: 'og:image', content: '/EncodeX/images/banner.png' }],
+    ['meta', { property: 'og:image', content: 'https://encodex.in/images/banner.png' }],
+    ['meta', { property: 'og:url', content: 'https://encodex.in/' }],
   ],
   themeConfig: {
     logo: '/images/icon.png',

@@ -40,13 +40,17 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 - **🔄 Media Conversion** — 51 video codecs, 27 audio codecs, 56 pixel formats with codec/bitrate/scale/quality controls
 - **⚡ Hardware Acceleration** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation
 - **✂️ Video Cutting** — Frame-accurate trimming with a built-in player (rawvideo + PCM pipes, Canvas + Web Audio) and zoomable timeline (waveform + thumbnail montage)
-- **📋 Batch Queue** — Serial FIFO processor with real-time progress, per-job errors, cancel-all, status filters
+- **📋 Batch Queue** — Parallel processing (up to 4 concurrent jobs) with real-time progress, per-job errors, pause/resume, drag-and-drop reordering, job option editing, status filters, JSON export/import, and when-done power actions (shutdown/sleep/hibernate)
 - **🖼️ Image Compression** — JPEG/PNG/WebP/BMP/GIF/TIFF with quality/scale, EXIF viewer, RGB/luma histograms
 - **🎵 Audio Extraction** — Any of 27 audio codecs from any video file
 - **ℹ️ Media Info** — Full per-stream probe: codec, profile, resolution, color metadata, frame rate, etc.
 - **⌨️ CLI Mode** — Headless scripting with subcommands (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `batch`)
 - **⚙️ 3 Transcoder Cores** — FFmpeg API (fluent-ffmpeg), FFmpeg CLI (child_process), BMF Framework
 - **🌍 56 Locales** — 35 languages with RTL support (Arabic, Hebrew)
+- **⌨️ Keyboard Shortcuts** — 60+ shortcuts across every page with an in-app help dialog (`Ctrl+/`)
+- **🔔 Activity Blips** — Live nav indicators with hover popovers showing per-job progress at a glance
+- **🛡️ Close Confirmation** — Warns before closing the window while jobs are still running
+- **🎉 Easter Eggs** — Holiday-themed app logos on special dates
 - **🔄 In-App Updates** — Checks GitHub Releases, downloads platform installer, real-time progress
 - **🛡️ Error Handling** — 16 typed error codes, global snackbar, inline banners, React error boundaries
 - **🌗 Dark/Light Theme** — System-aware with manual toggle, persistent preferences
@@ -55,7 +59,7 @@ See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, support
 
 ## 📌 Prerequisites
 
-- [Node.js](https://nodejs.org/) 20+
+- [Node.js](https://nodejs.org/) 22+
 - [FFmpeg](https://ffmpeg.org/) — bundled via `ffmpeg-static`; falls back to system `ffmpeg` if the bundled binary is unavailable
 
 ## 📥 Downloads
@@ -145,7 +149,7 @@ encodex convert input.mp4 output.avi --video-codec libx265 --audio-codec aac
 encodex info input.mp4 --json
 encodex compress photo.png -f jpg -q 30
 encodex extract-audio input.mp4
-encodex batch 'videos/**/*.mov' -j 2 --out-dir converted
+encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
 ```
 
 See [docs/CLI.md](docs/CLI.md) for all subcommands, options, and examples.
@@ -153,7 +157,7 @@ See [docs/CLI.md](docs/CLI.md) for all subcommands, options, and examples.
 ## 🧪 Testing
 
 ```bash
-npm test           # Run all 122 test files / 1573 tests
+npm test           # Run all 123 test files / 1603 tests
 npm run test:watch
 npm run test:coverage
 npm run test:unit
@@ -168,12 +172,17 @@ See [docs/TESTING.md](docs/TESTING.md) for the full test suite breakdown, test s
 | Document | Description |
 | -------- | ----------- |
 | [docs/FEATURES.md](docs/FEATURES.md) | Features, supported media formats, codec tables, validation utilities |
-| [docs/CLI.md](docs/CLI.md) | CLI usage, subcommands, all option tables |
+| [docs/CLI.md](docs/CLI.md) | CLI usage, subcommands, all option tables, exit codes |
 | [docs/TESTING.md](docs/TESTING.md) | Test suite, test setup, E2E specs |
 | [docs/IPC.md](docs/IPC.md) | IPC channels, electronAPI bridge, all methods and events |
 | [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) | Full directory tree with annotations |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Internal architecture overview and links to deep dives |
+| [docs/ARCHITECTURE_PROCESSES.md](docs/ARCHITECTURE_PROCESSES.md) | Process model, build system, startup sequence, CLI mode |
+| [docs/ARCHITECTURE_TRANSCODERS.md](docs/ARCHITECTURE_TRANSCODERS.md) | Transcoder abstraction, FFmpeg/BMF cores, hardware acceleration |
+| [docs/ARCHITECTURE_RENDERER.md](docs/ARCHITECTURE_RENDERER.md) | Render tree, pages, stores, queue, player, i18n, theming |
 | [docs/UPDATE_MANAGER.md](docs/UPDATE_MANAGER.md) | In-app update manager implementation details |
+| [Wiki](https://github.com/Sandeepv68/EncodeX/wiki) | Community wiki (mirrors the docs in a browsable form) |
+| [Documentation Site](https://encodex.in/) | VitePress site with features tour, guides, and release blog |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guidelines |
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting |
 | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Code of conduct |

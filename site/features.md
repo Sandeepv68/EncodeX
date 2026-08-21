@@ -6,7 +6,7 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 ![Media Conversion](/images/convert.png)
 
-Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Supports batch mode for processing multiple files sequentially.
+Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below).
 
 ## Lossless Copy
 
@@ -44,7 +44,17 @@ Preview and cut video segments with frame-accurate start/end time or duration se
 
 ![Batch Queue](/images/batch_process.png)
 
-Process multiple files sequentially with configurable operations (transcode, extract audio, compress image). The queue persists state across jobs with real-time progress tracking, per-job error handling, job removal, and cancel-all.
+Process multiple files with configurable operations (transcode, extract audio, compress image). Jobs are added through a review dialog where output names and options can be adjusted before they enter the queue.
+
+- **Parallel processing** — run up to 4 jobs concurrently; the concurrency cap is configurable at runtime and persisted.
+- **Queue lifecycle** — start, pause, and resume the whole queue; cancel all; clear completed/failed jobs; remove individual jobs.
+- **Reordering** — drag-and-drop reordering of queued jobs.
+- **Job editing** — replace the options (and optionally the output path) of any queued job before it starts.
+- **Export / import** — save the queue to a JSON file and re-import it later.
+- **Persistence** — the queue snapshot (jobs + concurrency) is saved to `queue-state.json` in the user-data directory and restored on startup.
+- **Status filters** — filter the job list by queued / running / done / failed, plus a focusable search field.
+- **When-done power actions** — optionally shut down, sleep, or hibernate the machine when the queue drains (Windows honors a force-close flag).
+- **Live feedback** — real-time per-job progress (percent, time, speed, ETA), per-job error handling, and a nav count badge showing outstanding work.
 
 ## Multiple Transcoder Cores
 
@@ -56,7 +66,23 @@ Process multiple files sequentially with configurable operations (transcode, ext
 
 ![Settings](/images/settings.png)
 
-Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), and window always-on-top. Preferences persist to `localStorage` and take effect on startup.
+Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, and the when-done power action. Preferences persist to `localStorage` and take effect on startup.
+
+## Keyboard Shortcuts
+
+A central shortcut registry defines 60+ shortcuts across nine sections. `Ctrl+/` opens the in-app help dialog; `Alt+1`…`Alt+9` jump between pages; `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` handle input/output/start consistently on every page. Chords are matched by `event.code`, so they work independently of keyboard layout.
+
+## Activity Blips & Job Popover
+
+While a conversion, audio extraction, or video cut is running, a flashing blip appears on the corresponding nav row; the Batch Queue row shows a live count of outstanding jobs. Hovering (or keyboard-focusing) a blip opens a popover anchored to it with the job's status, source-file thumbnail, file name, and a live progress bar — plus a pile of pending-job thumbnails while a batch advances.
+
+## Close Confirmation
+
+Closing the window while jobs are active routes through a confirmation flow: the main process asks the renderer, which shows a dialog listing active work before the close is confirmed. A splash screen is shown on boot while the main window loads.
+
+## Easter Eggs
+
+On festival dates the Dashboard swaps the default app logo for holiday artwork — Christmas, Halloween, New Year, July 4th, Easter, Diwali, and Holi — each active for a 7-day window around its date (Diwali and Holi follow the Hindu lunisolar calendar).
 
 ## Logs
 

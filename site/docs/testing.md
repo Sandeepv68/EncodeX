@@ -29,7 +29,7 @@ Coverage reports are generated in `coverage/`:
 
 ## Test Suite
 
-The suite is run by Vitest 4 (122 test files, 1573 tests, all passing). Coverage uses the v8 provider.
+The suite is run by Vitest 4 (123 test files, 1603 tests, all passing). Coverage uses the v8 provider.
 
 | Area | What's Covered |
 |------|----------------|

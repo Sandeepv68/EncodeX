@@ -39,7 +39,7 @@ src/
 │   │   ├── frame-decoder.ts           # Rawvideo frame + PCM audio pipe decoder
 │   │   └── types.ts                   # Decoded frame/audio structures + config types
 │   ├── queue/
-│   │   └── job-queue.ts               # Async serial batch queue with EventEmitter
+│   │   └── job-queue.ts               # Concurrency-capped batch queue (1-4 parallel jobs) with EventEmitter
 │   ├── timeline/
 │   │   └── timeline-media.ts          # Waveform + thumbnail-montage extraction
 │   └── transcoders/

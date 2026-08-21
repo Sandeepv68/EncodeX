@@ -30,6 +30,6 @@ The full architecture is split into focused documents:
 |----------|--------|
 | [CLI Usage](/docs/cli) | CLI usage, subcommands, all option tables |
 | [IPC Channels](/docs/ipc) | IPC channels (request/send-only/events), electronAPI bridge |
-| [Testing](/docs/testing) | Test suite (122 files, 1573 tests), test setup, E2E specs |
+| [Testing](/docs/testing) | Test suite (123 files, 1603 tests), test setup, E2E specs |
 | [Project Structure](/docs/project-structure) | Full directory tree with annotations |
 | [Update Manager](/docs/update-manager) | In-app update manager implementation |
