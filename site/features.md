@@ -1,147 +1,86 @@
-# Features
+﻿# What Can EncodeX Do?
 
-EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
+EncodeX is a free app for your computer that fixes common file problems in a few clicks:
 
-## Media Conversion
+- **Change a video's format** so it plays on any device
+- **Pull the audio out of a video** and save it as an MP3
+- **Trim a video** to keep only the parts you want
+- **Make photos smaller** so they're easy to email or upload
 
-![Media Conversion](/images/convert.png)
+It works on Windows, Mac, and Linux, it's completely free, and it speaks 35 languages.
 
-Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below).
+## Change Video & Audio Formats
 
-## Lossless Copy
+<img src="/images/convert.jpg" alt="Media Conversion" width="1600" height="1057" loading="lazy">
 
-Stream-copy video or audio tracks without re-encoding (`-c copy`). Useful for fast container format changes, remuxing, or when quality preservation is critical.
+**The problem:** someone sends you a video, but your phone, TV, or editing app won't open it.
 
-## Hardware Acceleration
+**The fix:** drop the file into EncodeX, pick what you want to play it on (or just pick MP4 â€” the safe choice), and click Convert. That's it.
 
-Hardware-accelerated encoding with auto-detection of available encoder families. Supports NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, and Microsoft Media Foundation encoders. Acceleration can be toggled, with a mode selector — `auto` adds the matching FFmpeg `-hwaccel` flags for the selected hardware encoder family, `encode` relies on the encoder's own acceleration — and an encoder-type filter (`auto` / `hardware` / `software`) that narrows the video codec picker to all, GPU-only, or CPU-only encoders.
+You can convert between virtually every video and audio format you'll ever run into â€” MP4, MKV, AVI, MOV, WebM, MP3, WAV, FLAC, and dozens more. If you're not sure what to pick, the default settings are a great place to start.
 
-## Media Information
+## Save Just the Audio From a Video
 
-![Media Information](/images/media_info.png)
+<img src="/images/extract_audio.jpg" alt="Audio Extraction" width="1600" height="1054" loading="lazy">
 
-Probe media files and inspect detailed per-stream information: codec, profile, level, resolution, display aspect ratio, pixel format, bit depth, color range/space/transfer/primaries, frame rate, bitrate, sample rate, sample format, channel count/layout, duration, start time, frame count, language, and tags.
+Found a lecture, podcast, interview, or concert video and only want the sound? Drop the video in, choose MP3 (or another audio type), and you'll get a music file you can listen to anywhere â€” even with the screen off.
 
-## Image Compression
+If a video has several audio tracks (like different languages), you can pick which one to keep.
 
-![Image Compression](/images/image_compress.png)
+## Trim Videos
 
-Compress images (JPEG, PNG, WebP, BMP, GIF, TIFF, PPM, PGM, PBM) with configurable quality scale and resolution scaling using FFmpeg's image codecs. Includes a live preview, a file-size readout, and — for JPEG/PNG/WebP inputs — a full EXIF metadata panel with RGB and luma histograms.
+<img src="/images/cut_video.jpg" alt="Video Cutting" width="1600" height="1267" loading="lazy">
 
-## Audio Extraction
+Cut out the boring parts. EncodeX shows you the video with a timeline underneath â€” drag the handles to mark where the good part starts and ends, watch a preview to double-check, then save.
 
-![Audio Extraction](/images/extract_audio.png)
+You can zoom into the timeline to be precise down to a fraction of a second, and you'll see a picture-in-picture strip of thumbnails plus sound waves to help you find the exact moment you're looking for.
 
-Extract audio tracks from video files. Output as AAC, MP3, AC3, FLAC, WAV, Vorbis, Opus, ALAC, or any of the 27 supported audio codecs. The source audio stream is selectable when multiple tracks are present.
+## Make Photos Smaller
 
-## Video Cutting
+<img src="/images/image_compress.jpg" alt="Image Compression" width="1600" height="1060" loading="lazy">
 
-![Video Cutting](/images/cut_video.png)
+Big photos are great until you have to send one. EncodeX shrinks photos so they take up less space and upload faster â€” with a live preview so you can see exactly how the smaller version will look before saving.
 
-Preview and cut video segments with frame-accurate start/end time or duration selection. Includes a built-in player that decodes video frames (via an FFmpeg rawvideo pipe to an HTML Canvas element) and audio (via a separate S16LE PCM pipe converted to float and fed to the Web Audio API) in lockstep, with a zoomable multi-track timeline.
+Works with all the common photo types: JPG, PNG, WebP, GIF, BMP, TIFF, and more. You can also see hidden info stored inside photos (like the camera settings and date taken).
 
-## Batch Queue
+## Convert Many Files at Once
 
-![Batch Queue](/images/batch_process.png)
+<img src="/images/batch_process.jpg" alt="Batch Queue" width="1600" height="1360" loading="lazy">
 
-Process multiple files with configurable operations (transcode, extract audio, compress image). Jobs are added through a review dialog where output names and options can be adjusted before they enter the queue.
+Have 50 videos to convert? Don't do them one by one. Drag them all into the queue, and EncodeX works through them automatically â€” showing progress for each file as it goes.
 
-- **Parallel processing** — run up to 4 jobs concurrently; the concurrency cap is configurable at runtime and persisted.
-- **Queue lifecycle** — start, pause, and resume the whole queue; cancel all; clear completed/failed jobs; remove individual jobs.
-- **Reordering** — drag-and-drop reordering of queued jobs.
-- **Job editing** — replace the options (and optionally the output path) of any queued job before it starts.
-- **Export / import** — save the queue to a JSON file and re-import it later.
-- **Persistence** — the queue snapshot (jobs + concurrency) is saved to `queue-state.json` in the user-data directory and restored on startup.
-- **Status filters** — filter the job list by queued / running / done / failed, plus a focusable search field.
-- **When-done power actions** — optionally shut down, sleep, or hibernate the machine when the queue drains (Windows honors a force-close flag).
-- **Live feedback** — real-time per-job progress (percent, time, speed, ETA), per-job error handling, and a nav count badge showing outstanding work.
+- Add files while it's running
+- Pause, resume, or cancel anytime
+- Reorder the list by dragging
+- Get notified when everything's done â€” or have the computer shut down automatically when the queue finishes
 
-## Multiple Transcoder Cores
+## Peek Inside Any Media File
 
-- **FFmpeg API** — fluent-ffmpeg Node.js bindings with programmatic progress events
-- **FFmpeg CLI** — direct CLI invocation via child process, no native bindings needed
-- **BMF Framework** — BMF CLI tools for advanced pipeline scenarios (requires separate installation)
+<img src="/images/media_info.jpg" alt="Media Information" width="1600" height="1058" loading="lazy">
 
-## Settings
+Curious about a file? EncodeX can tell you everything about it in plain terms â€” how long it is, its resolution (like 1080p), file size, frame rate, audio channels, and more. Handy when a file won't play and you want to know why.
 
-![Settings](/images/settings.png)
+## Speed That Feels Effortless
 
-Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, and the when-done power action. Preferences persist to `localStorage` and take effect on startup.
+On most modern computers, EncodeX automatically uses the graphics chip (the part normally used for games) to make conversions dramatically faster. You don't have to configure anything â€” it detects what your computer has and uses it. Big files that would normally take ages finish in a fraction of the time.
 
-## Keyboard Shortcuts
+## It Fits Your Style
 
-A central shortcut registry defines 60+ shortcuts across nine sections. `Ctrl+/` opens the in-app help dialog; `Alt+1`…`Alt+9` jump between pages; `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` handle input/output/start consistently on every page. Chords are matched by `event.code`, so they work independently of keyboard layout.
+- **Light or dark look** â€” follows your system, or switch manually
+- **35+ languages** â€” including Spanish, French, German, Hindi, Chinese, Japanese, Arabic, and Hebrew (with proper right-to-left layout)
+- **Keyboard shortcuts** â€” for those who prefer not to touch the mouse
+- **Keeps itself up to date** â€” EncodeX tells you when a new version is ready and installs it for you
 
-## Activity Blips & Job Popover
+## Private by Design
 
-While a conversion, audio extraction, or video cut is running, a flashing blip appears on the corresponding nav row; the Batch Queue row shows a live count of outstanding jobs. Hovering (or keyboard-focusing) a blip opens a popover anchored to it with the job's status, source-file thumbnail, file name, and a live progress bar — plus a pile of pending-job thumbnails while a batch advances.
+Everything runs on your own computer â€” your files never leave it. No accounts, no uploads, no tracking.
 
-## Close Confirmation
+## For the Curious: Under the Hood
 
-Closing the window while jobs are active routes through a confirmation flow: the main process asks the renderer, which shows a dialog listing active work before the close is confirmed. A splash screen is shown on boot while the main window loads.
+EncodeX is powered by [FFmpeg](https://ffmpeg.org) â€” the same battle-tested engine behind many well-known media apps â€” wrapped in a friendly interface. If you enjoy technical details, there's plenty more to explore:
 
-## Easter Eggs
+- Hardware-accelerated encoding via NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, and Media Foundation
+- A command-line interface for automation and scripting
+- Lossless stream copy for remuxing without quality loss
 
-On festival dates the Dashboard swaps the default app logo for holiday artwork — Christmas, Halloween, New Year, July 4th, Easter, Diwali, and Holi — each active for a 7-day window around its date (Diwali and Holi follow the Hindu lunisolar calendar).
-
-## Logs
-
-![Log Viewer](/images/logger.png)
-
-Live log viewer that aggregates console output from both the main and renderer processes over IPC. Supports level filtering (DEBUG/INFO/WARN/ERROR), clearing, and downloading the log as a `.txt` file.
-
-## Dark / Light Theme
-
-System-aware theme detection with manual toggle. Theme preference persists to `localStorage`.
-
-## RTL Support
-
-Right-to-left layout support for Arabic and Hebrew locales. Direction toggles automatically on language switch via an Emotion RTL style plugin.
-
-## Internationalization
-
-56 locales across 35 languages including English, Spanish, French, Hindi, German, Italian, Dutch, Swedish, Norwegian, Portuguese, Ukrainian, Russian, Polish, Thai, Chinese, Japanese, Korean, Indonesian, Filipino, Afrikaans, Hebrew, Arabic, Nepali, Vietnamese, Finnish, Danish, and more.
-
-## In-App Updates
-
-Custom update manager that checks GitHub Releases for new versions, notifies the user of availability, downloads the platform-specific installer (`.exe` / `.dmg` / `.AppImage`) in-app with real-time progress reporting, and launches the installer on completion.
-
-## Error Handling
-
-Structured error system with typed error codes, user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50).
-
----
-
-## Supported Media Formats
-
-### Video Codecs (51)
-
-| Group | Codecs |
-|-------|--------|
-| **Software (28)** | H.264, H.265/HEVC, VP8, VP9, AV1, MPEG-4, MPEG-1, MPEG-2, Theora, JPEG 2000, WebP, ProRes, Huffyuv, FFV1, Ut Video, MJPEG, PNG, TIFF, VC-2, AVS |
-| **NVIDIA NVENC (3)** | H.264, H.265, AV1 |
-| **Intel QSV (5)** | H.264, H.265, MPEG-2, VP9, AV1 |
-| **AMD AMF (3)** | H.264, H.265, AV1 |
-| **VAAPI (6)** | H.264, H.265, MJPEG, VP8, VP9, AV1 |
-| **Apple VideoToolbox (4)** | H.264, H.265, ProRes, VP9 |
-| **Media Foundation (2)** | H.264, H.265 |
-
-### Audio Codecs (27)
-
-| Group | Codecs |
-|-------|--------|
-| **AAC / MPEG** | AAC (native, FDK), MP3 (LAME, libshine), MP2 (libtwolame) |
-| **Dolby** | AC-3, E-AC-3, TrueHD, DTS, MLP |
-| **Lossless** | FLAC, ALAC, WavPack |
-| **Streaming** | Vorbis, Opus, Speex, AMR-WB |
-| **PCM** | s16le, s24le, f32le, s16be, u8, A-law, Mu-law |
-| **Windows Media** | WMA v1, WMA v2 |
-
-### Input File Extensions
-
-| Category | Extensions |
-|----------|-----------|
-| Video | `mp4`, `m4v`, `avi`, `mkv`, `mov`, `qt`, `flv`, `f4v`, `wmv`, `asf`, `webm`, `3gp`, `3g2`, `mpg`, `mpeg`, `mts`, `m2ts`, `ts`, `mxf`, `ogv`, `ogg`, `vob`, `divx`, `dv`, `rm`, `rmvb`, `h264`, `h265`, `hevc` |
-| Audio | `mp3`, `aac`, `wav`, `flac`, `ogg`, `opus`, `m4a`, `wma`, `alac`, `aiff`, `aif`, `au`, `caf`, `pcm`, `mid`, `midi` |
-| Image | `jpg`, `jpeg`, `png`, `webp`, `bmp`, `gif`, `tiff`, `tif`, `svg`, `ico`, `heic`, `heif`, `avif`, `ppm`, `pgm`, `pbm`, `xbm` |
-| Subtitle | `srt`, `ass`, `ssa`, `vtt`, `sub`, `idx`, `smi` |
+Developers can dig into the [technical docs](/docs/architecture) or the source code on [GitHub](https://github.com/Sandeepv68/EncodeX).

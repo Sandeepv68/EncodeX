@@ -2,19 +2,20 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'EncodeX',
-  description: 'A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron',
+  description: 'A free, easy-to-use app to convert videos and audio, trim clips, extract music from video, and shrink photos. Works on Windows, Mac, and Linux.',
   base: '/',
+  sitemap: { hostname: 'https://encodex.in' },
   head: [
-    ['link', { rel: 'icon', href: '/images/icon.png' }],
-    ['meta', { name: 'theme-color', content: '#47848F' }],
+    ['link', { rel: 'icon', href: '/images/favicon-64.png' }],
+    ['link', { rel: 'preload', as: 'image', href: '/images/icon.webp' }],
+    ['meta', { name: 'theme-color', content: '#0359AD' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'EncodeX' }],
-    ['meta', { property: 'og:description', content: 'A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron' }],
-    ['meta', { property: 'og:image', content: 'https://encodex.in/images/banner.png' }],
+    ['meta', { property: 'og:description', content: 'A free, easy-to-use app to convert videos and audio, trim clips, extract music from video, and shrink photos. Works on Windows, Mac, and Linux.' }],
+    ['meta', { property: 'og:image', content: 'https://encodex.in/images/banner.jpg' }],
     ['meta', { property: 'og:url', content: 'https://encodex.in/' }],
   ],
   themeConfig: {
-    logo: '/images/icon.png',
     siteTitle: 'EncodeX',
     nav: [
       { text: 'Home', link: '/' },
@@ -61,7 +62,7 @@ export default defineConfig({
       { icon: 'github', link: 'https://github.com/Sandeepv68/EncodeX' },
     ],
     footer: {
-      message: 'Released under the MIT License.',
+      message: 'Made with \u2764\uFE0F — Released under the MIT License.',
       copyright: `Copyright \u00a9 ${new Date().getFullYear()} EncodeX Contributors`,
     },
     search: {
