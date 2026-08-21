@@ -30,7 +30,7 @@ The full architecture is split into focused documents:
 | -------- | ------ |
 | [FEATURES.md](FEATURES.md) | Features, supported media formats, codec tables, validation utilities |
 | [CLI.md](CLI.md) | CLI usage, subcommands, all option tables |
-| [TESTING.md](TESTING.md) | Test suite (122 files, 1573 tests), test setup, E2E specs |
+| [TESTING.md](TESTING.md) | Test suite (123 files, 1603 tests), test setup, E2E specs |
 | [IPC.md](IPC.md) | IPC channels (request/send-only/events), electronAPI bridge |
 | [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | Full directory tree with annotations |
 | [UPDATE_MANAGER.md](UPDATE_MANAGER.md) | In-app update manager implementation |

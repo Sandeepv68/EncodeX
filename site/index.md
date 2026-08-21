@@ -28,7 +28,7 @@ features:
     details: Frame-accurate trimming with a built-in player, zoomable timeline, waveform visualization, and thumbnail montage.
   - icon: "\ud83d\udccb"
     title: Batch Queue
-    details: Process multiple files sequentially with real-time progress, per-job errors, cancel-all, and status filters.
+    details: Run up to 4 jobs in parallel with pause/resume, drag-and-drop reordering, job editing, JSON export/import, status filters, and when-done power actions.
   - icon: "\ud83d\uddbc\ufe0f"
     title: Image Compression
     details: Compress JPEG, PNG, WebP, BMP, GIF, and TIFF with quality/scale controls, EXIF viewer, and RGB/luma histograms.

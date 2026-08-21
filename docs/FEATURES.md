@@ -6,7 +6,7 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 ### Media Conversion
 
-Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Supports batch mode for processing multiple files sequentially.
+Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below).
 
 ### Lossless Copy
 
@@ -34,7 +34,17 @@ Preview and cut video segments with frame-accurate start/end time or duration se
 
 ### Batch Queue
 
-Process multiple files sequentially with configurable operations (transcode, extract audio, compress image). The queue persists state across jobs with real-time progress tracking, per-job error handling, job removal, and cancel-all.
+Process multiple files with configurable operations (transcode, extract audio, compress image). Jobs are added through a review dialog where output names and options can be adjusted before they enter the queue.
+
+- **Parallel processing** — run up to 4 jobs concurrently (`MAX_QUEUE_CONCURRENCY = 4`); the concurrency cap is configurable at runtime and persisted.
+- **Queue lifecycle** — start, pause, and resume the whole queue; cancel all; clear completed/failed jobs; remove individual jobs.
+- **Reordering** — drag-and-drop reordering of queued jobs (with a drop area), backed by a `QUEUE_MOVE_TO` channel that reports the job's new position.
+- **Job editing** — replace the options (and optionally the output path) of any queued job before it starts (`QUEUE_UPDATE_OPTIONS`).
+- **Export / import** — save the queue to a JSON file and re-import it later (`QUEUE_EXPORT` / `QUEUE_IMPORT`), validated with a dedicated `INVALID_QUEUE_FILE` error code.
+- **Persistence** — the queue snapshot (jobs + concurrency) is durably saved to `queue-state.json` in the user-data directory and restored on startup.
+- **Status filters** — filter the job list by queued / running / done / failed, plus a focusable search field.
+- **When-done power actions** — optionally shut down, sleep, or hibernate the machine when the queue drains (`shutdown`, `pmset`, or `systemctl` per platform; Windows honors a force-close flag).
+- **Live feedback** — real-time per-job progress (percent, time, speed, ETA) streamed over IPC, per-job error handling, and a nav count badge showing outstanding work.
 
 ### Multiple Transcoder Cores
 
@@ -44,7 +54,36 @@ Process multiple files sequentially with configurable operations (transcode, ext
 
 ### Settings
 
-Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), and window always-on-top. Preferences persist to `localStorage` and take effect on startup.
+Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, and the when-done power action. Preferences persist to `localStorage` and take effect on startup.
+
+### Keyboard Shortcuts
+
+A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 60+ shortcuts across nine sections (global, convert, media info, image compress, audio extract, video cut, batch queue, logs, dashboard). Highlights:
+
+- `Ctrl+/` — open the shortcuts help dialog
+- `Alt+1`…`Alt+9` — jump directly to a page
+- `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — pick input / pick output / start the job (consistent across pages)
+- `Ctrl+Shift+P` / `Ctrl+Shift+C` — pause / cancel the active job
+- Batch queue: `Ctrl+E` export, `Ctrl+I` import, `1`–`5` status filters, `F` focus search
+- Video cut player: `Space` play/pause, `M` mute, arrow keys to seek
+
+Chords are matched by `event.code`, so they work independently of keyboard layout. Tooltips derive their hint text from the same registry.
+
+### Activity Blips & Job Popover
+
+While a conversion, audio extraction, or video cut is running, a flashing blip appears on the corresponding nav row; the Batch Queue row shows a live count of outstanding jobs. Hovering (or keyboard-focusing) a blip opens a popover anchored to it with the job's title, localized status (including paused state and parallel-concurrency badge), source-file thumbnail, file name, and a live progress bar — plus a pile of pending-job thumbnails while a batch advances. The popover uses a soft shadow and its arrow points at the blip.
+
+### Close Confirmation
+
+Closing the window while jobs are active routes through a confirmation flow: the main process asks the renderer (`WINDOW_CLOSE_REQUESTED`), which shows a dialog listing active work before the close is confirmed (`WINDOW_CONFIRM_CLOSE`). A splash screen is shown on boot while the main window loads.
+
+### Dashboard
+
+A landing page with quick-action tiles for every tool (number keys `1`–`6` jump straight to them) and seasonal easter-egg branding (see below).
+
+### Easter Eggs
+
+On festival dates the Dashboard swaps the default app logo for holiday artwork — Christmas, Halloween, New Year, July 4th, Easter, Diwali, and Holi. Each festival is active for a 7-day window around its date; Diwali and Holi follow the Hindu lunisolar calendar via curated dates (2026–2035) with an astronomical fallback computation for other years.
 
 ### Logs
 

@@ -10,7 +10,7 @@ Node.js environment. Owns the application lifecycle and all privileged capabilit
 - Hosts the CLI entry point (`cli/`).
 - Resolves the FFmpeg/FFprobe binary path and probes encoder capabilities (`capabilities.ts`, `process-utils.ts`).
 - Implements the transcoder cores (`transcoders/`).
-- Runs the serial batch queue (`queue/job-queue.ts`).
+- Runs the concurrency-capped batch queue (1-4 parallel jobs) (`queue/job-queue.ts`).
 - Decodes video frames and audio PCM for the built-in player (`player/frame-decoder.ts`).
 - Extracts waveforms and thumbnail montages (`timeline/timeline-media.ts`).
 - Reads EXIF data, histograms, image dimensions, and previews (`image-*.ts`, `video-preview.ts`).
