@@ -7,7 +7,7 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 - [[Installation]] — Prerequisites, install, and development setup
 - [[Features]] — Full feature list and supported media formats
 - [[CLI-Usage]] — Command-line interface documentation
-- [Documentation Site](https://sandeepv68.github.io/EncodeX/) — VitePress site with features tour, guides, and release blog
+- [Documentation Site](https://encodex.in/) — VitePress site with features tour, guides, and release blog
 
 ## 🏗️ Internals
 

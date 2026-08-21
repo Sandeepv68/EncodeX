@@ -182,7 +182,7 @@ See [docs/TESTING.md](docs/TESTING.md) for the full test suite breakdown, test s
 | [docs/ARCHITECTURE_RENDERER.md](docs/ARCHITECTURE_RENDERER.md) | Render tree, pages, stores, queue, player, i18n, theming |
 | [docs/UPDATE_MANAGER.md](docs/UPDATE_MANAGER.md) | In-app update manager implementation details |
 | [Wiki](https://github.com/Sandeepv68/EncodeX/wiki) | Community wiki (mirrors the docs in a browsable form) |
-| [Documentation Site](https://sandeepv68.github.io/EncodeX/) | VitePress site with features tour, guides, and release blog |
+| [Documentation Site](https://encodex.in/) | VitePress site with features tour, guides, and release blog |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guidelines |
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting |
 | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Code of conduct |
