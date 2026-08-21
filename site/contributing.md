@@ -7,7 +7,10 @@ EncodeX is free and built by volunteers — and you don't need to be a programme
 - **Translate.** EncodeX speaks 35+ languages, and translators are always welcome. If your language is missing or sounds awkward, you can help fix that.
 - **Spread the word.** Share EncodeX with friends, write a review, or make a tutorial.
 
----
+## Get in Touch
+
+Questions, ideas, or just want to say hi? Email the developer directly at **[developer@encodex.in](mailto:developer@encodex.in)** — feedback from users is always welcome.
+
 
 ## For Developers
 
