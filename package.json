@@ -105,6 +105,9 @@
     "vitest": "^4.1.10",
     "wait-on": "^9.1.0"
   },
+  "overrides": {
+    "@docsearch/react": "^3.9.0"
+  },
   "build": {
     "appId": "com.openconverter.app",
     "productName": "EncodeX",
