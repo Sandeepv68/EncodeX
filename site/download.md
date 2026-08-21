@@ -1,66 +1,78 @@
 # Download EncodeX
 
-Download the latest version of EncodeX for your platform. All builds are generated from the [GitHub Releases](https://github.com/Sandeepv68/EncodeX/releases) page.
+EncodeX is **free** and works on Windows, Mac, and Linux. Pick your computer type below, download, install, and you're ready to go.
 
-::: tip Latest Version
-Check the [Releases page](https://github.com/Sandeepv68/EncodeX/releases) for the most recent download.
+::: tip Always get the newest version
+New versions are released on the [GitHub Releases page](https://github.com/Sandeepv68/EncodeX/releases). The links below always give you the latest one.
 :::
 
-## Windows
+## 🪟 Windows
 
-| File | Architecture | Size |
-|------|-------------|------|
-| [EncodeX-Setup-x64.exe](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x64-setup.exe) | 64-bit | ~343 MB |
-| [EncodeX-Setup-ia32.exe](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-ia32-setup.exe) | 32-bit | ~333 MB |
-| [EncodeX-Setup-arm64.exe](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64-setup.exe) | ARM64 | ~381 MB |
+**Just want it to work?** Click the first button — it's right for almost everyone.
 
-**Requirements:** Windows 10 or later
+| | Download | For |
+|---|---------|-----|
+| ✅ **Recommended** | [Download for Windows](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x64-setup.exe) | Most PCs and laptops (64-bit) |
+| Older 32-bit PC | [32-bit version](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-ia32-setup.exe) | Very old computers |
+| ARM laptops | [ARM version](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64-setup.exe) | Snapdragon-based Windows laptops |
 
-Run the installer and follow the on-screen instructions.
+**To install:** open the file you downloaded and follow the steps on screen. Works on Windows 10 and newer.
 
-## macOS
+Not sure which one to pick? Go with the recommended one — if it doesn't match, Windows will tell you.
 
-| File | Architecture | Size |
-|------|-------------|------|
-| [EncodeX-x64.dmg](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x64.dmg) | Intel | ~411 MB |
-| [EncodeX-arm64.dmg](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64.dmg) | Apple Silicon | ~388 MB |
+## 🍎 Mac
 
-**Requirements:** macOS 11 or later
+| | Download | For |
+|---|---------|-----|
+| Newer Macs (2021 or later) | [Download for Apple Silicon](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64.dmg) | M1, M2, M3, M4 chips |
+| Older Macs | [Download for Intel](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x64.dmg) | Macs from before 2021 |
 
-::: warning macOS Gatekeeper Warning
-EncodeX is not code-signed. macOS will show a "damaged" or "can't be opened" error on first launch. To fix this:
+**To install:** open the `.dmg` file you downloaded, then drag EncodeX into your Applications folder.
 
-**Option 1 — Right-click to open:**
-1. Right-click (or Control-click) the EncodeX app and select **Open**
-2. Click **Open** in the confirmation dialog
+**Not sure which Mac you have?** Click the Apple logo (🍎) in the top-left corner of your screen, choose "About This Mac", and look at the Chip line. If it says "Apple M1" (or M2/M3/M4), pick Apple Silicon. If it says "Intel", pick Intel.
 
-**Option 2 — Remove quarantine via Terminal:**
-```bash
-xattr -cr /Applications/EncodeX.app
-```
+::: warning First launch on Mac — one extra step
+Because EncodeX is free and open-source (and not sold through the Mac App Store), macOS may show a message saying the app "can't be opened" the first time. This is normal and safe to get past:
+
+1. Find EncodeX in your Applications folder
+2. Hold the **Control** key and click the app, then choose **Open**
+3. In the box that appears, click **Open** again
+
+You only need to do this once — after that it opens normally.
 :::
 
-## Linux
+## 🐧 Linux
 
-| File | Architecture | Size |
-|------|-------------|------|
-| [EncodeX-x86_64.AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x86_64.AppImage) | x64 | ~307 MB |
-| [EncodeX-arm64.AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64.AppImage) | ARM64 | ~327 MB |
-| [EncodeX-armv7l.AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-armv7l.AppImage) | ARMv7 | ~311 MB |
+| | Download | For |
+|---|---------|-----|
+| ✅ **Recommended** | [Download AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x86_64.AppImage) | Most Linux computers (64-bit) |
+| ARM64 | [ARM64 AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64.AppImage) | ARM boards and laptops |
+| ARMv7 | [ARMv7 AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-armv7l.AppImage) | Older single-board computers |
 
-**Requirements:** A modern Linux distribution with FUSE support
+**To run:** an AppImage is a single file — no installation needed. Just make it runnable and double-click it:
 
 ```bash
-# Make the AppImage executable
 chmod +x EncodeX-*.AppImage
-
-# Run the app
 ./EncodeX-*.AppImage
 ```
 
-## Build from Source
+(Many desktop environments also let you skip the terminal: right-click the file → Properties → allow executing, then double-click.)
 
-If you prefer to build from source:
+## What Your Computer Needs
+
+Nothing special — if your computer is from the last several years, you're fine:
+
+- **Operating system:** Windows 10+, macOS 11+, or a modern Linux
+- **Disk space:** about 400 MB (the app includes everything it needs — no extra downloads)
+- **Memory:** any normal amount works
+
+## Keeping It Up to Date
+
+When a new version comes out, EncodeX lets you know inside the app and can download and start the update for you — no need to revisit this page.
+
+## For Developers: Build It Yourself
+
+Prefer to build from source? Clone the repo and run:
 
 ```bash
 git clone https://github.com/Sandeepv68/EncodeX.git
@@ -70,11 +82,3 @@ npm run dist
 ```
 
 The installer will be created in the `release/` directory.
-
-## System Requirements
-
-| Requirement | Minimum |
-|-------------|---------|
-| OS | Windows 10+, macOS 11+, or modern Linux |
-| Disk Space | ~400 MB (includes bundled FFmpeg) |
-| RAM | 512 MB recommended |

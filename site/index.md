@@ -3,44 +3,45 @@ layout: home
 
 hero:
   name: EncodeX
-  text: Multimedia Conversion, Reimagined
-  tagline: A cross-platform desktop app that brings the full power of FFmpeg to a modern, intuitive interface. Convert media, extract audio, cut videos, and compress images — all in one tool.
+  text: The easy way to fix your video, audio, and photo files
+  tagline: Video won't play? File too big to send? Need just the music from a clip? EncodeX does it all in a few clicks — free, on Windows, Mac, and Linux.
   image:
     src: /images/banner.png
     alt: EncodeX
   actions:
     - theme: brand
-      text: Download Now
+      text: Download Now — It's Free
       link: /download
     - theme: alt
-      text: View on GitHub
-      link: https://github.com/Sandeepv68/EncodeX
+      text: See What It Can Do
+      link: /features
 
 features:
   - icon: "\ud83d\udd04"
-    title: Media Conversion
-    details: Convert between 51 video codecs, 27 audio codecs, and 56 pixel formats with granular controls over codec, bitrate, resolution, and quality.
-  - icon: "\u26a1"
-    title: Hardware Acceleration
-    details: Auto-detects and leverages NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, and Media Foundation encoders.
-  - icon: "\u2702\ufe0f"
-    title: Video Cutting
-    details: Frame-accurate trimming with a built-in player, zoomable timeline, waveform visualization, and thumbnail montage.
-  - icon: "\ud83d\udccb"
-    title: Batch Queue
-    details: Run up to 4 jobs in parallel with pause/resume, drag-and-drop reordering, job editing, JSON export/import, status filters, and when-done power actions.
-  - icon: "\ud83d\uddbc\ufe0f"
-    title: Image Compression
-    details: Compress JPEG, PNG, WebP, BMP, GIF, and TIFF with quality/scale controls, EXIF viewer, and RGB/luma histograms.
+    title: Make Any Video Play Anywhere
+    details: Got a video that refuses to open on your phone, TV, or computer? Convert it to a format that just works — no technical knowledge needed.
   - icon: "\ud83c\udfb5"
-    title: CLI Mode
-    details: Full headless scripting with subcommands for convert, info, compress, extract-audio, and batch operations.
+    title: Save the Music From a Video
+    details: Turn any video into an MP3 in seconds. Perfect for lectures, interviews, concerts, or that one song you can't find anywhere else.
+  - icon: "\u2702\ufe0f"
+    title: Trim the Boring Parts
+    details: Cut out the parts you don't want from a video. Watch it, pick where to start and stop, and keep only the good stuff.
+  - icon: "\ud83d\udcf8"
+    title: Shrink Photos So They're Easy to Share
+    details: Make big photos smaller so they upload faster and fit in emails and messages — without turning them into a blurry mess.
+  - icon: "\ud83d\udce6"
+    title: Convert Many Files at Once
+    details: Drop in a whole folder of files and let EncodeX work through them while you do something else. You can even set it to shut down your PC when it's done.
+  - icon: "\u26a1"
+    title: Fast, Even for Big Files
+    details: EncodeX uses your computer's built-in muscle (the graphics chip) to finish conversions much faster. No setup required — it happens automatically.
+
 ---
 
 ## See It In Action
 
-The EncodeX home dashboard — every tool one click away:
+The EncodeX home screen — every tool is one click away:
 
 ![EncodeX Home Dashboard](/images/home_dashboard.png)
 
-Head over to the [Features](/features) page for a full tour of what EncodeX can do.
+Head over to the [Features](/features) page for a friendly tour of everything EncodeX can do.
