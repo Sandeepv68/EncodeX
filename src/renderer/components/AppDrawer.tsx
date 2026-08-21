@@ -198,8 +198,13 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   };
 
   /**
-   * Opens the job popover for the nav row under the pointer/focus when that row
-   * carries a live blip; otherwise closes any open popover immediately.
+   * Opens the job popover when the pointer enters a live activity blip (or the
+   * row receives keyboard focus); otherwise closes any open popover
+   * immediately.
+   *
+   * Hover is intentionally bound to the blip itself rather than the whole nav
+   * row, so brushing across the drawer while jobs run does not flash popovers;
+   * only deliberately pointing at the flashing indicator opens one.
    *
    * Focus restores that come back from a MUI Modal overlay (e.g. dismissing the
    * window-close confirm dialog, which the dialog's focus trap sends back to the
@@ -307,7 +312,6 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
             data-testid={`nav-item-${item.to === '/' ? 'dashboard' : item.to.slice(1)}`}
             selected={location.pathname === item.to}
             sx={{ animationDelay: `${index * 0.05}s` }}
-            onMouseEnter={(e) => openPopover(e, item.to)}
             onMouseLeave={scheduleClose}
             onFocus={(e) => openPopover(e, item.to)}
             onBlur={scheduleClose}
@@ -321,18 +325,36 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
               {pageIcons[item.to]}
             </NavItemIcon>
             {!condensed && <NavItemText primary={t(`nav.${navKeyMap[item.to]}`)} />}
-            {item.to === '/convert' && isConverting && <NavBlip $condensed={condensed} aria-hidden="true" data-testid="nav-convert-blip" />}
+            {item.to === '/convert' && isConverting && (
+              <NavBlip
+                $condensed={condensed}
+                aria-hidden="true"
+                data-testid="nav-convert-blip"
+                onMouseEnter={(e) => openPopover(e, item.to)}
+              />
+            )}
             {item.to === '/audio-extract' && isExtractingAudio && (
-              <NavBlip $condensed={condensed} aria-hidden="true" data-testid="nav-audio-extract-blip" />
+              <NavBlip
+                $condensed={condensed}
+                aria-hidden="true"
+                data-testid="nav-audio-extract-blip"
+                onMouseEnter={(e) => openPopover(e, item.to)}
+              />
             )}
             {item.to === '/video-cut' && isCutting && (
-              <NavBlip $condensed={condensed} aria-hidden="true" data-testid="nav-video-cut-blip" />
+              <NavBlip
+                $condensed={condensed}
+                aria-hidden="true"
+                data-testid="nav-video-cut-blip"
+                onMouseEnter={(e) => openPopover(e, item.to)}
+              />
             )}
             {item.to === '/batch' && batchJobCount > 0 && (
               <NavCountBadge
                 $condensed={condensed}
                 data-testid="nav-batch-blip"
                 aria-label={t('batchQueue.badgeCount', { count: batchJobCount })}
+                onMouseEnter={(e) => openPopover(e, item.to)}
               >
                 {batchJobCount}
               </NavCountBadge>

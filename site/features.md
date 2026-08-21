@@ -4,6 +4,8 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 ## Media Conversion
 
+![Media Conversion](/images/convert.png)
+
 Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Supports batch mode for processing multiple files sequentially.
 
 ## Lossless Copy
@@ -16,21 +18,31 @@ Hardware-accelerated encoding with auto-detection of available encoder families.
 
 ## Media Information
 
+![Media Information](/images/media_info.png)
+
 Probe media files and inspect detailed per-stream information: codec, profile, level, resolution, display aspect ratio, pixel format, bit depth, color range/space/transfer/primaries, frame rate, bitrate, sample rate, sample format, channel count/layout, duration, start time, frame count, language, and tags.
 
 ## Image Compression
+
+![Image Compression](/images/image_compress.png)
 
 Compress images (JPEG, PNG, WebP, BMP, GIF, TIFF, PPM, PGM, PBM) with configurable quality scale and resolution scaling using FFmpeg's image codecs. Includes a live preview, a file-size readout, and — for JPEG/PNG/WebP inputs — a full EXIF metadata panel with RGB and luma histograms.
 
 ## Audio Extraction
 
+![Audio Extraction](/images/extract_audio.png)
+
 Extract audio tracks from video files. Output as AAC, MP3, AC3, FLAC, WAV, Vorbis, Opus, ALAC, or any of the 27 supported audio codecs. The source audio stream is selectable when multiple tracks are present.
 
 ## Video Cutting
 
+![Video Cutting](/images/cut_video.png)
+
 Preview and cut video segments with frame-accurate start/end time or duration selection. Includes a built-in player that decodes video frames (via an FFmpeg rawvideo pipe to an HTML Canvas element) and audio (via a separate S16LE PCM pipe converted to float and fed to the Web Audio API) in lockstep, with a zoomable multi-track timeline.
 
 ## Batch Queue
+
+![Batch Queue](/images/batch_process.png)
 
 Process multiple files sequentially with configurable operations (transcode, extract audio, compress image). The queue persists state across jobs with real-time progress tracking, per-job error handling, job removal, and cancel-all.
 
@@ -42,9 +54,13 @@ Process multiple files sequentially with configurable operations (transcode, ext
 
 ## Settings
 
+![Settings](/images/settings.png)
+
 Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), and window always-on-top. Preferences persist to `localStorage` and take effect on startup.
 
 ## Logs
+
+![Log Viewer](/images/logger.png)
 
 Live log viewer that aggregates console output from both the main and renderer processes over IPC. Supports level filtering (DEBUG/INFO/WARN/ERROR), clearing, and downloading the log as a `.txt` file.
 
