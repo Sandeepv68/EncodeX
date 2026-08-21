@@ -6,8 +6,8 @@ hero:
   text: The easy way to fix your video, audio, and photo files
   tagline: Video won't play? File too big to send? Need just the music from a clip? EncodeX does it all in a few clicks — free, on Windows, Mac, and Linux.
   image:
-    src: /images/banner.png
-    alt: EncodeX
+    src: /images/icon.png
+    alt: EncodeX logo
   actions:
     - theme: brand
       text: Download Now — It's Free

@@ -6,7 +6,7 @@ export default defineConfig({
   base: '/',
   head: [
     ['link', { rel: 'icon', href: '/images/icon.png' }],
-    ['meta', { name: 'theme-color', content: '#47848F' }],
+    ['meta', { name: 'theme-color', content: '#0359AD' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'EncodeX' }],
     ['meta', { property: 'og:description', content: 'A free, easy-to-use app to convert videos and audio, trim clips, extract music from video, and shrink photos. Works on Windows, Mac, and Linux.' }],

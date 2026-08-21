@@ -1,0 +1,26 @@
+.VPHero .image-src {
+  max-width: 320px;
+  max-height: 320px;
+  border-radius: 32px;
+}
+
+@media (min-width: 960px) {
+  .VPHero .image-src {
+    max-width: 380px;
+    max-height: 380px;
+  }
+}
+
+:root {
+  --vp-c-brand-1: #0359ad;
+  --vp-c-brand-2: #0f66c0;
+  --vp-c-brand-3: #2e7fd6;
+  --vp-c-brand-soft: rgba(3, 89, 173, 0.14);
+}
+
+.dark {
+  --vp-c-brand-1: #45c8ea;
+  --vp-c-brand-2: #22a9dd;
+  --vp-c-brand-3: #0561b4;
+  --vp-c-brand-soft: rgba(69, 200, 234, 0.16);
+}
