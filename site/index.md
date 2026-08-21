@@ -36,3 +36,11 @@ features:
     title: CLI Mode
     details: Full headless scripting with subcommands for convert, info, compress, extract-audio, and batch operations.
 ---
+
+## See It In Action
+
+The EncodeX home dashboard — every tool one click away:
+
+![EncodeX Home Dashboard](/images/home_dashboard.png)
+
+Head over to the [Features](/features) page for a full tour of what EncodeX can do.

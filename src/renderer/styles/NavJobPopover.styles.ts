@@ -62,20 +62,21 @@ export const PopoverThumb = styled('img')(({ theme }) => ({
 
 /**
  * Left-pointing arrow pinned to the left edge of the popover card, aimed at the
- * nav row it is anchored to. Rendered as a rotated square whose fill and border
- * match the card so the tip reads as part of it.
+ * activity blip it is anchored to (the card is vertically centered on the
+ * blip). Rendered as a rotated square whose fill and border match the card so
+ * the tip reads as part of it.
  * @const PopoverArrow
  */
 export const PopoverArrow = styled(Box)(({ theme }) => ({
   position: 'absolute',
   left: `-${theme.typography.pxToRem(7)}`,
-  top: theme.typography.pxToRem(20),
+  top: '50%',
   width: theme.typography.pxToRem(12),
   height: theme.typography.pxToRem(12),
   backgroundColor: theme.palette.background.paper,
   borderLeft: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
-  transform: 'rotate(45deg)',
+  transform: 'translateY(-50%) rotate(45deg)',
   zIndex: 1,
 }));
 

@@ -10,11 +10,11 @@
  * the relevant store and hands it in via the `content` prop - so the popover
  * can be reused and unit-tested in isolation.
  *
- * The popover is anchored to the nav row and is left-open while the pointer
- * rests on the row or the card: the host drives `open` via the `active` prop
- * and forwards `onMouseEnter` / `onMouseLeave` to the paper so the close can be
- * deferred while the cursor is over the card. Escape and focus-out close it
- * through `onClose`.
+ * The popover is anchored to the activity blip and is left-open while the
+ * pointer rests on the blip, its nav row, or the card: the host drives `open`
+ * via the `active` prop and forwards `onMouseEnter` / `onMouseLeave` to the
+ * paper so the close can be deferred while the cursor is over the card. Escape
+ * and focus-out close it through `onClose`.
  *
  * The full-screen Modal overlay MUI Popover mounts while open would otherwise
  * sit above the nav rows and steal their hover and click events (flickering the
@@ -23,7 +23,7 @@
  *
  * Props (see {@link NavJobPopoverProps}):
  *  - active: the blip id the popover is open for, or null when closed.
- *  - anchorEl: the nav row element the popover pins to.
+ *  - anchorEl: the blip element the popover pins to.
  *  - onClose: closes the popover.
  *  - content: resolved title / status / fileName / progress / input, or null.
  *  - onMouseEnter / onMouseLeave: forwarded to the popover paper.
@@ -35,6 +35,7 @@ import { Box, Popover, Typography } from '@mui/material';
 import ProgressBar from './ProgressBar';
 import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
 import type { NavJobPopoverProps } from './types';
+import { SHADOWS } from '../colors';
 import { PopoverArrow, PopoverParallelBadge, PopoverPileThumb, PopoverThumb } from '../styles/NavJobPopover.styles';
 
 /**
@@ -161,8 +162,8 @@ function PileThumb({ input, index }: { input: string; index: number }) {
 /**
  * Renders the navigation job popover card.
  *
- * When `active` and `content` are set, mounts a Popover anchored below/right of
- * the nav row showing the job status and a determinate progress bar (or a
+ * When `active` and `content` are set, mounts a Popover anchored to the
+ * activity blip showing the job status and a determinate progress bar (or a
  * localized "starting" caption while progress is not yet available). A paused
  * job is annotated with the localized paused label and passed through to the
  * ProgressBar for paused styling. `data-testid="nav-job-popover"` marks the
@@ -182,8 +183,8 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
       onClose={onClose}
       disableAutoFocus
       disableEnforceFocus
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+      anchorOrigin={{ vertical: 'center', horizontal: 'right' }}
+      transformOrigin={{ vertical: 'center', horizontal: 'left' }}
       slotProps={{
         root: { style: { pointerEvents: 'none' } },
         backdrop: { style: { pointerEvents: 'none' } },
@@ -199,6 +200,7 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
             borderRadius: 2,
             pointerEvents: 'auto',
             overflow: 'visible',
+            boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
           }),
         },
       }}
