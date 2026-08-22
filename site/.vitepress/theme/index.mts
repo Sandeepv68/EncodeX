@@ -1,4 +1,5 @@
 import DefaultTheme from 'vitepress/theme'
+import { defineAsyncComponent } from 'vue'
 import CustomLayout from './CustomLayout.vue'
 import OsIcon from './components/OsIcon.vue'
 import './custom.css'
@@ -8,5 +9,9 @@ export default {
   Layout: CustomLayout,
   enhanceApp({ app }) {
     app.component('OsIcon', OsIcon)
+    app.component(
+      'Mermaid',
+      defineAsyncComponent(() => import('vitepress-plugin-mermaid/Mermaid.vue')),
+    )
   },
 }

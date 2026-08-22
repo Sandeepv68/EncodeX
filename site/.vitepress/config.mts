@@ -1,5 +1,27 @@
 import { defineConfig } from 'vitepress'
-import { withMermaid } from 'vitepress-plugin-mermaid'
+import { MermaidMarkdown } from 'vitepress-plugin-mermaid'
+import type { Plugin } from 'vite'
+
+function mermaidVirtualConfig(inlineOptions: Record<string, unknown> = {}): Plugin {
+  const moduleId = 'virtual:mermaid-config'
+  const resolved = '\0' + moduleId
+  return {
+    name: 'encodex-mermaid-virtual-config',
+    resolveId(id) {
+      if (id === moduleId) return resolved
+    },
+    load(id) {
+      if (id === resolved) {
+        return `export default ${JSON.stringify({
+          securityLevel: 'loose',
+          startOnLoad: false,
+          externalDiagrams: [],
+          ...inlineOptions,
+        })}`
+      }
+    },
+  }
+}
 
 const docPaths = [
   'architecture',
@@ -163,23 +185,47 @@ function docsSidebar(locale: string) {
   ]
 }
 
-export default defineConfig(
-  withMermaid({
+export default defineConfig({
   title: 'EncodeX',
   description:
     'A free, easy-to-use app to convert videos and audio, trim clips, extract music from video, and shrink photos. Works on Windows, Mac, and Linux.',
   base: '/',
   srcExclude: ['**/README.md'],
   rewrites: (path) => (path.startsWith('locales/') ? path.slice('locales/'.length) : path),
+  markdown: {
+    config: (md) => {
+      MermaidMarkdown(md)
+    },
+  },
   vite: {
+    build: {
+      chunkSizeWarningLimit: 700,
+    },
+    plugins: [mermaidVirtualConfig()],
     optimizeDeps: {
-      include: ['mermaid', 'fastdom', 'fastdom/extensions/fastdom-promised'],
+      include: [
+        'mermaid',
+        'fastdom',
+        'fastdom/extensions/fastdom-promised',
+        '@braintree/sanitize-url',
+        'dayjs',
+        'debug',
+        'cytoscape-cose-bilkent',
+        'cytoscape',
+      ],
+    },
+    resolve: {
+      alias: {
+        'dayjs/plugin/advancedFormat.js': 'dayjs/esm/plugin/advancedFormat',
+        'dayjs/plugin/customParseFormat.js': 'dayjs/esm/plugin/customParseFormat',
+        'cytoscape/dist/cytoscape.umd.js': 'cytoscape/dist/cytoscape.esm.js',
+      },
     },
   },
   sitemap: { hostname: 'https://encodex.in' },
   head: [
     ['link', { rel: 'icon', href: '/images/favicon-64.png' }],
-    ['link', { rel: 'preload', as: 'image', href: '/images/icon.webp' }],
+    ['link', { rel: 'preload', as: 'image', href: '/images/icon.webp', fetchpriority: 'high' }],
     ['meta', { name: 'theme-color', content: '#0359AD' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'EncodeX' }],
@@ -337,5 +383,4 @@ gtag('config', 'G-SM28DL4DYR');`,
       provider: 'local',
     },
   },
-  }),
-)
+})

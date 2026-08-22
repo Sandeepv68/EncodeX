@@ -1,0 +1,20 @@
+# EncodeX
+
+A free, open-source desktop app for converting videos and audio, trimming clips, extracting music from video, compressing images, and batch-processing media files. Built on FFmpeg, React, TypeScript, and Electron. Works on Windows, Mac, and Linux. EncodeX is open-source software under the MIT license, available in 35+ languages.
+
+- [Home](https://encodex.in/): Product overview, everyday use cases, and quick facts about EncodeX.
+- [Features](https://encodex.in/features): Full tour of every tool: convert, trim, extract audio, compress images, and batch process.
+- [Download](https://encodex.in/download): Installers for Windows (NSIS), Mac (DMG), and Linux (AppImage).
+- [Blog](https://encodex.in/blog/): Release notes and announcements.
+- [Contributing](https://encodex.in/contributing): How to set up a development environment and submit contributions.
+- [Docs: Architecture Overview](https://encodex.in/docs/architecture): High-level architecture of the Electron app.
+- [Docs: Processes & Startup](https://encodex.in/docs/architecture-processes): Main and renderer process lifecycle.
+- [Docs: Transcoders](https://encodex.in/docs/architecture-transcoders): FFmpeg transcoding pipeline details.
+- [Docs: Renderer & State](https://encodex.in/docs/architecture-renderer): UI structure and state management.
+- [Docs: Feature Reference](https://encodex.in/docs/features-reference): Complete feature matrix.
+- [Docs: CLI Usage](https://encodex.in/docs/cli): Command-line interface reference.
+- [Docs: IPC Channels](https://encodex.in/docs/ipc): Inter-process communication API.
+- [Docs: Testing](https://encodex.in/docs/testing): Unit, integration, and e2e test setup.
+- [Docs: Project Structure](https://encodex.in/docs/project-structure): Repository layout guide.
+- [Docs: Update Manager](https://encodex.in/docs/update-manager): Auto-update system internals.
+- [GitHub Repository](https://github.com/Sandeepv68/EncodeX): Source code and issue tracker.
