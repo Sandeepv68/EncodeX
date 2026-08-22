@@ -332,6 +332,26 @@ html {
     max-height: 380px;
   }
 }
+
+/* Mobile/tablet: the default theme pulls the hero image up under the
+   transparent navbar and over the hero text with large negative margins.
+   Neutralize them so the logo never overlaps the nav or the text. */
+@media (max-width: 959px) {
+  .VPHero .image {
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
+}
+@media (max-width: 639px) {
+  .VPHero .image {
+    margin-top: 8px;
+    margin-bottom: 16px;
+  }
+  .VPHero .image-src {
+    max-width: 240px;
+    max-height: 240px;
+  }
+}
 .dark .VPHero .image-src {
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
 }

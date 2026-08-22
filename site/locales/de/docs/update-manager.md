@@ -6,18 +6,13 @@ Implementiert einen eigenen integrierten Update-Manager (Option C), der GitHub R
 
 ## Architektur
 
-```
-GitHub Releases API
-       |
-  [main/updater.ts]   fetches /releases/latest, compares versions, downloads
-       |
-  [main/ipc/updater.ts]  registers IPC handlers + pushes events to renderer
-       |
-  [preload/index.ts]  exposes checkForUpdates / downloadUpdate / events
-       |
-  [renderer/stores/updateStore.ts]  Zustand state for update flow
-       |
-  [renderer/components/UpdateDialog.tsx]  MUI Dialog with progress bar
+```mermaid
+flowchart TD
+    GH["GitHub Releases API"] --> U["main/updater.ts<br/>fetches /releases/latest,<br/>compares versions, downloads"]
+    U --> I["main/ipc/updater.ts<br/>registers IPC handlers +<br/>pushes events to renderer"]
+    I --> P["preload/index.ts<br/>exposes checkForUpdates /<br/>downloadUpdate / events"]
+    P --> S["renderer/stores/updateStore.ts<br/>Zustand state for update flow"]
+    S --> D2["renderer/components/UpdateDialog.tsx<br/>MUI Dialog with progress bar"]
 ```
 
 ## Zu erstellende Dateien

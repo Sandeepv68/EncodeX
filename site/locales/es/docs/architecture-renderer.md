@@ -97,19 +97,13 @@ El sistema de errores (`src/shared/errors.ts`) define 16 códigos tipados — `F
 
 El flujo es siempre el mismo:
 
-```
-throw new Error(...)
-    |
-    v
-formatError(err)                    <- shared/errors.ts
-    |  normalizes to AppError { code, message, detail, timestamp }
-    |  infers code from message keywords / system errno (ENOENT, EACCES, ...)
-    v
-errorStore.showError()              <- stores in currentError + errorHistory (cap 50)
-    |
-    +-- ErrorSnackbar               <- global toast, auto-dismiss 6s
-    +-- ErrorBanner                 <- inline per-page, closable
-    +-- ErrorBoundary               <- React crash catch-all (nested per-page + per-component)
+```mermaid
+flowchart TD
+    T["throw new Error(...)"] --> F["formatError(err)<br/>shared/errors.ts"]
+    F -->|"normalizes to AppError with code / message / detail / timestamp<br/>infers code from message keywords or system errno (ENOENT, EACCES, ...)"| S["errorStore.showError()<br/>stores in currentError + errorHistory (cap 50)"]
+    S --> SN["ErrorSnackbar<br/>global toast, auto-dismiss 6s"]
+    S --> BA["ErrorBanner<br/>inline per-page, closable"]
+    S --> BO["ErrorBoundary<br/>React crash catch-all,<br/>nested per-page + per-component"]
 ```
 
 Los manejadores IPC envuelven cada operación en `try/catch` y relanzan `formatError(err)`, así los códigos de error sobreviven al límite entre procesos y el renderer siempre recibe un `AppError` tipado.
@@ -140,43 +134,35 @@ La página Logs (`pages/Logs.tsx`) agrega ambas fuentes con filtrado por nivel (
 
 ### Conversión (GUI)
 
-```
-React page -> Zustand store -> electronAPI.convertFile -> ipcMain.handle(convert-file)
--> factory.createTranscoder(type) -> ITranscoder.convert() -> FFmpeg process
--> 'progress' events -> send(conversion-progress) -> onConversionProgress -> useMediaTask -> ProgressBar
+```mermaid
+flowchart LR
+    A["React page"] --> B["Zustand store"] --> C["electronAPI.convertFile"] --> D3["ipcMain.handle(convert-file)"] --> E["factory.createTranscoder(type)"] --> F["ITranscoder.convert()"] --> G["FFmpeg process"] --> H["progress events"] --> I["send(conversion-progress)"] --> J["onConversionProgress"] --> K["useMediaTask"] --> L["ProgressBar"]
 ```
 
 ### Cola por lotes
 
-```
-QueueJob card -> electronAPI.queueAdd -> JobQueue.addJob -> processNext()
--> transcoder.convert() -> 'progress'/'end'/'error' -> queue events -> IPC events -> queueStore -> QueueJobCard
+```mermaid
+flowchart LR
+    A["QueueJob card"] --> B["electronAPI.queueAdd"] --> C["JobQueue.addJob"] --> D4["processNext()"] --> E["transcoder.convert()"] --> F["progress / end / error events"] --> G["queue events"] --> H["IPC events"] --> I["queueStore"] --> J["QueueJobCard"]
 ```
 
 ### Reproducción de vídeo
 
-```
-VideoCut page -> playerOpen -> FrameDecoder.spawnFfmpeg (video pipe:1 + audio pipe:3)
--> 'frame'/'audio' events -> send(player-frame / player-audio)
--> onPlayerFrame / onPlayerAudio -> MediaPlayer (Canvas + Web Audio, A/V sync)
+```mermaid
+flowchart LR
+    A["VideoCut page"] --> B["playerOpen"] --> C["FrameDecoder.spawnFfmpeg<br/>video pipe:1 + audio pipe:3"] --> D5["frame / audio events"] --> E["send(player-frame / player-audio)"] --> G["onPlayerFrame / onPlayerAudio"] --> H["MediaPlayer<br/>Canvas + Web Audio,<br/>A/V sync"]
 ```
 
 ### Línea de tiempo
 
-```
-VideoCut page -> extractWaveform + extractThumbnails
--> timeline-media.ts (parallel FFmpeg segments, throttled)
--> WaveformData / ThumbnailStrip -> VideoTimeline.tsx (zoom/trim/scrub)
+```mermaid
+flowchart LR
+    A["VideoCut page"] --> B["extractWaveform + extractThumbnails"] --> C["timeline-media.ts<br/>parallel FFmpeg segments, throttled"] --> D6["WaveformData / ThumbnailStrip"] --> E["VideoTimeline.tsx<br/>zoom / trim / scrub"]
 ```
 
 ### Actualizaciones integradas
 
-```
-About page -> updateStore.checkForUpdates -> electronAPI.checkForUpdates
--> updater.ts fetches GitHub Releases API -> compares semver versions
--> send(update-available / update-not-available) -> updateStore -> UpdateDialog
--> electronAPI.downloadUpdate -> updater.ts downloads installer to temp dir
--> send(update-progress) -> updateStore -> progress bar
--> send(update-downloaded) -> updateStore -> "Install & Restart" button
--> electronAPI.installUpdate -> shell.openPath(installer) + app.quit()
+```mermaid
+flowchart LR
+    A["About page"] --> B["updateStore.checkForUpdates"] --> C["electronAPI.checkForUpdates"] --> D7["updater.ts fetches GitHub Releases API"] --> E7["compares semver versions"] --> F7["send(update-available / update-not-available)"] --> G7["updateStore"] --> H7["UpdateDialog"] --> I7["downloadUpdate -> installer to temp dir"] --> J7["send(update-progress) -> progress bar"] --> K7["send(update-downloaded) -> Install + Restart button"] --> L7["installUpdate -> shell.openPath(installer) + app.quit()"]
 ```

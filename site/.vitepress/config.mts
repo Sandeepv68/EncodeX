@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
 const docPaths = [
   'architecture',
@@ -162,12 +163,19 @@ function docsSidebar(locale: string) {
   ]
 }
 
-export default defineConfig({
+export default defineConfig(
+  withMermaid({
   title: 'EncodeX',
   description:
     'A free, easy-to-use app to convert videos and audio, trim clips, extract music from video, and shrink photos. Works on Windows, Mac, and Linux.',
   base: '/',
   srcExclude: ['**/README.md'],
+  rewrites: (path) => (path.startsWith('locales/') ? path.slice('locales/'.length) : path),
+  vite: {
+    optimizeDeps: {
+      include: ['mermaid', 'fastdom', 'fastdom/extensions/fastdom-promised'],
+    },
+  },
   sitemap: { hostname: 'https://encodex.in' },
   head: [
     ['link', { rel: 'icon', href: '/images/favicon-64.png' }],
@@ -329,4 +337,5 @@ gtag('config', 'G-SM28DL4DYR');`,
       provider: 'local',
     },
   },
-})
+  }),
+)

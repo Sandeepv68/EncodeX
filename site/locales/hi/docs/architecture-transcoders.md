@@ -61,27 +61,15 @@ Flags केवल तभी बनाए जाते हैं जब accelera
 
 GUI रूपांतरण के लिए complete end-to-end path:
 
-```
-User action (Convert page)
-    |
-    v
-electronAPI.convertFile(input, output, options, transcoderType)   <- preload
-    |  ipcRenderer.invoke('convert-file', ...)
-    v
-ipc/conversion.ts: ipcMain.handle(CONVERT_FILE)
-    |  creates ITranscoder via factory, calls convert()
-    v
-Transcoder core (ffmpeg-core | fftool-core | bmf-core)
-    |  fluent-ffmpeg / child_process / BMF CLI (+ hwaccel flags)
-    |  emits 'progress' / 'error' / 'end'
-    v
-ipc/conversion.ts forwards progress via send(CONVERSION_PROGRESS, ...)
-    |  win.webContents.send
-    v
-preload onConversionProgress -> renderer hook (useMediaTask)
-    |
-    v
-useConversion / page state -> ProgressBar UI
+```mermaid
+flowchart TD
+    A["User action (Convert page)"] -->|"electronAPI.convertFile(input, output, options)"| B["preload: ipcRenderer.invoke('convert-file')"]
+    B --> C["ipc/conversion.ts: ipcMain.handle(CONVERT_FILE)"]
+    C -->|"creates ITranscoder via factory, calls convert()"| D["Transcoder core<br/>ffmpeg-core / fftool-core / bmf-core"]
+    D -->|"fluent-ffmpeg / child_process / BMF CLI<br/>+ hwaccel flags"| E["FFmpeg process emits progress / error / end"]
+    E --> F["ipc/conversion.ts forwards progress via send(CONVERSION_PROGRESS)"]
+    F -->|"win.webContents.send"| G["preload onConversionProgress -> renderer hook (useMediaTask)"]
+    G --> H["useConversion / page state -> ProgressBar UI"]
 ```
 
 टिप्पणियाँ:

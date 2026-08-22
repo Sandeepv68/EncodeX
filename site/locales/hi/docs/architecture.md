@@ -2,7 +2,7 @@
 
 EncodeX FFmpeg, React, TypeScript और Electron पर बना एक क्रॉस-प्लेटफ़ॉर्म मल्टीमीडिया रूपांतरण उपकरण है। यह उन डेवलपर्स के लिए है जो योगदान देने से पहले यह समझना चाहते हैं कि विभिन्न हिस्से आपस में कैसे जुड़ते हैं।
 
-<p align="center"><img src="https://raw.githubusercontent.com/Sandeepv68/EncodeX/main/assets/architecture.png" alt="EncodeX architecture" width="1024" height="1024" loading="lazy" /></p>
+<p align="center"><img src="/images/architecture.png" alt="EncodeX architecture" width="1024" height="1024" loading="lazy" /></p>
 
 ## डिज़ाइन सिद्धांत
 
