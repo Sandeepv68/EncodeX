@@ -198,6 +198,9 @@ export default defineConfig({
     },
   },
   vite: {
+    build: {
+      chunkSizeWarningLimit: 700,
+    },
     plugins: [mermaidVirtualConfig()],
     optimizeDeps: {
       include: [
