@@ -606,6 +606,8 @@
     "authorTitle": "Forfatter og tilbakemelding",
     "author": "Forfatter",
     "repository": "Repository",
+
+    "contact": "Kontakt",
     "feedback": "Fant du en feil eller har du et forslag?",
     "reportIssue": "Åpne en issue på GitHub",
     "licenseTitle": "Lisens",

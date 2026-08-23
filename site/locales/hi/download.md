@@ -3,18 +3,16 @@
 EncodeX **मुफ़्त** है और Windows, Mac और Linux पर चलता है। नीचे अपने कंप्यूटर का टाइप चुनें, डाउनलोड करें, इंस्टॉल करें — बस हो गया।
 
 ::: tip हमेशा सबसे नया वर्ज़न लें
-नए वर्ज़न [GitHub Releases पेज](https://github.com/Sandeepv68/EncodeX/releases) पर आते हैं। नीचे के लिंक हमेशा सबसे नया वर्ज़न देते हैं।
+नए वर्ज़न [GitHub Releases पेज](https://github.com/Sandeepv68/EncodeX/releases) पर आते हैं। नीचे के लिंक हमेशा सबसे नया वर्ज़न देते हैं — हर एक के साथ आर्किटेक्चर, फ़ाइल साइज़ और SHA-256 चेकसम भी, ताकि आप अपना डाउनलोड जाँच सकें।
 :::
+
+<LatestDownloads />
 
 ## <OsIcon name="windows" /> Windows
 
 **बस चाहते हैं कि चल जाए?** पहला बटन दबाएँ — वही लगभग सबके लिए सही है।
 
-| | डाउनलोड | किसके लिए |
-|---|---------|-----|
-| ✅ **सुझाया गया** | [Windows के लिए डाउनलोड करें](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x64-setup.exe) | ज़्यादातर PC और लैपटॉप (64-bit) |
-| पुराना 32-bit PC | [32-bit वर्ज़न](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-ia32-setup.exe) | बहुत पुराने कंप्यूटर |
-| ARM लैपटॉप | [ARM वर्ज़न](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64-setup.exe) | Snapdragon वाले Windows लैपटॉप |
+<LatestDownloads platform="windows" />
 
 **इंस्टॉल करने के लिए:** डाउनलोड हुई फ़ाइल खोलें और स्क्रीन पर दिखे क़दम अपनाएँ। Windows 10 और उससे नए पर चलता है।
 
@@ -22,10 +20,7 @@ EncodeX **मुफ़्त** है और Windows, Mac और Linux पर �
 
 ## <OsIcon name="apple" /> Mac
 
-| | डाउनलोड | किसके लिए |
-|---|---------|-----|
-| नए Mac (2021 या बाद के) | [Apple Silicon के लिए डाउनलोड करें](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64.dmg) | M1, M2, M3, M4 चिप्स |
-| पुराने Mac | [Intel के लिए डाउनलोड करें](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x64.dmg) | 2021 से पहले के Mac |
+<LatestDownloads platform="macos" />
 
 **इंस्टॉल करने के लिए:** डाउनलोड हुई `.dmg` फ़ाइल खोलें और EncodeX को अपने Applications फ़ोल्डर में घसीटें।
 
@@ -43,11 +38,7 @@ EncodeX मुफ़्त और ओपन सोर्स है (और Mac A
 
 ## <OsIcon name="linux" /> Linux
 
-| | डाउनलोड | किसके लिए |
-|---|---------|-----|
-| ✅ **सुझाया गया** | [AppImage डाउनलोड करें](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x86_64.AppImage) | ज़्यादातर Linux कंप्यूटर (64-bit) |
-| ARM64 | [ARM64 AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64.AppImage) | ARM बोर्ड और लैपटॉप |
-| ARMv7 | [ARMv7 AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-armv7l.AppImage) | पुराने single-board कंप्यूटर |
+<LatestDownloads platform="linux" />
 
 **चलाने के लिए:** AppImage एक अकेली फ़ाइल है — इंस्टॉल की ज़रूरत नहीं। उसे चलने योग्य बनाएँ और डबल-क्लिक करें:
 
@@ -69,6 +60,12 @@ chmod +x EncodeX-*.AppImage
 ## अपडेट बने रहना
 
 नया वर्ज़न आते ही EncodeX ऐप के अंदर बता देता है और अपडेट ख़ुद डाउनलोड व शुरू कर सकता है — इस पेज पर लौटने की ज़रूरत नहीं।
+
+## पुराने वर्ज़न
+
+कोई पुराना वर्ज़न चाहिए? नीचे उस वर्ज़न को खोलें — हर फ़ाइल के साथ साइज़ और SHA-256 चेकसम दिया गया है।
+
+<LatestDownloads older />
 
 ## मदद चाहिए?
 

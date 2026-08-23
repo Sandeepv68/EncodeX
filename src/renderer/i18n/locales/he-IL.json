@@ -606,6 +606,8 @@
     "authorTitle": "מחבר ומשוב",
     "author": "מחבר",
     "repository": "מאגר",
+
+    "contact": "איש קשר",
     "feedback": "מצאתם באג או שיש לכם הצעה?",
     "reportIssue": "פתחו בעיה ב-GitHub",
     "licenseTitle": "רישיון",

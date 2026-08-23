@@ -606,6 +606,8 @@
     "authorTitle": "作者与反馈",
     "author": "作者",
     "repository": "仓库",
+
+    "contact": "联系方式",
     "feedback": "发现错误或有建议？",
     "reportIssue": "在 GitHub 上打开 Issue",
     "licenseTitle": "许可证",

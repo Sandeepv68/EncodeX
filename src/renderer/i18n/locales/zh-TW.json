@@ -606,6 +606,8 @@
     "authorTitle": "作者與意見回饋",
     "author": "作者",
     "repository": "存放庫",
+
+    "contact": "聯絡資訊",
     "feedback": "發現錯誤或有建議？",
     "reportIssue": "在 GitHub 上開啟 Issue",
     "licenseTitle": "授權條款",

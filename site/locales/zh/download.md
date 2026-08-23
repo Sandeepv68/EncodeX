@@ -3,18 +3,16 @@
 EncodeX **免费**，支持 Windows、Mac 和 Linux。在下面选择你的电脑类型，下载、安装，即可使用。
 
 ::: tip 始终获取最新版本
-新版本发布在 [GitHub Releases 页面](https://github.com/Sandeepv68/EncodeX/releases)。下面的链接始终指向最新版。
+新版本发布在 [GitHub Releases 页面](https://github.com/Sandeepv68/EncodeX/releases)。下面的链接始终指向最新版——每个都附带架构、文件大小和 SHA-256 校验值，方便验证下载。
 :::
+
+<LatestDownloads />
 
 ## <OsIcon name="windows" /> Windows
 
 **只想能用就行？** 点第一个按钮——适合绝大多数人。
 
-| | 下载 | 适用 |
-|---|---------|-----|
-| ✅ **推荐** | [下载 Windows 版](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x64-setup.exe) | 大多数台式机和笔记本（64 位） |
-| 老旧 32 位电脑 | [32 位版本](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-ia32-setup.exe) | 非常老的机器 |
-| ARM 笔记本 | [ARM 版本](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64-setup.exe) | 搭载骁龙的 Windows 笔记本 |
+<LatestDownloads platform="windows" />
 
 **安装：** 打开下载好的文件，按屏幕提示操作。支持 Windows 10 及以上。
 
@@ -22,10 +20,7 @@ EncodeX **免费**，支持 Windows、Mac 和 Linux。在下面选择你的电�
 
 ## <OsIcon name="apple" /> Mac
 
-| | 下载 | 适用 |
-|---|---------|-----|
-| 较新的 Mac（2021 年及以后） | [下载 Apple Silicon 版](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64.dmg) | M1、M2、M3、M4 芯片 |
-| 较旧的 Mac | [下载 Intel 版](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x64.dmg) | 2021 年之前的 Mac |
+<LatestDownloads platform="macos" />
 
 **安装：** 打开下载的 `.dmg` 文件，把 EncodeX 拖进"应用程序"文件夹。
 
@@ -43,11 +38,7 @@ EncodeX **免费**，支持 Windows、Mac 和 Linux。在下面选择你的电�
 
 ## <OsIcon name="linux" /> Linux
 
-| | 下载 | 适用 |
-|---|---------|-----|
-| ✅ **推荐** | [下载 AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x86_64.AppImage) | 大多数 Linux 电脑（64 位） |
-| ARM64 | [ARM64 AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64.AppImage) | ARM 开发板和笔记本 |
-| ARMv7 | [ARMv7 AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-armv7l.AppImage) | 较老的单板计算机 |
+<LatestDownloads platform="linux" />
 
 **运行：** AppImage 是单个文件——无需安装。加上可执行权限后双击即可：
 
@@ -69,6 +60,12 @@ chmod +x EncodeX-*.AppImage
 ## 保持更新
 
 有新版本时，EncodeX 会在应用内提醒你，并可以自动下载并启动更新——不用再回到这个页面。
+
+## 历史版本
+
+需要旧版本？在下方展开对应版本即可下载——每个文件都标有大小和 SHA-256 校验值。
+
+<LatestDownloads older />
 
 ## 需要帮助？
 

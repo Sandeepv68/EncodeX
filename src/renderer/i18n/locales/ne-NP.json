@@ -606,6 +606,8 @@
     "authorTitle": "लेखक र प्रतिक्रिया",
     "author": "लेखक",
     "repository": "भण्डार",
+
+    "contact": "सम्पर्क",
     "feedback": "कुनै बग भेट्टाउनुभयो वा सुझाव छ?",
     "reportIssue": "GitHub मा issue खोल्नुहोस्",
     "licenseTitle": "इजाजतपत्र",

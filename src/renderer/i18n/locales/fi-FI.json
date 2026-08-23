@@ -606,6 +606,8 @@
     "authorTitle": "Tekijä & palaute",
     "author": "Tekijä",
     "repository": "Säilö",
+
+    "contact": "Yhteystiedot",
     "feedback": "Löysitkö virheen tai onko sinulla ehdotus?",
     "reportIssue": "Avaa issue GitHubissa",
     "licenseTitle": "Lisenssi",
