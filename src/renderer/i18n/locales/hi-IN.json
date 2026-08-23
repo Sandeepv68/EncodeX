@@ -475,6 +475,8 @@
     "alwaysOnTopHint": "ऐप विंडो को अन्य सभी विंडो के ऊपर रखता है।",
     "launchAtLogin": "स्टार्टअप पर लॉन्च करें",
     "launchAtLoginHint": "जब आप अपने कंप्यूटर में साइन इन करते हैं, तो EncodeX स्वचालित रूप से शुरू हो जाता है।",
+    "monitoringErrorReporting": "त्रुटि रिपोर्टिंग",
+    "monitoringErrorReportingHint": "गुमनाम त्रुटि रिपोर्ट भेजकर EncodeX को बेहतर बनाने में मदद करता है। आप इसे कभी भी बंद कर सकते हैं।",
     "hardwareAcceleration": "हार्डवेयर त्वरण",
     "hwaccelMode": "त्वरण मोड",
     "hwaccelModeAuto": "स्वचालित (डिकोड + एन्कोड)",

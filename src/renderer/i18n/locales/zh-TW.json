@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "保持應用程式視窗位於所有其他視窗之上。",
     "launchAtLogin": "登入時啟動",
     "launchAtLoginHint": "登入電腦時自動啟動 EncodeX。",
+    "monitoringErrorReporting": "错误报告",
+    "monitoringErrorReportingHint": "发送匿名错误报告以帮助改进 EncodeX。您可以随时关闭此功能。",
     "hardwareAcceleration": "硬體加速",
     "hwaccelMode": "加速模式",
     "hwaccelModeAuto": "自動（解碼 + 編碼）",

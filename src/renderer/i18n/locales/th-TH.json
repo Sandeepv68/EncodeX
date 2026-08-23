@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "ทำให้หน้าต่างแอปอยู่เหนือหน้าต่างอื่นทั้งหมด",
     "launchAtLogin": "เปิดใช้งานเมื่อเริ่มระบบ",
     "launchAtLoginHint": "เริ่ม EncodeX โดยอัตโนมัติเมื่อคุณลงชื่อเข้าใช้คอมพิวเตอร์",
+    "monitoringErrorReporting": "การรายงานข้อผิดพลาด",
+    "monitoringErrorReportingHint": "ช่วยปรับปรุง EncodeX โดยส่งรายงานข้อผิดพลาดที่ไม่ระบุตัวตน คุณสามารถปิดฟีเจอร์นี้ได้ตลอดเวลา",
     "hardwareAcceleration": "การเร่งด้วยฮาร์ดแวร์",
     "hwaccelMode": "โหมดการเร่งความเร็ว",
     "hwaccelModeAuto": "อัตโนมัติ (ถอดรหัส + เข้ารหัส)",

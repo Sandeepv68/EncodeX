@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "រក្សាបង្អួចកម្មវិធីនៅពីលើបង្អួចផ្សេងទៀតទាំងអស់។",
     "launchAtLogin": "បើកដំណើរការនៅពេលចាប់ផ្ដើម",
     "launchAtLoginHint": "ចាប់ផ្ដើម EncodeX ដោយស្វ័យប្រវត្តិ នៅពេលអ្នកចូលគណនីទៅកុំព្យូទ័ររបស់អ្នក។",
+    "monitoringErrorReporting": "ការរាយការណ៍កំហុស",
+    "monitoringErrorReportingHint": "ជួយកែលម្អ EncodeX ដោយផ្ញើរបាកានកំហុសអនាមិក។ អ្នកអាចបិទមុខងារនេះនៅពេលណាមួយ។",
     "hardwareAcceleration": "ការពន្លឿនផ្នែករឹង",
     "hwaccelMode": "របៀបពន្លឿន",
     "hwaccelModeAuto": "ស្វ័យប្រវត្តិ (decoder + encoder)",

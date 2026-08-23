@@ -24,6 +24,9 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { Logger } from '../shared/logger';
+import { addMonitoringBreadcrumb, captureException, initMonitoring } from '../shared/monitoring/MonitoringService';
+import type { MonitoringConfig } from '../shared/monitoring/types';
+import { resolveRendererMonitorProvider } from './monitoring/providerFactory';
 import App from './App';
 import i18n from './i18n/config';
 import { DirectionProvider } from './i18n/DirectionProvider';
@@ -96,13 +99,57 @@ log.info(LOG_MOUNTING_REACT_APP);
  * not stored: the listener lives for the whole renderer lifetime.
  */
 setupSessionCleanup();
+log.info(LOG_MOUNTING_REACT_APP);
+
 /**
- * Creates the React root on the `#root` element and mounts the app inside
- * `React.StrictMode`.
+ * Initializes renderer-side monitoring before React mounts so early errors
+ * are covered. The backend choice mirrors the main process (which owns the
+ * DSN) via `window.electronAPI.monitoringGetState()`; consent is enforced
+ * centrally by the facade. Global `error` / `unhandledrejection` listeners
+ * route crashes through the provider-agnostic facade (Sentry's own automatic
+ * global-handler integration is disabled in its adapter to avoid duplicates).
+ *
+ * @returns {Promise<void>} Resolves once init and handler wiring settle.
+ */
+async function bootstrapRendererMonitoring(): Promise<void> {
+  let backend = 'noop';
+  let enabled = false;
+  try {
+    const state = await window.electronAPI?.monitoringGetState();
+    backend = state?.backend ?? 'noop';
+    enabled = state?.enabled === true && backend !== 'noop';
+  } catch (err) {
+    log.warn('monitoringGetState failed, continuing without monitoring:', err);
+  }
+
+  await initMonitoring(
+    {
+      enabled,
+      provider: backend,
+    } satisfies MonitoringConfig,
+    resolveRendererMonitorProvider,
+  );
+
+  window.addEventListener('error', (event) => {
+    captureException(event.error ?? event.message, { tags: { handler: 'window.error', process: 'renderer' } });
+  });
+  window.addEventListener('unhandledrejection', (event) => {
+    captureException(event.reason, { tags: { handler: 'unhandledrejection', process: 'renderer' } });
+  });
+
+  addMonitoringBreadcrumb({ category: 'app', message: 'renderer monitoring ready' });
+}
+
+/**
+ * Boots monitoring first, then mounts React once it settles. Mounting inside
+ * `.finally` guarantees the app still renders even if monitoring bootstrap
+ * fails unexpectedly.
  * @constant
  */
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <Root />
-  </React.StrictMode>,
-);
+void bootstrapRendererMonitoring().finally(() => {
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <Root />
+    </React.StrictMode>,
+  );
+});

@@ -475,6 +475,8 @@
     "alwaysOnTopHint": "アプリのウィンドウを他のすべてのウィンドウの上に表示します。",
     "launchAtLogin": "サインイン時に起動",
     "launchAtLoginHint": "コンピューターにサインインすると、EncodeX を自動的に起動します。",
+    "monitoringErrorReporting": "エラーレポート",
+    "monitoringErrorReportingHint": "匿名のエラーレポートを送信して EncodeX の改善に協力します。いつでもオフにできます。",
     "hardwareAcceleration": "ハードウェアアクセラレーション",
     "hwaccelMode": "アクセラレーションモード",
     "hwaccelModeAuto": "自動（デコード＋エンコード）",

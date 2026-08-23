@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "Програмын цонхыг бусад бүх цонхны дээр байлгана.",
     "launchAtLogin": "Эхлэх үед ажиллуулах",
     "launchAtLoginHint": "Компьютертээ нэвтрэх үед EncodeX-г автоматаар эхлүүлнэ.",
+    "monitoringErrorReporting": "Алдааны мэдээлэл",
+    "monitoringErrorReportingHint": "Нүцгэн алдааны тайлан илгээснээр EncodeX-г сайжруулахад тусална. Та үүнийг хүссэн үедээ унтрааж болно.",
     "hardwareAcceleration": "Тоног төхөөрөмжийн хурдатгал",
     "hwaccelMode": "Хурдатгалын горим",
     "hwaccelModeAuto": "Автомат (декод + код)",

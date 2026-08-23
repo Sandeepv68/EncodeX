@@ -772,6 +772,8 @@ export const LOG_WHEN_DONE_SKIPPED_DISABLED = 'When done: skipped (disabled)';
 export const LOG_WHEN_DONE_EXECUTING = 'When done: executing';
 /** @const {string} Prefix when a when-done power action cannot run on the current platform. */
 export const LOG_WHEN_DONE_UNSUPPORTED_PLATFORM = 'When done: unsupported platform';
+/** @const {string} Prefix when setMonitoringEnabled is invoked. */
+export const LOG_SET_MONITORING_ENABLED = 'setMonitoringEnabled:';
 /** @const {string} Prefix when spawning a when-done power command fails. */
 export const LOG_WHEN_DONE_SPAWN_FAILED = 'When done: spawn failed';
 /** @const {string} Logged when windowClose is invoked. */
@@ -818,3 +820,31 @@ export const LOG_IPC_DOWNLOAD_UPDATE = 'IPC download-update:';
 export const LOG_IPC_INSTALL_UPDATE = 'IPC install-update:';
 /** @const {string} Prefix for IPC cancel download handler. */
 export const LOG_IPC_CANCEL_DOWNLOAD = 'IPC cancel-download:';
+/** @const {string} Logged when monitoring initialization begins. */
+export const LOG_MONITORING_INITIALIZING = 'Initializing monitoring provider:';
+/** @const {string} Prefix when monitoring initialization fails. */
+export const LOG_MONITORING_INIT_FAILED = 'Monitoring init failed:';
+/** @const {string} Logged when a monitoring provider becomes active. */
+export const LOG_MONITORING_PROVIDER_ACTIVE = 'Monitoring provider active:';
+/** @const {string} Prefix when monitoring consent is toggled. */
+export const LOG_MONITORING_SET_ENABLED = 'Monitoring set enabled:';
+/** @const {string} Prefix when a monitoring capture call fails. */
+export const LOG_MONITORING_CAPTURE_FAILED = 'Monitoring capture failed:';
+/** @const {string} Prefix when closing the monitoring backend fails. */
+export const LOG_MONITORING_CLOSE_FAILED = 'Monitoring close failed:';
+/** @const {string} Prefix when reading the stored monitoring consent fails. */
+export const LOG_FAILED_TO_READ_STORED_MONITORING_CONSENT = 'Failed to read stored monitoring consent:';
+/** @const {string} Prefix when persisting monitoring consent fails. */
+export const LOG_FAILED_TO_PERSIST_MONITORING_CONSENT = 'Failed to persist monitoring consent:';
+/** @const {string} Logged when the MONITORING_GET_STATE IPC message is received. */
+export const LOG_IPC_MONITORING_GET_STATE = 'MONITORING_GET_STATE called';
+/** @const {string} Prefix when the MONITORING_SET_ENABLED IPC message is received. */
+export const LOG_IPC_MONITORING_SET_ENABLED = 'MONITORING_SET_ENABLED:';
+/** @const {string} Prefix when an uncaught exception reaches the process handler. */
+export const LOG_MONITORING_UNCAUGHT_EXCEPTION = 'Uncaught exception:';
+/** @const {string} Prefix when an unhandled rejection reaches the process handler. */
+export const LOG_MONITORING_UNHANDLED_REJECTION = 'Unhandled rejection:';
+/** @const {string} Prefix when a renderer process dies unexpectedly. */
+export const LOG_MONITORING_RENDER_PROCESS_GONE = 'Renderer process gone:';
+/** @const {string} Prefix when a child process dies unexpectedly. */
+export const LOG_MONITORING_CHILD_PROCESS_GONE = 'Child process gone:';

@@ -119,6 +119,8 @@ Object.defineProperty(globalThis, 'electronAPI', {
     onWindowCloseRequested: vi.fn(() => vi.fn()),
     windowSetAlwaysOnTop: vi.fn(),
     setLaunchAtLogin: vi.fn(),
+    monitoringGetState: vi.fn().mockResolvedValue({ enabled: true, backend: 'noop' }),
+    monitoringSetEnabled: vi.fn().mockResolvedValue({ enabled: true, backend: 'noop' }),
     onWindowMaximizedChange: vi.fn(() => vi.fn()),
     onConversionProgress: vi.fn(() => vi.fn()),
     onQueueAdded: vi.fn(() => vi.fn()),

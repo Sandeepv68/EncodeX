@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "Utrzymuje okno aplikacji nad wszystkimi innymi oknami.",
     "launchAtLogin": "Uruchamiaj przy starcie",
     "launchAtLoginHint": "Automatycznie uruchamia EncodeX po zalogowaniu się do komputera.",
+    "monitoringErrorReporting": "Zgłaszanie błędów",
+    "monitoringErrorReportingHint": "Pomaga ulepszać EncodeX, wysyłając anonimowe raporty błędów. Możesz to wyłączyć w każdej chwili.",
     "hardwareAcceleration": "Przyspieszanie sprzętowe",
     "hwaccelMode": "Tryb przyspieszania",
     "hwaccelModeAuto": "Automatyczny (dekodowanie + kodowanie)",

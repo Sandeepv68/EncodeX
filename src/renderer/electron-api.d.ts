@@ -403,6 +403,21 @@ export interface ElectronAPI {
    */
   setLaunchAtLogin(enabled: boolean): void;
   /**
+   * Queries the current error-monitoring state from the main process over
+   * `IPC.MONITORING_GET_STATE` ('monitoring-get-state').
+   * @returns {Promise<{ enabled: boolean; backend: string }>} Consent flag and
+   *   active backend adapter name in main ('sentry' | 'noop').
+   */
+  monitoringGetState(): Promise<{ enabled: boolean; backend: string }>;
+  /**
+   * Updates the error-monitoring consent (Settings toggle). Persists the new
+   * state in the main process and live-toggles the backend over
+   * `IPC.MONITORING_SET_ENABLED` ('monitoring-set-enabled').
+   * @param {boolean} enabled - true to enable error reporting, false to disable.
+   * @returns {Promise<{ enabled: boolean; backend: string }>}> The resulting state.
+   */
+  monitoringSetEnabled(enabled: boolean): Promise<{ enabled: boolean; backend: string }>;
+  /**
    * Subscribes to window maximized / un-maximized state changes pushed from the
    * main process over `IPC.WINDOW_MAXIMIZED_CHANGED`
    * ('window-maximized-changed').

@@ -160,6 +160,14 @@ const api = {
     state.loginCalls.push(!!enabled);
   },
 
+  // --- Monitoring consent ------------------------------------------------------
+  monitoringGetState: () => Promise.resolve({ enabled: true }),
+  monitoringSetEnabled: (enabled) => {
+    state.monitoringCalls = state.monitoringCalls || [];
+    state.monitoringCalls.push(!!enabled);
+    return Promise.resolve({ enabled: !!enabled });
+  },
+
   // --- Event subscriptions (each returns an unsubscribe) -----------------------
   onWindowMaximizedChange: (cb) => subscribe('window-maximized-change', cb),
   onWindowCloseRequested: (cb) => {

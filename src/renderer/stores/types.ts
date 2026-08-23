@@ -75,6 +75,8 @@ export interface HwAccelStored {
  * @property {(flag: boolean) => void} setAlwaysOnTop - Sets always-on-top and persists it via localStorage + electronAPI.
  * @property {boolean} launchAtLogin - Whether the app should launch at OS startup.
  * @property {(enabled: boolean) => void} setLaunchAtLogin - Sets launch-at-login, persists it, and forwards it to the main process.
+ * @property {boolean} monitoringEnabled - Whether error reporting (monitoring) is consented.
+ * @property {(enabled: boolean) => void} setMonitoringEnabled - Sets monitoring consent, forwards it to the main process, and adopts the authoritative result.
  * @property {number} queueConcurrency - Number of batch jobs run in parallel (1-4).
  * @property {(concurrency: number) => void} setQueueConcurrency - Sets the batch concurrency, persists it, and forwards it to the main process.
  * @property {WhenDoneConfig} whenDone - When-done power action config for the batch queue (enabled, action, force).
@@ -93,6 +95,8 @@ export interface SettingsState {
   setAlwaysOnTop: (flag: boolean) => void;
   launchAtLogin: boolean;
   setLaunchAtLogin: (enabled: boolean) => void;
+  monitoringEnabled: boolean;
+  setMonitoringEnabled: (enabled: boolean) => void;
   queueConcurrency: number;
   setQueueConcurrency: (concurrency: number) => void;
   whenDone: WhenDoneConfig;

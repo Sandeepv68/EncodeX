@@ -40,6 +40,7 @@
  * - Timeline tools: `extractWaveform`, `extractThumbnails`.
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
  *   `windowSetAlwaysOnTop`, `setLaunchAtLogin`.
+ * - Monitoring consent: `monitoringGetState`, `monitoringSetEnabled`.
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
  *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
@@ -124,6 +125,8 @@ import {
   LOG_IPC_INSTALL_UPDATE,
   LOG_IPC_CANCEL_DOWNLOAD,
   LOG_UPDATER_OPEN_RELEASE_NOTES,
+  LOG_IPC_MONITORING_GET_STATE,
+  LOG_IPC_MONITORING_SET_ENABLED,
 } from '../shared/log-constants';
 
 /**
@@ -758,6 +761,30 @@ const api = {
   setLaunchAtLogin: (enabled: boolean) => {
     log.debug(LOG_SET_LAUNCH_AT_LOGIN_CALLED, { enabled });
     ipcRenderer.send(IPC.SET_LAUNCH_AT_LOGIN, enabled);
+  },
+
+  /**
+   * Queries the current error-monitoring consent state. Logs the call at debug
+   * level and invokes `IPC.MONITORING_GET_STATE` ('monitoring-get-state').
+   *
+   * @returns {Promise<{ enabled: boolean }>} The monitoring consent state.
+   */
+  monitoringGetState: () => {
+    log.debug(LOG_IPC_MONITORING_GET_STATE);
+    return ipcRenderer.invoke(IPC.MONITORING_GET_STATE) as Promise<{ enabled: boolean }>;
+  },
+
+  /**
+   * Updates the error-monitoring consent (Settings toggle). Persists the new
+   * state in the main process and live-toggles the backend. Invokes
+   * `IPC.MONITORING_SET_ENABLED` ('monitoring-set-enabled') with the flag.
+   *
+   * @param {boolean} enabled - true to enable error reporting, false to disable.
+   * @returns {Promise<{ enabled: boolean }}> The resulting consent state.
+   */
+  monitoringSetEnabled: (enabled: boolean) => {
+    log.debug(LOG_IPC_MONITORING_SET_ENABLED, { enabled });
+    return ipcRenderer.invoke(IPC.MONITORING_SET_ENABLED, enabled) as Promise<{ enabled: boolean; backend: string }>;
   },
 
   /**

@@ -47,9 +47,79 @@ import {
   LOG_MAIN_WINDOW_READY_SHOWING,
   LOG_SPLASH_WINDOW_CLOSED,
   LOG_STARTING_IN_CLI_MODE_ARGV,
+  LOG_MONITORING_UNCAUGHT_EXCEPTION,
+  LOG_MONITORING_UNHANDLED_REJECTION,
+  LOG_MONITORING_RENDER_PROCESS_GONE,
+  LOG_MONITORING_CHILD_PROCESS_GONE,
 } from '../shared/log-constants';
+import { captureException, closeMonitoring, initMonitoring } from '../shared/monitoring/MonitoringService';
+import type { MonitoringConfig } from '../shared/monitoring/types';
+import { readMonitoringConsent } from './monitoring/consent';
+import { registerMonitoringIpcBridge } from './monitoring/ipcBridge';
+import { resolveMainMonitorProvider } from './monitoring/providerFactory';
 
 const log = new Logger('main/index');
+
+/** Consent state read during {@link bootstrapMonitoring}; consumed by the IPC bridge registration. @type {boolean} */
+let monitoringConsentAtBoot = true;
+
+/**
+ * Initializes the monitoring subsystem as early as possible in the main
+ * process (both GUI and CLI modes share this path).
+ *
+ * Reads the persisted user consent (`userData/monitoring-consent.json`,
+ * defaulting to enabled) and activates the provider resolved by
+ * {@link resolveMainMonitorProvider} - Sentry when a DSN is configured, the
+ * no-op fallback otherwise. Failures are swallowed: monitoring must never
+ * prevent startup.
+ *
+ * @returns {Promise<void>} Resolves once initialization attempts have settled.
+ */
+async function bootstrapMonitoring(): Promise<void> {
+  try {
+    const consent = readMonitoringConsent(app.getPath('userData'));
+    monitoringConsentAtBoot = consent;
+    const config: MonitoringConfig = {
+      enabled: consent,
+      dsn: process.env.SENTRY_DSN,
+      environment: process.env.SENTRY_ENVIRONMENT || (process.env.NODE_ENV === 'development' ? 'development' : 'production'),
+      release: `encodex@${app.getVersion()}`,
+    };
+    await initMonitoring(config, resolveMainMonitorProvider);
+  } catch (err) {
+    log.error('Monitoring bootstrap failed:', err);
+  }
+}
+
+/**
+ * Registers process-level crash handlers so uncaught exceptions, unhandled
+ * promise rejections, and unexpected child-process deaths are reported through
+ * the monitoring facade. Installed immediately at module load; events raised
+ * before a backend finishes initializing are absorbed by the facade's no-op.
+ *
+ * @returns {void}
+ */
+function registerProcessCrashHandlers(): void {
+  process.on('uncaughtException', (err) => {
+    log.error(LOG_MONITORING_UNCAUGHT_EXCEPTION, err);
+    captureException(err, { tags: { handler: 'uncaughtException', process: 'main' } });
+  });
+  process.on('unhandledRejection', (reason) => {
+    log.error(LOG_MONITORING_UNHANDLED_REJECTION, reason);
+    captureException(reason, { tags: { handler: 'unhandledRejection', process: 'main' } });
+  });
+  app.on('child-process-gone', (_event, details) => {
+    if (details.reason === 'clean-exit') return;
+    log.warn(LOG_MONITORING_CHILD_PROCESS_GONE, details.type, details.reason);
+    captureException(new Error(`Child ${details.type} process gone: ${details.reason}`), {
+      tags: { handler: 'child-process-gone', processType: details.type, reason: details.reason },
+    });
+  });
+}
+
+// Start monitoring before anything else runs; do not block module execution.
+void bootstrapMonitoring();
+registerProcessCrashHandlers();
 
 /**
  * Resolves the preload script path.
@@ -93,12 +163,15 @@ if (isCliMode()) {
   log.info(LOG_STARTING_IN_CLI_MODE_ARGV, process.argv.slice(2));
   app.whenReady().then(() => {
     runCli()
-      .then(() => {
+      .then(async () => {
         log.info(LOG_CLI_COMPLETED_SUCCESSFULLY);
+        await closeMonitoring();
         app.exit(EXIT_CODES.SUCCESS);
       })
-      .catch((err) => {
+      .catch(async (err) => {
         log.error(LOG_CLI_FAILED, err);
+        captureException(err, { tags: { handler: 'cli', process: 'main' } });
+        await closeMonitoring();
         app.exit(mapCliErrorToExitCode(err));
       });
   });
@@ -190,7 +263,21 @@ if (isCliMode()) {
     });
 
     registerIpcHandlers(mainWindow);
+    registerMonitoringIpcBridge({ userDataDir: app.getPath('userData'), consentEnabled: monitoringConsentAtBoot });
     patchConsole(mainWindow);
+
+    /**
+     * Reports unexpected renderer deaths (crashes, OOM kills) through the
+     * monitoring facade. Clean exits are ignored.
+     */
+    mainWindow.webContents.on('render-process-gone', (_event, details) => {
+      if (details.reason === 'clean-exit') return;
+      log.error(LOG_MONITORING_RENDER_PROCESS_GONE, details.reason, details.exitCode);
+      captureException(new Error(`Renderer process gone: ${details.reason} (exitCode ${details.exitCode})`), {
+        tags: { handler: 'render-process-gone', reason: details.reason },
+        extra: { exitCode: details.exitCode },
+      });
+    });
 
     /**
      * Routes external http(s) links opened from the renderer (e.g. the GitHub
@@ -242,6 +329,12 @@ if (isCliMode()) {
   app.on('activate', () => {
     log.info(LOG_ACTIVATE_EVENT_MAIN_WINDOW_NULL, mainWindow === null);
     if (mainWindow === null) createWindow();
+  });
+
+  app.on('will-quit', () => {
+    // Flush any queued monitoring events before the process dies. Fire-and-
+    // forget: quitting must never wait indefinitely on the network.
+    void closeMonitoring();
   });
 }
 

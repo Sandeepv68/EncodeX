@@ -123,11 +123,13 @@ export default function Settings() {
   const encoderType = useSettingsStore((s) => s.encoderType);
   const alwaysOnTop = useSettingsStore((s) => s.alwaysOnTop);
   const launchAtLogin = useSettingsStore((s) => s.launchAtLogin);
+  const monitoringEnabled = useSettingsStore((s) => s.monitoringEnabled);
   const setHardwareAcceleration = useSettingsStore((s) => s.setHardwareAcceleration);
   const setHwaccelMode = useSettingsStore((s) => s.setHwaccelMode);
   const setEncoderType = useSettingsStore((s) => s.setEncoderType);
   const setAlwaysOnTop = useSettingsStore((s) => s.setAlwaysOnTop);
   const setLaunchAtLogin = useSettingsStore((s) => s.setLaunchAtLogin);
+  const setMonitoringEnabled = useSettingsStore((s) => s.setMonitoringEnabled);
 
   return (
     <SettingsRoot>
@@ -175,6 +177,18 @@ export default function Settings() {
             slotProps={{ input: { 'aria-label': t('settings.launchAtLogin'), 'data-testid': 'settings-launch-at-login' } }}
           />
           <SettingLabel text={t('settings.launchAtLogin')} hint={t('settings.launchAtLoginHint')} />
+        </ToggleRow>
+      </SettingsSection>
+      <SettingsSection>
+        <ToggleRow>
+          <Switch
+            checked={monitoringEnabled}
+            onChange={(e) => setMonitoringEnabled(e.target.checked)}
+            slotProps={{
+              input: { 'aria-label': t('settings.monitoringErrorReporting'), 'data-testid': 'settings-monitoring-error-reporting' },
+            }}
+          />
+          <SettingLabel text={t('settings.monitoringErrorReporting')} hint={t('settings.monitoringErrorReportingHint')} />
         </ToggleRow>
       </SettingsSection>
       <SettingsSection>

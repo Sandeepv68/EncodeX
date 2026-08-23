@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "Coinníonn fuinneog an aip os cionn na bhfuinneoga eile go léir.",
     "launchAtLogin": "Seol ag am tosaithe",
     "launchAtLoginHint": "Cuireann sé tús le EncodeX go huathoibríoch nuair a logálann tú isteach ar do ríomhaire.",
+    "monitoringErrorReporting": "Tuairisciú earráidí",
+    "monitoringErrorReportingHint": "Cuidíonn sé le EncodeX a fheabhsú trí thuairiscí earráidí gan ainm a sheoladh. Is féidir leat é a mhúchadh ag am ar bith.",
     "hardwareAcceleration": "Luasghéarú Crua-earraí",
     "hwaccelMode": "Mód Luasghéaraithe",
     "hwaccelModeAuto": "Uathoibríoch (díchódóir + ionchódóir)",

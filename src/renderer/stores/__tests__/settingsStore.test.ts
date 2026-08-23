@@ -27,6 +27,7 @@ describe('settingsStore', () => {
       encoderType: ENCODER_TYPE_DEFAULT,
       alwaysOnTop: false,
       launchAtLogin: false,
+      monitoringEnabled: true,
       queueConcurrency: DEFAULT_QUEUE_CONCURRENCY,
       whenDone: { enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false },
     });
@@ -113,6 +114,47 @@ describe('settingsStore', () => {
     expect(useSettingsStore.getState().whenDone).toEqual(config);
     expect(JSON.parse(localStorage.getItem(WHEN_DONE_STORAGE_KEY) as string)).toEqual(config);
     expect(spy).toHaveBeenCalledWith(config);
+  });
+
+  it('defaults monitoring consent to enabled', () => {
+    expect(useSettingsStore.getState().monitoringEnabled).toBe(true);
+  });
+
+  it('setMonitoringEnabled forwards the flag and adopts the authoritative result', async () => {
+    const spy = vi
+      .fn()
+      .mockResolvedValueOnce({ enabled: false, backend: 'sentry' })
+      .mockResolvedValueOnce({ enabled: true, backend: 'sentry' });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, monitoringSetEnabled: spy },
+      writable: true,
+    });
+    await useSettingsStore.getState().setMonitoringEnabled(false);
+    expect(useSettingsStore.getState().monitoringEnabled).toBe(false);
+    expect(spy).toHaveBeenCalledWith(false);
+
+    await useSettingsStore.getState().setMonitoringEnabled(true);
+    expect(useSettingsStore.getState().monitoringEnabled).toBe(true);
+    expect(spy).toHaveBeenLastCalledWith(true);
+  });
+
+  it('keeps the previous consent when the main-process call fails', async () => {
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, monitoringSetEnabled: vi.fn().mockRejectedValue(new Error('ipc down')) },
+      writable: true,
+    });
+    await useSettingsStore.getState().setMonitoringEnabled(false);
+    expect(useSettingsStore.getState().monitoringEnabled).toBe(true);
+  });
+
+  it('hydrates monitoring consent from the main process at load', async () => {
+    vi.resetModules();
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { monitoringGetState: vi.fn().mockResolvedValue({ enabled: false, backend: 'noop' }) },
+      writable: true,
+    });
+    const { useSettingsStore: fresh } = await import('../settingsStore');
+    await vi.waitFor(() => expect(fresh.getState().monitoringEnabled).toBe(false));
   });
 });
 

@@ -475,6 +475,8 @@
     "alwaysOnTopHint": "Menjaga jendela aplikasi tetap di atas semua jendela lainnya.",
     "launchAtLogin": "Luncurkan saat startup",
     "launchAtLoginHint": "Menjalankan EncodeX secara otomatis saat Anda masuk ke komputer.",
+    "monitoringErrorReporting": "Pelaporan kesalahan",
+    "monitoringErrorReportingHint": "Membantu meningkatkan EncodeX dengan mengirim laporan kesalahan anonim. Anda dapat mematikan ini kapan saja.",
     "hardwareAcceleration": "Akselerasi perangkat keras",
     "hwaccelMode": "Mode akselerasi",
     "hwaccelModeAuto": "Otomatis (decode + encode)",

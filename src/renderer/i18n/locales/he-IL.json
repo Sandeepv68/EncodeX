@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "שומר על חלון האפליקציה מעל כל החלונות האחרים.",
     "launchAtLogin": "הפעלה בעת התחברות",
     "launchAtLoginHint": "מפעיל את EncodeX אוטומטית בעת התחברות למחשב שלך.",
+    "monitoringErrorReporting": "דיווח שגיאות",
+    "monitoringErrorReportingHint": "עוזר לשפר את EncodeX על ידי שליחת דוחות שגיאה אנונימיים. ניתן לכבות זאת בכל עת.",
     "hardwareAcceleration": "האצת חומרה",
     "hwaccelMode": "מצב האצה",
     "hwaccelModeAuto": "אוטומטי (פענוח + קידוד)",

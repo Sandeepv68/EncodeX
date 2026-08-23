@@ -39,6 +39,7 @@ const {
       },
     })),
     getAppPath: vi.fn(() => 'C:\\project'),
+    getPath: vi.fn((_name: string) => 'C:\\tmp\\encodex-userdata'),
     exit: vi.fn(),
     quit: vi.fn(),
     commandLine: {
@@ -103,7 +104,13 @@ const {
   };
 });
 
-vi.mock('electron', () => ({ app: appMock, BrowserWindow: BrowserWindowMock, Menu: menuMock, shell: shellMock }));
+vi.mock('electron', () => ({
+  app: appMock,
+  BrowserWindow: BrowserWindowMock,
+  Menu: menuMock,
+  shell: shellMock,
+  ipcMain: { handle: vi.fn() },
+}));
 vi.mock('../cli/cli', () => ({
   runCli: runCliMock,
   mapCliErrorToExitCode: (err: unknown) => (err instanceof Error && err.message === 'usage' ? 2 : 1),

@@ -475,6 +475,8 @@
     "alwaysOnTopHint": "Håller appfönstret ovanför alla andra fönster.",
     "launchAtLogin": "Starta vid inloggning",
     "launchAtLoginHint": "Startar EncodeX automatiskt när du loggar in på datorn.",
+    "monitoringErrorReporting": "Felrapportering",
+    "monitoringErrorReportingHint": "Hjälper till att förbättra EncodeX genom att skicka anonyma felrapporter. Du kan stänga av detta när som helst.",
     "hardwareAcceleration": "Hårdvaruacceleration",
     "hwaccelMode": "Accelerationsläge",
     "hwaccelModeAuto": "Automatisk (avkoda + koda)",
