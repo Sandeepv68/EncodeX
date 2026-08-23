@@ -3,18 +3,16 @@
 EncodeX est **gratuit** et fonctionne sur Windows, Mac et Linux. Choisissez votre type d'ordinateur ci-dessous, téléchargez, installez, et c'est parti.
 
 ::: tip Prenez toujours la dernière version
-Les nouvelles versions sortent sur la [page des releases GitHub](https://github.com/Sandeepv68/EncodeX/releases). Les liens ci-dessous vous donnent toujours la plus récente.
+Les nouvelles versions sortent sur la [page des releases GitHub](https://github.com/Sandeepv68/EncodeX/releases). Les liens ci-dessous vous donnent toujours la plus récente — chacun avec son architecture, sa taille de fichier et son empreinte SHA-256.
 :::
+
+<LatestDownloads />
 
 ## <OsIcon name="windows" /> Windows
 
 **Vous voulez juste que ça marche ?** Cliquez sur le premier bouton — c'est le bon pour presque tout le monde.
 
-| | Télécharger | Pour |
-|---|---------|-----|
-| ✅ **Recommandé** | [Télécharger pour Windows](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x64-setup.exe) | La plupart des PC et portables (64 bits) |
-| Vieux PC 32 bits | [Version 32 bits](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-ia32-setup.exe) | Très vieux ordinateurs |
-| Portables ARM | [Version ARM](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64-setup.exe) | Portables Windows à puce Snapdragon |
+<LatestDownloads platform="windows" />
 
 **Pour installer :** ouvrez le fichier téléchargé et suivez les étapes à l'écran. Fonctionne sous Windows 10 et plus récent.
 
@@ -22,10 +20,7 @@ Vous hésitez ? Prenez la version recommandée — si ce n'est pas la bonne, Win
 
 ## <OsIcon name="apple" /> Mac
 
-| | Télécharger | Pour |
-|---|---------|-----|
-| Macs récents (2021 ou plus) | [Télécharger pour Apple Silicon](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64.dmg) | Puces M1, M2, M3, M4 |
-| Macs plus anciens | [Télécharger pour Intel](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x64.dmg) | Macs d'avant 2021 |
+<LatestDownloads platform="macos" />
 
 **Pour installer :** ouvrez le fichier `.dmg` téléchargé, puis glissez EncodeX dans votre dossier Applications.
 
@@ -43,11 +38,7 @@ Il n'y a qu'à le faire une fois — ensuite il s'ouvre normalement.
 
 ## <OsIcon name="linux" /> Linux
 
-| | Télécharger | Pour |
-|---|---------|-----|
-| ✅ **Recommandé** | [Télécharger AppImage](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-x86_64.AppImage) | La plupart des ordinateurs Linux (64 bits) |
-| ARM64 | [AppImage ARM64](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-arm64.AppImage) | Cartes et portables ARM |
-| ARMv7 | [AppImage ARMv7](https://github.com/Sandeepv68/EncodeX/releases/latest/download/EncodeX-1.0.0-beta.0-armv7l.AppImage) | Vieilles cartes mono-carte |
+<LatestDownloads platform="linux" />
 
 **Pour lancer :** une AppImage est un fichier unique — pas d'installation. Rendez-le exécutable puis double-cliquez :
 
@@ -69,6 +60,12 @@ Rien de spécial — si votre machine a quelques années au plus, tout va bien :
 ## Rester à jour
 
 Quand une nouvelle version sort, EncodeX vous prévient dans l'appli et peut télécharger et lancer la mise à jour pour vous — inutile de revenir sur cette page.
+
+## Versions précédentes
+
+Besoin d'une version plus ancienne ? Dépliez la version souhaitée ci-dessous — chaque fichier indique sa taille et son empreinte SHA-256.
+
+<LatestDownloads older />
 
 ## Besoin d'aide ?
 

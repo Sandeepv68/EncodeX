@@ -14,14 +14,23 @@
  */
 
 import { useTranslation } from 'react-i18next';
-import { Divider, Link, Typography, Button } from '@mui/material';
+import { Divider, GlobalStyles, Link, Typography } from '@mui/material';
+import { css } from '@emotion/react';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PageContainer from '../components/PageContainer';
 import { pageIcons } from '../pageIcons';
 import pkg from '../../../package.json';
 import appLogo from '../../../assets/banner.png';
-import { AboutLogo, AboutFeatureList, AboutFeatureItem, AboutMetaRow, AboutMetaLabel } from '../styles/About.styles';
+import {
+  AboutLogo,
+  AboutFeatureList,
+  AboutFeatureItem,
+  AboutMetaRow,
+  AboutMetaLabel,
+  CheckUpdatesButtonWrapper,
+  CheckUpdatesButton,
+} from '../styles/About.styles';
 import { useUpdateStore } from '../stores/updateStore';
 
 /**
@@ -66,6 +75,13 @@ const ISSUES_URL = `${REPOSITORY_URL}/issues`;
 const LICENSE_URL = `${REPOSITORY_URL}/blob/main/LICENSE`;
 
 /**
+ * Developer contact email, shown as a mailto link in the author & feedback
+ * section. Matches the address published on the project site.
+ * @const {string} CONTACT_EMAIL
+ */
+const CONTACT_EMAIL = 'developer@encodex.in';
+
+/**
  * Renders the About page (`/about`).
  *
  * Lays out the app logo, the intro, a detailed product description, a "what
@@ -88,6 +104,15 @@ export default function About() {
 
   return (
     <PageContainer title={t('about.title')} icon={pageIcons['/about']}>
+      <GlobalStyles
+        styles={css`
+          @property --encodex-glow-angle {
+            syntax: '<angle>';
+            inherits: true;
+            initial-value: 0deg;
+          }
+        `}
+      />
       <AboutLogo src={appLogo} alt={t('about.logoAlt')} />
       <Typography variant="body1" color="text.secondary">
         {t('about.subtitle')}
@@ -108,11 +133,16 @@ export default function About() {
       <AboutMetaRow>
         <AboutMetaLabel variant="body2">{t('about.version')}</AboutMetaLabel>
         <Typography variant="body2">{pkg.version}</Typography>
-      </AboutMetaRow>
-      <AboutMetaRow>
-        <Button variant="outlined" size="small" startIcon={<FontAwesomeIcon icon={faArrowUp} />} onClick={handleCheckForUpdates}>
-          {t('about.checkForUpdates')}
-        </Button>
+        <CheckUpdatesButtonWrapper>
+          <CheckUpdatesButton
+            variant="outlined"
+            size="small"
+            startIcon={<FontAwesomeIcon icon={faArrowUp} />}
+            onClick={handleCheckForUpdates}
+          >
+            {t('about.checkForUpdates')}
+          </CheckUpdatesButton>
+        </CheckUpdatesButtonWrapper>
       </AboutMetaRow>
       <AboutMetaRow>
         <AboutMetaLabel variant="body2">{t('about.builtWith')}</AboutMetaLabel>
@@ -132,6 +162,12 @@ export default function About() {
         <AboutMetaLabel variant="body2">{t('about.repository')}</AboutMetaLabel>
         <Link variant="body2" href={REPOSITORY_URL} target="_blank" rel="noopener noreferrer">
           github.com/Sandeepv68/EncodeX
+        </Link>
+      </AboutMetaRow>
+      <AboutMetaRow>
+        <AboutMetaLabel variant="body2">{t('about.contact')}</AboutMetaLabel>
+        <Link variant="body2" href={`mailto:${CONTACT_EMAIL}`}>
+          {CONTACT_EMAIL}
         </Link>
       </AboutMetaRow>
       <Typography variant="body2" color="text.secondary">

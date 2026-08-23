@@ -606,6 +606,8 @@
     "authorTitle": "作者とフィードバック",
     "author": "作者",
     "repository": "リポジトリ",
+
+    "contact": "連絡先",
     "feedback": "バグを見つけましたか、または提案がありますか？",
     "reportIssue": "GitHub で issue を開く",
     "licenseTitle": "ライセンス",

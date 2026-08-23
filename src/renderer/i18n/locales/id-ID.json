@@ -606,6 +606,8 @@
     "authorTitle": "Penulis & umpan balik",
     "author": "Penulis",
     "repository": "Repositori",
+
+    "contact": "Kontak",
     "feedback": "Menemukan bug atau punya saran?",
     "reportIssue": "Buka issue di GitHub",
     "licenseTitle": "Lisensi",

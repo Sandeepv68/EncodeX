@@ -606,6 +606,8 @@
     "authorTitle": "Зохиогч ба санал хүсэлт",
     "author": "Зохиогч",
     "repository": "Репозитор",
+
+    "contact": "Холбоо барих",
     "feedback": "Алдаа олсон уу эсвэл санал байна уу?",
     "reportIssue": "GitHub дээр issue нээх",
     "licenseTitle": "Лиценз",

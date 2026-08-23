@@ -63,22 +63,62 @@ let activeDownloadStream: fs.WriteStream | null = null;
 let activeAbortController: AbortController | null = null;
 
 /**
- * Compares two semver version strings numerically (ignoring pre-release suffixes).
- * Returns 1 if a > b, -1 if a < b, 0 if equal.
+ * Compares two semver version strings following semver 2.0.0 precedence rules,
+ * including pre-release identifiers. Returns 1 if a > b, -1 if a < b, 0 if equal.
+ *
+ * Rules:
+ *  - Major/minor/patch are compared numerically.
+ *  - A version without a pre-release outranks one with one ('1.0.0' > '1.0.0-beta.1').
+ *  - Pre-release identifiers compare dot-by-dot: numerically when both are
+ *    numeric, otherwise lexically; numeric identifiers rank below alphanumeric
+ *    ones; a longer identifier set wins when all preceding ones are equal.
  *
  * @param {string} a - First version string (e.g. '1.2.0' or '1.2.0-beta.0').
  * @param {string} b - Second version string.
  * @returns {number} Comparison result.
  */
 export function compareVersions(a: string, b: string): number {
-  const strip = (v: string) => v.split('-')[0];
-  const pa = strip(a).split('.').map(Number);
-  const pb = strip(b).split('.').map(Number);
-  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
-    const na = pa[i] || 0;
-    const nb = pb[i] || 0;
+  const parse = (v: string): { core: number[]; pre: Array<string | number> | null } => {
+    const normalized = v.replace(/^v/i, '');
+    const hyphenIndex = normalized.indexOf('-');
+    const corePart = hyphenIndex === -1 ? normalized : normalized.slice(0, hyphenIndex);
+    const prePart = hyphenIndex === -1 ? null : normalized.slice(hyphenIndex + 1);
+    return {
+      core: corePart.split('.').map(Number),
+      pre: prePart === null ? null : prePart.split('.').map((id) => (/^\d+$/.test(id) ? Number(id) : id)),
+    };
+  };
+
+  const va = parse(a);
+  const vb = parse(b);
+
+  for (let i = 0; i < Math.max(va.core.length, vb.core.length); i++) {
+    const na = va.core[i] || 0;
+    const nb = vb.core[i] || 0;
     if (na > nb) return 1;
     if (na < nb) return -1;
+  }
+
+  if (!va.pre && !vb.pre) return 0;
+  if (!va.pre) return 1;
+  if (!vb.pre) return -1;
+
+  for (let i = 0; i < Math.max(va.pre.length, vb.pre.length); i++) {
+    const ia = va.pre[i];
+    const ib = vb.pre[i];
+    if (ia === undefined) return -1;
+    if (ib === undefined) return 1;
+    const aIsNum = typeof ia === 'number';
+    const bIsNum = typeof ib === 'number';
+    if (aIsNum !== bIsNum) {
+      return aIsNum ? -1 : 1;
+    }
+    if (aIsNum && bIsNum && ia !== ib) {
+      return (ia as number) > (ib as number) ? 1 : -1;
+    }
+    if (!aIsNum && !bIsNum && ia !== ib) {
+      return String(ia) > String(ib) ? 1 : -1;
+    }
   }
   return 0;
 }
@@ -98,7 +138,8 @@ export function selectAsset(assets: UpdateAsset[]): UpdateAsset | null {
   else if (platform === 'darwin') ext = '.dmg';
   else ext = '.AppImage';
 
-  const platformAssets = assets.filter((a) => a.name.toLowerCase().endsWith(ext));
+  const normalizedExt = ext.toLowerCase();
+  const platformAssets = assets.filter((a) => a.name.toLowerCase().endsWith(normalizedExt));
   if (platformAssets.length === 0) return null;
 
   const archMatch = platformAssets.find((a) => a.name.toLowerCase().includes(arch));

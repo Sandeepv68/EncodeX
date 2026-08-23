@@ -606,6 +606,8 @@
     "authorTitle": "ผู้เขียนและข้อเสนอแนะ",
     "author": "ผู้เขียน",
     "repository": "ที่เก็บโค้ด",
+
+    "contact": "ติดต่อ",
     "feedback": "พบข้อบกพร่องหรือมีข้อเสนอแนะ?",
     "reportIssue": "เปิด issue บน GitHub",
     "licenseTitle": "สัญญาอนุญาต",

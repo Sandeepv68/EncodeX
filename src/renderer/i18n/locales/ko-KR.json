@@ -606,6 +606,8 @@
     "authorTitle": "작성자 및 피드백",
     "author": "작성자",
     "repository": "저장소",
+
+    "contact": "연락처",
     "feedback": "버그를 발견했거나 제안이 있으신가요?",
     "reportIssue": "GitHub에서 이슈 열기",
     "licenseTitle": "라이선스",

@@ -606,6 +606,8 @@
     "authorTitle": "කතෘ සහ ප්රතිපෝෂණය",
     "author": "කතෘ",
     "repository": "ගබඩාව",
+
+    "contact": "සම්බන්ධතාව",
     "feedback": "දෝෂයක් හමු වුණාද නැතහොත් යෝජනාවක් තිබේද?",
     "reportIssue": "GitHub හි issue එකක් විවෘත කරන්න",
     "licenseTitle": "බලපත්රය",

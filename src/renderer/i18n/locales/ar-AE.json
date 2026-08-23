@@ -606,6 +606,8 @@
     "authorTitle": "المؤلف والملاحظات",
     "author": "المؤلف",
     "repository": "المستودع",
+
+    "contact": "جهة الاتصال",
     "feedback": "وجدت خطأً أو لديك اقتراح؟",
     "reportIssue": "افتح مشكلة على GitHub",
     "licenseTitle": "الترخيص",

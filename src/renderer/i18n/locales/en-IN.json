@@ -606,6 +606,8 @@
     "authorTitle": "Author & feedback",
     "author": "Author",
     "repository": "Repository",
+
+    "contact": "Contact",
     "feedback": "Found a bug or have a suggestion?",
     "reportIssue": "Open an issue on GitHub",
     "licenseTitle": "License",

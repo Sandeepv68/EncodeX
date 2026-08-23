@@ -606,6 +606,8 @@
     "authorTitle": "Автор і зворотний зв'язок",
     "author": "Автор",
     "repository": "Репозиторій",
+
+    "contact": "Контакт",
     "feedback": "Знайшли помилку або маєте пропозицію?",
     "reportIssue": "Відкрити issue на GitHub",
     "licenseTitle": "Ліцензія",
