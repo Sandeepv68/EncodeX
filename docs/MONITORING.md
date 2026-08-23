@@ -28,12 +28,12 @@ App code ──► shared/monitoring facade (initMonitoring / captureException /
 
 ## Configuration
 
-| Variable                                              | Purpose                                                                                                                                     |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SENTRY_DSN`                                          | Enables Sentry when present (main process only). Loaded from the repo-root `.env` via dotenv (real environment variables win) or the shell. |
-| `SENTRY_ENVIRONMENT`                                  | Environment label (defaults from NODE_ENV).                                                                                                 |
-| `MONITORING_PROVIDER`                                 | Optional override: `sentry` \| `noop`; otherwise auto-detected from DSN.                                                                    |
-| `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` | CI-only: production sourcemap upload via `@sentry/vite-plugin`.                                                                             |
+| Variable                                              | Purpose                                                                                                                                                                                                                                                                         |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SENTRY_DSN`                                          | Enables Sentry when present (main process only). Loaded from the repo-root `.env` via dotenv (real environment variables win) or the shell. For packaged releases it is baked in at build time via `npm run gen:sentry-config` (runs automatically on `npm install` and as part of `npm run build`). The generated file (`src/main/generated/sentryBuildConfig.ts`) is git-ignored, so the DSN never enters version control. |
+| `SENTRY_ENVIRONMENT`                                  | Environment label (defaults from NODE_ENV).                                                                                                                                                                                                                                     |
+| `MONITORING_PROVIDER`                                 | Optional override: `sentry` \| `noop`; otherwise auto-detected from DSN.                                                                                                                                                                                                        |
+| `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` | CI-only: production sourcemap upload via `@sentry/vite-plugin`.                                                                                                                                                                                                                 |
 
 Release identifier: `encodex@<app version>`.
 

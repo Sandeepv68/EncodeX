@@ -7,13 +7,14 @@
     "encodex": "bin/encodex.js"
   },
   "scripts": {
+    "prepare": "node scripts/generate-sentry-config.mjs",
     "dev": "concurrently -k \"npm run dev:renderer\" \"npm run dev:main\"",
     "dev:renderer": "vite",
     "dev:main": "tsc -p tsconfig.main.json --watch",
     "build:renderer": "vite build",
     "build:main": "tsc -p tsconfig.main.json",
     "build:preload": "tsc -p tsconfig.preload.json",
-    "build": "npm run build:renderer && npm run build:main && npm run build:preload",
+    "build": "npm run gen:sentry-config && npm run build:renderer && npm run build:main && npm run build:preload",
     "start": "electron .",
     "electron:dev": "concurrently -k \"npm run dev:renderer\" \"wait-on http://localhost:5173 && tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && electron . --dev\"",
     "dev:start": "tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && concurrently -k \"npm run dev:renderer\" \"electron .\"",
@@ -37,6 +38,7 @@
     "test:e2e:ci": "vitest run --config e2e/vitest.e2e.config.ts --silent",
     "test:e2e:real:ci": "vitest run --config e2e/vitest.e2e.real.config.ts --silent",
     "fetch:binaries": "node scripts/fetch-media-binaries.mjs",
+    "gen:sentry-config": "node scripts/generate-sentry-config.mjs",
     "perf": "vitest run --config perf/vitest.perf.config.ts",
     "perf:phase1": "vitest run --config perf/vitest.perf.config.ts -- perf/conversion-benchmark.perf.test.ts perf/queue-concurrency.perf.test.ts perf/startup.perf.test.ts",
     "perf:phase2": "vitest run --config perf/vitest.perf.config.ts -- perf/process-lifecycle.perf.test.ts perf/memory-leak.perf.test.ts perf/large-file.perf.test.ts",

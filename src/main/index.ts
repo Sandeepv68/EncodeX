@@ -62,6 +62,7 @@ import {
 } from '../shared/log-constants';
 import { captureException, closeMonitoring, initMonitoring } from '../shared/monitoring/MonitoringService';
 import type { MonitoringConfig } from '../shared/monitoring/types';
+import { SENTRY_BUILD_CONFIG } from './generated/sentryBuildConfig';
 import { readMonitoringConsent } from './monitoring/consent';
 import { registerMonitoringIpcBridge } from './monitoring/ipcBridge';
 import { resolveMainMonitorProvider } from './monitoring/providerFactory';
@@ -89,7 +90,9 @@ async function bootstrapMonitoring(): Promise<void> {
     monitoringConsentAtBoot = consent;
     const config: MonitoringConfig = {
       enabled: consent,
-      dsn: process.env.SENTRY_DSN,
+      // Runtime env wins; the generated build-time value covers packaged
+      // releases where end users cannot set SENTRY_DSN.
+      dsn: process.env.SENTRY_DSN ?? SENTRY_BUILD_CONFIG.dsn,
       environment: process.env.SENTRY_ENVIRONMENT || (process.env.NODE_ENV === 'development' ? 'development' : 'production'),
       release: `encodex@${app.getVersion()}`,
       // Set SENTRY_DEBUG=1 to watch the SDK log envelope delivery locally.
