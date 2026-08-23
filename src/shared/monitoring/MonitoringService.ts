@@ -16,7 +16,8 @@
  *    regardless of what the underlying adapter does.
  */
 
-import { Logger, registerLoggerErrorSink } from '../logger';
+import { Logger, registerLoggerSink } from '../logger';
+import type { LoggerLogLevel } from '../logger';
 import {
   LOG_MONITORING_CAPTURE_FAILED,
   LOG_MONITORING_CLOSE_FAILED,
@@ -313,28 +314,43 @@ export function isMonitoringInitialized(): boolean {
 }
 
 /**
- * Bridges ERROR-level application logs into the active backend so issues
- * developers see in the app console surface in the provider's issue feed.
+ * Maps every Logger severity onto the monitoring scale; `info` maps to
+ * `undefined` and is therefore never bridged (stays console-only).
+ * @const {Record<LoggerLogLevel, MonitoringLevel | undefined>}
+ */
+const BRIDGED_LOG_LEVELS: Record<LoggerLogLevel, MonitoringLevel | undefined> = {
+  debug: 'debug',
+  info: undefined,
+  warn: 'warning',
+  error: 'error',
+};
+
+/**
+ * Bridges application log records into the active backend so issues developers
+ * see in the app console surface in the provider's issue feed. DEBUG, WARN and
+ * ERROR records are forwarded with their mapped severities; INFO stays
+ * console-only. Records reach the bridge even when the local minimum console
+ * level suppresses their output, keeping telemetry independent of LOG_LEVEL.
  * Skipped while monitoring is uninitialized or consent is off (the active
  * provider reports disabled), and guarded against re-entrancy so a capture
- * that itself logs can never recurse. Errors passed as `Error` instances are
- * reported with full stack traces; anything else becomes a message event.
+ * that itself logs can never recurse. ERROR records carrying an `Error`
+ * instance are reported with full stack traces; everything else becomes a
+ * message event with the mapped severity.
  */
-let bridgingLogError = false;
-registerLoggerErrorSink((context, args) => {
-  if (!initialized || bridgingLogError || !activeProvider.isEnabled()) return;
-  bridgingLogError = true;
+let bridgingLogRecord = false;
+registerLoggerSink((level, context, args) => {
+  const monitorLevel = BRIDGED_LOG_LEVELS[level];
+  if (!monitorLevel || !initialized || bridgingLogRecord || !activeProvider.isEnabled()) return;
+  bridgingLogRecord = true;
   try {
     const errorArg = args.find((arg) => arg instanceof Error);
-    if (errorArg) {
-      captureException(errorArg, { tags: { handler: 'logger-error' }, extra: { loggerContext: context } });
+    const bridgeContext: MonitorContext = { tags: { handler: 'logger-bridge' }, extra: { loggerContext: context } };
+    if (errorArg && level === 'error') {
+      captureException(errorArg, bridgeContext);
     } else {
-      captureMessage(`${context}: ${args.map((arg) => String(arg)).join(' ')}`, 'error', {
-        tags: { handler: 'logger-error' },
-        extra: { loggerContext: context },
-      });
+      captureMessage(`${context}: ${args.map((arg) => String(arg)).join(' ')}`, monitorLevel, bridgeContext);
     }
   } finally {
-    bridgingLogError = false;
+    bridgingLogRecord = false;
   }
 });
