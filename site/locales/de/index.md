@@ -42,7 +42,7 @@ features:
 
 Sie sind nicht allein. Das sind die alltäglichen Probleme, die EncodeX löst:
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">📱</span>
     <p class="card-head">„Dieses Video läuft auf meinem Handy nicht!"</p>
@@ -62,6 +62,11 @@ Sie sind nicht allein. Das sind die alltäglichen Probleme, die EncodeX löst:
     <span class="card-emoji">⏱️</span>
     <p class="card-head">„Das Video dauert 40 Minuten, ich brauche nur 2."</p>
     <p>Schneiden Sie es in Sekunden zurecht. Kein Schnittprogramm nötig: Wer einen Schieberegler bewegen kann, kann das hier auch.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🗂️</span>
+    <p class="card-head">„Ich habe 50 Dateien zu konvertieren. Eine nach der anderen?!"</p>
+    <p>Ziehen Sie einfach den ganzen Ordner hinein. EncodeX reiht sie auf und arbeitet sie von selbst ab.</p>
   </div>
   <div class="card">
     <span class="card-emoji">😩</span>
@@ -109,7 +114,7 @@ Ein aufgeräumter Startbildschirm. Jedes Werkzeug einen Klick entfernt. Wenn Sie
 EncodeX ist freie Software, gebaut von einer Ehrenamtlichen-Community. Es gibt keine Bezahlversion, die einem angepreist wird, weil es nichts freizuschalten gibt: Alles ist dabei.
 :::
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🔒</span>
     <p class="card-head">Ihre Dateien gehören nur Ihnen</p>
@@ -144,7 +149,7 @@ EncodeX ist freie Software, gebaut von einer Ehrenamtlichen-Community. Es gibt k
 
 ## Für wen ist das?
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">👨‍👩‍👧</span>
     <p class="card-head">Familien</p>
@@ -164,6 +169,11 @@ EncodeX ist freie Software, gebaut von einer Ehrenamtlichen-Community. Es gibt k
     <span class="card-emoji">💼</span>
     <p class="card-head">Büros</p>
     <p>Schulungsvideos und volle Medienordner über Nacht im Stapel konvertieren.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎙️</span>
+    <p class="card-head">Podcaster</p>
+    <p>Machen Sie aus Videoaufnahmen saubere Audiodateien — im richtigen Format zum Veröffentlichen.</p>
   </div>
   <div class="card">
     <span class="card-emoji">🧓</span>

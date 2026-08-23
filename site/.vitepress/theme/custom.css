@@ -222,6 +222,23 @@ html {
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
+/* Fixed three-column variant for six-card grids */
+.card-grid.three-col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 900px) {
+  .card-grid.three-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .card-grid.three-col {
+    grid-template-columns: 1fr;
+  }
+}
+
 .card {
   display: flex;
   flex-direction: column;
@@ -366,17 +383,59 @@ html {
     color 0.2s ease,
     border-color 0.2s ease;
 }
-.VPButton.brand {
-  box-shadow: 0 4px 14px rgba(3, 89, 173, 0.28);
-}
 .VPButton:hover {
   transform: translateY(-1px);
 }
-.VPButton.brand:hover {
-  box-shadow: 0 6px 20px rgba(3, 89, 173, 0.36);
-}
 .VPButton:active {
   transform: translateY(0);
+}
+
+/* Hero CTAs: oversized, unmissable */
+.VPHero .actions .VPButton {
+  min-width: 210px;
+  padding: 0 32px;
+  line-height: 52px;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  border-radius: 12px;
+}
+
+.VPHero .actions .VPButton.brand {
+  background: linear-gradient(135deg, #0359ad, #00a6c8);
+  border: none;
+  box-shadow: 0 8px 24px rgba(3, 89, 173, 0.35);
+}
+.VPHero .actions .VPButton.brand:hover {
+  background: linear-gradient(135deg, #0f66c0, #00b5d8);
+  box-shadow: 0 10px 30px rgba(3, 89, 173, 0.45);
+}
+
+.dark .VPHero .actions .VPButton.brand {
+  background: linear-gradient(135deg, #0561b4, #0899c4);
+  box-shadow: 0 8px 26px rgba(34, 169, 221, 0.28);
+}
+.dark .VPHero .actions .VPButton.brand:hover {
+  background: linear-gradient(135deg, #0a70c9, #0aa8d6);
+  box-shadow: 0 10px 32px rgba(34, 169, 221, 0.38);
+}
+
+.VPHero .actions .VPButton.alt {
+  border: 1.5px solid var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+  background: var(--vp-c-bg);
+}
+.VPHero .actions .VPButton.alt:hover {
+  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+}
+
+@media (max-width: 639px) {
+  .VPHero .actions .VPButton {
+    min-width: 100%;
+    font-size: 16px;
+    line-height: 48px;
+  }
 }
 
 /* ---------- Feature cards ---------- */

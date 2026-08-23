@@ -4,6 +4,7 @@ export interface ReleaseAsset {
   url: string
   size: number
   sha256: string | null
+  downloads: number
 }
 
 export interface ReleaseData {
@@ -33,6 +34,7 @@ const ARTIFACT_PATTERNS: Array<[RegExp, string]> = [
 interface GitHubAsset {
   name: string
   size: number
+  download_count?: number
   digest?: string
   browser_download_url: string
 }
@@ -58,6 +60,7 @@ export function normalizeRelease(release: GitHubRelease, fetchedAt: string): Rel
       url: asset.browser_download_url,
       size: asset.size,
       sha256: asset.digest?.startsWith('sha256:') ? asset.digest.slice('sha256:'.length) : null,
+      downloads: Math.max(0, asset.download_count ?? 0),
     }
   }
   return {
@@ -70,6 +73,10 @@ export function normalizeRelease(release: GitHubRelease, fetchedAt: string): Rel
     assets,
     fetchedAt,
   }
+}
+
+export function totalDownloads(release: ReleaseData): number {
+  return Object.values(release.assets).reduce((sum, asset) => sum + asset.downloads, 0)
 }
 
 function apiHeaders(): Record<string, string> {
@@ -93,17 +100,23 @@ export async function fetchLatestRelease(): Promise<ReleaseData> {
   return normalizeRelease((await res.json()) as GitHubRelease, new Date().toISOString())
 }
 
-export async function fetchReleases(perPage = 21): Promise<ReleaseData[]> {
-  const res = await fetch(
-    `https://api.github.com/repos/${REPO}/releases?per_page=${perPage}`,
-    { headers: apiHeaders() },
-  )
-  if (!res.ok) {
-    throw new Error(`GitHub API responded ${res.status} while fetching releases`)
+export async function fetchReleases(perPage = 100): Promise<ReleaseData[]> {
+  const all: GitHubRelease[] = []
+  const maxPages = 10
+  for (let page = 1; page <= maxPages; page++) {
+    const res = await fetch(
+      `https://api.github.com/repos/${REPO}/releases?per_page=${perPage}&page=${page}`,
+      { headers: apiHeaders() },
+    )
+    if (!res.ok) {
+      throw new Error(`GitHub API responded ${res.status} while fetching releases`)
+    }
+    const list = (await res.json()) as GitHubRelease[]
+    all.push(...list)
+    if (list.length < perPage) break
   }
-  const list = (await res.json()) as GitHubRelease[]
   const now = new Date().toISOString()
-  return list.filter((rel) => !rel.draft).map((rel) => normalizeRelease(rel, now))
+  return all.filter((rel) => !rel.draft).map((rel) => normalizeRelease(rel, now))
 }
 
 // Memoized so every component on a page shares one API request

@@ -9,6 +9,7 @@
 ![CI](https://img.shields.io/github/actions/workflow/status/Sandeepv68/EncodeX/ci.yml?style=for-the-badge)
 ![License](https://img.shields.io/github/license/Sandeepv68/EncodeX?style=for-the-badge)
 ![Release](https://img.shields.io/github/v/release/Sandeepv68/EncodeX?style=for-the-badge)
+![Downloads](https://img.shields.io/github/downloads/Sandeepv68/EncodeX/total?style=for-the-badge&logo=github&logoColor=white)
 ![Stars](https://img.shields.io/github/stars/Sandeepv68/EncodeX?style=for-the-badge)
 ![Forks](https://img.shields.io/github/forks/Sandeepv68/EncodeX?style=for-the-badge)
 ![Watchers](https://img.shields.io/github/watchers/Sandeepv68/EncodeX?style=for-the-badge)
@@ -56,6 +57,46 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 - **🌗 Dark/Light Theme** — System-aware with manual toggle, persistent preferences
 
 See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, supported formats, and codec lists.
+
+## 📸 Screenshots
+
+<div align="center">
+  <img src="site/public/images/home_dashboard.jpg" alt="Home Dashboard" width="800" />
+  <p><strong>🏠 Home Dashboard</strong></p>
+</div>
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="site/public/images/convert.jpg" alt="Media Conversion" /><br />
+      <strong>🔄 Media Conversion</strong>
+    </td>
+    <td align="center" width="50%">
+      <img src="site/public/images/extract_audio.jpg" alt="Audio Extraction" /><br />
+      <strong>🎵 Audio Extraction</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="site/public/images/cut_video.jpg" alt="Video Cutting" /><br />
+      <strong>✂️ Video Cutting</strong>
+    </td>
+    <td align="center">
+      <img src="site/public/images/image_compress.jpg" alt="Image Compression" /><br />
+      <strong>🖼️ Image Compression</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="site/public/images/batch_process.jpg" alt="Batch Queue" /><br />
+      <strong>📋 Batch Queue</strong>
+    </td>
+    <td align="center">
+      <img src="site/public/images/media_info.jpg" alt="Media Info" /><br />
+      <strong>ℹ️ Media Info</strong>
+    </td>
+  </tr>
+</table>
 
 ## 📌 Prerequisites
 
