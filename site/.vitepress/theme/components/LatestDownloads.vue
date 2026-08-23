@@ -108,6 +108,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
 import { getLatestRelease, fetchReleases } from '../../data/releaseShared'
 import { data as buildData } from '../../data/release.data'
+import { data as buildOlderData } from '../../data/releases.data'
 
 const props = defineProps({
   platform: {
@@ -336,9 +337,13 @@ const release = ref(buildData)
 onMounted(async () => {
   if (props.older) {
     try {
-      olderReleases.value = await fetchReleases(21)
+      olderReleases.value = await fetchReleases()
     } catch {
-      olderError.value = true
+      // keep build-time data on rate limit or network failure;
+      // only surface the error message when we have nothing to show
+      if (!olderReleases.value.length) {
+        olderError.value = true
+      }
     }
     return
   }
@@ -419,7 +424,7 @@ function osLabel(key) {
 
 // ---- Previous versions ----
 
-const olderReleases = ref([])
+const olderReleases = ref(buildOlderData || [])
 const olderError = ref(false)
 
 const olderList = computed(() => {
