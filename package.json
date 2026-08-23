@@ -1,6 +1,6 @@
 {
   "name": "EncodeX",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "Multimedia converter built on FFmpeg, React, TypeScript, and Electron",
   "main": "dist/main/index.js",
   "bin": {
