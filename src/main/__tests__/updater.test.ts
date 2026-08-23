@@ -54,8 +54,7 @@ describe('updater', () => {
   });
 
   describe('selectAsset', () => {
-    const assets = (names: string[]): UpdateAsset[] =>
-      names.map((name) => ({ name, url: `https://example.com/${name}`, size: 1024 }));
+    const assets = (names: string[]): UpdateAsset[] => names.map((name) => ({ name, url: `https://example.com/${name}`, size: 1024 }));
 
     it('prefers the arch-matching setup executable on win32', () => {
       Object.defineProperty(process, 'platform', { value: 'win32' });
@@ -82,14 +81,10 @@ describe('updater', () => {
     it('selects the arch-matching dmg on darwin and the AppImage on linux', () => {
       Object.defineProperty(process, 'platform', { value: 'darwin' });
       Object.defineProperty(process, 'arch', { value: 'arm64' });
-      expect(selectAsset(assets(['EncodeX-1.0.0-x64.dmg', 'EncodeX-1.0.0-arm64.dmg']))?.name).toBe(
-        'EncodeX-1.0.0-arm64.dmg',
-      );
+      expect(selectAsset(assets(['EncodeX-1.0.0-x64.dmg', 'EncodeX-1.0.0-arm64.dmg']))?.name).toBe('EncodeX-1.0.0-arm64.dmg');
 
       Object.defineProperty(process, 'platform', { value: 'linux' });
-      expect(selectAsset(assets(['EncodeX-1.0.0-x86_64.AppImage', 'EncodeX-1.0.0-setup.exe']))?.name).toBe(
-        'EncodeX-1.0.0-x86_64.AppImage',
-      );
+      expect(selectAsset(assets(['EncodeX-1.0.0-x86_64.AppImage', 'EncodeX-1.0.0-setup.exe']))?.name).toBe('EncodeX-1.0.0-x86_64.AppImage');
     });
 
     it('never matches blockmap files', () => {
