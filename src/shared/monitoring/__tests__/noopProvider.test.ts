@@ -16,7 +16,6 @@ describe('NoopProvider', () => {
     release: 'encodex@test',
     debug: false,
     tracesSampleRate: 1.0,
-    profilesSampleRate: 1.0,
   };
 
   it('reports itself as the "noop" backend', () => {

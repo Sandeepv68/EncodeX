@@ -8,8 +8,7 @@
  * factory - no call sites change.
  *
  * Full-feature mode: error + global-handler capture, native crash minidumps,
- * performance tracing, CPU profiling (graceful fallback when the native
- * profiler binding is unavailable), renderer ANR (event-loop block) detection,
+ * performance tracing, renderer ANR (event-loop block) detection,
  * release-health sessions, screenshots attached to events, renderer profiling
  * header injection, and Spotlight debugging in development. The DSN never
  * leaves this process.
@@ -136,24 +135,6 @@ export class SentryMainProvider implements MonitorProvider {
   }
 
   /**
-   * Best-effort load of the native CPU profiler integration. Profiling is an
-   * enhancement: any failure (missing binding, unsupported platform) degrades
-   * to tracing-only without affecting error capture.
-   * @returns {Promise<Record<string, unknown> | undefined>} Integration instance or undefined.
-   */
-  private async tryLoadProfilerIntegration(): Promise<Record<string, unknown> | undefined> {
-    try {
-      const mod = (await import('@sentry/profiling-node')) as unknown as {
-        nodeProfilingIntegration: () => Record<string, unknown>;
-      };
-      return mod.nodeProfilingIntegration();
-    } catch (err) {
-      log.warn('CPU profiler unavailable, continuing without profiling:', err);
-      return undefined;
-    }
-  }
-
-  /**
    * Initializes Sentry for the main process with full-feature options.
    * @param {MonitoringConfig} config - Resolved config incl. DSN/env/release/consent/rates.
    * @returns {Promise<void>} Resolves once init options have been applied.
@@ -166,7 +147,6 @@ export class SentryMainProvider implements MonitorProvider {
     const sdk = await this.loadSdk();
 
     const isDev = process.env.NODE_ENV === 'development';
-    const profilerIntegration = await this.tryLoadProfilerIntegration();
 
     const options: Record<string, unknown> = {
       dsn: config.dsn,
@@ -175,9 +155,6 @@ export class SentryMainProvider implements MonitorProvider {
       debug: config.debug ?? false,
       // Performance monitoring: trace all transactions unless overridden.
       tracesSampleRate: config.tracesSampleRate ?? 1.0,
-      // CPU profiling of sampled transactions (only effective with the
-      // native profiler integration loaded above).
-      ...(profilerIntegration ? { profilesSampleRate: config.profilesSampleRate ?? 1.0 } : {}),
       // Privacy: do not send cookies/headers by default.
       sendDefaultPii: false,
       // Attach a screenshot to JavaScript error events (opt-in upstream).
@@ -190,7 +167,6 @@ export class SentryMainProvider implements MonitorProvider {
         const list = [...defaults];
         // Renderer ANR (event-loop hang) detection with native call stacks.
         list.push(sdk.rendererEventLoopBlockIntegration({ captureNativeStacktrace: true }) as unknown as Record<string, unknown>);
-        if (profilerIntegration) list.push(profilerIntegration);
         return list;
       },
     };

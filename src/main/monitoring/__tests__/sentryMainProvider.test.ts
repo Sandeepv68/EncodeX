@@ -1,8 +1,8 @@
 /**
  * @fileoverview Unit tests for the Sentry main-process adapter.
- * `@sentry/electron/main` and `@sentry/profiling-node` are replaced with spies
- * so the adapter's option assembly, capture delegation, consent transitions,
- * and shutdown semantics can be verified without a real backend.
+ * `@sentry/electron/main` is replaced with spies so the adapter's option
+ * assembly, capture delegation, consent transitions, and shutdown semantics
+ * can be verified without a real backend.
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -22,9 +22,6 @@ const sentryMainMock = vi.hoisted(() => ({
 }));
 
 vi.mock('@sentry/electron/main', () => sentryMainMock);
-vi.mock('@sentry/profiling-node', () => ({
-  nodeProfilingIntegration: () => ({ name: 'NodeProfiler' }),
-}));
 
 import { SentryMainProvider } from '../sentryMainProvider';
 import type { MonitoringConfig } from '../../../shared/monitoring/types';
@@ -36,7 +33,6 @@ const baseConfig = (overrides: Partial<MonitoringConfig> = {}): MonitoringConfig
   release: 'encodex@1.0.0',
   debug: false,
   tracesSampleRate: 1.0,
-  profilesSampleRate: 1.0,
   ...overrides,
 });
 
@@ -67,29 +63,11 @@ describe('SentryMainProvider', () => {
     expect(options.sendDefaultPii).toBe(false);
     expect(options.attachScreenshot).toBe(true);
     expect(options.enableRendererProfiling).toBe(true);
-    // Profiling rate present because the mocked native integration loads.
-    expect(options.profilesSampleRate).toBe(1.0);
 
-    // The integrations hook appends renderer ANR detection and the CPU profiler.
+    // The integrations hook appends renderer ANR detection.
     const integrations = options.integrations as (defaults: unknown[]) => unknown[];
-    expect(integrations([])).toHaveLength(2);
+    expect(integrations([])).toHaveLength(1);
     expect(sentryMainMock.rendererEventLoopBlockIntegration).toHaveBeenCalledWith({ captureNativeStacktrace: true });
-  });
-
-  it('falls back to tracing-only when the profiler binding is unavailable', async () => {
-    vi.doMock('@sentry/profiling-node', () => {
-      throw new Error('native binding missing');
-    });
-    try {
-      const provider = new SentryMainProvider();
-      await provider.init(baseConfig());
-      const options = sentryMainMock.init.mock.calls[0][0] as Record<string, unknown>;
-      expect(options.profilesSampleRate).toBeUndefined();
-      const integrations = options.integrations as (defaults: unknown[]) => unknown[];
-      expect(integrations([])).toHaveLength(1);
-    } finally {
-      vi.doUnmock('@sentry/profiling-node');
-    }
   });
 
   it('returns undefined for all captures while inactive', async () => {

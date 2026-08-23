@@ -104,8 +104,6 @@ export interface MonitoringConfig {
   debug?: boolean;
   /** Fraction [0..1] of transactions traced for performance monitoring. */
   tracesSampleRate?: number;
-  /** Fraction [0..1] of sampled transactions additionally profiled. */
-  profilesSampleRate?: number;
 }
 
 /**
