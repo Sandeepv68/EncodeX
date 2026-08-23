@@ -28,12 +28,12 @@ App code ──► shared/monitoring facade (initMonitoring / captureException /
 
 ## Configuration
 
-| Variable                                              | Purpose                                                                  |
-| ----------------------------------------------------- | ------------------------------------------------------------------------ |
-| `SENTRY_DSN`                                          | Enables Sentry when present (main process only).                         |
-| `SENTRY_ENVIRONMENT`                                  | Environment label (defaults from NODE_ENV).                              |
-| `MONITORING_PROVIDER`                                 | Optional override: `sentry` \| `noop`; otherwise auto-detected from DSN. |
-| `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` | CI-only: production sourcemap upload via `@sentry/vite-plugin`.          |
+| Variable                                              | Purpose                                                                                                                                     |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SENTRY_DSN`                                          | Enables Sentry when present (main process only). Loaded from the repo-root `.env` via dotenv (real environment variables win) or the shell. |
+| `SENTRY_ENVIRONMENT`                                  | Environment label (defaults from NODE_ENV).                                                                                                 |
+| `MONITORING_PROVIDER`                                 | Optional override: `sentry` \| `noop`; otherwise auto-detected from DSN.                                                                    |
+| `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` | CI-only: production sourcemap upload via `@sentry/vite-plugin`.                                                                             |
 
 Release identifier: `encodex@<app version>`.
 
@@ -47,6 +47,18 @@ profiling in a packaged build, rebuild the binding against Electron first:
 ```
 npx @electron/rebuild -f -w @sentry/node-cpu-profiler
 ```
+
+## What gets reported
+
+- Uncaught exceptions and unhandled rejections (both processes).
+- Renderer crashes (`render-process-gone`) as native crash/minidump events.
+- React errors caught by the app's ErrorBoundary.
+- **Errors logged through the shared `Logger.error(...)`** in either process:
+  the facade bridges ERROR-level log records into real issue events (tagged
+  `handler: logger-error`), so anything printed as `[ERROR]` in the app
+  console appears in the backend's issue feed.
+- Plain `console.log`/`info`/`warn` output is _not_ reported.
+- Set `SENTRY_DEBUG=1` to watch SDK capture/delivery in local dev.
 
 ## Privacy & consent
 

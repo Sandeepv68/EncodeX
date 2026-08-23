@@ -16,6 +16,14 @@
  * The module has no exports; its top-level code runs once when loaded.
  */
 
+/**
+ * Load the repo-root `.env` before anything reads `process.env` (monitoring
+ * bootstrap runs at module load). Real environment variables always win over
+ * file values; a missing file is not an error.
+ */
+import { config as loadDotenv } from 'dotenv';
+loadDotenv({ quiet: true });
+
 import { app, BrowserWindow, Menu, shell } from 'electron';
 import * as path from 'path';
 import { registerIpcHandlers } from './ipc/handlers';
@@ -84,6 +92,8 @@ async function bootstrapMonitoring(): Promise<void> {
       dsn: process.env.SENTRY_DSN,
       environment: process.env.SENTRY_ENVIRONMENT || (process.env.NODE_ENV === 'development' ? 'development' : 'production'),
       release: `encodex@${app.getVersion()}`,
+      // Set SENTRY_DEBUG=1 to watch the SDK log envelope delivery locally.
+      debug: process.env.SENTRY_DEBUG === '1',
     };
     await initMonitoring(config, resolveMainMonitorProvider);
   } catch (err) {

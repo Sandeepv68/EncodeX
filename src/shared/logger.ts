@@ -55,6 +55,30 @@ function getTimestamp(): string {
 const currentLevel = getLogLevel();
 
 /**
+ * Consumer of ERROR-level log records for external reporting. Installed by the
+ * monitoring facade at module load; the Logger itself stays dependency-free.
+ * @param {string} context - The logging subsystem label ('main/index', ...).
+ * @param {unknown[]} args - Raw arguments passed to {@link Logger.error}.
+ */
+export type LoggerErrorSink = (context: string, args: unknown[]) => void;
+
+/**
+ * Active error sink, or null until a reporter registers. @type {LoggerErrorSink | null}
+ */
+let errorSink: LoggerErrorSink | null = null;
+
+/**
+ * Registers the sink invoked for every ERROR-level record. Intended to be
+ * called exactly once by the monitoring facade; later registrations replace
+ * earlier ones.
+ * @param {LoggerErrorSink} sink - Consumer for error records.
+ * @returns {void}
+ */
+export function registerLoggerErrorSink(sink: LoggerErrorSink): void {
+  errorSink = sink;
+}
+
+/**
  * Structured logger that prefixes messages with a UTC timestamp, the severity
  * level, and a per-instance context label. The context lets messages be
  * attributed to a specific subsystem (e.g. 'Transcoder' or 'QueueManager').
@@ -106,12 +130,21 @@ export class Logger {
   }
 
   /**
-   * Logs an ERROR message via console.error. Always emitted regardless of the
-   * configured minimum log level.
+   * Logs an ERROR message via console.error and forwards the record to the
+   * registered error sink (monitoring), if any. Always emitted regardless of
+   * the configured minimum log level. Sink failures are swallowed so
+   * monitoring can never break logging.
    * @param {...unknown[]} args - Values to include in the message.
    * @returns {void}
    */
   error(...args: unknown[]) {
     console.error(`[${getTimestamp()}] [ERROR] [${this.context}]`, ...args);
+    if (errorSink) {
+      try {
+        errorSink(this.context, args);
+      } catch {
+        /* intentionally ignored - reporting must never break logging */
+      }
+    }
   }
 }

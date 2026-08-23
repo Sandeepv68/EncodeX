@@ -16,7 +16,7 @@
  *    regardless of what the underlying adapter does.
  */
 
-import { Logger } from '../logger';
+import { Logger, registerLoggerErrorSink } from '../logger';
 import {
   LOG_MONITORING_CAPTURE_FAILED,
   LOG_MONITORING_CLOSE_FAILED,
@@ -311,3 +311,30 @@ export function getActiveMonitorProviderForTests(): MonitorProvider {
 export function isMonitoringInitialized(): boolean {
   return initialized;
 }
+
+/**
+ * Bridges ERROR-level application logs into the active backend so issues
+ * developers see in the app console surface in the provider's issue feed.
+ * Skipped while monitoring is uninitialized or consent is off (the active
+ * provider reports disabled), and guarded against re-entrancy so a capture
+ * that itself logs can never recurse. Errors passed as `Error` instances are
+ * reported with full stack traces; anything else becomes a message event.
+ */
+let bridgingLogError = false;
+registerLoggerErrorSink((context, args) => {
+  if (!initialized || bridgingLogError || !activeProvider.isEnabled()) return;
+  bridgingLogError = true;
+  try {
+    const errorArg = args.find((arg) => arg instanceof Error);
+    if (errorArg) {
+      captureException(errorArg, { tags: { handler: 'logger-error' }, extra: { loggerContext: context } });
+    } else {
+      captureMessage(`${context}: ${args.map((arg) => String(arg)).join(' ')}`, 'error', {
+        tags: { handler: 'logger-error' },
+        extra: { loggerContext: context },
+      });
+    }
+  } finally {
+    bridgingLogError = false;
+  }
+});
