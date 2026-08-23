@@ -57,6 +57,46 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, supported formats, and codec lists.
 
+## 📸 Screenshots
+
+<div align="center">
+  <img src="site/public/images/home_dashboard.jpg" alt="Home Dashboard" width="800" />
+  <p><strong>🏠 Home Dashboard</strong></p>
+</div>
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="site/public/images/convert.jpg" alt="Media Conversion" /><br />
+      <strong>🔄 Media Conversion</strong>
+    </td>
+    <td align="center" width="50%">
+      <img src="site/public/images/extract_audio.jpg" alt="Audio Extraction" /><br />
+      <strong>🎵 Audio Extraction</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="site/public/images/cut_video.jpg" alt="Video Cutting" /><br />
+      <strong>✂️ Video Cutting</strong>
+    </td>
+    <td align="center">
+      <img src="site/public/images/image_compress.jpg" alt="Image Compression" /><br />
+      <strong>🖼️ Image Compression</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="site/public/images/batch_process.jpg" alt="Batch Queue" /><br />
+      <strong>📋 Batch Queue</strong>
+    </td>
+    <td align="center">
+      <img src="site/public/images/media_info.jpg" alt="Media Info" /><br />
+      <strong>ℹ️ Media Info</strong>
+    </td>
+  </tr>
+</table>
+
 ## 📌 Prerequisites
 
 - [Node.js](https://nodejs.org/) 22+
