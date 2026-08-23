@@ -106,7 +106,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
-import { fetchLatestRelease, fetchReleases } from '../../data/releaseShared'
+import { getLatestRelease, fetchReleases } from '../../data/releaseShared'
 import { data as buildData } from '../../data/release.data'
 
 const props = defineProps({
@@ -343,7 +343,7 @@ onMounted(async () => {
     return
   }
   try {
-    const fresh = await fetchLatestRelease()
+    const fresh = await getLatestRelease()
     if (Object.keys(fresh.assets).length > 0) {
       release.value = fresh
     }

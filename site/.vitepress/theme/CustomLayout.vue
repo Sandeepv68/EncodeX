@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import DefaultTheme from 'vitepress/theme'
 import HeroLogo from './components/HeroLogo.vue'
 import SiteFooter from './components/SiteFooter.vue'
+import VersionBadge from './components/VersionBadge.vue'
 
 const { Layout } = DefaultTheme
 
@@ -20,6 +21,12 @@ onMounted(() => {
     </template>
     <template #nav-bar-title-before>
       <img class="custom-nav-logo" src="/images/icon.webp" alt="" width="24" height="24">
+    </template>
+    <template #nav-bar-title-after>
+      <VersionBadge variant="nav" />
+    </template>
+    <template #home-hero-actions-after>
+      <VersionBadge variant="hero" />
     </template>
     <template #layout-bottom>
       <SiteFooter />

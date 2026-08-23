@@ -105,3 +105,16 @@ export async function fetchReleases(perPage = 21): Promise<ReleaseData[]> {
   const now = new Date().toISOString()
   return list.filter((rel) => !rel.draft).map((rel) => normalizeRelease(rel, now))
 }
+
+// Memoized so every component on a page shares one API request
+let latestPromise: Promise<ReleaseData> | null = null
+
+export function getLatestRelease(): Promise<ReleaseData> {
+  if (!latestPromise) {
+    latestPromise = fetchLatestRelease().catch((error) => {
+      latestPromise = null
+      throw error
+    })
+  }
+  return latestPromise
+}
