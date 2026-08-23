@@ -42,7 +42,7 @@ features:
 
 你不是一个人。这些都是 EncodeX 能解决的日常问题：
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">📱</span>
     <p class="card-head">"这个视频在我手机上放不了！"</p>
@@ -62,6 +62,11 @@ features:
     <span class="card-emoji">⏱️</span>
     <p class="card-head">"视频有 40 分钟，我只要 2 分钟。"</p>
     <p>几秒剪好。不用学剪辑：会拖滑块就会用。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🗂️</span>
+    <p class="card-head">"有 50 个文件要转，难道一个一个来？！"</p>
+    <p>直接把整个文件夹拖进来。EncodeX 会自动排队，逐个处理，不用你盯着。</p>
   </div>
   <div class="card">
     <span class="card-emoji">😩</span>
@@ -109,7 +114,7 @@ features:
 EncodeX 是由志愿者社区打造的开源软件。没有付费版来烦你，因为没有需要解锁的东西：功能全都内置。
 :::
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🔒</span>
     <p class="card-head">文件只属于你</p>
@@ -144,7 +149,7 @@ EncodeX 是由志愿者社区打造的开源软件。没有付费版来烦你，
 
 ## 适合谁用？
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">👨‍👩‍👧</span>
     <p class="card-head">家庭用户</p>
@@ -164,6 +169,11 @@ EncodeX 是由志愿者社区打造的开源软件。没有付费版来烦你，
     <span class="card-emoji">💼</span>
     <p class="card-head">办公族</p>
     <p>晚上批量转换培训视频和塞满素材的文件夹。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎙️</span>
+    <p class="card-head">播客主播</p>
+    <p>把视频录像变成干净的音频文件，按发布平台需要的大小和格式导出。</p>
   </div>
   <div class="card">
     <span class="card-emoji">🧓</span>

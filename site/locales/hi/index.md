@@ -42,7 +42,7 @@ features:
 
 आप अकेले नहीं हैं। ये रोज़मर्रा की समस्याएँ हैं जो EncodeX हल कर देता है:
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">📱</span>
     <p class="card-head">"ये वीडियो मेरे फ़ोन पर नहीं चल रहा!"</p>
@@ -62,6 +62,11 @@ features:
     <span class="card-emoji">⏱️</span>
     <p class="card-head">"वीडियो 40 मिनट का है, मुझे 2 मिनट चाहिए।"</p>
     <p>सेकंडों में ट्रिम करें। एडिटिंग सीखने की ज़रूरत नहीं: स्लाइडर घुमा सकते हैं तो ये भी कर लेंगे।</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🗂️</span>
+    <p class="card-head">"मुझे 50 फ़ाइलें बदलनी हैं। एक-एक करके?!"</p>
+    <p>पूरा फ़ोल्डर एक साथ डाल दीजिए। EncodeX खुद कतार बनाकर एक-एक करके सब निपटा देगा।</p>
   </div>
   <div class="card">
     <span class="card-emoji">😩</span>
@@ -109,7 +114,7 @@ features:
 EncodeX स्वयंसेवकों की कम्युनिटी से बनी ओपन सोर्स सॉफ़्टवेयर है। कोई पेड वर्ज़न नहीं जो आपको बेचा जाए, क्योंकि अनलॉक करने को कुछ है ही नहीं: सब कुछ पहले से शामिल है।
 :::
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🔒</span>
     <p class="card-head">आपकी फ़ाइलें सिर्फ़ आपकी</p>
@@ -144,7 +149,7 @@ EncodeX स्वयंसेवकों की कम्युनिटी स
 
 ## ये किसके लिए है?
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">👨‍👩‍👧</span>
     <p class="card-head">परिवार</p>
@@ -164,6 +169,11 @@ EncodeX स्वयंसेवकों की कम्युनिटी स
     <span class="card-emoji">💼</span>
     <p class="card-head">ऑफ़िस</p>
     <p>ट्रेनिंग वीडियो और भरे हुए मीडिया फ़ोल्डर रात में बैच में बदलना।</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎙️</span>
+    <p class="card-head">पॉडकास्टर्स</p>
+    <p>वीडियो रिकॉर्डिंग को साफ़ ऑडियो फ़ाइलों में बदलें — जहाँ पब्लिश करें, उसके हिसाब से साइज़ और फ़ॉर्मैट में।</p>
   </div>
   <div class="card">
     <span class="card-emoji">🧓</span>

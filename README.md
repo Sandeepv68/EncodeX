@@ -9,6 +9,7 @@
 ![CI](https://img.shields.io/github/actions/workflow/status/Sandeepv68/EncodeX/ci.yml?style=for-the-badge)
 ![License](https://img.shields.io/github/license/Sandeepv68/EncodeX?style=for-the-badge)
 ![Release](https://img.shields.io/github/v/release/Sandeepv68/EncodeX?style=for-the-badge)
+![Downloads](https://img.shields.io/github/downloads/Sandeepv68/EncodeX/total?style=for-the-badge&logo=github&logoColor=white)
 ![Stars](https://img.shields.io/github/stars/Sandeepv68/EncodeX?style=for-the-badge)
 ![Forks](https://img.shields.io/github/forks/Sandeepv68/EncodeX?style=for-the-badge)
 ![Watchers](https://img.shields.io/github/watchers/Sandeepv68/EncodeX?style=for-the-badge)

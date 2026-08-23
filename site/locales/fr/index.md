@@ -42,7 +42,7 @@ features:
 
 Vous n'êtes pas seul. Voici les problèmes du quotidien qu'EncodeX résout :
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">📱</span>
     <p class="card-head">« Cette vidéo ne se lit pas sur mon téléphone ! »</p>
@@ -62,6 +62,11 @@ Vous n'êtes pas seul. Voici les problèmes du quotidien qu'EncodeX résout :
     <span class="card-emoji">⏱️</span>
     <p class="card-head">« La vidéo dure 40 minutes, il m'en faut 2. »</p>
     <p>Coupez-la en quelques secondes. Pas besoin de savoir monter : si vous savez déplacer un curseur, vous y arriverez.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🗂️</span>
+    <p class="card-head">« J'ai 50 fichiers à convertir. Un par un ?! »</p>
+    <p>Glissez plutôt le dossier entier. EncodeX les met en file d'attente et les traite tout seul, l'un après l'autre.</p>
   </div>
   <div class="card">
     <span class="card-emoji">😩</span>
@@ -109,7 +114,7 @@ Un écran d'accueil épuré, chaque outil à un clic. Si vous savez utiliser un 
 EncodeX est un logiciel libre créé par une communauté de bénévoles. Il n'existe pas de version payante qu'on vous vend, parce qu'il n'y a rien à débloquer : tout est inclus.
 :::
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🔒</span>
     <p class="card-head">Vos fichiers restent chez vous</p>
@@ -144,7 +149,7 @@ EncodeX est un logiciel libre créé par une communauté de bénévoles. Il n'ex
 
 ## À qui ça s'adresse ?
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">👨‍👩‍👧</span>
     <p class="card-head">Les familles</p>
@@ -164,6 +169,11 @@ EncodeX est un logiciel libre créé par une communauté de bénévoles. Il n'ex
     <span class="card-emoji">💼</span>
     <p class="card-head">Les bureaux</p>
     <p>Convertir en lot des vidéos de formation et des dossiers pleins de médias pendant la nuit.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎙️</span>
+    <p class="card-head">Les podcasteurs</p>
+    <p>Transformez vos enregistrements vidéo en fichiers audio propres, prêts à publier au bon format.</p>
   </div>
   <div class="card">
     <span class="card-emoji">🧓</span>

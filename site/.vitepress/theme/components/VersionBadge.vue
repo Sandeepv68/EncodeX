@@ -13,6 +13,7 @@
       :title="t.viewOnGitHub"
     >{{ tag }}</a>
     <span v-if="dateText" class="vb-date">· {{ dateText }}</span>
+    <span v-if="downloadsText" class="vb-dl">⬇ {{ downloadsText }}</span>
     <a class="vb-ext" :href="allReleasesUrl" target="_blank" rel="noopener noreferrer">
       {{ t.viewOnGitHub }} ↗
     </a>
@@ -24,6 +25,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
 import { getLatestRelease } from '../../data/releaseShared'
 import { data as buildData } from '../../data/release.data'
+import { data as buildTotalDownloads } from '../../data/downloads.data'
 
 const props = defineProps({
   variant: {
@@ -34,13 +36,13 @@ const props = defineProps({
 })
 
 const STRINGS = {
-  en: { latest: 'Latest release', viewOnGitHub: 'View on GitHub' },
-  es: { latest: 'Última versión', viewOnGitHub: 'Ver en GitHub' },
-  fr: { latest: 'Dernière version', viewOnGitHub: 'Voir sur GitHub' },
-  de: { latest: 'Neueste Version', viewOnGitHub: 'Auf GitHub ansehen' },
-  pt: { latest: 'Versão mais recente', viewOnGitHub: 'Ver no GitHub' },
-  zh: { latest: '最新版本', viewOnGitHub: '在 GitHub 上查看' },
-  hi: { latest: 'नवीनतम संस्करण', viewOnGitHub: 'GitHub पर देखें' },
+  en: { latest: 'Latest release', viewOnGitHub: 'View on GitHub', downloadsCount: '{n} downloads' },
+  es: { latest: 'Última versión', viewOnGitHub: 'Ver en GitHub', downloadsCount: '{n} descargas' },
+  fr: { latest: 'Dernière version', viewOnGitHub: 'Voir sur GitHub', downloadsCount: '{n} téléchargements' },
+  de: { latest: 'Neueste Version', viewOnGitHub: 'Auf GitHub ansehen', downloadsCount: '{n} Downloads' },
+  pt: { latest: 'Versão mais recente', viewOnGitHub: 'Ver no GitHub', downloadsCount: '{n} downloads' },
+  zh: { latest: '最新版本', viewOnGitHub: '在 GitHub 上查看', downloadsCount: '{n} 次下载' },
+  hi: { latest: 'नवीनतम संस्करण', viewOnGitHub: 'GitHub पर देखें', downloadsCount: '{n} डाउनलोड' },
 }
 
 const LOCALES = {
@@ -94,6 +96,19 @@ const dateText = computed(() => {
     }).format(new Date(iso))
   } catch {
     return iso.slice(0, 10)
+  }
+})
+
+// Build-time lifetime total across all releases; hidden when unavailable
+const downloadsText = computed(() => {
+  if (!buildTotalDownloads || buildTotalDownloads <= 0) return ''
+  try {
+    return t.value.downloadsCount.replace(
+      '{n}',
+      new Intl.NumberFormat(localeTag.value).format(buildTotalDownloads),
+    )
+  } catch {
+    return t.value.downloadsCount.replace('{n}', String(buildTotalDownloads))
   }
 })
 </script>
@@ -150,6 +165,19 @@ const dateText = computed(() => {
 .vb-date {
   margin-left: 10px;
   font-size: 12.5px;
+}
+
+.vb-dl {
+  margin-left: 10px;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .vb-ext {

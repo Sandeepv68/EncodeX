@@ -42,7 +42,7 @@ features:
 
 Você não está sozinho. Estes são os problemas do dia a dia que o EncodeX resolve:
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">📱</span>
     <p class="card-head">"Esse vídeo não abre no meu celular!"</p>
@@ -62,6 +62,11 @@ Você não está sozinho. Estes são os problemas do dia a dia que o EncodeX res
     <span class="card-emoji">⏱️</span>
     <p class="card-head">"O vídeo tem 40 minutos e eu preciso de 2."</p>
     <p>Corte em segundos. Não precisa saber editar: se você sabe arrastar uma barrinha, você consegue.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🗂️</span>
+    <p class="card-head">"Tenho 50 arquivos para converter. Um por um?!"</p>
+    <p>Arraste a pasta inteira de uma vez. O EncodeX coloca tudo na fila e processa sozinho, um por um.</p>
   </div>
   <div class="card">
     <span class="card-emoji">😩</span>
@@ -109,7 +114,7 @@ Uma tela inicial limpa. Cada ferramenta a um clique. Se você sabe usar um naveg
 O EncodeX é software livre criado por uma comunidade de voluntários. Não existe versão paga te empurrada, porque não há nada para desbloquear: tudo vem incluso.
 :::
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🔒</span>
     <p class="card-head">Seus arquivos são só seus</p>
@@ -144,7 +149,7 @@ O EncodeX é software livre criado por uma comunidade de voluntários. Não exis
 
 ## Para quem é?
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">👨‍👩‍👧</span>
     <p class="card-head">Famílias</p>
@@ -164,6 +169,11 @@ O EncodeX é software livre criado por uma comunidade de voluntários. Não exis
     <span class="card-emoji">💼</span>
     <p class="card-head">Escritórios</p>
     <p>Converter vídeos de treinamento e pastas cheias de mídia durante a noite, em lote.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎙️</span>
+    <p class="card-head">Podcasters</p>
+    <p>Transforme gravações de vídeo em arquivos de áudio limpos, no tamanho e formato certos para publicar.</p>
   </div>
   <div class="card">
     <span class="card-emoji">🧓</span>

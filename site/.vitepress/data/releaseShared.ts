@@ -4,6 +4,7 @@ export interface ReleaseAsset {
   url: string
   size: number
   sha256: string | null
+  downloads: number
 }
 
 export interface ReleaseData {
@@ -33,6 +34,7 @@ const ARTIFACT_PATTERNS: Array<[RegExp, string]> = [
 interface GitHubAsset {
   name: string
   size: number
+  download_count?: number
   digest?: string
   browser_download_url: string
 }
@@ -58,6 +60,7 @@ export function normalizeRelease(release: GitHubRelease, fetchedAt: string): Rel
       url: asset.browser_download_url,
       size: asset.size,
       sha256: asset.digest?.startsWith('sha256:') ? asset.digest.slice('sha256:'.length) : null,
+      downloads: Math.max(0, asset.download_count ?? 0),
     }
   }
   return {
@@ -70,6 +73,10 @@ export function normalizeRelease(release: GitHubRelease, fetchedAt: string): Rel
     assets,
     fetchedAt,
   }
+}
+
+export function totalDownloads(release: ReleaseData): number {
+  return Object.values(release.assets).reduce((sum, asset) => sum + asset.downloads, 0)
 }
 
 function apiHeaders(): Record<string, string> {

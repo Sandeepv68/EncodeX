@@ -22,6 +22,10 @@
             <code class="dl-file">{{ asset.name }}</code>
             <div class="dl-meta">
               <span>{{ formatSize(asset.size) }}</span>
+              <template v-if="asset.downloads > 0">
+                <span aria-hidden="true">·</span>
+                <span>{{ t.downloadsCount.replace('{n}', formatCount(asset.downloads)) }}</span>
+              </template>
               <template v-if="asset.sha256">
                 <span aria-hidden="true">·</span>
                 <code class="dl-sha" :title="`${t.sha256}: ${asset.sha256}`">{{ shortSha(asset.sha256) }}</code>
@@ -46,6 +50,7 @@
       <span class="dl-label">{{ t.latestVersion }}</span>
       <span class="dl-ver">{{ release.tag }}</span>
       <span v-if="formatDate(release.publishedAt)" class="dl-date">· {{ t.released }} {{ formatDate(release.publishedAt) }}</span>
+      <span v-if="totalDownloads(release) > 0" class="dl-date">⬇ {{ t.downloadsCount.replace('{n}', formatCount(totalDownloads(release))) }}</span>
       <a :href="release.htmlUrl" target="_blank" rel="noopener noreferrer">{{ t.viewAll }}</a>
     </template>
     <a v-else href="https://github.com/Sandeepv68/EncodeX/releases" target="_blank" rel="noopener noreferrer">
@@ -66,6 +71,10 @@
           <span class="dl-file">{{ row.asset.name }}</span>
           <span aria-hidden="true">·</span>
           <span>{{ formatSize(row.asset.size) }}</span>
+          <template v-if="row.asset.downloads > 0">
+            <span aria-hidden="true">·</span>
+            <span>{{ t.downloadsCount.replace('{n}', formatCount(row.asset.downloads)) }}</span>
+          </template>
           <template v-if="row.asset.sha256">
             <span aria-hidden="true">·</span>
             <code
@@ -106,7 +115,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
-import { getLatestRelease, fetchReleases } from '../../data/releaseShared'
+import { getLatestRelease, fetchReleases, totalDownloads } from '../../data/releaseShared'
 import { data as buildData } from '../../data/release.data'
 import { data as buildOlderData } from '../../data/releases.data'
 
@@ -135,6 +144,7 @@ const STRINGS = {
     hide: 'Hide',
     sha256: 'SHA-256',
     filesCount: '{n} files',
+    downloadsCount: '{n} downloads',
     preRelease: 'Pre-release',
     unavailable:
       "Download links couldn't be loaded right now. Get the installers directly from the GitHub releases page:",
@@ -163,6 +173,7 @@ const STRINGS = {
     hide: 'Ocultar',
     sha256: 'SHA-256',
     filesCount: '{n} archivos',
+    downloadsCount: '{n} descargas',
     preRelease: 'Versión preliminar',
     unavailable:
       'No se pudieron cargar los enlaces de descarga. Obtén los instaladores directamente en la página de versiones de GitHub:',
@@ -191,6 +202,7 @@ const STRINGS = {
     hide: 'Masquer',
     sha256: 'SHA-256',
     filesCount: '{n} fichiers',
+    downloadsCount: '{n} téléchargements',
     preRelease: 'Préversion',
     unavailable:
       "Impossible de charger les liens de téléchargement. Récupérez les installateurs directement sur la page des versions GitHub :",
@@ -219,6 +231,7 @@ const STRINGS = {
     hide: 'Ausblenden',
     sha256: 'SHA-256',
     filesCount: '{n} Dateien',
+    downloadsCount: '{n} Downloads',
     preRelease: 'Vorabversion',
     unavailable:
       'Download-Links konnten nicht geladen werden. Installationsprogramme gibt es direkt auf der GitHub-Releases-Seite:',
@@ -247,6 +260,7 @@ const STRINGS = {
     hide: 'Ocultar',
     sha256: 'SHA-256',
     filesCount: '{n} arquivos',
+    downloadsCount: '{n} downloads',
     preRelease: 'Pré-lançamento',
     unavailable:
       'Não foi possível carregar os links de download. Obtenha os instaladores direto na página de versões do GitHub:',
@@ -275,6 +289,7 @@ const STRINGS = {
     hide: '收起',
     sha256: 'SHA-256',
     filesCount: '{n} 个文件',
+    downloadsCount: '{n} 次下载',
     preRelease: '预发布',
     unavailable: '暂时无法加载下载链接。请前往 GitHub 发布页面获取安装包：',
     olderUnavailable: '无法加载历史版本。请在 GitHub 上查看所有版本：',
@@ -301,6 +316,7 @@ const STRINGS = {
     hide: 'छिपाएँ',
     sha256: 'SHA-256',
     filesCount: '{n} फ़ाइलें',
+    downloadsCount: '{n} डाउनलोड',
     preRelease: 'प्री-रिलीज़',
     unavailable: 'डाउनलोड लिंक लोड नहीं हो सके। इंस्टॉलर सीधे GitHub रिलीज़ पेज से प्राप्त करें:',
     olderUnavailable: 'पुराने वर्ज़न लोड नहीं हो सके। GitHub पर सभी रिलीज़ देखें:',
@@ -401,6 +417,14 @@ function formatDate(iso) {
 function formatSize(bytes) {
   const mb = bytes / (1024 * 1024)
   return `${mb >= 100 ? Math.round(mb) : mb.toFixed(1)} MB`
+}
+
+function formatCount(n) {
+  try {
+    return new Intl.NumberFormat(localeTag.value).format(n)
+  } catch {
+    return String(n)
+  }
 }
 
 function shortSha(sha) {

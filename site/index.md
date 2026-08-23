@@ -42,7 +42,7 @@ features:
 
 You're not alone. These are the everyday file problems EncodeX was built to solve:
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">📱</span>
     <p class="card-head">"This video won't play on my phone!"</p>
@@ -62,6 +62,11 @@ You're not alone. These are the everyday file problems EncodeX was built to solv
     <span class="card-emoji">⏱️</span>
     <p class="card-head">"This video is 40 minutes long but I only need 2."</p>
     <p>Trim it down in seconds. No editing skills required — if you can drag a slider, you can do this.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🗂️</span>
+    <p class="card-head">"I have 50 files to convert. One by one?!"</p>
+    <p>Drag the whole folder in instead. EncodeX lines them up and works through them on its own.</p>
   </div>
   <div class="card">
     <span class="card-emoji">😩</span>
@@ -109,7 +114,7 @@ One clean home screen. Every tool one click away. If you can use a web browser, 
 EncodeX is open-source software built by a community of volunteers. There is no paid version you'll be nagged to upgrade to, because there's nothing to upgrade — everything is included.
 :::
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🔒</span>
     <p class="card-head">Your files stay yours</p>
@@ -144,7 +149,7 @@ EncodeX is open-source software built by a community of volunteers. There is no 
 
 ## Who Is It For?
 
-<div class="card-grid">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">👨‍👩‍👧</span>
     <p class="card-head">Families</p>
@@ -164,6 +169,11 @@ EncodeX is open-source software built by a community of volunteers. There is no 
     <span class="card-emoji">💼</span>
     <p class="card-head">Offices</p>
     <p>Batch-convert training videos and media-heavy folders overnight.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎙️</span>
+    <p class="card-head">Podcasters</p>
+    <p>Turn video recordings into clean audio files, sized and formatted for wherever you publish.</p>
   </div>
   <div class="card">
     <span class="card-emoji">🧓</span>
