@@ -69,6 +69,7 @@ import {
   LOG_SET_QUEUE_CONCURRENCY,
   LOG_SET_TRANSCODER,
   LOG_SET_WHEN_DONE,
+  LOG_SET_MONITORING_ENABLED,
 } from '../../shared/log-constants';
 
 /**
@@ -348,6 +349,20 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     window.electronAPI?.setLaunchAtLogin(enabled);
     set({ launchAtLogin: enabled });
   },
+  monitoringEnabled: true,
+  /**
+   * Sets error-monitoring consent. Forwards the flag to the main process via
+   * window.electronAPI.monitoringSetEnabled, which persists consent to disk
+   * and live-toggles the backend, then adopts the authoritative result.
+   * @param {boolean} enabled - True to allow error reporting.
+   */
+  setMonitoringEnabled: (enabled) => {
+    log.debug(LOG_SET_MONITORING_ENABLED, enabled);
+    window.electronAPI
+      ?.monitoringSetEnabled(enabled)
+      .then((result) => set({ monitoringEnabled: result.enabled }))
+      .catch((err) => log.warn(LOG_SET_MONITORING_ENABLED, 'failed:', err));
+  },
   queueConcurrency: readStoredQueueConcurrency(),
   /**
    * Sets the batch queue concurrency. Persists the value to localStorage and
@@ -377,3 +392,15 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     set({ whenDone: config });
   },
 }));
+
+/**
+ * Hydrates the monitoring consent flag from the main process, which owns the
+ * persisted consent file. Runs once at module load; failures leave the
+ * optimistic default (enabled) in place.
+ */
+if (typeof window !== 'undefined' && window.electronAPI?.monitoringGetState) {
+  window.electronAPI
+    .monitoringGetState()
+    .then((state) => useSettingsStore.setState({ monitoringEnabled: state.enabled }))
+    .catch((err) => log.warn('Failed to hydrate monitoring consent:', err));
+}

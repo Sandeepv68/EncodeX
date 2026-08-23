@@ -475,6 +475,8 @@
     "alwaysOnTopHint": "يبقي نافذة التطبيق فوق جميع النوافذ الأخرى.",
     "launchAtLogin": "التشغيل عند بدء التشغيل",
     "launchAtLoginHint": "يبدأ تشغيل EncodeX تلقائيًا عند تسجيل الدخول إلى جهاز الكمبيوتر الخاص بك.",
+    "monitoringErrorReporting": "الإبلاغ عن الأخطاء",
+    "monitoringErrorReportingHint": "يساعد في تحسين EncodeX عن طريق إرسال تقارير أخطاء مجهولة المصدر. يمكنك إيقاف هذه الميزة في أي وقت.",
     "hardwareAcceleration": "تسريع الأجهزة",
     "hwaccelMode": "وضع التسريع",
     "hwaccelModeAuto": "تلقائي (فك التشفير + التشفير)",

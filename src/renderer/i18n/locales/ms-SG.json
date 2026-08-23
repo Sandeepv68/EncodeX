@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "Mengekalkan tetingkap aplikasi di atas semua tetingkap lain.",
     "launchAtLogin": "Lancar semasa permulaan",
     "launchAtLoginHint": "Memulakan EncodeX secara automatik apabila anda log masuk ke komputer anda.",
+    "monitoringErrorReporting": "Pelaporan ralat",
+    "monitoringErrorReportingHint": "Membantu menambah baik EncodeX dengan menghantar laporan ralat tanpa nama. Anda boleh mematikan ini pada bila-bila masa.",
     "hardwareAcceleration": "Pecutan Perkakasan",
     "hwaccelMode": "Mod Pecutan",
     "hwaccelModeAuto": "Automatik (nyahkod + kod)",

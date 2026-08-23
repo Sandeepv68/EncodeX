@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "Giữ cửa sổ ứng dụng phía trên tất cả các cửa sổ khác.",
     "launchAtLogin": "Khởi chạy khi khởi động",
     "launchAtLoginHint": "Tự động khởi chạy EncodeX khi bạn đăng nhập vào máy tính.",
+    "monitoringErrorReporting": "Báo cáo lỗi",
+    "monitoringErrorReportingHint": "Giúp cải thiện EncodeX bằng cách gửi báo cáo lỗi ẩn danh. Bạn có thể tắt tính năng này bất cứ lúc nào.",
     "hardwareAcceleration": "Tăng tốc phần cứng",
     "hwaccelMode": "Chế độ tăng tốc",
     "hwaccelModeAuto": "Tự động (giải mã + mã hóa)",

@@ -24,6 +24,7 @@ import { Button } from '@mui/material';
 import { faTriangleExclamation, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Logger } from '../../shared/logger';
+import { captureException } from '../../shared/monitoring/MonitoringService';
 import i18n from '../i18n/config';
 import type { ErrorBoundaryProps, ErrorBoundaryState } from './types';
 import { FallbackBox, FallbackPaper, WarningIcon, FallbackTitle, FallbackDescription } from '../styles/ErrorBoundary.styles';
@@ -70,6 +71,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
    */
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     log.error(LOG_ERROR_BOUNDARY_CAUGHT, error.message, errorInfo.componentStack);
+    captureException(error, {
+      tags: { handler: 'react-error-boundary' },
+      extra: { componentStack: errorInfo.componentStack ?? '' },
+    });
   }
 
   /**

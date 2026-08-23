@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "අනෙක් සියලුම කවුළු වලට ඉහළින් යෙදුම් කවුළුව තබයි.",
     "launchAtLogin": "ආරම්භයේදී දියත් කරන්න",
     "launchAtLoginHint": "ඔබ ඔබේ පරිගණකයට පුරනය වන විට EncodeX ස්වයංක්‍රීයව ආරම්භ කරයි.",
+    "monitoringErrorReporting": "දෝෂ වාර්තාකරණය",
+    "monitoringErrorReportingHint": "නිර්නාමික දෝෂ වාර්තා යැවීමෙන් EncodeX වැඩිදියුණු කිරීමට උදව් වේ. ඔබට ඕනෑම වේලාවක මෙය අක්‍රිය කළ හැක.",
     "hardwareAcceleration": "දෘඪාංග ත්වරණය",
     "hwaccelMode": "ත්වරණ ප්‍රකාරය",
     "hwaccelModeAuto": "ස්වයංක්‍රීය (විකේතනය + කේතනය)",

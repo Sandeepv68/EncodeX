@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "Heldur app-glugganum fyrir ofan alla aðra glugga.",
     "launchAtLogin": "Ræsa við innskráningu",
     "launchAtLoginHint": "Ræsir EncodeX sjálfkrafa þegar þú skráir þig inn á tölvuna þína.",
+    "monitoringErrorReporting": "Villutilkynning",
+    "monitoringErrorReportingHint": "Hjálpar til við að bæta EncodeX með því að senda nafnlausa villuskýrslu. Þú getur slökkt á þessu hvenær sem er.",
     "hardwareAcceleration": "Vélbúnaðarhröðun",
     "hwaccelMode": "Hröðunarstilling",
     "hwaccelModeAuto": "Sjálfvirkt (afkóðari + kóðari)",

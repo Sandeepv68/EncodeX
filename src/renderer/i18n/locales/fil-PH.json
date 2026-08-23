@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "Pinapanatili ang app window sa itaas ng lahat ng iba pang window.",
     "launchAtLogin": "Ilunsad sa pagsisimula",
     "launchAtLoginHint": "Awtomatikong sisimulan ang EncodeX kapag nag-sign in ka sa iyong computer.",
+    "monitoringErrorReporting": "Pag-uulat ng error",
+    "monitoringErrorReportingHint": "Tumutulong pagbutihin ang EncodeX sa pamamagitan ng pagpapadala ng mga anonymous na error report. Maaari itong i-off anumang oras.",
     "hardwareAcceleration": "Pagpabilis ng Hardware",
     "hwaccelMode": "Mode ng Acceleration",
     "hwaccelModeAuto": "Awtomatiko (decode + encode)",

@@ -1,9 +1,16 @@
 <script setup>
+import { onMounted } from 'vue'
 import DefaultTheme from 'vitepress/theme'
 import HeroLogo from './components/HeroLogo.vue'
 import SiteFooter from './components/SiteFooter.vue'
 
 const { Layout } = DefaultTheme
+
+onMounted(() => {
+  if (document.querySelector('main, [role="main"]')) return
+  const home = document.querySelector('.VPHome')
+  if (home) home.setAttribute('role', 'main')
+})
 </script>
 
 <template>

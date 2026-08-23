@@ -55,6 +55,58 @@ function getTimestamp(): string {
 const currentLevel = getLogLevel();
 
 /**
+ * Severity label of a log record handed to the registered sink. Mirrors the
+ * {@link LogLevel} enum as serializable strings suitable for process
+ * boundaries and backend severity scales.
+ * @typedef {('debug' | 'info' | 'warn' | 'error')} LoggerLogLevel
+ */
+export type LoggerLogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+/**
+ * Consumer of log records for external reporting. Installed by the monitoring
+ * facade at module load; the Logger itself stays dependency-free. Receives
+ * every record regardless of the configured minimum console level so telemetry
+ * verbosity stays independent of console verbosity.
+ * @param {LoggerLogLevel} level - Severity label of the record.
+ * @param {string} context - The logging subsystem label ('main/index', ...).
+ * @param {unknown[]} args - Raw arguments passed to the Logger method.
+ */
+export type LoggerRecordSink = (level: LoggerLogLevel, context: string, args: unknown[]) => void;
+
+/**
+ * Active record sink, or null until a reporter registers. @type {LoggerRecordSink | null}
+ */
+let recordSink: LoggerRecordSink | null = null;
+
+/**
+ * Registers the sink invoked for every log record. Intended to be called
+ * exactly once by the monitoring facade; later registrations replace earlier
+ * ones.
+ * @param {LoggerRecordSink} sink - Consumer for log records.
+ * @returns {void}
+ */
+export function registerLoggerSink(sink: LoggerRecordSink): void {
+  recordSink = sink;
+}
+
+/**
+ * Forwards a record to the registered sink, swallowing any sink failure so
+ * monitoring can never break logging.
+ * @param {LoggerLogLevel} level - Severity label of the record.
+ * @param {string} context - The logging subsystem label.
+ * @param {unknown[]} args - Raw arguments passed to the Logger method.
+ * @returns {void}
+ */
+function emitToSink(level: LoggerLogLevel, context: string, args: unknown[]): void {
+  if (!recordSink) return;
+  try {
+    recordSink(level, context, args);
+  } catch {
+    /* intentionally ignored - reporting must never break logging */
+  }
+}
+
+/**
  * Structured logger that prefixes messages with a UTC timestamp, the severity
  * level, and a per-instance context label. The context lets messages be
  * attributed to a specific subsystem (e.g. 'Transcoder' or 'QueueManager').
@@ -74,44 +126,51 @@ export class Logger {
 
   /**
    * Logs a DEBUG message via console.log, unless the configured minimum level
-   * is more severe than DEBUG.
+   * is more severe than DEBUG. The record is always forwarded to the
+   * registered sink, even when console output is suppressed.
    * @param {...unknown[]} args - Values to include in the message.
    * @returns {void}
    */
   debug(...args: unknown[]) {
+    emitToSink('debug', this.context, args);
     if (currentLevel > LogLevel.DEBUG) return;
     console.log(`[${getTimestamp()}] [DEBUG] [${this.context}]`, ...args);
   }
 
   /**
    * Logs an INFO message via console.log, unless the configured minimum level
-   * is more severe than INFO.
+   * is more severe than INFO. The record is always forwarded to the
+   * registered sink, even when console output is suppressed.
    * @param {...unknown[]} args - Values to include in the message.
    * @returns {void}
    */
   info(...args: unknown[]) {
+    emitToSink('info', this.context, args);
     if (currentLevel > LogLevel.INFO) return;
     console.log(`[${getTimestamp()}] [INFO] [${this.context}]`, ...args);
   }
 
   /**
    * Logs a WARN message via console.warn, unless the configured minimum level
-   * is more severe than WARN.
+   * is more severe than WARN. The record is always forwarded to the
+   * registered sink, even when console output is suppressed.
    * @param {...unknown[]} args - Values to include in the message.
    * @returns {void}
    */
   warn(...args: unknown[]) {
+    emitToSink('warn', this.context, args);
     if (currentLevel > LogLevel.WARN) return;
     console.warn(`[${getTimestamp()}] [WARN] [${this.context}]`, ...args);
   }
 
   /**
    * Logs an ERROR message via console.error. Always emitted regardless of the
-   * configured minimum log level.
+   * configured minimum log level, and always forwarded to the registered sink.
    * @param {...unknown[]} args - Values to include in the message.
    * @returns {void}
    */
   error(...args: unknown[]) {
+    emitToSink('error', this.context, args);
     console.error(`[${getTimestamp()}] [ERROR] [${this.context}]`, ...args);
   }
 }

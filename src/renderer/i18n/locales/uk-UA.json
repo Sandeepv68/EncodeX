@@ -475,6 +475,8 @@
     "alwaysOnTopHint": "Тримає вікно застосунку над усіма іншими вікнами.",
     "launchAtLogin": "Запускати під час входу в систему",
     "launchAtLoginHint": "Автоматично запускає EncodeX під час входу в систему на вашому комп'ютері.",
+    "monitoringErrorReporting": "Звіти про помилки",
+    "monitoringErrorReportingHint": "Допомагає покращувати EncodeX, надсилаючи анонімні звіти про помилки. Ви можете вимкнути це будь-коли.",
     "hardwareAcceleration": "Апаратне прискорення",
     "hwaccelMode": "Режим прискорення",
     "hwaccelModeAuto": "Автоматично (декодування + кодування)",

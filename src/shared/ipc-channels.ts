@@ -66,6 +66,8 @@
  *   within the QUEUED subsequence.
  * @property {string} PLAYER_FRAME - Push a decoded frame to the renderer player.
  * @property {string} LOG_MESSAGE - Forward a log entry to the renderer.
+ * @property {string} MONITORING_GET_STATE - Query the monitoring consent state from main.
+ * @property {string} MONITORING_SET_ENABLED - Update the monitoring consent (user toggle).
  */
 export const IPC = {
   SELECT_FILE: 'select-file',
@@ -136,4 +138,7 @@ export const IPC = {
   UPDATE_PROGRESS: 'update-progress',
   UPDATE_DOWNLOADED: 'update-downloaded',
   UPDATE_ERROR: 'update-error',
+
+  MONITORING_GET_STATE: 'monitoring-get-state',
+  MONITORING_SET_ENABLED: 'monitoring-set-enabled',
 } as const;

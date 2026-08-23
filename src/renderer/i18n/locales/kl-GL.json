@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "App window-ip allat qaammaanni atugassaa.",
     "launchAtLogin": "Aallartiffimmi aallartikkit",
     "launchAtLoginHint": "EncodeX-imik nammineq aallartippaa, komputerimut iseriaruit.",
+    "monitoringErrorReporting": "Fejlrapportering",
+    "monitoringErrorReportingHint": "Hjælper med at forbedre EncodeX ved at sende anonyme fejlrapporter. Du kan altid slå det fra.",
     "hardwareAcceleration": "Hardware acceleration",
     "hwaccelMode": "Acceleration mode",
     "hwaccelModeAuto": "Automatisk (decoder + encoder)",

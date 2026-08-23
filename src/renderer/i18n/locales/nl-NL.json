@@ -475,6 +475,8 @@
     "alwaysOnTopHint": "Houdt het app-venster boven alle andere vensters.",
     "launchAtLogin": "Starten bij opstarten",
     "launchAtLoginHint": "Start EncodeX automatisch wanneer u zich aanmeldt bij uw computer.",
+    "monitoringErrorReporting": "Foutrapportage",
+    "monitoringErrorReportingHint": "Helpt EncodeX te verbeteren door anonieme foutrapporten te verzenden. U kunt dit op elk moment uitschakelen.",
     "hardwareAcceleration": "Hardwareversnelling",
     "hwaccelMode": "Versnellingsmodus",
     "hwaccelModeAuto": "Automatisch (decoderen + coderen)",

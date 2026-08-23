@@ -485,6 +485,8 @@
     "alwaysOnTopHint": "Pitää sovellusikkunan kaikkien muiden ikkunoiden yläpuolella.",
     "launchAtLogin": "Käynnistä kirjautumisen yhteydessä",
     "launchAtLoginHint": "Käynnistää EncodeX:n automaattisesti, kun kirjaudut tietokoneellesi.",
+    "monitoringErrorReporting": "Virheraportointi",
+    "monitoringErrorReportingHint": "Auttaa parantamaan EncodeX-sovellusta lähettämällä anonyymejä virheraportteja. Voit poistaa tämän käytöstä milloin tahansa.",
     "hardwareAcceleration": "Laitteistokiihdytys",
     "hwaccelMode": "Kiihdytystila",
     "hwaccelModeAuto": "Automaattinen (dekooderi + koodaaja)",
