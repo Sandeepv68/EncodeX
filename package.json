@@ -95,7 +95,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^6.0.4",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.11",
     "axe-core": "^4.13.0",
     "concurrently": "^10.0.4",
     "electron": "^43.4.0",
