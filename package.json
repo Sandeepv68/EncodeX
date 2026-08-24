@@ -97,7 +97,7 @@
     "@vitejs/plugin-react": "^6.0.4",
     "@vitest/coverage-v8": "^4.1.10",
     "axe-core": "^4.13.0",
-    "concurrently": "^10.0.4",
+    "concurrently": "^10.0.5",
     "electron": "^43.4.0",
     "electron-builder": "^26.15.3",
     "eslint": "^9.39.5",
