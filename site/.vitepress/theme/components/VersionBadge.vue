@@ -28,7 +28,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
-import { getLatestRelease } from '../../data/releaseShared'
+import { getLatestRelease, getTotalDownloads } from '../../data/releaseShared'
 import { data as buildData } from '../../data/release.data'
 import { data as buildTotalDownloads } from '../../data/downloads.data'
 
@@ -73,18 +73,30 @@ const localeTag = computed(() => LOCALES[lang.value] || 'en')
 
 const allReleasesUrl = 'https://github.com/Sandeepv68/EncodeX/releases'
 
-// Build-time snapshot first; refreshed live on mount (shared request)
+// Build-time snapshot first; refreshed live on mount (shared requests)
 const release = ref(buildData)
+const totalDownloads = ref(buildTotalDownloads ?? 0)
 
-onMounted(async () => {
-  try {
-    const fresh = await getLatestRelease()
-    if (fresh?.tag) {
-      release.value = fresh
-    }
-  } catch {
-    // keep build-time snapshot
-  }
+onMounted(() => {
+  getLatestRelease()
+    .then((fresh) => {
+      if (fresh?.tag) {
+        release.value = fresh
+      }
+    })
+    .catch(() => {
+      // keep build-time snapshot
+    })
+
+  getTotalDownloads()
+    .then((count) => {
+      if (count > 0) {
+        totalDownloads.value = count
+      }
+    })
+    .catch(() => {
+      // keep build-time snapshot
+    })
 })
 
 const tag = computed(() => release.value?.tag || '')
@@ -104,16 +116,16 @@ const dateText = computed(() => {
   }
 })
 
-// Build-time lifetime total across all releases; hidden when unavailable
+// Lifetime total across all releases; build-time snapshot refreshed live on mount
 const downloadsText = computed(() => {
-  if (!buildTotalDownloads || buildTotalDownloads <= 0) return ''
+  if (!totalDownloads.value || totalDownloads.value <= 0) return ''
   try {
     return t.value.downloadsCount.replace(
       '{n}',
-      new Intl.NumberFormat(localeTag.value).format(buildTotalDownloads),
+      new Intl.NumberFormat(localeTag.value).format(totalDownloads.value),
     )
   } catch {
-    return t.value.downloadsCount.replace('{n}', String(buildTotalDownloads))
+    return t.value.downloadsCount.replace('{n}', String(totalDownloads.value))
   }
 })
 </script>

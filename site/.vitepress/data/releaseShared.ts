@@ -131,3 +131,18 @@ export function getLatestRelease(): Promise<ReleaseData> {
   }
   return latestPromise
 }
+
+// Memoized so every component on a page shares one set of API requests
+let totalsPromise: Promise<number> | null = null
+
+export function getTotalDownloads(): Promise<number> {
+  if (!totalsPromise) {
+    totalsPromise = fetchReleases()
+      .then((releases) => releases.reduce((sum, release) => sum + totalDownloads(release), 0))
+      .catch((error) => {
+        totalsPromise = null
+        throw error
+      })
+  }
+  return totalsPromise
+}
