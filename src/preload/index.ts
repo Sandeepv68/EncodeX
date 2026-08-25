@@ -788,6 +788,20 @@ const api = {
   },
 
   /**
+   * Captures the current window contents and saves them as a PNG in the
+   * project's `screenshots/dev/` directory (development mode only; the main
+   * process registers no handler for this channel outside of dev, so the
+   * promise rejects there). Invokes `IPC.DEV_CAPTURE_SCREENSHOT`
+   * ('dev-capture-screenshot').
+   *
+   * @returns {Promise<string>} Resolves with the absolute path of the saved PNG.
+   * @throws {Error} Rejects when not in dev mode or the capture fails.
+   */
+  captureDevScreenshot: () => {
+    return ipcRenderer.invoke(IPC.DEV_CAPTURE_SCREENSHOT) as Promise<string>;
+  },
+
+  /**
    * Subscribes to window maximized / un-maximized state changes pushed by the main
    * process over `IPC.WINDOW_MAXIMIZED_CHANGED` ('window-maximized-changed'). Logs each
    * event at debug level.

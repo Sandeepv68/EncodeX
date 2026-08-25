@@ -25,6 +25,7 @@ import { registerCapabilityHandlers } from './capabilities';
 import { registerImageHandlers } from './image';
 import { registerTimelineHandlers } from './timeline';
 import { registerUpdaterHandlers } from './updater';
+import { registerDevHandlers } from './dev';
 import { LOG_REGISTERING_IPC_HANDLERS } from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/handlers');
@@ -55,4 +56,5 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   registerImageHandlers();
   registerTimelineHandlers();
   registerUpdaterHandlers(win);
+  registerDevHandlers(win);
 }

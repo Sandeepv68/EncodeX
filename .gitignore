@@ -14,3 +14,4 @@ perf/fixtures/*.mp4
 perf/fixtures/perf-*/
 site/.vitepress/cache/
 site/.vitepress/dist/
+screenshots/

@@ -418,6 +418,13 @@ export interface ElectronAPI {
    */
   monitoringSetEnabled(enabled: boolean): Promise<{ enabled: boolean; backend: string }>;
   /**
+   * Captures the current window contents and saves them as a PNG under the
+   * project's `screenshots/dev/` directory over `IPC.DEV_CAPTURE_SCREENSHOT`
+   * ('dev-capture-screenshot'). Development mode only; rejects elsewhere.
+   * @returns {Promise<string>} The absolute path of the saved PNG.
+   */
+  captureDevScreenshot(): Promise<string>;
+  /**
    * Subscribes to window maximized / un-maximized state changes pushed from the
    * main process over `IPC.WINDOW_MAXIMIZED_CHANGED`
    * ('window-maximized-changed').
