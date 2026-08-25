@@ -146,3 +146,8 @@ export function getTotalDownloads(): Promise<number> {
   }
   return totalsPromise
 }
+
+export function refreshTotalDownloads(): Promise<number> {
+  totalsPromise = null
+  return getTotalDownloads()
+}
