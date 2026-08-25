@@ -34,6 +34,7 @@ import TitleBar from './components/TitleBar';
 import ShortcutsHelpDialog from './components/ShortcutsHelpDialog';
 import UpdateDialog from './components/UpdateDialog';
 import { useHotkeys } from './hooks/useHotkeys';
+import { useDevScreenshot } from './dev/useDevScreenshot';
 import { SHORTCUTS } from './constants/shortcuts';
 import { THEMES } from './colors';
 import { useErrorStore } from './stores/errorStore';
@@ -106,6 +107,7 @@ function AppLayout() {
   const { themeId, setTheme } = useColorMode();
 
   useLanguageDirection();
+  useDevScreenshot();
 
   useEffect(() => {
     const cleanup = window.electronAPI?.onLogMessage((entry) => {

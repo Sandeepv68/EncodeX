@@ -26,9 +26,9 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useData } from 'vitepress'
-import { getLatestRelease, getTotalDownloads } from '../../data/releaseShared'
+import { getLatestRelease, getTotalDownloads, refreshTotalDownloads } from '../../data/releaseShared'
 import { data as buildData } from '../../data/release.data'
 import { data as buildTotalDownloads } from '../../data/downloads.data'
 
@@ -77,6 +77,9 @@ const allReleasesUrl = 'https://github.com/Sandeepv68/EncodeX/releases'
 const release = ref(buildData)
 const totalDownloads = ref(buildTotalDownloads ?? 0)
 
+const POLL_INTERVAL_MS = 5 * 60 * 1000
+let pollTimer: ReturnType<typeof setInterval> | null = null
+
 onMounted(() => {
   getLatestRelease()
     .then((fresh) => {
@@ -97,6 +100,25 @@ onMounted(() => {
     .catch(() => {
       // keep build-time snapshot
     })
+
+  pollTimer = setInterval(() => {
+    refreshTotalDownloads()
+      .then((count) => {
+        if (count > 0) {
+          totalDownloads.value = count
+        }
+      })
+      .catch(() => {
+        // keep previous value on transient errors
+      })
+  }, POLL_INTERVAL_MS)
+})
+
+onUnmounted(() => {
+  if (pollTimer !== null) {
+    clearInterval(pollTimer)
+    pollTimer = null
+  }
 })
 
 const tag = computed(() => release.value?.tag || '')
