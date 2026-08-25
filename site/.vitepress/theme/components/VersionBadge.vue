@@ -25,7 +25,7 @@
   </p>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useData } from 'vitepress'
 import { getLatestRelease, getTotalDownloads, refreshTotalDownloads } from '../../data/releaseShared'
