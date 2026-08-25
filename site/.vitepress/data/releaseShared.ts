@@ -119,35 +119,51 @@ export async function fetchReleases(perPage = 100): Promise<ReleaseData[]> {
   return all.filter((rel) => !rel.draft).map((rel) => normalizeRelease(rel, now))
 }
 
-// Memoized so every component on a page shares one API request
-let latestPromise: Promise<ReleaseData> | null = null
+// Memoized so every caller shares one set of API requests
+let releasesPromise: Promise<ReleaseData[]> | null = null
 
-export function getLatestRelease(): Promise<ReleaseData> {
-  if (!latestPromise) {
-    latestPromise = fetchLatestRelease().catch((error) => {
-      latestPromise = null
+export function getReleases(): Promise<ReleaseData[]> {
+  if (!releasesPromise) {
+    releasesPromise = fetchReleases().catch((error) => {
+      releasesPromise = null
       throw error
     })
   }
-  return latestPromise
+  return releasesPromise
 }
 
-// Memoized so every component on a page shares one set of API requests
-let totalsPromise: Promise<number> | null = null
+// Subscriber pattern — components register to be notified when data refreshes
+type ReleaseCallback = (releases: ReleaseData[]) => void
+const listeners = new Set<ReleaseCallback>()
 
-export function getTotalDownloads(): Promise<number> {
-  if (!totalsPromise) {
-    totalsPromise = fetchReleases()
-      .then((releases) => releases.reduce((sum, release) => sum + totalDownloads(release), 0))
-      .catch((error) => {
-        totalsPromise = null
-        throw error
-      })
+export function onReleasesUpdated(cb: ReleaseCallback): () => void {
+  listeners.add(cb)
+  return () => { listeners.delete(cb) }
+}
+
+// Singleton poll — at most one timer across all component instances
+const POLL_MS = 60_000
+let pollTimer: ReturnType<typeof setInterval> | null = null
+let polling = false
+
+export function startReleasePolling() {
+  if (pollTimer) return
+  pollTimer = setInterval(async () => {
+    if (polling) return
+    polling = true
+    try {
+      releasesPromise = null
+      const releases = await getReleases()
+      for (const cb of listeners) cb(releases)
+    } finally {
+      polling = false
+    }
+  }, POLL_MS)
+}
+
+export function stopReleasePolling() {
+  if (pollTimer) {
+    clearInterval(pollTimer)
+    pollTimer = null
   }
-  return totalsPromise
-}
-
-export function refreshTotalDownloads(): Promise<number> {
-  totalsPromise = null
-  return getTotalDownloads()
 }
