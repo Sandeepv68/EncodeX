@@ -115,7 +115,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
-import { getLatestRelease, fetchReleases, totalDownloads } from '../../data/releaseShared'
+import { getReleases, totalDownloads } from '../../data/releaseShared'
 import { data as buildData } from '../../data/release.data'
 import { data as buildOlderData } from '../../data/releases.data'
 
@@ -351,25 +351,20 @@ const localeTag = computed(() => LANG_MAP[lang.value]?.[0] || 'en')
 const release = ref(buildData)
 
 onMounted(async () => {
-  if (props.older) {
-    try {
-      olderReleases.value = await fetchReleases()
-    } catch {
-      // keep build-time data on rate limit or network failure;
-      // only surface the error message when we have nothing to show
+  try {
+    const releases = await getReleases()
+    if (props.older) {
+      olderReleases.value = releases
       if (!olderReleases.value.length) {
         olderError.value = true
       }
-    }
-    return
-  }
-  try {
-    const fresh = await getLatestRelease()
-    if (Object.keys(fresh.assets).length > 0) {
-      release.value = fresh
+    } else if (releases.length > 0 && Object.keys(releases[0].assets).length > 0) {
+      release.value = releases[0]
     }
   } catch {
-    // keep build-time data on rate limit or network failure
+    if (props.older && !olderReleases.value.length) {
+      olderError.value = true
+    }
   }
 })
 

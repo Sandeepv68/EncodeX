@@ -13,7 +13,7 @@
       :title="t.viewOnGitHub"
     >{{ tag }}</a>
     <span v-if="dateText" class="vb-date">· {{ dateText }}</span>
-    <span v-if="downloadsText" class="vb-dl">⬇ {{ downloadsText }}</span>
+    <span v-if="downloadsText" class="vb-dl">⬇ <span :key="bumpKey" class="dl-count bump">{{ downloadsText }}</span></span>
     <a class="vb-ext" :href="allReleasesUrl" target="_blank" rel="noopener noreferrer">
       <svg class="vb-gh" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">
         <path
@@ -25,10 +25,10 @@
   </p>
 </template>
 
-<script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+<script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData } from 'vitepress'
-import { getLatestRelease, getTotalDownloads, refreshTotalDownloads } from '../../data/releaseShared'
+import { type ReleaseData, getReleases, onReleasesUpdated, startReleasePolling } from '../../data/releaseShared'
 import { data as buildData } from '../../data/release.data'
 import { data as buildTotalDownloads } from '../../data/downloads.data'
 
@@ -77,49 +77,27 @@ const allReleasesUrl = 'https://github.com/Sandeepv68/EncodeX/releases'
 const release = ref(buildData)
 const totalDownloads = ref(buildTotalDownloads ?? 0)
 
-const POLL_INTERVAL_MS = 5 * 60 * 1000
-let pollTimer: ReturnType<typeof setInterval> | null = null
-
-onMounted(() => {
-  getLatestRelease()
-    .then((fresh) => {
-      if (fresh?.tag) {
-        release.value = fresh
-      }
-    })
-    .catch(() => {
-      // keep build-time snapshot
-    })
-
-  getTotalDownloads()
-    .then((count) => {
-      if (count > 0) {
-        totalDownloads.value = count
-      }
-    })
-    .catch(() => {
-      // keep build-time snapshot
-    })
-
-  pollTimer = setInterval(() => {
-    refreshTotalDownloads()
-      .then((count) => {
-        if (count > 0) {
-          totalDownloads.value = count
-        }
-      })
-      .catch(() => {
-        // keep previous value on transient errors
-      })
-  }, POLL_INTERVAL_MS)
-})
-
-onUnmounted(() => {
-  if (pollTimer !== null) {
-    clearInterval(pollTimer)
-    pollTimer = null
+function applyReleases(releases: ReleaseData[]) {
+  if (releases.length > 0) {
+    release.value = releases[0]
   }
+  const count = releases.reduce((sum, r) =>
+    sum + Object.values(r.assets).reduce((s, a) => s + a.downloads, 0), 0)
+  if (count > 0) {
+    totalDownloads.value = count
+  }
+}
+
+onMounted(async () => {
+  try {
+    applyReleases(await getReleases())
+  } catch {
+    // keep build-time snapshot on transient errors
+  }
+  startReleasePolling()
 })
+
+onUnmounted(onReleasesUpdated(applyReleases))
 
 const tag = computed(() => release.value?.tag || '')
 const url = computed(() => release.value?.htmlUrl || allReleasesUrl)
@@ -138,17 +116,59 @@ const dateText = computed(() => {
   }
 })
 
+// Animated download counter
+const animatedCount = ref(buildTotalDownloads ?? 0)
+const bumpKey = ref(0)
+let animationFrame: number | null = null
+
+function easeOutCubic(t: number): number {
+  return 1 - Math.pow(1 - t, 3)
+}
+
+function animateValue(from: number, to: number, duration = 600) {
+  if (animationFrame !== null) cancelAnimationFrame(animationFrame)
+  const start = performance.now()
+  bumpKey.value++
+
+  function tick(now: number) {
+    const elapsed = now - start
+    const progress = Math.min(elapsed / duration, 1)
+    const eased = easeOutCubic(progress)
+    animatedCount.value = Math.round(from + (to - from) * eased)
+
+    if (progress < 1) {
+      animationFrame = requestAnimationFrame(tick)
+    } else {
+      animationFrame = null
+    }
+  }
+
+  animationFrame = requestAnimationFrame(tick)
+}
+
+watch(totalDownloads, (newVal, oldVal) => {
+  if (newVal != null && newVal > 0 && oldVal != null) {
+    animateValue(oldVal, newVal)
+  } else if (newVal != null && newVal > 0) {
+    animatedCount.value = newVal
+  }
+})
+
 // Lifetime total across all releases; build-time snapshot refreshed live on mount
 const downloadsText = computed(() => {
-  if (!totalDownloads.value || totalDownloads.value <= 0) return ''
+  if (!animatedCount.value || animatedCount.value <= 0) return ''
   try {
     return t.value.downloadsCount.replace(
       '{n}',
-      new Intl.NumberFormat(localeTag.value).format(totalDownloads.value),
+      new Intl.NumberFormat(localeTag.value).format(animatedCount.value),
     )
   } catch {
-    return t.value.downloadsCount.replace('{n}', String(totalDownloads.value))
+    return t.value.downloadsCount.replace('{n}', String(animatedCount.value))
   }
+})
+
+onUnmounted(() => {
+  if (animationFrame !== null) cancelAnimationFrame(animationFrame)
 })
 </script>
 
@@ -217,6 +237,21 @@ const downloadsText = computed(() => {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.01em;
+}
+
+.vb-dl :deep(.dl-count) {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.vb-dl :deep(.dl-count.bump) {
+  animation: count-bump 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes count-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }
 
 .vb-ext {
