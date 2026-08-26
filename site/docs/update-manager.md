@@ -1,3 +1,8 @@
+---
+title: "Update Manager — In-App Auto-Updates for EncodeX"
+description: "EncodeX update manager: GitHub Releases integration, platform-specific downloads, progress reporting, and automatic installer launch."
+---
+
 # Update Manager
 
 ## Overview

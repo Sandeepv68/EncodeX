@@ -1,3 +1,8 @@
+---
+title: "Transcoder Abstraction & Conversion — EncodeX Architecture"
+description: "EncodeX transcoder interface: FfmpegCore, FFToolCore, BmfCore, hardware acceleration (NVENC, QSV, AMF, VAAPI), media probing, and conversion flow."
+---
+
 # Transcoder Abstraction & Conversion
 
 ## Transcoder Abstraction

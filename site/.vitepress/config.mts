@@ -2,6 +2,32 @@ import { defineConfig } from 'vitepress'
 import { MermaidMarkdown } from 'vitepress-plugin-mermaid'
 import type { Plugin } from 'vite'
 
+const SITE_URL = 'https://encodex.in'
+
+const localeLangMap: Record<string, string> = {
+  '': 'en',
+  es: 'es',
+  fr: 'fr',
+  de: 'de',
+  pt: 'pt-BR',
+  zh: 'zh-CN',
+  hi: 'hi',
+}
+
+function detectLocaleFromPath(relativePath: string): string {
+  for (const [prefix, lang] of Object.entries(localeLangMap)) {
+    if (prefix && relativePath.startsWith(prefix + '/')) return lang
+  }
+  return 'en'
+}
+
+function detectLocalePrefix(relativePath: string): string {
+  for (const prefix of Object.keys(localeLangMap)) {
+    if (prefix && relativePath.startsWith(prefix + '/')) return prefix
+  }
+  return ''
+}
+
 function mermaidVirtualConfig(inlineOptions: Record<string, unknown> = {}): Plugin {
   const moduleId = 'virtual:mermaid-config'
   const resolved = '\0' + moduleId
@@ -228,10 +254,6 @@ export default defineConfig({
     ['link', { rel: 'preload', as: 'image', href: '/images/icon.webp', fetchpriority: 'high' }],
     ['meta', { name: 'theme-color', content: '#0359AD' }],
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:title', content: 'EncodeX' }],
-    ['meta', { property: 'og:description', content: 'A free, easy-to-use app to convert videos and audio, trim clips, extract music from video, and shrink photos. Works on Windows, Mac, and Linux.' }],
-    ['meta', { property: 'og:image', content: 'https://encodex.in/images/banner.jpg' }],
-    ['meta', { property: 'og:url', content: 'https://encodex.in/' }],
     ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-SM28DL4DYR' }],
     [
       'script',
@@ -242,6 +264,88 @@ gtag('js', new Date());
 gtag('config', 'G-SM28DL4DYR');`,
     ],
   ],
+  transformHead: (context) => {
+    const head: [string, Record<string, string | boolean>][] = []
+    const pagePath = context.pageData?.relativePath || ''
+    const frontmatter = context.pageData?.frontmatter || {}
+
+    const pageLang = detectLocaleFromPath(pagePath)
+    const localePrefix = detectLocalePrefix(pagePath)
+    const cleanPath = localePrefix ? pagePath.slice(localePrefix.length) : pagePath
+    const pageSlug = cleanPath.replace(/\.md$/, '').replace(/\/index$/, '') || ''
+    const canonicalUrl = pageSlug ? `${SITE_URL}/${localePrefix ? localePrefix + '/' : ''}${pageSlug}` : `${SITE_URL}/${localePrefix ? localePrefix + '/' : ''}`
+
+    head.push(['link', { rel: 'canonical', href: canonicalUrl }])
+
+    const siteTitle = context.siteConfig?.title || 'EncodeX'
+    const siteDescription = context.siteData?.description || context.siteConfig?.description || ''
+    const pageTitle = frontmatter.title
+      ? `${frontmatter.title} | ${siteTitle}`
+      : `${siteTitle} — Free Video, Audio & Photo Converter`
+    const pageDescription = frontmatter.description || siteDescription
+    const pageOgImage = frontmatter.ogImage || `${SITE_URL}/images/banner.jpg`
+
+    head.push(['meta', { property: 'og:title', content: pageTitle }])
+    head.push(['meta', { property: 'og:description', content: pageDescription }])
+    head.push(['meta', { property: 'og:url', content: canonicalUrl }])
+    head.push(['meta', { property: 'og:image', content: pageOgImage }])
+    head.push(['meta', { property: 'og:locale', content: pageLang.replace('-', '_') }])
+
+    head.push(['meta', { name: 'twitter:card', content: 'summary_large_image' }])
+    head.push(['meta', { name: 'twitter:title', content: pageTitle }])
+    head.push(['meta', { name: 'twitter:description', content: pageDescription }])
+    head.push(['meta', { name: 'twitter:image', content: pageOgImage }])
+
+    const localeEntries = Object.entries(localeLangMap)
+    for (const [prefix, hreflang] of localeEntries) {
+      const href = prefix
+        ? `${SITE_URL}/${prefix}/${pageSlug}`
+        : `${SITE_URL}/${pageSlug}`
+      head.push([
+        'link',
+        { rel: 'alternate', hreflang, href },
+      ])
+    }
+    head.push([
+      'link',
+      { rel: 'alternate', hreflang: 'x-default', href: `${SITE_URL}/${pageSlug}` },
+    ])
+
+    if ((pageSlug === '' || pageSlug === 'index') && !localePrefix) {
+      const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'EncodeX',
+        description: siteDescription,
+        applicationCategory: 'MultimediaApplication',
+        operatingSystem: 'Windows 10+, macOS 11+, Linux',
+        url: SITE_URL,
+        downloadUrl: `${SITE_URL}/download`,
+        screenshot: `${SITE_URL}/images/home_dashboard.jpg`,
+        icon: `${SITE_URL}/images/icon.webp`,
+        license: 'https://opensource.org/licenses/MIT',
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+        },
+        author: {
+          '@type': 'Person',
+          name: 'Sandeepv68',
+          url: 'https://github.com/Sandeepv68',
+        },
+        softwareVersion: '1.0.0-beta.2',
+        fileFormat: ['MP4', 'MKV', 'AVI', 'MOV', 'WebM', 'MP3', 'FLAC', 'WAV', 'PNG', 'JPG', 'WebP'],
+      }
+      head.push([
+        'script',
+        { type: 'application/ld+json' },
+        JSON.stringify(jsonLd),
+      ])
+    }
+
+    return head
+  },
   locales: {
     root: {
       label: 'English',

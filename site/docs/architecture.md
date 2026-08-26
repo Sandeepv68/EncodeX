@@ -1,3 +1,8 @@
+---
+title: "Architecture Overview — How EncodeX Is Built"
+description: "Technical architecture of EncodeX: Electron, React, TypeScript, FFmpeg integration, three-process model, IPC channels, and design principles."
+---
+
 # Architecture
 
 EncodeX is a cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron. It is intended for developers who want to understand how the pieces fit together before contributing.

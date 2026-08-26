@@ -1,3 +1,8 @@
+---
+title: "Feature Reference — Supported Formats, Codecs & Capabilities"
+description: "Complete feature reference for EncodeX: supported media formats, codec tables, validation utilities, hardware acceleration, and conversion options."
+---
+
 # Features
 
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.

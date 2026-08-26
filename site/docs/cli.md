@@ -1,3 +1,8 @@
+---
+title: "CLI Usage — EncodeX Command-Line Interface"
+description: "EncodeX CLI reference: subcommands, options, batch processing, format conversion, and automation scripting via the command line."
+---
+
 # CLI Usage
 
 Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode auto-activates when two positional arguments (input + output) are given, or explicitly with `--cli`:

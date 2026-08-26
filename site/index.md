@@ -1,5 +1,7 @@
 ---
 layout: home
+title: "Free Video, Audio & Photo Converter for Windows, Mac, Linux"
+description: "Convert videos and audio between any format, trim clips, extract music, and compress photos. Free, open-source, no watermarks. Works on Windows, Mac, and Linux."
 
 hero:
   name: EncodeX

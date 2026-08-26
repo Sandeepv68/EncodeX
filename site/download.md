@@ -1,4 +1,9 @@
-﻿# Download EncodeX
+﻿---
+title: "Download EncodeX — Free Video Converter for Windows, Mac & Linux"
+description: "Download EncodeX for free. Convert videos, extract audio, trim clips, and compress photos on Windows, macOS, and Linux. No signup, no watermarks."
+---
+
+# Download EncodeX
 
 EncodeX is **free** and works on Windows, Mac, and Linux. Pick your computer type below, download, install, and you're ready to go.
 

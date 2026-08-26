@@ -1,3 +1,8 @@
+---
+title: "Contributing to EncodeX — Help Build a Free Video Converter"
+description: "Contribute to EncodeX, an open-source video and audio converter. Report bugs, suggest features, translate, or submit code. Join the community."
+---
+
 # Help Make EncodeX Better
 
 EncodeX is free and built by volunteers — and you don't need to be a programmer to help. Here are some ways anyone can pitch in:

@@ -1,4 +1,9 @@
-﻿# What Can EncodeX Do?
+﻿---
+title: "Features — Video Conversion, Audio Extraction, Trimming & More"
+description: "Explore all EncodeX features: convert video and audio formats, extract MP3 from video, trim clips, compress images, batch process files, and hardware-accelerated encoding."
+---
+
+# What Can EncodeX Do?
 
 EncodeX is a free app for your computer that fixes common file problems in a few clicks:
 

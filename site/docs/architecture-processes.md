@@ -1,3 +1,8 @@
+---
+title: "Processes, Build System & Startup — EncodeX Architecture"
+description: "How EncodeX manages Electron processes (main, preload, renderer), build system, binary resolution, CLI mode, and startup sequence."
+---
+
 # Processes, Build System & Startup
 
 ## Process Model
