@@ -251,10 +251,9 @@ export default defineConfig({
   sitemap: { hostname: 'https://encodex.in' },
   head: [
     ['link', { rel: 'icon', href: '/images/favicon-64.webp' }],
-    ['link', { rel: 'preload', as: 'image', href: '/images/icon.webp', fetchpriority: 'high' }],
+    ['link', { rel: 'preload', as: 'image', href: '/images/icon_380.webp', fetchpriority: 'high' }],
     ['meta', { name: 'theme-color', content: '#0359AD' }],
     ['meta', { property: 'og:type', content: 'website' }],
-    ['link', { rel: 'preconnect', href: 'https://www.googletagmanager.com' }],
     ['link', { rel: 'dns-prefetch', href: 'https://www.googletagmanager.com' }],
     ['link', { rel: 'alternate', type: 'application/rss+xml', title: 'EncodeX Blog', href: 'https://encodex.in/feed.xml' }],
     ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-SM28DL4DYR' }],

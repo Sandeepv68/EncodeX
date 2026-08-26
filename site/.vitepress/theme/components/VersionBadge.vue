@@ -203,7 +203,7 @@ onUnmounted(() => {
   display: block;
   margin-top: 16px;
   font-size: 13px;
-  color: var(--vp-c-text-3);
+  color: var(--vp-c-text-2);
   min-height: 24px;
 }
 
