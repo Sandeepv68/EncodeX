@@ -1,5 +1,5 @@
 import { defineLoader } from 'vitepress'
-import { readdirSync, readFileSync } from 'node:fs'
+import { readdirSync, readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -12,9 +12,12 @@ export interface BlogPost {
   tags: string[]
   slug: string
   url: string
+  locale: string
 }
 
 export declare const data: BlogPost[]
+
+const LOCALES = ['es', 'fr', 'de', 'pt', 'zh', 'hi']
 
 function parseFrontmatter(content: string) {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
@@ -42,32 +45,50 @@ function parseFrontmatter(content: string) {
   return meta
 }
 
+function loadPostsFromDir(dir: string, urlPrefix: string, locale: string): BlogPost[] {
+  const posts: BlogPost[] = []
+  if (!existsSync(dir)) return posts
+
+  let files: string[]
+  try {
+    files = readdirSync(dir).filter(f => f.endsWith('.md'))
+  } catch {
+    return posts
+  }
+
+  for (const file of files) {
+    const content = readFileSync(join(dir, file), 'utf-8')
+    const meta = parseFrontmatter(content)
+    if (!meta) continue
+
+    const slug = file.replace(/\.md$/, '')
+    posts.push({
+      title: String(meta.title || slug),
+      date: String(meta.date || ''),
+      description: String(meta.description || ''),
+      tags: Array.isArray(meta.tags) ? meta.tags : [],
+      slug,
+      url: `${urlPrefix}/blog/releases/${slug}`,
+      locale,
+    })
+  }
+
+  return posts
+}
+
 export default defineLoader({
   load(): BlogPost[] {
-    const blogDir = join(__dirname, '..', '..', 'blog', 'releases')
-    const posts: BlogPost[] = []
+    const siteDir = join(__dirname, '..', '..')
 
-    let files: string[]
-    try {
-      files = readdirSync(blogDir).filter(f => f.endsWith('.md'))
-    } catch {
-      return []
-    }
+    const posts: BlogPost[] = loadPostsFromDir(
+      join(siteDir, 'blog', 'releases'),
+      '',
+      'en',
+    )
 
-    for (const file of files) {
-      const content = readFileSync(join(blogDir, file), 'utf-8')
-      const meta = parseFrontmatter(content)
-      if (!meta) continue
-
-      const slug = file.replace(/\.md$/, '')
-      posts.push({
-        title: String(meta.title || slug),
-        date: String(meta.date || ''),
-        description: String(meta.description || ''),
-        tags: Array.isArray(meta.tags) ? meta.tags : [],
-        slug,
-        url: `/blog/releases/${slug}`,
-      })
+    for (const locale of LOCALES) {
+      const localeDir = join(siteDir, 'locales', locale, 'blog', 'releases')
+      posts.push(...loadPostsFromDir(localeDir, `/${locale}`, locale))
     }
 
     posts.sort((a, b) => (b.date > a.date ? 1 : b.date < a.date ? -1 : 0))

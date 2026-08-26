@@ -1,13 +1,97 @@
+---
+title: "Blog — EncodeX Mises à jour, Publications & Guides"
+description: "Lisez les derniers articles du blog EncodeX : annonces de publications, guides de fonctionnalités et actualités sur le convertisseur vidéo gratuit et open-source."
+---
+
+<script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vitepress'
+import { data as allPosts } from '../../../.vitepress/data/blog.data'
+
+const route = useRoute()
+const locale = computed(() => {
+  const p = route.path
+  if (p.startsWith('/es/')) return 'es'
+  if (p.startsWith('/fr/')) return 'fr'
+  if (p.startsWith('/de/')) return 'de'
+  if (p.startsWith('/pt/')) return 'pt'
+  if (p.startsWith('/zh/')) return 'zh'
+  if (p.startsWith('/hi/')) return 'hi'
+  return 'en'
+})
+const posts = computed(() => allPosts.filter(p => p.locale === locale.value))
+</script>
+
 # Blog
 
 Bienvenue sur le blog d'EncodeX. Vous y trouverez les annonces de versions, les journaux des modifications et les actualités du projet.
 
-## Publications récentes
+<div v-if="posts.length" class="blog-list">
+  <a v-for="post in posts" :key="post.slug" :href="post.url" class="blog-card" @click="typeof gtag === 'function' && gtag('event', 'blog_post_click', { post_title: post.title, page_location: location.href })">
+    <div class="blog-card-date">{{ post.date }}</div>
+    <h3 class="blog-card-title">{{ post.title }}</h3>
+    <p v-if="post.description" class="blog-card-desc">{{ post.description }}</p>
+    <div v-if="post.tags.length" class="blog-card-tags">
+      <span v-for="tag in post.tags" :key="tag" class="blog-tag">{{ tag }}</span>
+    </div>
+  </a>
+</div>
 
-<!-- Les publications sont générées automatiquement par scripts/generate-blog.mjs à partir des GitHub Releases -->
+<div v-else>
+  <p>Pas encore d'articles. Revenez bientôt !</p>
+</div>
 
-::: info
-Les notes de version sont générées automatiquement à partir des [GitHub Releases](https://github.com/Sandeepv68/EncodeX/releases).
-:::
+## Découvrir EncodeX
 
-Consultez la [page des Releases](https://github.com/Sandeepv68/EncodeX/releases) pour le journal complet.
+- [Télécharger EncodeX](/fr/download) — gratuit pour Windows, Mac et Linux
+- [Voir toutes les fonctionnalités](/fr/features) — captures d'écran et guides
+- [Documentation technique](/fr/docs/architecture) — comment EncodeX est construit
+- [Contribuer](/fr/contributing) — signaler des bugs, suggérer des fonctionnalités ou soumettre du code
+
+<style>
+.blog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.blog-card {
+  display: block;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.blog-card:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+.blog-card-date {
+  font-size: 0.85rem;
+  color: var(--vp-c-text-3);
+  margin-bottom: 0.3rem;
+}
+.blog-card-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.2rem;
+}
+.blog-card-desc {
+  margin: 0 0 0.5rem;
+  color: var(--vp-c-text-2);
+  font-size: 0.95rem;
+}
+.blog-card-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.blog-tag {
+  font-size: 0.75rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+  background: var(--vp-c-default-soft);
+  color: var(--vp-c-text-2);
+}
+</style>
