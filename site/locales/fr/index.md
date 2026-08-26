@@ -79,7 +79,7 @@ Vous n'êtes pas seul. Voici les problèmes du quotidien qu'EncodeX résout :
 
 Un écran d'accueil épuré, chaque outil à un clic. Si vous savez utiliser un navigateur web, vous savez déjà utiliser EncodeX :
 
-<img src="/images/home_dashboard.jpg" alt="Écran d'accueil d'EncodeX" width="1600" height="861" loading="lazy">
+<img src="/images/home_dashboard.webp" alt="Écran d'accueil d'EncodeX" width="1600" height="861" loading="lazy">
 
 ## Ce qu'il peut faire pour vous
 

@@ -13,7 +13,7 @@ Funciona no Windows, Mac e Linux, é totalmente grátis e fala mais de 35 idioma
 
 ## Mudar formatos de vídeo e áudio
 
-<img src="/images/convert.jpg" alt="Conversão de mídia" width="1600" height="1057" loading="lazy">
+<img src="/images/convert.webp" alt="Conversão de mídia" width="1600" height="1057" loading="lazy">
 
 **O problema:** alguém mandou um vídeo, mas seu celular, TV ou editor não abre.
 
@@ -23,7 +23,7 @@ Você converte entre praticamente todos os formatos que vai encontrar: MP4, MKV,
 
 ## Extrair só o áudio de um vídeo
 
-<img src="/images/extract_audio.jpg" alt="Extração de áudio" width="1600" height="1054" loading="lazy">
+<img src="/images/extract_audio.webp" alt="Extração de áudio" width="1600" height="1054" loading="lazy">
 
 Achou uma aula, podcast, entrevista ou show em vídeo e quer só o som? Arraste o vídeo, escolha MP3 (ou outro formato de áudio) e receba um arquivo de música para ouvir onde quiser.
 
@@ -31,7 +31,7 @@ Se o vídeo tiver várias faixas de áudio (como idiomas diferentes), você esco
 
 ## Cortar vídeos
 
-<img src="/images/cut_video.jpg" alt="Corte de vídeo" width="1600" height="1267" loading="lazy">
+<img src="/images/cut_video.webp" alt="Corte de vídeo" width="1600" height="1267" loading="lazy">
 
 Corte as partes chatas. O EncodeX mostra o vídeo com uma linha do tempo embaixo: arraste os controles marcando onde começa e termina o trecho bom, confira na prévia e salve.
 
@@ -39,7 +39,7 @@ Dá para dar zoom na linha do tempo para ser preciso até frações de segundo, 
 
 ## Diminuir o tamanho das fotos
 
-<img src="/images/image_compress.jpg" alt="Compressão de imagens" width="1600" height="1060" loading="lazy">
+<img src="/images/image_compress.webp" alt="Compressão de imagens" width="1600" height="1060" loading="lazy">
 
 Fotos grandes são ótimas... até precisar enviar. O EncodeX reduz o tamanho para pesar menos e subir mais rápido, com prévia ao vivo antes de salvar.
 
@@ -47,7 +47,7 @@ Formatos comuns suportados: JPG, PNG, WebP, GIF, BMP, TIFF e mais. Também dá p
 
 ## Converter muitos arquivos de uma vez
 
-<img src="/images/batch_process.jpg" alt="Fila em lote" width="1600" height="1360" loading="lazy">
+<img src="/images/batch_process.webp" alt="Fila em lote" width="1600" height="1360" loading="lazy">
 
 Tem 50 vídeos? Não converta um por um. Arraste todos para a fila — o EncodeX processa automaticamente mostrando o progresso de cada arquivo.
 
@@ -58,7 +58,7 @@ Tem 50 vídeos? Não converta um por um. Arraste todos para a fila — o EncodeX
 
 ## Espiar dentro de qualquer arquivo
 
-<img src="/images/media_info.jpg" alt="Informações de mídia" width="1600" height="1058" loading="lazy">
+<img src="/images/media_info.webp" alt="Informações de mídia" width="1600" height="1058" loading="lazy">
 
 Curioso sobre um arquivo? O EncodeX conta tudo em termos claros: duração, resolução (como 1080p), tamanho, quadros por segundo, canais de áudio e mais. Útil quando um arquivo não abre e você quer saber por quê.
 

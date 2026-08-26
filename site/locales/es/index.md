@@ -79,7 +79,7 @@ No estás solo. Estos son los problemas cotidianos que EncodeX resuelve:
 
 Una pantalla de inicio limpia. Cada herramienta a un clic. Si sabes usar un navegador, ya sabes usar EncodeX:
 
-<img src="/images/home_dashboard.jpg" alt="Pantalla de inicio de EncodeX" width="1600" height="861" loading="lazy">
+<img src="/images/home_dashboard.webp" alt="Pantalla de inicio de EncodeX" width="1600" height="861" loading="lazy">
 
 ## ¿Qué puede hacer por ti?
 

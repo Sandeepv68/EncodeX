@@ -47,9 +47,10 @@
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
     "docs:dev": "vitepress dev site",
-    "docs:build": "vitepress build site",
+    "docs:build": "npm run docs:rss && vitepress build site",
     "docs:preview": "vitepress preview site",
-    "docs:blog": "node scripts/generate-blog.mjs"
+    "docs:blog": "node scripts/generate-blog.mjs",
+    "docs:rss": "node scripts/generate-rss.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

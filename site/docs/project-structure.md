@@ -1,3 +1,8 @@
+---
+title: "Project Structure — EncodeX Source Code Layout"
+description: "EncodeX directory structure: src/main, src/renderer, src/preload, src/shared, src/cli, and how the Electron app codebase is organized."
+---
+
 # Project Structure
 
 ```

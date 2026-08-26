@@ -1,5 +1,7 @@
 ---
 layout: home
+title: "Free Video, Audio & Photo Converter for Windows, Mac, Linux"
+description: "Convert videos and audio between any format, trim clips, extract music, and compress photos. Free, open-source, no watermarks. Works on Windows, Mac, and Linux."
 
 hero:
   name: EncodeX
@@ -79,7 +81,7 @@ You're not alone. These are the everyday file problems EncodeX was built to solv
 
 One clean home screen. Every tool one click away. If you can use a web browser, you already know how to use EncodeX:
 
-<img src="/images/home_dashboard.jpg" alt="EncodeX Home Dashboard" width="1600" height="861" loading="lazy">
+<img src="/images/home_dashboard.webp" srcset="/images/home_dashboard_800.webp 800w, /images/home_dashboard.webp 1600w" sizes="(max-width: 960px) 100vw, 1150px" alt="EncodeX Home Dashboard" width="1150" height="619" loading="lazy" decoding="async">
 
 ## What Can It Do For You?
 

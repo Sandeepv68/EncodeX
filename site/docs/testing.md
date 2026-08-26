@@ -1,3 +1,8 @@
+---
+title: "Testing — Unit, Integration & E2E for EncodeX"
+description: "EncodeX test suite: 123 files, 1603 tests, Vitest unit tests, Playwright E2E specs, test setup, coverage, and CI integration."
+---
+
 # Testing
 
 ## Commands

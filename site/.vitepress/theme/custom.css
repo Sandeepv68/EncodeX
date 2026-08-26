@@ -213,126 +213,6 @@ html {
 }
 
 /* ============================================================
-   Card system
-   ============================================================ */
-.card-grid {
-  display: grid;
-  gap: 14px;
-  margin: 24px 0 12px;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-}
-
-/* Fixed three-column variant for six-card grids */
-.card-grid.three-col {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-@media (max-width: 900px) {
-  .card-grid.three-col {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .card-grid.three-col {
-    grid-template-columns: 1fr;
-  }
-}
-
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 18px 20px;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 14px;
-  background: var(--vp-c-bg);
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    border-color 0.25s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 8px 24px rgba(3, 89, 173, 0.1);
-}
-.dark .card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-}
-
-.card .card-emoji {
-  font-size: 24px;
-  line-height: 1;
-}
-
-.card .card-head {
-  margin: 0;
-  font-size: 15.5px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.4;
-  color: var(--vp-c-text-1);
-}
-
-.card p {
-  margin: 0;
-  font-size: 14.5px;
-  line-height: 1.65;
-  color: var(--vp-c-text-2);
-}
-
-/* Full-width card holding prose + headings */
-.card.wide {
-  gap: 4px;
-  padding: 24px 28px;
-  margin: 20px 0;
-}
-
-.card.wide h3:first-child {
-  margin-top: 0;
-}
-
-.card.wide p + p {
-  margin-top: 10px;
-}
-
-/* Closing call-to-action banner */
-.cta-card {
-  margin: 40px 0 16px;
-  padding: 40px 32px;
-  text-align: center;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 16px;
-  background: linear-gradient(
-    135deg,
-    rgba(3, 89, 173, 0.07),
-    rgba(0, 204, 228, 0.09)
-  );
-}
-
-.dark .cta-card {
-  background: linear-gradient(
-    135deg,
-    rgba(69, 200, 234, 0.08),
-    rgba(3, 89, 173, 0.16)
-  );
-}
-
-.cta-card h2 {
-  margin: 0 0 10px !important;
-  border: none !important;
-  padding: 0 !important;
-}
-
-.cta-card p {
-  margin: 6px auto;
-  max-width: 560px;
-  color: var(--vp-c-text-2);
-}
-
-/* ============================================================
    Components
    ============================================================ */
 
@@ -497,6 +377,126 @@ html {
   height: 24px;
   margin-right: 8px;
   border-radius: 6px;
+}
+
+/* ============================================================
+   Card system
+   ============================================================ */
+.card-grid {
+  display: grid;
+  gap: 14px;
+  margin: 24px 0 12px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+/* Fixed three-column variant for six-card grids */
+.card-grid.three-col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 900px) {
+  .card-grid.three-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .card-grid.three-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 20px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 14px;
+  background: var(--vp-c-bg);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 8px 24px rgba(3, 89, 173, 0.1);
+}
+.dark .card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.card .card-emoji {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.card .card-head {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  color: var(--vp-c-text-1);
+}
+
+.card p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--vp-c-text-2);
+}
+
+/* Full-width card holding prose + headings */
+.card.wide {
+  gap: 4px;
+  padding: 24px 28px;
+  margin: 20px 0;
+}
+
+.card.wide h3:first-child {
+  margin-top: 0;
+}
+
+.card.wide p + p {
+  margin-top: 10px;
+}
+
+/* Closing call-to-action banner */
+.cta-card {
+  margin: 40px 0 16px;
+  padding: 40px 32px;
+  text-align: center;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(3, 89, 173, 0.07),
+    rgba(0, 204, 228, 0.09)
+  );
+}
+
+.dark .cta-card {
+  background: linear-gradient(
+    135deg,
+    rgba(69, 200, 234, 0.08),
+    rgba(3, 89, 173, 0.16)
+  );
+}
+
+.cta-card h2 {
+  margin: 0 0 10px !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.cta-card p {
+  margin: 6px auto;
+  max-width: 560px;
+  color: var(--vp-c-text-2);
 }
 
 /* ============================================================

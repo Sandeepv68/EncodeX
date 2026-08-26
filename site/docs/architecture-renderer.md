@@ -1,3 +1,8 @@
+---
+title: "Renderer, State & Subsystems — EncodeX Architecture"
+description: "EncodeX renderer process: React pages, Zustand stores, batch queue, video player, timeline, image processing, i18n, theming, and data flow."
+---
+
 # Renderer, State & Subsystems
 
 ## Renderer Architecture

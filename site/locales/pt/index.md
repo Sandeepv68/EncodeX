@@ -79,7 +79,7 @@ Você não está sozinho. Estes são os problemas do dia a dia que o EncodeX res
 
 Uma tela inicial limpa. Cada ferramenta a um clique. Se você sabe usar um navegador, já sabe usar o EncodeX:
 
-<img src="/images/home_dashboard.jpg" alt="Tela inicial do EncodeX" width="1600" height="861" loading="lazy">
+<img src="/images/home_dashboard.webp" alt="Tela inicial do EncodeX" width="1600" height="861" loading="lazy">
 
 ## O que ele pode fazer por você
 

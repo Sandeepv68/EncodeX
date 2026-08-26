@@ -4,6 +4,18 @@ import DefaultTheme from 'vitepress/theme'
 import HeroLogo from './components/HeroLogo.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import VersionBadge from './components/VersionBadge.vue'
+import {
+  trackExternalLink,
+  trackLocaleSwitch,
+  initScrollDepthTracking,
+  initSearchTracking,
+  init404Tracking,
+  initMailtoTracking,
+  initOutboundDownloadTracking,
+  initEngagementTiming,
+  initUserProperties,
+  initCoreWebVitals,
+} from './composables/useAnalytics'
 
 const { Layout } = DefaultTheme
 
@@ -11,6 +23,36 @@ onMounted(() => {
   if (document.querySelector('main, [role="main"]')) return
   const home = document.querySelector('.VPHome')
   if (home) home.setAttribute('role', 'main')
+
+  // External link clicks
+  document.addEventListener('click', (e) => {
+    const anchor = e.target.closest('a[href]')
+    if (!anchor) return
+    const href = anchor.getAttribute('href') || ''
+    if (href.startsWith('http') && !href.includes('encodex.in')) {
+      trackExternalLink(href, anchor.textContent?.trim() || '')
+    }
+  })
+
+  // Locale switch clicks
+  document.addEventListener('click', (e) => {
+    const langItem = e.target.closest('[class*="VPLanguage"] [role="radio"], [class*="VPLocale"] a, .VPMenu .item')
+    if (!langItem) return
+    const text = langItem.textContent?.trim()
+    if (text) {
+      trackLocaleSwitch(text)
+    }
+  })
+
+  // Initialize all tracking modules
+  initUserProperties()
+  initScrollDepthTracking()
+  initSearchTracking()
+  init404Tracking()
+  initMailtoTracking()
+  initOutboundDownloadTracking()
+  initEngagementTiming()
+  initCoreWebVitals()
 })
 </script>
 
