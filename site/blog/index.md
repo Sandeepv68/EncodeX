@@ -4,7 +4,22 @@ description: "Read the latest EncodeX blog posts: release announcements, feature
 ---
 
 <script setup>
-import { data as posts } from '../.vitepress/data/blog.data'
+import { computed } from 'vue'
+import { useRoute } from 'vitepress'
+import { data as allPosts } from '../.vitepress/data/blog.data'
+
+const route = useRoute()
+const locale = computed(() => {
+  const p = route.path
+  if (p.startsWith('/es/')) return 'es'
+  if (p.startsWith('/fr/')) return 'fr'
+  if (p.startsWith('/de/')) return 'de'
+  if (p.startsWith('/pt/')) return 'pt'
+  if (p.startsWith('/zh/')) return 'zh'
+  if (p.startsWith('/hi/')) return 'hi'
+  return 'en'
+})
+const posts = computed(() => allPosts.filter(p => p.locale === locale.value))
 </script>
 
 # Blog
