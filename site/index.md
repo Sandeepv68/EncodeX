@@ -81,7 +81,7 @@ You're not alone. These are the everyday file problems EncodeX was built to solv
 
 One clean home screen. Every tool one click away. If you can use a web browser, you already know how to use EncodeX:
 
-<img src="/images/home_dashboard.jpg" alt="EncodeX Home Dashboard" width="1600" height="861" loading="lazy">
+<img src="/images/home_dashboard.webp" alt="EncodeX Home Dashboard" width="1600" height="861" loading="lazy">
 
 ## What Can It Do For You?
 

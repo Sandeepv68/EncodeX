@@ -48,3 +48,10 @@ npm start            # run built app
 ## Code of Conduct
 
 This project follows the [Contributor Covenant](https://github.com/Sandeepv68/EncodeX/blob/main/CODE_OF_CONDUCT.md). Be kind and respectful — we're all here because we like the project.
+
+## Learn More
+
+- [See all features](/features) — what EncodeX can do
+- [Download EncodeX](/download) — try it out
+- [Technical docs](/docs/architecture) — understand how it's built
+- [Read the blog](/blog/) — latest updates and release notes

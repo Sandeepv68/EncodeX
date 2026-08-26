@@ -79,7 +79,7 @@ features:
 
 एक साफ़-सुथरी होम स्क्रीन। हर टूल एक क्लिक दूर। अगर ब्राउज़र चला लेते हैं, तो EncodeX भी चला लेंगे:
 
-<img src="/images/home_dashboard.jpg" alt="EncodeX की होम स्क्रीन" width="1600" height="861" loading="lazy">
+<img src="/images/home_dashboard.webp" alt="EncodeX की होम स्क्रीन" width="1600" height="861" loading="lazy">
 
 ## ये आपके लिए क्या कर सकता है
 

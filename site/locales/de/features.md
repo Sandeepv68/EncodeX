@@ -13,7 +13,7 @@ Es läuft auf Windows, Mac und Linux, ist vollständig kostenlos und spricht üb
 
 ## Video- und Audioformate ändern
 
-<img src="/images/convert.jpg" alt="Medienkonvertierung" width="1600" height="1057" loading="lazy">
+<img src="/images/convert.webp" alt="Medienkonvertierung" width="1600" height="1057" loading="lazy">
 
 **Das Problem:** Jemand schickt Ihnen ein Video, aber Ihr Handy, Fernseher oder Bearbeitungsprogramm öffnet es nicht.
 
@@ -23,7 +23,7 @@ Sie können zwischen praktisch allen gängigen Video- und Audioformaten umwandel
 
 ## Nur den Ton aus einem Video holen
 
-<img src="/images/extract_audio.jpg" alt="Audioextraktion" width="1600" height="1054" loading="lazy">
+<img src="/images/extract_audio.webp" alt="Audioextraktion" width="1600" height="1054" loading="lazy">
 
 Eine Vorlesung, ein Podcast, ein Interview oder ein Konzert als Video gefunden — aber Sie wollen nur den Sound? Ziehen Sie das Video hinein, wählen Sie MP3 (oder ein anderes Audioformat) und erhalten eine Musikdatei zum Anhören überall.
 
@@ -31,7 +31,7 @@ Hat ein Video mehrere Tonspuren (z. B. verschiedene Sprachen), können Sie ausw�
 
 ## Videos zuschneiden
 
-<img src="/images/cut_video.jpg" alt="Videoschnitt" width="1600" height="1267" loading="lazy">
+<img src="/images/cut_video.webp" alt="Videoschnitt" width="1600" height="1267" loading="lazy">
 
 Entfernen Sie die langweiligen Stellen. EncodeX zeigt das Video mit einer Zeitleiste darunter: Schieben Sie zwei Regler auf Anfang und Ende des gewünschten Teils, prüfen Sie die Vorschau und speichern.
 
@@ -39,7 +39,7 @@ Die Zeitleiste lässt sich vergrößern, um auf Sekundenbruchteile genau zu arbe
 
 ## Fotos verkleinern
 
-<img src="/images/image_compress.jpg" alt="Bildkomprimierung" width="1600" height="1060" loading="lazy">
+<img src="/images/image_compress.webp" alt="Bildkomprimierung" width="1600" height="1060" loading="lazy">
 
 Große Fotos sind wunderbar ... bis man sie verschicken muss. EncodeX verkleinert sie, sodass sie weniger wiegen und schneller hochladen — mit Live-Vorschau des Ergebnisses vor dem Speichern.
 
@@ -47,7 +47,7 @@ Unterstützte Formate: JPG, PNG, WebP, GIF, BMP, TIFF und mehr. Außerdem könne
 
 ## Viele Dateien gleichzeitig konvertieren
 
-<img src="/images/batch_process.jpg" alt="Stapelverarbeitung" width="1600" height="1360" loading="lazy">
+<img src="/images/batch_process.webp" alt="Stapelverarbeitung" width="1600" height="1360" loading="lazy">
 
 50 Videos? Nicht einzeln konvertieren. Ziehen Sie alle in die Warteschlange — EncodeX arbeitet sie automatisch ab und zeigt den Fortschritt jeder Datei.
 
@@ -58,7 +58,7 @@ Unterstützte Formate: JPG, PNG, WebP, GIF, BMP, TIFF und mehr. Außerdem könne
 
 ## In jede Datei hineinschauen
 
-<img src="/images/media_info.jpg" alt="Medieninfos" width="1600" height="1058" loading="lazy">
+<img src="/images/media_info.webp" alt="Medieninfos" width="1600" height="1058" loading="lazy">
 
 Neugierig, was in einer Datei steckt? EncodeX erzählt es Ihnen in klaren Worten: Länge, Auflösung (z. B. 1080p), Größe, Bilder pro Sekunde, Audiokanäle und mehr. Praktisch, wenn eine Datei nicht abgespielt wird und Sie herausfinden wollen, warum.
 

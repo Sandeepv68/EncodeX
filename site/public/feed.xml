@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>EncodeX Blog</title>
+    <link>https://encodex.in/blog/</link>
+    <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
+    <language>en</language>
+    <lastBuildDate>Wed, 26 Aug 2026 09:28:50 GMT</lastBuildDate>
+    <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Convert Video Formats for Free in 2026</title>
+      <link>https://encodex.in/blog/releases/free-video-converter-guide</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/free-video-converter-guide</guid>
+      <description>Step-by-step guide to converting video files between MP4, MKV, AVI, MOV, and more using EncodeX, a free video converter for Windows, Mac, and Linux.</description>
+      <pubDate>Tue, 25 Aug 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>tutorial</category>
+    </item>
+    <item>
+      <title>Why We Built EncodeX — A Free, Open-Source Video Converter</title>
+      <link>https://encodex.in/blog/releases/why-we-built-encodex</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/why-we-built-encodex</guid>
+      <description>The story behind EncodeX: why we built a free, open-source video and audio converter that works on Windows, Mac, and Linux without watermarks or subscriptions.</description>
+      <pubDate>Sat, 22 Aug 2026 00:00:00 GMT</pubDate>
+      <category>behind the scenes</category>
+      <category>open source</category>
+    </item>
+    <item>
+      <title>EncodeX V1.0.0-beta.0</title>
+      <link>https://encodex.in/blog/releases/1.0.0-beta.0</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/1.0.0-beta.0</guid>
+      <description>First beta release of EncodeX: video conversion, audio extraction, trimming, image compression, batch processing, CLI, and 35+ languages.</description>
+      <pubDate>Thu, 20 Aug 2026 00:00:00 GMT</pubDate>
+      <category>release</category>
+      <category>1.0.0-beta.0</category>
+    </item>
+  </channel>
+</rss>

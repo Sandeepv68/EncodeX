@@ -13,7 +13,7 @@ EncodeX आपके कंप्यूटर के लिए एक मुफ�
 
 ## वीडियो और ऑडियो का फ़ॉर्मैट बदलें
 
-<img src="/images/convert.jpg" alt="मीडिया कन्वर्ज़न" width="1600" height="1057" loading="lazy">
+<img src="/images/convert.webp" alt="मीडिया कन्वर्ज़न" width="1600" height="1057" loading="lazy">
 
 **समस्या:** किसी ने वीडियो भेजा, पर फ़ोन, TV या एडिटर उसे खोल नहीं रहा।
 
@@ -23,7 +23,7 @@ EncodeX आपके कंप्यूटर के लिए एक मुफ�
 
 ## वीडियो से सिर्फ़ ऑडियो निकालें
 
-<img src="/images/extract_audio.jpg" alt="ऑडियो एक्सट्रैक्शन" width="1600" height="1054" loading="lazy">
+<img src="/images/extract_audio.webp" alt="ऑडियो एक्सट्रैक्शन" width="1600" height="1054" loading="lazy">
 
 कोई क्लास, पॉडकास्ट, इंटरव्यू या कॉन्सर्ट वीडियो में मिला — पर आपको सिर्फ़ आवाज़ चाहिए? वीडियो डालें, MP3 चुनें (या कोई और ऑडियो फ़ॉर्मैट), और एक म्यूज़िक फ़ाइल पाएँ जो कहीं भी सुन सकें।
 
@@ -31,7 +31,7 @@ EncodeX आपके कंप्यूटर के लिए एक मुफ�
 
 ## वीडियो ट्रिम करें
 
-<img src="/images/cut_video.jpg" alt="वीडियो ट्रिमिंग" width="1600" height="1267" loading="lazy">
+<img src="/images/cut_video.webp" alt="वीडियो ट्रिमिंग" width="1600" height="1267" loading="lazy">
 
 बोरिंग हिस्से हटाएँ। EncodeX वीडियो के नीचे टाइमलाइन दिखाता है: दो स्लाइडर घुमाकर बताएँ कहाँ से कहाँ तक रखना है, प्रीव्यू देखें और सेव करें।
 
@@ -39,7 +39,7 @@ EncodeX आपके कंप्यूटर के लिए एक मुफ�
 
 ## फ़ोटो छोटी करें
 
-<img src="/images/image_compress.jpg" alt="इमेज कंप्रेशन" width="1600" height="1060" loading="lazy">
+<img src="/images/image_compress.webp" alt="इमेज कंप्रेशन" width="1600" height="1060" loading="lazy">
 
 बड़ी फ़ोटो बढ़िया होती हैं... जब तक उन्हें भेजना न पड़े। EncodeX उन्हें इतना छोटा कर देता है कि वो जल्दी अपलोड हों — सेव करने से पहले लाइव प्रीव्यू देखकर।
 
@@ -47,7 +47,7 @@ EncodeX आपके कंप्यूटर के लिए एक मुफ�
 
 ## एक साथ कई फ़ाइलें बदलें
 
-<img src="/images/batch_process.jpg" alt="बैच क्यू" width="1600" height="1360" loading="lazy">
+<img src="/images/batch_process.webp" alt="बैच क्यू" width="1600" height="1360" loading="lazy">
 
 50 वीडियो हैं? एक-एक करके मत बदलें। सब को क्यू में डालें — EncodeX अपने आप निपटाता जाएगा और हर फ़ाइल का प्रोग्रेस दिखाएगा।
 
@@ -58,7 +58,7 @@ EncodeX आपके कंप्यूटर के लिए एक मुफ�
 
 ## किसी भी फ़ाइल के अंदर झाँकें
 
-<img src="/images/media_info.jpg" alt="मीडिया जानकारी" width="1600" height="1058" loading="lazy">
+<img src="/images/media_info.webp" alt="मीडिया जानकारी" width="1600" height="1058" loading="lazy">
 
 फ़ाइल के बारे में जानने का मन कर रहा है? EncodeX आसान भाषा में बता देगा: अवधि, रेज़ोल्यूशन (जैसे 1080p), साइज़, फ़्रेम प्रति सेकंड, ऑडियो चैनल और बहुत कुछ। फ़ाइल न चले और वजह जाननी हो तो बेहद काम आता है।
 

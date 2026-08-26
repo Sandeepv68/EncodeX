@@ -79,7 +79,7 @@ Sie sind nicht allein. Das sind die alltäglichen Probleme, die EncodeX löst:
 
 Ein aufgeräumter Startbildschirm. Jedes Werkzeug einen Klick entfernt. Wenn Sie einen Internetbrowser bedienen können, können Sie auch EncodeX:
 
-<img src="/images/home_dashboard.jpg" alt="Startbildschirm von EncodeX" width="1600" height="861" loading="lazy">
+<img src="/images/home_dashboard.webp" alt="Startbildschirm von EncodeX" width="1600" height="861" loading="lazy">
 
 ## Was kann es für Sie tun?
 

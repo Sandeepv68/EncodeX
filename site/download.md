@@ -76,6 +76,13 @@ Need an older release? Expand a version below to grab its files — each file li
 
 If something isn't working or you have a question, send an email to **[developer@encodex.in](mailto:developer@encodex.in)** — you'll hear back from a real person.
 
+## Learn More
+
+- [See all features](/features) — screenshots and guides for every tool
+- [Read the blog](/blog/) — release announcements and tips
+- [Technical documentation](/docs/architecture) — how EncodeX is built
+- [Contribute](/contributing) — help improve EncodeX
+
 ## For Developers: Build It Yourself
 
 Prefer to build from source? Clone the repo and run:

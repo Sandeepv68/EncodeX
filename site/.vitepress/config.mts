@@ -250,10 +250,13 @@ export default defineConfig({
   },
   sitemap: { hostname: 'https://encodex.in' },
   head: [
-    ['link', { rel: 'icon', href: '/images/favicon-64.png' }],
+    ['link', { rel: 'icon', href: '/images/favicon-64.webp' }],
     ['link', { rel: 'preload', as: 'image', href: '/images/icon.webp', fetchpriority: 'high' }],
     ['meta', { name: 'theme-color', content: '#0359AD' }],
     ['meta', { property: 'og:type', content: 'website' }],
+    ['link', { rel: 'preconnect', href: 'https://www.googletagmanager.com' }],
+    ['link', { rel: 'dns-prefetch', href: 'https://www.googletagmanager.com' }],
+    ['link', { rel: 'alternate', type: 'application/rss+xml', title: 'EncodeX Blog', href: 'https://encodex.in/feed.xml' }],
     ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-SM28DL4DYR' }],
     [
       'script',
@@ -283,7 +286,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       ? `${frontmatter.title} | ${siteTitle}`
       : `${siteTitle} — Free Video, Audio & Photo Converter`
     const pageDescription = frontmatter.description || siteDescription
-    const pageOgImage = frontmatter.ogImage || `${SITE_URL}/images/banner.jpg`
+    const pageOgImage = frontmatter.ogImage || `${SITE_URL}/images/banner.webp`
 
     head.push(['meta', { property: 'og:title', content: pageTitle }])
     head.push(['meta', { property: 'og:description', content: pageDescription }])
@@ -321,7 +324,7 @@ gtag('config', 'G-SM28DL4DYR');`,
         operatingSystem: 'Windows 10+, macOS 11+, Linux',
         url: SITE_URL,
         downloadUrl: `${SITE_URL}/download`,
-        screenshot: `${SITE_URL}/images/home_dashboard.jpg`,
+        screenshot: `${SITE_URL}/images/home_dashboard.webp`,
         icon: `${SITE_URL}/images/icon.webp`,
         license: 'https://opensource.org/licenses/MIT',
         offers: {
@@ -341,6 +344,40 @@ gtag('config', 'G-SM28DL4DYR');`,
         'script',
         { type: 'application/ld+json' },
         JSON.stringify(jsonLd),
+      ])
+    }
+
+    if (pageSlug.startsWith('blog/releases/') && frontmatter.date) {
+      const articleJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: frontmatter.title || pageTitle,
+        description: pageDescription,
+        datePublished: frontmatter.date,
+        author: {
+          '@type': 'Person',
+          name: 'Sandeepv68',
+          url: 'https://github.com/Sandeepv68',
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'EncodeX',
+          url: SITE_URL,
+          logo: {
+            '@type': 'ImageObject',
+            url: `${SITE_URL}/images/icon.webp`,
+          },
+        },
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': canonicalUrl,
+        },
+        image: frontmatter.ogImage || `${SITE_URL}/images/banner.webp`,
+      }
+      head.push([
+        'script',
+        { type: 'application/ld+json' },
+        JSON.stringify(articleJsonLd),
       ])
     }
 

@@ -79,7 +79,7 @@ features:
 
 清爽的主界面，每个工具一键直达。会用浏览器，就会用 EncodeX：
 
-<img src="/images/home_dashboard.jpg" alt="EncodeX 主界面" width="1600" height="861" loading="lazy">
+<img src="/images/home_dashboard.webp" alt="EncodeX 主界面" width="1600" height="861" loading="lazy">
 
 ## 它能帮你做什么
 

@@ -13,7 +13,7 @@ EncodeX 是一款免费的电脑应用，几次点击就能解决常见的文件
 
 ## 转换视频和音频格式
 
-<img src="/images/convert.jpg" alt="媒体转换" width="1600" height="1057" loading="lazy">
+<img src="/images/convert.webp" alt="媒体转换" width="1600" height="1057" loading="lazy">
 
 **问题：** 别人发来一个视频，手机、电视或剪辑软件都打不开。
 
@@ -23,7 +23,7 @@ EncodeX 是一款免费的电脑应用，几次点击就能解决常见的文件
 
 ## 只提取视频里的声音
 
-<img src="/images/extract_audio.jpg" alt="音频提取" width="1600" height="1054" loading="lazy">
+<img src="/images/extract_audio.webp" alt="音频提取" width="1600" height="1054" loading="lazy">
 
 找到一门课、一个播客、一段访谈或一场演唱会视频，但只要声音？拖入视频，选 MP3（或其他音频格式），就能得到一个随处可听的音乐文件。
 
@@ -31,7 +31,7 @@ EncodeX 是一款免费的电脑应用，几次点击就能解决常见的文件
 
 ## 裁剪视频
 
-<img src="/images/cut_video.jpg" alt="视频裁剪" width="1600" height="1267" loading="lazy">
+<img src="/images/cut_video.webp" alt="视频裁剪" width="1600" height="1267" loading="lazy">
 
 剪掉无聊的部分。EncodeX 在视频下方显示时间轴：拖动两个滑块标记想要的起止位置，预览确认后保存。
 
@@ -39,7 +39,7 @@ EncodeX 是一款免费的电脑应用，几次点击就能解决常见的文件
 
 ## 压缩照片
 
-<img src="/images/image_compress.jpg" alt="图片压缩" width="1600" height="1060" loading="lazy">
+<img src="/images/image_compress.webp" alt="图片压缩" width="1600" height="1060" loading="lazy">
 
 高清照片很棒……直到需要发送的时候。EncodeX 压缩照片让它更小、上传更快，保存前还能实时预览效果。
 
@@ -47,7 +47,7 @@ EncodeX 是一款免费的电脑应用，几次点击就能解决常见的文件
 
 ## 一次转换多个文件
 
-<img src="/images/batch_process.jpg" alt="批量处理队列" width="1600" height="1360" loading="lazy">
+<img src="/images/batch_process.webp" alt="批量处理队列" width="1600" height="1360" loading="lazy">
 
 有 50 个视频？别一个一个转。全部拖进队列——EncodeX 自动依次处理，并显示每个文件的进度。
 
@@ -58,7 +58,7 @@ EncodeX 是一款免费的电脑应用，几次点击就能解决常见的文件
 
 ## 查看文件的内在信息
 
-<img src="/images/media_info.jpg" alt="媒体信息" width="1600" height="1058" loading="lazy">
+<img src="/images/media_info.webp" alt="媒体信息" width="1600" height="1058" loading="lazy">
 
 好奇一个文件里有什么？EncodeX 用大白话告诉你：时长、分辨率（比如 1080p）、大小、帧率、声道数等等。文件放不出来想知道原因时特别有用。
 

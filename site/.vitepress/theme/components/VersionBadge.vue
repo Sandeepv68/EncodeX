@@ -204,6 +204,7 @@ onUnmounted(() => {
   margin-top: 16px;
   font-size: 13px;
   color: var(--vp-c-text-3);
+  min-height: 24px;
 }
 
 .vb-hero > * {

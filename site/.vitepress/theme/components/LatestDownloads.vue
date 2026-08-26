@@ -38,7 +38,7 @@
               </template>
             </div>
           </div>
-          <a class="dl-btn dl-btn-sm" :href="asset.url">{{ t.download }}</a>
+          <a class="dl-btn dl-btn-sm" :href="asset.url" @click="trackDownload(osOf(asset.key), asset.name, rel.tag)">{{ t.download }}</a>
         </div>
       </div>
     </details>
@@ -99,7 +99,7 @@
           class="dl-full"
         >SHA-256: {{ row.asset.sha256 }}</pre>
       </div>
-      <a class="dl-btn" :href="row.asset.url">{{ t.download }}</a>
+      <a class="dl-btn" :href="row.asset.url" @click="trackDownload(props.platform || 'unknown', row.asset.name, release?.tag || '')">{{ t.download }}</a>
     </div>
   </div>
 
@@ -118,6 +118,7 @@ import { useData } from 'vitepress'
 import { getReleases, totalDownloads } from '../../data/releaseShared'
 import { data as buildData } from '../../data/release.data'
 import { data as buildOlderData } from '../../data/releases.data'
+import { trackDownload } from '../composables/useAnalytics'
 
 const props = defineProps({
   platform: {
@@ -491,6 +492,7 @@ function toggleFull(key) {
   border-radius: 10px;
   background: var(--vp-c-bg-soft);
   font-size: 14px;
+  min-height: 42px;
 }
 
 .dl-label {
@@ -521,6 +523,7 @@ function toggleFull(key) {
   border: 1px solid var(--vp-c-divider);
   border-radius: 12px;
   overflow: hidden;
+  min-height: 60px;
 }
 
 .dl-row {

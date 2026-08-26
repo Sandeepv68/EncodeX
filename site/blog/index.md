@@ -12,7 +12,7 @@ import { data as posts } from '../.vitepress/data/blog.data'
 Welcome to the EncodeX blog. Here you'll find release announcements, changelogs, and updates about the project.
 
 <div v-if="posts.length" class="blog-list">
-  <a v-for="post in posts" :key="post.slug" :href="post.url" class="blog-card">
+  <a v-for="post in posts" :key="post.slug" :href="post.url" class="blog-card" @click="typeof gtag === 'function' && gtag('event', 'blog_post_click', { post_title: post.title, page_location: location.href })">
     <div class="blog-card-date">{{ post.date }}</div>
     <h3 class="blog-card-title">{{ post.title }}</h3>
     <p v-if="post.description" class="blog-card-desc">{{ post.description }}</p>
@@ -25,6 +25,13 @@ Welcome to the EncodeX blog. Here you'll find release announcements, changelogs,
 <div v-else>
   <p>No blog posts yet. Check back soon!</p>
 </div>
+
+## Explore EncodeX
+
+- [Download EncodeX](/download) — free for Windows, Mac, and Linux
+- [See all features](/features) — screenshots and guides
+- [Technical documentation](/docs/architecture) — how EncodeX is built
+- [Contribute](/contributing) — report bugs, suggest features, or submit code
 
 <style>
 .blog-list {
