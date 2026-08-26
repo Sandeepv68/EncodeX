@@ -4,7 +4,18 @@ import DefaultTheme from 'vitepress/theme'
 import HeroLogo from './components/HeroLogo.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import VersionBadge from './components/VersionBadge.vue'
-import { trackExternalLink, trackLocaleSwitch } from './composables/useAnalytics'
+import {
+  trackExternalLink,
+  trackLocaleSwitch,
+  initScrollDepthTracking,
+  initSearchTracking,
+  init404Tracking,
+  initMailtoTracking,
+  initOutboundDownloadTracking,
+  initEngagementTiming,
+  initUserProperties,
+  initCoreWebVitals,
+} from './composables/useAnalytics'
 
 const { Layout } = DefaultTheme
 
@@ -13,6 +24,7 @@ onMounted(() => {
   const home = document.querySelector('.VPHome')
   if (home) home.setAttribute('role', 'main')
 
+  // External link clicks
   document.addEventListener('click', (e) => {
     const anchor = e.target.closest('a[href]')
     if (!anchor) return
@@ -22,6 +34,7 @@ onMounted(() => {
     }
   })
 
+  // Locale switch clicks
   document.addEventListener('click', (e) => {
     const langItem = e.target.closest('[class*="VPLanguage"] [role="radio"], [class*="VPLocale"] a, .VPMenu .item')
     if (!langItem) return
@@ -30,6 +43,16 @@ onMounted(() => {
       trackLocaleSwitch(text)
     }
   })
+
+  // Initialize all tracking modules
+  initUserProperties()
+  initScrollDepthTracking()
+  initSearchTracking()
+  init404Tracking()
+  initMailtoTracking()
+  initOutboundDownloadTracking()
+  initEngagementTiming()
+  initCoreWebVitals()
 })
 </script>
 

@@ -38,7 +38,7 @@
               </template>
             </div>
           </div>
-          <a class="dl-btn dl-btn-sm" :href="asset.url" @click="trackDownload(osOf(asset.key), asset.name, rel.tag)">{{ t.download }}</a>
+          <a class="dl-btn dl-btn-sm" :href="asset.url" @click="trackDownload(osOf(asset.key), asset.name, rel.tag); trackDownloadConversion(osOf(asset.key), asset.name, rel.tag)">{{ t.download }}</a>
         </div>
       </div>
     </details>
@@ -99,7 +99,7 @@
           class="dl-full"
         >SHA-256: {{ row.asset.sha256 }}</pre>
       </div>
-      <a class="dl-btn" :href="row.asset.url" @click="trackDownload(props.platform || 'unknown', row.asset.name, release?.tag || '')">{{ t.download }}</a>
+      <a class="dl-btn" :href="row.asset.url" @click="trackDownload(props.platform || 'unknown', row.asset.name, release?.tag || ''); trackDownloadConversion(props.platform || 'unknown', row.asset.name, release?.tag || '')">{{ t.download }}</a>
     </div>
   </div>
 
@@ -118,7 +118,7 @@ import { useData } from 'vitepress'
 import { getReleases, totalDownloads } from '../../data/releaseShared'
 import { data as buildData } from '../../data/release.data'
 import { data as buildOlderData } from '../../data/releases.data'
-import { trackDownload } from '../composables/useAnalytics'
+import { trackDownload, trackDownloadConversion, trackShaCopy, trackShaExpand } from '../composables/useAnalytics'
 
 const props = defineProps({
   platform: {
@@ -464,6 +464,8 @@ async function copyText(key, text) {
   try {
     await navigator.clipboard.writeText(text)
     copiedKey.value = key
+    const version = key.split('/')[0] || ''
+    trackShaCopy(version)
     clearTimeout(copiedTimer)
     copiedTimer = setTimeout(() => {
       copiedKey.value = null
@@ -476,7 +478,12 @@ async function copyText(key, text) {
 const expandedKey = ref(null)
 
 function toggleFull(key) {
-  expandedKey.value = expandedKey.value === key ? null : key
+  const wasExpanded = expandedKey.value === key
+  expandedKey.value = wasExpanded ? null : key
+  if (!wasExpanded) {
+    const version = key.split('/')[0] || ''
+    trackShaExpand(version)
+  }
 }
 </script>
 
