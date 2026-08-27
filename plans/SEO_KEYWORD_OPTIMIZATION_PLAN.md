@@ -57,9 +57,9 @@ Blog posts are also translated to all 7 locales.
 ## Checkpoints
 
 ### Checkpoint 0 — Publish Phase 1
-- [ ] `git add` all SEO pages + `config.mts` + `feed.xml` + homepages
-- [ ] Commit with a descriptive message
-- [ ] Push to origin
+- [x] `git add` all SEO pages + `config.mts` + `feed.xml` + homepages
+- [x] Commit with a descriptive message
+- [x] Push to origin
 - [ ] (Manual, user) Submit/refresh sitemap in Google Search Console; verify `encodex.in` canonical
 
 ### Checkpoint 1 — Batch A: 4 new format-conversion pages
@@ -121,7 +121,7 @@ Directly supports the "extract audio" intent already in the homepage copy; very 
 - [x] Regenerate/verify `feed.xml` and `sitemap.xml` include all new routes (all 8 locales)
 - [x] `npm run docs:build` passes with exit 0
 - [x] Spot-check nav in a built page for every locale (no `label` "⋯" regression)
-- [ ] Final `git status` review; ask user before committing
+- [x] Final `git status` review; ask user before committing (committed & pushed: `3908850`, `862f51f`, `bfced7d`, `5ea76a5`)
 
 ---
 
@@ -148,3 +148,6 @@ Directly supports the "extract audio" intent already in the homepage copy; very 
   after every checkpoint, per the established working pattern. Do **not** delegate to parallel
   sub-agents for file writes (endpoint unavailable) — write files directly.
 - Do not commit until the user explicitly asks (per standing instruction).
+- **Status (2026-08-27):** All code checkpoints done, committed & pushed on `feat/seo_page_set`
+  (`3908850`, `862f51f`, `bfced7d`, `5ea76a5`); working tree clean. Only manual tasks remain:
+  Google Search Console sitemap submission and the Lighthouse run (Checkpoint 7).
