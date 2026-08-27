@@ -32,6 +32,12 @@
 
 </div>
 
+<div align="center">
+
+[English](./README.md) | [Deutsch](./docs/de/README.md) | [Español](./docs/es/README.md) | [Français](./docs/fr/README.md) | [हिन्दी](./docs/hi/README.md) | [Português](./docs/pt/README.md) | [简体中文](./docs/zh/README.md)
+
+</div>
+
 ## 👋 Introduction
 
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
