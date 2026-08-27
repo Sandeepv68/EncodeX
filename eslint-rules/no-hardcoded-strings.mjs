@@ -45,9 +45,11 @@ const HAS_LETTER = /[A-Za-z]/;
 function buildPatterns(patterns) {
   return patterns.map((pattern) => {
     // Allowlist entries already use a single `/` regex when we want exact-anchored
-    // matching; otherwise treat them as unanchored substring regexes.
+    // matching; otherwise treat them as unanchored substring regexes. Patterns are
+    // matched case-insensitively because the allowlist is dominated by technical
+    // identifiers (codecs, containers, formats) that are case-insensitive.
     const source = pattern.startsWith('^') ? pattern : `(?:${pattern})`;
-    return new RegExp(source);
+    return new RegExp(source, 'i');
   });
 }
 

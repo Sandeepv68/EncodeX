@@ -19,6 +19,38 @@ export const OptionIcon = styled(Box)(({ theme }) => ({
   flexShrink: 0,
 }));
 
+/** Inline SVG used to render `simple-icons` brand logos (fill via attribute). */
+export const BrandSvg = styled('svg')({
+  display: 'block',
+  flexShrink: 0,
+  width: '1em',
+  height: '1em',
+});
+
+/**
+ * Small monochrome "format badge" used for codecs/containers/formats that have no
+ * official logo (MP4, MKV, FLAC, JPEG, ...). The format's brand color is applied
+ * to the text and border so the family of badges stays consistent across themes.
+ */
+export const FormatBadge = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$color',
+})<{ $color: string }>(({ theme, $color }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minWidth: theme.typography.pxToRem(24),
+  height: theme.typography.pxToRem(16),
+  paddingInline: theme.typography.pxToRem(3),
+  borderRadius: theme.typography.pxToRem(4),
+  border: `${theme.typography.pxToRem(1)} solid ${$color}`,
+  color: $color,
+  fontSize: theme.typography.pxToRem(8),
+  fontWeight: 700,
+  letterSpacing: theme.typography.pxToRem(0.2),
+  lineHeight: 1,
+  textTransform: 'uppercase',
+}));
+
 /** Content wrapper (name + description) in each profile option row */
 export const OptionContent = styled(Box)({
   minWidth: 0,

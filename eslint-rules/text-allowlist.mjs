@@ -42,17 +42,19 @@ export const DEFAULT_ALLOW_PATTERNS = [
   'FFmpeg',
   // Video codecs.
   'H\\.?\\d+',
-  'avc|hevc|vp9|av1|prores|dnxhd|mpeg2',
+  'avc|hevc|vp9|av1|prores|dnxhd|dnxhr|cineform|ffv1|huffyuv|mpeg|mpeg2|vp8',
   // Audio codecs.
-  'aac|ac3|eac3|flac|wav|opus|vorbis|mp3|alac|pcm',
+  'aac|ac3|eac3|flac|wav|aiff|opus|vorbis|mp3|alac|pcm|dts|truehd|mlp',
   // Containers / formats.
-  'mp4|mkv|webm|mov|avi|flv|ts|m4v|m2ts|ogg|ogv|3gp',
+  'mp4|mkv|webm|mov|avi|flv|ts|m4v|m2ts|ogg|ogv|3gp|mpeg|mpg|mxf|y4m|hls|dash',
   // Image formats.
-  'png|jpe?g|gif|bmp|webp|heic|heif|tiff|svg',
+  'png|jpe?g|gif|bmp|webp|avif|heic|heif|tiff|svg',
   // Subtitle formats.
   'srt|ass|vtt|sub|idx',
   // Color-channel short ids / technical tokens.
   '^(?:r|g|b|luma)$',
+  // Lossless / generic technical descriptors.
+  'raw|lossless',
 ];
 
 /** Object property names whose literal values are always exempt. */

@@ -22,20 +22,6 @@ import {
   faMusic,
   faImage,
   faCode,
-  faPlay,
-  faCamera,
-  faThumbsUp,
-  faAt,
-  faTabletScreenButton,
-  faTv,
-  faRobot,
-  faGamepad,
-  faFileVideo,
-  faTowerBroadcast,
-  faHeadphonesSimple,
-  faCompactDisc,
-  faWaveSquare,
-  faVolumeHigh,
   faTrashCan,
 } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -44,10 +30,9 @@ import type { AutocompleteRenderGroupParams } from '@mui/material/Autocomplete';
 import { CATEGORY_ORDER, PROFILE_CATEGORIES } from '../../shared/profiles/categories';
 import { useProfileStore } from '../stores/profileStore';
 import { useToastStore } from '../stores/toastStore';
-import { PROFILE_ICON_COLORS } from '../colors';
+import ProfileIcon from './ProfileIcon';
 import {
   HighlightMark,
-  OptionIcon,
   OptionContent,
   OptionDescription,
   ActiveCheck,
@@ -78,89 +63,6 @@ const CATEGORY_ICONS: Record<ProfileCategory, IconDefinition> = {
 const LABEL_TO_CATEGORY: Record<string, ProfileCategory> = {};
 for (const cat of CATEGORY_ORDER) {
   LABEL_TO_CATEGORY[PROFILE_CATEGORIES[cat].label] = cat;
-}
-
-interface ProfileIconEntry {
-  test: (name: string) => boolean;
-  icon: IconDefinition;
-  color: string;
-}
-
-const PROFILE_ICON_MAP: ProfileIconEntry[] = [
-  // Web & Social — brands
-  { test: (n) => n.includes('YouTube'), icon: faPlay, color: PROFILE_ICON_COLORS.youtube },
-  { test: (n) => n.includes('Instagram'), icon: faCamera, color: PROFILE_ICON_COLORS.instagram },
-  { test: (n) => n.includes('TikTok'), icon: faMusic, color: PROFILE_ICON_COLORS.tiktok },
-  { test: (n) => n.includes('Facebook'), icon: faThumbsUp, color: PROFILE_ICON_COLORS.facebook },
-  { test: (n) => /^X\s/.test(n), icon: faAt, color: PROFILE_ICON_COLORS.x },
-
-  // Devices — Apple
-  { test: (n) => n.includes('iPhone'), icon: faMobileScreen, color: PROFILE_ICON_COLORS.apple },
-  { test: (n) => n.includes('iPad'), icon: faTabletScreenButton, color: PROFILE_ICON_COLORS.apple },
-  { test: (n) => n.includes('Apple TV'), icon: faTv, color: PROFILE_ICON_COLORS.appleTv },
-
-  // Devices — Android
-  { test: (n) => n.includes('Android'), icon: faRobot, color: PROFILE_ICON_COLORS.android },
-
-  // Devices — Gaming
-  { test: (n) => n.includes('PlayStation') || /^PS\d/.test(n), icon: faGamepad, color: PROFILE_ICON_COLORS.playstation },
-  { test: (n) => n.includes('Xbox'), icon: faGamepad, color: PROFILE_ICON_COLORS.xbox },
-  { test: (n) => n.includes('Nintendo') || n.includes('Switch'), icon: faGamepad, color: PROFILE_ICON_COLORS.nintendo },
-
-  // Video — containers
-  { test: (n) => /^MP4\b/.test(n), icon: faFileVideo, color: PROFILE_ICON_COLORS.mp4 },
-  { test: (n) => /^MKV\b/.test(n), icon: faFileVideo, color: PROFILE_ICON_COLORS.mkv },
-  { test: (n) => /^MOV\b/.test(n), icon: faFileVideo, color: PROFILE_ICON_COLORS.mov },
-  { test: (n) => /^WebM\b/.test(n), icon: faGlobe, color: PROFILE_ICON_COLORS.webm },
-  { test: (n) => /^AVI\b/.test(n), icon: faFileVideo, color: PROFILE_ICON_COLORS.avi },
-  { test: (n) => /^MPEG/.test(n), icon: faFilm, color: PROFILE_ICON_COLORS.mpeg },
-
-  // Professional
-  { test: (n) => n.includes('ProRes'), icon: faClapperboard, color: PROFILE_ICON_COLORS.proRes },
-  { test: (n) => n.includes('DNxHR'), icon: faClapperboard, color: PROFILE_ICON_COLORS.dnxhr },
-  { test: (n) => n.includes('CineForm'), icon: faClapperboard, color: PROFILE_ICON_COLORS.cineform },
-  {
-    test: (n) => n.includes('FFV1') || n.includes('HuffYUV') || n.includes('Uncompressed'),
-    icon: faFileVideo,
-    color: PROFILE_ICON_COLORS.lossless,
-  },
-
-  // Streaming
-  { test: (n) => n.startsWith('HLS'), icon: faSatelliteDish, color: PROFILE_ICON_COLORS.hls },
-  { test: (n) => n.startsWith('DASH'), icon: faTowerBroadcast, color: PROFILE_ICON_COLORS.dash },
-
-  // Audio — lossy
-  { test: (n) => /^MP3\b/.test(n), icon: faMusic, color: PROFILE_ICON_COLORS.mp3 },
-  { test: (n) => /^AAC\b/.test(n), icon: faMusic, color: PROFILE_ICON_COLORS.aac },
-  { test: (n) => n.includes('Opus'), icon: faHeadphonesSimple, color: PROFILE_ICON_COLORS.opus },
-  { test: (n) => n.includes('Vorbis'), icon: faHeadphonesSimple, color: PROFILE_ICON_COLORS.vorbis },
-
-  // Audio — lossless
-  { test: (n) => /^FLAC/.test(n), icon: faCompactDisc, color: PROFILE_ICON_COLORS.flac },
-  { test: (n) => n.includes('ALAC'), icon: faCompactDisc, color: PROFILE_ICON_COLORS.alac },
-  { test: (n) => n.includes('WAV'), icon: faWaveSquare, color: PROFILE_ICON_COLORS.wav },
-  { test: (n) => n.includes('AIFF'), icon: faWaveSquare, color: PROFILE_ICON_COLORS.aiff },
-
-  // Audio — Dolby
-  { test: (n) => n.includes('Dolby'), icon: faVolumeHigh, color: PROFILE_ICON_COLORS.dolby },
-
-  // Images
-  { test: (n) => n === 'JPEG', icon: faImage, color: PROFILE_ICON_COLORS.jpeg },
-  { test: (n) => n === 'PNG', icon: faImage, color: PROFILE_ICON_COLORS.png },
-  { test: (n) => n === 'WebP', icon: faImage, color: PROFILE_ICON_COLORS.webp },
-  { test: (n) => n === 'AVIF', icon: faImage, color: PROFILE_ICON_COLORS.avif },
-  { test: (n) => n === 'TIFF', icon: faImage, color: PROFILE_ICON_COLORS.tiff },
-  { test: (n) => n === 'BMP', icon: faImage, color: PROFILE_ICON_COLORS.bmp },
-  { test: (n) => n === 'GIF', icon: faImage, color: PROFILE_ICON_COLORS.gif },
-];
-
-const DEFAULT_PROFILE_ICON = { icon: faFileVideo, color: PROFILE_ICON_COLORS.fallback };
-
-function getProfileIcon(name: string): { icon: IconDefinition; color: string } {
-  for (const entry of PROFILE_ICON_MAP) {
-    if (entry.test(name)) return { icon: entry.icon, color: entry.color };
-  }
-  return DEFAULT_PROFILE_ICON;
 }
 
 function HighlightText({ text, query }: { text: string; query: string }) {
@@ -212,13 +114,10 @@ export default function ProfileSelector({ onCreateNew, testId }: ProfileSelector
   const renderOption = useCallback(
     (props: React.HTMLAttributes<HTMLLIElement>, option: ConversionProfile) => {
       const isActive = option.id === activeProfileId;
-      const profileIcon = getProfileIcon(option.name);
       return (
         // eslint-disable-next-line encodex/no-inline-styles -- MUI Autocomplete passes runtime positioning via props.style
         <li {...props} key={option.id} style={{ ...props.style, position: 'relative' }}>
-          <OptionIcon sx={{ color: profileIcon.color }}>
-            <FontAwesomeIcon icon={profileIcon.icon} />
-          </OptionIcon>
+          <ProfileIcon name={option.name} />
           <OptionContent>
             <Typography variant="body2" noWrap>
               <HighlightText text={option.name} query={searchQuery} />
