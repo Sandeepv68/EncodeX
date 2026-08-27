@@ -1,12 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-const {
-  checkForUpdateMock,
-  downloadUpdateMock,
-  installUpdateMock,
-  cancelDownloadMock,
-  openReleaseNotesMock,
-} = vi.hoisted(() => ({
+const { checkForUpdateMock, downloadUpdateMock, installUpdateMock, cancelDownloadMock, openReleaseNotesMock } = vi.hoisted(() => ({
   checkForUpdateMock: vi.fn(),
   downloadUpdateMock: vi.fn(),
   installUpdateMock: vi.fn(),
@@ -74,7 +68,12 @@ describe('registerUpdaterHandlers', () => {
   describe('CHECK_FOR_UPDATES handler', () => {
     it('sends UPDATE_AVAILABLE when a newer version exists', async () => {
       registerUpdaterHandlers(winMock as never);
-      const info = { version: '2.0.0', releaseNotes: 'notes', releaseUrl: 'https://', asset: { name: 'app.exe', url: 'https://', size: 100 } };
+      const info = {
+        version: '2.0.0',
+        releaseNotes: 'notes',
+        releaseUrl: 'https://',
+        asset: { name: 'app.exe', url: 'https://', size: 100 },
+      };
       checkForUpdateMock.mockResolvedValue(info);
 
       await ipcMainMock._getHandler(IPC.CHECK_FOR_UPDATES)!();

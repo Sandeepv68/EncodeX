@@ -66,7 +66,9 @@ describe('SentryRendererProvider', () => {
   });
 
   it('sets active=false when init throws', async () => {
-    sentryRendererMock.init.mockImplementationOnce(() => { throw new Error('SDK load failed'); });
+    sentryRendererMock.init.mockImplementationOnce(() => {
+      throw new Error('SDK load failed');
+    });
     const provider = new SentryRendererProvider();
     await provider.init(baseConfig());
     expect(provider.isEnabled()).toBe(false);
@@ -215,12 +217,24 @@ describe('SentryRendererProvider', () => {
   });
 
   it('captures throw internally and return undefined', async () => {
-    sentryRendererMock.captureException.mockImplementationOnce(() => { throw new Error('broken'); });
-    sentryRendererMock.captureMessage.mockImplementationOnce(() => { throw new Error('broken'); });
-    sentryRendererMock.captureFeedback.mockImplementationOnce(() => { throw new Error('broken'); });
-    sentryRendererMock.setTag.mockImplementationOnce(() => { throw new Error('broken'); });
-    sentryRendererMock.setUser.mockImplementationOnce(() => { throw new Error('broken'); });
-    sentryRendererMock.addBreadcrumb.mockImplementationOnce(() => { throw new Error('broken'); });
+    sentryRendererMock.captureException.mockImplementationOnce(() => {
+      throw new Error('broken');
+    });
+    sentryRendererMock.captureMessage.mockImplementationOnce(() => {
+      throw new Error('broken');
+    });
+    sentryRendererMock.captureFeedback.mockImplementationOnce(() => {
+      throw new Error('broken');
+    });
+    sentryRendererMock.setTag.mockImplementationOnce(() => {
+      throw new Error('broken');
+    });
+    sentryRendererMock.setUser.mockImplementationOnce(() => {
+      throw new Error('broken');
+    });
+    sentryRendererMock.addBreadcrumb.mockImplementationOnce(() => {
+      throw new Error('broken');
+    });
 
     const provider = new SentryRendererProvider();
     await provider.init(baseConfig());

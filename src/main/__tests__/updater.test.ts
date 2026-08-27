@@ -104,7 +104,9 @@ describe('updater', () => {
     it('prefers arch-matching exe on win32', () => {
       Object.defineProperty(process, 'platform', { value: 'win32' });
       Object.defineProperty(process, 'arch', { value: 'x64' });
-      expect(selectAsset(assets(['EncodeX-1.0.0-x64-setup.exe', 'EncodeX-1.0.0-arm64-setup.exe']))?.name).toBe('EncodeX-1.0.0-x64-setup.exe');
+      expect(selectAsset(assets(['EncodeX-1.0.0-x64-setup.exe', 'EncodeX-1.0.0-arm64-setup.exe']))?.name).toBe(
+        'EncodeX-1.0.0-x64-setup.exe',
+      );
     });
 
     it('falls back to first platform asset', () => {
@@ -136,7 +138,10 @@ describe('updater', () => {
   });
 
   describe('checkForUpdate', () => {
-    function mockHttpsGet(handler: (res: EventEmitter & { statusCode: number; headers: Record<string, string> }) => void, initialStatus = 200) {
+    function mockHttpsGet(
+      handler: (res: EventEmitter & { statusCode: number; headers: Record<string, string> }) => void,
+      initialStatus = 200,
+    ) {
       getMock.mockImplementationOnce((_url: unknown, _opts: unknown, cb: unknown) => {
         const res = new EventEmitter() as EventEmitter & { statusCode: number; headers: Record<string, string> };
         (res as unknown as { statusCode: number }).statusCode = initialStatus;
@@ -156,7 +161,12 @@ describe('updater', () => {
     });
 
     it('returns null when remote version is not newer', async () => {
-      const data = JSON.stringify({ tag_name: 'v1.0.0', body: '', html_url: 'https://', assets: [{ name: 'app.exe', browser_download_url: 'https://', size: 100 }] });
+      const data = JSON.stringify({
+        tag_name: 'v1.0.0',
+        body: '',
+        html_url: 'https://',
+        assets: [{ name: 'app.exe', browser_download_url: 'https://', size: 100 }],
+      });
       mockHttpsGet((res) => {
         res.emit('data', Buffer.from(data));
         res.emit('end');
@@ -168,7 +178,12 @@ describe('updater', () => {
     it('returns null when no matching asset exists', async () => {
       Object.defineProperty(process, 'platform', { value: 'win32' });
       Object.defineProperty(process, 'arch', { value: 'x64' });
-      const data = JSON.stringify({ tag_name: 'v2.0.0', body: 'New', html_url: 'https://', assets: [{ name: 'app.dmg', browser_download_url: 'https://', size: 100 }] });
+      const data = JSON.stringify({
+        tag_name: 'v2.0.0',
+        body: 'New',
+        html_url: 'https://',
+        assets: [{ name: 'app.dmg', browser_download_url: 'https://', size: 100 }],
+      });
       mockHttpsGet((res) => {
         res.emit('data', Buffer.from(data));
         res.emit('end');

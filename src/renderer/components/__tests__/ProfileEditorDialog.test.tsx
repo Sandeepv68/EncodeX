@@ -189,8 +189,24 @@ describe('ProfileEditorDialog', () => {
   });
 
   it('resets form when editProfile changes', () => {
-    const profile1 = { id: 'c1', name: 'First', category: 'video' as const, container: 'mp4', videoCodec: 'libx264', audioCodec: 'aac', builtin: false };
-    const profile2 = { id: 'c2', name: 'Second', category: 'audio' as const, container: 'mp3', videoCodec: '', audioCodec: 'libmp3lame', builtin: false };
+    const profile1 = {
+      id: 'c1',
+      name: 'First',
+      category: 'video' as const,
+      container: 'mp4',
+      videoCodec: 'libx264',
+      audioCodec: 'aac',
+      builtin: false,
+    };
+    const profile2 = {
+      id: 'c2',
+      name: 'Second',
+      category: 'audio' as const,
+      container: 'mp3',
+      videoCodec: '',
+      audioCodec: 'libmp3lame',
+      builtin: false,
+    };
     const { rerender } = render(<ProfileEditorDialog open={true} onClose={vi.fn()} editProfile={profile1} />);
     expect(screen.getByDisplayValue('First')).toBeInTheDocument();
     rerender(<ProfileEditorDialog open={true} onClose={vi.fn()} editProfile={profile2} />);

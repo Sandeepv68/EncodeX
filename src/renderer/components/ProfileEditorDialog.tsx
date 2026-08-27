@@ -27,12 +27,7 @@ import { useToastStore } from '../stores/toastStore';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import CodecSelect from './CodecSelect';
 import { ErrorBoundary } from './ErrorBoundary';
-import {
-  SCALE_OPTIONS,
-  BITRATE_OPTIONS,
-  VIDEO_BITRATE_OPTIONS,
-  PIXEL_FORMATS,
-} from '../../shared/media-options';
+import { SCALE_OPTIONS, BITRATE_OPTIONS, VIDEO_BITRATE_OPTIONS, PIXEL_FORMATS } from '../../shared/media-options';
 
 const CONTAINER_OPTIONS = [
   'mp4',
@@ -252,14 +247,7 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
           <Stack direction="row" spacing={2}>
             <FieldBox>
               <FieldLabel htmlFor="profile-quality">{t('profiles.qualityLabel')}</FieldLabel>
-              <TextField
-                id="profile-quality"
-                select
-                fullWidth
-                size="small"
-                value={crf}
-                onChange={(e) => setCrf(Number(e.target.value))}
-              >
+              <TextField id="profile-quality" select fullWidth size="small" value={crf} onChange={(e) => setCrf(Number(e.target.value))}>
                 {CRF_OPTIONS.map((v) => (
                   <MenuItem key={v} value={v}>
                     {v}
@@ -270,14 +258,7 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
 
             <FieldBox>
               <FieldLabel htmlFor="profile-preset">{t('profiles.presetLabel')}</FieldLabel>
-              <TextField
-                id="profile-preset"
-                select
-                fullWidth
-                size="small"
-                value={preset}
-                onChange={(e) => setPreset(e.target.value)}
-              >
+              <TextField id="profile-preset" select fullWidth size="small" value={preset} onChange={(e) => setPreset(e.target.value)}>
                 {PRESET_OPTIONS.map((p) => (
                   <MenuItem key={p} value={p}>
                     {p}
@@ -290,14 +271,7 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
           <Stack direction="row" spacing={2}>
             <FieldBox>
               <FieldLabel htmlFor="profile-scale">{t('profiles.resolutionLabel')}</FieldLabel>
-              <TextField
-                id="profile-scale"
-                select
-                fullWidth
-                size="small"
-                value={scale}
-                onChange={(e) => setScale(e.target.value)}
-              >
+              <TextField id="profile-scale" select fullWidth size="small" value={scale} onChange={(e) => setScale(e.target.value)}>
                 <MenuItem value="">{t('profiles.original')}</MenuItem>
                 {SCALE_OPTIONS.filter((s) => s !== '').map((s) => (
                   <MenuItem key={s} value={s}>

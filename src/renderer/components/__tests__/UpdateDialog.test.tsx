@@ -49,7 +49,12 @@ describe('UpdateDialog', () => {
     useUpdateStore.setState({
       status: 'available',
       dialogOpen: true,
-      info: { version: '2.0.0', releaseNotes: 'Bug fixes', releaseUrl: 'https://github.com/releases', asset: { name: 'app.exe', url: 'https://', size: 100 } },
+      info: {
+        version: '2.0.0',
+        releaseNotes: 'Bug fixes',
+        releaseUrl: 'https://github.com/releases',
+        asset: { name: 'app.exe', url: 'https://', size: 100 },
+      },
     });
     render(<UpdateDialog />);
     expect(screen.getByText('update.newVersionAvailable')).toBeInTheDocument();
@@ -163,7 +168,12 @@ describe('UpdateDialog', () => {
     useUpdateStore.setState({
       status: 'available',
       dialogOpen: true,
-      info: { version: '2.0.0', releaseNotes: 'notes', releaseUrl: 'https://github.com/r', asset: { name: 'app.exe', url: 'https://', size: 100 } },
+      info: {
+        version: '2.0.0',
+        releaseNotes: 'notes',
+        releaseUrl: 'https://github.com/r',
+        asset: { name: 'app.exe', url: 'https://', size: 100 },
+      },
     });
     render(<UpdateDialog />);
     fireEvent.click(screen.getByText('update.viewReleaseNotes'));

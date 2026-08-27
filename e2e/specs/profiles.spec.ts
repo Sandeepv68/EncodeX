@@ -63,12 +63,8 @@ describe.runIf(IS_E2E)('Create Custom Profile', () => {
 
     await session.page.getByRole('button', { name: 'Create Profile' }).click();
 
-    await expect
-      .poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Created' }).count())
-      .toBeGreaterThan(0);
-    await expect
-      .poll(() => session.page.locator('[role="alert"]').filter({ hasText: PROFILE_NAME }).count())
-      .toBeGreaterThan(0);
+    await expect.poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Created' }).count()).toBeGreaterThan(0);
+    await expect.poll(() => session.page.locator('[role="alert"]').filter({ hasText: PROFILE_NAME }).count()).toBeGreaterThan(0);
 
     await openProfileDropdown(session.page);
     const option = session.page.locator('[role="option"]').filter({ hasText: PROFILE_NAME }).first();

@@ -58,7 +58,7 @@ describe('isDevMode', () => {
 
   it('returns false in production without --dev', () => {
     process.env.NODE_ENV = 'production';
-    process.argv = ORIGINAL_ARGV.filter(a => a !== '--dev');
+    process.argv = ORIGINAL_ARGV.filter((a) => a !== '--dev');
     expect(isDevMode()).toBe(false);
   });
 });
@@ -72,7 +72,7 @@ describe('registerDevHandlers', () => {
     ipcMainMock._handlers.clear();
     winMock.isDestroyed.mockReturnValue(false);
     winMock.webContents.capturePage.mockResolvedValue({ toPNG: () => Buffer.from('png-data') });
-    process.argv = ORIGINAL_ARGV.filter(a => a !== '--dev');
+    process.argv = ORIGINAL_ARGV.filter((a) => a !== '--dev');
   });
 
   afterEach(() => {

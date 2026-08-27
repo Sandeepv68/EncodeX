@@ -245,7 +245,9 @@ describe('profileStore', () => {
   });
 
   it('loads custom profiles from localStorage on init', () => {
-    const stored = [{ id: 'custom-1', name: 'Stored', category: 'audio', container: 'mp3', videoCodec: '', audioCodec: 'libmp3lame', builtin: false }];
+    const stored = [
+      { id: 'custom-1', name: 'Stored', category: 'audio', container: 'mp3', videoCodec: '', audioCodec: 'libmp3lame', builtin: false },
+    ];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
     useProfileStore.setState({
       profiles: [...useProfileStore.getState().profiles.filter((p) => p.builtin), ...stored],
@@ -277,11 +279,22 @@ describe('profileStore', () => {
   });
 
   it('filters out invalid entries from localStorage', () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([{ id: 123 }, { name: 'no-id' }, { id: 'valid', name: 'OK', category: 'video', container: 'mp4', videoCodec: 'libx264', audioCodec: 'aac', builtin: false }]));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify([
+        { id: 123 },
+        { name: 'no-id' },
+        { id: 'valid', name: 'OK', category: 'video', container: 'mp4', videoCodec: 'libx264', audioCodec: 'aac', builtin: false },
+      ]),
+    );
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
     const valid = stored.filter(
       (p: unknown): p is { id: string; name: string; builtin: boolean } =>
-        typeof p === 'object' && p !== null && typeof (p as any).id === 'string' && typeof (p as any).name === 'string' && (p as any).builtin === false,
+        typeof p === 'object' &&
+        p !== null &&
+        typeof (p as any).id === 'string' &&
+        typeof (p as any).name === 'string' &&
+        (p as any).builtin === false,
     );
     expect(valid).toHaveLength(1);
   });

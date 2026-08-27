@@ -78,7 +78,9 @@ describe('ProfileSelector', () => {
     });
     const options = screen.getAllByRole('option');
     expect(options.length).toBeGreaterThan(0);
-    expect(options.length).toBeLessThan(useProfileStore.getState().profiles.filter((p) => p.id !== 'null-output' && p.id !== 'custom-ffmpeg').length);
+    expect(options.length).toBeLessThan(
+      useProfileStore.getState().profiles.filter((p) => p.id !== 'null-output' && p.id !== 'custom-ffmpeg').length,
+    );
   });
 
   it('selecting a profile calls applyProfileToConversionStore', async () => {
