@@ -6,6 +6,7 @@
 
 import tsParser from '@typescript-eslint/parser';
 import noInlineStyles from '../eslint-rules/no-inline-styles.mjs';
+import noHardcodedStrings from '../eslint-rules/no-hardcoded-strings.mjs';
 
 export default [
   {
@@ -17,6 +18,7 @@ export default [
       encodex: {
         rules: {
           'no-inline-styles': noInlineStyles,
+          'no-hardcoded-strings': noHardcodedStrings,
         },
       },
     },
