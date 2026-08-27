@@ -204,6 +204,10 @@ Mergulhe em uma tarefa específica — cada página explica como fazê-la com o 
     <p>Converta MP3, FLAC, WAV e mais, ou extraia áudio do vídeo.</p>
   </div>
   <div class="card">
+    <p class="card-head"><a href="/pt/extract-audio-from-video">Extrair áudio de vídeo</a></p>
+    <p>Transforme qualquer vídeo em MP3, M4A, FLAC ou WAV em alguns cliques.</p>
+  </div>
+  <div class="card">
     <p class="card-head"><a href="/pt/convert/mkv-to-mp4">MKV para MP4</a></p>
     <p>Faça vídeos MKV rodarem em qualquer lugar convertendo para MP4.</p>
   </div>

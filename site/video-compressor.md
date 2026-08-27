@@ -40,6 +40,14 @@ A **video size reducer** that:
 
 EncodeX handles the technical details so you don't have to.
 
+## FAQ
+
+**How much smaller will compressed videos be?** It depends on the source and settings, but EncodeX can often cut a file to a fraction of its size while keeping visually similar quality by choosing smart codecs and bitrates.
+
+**Will compressing reduce my video quality?** EncodeX balances size and quality automatically. You can choose how aggressive to be, and hardware acceleration keeps previews and output fast.
+
+**Does EncodeX compress videos offline?** Yes. Compression happens entirely on your computer with no uploads, so it is private and works even without internet.
+
 ## Get Started
 
 - [Download EncodeX for free](/download)

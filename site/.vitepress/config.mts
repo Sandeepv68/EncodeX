@@ -211,17 +211,22 @@ function docsSidebar(locale: string) {
   ]
 }
 
-const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: string; compressor: string; audio: string; convertLabel: string; mkv: string; mov: string; avi: string; codecsLabel: string; h264: string; h265: string; av1: string; learn: string; learnLink: string }> = {
+const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: string; compressor: string; audio: string; extractAudio: string; convertLabel: string; mkv: string; mov: string; avi: string; flv: string; wmv: string; m4v: string; webm: string; codecsLabel: string; h264: string; h265: string; av1: string; learn: string; learnLink: string }> = {
   en: {
     label: 'Tools',
     ffmpeg: 'FFmpeg GUI',
     converter: 'Video Converter',
     compressor: 'Video Compressor',
     audio: 'Audio Converter',
+    extractAudio: 'Extract Audio from Video',
     convertLabel: 'Convert',
     mkv: 'MKV to MP4',
     mov: 'MOV to MP4',
     avi: 'AVI to MP4',
+    flv: 'FLV to MP4',
+    wmv: 'WMV to MP4',
+    m4v: 'M4V to MP4',
+    webm: 'WebM to MP4',
     codecsLabel: 'Codecs',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
@@ -235,10 +240,15 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     converter: 'Convertidor de vídeo',
     compressor: 'Compresor de vídeo',
     audio: 'Convertidor de audio',
+    extractAudio: 'Extraer audio de vídeo',
     convertLabel: 'Convertir',
     mkv: 'MKV a MP4',
     mov: 'MOV a MP4',
     avi: 'AVI a MP4',
+    flv: 'FLV a MP4',
+    wmv: 'WMV a MP4',
+    m4v: 'M4V a MP4',
+    webm: 'WebM a MP4',
     codecsLabel: 'Códecs',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
@@ -252,10 +262,15 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     converter: 'Convertisseur vidéo',
     compressor: 'Compresseur vidéo',
     audio: 'Convertisseur audio',
+    extractAudio: 'Extraire l\u2019audio d\u2019une vidéo',
     convertLabel: 'Convertir',
     mkv: 'MKV vers MP4',
     mov: 'MOV vers MP4',
     avi: 'AVI vers MP4',
+    flv: 'FLV vers MP4',
+    wmv: 'WMV vers MP4',
+    m4v: 'M4V vers MP4',
+    webm: 'WebM vers MP4',
     codecsLabel: 'Codecs',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
@@ -269,10 +284,15 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     converter: 'Videokonverter',
     compressor: 'Videokompressor',
     audio: 'Audiokonverter',
+    extractAudio: 'Audio aus Video extrahieren',
     convertLabel: 'Konvertieren',
     mkv: 'MKV zu MP4',
     mov: 'MOV zu MP4',
     avi: 'AVI zu MP4',
+    flv: 'FLV zu MP4',
+    wmv: 'WMV zu MP4',
+    m4v: 'M4V zu MP4',
+    webm: 'WebM zu MP4',
     codecsLabel: 'Codecs',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
@@ -286,10 +306,15 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     converter: 'Conversor de vídeo',
     compressor: 'Compressor de vídeo',
     audio: 'Conversor de áudio',
+    extractAudio: 'Extrair áudio de vídeo',
     convertLabel: 'Converter',
     mkv: 'MKV para MP4',
     mov: 'MOV para MP4',
     avi: 'AVI para MP4',
+    flv: 'FLV para MP4',
+    wmv: 'WMV para MP4',
+    m4v: 'M4V para MP4',
+    webm: 'WebM para MP4',
     codecsLabel: 'Codecs',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
@@ -303,10 +328,15 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     converter: '视频转换器',
     compressor: '视频压缩器',
     audio: '音频转换器',
+    extractAudio: '从视频中提取音频',
     convertLabel: '转换',
     mkv: 'MKV 转 MP4',
     mov: 'MOV 转 MP4',
     avi: 'AVI 转 MP4',
+    flv: 'FLV 转 MP4',
+    wmv: 'WMV 转 MP4',
+    m4v: 'M4V 转 MP4',
+    webm: 'WebM 转 MP4',
     codecsLabel: '编码器',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
@@ -320,10 +350,15 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     converter: 'वीडियो कन्वर्टर',
     compressor: 'वीडियो कंप्रेसर',
     audio: 'ऑडियो कन्वर्टर',
+    extractAudio: 'वीडियो से ऑडियो निकालें',
     convertLabel: 'कन्वर्ट करें',
     mkv: 'MKV से MP4',
     mov: 'MOV से MP4',
     avi: 'AVI से MP4',
+    flv: 'FLV से MP4',
+    wmv: 'WMV से MP4',
+    m4v: 'M4V से MP4',
+    webm: 'WebM से MP4',
     codecsLabel: 'कोडेक',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
@@ -343,12 +378,17 @@ function toolsNav(locale: string) {
       { text: s.converter, link: `${p}/video-converter` },
       { text: s.compressor, link: `${p}/video-compressor` },
       { text: s.audio, link: `${p}/audio-converter` },
+      { text: s.extractAudio, link: `${p}/extract-audio-from-video` },
       {
         text: s.convertLabel,
         items: [
           { text: s.mkv, link: `${p}/convert/mkv-to-mp4` },
           { text: s.mov, link: `${p}/convert/mov-to-mp4` },
           { text: s.avi, link: `${p}/convert/avi-to-mp4` },
+          { text: s.flv, link: `${p}/convert/flv-to-mp4` },
+          { text: s.wmv, link: `${p}/convert/wmv-to-mp4` },
+          { text: s.m4v, link: `${p}/convert/m4v-to-mp4` },
+          { text: s.webm, link: `${p}/convert/webm-to-mp4` },
         ],
       },
       {
@@ -362,6 +402,79 @@ function toolsNav(locale: string) {
       { text: s.learn, link: `${s.learnLink}` },
     ],
   }
+}
+
+const seoFAQ: Record<string, { q: string; a: string }[]> = {
+  'video-converter': [
+    {
+      q: 'What file formats can EncodeX convert?',
+      a: 'EncodeX converts between dozens of formats - MP4, MKV, MOV, AVI, WebM, FLV, WMV, M4V and more for video, plus MP3, FLAC, WAV, M4A, AAC and OGG for audio - right on your computer.',
+    },
+    {
+      q: 'Is EncodeX really free?',
+      a: 'Yes. EncodeX is free forever, open source, with no watermarks, no trial limits and no hidden paywalls.',
+    },
+    {
+      q: 'Does converting upload my videos to a server?',
+      a: 'No. Everything runs offline on your own computer, so your files never leave your device.',
+    },
+  ],
+  'video-compressor': [
+    {
+      q: 'How much smaller will compressed videos be?',
+      a: 'It depends on the source and settings, but EncodeX can often cut a file to a fraction of its size while keeping visually similar quality by choosing smart codecs and bitrates.',
+    },
+    {
+      q: 'Will compressing reduce my video quality?',
+      a: 'EncodeX balances size and quality automatically. You can choose how aggressive to be, and hardware acceleration keeps previews and output fast.',
+    },
+    {
+      q: 'Does EncodeX compress videos offline?',
+      a: 'Yes. Compression happens entirely on your computer with no uploads, so it is private and works even without internet.',
+    },
+  ],
+  'audio-converter': [
+    {
+      q: 'What audio formats can I convert?',
+      a: 'MP3, FLAC, WAV, M4A, AAC, OGG, Opus and more - so you can switch between formats one-click, from WAV to MP3 or FLAC to MP3.',
+    },
+    {
+      q: 'Can EncodeX extract audio from video?',
+      a: 'Yes. Drop in a video and pull out the sound as an MP3 or another format - see our guide on extracting audio from video.',
+    },
+    {
+      q: 'Can I convert a whole folder of audio files?',
+      a: 'Yes. EncodeX is a batch audio converter, so you can drag in many files and it works through them automatically.',
+    },
+  ],
+  'extract-audio-from-video': [
+    {
+      q: 'What video formats can I extract audio from?',
+      a: 'EncodeX extracts sound from MP4, MKV, MOV, AVI, WebM, FLV, WMV, M4V and more.',
+    },
+    {
+      q: 'What audio formats can I extract to?',
+      a: 'You can save extracted audio as MP3, M4A/AAC, FLAC or WAV.',
+    },
+    {
+      q: 'Is extracting audio from video free?',
+      a: 'Yes. Extraction is free, offline and watermark-free, and you can also batch extract a whole folder of videos at once.',
+    },
+  ],
+  'convert/mkv-to-mp4': [
+    {
+      q: 'Why should I convert MKV to MP4?',
+      a: 'MKV is a flexible format but not every device or player supports it. MP4 plays on almost everything - phones, TVs, consoles, editing software and browsers.',
+    },
+    {
+      q: 'Will I lose quality converting MKV to MP4?',
+      a: 'No. EncodeX keeps your video and audio quality intact while converting the container.',
+    },
+    {
+      q: 'Can I convert many MKV files at once?',
+      a: 'Yes. EncodeX supports batch converting an entire folder of MKV files to MP4.',
+    },
+  ],
 }
 
 export default defineConfig({
@@ -538,12 +651,17 @@ gtag('config', 'G-SM28DL4DYR');`,
       'video-converter': 'Video Converter',
       'video-compressor': 'Video Compressor',
       'audio-converter': 'Audio Converter',
+      'extract-audio-from-video': 'Extract Audio from Video',
       'ffmpeg-gui/windows': 'FFmpeg GUI for Windows',
       'ffmpeg-gui/macos': 'FFmpeg GUI for Mac',
       'ffmpeg-gui/linux': 'FFmpeg GUI for Linux',
       'convert/mkv-to-mp4': 'MKV to MP4 Converter',
       'convert/mov-to-mp4': 'MOV to MP4 Converter',
       'convert/avi-to-mp4': 'AVI to MP4 Converter',
+      'convert/flv-to-mp4': 'FLV to MP4 Converter',
+      'convert/wmv-to-mp4': 'WMV to MP4 Converter',
+      'convert/m4v-to-mp4': 'M4V to MP4 Converter',
+      'convert/webm-to-mp4': 'WebM to MP4 Converter',
       'codecs/h264': 'H.264 Encoder & Converter',
       'codecs/h265': 'H.265 / HEVC Encoder & Converter',
       'codecs/av1': 'AV1 Encoder & Converter',
@@ -562,8 +680,27 @@ gtag('config', 'G-SM28DL4DYR');`,
       }
       head.push([
         'script',
-        { type: 'application/ld+json' },
+        {
+          type: 'application/ld+json',
+        },
         JSON.stringify(breadcrumbJsonLd),
+      ])
+    }
+
+    if (seoFAQ[pageSlug] && !localePrefix) {
+      const faqJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: seoFAQ[pageSlug].map(({ q, a }) => ({
+          '@type': 'Question',
+          name: q,
+          acceptedAnswer: { '@type': 'Answer', text: a },
+        })),
+      }
+      head.push([
+        'script',
+        { type: 'application/ld+json' },
+        JSON.stringify(faqJsonLd),
       ])
     }
 

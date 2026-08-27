@@ -35,6 +35,14 @@ MP4 is the safe default, so if you're ever unsure, pick it — EncodeX handles t
 - **No watermarks** and free forever
 - Works on **Windows, Mac, and Linux**
 
+## FAQ
+
+**Why should I convert MKV to MP4?** MKV is a flexible format but not every device or player supports it. MP4 plays on almost everything — phones, TVs, consoles, editing software and browsers.
+
+**Will I lose quality converting MKV to MP4?** No. EncodeX keeps your video and audio quality intact while converting the container.
+
+**Can I convert many MKV files at once?** Yes. EncodeX supports batch converting an entire folder of MKV files to MP4.
+
 ## Get Started
 
 - [Download EncodeX for free](/download)

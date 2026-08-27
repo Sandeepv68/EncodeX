@@ -18,7 +18,7 @@ Si no sabes cuál elegir, EncodeX sugiere un valor predeterminado sensato. **WAV
 
 ## Convierte vídeos en música
 
-Un **convertidor de audio** que también extrae audio: arrastra cualquier vídeo y saca el sonido como MP3 (u otro formato). Perfecto para clases, entrevistas, podcasts y grabaciones de conciertos.
+Un **convertidor de audio** que también extrae audio: arrastra cualquier vídeo y saca el sonido como MP3 (u otro formato). Perfecto para clases, entrevistas, podcasts y grabaciones de conciertos. Mira la [guía completa para extraer audio de un vídeo](/es/extract-audio-from-video).
 
 ## Convertidor de audio por lotes
 

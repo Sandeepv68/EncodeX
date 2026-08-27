@@ -204,6 +204,10 @@ EncodeX स्वयंसेवकों की कम्युनिटी स
     <p>MP3, FLAC, WAV और बहुत कुछ कन्वर्ट करें, या वीडियो से ऑडियो निकालें।</p>
   </div>
   <div class="card">
+    <p class="card-head"><a href="/hi/extract-audio-from-video">वीडियो से ऑडियो निकालें</a></p>
+    <p>कुछ ही क्लिक में किसी भी वीडियो को MP3, M4A, FLAC या WAV में बदलें।</p>
+  </div>
+  <div class="card">
     <p class="card-head"><a href="/hi/convert/mkv-to-mp4">MKV से MP4</a></p>
     <p>MKV वीडियो को MP4 में कन्वर्ट करके हर जगह चलाएँ।</p>
   </div>

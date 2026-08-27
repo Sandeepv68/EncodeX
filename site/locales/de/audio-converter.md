@@ -18,7 +18,7 @@ Wenn Sie nicht wissen, welches Sie wählen sollen, schlägt EncodeX eine sinnvol
 
 ## Videos in Musik verwandeln
 
-Ein **Audiokonverter**, der auch Audio extrahiert: Ziehen Sie ein Video hinein und holen Sie den Ton als MP3 (oder ein anderes Format) heraus. Perfekt für Vorlesungen, Interviews, Podcasts und Konzertaufnahmen.
+Ein **Audiokonverter**, der auch Audio extrahiert: Ziehen Sie ein Video hinein und holen Sie den Ton als MP3 (oder ein anderes Format) heraus. Perfekt für Vorlesungen, Interviews, Podcasts und Konzertaufnahmen. Sehen Sie die [vollständige Anleitung zum Extrahieren von Audio aus Video](/de/extract-audio-from-video).
 
 ## Stapel-Audiokonverter
 

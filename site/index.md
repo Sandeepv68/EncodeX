@@ -206,6 +206,10 @@ Dip into a specific task — each page explains how to do it with EncodeX:
     <p>Convert MP3, FLAC, WAV and more, or pull audio out of video.</p>
   </div>
   <div class="card">
+    <p class="card-head"><a href="/extract-audio-from-video">Extract Audio from Video</a></p>
+    <p>Turn any video into an MP3, M4A, FLAC or WAV with a few clicks.</p>
+  </div>
+  <div class="card">
     <p class="card-head"><a href="/convert/mkv-to-mp4">MKV to MP4</a></p>
     <p>Make MKV videos play anywhere by converting them to MP4.</p>
   </div>

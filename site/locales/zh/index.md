@@ -204,6 +204,10 @@ EncodeX 是由志愿者社区打造的开源软件。没有付费版来烦你，
     <p>转换 MP3、FLAC、WAV 等格式，或从视频提取音频。</p>
   </div>
   <div class="card">
+    <p class="card-head"><a href="/zh/extract-audio-from-video">从视频中提取音频</a></p>
+    <p>几下点击即可把任意视频变成 MP3、M4A、FLAC 或 WAV。</p>
+  </div>
+  <div class="card">
     <p class="card-head"><a href="/zh/convert/mkv-to-mp4">MKV 转 MP4</a></p>
     <p>通过转换为 MP4，让 MKV 视频随处可播。</p>
   </div>

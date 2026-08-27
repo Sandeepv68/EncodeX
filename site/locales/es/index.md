@@ -204,6 +204,10 @@ Entra en una tarea concreta — cada página explica cómo hacerla con EncodeX:
     <p>Convierte MP3, FLAC, WAV y más, o extrae audio de vídeo.</p>
   </div>
   <div class="card">
+    <p class="card-head"><a href="/es/extract-audio-from-video">Extraer audio de vídeo</a></p>
+    <p>Convierte cualquier vídeo en un MP3, M4A, FLAC o WAV con unos clics.</p>
+  </div>
+  <div class="card">
     <p class="card-head"><a href="/es/convert/mkv-to-mp4">MKV a MP4</a></p>
     <p>Haz que los vídeos MKV se reproduzcan en todas partes convirtiéndolos a MP4.</p>
   </div>

@@ -44,6 +44,14 @@ EncodeX is available on every major operating system:
 - **Batch & bulk conversion** — drop in 50 files and walk away
 - **Free forever** — open source, no paid tier to be nagged about
 
+## FAQ
+
+**What file formats can EncodeX convert?** EncodeX converts between dozens of formats — MP4, MKV, MOV, AVI, WebM, FLV, WMV, M4V and more for video, plus MP3, FLAC, WAV, M4A, AAC and OGG for audio — right on your computer.
+
+**Is EncodeX really free?** Yes. EncodeX is free forever, open source, with no watermarks, no trial limits and no hidden paywalls.
+
+**Does converting upload my videos to a server?** No. Everything runs offline on your own computer, so your files never leave your device.
+
 ## Get Started
 
 - [Download EncodeX for free](/download)

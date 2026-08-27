@@ -5,8 +5,35 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Thu, 27 Aug 2026 15:47:02 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 27 Aug 2026 16:23:22 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Best Video Format for YouTube &amp; Social Media in 2026</title>
+      <link>https://encodex.in/blog/releases/best-video-format-for-social-media</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/best-video-format-for-social-media</guid>
+      <description>What&apos;s the best video format for YouTube, TikTok, Instagram, and X in 2026? A plain-language guide to containers, codecs, and quality with EncodeX.</description>
+      <pubDate>Wed, 26 Aug 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>how-to</category>
+    </item>
+    <item>
+      <title>How to Compress a Video for Email in 2026</title>
+      <link>https://encodex.in/blog/releases/compress-video-for-email</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/compress-video-for-email</guid>
+      <description>Step-by-step guide to shrinking a video for email attachments with EncodeX — a free video compressor for Windows, Mac, and Linux. Keep quality while cutting file size.</description>
+      <pubDate>Wed, 26 Aug 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>tutorial</category>
+    </item>
+    <item>
+      <title>How to Extract Audio from Video for Free</title>
+      <link>https://encodex.in/blog/releases/extract-audio-from-video-free</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/extract-audio-from-video-free</guid>
+      <description>Learn how to extract audio from a video for free with EncodeX. Pull MP3, M4A, FLAC or WAV from any video on Windows, Mac, and Linux — offline and watermark-free.</description>
+      <pubDate>Wed, 26 Aug 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>tutorial</category>
+    </item>
     <item>
       <title>How to Convert Video Formats for Free in 2026</title>
       <link>https://encodex.in/blog/releases/free-video-converter-guide</link>

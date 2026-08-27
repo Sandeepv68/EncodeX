@@ -18,7 +18,7 @@ Si vous ne savez pas quoi choisir, EncodeX propose un réglage par défaut perti
 
 ## Transformez des vidéos en musique
 
-Un **convertisseur audio** qui extrait aussi l'audio : glissez n'importe quelle vidéo et récupérez le son en MP3 (ou un autre format). Parfait pour les cours, entrevues, podcasts et enregistrements de concerts.
+Un **convertisseur audio** qui extrait aussi l'audio : glissez n'importe quelle vidéo et récupérez le son en MP3 (ou un autre format). Parfait pour les cours, entrevues, podcasts et enregistrements de concerts. Consultez le [guide complet pour extraire l'audio d'une vidéo](/fr/extract-audio-from-video).
 
 ## Convertisseur audio par lots
 

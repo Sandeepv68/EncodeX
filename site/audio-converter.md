@@ -18,7 +18,7 @@ If you're not sure which to pick, EncodeX suggests a sensible default. **WAV to 
 
 ## Turn Videos Into Music
 
-An **audio converter** that also extracts audio: drop in any video and pull out the sound as an MP3 (or another format). Perfect for lectures, interviews, podcasts and concert recordings.
+An **audio converter** that also extracts audio: drop in any video and pull out the sound as an MP3 (or another format). Perfect for lectures, interviews, podcasts and concert recordings. See the full [guide to extracting audio from video](/extract-audio-from-video).
 
 ## Batch Audio Converter
 
@@ -37,6 +37,14 @@ EncodeX is available on every major desktop OS:
 - **Everything stays on your computer** — no uploads, no accounts
 - **No watermarks** and **no hidden paywalls** — it's free forever and open source
 - **Hardware accelerated** where possible, for fast conversions
+
+## FAQ
+
+**What audio formats can I convert?** MP3, FLAC, WAV, M4A, AAC, OGG, Opus and more — so you can switch between formats one-click, from WAV to MP3 or FLAC to MP3.
+
+**Can EncodeX extract audio from video?** Yes. Drop in a video and pull out the sound as an MP3 or another format — see our guide on extracting audio from video.
+
+**Can I convert a whole folder of audio files?** Yes. EncodeX is a batch audio converter, so you can drag in many files and it works through them automatically.
 
 ## Get Started
 

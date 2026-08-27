@@ -18,7 +18,7 @@ Se você não sabe qual escolher, o EncodeX sugere uma predefinição sensata. *
 
 ## Transforme vídeos em música
 
-Um **conversor de áudio** que também extrai áudio: arraste um vídeo e retire o som como MP3 (ou outro formato). Perfeito para palestras, entrevistas, podcasts e gravações de shows.
+Um **conversor de áudio** que também extrai áudio: arraste um vídeo e retire o som como MP3 (ou outro formato). Perfeito para palestras, entrevistas, podcasts e gravações de shows. Veja o [guia completo para extrair áudio de vídeo](/pt/extract-audio-from-video).
 
 ## Conversor de áudio em lote
 
