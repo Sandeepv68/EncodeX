@@ -16,25 +16,10 @@
  */
 
 import type { SimpleIcon } from 'simple-icons';
-import {
-  siYoutube,
-  siInstagram,
-  siTiktok,
-  siFacebook,
-  siX,
-  siApple,
-  siAndroid,
-  siPlaystation,
-  siDolby,
-} from 'simple-icons';
+import { siYoutube, siInstagram, siTiktok, siFacebook, siX, siApple, siAndroid, siPlaystation, siDolby } from 'simple-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faMobileScreen,
-  faTabletScreenButton,
-  faTv,
-  faGamepad,
-} from '@fortawesome/free-solid-svg-icons';
+import { faMobileScreen, faTabletScreenButton, faTv, faGamepad } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
 import { PROFILE_ICON_COLORS } from '../colors';
@@ -253,5 +238,9 @@ export function ProfileChipIcon({ name }: { name: string }) {
     );
   }
 
-  return <FormatBadge $large $color={resolved.color}>{resolved.label}</FormatBadge>;
+  return (
+    <FormatBadge $large $color={resolved.color}>
+      {resolved.label}
+    </FormatBadge>
+  );
 }

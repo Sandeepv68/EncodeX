@@ -240,60 +240,60 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
         <Grow in timeout={350}>
           <Box sx={{ width: '100%' }}>
             <Autocomplete
-        key={activeProfileId ?? 'none'}
-        fullWidth
-        size="small"
-        disableClearable
-        data-testid={testId ?? 'profile-selector'}
-        options={visibleProfiles}
-        getOptionLabel={getOptionLabel}
-        groupBy={groupBy}
-        value={activeProfile ?? undefined}
-        onChange={handleChange}
-        isOptionEqualToValue={(option, value) => option.id === value.id}
-        onInputChange={(_, value) => setSearchQuery(value)}
-        renderOption={renderOption}
-        renderGroup={renderGroup}
-        filterOptions={filterOptions}
-        slots={{ paper: dropdownPaper }}
-        popupIcon={
-          <PopupIcon>
-            <FontAwesomeIcon icon={faChevronDown} />
-          </PopupIcon>
-        }
-        slotProps={{
-          paper: {
-            sx: {
-              '& .MuiAutocomplete-listbox': {
-                maxHeight: 360,
-              },
-            },
-          },
-          popupIndicator: {
-            sx: {
-              color: 'text.secondary',
-              p: 0.5,
-            },
-          },
-        }}
-        renderInput={(params) => (
-          <SearchTextField
-            {...params}
-            placeholder={t('profiles.searchPlaceholder')}
-            slotProps={{
-              ...params.slotProps,
-              input: {
-                ...params.slotProps.input,
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <FontAwesomeIcon icon={faMagnifyingGlass} />
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
-        )}
-          />
+              key={activeProfileId ?? 'none'}
+              fullWidth
+              size="small"
+              disableClearable
+              data-testid={testId ?? 'profile-selector'}
+              options={visibleProfiles}
+              getOptionLabel={getOptionLabel}
+              groupBy={groupBy}
+              value={activeProfile ?? undefined}
+              onChange={handleChange}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              onInputChange={(_, value) => setSearchQuery(value)}
+              renderOption={renderOption}
+              renderGroup={renderGroup}
+              filterOptions={filterOptions}
+              slots={{ paper: dropdownPaper }}
+              popupIcon={
+                <PopupIcon>
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </PopupIcon>
+              }
+              slotProps={{
+                paper: {
+                  sx: {
+                    '& .MuiAutocomplete-listbox': {
+                      maxHeight: 360,
+                    },
+                  },
+                },
+                popupIndicator: {
+                  sx: {
+                    color: 'text.secondary',
+                    p: 0.5,
+                  },
+                },
+              }}
+              renderInput={(params) => (
+                <SearchTextField
+                  {...params}
+                  placeholder={t('profiles.searchPlaceholder')}
+                  slotProps={{
+                    ...params.slotProps,
+                    input: {
+                      ...params.slotProps.input,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <FontAwesomeIcon icon={faMagnifyingGlass} />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              )}
+            />
           </Box>
         </Grow>
       ) : (
