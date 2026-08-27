@@ -32,7 +32,6 @@ describe('profileStore', () => {
     localStorage.clear();
     useProfileStore.setState({
       profiles: useProfileStore.getState().profiles.filter((p) => p.builtin),
-      activeProfileId: null,
       selectedCategory: null,
       recentProfileIds: [],
     });
@@ -42,41 +41,28 @@ describe('profileStore', () => {
     const state = useProfileStore.getState();
     expect(state.profiles.length).toBeGreaterThan(0);
     expect(state.profiles.every((p) => p.builtin)).toBe(true);
-    expect(state.activeProfileId).toBeNull();
     expect(state.selectedCategory).toBeNull();
   });
 
-  it('setActiveProfile sets the active profile id', () => {
-    useProfileStore.getState().setActiveProfile('test-id');
-    expect(useProfileStore.getState().activeProfileId).toBe('test-id');
-  });
-
-  it('setActiveProfile updates recentProfileIds', () => {
-    useProfileStore.getState().setActiveProfile('id-1');
-    useProfileStore.getState().setActiveProfile('id-2');
+  it('recordRecentProfile updates recentProfileIds', () => {
+    useProfileStore.getState().recordRecentProfile('id-1');
+    useProfileStore.getState().recordRecentProfile('id-2');
     expect(useProfileStore.getState().recentProfileIds).toEqual(['id-2', 'id-1']);
   });
 
-  it('setActiveProfile deduplicates in recent list', () => {
-    useProfileStore.getState().setActiveProfile('id-1');
-    useProfileStore.getState().setActiveProfile('id-2');
-    useProfileStore.getState().setActiveProfile('id-1');
+  it('recordRecentProfile deduplicates in recent list', () => {
+    useProfileStore.getState().recordRecentProfile('id-1');
+    useProfileStore.getState().recordRecentProfile('id-2');
+    useProfileStore.getState().recordRecentProfile('id-1');
     expect(useProfileStore.getState().recentProfileIds).toEqual(['id-1', 'id-2']);
   });
 
-  it('setActiveProfile limits recent to 5 entries', () => {
+  it('recordRecentProfile limits recent to 5 entries', () => {
     const store = useProfileStore.getState();
     for (let i = 1; i <= 7; i++) {
-      store.setActiveProfile(`id-${i}`);
+      store.recordRecentProfile(`id-${i}`);
     }
     expect(useProfileStore.getState().recentProfileIds).toEqual(['id-7', 'id-6', 'id-5', 'id-4', 'id-3']);
-  });
-
-  it('setActiveProfile with null does not add to recent list', () => {
-    useProfileStore.getState().setActiveProfile('id-1');
-    useProfileStore.getState().setActiveProfile(null);
-    expect(useProfileStore.getState().activeProfileId).toBeNull();
-    expect(useProfileStore.getState().recentProfileIds).toEqual(['id-1']);
   });
 
   it('setSelectedCategory updates the category filter', () => {
@@ -84,12 +70,6 @@ describe('profileStore', () => {
     expect(useProfileStore.getState().selectedCategory).toBe('audio');
     useProfileStore.getState().setSelectedCategory(null);
     expect(useProfileStore.getState().selectedCategory).toBeNull();
-  });
-
-  it('clearActiveProfile resets activeProfileId to null', () => {
-    useProfileStore.getState().setActiveProfile('id-1');
-    useProfileStore.getState().clearActiveProfile();
-    expect(useProfileStore.getState().activeProfileId).toBeNull();
   });
 
   it('saveCustomProfile creates a profile with a unique id', () => {
@@ -158,21 +138,6 @@ describe('profileStore', () => {
     expect(stored).toHaveLength(0);
   });
 
-  it('deleteCustomProfile clears activeProfileId if deleting the active profile', () => {
-    const id = useProfileStore.getState().saveCustomProfile(customProfile());
-    useProfileStore.getState().setActiveProfile(id);
-    useProfileStore.getState().deleteCustomProfile(id);
-    expect(useProfileStore.getState().activeProfileId).toBeNull();
-  });
-
-  it('deleteCustomProfile preserves activeProfileId when deleting a different profile', () => {
-    const id1 = useProfileStore.getState().saveCustomProfile(customProfile({ name: 'P1' }));
-    const id2 = useProfileStore.getState().saveCustomProfile(customProfile({ name: 'P2' }));
-    useProfileStore.getState().setActiveProfile(id1);
-    useProfileStore.getState().deleteCustomProfile(id2);
-    expect(useProfileStore.getState().activeProfileId).toBe(id1);
-  });
-
   it('deleteCustomProfile does nothing for unknown id', () => {
     const before = useProfileStore.getState().profiles.length;
     useProfileStore.getState().deleteCustomProfile('nonexistent');
@@ -226,7 +191,6 @@ describe('profileStore', () => {
     expect(convState.qscale).toBe(20);
     expect(convState.scale).toBe('1920x1080');
     expect(convState.pixelFormat).toBe('yuv420p');
-    expect(useProfileStore.getState().activeProfileId).toBe('test-apply');
   });
 
   it('applyProfileToConversionStore skips undefined fields', () => {

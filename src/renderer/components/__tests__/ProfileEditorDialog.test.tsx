@@ -28,7 +28,6 @@ describe('ProfileEditorDialog', () => {
   beforeEach(() => {
     localStorage.clear();
     useProfileStore.setState({
-      activeProfileId: null,
       selectedCategory: null,
       recentProfileIds: [],
       profiles: useProfileStore.getState().profiles.filter((p) => p.builtin),

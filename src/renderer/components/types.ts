@@ -9,6 +9,7 @@ import type {
   AppError,
   ConversionOptions,
   ConversionProgress,
+  ConversionProfile,
   EncoderType,
   MediaInfo,
   MediaStreamInfo,
@@ -212,6 +213,7 @@ export interface BatchEncodingPanelProps {
   onQualityChange: (value: string) => void;
   onScaleChange: (value: string) => void;
   onPixelFormatChange: (value: string) => void;
+  onApplyProfile?: (profile: ConversionProfile) => void;
 }
 
 /**

@@ -8,23 +8,16 @@
 import { Chip, Tooltip, Stack, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { useProfileStore } from '../stores/profileStore';
+import type { ConversionProfile } from '../../shared/types';
 import { ProfileChipIcon } from './ProfileIcon';
 
 interface ProfileBadgeProps {
+  profile: ConversionProfile;
+  onClear?: () => void;
   testId?: string;
 }
 
-export default function ProfileBadge({ testId }: ProfileBadgeProps) {
-  const activeProfileId = useProfileStore((s) => s.activeProfileId);
-  const profiles = useProfileStore((s) => s.profiles);
-  const clearActiveProfile = useProfileStore((s) => s.clearActiveProfile);
-
-  if (!activeProfileId) return null;
-
-  const profile = profiles.find((p) => p.id === activeProfileId);
-  if (!profile) return null;
-
+export default function ProfileBadge({ profile, onClear, testId }: ProfileBadgeProps) {
   return (
     <Tooltip title={`${profile.container.toUpperCase()} / ${profile.videoCodec} / ${profile.audioCodec}`} arrow>
       <Chip
@@ -43,7 +36,7 @@ export default function ProfileBadge({ testId }: ProfileBadgeProps) {
           </Stack>
         }
         variant="outlined"
-        onDelete={clearActiveProfile}
+        onDelete={onClear}
         deleteIcon={<FontAwesomeIcon icon={faXmark} size="xs" />}
         sx={(theme) => ({
           height: 'auto',

@@ -85,16 +85,17 @@ function HighlightText({ text, query }: { text: string; query: string }) {
 
 interface ProfileSelectorProps {
   onCreateNew?: () => void;
+  onApplyProfile?: (profile: ConversionProfile) => void;
   testId?: string;
 }
 
-export default function ProfileSelector({ onCreateNew, testId }: ProfileSelectorProps) {
+export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }: ProfileSelectorProps) {
   const { t } = useTranslation();
   const profiles = useProfileStore((s) => s.profiles);
-  const activeProfileId = useProfileStore((s) => s.activeProfileId);
-  const applyProfile = useProfileStore((s) => s.applyProfileToConversionStore);
+  const applyProfileToConversionStore = useProfileStore((s) => s.applyProfileToConversionStore);
   const deleteCustomProfile = useProfileStore((s) => s.deleteCustomProfile);
 
+  const [activeProfileId, setActiveProfileId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [deletingProfile, setDeletingProfile] = useState<ConversionProfile | null>(null);
 
@@ -179,14 +180,16 @@ export default function ProfileSelector({ onCreateNew, testId }: ProfileSelector
   const handleChange = useCallback(
     (_: React.SyntheticEvent, value: ConversionProfile | null) => {
       if (value) {
+        setActiveProfileId(value.id);
         try {
-          applyProfile(value);
+          const apply = onApplyProfile ?? applyProfileToConversionStore;
+          apply(value);
         } catch (err) {
           console.error('Failed to apply profile:', err);
         }
       }
     },
-    [applyProfile],
+    [onApplyProfile, applyProfileToConversionStore],
   );
 
   const dropdownPaper = useCallback(
@@ -304,7 +307,7 @@ export default function ProfileSelector({ onCreateNew, testId }: ProfileSelector
         >
           <Grow in timeout={350}>
             <Box sx={{ width: '100%' }}>
-              <ProfileBadge />
+              <ProfileBadge profile={activeProfile} onClear={() => setActiveProfileId(null)} />
             </Box>
           </Grow>
         </Box>
@@ -320,6 +323,7 @@ export default function ProfileSelector({ onCreateNew, testId }: ProfileSelector
           if (deletingProfile) {
             const name = deletingProfile.name;
             deleteCustomProfile(deletingProfile.id);
+            if (deletingProfile.id === activeProfileId) setActiveProfileId(null);
             setDeletingProfile(null);
             useToastStore.getState().error(t('profiles.deleted', { name }));
           }

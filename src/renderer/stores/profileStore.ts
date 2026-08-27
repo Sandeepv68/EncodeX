@@ -6,14 +6,20 @@
  *
  * State held:
  *  - profiles: merged builtin + custom profiles
- *  - activeProfileId: currently selected profile id (or null)
  *  - selectedCategory: category filter in the UI (or null for all)
- *  - recentProfileIds: last 5 used profile ids
+ *  - recentProfileIds: last 5 most recently applied profile ids
+ *
+ * The active profile selection is intentionally NOT global: each page that
+ * renders a ProfileSelector keeps its own active profile in local component
+ * state, so selecting a profile on the Convert page never leaks into the Batch
+ * queue page (and vice versa). Applying a profile writes to the target of the
+ * page that invoked it; this store exposes `applyProfileToConversionStore` for
+ * the Convert default path.
  *
  * Consumers:
- *  - ProfileSelector component (reads profiles, activeProfileId, filters)
+ *  - ProfileSelector component (reads profiles, filters)
  *  - ProfileEditorDialog (reads/writes custom profiles)
- *  - ProfileBadge (reads activeProfileId)
+ *  - ProfileBadge (renders an already-resolved profile, passed via props)
  *  - Convert page / BatchEncodingPanel (apply profile to conversion form)
  */
 
@@ -78,10 +84,8 @@ function saveRecentIds(ids: string[]): void {
 
 interface ProfileState {
   profiles: ConversionProfile[];
-  activeProfileId: string | null;
   selectedCategory: ProfileCategory | null;
   recentProfileIds: string[];
-  setActiveProfile: (id: string | null) => void;
   setSelectedCategory: (cat: ProfileCategory | null) => void;
   saveCustomProfile: (profile: Omit<ConversionProfile, 'id' | 'builtin'>) => string;
   updateCustomProfile: (id: string, updates: Partial<ConversionProfile>) => void;
@@ -90,27 +94,13 @@ interface ProfileState {
   getProfilesByCategory: (cat: ProfileCategory) => ConversionProfile[];
   getRecentProfiles: () => ConversionProfile[];
   applyProfileToConversionStore: (profile: ConversionProfile) => void;
-  clearActiveProfile: () => void;
+  recordRecentProfile: (id: string) => void;
 }
 
 export const useProfileStore = create<ProfileState>((set, get) => ({
   profiles: [...BUILTIN_PROFILES, ...loadCustomProfiles()],
-  activeProfileId: null,
   selectedCategory: null,
   recentProfileIds: loadRecentIds(),
-
-  setActiveProfile: (id) => {
-    log.debug('setActiveProfile', id);
-    set({ activeProfileId: id });
-    if (id) {
-      const state = get();
-      const recent = state.recentProfileIds.filter((r) => r !== id);
-      recent.unshift(id);
-      const trimmed = recent.slice(0, MAX_RECENT);
-      saveRecentIds(trimmed);
-      set({ recentProfileIds: trimmed });
-    }
-  },
 
   setSelectedCategory: (cat) => {
     log.debug('setSelectedCategory', cat);
@@ -144,10 +134,7 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
     const next = all.filter((p) => p.id !== id || p.builtin);
     const customProfiles = next.filter((p) => !p.builtin);
     saveCustomProfiles(customProfiles);
-    set((s) => ({
-      profiles: next,
-      activeProfileId: s.activeProfileId === id ? null : s.activeProfileId,
-    }));
+    set({ profiles: next });
     log.info('Deleted custom profile', id);
   },
 
@@ -172,15 +159,20 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
       if (profile.scale) store.setScale(profile.scale);
       if (profile.pixelFormat) store.setPixelFormat(profile.pixelFormat);
 
-      get().setActiveProfile(profile.id);
+      get().recordRecentProfile(profile.id);
       log.info('Applied profile', profile.id, profile.name);
     } catch (err) {
       log.error('Failed to apply profile', profile.id, err);
     }
   },
 
-  clearActiveProfile: () => {
-    log.debug('clearActiveProfile');
-    set({ activeProfileId: null });
+  recordRecentProfile: (id) => {
+    log.debug('recordRecentProfile', id);
+    const state = get();
+    const recent = state.recentProfileIds.filter((r) => r !== id);
+    recent.unshift(id);
+    const trimmed = recent.slice(0, MAX_RECENT);
+    saveRecentIds(trimmed);
+    set({ recentProfileIds: trimmed });
   },
 }));

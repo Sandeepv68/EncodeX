@@ -13,7 +13,6 @@ describe('ProfileSelector', () => {
   beforeEach(() => {
     localStorage.clear();
     useProfileStore.setState({
-      activeProfileId: null,
       selectedCategory: null,
       recentProfileIds: [],
       profiles: useProfileStore.getState().profiles.filter((p) => p.builtin),
@@ -83,12 +82,13 @@ describe('ProfileSelector', () => {
     );
   });
 
-  it('selecting a profile calls applyProfileToConversionStore', async () => {
+  it('selecting a profile applies it and shows the active chip', async () => {
     render(<ProfileSelector />);
     fireEvent.mouseDown(screen.getByRole('combobox'));
     const options = await screen.findAllByRole('option');
     fireEvent.click(options[0]);
-    expect(useProfileStore.getState().activeProfileId).not.toBeNull();
+    expect(useProfileStore.getState().recentProfileIds.length).toBeGreaterThan(0);
+    expect(screen.getByTestId('profile-badge')).toBeInTheDocument();
   });
 
   it('shows a delete button for custom profiles only', async () => {
@@ -191,11 +191,12 @@ describe('ProfileSelector', () => {
     expect(screen.getByText(firstCategoryLabel)).toBeInTheDocument();
   });
 
-  it('shows the active profile as a chip and hides the autocomplete', () => {
-    const builtin = useProfileStore.getState().profiles.find((p) => p.builtin)!;
-    useProfileStore.setState({ activeProfileId: builtin.id });
+  it('shows the active profile as a chip and hides the autocomplete', async () => {
     render(<ProfileSelector />);
-    expect(screen.getByTestId('profile-badge')).toBeInTheDocument();
+    fireEvent.mouseDown(screen.getByRole('combobox'));
+    const options = await screen.findAllByRole('option');
+    fireEvent.click(options[0]);
+    expect(screen.getAllByTestId('profile-badge')).toHaveLength(1);
     expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
   });
 

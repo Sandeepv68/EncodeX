@@ -116,7 +116,11 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
 
       <Box sx={{ mb: 1 }}>
         <FieldLabel>{t('profiles.label')}</FieldLabel>
-        <ProfileSelector onCreateNew={() => setProfileEditorOpen(true)} testId="batch-profile-selector" />
+        <ProfileSelector
+          onCreateNew={() => setProfileEditorOpen(true)}
+          onApplyProfile={props.onApplyProfile}
+          testId="batch-profile-selector"
+        />
       </Box>
 
       <ProfileEditorDialog open={profileEditorOpen} onClose={() => setProfileEditorOpen(false)} />

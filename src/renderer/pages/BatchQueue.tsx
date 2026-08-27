@@ -17,7 +17,7 @@
  * which feed the `useQueueStore` zustand store.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Stack, Typography, Collapse, IconButton, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -35,6 +35,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { useQueueStore } from '../stores/queueStore';
 import { useToastStore } from '../stores/toastStore';
+import { useProfileStore } from '../stores/profileStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX, QUEUE_STATUS } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { FILE_FILTERS, MEDIA_INPUT_EXTENSIONS, isImageFile } from '../../shared/file-extensions';
@@ -45,7 +46,7 @@ import {
   suggestedExtensionForVideoCodec,
 } from '../../shared/codec-containers';
 import { estimateRemaining, formatEstimate } from '../../shared/estimate';
-import { QueueJob } from '../../shared/types';
+import { QueueJob, ConversionProfile } from '../../shared/types';
 import { useSettingsStore } from '../stores/settingsStore';
 import { readStoredBatchConfig, persistBatchConfig, type BatchConfig } from '../stores/batchConfig';
 import type { QueueAddReviewSelection } from '../components/types';
@@ -1006,6 +1007,29 @@ export default function BatchQueue() {
   };
 
   /**
+   * Applies a conversion profile to the batch encoding options by copying its
+   * defined fields onto the page's on-page state, mirroring how the Convert
+   * page applies a profile to the conversion form but staying local to this
+   * page's batch configuration. Records the profile id as recently used.
+   * @param {ConversionProfile} profile - The profile to apply.
+   * @returns {void}
+   */
+  const handleApplyBatchProfile = useCallback(
+    (profile: ConversionProfile) => {
+      if (profile.container) setContainer(profile.container);
+      if (profile.videoCodec) setVideoCodec(profile.videoCodec);
+      if (profile.audioCodec) setAudioCodec(profile.audioCodec);
+      if (profile.videoBitrate) setVideoBitrate(profile.videoBitrate);
+      if (profile.audioBitrate) setAudioBitrate(profile.audioBitrate);
+      if (profile.crf !== undefined) setQuality(String(profile.crf));
+      if (profile.scale) setScale(profile.scale);
+      if (profile.pixelFormat) setPixelFormat(profile.pixelFormat);
+      useProfileStore.getState().recordRecentProfile(profile.id);
+    },
+    [setContainer, setVideoCodec, setAudioCodec, setVideoBitrate, setAudioBitrate, setQuality, setScale, setPixelFormat],
+  );
+
+  /**
    * Pauses the main-process queue (suspending active conversions and blocking
    * queued jobs) and reflects the paused state in the toolbar.
    * @returns {Promise<void>} Resolves once the pause request is handled.
@@ -1236,6 +1260,7 @@ export default function BatchQueue() {
               onQualityChange={setQuality}
               onScaleChange={setScale}
               onPixelFormatChange={setPixelFormat}
+              onApplyProfile={handleApplyBatchProfile}
             />
           </Collapse>
         </AnimatedSection>
