@@ -23,6 +23,10 @@
     "lint": "eslint src/renderer",
     "lint:px": "eslint -c scripts/eslint.px.config.mjs src/renderer",
     "lint:colors": "eslint -c scripts/eslint.colors.config.mjs src/renderer",
+    "lint:rem": "eslint -c scripts/eslint.rem.config.mjs src/renderer",
+    "lint:inline-styles": "eslint -c scripts/eslint.inline-styles.config.mjs src/renderer",
+    "lint:strings": "eslint -c scripts/eslint.strings.config.mjs src/renderer",
+    "lint:strings:test": "node --test eslint-rules/no-hardcoded-strings.test.mjs",
     "validate:locales": "node scripts/validate-locales.mjs",
     "typecheck:renderer": "tsc -p tsconfig.renderer.json --noEmit",
     "typecheck:main": "tsc -p tsconfig.main.json --noEmit",
@@ -80,6 +84,7 @@
     "react-dom": "^19.0.0",
     "react-i18next": "^17.0.11",
     "react-router-dom": "^7.0.0",
+    "simple-icons": "^16.28.0",
     "stylis-plugin-rtl": "^2.1.1",
     "vitepress-plugin-mermaid": "^2.0.17",
     "zustand": "^5.0.0"

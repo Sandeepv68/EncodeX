@@ -78,6 +78,45 @@ jobs:
       - run: npm ci
       - run: npm run lint:colors
 
+  lint-rem:
+    name: Check - No hardcoded rem
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:rem
+
+  lint-inline-styles:
+    name: Check - No inline styles
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:inline-styles
+
+  lint-strings:
+    name: Check - No hardcoded UI strings
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:strings
+
   typecheck:
     name: Check - TypeScript typecheck
     runs-on: ubuntu-latest
@@ -122,7 +161,7 @@ jobs:
 
   build:
     name: Build - ${{ matrix.os }}
-    needs: [format-check, lint, lint-px, lint-colors, typecheck, validate-locales]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales]
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     strategy:
@@ -152,7 +191,7 @@ jobs:
 
   test-unit:
     name: Test - Unit Tests (coverage)
-    needs: [format-check, lint, lint-px, lint-colors, typecheck, validate-locales]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -180,7 +219,7 @@ jobs:
 
   test-integration:
     name: Test - Integration Tests
-    needs: [format-check, lint, lint-px, lint-colors, typecheck, validate-locales]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -194,7 +233,7 @@ jobs:
 
   test-perf:
     name: Test - Performance Benchmarks
-    needs: [format-check, lint, lint-px, lint-colors, typecheck, validate-locales]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

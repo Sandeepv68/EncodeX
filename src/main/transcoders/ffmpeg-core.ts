@@ -173,6 +173,10 @@ export class FfmpegCore implements ITranscoder {
       }
     }
 
+    if (options.inputArgs?.length) {
+      cmd.inputOptions(options.inputArgs);
+    }
+
     if (options.copy) {
       log.debug(LOG_USING_STREAM_COPY_MODE);
       cmd.outputOptions(FFMPEG_FLAGS.COPY, FFMPEG_FLAGS.COPY_VALUE);
@@ -237,6 +241,10 @@ export class FfmpegCore implements ITranscoder {
     if (options.duration) {
       log.debug(LOG_DURATION_CAPITALIZED, options.duration);
       cmd.duration(options.duration);
+    }
+
+    if (options.extraArgs?.length) {
+      cmd.outputOptions(options.extraArgs);
     }
 
     cmd.output(output);

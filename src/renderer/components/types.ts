@@ -9,6 +9,7 @@ import type {
   AppError,
   ConversionOptions,
   ConversionProgress,
+  ConversionProfile,
   EncoderType,
   MediaInfo,
   MediaStreamInfo,
@@ -212,6 +213,7 @@ export interface BatchEncodingPanelProps {
   onQualityChange: (value: string) => void;
   onScaleChange: (value: string) => void;
   onPixelFormatChange: (value: string) => void;
+  onApplyProfile?: (profile: ConversionProfile) => void;
 }
 
 /**
@@ -482,7 +484,7 @@ export interface MediaPlayerProps {
  * @interface PageContainerProps
  */
 export interface PageContainerProps {
-  title: string;
+  title: ReactNode;
   icon?: ReactNode;
   aside?: ReactNode;
   paper?: boolean;

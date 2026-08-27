@@ -62,6 +62,8 @@ import FileDropZone from '../components/FileDropZone';
 import ConfirmDialog from '../components/ConfirmDialog';
 import FileSummary from '../components/FileSummary';
 import StreamDetails from '../components/StreamDetails';
+import ProfileSelector from '../components/ProfileSelector';
+import ProfileEditorDialog from '../components/ProfileEditorDialog';
 import { pageIcons } from '../pageIcons';
 import GroupedSelect from '../components/GroupedSelect';
 import InfoTooltip from '../components/InfoTooltip';
@@ -237,6 +239,7 @@ export default function Convert() {
   const [streamsExpanded, setStreamsExpanded] = useState(false);
   const [mediaInfo, setMediaInfo] = useState<MediaInfoType | null>(null);
   const [mediaInfoLoading, setMediaInfoLoading] = useState(false);
+  const [profileEditorOpen, setProfileEditorOpen] = useState(false);
   const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
   const settingsEncoderType = useSettingsStore((s) => s.encoderType);
   const accelAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL));
@@ -512,6 +515,14 @@ export default function Convert() {
           {t('convert.encoding')}
         </SectionTitle>
 
+        <Box>
+          <FieldLabel>
+            {t('profiles.label')}
+            <InfoTooltip title={t('profiles.tooltip')} />
+          </FieldLabel>
+          <ProfileSelector onCreateNew={() => setProfileEditorOpen(true)} />
+        </Box>
+
         <ToggleRow>
           <Switch
             data-testid="convert-copy-switch"
@@ -610,7 +621,7 @@ export default function Convert() {
                 >
                   {VIDEO_BITRATE_OPTIONS.map((b) => (
                     <MenuItem key={b} value={b}>
-                      {b || 'Auto'}
+                      {b || t('status.auto')}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -829,6 +840,8 @@ export default function Convert() {
         onClose={() => setJobCancelOpen(false)}
         onConfirm={handleConfirmJobCancel}
       />
+
+      <ProfileEditorDialog open={profileEditorOpen} onClose={() => setProfileEditorOpen(false)} />
     </PageContainer>
   );
 }

@@ -80,7 +80,9 @@ export const ThemeCard = styled('button', {
   },
 }));
 
-export const ThemePreview = styled(Box)(({ theme }) => ({
+export const ThemePreview = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$backgroundColor',
+})<{ $backgroundColor: string }>(({ theme, $backgroundColor }) => ({
   width: theme.typography.pxToRem(132),
   height: theme.typography.pxToRem(88),
   borderRadius: theme.shape.borderRadius,
@@ -88,6 +90,7 @@ export const ThemePreview = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing(0.75),
+  backgroundColor: $backgroundColor,
 }));
 
 export const ThemePreviewPaper = styled(Box, {

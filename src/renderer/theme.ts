@@ -273,6 +273,58 @@ export function createAppTheme(themeId: ThemeId, direction: 'ltr' | 'rtl') {
       MuiPaper: {
         styleOverrides: { root: { backgroundImage: 'none' } },
       },
+      MuiAutocomplete: {
+        styleOverrides: {
+          inputRoot: {
+            '&.MuiOutlinedInput-root.MuiInputBase-sizeSmall': {
+              paddingTop: 0,
+              paddingBottom: 0,
+            },
+          },
+          input: {
+            '&.MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputSizeSmall': {
+              paddingTop: 0,
+              paddingBottom: 0,
+            },
+          },
+          paper: ({ theme }) => ({
+            borderRadius: theme.typography.pxToRem(10),
+            backgroundColor: themeDef.menu.surface,
+            boxShadow: themeDef.mode === 'dark' ? SHADOWS(theme).MENU_DARK : SHADOWS(theme).MENU_LIGHT,
+            border: `${theme.typography.pxToRem(1)} solid ${themeDef.border}`,
+            padding: theme.typography.pxToRem(6),
+          }),
+          listbox: ({ theme }) => ({
+            '& .MuiAutocomplete-option': {
+              borderRadius: theme.typography.pxToRem(8),
+              margin: `${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)}`,
+              paddingInlineEnd: theme.typography.pxToRem(36),
+              minHeight: 'auto',
+              '&:hover': {
+                backgroundColor: themeDef.tint.primary15,
+              },
+              '&[data-focus="true"]': {
+                backgroundColor: themeDef.tint.primary15,
+              },
+              '&[aria-selected="true"]': {
+                backgroundColor: themeDef.tint.primary25,
+                color: themeDef.text.primary,
+                '&:hover': { backgroundColor: themeDef.tint.primary25 },
+                '&[data-focus="true"]': { backgroundColor: themeDef.tint.primary25 },
+              },
+            },
+            '& .MuiAutocomplete-groupLabel': {
+              fontWeight: 700,
+              fontSize: theme.typography.pxToRem(12.8),
+              backgroundColor: 'transparent',
+              color: theme.palette.primary.main,
+              padding: `${theme.typography.pxToRem(6)} ${theme.typography.pxToRem(6)}`,
+              borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+              lineHeight: 1.5,
+            },
+          }),
+        },
+      },
     },
   });
 }
