@@ -182,6 +182,45 @@ EncodeX स्वयंसेवकों की कम्युनिटी स
   </div>
 </div>
 
+## लोकप्रिय टूल और गाइड
+
+किसी विशेष कार्य में गोता लगाएँ – हर पेज बताता है कि उसे EncodeX से कैसे करें:
+
+<div class="card-grid three-col">
+  <div class="card">
+    <p class="card-head"><a href="/hi/ffmpeg-gui">FFmpeg GUI</a></p>
+    <p>FFmpeg इंजन के लिए एक अनुकूल इंटरफ़ेस – बिना किसी कमांड के।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/video-converter">वीडियो कन्वर्टर</a></p>
+    <p>Windows, Mac और Linux पर सभी फ़ॉर्मेटों के बीच वीडियो कन्वर्ट करें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/video-compressor">वीडियो कंप्रेसर</a></p>
+    <p>गुणवत्ता बनाए रखते हुए आकार घटाएँ – MP4, MKV और बहुत कुछ।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/audio-converter">ऑडियो कन्वर्टर</a></p>
+    <p>MP3, FLAC, WAV और बहुत कुछ कन्वर्ट करें, या वीडियो से ऑडियो निकालें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/mkv-to-mp4">MKV से MP4</a></p>
+    <p>MKV वीडियो को MP4 में कन्वर्ट करके हर जगह चलाएँ।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/codecs/h264">H.264</a></p>
+    <p>दुनिया के सबसे संगत वीडियो कोडेक के साथ एन्कोड करें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/codecs/h265">H.265 / HEVC</a></p>
+    <p>समान गुणवत्ता पर H.264 का लगभग आधा आकार।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/learn/what-is-ffmpeg">FFmpeg क्या है?</a></p>
+    <p>EncodeX के अंदर के इंजन पर एक सरल भाषा में गाइड।</p>
+  </div>
+</div>
+
 <div class="cta-card">
   <h2>आज़माने को तैयार हैं?</h2>
   <p>इंस्टॉल होने में सिर्फ़ दो मिनट — और ये हमेशा के लिए मुफ़्त है।</p>

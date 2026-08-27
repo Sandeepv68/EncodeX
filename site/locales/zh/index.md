@@ -182,6 +182,45 @@ EncodeX 是由志愿者社区打造的开源软件。没有付费版来烦你，
   </div>
 </div>
 
+## 热门工具与指南
+
+深入某个具体任务——每页都说明如何用 EncodeX 完成：
+
+<div class="card-grid three-col">
+  <div class="card">
+    <p class="card-head"><a href="/zh/ffmpeg-gui">FFmpeg GUI</a></p>
+    <p>FFmpeg 引擎的友好界面——无需任何命令。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/video-converter">视频转换器</a></p>
+    <p>在 Windows、Mac 和 Linux 上于所有格式之间转换视频。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/video-compressor">视频压缩器</a></p>
+    <p>保持画质地缩小体积——支持 MP4、MKV 等。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/audio-converter">音频转换器</a></p>
+    <p>转换 MP3、FLAC、WAV 等格式，或从视频提取音频。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/mkv-to-mp4">MKV 转 MP4</a></p>
+    <p>通过转换为 MP4，让 MKV 视频随处可播。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/codecs/h264">H.264</a></p>
+    <p>使用世界上兼容性最广的视频编解码器编码。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/codecs/h265">H.265 / HEVC</a></p>
+    <p>画质相近时，文件大小约为 H.264 的一半。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/learn/what-is-ffmpeg">什么是 FFmpeg？</a></p>
+    <p>EncodeX 内部引擎的通俗指南。</p>
+  </div>
+</div>
+
 <div class="cta-card">
   <h2>准备好试试了吗？</h2>
   <p>安装大约两分钟，而且永远免费。</p>

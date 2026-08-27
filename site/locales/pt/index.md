@@ -182,6 +182,45 @@ O EncodeX é software livre criado por uma comunidade de voluntários. Não exis
   </div>
 </div>
 
+## Ferramentas e guias populares
+
+Mergulhe em uma tarefa específica — cada página explica como fazê-la com o EncodeX:
+
+<div class="card-grid three-col">
+  <div class="card">
+    <p class="card-head"><a href="/pt/ffmpeg-gui">GUI do FFmpeg</a></p>
+    <p>Uma interface amigável para o motor FFmpeg — sem nenhum comando.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/video-converter">Conversor de vídeo</a></p>
+    <p>Converta vídeos entre todos os formatos no Windows, Mac e Linux.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/video-compressor">Compressor de vídeo</a></p>
+    <p>Reduza o tamanho mantendo a qualidade — MP4, MKV e mais.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/audio-converter">Conversor de áudio</a></p>
+    <p>Converta MP3, FLAC, WAV e mais, ou extraia áudio do vídeo.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/mkv-to-mp4">MKV para MP4</a></p>
+    <p>Faça vídeos MKV rodarem em qualquer lugar convertendo para MP4.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/codecs/h264">H.264</a></p>
+    <p>Codifique com o codec de vídeo mais compatível do mundo.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/codecs/h265">H.265 / HEVC</a></p>
+    <p>Cerca de metade do tamanho do H.264 em qualidade semelhante.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/learn/what-is-ffmpeg">O que é FFmpeg?</a></p>
+    <p>Um guia em linguagem simples sobre o motor dentro do EncodeX.</p>
+  </div>
+</div>
+
 <div class="cta-card">
   <h2>Pronto para experimentar?</h2>
   <p>A instalação leva uns dois minutos — e é grátis para sempre.</p>
