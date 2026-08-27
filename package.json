@@ -25,6 +25,8 @@
     "lint:colors": "eslint -c scripts/eslint.colors.config.mjs src/renderer",
     "lint:rem": "eslint -c scripts/eslint.rem.config.mjs src/renderer",
     "lint:inline-styles": "eslint -c scripts/eslint.inline-styles.config.mjs src/renderer",
+    "lint:strings": "eslint -c scripts/eslint.strings.config.mjs src/renderer",
+    "lint:strings:test": "node --test eslint-rules/no-hardcoded-strings.test.mjs",
     "validate:locales": "node scripts/validate-locales.mjs",
     "typecheck:renderer": "tsc -p tsconfig.renderer.json --noEmit",
     "typecheck:main": "tsc -p tsconfig.main.json --noEmit",
