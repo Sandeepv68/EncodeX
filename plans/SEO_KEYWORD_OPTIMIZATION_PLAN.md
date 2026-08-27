@@ -18,7 +18,7 @@ Every new page is created in **English + all 7 locales** (es, fr, de, pt, zh, hi
 
 | # | Deliverable | Status |
 |---|-------------|--------|
-| 0 | Commit/publish Phase-1 SEO pages (15 core × 8 locales) + nav fix | [ ] |
+| 0 | Commit/publish Phase-1 SEO pages (15 core × 8 locales) + nav fix | [x] |
 | 1 | Batch A: 4 new `convert/{flv,wmv,m4v,webm}-to-mp4` pages | [x] |
 | 2 | `extract-audio-from-video` page (high-volume intent) | [x] |
 | 3 | FAQPage JSON-LD schema on converter pages | [x] |
