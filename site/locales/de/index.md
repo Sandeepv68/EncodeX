@@ -182,6 +182,49 @@ EncodeX ist freie Software, gebaut von einer Ehrenamtlichen-Community. Es gibt k
   </div>
 </div>
 
+## Beliebte Tools und Anleitungen
+
+Tauchen Sie in eine bestimmte Aufgabe ein – jede Seite erklärt, wie Sie sie mit EncodeX erledigen:
+
+<div class="card-grid three-col">
+  <div class="card">
+    <p class="card-head"><a href="/de/ffmpeg-gui">FFmpeg-GUI</a></p>
+    <p>Eine benutzerfreundliche Oberfläche für die FFmpeg-Engine – ganz ohne Befehle.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/video-converter">Videokonverter</a></p>
+    <p>Konvertieren Sie Videos zwischen allen Formaten auf Windows, Mac und Linux.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/video-compressor">Videokompressor</a></p>
+    <p>Reduzieren Sie die Größe bei gleichbleibender Qualität – MP4, MKV und mehr.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/audio-converter">Audiokonverter</a></p>
+    <p>Konvertieren Sie MP3, FLAC, WAV und mehr oder extrahieren Sie Audio aus Video.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/extract-audio-from-video">Audio aus Video extrahieren</a></p>
+    <p>Verwandeln Sie jedes Video mit wenigen Klicks in MP3, M4A, FLAC oder WAV.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/mkv-to-mp4">MKV zu MP4</a></p>
+    <p>Lassen Sie MKV-Videos überall laufen, indem Sie sie zu MP4 konvertieren.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/codecs/h264">H.264</a></p>
+    <p>Encodieren Sie mit dem kompatibelsten Videocodec der Welt.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/codecs/h265">H.265 / HEVC</a></p>
+    <p>Etwa die halbe Dateigröße von H.264 bei ähnlicher Qualität.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/learn/what-is-ffmpeg">Was ist FFmpeg?</a></p>
+    <p>Ein Leitfaden in einfacher Sprache zur Engine in EncodeX.</p>
+  </div>
+</div>
+
 <div class="cta-card">
   <h2>Bereit zum Ausprobieren?</h2>
   <p>Die Installation dauert etwa zwei Minuten — und es bleibt für immer kostenlos.</p>
