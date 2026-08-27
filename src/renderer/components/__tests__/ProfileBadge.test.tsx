@@ -54,20 +54,20 @@ describe('ProfileBadge', () => {
     expect(screen.getByTestId('my-badge')).toBeInTheDocument();
   });
 
-  it('renders with primary color and outlined variant', () => {
+  it('renders with neutral color and outlined variant', () => {
     const builtin = useProfileStore.getState().profiles.find((p) => p.builtin)!;
     useProfileStore.setState({ activeProfileId: builtin.id });
     render(<ProfileBadge />);
     const chip = screen.getByTestId('profile-badge');
     expect(chip).toHaveClass('MuiChip-outlined');
-    expect(chip).toHaveClass('MuiChip-colorPrimary');
+    expect(chip).not.toHaveClass('MuiChip-colorPrimary');
   });
 
-  it('renders small size chip', () => {
+  it('renders medium size chip', () => {
     const builtin = useProfileStore.getState().profiles.find((p) => p.builtin)!;
     useProfileStore.setState({ activeProfileId: builtin.id });
     render(<ProfileBadge />);
     const chip = screen.getByTestId('profile-badge');
-    expect(chip).toHaveClass('MuiChip-sizeSmall');
+    expect(chip).toHaveClass('MuiChip-sizeMedium');
   });
 });

@@ -63,7 +63,6 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import FileSummary from '../components/FileSummary';
 import StreamDetails from '../components/StreamDetails';
 import ProfileSelector from '../components/ProfileSelector';
-import ProfileBadge from '../components/ProfileBadge';
 import ProfileEditorDialog from '../components/ProfileEditorDialog';
 import { pageIcons } from '../pageIcons';
 import GroupedSelect from '../components/GroupedSelect';
@@ -373,12 +372,7 @@ export default function Convert() {
 
   return (
     <PageContainer
-      title={
-        <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
-          {t('convert.title')}
-          <ProfileBadge />
-        </Box>
-      }
+      title={t('convert.title')}
       icon={pageIcons['/convert']}
       aside={
         previewOpen && inputFile ? (

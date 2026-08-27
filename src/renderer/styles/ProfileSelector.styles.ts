@@ -11,11 +11,12 @@ export const HighlightMark = styled('span')(({ theme }) => ({
 
 /** Icon wrapper in each profile option row */
 export const OptionIcon = styled(Box)(({ theme }) => ({
-  minWidth: theme.typography.pxToRem(28),
+  minWidth: theme.typography.pxToRem(30),
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  fontSize: theme.typography.pxToRem(14),
+  fontSize: theme.typography.pxToRem(18),
+  marginTop: theme.typography.pxToRem(3),
   flexShrink: 0,
 }));
 
@@ -33,18 +34,19 @@ export const BrandSvg = styled('svg')({
  * to the text and border so the family of badges stays consistent across themes.
  */
 export const FormatBadge = styled(Box, {
-  shouldForwardProp: (prop) => prop !== '$color',
-})<{ $color: string }>(({ theme, $color }) => ({
+  shouldForwardProp: (prop) => prop !== '$color' && prop !== '$large',
+})<{ $color: string; $large?: boolean }>(({ theme, $color, $large }) => ({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  minWidth: theme.typography.pxToRem(24),
-  height: theme.typography.pxToRem(16),
-  paddingInline: theme.typography.pxToRem(3),
-  borderRadius: theme.typography.pxToRem(4),
+  minWidth: theme.typography.pxToRem($large ? 40 : 28),
+  height: theme.typography.pxToRem($large ? 30 : 20),
+  paddingInline: theme.typography.pxToRem($large ? 6 : 4),
+  marginRight: theme.typography.pxToRem($large ? 8 : 6),
+  borderRadius: theme.typography.pxToRem($large ? 7 : 5),
   border: `${theme.typography.pxToRem(1)} solid ${$color}`,
   color: $color,
-  fontSize: theme.typography.pxToRem(8),
+  fontSize: theme.typography.pxToRem($large ? 14 : 10),
   fontWeight: 700,
   letterSpacing: theme.typography.pxToRem(0.2),
   lineHeight: 1,

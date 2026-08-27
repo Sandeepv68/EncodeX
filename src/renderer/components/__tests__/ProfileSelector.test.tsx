@@ -92,14 +92,13 @@ describe('ProfileSelector', () => {
   });
 
   it('shows a delete button for custom profiles only', async () => {
-    const id = useProfileStore.getState().saveCustomProfile({
+    useProfileStore.getState().saveCustomProfile({
       name: 'Custom Test',
       category: 'video',
       container: 'mkv',
       videoCodec: 'libx264',
       audioCodec: 'aac',
     });
-    useProfileStore.setState({ activeProfileId: id });
     render(<ProfileSelector />);
     fireEvent.mouseDown(screen.getByRole('combobox'));
     const options = await screen.findAllByRole('option');
@@ -119,14 +118,13 @@ describe('ProfileSelector', () => {
   });
 
   it('opens delete confirmation dialog when delete is clicked', async () => {
-    const id = useProfileStore.getState().saveCustomProfile({
+    useProfileStore.getState().saveCustomProfile({
       name: 'To Delete',
       category: 'audio',
       container: 'mp3',
       videoCodec: '',
       audioCodec: 'libmp3lame',
     });
-    useProfileStore.setState({ activeProfileId: id });
     render(<ProfileSelector />);
     fireEvent.mouseDown(screen.getByRole('combobox'));
     const option = await screen.findByText(/To Delete/);
@@ -143,7 +141,6 @@ describe('ProfileSelector', () => {
       videoCodec: 'libx264',
       audioCodec: 'aac',
     });
-    useProfileStore.setState({ activeProfileId: id });
     render(<ProfileSelector />);
     fireEvent.mouseDown(screen.getByRole('combobox'));
     const option = await screen.findByText(/Delete Me/);
@@ -194,14 +191,12 @@ describe('ProfileSelector', () => {
     expect(screen.getByText(firstCategoryLabel)).toBeInTheDocument();
   });
 
-  it('applies active profile visually with a checkmark', async () => {
+  it('shows the active profile as a chip and hides the autocomplete', () => {
     const builtin = useProfileStore.getState().profiles.find((p) => p.builtin)!;
     useProfileStore.setState({ activeProfileId: builtin.id });
     render(<ProfileSelector />);
-    fireEvent.mouseDown(screen.getByRole('combobox'));
-    const options = await screen.findAllByRole('option');
-    const activeOption = options.find((o) => o.textContent?.includes(builtin.name));
-    expect(activeOption).toBeDefined();
+    expect(screen.getByTestId('profile-badge')).toBeInTheDocument();
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
   });
 
   it('search highlights matching text', async () => {

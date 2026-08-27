@@ -33,10 +33,10 @@ import {
   faMobileScreen,
   faTabletScreenButton,
   faTv,
-  faRobot,
   faGamepad,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '@mui/material/styles';
+import { Box } from '@mui/material';
 import { PROFILE_ICON_COLORS } from '../colors';
 import { OptionIcon, FormatBadge, BrandSvg } from '../styles/ProfileSelector.styles';
 
@@ -209,3 +209,49 @@ export default function ProfileIcon({ name }: { name: string }) {
 }
 
 export { resolveProfileIcon };
+
+/**
+ * Compact version of the profile icon sized for the active-profile chip in the
+ * page header. Reuses the same resolution as the autocomplete options so the
+ * badge always matches the icon shown for the selected profile.
+ */
+export function ProfileChipIcon({ name }: { name: string }) {
+  const resolved = resolveProfileIcon(name);
+
+  if (resolved.kind === 'brand') {
+    return (
+      <Box
+        component="span"
+        sx={(theme) => ({
+          display: 'inline-flex',
+          alignItems: 'center',
+          alignSelf: 'stretch',
+          fontSize: theme.typography.pxToRem(30),
+          lineHeight: 1,
+        })}
+      >
+        <BrandGlyph icon={resolved.icon} />
+      </Box>
+    );
+  }
+
+  if (resolved.kind === 'fa') {
+    return (
+      <Box
+        component="span"
+        sx={(theme) => ({
+          display: 'inline-flex',
+          alignItems: 'center',
+          alignSelf: 'stretch',
+          fontSize: theme.typography.pxToRem(30),
+          lineHeight: 1,
+          color: resolved.color,
+        })}
+      >
+        <FontAwesomeIcon icon={resolved.icon} />
+      </Box>
+    );
+  }
+
+  return <FormatBadge $large $color={resolved.color}>{resolved.label}</FormatBadge>;
+}

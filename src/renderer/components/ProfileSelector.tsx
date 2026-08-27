@@ -7,7 +7,7 @@
 
 import { useMemo, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Autocomplete, InputAdornment, Stack, Typography, Paper } from '@mui/material';
+import { Autocomplete, InputAdornment, Stack, Typography, Paper, Box, Grow } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMagnifyingGlass,
@@ -31,6 +31,7 @@ import { CATEGORY_ORDER, PROFILE_CATEGORIES } from '../../shared/profiles/catego
 import { useProfileStore } from '../stores/profileStore';
 import { useToastStore } from '../stores/toastStore';
 import ProfileIcon from './ProfileIcon';
+import ProfileBadge from './ProfileBadge';
 import {
   HighlightMark,
   OptionContent,
@@ -116,7 +117,7 @@ export default function ProfileSelector({ onCreateNew, testId }: ProfileSelector
       const isActive = option.id === activeProfileId;
       return (
         // eslint-disable-next-line encodex/no-inline-styles -- MUI Autocomplete passes runtime positioning via props.style
-        <li {...props} key={option.id} style={{ ...props.style, position: 'relative' }}>
+        <li {...props} key={option.id} style={{ ...props.style, position: 'relative', alignItems: 'flex-start' }}>
           <ProfileIcon name={option.name} />
           <OptionContent>
             <Typography variant="body2" noWrap>
@@ -232,7 +233,11 @@ export default function ProfileSelector({ onCreateNew, testId }: ProfileSelector
 
   return (
     <Stack spacing={0.5}>
-      <Autocomplete
+      {!activeProfile ? (
+        <Grow in timeout={350}>
+          <Box sx={{ width: '100%' }}>
+            <Autocomplete
+        key={activeProfileId ?? 'none'}
         fullWidth
         size="small"
         disableClearable
@@ -285,7 +290,25 @@ export default function ProfileSelector({ onCreateNew, testId }: ProfileSelector
             }}
           />
         )}
-      />
+          />
+          </Box>
+        </Grow>
+      ) : (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            py: 1,
+            pl: 1.5,
+          }}
+        >
+          <Grow in timeout={350}>
+            <Box sx={{ width: '100%' }}>
+              <ProfileBadge />
+            </Box>
+          </Grow>
+        </Box>
+      )}
       <ConfirmDialog
         open={!!deletingProfile}
         title={t('profiles.deleteTitle')}
