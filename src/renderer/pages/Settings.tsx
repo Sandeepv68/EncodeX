@@ -90,7 +90,7 @@ function SettingLabel({ text, hint }: { text: string; hint: string }) {
  */
 function ThemePreviewCard({ theme }: { theme: ThemeDefinition }) {
   return (
-    <ThemePreview style={{ backgroundColor: theme.background.default }}>
+    <ThemePreview $backgroundColor={theme.background.default}>
       <ThemePreviewPaper $color={theme.background.paper}>
         <ThemePreviewTextBar $color={theme.text.primary} $width="60%" />
         <ThemePreviewTextBar $color={theme.text.secondary} $width="85%" />

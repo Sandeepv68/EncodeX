@@ -18,7 +18,9 @@
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import tsParser from '@typescript-eslint/parser';
 import noHardcodedPx from './eslint-rules/no-hardcoded-px.mjs';
+import noHardcodedRem from './eslint-rules/no-hardcoded-rem.mjs';
 import noHardcodedColors from './eslint-rules/no-hardcoded-colors.mjs';
+import noInlineStyles from './eslint-rules/no-inline-styles.mjs';
 
 /** Downscales a rule's severity to 'warn' while preserving its options. */
 function asWarn(value) {
@@ -38,7 +40,9 @@ export default [
       encodex: {
         rules: {
           'no-hardcoded-px': noHardcodedPx,
+          'no-hardcoded-rem': noHardcodedRem,
           'no-hardcoded-colors': noHardcodedColors,
+          'no-inline-styles': noInlineStyles,
         },
       },
     },
@@ -53,7 +57,9 @@ export default [
     rules: {
       ...jsxA11yWarn,
       'encodex/no-hardcoded-px': 'error',
+      'encodex/no-hardcoded-rem': 'error',
       'encodex/no-hardcoded-colors': 'error',
+      'encodex/no-inline-styles': 'error',
     },
   },
   {
@@ -66,7 +72,9 @@ export default [
     files: ['src/renderer/**/*.{test,spec}.{ts,tsx}', 'src/renderer/**/__tests__/**/*.{ts,tsx}'],
     rules: {
       'encodex/no-hardcoded-px': 'off',
+      'encodex/no-hardcoded-rem': 'off',
       'encodex/no-hardcoded-colors': 'off',
+      'encodex/no-inline-styles': 'off',
     },
   },
 ];

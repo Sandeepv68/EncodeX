@@ -6,6 +6,9 @@
 
 import tsParser from '@typescript-eslint/parser';
 import noHardcodedPx from '../eslint-rules/no-hardcoded-px.mjs';
+import noHardcodedRem from '../eslint-rules/no-hardcoded-rem.mjs';
+import noHardcodedColors from '../eslint-rules/no-hardcoded-colors.mjs';
+import noInlineStyles from '../eslint-rules/no-inline-styles.mjs';
 
 export default [
   {
@@ -17,6 +20,9 @@ export default [
       encodex: {
         rules: {
           'no-hardcoded-px': noHardcodedPx,
+          'no-hardcoded-rem': noHardcodedRem,
+          'no-hardcoded-colors': noHardcodedColors,
+          'no-inline-styles': noInlineStyles,
         },
       },
     },

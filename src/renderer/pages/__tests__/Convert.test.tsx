@@ -302,7 +302,7 @@ describe('Convert', () => {
   it('applies the global encoder type to the video codec list', async () => {
     useSettingsStore.setState({ encoderType: 'software' });
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
     expect(await screen.findByRole('option', { name: 'H.264 (libx264)' })).toBeInTheDocument();
     expect(screen.queryByRole('option', { name: 'H.264 (NVENC)' })).not.toBeInTheDocument();
   });
@@ -311,7 +311,7 @@ describe('Convert', () => {
     useSettingsStore.setState({ encoderType: 'software' });
     useConversionStore.setState({ encoderType: 'hardware' });
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
     expect(await screen.findByRole('option', { name: 'H.264 (NVENC)' })).toBeInTheDocument();
     expect(screen.queryByRole('option', { name: 'H.264 (libx264)' })).not.toBeInTheDocument();
   });
@@ -319,21 +319,21 @@ describe('Convert', () => {
   it('does not filter the codec list when hardware acceleration is disabled', async () => {
     useSettingsStore.setState({ hardwareAcceleration: false, encoderType: 'software' });
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     expect(await screen.findByRole('option', { name: 'H.264 (libx264)' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'H.264 (NVENC)' })).toBeInTheDocument();
   });
 
   it('selecting an encoder type updates the per-conversion override', () => {
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByRole('option', { name: 'settings.encoderTypeHardware' }));
     expect(useConversionStore.getState().encoderType).toBe('hardware');
   });
 
   it('shows an info tooltip explaining the encoder type dropdown', async () => {
     renderPage();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[3]);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[4]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('convert.encoderTypeHint');
   });
 
@@ -343,6 +343,7 @@ describe('Convert', () => {
     const expected = new Set([
       'convert.inputFileHint',
       'convert.outputFileHint',
+      'profiles.tooltip',
       'convert.losslessCopyHint',
       'convert.encoderTypeHint',
       'convert.videoCodecHint',
@@ -368,7 +369,7 @@ describe('Convert', () => {
   it('does not show the encoder type info tooltip when hardware acceleration is disabled', () => {
     useSettingsStore.setState({ hardwareAcceleration: false });
     renderPage();
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(11);
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(12);
   });
 
   it('shows a hardware acceleration alert above the encoder type field', () => {

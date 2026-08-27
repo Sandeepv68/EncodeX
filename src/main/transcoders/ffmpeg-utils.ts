@@ -63,6 +63,9 @@ export function buildFfmpegArgs(input: string, output: string, options: Conversi
   if (!options.copy) {
     args.push(...getHwAccelArgs(options.videoCodec, options.hardwareAcceleration, options.hwaccelMode));
   }
+  if (options.inputArgs?.length) {
+    args.push(...options.inputArgs);
+  }
   args.push(FFMPEG_FLAGS.INPUT, input);
 
   if (options.copy) {
@@ -119,6 +122,10 @@ export function buildFfmpegArgs(input: string, output: string, options: Conversi
   if (options.duration) {
     args.push(FFMPEG_FLAGS.DURATION, options.duration);
     log.debug(LOG_DURATION_CAPITALIZED, options.duration);
+  }
+
+  if (options.extraArgs?.length) {
+    args.push(...options.extraArgs);
   }
 
   args.push(FFMPEG_FLAGS.OVERWRITE, output);

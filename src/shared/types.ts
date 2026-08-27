@@ -81,6 +81,8 @@ export interface CodecContainerInfo {
  * @property {boolean} [video] - Whether the output includes a video stream.
  * @property {boolean} [hardwareAcceleration] - Whether hardware acceleration is enabled.
  * @property {HwAccelMode} [hwaccelMode] - Hardware acceleration mode to use.
+ * @property {string[]} [extraArgs] - Extra FFmpeg output arguments appended to the command.
+ * @property {string[]} [inputArgs] - Extra FFmpeg input arguments prepended to the command.
  */
 export interface ConversionOptions {
   videoCodec?: string;
@@ -99,6 +101,67 @@ export interface ConversionOptions {
   video?: boolean;
   hardwareAcceleration?: boolean;
   hwaccelMode?: HwAccelMode;
+  extraArgs?: string[];
+  inputArgs?: string[];
+}
+
+/**
+ * Top-level category for grouping conversion profiles in the UI.
+ * Each category maps to a section in the profile selector.
+ * @typedef {string} ProfileCategory
+ */
+export type ProfileCategory = 'web-social' | 'devices' | 'video' | 'professional' | 'streaming' | 'audio' | 'images' | 'advanced';
+
+/**
+ * A pre-configured conversion profile that maps a human-facing name to a
+ * specific container, codecs, and encoding constraints. Profiles are the core
+ * abstraction for the profile system: selecting one populates the conversion
+ * form fields automatically.
+ *
+ * Built-in profiles are provided by the application catalogue and cannot be
+ * edited or deleted. User-created profiles are persisted to localStorage.
+ *
+ * @interface ConversionProfile
+ * @property {string} id - Unique identifier (builtin: 'yt-1080p', user: 'custom-<ts>').
+ * @property {string} name - Human-readable display name (e.g. 'YouTube 1080p').
+ * @property {ProfileCategory} category - UI grouping category.
+ * @property {string} [icon] - FontAwesome icon key for the category header.
+ * @property {string} container - Output container format (e.g. 'mp4', 'mkv', 'mov').
+ * @property {string} videoCodec - FFmpeg video encoder name (e.g. 'libx264').
+ * @property {string} audioCodec - FFmpeg audio encoder name (e.g. 'aac').
+ * @property {string} [videoBitrate] - Target video bitrate (e.g. '8M').
+ * @property {string} [audioBitrate] - Target audio bitrate (e.g. '192k').
+ * @property {number} [crf] - Constant Rate Factor quality (0-51 for x264/x265).
+ * @property {string} [preset] - Encoding speed preset (e.g. 'medium', 'slow').
+ * @property {string} [scale] - Output resolution WIDTHxHEIGHT (e.g. '1920x1080').
+ * @property {string} [pixelFormat] - Output pixel format (e.g. 'yuv420p').
+ * @property {number} [fps] - Output frame rate (e.g. 30, 60).
+ * @property {string[]} [extraArgs] - Extra raw FFmpeg output arguments.
+ * @property {string} [extension] - Output file extension override (no leading dot).
+ * @property {boolean} builtin - True for catalogue profiles, false for user-created.
+ * @property {string} [compatibility] - Compatibility tier: 'Broad', 'Modern', or 'Professional'.
+ * @property {string} [description] - Short description shown in the profile selector.
+ */
+export interface ConversionProfile {
+  id: string;
+  name: string;
+  category: ProfileCategory;
+  icon?: string;
+  container: string;
+  videoCodec: string;
+  audioCodec: string;
+  videoBitrate?: string;
+  audioBitrate?: string;
+  crf?: number;
+  preset?: string;
+  scale?: string;
+  pixelFormat?: string;
+  fps?: number;
+  extraArgs?: string[];
+  extension?: string;
+  builtin: boolean;
+  compatibility?: string;
+  description?: string;
 }
 
 /**

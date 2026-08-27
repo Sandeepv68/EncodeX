@@ -482,7 +482,7 @@ export interface MediaPlayerProps {
  * @interface PageContainerProps
  */
 export interface PageContainerProps {
-  title: string;
+  title: ReactNode;
   icon?: ReactNode;
   aside?: ReactNode;
   paper?: boolean;

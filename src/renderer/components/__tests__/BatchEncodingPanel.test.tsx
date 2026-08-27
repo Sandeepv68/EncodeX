@@ -79,7 +79,7 @@ describe('BatchEncodingPanel', () => {
 
   it('renders all seven controls for the transcode operation', () => {
     renderPanel();
-    expect(screen.getAllByRole('combobox')).toHaveLength(7);
+    expect(screen.getAllByRole('combobox')).toHaveLength(8);
     expect(screen.getByText('convert.videoBitrate')).toBeInTheDocument();
     expect(screen.getByText('convert.audioBitrate')).toBeInTheDocument();
     expect(screen.getByText('convert.scale')).toBeInTheDocument();
@@ -88,7 +88,7 @@ describe('BatchEncodingPanel', () => {
 
   it('lists the container options compatible with the selected video codec', () => {
     renderPanel();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[3]);
     expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
     expect(screen.getByText('mp4')).toBeInTheDocument();
     expect(screen.getByText('mkv')).toBeInTheDocument();
@@ -97,21 +97,21 @@ describe('BatchEncodingPanel', () => {
 
   it('fires onContainerChange when a container is chosen', () => {
     const { props } = renderPanel();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[3]);
     fireEvent.click(screen.getByText('mkv'));
     expect(props.onContainerChange).toHaveBeenCalledWith('mkv');
   });
 
   it('fires onVideoCodecChange when a video codec is chosen', () => {
     const { props } = renderPanel();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByText('Theora (libtheora)'));
     expect(props.onVideoCodecChange).toHaveBeenCalledWith('libtheora');
   });
 
   it('renders only audio controls for the extract audio operation', () => {
     renderPanel({ operation: 'extract_audio' });
-    expect(screen.getAllByRole('combobox')).toHaveLength(3);
+    expect(screen.getAllByRole('combobox')).toHaveLength(4);
     expect(screen.getByText('convert.audioBitrate')).toBeInTheDocument();
     expect(screen.queryByText('convert.videoBitrate')).not.toBeInTheDocument();
     expect(screen.queryByText('convert.scale')).not.toBeInTheDocument();
@@ -119,7 +119,7 @@ describe('BatchEncodingPanel', () => {
 
   it('lists only containers compatible with the selected audio codec', () => {
     renderPanel({ operation: 'extract_audio', audioCodec: 'aac' });
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
     expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
     expect(screen.getByText('m4a')).toBeInTheDocument();
     expect(screen.queryByText('mp3')).not.toBeInTheDocument();
@@ -127,7 +127,7 @@ describe('BatchEncodingPanel', () => {
 
   it('shows mp3 containers for the libmp3lame audio codec', () => {
     renderPanel({ operation: 'extract_audio', audioCodec: 'libmp3lame' });
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
     expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
     expect(screen.getByText('mp3')).toBeInTheDocument();
     expect(screen.queryByText('m4a')).not.toBeInTheDocument();
@@ -138,7 +138,7 @@ describe('BatchEncodingPanel', () => {
     expect(screen.getByText('imageCompress.outputFormat')).toBeInTheDocument();
     expect(screen.getByText('imageCompress.quality')).toBeInTheDocument();
     expect(screen.getByText('imageCompress.scale')).toBeInTheDocument();
-    expect(screen.getAllByRole('combobox')).toHaveLength(2);
+    expect(screen.getAllByRole('combobox')).toHaveLength(3);
     expect(screen.queryByText('convert.videoCodec')).not.toBeInTheDocument();
     expect(screen.queryByText('convert.audioCodec')).not.toBeInTheDocument();
   });
@@ -151,7 +151,7 @@ describe('BatchEncodingPanel', () => {
 
   it('lists the image formats for the compress image operation', () => {
     renderPanel({ operation: 'compress_image' });
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
     expect(screen.getByText('JPEG')).toBeInTheDocument();
     expect(screen.getByText('WebP')).toBeInTheDocument();

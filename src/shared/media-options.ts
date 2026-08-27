@@ -137,7 +137,19 @@ export const VIDEO_BITRATE_OPTIONS = [
  * resolution is kept.
  * @const {readonly string[]} SCALE_OPTIONS
  */
-export const SCALE_OPTIONS = ['', '3840x2160', '2560x1440', '1920x1080', '1280x720', '854x480', '640x360'] as const;
+export const SCALE_OPTIONS = [
+  '',
+  '3840x2160',
+  '2560x1440',
+  '1920x1080',
+  '1280x720',
+  '854x480',
+  '640x360',
+  '2160x3840',
+  '1080x1920',
+  '720x1280',
+  '1080x1080',
+] as const;
 
 /**
  * Selectable video encoders. Each entry pairs an FFmpeg encoder name (`value`)

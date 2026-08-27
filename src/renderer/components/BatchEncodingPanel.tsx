@@ -21,7 +21,8 @@
  * components.
  */
 
-import { Grid, MenuItem, TextField, InputAdornment } from '@mui/material';
+import { useState } from 'react';
+import { Grid, MenuItem, TextField, InputAdornment, Box } from '@mui/material';
 import { faPalette, faBrush, faDroplet, faSun } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +31,8 @@ import { QSCALE_RANGE } from '../../shared/transcoder-constants';
 import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
 import CodecSelect from './CodecSelect';
 import GroupedSelect from './GroupedSelect';
+import ProfileSelector from './ProfileSelector';
+import ProfileEditorDialog from './ProfileEditorDialog';
 import { useFieldId } from '../hooks/useFieldId';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import type { BatchEncodingPanelProps } from './types';
@@ -92,6 +95,7 @@ const pixelGroupIcons: Record<string, IconDefinition> = {
  */
 export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
   const { t } = useTranslation();
+  const [profileEditorOpen, setProfileEditorOpen] = useState(false);
 
   const lockedAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.OPTIONS_LOCKED));
   const editableAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.OPTIONS_EDITABLE));
@@ -109,6 +113,14 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
       <EncodingTitle variant="subtitle2" color="text.secondary">
         {t('batchQueue.encodingOptions')}
       </EncodingTitle>
+
+      <Box sx={{ mb: 1 }}>
+        <FieldLabel>{t('profiles.label')}</FieldLabel>
+        <ProfileSelector onCreateNew={() => setProfileEditorOpen(true)} testId="batch-profile-selector" />
+      </Box>
+
+      <ProfileEditorDialog open={profileEditorOpen} onClose={() => setProfileEditorOpen(false)} />
+
       {props.optionsLocked && !lockedAlertDismissed && (
         <OptionsLockedAlert
           severity="warning"
@@ -206,7 +218,7 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
               >
                 {VIDEO_BITRATE_OPTIONS.map((b) => (
                   <MenuItem key={b} value={b}>
-                    {b || 'Auto'}
+                    {b || t('status.auto')}
                   </MenuItem>
                 ))}
               </TextField>

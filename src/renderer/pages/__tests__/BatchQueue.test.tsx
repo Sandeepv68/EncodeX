@@ -202,7 +202,7 @@ describe('BatchQueue', () => {
     renderPage();
     fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
     fireEvent.click(screen.getByText('batchQueue.operationCompressImage'));
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[3]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[4]);
     fireEvent.click(screen.getByText('WebP'));
     fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '15' } });
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
@@ -233,7 +233,7 @@ describe('BatchQueue', () => {
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
     queueAddMock.mockResolvedValue('job-3');
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[5]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[6]);
     fireEvent.click(screen.getByText('mkv'));
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -247,9 +247,9 @@ describe('BatchQueue', () => {
     selectFilesMock.mockResolvedValue(['/in/video.mkv']);
     queueAddMock.mockResolvedValue('job-3');
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[5]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[6]);
     fireEvent.click(screen.getByText('mp4'));
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[3]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[4]);
     fireEvent.click(screen.getByText('Theora (libtheora)'));
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));

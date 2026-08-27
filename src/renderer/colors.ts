@@ -422,6 +422,53 @@ export const TITLEBAR_COLORS = {
 } as const;
 
 /**
+ * Brand / platform colors used for profile icons in the profile selector
+ * dropdown. These are fixed brand colors that stay the same across every theme.
+ */
+export const PROFILE_ICON_COLORS = {
+  youtube: '#FF0000',
+  instagram: '#E4405F',
+  tiktok: '#25F4EE',
+  facebook: '#1877F2',
+  x: '#000000',
+  apple: '#6e6e73',
+  appleTv: '#555555',
+  android: '#3DDC84',
+  playstation: '#003087',
+  xbox: '#107C10',
+  nintendo: '#E60012',
+  mp4: '#1976D2',
+  mkv: '#00897B',
+  mov: '#7B1FA2',
+  webm: '#00C853',
+  avi: '#F57C00',
+  mpeg: '#78909C',
+  proRes: '#A3AAAE',
+  dnxhr: '#9C27B0',
+  cineform: '#2196F3',
+  lossless: '#FF9800',
+  hls: '#1565C0',
+  dash: '#2E7D32',
+  mp3: '#9E9E9E',
+  aac: '#1976D2',
+  opus: '#7C4DFF',
+  vorbis: '#4CAF50',
+  flac: '#FFC107',
+  alac: '#9E9E9E',
+  wav: '#1976D2',
+  aiff: '#9C27B0',
+  dolby: '#D32F2F',
+  jpeg: '#1976D2',
+  png: '#2E7D32',
+  webp: '#00897B',
+  avif: '#7B1FA2',
+  tiff: '#F57C00',
+  bmp: '#78909C',
+  gif: '#E91E63',
+  fallback: '#78909C',
+} as const;
+
+/**
  * Factory for shared CSS box-shadow strings on elevated surfaces, sized with
  * `theme.typography.pxToRem()` so they scale with the root font size.
  * SOFT_* are used for resting cards and panels, SOFT_HOVER_* for their hover

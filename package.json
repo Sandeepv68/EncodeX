@@ -23,6 +23,8 @@
     "lint": "eslint src/renderer",
     "lint:px": "eslint -c scripts/eslint.px.config.mjs src/renderer",
     "lint:colors": "eslint -c scripts/eslint.colors.config.mjs src/renderer",
+    "lint:rem": "eslint -c scripts/eslint.rem.config.mjs src/renderer",
+    "lint:inline-styles": "eslint -c scripts/eslint.inline-styles.config.mjs src/renderer",
     "validate:locales": "node scripts/validate-locales.mjs",
     "typecheck:renderer": "tsc -p tsconfig.renderer.json --noEmit",
     "typecheck:main": "tsc -p tsconfig.main.json --noEmit",
