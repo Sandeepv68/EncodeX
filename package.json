@@ -106,7 +106,7 @@
     "concurrently": "^10.0.4",
     "electron": "^43.4.0",
     "electron-builder": "^26.15.3",
-    "eslint": "^9.39.5",
+    "eslint": "^10.9.1",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "jsdom": "^30.0.1",
     "playwright": "^1.62.0",
