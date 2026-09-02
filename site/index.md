@@ -110,6 +110,11 @@ One clean home screen. Every tool one click away. If you can use a web browser, 
   <p>Got 30 videos from your phone, or 100 photos from an event? Drag them all in at once. EncodeX lines them up and works through them one by one while you grab a coffee. Come back to everything done — it can even shut your computer down automatically when it finishes.</p>
 </div>
 
+<div class="card wide">
+  <h3>🎛️ Ready-Made Profiles for Every Occasion</h3>
+  <p>Over 140 built-in conversion profiles do the configuring for you — export straight to YouTube, Instagram, TikTok, Apple devices, ProRes, HLS streaming, and more. Pick a profile, and every setting fills in automatically. Save your own custom profiles too, and EncodeX remembers the ones you use most.</p>
+</div>
+
 ## Why People Love EncodeX
 
 ::: tip 💚 Completely Free, Forever

@@ -21,6 +21,14 @@ Funciona en Windows, Mac y Linux, es completamente gratis y habla más de 35 idi
 
 Puedes convertir entre prácticamente todos los formatos de vídeo y audio que encontrarás: MP4, MKV, AVI, MOV, WebM, MP3, WAV, FLAC y decenas más. Si no sabes qué elegir, los ajustes predeterminados son un gran punto de partida.
 
+## Elige un perfil y listo
+
+¿No quieres complicarte con los ajustes? EncodeX incluye más de 140 perfiles de conversión listos para usar, cada uno ajustado para un caso concreto. ¿Exportar un vídeo para YouTube en 1080p? Hay un perfil para eso. ¿Un Reel de Instagram con el formato correcto? A un clic de distancia. ¿ProRes para un editor de vídeo? Resuelto.
+
+Los perfiles están organizados en 8 categorías: Web y Social (YouTube, Instagram, TikTok, Facebook, X), Dispositivos (Apple, Android, consolas de juego), Códecs de vídeo, Profesional (ProRes, DNxHD/HR), Streaming (HLS, DASH), Audio, Imágenes y Avanzado. Elige uno y todos los ajustes correctos se completan automáticamente: códec, bitrate, calidad, resolución y más. Después de aplicar un perfil, puedes modificar lo que quieras.
+
+Si usas los mismos ajustes una y otra vez, guárdalos como tu propio perfil. Puedes crear, editar y eliminar perfiles personalizados, y EncodeX recuerda los 5 más usados recientemente para acceso rápido.
+
 ## Extraer solo el audio de un vídeo
 
 <img src="/images/extract_audio.webp" alt="Extracción de audio" width="1600" height="1054" loading="lazy">

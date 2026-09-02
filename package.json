@@ -122,7 +122,7 @@
     "@docsearch/react": "^3.9.0"
   },
   "build": {
-    "appId": "com.openconverter.app",
+    "appId": "com.encodex.app",
     "productName": "EncodeX",
     "directories": {
       "output": "release"

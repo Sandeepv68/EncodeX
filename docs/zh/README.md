@@ -45,6 +45,7 @@ EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大功能带�
 ## ✨ 功能特性
 
 - **🔄 媒体转换** — 51 种视频编解码器、27 种音频编解码器、56 种像素格式，支持编解码器/码率/缩放/质量设置
+- **🎛️ 转换配置文件** — 8 个类别（YouTube、Instagram、TikTok、Apple、Android、ProRes、HLS 等）中 140+ 个预配置预设，支持自定义配置文件创建和最近使用跟踪
 - **⚡ 硬件加速** — NVIDIA NVENC、Intel QSV、AMD AMF、VAAPI、Apple VideoToolbox、Media Foundation
 - **✂️ 视频裁剪** — 借助内置播放器实现逐帧精确裁剪（rawvideo + PCM 管道、Canvas + Web Audio），并提供可缩放的进度条（波形 + 缩略图拼接）
 - **📋 批量队列** — 并行处理（最多 4 个并发任务），支持实时进度、逐任务错误、暂停/继续、拖拽重新排序、任务选项编辑、状态筛选、JSON 导出/导入，以及完成后的电源操作（关机/睡眠/休眠）

@@ -302,7 +302,6 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
             display: 'flex',
             alignItems: 'center',
             py: 1,
-            pl: 1.5,
           }}
         >
           <Grow in timeout={350}>

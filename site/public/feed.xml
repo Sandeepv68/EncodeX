@@ -5,8 +5,18 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Thu, 27 Aug 2026 16:23:22 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 02 Sep 2026 15:43:09 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Introducing Conversion Profiles — 140+ Presets for One-Click Encoding</title>
+      <link>https://encodex.in/blog/releases/conversion-profiles</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/conversion-profiles</guid>
+      <description>EncodeX now ships with over 140 built-in conversion profiles across 8 categories. Pick a preset for YouTube, Instagram, TikTok, Apple devices, ProRes, HLS streaming, and more — all your settings fill in automatically.</description>
+      <pubDate>Wed, 02 Sep 2026 00:00:00 GMT</pubDate>
+      <category>feature</category>
+      <category>profiles</category>
+      <category>release</category>
+    </item>
     <item>
       <title>Best Video Format for YouTube &amp; Social Media in 2026</title>
       <link>https://encodex.in/blog/releases/best-video-format-for-social-media</link>

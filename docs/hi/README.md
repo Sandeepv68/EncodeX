@@ -45,6 +45,7 @@ EncodeX एक क्रॉस-प्लेटफ़ॉर्म मल्टी
 ## ✨ विशेषताएँ
 
 - **🔄 मीडिया रूपांतरण** — 51 video codecs, 27 audio codecs, 56 pixel formats जिनमें codec/bitrate/scale/quality नियंत्रण हैं
+- **🎛️ रूपांतरण प्रोफ़ाइल** — 8 श्रेणियों (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS आदि) में 140+ पूर्व-कॉन्फ़िगर किए गए प्रीसेट, कस्टम प्रोफ़ाइल निर्माण और हाल ही में उपयोग की गई प्रोफ़ाइलों की ट्रैकिंग के साथ
 - **⚡ हार्डवेयर त्वरण** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation
 - **✂️ वीडियो कटिंग** — एक built-in player (rawvideo + PCM pipes, Canvas + Web Audio) के साथ frame-accurate trimming और zoomable timeline (waveform + thumbnail montage)
 - **📋 बैच क्यू** — real-time progress, per-job errors, pause/resume, drag-and-drop reordering, job option editing, status filters, JSON export/import, और when-done power actions (shutdown/sleep/hibernate) के साथ समानांतर प्रोसेसिंग (अधिकतम 4 समवर्ती jobs)

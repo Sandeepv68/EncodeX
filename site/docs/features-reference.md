@@ -13,6 +13,18 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below).
 
+### Conversion Profiles
+
+Apply pre-configured encoding presets to instantly fill in conversion settings. Profiles encapsulate a complete encoding configuration — container format, video codec, audio codec, bitrate, CRF/quality, scale, pixel format, and advanced FFmpeg arguments — so you don't have to configure every setting manually.
+
+- **140+ built-in profiles** across 8 categories: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Devices (Apple, Android, gaming consoles), Video codecs, Professional (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Images, and Advanced
+- **Custom profiles** — create, edit, and delete your own profiles; persisted to local storage
+- **Recently used** — quick access to the last 5 applied profiles
+- **Category filtering** — browse profiles by category with icon badges
+- **Batch support** — apply profiles to individual batch jobs or the entire queue
+
+Profiles are available in the Convert page and Batch Queue. Selecting a profile automatically populates all relevant encoding fields, while still allowing manual overrides.
+
 ### Lossless Copy
 
 Stream-copy video or audio tracks without re-encoding (`-c copy`). Useful for fast container format changes, remuxing, or when quality preservation is critical.
