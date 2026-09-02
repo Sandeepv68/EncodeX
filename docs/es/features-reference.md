@@ -8,6 +8,18 @@ EncodeX es una herramienta multiplataforma de conversión multimedia que lleva l
 
 Convierte entre formatos de vídeo/audio con control granular sobre la selección de códecs (51 códecs de vídeo entre familias de codificadores por software y hardware, 27 códecs de audio), bitrate, resolución de salida (con conservación opcional de la relación de aspecto), formato de píxel (56 formatos agrupados por profundidad de bits), escala de calidad (qscale), inclusión de pista de audio y selección del núcleo transcoder. Se pueden poner varios archivos en cola mediante la Cola por lotes (ver abajo).
 
+### Perfiles de conversión
+
+Aplica preconfiguraciones de codificación para rellenar al instante los ajustes de conversión. Los perfiles encapsulan una configuración de codificación completa — formato de contenedor, códec de vídeo, códec de audio, bitrate, CRF/calidad, escala, formato de píxel y argumentos FFmpeg avanzados — para que no tengas que configurar cada ajuste manualmente.
+
+- **Más de 140 perfiles integrados** en 8 categorías: Web y Social (YouTube, Instagram, TikTok, Facebook, X), Dispositivos (Apple, Android, consolas de juego), Códecs de vídeo, Profesional (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Imágenes y Avanzado
+- **Perfiles personalizados** — crea, edita y elimina tus propios perfiles; guardados en el almacenamiento local
+- **Uso reciente** — acceso rápido a los últimos 5 perfiles aplicados
+- **Filtrado por categoría** — navega por categoría con insignias de iconos
+- **Compatibilidad con lotes** — aplica perfiles a trabajos por lotes individuales o a toda la cola
+
+Los perfiles están disponibles en la página de Conversión y en la Cola por lotes. Seleccionar un perfil rellena automáticamente todos los campos de codificación relevantes, y aun así permite sobrescribir manualmente.
+
 ### Copia sin pérdida
 
 Copia de stream de las pistas de vídeo o audio sin recodificar (`-c copy`). Útil para cambios rápidos de contenedor, remuxing o cuando preservar la calidad es crítico.

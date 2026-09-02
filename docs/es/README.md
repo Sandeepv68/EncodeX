@@ -45,6 +45,7 @@ EncodeX es una herramienta multiplataforma de conversión multimedia que lleva t
 ## ✨ Características
 
 - **🔄 Conversión multimedia** — 51 códecs de vídeo, 27 códecs de audio, 56 formatos de píxel con controles de códec/bitrate/escala/calidad
+- **🎛️ Perfiles de conversión** — más de 140 preconfiguraciones en 8 categorías (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS y más) con creación de perfiles personalizados y seguimiento de uso reciente
 - **⚡ Aceleración por hardware** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation
 - **✂️ Corte de vídeo** — Recorte con precisión de fotograma gracias a un reproductor integrado (conductos rawvideo + PCM, Canvas + Web Audio) y una línea de tiempo ampliable (onda de forma + montaje de miniaturas)
 - **📋 Cola por lotes** — Procesamiento en paralelo (hasta 4 tareas simultáneas) con progreso en tiempo real, errores por tarea, pausa/reanudación, reordenamiento por arrastrar y soltar, edición de opciones de tarea, filtros por estado, exportación/importación JSON y acciones de energía al terminar (apagado/suspensión/hibernación)

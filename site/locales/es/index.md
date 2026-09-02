@@ -108,6 +108,11 @@ Una pantalla de inicio limpia. Cada herramienta a un clic. Si sabes usar un nave
   <p>¿Tienes 30 vídeos del teléfono o 100 fotos de un evento? Arrástralos todos juntos. EncodeX los pone en fila y los procesa uno a uno mientras tomas un café. Incluso puede apagar la computadora automáticamente al terminar.</p>
 </div>
 
+<div class="card wide">
+  <h3>🎛️ Perfiles listos para cualquier ocasión</h3>
+  <p>Más de 140 perfiles de conversión integrados hacen la configuración por ti — exporta directamente a YouTube, Instagram, TikTok, dispositivos Apple, ProRes, streaming HLS y más. Elige un perfil y todos los ajustes se completan automáticamente. Guarda también tus propios perfiles, y EncodeX recuerda los que más usas.</p>
+</div>
+
 ## Por qué la gente ama EncodeX
 
 ::: tip 💚 Gratis siempre

@@ -482,6 +482,7 @@ export default defineConfig({
   description:
     'A free, easy-to-use app to convert videos and audio, trim clips, extract music from video, and shrink photos. Works on Windows, Mac, and Linux.',
   base: '/',
+  cleanUrls: true,
   srcExclude: ['**/README.md'],
   rewrites: (path) => (path.startsWith('locales/') ? path.slice('locales/'.length) : path),
   markdown: {
@@ -540,7 +541,7 @@ gtag('config', 'G-SM28DL4DYR');`,
     const pageLang = detectLocaleFromPath(pagePath)
     const localePrefix = detectLocalePrefix(pagePath)
     const cleanPath = localePrefix ? pagePath.slice(localePrefix.length) : pagePath
-    const pageSlug = cleanPath.replace(/\.md$/, '').replace(/\/index$/, '') || ''
+    const pageSlug = cleanPath.replace(/^\/+/, '').replace(/\.md$/, '').replace(/\/index$/, '') || ''
     const canonicalUrl = pageSlug ? `${SITE_URL}/${localePrefix ? localePrefix + '/' : ''}${pageSlug}` : `${SITE_URL}/${localePrefix ? localePrefix + '/' : ''}`
 
     head.push(['link', { rel: 'canonical', href: canonicalUrl }])

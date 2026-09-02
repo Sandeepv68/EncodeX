@@ -108,6 +108,11 @@ Ein aufgeräumter Startbildschirm. Jedes Werkzeug einen Klick entfernt. Wenn Sie
   <p>30 Handyvideos? 100 Fotos von einer Veranstaltung? Ziehen Sie alles auf einmal hinein. EncodeX reiht sie ein und arbeitet sie nacheinander ab, während Sie einen Kaffee trinken. Es kann den Computer am Ende sogar automatisch herunterfahren.</p>
 </div>
 
+<div class="card wide">
+  <h3>🎛️ Fertige Profile für jeden Zweck</h3>
+  <p>Über 140 eingebaute Konvertierungsprofile übernehmen die Einstellung für Sie — exportieren Sie direkt nach YouTube, Instagram, TikTok, Apple-Geräte, ProRes, HLS-Streaming und mehr. Ein Profil wählen, und jede Einstellung füllt sich automatisch. Speichern Sie auch eigene Profile, und EncodeX merkt sich die am häufigsten verwendeten.</p>
+</div>
+
 ## Warum Leute EncodeX lieben
 
 ::: tip 💚 Für immer kostenlos

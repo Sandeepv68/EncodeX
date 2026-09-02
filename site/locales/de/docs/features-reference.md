@@ -8,6 +8,18 @@ EncodeX ist ein plattformübergreifendes Multimedia-Konvertierungstool, das die 
 
 Konvertieren Sie zwischen Video-/Audioformaten mit granularer Kontrolle über Codecauswahl (51 Video-Codecs aus Software- und Hardware-Encoder-Familien, 27 Audio-Codecs), Bitrate, Ausgabeauflösung (mit optionaler Erhaltung des Seitenverhältnisses), Pixelformat (56 Formate gruppiert nach Bittiefe), Qualitätsstufe (qscale), Einbeziehung der Audiospur und Wahl des Transcoder-Kerns. Mehrere Dateien können über die Batch-Warteschlange eingereiht werden (siehe unten).
 
+### Konvertierungsprofile
+
+Wenden Sie vorkonfigurierte Encoding-Voreinstellungen an, um Konvertierungseinstellungen sofort auszufüllen. Profile kapseln eine vollständige Encoding-Konfiguration — Containerformat, Video-Codec, Audio-Codec, Bitrate, CRF/Qualität, Skalierung, Pixelformat und erweiterte FFmpeg-Argumente — sodass Sie nicht jede Einstellung manuell konfigurieren müssen.
+
+- **Über 140 eingebaute Profile** in 8 Kategorien: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Geräte (Apple, Android, Spielkonsolen), Video-Codecs, Professionell (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Bilder und Erweitert
+- **Benutzerdefinierte Profile** — erstellen, bearbeiten und löschen Sie eigene Profile; im lokalen Speicher gespeichert
+- **Zuletzt verwendet** — Schnellzugriff auf die letzten 5 angewendeten Profile
+- **Kategoriefilter** — Profile nach Kategorie mit Icon-Badges durchsuchen
+- **Batch-Unterstützung** — Profile auf einzelne Batch-Jobs oder die gesamte Warteschlange anwenden
+
+Profile sind auf der Konvertieren-Seite und in der Batch-Warteschlange verfügbar. Das Auswählen eines Profils füllt automatisch alle relevanten Encoding-Felder aus, während manuelle Überschreibungen weiterhin möglich sind.
+
 ### Verlustfreies Kopieren
 
 Stream-Kopie von Video- oder Audiospuren ohne Re-Encoding (`-c copy`). Nützlich für schnelle Containerwechsel, Remuxing oder wenn Qualitätserhaltung entscheidend ist.

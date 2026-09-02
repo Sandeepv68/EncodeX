@@ -8,6 +8,35 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below).
 
+### Conversion Profiles
+
+Choose from 140+ built-in conversion presets organized into 8 categories to instantly configure codec, bitrate, quality, resolution, and container settings — no manual tweaking required. Categories include:
+
+- **Web & Social** — optimized presets for YouTube, Instagram, TikTok, Facebook, and X (Twitter)
+- **Devices** — Apple (iPhone, iPad, Mac, Apple TV), Android, gaming consoles (PlayStation, Xbox, Nintendo Switch)
+- **Video Codecs** — codec-specific presets (H.264, H.265/HEVC, VP8, VP9, AV1, ProRes, DNxHD/HR, FFV1, and more)
+- **Professional** — broadcast and post-production formats (ProRes 422/4444, DNxHD/HR, XDCAM, XAVC)
+- **Streaming** — HLS and DASH adaptive streaming presets
+- **Audio** — audio-only presets (MP3, AAC, FLAC, Opus, WAV) with configurable bitrate and sample rate
+- **Images** — image conversion presets for JPEG, PNG, WebP, and AVIF with quality controls
+- **Advanced** — raw FFmpeg argument presets and custom FFmpeg passthrough for power users
+
+Selecting a profile automatically fills in all relevant conversion fields (codec, bitrate, CRF, scale, pixel format, container). Profiles can be applied on both the Convert page and the Batch Queue.
+
+#### Custom Profiles
+
+Create, edit, and save your own custom conversion profiles. Custom profiles persist to `localStorage` and appear alongside the built-in catalogue. Builtin profiles are immutable — they cannot be edited or deleted.
+
+#### Recently Used
+
+The 5 most recently applied profiles are tracked and shown in a dedicated section for quick access.
+
+#### Extra Arguments
+
+Advanced and professional profiles can include raw FFmpeg `extraArgs` and `inputArgs` that are passed directly to the FFmpeg command line, enabling use cases like ProRes `-profile:v` flags, HLS `-hls_time` parameters, and null-output pipelines.
+
+> **Note:** Conversion profiles are available in the GUI only. The CLI uses explicit flags (`--video-codec`, `--audio-codec`, etc.) for conversion settings.
+
 ### Lossless Copy
 
 Stream-copy video or audio tracks without re-encoding (`-c copy`). Useful for fast container format changes, remuxing, or when quality preservation is critical.

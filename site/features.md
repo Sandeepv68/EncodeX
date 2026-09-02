@@ -24,6 +24,14 @@ It works on Windows, Mac, and Linux, it's completely free, and it speaks 35 lang
 
 You can convert between virtually every video and audio format you'll ever run into — MP4, MKV, AVI, MOV, WebM, MP3, WAV, FLAC, and dozens more. If you're not sure what to pick, the default settings are a great place to start.
 
+## Pick a Profile and Go
+
+Don't want to fiddle with settings? EncodeX comes with over 140 ready-made conversion profiles — each one a carefully tuned preset for a specific use case. Want to export a video for YouTube at 1080p? There's a profile for that. Need an Instagram Reel in the right format? That's one click away. Rendering ProRes for a video editor? Covered.
+
+Profiles are organized into 8 categories: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Devices (Apple, Android, gaming consoles), Video codecs, Professional (ProRes, DNxHD/HR), Streaming (HLS, DASH), Audio, Images, and Advanced. Pick one, and all the right settings fill in automatically — codec, bitrate, quality, resolution, and more. You can still tweak anything after applying a profile.
+
+If you find yourself using the same custom settings over and over, save them as your own profile. You can create, edit, and delete custom profiles, and EncodeX remembers your 5 most recently used ones for quick access.
+
 ## Save Just the Audio From a Video
 
 <img src="/images/extract_audio.webp" alt="Audio Extraction" width="1600" height="1054" loading="lazy">

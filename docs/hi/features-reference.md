@@ -8,6 +8,18 @@ EncodeX एक क्रॉस-प्लेटफ़ॉर्म मल्टी
 
 Video/audio formats के बीच convert करें codec selection (software और hardware encoder families में 51 video codecs, 27 audio codecs), bitrate, output resolution (optional aspect-ratio preservation के साथ), pixel format (bit depth द्वारा grouped 56 formats), quality scale (qscale), audio track inclusion, और transcoder core selection पर granular controls के साथ। कई files Batch Queue के माध्यम से queue की जा सकती हैं (नीचे देखें)।
 
+### Conversion profiles
+
+Conversion settings को तुरंत भरने के लिए pre-configured encoding presets apply करें। Profiles एक पूर्ण encoding configuration encapsulate करते हैं — container format, video codec, audio codec, bitrate, CRF/quality, scale, pixel format, और advanced FFmpeg arguments — ताकि आपको हर setting manually configure न करनी पड़े।
+
+- **8 categories में 140+ built-in profiles**: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Devices (Apple, Android, gaming consoles), Video codecs, Professional (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Images, और Advanced
+- **Custom profiles** — अपने खुद के profiles create, edit और delete करें; local storage में saved रहते हैं
+- **हाल ही में उपयोग किए गए** — पिछले 5 applied profiles तक quick access
+- **Category filtering** — icon badges के साथ category द्वारा profiles browse करें
+- **Batch support** — अलग-अलग batch jobs या पूरी queue पर profiles apply करें
+
+Profiles Convert page और Batch Queue दोनों में available हैं। Profile select करने से सभी relevant encoding fields automatically fill हो जाते हैं, जबकि manual overrides की सुविधा बनी रहती है।
+
 ### Lossless copy
 
 Re-encoding के बिना video या audio tracks stream-copy करें (`-c copy`)। तेज़ container format changes, remuxing, या quality preservation critical होने पर उपयोगी।

@@ -21,6 +21,14 @@ EncodeX 是一款免费的电脑应用，几次点击就能解决常见的文件
 
 几乎可以在所有常见视频和音频格式之间转换：MP4、MKV、AVI、MOV、WebM、MP3、WAV、FLAC 等等。不知道选什么？默认设置就是最好的起点。
 
+## 选个配置文件，直接开始
+
+不想折腾设置？EncodeX 内置了 140 多个转换配置文件——每一个都是针对特定用途精心调校的预设。想导出一个 1080p 的 YouTube 视频？有对应的配置文件。Instagram Reel 需要正确格式？一键搞定。视频编辑器需要 ProRes？已覆盖。
+
+配置文件分为 8 个类别：Web 与社交（YouTube、Instagram、TikTok、Facebook、X）、设备（Apple、Android、游戏主机）、视频编解码器、专业（ProRes、DNxHD/HR）、流媒体（HLS、DASH）、音频、图片和高级。选择一个，所有正确的设置就会自动填入——编解码器、码率、质量、分辨率等。应用配置文件后，仍然可以手动调整。
+
+如果你反复使用同样的自定义设置，可以把它们保存为自己的配置文件。你可以创建、编辑和删除自定义配置文件，EncodeX 会记住最近使用的 5 个，方便快速访问。
+
 ## 只提取视频里的声音
 
 <img src="/images/extract_audio.webp" alt="音频提取" width="1600" height="1054" loading="lazy">
