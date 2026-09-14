@@ -26,6 +26,7 @@ loadDotenv({ quiet: true });
 
 import { app, BrowserWindow, Menu, shell } from 'electron';
 import * as path from 'path';
+import { format as formatArgs } from 'util';
 import { registerIpcHandlers } from './ipc/handlers';
 import { runCli, mapCliErrorToExitCode } from './cli/cli';
 import { Logger } from '../shared/logger';
@@ -175,6 +176,13 @@ function isCliMode(): boolean {
 }
 
 if (isCliMode()) {
+  // Keep CLI stdout reserved for command output: every internal log line
+  // (Logger.debug/info routes through console.log) is redirected to stderr so
+  // `--json` data stays parseable. This mirrors the stream-routing contract in
+  // cli-ui.ts ("status goes to stderr, stdout carries only data").
+  console.log = (...args: unknown[]) => {
+    process.stderr.write(`${formatArgs(...args)}\n`);
+  };
   log.info(LOG_STARTING_IN_CLI_MODE_ARGV, process.argv.slice(2));
   const cliSubcommand = process.argv.find((arg) => (CLI_SUBCOMMANDS as readonly string[]).includes(arg as never)) as string | undefined;
   recordAnalyticsEvent(
