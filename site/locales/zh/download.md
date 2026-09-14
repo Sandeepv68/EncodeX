@@ -1,22 +1,27 @@
 # 下载 EncodeX
 
-EncodeX **免费**，支持 Windows、Mac 和 Linux。在下面选择你的电脑类型，下载、安装，即可使用。
+EncodeX **免费**，支持 Windows、Mac 和 Linux。一款开源 FFmpeg 图形界面——无需账号、无水印、无文件大小限制——一切都在本地完成。
 
-::: tip 始终获取最新版本
-新版本发布在 [GitHub Releases 页面](https://github.com/Sandeepv68/EncodeX/releases)。下面的链接始终指向最新版——每个都附带架构、文件大小和 SHA-256 校验值，方便验证下载。
+::: tip 第一次来？接下来会发生什么
+安装应用，把一个视频或图片拖进窗口，选择一个配置（如 MP4 或“更小文件”），然后点击 **转换**——就完成了。所有操作都在你的电脑上本地完成。
+
+- **第一次使用 EncodeX？** 查看[可以做什么的示例](/zh/use-cases)，或[浏览所有工具](/zh/features)。
+- **卡住了？** 大多数转换只需要拖入一个文件 + 点击一个配置。仪表盘上的“快速上手”卡片会引导你选择目标。
 :::
-
-<LatestDownloads />
 
 ## <OsIcon name="windows" /> Windows
 
-**只想能用就行？** 点第一个按钮——适合绝大多数人。
+**Windows 10/11 · 64 位**——适合绝大多数人。
 
 <LatestDownloads platform="windows" />
 
-**安装：** 打开下载好的文件，按屏幕提示操作。支持 Windows 10 及以上。
+**安装：** 打开下载好的文件，按屏幕提示操作。
 
 不知道选哪个？选推荐版——如果不匹配，Windows 会提示你。
+
+### 其他平台
+
+[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 32 位](#windows)
 
 ## <OsIcon name="apple" /> Mac
 
@@ -70,6 +75,10 @@ chmod +x EncodeX-*.AppImage
 ## 需要帮助？
 
 遇到问题或有疑问，发邮件到 **[developer@encodex.in](mailto:developer@encodex.in)** ——会有真人回复你。
+
+## 隐私
+
+我们理解信任的重要性。每次转换都在你的电脑上进行——你的文件绝不会被上传、追踪或存储在服务器上。阅读[完整隐私政策](/zh/privacy)。
 
 ## 开发者：自行构建
 

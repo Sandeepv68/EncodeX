@@ -62,6 +62,8 @@ import {
 } from '../shared/log-constants';
 import { captureException, closeMonitoring, initMonitoring } from '../shared/monitoring/MonitoringService';
 import type { MonitoringConfig } from '../shared/monitoring/types';
+import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../shared/analytics/events';
 import { SENTRY_BUILD_CONFIG } from './generated/sentryBuildConfig';
 import { readMonitoringConsent } from './monitoring/consent';
 import { registerMonitoringIpcBridge } from './monitoring/ipcBridge';
@@ -174,6 +176,15 @@ function isCliMode(): boolean {
 
 if (isCliMode()) {
   log.info(LOG_STARTING_IN_CLI_MODE_ARGV, process.argv.slice(2));
+  const cliSubcommand = process.argv.find((arg) => (CLI_SUBCOMMANDS as readonly string[]).includes(arg as never)) as string | undefined;
+  recordAnalyticsEvent(
+    createAnalyticsEvent('cli_invoked', {
+      version: app.getVersion(),
+      platform: process.platform,
+      arch: process.arch,
+      subcommand: cliSubcommand,
+    }),
+  );
   app.whenReady().then(() => {
     runCli()
       .then(async () => {
@@ -330,6 +341,13 @@ if (isCliMode()) {
 
   app.whenReady().then(() => {
     log.info(LOG_APP_READY_CREATING_SPLASH_AND_MAIN_WINDOWS);
+    recordAnalyticsEvent(
+      createAnalyticsEvent('app_launched', {
+        version: app.getVersion(),
+        platform: process.platform,
+        arch: process.arch,
+      }),
+    );
     createSplashWindow();
     createWindow();
   });

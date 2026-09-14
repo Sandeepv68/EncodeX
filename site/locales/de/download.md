@@ -1,22 +1,27 @@
 # EncodeX herunterladen
 
-EncodeX ist **kostenlos** und läuft unter Windows, Mac und Linux. Wählen Sie unten Ihren Computertyp, laden Sie herunter, installieren Sie — fertig.
+EncodeX ist **kostenlos** und läuft unter Windows, Mac und Linux. Eine quelloffene FFmpeg-Oberfläche — ohne Konto, ohne Wasserzeichen und ohne Dateigrößen-Limits: alles läuft auf Ihrem Computer.
 
-::: tip Immer die neueste Version holen
-Neue Versionen erscheinen auf der [GitHub-Releases-Seite](https://github.com/Sandeepv68/EncodeX/releases). Die Links unten liefern Ihnen immer die aktuellste — jeweils mit Architektur, Dateigröße und SHA-256-Prüfsumme zur Überprüfung.
+::: tip Zum ersten Mal hier? So geht es weiter
+Installieren Sie die App, ziehen Sie ein Video oder ein Bild in das Fenster, wählen Sie ein Profil (z. B. MP4 oder „kleinere Datei") und klicken Sie **Konvertieren** — fertig. Alles läuft lokal auf Ihrem Computer.
+
+- **Neu bei EncodeX?** Sehen Sie sich [Beispiele an, was Sie damit machen können](/de/use-cases), oder [entdecken Sie die Werkzeuge](/de/features).
+- **Fragen?** Die meisten Umwandlungen brauchen nur einen Datei-Drop + einen Klick auf ein Profil. Die Karte „Erste Schritte" auf Ihrem Dashboard führt Sie durch die Zielwahl.
 :::
-
-<LatestDownloads />
 
 ## <OsIcon name="windows" /> Windows
 
-**Sie wollen nur, dass es funktioniert?** Klicken Sie auf die erste Schaltfläche — sie passt für fast alle.
+**Windows 10/11 · 64-Bit** — passt für fast alle.
 
 <LatestDownloads platform="windows" />
 
-**Installation:** Öffnen Sie die heruntergeladene Datei und folgen Sie den Schritten auf dem Bildschirm. Läuft unter Windows 10 und neuer.
+**Installation:** Öffnen Sie die heruntergeladene Datei und folgen Sie den Schritten auf dem Bildschirm.
 
 Unsicher, welche Sie nehmen sollen? Nehmen Sie die empfohlene — passt sie nicht, sagt es Windows schon.
+
+### Andere Plattformen
+
+[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 32-Bit](#windows)
 
 ## <OsIcon name="apple" /> Mac
 
@@ -70,6 +75,10 @@ Sie brauchen ein älteres Release? Klappen Sie unten die gewünschte Version auf
 ## Hilfe benötigt?
 
 Wenn etwas nicht klappt oder Sie eine Frage haben, schreiben Sie an **[developer@encodex.in](mailto:developer@encodex.in)** — ein echter Mensch antwortet.
+
+## Datenschutz
+
+Vertrauen ist uns wichtig. Jede Konvertierung läuft auf Ihrem Computer — Ihre Dateien werden niemals hochgeladen, verfolgt oder auf einem Server gespeichert. Lesen Sie die vollständige [Datenschutzerklärung](/de/privacy).
 
 ## Für Entwickler: Selbst bauen
 

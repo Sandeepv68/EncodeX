@@ -45,7 +45,7 @@ function parseFrontmatter(content: string) {
   return meta
 }
 
-function loadPostsFromDir(dir: string, urlPrefix: string, locale: string): BlogPost[] {
+function loadPostsFromDir(dir: string, urlPrefix: string, locale: string, subdir: string): BlogPost[] {
   const posts: BlogPost[] = []
   if (!existsSync(dir)) return posts
 
@@ -68,7 +68,7 @@ function loadPostsFromDir(dir: string, urlPrefix: string, locale: string): BlogP
       description: String(meta.description || ''),
       tags: Array.isArray(meta.tags) ? meta.tags : [],
       slug,
-      url: `${urlPrefix}/blog/releases/${slug}`,
+      url: `${urlPrefix}/blog/${subdir}/${slug}`,
       locale,
     })
   }
@@ -76,19 +76,24 @@ function loadPostsFromDir(dir: string, urlPrefix: string, locale: string): BlogP
   return posts
 }
 
+function loadBlogDirs(siteDir: string, urlPrefix: string, locale: string): BlogPost[] {
+  const posts: BlogPost[] = []
+  for (const subdir of ['releases', 'posts']) {
+    const dir = join(siteDir, 'blog', subdir)
+    posts.push(...loadPostsFromDir(dir, urlPrefix, locale, subdir))
+  }
+  return posts
+}
+
 export default defineLoader({
   load(): BlogPost[] {
     const siteDir = join(__dirname, '..', '..')
 
-    const posts: BlogPost[] = loadPostsFromDir(
-      join(siteDir, 'blog', 'releases'),
-      '',
-      'en',
-    )
+    const posts: BlogPost[] = loadBlogDirs(siteDir, '', 'en')
 
     for (const locale of LOCALES) {
-      const localeDir = join(siteDir, 'locales', locale, 'blog', 'releases')
-      posts.push(...loadPostsFromDir(localeDir, `/${locale}`, locale))
+      const localeDir = join(siteDir, 'locales', locale)
+      posts.push(...loadBlogDirs(localeDir, `/${locale}`, locale))
     }
 
     posts.sort((a, b) => (b.date > a.date ? 1 : b.date < a.date ? -1 : 0))

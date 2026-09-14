@@ -1,22 +1,27 @@
 # Baixar o EncodeX
 
-O EncodeX é **grátis** e funciona no Windows, Mac e Linux. Escolha abaixo o tipo do seu computador, baixe, instale e pronto.
+O EncodeX é **grátis** e funciona no Windows, Mac e Linux. Uma interface gráfica de código aberto para FFmpeg — sem conta, sem marca d'água e sem limite de tamanho: tudo roda no seu computador.
 
-::: tip Sempre pegue a versão mais nova
-As versões novas saem na [página de releases do GitHub](https://github.com/Sandeepv68/EncodeX/releases). Os links abaixo sempre trazem a mais recente — cada um com a arquitetura, o tamanho do arquivo e o checksum SHA-256 para você conferir.
+::: tip É a primeira vez aqui? Veja o que vem a seguir
+Instale o aplicativo, arraste um vídeo ou uma imagem para a janela, escolha um perfil (como MP4 ou "arquivo menor") e clique em **Converter** — pronto. Tudo roda localmente no seu computador.
+
+- **Novo no EncodeX?** Veja [exemplos do que você pode fazer](/pt/use-cases) ou [explore as ferramentas](/pt/features).
+- **Travou?** A maioria das conversões exige apenas soltar um arquivo + um clique no perfil. O cartão "Primeiros passos" do seu painel orienta você na escolha de um objetivo.
 :::
-
-<LatestDownloads />
 
 ## <OsIcon name="windows" /> Windows
 
-**Quer só que funcione?** Clique no primeiro botão — ele serve para quase todo mundo.
+**Windows 10/11 · 64 bits** — serve para quase todo mundo.
 
 <LatestDownloads platform="windows" />
 
-**Para instalar:** abra o arquivo baixado e siga os passos na tela. Funciona no Windows 10 ou mais novo.
+**Para instalar:** abra o arquivo baixado e siga os passos na tela.
 
 Não sabe qual escolher? Vá no recomendado — se não for compatível, o Windows avisa.
+
+### Outras plataformas
+
+[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 32 bits](#windows)
 
 ## <OsIcon name="apple" /> Mac
 
@@ -70,6 +75,10 @@ Precisa de uma versão mais antiga? Abra a versão desejada abaixo — cada arqu
 ## Precisa de ajuda?
 
 Se algo não funcionar ou surgir alguma dúvida, mande um e-mail para **[developer@encodex.in](mailto:developer@encodex.in)** — uma pessoa de verdade responde.
+
+## Privacidade
+
+Sabemos que a confiança importa. Cada conversão acontece no seu computador — seus arquivos nunca são enviados, rastreados ou armazenados em um servidor. Leia a [política de privacidade completa](/pt/privacy).
 
 ## Para desenvolvedores: compile você mesmo
 

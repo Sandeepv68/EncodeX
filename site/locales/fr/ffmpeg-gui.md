@@ -28,7 +28,16 @@ Si cela vous semble être une langue étrangère, vous n'êtes pas seul. Une **i
 - **Couper des clips** visuellement — glissez deux poignées sur une timeline, c'est fait
 - **Extraire l'audio** d'une vidéo et l'enregistrer en MP3
 - **Traiter par lots** des dossiers entiers de fichiers en une fois
-- **Accélération matérielle** via NVENC, QSV, AMF, VAAPI et VideoToolbox pour encoder beaucoup plus vite
+
+## Ultra-rapide : accélération matérielle intégrée
+
+EncodeX **utilise automatiquement votre GPU** pour rendre les conversions nettement plus rapides qu'un encodage logiciel classique. Aucune configuration, aucune recherche de pilotes — ça marche tout de suite :
+
+- Les utilisateurs **NVIDIA** profitent de NVENC ; **Intel** de Quick Sync (QSV) ; **AMD** de AMF
+- Les utilisateurs **Apple Silicon/Mac** profitent de VideoToolbox
+- Les utilisateurs **Linux** profitent de VAAPI — quelle que soit la marque de la GPU
+
+Votre matériel possède très probablement déjà un encodeur rapide. EncodeX le détecte et l'active pour vous — une longue conversion se termine ainsi en une fraction du temps.
 
 ## C'est open source et privé
 
@@ -44,7 +53,7 @@ EncodeX fonctionne sur Windows, macOS et Linux — une véritable **interface gr
 
 ## La meilleure alternative d'interface FFmpeg
 
-Vous cherchez la **meilleure interface FFmpeg** — ou une **alternative d'interface FFmpeg** à HandBrake ou Shutter Encoder ? EncodeX est gratuit, open source et délibérément facile à utiliser, tout en exposant des options d'encodage avancées pour ceux qui les veulent.
+Vous cherchez la **meilleure interface FFmpeg** — ou une **alternative d'interface FFmpeg** à HandBrake ou Shutter Encoder ? EncodeX est gratuit, open source et délibérément facile à utiliser, tout en exposant des options d'encodage avancées pour ceux qui les veulent. Découvrez notre comparaison de [l'alternative à HandBrake](/fr/handbrake-alternative).
 
 ## Commencer
 

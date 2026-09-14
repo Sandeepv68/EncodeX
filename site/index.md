@@ -1,12 +1,12 @@
 ---
 layout: home
-title: "Free Video, Audio & Photo Converter for Windows, Mac, Linux"
-description: "Convert videos and audio between any format, trim clips, extract music, and compress photos. Free, open-source, no watermarks. Works on Windows, Mac, and Linux."
+title: "EncodeX — Free, Open-Source FFmpeg GUI for Windows, macOS & Linux"
+description: "EncodeX is a free, open-source FFmpeg GUI for Windows, macOS, and Linux. Convert video and audio, compress files, trim clips, and extract music — entirely on your computer, with no command line."
 
 hero:
   name: EncodeX
-  text: The easy way to fix your video, audio, and photo files
-  tagline: Video won't play? File too big to send? Need just the music from a clip? EncodeX does it all in a few clicks — free, on Windows, Mac, and Linux.
+  text: FFmpeg power. Without the command line.
+  tagline: A free, open-source smart media converter for Windows, macOS, and Linux. Convert video, pull out audio, trim clips, and shrink files — everything runs on your computer and nothing leaves it.
   image:
     src: /images/icon.webp
     alt: EncodeX logo
@@ -83,6 +83,20 @@ One clean home screen. Every tool one click away. If you can use a web browser, 
 
 <img src="/images/home_dashboard.webp" srcset="/images/home_dashboard_800.webp 800w, /images/home_dashboard.webp 1600w" sizes="(max-width: 960px) 100vw, 1150px" alt="EncodeX Home Dashboard" width="1150" height="619" loading="lazy" decoding="async">
 
+<div class="privacy-band">
+  <h2>Your videos never leave your computer.</h2>
+  <p>EncodeX processes your media locally with the FFmpeg engine built right in. Nothing is uploaded, nothing is tracked, and nothing is stored on a server.</p>
+  <ul class="checklist">
+    <li>✅ No cloud uploads</li>
+    <li>✅ No account required</li>
+    <li>✅ No subscription</li>
+    <li>✅ No watermark</li>
+    <li>✅ No file-size limits</li>
+    <li>✅ Works offline</li>
+  </ul>
+  <p><a href="/privacy">Learn more about how EncodeX protects your privacy →</a></p>
+</div>
+
 ## What Can It Do For You?
 
 <div class="card wide">
@@ -151,6 +165,23 @@ EncodeX is open-source software built by a community of volunteers. There is no 
     <span class="card-emoji">🔄</span>
     <p class="card-head">Stays up to date by itself</p>
     <p>When there's a new version, EncodeX offers to update itself — you don't have to download anything again.</p>
+  </div>
+</div>
+
+## Built for Beginners. Powerful Enough for Developers.
+
+EncodeX wears two hats. Use the **drag-and-drop interface** for everyday tasks, or drop into **headless mode** for scripting and automation.
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🖱️</span>
+    <p class="card-head">The GUI</p>
+    <p>Drag → Configure → Convert. Convert, compress, trim, and extract from a single clean window — no commands, no nonsense.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⌨️</span>
+    <p class="card-head">The CLI</p>
+    <p>Script → Automate → Batch. Same engine, command-line control: <code>encodex convert</code>, <code>encodex batch</code>, <code>encodex info</code>, and more. <a href="/cli">Explore the CLI →</a></p>
   </div>
 </div>
 
@@ -229,6 +260,30 @@ Dip into a specific task — each page explains how to do it with EncodeX:
   <div class="card">
     <p class="card-head"><a href="/learn/what-is-ffmpeg">What is FFmpeg?</a></p>
     <p>A plain-language guide to the engine inside EncodeX.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/convert/mp4-to-mkv">MP4 to MKV</a></p>
+    <p>Remux MP4 into MKV — lossless, instant, with subtitles kept.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/convert/mp4-to-webm">MP4 to WebM</a></p>
+    <p>Convert to the web-native format for smaller, faster files.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/codecs/vp9">VP9</a></p>
+    <p>An open, royalty-free codec with excellent compression.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/codecs/prores">ProRes</a></p>
+    <p>Encode the professional editing codec used by film crews.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/compress/mp4">Compress MP4</a></p>
+    <p>Shrink MP4 videos for email, chats, and upload limits.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/extract/mp3-from-video">Extract MP3</a></p>
+    <p>Pull an MP3 soundtrack or podcast out of any video.</p>
   </div>
 </div>
 

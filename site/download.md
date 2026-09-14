@@ -1,27 +1,32 @@
 ﻿---
-title: "Download EncodeX — Free Video Converter for Windows, Mac & Linux"
-description: "Download EncodeX for free. Convert videos, extract audio, trim clips, and compress photos on Windows, macOS, and Linux. No signup, no watermarks."
+title: "Download EncodeX — Free FFmpeg GUI for Windows, Mac & Linux"
+description: "Download EncodeX for free — a free, open-source FFmpeg GUI for Windows, macOS and Linux. Convert videos, extract audio, trim clips, and compress photos. No signup, no watermarks."
 ---
 
 # Download EncodeX
 
-EncodeX is **free** and works on Windows, Mac, and Linux. Pick your computer type below, download, install, and you're ready to go.
+EncodeX is **free** and works on Windows, Mac, and Linux. It's an open-source FFmpeg GUI with no accounts, no watermarks, and no file-size limits — everything runs on your computer.
 
-::: tip Always get the newest version
-New versions are released on the [GitHub Releases page](https://github.com/Sandeepv68/EncodeX/releases). The links below always give you the latest one — each with its architecture, file size, and SHA-256 checksum so you can verify your download.
+::: tip First time here? Here's what happens next
+Install the app, drag a video or image into the window, pick a profile (like MP4 or "smaller file"), and hit Convert — you're done. Everything runs locally on your computer.
+
+- **New to EncodeX?** See [examples of what you can do](/use-cases) or [browse the tools](/features).
+- **Stuck?** Most conversions need just one file drop + one profile click. The in-app "Getting Started" card on your Dashboard walks you through picking a goal.
 :::
-
-<LatestDownloads />
 
 ## <OsIcon name="windows" /> Windows
 
-**Just want it to work?** Click the first button — it's right for almost everyone.
+**Windows 10/11 · 64-bit** — right for almost everyone.
 
 <LatestDownloads platform="windows" />
 
-**To install:** open the file you downloaded and follow the steps on screen. Works on Windows 10 and newer.
+**To install:** open the file you downloaded and follow the steps on screen.
 
 Not sure which one to pick? Go with the recommended one — if it doesn't match, Windows will tell you.
+
+### Other platforms
+
+[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 32-bit](#windows)
 
 ## <OsIcon name="apple" /> Mac
 
@@ -75,6 +80,10 @@ Need an older release? Expand a version below to grab its files — each file li
 ## Need Help?
 
 If something isn't working or you have a question, send an email to **[developer@encodex.in](mailto:developer@encodex.in)** — you'll hear back from a real person.
+
+## Privacy
+
+We understand trust matters. Every conversion happens on your computer — your files are never uploaded, tracked, or stored on a server. Read the [full privacy policy](/privacy).
 
 ## Learn More
 

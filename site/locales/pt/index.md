@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: EncodeX
-  text: O jeito fácil de resolver seus arquivos de vídeo, áudio e fotos
-  tagline: Um vídeo que não abre? Um arquivo grande demais para enviar? Só precisa da música de um clipe? O EncodeX faz tudo isso em poucos cliques — de graça, no Windows, Mac e Linux.
+  text: O poder do FFmpeg. Sem a linha de comando.
+  tagline: Uma interface gráfica FFmpeg gratuita e de código aberto para Windows, macOS e Linux. Converta vídeos, extraia áudio, corte clipes e reduza arquivos — tudo roda no seu computador e nada sai dele.
   image:
     src: /images/icon.webp
     alt: Logo do EncodeX
@@ -81,6 +81,20 @@ Uma tela inicial limpa. Cada ferramenta a um clique. Se você sabe usar um naveg
 
 <img src="/images/home_dashboard.webp" alt="Tela inicial do EncodeX" width="1600" height="861" loading="lazy">
 
+<div class="privacy-band">
+  <h2>Seus vídeos nunca saem do seu computador.</h2>
+  <p>O EncodeX processa sua mídia localmente com o motor FFmpeg integrado. Nada é enviado, nada é rastreado e nada é armazenado em um servidor.</p>
+  <ul class="checklist">
+    <li>✅ Sem uploads para a nuvem</li>
+    <li>✅ Sem necessidade de conta</li>
+    <li>✅ Sem assinatura</li>
+    <li>✅ Sem marca d'água</li>
+    <li>✅ Sem limites de tamanho</li>
+    <li>✅ Funciona offline</li>
+  </ul>
+  <p><a href="/pt/privacy">Saiba mais sobre como o EncodeX protege sua privacidade →</a></p>
+</div>
+
 ## O que ele pode fazer por você
 
 <div class="card wide">
@@ -149,6 +163,23 @@ O EncodeX é software livre criado por uma comunidade de voluntários. Não exis
     <span class="card-emoji">🔄</span>
     <p class="card-head">Se atualiza sozinho</p>
     <p>Quando sai uma versão nova, o EncodeX avisa dentro do app e atualiza por você — sem baixar tudo de novo.</p>
+  </div>
+</div>
+
+## Simples para todos. Poderoso para desenvolvedores.
+
+O EncodeX tem duas faces. Use a **interface de arrastar e soltar** para tarefas do dia a dia, ou entre no **modo headless** para scripts e automação.
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🖱️</span>
+    <p class="card-head">A interface gráfica</p>
+    <p>Arraste → Configure → Converta. Converta, comprima, corte e extraia de uma única janela limpa — sem comandos, sem complicação.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⌨️</span>
+    <p class="card-head">A CLI</p>
+    <p>Script → Automatize → Processe em lote. Mesmo motor, controle por linha de comando: <code>encodex convert</code>, <code>encodex batch</code>, <code>encodex info</code> e mais. <a href="/pt/cli">Explorar a CLI →</a></p>
   </div>
 </div>
 
@@ -227,6 +258,30 @@ Mergulhe em uma tarefa específica — cada página explica como fazê-la com o 
   <div class="card">
     <p class="card-head"><a href="/pt/learn/what-is-ffmpeg">O que é FFmpeg?</a></p>
     <p>Um guia em linguagem simples sobre o motor dentro do EncodeX.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/mp4-to-mkv">MP4 para MKV</a></p>
+    <p>Remux MP4 para MKV — sem perda, instantâneo, legendas mantidas.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/mp4-to-webm">MP4 para WebM</a></p>
+    <p>Converta para o formato nativo da web em arquivos menores.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/codecs/vp9">VP9</a></p>
+    <p>Um codec aberto e sem royalties com excelente compressão.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/codecs/prores">ProRes</a></p>
+    <p>Codifique o codec de edição profissional usado por cineastas.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/compress/mp4">Comprimir MP4</a></p>
+    <p>Reduza vídeos MP4 para e-mail, chats e limites de upload.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/extract/mp3-from-video">Extrair MP3</a></p>
+    <p>Tire um MP3 ou podcast de qualquer vídeo.</p>
   </div>
 </div>
 

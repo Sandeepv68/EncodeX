@@ -16,6 +16,8 @@
             <a :href="p('/features')">{{ t.features }}</a>
             <a :href="p('/download')">{{ t.download }}</a>
             <a :href="p('/blog/')">{{ t.blog }}</a>
+            <a :href="p('/cli')">{{ t.cli }}</a>
+            <a :href="p('/privacy')">{{ t.privacy }}</a>
           </div>
           <div class="sf-col">
             <p class="sf-col-title">{{ t.community }}</p>
@@ -53,6 +55,7 @@ const strings = {
     product: 'Product', features: 'Features', download: 'Download', blog: 'Blog',
     community: 'Community', contributing: 'Contributing',
     support: 'Support', docs: 'Technical Docs', contact: 'Contact', help: 'Get Help',
+    cli: 'CLI', privacy: 'Privacy',
     madeWith: 'Made with',
   },
   es: {
@@ -60,6 +63,7 @@ const strings = {
     product: 'Producto', features: 'Características', download: 'Descargar', blog: 'Blog',
     community: 'Comunidad', contributing: 'Contribuir',
     support: 'Soporte', docs: 'Documentación técnica', contact: 'Contacto', help: 'Ayuda',
+    cli: 'CLI', privacy: 'Privacidad',
     madeWith: 'Hecho con',
   },
   fr: {
@@ -67,6 +71,7 @@ const strings = {
     product: 'Produit', features: 'Fonctionnalités', download: 'Télécharger', blog: 'Blog',
     community: 'Communauté', contributing: 'Contribuer',
     support: 'Assistance', docs: 'Documentation technique', contact: 'Contact', help: 'Aide',
+    cli: 'CLI', privacy: 'Confidentialité',
     madeWith: 'Réalisé avec',
   },
   de: {
@@ -74,6 +79,7 @@ const strings = {
     product: 'Produkt', features: 'Funktionen', download: 'Download', blog: 'Blog',
     community: 'Community', contributing: 'Mitwirken',
     support: 'Hilfe', docs: 'Technische Dokumentation', contact: 'Kontakt', help: 'Hilfe erhalten',
+    cli: 'CLI', privacy: 'Datenschutz',
     madeWith: 'Gemacht mit',
   },
   'pt-BR': {
@@ -81,6 +87,7 @@ const strings = {
     product: 'Produto', features: 'Recursos', download: 'Download', blog: 'Blog',
     community: 'Comunidade', contributing: 'Contribuir',
     support: 'Suporte', docs: 'Documentação técnica', contact: 'Contato', help: 'Obter ajuda',
+    cli: 'CLI', privacy: 'Privacidade',
     madeWith: 'Feito com',
   },
   'zh-CN': {
@@ -88,6 +95,7 @@ const strings = {
     product: '产品', features: '功能特性', download: '下载', blog: '博客',
     community: '社区', contributing: '参与贡献',
     support: '支持', docs: '技术文档', contact: '联系我们', help: '获取帮助',
+    cli: 'CLI', privacy: '隐私政策',
     madeWith: '由社区用心打造',
   },
   hi: {
@@ -95,6 +103,7 @@ const strings = {
     product: 'प्रोडक्ट', features: 'फ़ीचर्स', download: 'डाउनलोड', blog: 'ब्लॉग',
     community: 'कम्युनिटी', contributing: 'योगदान दें',
     support: 'सहायता', docs: 'टेक्निकल दस्तावेज़', contact: 'संपर्क करें', help: 'मदद पाएँ',
+    cli: 'CLI', privacy: 'गोपनीयता',
     madeWith: 'इश्क़ के साथ बनाया गया',
   },
 }

@@ -500,6 +500,61 @@ html {
 }
 
 /* ============================================================
+   Privacy band
+   ============================================================ */
+.privacy-band {
+  margin: 40px 0;
+  padding: 36px 32px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(3, 89, 173, 0.07), rgba(0, 204, 228, 0.09));
+}
+
+.dark .privacy-band {
+  background: linear-gradient(135deg, rgba(69, 200, 234, 0.08), rgba(3, 89, 173, 0.16));
+}
+
+.privacy-band h2 {
+  margin: 0 0 12px !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: 1.3em;
+}
+
+.privacy-band p {
+  margin: 0 0 16px;
+  color: var(--vp-c-text-2);
+}
+
+.privacy-band .checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 6px 16px;
+}
+
+.privacy-band .checklist li {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--vp-c-text-2);
+}
+
+/* ============================================================
+   Two-column card grid
+   ============================================================ */
+.card-grid.two-col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 600px) {
+  .card-grid.two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
    Site footer
    ============================================================ */
 .site-footer {

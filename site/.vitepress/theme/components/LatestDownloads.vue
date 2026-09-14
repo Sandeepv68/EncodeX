@@ -386,6 +386,56 @@ const ROWS = {
   ],
 }
 
+// ── OS / architecture detection (best-effort, client-only) ───
+// Rank the "recommended" asset per platform group based on the visitor's
+// UA. Detection is progressive: cheap sync UA-token checks first, then an
+// async User-Agent Client Hints refinight when the browser supports it.
+// Everything stays a *default* — every row is always shown so manual choice
+// is never blocked.
+
+const detected = ref({ windows: null, macos: null, linux: null })
+
+function uaArchSync() {
+  const ua = navigator.userAgent || ''
+  if (/ARM64|aarch64/i.test(ua)) return 'arm64'
+  if (/WOW64|x86_64/.test(ua)) return 'x64'
+  return null
+}
+
+async function refineDetection() {
+  if (typeof navigator === 'undefined') return
+  const hints = navigator.userAgentData
+  if (!hints?.getHighEntropyValues) return
+  try {
+    const values = await hints.getHighEntropyValues(['architecture'])
+    const arch = values.architecture === 'arm' ? 'arm64' : values.architecture === 'x86' ? 'x64' : uaArchSync()
+    const platform = hints.platform || ''
+    if (/mac/i.test(platform)) detected.value.macos = arch === 'arm64' ? 'mac-arm64' : 'mac-x64'
+    else if (/win/i.test(platform)) detected.value.windows = arch === 'arm64' ? 'win-arm64' : 'win-x64'
+    else if (/lin/i.test(platform)) detected.value.linux = arch === 'arm64' ? 'linux-arm64' : 'linux-x86_64'
+  } catch {
+    // High-entropy hints unavailable — keep static defaults
+  }
+}
+
+onMounted(() => {
+  // Sync fallback: ARM64-capable Chromium on Windows/ARM64 can expose the
+  // token directly; anything else keeps the static recommended default.
+  const arch = uaArchSync()
+  if (arch === 'arm64') {
+    const ua = navigator.userAgent || ''
+    if (/Windows/i.test(ua)) detected.value.windows = 'win-arm64'
+    if (/Macintosh|Mac OS X/i.test(ua)) detected.value.macos = 'mac-arm64'
+    if (/Linux/i.test(ua)) detected.value.linux = 'linux-arm64'
+  }
+  void refineDetection()
+})
+
+function isRecommended(key) {
+  const group = props.platform
+  return Boolean(group && detected.value[group] === key)
+}
+
 const rows = computed(() => {
   if (!props.platform || !release.value) return []
   return ROWS[props.platform]
@@ -393,6 +443,7 @@ const rows = computed(() => {
     .filter((row) => Boolean(row.asset))
     .map((row) => ({
       ...row,
+      recommended: isRecommended(row.key) || row.recommended,
       description: t.value.rows[row.key] || t.value.rows['win-x64'],
     }))
 })

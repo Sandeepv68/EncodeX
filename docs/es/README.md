@@ -1,6 +1,12 @@
 <div align="center">
   <img src="../../assets/banner.png" alt="Logotipo de EncodeX" width="900" />
-  <h3>Una herramienta multiplataforma de conversión multimedia construida con FFmpeg, React, TypeScript y Electron.</h3>
+  <h3>El poder de FFmpeg. Sin la línea de comandos.</h3>
+  <p><strong>EncodeX</strong> — la interfaz gráfica de <strong>FFmpeg</strong> gratuita y de código abierto para Windows, macOS y Linux.</p>
+  <p style="font-size: 18px;">
+    <a href="https://encodex.in/download"><strong>Descargar</strong></a> ·
+    <a href="https://encodex.in">Sitio web</a> ·
+    <a href="https://encodex.in/docs/architecture">Documentación</a>
+  </p>
 </div>
 
 <div align="center">
@@ -40,7 +46,19 @@
 
 ## 👋 Introducción
 
-EncodeX es una herramienta multiplataforma de conversión multimedia que lleva todo el poder de FFmpeg a una interfaz de escritorio moderna e intuitiva. Construida con Electron, React y TypeScript, te permite convertir medios entre formatos, extraer audio, cortar vídeos y comprimir imágenes: todo a través de una interfaz limpia y receptiva con cola por lotes, aceleración por hardware, modo CLI y una internacionalización completa.
+EncodeX es la interfaz gráfica gratuita y de código abierto de FFmpeg que lleva todo su poder a una interfaz de escritorio moderna e intuitiva. Te permite convertir medios entre formatos, extraer audio, cortar vídeos y comprimir imágenes: todo a través de una interfaz limpia y receptiva con cola por lotes, aceleración por hardware, modo CLI y una internacionalización completa.
+
+## ¿Por qué EncodeX?
+
+- ✅ **Gratis para siempre** — código abierto (MIT), sin nivel de pago
+- ✅ **100 % privado** — tus archivos nunca salen de tu máquina
+- ✅ **Sin cuenta, sin registro, sin rastreo**
+- ✅ **Sin marcas de agua, sin límites de tamaño de archivo, sin anuncios**
+- ✅ **Potenciado por FFmpeg** — 51 códecs de vídeo, 27 códecs de audio, 56 formatos de píxel
+- ✅ **Aceleración por hardware** — NVIDIA, Intel, AMD, Apple Silicon para codificaciones rápidas
+- ✅ **Procesamiento por lotes** — convierte carpetas completas a la vez
+- ✅ **Multiplataforma** — Windows 10+, macOS 11+, Linux
+- ✅ **35+ idiomas** con soporte RTL
 
 ## ✨ Características
 

@@ -5,8 +5,94 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Mon, 14 Sep 2026 11:09:30 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 14 Sep 2026 16:50:27 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Compress Images Without Losing Visual Quality</title>
+      <link>https://encodex.in/blog/posts/image-compression-guide</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/image-compression-guide</guid>
+      <description>Reduce image file sizes for web, email, and storage using EncodeX — a free FFmpeg GUI with batch image compression and format conversion.</description>
+      <pubDate>Tue, 15 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>image-compression</category>
+      <category>photography</category>
+      <category>web-performance</category>
+    </item>
+    <item>
+      <title>How to Compress OBS and ShadowPlay Recordings for Sharing</title>
+      <link>https://encodex.in/blog/posts/compress-obs-recordings</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/compress-obs-recordings</guid>
+      <description>Shrink large gameplay recordings from OBS or ShadowPlay to upload-friendly sizes using EncodeX — a free FFmpeg GUI with GPU acceleration.</description>
+      <pubDate>Mon, 14 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>gaming</category>
+      <category>compression</category>
+      <category>obs</category>
+    </item>
+    <item>
+      <title>Best HandBrake Alternatives in 2026</title>
+      <link>https://encodex.in/blog/posts/handbrake-alternative-guide</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/handbrake-alternative-guide</guid>
+      <description>Looking for a HandBrake alternative? Compare EncodeX — a free, open-source FFmpeg GUI with batch processing and hardware acceleration.</description>
+      <pubDate>Mon, 14 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>comparison</category>
+      <category>handbrake-alternative</category>
+    </item>
+    <item>
+      <title>Best Formats for Archival Video: Preserving Your Media for Decades</title>
+      <link>https://encodex.in/blog/posts/best-formats-for-archival</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/best-formats-for-archival</guid>
+      <description>A practical guide to archival video codecs — FFV1, ProRes, HuffYUV, lossless copy — and how EncodeX helps you future-proof your media.</description>
+      <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>archival</category>
+      <category>codecs</category>
+      <category>prores</category>
+      <category>ffv1</category>
+    </item>
+    <item>
+      <title>How to Automate Media Workflows With the EncodeX CLI</title>
+      <link>https://encodex.in/blog/posts/cli-automation-guide</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/cli-automation-guide</guid>
+      <description>Use EncodeX from the command line to script batch conversions, extract audio, compress images, and build automated media pipelines.</description>
+      <pubDate>Sat, 12 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>cli</category>
+      <category>automation</category>
+      <category>developer</category>
+    </item>
+    <item>
+      <title>What Is Hardware Acceleration and Why Your Videos Encode Faster With It</title>
+      <link>https://encodex.in/blog/posts/gpu-hardware-acceleration-guide</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/gpu-hardware-acceleration-guide</guid>
+      <description>Learn how GPU encoding (NVENC, QSV, AMF, VAAPI, VideoToolbox) works and how EncodeX uses it to make video conversion dramatically faster.</description>
+      <pubDate>Fri, 11 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>hardware-acceleration</category>
+      <category>gpu</category>
+      <category>performance</category>
+    </item>
+    <item>
+      <title>How to Extract MP3 from a Video (3 Easy Steps)</title>
+      <link>https://encodex.in/blog/posts/extract-mp3-video-guide</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/extract-mp3-video-guide</guid>
+      <description>Learn how to extract audio from any video file and save it as MP3 using EncodeX — free, no sign-up, works on Windows, macOS, and Linux.</description>
+      <pubDate>Thu, 10 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>audio</category>
+      <category>mp3</category>
+    </item>
+    <item>
+      <title>How to Compress Video Files Without Losing Quality</title>
+      <link>https://encodex.in/blog/posts/video-compression-guide</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/video-compression-guide</guid>
+      <description>Shrink large video files for sharing using EncodeX — a free FFmpeg GUI with smart compression and hardware acceleration.</description>
+      <pubDate>Mon, 07 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>compression</category>
+      <category>video</category>
+    </item>
     <item>
       <title>Introducing Conversion Profiles — 140+ Presets for One-Click Encoding</title>
       <link>https://encodex.in/blog/releases/conversion-profiles</link>

@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: EncodeX
-  text: 轻松搞定视频、音频和照片文件
-  tagline: 视频打不开？文件太大发不出去？只想留下视频里的音乐？EncodeX 几次点击全部搞定——完全免费，支持 Windows、Mac 和 Linux。
+  text: FFmpeg 的强大能力。无需命令行。
+  tagline: 一款免费、开源的 FFmpeg 图形界面，适用于 Windows、macOS 和 Linux。转换视频、提取音频、剪辑片段、压缩文件——一切都在本地完成，文件不会离开您的电脑。
   image:
     src: /images/icon.webp
     alt: EncodeX 图标
@@ -81,6 +81,20 @@ features:
 
 <img src="/images/home_dashboard.webp" alt="EncodeX 主界面" width="1600" height="861" loading="lazy">
 
+<div class="privacy-band">
+  <h2>您的视频永远不会离开您的电脑。</h2>
+  <p>EncodeX 使用内置的 FFmpeg 引擎在本地处理您的媒体。不上传、不追踪、不存储到任何服务器。</p>
+  <ul class="checklist">
+    <li>✅ 无云端上传</li>
+    <li>✅ 无需注册账号</li>
+    <li>✅ 无需订阅</li>
+    <li>✅ 无水印</li>
+    <li>✅ 无文件大小限制</li>
+    <li>✅ 可离线使用</li>
+  </ul>
+  <p><a href="/zh/privacy">了解 EncodeX 如何保护你的隐私 →</a></p>
+</div>
+
 ## 它能帮你做什么
 
 <div class="card wide">
@@ -149,6 +163,23 @@ EncodeX 是由志愿者社区打造的开源软件。没有付费版来烦你，
     <span class="card-emoji">🔄</span>
     <p class="card-head">自动保持更新</p>
     <p>有新版本时 EncodeX 会提醒你并自动完成更新——不用重新下载安装包。</p>
+  </div>
+</div>
+
+## 新手友好，开发者强大。
+
+EncodeX 有两种用法。日常任务用**拖放式界面**，或者切换到**命令行模式**进行脚本化与自动化。
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🖱️</span>
+    <p class="card-head">图形界面</p>
+    <p>拖入 → 设置 → 转换。在同一个干净窗口里完成转换、压缩、剪辑和提取——无需命令，无需折腾。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⌨️</span>
+    <p class="card-head">命令行 CLI</p>
+    <p>脚本 → 自动化 → 批量处理。同一个引擎，命令行控制：<code>encodex convert</code>、<code>encodex batch</code>、<code>encodex info</code> 等。 <a href="/zh/cli">探索 CLI →</a></p>
   </div>
 </div>
 
@@ -227,6 +258,30 @@ EncodeX 是由志愿者社区打造的开源软件。没有付费版来烦你，
   <div class="card">
     <p class="card-head"><a href="/zh/learn/what-is-ffmpeg">什么是 FFmpeg？</a></p>
     <p>EncodeX 内部引擎的通俗指南。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/mp4-to-mkv">MP4 转 MKV</a></p>
+    <p>无损、即时重新封装 MP4 为 MKV，字幕完整保留。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/mp4-to-webm">MP4 转 WebM</a></p>
+    <p>转换为网页原生格式，文件更小、更快。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/codecs/vp9">VP9</a></p>
+    <p>开放、免专利费，压缩率出色的编码器。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/codecs/prores">ProRes</a></p>
+    <p>电影人使用的专业剪辑编码格式。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/compress/mp4">压缩 MP4</a></p>
+    <p>缩小 MP4 视频以适配邮件、聊天和上传限制。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/extract/mp3-from-video">提取 MP3</a></p>
+    <p>从任何视频中提取 MP3 配乐或播客。</p>
   </div>
 </div>
 

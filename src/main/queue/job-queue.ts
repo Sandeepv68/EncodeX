@@ -16,6 +16,8 @@ import { Logger } from '../../shared/logger';
 import { QueueJob, ConversionOptions, TranscoderType } from '../../shared/types';
 import { ErrorCode } from '../../shared/errors';
 import { createTranscoder } from '../transcoders/factory';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import type { ITranscoder } from '../transcoders/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
@@ -581,6 +583,14 @@ export class JobQueue extends EventEmitter {
     this.emit('statusChange', nextJob);
     this.schedulePersist();
 
+    recordAnalyticsEvent(
+      createAnalyticsEvent('conversion_started', {
+        jobKind: 'batch',
+        transcoder: nextJob.transcoder,
+        hwAccel: nextJob.options.hardwareAcceleration === true,
+      }),
+    );
+
     const transcoder = createTranscoder(nextJob.transcoder);
     this.activeJobs.set(nextJob.id, transcoder);
 
@@ -594,6 +604,13 @@ export class JobQueue extends EventEmitter {
       emitter.on('error', (err) => {
         const wasActive = this.activeJobs.delete(nextJob.id);
         log.error(LOG_JOB_FAILED, nextJob.id, err.message);
+        recordAnalyticsEvent(
+          createAnalyticsEvent('conversion_failed', {
+            jobKind: 'batch',
+            transcoder: nextJob.transcoder,
+            code: typeof err?.code === 'string' ? err.code : undefined,
+          }),
+        );
         nextJob.status = QUEUE_STATUS.ERROR;
         nextJob.error = err.message;
         this.schedulePersist();
@@ -606,6 +623,13 @@ export class JobQueue extends EventEmitter {
       emitter.on('end', () => {
         const wasActive = this.activeJobs.delete(nextJob.id);
         log.info(LOG_JOB_COMPLETED, nextJob.id);
+        recordAnalyticsEvent(
+          createAnalyticsEvent('conversion_completed', {
+            jobKind: 'batch',
+            transcoder: nextJob.transcoder,
+            hwAccel: nextJob.options.hardwareAcceleration === true,
+          }),
+        );
         nextJob.status = QUEUE_STATUS.DONE;
         nextJob.progress = COMPLETED_PROGRESS.percent;
         this.schedulePersist();
