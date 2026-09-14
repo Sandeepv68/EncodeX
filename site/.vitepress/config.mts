@@ -538,11 +538,29 @@ gtag('config', 'G-SM28DL4DYR');`,
     const pagePath = context.pageData?.relativePath || ''
     const frontmatter = context.pageData?.frontmatter || {}
 
+    if (context.pageData?.isNotFound) {
+      head.push(['meta', { name: 'robots', content: 'noindex' }])
+      return head
+    }
+
     const pageLang = detectLocaleFromPath(pagePath)
     const localePrefix = detectLocalePrefix(pagePath)
     const cleanPath = localePrefix ? pagePath.slice(localePrefix.length) : pagePath
-    const pageSlug = cleanPath.replace(/^\/+/, '').replace(/\.md$/, '').replace(/\/index$/, '') || ''
-    const canonicalUrl = pageSlug ? `${SITE_URL}/${localePrefix ? localePrefix + '/' : ''}${pageSlug}` : `${SITE_URL}/${localePrefix ? localePrefix + '/' : ''}`
+
+    let pageSlug = cleanPath.replace(/^\/+/, '').replace(/\.md$/, '')
+    const isHome = pageSlug === 'index'
+    const isDirIndex = !isHome && pageSlug.endsWith('/index')
+    if (isHome) pageSlug = ''
+    if (isDirIndex) pageSlug = pageSlug.slice(0, -'/index'.length)
+
+    const localeBase = localePrefix ? `${localePrefix}/` : ''
+    const canonicalUrl = pageSlug
+      ? `${SITE_URL}/${localeBase}${pageSlug}${isDirIndex ? '/' : ''}`
+      : `${SITE_URL}/${localeBase}`
+
+    if (localePrefix && pageSlug.startsWith('docs/')) {
+      head.push(['meta', { name: 'robots', content: 'noindex' }])
+    }
 
     head.push(['link', { rel: 'canonical', href: canonicalUrl }])
 
@@ -567,17 +585,15 @@ gtag('config', 'G-SM28DL4DYR');`,
 
     const localeEntries = Object.entries(localeLangMap)
     for (const [prefix, hreflang] of localeEntries) {
-      const href = prefix
-        ? `${SITE_URL}/${prefix}/${pageSlug}`
-        : `${SITE_URL}/${pageSlug}`
-      head.push([
-        'link',
-        { rel: 'alternate', hreflang, href },
-      ])
+      const base = prefix ? `${prefix}/` : ''
+      const href = pageSlug
+        ? `${SITE_URL}/${base}${pageSlug}${isDirIndex ? '/' : ''}`
+        : `${SITE_URL}/${base}`
+      head.push(['link', { rel: 'alternate', hreflang, href }])
     }
     head.push([
       'link',
-      { rel: 'alternate', hreflang: 'x-default', href: `${SITE_URL}/${pageSlug}` },
+      { rel: 'alternate', hreflang: 'x-default', href: pageSlug ? `${SITE_URL}/${pageSlug}${isDirIndex ? '/' : ''}` : `${SITE_URL}/` },
     ])
 
     if ((pageSlug === '' || pageSlug === 'index') && !localePrefix) {
