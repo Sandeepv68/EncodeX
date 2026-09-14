@@ -39,6 +39,18 @@
     "descBatch": "Assersuutit arlallit ataatsimut allanngortit",
     "shortcutsFooter": "Tastaturikkumut aaliangersakkanut {{shortcut}} atuartit"
   },
+  "gettingStarted": {
+    "hint": "Nutaaq?",
+    "title": "Aallartitsineq",
+    "body": "Sumi aallartertariaqarnigit toqqaga — tamatigut maannakkut kingornusatigullu pisinnaavat.",
+    "dismiss": "Matooruk",
+    "goals": {
+      "convert": "Videomik allanngortitsineq",
+      "compress": "Filinik komprimerineq",
+      "extract": "Nipinik anisitsineq",
+      "trim": "Kaaserisamik savallugit"
+    }
+  },
   "closeConfirm": {
     "title": "EncodeX qummassava?",
     "message": "Suliat ingerlanneqarput imaluunniit allannguutit toqutsakkat. Matuigaanni unitsippaat.",

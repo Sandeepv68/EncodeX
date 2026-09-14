@@ -39,6 +39,18 @@
     "descBatch": "Konverter mange filer samtidig med en smart kø",
     "shortcutsFooter": "Trykk {{shortcut}} for tastatursnarveier"
   },
+  "gettingStarted": {
+    "hint": "Ny her?",
+    "title": "Komme i gang",
+    "body": "Velg hvor du vil begynne — du kan gjøre alt herfra senere.",
+    "dismiss": "Avvis",
+    "goals": {
+      "convert": "Konverter en video",
+      "compress": "Komprimer en fil",
+      "extract": "Trekk ut lyd",
+      "trim": "Trim et klipp"
+    }
+  },
   "closeConfirm": {
     "title": "Lukke EncodeX?",
     "message": "Det er jobber som kjører eller ulagrede endringer. Lukking nå vil avbryte dem.",

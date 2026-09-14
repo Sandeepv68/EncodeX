@@ -39,6 +39,18 @@
     "descBatch": "Tiontaigh comhaid iolracha ag an am céanna le scuaine chliste",
     "shortcutsFooter": "Brúigh {{shortcut}} le haghaidh aicearraí méarchláir"
   },
+  "gettingStarted": {
+    "hint": "Nua anseo?",
+    "title": "Ag Tosú",
+    "body": "Roghnaigh cá háit ar mhaith leat tosú — is féidir leat gach rud a dhéanamh as seo ar ball.",
+    "dismiss": "Dún",
+    "goals": {
+      "convert": "Tiontaigh físeán",
+      "compress": "Comhbhrúigh comhad",
+      "extract": "Bain fuaim as",
+      "trim": "Bearr bunteascán"
+    }
+  },
   "closeConfirm": {
     "title": "Dún EncodeX?",
     "message": "Tá poist ar siúl nó athruithe gan sábháil. Déanfar iad a chealú má dhúnann tú anois.",

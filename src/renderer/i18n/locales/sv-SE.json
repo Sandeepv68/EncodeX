@@ -39,6 +39,18 @@
     "descBatch": "Konvertera många filer samtidigt med en smart kö",
     "shortcutsFooter": "Tryck på {{shortcut}} för kortkommandon"
   },
+  "gettingStarted": {
+    "hint": "Ny här?",
+    "title": "Kom igång",
+    "body": "Välj var du vill börja — du kan göra allt härifrån senare.",
+    "dismiss": "Stäng",
+    "goals": {
+      "convert": "Konvertera en video",
+      "compress": "Komprimera en fil",
+      "extract": "Extrahera ljud",
+      "trim": "Trimma ett klipp"
+    }
+  },
   "closeConfirm": {
     "title": "Stänga EncodeX?",
     "message": "Det finns jobb som körs eller osparade ändringar. Stänger du nu avbryts de.",

@@ -39,6 +39,18 @@
     "descBatch": "Konversi banyak file sekaligus dengan antrean cerdas",
     "shortcutsFooter": "Tekan {{shortcut}} untuk pintasan keyboard"
   },
+  "gettingStarted": {
+    "hint": "Baru di sini?",
+    "title": "Memulai",
+    "body": "Pilih dari mana kamu ingin memulai — kamu bisa melakukan semuanya dari sini nanti.",
+    "dismiss": "Tutup",
+    "goals": {
+      "convert": "Konversi video",
+      "compress": "Kompres file",
+      "extract": "Ekstrak audio",
+      "trim": "Potong klip"
+    }
+  },
   "closeConfirm": {
     "title": "Tutup EncodeX?",
     "message": "Ada pekerjaan yang sedang berjalan atau perubahan yang belum disimpan. Menutup sekarang akan membatalkannya.",

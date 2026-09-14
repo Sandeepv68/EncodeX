@@ -39,6 +39,18 @@
     "descBatch": "Konverter flere filer på én gang med en intelligent kø",
     "shortcutsFooter": "Tryk på {{shortcut}} for tastaturgenveje"
   },
+  "gettingStarted": {
+    "hint": "Ny her?",
+    "title": "Kom i gang",
+    "body": "Vælg, hvor du vil begynde — du kan klare alt herfra senere.",
+    "dismiss": "Luk",
+    "goals": {
+      "convert": "Konverter en video",
+      "compress": "Komprimer en fil",
+      "extract": "Udtræk lyd",
+      "trim": "Klip et klip"
+    }
+  },
   "closeConfirm": {
     "title": "Luk EncodeX?",
     "message": "Der er opgaver i gang eller ugemte ændringer. Lukker du nu, annulleres de.",

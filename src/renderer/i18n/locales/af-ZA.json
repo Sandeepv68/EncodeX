@@ -39,6 +39,18 @@
     "descBatch": "Skakel baie lêers gelyktydig om met 'n slim waglys",
     "shortcutsFooter": "Druk {{shortcut}} vir sleutelbordkortpaaie"
   },
+  "gettingStarted": {
+    "hint": "Nuut hier?",
+    "title": "Aan die gang kom",
+    "body": "Kies waar jy wil begin — jy kan later alles van hier af doen.",
+    "dismiss": "Maak toe",
+    "goals": {
+      "convert": "Omskep 'n video",
+      "compress": "Komprimeer 'n lêer",
+      "extract": "Onttrek klank",
+      "trim": "Snoei 'n snit"
+    }
+  },
   "closeConfirm": {
     "title": "Maak EncodeX toe?",
     "message": "Daar is take aan die gang of ongestoorde veranderinge. As u nou toemaak, sal hulle gekanselleer word.",

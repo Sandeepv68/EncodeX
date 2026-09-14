@@ -39,6 +39,18 @@
     "descBatch": "透過智慧佇列一次轉換多個檔案",
     "shortcutsFooter": "按 {{shortcut}} 查看鍵盤快速鍵"
   },
+  "gettingStarted": {
+    "hint": "第一次來？",
+    "title": "開始使用",
+    "body": "選擇你想從哪裡開始 — 之後你可以從這裡做任何事情。",
+    "dismiss": "關閉",
+    "goals": {
+      "convert": "轉換影片",
+      "compress": "壓縮檔案",
+      "extract": "擷取音訊",
+      "trim": "裁剪片段"
+    }
+  },
   "closeConfirm": {
     "title": "關閉 EncodeX？",
     "message": "有任務正在進行或未儲存的變更。現在關閉將取消它們。",

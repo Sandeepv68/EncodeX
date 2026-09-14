@@ -39,6 +39,18 @@
     "descBatch": "Viele Dateien auf einmal mit einer intelligenten Warteschlange konvertieren",
     "shortcutsFooter": "Drücken Sie {{shortcut}} für Tastenkombinationen"
   },
+  "gettingStarted": {
+    "hint": "Neu hier?",
+    "title": "Erste Schritte",
+    "body": "Wähle, wo du beginnen möchtest – alles Weitere kannst du später von hier aus erledigen.",
+    "dismiss": "Schließen",
+    "goals": {
+      "convert": "Video konvertieren",
+      "compress": "Datei komprimieren",
+      "extract": "Audio extrahieren",
+      "trim": "Clip kürzen"
+    }
+  },
   "closeConfirm": {
     "title": "EncodeX schließen?",
     "message": "Es laufen Aufträge oder es gibt ungespeicherte Änderungen. Beim Schließen werden sie abgebrochen.",

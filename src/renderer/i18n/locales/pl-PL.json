@@ -39,6 +39,18 @@
     "descBatch": "Konwertuj wiele plików naraz dzięki inteligentnej kolejce",
     "shortcutsFooter": "Naciśnij {{shortcut}}, aby wyświetlić skróty klawiszowe"
   },
+  "gettingStarted": {
+    "hint": "Nowy tutaj?",
+    "title": "Pierwsze kroki",
+    "body": "Wybierz, od czego chcesz zacząć — wszystko możesz zrobić stąd później.",
+    "dismiss": "Odrzuć",
+    "goals": {
+      "convert": "Konwertuj wideo",
+      "compress": "Skompresuj plik",
+      "extract": "Wyciągnij audio",
+      "trim": "Przytnij klip"
+    }
+  },
   "closeConfirm": {
     "title": "Zamknąć EncodeX?",
     "message": "W trakcie są zadania lub niezapisane zmiany. Zamknięcie teraz anuluje je.",

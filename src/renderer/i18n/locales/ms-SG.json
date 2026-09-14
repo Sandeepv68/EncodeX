@@ -39,6 +39,18 @@
     "descBatch": "Tukar banyak fail sekaligus dengan baris giliran pintar",
     "shortcutsFooter": "Tekan {{shortcut}} untuk pintasan papan kekunci"
   },
+  "gettingStarted": {
+    "hint": "Baru di sini?",
+    "title": "Memulakan",
+    "body": "Pilih tempat untuk anda bermula — anda boleh melakukan semuanya dari sini kemudian.",
+    "dismiss": "Tutup",
+    "goals": {
+      "convert": "Tukar video",
+      "compress": "Mampatkan fail",
+      "extract": "Ekstrak audio",
+      "trim": "Potong klip"
+    }
+  },
   "closeConfirm": {
     "title": "Tutup EncodeX?",
     "message": "Terdapat tugasan yang sedang berjalan atau perubahan yang belum disimpan. Menutup sekarang akan membatalkannya.",

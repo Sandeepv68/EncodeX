@@ -39,6 +39,18 @@
     "descBatch": "스마트 큐로 여러 파일을 한 번에 변환",
     "shortcutsFooter": "키보드 단축키 보기: {{shortcut}}"
   },
+  "gettingStarted": {
+    "hint": "처음 오셨나요?",
+    "title": "시작하기",
+    "body": "시작할 곳을 선택하세요 — 나중에 여기에서 모든 것을 할 수 있습니다.",
+    "dismiss": "닫기",
+    "goals": {
+      "convert": "동영상 변환",
+      "compress": "파일 압축",
+      "extract": "오디오 추출",
+      "trim": "클립 자르기"
+    }
+  },
   "closeConfirm": {
     "title": "EncodeX를 닫을까요?",
     "message": "진행 중인 작업 또는 저장되지 않은 변경 사항이 있습니다. 지금 닫으면 취소됩니다.",
