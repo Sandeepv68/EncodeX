@@ -30,7 +30,8 @@
  *   the renderer cannot observe their outcome and no error can be returned.
  *
  * Exposed API (`window.electronAPI`):
- * - File system & dialogs: `getPathForFile`, `selectFile`, `selectFiles`, `selectOutput`.
+ * - File system & dialogs: `getPathForFile`, `selectFile`, `selectFiles`,
+ *   `selectFolderFiles`, `expandPaths`, `selectOutput`.
  * - Media/image metadata & previews: `getMediaInfo`, `getImageInfo`, `getImagePreview`,
  *   `getImageFileInfo`, `getVideoPreview`, `getCapabilities`.
  * - Single-file conversion: `convertFile`, `pauseConversion`, `resumeConversion`,
@@ -111,6 +112,8 @@ import {
   LOG_SELECT_DIRECTORY_CALLED,
   LOG_SELECT_FILES_CALLED,
   LOG_SELECT_FILE_CALLED,
+  LOG_SELECT_FOLDER_FILES_CALLED,
+  LOG_EXPAND_PATHS_CALLED,
   LOG_SELECT_OUTPUT_CALLED,
   LOG_TRANSCODER,
   LOG_WINDOW_CLOSE_CALLED,
@@ -207,6 +210,36 @@ const api = {
   selectFiles: (filters?: Electron.FileFilter[]) => {
     log.debug(LOG_SELECT_FILES_CALLED);
     return ipcRenderer.invoke(IPC.SELECT_FILES, filters) as Promise<string[]>;
+  },
+  /**
+   * Opens a native folder-selection dialog in the main process to import a
+   * source folder into the batch queue. Logs the call at debug level, then
+   * invokes the main process over the `IPC.SELECT_FOLDER_FILES`
+   * ('select-folder-files') channel.
+   *
+   * @returns {Promise<string[]>} Resolves with the absolute paths of every
+   *   supported media file found inside the chosen folder (recursively), or an
+   *   empty array if the user cancelled the dialog.
+   * @throws {Error} Rejects if the dialog could not be opened in the main process.
+   */
+  selectFolderFiles: () => {
+    log.debug(LOG_SELECT_FOLDER_FILES_CALLED);
+    return ipcRenderer.invoke(IPC.SELECT_FOLDER_FILES) as Promise<string[]>;
+  },
+  /**
+   * Expands a mixed list of existing file/directory paths (e.g. drag-and-drop
+   * targets) into the supported media files they contain. Logs the call at
+   * debug level, then invokes the main process over the `IPC.EXPAND_PATHS`
+   * ('expand-paths') channel.
+   *
+   * @param {string[]} paths - File/directory paths to expand.
+   * @returns {Promise<string[]>} Resolves with the sorted media file paths
+   *   contained in the given paths (an empty array when none are found).
+   * @throws {Error} Rejects if the expansion fails in the main process.
+   */
+  expandPaths: (paths: string[]) => {
+    log.debug(LOG_EXPAND_PATHS_CALLED);
+    return ipcRenderer.invoke(IPC.EXPAND_PATHS, paths) as Promise<string[]>;
   },
   /**
    * Opens a native save-file dialog in the main process to choose an output

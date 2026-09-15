@@ -76,6 +76,8 @@ Object.defineProperty(globalThis, 'electronAPI', {
     getPathForFile: vi.fn(() => ''),
     selectFile: vi.fn().mockResolvedValue(null),
     selectFiles: vi.fn().mockResolvedValue([]),
+    selectFolderFiles: vi.fn().mockResolvedValue([]),
+    expandPaths: vi.fn().mockResolvedValue([]),
     selectOutput: vi.fn().mockResolvedValue(null),
     selectDirectory: vi.fn().mockResolvedValue(null),
     getMediaInfo: vi.fn().mockResolvedValue(EMPTY_MEDIA_INFO),

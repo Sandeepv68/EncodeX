@@ -26,7 +26,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { Chip } from '@mui/material';
 import {
   GettingStartedRoot,
   GettingStartedHeader,
@@ -34,6 +33,7 @@ import {
   GettingStartedTitle,
   GettingStartedBody,
   GoalRow,
+  GoalChip,
   DismissButton,
 } from '../styles/GettingStartedCard.styles';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
@@ -133,7 +133,7 @@ export default function GettingStartedCard(): ReactElement | null {
           <GettingStartedTitle variant="h6" component="h2">
             {t('gettingStarted.title')}
           </GettingStartedTitle>
-          <GettingStartedBody variant="body2" color="text.secondary">
+          <GettingStartedBody variant="body2">
             {t('gettingStarted.body')}
           </GettingStartedBody>
         </div>
@@ -143,11 +143,9 @@ export default function GettingStartedCard(): ReactElement | null {
       </GettingStartedHeader>
       <GoalRow>
         {GOALS.map((spec) => (
-          <Chip
+          <GoalChip
             key={spec.goal}
             clickable
-            color="primary"
-            sx={{ fontWeight: 500 }}
             label={t(`gettingStarted.goals.${spec.i18nKey}`)}
             onClick={() => handleGoal(spec)}
             data-testid={`getting-started-goal-${spec.goal}`}

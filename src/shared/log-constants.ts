@@ -397,6 +397,14 @@ export const LOG_IPC_SELECT_FILE_RESULT = 'SELECT_FILE result:';
 export const LOG_IPC_SELECT_FILES_CALLED = 'SELECT_FILES called';
 /** @const {string} Prefix when logging the SELECT_FILES result. */
 export const LOG_IPC_SELECT_FILES_RESULT = 'SELECT_FILES result:';
+/** @const {string} Logged when the SELECT_FOLDER_FILES IPC message is received. */
+export const LOG_IPC_SELECT_FOLDER_FILES_CALLED = 'SELECT_FOLDER_FILES called';
+/** @const {string} Prefix when logging the SELECT_FOLDER_FILES result. */
+export const LOG_IPC_SELECT_FOLDER_FILES_RESULT = 'SELECT_FOLDER_FILES result:';
+/** @const {string} Logged when the EXPAND_PATHS IPC message is received. */
+export const LOG_IPC_EXPAND_PATHS_CALLED = 'EXPAND_PATHS called';
+/** @const {string} Prefix when logging the EXPAND_PATHS result. */
+export const LOG_IPC_EXPAND_PATHS_RESULT = 'EXPAND_PATHS result:';
 /** @const {string} Logged when the SELECT_OUTPUT IPC message is received. */
 export const LOG_IPC_SELECT_OUTPUT_CALLED = 'SELECT_OUTPUT called';
 /** @const {string} Prefix when logging the SELECT_OUTPUT result. */
@@ -618,6 +626,10 @@ export const LOG_SEEK = 'seek:';
 export const LOG_SELECT_FILE_CALLED = 'selectFile called';
 /** @const {string} Logged when selectFiles is invoked. */
 export const LOG_SELECT_FILES_CALLED = 'selectFiles called';
+/** @const {string} Logged when selectFolderFiles is invoked. */
+export const LOG_SELECT_FOLDER_FILES_CALLED = 'selectFolderFiles called';
+/** @const {string} Logged when expandPaths is invoked. */
+export const LOG_EXPAND_PATHS_CALLED = 'expandPaths called';
 /** @const {string} Prefix when selectInput is invoked. */
 export const LOG_SELECT_INPUT = 'selectInput:';
 /** @const {string} Prefix when selectInput fails. */

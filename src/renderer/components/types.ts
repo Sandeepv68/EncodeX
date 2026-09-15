@@ -125,6 +125,7 @@ export interface BatchControlsProps {
   transcoderRef: RefObject<TranscoderType>;
   suffixRef: RefObject<string>;
   onAddFiles: () => void;
+  onAddFolder: () => void;
   onCancelAll: () => void;
   onClearCompleted: () => void;
   hasCompleted: boolean;

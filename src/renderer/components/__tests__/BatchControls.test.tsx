@@ -24,6 +24,7 @@ function renderControls(
   const transcoderRef = { current: TRANSCODER_TYPES[0] } as RefObject<(typeof TRANSCODER_TYPES)[number]>;
   const suffixRef = { current: DEFAULT_SUFFIX } as RefObject<string>;
   const onAddFiles = vi.fn();
+  const onAddFolder = vi.fn();
   const onCancelAll = vi.fn();
   const onClearCompleted = vi.fn();
   const onConcurrencyChange = vi.fn();
@@ -44,6 +45,7 @@ function renderControls(
       transcoderRef={transcoderRef}
       suffixRef={suffixRef}
       onAddFiles={onAddFiles}
+      onAddFolder={onAddFolder}
       onCancelAll={onCancelAll}
       onClearCompleted={onClearCompleted}
       hasCompleted={hasCompleted}
@@ -75,6 +77,7 @@ function renderControls(
     transcoderRef,
     suffixRef,
     onAddFiles,
+    onAddFolder,
     onCancelAll,
     onClearCompleted,
     onConcurrencyChange,
@@ -144,10 +147,18 @@ describe('BatchControls', () => {
     expect(suffixRef.current).toBe('_bak');
   });
 
-  it('fires onAddFiles when the add files button is clicked', () => {
+  it('opens the add menu and fires onAddFiles when the Add Files item is clicked', () => {
     const { onAddFiles } = renderControls();
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(screen.getByRole('menuitem', { name: 'batchQueue.addFiles' }));
     expect(onAddFiles).toHaveBeenCalledOnce();
+  });
+
+  it('opens the add menu and fires onAddFolder when the Add Folder item is clicked', () => {
+    const { onAddFolder } = renderControls();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(screen.getByRole('menuitem', { name: 'batchQueue.addFolder' }));
+    expect(onAddFolder).toHaveBeenCalledOnce();
   });
 
   it('fires onCancelAll when the cancel all button is clicked', () => {

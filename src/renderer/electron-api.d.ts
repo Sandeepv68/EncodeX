@@ -62,6 +62,24 @@ export interface ElectronAPI {
    */
   selectFiles(filters?: Electron.FileFilter[]): Promise<string[]>;
   /**
+   * Opens a native folder-selection dialog in the main process over the
+   * `IPC.SELECT_FOLDER_FILES` ('select-folder-files') channel and returns the
+   * supported media files found inside the chosen folder (recursively).
+   * @returns {Promise<string[]>} The media file paths found inside the chosen
+   *   folder, or an empty array if the user cancelled the dialog.
+   */
+  selectFolderFiles(): Promise<string[]>;
+  /**
+   * Expands a mixed list of existing file/directory paths (e.g. drag-and-drop
+   * targets) into the supported media files they contain over the
+   * `IPC.EXPAND_PATHS` ('expand-paths') channel. Directories are walked
+   * recursively; unrecognized paths and non-media files are dropped.
+   * @param {string[]} paths - File/directory paths to expand.
+   * @returns {Promise<string[]>} The sorted media file paths contained in the
+   *   given paths (an empty array when none are found).
+   */
+  expandPaths(paths: string[]): Promise<string[]>;
+  /**
    * Opens a native save-file dialog in the main process to choose an output
    * destination over the `IPC.SELECT_OUTPUT` ('select-output') channel.
    * @returns {Promise<string|null>} The chosen output path, or null if the user
