@@ -94,3 +94,12 @@ export const ForceCheckbox = styled(FormControlLabel)(({ theme }) => ({
   whiteSpace: 'nowrap',
   marginTop: fieldLabelOffset(theme),
 }));
+
+/** Small dropdown indicator placed next to the plus icon in the merged Add picker. @const DropdownChevron */
+export const DropdownChevron = styled('span')(({ theme }) => ({
+  marginLeft: theme.spacing(0.5),
+  fontSize: theme.typography.pxToRem(8),
+  lineHeight: 1,
+  opacity: 0.8,
+  verticalAlign: 'middle',
+}));

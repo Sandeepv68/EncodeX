@@ -49,7 +49,8 @@
  *    renders the hardware-acceleration info alert inside the controls box.
  */
 
-import { Checkbox, Grid, MenuItem, Tooltip } from '@mui/material';
+import { useState } from 'react';
+import { Checkbox, Grid, Menu, MenuItem, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
@@ -60,6 +61,7 @@ import {
   faFolderOpen,
   faFileExport,
   faFileImport,
+  faCaretDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
@@ -86,6 +88,7 @@ import {
   BrowseButton,
   AlignedCheckbox,
   ForceCheckbox,
+  DropdownChevron,
 } from '../styles/BatchControls.styles';
 
 /**
@@ -152,6 +155,7 @@ export default function BatchControls({
   transcoderRef,
   suffixRef,
   onAddFiles,
+  onAddFolder,
   onCancelAll,
   onClearCompleted,
   hasCompleted,
@@ -178,6 +182,10 @@ export default function BatchControls({
   const { t } = useTranslation();
 
   const accelAlertDismissed = useDismissedAlertsStore((s) => s.isDismissed(DISMISSED_ALERT_KEYS.HARDWARE_ACCEL));
+
+  /** Anchor element for the merged Add Files / Add Folder dropdown menu. */
+  const [addMenuAnchor, setAddMenuAnchor] = useState<HTMLElement | null>(null);
+  const closeAddMenu = () => setAddMenuAnchor(null);
 
   /**
    * Localized display labels keyed by batch operation value.
@@ -210,10 +218,37 @@ export default function BatchControls({
         <Grid size={12}>
           <ToolbarRow>
             <Tooltip title={shortcutHint(t, 'batchQueue.addFiles', SHORTCUT_BY_ID['batchQueue.add'].keys)}>
-              <OutlinedIconButton size="small" aria-label={t('batchQueue.addFiles')} onClick={onAddFiles}>
+              <OutlinedIconButton
+                size="small"
+                aria-label={t('batchQueue.addFiles')}
+                aria-haspopup="menu"
+                aria-expanded={Boolean(addMenuAnchor)}
+                onClick={(e) => setAddMenuAnchor(e.currentTarget)}
+              >
                 <FontAwesomeIcon icon={faPlus} />
+                <DropdownChevron>
+                  <FontAwesomeIcon icon={faCaretDown} />
+                </DropdownChevron>
               </OutlinedIconButton>
             </Tooltip>
+            <Menu anchorEl={addMenuAnchor} open={Boolean(addMenuAnchor)} onClose={closeAddMenu}>
+              <MenuItem
+                onClick={() => {
+                  closeAddMenu();
+                  onAddFiles();
+                }}
+              >
+                {t('batchQueue.addFiles')}
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  closeAddMenu();
+                  onAddFolder();
+                }}
+              >
+                {t('batchQueue.addFolder')}
+              </MenuItem>
+            </Menu>
             <Tooltip title={t('batchQueue.cancelAll')}>
               <OutlinedIconButton size="small" color="error" aria-label={t('batchQueue.cancelAll')} onClick={onCancelAll}>
                 <FontAwesomeIcon icon={faBroom} />

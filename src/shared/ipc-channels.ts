@@ -10,8 +10,12 @@
  * @const {Object} IPC
  * @property {string} SELECT_FILE - Open a single-file selection dialog.
  * @property {string} SELECT_FILES - Open a multi-file selection dialog.
+ * @property {string} SELECT_FOLDER_FILES - Pick a source folder and return the
+ *   media files it contains (recursively).
  * @property {string} SELECT_OUTPUT - Choose an output file location.
  * @property {string} SELECT_DIRECTORY - Choose an output directory.
+ * @property {string} EXPAND_PATHS - Expand a mixed list of file/directory paths
+ *   into the media files they contain.
  * @property {string} GET_MEDIA_INFO - Probe a media file for format and stream info.
  * @property {string} GET_IMAGE_INFO - Read image dimensions and format info.
  * @property {string} GET_IMAGE_PREVIEW - Generate a preview of an image.
@@ -73,8 +77,10 @@
 export const IPC = {
   SELECT_FILE: 'select-file',
   SELECT_FILES: 'select-files',
+  SELECT_FOLDER_FILES: 'select-folder-files',
   SELECT_OUTPUT: 'select-output',
   SELECT_DIRECTORY: 'select-directory',
+  EXPAND_PATHS: 'expand-paths',
   GET_MEDIA_INFO: 'get-media-info',
   GET_IMAGE_INFO: 'get-image-info',
   GET_IMAGE_PREVIEW: 'get-image-preview',

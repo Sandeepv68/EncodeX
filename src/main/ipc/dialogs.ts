@@ -1,8 +1,10 @@
 /**
- * @fileoverview IPC handlers for native file and folder selection dialogs.
- * Registers handlers for the SELECT_FILE, SELECT_FILES and SELECT_OUTPUT
- * channels, bridging the renderer to Electron's dialog module so the UI can
- * pick input media files or choose an output destination. All dialogs are
+ * @fileoverview IPC handlers for native file, folder, and path-expansion
+ * selection dialogs.
+ * Registers handlers for the SELECT_FILE, SELECT_FILES, SELECT_FOLDER_FILES,
+ * SELECT_OUTPUT, SELECT_DIRECTORY, and EXPAND_PATHS channels, bridging the
+ * renderer to Electron's dialog module so the UI can pick input media files,
+ * import an entire folder, or choose an output destination. All dialogs are
  * attached to the owning BrowserWindow and are therefore modal to the
  * application frame. When the renderer does not supply filters, the media
  * input/output extension whitelists from src/shared/file-extensions.ts
@@ -15,6 +17,7 @@ import { ipcMain, dialog, BrowserWindow } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import { FILE_EXTENSIONS } from '../../shared/file-extensions';
+import { collectMediaFiles, expandMediaPaths } from '../media-files';
 import {
   LOG_IPC_SELECT_DIRECTORY_CALLED,
   LOG_IPC_SELECT_DIRECTORY_RESULT,
@@ -22,8 +25,12 @@ import {
   LOG_IPC_SELECT_FILES_RESULT,
   LOG_IPC_SELECT_FILE_CALLED,
   LOG_IPC_SELECT_FILE_RESULT,
+  LOG_IPC_SELECT_FOLDER_FILES_CALLED,
+  LOG_IPC_SELECT_FOLDER_FILES_RESULT,
   LOG_IPC_SELECT_OUTPUT_CALLED,
   LOG_IPC_SELECT_OUTPUT_RESULT,
+  LOG_IPC_EXPAND_PATHS_CALLED,
+  LOG_IPC_EXPAND_PATHS_RESULT,
 } from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/dialogs');
@@ -90,6 +97,46 @@ export function registerDialogHandlers(win: BrowserWindow): void {
     });
     log.info(LOG_IPC_SELECT_FILES_RESULT, result.canceled ? 'cancelled' : `${result.filePaths.length} files`);
     return result.canceled ? [] : result.filePaths;
+  });
+
+  /**
+   * Handles the IPC.SELECT_FOLDER_FILES channel (select-folder-files).
+   * Opens a single-folder open dialog (`openDirectory`). When a folder is
+   * chosen, its supported media files are collected recursively (via
+   * collectMediaFiles) and returned. A cancelled dialog resolves with an
+   * empty array.
+   *
+   * @returns {Promise<string[]>} The media file paths found inside the chosen
+   *   folder, or an empty array when the dialog was cancelled.
+   */
+  ipcMain.handle(IPC.SELECT_FOLDER_FILES, async () => {
+    log.debug(LOG_IPC_SELECT_FOLDER_FILES_CALLED);
+    const preset = realTierPreset('E2E_REAL_INPUT_DIR');
+    const dir = preset || (await dialog.showOpenDialog(win, { properties: ['openDirectory'] })).filePaths[0];
+    if (!dir) {
+      log.info(LOG_IPC_SELECT_FOLDER_FILES_RESULT, 'cancelled');
+      return [];
+    }
+    const files = collectMediaFiles(dir);
+    log.info(LOG_IPC_SELECT_FOLDER_FILES_RESULT, `${files.length} files`);
+    return files;
+  });
+
+  /**
+   * Handles the IPC.EXPAND_PATHS channel (expand-paths).
+   * Expands a mixed list of existing file/directory paths (e.g. drop targets)
+   * into the supported media files they contain: directories are walked
+   * recursively, media files pass through, and anything else is ignored.
+   *
+   * @param {string[]} paths - Mixed file/directory paths to expand.
+   * @returns {Promise<string[]>} The sorted media file paths contained in the
+   *   given paths (an empty array when none are found).
+   */
+  ipcMain.handle(IPC.EXPAND_PATHS, (_event, paths: string[]) => {
+    log.debug(LOG_IPC_EXPAND_PATHS_CALLED, { count: paths?.length ?? 0 });
+    const files = expandMediaPaths(paths ?? []);
+    log.info(LOG_IPC_EXPAND_PATHS_RESULT, `${files.length} files`);
+    return files;
   });
 
   /**

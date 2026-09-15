@@ -686,17 +686,23 @@ export default function BatchQueue() {
       e.preventDefault();
       setDragging(false);
     };
-    const handleDrop = (e: DragEvent) => {
+    const handleDrop = async (e: DragEvent) => {
       e.preventDefault();
       setDragging(false);
       const paths: string[] = [];
       if (e.dataTransfer?.files) {
         for (const file of Array.from(e.dataTransfer.files)) {
-          const path = window.electronAPI?.getPathForFile(file);
-          if (path) paths.push(path);
+          const filePath = window.electronAPI?.getPathForFile(file);
+          if (filePath) paths.push(filePath);
         }
       }
-      if (paths.length > 0) enqueueSelectionsRef.current(paths.map((path) => ({ file: path, operation: operationRef.current })));
+      if (paths.length === 0) return;
+      const mediaFiles = await window.electronAPI?.expandPaths(paths);
+      if (!mediaFiles || mediaFiles.length === 0) {
+        useToastStore.getState().warning(t('batchQueue.noMediaFound'));
+        return;
+      }
+      enqueueSelectionsRef.current(mediaFiles.map((file) => ({ file, operation: operationRef.current })));
     };
     window.addEventListener('dragover', handleDragOver);
     window.addEventListener('dragleave', handleDragLeave);
@@ -818,6 +824,17 @@ export default function BatchQueue() {
     const files = await window.electronAPI.selectFiles([
       { name: FILE_FILTERS.MEDIA_FILES.name, extensions: [...FILE_FILTERS.MEDIA_FILES.extensions] },
     ]);
+    if (!files || files.length === 0) return;
+    setReviewFiles(files);
+  };
+
+  /**
+   * Opens a folder-selection dialog; every supported media file found inside
+   * (recursively) is staged for the per-file review dialog.
+   * @returns {Promise<void>} Resolves once the folder picker closes.
+   */
+  const handleAddFolder = async () => {
+    const files = await window.electronAPI.selectFolderFiles();
     if (!files || files.length === 0) return;
     setReviewFiles(files);
   };
@@ -1212,6 +1229,7 @@ export default function BatchQueue() {
               transcoderRef={transcoderRef}
               suffixRef={suffixRef}
               onAddFiles={handleAddFiles}
+              onAddFolder={handleAddFolder}
               onCancelAll={handleCancelAll}
               onClearCompleted={handleClearCompleted}
               hasCompleted={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)}
