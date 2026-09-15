@@ -1,6 +1,7 @@
 ---
 title: "Video Compressor – Shrink Video File Size Free | EncodeX"
 description: "Compress video and reduce file size with a free, open-source video compressor for Windows, Mac, and Linux. Shrink MP4, MKV and large videos without losing quality."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Video Compressor & Video File Size Reducer

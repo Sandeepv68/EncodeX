@@ -1,6 +1,7 @@
 ---
 title: "HandBrake 替代方案 — 免费、现代的 Web 转换器 | EncodeX"
 description: "在寻找 HandBrake 替代方案？EncodeX 是一款免费、开源的 FFmpeg 图形界面，适用于 Windows、Mac 和 Linux — 界面更友好、支持更多格式、硬件加速，无需命令行。"
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # HandBrake 替代方案
@@ -40,6 +41,14 @@ HandBrake 是一款流行的免费视频转码器 — 尤其因其光盘提取�
 ## 我真的需要切换吗？
 
 不一定！HandBrake 在光盘提取方面非常出色。但如果您想要更简单的界面、更丰富的批量功能、更多格式，或者一个同时支持图像压缩和音频提取的应用 — EncodeX 值得下载。
+
+## 常见问题
+
+**EncodeX 真的是 HandBrake 的替代品吗？** 是的。EncodeX 是一款免费开源的 FFmpeg 图形界面，支持 Windows、Mac 和 Linux，具有更友好的界面、更多格式、硬件加速、批量队列和 CLI 模式。
+
+**我应该从 HandBrake 换成 EncodeX 吗？** HandBrake 非常适合光盘抓取。如果您想要更简单的界面、更丰富的批处理功能、更多格式，或者一个还能压缩图片和提取音频的应用，EncodeX 更合适。
+
+**EncodeX 可以离线工作吗？** 是的。所有转换都在您的计算机本地进行，因此您的文件绝不会离开您的设备。
 
 ## 开始使用
 

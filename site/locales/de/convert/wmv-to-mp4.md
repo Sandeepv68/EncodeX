@@ -1,6 +1,7 @@
 ---
 title: "WMV zu MP4 Konverter – WMV-Videos kostenlos konvertieren | EncodeX"
 description: "Konvertieren Sie WMV in MP4 kostenlos mit EncodeX. Ein schneller, offline WMV-zu-MP4-Konverter für Windows, Mac und Linux. Ohne Wasserzeichen, ohne Uploads, ohne Qualitätsverlust."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Konvertieren Sie WMV zu MP4

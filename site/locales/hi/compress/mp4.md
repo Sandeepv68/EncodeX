@@ -1,6 +1,7 @@
 ---
 title: "MP4 वीडियो मुफ़्त में कंप्रेस करें – MP4 फ़ाइल का आकार घटाएं | EncodeX"
 description: "EncodeX से Windows, Mac और Linux पर MP4 वीडियो मुफ़्त में कंप्रेस करें। दिखने वाली गुणवत्ता खोए बिना MP4 फ़ाइल का आकार घटाएं। बिना अपलोड, बिना वॉटरमार्क, बिना साइनअप।"
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # MP4 वीडियो कंप्रेस करें

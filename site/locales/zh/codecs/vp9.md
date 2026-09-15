@@ -1,6 +1,7 @@
 ---
 title: "VP9 编码器与网页视频转换器 | EncodeX"
 description: "使用 EncodeX（适用于 Windows、Mac 和 Linux 的免费 VP9 视频转换器）将视频转换为 VP9。以较小的文件获得高质量的开源网页视频——完全离线。"
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # VP9 编码器与视频转换器

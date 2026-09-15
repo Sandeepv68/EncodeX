@@ -1,6 +1,7 @@
 ---
 title: "FFmpeg GUI – Powerful Desktop Frontend for FFmpeg | EncodeX"
 description: "A free, open-source FFmpeg GUI for Windows, Mac, and Linux. Convert video and audio, compress files, trim clips and extract audio — all without touching the command line."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # A Powerful GUI for FFmpeg

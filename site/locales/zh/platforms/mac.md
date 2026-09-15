@@ -1,6 +1,7 @@
 ---
 title: "EncodeX Mac 版 – 免费的 FFmpeg 图形界面 | EncodeX"
 description: "下载 EncodeX Mac 版 —— 一款免费开源的 FFmpeg 图形界面，适用于 macOS 11+。在你的 Mac 上转换视频、压缩文件和提取音频。无需命令行，无需上传。"
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX Mac 版

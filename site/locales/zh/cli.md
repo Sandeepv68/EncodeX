@@ -1,6 +1,7 @@
 ---
 title: "EncodeX CLI – FFmpeg 命令行，化繁为简 | EncodeX"
 description: "EncodeX CLI 为您带来 FFmpeg 命令行的强大功能，同时提供简洁易读的命令。在 Windows、Mac 和 Linux 上通过终端转换、压缩、提取音频和批量处理。"
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX CLI

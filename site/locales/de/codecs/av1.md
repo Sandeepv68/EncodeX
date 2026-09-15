@@ -1,6 +1,7 @@
 ---
 title: "AV1-Encoder und Videokonverter – Beste Qualität, kleinste Dateien | EncodeX"
 description: "Konvertieren Sie Video zu AV1 mit EncodeX, einem kostenlosen AV1-Videokonverter für Windows, Mac und Linux. Der effizienteste Codec für die kleinsten Dateien mit großartiger Qualität."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # AV1-Encoder und Videokonverter

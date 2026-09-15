@@ -1,6 +1,7 @@
 ---
 title: "Como extrair áudio de vídeo – extrair MP3 grátis | EncodeX"
 description: "Aprenda a extrair áudio de vídeo gratuitamente com o EncodeX. Tire MP3, M4A, FLAC ou WAV de qualquer vídeo no Windows, Mac e Linux — offline, sem uploads, sem marcas d'água."
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # Como extrair áudio de vídeo
@@ -37,6 +38,14 @@ Muito simples. Você pode até **extrair em lote** uma pasta inteira de vídeos 
 - **Sem uploads, sem contas, sem marcas d'água**
 - **Acelerado por hardware** quando possível, para extração rápida
 - Gratuito e **open source**, no **Windows, Mac e Linux**
+
+## Perguntas frequentes
+
+**De quais formatos de vídeo posso extrair áudio?** O EncodeX extrai som de MP4, MKV, MOV, AVI, WebM, FLV, WMV, M4V e mais.
+
+**Para quais formatos de áudio posso extrair?** Você pode salvar o áudio extraído como MP3, M4A/AAC, FLAC ou WAV.
+
+**Extrair áudio de vídeo é gratuito?** Sim. A extração é gratuita, offline e sem marcas d\u2019água, e você também pode extrair em lote uma pasta inteira de vídeos.
 
 ## Pronto para testar?
 

@@ -1,6 +1,7 @@
 ---
 title: "ProRes 转换器 – 免费编码 Apple ProRes | EncodeX"
 description: "使用 EncodeX（适用于 Windows、Mac 和 Linux 的免费 ProRes 转换器）将视频转换为 Apple ProRes。Final Cut、Premiere 和 DaVinci Resolve 的专业剪辑编解码器。"
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # ProRes 转换器

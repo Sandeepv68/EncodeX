@@ -1,6 +1,7 @@
 ---
 title: "ProRes Converter – Encode Apple ProRes Free | EncodeX"
 description: "Convert video to Apple ProRes with EncodeX, a free ProRes converter for Windows, Mac, and Linux. The professional editing codec for Final Cut, Premiere, and DaVinci Resolve."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # ProRes Converter

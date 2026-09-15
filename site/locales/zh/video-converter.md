@@ -1,6 +1,7 @@
 ---
 title: "免费视频转换器——转换任意视频格式 | EncodeX"
 description: "适用于 Windows、Mac 和 Linux 的免费开源视频转换器。转换 MP4、MKV、AVI、MOV、WebM 等格式——支持批量、离线、无水印。"
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # 任意格式的免费视频转换器
@@ -43,6 +44,14 @@ EncodeX 可在所有主流操作系统上使用：
 - **无需技术知识**——会拖拽就会转换
 - **批量与批量转换**——放入 50 个文件，然后离开
 - **永久免费**——开源，没有烦人的付费层级
+
+## 常见问题
+
+**EncodeX 可以转换哪些文件格式？** EncodeX 可以在几十种格式之间转换：视频支持 MP4、MKV、MOV、AVI、WebM、FLV、WMV、M4V 等，音频支持 MP3、FLAC、WAV、M4A、AAC 和 OGG——全部在您的电脑上完成。
+
+**EncodeX 真的免费吗？** 是的。EncodeX 永久免费、开源，无水印、无试用限制、无隐藏付费墙。
+
+**转换会把我的视频上传到服务器吗？** 不会。一切都在您自己的电脑上离线运行，您的文件绝不会离开您的设备。
 
 ## 立即开始
 

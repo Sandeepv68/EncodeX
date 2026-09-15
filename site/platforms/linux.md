@@ -1,6 +1,7 @@
 ---
 title: "EncodeX for Linux – Free FFmpeg GUI for Linux | EncodeX"
 description: "Download EncodeX for Linux — a free, open-source FFmpeg GUI. Convert video, compress files, and extract audio on Linux desktops. No command line, no uploads."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX for Linux

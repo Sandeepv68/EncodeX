@@ -1,6 +1,7 @@
 ---
 title: "Comprimir vídeos MKV grátis – Reduzir o tamanho de arquivos MKV | EncodeX"
 description: "Comprima vídeos MKV grátis com o EncodeX no Windows, Mac e Linux. Reduza o tamanho dos arquivos MKV mantendo a qualidade. Sem uploads, sem marcas d'água, sem cadastro."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Comprimir vídeos MKV

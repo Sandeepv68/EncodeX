@@ -1,6 +1,7 @@
 ---
 title: "AVI से MP4 कन्वर्टर – AVI वीडियो मुफ़्त में कन्वर्ट करें | EncodeX"
 description: "EncodeX से AVI को MP4 में मुफ़्त में कन्वर्ट करें। Windows, Mac और Linux के लिए एक तेज़, ऑफ़लाइन AVI से MP4 कन्वर्टर। बिना वॉटरमार्क, बिना अपलोड, बिना गुणवत्ता हानि।"
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # AVI को MP4 में कन्वर्ट करें

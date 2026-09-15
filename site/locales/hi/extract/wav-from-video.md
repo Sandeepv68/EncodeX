@@ -1,6 +1,7 @@
 ---
 title: "वीडियो से WAV निकालें – मुफ़्त लॉसलेस WAV एक्सट्रैक्टर | EncodeX"
 description: "EncodeX से Windows, Mac और Linux पर वीडियो से WAV मुफ़्त में निकालें। MP4, MKV, MOV और अन्य से लॉसलेस WAV ऑडियो पाएं। बिना अपलोड, बिना वॉटरमार्क।"
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # वीडियो से WAV निकालें

@@ -1,6 +1,7 @@
 ---
 title: "How to Extract Audio from Video – Free MP3 Extraction | EncodeX"
 description: "Learn how to extract audio from video for free with EncodeX. Pull MP3, M4A, FLAC or WAV from any video on Windows, Mac, and Linux — offline, no uploads, no watermarks."
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # How to Extract Audio from Video

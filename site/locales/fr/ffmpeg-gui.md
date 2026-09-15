@@ -1,6 +1,7 @@
 ---
 title: "Interface FFmpeg – Un front-end puissant pour FFmpeg | EncodeX"
 description: "Une interface FFmpeg gratuite et open source pour Windows, Mac et Linux. Convertissez vidéo et audio, compressez des fichiers, coupez des clips et extrayez l'audio sans toucher à la ligne de commande."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Une interface puissante pour FFmpeg

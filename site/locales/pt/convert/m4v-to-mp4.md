@@ -1,6 +1,7 @@
 ---
 title: "Conversor de M4V para MP4 – converta vídeos M4V gratuitamente | EncodeX"
 description: "Converta M4V em MP4 gratuitamente com o EncodeX. Um conversor rápido e offline de M4V para MP4 para Windows, Mac e Linux — ideal para compras do iTunes e Apple TV. Sem marca d'água e sem perda de qualidade."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Converta M4V para MP4

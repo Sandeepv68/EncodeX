@@ -1,6 +1,7 @@
 ---
 title: "Conversor de FLV para MP4 – converta vídeos FLV gratuitamente | EncodeX"
 description: "Converta FLV em MP4 gratuitamente com o EncodeX. Um conversor rápido e offline de FLV para MP4 para Windows, Mac e Linux. Funciona com FLV baixados e gravados, sem marca d'água e sem perda de qualidade."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Converta FLV para MP4

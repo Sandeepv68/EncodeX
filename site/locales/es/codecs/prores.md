@@ -1,6 +1,7 @@
 ---
 title: "Convertidor de ProRes – Codifica Apple ProRes gratis | EncodeX"
 description: "Convierte vídeo a Apple ProRes con EncodeX, un convertidor de ProRes gratuito para Windows, Mac y Linux. El códec profesional de edición para Final Cut, Premiere y DaVinci Resolve."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Convertidor de ProRes

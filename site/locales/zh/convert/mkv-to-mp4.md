@@ -1,6 +1,7 @@
 ---
 title: "MKV 转 MP4 转换器——免费转换 MKV 视频 | EncodeX"
 description: "使用 EncodeX 免费将 MKV 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 MKV 转 MP4 转换器。无水印、无上传、无画质损失。"
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # 将 MKV 转换为 MP4
@@ -34,6 +35,14 @@ MP4 是安全且默认的预设——如果不确定，就选它。编解码器�
 - **硬件加速**——利用 GPU 提升速度
 - **无水印**且永久免费
 - 支持 **Windows、Mac 和 Linux**
+
+## 常见问题
+
+**为什么要把 MKV 转成 MP4？** MKV 是灵活的格式，但并非所有设备或播放器都支持它。MP4 几乎可以在所有设备上播放：手机、电视、游戏机、编辑软件和浏览器。
+
+**将 MKV 转成 MP4 会丢失质量吗？** 不会。EncodeX 在转换封装格式时会保持视频和音频质量不变。
+
+**我可以一次转换多个 MKV 文件吗？** 可以。EncodeX 支持将整个文件夹的 MKV 文件批量转换为 MP4。
 
 ## 立即开始
 

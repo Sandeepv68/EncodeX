@@ -1,6 +1,7 @@
 ---
 title: "Free Video Converter – Convert Any Video Format | EncodeX"
 description: "A free, open-source video converter for Windows, Mac, and Linux. Convert MP4, MKV, AVI, MOV, WebM and more — batch, offline, and without watermarks."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Free Video Converter for Any Format

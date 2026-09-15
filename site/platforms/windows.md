@@ -1,6 +1,7 @@
 ---
 title: "EncodeX for Windows – Free FFmpeg GUI for Windows 10/11 | EncodeX"
 description: "Download EncodeX for Windows 10 and 11 — a free, open-source FFmpeg GUI. Convert video, compress files, and extract audio on Windows. No command line, no uploads."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX for Windows

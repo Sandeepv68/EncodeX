@@ -1,6 +1,7 @@
 ---
 title: "EncodeX für Mac – Kostenlose FFmpeg-Oberfläche für macOS | EncodeX"
 description: "Laden Sie EncodeX für Mac herunter — eine kostenlose, Open-Source-FFmpeg-Oberfläche für macOS 11+. Konvertieren Sie Videos, komprimieren Sie Dateien und extrahieren Sie Audio auf Ihrem Mac. Keine Kommandozeile, kein Hochladen."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX für Mac

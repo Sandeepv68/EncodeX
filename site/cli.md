@@ -1,6 +1,7 @@
 ---
 title: "EncodeX CLI – FFmpeg Command Line, Simplified | EncodeX"
 description: "The EncodeX CLI gives you FFmpeg command-line power with simple, readable commands. Convert, compress, extract audio, and batch-process from the terminal on Windows, Mac, and Linux."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX CLI
