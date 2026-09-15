@@ -133,9 +133,7 @@ export default function GettingStartedCard(): ReactElement | null {
           <GettingStartedTitle variant="h6" component="h2">
             {t('gettingStarted.title')}
           </GettingStartedTitle>
-          <GettingStartedBody variant="body2">
-            {t('gettingStarted.body')}
-          </GettingStartedBody>
+          <GettingStartedBody variant="body2">{t('gettingStarted.body')}</GettingStartedBody>
         </div>
         <DismissButton size="small" aria-label={t('gettingStarted.dismiss')} onClick={resolve} data-testid="getting-started-dismiss">
           <FontAwesomeIcon icon={faXmark} />

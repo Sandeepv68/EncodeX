@@ -226,7 +226,9 @@ export default function BatchControls({
                 onClick={(e) => setAddMenuAnchor(e.currentTarget)}
               >
                 <FontAwesomeIcon icon={faPlus} />
-                <DropdownChevron><FontAwesomeIcon icon={faCaretDown} /></DropdownChevron>
+                <DropdownChevron>
+                  <FontAwesomeIcon icon={faCaretDown} />
+                </DropdownChevron>
               </OutlinedIconButton>
             </Tooltip>
             <Menu anchorEl={addMenuAnchor} open={Boolean(addMenuAnchor)} onClose={closeAddMenu}>

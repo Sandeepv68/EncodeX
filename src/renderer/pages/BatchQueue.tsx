@@ -820,7 +820,7 @@ export default function BatchQueue() {
    * rather than enqueued immediately.
    * @returns {Promise<void>} Resolves once the file picker closes.
    */
-const handleAddFiles = async () => {
+  const handleAddFiles = async () => {
     const files = await window.electronAPI.selectFiles([
       { name: FILE_FILTERS.MEDIA_FILES.name, extensions: [...FILE_FILTERS.MEDIA_FILES.extensions] },
     ]);
