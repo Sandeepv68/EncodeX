@@ -1,6 +1,7 @@
 ---
 title: "FFmpeg GUI——强大的 FFmpeg 桌面界面 | EncodeX"
 description: "适用于 Windows、Mac 和 Linux 的免费开源 FFmpeg GUI。无需命令行，即可转换视频和音频、压缩文件、剪辑片段和提取音频。"
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # 强大的 FFmpeg GUI

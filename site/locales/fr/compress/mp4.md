@@ -1,6 +1,7 @@
 ---
 title: "Compresser des vidéos MP4 gratuitement – Réduire la taille des fichiers MP4 | EncodeX"
 description: "Compressez vos vidéos MP4 gratuitement avec EncodeX sur Windows, Mac et Linux. Réduisez la taille de vos fichiers MP4 sans perte de qualité visible. Sans envoi, sans filigrane, sans inscription."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Compresser des vidéos MP4

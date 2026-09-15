@@ -1,6 +1,7 @@
 ---
 title: "Kostenloser Videokonverter – Konvertieren Sie jedes Videoformat | EncodeX"
 description: "Ein kostenloser, Open-Source-Videokonverter für Windows, Mac und Linux. Konvertieren Sie MP4, MKV, AVI, MOV, WebM und mehr – stapelweise, offline und ohne Wasserzeichen."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Kostenloser Videokonverter für jedes Format
@@ -43,6 +44,14 @@ EncodeX ist auf jedem wichtigen Betriebssystem verfügbar:
 - **Keine technischen Kenntnisse nötig** – wer ziehen und ablegen kann, kann konvertieren
 - **Stapel- und Massenkonvertierung** – 50 Dateien hineinziehen und gehen
 - **Für immer kostenlos** – Open Source, ohne nervige Bezahlstufe
+
+## Häufig gestellte Fragen
+
+**Welche Dateiformate kann EncodeX konvertieren?** EncodeX konvertiert zwischen Dutzenden Formaten – MP4, MKV, MOV, AVI, WebM, FLV, WMV, M4V und mehr für Video, plus MP3, FLAC, WAV, M4A, AAC und OGG für Audio – direkt auf Ihrem Computer.
+
+**Ist EncodeX wirklich kostenlos?** Ja. EncodeX ist für immer kostenlos, Open Source, ohne Wasserzeichen, ohne Testlimits und ohne versteckte Bezahlschranken.
+
+**Werden meine Videos beim Konvertieren auf einen Server hochgeladen?** Nein. Alles läuft offline auf Ihrem eigenen Computer, Ihre Dateien verlassen also nie Ihr Gerät.
 
 ## Loslegen
 

@@ -1,6 +1,7 @@
 ---
 title: "Kostenloser Audiokonverter – MP3, FLAC, WAV und mehr | EncodeX"
 description: "Ein kostenloser, Open-Source-Audiokonverter für Windows, Mac und Linux. Konvertieren Sie MP3, FLAC, WAV, M4A, AAC und mehr, extrahieren Sie Audio aus Video und konvertieren Sie stapelweise."
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # Kostenloser Audiokonverter für jedes Format
@@ -37,6 +38,14 @@ EncodeX ist auf jedem wichtigen Desktop-Betriebssystem verfügbar:
 - **Alles bleibt auf Ihrem Computer** – keine Uploads, keine Konten
 - **Keine Wasserzeichen** und **keine versteckten Paywalls** – für immer kostenlos und Open Source
 - **Hardwarebeschleunigt**, wo möglich, für schnelle Konvertierungen
+
+## Häufig gestellte Fragen
+
+**Welche Audioformate kann ich konvertieren?** MP3, FLAC, WAV, M4A, AAC, OGG, Opus und mehr – so können Sie mit einem Klick zwischen Formaten wechseln, von WAV zu MP3 oder FLAC zu MP3.
+
+**Kann EncodeX Audio aus einem Video extrahieren?** Ja. Legen Sie ein Video ab und ziehen Sie den Ton als MP3 oder ein anderes Format heraus – siehe unseren Leitfaden zum Extrahieren von Audio aus Video.
+
+**Kann ich einen ganzen Ordner mit Audiodateien konvertieren?** Ja. EncodeX ist ein Stapel-Audiokonverter: Sie können viele Dateien hineinziehen und es verarbeitet sie automatisch.
 
 ## Loslegen
 

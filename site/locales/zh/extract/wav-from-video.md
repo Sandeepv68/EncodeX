@@ -1,6 +1,7 @@
 ---
 title: "免费从视频中提取 WAV – 无损 WAV 提取器 | EncodeX"
 description: "使用 EncodeX 在 Windows、Mac 和 Linux 上免费从视频中提取 WAV。从 MP4、MKV、MOV 等格式中获取无损 WAV 音频。无需上传、无水印。"
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # 从视频中提取 WAV

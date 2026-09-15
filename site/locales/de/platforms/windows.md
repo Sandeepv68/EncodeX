@@ -1,6 +1,7 @@
 ---
 title: "EncodeX für Windows – Kostenlose FFmpeg-Oberfläche für Windows 10/11 | EncodeX"
 description: "Laden Sie EncodeX für Windows 10 und 11 herunter — eine kostenlose, Open-Source-FFmpeg-Oberfläche. Konvertieren Sie Videos, komprimieren Sie Dateien und extrahieren Sie Audio unter Windows. Keine Kommandozeile, kein Hochladen."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX für Windows

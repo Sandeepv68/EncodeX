@@ -1,6 +1,7 @@
 ---
 title: "EncodeX für Linux – Kostenlose FFmpeg-Oberfläche für Linux | EncodeX"
 description: "Laden Sie EncodeX für Linux herunter — eine kostenlose, Open-Source-FFmpeg-Oberfläche. Konvertieren Sie Videos, komprimieren Sie Dateien und extrahieren Sie Audio auf Linux-Desktops. Keine Kommandozeile, kein Hochladen."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX für Linux

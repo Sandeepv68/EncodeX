@@ -1,6 +1,7 @@
 ---
 title: "Extraire du MP3 d'une vidéo gratuitement – Extracteur audio MP3 | EncodeX"
 description: "Extrayez du MP3 de vos vidéos gratuitement avec EncodeX sur Windows, Mac et Linux. Récupérez l'audio MP3 de MP4, MKV, MOV et plus encore. Sans envoi, sans filigrane."
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # Extraire du MP3 d'une vidéo

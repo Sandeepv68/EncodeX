@@ -1,6 +1,7 @@
 ---
 title: "EncodeX pour Linux – Interface graphique FFmpeg gratuite pour Linux | EncodeX"
 description: "Téléchargez EncodeX pour Linux — une interface graphique gratuite et open source pour FFmpeg. Convertissez des vidéos, compressez des fichiers et extrayez l'audio sur les postes Linux. Sans ligne de commande, sans envoi."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX pour Linux

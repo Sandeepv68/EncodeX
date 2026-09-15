@@ -1,6 +1,7 @@
 ---
 title: "EncodeX CLI – FFmpeg-Kommandozeile, vereinfacht | EncodeX"
 description: "Die EncodeX CLI gibt Ihnen die Leistung der FFmpeg-Kommandozeile mit einfachen, lesbaren Befehlen. Konvertieren, komprimieren, Audio extrahieren und Stapelverarbeitung vom Terminal aus auf Windows, Mac und Linux."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX CLI

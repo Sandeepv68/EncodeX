@@ -1,6 +1,7 @@
 ---
 title: "免费压缩 MKV 视频 – 减小 MKV 文件体积 | EncodeX"
 description: "使用 EncodeX 在 Windows、Mac 和 Linux 上免费压缩 MKV 视频。在保持画质的同时缩小 MKV 文件体积。无需上传、无水印、无需注册。"
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # 压缩 MKV 视频

@@ -1,6 +1,7 @@
 ---
 title: "Extrair MP3 de vídeo grátis – Extrator de áudio MP3 | EncodeX"
 description: "Extraia MP3 de vídeo grátis com o EncodeX no Windows, Mac e Linux. Extraia o áudio MP3 de MP4, MKV, MOV e mais. Sem uploads, sem marcas d'água."
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # Extrair MP3 de vídeo

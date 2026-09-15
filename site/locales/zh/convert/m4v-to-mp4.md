@@ -1,6 +1,7 @@
 ---
 title: "M4V 转 MP4 转换器——免费转换 M4V 视频 | EncodeX"
 description: "使用 EncodeX 免费将 M4V 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 M4V 转 MP4 转换器——iTunes 和 Apple TV 购买的理想工具。无水印、无画质损失。"
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # 将 M4V 转换为 MP4

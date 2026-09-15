@@ -1,6 +1,7 @@
 ---
 title: "AV1 编码器和视频转换器——最佳画质，更小文件 | EncodeX"
 description: "使用 EncodeX 将视频转换为 AV1，这是一款适用于 Windows、Mac 和 Linux 的免费 AV1 视频转换器。以出色画质获得最小文件的最高效编解码器。"
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # AV1 编码器和视频转换器

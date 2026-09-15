@@ -1,6 +1,7 @@
 ---
 title: "免费压缩 MP4 视频 – 减小 MP4 文件体积 | EncodeX"
 description: "使用 EncodeX 在 Windows、Mac 和 Linux 上免费压缩 MP4 视频。在不损失可见画质的情况下缩小 MP4 文件体积。无需上传、无水印、无需注册。"
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # 压缩 MP4 视频

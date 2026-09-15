@@ -1,6 +1,7 @@
 ---
 title: "Convertidor de MOV a MP4 – Convierte vídeos MOV gratis | EncodeX"
 description: "Convierte MOV a MP4 gratis con EncodeX. Un convertidor de MOV a MP4 rápido y sin conexión para Windows, Mac y Linux. Sin marcas de agua, sin subidas, sin pérdida de calidad."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Convierte MOV a MP4

@@ -1,6 +1,7 @@
 ---
 title: "MP4 转 MKV 转换器 – 免费将 MP4 封转为 MKV | EncodeX"
 description: "使用 EncodeX 免费将 MP4 转换为 MKV。适用于 Windows、Mac 和 Linux 的快速离线 MP4 转 MKV 封转，保留原始质量，无需重新编码，无需上传。"
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # 将 MP4 转换为 MKV

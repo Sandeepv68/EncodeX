@@ -1,6 +1,7 @@
 ---
 title: "Free Audio Converter – MP3, FLAC, WAV & More | EncodeX"
 description: "A free, open-source audio converter for Windows, Mac, and Linux. Convert MP3, FLAC, WAV, M4A, AAC and more, extract audio from video, and batch-convert files."
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # Free Audio Converter for Every Format

@@ -1,6 +1,7 @@
 ---
 title: "Comprime vídeos MP4 gratis – Reduce el tamaño de los MP4 | EncodeX"
 description: "Comprime vídeos MP4 gratis con EncodeX en Windows, Mac y Linux. Reduce el tamaño de tus archivos MP4 sin perder calidad visible. Sin subidas, sin marcas de agua, sin registro."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Comprime vídeos MP4

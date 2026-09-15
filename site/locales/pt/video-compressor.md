@@ -1,6 +1,7 @@
 ---
 title: "Compressor de vídeo — reduza o tamanho do arquivo de vídeo gratuitamente | EncodeX"
 description: "Comprima vídeos e reduza o tamanho do arquivo com um compressor de vídeo gratuito e de código aberto para Windows, Mac e Linux. Reduza MP4, MKV e vídeos grandes sem perder qualidade."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Compressor de vídeo e redutor de tamanho de vídeo
@@ -39,6 +40,14 @@ Um **redutor de tamanho de vídeo** que:
 3. Escolha uma configuração de compressão e clique em Converter
 
 O EncodeX cuida dos detalhes técnicos por você.
+
+## Perguntas frequentes
+
+**Quanto menores ficarão os vídeos comprimidos?** Depende da fonte e das configurações, mas o EncodeX geralmente reduz um arquivo a uma fração do tamanho mantendo qualidade visual semelhante ao escolher codecs e bitrates inteligentes.
+
+**A compressão vai reduzir a qualidade do meu vídeo?** O EncodeX equilibra tamanho e qualidade automaticamente. Você escolhe o quão agressivo ser, e a aceleração por hardware mantém prévias e saída rápidas.
+
+**O EncodeX comprime vídeos offline?** Sim. A compressão acontece inteiramente no seu computador, sem uploads, é privada e funciona mesmo sem internet.
 
 ## Comece agora
 

@@ -1,6 +1,7 @@
 ---
 title: "AVI zu MP4 Konverter – AVI-Videos kostenlos konvertieren | EncodeX"
 description: "Konvertieren Sie AVI in MP4 kostenlos mit EncodeX. Ein schneller, offline AVI-zu-MP4-Konverter für Windows, Mac und Linux. Ohne Wasserzeichen, ohne Uploads, ohne Qualitätsverlust."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Konvertieren Sie AVI zu MP4

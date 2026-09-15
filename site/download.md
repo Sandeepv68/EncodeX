@@ -1,6 +1,7 @@
 ﻿---
 title: "Download EncodeX — Free FFmpeg GUI for Windows, Mac & Linux"
 description: "Download EncodeX for free — a free, open-source FFmpeg GUI for Windows, macOS and Linux. Convert videos, extract audio, trim clips, and compress photos. No signup, no watermarks."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Download EncodeX

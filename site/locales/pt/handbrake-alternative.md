@@ -1,6 +1,7 @@
 ---
 title: "Alternativa ao HandBrake – Um conversor gratuito, moderno e web | EncodeX"
 description: "Procurando uma alternativa ao HandBrake? EncodeX é uma interface gráfica gratuita e de código aberto do FFmpeg para Windows, Mac e Linux — com uma interface mais amigável, mais formatos, aceleração por hardware e sem linha de comando."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Alternativa ao HandBrake
@@ -40,6 +41,14 @@ HandBrake é um popular transcodificador de vídeo gratuito — especialmente am
 ## Preciso mesmo mudar?
 
 Não necessariamente! O HandBrake é excelente para extração de discos. Mas se você quiser uma interface mais simples, recursos de lotes mais completos, mais formatos ou um aplicativo que também comprima imagens e extraia áudio — o EncodeX vale o download.
+
+## Perguntas frequentes
+
+**O EncodeX é realmente uma alternativa ao HandBrake?** Sim. O EncodeX é uma interface gratuita e open source para FFmpeg no Windows, Mac e Linux, com uma interface mais amigável, mais formatos, aceleração por hardware, fila em lote e modo CLI.
+
+**Devo migrar do HandBrake para o EncodeX?** O HandBrake é excelente para extrair discos. O EncodeX é melhor se você quer uma interface mais simples, recursos de lote mais ricos, mais formatos ou um único app que também comprima imagens e extraia áudio.
+
+**O EncodeX funciona offline?** Sim. Toda a conversão acontece localmente no seu computador, então seus arquivos nunca saem do seu dispositivo.
 
 ## Comece
 

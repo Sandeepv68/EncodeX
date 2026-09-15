@@ -1,6 +1,7 @@
 ---
 title: "VP9 एन्कोडर और वेब वीडियो कनवर्टर | EncodeX"
 description: "EncodeX के साथ वीडियो को VP9 में बदलें — Windows, Mac और Linux के लिए एक मुफ्त VP9 वीडियो कनवर्टर। छोटे फ़ाइल आकार में उच्च-गुणवत्ता वाला खुला वेब वीडियो — पूरी तरह से ऑफ़लाइन।"
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # VP9 एन्कोडर और वीडियो कनवर्टर

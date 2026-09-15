@@ -1,6 +1,7 @@
 ---
 title: "Conversor de MKV para MP4 — converta vídeos MKV gratuitamente | EncodeX"
 description: "Converta MKV em MP4 gratuitamente com o EncodeX. Um conversor rápido e offline de MKV para MP4 para Windows, Mac e Linux. Sem marca d'água, sem uploads, sem perda de qualidade."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Converta MKV para MP4
@@ -34,6 +35,14 @@ MP4 é a predefinição segura e padrão — se você não tiver certeza, escolh
 - **Acelerado por hardware** — usa sua GPU para velocidade
 - **Sem marcas d'água** e gratuito para sempre
 - Funciona no **Windows, Mac e Linux**
+
+## Perguntas frequentes
+
+**Por que devo converter MKV em MP4?** MKV é um formato flexível, mas nem todo dispositivo ou player suporta. MP4 roda em quase tudo: celulares, TVs, consoles, softwares de edição e navegadores.
+
+**Vou perder qualidade convertendo MKV para MP4?** Não. O EncodeX mantém a qualidade do seu vídeo e áudio ao converter o contêiner.
+
+**Posso converter muitos arquivos MKV de uma vez?** Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos MKV para MP4.
 
 ## Comece agora
 

@@ -1,6 +1,7 @@
 ---
 title: "VP9 Encoder & Web-Video-Konverter | EncodeX"
 description: "Konvertiere Video zu VP9 mit EncodeX, einem kostenlosen VP9-Video-Konverter für Windows, Mac und Linux. Hochwertiges offenes Web-Video in kleinen Dateien — vollständig offline."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # VP9 Encoder & Video-Konverter

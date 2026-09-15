@@ -1,6 +1,7 @@
 ---
 title: "WebM zu MP4 Konverter – WebM-Videos kostenlos konvertieren | EncodeX"
 description: "Konvertieren Sie WebM in MP4 kostenlos mit EncodeX. Ein schneller, offline WebM-zu-MP4-Konverter für Windows, Mac und Linux. Lassen Sie Browser-Exports und -Downloads überall laufen. Ohne Wasserzeichen oder Qualitätsverlust."
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Konvertieren Sie WebM zu MP4

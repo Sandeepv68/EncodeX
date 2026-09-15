@@ -1,6 +1,7 @@
 ---
 title: "如何从视频中提取音频 – 免费提取 MP3 | EncodeX"
 description: "了解如何使用 EncodeX 免费从视频中提取音频。从 Windows、Mac 和 Linux 上的任何视频中提取 MP3、M4A、FLAC 或 WAV——离线、无上传、无水印。"
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # 如何从视频中提取音频
@@ -37,6 +38,14 @@ EncodeX 可从几乎所有视频格式中提取声音——**MP4、MKV、MOV、A
 - **无上传、无账号、无水印**
 - 尽可能**硬件加速**，提取快速
 - 免费且**开源**，支持 **Windows、Mac 和 Linux**
+
+## 常见问题
+
+**我可以从哪些视频格式提取音频？** EncodeX 可以从 MP4、MKV、MOV、AVI、WebM、FLV、WMV、M4V 等格式提取声音。
+
+**我可以提取成哪些音频格式？** 您可以将提取的音频保存为 MP3、M4A/AAC、FLAC 或 WAV。
+
+**从视频中提取音频免费吗？** 是的。提取免费、离线且无水印，您还可以一次批量提取整个文件夹的视频。
 
 ## 准备好试试了吗？
 

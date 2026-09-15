@@ -1,6 +1,7 @@
 ---
 title: "Extrae WAV de vídeo gratis – Extractor WAV sin pérdida | EncodeX"
 description: "Extrae WAV de vídeo gratis con EncodeX en Windows, Mac y Linux. Obtén audio WAV sin pérdida de MP4, MKV, MOV y más. Sin subidas, sin marcas de agua."
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # Extrae WAV de un vídeo

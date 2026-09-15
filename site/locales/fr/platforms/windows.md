@@ -1,6 +1,7 @@
 ---
 title: "EncodeX pour Windows – Interface graphique FFmpeg gratuite pour Windows 10/11 | EncodeX"
 description: "Téléchargez EncodeX pour Windows 10 et 11 — une interface graphique gratuite et open source pour FFmpeg. Convertissez des vidéos, compressez des fichiers et extrayez l'audio sur Windows. Sans ligne de commande, sans envoi."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX pour Windows

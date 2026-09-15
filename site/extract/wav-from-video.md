@@ -1,6 +1,7 @@
 ---
 title: "Extract WAV From Video Free – Lossless WAV Extractor | EncodeX"
 description: "Extract WAV from video for free with EncodeX on Windows, Mac, and Linux. Get lossless WAV audio from MP4, MKV, MOV, and more. No uploads, no watermarks."
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # Extract WAV From Video

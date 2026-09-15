@@ -1,6 +1,7 @@
 ---
 title: "MKV वीडियो मुफ़्त में कंप्रेस करें – MKV फ़ाइल का आकार घटाएं | EncodeX"
 description: "EncodeX से Windows, Mac और Linux पर MKV वीडियो मुफ़्त में कंप्रेस करें। गुणवत्ता बनाए रखते हुए MKV फ़ाइल का आकार घटाएं। बिना अपलोड, बिना वॉटरमार्क, बिना साइनअप।"
+ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # MKV वीडियो कंप्रेस करें

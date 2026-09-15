@@ -1,6 +1,7 @@
 ---
 title: "EncodeX para Mac – FFmpeg GUI gratuito para macOS | EncodeX"
 description: "Descarga EncodeX para Mac — una interfaz gráfica gratuita y de código abierto para FFmpeg en macOS 11+. Convierte vídeo, comprime archivos y extrae audio en tu Mac. Sin línea de comandos, sin subidas."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX para Mac

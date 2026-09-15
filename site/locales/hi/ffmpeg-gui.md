@@ -1,6 +1,7 @@
 ---
 title: "FFmpeg GUI – FFmpeg के लिए शक्तिशाली डेस्कटॉप इंटरफ़ेस | EncodeX"
 description: "Windows, Mac और Linux के लिए एक मुफ़्त, ओपन-सोर्स FFmpeg GUI। कमांड लाइन के बिना वीडियो और ऑडियो कन्वर्ट करें, फ़ाइलें कंप्रेस करें, क्लिप काटें और ऑडियो निकालें।"
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # FFmpeg के लिए शक्तिशाली GUI

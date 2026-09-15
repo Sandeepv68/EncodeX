@@ -5,8 +5,28 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Mon, 14 Sep 2026 16:50:27 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 15 Sep 2026 08:16:36 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Best Free Video Converter in 2026</title>
+      <link>https://encodex.in/blog/posts/best-free-video-converter-2026</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/best-free-video-converter-2026</guid>
+      <description>Looking for the best free video converter in 2026? Compare EncodeX with HandBrake, VLC, and other options — then try it yourself.</description>
+      <pubDate>Wed, 16 Sep 2026 00:00:00 GMT</pubDate>
+      <category>comparison</category>
+      <category>video</category>
+      <category>2026</category>
+    </item>
+    <item>
+      <title>How to Use FFmpeg Without the Command Line</title>
+      <link>https://encodex.in/blog/posts/how-to-use-ffmpeg-without-command-line</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-use-ffmpeg-without-command-line</guid>
+      <description>FFmpeg is powerful but its command line is intimidating. Learn how to use FFmpeg through EncodeX, a free GUI that makes video conversion simple.</description>
+      <pubDate>Tue, 15 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>ffmpeg</category>
+      <category>beginner</category>
+    </item>
     <item>
       <title>How to Compress Images Without Losing Visual Quality</title>
       <link>https://encodex.in/blog/posts/image-compression-guide</link>
@@ -40,6 +60,16 @@
       <category>handbrake-alternative</category>
     </item>
     <item>
+      <title>How to Batch Convert Video Files with EncodeX</title>
+      <link>https://encodex.in/blog/posts/how-to-batch-convert-video-files</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-batch-convert-video-files</guid>
+      <description>Convert dozens of video files at once using EncodeX&apos;s batch queue. A step-by-step guide to converting entire folders of video.</description>
+      <pubDate>Mon, 14 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>batch</category>
+      <category>video</category>
+    </item>
+    <item>
       <title>Best Formats for Archival Video: Preserving Your Media for Decades</title>
       <link>https://encodex.in/blog/posts/best-formats-for-archival</link>
       <guid isPermaLink="true">https://encodex.in/blog/posts/best-formats-for-archival</guid>
@@ -52,6 +82,16 @@
       <category>ffv1</category>
     </item>
     <item>
+      <title>How to Convert H.265 to H.264 with EncodeX</title>
+      <link>https://encodex.in/blog/posts/how-to-convert-h265-to-h264</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-convert-h265-to-h264</guid>
+      <description>Convert HEVC (H.265) videos to the widely compatible H.264 format using EncodeX — a free FFmpeg GUI with hardware acceleration.</description>
+      <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>conversion</category>
+      <category>codecs</category>
+    </item>
+    <item>
       <title>How to Automate Media Workflows With the EncodeX CLI</title>
       <link>https://encodex.in/blog/posts/cli-automation-guide</link>
       <guid isPermaLink="true">https://encodex.in/blog/posts/cli-automation-guide</guid>
@@ -61,6 +101,16 @@
       <category>cli</category>
       <category>automation</category>
       <category>developer</category>
+    </item>
+    <item>
+      <title>How to Convert MKV to MP4 with EncodeX</title>
+      <link>https://encodex.in/blog/posts/how-to-convert-mkv-to-mp4</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-convert-mkv-to-mp4</guid>
+      <description>Learn how to convert MKV files to MP4 using EncodeX, a free FFmpeg GUI. Step-by-step guide with batch conversion tips.</description>
+      <pubDate>Sat, 12 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>conversion</category>
+      <category>video</category>
     </item>
     <item>
       <title>What Is Hardware Acceleration and Why Your Videos Encode Faster With It</title>

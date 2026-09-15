@@ -1,6 +1,7 @@
 ---
 title: "EncodeX CLI – FFmpeg कमांड लाइन, सरल की गई | EncodeX"
 description: "EncodeX CLI आपको सरल, पठनीय कमांड के साथ FFmpeg कमांड लाइन की शक्ति देती है। Windows, Mac और Linux पर टर्मिनल से कन्वर्ट करें, कंप्रेस करें, ऑडियो निकालें और बैच-प्रोसेस करें।"
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX CLI

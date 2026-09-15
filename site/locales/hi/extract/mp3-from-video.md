@@ -1,6 +1,7 @@
 ---
 title: "वीडियो से MP3 निकालें – मुफ़्त MP3 ऑडियो एक्सट्रैक्टर | EncodeX"
 description: "EncodeX से Windows, Mac और Linux पर वीडियो से MP3 मुफ़्त में निकालें। MP4, MKV, MOV और अन्य से MP3 ऑडियो रिप करें। बिना अपलोड, बिना वॉटरमार्क।"
+ogImage: "https://encodex.in/images/extract_audio.webp"
 ---
 
 # वीडियो से MP3 निकालें
