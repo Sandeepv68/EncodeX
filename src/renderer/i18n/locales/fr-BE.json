@@ -39,6 +39,18 @@
     "descBatch": "Convertissez plusieurs fichiers à la fois avec une file d'attente intelligente",
     "shortcutsFooter": "Appuyez sur {{shortcut}} pour les raccourcis clavier"
   },
+  "gettingStarted": {
+    "hint": "Nouveau ici ?",
+    "title": "Pour commencer",
+    "body": "Choisissez par où commencer — vous pourrez tout faire d'ici plus tard.",
+    "dismiss": "Ignorer",
+    "goals": {
+      "convert": "Convertir une vidéo",
+      "compress": "Compresser un fichier",
+      "extract": "Extraire l'audio",
+      "trim": "Couper un clip"
+    }
+  },
   "closeConfirm": {
     "title": "Fermer EncodeX ?",
     "message": "Il y a des tâches en cours ou des modifications non enregistrées. Les fermer maintenant les annulera.",

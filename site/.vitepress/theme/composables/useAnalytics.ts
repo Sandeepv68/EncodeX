@@ -279,10 +279,13 @@ export function initUserProperties() {
   else if (path.startsWith('/zh/')) locale = 'zh-CN'
   else if (path.startsWith('/hi/')) locale = 'hi'
 
+  const osArch = detectOsArch()
+
   gtag('set', 'user_properties', {
     locale,
     platform: navigator.platform,
     device_type: /Mobi|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
+    os_arch: osArch,
   })
 
   gtag('set', {
@@ -290,8 +293,33 @@ export function initUserProperties() {
       dimension1: 'locale',
       dimension2: 'platform',
       dimension3: 'device_type',
+      dimension4: 'os_arch',
     },
   })
+}
+
+/**
+ * Best-effort OS + CPU-architecture string for GA4 (e.g. "windows-x64",
+ * "windows-arm64", "macos-arm64", "linux-x86_64"). Categorical only — no
+ * device identifiers or personal data. Falls back to "unknown" when the
+ * client hints API is unavailable.
+ * @returns {string}
+ */
+function detectOsArch(): string {
+  const ua = navigator.userAgent || ''
+  let os: string
+  if (/Windows/i.test(ua)) os = 'windows'
+  else if (/Macintosh|Mac OS X|iPad|iPhone/i.test(ua)) os = 'macos'
+  else if (/Android/i.test(ua)) os = 'android'
+  else if (/Linux/i.test(ua)) os = 'linux'
+  else os = 'other'
+
+  let arch: string
+  if (/ARM64|aarch64/i.test(ua)) arch = 'arm64'
+  else if (/WOW64|x86_64/.test(ua)) arch = 'x64'
+  else arch = 'unknown'
+
+  return `${os}-${arch}`
 }
 
 // ── Core Web Vitals ──────────────────────────────────────────

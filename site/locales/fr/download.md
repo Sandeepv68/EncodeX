@@ -1,22 +1,27 @@
 # Télécharger EncodeX
 
-EncodeX est **gratuit** et fonctionne sur Windows, Mac et Linux. Choisissez votre type d'ordinateur ci-dessous, téléchargez, installez, et c'est parti.
+EncodeX est **gratuit** et fonctionne sur Windows, Mac et Linux. C'est une interface graphique open source pour FFmpeg — sans compte, sans filigrane et sans limite de taille : tout se passe sur votre ordinateur.
 
-::: tip Prenez toujours la dernière version
-Les nouvelles versions sortent sur la [page des releases GitHub](https://github.com/Sandeepv68/EncodeX/releases). Les liens ci-dessous vous donnent toujours la plus récente — chacun avec son architecture, sa taille de fichier et son empreinte SHA-256.
+::: tip Première fois ? Voici ce qui se passe ensuite
+Installez l'application, glissez une vidéo ou une image dans la fenêtre, choisissez un profil (par exemple MP4 ou « fichier plus petit ») puis cliquez sur **Convertir** — c'est tout. Tout se déroule en local sur votre ordinateur.
+
+- **Nouveau sur EncodeX ?** Découvrez des [exemples de ce que vous pouvez faire](/fr/use-cases) ou [parcourez les outils](/fr/features).
+- **Bloqué ?** La plupart des conversions demandent un simple glisser-déposer + un clic sur un profil. La carte « Pour commencer » de votre tableau de bord vous guide dans le choix d'un objectif.
 :::
-
-<LatestDownloads />
 
 ## <OsIcon name="windows" /> Windows
 
-**Vous voulez juste que ça marche ?** Cliquez sur le premier bouton — c'est le bon pour presque tout le monde.
+**Windows 10/11 · 64-bit** — convient à presque tout le monde.
 
 <LatestDownloads platform="windows" />
 
-**Pour installer :** ouvrez le fichier téléchargé et suivez les étapes à l'écran. Fonctionne sous Windows 10 et plus récent.
+**Pour installer :** ouvrez le fichier téléchargé et suivez les étapes à l'écran.
 
 Vous hésitez ? Prenez la version recommandée — si ce n'est pas la bonne, Windows vous le dira.
+
+### Autres plateformes
+
+[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 32 bits](#windows)
 
 ## <OsIcon name="apple" /> Mac
 
@@ -70,6 +75,10 @@ Besoin d'une version plus ancienne ? Dépliez la version souhaitée ci-dessous �
 ## Besoin d'aide ?
 
 Si quelque chose ne fonctionne pas ou si vous avez une question, écrivez à **[developer@encodex.in](mailto:developer@encodex.in)** — une vraie personne vous répondra.
+
+## Confidentialité
+
+Nous comprenons que la confiance compte. Chaque conversion se fait sur votre ordinateur — vos fichiers ne sont jamais envoyés, suivis ni stockés sur un serveur. Consultez la [politique de confidentialité](/fr/privacy).
 
 ## Pour les développeurs : compilez-le vous-même
 

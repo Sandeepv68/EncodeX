@@ -9,6 +9,11 @@ assignees: ''
 ## Problem Statement
 A clear and concise description of what problem this feature would solve.
 
+> **Before opening an issue:** feature ideas are also welcome in
+> [GitHub Discussions](https://github.com/Sandeepv68/encodex/discussions),
+> where ideas get community feedback before becoming issues. Release notes and
+> the roadmap live on the [blog](https://encodex.in/blog).
+
 ## Proposed Solution
 A clear and concise description of what you want to happen.
 

@@ -39,6 +39,18 @@
     "descBatch": "Converteer veel bestanden tegelijk met een slimme wachtrij",
     "shortcutsFooter": "Druk op {{shortcut}} voor sneltoetsen"
   },
+  "gettingStarted": {
+    "hint": "Nieuw hier?",
+    "title": "Aan de slag",
+    "body": "Kies waar je wilt beginnen — je kunt later alles vanaf hier doen.",
+    "dismiss": "Sluiten",
+    "goals": {
+      "convert": "Video converteren",
+      "compress": "Bestand comprimeren",
+      "extract": "Audio extraheren",
+      "trim": "Clip bijsnijden"
+    }
+  },
   "closeConfirm": {
     "title": "EncodeX sluiten?",
     "message": "Er zijn taken in uitvoering of niet-opgeslagen wijzigingen. Sluiten nu annuleert ze.",

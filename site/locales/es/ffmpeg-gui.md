@@ -28,7 +28,16 @@ Si eso te parece un idioma extranjero, no estás solo. Una **GUI de FFmpeg** con
 - **Recortar clips** visualmente — arrastra dos controles en una línea de tiempo, listo
 - **Extraer audio** de un vídeo y guardarlo como MP3
 - **Procesar por lotes** carpetas enteras de archivos de una sola vez
-- **Aceleración por hardware** con NVENC, QSV, AMF, VAAPI y VideoToolbox para codificar mucho más rápido
+
+## Aceleración por hardware ultrarrápida integrada
+
+EncodeX **usa tu GPU automáticamente** para hacer las conversiones mucho más rápidas que la codificación por software normal. Sin configuración, sin buscar controladores — simplemente funciona:
+
+- Los usuarios de **NVIDIA** obtienen NVENC; **Intel** obtiene Quick Sync (QSV); **AMD** obtiene AMF
+- Los usuarios de **Apple Silicon/Mac** obtienen VideoToolbox
+- Los usuarios de **Linux** obtienen VAAPI — sin importar la marca de la GPU
+
+Lo más probable es que tu hardware ya tenga un codificador rápido dentro. EncodeX lo encuentra y lo activa por ti — así que una conversión larga termina en una fracción del tiempo.
 
 ## Es de código abierto y privado
 
@@ -44,7 +53,7 @@ EncodeX funciona en Windows, macOS y Linux — una verdadera **interfaz gráfica
 
 ## La mejor alternativa de GUI de FFmpeg
 
-¿Buscas la **mejor GUI de FFmpeg** — o una **alternativa de GUI de FFmpeg** a HandBrake o Shutter Encoder? EncodeX es gratis, de código abierto y deliberadamente fácil de usar, mientras expone opciones de codificación avanzadas para quienes las quieren.
+¿Buscas la **mejor GUI de FFmpeg** — o una **alternativa de GUI de FFmpeg** a HandBrake o Shutter Encoder? EncodeX es gratis, de código abierto y deliberadamente fácil de usar, mientras expone opciones de codificación avanzadas para quienes las quieren. Consulta nuestra comparativa de [alternativa a HandBrake](/es/handbrake-alternative).
 
 ## Empieza
 

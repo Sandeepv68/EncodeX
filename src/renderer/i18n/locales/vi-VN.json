@@ -39,6 +39,18 @@
     "descBatch": "Chuyển đổi nhiều tệp cùng lúc với hàng đợi thông minh",
     "shortcutsFooter": "Nhấn {{shortcut}} để xem phím tắt"
   },
+  "gettingStarted": {
+    "hint": "Mới đến đây?",
+    "title": "Bắt đầu",
+    "body": "Chọn nơi bạn muốn bắt đầu — sau này bạn có thể làm mọi thứ từ đây.",
+    "dismiss": "Đóng",
+    "goals": {
+      "convert": "Chuyển đổi video",
+      "compress": "Nén tệp",
+      "extract": "Trích xuất âm thanh",
+      "trim": "Cắt clip"
+    }
+  },
   "closeConfirm": {
     "title": "Đóng EncodeX?",
     "message": "Có công việc đang chạy hoặc thay đổi chưa được lưu. Đóng ngay bây giờ sẽ hủy chúng.",

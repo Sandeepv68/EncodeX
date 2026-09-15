@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: EncodeX
-  text: La forma fácil de arreglar tus archivos de vídeo, audio y fotos
-  tagline: "¿Un vídeo que no se reproduce? ¿Un archivo demasiado grande para enviar? ¿Necesitas solo la música de un clip? EncodeX lo hace todo en pocos clics: gratis, en Windows, Mac y Linux."
+  text: El poder de FFmpeg. Sin la línea de comandos.
+  tagline: "Una interfaz gráfica de FFmpeg gratuita y de código abierto para Windows, macOS y Linux. Convierte vídeo, extrae audio, recorta clips y reduce archivos: todo funciona en tu computadora y nada sale de ella."
   image:
     src: /images/icon.webp
     alt: Logo de EncodeX
@@ -81,6 +81,20 @@ Una pantalla de inicio limpia. Cada herramienta a un clic. Si sabes usar un nave
 
 <img src="/images/home_dashboard.webp" alt="Pantalla de inicio de EncodeX" width="1600" height="861" loading="lazy">
 
+<div class="privacy-band">
+  <h2>Tus vídeos nunca salen de tu computadora.</h2>
+  <p>EncodeX procesa tus medios localmente con el motor FFmpeg integrado. Nada se sube, nada se rastrea y nada se guarda en un servidor.</p>
+  <ul class="checklist">
+    <li>✅ Sin subidas a la nube</li>
+    <li>✅ Sin necesidad de cuenta</li>
+    <li>✅ Sin suscripción</li>
+    <li>✅ Sin marcas de agua</li>
+    <li>✅ Sin límites de tamaño</li>
+    <li>✅ Funciona sin conexión</li>
+  </ul>
+  <p><a href="/es/privacy">Obtén más información sobre cómo EncodeX protege tu privacidad →</a></p>
+</div>
+
 ## ¿Qué puede hacer por ti?
 
 <div class="card wide">
@@ -149,6 +163,23 @@ EncodeX es software de código abierto creado por una comunidad de voluntarios. 
     <span class="card-emoji">🔄</span>
     <p class="card-head">Se actualiza solo</p>
     <p>Cuando hay una versión nueva, EncodeX ofrece actualizarse: no tienes que descargar nada otra vez.</p>
+  </div>
+</div>
+
+## Para todos: sencillo. Para desarrolladores: potente.
+
+EncodeX tiene dos caras. Usa la **interfaz de arrastrar y soltar** para las tareas de cada día, o entra en el **modo sin interfaz** para scripting y automatización.
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🖱️</span>
+    <p class="card-head">La interfaz gráfica</p>
+    <p>Arrastra → Configura → Convierte. Convierte, comprime, recorta y extrae desde una sola ventana limpia: sin comandos y sin complicaciones.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⌨️</span>
+    <p class="card-head">La CLI</p>
+    <p>Guioniza → Automatiza → Procesa en lote. El mismo motor, control por línea de comandos: <code>encodex convert</code>, <code>encodex batch</code>, <code>encodex info</code> y más. <a href="/es/cli">Explorar la CLI →</a></p>
   </div>
 </div>
 
@@ -227,6 +258,30 @@ Entra en una tarea concreta — cada página explica cómo hacerla con EncodeX:
   <div class="card">
     <p class="card-head"><a href="/es/learn/what-is-ffmpeg">¿Qué es FFmpeg?</a></p>
     <p>Una guía en lenguaje sencillo sobre el motor dentro de EncodeX.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/es/convert/mp4-to-mkv">MP4 a MKV</a></p>
+    <p>Remux MP4 a MKV — sin pérdida, al instante, conservando subtítulos.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/es/convert/mp4-to-webm">MP4 a WebM</a></p>
+    <p>Convierte al formato nativo de la web para archivos más pequeños.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/es/codecs/vp9">VP9</a></p>
+    <p>Un códec abierto y sin regalías con excelente compresión.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/es/codecs/prores">ProRes</a></p>
+    <p>Codifica el códec de edición profesional usado por los cineastas.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/es/compress/mp4">Comprimir MP4</a></p>
+    <p>Reduce vídeos MP4 para correos, chats y límites de subida.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/es/extract/mp3-from-video">Extraer MP3</a></p>
+    <p>Saca un MP3 o podcast de cualquier vídeo.</p>
   </div>
 </div>
 

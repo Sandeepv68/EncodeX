@@ -39,6 +39,18 @@
     "descBatch": "Convert many files at once with a smart queue",
     "shortcutsFooter": "Press {{shortcut}} for keyboard shortcuts"
   },
+  "gettingStarted": {
+    "hint": "New here?",
+    "title": "Getting started",
+    "body": "Pick where you'd like to begin — you can do everything from here later.",
+    "dismiss": "Dismiss",
+    "goals": {
+      "convert": "Convert a video",
+      "compress": "Compress a file",
+      "extract": "Extract audio",
+      "trim": "Trim a clip"
+    }
+  },
   "closeConfirm": {
     "title": "Close EncodeX?",
     "message": "There are jobs in progress or unsaved changes. Closing now will cancel them.",

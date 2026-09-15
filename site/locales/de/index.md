@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: EncodeX
-  text: Der einfache Weg, Ihre Video-, Audio- und Fotodateien in Ordnung zu bringen
-  tagline: Ein Video, das nicht abgespielt wird? Eine Datei, die zu groß zum Senden ist? Sie wollen nur die Musik aus einem Clip? EncodeX erledigt das alles mit wenigen Klicks — kostenlos, unter Windows, Mac und Linux.
+  text: FFmpeg-Kraft. Ohne Befehlszeile.
+  tagline: Eine kostenlose, quelloffene FFmpeg-Oberfläche für Windows, macOS und Linux. Video konvertieren, Audio extrahieren, Clips schneiden und Dateien verkleinern — alles läuft auf Ihrem Computer, nichts verlässt ihn.
   image:
     src: /images/icon.webp
     alt: EncodeX Logo
@@ -81,6 +81,20 @@ Ein aufgeräumter Startbildschirm. Jedes Werkzeug einen Klick entfernt. Wenn Sie
 
 <img src="/images/home_dashboard.webp" alt="Startbildschirm von EncodeX" width="1600" height="861" loading="lazy">
 
+<div class="privacy-band">
+  <h2>Ihre Videos verlassen niemals Ihren Computer.</h2>
+  <p>EncodeX verarbeitet Ihre Medien lokal mit der eingebauten FFmpeg-Engine. Nichts wird hochgeladen, nichts wird verfolgt und nichts wird auf einem Server gespeichert.</p>
+  <ul class="checklist">
+    <li>✅ Keine Cloud-Uploads</li>
+    <li>✅ Kein Konto nötig</li>
+    <li>✅ Kein Abo</li>
+    <li>✅ Kein Wasserzeichen</li>
+    <li>✅ Keine Dateigrößen-Limits</li>
+    <li>✅ Funktioniert offline</li>
+  </ul>
+  <p><a href="/de/privacy">Erfahren Sie mehr darüber, wie EncodeX Ihre Privatsphäre schützt →</a></p>
+</div>
+
 ## Was kann es für Sie tun?
 
 <div class="card wide">
@@ -149,6 +163,23 @@ EncodeX ist freie Software, gebaut von einer Ehrenamtlichen-Community. Es gibt k
     <span class="card-emoji">🔄</span>
     <p class="card-head">Aktualisiert sich selbst</p>
     <p>Gibt es eine neue Version, bietet EncodeX das Update an — Sie müssen nichts erneut herunterladen.</p>
+  </div>
+</div>
+
+## Einfach für alle. Stark für Entwickler.
+
+EncodeX trägt zwei Hüte. Nutzen Sie die **Drag-&-Drop-Oberfläche** für alltägliche Aufgaben oder wechseln Sie in den **Headless-Modus** für Scripting und Automatisierung.
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🖱️</span>
+    <p class="card-head">Die GUI</p>
+    <p>Ziehen → Konfigurieren → Konvertieren. Konvertieren, komprimieren, schneiden und extrahieren in einem einzigen aufgeräumten Fenster — ohne Befehle, ohne Umwege.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⌨️</span>
+    <p class="card-head">Die CLI</p>
+    <p>Scripten → Automatisieren → Stapelverarbeitung. Gleiche Engine, Befehlszeile: <code>encodex convert</code>, <code>encodex batch</code>, <code>encodex info</code> und mehr. <a href="/de/cli">CLI entdecken →</a></p>
   </div>
 </div>
 
@@ -227,6 +258,30 @@ Tauchen Sie in eine bestimmte Aufgabe ein – jede Seite erklärt, wie Sie sie m
   <div class="card">
     <p class="card-head"><a href="/de/learn/what-is-ffmpeg">Was ist FFmpeg?</a></p>
     <p>Ein Leitfaden in einfacher Sprache zur Engine in EncodeX.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/mp4-to-mkv">MP4 zu MKV</a></p>
+    <p>Remux MP4 in MKV — verlustfrei, sofort, Untertitel bleiben erhalten.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/mp4-to-webm">MP4 zu WebM</a></p>
+    <p>Konvertieren Sie in das native Webformat für kleinere Dateien.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/codecs/vp9">VP9</a></p>
+    <p>Ein offener, lizenzfreier Codec mit ausgezeichneter Kompression.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/codecs/prores">ProRes</a></p>
+    <p>Encodieren Sie den professionellen Schnittcodec der Filmindustrie.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/compress/mp4">MP4 komprimieren</a></p>
+    <p>Verkleinern Sie MP4-Videos für E-Mail, Chat und Upload-Limits.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/extract/mp3-from-video">MP3 extrahieren</a></p>
+    <p>Holen Sie einen MP3 oder Podcast aus jedem Video.</p>
   </div>
 </div>
 

@@ -1,6 +1,12 @@
 <div align="center">
   <img src="../../assets/banner.png" alt="EncodeX लोगो" width="900" />
-  <h3>FFmpeg, React, TypeScript और Electron पर निर्मित एक क्रॉस-प्लेटफ़ॉर्म मल्टीमीडिया रूपांतरण उपकरण।</h3>
+  <h3>FFmpeg की ताकत। कमांड लाइन के बिना।</h3>
+  <p><strong>EncodeX</strong> — Windows, macOS और Linux के लिए मुफ़्त, ओपन-सोर्स <strong>FFmpeg GUI</strong>।</p>
+  <p style="font-size: 18px;">
+    <a href="https://encodex.in/download"><strong>डाउनलोड करें</strong></a> ·
+    <a href="https://encodex.in">वेबसाइट</a> ·
+    <a href="https://encodex.in/docs/architecture">दस्तावेज़</a>
+  </p>
 </div>
 
 <div align="center">
@@ -40,7 +46,19 @@
 
 ## 👋 परिचय
 
-EncodeX एक क्रॉस-प्लेटफ़ॉर्म मल्टीमीडिया रूपांतरण उपकरण है जो FFmpeg की शक्ति को एक आधुनिक, सहज desktop interface में लाता है। Electron, React, और TypeScript के साथ निर्मित, यह आपको मीडिया को formats के बीच convert करने, audio extract करने, videos cut करने, और images compress करने देता है — सब कुछ एक clean, responsive UI के माध्यम से, batch queue, hardware acceleration, CLI mode, और पूर्ण internationalization के साथ।
+EncodeX मुफ़्त, ओपन-सोर्स FFmpeg GUI है जो FFmpeg की पूरी शक्ति को एक आधुनिक, सहज desktop interface में लाता है। यह आपको मीडिया को formats के बीच convert करने, audio extract करने, videos cut करने, और images compress करने देता है — सब कुछ एक clean, responsive UI के माध्यम से, batch queue, hardware acceleration, CLI mode, और पूर्ण internationalization के साथ।
+
+## EncodeX क्यों?
+
+- ✅ **हमेशा मुफ़्त** — ओपन सोर्स (MIT), कोई paid tier नहीं
+- ✅ **100% प्राइवेट** — आपकी फ़ाइलें कभी आपकी मशीन से बाहर नहीं जातीं
+- ✅ **कोई खाता नहीं, कोई साइन-अप नहीं, कोई tracking नहीं**
+- ✅ **कोई watermark नहीं, कोई file-size सीमा नहीं, कोई ads नहीं**
+- ✅ **FFmpeg powered** — 51 video codecs, 27 audio codecs, 56 pixel formats
+- ✅ **हार्डवेयर त्वरण** — NVIDIA, Intel, AMD, Apple Silicon तेज़ encodes के लिए
+- ✅ **बैच प्रोसेसिंग** — पूरे फ़ोल्डर एक साथ convert करें
+- ✅ **क्रॉस-प्लेटफ़ॉर्म** — Windows 10+, macOS 11+, Linux
+- ✅ **35+ भाषाएँ** RTL समर्थन के साथ
 
 ## ✨ विशेषताएँ
 

@@ -40,6 +40,7 @@ const {
     })),
     getAppPath: vi.fn(() => 'C:\\project'),
     getPath: vi.fn((_name: string) => 'C:\\tmp\\encodex-userdata'),
+    getVersion: vi.fn(() => '1.0.0'),
     exit: vi.fn(),
     quit: vi.fn(),
     commandLine: {

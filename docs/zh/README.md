@@ -1,6 +1,12 @@
 <div align="center">
   <img src="../../assets/banner.png" alt="EncodeX Logo" width="900" />
-  <h3>一款基于 FFmpeg、React、TypeScript 和 Electron 构建的跨平台多媒体转换工具。</h3>
+  <h3>FFmpeg 的强大能力。无需命令行。</h3>
+  <p><strong>EncodeX</strong> —— 适用于 Windows、macOS 和 Linux 的免费开源 <strong>FFmpeg 图形界面</strong>。</p>
+  <p style="font-size: 18px;">
+    <a href="https://encodex.in/download"><strong>下载</strong></a> ·
+    <a href="https://encodex.in">官网</a> ·
+    <a href="https://encodex.in/docs/architecture">文档</a>
+  </p>
 </div>
 
 <div align="center">
@@ -40,7 +46,19 @@
 
 ## 👋 简介
 
-EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大功能带到现代、直观的桌面界面中。它基于 Electron、React 和 TypeScript 构建，让您可以在不同格式之间转换媒体、提取音频、裁剪视频以及压缩图片——所有这些都通过一个干净且响应迅速的界面完成，并配有批量队列、硬件加速、CLI 模式以及完整的国际化支持。
+EncodeX 是一款免费、开源的 FFmpeg 图形界面，将 FFmpeg 的全部强大功能带到现代、直观的桌面界面中。它让您可以在不同格式之间转换媒体、提取音频、裁剪视频以及压缩图片——所有这些都通过一个干净且响应迅速的界面完成，并配有批量队列、硬件加速、CLI 模式以及完整的国际化支持。
+
+## 为什么选择 EncodeX？
+
+- ✅ **永久免费** — 开源 (MIT)，无付费层级
+- ✅ **100% 私密** — 您的文件永远不会离开您的电脑
+- ✅ **无需账户、无需注册、无追踪**
+- ✅ **无水印、无文件大小限制、无广告**
+- ✅ **FFmpeg 驱动** — 51 种视频编解码器、27 种音频编解码器、56 种像素格式
+- ✅ **硬件加速** — NVIDIA、Intel、AMD、Apple Silicon，实现快速编码
+- ✅ **批量处理** — 一次转换整个文件夹
+- ✅ **跨平台** — Windows 10+、macOS 11+、Linux
+- ✅ **35+ 种语言**，支持 RTL
 
 ## ✨ 功能特性
 

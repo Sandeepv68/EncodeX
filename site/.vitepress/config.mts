@@ -211,7 +211,7 @@ function docsSidebar(locale: string) {
   ]
 }
 
-const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: string; compressor: string; audio: string; extractAudio: string; convertLabel: string; mkv: string; mov: string; avi: string; flv: string; wmv: string; m4v: string; webm: string; codecsLabel: string; h264: string; h265: string; av1: string; learn: string; learnLink: string }> = {
+const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: string; compressor: string; audio: string; extractAudio: string; convertLabel: string; mkv: string; mov: string; avi: string; flv: string; wmv: string; m4v: string; webm: string; mp4ToMkv: string; mp4ToWebm: string; codecsLabel: string; h264: string; h265: string; av1: string; vp9: string; prores: string; learn: string; learnLink: string }> = {
   en: {
     label: 'Tools',
     ffmpeg: 'FFmpeg GUI',
@@ -227,10 +227,14 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     wmv: 'WMV to MP4',
     m4v: 'M4V to MP4',
     webm: 'WebM to MP4',
+    mp4ToMkv: 'MP4 to MKV',
+    mp4ToWebm: 'MP4 to WebM',
     codecsLabel: 'Codecs',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
     av1: 'AV1',
+    vp9: 'VP9',
+    prores: 'ProRes',
     learn: 'Learn',
     learnLink: '/learn/what-is-ffmpeg',
   },
@@ -249,10 +253,14 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     wmv: 'WMV a MP4',
     m4v: 'M4V a MP4',
     webm: 'WebM a MP4',
+    mp4ToMkv: 'MP4 a MKV',
+    mp4ToWebm: 'MP4 a WebM',
     codecsLabel: 'Códecs',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
     av1: 'AV1',
+    vp9: 'VP9',
+    prores: 'ProRes',
     learn: 'Aprender',
     learnLink: '/es/learn/what-is-ffmpeg',
   },
@@ -271,10 +279,14 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     wmv: 'WMV vers MP4',
     m4v: 'M4V vers MP4',
     webm: 'WebM vers MP4',
+    mp4ToMkv: 'MP4 vers MKV',
+    mp4ToWebm: 'MP4 vers WebM',
     codecsLabel: 'Codecs',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
     av1: 'AV1',
+    vp9: 'VP9',
+    prores: 'ProRes',
     learn: 'Apprendre',
     learnLink: '/fr/learn/what-is-ffmpeg',
   },
@@ -293,10 +305,14 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     wmv: 'WMV zu MP4',
     m4v: 'M4V zu MP4',
     webm: 'WebM zu MP4',
+    mp4ToMkv: 'MP4 zu MKV',
+    mp4ToWebm: 'MP4 zu WebM',
     codecsLabel: 'Codecs',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
     av1: 'AV1',
+    vp9: 'VP9',
+    prores: 'ProRes',
     learn: 'Lernen',
     learnLink: '/de/learn/what-is-ffmpeg',
   },
@@ -315,10 +331,14 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     wmv: 'WMV para MP4',
     m4v: 'M4V para MP4',
     webm: 'WebM para MP4',
+    mp4ToMkv: 'MP4 para MKV',
+    mp4ToWebm: 'MP4 para WebM',
     codecsLabel: 'Codecs',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
     av1: 'AV1',
+    vp9: 'VP9',
+    prores: 'ProRes',
     learn: 'Aprenda',
     learnLink: '/pt/learn/what-is-ffmpeg',
   },
@@ -337,10 +357,14 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     wmv: 'WMV 转 MP4',
     m4v: 'M4V 转 MP4',
     webm: 'WebM 转 MP4',
+    mp4ToMkv: 'MP4 转 MKV',
+    mp4ToWebm: 'MP4 转 WebM',
     codecsLabel: '编码器',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
     av1: 'AV1',
+    vp9: 'VP9',
+    prores: 'ProRes',
     learn: '了解',
     learnLink: '/zh/learn/what-is-ffmpeg',
   },
@@ -359,10 +383,14 @@ const toolsStrings: Record<string, { label: string; ffmpeg: string; converter: s
     wmv: 'WMV से MP4',
     m4v: 'M4V से MP4',
     webm: 'WebM से MP4',
+    mp4ToMkv: 'MP4 से MKV',
+    mp4ToWebm: 'MP4 से WebM',
     codecsLabel: 'कोडेक',
     h264: 'H.264',
     h265: 'H.265 / HEVC',
     av1: 'AV1',
+    vp9: 'VP9',
+    prores: 'ProRes',
     learn: 'सीखें',
     learnLink: '/hi/learn/what-is-ffmpeg',
   },
@@ -389,6 +417,8 @@ function toolsNav(locale: string) {
           { text: s.wmv, link: `${p}/convert/wmv-to-mp4` },
           { text: s.m4v, link: `${p}/convert/m4v-to-mp4` },
           { text: s.webm, link: `${p}/convert/webm-to-mp4` },
+          { text: s.mp4ToMkv, link: `${p}/convert/mp4-to-mkv` },
+          { text: s.mp4ToWebm, link: `${p}/convert/mp4-to-webm` },
         ],
       },
       {
@@ -397,6 +427,8 @@ function toolsNav(locale: string) {
           { text: s.h264, link: `${p}/codecs/h264` },
           { text: s.h265, link: `${p}/codecs/h265` },
           { text: s.av1, link: `${p}/codecs/av1` },
+          { text: s.vp9, link: `${p}/codecs/vp9` },
+          { text: s.prores, link: `${p}/codecs/prores` },
         ],
       },
       { text: s.learn, link: `${s.learnLink}` },
@@ -475,12 +507,166 @@ const seoFAQ: Record<string, { q: string; a: string }[]> = {
       a: 'Yes. EncodeX supports batch converting an entire folder of MKV files to MP4.',
     },
   ],
+  'convert/mp4-to-mkv': [
+    {
+      q: 'Does converting MP4 to MKV lose quality?',
+      a: 'No. By default EncodeX remuxes the existing video and audio streams, so the quality stays exactly the same and the conversion is very fast.',
+    },
+    {
+      q: 'Why would I want MKV instead of MP4?',
+      a: 'MKV supports soft subtitles, unlimited audio tracks, chapters and attachment files, which makes it a favorite for archiving and media servers.',
+    },
+    {
+      q: 'Can I convert many MP4 files at once?',
+      a: 'Yes. EncodeX supports batch converting an entire folder of MP4 files to MKV.',
+    },
+  ],
+  'convert/mp4-to-webm': [
+    {
+      q: 'Should I convert MP4 to WebM?',
+      a: "If you are publishing to the web, WebM usually wins on file size and quality-per-bit over MP4. For maximum compatibility with older players, keep MP4.",
+    },
+    {
+      q: 'Will I lose quality converting MP4 to WebM?',
+      a: "WebM's VP9 and AV1 codecs encode more efficiently, so you typically end up with a smaller file at similar visible quality.",
+    },
+    {
+      q: 'Can I convert many MP4 files at once?',
+      a: 'Yes. EncodeX supports batch converting an entire folder of MP4 files to WebM.',
+    },
+  ],
+  'compress/mp4': [
+    {
+      q: 'How small can compressed MP4 files get?',
+      a: 'It depends on the source and settings, but EncodeX often shrinks files to a fraction of their size while keeping visually similar quality.',
+    },
+    {
+      q: 'Will compressing reduce my video quality?',
+      a: 'EncodeX balances size and quality automatically. You choose how aggressive to be, and you can preview the result before saving.',
+    },
+    {
+      q: 'Does EncodeX compress files offline?',
+      a: 'Yes. Compression happens entirely on your computer with no uploads, so it is private and works even without internet.',
+    },
+  ],
+  'compress/mkv': [
+    {
+      q: 'Does compressing MKV lose quality?',
+      a: 'EncodeX balances size and quality automatically. You choose how aggressive to be and can preview the result before saving.',
+    },
+    {
+      q: 'Will my subtitles survive compression?',
+      a: 'Yes. EncodeX keeps the MKV container structure, so subtitles and audio tracks are carried over.',
+    },
+    {
+      q: 'Can I compress many MKV files at once?',
+      a: 'Yes. EncodeX supports batch compressing an entire folder of MKV files.',
+    },
+  ],
+  'extract/mp3-from-video': [
+    {
+      q: 'Does extracting MP3 from a video keep the quality?',
+      a: "Yes. EncodeX reads the original audio track and encodes it to MP3 with the settings you choose. Use 320 kbps for near-lossless sound.",
+    },
+    {
+      q: 'Can I extract MP3 from MKV files?',
+      a: 'Yes - any video container works, including MKV, MP4, MOV, AVI and WebM.',
+    },
+    {
+      q: 'Can I batch-extract MP3 from many videos?',
+      a: 'Yes. EncodeX can extract audio from an entire folder of videos in one go.',
+    },
+  ],
+  'extract/wav-from-video': [
+    {
+      q: 'Is WAV sound better than MP3?',
+      a: 'WAV is uncompressed, so it is the true original audio - MP3 discards some data to save space. For editing and archiving, WAV is the safe choice.',
+    },
+    {
+      q: 'Does extracting WAV make huge files?',
+      a: "Roughly 10 MB per minute of stereo 16-bit/48 kHz audio. That's the price of lossless quality.",
+    },
+    {
+      q: 'Can I batch-extract WAV from many videos?',
+      a: 'Yes. EncodeX can extract audio from an entire folder of videos in one go.',
+    },
+  ],
+  'platforms/windows': [
+    {
+      q: 'Does EncodeX work on Windows 11?',
+      a: 'Yes, EncodeX fully supports Windows 11 and Windows 10 (64-bit and ARM64).',
+    },
+    {
+      q: 'Is EncodeX for Windows really free?',
+      a: 'Yes - 100% free, open source (MIT), no ads, no watermarks and no paid tiers.',
+    },
+    {
+      q: 'Does EncodeX upload my videos?',
+      a: 'No. All conversion happens locally on your PC.',
+    },
+  ],
+  'platforms/mac': [
+    {
+      q: 'Does EncodeX work on Apple Silicon Macs?',
+      a: 'Yes, there is a dedicated Apple Silicon build that runs natively and uses the VideoToolbox hardware encoder.',
+    },
+    {
+      q: 'Can I convert video to ProRes on a Mac with EncodeX?',
+      a: 'Yes - EncodeX includes ready-made ProRes 422 and 4444 profiles, perfect for Final Cut and DaVinci Resolve workflows.',
+    },
+    {
+      q: 'Does EncodeX upload my videos?',
+      a: 'No. All conversion happens locally on your Mac.',
+    },
+  ],
+  'platforms/linux': [
+    {
+      q: 'Does EncodeX support Wayland?',
+      a: 'Yes, the app runs on both X11 and Wayland sessions.',
+    },
+    {
+      q: 'Can I use EncodeX on a headless Linux server?',
+      a: 'Yes - EncodeX includes a CLI mode for scripting conversions without a desktop.',
+    },
+    {
+      q: 'Is EncodeX for Linux really free?',
+      a: 'Yes - 100% free, open source (MIT), no ads and no accounts.',
+    },
+  ],
+  cli: [
+    {
+      q: 'Do I need the GUI to use the CLI?',
+      a: "No, the CLI works standalone. It's bundled with every install of EncodeX.",
+    },
+    {
+      q: 'Can I use the EncodeX CLI on a server?',
+      a: "Yes - it's headless, so it works great in scripts, CI, and server environments.",
+    },
+    {
+      q: 'Is the EncodeX CLI really free?',
+      a: 'Yes - EncodeX is free forever and open source (MIT).',
+    },
+  ],
+  'handbrake-alternative': [
+    {
+      q: 'Is EncodeX really a HandBrake alternative?',
+      a: 'Yes - EncodeX is a free, open-source FFmpeg GUI for Windows, Mac, and Linux with a friendlier UI, more formats, hardware acceleration, batch queue and CLI mode.',
+    },
+    {
+      q: 'Should I switch from HandBrake to EncodeX?',
+      a: 'HandBrake is excellent for disk ripping. EncodeX is a better fit if you want a simpler UI, richer batch features, more formats, or one app that also compresses images and extracts audio.',
+    },
+    {
+      q: 'Does EncodeX work offline?',
+      a: 'Yes - all conversion happens locally on your computer, so your files never leave your device.',
+    },
+  ],
 }
 
 export default defineConfig({
   title: 'EncodeX',
   description:
-    'A free, easy-to-use app to convert videos and audio, trim clips, extract music from video, and shrink photos. Works on Windows, Mac, and Linux.',
+    'EncodeX is a free, open-source FFmpeg GUI for Windows, macOS, and Linux. Convert video and audio, compress files, trim clips, and extract music — entirely on your computer, with no command line.',
   base: '/',
   cleanUrls: true,
   srcExclude: ['**/README.md'],
@@ -568,7 +754,7 @@ gtag('config', 'G-SM28DL4DYR');`,
     const siteDescription = context.siteData?.description || context.siteConfig?.description || ''
     const pageTitle = frontmatter.title
       ? `${frontmatter.title} | ${siteTitle}`
-      : `${siteTitle} — Free Video, Audio & Photo Converter`
+      : `${siteTitle} — Free, Open-Source FFmpeg GUI for Windows, macOS & Linux`
     const pageDescription = frontmatter.description || siteDescription
     const pageOgImage = frontmatter.ogImage || `${SITE_URL}/images/banner.webp`
 
@@ -679,9 +865,24 @@ gtag('config', 'G-SM28DL4DYR');`,
       'convert/wmv-to-mp4': 'WMV to MP4 Converter',
       'convert/m4v-to-mp4': 'M4V to MP4 Converter',
       'convert/webm-to-mp4': 'WebM to MP4 Converter',
+      'convert/mp4-to-mkv': 'MP4 to MKV Converter',
+      'convert/mp4-to-webm': 'MP4 to WebM Converter',
       'codecs/h264': 'H.264 Encoder & Converter',
       'codecs/h265': 'H.265 / HEVC Encoder & Converter',
       'codecs/av1': 'AV1 Encoder & Converter',
+      'codecs/vp9': 'VP9 Encoder & Converter',
+      'codecs/prores': 'ProRes Converter',
+      'compress/mp4': 'Compress MP4 Videos',
+      'compress/mkv': 'Compress MKV Videos',
+      'extract/mp3-from-video': 'Extract MP3 from Video',
+      'extract/wav-from-video': 'Extract WAV from Video',
+      'platforms/windows': 'EncodeX for Windows',
+      'platforms/mac': 'EncodeX for Mac',
+      'platforms/linux': 'EncodeX for Linux',
+      cli: 'EncodeX CLI',
+      'handbrake-alternative': 'HandBrake Alternative',
+      privacy: 'Privacy Policy',
+      'use-cases': 'Use Cases',
       'learn/what-is-ffmpeg': 'What is FFmpeg',
     }
 
@@ -731,6 +932,7 @@ gtag('config', 'G-SM28DL4DYR');`,
         nav: [
           { text: 'Home', link: '/' },
           { text: 'Features', link: '/features' },
+          { text: 'Use Cases', link: '/use-cases' },
           { text: 'Download', link: '/download' },
           toolsNav('en'),
           { text: 'Docs', items: docsNav('en') },
@@ -751,6 +953,7 @@ gtag('config', 'G-SM28DL4DYR');`,
         nav: [
           { text: 'Inicio', link: '/es/' },
           { text: 'Características', link: '/es/features' },
+          { text: 'Casos de uso', link: '/es/use-cases' },
           { text: 'Descargar', link: '/es/download' },
           toolsNav('es'),
           { text: 'Documentación', items: docsNav('es') },
@@ -771,6 +974,7 @@ gtag('config', 'G-SM28DL4DYR');`,
         nav: [
           { text: 'Accueil', link: '/fr/' },
           { text: 'Fonctionnalités', link: '/fr/features' },
+          { text: "Cas d'usage", link: '/fr/use-cases' },
           { text: 'Télécharger', link: '/fr/download' },
           toolsNav('fr'),
           { text: 'Documentation', items: docsNav('fr') },
@@ -791,6 +995,7 @@ gtag('config', 'G-SM28DL4DYR');`,
         nav: [
           { text: 'Start', link: '/de/' },
           { text: 'Funktionen', link: '/de/features' },
+          { text: 'Anwendungsfälle', link: '/de/use-cases' },
           { text: 'Download', link: '/de/download' },
           toolsNav('de'),
           { text: 'Dokumentation', items: docsNav('de') },
@@ -811,6 +1016,7 @@ gtag('config', 'G-SM28DL4DYR');`,
         nav: [
           { text: 'Início', link: '/pt/' },
           { text: 'Recursos', link: '/pt/features' },
+          { text: 'Casos de uso', link: '/pt/use-cases' },
           { text: 'Download', link: '/pt/download' },
           toolsNav('pt'),
           { text: 'Documentação', items: docsNav('pt') },
@@ -831,6 +1037,7 @@ gtag('config', 'G-SM28DL4DYR');`,
         nav: [
           { text: '首页', link: '/zh/' },
           { text: '功能特性', link: '/zh/features' },
+          { text: '使用场景', link: '/zh/use-cases' },
           { text: '下载', link: '/zh/download' },
           toolsNav('zh'),
           { text: '技术文档', items: docsNav('zh') },
@@ -851,6 +1058,7 @@ gtag('config', 'G-SM28DL4DYR');`,
         nav: [
           { text: 'होम', link: '/hi/' },
           { text: 'फ़ीचर्स', link: '/hi/features' },
+          { text: 'उपयोग के मामले', link: '/hi/use-cases' },
           { text: 'डाउनलोड', link: '/hi/download' },
           toolsNav('hi'),
           { text: 'दस्तावेज़', items: docsNav('hi') },

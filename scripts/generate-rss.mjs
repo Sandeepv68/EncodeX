@@ -3,7 +3,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const blogDir = join(__dirname, '..', 'site', 'blog', 'releases');
+const blogSubdirs = ['releases', 'posts'];
 const outputFile = join(__dirname, '..', 'site', 'public', 'feed.xml');
 
 const SITE_URL = 'https://encodex.in';
@@ -39,28 +39,31 @@ function parseFrontmatter(content) {
   return meta;
 }
 
-let files;
-try {
-  files = readdirSync(blogDir).filter((f) => f.endsWith('.md'));
-} catch {
-  console.error('Could not read blog directory');
-  process.exit(1);
-}
-
 const posts = [];
-for (const file of files) {
-  const content = readFileSync(join(blogDir, file), 'utf-8');
-  const meta = parseFrontmatter(content);
-  if (!meta) continue;
-  const slug = file.replace(/\.md$/, '');
-  posts.push({
-    title: String(meta.title || slug),
-    date: String(meta.date || ''),
-    description: String(meta.description || ''),
-    tags: Array.isArray(meta.tags) ? meta.tags : [],
-    slug,
-    url: `${SITE_URL}/blog/releases/${slug}`,
-  });
+for (const subdir of blogSubdirs) {
+  const blogDir = join(__dirname, '..', 'site', 'blog', subdir);
+  let files;
+  try {
+    files = readdirSync(blogDir).filter((f) => f.endsWith('.md'));
+  } catch {
+    console.error(`Could not read blog directory: ${subdir}`);
+    process.exit(1);
+  }
+
+  for (const file of files) {
+    const content = readFileSync(join(blogDir, file), 'utf-8');
+    const meta = parseFrontmatter(content);
+    if (!meta) continue;
+    const slug = file.replace(/\.md$/, '');
+    posts.push({
+      title: String(meta.title || slug),
+      date: String(meta.date || ''),
+      description: String(meta.description || ''),
+      tags: Array.isArray(meta.tags) ? meta.tags : [],
+      slug,
+      url: `${SITE_URL}/blog/${subdir}/${slug}`,
+    });
+  }
 }
 
 posts.sort((a, b) => (b.date > a.date ? 1 : b.date < a.date ? -1 : 0));

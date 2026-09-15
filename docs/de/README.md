@@ -1,6 +1,12 @@
 <div align="center">
   <img src="../../assets/banner.png" alt="EncodeX Logo" width="900" />
-  <h3>Ein plattformübergreifendes Multimedia-Konvertierungstool auf Basis von FFmpeg, React, TypeScript und Electron.</h3>
+  <h3>FFmpeg-Kraft. Ohne Befehlszeile.</h3>
+  <p><strong>EncodeX</strong> — die kostenlose, quelloffene <strong>FFmpeg-Oberfläche</strong> für Windows, macOS und Linux.</p>
+  <p style="font-size: 18px;">
+    <a href="https://encodex.in/download"><strong>Download</strong></a> ·
+    <a href="https://encodex.in">Website</a> ·
+    <a href="https://encodex.in/docs/architecture">Dokumentation</a>
+  </p>
 </div>
 
 <div align="center">
@@ -40,7 +46,19 @@
 
 ## 👋 Einführung
 
-EncodeX ist ein plattformübergreifendes Multimedia-Konvertierungstool, das die Leistung von FFmpeg in eine moderne, intuitive Desktop-Oberfläche bringt. Gebaut mit Electron, React und TypeScript ermöglicht es dir, Medien zwischen Formaten zu konvertieren, Audio zu extrahieren, Videos zu schneiden und Bilder zu komprimieren – alles über eine aufgeräumte, reaktionsschnelle UI mit Batch-Warteschlange, Hardwarebeschleunigung, CLI-Modus und vollständiger Internationalisierung.
+EncodeX ist die kostenlose, quelloffene FFmpeg-Oberfläche, die die Leistung von FFmpeg in eine moderne, intuitive Desktop-Oberfläche bringt. Mit ihr kannst du Medien zwischen Formaten konvertieren, Audio extrahieren, Videos schneiden und Bilder komprimieren – alles über eine aufgeräumte, reaktionsschnelle UI mit Batch-Warteschlange, Hardwarebeschleunigung, CLI-Modus und vollständiger Internationalisierung.
+
+## Warum EncodeX?
+
+- ✅ **Für immer kostenlos** — Open Source (MIT), keine kostenpflichtige Stufe
+- ✅ **100 % privat** — Deine Dateien verlassen niemals deinen Computer
+- ✅ **Kein Konto, keine Registrierung, kein Tracking**
+- ✅ **Keine Wasserzeichen, keine Dateigrößenbeschränkungen, keine Werbung**
+- ✅ **FFmpeg-powered** — 51 Video-Codecs, 27 Audio-Codecs, 56 Pixelformate
+- ✅ **Hardwarebeschleunigung** — NVIDIA, Intel, AMD, Apple Silicon für schnelle Encodes
+- ✅ **Stapelverarbeitung** — Ganze Ordner auf einmal konvertieren
+- ✅ **Plattformübergreifend** — Windows 10+, macOS 11+, Linux
+- ✅ **35+ Sprachen** mit RTL-Unterstützung
 
 ## ✨ Funktionen
 

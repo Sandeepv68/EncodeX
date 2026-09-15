@@ -39,6 +39,18 @@
     "descBatch": "Muunna useita tiedostoja kerralla älykkäällä jonolla",
     "shortcutsFooter": "Paina {{shortcut}} näppäimistöoikoteitä varten"
   },
+  "gettingStarted": {
+    "hint": "Uusi täällä?",
+    "title": "Aloittaminen",
+    "body": "Valitse, mistä haluat aloittaa — voit tehdä kaiken täältä myöhemmin.",
+    "dismiss": "Ohita",
+    "goals": {
+      "convert": "Muunna video",
+      "compress": "Pakkaa tiedosto",
+      "extract": "Pura ääniraita",
+      "trim": "Leikkaa katkelma"
+    }
+  },
   "closeConfirm": {
     "title": "Sulje EncodeX?",
     "message": "Käynnissä on töitä tai tallentamattomia muutoksia. Sulkeutuminen peruuttaa ne.",

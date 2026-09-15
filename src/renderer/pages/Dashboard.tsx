@@ -43,6 +43,7 @@ import {
   DashboardFooter,
 } from '../styles/Dashboard.styles';
 import { LOG_DASHBOARD_RENDERED } from '../../shared/log-constants';
+import GettingStartedCard from '../components/GettingStartedCard';
 
 /**
  * Logger instance scoped to this page. Used to emit the on-mount render marker.
@@ -168,6 +169,7 @@ export default function Dashboard() {
         {t('dashboard.welcome')} 👋
       </WelcomeTitle>
       <DashboardSubtitle color="text.secondary">{t('dashboard.subtitle')}</DashboardSubtitle>
+      <GettingStartedCard />
       <FeatureGrid container spacing={2}>
         {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs' && item.to !== '/settings' && item.to !== '/about').map(
           (item, index) => (

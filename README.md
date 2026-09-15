@@ -1,6 +1,12 @@
 <div align="center">
   <img src="assets/banner.png" alt="EncodeX Logo" width="900" />
-  <h3>A cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron.</h3>
+  <h3>FFmpeg power. Without the command line.</h3>
+  <p><strong>EncodeX</strong> — the free, open-source <strong>FFmpeg GUI</strong> for Windows, macOS &amp; Linux.</p>
+  <p style="font-size: 18px;">
+    <a href="https://encodex.in/download"><strong>Download</strong></a> ·
+    <a href="https://encodex.in">Website</a> ·
+    <a href="https://encodex.in/docs/architecture">Documentation</a>
+  </p>
 </div>
 
 <div align="center">
@@ -9,25 +15,10 @@
 ![CI](https://img.shields.io/github/actions/workflow/status/Sandeepv68/EncodeX/ci.yml?style=for-the-badge)
 ![License](https://img.shields.io/github/license/Sandeepv68/EncodeX?style=for-the-badge)
 ![Release](https://img.shields.io/github/v/release/Sandeepv68/EncodeX?style=for-the-badge)
-![Downloads](https://img.shields.io/github/downloads/Sandeepv68/EncodeX/total?style=for-the-badge&logo=github&logoColor=white)
+![Downloads](https://img.shields.io/github/downloads/Sandeepv68/EncodeX/total?style=for-the-badge)
 ![Stars](https://img.shields.io/github/stars/Sandeepv68/EncodeX?style=for-the-badge)
 ![Forks](https://img.shields.io/github/forks/Sandeepv68/EncodeX?style=for-the-badge)
-![Watchers](https://img.shields.io/github/watchers/Sandeepv68/EncodeX?style=for-the-badge)
 ![Issues](https://img.shields.io/github/issues/Sandeepv68/EncodeX?style=for-the-badge)
-![Pull Requests](https://img.shields.io/github/issues-pr/Sandeepv68/EncodeX?style=for-the-badge)
-![Last Commit](https://img.shields.io/github/last-commit/Sandeepv68/EncodeX?style=for-the-badge)
-![Contributors](https://img.shields.io/github/contributors/Sandeepv68/EncodeX?style=for-the-badge)
-![Repo Size](https://img.shields.io/github/repo-size/Sandeepv68/EncodeX?style=for-the-badge)
-![Languages](https://img.shields.io/github/languages/count/Sandeepv68/EncodeX?style=for-the-badge)
-![Top Language](https://img.shields.io/github/languages/top/Sandeepv68/EncodeX?style=for-the-badge)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Electron](https://img.shields.io/badge/Electron-47848F?style=for-the-badge&logo=electron&logoColor=white)
-![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![MUI](https://img.shields.io/badge/MUI-007FFF?style=for-the-badge&logo=mui&logoColor=white)
-![FFmpeg](https://img.shields.io/badge/FFmpeg-007808?style=for-the-badge&logo=ffmpeg&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js%2022-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)
 
 </div>
@@ -40,13 +31,27 @@
 
 ## 👋 Introduction
 
-EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
+EncodeX brings the full power of **FFmpeg** to a modern, intuitive desktop app — no command line required. Convert video and audio between formats, extract music from videos, trim clips, compress images, and batch-process whole folders. Developer? The same engine is available headless through the **EncodeX CLI**.
+
+Everything runs **locally on your computer** — no accounts, no uploads, no watermarks, no subscriptions.
+
+## Why EncodeX?
+
+- ✅ **Free forever** — open source (MIT), no paid tier
+- ✅ **100% private** — your files never leave your machine
+- ✅ **No account, no sign-up, no tracking**
+- ✅ **No watermarks, no file-size limits, no ads**
+- ✅ **FFmpeg powered** — 51 video codecs, 27 audio codecs, 56 pixel formats
+- ✅ **Hardware acceleration** — NVIDIA, Intel, AMD, Apple Silicon for fast encodes
+- ✅ **Batch processing** — convert whole folders at once
+- ✅ **Cross-platform** — Windows 10+, macOS 11+, Linux
+- ✅ **35+ languages** with RTL support
 
 ## ✨ Features
 
 - **🔄 Media Conversion** — 51 video codecs, 27 audio codecs, 56 pixel formats with codec/bitrate/scale/quality controls
 - **🎛️ Conversion Profiles** — 140+ pre-configured presets across 8 categories (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS, and more) with custom profile creation and recently-used tracking
-- **⚡ Hardware Acceleration** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation
+- **⚡ Hardware Acceleration** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation, auto-detected
 - **✂️ Video Cutting** — Frame-accurate trimming with a built-in player (rawvideo + PCM pipes, Canvas + Web Audio) and zoomable timeline (waveform + thumbnail montage)
 - **📋 Batch Queue** — Parallel processing (up to 4 concurrent jobs) with real-time progress, per-job errors, pause/resume, drag-and-drop reordering, job option editing, status filters, JSON export/import, and when-done power actions (shutdown/sleep/hibernate)
 - **🖼️ Image Compression** — JPEG/PNG/WebP/BMP/GIF/TIFF with quality/scale, EXIF viewer, RGB/luma histograms
@@ -56,9 +61,6 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 - **⚙️ 3 Transcoder Cores** — FFmpeg API (fluent-ffmpeg), FFmpeg CLI (child_process), BMF Framework
 - **🌍 56 Locales** — 35 languages with RTL support (Arabic, Hebrew)
 - **⌨️ Keyboard Shortcuts** — 60+ shortcuts across every page with an in-app help dialog (`Ctrl+/`)
-- **🔔 Activity Blips** — Live nav indicators with hover popovers showing per-job progress at a glance
-- **🛡️ Close Confirmation** — Warns before closing the window while jobs are still running
-- **🎉 Easter Eggs** — Holiday-themed app logos on special dates
 - **🔄 In-App Updates** — Checks GitHub Releases, downloads platform installer, real-time progress
 - **🛡️ Error Handling** — 16 typed error codes, global snackbar, inline banners, React error boundaries
 - **🌗 Dark/Light Theme** — System-aware with manual toggle, persistent preferences
@@ -105,14 +107,23 @@ See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, support
   </tr>
 </table>
 
-## 📌 Prerequisites
+## 💻 CLI Usage
 
-- [Node.js](https://nodejs.org/) 22+
-- [FFmpeg](https://ffmpeg.org/) — bundled via `ffmpeg-static`; falls back to system `ffmpeg` if the bundled binary is unavailable
+Simple enough for everyday users. Powerful enough for developers. The GUI and CLI share the same engine:
+
+```bash
+encodex convert input.mp4 output.avi --video-codec libx265 --audio-codec aac
+encodex info input.mp4 --json
+encodex compress photo.png -f jpg -q 30
+encodex extract-audio input.mp4
+encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
+```
+
+See [docs/CLI.md](docs/CLI.md) for all subcommands, options, and exit codes.
 
 ## 📥 Downloads
 
-Pre-built installers are available on the [Releases](https://github.com/Sandeepv68/EncodeX/releases) page.
+Pre-built installers are available on the [Releases](https://github.com/Sandeepv68/EncodeX/releases) page — or the friendly version at **[encodex.in/download](https://encodex.in/download)**.
 
 ### macOS
 
@@ -132,6 +143,11 @@ xattr -cr /Applications/EncodeX.app
 ### Windows / Linux
 
 Download the `.exe` (Windows) or `.AppImage` (Linux) installer from the [Releases](https://github.com/Sandeepv68/EncodeX/releases) page and run it.
+
+## 📌 Prerequisites (for contributors)
+
+- [Node.js](https://nodejs.org/) 22+
+- [FFmpeg](https://ffmpeg.org/) — bundled via `ffmpeg-static`; falls back to system `ffmpeg` if the bundled binary is unavailable
 
 ## 🚀 Install (from source)
 
@@ -188,20 +204,6 @@ npm run dist
 | `npm run pack`           | Build + electron-builder `--dir`                            |
 | `npm run dist`           | Build + electron-builder (NSIS/DMG/AppImage)                |
 
-## 💻 CLI Usage
-
-Build first, then invoke via `encodex`:
-
-```bash
-encodex convert input.mp4 output.avi --video-codec libx265 --audio-codec aac
-encodex info input.mp4 --json
-encodex compress photo.png -f jpg -q 30
-encodex extract-audio input.mp4
-encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
-```
-
-See [docs/CLI.md](docs/CLI.md) for all subcommands, options, and examples.
-
 ## 🧪 Testing
 
 ```bash
@@ -214,6 +216,11 @@ npm run test:e2e   # Requires build
 ```
 
 See [docs/TESTING.md](docs/TESTING.md) for the full test suite breakdown, test setup, and E2E specs.
+
+## 🌐 Website & Docs
+
+- **[encodex.in](https://encodex.in)** — product site, features tour, and release blog, in 8 languages
+- **Guides** — [FFmpeg GUI](https://encodex.in/ffmpeg-gui), [Video converter](https://encodex.in/video-converter), [Compressor](https://encodex.in/video-compressor), [Extract audio](https://encodex.in/extract-audio-from-video)
 
 ## 📚 Documentation
 
@@ -230,7 +237,6 @@ See [docs/TESTING.md](docs/TESTING.md) for the full test suite breakdown, test s
 | [docs/ARCHITECTURE_RENDERER.md](docs/ARCHITECTURE_RENDERER.md) | Render tree, pages, stores, queue, player, i18n, theming |
 | [docs/UPDATE_MANAGER.md](docs/UPDATE_MANAGER.md) | In-app update manager implementation details |
 | [Wiki](https://github.com/Sandeepv68/EncodeX/wiki) | Community wiki (mirrors the docs in a browsable form) |
-| [Documentation Site](https://encodex.in/) | VitePress site with features tour, guides, and release blog |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guidelines |
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting |
 | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Code of conduct |

@@ -157,6 +157,54 @@ Consent file: `<userData>/monitoring-consent.json` â†’ `{ "enabled": true }
 4. Delete Sentry adapter files + npm package when confident.
 5. App code, IPC surface, consent logic, settings UI: **unchanged**.
 
-## 6. Rollback
+## 6. Product Analytics channel (CP10, launch-growth plan)
+
+**Decision:** anonymous product/usage analytics ride the **existing breadcrumb channel**
+(category `analytics`) instead of a new network endpoint. This keeps the privacy promise
+("your files never leave your computer", no extra telemetry), inherits the exact same
+consent toggle + "telemetry off" semantics, and reuses the already-shipped consent/init flow.
+
+### 6.1 Event pipeline
+
+```
+App code ──► analyticsService.recordEvent(event)   (src/shared/analytics/AnalyticsService.ts)
+                 └─► monitor.addMonitoringBreadcrumb({ category: 'analytics', message: schemaVer, ... })
+                       └─► Sentry breadcrumbs (or Noop provider when consent off / DSN absent)
+```
+
+- Severity/level neutral; guardrails: `recordEvent` never throws (mirrors facade never-throws).
+- Consent: breadcrumbs only exist when monitoring is enabled (`monitoring-consent.json`) and a
+  backend is active (NoopProvider swallows). Nothing leaves the device otherwise.
+- No PII by taxonomy design: payloads are categorical-only (job kind, category, subcommand,
+  preset class, hardware-accel label, theme id — never file names, paths, or sizes).
+
+### 6.2 Taxonomy
+
+`src/shared/analytics/events.ts` — schema v1, 14 typed events (`createAnalyticsEvent<T>`
+factory, `ANALYTICS_SCHEMA_VERSION` constant): `app_installed`, `app_launched`,
+`onboarding_started`, `onboarding_goal_selected`, `conversion_started`,
+`conversion_completed`, `conversion_failed`, `batch_completed`, `profile_applied`,
+`hw_accel_detected`, `cli_invoked`, `update_available`, `telemetry_opt_in`,
+`telemetry_opt_out`.
+
+### 6.3 Wired call sites
+
+| Event | Call site |
+|-------|-----------|
+| `app_launched` | `src/main/index.ts` (GUI `whenReady`) |
+| `cli_invoked` | `src/main/index.ts` (CLI branch, subcommand included) |
+| `conversion_started` | `src/main/queue/job-queue.ts` (`startJob` → RUNNING) |
+| `conversion_completed` | `job-queue.ts` (`end` handler) |
+| `conversion_failed` | `job-queue.ts` (`error` handler + catch path) |
+| `onboarding_started` / `onboarding_goal_selected` | `src/renderer/components/GettingStartedCard.tsx` |
+
+### 6.4 Units
+
+- Facade tests + AnalyticsService unit tests (category routing, never-throws, schema version).
+- Measuring KPI reads: Sentry breadcrumb/issue aggregation; no separate analytics pipeline.
+  See the KPI Tracker in `plans/PRODUCT_LAUNCH_GROWTH_PLAN.md` (priority #1 = successful
+  first conversion).
+
+## 7. Rollback
 
 Set `MONITORING_PROVIDER=noop` (or unset `SENTRY_DSN`) â€” entire system becomes a no-op without code changes. Removing the feature = revert this branch.

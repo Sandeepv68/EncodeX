@@ -39,6 +39,18 @@
     "descBatch": "Umbreyta mörgum skrám samtímis með snjallri braut",
     "shortcutsFooter": "Ýttu á {{shortcut}} fyrir flýtilykla"
   },
+  "gettingStarted": {
+    "hint": "Nýr hér?",
+    "title": "Byrjum",
+    "body": "Veldu hvar þú vilt byrja — þú getur gert allt hérna síðar.",
+    "dismiss": "Loka",
+    "goals": {
+      "convert": "Umbreyta myndbandi",
+      "compress": "Þjappa skrá",
+      "extract": "Sækja hljóð",
+      "trim": "Klippa bút"
+    }
+  },
   "closeConfirm": {
     "title": "Loka EncodeX?",
     "message": "Verk í gangi eða óvistaðar breytingar. Að loka nú mun aflýsa þeim.",

@@ -39,6 +39,18 @@
     "descBatch": "Huripokia ngā kōnae maha i te wā kotahi me te rārangi mōhio",
     "shortcutsFooter": "Pēhia {{shortcut}} mō ngā poto aratohu papapātuhi"
   },
+  "gettingStarted": {
+    "hint": "He tauhou koe?",
+    "title": "Te Tīmatanga",
+    "body": "Kōwhiria te wāhi e hiahia ana koe ki te tīmata — ka taea e koe te mahi i ngā mea katoa mai i konei ā muri ake.",
+    "dismiss": "Katia",
+    "goals": {
+      "convert": "Hurihia tētahi ataata",
+      "compress": "Kōmitimiti tētahi kōnae",
+      "extract": "Tangohia te oro",
+      "trim": "Whakatote tētahi topenga"
+    }
+  },
   "closeConfirm": {
     "title": "Katia te EncodeX?",
     "message": "Kei te haere tonu ētahi mahi, ā, he huringa kāore anō kia penapenahia. Ka whakakorehia ina katia ināianei.",

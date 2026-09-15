@@ -28,7 +28,16 @@ ffmpeg -i input.mkv -c:v libx264 -crf 18 -c:a aac output.mp4
 - **可视化剪辑片段**——在时间轴上拖动两个手柄，完成
 - **从视频中提取音频**并保存为 MP3
 - **一键批量处理整个文件夹**
-- 通过 **NVENC、QSV、AMF、VAAPI 和 VideoToolbox** 使用硬件加速，编码大幅提速
+
+## 疾速体验：内置硬件加速
+
+EncodeX **自动利用你的 GPU**，让转换速度远超普通软件编码。无需设置，无需寻找驱动——开箱即用：
+
+- **NVIDIA** 用户使用 NVENC；**Intel** 使用 Quick Sync (QSV)；**AMD** 使用 AMF
+- **Apple Silicon/Mac** 用户使用 VideoToolbox
+- **Linux** 用户使用 VAAPI——不限 GPU 品牌
+
+你的硬件很可能已经内置了高速编码器。EncodeX 会找到它并自动启用——漫长的转换任务只需很短时间即可完成。
 
 ## 开源且私密
 
@@ -44,7 +53,7 @@ EncodeX 可在 Windows、macOS 和 Linux 上运行——一款真正的跨平台
 
 ## 最好的 FFmpeg GUI 替代品
 
-正在寻找**最好的 FFmpeg GUI**——或者 HandBrake 或 Shutter Encoder 的 **FFmpeg GUI 替代品**？EncodeX 免费、开源，并刻意保持易用，同时对有需要的人仍提供高级编码选项。
+正在寻找**最好的 FFmpeg GUI**——或者 HandBrake 或 Shutter Encoder 的 **FFmpeg GUI 替代品**？EncodeX 免费、开源，并刻意保持易用，同时对有需要的人仍提供高级编码选项。查看我们的 [HandBrake 替代品](/zh/handbrake-alternative) 对比。
 
 ## 立即开始
 

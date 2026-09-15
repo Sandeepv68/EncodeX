@@ -1,6 +1,12 @@
 <div align="center">
   <img src="../../assets/banner.png" alt="Logo EncodeX" width="900" />
-  <h3>Un outil de conversion multimédia multiplateforme reposant sur FFmpeg, React, TypeScript et Electron.</h3>
+  <h3>La puissance de FFmpeg. Sans la ligne de commande.</h3>
+  <p><strong>EncodeX</strong> — l'interface graphique <strong>FFmpeg</strong> gratuite et open source pour Windows, macOS et Linux.</p>
+  <p style="font-size: 18px;">
+    <a href="https://encodex.in/download"><strong>Télécharger</strong></a> ·
+    <a href="https://encodex.in">Site web</a> ·
+    <a href="https://encodex.in/docs/architecture">Documentation</a>
+  </p>
 </div>
 
 <div align="center">
@@ -40,7 +46,19 @@
 
 ## 👋 Introduction
 
-EncodeX est un outil de conversion multimédia multiplateforme qui apporte toute la puissance de FFmpeg dans une interface de bureau moderne et intuitive. Construit avec Electron, React et TypeScript, il vous permet de convertir des médias entre différents formats, d'extraire l'audio, de couper des vidéos et de compresser des images — le tout via une interface propre et réactive offrant une file d'attente par lot, l'accélération matérielle, un mode CLI et une internationalisation complète.
+EncodeX est l'interface graphique gratuite et open source de FFmpeg qui apporte toute sa puissance dans une interface de bureau moderne et intuitive. Il vous permet de convertir des médias entre différents formats, d'extraire l'audio, de couper des vidéos et de compresser des images — le tout via une interface propre et réactive offrant une file d'attente par lot, l'accélération matérielle, un mode CLI et une internationalisation complète.
+
+## Pourquoi EncodeX ?
+
+- ✅ **Gratuit pour toujours** — open source (MIT), pas d'abonnement payant
+- ✅ **100 % privé** — vos fichiers ne quittent jamais votre machine
+- ✅ **Aucun compte, aucune inscription, aucun traçage**
+- ✅ **Pas de filigrane, pas de limite de taille de fichier, pas de publicité**
+- ✅ **Propulsé par FFmpeg** — 51 codecs vidéo, 27 codecs audio, 56 formats de pixels
+- ✅ **Accélération matérielle** — NVIDIA, Intel, AMD, Apple Silicon pour des encodages rapides
+- ✅ **Traitement par lot** — convertir des dossiers entiers en une seule fois
+- ✅ **Multiplateforme** — Windows 10+, macOS 11+, Linux
+- ✅ **35+ langues** avec prise en charge RTL
 
 ## ✨ Fonctionnalités
 

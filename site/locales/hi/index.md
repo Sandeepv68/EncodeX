@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: EncodeX
-  text: अपनी वीडियो, ऑडियो और फ़ोटो फ़ाइलें ठीक करने का आसान तरीक़ा
-  tagline: कोई वीडियो नहीं चल रहा? फ़ाइल बहुत बड़ी है? किसी क्लिप का सिर्फ़ म्यूज़िक चाहिए? EncodeX सब कुछ कुछ ही क्लिक में कर देता है — मुफ़्त, Windows, Mac और Linux पर।
+  text: FFmpeg की ताकत। कमांड लाइन के बिना।
+  tagline: Windows, macOS और Linux के लिए एक मुफ़्त, ओपन-सोर्स FFmpeg GUI। वीडियो कन्वर्ट करें, ऑडियो निकालें, क्लिप ट्रिम करें और फ़ाइलें छोटी करें — सब कुछ आपके कंप्यूटर पर चलता है, कुछ भी बाहर नहीं जाता।
   image:
     src: /images/icon.webp
     alt: EncodeX लोगो
@@ -81,6 +81,20 @@ features:
 
 <img src="/images/home_dashboard.webp" alt="EncodeX की होम स्क्रीन" width="1600" height="861" loading="lazy">
 
+<div class="privacy-band">
+  <h2>आपके वीडियो कभी आपके कंप्यूटर से बाहर नहीं जाते।</h2>
+  <p>EncodeX अंतर्निहित FFmpeg इंजन से आपके मीडिया को स्थानीय रूप से प्रोसेस करता है। कुछ भी अपलोड नहीं होता, कुछ भी ट्रैक नहीं होता और कुछ भी सर्वर पर सेव नहीं होता।</p>
+  <ul class="checklist">
+    <li>✅ कोई क्लाउड अपलोड नहीं</li>
+    <li>✅ खाते की आवश्यकता नहीं</li>
+    <li>✅ कोई सदस्यता नहीं</li>
+    <li>✅ कोई वॉटरमार्क नहीं</li>
+    <li>✅ कोई फ़ाइल आकार सीमा नहीं</li>
+    <li>✅ ऑफ़लाइन काम करता है</li>
+  </ul>
+  <p><a href="/hi/privacy">जानें EncodeX आपकी निजता की रक्षा कैसे करता है →</a></p>
+</div>
+
 ## ये आपके लिए क्या कर सकता है
 
 <div class="card wide">
@@ -149,6 +163,23 @@ EncodeX स्वयंसेवकों की कम्युनिटी स
     <span class="card-emoji">🔄</span>
     <p class="card-head">ख़ुद अपडेट होता है</p>
     <p>नया वर्ज़न आते ही EncodeX अपडेट की पेशकश करता है — आपको सब कुछ दोबारा डाउनलोड नहीं करना पड़ता।</p>
+  </div>
+</div>
+
+## सभी के लिए सरल। डेवलपर्स के लिए शक्तिशाली।
+
+EncodeX की दो पहचान हैं। रोज़ के कामों के लिए **ड्रैग-एंड-ड्रॉप इंटरफ़ेस** इस्तेमाल करें, या स्क्रिप्टिंग और ऑटोमेशन के लिए **हेडलेस मोड** चुनें।
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🖱️</span>
+    <p class="card-head">GUI</p>
+    <p>ड्रैग करें → कॉन्फ़िगर करें → कन्वर्ट करें। एक ही साफ़ विंडो में कन्वर्ट करें, कंप्रेस करें, ट्रिम करें और निकालें — कोई कमांड नहीं, कोई झंझट नहीं।</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⌨️</span>
+    <p class="card-head">CLI</p>
+    <p>स्क्रिप्ट → ऑटोमेट → बैच। वही इंजन, कमांड-लाइन नियंत्रण: <code>encodex convert</code>, <code>encodex batch</code>, <code>encodex info</code> और बहुत कुछ। <a href="/hi/cli">CLI एक्सप्लोर करें →</a></p>
   </div>
 </div>
 
@@ -227,6 +258,30 @@ EncodeX स्वयंसेवकों की कम्युनिटी स
   <div class="card">
     <p class="card-head"><a href="/hi/learn/what-is-ffmpeg">FFmpeg क्या है?</a></p>
     <p>EncodeX के अंदर के इंजन पर एक सरल भाषा में गाइड।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/mp4-to-mkv">MP4 से MKV</a></p>
+    <p>MP4 को MKV में बदलें — बिना गुणवत्ता घटाए, सबटाइटल संरक्षित।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/mp4-to-webm">MP4 से WebM</a></p>
+    <p>वेब के मूल प्रारूप में बदलें — छोटी और तेज़ फ़ाइलें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/codecs/vp9">VP9</a></p>
+    <p>बेहतरीन कंप्रेशन वाला खुला, लाइसेंस-मुक्त कोडेक।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/codecs/prores">ProRes</a></p>
+    <p>फ़िल्म निर्माताओं द्वारा इस्तेमाल किया जाने वाला प्रोफ़ेशनल कोडेक।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/compress/mp4">MP4 कंप्रेस करें</a></p>
+    <p>ईमेल, चैट और अपलोड सीमा के लिए MP4 वीडियो छोटा करें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/extract/mp3-from-video">MP3 निकालें</a></p>
+    <p>किसी भी वीडियो से MP3 संगीत या पॉडकास्ट निकालें।</p>
   </div>
 </div>
 

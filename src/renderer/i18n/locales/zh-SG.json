@@ -39,6 +39,18 @@
     "descBatch": "通过智能队列一次转换多个文件",
     "shortcutsFooter": "按 {{shortcut}} 查看键盘快捷键"
   },
+  "gettingStarted": {
+    "hint": "第一次来？",
+    "title": "开始使用",
+    "body": "选择你想从哪里开始 — 之后你可以从这里做任何事情。",
+    "dismiss": "关闭",
+    "goals": {
+      "convert": "转换视频",
+      "compress": "压缩文件",
+      "extract": "提取音频",
+      "trim": "裁剪片段"
+    }
+  },
   "closeConfirm": {
     "title": "关闭 EncodeX？",
     "message": "有任务正在进行或有未保存的更改。现在关闭将取消它们。",

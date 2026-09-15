@@ -39,6 +39,18 @@
     "descBatch": "Convierte muchos archivos a la vez con una cola inteligente",
     "shortcutsFooter": "Pulsa {{shortcut}} para los atajos de teclado"
   },
+  "gettingStarted": {
+    "hint": "¿Nuevo por aquí?",
+    "title": "Primeros pasos",
+    "body": "Elige por dónde quieres empezar; podrás hacer todo desde aquí más adelante.",
+    "dismiss": "Descartar",
+    "goals": {
+      "convert": "Convertir un video",
+      "compress": "Comprimir un archivo",
+      "extract": "Extraer audio",
+      "trim": "Recortar un clip"
+    }
+  },
   "closeConfirm": {
     "title": "¿Cerrar EncodeX?",
     "message": "Hay trabajos en curso o cambios sin guardar. Si cierras ahora, se cancelarán.",

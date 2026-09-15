@@ -39,6 +39,18 @@
     "descBatch": "スマートなキューで多数のファイルをまとめて変換",
     "shortcutsFooter": "キーボードショートカットには {{shortcut}} を押してください"
   },
+  "gettingStarted": {
+    "hint": "はじめてですか？",
+    "title": "はじめに",
+    "body": "どこから始めるか選んでください。後からここで何でもできます。",
+    "dismiss": "閉じる",
+    "goals": {
+      "convert": "動画を変換",
+      "compress": "ファイルを圧縮",
+      "extract": "音声を抽出",
+      "trim": "クリップをトリミング"
+    }
+  },
   "closeConfirm": {
     "title": "EncodeX を閉じますか?",
     "message": "進行中のジョブまたは保存されていない変更があります。今閉じるとキャンセルされます。",

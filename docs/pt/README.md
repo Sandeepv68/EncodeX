@@ -1,6 +1,12 @@
 <div align="center">
   <img src="../../assets/banner.png" alt="Logotipo do EncodeX" width="900" />
-  <h3>Uma ferramenta multiplataforma de conversão de mídia criada com FFmpeg, React, TypeScript e Electron.</h3>
+  <h3>O poder do FFmpeg. Sem a linha de comando.</h3>
+  <p><strong>EncodeX</strong> — a interface gráfica <strong>FFmpeg</strong> gratuita e de código aberto para Windows, macOS e Linux.</p>
+  <p style="font-size: 18px;">
+    <a href="https://encodex.in/download"><strong>Baixar</strong></a> ·
+    <a href="https://encodex.in">Site</a> ·
+    <a href="https://encodex.in/docs/architecture">Documentação</a>
+  </p>
 </div>
 
 <div align="center">
@@ -40,7 +46,19 @@
 
 ## 👋 Introdução
 
-O EncodeX é uma ferramenta multiplataforma de conversão de mídia que leva todo o poder do FFmpeg para uma interface de desktop moderna e intuitiva. Construído com Electron, React e TypeScript, ele permite converter mídia entre formatos, extrair áudio, cortar vídeos e comprimir imagens — tudo por meio de uma interface limpa e responsiva, com fila em lote, aceleração de hardware, modo CLI e internacionalização completa.
+O EncodeX é a interface gráfica gratuita e de código aberto do FFmpeg que leva todo o seu poder para uma interface de desktop moderna e intuitiva. Ele permite converter mídia entre formatos, extrair áudio, cortar vídeos e comprimir imagens — tudo por meio de uma interface limpa e responsiva, com fila em lote, aceleração de hardware, modo CLI e internacionalização completa.
+
+## Por que o EncodeX?
+
+- ✅ **Gratuito para sempre** — código aberto (MIT), sem tier pago
+- ✅ **100% privado** — seus arquivos nunca saem da sua máquina
+- ✅ **Sem conta, sem cadastro, sem rastreamento**
+- ✅ **Sem marcas d'água, sem limite de tamanho de arquivo, sem anúncios**
+- ✅ **Powered por FFmpeg** — 51 codecs de vídeo, 27 codecs de áudio, 56 formatos de pixel
+- ✅ **Aceleração de hardware** — NVIDIA, Intel, AMD, Apple Silicon para encodes rápidos
+- ✅ **Processamento em lote** — converta pastas inteiras de uma vez
+- ✅ **Multiplataforma** — Windows 10+, macOS 11+, Linux
+- ✅ **35+ idiomas** com suporte a RTL
 
 ## ✨ Recursos
 

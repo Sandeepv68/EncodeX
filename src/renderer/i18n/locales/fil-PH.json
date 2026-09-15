@@ -39,6 +39,18 @@
     "descBatch": "I-convert ang maraming file nang sabay-sabay gamit ang smart queue",
     "shortcutsFooter": "Pindutin ang {{shortcut}} para sa mga keyboard shortcut"
   },
+  "gettingStarted": {
+    "hint": "Bago ka ba rito?",
+    "title": "Mga unang hakbang",
+    "body": "Piliin kung saan mo gustong magsimula — kayang gawin ang lahat mula rito mamaya.",
+    "dismiss": "Isara",
+    "goals": {
+      "convert": "I-convert ang isang video",
+      "compress": "I-compress ang isang file",
+      "extract": "Kuhanin ang audio",
+      "trim": "I-trim ang isang clip"
+    }
+  },
   "closeConfirm": {
     "title": "Isara ang EncodeX?",
     "message": "May mga trabahong kasalukuyang ginagawa o mga pagbabagong hindi pa nai-save. Makukansela ang mga ito kung isasara ngayon.",
