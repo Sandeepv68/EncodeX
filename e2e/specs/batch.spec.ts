@@ -58,6 +58,7 @@ describe.runIf(IS_E2E)('Batch Queue page', () => {
     const { page } = session;
     await mockApi.setSelectFiles(page, ['/media/clip_a.mp4', '/media/clip_b.mp4']);
     await page.getByRole('button', { name: 'Add Files' }).click();
+    await page.getByRole('menuitem', { name: 'Add Files' }).click();
     await page.getByRole('button', { name: 'Add 2 files' }).waitFor({ timeout: 10000 });
     await page.getByRole('button', { name: 'Add 2 files' }).click();
 
