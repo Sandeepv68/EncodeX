@@ -5,7 +5,7 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Tue, 15 Sep 2026 08:41:54 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 15 Sep 2026 15:05:59 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Best Free Video Converter in 2026</title>
@@ -16,6 +16,15 @@
       <category>comparison</category>
       <category>video</category>
       <category>2026</category>
+    </item>
+    <item>
+      <title>EncodeX V1.0.0-beta.3</title>
+      <link>https://encodex.in/blog/releases/1.0.0-beta.3</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/1.0.0-beta.3</guid>
+      <description>Conversion profiles, first-run onboarding, batch folder import, privacy-safe analytics, and 35+ locale coverage expansion.</description>
+      <pubDate>Tue, 15 Sep 2026 00:00:00 GMT</pubDate>
+      <category>release</category>
+      <category>1.0.0-beta.3</category>
     </item>
     <item>
       <title>How to Use FFmpeg Without the Command Line</title>
