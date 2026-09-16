@@ -62,6 +62,7 @@ const defaults = {
   loginCalls: [],
   revealCalls: [],
   closeRequestedSubscribers: 0,
+  termsRejectCalls: 0,
 };
 
 const state = JSON.parse(JSON.stringify(defaults));

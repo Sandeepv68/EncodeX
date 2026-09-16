@@ -21,18 +21,30 @@ export interface AppSession {
 export interface LaunchOptions {
   /** Use the mock preload (Tier A). Defaults to true. */
   mock?: boolean;
+  /**
+   * Terms-of-use gate handling. 'accept' (default): when using the mock preload,
+   * consent is pre-seeded into localStorage so the blocking gate never shows;
+   * 'show': the gate renders on first launch (Tier A mock mode) - use it for the
+   * terms spec. No effect when `mock: false` (the real preload never seeds).
+   */
+  terms?: 'accept' | 'show';
   /** Extra args passed to the Electron executable. */
   args?: string[];
   /** Extra environment variables merged into the child process env. */
   env?: NodeJS.ProcessEnv;
 }
 
-export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
+export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}, terms: 'accept' | 'show' = 'accept'): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = { ...process.env };
   if (mock) {
     env.ENCODEX_TEST_MODE = '1';
   } else {
     delete env.ENCODEX_TEST_MODE;
+  }
+  if (terms === 'show') {
+    env.ENCODEX_TERMS_GATE = 'show';
+  } else {
+    delete env.ENCODEX_TERMS_GATE;
   }
   return { ...env, ...extra };
 }
@@ -48,7 +60,7 @@ export function createUserDataDir(): string {
  * one exposing `window.electronAPI`).
  */
 export async function launchApp(options: LaunchOptions = {}): Promise<AppSession> {
-  const { mock = true, args = [], env = {} } = options;
+  const { mock = true, terms = 'accept', args = [], env = {} } = options;
   ensureBuildExists();
 
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -59,7 +71,7 @@ export async function launchApp(options: LaunchOptions = {}): Promise<AppSession
   const app = await _electron.launch({
     args: [getBuildPaths().mainEntry, `--user-data-dir=${userDataDir}`, ...args],
     cwd: getBuildPaths().root,
-    env: buildEnv(mock, env),
+    env: buildEnv(mock, env, terms),
   });
 
   await app.firstWindow();
@@ -82,6 +94,19 @@ export async function getMainWindow(app: ElectronApplication): Promise<Page> {
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
   throw new Error('Main window (with electronAPI) was not found');
+}
+
+/**
+ * Accepts the Terms & Conditions gate and waits for the modal to close. Used by
+ * real-preload (Tier B) specs, where the gate is never pre-seeded and must be
+ * dismissed before the app UI is usable.
+ * @param {Page} page - The main application window's page.
+ * @returns {Promise<void>} Resolves once the gate is gone.
+ */
+export async function acceptTermsGate(page: Page): Promise<void> {
+  await page.locator('[data-testid="terms-dialog"]').waitFor({ timeout: 15000 });
+  await page.locator('[data-testid="terms-accept"]').click();
+  await page.locator('[data-testid="terms-dialog"]').waitFor({ state: 'hidden', timeout: 10000 });
 }
 
 /** Best-effort close that also force-kills the app process and cleans temp data. */

@@ -10,7 +10,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['e2e/specs/real-convert.spec.ts'],
+    include: ['e2e/specs/real-convert.spec.ts', 'e2e/specs/terms-gate.spec.ts'],
     exclude: ['node_modules', 'dist'],
     env: { E2E: 'true', E2E_REAL: '1', ENCODEX_TEST_MODE: '' },
     testTimeout: 120000,

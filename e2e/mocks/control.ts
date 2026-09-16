@@ -27,6 +27,7 @@ export interface TestSnapshot {
   queueJobs: QueueJob[];
   queueState: { paused: boolean; concurrency: number };
   closeRequestedSubscribers: number;
+  termsRejectCalls: number;
 }
 
 function invoke(page: Page, method: string, args: unknown[]): Promise<unknown> {

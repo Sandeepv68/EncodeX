@@ -122,3 +122,35 @@ Status legend: `[ ]` pending, `[x]` done.
 - `npm run lint`
 - `npm test`
 - `npm run validate:locales`
+
+## Test automation (added)
+
+Beyond the component/unit tests (P9), the gate is covered by integration and
+e2e suites:
+
+### Integration (`npm run test:integration`)
+
+- `src/renderer/stores/__tests__/terms-gate.integration.test.ts` — verifies the
+  consent contract between `termsStore` and `sessionCleanup` in-process under
+  both node (`*.integration.test.ts`) and jsdom (default `*.test.ts` run):
+  first-run gate open, `accept()` record shape, cleanup keeps the whitelisted
+  consent while dropping transient keys, no re-prompting on next launch, version
+  bump re-prompts, malformed record resets, and the reject IPC request.
+
+### E2E (`npm run test:e2e`, `npm run test:e2e:real`)
+
+- `e2e/specs/terms-gate.spec.ts`:
+  - Tier A (mock preload, launched with `terms: 'show'`): gate blocks on first
+    run and survives Escape, keeps the drawer inert until accepted, Accept
+    persists `encodex-terms-accepted` and unlocks navigation, gate stays closed
+    after reload, About opens the read-only viewer (Close only), and Reject
+    records the quit request through the mock bridge.
+  - Tier B (real preload, `E2E_REAL=1`): Reject quits the app process entirely.
+- The mock preload **pre-seeds consent by default** (unless
+  `ENCODEX_TERMS_GATE=show`) so the 10 pre-existing Tier A specs and the
+  Tier B `real-convert.spec.ts` keep working with a fresh user-data-dir;
+  `real-convert.spec.ts` uses the `acceptTermsGate` fixture helper instead.
+- Plumbing: `e2e/fixtures/app.ts` (`terms` launch option + `acceptTermsGate`),
+  `e2e/mocks/preload.js` (seeding + `rejectTerms` recorder),
+  `e2e/mocks/main-store.js`/`control.ts` (`termsRejectCalls` snapshot),
+  `e2e/vitest.e2e.real.config.ts` now includes `terms-gate.spec.ts`.
