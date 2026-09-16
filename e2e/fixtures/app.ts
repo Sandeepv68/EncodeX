@@ -112,7 +112,12 @@ export async function acceptTermsGate(page: Page): Promise<void> {
 /** Best-effort close that also force-kills the app process and cleans temp data. */
 export async function closeApp(app: ElectronApplication, userDataDir?: string): Promise<void> {
   if (!app) return;
-  const pid = app.process().pid;
+  let pid: number | undefined;
+  try {
+    pid = app.process().pid;
+  } catch {
+    // ElectronApplication connection already closed (app exited / crashed)
+  }
   await Promise.race([app.close(), new Promise((resolve) => setTimeout(resolve, 5000))]);
   if (pid) {
     try {

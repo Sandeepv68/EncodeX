@@ -7,6 +7,7 @@ import { useLogStore } from '../stores/logStore';
 import { useToastStore } from '../stores/toastStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
+import { useTermsStore } from '../stores/termsStore';
 import type { LogEntry } from '../../shared/types';
 
 const onLogMessageMock = vi.mocked(window.electronAPI.onLogMessage);
@@ -41,6 +42,7 @@ describe('App', () => {
     useToastStore.setState({ toasts: [] });
     useAudioExtractStore.setState({ isConverting: false });
     useVideoCutStore.getState().setIsCutting(false);
+    useTermsStore.setState({ requiresAcceptance: false, dialogOpen: false });
   });
 
   it('renders the dashboard on the initial route', async () => {
