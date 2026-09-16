@@ -135,11 +135,12 @@ describe.runIf(IS_REAL)('Terms gate reject quits the app (Tier B)', () => {
     await page.locator('[data-testid="terms-reject"]').click();
 
     const isGone = () => {
-      const child = app.process();
-      if (child.exitCode !== null) return true;
       try {
+        const child = app.process();
+        if (child.exitCode !== null) return true;
         return app.windows().length === 0;
       } catch {
+        // ElectronApplication connection closed — app has exited
         return true;
       }
     };
