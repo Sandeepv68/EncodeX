@@ -119,6 +119,7 @@ import {
   LOG_WINDOW_CLOSE_CALLED,
   LOG_WINDOW_CONFIRM_CLOSE_CALLED,
   LOG_ON_WINDOW_CLOSE_REQUESTED,
+  LOG_IPC_TERMS_REJECT,
   LOG_WINDOW_MAXIMIZE_TOGGLE_CALLED,
   LOG_WINDOW_MINIMIZE_CALLED,
   LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED,
@@ -749,6 +750,19 @@ const api = {
   windowCloseConfirmed: () => {
     log.debug(LOG_WINDOW_CONFIRM_CLOSE_CALLED);
     ipcRenderer.send(IPC.WINDOW_CONFIRM_CLOSE);
+  },
+  /**
+   * Asks the main process to quit the application because the user rejected the
+   * Terms & Conditions. Fire-and-forget: logs the call at debug level and sends
+   * `IPC.TERMS_REJECT` ('terms-reject') via `ipcRenderer.send`. The main process
+   * handles it with `app.quit()` directly, bypassing the close-confirmation
+   * round-trip so rejecting always quits regardless of renderer state.
+   *
+   * @returns {void}
+   */
+  rejectTerms: () => {
+    log.debug(LOG_IPC_TERMS_REJECT);
+    ipcRenderer.send(IPC.TERMS_REJECT);
   },
   /**
    * Subscribes to window close requests pushed by the main process over

@@ -659,7 +659,6 @@
     "authorTitle": "Penulis & maklum balas",
     "author": "Penulis",
     "repository": "Repositori",
-
     "contact": "Hubungi",
     "feedback": "Menemui pepijat atau ada cadangan?",
     "reportIssue": "Buka isu di GitHub",
@@ -668,7 +667,17 @@
     "copyright": "Hak cipta © 2026 EncodeX",
     "licenseSummary": "Dikeluarkan di bawah Lesen MIT. Bebas untuk digunakan, disalin, diubah suai, digabung, diterbitkan, diedarkan, dilesenkan semula dan dijual — termasuk secara komersial — dengan syarat notis hak cipta dan notis kebenaran disertakan dalam semua salinan atau bahagian penting perisian. Perisian disediakan \"seadanya\", tanpa sebarang waranti.",
     "acknowledgements": "Dibuat dengan ❤️ untuk sumber terbuka — didorong oleh projek FFmpeg dan komuniti.",
-    "checkForUpdates": "Semak kemas kini"
+    "checkForUpdates": "Semak kemas kini",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "Kemas kini",

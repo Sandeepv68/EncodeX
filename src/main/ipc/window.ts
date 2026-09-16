@@ -18,7 +18,7 @@
  * the window.
  */
 
-import { BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import {
@@ -28,6 +28,7 @@ import {
   LOG_IPC_WINDOW_MAXIMIZE_TOGGLE,
   LOG_IPC_WINDOW_MINIMIZE,
   LOG_IPC_WINDOW_SET_ALWAYS_ON_TOP,
+  LOG_IPC_TERMS_REJECT,
 } from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/window');
@@ -133,6 +134,19 @@ export function registerWindowHandlers(win: BrowserWindow): void {
   ipcMain.on(IPC.WINDOW_SET_ALWAYS_ON_TOP, (_event, flag: boolean) => {
     log.debug(LOG_IPC_WINDOW_SET_ALWAYS_ON_TOP, { flag });
     win.setAlwaysOnTop(Boolean(flag));
+  });
+
+  /**
+   * Handles the IPC.TERMS_REJECT channel ('terms-reject'). Called by the
+   * renderer when the user clicks "I Disagree" in the Terms & Conditions
+   * acceptance gate. Quits the application directly via `app.quit()` so the
+   * rejection is deterministic and independent of any close-confirmation state
+   * or pending work in the renderer.
+   * @returns {void} Nothing is returned.
+   */
+  ipcMain.on(IPC.TERMS_REJECT, () => {
+    log.debug(LOG_IPC_TERMS_REJECT);
+    app.quit();
   });
 
   /**

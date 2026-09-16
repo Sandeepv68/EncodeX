@@ -659,7 +659,6 @@
     "authorTitle": "Författare och feedback",
     "author": "Författare",
     "repository": "Repository",
-
     "contact": "Kontakt",
     "feedback": "Hittade du en bugg eller har du ett förslag?",
     "reportIssue": "Öppna en issue på GitHub",
@@ -668,7 +667,17 @@
     "copyright": "Upphovsrätt © 2026 EncodeX",
     "licenseSummary": "Utgiven under MIT-licensen. Fritt att använda, kopiera, modifiera, slå samman, publicera, distribuera, underlicensiera och sälja — även kommersiellt — förutsatt att upphovsrättsmeddelandet och tillståndsmeddelandet ingår i alla kopior eller väsentliga delar av programvaran. Programvaran tillhandahålls \"i befintligt skick\", utan någon som helst garanti.",
     "acknowledgements": "Gjort med ❤️ för öppen källkod — drivs av FFmpeg-projektet och communityn.",
-    "checkForUpdates": "Sök efter uppdateringar"
+    "checkForUpdates": "Sök efter uppdateringar",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "Uppdatering",

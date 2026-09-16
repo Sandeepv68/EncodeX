@@ -659,7 +659,6 @@
     "authorTitle": "May-akda at feedback",
     "author": "May-akda",
     "repository": "Repository",
-
     "contact": "Makipag-ugnayan",
     "feedback": "Nakahanap ka ng bug o may mungkahi ka?",
     "reportIssue": "Magbukas ng issue sa GitHub",
@@ -668,7 +667,17 @@
     "copyright": "Copyright © 2026 EncodeX",
     "licenseSummary": "Inilabas sa ilalim ng MIT License. Malayang gamitin, kopyahin, baguhin, pagsamahin, i-publish, ipamahagi, i-sublicense, at ibenta — kabilang ang komersyal — basta't kasama ang copyright notice at permission notice sa lahat ng kopya o malaking bahagi ng software. Ang software ay ibinibigay \"as is\", nang walang anumang warranty.",
     "acknowledgements": "Ginawa nang may ❤️ para sa open source — pinaandar ng proyektong FFmpeg at ng komunidad.",
-    "checkForUpdates": "Maghanap ng mga update"
+    "checkForUpdates": "Maghanap ng mga update",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "Update",

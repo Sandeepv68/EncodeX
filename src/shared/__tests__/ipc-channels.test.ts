@@ -36,6 +36,7 @@ describe('IPC channels', () => {
     expect(IPC.PLAYER_AUDIO).toBe('player-audio');
     expect(IPC.PLAYER_ERROR).toBe('player-error');
     expect(IPC.WINDOW_CONFIRM_CLOSE).toBe('window-confirm-close');
+    expect(IPC.TERMS_REJECT).toBe('terms-reject');
   });
 
   it('defines all event channels as unique strings', () => {

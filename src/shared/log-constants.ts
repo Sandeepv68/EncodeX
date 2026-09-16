@@ -425,6 +425,8 @@ export const LOG_IPC_WINDOW_MAXIMIZE_TOGGLE = 'WINDOW_MAXIMIZE_TOGGLE';
 export const LOG_IPC_WINDOW_MINIMIZE = 'WINDOW_MINIMIZE';
 /** @const {string} Logged when the WINDOW_SET_ALWAYS_ON_TOP IPC message is received. */
 export const LOG_IPC_WINDOW_SET_ALWAYS_ON_TOP = 'WINDOW_SET_ALWAYS_ON_TOP';
+/** @const {string} Logged when the TERMS_REJECT IPC message is received. */
+export const LOG_IPC_TERMS_REJECT = 'TERMS_REJECT';
 /** @const {string} Prefix when a queue job completes. */
 export const LOG_JOB_COMPLETED = 'Job completed:';
 /** @const {string} Prefix when a queue job fails. */

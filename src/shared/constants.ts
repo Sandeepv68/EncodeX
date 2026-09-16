@@ -527,6 +527,16 @@ export const DEFAULT_LANGUAGE = 'en-US';
  */
 export const WINDOW_ALWAYS_ON_TOP_STORAGE_KEY = 'encodex-always-on-top';
 
+// --- Terms & Conditions ---
+/**
+ * localStorage key used to persist the accepted Terms & Conditions record
+ * (an object `{ version, acceptedAt }` recording which terms version the user
+ * consented to and when). Part of the session-cleanup preference whitelist so
+ * the consent survives an app close.
+ * @const {string} TERMS_ACCEPTED_STORAGE_KEY
+ */
+export const TERMS_ACCEPTED_STORAGE_KEY = 'encodex-terms-accepted';
+
 /**
  * localStorage key used to persist the launch-at-login preference.
  * @const {string} LAUNCH_AT_LOGIN_STORAGE_KEY

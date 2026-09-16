@@ -33,6 +33,7 @@ import AppDrawer from './components/AppDrawer';
 import TitleBar from './components/TitleBar';
 import ShortcutsHelpDialog from './components/ShortcutsHelpDialog';
 import UpdateDialog from './components/UpdateDialog';
+import TermsDialog from './components/TermsDialog';
 import { useHotkeys } from './hooks/useHotkeys';
 import { useDevScreenshot } from './dev/useDevScreenshot';
 import { SHORTCUTS } from './constants/shortcuts';
@@ -221,6 +222,7 @@ function AppLayout() {
       <CloseConfirmDialog />
       <UpdateDialog />
       <ShortcutsHelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <TermsDialog />
     </AppRoot>
   );
 }

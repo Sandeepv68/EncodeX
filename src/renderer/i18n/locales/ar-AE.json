@@ -659,7 +659,6 @@
     "authorTitle": "المؤلف والملاحظات",
     "author": "المؤلف",
     "repository": "المستودع",
-
     "contact": "جهة الاتصال",
     "feedback": "وجدت خطأً أو لديك اقتراح؟",
     "reportIssue": "افتح مشكلة على GitHub",
@@ -668,7 +667,17 @@
     "copyright": "حقوق النشر © 2026 EncodeX",
     "licenseSummary": "صدر بموجب رخصة MIT. حر في الاستخدام والنسخ والتعديل والدمج والنشر والتوزيع والترخيص الفرعي والبيع — بما في ذلك الاستخدام التجاري — شريطة تضمين إشعار حقوق النشر وإشعار الإذن في جميع النسخ أو الأجزاء الجوهرية من البرنامج. يُقدَّم البرنامج \"كما هو\"، دون أي ضمان من أي نوع.",
     "acknowledgements": "مصنوع بـ ❤️ للمصدر المفتوح — بدعم من مشروع FFmpeg والمجتمع.",
-    "checkForUpdates": "التحقق من التحديثات"
+    "checkForUpdates": "التحقق من التحديثات",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "تحديث",

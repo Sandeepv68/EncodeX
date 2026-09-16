@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import About from '../About';
+import { useTermsStore } from '../../stores/termsStore';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 const AUTHOR_GITHUB_URL = 'https://github.com/Sandeepv68';
@@ -9,6 +10,11 @@ const ISSUES_URL = `${REPOSITORY_URL}/issues`;
 const LICENSE_URL = `${REPOSITORY_URL}/blob/main/LICENSE`;
 
 describe('About', () => {
+  beforeEach(() => {
+    useTermsStore.setState({ dialogOpen: false, mode: 'accept' });
+    vi.clearAllMocks();
+  });
+
   it('has no axe violations', async () => {
     const { container } = render(<About />);
     await assertNoAxeViolations(container);
@@ -79,5 +85,13 @@ describe('About', () => {
   it('renders the acknowledgement caption', () => {
     render(<About />);
     expect(screen.getByText('about.acknowledgements')).toBeInTheDocument();
+  });
+
+  it('offers a Terms & Conditions row that opens the read-only viewer', () => {
+    render(<About />);
+    expect(screen.getByText('about.termsTitle')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('about-read-terms'));
+    expect(useTermsStore.getState().dialogOpen).toBe(true);
+    expect(useTermsStore.getState().mode).toBe('view');
   });
 });

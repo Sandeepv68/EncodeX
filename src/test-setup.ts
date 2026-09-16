@@ -118,6 +118,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     windowMaximizeToggle: vi.fn(),
     windowClose: vi.fn(),
     windowCloseConfirmed: vi.fn(),
+    rejectTerms: vi.fn(),
     onWindowCloseRequested: vi.fn(() => vi.fn()),
     windowSetAlwaysOnTop: vi.fn(),
     setLaunchAtLogin: vi.fn(),
