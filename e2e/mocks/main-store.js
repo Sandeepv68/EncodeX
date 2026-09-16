@@ -33,6 +33,8 @@ function emit(channel, payload) {
 const defaults = {
   selectFileResult: null,
   selectFilesResult: [],
+  selectFolderFilesResult: [],
+  expandPathsResult: [],
   selectOutputResult: null,
   selectDirectoryResult: null,
   getPathForFileResult: '',

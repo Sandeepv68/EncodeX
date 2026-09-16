@@ -21,6 +21,8 @@ const api = {
   getPathForFile: () => state.getPathForFileResult,
   selectFile: () => Promise.resolve(state.selectFileResult),
   selectFiles: () => Promise.resolve(state.selectFilesResult),
+  selectFolderFiles: () => Promise.resolve(state.selectFolderFilesResult),
+  expandPaths: (paths) => Promise.resolve(state.expandPathsResult),
   selectOutput: () => Promise.resolve(state.selectOutputResult),
   selectDirectory: () => Promise.resolve(state.selectDirectoryResult),
 
@@ -207,6 +209,15 @@ const api = {
     },
     setSelectFiles: (v) => {
       state.selectFilesResult = v;
+    },
+    setSelectFolderFiles: (v) => {
+      state.selectFolderFilesResult = v;
+    },
+    setExpandPaths: (v) => {
+      state.expandPathsResult = v;
+    },
+    setPathForFile: (v) => {
+      state.getPathForFileResult = v;
     },
     setSelectOutput: (v) => {
       state.selectOutputResult = v;

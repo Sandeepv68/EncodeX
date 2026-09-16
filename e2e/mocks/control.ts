@@ -43,6 +43,9 @@ function invoke(page: Page, method: string, args: unknown[]): Promise<unknown> {
 export const mockApi = {
   setSelectFile: (page: Page, v: string | null) => invoke(page, 'setSelectFile', [v]),
   setSelectFiles: (page: Page, v: string[]) => invoke(page, 'setSelectFiles', [v]),
+  setSelectFolderFiles: (page: Page, v: string[]) => invoke(page, 'setSelectFolderFiles', [v]),
+  setExpandPaths: (page: Page, v: string[]) => invoke(page, 'setExpandPaths', [v]),
+  setPathForFile: (page: Page, v: string | null) => invoke(page, 'setPathForFile', [v]),
   setSelectOutput: (page: Page, v: string | null) => invoke(page, 'setSelectOutput', [v]),
   setSelectDirectory: (page: Page, v: string | null) => invoke(page, 'setSelectDirectory', [v]),
   setMediaInfo: (page: Page, v: MediaInfo | null) => invoke(page, 'setMediaInfo', [v]),
