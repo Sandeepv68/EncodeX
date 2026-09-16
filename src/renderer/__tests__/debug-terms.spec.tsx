@@ -21,7 +21,9 @@ function dump() {
     storeDialogOpen: useTermsStore.getState().dialogOpen,
     storeMode: useTermsStore.getState().mode,
     modalOpen: !!document.querySelector('.MuiModal-root'),
-    anyAriaHidden: Array.from(document.querySelectorAll('[aria-hidden="true"]')).map((n) => n.tagName + '>' + (n.className || '')).slice(0, 5),
+    anyAriaHidden: Array.from(document.querySelectorAll('[aria-hidden="true"]'))
+      .map((n) => n.tagName + '>' + (n.className || ''))
+      .slice(0, 5),
     bodyStyle: document.body.getAttribute('style'),
   };
 }
