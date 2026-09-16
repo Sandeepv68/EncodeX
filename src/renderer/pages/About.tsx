@@ -14,7 +14,7 @@
  */
 
 import { useTranslation } from 'react-i18next';
-import { Divider, GlobalStyles, Link, Typography } from '@mui/material';
+import { Button, Divider, GlobalStyles, Link, Typography } from '@mui/material';
 import { css } from '@emotion/react';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -32,6 +32,7 @@ import {
   CheckUpdatesButton,
 } from '../styles/About.styles';
 import { useUpdateStore } from '../stores/updateStore';
+import { useTermsStore } from '../stores/termsStore';
 
 /**
  * Translation keys of the feature bullets, reused from the dashboard card
@@ -96,6 +97,7 @@ const CONTACT_EMAIL = 'developer@encodex.in';
 export default function About() {
   const { t } = useTranslation();
   const { openDialog, checkForUpdates } = useUpdateStore();
+  const openTermsViewer = useTermsStore((state) => state.openViewer);
 
   const handleCheckForUpdates = () => {
     openDialog();
@@ -176,6 +178,16 @@ export default function About() {
           {t('about.reportIssue')}
         </Link>
       </Typography>
+      <Divider />
+      <Typography variant="h6" component="h2">
+        {t('about.termsTitle')}
+      </Typography>
+      <AboutMetaRow>
+        <AboutMetaLabel variant="body2">{t('about.terms')}</AboutMetaLabel>
+        <Button variant="outlined" size="small" onClick={openTermsViewer} data-testid="about-read-terms">
+          {t('about.readTerms')}
+        </Button>
+      </AboutMetaRow>
       <Divider />
       <Typography variant="h6" component="h2">
         {t('about.licenseTitle')}

@@ -659,7 +659,6 @@
     "authorTitle": "Allaaserisoq aamma feedback",
     "author": "Allaaserisoq",
     "repository": "Repository",
-
     "contact": "Kontakt",
     "feedback": "Bug-eq takua imaluunniit isumassarsiaqarpit?",
     "reportIssue": "GitHub-mi issue-eq ammaruk",
@@ -668,7 +667,17 @@
     "copyright": "Copyright © 2026 EncodeX",
     "licenseSummary": "MIT-lisenssimiit saqqummiunneqarpoq. Atoruk, kopioruk, allanngoruk, merge-ioruk, publish-ioruk, distribute-ioruk, sublicense-ioruk aamma sell-ioruk — commercial-imullu — copyright-notice-q aamma permission-notice-q software-p copies-iniit annerpaaniit ilaanniit ilanngullugit. Software-q \"as is\"-imik tunitinneqarpoq, warranty-tanngitsumik.",
     "acknowledgements": "Made with ❤️ for open source — powered by the FFmpeg project and the community.",
-    "checkForUpdates": "Uppdateringer niunneq"
+    "checkForUpdates": "Uppdateringer niunneq",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "Oppdatering",

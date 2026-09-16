@@ -659,7 +659,6 @@
     "authorTitle": "Tekijä & palaute",
     "author": "Tekijä",
     "repository": "Säilö",
-
     "contact": "Yhteystiedot",
     "feedback": "Löysitkö virheen tai onko sinulla ehdotus?",
     "reportIssue": "Avaa issue GitHubissa",
@@ -668,7 +667,17 @@
     "copyright": "Tekijänoikeus © 2026 EncodeX",
     "licenseSummary": "Julkaistu MIT-lisenssillä. Vapaasti käytettävissä, kopioitavissa, muokattavissa, yhdistettävissä, julkaistavissa, jaettavissa, alilisensoitavissa ja myytävissä – myös kaupallisesti – edellyttäen, että tekijänoikeusilmoitus ja käyttölupailmoitus sisältyvät kaikkiin kopioihin tai olennaisiin osiin ohjelmistosta. Ohjelmisto toimitetaan \"sellaisenaan\" ilman minkäänlaista takuuta.",
     "acknowledgements": "Tehty ❤️:llä avoimen lähdekoodin puolesta — FFmpeg-projektin ja yhteisön voimin.",
-    "checkForUpdates": "Tarkista päivitykset"
+    "checkForUpdates": "Tarkista päivitykset",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "Päivitys",

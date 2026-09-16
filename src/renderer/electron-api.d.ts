@@ -395,6 +395,14 @@ export interface ElectronAPI {
    */
   windowCloseConfirmed(): void;
   /**
+   * Asks the main process to quit the application because the user rejected the
+   * Terms & Conditions. Fire-and-forget over the `IPC.TERMS_REJECT`
+   * ('terms-reject') channel; the main process handles it with `app.quit()`,
+   * bypassing the close-confirmation round-trip.
+   * @returns {void}
+   */
+  rejectTerms(): void;
+  /**
    * Subscribes to window close requests pushed from the main process over
    * `IPC.WINDOW_CLOSE_REQUESTED` ('window-close-requested'). The main process
    * sends this whenever a close is attempted, asking the renderer to verify

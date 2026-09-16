@@ -659,7 +659,6 @@
     "authorTitle": "लेखक र प्रतिक्रिया",
     "author": "लेखक",
     "repository": "भण्डार",
-
     "contact": "सम्पर्क",
     "feedback": "कुनै बग भेट्टाउनुभयो वा सुझाव छ?",
     "reportIssue": "GitHub मा issue खोल्नुहोस्",
@@ -668,7 +667,17 @@
     "copyright": "प्रतिलिपि अधिकार © 2026 EncodeX",
     "licenseSummary": "MIT इजाजतपत्र अन्तर्गत जारी गरिएको। प्रयोग गर्न, प्रतिलिपि गर्न, परिमार्जन गर्न, मर्ज गर्न, प्रकाशित गर्न, वितरण गर्न, उप-इजाजत दिन र बेच्न स्वतन्त्र — व्यावसायिक रूपमा पनि — प्रतिलिपि अधिकार सूचना र अनुमति सूचना सफ्टवेयरका सबै प्रतिलिपिहरू वा पर्याप्त भागहरूमा समावेश भएकोले। सफ्टवेयर \"जस्ताको तस्तै\" प्रदान गरिएको छ, कुनै प्रकारको वारेन्टी बिना।",
     "acknowledgements": "ओपन सोर्सका लागि ❤️ का साथ बनाइयो — FFmpeg परियोजना र समुदायद्वारा संचालित।",
-    "checkForUpdates": "अपडेट जाँच गर्नुहोस्"
+    "checkForUpdates": "अपडेट जाँच गर्नुहोस्",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "अपडेट",

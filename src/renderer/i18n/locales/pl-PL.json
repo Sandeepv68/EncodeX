@@ -659,7 +659,6 @@
     "authorTitle": "Autor i opinie",
     "author": "Autor",
     "repository": "Repozytorium",
-
     "contact": "Kontakt",
     "feedback": "Znalazłeś błąd lub masz sugestię?",
     "reportIssue": "Otwórz zgłoszenie na GitHub",
@@ -668,7 +667,17 @@
     "copyright": "Prawa autorskie © 2026 EncodeX",
     "licenseSummary": "Opublikowane na licencji MIT. Wolno używać, kopiować, modyfikować, scalać, publikować, rozpowszechniać, sublicencjonować i sprzedawać — także komercyjnie — pod warunkiem dołączenia informacji o prawach autorskich i informacji o zezwoleniu do wszystkich kopii lub istotnych części oprogramowania. Oprogramowanie jest dostarczane \"tak jak jest\", bez jakiejkolwiek gwarancji.",
     "acknowledgements": "Zrobione z ❤️ dla open source — napędzane przez projekt FFmpeg i społeczność.",
-    "checkForUpdates": "Sprawdź aktualizacje"
+    "checkForUpdates": "Sprawdź aktualizacje",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "Aktualizacja",

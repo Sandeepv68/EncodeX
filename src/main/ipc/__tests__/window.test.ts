@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-const { ipcMainMock, getOnHandlers } = vi.hoisted(() => {
+const { ipcMainMock, appMock, getOnHandlers } = vi.hoisted(() => {
   const onHandlers: Record<string, (...args: unknown[]) => void> = {};
   return {
     ipcMainMock: {
@@ -8,11 +8,12 @@ const { ipcMainMock, getOnHandlers } = vi.hoisted(() => {
         onHandlers[channel] = fn;
       }),
     },
+    appMock: { quit: vi.fn() },
     getOnHandlers: () => onHandlers,
   };
 });
 
-vi.mock('electron', () => ({ ipcMain: ipcMainMock, BrowserWindow: class {} }));
+vi.mock('electron', () => ({ ipcMain: ipcMainMock, BrowserWindow: class {}, app: appMock }));
 
 const { registerWindowHandlers } = await import('../window');
 import { IPC } from '../../../shared/ipc-channels';
@@ -49,6 +50,7 @@ describe('registerWindowHandlers', () => {
     expect(ipcMainMock.on).toHaveBeenCalledWith(IPC.WINDOW_MINIMIZE, expect.any(Function));
     expect(ipcMainMock.on).toHaveBeenCalledWith(IPC.WINDOW_MAXIMIZE_TOGGLE, expect.any(Function));
     expect(ipcMainMock.on).toHaveBeenCalledWith(IPC.WINDOW_CLOSE, expect.any(Function));
+    expect(ipcMainMock.on).toHaveBeenCalledWith(IPC.TERMS_REJECT, expect.any(Function));
     expect(win.on).toHaveBeenCalledWith('maximize', expect.any(Function));
     expect(win.on).toHaveBeenCalledWith('unmaximize', expect.any(Function));
   });
@@ -83,6 +85,14 @@ describe('registerWindowHandlers', () => {
     registerWindowHandlers(win as never);
     getOnHandlers()[IPC.WINDOW_CLOSE]();
     expect(win.close).toHaveBeenCalled();
+  });
+
+  it('TERMS_REJECT quits the app directly', () => {
+    const win = createWindowMock();
+    registerWindowHandlers(win as never);
+    getOnHandlers()[IPC.TERMS_REJECT]();
+    expect(appMock.quit).toHaveBeenCalled();
+    expect(win.close).not.toHaveBeenCalled();
   });
 
   it('intercepts the close event and requests confirmation', () => {

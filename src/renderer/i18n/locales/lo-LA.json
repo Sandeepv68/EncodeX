@@ -659,7 +659,6 @@
     "authorTitle": "ຜູ້ຂຽນ ແລະຄຳຕິຊົມ",
     "author": "ຜູ້ຂຽນ",
     "repository": "ບ່ອນເກັບຮັກສາ",
-
     "contact": "ຕິດຕໍ່",
     "feedback": "ພົບບັກ ຫຼືມີຂໍ້ສະເໜີ?",
     "reportIssue": "ເປີດ issue ໃນ GitHub",
@@ -668,7 +667,17 @@
     "copyright": "ລິຂະສິດ © 2026 EncodeX",
     "licenseSummary": "ເຜີຍແຜ່ພາຍໃຕ້ໃບອະນຸຍາດ MIT. ອິດສະລະໃນການໃຊ້, ສຳເນົາ, ດັດແກ້, ລວມ, ເຜີຍແຜ່, ແຈກຈ່າຍ, ໃຫ້ໃບອະນຸຍາດຊ່ວຍ ແລະຂາຍ — ລວມທັງການຄ້າ — ໂດຍທີ່ການແຈ້ງລິຂະສິດ ແລະການແຈ້ງການອະນຸຍາດ ຕ້ອງຖືກລວມໄວ້ໃນສຳເນົາທັງໝົດ ຫຼືສ່ວນສຳຄັນຂອງຊອບແວ. ຊອບແວນີ້ຖືກສະໜອງໃຫ້ \"ຕາມທີ່ເປັນ\", ໂດຍບໍ່ມີການຮັບປະກັນໃດໆ.",
     "acknowledgements": "ສ້າງດ້ວຍ ❤️ ສຳລັບຊອບແວເປີດ — ຂັບເຄື່ອນໂດຍໂຄງການ FFmpeg ແລະຊຸມຊົນ.",
-    "checkForUpdates": "ກວດສອບການອັບເດດ"
+    "checkForUpdates": "ກວດສອບການອັບເດດ",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "ການອັບເດດ",

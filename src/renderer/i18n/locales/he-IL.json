@@ -659,7 +659,6 @@
     "authorTitle": "מחבר ומשוב",
     "author": "מחבר",
     "repository": "מאגר",
-
     "contact": "איש קשר",
     "feedback": "מצאתם באג או שיש לכם הצעה?",
     "reportIssue": "פתחו בעיה ב-GitHub",
@@ -668,7 +667,17 @@
     "copyright": "זכויות יוצרים © 2026 EncodeX",
     "licenseSummary": "שוחרר תחת רישיון MIT. חופשי לשימוש, העתקה, שינוי, מיזוג, פרסום, הפצה, רישוי משנה ומכירה — כולל מסחרית — בתנאי שהודעת זכויות היוצרים והודעת ההרשאה ייכללו בכל העותקים או בחלקים המהותיים של התוכנה. התוכנה מסופקת \"כמות שהיא\", ללא אחריות מכל סוג שהוא.",
     "acknowledgements": "נעשה עם ❤️ לקוד פתוח — מופעל על ידי פרויקט FFmpeg והקהילה.",
-    "checkForUpdates": "בדוק עדכונים"
+    "checkForUpdates": "בדוק עדכונים",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "עדכון",

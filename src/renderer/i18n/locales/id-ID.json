@@ -659,7 +659,6 @@
     "authorTitle": "Penulis & umpan balik",
     "author": "Penulis",
     "repository": "Repositori",
-
     "contact": "Kontak",
     "feedback": "Menemukan bug atau punya saran?",
     "reportIssue": "Buka issue di GitHub",
@@ -668,7 +667,17 @@
     "copyright": "Hak cipta © 2026 EncodeX",
     "licenseSummary": "Dirilis di bawah Lisensi MIT. Bebas digunakan, disalin, dimodifikasi, digabung, diterbitkan, didistribusikan, dilisensikan kembali, dan dijual — termasuk secara komersial — dengan ketentuan pemberitahuan hak cipta dan pemberitahuan izin disertakan dalam semua salinan atau bagian substansial dari perangkat lunak. Perangkat lunak disediakan \"apa adanya\", tanpa jaminan apa pun.",
     "acknowledgements": "Dibuat dengan ❤️ untuk sumber terbuka — didukung oleh proyek FFmpeg dan komunitas.",
-    "checkForUpdates": "Periksa pembaruan"
+    "checkForUpdates": "Periksa pembaruan",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "Pembaruan",

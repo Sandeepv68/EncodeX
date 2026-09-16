@@ -659,7 +659,6 @@
     "authorTitle": "Údar agus aiseolas",
     "author": "Údar",
     "repository": "Stór",
-
     "contact": "Teagmháil",
     "feedback": "Fuair tú fabht nó an bhfuil moladh agat?",
     "reportIssue": "Oscail saincheist ar GitHub",
@@ -668,7 +667,17 @@
     "copyright": "Cóipcheart © 2026 EncodeX",
     "licenseSummary": "Scaoileadh faoin gCeadúnas MIT. Saor le húsáid, cóipeáil, mionathrú, cónascadh, foilsiú, dáileadh, fo-cheadúnú agus díol — lena n-áirítear ar bhonn tráchtála — ar an gcoinníoll go gcuirtear an fógra cóipchirt agus an fógra ceadúnais san áireamh i ngach cóip nó i gcuid shuntasach den bhogearra. Soláthraítear an bogearra \"mar atá\", gan baránta de chineál ar bith.",
     "acknowledgements": "Déanta le ❤️ don fhoinse oscailte — á chumhachtú ag tionscadal FFmpeg agus an pobal.",
-    "checkForUpdates": "Seiceáil le haghaidh nuashonruithe"
+    "checkForUpdates": "Seiceáil le haghaidh nuashonruithe",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "Nuashonrú",

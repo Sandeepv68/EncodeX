@@ -659,7 +659,6 @@
     "authorTitle": "Höfundur og endurgjöf",
     "author": "Höfundur",
     "repository": "Geymsla",
-
     "contact": "Hafa samband",
     "feedback": "Fannstu villu eða hefurðu tillögu?",
     "reportIssue": "Opnaðu mál á GitHub",
@@ -668,7 +667,17 @@
     "copyright": "Höfundarréttur © 2026 EncodeX",
     "licenseSummary": "Gefið út undir MIT-leyfinu. Frjálst að nota, afrita, breyta, sameina, birta, dreifa, undirleyfa og selja — þar með talið í atvinnuskyni — að því tilskildu að höfundarréttartilkynningin og leyfistilkynningin séu innifalin í öllum afritum eða verulegum hlutum hugbúnaðarins. Hugbúnaðurinn er veittur \"eins og hann er\", án nokkurrar ábyrgðar.",
     "acknowledgements": "Búið til með ❤️ fyrir opinn hugbúnað — knúið af FFmpeg-verkefninu og samfélaginu.",
-    "checkForUpdates": "Leita að uppfærslum"
+    "checkForUpdates": "Leita að uppfærslum",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "Uppfærsla",

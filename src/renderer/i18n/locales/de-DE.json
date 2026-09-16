@@ -659,7 +659,6 @@
     "authorTitle": "Autor & Feedback",
     "author": "Autor",
     "repository": "Repository",
-
     "contact": "Kontakt",
     "feedback": "Einen Fehler gefunden oder einen Vorschlag?",
     "reportIssue": "Ein Issue auf GitHub eröffnen",
@@ -668,7 +667,17 @@
     "copyright": "Urheberrecht © 2026 EncodeX",
     "licenseSummary": "Veröffentlicht unter der MIT-Lizenz. Frei zu verwenden, kopieren, modifizieren, zusammenführen, veröffentlichen, verteilen, unterlizenzieren und verkaufen – auch kommerziell – vorausgesetzt, der Urheberrechtshinweis und der Genehmigungshinweis sind in allen Kopien oder wesentlichen Teilen der Software enthalten. Die Software wird \"wie sie ist\" bereitgestellt, ohne jegliche Garantie.",
     "acknowledgements": "Mit ❤️ für Open Source gemacht — ermöglicht durch das FFmpeg-Projekt und die Community.",
-    "checkForUpdates": "Nach Updates suchen"
+    "checkForUpdates": "Nach Updates suchen",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "Update",

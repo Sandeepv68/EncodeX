@@ -139,6 +139,7 @@ describe('preload', () => {
     ['windowMaximizeToggle', IPC.WINDOW_MAXIMIZE_TOGGLE],
     ['windowClose', IPC.WINDOW_CLOSE],
     ['windowCloseConfirmed', IPC.WINDOW_CONFIRM_CLOSE],
+    ['rejectTerms', IPC.TERMS_REJECT],
   ])('%s sends the %s channel', (method, channel) => {
     (api[method] as () => void)();
     expect(ipcRendererMock.send).toHaveBeenCalledWith(channel);

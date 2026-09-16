@@ -68,6 +68,56 @@ describe.runIf(IS_E2E)('Batch Queue page', () => {
     await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'Added 2 file(s) to the queue' }).count()).toBeGreaterThan(0);
   });
 
+  it('adds folder files through the review dialog and shows an enqueued toast', async () => {
+    const { page } = session;
+    await mockApi.setSelectFolderFiles(page, ['/media/folder_a/clip_c.mp4', '/media/folder_a/clip_d.mp4']);
+    await page.getByRole('button', { name: 'Add Files' }).click();
+    await page.getByRole('menuitem', { name: 'Add Folder' }).click();
+    await page.getByRole('button', { name: 'Add 2 files' }).waitFor({ timeout: 10000 });
+    await page.getByRole('button', { name: 'Add 2 files' }).click();
+
+    await expect.poll(() => page.getByRole('button', { name: 'Remove' }).count()).toBe(2);
+    await expect.poll(() => page.getByText('clip_c.mp4').count()).toBeGreaterThan(0);
+    await expect.poll(() => page.getByText('clip_d.mp4').count()).toBeGreaterThan(0);
+    await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'Added 2 file(s) to the queue' }).count()).toBeGreaterThan(0);
+  });
+
+  it('expands and adds dropped folder paths', async () => {
+    const { page } = session;
+    await mockApi.setPathForFile(page, '/media/folder_b');
+    await mockApi.setExpandPaths(page, ['/media/folder_b/clip_e.mp4', '/media/folder_b/clip_f.mp4']);
+
+    const dataTransfer = await page.evaluateHandle(() => {
+      const dt = new DataTransfer();
+      dt.items.add(new File([''], '/media/folder_b'));
+      return dt;
+    });
+    await page.dispatchEvent('body', 'drop', { dataTransfer });
+
+    await expect.poll(() => page.getByRole('button', { name: 'Remove' }).count()).toBe(2);
+    await expect.poll(() => page.getByText('clip_e.mp4').count()).toBeGreaterThan(0);
+    await expect.poll(() => page.getByText('clip_f.mp4').count()).toBeGreaterThan(0);
+    await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'Added 2 file(s) to the queue' }).count()).toBeGreaterThan(0);
+  });
+
+  it('warns when a dropped folder contains no supported media files', async () => {
+    const { page } = session;
+    await mockApi.setPathForFile(page, '/media/empty_folder');
+    await mockApi.setExpandPaths(page, []);
+
+    const dataTransfer = await page.evaluateHandle(() => {
+      const dt = new DataTransfer();
+      dt.items.add(new File([''], '/media/empty_folder'));
+      return dt;
+    });
+    await page.dispatchEvent('body', 'drop', { dataTransfer });
+
+    await expect
+      .poll(() => page.locator('[role="alert"]').filter({ hasText: 'No supported media files found' }).count())
+      .toBeGreaterThan(0);
+    await expect.poll(() => page.getByRole('button', { name: 'Remove' }).count()).toBe(0);
+  });
+
   it('renders jobs pushed through queue-added events', async () => {
     const { page } = session;
     await seedJobs(page, [makeJob({}), makeJob({ id: 'job-2', input: '/media/clip_c.mkv', output: '/media/clip_c_converted.mkv' })]);

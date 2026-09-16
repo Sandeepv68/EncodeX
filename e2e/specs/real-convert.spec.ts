@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { launchApp, closeApp, AppSession } from '../fixtures/app';
+import { launchApp, closeApp, acceptTermsGate, AppSession } from '../fixtures/app';
 import { generateTestMedia } from '../helpers';
 
 const IS_REAL = process.env.E2E_REAL === '1';
@@ -28,6 +28,9 @@ describe.runIf(IS_REAL)('Real conversion (Tier B)', () => {
       mock: false,
       env: { E2E_REAL: '1', E2E_REAL_INPUT_FILE: inputPath, E2E_REAL_OUTPUT_FILE: outputPath },
     });
+    // The real app never pre-seeds consent, so dismiss the Terms & Conditions
+    // gate before driving the UI.
+    await acceptTermsGate(session.page);
     await gotoConvert(session.page);
   }, 120000);
 

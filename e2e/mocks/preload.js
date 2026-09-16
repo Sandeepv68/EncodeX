@@ -16,11 +16,30 @@ const { state, subscribe, emit } = require('./main-store');
 
 const noop = () => {};
 
+// Tier A specs opt out of the terms-of-use gate by default so the existing
+// suites can exercise the app without first accepting consent. The consent is
+// seeded from the compiled shared constants (dist/shared) so it always matches
+// the current TERMS_VERSION; specs that want to exercise the gate launch with
+// `terms: 'show'` (sets ENCODEX_TERMS_GATE=show) and this seeding is skipped.
+if (process.env.ENCODEX_TERMS_GATE !== 'show' && process.env.ENCODEX_TEST_MODE === '1') {
+  try {
+    const { TERMS_ACCEPTED_STORAGE_KEY } = require('../../dist/shared/constants.js');
+    const { TERMS_VERSION } = require('../../dist/shared/terms.js');
+    if (TERMS_ACCEPTED_STORAGE_KEY && TERMS_VERSION && !localStorage.getItem(TERMS_ACCEPTED_STORAGE_KEY)) {
+      localStorage.setItem(TERMS_ACCEPTED_STORAGE_KEY, JSON.stringify({ version: TERMS_VERSION, acceptedAt: new Date().toISOString() }));
+    }
+  } catch {
+    /* consent seeding is best-effort; the gate will simply show */
+  }
+}
+
 const api = {
   // --- File system & dialogs ------------------------------------------------
   getPathForFile: () => state.getPathForFileResult,
   selectFile: () => Promise.resolve(state.selectFileResult),
   selectFiles: () => Promise.resolve(state.selectFilesResult),
+  selectFolderFiles: () => Promise.resolve(state.selectFolderFilesResult),
+  expandPaths: (paths) => Promise.resolve(state.expandPathsResult),
   selectOutput: () => Promise.resolve(state.selectOutputResult),
   selectDirectory: () => Promise.resolve(state.selectDirectoryResult),
 
@@ -153,6 +172,9 @@ const api = {
   windowCloseConfirmed: () => {
     state.windowCalls.push('close-confirmed');
   },
+  rejectTerms: () => {
+    state.termsRejectCalls = (state.termsRejectCalls || 0) + 1;
+  },
   windowSetAlwaysOnTop: (flag) => {
     state.windowCalls.push('always-on-top:' + flag);
   },
@@ -207,6 +229,15 @@ const api = {
     },
     setSelectFiles: (v) => {
       state.selectFilesResult = v;
+    },
+    setSelectFolderFiles: (v) => {
+      state.selectFolderFilesResult = v;
+    },
+    setExpandPaths: (v) => {
+      state.expandPathsResult = v;
+    },
+    setPathForFile: (v) => {
+      state.getPathForFileResult = v;
     },
     setSelectOutput: (v) => {
       state.selectOutputResult = v;
@@ -272,7 +303,7 @@ const api = {
       reset();
     },
     get: () => {
-      const { windowCalls, loginCalls, revealCalls, queueJobs, queueState, closeRequestedSubscribers } = state;
+      const { windowCalls, loginCalls, revealCalls, queueJobs, queueState, closeRequestedSubscribers, termsRejectCalls } = state;
       return {
         windowCalls,
         loginCalls,
@@ -280,6 +311,7 @@ const api = {
         queueJobs,
         queueState,
         closeRequestedSubscribers,
+        termsRejectCalls,
       };
     },
   },

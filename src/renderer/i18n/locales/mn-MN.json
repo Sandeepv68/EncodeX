@@ -659,7 +659,6 @@
     "authorTitle": "Зохиогч ба санал хүсэлт",
     "author": "Зохиогч",
     "repository": "Репозитор",
-
     "contact": "Холбоо барих",
     "feedback": "Алдаа олсон уу эсвэл санал байна уу?",
     "reportIssue": "GitHub дээр issue нээх",
@@ -668,7 +667,17 @@
     "copyright": "Зохиогчийн эрх © 2026 EncodeX",
     "licenseSummary": "MIT лицензийн дагуу гаргасан. Ашиглах, хуулах, өөрчлөх, нэгтгэх, нийтлэх, түгээх, дамжуулан лицензлэх, худалдах — арилжааны зорилгоор ч — зөвшөөрөгдөх бөгөөд зохиогчийн эрхийн мэдэгдэл болон зөвшөөрлийн мэдэгдэл нь программ хангамжийн бүх хуулбар эсвэл чухал хэсэгт орсон байх ёстой. Програм хангамжийг ямар ч баталгаагүйгээр \"байгаа байдлаар нь\" олгодог.",
     "acknowledgements": "Нээлттэй эхийн төлөө ❤️-тэй хийсэн — FFmpeg төсөл болон нийгэмлэгийн дэмжлэгтэйгээр.",
-    "checkForUpdates": "Шинэчлэлт шалгах"
+    "checkForUpdates": "Шинэчлэлт шалгах",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "Шинэчлэлт",

@@ -659,7 +659,6 @@
     "authorTitle": "អ្នកនិពន្ធ និងមតិកែលម្អ",
     "author": "អ្នកនិពន្ធ",
     "repository": "ឃ្លាំង",
-
     "contact": "ទំនាក់ទំនង",
     "feedback": "រកឃើញកំហុស ឬមានការណែនាំ?",
     "reportIssue": "បើកបញ្ហានៅលើ GitHub",
@@ -668,7 +667,17 @@
     "copyright": "រក្សាសិទ្ធិ © 2026 EncodeX",
     "licenseSummary": "ចេញផ្សាយក្រោមអាជ្ញាប័ណ្ណ MIT។ អាចប្រើ ចម្លង កែប្រែ បញ្ចូល ផ្សព្វផ្សាយ ចែកចាយ ផ្តល់អាជ្ញាប័ណ្ណរង និងលក់ — រួមទាំងពាណិជ្ជកម្ម — ដោយផ្តល់ឲ្យការជូនដំណឹងអំពីសិទ្ធិ និងការជូនដំណឹងអំពីការអនុញ្ញាត ត្រូវបានរួមបញ្ចូលនៅក្នុងច្បាប់ចម្លងទាំងអស់ ឬផ្នែកសំខាន់ៗនៃកម្មវិធី។ កម្មវិធីត្រូវបានផ្តល់ជូន \"ដូចដែលមាន\" ដោយគ្មានការធានាណាមួយឡើយ។",
     "acknowledgements": "បង្កើតឡើងដោយ ❤️ សម្រាប់កូដប្រភពបើកចំហ — ដំណើរការដោយគម្រោង FFmpeg និងសហគមន៍។",
-    "checkForUpdates": "ពិនិត្យមើលការអាប់ដេត"
+    "checkForUpdates": "ពិនិត្យមើលការអាប់ដេត",
+    "termsTitle": "Terms & Conditions",
+    "terms": "Terms",
+    "readTerms": "Read Terms"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I Agree",
+    "reject": "I Disagree",
+    "close": "Close",
+    "lastUpdated": "Effective: {{date}}"
   },
   "update": {
     "title": "ការអាប់ដេត",

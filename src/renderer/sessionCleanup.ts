@@ -21,6 +21,7 @@ import {
   WINDOW_ALWAYS_ON_TOP_STORAGE_KEY,
   LAUNCH_AT_LOGIN_STORAGE_KEY,
   QUEUE_CONCURRENCY_STORAGE_KEY,
+  TERMS_ACCEPTED_STORAGE_KEY,
 } from '../shared/constants';
 import { HWACCEL_STORAGE_KEY } from '../shared/hwaccel-settings';
 import { LOG_FAILED_TO_CLEAR_TRANSIENT_STORAGE } from '../shared/log-constants';
@@ -40,13 +41,16 @@ const PREFERENCE_STORAGE_KEYS: ReadonlySet<string> = new Set([
   HWACCEL_STORAGE_KEY,
   LAUNCH_AT_LOGIN_STORAGE_KEY,
   QUEUE_CONCURRENCY_STORAGE_KEY,
+  TERMS_ACCEPTED_STORAGE_KEY,
 ]);
 
 /**
  * Removes every localStorage entry that is not a persisted preference (theme,
  * language, always-on-top, hardware acceleration, launch-at-login, queue
- * concurrency). Drafts and any other non-preference data written during the
- * session are dropped, so the next app launch starts from a clean slate.
+ * concurrency, accepted terms version). Drafts and any other non-preference
+ * data written during the session are dropped, so the next app launch starts
+ * from a clean slate. The accepted terms record must survive so the
+ * terms-of-use gate does not reappear on every launch.
  * Storage failures are logged and swallowed so a broken storage backend can
  * never prevent the window from closing.
  * @returns {void}
