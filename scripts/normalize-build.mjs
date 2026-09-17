@@ -70,9 +70,7 @@ async function main() {
   console.log(`\nDone: moved ${moved} pages, skipped ${skipped}.`);
 
   const rootFiles = readdirSync(distDir).filter((f) => f.endsWith('.html'));
-  console.log(
-    `Root html remaining (should only be index.html + 404.html): ${rootFiles.join(', ') || '(none)'}`,
-  );
+  console.log(`Root html remaining (should only be index.html + 404.html): ${rootFiles.join(', ') || '(none)'}`);
 }
 
 main().catch((err) => {
