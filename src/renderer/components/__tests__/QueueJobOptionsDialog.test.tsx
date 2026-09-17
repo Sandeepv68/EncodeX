@@ -13,6 +13,9 @@ const DEFAULTS: BatchEncodingValues = {
   audioBitrate: '320k',
   quality: '',
   scale: '',
+  rotate: '',
+  flipH: false,
+  flipV: false,
   pixelFormat: 'yuv420p',
 };
 
@@ -27,6 +30,8 @@ function makeJob(overrides: Partial<QueueJob> = {}): QueueJob {
       videoBitrate: '2000k',
       audioBitrate: '192k',
       scale: '1280x720',
+      rotate: '180',
+      flipH: true,
       pixelFormat: 'yuv420p',
       hardwareAcceleration: true,
       hwaccelMode: 'auto',
@@ -75,6 +80,17 @@ describe('QueueJobOptionsDialog', () => {
     renderDialog(makeJob());
     expect(screen.getByText('1280x720')).toBeInTheDocument();
     expect(screen.getByText('yuv420p')).toBeInTheDocument();
+  });
+
+  it('seeds rotation and mirror from the job options and saves them', () => {
+    const { onSave } = renderDialog(makeJob());
+    expect(screen.getByRole('switch', { name: 'convert.flipHorizontal' })).toBeChecked();
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    expect(onSave).toHaveBeenCalledWith(
+      makeJob(),
+      expect.objectContaining({ rotate: '180', flipH: true, flipV: undefined }),
+      'C:/videos/clip_encodex_converted.mp4',
+    );
   });
 
   it('seeds the container from the job output extension', () => {

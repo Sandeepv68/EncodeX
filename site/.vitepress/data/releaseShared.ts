@@ -79,6 +79,27 @@ export function totalDownloads(release: ReleaseData): number {
   return Object.values(release.assets).reduce((sum, asset) => sum + asset.downloads, 0)
 }
 
+export interface RepoStats {
+  stars: number
+  forks: number
+  fetchedAt: string
+}
+
+export async function fetchRepoStats(): Promise<RepoStats> {
+  const res = await fetch(`https://api.github.com/repos/${REPO}`, {
+    headers: apiHeaders(),
+  })
+  if (!res.ok) {
+    throw new Error(`GitHub API responded ${res.status} while fetching repo stats`)
+  }
+  const data = (await res.json()) as { stargazers_count?: number; forks_count?: number }
+  return {
+    stars: Math.max(0, data.stargazers_count ?? 0),
+    forks: Math.max(0, data.forks_count ?? 0),
+    fetchedAt: new Date().toISOString(),
+  }
+}
+
 function apiHeaders(): Record<string, string> {
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github+json',
@@ -132,6 +153,19 @@ export function getReleases(): Promise<ReleaseData[]> {
   return releasesPromise
 }
 
+// Memoized repo stats so every caller shares one API request
+let statsPromise: Promise<RepoStats> | null = null
+
+export function getRepoStats(): Promise<RepoStats> {
+  if (!statsPromise) {
+    statsPromise = fetchRepoStats().catch((error) => {
+      statsPromise = null
+      throw error
+    })
+  }
+  return statsPromise
+}
+
 // Subscriber pattern — components register to be notified when data refreshes
 type ReleaseCallback = (releases: ReleaseData[]) => void
 const listeners = new Set<ReleaseCallback>()
@@ -139,6 +173,14 @@ const listeners = new Set<ReleaseCallback>()
 export function onReleasesUpdated(cb: ReleaseCallback): () => void {
   listeners.add(cb)
   return () => { listeners.delete(cb) }
+}
+
+type StatsCallback = (stats: RepoStats) => void
+const statsListeners = new Set<StatsCallback>()
+
+export function onStatsUpdated(cb: StatsCallback): () => void {
+  statsListeners.add(cb)
+  return () => { statsListeners.delete(cb) }
 }
 
 // Singleton poll — at most one timer across all component instances
@@ -155,6 +197,13 @@ export function startReleasePolling() {
       releasesPromise = null
       const releases = await getReleases()
       for (const cb of listeners) cb(releases)
+      try {
+        statsPromise = null
+        const stats = await getRepoStats()
+        for (const cb of statsListeners) cb(stats)
+      } catch {
+        // transient repo-stats refresh errors are non-fatal
+      }
     } finally {
       polling = false
     }

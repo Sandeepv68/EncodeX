@@ -14,6 +14,14 @@
     >{{ tag }}</a>
     <span v-if="dateText" class="vb-date">· {{ dateText }}</span>
     <span v-if="downloadsText" class="vb-dl">⬇ <span :key="bumpKey" class="dl-count bump">{{ downloadsText }}</span></span>
+    <a v-if="starsText" class="vb-stars" :href="repoUrl" target="_blank" rel="noopener noreferrer" :title="starsText">
+      <svg class="vb-star" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+        <path
+          d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"
+        />
+      </svg>
+      <span class="star-count" :key="starBumpKey">{{ starsNumText }}</span>
+    </a>
     <a class="vb-ext" :href="allReleasesUrl" target="_blank" rel="noopener noreferrer">
       <svg class="vb-gh" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">
         <path
@@ -28,9 +36,10 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData } from 'vitepress'
-import { type ReleaseData, getReleases, onReleasesUpdated, startReleasePolling } from '../../data/releaseShared'
+import { type ReleaseData, type RepoStats, getReleases, getRepoStats, onReleasesUpdated, onStatsUpdated, startReleasePolling } from '../../data/releaseShared'
 import { data as buildData } from '../../data/release.data'
 import { data as buildTotalDownloads } from '../../data/downloads.data'
+import { data as buildStars } from '../../data/stars.data'
 
 const props = defineProps({
   variant: {
@@ -41,13 +50,13 @@ const props = defineProps({
 })
 
 const STRINGS = {
-  en: { latest: 'Latest release', viewOnGitHub: 'View on GitHub', downloadsCount: '{n} downloads' },
-  es: { latest: 'Última versión', viewOnGitHub: 'Ver en GitHub', downloadsCount: '{n} descargas' },
-  fr: { latest: 'Dernière version', viewOnGitHub: 'Voir sur GitHub', downloadsCount: '{n} téléchargements' },
-  de: { latest: 'Neueste Version', viewOnGitHub: 'Auf GitHub ansehen', downloadsCount: '{n} Downloads' },
-  pt: { latest: 'Versão mais recente', viewOnGitHub: 'Ver no GitHub', downloadsCount: '{n} downloads' },
-  zh: { latest: '最新版本', viewOnGitHub: '在 GitHub 上查看', downloadsCount: '{n} 次下载' },
-  hi: { latest: 'नवीनतम संस्करण', viewOnGitHub: 'GitHub पर देखें', downloadsCount: '{n} डाउनलोड' },
+  en: { latest: 'Latest release', viewOnGitHub: 'View on GitHub', downloadsCount: '{n} downloads', starsCount: '{n} stars' },
+  es: { latest: 'Última versión', viewOnGitHub: 'Ver en GitHub', downloadsCount: '{n} descargas', starsCount: '{n} estrellas' },
+  fr: { latest: 'Dernière version', viewOnGitHub: 'Voir sur GitHub', downloadsCount: '{n} téléchargements', starsCount: '{n} étoiles' },
+  de: { latest: 'Neueste Version', viewOnGitHub: 'Auf GitHub ansehen', downloadsCount: '{n} Downloads', starsCount: '{n} Sterne' },
+  pt: { latest: 'Versão mais recente', viewOnGitHub: 'Ver no GitHub', downloadsCount: '{n} downloads', starsCount: '{n} estrelas' },
+  zh: { latest: '最新版本', viewOnGitHub: '在 GitHub 上查看', downloadsCount: '{n} 次下载', starsCount: '{n} 星标' },
+  hi: { latest: 'नवीनतम संस्करण', viewOnGitHub: 'GitHub पर देखें', downloadsCount: '{n} डाउनलोड', starsCount: '{n} स्टार्स' },
 }
 
 const LOCALES = {
@@ -72,10 +81,12 @@ const t = computed(() => {
 const localeTag = computed(() => LOCALES[lang.value] || 'en')
 
 const allReleasesUrl = 'https://github.com/Sandeepv68/EncodeX/releases'
+const repoUrl = 'https://github.com/Sandeepv68/EncodeX'
 
 // Build-time snapshot first; refreshed live on mount (shared requests)
 const release = ref(buildData)
 const totalDownloads = ref(buildTotalDownloads ?? 0)
+const stars = ref(buildStars?.stars ?? 0)
 
 function applyReleases(releases: ReleaseData[]) {
   if (releases.length > 0) {
@@ -88,9 +99,20 @@ function applyReleases(releases: ReleaseData[]) {
   }
 }
 
+function applyStats(stats: RepoStats) {
+  if (stats.stars > 0) {
+    stars.value = stats.stars
+  }
+}
+
 onMounted(async () => {
   try {
     applyReleases(await getReleases())
+  } catch {
+    // keep build-time snapshot on transient errors
+  }
+  try {
+    applyStats(await getRepoStats())
   } catch {
     // keep build-time snapshot on transient errors
   }
@@ -98,6 +120,7 @@ onMounted(async () => {
 })
 
 onUnmounted(onReleasesUpdated(applyReleases))
+onUnmounted(onStatsUpdated(applyStats))
 
 const tag = computed(() => release.value?.tag || '')
 const url = computed(() => release.value?.htmlUrl || allReleasesUrl)
@@ -116,25 +139,33 @@ const dateText = computed(() => {
   }
 })
 
-// Animated download counter
+// Animated counters (downloads + stars)
 const animatedCount = ref(buildTotalDownloads ?? 0)
 const bumpKey = ref(0)
+const starAnimatedCount = ref(buildStars?.stars ?? 0)
+const starBumpKey = ref(0)
 let animationFrame: number | null = null
 
 function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3)
 }
 
-function animateValue(from: number, to: number, duration = 600) {
+function animateValue(
+  target: { value: number },
+  bump: { value: number },
+  from: number,
+  to: number,
+  duration = 600,
+) {
   if (animationFrame !== null) cancelAnimationFrame(animationFrame)
   const start = performance.now()
-  bumpKey.value++
+  bump.value++
 
   function tick(now: number) {
     const elapsed = now - start
     const progress = Math.min(elapsed / duration, 1)
     const eased = easeOutCubic(progress)
-    animatedCount.value = Math.round(from + (to - from) * eased)
+    target.value = Math.round(from + (to - from) * eased)
 
     if (progress < 1) {
       animationFrame = requestAnimationFrame(tick)
@@ -148,9 +179,17 @@ function animateValue(from: number, to: number, duration = 600) {
 
 watch(totalDownloads, (newVal, oldVal) => {
   if (newVal != null && newVal > 0 && oldVal != null) {
-    animateValue(oldVal, newVal)
+    animateValue(animatedCount, bumpKey, oldVal, newVal)
   } else if (newVal != null && newVal > 0) {
     animatedCount.value = newVal
+  }
+})
+
+watch(stars, (newVal, oldVal) => {
+  if (newVal != null && newVal > 0 && oldVal != null) {
+    animateValue(starAnimatedCount, starBumpKey, oldVal, newVal)
+  } else if (newVal != null && newVal > 0) {
+    starAnimatedCount.value = newVal
   }
 })
 
@@ -164,6 +203,29 @@ const downloadsText = computed(() => {
     )
   } catch {
     return t.value.downloadsCount.replace('{n}', String(animatedCount.value))
+  }
+})
+
+// Star count with localized title for the tooltip
+const starsText = computed(() => {
+  if (!starAnimatedCount.value || starAnimatedCount.value <= 0) return ''
+  try {
+    return t.value.starsCount.replace(
+      '{n}',
+      new Intl.NumberFormat(localeTag.value).format(starAnimatedCount.value),
+    )
+  } catch {
+    return t.value.starsCount.replace('{n}', String(starAnimatedCount.value))
+  }
+})
+
+// Bare formatted number shown next to the star icon
+const starsNumText = computed(() => {
+  if (!starAnimatedCount.value || starAnimatedCount.value <= 0) return ''
+  try {
+    return new Intl.NumberFormat(localeTag.value).format(starAnimatedCount.value)
+  } catch {
+    return String(starAnimatedCount.value)
   }
 })
 
@@ -246,6 +308,38 @@ onUnmounted(() => {
 }
 
 .vb-dl :deep(.dl-count.bump) {
+  animation: count-bump 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.vb-stars {
+  margin-left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--vp-c-bg-alt);
+  border: 1px solid var(--vp-c-divider);
+  color: var(--vp-c-text-2);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.vb-stars:hover,
+.vb-stars:focus-visible {
+  color: #e3b341;
+  border-color: #e3b341;
+}
+
+.vb-star {
+  color: #e3b341;
+}
+
+.vb-stars :deep(.star-count) {
+  display: inline-block;
   animation: count-bump 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 

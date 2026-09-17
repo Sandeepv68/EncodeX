@@ -19,6 +19,7 @@ import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/tra
 import { suspendProcess, resumeProcess } from '../process-utils';
 import { mapFfprobeData } from './ffprobe-mapper';
 import { getHwAccelArgs } from './hwaccel';
+import { buildRotationFilters, metadataRotationValue } from './ffmpeg-utils';
 import { cancelledError } from '../../shared/errors';
 import {
   LOG_ARROW,
@@ -46,6 +47,9 @@ import {
   LOG_PIXEL_FORMAT,
   LOG_QSCALE,
   LOG_RESUMING_FFMPEG_PROCESS,
+  LOG_ROTATION,
+  LOG_ROTATION_COPY_UNSUPPORTED,
+  LOG_ROTATION_METADATA,
   LOG_SCALE,
   LOG_SCALE_KEEP_ASPECT_RATIO,
   LOG_START_TIME,
@@ -180,6 +184,13 @@ export class FfmpegCore implements ITranscoder {
     if (options.copy) {
       log.debug(LOG_USING_STREAM_COPY_MODE);
       cmd.outputOptions(FFMPEG_FLAGS.COPY, FFMPEG_FLAGS.COPY_VALUE);
+      const rotation = metadataRotationValue(options, output);
+      if (rotation) {
+        log.debug(LOG_ROTATION_METADATA, rotation);
+        cmd.outputOptions(FFMPEG_FLAGS.METADATA_ROTATE, `rotate=${rotation}`);
+      } else if (options.rotate || options.flipH || options.flipV) {
+        log.warn(LOG_ROTATION_COPY_UNSUPPORTED);
+      }
     } else {
       if (options.videoCodec) {
         log.debug(LOG_VIDEO_CODEC, options.videoCodec);
@@ -201,7 +212,22 @@ export class FfmpegCore implements ITranscoder {
         log.debug(LOG_QSCALE, options.qscale);
         cmd.outputOptions(`${FFMPEG_FLAGS.QSCALE} ${options.qscale}`);
       }
-      if (options.scale) {
+      const rotationFilters = buildRotationFilters(options);
+      if (rotationFilters.length > 0) {
+        // fluent-ffmpeg emits videoFilters BEFORE sizeFilters in one -filter:v
+        // chain, so scale must be part of the same chain to stay scale-first.
+        const filters: string[] = [];
+        if (options.scale) {
+          filters.push(
+            options.keepAspectRatio
+              ? `${FFMPEG_FLAGS.SCALE}${options.scale.replace(/x.*$/, ':-2')}`
+              : `${FFMPEG_FLAGS.SCALE}${options.scale}`,
+          );
+        }
+        filters.push(...rotationFilters);
+        cmd.videoFilters(filters.join(','));
+        if (options.rotate) log.debug(LOG_ROTATION, options.rotate);
+      } else if (options.scale) {
         if (options.keepAspectRatio) {
           log.debug(LOG_SCALE_KEEP_ASPECT_RATIO, options.scale);
           cmd.videoFilters(`${FFMPEG_FLAGS.SCALE}${options.scale.replace(/x.*$/, ':-2')}`);

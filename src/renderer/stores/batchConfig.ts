@@ -13,6 +13,7 @@ import { Logger } from '../../shared/logger';
 import { BATCH_CONFIG_STORAGE_KEY } from '../../shared/constants';
 import { LOG_FAILED_TO_PERSIST_BATCH_CONFIG, LOG_FAILED_TO_READ_STORED_BATCH_CONFIG } from '../../shared/log-constants';
 import { AUDIO_CODECS, BATCH_OPERATIONS, VIDEO_CODECS } from '../../shared/media-options';
+import { ROTATION_VALUES } from '../../shared/transcoder-constants';
 
 /**
  * The persisted batch encoding configuration snapshot.
@@ -25,6 +26,9 @@ import { AUDIO_CODECS, BATCH_OPERATIONS, VIDEO_CODECS } from '../../shared/media
  * @property {string} audioBitrate - Target audio bitrate ('' = auto).
  * @property {string} quality - Image compression quality 1-31 ('' = auto).
  * @property {string} scale - Output resolution ('' = original).
+ * @property {string} rotate - Output rotation angle ('' | '90' | '180' | '270').
+ * @property {boolean} flipH - Whether to mirror the output horizontally.
+ * @property {boolean} flipV - Whether to mirror the output vertically.
  * @property {string} pixelFormat - Output pixel format.
  * @property {string} outputDir - Optional output folder for new jobs; '' means
  *   outputs are written next to their source files.
@@ -40,6 +44,9 @@ export interface BatchConfig {
   audioBitrate: string;
   quality: string;
   scale: string;
+  rotate: string;
+  flipH: boolean;
+  flipV: boolean;
   pixelFormat: string;
   outputDir: string;
   overwrite: boolean;
@@ -59,6 +66,9 @@ export const DEFAULT_BATCH_CONFIG: BatchConfig = {
   audioBitrate: '',
   quality: '',
   scale: '',
+  rotate: '',
+  flipH: false,
+  flipV: false,
   pixelFormat: 'yuv420p',
   outputDir: '',
   overwrite: false,
@@ -97,6 +107,12 @@ export function readStoredBatchConfig(): BatchConfig {
         audioBitrate: isString(parsed.audioBitrate) ? parsed.audioBitrate : DEFAULT_BATCH_CONFIG.audioBitrate,
         quality: isString(parsed.quality) ? parsed.quality : DEFAULT_BATCH_CONFIG.quality,
         scale: isString(parsed.scale) ? parsed.scale : DEFAULT_BATCH_CONFIG.scale,
+        rotate:
+          isString(parsed.rotate) && (ROTATION_VALUES as readonly string[]).includes(parsed.rotate)
+            ? parsed.rotate
+            : DEFAULT_BATCH_CONFIG.rotate,
+        flipH: isBoolean(parsed.flipH) ? parsed.flipH : DEFAULT_BATCH_CONFIG.flipH,
+        flipV: isBoolean(parsed.flipV) ? parsed.flipV : DEFAULT_BATCH_CONFIG.flipV,
         pixelFormat: isString(parsed.pixelFormat) ? parsed.pixelFormat : DEFAULT_BATCH_CONFIG.pixelFormat,
         outputDir: isString(parsed.outputDir) ? parsed.outputDir : DEFAULT_BATCH_CONFIG.outputDir,
         overwrite: isBoolean(parsed.overwrite) ? parsed.overwrite : DEFAULT_BATCH_CONFIG.overwrite,

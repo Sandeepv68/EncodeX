@@ -46,6 +46,9 @@ import {
   LOG_SET_OUTPUT_FILE,
   LOG_SET_PIXEL_FORMAT,
   LOG_SET_QSCALE,
+  LOG_SET_ROTATE,
+  LOG_SET_FLIP_H,
+  LOG_SET_FLIP_V,
   LOG_SET_SCALE,
   LOG_SET_TRANSCODER,
   LOG_SET_VIDEO_BITRATE,
@@ -73,6 +76,9 @@ const log = new Logger('renderer/stores/conversionStore');
  * @property {string} audioBitrate - CONVERSION_DEFAULTS.AUDIO_BITRATE ('192k').
  * @property {number} qscale - CONVERSION_DEFAULTS.QSCALE (23).
  * @property {string} scale - CONVERSION_DEFAULTS.SCALE ('1920x1080').
+ * @property {string} rotate - No rotation (<code>''</code>).
+ * @property {boolean} flipH - No horizontal mirroring.
+ * @property {boolean} flipV - No vertical mirroring.
  * @property {string} pixelFormat - CONVERSION_DEFAULTS.PIXEL_FORMAT ('yuv420p').
  * @property {boolean} copyMode - Copy mode off.
  * @property {string} transcoder - TRANSCODER_TYPES[0] ('FFMPEG').
@@ -92,6 +98,9 @@ const INITIAL_STATE = {
   audioBitrate: CONVERSION_DEFAULTS.AUDIO_BITRATE,
   qscale: CONVERSION_DEFAULTS.QSCALE,
   scale: CONVERSION_DEFAULTS.SCALE,
+  rotate: '',
+  flipH: false,
+  flipV: false,
   pixelFormat: CONVERSION_DEFAULTS.PIXEL_FORMAT,
   copyMode: false,
   transcoder: TRANSCODER_TYPES[0],
@@ -184,6 +193,30 @@ export const useConversionStore = create<ConversionState>((set) => ({
   setScale: (s) => {
     log.debug(LOG_SET_SCALE, s);
     set({ scale: s, isDirty: true });
+  },
+  /**
+   * Sets the output rotation angle and marks the form dirty.
+   * @param {string} a - Rotation value ('' | '90' | '180' | '270').
+   */
+  setRotate: (a) => {
+    log.debug(LOG_SET_ROTATE, a);
+    set({ rotate: a, isDirty: true });
+  },
+  /**
+   * Toggles horizontal mirroring and marks the form dirty.
+   * @param {boolean} v - True to mirror horizontally.
+   */
+  setFlipH: (v) => {
+    log.debug(LOG_SET_FLIP_H, v);
+    set({ flipH: v, isDirty: true });
+  },
+  /**
+   * Toggles vertical mirroring and marks the form dirty.
+   * @param {boolean} v - True to mirror vertically.
+   */
+  setFlipV: (v) => {
+    log.debug(LOG_SET_FLIP_V, v);
+    set({ flipV: v, isDirty: true });
   },
   /**
    * Sets the output pixel format and marks the form dirty.

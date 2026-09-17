@@ -16,6 +16,9 @@ const VALUES: BatchEncodingValues = {
   audioBitrate: '192k',
   quality: '20',
   scale: '1280x720',
+  rotate: '90',
+  flipH: true,
+  flipV: false,
   pixelFormat: 'yuv420p',
 };
 
@@ -66,6 +69,9 @@ describe('buildBatchOptions', () => {
       audioBitrate: '192k',
       qscale: undefined,
       scale: '1280x720',
+      rotate: '90',
+      flipH: true,
+      flipV: undefined,
       pixelFormat: 'yuv420p',
       hardwareAcceleration: true,
       hwaccelMode: 'auto',
@@ -80,13 +86,16 @@ describe('buildBatchOptions', () => {
       audioBitrate: '192k',
       qscale: undefined,
       scale: undefined,
+      rotate: undefined,
+      flipH: undefined,
+      flipV: undefined,
       pixelFormat: undefined,
       hardwareAcceleration: true,
       hwaccelMode: 'auto',
     });
   });
 
-  it('builds compress_image options with qscale and scale only', () => {
+  it('builds compress_image options with qscale, scale, and rotation', () => {
     expect(buildBatchOptions('compress_image', VALUES, HW)).toEqual({
       videoCodec: undefined,
       audioCodec: undefined,
@@ -94,18 +103,22 @@ describe('buildBatchOptions', () => {
       audioBitrate: undefined,
       qscale: 20,
       scale: '1280x720',
+      rotate: '90',
+      flipH: true,
+      flipV: undefined,
       pixelFormat: undefined,
       hardwareAcceleration: true,
       hwaccelMode: 'auto',
     });
   });
 
-  it('drops empty bitrates, quality, and scale', () => {
-    const values: BatchEncodingValues = { ...VALUES, videoBitrate: '', audioBitrate: '', quality: '', scale: '' };
+  it('drops empty bitrates, quality, scale, and rotation', () => {
+    const values: BatchEncodingValues = { ...VALUES, videoBitrate: '', audioBitrate: '', quality: '', scale: '', rotate: '' };
     expect(buildBatchOptions('transcode', values, HW).videoBitrate).toBeUndefined();
     expect(buildBatchOptions('transcode', values, HW).audioBitrate).toBeUndefined();
     expect(buildBatchOptions('compress_image', values, HW).qscale).toBeUndefined();
     expect(buildBatchOptions('compress_image', values, HW).scale).toBeUndefined();
+    expect(buildBatchOptions('transcode', values, HW).rotate).toBeUndefined();
   });
 
   it('reflects disabled hardware acceleration', () => {

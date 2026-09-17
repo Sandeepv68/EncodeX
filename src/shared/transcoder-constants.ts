@@ -53,6 +53,8 @@ export const TRANSCODER_LABELS: Record<TranscoderType, string> = {
  * @property {string} OUTPUT_PIPE - Output target meaning stdout (pipe) ('-').
  * @property {string} REALTIME - Flag to read input at native rate (-re).
  * @property {string} COPYTS - Flag to copy timestamps (-copyts).
+ * @property {string} METADATA_ROTATE - Flag to write rotation metadata on the
+ *   video stream (-metadata:s:v).
  */
 export const FFMPEG_FLAGS = {
   COPY: '-c',
@@ -81,6 +83,44 @@ export const FFMPEG_FLAGS = {
   OUTPUT_PIPE: '-',
   REALTIME: '-re',
   COPYTS: '-copyts',
+  METADATA_ROTATE: '-metadata:s:v',
+} as const;
+
+/**
+ * Output containers whose muxers honor writeable `rotate` metadata, enabling
+ * lossless (stream-copy) rotation. Containers outside this list (WebM, FLV,
+ * GIF, and every image output) can only be rotated by re-encoding.
+ * @const {readonly string[]} METADATA_ROTATION_CONTAINERS
+ */
+export const METADATA_ROTATION_CONTAINERS = ['mp4', 'mov', 'mkv'] as const;
+
+/**
+ * Returns whether the given output extension supports lossless rotation
+ * metadata. The extension is compared case-insensitively without a leading dot.
+ * @param {string} ext - The output file extension (e.g. 'MP4', '.mov').
+ * @returns {boolean} True when the container can store a rotate tag.
+ */
+export function isMetadataRotationContainer(ext: string): boolean {
+  const normalized = ext.replace(/^\./, '').toLowerCase();
+  return (METADATA_ROTATION_CONTAINERS as readonly string[]).includes(normalized);
+}
+
+/**
+ * Rotation angle values offered by the conversion UI. An empty string means no
+ * rotation and matches the store's default.
+ * @const {readonly string[]} ROTATION_VALUES
+ */
+export const ROTATION_VALUES = ['', '90', '180', '270'] as const;
+
+/**
+ * Maps the canonical rotation values to the value written via
+ * `-metadata:s:v rotate=<value>` in stream-copy mode.
+ * @const {Record<'90'|'180'|'270', string>} ROTATE_DEGREES
+ */
+export const ROTATE_DEGREES: Record<'90' | '180' | '270', string> = {
+  '90': '90',
+  '180': '180',
+  '270': '270',
 } as const;
 
 /**
