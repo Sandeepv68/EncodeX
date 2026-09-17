@@ -18,6 +18,7 @@ Que vous ayez besoin d'un **convertisseur vidéo de bureau**, de quelque chose d
 - Tout en MP4 pour une compatibilité maximale
 - Modifiez la **résolution, le taux de trames et le débit** pour une lecture parfaite
 - Utilisez l'**accélération matérielle** (NVENC, QSV, AMF, VAAPI, VideoToolbox) pour la vitesse
+- **Pivotez et retournez les vidéos** – corrigez les clips de travers sans perte (MP4, MOV, MKV) ou avec un ré-encodage rapide
 
 ### Installez une fois, convertissez hors ligne, sans limites
 

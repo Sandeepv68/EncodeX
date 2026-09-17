@@ -28,6 +28,7 @@ Si cela vous semble être une langue étrangère, vous n'êtes pas seul. Une **i
 - **Compresser des vidéos** pour réduire la taille du fichier sans gâcher la qualité
 - **Couper des clips** visuellement — glissez deux poignées sur une timeline, c'est fait
 - **Extraire l'audio** d'une vidéo et l'enregistrer en MP3
+- **Pivotez et retournez les vidéos** – corrigez les clips de travers, sans perte pour MP4/MOV/MKV
 - **Traiter par lots** des dossiers entiers de fichiers en une fois
 
 ## Ultra-rapide : accélération matérielle intégrée

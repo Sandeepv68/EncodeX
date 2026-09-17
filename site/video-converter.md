@@ -18,6 +18,7 @@ Whether you need a **desktop video converter**, something fast for a single file
 - Anything to MP4 for maximum compatibility
 - Change the **resolution, frame rate, and bitrate** for flawless playback
 - Use **hardware acceleration** (NVENC, QSV, AMF, VAAPI, VideoToolbox) for speed
+- **Rotate and mirror videos** — fix sideways clips losslessly (MP4, MOV, MKV) or with a quick re-encode
 
 ### Install Once, Convert Offline, No Limits
 

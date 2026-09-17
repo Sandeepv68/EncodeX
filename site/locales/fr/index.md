@@ -35,6 +35,9 @@ features:
   - icon: "\u26a1"
     title: Rapide même avec les gros fichiers
     details: EncodeX exploite la puissance de votre carte graphique pour convertir bien plus vite. Sans aucun réglage.
+  - icon: "\ud83c\udf00"
+    title: Faites pivoter les vidéos et corrigez les clips de travers
+    details: Filmé à l'envers ? Pivotez des clips de 90°, 180° ou 270° et retournez-les — sans perte de qualité en conservant MP4/MOV/MKV.
 
 ---
 
@@ -115,6 +118,11 @@ Un écran d'accueil épuré, chaque outil à un clic. Si vous savez utiliser un 
 <div class="card wide">
   <h3>🖼️ Allégez vos photos</h3>
   <p>Réduisez vos photos pour qu'elles s'envoient et se chargent plus vite et prennent moins de place — avec un aperçu en direct du résultat avant d'enregistrer.</p>
+</div>
+
+<div class="card wide">
+  <h3>🌀 Faites pivoter les vidéos et corrigez les clips de travers</h3>
+  <p>Filmé à l'envers ? Faites pivoter vidéos et photos de 90°, 180° ou 270° dans le sens horaire ou retournez-les en un clic. En conservant le même format MP4/MOV/MKV, la rotation est enregistrée sans perte, sans ré-encodage.</p>
 </div>
 
 <div class="card wide">

@@ -53,6 +53,14 @@ Fotos grandes são ótimas... até precisar enviar. O EncodeX reduz o tamanho pa
 
 Formatos comuns suportados: JPG, PNG, WebP, GIF, BMP, TIFF e mais. Também dá para ver as informações escondidas de cada foto (ajustes da câmera, data etc.).
 
+## Girar vídeos e corrigir clipes tortos
+
+<img src="/images/convert.webp" alt="Rotação e espelhamento" width="1600" height="1057" loading="lazy">
+
+Gravou um vídeo com o celular na posição errada? O EncodeX gira qualquer vídeo ou foto em 90°, 180° ou 270° no sentido horário e espelha horizontal ou verticalmente — clipes tortos, selfies invertidas ou vídeo vertical que você quer em paisagem são corrigidos com um clique.
+
+Se mantiver o mesmo formato MP4, MOV ou MKV, a rotação é salva como metadados sem perda — sem recodificar e sem perder qualidade. Qualquer outro formato (ou um espelhamento) é recodificado, e tudo também funciona na fila em lote.
+
 ## Converter muitos arquivos de uma vez
 
 <img src="/images/batch_process.webp" alt="Fila em lote" width="1600" height="1360" loading="lazy">

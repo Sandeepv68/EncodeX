@@ -6,6 +6,10 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below).
 
+## 🌀 Media Rotation & Mirroring
+
+Rotate videos and images by 90°, 180°, or 270° clockwise and mirror them (horizontal/vertical flip) from the Convert page and the Batch Queue — including transcode and compress-image jobs and the per-job options dialog. Rotation uses FFmpeg's `transpose` filter (`transpose=1` / `transpose=2,transpose=2` / `transpose=2`) combined with `hflip`/`vflip` into a single `-vf` filter chain alongside `scale`; mirrors always re-encode. In stream-copy mode, rotation is stored losslessly as display metadata (`-metadata:s:v rotate=N`) for MP4/MOV/MKV outputs — no decode, no re-encode, no quality loss.
+
 ## ⚡ Hardware Acceleration
 
 Hardware-accelerated encoding with auto-detection of available encoder families. Supports NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, and Microsoft Media Foundation encoders. Acceleration can be toggled, with a mode selector — `auto` adds the matching FFmpeg `-hwaccel` flags for the selected hardware encoder family, `encode` relies on the encoder's own acceleration — and an encoder-type filter (`auto` / `hardware` / `software`) that narrows the video codec picker to all, GPU-only, or CPU-only encoders.

@@ -18,6 +18,7 @@ Ob Sie einen **Desktop-Videokonverter**, etwas Schnelles für eine einzelne Date
 - Alles zu MP4 für maximale Kompatibilität
 - **Auflösung, Bildrate und Bitrate** ändern für perfekte Wiedergabe
 - **Hardwarebeschleunigung** nutzen (NVENC, QSV, AMF, VAAPI, VideoToolbox) für Geschwindigkeit
+- **Videos drehen und spiegeln** – seitlich liegende Clips verlustfrei (MP4, MOV, MKV) oder mit schneller Neukodierung korrigieren
 
 ### Einmal installieren, offline konvertieren, ohne Limits
 

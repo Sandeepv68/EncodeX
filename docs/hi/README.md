@@ -63,6 +63,7 @@ EncodeX मुफ़्त, ओपन-सोर्स FFmpeg GUI है जो F
 ## ✨ विशेषताएँ
 
 - **🔄 मीडिया रूपांतरण** — 51 video codecs, 27 audio codecs, 56 pixel formats जिनमें codec/bitrate/scale/quality नियंत्रण हैं
+- **🌀 रोटेशन और मिरर** — वीडियो और छवियों को 90°, 180° या 270° दक्षिणावर्त घुमाएँ और उन्हें क्षैतिज या लंबवत फ़्लिप करें; MP4/MOV/MKV स्ट्रीम-कॉपी में रोटेशन बिना क्वालिटी लॉस के मेटाडेटा के रूप में सहेजा जाता है
 - **🎛️ रूपांतरण प्रोफ़ाइल** — 8 श्रेणियों (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS आदि) में 140+ पूर्व-कॉन्फ़िगर किए गए प्रीसेट, कस्टम प्रोफ़ाइल निर्माण और हाल ही में उपयोग की गई प्रोफ़ाइलों की ट्रैकिंग के साथ
 - **⚡ हार्डवेयर त्वरण** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation
 - **✂️ वीडियो कटिंग** — एक built-in player (rawvideo + PCM pipes, Canvas + Web Audio) के साथ frame-accurate trimming और zoomable timeline (waveform + thumbnail montage)

@@ -28,6 +28,7 @@ Se isso parece uma língua estrangeira para você, você não está sozinho. Uma
 - **Comprima vídeos** para reduzir o tamanho do arquivo sem arruinar a qualidade
 - **Corte clipes visualmente** — arraste duas alças em uma linha do tempo, pronto
 - **Extraia o áudio de um vídeo** e salve como MP3
+- **Gire e espelhe vídeos** – corrija clipes tortos, sem perda para MP4/MOV/MKV
 - **Processe pastas inteiras em lote** em uma única passagem
 
 ## Ultra-rápido: aceleração de hardware integrada

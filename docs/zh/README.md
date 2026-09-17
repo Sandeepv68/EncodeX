@@ -63,6 +63,7 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面，将 FFmpeg 的全部�
 ## ✨ 功能特性
 
 - **🔄 媒体转换** — 51 种视频编解码器、27 种音频编解码器、56 种像素格式，支持编解码器/码率/缩放/质量设置
+- **🌀 旋转与镜像** — 将视频和图片顺时针旋转 90°、180° 或 270°，并支持水平或垂直翻转；MP4/MOV/MKV 流复制时，旋转会以无损元数据方式保存
 - **🎛️ 转换配置文件** — 8 个类别（YouTube、Instagram、TikTok、Apple、Android、ProRes、HLS 等）中 140+ 个预配置预设，支持自定义配置文件创建和最近使用跟踪
 - **⚡ 硬件加速** — NVIDIA NVENC、Intel QSV、AMD AMF、VAAPI、Apple VideoToolbox、Media Foundation
 - **✂️ 视频裁剪** — 借助内置播放器实现逐帧精确裁剪（rawvideo + PCM 管道、Canvas + Web Audio），并提供可缩放的进度条（波形 + 缩略图拼接）

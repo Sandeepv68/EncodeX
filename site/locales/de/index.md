@@ -35,6 +35,9 @@ features:
   - icon: "\u26a1"
     title: Schnell auch bei großen Dateien
     details: EncodeX nutzt die Kraft Ihrer Grafikkarte und konvertiert deutlich schneller. Ganz ohne Einstellungen.
+  - icon: "\ud83c\udf00"
+    title: Videos drehen und seitliche Aufnahmen korrigieren
+    details: Falsch herum aufgenommen? Drehen Sie Clips um 90°, 180° oder 270° oder spiegeln Sie sie — ohne Qualitätsverlust, wenn MP4/MOV/MKV beibehalten wird.
 
 ---
 
@@ -115,6 +118,11 @@ Ein aufgeräumter Startbildschirm. Jedes Werkzeug einen Klick entfernt. Wenn Sie
 <div class="card wide">
   <h3>🖼️ Erleichtern Sie Ihre Fotos</h3>
   <p>Verkleinern Sie Fotos, damit sie schneller gesendet und hochgeladen werden und weniger Platz brauchen — mit einer Live-Vorschau des Ergebnisses vor dem Speichern.</p>
+</div>
+
+<div class="card wide">
+  <h3>🌀 Videos drehen und seitliche Aufnahmen korrigieren</h3>
+  <p>Falsch herum aufgenommen? Drehen Sie Videos und Fotos um 90°, 180° oder 270° im Uhrzeigersinn oder spiegeln Sie sie mit einem Klick. Bei gleichem MP4/MOV/MKV-Format wird die Drehung verlustfrei gespeichert — ganz ohne Neukodierung.</p>
 </div>
 
 <div class="card wide">

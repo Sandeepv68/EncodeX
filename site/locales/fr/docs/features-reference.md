@@ -8,6 +8,10 @@ EncodeX est un outil multimédia de conversion multiplateforme qui met la puissa
 
 Convertissez entre formats vidéo/audio avec un contrôle fin : sélection du codec (51 codecs vidéo couvrant les familles logicielles et matérielles, 27 codecs audio), bitrate, résolution de sortie (avec préservation facultative du ratio), format de pixels (56 formats regroupés par profondeur de bits), échelle de qualité (qscale), inclusion de la piste audio et choix du cœur transcoder. Plusieurs fichiers peuvent être mis en file via la file par lots (voir ci-dessous).
 
+### Rotation et miroir des médias
+
+Faites pivoter vidéos et images de 90°, 180° ou 270° dans le sens horaire et retournez-les horizontalement ou verticalement — depuis la page Convertir et la file d'attente par lots (panneaux de transcodage et de compression d'images, plus la boîte de dialogue des options par tâche). La rotation utilise le filtre `transpose` de FFmpeg (`transpose=1` / `transpose=2,transpose=2` / `transpose=2`), combiné à `hflip`/`vflip` dans une seule chaîne de filtres `-vf` aux côtés de `scale` ; le retournement ré-encode toujours. En mode copie de flux, la rotation est enregistrée sans perte comme `-metadata:s:v rotate=N` uniquement pour les sorties MP4/MOV/MKV ; les autres conteneurs et sorties d'images utilisent toujours le chemin par pixels (ré-encodage).
+
 ### Profils de conversion
 
 Appliquez des préréglages d'encodage pour remplir instantanément les paramètres de conversion. Les profils encapsulent une configuration d'encodage complète — format de conteneur, codec vidéo, codec audio, débit, CRF/qualité, échelle, format de pixels et arguments FFmpeg avancés — afin que vous n'ayez pas à configurer chaque paramètre manuellement.

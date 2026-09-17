@@ -53,6 +53,14 @@ Große Fotos sind wunderbar ... bis man sie verschicken muss. EncodeX verkleiner
 
 Unterstützte Formate: JPG, PNG, WebP, GIF, BMP, TIFF und mehr. Außerdem können Sie die versteckten Infos jedes Fotos ansehen (Kameraeinstellungen, Datum usw.).
 
+## Videos drehen und seitliche Aufnahmen korrigieren
+
+<img src="/images/convert.webp" alt="Drehung und Spiegelung" width="1600" height="1057" loading="lazy">
+
+Ein Video mit dem Handy falsch herum aufgenommen? EncodeX dreht Videos und Fotos um 90°, 180° oder 270° im Uhrzeigersinn und spiegelt sie horizontal oder vertikal — seitliche Clips, gespiegelte Selfies oder Hochformat-Videos fürs Querformat sind mit einem Klick korrigiert.
+
+Wird das Format beibehalten (MP4, MOV oder MKV), wird die Drehung als verlustfreie Metadaten gespeichert — ohne Neukodierung und Qualitätsverlust. Jedes andere Format (oder eine Spiegelung) wird neu kodiert; alles funktioniert auch in der Stapelverarbeitung.
+
 ## Viele Dateien gleichzeitig konvertieren
 
 <img src="/images/batch_process.webp" alt="Stapelverarbeitung" width="1600" height="1360" loading="lazy">

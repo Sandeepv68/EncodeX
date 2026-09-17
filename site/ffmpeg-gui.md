@@ -28,6 +28,7 @@ If that looks like a foreign language to you, you're not alone. A **FFmpeg GUI**
 - **Compress videos** to shrink file size without wrecking quality
 - **Trim clips** visually — drag two handles on a timeline, done
 - **Extract audio** from a video and save it as an MP3
+- **Rotate and mirror videos** — fix sideways clips, losslessly for MP4/MOV/MKV
 - **Batch process** whole folders of files in one go
 
 ## Lightning Fast: Hardware Acceleration Built In
