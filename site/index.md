@@ -37,6 +37,9 @@ features:
   - icon: "\u26a1"
     title: Fast, Even for Big Files
     details: EncodeX uses your computer's built-in muscle (the graphics chip) to finish conversions much faster. No setup required — it happens automatically.
+  - icon: "\ud83c\udf00"
+    title: Rotate Videos & Fix Sideways Clips
+    details: Shot something the wrong way? Rotate clips 90°, 180°, or 270° and mirror them — lossless when you keep MP4/MOV/MKV.
 
 ---
 
@@ -117,6 +120,11 @@ One clean home screen. Every tool one click away. If you can use a web browser, 
 <div class="card wide">
   <h3>🖼️ Make Photos Lighter</h3>
   <p>Shrink photos so they send faster, upload quicker, and take up less space on your drive — with a live preview showing exactly how the smaller version will look before you save anything.</p>
+</div>
+
+<div class="card wide">
+  <h3>🌀 Rotate Videos & Fix Sideways Clips</h3>
+  <p>Shot something the wrong way? Rotate videos and photos 90°, 180°, or 270° clockwise or mirror them in a click. Keep the same MP4/MOV/MKV format and the rotation is saved losslessly — no re-encoding.</p>
 </div>
 
 <div class="card wide">

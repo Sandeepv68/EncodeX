@@ -403,6 +403,25 @@ export default function BatchQueue() {
   const [scale, setScale] = useState(initialConfig.scale);
 
   /**
+   * Output rotation angle ('' | '90' | '180' | '270') for transcode and
+   * compress_image jobs; empty disables rotation.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [rotate, setRotate] = useState(initialConfig.rotate);
+
+  /**
+   * Whether to mirror transcode and compress_image outputs horizontally.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
+  const [flipH, setFlipH] = useState(initialConfig.flipH);
+
+  /**
+   * Whether to mirror transcode and compress_image outputs vertically.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
+  const [flipV, setFlipV] = useState(initialConfig.flipV);
+
+  /**
    * Output pixel format (e.g. 'yuv420p') for transcode jobs.
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
@@ -509,11 +528,29 @@ export default function BatchQueue() {
       audioBitrate,
       quality,
       scale,
+      rotate,
+      flipH,
+      flipV,
       pixelFormat,
       outputDir,
       overwrite,
     });
-  }, [operation, videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat, outputDir, overwrite]);
+  }, [
+    operation,
+    videoCodec,
+    audioCodec,
+    container,
+    videoBitrate,
+    audioBitrate,
+    quality,
+    scale,
+    rotate,
+    flipH,
+    flipV,
+    pixelFormat,
+    outputDir,
+    overwrite,
+  ]);
 
   /**
    * Propagates the panel's encoding fields and the output folder to every queued
@@ -544,7 +581,7 @@ export default function BatchQueue() {
       if (customized.has(job.id)) continue;
       const options = buildBatchOptions(
         inferJobOperation(job.options),
-        { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat },
+        { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, rotate, flipH, flipV, pixelFormat },
         { hardwareAcceleration, hwaccelMode },
       );
       let output = job.output;
@@ -562,7 +599,21 @@ export default function BatchQueue() {
         .getState()
         .warning(t('batchQueue.outputCollisionSkipped', { count: skippedNames.length, names: skippedNames.join(', ') }));
     }
-  }, [videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat, outputDir, batchStarted]);
+  }, [
+    videoCodec,
+    audioCodec,
+    container,
+    videoBitrate,
+    audioBitrate,
+    quality,
+    scale,
+    rotate,
+    flipH,
+    flipV,
+    pixelFormat,
+    outputDir,
+    batchStarted,
+  ]);
 
   /**
    * On mount, pushes the persisted concurrency cap to the main process so the
@@ -783,7 +834,7 @@ export default function BatchQueue() {
       existingOutputs.add(normalizePath(outFile));
       const options = buildBatchOptions(
         operation,
-        { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat },
+        { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, rotate, flipH, flipV, pixelFormat },
         { hardwareAcceleration, hwaccelMode },
       );
       enqueues.push(
@@ -1267,6 +1318,9 @@ export default function BatchQueue() {
               audioBitrate={audioBitrate}
               quality={quality}
               scale={scale}
+              rotate={rotate}
+              flipH={flipH}
+              flipV={flipV}
               pixelFormat={pixelFormat}
               optionsLocked={batchStarted}
               optionsEditable={!batchStarted && jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
@@ -1277,6 +1331,9 @@ export default function BatchQueue() {
               onAudioBitrateChange={setAudioBitrate}
               onQualityChange={setQuality}
               onScaleChange={setScale}
+              onRotateChange={setRotate}
+              onFlipHChange={setFlipH}
+              onFlipVChange={setFlipV}
               onPixelFormatChange={setPixelFormat}
               onApplyProfile={handleApplyBatchProfile}
             />
@@ -1398,7 +1455,7 @@ export default function BatchQueue() {
         key={editJob?.id ?? 'none'}
         open={editJob !== null}
         job={editJob}
-        defaults={{ videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, pixelFormat }}
+        defaults={{ videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, rotate, flipH, flipV, pixelFormat }}
         onSave={handleEditSave}
         onClose={() => setEditJob(null)}
       />

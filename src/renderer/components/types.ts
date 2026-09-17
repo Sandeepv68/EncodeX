@@ -180,6 +180,9 @@ export interface BufferedFrame {
  * @property {string} audioBitrate - Target audio bitrate ('' = encoder default).
  * @property {string} quality - Image compression quality 1-31 ('' = encoder default).
  * @property {string} scale - Output resolution as WIDTHxHEIGHT ('' = original).
+ * @property {string} rotate - Output rotation angle ('' | '90' | '180' | '270').
+ * @property {boolean} flipH - Whether to mirror horizontally.
+ * @property {boolean} flipV - Whether to mirror vertically.
  * @property {string} pixelFormat - Output pixel format (e.g. 'yuv420p').
  * @property {boolean} [optionsLocked] - Whether the batch is running, locking the
  *   options; shows the options-locked warning alert inside the panel.
@@ -192,6 +195,9 @@ export interface BufferedFrame {
  * @property {(value: string) => void} onAudioBitrateChange - Fired on audio bitrate change.
  * @property {(value: string) => void} onQualityChange - Fired on quality change.
  * @property {(value: string) => void} onScaleChange - Fired on scale change.
+ * @property {(value: string) => void} onRotateChange - Fired on rotation change.
+ * @property {(value: boolean) => void} onFlipHChange - Fired on horizontal-mirror change.
+ * @property {(value: boolean) => void} onFlipVChange - Fired on vertical-mirror change.
  * @property {(value: string) => void} onPixelFormatChange - Fired on pixel format change.
  */
 export interface BatchEncodingPanelProps {
@@ -203,6 +209,9 @@ export interface BatchEncodingPanelProps {
   audioBitrate: string;
   quality: string;
   scale: string;
+  rotate: string;
+  flipH: boolean;
+  flipV: boolean;
   pixelFormat: string;
   optionsLocked?: boolean;
   optionsEditable?: boolean;
@@ -213,6 +222,9 @@ export interface BatchEncodingPanelProps {
   onAudioBitrateChange: (value: string) => void;
   onQualityChange: (value: string) => void;
   onScaleChange: (value: string) => void;
+  onRotateChange: (value: string) => void;
+  onFlipHChange: (value: boolean) => void;
+  onFlipVChange: (value: boolean) => void;
   onPixelFormatChange: (value: string) => void;
   onApplyProfile?: (profile: ConversionProfile) => void;
 }

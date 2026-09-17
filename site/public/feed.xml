@@ -5,12 +5,22 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Tue, 15 Sep 2026 15:05:59 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 17 Sep 2026 10:57:05 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Rotate &amp; Mirror Videos — Fix Sideways Clips Without Losing Quality</title>
+      <link>https://encodex.in/blog/releases/rotate-and-mirror-videos/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/rotate-and-mirror-videos/</guid>
+      <description>EncodeX now lets you rotate videos and photos 90°, 180°, or 270° clockwise and mirror them horizontally or vertically. Keep MP4/MOV/MKV and the rotation is saved as lossless metadata — no re-encoding needed.</description>
+      <pubDate>Thu, 17 Sep 2026 00:00:00 GMT</pubDate>
+      <category>feature</category>
+      <category>rotation</category>
+      <category>release</category>
+    </item>
+    <item>
       <title>Best Free Video Converter in 2026</title>
-      <link>https://encodex.in/blog/posts/best-free-video-converter-2026</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/best-free-video-converter-2026</guid>
+      <link>https://encodex.in/blog/posts/best-free-video-converter-2026/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/best-free-video-converter-2026/</guid>
       <description>Looking for the best free video converter in 2026? Compare EncodeX with HandBrake, VLC, and other options — then try it yourself.</description>
       <pubDate>Wed, 16 Sep 2026 00:00:00 GMT</pubDate>
       <category>comparison</category>
@@ -19,8 +29,8 @@
     </item>
     <item>
       <title>EncodeX V1.0.0-beta.3</title>
-      <link>https://encodex.in/blog/releases/1.0.0-beta.3</link>
-      <guid isPermaLink="true">https://encodex.in/blog/releases/1.0.0-beta.3</guid>
+      <link>https://encodex.in/blog/releases/1.0.0-beta.3/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/1.0.0-beta.3/</guid>
       <description>Conversion profiles, first-run onboarding, batch folder import, privacy-safe analytics, and 35+ locale coverage expansion.</description>
       <pubDate>Tue, 15 Sep 2026 00:00:00 GMT</pubDate>
       <category>release</category>
@@ -28,8 +38,8 @@
     </item>
     <item>
       <title>How to Use FFmpeg Without the Command Line</title>
-      <link>https://encodex.in/blog/posts/how-to-use-ffmpeg-without-command-line</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-use-ffmpeg-without-command-line</guid>
+      <link>https://encodex.in/blog/posts/how-to-use-ffmpeg-without-command-line/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-use-ffmpeg-without-command-line/</guid>
       <description>FFmpeg is powerful but its command line is intimidating. Learn how to use FFmpeg through EncodeX, a free GUI that makes video conversion simple.</description>
       <pubDate>Tue, 15 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -38,8 +48,8 @@
     </item>
     <item>
       <title>How to Compress Images Without Losing Visual Quality</title>
-      <link>https://encodex.in/blog/posts/image-compression-guide</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/image-compression-guide</guid>
+      <link>https://encodex.in/blog/posts/image-compression-guide/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/image-compression-guide/</guid>
       <description>Reduce image file sizes for web, email, and storage using EncodeX — a free FFmpeg GUI with batch image compression and format conversion.</description>
       <pubDate>Tue, 15 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -49,8 +59,8 @@
     </item>
     <item>
       <title>How to Compress OBS and ShadowPlay Recordings for Sharing</title>
-      <link>https://encodex.in/blog/posts/compress-obs-recordings</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/compress-obs-recordings</guid>
+      <link>https://encodex.in/blog/posts/compress-obs-recordings/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/compress-obs-recordings/</guid>
       <description>Shrink large gameplay recordings from OBS or ShadowPlay to upload-friendly sizes using EncodeX — a free FFmpeg GUI with GPU acceleration.</description>
       <pubDate>Mon, 14 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -60,8 +70,8 @@
     </item>
     <item>
       <title>Best HandBrake Alternatives in 2026</title>
-      <link>https://encodex.in/blog/posts/handbrake-alternative-guide</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/handbrake-alternative-guide</guid>
+      <link>https://encodex.in/blog/posts/handbrake-alternative-guide/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/handbrake-alternative-guide/</guid>
       <description>Looking for a HandBrake alternative? Compare EncodeX — a free, open-source FFmpeg GUI with batch processing and hardware acceleration.</description>
       <pubDate>Mon, 14 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -70,8 +80,8 @@
     </item>
     <item>
       <title>How to Batch Convert Video Files with EncodeX</title>
-      <link>https://encodex.in/blog/posts/how-to-batch-convert-video-files</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-batch-convert-video-files</guid>
+      <link>https://encodex.in/blog/posts/how-to-batch-convert-video-files/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-batch-convert-video-files/</guid>
       <description>Convert dozens of video files at once using EncodeX&apos;s batch queue. A step-by-step guide to converting entire folders of video.</description>
       <pubDate>Mon, 14 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -80,8 +90,8 @@
     </item>
     <item>
       <title>Best Formats for Archival Video: Preserving Your Media for Decades</title>
-      <link>https://encodex.in/blog/posts/best-formats-for-archival</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/best-formats-for-archival</guid>
+      <link>https://encodex.in/blog/posts/best-formats-for-archival/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/best-formats-for-archival/</guid>
       <description>A practical guide to archival video codecs — FFV1, ProRes, HuffYUV, lossless copy — and how EncodeX helps you future-proof your media.</description>
       <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -92,8 +102,8 @@
     </item>
     <item>
       <title>How to Convert H.265 to H.264 with EncodeX</title>
-      <link>https://encodex.in/blog/posts/how-to-convert-h265-to-h264</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-convert-h265-to-h264</guid>
+      <link>https://encodex.in/blog/posts/how-to-convert-h265-to-h264/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-convert-h265-to-h264/</guid>
       <description>Convert HEVC (H.265) videos to the widely compatible H.264 format using EncodeX — a free FFmpeg GUI with hardware acceleration.</description>
       <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -102,8 +112,8 @@
     </item>
     <item>
       <title>How to Automate Media Workflows With the EncodeX CLI</title>
-      <link>https://encodex.in/blog/posts/cli-automation-guide</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/cli-automation-guide</guid>
+      <link>https://encodex.in/blog/posts/cli-automation-guide/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/cli-automation-guide/</guid>
       <description>Use EncodeX from the command line to script batch conversions, extract audio, compress images, and build automated media pipelines.</description>
       <pubDate>Sat, 12 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -113,8 +123,8 @@
     </item>
     <item>
       <title>How to Convert MKV to MP4 with EncodeX</title>
-      <link>https://encodex.in/blog/posts/how-to-convert-mkv-to-mp4</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-convert-mkv-to-mp4</guid>
+      <link>https://encodex.in/blog/posts/how-to-convert-mkv-to-mp4/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-convert-mkv-to-mp4/</guid>
       <description>Learn how to convert MKV files to MP4 using EncodeX, a free FFmpeg GUI. Step-by-step guide with batch conversion tips.</description>
       <pubDate>Sat, 12 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -123,8 +133,8 @@
     </item>
     <item>
       <title>What Is Hardware Acceleration and Why Your Videos Encode Faster With It</title>
-      <link>https://encodex.in/blog/posts/gpu-hardware-acceleration-guide</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/gpu-hardware-acceleration-guide</guid>
+      <link>https://encodex.in/blog/posts/gpu-hardware-acceleration-guide/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/gpu-hardware-acceleration-guide/</guid>
       <description>Learn how GPU encoding (NVENC, QSV, AMF, VAAPI, VideoToolbox) works and how EncodeX uses it to make video conversion dramatically faster.</description>
       <pubDate>Fri, 11 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -134,8 +144,8 @@
     </item>
     <item>
       <title>How to Extract MP3 from a Video (3 Easy Steps)</title>
-      <link>https://encodex.in/blog/posts/extract-mp3-video-guide</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/extract-mp3-video-guide</guid>
+      <link>https://encodex.in/blog/posts/extract-mp3-video-guide/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/extract-mp3-video-guide/</guid>
       <description>Learn how to extract audio from any video file and save it as MP3 using EncodeX — free, no sign-up, works on Windows, macOS, and Linux.</description>
       <pubDate>Thu, 10 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -144,8 +154,8 @@
     </item>
     <item>
       <title>How to Compress Video Files Without Losing Quality</title>
-      <link>https://encodex.in/blog/posts/video-compression-guide</link>
-      <guid isPermaLink="true">https://encodex.in/blog/posts/video-compression-guide</guid>
+      <link>https://encodex.in/blog/posts/video-compression-guide/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/video-compression-guide/</guid>
       <description>Shrink large video files for sharing using EncodeX — a free FFmpeg GUI with smart compression and hardware acceleration.</description>
       <pubDate>Mon, 07 Sep 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -154,8 +164,8 @@
     </item>
     <item>
       <title>Introducing Conversion Profiles — 140+ Presets for One-Click Encoding</title>
-      <link>https://encodex.in/blog/releases/conversion-profiles</link>
-      <guid isPermaLink="true">https://encodex.in/blog/releases/conversion-profiles</guid>
+      <link>https://encodex.in/blog/releases/conversion-profiles/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/conversion-profiles/</guid>
       <description>EncodeX now ships with over 140 built-in conversion profiles across 8 categories. Pick a preset for YouTube, Instagram, TikTok, Apple devices, ProRes, HLS streaming, and more — all your settings fill in automatically.</description>
       <pubDate>Wed, 02 Sep 2026 00:00:00 GMT</pubDate>
       <category>feature</category>
@@ -164,8 +174,8 @@
     </item>
     <item>
       <title>Best Video Format for YouTube &amp; Social Media in 2026</title>
-      <link>https://encodex.in/blog/releases/best-video-format-for-social-media</link>
-      <guid isPermaLink="true">https://encodex.in/blog/releases/best-video-format-for-social-media</guid>
+      <link>https://encodex.in/blog/releases/best-video-format-for-social-media/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/best-video-format-for-social-media/</guid>
       <description>What&apos;s the best video format for YouTube, TikTok, Instagram, and X in 2026? A plain-language guide to containers, codecs, and quality with EncodeX.</description>
       <pubDate>Wed, 26 Aug 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -173,8 +183,8 @@
     </item>
     <item>
       <title>How to Compress a Video for Email in 2026</title>
-      <link>https://encodex.in/blog/releases/compress-video-for-email</link>
-      <guid isPermaLink="true">https://encodex.in/blog/releases/compress-video-for-email</guid>
+      <link>https://encodex.in/blog/releases/compress-video-for-email/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/compress-video-for-email/</guid>
       <description>Step-by-step guide to shrinking a video for email attachments with EncodeX — a free video compressor for Windows, Mac, and Linux. Keep quality while cutting file size.</description>
       <pubDate>Wed, 26 Aug 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -182,8 +192,8 @@
     </item>
     <item>
       <title>How to Extract Audio from Video for Free</title>
-      <link>https://encodex.in/blog/releases/extract-audio-from-video-free</link>
-      <guid isPermaLink="true">https://encodex.in/blog/releases/extract-audio-from-video-free</guid>
+      <link>https://encodex.in/blog/releases/extract-audio-from-video-free/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/extract-audio-from-video-free/</guid>
       <description>Learn how to extract audio from a video for free with EncodeX. Pull MP3, M4A, FLAC or WAV from any video on Windows, Mac, and Linux — offline and watermark-free.</description>
       <pubDate>Wed, 26 Aug 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -191,8 +201,8 @@
     </item>
     <item>
       <title>How to Convert Video Formats for Free in 2026</title>
-      <link>https://encodex.in/blog/releases/free-video-converter-guide</link>
-      <guid isPermaLink="true">https://encodex.in/blog/releases/free-video-converter-guide</guid>
+      <link>https://encodex.in/blog/releases/free-video-converter-guide/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/free-video-converter-guide/</guid>
       <description>Step-by-step guide to converting video files between MP4, MKV, AVI, MOV, and more using EncodeX, a free video converter for Windows, Mac, and Linux.</description>
       <pubDate>Tue, 25 Aug 2026 00:00:00 GMT</pubDate>
       <category>guide</category>
@@ -200,8 +210,8 @@
     </item>
     <item>
       <title>Why We Built EncodeX — A Free, Open-Source Video Converter</title>
-      <link>https://encodex.in/blog/releases/why-we-built-encodex</link>
-      <guid isPermaLink="true">https://encodex.in/blog/releases/why-we-built-encodex</guid>
+      <link>https://encodex.in/blog/releases/why-we-built-encodex/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/why-we-built-encodex/</guid>
       <description>The story behind EncodeX: why we built a free, open-source video and audio converter that works on Windows, Mac, and Linux without watermarks or subscriptions.</description>
       <pubDate>Sat, 22 Aug 2026 00:00:00 GMT</pubDate>
       <category>behind the scenes</category>
@@ -209,8 +219,8 @@
     </item>
     <item>
       <title>EncodeX V1.0.0-beta.0</title>
-      <link>https://encodex.in/blog/releases/1.0.0-beta.0</link>
-      <guid isPermaLink="true">https://encodex.in/blog/releases/1.0.0-beta.0</guid>
+      <link>https://encodex.in/blog/releases/1.0.0-beta.0/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/1.0.0-beta.0/</guid>
       <description>First beta release of EncodeX: video conversion, audio extraction, trimming, image compression, batch processing, CLI, and 35+ languages.</description>
       <pubDate>Thu, 20 Aug 2026 00:00:00 GMT</pubDate>
       <category>release</category>

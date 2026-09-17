@@ -14,7 +14,7 @@ import { Logger } from '../../shared/logger';
 import { useConversionStore } from '../stores/conversionStore';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
-import { ConversionProgress } from '../../shared/types';
+import { ConversionProgress, ConversionOptions } from '../../shared/types';
 import { ErrorCode } from '../../shared/errors';
 import i18n from '../i18n/config';
 import { useSettingsStore } from '../stores/settingsStore';
@@ -142,6 +142,9 @@ export function useConversion() {
           audioBitrate: store.audioBitrate || undefined,
           qscale: store.qscale || undefined,
           scale: store.scale || undefined,
+          rotate: (store.rotate || undefined) as ConversionOptions['rotate'],
+          flipH: store.flipH || undefined,
+          flipV: store.flipV || undefined,
           pixelFormat: store.pixelFormat || undefined,
           copy: store.copyMode,
           hardwareAcceleration,
@@ -168,6 +171,9 @@ export function useConversion() {
     store.audioBitrate,
     store.qscale,
     store.scale,
+    store.rotate,
+    store.flipH,
+    store.flipV,
     store.pixelFormat,
     store.copyMode,
     store.transcoder,

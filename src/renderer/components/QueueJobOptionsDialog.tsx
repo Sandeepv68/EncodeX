@@ -81,6 +81,9 @@ function seedEncodingValues(job: QueueJob, defaults: BatchEncodingValues): Batch
     audioBitrate: options.audioBitrate ?? defaults.audioBitrate,
     quality: options.qscale !== undefined ? String(options.qscale) : defaults.quality,
     scale: options.scale ?? defaults.scale,
+    rotate: options.rotate ?? defaults.rotate,
+    flipH: options.flipH ?? defaults.flipH,
+    flipV: options.flipV ?? defaults.flipV,
     pixelFormat: options.pixelFormat ?? defaults.pixelFormat,
   };
 }
@@ -175,6 +178,9 @@ export default function QueueJobOptionsDialog({ open, job, defaults, onSave, onC
           audioBitrate={values.audioBitrate}
           quality={values.quality}
           scale={values.scale}
+          rotate={values.rotate}
+          flipH={values.flipH}
+          flipV={values.flipV}
           pixelFormat={values.pixelFormat}
           onVideoCodecChange={handleVideoCodecChange}
           onAudioCodecChange={handleAudioCodecChange}
@@ -183,6 +189,9 @@ export default function QueueJobOptionsDialog({ open, job, defaults, onSave, onC
           onAudioBitrateChange={(value) => setValues((prev) => ({ ...prev, audioBitrate: value }))}
           onQualityChange={(value) => setValues((prev) => ({ ...prev, quality: value }))}
           onScaleChange={(value) => setValues((prev) => ({ ...prev, scale: value }))}
+          onRotateChange={(value) => setValues((prev) => ({ ...prev, rotate: value }))}
+          onFlipHChange={(value) => setValues((prev) => ({ ...prev, flipH: value }))}
+          onFlipVChange={(value) => setValues((prev) => ({ ...prev, flipV: value }))}
           onPixelFormatChange={(value) => setValues((prev) => ({ ...prev, pixelFormat: value }))}
         />
       </DialogContent>

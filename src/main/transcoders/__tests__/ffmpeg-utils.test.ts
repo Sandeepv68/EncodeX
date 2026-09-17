@@ -132,4 +132,42 @@ describe('buildFfmpegArgs', () => {
     expect(args.slice(0, 6)).toEqual(['-hwaccel', 'cuda', '-hwaccel_output_format', 'cuda', '-i', 'in.mp4']);
     expect(args).toContain('h264_nvenc');
   });
+
+  it('merges rotation into the scale video filter chain', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { scale: '1280x720', rotate: '90' });
+    expect(args).toEqual(['-i', 'in.mp4', '-vf', 'scale=1280x720,transpose=1', '-y', 'out.mp4']);
+  });
+
+  it('builds a single -vf flag for rotation without scale', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { rotate: '270' });
+    expect(args).toEqual(['-i', 'in.mp4', '-vf', 'transpose=2', '-y', 'out.mp4']);
+  });
+
+  it('rotates 180 degrees with a double transpose', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { rotate: '180' });
+    expect(args).toContain('-vf');
+    expect(args[args.indexOf('-vf') + 1]).toBe('transpose=2,transpose=2');
+  });
+
+  it('appends mirror filters after rotation', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { rotate: '90', flipH: true });
+    expect(args[args.indexOf('-vf') + 1]).toBe('transpose=1,hflip');
+    const both = buildFfmpegArgs('in.mp4', 'out.mp4', { flipH: true, flipV: true });
+    expect(both[both.indexOf('-vf') + 1]).toBe('hflip,vflip');
+  });
+
+  it('writes rotation metadata in copy mode for supported containers', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { copy: true, rotate: '90' });
+    expect(args).toEqual(['-i', 'in.mp4', '-c', 'copy', '-metadata:s:v', 'rotate=90', '-y', 'out.mp4']);
+  });
+
+  it('does not write rotation metadata for unsupported containers', () => {
+    const args = buildFfmpegArgs('in.webm', 'out.webm', { copy: true, rotate: '90' });
+    expect(args).toEqual(['-i', 'in.webm', '-c', 'copy', '-y', 'out.webm']);
+  });
+
+  it('does not write rotation metadata when mirroring is requested', () => {
+    const args = buildFfmpegArgs('in.mp4', 'out.mp4', { copy: true, rotate: '90', flipH: true });
+    expect(args).not.toContain('-metadata:s:v');
+  });
 });

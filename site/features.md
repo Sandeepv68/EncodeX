@@ -56,6 +56,14 @@ Big photos are great until you have to send one. EncodeX shrinks photos so they 
 
 Works with all the common photo types: JPG, PNG, WebP, GIF, BMP, TIFF, and more. You can also see hidden info stored inside photos (like the camera settings and date taken).
 
+## Rotate Videos and Fix Sideways Clips
+
+<img src="/images/convert.webp" alt="Rotation and Mirror" width="1600" height="1057" loading="lazy">
+
+Shot a video with your phone held the wrong way? EncodeX rotates any video or photo 90°, 180°, or 270° clockwise and mirrors it horizontally or vertically — sideways clips, flipped selfies, and portrait video you want in landscape are fixed in a click.
+
+Keep the same MP4, MOV, or MKV format and the rotation is saved as lossless metadata — no re-encoding, no quality loss. Any other format (or a mirror) re-encodes the frames, and it all works in the batch queue too.
+
 ## Convert Many Files at Once
 
 <img src="/images/batch_process.webp" alt="Batch Queue" width="1600" height="1360" loading="lazy">

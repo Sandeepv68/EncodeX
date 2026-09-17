@@ -18,6 +18,7 @@ ogImage: "https://encodex.in/images/convert.webp"
 - 全部转为 MP4，兼容性最佳
 - 调整**分辨率、帧率和码率**，实现完美播放
 - 使用**硬件加速**（NVENC、QSV、AMF、VAAPI、VideoToolbox）提升速度
+- **旋转与镜像视频** – 无损修正侧拍的片段（MP4、MOV、MKV）或快速重新编码
 
 ### 安装一次，离线转换，没有限制
 

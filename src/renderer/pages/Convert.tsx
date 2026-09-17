@@ -70,7 +70,14 @@ import InfoTooltip from '../components/InfoTooltip';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { PIXEL_FORMATS, VIDEO_BITRATE_OPTIONS, SCALE_OPTIONS, BITRATE_OPTIONS } from '../../shared/media-options';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
-import { TRANSCODER_TYPES, TRANSCODER_LABELS, CONVERSION_DEFAULTS, QSCALE_RANGE } from '../../shared/transcoder-constants';
+import {
+  TRANSCODER_TYPES,
+  TRANSCODER_LABELS,
+  CONVERSION_DEFAULTS,
+  QSCALE_RANGE,
+  ROTATION_VALUES,
+  isMetadataRotationContainer,
+} from '../../shared/transcoder-constants';
 import { MediaInfo as MediaInfoType } from '../../shared/types';
 import { isInRange } from '../../shared/validation';
 import { useFormErrors } from '../hooks/useFormErrors';
@@ -204,6 +211,9 @@ export default function Convert() {
     audioBitrate,
     qscale,
     scale,
+    rotate,
+    flipH,
+    flipV,
     pixelFormat,
     copyMode,
     transcoder,
@@ -217,6 +227,9 @@ export default function Convert() {
     setAudioBitrate,
     setQscale,
     setScale,
+    setRotate,
+    setFlipH,
+    setFlipV,
     setPixelFormat,
     setCopyMode,
     setTranscoder,
@@ -287,6 +300,22 @@ export default function Convert() {
     if (!outputFile) return;
     setOutputFile(replaceExtension(outputFile, suggestedOutputExt));
   };
+
+  /**
+   * Whether the current copy-mode rotation can be applied losslessly as stream
+   * metadata. True only with copy mode on, a rotation selected, no mirroring,
+   * and a container that stores rotation metadata (MP4/MOV/MKV).
+   * @type {boolean}
+   */
+  const copyRotationLossless = copyMode && !!rotate && isMetadataRotationContainer(outputExt) && !flipH && !flipV;
+
+  /**
+   * Whether to warn that the requested rotation/mirror cannot be applied in
+   * copy mode (unsupported container, or mirroring requested). The warning
+   * offers to turn copy mode off so the re-encode filter path is used.
+   * @type {boolean}
+   */
+  const showCopyRotationWarning = copyMode && (!!rotate || flipH || flipV) && !copyRotationLossless;
 
   /**
    * Loads media info for the preview panel whenever the input file changes and
@@ -723,6 +752,80 @@ export default function Convert() {
               </FieldBox>
             </Stack>
           </>
+        )}
+
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <FieldBox>
+            <FieldLabel>
+              {t('convert.rotation')}
+              <InfoTooltip title={t('convert.rotationHint')} />
+            </FieldLabel>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              data-testid="convert-rotation"
+              slotProps={{ htmlInput: { 'aria-label': t('convert.rotation') } }}
+              value={rotate}
+              onChange={(e) => setRotate(e.target.value)}
+            >
+              {ROTATION_VALUES.map((r) => (
+                <MenuItem key={r} value={r}>
+                  {r ? t('convert.rotationDegrees', { degrees: r }) : t('status.none')}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FieldBox>
+          <FieldBox>
+            <FieldLabel>
+              {t('convert.mirror')}
+              <InfoTooltip title={t('convert.mirrorHint')} />
+            </FieldLabel>
+            <Stack direction="row" spacing={2}>
+              <ToggleRow>
+                <Switch
+                  data-testid="convert-flip-h"
+                  checked={flipH}
+                  disabled={copyMode}
+                  onChange={(e) => setFlipH(e.target.checked)}
+                  slotProps={{ input: { 'aria-label': t('convert.flipHorizontal') } }}
+                />
+                <Typography variant="caption" color="text.secondary">
+                  {t('convert.flipHorizontal')}
+                </Typography>
+              </ToggleRow>
+              <ToggleRow>
+                <Switch
+                  data-testid="convert-flip-v"
+                  checked={flipV}
+                  disabled={copyMode}
+                  onChange={(e) => setFlipV(e.target.checked)}
+                  slotProps={{ input: { 'aria-label': t('convert.flipVertical') } }}
+                />
+                <Typography variant="caption" color="text.secondary">
+                  {t('convert.flipVertical')}
+                </Typography>
+              </ToggleRow>
+            </Stack>
+          </FieldBox>
+        </Stack>
+
+        {copyRotationLossless && (
+          <CompatAlert severity="info" icon={false}>
+            {t('convert.rotateCopyMetadataNote')}
+          </CompatAlert>
+        )}
+        {showCopyRotationWarning && (
+          <CompatAlert
+            severity="warning"
+            action={
+              <Button size="small" color="inherit" onClick={() => setCopyMode(false)}>
+                {t('convert.rotateTurnOffCopy')}
+              </Button>
+            }
+          >
+            {t('convert.rotateCopyUnsupported')}
+          </CompatAlert>
         )}
       </PageSection>
 

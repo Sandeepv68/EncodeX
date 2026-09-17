@@ -35,6 +35,9 @@ features:
   - icon: "\u26a1"
     title: Rápido mesmo com arquivos grandes
     details: O EncodeX usa a força da sua placa de vídeo para converter muito mais rápido. Sem configurar absolutamente nada.
+  - icon: "\ud83c\udf00"
+    title: Gire vídeos e corrija clipes tortos
+    details: Gravou ao contrário? Gire clipes em 90°, 180° ou 270° e espelhe — sem perder qualidade mantendo MP4/MOV/MKV.
 
 ---
 
@@ -115,6 +118,11 @@ Uma tela inicial limpa. Cada ferramenta a um clique. Se você sabe usar um naveg
 <div class="card wide">
   <h3>🖼️ Alivie suas fotos</h3>
   <p>Reduza fotos para enviarem e carregarem mais rápido e ocuparem menos espaço — com prévia ao vivo do resultado antes de salvar.</p>
+</div>
+
+<div class="card wide">
+  <h3>🌀 Gire vídeos e corrija clipes tortos</h3>
+  <p>Gravou algo de cabeça para baixo? Gire vídeos e fotos em 90°, 180° ou 270° no sentido horário ou espelhe com um clique. Mantendo o mesmo formato MP4/MOV/MKV, a rotação é salva sem perda — sem recodificar.</p>
 </div>
 
 <div class="card wide">

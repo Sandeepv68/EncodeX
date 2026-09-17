@@ -28,6 +28,7 @@ Wenn das für Sie wie eine Fremdsprache aussieht, sind Sie nicht allein. Eine **
 - **Videos komprimieren**, um die Dateigröße zu reduzieren, ohne die Qualität zu ruinieren
 - **Clips visuell schneiden** – zwei Griffe auf einer Zeitleiste ziehen, fertig
 - **Audio aus einem Video extrahieren** und als MP3 speichern
+- **Videos drehen und spiegeln** – seitlich liegende Clips korrigieren, verlustfrei für MP4/MOV/MKV
 - **Ganze Ordner stapelweise verarbeiten** in einem Durchgang
 
 ## Blitzschnell: Hardwarebeschleunigung bereits eingebaut

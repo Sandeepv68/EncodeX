@@ -10,6 +10,9 @@ describe('conversionStore', () => {
       isPaused: false,
       isDirty: false,
       progress: null,
+      rotate: '',
+      flipH: false,
+      flipV: false,
     });
   });
 
@@ -22,6 +25,9 @@ describe('conversionStore', () => {
     expect(state.copyMode).toBe(false);
     expect(state.transcoder).toBe('FFMPEG');
     expect(state.encoderType).toBe('auto');
+    expect(state.rotate).toBe('');
+    expect(state.flipH).toBe(false);
+    expect(state.flipV).toBe(false);
   });
 
   it('sets input file', () => {
@@ -62,6 +68,17 @@ describe('conversionStore', () => {
   it('sets scale', () => {
     useConversionStore.getState().setScale('1280x720');
     expect(useConversionStore.getState().scale).toBe('1280x720');
+  });
+
+  it('sets rotation and mirror fields', () => {
+    useConversionStore.getState().setRotate('90');
+    useConversionStore.getState().setFlipH(true);
+    useConversionStore.getState().setFlipV(true);
+    const state = useConversionStore.getState();
+    expect(state.rotate).toBe('90');
+    expect(state.flipH).toBe(true);
+    expect(state.flipV).toBe(true);
+    expect(state.isDirty).toBe(true);
   });
 
   it('sets pixel format', () => {
@@ -123,12 +140,17 @@ describe('conversionStore', () => {
   it('resets the form to initial state', () => {
     useConversionStore.getState().setVideoCodec('libx265');
     useConversionStore.getState().setScale('1280x720');
+    useConversionStore.getState().setRotate('180');
+    useConversionStore.getState().setFlipV(true);
     useConversionStore.getState().setProgress({ percent: 10, time: '00:00:01', speed: '1x', eta: '1' });
     useConversionStore.getState().setIsConverting(true);
     useConversionStore.getState().resetForm();
     const state = useConversionStore.getState();
     expect(state.videoCodec).toBe('libx264');
     expect(state.scale).toBe('1920x1080');
+    expect(state.rotate).toBe('');
+    expect(state.flipH).toBe(false);
+    expect(state.flipV).toBe(false);
     expect(state.progress).toBeNull();
     expect(state.isConverting).toBe(false);
     expect(state.isDirty).toBe(false);

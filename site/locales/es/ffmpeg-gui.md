@@ -28,6 +28,7 @@ Si eso te parece un idioma extranjero, no estás solo. Una **GUI de FFmpeg** con
 - **Comprimir vídeos** para reducir el tamaño sin arruinar la calidad
 - **Recortar clips** visualmente — arrastra dos controles en una línea de tiempo, listo
 - **Extraer audio** de un vídeo y guardarlo como MP3
+- **Girar y reflejar vídeos** – corrige clips de lado, sin pérdida para MP4/MOV/MKV
 - **Procesar por lotes** carpetas enteras de archivos de una sola vez
 
 ## Aceleración por hardware ultrarrápida integrada

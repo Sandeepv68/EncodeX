@@ -63,6 +63,7 @@ EncodeX est l'interface graphique gratuite et open source de FFmpeg qui apporte 
 ## ✨ Fonctionnalités
 
 - **🔄 Conversion de médias** — 51 codecs vidéo, 27 codecs audio, 56 formats de pixels avec contrôles du codec, du débit, de l'échelle et de la qualité
+- **🌀 Rotation et miroir** — Faites pivoter vidéos et images de 90°, 180° ou 270° dans le sens horaire et retournez-les horizontalement ou verticalement ; en copie de flux MP4/MOV/MKV, la rotation est enregistrée comme métadonnées sans perte
 - **🎛️ Profils de conversion** — plus de 140 préréglages dans 8 catégories (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS, etc.) avec création de profils personnalisés et suivi des utilisations récentes
 - **⚡ Accélération matérielle** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation
 - **✂️ Coupe vidéo** — Découpage précis à la trame avec lecteur intégré (flux rawvideo + PCM, Canvas + Web Audio) et chronologie zoomable (forme d'onde + montage de vignettes)

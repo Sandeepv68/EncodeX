@@ -35,6 +35,9 @@ describe('Convert', () => {
     expect(screen.getByRole('combobox', { name: 'convert.audioBitrate' })).toBeInTheDocument();
     expect(screen.getByLabelText('convert.qscale')).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'convert.scale' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.rotation' })).toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: 'convert.flipHorizontal' })).toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: 'convert.flipVertical' })).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'convert.pixelFormat' })).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'convert.transcoderCore' })).toBeInTheDocument();
   });
@@ -61,6 +64,9 @@ describe('Convert', () => {
       audioBitrate: '192k',
       qscale: 23,
       scale: '1920x1080',
+      rotate: '',
+      flipH: false,
+      flipV: false,
       pixelFormat: 'yuv420p',
       copyMode: false,
       transcoder: 'FFMPEG',
@@ -85,6 +91,7 @@ describe('Convert', () => {
     expect(screen.getByText('convert.audioCodec')).toBeInTheDocument();
     expect(screen.getByText('convert.qscale')).toBeInTheDocument();
     expect(screen.getByText('convert.scale')).toBeInTheDocument();
+    expect(screen.getByText('convert.rotation')).toBeInTheDocument();
     expect(screen.getByText('convert.pixelFormat')).toBeInTheDocument();
     expect(screen.getByText('convert.transcoderCore')).toBeInTheDocument();
     expect(screen.getByText('convert.startConversion')).toBeInTheDocument();
@@ -214,6 +221,53 @@ describe('Convert', () => {
       },
       'FFMPEG',
     );
+  });
+
+  it('passes rotation and mirror options to the conversion', async () => {
+    selectFileMock.mockResolvedValue('/in/video.mp4');
+    selectOutputMock.mockResolvedValue('/out/video.mkv');
+    convertFileMock.mockResolvedValue(undefined);
+    renderPage();
+    fireEvent.change(screen.getByTestId('convert-rotation').querySelector('input')!, { target: { value: '90' } });
+    fireEvent.click(screen.getByTestId('convert-flip-h').querySelector('input')!);
+    fireEvent.click(screen.getByTestId('file-drop-zone'));
+    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByText('convert.saveAs'));
+    await waitFor(() => expect(selectOutputMock).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByText('convert.startConversion'));
+    await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
+    expect(convertFileMock).toHaveBeenCalledWith(
+      '/in/video.mp4',
+      '/out/video.mkv',
+      expect.objectContaining({ rotate: '90', flipH: true, flipV: undefined }),
+      'FFMPEG',
+    );
+  });
+
+  it('keeps rotation available and disables mirroring in lossless copy mode', () => {
+    const { container } = renderPage();
+    expect(screen.getByTestId('convert-rotation')).toBeInTheDocument();
+    toggleCopy(container);
+    expect(screen.getByTestId('convert-rotation')).toBeInTheDocument();
+    expect(screen.getByTestId('convert-flip-h').querySelector('input')).toBeDisabled();
+    expect(screen.getByTestId('convert-flip-v').querySelector('input')).toBeDisabled();
+  });
+
+  it('notes lossless metadata rotation in copy mode for supported containers', () => {
+    useConversionStore.setState({ outputFile: '/out/video.mp4', outputUserSet: true, rotate: '90' });
+    const { container } = renderPage();
+    toggleCopy(container);
+    expect(screen.getByText('convert.rotateCopyMetadataNote')).toBeInTheDocument();
+    expect(screen.queryByText('convert.rotateCopyUnsupported')).not.toBeInTheDocument();
+  });
+
+  it('warns and offers to leave copy mode for unsupported rotation containers', () => {
+    useConversionStore.setState({ outputFile: '/out/video.webm', outputUserSet: true, rotate: '90' });
+    const { container } = renderPage();
+    toggleCopy(container);
+    expect(screen.getByText('convert.rotateCopyUnsupported')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('convert.rotateTurnOffCopy'));
+    expect(useConversionStore.getState().copyMode).toBe(false);
   });
 
   it('shows a qscale validation error and refuses to start', async () => {
@@ -352,6 +406,8 @@ describe('Convert', () => {
       'convert.audioBitrateHint',
       'convert.qscaleHint',
       'convert.scaleHint',
+      'convert.rotationHint',
+      'convert.mirrorHint',
       'convert.pixelFormatHint',
       'convert.transcoderCoreHint',
     ]);
@@ -369,7 +425,7 @@ describe('Convert', () => {
   it('does not show the encoder type info tooltip when hardware acceleration is disabled', () => {
     useSettingsStore.setState({ hardwareAcceleration: false });
     renderPage();
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(12);
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(14);
   });
 
   it('shows a hardware acceleration alert above the encoder type field', () => {

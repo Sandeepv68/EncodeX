@@ -18,6 +18,7 @@ Se você precisa de um **conversor de vídeo para desktop**, algo rápido para u
 - Tudo para MP4 para máxima compatibilidade
 - Ajuste **resolução, taxa de quadros e bitrate** para reprodução perfeita
 - Use **aceleração de hardware** (NVENC, QSV, AMF, VAAPI, VideoToolbox) para velocidade
+- **Gire e espelhe vídeos** – corrija clipes tortos sem perda (MP4, MOV, MKV) ou com uma recodificação rápida
 
 ### Instale uma vez, converta offline, sem limites
 

@@ -53,6 +53,14 @@ Les photos en haute qualité sont formidables... jusqu'à ce qu'il faille les en
 
 Formats courants pris en charge : JPG, PNG, WebP, GIF, BMP, TIFF et plus. Vous pouvez aussi consulter les informations cachées de chaque photo (réglages appareil, date, etc.).
 
+## Faire pivoter les vidéos et corriger les clips de travers
+
+<img src="/images/convert.webp" alt="Rotation et miroir" width="1600" height="1057" loading="lazy">
+
+Vous avez filmé une vidéo avec le téléphone tenu de travers ? EncodeX fait pivoter n'importe quelle vidéo ou photo de 90°, 180° ou 270° dans le sens horaire et la retourne horizontalement ou verticalement — clips de travers, selfies inversés ou vidéo verticale à passer en paysage se règlent en un clic.
+
+Gardez le format MP4, MOV ou MKV et la rotation est enregistrée comme métadonnées sans perte — pas de ré-encodage, pas de perte de qualité. Pour tout autre format (ou un retournement), la vidéo est ré-encodée, et tout fonctionne aussi dans la file d'attente.
+
 ## Convertir plusieurs fichiers à la fois
 
 <img src="/images/batch_process.webp" alt="File d'attente par lots" width="1600" height="1360" loading="lazy">

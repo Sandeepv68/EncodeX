@@ -620,6 +620,12 @@ export const LOG_RESUMING_FFMPEG_PROCESS = 'Resuming FFmpeg process';
 export const LOG_SCALE = 'Scale:';
 /** @const {string} Prefix when logging a keep-aspect-ratio scale value. */
 export const LOG_SCALE_KEEP_ASPECT_RATIO = 'Scale (keep aspect ratio):';
+/** @const {string} Prefix when logging a rotation value (pixel filter path). */
+export const LOG_ROTATION = 'Rotation:';
+/** @const {string} Prefix when logging a rotation written as stream metadata. */
+export const LOG_ROTATION_METADATA = 'Rotation (lossless metadata):';
+/** @const {string} Logged when a rotation/flip cannot apply in stream-copy mode. */
+export const LOG_ROTATION_COPY_UNSUPPORTED = 'Rotation/flip ignored: not supported in stream-copy mode for this container';
 /** @const {string} Prefix when scheduling one audio chunk fails. */
 export const LOG_SCHEDULE_ONE_CHUNK_ERROR = 'scheduleOneChunk error:';
 /** @const {string} Prefix when a seek is performed. */
@@ -706,6 +712,12 @@ export const LOG_SET_PREVIEW = 'setPreview:';
 export const LOG_SET_QSCALE = 'setQscale:';
 /** @const {string} Prefix when the scale is set. */
 export const LOG_SET_SCALE = 'setScale:';
+/** @const {string} Prefix when the rotation angle is set. */
+export const LOG_SET_ROTATE = 'setRotate:';
+/** @const {string} Prefix when horizontal mirroring is toggled. */
+export const LOG_SET_FLIP_H = 'setFlipH:';
+/** @const {string} Prefix when vertical mirroring is toggled. */
+export const LOG_SET_FLIP_V = 'setFlipV:';
 /** @const {string} Prefix when the transcoder is set. */
 export const LOG_SET_TRANSCODER = 'setTranscoder:';
 /** @const {string} Prefix when the video bitrate is set. */

@@ -251,6 +251,9 @@ export interface ProgressData {
  * @property {string} audioBitrate - Target audio bitrate (default '192k').
  * @property {number} qscale - Video quality scale, 1 (best) to 31 (worst); default 23.
  * @property {string} scale - Output resolution WIDTHxHEIGHT (default '1920x1080').
+ * @property {string} rotate - Output rotation angle ('' | '90' | '180' | '270'); default ''.
+ * @property {boolean} flipH - Whether to mirror the output horizontally; default false.
+ * @property {boolean} flipV - Whether to mirror the output vertically; default false.
  * @property {string} pixelFormat - Output pixel format (default 'yuv420p').
  * @property {boolean} copyMode - Whether to stream-copy streams instead of re-encoding.
  * @property {string} transcoder - Active transcoder backend ('FFMPEG' | 'FFTOOL' | 'BMF').
@@ -268,6 +271,9 @@ export interface ProgressData {
  * @property {(bitrate: string) => void} setAudioBitrate - Sets the audio bitrate and marks the form dirty.
  * @property {(q: number) => void} setQscale - Sets the qscale and marks the form dirty.
  * @property {(s: string) => void} setScale - Sets the output scale and marks the form dirty.
+ * @property {(a: string) => void} setRotate - Sets the rotation angle ('', '90', '180', '270') and marks the form dirty.
+ * @property {(v: boolean) => void} setFlipH - Toggles horizontal mirroring and marks the form dirty.
+ * @property {(v: boolean) => void} setFlipV - Toggles vertical mirroring and marks the form dirty.
  * @property {(f: string) => void} setPixelFormat - Sets the pixel format and marks the form dirty.
  * @property {(c: boolean) => void} setCopyMode - Sets copy mode and marks the form dirty.
  * @property {(t: string) => void} setTranscoder - Sets the transcoder and marks the form dirty.
@@ -287,6 +293,9 @@ export interface ConversionState {
   audioBitrate: string;
   qscale: number;
   scale: string;
+  rotate: string;
+  flipH: boolean;
+  flipV: boolean;
   pixelFormat: string;
   copyMode: boolean;
   transcoder: string;
@@ -304,6 +313,9 @@ export interface ConversionState {
   setAudioBitrate: (bitrate: string) => void;
   setQscale: (q: number) => void;
   setScale: (s: string) => void;
+  setRotate: (a: string) => void;
+  setFlipH: (v: boolean) => void;
+  setFlipV: (v: boolean) => void;
   setPixelFormat: (f: string) => void;
   setCopyMode: (c: boolean) => void;
   setTranscoder: (t: string) => void;

@@ -8,6 +8,10 @@ EncodeX एक क्रॉस-प्लेटफ़ॉर्म मल्टी
 
 Video/audio formats के बीच convert करें codec selection (software और hardware encoder families में 51 video codecs, 27 audio codecs), bitrate, output resolution (optional aspect-ratio preservation के साथ), pixel format (bit depth द्वारा grouped 56 formats), quality scale (qscale), audio track inclusion, और transcoder core selection पर granular controls के साथ। कई files Batch Queue के माध्यम से queue की जा सकती हैं (नीचे देखें)।
 
+### मीडिया रोटेशन और मिरर
+
+वीडियो और इमेज को 90°, 180° या 270° दक्षिणावर्त घुमाएँ और उन्हें क्षैतिज या लंबवत मिरर करें — कन्वर्ट पेज और बैच क्यू दोनों से (transcode और compress-image पैनल, साथ ही per-job options डायलॉग)। रोटेशन FFmpeg का `transpose` फ़िल्टर इस्तेमाल करता है (`transpose=1` / `transpose=2,transpose=2` / `transpose=2`), जो `hflip`/`vflip` के साथ `scale` के बगल में एक ही `-vf` फ़िल्टर चेन में जुड़ता है; मिरर हमेशा री-एनकोड करता है। स्ट्रीम-कॉपी मोड में रोटेशन सिर्फ़ MP4/MOV/MKV आउटपुट के लिए `-metadata:s:v rotate=N` के रूप में बिना लॉस के सेव होता है; बाक़ी कंटेनर और इमेज आउटपुट हमेशा पिक्सल (री-एनकोड) राह अपनाते हैं।
+
 ### Conversion profiles
 
 Conversion settings को तुरंत भरने के लिए pre-configured encoding presets apply करें। Profiles एक पूर्ण encoding configuration encapsulate करते हैं — container format, video codec, audio codec, bitrate, CRF/quality, scale, pixel format, और advanced FFmpeg arguments — ताकि आपको हर setting manually configure न करनी पड़े।

@@ -32,6 +32,9 @@ export interface BatchEncodingValues {
   audioBitrate: string;
   quality: string;
   scale: string;
+  rotate: string;
+  flipH: boolean;
+  flipV: boolean;
   pixelFormat: string;
 }
 
@@ -49,8 +52,9 @@ export interface BatchHwSettings {
  * encoding field values and the hardware-acceleration settings. 'transcode'
  * keeps video and audio codecs plus video/audio bitrate, scale, and pixel
  * format; 'extract_audio' keeps only audio (with audio bitrate);
- * 'compress_image' keeps only image encoding (qscale and scale, no video/audio
- * codecs).
+ * 'compress_image' keeps only image encoding (qscale, scale, and rotation, no
+ * video/audio codecs). Rotation and mirroring apply to both 'transcode' and
+ * 'compress_image'.
  * @param {string} operation - The batch operation value.
  * @param {BatchEncodingValues} values - The shared encoding field values.
  * @param {BatchHwSettings} hw - Current hardware-acceleration settings.
@@ -67,18 +71,25 @@ export function buildBatchOptions(
   audioBitrate?: string;
   qscale?: number;
   scale?: string;
+  rotate?: ConversionOptions['rotate'];
+  flipH?: boolean;
+  flipV?: boolean;
   pixelFormat?: string;
   hardwareAcceleration: boolean;
   hwaccelMode: HwAccelMode;
 } {
-  const { videoCodec, audioCodec, videoBitrate, audioBitrate, quality, scale, pixelFormat } = values;
+  const { videoCodec, audioCodec, videoBitrate, audioBitrate, quality, scale, rotate, flipH, flipV, pixelFormat } = values;
+  const appliesGeometry = operation === 'transcode' || operation === 'compress_image';
   return {
     videoCodec: operation === 'transcode' ? videoCodec : undefined,
     audioCodec: operation === 'transcode' || operation === 'extract_audio' ? audioCodec : undefined,
     videoBitrate: operation === 'transcode' ? videoBitrate || undefined : undefined,
     audioBitrate: operation === 'transcode' || operation === 'extract_audio' ? audioBitrate || undefined : undefined,
     qscale: operation === 'compress_image' && quality ? Number(quality) : undefined,
-    scale: operation === 'transcode' || operation === 'compress_image' ? scale || undefined : undefined,
+    scale: appliesGeometry ? scale || undefined : undefined,
+    rotate: appliesGeometry ? ((rotate || undefined) as ConversionOptions['rotate']) : undefined,
+    flipH: appliesGeometry ? flipH || undefined : undefined,
+    flipV: appliesGeometry ? flipV || undefined : undefined,
     pixelFormat: operation === 'transcode' ? pixelFormat : undefined,
     hardwareAcceleration: hw.hardwareAcceleration,
     hwaccelMode: hw.hwaccelMode,

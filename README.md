@@ -65,6 +65,7 @@ Everything runs **locally on your computer** — no accounts, no uploads, no wat
 ## ✨ Features
 
 - **🔄 Media Conversion** — 51 video codecs, 27 audio codecs, 56 pixel formats with codec/bitrate/scale/quality controls
+- **🌀 Rotation & Mirror** — Rotate videos and images 90°, 180°, or 270° clockwise and flip them horizontally or vertically; MP4/MOV/MKV stream-copy stores rotation as lossless metadata
 - **🎛️ Conversion Profiles** — 140+ pre-configured presets across 8 categories (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS, and more) with custom profile creation and recently-used tracking
 - **⚡ Hardware Acceleration** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation, auto-detected
 - **✂️ Video Cutting** — Frame-accurate trimming with a built-in player (rawvideo + PCM pipes, Canvas + Web Audio) and zoomable timeline (waveform + thumbnail montage)

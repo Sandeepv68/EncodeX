@@ -14,6 +14,9 @@ function renderPanel(props: Partial<ComponentProps<typeof BatchEncodingPanel>> =
     audioBitrate: '',
     quality: '',
     scale: '',
+    rotate: '',
+    flipH: false,
+    flipV: false,
     pixelFormat: 'yuv420p',
     onVideoCodecChange: vi.fn(),
     onAudioCodecChange: vi.fn(),
@@ -22,6 +25,9 @@ function renderPanel(props: Partial<ComponentProps<typeof BatchEncodingPanel>> =
     onAudioBitrateChange: vi.fn(),
     onQualityChange: vi.fn(),
     onScaleChange: vi.fn(),
+    onRotateChange: vi.fn(),
+    onFlipHChange: vi.fn(),
+    onFlipVChange: vi.fn(),
     onPixelFormatChange: vi.fn(),
     ...props,
   };
@@ -77,9 +83,9 @@ describe('BatchEncodingPanel', () => {
     expect(screen.getByText('batchQueue.optionsLockedAlert')).toBeInTheDocument();
   });
 
-  it('renders all seven controls for the transcode operation', () => {
+  it('renders all controls for the transcode operation', () => {
     renderPanel();
-    expect(screen.getAllByRole('combobox')).toHaveLength(8);
+    expect(screen.getAllByRole('combobox')).toHaveLength(9);
     expect(screen.getByText('convert.videoBitrate')).toBeInTheDocument();
     expect(screen.getByText('convert.audioBitrate')).toBeInTheDocument();
     expect(screen.getByText('convert.scale')).toBeInTheDocument();
@@ -138,7 +144,7 @@ describe('BatchEncodingPanel', () => {
     expect(screen.getByText('imageCompress.outputFormat')).toBeInTheDocument();
     expect(screen.getByText('imageCompress.quality')).toBeInTheDocument();
     expect(screen.getByText('imageCompress.scale')).toBeInTheDocument();
-    expect(screen.getAllByRole('combobox')).toHaveLength(3);
+    expect(screen.getAllByRole('combobox')).toHaveLength(4);
     expect(screen.queryByText('convert.videoCodec')).not.toBeInTheDocument();
     expect(screen.queryByText('convert.audioCodec')).not.toBeInTheDocument();
   });
@@ -165,7 +171,28 @@ describe('BatchEncodingPanel', () => {
     expect(screen.getByRole('combobox', { name: 'convert.videoBitrate' })).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'convert.audioBitrate' })).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'convert.scale' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'convert.rotation' })).toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: 'convert.flipHorizontal' })).toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: 'convert.flipVertical' })).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'convert.pixelFormat' })).toBeInTheDocument();
+  });
+
+  it('fires rotation and mirror change callbacks', () => {
+    const { props } = renderPanel({ rotate: '90', flipH: true, flipV: false });
+    const rotateInput = screen.getByTestId('batch-rotation').querySelector('input')!;
+    fireEvent.change(rotateInput, { target: { value: '180' } });
+    expect(props.onRotateChange).toHaveBeenCalledWith('180');
+    expect(screen.getByRole('switch', { name: 'convert.flipHorizontal' })).toBeChecked();
+    fireEvent.click(screen.getByRole('switch', { name: 'convert.flipVertical' }));
+    expect(props.onFlipVChange).toHaveBeenCalledWith(true);
+    fireEvent.click(screen.getByRole('switch', { name: 'convert.flipHorizontal' }));
+    expect(props.onFlipHChange).toHaveBeenCalledWith(false);
+  });
+
+  it('hides rotation and mirror controls for extract_audio', () => {
+    renderPanel({ operation: 'extract_audio' });
+    expect(screen.queryByRole('combobox', { name: 'convert.rotation' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('switch', { name: 'convert.flipHorizontal' })).not.toBeInTheDocument();
   });
 
   it('names the image and quality controls for compress_image', () => {

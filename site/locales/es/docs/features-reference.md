@@ -8,6 +8,10 @@ EncodeX es una herramienta multiplataforma de conversión multimedia que lleva l
 
 Convierte entre formatos de vídeo/audio con control granular sobre la selección de códecs (51 códecs de vídeo entre familias de codificadores por software y hardware, 27 códecs de audio), bitrate, resolución de salida (con conservación opcional de la relación de aspecto), formato de píxel (56 formatos agrupados por profundidad de bits), escala de calidad (qscale), inclusión de pista de audio y selección del núcleo transcoder. Se pueden poner varios archivos en cola mediante la Cola por lotes (ver abajo).
 
+### Rotación y espejo multimedia
+
+Rota vídeos e imágenes 90°, 180° o 270° en el sentido de las agujas del reloj y refleja horizontal o verticalmente — desde la página Convertir y la cola por lotes (paneles de transcodificación y compresión de imágenes, además del diálogo de opciones por tarea). La rotación usa el filtro `transpose` de FFmpeg (`transpose=1` / `transpose=2,transpose=2` / `transpose=2`), combinado con `hflip`/`vflip` en una sola cadena de filtros `-vf` junto a `scale`; el reflejo siempre recodifica. En el modo de copia de flujo, la rotación se guarda sin pérdida como `-metadata:s:v rotate=N` solo para salidas MP4/MOV/MKV; otros contenedores y salidas de imagen siempre usan el camino de píxeles (recodificación).
+
 ### Perfiles de conversión
 
 Aplica preconfiguraciones de codificación para rellenar al instante los ajustes de conversión. Los perfiles encapsulan una configuración de codificación completa — formato de contenedor, códec de vídeo, códec de audio, bitrate, CRF/calidad, escala, formato de píxel y argumentos FFmpeg avanzados — para que no tengas que configurar cada ajuste manualmente.

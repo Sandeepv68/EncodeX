@@ -35,6 +35,9 @@ features:
   - icon: "\u26a1"
     title: 大文件也一样快
     details: EncodeX 自动调用显卡算力，转换速度大幅提升。什么都不用设置。
+  - icon: "\ud83c\udf00"
+    title: 旋转视频，修正侧拍的素材
+    details: 拍反了？将视频顺时针旋转 90°、180° 或 270° 或镜像翻转——保持 MP4/MOV/MKV 格式即无损。
 
 ---
 
@@ -115,6 +118,11 @@ features:
 <div class="card wide">
   <h3>🖼️ 给照片减负</h3>
   <p>压缩照片，让它发送更快、占用更小——保存前还能实时预览压缩效果。</p>
+</div>
+
+<div class="card wide">
+  <h3>🌀 旋转视频，修正侧拍的素材</h3>
+  <p>拍反了？一键把视频和照片顺时针旋转 90°、180° 或 270°，或进行水平/垂直镜像。保持 MP4/MOV/MKV 格式不变时，旋转以无损方式保存——无需重新编码。</p>
 </div>
 
 <div class="card wide">

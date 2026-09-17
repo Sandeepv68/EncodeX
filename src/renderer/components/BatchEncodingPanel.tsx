@@ -5,10 +5,10 @@
  * controls depend on the selected batch operation:
  *
  *  - `transcode`: video codec, audio codec, container, video bitrate, audio
- *    bitrate, scale, and pixel format.
+ *    bitrate, scale, rotation/mirror, and pixel format.
  *  - `extract_audio`: audio codec, container (audio containers), and audio
  *    bitrate.
- *  - `compress_image`: output format, quality, and scale.
+ *  - `compress_image`: output format, quality, scale, and rotation/mirror.
  *
  * Every control is controlled through props (values plus `on*Change`
  * callbacks) so the parent page owns the state. The container/format select
@@ -22,12 +22,12 @@
  */
 
 import { useState } from 'react';
-import { Grid, MenuItem, TextField, InputAdornment, Box } from '@mui/material';
+import { Grid, MenuItem, TextField, InputAdornment, Box, Switch, Typography } from '@mui/material';
 import { faPalette, faBrush, faDroplet, faSun } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useTranslation } from 'react-i18next';
 import { BITRATE_OPTIONS, IMAGE_FORMATS, PIXEL_FORMATS, SCALE_OPTIONS, VIDEO_BITRATE_OPTIONS } from '../../shared/media-options';
-import { QSCALE_RANGE } from '../../shared/transcoder-constants';
+import { QSCALE_RANGE, ROTATION_VALUES } from '../../shared/transcoder-constants';
 import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
 import CodecSelect from './CodecSelect';
 import GroupedSelect from './GroupedSelect';
@@ -82,6 +82,9 @@ const pixelGroupIcons: Record<string, IconDefinition> = {
  * @param {string} props.audioBitrate - Target audio bitrate ('' = auto).
  * @param {string} props.quality - Image compression quality 1-31 ('' = auto).
  * @param {string} props.scale - Output resolution ('' = original).
+ * @param {string} props.rotate - Output rotation ('' | '90' | '180' | '270').
+ * @param {boolean} props.flipH - Whether to mirror horizontally.
+ * @param {boolean} props.flipV - Whether to mirror vertically.
  * @param {string} props.pixelFormat - Output pixel format.
  * @param {(value: string) => void} props.onVideoCodecChange - Video codec change callback.
  * @param {(value: string) => void} props.onAudioCodecChange - Audio codec change callback.
@@ -90,6 +93,9 @@ const pixelGroupIcons: Record<string, IconDefinition> = {
  * @param {(value: string) => void} props.onAudioBitrateChange - Audio bitrate change callback.
  * @param {(value: string) => void} props.onQualityChange - Quality change callback.
  * @param {(value: string) => void} props.onScaleChange - Scale change callback.
+ * @param {(value: string) => void} props.onRotateChange - Rotation change callback.
+ * @param {(value: boolean) => void} props.onFlipHChange - Horizontal-mirror change callback.
+ * @param {(value: boolean) => void} props.onFlipVChange - Vertical-mirror change callback.
  * @param {(value: string) => void} props.onPixelFormatChange - Pixel format change callback.
  * @returns {JSX.Element} The options panel.
  */
@@ -297,6 +303,61 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                   </MenuItem>
                 ))}
               </TextField>
+            </FieldBox>
+          </Grid>
+        )}
+        {(showVideo || showImage) && (
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>{t('convert.rotation')}</FieldLabel>
+              <TextField
+                select
+                fullWidth
+                size="small"
+                data-testid="batch-rotation"
+                slotProps={{ htmlInput: { 'aria-label': t('convert.rotation') } }}
+                value={props.rotate}
+                onChange={(e) => {
+                  props.onRotateChange(e.target.value);
+                }}
+              >
+                {ROTATION_VALUES.map((r) => (
+                  <MenuItem key={r} value={r}>
+                    {r ? t('convert.rotationDegrees', { degrees: r }) : t('status.none')}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FieldBox>
+          </Grid>
+        )}
+        {(showVideo || showImage) && (
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>{t('convert.mirror')}</FieldLabel>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', minHeight: 40 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Switch
+                    data-testid="batch-flip-h"
+                    checked={props.flipH}
+                    onChange={(e) => props.onFlipHChange(e.target.checked)}
+                    slotProps={{ input: { 'aria-label': t('convert.flipHorizontal') } }}
+                  />
+                  <Typography variant="caption" color="text.secondary">
+                    {t('convert.flipHorizontal')}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Switch
+                    data-testid="batch-flip-v"
+                    checked={props.flipV}
+                    onChange={(e) => props.onFlipVChange(e.target.checked)}
+                    slotProps={{ input: { 'aria-label': t('convert.flipVertical') } }}
+                  />
+                  <Typography variant="caption" color="text.secondary">
+                    {t('convert.flipVertical')}
+                  </Typography>
+                </Box>
+              </Box>
             </FieldBox>
           </Grid>
         )}

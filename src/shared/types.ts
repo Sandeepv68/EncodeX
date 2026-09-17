@@ -72,6 +72,12 @@ export interface CodecContainerInfo {
  * @property {number} [qscale] - Video quality scale (-qscale:v), 1 (best) to 31 (worst).
  * @property {string} [scale] - Output resolution as WIDTHxHEIGHT.
  * @property {boolean} [keepAspectRatio] - Whether to preserve the source aspect ratio when scaling.
+ * @property {'90'|'180'|'270'} [rotate] - Output rotation: 90 = 90° clockwise,
+ *   270 = 90° counter-clockwise, 180 = half turn. Applied as a pixel filter
+ *   (transpose) during re-encoding, or as lossless rotation metadata in
+ *   stream-copy mode for MP4/MOV/MKV outputs.
+ * @property {boolean} [flipH] - Mirror the output horizontally (hflip; requires re-encoding).
+ * @property {boolean} [flipV] - Mirror the output vertically (vflip; requires re-encoding).
  * @property {string} [pixelFormat] - Output pixel format (e.g. 'yuv420p').
  * @property {string} [startTime] - Trim start time (seconds or HH:MM:SS).
  * @property {string} [endTime] - Trim end time (seconds or HH:MM:SS).
@@ -92,6 +98,9 @@ export interface ConversionOptions {
   qscale?: number;
   scale?: string;
   keepAspectRatio?: boolean;
+  rotate?: '90' | '180' | '270';
+  flipH?: boolean;
+  flipV?: boolean;
   pixelFormat?: string;
   startTime?: string;
   endTime?: string;

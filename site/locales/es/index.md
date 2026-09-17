@@ -35,6 +35,9 @@ features:
   - icon: "\u26a1"
     title: Rápido incluso con archivos grandes
     details: EncodeX usa la potencia de tu tarjeta gráfica para terminar conversiones mucho más rápido. Sin configuración alguna.
+  - icon: "\ud83c\udf00"
+    title: Rota vídeos y corrige clips laterales
+    details: ¿Grabaste algo al revés? Rota 90°, 180° o 270° y refleja clips — sin pérdida de calidad al mantener MP4/MOV/MKV.
 
 ---
 
@@ -115,6 +118,11 @@ Una pantalla de inicio limpia. Cada herramienta a un clic. Si sabes usar un nave
 <div class="card wide">
   <h3>🖼️ Aligera tus fotos</h3>
   <p>Reduce fotos para que se envíen y suban más rápido y ocupen menos espacio, con una vista previa en vivo de cómo se verá la versión reducida antes de guardar.</p>
+</div>
+
+<div class="card wide">
+  <h3>🌀 Rota vídeos y corrige clips laterales</h3>
+  <p>¿Grabaste algo al revés? Rota vídeos y fotos 90°, 180° o 270° en el sentido de las agujas del reloj o espéjalos con un clic. Si mantienes el mismo formato MP4/MOV/MKV, la rotación se guarda sin pérdida, sin recodificar.</p>
 </div>
 
 <div class="card wide">

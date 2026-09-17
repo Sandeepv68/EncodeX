@@ -240,6 +240,44 @@ describe('FfmpegCore', () => {
     expect(cmd.videoFilters).not.toHaveBeenCalled();
   });
 
+  it('merges scale and rotation into one video filter chain', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { scale: '1280x720', rotate: '90' });
+    const cmd = getCommand();
+    expect(cmd.videoFilters).toHaveBeenCalledWith('scale=1280x720,transpose=1');
+    expect(cmd.size).not.toHaveBeenCalled();
+  });
+
+  it('applies rotation filters without scale', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { rotate: '270', flipH: true });
+    const cmd = getCommand();
+    expect(cmd.videoFilters).toHaveBeenCalledWith('transpose=2,hflip');
+    expect(cmd.size).not.toHaveBeenCalled();
+  });
+
+  it('keeps aspect ratio in the combined chain when requested', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { scale: '1280x720', rotate: '180', keepAspectRatio: true });
+    const cmd = getCommand();
+    expect(cmd.videoFilters).toHaveBeenCalledWith('scale=1280:-2,transpose=2,transpose=2');
+  });
+
+  it('writes rotation metadata in copy mode for supported containers', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { copy: true, rotate: '90' });
+    const cmd = getCommand();
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-c', 'copy');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-metadata:s:v', 'rotate=90');
+  });
+
+  it('does not write rotation metadata for unsupported containers', () => {
+    const core = new FfmpegCore();
+    core.convert('in.webm', 'out.webm', { copy: true, rotate: '90' });
+    const cmd = getCommand();
+    expect(cmd.outputOptions).not.toHaveBeenCalledWith('-metadata:s:v', 'rotate=90');
+  });
+
   it('emits progress with percent when provided', () => {
     const core = new FfmpegCore();
     const emitter = core.convert('in.mp4', 'out.mp4', {});

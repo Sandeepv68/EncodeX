@@ -2246,7 +2246,23 @@ export default defineConfig({
       },
     },
   },
-  sitemap: { hostname: 'https://encodex.in' },
+  sitemap: {
+    hostname: 'https://encodex.in',
+    transformItems(items) {
+      const noIndexLocaleDocs = /^(?:de|es|fr|hi|pt|zh)\/docs\//
+      const withTrailingSlash = (url: string) => {
+        if (!url || url.endsWith('/')) return url
+        return `${url}/`
+      }
+      return items
+        .filter((item) => item.url !== '404' && !noIndexLocaleDocs.test(item.url))
+        .map((item) => ({
+          ...item,
+          url: withTrailingSlash(item.url),
+          links: item.links?.map((link) => ({ ...link, url: withTrailingSlash(link.url) })),
+        }))
+    },
+  },
   head: [
     ['link', { rel: 'icon', href: '/images/favicon-64.webp' }],
     ['link', { rel: 'preload', as: 'image', href: '/images/icon_380.webp', fetchpriority: 'high' }],
@@ -2269,7 +2285,7 @@ gtag('config', 'G-SM28DL4DYR');`,
     const pagePath = context.pageData?.relativePath || ''
     const frontmatter = context.pageData?.frontmatter || {}
 
-    if (context.pageData?.isNotFound) {
+    if (context.pageData?.isNotFound || context.pageData?.relativePath === '404.md') {
       head.push(['meta', { name: 'robots', content: 'noindex' }])
       return head
     }
@@ -2286,7 +2302,7 @@ gtag('config', 'G-SM28DL4DYR');`,
 
     const localeBase = localePrefix ? `${localePrefix}/` : ''
     const canonicalUrl = pageSlug
-      ? `${SITE_URL}/${localeBase}${pageSlug}${isDirIndex ? '/' : ''}`
+      ? `${SITE_URL}/${localeBase}${pageSlug}/`
       : `${SITE_URL}/${localeBase}`
 
     if (localePrefix && pageSlug.startsWith('docs/')) {
@@ -2319,13 +2335,13 @@ gtag('config', 'G-SM28DL4DYR');`,
     for (const [prefix, hreflang] of localeEntries) {
       const base = prefix ? `${prefix}/` : ''
       const href = pageSlug
-        ? `${SITE_URL}/${base}${pageSlug}${isDirIndex ? '/' : ''}`
+        ? `${SITE_URL}/${base}${pageSlug}/`
         : `${SITE_URL}/${base}`
       head.push(['link', { rel: 'alternate', hreflang, href }])
     }
     head.push([
       'link',
-      { rel: 'alternate', hreflang: 'x-default', href: pageSlug ? `${SITE_URL}/${pageSlug}${isDirIndex ? '/' : ''}` : `${SITE_URL}/` },
+      { rel: 'alternate', hreflang: 'x-default', href: pageSlug ? `${SITE_URL}/${pageSlug}/` : `${SITE_URL}/` },
     ])
 
     if ((pageSlug === '' || pageSlug === 'index') && !localePrefix) {

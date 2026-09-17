@@ -18,6 +18,7 @@ Ya necesites un **convertidor de vídeo de escritorio**, algo rápido para un so
 - Cualquier cosa a MP4 para máxima compatibilidad
 - Cambia la **resolución, la velocidad de fotogramas y la tasa de bits** para una reproducción impecable
 - Usa **aceleración por hardware** (NVENC, QSV, AMF, VAAPI, VideoToolbox) para más velocidad
+- **Gira y refleja vídeos** – corrige clips de lado sin pérdida (MP4, MOV, MKV) o con un re-encode rápido
 
 ### Instala una vez, convierte sin conexión, sin límites
 

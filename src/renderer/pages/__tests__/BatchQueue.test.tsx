@@ -139,6 +139,26 @@ describe('BatchQueue', () => {
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'batchQueue.enqueued')).toBe(true);
   });
 
+  it('includes rotation and mirror selections in added job options', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/video.mp4']);
+    queueAddMock.mockResolvedValue('job-3');
+    renderPage();
+    fireEvent.change(screen.getByTestId('batch-rotation').querySelector('input')!, { target: { value: '90' } });
+    fireEvent.click(screen.getByTestId('batch-flip-h').querySelector('input')!);
+    openAddFiles();
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() =>
+      expect(queueAddMock).toHaveBeenCalledWith(
+        '/in/video.mp4',
+        '/in/video_encodex_converted.mp4',
+        expect.objectContaining({ rotate: '90', flipH: true }),
+        'FFMPEG',
+        false,
+      ),
+    );
+  });
+
   it('adds multiple files and maps each output path', async () => {
     queueListMock.mockResolvedValue([]);
     selectFilesMock.mockResolvedValue(['/a/one.mkv', '/a/two.mkv']);

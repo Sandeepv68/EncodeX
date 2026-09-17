@@ -53,6 +53,14 @@ Las fotos grandes son geniales... hasta que tienes que enviarlas. EncodeX reduce
 
 Compatible con los formatos habituales: JPG, PNG, WebP, GIF, BMP, TIFF y más. También puedes ver la información oculta de cada foto (ajustes de cámara, fecha, etc.).
 
+## Rotar vídeos y corregir clips laterales
+
+<img src="/images/convert.webp" alt="Rotación y espejo" width="1600" height="1057" loading="lazy">
+
+¿Grabaste un vídeo con el móvil en la posición equivocada? EncodeX rota cualquier vídeo o foto 90°, 180° o 270° en el sentido de las agujas del reloj y lo refleja horizontal o verticalmente: clips laterales, selfies invertidos o vídeos verticales que quieres en horizontal se corrigen con un clic.
+
+Si mantienes el formato MP4, MOV o MKV, la rotación se guarda como metadatos sin pérdida: sin recodificar y sin pérdida de calidad. Cualquier otro formato (o un reflejo) se recodifica, y todo funciona también en la cola por lotes.
+
 ## Convertir muchos archivos a la vez
 
 <img src="/images/batch_process.webp" alt="Cola por lotes" width="1600" height="1360" loading="lazy">
