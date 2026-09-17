@@ -379,6 +379,35 @@ html {
   border-radius: 6px;
 }
 
+/* ---------- Fluid navbar ----------
+   VitePress reveals the full top-level menu from 768px, but this site's nav
+   (8 top-level items + search box + language switch + social links) only fits
+   on wide screens. Below 1280px the bar collapses into the hamburger menu so
+   it never overflows or clips on tablets and narrow laptops; the full menu,
+   language switch, appearance toggle, and social links appear at 1280px+.
+   (1280px matches VitePress's own breakpoint for those extra controls.) */
+@media (max-width: 1279px) {
+  .VPNavBarMenu {
+    display: none;
+  }
+
+  .VPNavBarHamburger {
+    display: flex;
+  }
+
+  .VPNavScreen {
+    display: block;
+  }
+}
+
+/* Slightly tighten the top-level links on narrow laptops just above the
+   collapse point so the full menu fits without wrapping or clipping. */
+@media (min-width: 1280px) and (max-width: 1439px) {
+  .VPNavBarMenu .VPNavBarMenuLink {
+    padding: 0 10px;
+  }
+}
+
 /* ============================================================
    Card system
    ============================================================ */

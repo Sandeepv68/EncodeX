@@ -61,7 +61,7 @@ for (const subdir of blogSubdirs) {
       description: String(meta.description || ''),
       tags: Array.isArray(meta.tags) ? meta.tags : [],
       slug,
-      url: `${SITE_URL}/blog/${subdir}/${slug}`,
+      url: `${SITE_URL}/blog/${subdir}/${slug}/`,
     });
   }
 }

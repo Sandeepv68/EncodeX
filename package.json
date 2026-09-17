@@ -52,6 +52,7 @@
     "dist": "npm run build && electron-builder",
     "docs:dev": "vitepress dev site",
     "docs:build": "npm run docs:rss && vitepress build site",
+    "docs:build:gh": "npm run docs:build && node scripts/normalize-build.mjs",
     "docs:preview": "vitepress preview site",
     "docs:blog": "node scripts/generate-blog.mjs",
     "docs:rss": "node scripts/generate-rss.mjs"
