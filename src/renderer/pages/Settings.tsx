@@ -253,7 +253,7 @@ function McpSettingsSection() {
         <ModeSettingsSection>
           <SettingLabel text={t('settings.mcpToken')} hint={t('settings.mcpTokenHint')} />
           <McpValueRow>
-            <Box sx={(theme) => (hasToken ? undefined : { marginLeft: 'auto' })}>
+            <Box sx={hasToken ? undefined : { marginLeft: 'auto' }}>
               <Tooltip title={t('settings.mcpTokenGenerate')}>
                 <IconButton
                   size="small"
