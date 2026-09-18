@@ -32,13 +32,13 @@ Choisissez un cas d'usage ci-dessous pour apprendre comment.
   <div class="card">
     <h3>✂️ Rogner et couper des clips</h3>
     <p>Supprimez les passages creux, coupez les intros et découpez vos meilleurs moments sans réencoder tout le fichier.</p>
-    <a href="/fr/video-cut">En savoir plus →</a>
+    <a href="/fr/features#couper-des-videos">En savoir plus →</a>
   </div>
 
   <div class="card">
     <h3>📦 Traiter des dossiers entiers en lot</h3>
     <p>Chargez un dossier de 10 ou 1000 fichiers, choisissez un préréglage et laissez EncodeX tout convertir d'un coup — même pendant la nuit.</p>
-    <a href="/fr/batch">En savoir plus →</a>
+    <a href="/fr/features#convertir-plusieurs-fichiers-a-la-fois">En savoir plus →</a>
   </div>
 
   <div class="card">
@@ -56,7 +56,13 @@ Choisissez un cas d'usage ci-dessous pour apprendre comment.
   <div class="card">
     <h3>📊 Inspecter les métadonnées de vos médias</h3>
     <p>Vérifiez codecs, débits binaires, durée et pistes avant de convertir — sans connaissances FFmpeg.</p>
-    <a href="/fr/media-info">En savoir plus →</a>
+    <a href="/fr/features#espionner-l-interieur-d-un-fichier">En savoir plus →</a>
+  </div>
+
+  <div class="card">
+    <h3>🤖 Automatiser avec un assistant IA</h3>
+    <p>EncodeX intègre un serveur MCP — connectez Claude, Cursor, VS Code ou tout client MCP et demandez-lui, en langage naturel, de convertir, d'extraire, de compresser ou de suivre un travail en lot, entièrement en local.</p>
+    <a href="/fr/features#laissez-un-assistant-ia-piloter">En savoir plus →</a>
   </div>
 
 </div>

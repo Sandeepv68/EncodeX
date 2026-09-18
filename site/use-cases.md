@@ -14,7 +14,7 @@ Pick a use case below to learn how.
   <div class="card">
     <h3>📹 Compress video for upload</h3>
     <p>Shrink large video files before sharing on social media, email, or chat — without sacrificing visible quality.</p>
-    <a href="/compress">Learn more →</a>
+    <a href="/video-compressor">Learn more →</a>
   </div>
 
   <div class="card">
@@ -26,19 +26,19 @@ Pick a use case below to learn how.
   <div class="card">
     <h3>🔄 Convert between formats</h3>
     <p>MOV to MP4, WebM to AVI, MKV to MP4 — change the container while keeping the original quality.</p>
-    <a href="/convert">Learn more →</a>
+    <a href="/video-converter">Learn more →</a>
   </div>
 
   <div class="card">
     <h3>✂️ Trim and cut clips</h3>
     <p>Remove dead air, trim intros, and cut highlights without re-encoding the whole file.</p>
-    <a href="/video-cut">Learn more →</a>
+    <a href="/features#trim-videos">Learn more →</a>
   </div>
 
   <div class="card">
     <h3>📦 Batch process entire folders</h3>
     <p>Load a folder of 10 or 1000 files, pick a preset, and let EncodeX convert them all at once — overnight if needed.</p>
-    <a href="/batch">Learn more →</a>
+    <a href="/features#convert-many-files-at-once">Learn more →</a>
   </div>
 
   <div class="card">
@@ -56,7 +56,13 @@ Pick a use case below to learn how.
   <div class="card">
     <h3>📊 Inspect media metadata</h3>
     <p>Check codecs, bitrates, duration, and streams before converting — no FFmpeg knowledge needed.</p>
-    <a href="/media-info">Learn more →</a>
+    <a href="/features#peek-inside-any-media-file">Learn more →</a>
+  </div>
+
+  <div class="card">
+    <h3>🤖 Automate with an AI assistant</h3>
+    <p>EncodeX ships with a built-in MCP server — connect Claude, Cursor, VS Code, or any MCP client and ask it to convert, extract, compress, or track a batch job in plain language, all locally.</p>
+    <a href="/features#let-an-ai-assistant-drive">Learn more →</a>
   </div>
 
 </div>
