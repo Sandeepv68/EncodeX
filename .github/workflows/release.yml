@@ -66,6 +66,8 @@ jobs:
         run: node scripts/fetch-media-binaries.mjs --platform=${{ matrix.os }} --arch=${{ matrix.arch }}
       - name: Build ${{ matrix.arch }} ${{ matrix.target }} installer
         run: npm run dist -- --${{ matrix.builder-os || matrix.os }} ${{ matrix.target }} --${{ matrix.arch }} --publish never
+      - name: Smoke test compiled MCP server
+        run: npm run mcp:smoke
       - name: Upload installers
         uses: actions/upload-artifact@v4
         with:

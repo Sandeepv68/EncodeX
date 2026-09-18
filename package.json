@@ -16,6 +16,9 @@
     "build:preload": "tsc -p tsconfig.preload.json",
     "build": "npm run gen:sentry-config && npm run build:renderer && npm run build:main && npm run build:preload",
     "start": "electron .",
+    "mcp": "node dist/mcp/index.js",
+    "mcp:smoke": "node scripts/mcp-smoke.mjs",
+    "mcp:smoke:electron": "node scripts/mcp-smoke.mjs --electron",
     "electron:dev": "concurrently -k \"npm run dev:renderer\" \"wait-on http://localhost:5173 && tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && electron . --dev\"",
     "dev:start": "tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && concurrently -k \"npm run dev:renderer\" \"electron .\"",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"e2e/**/*.{ts,tsx}\" \"scripts/**/*.{ts,tsx,mjs,js}\" \"*.{ts,mjs,js}\" \"bin/**/*.js\"",
@@ -67,6 +70,7 @@
     "@fortawesome/fontawesome-svg-core": "^7.3.1",
     "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "@fortawesome/react-fontawesome": "^3.5.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@mui/material": "^9.2.0",
     "@sentry/electron": "^7.17.0",
     "chalk": "4.1.2",
@@ -88,6 +92,7 @@
     "simple-icons": "^16.28.0",
     "stylis-plugin-rtl": "^2.1.1",
     "vitepress-plugin-mermaid": "^2.0.17",
+    "zod": "^4.6.5",
     "zustand": "^5.0.0"
   },
   "devDependencies": {

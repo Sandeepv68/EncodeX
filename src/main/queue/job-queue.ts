@@ -70,11 +70,16 @@ const DEFAULT_PERSIST_DELAY_MS = 500;
  *   queue is in-memory only.
  * @property {number} [persistDelayMs=500] - Debounce delay before a mutation is
  *   written through the persistence adapter.
+ * @property {function(TranscoderType): ITranscoder} [transcoderFactory] -
+ *   Factory used to create the transcoder driving each job. Defaults to
+ *   {@link createTranscoder}; overridable so tests (and the MCP layer) can
+ *   inject deterministic fakes.
  */
 export interface JobQueueOptions {
   concurrency?: number;
   persistence?: QueuePersistence;
   persistDelayMs?: number;
+  transcoderFactory?: (type: TranscoderType) => ITranscoder;
 }
 
 /**
@@ -126,6 +131,8 @@ export class JobQueue extends EventEmitter {
   private readonly persistence?: QueuePersistence;
   /** Debounce delay before a mutation is persisted, in milliseconds. */
   private readonly persistDelayMs: number;
+  /** Factory used to create the transcoder running each job. */
+  private readonly transcoderFactory: (type: TranscoderType) => ITranscoder;
   /** Pending debounced persistence timer, or null when none is scheduled. */
   private persistTimer: NodeJS.Timeout | null = null;
   /** True once at least one job reached a terminal state (DONE or non-cancelled
@@ -150,6 +157,7 @@ export class JobQueue extends EventEmitter {
     this.concurrency = Math.min(Math.max(resolved.concurrency ?? 1, 1), MAX_QUEUE_CONCURRENCY);
     this.persistence = resolved.persistence;
     this.persistDelayMs = resolved.persistDelayMs ?? DEFAULT_PERSIST_DELAY_MS;
+    this.transcoderFactory = resolved.transcoderFactory ?? createTranscoder;
     this.loadPersistedState();
   }
 
@@ -591,7 +599,7 @@ export class JobQueue extends EventEmitter {
       }),
     );
 
-    const transcoder = createTranscoder(nextJob.transcoder);
+    const transcoder = this.transcoderFactory(nextJob.transcoder);
     this.activeJobs.set(nextJob.id, transcoder);
 
     try {

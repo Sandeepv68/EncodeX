@@ -39,6 +39,14 @@ export const ModeSelect = styled(TextField)(({ theme }) => ({
   },
 }));
 
+export const McpField = styled(TextField)(({ theme }) => ({
+  minWidth: theme.spacing(26),
+  [theme.breakpoints.down('sm')]: {
+    minWidth: 0,
+    width: '100%',
+  },
+}));
+
 export const ModeSettingsSection = styled(SettingsSection)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',

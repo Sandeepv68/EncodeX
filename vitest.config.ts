@@ -16,7 +16,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
-    exclude: ['node_modules', 'dist'],
+    exclude: ['node_modules', 'dist', '**/*.integration.{test,spec}.ts'],
     css: true,
     pool: 'forks',
     maxWorkers: 6,

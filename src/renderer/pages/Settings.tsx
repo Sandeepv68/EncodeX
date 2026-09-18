@@ -12,12 +12,14 @@
  * page only reads and writes store state and makes no direct IPC calls.
  */
 
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Switch, MenuItem } from '@mui/material';
 import { useColorMode } from '../ColorModeContext';
 import { useSettingsStore } from '../stores/settingsStore';
 import InfoTooltip from '../components/InfoTooltip';
 import { HWACCEL_MODES, ENCODER_TYPES } from '../../shared/hwaccel-settings';
+import { MCP_MIN_PORT, MCP_MAX_PORT } from '../../shared/mcp-settings';
 import { THEMES } from '../colors';
 import type { ThemeDefinition } from '../colors';
 import type { HwAccelMode, EncoderType } from '../../shared/types';
@@ -31,6 +33,7 @@ import {
   SettingsLabelRow,
   ModeSelect,
   ModeSettingsSection,
+  McpField,
   ThemeSwitcher,
   ThemeCard,
   ThemePreview,
@@ -102,14 +105,94 @@ function ThemePreviewCard({ theme }: { theme: ThemeDefinition }) {
 }
 
 /**
+ * Renders the embedded MCP server settings: an enable switch plus (when
+ * enabled) the loopback port and optional bearer-token fields. The port and
+ * token inputs keep local draft state and commit to the store on blur or Enter,
+ * so typing never triggers an IPC round-trip (and therefore never restarts the
+ * HTTP server) per keystroke.
+ * @returns {JSX.Element} The MCP server settings rows.
+ */
+function McpSettingsSection() {
+  const { t } = useTranslation();
+  const enabled = useSettingsStore((s) => s.mcpEnabled);
+  const port = useSettingsStore((s) => s.mcpPort);
+  const token = useSettingsStore((s) => s.mcpToken);
+  const setMcpEnabled = useSettingsStore((s) => s.setMcpEnabled);
+  const setMcpPort = useSettingsStore((s) => s.setMcpPort);
+  const setMcpToken = useSettingsStore((s) => s.setMcpToken);
+
+  const [portText, setPortText] = useState(String(port));
+  const [tokenText, setTokenText] = useState(token);
+
+  useEffect(() => setPortText(String(port)), [port]);
+  useEffect(() => setTokenText(token), [token]);
+
+  const commitPort = () => {
+    const parsed = Number.parseInt(portText, 10);
+    if (Number.isInteger(parsed)) setMcpPort(parsed);
+    else setPortText(String(port));
+  };
+
+  return (
+    <>
+      <SettingsSection>
+        <ToggleRow>
+          <Switch
+            checked={enabled}
+            onChange={(e) => setMcpEnabled(e.target.checked)}
+            slotProps={{ input: { 'aria-label': t('settings.mcpServer'), 'data-testid': 'settings-mcp-server' } }}
+          />
+          <SettingLabel text={t('settings.mcpServer')} hint={t('settings.mcpServerHint')} />
+        </ToggleRow>
+      </SettingsSection>
+      {enabled && (
+        <ModeSettingsSection>
+          <SettingLabel text={t('settings.mcpPort')} hint={t('settings.mcpPortHint')} />
+          <McpField
+            type="number"
+            size="small"
+            data-testid="settings-mcp-port"
+            slotProps={{ htmlInput: { 'aria-label': t('settings.mcpPort'), min: MCP_MIN_PORT, max: MCP_MAX_PORT } }}
+            value={portText}
+            onChange={(e) => setPortText(e.target.value)}
+            onBlur={commitPort}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') commitPort();
+            }}
+          />
+        </ModeSettingsSection>
+      )}
+      {enabled && (
+        <ModeSettingsSection>
+          <SettingLabel text={t('settings.mcpToken')} hint={t('settings.mcpTokenHint')} />
+          <McpField
+            type="password"
+            size="small"
+            data-testid="settings-mcp-token"
+            slotProps={{ htmlInput: { 'aria-label': t('settings.mcpToken') } }}
+            value={tokenText}
+            onChange={(e) => setTokenText(e.target.value)}
+            onBlur={() => setMcpToken(tokenText)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') setMcpToken(tokenText);
+            }}
+          />
+        </ModeSettingsSection>
+      )}
+    </>
+  );
+}
+
+/**
  * Renders the settings page (`/settings`).
  *
  * Layout: a theme section whose cards call `setTheme` from `useColorMode`, and
  * `SettingsSection`s for the "always on top" and "launch at startup" switches,
- * the hardware-acceleration enable switch, and (only when acceleration is
- * enabled) the hwaccel-mode and encoder-type selects. All values are bound
- * one-way to `useSettingsStore`; store setters update persisted state and the
- * main process automatically.
+ * the error-reporting switch, the embedded MCP server rows, the
+ * hardware-acceleration enable switch, and (only when acceleration is enabled)
+ * the hwaccel-mode and encoder-type selects. All values are bound one-way to
+ * `useSettingsStore`; store setters update persisted state and the main process
+ * automatically.
  *
  * No IPC calls are made directly from this page.
  *
@@ -191,6 +274,7 @@ export default function Settings() {
           <SettingLabel text={t('settings.monitoringErrorReporting')} hint={t('settings.monitoringErrorReportingHint')} />
         </ToggleRow>
       </SettingsSection>
+      <McpSettingsSection />
       <SettingsSection>
         <ToggleRow>
           <Switch

@@ -800,6 +800,12 @@ export const LOG_WHEN_DONE_EXECUTING = 'When done: executing';
 export const LOG_WHEN_DONE_UNSUPPORTED_PLATFORM = 'When done: unsupported platform';
 /** @const {string} Prefix when setMonitoringEnabled is invoked. */
 export const LOG_SET_MONITORING_ENABLED = 'setMonitoringEnabled:';
+/** @const {string} Prefix when setMcpEnabled is invoked. */
+export const LOG_SET_MCP_ENABLED = 'setMcpEnabled:';
+/** @const {string} Prefix when setMcpPort is invoked. */
+export const LOG_SET_MCP_PORT = 'setMcpPort:';
+/** @const {string} Logged when setMcpToken is invoked (the token value is never logged). */
+export const LOG_SET_MCP_TOKEN = 'setMcpToken';
 /** @const {string} Prefix when spawning a when-done power command fails. */
 export const LOG_WHEN_DONE_SPAWN_FAILED = 'When done: spawn failed';
 /** @const {string} Logged when windowClose is invoked. */
@@ -874,3 +880,31 @@ export const LOG_MONITORING_UNHANDLED_REJECTION = 'Unhandled rejection:';
 export const LOG_MONITORING_RENDER_PROCESS_GONE = 'Renderer process gone:';
 /** @const {string} Prefix when a child process dies unexpectedly. */
 export const LOG_MONITORING_CHILD_PROCESS_GONE = 'Child process gone:';
+/** @const {string} Prefix when reading the stored MCP server settings fails. */
+export const LOG_FAILED_TO_READ_STORED_MCP_SETTINGS = 'Failed to read stored MCP settings:';
+/** @const {string} Prefix when persisting the MCP server settings fails. */
+export const LOG_FAILED_TO_PERSIST_MCP_SETTINGS = 'Failed to persist MCP settings:';
+/** @const {string} Logged when the MCP_SETTINGS_GET IPC message is received. */
+export const LOG_IPC_MCP_SETTINGS_GET = 'MCP_SETTINGS_GET called';
+/** @const {string} Prefix when the MCP_SETTINGS_SET IPC message is received. */
+export const LOG_IPC_MCP_SETTINGS_SET = 'MCP_SETTINGS_SET:';
+/** @const {string} Prefix when the embedded MCP HTTP server starts listening. */
+export const LOG_MCP_HTTP_STARTED = 'MCP HTTP server listening on';
+/** @const {string} Prefix when the embedded MCP HTTP server fails to start. */
+export const LOG_MCP_HTTP_START_FAILED = 'MCP HTTP server failed to start:';
+/** @const {string} Prefix when the embedded MCP HTTP server is stopped. */
+export const LOG_MCP_HTTP_STOPPED = 'MCP HTTP server stopped';
+/** @const {string} Prefix when an HTTP request is rejected (origin/auth/method/path). */
+export const LOG_MCP_HTTP_REJECTED = 'MCP HTTP request rejected:';
+/** @const {string} Prefix when a GUI-parity MCP tool call fails internally. */
+export const LOG_MCP_GUI_TOOL_ERROR = 'MCP GUI tool error:';
+/** @const {string} Prefix when the embedded (Phase 2) MCP server is starting. */
+export const LOG_MCP_EMBEDDED_STARTING = 'Starting embedded MCP server:';
+/** @const {string} Prefix when the embedded MCP server(s) fail to start. */
+export const LOG_MCP_EMBEDDED_START_FAILED = 'Embedded MCP server failed:';
+/** @const {string} Logged when the embedded MCP server stays off per settings. */
+export const LOG_MCP_EMBEDDED_DISABLED = 'Embedded MCP server is disabled in settings';
+/** @const {string} Logged when the renderer requests the stored MCP settings. */
+export const LOG_IPC_MCP_GET_SETTINGS = 'mcpGetSettings called';
+/** @const {string} Prefix when the renderer updates the MCP settings. */
+export const LOG_IPC_MCP_SET_SETTINGS = 'mcpSetSettings:';

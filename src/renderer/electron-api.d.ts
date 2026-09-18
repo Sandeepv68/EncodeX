@@ -25,6 +25,7 @@ import {
   UpdateInfo,
   UpdateProgress,
 } from '../shared/types';
+import type { McpSettings } from '../shared/mcp-settings';
 
 /**
  * The bridge API exposed to the renderer as `window.electronAPI`.
@@ -443,6 +444,20 @@ export interface ElectronAPI {
    * @returns {Promise<{ enabled: boolean; backend: string }>}> The resulting state.
    */
   monitoringSetEnabled(enabled: boolean): Promise<{ enabled: boolean; backend: string }>;
+  /**
+   * Queries the stored embedded MCP server settings from the main process over
+   * `IPC.MCP_SETTINGS_GET` ('mcp-settings-get').
+   * @returns {Promise<McpSettings>} The persisted (sanitized) MCP settings.
+   */
+  mcpGetSettings(): Promise<McpSettings>;
+  /**
+   * Updates the embedded MCP server settings (Settings UI). Persists the new
+   * snapshot in the main process and live-reconciles the server over
+   * `IPC.MCP_SETTINGS_SET` ('mcp-settings-set').
+   * @param {McpSettings} settings - The candidate settings to store.
+   * @returns {Promise<McpSettings>} The resulting sanitized settings.
+   */
+  mcpSetSettings(settings: McpSettings): Promise<McpSettings>;
   /**
    * Captures the current window contents and saves them as a PNG under the
    * project's `screenshots/dev/` directory over `IPC.DEV_CAPTURE_SCREENSHOT`

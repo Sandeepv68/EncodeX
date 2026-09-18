@@ -42,6 +42,7 @@
  * - Window controls: `windowMinimize`, `windowMaximizeToggle`, `windowClose`,
  *   `windowSetAlwaysOnTop`, `setLaunchAtLogin`.
  * - Monitoring consent: `monitoringGetState`, `monitoringSetEnabled`.
+ * - MCP server settings: `mcpGetSettings`, `mcpSetSettings`.
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
  *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
@@ -68,6 +69,7 @@ import {
   UpdateInfo,
   UpdateProgress,
 } from '../shared/types';
+import type { McpSettings } from '../shared/mcp-settings';
 import {
   LOG_ARROW,
   LOG_CANCEL_CONVERSION_CALLED,
@@ -131,6 +133,8 @@ import {
   LOG_UPDATER_OPEN_RELEASE_NOTES,
   LOG_IPC_MONITORING_GET_STATE,
   LOG_IPC_MONITORING_SET_ENABLED,
+  LOG_IPC_MCP_GET_SETTINGS,
+  LOG_IPC_MCP_SET_SETTINGS,
 } from '../shared/log-constants';
 
 /**
@@ -832,6 +836,32 @@ const api = {
   monitoringSetEnabled: (enabled: boolean) => {
     log.debug(LOG_IPC_MONITORING_SET_ENABLED, { enabled });
     return ipcRenderer.invoke(IPC.MONITORING_SET_ENABLED, enabled) as Promise<{ enabled: boolean; backend: string }>;
+  },
+
+  /**
+   * Queries the stored embedded MCP server settings from the main process. Logs
+   * the call at debug level and invokes `IPC.MCP_SETTINGS_GET`
+   * ('mcp-settings-get').
+   *
+   * @returns {Promise<McpSettings>} The persisted (sanitized) MCP settings.
+   */
+  mcpGetSettings: () => {
+    log.debug(LOG_IPC_MCP_GET_SETTINGS);
+    return ipcRenderer.invoke(IPC.MCP_SETTINGS_GET) as Promise<McpSettings>;
+  },
+
+  /**
+   * Updates the embedded MCP server settings (Settings UI). Persists the new
+   * snapshot in the main process and live-reconciles the running server, then
+   * returns the authoritative sanitized settings. Invokes
+   * `IPC.MCP_SETTINGS_SET` ('mcp-settings-set') with the candidate snapshot.
+   *
+   * @param {McpSettings} settings - The candidate settings to store.
+   * @returns {Promise<McpSettings>} The resulting sanitized settings.
+   */
+  mcpSetSettings: (settings: McpSettings) => {
+    log.debug(LOG_IPC_MCP_SET_SETTINGS, settings);
+    return ipcRenderer.invoke(IPC.MCP_SETTINGS_SET, settings) as Promise<McpSettings>;
   },
 
   /**

@@ -98,6 +98,8 @@ describe('preload', () => {
     ['playerGetFrame', IPC.PLAYER_GET_FRAME, []],
     ['extractWaveform', IPC.EXTRACT_WAVEFORM, ['v.mp4', 60]],
     ['extractThumbnails', IPC.EXTRACT_THUMBNAILS, ['v.mp4', 60]],
+    ['mcpGetSettings', IPC.MCP_SETTINGS_GET, []],
+    ['mcpSetSettings', IPC.MCP_SETTINGS_SET, [{ enabled: true, port: 8765, token: 'abc' }]],
   ])('%s invokes the %s channel', async (method, channel, args) => {
     ipcRendererMock.invoke.mockResolvedValue('ok');
     const result = await (api[method] as (...a: unknown[]) => Promise<string>)(...args);

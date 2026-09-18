@@ -30,6 +30,9 @@ describe('settingsStore', () => {
       monitoringEnabled: true,
       queueConcurrency: DEFAULT_QUEUE_CONCURRENCY,
       whenDone: { enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false },
+      mcpEnabled: false,
+      mcpPort: 8765,
+      mcpToken: '',
     });
   });
 
@@ -155,6 +158,71 @@ describe('settingsStore', () => {
     });
     const { useSettingsStore: fresh } = await import('../settingsStore');
     await vi.waitFor(() => expect(fresh.getState().monitoringEnabled).toBe(false));
+  });
+
+  it('defaults the MCP server to disabled on the default port with no token', () => {
+    expect(useSettingsStore.getState().mcpEnabled).toBe(false);
+    expect(useSettingsStore.getState().mcpPort).toBe(8765);
+    expect(useSettingsStore.getState().mcpToken).toBe('');
+  });
+
+  it('setMcpEnabled forwards the full snapshot and adopts the sanitized result', async () => {
+    const spy = vi.fn().mockResolvedValue({ enabled: true, port: 9000, token: 'abc' });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: spy },
+      writable: true,
+    });
+    useSettingsStore.getState().setMcpEnabled(true);
+    expect(spy).toHaveBeenCalledWith({ enabled: true, port: 8765, token: '' });
+    await vi.waitFor(() => expect(useSettingsStore.getState().mcpEnabled).toBe(true));
+    expect(useSettingsStore.getState().mcpPort).toBe(9000);
+    expect(useSettingsStore.getState().mcpToken).toBe('abc');
+  });
+
+  it('setMcpPort forwards the merged snapshot and adopts the clamped port', async () => {
+    useSettingsStore.setState({ mcpEnabled: true, mcpPort: 8765, mcpToken: '' });
+    const spy = vi.fn().mockResolvedValue({ enabled: true, port: 1024, token: '' });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: spy },
+      writable: true,
+    });
+    useSettingsStore.getState().setMcpPort(50);
+    expect(spy).toHaveBeenCalledWith({ enabled: true, port: 50, token: '' });
+    await vi.waitFor(() => expect(useSettingsStore.getState().mcpPort).toBe(1024));
+  });
+
+  it('setMcpToken forwards the merged snapshot and adopts the result', async () => {
+    const spy = vi.fn().mockResolvedValue({ enabled: false, port: 8765, token: 'tok' });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: spy },
+      writable: true,
+    });
+    useSettingsStore.getState().setMcpToken('tok');
+    expect(spy).toHaveBeenCalledWith({ enabled: false, port: 8765, token: 'tok' });
+    await vi.waitFor(() => expect(useSettingsStore.getState().mcpToken).toBe('tok'));
+  });
+
+  it('keeps the previous MCP state when the main-process call fails', async () => {
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockRejectedValue(new Error('ipc down')) },
+      writable: true,
+    });
+    useSettingsStore.getState().setMcpEnabled(true);
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(useSettingsStore.getState().mcpEnabled).toBe(false);
+  });
+
+  it('hydrates the MCP settings from the main process at load', async () => {
+    vi.resetModules();
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { mcpGetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 9000, token: 'secret' }) },
+      writable: true,
+    });
+    const { useSettingsStore: fresh } = await import('../settingsStore');
+    await vi.waitFor(() => expect(fresh.getState().mcpEnabled).toBe(true));
+    expect(fresh.getState().mcpPort).toBe(9000);
+    expect(fresh.getState().mcpToken).toBe('secret');
   });
 });
 

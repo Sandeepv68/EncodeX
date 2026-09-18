@@ -77,6 +77,12 @@ export interface HwAccelStored {
  * @property {(enabled: boolean) => void} setLaunchAtLogin - Sets launch-at-login, persists it, and forwards it to the main process.
  * @property {boolean} monitoringEnabled - Whether error reporting (monitoring) is consented.
  * @property {(enabled: boolean) => void} setMonitoringEnabled - Sets monitoring consent, forwards it to the main process, and adopts the authoritative result.
+ * @property {boolean} mcpEnabled - Whether the embedded MCP HTTP server is enabled.
+ * @property {number} mcpPort - TCP port the embedded MCP server binds on 127.0.0.1.
+ * @property {string} mcpToken - Optional bearer token MCP clients must send.
+ * @property {(enabled: boolean) => void} setMcpEnabled - Enables/disables the MCP server, persists it, and live-reconciles it in the main process.
+ * @property {(port: number) => void} setMcpPort - Sets the MCP server port, persists it, and adopts the sanitized result.
+ * @property {(token: string) => void} setMcpToken - Sets the MCP server bearer token, persists it, and adopts the sanitized result.
  * @property {number} queueConcurrency - Number of batch jobs run in parallel (1-4).
  * @property {(concurrency: number) => void} setQueueConcurrency - Sets the batch concurrency, persists it, and forwards it to the main process.
  * @property {WhenDoneConfig} whenDone - When-done power action config for the batch queue (enabled, action, force).
@@ -97,6 +103,12 @@ export interface SettingsState {
   setLaunchAtLogin: (enabled: boolean) => void;
   monitoringEnabled: boolean;
   setMonitoringEnabled: (enabled: boolean) => void;
+  mcpEnabled: boolean;
+  mcpPort: number;
+  mcpToken: string;
+  setMcpEnabled: (enabled: boolean) => void;
+  setMcpPort: (port: number) => void;
+  setMcpToken: (token: string) => void;
   queueConcurrency: number;
   setQueueConcurrency: (concurrency: number) => void;
   whenDone: WhenDoneConfig;
