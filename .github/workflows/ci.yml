@@ -231,6 +231,29 @@ jobs:
       - run: npm ci
       - run: npm run test:integration
 
+  test-mcp-smoke:
+    name: Test - MCP server smoke
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-ubuntu
+          path: dist
+      - run: npm ci
+      - name: Smoke test standalone stdio server
+        run: npm run mcp:smoke
+      - name: Install xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+      - name: Smoke test Electron --mcp mode
+        run: xvfb-run --auto-servernum npm run mcp:smoke:electron -- --no-sandbox
+
   test-perf:
     name: Test - Performance Benchmarks
     needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales]

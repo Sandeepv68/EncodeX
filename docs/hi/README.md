@@ -48,6 +48,8 @@
 
 EncodeX मुफ़्त, ओपन-सोर्स FFmpeg GUI है जो FFmpeg की पूरी शक्ति को एक आधुनिक, सहज desktop interface में लाता है। यह आपको मीडिया को formats के बीच convert करने, audio extract करने, videos cut करने, और images compress करने देता है — सब कुछ एक clean, responsive UI के माध्यम से, batch queue, hardware acceleration, CLI mode, और पूर्ण internationalization के साथ।
 
+AI असिस्टेंट से काम करवाना चाहते हैं? EncodeX एक **बिल्ट-इन MCP सर्वर** के साथ भी आता है, ताकि Claude Desktop, Cursor, VS Code और custom agents जैसे टूल [Model Context Protocol](https://modelcontextprotocol.io) के माध्यम से आपके मीडिया को convert और manage कर सकें — और वह भी 100% आपके अपने कंप्यूटर पर।
+
 ## EncodeX क्यों?
 
 - ✅ **हमेशा मुफ़्त** — ओपन सोर्स (MIT), कोई paid tier नहीं
@@ -57,6 +59,7 @@ EncodeX मुफ़्त, ओपन-सोर्स FFmpeg GUI है जो F
 - ✅ **FFmpeg powered** — 51 video codecs, 27 audio codecs, 56 pixel formats
 - ✅ **हार्डवेयर त्वरण** — NVIDIA, Intel, AMD, Apple Silicon तेज़ encodes के लिए
 - ✅ **बैच प्रोसेसिंग** — पूरे फ़ोल्डर एक साथ convert करें
+- ✅ **AI-रेडी MCP सर्वर** — Claude, Cursor, VS Code और custom agents से EncodeX चलाएँ
 - ✅ **क्रॉस-प्लेटफ़ॉर्म** — Windows 10+, macOS 11+, Linux
 - ✅ **35+ भाषाएँ** RTL समर्थन के साथ
 
@@ -72,6 +75,7 @@ EncodeX मुफ़्त, ओपन-सोर्स FFmpeg GUI है जो F
 - **🎵 ऑडियो एक्सट्रैक्शन** — किसी भी video file से 27 audio codecs में से कोई भी
 - **ℹ️ मीडिया जानकारी** — प्रत्येक stream का पूर्ण per-stream probe: codec, profile, resolution, color metadata, frame rate, आदि
 - **⌨️ CLI मोड** — subcommands (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `batch`) के साथ headless scripting
+- **🤖 MCP सर्वर** — बिल्ट-इन [Model Context Protocol](https://modelcontextprotocol.io) सर्वर: stdio पर 13 core tools, 3 resources और 4 prompts (`encodex --mcp`), साथ ही एक embedded localhost HTTP endpoint जो 6 GUI-parity tools (live queue, preview, timeline, system info, updates) जोड़ता है। Claude Desktop, Claude Code, Cursor, VS Code या किसी भी MCP client से one-off conversions चलाएँ या async jobs manage करें
 - **⚙️ 3 ट्रांसकोडर कोर** — FFmpeg API (fluent-ffmpeg), FFmpeg CLI (child_process), BMF Framework
 - **🌍 56 लोकेल** — RTL समर्थन (Arabic, Hebrew) के साथ 35 भाषाएँ
 - **⌨️ कीबोर्ड शॉर्टकट** — एक in-app help dialog (`Ctrl+/`) के साथ हर पेज पर 60+ शॉर्टकट
@@ -217,6 +221,9 @@ encodex info input.mp4 --json
 encodex compress photo.png -f jpg -q 30
 encodex extract-audio input.mp4
 encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
+
+# AI असिस्टेंट और ऑटोमेशन के लिए MCP सर्वर के रूप में चलाएँ
+encodex --mcp
 ```
 
 सभी subcommands, options और examples के लिए [CLI उपयोग](cli.md) देखें।
@@ -240,6 +247,7 @@ npm run test:e2e   # build आवश्यक है
 | -------- | ----------- |
 | [फ़ीचर्स](features-reference.md) | Features, समर्थित media formats, codec tables, validation utilities |
 | [CLI उपयोग](cli.md) | CLI usage, subcommands, सभी option tables, exit codes |
+| [MCP सर्वर](mcp.md) | MCP server tool catalogue, client configs, embedded HTTP server, security |
 | [टेस्टिंग](testing.md) | Test suite, test setup, E2E specs |
 | [IPC चैनल](ipc.md) | IPC channels, electronAPI bridge, सभी methods और events |
 | [प्रोजेक्ट संरचना](project-structure.md) | annotations के साथ पूर्ण directory tree |

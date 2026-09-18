@@ -1,7 +1,7 @@
 ---
 layout: home
 title: "EncodeX — Free, Open-Source FFmpeg GUI for Windows, macOS & Linux"
-description: "EncodeX is a free, open-source FFmpeg GUI for Windows, macOS, and Linux. Convert video and audio, compress files, trim clips, and extract music — entirely on your computer, with no command line."
+description: "EncodeX is a free, open-source FFmpeg GUI for Windows, macOS, and Linux. Convert video and audio, compress files, trim clips, and extract music — entirely on your computer, with no command line. Includes a built-in MCP server for AI assistants."
 
 hero:
   name: EncodeX
@@ -40,6 +40,9 @@ features:
   - icon: "\ud83c\udf00"
     title: Rotate Videos & Fix Sideways Clips
     details: Shot something the wrong way? Rotate clips 90°, 180°, or 270° and mirror them — lossless when you keep MP4/MOV/MKV.
+  - icon: "\ud83e\udd16"
+    title: Hand It to Your AI Assistant
+    details: Connect Claude, Cursor, or VS Code and just ask. EncodeX's built-in MCP server converts files, extracts audio, compresses images, and manages batch jobs — all on your own machine.
 
 ---
 
@@ -137,6 +140,35 @@ One clean home screen. Every tool one click away. If you can use a web browser, 
   <p>Over 140 built-in conversion profiles do the configuring for you — export straight to YouTube, Instagram, TikTok, Apple devices, ProRes, HLS streaming, and more. Pick a profile, and every setting fills in automatically. Save your own custom profiles too, and EncodeX remembers the ones you use most.</p>
 </div>
 
+## Let AI Do the Heavy Lifting
+
+EncodeX ships with a built-in **MCP server** — the open [Model Context Protocol](https://modelcontextprotocol.io) standard that lets AI assistants use your apps. Connect Claude Desktop, Claude Code, Cursor, VS Code, or any MCP-compatible client and simply ask it to convert a video, pull out audio, compress a folder of photos, or check on a batch queue. The work happens locally; your files never leave your computer.
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🧠</span>
+    <p class="card-head">Ask in plain language</p>
+    <p>"Convert this to MP4 and shrink it for email." Your assistant picks the right tool, runs it through EncodeX, and hands back the result.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🔒</span>
+    <p class="card-head">Still 100% local</p>
+    <p>The server listens on localhost only and never uploads your media. Your files stay on your computer, exactly like the GUI.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🧩</span>
+    <p class="card-head">Two ways to connect</p>
+    <p>Run <code>encodex --mcp</code> for a standalone stdio server, or switch on the embedded server in Settings while the app is open.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⚙️</span>
+    <p class="card-head">Real automation</p>
+    <p>19 tools cover conversions, audio extraction, image compression, media info, batch jobs, previews, and updates — so agents can chain real work.</p>
+  </div>
+</div>
+
+<p><a href="/docs/cli#mcp-server-mode">Read the MCP server documentation →</a></p>
+
 ## Why People Love EncodeX
 
 ::: tip 💚 Completely Free, Forever
@@ -178,9 +210,9 @@ EncodeX is open-source software built by a community of volunteers. There is no 
 
 ## Built for Beginners. Powerful Enough for Developers.
 
-EncodeX wears two hats. Use the **drag-and-drop interface** for everyday tasks, or drop into **headless mode** for scripting and automation.
+EncodeX wears three hats. Use the **drag-and-drop interface** for everyday tasks, drop into **headless mode** for scripting, or connect an **AI assistant** through the built-in MCP server.
 
-<div class="card-grid two-col">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🖱️</span>
     <p class="card-head">The GUI</p>
@@ -190,6 +222,11 @@ EncodeX wears two hats. Use the **drag-and-drop interface** for everyday tasks, 
     <span class="card-emoji">⌨️</span>
     <p class="card-head">The CLI</p>
     <p>Script → Automate → Batch. Same engine, command-line control: <code>encodex convert</code>, <code>encodex batch</code>, <code>encodex info</code>, and more. <a href="/cli">Explore the CLI →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🤖</span>
+    <p class="card-head">The MCP Server</p>
+    <p>Ask → Automate → Integrate. Let Claude, Cursor, VS Code, and custom agents drive the same engine. <a href="/docs/cli#mcp-server-mode">Explore MCP →</a></p>
   </div>
 </div>
 

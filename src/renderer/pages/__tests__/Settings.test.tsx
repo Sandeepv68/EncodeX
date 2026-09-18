@@ -1,13 +1,16 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Settings from '../Settings';
 import { ColorModeProvider } from '../../ColorModeContext';
 import { useSettingsStore } from '../../stores/settingsStore';
+import { useToastStore } from '../../stores/toastStore';
 import { HWACCEL_DEFAULTS, ENCODER_TYPE_DEFAULT } from '../../../shared/hwaccel-settings';
 import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, LAUNCH_AT_LOGIN_STORAGE_KEY } from '../../../shared/constants';
 import { THEME_STORAGE_KEY } from '../../../shared/app-constants';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
+
+const defaultElectronAPI = window.electronAPI;
 
 function renderSettings() {
   return render(
@@ -26,7 +29,14 @@ describe('Settings', () => {
       encoderType: ENCODER_TYPE_DEFAULT,
       alwaysOnTop: false,
       launchAtLogin: false,
+      mcpEnabled: false,
+      mcpPort: 8765,
+      mcpToken: '',
     });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(globalThis, 'electronAPI', { value: defaultElectronAPI, writable: true });
   });
 
   it('has no axe violations', async () => {
@@ -124,27 +134,27 @@ describe('Settings', () => {
 
   it('shows info tooltips on the hardware acceleration settings', async () => {
     renderSettings();
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(6);
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[3]);
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(7);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[4]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.hardwareAccelerationHint');
   });
 
   it('shows an info tooltip for the mode setting', async () => {
     renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[4]);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[5]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.hwaccelModeHint');
   });
 
   it('shows an info tooltip for the encoder type setting', async () => {
     renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[5]);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[6]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.encoderTypeHint');
   });
 
   it('keeps the hardware acceleration tooltip when disabled but hides the others', () => {
     renderSettings();
     fireEvent.click(hwaccelSwitch());
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(4);
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(5);
   });
 
   it('renders the error-reporting row and toggles consent via the main process', async () => {
@@ -160,6 +170,201 @@ describe('Settings', () => {
     expect(spy).toHaveBeenCalledWith(false);
     await waitFor(() => expect(useSettingsStore.getState().monitoringEnabled).toBe(false));
     expect(monitoringSwitch).not.toBeChecked();
+  });
+
+  const mcpSwitch = () => screen.getByTestId('settings-mcp-server');
+  const mcpTokenInput = () => screen.getByLabelText('settings.mcpToken') as HTMLInputElement;
+
+  it('renders the MCP server switch off with no port or token fields', () => {
+    renderSettings();
+    expect(screen.getByText('settings.mcpServer')).toBeInTheDocument();
+    expect(mcpSwitch()).not.toBeChecked();
+    expect(screen.queryByTestId('settings-mcp-port')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('settings-mcp-token')).not.toBeInTheDocument();
+  });
+
+  it('shows an info tooltip for the MCP server setting', async () => {
+    renderSettings();
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[3]);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.mcpServerHint');
+  });
+
+  it('reveals the MCP port and generate action but no token field when enabled', async () => {
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    expect(await screen.findByTestId('settings-mcp-port')).toBeInTheDocument();
+    expect(screen.getByTestId('settings-mcp-generate-token')).toBeInTheDocument();
+    expect(screen.queryByTestId('settings-mcp-token')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('settings-mcp-token-copy')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('settings-mcp-clear-token')).not.toBeInTheDocument();
+  });
+
+  it('forwards enabling the MCP server to the main process', async () => {
+    const spy = vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: '' });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: spy },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    expect(spy).toHaveBeenCalledWith({ enabled: true, port: 8765, token: '' });
+    await waitFor(() => expect(useSettingsStore.getState().mcpEnabled).toBe(true));
+  });
+
+  it('commits the MCP port on blur and adopts the sanitized result', async () => {
+    const spy = vi.fn().mockResolvedValue({ enabled: true, port: 9000, token: '' });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: spy },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    const port = await screen.findByRole('spinbutton', { name: 'settings.mcpPort' });
+    fireEvent.change(port, { target: { value: '9000' } });
+    fireEvent.blur(port);
+    expect(spy).toHaveBeenCalledWith({ enabled: true, port: 9000, token: '' });
+    await waitFor(() => expect(useSettingsStore.getState().mcpPort).toBe(9000));
+  });
+
+  it('commits an edited MCP token on blur', async () => {
+    const spy = vi.fn((settings) => Promise.resolve(settings));
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: spy },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    fireEvent.click(await screen.findByTestId('settings-mcp-generate-token'));
+    await waitFor(() => expect(mcpTokenInput().value).toHaveLength(43));
+    fireEvent.change(mcpTokenInput(), { target: { value: 'secret' } });
+    fireEvent.blur(mcpTokenInput());
+    expect(spy).toHaveBeenCalledWith({ enabled: true, port: 8765, token: 'secret' });
+    await waitFor(() => expect(useSettingsStore.getState().mcpToken).toBe('secret'));
+  });
+
+  it('hides the MCP connection details when the server is disabled', () => {
+    renderSettings();
+    expect(screen.queryByTestId('settings-mcp-endpoint')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('settings-mcp-authorization')).not.toBeInTheDocument();
+  });
+
+  it('reveals the MCP endpoint URL when the server is enabled', async () => {
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: '' }) },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    const endpoint = await screen.findByRole('textbox', { name: 'settings.mcpEndpoint' });
+    expect(endpoint).toHaveValue('http://127.0.0.1:8765/mcp');
+  });
+
+  it('does not show the Authorization row until a token is configured', async () => {
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: '' }) },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    await screen.findByTestId('settings-mcp-endpoint');
+    expect(screen.queryByTestId('settings-mcp-authorization')).not.toBeInTheDocument();
+  });
+
+  it('shows the Authorization header row when a token is configured', async () => {
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: 'secret' }) },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    const authorization = await screen.findByRole('textbox', { name: 'settings.mcpAuthorization' });
+    expect(authorization).toHaveValue('Bearer secret');
+  });
+
+  it('copies the endpoint URL to the clipboard and shows a toast', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: '' }) },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    await screen.findByTestId('settings-mcp-endpoint');
+    fireEvent.click(screen.getByTestId('settings-mcp-copy-endpoint'));
+    expect(writeText).toHaveBeenCalledWith('http://127.0.0.1:8765/mcp');
+    await waitFor(() =>
+      expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'settings.mcpCopied')).toBe(true),
+    );
+  });
+
+  it('toggles token visibility when the reveal button is clicked', async () => {
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    fireEvent.click(await screen.findByTestId('settings-mcp-generate-token'));
+    const input = (await screen.findByLabelText('settings.mcpToken')) as HTMLInputElement;
+    expect(input.type).toBe('password');
+    fireEvent.click(screen.getByTestId('settings-mcp-token-visibility'));
+    expect(input.type).toBe('text');
+    fireEvent.click(screen.getByTestId('settings-mcp-token-visibility'));
+    expect(input.type).toBe('password');
+  });
+
+  it('generates a secure token and commits it to the store', async () => {
+    const getRandomValues = vi.fn((array: ArrayBufferView) => {
+      new Uint8Array(array.buffer, array.byteOffset, 32).fill(42);
+      return array;
+    });
+    vi.stubGlobal('crypto', { ...globalThis.crypto, getRandomValues });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn((settings) => Promise.resolve(settings)) },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    fireEvent.click(await screen.findByTestId('settings-mcp-generate-token'));
+    const input = (await screen.findByLabelText('settings.mcpToken')) as HTMLInputElement;
+    await waitFor(() => expect(useSettingsStore.getState().mcpToken).toHaveLength(43));
+    expect(input.value).toBe(useSettingsStore.getState().mcpToken);
+    expect(input.value).toMatch(/^[A-Za-z0-9_-]+$/);
+    vi.unstubAllGlobals();
+  });
+
+  it('copies the token to the clipboard and shows a toast', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: 'secret' }) },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    await waitFor(() => expect(useSettingsStore.getState().mcpToken).toBe('secret'));
+    fireEvent.click(screen.getByTestId('settings-mcp-token-copy'));
+    expect(writeText).toHaveBeenCalledWith('secret');
+    await waitFor(() =>
+      expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'settings.mcpCopied')).toBe(true),
+    );
+  });
+
+  it('clears the token and collapses the row back to the generate action', async () => {
+    const spy = vi.fn((settings) => Promise.resolve(settings));
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: spy },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    fireEvent.click(await screen.findByTestId('settings-mcp-generate-token'));
+    await screen.findByTestId('settings-mcp-token');
+    await waitFor(() => expect(useSettingsStore.getState().mcpToken).not.toBe(''));
+    fireEvent.click(screen.getByTestId('settings-mcp-clear-token'));
+    await waitFor(() => expect(useSettingsStore.getState().mcpToken).toBe(''));
+    expect(screen.getByTestId('settings-mcp-generate-token')).toBeInTheDocument();
+    expect(screen.queryByTestId('settings-mcp-token')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('settings-mcp-token-copy')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('settings-mcp-clear-token')).not.toBeInTheDocument();
+    expect(spy).toHaveBeenCalledWith({ enabled: true, port: 8765, token: '' });
   });
 
   it('renders the always-on-top row', () => {

@@ -132,6 +132,29 @@ Bundled FFmpeg binary से detected hardware encoders और hwaccel methods p
 | `--help`      | Command help                                   |
 | `--version`   | Print version                                  |
 
+## MCP सर्वर मोड {#mcp-server-mode}
+
+EncodeX एक हेडलेस [Model Context Protocol](https://modelcontextprotocol.io) सर्वर के रूप में चल सकता है ताकि MCP hosts (Claude Desktop, Claude Code, VS Code, Cursor, custom agents) conversions चला सकें। यह एक **mode** है, subcommand नहीं: `--mcp` pass करें और ऐप GUI और CLI branches छोड़कर stdio पर JSON-RPC बोलता है।
+
+```bash
+# Packaged app
+encodex --mcp
+
+# Source checkout (compiled Node entry point — run npm run build:main first)
+node dist/mcp/index.js
+
+# Raw Electron form
+npx electron . --mcp
+```
+
+stdout MCP JSON-RPC messages के लिए reserved है; सारा status और logging output stderr पर redirect होता है, और stdin बंद होने तक process जीवित रहता है। सर्वर 19 tools, 3 resources और 4 prompts expose करता है — पूरी catalogue के लिए [फ़ीचर रेफ़रेंस](/hi/docs/features-reference#mcp-server) देखें।
+
+| Option  | Description                                                          |
+| ------- | -------------------------------------------------------------------- |
+| `--mcp` | stdio MCP सर्वर के रूप में चलाएँ (कोई GUI नहीं, कोई CLI subcommand नहीं, कोई `app.exit` नहीं) |
+
+दूसरी, opt-in surface चल रहे GUI के अंदर **embedded HTTP सर्वर** है (`http://127.0.0.1:8765/mcp`), जो मूल कोर के ऊपर live queue, preview, timeline, system और update tools जोड़ता है। इसे **Settings → MCP Server** में enable करें; security model के लिए [फ़ीचर रेफ़रेंस](/hi/docs/features-reference#mcp-server) देखें।
+
 ## Exit codes
 
 | Code | Meaning                        |

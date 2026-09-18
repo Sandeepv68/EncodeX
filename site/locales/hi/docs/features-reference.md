@@ -70,7 +70,18 @@ Configurable operations (transcode, audio extraction, image compression) के 
 
 ### Settings
 
-Theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, और when-done power action के लिए dedicated settings page। Preferences `localStorage` में persist होती हैं और startup पर effective होती हैं।
+Theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, when-done power action, और MCP सर्वर (enable/disable, port, access token) के लिए dedicated settings page। Preferences `localStorage` में persist होती हैं और startup पर effective होती हैं।
+
+### MCP सर्वर {#mcp-server}
+
+EncodeX एक [Model Context Protocol](https://modelcontextprotocol.io) सर्वर के रूप में कार्य कर सकता है ताकि AI असिस्टेंट और automation clients इसे सीधे operate कर सकें। दो surfaces उपलब्ध हैं:
+
+- **स्टैंडअलोन stdio सर्वर** — `encodex --mcp` (या `node dist/mcp/index.js`) से launch, stdio पर JSON-RPC बोलता है और protocol messages के लिए stdout reserved रहता है। यह वह mode है जिसे MCP hosts इस्तेमाल करते हैं जो एक server process spawn करते हैं।
+- **Embedded HTTP सर्वर** — `http://127.0.0.1:8765/mcp` पर एक opt-in Streamable HTTP endpoint, जो GUI चलते समय **Settings → MCP Server** से enabled होता है। यह उसी tool core और चल रहे ऐप का job queue share करता है।
+
+stdio surface 13 core tools expose करता है (`ping`, `convert_media`, `get_job`, `list_jobs`, `cancel_job`, `get_media_info`, `list_capabilities`, `list_profiles`, `get_profile`, `compress_image`, `extract_audio`, `cut_video`, `batch_convert`); embedded HTTP surface कुल 19 के लिए 6 GUI-parity tools (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`) जोड़ता है। दोनों surfaces 3 resources (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) और 4 prompt templates (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`) expose करते हैं। Conversions asynchronous हैं: एक job start करें, फिर progress और results के लिए `get_job` या `list_jobs` poll करें।
+
+Embedded सर्वर सिर्फ़ loopback से binds होता है, `Origin` header validate करता है, optional bearer token support करता है (constant time में compared), और `/mcp` पर केवल `GET`, `POST` और `DELETE` accept करता है। सर्वर stop होने या ऐप quit होने पर सभी sessions force-close हो जाते हैं। MCP settings (enabled, port, token) user-data directory में `mcp-settings.json` में persist होती हैं।
 
 ### Keyboard shortcuts
 

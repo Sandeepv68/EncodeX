@@ -115,6 +115,29 @@ Las opciones globales pueden ir antes o después del nombre del subcomando.
 
 Batch también acepta todas las opciones de codificación de convert (`-v/--video-codec`, `-a/--audio-codec`, `--bitrate-video`, `--bitrate-audio`, `-q/--qscale`, `--pix-fmt`, `-s/--scale`, `--copy`, `--no-audio`, `--no-video`) y las aplica a cada trabajo.
 
+## Modo servidor MCP {#mcp-server-mode}
+
+EncodeX puede ejecutarse como un servidor [Model Context Protocol](https://modelcontextprotocol.io) sin interfaz gráfica para que los hosts MCP (Claude Desktop, Claude Code, VS Code, Cursor, agentes personalizados) puedan manejar conversiones. Es un **modo**, no un subcomando: pasa `--mcp` y la app omite las rutas de la GUI y la CLI y habla JSON-RPC mediante stdio.
+
+```bash
+# Packaged app
+encodex --mcp
+
+# Source checkout (compiled Node entry point — run npm run build:main first)
+node dist/mcp/index.js
+
+# Raw Electron form
+npx electron . --mcp
+```
+
+stdout está reservado para los mensajes MCP JSON-RPC; toda la salida de estado y logs se redirige a stderr, y el proceso sigue vivo hasta que stdin se cierra. El servidor expone 19 herramientas, 3 recursos y 4 prompts — consulta la [referencia de funciones](/es/docs/features-reference#mcp-server) para ver el catálogo completo.
+
+| Opción   | Descripción                                                           |
+| -------- | --------------------------------------------------------------------- |
+| `--mcp`  | Ejecutar como servidor MCP por stdio (sin GUI, sin subcomando CLI, sin `app.exit`) |
+
+Una segunda superficie opcional es el **servidor HTTP integrado** dentro de la GUI en ejecución (`http://127.0.0.1:8765/mcp`), que añade herramientas de cola en vivo, vista previa, línea de tiempo, sistema y actualizaciones sobre el mismo núcleo. Actívalo en **Ajustes → Servidor MCP**; consulta la [referencia de funciones](/es/docs/features-reference#mcp-server) para conocer el modelo de seguridad.
+
 ## Códigos de salida
 
 | Código | Constante                     | Significado                                        |

@@ -1,5 +1,6 @@
 ---
 layout: home
+description: "EncodeX es una interfaz gráfica de FFmpeg gratuita y de código abierto para Windows, macOS y Linux. Convierte vídeo y audio, comprime archivos, recorta clips y extrae música — todo en tu computadora, sin línea de comandos. Incluye un servidor MCP integrado para asistentes de IA."
 
 hero:
   name: EncodeX
@@ -38,6 +39,9 @@ features:
   - icon: "\ud83c\udf00"
     title: Rota vídeos y corrige clips laterales
     details: ¿Grabaste algo al revés? Rota 90°, 180° o 270° y refleja clips — sin pérdida de calidad al mantener MP4/MOV/MKV.
+  - icon: "\ud83e\udd16"
+    title: Entrégaselo a tu asistente de IA
+    details: Conecta Claude, Cursor o VS Code y solo tienes que pedirlo. El servidor MCP integrado de EncodeX convierte archivos, extrae audio, comprime imágenes y gestiona trabajos por lotes — todo en tu propia máquina.
 
 ---
 
@@ -135,6 +139,35 @@ Una pantalla de inicio limpia. Cada herramienta a un clic. Si sabes usar un nave
   <p>Más de 140 perfiles de conversión integrados hacen la configuración por ti — exporta directamente a YouTube, Instagram, TikTok, dispositivos Apple, ProRes, streaming HLS y más. Elige un perfil y todos los ajustes se completan automáticamente. Guarda también tus propios perfiles, y EncodeX recuerda los que más usas.</p>
 </div>
 
+## Deja que la IA haga el trabajo pesado
+
+EncodeX incluye un **servidor MCP** integrado — el estándar abierto [Model Context Protocol](https://modelcontextprotocol.io) que permite a los asistentes de IA usar tus aplicaciones. Conecta Claude Desktop, Claude Code, Cursor, VS Code o cualquier cliente compatible con MCP y simplemente pídele que convierta un vídeo, extraiga el audio, comprima una carpeta de fotos o revise la cola por lotes. El trabajo ocurre en local; tus archivos nunca salen de tu computadora.
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🧠</span>
+    <p class="card-head">Pide en lenguaje sencillo</p>
+    <p>"Convierte esto a MP4 y reduce su tamaño para enviarlo por correo." Tu asistente elige la herramienta correcta, la ejecuta a través de EncodeX y te entrega el resultado.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🔒</span>
+    <p class="card-head">Sigue siendo 100 % local</p>
+    <p>El servidor solo escucha en localhost y jamás sube tus archivos multimedia. Tus archivos se quedan en tu computadora, igual que con la interfaz gráfica.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🧩</span>
+    <p class="card-head">Dos formas de conectarte</p>
+    <p>Ejecuta <code>encodex --mcp</code> para un servidor stdio independiente, o activa el servidor integrado en Ajustes mientras la app está abierta.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⚙️</span>
+    <p class="card-head">Automatización real</p>
+    <p>19 herramientas cubren conversiones, extracción de audio, compresión de imágenes, información multimedia, trabajos por lotes, vistas previas y actualizaciones — así los agentes pueden encadenar trabajo real.</p>
+  </div>
+</div>
+
+<p><a href="/es/docs/cli#mcp-server-mode">Leer la documentación del servidor MCP →</a></p>
+
 ## Por qué la gente ama EncodeX
 
 ::: tip 💚 Gratis siempre
@@ -176,9 +209,9 @@ EncodeX es software de código abierto creado por una comunidad de voluntarios. 
 
 ## Para todos: sencillo. Para desarrolladores: potente.
 
-EncodeX tiene dos caras. Usa la **interfaz de arrastrar y soltar** para las tareas de cada día, o entra en el **modo sin interfaz** para scripting y automatización.
+EncodeX tiene tres caras. Usa la **interfaz de arrastrar y soltar** para las tareas de cada día, entra en el **modo sin interfaz** para scripting, o conecta un **asistente de IA** mediante el servidor MCP integrado.
 
-<div class="card-grid two-col">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🖱️</span>
     <p class="card-head">La interfaz gráfica</p>
@@ -188,6 +221,11 @@ EncodeX tiene dos caras. Usa la **interfaz de arrastrar y soltar** para las tare
     <span class="card-emoji">⌨️</span>
     <p class="card-head">La CLI</p>
     <p>Guioniza → Automatiza → Procesa en lote. El mismo motor, control por línea de comandos: <code>encodex convert</code>, <code>encodex batch</code>, <code>encodex info</code> y más. <a href="/es/cli">Explorar la CLI →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🤖</span>
+    <p class="card-head">El servidor MCP</p>
+    <p>Pide → Automatiza → Integra. Deja que Claude, Cursor, VS Code y agentes personalizados manejen el mismo motor. <a href="/es/docs/cli#mcp-server-mode">Explorar MCP →</a></p>
   </div>
 </div>
 

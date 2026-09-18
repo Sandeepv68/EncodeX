@@ -8,6 +8,6 @@
     "sourceMap": true,
     "types": ["node"]
   },
-  "include": ["src/main/**/*", "src/shared/**/*"],
+  "include": ["src/main/**/*", "src/shared/**/*", "src/mcp/**/*"],
   "exclude": ["**/__tests__/**", "**/*.test.ts", "**/*.spec.ts"]
 }

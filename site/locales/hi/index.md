@@ -38,6 +38,9 @@ features:
   - icon: "\ud83c\udf00"
     title: वीडियो घुमाएँ और तिरछी क्लिप सही करें
     details: उल्टा रिकॉर्ड किया? क्लिप को 90°, 180° या 270° घुमाएँ या मिरर करें — MP4/MOV/MKV रखने पर बिना क्वालिटी लॉस के।
+  - icon: "\ud83e\udd16"
+    title: अपने AI असिस्टेंट को सौंप दें
+    details: Claude, Cursor या VS Code कनेक्ट करें और बस पूछें। EncodeX का बिल्ट-इन MCP सर्वर फ़ाइलें कन्वर्ट करता है, ऑडियो निकालता है, इमेज कंप्रेस करता है और बैच jobs manage करता है — सब आपके अपने कंप्यूटर पर।
 
 ---
 
@@ -135,6 +138,35 @@ features:
   <p>140 से ज़्यादा बिल्ट-इन रूपांतरण प्रोफ़ाइल आपके लिए सेटिंग्स कर देती हैं — YouTube, Instagram, TikTok, Apple डिवाइस, ProRes, HLS स्ट्रीमिंग और बहुत कुछ के लिए सीधे एक्सपोर्ट करें। एक प्रोफ़ाइल चुनें, और हर सेटिंग अपने आप भर जाती है। अपनी कस्टम प्रोफ़ाइल भी सेव करें, और EncodeX आपकी सबसे ज़्यादा इस्तेमाल की जाने वाली प्रोफ़ाइल याद रखता है।</p>
 </div>
 
+## AI को भारी काम करने दें
+
+EncodeX एक बिल्ट-इन **MCP सर्वर** के साथ आता है — खुला [Model Context Protocol](https://modelcontextprotocol.io) मानक जो AI असिस्टेंट को आपके ऐप्स इस्तेमाल करने देता है। Claude Desktop, Claude Code, Cursor, VS Code या किसी भी MCP-compatible client को कनेक्ट करें और बस कहें कि वीडियो कन्वर्ट करें, ऑडियो निकालें, फ़ोटो के फ़ोल्डर को कंप्रेस करें या बैच क्यू चेक करें। काम लोकली होता है; आपकी फ़ाइलें कभी आपके कंप्यूटर से बाहर नहीं जातीं।
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🧠</span>
+    <p class="card-head">सीधी भाषा में पूछें</p>
+    <p>"इसे MP4 में बदलो और ईमेल के लिए छोटा करो।" आपका असिस्टेंट सही टूल चुनता है, उसे EncodeX के ज़रिए चलाता है और नतीजा लौटा देता है।</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🔒</span>
+    <p class="card-head">अब भी 100% लोकल</p>
+    <p>सर्वर सिर्फ़ localhost पर सुनता है और आपके मीडिया को कभी अपलोड नहीं करता। GUI की तरह ही आपकी फ़ाइलें आपके कंप्यूटर पर रहती हैं।</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🧩</span>
+    <p class="card-head">कनेक्ट करने के दो तरीके</p>
+    <p>स्टैंडअलोन stdio सर्वर के लिए <code>encodex --mcp</code> चलाएँ, या ऐप खुला होने पर Settings में embedded सर्वर ऑन करें।</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⚙️</span>
+    <p class="card-head">असली ऑटोमेशन</p>
+    <p>19 टूल conversions, audio extraction, image compression, media info, batch jobs, previews और updates कवर करते हैं — ताकि agents असली काम को जोड़ सकें।</p>
+  </div>
+</div>
+
+<p><a href="/hi/docs/cli#mcp-server-mode">MCP सर्वर दस्तावेज़ पढ़ें →</a></p>
+
 ## लोग EncodeX क्यों पसंद करते हैं
 
 ::: tip 💚 हमेशा मुफ़्त
@@ -176,9 +208,9 @@ EncodeX स्वयंसेवकों की कम्युनिटी स
 
 ## सभी के लिए सरल। डेवलपर्स के लिए शक्तिशाली।
 
-EncodeX की दो पहचान हैं। रोज़ के कामों के लिए **ड्रैग-एंड-ड्रॉप इंटरफ़ेस** इस्तेमाल करें, या स्क्रिप्टिंग और ऑटोमेशन के लिए **हेडलेस मोड** चुनें।
+EncodeX की तीन पहचान हैं। रोज़ के कामों के लिए **ड्रैग-एंड-ड्रॉप इंटरफ़ेस** इस्तेमाल करें, स्क्रिप्टिंग के लिए **हेडलेस मोड** चुनें, या बिल्ट-इन MCP सर्वर के ज़रिए एक **AI असिस्टेंट** कनेक्ट करें।
 
-<div class="card-grid two-col">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🖱️</span>
     <p class="card-head">GUI</p>
@@ -188,6 +220,11 @@ EncodeX की दो पहचान हैं। रोज़ के काम
     <span class="card-emoji">⌨️</span>
     <p class="card-head">CLI</p>
     <p>स्क्रिप्ट → ऑटोमेट → बैच। वही इंजन, कमांड-लाइन नियंत्रण: <code>encodex convert</code>, <code>encodex batch</code>, <code>encodex info</code> और बहुत कुछ। <a href="/hi/cli">CLI एक्सप्लोर करें →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🤖</span>
+    <p class="card-head">MCP सर्वर</p>
+    <p>पूछें → ऑटोमेट → इंटीग्रेट करें। Claude, Cursor, VS Code और custom agents को वही इंजन चलाने दें। <a href="/hi/docs/cli#mcp-server-mode">MCP एक्सप्लोर करें →</a></p>
   </div>
 </div>
 

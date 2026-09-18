@@ -28,6 +28,10 @@
  *    via window.electronAPI.queueSetConcurrency, and then updates state.
  *  - setWhenDone persists the config, forwards it to the main process via
  *    window.electronAPI.queueSetWhenDone, and then updates state.
+ *  - setMcpEnabled/setMcpPort/setMcpToken forward the whole embedded MCP server
+ *    snapshot to the main process via window.electronAPI.mcpSetSettings (which
+ *    persists it and live-reconciles the HTTP server) and adopt the sanitized
+ *    result, so an out-of-range port or non-string token can never stick.
  *
  * Consumers:
  *  - Settings UI panels and the conversion form (which reads the transcoder and
@@ -38,6 +42,8 @@ import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { HWACCEL_DEFAULTS, HWACCEL_MODES, HWACCEL_STORAGE_KEY, ENCODER_TYPES, ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
+import { defaultMcpSettings } from '../../shared/mcp-settings';
+import type { McpSettings } from '../../shared/mcp-settings';
 import type { HwAccelMode, EncoderType, WhenDoneAction } from '../../shared/types';
 import type { HwAccelStored, SettingsState } from './types';
 import {
@@ -70,6 +76,9 @@ import {
   LOG_SET_TRANSCODER,
   LOG_SET_WHEN_DONE,
   LOG_SET_MONITORING_ENABLED,
+  LOG_SET_MCP_ENABLED,
+  LOG_SET_MCP_PORT,
+  LOG_SET_MCP_TOKEN,
 } from '../../shared/log-constants';
 
 /**
@@ -125,6 +134,13 @@ function persistHwAccel(hardwareAcceleration: boolean, hwaccelMode: HwAccelMode,
  * @type {HwAccelStored}
  */
 const stored = readStoredHwAccel();
+
+/**
+ * Default embedded MCP server settings used to initialize the store before the
+ * main process (which owns the persisted file) hydrates the real values.
+ * @type {McpSettings}
+ */
+const storedMcp = defaultMcpSettings();
 
 /**
  * Reads the persisted always-on-top flag from localStorage
@@ -363,6 +379,37 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       .then((result) => set({ monitoringEnabled: result.enabled }))
       .catch((err) => log.warn(LOG_SET_MONITORING_ENABLED, 'failed:', err));
   },
+  mcpEnabled: storedMcp.enabled,
+  mcpPort: storedMcp.port,
+  mcpToken: storedMcp.token,
+  /**
+   * Enables or disables the embedded MCP server. Merges the flag into the
+   * current snapshot and forwards it to the main process, which persists it and
+   * live-reconciles the HTTP server; the sanitized result is adopted.
+   * @param {boolean} enabled - True to start the loopback MCP server.
+   */
+  setMcpEnabled: (enabled) => {
+    log.debug(LOG_SET_MCP_ENABLED, enabled);
+    applyMcpSettings({ enabled });
+  },
+  /**
+   * Sets the embedded MCP server port. The main process clamps it to the valid
+   * 1024-65535 range and the sanitized value is adopted.
+   * @param {number} port - The candidate TCP port.
+   */
+  setMcpPort: (port) => {
+    log.debug(LOG_SET_MCP_PORT, port);
+    applyMcpSettings({ port });
+  },
+  /**
+   * Sets the optional bearer token MCP clients must send. The token value is
+   * never logged. The sanitized result is adopted.
+   * @param {string} token - The candidate bearer token ('' allows any local client).
+   */
+  setMcpToken: (token) => {
+    log.debug(LOG_SET_MCP_TOKEN, { hasToken: token.length > 0 });
+    applyMcpSettings({ token });
+  },
   queueConcurrency: readStoredQueueConcurrency(),
   /**
    * Sets the batch queue concurrency. Persists the value to localStorage and
@@ -394,6 +441,29 @@ export const useSettingsStore = create<SettingsState>((set) => ({
 }));
 
 /**
+ * Merges a partial embedded MCP server patch into the current snapshot, sends
+ * the whole candidate to the main process via
+ * window.electronAPI.mcpSetSettings (which persists it and live-reconciles the
+ * HTTP server), and adopts the authoritative sanitized result. Declared as a
+ * hoisted function so the store setters above can reference it.
+ * @param {Partial<McpSettings>} patch - The fields to change.
+ * @returns {void}
+ */
+function applyMcpSettings(patch: Partial<McpSettings>): void {
+  const current = useSettingsStore.getState();
+  const candidate: McpSettings = {
+    enabled: current.mcpEnabled,
+    port: current.mcpPort,
+    token: current.mcpToken,
+    ...patch,
+  };
+  window.electronAPI
+    ?.mcpSetSettings(candidate)
+    .then((result) => useSettingsStore.setState({ mcpEnabled: result.enabled, mcpPort: result.port, mcpToken: result.token }))
+    .catch((err) => log.warn(LOG_SET_MCP_ENABLED, 'failed:', err));
+}
+
+/**
  * Hydrates the monitoring consent flag from the main process, which owns the
  * persisted consent file. Runs once at module load; failures leave the
  * optimistic default (enabled) in place.
@@ -403,4 +473,16 @@ if (typeof window !== 'undefined' && window.electronAPI?.monitoringGetState) {
     .monitoringGetState()
     .then((state) => useSettingsStore.setState({ monitoringEnabled: state.enabled }))
     .catch((err) => log.warn('Failed to hydrate monitoring consent:', err));
+}
+
+/**
+ * Hydrates the embedded MCP server settings from the main process, which owns
+ * the persisted `mcp-settings.json` file. Runs once at module load; failures
+ * leave the disabled-by-default snapshot in place.
+ */
+if (typeof window !== 'undefined' && window.electronAPI?.mcpGetSettings) {
+  window.electronAPI
+    .mcpGetSettings()
+    .then((settings) => useSettingsStore.setState({ mcpEnabled: settings.enabled, mcpPort: settings.port, mcpToken: settings.token }))
+    .catch((err) => log.warn('Failed to hydrate MCP settings:', err));
 }

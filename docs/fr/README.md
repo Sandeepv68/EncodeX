@@ -48,6 +48,8 @@
 
 EncodeX est l'interface graphique gratuite et open source de FFmpeg qui apporte toute sa puissance dans une interface de bureau moderne et intuitive. Il vous permet de convertir des médias entre différents formats, d'extraire l'audio, de couper des vidéos et de compresser des images — le tout via une interface propre et réactive offrant une file d'attente par lot, l'accélération matérielle, un mode CLI et une internationalisation complète.
 
+Vous voulez qu'un assistant IA fasse le travail ? EncodeX embarque aussi un **serveur MCP** intégré, pour que des outils comme Claude Desktop, Cursor, VS Code et des agents personnalisés puissent convertir et gérer vos médias à votre place via le [Model Context Protocol](https://modelcontextprotocol.io) — toujours entièrement sur votre propre machine.
+
 ## Pourquoi EncodeX ?
 
 - ✅ **Gratuit pour toujours** — open source (MIT), pas d'abonnement payant
@@ -57,6 +59,7 @@ EncodeX est l'interface graphique gratuite et open source de FFmpeg qui apporte 
 - ✅ **Propulsé par FFmpeg** — 51 codecs vidéo, 27 codecs audio, 56 formats de pixels
 - ✅ **Accélération matérielle** — NVIDIA, Intel, AMD, Apple Silicon pour des encodages rapides
 - ✅ **Traitement par lot** — convertir des dossiers entiers en une seule fois
+- ✅ **Serveur MCP prêt pour l'IA** — pilotez EncodeX depuis Claude, Cursor, VS Code et des agents personnalisés
 - ✅ **Multiplateforme** — Windows 10+, macOS 11+, Linux
 - ✅ **35+ langues** avec prise en charge RTL
 
@@ -72,6 +75,7 @@ EncodeX est l'interface graphique gratuite et open source de FFmpeg qui apporte 
 - **🎵 Extraction audio** — N'importe lequel des 27 codecs audio à partir de n'importe quel fichier vidéo
 - **ℹ️ Informations média** — Sonde complète par flux : codec, profil, résolution, métadonnées de couleur, débit d'images, etc.
 - **⌨️ Mode CLI** — Scripting sans interface avec sous-commandes (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `batch`)
+- **🤖 Serveur MCP** — Serveur [Model Context Protocol](https://modelcontextprotocol.io) intégré : 13 outils de base, 3 ressources et 4 prompts via stdio (`encodex --mcp`), plus un point de terminaison HTTP localhost intégré qui ajoute 6 outils de parité GUI (file d'attente en direct, aperçu, timeline, infos système, mises à jour). Lancez des conversions ponctuelles ou gérez des tâches asynchrones depuis Claude Desktop, Claude Code, Cursor, VS Code ou n'importe quel client MCP
 - **⚙️ 3 moteurs de transcodage** — API FFmpeg (fluent-ffmpeg), interface CLI FFmpeg (child_process), framework BMF
 - **🌍 56 locales** — 35 langues avec prise en charge du RTL (arabe, hébreu)
 - **⌨️ Raccourcis clavier** — Plus de 60 raccourcis sur toutes les pages avec une boîte d'aide intégrée à l'application (`Ctrl+/`)
@@ -217,6 +221,9 @@ encodex info input.mp4 --json
 encodex compress photo.png -f jpg -q 30
 encodex extract-audio input.mp4
 encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
+
+# Exécuter comme serveur MCP pour les assistants IA et l'automatisation
+encodex --mcp
 ```
 
 Voir [Utilisation de la CLI](./cli.md) pour toutes les sous-commandes, options et exemples.
@@ -240,6 +247,7 @@ Voir [Tests](./testing.md) pour la description complète de la suite de tests, l
 | -------- | ----------- |
 | [Référence des fonctionnalités](./features-reference.md) | Fonctionnalités, formats de médias pris en charge, tableaux des codecs, utilitaires de validation |
 | [Utilisation de la CLI](./cli.md) | Utilisation de la CLI, sous-commandes, tous les tableaux d'options, codes de sortie |
+| [docs/MCP.md](docs/MCP.md) | Catalogue des outils du serveur MCP, configurations client, serveur HTTP intégré, sécurité |
 | [Tests](./testing.md) | Suite de tests, configuration des tests, spécifications E2E |
 | [Canaux IPC](./ipc.md) | Canaux IPC, pont electronAPI, toutes les méthodes et tous les événements |
 | [Structure du projet](./project-structure.md) | Arborescence complète du répertoire avec annotations |

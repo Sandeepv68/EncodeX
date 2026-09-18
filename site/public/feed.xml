@@ -5,8 +5,19 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Thu, 17 Sep 2026 10:57:05 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 18 Sep 2026 06:58:58 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>EncodeX Adds a Built-In MCP Server: Let AI Drive Your Media Conversions</title>
+      <link>https://encodex.in/blog/releases/mcp-server-support/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/mcp-server-support/</guid>
+      <description>EncodeX now ships a Model Context Protocol (MCP) server, so Claude, Cursor, VS Code, and custom agents can convert, compress, trim, and batch-process your media — locally and safely.</description>
+      <pubDate>Fri, 18 Sep 2026 00:00:00 GMT</pubDate>
+      <category>release</category>
+      <category>mcp</category>
+      <category>ai</category>
+      <category>automation</category>
+    </item>
     <item>
       <title>Rotate &amp; Mirror Videos — Fix Sideways Clips Without Losing Quality</title>
       <link>https://encodex.in/blog/releases/rotate-and-mirror-videos/</link>

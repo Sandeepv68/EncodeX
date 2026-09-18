@@ -73,6 +73,8 @@
  * @property {string} LOG_MESSAGE - Forward a log entry to the renderer.
  * @property {string} MONITORING_GET_STATE - Query the monitoring consent state from main.
  * @property {string} MONITORING_SET_ENABLED - Update the monitoring consent (user toggle).
+ * @property {string} MCP_SETTINGS_GET - Query the embedded MCP server settings from main.
+ * @property {string} MCP_SETTINGS_SET - Update the embedded MCP server settings (user toggle).
  * @property {string} DEV_CAPTURE_SCREENSHOT - Dev-only: capture the window and save a PNG.
  */
 export const IPC = {
@@ -150,6 +152,9 @@ export const IPC = {
 
   MONITORING_GET_STATE: 'monitoring-get-state',
   MONITORING_SET_ENABLED: 'monitoring-set-enabled',
+
+  MCP_SETTINGS_GET: 'mcp-settings-get',
+  MCP_SETTINGS_SET: 'mcp-settings-set',
 
   DEV_CAPTURE_SCREENSHOT: 'dev-capture-screenshot',
 } as const;

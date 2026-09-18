@@ -48,6 +48,8 @@
 
 EncodeX 是一款免费、开源的 FFmpeg 图形界面，将 FFmpeg 的全部强大功能带到现代、直观的桌面界面中。它让您可以在不同格式之间转换媒体、提取音频、裁剪视频以及压缩图片——所有这些都通过一个干净且响应迅速的界面完成，并配有批量队列、硬件加速、CLI 模式以及完整的国际化支持。
 
+想让 AI 助手替你干活？EncodeX 还内置了 **MCP 服务器**，让 Claude Desktop、Cursor、VS Code 和自定义 Agent 等工具可以通过 [Model Context Protocol](https://modelcontextprotocol.io) 帮你转换和管理媒体——仍然完全在你的电脑上进行。
+
 ## 为什么选择 EncodeX？
 
 - ✅ **永久免费** — 开源 (MIT)，无付费层级
@@ -57,6 +59,7 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面，将 FFmpeg 的全部�
 - ✅ **FFmpeg 驱动** — 51 种视频编解码器、27 种音频编解码器、56 种像素格式
 - ✅ **硬件加速** — NVIDIA、Intel、AMD、Apple Silicon，实现快速编码
 - ✅ **批量处理** — 一次转换整个文件夹
+- ✅ **AI 就绪的 MCP 服务器** — 通过 Claude、Cursor、VS Code 和自定义 Agent 驱动 EncodeX
 - ✅ **跨平台** — Windows 10+、macOS 11+、Linux
 - ✅ **35+ 种语言**，支持 RTL
 
@@ -72,6 +75,7 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面，将 FFmpeg 的全部�
 - **🎵 音频提取** — 从任意视频文件中提取任意一种（共 27 种）音频编解码器
 - **ℹ️ 媒体信息** — 完整的逐流探测：编解码器、配置、分辨率、色彩元数据、帧率等
 - **⌨️ CLI 模式** — 无头脚本，支持子命令（`convert`、`info`、`capabilities`、`compress`、`extract-audio`、`batch`）
+- **🤖 MCP 服务器** — 内置 [Model Context Protocol](https://modelcontextprotocol.io) 服务器：通过 stdio（`encodex --mcp`）提供 13 个核心工具、3 个资源和 4 个提示模板，此外还有一个嵌入式 localhost HTTP 端点，新增 6 个与 GUI 对等的工具（实时队列、预览、时间轴、系统信息、更新）。兼容 Claude Desktop、Claude Code、Cursor、VS Code 以及任何 MCP 客户端
 - **⚙️ 3 个转码核心** — FFmpeg API（fluent-ffmpeg）、FFmpeg CLI（child_process）、BMF Framework
 - **🌍 56 种语言环境** — 35 种语言，支持 RTL（阿拉伯语、希伯来语）
 - **⌨️ 键盘快捷键** — 每个页面都有 60+ 快捷键，并提供应用内帮助对话框（`Ctrl+/`）
@@ -217,6 +221,9 @@ encodex info input.mp4 --json
 encodex compress photo.png -f jpg -q 30
 encodex extract-audio input.mp4
 encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
+
+# 作为 MCP 服务器运行，为 AI 助手和自动化提供支持
+encodex --mcp
 ```
 
 如需了解所有子命令、选项和示例，请参阅 [CLI 用法](./cli.md)。
@@ -240,6 +247,7 @@ npm run test:e2e   # 需要先构建
 | -------- | ----------- |
 | [功能参考](./features-reference.md) | 功能特性、支持的媒体格式、编解码器表格、校验工具 |
 | [CLI 用法](./cli.md) | CLI 用法、子命令、所有选项表格、退出码 |
+| [MCP 服务器](docs/MCP.md) | MCP 服务器工具目录、客户端配置、嵌入式 HTTP 服务器、安全 |
 | [测试](./testing.md) | 测试套件、测试设置、E2E 规范 |
 | [IPC 通道](./ipc.md) | IPC 通道、electronAPI 桥接、所有方法与事件 |
 | [项目结构](./project-structure.md) | 带注释的完整目录树 |

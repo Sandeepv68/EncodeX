@@ -29,6 +29,19 @@ import * as path from 'path';
 import { format as formatArgs } from 'util';
 import { registerIpcHandlers } from './ipc/handlers';
 import { runCli, mapCliErrorToExitCode } from './cli/cli';
+import { runMcpServer } from '../mcp/run';
+import { createMcpServer } from '../mcp/server';
+import { MCPJobManager } from '../mcp/jobs/manager';
+import { registerGuiTools } from './mcp/gui-tools';
+import { startMcpHttpServer } from './mcp/http-server';
+import type { McpHttpHandle } from './mcp/http-server';
+import { readMcpSettings } from './mcp/settings';
+import type { McpSettings } from './mcp/settings';
+import { registerMcpSettingsIpc } from './mcp/settings-ipc';
+import { getVideoPreview } from './video-preview';
+import { checkForUpdate } from './updater';
+import { createTranscoder } from './transcoders/factory';
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { Logger } from '../shared/logger';
 import {
   WINDOW_SIZE,
@@ -60,6 +73,9 @@ import {
   LOG_MONITORING_UNHANDLED_REJECTION,
   LOG_MONITORING_RENDER_PROCESS_GONE,
   LOG_MONITORING_CHILD_PROCESS_GONE,
+  LOG_MCP_EMBEDDED_STARTING,
+  LOG_MCP_EMBEDDED_START_FAILED,
+  LOG_MCP_EMBEDDED_DISABLED,
 } from '../shared/log-constants';
 import { captureException, closeMonitoring, initMonitoring } from '../shared/monitoring/MonitoringService';
 import type { MonitoringConfig } from '../shared/monitoring/types';
@@ -175,7 +191,32 @@ function isCliMode(): boolean {
   return args.length >= 2;
 }
 
-if (isCliMode()) {
+if (process.argv.includes('--mcp')) {
+  // MCP mode is headless and spawns no windows: disable Chromium's GPU so
+  // short-lived spawns (MCP clients, CI) never crash in the GPU process.
+  app.disableHardwareAcceleration();
+  // Keep stdout reserved for MCP JSON-RPC messages: every internal log line
+  // (Logger.debug/info routes through console.log) is redirected to stderr so
+  // the protocol stream stays parseable. This mirrors the stream-routing
+  // contract used by the standalone Node entry (src/mcp/index.ts).
+  console.log = (...args: unknown[]) => {
+    process.stderr.write(`${formatArgs(...args)}\n`);
+  };
+  log.info('Starting in MCP server mode');
+  app.whenReady().then(async () => {
+    try {
+      await runMcpServer();
+      log.info('MCP server session ended, exiting');
+      await closeMonitoring();
+      app.exit(EXIT_CODES.SUCCESS);
+    } catch (err) {
+      log.error('MCP server failed:', err);
+      captureException(err, { tags: { handler: 'mcp', process: 'main' } });
+      await closeMonitoring();
+      app.exit(EXIT_CODES.ERROR);
+    }
+  });
+} else if (isCliMode()) {
   // Keep CLI stdout reserved for command output: every internal log line
   // (Logger.debug/info routes through console.log) is redirected to stderr so
   // `--json` data stays parseable. This mirrors the stream-routing contract in
@@ -213,6 +254,86 @@ if (isCliMode()) {
   let mainWindow: BrowserWindow | null = null;
   /** The splash window shown while the app loads, or `null` once closed. @type {BrowserWindow | null} */
   let splashWindow: BrowserWindow | null = null;
+
+  /** Running embedded (Phase 2) MCP HTTP server handle, or `null`. @type {McpHttpHandle | null} */
+  let mcpHttpHandle: McpHttpHandle | null = null;
+  /** Shared job manager backing both the core and GUI-parity MCP tools. @type {MCPJobManager | null} */
+  let mcpJobManager: MCPJobManager | null = null;
+
+  /**
+   * Builds a fresh embedded MCP server for one HTTP session: the core surface
+   * from {@link createMcpServer} plus the GUI-parity tools. Every session
+   * shares the same {@link MCPJobManager} so queue operations (list/cancel)
+   * observe the same jobs as the conversion tools regardless of which session
+   * started them.
+   * @returns {McpServer} A configured, unconnected MCP server.
+   */
+  function createSessionMcpServer(): McpServer {
+    if (!mcpJobManager) {
+      mcpJobManager = new MCPJobManager({ transcoderFactory: createTranscoder });
+    }
+    const server = createMcpServer({ jobManager: mcpJobManager });
+    registerGuiTools(server, {
+      jobManager: mcpJobManager,
+      appVersion: app.getVersion(),
+      transcoderFactory: createTranscoder,
+      getPreviewFrame: getVideoPreview,
+      checkForUpdate: () => checkForUpdate(),
+    });
+    return server;
+  }
+
+  /**
+   * Stops the embedded HTTP server if one is running (idempotent).
+   * @returns {Promise<void>} Resolves once the listener and all sessions close.
+   */
+  async function stopEmbeddedMcpServer(): Promise<void> {
+    const handle = mcpHttpHandle;
+    mcpHttpHandle = null;
+    if (handle) {
+      try {
+        await handle.close();
+      } catch (err) {
+        log.warn(LOG_MCP_EMBEDDED_START_FAILED, 'stopping failed:', err);
+      }
+    }
+  }
+
+  /**
+   * Reconciles the embedded MCP HTTP server with a settings snapshot: starts it
+   * when enabled (restarting when already running to pick up port/token
+   * changes) and stops it when disabled. Failures are logged and swallowed so a
+   * bad port never breaks the app.
+   * @param {McpSettings} settings - The authoritative settings to apply.
+   * @returns {Promise<void>} Resolves once reconciliation settles.
+   */
+  async function reconcileMcpServer(settings: McpSettings): Promise<void> {
+    if (!settings.enabled) {
+      log.info(LOG_MCP_EMBEDDED_DISABLED);
+      await stopEmbeddedMcpServer();
+      return;
+    }
+    if (mcpHttpHandle) {
+      await stopEmbeddedMcpServer();
+    }
+    log.info(LOG_MCP_EMBEDDED_STARTING, `port=${settings.port}`);
+    try {
+      mcpHttpHandle = await startMcpHttpServer(() => createSessionMcpServer(), settings);
+    } catch (err) {
+      mcpHttpHandle = null;
+      log.error(LOG_MCP_EMBEDDED_START_FAILED, err);
+    }
+  }
+
+  /**
+   * Live callback wired into {@link registerMcpSettingsIpc}: every successful
+   * settings update reconciles the running server without a restart.
+   * @param {McpSettings} settings - The freshly persisted settings.
+   * @returns {void}
+   */
+  function applyMcpSettings(settings: McpSettings): void {
+    void reconcileMcpServer(settings);
+  }
 
   /**
    * Creates the frameless, always-on-top splash window shown while the main
@@ -358,6 +479,11 @@ if (isCliMode()) {
     );
     createSplashWindow();
     createWindow();
+    registerMcpSettingsIpc({
+      userDataDir: app.getPath('userData'),
+      apply: applyMcpSettings,
+    });
+    void reconcileMcpServer(readMcpSettings(app.getPath('userData')));
   });
 
   app.on('window-all-closed', () => {
@@ -374,6 +500,8 @@ if (isCliMode()) {
     // Flush any queued monitoring events before the process dies. Fire-and-
     // forget: quitting must never wait indefinitely on the network.
     void closeMonitoring();
+    // Stop the embedded MCP HTTP server and its sessions.
+    void stopEmbeddedMcpServer();
   });
 }
 

@@ -1,5 +1,6 @@
 ---
 layout: home
+description: "EncodeX 是一款适用于 Windows、macOS 和 Linux 的免费开源 FFmpeg 图形界面。您可以转换视频和音频、压缩文件、裁剪片段、提取音乐——全程在您的电脑上完成，无需命令行。内置 MCP 服务器，专为 AI 助手打造。"
 
 hero:
   name: EncodeX
@@ -38,6 +39,9 @@ features:
   - icon: "\ud83c\udf00"
     title: 旋转视频，修正侧拍的素材
     details: 拍反了？将视频顺时针旋转 90°、180° 或 270° 或镜像翻转——保持 MP4/MOV/MKV 格式即无损。
+  - icon: "\ud83e\udd16"
+    title: 交给你的 AI 助手
+    details: 连接 Claude、Cursor 或 VS Code，直接开口就行。EncodeX 内置的 MCP 服务器会转换文件、提取音频、压缩图片并管理批量任务——全部在你的电脑上完成。
 
 ---
 
@@ -135,6 +139,35 @@ features:
   <p>140 多个内置转换配置文件帮你完成设置——直接导出到 YouTube、Instagram、TikTok、Apple 设备、ProRes、HLS 流媒体等。选一个配置文件，所有设置自动填入。也可以保存自己的自定义配置文件，EncodeX 会记住你最常用的那些。</p>
 </div>
 
+## 把重活交给 AI
+
+EncodeX 内置了 **MCP 服务器**——开放的 [Model Context Protocol](https://modelcontextprotocol.io) 标准，让 AI 助手可以使用你的应用。连接 Claude Desktop、Claude Code、Cursor、VS Code 或任何兼容 MCP 的客户端，只需开口请它转换视频、提取音频、压缩一整个文件夹的照片，或查看批量队列的进度。所有工作都在本地完成；你的文件永远不会离开你的电脑。
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🧠</span>
+    <p class="card-head">用大白话直接说</p>
+    <p>"把它转成 MP4 再压小一点发邮件。"你的助手会选对工具、通过 EncodeX 执行，然后把结果交还给你。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🔒</span>
+    <p class="card-head">依然是 100% 本地</p>
+    <p>服务器只监听 localhost，绝不会上传你的媒体。和 GUI 一样，文件始终留在你的电脑上。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🧩</span>
+    <p class="card-head">两种连接方式</p>
+    <p>运行 <code>encodex --mcp</code> 启动独立的 stdio 服务器，或在应用打开时到设置里开启内置服务器。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⚙️</span>
+    <p class="card-head">真正的自动化</p>
+    <p>19 个工具覆盖转换、音频提取、图片压缩、媒体信息、批量任务、预览和更新——让 Agent 可以串联起真正的工作。</p>
+  </div>
+</div>
+
+<p><a href="/zh/docs/cli#mcp-server-mode">阅读 MCP 服务器文档 →</a></p>
+
 ## 大家为什么喜欢 EncodeX
 
 ::: tip 💚 永远免费
@@ -176,9 +209,9 @@ EncodeX 是由志愿者社区打造的开源软件。没有付费版来烦你，
 
 ## 新手友好，开发者强大。
 
-EncodeX 有两种用法。日常任务用**拖放式界面**，或者切换到**命令行模式**进行脚本化与自动化。
+EncodeX 有三重身份。日常任务用**拖放式界面**，需要脚本时用**命令行模式**进行脚本化与自动化，或者通过内置的 MCP 服务器连接 **AI 助手**。
 
-<div class="card-grid two-col">
+<div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🖱️</span>
     <p class="card-head">图形界面</p>
@@ -188,6 +221,11 @@ EncodeX 有两种用法。日常任务用**拖放式界面**，或者切换到**
     <span class="card-emoji">⌨️</span>
     <p class="card-head">命令行 CLI</p>
     <p>脚本 → 自动化 → 批量处理。同一个引擎，命令行控制：<code>encodex convert</code>、<code>encodex batch</code>、<code>encodex info</code> 等。 <a href="/zh/cli">探索 CLI →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🤖</span>
+    <p class="card-head">MCP 服务器</p>
+    <p>提问 → 自动化 → 集成。让 Claude、Cursor、VS Code 和自定义 Agent 驱动同一个引擎。 <a href="/zh/docs/cli#mcp-server-mode">探索 MCP →</a></p>
   </div>
 </div>
 
