@@ -14,9 +14,9 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Switch, MenuItem, IconButton, Tooltip } from '@mui/material';
+import { Box, Switch, MenuItem, IconButton, Tooltip, InputAdornment } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCopy } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faEye, faEyeSlash, faTrashCan, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useColorMode } from '../ColorModeContext';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useToastStore } from '../stores/toastStore';
@@ -138,13 +138,27 @@ function CopyButton({
 }
 
 /**
+ * Generates a cryptographically random, URL-safe bearer token from 32 random
+ * bytes (base64url-encoded, padding stripped).
+ * @returns {string} A 43-character secure token.
+ */
+function generateMcpToken(): string {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  const binary = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+/**
  * Renders the embedded MCP server settings: an enable switch plus (when
- * enabled) the loopback port, optional bearer-token fields, and a read-only
- * connection-details block that shows the live endpoint URL (and the
- * `Authorization` header when a token is configured) with copy buttons. The
- * port and token inputs keep local draft state and commit to the store on blur
- * or Enter, so typing never triggers an IPC round-trip (and therefore never
- * restarts the HTTP server) per keystroke.
+ * enabled) the loopback port and the optional bearer-token row. The token row
+ * collapses to a single generate action until a token exists; once set it shows
+ * the generate button, a masked field with a reveal/hide toggle, a copy button,
+ * and a clear button. A read-only connection-details block shows the live
+ * endpoint URL (and the `Authorization` header when a token is configured) with
+ * copy buttons. The port and token inputs keep local draft state and commit to
+ * the store on blur or Enter, so typing never triggers an IPC round-trip (and
+ * therefore never restarts the HTTP server) per keystroke.
  * @returns {JSX.Element} The MCP server settings rows.
  */
 function McpSettingsSection() {
@@ -158,6 +172,7 @@ function McpSettingsSection() {
 
   const [portText, setPortText] = useState(String(port));
   const [tokenText, setTokenText] = useState(token);
+  const [showToken, setShowToken] = useState(false);
 
   useEffect(() => setPortText(String(port)), [port]);
   useEffect(() => setTokenText(token), [token]);
@@ -168,6 +183,30 @@ function McpSettingsSection() {
     else setPortText(String(port));
   };
 
+  /**
+   * Replaces the draft and committed token with a freshly generated secure
+   * value so the server starts requiring it immediately.
+   * @returns {void}
+   */
+  const handleGenerateToken = () => {
+    const generated = generateMcpToken();
+    setTokenText(generated);
+    setShowToken(false);
+    setMcpToken(generated);
+  };
+
+  /**
+   * Clears the draft and committed token so the row collapses back to just the
+   * generate action, and the server stops requiring a bearer credential.
+   * @returns {void}
+   */
+  const handleClearToken = () => {
+    setTokenText('');
+    setShowToken(false);
+    setMcpToken('');
+  };
+
+  const hasToken = token.length > 0;
   const endpoint = `http://127.0.0.1:${port}/mcp`;
   const authorization = `Bearer ${token}`;
 
@@ -213,18 +252,67 @@ function McpSettingsSection() {
       {enabled && (
         <ModeSettingsSection>
           <SettingLabel text={t('settings.mcpToken')} hint={t('settings.mcpTokenHint')} />
-          <McpField
-            type="password"
-            size="small"
-            data-testid="settings-mcp-token"
-            slotProps={{ htmlInput: { 'aria-label': t('settings.mcpToken') } }}
-            value={tokenText}
-            onChange={(e) => setTokenText(e.target.value)}
-            onBlur={() => setMcpToken(tokenText)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') setMcpToken(tokenText);
-            }}
-          />
+          <McpValueRow>
+            <Box sx={(theme) => (hasToken ? undefined : { marginLeft: 'auto' })}>
+              <Tooltip title={t('settings.mcpTokenGenerate')}>
+                <IconButton
+                  size="small"
+                  aria-label={t('settings.mcpTokenGenerate')}
+                  data-testid="settings-mcp-generate-token"
+                  onClick={handleGenerateToken}
+                >
+                  <FontAwesomeIcon icon={faWandMagicSparkles} />
+                </IconButton>
+              </Tooltip>
+            </Box>
+            {hasToken && (
+              <McpField
+                type={showToken ? 'text' : 'password'}
+                size="small"
+                data-testid="settings-mcp-token"
+                slotProps={{
+                  htmlInput: { 'aria-label': t('settings.mcpToken') },
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Tooltip title={showToken ? t('settings.mcpTokenHide') : t('settings.mcpTokenReveal')}>
+                          <IconButton
+                            size="small"
+                            aria-label={showToken ? t('settings.mcpTokenHide') : t('settings.mcpTokenReveal')}
+                            data-testid="settings-mcp-token-visibility"
+                            onClick={() => setShowToken((prev) => !prev)}
+                          >
+                            <FontAwesomeIcon icon={showToken ? faEyeSlash : faEye} />
+                          </IconButton>
+                        </Tooltip>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                value={tokenText}
+                onChange={(e) => setTokenText(e.target.value)}
+                onBlur={() => setMcpToken(tokenText)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') setMcpToken(tokenText);
+                }}
+              />
+            )}
+            {hasToken && (
+              <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <CopyButton value={token} label={t('settings.mcpCopy')} testId="settings-mcp-token-copy" onCopy={copyConnectionValue} />
+                <Tooltip title={t('settings.mcpTokenClear')}>
+                  <IconButton
+                    size="small"
+                    aria-label={t('settings.mcpTokenClear')}
+                    data-testid="settings-mcp-clear-token"
+                    onClick={handleClearToken}
+                  >
+                    <FontAwesomeIcon icon={faTrashCan} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
+          </McpValueRow>
         </ModeSettingsSection>
       )}
       {enabled && (
