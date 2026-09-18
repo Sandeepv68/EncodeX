@@ -14,7 +14,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Switch, MenuItem, IconButton, Tooltip, InputAdornment } from '@mui/material';
+import { Box, Switch, MenuItem, IconButton, Tooltip, InputAdornment, Link } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faEye, faEyeSlash, faTrashCan, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useColorMode } from '../ColorModeContext';
@@ -69,6 +69,13 @@ const encoderTypeLabel: Record<EncoderType, string> = {
   hardware: 'settings.encoderTypeHardware',
   software: 'settings.encoderTypeSoftware',
 };
+
+/**
+ * Website URL of the AI use-case documentation, linked from the MCP server
+ * settings once the embedded server is enabled.
+ * @const {string} MCP_AI_USE_CASES_URL
+ */
+const MCP_AI_USE_CASES_URL = 'https://encodex.in/features#let-an-ai-assistant-drive';
 
 /**
  * Renders a settings row consisting of a label and its info tooltip. Used to
@@ -231,6 +238,16 @@ function McpSettingsSection() {
           />
           <SettingLabel text={t('settings.mcpServer')} hint={t('settings.mcpServerHint')} />
         </ToggleRow>
+        {enabled && (
+          <Link
+            href={MCP_AI_USE_CASES_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="settings-mcp-ai-use-cases-link"
+          >
+            {t('settings.mcpAiUseCases')}
+          </Link>
+        )}
       </SettingsSection>
       {enabled && (
         <ModeSettingsSection>

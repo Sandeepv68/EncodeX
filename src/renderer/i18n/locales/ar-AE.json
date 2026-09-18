@@ -542,6 +542,7 @@
     "monitoringErrorReportingHint": "يساعد في تحسين EncodeX عن طريق إرسال تقارير أخطاء مجهولة المصدر. يمكنك إيقاف هذه الميزة في أي وقت.",
     "mcpServer": "خادم MCP",
     "mcpServerHint": "يتيح لعملاء MCP الخارجيين مثل Claude Desktop وVS Code وCursor التحكم في EncodeX عبر اتصال محلي. يستمع الخادم على هذا الكمبيوتر فقط.",
+    "mcpAiUseCases": "حالات استخدام الذكاء الاصطناعي",
     "mcpPort": "المنفذ",
     "mcpPortHint": "منفذ TCP محلي لخادم MCP (1024-65535). يعيد التطبيق تشغيل الخادم عند تغيير ذلك.",
     "mcpToken": "رمز الوصول",

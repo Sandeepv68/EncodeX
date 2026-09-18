@@ -542,6 +542,7 @@
     "monitoringErrorReportingHint": "गुमनाम त्रुटि रिपोर्ट भेजकर EncodeX को बेहतर बनाने में मदद करता है। आप इसे कभी भी बंद कर सकते हैं।",
     "mcpServer": "MCP सर्वर",
     "mcpServerHint": "बाहरी MCP क्लाइंट जैसे Claude Desktop, VS Code या Cursor को स्थानीय कनेक्शन के ज़रिए EncodeX नियंत्रित करने देता है। सर्वर केवल इस कंप्यूटर पर सुनता है।",
+    "mcpAiUseCases": "AI उपयोग के मामले",
     "mcpPort": "पोर्ट",
     "mcpPortHint": "MCP सर्वर के लिए स्थानीय TCP पोर्ट (1024-65535)। यह बदलने पर ऐप सर्वर को पुनः आरंभ करता है।",
     "mcpToken": "एक्सेस टोकन",

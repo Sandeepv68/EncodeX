@@ -552,6 +552,7 @@
     "monitoringErrorReportingHint": "发送匿名错误报告以帮助改进 EncodeX。您可以随时关闭此功能。",
     "mcpServer": "MCP 服务器",
     "mcpServerHint": "允许 Claude Desktop、VS Code 或 Cursor 等外部 MCP 客户端通过本地连接控制 EncodeX。服务器仅在本机监听。",
+    "mcpAiUseCases": "AI 使用场景",
     "mcpPort": "端口",
     "mcpPortHint": "MCP 服务器的本地 TCP 端口（1024-65535）。更改后应用会重启服务器。",
     "mcpToken": "访问令牌",
