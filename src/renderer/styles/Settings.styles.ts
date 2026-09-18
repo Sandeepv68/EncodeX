@@ -47,6 +47,17 @@ export const McpField = styled(TextField)(({ theme }) => ({
   },
 }));
 
+export const McpValueRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  minWidth: theme.spacing(26),
+  [theme.breakpoints.down('sm')]: {
+    minWidth: 0,
+    width: '100%',
+  },
+}));
+
 export const ModeSettingsSection = styled(SettingsSection)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',

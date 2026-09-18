@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import Settings from '../Settings';
 import { ColorModeProvider } from '../../ColorModeContext';
 import { useSettingsStore } from '../../stores/settingsStore';
+import { useToastStore } from '../../stores/toastStore';
 import { HWACCEL_DEFAULTS, ENCODER_TYPE_DEFAULT } from '../../../shared/hwaccel-settings';
 import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, LAUNCH_AT_LOGIN_STORAGE_KEY } from '../../../shared/constants';
 import { THEME_STORAGE_KEY } from '../../../shared/app-constants';
@@ -229,6 +230,62 @@ describe('Settings', () => {
     fireEvent.blur(mcpTokenInput());
     expect(spy).toHaveBeenCalledWith({ enabled: true, port: 8765, token: 'secret' });
     await waitFor(() => expect(useSettingsStore.getState().mcpToken).toBe('secret'));
+  });
+
+  it('hides the MCP connection details when the server is disabled', () => {
+    renderSettings();
+    expect(screen.queryByTestId('settings-mcp-endpoint')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('settings-mcp-authorization')).not.toBeInTheDocument();
+  });
+
+  it('reveals the MCP endpoint URL when the server is enabled', async () => {
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: '' }) },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    const endpoint = await screen.findByRole('textbox', { name: 'settings.mcpEndpoint' });
+    expect(endpoint).toHaveValue('http://127.0.0.1:8765/mcp');
+  });
+
+  it('does not show the Authorization row until a token is configured', async () => {
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: '' }) },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    await screen.findByTestId('settings-mcp-endpoint');
+    expect(screen.queryByTestId('settings-mcp-authorization')).not.toBeInTheDocument();
+  });
+
+  it('shows the Authorization header row when a token is configured', async () => {
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: 'secret' }) },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    const authorization = await screen.findByRole('textbox', { name: 'settings.mcpAuthorization' });
+    expect(authorization).toHaveValue('Bearer secret');
+  });
+
+  it('copies the endpoint URL to the clipboard and shows a toast', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: '' }) },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    await screen.findByTestId('settings-mcp-endpoint');
+    fireEvent.click(screen.getByTestId('settings-mcp-copy-endpoint'));
+    expect(writeText).toHaveBeenCalledWith('http://127.0.0.1:8765/mcp');
+    await waitFor(() =>
+      expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'settings.mcpCopied')).toBe(true),
+    );
   });
 
   it('renders the always-on-top row', () => {

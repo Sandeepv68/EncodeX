@@ -14,9 +14,12 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Switch, MenuItem } from '@mui/material';
+import { Box, Switch, MenuItem, IconButton, Tooltip } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { useColorMode } from '../ColorModeContext';
 import { useSettingsStore } from '../stores/settingsStore';
+import { useToastStore } from '../stores/toastStore';
 import InfoTooltip from '../components/InfoTooltip';
 import { HWACCEL_MODES, ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import { MCP_MIN_PORT, MCP_MAX_PORT } from '../../shared/mcp-settings';
@@ -34,6 +37,7 @@ import {
   ModeSelect,
   ModeSettingsSection,
   McpField,
+  McpValueRow,
   ThemeSwitcher,
   ThemeCard,
   ThemePreview,
@@ -105,11 +109,42 @@ function ThemePreviewCard({ theme }: { theme: ThemeDefinition }) {
 }
 
 /**
+ * Renders a copy-to-clipboard button for a read-only MCP connection value.
+ * @param {Object} props - Component props.
+ * @param {string} props.value - The value copied to the clipboard.
+ * @param {string} props.label - Translated aria-label / tooltip text.
+ * @param {string} props.testId - Stable test id for the copy icon button.
+ * @param {(value: string) => Promise<void>} props.onCopy - Callback used to copy.
+ * @returns {JSX.Element} A tooltip-wrapped copy button.
+ */
+function CopyButton({
+  value,
+  label,
+  testId,
+  onCopy,
+}: {
+  value: string;
+  label: string;
+  testId: string;
+  onCopy: (value: string) => Promise<void>;
+}) {
+  return (
+    <Tooltip title={label}>
+      <IconButton size="small" aria-label={label} data-testid={testId} onClick={() => void onCopy(value)}>
+        <FontAwesomeIcon icon={faCopy} />
+      </IconButton>
+    </Tooltip>
+  );
+}
+
+/**
  * Renders the embedded MCP server settings: an enable switch plus (when
- * enabled) the loopback port and optional bearer-token fields. The port and
- * token inputs keep local draft state and commit to the store on blur or Enter,
- * so typing never triggers an IPC round-trip (and therefore never restarts the
- * HTTP server) per keystroke.
+ * enabled) the loopback port, optional bearer-token fields, and a read-only
+ * connection-details block that shows the live endpoint URL (and the
+ * `Authorization` header when a token is configured) with copy buttons. The
+ * port and token inputs keep local draft state and commit to the store on blur
+ * or Enter, so typing never triggers an IPC round-trip (and therefore never
+ * restarts the HTTP server) per keystroke.
  * @returns {JSX.Element} The MCP server settings rows.
  */
 function McpSettingsSection() {
@@ -131,6 +166,19 @@ function McpSettingsSection() {
     const parsed = Number.parseInt(portText, 10);
     if (Number.isInteger(parsed)) setMcpPort(parsed);
     else setPortText(String(port));
+  };
+
+  const endpoint = `http://127.0.0.1:${port}/mcp`;
+  const authorization = `Bearer ${token}`;
+
+  /**
+   * Copies a connection detail value to the clipboard and confirms with a toast.
+   * @param {string} value - The value to copy.
+   * @returns {Promise<void>} Resolves once the value is copied (or fails).
+   */
+  const copyConnectionValue = async (value: string): Promise<void> => {
+    await navigator.clipboard.writeText(value);
+    useToastStore.getState().success(t('settings.mcpCopied'));
   };
 
   return (
@@ -177,6 +225,34 @@ function McpSettingsSection() {
               if (e.key === 'Enter') setMcpToken(tokenText);
             }}
           />
+        </ModeSettingsSection>
+      )}
+      {enabled && (
+        <ModeSettingsSection>
+          <SettingLabel text={t('settings.mcpEndpoint')} hint={t('settings.mcpEndpointHint')} />
+          <McpValueRow>
+            <McpField
+              size="small"
+              value={endpoint}
+              data-testid="settings-mcp-endpoint"
+              slotProps={{ htmlInput: { 'aria-label': t('settings.mcpEndpoint'), readOnly: true } }}
+            />
+            <CopyButton value={endpoint} label={t('settings.mcpCopy')} testId="settings-mcp-copy-endpoint" onCopy={copyConnectionValue} />
+          </McpValueRow>
+        </ModeSettingsSection>
+      )}
+      {enabled && token && (
+        <ModeSettingsSection>
+          <SettingLabel text={t('settings.mcpAuthorization')} hint={t('settings.mcpAuthorizationHint')} />
+          <McpValueRow>
+            <McpField
+              size="small"
+              value={authorization}
+              data-testid="settings-mcp-authorization"
+              slotProps={{ htmlInput: { 'aria-label': t('settings.mcpAuthorization'), readOnly: true } }}
+            />
+            <CopyButton value={authorization} label={t('settings.mcpCopy')} testId="settings-mcp-copy-token" onCopy={copyConnectionValue} />
+          </McpValueRow>
         </ModeSettingsSection>
       )}
     </>
