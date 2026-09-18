@@ -4,8 +4,9 @@
  * exercises each Phase-1 operation against the running stdio server, asserting
  * jobs transition to `done` and real output files exist.
  *
- * Run via `npm run test:integration` (make sure `npm run build:main` ran
- * first). This file is excluded from the default unit suite.
+ * Run via `npm run test:integration` (it builds `dist` first). If you invoke
+ * vitest directly, run `npm run build:main` first. This file is excluded from
+ * the default unit suite.
  */
 
 import { describe, it, beforeAll, afterAll, expect, vi } from 'vitest';
@@ -133,8 +134,8 @@ describe('EncodeX MCP stdio server (integration)', () => {
   }, 120000);
 
   afterAll(async () => {
-    await ctx.client.close();
-    fs.rmSync(ctx.dir, { recursive: true, force: true });
+    await ctx?.client.close();
+    if (ctx) fs.rmSync(ctx.dir, { recursive: true, force: true });
   });
 
   it('probes the generated video and reports video+audio streams', async () => {
