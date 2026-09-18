@@ -115,6 +115,29 @@ Les options globales peuvent être placées avant ou après le nom de la sous-co
 
 Batch accepte aussi toutes les options d'encodage de convert (`-v/--video-codec`, `-a/--audio-codec`, `--bitrate-video`, `--bitrate-audio`, `-q/--qscale`, `--pix-fmt`, `-s/--scale`, `--copy`, `--no-audio`, `--no-video`) et les applique à chaque tâche.
 
+## Mode serveur MCP {#mcp-server-mode}
+
+EncodeX peut fonctionner comme serveur [Model Context Protocol](https://modelcontextprotocol.io) sans interface graphique, afin que les hôtes MCP (Claude Desktop, Claude Code, VS Code, Cursor, agents personnalisés) puissent piloter des conversions. C'est un **mode**, pas une sous-commande : passez `--mcp` et l'application ignore les branches GUI et CLI pour parler JSON-RPC via stdio.
+
+```bash
+# Packaged app
+encodex --mcp
+
+# Source checkout (compiled Node entry point — run npm run build:main first)
+node dist/mcp/index.js
+
+# Raw Electron form
+npx electron . --mcp
+```
+
+stdout est réservé aux messages MCP JSON-RPC ; toutes les sorties de statut et de journalisation sont redirigées vers stderr, et le processus reste actif jusqu'à la fermeture de stdin. Le serveur expose 19 outils, 3 ressources et 4 prompts — voir la [référence des fonctionnalités](/fr/docs/features-reference#mcp-server) pour le catalogue complet.
+
+| Option  | Description                                                          |
+| ------- | -------------------------------------------------------------------- |
+| `--mcp` | Exécuter comme serveur MCP stdio (pas de GUI, pas de sous-commande CLI, pas de `app.exit`) |
+
+Une seconde surface facultative est le **serveur HTTP intégré** dans l'interface graphique en cours d'exécution (`http://127.0.0.1:8765/mcp`), qui ajoute des outils de file d'attente en direct, d'aperçu, de timeline, de système et de mises à jour, en plus du même cœur. Activez-le dans **Réglages → Serveur MCP** ; voir la [référence des fonctionnalités](/fr/docs/features-reference#mcp-server) pour le modèle de sécurité.
+
 ## Codes de sortie
 
 | Code | Constante                    | Signification                                  |

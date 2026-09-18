@@ -1,6 +1,6 @@
 ﻿---
 title: "Features — Video Conversion, Audio Extraction, Trimming & More"
-description: "Explore all EncodeX features: convert video and audio formats, extract MP3 from video, trim clips, compress images, batch process files, and hardware-accelerated encoding."
+description: "Explore all EncodeX features: convert video and audio formats, extract MP3 from video, trim clips, compress images, batch process files, hardware-accelerated encoding, and a built-in MCP server for AI assistants."
 ---
 
 # What Can EncodeX Do?
@@ -74,6 +74,26 @@ Have 50 videos to convert? Don't do them one by one. Drag them all into the queu
 - Pause, resume, or cancel anytime
 - Reorder the list by dragging
 - Get notified when everything's done — or have the computer shut down automatically when the queue finishes
+
+## Let an AI Assistant Drive
+
+EncodeX includes a built-in **MCP server** — the open [Model Context Protocol](https://modelcontextprotocol.io) standard that lets AI assistants use your apps. Connect Claude Desktop, Claude Code, Cursor, VS Code, or any MCP-compatible client, then just ask in plain language: convert a file, extract audio, compress a folder of photos, or check on a batch job.
+
+There are two ways to connect:
+
+- **Standalone stdio server** — run `encodex --mcp` (or `node dist/mcp/index.js`). Ideal for desktop AI apps that launch a server on demand.
+- **Embedded localhost server** — turn it on in **Settings → MCP Server** while the GUI is running, then point clients at `http://127.0.0.1:8765/mcp`. This mode adds live queue, preview, timeline, system, and update tools on top of the same core.
+
+Across both modes the server exposes **19 tools**, **3 resources** (profiles, capabilities, codecs), and **4 prompt templates** (convert video, extract audio, compress image, batch convert). Conversions run asynchronously, so an assistant can start a long job and check back on it later.
+
+### Private and safe by design
+
+- The embedded server binds to `127.0.0.1` only — it is never reachable from other computers.
+- Cross-origin requests are rejected unless they come from the local app.
+- An optional access token can require every request to be authenticated.
+- Your media is never uploaded anywhere; everything still runs on your own machine.
+
+[Read the MCP server documentation →](/docs/cli#mcp-server-mode)
 
 ## Peek Inside Any Media File
 

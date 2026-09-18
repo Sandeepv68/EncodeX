@@ -115,6 +115,29 @@ encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 
 batch 还接受所有 convert 编码选项（`-v/--video-codec`、`-a/--audio-codec`、`--bitrate-video`、`--bitrate-audio`、`-q/--qscale`、`--pix-fmt`、`-s/--scale`、`--copy`、`--no-audio`、`--no-video`），并将它们应用到每个任务。
 
+## MCP 服务器模式 {#mcp-server-mode}
+
+EncodeX 可以作为无头 [Model Context Protocol](https://modelcontextprotocol.io) 服务器运行，让 MCP 主机（Claude Desktop、Claude Code、VS Code、Cursor、自定义 Agent）驱动转换。这是一种**模式**，而不是子命令：传入 `--mcp` 后，应用会跳过 GUI 和 CLI 分支，通过 stdio 使用 JSON-RPC 通信。
+
+```bash
+# Packaged app
+encodex --mcp
+
+# Source checkout (compiled Node entry point — run npm run build:main first)
+node dist/mcp/index.js
+
+# Raw Electron form
+npx electron . --mcp
+```
+
+stdout 保留给 MCP JSON-RPC 消息；所有状态和日志输出都重定向到 stderr，进程在 stdin 关闭前保持运行。服务器提供 19 个工具、3 个资源和 4 个提示模板——完整目录请参阅[功能参考](/zh/docs/features-reference#mcp-server)。
+
+| Option  | Description                                                          |
+| ------- | -------------------------------------------------------------------- |
+| `--mcp` | 作为 stdio MCP 服务器运行（无 GUI、无 CLI 子命令、无 `app.exit`）    |
+
+第二种可选的接入方式是运行中 GUI 内的**嵌入式 HTTP 服务器**（`http://127.0.0.1:8765/mcp`），它在同样的核心之上新增了实时队列、预览、时间轴、系统和更新工具。在 **设置 → MCP 服务器** 中启用；安全模型请参阅[功能参考](/zh/docs/features-reference#mcp-server)。
+
 ## 退出码
 
 | 码   | 常量                         | 含义                                           |

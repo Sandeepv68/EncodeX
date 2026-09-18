@@ -72,6 +72,26 @@ EncodeX आपके कंप्यूटर के लिए एक मुफ�
 - लिस्ट को खींचकर क्रम बदलें
 - पूरा होने पर बता देता है — या क्यू ख़त्म होने पर कंप्यूटर ख़ुद बंद कर देता है
 
+## AI असिस्टेंट को ड्राइव करने दें
+
+EncodeX में एक बिल्ट-इन **MCP सर्वर** शामिल है — खुला [Model Context Protocol](https://modelcontextprotocol.io) मानक जो AI असिस्टेंट को आपके ऐप्स इस्तेमाल करने देता है। Claude Desktop, Claude Code, Cursor, VS Code या किसी भी MCP-compatible client को कनेक्ट करें, फिर सीधी भाषा में पूछें: कोई फ़ाइल कन्वर्ट करें, ऑडियो निकालें, फ़ोटो के फ़ोल्डर को कंप्रेस करें या बैच job की जाँच करें।
+
+कनेक्ट करने के दो तरीके हैं:
+
+- **स्टैंडअलोन stdio सर्वर** — `encodex --mcp` (या `node dist/mcp/index.js`) चलाएँ। उन desktop AI ऐप्स के लिए आदर्श जो सर्वर को ऑन-डिमांड launch करते हैं।
+- **Embedded localhost सर्वर** — GUI चलते समय **Settings → MCP Server** में इसे चालू करें, फिर clients को `http://127.0.0.1:8765/mcp` पर point करें। यह mode मूल कोर के ऊपर live queue, preview, timeline, system और update tools जोड़ता है।
+
+दोनों modes में सर्वर **19 tools**, **3 resources** (profiles, capabilities, codecs) और **4 prompt templates** (convert video, extract audio, compress image, batch convert) expose करता है। Conversions async रूप से चलती हैं, इसलिए असिस्टेंट एक लंबा job शुरू कर सकता है और बाद में उसकी जाँच कर सकता है।
+
+### डिज़ाइन से प्राइवेट और सुरक्षित
+
+- Embedded सर्वर सिर्फ़ `127.0.0.1` पर binds होता है — यह दूसरे कंप्यूटरों से कभी नहीं पहुँचा जा सकता।
+- Cross-origin requests अस्वीकार होती हैं, जब तक वे local ऐप से नहीं आतीं।
+- एक optional access token हर request के authenticate होने की आवश्यकता कर सकता है।
+- आपका मीडिया कभी कहीं अपलोड नहीं होता; सब कुछ आपके अपने कंप्यूटर पर चलता है।
+
+[MCP सर्वर दस्तावेज़ पढ़ें →](/hi/docs/cli#mcp-server-mode)
+
 ## किसी भी फ़ाइल के अंदर झाँकें
 
 <img src="/images/media_info.webp" alt="मीडिया जानकारी" width="1600" height="1058" loading="lazy">

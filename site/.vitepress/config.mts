@@ -2831,7 +2831,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       link: '/es/',
       title: 'EncodeX',
       description:
-        'Una app gratuita y fácil de usar para convertir vídeos y audio, recortar clips, extraer música de vídeos y reducir el tamaño de tus fotos.',
+        'Una app gratuita y fácil de usar para convertir vídeos y audio, recortar clips, extraer música de vídeos y reducir el tamaño de tus fotos. Incluye un servidor MCP integrado para asistentes de IA.',
       themeConfig: {
         nav: [
           { text: 'Inicio', link: '/es/' },
@@ -2852,7 +2852,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       link: '/fr/',
       title: 'EncodeX',
       description:
-        'Une application gratuite et simple pour convertir vidéos et audio, couper des clips, extraire la musique d\u2019une vidéo et alléger vos photos.',
+        'Une application gratuite et simple pour convertir vidéos et audio, couper des clips, extraire la musique d\u2019une vidéo et alléger vos photos. Inclut un serveur MCP intégré pour les assistants IA.',
       themeConfig: {
         nav: [
           { text: 'Accueil', link: '/fr/' },
@@ -2873,7 +2873,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       link: '/de/',
       title: 'EncodeX',
       description:
-        'Eine kostenlose, einfach zu bedienende App zum Konvertieren von Videos und Audio, Trimmen von Clips, Extrahieren von Musik aus Videos und Verkleinern von Fotos.',
+        'Eine kostenlose, einfach zu bedienende App zum Konvertieren von Videos und Audio, Trimmen von Clips, Extrahieren von Musik aus Videos und Verkleinern von Fotos. Enthält einen integrierten MCP-Server für KI-Assistenten.',
       themeConfig: {
         nav: [
           { text: 'Start', link: '/de/' },
@@ -2894,7 +2894,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       link: '/pt/',
       title: 'EncodeX',
       description:
-        'Um aplicativo gratuito e fácil de usar para converter vídeos e áudio, cortar clipes, extrair música de vídeos e reduzir o tamanho das fotos.',
+        'Um aplicativo gratuito e fácil de usar para converter vídeos e áudio, cortar clipes, extrair música de vídeos e reduzir o tamanho das fotos. Inclui um servidor MCP integrado para assistentes de IA.',
       themeConfig: {
         nav: [
           { text: 'Início', link: '/pt/' },
@@ -2915,7 +2915,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       link: '/zh/',
       title: 'EncodeX',
       description:
-        '一款免费易用的应用：转换视频和音频、剪辑片段、从视频中提取音乐、压缩照片。支持 Windows、Mac 和 Linux。',
+        '一款免费易用的应用：转换视频和音频、剪辑片段、从视频中提取音乐、压缩照片。支持 Windows、Mac 和 Linux。内置 MCP 服务器，可供 AI 助手调用。',
       themeConfig: {
         nav: [
           { text: '首页', link: '/zh/' },
@@ -2936,7 +2936,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       link: '/hi/',
       title: 'EncodeX',
       description:
-        'वीडियो और ऑडियो बदलने, क्लिप ट्रिम करने, वीडियो से म्यूज़िक निकालने और फ़ोटो छोटी करने के लिए एक मुफ़्त, आसान ऐप। Windows, Mac और Linux पर उपलब्ध।',
+        'वीडियो और ऑडियो बदलने, क्लिप ट्रिम करने, वीडियो से म्यूज़िक निकालने और फ़ोटो छोटी करने के लिए एक मुफ़्त, आसान ऐप। Windows, Mac और Linux पर उपलब्ध। AI सहायकों के लिए अंतर्निहित MCP सर्वर शामिल है।',
       themeConfig: {
         nav: [
           { text: 'होम', link: '/hi/' },

@@ -48,6 +48,8 @@
 
 EncodeX brings the full power of **FFmpeg** to a modern, intuitive desktop app — no command line required. Convert video and audio between formats, extract music from videos, trim clips, compress images, and batch-process whole folders. Developer? The same engine is available headless through the **EncodeX CLI**.
 
+Want an AI assistant to do the work? EncodeX also ships a built-in **MCP server**, so tools like Claude Desktop, Cursor, VS Code, and custom agents can convert and manage your media for you over the [Model Context Protocol](https://modelcontextprotocol.io) — still entirely on your own machine.
+
 Everything runs **locally on your computer** — no accounts, no uploads, no watermarks, no subscriptions.
 
 ## Why EncodeX?
@@ -59,6 +61,7 @@ Everything runs **locally on your computer** — no accounts, no uploads, no wat
 - ✅ **FFmpeg powered** — 51 video codecs, 27 audio codecs, 56 pixel formats
 - ✅ **Hardware acceleration** — NVIDIA, Intel, AMD, Apple Silicon for fast encodes
 - ✅ **Batch processing** — convert whole folders at once
+- ✅ **AI-ready MCP server** — drive EncodeX from Claude, Cursor, VS Code, and custom agents
 - ✅ **Cross-platform** — Windows 10+, macOS 11+, Linux
 - ✅ **35+ languages** with RTL support
 
@@ -74,6 +77,7 @@ Everything runs **locally on your computer** — no accounts, no uploads, no wat
 - **🎵 Audio Extraction** — Any of 27 audio codecs from any video file
 - **ℹ️ Media Info** — Full per-stream probe: codec, profile, resolution, color metadata, frame rate, etc.
 - **⌨️ CLI Mode** — Headless scripting with subcommands (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `batch`)
+- **🤖 MCP Server** — Built-in [Model Context Protocol](https://modelcontextprotocol.io) server: 13 core tools, 3 resources, and 4 prompts over stdio (`encodex --mcp`), plus an embedded localhost HTTP endpoint that adds 6 GUI-parity tools (live queue, preview, timeline, system info, updates). Run one-off conversions or manage async jobs from Claude Desktop, Claude Code, Cursor, VS Code, or any MCP client
 - **⚙️ 3 Transcoder Cores** — FFmpeg API (fluent-ffmpeg), FFmpeg CLI (child_process), BMF Framework
 - **🌍 56 Locales** — 35 languages with RTL support (Arabic, Hebrew)
 - **⌨️ Keyboard Shortcuts** — 60+ shortcuts across every page with an in-app help dialog (`Ctrl+/`)
@@ -133,6 +137,9 @@ encodex info input.mp4 --json
 encodex compress photo.png -f jpg -q 30
 encodex extract-audio input.mp4
 encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
+
+# Run as an MCP server for AI assistants and automation
+encodex --mcp
 ```
 
 See [docs/CLI.md](docs/CLI.md) for all subcommands, options, and exit codes.
@@ -244,6 +251,7 @@ See [docs/TESTING.md](docs/TESTING.md) for the full test suite breakdown, test s
 | -------- | ----------- |
 | [docs/FEATURES.md](docs/FEATURES.md) | Features, supported media formats, codec tables, validation utilities |
 | [docs/CLI.md](docs/CLI.md) | CLI usage, subcommands, all option tables, exit codes |
+| [docs/MCP.md](docs/MCP.md) | MCP server tool catalogue, client configs, embedded HTTP server, security |
 | [docs/TESTING.md](docs/TESTING.md) | Test suite, test setup, E2E specs |
 | [docs/IPC.md](docs/IPC.md) | IPC channels, electronAPI bridge, all methods and events |
 | [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) | Full directory tree with annotations |

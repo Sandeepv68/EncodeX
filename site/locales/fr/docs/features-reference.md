@@ -70,7 +70,18 @@ Traitez plusieurs fichiers avec des opérations configurables (transcodage, extr
 
 ### Réglages
 
-Page de réglages dédiée pour le thème, l'accélération matérielle (activer/désactiver, mode, type d'encodeur), toujours au premier plan, lancement à la connexion, concurrence de la file par lots et action d'alimentation après fin. Les préférences persistent dans `localStorage` et prennent effet au démarrage.
+Page de réglages dédiée pour le thème, l'accélération matérielle (activer/désactiver, mode, type d'encodeur), toujours au premier plan, lancement à la connexion, concurrence de la file par lots, action d'alimentation après fin et le serveur MCP (activer/désactiver, port, jeton d'accès). Les préférences persistent dans `localStorage` et prennent effet au démarrage.
+
+### Serveur MCP {#mcp-server}
+
+EncodeX peut agir comme serveur [Model Context Protocol](https://modelcontextprotocol.io) pour que les assistants IA et les clients d'automatisation puissent l'opérer directement. Deux surfaces sont disponibles :
+
+- **Serveur stdio autonome** — lancé avec `encodex --mcp` (ou `node dist/mcp/index.js`), parlant JSON-RPC via stdio avec stdout réservé aux messages du protocole. C'est le mode utilisé par les hôtes MCP qui démarrent un processus serveur.
+- **Serveur HTTP intégré** — point de terminaison Streamable HTTP opt-in à `http://127.0.0.1:8765/mcp`, activé depuis **Réglages → Serveur MCP** pendant que l'interface graphique tourne. Il partage le même cœur d'outils et la file de tâches de l'application en cours d'exécution.
+
+La surface stdio expose 13 outils de base (`ping`, `convert_media`, `get_job`, `list_jobs`, `cancel_job`, `get_media_info`, `list_capabilities`, `list_profiles`, `get_profile`, `compress_image`, `extract_audio`, `cut_video`, `batch_convert`) ; la surface HTTP intégrée ajoute 6 outils de parité GUI (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`), pour un total de 19. Les deux surfaces exposent 3 ressources (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) et 4 modèles de prompts (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`). Les conversions sont asynchrones : lancez une tâche, puis interrogez `get_job` ou `list_jobs` pour la progression et les résultats.
+
+Le serveur intégré écoute uniquement en loopback, valide l'en-tête `Origin`, prend en charge un jeton bearer facultatif (comparé en temps constant) et n'accepte que `GET`, `POST` et `DELETE` sur `/mcp`. Toutes les sessions sont fermées de force lorsque le serveur s'arrête ou que l'application quitte. Les réglages MCP (activé, port, jeton) persistent dans `mcp-settings.json` dans le répertoire user-data.
 
 ### Raccourcis clavier
 

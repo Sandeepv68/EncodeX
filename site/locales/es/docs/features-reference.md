@@ -70,7 +70,18 @@ Procesa múltiples archivos con operaciones configurables (transcodificar, extra
 
 ### Ajustes
 
-Página de ajustes dedicada para tema, aceleración por hardware (activar/desactivar, modo, tipo de codificador), ventana siempre visible, lanzar al inicio, concurrencia de la cola por lotes y la acción de energía al terminar. Las preferencias persisten en `localStorage` y surten efecto al arrancar.
+Página de ajustes dedicada para tema, aceleración por hardware (activar/desactivar, modo, tipo de codificador), ventana siempre visible, lanzar al inicio, concurrencia de la cola por lotes, la acción de energía al terminar y el servidor MCP (activar/desactivar, puerto, token de acceso). Las preferencias persisten en `localStorage` y surten efecto al arrancar.
+
+### Servidor MCP {#mcp-server}
+
+EncodeX puede actuar como un servidor [Model Context Protocol](https://modelcontextprotocol.io) para que los asistentes de IA y los clientes de automatización lo operen directamente. Hay dos superficies disponibles:
+
+- **Servidor stdio independiente** — se lanza con `encodex --mcp` (o `node dist/mcp/index.js`), hablando JSON-RPC por stdio con stdout reservado para los mensajes del protocolo. Es el modo que usan los hosts MCP que inician un proceso de servidor.
+- **Servidor HTTP integrado** — un endpoint Streamable HTTP opcional en `http://127.0.0.1:8765/mcp`, activado desde **Ajustes → Servidor MCP** mientras la GUI está en ejecución. Comparte el mismo núcleo de herramientas y la cola de trabajos de la app en ejecución.
+
+La superficie stdio expone 13 herramientas principales (`ping`, `convert_media`, `get_job`, `list_jobs`, `cancel_job`, `get_media_info`, `list_capabilities`, `list_profiles`, `get_profile`, `compress_image`, `extract_audio`, `cut_video`, `batch_convert`); la superficie HTTP integrada añade 6 herramientas de paridad con la GUI (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`) para un total de 19. Ambas superficies exponen 3 recursos (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) y 4 plantillas de prompt (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`). Las conversiones son asíncronas: inicia un trabajo y luego consulta `get_job` o `list_jobs` para ver el progreso y los resultados.
+
+El servidor integrado se vincula solo a loopback, valida la cabecera `Origin`, soporta un token bearer opcional (comparado en tiempo constante) y acepta únicamente `GET`, `POST` y `DELETE` en `/mcp`. Todas las sesiones se cierran a la fuerza cuando el servidor se detiene o la app se cierra. Los ajustes MCP (activado, puerto, token) persisten en `mcp-settings.json` en el directorio de datos del usuario.
 
 ### Atajos de teclado
 

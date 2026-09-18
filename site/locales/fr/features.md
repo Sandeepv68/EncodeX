@@ -1,3 +1,7 @@
+---
+description: "Découvrez toutes les fonctionnalités d'EncodeX : convertir des formats vidéo et audio, extraire un MP3 d'une vidéo, couper des clips, compresser des images, traiter des fichiers par lots, encoder avec accélération matérielle, et un serveur MCP intégré pour les assistants IA."
+---
+
 # Que peut faire EncodeX ?
 
 EncodeX est une application gratuite pour votre ordinateur qui résout les problèmes de fichiers courants en quelques clics :
@@ -71,6 +75,26 @@ Cinquante vidéos ? Ne les convertissez pas une par une. Glissez-les toutes dans
 - Mettez en pause, reprenez ou annulez quand vous voulez
 - Réorganisez la liste en glissant
 - Il prévient quand c'est fini — ou éteint l'ordinateur automatiquement
+
+## Laissez un assistant IA piloter
+
+EncodeX inclut un **serveur MCP** intégré — la norme ouverte [Model Context Protocol](https://modelcontextprotocol.io) qui permet aux assistants IA d'utiliser vos applications. Connectez Claude Desktop, Claude Code, Cursor, VS Code ou n'importe quel client compatible MCP, puis demandez simplement en langage courant : convertir un fichier, extraire un son, compresser un dossier de photos ou vérifier une tâche de lot.
+
+Il existe deux façons de se connecter :
+
+- **Serveur stdio autonome** — lancez `encodex --mcp` (ou `node dist/mcp/index.js`). Idéal pour les applications IA de bureau qui démarrent un serveur à la demande.
+- **Serveur localhost intégré** — activez-le dans **Réglages → Serveur MCP** pendant que l'interface graphique tourne, puis pointez vos clients vers `http://127.0.0.1:8765/mcp`. Ce mode ajoute des outils de file d'attente en direct, d'aperçu, de timeline, de système et de mises à jour, en plus du même cœur.
+
+Sur les deux modes, le serveur expose **19 outils**, **3 ressources** (profils, capacités, codecs) et **4 modèles de prompts** (convertir une vidéo, extraire un son, compresser une image, convertir par lots). Les conversions s'exécutent de façon asynchrone, de sorte qu'un assistant peut lancer une tâche longue et en revérifier l'avancement plus tard.
+
+### Privé et sûr par conception
+
+- Le serveur intégré écoute uniquement sur `127.0.0.1` — il n'est jamais accessible depuis d'autres ordinateurs.
+- Les requêtes cross-origin sont rejetées sauf si elles proviennent de l'application locale.
+- Un jeton d'accès facultatif peut exiger que chaque requête soit authentifiée.
+- Vos médias ne sont jamais téléversés nulle part ; tout s'exécute toujours sur votre propre machine.
+
+[Lire la documentation du serveur MCP →](/fr/docs/cli#mcp-server-mode)
 
 ## Espionner l'intérieur d'un fichier
 

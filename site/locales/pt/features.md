@@ -1,3 +1,7 @@
+---
+description: "Explore todos os recursos do EncodeX: converta formatos de vídeo e áudio, extraia MP3 de vídeos, corte clipes, comprima imagens, processe arquivos em lote, codifique com aceleração por hardware e use o servidor MCP integrado para assistentes de IA."
+---
+
 # O que o EncodeX pode fazer?
 
 O EncodeX é um aplicativo gratuito para o seu computador que resolve problemas comuns de arquivos em poucos cliques:
@@ -71,6 +75,26 @@ Tem 50 vídeos? Não converta um por um. Arraste todos para a fila — o EncodeX
 - Pause, retome ou cancele quando quiser
 - Reordene a lista arrastando
 - Avisa quando terminar — ou desliga o computador sozinho ao final da fila
+
+## Deixe um assistente de IA conduzir
+
+O EncodeX inclui um **servidor MCP** integrado — o padrão aberto [Model Context Protocol](https://modelcontextprotocol.io) que permite aos assistentes de IA usar seus apps. Conecte Claude Desktop, Claude Code, Cursor, VS Code ou qualquer cliente compatível com MCP e é só pedir em linguagem simples: converter um arquivo, extrair áudio, comprimir uma pasta de fotos ou verificar uma tarefa em lote.
+
+Há duas formas de conectar:
+
+- **Servidor stdio autônomo** — execute `encodex --mcp` (ou `node dist/mcp/index.js`). Ideal para apps de IA de desktop que iniciam um servidor sob demanda.
+- **Servidor localhost integrado** — ative-o em **Configurações → MCP Server** com a GUI em execução e aponte os clientes para `http://127.0.0.1:8765/mcp`. Esse modo adiciona ferramentas de fila ao vivo, prévia, linha do tempo, sistema e atualizações sobre o mesmo núcleo.
+
+Em ambos os modos, o servidor expõe **19 ferramentas**, **3 recursos** (perfis, capacidades, codecs) e **4 modelos de prompt** (converter vídeo, extrair áudio, comprimir imagem, converter em lote). As conversões rodam de forma assíncrona, então um assistente pode iniciar uma tarefa longa e voltar depois para ver o resultado.
+
+### Privado e seguro por design
+
+- O servidor integrado conecta-se apenas em `127.0.0.1` — nunca é acessível a partir de outros computadores.
+- Solicitações de origem cruzada são rejeitadas, a menos que venham do app local.
+- Um token de acesso opcional pode exigir autenticação em todas as solicitações.
+- Sua mídia nunca é enviada a lugar nenhum; tudo continua rodando na sua própria máquina.
+
+[Leia a documentação do servidor MCP →](/pt/docs/cli#mcp-server-mode)
 
 ## Espiar dentro de qualquer arquivo
 

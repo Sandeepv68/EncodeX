@@ -70,7 +70,18 @@ Verarbeiten Sie mehrere Dateien mit konfigurierbaren Operationen (Transkodierung
 
 ### Einstellungen
 
-Eigene Einstellungsseite für Thema, Hardwarebeschleunigung (an/aus, Modus, Encoder-Typ), Fenster immer im Vordergrund, Autostart, Batch-Konkurrenz und die When-done-Power-Aktion. Präferenzen persistieren im `localStorage` und greifen beim Start.
+Eigene Einstellungsseite für Thema, Hardwarebeschleunigung (an/aus, Modus, Encoder-Typ), Fenster immer im Vordergrund, Autostart, Batch-Konkurrenz, die When-done-Power-Aktion und den MCP-Server (an/aus, Port, Zugriffstoken). Präferenzen persistieren im `localStorage` und greifen beim Start.
+
+### MCP-Server {#mcp-server}
+
+EncodeX kann als [Model Context Protocol](https://modelcontextprotocol.io)-Server fungieren, sodass KI-Assistenten und Automatisierungs-Clients es direkt bedienen können. Zwei Oberflächen stehen zur Verfügung:
+
+- **Eigenständiger stdio-Server** — wird mit `encodex --mcp` (oder `node dist/mcp/index.js`) gestartet, spricht JSON-RPC über stdio, wobei stdout für Protokollnachrichten reserviert ist. Dies ist der Modus, den MCP-Hosts verwenden, die einen Serverprozess starten.
+- **Eingebetteter HTTP-Server** — ein optionaler Streamable-HTTP-Endpunkt unter `http://127.0.0.1:8765/mcp`, der unter **Einstellungen → MCP-Server** aktiviert wird, während die GUI läuft. Er teilt sich denselben Tool-Kern und die Job-Warteschlange der laufenden App.
+
+Die stdio-Oberfläche stellt 13 Kern-Tools bereit (`ping`, `convert_media`, `get_job`, `list_jobs`, `cancel_job`, `get_media_info`, `list_capabilities`, `list_profiles`, `get_profile`, `compress_image`, `extract_audio`, `cut_video`, `batch_convert`); die eingebettete HTTP-Oberfläche fügt 6 GUI-äquivalente Tools hinzu (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`), insgesamt 19. Beide Oberflächen stellen 3 Ressourcen (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) und 4 Prompt-Vorlagen (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`) bereit. Konvertierungen sind asynchron: einen Job starten und dann per `get_job` oder `list_jobs` Fortschritt und Ergebnisse abfragen.
+
+Der eingebettete Server bindet nur an Loopback, validiert den `Origin`-Header, unterstützt ein optionales Bearer-Token (in konstanter Zeit verglichen) und akzeptiert unter `/mcp` nur `GET`, `POST` und `DELETE`. Alle Sitzungen werden zwangsweise geschlossen, wenn der Server stoppt oder die App beendet wird. Die MCP-Einstellungen (aktiviert, Port, Token) persistieren in `mcp-settings.json` im User-Data-Verzeichnis.
 
 ### Tastaturkürzel
 

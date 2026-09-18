@@ -75,7 +75,18 @@ Process multiple files with configurable operations (transcode, extract audio, c
 
 ### Settings
 
-Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, and the when-done power action. Preferences persist to `localStorage` and take effect on startup.
+Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, the when-done power action, and the MCP server (enable/disable, port, access token). Preferences persist to `localStorage` and take effect on startup.
+
+### MCP Server {#mcp-server}
+
+EncodeX can act as a [Model Context Protocol](https://modelcontextprotocol.io) server so AI assistants and automation clients can operate it directly. Two surfaces are available:
+
+- **Standalone stdio server** — launched with `encodex --mcp` (or `node dist/mcp/index.js`), speaking JSON-RPC over stdio with stdout reserved for protocol messages. This is the mode used by MCP hosts that spawn a server process.
+- **Embedded HTTP server** — an opt-in Streamable HTTP endpoint at `http://127.0.0.1:8765/mcp`, enabled from **Settings → MCP Server** while the GUI is running. It shares the same tool core and the running app's job queue.
+
+The stdio surface exposes 13 core tools (`ping`, `convert_media`, `get_job`, `list_jobs`, `cancel_job`, `get_media_info`, `list_capabilities`, `list_profiles`, `get_profile`, `compress_image`, `extract_audio`, `cut_video`, `batch_convert`); the embedded HTTP surface adds 6 GUI-parity tools (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`) for a total of 19. Both surfaces expose 3 resources (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) and 4 prompt templates (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`). Conversions are asynchronous: start a job, then poll `get_job` or `list_jobs` for progress and results.
+
+The embedded server binds to loopback only, validates the `Origin` header, supports an optional bearer token (compared in constant time), and accepts only `GET`, `POST`, and `DELETE` on `/mcp`. All sessions are force-closed when the server stops or the app quits. MCP settings (enabled, port, token) persist to `mcp-settings.json` in the user-data directory.
 
 ### Keyboard Shortcuts
 

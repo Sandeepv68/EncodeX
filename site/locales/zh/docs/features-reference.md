@@ -70,7 +70,18 @@ EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带�
 
 ### 设置
 
-专用设置页面，用于主题、硬件加速（启用/禁用、模式、编码器类型）、窗口置顶、开机自启、批处理队列并发数以及完成后电源操作。偏好设置持久化到 `localStorage` 并在启动时生效。
+专用设置页面，用于主题、硬件加速（启用/禁用、模式、编码器类型）、窗口置顶、开机自启、批处理队列并发数、完成后电源操作以及 MCP 服务器（启用/禁用、端口、访问令牌）。偏好设置持久化到 `localStorage` 并在启动时生效。
+
+### MCP 服务器 {#mcp-server}
+
+EncodeX 可以作为 [Model Context Protocol](https://modelcontextprotocol.io) 服务器，让 AI 助手和自动化客户端直接操作它。有两种可用形式：
+
+- **独立的 stdio 服务器** — 通过 `encodex --mcp`（或 `node dist/mcp/index.js`）启动，使用 stdio 上的 JSON-RPC，stdout 保留给协议消息。这是生成服务器进程的 MCP 主机所使用的模式。
+- **嵌入式 HTTP 服务器** — 一个可选的 Streamable HTTP 端点，位于 `http://127.0.0.1:8765/mcp`，在 GUI 运行时从 **设置 → MCP 服务器** 启用。它与运行中的应用共享同一套工具核心和任务队列。
+
+stdio 端提供 13 个核心工具（`ping`、`convert_media`、`get_job`、`list_jobs`、`cancel_job`、`get_media_info`、`list_capabilities`、`list_profiles`、`get_profile`、`compress_image`、`extract_audio`、`cut_video`、`batch_convert`）；嵌入式 HTTP 端额外提供 6 个与 GUI 对等的工具（`get_queue_state`、`cancel_all_jobs`、`get_timeline`、`extract_preview`、`get_system_info`、`check_for_updates`），合计 19 个。两端都提供 3 个资源（`encodex://profiles`、`encodex://capabilities`、`encodex://codecs`）和 4 个提示模板（`convert-video`、`extract-audio`、`compress-image`、`batch-convert`）。转换是异步的：启动任务后，轮询 `get_job` 或 `list_jobs` 查看进度和结果。
+
+嵌入式服务器只绑定到 loopback，会校验 `Origin` 请求头，支持可选的 bearer 令牌（常量时间比较），并且只接受 `/mcp` 上的 `GET`、`POST` 和 `DELETE` 方法。服务器停止或应用退出时，所有会话都会被强制关闭。MCP 设置（启用状态、端口、令牌）持久化到用户数据目录下的 `mcp-settings.json` 中。
 
 ### 键盘快捷键
 

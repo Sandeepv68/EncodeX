@@ -72,6 +72,26 @@ Wird das Format beibehalten (MP4, MOV oder MKV), wird die Drehung als verlustfre
 - Liste per Ziehen neu sortieren
 - Benachrichtigung am Ende — oder der Computer fährt automatisch herunter
 
+## Lassen Sie einen KI-Assistenten das Steuer übernehmen
+
+EncodeX enthält einen integrierten **MCP-Server** — den offenen [Model Context Protocol](https://modelcontextprotocol.io)-Standard, der KI-Assistenten die Nutzung Ihrer Apps ermöglicht. Verbinden Sie Claude Desktop, Claude Code, Cursor, VS Code oder einen beliebigen MCP-kompatiblen Client und fragen Sie einfach in normaler Sprache: eine Datei konvertieren, Audio extrahieren, einen Ordner mit Fotos komprimieren oder einen Stapeljob prüfen.
+
+Es gibt zwei Verbindungsmöglichkeiten:
+
+- **Eigenständiger stdio-Server** — führen Sie `encodex --mcp` (oder `node dist/mcp/index.js`) aus. Ideal für Desktop-KI-Apps, die bei Bedarf einen Server starten.
+- **Eingebetteter localhost-Server** — aktivieren Sie ihn in **Einstellungen → MCP-Server**, während die GUI läuft, und richten Sie Clients auf `http://127.0.0.1:8765/mcp`. Dieser Modus fügt Live-Warteschlange, Vorschau, Timeline, System- und Update-Tools auf Basis desselben Kerns hinzu.
+
+In beiden Modi stellt der Server **19 Werkzeuge**, **3 Ressourcen** (Profile, Fähigkeiten, Codecs) und **4 Prompt-Vorlagen** (Video konvertieren, Audio extrahieren, Bild komprimieren, Stapelkonvertierung) bereit. Konvertierungen laufen asynchron, sodass ein Assistent einen langen Job starten und später wieder nachsehen kann.
+
+### Privat und von Grund auf sicher
+
+- Der eingebettete Server bindet nur an `127.0.0.1` — von anderen Computern ist er nie erreichbar.
+- Cross-Origin-Anfragen werden abgelehnt, sofern sie nicht von der lokalen App stammen.
+- Ein optionales Zugriffstoken kann festlegen, dass jede Anfrage authentifiziert werden muss.
+- Ihre Medien werden niemals irgendwohin hochgeladen; alles läuft weiterhin auf Ihrem eigenen Rechner.
+
+[Zur MCP-Server-Dokumentation →](/de/docs/cli#mcp-server-mode)
+
 ## In jede Datei hineinschauen
 
 <img src="/images/media_info.webp" alt="Medieninfos" width="1600" height="1058" loading="lazy">

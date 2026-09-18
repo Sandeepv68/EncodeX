@@ -115,6 +115,29 @@ Globale Optionen können vor oder nach dem Subcommand-Namen stehen.
 
 Batch akzeptiert außerdem alle Convert-Encoding-Optionen (`-v/--video-codec`, `-a/--audio-codec`, `--bitrate-video`, `--bitrate-audio`, `-q/--qscale`, `--pix-fmt`, `-s/--scale`, `--copy`, `--no-audio`, `--no-video`) und wendet sie auf jeden Job an.
 
+## MCP-Server-Modus {#mcp-server-mode}
+
+EncodeX kann als Headless-[Model Context Protocol](https://modelcontextprotocol.io)-Server laufen, sodass MCP-Hosts (Claude Desktop, Claude Code, VS Code, Cursor, eigene Agenten) Konvertierungen steuern können. Das ist ein **Modus**, kein Subcommand: Mit `--mcp` überspringt die App die GUI- und CLI-Zweige und spricht JSON-RPC über stdio.
+
+```bash
+# Gepackte App
+encodex --mcp
+
+# Quellcode-Checkout (kompilierter Node-Einstiegspunkt — zuerst npm run build:main ausführen)
+node dist/mcp/index.js
+
+# Rohe Electron-Form
+npx electron . --mcp
+```
+
+stdout ist für MCP-JSON-RPC-Nachrichten reserviert; alle Status- und Logging-Ausgaben werden nach stderr umgeleitet, und der Prozess bleibt aktiv, bis stdin geschlossen wird. Der Server stellt 19 Werkzeuge, 3 Ressourcen und 4 Prompts bereit — den vollständigen Katalog finden Sie in der [Funktionsreferenz](/de/docs/features-reference#mcp-server).
+
+| Option  | Beschreibung                                            |
+| ------- | ------------------------------------------------------- |
+| `--mcp` | Als stdio-MCP-Server ausführen (kein GUI, kein CLI-Subcommand, kein `app.exit`) |
+
+Eine zweite, optionale Oberfläche ist der **eingebettete HTTP-Server** in der laufenden GUI (`http://127.0.0.1:8765/mcp`), der Live-Warteschlange, Vorschau, Timeline, System- und Update-Tools auf Basis desselben Kerns hinzufügt. Aktivieren Sie ihn in **Einstellungen → MCP-Server**; das Sicherheitsmodell finden Sie in der [Funktionsreferenz](/de/docs/features-reference#mcp-server).
+
 ## Exit-Codes
 
 | Code | Konstante                    | Bedeutung                                      |
