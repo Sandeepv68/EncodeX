@@ -552,6 +552,7 @@
     "monitoringErrorReportingHint": "Ka āwhina ki te whakapai ake i te EncodeX mā te tuku pūrongo hapa ohauru. Ka taea te whakaweto i tēnei i ngā wā katoa.",
     "mcpServer": "Tūmau MCP",
     "mcpServerHint": "Ka taea e ngā kiritaki MCP o waho pēnei i a Claude Desktop, VS Code, Cursor rānei te whakahaere i a EncodeX mā tētahi hononga ā-rohe. Ka whakarongo te tūmau ki tēnei rorohiko anake.",
+    "mcpAiUseCases": "Ngā take whakamahi AI",
     "mcpPort": "Tauranga",
     "mcpPortHint": "Tauranga TCP ā-rohe mō te tūmau MCP (1024-65535). Ka tīmata anō te taupānga i te tūmau ina huri tēnei.",
     "mcpToken": "Tōkena uru",

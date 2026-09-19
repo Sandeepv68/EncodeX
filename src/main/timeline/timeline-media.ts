@@ -34,6 +34,7 @@ import {
   MAX_CONCURRENT_FFMPEG,
   PCM_MAX_AMPLITUDE,
 } from '../../shared/constants';
+import { clamp } from '../../shared/math';
 import {
   LOG_FFMPEG_SPAWN_ERROR,
   LOG_NOT_A_THUMBNAIL_ABLE_FILE,
@@ -48,17 +49,6 @@ const log = new Logger('main/timeline/timeline-media');
 
 /** Byte size of one raw RGB24 thumbnail frame (`THUMB_WIDTH * THUMB_HEIGHT * 3`). */
 const RAW_FRAME_BYTES = THUMB_WIDTH * THUMB_HEIGHT * 3;
-
-/**
- * Clamps a value into the inclusive `[min, max]` range.
- * @param {number} value - The value to clamp
- * @param {number} min - Lower bound of the range
- * @param {number} max - Upper bound of the range
- * @returns {number} `min` if value < min, `max` if value > max, else `value`
- */
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
-}
 
 /**
  * Formats a number of seconds for use in ffmpeg `-ss`/`-t` arguments.

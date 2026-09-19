@@ -23,6 +23,7 @@ import { faMobileScreen, faTabletScreenButton, faTv, faGamepad } from '@fortawes
 import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
 import { PROFILE_ICON_COLORS } from '../colors';
+import { isNearBlack } from '../utils/colors';
 import { OptionIcon, FormatBadge, BrandSvg } from '../styles/ProfileSelector.styles';
 
 /** A resolved profile icon, rendered by <ProfileIcon />. */
@@ -141,15 +142,6 @@ function resolveProfileIcon(name: string): ResolvedIcon {
 
   // eslint-disable-next-line encodex/no-hardcoded-strings -- Generic fallback badge for unknown profiles; content-free icon abbreviation, not localizable UI copy.
   return { kind: 'badge', label: 'FILE', color: PROFILE_ICON_COLORS.fallback };
-}
-
-/** True when a hex brand color is too dark to render as a fill in dark mode. */
-function isNearBlack(hex: string): boolean {
-  const value = hex.replace('#', '');
-  const r = parseInt(value.slice(0, 2), 16);
-  const g = parseInt(value.slice(2, 4), 16);
-  const b = parseInt(value.slice(4, 6), 16);
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b < 40;
 }
 
 /** An inline SVG rendering of a `simple-icons` brand glyph. */

@@ -1,6 +1,6 @@
 # 💻 CLI Usage
 
-Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode auto-activates when two positional arguments (input + output) are given, or explicitly with `--cli`:
+Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode auto-activates when two positional arguments (input + output) are given, or explicitly with `--cli`. Passing `--mcp` instead starts the headless MCP server over stdio (see [[MCP]]):
 
 ```bash
 # Convert a file (subcommand form)
@@ -36,6 +36,9 @@ encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
 
 # Use a specific transcoder core
 encodex convert input.mp4 output.mp4 --transcoder FFTOOL
+
+# Run the headless MCP server over stdio (see the MCP page)
+encodex --mcp
 ```
 
 Legacy flat usage (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) is shimmed into the matching subcommand automatically.
@@ -125,3 +128,7 @@ Batch also accepts all convert encoding options (`-v/--video-codec`, `-a/--audio
 | `3`  | `EXIT_CODES.CANCELLED`       | Operation cancelled by the user                |
 | `4`  | `EXIT_CODES.NOT_FOUND`       | Input file, FFmpeg, or FFprobe not found       |
 | `5`  | `EXIT_CODES.TIMEOUT`         | Conversion exceeded `--timeout`                |
+
+## 🔌 MCP Mode
+
+`encodex --mcp` starts the Model Context Protocol server in non-interactive stdio mode, exposing the 13 core tools to MCP hosts while keeping stdout reserved for JSON-RPC protocol messages (all logs route to stderr). The Electron main process runs headless: Chromium's GPU acceleration is disabled and no windows are spawned. Equivalently, the compiled entry can be started directly with `node dist/mcp/index.js`. See the [[MCP]] page for the tool catalogue, client configuration, and the embedded HTTP variant.

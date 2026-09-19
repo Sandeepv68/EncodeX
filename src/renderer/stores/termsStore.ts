@@ -27,6 +27,7 @@
 
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
+import { loadJson, saveJson } from '../utils/storage';
 import { TERMS_VERSION } from '../../shared/terms';
 import { TERMS_ACCEPTED_STORAGE_KEY } from '../../shared/constants';
 
@@ -53,23 +54,16 @@ interface AcceptedTermsRecord {
  * @returns {AcceptedTermsRecord | null} The stored record, or null.
  */
 function loadAcceptedRecord(): AcceptedTermsRecord | null {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const parsed: unknown = JSON.parse(raw);
-    if (
-      typeof parsed !== 'object' ||
-      parsed === null ||
-      typeof (parsed as AcceptedTermsRecord).version !== 'string' ||
-      typeof (parsed as AcceptedTermsRecord).acceptedAt !== 'string'
-    ) {
-      return null;
-    }
-    return { version: (parsed as AcceptedTermsRecord).version, acceptedAt: (parsed as AcceptedTermsRecord).acceptedAt };
-  } catch {
-    log.warn('Failed to load accepted terms record from localStorage');
+  const parsed = loadJson<unknown>(STORAGE_KEY, null, () => log.warn('Failed to load accepted terms record from localStorage'));
+  if (
+    typeof parsed !== 'object' ||
+    parsed === null ||
+    typeof (parsed as AcceptedTermsRecord).version !== 'string' ||
+    typeof (parsed as AcceptedTermsRecord).acceptedAt !== 'string'
+  ) {
     return null;
   }
+  return { version: (parsed as AcceptedTermsRecord).version, acceptedAt: (parsed as AcceptedTermsRecord).acceptedAt };
 }
 
 /**
@@ -78,11 +72,7 @@ function loadAcceptedRecord(): AcceptedTermsRecord | null {
  * @returns {void}
  */
 function saveAcceptedRecord(record: AcceptedTermsRecord): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
-  } catch (err) {
-    log.warn('Failed to persist accepted terms record to localStorage', err);
-  }
+  saveJson(STORAGE_KEY, record, (err) => log.warn('Failed to persist accepted terms record to localStorage', err));
 }
 
 /**

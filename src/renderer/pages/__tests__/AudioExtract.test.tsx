@@ -130,7 +130,7 @@ describe('AudioExtract', () => {
     expect(info).toHaveTextContent('aac');
     expect(info).toHaveTextContent('(LC)');
     expect(info).toHaveTextContent('2 ch');
-    expect(info).toHaveTextContent('48000 Hz');
+    expect(info).toHaveTextContent('48 kHz');
     expect(info).toHaveTextContent('128 kb/s');
     expect(screen.getByTestId('selected-video')).toHaveTextContent('video.mp4');
   });

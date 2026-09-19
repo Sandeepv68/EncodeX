@@ -8,6 +8,7 @@ import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
 import type { QueueJob } from '../../../shared/types';
 import { FILE_FILTERS } from '../../../shared/file-extensions';
 import { BATCH_CONFIG_STORAGE_KEY } from '../../../shared/constants';
+import { ERROR_MESSAGES } from '../../../shared/errors';
 
 const queueListMock = vi.mocked(window.electronAPI.queueList);
 const queueGetStateMock = vi.mocked(window.electronAPI.queueGetState);
@@ -884,7 +885,9 @@ describe('BatchQueue', () => {
     await screen.findByText(/video\.mp4/);
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.retry' }));
     await waitFor(() =>
-      expect(useToastStore.getState().toasts.some((toast) => toast.type === 'error' && toast.message === 'retry failed')).toBe(true),
+      expect(
+        useToastStore.getState().toasts.some((toast) => toast.type === 'error' && toast.message === ERROR_MESSAGES.CONVERSION_FAILED),
+      ).toBe(true),
     );
   });
 

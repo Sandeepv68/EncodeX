@@ -16,6 +16,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Logger } from '../../shared/logger';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import type { ConversionProgress } from '../../shared/types';
+import { toTaskProgress } from '../../shared/progress';
 import { useErrorStore } from '../stores/errorStore';
 import { useTaskStore } from '../stores/taskStore';
 import { LOG_SUBSCRIBING_TO_CONVERSION_PROGRESS, LOG_UNSUBSCRIBING_FROM_CONVERSION_PROGRESS } from '../../shared/log-constants';
@@ -70,8 +71,7 @@ export function useMediaTask() {
     log.debug(LOG_SUBSCRIBING_TO_CONVERSION_PROGRESS);
     const cleanup = window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
       if (!isConvertingRef.current) return;
-      const p = data.progress;
-      setProgress({ percent: p.percent, time: p.time, speed: p.speed, eta: p.eta });
+      setProgress(toTaskProgress(data.progress));
     });
     return () => {
       log.debug(LOG_UNSUBSCRIBING_FROM_CONVERSION_PROGRESS);

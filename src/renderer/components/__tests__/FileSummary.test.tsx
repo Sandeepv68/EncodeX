@@ -19,7 +19,7 @@ describe('FileSummary', () => {
     expect(screen.getByText('mp4')).toBeInTheDocument();
     expect(screen.getByText('2.0 MB')).toBeInTheDocument();
     expect(screen.getByText('12.34s')).toBeInTheDocument();
-    expect(screen.getByText('800000')).toBeInTheDocument();
+    expect(screen.getByText('800 kbps')).toBeInTheDocument();
   });
 
   it('renders labels for each field', () => {

@@ -49,6 +49,8 @@ import { useHotkeys } from '../hooks/useHotkeys';
 import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { focusFirstError } from '../utils/focusFirstError';
 import { openFileDialog } from '../utils/fileDialog';
+import { fileName } from '../utils/path-utils';
+import { withExtension } from '../../shared/codec-containers';
 import { isInRange } from '../../shared/validation';
 import { formatSize } from '../utils/formatters';
 import type { ImageFileInfo } from '../../shared/types';
@@ -71,33 +73,6 @@ import {
  * @const {Logger} log
  */
 const log = new Logger('renderer/pages/ImageCompress');
-
-/**
- * Extracts the base file name from an absolute path, handling both `/` and `\`
- * separators (POSIX and Windows paths).
- * @param {string} path - The full file path to process.
- * @returns {string} The trailing path segment, or the original `path` when no
- *   separator is present.
- */
-function fileName(path: string): string {
-  return path.split(/[\\/]/).pop() ?? path;
-}
-
-/**
- * Replaces the extension of a file path with the given one, preserving any
- * directory portion. If `path` has no extension (or only directory dots), the
- * new extension is appended. Extension detection stops at the last slash so
- * directory names containing dots are not mangled.
- * @param {string} path - The file path whose extension is replaced.
- * @param {string} ext - The new extension, without a leading dot.
- * @returns {string} The path with its extension replaced or appended.
- */
-function withExtension(path: string, ext: string): string {
-  const slashIdx = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
-  const dotIdx = path.lastIndexOf('.');
-  const base = dotIdx > slashIdx ? path.slice(0, dotIdx) : path;
-  return `${base}.${ext}`;
-}
 
 /**
  * Renders the image compression page (`/image-compress`).

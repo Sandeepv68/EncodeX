@@ -30,6 +30,7 @@ import { Logger } from '../../shared/logger';
 import { BITRATE_OPTIONS } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import type { ConversionProgress, MediaStreamInfo } from '../../shared/types';
+import { toTaskProgress } from '../../shared/progress';
 import { ErrorCode } from '../../shared/errors';
 import { useErrorStore } from './errorStore';
 import { useToastStore } from './toastStore';
@@ -251,6 +252,5 @@ export const useAudioExtractStore = create<AudioExtractState>((set, get) => ({
 window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
   const state = useAudioExtractStore.getState();
   if (!state.isConverting) return;
-  const p = data.progress;
-  useAudioExtractStore.getState().setProgress({ percent: p.percent, time: p.time, speed: p.speed, eta: p.eta });
+  useAudioExtractStore.getState().setProgress(toTaskProgress(data.progress));
 });

@@ -28,19 +28,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { BATCH_OPERATIONS } from '../../shared/media-options';
 import type { QueueAddReviewDialogProps, QueueAddReviewSelection } from './types';
+import { basename } from '../utils/path-utils';
 import { ReviewFileName, ReviewList, ReviewOperationSelect, ReviewRow } from '../styles/QueueAddReviewDialog.styles';
-
-/**
- * Extracts the basename of a file path, handling both Windows backslashes and
- * POSIX forward slashes.
- * @param {string} path - The file path to process.
- * @returns {string} The trailing path segment, or the original path when it has
- *   no separators.
- */
-function basename(path: string): string {
-  const parts = path.split(/[\\/]/);
-  return parts[parts.length - 1] || path;
-}
 
 /**
  * Renders the batch add review dialog.

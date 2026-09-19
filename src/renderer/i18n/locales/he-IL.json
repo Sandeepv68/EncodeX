@@ -552,6 +552,7 @@
     "monitoringErrorReportingHint": "עוזר לשפר את EncodeX על ידי שליחת דוחות שגיאה אנונימיים. ניתן לכבות זאת בכל עת.",
     "mcpServer": "שרת MCP",
     "mcpServerHint": "מאפשר ללקוחות MCP חיצוניים כגון Claude Desktop, VS Code או Cursor לשלוט ב-EncodeX דרך חיבור מקומי. השרת מאזין רק במחשב זה.",
+    "mcpAiUseCases": "מקרי שימוש ב-AI",
     "mcpPort": "יציאה",
     "mcpPortHint": "יציאת TCP מקומית עבור שרת MCP (1024-65535). האפליקציה מפעילה מחדש את השרת כאשר ערך זה משתנה.",
     "mcpToken": "אסימון גישה",

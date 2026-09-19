@@ -15,7 +15,7 @@ import {
   timemarkToSeconds,
   percentFromTimemark,
   formatBytes,
-  formatDuration,
+  formatDurationCompact,
   parseTimeValue,
 } from '../cli-util';
 
@@ -152,17 +152,17 @@ describe('formatBytes', () => {
   });
 });
 
-describe('formatDuration', () => {
+describe('formatDurationCompact', () => {
   it('formats hours, minutes, and seconds compactly', () => {
-    expect(formatDuration(0)).toBe('0s');
-    expect(formatDuration(45)).toBe('45s');
-    expect(formatDuration(90)).toBe('1m 30s');
-    expect(formatDuration(3661)).toBe('1h 1m');
+    expect(formatDurationCompact(0)).toBe('0s');
+    expect(formatDurationCompact(45)).toBe('45s');
+    expect(formatDurationCompact(90)).toBe('1m 30s');
+    expect(formatDurationCompact(3661)).toBe('1h 1m');
   });
 
   it('falls back to 0s for invalid input', () => {
-    expect(formatDuration(NaN)).toBe('0s');
-    expect(formatDuration(-3)).toBe('0s');
+    expect(formatDurationCompact(NaN)).toBe('0s');
+    expect(formatDurationCompact(-3)).toBe('0s');
   });
 });
 

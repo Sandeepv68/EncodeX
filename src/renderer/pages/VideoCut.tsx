@@ -55,6 +55,8 @@ import { isValidTime } from '../../shared/validation';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import type { MediaInfo } from '../../shared/types';
 import { useMediaTask } from '../hooks/useMediaTask';
+import { timeToSeconds, formatClockTime as secondsToTime } from '../utils/formatters';
+import { basename } from '../utils/path-utils';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
@@ -63,6 +65,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
+import { openFileDialog } from '../utils/fileDialog';
 import { SectionHeader, FileChip, SectionsStack, HeadingGroup, AccelAlert, ActionRow } from '../styles/VideoCut.styles';
 import { FieldLabel, ToggleRow, SectionCard, SectionTitle } from '../styles/form.styles';
 import {
@@ -87,51 +90,6 @@ import {
  * @const {Logger} log
  */
 const log = new Logger('renderer/pages/VideoCut');
-
-/**
- * Converts a time string to seconds. Accepts a plain number of seconds (e.g.
- * `42.5`) or an `HH:MM:SS[.mmm]` timestamp. Empty input returns null.
- * @param {string} value - The time string to parse.
- * @returns {number | null} The time in seconds, or null when the input is
- *   empty or not a valid format.
- */
-function timeToSeconds(value: string): number | null {
-  if (!value.trim()) return null;
-  if (/^\d+(\.\d+)?$/.test(value.trim())) return parseFloat(value.trim());
-  const match = /^(\d{1,2}):(\d{2}):(\d{2})(\.\d+)?$/.exec(value.trim());
-  if (!match) return null;
-  return parseInt(match[1], 10) * 3600 + parseInt(match[2], 10) * 60 + parseInt(match[3], 10) + (match[4] ? parseFloat(match[4]) : 0);
-}
-
-/**
- * Formats a number of seconds as an `HH:MM:SS` string, appending `.mmm`
- * milliseconds when there is a fractional part. Negative inputs are clamped to
- * zero.
- * @param {number} seconds - The time in seconds to format.
- * @returns {string} The formatted time string.
- */
-function secondsToTime(seconds: number): string {
-  const totalMs = Math.max(0, Math.round(seconds * 1000));
-  const ms = totalMs % 1000;
-  const totalSec = Math.floor(totalMs / 1000);
-  const h = Math.floor(totalSec / 3600);
-  const m = Math.floor((totalSec % 3600) / 60);
-  const s = totalSec % 60;
-  const base = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  return ms > 0 ? `${base}.${ms.toString().padStart(3, '0')}` : base;
-}
-
-/**
- * Extracts the base file name from an absolute path, handling both `/` and `\`
- * separators (POSIX and Windows paths). Returns the original path when the
- * trailing segment is empty.
- * @param {string} filePath - The full file path to process.
- * @returns {string} The trailing path segment.
- */
-function basename(filePath: string): string {
-  const parts = filePath.split(/[\\/]/);
-  return parts[parts.length - 1] || filePath;
-}
 
 /**
  * Renders the video cutting page (`/video-cut`).
@@ -532,8 +490,7 @@ export default function VideoCut() {
    * @returns {Promise<void>} Resolves once the dialog is closed.
    */
   const handleBrowseVideo = async () => {
-    const extList = [{ name: 'Files', extensions: VIDEO_DROPZONE_ACCEPT.split(',').map((s) => s.trim()) }];
-    const file = await window.electronAPI.selectFile(extList);
+    const file = await openFileDialog(VIDEO_DROPZONE_ACCEPT);
     if (file) handleFileSelect(file);
   };
 

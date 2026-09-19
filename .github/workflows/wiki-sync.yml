@@ -1,0 +1,51 @@
+name: Sync Wiki
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'wiki/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wiki
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout wiki source
+        uses: actions/checkout@v4
+        with:
+          path: repo
+          fetch-depth: 0
+
+      - name: Checkout wiki destination
+        uses: actions/checkout@v4
+        with:
+          repository: Sandeepv68/EncodeX.wiki
+          path: wiki
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Mirror wiki files
+        run: |
+          rm -rf wiki/*
+          cp -r repo/wiki/* wiki/
+
+      - name: Commit and push
+        run: |
+          cd wiki
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No wiki changes to commit"
+            exit 0
+          fi
+          git commit -m "Sync wiki with main repo"
+          git push origin HEAD

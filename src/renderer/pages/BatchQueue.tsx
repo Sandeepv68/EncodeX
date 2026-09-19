@@ -38,21 +38,19 @@ import { useToastStore } from '../stores/toastStore';
 import { useProfileStore } from '../stores/profileStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX, QUEUE_STATUS } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
-import { FILE_FILTERS, MEDIA_INPUT_EXTENSIONS, isImageFile } from '../../shared/file-extensions';
-import {
-  getAudioCodecContainers,
-  getVideoCodecContainer,
-  suggestedExtensionForAudioCodec,
-  suggestedExtensionForVideoCodec,
-} from '../../shared/codec-containers';
-import { estimateRemaining, formatEstimate } from '../../shared/estimate';
+import { FILE_FILTERS } from '../../shared/file-extensions';
+import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
+import { estimateRemaining, formatDurationCompact } from '../../shared/estimate';
 import { QueueJob, ConversionProfile } from '../../shared/types';
 import { useSettingsStore } from '../stores/settingsStore';
 import { readStoredBatchConfig, persistBatchConfig, type BatchConfig } from '../stores/batchConfig';
 import type { QueueAddReviewSelection } from '../components/types';
 import type { HwAccelMode } from '../../shared/types';
 import { buildBatchOptions, inferJobOperation, recomputeJobOutput, recomputeJobOutputDir } from '../utils/batch-options';
+import { planEnqueues } from '../utils/queue-job-utils';
+import { formatError } from '../../shared/errors';
 import { computeQueuedTargetPosition, reorderJob } from '../utils/queue-reorder';
+import { basename, normalizePath } from '../utils/path-utils';
 import { JobCard } from '../styles/QueueJobCard.styles';
 import {
   PageTitle,
@@ -67,100 +65,7 @@ import {
 } from '../styles/BatchQueue.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
-
-/**
- * Extracts the basename of a file path, handling both Windows backslashes and
- * POSIX forward slashes.
- * @param {string} path - The file path to process.
- * @returns {string} The trailing path segment, or the original path when it
- *   has no separators.
- */
-function basename(path: string): string {
-  const parts = path.split(/[\\/]/);
-  return parts[parts.length - 1] || path;
-}
-
-/**
- * Shows a native OS notification (via the HTML5 Notification API, which
- * Electron's renderer surfaces as a real system notification). Permission is
- * requested once when the browser has not yet decided; failures and
- * unavailable notification support are swallowed so they can never break the
- * UI. The OS notification complements the in-app batch-finished toast.
- * @param {string} title - The notification title.
- * @param {string} body - The notification body text.
- * @returns {void}
- */
-function showNativeCompletionNotification(title: string, body: string): void {
-  try {
-    if (typeof Notification === 'undefined') return;
-    const show = () => {
-      try {
-        new Notification(title, { body });
-      } catch {
-        // Notification construction failed; the in-app toast still informs.
-      }
-    };
-    if (Notification.permission === 'granted') {
-      show();
-    } else if (Notification.permission === 'default' && typeof Notification.requestPermission === 'function') {
-      Notification.requestPermission()
-        .then((permission: string) => {
-          if (permission === 'granted') show();
-        })
-        .catch(() => {
-          // Permission request failed; fall back to the toast alone.
-        });
-    }
-  } catch {
-    // Notification support missing entirely; fall back to the toast alone.
-  }
-}
-
-/**
- * Normalizes a file path for duplicate comparison: lowercases and unifies
- * Windows backslashes with POSIX forward slashes.
- * @param {string} path - The file path to normalize.
- * @returns {string} The normalized path.
- */
-function normalizePath(path: string): string {
-  return path.replace(/\\/g, '/').toLowerCase();
-}
-
-/**
- * Extracts the directory portion of a file path, handling both Windows
- * backslashes and POSIX forward slashes. The trailing separator is removed.
- * @param {string} file - The file path to process.
- * @returns {string} The directory path, or '' when the path has no separators.
- */
-function getSourceDir(file: string): string {
-  const idx = Math.max(file.lastIndexOf('/'), file.lastIndexOf('\\'));
-  return idx >= 0 ? file.slice(0, idx) : '';
-}
-
-/**
- * Extracts the basename stem (filename without its final extension). A leading
- * dot is not treated as an extension separator, so dotfiles (`.env`) keep their
- * whole name as the stem.
- * @param {string} file - The file path to process.
- * @returns {string} The basename without its extension.
- */
-function getSourceStem(file: string): string {
-  const base = basename(file);
-  const dotIdx = base.lastIndexOf('.');
-  return dotIdx > 0 ? base.slice(0, dotIdx) : base;
-}
-
-/**
- * Extracts the lowercase file extension from a path. Dotfiles (`.env`) have no
- * extension because a leading dot is not an extension separator.
- * @param {string} file - The file path to process.
- * @returns {string} The extension without a leading dot, or '' when there is none.
- */
-function getSourceExtension(file: string): string {
-  const base = basename(file);
-  const dotIdx = base.lastIndexOf('.');
-  return dotIdx > 0 ? base.slice(dotIdx + 1).toLowerCase() : '';
-}
+import { showNativeCompletionNotification } from '../utils/desktop-utils';
 
 /**
  * Restricts the dragged card to vertical movement only, so reordering a queued
@@ -766,30 +671,6 @@ export default function BatchQueue() {
   }, []);
 
   /**
-   * Builds the output path for a new batch job: the source directory (or the
-   * configured output folder), the source stem with the configured suffix, and
-   * the chosen extension. The extension defaults to the source extension (or
-   * the codec-suggested one) when no container/format is selected, falling back
-   * to 'mp4'.
-   * @param {string} file - The source file path.
-   * @param {string} operation - The batch operation value.
-   * @param {string} sourceExt - The source file's extension.
-   * @returns {string} The computed output path.
-   */
-  const buildOutputPath = (file: string, operation: string, sourceExt: string): string => {
-    const sourceDir = outputDir.length > 0 ? outputDir.replace(/\\/g, '/').replace(/\/+$/, '') : getSourceDir(file).replace(/\\/g, '/');
-    const stem = getSourceStem(file);
-    let ext = container;
-    if (!ext) {
-      if (operation === 'extract_audio') ext = suggestedExtensionForAudioCodec(audioCodec) || sourceExt;
-      else if (operation === 'transcode') ext = sourceExt || suggestedExtensionForVideoCodec(videoCodec);
-      else ext = sourceExt;
-    }
-    if (!ext) ext = 'mp4';
-    return `${sourceDir ? sourceDir + '/' : ''}${stem}${suffixRef.current}.${ext}`;
-  };
-
-  /**
    * Enqueues every given selection as a batch job using its per-file operation,
    * the shared suffix/transcoder/codec refs, and the hardware-acceleration
    * settings. The output path for each file is derived by inserting the
@@ -810,50 +691,36 @@ export default function BatchQueue() {
   const enqueueSelections = async (selections: QueueAddReviewSelection[]) => {
     const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
     const currentJobs = useQueueStore.getState().jobs;
-    const existingKeys = new Set(currentJobs.map((job: QueueJob) => `${normalizePath(job.input)}|${normalizePath(job.output)}`));
-    const existingOutputs = new Set(currentJobs.map((job: QueueJob) => normalizePath(job.output)));
-    const skippedNames: string[] = [];
+    const plan = planEnqueues({
+      selections,
+      currentJobs,
+      outputDir,
+      enc: { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, rotate, flipH, flipV, pixelFormat },
+      hw: { hardwareAcceleration, hwaccelMode },
+      suffix: suffixRef.current,
+      transcoder: transcoderRef.current,
+      overwrite,
+    });
     let added = 0;
-    const enqueues: Promise<void>[] = [];
-    for (const { file, operation } of selections) {
-      const normalized = normalizePath(file);
-      const expectsImage = operation === 'compress_image';
-      const sourceExt = getSourceExtension(file);
-      const isMedia = MEDIA_INPUT_EXTENSIONS.includes(sourceExt as (typeof MEDIA_INPUT_EXTENSIONS)[number]);
-      if (expectsImage !== isImageFile(file) || !isMedia) {
-        skippedNames.push(basename(file));
-        continue;
-      }
-      const outFile = buildOutputPath(file, operation, sourceExt);
-      const key = `${normalized}|${normalizePath(outFile)}`;
-      if (existingKeys.has(key) || existingOutputs.has(normalizePath(outFile))) {
-        skippedNames.push(basename(file));
-        continue;
-      }
-      existingKeys.add(key);
-      existingOutputs.add(normalizePath(outFile));
-      const options = buildBatchOptions(
-        operation,
-        { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, rotate, flipH, flipV, pixelFormat },
-        { hardwareAcceleration, hwaccelMode },
-      );
-      enqueues.push(
-        window.electronAPI
-          .queueAdd(file, outFile, options, transcoderRef.current, overwrite)
-          .then(() => {
-            added += 1;
-          })
-          .catch((err: unknown) => {
-            useToastStore.getState().error(err instanceof Error ? err.message : String(err));
-          }),
-      );
-    }
+    const enqueues = plan.enqueues.map((draft) =>
+      window.electronAPI
+        .queueAdd(draft.file, draft.output, draft.options, draft.transcoder, draft.overwrite)
+        .then(() => {
+          added += 1;
+        })
+        .catch((err: unknown) => {
+          const appError = formatError(err);
+          useToastStore.getState().error(appError.message, appError.detail);
+        }),
+    );
     await Promise.all(enqueues);
     if (added > 0) {
       useToastStore.getState().success(t('batchQueue.enqueued', { count: added }));
     }
-    if (skippedNames.length > 0) {
-      useToastStore.getState().warning(t('batchQueue.skippedDuplicates', { count: skippedNames.length, names: skippedNames.join(', ') }));
+    if (plan.skippedNames.length > 0) {
+      useToastStore
+        .getState()
+        .warning(t('batchQueue.skippedDuplicates', { count: plan.skippedNames.length, names: plan.skippedNames.join(', ') }));
     }
   };
 
@@ -924,7 +791,8 @@ export default function BatchQueue() {
       window.electronAPI.queueRemove(failedJob.id);
       useToastStore.getState().success(t('toast.jobAdded'));
     } catch (err) {
-      useToastStore.getState().error(err instanceof Error ? err.message : String(err));
+      const appError = formatError(err);
+      useToastStore.getState().error(appError.message, appError.detail);
     }
   };
 
@@ -1018,7 +886,8 @@ export default function BatchQueue() {
       useToastStore.getState().success(t('batchQueue.optionsUpdated'));
       setEditJob(null);
     } catch (err) {
-      useToastStore.getState().error(err instanceof Error ? err.message : String(err));
+      const appError = formatError(err);
+      useToastStore.getState().error(appError.message, appError.detail);
     }
   };
 
@@ -1155,7 +1024,8 @@ export default function BatchQueue() {
         useToastStore.getState().success(t('batchQueue.imported', { count }));
       }
     } catch (err) {
-      useToastStore.getState().error(err instanceof Error ? err.message : String(err));
+      const appError = formatError(err);
+      useToastStore.getState().error(appError.message, appError.detail);
     }
   };
 
@@ -1366,7 +1236,7 @@ export default function BatchQueue() {
             />
             {remainingSeconds !== null && (
               <FilterEta variant="body2" color="text.secondary">
-                {t('batchQueue.etaEstimate', { eta: formatEstimate(remainingSeconds) })}
+                {t('batchQueue.etaEstimate', { eta: formatDurationCompact(remainingSeconds) })}
               </FilterEta>
             )}
             {allDone && (

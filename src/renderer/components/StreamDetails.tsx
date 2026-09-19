@@ -20,7 +20,7 @@ import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { MediaStreamInfo } from '../../shared/types';
 import type { StreamDetailsProps } from './types';
-import { formatDuration } from '../utils/formatters';
+import { formatDuration, formatSampleRate, formatBitrate } from '../utils/formatters';
 import { FieldLabel, FieldValue } from '../styles/InfoField.styles';
 import EllipsisTooltip from './EllipsisTooltip';
 import {
@@ -62,8 +62,8 @@ function buildStreamRows(stream: MediaStreamInfo, t: (key: string, opts?: Record
   if (stream.bitDepth != null && stream.bitDepth > 0) rows.push([t('mediaInfo.bitDepth'), String(stream.bitDepth)]);
   if (stream.frameRate) rows.push([t('mediaInfo.frameRate'), `${stream.frameRate} fps`]);
   if (stream.avgFrameRate) rows.push([t('mediaInfo.avgFrameRate'), `${stream.avgFrameRate} fps`]);
-  if (stream.bitrate) rows.push([t('mediaInfo.bitrate'), stream.bitrate]);
-  if (stream.sampleRate != null && stream.sampleRate > 0) rows.push([t('mediaInfo.sampleRate'), `${stream.sampleRate} Hz`]);
+  if (stream.bitrate) rows.push([t('mediaInfo.bitrate'), formatBitrate(stream.bitrate)]);
+  if (stream.sampleRate != null && stream.sampleRate > 0) rows.push([t('mediaInfo.sampleRate'), formatSampleRate(stream.sampleRate)]);
   if (stream.sampleFormat) rows.push([t('mediaInfo.sampleFormat'), stream.sampleFormat]);
   if (stream.channels != null && stream.channels > 0) rows.push([t('mediaInfo.channels'), String(stream.channels)]);
   if (stream.channelLayout) rows.push([t('mediaInfo.channelLayout'), stream.channelLayout]);

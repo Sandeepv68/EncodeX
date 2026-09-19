@@ -14,6 +14,7 @@
  */
 
 import { useEffect } from 'react';
+import { formatError } from '../../shared/errors';
 import { parseShortcut, shortcutMatches } from '../constants/shortcuts';
 import { useToastStore } from '../stores/toastStore';
 
@@ -69,7 +70,8 @@ export function useDevScreenshot(): void {
         const savedPath = await window.electronAPI.captureDevScreenshot();
         useToastStore.getState().success('Dev screenshot saved', savedPath);
       } catch (err) {
-        useToastStore.getState().error('Dev screenshot failed', err instanceof Error ? err.message : String(err));
+        const appError = formatError(err);
+        useToastStore.getState().error('Dev screenshot failed', appError.message);
       }
     }
 

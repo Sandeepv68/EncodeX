@@ -8,6 +8,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
+import { clamp } from '../../shared/math';
 
 /**
  * Options controlling how an output file path is derived from an input path.
@@ -284,7 +285,7 @@ export function timemarkToSeconds(timemark: string): number {
 export function percentFromTimemark(timemark: string, duration: number): number {
   const seconds = timemarkToSeconds(timemark);
   if (!Number.isFinite(seconds) || !Number.isFinite(duration) || duration <= 0) return 0;
-  return Math.min(100, Math.max(0, (seconds / duration) * 100));
+  return clamp((seconds / duration) * 100, 0, 100);
 }
 
 /**
@@ -309,12 +310,15 @@ export function formatBytes(bytes: number): string {
 
 /**
  * Formats a number of seconds into a compact human readable duration.
+ * Named `formatDurationCompact` to disambiguate from the renderer's
+ * `formatters.formatDuration` (short form '12.34s'); this main/CLI variant
+ * renders a compact '1m 30s' style used in CLI output.
  * @param {number} seconds - Duration in seconds.
  * @returns {string} Formatted duration, e.g. `1m 30s`.
  * @example
- * formatDuration(90) // '1m 30s'
+ * formatDurationCompact(90) // '1m 30s'
  */
-export function formatDuration(seconds: number): string {
+export function formatDurationCompact(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return '0s';
   const total = Math.round(seconds);
   const h = Math.floor(total / 3600);

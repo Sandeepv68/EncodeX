@@ -22,6 +22,7 @@ import { Typography } from '@mui/material';
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
 import type { FileDropZoneProps } from './types';
+import { openFileDialog } from '../utils/fileDialog';
 import { DropZoneRoot, UploadIcon } from '../styles/FileDropZone.styles';
 import { LOG_FILE_DROPPED, LOG_FILE_SELECTED, LOG_OPENING_FILE_DIALOG_ACCEPT } from '../../shared/log-constants';
 
@@ -87,9 +88,8 @@ export default function FileDropZone({ onFileSelect, label, accept }: FileDropZo
    * @returns {Promise<void>}
    */
   const handleClick = async () => {
-    const extList = accept ? [{ name: 'Files', extensions: accept.split(',').map((s) => s.trim()) }] : undefined;
     log.debug(LOG_OPENING_FILE_DIALOG_ACCEPT, accept);
-    const file = await window.electronAPI?.selectFile(extList);
+    const file = await openFileDialog(accept);
     if (file) {
       log.info(LOG_FILE_SELECTED, file);
       onFileSelect(file);

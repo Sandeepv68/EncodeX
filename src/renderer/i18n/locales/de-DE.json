@@ -542,6 +542,7 @@
     "monitoringErrorReportingHint": "Hilft, EncodeX zu verbessern, indem anonyme Fehlerberichte gesendet werden. Sie können dies jederzeit deaktivieren.",
     "mcpServer": "MCP-Server",
     "mcpServerHint": "Ermöglicht externen MCP-Clients wie Claude Desktop, VS Code oder Cursor, EncodeX über eine lokale Verbindung zu steuern. Der Server lauscht nur auf diesem Computer.",
+    "mcpAiUseCases": "KI-Anwendungsfälle",
     "mcpPort": "Port",
     "mcpPortHint": "Lokaler TCP-Port für den MCP-Server (1024-65535). Die App startet den Server neu, wenn sich dies ändert.",
     "mcpToken": "Zugriffstoken",

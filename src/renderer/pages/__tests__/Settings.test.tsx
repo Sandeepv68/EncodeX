@@ -183,6 +183,19 @@ describe('Settings', () => {
     expect(screen.queryByTestId('settings-mcp-token')).not.toBeInTheDocument();
   });
 
+  it('hides the AI use-case link until the MCP server is enabled', () => {
+    renderSettings();
+    expect(screen.queryByTestId('settings-mcp-ai-use-cases-link')).not.toBeInTheDocument();
+  });
+
+  it('reveals the AI use-case documentation link when the MCP server is enabled', async () => {
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    const link = await screen.findByTestId('settings-mcp-ai-use-cases-link');
+    expect(link).toHaveAttribute('href', 'https://encodex.in/features#let-an-ai-assistant-drive');
+    expect(link).toHaveTextContent('settings.mcpAiUseCases');
+  });
+
   it('shows an info tooltip for the MCP server setting', async () => {
     renderSettings();
     fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[3]);

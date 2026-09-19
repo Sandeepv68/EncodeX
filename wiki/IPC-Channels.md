@@ -8,8 +8,10 @@ All channel names are centralized in `src/shared/ipc-channels.ts`. The preload s
 | --------------------- | ---------------------------------------- | ----------------------------- |
 | `select-file`         | `filters?`                               | `string \| null`              |
 | `select-files`        | `filters?`                               | `string[]`                    |
+| `select-folder-files` | —                                        | `string[]` (media files)      |
 | `select-output`       | —                                        | `string \| null`              |
 | `select-directory`    | —                                        | `string \| null`              |
+| `expand-paths`        | `paths[]` (files + directories)          | `string[]` (media files)      |
 | `get-media-info`      | `filePath, transcoderType`               | `MediaInfo`                   |
 | `get-image-info`      | `filePath`                               | `ImageExifData \| null`       |
 | `get-image-preview`   | `filePath`                               | `string \| null` (data URL)   |
@@ -48,6 +50,11 @@ All channel names are centralized in `src/shared/ipc-channels.ts`. The preload s
 | `install-update`      | `installerPath`                          | `void`                        |
 | `cancel-download`     | —                                        | `void`                        |
 | `open-release-notes`  | `url`                                    | `void`                        |
+| `monitoring-get-state` | —                                       | `{ enabled, backend }`        |
+| `monitoring-set-enabled` | `enabled`                              | `{ enabled, backend }`        |
+| `mcp-settings-get`    | —                                        | `McpSettings`                 |
+| `mcp-settings-set`    | `settings`                               | `McpSettings` (sanitized)     |
+| `dev-capture-screenshot` | —                                     | `string` (dev-mode only PNG path) |
 
 ## 📤 Send-only (renderer to main)
 
@@ -58,6 +65,7 @@ All channel names are centralized in `src/shared/ipc-channels.ts`. The preload s
 | `window-close`             | —         |
 | `window-confirm-close`     | —         |
 | `window-set-always-on-top` | `boolean` |
+| `terms-reject`             | —         |
 
 ## 📡 Events (main to renderer)
 
@@ -91,8 +99,10 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `getPathForFile(file)` — resolve dropped `File` to absolute path
 - `selectFile(filters?)` — open file dialog, return path
 - `selectFiles(filters?)` — open multi-file dialog, return paths
+- `selectFolderFiles()` — pick a source folder, return its media files (recursive)
 - `selectOutput()` — open save dialog
 - `selectDirectory()` — open directory picker
+- `expandPaths(paths)` — expand a mixed list of files/directories into media files
 - `getMediaInfo(filePath, transcoderType)` — probe media file
 - `getImageInfo(filePath)` — get EXIF + histograms
 - `getImagePreview(filePath)` — downscale preview
@@ -112,6 +122,10 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `extractWaveform(filePath, duration)` / `extractThumbnails(filePath, duration)`
 - `windowMinimize()` / `windowMaximizeToggle()` / `windowClose()` / `windowCloseConfirmed()`
 - `windowSetAlwaysOnTop(flag)`
+- `rejectTerms()` — quit the app (used when the terms gate is declined; bypasses close confirmation)
+- `monitoringGetState()` / `monitoringSetEnabled(enabled)` — query/toggle error-monitoring consent
+- `mcpGetSettings()` / `mcpSetSettings(settings)` — read/update embedded MCP server settings
+- `captureDevScreenshot()` — save a PNG of the window (dev mode only; rejects otherwise)
 - `checkForUpdates()` / `downloadUpdate()` / `installUpdate(path)` / `cancelDownload()` / `openReleaseNotes(url)`
 
 ### Event listeners (each returns a cleanup function)

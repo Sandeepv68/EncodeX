@@ -479,7 +479,7 @@ const MediaPlayer = memo(
         const time = pending.time;
         resetAudioScheduling();
         resetPacing(time);
-        runPlayerCommand(window.electronAPI.playerSeek(formatTime(time)));
+        runPlayerCommand(window.electronAPI.playerSeek(formatClockTime(time, { alwaysShowMs: true })));
         setIsPlaying(true);
       }, [resetAudioScheduling, resetPacing, runPlayerCommand]);
 
@@ -803,7 +803,7 @@ const MediaPlayer = memo(
         ctx?.resume().catch(() => {});
         resetPacing(resumeTime);
         if (resumeTime > 0) {
-          runPlayerCommand(window.electronAPI.playerSeek(formatTime(resumeTime)));
+          runPlayerCommand(window.electronAPI.playerSeek(formatClockTime(resumeTime, { alwaysShowMs: true })));
         } else {
           runPlayerCommand(window.electronAPI.playerOpen(filePath));
         }
@@ -837,7 +837,7 @@ const MediaPlayer = memo(
         displayPtsRef.current = time;
         resetAudioScheduling();
         resetPacing(time);
-        runPlayerCommand(window.electronAPI.playerSeek(formatTime(time)));
+        runPlayerCommand(window.electronAPI.playerSeek(formatClockTime(time, { alwaysShowMs: true })));
         setIsPlaying(true);
       };
 
@@ -927,19 +927,6 @@ const MediaPlayer = memo(
           allowRepeat: true,
         },
       ]);
-
-      /**
-       * Formats a time in seconds as an HH:MM:SS.mmm string for playerSeek IPC
-       * commands.
-       * @param {number} t - Time in seconds.
-       * @returns {string} Zero-padded timestamp, e.g. "00:01:23.456".
-       */
-      function formatTime(t: number): string {
-        const h = Math.floor(t / 3600);
-        const m = Math.floor((t % 3600) / 60);
-        const s = t % 60;
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toFixed(3).padStart(6, '0')}`;
-      }
 
       return (
         <PlayerRoot>

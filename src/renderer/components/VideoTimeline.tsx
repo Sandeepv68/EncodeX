@@ -76,32 +76,17 @@ import {
   TIMELINE_MAX_ZOOM,
   TIMELINE_ZOOM_STEP,
   TIMELINE_MIN_GAP,
-  TIMELINE_LABEL_MIN_GAP,
-  TIMELINE_MIN_BAR_PITCH,
   TIMELINE_THUMB_MONTAGE_CLASS,
-  TIMELINE_TICK_STEPS,
 } from '../../shared/constants';
-
-/**
- * Clamps a value to the inclusive [min, max] range.
- * @param {number} value - The value to clamp.
- * @param {number} min - Lower bound.
- * @param {number} max - Upper bound.
- * @returns {number} The clamped value.
- */
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
-}
-
-/**
- * Computes the initial zoom level (pixels per second) that fits the full clip
- * width at the default timeline width, clamped to the allowed zoom range.
- * @param {number} duration - Clip duration in seconds.
- * @returns {number} Initial zoom in pixels per second.
- */
-function initialZoom(duration: number): number {
-  return clamp(DEFAULT_TIMELINE_WIDTH / Math.max(duration, 1), TIMELINE_MIN_ZOOM, TIMELINE_MAX_ZOOM);
-}
+import { clamp } from '../../shared/math';
+import {
+  initialZoom,
+  timeFromEvent as timeFromEventAt,
+  computeTimelineZoom,
+  zoomCenterScrollLeft,
+  computeRulerTicks,
+  computeWaveformBars,
+} from '../utils/timeline-utils';
 
 /**
  * Renders the interactive video cutting timeline.
@@ -256,8 +241,7 @@ export default function VideoTimeline({
   const timeFromEvent = (clientX: number): number => {
     const el = scrollerRef.current;
     if (!el) return 0;
-    const rect = el.getBoundingClientRect();
-    return clamp((clientX - rect.left) / zoom, 0, duration);
+    return timeFromEventAt(clientX, el.getBoundingClientRect().left, zoom, duration);
   };
 
   /**
@@ -408,125 +392,64 @@ export default function VideoTimeline({
    */
   const changeZoom = (factor: number) => {
     const viewport = viewportRef.current;
-    const next = clamp(zoom * factor, TIMELINE_MIN_ZOOM, TIMELINE_MAX_ZOOM);
+    const next = computeTimelineZoom(zoom, factor);
     const centerTime = viewport ? (viewport.scrollLeft + viewport.clientWidth / 2) / zoom : currentTime;
     setZoomState(next);
     onZoomChange?.(next);
     if (viewport && typeof requestAnimationFrame === 'function') {
       requestAnimationFrame(() => {
-        viewport.scrollLeft = Math.max(0, centerTime * next - viewport.clientWidth / 2);
+        viewport.scrollLeft = zoomCenterScrollLeft(centerTime, next, viewport.clientWidth);
       });
     }
   };
 
   /**
-   * Builds the ruler tick and label elements for the visible time range. The
-   * major tick step is chosen from TIMELINE_TICK_STEPS so ticks stay at least
-   * 50px apart; labels are dropped when they would land too close to the
-   * previous one; minor subdivisions are added only when they keep at least
-   * 5px spacing.
+   * Builds the ruler tick and label elements for the visible time range via the
+   * shared {@link computeRulerTicks} geometry helper.
    * @returns {{ minorEls: ReactElement[]; majorEls: ReactElement[]; labelEls: ReactElement[] }}
    */
   const rulerEls = useMemo(() => {
-    const step = TIMELINE_TICK_STEPS.find((candidate) => candidate * zoom >= 50) ?? TIMELINE_TICK_STEPS[TIMELINE_TICK_STEPS.length - 1];
-    const margin = viewState.viewportWidth / zoom / 2;
-    const startTime = Math.max(0, viewState.scrollLeft / zoom - margin);
-    const endTime = Math.min(duration, (viewState.scrollLeft + viewState.viewportWidth) / zoom + margin);
+    const ticks = computeRulerTicks({
+      duration,
+      zoom,
+      scrollLeft: viewState.scrollLeft,
+      viewportWidth: viewState.viewportWidth,
+    });
 
-    const majorEls: ReactElement[] = [];
-    const labelEls: ReactElement[] = [];
-    let lastLabelX = -Infinity;
-    const firstMajor = Math.max(0, Math.floor(startTime / step) * step);
-    for (let value = firstMajor; value <= endTime + 1e-9; value += step) {
-      majorEls.push(<RulerTick key={`major-${value}`} sx={{ left: value * zoom }} />);
-      const x = value * zoom;
-      if (x - lastLabelX >= TIMELINE_LABEL_MIN_GAP) {
-        lastLabelX = x;
-        labelEls.push(
-          <RulerLabel key={`label-${value}`} sx={{ left: x }}>
-            {formatClockTime(value)}
-          </RulerLabel>,
-        );
-      }
-    }
-
-    const minorEls: ReactElement[] = [];
-    let sub = 0;
-    if ((step * zoom) / 5 >= 5) sub = step / 5;
-    else if ((step * zoom) / 2 >= 5) sub = step / 2;
-    if (sub > 0) {
-      const firstMinor = Math.max(0, Math.floor(startTime / sub) * sub);
-      for (let value = firstMinor; value <= endTime + 1e-9; value += sub) {
-        if (Math.abs(value / step - Math.round(value / step)) > 1e-9) {
-          minorEls.push(<RulerMinorTick key={`minor-${value}`} sx={{ left: value * zoom }} />);
-        }
-      }
-    }
+    const majorEls = ticks.major.map((value) => <RulerTick key={`major-${value}`} sx={{ left: value * zoom }} />);
+    const labelEls = ticks.labels.map((value) => (
+      <RulerLabel key={`label-${value}`} sx={{ left: value * zoom }}>
+        {formatClockTime(value)}
+      </RulerLabel>
+    ));
+    const minorEls = ticks.minor.map((value) => <RulerMinorTick key={`minor-${value}`} sx={{ left: value * zoom }} />);
 
     return { minorEls, majorEls, labelEls };
   }, [duration, zoom, viewState.scrollLeft, viewState.viewportWidth]);
 
   /**
    * Builds the waveform bar elements for the visible range, virtualized to
-   * the viewport. When several buckets map to one on-screen slot they are
-   * aggregated by averaging the peak and max amplitudes; each bar is
-   * positioned and sized from its min/max envelope.
+   * the viewport, from the shared {@link computeWaveformBars} geometry helper.
    * @returns {ReactElement[]} Array of WaveformBar elements.
    */
   const waveformBars = useMemo(() => {
     if (!waveform || waveform.buckets.length === 0 || duration <= 0) return [];
-    const totalWidth = duration * zoom;
-    const bucketWidth = totalWidth / waveform.buckets.length;
-    const slotWidth = Math.max(bucketWidth, TIMELINE_MIN_BAR_PITCH);
-    const barWidth = Math.max(2, slotWidth - 1);
-    const barHeight = TIMELINE_LAYOUT.TRACK_CONTENT_HEIGHT;
-    const envelopeTop = TIMELINE_LAYOUT.TRACK_CONTENT_TOP;
-    const virtualize = viewState.viewportWidth > 0;
-    const bucketsPerSec = waveform.buckets.length / duration;
-    const margin = virtualize ? viewState.viewportWidth / zoom / 2 : 0;
-    const startTime = virtualize ? Math.max(0, viewState.scrollLeft / zoom - margin) : 0;
-    const endTime = virtualize ? Math.min(duration, (viewState.scrollLeft + viewState.viewportWidth) / zoom + margin) : duration;
-    const bucketsPerSlot = slotWidth / bucketWidth;
-    const bars: ReactElement[] = [];
-    /**
-     * Pushes a single WaveformBar element for a bucket slot at the given left
-     * offset, computing its top/height from the min/max envelope and clamping
-     * to the track content area.
-     * @param {number} left - Left offset in pixels.
-     * @param {{ min: number; max: number }} bucket - Envelope bucket to render.
-     * @returns {void}
-     */
-    const pushBar = (left: number, bucket: { min: number; max: number }) => {
-      const topFraction = (1 - bucket.max) / 2;
-      const heightFraction = Math.max(0, bucket.max - bucket.min) / 2;
-      const height = Math.max(2, heightFraction * barHeight);
-      const top = Math.max(envelopeTop, Math.min(envelopeTop + barHeight - height, envelopeTop + topFraction * barHeight));
-      bars.push(<WaveformBar key={left} data-testid="timeline-waveform-bar" sx={{ left, top, width: barWidth, height }} />);
-    };
-
-    const firstSlot = Math.max(0, Math.floor((startTime * zoom) / slotWidth));
-    const lastSlot = Math.min(Math.ceil(totalWidth / slotWidth) - 1, Math.ceil((endTime * zoom) / slotWidth));
-    for (let slot = firstSlot; slot <= lastSlot; slot++) {
-      const left = slot * slotWidth;
-      const i0 = Math.min(waveform.buckets.length - 1, Math.max(0, Math.floor(slot * bucketsPerSlot)));
-      const i1 = Math.min(waveform.buckets.length - 1, Math.max(0, Math.ceil((slot + 1) * bucketsPerSlot) - 1));
-      if (bucketsPerSlot <= 1.001) {
-        pushBar(left, waveform.buckets[i0]);
-      } else {
-        let peakSum = 0;
-        let maxSum = 0;
-        for (let i = i0; i <= i1; i++) {
-          const b = waveform.buckets[i];
-          peakSum += (b.max - b.min) / 2;
-          maxSum += b.max;
-        }
-        const count = i1 - i0 + 1;
-        const avgMax = maxSum / count;
-        const avgPeak = peakSum / count;
-        pushBar(left, { min: avgMax - avgPeak * 2, max: avgMax });
-      }
-    }
-    return bars;
+    const bars = computeWaveformBars({
+      buckets: waveform.buckets,
+      duration,
+      zoom,
+      scrollLeft: viewState.scrollLeft,
+      viewportWidth: viewState.viewportWidth,
+      trackContentHeight: TIMELINE_LAYOUT.TRACK_CONTENT_HEIGHT,
+      trackContentTop: TIMELINE_LAYOUT.TRACK_CONTENT_TOP,
+    });
+    return bars.map((bar) => (
+      <WaveformBar
+        key={bar.left}
+        data-testid="timeline-waveform-bar"
+        sx={{ left: bar.left, top: bar.top, width: bar.width, height: bar.height }}
+      />
+    ));
   }, [waveform, duration, zoom, viewState.scrollLeft, viewState.viewportWidth]);
 
   /**

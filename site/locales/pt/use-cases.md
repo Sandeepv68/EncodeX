@@ -32,13 +32,13 @@ Escolha um caso de uso abaixo para aprender como.
   <div class="card">
     <h3>✂️ Aparar e cortar clipes</h3>
     <p>Remova partes em branco, corte introduções e faça cortes de destaques sem reencodificar o arquivo inteiro.</p>
-    <a href="/pt/video-cut">Saiba mais →</a>
+    <a href="/pt/features#cortar-videos">Saiba mais →</a>
   </div>
 
   <div class="card">
     <h3>📦 Processar pastas inteiras em lote</h3>
     <p>Carregue uma pasta com 10 ou 1000 arquivos, escolha um preset e deixe o EncodeX converter todos de uma vez — até mesmo durante a noite.</p>
-    <a href="/pt/batch">Saiba mais →</a>
+    <a href="/pt/features#converter-muitos-arquivos-de-uma-vez">Saiba mais →</a>
   </div>
 
   <div class="card">
@@ -56,7 +56,13 @@ Escolha um caso de uso abaixo para aprender como.
   <div class="card">
     <h3>📊 Inspecionar metadados de mídia</h3>
     <p>Verifique codecs, bitrates, duração e streams antes de converter — sem precisar conhecer FFmpeg.</p>
-    <a href="/pt/media-info">Saiba mais →</a>
+    <a href="/pt/features#espiar-dentro-de-qualquer-arquivo">Saiba mais →</a>
+  </div>
+
+  <div class="card">
+    <h3>🤖 Automatize com um assistente de IA</h3>
+    <p>O EncodeX inclui um servidor MCP integrado — conecte Claude, Cursor, VS Code ou qualquer cliente MCP e peça, em linguagem simples, para converter, extrair, comprimir ou acompanhar um trabalho em lote, tudo local.</p>
+    <a href="/pt/features#deixe-um-assistente-de-ia-conduzir">Saiba mais →</a>
   </div>
 
 </div>

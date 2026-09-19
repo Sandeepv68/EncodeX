@@ -48,12 +48,12 @@ describe('StreamDetails', () => {
     expect(screen.getByText(/1920x1080/)).toBeInTheDocument();
     expect(screen.getByText(/yuv420p/)).toBeInTheDocument();
     expect(screen.getByText(/30\.00 fps/)).toBeInTheDocument();
-    expect(screen.getByText(/1000000/)).toBeInTheDocument();
+    expect(screen.getByText(/1\.0 Mbps/)).toBeInTheDocument();
   });
 
   it('renders audio stream metadata', () => {
     render(<StreamDetails streams={streams} />);
-    expect(screen.getByText(/48000 Hz/)).toBeInTheDocument();
+    expect(screen.getByText(/48 kHz/)).toBeInTheDocument();
     expect(screen.getByText(/eng/)).toBeInTheDocument();
   });
 
@@ -61,7 +61,7 @@ describe('StreamDetails', () => {
     render(<StreamDetails streams={streams} compact />);
     expect(screen.getByText('mediaInfo.stream #0')).toBeInTheDocument();
     expect(screen.getByText(/h264/)).toBeInTheDocument();
-    expect(screen.getByText(/48000 Hz/)).toBeInTheDocument();
+    expect(screen.getByText(/48 kHz/)).toBeInTheDocument();
   });
 
   it('renders nothing for an empty stream list besides the title', () => {

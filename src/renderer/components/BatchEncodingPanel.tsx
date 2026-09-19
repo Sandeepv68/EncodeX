@@ -23,10 +23,9 @@
 
 import { useState } from 'react';
 import { Grid, MenuItem, TextField, InputAdornment, Box, Switch, Typography } from '@mui/material';
-import { faPalette, faBrush, faDroplet, faSun } from '@fortawesome/free-solid-svg-icons';
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useTranslation } from 'react-i18next';
-import { BITRATE_OPTIONS, IMAGE_FORMATS, PIXEL_FORMATS, SCALE_OPTIONS, VIDEO_BITRATE_OPTIONS } from '../../shared/media-options';
+import { pixelFormatOptions, pixelGroupIcons } from '../utils/encoding-option-utils';
+import { BITRATE_OPTIONS, IMAGE_FORMATS, SCALE_OPTIONS, VIDEO_BITRATE_OPTIONS } from '../../shared/media-options';
 import { QSCALE_RANGE, ROTATION_VALUES } from '../../shared/transcoder-constants';
 import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
 import CodecSelect from './CodecSelect';
@@ -38,32 +37,6 @@ import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismiss
 import type { BatchEncodingPanelProps } from './types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import { EncodingPaper, EncodingTitle, OptionsLockedAlert, OptionsEditableAlert } from '../styles/BatchEncodingPanel.styles';
-
-/**
- * Pixel-format options prepared for the GroupedSelect: every entry of
- * PIXEL_FORMATS is spread and given a `label` equal to its `value` so the
- * select can render the format string.
- * @const {Array<{value: string; group: string; label: string}>} pixelFormatOptions
- */
-const pixelFormatOptions = PIXEL_FORMATS.map((f) => ({ ...f, label: f.value }));
-
-/**
- * Maps pixel-format group names to FontAwesome icons used by the GroupedSelect
- * pixel-format picker, giving each group a distinct visual cue.
- * @const {Record<string, IconDefinition>} pixelGroupIcons
- */
-const pixelGroupIcons: Record<string, IconDefinition> = {
-  'YUV 8-bit': faPalette,
-  'YUV 10-bit': faPalette,
-  'YUV 12-bit': faPalette,
-  'YUV 16-bit': faPalette,
-  'YUV Semi-planar': faPalette,
-  'YUV with Alpha': faPalette,
-  'RGB Packed': faBrush,
-  'Planar RGB': faBrush,
-  Monochrome: faDroplet,
-  HDR: faSun,
-};
 
 /**
  * Renders the batch encoding options panel.

@@ -552,6 +552,7 @@
     "monitoringErrorReportingHint": "Help om EncodeX te verbeter deur anonieme foutverslae te stuur. Jy kan dit enige tyd afskakel.",
     "mcpServer": "MCP-bediener",
     "mcpServerHint": "Laat eksterne MCP-kliënte soos Claude Desktop, VS Code of Cursor EncodeX oor 'n plaaslike verbinding beheer. Die bediener luister slegs op hierdie rekenaar.",
+    "mcpAiUseCases": "AI-gebruiksgevalle",
     "mcpPort": "Poort",
     "mcpPortHint": "Plaaslike TCP-poort vir die MCP-bediener (1024-65535). Die app herbegin die bediener wanneer dit verander.",
     "mcpToken": "Toegangstoken",

@@ -552,6 +552,7 @@
     "monitoringErrorReportingHint": "Membantu menambah baik EncodeX dengan menghantar laporan ralat tanpa nama. Anda boleh mematikan ini pada bila-bila masa.",
     "mcpServer": "Pelayan MCP",
     "mcpServerHint": "Membenarkan klien MCP luaran seperti Claude Desktop, VS Code atau Cursor mengawal EncodeX melalui sambungan setempat. Pelayan hanya mendengar pada komputer ini.",
+    "mcpAiUseCases": "Kes penggunaan AI",
     "mcpPort": "Port",
     "mcpPortHint": "Port TCP setempat untuk pelayan MCP (1024-65535). Aplikasi memulakan semula pelayan apabila ini berubah.",
     "mcpToken": "Token akses",

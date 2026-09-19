@@ -34,6 +34,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Popover, Typography } from '@mui/material';
 import ProgressBar from './ProgressBar';
 import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
+import { basenameOrEmpty as basename } from '../utils/path-utils';
 import type { NavJobPopoverProps } from './types';
 import { SHADOWS } from '../colors';
 import { PopoverArrow, PopoverParallelBadge, PopoverPileThumb, PopoverThumb } from '../styles/NavJobPopover.styles';
@@ -68,16 +69,6 @@ function usePreviewSrc(input?: string): string | null {
     };
   }, [input]);
   return src;
-}
-
-/**
- * Extracts the file name portion of an absolute path, handling both forward and
- * Windows back slashes (no Node `path` import in the renderer).
- * @param {string} filePath - Absolute file path.
- * @returns {string} The basename, or '' when the path is empty.
- */
-function basename(filePath: string): string {
-  return filePath.split(/[\\/]/).pop() ?? '';
 }
 
 /**

@@ -14,7 +14,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Switch, MenuItem, IconButton, Tooltip, InputAdornment } from '@mui/material';
+import { Box, Switch, MenuItem, IconButton, Tooltip, InputAdornment, Link } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faEye, faEyeSlash, faTrashCan, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useColorMode } from '../ColorModeContext';
@@ -59,16 +59,15 @@ const hwaccelModeLabel: Record<HwAccelMode, string> = {
   encode: 'settings.hwaccelModeEncode',
 };
 
+import { encoderTypeLabel } from '../utils/encoding-option-utils';
+import { generateMcpToken } from '../utils/security-utils';
+
 /**
- * Maps each encoder type value to the translation key of its label, read under
- * the `settings.` namespace.
- * @const {Record<EncoderType, string>}
+ * Website URL of the AI use-case documentation, linked from the MCP server
+ * settings once the embedded server is enabled.
+ * @const {string} MCP_AI_USE_CASES_URL
  */
-const encoderTypeLabel: Record<EncoderType, string> = {
-  auto: 'settings.encoderTypeAuto',
-  hardware: 'settings.encoderTypeHardware',
-  software: 'settings.encoderTypeSoftware',
-};
+const MCP_AI_USE_CASES_URL = 'https://encodex.in/features#let-an-ai-assistant-drive';
 
 /**
  * Renders a settings row consisting of a label and its info tooltip. Used to
@@ -135,18 +134,6 @@ function CopyButton({
       </IconButton>
     </Tooltip>
   );
-}
-
-/**
- * Generates a cryptographically random, URL-safe bearer token from 32 random
- * bytes (base64url-encoded, padding stripped).
- * @returns {string} A 43-character secure token.
- */
-function generateMcpToken(): string {
-  const bytes = new Uint8Array(32);
-  crypto.getRandomValues(bytes);
-  const binary = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 /**
@@ -231,6 +218,11 @@ function McpSettingsSection() {
           />
           <SettingLabel text={t('settings.mcpServer')} hint={t('settings.mcpServerHint')} />
         </ToggleRow>
+        {enabled && (
+          <Link href={MCP_AI_USE_CASES_URL} target="_blank" rel="noopener noreferrer" data-testid="settings-mcp-ai-use-cases-link">
+            {t('settings.mcpAiUseCases')}
+          </Link>
+        )}
       </SettingsSection>
       {enabled && (
         <ModeSettingsSection>

@@ -32,13 +32,13 @@ Wählen Sie unten einen Anwendungsfall aus.
   <div class="card">
     <h3>✂️ Clips kürzen und schneiden</h3>
     <p>Entfernen Sie tote Zeit, trimmen Sie Intros und schneiden Sie Highlights — ohne die gesamte Datei neu zu encodieren.</p>
-    <a href="/de/video-cut">Mehr erfahren →</a>
+    <a href="/de/features#videos-zuschneiden">Mehr erfahren →</a>
   </div>
 
   <div class="card">
     <h3>📦 Ganze Ordner stapelweise verarbeiten</h3>
     <p>Laden Sie einen Ordner mit 10 oder 1000 Dateien, wählen Sie ein Preset und lassen Sie EncodeX alles auf einmal konvertieren — notfalls über Nacht.</p>
-    <a href="/de/batch">Mehr erfahren →</a>
+    <a href="/de/features#viele-dateien-gleichzeitig-konvertieren">Mehr erfahren →</a>
   </div>
 
   <div class="card">
@@ -56,7 +56,13 @@ Wählen Sie unten einen Anwendungsfall aus.
   <div class="card">
     <h3>📊 Medien-Metadaten prüfen</h3>
     <p>Codecs, Bitraten, Dauer und Streams vor dem Konvertieren prüfen — ganz ohne FFmpeg-Wissen.</p>
-    <a href="/de/media-info">Mehr erfahren →</a>
+    <a href="/de/features#in-jede-datei-hineinschauen">Mehr erfahren →</a>
+  </div>
+
+  <div class="card">
+    <h3>🤖 Mit einem KI-Assistenten automatisieren</h3>
+    <p>EncodeX enthält einen integrierten MCP-Server — verbinden Sie Claude, Cursor, VS Code oder jeden MCP-Client und bitten Sie ihn in natürlicher Sprache, zu konvertieren, Audio zu extrahieren, zu komprimieren oder einen Stapeljob zu verfolgen — alles lokal.</p>
+    <a href="/de/features#lassen-sie-einen-ki-assistenten-das-steuer-ubernehmen">Mehr erfahren →</a>
   </div>
 
 </div>

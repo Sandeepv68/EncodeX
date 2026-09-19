@@ -2,18 +2,14 @@
   <!-- Navbar pill. Rendered inside the site-title anchor, so it must stay a <span>. -->
   <span v-if="variant === 'nav' && tag" class="vb-pill vb-nav">{{ tag }}</span>
 
-  <!-- Homepage hero line under the action buttons -->
+  <!-- Homepage hero line, full-width band under the hero content -->
   <p v-else-if="variant === 'hero' && tag" class="vb-hero">
     <span class="vb-label">{{ t.latest }}</span>
-    <a
-      class="vb-pill vb-link"
-      :href="url"
-      target="_blank"
-      rel="noopener noreferrer"
-      :title="t.viewOnGitHub"
-    >{{ tag }}</a>
+    <a class="vb-pill vb-link" :href="url" target="_blank" rel="noopener noreferrer" :title="t.viewOnGitHub">{{ tag }}</a>
     <span v-if="dateText" class="vb-date">· {{ dateText }}</span>
-    <span v-if="downloadsText" class="vb-dl">⬇ <span :key="bumpKey" class="dl-count bump">{{ downloadsText }}</span></span>
+    <span v-if="downloadsText" class="vb-dl"
+      >⬇ <span :key="bumpKey" class="dl-count bump">{{ downloadsText }}</span></span
+    >
     <a v-if="starsText" class="vb-stars" :href="repoUrl" target="_blank" rel="noopener noreferrer" :title="starsText">
       <svg class="vb-star" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
         <path
@@ -21,6 +17,14 @@
         />
       </svg>
       <span class="star-count" :key="starBumpKey">{{ starsNumText }}</span>
+    </a>
+    <a v-if="clonesText" class="vb-clones" :href="repoUrl" target="_blank" rel="noopener noreferrer" :title="clonesText">
+      <svg class="vb-clone" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+        <path
+          d="M8.75 1.5a.75.75 0 0 0-1.5 0v6.19L5.03 5.44a.75.75 0 1 0-1.06 1.06l3.53 3.53 3.53-3.53a.75.75 0 1 0-1.06-1.06L8.75 7.69V1.5ZM3 12.75a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1-.75-.75Z"
+        />
+      </svg>
+      <span class="clone-count" :key="cloneBumpKey">{{ clonesNumText }}</span>
     </a>
     <a class="vb-ext" :href="allReleasesUrl" target="_blank" rel="noopener noreferrer">
       <svg class="vb-gh" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">
@@ -34,12 +38,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useData } from 'vitepress'
-import { type ReleaseData, type RepoStats, getReleases, getRepoStats, onReleasesUpdated, onStatsUpdated, startReleasePolling } from '../../data/releaseShared'
-import { data as buildData } from '../../data/release.data'
-import { data as buildTotalDownloads } from '../../data/downloads.data'
-import { data as buildStars } from '../../data/stars.data'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useData } from 'vitepress';
+import {
+  type ReleaseData,
+  type RepoStats,
+  getReleases,
+  getRepoStats,
+  onReleasesUpdated,
+  onStatsUpdated,
+  startReleasePolling,
+} from '../../data/releaseShared';
+import { data as buildData } from '../../data/release.data';
+import { data as buildTotalDownloads } from '../../data/downloads.data';
+import { data as buildStars } from '../../data/stars.data';
 
 const props = defineProps({
   variant: {
@@ -47,17 +59,59 @@ const props = defineProps({
     default: 'nav',
     validator: (value) => ['nav', 'hero'].includes(value),
   },
-})
+});
 
 const STRINGS = {
-  en: { latest: 'Latest release', viewOnGitHub: 'View on GitHub', downloadsCount: '{n} downloads', starsCount: '{n} stars' },
-  es: { latest: 'Última versión', viewOnGitHub: 'Ver en GitHub', downloadsCount: '{n} descargas', starsCount: '{n} estrellas' },
-  fr: { latest: 'Dernière version', viewOnGitHub: 'Voir sur GitHub', downloadsCount: '{n} téléchargements', starsCount: '{n} étoiles' },
-  de: { latest: 'Neueste Version', viewOnGitHub: 'Auf GitHub ansehen', downloadsCount: '{n} Downloads', starsCount: '{n} Sterne' },
-  pt: { latest: 'Versão mais recente', viewOnGitHub: 'Ver no GitHub', downloadsCount: '{n} downloads', starsCount: '{n} estrelas' },
-  zh: { latest: '最新版本', viewOnGitHub: '在 GitHub 上查看', downloadsCount: '{n} 次下载', starsCount: '{n} 星标' },
-  hi: { latest: 'नवीनतम संस्करण', viewOnGitHub: 'GitHub पर देखें', downloadsCount: '{n} डाउनलोड', starsCount: '{n} स्टार्स' },
-}
+  en: {
+    latest: 'Latest release',
+    viewOnGitHub: 'View on GitHub',
+    downloadsCount: '{n} downloads',
+    starsCount: '{n} stars',
+    clonesCount: '{n} clones',
+  },
+  es: {
+    latest: 'Última versión',
+    viewOnGitHub: 'Ver en GitHub',
+    downloadsCount: '{n} descargas',
+    starsCount: '{n} estrellas',
+    clonesCount: '{n} clonaciones',
+  },
+  fr: {
+    latest: 'Dernière version',
+    viewOnGitHub: 'Voir sur GitHub',
+    downloadsCount: '{n} téléchargements',
+    starsCount: '{n} étoiles',
+    clonesCount: '{n} clones',
+  },
+  de: {
+    latest: 'Neueste Version',
+    viewOnGitHub: 'Auf GitHub ansehen',
+    downloadsCount: '{n} Downloads',
+    starsCount: '{n} Sterne',
+    clonesCount: '{n} Klone',
+  },
+  pt: {
+    latest: 'Versão mais recente',
+    viewOnGitHub: 'Ver no GitHub',
+    downloadsCount: '{n} downloads',
+    starsCount: '{n} estrelas',
+    clonesCount: '{n} clones',
+  },
+  zh: {
+    latest: '最新版本',
+    viewOnGitHub: '在 GitHub 上查看',
+    downloadsCount: '{n} 次下载',
+    starsCount: '{n} 星标',
+    clonesCount: '{n} 次克隆',
+  },
+  hi: {
+    latest: 'नवीनतम संस्करण',
+    viewOnGitHub: 'GitHub पर देखें',
+    downloadsCount: '{n} डाउनलोड',
+    starsCount: '{n} स्टार्स',
+    clonesCount: '{n} क्लोन',
+  },
+};
 
 const LOCALES = {
   en: 'en',
@@ -67,171 +121,192 @@ const LOCALES = {
   'pt-BR': 'pt-BR',
   'zh-CN': 'zh-CN',
   hi: 'hi',
-}
+};
 
-const { lang } = useData()
+const { lang } = useData();
 
 // VitePress locale codes ('pt-BR', 'zh-CN') -> string-dict keys
-const CANON = { 'pt-BR': 'pt', 'zh-CN': 'zh' }
+const CANON = { 'pt-BR': 'pt', 'zh-CN': 'zh' };
 
 const t = computed(() => {
-  const key = CANON[lang.value] || lang.value
-  return STRINGS[key] || STRINGS.en
-})
-const localeTag = computed(() => LOCALES[lang.value] || 'en')
+  const key = CANON[lang.value] || lang.value;
+  return STRINGS[key] || STRINGS.en;
+});
+const localeTag = computed(() => LOCALES[lang.value] || 'en');
 
-const allReleasesUrl = 'https://github.com/Sandeepv68/EncodeX/releases'
-const repoUrl = 'https://github.com/Sandeepv68/EncodeX'
+const allReleasesUrl = 'https://github.com/Sandeepv68/EncodeX/releases';
+const repoUrl = 'https://github.com/Sandeepv68/EncodeX';
 
 // Build-time snapshot first; refreshed live on mount (shared requests)
-const release = ref(buildData)
-const totalDownloads = ref(buildTotalDownloads ?? 0)
-const stars = ref(buildStars?.stars ?? 0)
+const release = ref(buildData);
+const totalDownloads = ref(buildTotalDownloads ?? 0);
+const stars = ref(buildStars?.stars ?? 0);
+const clones = ref(buildStars?.clones ?? 0);
 
 function applyReleases(releases: ReleaseData[]) {
   if (releases.length > 0) {
-    release.value = releases[0]
+    release.value = releases[0];
   }
-  const count = releases.reduce((sum, r) =>
-    sum + Object.values(r.assets).reduce((s, a) => s + a.downloads, 0), 0)
+  const count = releases.reduce((sum, r) => sum + Object.values(r.assets).reduce((s, a) => s + a.downloads, 0), 0);
   if (count > 0) {
-    totalDownloads.value = count
+    totalDownloads.value = count;
   }
 }
 
 function applyStats(stats: RepoStats) {
   if (stats.stars > 0) {
-    stars.value = stats.stars
+    stars.value = stats.stars;
+  }
+  if (stats.clones > 0) {
+    clones.value = stats.clones;
   }
 }
 
 onMounted(async () => {
   try {
-    applyReleases(await getReleases())
+    applyReleases(await getReleases());
   } catch {
     // keep build-time snapshot on transient errors
   }
   try {
-    applyStats(await getRepoStats())
+    applyStats(await getRepoStats());
   } catch {
     // keep build-time snapshot on transient errors
   }
-  startReleasePolling()
-})
+  startReleasePolling();
+});
 
-onUnmounted(onReleasesUpdated(applyReleases))
-onUnmounted(onStatsUpdated(applyStats))
+onUnmounted(onReleasesUpdated(applyReleases));
+onUnmounted(onStatsUpdated(applyStats));
 
-const tag = computed(() => release.value?.tag || '')
-const url = computed(() => release.value?.htmlUrl || allReleasesUrl)
+const tag = computed(() => release.value?.tag || '');
+const url = computed(() => release.value?.htmlUrl || allReleasesUrl);
 
 const dateText = computed(() => {
-  const iso = release.value?.publishedAt
-  if (!iso) return ''
+  const iso = release.value?.publishedAt;
+  if (!iso) return '';
   try {
     return new Intl.DateTimeFormat(localeTag.value, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-    }).format(new Date(iso))
+    }).format(new Date(iso));
   } catch {
-    return iso.slice(0, 10)
+    return iso.slice(0, 10);
   }
-})
+});
 
 // Animated counters (downloads + stars)
-const animatedCount = ref(buildTotalDownloads ?? 0)
-const bumpKey = ref(0)
-const starAnimatedCount = ref(buildStars?.stars ?? 0)
-const starBumpKey = ref(0)
-let animationFrame: number | null = null
+const animatedCount = ref(buildTotalDownloads ?? 0);
+const bumpKey = ref(0);
+const starAnimatedCount = ref(buildStars?.stars ?? 0);
+const starBumpKey = ref(0);
+const cloneAnimatedCount = ref(buildStars?.clones ?? 0);
+const cloneBumpKey = ref(0);
+let animationFrame: number | null = null;
 
 function easeOutCubic(t: number): number {
-  return 1 - Math.pow(1 - t, 3)
+  return 1 - Math.pow(1 - t, 3);
 }
 
-function animateValue(
-  target: { value: number },
-  bump: { value: number },
-  from: number,
-  to: number,
-  duration = 600,
-) {
-  if (animationFrame !== null) cancelAnimationFrame(animationFrame)
-  const start = performance.now()
-  bump.value++
+function animateValue(target: { value: number }, bump: { value: number }, from: number, to: number, duration = 600) {
+  if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+  const start = performance.now();
+  bump.value++;
 
   function tick(now: number) {
-    const elapsed = now - start
-    const progress = Math.min(elapsed / duration, 1)
-    const eased = easeOutCubic(progress)
-    target.value = Math.round(from + (to - from) * eased)
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = easeOutCubic(progress);
+    target.value = Math.round(from + (to - from) * eased);
 
     if (progress < 1) {
-      animationFrame = requestAnimationFrame(tick)
+      animationFrame = requestAnimationFrame(tick);
     } else {
-      animationFrame = null
+      animationFrame = null;
     }
   }
 
-  animationFrame = requestAnimationFrame(tick)
+  animationFrame = requestAnimationFrame(tick);
 }
 
 watch(totalDownloads, (newVal, oldVal) => {
   if (newVal != null && newVal > 0 && oldVal != null) {
-    animateValue(animatedCount, bumpKey, oldVal, newVal)
+    animateValue(animatedCount, bumpKey, oldVal, newVal);
   } else if (newVal != null && newVal > 0) {
-    animatedCount.value = newVal
+    animatedCount.value = newVal;
   }
-})
+});
 
 watch(stars, (newVal, oldVal) => {
   if (newVal != null && newVal > 0 && oldVal != null) {
-    animateValue(starAnimatedCount, starBumpKey, oldVal, newVal)
+    animateValue(starAnimatedCount, starBumpKey, oldVal, newVal);
   } else if (newVal != null && newVal > 0) {
-    starAnimatedCount.value = newVal
+    starAnimatedCount.value = newVal;
   }
-})
+});
+
+watch(clones, (newVal, oldVal) => {
+  if (newVal != null && newVal > 0 && oldVal != null) {
+    animateValue(cloneAnimatedCount, cloneBumpKey, oldVal, newVal);
+  } else if (newVal != null && newVal > 0) {
+    cloneAnimatedCount.value = newVal;
+  }
+});
 
 // Lifetime total across all releases; build-time snapshot refreshed live on mount
 const downloadsText = computed(() => {
-  if (!animatedCount.value || animatedCount.value <= 0) return ''
+  if (!animatedCount.value || animatedCount.value <= 0) return '';
   try {
-    return t.value.downloadsCount.replace(
-      '{n}',
-      new Intl.NumberFormat(localeTag.value).format(animatedCount.value),
-    )
+    return t.value.downloadsCount.replace('{n}', new Intl.NumberFormat(localeTag.value).format(animatedCount.value));
   } catch {
-    return t.value.downloadsCount.replace('{n}', String(animatedCount.value))
+    return t.value.downloadsCount.replace('{n}', String(animatedCount.value));
   }
-})
+});
 
 // Star count with localized title for the tooltip
 const starsText = computed(() => {
-  if (!starAnimatedCount.value || starAnimatedCount.value <= 0) return ''
+  if (!starAnimatedCount.value || starAnimatedCount.value <= 0) return '';
   try {
-    return t.value.starsCount.replace(
-      '{n}',
-      new Intl.NumberFormat(localeTag.value).format(starAnimatedCount.value),
-    )
+    return t.value.starsCount.replace('{n}', new Intl.NumberFormat(localeTag.value).format(starAnimatedCount.value));
   } catch {
-    return t.value.starsCount.replace('{n}', String(starAnimatedCount.value))
+    return t.value.starsCount.replace('{n}', String(starAnimatedCount.value));
   }
-})
+});
 
 // Bare formatted number shown next to the star icon
 const starsNumText = computed(() => {
-  if (!starAnimatedCount.value || starAnimatedCount.value <= 0) return ''
+  if (!starAnimatedCount.value || starAnimatedCount.value <= 0) return '';
   try {
-    return new Intl.NumberFormat(localeTag.value).format(starAnimatedCount.value)
+    return new Intl.NumberFormat(localeTag.value).format(starAnimatedCount.value);
   } catch {
-    return String(starAnimatedCount.value)
+    return String(starAnimatedCount.value);
   }
-})
+});
+
+// Localized tooltip for the clone pill
+const clonesText = computed(() => {
+  if (!cloneAnimatedCount.value || cloneAnimatedCount.value <= 0) return '';
+  try {
+    return t.value.clonesCount.replace('{n}', new Intl.NumberFormat(localeTag.value).format(cloneAnimatedCount.value));
+  } catch {
+    return t.value.clonesCount.replace('{n}', String(cloneAnimatedCount.value));
+  }
+});
+
+// Bare formatted number shown next to the clone icon
+const clonesNumText = computed(() => {
+  if (!cloneAnimatedCount.value || cloneAnimatedCount.value <= 0) return '';
+  try {
+    return new Intl.NumberFormat(localeTag.value).format(cloneAnimatedCount.value);
+  } catch {
+    return String(cloneAnimatedCount.value);
+  }
+});
 
 onUnmounted(() => {
-  if (animationFrame !== null) cancelAnimationFrame(animationFrame)
-})
+  if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+});
 </script>
 
 <style scoped>
@@ -263,10 +338,27 @@ onUnmounted(() => {
 
 .vb-hero {
   display: block;
-  margin-top: 16px;
+  text-align: center;
+  max-width: 1152px;
+  margin: 0 auto 48px;
+  padding: 0 24px;
   font-size: 13px;
   color: var(--vp-c-text-2);
   min-height: 24px;
+  line-height: 2.2;
+}
+
+@media (min-width: 641px) {
+  .vb-hero {
+    margin-bottom: 64px;
+    padding: 0 48px;
+  }
+}
+
+@media (min-width: 960px) {
+  .vb-hero {
+    padding: 0 64px;
+  }
 }
 
 .vb-hero > * {
@@ -325,7 +417,9 @@ onUnmounted(() => {
   font-weight: 700;
   letter-spacing: 0.01em;
   text-decoration: none;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .vb-stars:hover,
@@ -343,10 +437,50 @@ onUnmounted(() => {
   animation: count-bump 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+.vb-clones {
+  margin-left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--vp-c-bg-alt);
+  border: 1px solid var(--vp-c-divider);
+  color: var(--vp-c-text-2);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.vb-clones:hover,
+.vb-clones:focus-visible {
+  color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+}
+
+.vb-clone {
+  color: var(--vp-c-brand-1);
+}
+
+.vb-clones :deep(.clone-count) {
+  display: inline-block;
+  animation: count-bump 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 @keyframes count-bump {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .vb-ext {

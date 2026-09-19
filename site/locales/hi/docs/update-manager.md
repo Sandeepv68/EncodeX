@@ -1,10 +1,15 @@
+---
+title: 'अपडेट मैनेजर — EncodeX के लिए इन-ऐप ऑटो-अपडेट'
+description: 'EncodeX अपडेट मैनेजर: GitHub Releases इंटीग्रेशन, प्लेटफ़ॉर्म-विशिष्ट डाउनलोड, प्रगति रिपोर्टिंग और स्वचालित इंस्टॉलर लॉन्च।'
+---
+
 # अपडेट मैनेजर
 
-## Overview
+## अवलोकन
 
-कस्टम इन-ऐप अपडेट मैनेजर (विकल्प C) का implementation जो new releases के लिए GitHub Releases check करता है, user को notify करता है, platform-specific installer in-app real-time progress reporting के साथ download करता है, और completion पर installer launch करता है।
+एक कस्टम इन-ऐप अपडेट मैनेजर (विकल्प C) लागू करें जो नई रिलीज़ के लिए GitHub Releases की जाँच करता है, उपयोगकर्ता को सूचित करता है, प्रगति रिपोर्टिंग के साथ प्लेटफ़ॉर्म-विशिष्ट इंस्टॉलर को ऐप के अंदर ही डाउनलोड करता है, और पूरा होने पर इंस्टॉलर को लॉन्च करता है।
 
-## Architecture
+## आर्किटेक्चर
 
 ```mermaid
 flowchart TD
@@ -15,87 +20,87 @@ flowchart TD
     S --> D2["renderer/components/UpdateDialog.tsx<br/>MUI Dialog with progress bar"]
 ```
 
-## Files to create
+## बनाने योग्य फ़ाइलें
 
-| File | Purpose |
-|------|---------|
-| `src/main/updater.ts` | Core update logic: version comparison, release fetching, asset selection, download with progress, launching installer |
-| `src/main/ipc/updater.ts` | IPC handler registration for update channels |
-| `src/renderer/stores/updateStore.ts` | Zustand store for update state (checking, available, downloading, progress, downloaded, error) |
-| `src/renderer/components/UpdateDialog.tsx` | Modal dialog showing update status, download progress, and install button |
-| `src/renderer/styles/UpdateDialog.styles.ts` | Styled components for the update dialog |
+| फ़ाइल                                        | उद्देश्य                                                                                              |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `src/main/updater.ts`                        | मुख्य अपडेट लॉजिक: वर्ज़न तुलना, रिलीज़ प्राप्त करना, एसेट चयन, प्रगति के साथ डाउनलोड, इंस्टॉलर लॉन्च |
+| `src/main/ipc/updater.ts`                    | अपडेट चैनलों के लिए IPC हैंडलर पंजीकरण                                                                |
+| `src/renderer/stores/updateStore.ts`         | अपडेट अवस्था के लिए Zustand store (checking, available, downloading, progress, downloaded, error)     |
+| `src/renderer/components/UpdateDialog.tsx`   | मॉडल डायलॉग जो अपडेट स्थिति, डाउनलोड प्रगति और इंस्टॉल बटन दिखाता है                                  |
+| `src/renderer/styles/UpdateDialog.styles.ts` | अपडेट डायलॉग के लिए स्टाइल किए गए कंपोनेंट                                                            |
 
-## Files to modify
+## संशोधित करने योग्य फ़ाइलें
 
-| File | Change |
-|------|--------|
-| `src/shared/types.ts` | Add `UpdateInfo`, `UpdateAsset`, `UpdateProgress` interfaces |
-| `src/shared/ipc-channels.ts` | Add update IPC channel constants |
-| `src/shared/log-constants.ts` | Add updater log message constants |
-| `src/main/ipc/handlers.ts` | Register updater handlers |
-| `src/preload/index.ts` | Expose update bridge methods and event subscriptions |
-| `src/renderer/electron-api.d.ts` | Declare update API types on `ElectronAPI` |
-| `src/renderer/pages/About.tsx` | Add "Check for Updates" button |
-| `src/renderer/App.tsx` | Mount `UpdateDialog` globally |
-| `src/test-setup.ts` | Add update API mocks to the global electronAPI stub |
-| `e2e/mocks/preload.js` | Add update API methods to the mocked preload |
-| `e2e/mocks/main-store.js` | No changes needed (update state is transient) |
+| फ़ाइल                            | बदलाव                                                         |
+| -------------------------------- | ------------------------------------------------------------- |
+| `src/shared/types.ts`            | `UpdateInfo`, `UpdateAsset`, `UpdateProgress` इंटरफ़ेस जोड़ें |
+| `src/shared/ipc-channels.ts`     | अपडेट IPC चैनल कॉन्स्टेंट जोड़ें                              |
+| `src/shared/log-constants.ts`    | अपडेट लॉग मैसेज कॉन्स्टेंट जोड़ें                             |
+| `src/main/ipc/handlers.ts`       | अपडेटर हैंडलर पंजीकृत करें                                    |
+| `src/preload/index.ts`           | अपडेट ब्रिज विधियाँ और इवेंट सब्सक्रिप्शन खोलें               |
+| `src/renderer/electron-api.d.ts` | `ElectronAPI` पर अपडेट API प्रकार घोषित करें                  |
+| `src/renderer/pages/About.tsx`   | \"अपडेट जाँचें\" बटन जोड़ें                                   |
+| `src/renderer/App.tsx`           | `UpdateDialog` को वैश्विक रूप से माउंट करें                   |
+| `src/test-setup.ts`              | वैश्विक electronAPI स्टब में अपडेट API मॉक जोड़ें             |
+| `e2e/mocks/preload.js`           | मॉक preload में अपडेट API विधियाँ जोड़ें                      |
+| `e2e/mocks/main-store.js`        | कोई बदलाव आवश्यक नहीं (अपडेट अवस्था क्षणिक है)                |
 
-## IPC channels
+## IPC चैनल
 
-| Channel | Direction | Purpose |
-|---------|-----------|---------|
-| `check-for-updates` | renderer -> main | Trigger an update check |
-| `download-update` | renderer -> main | Start downloading the matched asset |
-| `install-update` | renderer -> main | Launch the downloaded installer |
-| `cancel-download` | renderer -> main | Abort an in-progress download |
-| `open-release-notes` | renderer -> main | Open the release page in a browser |
-| `update-available` | main -> renderer | Notify that a newer version exists |
-| `update-not-available` | main -> renderer | Notify that the app is current |
-| `update-progress` | main -> renderer | Push download progress |
-| `update-downloaded` | main -> renderer | Notify that the download completed |
-| `update-error` | main -> renderer | Push an update failure |
+| चैनल                   | दिशा             | उद्देश्य                               |
+| ---------------------- | ---------------- | -------------------------------------- |
+| `check-for-updates`    | renderer -> main | अपडेट जाँच ट्रिगर करें                 |
+| `download-update`      | renderer -> main | मिलान किए गए एसेट का डाउनलोड शुरू करें |
+| `install-update`       | renderer -> main | डाउनलोड किया गया इंस्टॉलर लॉन्च करें   |
+| `cancel-download`      | renderer -> main | चल रहे डाउनलोड को रद्द करें            |
+| `open-release-notes`   | renderer -> main | ब्राउज़र में रिलीज़ पेज खोलें          |
+| `update-available`     | main -> renderer | सूचित करें कि नया वर्ज़न उपलब्ध है     |
+| `update-not-available` | main -> renderer | सूचित करें कि ऐप अप-टू-डेट है          |
+| `update-progress`      | main -> renderer | डाउनलोड प्रगति भेजें                   |
+| `update-downloaded`    | main -> renderer | सूचित करें कि डाउनलोड पूरा हो गया      |
+| `update-error`         | main -> renderer | अपडेट त्रुटि भेजें                     |
 
-## Version comparison
+## वर्ज़न तुलना
 
-- Simple semver comparison: split on `.`, numeric compare.
-- Pre-release suffixes (e.g. `-beta.0`) stripped before comparing.
-- Returns true only when the remote version is strictly greater.
+- सरल semver तुलना: `.` पर विभाजित करें, संख्यात्मक रूप से तुलना करें।
+- तुलना के लिए pre-release सफ़िक्स (जैसे `-beta.0`) हटाएँ।
+- यदि रिमोट वर्ज़न स्थानीय से सख्ती से बड़ा है तो true लौटाता है।
 
-## Asset selection logic
+## एसेट चयन लॉजिक
 
-1. Filter release assets by platform extension:
+1. प्लेटफ़ॉर्म एक्सटेंशन के अनुसार रिलीज़ एसेट फ़िल्टर करें:
    - `win32` -> `.exe`
    - `darwin` -> `.dmg`
    - `linux` -> `.AppImage`
-2. Within the platform, match architecture:
-   - `x64` -> filename contains `x64`
-   - `arm64` -> filename contains `arm64`
-   - `ia32` -> filename contains `ia32`
-3. If no architecture match, fall back to the first platform-matching asset.
+2. प्लेटफ़ॉर्म के भीतर आर्किटेक्चर मिलान करें:
+   - `x64` -> फ़ाइलनाम में `x64` हो
+   - `arm64` -> फ़ाइलनाम में `arm64` हो
+   - `ia32` -> फ़ाइलनाम में `ia32` हो
+3. यदि आर्क मिलान विफल हो तो पहले प्लेटफ़ॉर्म-मिलान वाले एसेट पर फ़ॉलबैक करें।
 
-## Download flow
+## डाउनलोड प्रवाह
 
-1. Renderer calls the `download-update` IPC.
-2. Main process downloads to `app.getPath('temp')/EncodeX-updater/`.
-3. Progress is pushed via `update-progress` every ~300ms.
-4. On completion, `update-downloaded` is emitted with the installer path.
-5. Renderer shows an "Install & Restart" button.
-6. On click, the main process launches the installer via `shell.openPath()` then calls `app.quit()`.
+1. Renderer `download-update` IPC कॉल करता है।
+2. मुख्य प्रक्रिया `app.getPath('temp')/EncodeX-updater/` में डाउनलोड करती है।
+3. प्रगति हर ~300ms पर `update-progress` के माध्यम से भेजी जाती है।
+4. पूरा होने पर `update-downloaded` इंस्टॉलर पथ के साथ भेजा जाता है।
+5. Renderer \"इंस्टॉल और पुनःप्रारंभ\" बटन दिखाता है।
+6. क्लिक पर मुख्य प्रक्रिया `shell.openPath()` + `app.quit()` के माध्यम से इंस्टॉलर लॉन्च करती है।
 
-## UI states
+## UI अवस्थाएँ
 
-| State        | Dialog shows |
-|--------------|--------------|
-| `idle` | (dialog hidden) |
-| `checking` | Spinner + "Checking for updates..." |
-| `available` | Version info, release notes link, Download button |
-| `not-available` | "You're up to date" message, Close button |
-| `downloading` | Progress bar with percentage and speed |
-| `downloaded` | "Update ready to install" + Install & Restart button |
-| `error` | Error message + Retry / Close buttons |
+| अवस्था          | डायलॉग दिखाता है                                                 |
+| --------------- | ---------------------------------------------------------------- |
+| `idle`          | (डायलॉग छिपा हुआ)                                                |
+| `checking`      | स्पिनर + \"अपडेट जाँची जा रही हैं...\"                           |
+| `available`     | वर्ज़न जानकारी, रिलीज़ नोट्स लिंक, डाउनलोड बटन                   |
+| `not-available` | \"आप अप-टू-डेट हैं\" संदेश, बंद बटन                              |
+| `downloading`   | प्रतिशत और गति के साथ प्रगति पट्टी                               |
+| `downloaded`    | \"अपडेट इंस्टॉल करने के लिए तैयार\" + इंस्टॉल और पुनःप्रारंभ बटन |
+| `error`         | त्रुटि संदेश + पुनः प्रयास / बंद बटन                             |
 
-## Testing strategy
+## परीक्षण रणनीति
 
-- Unit tests: version comparison function, asset selection function.
-- Manual testing: publish a test tag/release above `1.0.0-beta.0` and verify the full check -> download -> install flow on each target platform.
+- यूनिट: वर्ज़न तुलना फ़ंक्शन, एसेट चयन फ़ंक्शन।
+- मैनुअल: `1.0.0-beta.0` से ऊपर एक परीक्षण टैग/रिलीज़ प्रकाशित करें और लक्षित प्लेटफ़ॉर्म पर पूर्ण जाँच -> डाउनलोड -> इंस्टॉल प्रवाह सत्यापित करें।

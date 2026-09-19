@@ -32,13 +32,13 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面工具，专为真实的�
   <div class="card">
     <h3>✂️ 裁剪片段</h3>
     <p>去掉无用的空白片段、修剪开头并截取精彩瞬间——无需重新编码整个文件。</p>
-    <a href="/zh/video-cut">了解更多 →</a>
+    <a href="/zh/features#裁剪视频">了解更多 →</a>
   </div>
 
   <div class="card">
     <h3>📦 批量处理整个文件夹</h3>
     <p>载入包含 10 个或 1000 个文件的文件夹，选择一个预设，让 EncodeX 一次性全部转换——需要时甚至可以通宵运行。</p>
-    <a href="/zh/batch">了解更多 →</a>
+    <a href="/zh/features#一次转换多个文件">了解更多 →</a>
   </div>
 
   <div class="card">
@@ -56,7 +56,13 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面工具，专为真实的�
   <div class="card">
     <h3>📊 查看媒体元数据</h3>
     <p>在转换前查看编码器、码率、时长和流信息——无需任何 FFmpeg 知识。</p>
-    <a href="/zh/media-info">了解更多 →</a>
+    <a href="/zh/features#查看文件的内在信息">了解更多 →</a>
+  </div>
+
+  <div class="card">
+    <h3>🤖 用 AI 助手自动处理</h3>
+    <p>EncodeX 内置 MCP 服务器——连接 Claude、Cursor、VS Code 或任何 MCP 客户端，用自然语言让它转换、提取、压缩或跟踪批量任务，一切都在本地完成。</p>
+    <a href="/zh/features#让-ai-助手来驱动">了解更多 →</a>
   </div>
 
 </div>

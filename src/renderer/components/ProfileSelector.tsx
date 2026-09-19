@@ -30,6 +30,7 @@ import type { AutocompleteRenderGroupParams } from '@mui/material/Autocomplete';
 import { CATEGORY_ORDER, PROFILE_CATEGORIES } from '../../shared/profiles/categories';
 import { useProfileStore } from '../stores/profileStore';
 import { useToastStore } from '../stores/toastStore';
+import { highlightSegments } from '../utils/string-utils';
 import ProfileIcon from './ProfileIcon';
 import ProfileBadge from './ProfileBadge';
 import {
@@ -67,20 +68,13 @@ for (const cat of CATEGORY_ORDER) {
 }
 
 function HighlightText({ text, query }: { text: string; query: string }) {
-  if (!query) return <>{text}</>;
-  const lower = text.toLowerCase();
-  const lowerQuery = query.toLowerCase();
-  const parts: React.ReactNode[] = [];
-  let lastIndex = 0;
-  let idx = lower.indexOf(lowerQuery, lastIndex);
-  while (idx !== -1) {
-    if (idx > lastIndex) parts.push(text.slice(lastIndex, idx));
-    parts.push(<HighlightMark key={idx}>{text.slice(idx, idx + query.length)}</HighlightMark>);
-    lastIndex = idx + query.length;
-    idx = lower.indexOf(lowerQuery, lastIndex);
-  }
-  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
-  return <>{parts}</>;
+  return (
+    <>
+      {highlightSegments(text, query).map((segment, index) =>
+        segment.highlight ? <HighlightMark key={index}>{segment.text}</HighlightMark> : segment.text,
+      )}
+    </>
+  );
 }
 
 interface ProfileSelectorProps {

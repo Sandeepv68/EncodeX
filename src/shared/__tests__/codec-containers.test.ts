@@ -6,6 +6,7 @@ import {
   isExtensionCompatibleWithVideoCodec,
   getExtension,
   replaceExtension,
+  withExtension,
 } from '../codec-containers';
 
 describe('classifyVideoCodec', () => {
@@ -116,5 +117,27 @@ describe('replaceExtension', () => {
 
   it('keeps dot-prefixed extensions', () => {
     expect(replaceExtension('video.mp4', '.mkv')).toBe('video.mkv');
+  });
+});
+
+describe('withExtension', () => {
+  it('replaces an existing extension', () => {
+    expect(withExtension('/a/b/video.mp4', 'webm')).toBe('/a/b/video.webm');
+    expect(withExtension('video.MP4', 'mkv')).toBe('video.mkv');
+  });
+
+  it('appends the extension when the file name has none', () => {
+    expect(withExtension('/a/b/video', 'mkv')).toBe('/a/b/video.mkv');
+    expect(withExtension('video', 'mp4')).toBe('video.mp4');
+  });
+
+  it('ignores dots in directory names when locating the extension', () => {
+    expect(withExtension('/a.b/c/video', 'mp4')).toBe('/a.b/c/video.mp4');
+    expect(withExtension('/a.b/c/video.raw', 'mkv')).toBe('/a.b/c/video.mkv');
+  });
+
+  it('handles Windows separators', () => {
+    expect(withExtension('C:\\shows\\episode.1', 'mkv')).toBe('C:\\shows\\episode.mkv');
+    expect(withExtension('C:\\shows\\episode', 'mkv')).toBe('C:\\shows\\episode.mkv');
   });
 });

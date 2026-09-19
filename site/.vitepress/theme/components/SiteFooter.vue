@@ -22,6 +22,7 @@
           <div class="sf-col">
             <p class="sf-col-title">{{ t.community }}</p>
             <a :href="p('/contributing')">{{ t.contributing }}</a>
+            <a href="https://github.com/Sandeepv68/EncodeX/wiki" target="_blank" rel="noopener noreferrer">{{ t.wiki }}</a>
             <a href="https://github.com/Sandeepv68/EncodeX" target="_blank" rel="noopener noreferrer">GitHub</a>
             <a href="https://github.com/Sandeepv68/EncodeX/releases" target="_blank" rel="noopener noreferrer">Releases</a>
           </div>
@@ -53,7 +54,7 @@ const strings = {
   en: {
     tagline: 'The free, friendly way to convert videos, extract music, trim clips, and shrink photos.',
     product: 'Product', features: 'Features', download: 'Download', blog: 'Blog',
-    community: 'Community', contributing: 'Contributing',
+    community: 'Community', contributing: 'Contributing', wiki: 'Wiki',
     support: 'Support', docs: 'Technical Docs', contact: 'Contact', help: 'Get Help',
     cli: 'CLI', privacy: 'Privacy',
     madeWith: 'Made with',
@@ -61,7 +62,7 @@ const strings = {
   es: {
     tagline: 'La forma gratuita y sencilla de convertir vídeos, extraer música, recortar clips y reducir fotos.',
     product: 'Producto', features: 'Características', download: 'Descargar', blog: 'Blog',
-    community: 'Comunidad', contributing: 'Contribuir',
+    community: 'Comunidad', contributing: 'Contribuir', wiki: 'Wiki',
     support: 'Soporte', docs: 'Documentación técnica', contact: 'Contacto', help: 'Ayuda',
     cli: 'CLI', privacy: 'Privacidad',
     madeWith: 'Hecho con',
@@ -69,7 +70,7 @@ const strings = {
   fr: {
     tagline: 'La façon gratuite et simple de convertir des vidéos, extraire de la musique, couper des clips et alléger vos photos.',
     product: 'Produit', features: 'Fonctionnalités', download: 'Télécharger', blog: 'Blog',
-    community: 'Communauté', contributing: 'Contribuer',
+    community: 'Communauté', contributing: 'Contribuer', wiki: 'Wiki',
     support: 'Assistance', docs: 'Documentation technique', contact: 'Contact', help: 'Aide',
     cli: 'CLI', privacy: 'Confidentialité',
     madeWith: 'Réalisé avec',
@@ -77,7 +78,7 @@ const strings = {
   de: {
     tagline: 'Der kostenlose und einfache Weg, Videos zu konvertieren, Musik zu extrahieren, Clips zu schneiden und Fotos zu verkleinern.',
     product: 'Produkt', features: 'Funktionen', download: 'Download', blog: 'Blog',
-    community: 'Community', contributing: 'Mitwirken',
+    community: 'Community', contributing: 'Mitwirken', wiki: 'Wiki',
     support: 'Hilfe', docs: 'Technische Dokumentation', contact: 'Kontakt', help: 'Hilfe erhalten',
     cli: 'CLI', privacy: 'Datenschutz',
     madeWith: 'Gemacht mit',
@@ -85,7 +86,7 @@ const strings = {
   'pt-BR': {
     tagline: 'O jeito gratuito e simples de converter vídeos, extrair música, cortar clipes e reduzir fotos.',
     product: 'Produto', features: 'Recursos', download: 'Download', blog: 'Blog',
-    community: 'Comunidade', contributing: 'Contribuir',
+    community: 'Comunidade', contributing: 'Contribuir', wiki: 'Wiki',
     support: 'Suporte', docs: 'Documentação técnica', contact: 'Contato', help: 'Obter ajuda',
     cli: 'CLI', privacy: 'Privacidade',
     madeWith: 'Feito com',
@@ -93,7 +94,7 @@ const strings = {
   'zh-CN': {
     tagline: '免费、友好的视频转换工具：提取音乐、剪辑片段、压缩照片。',
     product: '产品', features: '功能特性', download: '下载', blog: '博客',
-    community: '社区', contributing: '参与贡献',
+    community: '社区', contributing: '参与贡献', wiki: 'Wiki',
     support: '支持', docs: '技术文档', contact: '联系我们', help: '获取帮助',
     cli: 'CLI', privacy: '隐私政策',
     madeWith: '由社区用心打造',
@@ -101,7 +102,7 @@ const strings = {
   hi: {
     tagline: 'वीडियो बदलने, म्यूज़िक निकालने, क्लिप ट्रिम करने और फ़ोटो छोटी करने का मुफ़्त और आसान तरीक़ा।',
     product: 'प्रोडक्ट', features: 'फ़ीचर्स', download: 'डाउनलोड', blog: 'ब्लॉग',
-    community: 'कम्युनिटी', contributing: 'योगदान दें',
+    community: 'कम्युनिटी', contributing: 'योगदान दें', wiki: 'Wiki',
     support: 'सहायता', docs: 'टेक्निकल दस्तावेज़', contact: 'संपर्क करें', help: 'मदद पाएँ',
     cli: 'CLI', privacy: 'गोपनीयता',
     madeWith: 'इश्क़ के साथ बनाया गया',
