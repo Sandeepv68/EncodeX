@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { randomUUID } from 'crypto';
 import { FileQueuePersistence, QUEUE_STATE_FILENAME, QUEUE_STATE_VERSION } from '../queue/persistence';
 import { cancelledError } from '../../shared/errors';
 import { QueueJob } from '../../shared/types';
@@ -512,8 +511,7 @@ describe('JobQueue', () => {
     });
 
     it('persists the updated options', () => {
-      const tempDir = path.join(os.tmpdir(), 'encodex-queue-test-' + randomUUID());
-      fs.mkdirSync(tempDir, { recursive: true });
+      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-queue-test-'));
       const filePersistence = new FileQueuePersistence(tempDir);
       try {
         queue = new JobQueue({ persistence: filePersistence });
@@ -534,8 +532,7 @@ describe('JobQueue', () => {
     let snapshotPath: string;
 
     beforeEach(() => {
-      tempDir = path.join(os.tmpdir(), 'encodex-queue-test-' + randomUUID());
-      fs.mkdirSync(tempDir, { recursive: true });
+      tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-queue-test-'));
       persistence = new FileQueuePersistence(tempDir);
       snapshotPath = path.join(tempDir, QUEUE_STATE_FILENAME);
     });
