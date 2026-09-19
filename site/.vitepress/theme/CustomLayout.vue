@@ -1,9 +1,10 @@
 <script setup>
-import { onMounted } from 'vue'
-import DefaultTheme from 'vitepress/theme'
-import HeroLogo from './components/HeroLogo.vue'
-import SiteFooter from './components/SiteFooter.vue'
-import VersionBadge from './components/VersionBadge.vue'
+import { onMounted } from 'vue';
+import DefaultTheme from 'vitepress/theme';
+import Breadcrumbs from './components/Breadcrumbs.vue';
+import HeroLogo from './components/HeroLogo.vue';
+import SiteFooter from './components/SiteFooter.vue';
+import VersionBadge from './components/VersionBadge.vue';
 import {
   trackExternalLink,
   trackLocaleSwitch,
@@ -15,45 +16,45 @@ import {
   initEngagementTiming,
   initUserProperties,
   initCoreWebVitals,
-} from './composables/useAnalytics'
+} from './composables/useAnalytics';
 
-const { Layout } = DefaultTheme
+const { Layout } = DefaultTheme;
 
 onMounted(() => {
-  if (document.querySelector('main, [role="main"]')) return
-  const home = document.querySelector('.VPHome')
-  if (home) home.setAttribute('role', 'main')
+  if (document.querySelector('main, [role="main"]')) return;
+  const home = document.querySelector('.VPHome');
+  if (home) home.setAttribute('role', 'main');
 
   // External link clicks
   document.addEventListener('click', (e) => {
-    const anchor = e.target.closest('a[href]')
-    if (!anchor) return
-    const href = anchor.getAttribute('href') || ''
+    const anchor = e.target.closest('a[href]');
+    if (!anchor) return;
+    const href = anchor.getAttribute('href') || '';
     if (href.startsWith('http') && !href.includes('encodex.in')) {
-      trackExternalLink(href, anchor.textContent?.trim() || '')
+      trackExternalLink(href, anchor.textContent?.trim() || '');
     }
-  })
+  });
 
   // Locale switch clicks
   document.addEventListener('click', (e) => {
-    const langItem = e.target.closest('[class*="VPLanguage"] [role="radio"], [class*="VPLocale"] a, .VPMenu .item')
-    if (!langItem) return
-    const text = langItem.textContent?.trim()
+    const langItem = e.target.closest('[class*="VPLanguage"] [role="radio"], [class*="VPLocale"] a, .VPMenu .item');
+    if (!langItem) return;
+    const text = langItem.textContent?.trim();
     if (text) {
-      trackLocaleSwitch(text)
+      trackLocaleSwitch(text);
     }
-  })
+  });
 
   // Initialize all tracking modules
-  initUserProperties()
-  initScrollDepthTracking()
-  initSearchTracking()
-  init404Tracking()
-  initMailtoTracking()
-  initOutboundDownloadTracking()
-  initEngagementTiming()
-  initCoreWebVitals()
-})
+  initUserProperties();
+  initScrollDepthTracking();
+  initSearchTracking();
+  init404Tracking();
+  initMailtoTracking();
+  initOutboundDownloadTracking();
+  initEngagementTiming();
+  initCoreWebVitals();
+});
 </script>
 
 <template>
@@ -62,13 +63,16 @@ onMounted(() => {
       <HeroLogo />
     </template>
     <template #nav-bar-title-before>
-      <img class="custom-nav-logo" src="/images/icon.webp" alt="" width="24" height="24">
+      <img class="custom-nav-logo" src="/images/icon.webp" alt="" width="24" height="24" />
     </template>
     <template #nav-bar-title-after>
       <VersionBadge variant="nav" />
     </template>
     <template #home-hero-actions-after>
       <VersionBadge variant="hero" />
+    </template>
+    <template #doc-before>
+      <Breadcrumbs />
     </template>
     <template #layout-bottom>
       <SiteFooter />
