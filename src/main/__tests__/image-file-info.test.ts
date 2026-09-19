@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-const { existsSyncMock, statMock, openMock } = vi.hoisted(() => ({
-  existsSyncMock: vi.fn(),
+const { statMock, openMock } = vi.hoisted(() => ({
   statMock: vi.fn(),
   openMock: vi.fn(),
 }));
@@ -10,11 +9,9 @@ const closeMock = vi.fn();
 const readMock = vi.fn();
 
 vi.mock('fs/promises', () => ({
-  stat: statMock,
   open: openMock,
-  default: { stat: statMock, open: openMock },
+  default: { open: openMock },
 }));
-vi.mock('fs', () => ({ existsSync: existsSyncMock, default: { existsSync: existsSyncMock } }));
 
 const { getImageFileInfo, readImageDimensions } = await import('../image-file-info');
 
@@ -131,9 +128,8 @@ describe('readImageDimensions', () => {
 describe('getImageFileInfo', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    existsSyncMock.mockReturnValue(true);
     statMock.mockResolvedValue({ size: 2500000 });
-    openMock.mockResolvedValue({ read: readMock, close: closeMock });
+    openMock.mockResolvedValue({ stat: statMock, read: readMock, close: closeMock });
     closeMock.mockResolvedValue(undefined);
   });
 
@@ -178,8 +174,8 @@ describe('getImageFileInfo', () => {
     expect(openMock).not.toHaveBeenCalled();
   });
 
-  it('returns null when the file does not exist', async () => {
-    existsSyncMock.mockReturnValue(false);
+  it('returns null when the file cannot be opened', async () => {
+    openMock.mockRejectedValue(new Error('ENOENT'));
     await expect(getImageFileInfo('photo.jpg')).resolves.toBeNull();
   });
 
@@ -188,14 +184,10 @@ describe('getImageFileInfo', () => {
     await expect(getImageFileInfo('photo.jpg')).resolves.toBeNull();
   });
 
-  it('returns size with null dimensions when opening fails', async () => {
+  it('returns null when opening fails', async () => {
     openMock.mockRejectedValue(new Error('EIO'));
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    await expect(getImageFileInfo('photo.jpg')).resolves.toEqual({
-      width: null,
-      height: null,
-      size: 2500000,
-    });
+    await expect(getImageFileInfo('photo.jpg')).resolves.toBeNull();
     warnSpy.mockRestore();
   });
 });

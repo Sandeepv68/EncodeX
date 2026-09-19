@@ -17,8 +17,7 @@
  * the file with unknown dimensions.
  */
 
-import { open, stat } from 'fs/promises';
-import { existsSync } from 'fs';
+import { open, type FileHandle } from 'fs/promises';
 import { Logger } from '../shared/logger';
 import { isImageFile } from '../shared/file-extensions';
 import { ImageFileInfo } from '../shared/types';
@@ -136,10 +135,10 @@ export function readImageDimensions(buffer: Buffer): { width: number; height: nu
  * Collects basic info (pixel dimensions and byte size) for a single image file.
  *
  * Returns `null` when the file path is not a recognized image extension or the
- * file does not exist. Size comes from `fs.stat`; dimensions are read from the
- * first `IMAGE_HEADER_READ_SIZE` bytes via {@link readImageDimensions}. Stat or
- * read failures are logged and degrade to `null`/null-dimensions rather than
- * throwing.
+ * file cannot be opened. Size and dimensions are both read through a single
+ * file descriptor (via `fs.promises.FileHandle`) so the file cannot change
+ * between the stat and the header read. Stat or read failures are logged and
+ * degrade to `null`/null-dimensions rather than throwing.
  *
  * @param {string} filePath - Absolute or relative path to the image file.
  * @returns {Promise<ImageFileInfo | null>} An object with `width`, `height`
@@ -147,29 +146,35 @@ export function readImageDimensions(buffer: Buffer): { width: number; height: nu
  *   `null` when the path is not an image or does not exist.
  */
 export async function getImageFileInfo(filePath: string): Promise<ImageFileInfo | null> {
-  if (!isImageFile(filePath) || !existsSync(filePath)) {
+  if (!isImageFile(filePath)) {
     log.debug(LOG_NOT_A_READABLE_IMAGE_FILE, filePath);
     return null;
   }
-  let fileSize: number;
+  let handle: FileHandle;
   try {
-    fileSize = (await stat(filePath)).size;
+    handle = await open(filePath, 'r');
   } catch (err) {
-    log.warn(LOG_FAILED_TO_STAT_IMAGE_FILE, err);
+    log.warn(LOG_NOT_A_READABLE_IMAGE_FILE, err);
     return null;
   }
-  let dims: { width: number; height: number } | null = null;
   try {
-    const handle = await open(filePath, 'r');
+    let fileSize: number;
+    try {
+      fileSize = (await handle.stat()).size;
+    } catch (err) {
+      log.warn(LOG_FAILED_TO_STAT_IMAGE_FILE, err);
+      return null;
+    }
+    let dims: { width: number; height: number } | null = null;
     try {
       const buffer = Buffer.alloc(IMAGE_HEADER_READ_SIZE);
       const { bytesRead } = await handle.read(buffer, 0, IMAGE_HEADER_READ_SIZE, 0);
       dims = readImageDimensions(buffer.subarray(0, bytesRead));
-    } finally {
-      await handle.close();
+    } catch (err) {
+      log.warn(LOG_FAILED_TO_READ_IMAGE_DIMENSIONS, err);
     }
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_READ_IMAGE_DIMENSIONS, err);
+    return { width: dims?.width ?? null, height: dims?.height ?? null, size: fileSize };
+  } finally {
+    await handle.close();
   }
-  return { width: dims?.width ?? null, height: dims?.height ?? null, size: fileSize };
 }

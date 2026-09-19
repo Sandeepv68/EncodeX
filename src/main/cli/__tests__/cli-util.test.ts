@@ -74,6 +74,20 @@ describe('expandInputs', () => {
     expect(expandInputs([path.join(dir, 'missing.mp4')])).toEqual([]);
   });
 
+  it('supports character classes in glob segments', () => {
+    const result = expandInputs([path.join(dir, '[ab].mp4')]);
+    expect(result).toEqual([path.join(dir, 'a.mp4'), path.join(dir, 'b.mp4')]);
+  });
+
+  it('treats regex metacharacters in glob segments as literals', () => {
+    const plus = path.join(dir, 'clip+(1).mp4');
+    const bracket = path.join(dir, 'clip].mp4');
+    fs.writeFileSync(plus, 'x');
+    fs.writeFileSync(bracket, 'x');
+    expect(expandInputs([plus])).toEqual([plus]);
+    expect(expandInputs([bracket])).toEqual([bracket]);
+  });
+
   it('expands a home-directory prefix', () => {
     const homeDir = fs.mkdtempSync(path.join(os.homedir(), 'encodex-cli-util-home-'));
     const file = path.join(homeDir, 'a.mp4');

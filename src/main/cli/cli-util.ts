@@ -113,10 +113,32 @@ function hasMagic(segment: string): boolean {
 }
 
 /**
+ * Escapes every regex metacharacter in a string so it is matched literally,
+ * equivalent to lodash `_.escapeRegExp`/the MDN regex-escaping recipe.
+ * @param {string} str - Text to escape.
+ * @returns {string} Text safe to embed in the body of a RegExp.
+ */
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Escapes characters that could inject regex escapes inside a character class
+ * (`[...]`). A backslash is the only way to introduce regex behavior within a
+ * class; glob ranges (`a-z`) and a leading `^` negation are preserved.
+ * @param {string} body - Contents of a character class.
+ * @returns {string} Contents safe to place between `[` and `]`.
+ */
+function escapeGlobClass(body: string): string {
+  return body.replace(/\\/g, '\\\\');
+}
+
+/**
  * Converts a single glob segment into an anchored RegExp.
  *
  * `*` matches any run of characters (not crossing a path separator), `?`
- * matches exactly one, and `[...]` character classes are passed through.
+ * matches exactly one, and `[...]` character classes are supported with their
+ * contents escaped so no user input can alter the regular expression.
  *
  * @param {string} segment - A single path segment.
  * @returns {RegExp} Anchored regular expression for the segment.
@@ -132,13 +154,13 @@ function globToRegex(segment: string): RegExp {
     } else if (ch === '[') {
       const close = segment.indexOf(']', i + 1);
       if (close > i) {
-        out += segment.slice(i, close + 1);
+        out += '[' + escapeGlobClass(segment.slice(i + 1, close)) + ']';
         i = close;
       } else {
         out += '\\[';
       }
     } else {
-      out += ch.replace(/[.+^${}()|\\]/g, '\\$&');
+      out += escapeRegExp(ch);
     }
   }
   return new RegExp(`^${out}$`);
