@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   buildBatchOptions,
+  buildOutputPath,
   inferJobOperation,
   recomputeJobOutput,
   recomputeJobOutputDir,
@@ -198,5 +199,64 @@ describe('recomputeJobOutputDir', () => {
   it('strips trailing slashes from outputDir', () => {
     const job = makeJob({ output: '/in/video_encodex_converted.mp4' });
     expect(recomputeJobOutputDir(job, '/out/')).toBe('/out/video_encodex_converted.mp4');
+  });
+});
+
+describe('buildOutputPath', () => {
+  const base = { container: 'mp4', audioCodec: 'aac', videoCodec: 'libx264', outputDir: '', suffix: '_encodex_converted' };
+
+  it('builds a source-adjacent output with the configured suffix', () => {
+    expect(buildOutputPath({ ...base, file: '/in/video.mp4', operation: 'transcode', sourceExt: 'mp4' })).toBe(
+      '/in/video_encodex_converted.mp4',
+    );
+  });
+
+  it('places the output in the configured output directory', () => {
+    expect(buildOutputPath({ ...base, file: '/in/video.mp4', operation: 'transcode', sourceExt: 'mp4', outputDir: '/out' })).toBe(
+      '/out/video_encodex_converted.mp4',
+    );
+  });
+
+  it('strips trailing slashes and normalises backslashes in outputDir', () => {
+    expect(buildOutputPath({ ...base, file: '/in/video.mp4', operation: 'transcode', sourceExt: 'mp4', outputDir: 'C:\\Out\\' })).toBe(
+      'C:/Out/video_encodex_converted.mp4',
+    );
+  });
+
+  it('derives the extension from the audio-codec container for extract_audio', () => {
+    expect(buildOutputPath({ ...base, container: '', file: '/in/movie.mp4', operation: 'extract_audio', sourceExt: 'mp4' })).toBe(
+      '/in/movie_encodex_converted.m4a',
+    );
+  });
+
+  it('keeps the source extension when no container and no audio-codec mapping exist', () => {
+    expect(
+      buildOutputPath({
+        ...base,
+        container: '',
+        audioCodec: 'mystery_codec',
+        file: '/in/movie.mp4',
+        operation: 'extract_audio',
+        sourceExt: 'mp4',
+      }),
+    ).toBe('/in/movie_encodex_converted.mp4');
+  });
+
+  it('uses the video-codec container when transcode has no container and no source extension', () => {
+    expect(buildOutputPath({ ...base, container: '', file: '/in/stream', operation: 'transcode', sourceExt: '' })).toBe(
+      '/in/stream_encodex_converted.mp4',
+    );
+  });
+
+  it('falls back to mp4 when no extension can be derived', () => {
+    expect(buildOutputPath({ ...base, container: '', file: '/in/photo.png', operation: 'compress_image', sourceExt: '' })).toBe(
+      '/in/photo_encodex_converted.mp4',
+    );
+  });
+
+  it('inserts the current suffix value', () => {
+    expect(buildOutputPath({ ...base, file: '/in/video.mp4', operation: 'transcode', sourceExt: 'mp4', suffix: '_v2' })).toBe(
+      '/in/video_v2.mp4',
+    );
   });
 });

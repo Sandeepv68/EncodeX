@@ -192,7 +192,7 @@ describe('Settings', () => {
     renderSettings();
     fireEvent.click(mcpSwitch());
     const link = await screen.findByTestId('settings-mcp-ai-use-cases-link');
-    expect(link).toHaveAttribute('href', 'https://encodex.in/use-cases');
+    expect(link).toHaveAttribute('href', 'https://encodex.in/features#let-an-ai-assistant-drive');
     expect(link).toHaveTextContent('settings.mcpAiUseCases');
   });
 

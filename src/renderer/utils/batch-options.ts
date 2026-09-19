@@ -16,7 +16,13 @@
 
 import { QueueJob, ConversionOptions, HwAccelMode } from '../../shared/types';
 import { BATCH_OPERATIONS, IMAGE_FORMATS } from '../../shared/media-options';
-import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
+import {
+  getAudioCodecContainers,
+  getVideoCodecContainer,
+  suggestedExtensionForAudioCodec,
+  suggestedExtensionForVideoCodec,
+} from '../../shared/codec-containers';
+import { basename, dirname as getSourceDir, stem as getSourceStem } from './path-utils';
 
 /**
  * Encoding-option field values shared by the batch page and the per-job dialog.
@@ -97,6 +103,47 @@ export function buildBatchOptions(
 }
 
 /**
+ * Derives a batch job's output path by inserting the configured suffix before
+ * the chosen extension, inside the optional output folder when one is set. The
+ * extension is the container value when present, otherwise the per-operation
+ * default (audio-codec container for 'extract_audio', the source extension or
+ * video-codec container for 'transcode', the source extension otherwise),
+ * falling back to 'mp4'.
+ * @param {Object} args - Derivation inputs.
+ * @param {string} args.file - The source file path.
+ * @param {string} args.operation - The batch operation value.
+ * @param {string} args.sourceExt - The source file's extension.
+ * @param {string} args.container - The shared container/format value.
+ * @param {string} args.audioCodec - The shared audio codec value.
+ * @param {string} args.videoCodec - The shared video codec value.
+ * @param {string} args.outputDir - The output folder ('' = source-adjacent).
+ * @param {number} args.suffix - The name-suffix to insert (e.g. `_encodex_converted`).
+ * @returns {string} The computed output path.
+ */
+export function buildOutputPath(args: {
+  file: string;
+  operation: string;
+  sourceExt: string;
+  container: string;
+  audioCodec: string;
+  videoCodec: string;
+  outputDir: string;
+  suffix: string;
+}): string {
+  const { file, operation, sourceExt, container, audioCodec, videoCodec, outputDir, suffix } = args;
+  const sourceDir = outputDir.length > 0 ? outputDir.replace(/\\/g, '/').replace(/\/+$/, '') : getSourceDir(file).replace(/\\/g, '/');
+  const stem = getSourceStem(file);
+  let ext = container;
+  if (!ext) {
+    if (operation === 'extract_audio') ext = suggestedExtensionForAudioCodec(audioCodec) || sourceExt;
+    else if (operation === 'transcode') ext = sourceExt || suggestedExtensionForVideoCodec(videoCodec);
+    else ext = sourceExt;
+  }
+  if (!ext) ext = 'mp4';
+  return `${sourceDir ? sourceDir + '/' : ''}${stem}${suffix}.${ext}`;
+}
+
+/**
  * Recovers which batch operation a job was created under by inspecting its
  * baked options. A job does not store its operation, so it is inferred from the
  * codec fields: video codec implies 'transcode', audio-only implies
@@ -141,29 +188,6 @@ export function recomputeJobOutput(job: QueueJob, container: string): string {
   const base = job.output.replace(/\.[^/\\]*$/, '');
   if (base === job.output) return job.output;
   return `${base}.${ext}`;
-}
-
-/**
- * Extracts the directory portion of a file path, handling both Windows
- * backslashes and POSIX forward slashes. The trailing separator is removed.
- * @param {string} file - The file path to process.
- * @returns {string} The directory path, or '' when the path has no separators.
- */
-function getSourceDir(file: string): string {
-  const idx = Math.max(file.lastIndexOf('/'), file.lastIndexOf('\\'));
-  return idx >= 0 ? file.slice(0, idx) : '';
-}
-
-/**
- * Extracts the basename of a file path, handling both Windows backslashes and
- * POSIX forward slashes.
- * @param {string} filePath - The file path to process.
- * @returns {string} The trailing path segment, or the original path when it
- *   has no separators.
- */
-function basename(filePath: string): string {
-  const parts = filePath.split(/[\\/]/);
-  return parts[parts.length - 1] || filePath;
 }
 
 /**

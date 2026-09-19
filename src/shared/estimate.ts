@@ -39,10 +39,15 @@ export function estimateRemaining(jobs: QueueJob[], progress?: Record<string, Co
 /**
  * Formats a number of seconds as a compact human-readable duration.
  *
+ * Named `formatDurationCompact` (previously `formatEstimate`) to disambiguate
+ * from the renderer's `formatters.formatDuration`, which renders a short
+ * fractional-seconds form ('12.34s'). This shared variant drops zero units:
+ * e.g. '45s', '1m 30s', '1h 5m'.
+ *
  * @param {number} seconds - Total seconds to format.
  * @returns {string} e.g. '45s', '1m 30s', '1h 5m'.
  */
-export function formatEstimate(seconds: number): string {
+export function formatDurationCompact(seconds: number): string {
   const total = Math.max(0, Math.round(seconds));
   if (total < 60) {
     return `${total}s`;

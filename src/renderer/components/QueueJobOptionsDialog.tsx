@@ -30,18 +30,7 @@ import type { QueueJob } from '../../shared/types';
 import type { QueueJobOptionsDialogProps } from './types';
 import type { BatchEncodingValues } from '../utils/batch-options';
 import { buildBatchOptions, inferJobOperation, recomputeJobOutput } from '../utils/batch-options';
-
-/**
- * Extracts the basename of a file path, handling both Windows backslashes and
- * POSIX forward slashes.
- * @param {string} path - The file path to process.
- * @returns {string} The trailing path segment, or the original path when it
- *   has no separators.
- */
-function basename(path: string): string {
-  const parts = path.split(/[\\/]/);
-  return parts[parts.length - 1] || path;
-}
+import { basename } from '../utils/path-utils';
 
 /**
  * Seeds the dialog's encoding field values from a job's baked options, using

@@ -10,6 +10,7 @@
  */
 
 import { Logger } from '../../shared/logger';
+import { loadJson, saveJson } from '../utils/storage';
 import { BATCH_CONFIG_STORAGE_KEY } from '../../shared/constants';
 import { LOG_FAILED_TO_PERSIST_BATCH_CONFIG, LOG_FAILED_TO_READ_STORED_BATCH_CONFIG } from '../../shared/log-constants';
 import { AUDIO_CODECS, BATCH_OPERATIONS, VIDEO_CODECS } from '../../shared/media-options';
@@ -94,34 +95,28 @@ export function readStoredBatchConfig(): BatchConfig {
     typeof value === 'string' && list.some((entry) => entry.value === value);
   const isString = (value: unknown): value is string => typeof value === 'string';
   const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
-  try {
-    const raw = localStorage.getItem(BATCH_CONFIG_STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as Partial<BatchConfig>;
-      return {
-        operation: isOperation(parsed.operation) ? parsed.operation : DEFAULT_BATCH_CONFIG.operation,
-        videoCodec: isCodec(parsed.videoCodec, VIDEO_CODECS) ? parsed.videoCodec : DEFAULT_BATCH_CONFIG.videoCodec,
-        audioCodec: isCodec(parsed.audioCodec, AUDIO_CODECS) ? parsed.audioCodec : DEFAULT_BATCH_CONFIG.audioCodec,
-        container: isString(parsed.container) ? parsed.container : DEFAULT_BATCH_CONFIG.container,
-        videoBitrate: isString(parsed.videoBitrate) ? parsed.videoBitrate : DEFAULT_BATCH_CONFIG.videoBitrate,
-        audioBitrate: isString(parsed.audioBitrate) ? parsed.audioBitrate : DEFAULT_BATCH_CONFIG.audioBitrate,
-        quality: isString(parsed.quality) ? parsed.quality : DEFAULT_BATCH_CONFIG.quality,
-        scale: isString(parsed.scale) ? parsed.scale : DEFAULT_BATCH_CONFIG.scale,
-        rotate:
-          isString(parsed.rotate) && (ROTATION_VALUES as readonly string[]).includes(parsed.rotate)
-            ? parsed.rotate
-            : DEFAULT_BATCH_CONFIG.rotate,
-        flipH: isBoolean(parsed.flipH) ? parsed.flipH : DEFAULT_BATCH_CONFIG.flipH,
-        flipV: isBoolean(parsed.flipV) ? parsed.flipV : DEFAULT_BATCH_CONFIG.flipV,
-        pixelFormat: isString(parsed.pixelFormat) ? parsed.pixelFormat : DEFAULT_BATCH_CONFIG.pixelFormat,
-        outputDir: isString(parsed.outputDir) ? parsed.outputDir : DEFAULT_BATCH_CONFIG.outputDir,
-        overwrite: isBoolean(parsed.overwrite) ? parsed.overwrite : DEFAULT_BATCH_CONFIG.overwrite,
-      };
-    }
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_READ_STORED_BATCH_CONFIG, err);
-  }
-  return { ...DEFAULT_BATCH_CONFIG };
+  const parsed = loadJson<Partial<BatchConfig>>(BATCH_CONFIG_STORAGE_KEY, {}, (err) =>
+    log.warn(LOG_FAILED_TO_READ_STORED_BATCH_CONFIG, err),
+  );
+  return {
+    operation: isOperation(parsed.operation) ? parsed.operation : DEFAULT_BATCH_CONFIG.operation,
+    videoCodec: isCodec(parsed.videoCodec, VIDEO_CODECS) ? parsed.videoCodec : DEFAULT_BATCH_CONFIG.videoCodec,
+    audioCodec: isCodec(parsed.audioCodec, AUDIO_CODECS) ? parsed.audioCodec : DEFAULT_BATCH_CONFIG.audioCodec,
+    container: isString(parsed.container) ? parsed.container : DEFAULT_BATCH_CONFIG.container,
+    videoBitrate: isString(parsed.videoBitrate) ? parsed.videoBitrate : DEFAULT_BATCH_CONFIG.videoBitrate,
+    audioBitrate: isString(parsed.audioBitrate) ? parsed.audioBitrate : DEFAULT_BATCH_CONFIG.audioBitrate,
+    quality: isString(parsed.quality) ? parsed.quality : DEFAULT_BATCH_CONFIG.quality,
+    scale: isString(parsed.scale) ? parsed.scale : DEFAULT_BATCH_CONFIG.scale,
+    rotate:
+      isString(parsed.rotate) && (ROTATION_VALUES as readonly string[]).includes(parsed.rotate)
+        ? parsed.rotate
+        : DEFAULT_BATCH_CONFIG.rotate,
+    flipH: isBoolean(parsed.flipH) ? parsed.flipH : DEFAULT_BATCH_CONFIG.flipH,
+    flipV: isBoolean(parsed.flipV) ? parsed.flipV : DEFAULT_BATCH_CONFIG.flipV,
+    pixelFormat: isString(parsed.pixelFormat) ? parsed.pixelFormat : DEFAULT_BATCH_CONFIG.pixelFormat,
+    outputDir: isString(parsed.outputDir) ? parsed.outputDir : DEFAULT_BATCH_CONFIG.outputDir,
+    overwrite: isBoolean(parsed.overwrite) ? parsed.overwrite : DEFAULT_BATCH_CONFIG.overwrite,
+  };
 }
 
 /**
@@ -132,9 +127,5 @@ export function readStoredBatchConfig(): BatchConfig {
  * @returns {void}
  */
 export function persistBatchConfig(config: BatchConfig): void {
-  try {
-    localStorage.setItem(BATCH_CONFIG_STORAGE_KEY, JSON.stringify(config));
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_PERSIST_BATCH_CONFIG, err);
-  }
+  saveJson(BATCH_CONFIG_STORAGE_KEY, config, (err) => log.warn(LOG_FAILED_TO_PERSIST_BATCH_CONFIG, err));
 }

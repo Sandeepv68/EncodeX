@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { estimateRemaining, formatEstimate } from '../estimate';
+import { estimateRemaining, formatDurationCompact } from '../estimate';
 import { QUEUE_STATUS } from '../media-options';
 import type { ConversionProgress, QueueJob } from '../types';
 
@@ -67,24 +67,24 @@ describe('estimateRemaining', () => {
   });
 });
 
-describe('formatEstimate', () => {
+describe('formatDurationCompact', () => {
   it('formats sub-minute values in seconds', () => {
-    expect(formatEstimate(0)).toBe('0s');
-    expect(formatEstimate(45)).toBe('45s');
-    expect(formatEstimate(59.6)).toBe('1m');
+    expect(formatDurationCompact(0)).toBe('0s');
+    expect(formatDurationCompact(45)).toBe('45s');
+    expect(formatDurationCompact(59.6)).toBe('1m');
   });
 
   it('formats minute-level values with remaining seconds', () => {
-    expect(formatEstimate(90)).toBe('1m 30s');
-    expect(formatEstimate(120)).toBe('2m');
+    expect(formatDurationCompact(90)).toBe('1m 30s');
+    expect(formatDurationCompact(120)).toBe('2m');
   });
 
   it('formats hour-level values with remaining minutes', () => {
-    expect(formatEstimate(3725)).toBe('1h 2m');
-    expect(formatEstimate(3600)).toBe('1h');
+    expect(formatDurationCompact(3725)).toBe('1h 2m');
+    expect(formatDurationCompact(3600)).toBe('1h');
   });
 
   it('never returns negative values', () => {
-    expect(formatEstimate(-10)).toBe('0s');
+    expect(formatDurationCompact(-10)).toBe('0s');
   });
 });

@@ -35,20 +35,8 @@ import {
   Tooltip,
   Collapse,
 } from '@mui/material';
-import {
-  faPalette,
-  faBrush,
-  faDroplet,
-  faSun,
-  faPlay,
-  faPause,
-  faXmark,
-  faEye,
-  faFolderOpen,
-  faChevronDown,
-} from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faPause, faXmark, faEye, faFolderOpen, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Logger } from '../../shared/logger';
 import { useConversion } from '../hooks/useConversion';
 import { useHotkeys } from '../hooks/useHotkeys';
@@ -68,7 +56,7 @@ import { pageIcons } from '../pageIcons';
 import GroupedSelect from '../components/GroupedSelect';
 import InfoTooltip from '../components/InfoTooltip';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { PIXEL_FORMATS, VIDEO_BITRATE_OPTIONS, SCALE_OPTIONS, BITRATE_OPTIONS } from '../../shared/media-options';
+import { VIDEO_BITRATE_OPTIONS, SCALE_OPTIONS, BITRATE_OPTIONS } from '../../shared/media-options';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import {
   TRANSCODER_TYPES,
@@ -87,6 +75,8 @@ import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismiss
 import { useFieldId } from '../hooks/useFieldId';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import type { EncoderType } from '../../shared/types';
+import { fileName } from '../utils/path-utils';
+import { encoderTypeLabel, pixelFormatOptions, pixelGroupIcons } from '../utils/encoding-option-utils';
 import {
   ActionStack,
   AccelAlert,
@@ -121,53 +111,6 @@ import {
  * @const {Logger} log
  */
 const log = new Logger('renderer/pages/Convert');
-
-/**
- * Extracts the base file name from an absolute path, handling both `/` and `\`
- * separators (POSIX and Windows paths).
- * @param {string} path - The full file path to process.
- * @returns {string} The trailing path segment, or the original `path` when no
- *   separator is present.
- */
-function fileName(path: string): string {
-  return path.split(/[\\/]/).pop() ?? path;
-}
-
-/**
- * Maps encoder types to i18n translation keys for the encoder-type selector.
- * @const {Record<EncoderType, string>} encoderTypeLabel
- */
-const encoderTypeLabel: Record<EncoderType, string> = {
-  auto: 'settings.encoderTypeAuto',
-  hardware: 'settings.encoderTypeHardware',
-  software: 'settings.encoderTypeSoftware',
-};
-
-/**
- * Maps pixel-format group names to FontAwesome icons used by the GroupedSelect
- * pixel-format picker, giving each group a distinct visual cue.
- * @const {Record<string, IconDefinition>} pixelGroupIcons
- */
-const pixelGroupIcons: Record<string, IconDefinition> = {
-  'YUV 8-bit': faPalette,
-  'YUV 10-bit': faPalette,
-  'YUV 12-bit': faPalette,
-  'YUV 16-bit': faPalette,
-  'YUV Semi-planar': faPalette,
-  'YUV with Alpha': faPalette,
-  'RGB Packed': faBrush,
-  'Planar RGB': faBrush,
-  Monochrome: faDroplet,
-  HDR: faSun,
-};
-
-/**
- * Pixel-format options prepared for the GroupedSelect: every entry of
- * PIXEL_FORMATS is spread and given a `label` equal to its `value` so the
- * select can render the format string.
- * @const {Array<{value: string; group: string; label: string}>} pixelFormatOptions
- */
-const pixelFormatOptions = PIXEL_FORMATS.map((f) => ({ ...f, label: f.value }));
 
 /**
  * Renders the single-file conversion page (`/convert`).

@@ -59,16 +59,8 @@ const hwaccelModeLabel: Record<HwAccelMode, string> = {
   encode: 'settings.hwaccelModeEncode',
 };
 
-/**
- * Maps each encoder type value to the translation key of its label, read under
- * the `settings.` namespace.
- * @const {Record<EncoderType, string>}
- */
-const encoderTypeLabel: Record<EncoderType, string> = {
-  auto: 'settings.encoderTypeAuto',
-  hardware: 'settings.encoderTypeHardware',
-  software: 'settings.encoderTypeSoftware',
-};
+import { encoderTypeLabel } from '../utils/encoding-option-utils';
+import { generateMcpToken } from '../utils/security-utils';
 
 /**
  * Website URL of the AI use-case documentation, linked from the MCP server
@@ -142,18 +134,6 @@ function CopyButton({
       </IconButton>
     </Tooltip>
   );
-}
-
-/**
- * Generates a cryptographically random, URL-safe bearer token from 32 random
- * bytes (base64url-encoded, padding stripped).
- * @returns {string} A 43-character secure token.
- */
-function generateMcpToken(): string {
-  const bytes = new Uint8Array(32);
-  crypto.getRandomValues(bytes);
-  const binary = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 /**
@@ -239,12 +219,7 @@ function McpSettingsSection() {
           <SettingLabel text={t('settings.mcpServer')} hint={t('settings.mcpServerHint')} />
         </ToggleRow>
         {enabled && (
-          <Link
-            href={MCP_AI_USE_CASES_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-testid="settings-mcp-ai-use-cases-link"
-          >
+          <Link href={MCP_AI_USE_CASES_URL} target="_blank" rel="noopener noreferrer" data-testid="settings-mcp-ai-use-cases-link">
             {t('settings.mcpAiUseCases')}
           </Link>
         )}

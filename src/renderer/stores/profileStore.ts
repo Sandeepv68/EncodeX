@@ -25,6 +25,7 @@
 
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
+import { loadJson, saveJson } from '../utils/storage';
 import type { ConversionProfile, ProfileCategory } from '../../shared/types';
 import { BUILTIN_PROFILES } from '../../shared/profiles';
 import { useConversionStore } from './conversionStore';
@@ -36,50 +37,29 @@ const MAX_RECENT = 5;
 const log = new Logger('renderer/stores/profileStore');
 
 function loadCustomProfiles(): ConversionProfile[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (p): p is ConversionProfile =>
-        typeof p === 'object' &&
-        p !== null &&
-        typeof (p as ConversionProfile).id === 'string' &&
-        typeof (p as ConversionProfile).name === 'string' &&
-        (p as ConversionProfile).builtin === false,
-    );
-  } catch {
-    log.warn('Failed to load custom profiles from localStorage');
-    return [];
-  }
+  const parsed = loadJson<unknown>(STORAGE_KEY, [], () => log.warn('Failed to load custom profiles from localStorage'));
+  if (!Array.isArray(parsed)) return [];
+  return parsed.filter(
+    (p): p is ConversionProfile =>
+      typeof p === 'object' &&
+      p !== null &&
+      typeof (p as ConversionProfile).id === 'string' &&
+      typeof (p as ConversionProfile).name === 'string' &&
+      (p as ConversionProfile).builtin === false,
+  );
 }
 
 function saveCustomProfiles(profiles: ConversionProfile[]): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles));
-  } catch {
-    log.warn('Failed to persist custom profiles to localStorage');
-  }
+  saveJson(STORAGE_KEY, profiles, () => log.warn('Failed to persist custom profiles to localStorage'));
 }
 
 function loadRecentIds(): string[] {
-  try {
-    const raw = localStorage.getItem(RECENT_KEY);
-    if (!raw) return [];
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as string[]).slice(0, MAX_RECENT) : [];
-  } catch {
-    return [];
-  }
+  const parsed = loadJson<unknown>(RECENT_KEY, []);
+  return Array.isArray(parsed) ? (parsed as string[]).slice(0, MAX_RECENT) : [];
 }
 
 function saveRecentIds(ids: string[]): void {
-  try {
-    localStorage.setItem(RECENT_KEY, JSON.stringify(ids.slice(0, MAX_RECENT)));
-  } catch {
-    // silent
-  }
+  saveJson(RECENT_KEY, ids.slice(0, MAX_RECENT));
 }
 
 interface ProfileState {

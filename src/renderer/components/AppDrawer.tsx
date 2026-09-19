@@ -38,6 +38,8 @@ import { useQueueStore } from '../stores/queueStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import LanguageMenu from './LanguageMenu';
 import NavJobPopover from './NavJobPopover';
+import { basenameOrEmpty as basenameOf } from '../utils/path-utils';
+import { isJobActive } from '../utils/queue-job-utils';
 import type { AppDrawerProps, NavBlipId, NavJobPopoverContent } from './types';
 import type { QueueJob } from '../../shared/types';
 import {
@@ -77,30 +79,6 @@ const navKeyMap: Record<string, string> = {
  * @const {number} POPOVER_CLOSE_DELAY_MS
  */
 const POPOVER_CLOSE_DELAY_MS = 150;
-
-/**
- * Extracts the file name portion of an absolute path without a Node `path`
- * import, handling both forward and Windows back slashes.
- * @param {string | null} filePath - Absolute file path, or null.
- * @returns {string} The basename, or '' when the path is empty.
- */
-function basenameOf(filePath: string | null): string {
-  if (!filePath) return '';
-  return filePath.split(/[\\/]/).pop() ?? '';
-}
-
-/**
- * Returns true while a queue job still represents outstanding work (waiting or
- * running). Completed (DONE) and failed (ERROR) jobs are excluded: they remain
- * in the list for review, but the nav badge, blip, and popover reflect only the
- * remaining work so they shrink as jobs finish and disappear once the batch
- * drains.
- * @param {QueueJob} job - The queue job to classify.
- * @returns {boolean} True for QUEUED or RUNNING jobs.
- */
-function isJobActive(job: QueueJob): boolean {
-  return job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING;
-}
 
 /**
  * Renders the application navigation drawer.

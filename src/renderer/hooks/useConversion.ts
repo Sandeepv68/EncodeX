@@ -15,11 +15,13 @@ import { useConversionStore } from '../stores/conversionStore';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
 import { ConversionProgress, ConversionOptions } from '../../shared/types';
+import { toTaskProgress } from '../../shared/progress';
 import { ErrorCode } from '../../shared/errors';
 import i18n from '../i18n/config';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getExtension, suggestedExtensionForVideoCodec } from '../../shared/codec-containers';
 import { DEFAULT_SUFFIX } from '../../shared/media-options';
+import { openFileDialog } from '../utils/fileDialog';
 import {
   LOG_ARROW,
   LOG_AUTO_SUGGESTING_OUTPUT_FILE,
@@ -82,7 +84,7 @@ const log = new Logger('renderer/hooks/useConversion');
  * @property {() => Promise<void>} cancelConversion - Asks the main process to
  *   cancel the running conversion and clears the converting flag.
  * @property {() => Promise<void>} selectInput - Opens the native file dialog via
- *   `window.electronAPI?.selectFile()` and stores the chosen input file.
+ *   `openFileDialog()` and stores the chosen input file.
  * @property {() => Promise<void>} selectOutput - Opens the native save dialog via
  *   `window.electronAPI?.selectOutput()` and stores the chosen output file.
  */
@@ -95,7 +97,7 @@ export function useConversion() {
     log.debug(LOG_SUBSCRIBING_TO_CONVERSION_PROGRESS);
     const cleanup = window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
       if (!useConversionStore.getState().isConverting) return;
-      store.setProgress(data.progress);
+      store.setProgress(toTaskProgress(data.progress));
     });
     return () => {
       log.debug(LOG_UNSUBSCRIBING_FROM_CONVERSION_PROGRESS);
@@ -201,7 +203,7 @@ export function useConversion() {
 
   const selectInput = useCallback(async () => {
     try {
-      const file = await window.electronAPI?.selectFile();
+      const file = await openFileDialog();
       if (file) {
         log.info(LOG_SELECT_INPUT, file);
         store.setInputFile(file);

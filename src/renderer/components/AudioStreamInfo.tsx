@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { Stack, Typography } from '@mui/material';
 import type { MediaStreamInfo } from '../../shared/types';
 import type { AudioStreamInfoProps } from './types';
+import { formatSampleRate } from '../utils/formatters';
 
 /**
  * Builds a single-line summary string for an audio stream.
@@ -36,7 +37,7 @@ function formatStreamLine(stream: MediaStreamInfo): string {
   const parts: string[] = [];
   parts.push(stream.codec + (stream.profile ? ` (${stream.profile})` : ''));
   if (stream.channels != null && stream.channels > 0) parts.push(`${stream.channels} ch`);
-  if (stream.sampleRate != null && stream.sampleRate > 0) parts.push(`${stream.sampleRate} Hz`);
+  if (stream.sampleRate != null && stream.sampleRate > 0) parts.push(formatSampleRate(stream.sampleRate));
   if (stream.channelLayout) parts.push(stream.channelLayout);
   if (stream.bitrate) parts.push(stream.bitrate);
   if (stream.language) parts.push(stream.language);

@@ -29,6 +29,19 @@ export function formatSize(bytes: number): string {
 }
 
 /**
+ * Guarded alias of `formatSize`: negative and non-finite inputs return '0 B'.
+ * Matches the semantics of the main-process `formatBytes` (cli-util.ts) so the
+ * renderer and CLI agree on degenerate inputs (previously handled inline with a
+ * NaN bug in UpdateDialog.tsx).
+ * @param {number} bytes - The size in bytes.
+ * @returns {string} The formatted size, e.g. '2048 B' or '1.5 GB'.
+ */
+export function formatBytes(bytes: number): string {
+  if (!Number.isFinite(bytes) || bytes < 0) return '0 B';
+  return formatSize(bytes);
+}
+
+/**
  * Formats a duration in seconds as a short string with two decimal places.
  * @param {number} seconds - The duration in seconds.
  * @returns {string} The formatted duration, e.g. '12.34s'.
@@ -40,11 +53,13 @@ export function formatDuration(seconds: number): string {
 /**
  * Formats a duration in seconds as a clock time (HH:MM:SS).
  * Milliseconds are included (HH:MM:SS.mmm) when the value has a sub-second
- * remainder; negative inputs are clamped to zero.
+ * remainder; negative inputs are clamped to zero. With `alwaysShowMs` the
+ * milliseconds are always emitted (padded to 3 digits).
  * @param {number} seconds - The duration in seconds.
+ * @param {{ alwaysShowMs?: boolean }} [opts] - Formatting options.
  * @returns {string} The formatted clock time, e.g. '01:05:09' or '00:00:03.250'.
  */
-export function formatClockTime(seconds: number): string {
+export function formatClockTime(seconds: number, opts?: { alwaysShowMs?: boolean }): string {
   const totalMs = Math.max(0, Math.round(seconds * 1000));
   const ms = totalMs % 1000;
   const totalSec = Math.floor(totalMs / 1000);
@@ -53,7 +68,23 @@ export function formatClockTime(seconds: number): string {
   const s = totalSec % 60;
   const pad = (n: number) => n.toString().padStart(2, '0');
   const base = `${pad(h)}:${pad(m)}:${pad(s)}`;
-  return ms > 0 ? `${base}.${pad(ms)}` : base;
+  if (opts?.alwaysShowMs) return `${base}.${ms.toString().padStart(3, '0')}`;
+  return ms > 0 ? `${base}.${ms.toString().padStart(3, '0')}` : base;
+}
+
+/**
+ * Converts a time string to seconds. Accepts a plain number of seconds (e.g.
+ * `42.5`) or an `HH:MM:SS[.mmm]` timestamp. Empty input returns null.
+ * @param {string} value - The time string to parse.
+ * @returns {number | null} The time in seconds, or null when the input is
+ *   empty or not a valid format.
+ */
+export function timeToSeconds(value: string): number | null {
+  if (!value.trim()) return null;
+  if (/^\d+(\.\d+)?$/.test(value.trim())) return parseFloat(value.trim());
+  const match = /^(\d{1,2}):(\d{2}):(\d{2})(\.\d+)?$/.exec(value.trim());
+  if (!match) return null;
+  return parseInt(match[1], 10) * 3600 + parseInt(match[2], 10) * 60 + parseInt(match[3], 10) + (match[4] ? parseFloat(match[4]) : 0);
 }
 
 /**
@@ -73,6 +104,18 @@ export function formatBitrate(bitrate: string): string {
     return `${bps} bps`;
   }
   return bitrate;
+}
+
+/**
+ * Formats a raw sample-rate value (Hz) as a human-readable string.
+ * Matches the `formatStreamSummary` rendering: values are shown in kHz. Invalid
+ * or missing inputs return an empty string.
+ * @param {number | null | undefined} sampleRate - The sample rate in Hz.
+ * @returns {string} The formatted rate, e.g. '48 kHz', or '' when invalid.
+ */
+export function formatSampleRate(sampleRate: number | null | undefined): string {
+  if (sampleRate == null || sampleRate <= 0) return '';
+  return `${Math.round(sampleRate / 1000)} kHz`;
 }
 
 /**
@@ -97,7 +140,7 @@ export function formatStreamSummary(stream: MediaStreamInfo): string {
     const layout = typeof stream.channelLayout === 'string' ? stream.channelLayout.trim() : undefined;
     if (layout) parts.push(layout);
     else if (stream.channels != null && stream.channels > 0) parts.push(`${stream.channels} ch`);
-    if (stream.sampleRate != null && stream.sampleRate > 0) parts.push(`${Math.round(stream.sampleRate / 1000)} kHz`);
+    if (stream.sampleRate != null && stream.sampleRate > 0) parts.push(formatSampleRate(stream.sampleRate));
     if (stream.bitrate) parts.push(formatBitrate(stream.bitrate));
   }
   return parts.join(' · ');

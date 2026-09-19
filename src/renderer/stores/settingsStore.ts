@@ -40,6 +40,7 @@
 
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
+import { loadJson, saveJson, loadString, saveString } from '../utils/storage';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { HWACCEL_DEFAULTS, HWACCEL_MODES, HWACCEL_STORAGE_KEY, ENCODER_TYPES, ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
 import { defaultMcpSettings } from '../../shared/mcp-settings';
@@ -80,6 +81,7 @@ import {
   LOG_SET_MCP_PORT,
   LOG_SET_MCP_TOKEN,
 } from '../../shared/log-constants';
+import { clamp } from '../../shared/math';
 
 /**
  * Per-store logger for the settings store.
@@ -95,20 +97,14 @@ const log = new Logger('renderer/stores/settingsStore');
  * @returns {HwAccelStored} The validated settings snapshot.
  */
 export function readStoredHwAccel(): HwAccelStored {
-  try {
-    const raw = localStorage.getItem(HWACCEL_STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as Partial<HwAccelStored>;
-      return {
-        hardwareAcceleration: typeof parsed.hardwareAcceleration === 'boolean' ? parsed.hardwareAcceleration : HWACCEL_DEFAULTS.ENABLED,
-        hwaccelMode: parsed.hwaccelMode && HWACCEL_MODES.includes(parsed.hwaccelMode) ? parsed.hwaccelMode : HWACCEL_DEFAULTS.MODE,
-        encoderType: parsed.encoderType && ENCODER_TYPES.includes(parsed.encoderType) ? parsed.encoderType : ENCODER_TYPE_DEFAULT,
-      };
-    }
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_READ_STORED_HARDWARE_ACCELERATION_SETTINGS, err);
-  }
-  return { hardwareAcceleration: HWACCEL_DEFAULTS.ENABLED, hwaccelMode: HWACCEL_DEFAULTS.MODE, encoderType: ENCODER_TYPE_DEFAULT };
+  const parsed = loadJson<Partial<HwAccelStored>>(HWACCEL_STORAGE_KEY, {}, (err) =>
+    log.warn(LOG_FAILED_TO_READ_STORED_HARDWARE_ACCELERATION_SETTINGS, err),
+  );
+  return {
+    hardwareAcceleration: typeof parsed.hardwareAcceleration === 'boolean' ? parsed.hardwareAcceleration : HWACCEL_DEFAULTS.ENABLED,
+    hwaccelMode: parsed.hwaccelMode && HWACCEL_MODES.includes(parsed.hwaccelMode) ? parsed.hwaccelMode : HWACCEL_DEFAULTS.MODE,
+    encoderType: parsed.encoderType && ENCODER_TYPES.includes(parsed.encoderType) ? parsed.encoderType : ENCODER_TYPE_DEFAULT,
+  };
 }
 
 /**
@@ -121,11 +117,9 @@ export function readStoredHwAccel(): HwAccelStored {
  * @returns {void}
  */
 function persistHwAccel(hardwareAcceleration: boolean, hwaccelMode: HwAccelMode, encoderType: EncoderType): void {
-  try {
-    localStorage.setItem(HWACCEL_STORAGE_KEY, JSON.stringify({ hardwareAcceleration, hwaccelMode, encoderType }));
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS, err);
-  }
+  saveJson(HWACCEL_STORAGE_KEY, { hardwareAcceleration, hwaccelMode, encoderType }, (err) =>
+    log.warn(LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS, err),
+  );
 }
 
 /**
@@ -149,12 +143,10 @@ const storedMcp = defaultMcpSettings();
  * @returns {boolean} True when the window should start always-on-top.
  */
 function readStoredAlwaysOnTop(): boolean {
-  try {
-    return localStorage.getItem(WINDOW_ALWAYS_ON_TOP_STORAGE_KEY) === 'true';
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING, err);
-    return false;
-  }
+  return (
+    loadString(WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, 'false', (err) => log.warn(LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING, err)) ===
+    'true'
+  );
 }
 
 /**
@@ -164,11 +156,7 @@ function readStoredAlwaysOnTop(): boolean {
  * @returns {void}
  */
 function persistAlwaysOnTop(flag: boolean): void {
-  try {
-    localStorage.setItem(WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, String(flag));
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING, err);
-  }
+  saveString(WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, String(flag), (err) => log.warn(LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING, err));
 }
 
 /**
@@ -178,12 +166,9 @@ function persistAlwaysOnTop(flag: boolean): void {
  * @returns {boolean} True when the app should launch at OS startup.
  */
 function readStoredLaunchAtLogin(): boolean {
-  try {
-    return localStorage.getItem(LAUNCH_AT_LOGIN_STORAGE_KEY) === 'true';
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_READ_STORED_LAUNCH_AT_LOGIN_SETTING, err);
-    return false;
-  }
+  return (
+    loadString(LAUNCH_AT_LOGIN_STORAGE_KEY, 'false', (err) => log.warn(LOG_FAILED_TO_READ_STORED_LAUNCH_AT_LOGIN_SETTING, err)) === 'true'
+  );
 }
 
 /**
@@ -193,11 +178,7 @@ function readStoredLaunchAtLogin(): boolean {
  * @returns {void}
  */
 function persistLaunchAtLogin(enabled: boolean): void {
-  try {
-    localStorage.setItem(LAUNCH_AT_LOGIN_STORAGE_KEY, String(enabled));
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_PERSIST_LAUNCH_AT_LOGIN_SETTING, err);
-  }
+  saveString(LAUNCH_AT_LOGIN_STORAGE_KEY, String(enabled), (err) => log.warn(LOG_FAILED_TO_PERSIST_LAUNCH_AT_LOGIN_SETTING, err));
 }
 
 /**
@@ -208,16 +189,12 @@ function persistLaunchAtLogin(enabled: boolean): void {
  * @returns {number} The validated concurrency value (1-4).
  */
 export function readStoredQueueConcurrency(): number {
-  try {
-    const raw = localStorage.getItem(QUEUE_CONCURRENCY_STORAGE_KEY);
-    if (raw) {
-      const parsed = Number.parseInt(raw, 10);
-      if (Number.isInteger(parsed)) {
-        return Math.min(Math.max(parsed, 1), MAX_QUEUE_CONCURRENCY);
-      }
+  const raw = loadString(QUEUE_CONCURRENCY_STORAGE_KEY, '', (err) => log.warn(LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY, err));
+  if (raw) {
+    const parsed = Number.parseInt(raw, 10);
+    if (Number.isInteger(parsed)) {
+      return clamp(parsed, 1, MAX_QUEUE_CONCURRENCY);
     }
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY, err);
   }
   return DEFAULT_QUEUE_CONCURRENCY;
 }
@@ -229,11 +206,7 @@ export function readStoredQueueConcurrency(): number {
  * @returns {void}
  */
 function persistQueueConcurrency(concurrency: number): void {
-  try {
-    localStorage.setItem(QUEUE_CONCURRENCY_STORAGE_KEY, String(concurrency));
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY, err);
-  }
+  saveString(QUEUE_CONCURRENCY_STORAGE_KEY, String(concurrency), (err) => log.warn(LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY, err));
 }
 
 /**
@@ -247,22 +220,16 @@ function persistQueueConcurrency(concurrency: number): void {
  *   validated when-done config snapshot.
  */
 export function readStoredWhenDone(): { enabled: boolean; action: WhenDoneAction; force: boolean } {
-  try {
-    const raw = localStorage.getItem(WHEN_DONE_STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as Partial<{ enabled: boolean; action: WhenDoneAction; force: boolean }>;
-      const action =
-        parsed.action && (WHEN_DONE_ACTIONS as readonly string[]).includes(parsed.action) ? parsed.action : DEFAULT_WHEN_DONE_ACTION;
-      return {
-        enabled: typeof parsed.enabled === 'boolean' ? parsed.enabled : false,
-        action,
-        force: typeof parsed.force === 'boolean' ? parsed.force : false,
-      };
-    }
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_READ_STORED_WHEN_DONE_CONFIG, err);
-  }
-  return { enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false };
+  const parsed = loadJson<Partial<{ enabled: boolean; action: WhenDoneAction; force: boolean }>>(WHEN_DONE_STORAGE_KEY, {}, (err) =>
+    log.warn(LOG_FAILED_TO_READ_STORED_WHEN_DONE_CONFIG, err),
+  );
+  const action =
+    parsed.action && (WHEN_DONE_ACTIONS as readonly string[]).includes(parsed.action) ? parsed.action : DEFAULT_WHEN_DONE_ACTION;
+  return {
+    enabled: typeof parsed.enabled === 'boolean' ? parsed.enabled : false,
+    action,
+    force: typeof parsed.force === 'boolean' ? parsed.force : false,
+  };
 }
 
 /**
@@ -273,11 +240,7 @@ export function readStoredWhenDone(): { enabled: boolean; action: WhenDoneAction
  * @returns {void}
  */
 function persistWhenDone(config: { enabled: boolean; action: WhenDoneAction; force: boolean }): void {
-  try {
-    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify(config));
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_PERSIST_WHEN_DONE_CONFIG, err);
-  }
+  saveJson(WHEN_DONE_STORAGE_KEY, config, (err) => log.warn(LOG_FAILED_TO_PERSIST_WHEN_DONE_CONFIG, err));
 }
 
 /**

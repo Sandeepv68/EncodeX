@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import type { ProgressBarProps } from './types';
 import { ProgressTrack, ProgressInfoRow, SrOnlyStatus } from '../styles/ProgressBar.styles';
+import { clamp } from '../../shared/math';
 
 /**
  * Renders the progress bar with info captions.
@@ -49,7 +50,7 @@ import { ProgressTrack, ProgressInfoRow, SrOnlyStatus } from '../styles/Progress
  */
 export default function ProgressBar({ percent, time, speed, eta, paused = false, shadowed = false, minimal = false }: ProgressBarProps) {
   const { t } = useTranslation();
-  const clamped = Math.min(100, Math.max(0, percent));
+  const clamped = clamp(percent, 0, 100);
   const completed = clamped >= 100;
   return (
     <Box>

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
+import { ERROR_MESSAGES } from '../../../shared/errors';
 
 const { toastSuccessSpy, toastErrorSpy } = vi.hoisted(() => ({
   toastSuccessSpy: vi.fn(),
@@ -122,7 +123,7 @@ describe('useDevScreenshot', () => {
       } as unknown as KeyboardEvent);
     });
 
-    expect(toastErrorSpy).toHaveBeenCalledWith('Dev screenshot failed', 'capture failed');
+    expect(toastErrorSpy).toHaveBeenCalledWith('Dev screenshot failed', ERROR_MESSAGES.CONVERSION_FAILED);
   });
 
   it('shows error when captureDevScreenshot API is unavailable', async () => {
@@ -142,7 +143,7 @@ describe('useDevScreenshot', () => {
       } as unknown as KeyboardEvent);
     });
 
-    expect(toastErrorSpy).toHaveBeenCalledWith('Dev screenshot failed', 'captureDevScreenshot API unavailable');
+    expect(toastErrorSpy).toHaveBeenCalledWith('Dev screenshot failed', ERROR_MESSAGES.UNKNOWN);
   });
 
   it('shows error when non-Error is thrown', async () => {
@@ -162,6 +163,6 @@ describe('useDevScreenshot', () => {
       } as unknown as KeyboardEvent);
     });
 
-    expect(toastErrorSpy).toHaveBeenCalledWith('Dev screenshot failed', 'string error');
+    expect(toastErrorSpy).toHaveBeenCalledWith('Dev screenshot failed', ERROR_MESSAGES.UNKNOWN);
   });
 });

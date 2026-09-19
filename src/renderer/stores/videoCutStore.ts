@@ -29,6 +29,7 @@
 
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
+import { loadJson, saveJson } from '../utils/storage';
 import { VIDEO_CUT_DRAFT_STORAGE_KEY } from '../../shared/constants';
 import type { VideoCutState } from './types';
 import {
@@ -126,24 +127,18 @@ export function readStoredVideoCutDraft(): Pick<
   VideoCutState,
   'input' | 'output' | 'startTime' | 'endTime' | 'duration' | 'useDuration' | 'includeAudio'
 > {
-  try {
-    const raw = localStorage.getItem(VIDEO_CUT_DRAFT_STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as Partial<VideoCutState>;
-      return {
-        input: typeof parsed.input === 'string' ? parsed.input : INITIAL_STATE.input,
-        output: typeof parsed.output === 'string' ? parsed.output : INITIAL_STATE.output,
-        startTime: typeof parsed.startTime === 'string' ? parsed.startTime : INITIAL_STATE.startTime,
-        endTime: typeof parsed.endTime === 'string' ? parsed.endTime : INITIAL_STATE.endTime,
-        duration: typeof parsed.duration === 'string' ? parsed.duration : INITIAL_STATE.duration,
-        useDuration: typeof parsed.useDuration === 'boolean' ? parsed.useDuration : INITIAL_STATE.useDuration,
-        includeAudio: typeof parsed.includeAudio === 'boolean' ? parsed.includeAudio : INITIAL_STATE.includeAudio,
-      };
-    }
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_READ_STORED_VIDEO_CUT_DRAFT, err);
-  }
-  return { ...INITIAL_STATE };
+  const parsed = loadJson<Partial<VideoCutState>>(VIDEO_CUT_DRAFT_STORAGE_KEY, {}, (err) =>
+    log.warn(LOG_FAILED_TO_READ_STORED_VIDEO_CUT_DRAFT, err),
+  );
+  return {
+    input: typeof parsed.input === 'string' ? parsed.input : INITIAL_STATE.input,
+    output: typeof parsed.output === 'string' ? parsed.output : INITIAL_STATE.output,
+    startTime: typeof parsed.startTime === 'string' ? parsed.startTime : INITIAL_STATE.startTime,
+    endTime: typeof parsed.endTime === 'string' ? parsed.endTime : INITIAL_STATE.endTime,
+    duration: typeof parsed.duration === 'string' ? parsed.duration : INITIAL_STATE.duration,
+    useDuration: typeof parsed.useDuration === 'boolean' ? parsed.useDuration : INITIAL_STATE.useDuration,
+    includeAudio: typeof parsed.includeAudio === 'boolean' ? parsed.includeAudio : INITIAL_STATE.includeAudio,
+  };
 }
 
 /**
@@ -162,11 +157,7 @@ function persistDraft(draft: {
   useDuration: boolean;
   includeAudio: boolean;
 }): void {
-  try {
-    localStorage.setItem(VIDEO_CUT_DRAFT_STORAGE_KEY, JSON.stringify(draft));
-  } catch (err) {
-    log.warn(LOG_FAILED_TO_PERSIST_VIDEO_CUT_DRAFT, err);
-  }
+  saveJson(VIDEO_CUT_DRAFT_STORAGE_KEY, draft, (err) => log.warn(LOG_FAILED_TO_PERSIST_VIDEO_CUT_DRAFT, err));
 }
 
 /**

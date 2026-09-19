@@ -25,6 +25,7 @@ import {
 import { faArrowUp, faDownload, faXmark, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUpdateStore } from '../stores/updateStore';
+import { formatBytes } from '../utils/formatters';
 import { UpdateDialogContent, UpdateVersionText, UpdateReleaseNotes, UpdateStatusMessage } from '../styles/UpdateDialog.styles';
 
 /**
@@ -152,17 +153,4 @@ export default function UpdateDialog() {
       </DialogActions>
     </Dialog>
   );
-}
-
-/**
- * Formats a byte count into a human-readable string (B, KB, MB, GB).
- *
- * @param {number} bytes - The byte count.
- * @returns {string} Formatted string.
- */
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 B';
-  const units = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${units[i]}`;
 }

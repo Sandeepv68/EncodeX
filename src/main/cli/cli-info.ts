@@ -9,7 +9,7 @@ import type { MediaInfo, MediaStreamInfo, EncoderCapabilities } from '../../shar
 import { getEncoderCapabilities } from '../capabilities';
 import { createError, ErrorCode } from '../../shared/errors';
 import { spinner, printTable, data, success, error as printError } from './cli-ui';
-import { formatBytes, formatDuration } from './cli-util';
+import { formatBytes, formatDurationCompact } from './cli-util';
 import type { CliThemeId } from '../cli-logo';
 
 /**
@@ -42,7 +42,7 @@ export async function runInfo(transcoder: ITranscoder, input: string, json: bool
     ['File', info.file],
     ['Format', info.formatLong || info.format],
     ['Size', formatBytes(info.size)],
-    ['Duration', formatDuration(info.duration)],
+    ['Duration', formatDurationCompact(info.duration)],
     ['Bitrate', info.bitrate],
   ]);
   for (const stream of info.streams) {
@@ -80,7 +80,7 @@ function printStream(stream: MediaStreamInfo): void {
     if (stream.language) rows.push(['Language', stream.language]);
     if (stream.title) rows.push(['Title', stream.title]);
   }
-  if (stream.duration !== undefined) rows.push(['Duration', formatDuration(stream.duration)]);
+  if (stream.duration !== undefined) rows.push(['Duration', formatDurationCompact(stream.duration)]);
   printTable(rows);
 }
 

@@ -217,3 +217,19 @@ export function replaceExtension(path: string, newExtension: string): string {
   const ext = newExtension.replace(/^\./, '');
   return path.replace(/\.[^./\\]+$/, `.${ext}`);
 }
+
+/**
+ * Replaces the extension of a file path with the given one, preserving any
+ * directory portion. If the path has no extension (or only directory dots), the
+ * new extension is appended. Extension detection stops at the last slash so
+ * directory names containing dots are not mangled.
+ * @param {string} path - The file path whose extension is replaced.
+ * @param {string} ext - The new extension, without a leading dot.
+ * @returns {string} The path with its extension replaced or appended.
+ */
+export function withExtension(path: string, ext: string): string {
+  const slashIdx = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+  const dotIdx = path.lastIndexOf('.');
+  const base = dotIdx > slashIdx ? path.slice(0, dotIdx) : path;
+  return `${base}.${ext}`;
+}

@@ -70,6 +70,8 @@ import type { ConversionOptions } from '../../shared/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { useToastStore } from '../stores/toastStore';
 import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
+import { basename } from '../utils/path-utils';
+import { statusChipColor } from '../utils/queue-job-utils';
 import {
   JobCard,
   CardBody,
@@ -88,29 +90,6 @@ import {
   OptionsGrid,
   OptionRow,
 } from '../styles/QueueJobCard.styles';
-
-/**
- * Maps QUEUE_STATUS values to MUI Chip color props used for the status chip.
- * @type {Record<string, 'default' | 'primary' | 'success' | 'error' | 'warning'>}
- */
-const statusColors: Record<string, 'default' | 'primary' | 'success' | 'error' | 'warning'> = {
-  [QUEUE_STATUS.QUEUED]: 'warning',
-  [QUEUE_STATUS.RUNNING]: 'primary',
-  [QUEUE_STATUS.DONE]: 'success',
-  [QUEUE_STATUS.ERROR]: 'error',
-};
-
-/**
- * Extracts the basename of a file path, handling both Windows backslashes and
- * POSIX forward slashes.
- * @param {string} path - The file path to process.
- * @returns {string} The trailing path segment, or the original path when it
- *   has no separators.
- */
-function basename(path: string): string {
-  const parts = path.split(/[\\/]/);
-  return parts[parts.length - 1] || path;
-}
 
 /**
  * Handle props forwarded from {@link QueueJobCard} to the presentational body.
@@ -328,7 +307,7 @@ export function QueueJobCardContent({
                   </CustomizedIconButton>
                 </Tooltip>
               )}
-              <StatusChip label={job.status} color={statusColors[job.status] || 'default'} variant="outlined" />
+              <StatusChip label={job.status} color={statusChipColor(job.status)} variant="outlined" />
               {job.status === QUEUE_STATUS.RUNNING && job.paused && (
                 <StatusChip label={t('batchQueue.paused')} color="info" variant="outlined" data-testid="queue-job-paused-badge" />
               )}
