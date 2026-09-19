@@ -11,7 +11,7 @@
 npm install
 ```
 
-This installs all dependencies including `ffmpeg-static` and `ffprobe-static`, which download platform-specific binaries during their postinstall scripts.
+This installs all dependencies including `ffmpeg-static` and `ffprobe-static`, which download platform-specific binaries during their postinstall scripts. The `prepare` hook also runs `npm run gen:sentry-config`, which bakes the Sentry DSN (if present in `.env`) into a git-ignored `src/main/generated/sentryBuildConfig.ts`.
 
 ## 🧑‍💻 Development
 
@@ -46,6 +46,8 @@ npm run pack
 npm run dist
 ```
 
+The MCP server entry (`dist/mcp/index.js`) is produced by `npm run build:main` and shipped in the packaged app, so `encodex --mcp` works out of the box.
+
 ### Build Scripts
 
 | Script                   | Description                                                 |
@@ -55,23 +57,31 @@ npm run dist
 | `npm run build:renderer` | Vite production build — outputs to `dist/renderer/`         |
 | `npm run build:main`     | `tsc -p tsconfig.main.json` — outputs to `dist/main/`       |
 | `npm run build:preload`  | `tsc -p tsconfig.preload.json` — outputs to `dist/preload/` |
-| `npm run build`          | All three in sequence                                       |
+| `npm run build`          | All three in sequence (after `gen:sentry-config`)           |
 | `npm run start`          | Launch compiled app from `dist/` via `electron .`           |
 | `npm run electron:dev`   | Vite + Electron dev environment                             |
 | `npm run dev:start`      | Build then launch                                           |
-| `npm run format`         | `prettier --write` on all `src` TypeScript/JSON             |
-| `npm run format:check`   | `prettier --check` on all `src` TypeScript/JSON             |
+| `npm run format`         | `prettier --write` on `src`, `e2e`, `scripts`, `bin`        |
+| `npm run format:check`   | `prettier --check` on the same patterns                     |
 | `npm run pack`           | Build + electron-builder `--dir`                            |
 | `npm run dist`           | Build + electron-builder (NSIS/DMG/AppImage)                |
+| `npm run mcp`            | Run the standalone MCP server (`node dist/mcp/index.js`)    |
+| `npm run mcp:smoke`      | Smoke-test the standalone stdio MCP server                  |
+| `npm run mcp:smoke:electron` | Smoke-test `--mcp` through Electron (needs display/xvfb) |
+
+The [Testing page](Testing) covers the full testing script list; the [Contributing page](Contributing) covers lint/typecheck.
 
 ## 🧰 Tech Stack
 
 | Layer      | Technology |
 | ---------- | ---------- |
-| Framework  | Electron v43 |
+| Framework  | Electron 43 |
 | UI         | React 19, MUI 9 |
+| Routing    | react-router-dom 7 |
 | State      | Zustand 5 |
-| Build      | Vite, TypeScript |
+| Build      | Vite 8, TypeScript 5 |
 | Testing    | Vitest 4, Playwright |
 | Media      | FFmpeg (bundled via ffmpeg-static) |
-| i18n       | i18next (56 locales) |
+| i18n       | i18next (56 locales / 35 languages) |
+| AI         | @modelcontextprotocol/sdk (MCP server) |
+| Monitoring | provider-agnostic layer with a Sentry adapter |

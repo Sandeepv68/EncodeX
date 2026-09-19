@@ -18,15 +18,22 @@ The renderer never spawns processes and never touches the filesystem directly. A
 
 Node.js environment. Owns the application lifecycle and all privileged capabilities:
 
-- Creates the splash and main `BrowserWindow`s and registers IPC handlers (`index.ts`).
+- Creates the splash and main `BrowserWindow`s and registers IPC handlers (`index.ts`). A `--mcp` branch starts a headless stdio MCP session instead of spawning windows.
 - Hosts the CLI entry point (`cli/`).
-- Resolves the FFmpeg/FFprobe binary path and probes encoder capabilities (`capabilities.ts`, `process-utils.ts`).
+- Resolves the FFmpeg/FFprobe binary path and probes encoder capabilities (`capabilities.ts`, `media-binaries.ts`, `process-utils.ts`).
 - Implements the transcoder cores (`transcoders/`).
 - Runs the concurrency-capped batch queue (1-4 parallel jobs) (`queue/job-queue.ts`).
 - Decodes video frames and audio PCM for the built-in player (`player/frame-decoder.ts`).
 - Extracts waveforms and thumbnail montages (`timeline/timeline-media.ts`).
-- Reads EXIF data, histograms, image dimensions, and previews (`image-*.ts`, `video-preview.ts`).
+- Reads EXIF data, histograms, image dimensions, and previews (`image-*.ts`, `video-preview.ts`, `preview-cache.ts`).
+- Implements the embedded MCP HTTP server (Streamable HTTP) and its GUI-parity tools (`mcp/`).
+- Hosts the error-monitoring backend (Sentry adapter, consent persistence) and the `MONITORING_*` IPC bridge (`monitoring/`).
+- Executes when-done power actions (shut down / sleep / hibernate) on queue completion (`power-actions.ts`).
 - Bridges renderer `console` output into the log system (`patchConsole` in `index.ts`).
+
+### Shared MCP Server (`src/mcp/`)
+
+A dedicated Node entry (`index.ts`) used by both the standalone launcher (`node dist/mcp/index.js`) and the Electron `--mcp` branch. Talks stdio over raw file descriptors (fd 0/1), registers the 13 core tools plus resources and prompts, and manages async conversion jobs in memory (`jobs/manager.ts`). When launched inside the GUI, the same operations connect to the live queue so tools and UI observe the same jobs.
 
 ### Preload Script (`src/preload/index.ts`)
 
@@ -38,7 +45,7 @@ Browser environment served by Vite in development and loaded from `dist/renderer
 
 ### Shared Layer (`src/shared/`)
 
-Pure TypeScript, imported by all three processes. Contains the IPC channel registry, domain types, error system, logger, constants, codec lists, validation helpers, and log message constants.
+Pure TypeScript, imported by all three processes. Contains the IPC channel registry, domain types, error system, logger, constants, codec lists, validation helpers, log message constants, profile catalogue, terms, and the provider-agnostic monitoring facade (`monitoring/`).
 
 ## 🔄 Transcoder Abstraction
 
@@ -94,14 +101,20 @@ useConversion / page state -> ProgressBar UI
 
 ## 🌍 Additional Topics
 
-For more detail on specific subsystems, see the source code in `src/`. Key files:
+For more detail on specific subsystems, see the source code in `src/` and the docs. Key files:
 
 | Subsystem | Key Files |
 | --------- | --------- |
 | Player | `src/main/player/frame-decoder.ts`, `src/renderer/components/MediaPlayer.tsx` |
 | Timeline | `src/main/timeline/timeline-media.ts`, `src/renderer/components/VideoTimeline.tsx` |
 | Batch Queue | `src/main/queue/job-queue.ts`, `src/renderer/stores/queueStore.ts` |
-| Image Processing | `src/main/image-info.ts`, `src/main/image-preview.ts`, `src/main/image-file-info.ts` |
+| Image Processing | `src/main/image-info.ts`, `src/main/image-preview.ts`, `src/main/image-file-info.ts`, `src/main/preview-cache.ts` |
+| Conversion Profiles | `src/shared/profiles/builtin.ts`, `src/shared/profiles/categories.ts`, `src/renderer/stores/profileStore.ts` |
+| MCP Server | `src/mcp/index.ts`, `src/main/mcp/http-server.ts` — see the [MCP page](MCP) and `docs/MCP.md` |
+| Monitoring | `src/shared/monitoring/MonitoringService.ts`, `src/main/monitoring/sentryMainProvider.ts` — see the [Monitoring page](Monitoring) |
+| Terms Gate | `src/shared/terms.ts`, `src/renderer/stores/termsStore.ts`, `src/renderer/components/TermsDialog.tsx` |
+| Power Actions | `src/main/power-actions.ts` |
+| Shortcuts | `src/renderer/constants/shortcuts.ts` |
 | i18n | `src/renderer/i18n/config.ts`, `src/renderer/i18n/localeMeta.ts` |
 | Theming | `src/renderer/ColorModeContext.tsx`, `src/renderer/theme.ts`, `src/renderer/colors.ts` |
 | Updates | `src/main/updater.ts`, `src/renderer/stores/updateStore.ts`, `src/renderer/components/UpdateDialog.tsx` |

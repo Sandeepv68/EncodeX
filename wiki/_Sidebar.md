@@ -4,11 +4,15 @@
 * [[Features]]
 * [[CLI-Usage]]
 
+**AI & Automation**
+* [[MCP]]
+
 **Internals**
 * [[Architecture]]
 * [[IPC-Channels]]
 * [[Project-Structure]]
 * [[Update-Manager]]
+* [[Monitoring]]
 
 **Quality**
 * [[Testing]]
