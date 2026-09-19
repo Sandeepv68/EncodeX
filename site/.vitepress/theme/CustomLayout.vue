@@ -68,7 +68,7 @@ onMounted(() => {
     <template #nav-bar-title-after>
       <VersionBadge variant="nav" />
     </template>
-    <template #home-hero-actions-after>
+    <template #home-hero-after>
       <VersionBadge variant="hero" />
     </template>
     <template #doc-before>

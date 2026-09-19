@@ -1,24 +1,24 @@
 export interface ReleaseAsset {
-  key: string
-  name: string
-  url: string
-  size: number
-  sha256: string | null
-  downloads: number
+  key: string;
+  name: string;
+  url: string;
+  size: number;
+  sha256: string | null;
+  downloads: number;
 }
 
 export interface ReleaseData {
-  tag: string
-  version: string
-  name: string
-  publishedAt: string
-  htmlUrl: string
-  prerelease: boolean
-  assets: Record<string, ReleaseAsset>
-  fetchedAt: string
+  tag: string;
+  version: string;
+  name: string;
+  publishedAt: string;
+  htmlUrl: string;
+  prerelease: boolean;
+  assets: Record<string, ReleaseAsset>;
+  fetchedAt: string;
 }
 
-export const REPO = 'Sandeepv68/EncodeX'
+export const REPO = 'Sandeepv68/EncodeX';
 
 const ARTIFACT_PATTERNS: Array<[RegExp, string]> = [
   [/^EncodeX-[\w.+~-]+-x64-setup\.exe$/, 'win-x64'],
@@ -29,31 +29,31 @@ const ARTIFACT_PATTERNS: Array<[RegExp, string]> = [
   [/^EncodeX-[\w.+~-]+-x86_64\.AppImage$/, 'linux-x86_64'],
   [/^EncodeX-[\w.+~-]+-arm64\.AppImage$/, 'linux-arm64'],
   [/^EncodeX-[\w.+~-]+-armv7l\.AppImage$/, 'linux-armv7l'],
-]
+];
 
 interface GitHubAsset {
-  name: string
-  size: number
-  download_count?: number
-  digest?: string
-  browser_download_url: string
+  name: string;
+  size: number;
+  download_count?: number;
+  digest?: string;
+  browser_download_url: string;
 }
 
 interface GitHubRelease {
-  tag_name: string
-  name: string | null
-  published_at: string
-  html_url: string
-  prerelease?: boolean
-  draft?: boolean
-  assets: GitHubAsset[]
+  tag_name: string;
+  name: string | null;
+  published_at: string;
+  html_url: string;
+  prerelease?: boolean;
+  draft?: boolean;
+  assets: GitHubAsset[];
 }
 
 export function normalizeRelease(release: GitHubRelease, fetchedAt: string): ReleaseData {
-  const assets: Record<string, ReleaseAsset> = {}
+  const assets: Record<string, ReleaseAsset> = {};
   for (const asset of release.assets) {
-    const match = ARTIFACT_PATTERNS.find(([pattern]) => pattern.test(asset.name))
-    if (!match) continue
+    const match = ARTIFACT_PATTERNS.find(([pattern]) => pattern.test(asset.name));
+    if (!match) continue;
     assets[match[1]] = {
       key: match[1],
       name: asset.name,
@@ -61,7 +61,7 @@ export function normalizeRelease(release: GitHubRelease, fetchedAt: string): Rel
       size: asset.size,
       sha256: asset.digest?.startsWith('sha256:') ? asset.digest.slice('sha256:'.length) : null,
       downloads: Math.max(0, asset.download_count ?? 0),
-    }
+    };
   }
   return {
     tag: release.tag_name,
@@ -72,31 +72,54 @@ export function normalizeRelease(release: GitHubRelease, fetchedAt: string): Rel
     prerelease: release.prerelease === true,
     assets,
     fetchedAt,
-  }
+  };
 }
 
 export function totalDownloads(release: ReleaseData): number {
-  return Object.values(release.assets).reduce((sum, asset) => sum + asset.downloads, 0)
+  return Object.values(release.assets).reduce((sum, asset) => sum + asset.downloads, 0);
 }
 
 export interface RepoStats {
-  stars: number
-  forks: number
-  fetchedAt: string
+  stars: number;
+  forks: number;
+  clones: number;
+  fetchedAt: string;
 }
 
 export async function fetchRepoStats(): Promise<RepoStats> {
   const res = await fetch(`https://api.github.com/repos/${REPO}`, {
     headers: apiHeaders(),
-  })
+  });
   if (!res.ok) {
-    throw new Error(`GitHub API responded ${res.status} while fetching repo stats`)
+    throw new Error(`GitHub API responded ${res.status} while fetching repo stats`);
   }
-  const data = (await res.json()) as { stargazers_count?: number; forks_count?: number }
+  const data = (await res.json()) as { stargazers_count?: number; forks_count?: number };
   return {
     stars: Math.max(0, data.stargazers_count ?? 0),
     forks: Math.max(0, data.forks_count ?? 0),
+    clones: await fetchCloneStats(),
     fetchedAt: new Date().toISOString(),
+  };
+}
+
+// GitHub exposes clone counts only via the /traffic/clones endpoint (last 14 days).
+// It requires an authenticated request with push access, so without a GITHUB_TOKEN
+// we skip it silently and failures just hide the pill.
+async function fetchCloneStats(): Promise<number> {
+  const hasToken = typeof process !== 'undefined' && Boolean(process.env?.GITHUB_TOKEN);
+  if (!hasToken) return 0;
+  try {
+    const res = await fetch(`https://api.github.com/repos/${REPO}/traffic/clones`, {
+      headers: apiHeaders(),
+    });
+    if (!res.ok) {
+      throw new Error(`GitHub API responded ${res.status} while fetching clone stats`);
+    }
+    const data = (await res.json()) as { count?: number };
+    return Math.max(0, data.count ?? 0);
+  } catch (error) {
+    console.warn('[clone stats] Could not fetch clone counts; the count will stay hidden.', error instanceof Error ? error.message : error);
+    return 0;
   }
 }
 
@@ -104,115 +127,116 @@ function apiHeaders(): Record<string, string> {
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github+json',
     'User-Agent': 'encodex-site',
-  }
+  };
   if (typeof process !== 'undefined' && process.env?.GITHUB_TOKEN) {
-    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`
+    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
-  return headers
+  return headers;
 }
 
 export async function fetchLatestRelease(): Promise<ReleaseData> {
   const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
     headers: apiHeaders(),
-  })
+  });
   if (!res.ok) {
-    throw new Error(`GitHub API responded ${res.status} while fetching latest release`)
+    throw new Error(`GitHub API responded ${res.status} while fetching latest release`);
   }
-  return normalizeRelease((await res.json()) as GitHubRelease, new Date().toISOString())
+  return normalizeRelease((await res.json()) as GitHubRelease, new Date().toISOString());
 }
 
 export async function fetchReleases(perPage = 100): Promise<ReleaseData[]> {
-  const all: GitHubRelease[] = []
-  const maxPages = 10
+  const all: GitHubRelease[] = [];
+  const maxPages = 10;
   for (let page = 1; page <= maxPages; page++) {
-    const res = await fetch(
-      `https://api.github.com/repos/${REPO}/releases?per_page=${perPage}&page=${page}`,
-      { headers: apiHeaders() },
-    )
+    const res = await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=${perPage}&page=${page}`, { headers: apiHeaders() });
     if (!res.ok) {
-      throw new Error(`GitHub API responded ${res.status} while fetching releases`)
+      throw new Error(`GitHub API responded ${res.status} while fetching releases`);
     }
-    const list = (await res.json()) as GitHubRelease[]
-    all.push(...list)
-    if (list.length < perPage) break
+    const list = (await res.json()) as GitHubRelease[];
+    all.push(...list);
+    if (list.length < perPage) break;
   }
-  const now = new Date().toISOString()
-  return all.filter((rel) => !rel.draft).map((rel) => normalizeRelease(rel, now))
+  const now = new Date().toISOString();
+  return all.filter((rel) => !rel.draft).map((rel) => normalizeRelease(rel, now));
 }
 
 // Memoized so every caller shares one set of API requests
-let releasesPromise: Promise<ReleaseData[]> | null = null
+let releasesPromise: Promise<ReleaseData[]> | null = null;
 
 export function getReleases(): Promise<ReleaseData[]> {
   if (!releasesPromise) {
     releasesPromise = fetchReleases().catch((error) => {
-      releasesPromise = null
-      throw error
-    })
+      releasesPromise = null;
+      throw error;
+    });
   }
-  return releasesPromise
+  return releasesPromise;
 }
 
 // Memoized repo stats so every caller shares one API request
-let statsPromise: Promise<RepoStats> | null = null
+let statsPromise: Promise<RepoStats> | null = null;
 
 export function getRepoStats(): Promise<RepoStats> {
   if (!statsPromise) {
     statsPromise = fetchRepoStats().catch((error) => {
-      statsPromise = null
-      throw error
-    })
+      statsPromise = null;
+      throw error;
+    });
   }
-  return statsPromise
+  return statsPromise;
 }
 
 // Subscriber pattern — components register to be notified when data refreshes
-type ReleaseCallback = (releases: ReleaseData[]) => void
-const listeners = new Set<ReleaseCallback>()
+type ReleaseCallback = (releases: ReleaseData[]) => void;
+const listeners = new Set<ReleaseCallback>();
 
 export function onReleasesUpdated(cb: ReleaseCallback): () => void {
-  listeners.add(cb)
-  return () => { listeners.delete(cb) }
+  listeners.add(cb);
+  return () => {
+    listeners.delete(cb);
+  };
 }
 
-type StatsCallback = (stats: RepoStats) => void
-const statsListeners = new Set<StatsCallback>()
+type StatsCallback = (stats: RepoStats) => void;
+const statsListeners = new Set<StatsCallback>();
 
 export function onStatsUpdated(cb: StatsCallback): () => void {
-  statsListeners.add(cb)
-  return () => { statsListeners.delete(cb) }
+  statsListeners.add(cb);
+  return () => {
+    statsListeners.delete(cb);
+  };
 }
 
 // Singleton poll — at most one timer across all component instances
-const POLL_MS = 60_000
-let pollTimer: ReturnType<typeof setInterval> | null = null
-let polling = false
+const POLL_MS = 60_000;
+let pollTimer: ReturnType<typeof setInterval> | null = null;
+let polling = false;
 
 export function startReleasePolling() {
-  if (pollTimer) return
+  if (pollTimer) return;
   pollTimer = setInterval(async () => {
-    if (polling) return
-    polling = true
+    if (polling) return;
+    polling = true;
     try {
-      releasesPromise = null
-      const releases = await getReleases()
-      for (const cb of listeners) cb(releases)
+      releasesPromise = null;
+      const releases = await getReleases();
+      for (const cb of listeners) cb(releases);
       try {
-        statsPromise = null
-        const stats = await getRepoStats()
-        for (const cb of statsListeners) cb(stats)
+        statsPromise = null;
+        const stats = await getRepoStats();
+        for (const cb of statsListeners) cb(stats);
       } catch {
         // transient repo-stats refresh errors are non-fatal
       }
     } finally {
-      polling = false
+      polling = false;
     }
-  }, POLL_MS)
+  }, POLL_MS);
 }
 
 export function stopReleasePolling() {
   if (pollTimer) {
-    clearInterval(pollTimer)
-    pollTimer = null
+    clearInterval(pollTimer);
+    pollTimer = null;
   }
 }
