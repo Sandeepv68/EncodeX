@@ -48,26 +48,37 @@ function getTimestamp(): string {
 }
 
 /**
- * Sanitizes a single log argument to prevent log injection (CWE-117). String
- * values have line-breaking characters replaced with spaces so user-provided
- * input cannot forge additional log lines. Non-string values are returned
- * unchanged so structured data is preserved in the console output.
+ * Sanitizes a single log argument to prevent log injection (CWE-117).
+ * All values are normalized to text and have line-breaking characters replaced
+ * with spaces so user-provided input cannot forge additional log lines.
  * @param {unknown} value - A raw log argument.
- * @returns {unknown} The sanitized value.
+ * @returns {string} The sanitized value as a single-line string.
  */
-function sanitizeLogArg(value: unknown): unknown {
+function sanitizeLogArg(value: unknown): string {
+  let normalized: string;
   if (typeof value === 'string') {
-    return value.replace(/[\r\n\u2028\u2029]/g, ' ');
+    normalized = value;
+  } else if (value instanceof Error) {
+    normalized = value.stack || value.message;
+  } else {
+    try {
+      normalized = JSON.stringify(value);
+    } catch {
+      normalized = String(value);
+    }
+    if (normalized === undefined) {
+      normalized = String(value);
+    }
   }
-  return value;
+  return normalized.replace(/[\r\n\u2028\u2029]/g, ' ');
 }
 
 /**
  * Sanitizes every log argument before console output to prevent log injection.
  * @param {unknown[]} args - Raw log arguments.
- * @returns {unknown[]} Arguments safe for plain-text console output.
+ * @returns {string[]} Arguments safe for plain-text console output.
  */
-function sanitizeLogArgs(args: unknown[]): unknown[] {
+function sanitizeLogArgs(args: unknown[]): string[] {
   return args.map(sanitizeLogArg);
 }
 
