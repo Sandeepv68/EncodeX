@@ -54,8 +54,16 @@ describe('BmfCore', () => {
     execFileSyncMock.mockReturnValue(JSON.stringify({ format: { duration: '5', format_name: 'mp4' }, streams: [] }));
     const core = new BmfCore();
     const info = await core.getInfo('in.mp4');
-    expect(execFileSyncMock).toHaveBeenCalledWith('bmf_ffprobe', expect.arrayContaining(['in.mp4']), expect.objectContaining({ timeout: 30000 }));
-    expect(execFileSyncMock).toHaveBeenCalledWith('bmf_ffprobe', expect.arrayContaining(['-show_format', '-show_streams']), expect.any(Object));
+    expect(execFileSyncMock).toHaveBeenCalledWith(
+      'bmf_ffprobe',
+      expect.arrayContaining(['in.mp4']),
+      expect.objectContaining({ timeout: 30000 }),
+    );
+    expect(execFileSyncMock).toHaveBeenCalledWith(
+      'bmf_ffprobe',
+      expect.arrayContaining(['-show_format', '-show_streams']),
+      expect.any(Object),
+    );
     expect(info).toEqual(expect.objectContaining({ format: 'mp4', duration: 5 }));
   });
 
