@@ -67,7 +67,7 @@ describe('process-utils', () => {
     expect(warnSpy).toHaveBeenCalledWith(
       expect.stringContaining('[WARN]'),
       expect.stringContaining('Failed to suspend process:'),
-      expect.any(Error),
+      expect.stringContaining('nope'),
     );
     warnSpy.mockRestore();
   });
