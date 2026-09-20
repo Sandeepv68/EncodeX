@@ -103,14 +103,7 @@ describe('Logger', () => {
     const { Logger } = await loadLogger();
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const log = new Logger('ctx');
-    log.error(
-      'user input\nwith newline',
-      { name: 'alice\r\nbob' },
-      new Error('boom\nnested'),
-      null,
-      undefined,
-      Symbol('sym'),
-    );
+    log.error('user input\nwith newline', { name: 'alice\r\nbob' }, new Error('boom\nnested'), null, undefined, Symbol('sym'));
     const [, ...args] = errorSpy.mock.calls[0];
     expect(args[0]).toBe('user input with newline');
     expect(args[1]).toContain('alice');
