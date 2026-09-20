@@ -98,6 +98,14 @@ describe.runIf(IS_E2E)('Video Cut page', () => {
 
   it('scrubs the playhead and drags the start handle on the timeline', async () => {
     const { page } = session;
+    await session.app.evaluate(({ BrowserWindow }) => {
+      const wins = BrowserWindow.getAllWindows();
+      if (wins.length) {
+        wins[wins.length - 1].setMinimumSize(400, 300);
+        wins[wins.length - 1].setContentSize(1000, 600);
+      }
+    });
+    await page.waitForTimeout(500);
     await selectVideo(page);
     const scroller = page.locator('[data-testid="timeline-scroller"]');
     const box = await scroller.boundingBox();
@@ -105,6 +113,9 @@ describe.runIf(IS_E2E)('Video Cut page', () => {
     const endHandle = page.locator('[data-testid="timeline-end-handle"]');
     await startHandle.waitFor({ timeout: 10000 });
     await endHandle.waitFor({ timeout: 10000 });
+    await scroller.scrollIntoViewIfNeeded();
+    await startHandle.scrollIntoViewIfNeeded();
+    await endHandle.scrollIntoViewIfNeeded();
     const startBox = await startHandle.boundingBox();
     const endBox = await endHandle.boundingBox();
     const zoom = (endBox.x - startBox.x) / 60;
