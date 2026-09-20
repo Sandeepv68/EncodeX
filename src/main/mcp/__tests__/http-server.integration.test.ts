@@ -37,7 +37,7 @@ beforeAll(async () => {
     const server = createMcpServer({ jobManager });
     registerGuiTools(server, {
       jobManager,
-      appVersion: '1.0.0-beta.3',
+      appVersion: '1.0.0-beta.4',
       transcoderFactory: () => new FakeTranscoder(),
       getPreviewFrame: async () => null,
       checkForUpdate: async () => null,

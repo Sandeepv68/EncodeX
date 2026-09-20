@@ -62,7 +62,7 @@ async function setup(overrides: Partial<GuiToolsDeps> = {}): Promise<GuiSession>
   const server = new McpServer({ name: 'encodex-gui-test', version: '1.0.0' });
   registerGuiTools(server, {
     jobManager,
-    appVersion: '1.0.0-beta.3',
+    appVersion: '1.0.0-beta.4',
     transcoderFactory: () => new TimelineTranscoder(),
     getPreviewFrame: async () => 'data:image/png;base64,cHJldmlldw==',
     checkForUpdate: async () => null,
@@ -170,7 +170,7 @@ describe('registerGuiTools', () => {
     const session = await setup();
     const parsed = JSON.parse(textOf(await session.client.callTool({ name: 'get_system_info', arguments: {} })));
     await session.close();
-    expect(parsed.appVersion).toBe('1.0.0-beta.3');
+    expect(parsed.appVersion).toBe('1.0.0-beta.4');
     expect(parsed.platform).toBe(process.platform);
     expect(parsed.os).toBeDefined();
     expect(typeof parsed.os.totalMemory).toBe('number');
@@ -181,7 +181,7 @@ describe('registerGuiTools', () => {
     const parsed = JSON.parse(textOf(await session.client.callTool({ name: 'check_for_updates', arguments: {} })));
     await session.close();
     expect(parsed.available).toBe(false);
-    expect(parsed.current).toBe('1.0.0-beta.3');
+    expect(parsed.current).toBe('1.0.0-beta.4');
   });
 
   it('check_for_updates reports the latest release when one exists', async () => {
