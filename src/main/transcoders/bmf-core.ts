@@ -8,7 +8,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { spawn, ChildProcess, execSync } from 'child_process';
+import { spawn, ChildProcess, execFileSync } from 'child_process';
 import { Logger } from '../../shared/logger';
 import type { ITranscoder } from './types';
 import { suspendProcess, resumeProcess } from '../process-utils';
@@ -82,8 +82,8 @@ export class BmfCore implements ITranscoder {
    * Reads media metadata using the synchronous bmf_ffprobe CLI.
    *
    * Builds and executes `bmf_ffprobe -v quiet -print_format json -show_format
-   * -show_streams "<input>"` via execSync with a BMF_TIMEOUT_MS timeout, parses
-   * the JSON output, and maps it through {@link mapFfprobeData} into a
+   * -show_streams <input>` via execFileSync with a BMF_TIMEOUT_MS timeout,
+   * parses the JSON output, and maps it through {@link mapFfprobeData} into a
    * MediaInfo object. Any failure (missing binary, probe error, bad JSON, or
    * timeout) is logged and rethrown as a generic "BMF not available" error.
    * @param {string} input - Absolute path of the media file to probe
@@ -94,9 +94,9 @@ export class BmfCore implements ITranscoder {
   async getInfo(input: string): Promise<MediaInfo> {
     log.info(LOG_GET_INFO, input);
     try {
-      const cmd = `${TRANSCODER_COMMANDS.BMF_FFPROBE} -v quiet -print_format json -show_format -show_streams "${input}"`;
-      log.debug(LOG_BMF_FFPROBE_COMMAND, cmd);
-      const result = execSync(cmd, {
+      const args = ['-v', 'quiet', '-print_format', 'json', '-show_format', '-show_streams', input];
+      log.debug(LOG_BMF_FFPROBE_COMMAND, TRANSCODER_COMMANDS.BMF_FFPROBE, args.join(' '));
+      const result = execFileSync(TRANSCODER_COMMANDS.BMF_FFPROBE, args, {
         encoding: 'utf-8' as BufferEncoding,
         timeout: TRANSCODER_DEFAULTS.BMF_TIMEOUT_MS,
       });

@@ -48,6 +48,30 @@ function getTimestamp(): string {
 }
 
 /**
+ * Sanitizes a single log argument to prevent log injection (CWE-117). String
+ * values have line-breaking characters replaced with spaces so user-provided
+ * input cannot forge additional log lines. Non-string values are returned
+ * unchanged so structured data is preserved in the console output.
+ * @param {unknown} value - A raw log argument.
+ * @returns {unknown} The sanitized value.
+ */
+function sanitizeLogArg(value: unknown): unknown {
+  if (typeof value === 'string') {
+    return value.replace(/[\r\n\u2028\u2029]/g, ' ');
+  }
+  return value;
+}
+
+/**
+ * Sanitizes every log argument before console output to prevent log injection.
+ * @param {unknown[]} args - Raw log arguments.
+ * @returns {unknown[]} Arguments safe for plain-text console output.
+ */
+function sanitizeLogArgs(args: unknown[]): unknown[] {
+  return args.map(sanitizeLogArg);
+}
+
+/**
  * The minimum log level resolved once at module load time. Messages with a
  * severity below this level are suppressed by the Logger methods.
  * @const {LogLevel} currentLevel
@@ -134,7 +158,7 @@ export class Logger {
   debug(...args: unknown[]) {
     emitToSink('debug', this.context, args);
     if (currentLevel > LogLevel.DEBUG) return;
-    console.log(`[${getTimestamp()}] [DEBUG] [${this.context}]`, ...args);
+    console.log(`[${getTimestamp()}] [DEBUG] [${this.context}]`, ...sanitizeLogArgs(args));
   }
 
   /**
@@ -147,7 +171,7 @@ export class Logger {
   info(...args: unknown[]) {
     emitToSink('info', this.context, args);
     if (currentLevel > LogLevel.INFO) return;
-    console.log(`[${getTimestamp()}] [INFO] [${this.context}]`, ...args);
+    console.log(`[${getTimestamp()}] [INFO] [${this.context}]`, ...sanitizeLogArgs(args));
   }
 
   /**
@@ -160,7 +184,7 @@ export class Logger {
   warn(...args: unknown[]) {
     emitToSink('warn', this.context, args);
     if (currentLevel > LogLevel.WARN) return;
-    console.warn(`[${getTimestamp()}] [WARN] [${this.context}]`, ...args);
+    console.warn(`[${getTimestamp()}] [WARN] [${this.context}]`, ...sanitizeLogArgs(args));
   }
 
   /**
@@ -171,6 +195,6 @@ export class Logger {
    */
   error(...args: unknown[]) {
     emitToSink('error', this.context, args);
-    console.error(`[${getTimestamp()}] [ERROR] [${this.context}]`, ...args);
+    console.error(`[${getTimestamp()}] [ERROR] [${this.context}]`, ...sanitizeLogArgs(args));
   }
 }

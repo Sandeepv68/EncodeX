@@ -348,7 +348,8 @@ registerLoggerSink((level, context, args) => {
     if (errorArg && level === 'error') {
       captureException(errorArg, bridgeContext);
     } else {
-      captureMessage(`${context}: ${args.map((arg) => String(arg)).join(' ')}`, monitorLevel, bridgeContext);
+      const messageArgs = args.map((arg) => String(arg).replace(/[\r\n\u2028\u2029]/g, ' ')).join(' ');
+      captureMessage(`${context}: ${messageArgs}`, monitorLevel, bridgeContext);
     }
   } finally {
     bridgingLogRecord = false;
