@@ -31,7 +31,7 @@ describe('Logger', () => {
     log.info('i');
     log.warn('w');
     log.error('e');
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('[DEBUG] [ctx]'), 'd', 1);
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('[DEBUG] [ctx]'), 'd', '1');
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('[INFO] [ctx]'), 'i');
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('[WARN] [ctx]'), 'w');
     expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('[ERROR] [ctx]'), 'e');
@@ -97,5 +97,20 @@ describe('Logger', () => {
     new Logger('ctx').debug('shown');
     expect(logSpy).toHaveBeenCalledTimes(1);
     logSpy.mockRestore();
+  });
+
+  it('strips line-breaking characters from all argument types to prevent log injection', async () => {
+    const { Logger } = await loadLogger();
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const log = new Logger('ctx');
+    log.error('user input\nwith newline', { name: 'alice\r\nbob' }, new Error('boom\nnested'), null, undefined, Symbol('sym'));
+    const [, ...args] = errorSpy.mock.calls[0];
+    expect(args[0]).toBe('user input with newline');
+    expect(args[1]).toContain('alice');
+    expect(args[2]).toContain('boom');
+    for (const arg of args) {
+      expect(arg).not.toMatch(/[\r\n\u2028\u2029]/);
+    }
+    errorSpy.mockRestore();
   });
 });

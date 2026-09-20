@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EventEmitter } from 'events';
 
-const { spawnMock, execSyncMock, suspendProcessMock, resumeProcessMock, buildFfmpegArgsMock } = vi.hoisted(() => ({
+const { spawnMock, execFileSyncMock, suspendProcessMock, resumeProcessMock, buildFfmpegArgsMock } = vi.hoisted(() => ({
   spawnMock: vi.fn(),
-  execSyncMock: vi.fn(),
+  execFileSyncMock: vi.fn(),
   suspendProcessMock: vi.fn(),
   resumeProcessMock: vi.fn(),
   buildFfmpegArgsMock: vi.fn(),
@@ -11,9 +11,9 @@ const { spawnMock, execSyncMock, suspendProcessMock, resumeProcessMock, buildFfm
 
 vi.mock('child_process', () => ({
   spawn: spawnMock,
-  execSync: execSyncMock,
+  execFileSync: execFileSyncMock,
   ChildProcess: class {},
-  default: { spawn: spawnMock, execSync: execSyncMock },
+  default: { spawn: spawnMock, execFileSync: execFileSyncMock },
 }));
 vi.mock('../../process-utils', () => ({ suspendProcess: suspendProcessMock, resumeProcess: resumeProcessMock }));
 vi.mock('../ffmpeg-utils', () => ({ buildFfmpegArgs: buildFfmpegArgsMock }));
@@ -51,16 +51,24 @@ describe('BmfCore', () => {
   });
 
   it('getInfo runs bmf_ffprobe and resolves parsed data', async () => {
-    execSyncMock.mockReturnValue(JSON.stringify({ format: { duration: '5', format_name: 'mp4' }, streams: [] }));
+    execFileSyncMock.mockReturnValue(JSON.stringify({ format: { duration: '5', format_name: 'mp4' }, streams: [] }));
     const core = new BmfCore();
     const info = await core.getInfo('in.mp4');
-    expect(execSyncMock).toHaveBeenCalledWith(expect.stringContaining('bmf_ffprobe'), expect.objectContaining({ timeout: 30000 }));
-    expect(execSyncMock).toHaveBeenCalledWith(expect.stringContaining('in.mp4'), expect.any(Object));
+    expect(execFileSyncMock).toHaveBeenCalledWith(
+      'bmf_ffprobe',
+      expect.arrayContaining(['in.mp4']),
+      expect.objectContaining({ timeout: 30000 }),
+    );
+    expect(execFileSyncMock).toHaveBeenCalledWith(
+      'bmf_ffprobe',
+      expect.arrayContaining(['-show_format', '-show_streams']),
+      expect.any(Object),
+    );
     expect(info).toEqual(expect.objectContaining({ format: 'mp4', duration: 5 }));
   });
 
   it('getInfo rejects when bmf_ffprobe fails', async () => {
-    execSyncMock.mockImplementation(() => {
+    execFileSyncMock.mockImplementation(() => {
       throw new Error('command not found');
     });
     const core = new BmfCore();

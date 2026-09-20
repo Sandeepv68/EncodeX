@@ -48,6 +48,41 @@ function getTimestamp(): string {
 }
 
 /**
+ * Sanitizes a single log argument to prevent log injection (CWE-117).
+ * All values are normalized to text and have line-breaking characters replaced
+ * with spaces so user-provided input cannot forge additional log lines.
+ * @param {unknown} value - A raw log argument.
+ * @returns {string} The sanitized value as a single-line string.
+ */
+function sanitizeLogArg(value: unknown): string {
+  let normalized: string;
+  if (typeof value === 'string') {
+    normalized = value;
+  } else if (value instanceof Error) {
+    normalized = value.stack || value.message;
+  } else {
+    try {
+      normalized = JSON.stringify(value);
+    } catch {
+      normalized = String(value);
+    }
+    if (normalized === undefined) {
+      normalized = String(value);
+    }
+  }
+  return normalized.replace(/[\r\n\u2028\u2029]/g, ' ');
+}
+
+/**
+ * Sanitizes every log argument before console output to prevent log injection.
+ * @param {unknown[]} args - Raw log arguments.
+ * @returns {string[]} Arguments safe for plain-text console output.
+ */
+function sanitizeLogArgs(args: unknown[]): string[] {
+  return args.map(sanitizeLogArg);
+}
+
+/**
  * The minimum log level resolved once at module load time. Messages with a
  * severity below this level are suppressed by the Logger methods.
  * @const {LogLevel} currentLevel
@@ -134,7 +169,7 @@ export class Logger {
   debug(...args: unknown[]) {
     emitToSink('debug', this.context, args);
     if (currentLevel > LogLevel.DEBUG) return;
-    console.log(`[${getTimestamp()}] [DEBUG] [${this.context}]`, ...args);
+    console.log(`[${getTimestamp()}] [DEBUG] [${this.context}]`, ...sanitizeLogArgs(args));
   }
 
   /**
@@ -147,7 +182,7 @@ export class Logger {
   info(...args: unknown[]) {
     emitToSink('info', this.context, args);
     if (currentLevel > LogLevel.INFO) return;
-    console.log(`[${getTimestamp()}] [INFO] [${this.context}]`, ...args);
+    console.log(`[${getTimestamp()}] [INFO] [${this.context}]`, ...sanitizeLogArgs(args));
   }
 
   /**
@@ -160,7 +195,7 @@ export class Logger {
   warn(...args: unknown[]) {
     emitToSink('warn', this.context, args);
     if (currentLevel > LogLevel.WARN) return;
-    console.warn(`[${getTimestamp()}] [WARN] [${this.context}]`, ...args);
+    console.warn(`[${getTimestamp()}] [WARN] [${this.context}]`, ...sanitizeLogArgs(args));
   }
 
   /**
@@ -171,6 +206,6 @@ export class Logger {
    */
   error(...args: unknown[]) {
     emitToSink('error', this.context, args);
-    console.error(`[${getTimestamp()}] [ERROR] [${this.context}]`, ...args);
+    console.error(`[${getTimestamp()}] [ERROR] [${this.context}]`, ...sanitizeLogArgs(args));
   }
 }

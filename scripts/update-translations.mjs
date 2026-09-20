@@ -897,10 +897,16 @@ function setNested(obj, dottedKey, value) {
   const parts = dottedKey.split('.');
   let cur = obj;
   for (let i = 0; i < parts.length - 1; i++) {
-    if (!cur[parts[i]] || typeof cur[parts[i]] !== 'object') cur[parts[i]] = {};
-    cur = cur[parts[i]];
+    const part = parts[i];
+    if (part === '__proto__' || part === 'constructor' || part === 'prototype') return;
+    if (!Object.prototype.hasOwnProperty.call(cur, part) || typeof cur[part] !== 'object') {
+      cur[part] = {};
+    }
+    cur = cur[part];
   }
-  cur[parts[parts.length - 1]] = value;
+  const last = parts[parts.length - 1];
+  if (last === '__proto__' || last === 'constructor' || last === 'prototype') return;
+  cur[last] = value;
 }
 
 const files = readdirSync(LOCALES_DIR).filter((f) => f.endsWith('.json'));
