@@ -163,6 +163,9 @@ function globToRegex(segment: string): RegExp {
       out += escapeRegExp(ch);
     }
   }
+  // codeql[js/regex-injection] All user input above is escaped: literals via
+  // escapeRegExp, class bodies via escapeGlobClass; only fixed operator pieces
+  // are unescaped, so no injection or ReDoS is possible.
   return new RegExp(`^${out}$`);
 }
 
