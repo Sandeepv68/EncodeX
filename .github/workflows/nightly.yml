@@ -1,0 +1,103 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: nightly
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: 22
+
+jobs:
+  build:
+    name: Build - ubuntu
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-ubuntu
+          path: dist
+          if-no-files-found: error
+
+  test-e2e-real:
+    name: Test - E2E Production Scenario (nightly)
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-ubuntu
+          path: dist
+      - run: npm ci
+      - name: Install xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+      - name: Run real conversion e2e
+        run: xvfb-run --auto-servernum npm run test:e2e:real:ci
+
+  test-mcp-smoke:
+    name: Test - MCP server smoke (nightly)
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-ubuntu
+          path: dist
+      - run: npm ci
+      - name: Smoke test standalone stdio server
+        run: npm run mcp:smoke
+      - name: Install xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+      - name: Smoke test Electron --mcp mode
+        run: xvfb-run --auto-servernum npm run mcp:smoke:electron -- --no-sandbox
+
+  test-perf:
+    name: Test - Performance Benchmarks (nightly)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Generate test media fixtures
+        run: npm run perf:generate-media
+      - name: Run performance tests
+        run: npm run perf
+      - name: Compare against baseline (regression gate)
+        run: npm run perf:compare
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: perf-results-nightly
+          path: perf/results/
+          if-no-files-found: warn

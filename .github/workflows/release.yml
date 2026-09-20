@@ -12,8 +12,25 @@ env:
   NODE_VERSION: 22
 
 jobs:
+  validate-version:
+    name: Validate tag matches package.json
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assert v<package.json.version> equals tag
+        run: |
+          version=$(node -p "require('./package.json').version")
+          expected="v${version}"
+          if [ "$GITHUB_REF_NAME" != "$expected" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version (expected $expected)"
+            exit 1
+          fi
+          echo "Tag $GITHUB_REF_NAME matches package.json version"
+
   package:
     name: Package - ${{ matrix.os }} (${{ matrix.arch }})
+    needs: [validate-version]
     strategy:
       fail-fast: false
       matrix:
@@ -85,15 +102,50 @@ jobs:
     name: Publish draft release
     needs: [package]
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
+    outputs:
+      subject: ${{ steps.subject.outputs.subject }}
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           path: release-artifacts
           merge-multiple: true
+      - name: Generate SHA256SUMS.txt
+        run: |
+          cd release-artifacts
+          sha256sum * > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+      - name: Compute artifact digests
+        id: subject
+        run: |
+          cd release-artifacts
+          DIGESTS=$(node -e "const fs=require('fs');const cp=require('child_process');const files=fs.readdirSync('.').filter(f=>fs.statSync(f).isFile()).sort();const out=files.map(f=>'sha256:'+cp.execFileSync('sha256sum',[f]).toString().split(/\s+/)[0]);process.stdout.write(Buffer.from(JSON.stringify(out)).toString('base64'))")
+          echo "subject=$DIGESTS" >> "$GITHUB_OUTPUT"
+      - name: Generate CycloneDX SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: ./sbom.cdx.json
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          draft: false
+          draft: true
           generate_release_notes: true
-          files: release-artifacts/**
+          files: |
+            release-artifacts/**
+            sbom.cdx.json
+
+  provenance:
+    name: Generate SLSA provenance
+    needs: [publish]
+    permissions:
+      id-token: write
+      contents: write
+      actions: read
+    uses: slsa-framework/slsa-github-actions/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+    with:
+      base64-subject: "${{ needs.publish.outputs.subject }}"
+      upload-assets: true
+      upload-tag-name: ${{ github.ref_name }}

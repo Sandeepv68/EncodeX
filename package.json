@@ -51,6 +51,8 @@
     "perf:phase2": "vitest run --config perf/vitest.perf.config.ts -- perf/process-lifecycle.perf.test.ts perf/memory-leak.perf.test.ts perf/large-file.perf.test.ts",
     "perf:phase3": "vitest run --config perf/vitest.perf.config.ts -- perf/ipc-overhead.perf.test.ts perf/cli-batch.perf.test.ts perf/extraction.perf.test.ts",
     "perf:generate-media": "node perf/fixtures/generate-media.cjs",
+    "perf:baseline": "node scripts/perf-compare.mjs --generate",
+    "perf:compare": "node scripts/perf-compare.mjs",
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
     "docs:dev": "vitepress dev site",

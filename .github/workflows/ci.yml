@@ -147,9 +147,10 @@ jobs:
     name: Check - Dependency audit
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Non-blocking until electron-builder is upgraded (see
-    # docs/ci-improvements-plan.md, Open Item O1). Flip continue-on-error
-    # to false once `npm audit --audit-level=high` exits 0.
+    # Non-blocking: npm audit --audit-level=high still exits non-zero (1 high
+    # + 6 moderate, electron-builder already at 26.x). See
+    # plans/CI_IMPROVEMENTS.md O1 + plans/CI_CD_EXPANSION_PLAN.md N4. Flip
+    # continue-on-error to false once the audit exits 0.
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
@@ -159,9 +160,19 @@ jobs:
       - name: npm audit
         run: npm audit --audit-level=high
 
+  actionlint:
+    name: Check - GitHub Actions workflow lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: reviewdog/action-actionlint@v1
+        with:
+          actionlint_flags: -color
+
   build:
     name: Build - ${{ matrix.os }}
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales, actionlint]
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     strategy:
@@ -183,15 +194,14 @@ jobs:
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-artifact@v4
-        if: matrix.os == 'ubuntu'
         with:
-          name: dist-ubuntu
+          name: dist-${{ matrix.os }}
           path: dist
           if-no-files-found: error
 
   test-unit:
     name: Test - Unit Tests (coverage)
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -219,7 +229,7 @@ jobs:
 
   test-integration:
     name: Test - Integration Tests
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -256,7 +266,7 @@ jobs:
 
   test-perf:
     name: Test - Performance Benchmarks
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -270,6 +280,8 @@ jobs:
         run: npm run perf:generate-media
       - name: Run performance tests
         run: npm run perf
+      - name: Compare against baseline (regression gate)
+        run: npm run perf:compare
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -278,10 +290,18 @@ jobs:
           if-no-files-found: warn
 
   test-e2e:
-    name: Test - E2E Automation
+    name: Test - E2E Automation (${{ matrix.os }})
     needs: [build, test-unit, test-integration]
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu
+            runner: ubuntu-latest
+          - os: windows
+            runner: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -290,13 +310,18 @@ jobs:
           cache: npm
       - uses: actions/download-artifact@v4
         with:
-          name: dist-ubuntu
+          name: dist-${{ matrix.os }}
           path: dist
       - run: npm ci
       - name: Install xvfb
+        if: matrix.os == 'ubuntu'
         run: sudo apt-get update && sudo apt-get install -y xvfb
-      - name: Run e2e tests
+      - name: Run e2e tests (Linux)
+        if: matrix.os == 'ubuntu'
         run: xvfb-run --auto-servernum npm run test:e2e:ci
+      - name: Run e2e tests (Windows)
+        if: matrix.os == 'windows'
+        run: npm run test:e2e:ci
 
   test-e2e-real:
     name: Test - E2E Production Scenario
