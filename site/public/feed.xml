@@ -5,8 +5,17 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Sat, 19 Sep 2026 09:18:19 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 20 Sep 2026 10:41:31 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>EncodeX V1.0.0-beta.4</title>
+      <link>https://encodex.in/blog/releases/1.0.0-beta.4/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/1.0.0-beta.4/</guid>
+      <description>Rotation &amp; mirror editing, a built-in MCP server for AI-driven conversions, security hardening, use-case docs, and dev tooling updates.</description>
+      <pubDate>Sun, 20 Sep 2026 00:00:00 GMT</pubDate>
+      <category>release</category>
+      <category>1.0.0-beta.4</category>
+    </item>
     <item>
       <title>EncodeX Adds a Built-In MCP Server: Let AI Drive Your Media Conversions</title>
       <link>https://encodex.in/blog/releases/mcp-server-support/</link>
