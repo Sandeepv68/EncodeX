@@ -4,10 +4,14 @@
  * Renders a modal MUI Dialog that guides the user through the update lifecycle:
  * checking for updates, displaying availability with release notes and a download
  * button, showing download progress, and offering to install the downloaded
- * installer. The dialog is controlled by the `useUpdateStore` Zustand store and
- * subscribes to main-process events via the preload bridge.
+ * installer. The download can be pushed to the background at any time by closing
+ * the dialog (the footer widget keeps showing progress). Once downloaded the user
+ * picks between installing & restarting now, scheduling the install for the next
+ * app restart, or doing nothing for now.
  *
- * Mounted once inside `AppLayout` so it persists across route changes.
+ * The dialog is controlled by the `useUpdateStore` Zustand store and subscribes to
+ * main-process events via the preload bridge. Mounted once inside `AppLayout` so it
+ * persists across route changes.
  */
 
 import { useTranslation } from 'react-i18next';
@@ -22,7 +26,7 @@ import {
   Link,
   Typography,
 } from '@mui/material';
-import { faArrowUp, faDownload, faXmark, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faDownload, faXmark, faCircleCheck, faStopwatch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUpdateStore } from '../stores/updateStore';
 import { formatBytes } from '../utils/formatters';
@@ -33,6 +37,8 @@ import { UpdateDialogContent, UpdateVersionText, UpdateReleaseNotes, UpdateStatu
  *
  * The dialog is fully controlled by the useUpdateStore state machine. Each
  * status renders a distinct content area; action buttons drive the next step.
+ * Closing the dialog never stops work: a running download continues in the
+ * background and its progress is shown in the app footer.
  *
  * @returns {JSX.Element} The update dialog, rendered only when open.
  */
@@ -43,18 +49,20 @@ export default function UpdateDialog() {
     info,
     progress,
     errorMessage,
+    scheduledVersion,
     dialogOpen,
     closeDialog,
     checkForUpdates,
     downloadUpdate,
     cancelDownload,
     installUpdate,
+    installOnRestart,
+    cancelRestartInstall,
     openReleaseNotes,
     reset,
   } = useUpdateStore();
 
   const handleClose = () => {
-    if (status === 'downloading') return;
     closeDialog();
   };
 
@@ -101,9 +109,12 @@ export default function UpdateDialog() {
                   </Typography>
                 </>
               )}
+              <UpdateStatusMessage>{t('update.downloadInBackground')}</UpdateStatusMessage>
             </>
           ) : status === 'downloaded' ? (
-            <UpdateStatusMessage>{t('update.readyToInstall')}</UpdateStatusMessage>
+            <UpdateStatusMessage>{t('update.readyToInstall', { version: info?.version })}</UpdateStatusMessage>
+          ) : status === 'restart-scheduled' ? (
+            <UpdateStatusMessage>{t('update.installScheduled', { version: info?.version || scheduledVersion })}</UpdateStatusMessage>
           ) : status === 'error' ? (
             <UpdateStatusMessage color="error">{errorMessage || t('update.error')}</UpdateStatusMessage>
           ) : null}
@@ -128,13 +139,37 @@ export default function UpdateDialog() {
             </Button>
           </>
         ) : status === 'downloading' ? (
-          <Button onClick={cancelDownload} startIcon={<FontAwesomeIcon icon={faXmark} />} color="warning">
-            {t('update.cancelDownload')}
-          </Button>
+          <>
+            <Button
+              onClick={() => {
+                cancelDownload();
+                closeDialog();
+              }}
+              startIcon={<FontAwesomeIcon icon={faXmark} />}
+              color="warning"
+            >
+              {t('update.cancelDownload')}
+            </Button>
+            <Button variant="contained" onClick={handleClose} startIcon={<FontAwesomeIcon icon={faStopwatch} />}>
+              {t('update.background')}
+            </Button>
+          </>
         ) : status === 'downloaded' ? (
           <>
             <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
               {t('update.later')}
+            </Button>
+            <Button onClick={installOnRestart} startIcon={<FontAwesomeIcon icon={faStopwatch} />}>
+              {t('update.installOnRestart')}
+            </Button>
+            <Button variant="contained" onClick={installUpdate} startIcon={<FontAwesomeIcon icon={faCircleCheck} />}>
+              {t('update.installRestart')}
+            </Button>
+          </>
+        ) : status === 'restart-scheduled' ? (
+          <>
+            <Button onClick={cancelRestartInstall} startIcon={<FontAwesomeIcon icon={faXmark} />} color="warning">
+              {t('update.cancelRestartInstall')}
             </Button>
             <Button variant="contained" onClick={installUpdate} startIcon={<FontAwesomeIcon icon={faCircleCheck} />}>
               {t('update.installRestart')}

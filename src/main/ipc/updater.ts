@@ -10,13 +10,25 @@
 import { ipcMain, BrowserWindow } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
-import { checkForUpdate, downloadUpdate, installUpdate, cancelDownload, openReleaseNotes } from '../updater';
-import type { UpdateInfo } from '../../shared/types';
+import {
+  checkForUpdate,
+  downloadUpdate,
+  installUpdate,
+  cancelDownload,
+  openReleaseNotes,
+  scheduleInstallOnRestart,
+  cancelRestartInstall,
+  readPendingInstall,
+} from '../updater';
+import type { UpdateInfo, PendingInstall } from '../../shared/types';
 import {
   LOG_IPC_CHECK_FOR_UPDATES,
   LOG_IPC_DOWNLOAD_UPDATE,
   LOG_IPC_INSTALL_UPDATE,
   LOG_IPC_CANCEL_DOWNLOAD,
+  LOG_IPC_SCHEDULE_RESTART_INSTALL,
+  LOG_IPC_CANCEL_RESTART_INSTALL,
+  LOG_IPC_GET_PENDING_INSTALL,
   LOG_UPDATER_ERROR,
 } from '../../shared/log-constants';
 
@@ -129,5 +141,38 @@ export function registerUpdaterHandlers(win: BrowserWindow): void {
     } catch (err) {
       log.error(LOG_UPDATER_ERROR, err);
     }
+  });
+
+  /**
+   * Handles IPC.SCHEDULE_RESTART_INSTALL ('schedule-install-on-restart').
+   * Persists a marker that applies the downloaded installer on the next app
+   * restart, letting the user keep working until then.
+   * @param {_event} - The IPC event (unused).
+   * @param {string} installerPath - Absolute path of the downloaded installer.
+   * @param {string} version - Update version the installer targets.
+   */
+  ipcMain.handle(IPC.SCHEDULE_RESTART_INSTALL, (_event, installerPath: string, version: string) => {
+    log.info(LOG_IPC_SCHEDULE_RESTART_INSTALL, installerPath, version);
+    scheduleInstallOnRestart(installerPath, version);
+  });
+
+  /**
+   * Handles IPC.CANCEL_RESTART_INSTALL ('cancel-install-on-restart').
+   * Removes the pending restart-install marker so the update is NOT applied on
+   * the next restart.
+   */
+  ipcMain.handle(IPC.CANCEL_RESTART_INSTALL, () => {
+    log.info(LOG_IPC_CANCEL_RESTART_INSTALL);
+    cancelRestartInstall();
+  });
+
+  /**
+   * Handles IPC.GET_PENDING_INSTALL ('get-pending-install').
+   * Returns the persisted restart-install marker, or null when none exists.
+   * Used by the renderer to hydrate the footer after a restart.
+   */
+  ipcMain.handle(IPC.GET_PENDING_INSTALL, (): PendingInstall | null => {
+    log.info(LOG_IPC_GET_PENDING_INSTALL);
+    return readPendingInstall();
   });
 }

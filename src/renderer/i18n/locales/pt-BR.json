@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Desenvolvido por",
     "checkingForUpdates": "Verificando atualizações...",
-    "updateAvailable": "Atualização disponível: v{{version}}"
+    "updateAvailable": "Atualização disponível: v{{version}}",
+    "downloading": "Baixando v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} pronto para instalar",
+    "installScheduled": "v{{version}} será instalado na próxima reinicialização"
   },
   "status": {
     "auto": "Automático",
@@ -490,7 +493,9 @@
     "cancelled": "Cancelado",
     "pathCopied": "Caminho de saída copiado para a área de transferência",
     "updateAvailable": "Atualização disponível: v{{version}}",
-    "updateNow": "Atualizar agora"
+    "updateNow": "Atualizar agora",
+    "updateDownloaded": "Atualização v{{version}} baixada",
+    "viewUpdate": "Ver"
   },
   "profiles": {
     "searchPlaceholder": "Pesquisar perfis...",
@@ -721,6 +726,11 @@
     "cancel": "Cancelar",
     "close": "Fechar",
     "retry": "Tentar novamente",
-    "error": "Ocorreu um erro ao verificar atualizações."
+    "error": "Ocorreu um erro ao verificar atualizações.",
+    "downloadInBackground": "O download continua em segundo plano. Você pode ver o progresso na barra inferior.",
+    "background": "Continuar em segundo plano",
+    "installOnRestart": "Instalar na próxima reinicialização",
+    "installScheduled": "A atualização v{{version}} será instalada na próxima reinicialização do aplicativo.",
+    "cancelRestartInstall": "Cancelar"
   }
 }

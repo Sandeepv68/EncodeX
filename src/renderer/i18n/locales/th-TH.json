@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "ขับเคลื่อนโดย",
     "checkingForUpdates": "กำลังตรวจสอบการอัปเดต...",
-    "updateAvailable": "มีการอัปเดต: v{{version}}"
+    "updateAvailable": "มีการอัปเดต: v{{version}}",
+    "downloading": "กำลังดาวน์โหลด v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} พร้อมติดตั้ง",
+    "installScheduled": "v{{version}} จะติดตั้งเมื่อรีสตาร์ทครั้งถัดไป"
   },
   "status": {
     "auto": "อัตโนมัติ",
@@ -490,7 +493,9 @@
     "languageChanged": "เปลี่ยนภาษาเป็น {{language}}",
     "cancelled": "ยกเลิกแล้ว",
     "updateAvailable": "มีการอัปเดต: v{{version}}",
-    "updateNow": "อัปเดตตอนนี้"
+    "updateNow": "อัปเดตตอนนี้",
+    "updateDownloaded": "ดาวน์โหลดอัปเดต v{{version}} แล้ว",
+    "viewUpdate": "ดู"
   },
   "profiles": {
     "searchPlaceholder": "ค้นหาโปรไฟล์...",
@@ -721,6 +726,11 @@
     "cancel": "ยกเลิก",
     "close": "ปิด",
     "retry": "ลองอีกครั้ง",
-    "error": "เกิดข้อผิดพลาดขณะตรวจสอบการอัปเดต"
+    "error": "เกิดข้อผิดพลาดขณะตรวจสอบการอัปเดต",
+    "downloadInBackground": "การดาวน์โหลดดำเนินต่อไปในพื้นหลัง คุณสามารถดูความคืบหน้าได้ที่แถบด้านล่าง",
+    "background": "ดำเนินการต่อในพื้นหลัง",
+    "installOnRestart": "ติดตั้งเมื่อรีสตาร์ทครั้งถัดไป",
+    "installScheduled": "อัปเดต v{{version}} จะติดตั้งเมื่อรีสตาร์ทแอปครั้งถัดไป",
+    "cancelRestartInstall": "ยกเลิก"
   }
 }

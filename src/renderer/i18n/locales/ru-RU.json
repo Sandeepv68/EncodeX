@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Работает на",
     "checkingForUpdates": "Проверка обновлений...",
-    "updateAvailable": "Доступно обновление: v{{version}}"
+    "updateAvailable": "Доступно обновление: v{{version}}",
+    "downloading": "Загрузка v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} готов к установке",
+    "installScheduled": "v{{version}} будет установлен при следующем перезапуске"
   },
   "status": {
     "auto": "Авто",
@@ -490,7 +493,9 @@
     "languageChanged": "Язык изменён на {{language}}",
     "cancelled": "Отменено",
     "updateAvailable": "Доступно обновление: v{{version}}",
-    "updateNow": "Обновить сейчас"
+    "updateNow": "Обновить сейчас",
+    "updateDownloaded": "Обновление v{{version}} загружено",
+    "viewUpdate": "Просмотр"
   },
   "profiles": {
     "searchPlaceholder": "Поиск профилей...",
@@ -721,6 +726,11 @@
     "cancel": "Отмена",
     "close": "Закрыть",
     "retry": "Повторить",
-    "error": "Произошла ошибка при проверке обновлений."
+    "error": "Произошла ошибка при проверке обновлений.",
+    "downloadInBackground": "Загрузка продолжается в фоновом режиме. Вы можете видеть её прогресс в нижней панели.",
+    "background": "Продолжить в фоне",
+    "installOnRestart": "Установить при следующем перезапуске",
+    "installScheduled": "Обновление v{{version}} будет установлено при следующем перезапуске приложения.",
+    "cancelRestartInstall": "Отмена"
   }
 }

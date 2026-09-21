@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Obsługiwane przez",
     "checkingForUpdates": "Sprawdzanie aktualizacji...",
-    "updateAvailable": "Dostępna aktualizacja: v{{version}}"
+    "updateAvailable": "Dostępna aktualizacja: v{{version}}",
+    "downloading": "Pobieranie v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} gotowy do instalacji",
+    "installScheduled": "v{{version}} zainstaluje się przy następnym restarcie"
   },
   "status": {
     "auto": "Automatycznie",
@@ -490,7 +493,9 @@
     "languageChanged": "Język zmieniony na {{language}}",
     "cancelled": "Anulowano",
     "updateAvailable": "Dostępna aktualizacja: v{{version}}",
-    "updateNow": "Zaktualizuj teraz"
+    "updateNow": "Zaktualizuj teraz",
+    "updateDownloaded": "Pobrano aktualizację v{{version}}",
+    "viewUpdate": "Zobacz"
   },
   "profiles": {
     "searchPlaceholder": "Szukaj profili...",
@@ -721,6 +726,11 @@
     "cancel": "Anuluj",
     "close": "Zamknij",
     "retry": "Spróbuj ponownie",
-    "error": "Wystąpił błąd podczas sprawdzania aktualizacji."
+    "error": "Wystąpił błąd podczas sprawdzania aktualizacji.",
+    "downloadInBackground": "Pobieranie trwa w tle. Postęp można śledzić w dolnym pasku.",
+    "background": "Kontynuuj w tle",
+    "installOnRestart": "Zainstaluj przy następnym restarcie",
+    "installScheduled": "Aktualizacja v{{version}} zainstaluje się przy następnym restarcie aplikacji.",
+    "cancelRestartInstall": "Anuluj"
   }
 }

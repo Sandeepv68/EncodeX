@@ -68,6 +68,7 @@ import {
   WhenDoneConfig,
   UpdateInfo,
   UpdateProgress,
+  PendingInstall,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
 import {
@@ -1092,6 +1093,18 @@ const api = {
   openReleaseNotes: (url: string) => {
     log.debug(LOG_UPDATER_OPEN_RELEASE_NOTES, url);
     return ipcRenderer.invoke(IPC.OPEN_RELEASE_NOTES, url) as Promise<void>;
+  },
+  scheduleInstallOnRestart: (installerPath: string, version: string) => {
+    log.debug('scheduleInstallOnRestart:', installerPath, version);
+    return ipcRenderer.invoke(IPC.SCHEDULE_RESTART_INSTALL, installerPath, version) as Promise<void>;
+  },
+  cancelRestartInstall: () => {
+    log.debug('cancelRestartInstall');
+    return ipcRenderer.invoke(IPC.CANCEL_RESTART_INSTALL) as Promise<void>;
+  },
+  getPendingInstall: () => {
+    log.debug('getPendingInstall');
+    return ipcRenderer.invoke(IPC.GET_PENDING_INSTALL) as Promise<PendingInstall | null>;
   },
   onUpdateAvailable: (cb: (info: UpdateInfo) => void) => {
     const handler = (_event: IpcRendererEvent, info: UpdateInfo) => {

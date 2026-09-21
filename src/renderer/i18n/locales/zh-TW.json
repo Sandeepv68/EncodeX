@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "由以下技術提供支援",
     "checkingForUpdates": "正在檢查更新...",
-    "updateAvailable": "有可用更新: v{{version}}"
+    "updateAvailable": "有可用更新: v{{version}}",
+    "downloading": "正在下載 v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} 已準備好安裝",
+    "installScheduled": "v{{version}} 將在下次重新啟動時安裝"
   },
   "status": {
     "auto": "自動",
@@ -490,7 +493,9 @@
     "languageChanged": "語言已變更為 {{language}}",
     "cancelled": "已取消",
     "updateAvailable": "有可用更新: v{{version}}",
-    "updateNow": "立即更新"
+    "updateNow": "立即更新",
+    "updateDownloaded": "已下載更新 v{{version}}",
+    "viewUpdate": "檢視"
   },
   "profiles": {
     "searchPlaceholder": "搜尋設定檔...",
@@ -721,6 +726,11 @@
     "cancel": "取消",
     "close": "關閉",
     "retry": "重試",
-    "error": "檢查更新時發生錯誤。"
+    "error": "檢查更新時發生錯誤。",
+    "downloadInBackground": "下載正在背景中繼續進行。您可以在底部工具列查看進度。",
+    "background": "在背景中繼續",
+    "installOnRestart": "在下次重新啟動時安裝",
+    "installScheduled": "更新 v{{version}} 將在應用程式下次重新啟動時安裝。",
+    "cancelRestartInstall": "取消"
   }
 }

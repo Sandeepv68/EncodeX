@@ -55,6 +55,7 @@ vi.mock('react-i18next', () => ({
         'nav.blip.cutting': 'Cutting video',
         'nav.blip.paused': 'Paused',
         'nav.blip.starting': 'Starting',
+        'footer.downloading': 'Downloading v{{version}} — {{percent}}%',
       };
       let text = map[key] || (opts?.defaultValue as string | undefined) || key;
       if (opts) {
@@ -141,6 +142,9 @@ Object.defineProperty(globalThis, 'electronAPI', {
     installUpdate: vi.fn().mockResolvedValue(undefined),
     cancelDownload: vi.fn().mockResolvedValue(undefined),
     openReleaseNotes: vi.fn().mockResolvedValue(undefined),
+    scheduleInstallOnRestart: vi.fn().mockResolvedValue(undefined),
+    cancelRestartInstall: vi.fn().mockResolvedValue(undefined),
+    getPendingInstall: vi.fn().mockResolvedValue(null),
     onUpdateAvailable: vi.fn(() => vi.fn()),
     onUpdateNotAvailable: vi.fn(() => vi.fn()),
     onUpdateProgress: vi.fn(() => vi.fn()),

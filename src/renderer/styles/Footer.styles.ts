@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress, LinearProgress, Button, IconButton } from '@mui/material';
 import { FOOTER_HEIGHT } from '../../shared/app-constants';
 
 export const FooterBox = styled('footer')(({ theme }) => ({
@@ -23,6 +23,7 @@ export const FooterLeft = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(0.75),
+  minWidth: 0,
 }));
 
 export const FooterRight = styled(Box)(({ theme }) => ({
@@ -47,4 +48,42 @@ export const UpdateLink = styled(Typography)(({ theme }) => ({
   '&:hover': {
     textDecoration: 'underline',
   },
+}));
+
+export const UpdateWidget = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.75),
+  minWidth: 0,
+  overflow: 'hidden',
+}));
+
+export const UpdateWidgetText = styled(Typography)(({ theme }) => ({
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+}));
+
+export const UpdateProgressTrack = styled(LinearProgress)(({ theme }) => ({
+  width: theme.typography.pxToRem(110),
+  height: theme.typography.pxToRem(6),
+  borderRadius: theme.typography.pxToRem(3),
+  flexShrink: 0,
+}));
+
+export const UpdateActionButton = styled(Button)(({ theme }) => ({
+  minWidth: 0,
+  paddingInline: theme.spacing(1),
+  paddingTop: theme.spacing(0.25),
+  paddingBottom: theme.spacing(0.25),
+  fontSize: theme.typography.pxToRem(11),
+  fontWeight: 'bold',
+  whiteSpace: 'nowrap',
+}));
+
+export const UpdateIconButton = styled(IconButton)(({ theme }) => ({
+  padding: 0,
+  fontSize: theme.typography.pxToRem(13),
+  color: theme.palette.text.secondary,
+  flexShrink: 0,
 }));

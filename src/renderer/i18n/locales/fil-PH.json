@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Pinapatakbo ng",
     "checkingForUpdates": "Tinitingnan ang mga update...",
-    "updateAvailable": "May bagong update: v{{version}}"
+    "updateAvailable": "May bagong update: v{{version}}",
+    "downloading": "I-download ang v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} handa nang i-install",
+    "installScheduled": "i-install ang v{{version}} sa susunod na pag-restart"
   },
   "status": {
     "auto": "Auto",
@@ -490,7 +493,9 @@
     "languageChanged": "Pinalitan ang wika sa {{language}}",
     "cancelled": "Kinansela",
     "updateAvailable": "May bagong update: v{{version}}",
-    "updateNow": "I-update na"
+    "updateNow": "I-update na",
+    "updateDownloaded": "Na-download ang update na v{{version}}",
+    "viewUpdate": "Tingnan"
   },
   "profiles": {
     "searchPlaceholder": "Maghanap ng mga profile...",
@@ -721,6 +726,11 @@
     "cancel": "Kanselahin",
     "close": "Isara",
     "retry": "Subukan muli",
-    "error": "Nagkaroon ng error habang sinisiting ang mga update."
+    "error": "Nagkaroon ng error habang sinisiting ang mga update.",
+    "downloadInBackground": "Patuloy ang pag-download sa background. Makikita mo ang progreso nito sa footer.",
+    "background": "Magpatuloy sa background",
+    "installOnRestart": "I-install sa susunod na pag-restart",
+    "installScheduled": "I-install ang update na v{{version}} sa susunod na pag-restart ng app.",
+    "cancelRestartInstall": "Kanselahin"
   }
 }

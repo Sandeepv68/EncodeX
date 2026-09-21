@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Con tecnologia",
     "checkingForUpdates": "Verifica aggiornamenti...",
-    "updateAvailable": "Aggiornamento disponibile: v{{version}}"
+    "updateAvailable": "Aggiornamento disponibile: v{{version}}",
+    "downloading": "Download di v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} pronto per l’installazione",
+    "installScheduled": "v{{version}} verrà installato al prossimo riavvio"
   },
   "status": {
     "auto": "Automatico",
@@ -490,7 +493,9 @@
     "cancelled": "Annullato",
     "pathCopied": "Percorso di output copiato negli appunti",
     "updateAvailable": "Aggiornamento disponibile: v{{version}}",
-    "updateNow": "Aggiorna ora"
+    "updateNow": "Aggiorna ora",
+    "updateDownloaded": "Aggiornamento v{{version}} scaricato",
+    "viewUpdate": "Visualizza"
   },
   "profiles": {
     "searchPlaceholder": "Cerca profili...",
@@ -721,6 +726,11 @@
     "cancel": "Annulla",
     "close": "Chiudi",
     "retry": "Riprova",
-    "error": "Si è verificato un errore durante il controllo degli aggiornamenti."
+    "error": "Si è verificato un errore durante il controllo degli aggiornamenti.",
+    "downloadInBackground": "Il download prosegue in background. Puoi vedere il suo avanzamento nel piè di pagina.",
+    "background": "Continua in background",
+    "installOnRestart": "Installa al prossimo riavvio",
+    "installScheduled": "L’aggiornamento v{{version}} verrà installato al prossimo riavvio dell’app.",
+    "cancelRestartInstall": "Annulla"
   }
 }

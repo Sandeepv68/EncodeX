@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Dikuasakan oleh",
     "checkingForUpdates": "Menyemak kemas kini...",
-    "updateAvailable": "Kemas kini tersedia: v{{version}}"
+    "updateAvailable": "Kemas kini tersedia: v{{version}}",
+    "downloading": "Memuat turun v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} sedia untuk dipasang",
+    "installScheduled": "v{{version}} akan dipasang pada but semula seterusnya"
   },
   "status": {
     "auto": "Automatik",
@@ -490,7 +493,9 @@
     "languageChanged": "Bahasa ditukar kepada {{language}}",
     "cancelled": "Dibatalkan",
     "updateAvailable": "Kemas kini tersedia: v{{version}}",
-    "updateNow": "Kemas kini sekarang"
+    "updateNow": "Kemas kini sekarang",
+    "updateDownloaded": "Kemas kini v{{version}} dimuat turun",
+    "viewUpdate": "Lihat"
   },
   "profiles": {
     "searchPlaceholder": "Cari profil...",
@@ -721,6 +726,11 @@
     "cancel": "Batal",
     "close": "Tutup",
     "retry": "Cuba lagi",
-    "error": "Ralat berlaku semasa menyemak kemas kini."
+    "error": "Ralat berlaku semasa menyemak kemas kini.",
+    "downloadInBackground": "Muat turun berjalan di latar belakang. Anda boleh melihat kemajuannya di bahagian bawah.",
+    "background": "Teruskan di latar belakang",
+    "installOnRestart": "Pasang pada but semula seterusnya",
+    "installScheduled": "Kemas kini v{{version}} akan dipasang pada but semula aplikasi seterusnya.",
+    "cancelRestartInstall": "Batal"
   }
 }

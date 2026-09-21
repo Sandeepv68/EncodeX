@@ -852,6 +852,22 @@ export const LOG_IPC_DOWNLOAD_UPDATE = 'IPC download-update:';
 export const LOG_IPC_INSTALL_UPDATE = 'IPC install-update:';
 /** @const {string} Prefix for IPC cancel download handler. */
 export const LOG_IPC_CANCEL_DOWNLOAD = 'IPC cancel-download:';
+/** @const {string} Prefix for IPC schedule-install-on-restart handler. */
+export const LOG_IPC_SCHEDULE_RESTART_INSTALL = 'IPC schedule-install-on-restart:';
+/** @const {string} Prefix for IPC cancel-install-on-restart handler. */
+export const LOG_IPC_CANCEL_RESTART_INSTALL = 'IPC cancel-install-on-restart:';
+/** @const {string} Prefix for IPC get-pending-install handler. */
+export const LOG_IPC_GET_PENDING_INSTALL = 'IPC get-pending-install:';
+/** @const {string} Logged when an update install is scheduled for the next restart. */
+export const LOG_UPDATER_SCHEDULED_RESTART_INSTALL = 'Update install scheduled for next restart:';
+/** @const {string} Logged when a scheduled restart install is cancelled. */
+export const LOG_UPDATER_CANCELLED_RESTART_INSTALL = 'Scheduled restart install cancelled:';
+/** @const {string} Logged when a scheduled restart install is read at startup. */
+export const LOG_UPDATER_READ_PENDING_INSTALL = 'Reading pending restart install:';
+/** @const {string} Logged when a scheduled restart install is applied at startup. */
+export const LOG_UPDATER_APPLYING_PENDING_INSTALL = 'Applying pending restart install:';
+/** @const {string} Logged when a scheduled restart install is skipped (no pending marker). */
+export const LOG_UPDATER_NO_PENDING_INSTALL = 'No pending restart install';
 /** @const {string} Logged when monitoring initialization begins. */
 export const LOG_MONITORING_INITIALIZING = 'Initializing monitoring provider:';
 /** @const {string} Prefix when monitoring initialization fails. */

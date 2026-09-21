@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "ຂັບເຄື່ອນໂດຍ",
     "checkingForUpdates": "ກຳລັງກວດສອບການອັບເດດ...",
-    "updateAvailable": "ມີການອັບເດດ: v{{version}}"
+    "updateAvailable": "ມີການອັບເດດ: v{{version}}",
+    "downloading": "ກຳລັງດາວໂຫລດ v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} ພ້ອມຕິດຕັ້ງ",
+    "installScheduled": "v{{version}} ຈະຖືກຕິດຕັ້ງໃນການ restart ຄັ້ງຕໍ່ໄປ"
   },
   "status": {
     "auto": "ອັດຕະໂນມັດ",
@@ -490,7 +493,9 @@
     "languageChanged": "ປ່ຽນພາສາເປັນ {{language}} ແລ້ວ",
     "cancelled": "ຍົກເລີກແລ້ວ",
     "updateAvailable": "ມີການອັບເດດ: v{{version}}",
-    "updateNow": "ອັບເດດຕອນນີ້"
+    "updateNow": "ອັບເດດຕອນນີ້",
+    "updateDownloaded": "ດາວໂຫລດອັບເດດ v{{version}} ແລ້ວ",
+    "viewUpdate": "ເບິ່ງ"
   },
   "profiles": {
     "searchPlaceholder": "ຊອກຫາໂປຣໄຟລ໌...",
@@ -721,6 +726,11 @@
     "cancel": "ຍົກເລີກ",
     "close": "ປິດ",
     "retry": "ລອງໃໝ່",
-    "error": "ມີຂໍ້ຜິດພາດເກີດຂຶ້ນໃນຂະນະກວດສອບການອັບເດດ."
+    "error": "ມີຂໍ້ຜິດພາດເກີດຂຶ້ນໃນຂະນະກວດສອບການອັບເດດ.",
+    "downloadInBackground": "ການດາວໂຫລດກຳລັງດຳເນີນຢູ່ໃນພື້ນຫຼັງ. ທ່ານສາມາດເບິ່ງຄວາມຄືບໜ້າໄດ້ທີ່ footer ດ້ານລຸ່ມ.",
+    "background": "ສືບຕໍ່ໃນພື້ນຫຼັງ",
+    "installOnRestart": "ຕິດຕັ້ງໃນການ restart ຄັ້ງຕໍ່ໄປ",
+    "installScheduled": "ອັບເດດ v{{version}} ຈະຖືກຕິດຕັ້ງໃນການ restart ແອັບຄັ້ງຕໍ່ໄປ.",
+    "cancelRestartInstall": "ຍົກເລີກ"
   }
 }

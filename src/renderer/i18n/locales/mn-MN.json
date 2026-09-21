@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Идэвхжүүлсэн",
     "checkingForUpdates": "Шинэчлэлт шалгаж байна...",
-    "updateAvailable": "Шинэчлэлт боломжтой: v{{version}}"
+    "updateAvailable": "Шинэчлэлт боломжтой: v{{version}}",
+    "downloading": "v{{version}} татаж байна — {{percent}}%",
+    "updateReady": "v{{version}} суулгахад бэлэн",
+    "installScheduled": "v{{version}} дараагийн дахин эхлүүлэхэд суулгагдана"
   },
   "status": {
     "auto": "Авто",
@@ -490,7 +493,9 @@
     "languageChanged": "Хэл {{language}} болж өөрчлөгдсөн",
     "cancelled": "Цуцлагдсан",
     "updateAvailable": "Шинэчлэлт боломжтой: v{{version}}",
-    "updateNow": "Одоо шинэчлэх"
+    "updateNow": "Одоо шинэчлэх",
+    "updateDownloaded": "Шинэчлэлт v{{version}} татагдлаа",
+    "viewUpdate": "Харах"
   },
   "profiles": {
     "searchPlaceholder": "Профайлаар хайх...",
@@ -721,6 +726,11 @@
     "cancel": "Цуцлах",
     "close": "Хаах",
     "retry": "Дахин оролдох",
-    "error": "Шинэчлэлт шалгахад алдаа гарлаа."
+    "error": "Шинэчлэлт шалгахад алдаа гарлаа.",
+    "downloadInBackground": "Таталт дэлгэцийн ард үргэлжилж байна. Дэвшлийг доод мөрөн дээрээс харж болно.",
+    "background": "Дэлгэцийн ард үргэлжлүүлэх",
+    "installOnRestart": "Дараагийн дахин эхлүүлэхэд суулгах",
+    "installScheduled": "Шинэчлэлт v{{version}} аппыг дараагийн дахин эхлүүлэхэд суулгагдана.",
+    "cancelRestartInstall": "Цуцлах"
   }
 }

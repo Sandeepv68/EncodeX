@@ -117,6 +117,10 @@ vi.mock('../cli/cli', () => ({
   mapCliErrorToExitCode: (err: unknown) => (err instanceof Error && err.message === 'usage' ? 2 : 1),
 }));
 vi.mock('../ipc/handlers', () => ({ registerIpcHandlers: registerIpcHandlersMock }));
+vi.mock('../updater', () => ({
+  autoInstallPendingUpdate: vi.fn().mockResolvedValue(undefined),
+  checkForUpdate: vi.fn().mockResolvedValue(null),
+}));
 
 const ORIGINAL_ARGV = process.argv;
 const ORIGINAL_PLATFORM = process.platform;
@@ -125,6 +129,16 @@ const ORIGINAL_WARN = console.warn;
 const ORIGINAL_ERROR = console.error;
 
 const getMainWindows = () => registerIpcHandlersMock.mock.calls.map((call) => call[0]);
+
+/**
+ * Fires the app.whenReady callback and flushes the microtask chain so the
+ * awaited autoInstallPendingUpdate().then(...) window creation has run.
+ */
+async function triggerStartup(): Promise<void> {
+  getWhenReadyCbs()[0]();
+  await Promise.resolve();
+  await Promise.resolve();
+}
 
 describe('main/index', () => {
   beforeEach(() => {
@@ -154,7 +168,7 @@ describe('main/index', () => {
     process.argv = ['node', 'C:\\project\\index.js', '--cli'];
     await import('../index');
     expect(appMock.whenReady).toHaveBeenCalled();
-    getWhenReadyCbs()[0]();
+    await triggerStartup();
     await vi.waitFor(() => expect(appMock.exit).toHaveBeenCalledWith(EXIT_CODES.SUCCESS));
     expect(runCliMock).toHaveBeenCalled();
   });
@@ -163,7 +177,7 @@ describe('main/index', () => {
     process.argv = ['node', 'C:\\project\\index.js', '--cli'];
     runCliMock.mockRejectedValue(new Error('cli boom'));
     await import('../index');
-    getWhenReadyCbs()[0]();
+    await triggerStartup();
     await vi.waitFor(() => expect(appMock.exit).toHaveBeenCalledWith(EXIT_CODES.ERROR));
   });
 
@@ -171,7 +185,7 @@ describe('main/index', () => {
     process.argv = ['node', 'x.js'];
     await import('../index');
     expect(appMock.whenReady).toHaveBeenCalled();
-    getWhenReadyCbs()[0]();
+    await triggerStartup();
     const win = getMainWindows()[0];
     expect(menuMock.setApplicationMenu).toHaveBeenCalledWith(null);
     expect(BrowserWindowMock).toHaveBeenCalledWith(
@@ -190,7 +204,7 @@ describe('main/index', () => {
   it('shows a splash window that loads the splash image', async () => {
     process.argv = ['node', 'x.js'];
     await import('../index');
-    getWhenReadyCbs()[0]();
+    await triggerStartup();
     expect(BrowserWindowMock).toHaveBeenCalledWith(
       expect.objectContaining({
         width: SPLASH_SIZE.WIDTH,
@@ -207,7 +221,7 @@ describe('main/index', () => {
   it('keeps the splash hidden until its content has finished loading', async () => {
     process.argv = ['node', 'x.js'];
     await import('../index');
-    getWhenReadyCbs()[0]();
+    await triggerStartup();
     expect(BrowserWindowMock).toHaveBeenCalledWith(
       expect.objectContaining({
         show: false,
@@ -224,7 +238,7 @@ describe('main/index', () => {
   it('shows the main window and closes the splash when ready', async () => {
     process.argv = ['node', 'x.js'];
     await import('../index');
-    getWhenReadyCbs()[0]();
+    await triggerStartup();
     const splash = getWindowInstances()[0];
     const win = getMainWindows()[0];
     const readyCb = win.on.mock.calls.find((call: unknown[]) => call[0] === 'ready-to-show')?.[1] as () => void;
@@ -237,7 +251,7 @@ describe('main/index', () => {
     process.argv = ['node', 'x.js'];
     process.env.NODE_ENV = 'development';
     await import('../index');
-    getWhenReadyCbs()[0]();
+    await triggerStartup();
     const win = getMainWindows()[0];
     expect(win.loadURL).toHaveBeenCalledWith(DEV_SERVER_URL);
     expect(win.webContents.openDevTools).toHaveBeenCalled();
@@ -246,7 +260,7 @@ describe('main/index', () => {
   it('opens external http(s) links in the system browser and denies new windows', async () => {
     process.argv = ['node', 'x.js'];
     await import('../index');
-    getWhenReadyCbs()[0]();
+    await triggerStartup();
     const win = getMainWindows()[0];
     const handler = win.webContents.setWindowOpenHandler.mock.calls[0][0] as (details: { url: string }) => { action: string };
     expect(handler({ url: 'https://github.com/Sandeepv68/EncodeX' })).toEqual({ action: 'deny' });
@@ -258,7 +272,7 @@ describe('main/index', () => {
   it('patches console to forward log messages to the window', async () => {
     process.argv = ['node', 'x.js'];
     await import('../index');
-    getWhenReadyCbs()[0]();
+    await triggerStartup();
     const win = getMainWindows()[0];
     console.log('hello');
     expect(win.webContents.send).toHaveBeenCalledWith(
@@ -282,7 +296,7 @@ describe('main/index', () => {
   it('skips forwarding when the window is destroyed', async () => {
     process.argv = ['node', 'x.js'];
     await import('../index');
-    getWhenReadyCbs()[0]();
+    await triggerStartup();
     const win = getMainWindows()[0];
     win.isDestroyed.mockReturnValue(true);
     win.webContents.send.mockClear();
@@ -293,7 +307,7 @@ describe('main/index', () => {
   it('recreates the window on activate after it was closed', async () => {
     process.argv = ['node', 'x.js'];
     await import('../index');
-    getWhenReadyCbs()[0]();
+    await triggerStartup();
     const win = getMainWindows()[0];
     const closedCb = win.on.mock.calls.find((call: unknown[]) => call[0] === 'closed')?.[1] as () => void;
     closedCb();

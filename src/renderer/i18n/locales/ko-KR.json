@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "제공",
     "checkingForUpdates": "업데이트 확인 중...",
-    "updateAvailable": "업데이트 가능: v{{version}}"
+    "updateAvailable": "업데이트 가능: v{{version}}",
+    "downloading": "v{{version}} 다운로드 중 — {{percent}}%",
+    "updateReady": "v{{version}} 설치 준비 완료",
+    "installScheduled": "v{{version}}은(는) 다음 재시작 시 설치됩니다"
   },
   "status": {
     "auto": "자동",
@@ -490,7 +493,9 @@
     "cancelled": "취소됨",
     "pathCopied": "출력 경로가 클립보드에 복사되었습니다",
     "updateAvailable": "업데이트 가능: v{{version}}",
-    "updateNow": "지금 업데이트"
+    "updateNow": "지금 업데이트",
+    "updateDownloaded": "업데이트 v{{version}} 다운로드 완료",
+    "viewUpdate": "보기"
   },
   "profiles": {
     "searchPlaceholder": "프로필 검색...",
@@ -721,6 +726,11 @@
     "cancel": "취소",
     "close": "닫기",
     "retry": "재시도",
-    "error": "업데이트 확인 중 오류가 발생했습니다."
+    "error": "업데이트 확인 중 오류가 발생했습니다.",
+    "downloadInBackground": "다운로드가 백그라운드에서 계속 진행됩니다. 진행 상황은 하단 바에서 확인할 수 있습니다.",
+    "background": "백그라운드에서 계속",
+    "installOnRestart": "다음 재시작 시 설치",
+    "installScheduled": "업데이트 v{{version}}은(는) 다음 앱 재시작 시 설치됩니다.",
+    "cancelRestartInstall": "취소"
   }
 }

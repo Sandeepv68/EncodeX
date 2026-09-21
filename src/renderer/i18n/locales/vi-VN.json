@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Được hỗ trợ bởi",
     "checkingForUpdates": "Đang kiểm tra bản cập nhật...",
-    "updateAvailable": "Có bản cập nhật: v{{version}}"
+    "updateAvailable": "Có bản cập nhật: v{{version}}",
+    "downloading": "Đang tải xuống v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} sẵn sàng cài đặt",
+    "installScheduled": "v{{version}} sẽ được cài đặt khi khởi động lại"
   },
   "status": {
     "auto": "Tự động",
@@ -490,7 +493,9 @@
     "languageChanged": "Ngôn ngữ đã được chuyển sang {{language}}",
     "cancelled": "Đã hủy",
     "updateAvailable": "Có bản cập nhật: v{{version}}",
-    "updateNow": "Cập nhật ngay"
+    "updateNow": "Cập nhật ngay",
+    "updateDownloaded": "Đã tải xuống bản cập nhật v{{version}}",
+    "viewUpdate": "Xem"
   },
   "profiles": {
     "searchPlaceholder": "Tìm kiếm hồ sơ...",
@@ -721,6 +726,11 @@
     "cancel": "Hủy",
     "close": "Đóng",
     "retry": "Thử lại",
-    "error": "Đã xảy ra lỗi khi kiểm tra cập nhật."
+    "error": "Đã xảy ra lỗi khi kiểm tra cập nhật.",
+    "downloadInBackground": "Quá trình tải xuống tiếp tục chạy nền. Bạn có thể xem tiến trình ở thanh dưới cùng.",
+    "background": "Tiếp tục chạy nền",
+    "installOnRestart": "Cài đặt khi khởi động lại",
+    "installScheduled": "Bản cập nhật v{{version}} sẽ được cài đặt khi ứng dụng khởi động lại.",
+    "cancelRestartInstall": "Hủy"
   }
 }

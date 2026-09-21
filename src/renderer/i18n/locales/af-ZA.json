@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Aangedryf deur",
     "checkingForUpdates": "Kontroleer vir opdaterings...",
-    "updateAvailable": "Opdatering beskikbaar: v{{version}}"
+    "updateAvailable": "Opdatering beskikbaar: v{{version}}",
+    "downloading": "Laai tans af v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} gereed om te installeer",
+    "installScheduled": "v{{version}} sal met die volgende herbegin installeer"
   },
   "status": {
     "auto": "Outomaties",
@@ -490,7 +493,9 @@
     "languageChanged": "Taal verander na {{language}}",
     "cancelled": "Gekanselleer",
     "updateAvailable": "Opdatering beskikbaar: v{{version}}",
-    "updateNow": "Dateer nou op"
+    "updateNow": "Dateer nou op",
+    "updateDownloaded": "Opdatering v{{version}} afgelaai",
+    "viewUpdate": "Bekyk"
   },
   "profiles": {
     "searchPlaceholder": "Soek profiele...",
@@ -721,6 +726,11 @@
     "cancel": "Kanselleer",
     "close": "Maak toe",
     "retry": "Herprobeer",
-    "error": "'n Fout het voorgekom tydens die opdateringsoektog."
+    "error": "'n Fout het voorgekom tydens die opdateringsoektog.",
+    "downloadInBackground": "Die aflaai loop in die agtergrond voort. U kan die vordering in die voetskrif sien.",
+    "background": "Gaan voort in die agtergrond",
+    "installOnRestart": "Installeer met volgende herbegin",
+    "installScheduled": "Opdatering v{{version}} sal met die volgende herbegin van die toepassing installeer.",
+    "cancelRestartInstall": "Kanselleer"
   }
 }

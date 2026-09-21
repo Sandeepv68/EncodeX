@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Voimanlähteenä",
     "checkingForUpdates": "Tarkistetaan päivityksiä...",
-    "updateAvailable": "Päivitys saatavilla: v{{version}}"
+    "updateAvailable": "Päivitys saatavilla: v{{version}}",
+    "downloading": "Ladataan v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} valmis asennettavaksi",
+    "installScheduled": "v{{version}} asennetaan seuraavalla uudelleenkäynnistyksellä"
   },
   "status": {
     "auto": "Automaattinen",
@@ -490,7 +493,9 @@
     "languageChanged": "Kieli vaihdettu {{language}}-kieleksi",
     "cancelled": "Peruutettu",
     "updateAvailable": "Päivitys saatavilla: v{{version}}",
-    "updateNow": "Päivitä nyt"
+    "updateNow": "Päivitä nyt",
+    "updateDownloaded": "Päivitys v{{version}} ladattu",
+    "viewUpdate": "Näytä"
   },
   "profiles": {
     "searchPlaceholder": "Hae profiileja...",
@@ -721,6 +726,11 @@
     "cancel": "Peruuta",
     "close": "Sulje",
     "retry": "Yritä uudelleen",
-    "error": "Päivitysten tarkistuksessa tapahtui virhe."
+    "error": "Päivitysten tarkistuksessa tapahtui virhe.",
+    "downloadInBackground": "Lataus jatkuu taustalla. Näet sen edistymisen alatunnisteesta.",
+    "background": "Jatka taustalla",
+    "installOnRestart": "Asenna seuraavalla uudelleenkäynnistyksellä",
+    "installScheduled": "Päivitys v{{version}} asennetaan sovelluksen seuraavalla uudelleenkäynnistyksellä.",
+    "cancelRestartInstall": "Peruuta"
   }
 }

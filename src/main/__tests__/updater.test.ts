@@ -28,6 +28,9 @@ vi.mock('https', () => ({
 vi.mock('fs', () => ({
   existsSync: vi.fn(() => true),
   mkdirSync: vi.fn(),
+  writeFileSync: vi.fn(),
+  readFileSync: vi.fn(() => ''),
+  unlinkSync: vi.fn(),
   createWriteStream: vi.fn(() => {
     const stream = new EventEmitter();
     (stream as unknown as { write: ReturnType<typeof vi.fn>; end: ReturnType<typeof vi.fn> }).write = vi.fn();
@@ -37,7 +40,21 @@ vi.mock('fs', () => ({
   }),
 }));
 
-import { compareVersions, selectAsset, checkForUpdate, installUpdate, openReleaseNotes, cancelDownload } from '../updater';
+import * as fs from 'fs';
+import * as nodePath from 'path';
+
+import {
+  compareVersions,
+  selectAsset,
+  checkForUpdate,
+  installUpdate,
+  openReleaseNotes,
+  cancelDownload,
+  scheduleInstallOnRestart,
+  cancelRestartInstall,
+  readPendingInstall,
+  autoInstallPendingUpdate,
+} from '../updater';
 import type { UpdateAsset } from '../../../shared/types';
 
 const ORIGINAL_PLATFORM = process.platform;
@@ -46,6 +63,8 @@ const ORIGINAL_ARCH = process.arch;
 describe('updater', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(fs.existsSync).mockImplementation(() => true);
+    vi.mocked(fs.readFileSync).mockImplementation(() => '');
   });
 
   afterEach(() => {
@@ -259,6 +278,105 @@ describe('updater', () => {
       await installUpdate('/tmp/app.exe');
       expect(openPathMock).toHaveBeenCalledWith('/tmp/app.exe');
       expect(quitMock).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('scheduleInstallOnRestart', () => {
+    it('persists a marker JSON with installer path and version', () => {
+      scheduleInstallOnRestart('/tmp/app.exe', '2.0.0');
+      expect(fs.writeFileSync).toHaveBeenCalled();
+      const [filePath, contents] = vi.mocked(fs.writeFileSync).mock.calls[0];
+      expect(filePath).toBe(nodePath.join('/tmp', 'pending-install.json'));
+      const parsed = JSON.parse(contents as string);
+      expect(parsed).toEqual({ installerPath: '/tmp/app.exe', version: '2.0.0' });
+    });
+
+    it('does not throw when the marker cannot be written', () => {
+      vi.mocked(fs.writeFileSync).mockImplementationOnce(() => {
+        throw new Error('disk full');
+      });
+      expect(() => scheduleInstallOnRestart('/tmp/app.exe', '2.0.0')).not.toThrow();
+    });
+  });
+
+  describe('cancelRestartInstall', () => {
+    it('removes the marker when present', () => {
+      cancelRestartInstall();
+      expect(fs.unlinkSync).toHaveBeenCalledWith(nodePath.join('/tmp', 'pending-install.json'));
+    });
+
+    it('does not remove the marker when absent', () => {
+      vi.mocked(fs.existsSync).mockImplementationOnce(() => false);
+      cancelRestartInstall();
+      expect(fs.unlinkSync).not.toHaveBeenCalled();
+    });
+
+    it('does not throw when unlink fails', () => {
+      vi.mocked(fs.unlinkSync).mockImplementationOnce(() => {
+        throw new Error('permission denied');
+      });
+      expect(() => cancelRestartInstall()).not.toThrow();
+    });
+  });
+
+  describe('readPendingInstall', () => {
+    it('returns null when no marker exists', () => {
+      vi.mocked(fs.existsSync).mockImplementationOnce(() => false);
+      expect(readPendingInstall()).toBeNull();
+      expect(fs.readFileSync).not.toHaveBeenCalled();
+    });
+
+    it('returns null for an empty marker file', () => {
+      vi.mocked(fs.readFileSync).mockReturnValue('   ');
+      expect(readPendingInstall()).toBeNull();
+    });
+
+    it('returns the parsed payload for a valid marker', () => {
+      vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({ installerPath: '/tmp/app.exe', version: '2.0.0' }));
+      expect(readPendingInstall()).toEqual({ installerPath: '/tmp/app.exe', version: '2.0.0' });
+    });
+
+    it('returns null for corrupt JSON', () => {
+      vi.mocked(fs.readFileSync).mockReturnValue('not-json');
+      expect(readPendingInstall()).toBeNull();
+    });
+
+    it('returns null when required fields are missing', () => {
+      vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({ installerPath: '/tmp/app.exe' }));
+      expect(readPendingInstall()).toBeNull();
+    });
+  });
+
+  describe('autoInstallPendingUpdate', () => {
+    it('does nothing when no marker exists', async () => {
+      vi.mocked(fs.existsSync).mockImplementation(() => false);
+      await autoInstallPendingUpdate();
+      expect(openPathMock).not.toHaveBeenCalled();
+      expect(quitMock).not.toHaveBeenCalled();
+    });
+
+    it('launches the installer and quits the app for a valid pending version', async () => {
+      vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({ installerPath: '/tmp/app.exe', version: '2.0.0' }));
+      await autoInstallPendingUpdate();
+      expect(openPathMock).toHaveBeenCalledWith('/tmp/app.exe');
+      expect(quitMock).toHaveBeenCalledOnce();
+      expect(fs.unlinkSync).toHaveBeenCalled();
+    });
+
+    it('skips applying when the pending version is already installed', async () => {
+      vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({ installerPath: '/tmp/app.exe', version: '1.0.0' }));
+      await autoInstallPendingUpdate();
+      expect(openPathMock).not.toHaveBeenCalled();
+      expect(quitMock).not.toHaveBeenCalled();
+    });
+
+    it('clears the marker but skips a missing installer', async () => {
+      vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({ installerPath: '/tmp/missing.exe', version: '2.0.0' }));
+      vi.mocked(fs.existsSync).mockImplementation((p: string) => p !== '/tmp/missing.exe');
+      await autoInstallPendingUpdate();
+      expect(fs.unlinkSync).toHaveBeenCalled();
+      expect(openPathMock).not.toHaveBeenCalled();
+      expect(quitMock).not.toHaveBeenCalled();
     });
   });
 

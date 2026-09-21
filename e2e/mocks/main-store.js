@@ -63,6 +63,7 @@ const defaults = {
   revealCalls: [],
   closeRequestedSubscribers: 0,
   termsRejectCalls: 0,
+  pendingInstallResult: null,
 };
 
 const state = JSON.parse(JSON.stringify(defaults));

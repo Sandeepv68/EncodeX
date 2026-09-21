@@ -213,6 +213,9 @@ const api = {
   installUpdate: () => Promise.resolve(),
   cancelDownload: () => Promise.resolve(),
   openReleaseNotes: () => Promise.resolve(),
+  scheduleInstallOnRestart: () => Promise.resolve(),
+  cancelRestartInstall: () => Promise.resolve(),
+  getPendingInstall: () => Promise.resolve(state.pendingInstallResult || null),
   onUpdateAvailable: (cb) => subscribe('update-available', cb),
   onUpdateNotAvailable: (cb) => subscribe('update-not-available', cb),
   onUpdateProgress: (cb) => subscribe('update-progress', cb),
@@ -298,6 +301,9 @@ const api = {
       state.thumbnailsResult = v;
     },
     emit: (channel, payload) => emit(channel, payload),
+    setPendingInstall: (v) => {
+      state.pendingInstallResult = v;
+    },
     reset: () => {
       const { reset } = require('./main-store');
       reset();

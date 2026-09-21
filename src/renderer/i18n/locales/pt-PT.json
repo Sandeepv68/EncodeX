@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Desenvolvido por",
     "checkingForUpdates": "A verificar atualizações...",
-    "updateAvailable": "Atualização disponível: v{{version}}"
+    "updateAvailable": "Atualização disponível: v{{version}}",
+    "downloading": "A transferir v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} pronto para instalar",
+    "installScheduled": "v{{version}} será instalado no próximo reinício"
   },
   "status": {
     "auto": "Automático",
@@ -490,7 +493,9 @@
     "languageChanged": "Idioma alterado para {{language}}",
     "cancelled": "Cancelado",
     "updateAvailable": "Atualização disponível: v{{version}}",
-    "updateNow": "Atualizar agora"
+    "updateNow": "Atualizar agora",
+    "updateDownloaded": "Atualização v{{version}} transferida",
+    "viewUpdate": "Ver"
   },
   "profiles": {
     "searchPlaceholder": "Pesquisar perfis...",
@@ -721,6 +726,11 @@
     "cancel": "Cancelar",
     "close": "Fechar",
     "retry": "Tentar novamente",
-    "error": "Ocorreu um erro ao verificar atualizações."
+    "error": "Ocorreu um erro ao verificar atualizações.",
+    "downloadInBackground": "A transferência continua em segundo plano. Pode ver o progresso na barra inferior.",
+    "background": "Continuar em segundo plano",
+    "installOnRestart": "Instalar no próximo reinício",
+    "installScheduled": "A atualização v{{version}} será instalada no próximo reinício da aplicação.",
+    "cancelRestartInstall": "Cancelar"
   }
 }

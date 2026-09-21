@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Hangaia e",
     "checkingForUpdates": "E tiaki ana i nga whakamāoritanga...",
-    "updateAvailable": "Kei te wātea he whakamāoritanga: v{{version}}"
+    "updateAvailable": "Kei te wātea he whakamāoritanga: v{{version}}",
+    "downloading": "Kei te tango i te v{{version}} — {{percent}}%",
+    "updateReady": "Kua reri te v{{version}} ki te whakauru",
+    "installScheduled": "Ka whakaurua te v{{version}} i te tīmatanga anō e whai ake nei"
   },
   "status": {
     "auto": "Aunoa",
@@ -490,7 +493,9 @@
     "languageChanged": "Kua huri te reo ki {{language}}",
     "cancelled": "Kua whakakore",
     "updateAvailable": "Kei te wātea he whakamāoritanga: v{{version}}",
-    "updateNow": "Whakamāoritia ināianei"
+    "updateNow": "Whakamāoritia ināianei",
+    "updateDownloaded": "Kua tangohia te whakahoutanga v{{version}}",
+    "viewUpdate": "Tirohia"
   },
   "profiles": {
     "searchPlaceholder": "Tuhia haupae...",
@@ -721,6 +726,11 @@
     "cancel": "Whakakorehia",
     "close": "Katihia",
     "retry": "Hoamata",
-    "error": "Kua pahae he hea i te tirohanga whakahou."
+    "error": "Kua pahae he hea i te tirohanga whakahou.",
+    "downloadInBackground": "Kei te haere tonu te tango i muri. Ka kite koe i tana ahunga whakamua ki te huinga o raro.",
+    "background": "Haere tonu i muri",
+    "installOnRestart": "Whakauru i te tīmatanga anō e whai ake nei",
+    "installScheduled": "Ka whakaurua te whakahoutanga v{{version}} i te tīmatanga anō o te taupānga i muri.",
+    "cancelRestartInstall": "Whakakorehia"
   }
 }

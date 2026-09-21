@@ -71,6 +71,20 @@
  *   within the QUEUED subsequence.
  * @property {string} PLAYER_FRAME - Push a decoded frame to the renderer player.
  * @property {string} LOG_MESSAGE - Forward a log entry to the renderer.
+ * @property {string} CHECK_FOR_UPDATES - Start an update check.
+ * @property {string} DOWNLOAD_UPDATE - Download the matched update asset.
+ * @property {string} INSTALL_UPDATE - Launch the downloaded installer and quit.
+ * @property {string} CANCEL_DOWNLOAD - Cancel an in-progress update download.
+ * @property {string} OPEN_RELEASE_NOTES - Open the release page in the browser.
+ * @property {string} SCHEDULE_RESTART_INSTALL - Persist a marker that installs
+ *   the downloaded update on the next app restart.
+ * @property {string} CANCEL_RESTART_INSTALL - Remove a pending restart-install marker.
+ * @property {string} GET_PENDING_INSTALL - Read any pending restart-install marker.
+ * @property {string} UPDATE_AVAILABLE - Notify that an update is available.
+ * @property {string} UPDATE_NOT_AVAILABLE - Notify that the app is up to date.
+ * @property {string} UPDATE_PROGRESS - Push update download progress.
+ * @property {string} UPDATE_DOWNLOADED - Notify that the installer finished downloading.
+ * @property {string} UPDATE_ERROR - Notify that an update operation failed.
  * @property {string} MONITORING_GET_STATE - Query the monitoring consent state from main.
  * @property {string} MONITORING_SET_ENABLED - Update the monitoring consent (user toggle).
  * @property {string} MCP_SETTINGS_GET - Query the embedded MCP server settings from main.
@@ -144,6 +158,9 @@ export const IPC = {
   INSTALL_UPDATE: 'install-update',
   CANCEL_DOWNLOAD: 'cancel-download',
   OPEN_RELEASE_NOTES: 'open-release-notes',
+  SCHEDULE_RESTART_INSTALL: 'schedule-install-on-restart',
+  CANCEL_RESTART_INSTALL: 'cancel-install-on-restart',
+  GET_PENDING_INSTALL: 'get-pending-install',
   UPDATE_AVAILABLE: 'update-available',
   UPDATE_NOT_AVAILABLE: 'update-not-available',
   UPDATE_PROGRESS: 'update-progress',

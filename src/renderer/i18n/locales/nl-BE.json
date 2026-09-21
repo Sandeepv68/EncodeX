@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Mogelijk gemaakt door",
     "checkingForUpdates": "Controleren op updates...",
-    "updateAvailable": "Update beschikbaar: v{{version}}"
+    "updateAvailable": "Update beschikbaar: v{{version}}",
+    "downloading": "v{{version}} downloaden — {{percent}}%",
+    "updateReady": "v{{version}} klaar om te installeren",
+    "installScheduled": "v{{version}} wordt geïnstalleerd bij de volgende herstart"
   },
   "status": {
     "auto": "Automatisch",
@@ -490,7 +493,9 @@
     "cancelled": "Geannuleerd",
     "pathCopied": "Uitvoerpad gekopieerd naar klembord",
     "updateAvailable": "Update beschikbaar: v{{version}}",
-    "updateNow": "Nu bijwerken"
+    "updateNow": "Nu bijwerken",
+    "updateDownloaded": "Update v{{version}} gedownload",
+    "viewUpdate": "Bekijk"
   },
   "profiles": {
     "searchPlaceholder": "Profielen zoeken...",
@@ -721,6 +726,11 @@
     "cancel": "Annuleren",
     "close": "Sluiten",
     "retry": "Opnieuw proberen",
-    "error": "Er is een fout opgetreden bij het controleren op updates."
+    "error": "Er is een fout opgetreden bij het controleren op updates.",
+    "downloadInBackground": "De download gaat door op de achtergrond. Je kunt de voortgang zien in de voettekst.",
+    "background": "Doorgaan op de achtergrond",
+    "installOnRestart": "Installeren bij volgende herstart",
+    "installScheduled": "Update v{{version}} wordt geïnstalleerd bij de volgende app-herstart.",
+    "cancelRestartInstall": "Annuleren"
   }
 }

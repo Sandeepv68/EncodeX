@@ -14,6 +14,8 @@ describe('UpdateDialog', () => {
       info: null,
       progress: null,
       installerPath: null,
+      scheduledVersion: null,
+      restartScheduled: false,
       errorMessage: null,
       dialogOpen: true,
     });
@@ -83,6 +85,8 @@ describe('UpdateDialog', () => {
     render(<UpdateDialog />);
     expect(screen.getByText('update.downloading')).toBeInTheDocument();
     expect(screen.getByText('update.cancelDownload')).toBeInTheDocument();
+    expect(screen.getByText('update.background')).toBeInTheDocument();
+    expect(screen.getByText('update.downloadInBackground')).toBeInTheDocument();
     expect(screen.getByText(/45%/)).toBeInTheDocument();
   });
 
@@ -98,7 +102,16 @@ describe('UpdateDialog', () => {
     render(<UpdateDialog />);
     expect(screen.getByText('update.readyToInstall')).toBeInTheDocument();
     expect(screen.getByText('update.installRestart')).toBeInTheDocument();
+    expect(screen.getByText('update.installOnRestart')).toBeInTheDocument();
     expect(screen.getByText('update.later')).toBeInTheDocument();
+  });
+
+  it('renders with restart-scheduled status', () => {
+    useUpdateStore.setState({ status: 'restart-scheduled', dialogOpen: true, scheduledVersion: '2.0.0' });
+    render(<UpdateDialog />);
+    expect(screen.getByText('update.installScheduled')).toBeInTheDocument();
+    expect(screen.getByText('update.cancelRestartInstall')).toBeInTheDocument();
+    expect(screen.getByText('update.installRestart')).toBeInTheDocument();
   });
 
   it('renders with error status', () => {
@@ -115,17 +128,23 @@ describe('UpdateDialog', () => {
     expect(screen.getByText('update.error')).toBeInTheDocument();
   });
 
-  it('close button is disabled when downloading', () => {
-    useUpdateStore.setState({ status: 'downloading', dialogOpen: true });
+  it('continue in background closes the dialog while keeping the download running', () => {
+    useUpdateStore.setState({ status: 'downloading', dialogOpen: true, progress: { percent: 20, transferred: 100, total: 500 } });
     render(<UpdateDialog />);
-    const dialog = screen.getByRole('dialog');
-    // MUI Dialog's onClose should not fire closeDialog during downloading
-    // Test by checking that cancelDownload is called instead
-    fireEvent.click(screen.getByText('update.cancelDownload'));
-    expect(useUpdateStore.getState().status).toBe('available');
+    fireEvent.click(screen.getByText('update.background'));
+    expect(useUpdateStore.getState().dialogOpen).toBe(false);
+    expect(useUpdateStore.getState().status).toBe('downloading');
   });
 
-  it('handleClose calls closeDialog when not downloading', () => {
+  it('cancel download reverts to available and closes the dialog', () => {
+    useUpdateStore.setState({ status: 'downloading', dialogOpen: true, progress: { percent: 20, transferred: 100, total: 500 } });
+    render(<UpdateDialog />);
+    fireEvent.click(screen.getByText('update.cancelDownload'));
+    expect(useUpdateStore.getState().status).toBe('available');
+    expect(useUpdateStore.getState().dialogOpen).toBe(false);
+  });
+
+  it('handleClose closes the dialog outside the downloading state', () => {
     useUpdateStore.setState({ status: 'not-available', dialogOpen: true });
     render(<UpdateDialog />);
     fireEvent.click(screen.getByText('update.close'));
@@ -159,6 +178,29 @@ describe('UpdateDialog', () => {
     useUpdateStore.setState({ status: 'downloaded', dialogOpen: true, installerPath: '/tmp/app.exe' });
     render(<UpdateDialog />);
     fireEvent.click(screen.getByText('update.installRestart'));
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  it('install-on-restart button calls installOnRestart', () => {
+    const spy = vi.spyOn(useUpdateStore.getState(), 'installOnRestart');
+    useUpdateStore.setState({
+      status: 'downloaded',
+      dialogOpen: true,
+      installerPath: '/tmp/app.exe',
+      info: { version: '2.0.0', releaseNotes: '', releaseUrl: '', asset: { name: 'app.exe', url: '', size: 0 } },
+    });
+    render(<UpdateDialog />);
+    fireEvent.click(screen.getByText('update.installOnRestart'));
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  it('cancel-restart-install button calls cancelRestartInstall', () => {
+    const spy = vi.spyOn(useUpdateStore.getState(), 'cancelRestartInstall');
+    useUpdateStore.setState({ status: 'restart-scheduled', dialogOpen: true, scheduledVersion: '2.0.0' });
+    render(<UpdateDialog />);
+    fireEvent.click(screen.getByText('update.cancelRestartInstall'));
     expect(spy).toHaveBeenCalled();
     spy.mockRestore();
   });

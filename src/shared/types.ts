@@ -557,3 +557,16 @@ export interface UpdateProgress {
   transferred: number;
   total: number;
 }
+
+/**
+ * A persisted marker for an update the user chose to apply on the next app
+ * restart. Stored as `userData/pending-install.json` by the main process and
+ * consumed at startup so the installer can be launched before the window opens.
+ * @interface PendingInstall
+ * @property {string} installerPath - Absolute path of the downloaded installer.
+ * @property {string} version - Update version the installer targets.
+ */
+export interface PendingInstall {
+  installerPath: string;
+  version: string;
+}
