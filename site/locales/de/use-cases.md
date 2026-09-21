@@ -62,7 +62,7 @@ Wählen Sie unten einen Anwendungsfall aus.
   <div class="card">
     <h3>🤖 Mit einem KI-Assistenten automatisieren</h3>
     <p>EncodeX enthält einen integrierten MCP-Server — verbinden Sie Claude, Cursor, VS Code oder jeden MCP-Client und bitten Sie ihn in natürlicher Sprache, zu konvertieren, Audio zu extrahieren, zu komprimieren oder einen Stapeljob zu verfolgen — alles lokal.</p>
-    <a href="/de/features#lassen-sie-einen-ki-assistenten-das-steuer-ubernehmen">Mehr erfahren →</a>
+    <a href="/de/mcp">Mehr erfahren →</a>
   </div>
 
 </div>

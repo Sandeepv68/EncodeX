@@ -62,6 +62,9 @@ Nichts Besonderes — wenn Ihr Rechner einige Jahre jung ist, sind Sie fein:
 - **Festplatte:** etwa 400 MB (die App bringt alles mit — keine zusätzlichen Downloads)
 - **Arbeitsspeicher:** jede normale Menge reicht
 
+> **Warum ist EncodeX etwa 400 MB groß?**
+> EncodeX bündelt die FFmpeg-Engine und alle unterstützten Komponenten, sodass Sie FFmpeg, Codecs oder sonst nichts separat installieren müssen — und später auch nie Extras herunterladen. Nichts wird hochgeladen und nichts läuft in der Cloud — jede Konvertierung passiert [lokal auf Ihrem Computer](/de/features).
+
 ## Immer auf dem neuesten Stand
 
 Erscheint eine neue Version, meldet sich EncodeX in der App und kann das Update für Sie herunterladen und starten — Sie müssen nicht wieder hierher kommen.
@@ -79,6 +82,10 @@ Wenn etwas nicht klappt oder Sie eine Frage haben, schreiben Sie an **[developer
 ## Datenschutz
 
 Vertrauen ist uns wichtig. Jede Konvertierung läuft auf Ihrem Computer — Ihre Dateien werden niemals hochgeladen, verfolgt oder auf einem Server gespeichert. Lesen Sie die vollständige [Datenschutzerklärung](/de/privacy).
+
+## Sicherheit
+
+Jede Version enthält [verifizierbare SHA-256-Checksummen und signierte Builds](/de/security) — und wenn Sie ein Problem finden, können Sie es vertraulich melden. Details auf der [Sicherheitsseite](/de/security).
 
 ## Für Entwickler: Selbst bauen
 

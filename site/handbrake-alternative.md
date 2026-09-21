@@ -30,6 +30,34 @@ It's great software. But it's not for everyone — which is why a modern HandBra
 | **Platforms**  | Windows, macOS, Linux            | Windows, macOS, Linux        |
 | **Uploads**    | None — 100% offline              | None — 100% offline          |
 
+## How This Comparison Was Made
+
+We compared capabilities each tool actually ships today — GUI layout, preset depth, hardware
+encoding support, batch behavior, and extra tools — using each product's current documentation and
+release notes. We only claim features we can verify: anything labeled "partial" or "limited" means
+the capability exists but with caveats (for example, HandBrake's hardware encoding support varies by
+platform and build, and its CLI is documented separately from the GUI app). If a row is split across
+more tools below, the same verification applies.
+
+## EncodeX vs HandBrake vs FFmpeg CLI vs Shutter Encoder
+
+|                        | EncodeX      | HandBrake    | FFmpeg CLI   | Shutter Encoder |
+| ---------------------- | ------------ | ------------ | ------------ | --------------- |
+| **Interface**          | GUI + CLI    | GUI (+ CLI)  | CLI only     | GUI             |
+| **Built on FFmpeg**    | Yes          | Yes          | Is FFmpeg    | Yes             |
+| **Free & open source** | Yes (MIT)    | Yes (GPL)    | Yes (GPL)    | Yes (proprietary license) |
+| **Task-based presets** | 140+ profiles | File-based sets | Scripts only  | Library-based  |
+| **Hardware encoding**  | NVENC, QSV, AMF, VAAPI, VideoToolbox | Partial (varies by platform) | Via flags (manual setup) | NVENC + others |
+| **Parallel batch**     | Yes (4 jobs)  | Sequential   | Via scripting | Yes            |
+| **Image compression**  | Yes (JPEG/PNG/WebP) | No       | Via flags     | Yes            |
+| **Audio extraction**   | One click (27 codecs) | Limited | Via flags | Yes |
+| **100% offline**       | Yes          | Yes          | Yes          | Yes            |
+
+The short version: **HandBrake** is the best open-source disk-ripper, **FFmpeg CLI** is the most
+powerful but has the steepest learning curve, **Shutter Encoder** is a strong generalist with more
+moving parts, and **EncodeX** focuses on the simplest path from goal to finished file while keeping
+the advanced options reachable.
+
 ## Why Switch to EncodeX?
 
 - **A gentler learning curve** — the GUI is task-based ("Convert", "Compress", "Cut"), not codec-based
@@ -56,3 +84,4 @@ Not necessarily! HandBrake is excellent for disk ripping. But if you want a simp
 - [Compare more FFmpeg GUI options](/ffmpeg-gui)
 - [See all conversion and features](/features)
 - [Learn what FFmpeg actually is](/learn/what-is-ffmpeg)
+- [Pick the right video format for your goal](/learn/what-format-to-use)

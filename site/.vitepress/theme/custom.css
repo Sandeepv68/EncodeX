@@ -180,6 +180,8 @@ html {
 /* ---------- Hero type ---------- */
 .VPHero .name {
   letter-spacing: -0.03em;
+  text-align: left;
+  line-height: 1.35;
 }
 .VPHero .text {
   font-weight: 700;
@@ -216,23 +218,48 @@ html {
    Components
    ============================================================ */
 
-/* ---------- Hero image & buttons ---------- */
+/* ---------- Hero image & buttons ----------
+   The hero now renders a wide product screenshot instead of the app icon,
+   so the default circular-icon sizing is replaced with a fluid layout that
+   fills the right-hand column without distorting aspect ratio. */
 .VPHero .image-src {
+  position: static;
+  transform: none;
+  width: 100%;
+  height: auto;
   max-width: 320px;
-  max-height: 320px;
-  border-radius: 32px;
+  max-height: none;
+  border-radius: 12px;
   box-shadow: 0 16px 48px rgba(3, 89, 173, 0.28);
+}
+@media (min-width: 640px) {
+  .VPHero .image-src {
+    max-width: 392px;
+  }
 }
 @media (min-width: 960px) {
   .VPHero .image-src {
-    max-width: 380px;
-    max-height: 380px;
+    max-width: 560px;
   }
+}
+
+/* The default theme translates the image container 32px up/left on desktop;
+   with a full-column screenshot this clips the layout, so neutralize it. */
+@media (min-width: 960px) {
+  .VPHero .image-container {
+    transform: none;
+  }
+}
+
+/* The circular glow behind the old icon is not needed once the hero
+   renders a full screenshot, and it overlaps the image — hide it. */
+.VPHero .image-bg {
+  display: none;
 }
 
 /* Mobile/tablet: the default theme pulls the hero image up under the
    transparent navbar and over the hero text with large negative margins.
-   Neutralize them so the logo never overlaps the nav or the text. */
+   Neutralize them so the screenshot never overlaps the nav or the text. */
 @media (max-width: 959px) {
   .VPHero .image {
     margin-top: 24px;
@@ -243,10 +270,6 @@ html {
   .VPHero .image {
     margin-top: 8px;
     margin-bottom: 16px;
-  }
-  .VPHero .image-src {
-    max-width: 240px;
-    max-height: 240px;
   }
 }
 .dark .VPHero .image-src {
@@ -571,6 +594,104 @@ html {
 }
 
 /* ============================================================
+   Trust strip (hero reassurance line)
+   ============================================================ */
+.trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 28px;
+  margin: 28px 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+}
+
+.trust-strip span::before {
+  content: '✓ ';
+  color: var(--vp-c-brand-1);
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .trust-strip {
+    gap: 6px 16px;
+    font-size: 13px;
+  }
+}
+
+/* ============================================================
+   Workflow steps (Drop → Choose → Convert → Done)
+   ============================================================ */
+.workflow-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 24px 0;
+}
+
+@media (max-width: 760px) {
+  .workflow-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  .workflow-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wf-step {
+  padding: 18px 20px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 14px;
+  background: var(--vp-c-bg);
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.wf-step:hover {
+  transform: translateY(-2px);
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 8px 24px rgba(3, 89, 173, 0.1);
+}
+
+.dark .wf-step:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.wf-step .wf-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.wf-step .card-head {
+  margin: 0 0 4px;
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.wf-step p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--vp-c-text-2);
+}
+
+/* ============================================================
    Two-column card grid
    ============================================================ */
 .card-grid.two-col {
@@ -630,7 +751,7 @@ html {
 
 .sf-link-cols {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
 

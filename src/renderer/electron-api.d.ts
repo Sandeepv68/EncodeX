@@ -24,6 +24,7 @@ import {
   ImageFileInfo,
   UpdateInfo,
   UpdateProgress,
+  PendingInstall,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
 
@@ -567,6 +568,9 @@ export interface ElectronAPI {
   installUpdate(installerPath: string): Promise<void>;
   cancelDownload(): Promise<void>;
   openReleaseNotes(url: string): Promise<void>;
+  scheduleInstallOnRestart(installerPath: string, version: string): Promise<void>;
+  cancelRestartInstall(): Promise<void>;
+  getPendingInstall(): Promise<PendingInstall | null>;
   onUpdateAvailable(cb: (info: UpdateInfo) => void): () => void;
   onUpdateNotAvailable(cb: () => void): () => void;
   onUpdateProgress(cb: (progress: UpdateProgress) => void): () => void;

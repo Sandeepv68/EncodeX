@@ -16,6 +16,8 @@ import {
   initEngagementTiming,
   initUserProperties,
   initCoreWebVitals,
+  initHeroCtaTracking,
+  initFeatureCardTracking,
 } from './composables/useAnalytics';
 
 const { Layout } = DefaultTheme;
@@ -54,6 +56,8 @@ onMounted(() => {
   initOutboundDownloadTracking();
   initEngagementTiming();
   initCoreWebVitals();
+  initHeroCtaTracking();
+  initFeatureCardTracking();
 });
 </script>
 

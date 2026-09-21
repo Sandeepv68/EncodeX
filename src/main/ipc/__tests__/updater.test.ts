@@ -1,11 +1,23 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-const { checkForUpdateMock, downloadUpdateMock, installUpdateMock, cancelDownloadMock, openReleaseNotesMock } = vi.hoisted(() => ({
+const {
+  checkForUpdateMock,
+  downloadUpdateMock,
+  installUpdateMock,
+  cancelDownloadMock,
+  openReleaseNotesMock,
+  scheduleInstallOnRestartMock,
+  cancelRestartInstallMock,
+  readPendingInstallMock,
+} = vi.hoisted(() => ({
   checkForUpdateMock: vi.fn(),
   downloadUpdateMock: vi.fn(),
   installUpdateMock: vi.fn(),
   cancelDownloadMock: vi.fn(),
   openReleaseNotesMock: vi.fn(),
+  scheduleInstallOnRestartMock: vi.fn(),
+  cancelRestartInstallMock: vi.fn(),
+  readPendingInstallMock: vi.fn(),
 }));
 
 const { handleSpy, ipcMainMock, winMock } = vi.hoisted(() => {
@@ -29,6 +41,9 @@ vi.mock('../../updater', () => ({
   installUpdate: installUpdateMock,
   cancelDownload: cancelDownloadMock,
   openReleaseNotes: openReleaseNotesMock,
+  scheduleInstallOnRestart: scheduleInstallOnRestartMock,
+  cancelRestartInstall: cancelRestartInstallMock,
+  readPendingInstall: readPendingInstallMock,
 }));
 
 import { IPC } from '../../../shared/ipc-channels';
@@ -54,15 +69,18 @@ describe('registerUpdaterHandlers', () => {
     vi.restoreAllMocks();
   });
 
-  it('registers five IPC handlers', () => {
+  it('registers eight IPC handlers', () => {
     registerUpdaterHandlers(winMock as never);
-    expect(handleSpy).toHaveBeenCalledTimes(5);
+    expect(handleSpy).toHaveBeenCalledTimes(8);
     const channels = Array.from(ipcMainMock._handlers.keys());
     expect(channels).toContain(IPC.CHECK_FOR_UPDATES);
     expect(channels).toContain(IPC.DOWNLOAD_UPDATE);
     expect(channels).toContain(IPC.INSTALL_UPDATE);
     expect(channels).toContain(IPC.CANCEL_DOWNLOAD);
     expect(channels).toContain(IPC.OPEN_RELEASE_NOTES);
+    expect(channels).toContain(IPC.SCHEDULE_RESTART_INSTALL);
+    expect(channels).toContain(IPC.CANCEL_RESTART_INSTALL);
+    expect(channels).toContain(IPC.GET_PENDING_INSTALL);
   });
 
   describe('CHECK_FOR_UPDATES handler', () => {
@@ -208,6 +226,39 @@ describe('registerUpdaterHandlers', () => {
       registerUpdaterHandlers(winMock as never);
       openReleaseNotesMock.mockRejectedValue(new Error('open fail'));
       await expect(ipcMainMock._getHandler(IPC.OPEN_RELEASE_NOTES)!({}, 'https://bad')).resolves.toBeUndefined();
+    });
+  });
+
+  describe('SCHEDULE_RESTART_INSTALL handler', () => {
+    it('persists the installer path and version', async () => {
+      registerUpdaterHandlers(winMock as never);
+      await ipcMainMock._getHandler(IPC.SCHEDULE_RESTART_INSTALL)!({}, '/tmp/app.exe', '2.0.0');
+      expect(scheduleInstallOnRestartMock).toHaveBeenCalledWith('/tmp/app.exe', '2.0.0');
+    });
+  });
+
+  describe('CANCEL_RESTART_INSTALL handler', () => {
+    it('disarms the scheduled install', async () => {
+      registerUpdaterHandlers(winMock as never);
+      await ipcMainMock._getHandler(IPC.CANCEL_RESTART_INSTALL)!();
+      expect(cancelRestartInstallMock).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('GET_PENDING_INSTALL handler', () => {
+    it('returns the pending install marker', async () => {
+      registerUpdaterHandlers(winMock as never);
+      readPendingInstallMock.mockReturnValue({ installerPath: '/tmp/app.exe', version: '2.0.0' });
+      expect(ipcMainMock._getHandler(IPC.GET_PENDING_INSTALL)!()).toEqual({
+        installerPath: '/tmp/app.exe',
+        version: '2.0.0',
+      });
+    });
+
+    it('returns null when no marker exists', async () => {
+      registerUpdaterHandlers(winMock as never);
+      readPendingInstallMock.mockReturnValue(null);
+      expect(ipcMainMock._getHandler(IPC.GET_PENDING_INSTALL)!()).toBeNull();
     });
   });
 });

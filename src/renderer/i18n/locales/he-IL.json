@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "מופעל על ידי",
     "checkingForUpdates": "בודק עדכונים...",
-    "updateAvailable": "עדכון זמין: v{{version}}"
+    "updateAvailable": "עדכון זמין: v{{version}}",
+    "downloading": "מוריד v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} מוכן להתקנה",
+    "installScheduled": "v{{version}} יותקן באתחול הבא"
   },
   "status": {
     "auto": "אוטומטי",
@@ -490,7 +493,9 @@
     "languageChanged": "השפה שונתה ל-{{language}}",
     "cancelled": "בוטל",
     "updateAvailable": "עדכון זמין: v{{version}}",
-    "updateNow": "עדכן עכשיו"
+    "updateNow": "עדכן עכשיו",
+    "updateDownloaded": "העדכון v{{version}} הורד",
+    "viewUpdate": "צפייה"
   },
   "profiles": {
     "searchPlaceholder": "חיפוש פרופילים...",
@@ -721,6 +726,11 @@
     "cancel": "ביטול",
     "close": "סגור",
     "retry": "נסה שוב",
-    "error": "אירעה שגיאה בעת בדיקת עדכונים."
+    "error": "אירעה שגיאה בעת בדיקת עדכונים.",
+    "downloadInBackground": "ההורדה ממשיכה ברקע. תוכל לראות את ההתקדמות שלה בתחתית העמוד.",
+    "background": "המשך ברקע",
+    "installOnRestart": "התקן באתחול הבא",
+    "installScheduled": "העדכון v{{version}} יותקן באתחול הבא של האפליקציה.",
+    "cancelRestartInstall": "ביטול"
   }
 }

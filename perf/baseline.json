@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-20T11:16:07.732Z",
+  "source": "perf/results/*.json",
+  "platforms": {
+    "win32-x64": {
+      "phase1-conversion::H.264 1080p conversion": {
+        "medianMs": 820.8469,
+        "samples": 4
+      },
+      "phase1-conversion::H.265 1080p conversion": {
+        "medianMs": 1732.6729500000001,
+        "samples": 4
+      },
+      "phase1-conversion::Stream copy (remux) 1080p": {
+        "medianMs": 57.293,
+        "samples": 4
+      },
+      "phase1-conversion::H.264 720p conversion": {
+        "medianMs": 487.54359999999997,
+        "samples": 4
+      },
+      "phase1-conversion::Audio extraction (MP3)": {
+        "medianMs": 135.278,
+        "samples": 4
+      },
+      "phase1-queue::Queue concurrency=1, 4 jobs sequential": {
+        "medianMs": 162,
+        "samples": 7
+      },
+      "phase1-queue::Queue concurrency=4, 4 jobs parallel": {
+        "medianMs": 50.5,
+        "samples": 4
+      },
+      "phase1-queue::Queue dynamic concurrency 1→4": {
+        "medianMs": 95,
+        "samples": 7
+      },
+      "phase1-queue::Queue drain event correctness": {
+        "medianMs": 0,
+        "samples": 7
+      },
+      "phase1-queue::Queue priority scheduling": {
+        "medianMs": 0,
+        "samples": 3
+      },
+      "phase1-queue::Queue cancelAll mid-flight": {
+        "medianMs": 0,
+        "samples": 6
+      },
+      "phase1-queue::Queue stress: 50 jobs, concurrency 4": {
+        "medianMs": 484.5,
+        "samples": 4
+      },
+      "phase1-startup::CLI --help output time": {
+        "medianMs": 352.92555000000004,
+        "samples": 8
+      },
+      "phase1-startup::ffprobe capability probe time": {
+        "medianMs": 16.9672,
+        "samples": 7
+      },
+      "phase1-startup::FFmpeg encoder listing time": {
+        "medianMs": 19.2391,
+        "samples": 7
+      },
+      "phase1-startup::Queue restore from 100 persisted jobs": {
+        "medianMs": 0.2251,
+        "samples": 7
+      },
+      "phase1-startup::Queue restore from 500 persisted jobs": {
+        "medianMs": 0.0836,
+        "samples": 7
+      },
+      "phase1-startup::Tmpdir create/cleanup": {
+        "medianMs": 2.4468,
+        "samples": 7
+      },
+      "phase2-large-file::Large file: probe within time limit": {
+        "medianMs": 37.7447,
+        "samples": 7
+      },
+      "phase2-large-file::Large file: 60s 1080p conversion": {
+        "medianMs": 3654.7628,
+        "samples": 6
+      },
+      "phase2-large-file::Large file: batch 20 small files": {
+        "medianMs": 2175.49435,
+        "samples": 6
+      },
+      "phase2-memory::Memory: 30 repeated ffprobe calls": {
+        "medianMs": 0,
+        "samples": 7
+      },
+      "phase2-memory::Memory: log store entry cap (2000)": {
+        "medianMs": 0,
+        "samples": 7
+      },
+      "phase2-memory::Memory: error history cap (50)": {
+        "medianMs": 0,
+        "samples": 7
+      },
+      "phase2-memory::Memory: 20 repeated conversions": {
+        "medianMs": 0,
+        "samples": 4
+      },
+      "phase2-process-lifecycle::Process cleanup after SIGKILL cancellation": {
+        "medianMs": 0,
+        "samples": 7
+      },
+      "phase2-process-lifecycle::4 concurrent conversions cleanup": {
+        "medianMs": 450.33115,
+        "samples": 4
+      },
+      "phase2-process-lifecycle::Process cleanup after normal completion": {
+        "medianMs": 0,
+        "samples": 4
+      },
+      "phase2-process-lifecycle::Rapid sequential conversions (10) no leak": {
+        "medianMs": 3114.0610500000003,
+        "samples": 4
+      },
+      "phase3-cli::CLI capabilities command": {
+        "medianMs": 440.658,
+        "samples": 7
+      },
+      "phase3-cli::CLI --help time": {
+        "medianMs": 330.1309,
+        "samples": 7
+      },
+      "phase3-cli::CLI info command": {
+        "medianMs": 560.9688,
+        "samples": 4
+      },
+      "phase3-cli::CLI info --json output": {
+        "medianMs": 515.8528,
+        "samples": 4
+      },
+      "phase3-cli::CLI single-file conversion": {
+        "medianMs": 567.0037,
+        "samples": 3
+      },
+      "phase3-extraction::Concurrent extraction (3 parallel tasks)": {
+        "medianMs": 4674.2348999999995,
+        "samples": 4
+      },
+      "phase3-extraction::Waveform audio PCM extraction (300s)": {
+        "medianMs": 499.2759,
+        "samples": 5
+      },
+      "phase3-extraction::Thumbnail extraction (300s video)": {
+        "medianMs": 3183.7863,
+        "samples": 5
+      },
+      "phase3-extraction::Thumbnail count validation": {
+        "medianMs": 3284.5999,
+        "samples": 5
+      },
+      "phase3-ipc::IPC single invoke roundtrip": {
+        "medianMs": 0.5922999999999945,
+        "samples": 7
+      },
+      "phase3-ipc::IPC event emission throughput": {
+        "medianMs": 6.864099999999979,
+        "samples": 7
+      },
+      "phase3-ipc::IPC event storm (1000 rapid events)": {
+        "medianMs": 0.2483000000000004,
+        "samples": 7
+      },
+      "phase3-ipc::IPC queue event fanout (100 jobs)": {
+        "medianMs": 0.12460000000001514,
+        "samples": 7
+      },
+      "phase3-ipc::IPC channel name lookup overhead": {
+        "medianMs": 2.133899999999983,
+        "samples": 7
+      }
+    }
+  }
+}

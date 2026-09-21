@@ -62,7 +62,7 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面工具，专为真实的�
   <div class="card">
     <h3>🤖 用 AI 助手自动处理</h3>
     <p>EncodeX 内置 MCP 服务器——连接 Claude、Cursor、VS Code 或任何 MCP 客户端，用自然语言让它转换、提取、压缩或跟踪批量任务，一切都在本地完成。</p>
-    <a href="/zh/features#让-ai-助手来驱动">了解更多 →</a>
+    <a href="/zh/mcp">了解更多 →</a>
   </div>
 
 </div>

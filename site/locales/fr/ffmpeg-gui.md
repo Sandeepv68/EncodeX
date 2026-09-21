@@ -62,3 +62,5 @@ Vous cherchez la **meilleure interface FFmpeg** — ou une **alternative d'inter
 - [Téléchargez EncodeX gratuitement](/fr/download) — disponible pour Windows, Mac et Linux
 - [Découvrez toutes les fonctionnalités](/fr/features) — une visite complète de l'application
 - [Apprenez ce qu'est réellement FFmpeg](/fr/learn/what-is-ffmpeg) — une explication simple
+- [HandBrake vs EncodeX](/fr/handbrake-alternative) — voyez comment les outils se comparent
+- [Quel format vidéo choisir ?](/fr/learn/what-format-to-use) — choisissez le bon résultat

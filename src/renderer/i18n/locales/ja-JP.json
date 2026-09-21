@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "技術提供",
     "checkingForUpdates": "更新を確認中...",
-    "updateAvailable": "アップデートがあります: v{{version}}"
+    "updateAvailable": "アップデートがあります: v{{version}}",
+    "downloading": "v{{version}} をダウンロード中 — {{percent}}%",
+    "updateReady": "v{{version}} のインストール準備完了",
+    "installScheduled": "v{{version}} は次回再起動時にインストールされます"
   },
   "status": {
     "auto": "自動",
@@ -490,7 +493,9 @@
     "cancelled": "キャンセル",
     "pathCopied": "出力パスをクリップボードにコピーしました",
     "updateAvailable": "アップデートがあります: v{{version}}",
-    "updateNow": "今すぐ更新"
+    "updateNow": "今すぐ更新",
+    "updateDownloaded": "更新 v{{version}} をダウンロードしました",
+    "viewUpdate": "表示"
   },
   "profiles": {
     "searchPlaceholder": "プロファイルを検索...",
@@ -721,6 +726,11 @@
     "cancel": "キャンセル",
     "close": "閉じる",
     "retry": "再試行",
-    "error": "アップデートの確認中にエラーが発生しました。"
+    "error": "アップデートの確認中にエラーが発生しました。",
+    "downloadInBackground": "ダウンロードはバックグラウンドで続行されます。進行状況はフッターで確認できます。",
+    "background": "バックグラウンドで続行",
+    "installOnRestart": "次回の再起動時にインストール",
+    "installScheduled": "更新 v{{version}} は次回アプリを再起動したときにインストールされます。",
+    "cancelRestartInstall": "キャンセル"
   }
 }

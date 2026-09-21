@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Працює на",
     "checkingForUpdates": "Перевірка оновлень...",
-    "updateAvailable": "Доступне оновлення: v{{version}}"
+    "updateAvailable": "Доступне оновлення: v{{version}}",
+    "downloading": "Завантаження v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} готовий до встановлення",
+    "installScheduled": "v{{version}} буде встановлено під час наступного перезапуску"
   },
   "status": {
     "auto": "Авто",
@@ -490,7 +493,9 @@
     "cancelled": "Скасовано",
     "pathCopied": "Шлях виведення скопійовано в буфер обміну",
     "updateAvailable": "Доступне оновлення: v{{version}}",
-    "updateNow": "Оновити зараз"
+    "updateNow": "Оновити зараз",
+    "updateDownloaded": "Оновлення v{{version}} завантажено",
+    "viewUpdate": "Переглянути"
   },
   "profiles": {
     "searchPlaceholder": "Пошук профілів...",
@@ -721,6 +726,11 @@
     "cancel": "Скасувати",
     "close": "Закрити",
     "retry": "Повторити",
-    "error": "Сталася помилка під час перевірки оновлень."
+    "error": "Сталася помилка під час перевірки оновлень.",
+    "downloadInBackground": "Завантаження триває у фоновому режимі. Ви можете бачити його прогрес у нижній панелі.",
+    "background": "Продовжити у фоновому режимі",
+    "installOnRestart": "Встановити під час наступного перезапуску",
+    "installScheduled": "Оновлення v{{version}} буде встановлено під час наступного перезапуску застосунку.",
+    "cancelRestartInstall": "Скасувати"
   }
 }

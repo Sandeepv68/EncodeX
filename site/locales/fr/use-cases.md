@@ -62,7 +62,7 @@ Choisissez un cas d'usage ci-dessous pour apprendre comment.
   <div class="card">
     <h3>🤖 Automatiser avec un assistant IA</h3>
     <p>EncodeX intègre un serveur MCP — connectez Claude, Cursor, VS Code ou tout client MCP et demandez-lui, en langage naturel, de convertir, d'extraire, de compresser ou de suivre un travail en lot, entièrement en local.</p>
-    <a href="/fr/features#laissez-un-assistant-ia-piloter">En savoir plus →</a>
+    <a href="/fr/mcp">En savoir plus →</a>
   </div>
 
 </div>

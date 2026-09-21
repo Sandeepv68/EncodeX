@@ -3,6 +3,7 @@ import { defineAsyncComponent } from 'vue'
 import CustomLayout from './CustomLayout.vue'
 import OsIcon from './components/OsIcon.vue'
 import LatestDownloads from './components/LatestDownloads.vue'
+import OpenSourceCard from './components/OpenSourceCard.vue'
 import './custom.css'
 
 export default {
@@ -11,6 +12,7 @@ export default {
   enhanceApp({ app }) {
     app.component('OsIcon', OsIcon)
     app.component('LatestDownloads', LatestDownloads)
+    app.component('OpenSourceCard', OpenSourceCard)
     app.component(
       'Mermaid',
       defineAsyncComponent(() => import('vitepress-plugin-mermaid/Mermaid.vue')),

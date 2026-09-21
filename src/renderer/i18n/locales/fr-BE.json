@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Propulsé par",
     "checkingForUpdates": "Vérification des mises à jour...",
-    "updateAvailable": "Mise à jour disponible : v{{version}}"
+    "updateAvailable": "Mise à jour disponible : v{{version}}",
+    "downloading": "Téléchargement de v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} prêt à installer",
+    "installScheduled": "v{{version}} s’installera au prochain redémarrage"
   },
   "status": {
     "auto": "Automatique",
@@ -490,7 +493,9 @@
     "cancelled": "Annulé",
     "pathCopied": "Chemin de sortie copié dans le presse-papiers",
     "updateAvailable": "Mise à jour disponible : v{{version}}",
-    "updateNow": "Mettre à jour"
+    "updateNow": "Mettre à jour",
+    "updateDownloaded": "Mise à jour v{{version}} téléchargée",
+    "viewUpdate": "Voir"
   },
   "profiles": {
     "searchPlaceholder": "Rechercher des profils...",
@@ -721,6 +726,11 @@
     "cancel": "Annuler",
     "close": "Fermer",
     "retry": "Réessayer",
-    "error": "Une erreur s'est produite lors de la recherche de mises à jour."
+    "error": "Une erreur s'est produite lors de la recherche de mises à jour.",
+    "downloadInBackground": "Le téléchargement se poursuit en arrière-plan. Vous pouvez suivre sa progression dans le pied de page.",
+    "background": "Continuer en arrière-plan",
+    "installOnRestart": "Installer au prochain redémarrage",
+    "installScheduled": "La mise à jour v{{version}} s’installera au prochain redémarrage de l’application.",
+    "cancelRestartInstall": "Annuler"
   }
 }

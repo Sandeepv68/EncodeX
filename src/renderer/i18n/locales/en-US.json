@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Powered by",
     "checkingForUpdates": "Checking for updates...",
-    "updateAvailable": "Update available: v{{version}}"
+    "updateAvailable": "Update available: v{{version}}",
+    "downloading": "Downloading v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} ready to install",
+    "installScheduled": "v{{version}} will install on next restart"
   },
   "status": {
     "auto": "Auto",
@@ -490,7 +493,9 @@
     "languageChanged": "Language changed to {{language}}",
     "cancelled": "Cancelled",
     "updateAvailable": "Update available: v{{version}}",
-    "updateNow": "Update Now"
+    "updateNow": "Update Now",
+    "updateDownloaded": "Update v{{version}} downloaded",
+    "viewUpdate": "View"
   },
   "profiles": {
     "searchPlaceholder": "Search profiles...",
@@ -714,9 +719,14 @@
     "viewReleaseNotes": "View release notes",
     "download": "Download",
     "downloading": "Downloading update...",
+    "downloadInBackground": "The download is running in the background. You can see its progress in the footer below.",
+    "background": "Continue in background",
     "cancelDownload": "Cancel Download",
-    "readyToInstall": "Update downloaded and ready to install. The app will restart to apply the update.",
+    "readyToInstall": "Update v{{version}} downloaded and ready. Install & Restart now, or choose to install on the next restart.",
     "installRestart": "Install & Restart",
+    "installOnRestart": "Install on Next Restart",
+    "installScheduled": "Update v{{version}} will install on the next app restart.",
+    "cancelRestartInstall": "Cancel",
     "later": "Later",
     "cancel": "Cancel",
     "close": "Close",

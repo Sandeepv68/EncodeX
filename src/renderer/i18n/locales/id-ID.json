@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Didukung oleh",
     "checkingForUpdates": "Memeriksa pembaruan...",
-    "updateAvailable": "Pembaruan tersedia: v{{version}}"
+    "updateAvailable": "Pembaruan tersedia: v{{version}}",
+    "downloading": "Mengunduh v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} siap dipasang",
+    "installScheduled": "v{{version}} akan dipasang saat restart berikutnya"
   },
   "status": {
     "auto": "Otomatis",
@@ -490,7 +493,9 @@
     "cancelled": "Dibatalkan",
     "pathCopied": "Jalur output disalin ke clipboard",
     "updateAvailable": "Pembaruan tersedia: v{{version}}",
-    "updateNow": "Perbarui sekarang"
+    "updateNow": "Perbarui sekarang",
+    "updateDownloaded": "Pembaruan v{{version}} diunduh",
+    "viewUpdate": "Lihat"
   },
   "profiles": {
     "searchPlaceholder": "Cari profil...",
@@ -721,6 +726,11 @@
     "cancel": "Batal",
     "close": "Tutup",
     "retry": "Coba lagi",
-    "error": "Terjadi kesalahan saat memeriksa pembaruan."
+    "error": "Terjadi kesalahan saat memeriksa pembaruan.",
+    "downloadInBackground": "Unduhan berjalan di latar belakang. Anda dapat melihat progresnya di footer.",
+    "background": "Lanjutkan di latar belakang",
+    "installOnRestart": "Pasang saat restart berikutnya",
+    "installScheduled": "Pembaruan v{{version}} akan dipasang saat aplikasi restart berikutnya.",
+    "cancelRestartInstall": "Batal"
   }
 }

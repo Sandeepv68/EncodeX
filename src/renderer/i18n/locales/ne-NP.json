@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "द्वारा संचालित",
     "checkingForUpdates": "अपडेट जाँच गर्दैछ...",
-    "updateAvailable": "अपडेट उपलब्ध: v{{version}}"
+    "updateAvailable": "अपडेट उपलब्ध: v{{version}}",
+    "downloading": "v{{version}} डाउनलोड हुँदैछ — {{percent}}%",
+    "updateReady": "v{{version}} स्थापना गर्न तयार",
+    "installScheduled": "v{{version}} अर्को पुनःसुरु हुँदा स्थापना हुनेछ"
   },
   "status": {
     "auto": "स्वचालित",
@@ -490,7 +493,9 @@
     "languageChanged": "भाषा {{language}} मा परिवर्तन भयो",
     "cancelled": "रद्द गरियो",
     "updateAvailable": "अपडेट उपलब्ध: v{{version}}",
-    "updateNow": "अहिले अपडेट गर्नुहोस्"
+    "updateNow": "अहिले अपडेट गर्नुहोस्",
+    "updateDownloaded": "अपडेट v{{version}} डाउनलोड भयो",
+    "viewUpdate": "हेर्नुहोस्"
   },
   "profiles": {
     "searchPlaceholder": "प्रोफाइलहरू खोज्नुहोस्...",
@@ -721,6 +726,11 @@
     "cancel": "रद्द गर्नुहोस्",
     "close": "बन्द गर्नुहोस्",
     "retry": "फेरि प्रयास गर्नुहोस्",
-    "error": "अपडेट जाँच गर्दा एउटा त्रुटि भयो।"
+    "error": "अपडेट जाँच गर्दा एउटा त्रुटि भयो।",
+    "downloadInBackground": "डाउनलोड पृष्ठभूमिमा जारी छ। यसको प्रगति तलको फुटरमा हेर्न सक्नुहुन्छ।",
+    "background": "पृष्ठभूमिमा जारी राख्नुहोस्",
+    "installOnRestart": "अर्को पुनःसुरु हुँदा स्थापना गर्नुहोस्",
+    "installScheduled": "अपडेट v{{version}} अर्को एप पुनःसुरु हुँदा स्थापना हुनेछ।",
+    "cancelRestartInstall": "रद्द गर्नुहोस्"
   }
 }

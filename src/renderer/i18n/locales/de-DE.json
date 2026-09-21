@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Unterstützt von",
     "checkingForUpdates": "Nach Updates suchen...",
-    "updateAvailable": "Update verfügbar: v{{version}}"
+    "updateAvailable": "Update verfügbar: v{{version}}",
+    "downloading": "lädt v{{version}} herunter — {{percent}}%",
+    "updateReady": "v{{version}} bereit zur Installation",
+    "installScheduled": "v{{version}} wird beim nächsten Neustart installiert"
   },
   "status": {
     "auto": "Automatisch",
@@ -490,7 +493,9 @@
     "cancelled": "Abgebrochen",
     "pathCopied": "Ausgabepfad in die Zwischenablage kopiert",
     "updateAvailable": "Update verfügbar: v{{version}}",
-    "updateNow": "Jetzt aktualisieren"
+    "updateNow": "Jetzt aktualisieren",
+    "updateDownloaded": "Update v{{version}} heruntergeladen",
+    "viewUpdate": "Ansehen"
   },
   "profiles": {
     "searchPlaceholder": "Profile suchen...",
@@ -721,6 +726,11 @@
     "cancel": "Abbrechen",
     "close": "Schließen",
     "retry": "Erneut versuchen",
-    "error": "Beim Suchen nach Updates ist ein Fehler aufgetreten."
+    "error": "Beim Suchen nach Updates ist ein Fehler aufgetreten.",
+    "downloadInBackground": "Der Download läuft im Hintergrund weiter. Den Fortschritt sehen Sie in der Fußzeile.",
+    "background": "Im Hintergrund fortfahren",
+    "installOnRestart": "Beim nächsten Neustart installieren",
+    "installScheduled": "Update v{{version}} wird beim nächsten App-Neustart installiert.",
+    "cancelRestartInstall": "Abbrechen"
   }
 }

@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Kynt undir",
     "checkingForUpdates": "Athuga uppfærslur...",
-    "updateAvailable": "Uppfærsla tiltæk: v{{version}}"
+    "updateAvailable": "Uppfærsla tiltæk: v{{version}}",
+    "downloading": "Hleð niður v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} tilbúið til uppsetningar",
+    "installScheduled": "v{{version}} verður sett upp við næstu endurræsingu"
   },
   "status": {
     "auto": "Sjálfvirkt",
@@ -490,7 +493,9 @@
     "languageChanged": "Tungumáli var skipt í {{language}}",
     "cancelled": "Hætt við",
     "updateAvailable": "Uppfærsla tiltæk: v{{version}}",
-    "updateNow": "Uppfæra núna"
+    "updateNow": "Uppfæra núna",
+    "updateDownloaded": "Uppfærsla v{{version}} sótt",
+    "viewUpdate": "Skoða"
   },
   "profiles": {
     "searchPlaceholder": "Leita að sniðum...",
@@ -721,6 +726,11 @@
     "cancel": "Hætta við",
     "close": "Loka",
     "retry": "Reyna aftur",
-    "error": "Villa kom upp við leit að uppfærslum."
+    "error": "Villa kom upp við leit að uppfærslum.",
+    "downloadInBackground": "Niðurhal heldur áfram í bakgrunni. Þú sérð framvinduna neðst á síðunni.",
+    "background": "Halda áfram í bakgrunni",
+    "installOnRestart": "Setja upp við næstu endurræsingu",
+    "installScheduled": "Uppfærsla v{{version}} verður sett upp við næstu endurræsingu appsins.",
+    "cancelRestartInstall": "Hætta við"
   }
 }

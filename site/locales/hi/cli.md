@@ -22,6 +22,39 @@ encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
 
 कोई गूढ़ `-c:v libx264 -crf 23 -preset medium` श्रृंखला नहीं — बस स्पष्ट विकल्प फ़्लैग्स, GUI के समान सेटिंग्स, और साफ़ आउटपुट।
 
+## वही चार कदम
+
+CLI हो या GUI, फ़्लो एक जैसा है — आप लक्ष्य चुनते हैं, EncodeX एन्कोडिंग करता है:
+
+<div class="workflow-steps">
+  <div class="wf-step">
+    <span class="wf-num">1</span>
+    <p class="card-head">ड्रॉप करें</p>
+    <p><code>vacation.mkv</code></p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">2</span>
+    <p class="card-head">चुनें</p>
+    <p>📱 फ़ोन</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">3</span>
+    <p class="card-head">कन्वर्ट करें</p>
+    <p>✓ MP4 1080p</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">4</span>
+    <p class="card-head">हो गया</p>
+    <p><code>vacation.mp4</code></p>
+  </div>
+</div>
+
+टर्मिनल से, वही «फ़ोन» प्रोफ़ाइल बस एक फ़्लैग दूर है:
+
+```bash
+encodex convert vacation.mkv vacation.mp4 --profile phone
+```
+
 ## EncodeX CLI क्यों उपयोग करें?
 
 - **स्क्रिप्ट करें** — cron jobs, CI pipelines और सर्वरों में कन्वर्ज़न को स्वचालित करें

@@ -66,3 +66,5 @@ Um único arquivo MP4 pode conter H.264, H.265 ou AV1 internamente. Entender a d
 - [Baixe o EncodeX gratuitamente](/pt/download)
 - [Converta vídeo entre formatos](/pt/video-converter)
 - [Comprima vídeos para um tamanho menor](/pt/video-compressor)
+- [Qual formato de vídeo escolher?](/pt/learn/what-format-to-use)
+- [HandBrake vs EncodeX](/pt/handbrake-alternative)

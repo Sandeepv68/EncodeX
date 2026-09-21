@@ -6,6 +6,9 @@ const downloadUpdateMock = vi.mocked(window.electronAPI.downloadUpdate);
 const cancelDownloadMock = vi.mocked(window.electronAPI.cancelDownload);
 const installUpdateMock = vi.mocked(window.electronAPI.installUpdate);
 const openReleaseNotesMock = vi.mocked(window.electronAPI.openReleaseNotes);
+const scheduleInstallOnRestartMock = vi.mocked(window.electronAPI.scheduleInstallOnRestart);
+const cancelRestartInstallMock = vi.mocked(window.electronAPI.cancelRestartInstall);
+const getPendingInstallMock = vi.mocked(window.electronAPI.getPendingInstall);
 
 describe('updateStore', () => {
   beforeEach(() => {
@@ -14,6 +17,8 @@ describe('updateStore', () => {
       info: null,
       progress: null,
       installerPath: null,
+      scheduledVersion: null,
+      restartScheduled: false,
       errorMessage: null,
       dialogOpen: false,
     });
@@ -69,6 +74,57 @@ describe('updateStore', () => {
     useUpdateStore.setState({ installerPath: null });
     useUpdateStore.getState().installUpdate();
     expect(installUpdateMock).not.toHaveBeenCalled();
+  });
+
+  it('installOnRestart persists marker via IPC and sets restart-scheduled', () => {
+    useUpdateStore.setState({
+      status: 'downloaded',
+      installerPath: '/tmp/app.exe',
+      info: { version: '2.0.0', releaseNotes: '', releaseUrl: '', asset: { name: 'a.exe', url: '', size: 0 } },
+    });
+    useUpdateStore.getState().installOnRestart();
+    expect(scheduleInstallOnRestartMock).toHaveBeenCalledWith('/tmp/app.exe', '2.0.0');
+    expect(useUpdateStore.getState()).toMatchObject({
+      status: 'restart-scheduled',
+      restartScheduled: true,
+      scheduledVersion: '2.0.0',
+    });
+  });
+
+  it('installOnRestart does nothing without installerPath', () => {
+    useUpdateStore.setState({ installerPath: null, status: 'downloaded' });
+    useUpdateStore.getState().installOnRestart();
+    expect(scheduleInstallOnRestartMock).not.toHaveBeenCalled();
+  });
+
+  it('cancelRestartInstall disarms via IPC and reverts to downloaded', () => {
+    useUpdateStore.setState({ status: 'restart-scheduled', installerPath: '/tmp/app.exe', restartScheduled: true });
+    useUpdateStore.getState().cancelRestartInstall();
+    expect(cancelRestartInstallMock).toHaveBeenCalled();
+    expect(useUpdateStore.getState()).toMatchObject({ status: 'downloaded', restartScheduled: false });
+  });
+
+  it('hydratePendingInstall sets restart-scheduled when a marker exists', async () => {
+    getPendingInstallMock.mockResolvedValue({ installerPath: '/tmp/app.exe', version: '2.0.0' });
+    useUpdateStore.setState({ status: 'idle' });
+    useUpdateStore.getState().hydratePendingInstall();
+    await vi.waitFor(() => {
+      expect(useUpdateStore.getState()).toMatchObject({
+        status: 'restart-scheduled',
+        installerPath: '/tmp/app.exe',
+        scheduledVersion: '2.0.0',
+        restartScheduled: true,
+      });
+    });
+  });
+
+  it('hydratePendingInstall ignores a missing marker', async () => {
+    getPendingInstallMock.mockResolvedValue(null);
+    useUpdateStore.setState({ status: 'idle' });
+    useUpdateStore.getState().hydratePendingInstall();
+    await vi.waitFor(() => {
+      expect(useUpdateStore.getState().status).toBe('idle');
+    });
   });
 
   it('openReleaseNotes invokes IPC with url', () => {

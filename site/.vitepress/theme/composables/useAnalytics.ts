@@ -264,6 +264,40 @@ export function trackShaExpand(version: string) {
   trackEvent('sha_expand', { version })
 }
 
+// ── Feature card click tracking (homepage card grids) ────────
+
+export function initFeatureCardTracking() {
+  if (typeof window === 'undefined') return
+
+  document.addEventListener('click', (e) => {
+    const anchor = (e.target as HTMLElement).closest('a')
+    if (!anchor) return
+    const card = anchor.closest('.card')
+    if (!card) return
+    const title = card.querySelector('.card-head')?.textContent?.trim().replace(/\s+/g, ' ')
+    if (title) trackFeatureClick(title)
+  })
+}
+
+// ── Hero CTA tracking ────────────────────────────────────────
+
+export function initHeroCtaTracking() {
+  if (typeof window === 'undefined') return
+
+  document.addEventListener('click', (e) => {
+    const anchor = (e.target as HTMLElement).closest('a')
+    if (!anchor) return
+    if (!anchor.closest('.VPHero')) return
+    const href = anchor.getAttribute('href') || ''
+    const cta = /\/download$/.test(href)
+      ? 'hero-download'
+      : href.includes('github.com')
+        ? 'hero-github'
+        : 'hero-cta'
+    trackEvent('cta_click', { cta, page_location: window.location.href })
+  })
+}
+
 // ── Custom dimensions & user properties ──────────────────────
 
 export function initUserProperties() {

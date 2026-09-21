@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Drevet af",
     "checkingForUpdates": "Tjekker for opdateringer...",
-    "updateAvailable": "Opdatering tilgængelig: v{{version}}"
+    "updateAvailable": "Opdatering tilgængelig: v{{version}}",
+    "downloading": "Downloader v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} klar til installation",
+    "installScheduled": "v{{version}} installeres ved næste genstart"
   },
   "status": {
     "auto": "Automatisk",
@@ -490,7 +493,9 @@
     "languageChanged": "Sprog ændret til {{language}}",
     "cancelled": "Annulleret",
     "updateAvailable": "Opdatering tilgængelig: v{{version}}",
-    "updateNow": "Opdater nu"
+    "updateNow": "Opdater nu",
+    "updateDownloaded": "Opdatering v{{version}} downloadet",
+    "viewUpdate": "Vis"
   },
   "profiles": {
     "searchPlaceholder": "Søg i profiler...",
@@ -721,6 +726,11 @@
     "cancel": "Annuller",
     "close": "Luk",
     "retry": "Forsøg igen",
-    "error": "Der opstod en fejl under søgningen efter opdateringer."
+    "error": "Der opstod en fejl under søgningen efter opdateringer.",
+    "downloadInBackground": "Downloadet fortsætter i baggrunden. Du kan se fremskridtet i sidefoden.",
+    "background": "Fortsæt i baggrunden",
+    "installOnRestart": "Installer ved næste genstart",
+    "installScheduled": "Opdatering v{{version}} installeres ved næste app-genstart.",
+    "cancelRestartInstall": "Annuller"
   }
 }

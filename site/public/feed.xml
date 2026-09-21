@@ -5,7 +5,7 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Sun, 20 Sep 2026 10:41:31 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 20 Sep 2026 16:48:23 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>EncodeX V1.0.0-beta.4</title>
@@ -15,6 +15,16 @@
       <pubDate>Sun, 20 Sep 2026 00:00:00 GMT</pubDate>
       <category>release</category>
       <category>1.0.0-beta.4</category>
+    </item>
+    <item>
+      <title>How to Convert Video for WhatsApp: Send Sharp, Not Squashed</title>
+      <link>https://encodex.in/blog/posts/how-to-convert-video-for-whatsapp/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-convert-video-for-whatsapp/</guid>
+      <description>WhatsApp compresses everything you send — unless you take control first. How to pick a size and codec that stays clear on phones, with a simple offline EncodeX workflow.</description>
+      <pubDate>Sat, 19 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>whatsapp</category>
+      <category>how-to</category>
     </item>
     <item>
       <title>EncodeX Adds a Built-In MCP Server: Let AI Drive Your Media Conversions</title>
@@ -28,6 +38,16 @@
       <category>automation</category>
     </item>
     <item>
+      <title>How to Convert Video for Instagram: Reels, Stories &amp; Posts Done Right</title>
+      <link>https://encodex.in/blog/posts/how-to-convert-video-for-instagram/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-convert-video-for-instagram/</guid>
+      <description>Instagram is all about aspect ratio. Convert vertical Reels and Stories at 1080x1920, pick the right codec, and keep quality on mobile — a practical offline workflow with EncodeX.</description>
+      <pubDate>Fri, 18 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>instagram</category>
+      <category>how-to</category>
+    </item>
+    <item>
       <title>Rotate &amp; Mirror Videos — Fix Sideways Clips Without Losing Quality</title>
       <link>https://encodex.in/blog/releases/rotate-and-mirror-videos/</link>
       <guid isPermaLink="true">https://encodex.in/blog/releases/rotate-and-mirror-videos/</guid>
@@ -38,6 +58,16 @@
       <category>release</category>
     </item>
     <item>
+      <title>How to Convert Video for YouTube: Settings That Actually Matter</title>
+      <link>https://encodex.in/blog/posts/how-to-convert-video-for-youtube/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-convert-video-for-youtube/</guid>
+      <description>Preparing video for YouTube without a huge file or a quality cliff. A practical workflow for converting to MP4, choosing 1080p vs 4K, and getting H.264 benefits — all offline with EncodeX.</description>
+      <pubDate>Thu, 17 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>youtube</category>
+      <category>how-to</category>
+    </item>
+    <item>
       <title>Best Free Video Converter in 2026</title>
       <link>https://encodex.in/blog/posts/best-free-video-converter-2026/</link>
       <guid isPermaLink="true">https://encodex.in/blog/posts/best-free-video-converter-2026/</guid>
@@ -46,6 +76,16 @@
       <category>comparison</category>
       <category>video</category>
       <category>2026</category>
+    </item>
+    <item>
+      <title>What Is the Best Video Format? A Decision Framework (2026)</title>
+      <link>https://encodex.in/blog/posts/what-is-the-best-video-format/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/what-is-the-best-video-format/</guid>
+      <description>MP4, MKV, MOV, WebM, H.264, H.265, AV1 — which format should you actually use? A plain-language decision framework for choosing the right format for your goal, not the one everyone says to use.</description>
+      <pubDate>Wed, 16 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>formats</category>
+      <category>video</category>
     </item>
     <item>
       <title>EncodeX V1.0.0-beta.3</title>

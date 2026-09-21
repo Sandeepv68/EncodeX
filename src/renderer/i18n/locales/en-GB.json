@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Powered by",
     "checkingForUpdates": "Checking for updates...",
-    "updateAvailable": "Update available: v{{version}}"
+    "updateAvailable": "Update available: v{{version}}",
+    "downloading": "Downloading v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} ready to install",
+    "installScheduled": "v{{version}} will install on next restart"
   },
   "status": {
     "auto": "Auto",
@@ -490,7 +493,9 @@
     "cancelled": "Cancelled",
     "pathCopied": "Output path copied to clipboard",
     "updateAvailable": "Update available: v{{version}}",
-    "updateNow": "Update Now"
+    "updateNow": "Update Now",
+    "updateDownloaded": "Update v{{version}} downloaded",
+    "viewUpdate": "View"
   },
   "profiles": {
     "searchPlaceholder": "Search profiles...",
@@ -721,6 +726,11 @@
     "cancel": "Cancel",
     "close": "Close",
     "retry": "Retry",
-    "error": "An error occurred while checking for updates."
+    "error": "An error occurred while checking for updates.",
+    "downloadInBackground": "The download is running in the background. You can see its progress in the footer below.",
+    "background": "Continue in background",
+    "installOnRestart": "Install on Next Restart",
+    "installScheduled": "Update v{{version}} will install on the next app restart.",
+    "cancelRestartInstall": "Cancel"
   }
 }

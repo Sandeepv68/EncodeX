@@ -62,7 +62,7 @@ Pick a use case below to learn how.
   <div class="card">
     <h3>🤖 Automate with an AI assistant</h3>
     <p>EncodeX ships with a built-in MCP server — connect Claude, Cursor, VS Code, or any MCP client and ask it to convert, extract, compress, or track a batch job in plain language, all locally.</p>
-    <a href="/features#let-an-ai-assistant-drive">Learn more →</a>
+    <a href="/mcp">Learn more →</a>
   </div>
 
 </div>

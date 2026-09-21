@@ -39,6 +39,26 @@ The EncodeX website itself:
 - Uses no third-party tracking cookies
 - Uses privacy-friendly analytics (no cross-site tracking, no personal data)
 
+## What Telemetry Exists
+
+To be completely transparent, here is every piece of data EncodeX collects — on the website and in the app:
+
+### The website (encodex.in)
+
+- **Cookie-less page-view counts.** We measure aggregate page views with a privacy-first analytics setup — no cookies, no cross-site tracking, no session replay, and nothing tied to your identity. We cannot see who you are.
+
+### The desktop app
+
+- **Consent-gated crash & diagnostics reporting.** The app can report crash diagnostics and anonymous error information to Sentry — and it is **on by default, with a visible toggle in Settings** to turn it off at any time. Everything is governed by a single consent switch (stored locally on your device as `monitoring-consent.json`).
+- **Categorical-only usage events.** When enabled, the app records anonymous, categorical-only events — things like "conversion started" or "profile applied" — through the same breadcrumb channel. By taxonomy design, these payloads contain **no media content, no file names, no folder paths, and no file sizes.** If you disable telemetry, nothing leaves your computer.
+- **No uploads, no cloud processing.** Even with telemetry enabled, your actual media files are never transmitted. Encoding, converting, compressing, or extracting happens entirely in-process on your device.
+
+### In plain terms
+
+- There is **no account** — nothing to sign up for, no profile to maintain
+- Your files **never leave your computer** — no uploads, no cloud processing
+- The app works **fully offline** — telemetry is the only thing that can connect out, it's consent-gated, categorical-only, and can be switched off
+
 ## How It Works
 
 There's no cloud to send your files to. EncodeX bundles the FFmpeg engine directly into the app and runs every conversion **in-process on your device** — the same way your web browser renders a page without it being "sent to a server." If you'd like to verify that, the whole app (including its media-processing pipeline) is open source and documented in the [technical architecture](/docs/architecture).

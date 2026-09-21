@@ -62,3 +62,5 @@ EncodeX Windows, macOS और Linux पर चलता है – एक सच
 - [EncodeX मुफ़्त में डाउनलोड करें](/hi/download) – Windows, Mac और Linux के लिए उपलब्ध
 - [सभी फ़ीचर देखें](/hi/features) – ऐप का पूरा टूर
 - [जानें FFmpeg वास्तव में क्या है](/hi/learn/what-is-ffmpeg) – सरल भाषा में समझाया गया
+- [HandBrake vs EncodeX](/hi/handbrake-alternative) – तुलना देखें
+- [कौन सा फ़ॉर्मैट चुनें?](/hi/learn/what-format-to-use) – सही आउटपुट चुनें

@@ -13,6 +13,7 @@
  *  - not-available: app is up to date
  *  - downloading: download in progress with percent/transferred/total
  *  - downloaded: installer ready to launch
+ *  - restart-scheduled: installer will be applied on the next app restart
  *  - error: an update operation failed
  */
 
@@ -23,7 +24,8 @@ import type { UpdateInfo, UpdateProgress } from '../../shared/types';
  * Possible states of the update manager UI flow.
  * @typedef {string} UpdateStatus
  */
-export type UpdateStatus = 'idle' | 'checking' | 'available' | 'not-available' | 'downloading' | 'downloaded' | 'error';
+export type UpdateStatus =
+  'idle' | 'checking' | 'available' | 'not-available' | 'downloading' | 'downloaded' | 'restart-scheduled' | 'error';
 
 /**
  * State of the update store.
@@ -32,15 +34,20 @@ export type UpdateStatus = 'idle' | 'checking' | 'available' | 'not-available' |
  * @property {UpdateInfo | null} info - Available update metadata, or null.
  * @property {UpdateProgress | null} progress - Live download progress, or null.
  * @property {string | null} installerPath - Path to the downloaded installer, or null.
+ * @property {string | null} scheduledVersion - Version scheduled for next-restart install, or null.
+ * @property {boolean} restartScheduled - Whether a next-restart install is armed.
  * @property {string | null} errorMessage - Error message when status is 'error', or null.
  * @property {boolean} dialogOpen - Whether the update dialog is visible.
  * @property {() => void} checkForUpdates - Triggers an update check via IPC.
  * @property {() => void} downloadUpdate - Starts downloading the matched asset.
  * @property {() => void} cancelDownload - Cancels an in-progress download.
  * @property {() => void} installUpdate - Launches the downloaded installer.
+ * @property {() => void} installOnRestart - Arms a next-restart install via IPC.
+ * @property {() => void} cancelRestartInstall - Disarms a next-restart install via IPC.
  * @property {(url: string) => void} openReleaseNotes - Opens the release page in the browser.
  * @property {() => void} openDialog - Shows the update dialog.
  * @property {() => void} closeDialog - Hides the update dialog.
+ * @property {() => void} hydratePendingInstall - Restores an armed next-restart install from the persisted marker.
  * @property {() => void} reset - Resets the store to idle state.
  */
 export interface UpdateState {
@@ -48,15 +55,20 @@ export interface UpdateState {
   info: UpdateInfo | null;
   progress: UpdateProgress | null;
   installerPath: string | null;
+  scheduledVersion: string | null;
+  restartScheduled: boolean;
   errorMessage: string | null;
   dialogOpen: boolean;
   checkForUpdates: () => void;
   downloadUpdate: () => void;
   cancelDownload: () => void;
   installUpdate: () => void;
+  installOnRestart: () => void;
+  cancelRestartInstall: () => void;
   openReleaseNotes: (url: string) => void;
   openDialog: () => void;
   closeDialog: () => void;
+  hydratePendingInstall: () => void;
   reset: () => void;
 }
 
@@ -78,7 +90,7 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
 
     unsubAvailable =
       window.electronAPI?.onUpdateAvailable((info) => {
-        set({ status: 'available', info, progress: null, errorMessage: null });
+        set({ status: 'available', info, progress: null, errorMessage: null, restartScheduled: false });
       }) || null;
 
     unsubNotAvailable =
@@ -108,11 +120,38 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
     get().checkForUpdates();
   }, 3000);
 
+  /**
+   * Restores a previously armed next-restart install after an app restart.
+   * Reads the persisted marker via IPC; when present, the footer shows the
+   * pending-install state again so the user can install now or cancel.
+   * @returns {void}
+   */
+  function hydratePendingInstall(): void {
+    window.electronAPI
+      ?.getPendingInstall()
+      .then((pending) => {
+        if (!pending) return;
+        set({
+          status: 'restart-scheduled',
+          installerPath: pending.installerPath,
+          scheduledVersion: pending.version,
+          restartScheduled: true,
+        });
+      })
+      .catch(() => {
+        // Failed hydration is non-fatal; the footer simply shows nothing.
+      });
+  }
+
+  hydratePendingInstall();
+
   return {
     status: 'idle',
     info: null,
     progress: null,
     installerPath: null,
+    scheduledVersion: null,
+    restartScheduled: false,
     errorMessage: null,
     dialogOpen: false,
 
@@ -122,7 +161,7 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
     },
 
     downloadUpdate: () => {
-      set({ status: 'downloading', progress: null, errorMessage: null });
+      set({ status: 'downloading', progress: null, errorMessage: null, restartScheduled: false });
       window.electronAPI?.downloadUpdate();
     },
 
@@ -138,6 +177,19 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
       }
     },
 
+    installOnRestart: () => {
+      const { installerPath, info, scheduledVersion } = get();
+      if (!installerPath) return;
+      const version = info?.version || scheduledVersion || '';
+      window.electronAPI?.scheduleInstallOnRestart(installerPath, version);
+      set({ status: 'restart-scheduled', restartScheduled: true, scheduledVersion: version });
+    },
+
+    cancelRestartInstall: () => {
+      window.electronAPI?.cancelRestartInstall();
+      set({ status: 'downloaded', restartScheduled: false });
+    },
+
     openReleaseNotes: (url: string) => {
       window.electronAPI?.openReleaseNotes(url);
     },
@@ -150,12 +202,16 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
       set({ dialogOpen: false });
     },
 
+    hydratePendingInstall,
+
     reset: () => {
       set({
         status: 'idle',
         info: null,
         progress: null,
         installerPath: null,
+        scheduledVersion: null,
+        restartScheduled: false,
         errorMessage: null,
       });
     },

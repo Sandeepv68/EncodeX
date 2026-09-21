@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "බල ගැන්වෙන්නේ",
     "checkingForUpdates": "යාවත්කාලීන පරීක්ෂා කරමින්...",
-    "updateAvailable": "යාවත්කාලීනයක් ඇත: v{{version}}"
+    "updateAvailable": "යාවත්කාලීනයක් ඇත: v{{version}}",
+    "downloading": "v{{version}} බාගත වෙමින් — {{percent}}%",
+    "updateReady": "v{{version}} ස්ථාපනයට සූදානම්",
+    "installScheduled": "v{{version}} ඊළඟ නැවත ආරම්භයේදී ස්ථාපනය වේ"
   },
   "status": {
     "auto": "ස්වයංක්‍රීය",
@@ -490,7 +493,9 @@
     "languageChanged": "භාෂාව {{language}} ලෙස වෙනස් කරන ලදී",
     "cancelled": "අවලංගු කරන ලදී",
     "updateAvailable": "යාවත්කාලීනයක් ඇත: v{{version}}",
-    "updateNow": "දැන් යාවත්කාලීන කරන්න"
+    "updateNow": "දැන් යාවත්කාලීන කරන්න",
+    "updateDownloaded": "යාවත්කාලීනය v{{version}} බාගත විය",
+    "viewUpdate": "බලන්න"
   },
   "profiles": {
     "searchPlaceholder": "පැතිකඩ සොයන්න...",
@@ -721,6 +726,11 @@
     "cancel": "අවලංගු කරන්න",
     "close": "වසන්න",
     "retry": "නැවත උත්සාහ කරන්න",
-    "error": "යාවත්කාලීන පරීක්ෂා කිරීමේදී දෝෂයක් සිදු විය."
+    "error": "යාවත්කාලීන පරීක්ෂා කිරීමේදී දෝෂයක් සිදු විය.",
+    "downloadInBackground": "බාගැනීම පසුබිමේ ක්‍රියාත්මක වේ. එහි ප්‍රගතිය පහළ තීරුවෙන් දැකිය හැක.",
+    "background": "පසුබිමේ ඉදිරියට යන්න",
+    "installOnRestart": "ඊළඟ නැවත ආරම්භයේදී ස්ථාපනය කරන්න",
+    "installScheduled": "යාවත්කාලීනය v{{version}} ඊළඟ යෙදුම නැවත ආරම්භයේදී ස්ථාපනය වේ.",
+    "cancelRestartInstall": "අවලංගු කරන්න"
   }
 }

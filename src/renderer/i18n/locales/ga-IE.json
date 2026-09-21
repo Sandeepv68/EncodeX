@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Á thiomáint ag",
     "checkingForUpdates": "Ag seiceáil le haghaidh nuashonruithe...",
-    "updateAvailable": "Nuashonrú ar fáil: v{{version}}"
+    "updateAvailable": "Nuashonrú ar fáil: v{{version}}",
+    "downloading": "Á íoslódáil v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} réidh le suiteáil",
+    "installScheduled": "Suiteálfar v{{version}} ar an gcéad atosú eile"
   },
   "status": {
     "auto": "Uathoibríoch",
@@ -490,7 +493,9 @@
     "languageChanged": "Athraíodh an teanga go {{language}}",
     "cancelled": "Cealaithe",
     "updateAvailable": "Nuashonrú ar fáil: v{{version}}",
-    "updateNow": "Nuashonraigh anois"
+    "updateNow": "Nuashonraigh anois",
+    "updateDownloaded": "Nuashonrú v{{version}} íoslódáilte",
+    "viewUpdate": "Féach"
   },
   "profiles": {
     "searchPlaceholder": "Cuardaigh próifílí...",
@@ -721,6 +726,11 @@
     "cancel": "Cealaigh",
     "close": "Dún",
     "retry": "Déan iarracht arís",
-    "error": "Tharla earráid agus na nuashonruithe á seiceáil."
+    "error": "Tharla earráid agus na nuashonruithe á seiceáil.",
+    "downloadInBackground": "Leanann an t-íoslódáil ar aghaidh sa chúlra. Feicfidh tú a dhul chun cinn sa bhuntásc thíos.",
+    "background": "Lean ar aghaidh sa chúlra",
+    "installOnRestart": "Suiteáil ar an gcéad atosú eile",
+    "installScheduled": "Suiteálfar nuashonrú v{{version}} ar an gcéad atosú eile den aip.",
+    "cancelRestartInstall": "Cealaigh"
   }
 }

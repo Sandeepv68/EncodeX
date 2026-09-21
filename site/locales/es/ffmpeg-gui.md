@@ -62,3 +62,5 @@ EncodeX funciona en Windows, macOS y Linux — una verdadera **interfaz gráfica
 - [Descarga EncodeX gratis](/es/download) — disponible para Windows, Mac y Linux
 - [Mira todas las funciones](/es/features) — un recorrido completo de la app
 - [Aprende qué es realmente FFmpeg](/es/learn/what-is-ffmpeg) — una explicación amigable
+- [HandBrake vs EncodeX](/es/handbrake-alternative) — compara las herramientas
+- [¿Qué formato de video elegir?](/es/learn/what-format-to-use) — elige la salida adecuada

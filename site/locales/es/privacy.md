@@ -39,6 +39,26 @@ El sitio web de EncodeX en sí:
 - No utiliza cookies de seguimiento de terceros
 - Utiliza análisis respetuosos con la privacidad (sin seguimiento entre sitios, sin datos personales)
 
+## Qué telemetría existe
+
+Para ser completamente transparentes, aquí está cada dato que EncodeX recopila — en la web y en la aplicación:
+
+### El sitio web (encodex.in)
+
+- **Conteos de páginas vistas sin cookies.** Medimos las visitas agregadas con una configuración de análisis que respeta la privacidad — sin cookies, sin seguimiento entre sitios, sin repetición de sesiones y nada vinculado a tu identidad. No podemos ver quién eres.
+
+### La aplicación de escritorio
+
+- **Informes de errores y diagnósticos con consentimiento.** La aplicación puede enviar diagnósticos de fallos e información de errores anónima a Sentry — y está **activada por defecto, con un interruptor visible en Ajustes** para desactivarla cuando quieras. Todo está gobernado por un único interruptor de consentimiento (guardado localmente en tu dispositivo como `monitoring-consent.json`).
+- **Eventos de uso solo por categorías.** Cuando está activada, la aplicación registra eventos anónimos y solo por categorías — cosas como «conversión iniciada» o «perfil aplicado» — a través del mismo canal de breadcrumbs. Por diseño de taxonomía, estos datos **no contienen contenido multimedia, ni nombres de archivo, ni rutas de carpetas, ni tamaños de archivo.** Si desactivas la telemetría, nada sale de tu equipo.
+- **Sin subidas, sin procesamiento en la nube.** Incluso con la telemetría activada, tus archivos multimedia reales nunca se transmiten. Codificar, convertir, comprimir o extraer ocurre enteramente dentro de tu dispositivo.
+
+### En términos simples
+
+- No hay **cuenta** — nada que crear, ningún perfil que mantener
+- Tus archivos **nunca salen de tu equipo** — sin subidas, sin procesamiento en la nube
+- La aplicación funciona **completamente sin conexión** — la telemetría es lo único que puede conectarse, requiere consentimiento, es solo por categorías y se puede desactivar
+
 ## Cómo funciona
 
 No hay nube a la que enviar tus archivos. EncodeX incluye el motor FFmpeg directamente en la aplicación y ejecuta cada conversión **en el proceso de tu dispositivo** — de la misma manera que tu navegador web renderiza una página sin que se envíe a un servidor. Si quieres verificarlo, toda la aplicación (incluida su canal de procesamiento multimedia) es de código abierto y está documentada en la [arquitectura técnica](/es/docs/architecture).

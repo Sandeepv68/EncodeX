@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Drevet av",
     "checkingForUpdates": "Sjekker for oppdateringer...",
-    "updateAvailable": "Oppdatering tilgjengelig: v{{version}}"
+    "updateAvailable": "Oppdatering tilgjengelig: v{{version}}",
+    "downloading": "Laster ned v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} klar til installasjon",
+    "installScheduled": "v{{version}} installeres ved neste omstart"
   },
   "status": {
     "auto": "Automatisk",
@@ -490,7 +493,9 @@
     "languageChanged": "Språk endret til {{language}}",
     "cancelled": "Avbrutt",
     "updateAvailable": "Oppdatering tilgjengelig: v{{version}}",
-    "updateNow": "Oppdater nå"
+    "updateNow": "Oppdater nå",
+    "updateDownloaded": "Oppdatering v{{version}} lastet ned",
+    "viewUpdate": "Vis"
   },
   "profiles": {
     "searchPlaceholder": "Søk i profiler...",
@@ -721,6 +726,11 @@
     "cancel": "Avbryt",
     "close": "Lukk",
     "retry": "Prøv igjen",
-    "error": "Det oppstod en feil under søket etter oppdateringer."
+    "error": "Det oppstod en feil under søket etter oppdateringer.",
+    "downloadInBackground": "Nedlastingen fortsetter i bakgrunnen. Du kan se fremdriften i bunnteksten.",
+    "background": "Fortsett i bakgrunnen",
+    "installOnRestart": "Installer ved neste omstart",
+    "installScheduled": "Oppdatering v{{version}} installeres ved neste omstart av appen.",
+    "cancelRestartInstall": "Avbryt"
   }
 }

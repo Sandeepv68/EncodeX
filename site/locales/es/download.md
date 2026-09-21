@@ -62,6 +62,9 @@ Nada especial — si tu computadora es de los últimos años, estás bien:
 - **Espacio en disco:** unos 400 MB (la app incluye todo lo que necesita — sin descargas extra)
 - **Memoria:** cualquier cantidad normal funciona
 
+> **¿Por qué EncodeX ocupa unos 400 MB?**
+> EncodeX incluye el motor FFmpeg y todos los componentes necesarios, así que nunca instalas FFmpeg, códecs ni nada por separado — y tampoco descargas extras más tarde. Nada se sube a internet ni se procesa en la nube: cada conversión ocurre [localmente en tu ordenador](/es/features).
+
 ## Mantenerlo actualizado
 
 Cuando sale una versión nueva, EncodeX te avisa dentro de la app y puede descargar e iniciar la actualización por ti — no hace falta volver a esta página.
@@ -79,6 +82,10 @@ Si algo no funciona o tienes una pregunta, envía un correo a **[developer@encod
 ## Privacidad
 
 Entendemos que la confianza importa. Cada conversión ocurre en tu computadora — tus archivos nunca se suben, rastrean ni almacenan en un servidor. Lee la [política de privacidad completa](/es/privacy).
+
+## Seguridad
+
+Cada versión incluye [sumas de verificación SHA-256 verificables y compilaciones firmadas](/es/security) — y si encuentras un problema, puedes reportarlo de forma privada. Consulta la [página de seguridad](/es/security) para más detalles.
 
 ## Para desarrolladores: compílelo tú mismo
 

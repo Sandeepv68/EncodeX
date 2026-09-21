@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "द्वारा संचालित",
     "checkingForUpdates": "अपडेट की जाँच हो रही है...",
-    "updateAvailable": "अपडेट उपलब्ध: v{{version}}"
+    "updateAvailable": "अपडेट उपलब्ध: v{{version}}",
+    "downloading": "v{{version}} डाउनलोड हो रहा है — {{percent}}%",
+    "updateReady": "v{{version}} इंस्टॉल करने के लिए तैयार",
+    "installScheduled": "v{{version}} अगले रीस्टार्ट पर इंस्टॉल होगा"
   },
   "status": {
     "auto": "स्वचालित",
@@ -490,7 +493,9 @@
     "cancelled": "रद्द",
     "pathCopied": "आउटपुट पथ क्लिपबोर्ड पर कॉपी हो गया",
     "updateAvailable": "अपडेट उपलब्ध: v{{version}}",
-    "updateNow": "अभी अपडेट करें"
+    "updateNow": "अभी अपडेट करें",
+    "updateDownloaded": "अपडेट v{{version}} डाउनलोड हुआ",
+    "viewUpdate": "देखें"
   },
   "profiles": {
     "searchPlaceholder": "प्रोफ़ाइल खोजें...",
@@ -721,6 +726,11 @@
     "cancel": "रद्द करें",
     "close": "बंद करें",
     "retry": "पुनः प्रयास करें",
-    "error": "अपडेट की जांच के दौरान एक त्रुटि हुई।"
+    "error": "अपडेट की जांच के दौरान एक त्रुटि हुई।",
+    "downloadInBackground": "डाउनलोड बैकग्राउंड में जारी है। इसकी प्रगति आप फुटर में देख सकते हैं।",
+    "background": "बैकग्राउंड में जारी रखें",
+    "installOnRestart": "अगले रीस्टार्ट पर इंस्टॉल करें",
+    "installScheduled": "अपडेट v{{version}} अगले ऐप रीस्टार्ट पर इंस्टॉल होगा।",
+    "cancelRestartInstall": "रद्द करें"
   }
 }

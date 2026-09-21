@@ -62,6 +62,9 @@ Rien de spécial — si votre machine a quelques années au plus, tout va bien :
 - **Disque :** environ 400 Mo (l'appli embarque tout ce qu'il lui faut — aucun téléchargement supplémentaire)
 - **Mémoire :** une quantité normale suffit
 
+> **Pourquoi EncodeX fait-il ~400 Mo ?**
+> EncodeX embarque le moteur FFmpeg et tous les composants pris en charge, si bien que vous n'installez jamais FFmpeg, de codecs ou quoi que ce soit séparément — et vous ne téléchargez aucun extra plus tard. Rien n'est envoyé en ligne et rien ne tourne dans le cloud : chaque conversion se fait [localement sur votre ordinateur](/fr/features).
+
 ## Rester à jour
 
 Quand une nouvelle version sort, EncodeX vous prévient dans l'appli et peut télécharger et lancer la mise à jour pour vous — inutile de revenir sur cette page.
@@ -79,6 +82,10 @@ Si quelque chose ne fonctionne pas ou si vous avez une question, écrivez à **[
 ## Confidentialité
 
 Nous comprenons que la confiance compte. Chaque conversion se fait sur votre ordinateur — vos fichiers ne sont jamais envoyés, suivis ni stockés sur un serveur. Consultez la [politique de confidentialité](/fr/privacy).
+
+## Sécurité
+
+Chaque version inclut des [sommes de contrôle SHA-256 vérifiables et des builds signés](/fr/security) — et si vous trouvez un problème, vous pouvez le signaler de manière privée. Consultez la [page sécurité](/fr/security) pour plus de détails.
 
 ## Pour les développeurs : compilez-le vous-même
 

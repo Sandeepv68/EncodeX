@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "مدعوم بواسطة",
     "checkingForUpdates": "جارٍ التحقق من التحديثات...",
-    "updateAvailable": "تحديث متاح: v{{version}}"
+    "updateAvailable": "تحديث متاح: v{{version}}",
+    "downloading": "جارٍ تنزيل v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} جاهز للتثبيت",
+    "installScheduled": "سيتم تثبيت v{{version}} عند إعادة التشغيل التالية"
   },
   "status": {
     "auto": "تلقائي",
@@ -490,7 +493,9 @@
     "cancelled": "تم الإلغاء",
     "pathCopied": "تم نسخ مسار الإخراج إلى الحافظة",
     "updateAvailable": "تحديث متاح: v{{version}}",
-    "updateNow": "تحديث الآن"
+    "updateNow": "تحديث الآن",
+    "updateDownloaded": "تم تنزيل التحديث v{{version}}",
+    "viewUpdate": "عرض"
   },
   "profiles": {
     "searchPlaceholder": "البحث عن ملفات تعريف...",
@@ -721,6 +726,11 @@
     "cancel": "إلغاء",
     "close": "إغلاق",
     "retry": "إعادة المحاولة",
-    "error": "حدث خطأ أثناء التحقق من التحديثات."
+    "error": "حدث خطأ أثناء التحقق من التحديثات.",
+    "downloadInBackground": "يستمر التنزيل في الخلفية. يمكنك مشاهدة تقدمه في الشريط السفلي.",
+    "background": "متابعة في الخلفية",
+    "installOnRestart": "تثبيت عند إعادة التشغيل التالية",
+    "installScheduled": "سيتم تثبيت التحديث v{{version}} عند إعادة تشغيل التطبيق التالية.",
+    "cancelRestartInstall": "إلغاء"
   }
 }

@@ -39,7 +39,7 @@ import { readMcpSettings } from './mcp/settings';
 import type { McpSettings } from './mcp/settings';
 import { registerMcpSettingsIpc } from './mcp/settings-ipc';
 import { getVideoPreview } from './video-preview';
-import { checkForUpdate } from './updater';
+import { checkForUpdate, autoInstallPendingUpdate } from './updater';
 import { createTranscoder } from './transcoders/factory';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { Logger } from '../shared/logger';
@@ -477,8 +477,10 @@ if (process.argv.includes('--mcp')) {
         arch: process.arch,
       }),
     );
-    createSplashWindow();
-    createWindow();
+    void autoInstallPendingUpdate().then(() => {
+      createSplashWindow();
+      createWindow();
+    });
     registerMcpSettingsIpc({
       userDataDir: app.getPath('userData'),
       apply: applyMcpSettings,

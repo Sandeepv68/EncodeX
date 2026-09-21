@@ -15,7 +15,7 @@ import * as https from 'https';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from '../shared/logger';
-import type { UpdateInfo, UpdateAsset, UpdateProgress } from '../shared/types';
+import type { UpdateInfo, UpdateAsset, UpdateProgress, PendingInstall } from '../shared/types';
 import {
   LOG_UPDATER_CHECKING,
   LOG_UPDATER_AVAILABLE,
@@ -26,6 +26,11 @@ import {
   LOG_UPDATER_ERROR,
   LOG_UPDATER_CANCELLED,
   LOG_UPDATER_OPEN_RELEASE_NOTES,
+  LOG_UPDATER_SCHEDULED_RESTART_INSTALL,
+  LOG_UPDATER_CANCELLED_RESTART_INSTALL,
+  LOG_UPDATER_READ_PENDING_INSTALL,
+  LOG_UPDATER_APPLYING_PENDING_INSTALL,
+  LOG_UPDATER_NO_PENDING_INSTALL,
 } from '../shared/log-constants';
 
 const log = new Logger('main/updater');
@@ -256,6 +261,117 @@ function getUpdateDir(): string {
 }
 
 /**
+ * File name of the pending restart-install marker inside the userData dir.
+ * @const {string}
+ */
+const PENDING_INSTALL_FILENAME = 'pending-install.json';
+
+/**
+ * Resolves the absolute path of the pending restart-install marker file.
+ * Stored under `userData` (not the volatile temp dir) so it survives OS temp
+ * cleanup between sessions.
+ *
+ * @returns {string} Absolute path of the marker file.
+ */
+function getPendingInstallPath(): string {
+  return path.join(app.getPath('userData'), PENDING_INSTALL_FILENAME);
+}
+
+/**
+ * Persists a pending "apply this update on the next app restart" marker.
+ *
+ * The marker is written to `userData/pending-install.json` and consumed by
+ * {@link autoInstallPendingUpdate} on the next GUI-mode startup, where the
+ * installer is launched before the window opens.
+ *
+ * @param {string} installerPath - Absolute path of the downloaded installer.
+ * @param {string} version - Update version the installer targets.
+ * @returns {void}
+ */
+export function scheduleInstallOnRestart(installerPath: string, version: string): void {
+  log.info(LOG_UPDATER_SCHEDULED_RESTART_INSTALL, installerPath, version);
+  try {
+    fs.mkdirSync(app.getPath('userData'), { recursive: true });
+    const payload: PendingInstall = { installerPath, version };
+    fs.writeFileSync(getPendingInstallPath(), JSON.stringify(payload, null, 2), 'utf-8');
+  } catch (err) {
+    log.warn(LOG_UPDATER_ERROR, 'Failed to persist restart install marker:', err);
+  }
+}
+
+/**
+ * Removes the pending restart-install marker, if present. Idempotent.
+ *
+ * @returns {void}
+ */
+export function cancelRestartInstall(): void {
+  log.info(LOG_UPDATER_CANCELLED_RESTART_INSTALL);
+  try {
+    const filePath = getPendingInstallPath();
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  } catch (err) {
+    log.warn(LOG_UPDATER_ERROR, 'Failed to remove restart install marker:', err);
+  }
+}
+
+/**
+ * Reads the pending restart-install marker, returning null when absent, empty,
+ * or corrupt. Never throws.
+ *
+ * @returns {PendingInstall | null} The persisted marker, or null.
+ */
+export function readPendingInstall(): PendingInstall | null {
+  try {
+    const filePath = getPendingInstallPath();
+    if (!fs.existsSync(filePath)) return null;
+    const raw = fs.readFileSync(filePath, 'utf-8');
+    if (!raw.trim()) return null;
+    const parsed = JSON.parse(raw) as Partial<PendingInstall>;
+    if (!parsed || typeof parsed.installerPath !== 'string' || typeof parsed.version !== 'string') {
+      return null;
+    }
+    log.info(LOG_UPDATER_READ_PENDING_INSTALL, parsed.installerPath, parsed.version);
+    return { installerPath: parsed.installerPath, version: parsed.version };
+  } catch (err) {
+    log.warn(LOG_UPDATER_ERROR, 'Failed to read restart install marker:', err);
+    return null;
+  }
+}
+
+/**
+ * Applies a pending restart-install marker at startup.
+ *
+ * When a marker exists the installer is launched and the app quits before any
+ * window is created. The marker is always cleared first (single fire), so a
+ * cancelled installer dialog never re-launches on the next start. Missing
+ * installer files and markers whose version is already installed are skipped
+ * silently.
+ *
+ * @returns {Promise<void>} Resolves once any pending install has been handled.
+ */
+export async function autoInstallPendingUpdate(): Promise<void> {
+  const pending = readPendingInstall();
+  if (!pending) {
+    log.info(LOG_UPDATER_NO_PENDING_INSTALL);
+    return;
+  }
+  cancelRestartInstall();
+  if (!fs.existsSync(pending.installerPath)) {
+    log.warn(LOG_UPDATER_ERROR, 'Pending installer missing:', pending.installerPath);
+    return;
+  }
+  if (pending.version && compareVersions(pending.version, app.getVersion()) <= 0) {
+    log.info(LOG_UPDATER_NOT_AVAILABLE, 'Pending version', pending.version, 'already installed');
+    return;
+  }
+  log.info(LOG_UPDATER_APPLYING_PENDING_INSTALL, pending.installerPath);
+  await shell.openPath(pending.installerPath);
+  app.quit();
+}
+
+/**
  * Downloads a file from the given URL to the update directory, reporting
  * progress via the BrowserWindow's webContents.
  *
@@ -381,6 +497,7 @@ export function cancelDownload(): void {
  */
 export async function installUpdate(installerPath: string): Promise<void> {
   log.info(LOG_UPDATER_INSTALLING, installerPath);
+  cancelRestartInstall();
   await shell.openPath(installerPath);
   app.quit();
 }

@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Drivs av",
     "checkingForUpdates": "Söker efter uppdateringar...",
-    "updateAvailable": "Uppdatering tillgänglig: v{{version}}"
+    "updateAvailable": "Uppdatering tillgänglig: v{{version}}",
+    "downloading": "Laddar ner v{{version}} — {{percent}}%",
+    "updateReady": "v{{version}} redo att installera",
+    "installScheduled": "v{{version}} installeras vid nästa omstart"
   },
   "status": {
     "auto": "Automatiskt",
@@ -490,7 +493,9 @@
     "cancelled": "Avbruten",
     "pathCopied": "Utmatningssökvägen kopierad till urklipp",
     "updateAvailable": "Uppdatering tillgänglig: v{{version}}",
-    "updateNow": "Uppdatera nu"
+    "updateNow": "Uppdatera nu",
+    "updateDownloaded": "Uppdatering v{{version}} nedladdad",
+    "viewUpdate": "Visa"
   },
   "profiles": {
     "searchPlaceholder": "Sök profiler...",
@@ -721,6 +726,11 @@
     "cancel": "Avbryt",
     "close": "Stäng",
     "retry": "Försök igen",
-    "error": "Ett fel inträffade vid sökning efter uppdateringar."
+    "error": "Ett fel inträffade vid sökning efter uppdateringar.",
+    "downloadInBackground": "Nedladdningen fortsätter i bakgrunden. Du kan se förloppet i sidfoten.",
+    "background": "Fortsätt i bakgrunden",
+    "installOnRestart": "Installera vid nästa omstart",
+    "installScheduled": "Uppdatering v{{version}} installeras nästa gång appen startas om.",
+    "cancelRestartInstall": "Avbryt"
   }
 }

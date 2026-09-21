@@ -471,7 +471,10 @@
     "version": "v{{version}}",
     "poweredBy": "Pissusianit",
     "checkingForUpdates": "Kontrollerit minusqaat...",
-    "updateAvailable": "Minusqaat princessaluarpoq: v{{version}}"
+    "updateAvailable": "Minusqaat princessaluarpoq: v{{version}}",
+    "downloading": "v{{version}} niisissutigineqarpoq — {{percent}}%",
+    "updateReady": "v{{version}} installeriqisinnaavoq",
+    "installScheduled": "v{{version}} isikkiveqarfissamut tullermut installeriqineqassaaq"
   },
   "status": {
     "auto": "Automatisk",
@@ -490,7 +493,9 @@
     "languageChanged": "Oqaatsit {{language}}-imut allanngortinneqarput",
     "cancelled": "Piumasuunngineqarpoq",
     "updateAvailable": "Minusqaat princessaluarpoq: v{{version}}",
-    "updateNow": "Minusqigivit nuannillit"
+    "updateNow": "Minusqigivit nuannillit",
+    "updateDownloaded": "Uppdateriaq v{{version}} niissutigineqarpoq",
+    "viewUpdate": "Takuss"
   },
   "profiles": {
     "searchPlaceholder": "Ugisinnaanut misissuisoq...",
@@ -721,6 +726,11 @@
     "cancel": "Ajuffissit",
     "close": "Kingullugu",
     "retry": "Mallaaritseq",
-    "error": "Toqqinnerpaat updatingmik imai eqqinnaanermik."
+    "error": "Toqqinnerpaat updatingmik imai eqqinnaanermik.",
+    "downloadInBackground": "Niisissut uummatigut ingerlaannassaaq. Qileriataa erectorujussuup naa kangmut takuneqarsinnaavoq.",
+    "background": "Uummatigut ingerlalluarit",
+    "installOnRestart": "Isikkiveqarfissamut tullermut instal",
+    "installScheduled": "Uppdateriaq v{{version}} aappersaallu aallartikkatigu installeriqineqassaaq.",
+    "cancelRestartInstall": "Ajuffissit"
   }
 }
