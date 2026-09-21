@@ -1,7 +1,6 @@
 <template>
   <footer class="site-footer">
     <div class="sf-shell">
-      <p class="sf-descriptor">{{ t.descriptor }}</p>
       <div class="sf-cols">
         <div class="sf-brand">
           <div class="sf-brand-row">
@@ -59,7 +58,6 @@ const year = new Date().getFullYear()
 
 const strings = {
   en: {
-    descriptor: 'EncodeX is an open-source multimedia application built around FFmpeg.',
     tagline: 'The free, friendly way to convert videos, extract music, trim clips, and shrink photos.',
     product: 'Product', features: 'Features', download: 'Download', blog: 'Blog',
     project: 'Project', license: 'License (MIT)', security: 'Security',
@@ -69,7 +67,6 @@ const strings = {
     madeWith: 'Made with',
   },
   es: {
-    descriptor: 'EncodeX es una aplicación multimedia de código abierto construida alrededor de FFmpeg.',
     tagline: 'La forma gratuita y sencilla de convertir vídeos, extraer música, recortar clips y reducir fotos.',
     product: 'Producto', features: 'Características', download: 'Descargar', blog: 'Blog',
     project: 'Proyecto', license: 'Licencia (MIT)', security: 'Seguridad',
@@ -79,7 +76,6 @@ const strings = {
     madeWith: 'Hecho con',
   },
   fr: {
-    descriptor: "EncodeX est une application multimédia open source construite autour de FFmpeg.",
     tagline: 'La façon gratuite et simple de convertir des vidéos, extraire de la musique, couper des clips et alléger vos photos.',
     product: 'Produit', features: 'Fonctionnalités', download: 'Télécharger', blog: 'Blog',
     project: 'Projet', license: 'Licence (MIT)', security: 'Sécurité',
@@ -89,7 +85,6 @@ const strings = {
     madeWith: 'Réalisé avec',
   },
   de: {
-    descriptor: 'EncodeX ist eine quelloffene Multimedia-Anwendung rund um FFmpeg.',
     tagline: 'Der kostenlose und einfache Weg, Videos zu konvertieren, Musik zu extrahieren, Clips zu schneiden und Fotos zu verkleinern.',
     product: 'Produkt', features: 'Funktionen', download: 'Download', blog: 'Blog',
     project: 'Projekt', license: 'MIT-Lizenz', security: 'Sicherheit',
@@ -99,7 +94,6 @@ const strings = {
     madeWith: 'Gemacht mit',
   },
   'pt-BR': {
-    descriptor: 'O EncodeX é um aplicativo multimídia de código aberto construído em torno do FFmpeg.',
     tagline: 'O jeito gratuito e simples de converter vídeos, extrair música, cortar clipes e reduzir fotos.',
     product: 'Produto', features: 'Recursos', download: 'Download', blog: 'Blog',
     project: 'Projeto', license: 'Licença (MIT)', security: 'Segurança',
@@ -109,7 +103,6 @@ const strings = {
     madeWith: 'Feito com',
   },
   'zh-CN': {
-    descriptor: 'EncodeX 是一个围绕 FFmpeg 构建的开源多媒体应用。',
     tagline: '免费、友好的视频转换工具：提取音乐、剪辑片段、压缩照片。',
     product: '产品', features: '功能特性', download: '下载', blog: '博客',
     project: '项目', license: 'MIT 许可证', security: '安全',
@@ -119,7 +112,6 @@ const strings = {
     madeWith: '由社区用心打造',
   },
   hi: {
-    descriptor: 'EncodeX FFmpeg के इर्द-गिर्द बना एक ओपन-सोर्स मल्टीमीडिया ऐप है।',
     tagline: 'वीडियो बदलने, म्यूज़िक निकालने, क्लिप ट्रिम करने और फ़ोटो छोटी करने का मुफ़्त और आसान तरीक़ा।',
     product: 'प्रोडक्ट', features: 'फ़ीचर्स', download: 'डाउनलोड', blog: 'ब्लॉग',
     project: 'प्रोजेक्ट', license: 'MIT लाइसेंस', security: 'सुरक्षा',
