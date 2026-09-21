@@ -1,49 +1,155 @@
 ---
 layout: home
+title: "EncodeX — Convertisseur vidéo gratuit avec FFmpeg pour Windows, Mac et Linux"
 description: "EncodeX est une interface FFmpeg gratuite et open source pour Windows, macOS et Linux. Convertissez vidéos et audios, compressez des fichiers, coupez des clips et extrayez de la musique — entièrement sur votre ordinateur, sans ligne de commande. Inclut un serveur MCP intégré pour les assistants IA."
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 
 hero:
-  name: EncodeX
+  name: EncodeX<br>Gratuit et open source · Windows · macOS · Linux
   text: La puissance de FFmpeg. Sans la ligne de commande.
   tagline: Une interface FFmpeg gratuite et open source pour Windows, macOS et Linux. Convertissez des vidéos, extrayez l'audio, coupez des clips et allégez des fichiers — tout se passe sur votre ordinateur, rien ne le quitte.
   image:
-    src: /images/icon.webp
-    alt: Logo EncodeX
+    src: /images/home_dashboard.webp
+    alt: Écran d'accueil d'EncodeX avec une vidéo chargée et le profil YouTube 1080p sélectionné
   actions:
     - theme: brand
       text: Télécharger maintenant — C'est gratuit
       link: /fr/download
     - theme: alt
-      text: Découvrir ce qu'il sait faire
-      link: /fr/features
-
-features:
-  - icon: "\ud83d\udd04"
-    title: Lisez n'importe quelle vidéo partout
-    details: Une vidéo que votre téléphone, TV ou ordinateur refuse d'ouvrir ? Convertissez-la dans un format qui fonctionne simplement, sans connaissances techniques.
-  - icon: "\ud83c\udfb5"
-    title: Gardez la musique d'une vidéo
-    details: Transformez n'importe quelle vidéo en MP3 en quelques secondes. Parfait pour les cours, interviews, concerts ou cette chanson introuvable.
-  - icon: "\u2702\ufe0f"
-    title: Coupez ce qui est ennuyeux
-    details: Supprimez les passages inutiles de vos vidéos. Regardez, choisissez où couper, gardez seulement le meilleur.
-  - icon: "\ud83d\udcf8"
-    title: Allégez vos photos pour les partager
-    details: Rendez vos photos plus légères pour qu'elles s'envoient plus vite et tiennent dans les e-mails, sans devenir floues.
-  - icon: "\ud83d\udce6"
-    title: Convertissez plusieurs fichiers d'un coup
-    details: Glissez un dossier entier et laissez EncodeX travailler pendant que vous faites autre chose. Il peut même éteindre le PC à la fin.
-  - icon: "\u26a1"
-    title: Rapide même avec les gros fichiers
-    details: EncodeX exploite la puissance de votre carte graphique pour convertir bien plus vite. Sans aucun réglage.
-  - icon: "\ud83c\udf00"
-    title: Faites pivoter les vidéos et corrigez les clips de travers
-    details: Filmé à l'envers ? Pivotez des clips de 90°, 180° ou 270° et retournez-les — sans perte de qualité en conservant MP4/MOV/MKV.
-  - icon: "\ud83e\udd16"
-    title: Confiez la tâche à votre assistant IA
-    details: Connectez Claude, Cursor ou VS Code et demandez simplement. Le serveur MCP intégré d'EncodeX convertit les fichiers, extrait l'audio, compresse les images et gère les files par lots — le tout sur votre propre machine.
+      text: Voir sur GitHub →
+      link: https://github.com/Sandeepv68/EncodeX
 
 ---
+
+<div class="trust-strip">
+  <span>Gratuit pour toujours</span>
+  <span>Aucun compte</span>
+  <span>Aucun filigrane</span>
+  <span>100 % local</span>
+</div>
+
+## Ce qu'il peut faire pour vous
+
+Dites à EncodeX ce que vous voulez faire, et il s'occupe de la partie technique.
+
+<div class="card-grid three-col">
+  <div class="card">
+    <span class="card-emoji">🎬</span>
+    <p class="card-head">Convertissez n'importe quoi, lisez-le partout</p>
+    <p>MP4, MKV, AVI, MOV, WebM et plus. Choisissez l'appareil sur lequel vous voulez regarder, et EncodeX s'occupe du format.</p>
+    <p><a href="/fr/video-converter">Convertisseur vidéo →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">📦</span>
+    <p class="card-head">Allégez les gros fichiers</p>
+    <p>Des MP4 et MKV plus petits qui tiennent dans les e-mails, messages et limites d'upload — avec à peine une différence visible.</p>
+    <p><a href="/fr/video-compressor">Compresseur vidéo →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">✂️</span>
+    <p class="card-head">Gardez seulement les bons moments</p>
+    <p>Coupez aux moments exacts que vous voulez. Si vous savez déplacer un curseur, vous savez couper une vidéo.</p>
+    <p><a href="/fr/use-cases">Voir les cas d'usage →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎧</span>
+    <p class="card-head">Transformez les vidéos en musique</p>
+    <p>Extrayez un MP3, M4A, FLAC ou WAV de n'importe quelle vidéo — cours, interviews, concerts.</p>
+    <p><a href="/fr/audio-converter">Convertisseur audio →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🗂️</span>
+    <p class="card-head">Traitez tout un dossier d'un coup</p>
+    <p>Déposez 50 fichiers et partez. EncodeX les traite — il peut même éteindre le PC à la fin.</p>
+    <p><a href="/fr/features">Toutes les fonctionnalités →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🖼️</span>
+    <p class="card-head">Corrigez et allégez vos images</p>
+    <p>Réduisez vos photos pour les partager et faites pivoter les prises de vue latérales — sans perte si le format est conservé.</p>
+    <p><a href="/fr/features">Toutes les fonctionnalités →</a></p>
+  </div>
+</div>
+
+## Dans une seule fenêtre simple
+
+Rien à apprendre. Quatre étapes, du début à la fin :
+
+<div class="workflow-steps">
+  <div class="wf-step">
+    <span class="wf-num">1</span>
+    <p class="card-head">Déposer</p>
+    <p>Glissez <code>vacation.mkv</code> dans la fenêtre.</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">2</span>
+    <p class="card-head">Choisir</p>
+    <p>Choisissez 📱 Téléphone — EncodeX opte pour MP4 1080p.</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">3</span>
+    <p class="card-head">Convertir</p>
+    <p>EncodeX exécute FFmpeg pour vous, avec votre GPU.</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">4</span>
+    <p class="card-head">Terminé</p>
+    <p><code>vacation.mp4</code> est prêt à l'endroit où vous l'avez laissé.</p>
+  </div>
+</div>
+
+<div class="privacy-band">
+  <h2>Vos vidéos ne quittent jamais votre ordinateur.</h2>
+  <p>EncodeX traite vos médias en local grâce au moteur FFmpeg intégré. Rien n'est téléversé, rien n'est suivi, rien n'est stocké sur un serveur.</p>
+  <ul class="checklist">
+    <li>✅ Aucun téléversement dans le cloud</li>
+    <li>✅ Aucun compte requis</li>
+    <li>✅ Aucun abonnement</li>
+    <li>✅ Aucun filigrane</li>
+    <li>✅ Aucune limite de taille de fichier</li>
+    <li>✅ Fonctionne hors ligne</li>
+  </ul>
+  <p><a href="/fr/privacy">En savoir plus sur la façon dont EncodeX protège votre vie privée →</a> · <a href="/fr/security">Voyez comment les versions sont signées et vérifiées →</a></p>
+</div>
+
+## Choisissez un objectif, pas un codec
+
+Plus de 140 profils intégrés font la configuration. Vous n'avez qu'à dire ce que vous voulez.
+
+<div class="card-grid three-col">
+  <div class="card">
+    <p class="card-head">📱 Téléphone</p>
+    <p>MP4 léger qui se lit partout.</p>
+    <p><a href="/fr/video-converter">MP4 →</a></p>
+  </div>
+  <div class="card">
+    <p class="card-head">▶️ YouTube</p>
+    <p>MP4 1080p prêt à mettre en ligne.</p>
+    <p><a href="/fr/features">Profils YouTube →</a></p>
+  </div>
+  <div class="card">
+    <p class="card-head">📸 Instagram Reels</p>
+    <p>H.264 vertical dans le bon ratio.</p>
+    <p><a href="/fr/features">Profils Reels →</a></p>
+  </div>
+  <div class="card">
+    <p class="card-head">💬 WhatsApp</p>
+    <p>MP4 compact qui s'envoie vite.</p>
+    <p><a href="/fr/compress/mp4">Compresser MP4 →</a></p>
+  </div>
+  <div class="card">
+    <p class="card-head">📧 E-mail</p>
+    <p>MP4 léger qui tient dans la limite de taille.</p>
+    <p><a href="/fr/compress/mp4">Compresser MP4 →</a></p>
+  </div>
+  <div class="card">
+    <p class="card-head">🎬 Montage vidéo</p>
+    <p>ProRes 422 pour les flux de travail professionnels.</p>
+    <p><a href="/fr/codecs/prores">ProRes →</a></p>
+  </div>
+</div>
+
+> **Pas besoin de comprendre les codecs. Il suffit de choisir ce que vous voulez faire.**
 
 ## Ça vous parle ?
 
@@ -82,63 +188,6 @@ Vous n'êtes pas seul. Voici les problèmes du quotidien qu'EncodeX résout :
   </div>
 </div>
 
-## Voyez-le en action
-
-Un écran d'accueil épuré, chaque outil à un clic. Si vous savez utiliser un navigateur web, vous savez déjà utiliser EncodeX :
-
-<img src="/images/home_dashboard.webp" alt="Écran d'accueil d'EncodeX" width="1600" height="861" loading="lazy">
-
-<div class="privacy-band">
-  <h2>Vos vidéos ne quittent jamais votre ordinateur.</h2>
-  <p>EncodeX traite vos médias en local grâce au moteur FFmpeg intégré. Rien n'est téléversé, rien n'est suivi, rien n'est stocké sur un serveur.</p>
-  <ul class="checklist">
-    <li>✅ Aucun téléversement dans le cloud</li>
-    <li>✅ Aucun compte requis</li>
-    <li>✅ Aucun abonnement</li>
-    <li>✅ Aucun filigrane</li>
-    <li>✅ Aucune limite de taille de fichier</li>
-    <li>✅ Fonctionne hors ligne</li>
-  </ul>
-  <p><a href="/fr/privacy">En savoir plus sur la façon dont EncodeX protège votre vie privée →</a></p>
-</div>
-
-## Ce qu'il peut faire pour vous
-
-<div class="card wide">
-  <h3>🎬 Tout lire, partout</h3>
-  <p>Convertissez vos vidéos entre tous les formats populaires : MP4, MKV, AVI, MOV, WebM et plus encore. Emmenez une vidéo de l'ordinateur au téléphone, à la TV ou au vieil ordinateur portable familial. Choisissez où vous voulez la regarder, EncodeX s'occupe du reste.</p>
-</div>
-
-<div class="card wide">
-  <h3>🎧 Transformez les vidéos en musique</h3>
-  <p>Glissez n'importe quelle vidéo et récupérez un MP3. Idéal pour écouter les cours en déplacement, garder les podcasts et interviews en audio, ou retrouver cette chanson rare qui n'existe qu'en vidéo de concert.</p>
-</div>
-
-<div class="card wide">
-  <h3>✂️ Ne gardez que le meilleur</h3>
-  <p>Regardez la vidéo directement dans EncodeX, déplacez deux curseurs pour délimiter le passage voulu et enregistrez. La timeline affiche miniatures et ondes sonores pour trouver le moment exact.</p>
-</div>
-
-<div class="card wide">
-  <h3>🖼️ Allégez vos photos</h3>
-  <p>Réduisez vos photos pour qu'elles s'envoient et se chargent plus vite et prennent moins de place — avec un aperçu en direct du résultat avant d'enregistrer.</p>
-</div>
-
-<div class="card wide">
-  <h3>🌀 Faites pivoter les vidéos et corrigez les clips de travers</h3>
-  <p>Filmé à l'envers ? Faites pivoter vidéos et photos de 90°, 180° ou 270° dans le sens horaire ou retournez-les en un clic. En conservant le même format MP4/MOV/MKV, la rotation est enregistrée sans perte, sans ré-encodage.</p>
-</div>
-
-<div class="card wide">
-  <h3>📦 Traitez des dossiers entiers d'un coup</h3>
-  <p>Trente vidéos du téléphone ? Cent photos d'un événement ? Glissez-les toutes en même temps. EncodeX les met en file et les traite une par une pendant votre pause café. Il peut même éteindre l'ordinateur automatiquement à la fin.</p>
-</div>
-
-<div class="card wide">
-  <h3>🎛️ Des profils prêts pour chaque occasion</h3>
-  <p>Plus de 140 profils de conversion intégrés font la configuration à votre place — exportez directement vers YouTube, Instagram, TikTok, les appareils Apple, ProRes, le streaming HLS et plus. Choisissez un profil et tous les paramètres se remplissent automatiquement. Enregistrez aussi vos propres profils, et EncodeX se souvient de ceux que vous utilisez le plus.</p>
-</div>
-
 ## Laissez l'IA faire le gros du travail
 
 EncodeX embarque un **serveur MCP** intégré — la norme ouverte [Model Context Protocol](https://modelcontextprotocol.io) qui permet aux assistants IA d'utiliser vos applications. Connectez Claude Desktop, Claude Code, Cursor, VS Code ou n'importe quel client compatible MCP, puis demandez-lui simplement de convertir une vidéo, d'extraire un son, de compresser un dossier de photos ou de vérifier une file de conversion. Tout se passe en local ; vos fichiers ne quittent jamais votre ordinateur.
@@ -168,17 +217,32 @@ EncodeX embarque un **serveur MCP** intégré — la norme ouverte [Model Contex
 
 <p><a href="/fr/docs/cli#mcp-server-mode">Lire la documentation du serveur MCP →</a></p>
 
-## Pourquoi les gens adorent EncodeX
+## Pourquoi EncodeX ?
 
-::: tip 💚 Gratuit, pour toujours
-EncodeX est un logiciel libre créé par une communauté de bénévoles. Il n'existe pas de version payante qu'on vous vend, parce qu'il n'y a rien à débloquer : tout est inclus.
+::: tip 🆓 Gratuit et open source (MIT)
+EncodeX est **gratuit, pour toujours** — pas d'abonnement, pas de compte et pas de version payante qui cache le meilleur. C'est un logiciel open source (licence MIT) créé par une communauté de bénévoles. <a href="https://github.com/Sandeepv68/EncodeX">Voir le code source sur GitHub →</a> · <a href="https://github.com/Sandeepv68/EncodeX/blob/main/LICENSE">Licence MIT</a>
 :::
 
 <div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🔒</span>
-    <p class="card-head">Vos fichiers restent chez vous</p>
-    <p>Tout se passe sur votre propre ordinateur. Rien n'est envoyé nulle part. Pas de compte, pas de journal, pas de traçage.</p>
+    <p class="card-head">Privé</p>
+    <p>Tout se passe sur votre propre ordinateur. Rien n'est envoyé nulle part, jamais.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🆓</span>
+    <p class="card-head">Gratuit et open source</p>
+    <p>Licence MIT. Pas d'abonnement, pas de compte, pas de version payante qui cache le meilleur.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⚡</span>
+    <p class="card-head">Accéléré par le matériel</p>
+    <p>Utilise automatiquement votre puce graphique pour terminer les conversions bien plus vite.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🌎</span>
+    <p class="card-head">35+ langues</p>
+    <p>Y compris les écritures de droite à gauche comme l'arabe et l'hébreu — chaque écran est traduit.</p>
   </div>
   <div class="card">
     <span class="card-emoji">🚫</span>
@@ -186,24 +250,9 @@ EncodeX est un logiciel libre créé par une communauté de bénévoles. Il n'ex
     <p>Vos fichiers convertis sortent propres, sans logo apposé dessus.</p>
   </div>
   <div class="card">
-    <span class="card-emoji">🌍</span>
-    <p class="card-head">Il parle votre langue</p>
-    <p>Disponible en plus de 35 langues, du français et hindi à l'arabe et au japonais.</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🌙</span>
-    <p class="card-head">Facile pour les yeux</p>
-    <p>Modes clair et sombre qui suivent automatiquement votre système.</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🪶</span>
-    <p class="card-head">Sans prise de tête</p>
-    <p>Une fenêtre, des boutons clairs, des options en langage simple. Rien à apprendre ni régler.</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🔄</span>
-    <p class="card-head">Il se met à jour tout seul</p>
-    <p>Lorsqu'une nouvelle version sort, EncodeX propose de se mettre à jour : pas besoin de tout retélécharger.</p>
+    <span class="card-emoji">📴</span>
+    <p class="card-head">Fonctionne hors ligne</p>
+    <p>Pas besoin d'internet. Tout ce dont vous avez besoin voyage avec l'application.</p>
   </div>
 </div>
 
@@ -226,6 +275,24 @@ EncodeX joue trois rôles. Utilisez l'**interface glisser-déposer** pour les t�
     <span class="card-emoji">🤖</span>
     <p class="card-head">Le serveur MCP</p>
     <p>Demander → Automatiser → Connecter. Laissez Claude, Cursor, VS Code et des agents personnalisés piloter le même moteur. <a href="/fr/docs/cli#mcp-server-mode">Découvrir MCP →</a></p>
+  </div>
+</div>
+
+<div class="card-grid three-col">
+  <div class="card">
+    <span class="card-emoji">⚡</span>
+    <p class="card-head">Accéléré par GPU</p>
+    <p>Des conversions plus rapides sur NVIDIA, AMD, Intel et Apple Silicon — automatiquement.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎛️</span>
+    <p class="card-head">Plus de 140 profils prêts à l'emploi</p>
+    <p>YouTube, Instagram, TikTok, appareils Apple, ProRes, HLS et plus. Choisissez-en un, les réglages se remplissent.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🌀</span>
+    <p class="card-head">Pivotez et corrigez les clips de travers</p>
+    <p>90°, 180° ou 270°, plus le miroir — sans perte si MP4/MOV/MKV est conservé.</p>
   </div>
 </div>
 
@@ -274,6 +341,10 @@ Plongez dans une tâche précise — chaque page explique comment la faire avec 
     <p>Un front-end convivial pour le moteur FFmpeg — sans aucune commande.</p>
   </div>
   <div class="card">
+    <p class="card-head"><a href="/fr/handbrake-alternative">Alternative à HandBrake</a></p>
+    <p>Comment EncodeX se compare à HandBrake, FFmpeg CLI et Shutter Encoder.</p>
+  </div>
+  <div class="card">
     <p class="card-head"><a href="/fr/video-converter">Convertisseur vidéo</a></p>
     <p>Convertissez la vidéo entre tous les formats sur Windows, Mac et Linux.</p>
   </div>
@@ -306,6 +377,10 @@ Plongez dans une tâche précise — chaque page explique comment la faire avec 
     <p>Un guide en langage simple sur le moteur à l'intérieur d'EncodeX.</p>
   </div>
   <div class="card">
+    <p class="card-head"><a href="/fr/learn/what-format-to-use">Quel format choisir ?</a></p>
+    <p>MP4, MKV, H.264, HEVC ou AV1 — une table pour votre objectif.</p>
+  </div>
+  <div class="card">
     <p class="card-head"><a href="/fr/convert/mp4-to-mkv">MP4 vers MKV</a></p>
     <p>Remux MP4 en MKV — sans perte, instantané, sous-titres conservés.</p>
   </div>
@@ -330,6 +405,8 @@ Plongez dans une tâche précise — chaque page explique comment la faire avec 
     <p>Tirez un MP3 ou un podcast de n'importe quelle vidéo.</p>
   </div>
 </div>
+
+<OpenSourceCard />
 
 <div class="cta-card">
   <h2>Prêt à essayer ?</h2>

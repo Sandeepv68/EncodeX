@@ -62,3 +62,5 @@ EncodeX 可在 Windows、macOS 和 Linux 上运行——一款真正的跨平台
 - [免费下载 EncodeX](/zh/download)——适用于 Windows、Mac 和 Linux
 - [查看全部功能](/zh/features)——应用的完整导览
 - [了解 FFmpeg 的真正含义](/zh/learn/what-is-ffmpeg)——通俗易懂的解释
+- [HandBrake 与 EncodeX 对比](/zh/handbrake-alternative)——看看哪个更适合你
+- [该选什么视频格式？](/zh/learn/what-format-to-use)——选择正确的输出

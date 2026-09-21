@@ -66,3 +66,5 @@ Un seul fichier MP4 peut contenir du H.264, du H.265 ou de l'AV1. Comprendre la 
 - [Téléchargez EncodeX gratuitement](/fr/download)
 - [Convertissez la vidéo entre les formats](/fr/video-converter)
 - [Compressez des vidéos vers une taille plus petite](/fr/video-compressor)
+- [Quel format vidéo choisir ?](/fr/learn/what-format-to-use)
+- [HandBrake vs EncodeX](/fr/handbrake-alternative)

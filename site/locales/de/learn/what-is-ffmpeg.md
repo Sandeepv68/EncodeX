@@ -66,3 +66,5 @@ Eine einzige MP4-Datei kann H.264, H.265 oder AV1 im Inneren verwenden. Den Unte
 - [EncodeX kostenlos herunterladen](/de/download)
 - [Video zwischen Formaten konvertieren](/de/video-converter)
 - [Videos auf eine kleinere Größe komprimieren](/de/video-compressor)
+- [Welches Videoformat wählen?](/de/learn/what-format-to-use)
+- [HandBrake vs EncodeX](/de/handbrake-alternative)

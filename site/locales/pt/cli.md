@@ -22,6 +22,39 @@ encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
 
 Nada de cadeias crípticas como `-c:v libx264 -crf 23 -preset medium` — apenas flags de opções claras, as mesmas configurações que a interface gráfica usa, e saída limpa.
 
+## Os mesmos quatro passos
+
+Na CLI ou na interface, o fluxo é idêntico — você escolhe uma meta, o EncodeX faz a codificação:
+
+<div class="workflow-steps">
+  <div class="wf-step">
+    <span class="wf-num">1</span>
+    <p class="card-head">Arraste</p>
+    <p><code>vacation.mkv</code></p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">2</span>
+    <p class="card-head">Escolha</p>
+    <p>📱 Telefone</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">3</span>
+    <p class="card-head">Converta</p>
+    <p>✓ MP4 1080p</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">4</span>
+    <p class="card-head">Pronto</p>
+    <p><code>vacation.mp4</code></p>
+  </div>
+</div>
+
+No terminal, o mesmo perfil «Telefone» está a uma flag de distância:
+
+```bash
+encodex convert vacation.mkv vacation.mp4 --profile phone
+```
+
 ## Por que usar a CLI do EncodeX?
 
 - **Automatize** — automatize conversões em jobs cron, pipelines CI e servidores

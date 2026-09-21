@@ -62,3 +62,5 @@ Auf der Suche nach der **besten FFmpeg-GUI** – oder einer **FFmpeg-GUI-Alterna
 - [EncodeX kostenlos herunterladen](/de/download) – verfügbar für Windows, Mac und Linux
 - [Alle Funktionen ansehen](/de/features) – eine vollständige Tour durch die App
 - [Erfahren Sie, was FFmpeg wirklich ist](/de/learn/what-is-ffmpeg) – eine verständliche Erklärung
+- [HandBrake vs EncodeX](/de/handbrake-alternative) – die Tools im Vergleich
+- [Welches Format wählen?](/de/learn/what-format-to-use) – das richtige Ausgabeformat wählen

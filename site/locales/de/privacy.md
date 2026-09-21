@@ -39,6 +39,26 @@ Die EncodeX-Website selbst:
 - Keine Third-Party-Tracking-Cookies
 - Datenschutzfreundliche Analysen (kein Cross-Site-Tracking, keine persönlichen Daten)
 
+## Welche Telemetrie existiert
+
+Zur völligen Transparenz — hier sind alle Daten, die EncodeX erhebt, auf der Website und in der App:
+
+### Die Website (encodex.in)
+
+- **Cookie-lose Seitenaufrufe.** Wir messen aggregierte Seitenaufrufe mit einer datenschutzfreundlichen Analyse-Einrichtung — keine Cookies, kein Cross-Site-Tracking, kein Session-Replay und nichts, das mit Ihrer Identität verknüpft wäre. Wir können nicht sehen, wer Sie sind.
+
+### Die Desktop-App
+
+- **Fehler- und Diagnose-Meldung mit Zustimmung.** Die App kann Crash-Diagnosen und anonyme Fehlerinformationen an Sentry melden — standardmäßig **aktiviert, mit einem sichtbaren Schalter in den Einstellungen**, um sie jederzeit zu deaktivieren. Alles hängt an einem einzigen Zustimmungs-Schalter (lokal auf Ihrem Gerät gespeichert als `monitoring-consent.json`).
+- **Nur kategoriale Nutzungsereignisse.** Wenn aktiviert, zeichnet die App anonyme, nur kategoriale Ereignisse auf — etwa „Konvertierung gestartet" oder „Profil angewendet" — über denselben Breadcrumb-Kanal. Durch das Taxonomie-Design enthalten diese Daten **keine Medieninhalte, keine Dateinamen, keine Ordnerpfade und keine Dateigrößen.** Wenn Sie die Telemetrie deaktivieren, verlässt nichts Ihren Computer.
+- **Keine Uploads, keine Cloud-Verarbeitung.** Selbst mit aktivierter Telemetrie werden Ihre eigentlichen Mediendateien nie übertragen. Kodierung, Konvertierung, Komprimierung oder Extrahierung passieren vollständig auf Ihrem Gerät.
+
+### In klaren Worten
+
+- Es gibt **kein Konto** — nichts anzulegen, kein Profil zu pflegen
+- Ihre Dateien **verlassen nie Ihren Computer** — keine Uploads, keine Cloud-Verarbeitung
+- Die App arbeitet **vollständig offline** — Telemetrie ist das Einzige, das sich verbinden kann; sie erfordert Zustimmung, ist nur kategorial und kann abgeschaltet werden
+
 ## So funktioniert
 
 Es gibt keine Cloud, an die Ihre Dateien gesendet werden könnten. EncodeX bindet die FFmpeg-Engine direkt in die App ein und führt jede Konvertierung **als Prozess auf Ihrem Gerät aus** — auf die gleiche Weise, wie Ihr Webbrowser eine Seite rendert, ohne dass sie „an einen Server gesendet" wird. Wenn Sie das überprüfen möchten, ist die gesamte App (einschließlich ihrer Medienverarbeitungs-Pipeline) Open Source und in der [technischen Architektur](/de/docs/architecture) dokumentiert.

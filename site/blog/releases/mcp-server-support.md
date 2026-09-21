@@ -147,6 +147,8 @@ If you have never used an MCP client, nothing changes — the GUI and CLI are ex
 2. Run `encodex --mcp`, or enable **Settings → MCP Server** in the app.
 3. Connect your AI assistant and ask it to convert something.
 
+Want the elevator pitch? See [Let AI do the heavy lifting](/mcp) for how the server fits into everyday workflows.
+
 Read the full reference — every tool, resource, prompt, client config, and the security model — in the [MCP documentation](/docs/cli#mcp-server-mode).
 
 ---

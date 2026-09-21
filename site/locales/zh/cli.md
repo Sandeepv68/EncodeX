@@ -22,6 +22,39 @@ encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
 
 没有晦涩的 `-c:v libx264 -crf 23 -preset medium` 链式命令 — 只有清晰的选项标志，与图形界面相同的设置，以及干净的输出。
 
+## 完全相同的四个步骤
+
+无论是 CLI 还是图形界面，流程都一样——你选好目标，EncodeX 负责编码：
+
+<div class="workflow-steps">
+  <div class="wf-step">
+    <span class="wf-num">1</span>
+    <p class="card-head">拖入</p>
+    <p><code>vacation.mkv</code></p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">2</span>
+    <p class="card-head">选目标</p>
+    <p>📱 手机</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">3</span>
+    <p class="card-head">开始转换</p>
+    <p>✓ MP4 1080p</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">4</span>
+    <p class="card-head">完成</p>
+    <p><code>vacation.mp4</code></p>
+  </div>
+</div>
+
+在终端里，同样的「手机」配置只需一条命令：
+
+```bash
+encodex convert vacation.mkv vacation.mp4 --profile phone
+```
+
 ## 为什么使用 EncodeX CLI？
 
 - **编写脚本** — 在 cron 任务、CI 流水线和服务器中自动化转换

@@ -15,23 +15,25 @@ Install the app, drag a video or image into the window, pick a profile (like MP4
 - **Stuck?** Most conversions need just one file drop + one profile click. The in-app "Getting Started" card on your Dashboard walks you through picking a goal.
 :::
 
+## Recommended Download
+
+<LatestDownloads primary />
+
 ## <OsIcon name="windows" /> Windows
 
-**Windows 10/11 · 64-bit** — right for almost everyone.
-
-<LatestDownloads platform="windows" />
+The download button above is right for almost everyone — **Windows 10/11 · 64-bit**.
 
 **To install:** open the file you downloaded and follow the steps on screen.
 
-Not sure which one to pick? Go with the recommended one — if it doesn't match, Windows will tell you.
+Not sure which one to pick? Go with the recommended one — if it doesn't match, Windows will tell you. Under **Other downloads** you'll also find an **Windows ARM64** build (Snapdragon laptops) and a 32-bit build (very old computers).
 
 ### Other platforms
 
-[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 32-bit](#windows)
+[macOS](#mac) · [Linux](#linux)
 
 ## <OsIcon name="apple" /> Mac
 
-<LatestDownloads platform="macos" />
+The download button above shows **Apple Silicon** first on M-series Macs (M1/M2/M3/M4). Under **Other downloads**, pick the **Intel** build if your Mac is older.
 
 **To install:** open the `.dmg` file you downloaded, then drag EncodeX into your Applications folder.
 
@@ -49,7 +51,7 @@ You only need to do this once — after that it opens normally.
 
 ## <OsIcon name="linux" /> Linux
 
-<LatestDownloads platform="linux" />
+The download button above is right for most Linux computers — **x86_64**. Under **Other downloads** you'll also find **ARM64** and **ARMv7** builds.
 
 **To run:** an AppImage is a single file — no installation needed. Just make it runnable and double-click it:
 
@@ -68,6 +70,9 @@ Nothing special — if your computer is from the last several years, you're fine
 - **Disk space:** about 400 MB (the app includes everything it needs — no extra downloads)
 - **Memory:** any normal amount works
 
+> **Why is EncodeX about 400 MB?**
+> EncodeX bundles the FFmpeg engine and every supported component, so you never install FFmpeg, codecs, or anything else separately — and you never download extras later. Nothing is uploaded and nothing runs in the cloud — every conversion happens [locally on your computer](/features#private-by-design).
+
 ## Keeping It Up to Date
 
 When a new version comes out, EncodeX lets you know inside the app and can download and start the update for you — no need to revisit this page.
@@ -85,6 +90,10 @@ If something isn't working or you have a question, send an email to **[developer
 ## Privacy
 
 We understand trust matters. Every conversion happens on your computer — your files are never uploaded, tracked, or stored on a server. Read the [full privacy policy](/privacy).
+
+## Security
+
+Every release ships with verifiable [SHA-256 checksums and signed builds](/security) — and if you find a problem, you can report it privately. See the [security page](/security) for details.
 
 ## Learn More
 

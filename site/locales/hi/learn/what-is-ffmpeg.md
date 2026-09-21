@@ -66,3 +66,5 @@ ffmpeg -i input.mkv -c:v libx264 -crf 18 -c:a aac output.mp4
 - [EncodeX मुफ़्त में डाउनलोड करें](/hi/download)
 - [फ़ॉर्मेटों के बीच वीडियो कन्वर्ट करें](/hi/video-converter)
 - [वीडियो को छोटे आकार में कंप्रेस करें](/hi/video-compressor)
+- [कौन सा वीडियो फ़ॉर्मैट चुनें?](/hi/learn/what-format-to-use)
+- [HandBrake vs EncodeX](/hi/handbrake-alternative)

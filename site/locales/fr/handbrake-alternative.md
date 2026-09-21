@@ -30,6 +30,26 @@ C'est un excellent logiciel. Mais il n'est pas pour tout le monde — c'est pour
 | **Plateformes** | Windows, macOS, Linux            | Windows, macOS, Linux        |
 | **Téléchargements** | Aucun — 100% hors ligne        | Aucun — 100% hors ligne      |
 
+## Comment cette comparaison a été faite
+
+Nous avons comparé les capacités que chaque outil propose réellement aujourd'hui — disposition de l'interface, profondeur des préréglages, prise en charge de l'encodage matériel, comportement du lot et outils supplémentaires — à l'aide de la documentation actuelle et des notes de version de chaque produit. Nous n'affirmons que ce que nous pouvons vérifier : tout ce qui est marqué « partiel » ou « limité » signifie que la fonction existe mais avec des réserves (par exemple, l'encodage matériel de HandBrake varie selon la plateforme et la version, et son CLI est documenté séparément de l'application graphique). Si une ligne se répète dans plusieurs outils plus bas, la même vérification s'applique.
+
+## EncodeX vs HandBrake vs FFmpeg CLI vs Shutter Encoder
+
+|                        | EncodeX      | HandBrake    | FFmpeg CLI   | Shutter Encoder |
+| ---------------------- | ------------ | ------------ | ------------ | --------------- |
+| **Interface**          | GUI + CLI    | GUI (+ CLI)  | CLI uniquement | GUI           |
+| **Basé sur FFmpeg**    | Oui          | Oui          | Est FFmpeg    | Oui             |
+| **Gratuit et open source** | Oui (MIT) | Oui (GPL)    | Oui (GPL)    | Oui (licence propriétaire) |
+| **Préréglages par tâche** | Plus de 140 | Ensembles par fichier | Scripts uniquement | Basée sur bibliothèques |
+| **Encodage matériel**  | NVENC, QSV, AMF, VAAPI, VideoToolbox | Partiel (varie selon la plateforme) | Via flags (configuration manuelle) | NVENC et autres |
+| **Lot en parallèle**   | Oui (4 travaux) | Séquentiel  | Via scripts   | Oui             |
+| **Compression d'images** | Oui (JPEG/PNG/WebP) | Non   | Via flags      | Oui             |
+| **Extraction audio**   | Un clic (27 codecs) | Limitée | Via flags | Oui             |
+| **100% hors ligne**    | Oui          | Oui          | Oui           | Oui             |
+
+En bref : **HandBrake** est le meilleur outil open source de rip de disques, **FFmpeg CLI** est le plus puissant mais avec la courbe d'apprentissage la plus raide, **Shutter Encoder** est un généraliste bien rempli avec plus de rouages, et **EncodeX** se concentre sur le chemin le plus simple entre l'objectif et le fichier final tout en gardant les options avancées accessibles.
+
 ## Pourquoi passer à EncodeX ?
 
 - **Une courbe d'apprentissage plus douce** — l'interface est basée sur les tâches ("Convertir", "Compresser", "Couper"), pas sur les codecs
@@ -56,3 +76,4 @@ Pas nécessairement ! HandBrake est excellent pour l'extraction de disques. Mais
 - [Comparez d'autres options d'interface FFmpeg](/fr/ffmpeg-gui)
 - [Voir toutes les conversions et fonctionnalités](/fr/features)
 - [Apprenez ce qu'est réellement FFmpeg](/fr/learn/what-is-ffmpeg)
+- [Choisissez le bon format vidéo](/fr/learn/what-format-to-use)

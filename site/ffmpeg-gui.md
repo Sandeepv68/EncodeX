@@ -62,3 +62,5 @@ Looking for the **best FFmpeg GUI** — or an **FFmpeg GUI alternative** to Hand
 - [Download EncodeX for free](/download) — available for Windows, Mac, and Linux
 - [See every feature](/features) — a full tour of what the app can do
 - [Learn what FFmpeg actually is](/learn/what-is-ffmpeg) — a friendly explainer
+- [HandBrake vs EncodeX](/handbrake-alternative) — see how the tools compare
+- [What format should I use?](/learn/what-format-to-use) — pick the right output

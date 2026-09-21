@@ -1,4 +1,5 @@
 ---
+title: "Recursos do EncodeX — Conversor de vídeo gratuito com FFmpeg"
 description: "Explore todos os recursos do EncodeX: converta formatos de vídeo e áudio, extraia MP3 de vídeos, corte clipes, comprima imagens, processe arquivos em lote, codifique com aceleração por hardware e use o servidor MCP integrado para assistentes de IA."
 ---
 

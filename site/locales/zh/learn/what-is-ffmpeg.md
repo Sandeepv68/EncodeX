@@ -66,3 +66,5 @@ ffmpeg -i input.mkv -c:v libx264 -crf 18 -c:a aac output.mp4
 - [免费下载 EncodeX](/zh/download)
 - [在格式之间转换视频](/zh/video-converter)
 - [将视频压缩到更小](/zh/video-compressor)
+- [该选什么视频格式？](/zh/learn/what-format-to-use)
+- [HandBrake 与 EncodeX 对比](/zh/handbrake-alternative)

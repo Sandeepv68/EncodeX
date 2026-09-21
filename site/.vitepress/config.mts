@@ -250,6 +250,7 @@ const toolsStrings: Record<
     learn: string;
     whatIsFfmpeg: string;
     handbrakeAlt: string;
+    whatFormatLabel: string;
     learnLink: string;
   }
 > = {
@@ -298,6 +299,7 @@ const toolsStrings: Record<
     learn: 'Learn',
     whatIsFfmpeg: 'What is FFmpeg',
     handbrakeAlt: 'HandBrake Alternative',
+    whatFormatLabel: 'What format should I choose?',
     learnLink: '/learn/what-is-ffmpeg',
   },
   es: {
@@ -345,6 +347,7 @@ const toolsStrings: Record<
     learn: 'Aprender',
     whatIsFfmpeg: '¿Qué es FFmpeg?',
     handbrakeAlt: 'Alternativa a HandBrake',
+    whatFormatLabel: '¿Qué formato elegir?',
     learnLink: '/es/learn/what-is-ffmpeg',
   },
   fr: {
@@ -392,6 +395,7 @@ const toolsStrings: Record<
     learn: 'Apprendre',
     whatIsFfmpeg: 'Quest-ce que FFmpeg',
     handbrakeAlt: 'Alternative à HandBrake',
+    whatFormatLabel: 'Quel format choisir ?',
     learnLink: '/fr/learn/what-is-ffmpeg',
   },
   de: {
@@ -439,6 +443,7 @@ const toolsStrings: Record<
     learn: 'Lernen',
     whatIsFfmpeg: 'Was ist FFmpeg',
     handbrakeAlt: 'HandBrake-Alternative',
+    whatFormatLabel: 'Welches Format wählen?',
     learnLink: '/de/learn/what-is-ffmpeg',
   },
   pt: {
@@ -486,6 +491,7 @@ const toolsStrings: Record<
     learn: 'Aprenda',
     whatIsFfmpeg: 'O que é FFmpeg',
     handbrakeAlt: 'Alternativa ao HandBrake',
+    whatFormatLabel: 'Qual formato escolher?',
     learnLink: '/pt/learn/what-is-ffmpeg',
   },
   zh: {
@@ -533,6 +539,7 @@ const toolsStrings: Record<
     learn: '了解',
     whatIsFfmpeg: '什么是 FFmpeg',
     handbrakeAlt: 'HandBrake 替代方案',
+    whatFormatLabel: '该选什么格式？',
     learnLink: '/zh/learn/what-is-ffmpeg',
   },
   hi: {
@@ -580,6 +587,7 @@ const toolsStrings: Record<
     learn: 'सीखें',
     whatIsFfmpeg: 'FFmpeg क्या है',
     handbrakeAlt: 'HandBrake का विकल्प',
+    whatFormatLabel: 'कौन सा फ़ॉर्मैट चुनें?',
     learnLink: '/hi/learn/what-is-ffmpeg',
   },
 };
@@ -654,11 +662,152 @@ function toolsNav(locale: string) {
         text: s.learn,
         items: [
           { text: s.whatIsFfmpeg, link: `${s.learnLink}` },
+          { text: s.whatFormatLabel, link: `${p}/learn/what-format-to-use` },
           { text: s.handbrakeAlt, link: `${p}/handbrake-alternative` },
         ],
       },
     ],
   };
+}
+
+const navStrings: Record<
+  string,
+  {
+    product: string;
+    resources: string;
+    community: string;
+    features: string;
+    useCases: string;
+    download: string;
+    docs: string;
+    blog: string;
+    contributing: string;
+    github: string;
+    mcp: string;
+  }
+> = {
+  en: {
+    product: 'Product',
+    resources: 'Resources',
+    community: 'Community',
+    features: 'Features',
+    useCases: 'Use Cases',
+    download: 'Download',
+    docs: 'Docs',
+    blog: 'Blog',
+    contributing: 'Contributing',
+    github: 'GitHub',
+    mcp: 'MCP Server',
+  },
+  es: {
+    product: 'Producto',
+    resources: 'Recursos',
+    community: 'Comunidad',
+    features: 'Características',
+    useCases: 'Casos de uso',
+    download: 'Descargar',
+    docs: 'Documentación',
+    blog: 'Blog',
+    contributing: 'Contribuir',
+    github: 'GitHub',
+    mcp: 'Servidor MCP',
+  },
+  fr: {
+    product: 'Produit',
+    resources: 'Ressources',
+    community: 'Communauté',
+    features: 'Fonctionnalités',
+    useCases: "Cas d'usage",
+    download: 'Télécharger',
+    docs: 'Documentation',
+    blog: 'Blog',
+    contributing: 'Contribuer',
+    github: 'GitHub',
+    mcp: 'Serveur MCP',
+  },
+  de: {
+    product: 'Produkt',
+    resources: 'Ressourcen',
+    community: 'Community',
+    features: 'Funktionen',
+    useCases: 'Anwendungsfälle',
+    download: 'Download',
+    docs: 'Dokumentation',
+    blog: 'Blog',
+    contributing: 'Mitwirken',
+    github: 'GitHub',
+    mcp: 'MCP-Server',
+  },
+  pt: {
+    product: 'Produto',
+    resources: 'Recursos',
+    community: 'Comunidade',
+    features: 'Recursos',
+    useCases: 'Casos de uso',
+    download: 'Download',
+    docs: 'Documentação',
+    blog: 'Blog',
+    contributing: 'Contribuir',
+    github: 'GitHub',
+    mcp: 'Servidor MCP',
+  },
+  zh: {
+    product: '产品',
+    resources: '资源',
+    community: '社区',
+    features: '功能特性',
+    useCases: '使用场景',
+    download: '下载',
+    docs: '技术文档',
+    blog: '博客',
+    contributing: '参与贡献',
+    github: 'GitHub',
+    mcp: 'MCP 服务器',
+  },
+  hi: {
+    product: 'उत्पाद',
+    resources: 'संसाधन',
+    community: 'समुदाय',
+    features: 'फ़ीचर्स',
+    useCases: 'उपयोग के मामले',
+    download: 'डाउनलोड',
+    docs: 'दस्तावेज़',
+    blog: 'ब्लॉग',
+    contributing: 'योगदान दें',
+    github: 'GitHub',
+    mcp: 'MCP सर्वर',
+  },
+};
+
+function localeNav(locale: string) {
+  const s = navStrings[locale];
+  const p = localePrefixes[locale];
+  return [
+    {
+      text: s.product,
+      items: [
+        { text: s.features, link: `${p}/features` },
+        { text: s.useCases, link: `${p}/use-cases` },
+        { text: s.download, link: `${p}/download` },
+      ],
+    },
+    toolsNav(locale),
+    {
+      text: s.resources,
+      items: [
+        { text: s.docs, items: docsNav(locale) },
+        { text: s.blog, link: `${p}/blog/` },
+      ],
+    },
+    {
+      text: s.community,
+      items: [
+        { text: s.github, link: 'https://github.com/Sandeepv68/EncodeX' },
+        { text: s.contributing, link: `${p}/contributing` },
+        { text: s.mcp, link: `${p}/mcp` },
+      ],
+    },
+  ];
 }
 
 const seoFAQ: Record<string, { q: string; a: string }[]> = {
@@ -983,6 +1132,20 @@ const seoFAQ: Record<string, { q: string; a: string }[]> = {
     {
       q: 'Does EncodeX work offline?',
       a: 'Yes - all conversion happens locally on your computer, so your files never leave your device.',
+    },
+  ],
+  mcp: [
+    {
+      q: 'Is the EncodeX MCP server free?',
+      a: 'Yes. The MCP server is built into the free, open-source (MIT) EncodeX app - no extra license or subscription.',
+    },
+    {
+      q: 'Does using MCP upload my files?',
+      a: 'No. EncodeX runs entirely offline. The MCP server drives the same local FFmpeg engine, so your media never leaves your computer.',
+    },
+    {
+      q: 'Which AI assistants can connect to EncodeX?',
+      a: 'Any MCP-compatible client: Claude Desktop, Claude Code, Cursor, VS Code, and custom agents. The stdio server is a standard JSON-RPC process, so anything that can spawn a command and speak MCP can connect.',
     },
   ],
 };
@@ -1903,6 +2066,20 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'Sí. Toda la conversión ocurre localmente en tu computadora, así que tus archivos nunca salen de tu dispositivo.',
       },
     ],
+    'mcp': [
+      {
+        q: '¿El servidor MCP de EncodeX es gratuito?',
+        a: 'Sí. El servidor MCP está integrado en EncodeX, que es gratuito y de código abierto (MIT); no necesita licencia ni suscripción adicional.',
+      },
+      {
+        q: '¿Usar MCP sube mis archivos?',
+        a: 'No. EncodeX funciona totalmente sin conexión. El servidor MCP dirige el mismo motor FFmpeg local, así que tus archivos nunca salen de tu computadora.',
+      },
+      {
+        q: '¿Qué asistentes de IA pueden conectarse a EncodeX?',
+        a: 'Cualquier cliente compatible con MCP: Claude Desktop, Claude Code, Cursor, VS Code y agentes personalizados. El servidor stdio es un proceso JSON-RPC estándar, así que cualquier herramienta capaz de ejecutar un comando y hablar MCP puede conectarse.',
+      },
+    ],
     'video-converter': [
       {
         q: '¿Qué formatos de archivo puede convertir EncodeX?',
@@ -2135,6 +2312,20 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
       {
         q: 'EncodeX fonctionne-t-il hors ligne ?',
         a: 'Oui. Toute la conversion se fait localement sur votre ordinateur, vos fichiers ne quittent donc jamais votre appareil.',
+      },
+    ],
+    'mcp': [
+      {
+        q: 'Le serveur MCP d\u2019EncodeX est-il gratuit ?',
+        a: 'Oui. Le serveur MCP est intégré à EncodeX, qui est gratuit et open source (MIT) — aucune licence ni abonnement supplémentaire.',
+      },
+      {
+        q: 'Est-ce que MCP téléverse mes fichiers ?',
+        a: 'Non. EncodeX fonctionne entièrement hors ligne. Le serveur MCP pilote le même moteur FFmpeg local, vos médias ne quittent donc jamais votre ordinateur.',
+      },
+      {
+        q: 'Quels assistants IA peuvent se connecter à EncodeX ?',
+        a: 'Tout client compatible MCP : Claude Desktop, Claude Code, Cursor, VS Code et les agents personnalisés. Le serveur stdio est un processus JSON-RPC standard, donc tout ce qui peut lancer une commande et parler MCP peut se connecter.',
       },
     ],
     'video-converter': [
@@ -2374,6 +2565,20 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'Ja. Die gesamte Konvertierung findet lokal auf Ihrem Computer statt, Ihre Dateien verlassen also nie Ihr Gerät.',
       },
     ],
+    'mcp': [
+      {
+        q: 'Ist der MCP-Server von EncodeX kostenlos?',
+        a: 'Ja. Der MCP-Server ist in EncodeX integriert, das kostenlos und Open Source (MIT) ist — kein zusätzliches Lizenz- oder Abo-Modell.',
+      },
+      {
+        q: 'Lädt die MCP-Nutzung meine Dateien hoch?',
+        a: 'Nein. EncodeX arbeitet vollständig offline. Der MCP-Server steuert dieselbe lokale FFmpeg-Engine, Ihre Medien verlassen also nie Ihren Computer.',
+      },
+      {
+        q: 'Welche KI-Assistenten können sich mit EncodeX verbinden?',
+        a: 'Jeder MCP-kompatible Client: Claude Desktop, Claude Code, Cursor, VS Code und eigene Agenten. Der stdio-Server ist ein standardmäßiger JSON-RPC-Prozess, sodass alles, was einen Befehl starten und MCP sprechen kann, sich verbinden kann.',
+      },
+    ],
     'video-converter': [
       {
         q: 'Welche Dateiformate kann EncodeX konvertieren?',
@@ -2611,6 +2816,20 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'Sim. Toda a conversão acontece localmente no seu computador, então seus arquivos nunca saem do seu dispositivo.',
       },
     ],
+    'mcp': [
+      {
+        q: 'O servidor MCP do EncodeX é gratuito?',
+        a: 'Sim. O servidor MCP está integrado ao EncodeX, que é gratuito e open source (MIT) — sem licença ou assinatura extra.',
+      },
+      {
+        q: 'Usar MCP faz upload dos meus arquivos?',
+        a: 'Não. O EncodeX funciona totalmente offline. O servidor MCP usa o mesmo motor FFmpeg local, então sua mídia nunca sai do seu computador.',
+      },
+      {
+        q: 'Quais assistentes de IA podem se conectar ao EncodeX?',
+        a: 'Qualquer cliente compatível com MCP: Claude Desktop, Claude Code, Cursor, VS Code e agentes personalizados. O servidor stdio é um processo JSON-RPC padrão, então qualquer coisa que consiga rodar um comando e falar MCP pode se conectar.',
+      },
+    ],
     'video-converter': [
       {
         q: 'Quais formatos de arquivo o EncodeX converte?',
@@ -2845,6 +3064,20 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
       },
       { q: 'EncodeX 可以离线工作吗？', a: '是的。所有转换都在您的计算机本地进行，因此您的文件绝不会离开您的设备。' },
     ],
+    'mcp': [
+      {
+        q: 'EncodeX 的 MCP 服务器免费吗？',
+        a: '免费。MCP 服务器内置在免费、开源的（MIT）EncodeX 中，无需额外许可或订阅。',
+      },
+      {
+        q: '使用 MCP 会上传我的文件吗？',
+        a: '不会。EncodeX 完全离线运行。MCP 服务器驱动的是同一套本地 FFmpeg 引擎，您的媒体文件永远不会离开您的电脑。',
+      },
+      {
+        q: '哪些 AI 助手可以连接 EncodeX？',
+        a: '任何兼容 MCP 的客户端：Claude Desktop、Claude Code、Cursor、VS Code 和自定义代理。stdio 服务器是标准 JSON-RPC 进程，所以任何能启动命令并支持 MCP 的工具都可以连接。',
+      },
+    ],
     'video-converter': [
       {
         q: 'EncodeX 可以转换哪些文件格式？',
@@ -2993,6 +3226,20 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
       {
         q: 'क्या EncodeX ऑफ़लाइन काम करता है?',
         a: 'हाँ। सभी रूपांतरण आपके कंप्यूटर पर स्थानीय रूप से होते हैं, इसलिए आपकी फ़ाइलें कभी आपके डिवाइस से बाहर नहीं जातीं।',
+      },
+    ],
+    'mcp': [
+      {
+        q: 'क्या EncodeX का MCP सर्वर मुफ़्त है?',
+        a: 'हाँ। MCP सर्वर मुफ़्त, ओपन-सोर्स (MIT) EncodeX ऐप में बिल्ट-इन है — कोई अतिरिक्त लाइसेंस या सब्सक्रिप्शन नहीं।',
+      },
+      {
+        q: 'क्या MCP इस्तेमाल करने से मेरी फ़ाइलें अपलोड होती हैं?',
+        a: 'नहीं। EncodeX पूरी तरह ऑफ़लाइन चलता है। MCP सर्वर वही लोकल FFmpeg इंजन चलाता है, इसलिए आपका मीडिया कभी आपके कंप्यूटर से बाहर नहीं जाता।',
+      },
+      {
+        q: 'कौन से AI असिस्टेंट EncodeX से जुड़ सकते हैं?',
+        a: 'कोई भी MCP-कंपैटिबल क्लाइंट: Claude Desktop, Claude Code, Cursor, VS Code और कस्टम एजेंट। stdio सर्वर एक मानक JSON-RPC प्रोसेस है, इसलिए जो भी कमांड चला सकता है और MCP बोल सकता है, वह जुड़ सकता है।',
       },
     ],
     'video-converter': [
@@ -3276,7 +3523,7 @@ export default defineConfig({
   },
   head: [
     ['link', { rel: 'icon', href: '/images/favicon-64.webp' }],
-    ['link', { rel: 'preload', as: 'image', href: '/images/icon_380.webp', fetchpriority: 'high' }],
+    ['link', { rel: 'preload', as: 'image', href: '/images/home_dashboard_800.webp', fetchpriority: 'high' }],
     ['meta', { name: 'theme-color', content: '#0359AD' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['link', { rel: 'dns-prefetch', href: 'https://www.googletagmanager.com' }],
@@ -3322,9 +3569,18 @@ gtag('config', 'G-SM28DL4DYR');`,
 
     const siteTitle = context.siteConfig?.title || 'EncodeX';
     const siteDescription = context.siteData?.description || context.siteConfig?.description || '';
+    const fallbackTitleByLang: Record<string, string> = {
+      en: 'Free FFmpeg Video Converter for Windows, Mac & Linux',
+      es: 'Convertidor de video gratuito con FFmpeg para Windows, Mac y Linux',
+      fr: 'Convertisseur vidéo gratuit avec FFmpeg pour Windows, Mac et Linux',
+      de: 'Kostenloser Video-Konverter mit FFmpeg für Windows, Mac und Linux',
+      'pt-BR': 'Conversor de vídeo gratuito com FFmpeg para Windows, Mac e Linux',
+      'zh-CN': '免费 FFmpeg 视频转换器，适用于 Windows、Mac 和 Linux',
+      hi: 'Windows, Mac और Linux के लिए मुफ़्त FFmpeg वीडियो कनवर्टर',
+    };
     const pageTitle = frontmatter.title
       ? `${frontmatter.title} | ${siteTitle}`
-      : `${siteTitle} — Free, Open-Source FFmpeg GUI for Windows, macOS & Linux`;
+      : `${siteTitle} — ${fallbackTitleByLang[pageLang] || fallbackTitleByLang.en}`;
     const pageDescription = frontmatter.description || siteDescription;
     const pageOgImage = frontmatter.ogImage || `${SITE_URL}/images/banner.webp`;
 
@@ -3452,6 +3708,8 @@ gtag('config', 'G-SM28DL4DYR');`,
       privacy: 'Privacy Policy',
       'use-cases': 'Use Cases',
       'learn/what-is-ffmpeg': 'What is FFmpeg',
+      'learn/what-format-to-use': 'What Video Format Should I Use?',
+      mcp: 'MCP Server for Video Conversion',
     };
 
     const seoLandingPagesTranslations: Record<string, Record<string, string>> = {
@@ -3499,6 +3757,8 @@ gtag('config', 'G-SM28DL4DYR');`,
         privacy: 'Política de Privacidad',
         'use-cases': 'Casos de Uso',
         'learn/what-is-ffmpeg': 'Qué es FFmpeg',
+        'learn/what-format-to-use': '¿Qué formato de video elegir?',
+        mcp: 'Servidor MCP para conversión de video',
       },
       fr: {
         'ffmpeg-gui': 'FFmpeg GUI',
@@ -3544,6 +3804,8 @@ gtag('config', 'G-SM28DL4DYR');`,
         privacy: 'Politique de Confidentialité',
         'use-cases': 'Cas d\u2019Usage',
         'learn/what-is-ffmpeg': 'Qu\u2019est-ce que FFmpeg',
+        'learn/what-format-to-use': 'Quel format vidéo choisir ?',
+        mcp: 'Serveur MCP pour la conversion vidéo',
       },
       de: {
         'ffmpeg-gui': 'FFmpeg GUI',
@@ -3589,6 +3851,8 @@ gtag('config', 'G-SM28DL4DYR');`,
         privacy: 'Datenschutzerklärung',
         'use-cases': 'Anwendungsfälle',
         'learn/what-is-ffmpeg': 'Was ist FFmpeg',
+        'learn/what-format-to-use': 'Welches Videoformat sollte ich wählen?',
+        mcp: 'MCP-Server für die Videokonvertierung',
       },
       pt: {
         'ffmpeg-gui': 'FFmpeg GUI',
@@ -3634,6 +3898,8 @@ gtag('config', 'G-SM28DL4DYR');`,
         privacy: 'Política de Privacidade',
         'use-cases': 'Casos de Uso',
         'learn/what-is-ffmpeg': 'O que é FFmpeg',
+        'learn/what-format-to-use': 'Qual formato de vídeo escolher?',
+        mcp: 'Servidor MCP para conversão de vídeo',
       },
       zh: {
         'ffmpeg-gui': 'FFmpeg GUI',
@@ -3679,6 +3945,8 @@ gtag('config', 'G-SM28DL4DYR');`,
         privacy: '隐私政策',
         'use-cases': '使用场景',
         'learn/what-is-ffmpeg': '什么是 FFmpeg',
+        'learn/what-format-to-use': '该选择什么视频格式？',
+        mcp: '视频转换 MCP 服务器',
       },
       hi: {
         'ffmpeg-gui': 'FFmpeg GUI',
@@ -3724,6 +3992,8 @@ gtag('config', 'G-SM28DL4DYR');`,
         privacy: 'गोपनीयता नीति',
         'use-cases': 'उपयोग के मामले',
         'learn/what-is-ffmpeg': 'FFmpeg क्या है',
+        'learn/what-format-to-use': 'कौन सा वीडियो फ़ॉर्मैट चुनें?',
+        mcp: 'वीडियो कन्वर्ज़न के लिए MCP सर्वर',
       },
     };
 
@@ -3798,16 +4068,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       label: 'English',
       lang: 'en',
       themeConfig: {
-        nav: [
-          { text: 'Home', link: '/' },
-          { text: 'Features', link: '/features' },
-          { text: 'Use Cases', link: '/use-cases' },
-          { text: 'Download', link: '/download' },
-          toolsNav('en'),
-          { text: 'Docs', items: docsNav('en') },
-          { text: 'Blog', link: '/blog/' },
-          { text: 'Contributing', link: '/contributing' },
-        ],
+        nav: localeNav('en'),
         sidebar: { '/docs/': docsSidebar('en') },
       },
     },
@@ -3819,16 +4080,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       description:
         'Una app gratuita y fácil de usar para convertir vídeos y audio, recortar clips, extraer música de vídeos y reducir el tamaño de tus fotos. Incluye un servidor MCP integrado para asistentes de IA.',
       themeConfig: {
-        nav: [
-          { text: 'Inicio', link: '/es/' },
-          { text: 'Características', link: '/es/features' },
-          { text: 'Casos de uso', link: '/es/use-cases' },
-          { text: 'Descargar', link: '/es/download' },
-          toolsNav('es'),
-          { text: 'Documentación', items: docsNav('es') },
-          { text: 'Blog', link: '/es/blog/' },
-          { text: 'Contribuir', link: '/es/contributing' },
-        ],
+        nav: localeNav('es'),
         sidebar: { '/es/docs/': docsSidebar('es') },
       },
     },
@@ -3840,16 +4092,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       description:
         'Une application gratuite et simple pour convertir vidéos et audio, couper des clips, extraire la musique d\u2019une vidéo et alléger vos photos. Inclut un serveur MCP intégré pour les assistants IA.',
       themeConfig: {
-        nav: [
-          { text: 'Accueil', link: '/fr/' },
-          { text: 'Fonctionnalités', link: '/fr/features' },
-          { text: "Cas d'usage", link: '/fr/use-cases' },
-          { text: 'Télécharger', link: '/fr/download' },
-          toolsNav('fr'),
-          { text: 'Documentation', items: docsNav('fr') },
-          { text: 'Blog', link: '/fr/blog/' },
-          { text: 'Contribuer', link: '/fr/contributing' },
-        ],
+        nav: localeNav('fr'),
         sidebar: { '/fr/docs/': docsSidebar('fr') },
       },
     },
@@ -3861,16 +4104,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       description:
         'Eine kostenlose, einfach zu bedienende App zum Konvertieren von Videos und Audio, Trimmen von Clips, Extrahieren von Musik aus Videos und Verkleinern von Fotos. Enthält einen integrierten MCP-Server für KI-Assistenten.',
       themeConfig: {
-        nav: [
-          { text: 'Start', link: '/de/' },
-          { text: 'Funktionen', link: '/de/features' },
-          { text: 'Anwendungsfälle', link: '/de/use-cases' },
-          { text: 'Download', link: '/de/download' },
-          toolsNav('de'),
-          { text: 'Dokumentation', items: docsNav('de') },
-          { text: 'Blog', link: '/de/blog/' },
-          { text: 'Mitwirken', link: '/de/contributing' },
-        ],
+        nav: localeNav('de'),
         sidebar: { '/de/docs/': docsSidebar('de') },
       },
     },
@@ -3882,16 +4116,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       description:
         'Um aplicativo gratuito e fácil de usar para converter vídeos e áudio, cortar clipes, extrair música de vídeos e reduzir o tamanho das fotos. Inclui um servidor MCP integrado para assistentes de IA.',
       themeConfig: {
-        nav: [
-          { text: 'Início', link: '/pt/' },
-          { text: 'Recursos', link: '/pt/features' },
-          { text: 'Casos de uso', link: '/pt/use-cases' },
-          { text: 'Download', link: '/pt/download' },
-          toolsNav('pt'),
-          { text: 'Documentação', items: docsNav('pt') },
-          { text: 'Blog', link: '/pt/blog/' },
-          { text: 'Contribuir', link: '/pt/contributing' },
-        ],
+        nav: localeNav('pt'),
         sidebar: { '/pt/docs/': docsSidebar('pt') },
       },
     },
@@ -3903,16 +4128,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       description:
         '一款免费易用的应用：转换视频和音频、剪辑片段、从视频中提取音乐、压缩照片。支持 Windows、Mac 和 Linux。内置 MCP 服务器，可供 AI 助手调用。',
       themeConfig: {
-        nav: [
-          { text: '首页', link: '/zh/' },
-          { text: '功能特性', link: '/zh/features' },
-          { text: '使用场景', link: '/zh/use-cases' },
-          { text: '下载', link: '/zh/download' },
-          toolsNav('zh'),
-          { text: '技术文档', items: docsNav('zh') },
-          { text: '博客', link: '/zh/blog/' },
-          { text: '参与贡献', link: '/zh/contributing' },
-        ],
+        nav: localeNav('zh'),
         sidebar: { '/zh/docs/': docsSidebar('zh') },
       },
     },
@@ -3924,16 +4140,7 @@ gtag('config', 'G-SM28DL4DYR');`,
       description:
         'वीडियो और ऑडियो बदलने, क्लिप ट्रिम करने, वीडियो से म्यूज़िक निकालने और फ़ोटो छोटी करने के लिए एक मुफ़्त, आसान ऐप। Windows, Mac और Linux पर उपलब्ध। AI सहायकों के लिए अंतर्निहित MCP सर्वर शामिल है।',
       themeConfig: {
-        nav: [
-          { text: 'होम', link: '/hi/' },
-          { text: 'फ़ीचर्स', link: '/hi/features' },
-          { text: 'उपयोग के मामले', link: '/hi/use-cases' },
-          { text: 'डाउनलोड', link: '/hi/download' },
-          toolsNav('hi'),
-          { text: 'दस्तावेज़', items: docsNav('hi') },
-          { text: 'ब्लॉग', link: '/hi/blog/' },
-          { text: 'योगदान दें', link: '/hi/contributing' },
-        ],
+        nav: localeNav('hi'),
         sidebar: { '/hi/docs/': docsSidebar('hi') },
       },
     },

@@ -1,4 +1,5 @@
 ---
+title: "Fonctionnalités d'EncodeX — Convertisseur vidéo gratuit avec FFmpeg"
 description: "Découvrez toutes les fonctionnalités d'EncodeX : convertir des formats vidéo et audio, extraire un MP3 d'une vidéo, couper des clips, compresser des images, traiter des fichiers par lots, encoder avec accélération matérielle, et un serveur MCP intégré pour les assistants IA."
 ---
 

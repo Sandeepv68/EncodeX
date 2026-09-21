@@ -44,6 +44,85 @@
     </details>
   </div>
 
+  <!-- Primary single-decision mode -->
+  <div v-else-if="props.primary" class="dl-primary">
+    <template v-if="primaryRow">
+      <div class="dl-primary-card">
+        <div class="dl-primary-info">
+          <span class="dl-badge">✓ {{ t.recommended }}</span>
+          <p class="dl-primary-title">{{ primaryLabel }}</p>
+          <p class="dl-primary-meta">{{ primaryRow.chip }} · {{ formatSize(primaryRow.asset.size) }} · {{ primaryRow.description }}</p>
+        </div>
+        <a
+          class="dl-btn dl-btn-lg"
+          :href="primaryRow.asset.url"
+          @click="onPrimaryDownload"
+        >{{ t.download }}</a>
+      </div>
+      <details class="dl-others">
+        <summary class="dl-others-summary">
+          {{ t.otherDownloads }}
+          <span class="dl-chevron" aria-hidden="true">▾</span>
+        </summary>
+        <div class="dl-we-recommend">{{ t.weRecommend }}</div>
+        <div class="dl-list dl-list-others">
+          <div v-for="row in allRows" :key="row.key" class="dl-row" :class="{ 'dl-row-recommended': row.recommended }">
+            <div class="dl-main">
+              <div class="dl-title">
+                <span class="dl-chip">{{ row.chip }}</span>
+                <template v-if="row.recommended">
+                  <span class="dl-badge">✓ {{ t.recommended }}</span>
+                </template>
+                <template v-else>
+                  <span class="dl-os-tag">{{ osLabelOfGroup(row.group) }}</span>
+                </template>
+              </div>
+              <div class="dl-desc">{{ row.description }}</div>
+              <div class="dl-meta">
+                <span class="dl-file">{{ row.asset.name }}</span>
+                <span aria-hidden="true">·</span>
+                <span>{{ formatSize(row.asset.size) }}</span>
+                <template v-if="row.asset.downloads > 0">
+                  <span aria-hidden="true">·</span>
+                  <span>{{ t.downloadsCount.replace('{n}', formatCount(row.asset.downloads)) }}</span>
+                </template>
+                <template v-if="row.asset.sha256">
+                  <span aria-hidden="true">·</span>
+                  <code
+                    class="dl-sha"
+                    :title="`${t.sha256}: ${row.asset.sha256}`"
+                  >{{ shortSha(row.asset.sha256) }}</code>
+                  <button
+                    type="button"
+                    class="dl-mini"
+                    :aria-label="`${t.copy} SHA-256`"
+                    @click="copyText(row.key, row.asset.sha256)"
+                  >{{ copiedKey === row.key ? t.copied : t.copy }}</button>
+                  <button
+                    type="button"
+                    class="dl-mini dl-mini-ghost"
+                    @click="toggleFull(row.key)"
+                  >{{ expandedKey === row.key ? t.hide : t.showFull }}</button>
+                </template>
+              </div>
+              <pre
+                v-if="expandedKey === row.key && row.asset.sha256"
+                class="dl-full"
+              >SHA-256: {{ row.asset.sha256 }}</pre>
+            </div>
+            <a class="dl-btn" :href="row.asset.url" @click="trackDownload(row.group, row.asset.name, release?.tag || ''); trackDownloadConversion(row.group, row.asset.name, release?.tag || '')">{{ t.download }}</a>
+          </div>
+        </div>
+      </details>
+    </template>
+    <p v-else class="dl-unavailable">
+      {{ t.unavailable }}
+      <a href="https://github.com/Sandeepv68/EncodeX/releases" target="_blank" rel="noopener noreferrer">
+        GitHub Releases
+      </a>
+    </p>
+  </div>
+
   <!-- Version banner (no platform prop) -->
   <div v-else-if="!props.platform" class="dl-banner">
     <template v-if="release">
@@ -130,6 +209,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  primary: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const STRINGS = {
@@ -139,6 +222,12 @@ const STRINGS = {
     viewAll: 'All releases',
     recommended: 'Recommended',
     download: 'Download',
+    downloadForWindows: 'Download for Windows',
+    downloadForMacos: 'Download for macOS',
+    downloadForLinux: 'Download for Linux',
+    otherDownloads: 'Other downloads',
+    weRecommend:
+      "You don't need to know which file is right for you — if unsure, choose the one marked ✓ Recommended.",
     copy: 'Copy',
     copied: 'Copied!',
     showFull: 'Show full',
@@ -168,6 +257,12 @@ const STRINGS = {
     viewAll: 'Todas las versiones',
     recommended: 'Recomendado',
     download: 'Descargar',
+    downloadForWindows: 'Descargar para Windows',
+    downloadForMacos: 'Descargar para macOS',
+    downloadForLinux: 'Descargar para Linux',
+    otherDownloads: 'Otras descargas',
+    weRecommend:
+      'No necesitas saber qué archivo te corresponde. Si tienes dudas, elige el marcado con ✓ Recomendado.',
     copy: 'Copiar',
     copied: '¡Copiado!',
     showFull: 'Mostrar completo',
@@ -197,6 +292,12 @@ const STRINGS = {
     viewAll: 'Toutes les versions',
     recommended: 'Recommandé',
     download: 'Télécharger',
+    downloadForWindows: 'Télécharger pour Windows',
+    downloadForMacos: 'Télécharger pour macOS',
+    downloadForLinux: 'Télécharger pour Linux',
+    otherDownloads: 'Autres téléchargements',
+    weRecommend:
+      "Pas besoin de savoir quel fichier vous convient — en cas de doute, choisissez celui marqué ✓ Recommandé.",
     copy: 'Copier',
     copied: 'Copié !',
     showFull: 'Tout afficher',
@@ -226,6 +327,12 @@ const STRINGS = {
     viewAll: 'Alle Releases',
     recommended: 'Empfohlen',
     download: 'Herunterladen',
+    downloadForWindows: 'Für Windows herunterladen',
+    downloadForMacos: 'Für macOS herunterladen',
+    downloadForLinux: 'Für Linux herunterladen',
+    otherDownloads: 'Weitere Downloads',
+    weRecommend:
+      'Sie müssen nicht wissen, welche Datei die richtige ist — bei Unsicherheit nehmen Sie die mit ✓ Empfohlen.',
     copy: 'Kopieren',
     copied: 'Kopiert!',
     showFull: 'Vollständig anzeigen',
@@ -255,6 +362,12 @@ const STRINGS = {
     viewAll: 'Todas as versões',
     recommended: 'Recomendado',
     download: 'Baixar',
+    downloadForWindows: 'Baixar para Windows',
+    downloadForMacos: 'Baixar para macOS',
+    downloadForLinux: 'Baixar para Linux',
+    otherDownloads: 'Outros downloads',
+    weRecommend:
+      'Você não precisa saber qual arquivo é o certo — na dúvida, escolha o marcado com ✓ Recomendado.',
     copy: 'Copiar',
     copied: 'Copiado!',
     showFull: 'Mostrar completo',
@@ -284,6 +397,12 @@ const STRINGS = {
     viewAll: '所有版本',
     recommended: '推荐',
     download: '下载',
+    downloadForWindows: '下载 Windows 版',
+    downloadForMacos: '下载 macOS 版',
+    downloadForLinux: '下载 Linux 版',
+    otherDownloads: '其他下载',
+    weRecommend:
+      '您无需了解哪个文件适合您——如果不确定，请选择标有 ✓ 推荐 的那个。',
     copy: '复制',
     copied: '已复制！',
     showFull: '显示完整',
@@ -311,6 +430,12 @@ const STRINGS = {
     viewAll: 'सभी रिलीज़',
     recommended: 'अनुशंसित',
     download: 'डाउनलोड',
+    downloadForWindows: 'Windows के लिए डाउनलोड',
+    downloadForMacos: 'macOS के लिए डाउनलोड',
+    downloadForLinux: 'Linux के लिए डाउनलोड',
+    otherDownloads: 'अन्य डाउनलोड',
+    weRecommend:
+      'आपको यह जानने की ज़रूरत नहीं कि कौन-सी फ़ाइल सही है — संदेह होने पर ✓ अनुशंसित वाली चुनें।',
     copy: 'कॉपी करें',
     copied: 'कॉपी हो गया!',
     showFull: 'पूरा दिखाएँ',
@@ -402,6 +527,14 @@ function uaArchSync() {
   return null
 }
 
+function uaOsSync() {
+  const ua = navigator.userAgent || ''
+  if (/Windows/i.test(ua)) return 'windows'
+  if (/Macintosh|Mac OS X/i.test(ua)) return 'macos'
+  if (/Linux/i.test(ua)) return 'linux'
+  return 'windows'
+}
+
 async function refineDetection() {
   if (typeof navigator === 'undefined') return
   const hints = navigator.userAgentData
@@ -447,6 +580,62 @@ const rows = computed(() => {
       description: t.value.rows[row.key] || t.value.rows['win-x64'],
     }))
 })
+
+// ---- Primary single-decision mode ----
+
+const primaryRow = computed(() => {
+  if (!props.primary || !release.value) return null
+  const d = detected.value
+  const group = d.windows ? 'windows' : d.macos ? 'macos' : d.linux ? 'linux' : uaOsSync()
+  const preferred = d[group] || {
+    windows: 'win-x64',
+    macos: 'mac-arm64',
+    linux: 'linux-x86_64',
+  }[group]
+  const config = ROWS[group].find((row) => row.key === preferred)
+  if (!config) return null
+  const asset = release.value.assets[config.key]
+  if (!asset) return null
+  return {
+    ...config,
+    group,
+    asset,
+    description: t.value.rows[config.key] || t.value.rows['win-x64'],
+  }
+})
+
+const primaryLabel = computed(() => {
+  const group = primaryRow.value?.group || 'windows'
+  if (group === 'windows') return t.value.downloadForWindows
+  if (group === 'macos') return t.value.downloadForMacos
+  return t.value.downloadForLinux
+})
+
+const allRows = computed(() => {
+  if (!release.value) return []
+  const primaryKey = primaryRow.value?.key
+  return ['windows', 'macos', 'linux']
+    .flatMap((group) => ROWS[group].map((config) => ({ ...config, group, asset: release.value.assets[config.key] })))
+    .filter((row) => Boolean(row.asset))
+    .map((row) => ({
+      ...row,
+      recommended: row.key === primaryKey,
+      description: t.value.rows[row.key] || t.value.rows['win-x64'],
+    }))
+})
+
+function osLabelOfGroup(group) {
+  if (group === 'macos') return 'macOS'
+  return group.charAt(0).toUpperCase() + group.slice(1)
+}
+
+function onPrimaryDownload() {
+  const row = primaryRow.value
+  if (!row || !release.value) return
+  const tag = release.value.tag || ''
+  trackDownload(row.group, row.asset.name, tag)
+  trackDownloadConversion(row.group, row.asset.name, tag)
+}
 
 function formatDate(iso) {
   if (!iso) return ''
@@ -743,6 +932,104 @@ function toggleFull(key) {
   box-shadow: 0 2px 10px rgba(3, 89, 173, 0.28);
 }
 
+/* ---------- Primary single-decision card ---------- */
+
+.dl-primary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dl-primary-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px;
+  border: 1px solid var(--vp-c-brand-1);
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--vp-c-brand-soft) 0%, var(--vp-c-bg-soft) 100%);
+}
+
+.dl-primary-info {
+  min-width: 0;
+}
+
+.dl-primary-title {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+}
+
+.dl-primary-meta {
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: var(--vp-c-text-2);
+}
+
+.dl-btn-lg {
+  padding: 13px 30px;
+  font-size: 15px;
+}
+
+.dl-btn-lg:hover {
+  box-shadow: 0 4px 16px rgba(3, 89, 173, 0.32);
+}
+
+.dl-others {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dl-others-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  transition: background-color 0.15s;
+}
+
+.dl-others-summary::-webkit-details-marker,
+.dl-others-summary::marker {
+  display: none;
+  content: '';
+}
+
+.dl-others-summary:hover {
+  background: var(--vp-c-bg-soft);
+}
+
+.dl-others[open] .dl-chevron {
+  transform: rotate(180deg);
+}
+
+.dl-we-recommend {
+  padding: 10px 20px 0;
+  font-size: 13px;
+  color: var(--vp-c-text-3);
+}
+
+.dl-list-others {
+  margin: 10px;
+  min-height: 0;
+}
+
+.dl-os-tag {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 999px;
+  color: var(--vp-c-text-2);
+}
+
 /* ---------- Previous versions ---------- */
 
 .dl-old {
@@ -864,6 +1151,16 @@ function toggleFull(key) {
 
   .dl-btn {
     text-align: center;
+  }
+
+  .dl-primary-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .dl-btn-lg {
+    width: 100%;
   }
 }
 </style>

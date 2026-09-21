@@ -1,49 +1,155 @@
 ---
 layout: home
+title: "EncodeX — 免费 FFmpeg 视频转换器，适用于 Windows、Mac 和 Linux"
 description: "EncodeX 是一款适用于 Windows、macOS 和 Linux 的免费开源 FFmpeg 图形界面。您可以转换视频和音频、压缩文件、裁剪片段、提取音乐——全程在您的电脑上完成，无需命令行。内置 MCP 服务器，专为 AI 助手打造。"
+ogImage: "https://encodex.in/images/home_dashboard.webp"
 
 hero:
-  name: EncodeX
+  name: EncodeX<br>免费开源 · Windows · macOS · Linux
   text: FFmpeg 的强大能力。无需命令行。
   tagline: 一款免费、开源的 FFmpeg 图形界面，适用于 Windows、macOS 和 Linux。转换视频、提取音频、剪辑片段、压缩文件——一切都在本地完成，文件不会离开您的电脑。
   image:
-    src: /images/icon.webp
-    alt: EncodeX 图标
+    src: /images/home_dashboard.webp
+    alt: EncodeX 主界面，已加载视频并选中 YouTube 1080p 配置文件
   actions:
     - theme: brand
       text: 立即下载 — 完全免费
       link: /zh/download
     - theme: alt
-      text: 看看它能做什么
-      link: /zh/features
-
-features:
-  - icon: "\ud83d\udd04"
-    title: 任何视频随处可播
-    details: 手机、电视或电脑打不开某个视频？把它转换成一个到处都能播放的格式，完全不需要懂技术。
-  - icon: "\ud83c\udfb5"
-    title: 把视频里的音乐保存下来
-    details: 几秒钟把任何视频变成 MP3。课程、访谈、演唱会，或者那首别处找不到的歌，通通拿下。
-  - icon: "\u2702\ufe0f"
-    title: 剪掉无聊的部分
-    details: 删掉视频里不需要的段落。看一遍、拖动滑块选好起止点，只保留精华。
-  - icon: "\ud83d\udcf8"
-    title: 给照片瘦身方便分享
-    details: 让大照片体积变小，上传更快，邮件也装得下——而且不会变模糊。
-  - icon: "\ud83d\udce6"
-    title: 批量转换一堆文件
-    details: 拖进整个文件夹，让 EncodeX 替你干活。任务完成后它还能自动关机。
-  - icon: "\u26a1"
-    title: 大文件也一样快
-    details: EncodeX 自动调用显卡算力，转换速度大幅提升。什么都不用设置。
-  - icon: "\ud83c\udf00"
-    title: 旋转视频，修正侧拍的素材
-    details: 拍反了？将视频顺时针旋转 90°、180° 或 270° 或镜像翻转——保持 MP4/MOV/MKV 格式即无损。
-  - icon: "\ud83e\udd16"
-    title: 交给你的 AI 助手
-    details: 连接 Claude、Cursor 或 VS Code，直接开口就行。EncodeX 内置的 MCP 服务器会转换文件、提取音频、压缩图片并管理批量任务——全部在你的电脑上完成。
+      text: 在 GitHub 上查看 →
+      link: https://github.com/Sandeepv68/EncodeX
 
 ---
+
+<div class="trust-strip">
+  <span>永远免费</span>
+  <span>无需账号</span>
+  <span>无水印</span>
+  <span>100% 本地</span>
+</div>
+
+## 它能帮你做什么
+
+告诉 EncodeX 你想做什么，技术细节交给它。
+
+<div class="card-grid three-col">
+  <div class="card">
+    <span class="card-emoji">🎬</span>
+    <p class="card-head">什么都能转，随处都能播</p>
+    <p>MP4、MKV、AVI、MOV、WebM 等。选好您要在哪个设备上看，格式的事交给 EncodeX。</p>
+    <p><a href="/zh/video-converter">视频转换器 →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">📦</span>
+    <p class="card-head">把大文件变小</p>
+    <p>更小的 MP4 和 MKV，能塞进邮件、聊天和上传限制——几乎看不出差别。</p>
+    <p><a href="/zh/video-compressor">视频压缩器 →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">✂️</span>
+    <p class="card-head">只保留精彩部分</p>
+    <p>剪到你想要的精确时刻。会拖滑块，就会剪视频。</p>
+    <p><a href="/zh/use-cases">查看使用场景 →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎧</span>
+    <p class="card-head">把视频变成音乐</p>
+    <p>从任何视频中提取 MP3、M4A、FLAC 或 WAV——课程、访谈、演唱会。</p>
+    <p><a href="/zh/audio-converter">音频转换器 →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🗂️</span>
+    <p class="card-head">整个文件夹一次搞定</p>
+    <p>丢进 50 个文件就走人。EncodeX 逐个处理——完成后还能自动关机。</p>
+    <p><a href="/zh/features">全部功能 →</a></p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🖼️</span>
+    <p class="card-head">修正并瘦身图片</p>
+    <p>缩小照片方便分享，旋转侧拍的画面——只要格式不变就无损。</p>
+    <p><a href="/zh/features">全部功能 →</a></p>
+  </div>
+</div>
+
+## 一个简单窗口，搞定一切
+
+没什么要学的。四个步骤，从头到尾：
+
+<div class="workflow-steps">
+  <div class="wf-step">
+    <span class="wf-num">1</span>
+    <p class="card-head">拖入</p>
+    <p>把 <code>vacation.mkv</code> 拖进窗口。</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">2</span>
+    <p class="card-head">选目标</p>
+    <p>选 📱 手机——EncodeX 自动选择 MP4 1080p。</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">3</span>
+    <p class="card-head">开始转换</p>
+    <p>EncodeX 为你运行 FFmpeg，并调用显卡加速。</p>
+  </div>
+  <div class="wf-step">
+    <span class="wf-num">4</span>
+    <p class="card-head">完成</p>
+    <p><code>vacation.mp4</code> 就在你放的位置。</p>
+  </div>
+</div>
+
+<div class="privacy-band">
+  <h2>您的视频永远不会离开您的电脑。</h2>
+  <p>EncodeX 使用内置的 FFmpeg 引擎在本地处理您的媒体。不上传、不追踪、不存储到任何服务器。</p>
+  <ul class="checklist">
+    <li>✅ 无云端上传</li>
+    <li>✅ 无需注册账号</li>
+    <li>✅ 无需订阅</li>
+    <li>✅ 无水印</li>
+    <li>✅ 无文件大小限制</li>
+    <li>✅ 可离线使用</li>
+  </ul>
+  <p><a href="/zh/privacy">了解 EncodeX 如何保护你的隐私 →</a> · <a href="/zh/security">了解版本如何签名与校验 →</a></p>
+</div>
+
+## 选目标，而不是选编码
+
+140 多个内置配置文件替你完成设置。你只要说出你想要什么。
+
+<div class="card-grid three-col">
+  <div class="card">
+    <p class="card-head">📱 手机</p>
+    <p>到处都能播放的小巧 MP4。</p>
+    <p><a href="/zh/video-converter">MP4 →</a></p>
+  </div>
+  <div class="card">
+    <p class="card-head">▶️ YouTube</p>
+    <p>1080p MP4，可直接上传。</p>
+    <p><a href="/zh/features">YouTube 配置文件 →</a></p>
+  </div>
+  <div class="card">
+    <p class="card-head">📸 Instagram Reels</p>
+    <p>正确比例的竖屏 H.264。</p>
+    <p><a href="/zh/features">Reels 配置文件 →</a></p>
+  </div>
+  <div class="card">
+    <p class="card-head">💬 WhatsApp</p>
+    <p>发送快速的精简 MP4。</p>
+    <p><a href="/zh/compress/mp4">压缩 MP4 →</a></p>
+  </div>
+  <div class="card">
+    <p class="card-head">📧 邮件</p>
+    <p>不超大小限制的小巧 MP4。</p>
+    <p><a href="/zh/compress/mp4">压缩 MP4 →</a></p>
+  </div>
+  <div class="card">
+    <p class="card-head">🎬 视频剪辑</p>
+    <p>专业工作流的 ProRes 422。</p>
+    <p><a href="/zh/codecs/prores">ProRes →</a></p>
+  </div>
+</div>
+
+> **你不需要懂编码格式。只要选好你要干什么。**
 
 ## 是不是很眼熟？
 
@@ -82,63 +188,6 @@ features:
   </div>
 </div>
 
-## 眼见为实
-
-清爽的主界面，每个工具一键直达。会用浏览器，就会用 EncodeX：
-
-<img src="/images/home_dashboard.webp" alt="EncodeX 主界面" width="1600" height="861" loading="lazy">
-
-<div class="privacy-band">
-  <h2>您的视频永远不会离开您的电脑。</h2>
-  <p>EncodeX 使用内置的 FFmpeg 引擎在本地处理您的媒体。不上传、不追踪、不存储到任何服务器。</p>
-  <ul class="checklist">
-    <li>✅ 无云端上传</li>
-    <li>✅ 无需注册账号</li>
-    <li>✅ 无需订阅</li>
-    <li>✅ 无水印</li>
-    <li>✅ 无文件大小限制</li>
-    <li>✅ 可离线使用</li>
-  </ul>
-  <p><a href="/zh/privacy">了解 EncodeX 如何保护你的隐私 →</a></p>
-</div>
-
-## 它能帮你做什么
-
-<div class="card wide">
-  <h3>🎬 到哪都能播</h3>
-  <p>在所有主流格式之间转换视频：MP4、MKV、AVI、MOV、WebM 等等。把电脑上的视频搬到手机、电视或家里那台旧笔记本上。你只管选在哪看，剩下的交给 EncodeX。</p>
-</div>
-
-<div class="card wide">
-  <h3>🎧 把视频变成音乐</h3>
-  <p>拖入任何视频，得到一个 MP3。适合路上听课、把播客和访谈存成音频，或抢救那首只存在于演唱会视频里的歌。</p>
-</div>
-
-<div class="card wide">
-  <h3>✂️ 只留精彩部分</h3>
-  <p>直接在 EncodeX 里看视频，拖动两个滑块定好想要的片段再保存。时间轴带缩略图和声波图，精确找到那一秒。</p>
-</div>
-
-<div class="card wide">
-  <h3>🖼️ 给照片减负</h3>
-  <p>压缩照片，让它发送更快、占用更小——保存前还能实时预览压缩效果。</p>
-</div>
-
-<div class="card wide">
-  <h3>🌀 旋转视频，修正侧拍的素材</h3>
-  <p>拍反了？一键把视频和照片顺时针旋转 90°、180° 或 270°，或进行水平/垂直镜像。保持 MP4/MOV/MKV 格式不变时，旋转以无损方式保存——无需重新编码。</p>
-</div>
-
-<div class="card wide">
-  <h3>📦 整个文件夹一次处理</h3>
-  <p>手机里攒了 30 个视频？活动拍了 100 张照片？一起拖进来。EncodeX 排队逐个处理，你可以先去喝杯咖啡。它甚至能在队列结束后自动关机。</p>
-</div>
-
-<div class="card wide">
-  <h3>🎛️ 各种场合的现成配置文件</h3>
-  <p>140 多个内置转换配置文件帮你完成设置——直接导出到 YouTube、Instagram、TikTok、Apple 设备、ProRes、HLS 流媒体等。选一个配置文件，所有设置自动填入。也可以保存自己的自定义配置文件，EncodeX 会记住你最常用的那些。</p>
-</div>
-
 ## 把重活交给 AI
 
 EncodeX 内置了 **MCP 服务器**——开放的 [Model Context Protocol](https://modelcontextprotocol.io) 标准，让 AI 助手可以使用你的应用。连接 Claude Desktop、Claude Code、Cursor、VS Code 或任何兼容 MCP 的客户端，只需开口请它转换视频、提取音频、压缩一整个文件夹的照片，或查看批量队列的进度。所有工作都在本地完成；你的文件永远不会离开你的电脑。
@@ -168,17 +217,32 @@ EncodeX 内置了 **MCP 服务器**——开放的 [Model Context Protocol](http
 
 <p><a href="/zh/docs/cli#mcp-server-mode">阅读 MCP 服务器文档 →</a></p>
 
-## 大家为什么喜欢 EncodeX
+## 为什么选择 EncodeX？
 
-::: tip 💚 永远免费
-EncodeX 是由志愿者社区打造的开源软件。没有付费版来烦你，因为没有需要解锁的东西：功能全都内置。
+::: tip 🆓 免费开源（MIT）
+EncodeX **永远完全免费**——无需账号、无需订阅，也没有藏着好东西的付费档。它是由志愿者社区打造的开源软件（MIT 许可证）。 <a href="https://github.com/Sandeepv68/EncodeX">在 GitHub 上查看源码 →</a> · <a href="https://github.com/Sandeepv68/EncodeX/blob/main/LICENSE">MIT 许可证</a>
 :::
 
 <div class="card-grid three-col">
   <div class="card">
     <span class="card-emoji">🔒</span>
-    <p class="card-head">文件只属于你</p>
-    <p>一切都在你自己的电脑上进行，不上传任何东西。没有账号、没有日志、没有追踪。</p>
+    <p class="card-head">隐私保护</p>
+    <p>一切都在你自己的电脑上进行，永远不会上传任何东西。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🆓</span>
+    <p class="card-head">免费且开源</p>
+    <p>MIT 许可证。没有订阅、没有账号、没有藏着好东西的付费档。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⚡</span>
+    <p class="card-head">硬件加速</p>
+    <p>自动调用你的显卡芯片，让转换快得多。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🌎</span>
+    <p class="card-head">35+ 种语言</p>
+    <p>包括阿拉伯语、希伯来语等从右到左的书写系统——每个界面都有翻译。</p>
   </div>
   <div class="card">
     <span class="card-emoji">🚫</span>
@@ -186,24 +250,9 @@ EncodeX 是由志愿者社区打造的开源软件。没有付费版来烦你，
     <p>转换出来的文件干干净净，不带任何 logo。</p>
   </div>
   <div class="card">
-    <span class="card-emoji">🌍</span>
-    <p class="card-head">说你的语言</p>
-    <p>支持 35 种以上语言——从中文、印地语到阿拉伯语和日语。</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🌙</span>
-    <p class="card-head">看着舒服</p>
-    <p>浅色和深色模式自动跟随系统。</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🪶</span>
-    <p class="card-head">零学习成本</p>
-    <p>一个窗口、清晰的按钮、大白话选项。没什么要学的，也没什么要配的。</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🔄</span>
-    <p class="card-head">自动保持更新</p>
-    <p>有新版本时 EncodeX 会提醒你并自动完成更新——不用重新下载安装包。</p>
+    <span class="card-emoji">📴</span>
+    <p class="card-head">离线可用</p>
+    <p>无需联网。你需要的一切都随应用自带。</p>
   </div>
 </div>
 
@@ -226,6 +275,24 @@ EncodeX 有三重身份。日常任务用**拖放式界面**，需要脚本时�
     <span class="card-emoji">🤖</span>
     <p class="card-head">MCP 服务器</p>
     <p>提问 → 自动化 → 集成。让 Claude、Cursor、VS Code 和自定义 Agent 驱动同一个引擎。 <a href="/zh/docs/cli#mcp-server-mode">探索 MCP →</a></p>
+  </div>
+</div>
+
+<div class="card-grid three-col">
+  <div class="card">
+    <span class="card-emoji">⚡</span>
+    <p class="card-head">GPU 加速</p>
+    <p>在 NVIDIA、AMD、Intel 和 Apple Silicon 上自动获得更快的编码。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🎛️</span>
+    <p class="card-head">140+ 现成配置文件</p>
+    <p>YouTube、Instagram、TikTok、Apple 设备、ProRes、HLS 等。选一个，设置自动填好。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🌀</span>
+    <p class="card-head">旋转并修正侧拍画面</p>
+    <p>90°、180° 或 270°，外加镜像——只要保持 MP4/MOV/MKV 就无损。</p>
   </div>
 </div>
 
@@ -274,6 +341,10 @@ EncodeX 有三重身份。日常任务用**拖放式界面**，需要脚本时�
     <p>FFmpeg 引擎的友好界面——无需任何命令。</p>
   </div>
   <div class="card">
+    <p class="card-head"><a href="/zh/handbrake-alternative">HandBrake 替代方案</a></p>
+    <p>EncodeX 与 HandBrake、FFmpeg CLI、Shutter Encoder 的对比。</p>
+  </div>
+  <div class="card">
     <p class="card-head"><a href="/zh/video-converter">视频转换器</a></p>
     <p>在 Windows、Mac 和 Linux 上于所有格式之间转换视频。</p>
   </div>
@@ -306,6 +377,10 @@ EncodeX 有三重身份。日常任务用**拖放式界面**，需要脚本时�
     <p>EncodeX 内部引擎的通俗指南。</p>
   </div>
   <div class="card">
+    <p class="card-head"><a href="/zh/learn/what-format-to-use">该选什么格式？</a></p>
+    <p>MP4、MKV、H.264、HEVC 或 AV1 — 按目标选择。</p>
+  </div>
+  <div class="card">
     <p class="card-head"><a href="/zh/convert/mp4-to-mkv">MP4 转 MKV</a></p>
     <p>无损、即时重新封装 MP4 为 MKV，字幕完整保留。</p>
   </div>
@@ -330,6 +405,8 @@ EncodeX 有三重身份。日常任务用**拖放式界面**，需要脚本时�
     <p>从任何视频中提取 MP3 配乐或播客。</p>
   </div>
 </div>
+
+<OpenSourceCard />
 
 <div class="cta-card">
   <h2>准备好试试了吗？</h2>
