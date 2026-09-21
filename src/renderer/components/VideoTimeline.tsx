@@ -37,7 +37,6 @@ import {
   ZoomButton,
   ZoomControls,
   TrackLabelPanel,
-  TrackLabel,
   VideoTrackLabel,
   AudioTrackLabel,
   TrackRow,

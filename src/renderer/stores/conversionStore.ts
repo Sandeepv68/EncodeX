@@ -31,8 +31,7 @@ import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { CONVERSION_DEFAULTS, TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
-import type { EncoderType } from '../../shared/types';
-import type { ConversionState, ProgressData } from './types';
+import type { ConversionState } from './types';
 import {
   LOG_RESET_FORM,
   LOG_SET_AUDIO_BITRATE,

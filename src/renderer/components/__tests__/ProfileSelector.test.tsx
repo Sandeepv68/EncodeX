@@ -168,7 +168,7 @@ describe('ProfileSelector', () => {
   });
 
   it('shows a toast after deleting a profile', async () => {
-    const id = useProfileStore.getState().saveCustomProfile({
+    useProfileStore.getState().saveCustomProfile({
       name: 'Toast Test',
       category: 'video',
       container: 'mp4',

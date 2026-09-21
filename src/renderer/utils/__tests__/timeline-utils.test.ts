@@ -164,7 +164,6 @@ describe('computeWaveformBars', () => {
     expect(bars[0].width).toBe(4);
 
     const first4 = buckets.slice(0, 9);
-    const avgMax = first4.reduce((sum, b) => sum + b.max, 0) / first4.length;
     const avgPeak = first4.reduce((sum, b) => sum + (b.max - b.min) / 2, 0) / first4.length;
     expect(bars[0].height).toBe(Math.max(2, avgPeak * 50));
   });

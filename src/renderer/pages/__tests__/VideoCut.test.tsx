@@ -220,7 +220,7 @@ describe('VideoCut', () => {
   });
 
   it('requires a duration when duration mode is enabled', async () => {
-    const { container } = renderPage();
+    renderPage();
     await selectVideo();
     fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/cut.mp4' } });
     fireEvent.click(screen.getByRole('switch', { name: 'videoCut.useDuration' }));

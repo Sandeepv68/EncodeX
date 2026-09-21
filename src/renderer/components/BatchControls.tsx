@@ -68,7 +68,7 @@ import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { MAX_QUEUE_CONCURRENCY, WHEN_DONE_ACTIONS } from '../../shared/constants';
-import type { TranscoderType, WhenDoneAction, WhenDoneConfig } from '../../shared/types';
+import type { TranscoderType, WhenDoneAction } from '../../shared/types';
 import type { BatchControlsProps } from './types';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { FieldBox, FieldLabel } from '../styles/form.styles';

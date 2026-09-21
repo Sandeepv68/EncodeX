@@ -16,7 +16,6 @@
  */
 
 import { create } from 'zustand';
-import { LogEntry } from '../../shared/types';
 import { LOG_MAX_ENTRIES } from '../../shared/constants';
 import type { LogState } from './types';
 

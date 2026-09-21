@@ -13,7 +13,6 @@ import { ERROR_MESSAGES } from '../../../shared/errors';
 const queueListMock = vi.mocked(window.electronAPI.queueList);
 const queueGetStateMock = vi.mocked(window.electronAPI.queueGetState);
 const selectFilesMock = vi.mocked(window.electronAPI.selectFiles);
-const selectFolderFilesMock = vi.mocked(window.electronAPI.selectFolderFiles);
 const expandPathsMock = vi.mocked(window.electronAPI.expandPaths);
 const selectDirectoryMock = vi.mocked(window.electronAPI.selectDirectory);
 const queueAddMock = vi.mocked(window.electronAPI.queueAdd);

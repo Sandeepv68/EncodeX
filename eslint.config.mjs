@@ -22,6 +22,7 @@ import noHardcodedRem from './eslint-rules/no-hardcoded-rem.mjs';
 import noHardcodedColors from './eslint-rules/no-hardcoded-colors.mjs';
 import noInlineStyles from './eslint-rules/no-inline-styles.mjs';
 import noHardcodedStrings from './eslint-rules/no-hardcoded-strings.mjs';
+import noUnused from './eslint-rules/no-unused.mjs';
 
 /** Downscales a rule's severity to 'warn' while preserving its options. */
 function asWarn(value) {
@@ -45,6 +46,7 @@ export default [
           'no-hardcoded-colors': noHardcodedColors,
           'no-inline-styles': noInlineStyles,
           'no-hardcoded-strings': noHardcodedStrings,
+          'no-unused': noUnused,
         },
       },
     },
@@ -68,6 +70,7 @@ export default [
           ignoreFiles: ['src/renderer/i18n/localeMeta.ts'],
         },
       ],
+      'encodex/no-unused': 'error',
     },
   },
   {

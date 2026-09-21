@@ -8,7 +8,6 @@
  * adding its renderer counterpart (if any) and one branch here.
  */
 
-import { NoopProvider } from '../../shared/monitoring/noopProvider';
 import type { MonitorProvider, MonitoringConfig } from '../../shared/monitoring/types';
 import { SentryRendererProvider } from './sentryRendererProvider';
 

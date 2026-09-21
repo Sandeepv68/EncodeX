@@ -22,8 +22,8 @@
 
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
-import { createError, formatError, ErrorCode, ERROR_MESSAGES } from '../../shared/errors';
-import type { AppError, ErrorCodeType } from '../../shared/types';
+import { createError, formatError, ERROR_MESSAGES } from '../../shared/errors';
+import type { ErrorCodeType } from '../../shared/types';
 import type { ErrorState } from './types';
 import { ERROR_HISTORY_MAX } from '../../shared/constants';
 import { LOG_ERROR_CLEARED, LOG_ERROR_HISTORY_CLEARED, LOG_ERROR_MESSAGE_SHOWN, LOG_ERROR_SHOWN } from '../../shared/log-constants';

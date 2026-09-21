@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import ProfileEditorDialog from '../ProfileEditorDialog';
 import { useProfileStore } from '../../stores/profileStore';
 import { useToastStore } from '../../stores/toastStore';
-import { PROFILE_CATEGORIES, CATEGORY_ORDER } from '../../../shared/profiles/categories';
+import { PROFILE_CATEGORIES } from '../../../shared/profiles/categories';
 
 function selectMuiOption(comboboxIndex: number, optionText: string) {
   const comboboxes = screen.getAllByRole('combobox');

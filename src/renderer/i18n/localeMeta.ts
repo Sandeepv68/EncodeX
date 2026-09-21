@@ -43,7 +43,7 @@ import {
   FI,
   DK,
 } from 'country-flag-icons/react/3x2';
-import type { FlagComponent, LocaleMeta } from './types';
+import type { LocaleMeta } from './types';
 
 /**
  * @fileoverview Static metadata for the locales supported by the app's UI.

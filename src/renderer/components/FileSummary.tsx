@@ -18,7 +18,6 @@
 
 import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import type { MediaInfo } from '../../shared/types';
 import type { FileSummaryProps, SummaryRow } from './types';
 import { formatSize, formatDuration, formatBitrate } from '../utils/formatters';
 import { SummaryGrid, TagsBox, TagsTitle, TagItem } from '../styles/FileSummary.styles';

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ErrorBoundary } from '../ErrorBoundary';
 
@@ -47,7 +47,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('resets error state when Try Again is clicked', () => {
-    const { rerender } = render(
+    render(
       <ErrorBoundary>
         <ConditionalBadChild />
       </ErrorBoundary>,

@@ -19,7 +19,7 @@
  */
 
 import { create } from 'zustand';
-import type { ToastType, Toast, ToastState } from './types';
+import type { Toast, ToastState } from './types';
 
 /**
  * Monotonically increasing counter used to generate unique toast ids.

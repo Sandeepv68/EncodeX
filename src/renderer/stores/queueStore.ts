@@ -14,7 +14,7 @@
 
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
-import { QueueJob, ConversionProgress } from '../../shared/types';
+import { QueueJob } from '../../shared/types';
 import { LOG_ADD_JOB, LOG_CLEAR_JOBS, LOG_REMOVE_JOB, LOG_SET_JOBS, LOG_UPDATE_JOB, LOG_UPDATE_PROGRESS } from '../../shared/log-constants';
 import type { QueueState } from './types';
 

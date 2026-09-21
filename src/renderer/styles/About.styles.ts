@@ -1,5 +1,4 @@
 import { alpha, keyframes, styled } from '@mui/material/styles';
-import type { Theme } from '@mui/material/styles';
 import { Box, Button, Typography } from '@mui/material';
 import { THEMES, OVERLAY_COLORS } from '../colors';
 
