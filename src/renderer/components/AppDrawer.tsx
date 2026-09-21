@@ -41,7 +41,6 @@ import NavJobPopover from './NavJobPopover';
 import { basenameOrEmpty as basenameOf } from '../utils/path-utils';
 import { isJobActive } from '../utils/queue-job-utils';
 import type { AppDrawerProps, NavBlipId, NavJobPopoverContent } from './types';
-import type { QueueJob } from '../../shared/types';
 import {
   DrawerDivider,
   NavList,

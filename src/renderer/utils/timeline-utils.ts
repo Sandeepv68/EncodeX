@@ -214,7 +214,6 @@ export function computeWaveformBars(args: {
   const barHeight = trackContentHeight;
   const envelopeTop = trackContentTop;
   const virtualize = viewportWidth > 0;
-  const bucketsPerSec = buckets.length / duration;
   const margin = virtualize ? viewportWidth / zoom / 2 : 0;
   const startTime = virtualize ? Math.max(0, scrollLeft / zoom - margin) : 0;
   const endTime = virtualize ? Math.min(duration, (scrollLeft + viewportWidth) / zoom + margin) : duration;

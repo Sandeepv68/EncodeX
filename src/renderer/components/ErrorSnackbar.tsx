@@ -22,13 +22,10 @@
 
 import { Snackbar, AlertColor } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Logger } from '../../shared/logger';
 import { ErrorCode } from '../../shared/errors';
 import type { ErrorSnackbarProps } from './types';
 import { SnackbarAlert, AlertMessage, AlertDetail } from '../styles/ErrorSnackbar.styles';
 import { SNACKBAR_AUTO_HIDE_MS, TITLE_BAR_HEIGHT } from '../../shared/constants';
-
-const log = new Logger('renderer/components/ErrorSnackbar');
 
 /**
  * Maps each error code to a MUI Alert severity color.

@@ -27,7 +27,7 @@ import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { BATCH_OPERATIONS } from '../../shared/media-options';
-import type { QueueAddReviewDialogProps, QueueAddReviewSelection } from './types';
+import type { QueueAddReviewDialogProps } from './types';
 import { basename } from '../utils/path-utils';
 import { ReviewFileName, ReviewList, ReviewOperationSelect, ReviewRow } from '../styles/QueueAddReviewDialog.styles';
 
