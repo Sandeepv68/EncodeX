@@ -192,6 +192,17 @@ html {
   line-height: 1.6;
   color: var(--vp-c-text-2);
 }
+@media (max-width: 959px) {
+  .VPHero.has-image .heading {
+    align-items: center;
+  }
+  .VPHero.has-image .name,
+  .VPHero.has-image .text {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
 @media (min-width: 960px) {
   .VPHero .tagline {
     font-size: 20px;
