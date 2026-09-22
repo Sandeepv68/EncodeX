@@ -30,6 +30,8 @@ import {
   LOG_IPC_WINDOW_SET_ALWAYS_ON_TOP,
   LOG_IPC_TERMS_REJECT,
 } from '../../shared/log-constants';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 
 const log = new Logger('main/ipc/window');
 
@@ -120,6 +122,7 @@ export function registerWindowHandlers(win: BrowserWindow): void {
     }
     event.preventDefault();
     log.info(LOG_IPC_WINDOW_CLOSE_REQUESTED);
+    recordAnalyticsEvent(createAnalyticsEvent('window_close_requested', {}));
     win.webContents.send(IPC.WINDOW_CLOSE_REQUESTED);
   });
 
@@ -155,6 +158,7 @@ export function registerWindowHandlers(win: BrowserWindow): void {
    * @returns {void} Nothing is returned.
    */
   win.on('maximize', () => {
+    recordAnalyticsEvent(createAnalyticsEvent('window_maximize_toggled', { maximized: true }));
     if (!win.isDestroyed()) win.webContents.send(IPC.WINDOW_MAXIMIZED_CHANGED, true);
   });
 
@@ -165,6 +169,7 @@ export function registerWindowHandlers(win: BrowserWindow): void {
    * @returns {void} Nothing is returned.
    */
   win.on('unmaximize', () => {
+    recordAnalyticsEvent(createAnalyticsEvent('window_maximize_toggled', { maximized: false }));
     if (!win.isDestroyed()) win.webContents.send(IPC.WINDOW_MAXIMIZED_CHANGED, false);
   });
 }

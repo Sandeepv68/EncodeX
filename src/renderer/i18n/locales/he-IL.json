@@ -555,6 +555,8 @@
     "launchAtLoginHint": "מפעיל את EncodeX אוטומטית בעת התחברות למחשב שלך.",
     "monitoringErrorReporting": "דיווח שגיאות",
     "monitoringErrorReportingHint": "עוזר לשפר את EncodeX על ידי שליחת דוחות שגיאה אנונימיים. ניתן לכבות זאת בכל עת.",
+    "telemetry": "נתוני שימוש ודיווח שגיאות",
+    "telemetryHint": "עוזר לשפר את EncodeX על ידי שליחת נתוני שימוש ודוחות שגיאה אנונימיים. ניתן לכבות זאת בכל עת.",
     "mcpServer": "שרת MCP",
     "mcpServerHint": "מאפשר ללקוחות MCP חיצוניים כגון Claude Desktop, VS Code או Cursor לשלוט ב-EncodeX דרך חיבור מקומי. השרת מאזין רק במחשב זה.",
     "mcpAiUseCases": "מקרי שימוש ב-AI",

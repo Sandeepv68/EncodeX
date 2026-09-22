@@ -65,6 +65,9 @@ import {
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 import { showNativeCompletionNotification } from '../utils/desktop-utils';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
+import type { InputSource } from '../../shared/analytics/events';
 
 /**
  * Restricts the dragged card to vertical movement only, so reordering a queued
@@ -370,6 +373,13 @@ export default function BatchQueue() {
   const transcoderRef = useRef(TRANSCODER_TYPES[0]);
 
   /**
+   * Origin of the pending add-files review (dialog/folder), used to attribute
+   * `batch_files_added` analytics after the review confirm enqueues selections.
+   * @type {React.MutableRefObject<InputSource>}
+   */
+  const lastAddSourceRef = useRef<InputSource>('dialog');
+
+  /**
    * Suffix inserted into every generated output file name (e.g. `_encodex_converted`),
    * producing `name<suffix>.ext` next to the source file.
    * @type {React.MutableRefObject<string>}
@@ -657,7 +667,10 @@ export default function BatchQueue() {
         useToastStore.getState().warning(t('batchQueue.noMediaFound'));
         return;
       }
-      enqueueSelectionsRef.current(mediaFiles.map((file) => ({ file, operation: operationRef.current })));
+      enqueueSelectionsRef.current(
+        mediaFiles.map((file) => ({ file, operation: operationRef.current })),
+        'drop',
+      );
     };
     window.addEventListener('dragover', handleDragOver);
     window.addEventListener('dragleave', handleDragLeave);
@@ -687,7 +700,7 @@ export default function BatchQueue() {
    *   with its chosen operation.
    * @returns {Promise<void>} Resolves once every enqueue request settled.
    */
-  const enqueueSelections = async (selections: QueueAddReviewSelection[]) => {
+  const enqueueSelections = async (selections: QueueAddReviewSelection[], source: InputSource = lastAddSourceRef.current) => {
     const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
     const currentJobs = useQueueStore.getState().jobs;
     const plan = planEnqueues({
@@ -715,6 +728,7 @@ export default function BatchQueue() {
     await Promise.all(enqueues);
     if (added > 0) {
       useToastStore.getState().success(t('batchQueue.enqueued', { count: added }));
+      recordAnalyticsEvent(createAnalyticsEvent('batch_files_added', { source: source, count: added }));
     }
     if (plan.skippedNames.length > 0) {
       useToastStore
@@ -742,6 +756,7 @@ export default function BatchQueue() {
       { name: FILE_FILTERS.MEDIA_FILES.name, extensions: [...FILE_FILTERS.MEDIA_FILES.extensions] },
     ]);
     if (!files || files.length === 0) return;
+    lastAddSourceRef.current = 'dialog';
     setReviewFiles(files);
   };
 
@@ -753,6 +768,7 @@ export default function BatchQueue() {
   const handleAddFolder = async () => {
     const files = await window.electronAPI.selectFolderFiles();
     if (!files || files.length === 0) return;
+    lastAddSourceRef.current = 'folder';
     setReviewFiles(files);
   };
 
@@ -766,6 +782,7 @@ export default function BatchQueue() {
   const handleReviewConfirm = (selections: QueueAddReviewSelection[]) => {
     enqueueSelections(selections);
     setReviewFiles(null);
+    recordAnalyticsEvent(createAnalyticsEvent('batch_review_confirmed', { count: selections.length }));
   };
 
   /**
@@ -789,6 +806,7 @@ export default function BatchQueue() {
       removeJob(failedJob.id);
       window.electronAPI.queueRemove(failedJob.id);
       useToastStore.getState().success(t('toast.jobAdded'));
+      recordAnalyticsEvent(createAnalyticsEvent('batch_job_retried', { operation: inferJobOperation(failedJob.options) }));
     } catch (err) {
       const appError = formatError(err);
       useToastStore.getState().error(appError.message, appError.detail);
@@ -821,10 +839,12 @@ export default function BatchQueue() {
    * @returns {Promise<void>} Resolves once the cancel request has been handled.
    */
   const handleCancelAllConfirm = async () => {
+    const cancelledCount = useQueueStore.getState().jobs.length;
     setCancelConfirmOpen(false);
     await window.electronAPI.queueCancelAll();
     clearJobs();
     useToastStore.getState().info(t('toast.allCancelled'));
+    recordAnalyticsEvent(createAnalyticsEvent('batch_queue_cancelled_all', { count: cancelledCount }));
   };
 
   /**
@@ -834,10 +854,11 @@ export default function BatchQueue() {
    */
   const handleClearCompleted = async () => {
     await window.electronAPI.queueClearCompleted();
-    useQueueStore
+    const completedJobs = useQueueStore
       .getState()
-      .jobs.filter((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)
-      .forEach((job: QueueJob) => removeJob(job.id));
+      .jobs.filter((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR);
+    completedJobs.forEach((job: QueueJob) => removeJob(job.id));
+    recordAnalyticsEvent(createAnalyticsEvent('batch_clear_completed', { count: completedJobs.length }));
   };
 
   /**
@@ -849,6 +870,7 @@ export default function BatchQueue() {
   const handleEditOptions = (job: QueueJob) => {
     if (batchStarted) return;
     setEditJob(job);
+    recordAnalyticsEvent(createAnalyticsEvent('batch_job_options_edited', { operation: inferJobOperation(job.options) }));
   };
 
   /**
@@ -884,6 +906,7 @@ export default function BatchQueue() {
       });
       useToastStore.getState().success(t('batchQueue.optionsUpdated'));
       setEditJob(null);
+      recordAnalyticsEvent(createAnalyticsEvent('batch_job_options_edited', { operation: inferJobOperation(options) }));
     } catch (err) {
       const appError = formatError(err);
       useToastStore.getState().error(appError.message, appError.detail);
@@ -899,6 +922,7 @@ export default function BatchQueue() {
    */
   const handleConcurrencyChange = (concurrency: number) => {
     useSettingsStore.getState().setQueueConcurrency(concurrency);
+    recordAnalyticsEvent(createAnalyticsEvent('batch_concurrency_changed', { concurrency }));
   };
 
   /**
@@ -912,6 +936,7 @@ export default function BatchQueue() {
   const handleOperationChange = (value: string) => {
     setOperation(value);
     setContainer('');
+    recordAnalyticsEvent(createAnalyticsEvent('batch_operation_changed', { operation: value }));
   };
 
   /**
@@ -961,6 +986,7 @@ export default function BatchQueue() {
       if (profile.scale) setScale(profile.scale);
       if (profile.pixelFormat) setPixelFormat(profile.pixelFormat);
       useProfileStore.getState().recordRecentProfile(profile.id);
+      recordAnalyticsEvent(createAnalyticsEvent('batch_profile_applied', { profileId: profile.id }));
     },
     [setContainer, setVideoCodec, setAudioCodec, setVideoBitrate, setAudioBitrate, setQuality, setScale, setPixelFormat],
   );
@@ -973,6 +999,7 @@ export default function BatchQueue() {
   const handlePause = async () => {
     await window.electronAPI.queuePause();
     setPaused(true);
+    recordAnalyticsEvent(createAnalyticsEvent('batch_queue_paused', {}));
   };
 
   /**
@@ -983,6 +1010,7 @@ export default function BatchQueue() {
   const handleResume = async () => {
     await window.electronAPI.queueResume();
     setPaused(false);
+    recordAnalyticsEvent(createAnalyticsEvent('batch_queue_resumed', {}));
   };
 
   /**
@@ -994,6 +1022,17 @@ export default function BatchQueue() {
   const handleStart = async () => {
     await window.electronAPI.queueStart();
     setPaused(false);
+    const pending = useQueueStore.getState().jobs.filter((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED);
+    if (pending.length > 0) {
+      const mix = [...new Set(pending.map((j) => inferJobOperation(j.options)))].sort().join(',');
+      recordAnalyticsEvent(
+        createAnalyticsEvent('batch_queue_started', {
+          jobCount: pending.length,
+          operationMix: mix,
+          concurrency: queueConcurrency,
+        }),
+      );
+    }
   };
 
   /**
@@ -1006,6 +1045,7 @@ export default function BatchQueue() {
     const count = await window.electronAPI.queueExport();
     if (count > 0) {
       useToastStore.getState().success(t('batchQueue.exported', { count }));
+      recordAnalyticsEvent(createAnalyticsEvent('batch_export', { count }));
     }
   };
 
@@ -1021,6 +1061,7 @@ export default function BatchQueue() {
       const count = await window.electronAPI.queueImport();
       if (count > 0) {
         useToastStore.getState().success(t('batchQueue.imported', { count }));
+        recordAnalyticsEvent(createAnalyticsEvent('batch_import', { count }));
       }
     } catch (err) {
       const appError = formatError(err);
@@ -1050,13 +1091,54 @@ export default function BatchQueue() {
     { id: 'batchQueue.clearCompleted', handler: () => handleClearCompleted(), enabled: hasCompleted },
     { id: 'batchQueue.export', handler: () => handleExport(), enabled: jobs.length > 0 },
     { id: 'batchQueue.import', handler: () => handleImport() },
-    { id: 'batchQueue.condense', handler: () => setCondensed((prev) => !prev) },
+    {
+      id: 'batchQueue.condense',
+      handler: () => {
+        setCondensed((prev) => !prev);
+        recordAnalyticsEvent(createAnalyticsEvent('batch_condense_toggled', { condensed: !condensed }));
+      },
+    },
     { id: 'batchQueue.focusSearch', handler: () => searchRef.current?.focus() },
-    { id: 'batchQueue.filterAll', handler: () => setFilter('all'), enabled: jobs.length > 0 },
-    { id: 'batchQueue.filterQueued', handler: () => setFilter(QUEUE_STATUS.QUEUED), enabled: jobs.length > 0 },
-    { id: 'batchQueue.filterRunning', handler: () => setFilter(QUEUE_STATUS.RUNNING), enabled: jobs.length > 0 },
-    { id: 'batchQueue.filterDone', handler: () => setFilter(QUEUE_STATUS.DONE), enabled: jobs.length > 0 },
-    { id: 'batchQueue.filterFailed', handler: () => setFilter(QUEUE_STATUS.ERROR), enabled: jobs.length > 0 },
+    {
+      id: 'batchQueue.filterAll',
+      handler: () => {
+        setFilter('all');
+        recordAnalyticsEvent(createAnalyticsEvent('batch_filter_changed', { filter: 'all' }));
+      },
+      enabled: jobs.length > 0,
+    },
+    {
+      id: 'batchQueue.filterQueued',
+      handler: () => {
+        setFilter(QUEUE_STATUS.QUEUED);
+        recordAnalyticsEvent(createAnalyticsEvent('batch_filter_changed', { filter: QUEUE_STATUS.QUEUED }));
+      },
+      enabled: jobs.length > 0,
+    },
+    {
+      id: 'batchQueue.filterRunning',
+      handler: () => {
+        setFilter(QUEUE_STATUS.RUNNING);
+        recordAnalyticsEvent(createAnalyticsEvent('batch_filter_changed', { filter: QUEUE_STATUS.RUNNING }));
+      },
+      enabled: jobs.length > 0,
+    },
+    {
+      id: 'batchQueue.filterDone',
+      handler: () => {
+        setFilter(QUEUE_STATUS.DONE);
+        recordAnalyticsEvent(createAnalyticsEvent('batch_filter_changed', { filter: QUEUE_STATUS.DONE }));
+      },
+      enabled: jobs.length > 0,
+    },
+    {
+      id: 'batchQueue.filterFailed',
+      handler: () => {
+        setFilter(QUEUE_STATUS.ERROR);
+        recordAnalyticsEvent(createAnalyticsEvent('batch_filter_changed', { filter: 'failed' }));
+      },
+      enabled: jobs.length > 0,
+    },
   ]);
 
   const remainingSeconds = estimateRemaining(jobs, progress);
@@ -1114,6 +1196,10 @@ export default function BatchQueue() {
       return reordered === state.jobs ? {} : { jobs: reordered };
     });
     window.electronAPI.queueMoveTo(activeId, toPosition);
+    const moved = jobs.find((job: QueueJob) => job.id === activeId);
+    if (moved) {
+      recordAnalyticsEvent(createAnalyticsEvent('batch_job_reordered', { movedBy: Math.abs(to - from) }));
+    }
   };
 
   const activeJob = activeDragId ? jobs.find((job: QueueJob) => job.id === activeDragId) : null;
@@ -1129,7 +1215,10 @@ export default function BatchQueue() {
             aria-label={condensed ? t('batchQueue.expand') : t('batchQueue.condense')}
             aria-expanded={!condensed}
             aria-controls="batch-controls-section encoding-options-section"
-            onClick={() => setCondensed((prev) => !prev)}
+            onClick={() => {
+              setCondensed((prev) => !prev);
+              recordAnalyticsEvent(createAnalyticsEvent('batch_condense_toggled', { condensed: !condensed }));
+            }}
             sx={{ marginInlineStart: 'auto' }}
             data-testid="batch-queue-condense"
           >
@@ -1222,7 +1311,14 @@ export default function BatchQueue() {
                   label={`${label} (${count})`}
                   color={filter === value ? 'primary' : 'default'}
                   aria-pressed={filter === value}
-                  onClick={() => setFilter(value)}
+                  onClick={() => {
+                    setFilter(value);
+                    recordAnalyticsEvent(
+                      createAnalyticsEvent('batch_filter_changed', {
+                        filter: (value === QUEUE_STATUS.ERROR ? 'failed' : value) as 'all' | 'queued' | 'running' | 'done' | 'failed',
+                      }),
+                    );
+                  }}
                 />
               );
             })}
@@ -1270,7 +1366,13 @@ export default function BatchQueue() {
                       key={job.id}
                       job={job}
                       progress={progress[job.id]}
-                      onRemove={(id) => window.electronAPI.queueRemove(id)}
+                      onRemove={(id) => {
+                        const removed = jobs.find((j: QueueJob) => j.id === id);
+                        window.electronAPI.queueRemove(id);
+                        if (removed) {
+                          recordAnalyticsEvent(createAnalyticsEvent('batch_job_removed', { status: removed.status }));
+                        }
+                      }}
                       onRetry={handleRetry}
                       onEditOptions={handleEditOptions}
                       editLocked={batchStarted}

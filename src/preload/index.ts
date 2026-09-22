@@ -134,6 +134,8 @@ import {
   LOG_UPDATER_OPEN_RELEASE_NOTES,
   LOG_IPC_MONITORING_GET_STATE,
   LOG_IPC_MONITORING_SET_ENABLED,
+  LOG_IPC_ANALYTICS_GET_STATE,
+  LOG_IPC_ANALYTICS_SET_ENABLED,
   LOG_IPC_MCP_GET_SETTINGS,
   LOG_IPC_MCP_SET_SETTINGS,
 } from '../shared/log-constants';
@@ -837,6 +839,30 @@ const api = {
   monitoringSetEnabled: (enabled: boolean) => {
     log.debug(LOG_IPC_MONITORING_SET_ENABLED, { enabled });
     return ipcRenderer.invoke(IPC.MONITORING_SET_ENABLED, enabled) as Promise<{ enabled: boolean; backend: string }>;
+  },
+
+  /**
+   * Queries the current usage-analytics consent state. Logs the call at debug
+   * level and invokes `IPC.ANALYTICS_GET_STATE` ('analytics-get-state').
+   *
+   * @returns {Promise<{ enabled: boolean }>} The analytics consent state.
+   */
+  analyticsGetState: () => {
+    log.debug(LOG_IPC_ANALYTICS_GET_STATE);
+    return ipcRenderer.invoke(IPC.ANALYTICS_GET_STATE) as Promise<{ enabled: boolean; backend: string }>;
+  },
+
+  /**
+   * Updates the usage-analytics consent (Settings toggle). Persists the new
+   * state in the main process and live-toggles the backend. Invokes
+   * `IPC.ANALYTICS_SET_ENABLED` ('analytics-set-enabled') with the flag.
+   *
+   * @param {boolean} enabled - true to enable usage analytics, false to disable.
+   * @returns {Promise<{ enabled: boolean }}> The resulting consent state.
+   */
+  analyticsSetEnabled: (enabled: boolean) => {
+    log.debug(LOG_IPC_ANALYTICS_SET_ENABLED, { enabled });
+    return ipcRenderer.invoke(IPC.ANALYTICS_SET_ENABLED, enabled) as Promise<{ enabled: boolean; backend: string }>;
   },
 
   /**

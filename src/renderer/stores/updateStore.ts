@@ -19,6 +19,8 @@
 
 import { create } from 'zustand';
 import type { UpdateInfo, UpdateProgress } from '../../shared/types';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 
 /**
  * Possible states of the update manager UI flow.
@@ -150,22 +152,26 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
     checkForUpdates: () => {
       set({ status: 'checking', errorMessage: null, progress: null });
       window.electronAPI?.checkForUpdates();
+      recordAnalyticsEvent(createAnalyticsEvent('update_check_triggered', { source: 'manual' }));
     },
 
     downloadUpdate: () => {
       set({ status: 'downloading', progress: null, errorMessage: null, restartScheduled: false });
       window.electronAPI?.downloadUpdate();
+      recordAnalyticsEvent(createAnalyticsEvent('update_download_started', {}));
     },
 
     cancelDownload: () => {
       window.electronAPI?.cancelDownload();
       set({ status: 'available', progress: null });
+      recordAnalyticsEvent(createAnalyticsEvent('update_download_cancelled', {}));
     },
 
     installUpdate: () => {
       const { installerPath } = get();
       if (installerPath) {
         window.electronAPI?.installUpdate(installerPath);
+        recordAnalyticsEvent(createAnalyticsEvent('update_install_now', {}));
       }
     },
 
@@ -175,19 +181,23 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
       const version = info?.version || scheduledVersion || '';
       window.electronAPI?.scheduleInstallOnRestart(installerPath, version);
       set({ status: 'restart-scheduled', restartScheduled: true, scheduledVersion: version });
+      recordAnalyticsEvent(createAnalyticsEvent('update_install_on_restart', {}));
     },
 
     cancelRestartInstall: () => {
       window.electronAPI?.cancelRestartInstall();
       set({ status: 'downloaded', restartScheduled: false });
+      recordAnalyticsEvent(createAnalyticsEvent('update_restart_install_cancelled', {}));
     },
 
     openReleaseNotes: (url: string) => {
       window.electronAPI?.openReleaseNotes(url);
+      recordAnalyticsEvent(createAnalyticsEvent('update_release_notes_opened', {}));
     },
 
     openDialog: () => {
       set({ dialogOpen: true });
+      recordAnalyticsEvent(createAnalyticsEvent('update_dialog_opened', { source: 'manual' }));
     },
 
     closeDialog: () => {

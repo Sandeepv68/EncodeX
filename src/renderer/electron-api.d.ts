@@ -446,6 +446,21 @@ export interface ElectronAPI {
    */
   monitoringSetEnabled(enabled: boolean): Promise<{ enabled: boolean; backend: string }>;
   /**
+   * Queries the current usage-analytics state from the main process over
+   * `IPC.ANALYTICS_GET_STATE` ('analytics-get-state').
+   * @returns {Promise<{ enabled: boolean; backend: string }>} Consent flag and
+   *   active backend adapter name in main ('aptabase' | 'noop').
+   */
+  analyticsGetState(): Promise<{ enabled: boolean; backend: string }>;
+  /**
+   * Updates the usage-analytics consent (Settings toggle). Persists the new
+   * state in the main process and live-toggles the backend over
+   * `IPC.ANALYTICS_SET_ENABLED` ('analytics-set-enabled').
+   * @param {boolean} enabled - true to enable usage analytics, false to disable.
+   * @returns {Promise<{ enabled: boolean; backend: string }>}> The resulting state.
+   */
+  analyticsSetEnabled(enabled: boolean): Promise<{ enabled: boolean; backend: string }>;
+  /**
    * Queries the stored embedded MCP server settings from the main process over
    * `IPC.MCP_SETTINGS_GET` ('mcp-settings-get').
    * @returns {Promise<McpSettings>} The persisted (sanitized) MCP settings.

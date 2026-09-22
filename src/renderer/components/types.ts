@@ -490,6 +490,7 @@ export interface MediaPlayerProps {
   onTimeUpdate?: (time: number) => void;
   onDurationChange?: (duration: number) => void;
   onMediaInfo?: (info: MediaInfo) => void;
+  onTogglePlay?: (playing: boolean) => void;
 }
 
 /**

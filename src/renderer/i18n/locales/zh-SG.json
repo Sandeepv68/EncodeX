@@ -555,6 +555,8 @@
     "launchAtLoginHint": "登录计算机时自动启动 EncodeX。",
     "monitoringErrorReporting": "错误报告",
     "monitoringErrorReportingHint": "发送匿名错误报告以帮助改进 EncodeX。您可以随时关闭此功能。",
+    "telemetry": "使用数据和错误报告",
+    "telemetryHint": "发送匿名的使用数据和错误报告以帮助改进 EncodeX。您可以随时关闭此功能。",
     "mcpServer": "MCP 服务器",
     "mcpServerHint": "允许 Claude Desktop、VS Code 或 Cursor 等外部 MCP 客户端通过本地连接控制 EncodeX。服务器仅在本机监听。",
     "mcpAiUseCases": "AI 使用场景",

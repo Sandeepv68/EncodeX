@@ -545,6 +545,8 @@
     "launchAtLoginHint": "Startar EncodeX automatiskt när du loggar in på datorn.",
     "monitoringErrorReporting": "Felrapportering",
     "monitoringErrorReportingHint": "Hjälper till att förbättra EncodeX genom att skicka anonyma felrapporter. Du kan stänga av detta när som helst.",
+    "telemetry": "Användningsdata och felrapportering",
+    "telemetryHint": "Hjälper till att förbättra EncodeX genom att skicka anonyma användningsdata och felrapporter. Du kan stänga av detta när som helst.",
     "mcpServer": "MCP-server",
     "mcpServerHint": "Låter externa MCP-klienter som Claude Desktop, VS Code eller Cursor styra EncodeX via en lokal anslutning. Servern lyssnar bara på den här datorn.",
     "mcpAiUseCases": "AI-användningsfall",

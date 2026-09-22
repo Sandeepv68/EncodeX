@@ -69,6 +69,8 @@ import type { QueueJobCardProps } from './types';
 import type { ConversionOptions } from '../../shared/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { useToastStore } from '../stores/toastStore';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
 import { basename } from '../utils/path-utils';
 import { statusChipColor } from '../utils/queue-job-utils';
@@ -244,6 +246,7 @@ export function QueueJobCardContent({
    */
   const handleReveal = async () => {
     await window.electronAPI.revealFile(job.output);
+    recordAnalyticsEvent(createAnalyticsEvent('batch_job_reveal_in_folder', {}));
   };
 
   /**
@@ -253,6 +256,7 @@ export function QueueJobCardContent({
   const handleCopyPath = async () => {
     await navigator.clipboard.writeText(job.output);
     useToastStore.getState().success(t('toast.pathCopied'));
+    recordAnalyticsEvent(createAnalyticsEvent('batch_job_path_copied', {}));
   };
 
   const optionRows = buildOptionRows(job.options);

@@ -16,6 +16,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from '../shared/logger';
 import type { UpdateInfo, UpdateAsset, UpdateProgress, PendingInstall } from '../shared/types';
+import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../shared/analytics/events';
 import {
   LOG_UPDATER_CHECKING,
   LOG_UPDATER_AVAILABLE,
@@ -244,6 +246,7 @@ export async function checkForUpdate(): Promise<UpdateInfo | null> {
   };
 
   log.info(LOG_UPDATER_AVAILABLE, info.version, asset.name);
+  recordAnalyticsEvent(createAnalyticsEvent('update_available', { version: app.getVersion(), newVersion: info.version }));
   return info;
 }
 
@@ -468,6 +471,7 @@ export async function downloadUpdate(info: UpdateInfo, win: BrowserWindow): Prom
   log.info(LOG_UPDATER_DOWNLOADING, info.asset.name);
   const filePath = await downloadFile(info.asset.url, info.asset.name, win);
   log.info(LOG_UPDATER_DOWNLOADED, filePath);
+  recordAnalyticsEvent(createAnalyticsEvent('update_downloaded', { version: app.getVersion(), newVersion: info.version }));
   return filePath;
 }
 
@@ -498,6 +502,13 @@ export function cancelDownload(): void {
 export async function installUpdate(installerPath: string): Promise<void> {
   log.info(LOG_UPDATER_INSTALLING, installerPath);
   cancelRestartInstall();
+  const pending = readPendingInstall();
+  recordAnalyticsEvent(
+    createAnalyticsEvent('update_installed', {
+      version: app.getVersion(),
+      newVersion: pending?.version || '',
+    }),
+  );
   await shell.openPath(installerPath);
   app.quit();
 }

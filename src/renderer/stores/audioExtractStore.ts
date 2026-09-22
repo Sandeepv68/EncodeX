@@ -35,6 +35,8 @@ import { ErrorCode } from '../../shared/errors';
 import { useErrorStore } from './errorStore';
 import { useToastStore } from './toastStore';
 import type { AudioExtractState, TaskProgress } from './types';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import i18n from '../i18n/config';
 import { AUDIO_EXTRACT_DEFAULT_CODEC } from '../../shared/constants';
 import {
@@ -197,13 +199,24 @@ export const useAudioExtractStore = create<AudioExtractState>((set, get) => ({
     log.info(LOG_START_EXTRACT, input, LOG_ARROW, output, LOG_CODEC, audioCodec);
     useErrorStore.getState().clearError();
     set({ isConverting: true, isPaused: false, progress: null });
+    const extractStartedAt = Date.now();
     try {
       await window.electronAPI.convertFile(input, output, { audioCodec, audioBitrate }, TRANSCODER_TYPES[0]);
       log.info(LOG_EXTRACTION_COMPLETED_SUCCESSFULLY);
+      recordAnalyticsEvent(
+        createAnalyticsEvent('audio_extract_completed', {
+          codec: audioCodec,
+          durationSec: Math.round((Date.now() - extractStartedAt) / 1000),
+        }),
+      );
       useToastStore.getState().success(i18n.t('toast.audioExtracted'));
       set({ progress: null });
     } catch (err: unknown) {
       log.error(LOG_EXTRACTION_FAILED, err);
+      const code = typeof (err as { code?: string })?.code === 'string' ? (err as { code: string }).code : undefined;
+      if (code !== ErrorCode.CANCELLED) {
+        recordAnalyticsEvent(createAnalyticsEvent('audio_extract_failed', { codec: audioCodec, code }));
+      }
       useErrorStore.getState().showError(err);
       set({ progress: null });
     } finally {

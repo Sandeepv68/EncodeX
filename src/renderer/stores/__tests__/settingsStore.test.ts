@@ -28,6 +28,7 @@ describe('settingsStore', () => {
       alwaysOnTop: false,
       launchAtLogin: false,
       monitoringEnabled: true,
+      analyticsEnabled: true,
       queueConcurrency: DEFAULT_QUEUE_CONCURRENCY,
       whenDone: { enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false },
       mcpEnabled: false,
@@ -158,6 +159,61 @@ describe('settingsStore', () => {
     });
     const { useSettingsStore: fresh } = await import('../settingsStore');
     await vi.waitFor(() => expect(fresh.getState().monitoringEnabled).toBe(false));
+  });
+
+  it('defaults the analytics consent to enabled', () => {
+    expect(useSettingsStore.getState().analyticsEnabled).toBe(true);
+  });
+
+  it('setTelemetryEnabled forwards the flag to both IPC channels and adopts both results', async () => {
+    const analyticsSpy = vi
+      .fn()
+      .mockResolvedValueOnce({ enabled: false, backend: 'aptabase' })
+      .mockResolvedValueOnce({ enabled: true, backend: 'aptabase' });
+    const monitoringSpy = vi
+      .fn()
+      .mockResolvedValueOnce({ enabled: false, backend: 'sentry' })
+      .mockResolvedValueOnce({ enabled: true, backend: 'sentry' });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, analyticsSetEnabled: analyticsSpy, monitoringSetEnabled: monitoringSpy },
+      writable: true,
+    });
+    useSettingsStore.getState().setTelemetryEnabled(false);
+    await vi.waitFor(() => expect(useSettingsStore.getState().analyticsEnabled).toBe(false));
+    expect(useSettingsStore.getState().monitoringEnabled).toBe(false);
+    expect(analyticsSpy).toHaveBeenCalledWith(false);
+    expect(monitoringSpy).toHaveBeenCalledWith(false);
+
+    useSettingsStore.getState().setTelemetryEnabled(true);
+    await vi.waitFor(() => expect(useSettingsStore.getState().analyticsEnabled).toBe(true));
+    expect(useSettingsStore.getState().monitoringEnabled).toBe(true);
+    expect(analyticsSpy).toHaveBeenLastCalledWith(true);
+    expect(monitoringSpy).toHaveBeenLastCalledWith(true);
+  });
+
+  it('keeps the previous telemetry consent when either main-process call fails', async () => {
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: {
+        ...window.electronAPI,
+        analyticsSetEnabled: vi.fn().mockRejectedValue(new Error('ipc down')),
+        monitoringSetEnabled: vi.fn().mockResolvedValue({ enabled: true, backend: 'sentry' }),
+      },
+      writable: true,
+    });
+    useSettingsStore.getState().setTelemetryEnabled(false);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(useSettingsStore.getState().analyticsEnabled).toBe(true);
+    expect(useSettingsStore.getState().monitoringEnabled).toBe(true);
+  });
+
+  it('hydrates analytics consent from the main process at load', async () => {
+    vi.resetModules();
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { analyticsGetState: vi.fn().mockResolvedValue({ enabled: false, backend: 'noop' }) },
+      writable: true,
+    });
+    const { useSettingsStore: fresh } = await import('../settingsStore');
+    await vi.waitFor(() => expect(fresh.getState().analyticsEnabled).toBe(false));
   });
 
   it('defaults the MCP server to disabled on the default port with no token', () => {

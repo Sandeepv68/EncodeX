@@ -26,6 +26,7 @@ loadDotenv({ quiet: true });
 
 import { app, BrowserWindow, Menu, shell } from 'electron';
 import * as path from 'path';
+import * as fs from 'fs';
 import { format as formatArgs } from 'util';
 import { registerIpcHandlers } from './ipc/handlers';
 import { runCli, mapCliErrorToExitCode } from './cli/cli';
@@ -79,17 +80,34 @@ import {
 } from '../shared/log-constants';
 import { captureException, closeMonitoring, initMonitoring } from '../shared/monitoring/MonitoringService';
 import type { MonitoringConfig } from '../shared/monitoring/types';
+import { closeAnalytics, flushAnalytics, initAnalytics } from '../shared/analytics/AnalyticsService';
+import type { AnalyticsConfig } from '../shared/analytics/types';
 import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../shared/analytics/events';
 import { SENTRY_BUILD_CONFIG } from './generated/sentryBuildConfig';
 import { readMonitoringConsent } from './monitoring/consent';
 import { registerMonitoringIpcBridge } from './monitoring/ipcBridge';
 import { resolveMainMonitorProvider } from './monitoring/providerFactory';
+import { readAnalyticsConsent } from './analytics/consent';
+import { registerAnalyticsIpcBridge } from './analytics/ipcBridge';
+import { resolveMainAnalyticsProvider } from './analytics/providerFactory';
 
 const log = new Logger('main/index');
 
 /** Consent state read during {@link bootstrapMonitoring}; consumed by the IPC bridge registration. @type {boolean} */
 let monitoringConsentAtBoot = true;
+
+/** Consent state read during {@link bootstrapAnalytics}; consumed by the analytics IPC bridge registration. @type {boolean} */
+let analyticsConsentAtBoot = true;
+
+/** Wall-clock timestamp when the process started; drives the app_quit session length. @type {number} */
+const SESSION_STARTED_AT = Date.now();
+
+/** Set when the renderer process dies unexpectedly during this session. @type {boolean} */
+let rendererCrashedDuringSession = false;
+
+/** userData-relative JSON file recording the version whose first run was already observed. @const {string} */
+const ANALYTICS_INSTALL_MARKER_FILE = 'analytics-install-marker.json';
 
 /**
  * Initializes the monitoring subsystem as early as possible in the main
@@ -124,6 +142,42 @@ async function bootstrapMonitoring(): Promise<void> {
 }
 
 /**
+ * Initializes the analytics subsystem as early as possible in the main
+ * process (both GUI and CLI modes share this path).
+ *
+ * Reads the persisted user consent (`userData/analytics-consent.json`, seeded
+ * from monitoring consent when missing and defaulting to enabled) and
+ * activates the provider resolved by {@link resolveMainAnalyticsProvider} -
+ * Aptabase when an App Key is configured, the no-op fallback otherwise.
+ *
+ * MUST be invoked before `app.whenReady()`: the Aptabase SDK registers its
+ * custom `aptabase-ipc` scheme synchronously inside `initialize` (D7).
+ * Failures are swallowed: analytics must never prevent startup.
+ *
+ * @returns {Promise<void>} Resolves once initialization attempts have settled.
+ */
+async function bootstrapAnalytics(): Promise<void> {
+  try {
+    const consent = readAnalyticsConsent(app.getPath('userData'));
+    analyticsConsentAtBoot = consent;
+    const config: AnalyticsConfig = {
+      enabled: consent,
+      // Runtime env wins; packaged releases ship the key via environment or
+      // electron-builder config injection (see .env.example / docs/ANALYTICS.md).
+      appKey: process.env.APTABASE_APP_KEY,
+      host: process.env.APTABASE_HOST,
+      environment: process.env.APTABASE_ENVIRONMENT || (process.env.NODE_ENV === 'development' ? 'development' : 'production'),
+      release: `encodex@${app.getVersion()}`,
+      // Set APTABASE_DEBUG=1 to watch the SDK log event delivery locally.
+      debug: process.env.APTABASE_DEBUG === '1',
+    };
+    await initAnalytics(config, resolveMainAnalyticsProvider);
+  } catch (err) {
+    log.error('Analytics bootstrap failed:', err);
+  }
+}
+
+/**
  * Registers process-level crash handlers so uncaught exceptions, unhandled
  * promise rejections, and unexpected child-process deaths are reported through
  * the monitoring facade. Installed immediately at module load; events raised
@@ -150,7 +204,16 @@ function registerProcessCrashHandlers(): void {
 }
 
 // Start monitoring before anything else runs; do not block module execution.
-void bootstrapMonitoring();
+// Analytics is chained AFTER monitoring settles: Sentry's main SDK replaces the
+// privileged-scheme list during its own registration (installing a proxy so
+// later calls append). If Aptabase registered first, Sentry's replace would
+// drop `aptabase-ipc`, and renderer fetch() would fail with
+// "URL scheme aptabase-ipc is not supported" even though the handler exists.
+void bootstrapMonitoring().finally(() => {
+  // Start analytics before `app.whenReady()` (D7): the Aptabase SDK preregisters
+  // its custom protocol scheme synchronously inside initialize().
+  void bootstrapAnalytics();
+});
 registerProcessCrashHandlers();
 
 /**
@@ -208,11 +271,13 @@ if (process.argv.includes('--mcp')) {
       await runMcpServer();
       log.info('MCP server session ended, exiting');
       await closeMonitoring();
+      await closeAnalytics();
       app.exit(EXIT_CODES.SUCCESS);
     } catch (err) {
       log.error('MCP server failed:', err);
       captureException(err, { tags: { handler: 'mcp', process: 'main' } });
       await closeMonitoring();
+      await closeAnalytics();
       app.exit(EXIT_CODES.ERROR);
     }
   });
@@ -226,25 +291,47 @@ if (process.argv.includes('--mcp')) {
   };
   log.info(LOG_STARTING_IN_CLI_MODE_ARGV, process.argv.slice(2));
   const cliSubcommand = process.argv.find((arg) => (CLI_SUBCOMMANDS as readonly string[]).includes(arg as never)) as string | undefined;
+  /** CLI wall-clock start, used for `cli_completed` durationSec. @type {number} */
+  const cliStartedAt = Date.now();
   recordAnalyticsEvent(
     createAnalyticsEvent('cli_invoked', {
       version: app.getVersion(),
       platform: process.platform,
       arch: process.arch,
       subcommand: cliSubcommand,
+      hwAccel: process.argv.includes('--hwaccel'),
     }),
   );
   app.whenReady().then(() => {
     runCli()
       .then(async () => {
         log.info(LOG_CLI_COMPLETED_SUCCESSFULLY);
+        recordAnalyticsEvent(
+          createAnalyticsEvent('cli_completed', {
+            subcommand: cliSubcommand,
+            outcome: 'ok',
+            durationSec: Math.round((Date.now() - cliStartedAt) / 1000),
+          }),
+        );
+        // Drain any buffered pre-init analytics (e.g. `cli_invoked`) plus
+        // in-flight requests before the process exits (Phase 5.4).
+        await flushAnalytics(5000);
         await closeMonitoring();
+        await closeAnalytics();
         app.exit(EXIT_CODES.SUCCESS);
       })
       .catch(async (err) => {
         log.error(LOG_CLI_FAILED, err);
         captureException(err, { tags: { handler: 'cli', process: 'main' } });
+        recordAnalyticsEvent(
+          createAnalyticsEvent('cli_completed', {
+            subcommand: cliSubcommand,
+            outcome: 'error',
+            durationSec: Math.round((Date.now() - cliStartedAt) / 1000),
+          }),
+        );
         await closeMonitoring();
+        await closeAnalytics();
         app.exit(mapCliErrorToExitCode(err));
       });
   });
@@ -417,6 +504,7 @@ if (process.argv.includes('--mcp')) {
 
     registerIpcHandlers(mainWindow);
     registerMonitoringIpcBridge({ userDataDir: app.getPath('userData'), consentEnabled: monitoringConsentAtBoot });
+    registerAnalyticsIpcBridge({ userDataDir: app.getPath('userData'), consentEnabled: analyticsConsentAtBoot });
     patchConsole(mainWindow);
 
     /**
@@ -425,6 +513,7 @@ if (process.argv.includes('--mcp')) {
      */
     mainWindow.webContents.on('render-process-gone', (_event, details) => {
       if (details.reason === 'clean-exit') return;
+      rendererCrashedDuringSession = true;
       log.error(LOG_MONITORING_RENDER_PROCESS_GONE, details.reason, details.exitCode);
       captureException(new Error(`Renderer process gone: ${details.reason} (exitCode ${details.exitCode})`), {
         tags: { handler: 'render-process-gone', reason: details.reason },
@@ -470,6 +559,7 @@ if (process.argv.includes('--mcp')) {
 
   app.whenReady().then(() => {
     log.info(LOG_APP_READY_CREATING_SPLASH_AND_MAIN_WINDOWS);
+    recordAppInstalledOnce(app.getPath('userData'));
     recordAnalyticsEvent(
       createAnalyticsEvent('app_launched', {
         version: app.getVersion(),
@@ -499,12 +589,54 @@ if (process.argv.includes('--mcp')) {
   });
 
   app.on('will-quit', () => {
+    recordAnalyticsEvent(
+      createAnalyticsEvent('app_quit', {
+        sessionSec: Math.round((Date.now() - SESSION_STARTED_AT) / 1000),
+        crashDuringSession: rendererCrashedDuringSession,
+      }),
+    );
     // Flush any queued monitoring events before the process dies. Fire-and-
     // forget: quitting must never wait indefinitely on the network.
     void closeMonitoring();
+    // Drain pending usage-analytics requests, then shut analytics down too.
+    void flushAnalytics(5000).finally(() => {
+      void closeAnalytics();
+    });
     // Stop the embedded MCP HTTP server and its sessions.
     void stopEmbeddedMcpServer();
   });
+}
+
+/**
+ * Records `app_installed` once per installed version: the first run of a given
+ * version emits the event and then writes a userData marker containing that
+ * version, so subsequent launches (and dev-mode reloads) stay silent. A missing
+ * or unreadable marker counts as the first recorded run; marker-write failures
+ * are swallowed so a read-only userData directory can never block startup.
+ * @param {string} userDataDir - The app's userData directory.
+ * @returns {void}
+ */
+function recordAppInstalledOnce(userDataDir: string): void {
+  const markerPath = path.join(userDataDir, ANALYTICS_INSTALL_MARKER_FILE);
+  let recordedVersion = '';
+  try {
+    recordedVersion = fs.readFileSync(markerPath, 'utf8').trim();
+  } catch {
+    recordedVersion = '';
+  }
+  if (recordedVersion === app.getVersion()) return;
+  recordAnalyticsEvent(
+    createAnalyticsEvent('app_installed', {
+      version: app.getVersion(),
+      platform: process.platform,
+      arch: process.arch,
+    }),
+  );
+  try {
+    fs.writeFileSync(markerPath, app.getVersion(), 'utf8');
+  } catch {
+    // Marker write failure is non-fatal; a future launch may re-emit the event.
+  }
 }
 
 /**

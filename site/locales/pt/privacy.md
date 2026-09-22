@@ -16,7 +16,7 @@ EncodeX é um aplicativo de desktop que processa todas as mídias **localmente e
 - **100% offline** — toda conversão, compressão e extração acontece no seu dispositivo
 - **Sem conta** — nada para se cadastrar, sem perfil para manter
 - **Sem uploads** — suas mídias nunca são transmitidas para nós ou qualquer outra pessoa
-- **Sem telemetria no aplicativo** — o aplicativo não envia análise sobre seus arquivos ou uso
+- **Telemetria apenas com consentimento** — os únicos dados que saem são eventos opcionais, anônimos e apenas categóricos que você pode desativar nas Configurações
 - **Código aberto** — qualquer pessoa pode inspecionar exatamente o que o aplicativo faz
 
 ## O que não coletamos
@@ -49,8 +49,8 @@ Para sermos totalmente transparentes, aqui está cada dado que o EncodeX coleta 
 
 ### O app de desktop
 
-- **Relatórios de erros e diagnóstico com consentimento.** O app pode enviar diagnósticos de falha e informações de erro anônimas ao Sentry — e fica **ativado por padrão, com uma chave visível nas Configurações** para desativar quando quiser. Tudo é controlado por uma única chave de consentimento (salva localmente no seu dispositivo como `monitoring-consent.json`).
-- **Eventos de uso apenas por categorias.** Quando ativado, o app registra eventos anônimos e apenas categóricos — como "conversão iniciada" ou "perfil aplicado" — pelo mesmo canal de breadcrumbs. Por design da taxonomia, esses dados **não contêm conteúdo de mídia, nomes de arquivo, caminhos de pasta nem tamanhos de arquivo.** Se você desativar a telemetria, nada sai do seu computador.
+- **Relatórios de erros e diagnóstico com consentimento.** O app pode enviar diagnósticos de falha e informações de erro anônimas ao Sentry — e fica **ativado por padrão, com uma chave visível nas Configurações** para desativar quando quiser. Tudo é controlado por uma única chave de consentimento (salvas localmente no seu dispositivo como `monitoring-consent.json` e `analytics-consent.json`).
+- **Eventos de uso apenas por categorias.** Quando ativado, o app registra eventos anônimos e apenas categóricos — como "conversão iniciada" ou "perfil aplicado" — por um canal de análise de uso dedicado. Por design da taxonomia, esses dados **não contêm conteúdo de mídia, nomes de arquivo, caminhos de pasta nem tamanhos de arquivo.** Se você desativar a telemetria, nada sai do seu computador.
 - **Sem uploads, sem processamento na nuvem.** Mesmo com a telemetria ativada, seus arquivos de mídia reais nunca são transmitidos. Codificar, converter, comprimir ou extrair acontece inteiramente no seu dispositivo.
 
 ### Em palavras simples

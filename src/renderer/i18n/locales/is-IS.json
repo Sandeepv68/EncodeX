@@ -555,6 +555,8 @@
     "launchAtLoginHint": "Ræsir EncodeX sjálfkrafa þegar þú skráir þig inn á tölvuna þína.",
     "monitoringErrorReporting": "Villutilkynning",
     "monitoringErrorReportingHint": "Hjálpar til við að bæta EncodeX með því að senda nafnlausa villuskýrslu. Þú getur slökkt á þessu hvenær sem er.",
+    "telemetry": "Notkunargögn og villutilkynning",
+    "telemetryHint": "Hjálpar til við að bæta EncodeX með því að senda nafnlaus notkunargögn og villuskýrslur. Þú getur slökkt á þessu hvenær sem er.",
     "mcpServer": "MCP-þjónn",
     "mcpServerHint": "Leyfir utanaðkomandi MCP-biðlum eins og Claude Desktop, VS Code eða Cursor að stýra EncodeX um staðbundna tengingu. Þjónninn hlustar aðeins á þessari tölvu.",
     "mcpAiUseCases": "AI notkunartilvik",

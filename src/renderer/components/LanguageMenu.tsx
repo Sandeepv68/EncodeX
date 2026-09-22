@@ -31,6 +31,8 @@ import {
 } from '../styles/LanguageMenu.styles';
 import { LANGUAGE_STORAGE_KEY } from '../../shared/constants';
 import { LOG_SWITCHING_LANGUAGE_TO } from '../../shared/log-constants';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 
 /**
  * Logger instance for this module, scoped to the language menu.
@@ -112,6 +114,7 @@ export default function LanguageMenu({ condensed = false }: { condensed?: boolea
     await i18n.changeLanguage(lng);
     localStorage.setItem(LANGUAGE_STORAGE_KEY, lng);
     closeMenu();
+    recordAnalyticsEvent(createAnalyticsEvent('locale_changed', { language: lng, rtl: dir === 'rtl' }));
   };
 
   /**

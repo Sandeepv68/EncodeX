@@ -44,6 +44,8 @@ import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { replaceExtension, suggestedExtensionForAudioCodec, withExtension } from '../../shared/codec-containers';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import type { MediaStreamInfo } from '../../shared/types';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import MediaPreview from '../components/MediaPreview';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import { SelectedFileName, ActionRow } from '../styles/AudioExtract.styles';
@@ -105,6 +107,7 @@ export default function AudioExtract() {
     store.setPreview(null);
     store.setAudioStreams([]);
     if (!path) return;
+    recordAnalyticsEvent(createAnalyticsEvent('audio_input_selected', { source: 'dialog' }));
     const dataUrl = await window.electronAPI.getVideoPreview(path);
     store.setPreview(dataUrl);
     try {
@@ -134,6 +137,7 @@ export default function AudioExtract() {
    */
   const handleCodecChange = (value: string) => {
     store.setAudioCodec(value);
+    recordAnalyticsEvent(createAnalyticsEvent('audio_codec_changed', { codec: value }));
     if (!store.output.trim()) return;
     const ext = suggestedExtensionForAudioCodec(value);
     if (ext) store.setOutput(replaceExtension(store.output, ext));
@@ -177,6 +181,7 @@ export default function AudioExtract() {
       return;
     }
     log.info(LOG_EXTRACTING_AUDIO, store.input, LOG_ARROW, store.output, LOG_CODEC, store.audioCodec);
+    recordAnalyticsEvent(createAnalyticsEvent('audio_extract_started', { codec: store.audioCodec }));
     await store.startExtract();
   };
 
@@ -329,12 +334,28 @@ export default function AudioExtract() {
           </span>
         </Tooltip>
         {store.isConverting && !store.isPaused && (
-          <Button variant="contained" color="warning" startIcon={<FontAwesomeIcon icon={faPause} />} onClick={() => store.pauseExtract()}>
+          <Button
+            variant="contained"
+            color="warning"
+            startIcon={<FontAwesomeIcon icon={faPause} />}
+            onClick={() => {
+              store.pauseExtract();
+              recordAnalyticsEvent(createAnalyticsEvent('audio_extract_paused', {}));
+            }}
+          >
             {t('audioExtract.pause')}
           </Button>
         )}
         {store.isConverting && store.isPaused && (
-          <Button variant="contained" color="success" startIcon={<FontAwesomeIcon icon={faPlay} />} onClick={() => store.resumeExtract()}>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<FontAwesomeIcon icon={faPlay} />}
+            onClick={() => {
+              store.resumeExtract();
+              recordAnalyticsEvent(createAnalyticsEvent('audio_extract_resumed', {}));
+            }}
+          >
             {t('audioExtract.resume')}
           </Button>
         )}
@@ -372,6 +393,7 @@ export default function AudioExtract() {
         onConfirm={() => {
           setCancelConfirmOpen(false);
           store.cancelExtract();
+          recordAnalyticsEvent(createAnalyticsEvent('audio_extract_cancelled', {}));
         }}
       />
     </PageContainer>

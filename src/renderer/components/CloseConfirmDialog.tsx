@@ -22,6 +22,8 @@ import { useAudioExtractStore } from '../stores/audioExtractStore';
 import { useVideoCutStore, isVideoCutDirty } from '../stores/videoCutStore';
 import { useQueueStore } from '../stores/queueStore';
 import { useTaskStore } from '../stores/taskStore';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 
 /**
  * Reports whether closing the window would abandon pending work on any page.
@@ -82,6 +84,7 @@ export default function CloseConfirmDialog() {
   useEffect(() => {
     const cleanup = window.electronAPI?.onWindowCloseRequested(() => {
       if (hasPendingWork()) {
+        recordAnalyticsEvent(createAnalyticsEvent('window_close_deferred', { reason: 'pending' }));
         setOpen(true);
       } else {
         window.electronAPI?.windowCloseConfirmed();

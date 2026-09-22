@@ -800,6 +800,7 @@ export const LOG_WHEN_DONE_EXECUTING = 'When done: executing';
 export const LOG_WHEN_DONE_UNSUPPORTED_PLATFORM = 'When done: unsupported platform';
 /** @const {string} Prefix when setMonitoringEnabled is invoked. */
 export const LOG_SET_MONITORING_ENABLED = 'setMonitoringEnabled:';
+export const LOG_SET_TELEMETRY_ENABLED = 'setTelemetryEnabled:';
 /** @const {string} Prefix when setMcpEnabled is invoked. */
 export const LOG_SET_MCP_ENABLED = 'setMcpEnabled:';
 /** @const {string} Prefix when setMcpPort is invoked. */
@@ -896,6 +897,28 @@ export const LOG_MONITORING_UNHANDLED_REJECTION = 'Unhandled rejection:';
 export const LOG_MONITORING_RENDER_PROCESS_GONE = 'Renderer process gone:';
 /** @const {string} Prefix when a child process dies unexpectedly. */
 export const LOG_MONITORING_CHILD_PROCESS_GONE = 'Child process gone:';
+/** @const {string} Logged when analytics initialization begins. */
+export const LOG_ANALYTICS_INITIALIZING = 'Initializing analytics provider:';
+/** @const {string} Prefix when analytics initialization fails. */
+export const LOG_ANALYTICS_INIT_FAILED = 'Analytics init failed:';
+/** @const {string} Logged when an analytics provider becomes active. */
+export const LOG_ANALYTICS_PROVIDER_ACTIVE = 'Analytics provider active:';
+/** @const {string} Prefix when analytics consent is toggled. */
+export const LOG_ANALYTICS_SET_ENABLED = 'Analytics set enabled:';
+/** @const {string} Prefix when an analytics track call fails. */
+export const LOG_ANALYTICS_TRACK_FAILED = 'Analytics track failed:';
+/** @const {string} Prefix when flushing the analytics backend fails. */
+export const LOG_ANALYTICS_FLUSH_FAILED = 'Analytics flush failed:';
+/** @const {string} Prefix when closing the analytics backend fails. */
+export const LOG_ANALYTICS_CLOSE_FAILED = 'Analytics close failed:';
+/** @const {string} Logged when the ANALYTICS_GET_STATE IPC message is received. */
+export const LOG_IPC_ANALYTICS_GET_STATE = 'ANALYTICS_GET_STATE called';
+/** @const {string} Prefix when the ANALYTICS_SET_ENABLED IPC message is received. */
+export const LOG_IPC_ANALYTICS_SET_ENABLED = 'ANALYTICS_SET_ENABLED:';
+/** @const {string} Prefix when reading the stored analytics consent fails. */
+export const LOG_FAILED_TO_READ_STORED_ANALYTICS_CONSENT = 'Failed to read stored analytics consent:';
+/** @const {string} Prefix when persisting analytics consent fails. */
+export const LOG_FAILED_TO_PERSIST_ANALYTICS_CONSENT = 'Failed to persist analytics consent:';
 /** @const {string} Prefix when reading the stored MCP server settings fails. */
 export const LOG_FAILED_TO_READ_STORED_MCP_SETTINGS = 'Failed to read stored MCP settings:';
 /** @const {string} Prefix when persisting the MCP server settings fails. */

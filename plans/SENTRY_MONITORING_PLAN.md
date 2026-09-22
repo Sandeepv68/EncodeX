@@ -159,6 +159,14 @@ Consent file: `<userData>/monitoring-consent.json` â†’ `{ "enabled": true }
 
 ## 6. Product Analytics channel (CP10, launch-growth plan)
 
+> **Superseded (1.0.0-beta.4):** this section originally routed product analytics
+> through the Sentry breadcrumb channel. Usage analytics have since moved onto
+> their **own provider-agnostic layer** (`src/shared/analytics/`, main+renderer
+> Aptabase adapters) so the monitoring backend never sees product events, the
+> DSN stays out of the analytics path, and both backends are swappable
+> independently. Consent remains a single Settings toggle that drives both
+> layers. See `docs/ANALYTICS.md`. The plan below is retained for history.
+
 **Decision:** anonymous product/usage analytics ride the **existing breadcrumb channel**
 (category `analytics`) instead of a new network endpoint. This keeps the privacy promise
 ("your files never leave your computer", no extra telemetry), inherits the exact same

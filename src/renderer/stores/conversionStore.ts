@@ -28,6 +28,8 @@
  */
 
 import { create } from 'zustand';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { Logger } from '../../shared/logger';
 import { CONVERSION_DEFAULTS, TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
@@ -125,6 +127,9 @@ export const useConversionStore = create<ConversionState>((set) => ({
    */
   setInputFile: (file) => {
     log.debug(LOG_SET_INPUT_FILE, file);
+    if (file) {
+      recordAnalyticsEvent(createAnalyticsEvent('convert_input_selected', { source: 'dialog' }));
+    }
     set({ inputFile: file, isDirty: true });
   },
   /**
@@ -133,6 +138,9 @@ export const useConversionStore = create<ConversionState>((set) => ({
    */
   setOutputFile: (file) => {
     log.debug(LOG_SET_OUTPUT_FILE, file);
+    if (file) {
+      recordAnalyticsEvent(createAnalyticsEvent('convert_output_selected', {}));
+    }
     set({ outputFile: file, outputUserSet: true, isDirty: true });
   },
   /**

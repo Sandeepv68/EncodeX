@@ -555,6 +555,8 @@
     "launchAtLoginHint": "Käynnistää EncodeX:n automaattisesti, kun kirjaudut tietokoneellesi.",
     "monitoringErrorReporting": "Virheraportointi",
     "monitoringErrorReportingHint": "Auttaa parantamaan EncodeX-sovellusta lähettämällä anonyymejä virheraportteja. Voit poistaa tämän käytöstä milloin tahansa.",
+    "telemetry": "Käyttötiedot ja virheraportointi",
+    "telemetryHint": "Auttaa parantamaan EncodeX-sovellusta lähettämällä anonyymejä käyttötietoja ja virheraportteja. Voit poistaa tämän käytöstä milloin tahansa.",
     "mcpServer": "MCP-palvelin",
     "mcpServerHint": "Antaa ulkoisten MCP-asiakkaiden, kuten Claude Desktopin, VS Coden tai Cursorin, ohjata EncodeXia paikallisen yhteyden kautta. Palvelin kuuntelee vain tällä tietokoneella.",
     "mcpAiUseCases": "AI-käyttötapaukset",

@@ -30,6 +30,8 @@ import { faArrowUp, faDownload, faXmark, faCircleCheck, faStopwatch } from '@for
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUpdateStore } from '../stores/updateStore';
 import { formatBytes } from '../utils/formatters';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { UpdateDialogContent, UpdateVersionText, UpdateReleaseNotes, UpdateStatusMessage } from '../styles/UpdateDialog.styles';
 
 /**
@@ -69,6 +71,7 @@ export default function UpdateDialog() {
   const handleRetry = () => {
     reset();
     checkForUpdates();
+    recordAnalyticsEvent(createAnalyticsEvent('update_retry', {}));
   };
 
   return (

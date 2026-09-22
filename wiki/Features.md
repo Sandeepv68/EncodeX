@@ -159,6 +159,10 @@ Right-to-left layout support for Arabic and Hebrew locales (`ar-SA`, `ar-AE`, `a
 
 Provider-agnostic error monitoring (first adapter: Sentry) with user-controlled consent in Settings, main + renderer capture, native crash minidumps, CPU profiling, and `Logger.error()` bridging. On by default but fully toggleable; all events stream through the shared `MONITORING_*` IPC channels. See the [[Monitoring]] page for details.
 
+### Usage Analytics
+
+Provider-agnostic, categorical-only usage analytics (first adapter: Aptabase) driven by the same Settings consent switch as error monitoring. Events never contain media content, file names, paths, or sizes; a per-group emission gate (`ANALYTICS_GROUPS`) can silence noisy groups without a release. See the [[Analytics]] page for details.
+
 ### Internationalization
 
 56 locales across 35 languages:

@@ -23,6 +23,16 @@ import { EncoderCapabilities } from '../shared/types';
 import { CAPABILITY_PROBE_TIMEOUT_MS } from '../shared/constants';
 import { getFfmpegPath } from './transcoders/ffmpeg-utils';
 import { LOG_DETECTED_FFMPEG_CAPABILITIES, LOG_ENCODER_CAPABILITY_PROBE_FAILED } from '../shared/log-constants';
+import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../shared/analytics/events';
+
+/**
+ * Hardware encoder family markers used to spot vendor hardware encoders in the
+ * flat `ffmpeg -encoders` list. Any encoder whose name contains one of these
+ * substrings is treated as requiring dedicated hardware.
+ * @const {string[]} HARDWARE_ENCODER_MARKERS
+ */
+const HARDWARE_ENCODER_MARKERS = ['nvenc', 'qsv', 'amf', 'videotoolbox', '_vaapi', 'h264_mf', 'hevc_mf', 'av1_mf'];
 
 /**
  * Logger instance scoped to the capabilities module. Logs detected encoder and
@@ -154,6 +164,12 @@ export function getEncoderCapabilities(force = false): EncoderCapabilities | nul
       'audio encoders,',
       hwaccels.length,
       'hwaccels',
+    );
+    recordAnalyticsEvent(
+      createAnalyticsEvent('hw_accel_detected', {
+        mode: hwaccels.find((h) => h !== 'auto' && h !== 'none') ?? 'none',
+        encoderType: videoEncoders.find((e) => HARDWARE_ENCODER_MARKERS.some((marker) => e.includes(marker))) ?? 'software',
+      }),
     );
     return cached;
   } catch (err) {

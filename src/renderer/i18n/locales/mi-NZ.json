@@ -555,6 +555,8 @@
     "launchAtLoginHint": "Ka tīmata aunoatia a EncodeX ina takiuru koe ki tō rorohiko.",
     "monitoringErrorReporting": "Pūrongo hapa",
     "monitoringErrorReportingHint": "Ka āwhina ki te whakapai ake i te EncodeX mā te tuku pūrongo hapa ohauru. Ka taea te whakaweto i tēnei i ngā wā katoa.",
+    "telemetry": "Ngā raraunga whakamahinga me ngā pūrongo hapa",
+    "telemetryHint": "Ka āwhina ki te whakapai ake i te EncodeX mā te tuku raraunga whakamahinga me ngā pūrongo hapa ohauru. Ka taea te whakaweto i tēnei i ngā wā katoa.",
     "mcpServer": "Tūmau MCP",
     "mcpServerHint": "Ka taea e ngā kiritaki MCP o waho pēnei i a Claude Desktop, VS Code, Cursor rānei te whakahaere i a EncodeX mā tētahi hononga ā-rohe. Ka whakarongo te tūmau ki tēnei rorohiko anake.",
     "mcpAiUseCases": "Ngā take whakamahi AI",

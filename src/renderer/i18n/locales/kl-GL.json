@@ -555,6 +555,8 @@
     "launchAtLoginHint": "EncodeX-imik nammineq aallartippaa, komputerimut iseriaruit.",
     "monitoringErrorReporting": "Fejlrapportering",
     "monitoringErrorReportingHint": "Hjælper med at forbedre EncodeX ved at sende anonyme fejlrapporter. Du kan altid slå det fra.",
+    "telemetry": "Atortornerisassanik atuinerup fejlrapporteriillu",
+    "telemetryHint": "EncodeX-ip qanoq pitsanngorsarneqarsinnaanera: atortornerisassanik nammineerluni atuinerit fejlrapporterit anonimiusut nassiumeqarput. Uannitsinniami taanna marrsurniallarneqarsinnaavooq.",
     "mcpServer": "MCP serveri",
     "mcpServerHint": "MCP-klientit allaanerusut, soorlu Claude Desktop, VS Code imaluunniit Cursor, EncodeX-mut lokal atutserfimmik atuisinnaapput. Serveri uuminnga computerip qaangersaani tusarnaarpoq.",
     "mcpAiUseCases": "AI atugassiat",

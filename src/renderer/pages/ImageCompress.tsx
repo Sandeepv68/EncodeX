@@ -58,6 +58,8 @@ import { ToggleSpacer, SelectedImageName, AspectRatioRow } from '../styles/Image
 import MediaPreview from '../components/MediaPreview';
 import { useFieldId } from '../hooks/useFieldId';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import {
   LOG_ARROW,
   LOG_COMPRESSING_IMAGE,
@@ -95,6 +97,19 @@ const log = new Logger('renderer/pages/ImageCompress');
  *
  * @returns {JSX.Element} The page content inside a PageContainer.
  */
+
+/**
+ * Collapses a qscale quality value into a coarse analytics band so exact
+ * settings are not sent (privacy guard D10).
+ * @param {number} quality - The qscale value (lower = better quality).
+ * @returns {string} One of 'high' | 'medium' | 'low'.
+ */
+function qualityBandFor(quality: number): string {
+  if (quality <= 10) return 'high';
+  if (quality <= 20) return 'medium';
+  return 'low';
+}
+
 export default function ImageCompress() {
   const { t } = useTranslation();
   const qualityId = useFieldId();
@@ -183,6 +198,7 @@ export default function ImageCompress() {
     setFileInfo(null);
     if (!path) return;
     setHasPendingWork(true);
+    recordAnalyticsEvent(createAnalyticsEvent('compress_input_selected', { source: 'dialog' }));
     const dataUrl = await window.electronAPI.getImagePreview(path);
     setPreview(dataUrl);
     const info = await window.electronAPI.getImageFileInfo(path);
@@ -220,6 +236,7 @@ export default function ImageCompress() {
   const handleFormatChange = (value: string) => {
     setFormat(value);
     if (output.trim()) setOutput(withExtension(output, value));
+    recordAnalyticsEvent(createAnalyticsEvent('compress_format_changed', { format: value }));
   };
 
   /**
@@ -271,8 +288,15 @@ export default function ImageCompress() {
       return;
     }
     log.info(LOG_COMPRESSING_IMAGE, input, LOG_ARROW, output, LOG_FORMAT, format, LOG_QUALITY, quality);
+    recordAnalyticsEvent(
+      createAnalyticsEvent('compress_started', {
+        format,
+        qualityBand: qualityBandFor(quality),
+        scaleApplied: !!scale,
+      }),
+    );
     await runTask(async () => {
-      await window.electronAPI.convertFile(
+      const taskPromise = window.electronAPI.convertFile(
         input,
         output,
         {
@@ -284,6 +308,28 @@ export default function ImageCompress() {
         },
         transcoder,
       );
+      taskPromise
+        .then(async () => {
+          const inputSize = fileInfo?.size ?? 0;
+          let savedPercent = 0;
+          try {
+            const outputInfo = await window.electronAPI.getImageFileInfo(output);
+            const outputSize = outputInfo?.size ?? 0;
+            if (inputSize > 0 && outputSize > 0) {
+              savedPercent = Math.round(((inputSize - outputSize) / inputSize) * 100);
+            }
+          } catch {
+            savedPercent = 0;
+          }
+          recordAnalyticsEvent(createAnalyticsEvent('compress_completed', { format, savedPercent }));
+        })
+        .catch((err: unknown) => {
+          const code = typeof (err as { code?: string })?.code === 'string' ? (err as { code: string }).code : undefined;
+          if (code !== ErrorCode.CANCELLED) {
+            recordAnalyticsEvent(createAnalyticsEvent('compress_failed', { format, code }));
+          }
+        });
+      await taskPromise;
       useToastStore.getState().success(t('toast.imageCompressed'));
     });
     setProgress(null);
