@@ -44,6 +44,8 @@ WebM é uma ótima escolha quando o tamanho importa mais que a compatibilidade c
 
 **Posso converter vários arquivos MP4 de uma vez?** Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos MP4 para WebM.
 
+<RelatedConversions slug="convert/mp4-to-webm" />
+
 ## Comece
 
 - [Baixe o EncodeX grátis](/pt/download)

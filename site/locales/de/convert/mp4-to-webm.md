@@ -44,6 +44,8 @@ WebM ist eine großartige Wahl, wenn die Größe wichtiger ist als die Kompatibi
 
 **Kann ich mehrere MP4-Dateien auf einmal konvertieren?** Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners mit MP4-Dateien zu WebM.
 
+<RelatedConversions slug="convert/mp4-to-webm" />
+
 ## Loslegen
 
 - [Lade EncodeX kostenlos herunter](/de/download)

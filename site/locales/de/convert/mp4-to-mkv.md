@@ -44,6 +44,8 @@ Du kannst sogar einen **ganzen Ordner** mit MP4-Dateien auf einmal zu MKV konver
 
 **Kann ich mehrere MP4-Dateien auf einmal konvertieren?** Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners mit MP4-Dateien zu MKV.
 
+<RelatedConversions slug="convert/mp4-to-mkv" />
+
 ## Loslegen
 
 - [Lade EncodeX kostenlos herunter](/de/download)

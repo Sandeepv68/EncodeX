@@ -36,6 +36,8 @@ You can convert a single clip or **batch-convert** whole folders of MOV files at
 - **No watermarks** and free forever
 - Works on **Windows, Mac, and Linux**
 
+<RelatedConversions slug="convert/mov-to-mp4" />
+
 ## Get Started
 
 - [Download EncodeX for free](/download)

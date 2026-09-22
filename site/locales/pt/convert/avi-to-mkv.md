@@ -44,6 +44,8 @@ MP4 também é um ótimo destino se você precisa de máxima compatibilidade —
 
 **Posso converter vários arquivos AVI de uma vez?** Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos AVI para MKV.
 
+<RelatedConversions slug="convert/avi-to-mkv" />
+
 ## Comece
 
 - [Baixe o EncodeX grátis](/pt/download)

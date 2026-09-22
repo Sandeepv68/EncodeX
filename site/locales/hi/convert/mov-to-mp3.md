@@ -50,6 +50,8 @@ EncodeX आपके MOV से ऑडियो ट्रैक पढ़ता 
 - [वीडियो से ऑडियो निकालें](/hi/extract-audio-from-video)
 - [ऑडियो को फ़ॉर्मेटों के बीच कन्वर्ट करें](/hi/audio-converter)
 
+<RelatedConversions slug="convert/mov-to-mp3" />
+
 ## शुरू करें
 
 - [EncodeX मुफ़्त में डाउनलोड करें](/hi/download)

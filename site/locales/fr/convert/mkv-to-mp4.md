@@ -44,6 +44,8 @@ Le MP4 est la valeur par défaut sûre, donc si vous hésitez, choisissez-la —
 
 **Puis-je convertir plusieurs fichiers MKV à la fois ?** Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers MKV en MP4.
 
+<RelatedConversions slug="convert/mkv-to-mp4" />
+
 ## Commencer
 
 - [Téléchargez EncodeX gratuitement](/fr/download)

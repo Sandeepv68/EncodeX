@@ -36,6 +36,8 @@ EncodeX handles the codecs, resolution, and bitrate for you and supports **batch
 - **No watermarks** and free forever
 - Works on **Windows, Mac, and Linux**
 
+<RelatedConversions slug="convert/webm-to-mp4" />
+
 ## Get Started
 
 - [Download EncodeX for free](/download)

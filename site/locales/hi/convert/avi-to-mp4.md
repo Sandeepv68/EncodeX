@@ -36,6 +36,8 @@ EncodeX वीडियो को कुशलता से फिर से ए
 - **कोई वॉटरमार्क नहीं** और हमेशा के लिए मुफ़्त
 - **Windows, Mac और Linux** पर काम करता है
 
+<RelatedConversions slug="convert/avi-to-mp4" />
+
 ## शुरू करें
 
 - [EncodeX मुफ़्त में डाउनलोड करें](/hi/download)

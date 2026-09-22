@@ -44,6 +44,8 @@ MP4 é a predefinição segura e padrão — se você não tiver certeza, escolh
 
 **Posso converter muitos arquivos MKV de uma vez?** Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos MKV para MP4.
 
+<RelatedConversions slug="convert/mkv-to-mp4" />
+
 ## Comece agora
 
 - [Baixe o EncodeX gratuitamente](/pt/download)

@@ -43,6 +43,8 @@ EncodeX आपके **MOV को MKV** में तेज़ी से बद�
 
 **क्या मैं एक साथ कई MOV फ़ाइलें बदल सकता हूँ?** हाँ। EncodeX MOV फ़ाइलों के पूरे फ़ोल्डर को MKV में बैच कनवर्ट करने का समर्थन करता है।
 
+<RelatedConversions slug="convert/mov-to-mkv" />
+
 ## शुरू करें
 
 - [EncodeX मुफ़्त में डाउनलोड करें](/hi/download)

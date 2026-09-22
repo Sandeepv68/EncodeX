@@ -43,6 +43,8 @@ Puedes convertir un solo clip o **convertir por lotes** carpetas enteras de arch
 
 **¿Puedo convertir muchos archivos MOV a la vez?** Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos MOV a MKV.
 
+<RelatedConversions slug="convert/mov-to-mkv" />
+
 ## Empieza
 
 - [Descarga EncodeX gratis](/es/download)

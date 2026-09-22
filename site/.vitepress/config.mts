@@ -931,6 +931,72 @@ const seoFAQ: Record<string, { q: string; a: string }[]> = {
     },
     { q: 'Can I convert many MOV files at once?', a: 'Yes. EncodeX supports batch converting an entire folder of MOV files to MKV.' },
   ],
+  'convert/avi-to-mp4': [
+    {
+      q: 'Why should I convert AVI to MP4?',
+      a: 'AVI is an old format that produces large files and often refuses to play on phones, TVs, consoles and browsers. MP4 is the universal format that plays almost everywhere.',
+    },
+    {
+      q: 'Will I lose quality converting AVI to MP4?',
+      a: 'No. EncodeX keeps your video and audio quality intact while producing a modern, compatible MP4 file.',
+    },
+    { q: 'Can I convert many AVI files at once?', a: 'Yes. EncodeX supports batch converting an entire folder of AVI files to MP4.' },
+  ],
+  'convert/mov-to-mp4': [
+    {
+      q: 'Why should I convert MOV to MP4?',
+      a: "MOV is Apple's format and often won't play on Android phones, Windows players, TVs or web upload forms. MP4 is the universal format that plays everywhere.",
+    },
+    {
+      q: 'Will I lose quality converting MOV to MP4?',
+      a: 'No. By default EncodeX remuxes the existing video and audio streams, so the quality stays exactly the same and the conversion is very fast.',
+    },
+    { q: 'Can I convert many MOV files at once?', a: 'Yes. EncodeX supports batch converting an entire folder of MOV files to MP4.' },
+  ],
+  'convert/m4v-to-mp4': [
+    {
+      q: 'Why should I convert M4V to MP4?',
+      a: "M4V is Apple's container for iTunes and Apple TV purchases, and it often carries playback restrictions. MP4 is the open, universal format that plays on any device.",
+    },
+    {
+      q: 'Does EncodeX remove DRM from M4V files?',
+      a: 'If a file is DRM-locked and won\u2019t open in other apps, play it in your licensed library first. EncodeX converts the unlocked video you can already access into an open MP4.',
+    },
+    { q: 'Can I batch convert M4V files at once?', a: 'Yes. EncodeX supports batch converting an entire folder of M4V files to MP4.' },
+  ],
+  'convert/flv-to-mp4': [
+    {
+      q: 'Why should I convert FLV to MP4?',
+      a: 'FLV is a Flash-era format and most modern devices, TVs, phones, editing apps and browsers dropped support years ago. MP4 is the universal modern format.',
+    },
+    {
+      q: 'Will I lose quality converting FLV to MP4?',
+      a: 'No. EncodeX re-codes your FLV into MP4 cleanly, keeping your video quality while modernizing the format.',
+    },
+    { q: 'Can I convert many FLV files at once?', a: 'Yes. EncodeX supports batch converting an entire folder of FLV files to MP4.' },
+  ],
+  'convert/wmv-to-mp4': [
+    {
+      q: 'Why should I convert WMV to MP4?',
+      a: 'WMV is a Microsoft format that mostly stays on Windows and often won\u2019t play on Macs, phones, tablets, TVs or in modern browsers. MP4 works almost everywhere.',
+    },
+    {
+      q: 'Will I lose quality converting WMV to MP4?',
+      a: 'No. EncodeX converts your WMV to MP4 cleanly while keeping your video quality.',
+    },
+    { q: 'Can I convert many WMV files at once?', a: 'Yes. EncodeX supports batch converting an entire folder of WMV files to MP4.' },
+  ],
+  'convert/webm-to-mp4': [
+    {
+      q: 'Why should I convert WebM to MP4?',
+      a: 'WebM comes from browsers, screen recorders and Chrome extensions, but support is inconsistent in editing apps, phones, TVs and older players. MP4 plays almost everywhere.',
+    },
+    {
+      q: 'Will I lose quality converting WebM to MP4?',
+      a: 'No. EncodeX converts your WebM to a highly compatible MP4 while keeping your video quality.',
+    },
+    { q: 'Can I convert many WebM files at once?', a: 'Yes. EncodeX supports batch converting an entire folder of WebM files to MP4.' },
+  ],
   'convert/webm-to-mkv': [
     {
       q: 'Why should I convert WebM to MKV?',
@@ -1132,6 +1198,132 @@ const seoFAQ: Record<string, { q: string; a: string }[]> = {
     {
       q: 'Does EncodeX work offline?',
       a: 'Yes - all conversion happens locally on your computer, so your files never leave your device.',
+    },
+  ],
+  'codecs/h264': [
+    {
+      q: 'What is H.264 and why is it everywhere?',
+      a: 'H.264 (AVC) is the most widely supported video codec in the world - it plays on phones, TVs, consoles, browsers and editing software, and it is the standard for YouTube, Instagram and most platforms.',
+    },
+    {
+      q: 'Does EncodeX use hardware acceleration for H.264 encoding?',
+      a: 'Yes. EncodeX uses NVENC on NVIDIA, Quick Sync on Intel, AMF on AMD, VideoToolbox on Apple Silicon and VAAPI on Linux, so H.264 conversion is dramatically faster with no setup.',
+    },
+    {
+      q: 'Is MP4 + H.264 the most compatible combination?',
+      a: 'Yes. Pairing H.264 video with AAC audio in an MP4 container is the most compatible setup there is - and EncodeX makes it the easy default whenever you choose MP4 output.',
+    },
+  ],
+  'codecs/h265': [
+    {
+      q: 'What is the advantage of H.265 over H.264?',
+      a: 'H.265 (HEVC) delivers roughly half the file size of H.264 at similar quality, and it is built for 4K and HDR content.',
+    },
+    {
+      q: 'Does EncodeX support hardware-accelerated H.265 encoding?',
+      a: 'Yes. EncodeX uses the hardware HEVC encoder built into your device - NVENC, Quick Sync, AMF, VAAPI or VideoToolbox - automatically.',
+    },
+    {
+      q: 'Will H.265 files play everywhere?',
+      a: 'H.265 is widely supported on phones, TVs and consoles from the last several years. For maximum compatibility with older devices, H.264 in MP4 is still the safest bet.',
+    },
+  ],
+  'codecs/av1': [
+    {
+      q: 'What is AV1 and why use it?',
+      a: 'AV1 is the most efficient mainstream video codec available today, giving the smallest file size for a given quality - up to about 30% smaller than H.265. It is royalty-free and used by YouTube and Netflix.',
+    },
+    {
+      q: 'Does EncodeX support AV1 encoding?',
+      a: "Yes. EncodeX offers software AV1 encoders (libaom, SVT-AV1, rav1e) plus AV1 hardware encoders where your GPU provides them.",
+    },
+    {
+      q: 'Is AV1 encoding slow?',
+      a: "AV1 encoding is more demanding than H.264 or H.265. It's best for archiving and web delivery where size matters most, rather than everyday quick conversions.",
+    },
+  ],
+  'codecs/vp9': [
+    {
+      q: 'What is VP9?',
+      a: 'VP9 is Google\u2019s open, royalty-free video codec - the workhorse behind YouTube, Chrome and Android, with roughly half the file size of H.264 at similar quality.',
+    },
+    {
+      q: 'Does EncodeX support VP9 encoding?',
+      a: 'Yes. EncodeX encodes VP9 using software libvpx, plus VAAPI and VideoToolbox hardware acceleration where available.',
+    },
+    {
+      q: 'When should I use VP9 instead of H.264?',
+      a: 'Choose VP9 for open, efficient web-ready video and archiving. Choose H.264 when you need maximum compatibility with older devices. EncodeX lets you compare a test clip in seconds.',
+    },
+  ],
+  'codecs/prores': [
+    {
+      q: 'What is Apple ProRes?',
+      a: 'ProRes is the professional intermediate codec used across the film and broadcast industry - excellent quality that edits smoothly, with keyframe-friendly scrubbing in Final Cut Pro, Premiere Pro and DaVinci Resolve.',
+    },
+    {
+      q: 'Does EncodeX support ProRes encoding?',
+      a: 'Yes. EncodeX includes ready-made ProRes 422, 422HQ, 4444 and more profiles that work on Windows, Mac and Linux.',
+    },
+    {
+      q: 'Why are ProRes files so large?',
+      a: 'ProRes is an intermediate format for editing, not delivery. Use it to prepare a master for an editing session, then export a small delivery file such as H.264 afterwards.',
+    },
+  ],
+  'ffmpeg-gui': [
+    {
+      q: 'What is an FFmpeg GUI?',
+      a: 'An FFmpeg GUI is a visual frontend that wraps the FFmpeg command-line engine in menus and buttons, so you can convert, compress, trim and extract audio without typing a single command.',
+    },
+    {
+      q: 'Does EncodeX include FFmpeg?',
+      a: 'Yes. EncodeX bundles the FFmpeg engine, so you never install FFmpeg, codecs or anything else separately.',
+    },
+    {
+      q: 'Is EncodeX a free FFmpeg GUI?',
+      a: 'Yes. EncodeX is free forever and open source (MIT) with no watermarks, no accounts and no paid tier.',
+    },
+  ],
+  'ffmpeg-gui/windows': [
+    {
+      q: 'Is there a free FFmpeg GUI for Windows?',
+      a: 'Yes. EncodeX is a free, open-source FFmpeg GUI for Windows 10 and newer, with no watermarks and no paid tier.',
+    },
+    {
+      q: 'Does EncodeX use hardware acceleration on Windows?',
+      a: 'Yes. EncodeX automatically uses NVIDIA NVENC, Intel Quick Sync (QSV) and AMD AMF to finish conversions in a fraction of the time.',
+    },
+    {
+      q: 'Does EncodeX upload my files on Windows?',
+      a: 'No. Everything runs offline on your PC - your files never leave your computer.',
+    },
+  ],
+  'ffmpeg-gui/macos': [
+    {
+      q: 'Is there a free FFmpeg GUI for Mac?',
+      a: 'Yes. EncodeX is a free, open-source FFmpeg GUI for macOS 11 and newer, with a native Apple Silicon build for M-series Macs.',
+    },
+    {
+      q: 'Does EncodeX use Apple VideoToolbox on Mac?',
+      a: 'Yes. EncodeX automatically uses Apple VideoToolbox hardware acceleration on both Apple Silicon and Intel Macs.',
+    },
+    {
+      q: 'Can EncodeX convert to ProRes on a Mac?',
+      a: 'Yes - EncodeX includes ready-made ProRes 422 and 4444 profiles, perfect for Final Cut Pro and DaVinci Resolve workflows.',
+    },
+  ],
+  'ffmpeg-gui/linux': [
+    {
+      q: 'Is there a free FFmpeg GUI for Linux?',
+      a: 'Yes. EncodeX is free and open source, runs on most modern Linux distributions as an AppImage, and needs no package juggling.',
+    },
+    {
+      q: 'Does EncodeX support hardware acceleration on Linux?',
+      a: "Yes. EncodeX supports VAAPI on Linux - no matter the GPU brand - plus NVENC on NVIDIA GPUs.",
+    },
+    {
+      q: 'Can I use EncodeX on a headless Linux server?',
+      a: 'Yes - EncodeX includes a CLI mode for scripting conversions without a desktop, and the bundled FFmpeg engine works standalone.',
     },
   ],
   mcp: [
@@ -2298,6 +2490,198 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos MOV a MP3.',
       },
     ],
+    'convert/avi-to-mp4': [
+      {
+        q: '¿Por qué debería convertir AVI a MP4?',
+        a: 'AVI es un formato antiguo que genera archivos grandes y a menudo no se reproduce en teléfonos, televisores, consolas ni navegadores. MP4 es el formato universal que se reproduce en casi cualquier lugar.',
+      },
+      {
+        q: '¿Perderé calidad al convertir AVI a MP4?',
+        a: 'No. EncodeX mantiene intacta la calidad de tu video y audio mientras produce un MP4 moderno y compatible.',
+      },
+      { q: '¿Puedo convertir muchos archivos AVI a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos AVI a MP4.' },
+    ],
+    'convert/mov-to-mp4': [
+      {
+        q: '¿Por qué debería convertir MOV a MP4?',
+        a: 'MOV es el formato de Apple y a menudo no se reproduce en teléfonos Android, reproductores de Windows, televisores ni formularios de subida web. MP4 es el formato universal que se reproduce en cualquier lugar.',
+      },
+      {
+        q: '¿Perderé calidad al convertir MOV a MP4?',
+        a: 'No. Por defecto, EncodeX re-empaqueta (remux) los flujos de video y audio existentes, por lo que la calidad permanece exactamente igual y la conversión es muy rápida.',
+      },
+      { q: '¿Puedo convertir muchos archivos MOV a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos MOV a MP4.' },
+    ],
+    'convert/m4v-to-mp4': [
+      {
+        q: '¿Por qué debería convertir M4V a MP4?',
+        a: 'M4V es el contenedor de Apple para compras de iTunes y Apple TV, y a menudo trae restricciones de reproducción. MP4 es el formato abierto y universal que se reproduce en cualquier dispositivo.',
+      },
+      {
+        q: '¿EncodeX elimina el DRM de los archivos M4V?',
+        a: 'Si un archivo tiene DRM y no se abre en otras apps, reprodúcelo primero en tu biblioteca con licencia. EncodeX convierte el video desbloqueado al que ya tienes acceso en un MP4 abierto.',
+      },
+      { q: '¿Puedo convertir en lote archivos M4V a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos M4V a MP4.' },
+    ],
+    'convert/flv-to-mp4': [
+      {
+        q: '¿Por qué debería convertir FLV a MP4?',
+        a: 'FLV es un formato de la era Flash y la mayoría de los dispositivos, televisores, teléfonos, apps de edición y navegadores dejaron de admitirlo. MP4 es el formato moderno universal.',
+      },
+      {
+        q: '¿Perderé calidad al convertir FLV a MP4?',
+        a: 'No. EncodeX re-codifica tu FLV a MP4 de forma limpia, conservando la calidad de tu video mientras moderniza el formato.',
+      },
+      { q: '¿Puedo convertir muchos archivos FLV a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos FLV a MP4.' },
+    ],
+    'convert/wmv-to-mp4': [
+      {
+        q: '¿Por qué debería convertir WMV a MP4?',
+        a: 'WMV es un formato de Microsoft que se queda casi solo en Windows y a menudo no se reproduce en Macs, teléfonos, tablets, televisores ni navegadores modernos. MP4 funciona en casi cualquier lugar.',
+      },
+      {
+        q: '¿Perderé calidad al convertir WMV a MP4?',
+        a: 'No. EncodeX convierte tu WMV a MP4 de forma limpia conservando la calidad de tu video.',
+      },
+      { q: '¿Puedo convertir muchos archivos WMV a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos WMV a MP4.' },
+    ],
+    'convert/webm-to-mp4': [
+      {
+        q: '¿Por qué debería convertir WebM a MP4?',
+        a: 'WebM viene de navegadores, grabadores de pantalla y extensiones de Chrome, pero el soporte es inconsistente en apps de edición, teléfonos, televisores y reproductores antiguos. MP4 se reproduce en casi cualquier lugar.',
+      },
+      {
+        q: '¿Perderé calidad al convertir WebM a MP4?',
+        a: 'No. EncodeX convierte tu WebM a un MP4 altamente compatible conservando la calidad de tu video.',
+      },
+      { q: '¿Puedo convertir muchos archivos WebM a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos WebM a MP4.' },
+    ],
+    'codecs/h264': [
+      {
+        q: '¿Qué es H.264 y por qué está en todos lados?',
+        a: 'H.264 (AVC) es el códec de video más compatible del mundo: se reproduce en teléfonos, televisores, consolas, navegadores y software de edición, y es el estándar en YouTube, Instagram y la mayoría de las plataformas.',
+      },
+      {
+        q: '¿EncodeX usa aceleración por hardware para codificar H.264?',
+        a: 'Sí. EncodeX usa NVENC en NVIDIA, Quick Sync en Intel, AMF en AMD, VideoToolbox en Apple Silicon y VAAPI en Linux, por lo que la conversión a H.264 es mucho más rápida sin configuración.',
+      },
+      {
+        q: '¿MP4 + H.264 es la combinación más compatible?',
+        a: 'Sí. Combinar video H.264 con audio AAC en un contenedor MP4 es la configuración más compatible que existe, y EncodeX la hace la opción fácil por defecto cuando eliges salida MP4.',
+      },
+    ],
+    'codecs/h265': [
+      {
+        q: '¿Qué ventaja tiene H.265 frente a H.264?',
+        a: 'H.265 (HEVC) ofrece aproximadamente la mitad del tamaño de archivo de H.264 con calidad similar, y está pensado para contenido 4K y HDR.',
+      },
+      {
+        q: '¿EncodeX admite codificación H.265 por hardware?',
+        a: 'Sí. EncodeX usa automáticamente el codificador HEVC por hardware de tu dispositivo: NVENC, Quick Sync, AMF, VAAPI o VideoToolbox.',
+      },
+      {
+        q: '¿Los archivos H.265 se reproducen en todas partes?',
+        a: 'H.265 es compatible de forma amplia con teléfonos, televisores y consolas de los últimos años. Para máxima compatibilidad con dispositivos antiguos, H.264 en MP4 sigue siendo la opción más segura.',
+      },
+    ],
+    'codecs/av1': [
+      {
+        q: '¿Qué es AV1 y por qué usarlo?',
+        a: 'AV1 es el códec de video más eficiente disponible hoy, ofreciendo el tamaño de archivo más pequeño para una calidad dada, hasta un 30 % menos que H.265. Es libre de regalías y lo usan YouTube y Netflix.',
+      },
+      {
+        q: '¿EncodeX admite codificación AV1?',
+        a: 'Sí. EncodeX ofrece codificadores AV1 por software (libaom, SVT-AV1, rav1e) además de codificadores AV1 por hardware donde tu GPU los ofrece.',
+      },
+      {
+        q: '¿La codificación AV1 es lenta?',
+        a: 'AV1 exige más cómputo que H.264 o H.265. Es ideal para archivar y entrega web donde el tamaño importa más, antes que para conversiones rápidas cotidianas.',
+      },
+    ],
+    'codecs/vp9': [
+      {
+        q: '¿Qué es VP9?',
+        a: 'VP9 es el códec abierto y libre de regalías de Google, el caballo de batalla detrás de YouTube, Chrome y Android, con aproximadamente la mitad del tamaño de H.264 a calidad similar.',
+      },
+      {
+        q: '¿EncodeX admite codificación VP9?',
+        a: 'Sí. EncodeX codifica VP9 con libvpx por software, además de aceleración por hardware VAAPI y VideoToolbox donde esté disponible.',
+      },
+      {
+        q: '¿Cuándo debería usar VP9 en lugar de H.264?',
+        a: 'Elige VP9 para video web abierto y eficiente, y para archivar. Elige H.264 cuando necesites máxima compatibilidad con dispositivos antiguos. Con EncodeX puedes comparar un clip de prueba en segundos.',
+      },
+    ],
+    'codecs/prores': [
+      {
+        q: '¿Qué es Apple ProRes?',
+        a: 'ProRes es el códec intermedio profesional usado en toda la industria del cine y la difusión: excelente calidad que se edita con fluidez, con scrubbing apto para keyframes en Final Cut Pro, Premiere Pro y DaVinci Resolve.',
+      },
+      {
+        q: '¿EncodeX admite codificación ProRes?',
+        a: 'Sí. EncodeX incluye perfiles listos de ProRes 422, 422HQ, 4444 y más, que funcionan en Windows, Mac y Linux.',
+      },
+      {
+        q: '¿Por qué los archivos ProRes son tan grandes?',
+        a: 'ProRes es un formato intermedio para editar, no para entrega. Úsalo para preparar un máster para una sesión de edición y luego exporta un archivo pequeño de entrega, como H.264.',
+      },
+    ],
+    'ffmpeg-gui': [
+      {
+        q: '¿Qué es una interfaz gráfica para FFmpeg?',
+        a: 'Una interfaz gráfica para FFmpeg es un frontend visual que envuelve el motor de línea de comandos de FFmpeg en menús y botones, para convertir, comprimir, recortar y extraer audio sin teclear ni un comando.',
+      },
+      {
+        q: '¿EncodeX incluye FFmpeg?',
+        a: 'Sí. EncodeX trae el motor FFmpeg integrado, por lo que nunca instalas FFmpeg, códecs ni nada más por separado.',
+      },
+      {
+        q: '¿EncodeX es una interfaz gráfica para FFmpeg gratuita?',
+        a: 'Sí. EncodeX es gratuito para siempre y de código abierto (MIT), sin marcas de agua, sin cuentas y sin nivel de pago.',
+      },
+    ],
+    'ffmpeg-gui/windows': [
+      {
+        q: '¿Hay una interfaz gráfica gratuita para FFmpeg en Windows?',
+        a: 'Sí. EncodeX es una interfaz gráfica gratuita y de código abierto para FFmpeg en Windows 10 y más reciente, sin marcas de agua ni nivel de pago.',
+      },
+      {
+        q: '¿EncodeX usa aceleración por hardware en Windows?',
+        a: 'Sí. EncodeX usa automáticamente NVIDIA NVENC, Intel Quick Sync (QSV) y AMD AMF para terminar las conversiones en una fracción del tiempo.',
+      },
+      {
+        q: '¿EncodeX sube mis archivos en Windows?',
+        a: 'No. Todo se ejecuta sin conexión en tu PC: tus archivos nunca salen de tu computadora.',
+      },
+    ],
+    'ffmpeg-gui/macos': [
+      {
+        q: '¿Hay una interfaz gráfica gratuita para FFmpeg en Mac?',
+        a: 'Sí. EncodeX es una interfaz gráfica gratuita y de código abierto para FFmpeg en macOS 11 y más reciente, con una compilación nativa para Apple Silicon en Macs con chip M.',
+      },
+      {
+        q: '¿EncodeX usa Apple VideoToolbox en Mac?',
+        a: 'Sí. EncodeX usa automáticamente la aceleración por hardware de Apple VideoToolbox en Macs Apple Silicon e Intel.',
+      },
+      {
+        q: '¿Puedo convertir a ProRes en un Mac con EncodeX?',
+        a: 'Sí. EncodeX incluye perfiles listos de ProRes 422 y 4444, perfectos para flujos de Final Cut Pro y DaVinci Resolve.',
+      },
+    ],
+    'ffmpeg-gui/linux': [
+      {
+        q: '¿Hay una interfaz gráfica gratuita para FFmpeg en Linux?',
+        a: 'Sí. EncodeX es gratuito y de código abierto, corre en la mayoría de las distribuciones modernas de Linux como AppImage y no requiere lidiar con paquetes.',
+      },
+      {
+        q: '¿EncodeX admite aceleración por hardware en Linux?',
+        a: 'Sí. EncodeX admite VAAPI en Linux, sin importar la marca de la GPU, además de NVENC en GPUs NVIDIA.',
+      },
+      {
+        q: '¿Puedo usar EncodeX en un servidor Linux sin interfaz gráfica?',
+        a: 'Sí. EncodeX incluye un modo CLI para automatizar conversiones con scripts sin escritorio, y el motor FFmpeg integrado funciona de forma autónoma.',
+      },
+    ],
   },
   fr: {
     'handbrake-alternative': [
@@ -2547,6 +2931,198 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
       {
         q: 'Puis-je convertir plusieurs fichiers MOV à la fois ?',
         a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers MOV en MP3.',
+      },
+    ],
+    'convert/avi-to-mp4': [
+      {
+        q: 'Pourquoi convertir AVI en MP4 ?',
+        a: 'AVI est un ancien format qui produit de gros fichiers et refuse souvent de se lire sur les téléphones, téléviseurs, consoles et navigateurs. MP4 est le format universel qui se lit presque partout.',
+      },
+      {
+        q: 'Vais-je perdre de la qualité en convertissant AVI en MP4 ?',
+        a: 'Non. EncodeX conserve intacte la qualité de votre vidéo et de votre audio tout en produisant un MP4 moderne et compatible.',
+      },
+      { q: 'Puis-je convertir plusieurs fichiers AVI à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers AVI en MP4.' },
+    ],
+    'convert/mov-to-mp4': [
+      {
+        q: 'Pourquoi convertir MOV en MP4 ?',
+        a: 'MOV est le format d\u2019Apple et ne se lit souvent pas sur les téléphones Android, les lecteurs Windows, les téléviseurs ou les formulaires de téléversement web. MP4 est le format universel qui se lit partout.',
+      },
+      {
+        q: 'Vais-je perdre de la qualité en convertissant MOV en MP4 ?',
+        a: 'Non. Par défaut, EncodeX remuxe les flux vidéo et audio existants : la qualité reste exactement la même et la conversion est très rapide.',
+      },
+      { q: 'Puis-je convertir plusieurs fichiers MOV à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers MOV en MP4.' },
+    ],
+    'convert/m4v-to-mp4': [
+      {
+        q: 'Pourquoi convertir M4V en MP4 ?',
+        a: 'M4V est le conteneur d\u2019Apple pour les achats iTunes et Apple TV, et il comporte souvent des restrictions de lecture. MP4 est le format ouvert et universel qui se lit sur n\u2019importe quel appareil.',
+      },
+      {
+        q: 'EncodeX supprime-t-il le DRM des fichiers M4V ?',
+        a: 'Si un fichier est verrouillé par DRM et ne s\u2019ouvre pas dans d\u2019autres applications, lisez-le d\u2019abord dans votre bibliothèque sous licence. EncodeX convertit la vidéo déverrouillée à laquelle vous avez déjà accès en MP4 ouvert.',
+      },
+      { q: 'Puis-je convertir plusieurs fichiers M4V à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers M4V en MP4.' },
+    ],
+    'convert/flv-to-mp4': [
+      {
+        q: 'Pourquoi convertir FLV en MP4 ?',
+        a: 'FLV est un format de l\u2019ère Flash et la plupart des appareils, téléviseurs, téléphones, applications d\u2019édition et navigateurs ont abandonné sa prise en charge. MP4 est le format moderne universel.',
+      },
+      {
+        q: 'Vais-je perdre de la qualité en convertissant FLV en MP4 ?',
+        a: 'Non. EncodeX ré-encode proprement votre FLV en MP4, en conservant la qualité de votre vidéo tout en modernisant le format.',
+      },
+      { q: 'Puis-je convertir plusieurs fichiers FLV à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers FLV en MP4.' },
+    ],
+    'convert/wmv-to-mp4': [
+      {
+        q: 'Pourquoi convertir WMV en MP4 ?',
+        a: 'WMV est un format Microsoft qui reste surtout sur Windows et ne se lit souvent pas sur les Mac, téléphones, tablettes, téléviseurs ou navigateurs modernes. MP4 fonctionne presque partout.',
+      },
+      {
+        q: 'Vais-je perdre de la qualité en convertissant WMV en MP4 ?',
+        a: 'Non. EncodeX convertit proprement votre WMV en MP4 en conservant la qualité de votre vidéo.',
+      },
+      { q: 'Puis-je convertir plusieurs fichiers WMV à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers WMV en MP4.' },
+    ],
+    'convert/webm-to-mp4': [
+      {
+        q: 'Pourquoi convertir WebM en MP4 ?',
+        a: 'Le WebM vient des navigateurs, enregistreurs d\u2019écran et extensions Chrome, mais sa prise en charge est inégale dans les applications d\u2019édition, les téléphones, les téléviseurs et les lecteurs anciens. MP4 se lit presque partout.',
+      },
+      {
+        q: 'Vais-je perdre de la qualité en convertissant WebM en MP4 ?',
+        a: 'Non. EncodeX convertit votre WebM en un MP4 très compatible en conservant la qualité de votre vidéo.',
+      },
+      { q: 'Puis-je convertir plusieurs fichiers WebM à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers WebM en MP4.' },
+    ],
+    'codecs/h264': [
+      {
+        q: 'Qu\u2019est-ce que le H.264 et pourquoi est-il partout ?',
+        a: 'Le H.264 (AVC) est le codec vidéo le plus compatible au monde : il se lit sur les téléphones, téléviseurs, consoles, navigateurs et logiciels d\u2019édition, et c\u2019est la norme sur YouTube, Instagram et la plupart des plateformes.',
+      },
+      {
+        q: 'EncodeX utilise-t-il l\u2019accélération matérielle pour encoder en H.264 ?',
+        a: 'Oui. EncodeX utilise NVENC sur NVIDIA, Quick Sync sur Intel, AMF sur AMD, VideoToolbox sur Apple Silicon et VAAPI sur Linux, donc la conversion H.264 est beaucoup plus rapide sans configuration.',
+      },
+      {
+        q: 'MP4 + H.264 est-il la combinaison la plus compatible ?',
+        a: 'Oui. Associer la vidéo H.264 à l\u2019audio AAC dans un conteneur MP4 est la configuration la plus compatible qui soit, et EncodeX en fait le choix simple par défaut dès que vous choisissez une sortie MP4.',
+      },
+    ],
+    'codecs/h265': [
+      {
+        q: 'Quel est l\u2019avantage du H.265 par rapport au H.264 ?',
+        a: 'Le H.265 (HEVC) offre environ la moitié de la taille de fichier du H.264 pour une qualité similaire, et il est pensé pour la 4K et le HDR.',
+      },
+      {
+        q: 'EncodeX prend-il en charge l\u2019encodage H.265 accéléré par le matériel ?',
+        a: 'Oui. EncodeX utilise automatiquement l\u2019encodeur HEVC matériel de votre appareil : NVENC, Quick Sync, AMF, VAAPI ou VideoToolbox.',
+      },
+      {
+        q: 'Les fichiers H.265 se lisent-ils partout ?',
+        a: 'H.265 est largement pris en charge sur les téléphones, téléviseurs et consoles des dernières années. Pour une compatibilité maximale avec les appareils anciens, le H.264 en MP4 reste le plus sûr.',
+      },
+    ],
+    'codecs/av1': [
+      {
+        q: 'Qu\u2019est-ce que l\u2019AV1 et pourquoi l\u2019utiliser ?',
+        a: 'L\u2019AV1 est le codec vidéo le plus efficace aujourd\u2019hui, offrant la plus petite taille de fichier pour une qualité donnée, jusqu\u2019à environ 30 % de moins que le H.265. Il est exempt de redevances et utilisé par YouTube et Netflix.',
+      },
+      {
+        q: 'EncodeX prend-il en charge l\u2019encodage AV1 ?',
+        a: 'Oui. EncodeX propose les encodeurs AV1 logiciels (libaom, SVT-AV1, rav1e) ainsi que les encodeurs AV1 matériels là où votre GPU les offre.',
+      },
+      {
+        q: 'L\u2019encodage AV1 est-il lent ?',
+        a: 'L\u2019AV1 demande plus de calcul que le H.264 ou le H.265. Il convient surtout à l\u2019archivage et à la diffusion web où la taille compte le plus, plutôt qu\u2019aux conversions rapides du quotidien.',
+      },
+    ],
+    'codecs/vp9': [
+      {
+        q: 'Qu\u2019est-ce que le VP9 ?',
+        a: 'Le VP9 est le codec vidéo ouvert et exempt de redevances de Google, le cheval de trait de YouTube, Chrome et Android, avec environ la moitié de la taille du H.264 pour une qualité similaire.',
+      },
+      {
+        q: 'EncodeX prend-il en charge l\u2019encodage VP9 ?',
+        a: 'Oui. EncodeX encode le VP9 avec libvpx en logiciel, plus l\u2019accélération matérielle VAAPI et VideoToolbox là où elle est disponible.',
+      },
+      {
+        q: 'Quand utiliser le VP9 plutôt que le H.264 ?',
+        a: 'Choisissez VP9 pour une vidéo web ouverte, efficace et pour l\u2019archivage. Choisissez H.264 pour une compatibilité maximale avec les appareils anciens. Avec EncodeX, comparez un clip de test en quelques secondes.',
+      },
+    ],
+    'codecs/prores': [
+      {
+        q: 'Qu\u2019est-ce que l\u2019Apple ProRes ?',
+        a: 'Le ProRes est le codec intermédiaire professionnel de toute l\u2019industrie du cinéma et de la diffusion : une excellente qualité qui se monte en douceur, avec un défilement adapté aux images clés dans Final Cut Pro, Premiere Pro et DaVinci Resolve.',
+      },
+      {
+        q: 'EncodeX prend-il en charge l\u2019encodage ProRes ?',
+        a: 'Oui. EncodeX inclut des profils ProRes prêts à l\u2019emploi : 422, 422HQ, 4444 et plus, qui fonctionnent sous Windows, Mac et Linux.',
+      },
+      {
+        q: 'Pourquoi les fichiers ProRes sont-ils si volumineux ?',
+        a: 'Le ProRes est un format intermédiaire pour le montage, pas pour la livraison. Utilisez-le pour préparer un master pour une session de montage, puis exportez un petit fichier de livraison, par exemple en H.264.',
+      },
+    ],
+    'ffmpeg-gui': [
+      {
+        q: 'Qu\u2019est-ce qu\u2019une interface graphique FFmpeg ?',
+        a: 'Une interface graphique FFmpeg est un front-end visuel qui enveloppe le moteur en ligne de commande de FFmpeg dans des menus et des boutons, pour convertir, compresser, couper et extraire l\u2019audio sans taper une seule commande.',
+      },
+      {
+        q: 'EncodeX inclut-il FFmpeg ?',
+        a: 'Oui. EncodeX embarque le moteur FFmpeg, donc vous n\u2019installez jamais FFmpeg, ni codecs, ni quoi que ce soit d\u2019autre séparément.',
+      },
+      {
+        q: 'EncodeX est-il une interface graphique FFmpeg gratuite ?',
+        a: 'Oui. EncodeX est gratuit pour toujours et open source (MIT), sans filigranes, sans comptes et sans offre payante.',
+      },
+    ],
+    'ffmpeg-gui/windows': [
+      {
+        q: 'Existe-t-il une interface graphique FFmpeg gratuite pour Windows ?',
+        a: 'Oui. EncodeX est une interface graphique FFmpeg gratuite et open source pour Windows 10 et plus récent, sans filigranes ni offre payante.',
+      },
+      {
+        q: 'EncodeX utilise-t-il l\u2019accélération matérielle sous Windows ?',
+        a: 'Oui. EncodeX utilise automatiquement NVIDIA NVENC, Intel Quick Sync (QSV) et AMD AMF pour finir les conversions en une fraction du temps.',
+      },
+      {
+        q: 'EncodeX téléverse-t-il mes fichiers sous Windows ?',
+        a: 'Non. Tout fonctionne hors ligne sur votre PC : vos fichiers ne quittent jamais votre ordinateur.',
+      },
+    ],
+    'ffmpeg-gui/macos': [
+      {
+        q: 'Existe-t-il une interface graphique FFmpeg gratuite pour Mac ?',
+        a: 'Oui. EncodeX est une interface graphique FFmpeg gratuite et open source pour macOS 11 et plus récent, avec une build native Apple Silicon pour les Mac à puce M.',
+      },
+      {
+        q: 'EncodeX utilise-t-il Apple VideoToolbox sur Mac ?',
+        a: 'Oui. EncodeX utilise automatiquement l\u2019accélération matérielle Apple VideoToolbox sur les Mac Apple Silicon et Intel.',
+      },
+      {
+        q: 'Puis-je convertir en ProRes sur un Mac avec EncodeX ?',
+        a: 'Oui. EncodeX inclut des profils ProRes 422 et 4444 prêts à l\u2019emploi, parfaits pour les flux Final Cut Pro et DaVinci Resolve.',
+      },
+    ],
+    'ffmpeg-gui/linux': [
+      {
+        q: 'Existe-t-il une interface graphique FFmpeg gratuite pour Linux ?',
+        a: 'Oui. EncodeX est gratuit et open source, fonctionne sur la plupart des distributions Linux modernes en AppImage, et ne demande aucun casse-tête de paquets.',
+      },
+      {
+        q: 'EncodeX prend-il en charge l\u2019accélération matérielle sous Linux ?',
+        a: 'Oui. EncodeX prend en charge VAAPI sous Linux, quelle que soit la marque de GPU, plus NVENC sur les GPU NVIDIA.',
+      },
+      {
+        q: 'Puis-je utiliser EncodeX sur un serveur Linux sans interface graphique ?',
+        a: 'Oui. EncodeX inclut un mode CLI pour automatiser les conversions avec des scripts sans bureau, et le moteur FFmpeg intégré fonctionne de manière autonome.',
       },
     ],
   },
@@ -2800,6 +3376,198 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners MOV-Dateien in MP3.',
       },
     ],
+    'convert/avi-to-mp4': [
+      {
+        q: 'Warum sollte ich AVI in MP4 konvertieren?',
+        a: 'AVI ist ein altes Format, das große Dateien erzeugt und sich oft nicht auf Telefonen, Fernsehern, Konsolen und Browsern abspielen lässt. MP4 ist das universelle Format, das fast überall funktioniert.',
+      },
+      {
+        q: 'Verliere ich beim Konvertieren von AVI zu MP4 an Qualität?',
+        a: 'Nein. EncodeX erhält die Qualität Ihrer Video- und Audiodaten und erzeugt zugleich eine moderne, kompatible MP4-Datei.',
+      },
+      { q: 'Kann ich viele AVI-Dateien auf einmal konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners AVI-Dateien in MP4.' },
+    ],
+    'convert/mov-to-mp4': [
+      {
+        q: 'Warum sollte ich MOV in MP4 konvertieren?',
+        a: 'MOV ist Apples Format und lässt sich oft nicht auf Android-Telefonen, Windows-Playern, Fernsehern oder Web-Upload-Formularen abspielen. MP4 ist das universelle Format, das überall läuft.',
+      },
+      {
+        q: 'Verliere ich beim Konvertieren von MOV zu MP4 an Qualität?',
+        a: 'Nein. Standardmäßig remuxt EncodeX die vorhandenen Video- und Audiostreams, sodass die Qualität exakt gleich bleibt und die Konvertierung sehr schnell ist.',
+      },
+      { q: 'Kann ich viele MOV-Dateien auf einmal konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners MOV-Dateien in MP4.' },
+    ],
+    'convert/m4v-to-mp4': [
+      {
+        q: 'Warum sollte ich M4V in MP4 konvertieren?',
+        a: 'M4V ist Apples Container für iTunes- und Apple-TV-Käufe und bringt oft Wiedergabebeschränkungen mit. MP4 ist das offene, universelle Format, das auf jedem Gerät funktioniert.',
+      },
+      {
+        q: 'Entfernt EncodeX DRM aus M4V-Dateien?',
+        a: 'Wenn eine Datei DRM-gesperrt ist und in anderen Apps nicht geöffnet wird, spielen Sie sie zuerst in Ihrer lizenzierten Bibliothek ab. EncodeX konvertiert das bereits entsperrte Video, auf das Sie Zugriff haben, in ein offenes MP4.',
+      },
+      { q: 'Kann ich M4V-Dateien in einem Rutsch stapelweise konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners M4V-Dateien in MP4.' },
+    ],
+    'convert/flv-to-mp4': [
+      {
+        q: 'Warum sollte ich FLV in MP4 konvertieren?',
+        a: 'FLV ist ein Format aus der Flash-Ära, und die meisten Geräte, Fernseher, Telefone, Editier-Apps und Browser haben die Unterstützung vor Jahren eingestellt. MP4 ist das moderne Universalformat.',
+      },
+      {
+        q: 'Verliere ich beim Konvertieren von FLV zu MP4 an Qualität?',
+        a: 'Nein. EncodeX codiert Ihre FLV sauber in MP4 um, erhält die Videoqualität und modernisiert zugleich das Format.',
+      },
+      { q: 'Kann ich viele FLV-Dateien auf einmal konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners FLV-Dateien in MP4.' },
+    ],
+    'convert/wmv-to-mp4': [
+      {
+        q: 'Warum sollte ich WMV in MP4 konvertieren?',
+        a: 'WMV ist ein Microsoft-Format, das meist auf Windows beschränkt bleibt und sich oft nicht auf Macs, Telefonen, Tablets, Fernsehern oder modernen Browsern abspielen lässt. MP4 funktioniert fast überall.',
+      },
+      {
+        q: 'Verliere ich beim Konvertieren von WMV zu MP4 an Qualität?',
+        a: 'Nein. EncodeX konvertiert Ihre WMV sauber in MP4 und erhält dabei die Qualität Ihres Videos.',
+      },
+      { q: 'Kann ich viele WMV-Dateien auf einmal konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners WMV-Dateien in MP4.' },
+    ],
+    'convert/webm-to-mp4': [
+      {
+        q: 'Warum sollte ich WebM in MP4 konvertieren?',
+        a: 'WebM stammt aus Browsern, Bildschirmrecordern und Chrome-Erweiterungen, aber die Unterstützung in Editier-Apps, Telefonen, Fernsehern und älteren Playern ist uneinheitlich. MP4 läuft fast überall.',
+      },
+      {
+        q: 'Verliere ich beim Konvertieren von WebM zu MP4 an Qualität?',
+        a: 'Nein. EncodeX konvertiert Ihr WebM in ein hochkompatibles MP4 und erhält dabei die Qualität Ihres Videos.',
+      },
+      { q: 'Kann ich viele WebM-Dateien auf einmal konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners WebM-Dateien in MP4.' },
+    ],
+    'codecs/h264': [
+      {
+        q: 'Was ist H.264 und warum gibt es ihn überall?',
+        a: 'H.264 (AVC) ist der weltweit am weitesten verbreitete Videocodec: Er läuft auf Telefonen, Fernsehern, Konsolen, Browsern und Editiersoftware und ist der Standard bei YouTube, Instagram und den meisten Plattformen.',
+      },
+      {
+        q: 'Nutzt EncodeX Hardware-Beschleunigung für die H.264-Kodierung?',
+        a: 'Ja. EncodeX nutzt NVENC auf NVIDIA, Quick Sync auf Intel, AMF auf AMD, VideoToolbox auf Apple Silicon und VAAPI unter Linux – H.264-Konvertierung ist damit ohne Einrichtung deutlich schneller.',
+      },
+      {
+        q: 'Ist MP4 + H.264 die kompatibelste Kombination?',
+        a: 'Ja. H.264-Video mit AAC-Audio in einem MP4-Container ist die kompatibelste Kombination überhaupt – und EncodeX macht sie zur einfachen Standardwahl, wenn Sie MP4-Ausgabe wählen.',
+      },
+    ],
+    'codecs/h265': [
+      {
+        q: 'Was ist der Vorteil von H.265 gegenüber H.264?',
+        a: 'H.265 (HEVC) liefert bei ähnlicher Qualität etwa die halbe Dateigröße von H.264 und ist für 4K- und HDR-Inhalte gedacht.',
+      },
+      {
+        q: 'Unterstützt EncodeX hardwarebeschleunigte H.265-Kodierung?',
+        a: 'Ja. EncodeX verwendet automatisch den Hardware-HEVC-Encoder Ihres Geräts – NVENC, Quick Sync, AMF, VAAPI oder VideoToolbox.',
+      },
+      {
+        q: 'Lassen sich H.265-Dateien überall abspielen?',
+        a: 'H.265 wird von Telefonen, Fernsehern und Konsolen der letzten Jahre breit unterstützt. Für maximale Kompatibilität mit älteren Geräten bleibt H.264 in MP4 die sicherste Wahl.',
+      },
+    ],
+    'codecs/av1': [
+      {
+        q: 'Was ist AV1 und warum sollte man ihn verwenden?',
+        a: 'AV1 ist der effizienteste gängige Videocodec und liefert für eine gegebene Qualität die kleinste Datei – bis zu etwa 30 % kleiner als H.265. Er ist lizenzgebührenfrei und wird von YouTube und Netflix genutzt.',
+      },
+      {
+        q: 'Unterstützt EncodeX die AV1-Kodierung?',
+        a: 'Ja. EncodeX bietet Software-AV1-Encoder (libaom, SVT-AV1, rav1e) sowie Hardware-AV1-Encoder, sofern Ihre GPU sie bereitstellt.',
+      },
+      {
+        q: 'Ist die AV1-Kodierung langsam?',
+        a: 'AV1 ist rechenintensiver als H.264 oder H.265. Er eignet sich am besten für Archivierung und Web-Auslieferung, bei denen die Größe am wichtigsten ist – nicht für schnelle Alltagskonvertierungen.',
+      },
+    ],
+    'codecs/vp9': [
+      {
+        q: 'Was ist VP9?',
+        a: 'VP9 ist Googles offener, lizenzgebührenfreier Videocodec – das Arbeitstier hinter YouTube, Chrome und Android – mit etwa der halben Dateigröße von H.264 bei ähnlicher Qualität.',
+      },
+      {
+        q: 'Unterstützt EncodeX die VP9-Kodierung?',
+        a: 'Ja. EncodeX kodiert VP9 mit der Software-libvpx sowie mit VAAPI- und VideoToolbox-Hardwarebeschleunigung, wo verfügbar.',
+      },
+      {
+        q: 'Wann sollte ich VP9 statt H.264 verwenden?',
+        a: 'Wählen Sie VP9 für offenes, effizientes Web-Video und Archivierung. Wählen Sie H.264 für maximale Kompatibilität mit älteren Geräten. Mit EncodeX vergleichen Sie einen Testclip in Sekunden.',
+      },
+    ],
+    'codecs/prores': [
+      {
+        q: 'Was ist Apple ProRes?',
+        a: 'ProRes ist der professionelle Zwischencodec der Film- und Broadcast-Branche: hervorragende Qualität, die sich flüssig schneiden lässt, mit keyframe-freundlichem Scrubbing in Final Cut Pro, Premiere Pro und DaVinci Resolve.',
+      },
+      {
+        q: 'Unterstützt EncodeX die ProRes-Kodierung?',
+        a: 'Ja. EncodeX enthält fertige ProRes-Profile (422, 422HQ, 4444 und mehr), die unter Windows, Mac und Linux funktionieren.',
+      },
+      {
+        q: 'Warum sind ProRes-Dateien so groß?',
+        a: 'ProRes ist ein Zwischenformat für den Schnitt, nicht für die Auslieferung. Nutzen Sie es, um ein Master für eine Schnittsitzung vorzubereiten, und exportieren Sie danach eine kleine Lieferdatei, etwa H.264.',
+      },
+    ],
+    'ffmpeg-gui': [
+      {
+        q: 'Was ist eine FFmpeg-GUI?',
+        a: 'Eine FFmpeg-GUI ist ein visuelles Frontend, das die FFmpeg-Befehlszeilen-Engine in Menüs und Schaltflächen verpackt – konvertieren, komprimieren, schneiden und Audio extrahieren ohne einen einzigen Befehl.',
+      },
+      {
+        q: 'Enthält EncodeX FFmpeg?',
+        a: 'Ja. EncodeX bringt die FFmpeg-Engine mit, sodass Sie FFmpeg, Codecs oder sonst nichts separat installieren müssen.',
+      },
+      {
+        q: 'Ist EncodeX eine kostenlose FFmpeg-GUI?',
+        a: 'Ja. EncodeX ist für immer kostenlos und Open Source (MIT), ohne Wasserzeichen, ohne Konten und ohne kostenpflichtige Stufe.',
+      },
+    ],
+    'ffmpeg-gui/windows': [
+      {
+        q: 'Gibt es eine kostenlose FFmpeg-GUI für Windows?',
+        a: 'Ja. EncodeX ist eine kostenlose, Open-Source-FFmpeg-GUI für Windows 10 und neuer, ohne Wasserzeichen und ohne kostenpflichtige Stufe.',
+      },
+      {
+        q: 'Nutzt EncodeX unter Windows Hardware-Beschleunigung?',
+        a: 'Ja. EncodeX nutzt automatisch NVIDIA NVENC, Intel Quick Sync (QSV) und AMD AMF, um Konvertierungen in einem Bruchteil der Zeit abzuschließen.',
+      },
+      {
+        q: 'Lädt EncodeX unter Windows meine Dateien hoch?',
+        a: 'Nein. Alles läuft offline auf Ihrem PC – Ihre Dateien verlassen nie Ihren Computer.',
+      },
+    ],
+    'ffmpeg-gui/macos': [
+      {
+        q: 'Gibt es eine kostenlose FFmpeg-GUI für Mac?',
+        a: 'Ja. EncodeX ist eine kostenlose, Open-Source-FFmpeg-GUI für macOS 11 und neuer, mit einer nativen Apple-Silicon-Build für M-Serie-Macs.',
+      },
+      {
+        q: 'Nutzt EncodeX auf dem Mac Apple VideoToolbox?',
+        a: 'Ja. EncodeX nutzt automatisch die Apple-VideoToolbox-Hardwarebeschleunigung auf Apple-Silicon- und Intel-Macs.',
+      },
+      {
+        q: 'Kann ich mit EncodeX auf einem Mac in ProRes konvertieren?',
+        a: 'Ja. EncodeX enthält fertige ProRes-422- und 4444-Profile, ideal für Final-Cut-Pro- und DaVinci-Resolve-Workflows.',
+      },
+    ],
+    'ffmpeg-gui/linux': [
+      {
+        q: 'Gibt es eine kostenlose FFmpeg-GUI für Linux?',
+        a: 'Ja. EncodeX ist kostenlos und Open Source, läuft auf den meisten modernen Linux-Distributionen als AppImage und erfordert keine Paket-Fummelei.',
+      },
+      {
+        q: 'Unterstützt EncodeX unter Linux Hardware-Beschleunigung?',
+        a: 'Ja. EncodeX unterstützt unter Linux VAAPI – unabhängig von der GPU-Marke – sowie NVENC auf NVIDIA-GPUs.',
+      },
+      {
+        q: 'Kann ich EncodeX auf einem headless Linux-Server verwenden?',
+        a: 'Ja. EncodeX enthält einen CLI-Modus zum Skripten von Konvertierungen ohne Desktop, und die integrierte FFmpeg-Engine funktioniert eigenständig.',
+      },
+    ],
   },
   pt: {
     'handbrake-alternative': [
@@ -3051,6 +3819,198 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos MOV para MP3.',
       },
     ],
+    'convert/avi-to-mp4': [
+      {
+        q: 'Por que devo converter AVI em MP4?',
+        a: 'AVI é um formato antigo que gera arquivos grandes e muitas vezes não é reproduzido em celulares, TVs, consoles e navegadores. MP4 é o formato universal que funciona em quase tudo.',
+      },
+      {
+        q: 'Vou perder qualidade convertendo AVI para MP4?',
+        a: 'Não. O EncodeX mantém a qualidade do vídeo e do áudio ao produzir um MP4 moderno e compatível.',
+      },
+      { q: 'Posso converter muitos arquivos AVI de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos AVI para MP4.' },
+    ],
+    'convert/mov-to-mp4': [
+      {
+        q: 'Por que devo converter MOV em MP4?',
+        a: 'MOV é o formato da Apple e muitas vezes não é reproduzido em celulares Android, players do Windows, TVs ou formulários de upload na web. MP4 é o formato universal que funciona em qualquer lugar.',
+      },
+      {
+        q: 'Vou perder qualidade convertendo MOV para MP4?',
+        a: 'Não. Por padrão, o EncodeX remuxa os fluxos de vídeo e áudio existentes, então a qualidade permanece exatamente a mesma e a conversão é muito rápida.',
+      },
+      { q: 'Posso converter muitos arquivos MOV de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos MOV para MP4.' },
+    ],
+    'convert/m4v-to-mp4': [
+      {
+        q: 'Por que devo converter M4V em MP4?',
+        a: 'M4V é o contêiner da Apple para compras do iTunes e Apple TV, e muitas vezes traz restrições de reprodução. MP4 é o formato aberto e universal que funciona em qualquer dispositivo.',
+      },
+      {
+        q: 'O EncodeX remove o DRM de arquivos M4V?',
+        a: 'Se um arquivo estiver bloqueado por DRM e não abrir em outros apps, reproduza-o primeiro na sua biblioteca licenciada. O EncodeX converte o vídeo desbloqueado ao qual você já tem acesso em um MP4 aberto.',
+      },
+      { q: 'Posso converter vários arquivos M4V de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos M4V para MP4.' },
+    ],
+    'convert/flv-to-mp4': [
+      {
+        q: 'Por que devo converter FLV em MP4?',
+        a: 'FLV é um formato da era do Flash e a maioria dos dispositivos, TVs, celulares, apps de edição e navegadores abandonou o suporte há anos. MP4 é o formato moderno universal.',
+      },
+      {
+        q: 'Vou perder qualidade convertendo FLV para MP4?',
+        a: 'Não. O EncodeX re-codifica seu FLV em MP4 de forma limpa, mantendo a qualidade do vídeo enquanto moderniza o formato.',
+      },
+      { q: 'Posso converter muitos arquivos FLV de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos FLV para MP4.' },
+    ],
+    'convert/wmv-to-mp4': [
+      {
+        q: 'Por que devo converter WMV em MP4?',
+        a: 'WMV é um formato da Microsoft que fica quase só no Windows e muitas vezes não é reproduzido em Macs, celulares, tablets, TVs ou navegadores modernos. MP4 funciona em quase tudo.',
+      },
+      {
+        q: 'Vou perder qualidade convertendo WMV para MP4?',
+        a: 'Não. O EncodeX converte seu WMV em MP4 de forma limpa, mantendo a qualidade do vídeo.',
+      },
+      { q: 'Posso converter muitos arquivos WMV de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos WMV para MP4.' },
+    ],
+    'convert/webm-to-mp4': [
+      {
+        q: 'Por que devo converter WebM em MP4?',
+        a: 'WebM vem de navegadores, gravadores de tela e extensões do Chrome, mas o suporte é inconsistente em apps de edição, celulares, TVs e players antigos. MP4 funciona em quase tudo.',
+      },
+      {
+        q: 'Vou perder qualidade convertendo WebM para MP4?',
+        a: 'Não. O EncodeX converte seu WebM em um MP4 altamente compatível, mantendo a qualidade do vídeo.',
+      },
+      { q: 'Posso converter muitos arquivos WebM de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos WebM para MP4.' },
+    ],
+    'codecs/h264': [
+      {
+        q: 'O que é H.264 e por que ele está em todo lugar?',
+        a: 'H.264 (AVC) é o codec de vídeo mais compatível do mundo: funciona em celulares, TVs, consoles, navegadores e software de edição, e é o padrão no YouTube, Instagram e na maioria das plataformas.',
+      },
+      {
+        q: 'O EncodeX usa aceleração de hardware para codificar H.264?',
+        a: 'Sim. O EncodeX usa NVENC na NVIDIA, Quick Sync na Intel, AMF na AMD, VideoToolbox no Apple Silicon e VAAPI no Linux, então a conversão para H.264 é muito mais rápida sem configuração.',
+      },
+      {
+        q: 'MP4 + H.264 é a combinação mais compatível?',
+        a: 'Sim. Combinar vídeo H.264 com áudio AAC em um contêiner MP4 é a configuração mais compatível que existe, e o EncodeX a torna a opção fácil padrão quando você escolhe saída MP4.',
+      },
+    ],
+    'codecs/h265': [
+      {
+        q: 'Qual é a vantagem do H.265 sobre o H.264?',
+        a: 'H.265 (HEVC) entrega aproximadamente metade do tamanho de arquivo do H.264 com qualidade semelhante, e é feito para conteúdo 4K e HDR.',
+      },
+      {
+        q: 'O EncodeX suporta codificação H.265 acelerada por hardware?',
+        a: 'Sim. O EncodeX usa automaticamente o codificador HEVC por hardware do seu dispositivo: NVENC, Quick Sync, AMF, VAAPI ou VideoToolbox.',
+      },
+      {
+        q: 'Arquivos H.265 são reproduzidos em qualquer lugar?',
+        a: 'H.265 tem amplo suporte em celulares, TVs e consoles dos últimos anos. Para máxima compatibilidade com dispositivos antigos, H.264 em MP4 ainda é a opção mais segura.',
+      },
+    ],
+    'codecs/av1': [
+      {
+        q: 'O que é AV1 e por que usar?',
+        a: 'AV1 é o codec de vídeo mais eficiente disponível hoje, entregando o menor tamanho de arquivo para uma determinada qualidade — até cerca de 30% menor que H.265. É livre de royalties e usado pelo YouTube e Netflix.',
+      },
+      {
+        q: 'O EncodeX suporta codificação AV1?',
+        a: 'Sim. O EncodeX oferece codificadores AV1 por software (libaom, SVT-AV1, rav1e) além de codificadores AV1 por hardware onde sua GPU oferecer.',
+      },
+      {
+        q: 'A codificação AV1 é lenta?',
+        a: 'AV1 exige mais processamento que H.264 ou H.265. É melhor para arquivamento e entrega web onde o tamanho importa mais, e não para conversões rápidas do dia a dia.',
+      },
+    ],
+    'codecs/vp9': [
+      {
+        q: 'O que é VP9?',
+        a: 'VP9 é o codec de vídeo aberto e livre de royalties do Google — o cavalo de batalha por trás do YouTube, Chrome e Android — com cerca de metade do tamanho do H.264 em qualidade semelhante.',
+      },
+      {
+        q: 'O EncodeX suporta codificação VP9?',
+        a: 'Sim. O EncodeX codifica VP9 com libvpx por software, além de aceleração de hardware VAAPI e VideoToolbox onde disponível.',
+      },
+      {
+        q: 'Quando devo usar VP9 em vez de H.264?',
+        a: 'Escolha VP9 para vídeo web aberto, eficiente e para arquivamento. Escolha H.264 para máxima compatibilidade com dispositivos antigos. Com o EncodeX, compare um clipe de teste em segundos.',
+      },
+    ],
+    'codecs/prores': [
+      {
+        q: 'O que é Apple ProRes?',
+        a: 'ProRes é o codec intermediário profissional usado em toda a indústria de cinema e broadcast: excelente qualidade que edita com fluidez, com scrubbing favorável a keyframes no Final Cut Pro, Premiere Pro e DaVinci Resolve.',
+      },
+      {
+        q: 'O EncodeX suporta codificação ProRes?',
+        a: 'Sim. O EncodeX inclui perfis prontos de ProRes 422, 422HQ, 4444 e mais, que funcionam no Windows, Mac e Linux.',
+      },
+      {
+        q: 'Por que arquivos ProRes são tão grandes?',
+        a: 'ProRes é um formato intermediário para edição, não para entrega. Use-o para preparar um master para uma sessão de edição e depois exporte um arquivo pequeno de entrega, como H.264.',
+      },
+    ],
+    'ffmpeg-gui': [
+      {
+        q: 'O que é uma interface gráfica para FFmpeg?',
+        a: 'Uma interface gráfica para FFmpeg é um front-end visual que envolve o motor de linha de comando do FFmpeg em menus e botões, para converter, comprimir, cortar e extrair áudio sem digitar um único comando.',
+      },
+      {
+        q: 'O EncodeX inclui o FFmpeg?',
+        a: 'Sim. O EncodeX traz o motor FFmpeg embutido, então você nunca instala FFmpeg, codecs ou qualquer outra coisa separadamente.',
+      },
+      {
+        q: 'O EncodeX é uma interface gráfica gratuita para FFmpeg?',
+        a: 'Sim. O EncodeX é gratuito para sempre e open source (MIT), sem marcas d\'água, sem contas e sem plano pago.',
+      },
+    ],
+    'ffmpeg-gui/windows': [
+      {
+        q: 'Existe uma interface gráfica gratuita para FFmpeg no Windows?',
+        a: 'Sim. O EncodeX é uma interface gráfica gratuita e open source para FFmpeg no Windows 10 e mais recente, sem marcas d\'água e sem plano pago.',
+      },
+      {
+        q: 'O EncodeX usa aceleração de hardware no Windows?',
+        a: 'Sim. O EncodeX usa automaticamente NVIDIA NVENC, Intel Quick Sync (QSV) e AMD AMF para terminar conversões em uma fração do tempo.',
+      },
+      {
+        q: 'O EncodeX envia meus arquivos no Windows?',
+        a: 'Não. Tudo roda offline no seu PC — seus arquivos nunca saem do seu computador.',
+      },
+    ],
+    'ffmpeg-gui/macos': [
+      {
+        q: 'Existe uma interface gráfica gratuita para FFmpeg no Mac?',
+        a: 'Sim. O EncodeX é uma interface gráfica gratuita e open source para FFmpeg no macOS 11 e mais recente, com uma build nativa para Apple Silicon em Macs com chip M.',
+      },
+      {
+        q: 'O EncodeX usa Apple VideoToolbox no Mac?',
+        a: 'Sim. O EncodeX usa automaticamente a aceleração de hardware Apple VideoToolbox em Macs Apple Silicon e Intel.',
+      },
+      {
+        q: 'Posso converter para ProRes em um Mac com o EncodeX?',
+        a: 'Sim. O EncodeX inclui perfis prontos de ProRes 422 e 4444, perfeitos para fluxos do Final Cut Pro e DaVinci Resolve.',
+      },
+    ],
+    'ffmpeg-gui/linux': [
+      {
+        q: 'Existe uma interface gráfica gratuita para FFmpeg no Linux?',
+        a: 'Sim. O EncodeX é gratuito e open source, roda na maioria das distribuições Linux modernas como AppImage e não exige sofrer com pacotes.',
+      },
+      {
+        q: 'O EncodeX suporta aceleração de hardware no Linux?',
+        a: 'Sim. O EncodeX suporta VAAPI no Linux — independente da marca da GPU — além de NVENC em GPUs NVIDIA.',
+      },
+      {
+        q: 'Posso usar o EncodeX em um servidor Linux sem interface gráfica?',
+        a: 'Sim. O EncodeX inclui um modo CLI para automatizar conversões com scripts sem área de trabalho, e o motor FFmpeg embutido funciona de forma autônoma.',
+      },
+    ],
   },
   zh: {
     'handbrake-alternative': [
@@ -3211,6 +4171,198 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'MP3 是有损格式，但 EncodeX 会读取原始音轨并按您选择的设置进行编码。使用 320 kbps 可获得接近无损的音质。',
       },
       { q: '我可以一次转换多个 MOV 文件吗？', a: '可以。EncodeX 支持将整个文件夹的 MOV 文件批量转换为 MP3。' },
+    ],
+    'convert/avi-to-mp4': [
+      {
+        q: '为什么要把 AVI 转成 MP4？',
+        a: 'AVI 是一种较老的格式，会产生很大的文件，而且经常无法在手机、电视、游戏主机和浏览器上播放。MP4 是几乎随处可用的通用格式。',
+      },
+      {
+        q: '将 AVI 转成 MP4 会丢失质量吗？',
+        a: '不会。EncodeX 在生成现代、兼容的 MP4 文件时会完整保留视频和音频质量。',
+      },
+      { q: '我可以一次转换多个 AVI 文件吗？', a: '可以。EncodeX 支持将整个文件夹的 AVI 文件批量转换为 MP4。' },
+    ],
+    'convert/mov-to-mp4': [
+      {
+        q: '为什么要把 MOV 转成 MP4？',
+        a: 'MOV 是苹果的格式，通常无法在安卓手机、Windows 播放器、电视或网页上传表单中播放。MP4 是随处可用的通用格式。',
+      },
+      {
+        q: '将 MOV 转成 MP4 会丢失质量吗？',
+        a: '不会。默认情况下 EncodeX 会重新封装（remux）现有的视频和音频流，因此质量完全不变，转换也很快。',
+      },
+      { q: '我可以一次转换多个 MOV 文件吗？', a: '可以。EncodeX 支持将整个文件夹的 MOV 文件批量转换为 MP4。' },
+    ],
+    'convert/m4v-to-mp4': [
+      {
+        q: '为什么要把 M4V 转成 MP4？',
+        a: 'M4V 是苹果用于 iTunes 和 Apple TV 购买的容器格式，通常带有播放限制。MP4 是可在任何设备上播放的开放通用格式。',
+      },
+      {
+        q: 'EncodeX 能去除 M4V 文件的 DRM 吗？',
+        a: '如果文件受 DRM 保护、无法在其他应用中打开，请先在您的授权媒体库中播放。EncodeX 将您已经可以访问的已解锁视频转换为开放的 MP4。',
+      },
+      { q: '我可以一次批量转换 M4V 文件吗？', a: '可以。EncodeX 支持将整个文件夹的 M4V 文件批量转换为 MP4。' },
+    ],
+    'convert/flv-to-mp4': [
+      {
+        q: '为什么要把 FLV 转成 MP4？',
+        a: 'FLV 是 Flash 时代的格式，大多数设备、电视、手机、剪辑应用和浏览器多年前就已停止支持。MP4 是现代的通用格式。',
+      },
+      {
+        q: '将 FLV 转成 MP4 会丢失质量吗？',
+        a: '不会。EncodeX 会将 FLV 干净地重新编码为 MP4，在现代化格式的同时保持视频质量。',
+      },
+      { q: '我可以一次转换多个 FLV 文件吗？', a: '可以。EncodeX 支持将整个文件夹的 FLV 文件批量转换为 MP4。' },
+    ],
+    'convert/wmv-to-mp4': [
+      {
+        q: '为什么要把 WMV 转成 MP4？',
+        a: 'WMV 是微软的格式，通常主要停留在 Windows，在 Mac、手机、平板、电视或现代浏览器上往往无法播放。MP4 几乎到处都能用。',
+      },
+      {
+        q: '将 WMV 转成 MP4 会丢失质量吗？',
+        a: '不会。EncodeX 会将 WMV 干净地转换为 MP4，并保持视频质量。',
+      },
+      { q: '我可以一次转换多个 WMV 文件吗？', a: '可以。EncodeX 支持将整个文件夹的 WMV 文件批量转换为 MP4。' },
+    ],
+    'convert/webm-to-mp4': [
+      {
+        q: '为什么要把 WebM 转成 MP4？',
+        a: 'WebM 来自浏览器、录屏工具和 Chrome 扩展，但在剪辑应用、手机、电视和老旧播放器中的支持不一致。MP4 几乎到处都能播放。',
+      },
+      {
+        q: '将 WebM 转成 MP4 会丢失质量吗？',
+        a: '不会。EncodeX 会将 WebM 转换为高度兼容的 MP4，并保持视频质量。',
+      },
+      { q: '我可以一次转换多个 WebM 文件吗？', a: '可以。EncodeX 支持将整个文件夹的 WebM 文件批量转换为 MP4。' },
+    ],
+    'codecs/h264': [
+      {
+        q: '什么是 H.264，为什么它无处不在？',
+        a: 'H.264（AVC）是世界上最广泛支持的视频编解码器：可在手机、电视、游戏主机、浏览器和剪辑软件上播放，也是 YouTube、Instagram 和大多数平台的标准。',
+      },
+      {
+        q: 'EncodeX 会为 H.264 编码使用硬件加速吗？',
+        a: '会。EncodeX 在 NVIDIA 上使用 NVENC、Intel 上使用 Quick Sync、AMD 上使用 AMF、Apple Silicon 上使用 VideoToolbox、Linux 上使用 VAAPI，无需设置即可大幅加快 H.264 转换。',
+      },
+      {
+        q: 'MP4 + H.264 是最兼容的组合吗？',
+        a: '是的。将 H.264 视频与 AAC 音频组合在 MP4 容器中就是最兼容的配置，而 EncodeX 在您选择 MP4 输出时默认就会采用这个组合。',
+      },
+    ],
+    'codecs/h265': [
+      {
+        q: 'H.265 相比 H.264 有什么优势？',
+        a: 'H.265（HEVC）在相同质量下文件大小约为 H.264 的一半，并且专为 4K 和 HDR 内容而设计。',
+      },
+      {
+        q: 'EncodeX 支持硬件加速的 H.265 编码吗？',
+        a: '支持。EncodeX 会自动使用设备内置的硬件 HEVC 编码器：NVENC、Quick Sync、AMF、VAAPI 或 VideoToolbox。',
+      },
+      {
+        q: 'H.265 文件能被随处播放吗？',
+        a: 'H.265 在近几年的手机、电视和游戏主机上得到广泛支持。若追求与老设备的最大兼容性，MP4 中的 H.264 仍是最稳妥的选择。',
+      },
+    ],
+    'codecs/av1': [
+      {
+        q: '什么是 AV1，为什么要用它？',
+        a: 'AV1 是目前最高效的主流视频编解码器，在同等质量下文件最小——比 H.265 小约 30%。它免版税，并被 YouTube 和 Netflix 使用。',
+      },
+      {
+        q: 'EncodeX 支持 AV1 编码吗？',
+        a: '支持。EncodeX 提供软件 AV1 编码器（libaom、SVT-AV1、rav1e），并在您的 GPU 支持时提供硬件 AV1 编码器。',
+      },
+      {
+        q: 'AV1 编码慢吗？',
+        a: 'AV1 编码比 H.264 或 H.265 更耗费算力。它最适合压缩需求突出的存档和网页交付场景，而不是日常快速转换。',
+      },
+    ],
+    'codecs/vp9': [
+      {
+        q: '什么是 VP9？',
+        a: 'VP9 是谷歌开放、免版税的视频编解码器——YouTube、Chrome 和安卓背后的主力，在相似质量下文件大小约为 H.264 的一半。',
+      },
+      {
+        q: 'EncodeX 支持 VP9 编码吗？',
+        a: '支持。EncodeX 使用软件 libvpx 编码 VP9，并在可用时使用 VAAPI 和 VideoToolbox 硬件加速。',
+      },
+      {
+        q: '什么时候该用 VP9 而不是 H.264？',
+        a: '需要开放、高效的网页视频和存档时选择 VP9；需要与旧设备最大兼容时选择 H.264。用 EncodeX 几秒钟就能对比一个测试片段。',
+      },
+    ],
+    'codecs/prores': [
+      {
+        q: '什么是 Apple ProRes？',
+        a: 'ProRes 是电影和广播行业广泛使用的专业中间编解码器：画质出色、剪辑流畅，在 Final Cut Pro、Premiere Pro 和 DaVinci Resolve 中支持关键帧友好型的拖动预览。',
+      },
+      {
+        q: 'EncodeX 支持 ProRes 编码吗？',
+        a: '支持。EncodeX 内置 ProRes 422、422HQ、4444 等现成配置，可在 Windows、Mac 和 Linux 上使用。',
+      },
+      {
+        q: '为什么 ProRes 文件那么大？',
+        a: 'ProRes 是用于剪辑的中间格式，而非交付格式。用它为剪辑会话准备母版，之后再导出 H.264 这样的小型交付文件。',
+      },
+    ],
+    'ffmpeg-gui': [
+      {
+        q: '什么是 FFmpeg 图形界面？',
+        a: 'FFmpeg 图形界面是一种可视化前端，将 FFmpeg 命令行引擎封装在菜单和按钮中，您无需输入任何命令即可转换、压缩、裁剪和提取音频。',
+      },
+      {
+        q: 'EncodeX 自带 FFmpeg 吗？',
+        a: '是的。EncodeX 内置 FFmpeg 引擎，因此您永远不需要单独安装 FFmpeg、编解码器或任何其他内容。',
+      },
+      {
+        q: 'EncodeX 是免费的 FFmpeg 图形界面吗？',
+        a: '是的。EncodeX 永久免费且开源（MIT），无水印、无需账号、无付费版本。',
+      },
+    ],
+    'ffmpeg-gui/windows': [
+      {
+        q: '有免费的 Windows FFmpeg 图形界面吗？',
+        a: '有。EncodeX 是一款免费开源的 FFmpeg 图形界面，支持 Windows 10 及更高版本，无水印、无付费版本。',
+      },
+      {
+        q: 'EncodeX 在 Windows 上使用硬件加速吗？',
+        a: '是的。EncodeX 自动使用 NVIDIA NVENC、Intel Quick Sync（QSV）和 AMD AMF，以更短的时间完成转换。',
+      },
+      {
+        q: 'EncodeX 在 Windows 上会上传我的文件吗？',
+        a: '不会。一切都在您的电脑上离线进行——文件绝不会离开您的计算机。',
+      },
+    ],
+    'ffmpeg-gui/macos': [
+      {
+        q: '有免费的 Mac FFmpeg 图形界面吗？',
+        a: '有。EncodeX 是一款免费开源的 FFmpeg 图形界面，支持 macOS 11 及更高版本，并为 M 系列芯片的 Mac 提供原生 Apple Silicon 版本。',
+      },
+      {
+        q: 'EncodeX 在 Mac 上使用 Apple VideoToolbox 吗？',
+        a: '是的。EncodeX 在 Apple Silicon 和 Intel Mac 上自动使用 Apple VideoToolbox 硬件加速。',
+      },
+      {
+        q: '能用 EncodeX 在 Mac 上转换 ProRes 吗？',
+        a: '可以。EncodeX 内置现成的 ProRes 422 和 4444 配置，非常适合 Final Cut Pro 和 DaVinci Resolve 工作流。',
+      },
+    ],
+    'ffmpeg-gui/linux': [
+      {
+        q: '有免费的 Linux FFmpeg 图形界面吗？',
+        a: '有。EncodeX 免费且开源，以 AppImage 形式运行于大多数现代 Linux 发行版，无需折腾软件包。',
+      },
+      {
+        q: 'EncodeX 在 Linux 上支持硬件加速吗？',
+        a: '支持。EncodeX 在 Linux 上支持 VAAPI（与 GPU 品牌无关），以及 NVIDIA GPU 上的 NVENC。',
+      },
+      {
+        q: '我可以在无图形界面的 Linux 服务器上使用 EncodeX 吗？',
+        a: '可以。EncodeX 提供 CLI 模式，无需桌面即可通过脚本自动化转换，内置 FFmpeg 引擎也可独立运行。',
+      },
     ],
   },
   hi: {
@@ -3461,6 +4613,198 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
       {
         q: 'क्या मैं एक साथ कई MOV फ़ाइलें बदल सकता हूँ?',
         a: 'हाँ। EncodeX MOV फ़ाइलों के पूरे फ़ोल्डर को MP3 में बैच कनवर्ट करने का समर्थन करता है।',
+      },
+    ],
+    'convert/avi-to-mp4': [
+      {
+        q: 'मुझे AVI को MP4 में क्यों बदलना चाहिए?',
+        a: 'AVI एक पुराना प्रारूप है जो बड़ी फ़ाइलें बनाता है और अक्सर फ़ोन, टीवी, कंसोल और ब्राउज़र पर नहीं चलता। MP4 वह सार्वभौमिक प्रारूप है जो लगभग हर जगह चलता है।',
+      },
+      {
+        q: 'क्या AVI से MP4 बदलने में गुणवत्ता घटेगी?',
+        a: 'नहीं। EncodeX आधुनिक, कंपैटिबल MP4 फ़ाइल बनाते हुए आपके वीडियो और ऑडियो की गुणवत्ता बरकरार रखता है।',
+      },
+      { q: 'क्या मैं एक साथ कई AVI फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX AVI फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+    ],
+    'convert/mov-to-mp4': [
+      {
+        q: 'मुझे MOV को MP4 में क्यों बदलना चाहिए?',
+        a: 'MOV Apple का प्रारूप है और अक्सर Android फ़ोन, Windows प्लेयर, टीवी या वेब अपलोड फ़ॉर्म पर नहीं चलता। MP4 वह सार्वभौमिक प्रारूप है जो हर जगह चलता है।',
+      },
+      {
+        q: 'क्या MOV से MP4 बदलने में गुणवत्ता घटेगी?',
+        a: 'नहीं। डिफ़ॉल्ट रूप से EncodeX मौजूदा वीडियो और ऑडियो स्ट्रीम को रीमक्स करता है, इसलिए गुणवत्ता बिल्कुल समान रहती है और रूपांतरण बहुत तेज़ है।',
+      },
+      { q: 'क्या मैं एक साथ कई MOV फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX MOV फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+    ],
+    'convert/m4v-to-mp4': [
+      {
+        q: 'मुझे M4V को MP4 में क्यों बदलना चाहिए?',
+        a: 'M4V iTunes और Apple TV खरीदों के लिए Apple का कंटेनर है, और इसमें अक्सर प्लेबैक प्रतिबंध होते हैं। MP4 खुला, सार्वभौमिक प्रारूप है जो किसी भी डिवाइस पर चलता है।',
+      },
+      {
+        q: 'क्या EncodeX M4V फ़ाइलों से DRM हटाता है?',
+        a: 'यदि कोई फ़ाइल DRM-लॉक है और दूसरी ऐप्स में नहीं खुलती, तो पहले उसे अपनी लाइसेंस वाली लाइब्रेरी में चलाएँ। EncodeX उस अनलॉक किए गए वीडियो को, जिसे आप पहले से एक्सेस कर सकते हैं, ओपन MP4 में बदलता है।',
+      },
+      { q: 'क्या मैं एक साथ कई M4V फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX M4V फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+    ],
+    'convert/flv-to-mp4': [
+      {
+        q: 'मुझे FLV को MP4 में क्यों बदलना चाहिए?',
+        a: 'FLV Flash-युग का प्रारूप है और ज़्यादातर डिवाइस, टीवी, फ़ोन, एडिटिंग ऐप्स और ब्राउज़र ने सालों पहले इसका समर्थन छोड़ दिया। MP4 आधुनिक, सार्वभौमिक प्रारूप है।',
+      },
+      {
+        q: 'क्या FLV से MP4 बदलने में गुणवत्ता घटेगी?',
+        a: 'नहीं। EncodeX आपके FLV को साफ़-सुथरा MP4 में री-कोड करता है, प्रारूप को आधुनिक बनाते हुए वीडियो गुणवत्ता बनाए रखता है।',
+      },
+      { q: 'क्या मैं एक साथ कई FLV फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX FLV फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+    ],
+    'convert/wmv-to-mp4': [
+      {
+        q: 'मुझे WMV को MP4 में क्यों बदलना चाहिए?',
+        a: 'WMV Microsoft का प्रारूप है जो ज़्यादातर Windows तक सीमित रहता है और अक्सर Mac, फ़ोन, टैबलेट, टीवी या आधुनिक ब्राउज़र पर नहीं चलता। MP4 लगभग हर जगह काम करता है।',
+      },
+      {
+        q: 'क्या WMV से MP4 बदलने में गुणवत्ता घटेगी?',
+        a: 'नहीं। EncodeX आपके WMV को साफ़-सुथरा MP4 में बदलता है और वीडियो की गुणवत्ता बनाए रखता है।',
+      },
+      { q: 'क्या मैं एक साथ कई WMV फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX WMV फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+    ],
+    'convert/webm-to-mp4': [
+      {
+        q: 'मुझे WebM को MP4 में क्यों बदलना चाहिए?',
+        a: 'WebM ब्राउज़र, स्क्रीन रिकॉर्डर और Chrome एक्सटेंशन से आता है, लेकिन एडिटिंग ऐप्स, फ़ोन, टीवी और पुराने प्लेयर्स में समर्थन असमान है। MP4 लगभग हर जगह चलता है।',
+      },
+      {
+        q: 'क्या WebM से MP4 बदलने में गुणवत्ता घटेगी?',
+        a: 'नहीं। EncodeX आपके WebM को अत्यधिक कंपैटिबल MP4 में बदलता है और वीडियो की गुणवत्ता बनाए रखता है।',
+      },
+      { q: 'क्या मैं एक साथ कई WebM फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX WebM फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+    ],
+    'codecs/h264': [
+      {
+        q: 'H.264 क्या है और यह हर जगह क्यों है?',
+        a: 'H.264 (AVC) दुनिया में सबसे व्यापक रूप से समर्थित वीडियो कोडेक है – यह फ़ोन, टीवी, कंसोल, ब्राउज़र और एडिटिंग सॉफ़्टवेयर पर चलता है, और YouTube, Instagram और ज़्यादातर प्लेटफ़ॉर्म का मानक है।',
+      },
+      {
+        q: 'क्या EncodeX H.264 एन्कोडिंग के लिए हार्डवेयर एक्सेलेरेशन उपयोग करता है?',
+        a: 'हाँ। EncodeX NVIDIA पर NVENC, Intel पर Quick Sync, AMD पर AMF, Apple Silicon पर VideoToolbox और Linux पर VAAPI उपयोग करता है, जिससे H.264 रूपांतरण बिना सेटअप के काफ़ी तेज़ हो जाता है।',
+      },
+      {
+        q: 'क्या MP4 + H.264 सबसे कंपैटिबल संयोजन है?',
+        a: 'हाँ। H.264 वीडियो को AAC ऑडियो के साथ MP4 कंटेनर में जोड़ना सबसे कंपैटिबल सेटअप है – और EncodeX इसे MP4 आउटपुट चुनते ही डिफ़ॉल्ट विकल्प बना देता है।',
+      },
+    ],
+    'codecs/h265': [
+      {
+        q: 'H.265 की H.264 पर क्या बढ़त है?',
+        a: 'H.265 (HEVC) समान गुणवत्ता पर H.264 की लगभग आधी फ़ाइल साइज़ देता है, और यह 4K व HDR कंटेंट के लिए बना है।',
+      },
+      {
+        q: 'क्या EncodeX हार्डवेयर-एक्सेलरेटेड H.265 एन्कोडिंग का समर्थन करता है?',
+        a: 'हाँ। EncodeX आपके डिवाइस में बने हार्डवेयर HEVC एन्कोडर का स्वचालित रूप से उपयोग करता है – NVENC, Quick Sync, AMF, VAAPI या VideoToolbox।',
+      },
+      {
+        q: 'क्या H.265 फ़ाइलें हर जगह चलती हैं?',
+        a: 'H.265 को हाल के सालों के फ़ोन, टीवी और कंसोल पर व्यापक रूप से समर्थन मिलता है। पुराने डिवाइसों से अधिकतम कंपैटिबिलिटी के लिए MP4 में H.264 ही सबसे सुरक्षित विकल्प है।',
+      },
+    ],
+    'codecs/av1': [
+      {
+        q: 'AV1 क्या है और इसे क्यों उपयोग करें?',
+        a: 'AV1 आज उपलब्ध सबसे कुशल मुख्यधारा वीडियो कोडेक है, जो किसी दी गई गुणवत्ता पर सबसे छोटी फ़ाइल देता है – H.265 से लगभग 30% छोटी। यह रॉयल्टी-मुक्त है और YouTube व Netflix उपयोग करते हैं।',
+      },
+      {
+        q: 'क्या EncodeX AV1 एन्कोडिंग का समर्थन करता है?',
+        a: 'हाँ। EncodeX सॉफ़्टवेयर AV1 एन्कोडर (libaom, SVT-AV1, rav1e) के साथ-साथ हार्डवेयर AV1 एन्कोडर भी देता है, जहाँ आपका GPU उन्हें प्रदान करता है।',
+      },
+      {
+        q: 'क्या AV1 एन्कोडिंग धीमी है?',
+        a: 'AV1 एन्कोडिंग H.264 या H.265 से ज़्यादा संसाधन मांगती है। यह आर्काइविंग और वेब डिलीवरी के लिए सबसे अच्छा है जहाँ साइज़ सबसे ज़्यादा मायने रखती है, न कि रोज़मर्रा के तेज़ रूपांतरणों के लिए।',
+      },
+    ],
+    'codecs/vp9': [
+      {
+        q: 'VP9 क्या है?',
+        a: 'VP9 Google का खुला, रॉयल्टी-मुक्त वीडियो कोडेक है – YouTube, Chrome और Android के पीछे का वर्कहॉर्स – जो समान गुणवत्ता पर H.264 से लगभग आधी फ़ाइल साइज़ देता है।',
+      },
+      {
+        q: 'क्या EncodeX VP9 एन्कोडिंग का समर्थन करता है?',
+        a: 'हाँ। EncodeX VP9 को सॉफ़्टवेयर libvpx से एन्कोड करता है, साथ ही VAAPI और VideoToolbox हार्डवेयर एक्सेलेरेशन जहाँ उपलब्ध हो।',
+      },
+      {
+        q: 'H.264 के बजाय VP9 कब उपयोग करना चाहिए?',
+        a: 'खुले, कुशल वेब-रेडी वीडियो और आर्काइविंग के लिए VP9 चुनें। पुराने डिवाइसों से अधिकतम कंपैटिबिलिटी के लिए H.264 चुनें। EncodeX से आप कुछ सेकंड में ही टेस्ट क्लिप की तुलना कर सकते हैं।',
+      },
+    ],
+    'codecs/prores': [
+      {
+        q: 'Apple ProRes क्या है?',
+        a: 'ProRes फ़िल्म और प्रसारण इंडस्ट्री में उपयोग होने वाला पेशेवर इंटरमीडिएट कोडेक है – बेहतरीन क्वालिटी जो सहजता से एडिट होती है, Final Cut Pro, Premiere Pro और DaVinci Resolve में keyframe-friendly scrubbing के साथ।',
+      },
+      {
+        q: 'क्या EncodeX ProRes एन्कोडिंग का समर्थन करता है?',
+        a: 'हाँ। EncodeX में तैयार ProRes 422, 422HQ, 4444 और अधिक प्रोफ़ाइल शामिल हैं, जो Windows, Mac और Linux पर काम करती हैं।',
+      },
+      {
+        q: 'ProRes फ़ाइलें इतनी बड़ी क्यों होती हैं?',
+        a: 'ProRes एडिटिंग के लिए इंटरमीडिएट प्रारूप है, डिलीवरी के लिए नहीं। इसे एडिटिंग सत्र के लिए मास्टर तैयार करने में उपयोग करें, फिर H.264 जैसी छोटी डिलीवरी फ़ाइल एक्सपोर्ट करें।',
+      },
+    ],
+    'ffmpeg-gui': [
+      {
+        q: 'FFmpeg GUI क्या है?',
+        a: 'FFmpeg GUI एक विज़ुअल फ्रंटएंड है जो FFmpeg कमांड-लाइन इंजन को मेन्यू और बटन में लपेटता है, ताकि आप बिना एक भी कमांड टाइप किए कनवर्ट, कंप्रेस, ट्रिम और ऑडियो निकाल सकें।',
+      },
+      {
+        q: 'क्या EncodeX FFmpeg के साथ आता है?',
+        a: 'हाँ। EncodeX FFmpeg इंजन अपने साथ लाता है, इसलिए आपको FFmpeg, कोडेक्स या कुछ भी अलग से इंस्टॉल करने की ज़रूरत नहीं पड़ती।',
+      },
+      {
+        q: 'क्या EncodeX मुफ़्त FFmpeg GUI है?',
+        a: 'हाँ। EncodeX हमेशा के लिए मुफ़्त और ओपन सोर्स (MIT) है, बिना वॉटरमार्क, बिना खाते और बिना पेड टियर के।',
+      },
+    ],
+    'ffmpeg-gui/windows': [
+      {
+        q: 'क्या Windows के लिए मुफ़्त FFmpeg GUI है?',
+        a: 'हाँ। EncodeX Windows 10 और नए के लिए मुफ़्त, ओपन-सोर्स FFmpeg GUI है, बिना वॉटरमार्क और बिना पेड टियर के।',
+      },
+      {
+        q: 'क्या EncodeX Windows पर हार्डवेयर एक्सेलेरेशन उपयोग करता है?',
+        a: 'हाँ। EncodeX स्वचालित रूप से NVIDIA NVENC, Intel Quick Sync (QSV) और AMD AMF उपयोग करता है, जिससे कनवर्ज़न बहुत कम समय में पूरे होते हैं।',
+      },
+      {
+        q: 'क्या EncodeX Windows पर मेरी फ़ाइलें अपलोड करता है?',
+        a: 'नहीं। सब कुछ आपके PC पर ऑफ़लाइन चलता है – आपकी फ़ाइलें कभी आपके कंप्यूटर से बाहर नहीं जातीं।',
+      },
+    ],
+    'ffmpeg-gui/macos': [
+      {
+        q: 'क्या Mac के लिए मुफ़्त FFmpeg GUI है?',
+        a: 'हाँ। EncodeX macOS 11 और नए के लिए मुफ़्त, ओपन-सोर्स FFmpeg GUI है, और M-सीरीज़ Macs के लिए नेटिव Apple Silicon बिल्ड भी।',
+      },
+      {
+        q: 'क्या EncodeX Mac पर Apple VideoToolbox उपयोग करता है?',
+        a: 'हाँ। EncodeX Apple Silicon और Intel दोनों Macs पर Apple VideoToolbox हार्डवेयर एक्सेलेरेशन का स्वचालित रूप से उपयोग करता है।',
+      },
+      {
+        q: 'क्या मैं Mac पर EncodeX से ProRes में कनवर्ट कर सकता हूँ?',
+        a: 'हाँ। EncodeX में तैयार ProRes 422 और 4444 प्रोफ़ाइल शामिल हैं, जो Final Cut Pro और DaVinci Resolve वर्कफ़्लो के लिए परफेक्ट हैं।',
+      },
+    ],
+    'ffmpeg-gui/linux': [
+      {
+        q: 'क्या Linux के लिए मुफ़्त FFmpeg GUI है?',
+        a: 'हाँ। EncodeX मुफ़्त और ओपन सोर्स है, ज़्यादातर आधुनिक Linux डिस्ट्रोस पर AppImage के रूप में चलता है, और इसमें पैकेज की झंझट नहीं है।',
+      },
+      {
+        q: 'क्या EncodeX Linux पर हार्डवेयर एक्सेलेरेशन का समर्थन करता है?',
+        a: 'हाँ। EncodeX Linux पर VAAPI का समर्थन करता है – GPU ब्रांड चाहे कोई भी हो – साथ ही NVIDIA GPUs पर NVENC का।',
+      },
+      {
+        q: 'क्या मैं बिना डेस्कटॉप वाले Linux सर्वर पर EncodeX उपयोग कर सकता हूँ?',
+        a: 'हाँ। EncodeX में बिना डेस्कटॉप के स्क्रिप्टिंग द्वारा कनवर्ज़न के लिए CLI मोड शामिल है, और बंडल किया गया FFmpeg इंजन अकेले भी काम करता है।',
       },
     ],
   },

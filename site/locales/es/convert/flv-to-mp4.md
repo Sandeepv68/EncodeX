@@ -36,6 +36,8 @@ EncodeX maneja los códecs, la resolución y la tasa de bits por ti, para que ob
 - **Sin marcas de agua** y gratis para siempre
 - Funciona en **Windows, Mac y Linux**
 
+<RelatedConversions slug="convert/flv-to-mp4" />
+
 ## Empieza
 
 - [Descarga EncodeX gratis](/es/download)

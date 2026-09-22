@@ -77,3 +77,5 @@ Pas nécessairement ! HandBrake est excellent pour l'extraction de disques. Mais
 - [Voir toutes les conversions et fonctionnalités](/fr/features)
 - [Apprenez ce qu'est réellement FFmpeg](/fr/learn/what-is-ffmpeg)
 - [Choisissez le bon format vidéo](/fr/learn/what-format-to-use)
+- [Lire : Meilleures alternatives à HandBrake en 2026](/fr/blog/posts/handbrake-alternative-guide)
+- [Lire : Meilleur convertisseur vidéo gratuit pour 2026](/fr/blog/posts/best-free-video-converter-2026)

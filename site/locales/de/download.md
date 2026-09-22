@@ -1,6 +1,6 @@
-# EncodeX herunterladen
+# EncodeX herunterladen — Kostenlos & quelloffen
 
-EncodeX ist **kostenlos** und läuft unter Windows, Mac und Linux. Eine quelloffene FFmpeg-Oberfläche — ohne Konto, ohne Wasserzeichen und ohne Dateigrößen-Limits: alles läuft auf Ihrem Computer.
+EncodeX ist **kostenlos und quelloffen** und läuft unter Windows, Mac und Linux. Eine quelloffene FFmpeg-Oberfläche — ohne Konto, ohne Wasserzeichen und ohne Dateigrößen-Limits: alles läuft auf Ihrem Computer.
 
 ::: tip Zum ersten Mal hier? So geht es weiter
 Installieren Sie die App, ziehen Sie ein Video oder ein Bild in das Fenster, wählen Sie ein Profil (z. B. MP4 oder „kleinere Datei") und klicken Sie **Konvertieren** — fertig. Alles läuft lokal auf Ihrem Computer.
@@ -14,6 +14,8 @@ Installieren Sie die App, ziehen Sie ein Video oder ein Bild in das Fenster, wä
 **Windows 10/11 · 64-Bit** — passt für fast alle.
 
 <LatestDownloads platform="windows" />
+
+**Unsicher? Download x64 — empfohlen für die meisten Windows-PCs.**
 
 **Installation:** Öffnen Sie die heruntergeladene Datei und folgen Sie den Schritten auf dem Bildschirm.
 

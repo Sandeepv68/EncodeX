@@ -44,6 +44,8 @@ EncodeX re-codifica tu MP4 con opciones más inteligentes — un códec moderno 
 
 **¿EncodeX comprime archivos sin conexión?** Sí. La compresión ocurre completamente en tu computadora y sin subidas — privado y funciona incluso sin internet.
 
+<RelatedConversions slug="compress/mp4" />
+
 ## Empieza
 
 - [Descarga EncodeX gratis](/es/download)

@@ -44,6 +44,8 @@ WebM es la opción correcta cuando el tamaño importa más que la compatibilidad
 
 **¿Puedo convertir muchos archivos MKV a la vez?** Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos MKV a WebM.
 
+<RelatedConversions slug="convert/mkv-to-webm" />
+
 ## Empieza
 
 - [Descarga EncodeX gratis](/es/download)

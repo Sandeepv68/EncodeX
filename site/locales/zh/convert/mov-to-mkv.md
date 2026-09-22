@@ -43,6 +43,8 @@ EncodeX 快速将你的 **MOV 转为 MKV**，同时保持你的**视频画质**�
 
 **我可以一次转换多个 MOV 文件吗？** 可以。EncodeX 支持将整个文件夹的 MOV 文件批量转换为 MKV。
 
+<RelatedConversions slug="convert/mov-to-mkv" />
+
 ## 立即开始
 
 - [免费下载 EncodeX](/zh/download)

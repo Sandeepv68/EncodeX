@@ -36,6 +36,8 @@ Sie können einen einzelnen Clip oder **ganze Ordner voller MOV-Dateien stapelwe
 - **Keine Wasserzeichen** und für immer kostenlos
 - Funktioniert auf **Windows, Mac und Linux**
 
+<RelatedConversions slug="convert/mov-to-mp4" />
+
 ## Loslegen
 
 - [EncodeX kostenlos herunterladen](/de/download)

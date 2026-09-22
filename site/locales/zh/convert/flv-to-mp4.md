@@ -36,6 +36,8 @@ EncodeX 将你的 **FLV 干净地转为 MP4**，在现代化格式的同时保�
 - **无水印**且永久免费
 - 支持 **Windows、Mac 和 Linux**
 
+<RelatedConversions slug="convert/flv-to-mp4" />
+
 ## 立即开始
 
 - [免费下载 EncodeX](/zh/download)

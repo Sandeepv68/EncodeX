@@ -5,8 +5,56 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Sun, 20 Sep 2026 16:48:23 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 22 Sep 2026 06:56:48 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MCP Privacy and Security: Why EncodeX Keeps Your Media Local</title>
+      <link>https://encodex.in/blog/posts/mcp-privacy-security/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/mcp-privacy-security/</guid>
+      <description>The EncodeX MCP server runs entirely on your machine — loopback binding, Origin validation, optional bearer token, and an offline-first design. No uploads, no cloud, no account.</description>
+      <pubDate>Thu, 24 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>mcp</category>
+      <category>security</category>
+      <category>privacy</category>
+      <category>ai</category>
+    </item>
+    <item>
+      <title>Cursor and VS Code MCP Workflows With EncodeX</title>
+      <link>https://encodex.in/blog/posts/cursor-and-vscode-mcp-workflows/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/cursor-and-vscode-mcp-workflows/</guid>
+      <description>Wire EncodeX into Cursor or VS Code with encodex --mcp and turn media chores into agent workflows — conversions, extracts, and image compression inside your editor.</description>
+      <pubDate>Wed, 23 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>mcp</category>
+      <category>cursor</category>
+      <category>vscode</category>
+      <category>ai</category>
+    </item>
+    <item>
+      <title>MCP Batch Automation: Queue Dozens of Media Jobs in One Prompt</title>
+      <link>https://encodex.in/blog/posts/mcp-batch-automation-guide/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/mcp-batch-automation-guide/</guid>
+      <description>Use EncodeX&apos;s MCP server to queue an entire folder of videos with a single prompt — async jobs, progress tracking, and structured results via batch_convert, list_jobs, and get_job.</description>
+      <pubDate>Tue, 22 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>mcp</category>
+      <category>automation</category>
+      <category>batch</category>
+      <category>ai</category>
+    </item>
+    <item>
+      <title>How to Use the EncodeX MCP Server With Claude Desktop and Claude Code</title>
+      <link>https://encodex.in/blog/posts/how-to-use-claude-with-mcp/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/posts/how-to-use-claude-with-mcp/</guid>
+      <description>Connect EncodeX&apos;s built-in MCP server to Claude Desktop or Claude Code and convert, extract, compress, and batch-process media using natural language — entirely offline.</description>
+      <pubDate>Mon, 21 Sep 2026 00:00:00 GMT</pubDate>
+      <category>guide</category>
+      <category>mcp</category>
+      <category>claude</category>
+      <category>ai</category>
+      <category>automation</category>
+    </item>
     <item>
       <title>EncodeX V1.0.0-beta.4</title>
       <link>https://encodex.in/blog/releases/1.0.0-beta.4/</link>

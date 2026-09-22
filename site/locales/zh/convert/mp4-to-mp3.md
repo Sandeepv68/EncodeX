@@ -50,6 +50,8 @@ EncodeX 会读取 MP4 中的原始音轨，并按你选择的设置将其编码�
 - [从视频中提取音频](/zh/extract-audio-from-video)
 - [在格式之间转换音频](/zh/audio-converter)
 
+<RelatedConversions slug="convert/mp4-to-mp3" />
+
 ## 立即开始
 
 - [免费下载 EncodeX](/zh/download)

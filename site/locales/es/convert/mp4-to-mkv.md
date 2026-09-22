@@ -44,6 +44,8 @@ Incluso puedes **convertir por lotes** una carpeta entera de archivos MP4 a MKV 
 
 **¿Puedo convertir muchos archivos MP4 a la vez?** Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos MP4 a MKV.
 
+<RelatedConversions slug="convert/mp4-to-mkv" />
+
 ## Empieza
 
 - [Descarga EncodeX gratis](/es/download)

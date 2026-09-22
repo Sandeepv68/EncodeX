@@ -4,9 +4,9 @@ description: "Download EncodeX for free — a free, open-source FFmpeg GUI for W
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
-# Download EncodeX
+# Download EncodeX — Free & Open Source
 
-EncodeX is **free** and works on Windows, Mac, and Linux. It's an open-source FFmpeg GUI with no accounts, no watermarks, and no file-size limits — everything runs on your computer.
+EncodeX is **free & open source** and works on Windows, Mac, and Linux. It's an FFmpeg GUI with no accounts, no watermarks, and no file-size limits — everything runs on your computer.
 
 ::: tip First time here? Here's what happens next
 Install the app, drag a video or image into the window, pick a profile (like MP4 or "smaller file"), and hit Convert — you're done. Everything runs locally on your computer.
@@ -23,9 +23,11 @@ Install the app, drag a video or image into the window, pick a profile (like MP4
 
 The download button above is right for almost everyone — **Windows 10/11 · 64-bit**.
 
+**Not sure? Download x64 — Recommended for most Windows PCs.**
+
 **To install:** open the file you downloaded and follow the steps on screen.
 
-Not sure which one to pick? Go with the recommended one — if it doesn't match, Windows will tell you. Under **Other downloads** you'll also find an **Windows ARM64** build (Snapdragon laptops) and a 32-bit build (very old computers).
+Not sure which one to pick? Go with the recommended one — if it doesn't match, Windows will tell you. Under **Other downloads** you'll also find a **Windows ARM64** build (Snapdragon laptops) and a 32-bit build (very old computers).
 
 ### Other platforms
 

@@ -44,6 +44,8 @@ AVI（音频视频交错）诞生于 1990 年代，以过时、僵化的方式�
 
 **我可以一次转换多个 AVI 文件吗？** 可以。EncodeX 支持将整个文件夹中的 AVI 文件批量转换为 MKV。
 
+<RelatedConversions slug="convert/avi-to-mkv" />
+
 ## 开始使用
 
 - [免费下载 EncodeX](/zh/download)

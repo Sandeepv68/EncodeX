@@ -44,6 +44,8 @@ Vous voulez une taille cible précise — par exemple « moins de 10 Mo » ? Enc
 
 **EncodeX compresse-t-il les fichiers hors ligne ?** Oui. La compression s'effectue entièrement sur votre ordinateur, sans envoi — privé et fonctionne même sans internet.
 
+<RelatedConversions slug="compress/mp4" />
+
 ## Commencer
 
 - [Téléchargez EncodeX gratuitement](/fr/download)

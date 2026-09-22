@@ -44,6 +44,8 @@ MP4 是安全且默认的预设——如果不确定，就选它。编解码器�
 
 **我可以一次转换多个 MKV 文件吗？** 可以。EncodeX 支持将整个文件夹的 MKV 文件批量转换为 MP4。
 
+<RelatedConversions slug="convert/mkv-to-mp4" />
+
 ## 立即开始
 
 - [免费下载 EncodeX](/zh/download)

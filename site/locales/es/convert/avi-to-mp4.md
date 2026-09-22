@@ -36,6 +36,8 @@ EncodeX recodifica el vídeo de forma eficiente para que tu **MP4 sea drásticam
 - **Sin marcas de agua** y gratis para siempre
 - Funciona en **Windows, Mac y Linux**
 
+<RelatedConversions slug="convert/avi-to-mp4" />
+
 ## Empieza
 
 - [Descarga EncodeX gratis](/es/download)

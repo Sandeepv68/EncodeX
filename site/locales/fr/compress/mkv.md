@@ -43,6 +43,8 @@ Vous pouvez **compresser tout un dossier de fichiers MKV en lot** d'un coup, et 
 
 **Puis-je compresser plusieurs fichiers MKV à la fois ?** Oui. EncodeX prend en charge la compression en lot d'un dossier entier de fichiers MKV.
 
+<RelatedConversions slug="compress/mkv" />
+
 ## Commencer
 
 - [Téléchargez EncodeX gratuitement](/fr/download)

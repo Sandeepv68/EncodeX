@@ -43,6 +43,8 @@ EncodeX **不重新编码**，直接重新封装你的 **WebM 为 MKV**，因此
 
 **我可以一次转换多个 WebM 文件吗？** 可以。EncodeX 支持将整个文件夹的 WebM 文件批量转换为 MKV。
 
+<RelatedConversions slug="convert/webm-to-mkv" />
+
 ## 立即开始
 
 - [免费下载 EncodeX](/zh/download)

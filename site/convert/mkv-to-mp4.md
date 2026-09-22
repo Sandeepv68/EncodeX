@@ -44,6 +44,8 @@ MP4 is the safe default, so if you're ever unsure, pick it — EncodeX handles t
 
 **Can I convert many MKV files at once?** Yes. EncodeX supports batch converting an entire folder of MKV files to MP4.
 
+<RelatedConversions slug="convert/mkv-to-mp4" />
+
 ## Get Started
 
 - [Download EncodeX for free](/download)

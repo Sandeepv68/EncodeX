@@ -44,6 +44,8 @@ EncodeX handles the codecs, resolution, and bitrate for you and offers true **ba
 
 **Can I convert many WMV files at once?** Yes. EncodeX supports batch converting an entire folder of WMV files to MKV.
 
+<RelatedConversions slug="convert/wmv-to-mkv" />
+
 ## Get Started
 
 - [Download EncodeX for free](/download)

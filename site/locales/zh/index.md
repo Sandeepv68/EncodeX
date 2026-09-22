@@ -7,13 +7,13 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 hero:
   name: EncodeX<br>免费开源 · Windows · macOS · Linux
   text: FFmpeg 的强大能力。无需命令行。
-  tagline: 一款免费、开源的 FFmpeg 图形界面，适用于 Windows、macOS 和 Linux。转换视频、提取音频、剪辑片段、压缩文件——一切都在本地完成，文件不会离开您的电脑。
+  tagline: 一款免费、开源的智能多媒体转换器，适用于 Windows、macOS 和 Linux。转换视频、提取音频、剪辑片段、压缩文件——一切都在本地完成，文件不会离开您的电脑。现在，通过 MCP，Claude、Cursor 或 VS Code 等 AI 助手可以用自然语言驱动同一引擎。
   image:
     src: /images/home_dashboard.webp
     alt: EncodeX 主界面，已加载视频并选中 YouTube 1080p 配置文件
   actions:
     - theme: brand
-      text: 立即下载 — 完全免费
+      text: 下载 EncodeX — 免费且开源
       link: /zh/download
     - theme: alt
       text: 在 GitHub 上查看 →
@@ -21,12 +21,49 @@ hero:
 
 ---
 
+<p class="hero-subline">
+  <span class="mcp-pill">🤖 MCP</span>
+  <span class="hero-subline-text">使用 MCP — 让 Claude、Cursor 或 VS Code 用自然语言控制 EncodeX。</span>
+</p>
+
 <div class="trust-strip">
   <span>永远免费</span>
   <span>无需账号</span>
   <span>无水印</span>
   <span>100% 本地</span>
+  <span>🤖 内置 MCP</span>
 </div>
+
+## 把重活交给 AI
+
+AI 助手现在可以操作您的本地媒体工具箱。让 Claude、Cursor 或 VS Code 转换视频、提取音频或压缩一整个文件夹的照片——所有工作都在您的电脑上通过 EncodeX 完成。
+
+<McpDemo />
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🧠</span>
+    <p class="card-head">用大白话直接说</p>
+    <p>"把它转成 MP4 再压小一点发邮件。"你的助手会选对工具、通过 EncodeX 执行，然后把结果交还给你。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🔒</span>
+    <p class="card-head">依然是 100% 本地</p>
+    <p>MCP 服务器只监听 localhost，绝不会上传你的媒体。和 GUI 一样，文件始终留在你的电脑上。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🧩</span>
+    <p class="card-head">兼容你的助手</p>
+    <p>Claude Desktop、Claude Code、Cursor、VS Code 或任何兼容 MCP 的客户端。运行 <code>encodex --mcp</code>，或在应用打开时到设置里开启内置服务器。</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⚙️</span>
+    <p class="card-head">真正的自动化</p>
+    <p>19 个工具覆盖转换、音频提取、图片压缩、媒体信息、批量任务、预览和更新——让 Agent 可以串联起真正的工作。</p>
+  </div>
+</div>
+
+<p><a href="/zh/mcp">探索 MCP 服务器 →</a> · <a href="/zh/docs/cli#mcp-server-mode">阅读 MCP 服务器文档 →</a></p>
 
 ## 它能帮你做什么
 
@@ -187,35 +224,6 @@ hero:
     <p>EncodeX 是真免费。没账号、没订阅、文件上也没水印。</p>
   </div>
 </div>
-
-## 把重活交给 AI
-
-EncodeX 内置了 **MCP 服务器**——开放的 [Model Context Protocol](https://modelcontextprotocol.io) 标准，让 AI 助手可以使用你的应用。连接 Claude Desktop、Claude Code、Cursor、VS Code 或任何兼容 MCP 的客户端，只需开口请它转换视频、提取音频、压缩一整个文件夹的照片，或查看批量队列的进度。所有工作都在本地完成；你的文件永远不会离开你的电脑。
-
-<div class="card-grid two-col">
-  <div class="card">
-    <span class="card-emoji">🧠</span>
-    <p class="card-head">用大白话直接说</p>
-    <p>"把它转成 MP4 再压小一点发邮件。"你的助手会选对工具、通过 EncodeX 执行，然后把结果交还给你。</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🔒</span>
-    <p class="card-head">依然是 100% 本地</p>
-    <p>服务器只监听 localhost，绝不会上传你的媒体。和 GUI 一样，文件始终留在你的电脑上。</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🧩</span>
-    <p class="card-head">两种连接方式</p>
-    <p>运行 <code>encodex --mcp</code> 启动独立的 stdio 服务器，或在应用打开时到设置里开启内置服务器。</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">⚙️</span>
-    <p class="card-head">真正的自动化</p>
-    <p>19 个工具覆盖转换、音频提取、图片压缩、媒体信息、批量任务、预览和更新——让 Agent 可以串联起真正的工作。</p>
-  </div>
-</div>
-
-<p><a href="/zh/docs/cli#mcp-server-mode">阅读 MCP 服务器文档 →</a></p>
 
 ## 为什么选择 EncodeX？
 
@@ -399,6 +407,70 @@ EncodeX 有三重身份。日常任务用**拖放式界面**，需要脚本时�
   <div class="card">
     <p class="card-head"><a href="/zh/compress/mp4">压缩 MP4</a></p>
     <p>缩小 MP4 视频以适配邮件、聊天和上传限制。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/compress/mkv">压缩 MKV</a></p>
+    <p>压缩 MKV 文件，便于存储和分享。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/avi-to-mp4">AVI 转 MP4</a></p>
+    <p>让 AVI 视频在手机、电视和网页上都能播放。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/mov-to-mp4">MOV 转 MP4</a></p>
+    <p>把 Apple 的 MOV 文件转成任何设备和应用都能播放。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/mkv-to-webm">MKV 转 WebM</a></p>
+    <p>转为网页原生格式，文件更小、加载更快。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/webm-to-mp4">WebM 转 MP4</a></p>
+    <p>把 WebM 视频转成 MP4，随处都能播放。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/mkv-to-mp3">MKV 转 MP3</a></p>
+    <p>把 MKV 里的音轨单独提取成 MP3。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/mov-to-mp3">MOV 转 MP3</a></p>
+    <p>把 MOV 视频中的音频提取为干净的 MP3。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/mp4-to-mp3">MP4 转 MP3</a></p>
+    <p>把 MP4 视频转成纯音频 MP3。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/flv-to-mp4">FLV 转 MP4</a></p>
+    <p>把 Flash 时代的 FLV 视频转成通用 MP4。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/flv-to-mkv">FLV 转 MKV</a></p>
+    <p>把 FLV 视频放进现代灵活的 MKV 容器。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/m4v-to-mp4">M4V 转 MP4</a></p>
+    <p>让 iTunes 和 Apple 视频文件在任意设备播放。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/wmv-to-mp4">WMV 转 MP4</a></p>
+    <p>转换 WMV 视频，适合手机、电视和网上分享。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/wmv-to-mkv">WMV 转 MKV</a></p>
+    <p>把 Windows Media 的 WMV 文件封装进 MKV 容器。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/avi-to-mkv">AVI 转 MKV</a></p>
+    <p>把 AVI 封装进灵活功能丰富的 MKV 容器。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/mov-to-mkv">MOV 转 MKV</a></p>
+    <p>把 Apple MOV 视频转换到 MKV 容器。</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/zh/convert/webm-to-mkv">WebM 转 MKV</a></p>
+    <p>把 WebM 转成 MKV，支持字幕和多音轨。</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/zh/extract/mp3-from-video">提取 MP3</a></p>

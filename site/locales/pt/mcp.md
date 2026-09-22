@@ -1,12 +1,23 @@
 ---
-title: "Servidor MCP para conversão de vídeo – Deixe a IA conduzir o EncodeX | EncodeX"
-description: "O EncodeX inclui um servidor MCP integrado (Model Context Protocol). Conecte Claude, Claude Code, Cursor ou VS Code e peça, em linguagem simples, para converter, extrair, comprimir ou acompanhar trabalhos em lote — tudo no seu computador."
+title: "Servidor MCP do EncodeX — Dê à IA o controle da sua mídia local | EncodeX"
+description: "O EncodeX inclui um servidor MCP integrado (Model Context Protocol) — um servidor MCP FFmpeg que permite ao Claude Desktop, Claude Code, Cursor ou VS Code converter, extrair, comprimir ou acompanhar trabalhos em lote em linguagem simples. Tudo roda localmente, no seu computador."
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Deixe a IA fazer o trabalho pesado
 
 Peça ao Claude, ao Cursor ou a qualquer assistente compatível com MCP que converta um vídeo, extraia o áudio, reduza uma pasta de fotos ou acompanhe um trabalho em lote. O assistente conduz o **EncodeX** — o trabalho acontece no seu computador e seus arquivos nunca saem do seu dispositivo.
+
+<McpDemo />
+
+Tente dizer:
+
+- *"Converta `vacation.mp4` para um MP4 menor, adequado ao WhatsApp."*
+- *"Extraia o áudio de `lecture.mov` como MP3."*
+- *"Reduza as fotos de `~/Pics` e coloque os resultados em `~/Output`."*
+- *"Converta todos os MKV em `~/Downloads` para MP4."*
+
+O EncodeX é um **servidor MCP FFmpeg** gratuito e open source com um app de desktop ao redor — um servidor MCP local para automação de mídia com IA. Sem nuvem, sem uploads, sem conta.
 
 ```mermaid
 flowchart TD
@@ -56,6 +67,12 @@ http://127.0.0.1:8765/mcp
 
 Esse modo adiciona ferramentas de **fila**, **pré-visualização**, **linha do tempo**, **sistema** e **atualizações** ao vivo, sobre o mesmo núcleo.
 
+## Conecte com um único colar
+
+Copie a configuração do seu cliente e cole — o EncodeX faz o resto. Garanta que `encodex` esteja no seu `PATH` (instalar o EncodeX o adiciona).
+
+<McpConfig />
+
 ## Privado por design
 
 - **Todo o processamento é local** — os arquivos nunca são enviados e nada vai para a nuvem
@@ -99,3 +116,10 @@ Sim. Ele vincula apenas ao loopback, valida o cabeçalho `Origin`, suporta um to
 - [Referência de recursos: MCP](/pt/docs/features-reference#mcp-server)
 - [Anúncio do MCP](/pt/blog/releases/mcp-server-support)
 - [Baixar o EncodeX](/pt/download)
+
+<div class="cta-card">
+  <h2>Pronto para entregar suas tarefas de mídia a um assistente de IA?</h2>
+  <p>Baixe o EncodeX para Windows, macOS ou Linux — o servidor MCP é integrado. Grátis e open source, sem precisar de conta.</p>
+  <p><a class="cta-link-primary" href="/pt/download">Baixar EncodeX — Grátis e de código aberto</a></p>
+  <p>Windows · macOS · Linux · Sem conta necessária</p>
+</div>

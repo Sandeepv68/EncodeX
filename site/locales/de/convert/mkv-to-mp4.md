@@ -44,6 +44,8 @@ MP4 ist die sichere Standardeinstellung – wenn Sie unsicher sind, wählen Sie 
 
 **Kann ich viele MKV-Dateien auf einmal konvertieren?** Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners MKV-Dateien in MP4.
 
+<RelatedConversions slug="convert/mkv-to-mp4" />
+
 ## Loslegen
 
 - [EncodeX kostenlos herunterladen](/de/download)

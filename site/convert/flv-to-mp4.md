@@ -36,6 +36,8 @@ EncodeX handles the codecs, resolution, and bitrate for you, so you get a clean,
 - **No watermarks** and free forever
 - Works on **Windows, Mac, and Linux**
 
+<RelatedConversions slug="convert/flv-to-mp4" />
+
 ## Get Started
 
 - [Download EncodeX for free](/download)

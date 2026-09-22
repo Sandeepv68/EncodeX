@@ -1,6 +1,6 @@
-# Télécharger EncodeX
+# Télécharger EncodeX — Gratuit et open source
 
-EncodeX est **gratuit** et fonctionne sur Windows, Mac et Linux. C'est une interface graphique open source pour FFmpeg — sans compte, sans filigrane et sans limite de taille : tout se passe sur votre ordinateur.
+EncodeX est **gratuit et open source** et fonctionne sur Windows, Mac et Linux. C'est une interface graphique pour FFmpeg — sans compte, sans filigrane et sans limite de taille : tout se passe sur votre ordinateur.
 
 ::: tip Première fois ? Voici ce qui se passe ensuite
 Installez l'application, glissez une vidéo ou une image dans la fenêtre, choisissez un profil (par exemple MP4 ou « fichier plus petit ») puis cliquez sur **Convertir** — c'est tout. Tout se déroule en local sur votre ordinateur.
@@ -14,6 +14,8 @@ Installez l'application, glissez une vidéo ou une image dans la fenêtre, chois
 **Windows 10/11 · 64-bit** — convient à presque tout le monde.
 
 <LatestDownloads platform="windows" />
+
+**Vous hésitez ? Téléchargez la version x64 — recommandée pour la plupart des PC Windows.**
 
 **Pour installer :** ouvrez le fichier téléchargé et suivez les étapes à l'écran.
 

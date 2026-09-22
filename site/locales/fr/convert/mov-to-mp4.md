@@ -36,6 +36,8 @@ Vous pouvez convertir un seul clip ou **convertir par lots** des dossiers entier
 - **Sans filigrane** et gratuit pour toujours
 - Fonctionne sur **Windows, Mac et Linux**
 
+<RelatedConversions slug="convert/mov-to-mp4" />
+
 ## Commencer
 
 - [Téléchargez EncodeX gratuitement](/fr/download)

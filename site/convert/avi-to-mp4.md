@@ -36,6 +36,8 @@ EncodeX re-encodes the video efficiently so your **MP4 is dramatically smaller**
 - **No watermarks** and free forever
 - Works on **Windows, Mac, and Linux**
 
+<RelatedConversions slug="convert/avi-to-mp4" />
+
 ## Get Started
 
 - [Download EncodeX for free](/download)
