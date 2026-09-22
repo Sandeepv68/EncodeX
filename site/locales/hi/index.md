@@ -20,11 +20,6 @@ hero:
 
 ---
 
-<p class="hero-subline">
-  <span class="mcp-pill">🤖 MCP</span>
-  <span class="hero-subline-text">MCP के साथ — Claude, Cursor या VS Code को EncodeX को प्राकृतिक भाषा में कंट्रोल करने दें।</span>
-</p>
-
 <div class="trust-strip">
   <span>हमेशा मुफ़्त</span>
   <span>कोई खाता नहीं</span>

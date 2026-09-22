@@ -21,11 +21,6 @@ hero:
 
 ---
 
-<p class="hero-subline">
-  <span class="mcp-pill">🤖 MCP</span>
-  <span class="hero-subline-text">使用 MCP — 让 Claude、Cursor 或 VS Code 用自然语言控制 EncodeX。</span>
-</p>
-
 <div class="trust-strip">
   <span>永远免费</span>
   <span>无需账号</span>

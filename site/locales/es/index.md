@@ -21,11 +21,6 @@ hero:
 
 ---
 
-<p class="hero-subline">
-  <span class="mcp-pill">🤖 MCP</span>
-  <span class="hero-subline-text">Con MCP — deja que Claude, Cursor o VS Code controlen EncodeX con lenguaje natural.</span>
-</p>
-
 <div class="trust-strip">
   <span>Gratis para siempre</span>
   <span>Sin cuenta</span>
