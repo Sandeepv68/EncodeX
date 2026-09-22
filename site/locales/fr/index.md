@@ -13,7 +13,7 @@ hero:
     alt: Écran d'accueil d'EncodeX avec une vidéo chargée et le profil YouTube 1080p sélectionné
   actions:
     - theme: brand
-      text: Télécharger EncodeX — Gratuit et open source
+      text: Télécharger EncodeX
       link: /fr/download
     - theme: alt
       text: Voir sur GitHub →

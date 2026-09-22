@@ -12,7 +12,7 @@ hero:
     alt: EncodeX-Startbildschirm mit geladenem Video und ausgewähltem YouTube-1080p-Profil
   actions:
     - theme: brand
-      text: EncodeX herunterladen — Kostenlos & Open Source
+      text: EncodeX herunterladen
       link: /de/download
     - theme: alt
       text: Auf GitHub ansehen →

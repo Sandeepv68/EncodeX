@@ -294,13 +294,31 @@ html {
 }
 
 /* Hero CTAs: oversized, unmissable */
+.VPHero .actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 12px;
+  margin: -6px;
+}
+
+.VPHero .actions .action {
+  display: flex;
+  padding: 0;
+  min-width: 0;
+}
+
 .VPHero .actions .VPButton {
-  min-width: 210px;
-  padding: 0 32px;
-  line-height: 52px;
-  font-size: 17px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 10px;
+  font-size: 16px;
+  line-height: 24px;
   letter-spacing: 0.01em;
   border-radius: 12px;
+  white-space: normal;
 }
 
 .VPHero .actions .VPButton.brand {
@@ -334,10 +352,12 @@ html {
 }
 
 @media (max-width: 639px) {
+  .VPHero .actions {
+    grid-template-columns: 1fr;
+  }
   .VPHero .actions .VPButton {
-    min-width: 100%;
     font-size: 16px;
-    line-height: 48px;
+    padding: 12px 10px;
   }
 }
 

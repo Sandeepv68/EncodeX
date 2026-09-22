@@ -13,7 +13,7 @@ hero:
     alt: EncodeX 主界面，已加载视频并选中 YouTube 1080p 配置文件
   actions:
     - theme: brand
-      text: 下载 EncodeX — 免费且开源
+      text: 下载 EncodeX
       link: /zh/download
     - theme: alt
       text: 在 GitHub 上查看 →

@@ -12,7 +12,7 @@ hero:
     alt: एक लोड किया हुआ वीडियो और चुना हुआ YouTube 1080p प्रोफ़ाइल के साथ EncodeX डैशबोर्ड
   actions:
     - theme: brand
-      text: EncodeX डाउनलोड करें — मुफ़्त और ओपन-सोर्स
+      text: EncodeX डाउनलोड करें
       link: /hi/download
     - theme: alt
       text: GitHub पर देखें →

@@ -13,7 +13,7 @@ hero:
     alt: EncodeX dashboard with a video loaded and a YouTube 1080p profile selected
   actions:
     - theme: brand
-      text: Download EncodeX — Free & Open Source
+      text: Download EncodeX
       link: /download
     - theme: alt
       text: View on GitHub →
