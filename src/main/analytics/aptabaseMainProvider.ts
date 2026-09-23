@@ -36,7 +36,6 @@ import { Logger } from '../../shared/logger';
 import { protocol } from 'electron';
 import {
   LOG_ANALYTICS_CLOSE_FAILED,
-  LOG_ANALYTICS_FLUSH_FAILED,
   LOG_ANALYTICS_INIT_FAILED,
   LOG_ANALYTICS_TRACK_FAILED,
 } from '../../shared/log-constants';

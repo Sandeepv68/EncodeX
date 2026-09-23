@@ -6,7 +6,7 @@
  * is stamped onto outgoing events.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ANALYTICS_SCHEMA_VERSION, createAnalyticsEvent } from '../events';
 import type { AnalyticsEvent } from '../events';
 import type { AnalyticsProvider } from '../types';
