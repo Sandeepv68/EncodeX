@@ -85,6 +85,7 @@ import type { AnalyticsConfig } from '../shared/analytics/types';
 import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../shared/analytics/events';
 import { SENTRY_BUILD_CONFIG } from './generated/sentryBuildConfig';
+import { APTABASE_BUILD_CONFIG } from './generated/aptabaseBuildConfig';
 import { readMonitoringConsent } from './monitoring/consent';
 import { registerMonitoringIpcBridge } from './monitoring/ipcBridge';
 import { resolveMainMonitorProvider } from './monitoring/providerFactory';
@@ -130,7 +131,10 @@ async function bootstrapMonitoring(): Promise<void> {
       // Runtime env wins; the generated build-time value covers packaged
       // releases where end users cannot set SENTRY_DSN.
       dsn: process.env.SENTRY_DSN ?? SENTRY_BUILD_CONFIG.dsn,
-      environment: process.env.SENTRY_ENVIRONMENT || (process.env.NODE_ENV === 'development' ? 'development' : 'production'),
+      environment:
+        process.env.SENTRY_ENVIRONMENT ||
+        SENTRY_BUILD_CONFIG.environment ||
+        (process.env.NODE_ENV === 'development' ? 'development' : 'production'),
       release: `encodex@${app.getVersion()}`,
       // Set SENTRY_DEBUG=1 to watch the SDK log envelope delivery locally.
       debug: process.env.SENTRY_DEBUG === '1',
@@ -162,11 +166,14 @@ async function bootstrapAnalytics(): Promise<void> {
     analyticsConsentAtBoot = consent;
     const config: AnalyticsConfig = {
       enabled: consent,
-      // Runtime env wins; packaged releases ship the key via environment or
-      // electron-builder config injection (see .env.example / docs/ANALYTICS.md).
-      appKey: process.env.APTABASE_APP_KEY,
-      host: process.env.APTABASE_HOST,
-      environment: process.env.APTABASE_ENVIRONMENT || (process.env.NODE_ENV === 'development' ? 'development' : 'production'),
+      // Runtime env wins; the generated build-time value covers packaged
+      // releases where end users cannot set APTABASE_APP_KEY.
+      appKey: process.env.APTABASE_APP_KEY ?? APTABASE_BUILD_CONFIG.appKey,
+      host: process.env.APTABASE_HOST ?? APTABASE_BUILD_CONFIG.host,
+      environment:
+        process.env.APTABASE_ENVIRONMENT ||
+        APTABASE_BUILD_CONFIG.environment ||
+        (process.env.NODE_ENV === 'development' ? 'development' : 'production'),
       release: `encodex@${app.getVersion()}`,
       // Set APTABASE_DEBUG=1 to watch the SDK log event delivery locally.
       debug: process.env.APTABASE_DEBUG === '1',

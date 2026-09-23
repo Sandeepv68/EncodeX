@@ -33,7 +33,7 @@ App code ──► shared/analytics facade (initAnalytics / recordAnalyticsEvent
 
 | Variable             | Purpose |
 | -------------------- | ------- |
-| `APTABASE_APP_KEY`   | Enables analytics when present (main process only; `A-{US\|EU\|DEV\|SH}-...`). |
+| `APTABASE_APP_KEY`   | Enables analytics when present (main process only; `A-{US\|EU\|DEV\|SH}-...`). Loaded from `APTABASE_BUILD_CONFIG` at build time (git-ignored, baked by `npm run gen:aptabase-config`); runtime env wins. |
 | `APTABASE_HOST`      | Only for self-hosted Aptabase. Leave empty on cloud. |
 | `APTABASE_ENVIRONMENT` | Environment label (defaults from `NODE_ENV`). |
 | `ANALYTICS_PROVIDER` | Optional override: `aptabase` \| `noop`; auto-detected from App Key. |
