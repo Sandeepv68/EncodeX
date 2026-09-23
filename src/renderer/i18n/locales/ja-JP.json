@@ -545,6 +545,8 @@
     "launchAtLoginHint": "コンピューターにサインインすると、EncodeX を自動的に起動します。",
     "monitoringErrorReporting": "エラーレポート",
     "monitoringErrorReportingHint": "匿名のエラーレポートを送信して EncodeX の改善に協力します。いつでもオフにできます。",
+    "telemetry": "利用データとエラーレポート",
+    "telemetryHint": "匿名の利用データとエラーレポートを送信して EncodeX の改善に協力します。いつでもオフにできます。",
     "mcpServer": "MCPサーバー",
     "mcpServerHint": "Claude Desktop、VS Code、Cursor などの外部 MCP クライアントがローカル接続経由で EncodeX を操作できるようにします。サーバーはこのコンピューター上でのみ待ち受けます。",
     "mcpAiUseCases": "AIのユースケース",

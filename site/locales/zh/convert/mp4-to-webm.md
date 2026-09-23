@@ -44,6 +44,8 @@ WebM 基于 **VP9**（以及更新的 **AV1**）编解码器构建，在相似�
 
 **我可以一次转换多个 MP4 文件吗？** 可以。EncodeX 支持将整个文件夹中的 MP4 文件批量转换为 WebM。
 
+<RelatedConversions slug="convert/mp4-to-webm" />
+
 ## 开始使用
 
 - [免费下载 EncodeX](/zh/download)

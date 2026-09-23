@@ -44,6 +44,8 @@ EncodeX kümmert sich um Codecs, Auflösung und Bitrate, sodass Sie ein sauberes
 
 **Kann ich viele FLV-Dateien auf einmal konvertieren?** Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners mit FLV-Dateien zu MKV.
 
+<RelatedConversions slug="convert/flv-to-mkv" />
+
 ## Loslegen
 
 - [EncodeX kostenlos herunterladen](/de/download)

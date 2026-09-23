@@ -16,7 +16,7 @@ EncodeX est une application de bureau qui traite tous les médias **localement e
 - **100% hors ligne** — toute conversion, compression et extraction se fait sur votre appareil
 - **Pas de compte** — rien à s'inscrire, pas de profil à maintenir
 - **Pas de téléchargements** — vos médias ne sont jamais transmis à nous ou à quiconque
-- **Pas de télémétrie dans l'application** — l'application n'envoie aucune analytique sur vos fichiers ou votre utilisation
+- **Télémétrie uniquement avec consentement** — les seules données sortantes sont des événements facultatifs, anonymes et uniquement catégoriels que vous pouvez désactiver dans les Réglages
 - **Open source** — n'importe qui peut inspecter exactement ce que fait l'application
 
 ## Ce que nous ne collectons pas
@@ -49,8 +49,8 @@ Pour être entièrement transparents, voici chaque donnée qu'EncodeX collecte �
 
 ### L'application de bureau
 
-- **Signalement des bogues et diagnostics avec consentement.** L'application peut envoyer des diagnostics de crash et des informations d'erreur anonymes à Sentry — et c'est **activé par défaut, avec un interrupteur visible dans les Réglages** pour le désactiver à tout moment. Tout est gouverné par un seul interrupteur de consentement (stocké localement sur votre appareil sous `monitoring-consent.json`).
-- **Événements d'usage uniquement par catégories.** Une fois activé, l'application enregistre des événements anonymes et uniquement catégoriels — comme « conversion démarrée » ou « profil appliqué » — via le même canal de breadcrumbs. Par conception de la taxonomie, ces données **ne contiennent aucun contenu média, aucun nom de fichier, aucun chemin de dossier et aucune taille de fichier.** Si vous désactivez la télémétrie, rien ne quitte votre ordinateur.
+- **Signalement des bogues et diagnostics avec consentement.** L'application peut envoyer des diagnostics de crash et des informations d'erreur anonymes à Sentry — et c'est **activé par défaut, avec un interrupteur visible dans les Réglages** pour le désactiver à tout moment. Tout est gouverné par un seul interrupteur de consentement (stockés localement sur votre appareil sous `monitoring-consent.json` et `analytics-consent.json`).
+- **Événements d'usage uniquement par catégories.** Une fois activé, l'application enregistre des événements anonymes et uniquement catégoriels — comme « conversion démarrée » ou « profil appliqué » — via un canal d'analyse d'usage dédié. Par conception de la taxonomie, ces données **ne contiennent aucun contenu média, aucun nom de fichier, aucun chemin de dossier et aucune taille de fichier.** Si vous désactivez la télémétrie, rien ne quitte votre ordinateur.
 - **Aucun téléversement, aucun traitement dans le cloud.** Même avec la télémétrie activée, vos fichiers média réels ne sont jamais transmis. L'encodage, la conversion, la compression ou l'extraction se font entièrement sur votre appareil.
 
 ### En clair

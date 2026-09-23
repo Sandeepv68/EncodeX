@@ -44,6 +44,8 @@ Quer um tamanho alvo específico — como "menos de 10 MB"? O EncodeX tem preset
 
 **O EncodeX comprime arquivos offline?** Sim. A compressão acontece inteiramente no seu computador, sem uploads — privada e funciona até sem internet.
 
+<RelatedConversions slug="compress/mp4" />
+
 ## Comece agora
 
 - [Baixe o EncodeX grátis](/pt/download)

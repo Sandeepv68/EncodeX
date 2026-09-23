@@ -57,7 +57,9 @@ export const DashboardSubtitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-export const FeatureCard = styled(Card)<{ gradientAngle?: number }>(({ theme, gradientAngle = 180 }) => ({
+export const FeatureCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'gradientAngle',
+})<{ gradientAngle?: number }>(({ theme, gradientAngle = 180 }) => ({
   display: 'flex',
   flexDirection: 'column',
   width: '100%',

@@ -1,12 +1,23 @@
 ---
-title: "MCP Server for Video Conversion – Let AI Drive EncodeX | EncodeX"
-description: "EncodeX ships a built-in MCP server (Model Context Protocol). Connect Claude, Claude Code, Cursor, or VS Code and ask in plain language to convert, extract, compress, or check batch jobs — all locally, on your own computer."
+title: "EncodeX MCP Server — Give AI Control of Your Local Media | EncodeX"
+description: "EncodeX ships a built-in MCP server (Model Context Protocol) — an FFmpeg MCP server that lets Claude Desktop, Claude Code, Cursor, or VS Code convert, extract, compress, or check batch jobs in plain language. Everything runs locally, on your own computer."
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Let AI Do the Heavy Lifting
 
 Ask Claude, Cursor, or any MCP-compatible assistant to convert a video, pull out the audio, shrink a folder of photos, or check on a batch job. The assistant drives **EncodeX** — the work happens on your computer, and your files never leave your device.
+
+<McpDemo />
+
+Try saying:
+
+- *"Convert `vacation.mp4` to a smaller MP4 suitable for WhatsApp."*
+- *"Pull the audio out of `lecture.mov` as an MP3."*
+- *"Shrink the photos in `~/Pics` and put the results in `~/Output`."*
+- *"Convert all MKV files in `~/Downloads` to MP4."*
+
+EncodeX is a free, open-source **FFmpeg MCP server** with a desktop app around it — a local MCP server for AI media automation. No cloud, no uploads, no account.
 
 ```mermaid
 flowchart TD
@@ -56,6 +67,12 @@ http://127.0.0.1:8765/mcp
 
 This mode adds live **queue**, **preview**, **timeline**, **system**, and **update** tools on top of the same core.
 
+## Connect in One Paste
+
+Copy the configuration for your client and paste it in — EncodeX does the rest. Make sure `encodex` is on your `PATH` (installing EncodeX puts it there).
+
+<McpConfig />
+
 ## Private by Design
 
 - **All processing is local** — files are never uploaded, and nothing is sent to the cloud
@@ -99,3 +116,10 @@ Yes. It binds only to loopback, validates the `Origin` header, supports an optio
 - [Feature reference: MCP](/docs/features-reference#mcp-server)
 - [MCP announcement post](/blog/releases/mcp-server-support)
 - [Download EncodeX](/download)
+
+<div class="cta-card">
+  <h2>Ready to hand your media chores to an AI assistant?</h2>
+  <p>Download EncodeX for Windows, macOS, or Linux — the MCP server is built in. Free and open source, no account required.</p>
+  <p><a class="cta-link-primary" href="/download">Download EncodeX — Free &amp; Open Source</a></p>
+  <p>Windows · macOS · Linux · No account required</p>
+</div>

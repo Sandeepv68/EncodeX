@@ -43,6 +43,8 @@ Du kannst **einen ganzen Ordner mit MKV-Dateien auf einmal in Stapeln komprimier
 
 **Kann ich viele MKV-Dateien gleichzeitig komprimieren?** Ja. EncodeX unterstützt das Stapel-Komprimieren eines ganzen Ordners mit MKV-Dateien.
 
+<RelatedConversions slug="compress/mkv" />
+
 ## Loslegen
 
 - [Lade EncodeX kostenlos herunter](/de/download)

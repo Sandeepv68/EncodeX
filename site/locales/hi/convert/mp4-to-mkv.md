@@ -44,6 +44,8 @@ ogImage: "https://encodex.in/images/convert.webp"
 
 **क्या मैं एक साथ कई MP4 फ़ाइलें बदल सकता हूँ?** हाँ। EncodeX MP4 फ़ाइलों के पूरे फ़ोल्डर को MKV में बैच-कन्वर्ट करने का समर्थन करता है।
 
+<RelatedConversions slug="convert/mp4-to-mkv" />
+
 ## शुरू करें
 
 - [EncodeX मुफ्त में डाउनलोड करें](/hi/download)

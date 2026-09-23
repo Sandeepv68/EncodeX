@@ -44,6 +44,8 @@ WebM ist die richtige Wahl, wenn Größe wichtiger ist als Kompatibilität mit �
 
 **Kann ich viele MKV-Dateien auf einmal konvertieren?** Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners MKV-Dateien in WebM.
 
+<RelatedConversions slug="convert/mkv-to-webm" />
+
 ## Loslegen
 
 - [EncodeX kostenlos herunterladen](/de/download)

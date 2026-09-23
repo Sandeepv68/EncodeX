@@ -1,12 +1,23 @@
 ---
-title: "视频转换 MCP 服务器——让 AI 驱动 EncodeX | EncodeX"
-description: "EncodeX 内置 MCP 服务器（Model Context Protocol）。连接 Claude、Claude Code、Cursor 或 VS Code，用自然语言让它转换视频、提取音频、压缩文件或跟踪批量任务——一切都在你自己的电脑上完成。"
+title: "EncodeX MCP 服务器——让 AI 掌控你的本地媒体 | EncodeX"
+description: "EncodeX 内置 MCP 服务器（Model Context Protocol）——一个 FFmpeg MCP 服务器，让 Claude Desktop、Claude Code、Cursor 或 VS Code 用自然语言完成转换、提取、压缩或跟踪批量任务。一切都在你的电脑上本地运行。"
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # 让 AI 完成繁重的工作
 
 让 Claude、Cursor 或任何兼容 MCP 的助手转换视频、提取音频、压缩照片文件夹，或查看批量任务进度。助手直接驱动 **EncodeX**——处理都在你的电脑上进行，文件绝不会离开设备。
+
+<McpDemo />
+
+试试这样对话：
+
+- "把 `vacation.mp4` 转成适合 WhatsApp 的更小的 MP4。"
+- "把 `lecture.mov` 的音频提取成 MP3。"
+- "把 `~/Pics` 里的照片压缩，结果放到 `~/Output`。"
+- "把 `~/Downloads` 下所有 MKV 转成 MP4。"
+
+EncodeX 是一个免费、开源的 **FFmpeg MCP 服务器**，外面套着一层桌面应用——为 AI 媒体自动化而生的本地 MCP 服务器。没有云、没有上传、没有账号。
 
 ```mermaid
 flowchart TD
@@ -56,6 +67,12 @@ http://127.0.0.1:8765/mcp
 
 该模式在相同核心之上额外提供**队列**、**预览**、**时间线**、**系统**和**更新**工具。
 
+## 一键粘贴连接
+
+复制你客户端的配置并粘贴——剩下的交给 EncodeX。请确保 `encodex` 在你的 `PATH` 中（安装 EncodeX 时会自动加入）。
+
+<McpConfig />
+
 ## 天然注重隐私
 
 - **所有处理都在本地**——文件永不上传，数据绝不上云
@@ -99,3 +116,10 @@ http://127.0.0.1:8765/mcp
 - [功能参考：MCP](/zh/docs/features-reference#mcp-server)
 - [MCP 发布公告](/zh/blog/releases/mcp-server-support)
 - [下载 EncodeX](/zh/download)
+
+<div class="cta-card">
+  <h2>准备好把媒体任务交给 AI 助手了吗？</h2>
+  <p>下载 EncodeX（Windows、macOS 或 Linux）——内置 MCP 服务器。免费且开源，无需账号。</p>
+  <p><a class="cta-link-primary" href="/zh/download">下载 EncodeX——免费开源</a></p>
+  <p>Windows · macOS · Linux · 无需账号</p>
+</div>

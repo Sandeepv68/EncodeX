@@ -6,13 +6,13 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 hero:
   name: EncodeX<br>मुफ़्त और ओपन-सोर्स · Windows · macOS · Linux
   text: FFmpeg की ताकत। कमांड लाइन के बिना।
-  tagline: Windows, macOS और Linux के लिए एक मुफ़्त, ओपन-सोर्स FFmpeg GUI। वीडियो कन्वर्ट करें, ऑडियो निकालें, क्लिप ट्रिम करें और फ़ाइलें छोटी करें — सब कुछ आपके कंप्यूटर पर चलता है, कुछ भी बाहर नहीं जाता।
+  tagline: Windows, macOS और Linux के लिए एक मुफ़्त, ओपन-सोर्स स्मार्ट मीडिया कन्वर्टर। वीडियो कन्वर्ट करें, ऑडियो निकालें, क्लिप ट्रिम करें और फ़ाइलें छोटी करें — सब कुछ आपके कंप्यूटर पर चलता है, कुछ भी बाहर नहीं जाता। अब MCP के साथ, Claude, Cursor या VS Code जैसे AI असिस्टेंट प्राकृतिक भाषा में उसी इंजन को चला सकते हैं।
   image:
     src: /images/home_dashboard.webp
     alt: एक लोड किया हुआ वीडियो और चुना हुआ YouTube 1080p प्रोफ़ाइल के साथ EncodeX डैशबोर्ड
   actions:
     - theme: brand
-      text: अभी डाउनलोड करें — मुफ़्त है
+      text: EncodeX डाउनलोड करें
       link: /hi/download
     - theme: alt
       text: GitHub पर देखें →
@@ -25,7 +25,39 @@ hero:
   <span>कोई खाता नहीं</span>
   <span>कोई वॉटरमार्क नहीं</span>
   <span>100% लोकल</span>
+  <span>🤖 बिल्ट-इन MCP</span>
 </div>
+
+## AI को भारी काम करने दें
+
+AI असिस्टेंट अब आपके लोकल मीडिया टूलकिट को चला सकते हैं। Claude, Cursor या VS Code से कहें कि वीडियो कन्वर्ट करें, ऑडियो निकालें या फ़ोटो के फ़ोल्डर को छोटा करें — काम आपके कंप्यूटर पर EncodeX के ज़रिए होता है।
+
+<McpDemo />
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🧠</span>
+    <p class="card-head">सीधी भाषा में पूछें</p>
+    <p>"इसे MP4 में बदलो और ईमेल के लिए छोटा करो।" आपका असिस्टेंट सही टूल चुनता है, उसे EncodeX के ज़रिए चलाता है और नतीजा लौटा देता है।</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🔒</span>
+    <p class="card-head">अब भी 100% लोकल</p>
+    <p>MCP सर्वर सिर्फ़ localhost पर सुनता है और आपके मीडिया को कभी अपलोड नहीं करता। GUI की तरह ही आपकी फ़ाइलें आपके कंप्यूटर पर रहती हैं।</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🧩</span>
+    <p class="card-head">आपके असिस्टेंट के साथ काम करता है</p>
+    <p>Claude Desktop, Claude Code, Cursor, VS Code या कोई भी MCP-compatible client। <code>encodex --mcp</code> चलाएँ या ऐप खुला होने पर Settings में embedded सर्वर ऑन करें।</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⚙️</span>
+    <p class="card-head">असली ऑटोमेशन</p>
+    <p>19 टूल conversions, audio extraction, image compression, media info, batch jobs, previews और updates कवर करते हैं — ताकि agents असली काम को जोड़ सकें।</p>
+  </div>
+</div>
+
+<p><a href="/hi/mcp">MCP सर्वर एक्सप्लोर करें →</a> · <a href="/hi/docs/cli#mcp-server-mode">MCP सर्वर दस्तावेज़ पढ़ें →</a></p>
 
 ## ये आपके लिए क्या कर सकता है
 
@@ -186,35 +218,6 @@ EncodeX को बताइए कि आप क्या करना चाह
     <p>EncodeX सच में मुफ़्त है। न कोई अकाउंट, न सब्सक्रिप्शन, न आपकी फ़ाइलों पर वॉटरमार्क।</p>
   </div>
 </div>
-
-## AI को भारी काम करने दें
-
-EncodeX एक बिल्ट-इन **MCP सर्वर** के साथ आता है — खुला [Model Context Protocol](https://modelcontextprotocol.io) मानक जो AI असिस्टेंट को आपके ऐप्स इस्तेमाल करने देता है। Claude Desktop, Claude Code, Cursor, VS Code या किसी भी MCP-compatible client को कनेक्ट करें और बस कहें कि वीडियो कन्वर्ट करें, ऑडियो निकालें, फ़ोटो के फ़ोल्डर को कंप्रेस करें या बैच क्यू चेक करें। काम लोकली होता है; आपकी फ़ाइलें कभी आपके कंप्यूटर से बाहर नहीं जातीं।
-
-<div class="card-grid two-col">
-  <div class="card">
-    <span class="card-emoji">🧠</span>
-    <p class="card-head">सीधी भाषा में पूछें</p>
-    <p>"इसे MP4 में बदलो और ईमेल के लिए छोटा करो।" आपका असिस्टेंट सही टूल चुनता है, उसे EncodeX के ज़रिए चलाता है और नतीजा लौटा देता है।</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🔒</span>
-    <p class="card-head">अब भी 100% लोकल</p>
-    <p>सर्वर सिर्फ़ localhost पर सुनता है और आपके मीडिया को कभी अपलोड नहीं करता। GUI की तरह ही आपकी फ़ाइलें आपके कंप्यूटर पर रहती हैं।</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🧩</span>
-    <p class="card-head">कनेक्ट करने के दो तरीके</p>
-    <p>स्टैंडअलोन stdio सर्वर के लिए <code>encodex --mcp</code> चलाएँ, या ऐप खुला होने पर Settings में embedded सर्वर ऑन करें।</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">⚙️</span>
-    <p class="card-head">असली ऑटोमेशन</p>
-    <p>19 टूल conversions, audio extraction, image compression, media info, batch jobs, previews और updates कवर करते हैं — ताकि agents असली काम को जोड़ सकें।</p>
-  </div>
-</div>
-
-<p><a href="/hi/docs/cli#mcp-server-mode">MCP सर्वर दस्तावेज़ पढ़ें →</a></p>
 
 ## EncodeX क्यों?
 
@@ -398,6 +401,70 @@ EncodeX की तीन पहचान हैं। रोज़ के का
   <div class="card">
     <p class="card-head"><a href="/hi/compress/mp4">MP4 कंप्रेस करें</a></p>
     <p>ईमेल, चैट और अपलोड सीमा के लिए MP4 वीडियो छोटा करें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/compress/mkv">MKV कंप्रेस करें</a></p>
+    <p>MKV फ़ाइलें स्टोर और शेयर करने के लिए छोटी करें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/avi-to-mp4">AVI से MP4</a></p>
+    <p>AVI वीडियो को फ़ोन, TV और वेब पर चलाने लायक बनाएँ।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/mov-to-mp4">MOV से MP4</a></p>
+    <p>Apple की MOV फ़ाइलें हर डिवाइस और ऐप पर चलाने के लिए बदलें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/mkv-to-webm">MKV से WebM</a></p>
+    <p>MKV को वेब-नेटिव फ़ॉर्मैट में बदलें — छोटी और तेज़ फ़ाइलें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/webm-to-mp4">WebM से MP4</a></p>
+    <p>WebM वीडियो को MP4 बनाकर हर जगह चलाने योग्य बनाएँ।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/mkv-to-mp3">MKV से MP3</a></p>
+    <p>MKV से साउंडट्रैक को अलग MP3 के रूप में निकालें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/mov-to-mp3">MOV से MP3</a></p>
+    <p>MOV वीडियो का ऑडियो साफ़ MP3 के रूप में निकालें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/mp4-to-mp3">MP4 से MP3</a></p>
+    <p>MP4 वीडियो को सिर्फ़ ऑडियो वाला MP3 बनाएँ।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/flv-to-mp4">FLV से MP4</a></p>
+    <p>Flash युग की FLV वीडियो को हर जगह चलने वाले MP4 में बदलें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/flv-to-mkv">FLV से MKV</a></p>
+    <p>FLV वीडियो को मॉडर्न MKV कंटेनर में ले जाएँ।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/m4v-to-mp4">M4V से MP4</a></p>
+    <p>iTunes और Apple की वीडियो फ़ाइलें किसी भी डिवाइस पर चलाएँ।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/wmv-to-mp4">WMV से MP4</a></p>
+    <p>WMV वीडियो को फ़ोन, TV और ऑनलाइन शेयरिंग के लिए बदलें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/wmv-to-mkv">WMV से MKV</a></p>
+    <p>Windows Media की WMV फ़ाइलों को MKV कंटेनर में बदलें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/avi-to-mkv">AVI से MKV</a></p>
+    <p>AVI को लचीले MKV कंटेनर में बदलें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/mov-to-mkv">MOV से MKV</a></p>
+    <p>Apple की MOV वीडियो को MKV कंटेनर में कन्वर्ट करें।</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/hi/convert/webm-to-mkv">WebM से MKV</a></p>
+    <p>सबटाइटल और मल्टी-ट्रैक ऑडियो के लिए WebM को MKV बनाएँ।</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/extract/mp3-from-video">MP3 निकालें</a></p>

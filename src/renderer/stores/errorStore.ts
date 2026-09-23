@@ -27,6 +27,24 @@ import type { ErrorCodeType } from '../../shared/types';
 import type { ErrorState } from './types';
 import { ERROR_HISTORY_MAX } from '../../shared/constants';
 import { LOG_ERROR_CLEARED, LOG_ERROR_HISTORY_CLEARED, LOG_ERROR_MESSAGE_SHOWN, LOG_ERROR_SHOWN } from '../../shared/log-constants';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
+
+/**
+ * Maps an error code to a coarse, stable analytics category so the UI-error
+ * signal is bucketed for analysis without leaking error strings.
+ * @param {ErrorCodeType} code - The surfaced error code.
+ * @returns {string} One of 'validation' | 'io' | 'conversion' | 'runtime' | 'unknown'.
+ */
+function categoryForError(code: ErrorCodeType): string {
+  const normalized = code.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+  if (normalized.includes('not_specified') || normalized.includes('invalid') || normalized.includes('unsupported')) return 'validation';
+  if (normalized.includes('io_') || normalized.includes('file_') || normalized.includes('read') || normalized.includes('write'))
+    return 'io';
+  if (normalized.includes('convert') || normalized.includes('transcod') || normalized.includes('encode')) return 'conversion';
+  if (normalized.includes('runtime') || normalized.includes('internal')) return 'runtime';
+  return 'unknown';
+}
 
 /**
  * Per-store logger for the error store.
@@ -53,6 +71,7 @@ export const useErrorStore = create<ErrorState>((set) => ({
   showError: (err: unknown) => {
     const appError = formatError(err);
     log.error(LOG_ERROR_SHOWN, appError.code, appError.message, appError.detail || '');
+    recordAnalyticsEvent(createAnalyticsEvent('ui_error_shown', { category: categoryForError(appError.code) }));
     set((s) => ({
       currentError: appError,
       errorHistory: [...s.errorHistory.slice(-(ERROR_HISTORY_MAX - 1)), appError],
@@ -68,6 +87,7 @@ export const useErrorStore = create<ErrorState>((set) => ({
   showErrorMessage: (code: ErrorCodeType, detail?: string) => {
     const appError = createError(code, ERROR_MESSAGES[code], detail);
     log.error(LOG_ERROR_MESSAGE_SHOWN, code, ERROR_MESSAGES[code], detail || '');
+    recordAnalyticsEvent(createAnalyticsEvent('ui_error_shown', { category: categoryForError(appError.code) }));
     set((s) => ({
       currentError: appError,
       errorHistory: [...s.errorHistory.slice(-(ERROR_HISTORY_MAX - 1)), appError],

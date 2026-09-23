@@ -16,12 +16,12 @@ EncodeX is a desktop application that processes all media **locally and offline*
 - **100% offline** — all conversion, compression, and extraction happens on your device
 - **No account** — nothing to sign up for, no profile to maintain
 - **No uploads** — your media is never transmitted to us or anyone else
-- **No telemetry in the app** — the app sends no analytics about your files or usage
+- **Consent-gated telemetry only** — the only outbound data is optional, anonymous, categorical usage & error events that you can switch off in Settings
 - **Open source** — anyone can inspect exactly what the app does
 
 ## What We Don't Collect
 
-EncodeX does not collect, transmit, or store any of your media files, folder names, or usage behavior. Because the app runs entirely on your computer, there is nothing for us to gather.
+EncodeX does not collect, transmit, or store any of your media files, folder names, or anything else that could identify you. Because the app runs entirely on your computer, there is nothing for us to gather — the only outbound data is the optional, anonymous telemetry described below.
 
 ## What We Do
 
@@ -49,8 +49,8 @@ To be completely transparent, here is every piece of data EncodeX collects — o
 
 ### The desktop app
 
-- **Consent-gated crash & diagnostics reporting.** The app can report crash diagnostics and anonymous error information to Sentry — and it is **on by default, with a visible toggle in Settings** to turn it off at any time. Everything is governed by a single consent switch (stored locally on your device as `monitoring-consent.json`).
-- **Categorical-only usage events.** When enabled, the app records anonymous, categorical-only events — things like "conversion started" or "profile applied" — through the same breadcrumb channel. By taxonomy design, these payloads contain **no media content, no file names, no folder paths, and no file sizes.** If you disable telemetry, nothing leaves your computer.
+- **Consent-gated crash & diagnostics reporting.** The app can report crash diagnostics and anonymous error information to Sentry — and it is **on by default, with a visible toggle in Settings** to turn it off at any time. Everything is governed by a single consent switch — _Usage data & error reporting_ in Settings (persisted locally as `monitoring-consent.json` and `analytics-consent.json`).
+- **Categorical-only usage events.** When enabled, the app records anonymous, categorical-only events — things like "conversion started" or "profile applied" — through a dedicated usage-analytics pipeline. By taxonomy design, these payloads contain **no media content, no file names, no folder paths, and no file sizes.** If you disable telemetry, nothing leaves your computer.
 - **No uploads, no cloud processing.** Even with telemetry enabled, your actual media files are never transmitted. Encoding, converting, compressing, or extracting happens entirely in-process on your device.
 
 ### In plain terms

@@ -103,6 +103,8 @@ export interface SettingsState {
   setLaunchAtLogin: (enabled: boolean) => void;
   monitoringEnabled: boolean;
   setMonitoringEnabled: (enabled: boolean) => void;
+  analyticsEnabled: boolean;
+  setTelemetryEnabled: (enabled: boolean) => void;
   mcpEnabled: boolean;
   mcpPort: number;
   mcpToken: string;

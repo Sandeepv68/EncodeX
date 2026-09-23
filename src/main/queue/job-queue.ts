@@ -539,6 +539,9 @@ export class JobQueue extends EventEmitter {
     if (this.activeJobs.size === 0 && this.jobCompletedSinceLastDrain) {
       this.jobCompletedSinceLastDrain = false;
       log.info(LOG_QUEUE_DRAINED);
+      const done = this.queue.filter((j) => j.status === QUEUE_STATUS.DONE).length;
+      const failed = this.queue.filter((j) => j.status === QUEUE_STATUS.ERROR).length;
+      recordAnalyticsEvent(createAnalyticsEvent('batch_completed', { completed: done, failed }));
       this.emit('drained');
     }
   }
@@ -596,6 +599,7 @@ export class JobQueue extends EventEmitter {
         jobKind: 'batch',
         transcoder: nextJob.transcoder,
         hwAccel: nextJob.options.hardwareAcceleration === true,
+        mode: 'gui',
       }),
     );
 
@@ -616,7 +620,9 @@ export class JobQueue extends EventEmitter {
           createAnalyticsEvent('conversion_failed', {
             jobKind: 'batch',
             transcoder: nextJob.transcoder,
+            hwAccel: nextJob.options.hardwareAcceleration === true,
             code: typeof err?.code === 'string' ? err.code : undefined,
+            mode: 'gui',
           }),
         );
         nextJob.status = QUEUE_STATUS.ERROR;
@@ -636,6 +642,7 @@ export class JobQueue extends EventEmitter {
             jobKind: 'batch',
             transcoder: nextJob.transcoder,
             hwAccel: nextJob.options.hardwareAcceleration === true,
+            mode: 'gui',
           }),
         );
         nextJob.status = QUEUE_STATUS.DONE;

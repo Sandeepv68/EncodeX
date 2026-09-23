@@ -35,6 +35,8 @@ import {
 } from '../styles/Logs.styles';
 import { PageTitle } from '../styles/BatchQueue.styles';
 import { LOG_EXPORT_FILENAME_PREFIX } from '../../shared/constants';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
 
@@ -78,6 +80,15 @@ export default function Logs() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   /**
+   * Clears all buffered log entries and records the action for analytics.
+   * @returns {void}
+   */
+  const handleClear = () => {
+    clear();
+    recordAnalyticsEvent(createAnalyticsEvent('logs_cleared', {}));
+  };
+
+  /**
    * Active log level filter; 'ALL' shows every level.
    * @type {string}
    */
@@ -101,6 +112,7 @@ export default function Logs() {
     a.click();
     URL.revokeObjectURL(url);
     useToastStore.getState().success(t('toast.logsDownloaded'));
+    recordAnalyticsEvent(createAnalyticsEvent('logs_exported', { entryCount: filtered.length }));
   };
 
   /**
@@ -126,7 +138,7 @@ export default function Logs() {
    * @returns {void}
    */
   useHotkeys([
-    { id: 'logs.clear', handler: () => clear(), enabled: entries.length > 0 },
+    { id: 'logs.clear', handler: () => handleClear(), enabled: entries.length > 0 },
     { id: 'logs.download', handler: () => downloadLogs(), enabled: filtered.length > 0 },
   ]);
 
@@ -140,7 +152,11 @@ export default function Logs() {
         <FilterSelect
           size="small"
           value={filter}
-          onChange={(e) => setFilter(e.target.value as string)}
+          onChange={(e) => {
+            const next = e.target.value as string;
+            setFilter(next);
+            recordAnalyticsEvent(createAnalyticsEvent('logs_filter_changed', { level: next }));
+          }}
           data-testid="logs-filter"
           slotProps={{ input: { 'aria-label': t('logs.filter') } }}
         >
@@ -151,7 +167,7 @@ export default function Logs() {
           <MenuItem value="ERROR">{t('logs.levelError')}</MenuItem>
         </FilterSelect>
         <Tooltip title={t('logs.clear')}>
-          <IconButton size="small" onClick={clear} aria-label={t('logs.clear')} data-testid="logs-clear">
+          <IconButton size="small" onClick={handleClear} aria-label={t('logs.clear')} data-testid="logs-clear">
             <LogActionIcon icon={faEraser} />
           </IconButton>
         </Tooltip>

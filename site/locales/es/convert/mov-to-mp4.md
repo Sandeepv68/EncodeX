@@ -36,6 +36,8 @@ Puedes convertir un solo clip o **convertir por lotes** carpetas enteras de arch
 - **Sin marcas de agua** y gratis para siempre
 - Funciona en **Windows, Mac y Linux**
 
+<RelatedConversions slug="convert/mov-to-mp4" />
+
 ## Empieza
 
 - [Descarga EncodeX gratis](/es/download)

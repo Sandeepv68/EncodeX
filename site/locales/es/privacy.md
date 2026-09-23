@@ -16,7 +16,7 @@ EncodeX es una aplicación de escritorio que procesa todo el contenido multimedi
 - **100% sin conexión** — toda conversión, compresión y extracción ocurre en tu dispositivo
 - **Sin cuenta** — nada que registrar, sin perfil que mantener
 - **Sin subidas** — tu contenido multimedia nunca se transmite a nosotros ni a nadie más
-- **Sin telemetría en la aplicación** — la aplicación no envía análisis sobre tus archivos ni tu uso
+- **Solo telemetría con consentimiento** — el único dato que sale son eventos opcionales, anónimos y solo por categorías que puedes desactivar en Ajustes
 - **Código abierto** — cualquiera puede inspeccionar exactamente qué hace la aplicación
 
 ## Lo que no recopilamos
@@ -49,8 +49,8 @@ Para ser completamente transparentes, aquí está cada dato que EncodeX recopila
 
 ### La aplicación de escritorio
 
-- **Informes de errores y diagnósticos con consentimiento.** La aplicación puede enviar diagnósticos de fallos e información de errores anónima a Sentry — y está **activada por defecto, con un interruptor visible en Ajustes** para desactivarla cuando quieras. Todo está gobernado por un único interruptor de consentimiento (guardado localmente en tu dispositivo como `monitoring-consent.json`).
-- **Eventos de uso solo por categorías.** Cuando está activada, la aplicación registra eventos anónimos y solo por categorías — cosas como «conversión iniciada» o «perfil aplicado» — a través del mismo canal de breadcrumbs. Por diseño de taxonomía, estos datos **no contienen contenido multimedia, ni nombres de archivo, ni rutas de carpetas, ni tamaños de archivo.** Si desactivas la telemetría, nada sale de tu equipo.
+- **Informes de errores y diagnósticos con consentimiento.** La aplicación puede enviar diagnósticos de fallos e información de errores anónima a Sentry — y está **activada por defecto, con un interruptor visible en Ajustes** para desactivarla cuando quieras. Todo está gobernado por un único interruptor de consentimiento (guardados localmente en tu dispositivo como `monitoring-consent.json` y `analytics-consent.json`).
+- **Eventos de uso solo por categorías.** Cuando está activada, la aplicación registra eventos anónimos y solo por categorías — cosas como «conversión iniciada» o «perfil aplicado» — mediante un canal de análisis de uso propio y dedicado. Por diseño de taxonomía, estos datos **no contienen contenido multimedia, ni nombres de archivo, ni rutas de carpetas, ni tamaños de archivo.** Si desactivas la telemetría, nada sale de tu equipo.
 - **Sin subidas, sin procesamiento en la nube.** Incluso con la telemetría activada, tus archivos multimedia reales nunca se transmiten. Codificar, convertir, comprimir o extraer ocurre enteramente dentro de tu dispositivo.
 
 ### En términos simples

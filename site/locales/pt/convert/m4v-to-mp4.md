@@ -38,6 +38,8 @@ O EncodeX escolhe codecs, resolução e bitrate para você e suporta **converter
 - **Sem marcas d'água** e gratuito para sempre
 - Funciona no **Windows, Mac e Linux**
 
+<RelatedConversions slug="convert/m4v-to-mp4" />
+
 ## Comece agora
 
 - [Baixe o EncodeX gratuitamente](/pt/download)

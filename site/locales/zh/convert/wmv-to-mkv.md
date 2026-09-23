@@ -44,6 +44,8 @@ EncodeX 在保持**视频画质**的同时，干净地将你的 **WMV 转换为 
 
 **我可以一次转换多个 WMV 文件吗？** 可以。EncodeX 支持将整个文件夹中的 WMV 文件批量转换为 MKV。
 
+<RelatedConversions slug="convert/wmv-to-mkv" />
+
 ## 开始使用
 
 - [免费下载 EncodeX](/zh/download)

@@ -555,6 +555,8 @@
     "launchAtLoginHint": "ඔබ ඔබේ පරිගණකයට පුරනය වන විට EncodeX ස්වයංක්‍රීයව ආරම්භ කරයි.",
     "monitoringErrorReporting": "දෝෂ වාර්තාකරණය",
     "monitoringErrorReportingHint": "නිර්නාමික දෝෂ වාර්තා යැවීමෙන් EncodeX වැඩිදියුණු කිරීමට උදව් වේ. ඔබට ඕනෑම වේලාවක මෙය අක්‍රිය කළ හැක.",
+    "telemetry": "භාවිත දත්ත සහ දෝෂ වාර්තාකරණය",
+    "telemetryHint": "නිර්නාමික භාවිත දත්ත සහ දෝෂ වාර්තා යැවීමෙන් EncodeX වැඩිදියුණු කිරීමට උදව් වේ. ඔබට ඕනෑම වේලාවක මෙය අක්‍රිය කළ හැක.",
     "mcpServer": "MCP සේවාදායකය",
     "mcpServerHint": "Claude Desktop, VS Code හෝ Cursor වැනි බාහිර MCP සේවාලාභීන්ට දේශීය සම්බන්ධතාවයක් හරහා EncodeX පාලනය කිරීමට ඉඩ දෙයි. සේවාදායකය මෙම පරිගණකයේ පමණක් සවන් දෙයි.",
     "mcpAiUseCases": "AI භාවිත අවස්ථා",

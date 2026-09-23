@@ -36,6 +36,8 @@ EncodeX kümmert sich um Codecs, Auflösung und Bitrate und bietet echte **Stape
 - **Keine Wasserzeichen** und für immer kostenlos
 - Funktioniert auf **Windows, Mac und Linux**
 
+<RelatedConversions slug="convert/wmv-to-mp4" />
+
 ## Loslegen
 
 - [EncodeX kostenlos herunterladen](/de/download)

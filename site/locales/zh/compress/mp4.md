@@ -44,6 +44,8 @@ EncodeX 使用更智能的设置重新编码你的 MP4——采用 **H.265/HEVC 
 
 **EncodeX 可以在离线状态压缩文件吗？** 可以。压缩完全在你自己的电脑上进行，无需上传——私密可靠，即使没有网络也能工作。
 
+<RelatedConversions slug="compress/mp4" />
+
 ## 立即开始
 
 - [免费下载 EncodeX](/zh/download)

@@ -555,6 +555,8 @@
     "launchAtLoginHint": "Tự động khởi chạy EncodeX khi bạn đăng nhập vào máy tính.",
     "monitoringErrorReporting": "Báo cáo lỗi",
     "monitoringErrorReportingHint": "Giúp cải thiện EncodeX bằng cách gửi báo cáo lỗi ẩn danh. Bạn có thể tắt tính năng này bất cứ lúc nào.",
+    "telemetry": "Dữ liệu sử dụng và báo cáo lỗi",
+    "telemetryHint": "Giúp cải thiện EncodeX bằng cách gửi dữ liệu sử dụng và báo cáo lỗi ẩn danh. Bạn có thể tắt tính năng này bất cứ lúc nào.",
     "mcpServer": "Máy chủ MCP",
     "mcpServerHint": "Cho phép các ứng dụng MCP bên ngoài như Claude Desktop, VS Code hoặc Cursor điều khiển EncodeX qua kết nối cục bộ. Máy chủ chỉ lắng nghe trên máy tính này.",
     "mcpAiUseCases": "Các trường hợp sử dụng AI",

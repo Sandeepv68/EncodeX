@@ -555,6 +555,8 @@
     "launchAtLoginHint": "Begin EncodeX outomaties wanneer jy by jou rekenaar aanmeld.",
     "monitoringErrorReporting": "Foutberiggewing",
     "monitoringErrorReportingHint": "Help om EncodeX te verbeter deur anonieme foutverslae te stuur. Jy kan dit enige tyd afskakel.",
+    "telemetry": "Gebruiksdata en foutberiggewing",
+    "telemetryHint": "Help om EncodeX te verbeter deur anonieme gebruiksdata en foutverslae te stuur. Jy kan dit enige tyd afskakel.",
     "mcpServer": "MCP-bediener",
     "mcpServerHint": "Laat eksterne MCP-kliënte soos Claude Desktop, VS Code of Cursor EncodeX oor 'n plaaslike verbinding beheer. Die bediener luister slegs op hierdie rekenaar.",
     "mcpAiUseCases": "AI-gebruiksgevalle",

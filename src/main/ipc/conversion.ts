@@ -19,6 +19,8 @@ import { Logger } from '../../shared/logger';
 import { ConversionOptions, TranscoderType, ConversionProgress } from '../../shared/types';
 import { IPC } from '../../shared/ipc-channels';
 import { formatError } from '../../shared/errors';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import type { IpcSender } from './types';
 import {
   LOG_ARROW,
@@ -119,6 +121,14 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
         const transcoder = createTranscoder(transcoderType);
         currentTranscoder = transcoder;
         const emitter = transcoder.convert(input, output, options);
+        recordAnalyticsEvent(
+          createAnalyticsEvent('conversion_started', {
+            jobKind: 'single',
+            transcoder: transcoderType,
+            hwAccel: options.hardwareAcceleration === true,
+            mode: 'gui',
+          }),
+        );
 
         return await new Promise<void>((resolve, reject) => {
           emitter.on('progress', (progress: ConversionProgress) => {
@@ -126,6 +136,15 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
           });
           emitter.on('error', (err: Error) => {
             log.error(LOG_IPC_CONVERT_FILE_FAILED, err);
+            recordAnalyticsEvent(
+              createAnalyticsEvent('conversion_failed', {
+                jobKind: 'single',
+                transcoder: transcoderType,
+                hwAccel: options.hardwareAcceleration === true,
+                code: err?.message ? 'transcode-error' : undefined,
+                mode: 'gui',
+              }),
+            );
             if (output !== input) {
               unlink(output, (unlinkErr) => {
                 if (unlinkErr && unlinkErr.code !== 'ENOENT') {
@@ -139,6 +158,14 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
           });
           emitter.on('end', () => {
             log.info(LOG_IPC_CONVERT_FILE_COMPLETED_SUCCESSFULLY);
+            recordAnalyticsEvent(
+              createAnalyticsEvent('conversion_completed', {
+                jobKind: 'single',
+                transcoder: transcoderType,
+                hwAccel: options.hardwareAcceleration === true,
+                mode: 'gui',
+              }),
+            );
             resolve();
           });
         });
@@ -160,6 +187,7 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
     log.info(LOG_IPC_PAUSE_CONVERSION_CALLED);
     if (currentTranscoder) {
       currentTranscoder.pause();
+      recordAnalyticsEvent(createAnalyticsEvent('conversion_paused', {}));
     }
   });
 
@@ -174,6 +202,7 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
     log.info(LOG_IPC_RESUME_CONVERSION_CALLED);
     if (currentTranscoder) {
       currentTranscoder.resume();
+      recordAnalyticsEvent(createAnalyticsEvent('conversion_resumed', {}));
     }
   });
 
@@ -190,6 +219,7 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
       currentTranscoder.cancel();
       currentTranscoder = null;
       log.info(LOG_CONVERSION_CANCELLED);
+      recordAnalyticsEvent(createAnalyticsEvent('conversion_cancelled', { jobKind: 'single' }));
     }
   });
 }

@@ -50,6 +50,8 @@ Du kannst die **Bitrate (128–320 kbps)** wählen — das richtige Gleichgewich
 - [Audio aus Videos extrahieren](/de/extract-audio-from-video)
 - [Audio zwischen Formaten konvertieren](/de/audio-converter)
 
+<RelatedConversions slug="convert/mp4-to-mp3" />
+
 ## Loslegen
 
 - [Lade EncodeX kostenlos herunter](/de/download)

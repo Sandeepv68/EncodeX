@@ -13,6 +13,7 @@
 * [[Project-Structure]]
 * [[Update-Manager]]
 * [[Monitoring]]
+* [[Analytics]]
 
 **Quality**
 * [[Testing]]

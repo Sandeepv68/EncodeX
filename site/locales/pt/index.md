@@ -7,13 +7,13 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 hero:
   name: EncodeX<br>Grátis e de código aberto · Windows · macOS · Linux
   text: O poder do FFmpeg. Sem a linha de comando.
-  tagline: Uma interface gráfica FFmpeg gratuita e de código aberto para Windows, macOS e Linux. Converta vídeos, extraia áudio, corte clipes e reduza arquivos — tudo roda no seu computador e nada sai dele.
+  tagline: Um conversor multimídia inteligente gratuito e de código aberto para Windows, macOS e Linux. Converta vídeos, extraia áudio, corte clipes e reduza arquivos — tudo roda no seu computador e nada sai dele. Agora com MCP, assistentes de IA como Claude, Cursor ou VS Code podem controlar o mesmo motor em linguagem natural.
   image:
     src: /images/home_dashboard.webp
     alt: Dashboard do EncodeX com um vídeo carregado e o perfil YouTube 1080p selecionado
   actions:
     - theme: brand
-      text: Baixar agora — É grátis
+      text: Baixar EncodeX
       link: /pt/download
     - theme: alt
       text: Ver no GitHub →
@@ -26,7 +26,39 @@ hero:
   <span>Sem conta</span>
   <span>Sem marca d'água</span>
   <span>100% local</span>
+  <span>🤖 MCP integrado</span>
 </div>
+
+## Deixe a IA fazer o trabalho pesado
+
+Os assistentes de IA agora podem operar seu kit de mídia local. Peça ao Claude, Cursor ou VS Code para converter um vídeo, extrair o áudio ou reduzir uma pasta de fotos — o trabalho acontece no seu computador pelo EncodeX.
+
+<McpDemo />
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🧠</span>
+    <p class="card-head">Peça em linguagem simples</p>
+    <p>"Converta isso para MP4 e reduza para enviar por e-mail." Seu assistente escolhe a ferramenta certa, executa pelo EncodeX e devolve o resultado.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🔒</span>
+    <p class="card-head">Continua 100% local</p>
+    <p>O servidor MCP escuta apenas no localhost e nunca envia sua mídia. Seus arquivos ficam no seu computador, exatamente como na interface gráfica.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🧩</span>
+    <p class="card-head">Funciona com seu assistente</p>
+    <p>Claude Desktop, Claude Code, Cursor, VS Code ou qualquer cliente compatível com MCP. Execute <code>encodex --mcp</code> ou ative o servidor integrado em Configurações.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⚙️</span>
+    <p class="card-head">Automação de verdade</p>
+    <p>19 ferramentas cobrem conversões, extração de áudio, compressão de imagens, informações de mídia, tarefas em lote, prévias e atualizações — para os agentes encadearem trabalho real.</p>
+  </div>
+</div>
+
+<p><a href="/pt/mcp">Explore o servidor MCP →</a> · <a href="/pt/docs/cli#mcp-server-mode">Leia a documentação do servidor MCP →</a></p>
 
 ## O que ele pode fazer por você
 
@@ -187,35 +219,6 @@ Você não está sozinho. Estes são os problemas do dia a dia que o EncodeX res
     <p>O EncodeX é grátis de verdade. Sem cadastro, sem assinatura, sem marca d'água nos seus arquivos.</p>
   </div>
 </div>
-
-## Deixe a IA fazer o trabalho pesado
-
-O EncodeX vem com um **servidor MCP** integrado — o padrão aberto [Model Context Protocol](https://modelcontextprotocol.io) que permite aos assistentes de IA usar seus apps. Conecte Claude Desktop, Claude Code, Cursor, VS Code ou qualquer cliente compatível com MCP e é só pedir: converter um vídeo, extrair o áudio, comprimir uma pasta de fotos ou verificar uma fila em lote. O trabalho acontece localmente; seus arquivos nunca saem do seu computador.
-
-<div class="card-grid two-col">
-  <div class="card">
-    <span class="card-emoji">🧠</span>
-    <p class="card-head">Peça em linguagem simples</p>
-    <p>"Converta isso para MP4 e reduza para enviar por e-mail." Seu assistente escolhe a ferramenta certa, executa pelo EncodeX e devolve o resultado.</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🔒</span>
-    <p class="card-head">Continua 100% local</p>
-    <p>O servidor escuta apenas no localhost e nunca envia sua mídia. Seus arquivos ficam no seu computador, exatamente como na interface gráfica.</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🧩</span>
-    <p class="card-head">Duas formas de conectar</p>
-    <p>Execute <code>encodex --mcp</code> para um servidor stdio autônomo, ou ative o servidor integrado em Configurações enquanto o app está aberto.</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">⚙️</span>
-    <p class="card-head">Automação de verdade</p>
-    <p>19 ferramentas cobrem conversões, extração de áudio, compressão de imagens, informações de mídia, tarefas em lote, prévias e atualizações — para os agentes encadearem trabalho real.</p>
-  </div>
-</div>
-
-<p><a href="/pt/docs/cli#mcp-server-mode">Leia a documentação do servidor MCP →</a></p>
 
 ## Por que o EncodeX?
 
@@ -399,6 +402,70 @@ Mergulhe em uma tarefa específica — cada página explica como fazê-la com o 
   <div class="card">
     <p class="card-head"><a href="/pt/compress/mp4">Comprimir MP4</a></p>
     <p>Reduza vídeos MP4 para e-mail, chats e limites de upload.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/compress/mkv">Comprimir MKV</a></p>
+    <p>Encolha arquivos MKV para armazenar e compartilhar.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/avi-to-mp4">AVI para MP4</a></p>
+    <p>Faça vídeos AVI rodarem em celulares, TVs e na web.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/mov-to-mp4">MOV para MP4</a></p>
+    <p>Converta arquivos MOV da Apple para rodar em qualquer aparelho.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/mkv-to-webm">MKV para WebM</a></p>
+    <p>Converta MKV para o formato nativo da web, com arquivos menores.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/webm-to-mp4">WebM para MP4</a></p>
+    <p>Faça vídeos WebM rodarem em qualquer lugar convertendo para MP4.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/mkv-to-mp3">MKV para MP3</a></p>
+    <p>Extraia a trilha sonora de MKV como MP3 avulsa.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/mov-to-mp3">MOV para MP3</a></p>
+    <p>Extraia o áudio de vídeos MOV como um MP3 limpo.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/mp4-to-mp3">MP4 para MP3</a></p>
+    <p>Transforme um vídeo MP4 em um MP3 só de áudio.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/flv-to-mp4">FLV para MP4</a></p>
+    <p>Converta vídeos FLV da era Flash em MP4 universal.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/flv-to-mkv">FLV para MKV</a></p>
+    <p>Leve vídeos FLV para um contêiner MKV moderno e flexível.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/m4v-to-mp4">M4V para MP4</a></p>
+    <p>Faça arquivos do iTunes e da Apple rodarem em qualquer dispositivo.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/wmv-to-mp4">WMV para MP4</a></p>
+    <p>Converta vídeos WMV para celulares, TVs e compartilhamento online.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/wmv-to-mkv">WMV para MKV</a></p>
+    <p>Remuxe arquivos WMV do Windows Media para o contêiner MKV.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/avi-to-mkv">AVI para MKV</a></p>
+    <p>Remuxe AVI para o contêiner MKV, flexível e cheio de recursos.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/mov-to-mkv">MOV para MKV</a></p>
+    <p>Converta vídeos MOV da Apple para o contêiner MKV.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/pt/convert/webm-to-mkv">WebM para MKV</a></p>
+    <p>Converta WebM em MKV para legendas e áudio de várias faixas.</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/pt/extract/mp3-from-video">Extrair MP3</a></p>

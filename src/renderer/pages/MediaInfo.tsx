@@ -28,6 +28,8 @@ import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
 import { MediaInfo as MediaInfoType, ImageExifData } from '../../shared/types';
 import { isImageFile } from '../../shared/file-extensions';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { PageTitle, ContentBox, LoadingBox, InfoPaper, InfoTitle } from '../styles/MediaInfo.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
@@ -65,6 +67,18 @@ const log = new Logger('renderer/pages/MediaInfo');
  */
 export default function MediaInfo() {
   const { t } = useTranslation();
+
+  /**
+   * Collapses a stream count into a coarse analytics bucket so no exact count
+   * is sent (privacy guard D10). @param {number} count - Number of streams.
+   * @returns {string} A bucketed label.
+   */
+  const streamCountBucket = (count: number): string => {
+    if (count <= 0) return 'none';
+    if (count === 1) return '1';
+    if (count <= 4) return '2-4';
+    return '5+';
+  };
 
   /**
    * Probed media info for the selected file, or null before any selection.
@@ -105,6 +119,7 @@ export default function MediaInfo() {
       log.info(LOG_MEDIA_INFO_RETRIEVED, data.format, data.duration.toFixed(2) + 's,', data.streams.length, 'streams');
       setInfo(data);
       useToastStore.getState().success(t('toast.mediaInfoLoaded'));
+      let exifData: ImageExifData | null = null;
       if (isImageFile(path)) {
         const imageData = await window.electronAPI.getImageInfo(path);
         log.info(
@@ -114,7 +129,15 @@ export default function MediaInfo() {
           imageData?.histogram ? 'yes' : 'no',
         );
         setExif(imageData);
+        exifData = imageData;
       }
+      recordAnalyticsEvent(
+        createAnalyticsEvent('media_info_probed', {
+          kind: isImageFile(path) ? 'image' : 'video',
+          streamCountBucket: streamCountBucket(data.streams.length),
+          hasExif: !!exifData?.exif && Object.keys(exifData.exif).length > 0,
+        }),
+      );
     } catch (err: unknown) {
       log.error(LOG_FAILED_TO_GET_MEDIA_INFO, err);
       showError(err);

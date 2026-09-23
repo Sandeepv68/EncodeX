@@ -545,6 +545,8 @@
     "launchAtLoginHint": "जब आप अपने कंप्यूटर में साइन इन करते हैं, तो EncodeX स्वचालित रूप से शुरू हो जाता है।",
     "monitoringErrorReporting": "त्रुटि रिपोर्टिंग",
     "monitoringErrorReportingHint": "गुमनाम त्रुटि रिपोर्ट भेजकर EncodeX को बेहतर बनाने में मदद करता है। आप इसे कभी भी बंद कर सकते हैं।",
+    "telemetry": "उपयोग डेटा और त्रुटि रिपोर्टिंग",
+    "telemetryHint": "गुमनाम उपयोग डेटा और त्रुटि रिपोर्ट भेजकर EncodeX को बेहतर बनाने में मदद करता है। आप इसे कभी भी बंद कर सकते हैं।",
     "mcpServer": "MCP सर्वर",
     "mcpServerHint": "बाहरी MCP क्लाइंट जैसे Claude Desktop, VS Code या Cursor को स्थानीय कनेक्शन के ज़रिए EncodeX नियंत्रित करने देता है। सर्वर केवल इस कंप्यूटर पर सुनता है।",
     "mcpAiUseCases": "AI उपयोग के मामले",

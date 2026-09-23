@@ -36,6 +36,8 @@ Você pode converter um único clipe ou **converter pastas inteiras de arquivos 
 - **Sem marcas d'água** e gratuito para sempre
 - Funciona no **Windows, Mac e Linux**
 
+<RelatedConversions slug="convert/mov-to-mp4" />
+
 ## Comece agora
 
 - [Baixe o EncodeX gratuitamente](/pt/download)

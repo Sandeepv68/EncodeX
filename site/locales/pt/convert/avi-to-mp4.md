@@ -36,6 +36,8 @@ O EncodeX re-codifica o vídeo com eficiência para que seu **MP4 seja bem menor
 - **Sem marcas d'água** e gratuito para sempre
 - Funciona no **Windows, Mac e Linux**
 
+<RelatedConversions slug="convert/avi-to-mp4" />
+
 ## Comece agora
 
 - [Baixe o EncodeX gratuitamente](/pt/download)

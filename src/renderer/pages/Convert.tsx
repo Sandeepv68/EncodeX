@@ -74,6 +74,8 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { useFieldId } from '../hooks/useFieldId';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import type { EncoderType } from '../../shared/types';
 import { fileName } from '../utils/path-utils';
 import { encoderTypeLabel, pixelFormatOptions, pixelGroupIcons } from '../utils/encoding-option-utils';
@@ -241,6 +243,7 @@ export default function Convert() {
   const applySuggestedExtension = () => {
     if (!outputFile) return;
     setOutputFile(replaceExtension(outputFile, suggestedOutputExt));
+    recordAnalyticsEvent(createAnalyticsEvent('suggested_extension_applied', { codec: videoCodec }));
   };
 
   /**
@@ -308,6 +311,7 @@ export default function Convert() {
   const handleConfirmJobCancel = () => {
     setJobCancelOpen(false);
     resetForm();
+    recordAnalyticsEvent(createAnalyticsEvent('convert_form_cleared', {}));
   };
 
   const handleStartConversion = () => {
@@ -337,8 +341,21 @@ export default function Convert() {
     { id: 'convert.pause', handler: () => pauseConversion(), enabled: isConverting && !isPaused },
     { id: 'convert.cancel', handler: () => handleCancelClick(), enabled: isConverting },
     { id: 'convert.clear', handler: () => setJobCancelOpen(true), enabled: isDirty && !isConverting },
-    { id: 'convert.lossless', handler: () => setCopyMode(!copyMode) },
-    { id: 'convert.preview', handler: () => setPreviewOpen(true), enabled: !!inputFile && !previewOpen },
+    {
+      id: 'convert.lossless',
+      handler: () => {
+        setCopyMode(!copyMode);
+        recordAnalyticsEvent(createAnalyticsEvent('copy_mode_toggled', { copyMode: !copyMode }));
+      },
+    },
+    {
+      id: 'convert.preview',
+      handler: () => {
+        setPreviewOpen(true);
+        recordAnalyticsEvent(createAnalyticsEvent('preview_opened', {}));
+      },
+      enabled: !!inputFile && !previewOpen,
+    },
   ]);
 
   return (
@@ -350,7 +367,14 @@ export default function Convert() {
           <PreviewPanel>
             <PreviewHeader>
               <Typography variant="h6">{t('convert.preview')}</Typography>
-              <IconButton size="small" aria-label={t('convert.closePreview')} onClick={() => setPreviewOpen(false)}>
+              <IconButton
+                size="small"
+                aria-label={t('convert.closePreview')}
+                onClick={() => {
+                  setPreviewOpen(false);
+                  recordAnalyticsEvent(createAnalyticsEvent('preview_closed', {}));
+                }}
+              >
                 <FontAwesomeIcon icon={faXmark} />
               </IconButton>
             </PreviewHeader>
@@ -444,7 +468,10 @@ export default function Convert() {
                   variant="outlined"
                   size="small"
                   startIcon={<FontAwesomeIcon icon={faEye} />}
-                  onClick={() => setPreviewOpen(true)}
+                  onClick={() => {
+                    setPreviewOpen(true);
+                    recordAnalyticsEvent(createAnalyticsEvent('preview_opened', {}));
+                  }}
                 >
                   {t('convert.showPreview')}
                 </ShowPreviewButton>
@@ -498,7 +525,10 @@ export default function Convert() {
           <Switch
             data-testid="convert-copy-switch"
             checked={copyMode}
-            onChange={(e) => setCopyMode(e.target.checked)}
+            onChange={(e) => {
+              setCopyMode(e.target.checked);
+              recordAnalyticsEvent(createAnalyticsEvent('copy_mode_toggled', { copyMode: e.target.checked }));
+            }}
             slotProps={{ input: { 'aria-label': t('convert.losslessCopy') } }}
           />
           <Typography variant="caption" color="text.secondary">
@@ -548,7 +578,10 @@ export default function Convert() {
                   <CodecSelect
                     type="video"
                     value={videoCodec}
-                    onChange={setVideoCodec}
+                    onChange={(codec) => {
+                      setVideoCodec(codec);
+                      recordAnalyticsEvent(createAnalyticsEvent('codec_changed', { codecType: 'video', codec }));
+                    }}
                     encoderType={settingsHardwareAcceleration ? effectiveEncoderType : 'auto'}
                     ariaLabel={t('convert.videoCodec')}
                     testId="convert-video-codec"
@@ -564,7 +597,10 @@ export default function Convert() {
                   <CodecSelect
                     type="audio"
                     value={audioCodec}
-                    onChange={setAudioCodec}
+                    onChange={(codec) => {
+                      setAudioCodec(codec);
+                      recordAnalyticsEvent(createAnalyticsEvent('codec_changed', { codecType: 'audio', codec }));
+                    }}
                     ariaLabel={t('convert.audioCodec')}
                     testId="convert-audio-codec"
                   />
@@ -790,7 +826,10 @@ export default function Convert() {
             data-testid="convert-transcoder"
             slotProps={{ htmlInput: { 'aria-label': t('convert.transcoderCore') } }}
             value={transcoder}
-            onChange={(e) => setTranscoder(e.target.value)}
+            onChange={(e) => {
+              setTranscoder(e.target.value);
+              recordAnalyticsEvent(createAnalyticsEvent('transcoder_changed', { transcoder: e.target.value }));
+            }}
           >
             {TRANSCODER_TYPES.map((tc) => (
               <MenuItem key={tc} value={tc}>

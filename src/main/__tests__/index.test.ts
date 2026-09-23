@@ -12,6 +12,7 @@ const {
   registerIpcHandlersMock,
   menuMock,
   shellMock,
+  aptabaseMainMock,
 } = vi.hoisted(() => {
   const whenReadyCbs: Array<() => void> = [];
   const appOnHandlers: Record<string, (...args: unknown[]) => void> = {};
@@ -52,6 +53,10 @@ const {
   };
   const menuMock = {
     setApplicationMenu: vi.fn(),
+  };
+  const aptabaseMainMock = {
+    initialize: vi.fn(async () => undefined),
+    trackEvent: vi.fn(async () => undefined),
   };
   const shellMock = {
     openExternal: vi.fn(),
@@ -102,6 +107,7 @@ const {
     registerIpcHandlersMock: vi.fn(),
     menuMock,
     shellMock,
+    aptabaseMainMock,
   };
 });
 
@@ -112,6 +118,7 @@ vi.mock('electron', () => ({
   shell: shellMock,
   ipcMain: { handle: vi.fn() },
 }));
+vi.mock('@aptabase/electron/main', () => aptabaseMainMock);
 vi.mock('../cli/cli', () => ({
   runCli: runCliMock,
   mapCliErrorToExitCode: (err: unknown) => (err instanceof Error && err.message === 'usage' ? 2 : 1),

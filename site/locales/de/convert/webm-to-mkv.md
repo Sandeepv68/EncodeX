@@ -43,6 +43,8 @@ Da WebM und MKV ähnliche Codecs wie **VP9** und **AV1** teilen, ist die Konvert
 
 **Kann ich viele WebM-Dateien auf einmal konvertieren?** Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners WebM-Dateien in MKV.
 
+<RelatedConversions slug="convert/webm-to-mkv" />
+
 ## Loslegen
 
 - [EncodeX kostenlos herunterladen](/de/download)

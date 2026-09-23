@@ -43,6 +43,8 @@ EncodeX 使用现代编解码器（如 **H.265/HEVC 或 AV1**）以经过调校�
 
 **我可以一次压缩多个 MKV 文件吗？** 可以。EncodeX 支持批量压缩整个文件夹中的 MKV 文件。
 
+<RelatedConversions slug="compress/mkv" />
+
 ## 立即开始
 
 - [免费下载 EncodeX](/zh/download)

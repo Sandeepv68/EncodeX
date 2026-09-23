@@ -68,6 +68,8 @@ import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { openFileDialog } from '../utils/fileDialog';
 import { SectionHeader, FileChip, SectionsStack, HeadingGroup, AccelAlert, ActionRow } from '../styles/VideoCut.styles';
 import { FieldLabel, ToggleRow, SectionCard, SectionTitle } from '../styles/form.styles';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import {
   LOG_ARROW,
   LOG_CANCELLING_CUT_JOB,
@@ -118,6 +120,20 @@ const log = new Logger('renderer/pages/VideoCut');
  *
  * @returns {JSX.Element} The page content inside a PageContainer.
  */
+/**
+ * Collapses a trim window length into a coarse analytics bucket so no exact
+ * duration is sent (privacy guard D10).
+ * @param {number} seconds - The trim window length in seconds.
+ * @returns {string} One of 'u15' | '15-59' | '60-299' | '300-1799' | '1800+'.
+ */
+function cutSecondsBucket(seconds: number): string {
+  if (seconds < 15) return 'u15';
+  if (seconds < 60) return '15-59';
+  if (seconds < 300) return '60-299';
+  if (seconds < 1800) return '300-1799';
+  return '1800+';
+}
+
 export default function VideoCut() {
   const { t } = useTranslation();
   const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
@@ -471,6 +487,9 @@ export default function VideoCut() {
     setMediaInfo(null);
     setWaveformLoading(false);
     setThumbnailsLoading(false);
+    if (path) {
+      recordAnalyticsEvent(createAnalyticsEvent('cut_input_selected', { source: 'dialog' }));
+    }
   };
 
   /**
@@ -517,9 +536,18 @@ export default function VideoCut() {
     }
     log.info(LOG_CUTTING_VIDEO, input, LOG_ARROW, output, LOG_START, startTime, LOG_USE_DURATION, useDuration);
     setIsCutting(true);
+    const trimSeconds = useDuration ? Number(duration) || 0 : Math.max(0, (timeToSeconds(endTime) || 0) - (timeToSeconds(startTime) || 0));
+    recordAnalyticsEvent(
+      createAnalyticsEvent('video_cut_started', {
+        useDuration,
+        includeAudio,
+        trimSecBucket: cutSecondsBucket(trimSeconds),
+      }),
+    );
     try {
+      const cutStartedAt = Date.now();
       await runTask(async () => {
-        await window.electronAPI.convertFile(
+        const taskPromise = window.electronAPI.convertFile(
           input,
           output,
           {
@@ -530,6 +558,23 @@ export default function VideoCut() {
           },
           transcoder,
         );
+        taskPromise
+          .then(() => {
+            recordAnalyticsEvent(
+              createAnalyticsEvent('video_cut_completed', {
+                useDuration,
+                includeAudio,
+                durationSec: Math.round((Date.now() - cutStartedAt) / 1000),
+              }),
+            );
+          })
+          .catch((err: unknown) => {
+            const code = typeof (err as { code?: string })?.code === 'string' ? (err as { code: string }).code : undefined;
+            if (code !== ErrorCode.CANCELLED) {
+              recordAnalyticsEvent(createAnalyticsEvent('video_cut_failed', { code, trimSecBucket: cutSecondsBucket(trimSeconds) }));
+            }
+          });
+        await taskPromise;
         useToastStore.getState().success(t('toast.videoCut'));
       });
     } finally {
@@ -546,6 +591,7 @@ export default function VideoCut() {
     log.info(LOG_PAUSING_CUT_JOB);
     await window.electronAPI.pauseConversion();
     setIsPaused(true);
+    recordAnalyticsEvent(createAnalyticsEvent('video_cut_paused', {}));
   };
 
   /**
@@ -557,6 +603,7 @@ export default function VideoCut() {
     log.info(LOG_RESUMING_CUT_JOB);
     await window.electronAPI.resumeConversion();
     setIsPaused(false);
+    recordAnalyticsEvent(createAnalyticsEvent('video_cut_resumed', {}));
   };
 
   /**
@@ -570,6 +617,7 @@ export default function VideoCut() {
     log.info(LOG_CANCELLING_CUT_JOB);
     await window.electronAPI.cancelConversion();
     resetForm();
+    recordAnalyticsEvent(createAnalyticsEvent('video_cut_cancelled', {}));
   };
 
   /**
@@ -581,6 +629,7 @@ export default function VideoCut() {
     setJobCancelOpen(false);
     log.info(LOG_CLEARING_VIDEO_CUT_FORM);
     resetForm();
+    recordAnalyticsEvent(createAnalyticsEvent('video_cut_form_cleared', {}));
   };
 
   /**
@@ -607,8 +656,20 @@ export default function VideoCut() {
     { id: 'videoCut.pause', handler: () => pauseCut(), enabled: isConverting && !isPaused },
     { id: 'videoCut.cancel', handler: () => setCancelConfirmOpen(true), enabled: isConverting },
     { id: 'videoCut.clear', handler: () => setJobCancelOpen(true), enabled: isDirty && !isConverting },
-    { id: 'videoCut.useDuration', handler: () => setUseDuration(!useDuration) },
-    { id: 'videoCut.includeAudio', handler: () => setIncludeAudio(!includeAudio) },
+    {
+      id: 'videoCut.useDuration',
+      handler: () => {
+        setUseDuration(!useDuration);
+        recordAnalyticsEvent(createAnalyticsEvent('cut_use_duration_toggled', { useDuration: !useDuration }));
+      },
+    },
+    {
+      id: 'videoCut.includeAudio',
+      handler: () => {
+        setIncludeAudio(!includeAudio);
+        recordAnalyticsEvent(createAnalyticsEvent('cut_audio_toggled', { includeAudio: !includeAudio }));
+      },
+    },
   ]);
 
   return (
@@ -638,6 +699,7 @@ export default function VideoCut() {
                 onTimeUpdate={setPlayhead}
                 onDurationChange={setVideoDuration}
                 onMediaInfo={setMediaInfo}
+                onTogglePlay={(playing) => recordAnalyticsEvent(createAnalyticsEvent('media_playback_toggled', { playing }))}
               />
             </ErrorBoundary>
             <VideoTimeline
@@ -650,11 +712,21 @@ export default function VideoCut() {
               waveformLoading={waveformLoading}
               thumbnailsLoading={thumbnailsLoading}
               zoom={cachedZoomKey === `${input}::${videoDuration}` ? cachedZoom : null}
-              onZoomChange={(z) => cacheZoom(z, `${input}::${videoDuration}`)}
+              onZoomChange={(z) => {
+                const direction =
+                  cachedZoom == null || cachedZoom === z ? (cachedZoom === null ? 'in' : 'same') : z > cachedZoom ? 'in' : 'out';
+                cacheZoom(z, `${input}::${videoDuration}`);
+                if (direction !== 'same') {
+                  recordAnalyticsEvent(createAnalyticsEvent('timeline_zoom_changed', { direction }));
+                }
+              }}
               audioEnabled={includeAudio}
               videoStream={videoStream}
               audioStream={audioStream}
-              onAudioEnabledChange={setIncludeAudio}
+              onAudioEnabledChange={(enabled) => {
+                setIncludeAudio(enabled);
+                recordAnalyticsEvent(createAnalyticsEvent('cut_audio_toggled', { includeAudio: enabled }));
+              }}
               onSeek={handleTimelineSeek}
               onStartChange={(s) => setStartTime(secondsToTime(s))}
               onEndChange={(s) => setEndTime(secondsToTime(s))}
@@ -778,7 +850,10 @@ export default function VideoCut() {
           <ToggleRow>
             <Switch
               checked={useDuration}
-              onChange={() => setUseDuration(!useDuration)}
+              onChange={() => {
+                setUseDuration(!useDuration);
+                recordAnalyticsEvent(createAnalyticsEvent('cut_use_duration_toggled', { useDuration: !useDuration }));
+              }}
               slotProps={{ input: { 'aria-label': t('videoCut.useDuration'), 'data-testid': 'video-cut-use-duration' } }}
             />
             <Typography variant="caption" color="text.secondary">

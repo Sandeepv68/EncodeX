@@ -43,6 +43,8 @@ You can convert a single clip or **batch-convert** whole folders of MOV files at
 
 **Can I convert many MOV files at once?** Yes. EncodeX supports batch converting an entire folder of MOV files to MKV.
 
+<RelatedConversions slug="convert/mov-to-mkv" />
+
 ## Get Started
 
 - [Download EncodeX for free](/download)

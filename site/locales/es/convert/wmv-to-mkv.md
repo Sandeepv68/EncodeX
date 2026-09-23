@@ -44,6 +44,8 @@ EncodeX maneja los códecs, la resolución y la tasa de bits por ti y ofrece una
 
 **¿Puedo convertir muchos archivos WMV a la vez?** Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos WMV a MKV.
 
+<RelatedConversions slug="convert/wmv-to-mkv" />
+
 ## Empieza
 
 - [Descarga EncodeX gratis](/es/download)

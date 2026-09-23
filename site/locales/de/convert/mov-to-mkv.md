@@ -43,6 +43,8 @@ Sie können einen einzelnen Clip oder **ganze Ordner voller MOV-Dateien stapelwe
 
 **Kann ich viele MOV-Dateien auf einmal konvertieren?** Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners MOV-Dateien in MKV.
 
+<RelatedConversions slug="convert/mov-to-mkv" />
+
 ## Loslegen
 
 - [EncodeX kostenlos herunterladen](/de/download)

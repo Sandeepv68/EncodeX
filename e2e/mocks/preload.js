@@ -183,11 +183,19 @@ const api = {
   },
 
   // --- Monitoring consent ------------------------------------------------------
-  monitoringGetState: () => Promise.resolve({ enabled: true }),
+  monitoringGetState: () => Promise.resolve({ enabled: true, backend: 'noop' }),
   monitoringSetEnabled: (enabled) => {
     state.monitoringCalls = state.monitoringCalls || [];
     state.monitoringCalls.push(!!enabled);
-    return Promise.resolve({ enabled: !!enabled });
+    return Promise.resolve({ enabled: !!enabled, backend: 'noop' });
+  },
+
+  // --- Usage analytics consent -------------------------------------------------
+  analyticsGetState: () => Promise.resolve({ enabled: true, backend: 'noop' }),
+  analyticsSetEnabled: (enabled) => {
+    state.analyticsCalls = state.analyticsCalls || [];
+    state.analyticsCalls.push(!!enabled);
+    return Promise.resolve({ enabled: !!enabled, backend: 'noop' });
   },
 
   // --- Event subscriptions (each returns an unsubscribe) -----------------------

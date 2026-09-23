@@ -36,6 +36,8 @@ EncodeX codiert das Video effizient neu, sodass Ihre **MP4 deutlich kleiner ist*
 - **Keine Wasserzeichen** und für immer kostenlos
 - Funktioniert auf **Windows, Mac und Linux**
 
+<RelatedConversions slug="convert/avi-to-mp4" />
+
 ## Loslegen
 
 - [EncodeX kostenlos herunterladen](/de/download)

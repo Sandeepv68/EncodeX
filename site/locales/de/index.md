@@ -6,13 +6,13 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 hero:
   name: EncodeX<br>Kostenlos & Open Source · Windows · macOS · Linux
   text: FFmpeg-Kraft. Ohne Befehlszeile.
-  tagline: Eine kostenlose, quelloffene FFmpeg-Oberfläche für Windows, macOS und Linux. Video konvertieren, Audio extrahieren, Clips schneiden und Dateien verkleinern — alles läuft auf Ihrem Computer, nichts verlässt ihn.
+  tagline: Eine kostenlose, quelloffene Smart-Media-Konverter für Windows, macOS und Linux. Video konvertieren, Audio extrahieren, Clips schneiden und Dateien verkleinern — alles läuft auf Ihrem Computer, nichts verlässt ihn. Mit MCP können KI-Assistenten wie Claude, Cursor oder VS Code dieselbe Engine in natürlicher Sprache steuern.
   image:
     src: /images/home_dashboard.webp
     alt: EncodeX-Startbildschirm mit geladenem Video und ausgewähltem YouTube-1080p-Profil
   actions:
     - theme: brand
-      text: Jetzt herunterladen — Kostenlos
+      text: EncodeX herunterladen
       link: /de/download
     - theme: alt
       text: Auf GitHub ansehen →
@@ -25,7 +25,39 @@ hero:
   <span>Kein Konto</span>
   <span>Kein Wasserzeichen</span>
   <span>100 % lokal</span>
+  <span>🤖 Integrierter MCP</span>
 </div>
+
+## Überlassen Sie die schwere Arbeit Ihrer KI
+
+KI-Assistenten können jetzt Ihre lokale Medien-Werkzeugkiste bedienen. Bitten Sie Claude, Cursor oder VS Code, ein Video zu konvertieren, das Audio zu extrahieren oder einen Ordner mit Fotos zu verkleinern — die Arbeit passiert auf Ihrem Computer über EncodeX.
+
+<McpDemo />
+
+<div class="card-grid two-col">
+  <div class="card">
+    <span class="card-emoji">🧠</span>
+    <p class="card-head">Fragen Sie in einfacher Sprache</p>
+    <p>„Konvertiere das in MP4 und verkleinere es für eine E-Mail." Ihr Assistent wählt das richtige Werkzeug, führt es über EncodeX aus und liefert das Ergebnis zurück.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🔒</span>
+    <p class="card-head">Weiterhin 100 % lokal</p>
+    <p>Der MCP-Server lauscht nur auf localhost und lädt Ihre Medien niemals hoch. Ihre Dateien bleiben auf Ihrem Computer — genau wie bei der GUI.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">🧩</span>
+    <p class="card-head">Funktioniert mit Ihrem Assistenten</p>
+    <p>Claude Desktop, Claude Code, Cursor, VS Code oder jeder MCP-kompatible Client. Führen Sie <code>encodex --mcp</code> aus oder aktivieren Sie den eingebetteten Server in den Einstellungen.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">⚙️</span>
+    <p class="card-head">Echte Automatisierung</p>
+    <p>19 Werkzeuge decken Konvertierungen, Audioextraktion, Bildkomprimierung, Medieninfos, Stapeljobs, Vorschauen und Updates ab — so können Agenten echte Arbeit verketten.</p>
+  </div>
+</div>
+
+<p><a href="/de/mcp">MCP-Server entdecken →</a> · <a href="/de/docs/cli#mcp-server-mode">Zur MCP-Server-Dokumentation →</a></p>
 
 ## Was kann es für Sie tun?
 
@@ -186,35 +218,6 @@ Sie sind nicht allein. Das sind die alltäglichen Probleme, die EncodeX löst:
     <p>EncodeX ist wirklich kostenlos. Kein Konto, kein Abo, keine Wasserzeichen in Ihren Dateien.</p>
   </div>
 </div>
-
-## Überlassen Sie die schwere Arbeit Ihrer KI
-
-EncodeX enthält einen integrierten **MCP-Server** — den offenen [Model Context Protocol](https://modelcontextprotocol.io)-Standard, der KI-Assistenten die Nutzung Ihrer Apps ermöglicht. Verbinden Sie Claude Desktop, Claude Code, Cursor, VS Code oder einen beliebigen MCP-kompatiblen Client und bitten Sie ihn einfach, ein Video zu konvertieren, Audio zu extrahieren, einen Ordner mit Fotos zu komprimieren oder die Stapelverarbeitung zu prüfen. Die Arbeit findet lokal statt; Ihre Dateien verlassen niemals Ihren Computer.
-
-<div class="card-grid two-col">
-  <div class="card">
-    <span class="card-emoji">🧠</span>
-    <p class="card-head">Fragen Sie in einfacher Sprache</p>
-    <p>„Konvertiere das in MP4 und verkleinere es für eine E-Mail." Ihr Assistent wählt das richtige Werkzeug, führt es über EncodeX aus und liefert das Ergebnis zurück.</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🔒</span>
-    <p class="card-head">Weiterhin 100 % lokal</p>
-    <p>Der Server lauscht nur auf localhost und lädt Ihre Medien niemals hoch. Ihre Dateien bleiben auf Ihrem Computer — genau wie bei der GUI.</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">🧩</span>
-    <p class="card-head">Zwei Verbindungsmöglichkeiten</p>
-    <p>Führen Sie <code>encodex --mcp</code> für einen eigenständigen stdio-Server aus oder aktivieren Sie den eingebetteten Server in den Einstellungen, während die App geöffnet ist.</p>
-  </div>
-  <div class="card">
-    <span class="card-emoji">⚙️</span>
-    <p class="card-head">Echte Automatisierung</p>
-    <p>19 Werkzeuge decken Konvertierungen, Audioextraktion, Bildkomprimierung, Medieninfos, Stapeljobs, Vorschauen und Updates ab — so können Agenten echte Arbeit verketten.</p>
-  </div>
-</div>
-
-<p><a href="/de/docs/cli#mcp-server-mode">Zur MCP-Server-Dokumentation →</a></p>
 
 ## Warum EncodeX?
 
@@ -398,6 +401,70 @@ Tauchen Sie in eine bestimmte Aufgabe ein – jede Seite erklärt, wie Sie sie m
   <div class="card">
     <p class="card-head"><a href="/de/compress/mp4">MP4 komprimieren</a></p>
     <p>Verkleinern Sie MP4-Videos für E-Mail, Chat und Upload-Limits.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/compress/mkv">MKV komprimieren</a></p>
+    <p>MKV-Dateien für Speicherung und Versand verkleinern.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/avi-to-mp4">AVI zu MP4</a></p>
+    <p>AVI-Videos für Handy, TV und Web abspielbar machen.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/mov-to-mp4">MOV zu MP4</a></p>
+    <p>Apple-MOV-Dateien so umwandeln, dass sie überall abspielbar sind.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/mkv-to-webm">MKV zu WebM</a></p>
+    <p>MKV ins web-native Format konvertieren – kleinere Dateien.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/webm-to-mp4">WebM zu MP4</a></p>
+    <p>WebM-Videos überall abspielbar machen.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/mkv-to-mp3">MKV zu MP3</a></p>
+    <p>Den Soundtrack aus MKV als eigenständige MP3 extrahieren.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/mov-to-mp3">MOV zu MP3</a></p>
+    <p>Audio aus MOV-Videos als saubere MP3 extrahieren.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/mp4-to-mp3">MP4 zu MP3</a></p>
+    <p>Ein MP4-Video in eine reine Audio-MP3 verwandeln.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/flv-to-mp4">FLV zu MP4</a></p>
+    <p>Flash-FLV-Videos in universell unterstütztes MP4 umwandeln.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/flv-to-mkv">FLV zu MKV</a></p>
+    <p>FLV-Videos in einen modernen MKV-Container übertragen.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/m4v-to-mp4">M4V zu MP4</a></p>
+    <p>iTunes- und Apple-Dateien auf jedem Gerät abspielbar machen.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/wmv-to-mp4">WMV zu MP4</a></p>
+    <p>WMV-Videos für Handy, TV und Online-Sharing konvertieren.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/wmv-to-mkv">WMV zu MKV</a></p>
+    <p>Windows-Media-WMV-Dateien in den MKV-Container ummuxen.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/avi-to-mkv">AVI zu MKV</a></p>
+    <p>AVI in den flexiblen MKV-Container ummuxen.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/mov-to-mkv">MOV zu MKV</a></p>
+    <p>Apple-MOV-Videos in den MKV-Container konvertieren.</p>
+  </div>
+  <div class="card">
+    <p class="card-head"><a href="/de/convert/webm-to-mkv">WebM zu MKV</a></p>
+    <p>WebM in MKV konvertieren für Untertitel und Mehrspur-Audio.</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/de/extract/mp3-from-video">MP3 extrahieren</a></p>

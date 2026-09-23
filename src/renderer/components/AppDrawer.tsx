@@ -38,6 +38,8 @@ import { useQueueStore } from '../stores/queueStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import LanguageMenu from './LanguageMenu';
 import NavJobPopover from './NavJobPopover';
+import { recordAnalyticsEvent, setAnalyticsContext } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { basenameOrEmpty as basenameOf } from '../utils/path-utils';
 import { isJobActive } from '../utils/queue-job-utils';
 import type { AppDrawerProps, NavBlipId, NavJobPopoverContent } from './types';
@@ -295,6 +297,10 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
             onClick={() => {
               closePopover();
               navigate(item.to);
+              // Journey anchor (D9): every interaction is attributed to the tool
+              // it happened in via the route badge stamped on subsequent events.
+              recordAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: item.to }));
+              setAnalyticsContext({ route: item.to, jobKind: item.to === '/batch' ? 'batch' : undefined });
               if (isMobile) onNavigate();
             }}
           >

@@ -29,6 +29,8 @@ import { loadJson, saveJson } from '../utils/storage';
 import type { ConversionProfile, ProfileCategory } from '../../shared/types';
 import { BUILTIN_PROFILES } from '../../shared/profiles';
 import { useConversionStore } from './conversionStore';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 
 const STORAGE_KEY = 'encodex-custom-profiles';
 const RECENT_KEY = 'encodex-recent-profiles';
@@ -94,6 +96,9 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
     saveCustomProfiles(customProfiles);
     set({ profiles: [...BUILTIN_PROFILES, ...customProfiles] });
     log.info('Saved custom profile', id, profile.name);
+    recordAnalyticsEvent(
+      createAnalyticsEvent('profile_created', { category: profile.category, advanced: profile.category === 'advanced' }),
+    );
     return id;
   },
 
@@ -107,15 +112,20 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
     saveCustomProfiles(customProfiles);
     set({ profiles: next });
     log.info('Updated custom profile', id);
+    recordAnalyticsEvent(createAnalyticsEvent('profile_updated', { category: updated.category }));
   },
 
   deleteCustomProfile: (id) => {
     const all = get().profiles;
+    const target = all.find((p) => p.id === id && !p.builtin);
     const next = all.filter((p) => p.id !== id || p.builtin);
     const customProfiles = next.filter((p) => !p.builtin);
     saveCustomProfiles(customProfiles);
     set({ profiles: next });
     log.info('Deleted custom profile', id);
+    if (target) {
+      recordAnalyticsEvent(createAnalyticsEvent('profile_deleted', { category: target.category, custom: true }));
+    }
   },
 
   getProfileById: (id) => get().profiles.find((p) => p.id === id),
@@ -141,6 +151,7 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
 
       get().recordRecentProfile(profile.id);
       log.info('Applied profile', profile.id, profile.name);
+      recordAnalyticsEvent(createAnalyticsEvent('profile_applied', { profileId: profile.id, category: profile.category }));
     } catch (err) {
       log.error('Failed to apply profile', profile.id, err);
     }

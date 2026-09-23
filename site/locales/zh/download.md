@@ -1,6 +1,6 @@
-# 下载 EncodeX
+# 下载 EncodeX — 免费且开源
 
-EncodeX **免费**，支持 Windows、Mac 和 Linux。一款开源 FFmpeg 图形界面——无需账号、无水印、无文件大小限制——一切都在本地完成。
+EncodeX **免费且开源**，支持 Windows、Mac 和 Linux。一款开源 FFmpeg 图形界面——无需账号、无水印、无文件大小限制——一切都在本地完成。
 
 ::: tip 第一次来？接下来会发生什么
 安装应用，把一个视频或图片拖进窗口，选择一个配置（如 MP4 或“更小文件”），然后点击 **转换**——就完成了。所有操作都在你的电脑上本地完成。
@@ -14,6 +14,8 @@ EncodeX **免费**，支持 Windows、Mac 和 Linux。一款开源 FFmpeg 图形
 **Windows 10/11 · 64 位**——适合绝大多数人。
 
 <LatestDownloads platform="windows" />
+
+**不确定？下载 x64 版本——推荐用于大多数 Windows 电脑。**
 
 **安装：** 打开下载好的文件，按屏幕提示操作。
 

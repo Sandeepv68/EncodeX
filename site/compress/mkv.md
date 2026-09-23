@@ -43,6 +43,8 @@ You can **batch-compress a whole folder** of MKV files at once, and hardware acc
 
 **Can I compress many MKV files at once?** Yes. EncodeX supports batch compressing an entire folder of MKV files.
 
+<RelatedConversions slug="compress/mkv" />
+
 ## Get Started
 
 - [Download EncodeX for free](/download)

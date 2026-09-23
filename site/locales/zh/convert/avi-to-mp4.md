@@ -36,6 +36,8 @@ EncodeX 高效地重新编码视频，让你的 **MP4 明显小于**原始 AVI�
 - **无水印**且永久免费
 - 支持 **Windows、Mac 和 Linux**
 
+<RelatedConversions slug="convert/avi-to-mp4" />
+
 ## 立即开始
 
 - [免费下载 EncodeX](/zh/download)

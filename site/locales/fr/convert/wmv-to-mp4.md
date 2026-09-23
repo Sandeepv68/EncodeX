@@ -36,6 +36,8 @@ EncodeX gère les codecs, la résolution et le débit pour vous et propose une v
 - **Sans filigrane** et gratuit pour toujours
 - Fonctionne sur **Windows, Mac et Linux**
 
+<RelatedConversions slug="convert/wmv-to-mp4" />
+
 ## Commencer
 
 - [Téléchargez EncodeX gratuitement](/fr/download)

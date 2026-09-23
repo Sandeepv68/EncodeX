@@ -30,6 +30,8 @@ import { Logger } from '../../shared/logger';
 import { loadJson, saveJson } from '../utils/storage';
 import { TERMS_VERSION } from '../../shared/terms';
 import { TERMS_ACCEPTED_STORAGE_KEY } from '../../shared/constants';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 
 const STORAGE_KEY = TERMS_ACCEPTED_STORAGE_KEY;
 
@@ -119,10 +121,12 @@ export const useTermsStore = create<TermsState>((set) => ({
     saveAcceptedRecord(record);
     set({ acceptedVersion: TERMS_VERSION, acceptedAt: record.acceptedAt, requiresAcceptance: false, dialogOpen: false });
     log.info('Terms accepted', TERMS_VERSION);
+    recordAnalyticsEvent(createAnalyticsEvent('terms_accepted', {}));
   },
 
   rejectTerms: () => {
     log.info('Terms rejected; quitting');
+    recordAnalyticsEvent(createAnalyticsEvent('terms_rejected', {}));
     window.electronAPI?.rejectTerms();
   },
 

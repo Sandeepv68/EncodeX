@@ -555,6 +555,8 @@
     "launchAtLoginHint": "Inicia o EncodeX automaticamente quando inicia sessão no seu computador.",
     "monitoringErrorReporting": "Relatórios de erros",
     "monitoringErrorReportingHint": "Ajuda a melhorar o EncodeX enviando relatórios de erros anônimos. Você pode desativar isso a qualquer momento.",
+    "telemetry": "Dados de utilização e relatórios de erros",
+    "telemetryHint": "Ajuda a melhorar o EncodeX enviando dados de utilização e relatórios de erros anônimos. Pode desativar isto a qualquer momento.",
     "mcpServer": "Servidor MCP",
     "mcpServerHint": "Permite que clientes MCP externos, como o Claude Desktop, VS Code ou Cursor, controlem o EncodeX através de uma ligação local. O servidor escuta apenas neste computador.",
     "mcpAiUseCases": "Casos de uso de IA",

@@ -545,6 +545,8 @@
     "launchAtLoginHint": "Menjalankan EncodeX secara otomatis saat Anda masuk ke komputer.",
     "monitoringErrorReporting": "Pelaporan kesalahan",
     "monitoringErrorReportingHint": "Membantu meningkatkan EncodeX dengan mengirim laporan kesalahan anonim. Anda dapat mematikan ini kapan saja.",
+    "telemetry": "Data penggunaan dan pelaporan kesalahan",
+    "telemetryHint": "Membantu meningkatkan EncodeX dengan mengirim data penggunaan dan laporan kesalahan anonim. Anda dapat mematikan ini kapan saja.",
     "mcpServer": "Server MCP",
     "mcpServerHint": "Memungkinkan klien MCP eksternal seperti Claude Desktop, VS Code, atau Cursor mengendalikan EncodeX melalui koneksi lokal. Server hanya mendengarkan di komputer ini.",
     "mcpAiUseCases": "Kasus penggunaan AI",

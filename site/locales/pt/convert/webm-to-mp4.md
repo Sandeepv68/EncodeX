@@ -36,6 +36,8 @@ O EncodeX cuida de codecs, resolução e bitrate para você e suporta **converte
 - **Sem marcas d'água** e gratuito para sempre
 - Funciona no **Windows, Mac e Linux**
 
+<RelatedConversions slug="convert/webm-to-mp4" />
+
 ## Comece agora
 
 - [Baixe o EncodeX gratuitamente](/pt/download)

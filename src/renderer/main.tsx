@@ -26,7 +26,10 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import { Logger } from '../shared/logger';
 import { addMonitoringBreadcrumb, captureException, initMonitoring } from '../shared/monitoring/MonitoringService';
 import type { MonitoringConfig } from '../shared/monitoring/types';
+import { initAnalytics } from '../shared/analytics/AnalyticsService';
+import type { AnalyticsConfig } from '../shared/analytics/types';
 import { resolveRendererMonitorProvider } from './monitoring/providerFactory';
+import { resolveRendererAnalyticsProvider } from './analytics/providerFactory';
 import App from './App';
 import i18n from './i18n/config';
 import { DirectionProvider } from './i18n/DirectionProvider';
@@ -141,11 +144,41 @@ async function bootstrapRendererMonitoring(): Promise<void> {
 }
 
 /**
- * Boots monitoring first, then mounts React once it settles. Mounting inside
- * `.finally` guarantees the app still renders even if monitoring bootstrap
- * fails unexpectedly.
+ * Initializes renderer-side usage analytics before the app is interacted with.
+ * The backend choice mirrors the main process (which owns the App Key) via
+ * `window.electronAPI.analyticsGetState()`; consent is enforced centrally by
+ * the facade. Events recorded before this settles are buffered and replayed
+ * on success, so early product events (onboarding, navigation) are not lost.
+ *
+ * @returns {Promise<void>} Resolves once init settles.
+ */
+async function bootstrapRendererAnalytics(): Promise<void> {
+  let backend = 'noop';
+  let enabled = false;
+  try {
+    const state = await window.electronAPI?.analyticsGetState();
+    backend = state?.backend ?? 'noop';
+    enabled = state?.enabled === true && backend !== 'noop';
+  } catch (err) {
+    log.warn('analyticsGetState failed, continuing without analytics:', err);
+  }
+
+  await initAnalytics(
+    {
+      enabled,
+      provider: backend,
+    } satisfies AnalyticsConfig,
+    resolveRendererAnalyticsProvider,
+  );
+}
+
+/**
+ * Boots monitoring and analytics first, then mounts React once monitoring
+ * settles. Mounting inside `.finally` guarantees the app still renders even
+ * if a bootstrap fails unexpectedly.
  * @constant
  */
+void bootstrapRendererAnalytics();
 void bootstrapRendererMonitoring().finally(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>

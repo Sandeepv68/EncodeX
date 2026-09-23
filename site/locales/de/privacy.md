@@ -16,7 +16,7 @@ EncodeX ist eine Desktop-Anwendung, die alle Medien **lokal und offline** verarb
 - **100% offline** — alle Konvertierung, Kompression und Extraktion erfolgt auf Ihrem Gerät
 - **Kein Konto** — nichts zum Anmelden, kein Profil zu pflegen
 - **Keine Uploads** — Ihre Medien werden nie an uns oder jemand anderen übertragen
-- **Keine Telemetrie in der App** — die App sendet keine Analysen über Ihre Dateien oder Nutzung
+- **Telemetrie nur mit Zustimmung** — die einzigen ausgehenden Daten sind optionale, anonyme, nur kategoriale Nutzungs- und Fehlerereignisse, die Sie in den Einstellungen abschalten können
 - **Open Source** — jeder kann genau prüfen, was die App tut
 
 ## Was wir nicht erfassen
@@ -49,8 +49,8 @@ Zur völligen Transparenz — hier sind alle Daten, die EncodeX erhebt, auf der 
 
 ### Die Desktop-App
 
-- **Fehler- und Diagnose-Meldung mit Zustimmung.** Die App kann Crash-Diagnosen und anonyme Fehlerinformationen an Sentry melden — standardmäßig **aktiviert, mit einem sichtbaren Schalter in den Einstellungen**, um sie jederzeit zu deaktivieren. Alles hängt an einem einzigen Zustimmungs-Schalter (lokal auf Ihrem Gerät gespeichert als `monitoring-consent.json`).
-- **Nur kategoriale Nutzungsereignisse.** Wenn aktiviert, zeichnet die App anonyme, nur kategoriale Ereignisse auf — etwa „Konvertierung gestartet" oder „Profil angewendet" — über denselben Breadcrumb-Kanal. Durch das Taxonomie-Design enthalten diese Daten **keine Medieninhalte, keine Dateinamen, keine Ordnerpfade und keine Dateigrößen.** Wenn Sie die Telemetrie deaktivieren, verlässt nichts Ihren Computer.
+- **Fehler- und Diagnose-Meldung mit Zustimmung.** Die App kann Crash-Diagnosen und anonyme Fehlerinformationen an Sentry melden — standardmäßig **aktiviert, mit einem sichtbaren Schalter in den Einstellungen**, um sie jederzeit zu deaktivieren. Alles hängt an einem einzigen Zustimmungs-Schalter (lokal auf Ihrem Gerät gespeichert als `monitoring-consent.json` und `analytics-consent.json`).
+- **Nur kategoriale Nutzungsereignisse.** Wenn aktiviert, zeichnet die App anonyme, nur kategoriale Ereignisse auf — etwa „Konvertierung gestartet" oder „Profil angewendet" — über einen eigenen, dedizierten Nutzungsanalyse-Kanal. Durch das Taxonomie-Design enthalten diese Daten **keine Medieninhalte, keine Dateinamen, keine Ordnerpfade und keine Dateigrößen.** Wenn Sie die Telemetrie deaktivieren, verlässt nichts Ihren Computer.
 - **Keine Uploads, keine Cloud-Verarbeitung.** Selbst mit aktivierter Telemetrie werden Ihre eigentlichen Mediendateien nie übertragen. Kodierung, Konvertierung, Komprimierung oder Extrahierung passieren vollständig auf Ihrem Gerät.
 
 ### In klaren Worten

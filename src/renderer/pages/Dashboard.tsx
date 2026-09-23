@@ -43,6 +43,8 @@ import {
   DashboardFooter,
 } from '../styles/Dashboard.styles';
 import { LOG_DASHBOARD_RENDERED } from '../../shared/log-constants';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import GettingStartedCard from '../components/GettingStartedCard';
 
 /**
@@ -158,7 +160,10 @@ export default function Dashboard() {
   useHotkeys(
     SHORTCUTS.filter((spec) => spec.section === 'dashboard' && spec.to).map((spec) => ({
       id: spec.id,
-      handler: () => navigate(spec.to!),
+      handler: () => {
+        recordAnalyticsEvent(createAnalyticsEvent('dashboard_shortcut_used', { shortcutId: spec.id }));
+        navigate(spec.to!);
+      },
     })),
   );
 
@@ -184,7 +189,12 @@ export default function Dashboard() {
                     </g>
                   ))}
                 </CardBackgroundSvg>
-                <CardLink onClick={() => navigate(item.to)}>
+                <CardLink
+                  onClick={() => {
+                    recordAnalyticsEvent(createAnalyticsEvent('dashboard_card_clicked', { route: item.to }));
+                    navigate(item.to);
+                  }}
+                >
                   <FeatureIconBox>{pageIcons[item.to]}</FeatureIconBox>
                   <CardBody>
                     <CardTitleText variant="h6" component="h2">

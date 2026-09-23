@@ -22,7 +22,9 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useToastStore } from '../stores/toastStore';
 import InfoTooltip from '../components/InfoTooltip';
 import { HWACCEL_MODES, ENCODER_TYPES } from '../../shared/hwaccel-settings';
-import { MCP_MIN_PORT, MCP_MAX_PORT } from '../../shared/mcp-settings';
+import { MCP_MIN_PORT, MCP_MAX_PORT, MCP_DEFAULT_PORT } from '../../shared/mcp-settings';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { THEMES } from '../colors';
 import type { ThemeDefinition } from '../colors';
 import type { HwAccelMode, EncoderType } from '../../shared/types';
@@ -166,8 +168,10 @@ function McpSettingsSection() {
 
   const commitPort = () => {
     const parsed = Number.parseInt(portText, 10);
-    if (Number.isInteger(parsed)) setMcpPort(parsed);
-    else setPortText(String(port));
+    if (Number.isInteger(parsed)) {
+      setMcpPort(parsed);
+      recordAnalyticsEvent(createAnalyticsEvent('mcp_port_committed', { isDefaultPort: parsed === MCP_DEFAULT_PORT }));
+    } else setPortText(String(port));
   };
 
   /**
@@ -180,6 +184,7 @@ function McpSettingsSection() {
     setTokenText(generated);
     setShowToken(false);
     setMcpToken(generated);
+    recordAnalyticsEvent(createAnalyticsEvent('mcp_token_generated', {}));
   };
 
   /**
@@ -191,6 +196,7 @@ function McpSettingsSection() {
     setTokenText('');
     setShowToken(false);
     setMcpToken('');
+    recordAnalyticsEvent(createAnalyticsEvent('mcp_token_cleared', {}));
   };
 
   const hasToken = token.length > 0;
@@ -198,12 +204,15 @@ function McpSettingsSection() {
   const authorization = `Bearer ${token}`;
 
   /**
-   * Copies a connection detail value to the clipboard and confirms with a toast.
+   * Copies a connection detail value to the clipboard, records which value type
+   * was copied, and confirms via a toast.
    * @param {string} value - The value to copy.
+   * @param {('token'|'endpoint'|'authorization')} valueType - Which kind of connection value is copied.
    * @returns {Promise<void>} Resolves once the value is copied (or fails).
    */
-  const copyConnectionValue = async (value: string): Promise<void> => {
+  const copyConnectionValue = async (value: string, valueType: 'token' | 'endpoint' | 'authorization'): Promise<void> => {
     await navigator.clipboard.writeText(value);
+    recordAnalyticsEvent(createAnalyticsEvent('mcp_connection_value_copied', { valueType }));
     useToastStore.getState().success(t('settings.mcpCopied'));
   };
 
@@ -213,7 +222,10 @@ function McpSettingsSection() {
         <ToggleRow>
           <Switch
             checked={enabled}
-            onChange={(e) => setMcpEnabled(e.target.checked)}
+            onChange={(e) => {
+              setMcpEnabled(e.target.checked);
+              recordAnalyticsEvent(createAnalyticsEvent('mcp_server_toggled', { enabled: e.target.checked }));
+            }}
             slotProps={{ input: { 'aria-label': t('settings.mcpServer'), 'data-testid': 'settings-mcp-server' } }}
           />
           <SettingLabel text={t('settings.mcpServer')} hint={t('settings.mcpServerHint')} />
@@ -291,7 +303,12 @@ function McpSettingsSection() {
             )}
             {hasToken && (
               <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <CopyButton value={token} label={t('settings.mcpCopy')} testId="settings-mcp-token-copy" onCopy={copyConnectionValue} />
+                <CopyButton
+                  value={token}
+                  label={t('settings.mcpCopy')}
+                  testId="settings-mcp-token-copy"
+                  onCopy={(v) => copyConnectionValue(v, 'token')}
+                />
                 <Tooltip title={t('settings.mcpTokenClear')}>
                   <IconButton
                     size="small"
@@ -317,7 +334,12 @@ function McpSettingsSection() {
               data-testid="settings-mcp-endpoint"
               slotProps={{ htmlInput: { 'aria-label': t('settings.mcpEndpoint'), readOnly: true } }}
             />
-            <CopyButton value={endpoint} label={t('settings.mcpCopy')} testId="settings-mcp-copy-endpoint" onCopy={copyConnectionValue} />
+            <CopyButton
+              value={endpoint}
+              label={t('settings.mcpCopy')}
+              testId="settings-mcp-copy-endpoint"
+              onCopy={(v) => copyConnectionValue(v, 'endpoint')}
+            />
           </McpValueRow>
         </ModeSettingsSection>
       )}
@@ -331,7 +353,12 @@ function McpSettingsSection() {
               data-testid="settings-mcp-authorization"
               slotProps={{ htmlInput: { 'aria-label': t('settings.mcpAuthorization'), readOnly: true } }}
             />
-            <CopyButton value={authorization} label={t('settings.mcpCopy')} testId="settings-mcp-copy-token" onCopy={copyConnectionValue} />
+            <CopyButton
+              value={authorization}
+              label={t('settings.mcpCopy')}
+              testId="settings-mcp-copy-token"
+              onCopy={(v) => copyConnectionValue(v, 'authorization')}
+            />
           </McpValueRow>
         </ModeSettingsSection>
       )}
@@ -368,7 +395,7 @@ export default function Settings() {
   const setEncoderType = useSettingsStore((s) => s.setEncoderType);
   const setAlwaysOnTop = useSettingsStore((s) => s.setAlwaysOnTop);
   const setLaunchAtLogin = useSettingsStore((s) => s.setLaunchAtLogin);
-  const setMonitoringEnabled = useSettingsStore((s) => s.setMonitoringEnabled);
+  const setTelemetryEnabled = useSettingsStore((s) => s.setTelemetryEnabled);
 
   return (
     <SettingsRoot>
@@ -402,7 +429,10 @@ export default function Settings() {
         <ToggleRow>
           <Switch
             checked={alwaysOnTop}
-            onChange={(e) => setAlwaysOnTop(e.target.checked)}
+            onChange={(e) => {
+              setAlwaysOnTop(e.target.checked);
+              recordAnalyticsEvent(createAnalyticsEvent('always_on_top_toggled', { enabled: e.target.checked }));
+            }}
             slotProps={{ input: { 'aria-label': t('settings.alwaysOnTop'), 'data-testid': 'settings-always-on-top' } }}
           />
           <SettingLabel text={t('settings.alwaysOnTop')} hint={t('settings.alwaysOnTopHint')} />
@@ -412,7 +442,10 @@ export default function Settings() {
         <ToggleRow>
           <Switch
             checked={launchAtLogin}
-            onChange={(e) => setLaunchAtLogin(e.target.checked)}
+            onChange={(e) => {
+              setLaunchAtLogin(e.target.checked);
+              recordAnalyticsEvent(createAnalyticsEvent('launch_at_login_toggled', { enabled: e.target.checked }));
+            }}
             slotProps={{ input: { 'aria-label': t('settings.launchAtLogin'), 'data-testid': 'settings-launch-at-login' } }}
           />
           <SettingLabel text={t('settings.launchAtLogin')} hint={t('settings.launchAtLoginHint')} />
@@ -422,12 +455,12 @@ export default function Settings() {
         <ToggleRow>
           <Switch
             checked={monitoringEnabled}
-            onChange={(e) => setMonitoringEnabled(e.target.checked)}
+            onChange={(e) => setTelemetryEnabled(e.target.checked)}
             slotProps={{
-              input: { 'aria-label': t('settings.monitoringErrorReporting'), 'data-testid': 'settings-monitoring-error-reporting' },
+              input: { 'aria-label': t('settings.telemetry'), 'data-testid': 'settings-monitoring-error-reporting' },
             }}
           />
-          <SettingLabel text={t('settings.monitoringErrorReporting')} hint={t('settings.monitoringErrorReportingHint')} />
+          <SettingLabel text={t('settings.telemetry')} hint={t('settings.telemetryHint')} />
         </ToggleRow>
       </SettingsSection>
       <McpSettingsSection />
@@ -469,7 +502,10 @@ export default function Settings() {
             data-testid="settings-encoder-type"
             slotProps={{ htmlInput: { 'aria-label': t('settings.encoderType') } }}
             value={encoderType}
-            onChange={(e) => setEncoderType(e.target.value as EncoderType)}
+            onChange={(e) => {
+              setEncoderType(e.target.value as EncoderType);
+              recordAnalyticsEvent(createAnalyticsEvent('encoder_type_changed', { encoderType: e.target.value as EncoderType }));
+            }}
           >
             {ENCODER_TYPES.map((type) => (
               <MenuItem key={type} value={type}>

@@ -44,6 +44,8 @@ WebM **VP9** और नए **AV1** कोडेक पर आधारित ह
 
 **क्या मैं एक साथ कई MKV फ़ाइलें बदल सकता हूँ?** हाँ। EncodeX MKV फ़ाइलों के पूरे फ़ोल्डर को WebM में बैच कनवर्ट करने का समर्थन करता है।
 
+<RelatedConversions slug="convert/mkv-to-webm" />
+
 ## शुरू करें
 
 - [EncodeX मुफ़्त में डाउनलोड करें](/hi/download)

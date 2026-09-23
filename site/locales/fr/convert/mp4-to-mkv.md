@@ -44,6 +44,8 @@ Vous pouvez même **convertir par lots** un dossier entier de fichiers MP4 en MK
 
 **Puis-je convertir plusieurs fichiers MP4 en même temps ?** Oui. EncodeX prend en charge la conversion par lots d'un dossier entier de fichiers MP4 en MKV.
 
+<RelatedConversions slug="convert/mp4-to-mkv" />
+
 ## Commencez
 
 - [Téléchargez EncodeX gratuitement](/fr/download)

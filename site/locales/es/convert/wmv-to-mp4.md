@@ -36,6 +36,8 @@ EncodeX maneja los códecs, la resolución y la tasa de bits por ti y ofrece **c
 - **Sin marcas de agua** y gratis para siempre
 - Funciona en **Windows, Mac y Linux**
 
+<RelatedConversions slug="convert/wmv-to-mp4" />
+
 ## Empieza
 
 - [Descarga EncodeX gratis](/es/download)

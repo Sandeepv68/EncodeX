@@ -77,11 +77,15 @@ import {
   LOG_SET_TRANSCODER,
   LOG_SET_WHEN_DONE,
   LOG_SET_MONITORING_ENABLED,
+  LOG_SET_TELEMETRY_ENABLED,
   LOG_SET_MCP_ENABLED,
   LOG_SET_MCP_PORT,
   LOG_SET_MCP_TOKEN,
 } from '../../shared/log-constants';
 import { clamp } from '../../shared/math';
+import { recordAnalyticsEvent, setAnalyticsEnabled as enableAnalyticsFacade } from '../../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../../shared/analytics/events';
+import pkg from '../../../package.json';
 
 /**
  * Per-store logger for the settings store.
@@ -251,6 +255,9 @@ function persistWhenDone(config: { enabled: boolean; action: WhenDoneAction; for
  * singleton consumed by the settings UI and the conversion form.
  * @const {UseBoundStore<StoreApi<SettingsState>>} useSettingsStore
  */
+/** App version used to stamp telemetry consent events. @const {string} */
+const APP_VERSION = pkg.version;
+
 export const useSettingsStore = create<SettingsState>((set) => ({
   transcoder: TRANSCODER_TYPES[0],
   /**
@@ -275,6 +282,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       persistHwAccel(enabled, state.hwaccelMode, state.encoderType);
       return { hardwareAcceleration: enabled };
     });
+    recordAnalyticsEvent(createAnalyticsEvent('hwaccel_toggled', { enabled }));
   },
   /**
    * Sets the hardware acceleration mode and persists the change to localStorage,
@@ -287,6 +295,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       persistHwAccel(state.hardwareAcceleration, mode, state.encoderType);
       return { hwaccelMode: mode };
     });
+    recordAnalyticsEvent(createAnalyticsEvent('hwaccel_mode_changed', { mode }));
   },
   /**
    * Sets the encoder preference and persists the change to localStorage, keeping
@@ -341,6 +350,37 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       ?.monitoringSetEnabled(enabled)
       .then((result) => set({ monitoringEnabled: result.enabled }))
       .catch((err) => log.warn(LOG_SET_MONITORING_ENABLED, 'failed:', err));
+  },
+  analyticsEnabled: true,
+  /**
+   * Toggles the combined usage-telemetry consent (D1 single switch). Enabling
+   * persists consent via the main process and re-activates both the analytics
+   * and monitoring backends, then records the `telemetry_opt_in` event through
+   * the now-active facade. Disabling records `telemetry_opt_out` first (so the
+   * event is not lost once consent is off), then shuts both backends down. The
+   * authoritative results from both IPC calls are adopted into the store.
+   * @param {boolean} enabled - True to allow usage analytics + error reporting.
+   */
+  setTelemetryEnabled: (enabled) => {
+    log.debug(LOG_SET_TELEMETRY_ENABLED, enabled);
+    const apply = async () => {
+      const [analyticsState, monitoringState] = await Promise.all([
+        window.electronAPI?.analyticsSetEnabled(enabled) ?? Promise.resolve({ enabled, backend: 'noop' }),
+        window.electronAPI?.monitoringSetEnabled(enabled) ?? Promise.resolve({ enabled }),
+      ]);
+      await enableAnalyticsFacade(enabled);
+      set({ analyticsEnabled: analyticsState.enabled, monitoringEnabled: monitoringState.enabled });
+    };
+    if (enabled) {
+      void apply()
+        .then(() => {
+          recordAnalyticsEvent(createAnalyticsEvent('telemetry_opt_in', { version: APP_VERSION }));
+        })
+        .catch((err) => log.warn(LOG_SET_TELEMETRY_ENABLED, 'failed:', err));
+    } else {
+      recordAnalyticsEvent(createAnalyticsEvent('telemetry_opt_out', { version: APP_VERSION }));
+      void apply().catch((err) => log.warn(LOG_SET_TELEMETRY_ENABLED, 'failed:', err));
+    }
   },
   mcpEnabled: storedMcp.enabled,
   mcpPort: storedMcp.port,
@@ -436,6 +476,18 @@ if (typeof window !== 'undefined' && window.electronAPI?.monitoringGetState) {
     .monitoringGetState()
     .then((state) => useSettingsStore.setState({ monitoringEnabled: state.enabled }))
     .catch((err) => log.warn('Failed to hydrate monitoring consent:', err));
+}
+
+/**
+ * Hydrates the usage-analytics consent flag from the main process, which owns
+ * the persisted consent file. Runs once at module load; failures leave the
+ * optimistic default (enabled) in place.
+ */
+if (typeof window !== 'undefined' && window.electronAPI?.analyticsGetState) {
+  window.electronAPI
+    .analyticsGetState()
+    .then((state) => useSettingsStore.setState({ analyticsEnabled: state.enabled }))
+    .catch((err) => log.warn('Failed to hydrate analytics consent:', err));
 }
 
 /**

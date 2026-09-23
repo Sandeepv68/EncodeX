@@ -125,6 +125,8 @@ Object.defineProperty(globalThis, 'electronAPI', {
     setLaunchAtLogin: vi.fn(),
     monitoringGetState: vi.fn().mockResolvedValue({ enabled: true, backend: 'noop' }),
     monitoringSetEnabled: vi.fn().mockResolvedValue({ enabled: true, backend: 'noop' }),
+    analyticsGetState: vi.fn().mockResolvedValue({ enabled: true, backend: 'noop' }),
+    analyticsSetEnabled: vi.fn().mockResolvedValue({ enabled: true, backend: 'noop' }),
     mcpGetSettings: vi.fn().mockResolvedValue({ enabled: false, port: 8765, token: '' }),
     mcpSetSettings: vi.fn().mockImplementation((settings) => Promise.resolve(settings)),
     onWindowMaximizedChange: vi.fn(() => vi.fn()),

@@ -77,3 +77,5 @@ HandBrake 是一款流行的免费视频转码器 — 尤其因其光盘提取�
 - [查看所有转换和功能](/zh/features)
 - [了解 FFmpeg 是什么](/zh/learn/what-is-ffmpeg)
 - [选择正确的视频格式](/zh/learn/what-format-to-use)
+- [阅读：2026 年最佳 HandBrake 替代品](/zh/blog/posts/handbrake-alternative-guide)
+- [阅读：2026 最佳免费视频转换器](/zh/blog/posts/best-free-video-converter-2026)

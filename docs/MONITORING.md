@@ -63,11 +63,16 @@ npx @electron/rebuild -f -w @sentry/node-cpu-profiler
 ## Privacy & consent
 
 - Reporting is **on by default** but fully user-controllable via _Settings →
-  Error reporting_. The toggle persists to `userData/monitoring-consent.json`,
-  which both GUI and CLI honor at boot.
+  Usage data & error reporting_. The toggle persists to
+  `userData/monitoring-consent.json` (and the sibling
+  `userData/analytics-consent.json` used by the usage-analytics layer, which
+  is seeded from it); both GUI and CLI honor them at boot.
 - Turning it off closes the backend at runtime; nothing is captured afterwards.
 - No PII is sent by default (`sendDefaultPii: false`); user identity is only set
   if the app explicitly provides it.
+- Since 1.0.0-beta.4, product usage events no longer ride the Sentry breadcrumb
+  channel. They were moved onto a dedicated, provider-agnostic analytics layer
+  (`docs/ANALYTICS.md`) that records anonymous categorical events only.
 
 ## Swapping backends later
 

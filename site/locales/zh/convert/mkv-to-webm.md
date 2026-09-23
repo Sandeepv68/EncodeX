@@ -44,6 +44,8 @@ WebM 基于 **VP9** 和更新的 **AV1** 编码，在画质相近时通常能提
 
 **我可以一次转换多个 MKV 文件吗？** 可以。EncodeX 支持将整个文件夹的 MKV 文件批量转换为 WebM。
 
+<RelatedConversions slug="convert/mkv-to-webm" />
+
 ## 立即开始
 
 - [免费下载 EncodeX](/zh/download)

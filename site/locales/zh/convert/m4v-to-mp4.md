@@ -38,6 +38,8 @@ EncodeX 为你选择合适的编解码器、分辨率和码率，并支持**批�
 - **无水印**且永久免费
 - 支持 **Windows、Mac 和 Linux**
 
+<RelatedConversions slug="convert/m4v-to-mp4" />
+
 ## 立即开始
 
 - [免费下载 EncodeX](/zh/download)

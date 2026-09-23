@@ -44,6 +44,8 @@ You can even **batch-convert** a whole folder of MP4 files to MKV in one go.
 
 **Can I convert many MP4 files at once?** Yes. EncodeX supports batch converting an entire folder of MP4 files to MKV.
 
+<RelatedConversions slug="convert/mp4-to-mkv" />
+
 ## Get Started
 
 - [Download EncodeX for free](/download)

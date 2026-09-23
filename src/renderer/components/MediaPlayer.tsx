@@ -88,7 +88,7 @@ const MediaPlayer = memo(
      *   (see {@link MediaPlayerHandle}) exposing seekTo to parent components.
      * @returns {JSX.Element} The player canvas and transport controls.
      */
-    function MediaPlayer({ filePath, onTimeUpdate, onDurationChange, onMediaInfo }: MediaPlayerProps, ref) {
+    function MediaPlayer({ filePath, onTimeUpdate, onDurationChange, onMediaInfo, onTogglePlay }: MediaPlayerProps, ref) {
       const { t } = useTranslation();
       /**
        * Reference to the <canvas> element decoded frames are drawn into.
@@ -795,6 +795,7 @@ const MediaPlayer = memo(
           closeAudio();
           setIsPlaying(false);
           window.electronAPI.playerClose();
+          onTogglePlay?.(false);
           return;
         }
         resetToStartRef.current = false;
@@ -808,6 +809,7 @@ const MediaPlayer = memo(
           runPlayerCommand(window.electronAPI.playerOpen(filePath));
         }
         setIsPlaying(true);
+        onTogglePlay?.(true);
       };
 
       /**

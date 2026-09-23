@@ -44,6 +44,8 @@ EncodeX kümmert sich um Codecs, Auflösung und Bitrate und bietet echte **Stape
 
 **Kann ich viele WMV-Dateien auf einmal konvertieren?** Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners mit WMV-Dateien zu MKV.
 
+<RelatedConversions slug="convert/wmv-to-mkv" />
+
 ## Loslegen
 
 - [EncodeX kostenlos herunterladen](/de/download)

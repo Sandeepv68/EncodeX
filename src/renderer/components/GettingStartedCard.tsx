@@ -125,6 +125,16 @@ export default function GettingStartedCard(): ReactElement | null {
     navigate(spec.to);
   }
 
+  /**
+   * Records the `onboarding_dismissed` event and hides the card without picking
+   * a goal, so users who solve it themselves are never pushed again.
+   * @returns {void}
+   */
+  function handleDismiss(): void {
+    recordAnalyticsEvent(createAnalyticsEvent('onboarding_dismissed', { version: APP_VERSION }));
+    resolve();
+  }
+
   return (
     <GettingStartedRoot data-testid="getting-started-card">
       <GettingStartedHeader>
@@ -135,7 +145,7 @@ export default function GettingStartedCard(): ReactElement | null {
           </GettingStartedTitle>
           <GettingStartedBody variant="body2">{t('gettingStarted.body')}</GettingStartedBody>
         </div>
-        <DismissButton size="small" aria-label={t('gettingStarted.dismiss')} onClick={resolve} data-testid="getting-started-dismiss">
+        <DismissButton size="small" aria-label={t('gettingStarted.dismiss')} onClick={handleDismiss} data-testid="getting-started-dismiss">
           <FontAwesomeIcon icon={faXmark} />
         </DismissButton>
       </GettingStartedHeader>

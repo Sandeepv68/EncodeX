@@ -36,6 +36,8 @@ EncodeX re-encode la vidéo efficacement pour que votre **MP4 soit nettement plu
 - **Sans filigrane** et gratuit pour toujours
 - Fonctionne sur **Windows, Mac et Linux**
 
+<RelatedConversions slug="convert/avi-to-mp4" />
+
 ## Commencer
 
 - [Téléchargez EncodeX gratuitement](/fr/download)

@@ -20,6 +20,7 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 - [[Project-Structure]] — Full directory tree with annotations
 - [[Update-Manager]] — In-app update manager implementation
 - [[Monitoring]] — Provider-agnostic error monitoring (Sentry-backed)
+- [[Analytics]] — Anonymous, categorical-only usage analytics (Aptabase-backed)
 
 ## 🧪 Quality
 
