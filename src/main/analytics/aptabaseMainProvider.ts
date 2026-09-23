@@ -23,8 +23,9 @@
  *    semantics (D7).
  *  - `trackEvent(name, props)` accepts only string/number/boolean props and
  *    buffers events emitted before init completes; the buffer drains on init.
- *  - The App Key is read from config (runtime env `APTABASE_APP_KEY`); it
- *    never leaves the main process.
+ *  - The App Key is read from config (runtime env `APTABASE_APP_KEY` falling
+ *    back to the build-time `APTABASE_BUILD_CONFIG`); it never leaves the
+ *    main process.
  *
  * The App Key format is validated by the provider factory
  * (`providerFactory.isValidAptabaseAppKey`, mirroring the SDK's

@@ -11,7 +11,7 @@
 npm install
 ```
 
-This installs all dependencies including `ffmpeg-static` and `ffprobe-static`, which download platform-specific binaries during their postinstall scripts. The `prepare` hook also runs `npm run gen:sentry-config`, which bakes the Sentry DSN (if present in `.env`) into a git-ignored `src/main/generated/sentryBuildConfig.ts`.
+This installs all dependencies including `ffmpeg-static` and `ffprobe-static`, which download platform-specific binaries during their postinstall scripts. The `prepare` hook also runs `npm run gen:sentry-config` and `npm run gen:aptabase-config`, which bake the Sentry DSN and Aptabase App Key (if present in `.env`) into git-ignored files under `src/main/generated/`.
 
 ## 🧑‍💻 Development
 
@@ -57,7 +57,7 @@ The MCP server entry (`dist/mcp/index.js`) is produced by `npm run build:main` a
 | `npm run build:renderer` | Vite production build — outputs to `dist/renderer/`         |
 | `npm run build:main`     | `tsc -p tsconfig.main.json` — outputs to `dist/main/`       |
 | `npm run build:preload`  | `tsc -p tsconfig.preload.json` — outputs to `dist/preload/` |
-| `npm run build`          | All three in sequence (after `gen:sentry-config`)           |
+| `npm run build`          | All three in sequence (after `gen:sentry-config` and `gen:aptabase-config`) |
 | `npm run start`          | Launch compiled app from `dist/` via `electron .`           |
 | `npm run electron:dev`   | Vite + Electron dev environment                             |
 | `npm run dev:start`      | Build then launch                                           |
