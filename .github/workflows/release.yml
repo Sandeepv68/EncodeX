@@ -133,9 +133,11 @@ jobs:
           cat SHA256SUMS.txt
       - name: Compute artifact digests
         id: subject
+        shell: bash
         run: |
+          set -euo pipefail
           cd release-artifacts
-          DIGESTS=$(node -e "const fs=require('fs');const cp=require('child_process');const files=fs.readdirSync('.').filter(f=>fs.statSync(f).isFile()).sort();const out=files.map(f=>'sha256:'+cp.execFileSync('sha256sum',[f]).toString().split(/\s+/)[0]);process.stdout.write(Buffer.from(JSON.stringify(out)).toString('base64'))")
+          DIGESTS=$(sha256sum -- * | base64 -w0)
           echo "subject=$DIGESTS" >> "$GITHUB_OUTPUT"
       - name: Generate CycloneDX SBOM
         uses: anchore/sbom-action@v0
