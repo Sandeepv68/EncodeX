@@ -34,11 +34,7 @@
 
 import { Logger } from '../../shared/logger';
 import { protocol } from 'electron';
-import {
-  LOG_ANALYTICS_CLOSE_FAILED,
-  LOG_ANALYTICS_INIT_FAILED,
-  LOG_ANALYTICS_TRACK_FAILED,
-} from '../../shared/log-constants';
+import { LOG_ANALYTICS_CLOSE_FAILED, LOG_ANALYTICS_INIT_FAILED, LOG_ANALYTICS_TRACK_FAILED } from '../../shared/log-constants';
 import { ANALYTICS_EVENT_GROUP } from '../../shared/analytics/events';
 import type { AnalyticsEvent } from '../../shared/analytics/events';
 import type { AnalyticsConfig, AnalyticsProvider } from '../../shared/analytics/types';
