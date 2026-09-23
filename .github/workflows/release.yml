@@ -42,10 +42,6 @@ jobs:
           - os: windows
             runner: windows-latest
             target: nsis
-            arch: ia32
-          - os: windows
-            runner: windows-latest
-            target: nsis
             arch: arm64
           - os: macos
             runner: macos-latest
@@ -65,11 +61,6 @@ jobs:
             builder-os: linux
             target: appimage
             arch: arm64
-          - os: ubuntu
-            runner: ubuntu-latest
-            builder-os: linux
-            target: appimage
-            arch: armv7l
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
     steps:
@@ -85,22 +76,29 @@ jobs:
         run: npm run dist -- --${{ matrix.builder-os || matrix.os }} ${{ matrix.target }} --${{ matrix.arch }} --publish never
       - name: Smoke test compiled MCP server
         run: npm run mcp:smoke
+      - name: Stage installers
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          mkdir -p staging
+          installers=(release/*.exe release/*.dmg release/*.AppImage)
+          if [ "${#installers[@]}" -eq 0 ]; then
+            echo "::error::No installer artifacts produced in release/"
+            exit 1
+          fi
+          cp "${installers[@]}" staging/
       - name: Upload installers
         uses: actions/upload-artifact@v4
         with:
           name: release-${{ matrix.os }}-${{ matrix.arch }}
-          path: |
-            release/*.exe
-            release/*.dmg
-            release/*.AppImage
-            release/*.blockmap
-            release/*.zip
-            release/*.tar.gz
+          path: staging/
           if-no-files-found: error
 
   publish:
     name: Publish draft release
     needs: [package]
+    if: ${{ needs.package.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
@@ -112,9 +110,19 @@ jobs:
           path: release-artifacts
           merge-multiple: true
       - name: Generate SHA256SUMS.txt
+        shell: bash
         run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          files=(release-artifacts/*)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "::error::No release artifacts were downloaded"
+            exit 1
+          fi
+
           cd release-artifacts
-          sha256sum * > SHA256SUMS.txt
+          sha256sum -- * > SHA256SUMS.txt
           cat SHA256SUMS.txt
       - name: Compute artifact digests
         id: subject
