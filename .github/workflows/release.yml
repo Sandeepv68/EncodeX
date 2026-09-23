@@ -66,9 +66,10 @@ jobs:
     env:
       # Baked into the packaged app at build time by gen:*-config.
       APTABASE_APP_KEY: ${{ secrets.APTABASE_APP_KEY }}
-      APTABASE_ENVIRONMENT: production
+      APTABASE_HOST: ${{ secrets.APTABASE_HOST }}
+      APTABASE_ENVIRONMENT: ${{ secrets.APTABASE_ENVIRONMENT }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-      SENTRY_ENVIRONMENT: production
+      SENTRY_ENVIRONMENT: ${{ secrets.SENTRY_ENVIRONMENT }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
