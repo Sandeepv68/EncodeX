@@ -18,7 +18,62 @@ export interface ReleaseData {
   fetchedAt: string;
 }
 
+import packageJson from '../../../package.json';
+
 export const REPO = 'Sandeepv68/EncodeX';
+
+export const PRODUCT_NAME = 'EncodeX';
+export const APP_VERSION: string = (packageJson as { version?: string }).version || '0.0.0';
+
+// GitHub always resolves this host-relative path to whatever the current
+// "latest" release asset is, so a link built from it keeps working between
+// releases and never needs an API round-trip. It is the last line of defence
+// when the API is unavailable at build time AND at runtime.
+export const LATEST_DOWNLOAD_BASE = `https://github.com/${REPO}/releases/latest/download`;
+
+// Mirror of the electron-builder `artifactName` templates in package.json so
+// the deterministic fallback names exactly match the real asset names.
+const FALLBACK_ASSET_NAMES: Record<string, string> = {
+  'win-x64': `${PRODUCT_NAME}-${APP_VERSION}-x64-setup.exe`,
+  'win-ia32': `${PRODUCT_NAME}-${APP_VERSION}-ia32-setup.exe`,
+  'win-arm64': `${PRODUCT_NAME}-${APP_VERSION}-arm64-setup.exe`,
+  'mac-arm64': `${PRODUCT_NAME}-${APP_VERSION}-arm64.dmg`,
+  'mac-x64': `${PRODUCT_NAME}-${APP_VERSION}-x64.dmg`,
+  'linux-x86_64': `${PRODUCT_NAME}-${APP_VERSION}-x86_64.AppImage`,
+  'linux-arm64': `${PRODUCT_NAME}-${APP_VERSION}-arm64.AppImage`,
+  'linux-armv7l': `${PRODUCT_NAME}-${APP_VERSION}-armv7l.AppImage`,
+};
+
+/**
+ * A release snapshot that needs no network at all: every download URL points
+ * at GitHub's `releases/latest/download/<asset>` redirect. Size, checksum and
+ * download counts are unknown (zero) and are simply not rendered until a real
+ * API response upgrades them.
+ * @returns {ReleaseData}
+ */
+export function buildFallbackRelease(): ReleaseData {
+  const assets: Record<string, ReleaseAsset> = {};
+  for (const [key, name] of Object.entries(FALLBACK_ASSET_NAMES)) {
+    assets[key] = {
+      key,
+      name,
+      url: `${LATEST_DOWNLOAD_BASE}/${name}`,
+      size: 0,
+      sha256: null,
+      downloads: 0,
+    };
+  }
+  return {
+    tag: `v${APP_VERSION}`,
+    version: APP_VERSION,
+    name: `${PRODUCT_NAME} ${APP_VERSION}`,
+    publishedAt: '',
+    htmlUrl: `https://github.com/${REPO}/releases`,
+    prerelease: true,
+    assets,
+    fetchedAt: new Date().toISOString(),
+  };
+}
 
 const ARTIFACT_PATTERNS: Array<[RegExp, string]> = [
   [/^EncodeX-[\w.+~-]+-x64-setup\.exe$/, 'win-x64'],
@@ -135,13 +190,21 @@ function apiHeaders(): Record<string, string> {
 }
 
 export async function fetchLatestRelease(): Promise<ReleaseData> {
-  const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
+  // Uses the releases list (newest first) instead of `/releases/latest`, which
+  // returns 404 when every release is marked prerelease (common for beta
+  // products). The list endpoint resolves the newest release in every case.
+  const res = await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=1`, {
     headers: apiHeaders(),
   });
   if (!res.ok) {
     throw new Error(`GitHub API responded ${res.status} while fetching latest release`);
   }
-  return normalizeRelease((await res.json()) as GitHubRelease, new Date().toISOString());
+  const list = (await res.json()) as GitHubRelease[];
+  const first = list.find((rel) => !rel.draft);
+  if (!first) {
+    throw new Error('GitHub returned no published releases');
+  }
+  return normalizeRelease(first, new Date().toISOString());
 }
 
 export async function fetchReleases(perPage = 100): Promise<ReleaseData[]> {
