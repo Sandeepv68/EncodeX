@@ -2,6 +2,7 @@ declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void
     dataLayer?: unknown[]
+    ENCODEX_ADS?: { id: string; conversions?: Record<string, string> }
   }
 }
 
@@ -74,7 +75,21 @@ export function trackDownloadConversion(platform: string, fileName: string, vers
     platform,
     file_name: fileName,
     version,
+    page_location: typeof window !== 'undefined' ? window.location.href : '',
   })
+
+  // Google Ads conversion tag — fires only when GOOGLE_ADS_CONVERSION_ID is
+  // set at build time (see site/.vitepress/config.mts head). Nothing is sent
+  // from the site until the Ads account + conversion action exist.
+  const ads = typeof window !== 'undefined' ? window.ENCODEX_ADS : undefined
+  if (ads?.id) {
+    const label = ads.conversions?.download || 'undefined'
+    gtag('event', 'conversion', {
+      send_to: `${ads.id}/${label}`,
+      value: 0,
+      currency: 'USD',
+    })
+  }
 }
 
 // ── Scroll depth tracking ────────────────────────────────────

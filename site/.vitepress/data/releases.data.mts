@@ -1,5 +1,5 @@
 import { defineLoader } from 'vitepress'
-import { fetchReleases, type ReleaseData } from './releaseShared'
+import { buildFallbackRelease, fetchReleases, type ReleaseData } from './releaseShared'
 
 export type { ReleaseData, ReleaseAsset } from './releaseShared'
 
@@ -11,10 +11,10 @@ export default defineLoader({
       return await fetchReleases()
     } catch (error) {
       console.warn(
-        '[releases.data] Could not fetch releases at build time; previous versions will be resolved on the client.',
+        '[releases.data] Could not fetch releases at build time; falling back to deterministic latest-download links.',
         error instanceof Error ? error.message : error,
       )
-      return null
+      return [buildFallbackRelease()]
     }
   },
 })

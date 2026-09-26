@@ -7,6 +7,13 @@ const SITE_URL = 'https://encodex.in';
 
 const SITE_VERSION: string = (packageJson as { version?: string }).version || '1.0.0-beta.2';
 
+// Optional Google Ads conversion tag. Set GOOGLE_ADS_CONVERSION_ID (AW-…) and
+// GOOGLE_ADS_CONVERSION_LABEL in the build environment to enable it. The site
+// stays plain GA4-only until then — no download conversion event leaves the
+// page without these two variables.
+const ADS_ID: string = (process.env.GOOGLE_ADS_CONVERSION_ID || '').trim();
+const ADS_LABEL: string = (process.env.GOOGLE_ADS_CONVERSION_LABEL || '').trim();
+
 const localeLangMap: Record<string, string> = {
   '': 'en',
   es: 'es',
@@ -4881,6 +4888,22 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-SM28DL4DYR');`,
     ],
+    ...(ADS_ID
+      ? [
+          ['script', { async: '', src: `https://www.googletagmanager.com/gtag/js?id=${ADS_ID}` }] as [
+            string,
+            Record<string, string | boolean>,
+          ],
+          [
+            'script',
+            {},
+            `window.ENCODEX_ADS = ${JSON.stringify({
+              id: ADS_ID,
+              conversions: { download: ADS_LABEL || 'undefined' },
+            })}; gtag('config', '${ADS_ID}');`,
+          ],
+        ]
+      : []),
   ],
   transformHead: (context) => {
     const head: [string, Record<string, string | boolean>][] = [];

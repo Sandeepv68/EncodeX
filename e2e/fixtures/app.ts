@@ -49,6 +49,15 @@ export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}, terms: 'a
   return { ...env, ...extra };
 }
 
+/**
+ * Chromium switches forced for every GUI e2e launch. Canvas-heavy specs (e.g.
+ * video-cut) route compositing through Chromium's GPU process, which crashes
+ * randomly on headless Windows CI runners; the CLI harness already disables the
+ * GPU for the same reason (see e2e/cli.spec.ts).
+ * @const {string[]} CHROMIUM_STABILITY_ARGS
+ */
+const CHROMIUM_STABILITY_ARGS = ['--disable-gpu', '--disable-software-rasterizer'];
+
 /** Creates a throwaway Chromium/Electron user data directory for isolation. */
 export function createUserDataDir(): string {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-e2e-'));
@@ -69,7 +78,7 @@ export async function launchApp(options: LaunchOptions = {}): Promise<AppSession
   const userDataDir = createUserDataDir();
 
   const app = await _electron.launch({
-    args: [getBuildPaths().mainEntry, `--user-data-dir=${userDataDir}`, ...args],
+    args: [getBuildPaths().mainEntry, `--user-data-dir=${userDataDir}`, ...CHROMIUM_STABILITY_ARGS, ...args],
     cwd: getBuildPaths().root,
     env: buildEnv(mock, env, terms),
   });

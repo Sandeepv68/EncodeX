@@ -21,9 +21,11 @@
           <div class="dl-rel-main">
             <code class="dl-file">{{ asset.name }}</code>
             <div class="dl-meta">
-              <span>{{ formatSize(asset.size) }}</span>
-              <template v-if="asset.downloads > 0">
+              <template v-if="hasSize(asset)">
+                <span>{{ formatSize(asset.size) }}</span>
                 <span aria-hidden="true">·</span>
+              </template>
+              <template v-if="asset.downloads > 0">
                 <span>{{ t.downloadsCount.replace('{n}', formatCount(asset.downloads)) }}</span>
               </template>
               <template v-if="asset.sha256">
@@ -38,7 +40,7 @@
               </template>
             </div>
           </div>
-          <a class="dl-btn dl-btn-sm" :href="asset.url" @click="trackDownload(osOf(asset.key), asset.name, rel.tag); trackDownloadConversion(osOf(asset.key), asset.name, rel.tag)">{{ t.download }}</a>
+          <a class="dl-btn dl-btn-sm" :href="asset.url" @click="trackDownload(platformOf(asset.key), asset.name, rel.tag); trackDownloadConversion(platformOf(asset.key), asset.name, rel.tag)">{{ t.download }}</a>
         </div>
       </div>
     </details>
@@ -51,7 +53,7 @@
         <div class="dl-primary-info">
           <span class="dl-badge">✓ {{ t.recommended }}</span>
           <p class="dl-primary-title">{{ primaryLabel }}</p>
-          <p class="dl-primary-meta">{{ primaryRow.chip }} · {{ formatSize(primaryRow.asset.size) }} · {{ primaryRow.description }}</p>
+          <p class="dl-primary-meta">{{ primaryRow.chip }}<template v-if="hasSize(primaryRow.asset)"><span aria-hidden="true"> · </span>{{ formatSize(primaryRow.asset.size) }}</template><span aria-hidden="true"> · </span>{{ primaryRow.description }}</p>
         </div>
         <a
           class="dl-btn dl-btn-lg"
@@ -80,8 +82,10 @@
               <div class="dl-desc">{{ row.description }}</div>
               <div class="dl-meta">
                 <span class="dl-file">{{ row.asset.name }}</span>
-                <span aria-hidden="true">·</span>
-                <span>{{ formatSize(row.asset.size) }}</span>
+                <template v-if="hasSize(row.asset)">
+                  <span aria-hidden="true">·</span>
+                  <span>{{ formatSize(row.asset.size) }}</span>
+                </template>
                 <template v-if="row.asset.downloads > 0">
                   <span aria-hidden="true">·</span>
                   <span>{{ t.downloadsCount.replace('{n}', formatCount(row.asset.downloads)) }}</span>
@@ -148,8 +152,10 @@
         <div class="dl-desc">{{ row.description }}</div>
         <div class="dl-meta">
           <span class="dl-file">{{ row.asset.name }}</span>
-          <span aria-hidden="true">·</span>
-          <span>{{ formatSize(row.asset.size) }}</span>
+          <template v-if="hasSize(row.asset)">
+            <span aria-hidden="true">·</span>
+            <span>{{ formatSize(row.asset.size) }}</span>
+          </template>
           <template v-if="row.asset.downloads > 0">
             <span aria-hidden="true">·</span>
             <span>{{ t.downloadsCount.replace('{n}', formatCount(row.asset.downloads)) }}</span>
@@ -521,6 +527,7 @@ const ROWS = {
 const detected = ref({ windows: null, macos: null, linux: null })
 
 function uaArchSync() {
+  if (typeof navigator === 'undefined') return null
   const ua = navigator.userAgent || ''
   if (/ARM64|aarch64/i.test(ua)) return 'arm64'
   if (/WOW64|x86_64/.test(ua)) return 'x64'
@@ -528,6 +535,7 @@ function uaArchSync() {
 }
 
 function uaOsSync() {
+  if (typeof navigator === 'undefined') return 'windows'
   const ua = navigator.userAgent || ''
   if (/Windows/i.test(ua)) return 'windows'
   if (/Macintosh|Mac OS X/i.test(ua)) return 'macos'
@@ -651,8 +659,13 @@ function formatDate(iso) {
 }
 
 function formatSize(bytes) {
+  if (!bytes || bytes <= 0) return ''
   const mb = bytes / (1024 * 1024)
   return `${mb >= 100 ? Math.round(mb) : mb.toFixed(1)} MB`
+}
+
+function hasSize(asset) {
+  return Boolean(asset && asset.size > 0)
 }
 
 function formatCount(n) {
@@ -674,6 +687,13 @@ function assetList(rel) {
 function osOf(key) {
   if (key.startsWith('win')) return 'windows'
   if (key.startsWith('mac')) return 'apple'
+  return 'linux'
+}
+
+// Canonical platform for the download-conversion event (windows | macos | linux)
+function platformOf(key) {
+  if (key.startsWith('win')) return 'windows'
+  if (key.startsWith('mac')) return 'macos'
   return 'linux'
 }
 
