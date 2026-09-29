@@ -68,38 +68,6 @@ function leafKeys(source, prefix = '') {
 }
 
 /**
- * Reads a leaf value by dot path.
- * @param {object} source - The locale object.
- * @param {string} keyPath - Dot-separated key path.
- * @returns {unknown} The stored value.
- */
-function readLeaf(source, keyPath) {
-  let node = source;
-  for (const part of keyPath.split('.')) {
-    node = node?.[part];
-  }
-  return node;
-}
-
-/**
- * Sets a leaf value by dot path, creating intermediate namespaces.
- * @param {object} target - The locale object (mutated).
- * @param {string} keyPath - Dot-separated key path.
- * @param {unknown} value - The value to store.
- * @returns {void}
- */
-function writeLeaf(target, keyPath, value) {
-  const parts = keyPath.split('.');
-  const last = parts.pop();
-  let node = target;
-  for (const part of parts) {
-    if (!isNamespace(node[part])) node[part] = {};
-    node = node[part];
-  }
-  node[last] = value;
-}
-
-/**
  * Merges the namespaces of `source` into `target`, adding only the keys that
  * `target` lacks. Sibling order follows `source` so new keys keep the base
  * file's ordering.
@@ -111,6 +79,8 @@ function mergeNamespace(target, source) {
   let added = 0;
   const existing = new Set(Object.keys(target));
   for (const [key, value] of Object.entries(source)) {
+    // Block prototype-polluting names (`__proto__`, `constructor.prototype`, ...).
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;
     if (isNamespace(value)) {
       if (!isNamespace(target[key])) {
         target[key] = {};

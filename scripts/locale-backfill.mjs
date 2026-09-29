@@ -215,7 +215,6 @@ for (const file of files) {
   const flatBefore = flat(data2);
 
   let applied = 0;
-  let missingTable = 0;
   if (table) {
     for (const [key, value] of Object.entries(table)) {
       // Only fill keys that are still the English source string.
@@ -227,8 +226,6 @@ for (const file of files) {
       setNested(data2, key, value);
       applied++;
     }
-  } else {
-    missingTable = Object.keys(enFlat).filter((k) => flatBefore[k] === enFlat[k]).length;
   }
   writes += applied;
 
