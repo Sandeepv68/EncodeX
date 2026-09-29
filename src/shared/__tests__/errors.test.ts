@@ -149,6 +149,13 @@ describe('formatError', () => {
     expect(result.code).toBe(ErrorCode.FILE_NOT_FOUND);
   });
 
+  it('formats errors mentioning auxiliary inputs', () => {
+    const err = new Error('An added subtitle, audio, chapter, or cover file could not be found.');
+    const result = formatError(err);
+    expect(result.code).toBe(ErrorCode.AUXILIARY_INPUT_NOT_FOUND);
+    expect(result.message).toBe(ERROR_MESSAGES.AUXILIARY_INPUT_NOT_FOUND);
+  });
+
   it('formats EACCES errors', () => {
     const err = new Error('permission denied');
     (err as NodeJS.ErrnoException).code = 'EACCES';

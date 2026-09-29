@@ -131,6 +131,8 @@ export const NAV_ITEMS = [
   { to: '/image-compress', label: 'Image' },
   { to: '/audio-extract', label: 'Audio' },
   { to: '/video-cut', label: 'Cut' },
+  { to: '/remux', label: 'Remux' },
+  { to: '/demux', label: 'Demux' },
   { to: '/batch', label: 'Batch Queue' },
   { to: '/logs', label: 'Logs' },
   { to: '/settings', label: 'Settings' },

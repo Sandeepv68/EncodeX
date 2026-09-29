@@ -16,6 +16,8 @@ import { createCliTranscoder, runConvert } from '../cli-convert';
 import { runInfo, runCapabilities } from '../cli-info';
 import { runCompress, runExtractAudio } from '../cli-compress';
 import { runBatch } from '../cli-batch';
+import { runRemux } from '../cli-remux';
+import { runDemux } from '../cli-demux';
 import { configureCliOutput } from '../cli-ui';
 import { CliExitError } from '../cli-options';
 import { ErrorCode } from '../../../shared/errors';
@@ -24,6 +26,7 @@ import { DEFAULT_CLI_THEME } from '../../cli-logo';
 import type { ITranscoder } from '../../transcoders/types';
 
 const ffmpegStatic = require('ffmpeg-static') as string;
+const ffprobeStatic = (require('ffprobe-static') as { path: string }).path;
 const theme = DEFAULT_CLI_THEME;
 
 let tmpDir: string;
@@ -33,6 +36,22 @@ let imagePath: string;
 function run(cmd: string, args: string[], cwd?: string): number {
   const result = spawnSync(cmd, args, { cwd, stdio: 'ignore', timeout: 60000 });
   return result.status ?? -1;
+}
+
+/**
+ * Reads a single video-stream field from a probed file, so the filter
+ * integration tests can assert the real encoder output rather than the plan.
+ * @param {string} file - Path to probe.
+ * @param {string} field - `stream=...` field name, e.g. 'r_frame_rate'.
+ * @returns {string} The ffprobe CSV value, trimmed.
+ */
+function probeField(file: string, field: string): string {
+  const probe = spawnSync(
+    ffprobeStatic,
+    ['-v', 'error', '-select_streams', 'v:0', '-show_entries', `stream=${field}`, '-of', 'csv=p=0', file],
+    { encoding: 'utf8', timeout: 30000 },
+  );
+  return (probe.stdout ?? '').trim();
 }
 
 beforeAll(() => {
@@ -140,6 +159,33 @@ describe('runConvert (real FFmpeg)', () => {
     expect(fs.statSync(output).size).toBeGreaterThan(0);
   });
 
+  it('applies a video filter chain with --filters and rewrites the frame rate', async () => {
+    const transcoder = createCliTranscoder('FFMPEG');
+    const output = path.join(tmpDir, 'filtered.mp4');
+
+    await runConvertFor({ transcoder, input: videoPath, output, flags: { filters: 'fps=24' } });
+
+    expect(fs.existsSync(output)).toBe(true);
+    const probe = spawnSync(
+      ffprobeStatic,
+      ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=r_frame_rate', '-of', 'csv=p=0', output],
+      { encoding: 'utf8', timeout: 30000 },
+    );
+    expect(probe.stdout.trim()).toBe('24/1');
+  });
+
+  it('rejects filters combined with --copy before starting', async () => {
+    const transcoder = createCliTranscoder('FFMPEG');
+    await expect(
+      runConvertFor({
+        transcoder,
+        input: videoPath,
+        output: path.join(tmpDir, 'never-filtered.mp4'),
+        flags: { filters: 'fps=24', copy: true },
+      }),
+    ).rejects.toBeInstanceOf(CliExitError);
+  });
+
   it('trims with --duration', async () => {
     const transcoder = createCliTranscoder('FFMPEG');
     const output = path.join(tmpDir, 'trimmed.mp4');
@@ -230,6 +276,120 @@ describe('runCompress / runExtractAudio (real FFmpeg)', () => {
 
     expect(fs.existsSync(output)).toBe(true);
     expect(fs.statSync(output).size).toBeGreaterThan(0);
+  });
+});
+
+describe('runRemux --filters (real FFmpeg)', () => {
+  it('stream-copies without filters and keeps the source frame rate', async () => {
+    const transcoder = createCliTranscoder('FFMPEG');
+    const output = path.join(tmpDir, 'remux-copy.mkv');
+
+    await runRemux({ input: videoPath, flags: { output, format: 'mkv' }, transcoder, timeoutSeconds: 60, themeId: theme });
+
+    expect(fs.existsSync(output)).toBe(true);
+    expect(probeField(output, 'r_frame_rate')).toBe('10/1');
+  });
+
+  it('re-encodes and rewrites the frame rate when --filters is given', async () => {
+    const transcoder = createCliTranscoder('FFMPEG');
+    const output = path.join(tmpDir, 'remux-filtered.mkv');
+
+    await runRemux({
+      input: videoPath,
+      flags: { output, format: 'mkv', filters: ['fps=24'] },
+      transcoder,
+      timeoutSeconds: 60,
+      themeId: theme,
+    });
+
+    expect(fs.existsSync(output)).toBe(true);
+    expect(probeField(output, 'r_frame_rate')).toBe('24/1');
+  });
+
+  it('merges repeated --filters chains into a single -vf', async () => {
+    const transcoder = createCliTranscoder('FFMPEG');
+    const output = path.join(tmpDir, 'remux-multifilter.mkv');
+
+    await runRemux({
+      input: videoPath,
+      flags: { output, format: 'mkv', filters: ['fps=24', 'framerate.15'] },
+      transcoder,
+      timeoutSeconds: 60,
+      themeId: theme,
+    });
+
+    expect(fs.existsSync(output)).toBe(true);
+    // The last fps filter in the chain wins.
+    expect(probeField(output, 'r_frame_rate')).toBe('15/1');
+  });
+
+  it('rejects an invalid --filters chain before starting FFmpeg', async () => {
+    const transcoder = createCliTranscoder('FFMPEG');
+    const output = path.join(tmpDir, 'remux-never.mp4');
+
+    await expect(
+      runRemux({
+        input: videoPath,
+        flags: { output, format: 'mp4', filters: ['fps=24;rm -rf /'] },
+        transcoder,
+        timeoutSeconds: 60,
+        themeId: theme,
+      }),
+    ).rejects.toBeInstanceOf(CliExitError);
+    expect(fs.existsSync(output)).toBe(false);
+  });
+});
+
+describe('runDemux --video-filters (real FFmpeg)', () => {
+  it('rejects filters when the video target stays a stream copy', async () => {
+    const transcoder = createCliTranscoder('FFMPEG');
+
+    await expect(
+      runDemux({
+        input: videoPath,
+        flags: { video: true, videoFilters: ['fps=24'] },
+        transcoder,
+        timeoutSeconds: 60,
+        themeId: theme,
+      }),
+    ).rejects.toBeInstanceOf(CliExitError);
+    expect(fs.existsSync(path.join(tmpDir, 'input.video.mp4'))).toBe(false);
+  });
+
+  it('re-encodes the video target and applies the filter chain', async () => {
+    const transcoder = createCliTranscoder('FFMPEG');
+    const outDir = path.join(tmpDir, 'demux-filtered');
+    fs.mkdirSync(outDir, { recursive: true });
+
+    await runDemux({
+      input: videoPath,
+      flags: { video: true, videoContainer: 'mkv', videoFilters: ['fps=24'], outputDir: outDir },
+      transcoder,
+      timeoutSeconds: 60,
+      themeId: theme,
+    });
+
+    const output = path.join(outDir, 'input.video.mkv');
+    expect(fs.existsSync(output)).toBe(true);
+    expect(probeField(output, 'r_frame_rate')).toBe('24/1');
+  });
+
+  it('keeps a copied video target at the source frame rate', async () => {
+    const transcoder = createCliTranscoder('FFMPEG');
+    const outDir = path.join(tmpDir, 'demux-copy');
+    fs.mkdirSync(outDir, { recursive: true });
+
+    await runDemux({
+      input: videoPath,
+      flags: { video: true, outputDir: outDir },
+      transcoder,
+      timeoutSeconds: 60,
+      themeId: theme,
+    });
+
+    const output = path.join(outDir, 'input.video.mp4');
+    expect(fs.existsSync(output)).toBe(true);
+    expect(probeField(output, 'r_frame_rate')).toBe('10/1');
   });
 });
 

@@ -335,6 +335,42 @@ export default function BatchQueue() {
   const [pixelFormat, setPixelFormat] = useState(initialConfig.pixelFormat);
 
   /**
+   * Ordered video filter chain entries applied to transcode jobs (combined into
+   * a single `-vf` argument, after scale and rotation/mirror).
+   * @type {[string[], React.Dispatch<React.SetStateAction<string[]>>]}
+   */
+  const [videoFilters, setVideoFilters] = useState(initialConfig.videoFilters);
+
+  /**
+   * Stream kinds extracted by demux jobs, one output file per stream.
+   * @type {[Array<'video'|'audio'|'subtitle'>, React.Dispatch<React.SetStateAction<Array<'video'|'audio'|'subtitle'>>>]}
+   */
+  const [demuxKinds, setDemuxKinds] = useState<Array<'video' | 'audio' | 'subtitle'>>(
+    initialConfig.demuxKinds ?? ['video', 'audio', 'subtitle'],
+  );
+
+  /**
+   * Conversion target for the demux video kind: a container extension to
+   * re-encode into, or '' to keep the lossless stream copy.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [demuxVideoContainer, setDemuxVideoContainer] = useState(initialConfig.demuxVideoContainer ?? '');
+
+  /**
+   * Conversion target for the demux audio kind: an encoder/format to re-encode
+   * into, or '' to keep the lossless stream copy.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [demuxAudioCodec, setDemuxAudioCodec] = useState(initialConfig.demuxAudioCodec ?? '');
+
+  /**
+   * Conversion target for the demux subtitle kind: a subtitle format to convert
+   * to, or '' to keep the lossless stream copy.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
+   */
+  const [demuxSubtitleFormat, setDemuxSubtitleFormat] = useState(initialConfig.demuxSubtitleFormat ?? '');
+
+  /**
    * True while any job is RUNNING. Options editing (global propagation and the
    * per-job dialog) is disabled once a batch has started, because the running
    * jobs are already executing with the options they were given.
@@ -446,6 +482,11 @@ export default function BatchQueue() {
       flipH,
       flipV,
       pixelFormat,
+      videoFilters,
+      demuxKinds,
+      demuxVideoContainer,
+      demuxAudioCodec,
+      demuxSubtitleFormat,
       outputDir,
       overwrite,
     });
@@ -462,6 +503,11 @@ export default function BatchQueue() {
     flipH,
     flipV,
     pixelFormat,
+    videoFilters,
+    demuxKinds,
+    demuxVideoContainer,
+    demuxAudioCodec,
+    demuxSubtitleFormat,
     outputDir,
     overwrite,
   ]);
@@ -495,7 +541,24 @@ export default function BatchQueue() {
       if (customized.has(job.id)) continue;
       const options = buildBatchOptions(
         inferJobOperation(job.options),
-        { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, rotate, flipH, flipV, pixelFormat },
+        {
+          videoCodec,
+          audioCodec,
+          container,
+          videoBitrate,
+          audioBitrate,
+          quality,
+          scale,
+          rotate,
+          flipH,
+          flipV,
+          pixelFormat,
+          videoFilters,
+          demuxKinds,
+          demuxVideoContainer,
+          demuxAudioCodec,
+          demuxSubtitleFormat,
+        },
         { hardwareAcceleration, hwaccelMode },
       );
       let output = job.output;
@@ -525,6 +588,11 @@ export default function BatchQueue() {
     flipH,
     flipV,
     pixelFormat,
+    videoFilters,
+    demuxKinds,
+    demuxVideoContainer,
+    demuxAudioCodec,
+    demuxSubtitleFormat,
     outputDir,
     batchStarted,
   ]);
@@ -703,15 +771,33 @@ export default function BatchQueue() {
   const enqueueSelections = async (selections: QueueAddReviewSelection[], source: InputSource = lastAddSourceRef.current) => {
     const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
     const currentJobs = useQueueStore.getState().jobs;
-    const plan = planEnqueues({
+    const plan = await planEnqueues({
       selections,
       currentJobs,
       outputDir,
-      enc: { videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, rotate, flipH, flipV, pixelFormat },
+      enc: {
+        videoCodec,
+        audioCodec,
+        container,
+        videoBitrate,
+        audioBitrate,
+        quality,
+        scale,
+        rotate,
+        flipH,
+        flipV,
+        pixelFormat,
+        videoFilters,
+        demuxKinds,
+        demuxVideoContainer,
+        demuxAudioCodec,
+        demuxSubtitleFormat,
+      },
       hw: { hardwareAcceleration, hwaccelMode },
       suffix: suffixRef.current,
       transcoder: transcoderRef.current,
       overwrite,
+      probe: async (file) => (await window.electronAPI.getMediaInfo(file, TRANSCODER_TYPES[0])).streams ?? [],
     });
     let added = 0;
     const enqueues = plan.enqueues.map((draft) =>
@@ -1280,6 +1366,11 @@ export default function BatchQueue() {
               flipH={flipH}
               flipV={flipV}
               pixelFormat={pixelFormat}
+              videoFilters={videoFilters}
+              demuxKinds={demuxKinds}
+              demuxVideoContainer={demuxVideoContainer}
+              demuxAudioCodec={demuxAudioCodec}
+              demuxSubtitleFormat={demuxSubtitleFormat}
               optionsLocked={batchStarted}
               optionsEditable={!batchStarted && jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
               onVideoCodecChange={handleVideoCodecChange}
@@ -1293,6 +1384,11 @@ export default function BatchQueue() {
               onFlipHChange={setFlipH}
               onFlipVChange={setFlipV}
               onPixelFormatChange={setPixelFormat}
+              onVideoFiltersChange={setVideoFilters}
+              onDemuxKindsChange={setDemuxKinds}
+              onDemuxVideoContainerChange={setDemuxVideoContainer}
+              onDemuxAudioCodecChange={setDemuxAudioCodec}
+              onDemuxSubtitleFormatChange={setDemuxSubtitleFormat}
               onApplyProfile={handleApplyBatchProfile}
             />
           </Collapse>
@@ -1426,7 +1522,24 @@ export default function BatchQueue() {
         key={editJob?.id ?? 'none'}
         open={editJob !== null}
         job={editJob}
-        defaults={{ videoCodec, audioCodec, container, videoBitrate, audioBitrate, quality, scale, rotate, flipH, flipV, pixelFormat }}
+        defaults={{
+          videoCodec,
+          audioCodec,
+          container,
+          videoBitrate,
+          audioBitrate,
+          quality,
+          scale,
+          rotate,
+          flipH,
+          flipV,
+          pixelFormat,
+          videoFilters,
+          demuxKinds,
+          demuxVideoContainer,
+          demuxAudioCodec,
+          demuxSubtitleFormat,
+        }}
         onSave={handleEditSave}
         onClose={() => setEditJob(null)}
       />

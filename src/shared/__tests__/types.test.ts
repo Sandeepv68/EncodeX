@@ -120,6 +120,8 @@ describe('ConversionOperation', () => {
     expect(ConversionOperation.CompressImage).toBe('compress_image');
     expect(ConversionOperation.CreateGif).toBe('create_gif');
     expect(ConversionOperation.CutVideo).toBe('cut_video');
+    expect(ConversionOperation.Remux).toBe('remux');
+    expect(ConversionOperation.Demux).toBe('demux');
   });
 });
 

@@ -26,7 +26,9 @@
       "paused": "Naka-pause",
       "starting": "Sinisimulan",
       "parallel": "{{count}} sabay-sabay"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Maligayang Pagdating sa EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "I-extract ang malinis na audio track mula sa mga video file",
     "descCut": "I-trim at i-cut ang video gamit ang frame-accurate na player",
     "descBatch": "I-convert ang maraming file nang sabay-sabay gamit ang smart queue",
-    "shortcutsFooter": "Pindutin ang {{shortcut}} para sa mga keyboard shortcut"
+    "shortcutsFooter": "Pindutin ang {{shortcut}} para sa mga keyboard shortcut",
+    "descRemux": "Inililipat nang walang kabawasang-kalidad ang mga stream sa bagong container",
+    "descDemux": "Hinahati ang mga stream ng isang file sa magkakahiwalay na output na file"
   },
   "gettingStarted": {
     "hint": "Bago ka ba rito?",
@@ -125,7 +129,25 @@
     "showPreview": "Ipakita ang Preview",
     "closePreview": "Isara ang Preview",
     "viewMore": "Ipakita pa",
-    "viewLess": "Ipakita nang mas kaunti"
+    "viewLess": "Ipakita nang mas kaunti",
+    "filtersTitle": "Mga video filter",
+    "filtersHint": "Nag-aplay ng mga video filter ng FFmpeg (trim, frame rate, deinterlace, pagbawas ng ingay, kulay…) habang nagre-re-encode. Pinagsasama ang lahat ng filter sa iisang -vf chain pagkatapos ng pag-scale at pag-rotate.",
+    "addPreset": "Magdagdag ng preset na filter…",
+    "addFilter": "Magdagdag ng filter",
+    "customChainLabel": "Custom na chain ng filter",
+    "customChainPlaceholder": "hal. fps=30, eq=brightness=0.1",
+    "customChainHint": "Mga ekspresyon ng filter ng FFmpeg na pinaghihiwalay ng kuwit. Bawat item ay dapat may balanseng panaklong at kuwadradong panaklong, magkatugmang mga panipi, at hindi dapat maglaman ng meta-character ng shell.",
+    "addCustom": "Magdagdag ng custom",
+    "removeFilter": "Alisin ang filter",
+    "moveUp": "Itaas",
+    "moveDown": "Ibaba",
+    "clearAll": "I-clear lahat",
+    "noFilters": "Wala pang nadagdag na filter.",
+    "filtersDisabledNote": "Nangangailangan ng re-encoding ang mga video filter. I-off ang lossless copy upang magdagdag ng mga filter.",
+    "filtersTurnOffCopy": "I-off ang lossless copy",
+    "filtersCopyWarning": "Naka-on ang lossless copy mode, kaya hindi papansinin ang mga video filter. I-off ang lossless copy upang mailapat ang mga filter.",
+    "chainPreview": "Preview: -vf {{chain}}",
+    "filtersInvalid": "Hindi balidong filter: {{error}}"
   },
   "mediaInfo": {
     "title": "Impormasyon ng Media",
@@ -174,7 +196,7 @@
       "encoder": "Encoder",
       "creation_time": "Oras ng Paggawa",
       "title": "Titulo",
-      "artist": "Artist",
+      "artist": "Artista",
       "album": "Album",
       "album_artist": "Artist ng Album",
       "genre": "Genre",
@@ -184,9 +206,9 @@
       "description": "Deskripsyon",
       "composer": "Kompositor",
       "performer": "Tagapagtanghal",
-      "publisher": "Publisher",
+      "publisher": "Tagapaglathala",
       "track": "Track",
-      "disc": "Disc",
+      "disc": "Disk",
       "lyrics": "Titik",
       "language": "Wika",
       "handler_name": "Pangalan ng Handler",
@@ -195,7 +217,7 @@
     },
     "dispositionFlags": {
       "default": "Default",
-      "dub": "Dub",
+      "dub": "Dubbed",
       "original": "Orihinal",
       "comment": "Komento",
       "lyrics": "Titik",
@@ -331,7 +353,7 @@
   "batchQueue": {
     "title": "Pila ng Batch",
     "operation": "Operasyon",
-    "suffix": "Suffix",
+    "suffix": "Hulapi",
     "addFiles": "Magdagdag ng mga File",
     "addFolder": "Magdagdag ng Folder",
     "cancelAll": "Kanselahin Lahat",
@@ -347,7 +369,7 @@
     "revealInFolder": "Ipakita sa folder",
     "copyPath": "Kopyahin ang path",
     "stats": "{{queued}} naka-queue, {{running}} tumatakbo, {{done}} tapos, {{failed}} nabigo",
-    "etaEstimate": "ETA ~{{eta}}",
+    "etaEstimate": "Matatapos sa ~{{eta}}",
     "finished": "Natapos ang batch: {{done}} nagtagumpay, {{failed}} nabigo",
     "notificationTitle": "Natapos ang batch ng EncodeX",
     "filters": {
@@ -394,7 +416,7 @@
     "detailsError": "Mga detalye ng error",
     "detailsOutput": "Output",
     "detailsOptions": "Mga Opsyon",
-    "detailsTranscoder": "Transcoder",
+    "detailsTranscoder": "Transkoder",
     "detailsCreatedAt": "Idinagdag",
     "yes": "Oo",
     "no": "Hindi",
@@ -427,13 +449,16 @@
     "optionsUpdateFailed": "Hindi na ma-edit ang trabahong ito.",
     "condense": "Paliitin",
     "expand": "Palakihin",
-    "clearAll": "I-clear lahat"
+    "clearAll": "I-clear lahat",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "Ang container na kinokopyahan ng mga stream. Pinananatili ng \"Awtomatiko\" ang extension ng bawat pinagmulang file."
   },
   "progress": {
     "title": "Pag-unlad ng conversion",
     "time": "Oras",
     "speed": "Bilis",
-    "eta": "ETA"
+    "eta": "Natitirang oras"
   },
   "errorBoundary": {
     "title": "May nangyaring mali",
@@ -462,7 +487,7 @@
     "levelAll": "LAHAT",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
-    "levelWarn": "WARN",
+    "levelWarn": "BABALA",
     "levelError": "ERROR",
     "noEntries": "Wala pang log entries.",
     "entryCount": "{{count}} mga entry"
@@ -477,7 +502,7 @@
     "installScheduled": "i-install ang v{{version}} sa susunod na pag-restart"
   },
   "status": {
-    "auto": "Auto",
+    "auto": "Awtomatiko",
     "none": "Wala"
   },
   "toast": {
@@ -495,7 +520,9 @@
     "updateAvailable": "May bagong update: v{{version}}",
     "updateNow": "I-update na",
     "updateDownloaded": "Na-download ang update na v{{version}}",
-    "viewUpdate": "Tingnan"
+    "viewUpdate": "Tingnan",
+    "remuxed": "Nakumpleto ang remux",
+    "demuxed": "Matagumpay na nakuha ang mga stream"
   },
   "profiles": {
     "searchPlaceholder": "Maghanap ng mga profile...",
@@ -520,10 +547,10 @@
     "qualityLabel": "Kalidad (CRF)",
     "presetLabel": "Preset",
     "resolutionLabel": "Resolusyon",
-    "original": "Original",
+    "original": "Orihinal",
     "pixelFormatLabel": "Pixel format",
     "videoBitrateLabel": "Video bitrate",
-    "autoCrf": "Auto (CRF)",
+    "autoCrf": "Awtomatiko (CRF)",
     "audioBitrateLabel": "Audio bitrate",
     "advancedOptions": "Mga advanced na opsyon",
     "extensionOverrideLabel": "I-override ang output extension",
@@ -546,7 +573,7 @@
       "forest": "Kagubatan",
       "lavender": "Lavender",
       "rose": "Rosas",
-      "slate": "Slate",
+      "slate": "Slat",
       "dark": "Madilim"
     },
     "alwaysOnTop": "Palaging nasa itaas",
@@ -557,16 +584,16 @@
     "monitoringErrorReportingHint": "Tumutulong pagbutihin ang EncodeX sa pamamagitan ng pagpapadala ng mga anonymous na error report. Maaari itong i-off anumang oras.",
     "telemetry": "Data ng paggamit at pag-uulat ng error",
     "telemetryHint": "Tumutulong pagbutihin ang EncodeX sa pamamagitan ng pagpapadala ng mga anonymous na data ng paggamit at error report. Maaari itong i-off anumang oras.",
-    "mcpServer": "MCP Server",
+    "mcpServer": "MCP server",
     "mcpServerHint": "Hinahayaan ang mga panlabas na MCP client tulad ng Claude Desktop, VS Code, o Cursor na kontrolin ang EncodeX sa pamamagitan ng lokal na koneksyon. Nakikinig lamang ang server sa computer na ito.",
     "mcpAiUseCases": "Mga gamit ng AI",
     "mcpPort": "Port",
     "mcpPortHint": "Lokal na TCP port para sa MCP server (1024-65535). Ni-restart ng app ang server kapag nagbago ito.",
     "mcpToken": "Access token",
     "mcpTokenHint": "Opsyonal. Kapag nakatakda, dapat ipadala ng mga MCP client ang token na ito bilang Bearer credential. Iwanang walang laman upang payagan ang anumang lokal na client.",
-    "mcpEndpoint": "MCP endpoint",
+    "mcpEndpoint": "Endpoint ng MCP",
     "mcpEndpointHint": "Ang URL na kinauugnayan ng mga MCP client. Idagdag ang address na ito sa iyong MCP client bilang URL ng server.",
-    "mcpAuthorization": "Authorization header",
+    "mcpAuthorization": "Header ng awtorisasyon",
     "mcpAuthorizationHint": "Dapat ipadala ng mga client ang header na ito bilang Bearer credential sa bawat kahilingan.",
     "mcpCopy": "Kopyahin sa clipboard",
     "mcpCopied": "Na-kopya sa clipboard",
@@ -596,9 +623,11 @@
       "imageCompress": "I-compress ang Larawan",
       "audioExtract": "I-extract ang Audio",
       "videoCut": "I-cut ang Video",
-      "batchQueue": "Batch Queue",
+      "batchQueue": "Pila",
       "logs": "Mga Log",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Ipakita ang mga keyboard shortcut",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Pumunta sa Batch Queue",
       "navLogs": "Pumunta sa Mga Log",
       "navSettings": "Pumunta sa Mga Setting",
-      "themeToggle": "I-toggle ang tema"
+      "themeToggle": "I-toggle ang tema",
+      "navRemux": "Pumunta sa Remux"
     },
     "convert": {
       "input": "Pumili ng input file",
@@ -679,7 +709,17 @@
       "image": "Buksan ang Larawan",
       "audio": "Buksan ang Audio",
       "cut": "Buksan ang I-cut",
-      "batch": "Buksan ang Batch Queue"
+      "batch": "Buksan ang Batch Queue",
+      "remux": "Buksan ang Remux",
+      "demux": "Buksan ang Demux"
+    },
+    "remux": {
+      "input": "Pumili ng input file",
+      "start": "Simulan ang remux"
+    },
+    "demux": {
+      "input": "Pumili ng input file",
+      "start": "Simulan ang pagkuha"
     }
   },
   "about": {
@@ -692,7 +732,7 @@
     "builtWith": "Binuo gamit ang",
     "authorTitle": "May-akda at feedback",
     "author": "May-akda",
-    "repository": "Repository",
+    "repository": "Repositoryo",
     "contact": "Makipag-ugnayan",
     "feedback": "Nakahanap ka ng bug o may mungkahi ka?",
     "reportIssue": "Magbukas ng issue sa GitHub",
@@ -702,16 +742,16 @@
     "licenseSummary": "Inilabas sa ilalim ng MIT License. Malayang gamitin, kopyahin, baguhin, pagsamahin, i-publish, ipamahagi, i-sublicense, at ibenta — kabilang ang komersyal — basta't kasama ang copyright notice at permission notice sa lahat ng kopya o malaking bahagi ng software. Ang software ay ibinibigay \"as is\", nang walang anumang warranty.",
     "acknowledgements": "Ginawa nang may ❤️ para sa open source — pinapagana ng proyektong FFmpeg at ng komunidad.",
     "checkForUpdates": "Maghanap ng mga update",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Mga Tuntunin at Kundisyon",
+    "terms": "Mga Patakaran",
+    "readTerms": "Basahin ang mga patakaran"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Mga Tuntunin at Kundisyon",
+    "accept": "Sumasang-ayon ako",
+    "reject": "Hindi ako sumasang-ayon",
+    "close": "Isara",
+    "lastUpdated": "Epektibo mula: {{date}}"
   },
   "update": {
     "title": "Update",
@@ -734,5 +774,167 @@
     "installOnRestart": "I-install sa susunod na pag-restart",
     "installScheduled": "I-install ang update na v{{version}} sa susunod na pag-restart ng app.",
     "cancelRestartInstall": "Kanselahin"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Trim",
+      "cropHint": "Pinagpuputul ang video ayon sa tinukoy na lapad, taas, at offset.",
+      "framerate": "Frame rate",
+      "framerateHint": "Binabago ang frame rate ng output (inuulit o nilalaktawan ang mga frame).",
+      "deinterlace": "Deinterlace",
+      "deinterlaceHint": "Ginagawang progresibo ang interlaced na video.",
+      "denoise": "Pagbawas ng ingay",
+      "denoiseHint": "Binabawasan ang ingay habang pinananatili ang detalye (hqdn3d).",
+      "sharpen": "Katalim",
+      "sharpenHint": "Pinapataas ang nadaramang katalim (unsharp).",
+      "color": "Kulay",
+      "colorHint": "Inaayos ang kaliwanagan, kontras, saturasyon, at gamma (eq).",
+      "grayscale": "Grayscale",
+      "grayscaleHint": "Inaalis ang kulay, naiiwan ang itim-at-puting imahe.",
+      "blur": "Blur",
+      "blurHint": "Nag-aplay ng box blur upang palambutin ang imahe."
+    },
+    "params": {
+      "crop": {
+        "w": "Lapad",
+        "h": "Taas",
+        "x": "Offset ng X",
+        "y": "Offset ng Y"
+      },
+      "framerate": {
+        "fps": "Frame sa bawat segundo"
+      },
+      "deinterlace": {
+        "mode": "Pagkakasunud-sunod ng field",
+        "modes": {
+          "auto": "Awtomatiko",
+          "tff": "Itaas muna ang field",
+          "bff": "Ibaba muna ang field"
+        }
+      },
+      "denoise": {
+        "strength": "Lakas"
+      },
+      "sharpen": {
+        "strength": "Lakas"
+      },
+      "color": {
+        "brightness": "Kaliwanagan",
+        "contrast": "Kontras",
+        "saturation": "Saturasyon",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Lakas"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Video file",
+    "dropLabel": "I-drag ang video file dito o i-click upang pumili",
+    "videoFileHint": "Ang pinagmulang media file na ang mga stream ay ire-repack sa destinasyong container. Kinokopya ang mga stream nang walang re-encoding.",
+    "selectedVideo": "Piniling video: {{file}}",
+    "streamCount": "{{selected}} sa {{total}} stream ang napili",
+    "container": "Container",
+    "containerHint": "Ang container ng output na file pagkatapos ng remux. Pumili mula sa mga karaniwang video container; ang extension ng output ay sumusunod sa container.",
+    "streams": "Mga pinagmulang stream",
+    "streamsHint": "Piliin kung aling mga stream mula sa pinagmulang file ang itatago sa output ng remux. Itinatapon ang mga hindi napiling stream.",
+    "streamIndex": "Bilang",
+    "kind": "Uri",
+    "selectStream": "Piliin ang {{kind}} stream #{{index}}",
+    "selectAll": "Itago lahat",
+    "selectNone": "Huwag itago ang anuman",
+    "audioSync": "I-shift ang audio (segundo)",
+    "audioSyncHint": "Ini-shift ang pangunahing audio track kaugnay ng video nang walang re-encoding, hal. -0.5 para 0.5 segundo nang mas maaga o 1.5 para 1.5 segundo nang mas huli.",
+    "audioSyncLossless": "Walang kabawasan: kinokopya ang audio bilang stream na may offset ng timestamp, kaya hindi nagbabago ang kalidad.",
+    "subtitles": "Mga nadagdag na subtitle",
+    "subtitlesHint": "Mga panlabas na subtitle file (.srt, .ass, .vtt) na naka-embed sa output ng remux bilang karagdagang input track.",
+    "addSubtitle": "Magdagdag ng subtitle file",
+    "subtitleCodec": "Target na codec",
+    "subtitleCodecHint": "Ang subtitle codec para sa naka-embed na track. Sinusuportahan ng mga container ang iba't ibang format ng subtitle; ang pagpili ng format na hindi maiimbak ng container ay bubuo ng babala.",
+    "removeSubtitle": "Alisin ang subtitle",
+    "audioTracks": "Mga nadagdag na audio track",
+    "audioTracksHint": "Mga panlabas na audio file (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) na naka-embed sa output ng remux bilang karagdagang input track.",
+    "addAudioTrack": "Magdagdag ng audio track",
+    "removeAudioTrack": "Alisin ang audio track",
+    "addedTrackDelay": "I-delay ang track na ito (segundo)",
+    "addedTrackDelayHint": "May senyas na offset para sa track na ito kaugnay ng video (positibo = magpe-play nang mas huli). Walang kabawasan: inilalapat bilang -itsoffset kapag kinokopya ang stream.",
+    "thumbnail": "Thumbnail / pabalat",
+    "thumbnailHint": "Opsiyonal na imahe ng pabalat (.jpg, .jpeg, .png) na naka-embed sa file pagkatapos ng remux. Inilalakip ito ng MKV/WebM bilang image stream; ini-embed ito ng MP4/MOV bilang video stream na may tag na attached_pic.",
+    "addThumbnail": "Magdagdag ng thumbnail",
+    "thumbnailUnsupported": "Hindi makapag-imbak ng mga pabalat ang {{container}}. Lumipat sa MKV, WebM, MP4, o MOV upang mailakip ang thumbnail.",
+    "removeThumbnail": "Alisin ang thumbnail",
+    "thumbnailMode": "Naka-embed bilang {{mode}}",
+    "thumbnailAttached": "nakalakip na imahe",
+    "thumbnailDisposition": "pabalat na stream na attached_pic",
+    "chapters": "Mga kabanata",
+    "chaptersHint": "Pinananatili ang mga kabanata mula sa pinagmulan bilang default. Mag-import ng FFMETADATA chapter file upang mapalitan ang mga kabanata ng pinagmulan sa file pagkatapos ng remux.",
+    "copyChapters": "Kopyahin ang mga kabanata ng pinagmulan",
+    "copyChaptersHint": "Pinananatili ang mga marka ng kabanata ng pinagmulang file sa output ng remux (walang kabawasan, -map_chapters 0).",
+    "importChapters": "Mag-import ng chapter file",
+    "chaptersUnsupported": "Hindi nag-iimbak ng metadata ng kabanata ang {{container}}, kaya itatapon ang mga kabanata.",
+    "removeChapters": "Alisin ang chapter file",
+    "warnings": "Mga babala sa kompatibilidad",
+    "warningsHint": "Mga hindi humahadlang na pahayag tungkol sa pagkaangkop ng piniling mga stream at setting sa napiling container. Pinapayagan pa rin ng mga babala ang pagsisimula; hinahadlangan ito ng mga error.",
+    "outputFile": "Output na file",
+    "outputFileHint": "Ang destinasyong landas para sa file pagkatapos ng remux. Ang extension ay sumusunod sa destinasyong container.",
+    "placeholderOutput": "output.mkv",
+    "start": "Simulan ang remux",
+    "remuxing": "Nire-remux…",
+    "pause": "I-pause",
+    "resume": "Magpatuloy",
+    "cancel": "Kanselahin",
+    "cancelTitle": "Kanselahin ang remux",
+    "cancelMessage": "Sigurado ka bang kanselahin ang kasalukuyang remux?",
+    "yes": "Oo",
+    "no": "Hindi",
+    "filtersTitle": "Mga video filter",
+    "filtersHint": "Nag-aplay ng mga video filter ng FFmpeg habang nagre-re-encode ng piniling mga video stream. Hindi mailalapat ang mga filter sa lossless copy, kaya ang pagdaragdag ng isang filter ay gagawing re-encoding ang remux na ito.",
+    "filtersReencodeWarning": "Hindi maaaring tumakbo ang mga video filter sa kopya ng stream, kaya ang {{count}} piniling filter ay gagawing re-encoding ang remux na ito."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Video file",
+    "videoFileHint": "Ang pinagmulang media file na kukuningan ng mga stream. Bawat napiling stream ay isinusulat sa sarili nitong output na file.",
+    "dropLabel": "I-drag ang video file dito o i-click upang pumili",
+    "selectedVideo": "Piniling video: {{file}}",
+    "streamCount": "{{selected}} sa {{total}} stream ang napili",
+    "streams": "Mga pinagmulang stream",
+    "streamsHint": "Piliin kung aling mga stream ang kukuningan. Bawat napiling stream ay nagiging hiwalay na output na file; nilalaktawan ang mga hindi napili.",
+    "extractStreams": "Mga stream na kukuningan",
+    "streamGroup": "Mga {{kind}} stream",
+    "suggestedOutput": "Output",
+    "selectStream": "Piliin ang {{kind}} stream #{{index}} upang kunin",
+    "videoContainer": "Destinasyon ng video",
+    "videoContainerHint": "Paano isinusulat ang mga video stream. Ang \"Kopyahin\" ay kumukuha sa kanila nang walang kabawasang-kalidad at walang re-encoding; ang pagpili ng container ay magre-re-encode ng video sa format na iyon.",
+    "audioCodec": "Destinasyon ng audio",
+    "audioCodecHint": "Paano isinusulat ang mga audio stream. Ang \"Kopyahin\" ay kumukuha sa kanila nang walang kabawasang-kalidad at walang re-encoding; ang pagpili ng codec ay magre-re-encode sa audio.",
+    "subtitleFormat": "Destinasyon ng subtitle",
+    "subtitleFormatHint": "Paano isinusulat ang mga subtitle stream. Ang \"Kopyahin\" ay kumukuha sa kanila nang walang kabawasang-kalidad at walang re-encoding; ang pagpili ng format ay nagko-convert sa mga subtitle. Ang mga bitmap na subtitle (hal. PGS/DVDSUB) ay hindi maaaring gawing teksto, kaya nananatiling kinokopya ang mga ito.",
+    "subtitleWarning": "Mga babala sa pag-convert ng subtitle",
+    "subtitleWarningHint": "Ang mga bitmap subtitle stream (hal. PGS/DVDSUB) ay hindi maaaring i-encode bilang teksto nang walang OCR, kaya kinukuha ang mga ito bilang lossless na .mks na kopya. Sa planong pang-extract, lumalabas ang mga ito bilang \"Kopyahin.\"",
+    "bitmapSubtitleWarning": "Ang bitmap subtitle stream na ito ay hindi maaaring gawing teksto nang walang OCR, kaya kinukuha ito bilang lossless na .mks na kopya.",
+    "copyOption": "Kopyahin (walang kabawasan)",
+    "outputDir": "Folder ng output",
+    "outputDirHint": "Ang folder kung saan isinusulat ang mga kinuhang stream. Bilang default, ito ang folder ng pinagmulang file.",
+    "outputDirPlaceholder": "folder ng output",
+    "summary": "Planong pang-extract",
+    "summaryHint": "Isang output na file para sa bawat napiling stream ayon sa pagkakasunud-sunod ng pagtakbo. Ang mga file na may markang \"Kopyahin\" ay kinukuha nang walang kabawasan; ang mga may markang \"I-convert\" ay re-encode.",
+    "copyLabel": "Kopyahin",
+    "convertLabel": "I-convert sa {{target}}",
+    "start": "Simulan ang demux",
+    "demuxing": "Kumukuha…",
+    "pause": "I-pause",
+    "resume": "Magpatuloy",
+    "cancel": "Kanselahin",
+    "cancelTitle": "Kanselahin ang demux",
+    "cancelMessage": "Sigurado ka bang kanselahin ang kasalukuyang demux?",
+    "yes": "Oo",
+    "no": "Hindi",
+    "currentStream": "Kinukuha ang {{kind}} stream #{{index}}",
+    "filtersTitle": "Mga video filter",
+    "filtersHint": "Nag-aplay ng mga video filter ng FFmpeg (trim, frame rate, deinterlace, pagbawas ng ingay, kulay…) habang nagre-re-encode ng piniling mga video stream. Ang \"Kopyahin\" ay walang kabawasan, kaya ang mga filter ay lalabas lamang kapag ang destinasyong container ay nagre-re-encode ng video.",
+    "filtersIgnoredCopy": "Hindi papansinin ang mga video filter habang ang destinasyon ng video ay \"Kopyahin,\" dahil hindi maaaring mag-re-encode ang kopya ng stream. Pumili ng destinasyong container upang mailapat ang mga filter."
   }
 }

@@ -13,6 +13,7 @@ describe('conversionStore', () => {
       rotate: '',
       flipH: false,
       flipV: false,
+      videoFilters: [],
     });
   });
 
@@ -28,6 +29,7 @@ describe('conversionStore', () => {
     expect(state.rotate).toBe('');
     expect(state.flipH).toBe(false);
     expect(state.flipV).toBe(false);
+    expect(state.videoFilters).toEqual([]);
   });
 
   it('sets input file', () => {
@@ -91,6 +93,28 @@ describe('conversionStore', () => {
     expect(useConversionStore.getState().copyMode).toBe(true);
   });
 
+  it('replaces the full video filter list', () => {
+    useConversionStore.getState().setVideoFilters(['fps=30', 'eq=brightness=0.1']);
+    const state = useConversionStore.getState();
+    expect(state.videoFilters).toEqual(['fps=30', 'eq=brightness=0.1']);
+    expect(state.isDirty).toBe(true);
+  });
+
+  it('appends and removes video filter entries', () => {
+    useConversionStore.getState().addVideoFilter('crop=640:480');
+    useConversionStore.getState().addVideoFilter('fps=30');
+    expect(useConversionStore.getState().videoFilters).toEqual(['crop=640:480', 'fps=30']);
+    useConversionStore.getState().removeVideoFilter(0);
+    expect(useConversionStore.getState().videoFilters).toEqual(['fps=30']);
+    expect(useConversionStore.getState().isDirty).toBe(true);
+  });
+
+  it('ignores removal outside the filter range', () => {
+    useConversionStore.getState().setVideoFilters(['fps=30']);
+    useConversionStore.getState().removeVideoFilter(5);
+    expect(useConversionStore.getState().videoFilters).toEqual(['fps=30']);
+  });
+
   it('sets encoder type', () => {
     useConversionStore.getState().setEncoderType('hardware');
     expect(useConversionStore.getState().encoderType).toBe('hardware');
@@ -142,6 +166,7 @@ describe('conversionStore', () => {
     useConversionStore.getState().setScale('1280x720');
     useConversionStore.getState().setRotate('180');
     useConversionStore.getState().setFlipV(true);
+    useConversionStore.getState().setVideoFilters(['yadif=1']);
     useConversionStore.getState().setProgress({ percent: 10, time: '00:00:01', speed: '1x', eta: '1' });
     useConversionStore.getState().setIsConverting(true);
     useConversionStore.getState().resetForm();
@@ -151,6 +176,7 @@ describe('conversionStore', () => {
     expect(state.rotate).toBe('');
     expect(state.flipH).toBe(false);
     expect(state.flipV).toBe(false);
+    expect(state.videoFilters).toEqual([]);
     expect(state.progress).toBeNull();
     expect(state.isConverting).toBe(false);
     expect(state.isDirty).toBe(false);

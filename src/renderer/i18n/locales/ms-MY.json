@@ -26,7 +26,9 @@
       "paused": "Dijeda",
       "starting": "Bermula",
       "parallel": "{{count}} selari"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Selamat Datang ke EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Ekstrak trek audio yang bersih daripada fail video",
     "descCut": "Pangkas dan potong video dengan pemain tepat bingkai",
     "descBatch": "Tukar banyak fail sekaligus dengan baris giliran pintar",
-    "shortcutsFooter": "Tekan {{shortcut}} untuk pintasan papan kekunci"
+    "shortcutsFooter": "Tekan {{shortcut}} untuk pintasan papan kekunci",
+    "descRemux": "Pindahkan strim tanpa-rugi ke bekas baharu",
+    "descDemux": "Pisahkan strim fail kepada fail output berasingan"
   },
   "gettingStarted": {
     "hint": "Baru di sini?",
@@ -125,7 +129,25 @@
     "showPreview": "Tunjukkan Pratonton",
     "closePreview": "Tutup Pratonton",
     "viewMore": "Lihat lagi",
-    "viewLess": "Lihat kurang"
+    "viewLess": "Lihat kurang",
+    "filtersTitle": "Penapis video",
+    "filtersHint": "Gunakan penapis video FFmpeg (pangkas, kadar bingkai, nyah-selang, pengurang hingar, warna…) semasa pengekodan semula. Semua penapis digabungkan menjadi satu rantai -vf selepas penskalaan dan putaran.",
+    "addPreset": "Tambah penapis praprakira…",
+    "addFilter": "Tambah penapis",
+    "customChainLabel": "Rangkaian penapis tersuai",
+    "customChainPlaceholder": "cth. fps=30, eq=brightness=0.1",
+    "customChainHint": "Ungkapan penapis FFmpeg dipisahkan koma. Setiap elemen mesti mempunyai kurungan dan kurungan segi empat sama yang seimbang, petikan yang padan dan tiada aksara meta cengkerang.",
+    "addCustom": "Tambah tersuai",
+    "removeFilter": "Buang penapis",
+    "moveUp": "Gerak ke atas",
+    "moveDown": "Gerak ke bawah",
+    "clearAll": "Kosongkan semua",
+    "noFilters": "Belum ada penapis ditambah.",
+    "filtersDisabledNote": "Penapis video memerlukan pengekodan semula. Lumpuhkan salinan tanpa-rugi untuk menambah penapis.",
+    "filtersTurnOffCopy": "Lumpuhkan salinan tanpa-rugi",
+    "filtersCopyWarning": "Mod salinan tanpa-rugi didayakan, jadi penapis video akan diabaikan. Lumpuhkan salinan tanpa-rugi untuk menggunakan penapis.",
+    "chainPreview": "Pratonton: -vf {{chain}}",
+    "filtersInvalid": "Penapis tidak sah: {{error}}"
   },
   "mediaInfo": {
     "title": "Maklumat Media",
@@ -138,7 +160,7 @@
     "bitrate": "Kadar Bit",
     "streams": "Strim",
     "stream": "Strim",
-    "codec": "Codec",
+    "codec": "Kodek",
     "resolution": "Resolusi",
     "pixelFormat": "Format Piksel",
     "frameRate": "Kadar Bingkai",
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "Kerja ini tidak boleh diedit lagi.",
     "condense": "Ciutkan",
     "expand": "Kembangkan",
-    "clearAll": "Padam Semua"
+    "clearAll": "Padam Semua",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "Bekas tempat strim disalin masuk ke. \"Auto\" mengekalkan sambungan setiap fail sumber."
   },
   "progress": {
     "title": "Kemajuan penukaran",
@@ -495,7 +520,9 @@
     "updateAvailable": "Kemas kini tersedia: v{{version}}",
     "updateNow": "Kemas kini sekarang",
     "updateDownloaded": "Kemas kini v{{version}} dimuat turun",
-    "viewUpdate": "Lihat"
+    "viewUpdate": "Lihat",
+    "remuxed": "Remux selesai",
+    "demuxed": "Strim berjaya diekstrak"
   },
   "profiles": {
     "searchPlaceholder": "Cari profil...",
@@ -514,11 +541,11 @@
     "descriptionLabel": "Penerangan",
     "descriptionPlaceholder": "Penerangan ringkas (dipaparkan dalam pemilih)",
     "categoryLabel": "Kategori",
-    "containerLabel": "Container",
+    "containerLabel": "Bekas",
     "videoCodecLabel": "Codec video",
     "audioCodecLabel": "Codec audio",
     "qualityLabel": "Kualiti (CRF)",
-    "presetLabel": "Preset",
+    "presetLabel": "Praprakira",
     "resolutionLabel": "Resolusi",
     "original": "Asal",
     "pixelFormatLabel": "Format piksel",
@@ -598,7 +625,9 @@
       "videoCut": "Potong Video",
       "batchQueue": "Giliran Kelompok",
       "logs": "Log",
-      "dashboard": "Papan Pemuka"
+      "dashboard": "Papan Pemuka",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Papar pintasan papan kekunci",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Pergi ke Giliran Kelompok",
       "navLogs": "Pergi ke Log",
       "navSettings": "Pergi ke Tetapan",
-      "themeToggle": "Tukar tema"
+      "themeToggle": "Tukar tema",
+      "navRemux": "Pergi ke Remux"
     },
     "convert": {
       "input": "Pilih fail input",
@@ -679,7 +709,17 @@
       "image": "Buka Imej",
       "audio": "Buka Audio",
       "cut": "Buka Potong",
-      "batch": "Buka Giliran Kelompok"
+      "batch": "Buka Giliran Kelompok",
+      "remux": "Buka Remux",
+      "demux": "Buka Demux"
+    },
+    "remux": {
+      "input": "Pilih fail input",
+      "start": "Mula Remux"
+    },
+    "demux": {
+      "input": "Pilih fail input",
+      "start": "Mula ekstrak"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "Dikeluarkan di bawah Lesen MIT. Bebas untuk digunakan, disalin, diubah suai, digabung, diterbitkan, diedarkan, dilesenkan semula dan dijual — termasuk secara komersial — dengan syarat notis hak cipta dan notis kebenaran disertakan dalam semua salinan atau bahagian penting perisian. Perisian disediakan \"seadanya\", tanpa sebarang waranti.",
     "acknowledgements": "Dibuat dengan ❤️ untuk sumber terbuka — didorong oleh projek FFmpeg dan komuniti.",
     "checkForUpdates": "Semak kemas kini",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Syarat dan Peraturan",
+    "terms": "Syarat",
+    "readTerms": "Baca syarat"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Syarat dan Peraturan",
+    "accept": "Saya terima",
+    "reject": "Saya tidak terima",
+    "close": "Tutup",
+    "lastUpdated": "Berkuat kuasa dari: {{date}}"
   },
   "update": {
     "title": "Kemas kini",
@@ -734,5 +774,167 @@
     "installOnRestart": "Pasang pada but semula seterusnya",
     "installScheduled": "Kemas kini v{{version}} akan dipasang pada but semula aplikasi seterusnya.",
     "cancelRestartInstall": "Batal"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Pangkas",
+      "cropHint": "Pangkas video mengikut lebar, tinggi dan offset yang ditetapkan.",
+      "framerate": "Kadar bingkai",
+      "framerateHint": "Ubah kadar bingkai output (bingkai diduakan atau dilangkau).",
+      "deinterlace": "Nyah-selang",
+      "deinterlaceHint": "Tukar video berselang-seli kepada video progressive.",
+      "denoise": "Pengurang hingar",
+      "denoiseHint": "Kurangkan hingar sambil mengekalkan butiran (hqdn3d).",
+      "sharpen": "Ketajaman",
+      "sharpenHint": "Tingkatkan ketajaman yang dirasakan (unsharp).",
+      "color": "Warna",
+      "colorHint": "Laraskan kecerahan, kontras, kepekatan warna dan gamma (eq).",
+      "grayscale": "Skala kelabu",
+      "grayscaleHint": "Buang warna, meninggalkan imej hitam putih.",
+      "blur": "Kabur",
+      "blurHint": "Gunakan peleburan kotak untuk melembutkan imej."
+    },
+    "params": {
+      "crop": {
+        "w": "Lebar",
+        "h": "Tinggi",
+        "x": "Offset X",
+        "y": "Offset Y"
+      },
+      "framerate": {
+        "fps": "Bingkai sesaat"
+      },
+      "deinterlace": {
+        "mode": "Susunan medan",
+        "modes": {
+          "auto": "Auto",
+          "tff": "Medan atas dahulu",
+          "bff": "Medan bawah dahulu"
+        }
+      },
+      "denoise": {
+        "strength": "Kekuatan"
+      },
+      "sharpen": {
+        "strength": "Kekuatan"
+      },
+      "color": {
+        "brightness": "Kecerahan",
+        "contrast": "Kontras",
+        "saturation": "Kepekatan warna",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Kekuatan"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Fail video",
+    "dropLabel": "Seret fail video ke sini atau klik untuk memilih",
+    "videoFileHint": "Fail media sumber yang strimnya dibungkus semula ke bekas sasaran. Strim disalin tanpa pengekodan semula.",
+    "selectedVideo": "Video dipilih: {{file}}",
+    "streamCount": "{{selected}} daripada {{total}} strim dipilih",
+    "container": "Bekas",
+    "containerHint": "Bekas fail output selepas Remux. Pilih daripada bekas video biasa; sambungan output mengikut bekas.",
+    "streams": "Strim sumber",
+    "streamsHint": "Pilih strim daripada fail sumber untuk dikekalkan dalam output Remux. Strim tidak dipilih akan dibuang.",
+    "streamIndex": "Nombor",
+    "kind": "Jenis",
+    "selectStream": "Pilih strim {{kind}} #{{index}}",
+    "selectAll": "Kekalkan semua",
+    "selectNone": "Jangan kekalkan apa-apa",
+    "audioSync": "Segerak audio (saat)",
+    "audioSyncHint": "Gerakkan trek audio utama berbanding video tanpa mengekod semula, cth. -0.5 untuk 0.5 saat lebih awal atau 1.5 untuk 1.5 saat kemudian.",
+    "audioSyncLossless": "Tanpa-rugi: audio disalin sebagai strim dengan offset masa, jadi kualiti tidak berubah.",
+    "subtitles": "Sari kata ditambah",
+    "subtitlesHint": "Fail sari kata luaran (.srt, .ass, .vtt) yang dibenamkan ke output Remux sebagai trek input tambahan.",
+    "addSubtitle": "Tambah fail sari kata",
+    "subtitleCodec": "Kodek sasaran",
+    "subtitleCodecHint": "Kodek sari kata untuk trek yang dibenamkan. Bekas menerima format sari kata yang berbeza; memilih format yang tidak boleh disimpan bekas akan memberi amaran.",
+    "removeSubtitle": "Buang sari kata",
+    "audioTracks": "Trek audio ditambah",
+    "audioTracksHint": "Fail audio luaran (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) yang dibenamkan ke output Remux sebagai trek input tambahan.",
+    "addAudioTrack": "Tambah trek audio",
+    "removeAudioTrack": "Buang trek audio",
+    "addedTrackDelay": "Kelewatan trek ini (saat)",
+    "addedTrackDelayHint": "Offset bertanda bagi trek ini berbanding video (positif = dimainkan kemudian). Tanpa-rugi: digunakan sebagai -itsoffset semasa menyalin strim.",
+    "thumbnail": "Imej kecil / Kulit",
+    "thumbnailHint": "Imej kulit pilihan (.jpg, .jpeg, .png) yang dibenamkan ke fail selepas Remux. MKV/WebM melampirkannya sebagai strim imej; MP4/MOV membenamkannya sebagai strim video dengan tag attached_pic.",
+    "addThumbnail": "Tambah imej kecil",
+    "thumbnailUnsupported": "{{container}} tidak boleh menyimpan kulit. Tukar kepada MKV, WebM, MP4 atau MOV untuk melampirkan imej kecil.",
+    "removeThumbnail": "Buang imej kecil",
+    "thumbnailMode": "Benamkan sebagai {{mode}}",
+    "thumbnailAttached": "Imej terpasang",
+    "thumbnailDisposition": "Strim kulit attached_pic",
+    "chapters": "Bab",
+    "chaptersHint": "Bab daripada sumber dikekalkan secara lalai. Import fail bab FFMETADATA untuk menggantikan bab sumber dalam fail selepas Remux.",
+    "copyChapters": "Salin bab sumber",
+    "copyChaptersHint": "Kekalkan penanda bab fail sumber dalam output Remux (tanpa-rugi, -map_chapters 0).",
+    "importChapters": "Import fail bab",
+    "chaptersUnsupported": "{{container}} tidak menyimpan metadata bab, jadi bab akan dibuang.",
+    "removeChapters": "Buang fail bab",
+    "warnings": "Amaran keserasian",
+    "warningsHint": "Nota tidak menyekat tentang sama ada strim dan tetapan terpilih sesuai dengan bekas terpilih. Amaran masih membenarkan permulaan; ralat menyekatnya.",
+    "outputFile": "Fail output",
+    "outputFileHint": "Laluan sasaran bagi fail selepas Remux. Sambungan mengikut bekas sasaran.",
+    "placeholderOutput": "output.mkv",
+    "start": "Mula Remux",
+    "remuxing": "MenRemux…",
+    "pause": "Jeda",
+    "resume": "Sambung",
+    "cancel": "Batal",
+    "cancelTitle": "Batal Remux",
+    "cancelMessage": "Adakah anda pasti mahu membatalkan Remux semasa?",
+    "yes": "Ya",
+    "no": "Tidak",
+    "filtersTitle": "Penapis video",
+    "filtersHint": "Gunakan penapis video FFmpeg semasa mengekod semula strim video terpilih. Penapis tidak boleh beroperasi pada salinan tanpa-rugi, jadi menambah satu akan menjadikan Remux ini pengekodan semula.",
+    "filtersReencodeWarning": "Penapis video tidak boleh beroperasi pada salinan strim, jadi penapis terpilih ({{count}}) akan menjadikan Remux ini pengekodan semula."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Fail video",
+    "videoFileHint": "Fail media sumber yang strimnya akan diekstrak. Setiap strim terpilih ditulis ke fail output sendiri.",
+    "dropLabel": "Seret fail video ke sini atau klik untuk memilih",
+    "selectedVideo": "Video dipilih: {{file}}",
+    "streamCount": "{{selected}} daripada {{total}} strim dipilih",
+    "streams": "Strim sumber",
+    "streamsHint": "Pilih strim yang perlu diekstrak. Setiap strim terpilih menjadi fail output berasingan; strim tidak dipilih dilangkau.",
+    "extractStreams": "Strim untuk diekstrak",
+    "streamGroup": "Strim {{kind}}",
+    "suggestedOutput": "Output",
+    "selectStream": "Pilih strim {{kind}} #{{index}} untuk diekstrak",
+    "videoContainer": "Kodek video",
+    "videoContainerHint": "Cara strim video ditulis. \"Salin\" mengeluarkannya tanpa-rugi dan tanpa pengekodan semula; memilih bekas akan mengekod semula video kepada format tersebut.",
+    "audioCodec": "Kodek audio",
+    "audioCodecHint": "Cara strim audio ditulis. \"Salin\" mengeluarkannya tanpa-rugi dan tanpa pengekodan semula; memilih kodek akan mengekod semula audio.",
+    "subtitleFormat": "Format sari kata",
+    "subtitleFormatHint": "Cara strim sari kata ditulis. \"Salin\" mengeluarkannya tanpa-rugi dan tanpa pengekodan semula; memilih format akan menukar sari kata. Sari kata bitmap (cth. PGS/DVDSUB) tidak boleh menjadi teks, jadi ia kekal sebagai salinan.",
+    "subtitleWarning": "Amaran penukaran sari kata",
+    "subtitleWarningHint": "Strim sari kata bitmap (cth. PGS/DVDSUB) tidak boleh dikodkan kepada teks tanpa OCR, jadi ia diekstrak sebagai salinan .mks tanpa-rugi. Dalam pelan ekstrak, ia muncul sebagai \"Salin\".",
+    "bitmapSubtitleWarning": "Strim sari kata bitmap ini tidak boleh ditukar kepada teks tanpa OCR, jadi ia diekstrak sebagai salinan .mks tanpa-rugi.",
+    "copyOption": "Salin (tanpa-rugi)",
+    "outputDir": "Folder output",
+    "outputDirHint": "Folder tempat strim diekstrak ditulis. Lalai ialah folder fail sumber.",
+    "outputDirPlaceholder": "Folder output",
+    "summary": "Pelan ekstrak",
+    "summaryHint": "Satu fail output bagi setiap strim terpilih, dalam susunan operasi. Fail yang dilabel \"Salin\" diekstrak tanpa-rugi; fail yang dilabel \"Tukar\" dikodkan semula.",
+    "copyLabel": "Salin",
+    "convertLabel": "Tukar kepada {{target}}",
+    "start": "Mula Demux",
+    "demuxing": "Mengekstrak…",
+    "pause": "Jeda",
+    "resume": "Sambung",
+    "cancel": "Batal",
+    "cancelTitle": "Batal Demux",
+    "cancelMessage": "Adakah anda pasti mahu membatalkan Demux semasa?",
+    "yes": "Ya",
+    "no": "Tidak",
+    "currentStream": "Mengekstrak strim {{kind}} #{{index}}",
+    "filtersTitle": "Penapis video",
+    "filtersHint": "Gunakan penapis video FFmpeg (pangkas, kadar bingkai, nyah-selang, pengurang hingar, warna…) semasa mengekod semula strim video terpilih. \"Salin\" adalah tanpa-rugi, jadi penapis hanya muncul apabila bekas sasaran mengekod semula video.",
+    "filtersIgnoredCopy": "Penapis video diabaikan selagi sasaran video ialah \"Salin\" kerana salinan strim tidak boleh mengekod semula. Pilih bekas sasaran untuk menggunakan penapis."
   }
 }

@@ -25,6 +25,11 @@ describe('batchConfig', () => {
       flipH: true,
       flipV: false,
       pixelFormat: 'yuv420p',
+      videoFilters: ['hflip', 'eq=brightness=0.1'],
+      demuxKinds: ['video', 'subtitle'],
+      demuxVideoContainer: 'mp4',
+      demuxAudioCodec: 'mp3',
+      demuxSubtitleFormat: 'srt',
       outputDir: 'C:/Users/me/Videos/Out',
       overwrite: true,
     };
@@ -48,5 +53,21 @@ describe('batchConfig', () => {
   it('returns defaults when the stored value is malformed', () => {
     localStorage.setItem(BATCH_CONFIG_STORAGE_KEY, 'not json');
     expect(readStoredBatchConfig()).toEqual(DEFAULT_BATCH_CONFIG);
+  });
+
+  it('falls back to defaults for invalid video filters', () => {
+    localStorage.setItem(BATCH_CONFIG_STORAGE_KEY, JSON.stringify({ videoFilters: ['hflip', 'semi;collon'] }));
+    expect(readStoredBatchConfig().videoFilters).toEqual([]);
+  });
+
+  it('falls back to defaults for invalid demux kinds and keeps valid demux targets', () => {
+    localStorage.setItem(
+      BATCH_CONFIG_STORAGE_KEY,
+      JSON.stringify({ demuxKinds: ['video', 'bogus', 'video'], demuxVideoContainer: 'mp4', demuxAudioCodec: 'mp3' }),
+    );
+    const result = readStoredBatchConfig();
+    expect(result.demuxKinds).toEqual(DEFAULT_BATCH_CONFIG.demuxKinds);
+    expect(result.demuxVideoContainer).toBe('mp4');
+    expect(result.demuxAudioCodec).toBe('mp3');
   });
 });

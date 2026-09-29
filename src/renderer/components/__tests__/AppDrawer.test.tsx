@@ -41,6 +41,8 @@ describe('AppDrawer', () => {
     expect(screen.queryByText('app.name')).not.toBeInTheDocument();
     expect(screen.getByText('nav.dashboard')).toBeInTheDocument();
     expect(screen.getByText('nav.convert')).toBeInTheDocument();
+    expect(screen.getByText('nav.remux')).toBeInTheDocument();
+    expect(screen.getByText('nav.demux')).toBeInTheDocument();
     expect(screen.getByText('nav.batchQueue')).toBeInTheDocument();
     expect(screen.getByText('nav.settings')).toBeInTheDocument();
   });

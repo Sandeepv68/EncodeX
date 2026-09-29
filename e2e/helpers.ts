@@ -46,6 +46,52 @@ export function generateTestMedia(outputDir: string, name = 'test-input.mp4'): s
   return outputPath;
 }
 
+/**
+ * Generates a three-kind MKV (video + audio + subtitle) so demux tests can
+ * assert per-kind extraction. The subtitle is a text SRT track, so it can also
+ * exercise a real `--subtitle-format` conversion.
+ */
+export function generateTestDemuxSource(outputDir: string, name = 'demux-source.mkv'): string {
+  const outputPath = path.join(outputDir, name);
+  if (fs.existsSync(outputPath)) return outputPath;
+
+  const ffmpeg = getFfmpegPath();
+  const subtitlePath = generateTestSubtitle(outputDir, `${path.parse(name).name}-subs.srt`);
+  const result = spawnSync(
+    ffmpeg,
+    [
+      '-f',
+      'lavfi',
+      '-i',
+      'testsrc=duration=1:size=320x240:rate=1',
+      '-f',
+      'lavfi',
+      '-i',
+      'sine=frequency=440:duration=1',
+      '-i',
+      subtitlePath,
+      '-c:v',
+      'libx264',
+      '-pix_fmt',
+      'yuv420p',
+      '-c:a',
+      'aac',
+      '-c:s',
+      'srt',
+      '-shortest',
+      '-y',
+      outputPath,
+    ],
+    { timeout: 30000 },
+  );
+
+  if (result.status !== 0) {
+    throw new Error(`Failed to generate demux test source: ${result.stderr.toString()}`);
+  }
+
+  return outputPath;
+}
+
 export function generateTestImage(outputDir: string, name = 'sample.png'): string {
   const outputPath = path.join(outputDir, name);
   if (fs.existsSync(outputPath)) return outputPath;
@@ -60,6 +106,61 @@ export function generateTestImage(outputDir: string, name = 'sample.png'): strin
   }
 
   return outputPath;
+}
+
+export function generateTestJpeg(outputDir: string, name = 'cover.jpg'): string {
+  return generateTestImage(outputDir, name);
+}
+
+export function generateTestAudio(outputDir: string, name = 'extra-audio.m4a'): string {
+  const outputPath = path.join(outputDir, name);
+  if (fs.existsSync(outputPath)) return outputPath;
+
+  const ffmpeg = getFfmpegPath();
+  const result = spawnSync(ffmpeg, ['-f', 'lavfi', '-i', 'sine=frequency=880:duration=1', '-c:a', 'aac', '-y', outputPath], {
+    timeout: 30000,
+  });
+
+  if (result.status !== 0) {
+    throw new Error(`Failed to generate test audio: ${result.stderr.toString()}`);
+  }
+
+  return outputPath;
+}
+
+export function generateTestSubtitle(outputDir: string, name = 'extra-subs.srt'): string {
+  const outputPath = path.join(outputDir, name);
+  if (fs.existsSync(outputPath)) return outputPath;
+
+  fs.writeFileSync(outputPath, '1\n00:00:00,000 --> 00:00:01,000\nEncodeX e2e subtitle\n', 'utf8');
+  return outputPath;
+}
+
+export function generateTestChapters(outputDir: string, name = 'extra-chapters.ffmeta'): string {
+  const outputPath = path.join(outputDir, name);
+  if (fs.existsSync(outputPath)) return outputPath;
+
+  fs.writeFileSync(
+    outputPath,
+    [';FFMETADATA1', '', '[CHAPTER]', 'TIMEBASE=1/1000', 'START=0', 'END=1000', 'title=EncodeX e2e chapter', ''].join('\n'),
+    'utf8',
+  );
+  return outputPath;
+}
+
+/**
+ * Reads the leading bytes of a media file and returns them as a hex string so a
+ * test can assert the container signature (EBML for MKV, `ftyp` for MP4).
+ */
+export function readContainerMagic(filePath: string, byteCount = 8): string {
+  const buffer = Buffer.alloc(byteCount);
+  const fd = fs.openSync(filePath, 'r');
+  try {
+    fs.readSync(fd, buffer, 0, byteCount, 0);
+  } finally {
+    fs.closeSync(fd);
+  }
+  return buffer.toString('hex');
 }
 
 export function getBuildPaths() {

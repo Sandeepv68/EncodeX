@@ -26,7 +26,9 @@
       "paused": "Keskeytetty",
       "starting": "Käynnistetään",
       "parallel": "{{count}} rinnakkain"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Tervetuloa EncodeX:ään",
@@ -37,7 +39,9 @@
     "descAudio": "Pura puhdasta ääntä videotiedostoista",
     "descCut": "Leikkaa videoita kehyksen tarkkuudella",
     "descBatch": "Muunna useita tiedostoja kerralla älykkäällä jonolla",
-    "shortcutsFooter": "Paina {{shortcut}} näppäimistöoikoteitä varten"
+    "shortcutsFooter": "Paina {{shortcut}} näppäimistöoikoteitä varten",
+    "descRemux": "Siirtää virrat häviöttömästi uuteen säilöön",
+    "descDemux": "Jakaa tiedoston virrat erillisiin tulostiedostoihin"
   },
   "gettingStarted": {
     "hint": "Uusi täällä?",
@@ -125,7 +129,25 @@
     "showPreview": "Näytä esikatselu",
     "closePreview": "Sulje esikatselu",
     "viewMore": "Näytä lisää",
-    "viewLess": "Näytä vähemmän"
+    "viewLess": "Näytä vähemmän",
+    "filtersTitle": "Videosuodattimet",
+    "filtersHint": "Soveltaa FFmpeg-videosuodattimia (rajaus, ruutunopeus, deinterlacing, kohinan vaimennus, väri…) uudelleenkoodauksen aikana. Kaikki suodattimet yhdistetään yhdeksi -vf-ketjuksi skaalauksen ja kierroksen jälkeen.",
+    "addPreset": "Lisää esiasetettu suodatin…",
+    "addFilter": "Lisää suodatin",
+    "customChainLabel": "Mukautettu suodatinketju",
+    "customChainPlaceholder": "esim. fps=30, eq=brightness=0.1",
+    "customChainHint": "Pilkulla erotetut FFmpeg-suodatinlausekkeet. Jokaisessa kohteessa on oltava tasapainoiset sulut ja hakasulut, vastavat lainausmerkit eikä lainkaan komentorivin erikoismerkkejä.",
+    "addCustom": "Lisää mukautettu",
+    "removeFilter": "Poista suodatin",
+    "moveUp": "Siirrä ylös",
+    "moveDown": "Siirrä alas",
+    "clearAll": "Tyhjennä kaikki",
+    "noFilters": "Suodattimia ei ole lisätty.",
+    "filtersDisabledNote": "Videosuodattimet vaativat uudelleenkoodauksen. Kytke häviötön kopiointi pois päältä lisätäksesi suodattimia.",
+    "filtersTurnOffCopy": "Kytke häviötön kopiointi pois päältä",
+    "filtersCopyWarning": "Häviötön kopiointi on käytössä, joten videosuodattimet ohitetaan. Kytke häviötön kopiointi pois päältä ottaaksesi suodattimet käyttöön.",
+    "chainPreview": "Esikatselu: -vf {{chain}}",
+    "filtersInvalid": "Virheellinen suodatin: {{error}}"
   },
   "mediaInfo": {
     "title": "Mediatiedot",
@@ -138,7 +160,7 @@
     "bitrate": "Bittinopeus",
     "streams": "Virrat",
     "stream": "Virta",
-    "codec": "Codec",
+    "codec": "Koodekki",
     "resolution": "Tarkkuus",
     "pixelFormat": "Pikselimuoto",
     "frameRate": "Kuvanopeus",
@@ -347,7 +369,7 @@
     "revealInFolder": "Näytä kansiossa",
     "copyPath": "Kopioi polku",
     "stats": "{{queued}} jonossa, {{running}} käynnissä, {{done}} valmis, {{failed}} epäonnistunut",
-    "etaEstimate": "ETA ~{{eta}}",
+    "etaEstimate": "Valmis noin {{eta}} kuluttua",
     "finished": "Erä valmistui: {{done}} onnistui, {{failed}} epäonnistui",
     "notificationTitle": "EncodeX-erä valmistui",
     "filters": {
@@ -427,13 +449,16 @@
     "optionsUpdateFailed": "Tätä tehtävää ei voi enää muokata.",
     "condense": "Tiivistä",
     "expand": "Laajenna",
-    "clearAll": "Tyhjennä kaikki"
+    "clearAll": "Tyhjennä kaikki",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "Säilö, johon virrat kopioidaan. \"Automaattinen\" säilyttää kunkin lähdetiedoston päätteen."
   },
   "progress": {
     "title": "Muunnoksen edistyminen",
     "time": "Aika",
     "speed": "Nopeus",
-    "eta": "ETA"
+    "eta": "Jäljellä oleva aika"
   },
   "errorBoundary": {
     "title": "Jotain meni pieleen",
@@ -460,10 +485,10 @@
     "download": "Lataa TXT-muodossa",
     "filter": "Suodata tason mukaan",
     "levelAll": "Kaikki",
-    "levelDebug": "DEBUG",
-    "levelInfo": "INFO",
-    "levelWarn": "WARN",
-    "levelError": "ERROR",
+    "levelDebug": "VIRHEENETSINTÄ",
+    "levelInfo": "TIETO",
+    "levelWarn": "VAROITUS",
+    "levelError": "VIRHE",
     "noEntries": "Ei lokimerkintöjä vielä.",
     "entryCount": "{{count}} merkintää"
   },
@@ -495,7 +520,9 @@
     "updateAvailable": "Päivitys saatavilla: v{{version}}",
     "updateNow": "Päivitä nyt",
     "updateDownloaded": "Päivitys v{{version}} ladattu",
-    "viewUpdate": "Näytä"
+    "viewUpdate": "Näytä",
+    "remuxed": "Remux valmis",
+    "demuxed": "Virrat poimittiin onnistuneesti"
   },
   "profiles": {
     "searchPlaceholder": "Hae profiileja...",
@@ -523,7 +550,7 @@
     "original": "Alkuperäinen",
     "pixelFormatLabel": "Kuvamuoto",
     "videoBitrateLabel": "Videobittinopeus",
-    "autoCrf": "Auto (CRF)",
+    "autoCrf": "Automaattinen (CRF)",
     "audioBitrateLabel": "Äänibittinopeus",
     "advancedOptions": "Edistyneet asetukset",
     "extensionOverrideLabel": "Tulosteen tiedostopäätteen korvaus",
@@ -598,7 +625,9 @@
       "videoCut": "Videon leikkaus",
       "batchQueue": "Eräjono",
       "logs": "Lokit",
-      "dashboard": "Kojelauta"
+      "dashboard": "Kojelauta",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Näytä näppäimistöoikotiet",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Siirry eräjonoon",
       "navLogs": "Siirry lokiin",
       "navSettings": "Siirry asetuksiin",
-      "themeToggle": "Vaihda teemaa"
+      "themeToggle": "Vaihda teemaa",
+      "navRemux": "Siirry Remuxiin"
     },
     "convert": {
       "input": "Valitse syötetiedosto",
@@ -679,7 +709,17 @@
       "image": "Avaa Kuva",
       "audio": "Avaa Ääni",
       "cut": "Avaa Leikkaus",
-      "batch": "Avaa Eräjono"
+      "batch": "Avaa Eräjono",
+      "remux": "Avaa Remux",
+      "demux": "Avaa Demux"
+    },
+    "remux": {
+      "input": "Valitse sisääntulotiedosto",
+      "start": "Käynnistä remux"
+    },
+    "demux": {
+      "input": "Valitse sisääntulotiedosto",
+      "start": "Käynnistä poiminta"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "Julkaistu MIT-lisenssillä. Vapaasti käytettävissä, kopioitavissa, muokattavissa, yhdistettävissä, julkaistavissa, jaettavissa, alilisensoitavissa ja myytävissä – myös kaupallisesti – edellyttäen, että tekijänoikeusilmoitus ja käyttölupailmoitus sisältyvät kaikkiin kopioihin tai olennaisiin osiin ohjelmistosta. Ohjelmisto toimitetaan \"sellaisenaan\" ilman minkäänlaista takuuta.",
     "acknowledgements": "Tehty ❤️:llä avoimen lähdekoodin puolesta — FFmpeg-projektin ja yhteisön voimin.",
     "checkForUpdates": "Tarkista päivitykset",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Ehdot ja määräykset",
+    "terms": "Ehdot",
+    "readTerms": "Lue ehdot"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Ehdot ja määräykset",
+    "accept": "Hyväksyn",
+    "reject": "En hyväksy",
+    "close": "Sulje",
+    "lastUpdated": "Voimassa alkaen: {{date}}"
   },
   "update": {
     "title": "Päivitys",
@@ -734,5 +774,167 @@
     "installOnRestart": "Asenna seuraavalla uudelleenkäynnistyksellä",
     "installScheduled": "Päivitys v{{version}} asennetaan sovelluksen seuraavalla uudelleenkäynnistyksellä.",
     "cancelRestartInstall": "Peruuta"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Rajaus",
+      "cropHint": "Rajaa video annettuun leveyteen, korkeuteen ja siirtymään.",
+      "framerate": "Ruutunopeus",
+      "framerateHint": "Muuttaa tulostuksen ruutunopeutta (kuvat päällekkäistetään tai hylätään).",
+      "deinterlace": "Deinterlacing",
+      "deinterlaceHint": "Muuntaa vuorotaskuvideon progressiiviseksi.",
+      "denoise": "Kohinan vaimennus",
+      "denoiseHint": "Vähentää kohinaa säilyttäen yksityiskohdat (hqdn3d).",
+      "sharpen": "Terävöinti",
+      "sharpenHint": "Lisää koettua terävyyttä (unsharp).",
+      "color": "Väri",
+      "colorHint": "Säätää kirkkautta, kontrastia, kylläisyyttä ja gammaa (eq).",
+      "grayscale": "Harmaasävy",
+      "grayscaleHint": "Poistaa värin jättäen jäljelle mustavalkoisen kuvan.",
+      "blur": "Sumutus",
+      "blurHint": "Soveltaa laatikkosumutusta kuvan pehmentämiseksi."
+    },
+    "params": {
+      "crop": {
+        "w": "Leveys",
+        "h": "Korkeus",
+        "x": "X-siirtymä",
+        "y": "Y-siirtymä"
+      },
+      "framerate": {
+        "fps": "Kuvaa sekunnissa"
+      },
+      "deinterlace": {
+        "mode": "Kenttien järjestys",
+        "modes": {
+          "auto": "Automaattinen",
+          "tff": "Yläkenttä ensin",
+          "bff": "Alakenttä ensin"
+        }
+      },
+      "denoise": {
+        "strength": "Voimakkuus"
+      },
+      "sharpen": {
+        "strength": "Voimakkuus"
+      },
+      "color": {
+        "brightness": "Kirkkaus",
+        "contrast": "Kontrasti",
+        "saturation": "Kylläisyys",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Voimakkuus"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Videotiedosto",
+    "dropLabel": "Vedä videotiedosto tähän tai napsauta selataksesi",
+    "videoFileHint": "Lähdemediatiedosto, jonka virrat pakataan kohdesäilöön. Virrat kopioidaan uudelleenkoodaamatta.",
+    "selectedVideo": "Valittu video: {{file}}",
+    "streamCount": "{{selected}} / {{total}} virtaa valittu",
+    "container": "Säilö",
+    "containerHint": "Remuxatun tiedoston tulostussäilö. Valitse yleisistä videosäilöistä; tulostuksen pääte vastaa säilöä.",
+    "streams": "Lähtevirrat",
+    "streamsHint": "Valitse, mitkä lähdetiedoston virroista säilytetään remux-tulostuksessa. Valitsematta jätetyt hylätään.",
+    "streamIndex": "Nro",
+    "kind": "Tyyppi",
+    "selectStream": "Valitse {{kind}}-virta nro {{index}}",
+    "selectAll": "Säilytä kaikki",
+    "selectNone": "Älä säilytä mitään",
+    "audioSync": "Viivästä ääntä (sekuntia)",
+    "audioSyncHint": "Siirtää pääääniradan videoon suhteen uudelleenkoodaamatta, esim. -0.5 = 0,5 s aiemmin tai 1.5 = 1,5 s myöhemmin.",
+    "audioSyncLossless": "Häviötön: ääni kopioidaan virrana, jonka aikaleima on siirretty, joten laatu ei muutu.",
+    "subtitles": "Lisätyt tekstitykset",
+    "subtitlesHint": "Ulkoiset tekstitystiedostot (.srt, .ass, .vtt), jotka upotetaan remux-tulostukseen ylimääräisinä sisääntuloraitoina.",
+    "addSubtitle": "Lisää tekstitystiedosto",
+    "subtitleCodec": "Kohdekoodekki",
+    "subtitleCodecHint": "Upotetun raidan tekstityskoodekki. Säilöt hyväksyvät erilaisia tekstitysmuotoja; muodon valinta, jota säilö ei voi säilyttää, aiheuttaa varoituksen.",
+    "removeSubtitle": "Poista tekstitykset",
+    "audioTracks": "Lisätyt ääniraidat",
+    "audioTracksHint": "Ulkoiset äänitiedostot (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav), jotka upotetaan remux-tulostukseen ylimääräisinä sisääntuloraitoina.",
+    "addAudioTrack": "Lisää ääniraita",
+    "removeAudioTrack": "Poista ääniraita",
+    "addedTrackDelay": "Viivästä tätä raitaa (sekuntia)",
+    "addedTrackDelayHint": "Tämän raidan etumerkillinen siirtymä videoon nähden (positiivinen = toistuu myöhemmin). Häviötön: käytetään -itsoffset-argumenttina virran kopioinnin yhteydessä.",
+    "thumbnail": "Pikkukuva / kansikuva",
+    "thumbnailHint": "Valinnainen kansikuva (.jpg, .jpeg, .png), joka upotetaan remuxatussa tiedostossa. MKV/WebM liittää sen kuvavirrana; MP4/MOV upottaa sen videovirrana, jossa on attached_pic-asetus.",
+    "addThumbnail": "Lisää pikkukuva",
+    "thumbnailUnsupported": "{{container}} ei voi säilyttää kansikuvia. Vaihda MKV-, WebM-, MP4- tai MOV-säilöön liittääksesi pikkukuvan.",
+    "removeThumbnail": "Poista pikkukuva",
+    "thumbnailMode": "Upotettu muodossa {{mode}}",
+    "thumbnailAttached": "liitetty kuva",
+    "thumbnailDisposition": "attached_pic-kansivirta",
+    "chapters": "Luvut",
+    "chaptersHint": "Lähteen luvut säilytetään oletuksena. Tuo FFMETADATA-lututiedosto korvataksesi lähteen luvut remuxatussa tiedostossa.",
+    "copyChapters": "Kopioi lähteen luvut",
+    "copyChaptersHint": "Säilyttää lähdetiedoston lukumerkinnät remux-tulostuksessa (häviötön, -map_chapters 0).",
+    "importChapters": "Tuo lututiedosto",
+    "chaptersUnsupported": "{{container}} ei säilytä lukujen metatietoja, joten luvut hylätään.",
+    "removeChapters": "Poista lututiedosto",
+    "warnings": "Yhteensopivuusvaroitukset",
+    "warningsHint": "Ei-estoavat huomautukset siitä, sopivatko valitut virrat ja asetukset valittuun säilöön. Varoitukset eivät estä aloitusta; virheet estävät sen.",
+    "outputFile": "Tulostustiedosto",
+    "outputFileHint": "Remuxatun tiedoston kohdepolku. Pääte vastaa kohdesäilöä.",
+    "placeholderOutput": "tulos.mkv",
+    "start": "Käynnistä remux",
+    "remuxing": "Remuxataan…",
+    "pause": "Tauko",
+    "resume": "Jatka",
+    "cancel": "Peruuta",
+    "cancelTitle": "Peruuta remux",
+    "cancelMessage": "Haluatko varmasti peruuttaa käynnissä olevan remuxin?",
+    "yes": "Kyllä",
+    "no": "Ei",
+    "filtersTitle": "Videosuodattimet",
+    "filtersHint": "Soveltaa FFmpeg-videosuodattimia valittujen videovirtojen uudelleenkoodauksen aikana. Suodattimia ei voi soveltaa häviöttömään kopioon, joten yhden lisääminen muuttaa remuxin uudelleenkoodaukseksi.",
+    "filtersReencodeWarning": "Videosuodattimia ei voi ajaa virran kopiolla, joten {{count}} valittua suodatinta muuttavat tämän remuxin uudelleenkoodaukseksi."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Videotiedosto",
+    "videoFileHint": "Lähdemediatiedosto, jonka virrat poimitaan. Jokainen valittu virta kirjoitetaan omaan tulostiedostoonsa.",
+    "dropLabel": "Vedä videotiedosto tähän tai napsauta selataksesi",
+    "selectedVideo": "Valittu video: {{file}}",
+    "streamCount": "{{selected}} / {{total}} virtaa valittu",
+    "streams": "Lähtevirrat",
+    "streamsHint": "Valitse poimittavat virrat. Jokainen valittu virta muodostaa oman tulostiedoston; valitsematta jätetyt ohitetaan.",
+    "extractStreams": "Poimittavat virrat",
+    "streamGroup": "{{kind}}-virrat",
+    "suggestedOutput": "Tulostus",
+    "selectStream": "Valitse poimittava {{kind}}-virta nro {{index}}",
+    "videoContainer": "Videon kohde",
+    "videoContainerHint": "Näin videovirrat kirjoitetaan. \"Kopioi\" poimii ne häviöttömästi ilman uudelleenkoodausta; säilön valinta koodaa videon uudelleen kyseiseen muotoon.",
+    "audioCodec": "Äänen kohde",
+    "audioCodecHint": "Näin äänivirrat kirjoitetaan. \"Kopioi\" poimii ne häviöttömästi ilman uudelleenkoodausta; koodekin valinta koodaa äänen uudelleen.",
+    "subtitleFormat": "Tekstitysten kohde",
+    "subtitleFormatHint": "Näin tekstitysvirrat kirjoitetaan. \"Kopioi\" poimii ne häviöttömästi ilman uudelleenkoodausta; muodon valinta muuntaa tekstitykset. Bittikarttatekstityksiä (esim. PGS/DVDSUB) ei voi muuttaa tekstiksi, joten ne jäävät kopioiduiksi.",
+    "subtitleWarning": "Tekstitysten muunnosta koskevat varoitukset",
+    "subtitleWarningHint": "Bittikarttatekstitysvirtoja (esim. PGS/DVDSUB) ei voi koodata tekstiksi ilman OCR:ää, joten ne poimitaan häviöttöminä .mks-kopioina. Poimintasuunnitelmassa ne näkyvät merkinnällä \"Kopioi\".",
+    "bitmapSubtitleWarning": "Tätä bittikarttatekstivirtaa ei voi koodata tekstiksi ilman OCR:ää, joten se poimitaan häviöttömänä .mks-kopiona.",
+    "copyOption": "Kopioi (häviötön)",
+    "outputDir": "Tulostuskansio",
+    "outputDirHint": "Kansio, johon poimitut virrat kirjoitetaan. Oletuksena lähdetiedoston kansio.",
+    "outputDirPlaceholder": "tulostuskansio",
+    "summary": "Poimintasuunnitelma",
+    "summaryHint": "Yksi tulostiedosto valitulle virralle suoritusjärjestyksessä. \"Kopioi\"-merkinnät poimitaan häviöttömästi; \"Muunna\"-merkinnät koodataan uudelleen.",
+    "copyLabel": "Kopioi",
+    "convertLabel": "Muunnetaan muotoon {{target}}",
+    "start": "Käynnistä demux",
+    "demuxing": "Poimitaan…",
+    "pause": "Tauko",
+    "resume": "Jatka",
+    "cancel": "Peruuta",
+    "cancelTitle": "Peruuta demux",
+    "cancelMessage": "Haluatko varmasti peruuttaa käynnissä olevan demuxin?",
+    "yes": "Kyllä",
+    "no": "Ei",
+    "currentStream": "Poimitaan {{kind}}-virtaa nro {{index}}",
+    "filtersTitle": "Videosuodattimet",
+    "filtersHint": "Soveltaa FFmpeg-videosuodattimia (rajaus, ruutunopeus, deinterlacing, kohinan vaimennus, väri…) valittujen videovirtojen uudelleenkoodauksen aikana. \"Kopioi\" on häviötön, joten suodattimet näkyvät vain, kun kohdesäilö koodaa videon uudelleen.",
+    "filtersIgnoredCopy": "Videosuodattimet ohitetaan, kun videon kohde on \"Kopioi\", koska virran kopiointi ei voi koodata uudelleen. Suodattimet otetaan käyttöön valitsemalla kohdesäilö."
   }
 }

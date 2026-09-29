@@ -26,7 +26,9 @@
       "paused": "已暂停",
       "starting": "正在开始",
       "parallel": "{{count}} 并行"
-    }
+    },
+    "remux": "封装",
+    "demux": "解复用"
   },
   "dashboard": {
     "welcome": "欢迎使用 EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "从视频文件中提取纯净的音频轨道",
     "descCut": "使用帧精确的播放器来修剪和剪切视频",
     "descBatch": "通过智能队列一次转换多个文件",
-    "shortcutsFooter": "按 {{shortcut}} 查看键盘快捷键"
+    "shortcutsFooter": "按 {{shortcut}} 查看键盘快捷键",
+    "descRemux": "将流无损转移到新的容器中",
+    "descDemux": "将文件的各个流拆分到独立的输出文件"
   },
   "gettingStarted": {
     "hint": "第一次来？",
@@ -125,7 +129,25 @@
     "showPreview": "显示预览",
     "closePreview": "关闭预览",
     "viewMore": "查看更多",
-    "viewLess": "显示更少"
+    "viewLess": "显示更少",
+    "filtersTitle": "视频滤镜",
+    "filtersHint": "在重新编码时应用 FFmpeg 视频滤镜（裁剪、帧率、去隔行、降噪、色彩等）。所有滤镜会在缩放和旋转之后合并为一条 -vf 滤镜链。",
+    "addPreset": "添加预设滤镜…",
+    "addFilter": "添加滤镜",
+    "customChainLabel": "自定义滤镜链",
+    "customChainPlaceholder": "例如 fps=30, eq=brightness=0.1",
+    "customChainHint": "以逗号分隔的 FFmpeg 滤镜表达式。每项的括号与方括号必须成对、引号必须匹配，且不得包含 shell 元字符。",
+    "addCustom": "添加自定义",
+    "removeFilter": "移除滤镜",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "clearAll": "全部清除",
+    "noFilters": "尚未添加滤镜。",
+    "filtersDisabledNote": "视频滤镜需要重新编码。请关闭无损复制以添加滤镜。",
+    "filtersTurnOffCopy": "关闭无损复制",
+    "filtersCopyWarning": "当前启用了无损复制模式，视频滤镜将被忽略。请关闭无损复制以应用滤镜。",
+    "chainPreview": "预览：-vf {{chain}}",
+    "filtersInvalid": "滤镜无效：{{error}}"
   },
   "mediaInfo": {
     "title": "媒体信息",
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "此任务不再可编辑。",
     "condense": "收起",
     "expand": "展开",
-    "clearAll": "清除全部"
+    "clearAll": "清除全部",
+    "operationRemux": "封装",
+    "operationDemux": "解复用",
+    "remuxContainerHint": "流复制到的容器。“自动”将保留每个源文件的扩展名。"
   },
   "progress": {
     "title": "转换进度",
@@ -495,7 +520,9 @@
     "updateAvailable": "有可用更新: v{{version}}",
     "updateNow": "立即更新",
     "updateDownloaded": "更新 v{{version}} 已下载",
-    "viewUpdate": "查看"
+    "viewUpdate": "查看",
+    "remuxed": "封装已完成",
+    "demuxed": "已成功提取各个流"
   },
   "profiles": {
     "searchPlaceholder": "搜索配置文件...",
@@ -598,7 +625,9 @@
       "videoCut": "视频裁剪",
       "batchQueue": "批量队列",
       "logs": "日志",
-      "dashboard": "仪表板"
+      "dashboard": "仪表板",
+      "remux": "封装",
+      "demux": "解复用"
     },
     "global": {
       "help": "显示键盘快捷键",
@@ -611,7 +640,8 @@
       "navBatchQueue": "转到批量队列",
       "navLogs": "转到日志",
       "navSettings": "转到设置",
-      "themeToggle": "切换主题"
+      "themeToggle": "切换主题",
+      "navRemux": "转到封装"
     },
     "convert": {
       "input": "选择输入文件",
@@ -679,7 +709,17 @@
       "image": "打开图片",
       "audio": "打开音频",
       "cut": "打开裁剪",
-      "batch": "打开批量队列"
+      "batch": "打开批量队列",
+      "remux": "打开封装",
+      "demux": "打开解复用"
+    },
+    "remux": {
+      "input": "选择输入文件",
+      "start": "开始封装"
+    },
+    "demux": {
+      "input": "选择输入文件",
+      "start": "开始提取"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "在 MIT 许可证下发布。可以自由使用、复制、修改、合并、发布、分发、再许可和出售——包括商业用途——前提是软件的所有副本或实质性部分中都包含版权声明和许可声明。本软件按\"原样\"提供，不附带任何形式的保证。",
     "acknowledgements": "为开源倾注 ❤️ — 由 FFmpeg 项目与社区共同驱动。",
     "checkForUpdates": "检查更新",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "条款与条件",
+    "terms": "条款",
+    "readTerms": "阅读条款"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "条款与条件",
+    "accept": "我接受",
+    "reject": "我不接受",
+    "close": "关闭",
+    "lastUpdated": "生效日期：{{date}}"
   },
   "update": {
     "title": "更新",
@@ -734,5 +774,167 @@
     "installOnRestart": "在下次重启时安装",
     "installScheduled": "更新 v{{version}} 将在应用下次重启时安装。",
     "cancelRestartInstall": "取消"
+  },
+  "filters": {
+    "presets": {
+      "crop": "裁剪",
+      "cropHint": "按指定的宽度、高度和偏移裁剪视频。",
+      "framerate": "帧率",
+      "framerateHint": "更改输出帧率（会复制或丢弃帧）。",
+      "deinterlace": "去隔行",
+      "deinterlaceHint": "将隔行视频转换为逐行视频。",
+      "denoise": "降噪",
+      "denoiseHint": "在保留细节的同时降低噪点（hqdn3d）。",
+      "sharpen": "锐化",
+      "sharpenHint": "提升观感上的清晰度（unsharp）。",
+      "color": "色彩",
+      "colorHint": "调整亮度、对比度、饱和度和伽马（eq）。",
+      "grayscale": "灰度",
+      "grayscaleHint": "去除颜色，得到黑白画面。",
+      "blur": "模糊",
+      "blurHint": "应用箱式模糊，使画面更柔和。"
+    },
+    "params": {
+      "crop": {
+        "w": "宽度",
+        "h": "高度",
+        "x": "X 偏移",
+        "y": "Y 偏移"
+      },
+      "framerate": {
+        "fps": "每秒帧数"
+      },
+      "deinterlace": {
+        "mode": "场序",
+        "modes": {
+          "auto": "自动",
+          "tff": "顶场优先",
+          "bff": "底场优先"
+        }
+      },
+      "denoise": {
+        "strength": "强度"
+      },
+      "sharpen": {
+        "strength": "强度"
+      },
+      "color": {
+        "brightness": "亮度",
+        "contrast": "对比度",
+        "saturation": "饱和度",
+        "gamma": "伽马"
+      },
+      "blur": {
+        "strength": "强度"
+      }
+    }
+  },
+  "remux": {
+    "title": "封装",
+    "videoFile": "视频文件",
+    "dropLabel": "将视频文件拖到此处，或点击浏览",
+    "videoFileHint": "其各个流将被重新打包到目标容器的源媒体文件。各流以复制方式写入，不重新编码。",
+    "selectedVideo": "已选择视频：{{file}}",
+    "streamCount": "已选择 {{selected}} / {{total}} 个流",
+    "container": "容器",
+    "containerHint": "封装文件的输出容器。可从常见视频容器中选择；输出扩展名随容器而定。",
+    "streams": "源流",
+    "streamsHint": "选择要保留到封装输出中的源文件各个流。未选中的流将被丢弃。",
+    "streamIndex": "序号",
+    "kind": "类型",
+    "selectStream": "选择第 {{index}} 个 {{kind}} 流",
+    "selectAll": "全部保留",
+    "selectNone": "全部不保留",
+    "audioSync": "延迟音频（秒）",
+    "audioSyncHint": "在不重新编码的情况下将主音轨相对于视频偏移，例如 -0.5 表示提前 0.5 秒，1.5 表示延后 1.5 秒。",
+    "audioSyncLossless": "无损：音频以带时间戳偏移的流复制方式写入，因此画质不变。",
+    "subtitles": "已添加的字幕",
+    "subtitlesHint": "外部字幕文件（.srt、.ass、.vtt），作为额外的输入轨道封装进输出。",
+    "addSubtitle": "添加字幕文件",
+    "subtitleCodec": "目标编解码器",
+    "subtitleCodecHint": "内嵌轨道所用的字幕编解码器。不同容器支持的字幕格式不同；若选择容器无法存储的格式，会显示警告。",
+    "removeSubtitle": "移除字幕",
+    "audioTracks": "已添加的音轨",
+    "audioTracksHint": "外部音频文件（.m4a、.aac、.mp3、.flac、.opus、.ogg、.wav），作为额外的输入轨道封装进输出。",
+    "addAudioTrack": "添加音轨",
+    "removeAudioTrack": "移除音轨",
+    "addedTrackDelay": "延迟此轨道（秒）",
+    "addedTrackDelayHint": "此轨道相对于视频的带符号偏移（正数表示播放更晚）。无损：作为 -itsoffset 配合流复制应用。",
+    "thumbnail": "缩略图 / 封面",
+    "thumbnailHint": "可选的封面图片（.jpg、.jpeg、.png），会嵌入封装后的文件。MKV/WebM 将其作为图片流附加；MP4/MOV 则将其作为带 attached_pic 标记的视频流嵌入。",
+    "addThumbnail": "添加缩略图",
+    "thumbnailUnsupported": "{{container}} 无法存储封面。请改用 MKV、WebM、MP4 或 MOV 以附加缩略图。",
+    "removeThumbnail": "移除缩略图",
+    "thumbnailMode": "以 {{mode}} 方式嵌入",
+    "thumbnailAttached": "附加图片",
+    "thumbnailDisposition": "attached_pic 封面流",
+    "chapters": "章节",
+    "chaptersHint": "默认保留源文件的章节。导入 FFMETADATA 章节文件可在封装后的文件中替换源章节。",
+    "copyChapters": "复制源章节",
+    "copyChaptersHint": "将源文件的章节标记保留到封装输出中（无损，-map_chapters 0）。",
+    "importChapters": "导入章节文件",
+    "chaptersUnsupported": "{{container}} 不支持存储章节元数据；章节将被丢弃。",
+    "removeChapters": "移除章节文件",
+    "warnings": "兼容性警告",
+    "warningsHint": "关于所选流和设置与目标容器匹配情况的非阻断提示。警告不阻止开始；错误会阻止开始。",
+    "outputFile": "输出文件",
+    "outputFileHint": "封装文件的保存路径。扩展名随目标容器而定。",
+    "placeholderOutput": "output.mkv",
+    "start": "开始封装",
+    "remuxing": "正在封装…",
+    "pause": "暂停",
+    "resume": "继续",
+    "cancel": "取消",
+    "cancelTitle": "取消封装",
+    "cancelMessage": "确定要取消正在进行的封装吗？",
+    "yes": "是",
+    "no": "否",
+    "filtersTitle": "视频滤镜",
+    "filtersHint": "在重新编码选中的视频流时应用 FFmpeg 视频滤镜。滤镜无法应用于无损的流复制，因此添加滤镜会将封装变为重新编码。",
+    "filtersReencodeWarning": "视频滤镜无法在流复制上运行，因此所选的 {{count}} 个滤镜会使本次封装变为重新编码。"
+  },
+  "demux": {
+    "title": "解复用",
+    "videoFile": "视频文件",
+    "videoFileHint": "将要提取其各个流的源媒体文件。每个选中的流都会写入各自的输出文件。",
+    "dropLabel": "将视频文件拖到此处，或点击浏览",
+    "selectedVideo": "已选择视频：{{file}}",
+    "streamCount": "已选择 {{selected}} / {{total}} 个流",
+    "streams": "源流",
+    "streamsHint": "选择要提取的流。每个选中的流会生成各自的输出文件；未选中的流将被跳过。",
+    "extractStreams": "要提取的流",
+    "streamGroup": "{{kind}} 流",
+    "suggestedOutput": "输出",
+    "selectStream": "选择要提取的第 {{index}} 个 {{kind}} 流",
+    "videoContainer": "视频输出方式",
+    "videoContainerHint": "视频流的写入方式。“复制”可无损提取且不重新编码；选择容器则会将视频重新编码为该格式。",
+    "audioCodec": "音频输出方式",
+    "audioCodecHint": "音频流的写入方式。“复制”可无损提取且不重新编码；选择编解码器则会对音频重新编码。",
+    "subtitleFormat": "字幕输出方式",
+    "subtitleFormatHint": "字幕流的写入方式。“复制”可无损提取且不重新编码；选择格式则会转换字幕。图像字幕（如 PGS/DVDSUB）无法转为文本，将保持复制状态。",
+    "subtitleWarning": "字幕转换警告",
+    "subtitleWarningHint": "图像字幕流（如 PGS/DVDSUB）无法在没有 OCR 的情况下转码为文本，因此将以无损 .mks 副本形式提取。在提取计划中它们显示为“复制”。",
+    "bitmapSubtitleWarning": "该图像字幕流无法在没有 OCR 的情况下转码为文本，因此将以无损 .mks 副本形式提取。",
+    "copyOption": "复制（无损）",
+    "outputDir": "输出文件夹",
+    "outputDirHint": "写入已提取流的文件夹。默认为源文件所在文件夹。",
+    "outputDirPlaceholder": "输出文件夹",
+    "summary": "提取计划",
+    "summaryHint": "每个选中的流对应一个输出文件，按执行顺序排列。标记为“复制”的文件将被无损提取；标记为“转换”的文件将被重新编码。",
+    "copyLabel": "复制",
+    "convertLabel": "转换为 {{target}}",
+    "start": "开始解复用",
+    "demuxing": "正在提取…",
+    "pause": "暂停",
+    "resume": "继续",
+    "cancel": "取消",
+    "cancelTitle": "取消解复用",
+    "cancelMessage": "确定要取消正在进行的解复用吗？",
+    "yes": "是",
+    "no": "否",
+    "currentStream": "正在提取第 {{index}} 个 {{kind}} 流",
+    "filtersTitle": "视频滤镜",
+    "filtersHint": "在重新编码选中的视频流时应用 FFmpeg 视频滤镜（裁剪、帧率、去隔行、降噪、色彩等）。“复制”为无损方式，因此只有当输出容器会重新编码视频时，才会显示滤镜选项。",
+    "filtersIgnoredCopy": "当视频输出方式为“复制”时，视频滤镜会被忽略，因为流复制无法重新编码。请选择输出容器以应用滤镜。"
   }
 }

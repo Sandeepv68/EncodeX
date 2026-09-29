@@ -18,7 +18,7 @@
     "batchQueue": "Ilerleq",
     "logs": "Allaaserisat",
     "settings": "Inissiissutit",
-    "about": "About",
+    "about": "Oqaloqatigiinneq",
     "blip": {
       "converting": "Allannguineqartuarpoq",
       "extracting": "Nipaatit (audio) aniat",
@@ -26,7 +26,9 @@
       "paused": "Unnerseqsimavoq",
       "starting": "Aallartippoq",
       "parallel": "{{count}} paasisuutigalugu"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "EncodeX-imut tikilluaritsi",
@@ -37,7 +39,9 @@
     "descAudio": "Video-mit nipilersorneq pillaartorujussuaq nuiaatit",
     "descCut": "Video nakassat frame-nut naliginissaanut naapertuuttumik",
     "descBatch": "Assersuutit arlallit ataatsimut allanngortit",
-    "shortcutsFooter": "Tastaturikkumut aaliangersakkanut {{shortcut}} atuartit"
+    "shortcutsFooter": "Tastaturikkumut aaliangersakkanut {{shortcut}} atuartit",
+    "descRemux": "Stream-it timersoqutissanut nuakkut, tamannalu anneralugu",
+    "descDemux": "Fileup stream-it annilarutinut immikkoortinnaveersaarpaa"
   },
   "gettingStarted": {
     "hint": "Nutaaq?",
@@ -125,7 +129,25 @@
     "showPreview": "Takussaalillugu takut",
     "closePreview": "Takussaalillugu matu",
     "viewMore": "Amerlanerusut takukkit",
-    "viewLess": "Ikittut takukkit"
+    "viewLess": "Ikittut takukkit",
+    "filtersTitle": "Video-filtrit",
+    "filtersHint": "FFmpeg-video-filterit atatseq (trim, frame rate, deinterlace, noiseunerit, qalipaatsit…) enkoderinermat. Filterit tamaasa ataatsiinut -vf chain-imut kattunneqartarput scale aamma rotation qaangiuteqqaartumik.",
+    "addPreset": "Preset-filter ilanngussigit…",
+    "addFilter": "Filterik ilanngussigit",
+    "customChainLabel": "Custom-filter-chain",
+    "customChainPlaceholder": "assersuut: fps=30, eq=brightness=0.1",
+    "customChainHint": "FFmpeg-filter-expression, komma-mit apornerat. Aappassagut qallusit aamma kvadrat-qallusit ikinngutigiipput, hugissat assigiimmik aaqqissorneqarsimapput, shell-meta-tegnat nammineq aningaaq.",
+    "addCustom": "Customik ilanngussigit",
+    "removeFilter": "Filter pisissiuk",
+    "moveUp": "Qummuk",
+    "moveDown": "Unniruk",
+    "clearAll": "Tamarmik piiaruk",
+    "noFilters": "Filter pasissat.",
+    "filtersDisabledNote": "Video-filterit enkoderinermik pissarsiarisartut. Filter ilanngussigukkit lossless-copy nuttersuk.",
+    "filtersTurnOffCopy": "Lossless-copy nuttersuk",
+    "filtersCopyWarning": "Lossless-copy-mode siorluneqarsimavoq, taamaalilluni video-filterit atatoginassanngillat. Filterit atatseq patsiornissaat lossless-copy nuttersuk.",
+    "chainPreview": "Takussaanera: -vf {{chain}}",
+    "filtersInvalid": "Filteriginnarneqanngilaq: {{error}}"
   },
   "mediaInfo": {
     "title": "Mediami Pissusianik",
@@ -135,7 +157,7 @@
     "format": "Format",
     "size": "Annertussusaq",
     "duration": "Sivisussuseq",
-    "bitrate": "Bitrate",
+    "bitrate": "Bitrat",
     "streams": "Stream-i",
     "stream": "Stream",
     "codec": "Codec",
@@ -183,8 +205,8 @@
       "copyright": "Piginnaaneq",
       "description": "Pissusianik",
       "composer": "Nalunaaq",
-      "performer": "Performer",
-      "publisher": "Publisher",
+      "performer": "Nalunaaquteqartitsisoq",
+      "publisher": "Publisheri",
       "track": "Track",
       "disc": "Diskki",
       "lyrics": "Erinarsugassiaq",
@@ -240,7 +262,7 @@
     "scaleHint": "Output resolution preset-it. Standard-size toqqaruk imaluunnit original-ip toqqarneqartussatut, 'No scaling' toqqarlugu.",
     "keepAspectRatio": "Aspect ratio toqqaruk",
     "keepAspectRatioHint": "Assersuut aspect ratio-ip toqqaartumik toqqarneqartussatut; sunaungaluunngit aallartitsiffik, resolution-imut naapertuuttumik qaffoq.",
-    "noScale": "No scaling"
+    "noScale": "Scale aningaaq"
   },
   "audioExtract": {
     "title": "Nipilersorneq nuiaatit",
@@ -248,7 +270,7 @@
     "dropLabel": "Video filiussaq maani ilissi",
     "outputFile": "Anineqassaaq",
     "audioCodec": "Nipilersorneq codec",
-    "bitrate": "Bitrate",
+    "bitrate": "Bitrat",
     "videoFileHint": "Video iserniarfik nipilersorneq stream-imik atoqassaaq.",
     "outputFileHint": "Nipilersorneq nuiaatissatut filiussaq. Filiussutip format-imut naapertuuttu.",
     "audioCodecHint": "Nipilersorneq stream-ip encoding-iani atorneqartoq codec, soqquit. AAC, MP3 imaluunnit Opus.",
@@ -313,7 +335,7 @@
   "videoTimeline": {
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
-    "videoTrack": "Video track",
+    "videoTrack": "Video-track",
     "audioTrack": "Nipilersorneq track",
     "audioEnabled": "Nipilersorneq ilanngullugu",
     "audioEnabledHint": "Nakassat output-imut nipilersorneq track ilanngullugu. Video nipilersornartumik atorunnaaruk."
@@ -331,7 +353,7 @@
   "batchQueue": {
     "title": "Ilerleq",
     "operation": "Suliniut",
-    "suffix": "Suffix",
+    "suffix": "Suffiks",
     "addFiles": "Filiussat ilannguk",
     "addFolder": "Mappimik ilanngussigit",
     "cancelAll": "Tamaasa piumasuunngikkit",
@@ -347,7 +369,7 @@
     "revealInFolder": "Folder-mi takuuk",
     "copyPath": "Path copy-kooruk",
     "stats": "{{queued}} ikiuttat, {{running}} inissisimanitut, {{done}} naammassineqartoq, {{failed}} kinguneqanngitsut",
-    "etaEstimate": "ETA ~{{eta}}",
+    "etaEstimate": "Naggassamissaa ~{{eta}}",
     "finished": "Batch naammassineqarpoq: {{done}} naammassineqartoq, {{failed}} kinguneqanngitsut",
     "notificationTitle": "EncodeX batch naammassineqarpoq",
     "filters": {
@@ -385,34 +407,34 @@
     "reviewTitle": "Filiussat takusaat, ilanngussanngikkaluarlugit",
     "reviewAdd": "Filiussat {{count}} ilannguk",
     "reviewCancel": "Piumasuunngit",
-    "exportQueue": "Export",
-    "importQueue": "Import",
+    "exportQueue": "Exportit",
+    "importQueue": "Importit",
     "exported": "Suliassat {{count}} export-neqarput",
     "imported": "Suliassat {{count}} import-neqarput",
     "expandDetails": "Pissusianik takuuk",
     "collapseDetails": "Pissusianik piiaruk",
     "detailsError": "Error-ip Pissusianik",
     "detailsOutput": "Anineqassaaq",
-    "detailsOptions": "Options",
-    "detailsTranscoder": "Transcoder",
+    "detailsOptions": "Inippat",
+    "detailsTranscoder": "Transkoderi",
     "detailsCreatedAt": "Ilanngussaneqarpoq",
     "yes": "Aap",
     "no": "Naamik",
-    "optionVideoCodec": "Video codec",
+    "optionVideoCodec": "Video-codec",
     "optionAudioCodec": "Nipilersorneq codec",
-    "optionVideoBitrate": "Video bitrate",
+    "optionVideoBitrate": "Video-bitrat",
     "optionAudioBitrate": "Nipilersorneq bitrate",
     "optionQscale": "Pissaaserususeq (qscale)",
     "optionScale": "Qafforissaq",
-    "optionPixelFormat": "Pixel format",
+    "optionPixelFormat": "Pixel-format",
     "optionTrim": "Trim",
     "optionDuration": "Sivisussuseq",
     "optionCopy": "Stream copy",
     "optionAudio": "Nipilersorneq",
-    "optionHwaccel": "HW accel",
-    "optionHwaccelMode": "HW accel mode",
-    "encodingOptions": "Encoding options",
-    "container": "Container",
+    "optionHwaccel": "Hardware-akselerassiaq",
+    "optionHwaccelMode": "Hardware-akselerassiamut mode",
+    "encodingOptions": "Enkoderinermut inippat",
+    "container": "Containeri",
     "containerAuto": "Automatisk (iserniarfik)",
     "optionsEditableAlert": "Suli aallaqqinneqartut nakkutilinneqartut peqqussaatit allanngortinneqarsinnaasarput.",
     "optionsLockedAlert": "Batch suliaqartillugu peqqussaatit matuneqarput.",
@@ -427,13 +449,16 @@
     "optionsUpdateFailed": "Una sulineq allanngortinneqarsinnaanngilaq.",
     "condense": "Mikissusaruk",
     "expand": "Annertusaruk",
-    "clearAll": "Eradluutit tamarmik"
+    "clearAll": "Eradluutit tamarmik",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "Containeri, stream-it koppi iffaat. \"Automatik\" kingunnaq aatsitassap file-ia atorsimavaa."
   },
   "progress": {
     "title": "Allanngortitsineq ingerlanera",
     "time": "Nalliinera",
     "speed": "Sukkassuseq",
-    "eta": "ETA"
+    "eta": "Nakuuussut"
   },
   "errorBoundary": {
     "title": "Pissutsit pisoqartut",
@@ -462,8 +487,8 @@
     "levelAll": "Tamarmik",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
-    "levelWarn": "WARN",
-    "levelError": "ERROR",
+    "levelWarn": "NALLIAAVIT",
+    "levelError": "KUSANERUQ",
     "noEntries": "Allaaserisat taamaallaat ilaanaqanngilaq.",
     "entryCount": "{{count}} inissisimanitut"
   },
@@ -495,7 +520,9 @@
     "updateAvailable": "Minusqaat princessaluarpoq: v{{version}}",
     "updateNow": "Minusqigivit nuannillit",
     "updateDownloaded": "Uppdateriaq v{{version}} niissutigineqarpoq",
-    "viewUpdate": "Takuss"
+    "viewUpdate": "Takuss",
+    "remuxed": "Remux naammassineqarpoq",
+    "demuxed": "Stream-it annerani immikkut annilerneqarsimapput"
   },
   "profiles": {
     "searchPlaceholder": "Ugisinnaanut misissuisoq...",
@@ -564,9 +591,9 @@
     "mcpPortHint": "Lokal TCP-porti MCP serverimut (1024-65535). App-ip serveri aallartippaa taanna allanngortillugu.",
     "mcpToken": "Isersinnaanermut tokeni",
     "mcpTokenHint": "Kissaateqanngilaq. Tokeni taanna tungaanut MCP-klientit Bearer-p tungaanut nassiussinnaapput. Kissaammik lokal-klienti ilaarinissaq anguniarlugu manngertinnagu.",
-    "mcpEndpoint": "MCP endpoint",
+    "mcpEndpoint": "MCP-endpoint",
     "mcpEndpointHint": "URL-ip MCP-klientit attuumassuteqarfigisaat. Una sumiiffik MCP-klientimut serveri URL-tut ilannguk.",
-    "mcpAuthorization": "Authorization header",
+    "mcpAuthorization": "Authorization-header",
     "mcpAuthorizationHint": "MCP-klientit taanna header-imik Bearer-p tungaanut nassiussinnaapput apeqqut tamatigut.",
     "mcpCopy": "Clipboard-mut copy-kooruk",
     "mcpCopied": "Clipboard-mut copy-neqarpoq",
@@ -598,7 +625,9 @@
       "videoCut": "Video nakkaruk",
       "batchQueue": "Qatamut ikinngut",
       "logs": "Logit",
-      "dashboard": "Dashboardi"
+      "dashboard": "Dashboardi",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Tastaturimi aaliangersagat takukkit",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Qatamut ikinngummut ingerla",
       "navLogs": "Logimut ingerla",
       "navSettings": "Inissiissutinut ingerla",
-      "themeToggle": "Tema allanngoruk"
+      "themeToggle": "Tema allanngoruk",
+      "navRemux": "Remux-imut ingerlavik"
     },
     "convert": {
       "input": "Iterfiussaq qineruk",
@@ -679,7 +709,17 @@
       "image": "Assak matoqqigit",
       "audio": "Nipit matoqqigit",
       "cut": "Nakkarneqarnerit matoqqigit",
-      "batch": "Qatamut ikinngut matoqqigit"
+      "batch": "Qatamut ikinngut matoqqigit",
+      "remux": "Remux ammaruk",
+      "demux": "Demux ammaruk"
+    },
+    "remux": {
+      "input": "Input-file toqqaruk",
+      "start": "Remux aallartiguk"
+    },
+    "demux": {
+      "input": "Input-file toqqaruk",
+      "start": "Anilertitsineq aallartiguk"
     }
   },
   "about": {
@@ -688,11 +728,11 @@
     "description": "EncodeX multimedia-toolkit cross-platform-uvoq FFmpeg-ip sunniutaanik moderni, intuitivi desktop-interface-mut atuutsiissutigineqartoq. Nipit, videot aamma assit formatinik allanngortinneqarsinnaapput codec-it, bitrate, resolution, pixel-format aamma kvalitet-imik nakussagaqarneq annertusisumik; track-it anngunnaateqanngitsumik kopioruk remux-tassamut; video-miit nipit anitseruk; aamma video qimassoruk frame-akkuratungasutigut preview-player-ikkut. Hardware-accelerated encoding NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox aamma Microsoft Media Foundation-i tersorsimavaa, encoderit atorneqarsinnaasut runtime-mi FFmpeg-binærimiit automatisk-iusumik takuneqartut. Batch-jobsit queue-persistent-imikkut suliffigineqarput progress-real-time-ikkut, aamma headless-CLI-mode-ip taamaattumik piginnaasaatit scripting-imi aamma automation-imi atuutsinneqarput.",
     "logoAlt": "EncodeX-logo",
     "featuresTitle": "Qanoq pisinnaavit",
-    "version": "Version",
+    "version": "Nutseriaq",
     "builtWith": "Sananeqarsimavoq",
     "authorTitle": "Allaaserisoq aamma feedback",
     "author": "Allaaserisoq",
-    "repository": "Repository",
+    "repository": "Repositoriumi",
     "contact": "Kontakt",
     "feedback": "Bug-eq takua imaluunniit isumassarsiaqarpit?",
     "reportIssue": "GitHub-mi issue-eq ammaruk",
@@ -700,18 +740,18 @@
     "licenseName": "MIT-lisenssi",
     "copyright": "Copyright © 2026 EncodeX",
     "licenseSummary": "MIT-lisenssimiit saqqummiunneqarpoq. Atoruk, kopioruk, allanngoruk, merge-ioruk, publish-ioruk, distribute-ioruk, sublicense-ioruk aamma sell-ioruk — commercial-imullu — copyright-notice-q aamma permission-notice-q software-p copies-iniit annerpaaniit ilaanniit ilanngullugit. Software-q \"as is\"-imik tunitinneqarpoq, warranty-tanngitsumik.",
-    "acknowledgements": "Made with ❤️ for open source — powered by the FFmpeg project and the community.",
+    "acknowledgements": "Sananeqareersut ❤️-akkut oqarasuaat-immikkoot — FFmpeg-suliatigut isumaginninnermik takussutissaq.",
     "checkForUpdates": "Uppdateringer niunneq",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Naatsorsuussutit aamma ingerlariaatsit",
+    "terms": "Naatsorsuussutit",
+    "readTerms": "Naatsorsuussutit tigukkit"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Naatsorsuussutit aamma ingerlariaatsit",
+    "accept": "Iliuuseqartarpunga",
+    "reject": "Iliuuseqarnanngilanga",
+    "close": "Matiuk",
+    "lastUpdated": "Atorunnaarsinneqarpoq: {{date}}"
   },
   "update": {
     "title": "Oppdatering",
@@ -734,5 +774,167 @@
     "installOnRestart": "Isikkiveqarfissamut tullermut instal",
     "installScheduled": "Uppdateriaq v{{version}} aappersaallu aallartikkatigu installeriqineqassaaq.",
     "cancelRestartInstall": "Ajuffissit"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Trim",
+      "cropHint": "Video-trimeq, ilusaaseq, portussuseq aamma offset aqqutissimasut.",
+      "framerate": "Frame rate",
+      "framerateHint": "Animerfimmut frame rate allanngorpaa (frame-it immikkut assigiissaarneqarput).",
+      "deinterlace": "Deinterlace",
+      "deinterlaceHint": "Interlaced-video progressiv-imiut allanngortit.",
+      "denoise": "Noise negerlugit",
+      "denoiseHint": "Noise-nek annertoqatigeqqaarsimajuttat, ataatsimut iluuseq (hqdn3d).",
+      "sharpen": "Gammassineq",
+      "sharpenHint": "Isiginnartaassuseq annertusarpaa (unsharp).",
+      "color": "Qalipaaneq",
+      "colorHint": "Qaamasoq, contrast, saturation aamma gamma eq-mik (eq) naligiikkaasa.",
+      "grayscale": "Grayscale",
+      "grayscaleHint": "Qalipaaneq tikinneqarpaa, qaqartuup-takornusaasunik inuiaatut anneralugu.",
+      "blur": "Blur",
+      "blurHint": "Box-blur atatseq, takussannginnerusumik isigininiarluni."
+    },
+    "params": {
+      "crop": {
+        "w": "Ilusaaseq",
+        "h": "Portussuseq",
+        "x": "X-offset",
+        "y": "Y-offset"
+      },
+      "framerate": {
+        "fps": "Frame sekundimut"
+      },
+      "deinterlace": {
+        "mode": "Field-inik artorniaq",
+        "modes": {
+          "auto": "Automatik",
+          "tff": "Siullermik qaallyneeq field",
+          "bff": "Siullermik attenuuneq field"
+        }
+      },
+      "denoise": {
+        "strength": "Sakkortussuseq"
+      },
+      "sharpen": {
+        "strength": "Sakkortussuseq"
+      },
+      "color": {
+        "brightness": "Qaamasoq",
+        "contrast": "Contrast",
+        "saturation": "Saturation",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Sakkortussuseq"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Video-file",
+    "dropLabel": "Video-file taani aallukassuk imaluunniit klikkuk toqqassallugu",
+    "videoFileHint": "Aatsitassiup media-file, streamerit container-imut repack-nianeersarneqartut. Stream-it enkoderineqanngitsumik koppi iffigaat.",
+    "selectedVideo": "Toqqagasoqat video: {{file}}",
+    "streamCount": "{{selected}} stream {{total}}-mik toqqarneqarsimavoq",
+    "container": "Containeri",
+    "containerHint": "Remux aaqqissornerup kingunerisa file-ip containeri. Video-containerit pillugit toqqaruk; annerutissaq extension container-tutigut.",
+    "streams": "Aatsitassiup stream-it",
+    "streamsHint": "Source file-ip stream-it toqqaruk, remux-ip annerutanitut kissaatigut. Toqqaqanngilaq stream-it piiarneqarput.",
+    "streamIndex": "Umeriak",
+    "kind": "Suna",
+    "selectStream": "{{kind}} stream #{{index}} toqqaruk",
+    "selectAll": "Tamassaanik psaaruk",
+    "selectNone": "Kisimik psaarunngilaq",
+    "audioSync": "Audio-shift (sekundit)",
+    "audioSyncHint": "Audio-trackip videoimut nuuaanneqartarpoq, enkoderineqanngitsumik, assersuutigalugu -0.5 sekundimut siusinnerusumik imaluunniit 1.5 sekundimut kingusinnerusumik.",
+    "audioSyncLossless": "Lossless: audio koppi iffigaaq stream-sutut timestamp-offset, taamaammat kvalitet allanngorissaaq.",
+    "subtitles": "Subtitle-it ilanngunneqarsimasut",
+    "subtitlesHint": "Ekstern subtitle-file-it (.srt, .ass, .vtt) remux-ip annerutaanut input-track-it ilanngunneqartut.",
+    "addSubtitle": "Subtitle-file ilanngussigit",
+    "subtitleCodec": "Kingullugu inissamut codec",
+    "subtitleCodecHint": "Subtitle-codec embeddertariaqivigisaaq. Container-it subtitle-formatit assigiinngissuteqarput; containerimut format ikinngutigineqarsinnaanngitsumik toqqarneqaraangat nalunaarutigineqartarpoq.",
+    "removeSubtitle": "Subtitle piiaruk",
+    "audioTracks": "Audio-track-it ilanngunneqarsimasut",
+    "audioTracksHint": "Ekstern audio-file-it (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) remux-ip annerutaanut input-track-it ilanngunneqartut.",
+    "addAudioTrack": "Audio-track ilanngussigit",
+    "removeAudioTrack": "Audio-track piiaruk",
+    "addedTrackDelay": "Track-imik nappartitsineq (sekundit)",
+    "addedTrackDelayHint": "Track-imut sign-offset video-up tunuani (positivit = kingusinnerusikunnaaneq). Lossless: -itsoffset-sutit atatseq stream kopi aqqut.",
+    "thumbnail": "Thumbnail / cover",
+    "thumbnailHint": "Cover-image ikinngutigalugu (.jpg, .jpeg, .png) remux aaqqissornerup kingunerani file-imut embed-nerunneqarsinnaasoq. MKV/WebM it image-stream-sutut attach-nerpaa; MP4/MOV it video-stream-sutut embed-nersaavat attached_pic-tagigut.",
+    "addThumbnail": "Thumbnail ilanngussigit",
+    "thumbnailUnsupported": "{{container}} cover-it anneruanngilaq. MKV, WebM, MP4 imaluunniit MOV-imut allanngoruk, thumbnail attach-ssallugu.",
+    "removeThumbnail": "Thumbnail piiaruk",
+    "thumbnailMode": "Embed-sutut {{mode}}",
+    "thumbnailAttached": "attached image",
+    "thumbnailDisposition": "attached_pic-cover-stream",
+    "chapters": "Kapitalit",
+    "chaptersHint": "Source-ip kapitalit default-utigut psaarneqarput. FFMETADATA-chapter-file importiguk, source-ip kapitalit allanngortinneqartarput remux naammassogamik.",
+    "copyChapters": "Source-ip kapitalit kopiiguk",
+    "copyChaptersHint": "Source file-ip chapter-markørerit remux-ip annerutaanut psaarneqarput (lossless, -map_chapters 0).",
+    "importChapters": "Chapter-file importiguk",
+    "chaptersUnsupported": "{{container}} chapter-metadata anneruanngilaq, taamaammat kapitalit piiarneqarput.",
+    "removeChapters": "Chapter-file piiaruk",
+    "warnings": "Compatibilitet-nulliunerat",
+    "warningsHint": "Nalliaanerit, streamit aamma settingsit toqqarnegartut container soqanngitsumik ataqgissimassuaqassat assorsuaq. Nalliaanerit aallartinissannut anerutinngilaat, kusanerit anerutipput.",
+    "outputFile": "Aneriffimmut file",
+    "outputFileHint": "Remux naammassiffiup kingunerisa file-ip inissarnerpaa. Extension container aallaaveq.",
+    "placeholderOutput": "output.mkv",
+    "start": "Remux aallartiguk",
+    "remuxing": "Remux ingerlanneqarpoq…",
+    "pause": "Unnerpaa",
+    "resume": "Aallangaavik",
+    "cancel": "Nakorsuuk",
+    "cancelTitle": "Remux nakorsuk",
+    "cancelMessage": "Remuxiliorsiup unitsissinnaaviarputaa?",
+    "yes": "Aap",
+    "no": "Naamik",
+    "filtersTitle": "Video-filtrit",
+    "filtersHint": "FFmpeg-video-filterit atatseq video-streamit enkoderineqarpat. Filterit lossless-kopimut atatoginassanngillat, taamaammat filter ataatsit ilanngussigaat remuxiliusaq enkoderinegarluni.",
+    "filtersReencodeWarning": "Video-filterit stream-kopimut ingerlanneqarsinnaanngillat, taamaammat {{count}} filterit toqqarneqarsimasut remuxip enkoderinermigut allanngortippaat."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Video-file",
+    "videoFileHint": "Aatsitassiup media-file, streamerit anilertussat. Toqqorneqasaq stream-igigaattaaq annerutinut file-imi allanneqartarpoq.",
+    "dropLabel": "Video-file taani aallukassuk imaluunniit klikkuk toqqassallugu",
+    "selectedVideo": "Toqqagasoqat video: {{file}}",
+    "streamCount": "{{selected}} stream {{total}}-mik toqqarneqarsimavoq",
+    "streams": "Aatsitassiup stream-it",
+    "streamsHint": "Toqqaruk, uannertut streamit anilertussat. Toqqornegartut streamit tamarmik file-mingaannaamik annerutissaqarput; toqqorsimanngitsut qimassapput.",
+    "extractStreams": "Stream-it annilertussat",
+    "streamGroup": "{{kind}} stream-it",
+    "suggestedOutput": "Animerffik",
+    "selectStream": "{{kind}} stream #{{index}} toqqaruk anilertussat",
+    "videoContainer": "Video-kingullugu inissaq",
+    "videoContainerHint": "Video-streamit qanoq allanneqartarpat. \"Kopi\" annilerpaa, enkoderineqanngitsumik; container toqqarneqaraangat video allanngortinneqartarpoq.",
+    "audioCodec": "Audio-kingullugu inissaq",
+    "audioCodecHint": "Nipilersuut-streamit qanoq allanneqartarpat. \"Kopi\" annilerpaa, enkoderineqanngitsumik; codec toqqarneqaraangat nipilersuut enkoderineqartarpoq.",
+    "subtitleFormat": "Subtitle-kingullugu inissaq",
+    "subtitleFormatHint": "Subtitle-streamit qanoq allanneqartarpat. \"Kopi\" annilerpaa, enkoderineqanngitsumik; format toqqarneqaraangat subtitle-it allanngortinneqarput. Bitmap-subtitle-it (PGS/DVDSUB-sut) tekstimut allanngortinneqarsinnaanngillat, taamaammat kopi-nutinnerunneqquseqartarput.",
+    "subtitleWarning": "Subtitle-allanngortinermut nalliaanerit",
+    "subtitleWarningHint": "Bitmap-subtitle-streamit (PGS/DVDSUB-sut) OCR-anngitsumik tekstimut enkoderineqarsinnaanngillat, taamaammat lossless .mks kopiinik anilerneqartarput. Anilertussanut planimi \"Kopi\"-sutut takkusaanneqartarput.",
+    "bitmapSubtitleWarning": "Bitmap-subtitle-stream-umikkut OCR-anngitsumik tekstimut allanngortinneqarsinnaanngilaq, taamaammat lossless .mks kopi-sutigit",
+    "copyOption": "Kopi (lossless)",
+    "outputDir": "Aneriffik",
+    "outputDirHint": "Anilertussat allaffissarfik. Default-ut, file-ip aatsitassap folder-a.",
+    "outputDirPlaceholder": "aneriffik",
+    "summary": "Anilertussanut plan",
+    "summaryHint": "Toqqornegartoq stream-imik fileerutaani annerutinissaat, ingerlanerup naa. \"Kopi\"-mik nalunaarutigaasoq file annerneqartarpoq; \"Allanngortit\"-mik nalunaarutigaasoq enkoderineqartarpoq.",
+    "copyLabel": "Kopi",
+    "convertLabel": "{{target}} imut allanngortit",
+    "start": "Demux aallartiguk",
+    "demuxing": "Annerannguaq…",
+    "pause": "Unnerpaa",
+    "resume": "Aallangaavik",
+    "cancel": "Nakorsuuk",
+    "cancelTitle": "Demux nakorsuk",
+    "cancelMessage": "Makku demux-ip naammassissusianik unitsissinngilatigit?",
+    "yes": "Aap",
+    "no": "Naamik",
+    "currentStream": "{{kind}} stream #{{index}} annilerneqarpoq",
+    "filtersTitle": "Video-filtrit",
+    "filtersHint": "FFmpeg-video-filterit atatseq (trim, frame rate, deinterlace, noiseunerit, qalipaatsit…) video-streamit enkoderineqarpat. \"Kopi\" lossless-uvoq, taamaammat filterit takunneqartarput videoq enkoderineqaraangat.",
+    "filtersIgnoredCopy": "Video-filterit atatoginassanngillat, video-ip kingullugu inissaq \"Kopi\"-pasilluni, stream-kopik enkoderineqarsinnaanngimmat. Filterit atatseq patsiornissaat container toqqaruk."
   }
 }

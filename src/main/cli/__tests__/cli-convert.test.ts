@@ -6,7 +6,9 @@
 
 import { describe, it, expect } from 'vitest';
 import * as path from 'path';
-import { buildConversionOptions, resolveOutputPath } from '../cli-convert';
+import { buildConversionOptions, resolveOutputPath, resolveCliVideoFilters } from '../cli-convert';
+import { CliExitError } from '../cli-options';
+import { CLI_EXIT_USAGE } from '../../../shared/constants';
 
 describe('buildConversionOptions', () => {
   it('returns empty options for empty flags', () => {
@@ -63,6 +65,59 @@ describe('buildConversionOptions', () => {
 
   it('ignores unknown codec values rather than throwing', () => {
     expect(() => buildConversionOptions({ videoCodec: 'bogus-codec' })).not.toThrow();
+  });
+
+  it('maps a comma-joined filter chain into ordered videoFilters entries', () => {
+    const options = buildConversionOptions({ filters: 'fps=30, eq=brightness=0.1' });
+    expect(options.videoFilters).toEqual(['fps=30', 'eq=brightness=0.1']);
+  });
+
+  it('expands curated presets into their default filter expressions', () => {
+    const options = buildConversionOptions({ presets: ['grayscale', 'crop'] });
+    expect(options.videoFilters).toEqual(['hue=s=0', 'crop=in_w:in_h']);
+  });
+
+  it('orders presets before the custom chain in the built options', () => {
+    const options = buildConversionOptions({ presets: ['grayscale'], filters: 'fps=30' });
+    expect(options.videoFilters).toEqual(['hue=s=0', 'fps=30']);
+  });
+
+  it('omits videoFilters when no filter flags are provided', () => {
+    expect(buildConversionOptions({ videoCodec: 'libx264' }).videoFilters).toBeUndefined();
+  });
+
+  it('rejects an invalid filter chain with the usage exit code', () => {
+    expect(() => buildConversionOptions({ filters: 'fps=30;rm -rf /' })).toThrowError(
+      expect.objectContaining({ name: 'CliExitError', exitCode: CLI_EXIT_USAGE }),
+    );
+  });
+
+  it('rejects filters combined with lossless copy', () => {
+    try {
+      buildConversionOptions({ filters: 'fps=30', copy: true });
+      expect.unreachable();
+    } catch (err) {
+      expect(err).toBeInstanceOf(CliExitError);
+      expect((err as CliExitError).exitCode).toBe(CLI_EXIT_USAGE);
+    }
+  });
+
+  it('rejects an unknown preset id with the usage exit code', () => {
+    expect(() => buildConversionOptions({ presets: ['nope'] })).toThrowError(expect.objectContaining({ exitCode: CLI_EXIT_USAGE }));
+  });
+});
+
+describe('resolveCliVideoFilters', () => {
+  it('returns an empty list for no filter flags', () => {
+    expect(resolveCliVideoFilters({})).toEqual([]);
+  });
+
+  it('splits and trims a comma-joined chain', () => {
+    expect(resolveCliVideoFilters({ filters: ' fps=30 , eq=brightness=0.1 ' })).toEqual(['fps=30', 'eq=brightness=0.1']);
+  });
+
+  it('throws a usage error for unknown preset ids', () => {
+    expect(() => resolveCliVideoFilters({ presets: ['blurr'] })).toThrowError(expect.objectContaining({ exitCode: CLI_EXIT_USAGE }));
   });
 });
 

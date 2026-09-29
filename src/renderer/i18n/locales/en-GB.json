@@ -26,7 +26,9 @@
       "paused": "Paused",
       "starting": "Starting",
       "parallel": "{{count}} parallel"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Welcome to EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Extract clean audio tracks from video files",
     "descCut": "Trim and cut video with a frame-accurate player",
     "descBatch": "Convert many files at once with a smart queue",
-    "shortcutsFooter": "Press {{shortcut}} for keyboard shortcuts"
+    "shortcutsFooter": "Press {{shortcut}} for keyboard shortcuts",
+    "descRemux": "Remux streams losslessly into a new container",
+    "descDemux": "Split a file's streams into separate output files"
   },
   "gettingStarted": {
     "hint": "New here?",
@@ -125,7 +129,25 @@
     "showPreview": "Show Preview",
     "closePreview": "Close Preview",
     "viewMore": "View More",
-    "viewLess": "View Less"
+    "viewLess": "View Less",
+    "filtersTitle": "Video Filters",
+    "filtersHint": "Applies FFmpeg video filters (crop, frame rate, deinterlace, denoise, color...) during re-encoding. All filters merge into the single -vf chain after scale and rotation.",
+    "addPreset": "Add preset filter...",
+    "addFilter": "Add filter",
+    "customChainLabel": "Custom filter chain",
+    "customChainPlaceholder": "e.g. fps=30, eq=brightness=0.1",
+    "customChainHint": "Comma-separated FFmpeg filter expressions. Each entry must use balanced brackets, matched quotes, and no shell metacharacters.",
+    "addCustom": "Add custom",
+    "removeFilter": "Remove filter",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "clearAll": "Clear all",
+    "noFilters": "No filters added.",
+    "filtersDisabledNote": "Video filters require re-encoding. Turn off lossless copy to add filters.",
+    "filtersTurnOffCopy": "Turn off lossless copy",
+    "filtersCopyWarning": "Lossless copy mode is on, so video filters would be ignored. Turn off lossless copy to apply filters.",
+    "chainPreview": "Preview: -vf {{chain}}",
+    "filtersInvalid": "Invalid filter: {{error}}"
   },
   "mediaInfo": {
     "title": "Media Information",
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "This job is no longer editable.",
     "condense": "Condense",
     "expand": "Expand",
-    "clearAll": "Clear All"
+    "clearAll": "Clear All",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "The container the streams are copied into. Auto keeps each file's source extension."
   },
   "progress": {
     "title": "Conversion progress",
@@ -495,7 +520,9 @@
     "updateAvailable": "Update available: v{{version}}",
     "updateNow": "Update Now",
     "updateDownloaded": "Update v{{version}} downloaded",
-    "viewUpdate": "View"
+    "viewUpdate": "View",
+    "remuxed": "Remux complete",
+    "demuxed": "Streams extracted successfully"
   },
   "profiles": {
     "searchPlaceholder": "Search profiles...",
@@ -598,7 +625,9 @@
       "videoCut": "Video Cut",
       "batchQueue": "Batch Queue",
       "logs": "Logs",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Show keyboard shortcuts",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Go to Batch Queue",
       "navLogs": "Go to Logs",
       "navSettings": "Go to Settings",
-      "themeToggle": "Toggle theme"
+      "themeToggle": "Toggle theme",
+      "navRemux": "Go to Remux"
     },
     "convert": {
       "input": "Choose input file",
@@ -679,7 +709,17 @@
       "image": "Open Image",
       "audio": "Open Audio",
       "cut": "Open Cut",
-      "batch": "Open Batch Queue"
+      "batch": "Open Batch Queue",
+      "remux": "Open Remux",
+      "demux": "Open Demux"
+    },
+    "remux": {
+      "input": "Choose input file",
+      "start": "Start remuxing"
+    },
+    "demux": {
+      "input": "Choose input file",
+      "start": "Start demuxing"
     }
   },
   "about": {
@@ -734,5 +774,167 @@
     "installOnRestart": "Install on Next Restart",
     "installScheduled": "Update v{{version}} will install on the next app restart.",
     "cancelRestartInstall": "Cancel"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Crop",
+      "cropHint": "Crops the video to the given width, height and offset.",
+      "framerate": "Frame rate",
+      "framerateHint": "Changes the output frame rate (frames are duplicated or dropped).",
+      "deinterlace": "Deinterlace",
+      "deinterlaceHint": "Converts interlaced video to progressive.",
+      "denoise": "Denoise",
+      "denoiseHint": "Reduces noise while keeping detail (hqdn3d).",
+      "sharpen": "Sharpen",
+      "sharpenHint": "Increases perceived sharpness (unsharp).",
+      "color": "Color",
+      "colorHint": "Adjusts brightness, contrast, saturation and gamma (eq).",
+      "grayscale": "Grayscale",
+      "grayscaleHint": "Removes color, leaving a black & white image.",
+      "blur": "Blur",
+      "blurHint": "Applies a box blur to soften the image."
+    },
+    "params": {
+      "crop": {
+        "w": "Width",
+        "h": "Height",
+        "x": "Offset X",
+        "y": "Offset Y"
+      },
+      "framerate": {
+        "fps": "Frames per second"
+      },
+      "deinterlace": {
+        "mode": "Field order",
+        "modes": {
+          "auto": "Auto",
+          "tff": "Top field first",
+          "bff": "Bottom field first"
+        }
+      },
+      "denoise": {
+        "strength": "Strength"
+      },
+      "sharpen": {
+        "strength": "Strength"
+      },
+      "color": {
+        "brightness": "Brightness",
+        "contrast": "Contrast",
+        "saturation": "Saturation",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Strength"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Video File",
+    "dropLabel": "Drop a video file here or click to browse",
+    "videoFileHint": "The source media file whose streams will be repackaged into the target container. Streams are copied without re-encoding.",
+    "selectedVideo": "Selected video: {{file}}",
+    "streamCount": "{{selected}} of {{total}} streams selected",
+    "container": "Container",
+    "containerHint": "The output container for the remuxed file. Choose from common video containers; the output extension follows the container.",
+    "streams": "Source Streams",
+    "streamsHint": "Choose which streams from the source file to keep in the remuxed output. Unchecked streams are dropped.",
+    "streamIndex": "#",
+    "kind": "Kind",
+    "selectStream": "Select {{kind}} stream #{{index}}",
+    "selectAll": "Keep All",
+    "selectNone": "Keep None",
+    "audioSync": "Delay audio (seconds)",
+    "audioSyncHint": "Shift the primary audio track relative to video without re-encoding, e.g. -0.5 for 0.5s earlier or 1.5 for 1.5s later.",
+    "audioSyncLossless": "Lossless: the audio is stream-copied with a timestamp offset, so quality is unchanged.",
+    "subtitles": "Added Subtitles",
+    "subtitlesHint": "External subtitle files (.srt, .ass, .vtt) embedded into the remuxed output as extra input tracks.",
+    "addSubtitle": "Add Subtitle File",
+    "subtitleCodec": "Target codec",
+    "subtitleCodecHint": "The subtitle codec used for the embedded track. Containers accept different subtitle formats; picking one the container cannot store surfaces a warning.",
+    "removeSubtitle": "Remove subtitle",
+    "audioTracks": "Added Audio Tracks",
+    "audioTracksHint": "External audio files (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) embedded into the remuxed output as extra input tracks.",
+    "addAudioTrack": "Add Audio Track",
+    "removeAudioTrack": "Remove audio track",
+    "addedTrackDelay": "Delay this track (seconds)",
+    "addedTrackDelayHint": "Signed offset applied to this track relative to the video (positive = plays later). Lossless: applied as -itsoffset with stream copy.",
+    "thumbnail": "Thumbnail / Cover Art",
+    "thumbnailHint": "Optional cover image (.jpg, .jpeg, .png) embedded into the remuxed file. MKV/WebM attach it as an attached picture stream; MP4/MOV embed it as a video stream with an attached_pic disposition.",
+    "addThumbnail": "Add Thumbnail",
+    "thumbnailUnsupported": "{{container}} cannot store cover art. Switch to MKV, WebM, MP4, or MOV to attach a thumbnail.",
+    "removeThumbnail": "Remove thumbnail",
+    "thumbnailMode": "Embedded as {{mode}}",
+    "thumbnailAttached": "attached picture",
+    "thumbnailDisposition": "attached_pic cover stream",
+    "chapters": "Chapters",
+    "chaptersHint": "Source chapters are preserved by default. Import an FFMETADATA chapters file to replace the source chapters in the remuxed file.",
+    "copyChapters": "Copy source chapters",
+    "copyChaptersHint": "Preserves the source file's chapter markers in the remuxed output (lossless, -map_chapters 0).",
+    "importChapters": "Import Chapters File",
+    "chaptersUnsupported": "{{container}} does not store chapter metadata; chapters will be dropped.",
+    "removeChapters": "Remove chapters file",
+    "warnings": "Compatibility Warnings",
+    "warningsHint": "Non-blocking findings about whether the selected streams and settings fit the chosen container. Warning-level findings still allow starting; error-level findings block it.",
+    "outputFile": "Output File",
+    "outputFileHint": "The destination path for the remuxed file. Its extension follows the target container.",
+    "placeholderOutput": "output.mkv",
+    "start": "Start Remux",
+    "remuxing": "Remuxing...",
+    "pause": "Pause",
+    "resume": "Resume",
+    "cancel": "Cancel",
+    "cancelTitle": "Cancel Remux",
+    "cancelMessage": "Are you sure you want to cancel the current remux?",
+    "yes": "Yes",
+    "no": "No",
+    "filtersTitle": "Video Filters",
+    "filtersHint": "Applies FFmpeg video filters while the selected video streams are re-encoded. Filters cannot be applied to a lossless copy, so adding one turns the remux into a re-encode.",
+    "filtersReencodeWarning": "Video filters cannot run on a stream copy, so the {{count}} selected filter(s) turn this remux into a re-encode."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Video File",
+    "videoFileHint": "The source media file whose streams will be extracted. Each selected stream is written to its own output file.",
+    "dropLabel": "Drop a video file here or click to browse",
+    "selectedVideo": "Selected video: {{file}}",
+    "streamCount": "{{selected}} of {{total}} streams selected",
+    "streams": "Source Streams",
+    "streamsHint": "Choose which streams to extract. Each checked stream becomes its own output file; unchecked streams are skipped.",
+    "extractStreams": "Streams to extract",
+    "streamGroup": "{{kind}} streams",
+    "suggestedOutput": "Output",
+    "selectStream": "Select extracted {{kind}} stream #{{index}}",
+    "videoContainer": "Video target",
+    "videoContainerHint": "How the video streams are written. Copy extracts them losslessly without re-encoding; choosing a container re-encodes the video into that format.",
+    "audioCodec": "Audio target",
+    "audioCodecHint": "How the audio streams are written. Copy extracts them losslessly without re-encoding; choosing a codec re-encodes the audio.",
+    "subtitleFormat": "Subtitle target",
+    "subtitleFormatHint": "How the subtitle streams are written. Copy extracts them losslessly without re-encoding; choosing a format converts the subtitles. Bitmap subtitles (e.g. PGS/DVDSUB) cannot become plain text and stay copied.",
+    "subtitleWarning": "Subtitle conversion warnings",
+    "subtitleWarningHint": "Bitmap subtitle streams (e.g. PGS/DVDSUB) cannot be re-encoded into a plain-text format without OCR, so they are extracted as .mks stream copies instead. They show as Copy in the extraction plan.",
+    "bitmapSubtitleWarning": "This bitmap subtitle stream cannot be re-encoded into a plain-text format without OCR, so it is extracted as a .mks stream copy instead.",
+    "copyOption": "Copy (lossless)",
+    "outputDir": "Output Folder",
+    "outputDirHint": "The folder where the extracted streams are written. Defaults to the source file's folder.",
+    "outputDirPlaceholder": "output folder",
+    "summary": "Extraction Plan",
+    "summaryHint": "One output file per checked stream, in the order they run. Files marked Copy are extracted losslessly; files marked Convert are re-encoded.",
+    "copyLabel": "Copy",
+    "convertLabel": "Convert to {{target}}",
+    "start": "Start Demux",
+    "demuxing": "Demuxing...",
+    "pause": "Pause",
+    "resume": "Resume",
+    "cancel": "Cancel",
+    "cancelTitle": "Cancel Demux",
+    "cancelMessage": "Are you sure you want to cancel the current demux?",
+    "yes": "Yes",
+    "no": "No",
+    "currentStream": "Extracting {{kind}} stream #{{index}}",
+    "filtersTitle": "Video Filters",
+    "filtersHint": "Applies FFmpeg video filters (crop, frame rate, deinterlace, denoise, color...) while the selected video streams are re-encoded. Copy is lossless, so filters only appear when a video target container re-encodes the video.",
+    "filtersIgnoredCopy": "Video filters are ignored while the video target is Copy, because a stream copy cannot re-encode. Choose a video target container to apply them."
   }
 }

@@ -9,7 +9,7 @@
     "expand": "Udvid sidepanelet"
   },
   "nav": {
-    "dashboard": "Dashboard",
+    "dashboard": "Oversigt",
     "convert": "Konverter",
     "mediaInfo": "Medieoplysninger",
     "image": "Billede",
@@ -26,7 +26,9 @@
       "paused": "Pause",
       "starting": "Starter",
       "parallel": "{{count}} parallelt"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Velkommen til EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Uddrag ren lyd fra videofiler",
     "descCut": "Klip videoer med frame-præcision",
     "descBatch": "Konverter flere filer på én gang med en intelligent kø",
-    "shortcutsFooter": "Tryk på {{shortcut}} for tastaturgenveje"
+    "shortcutsFooter": "Tryk på {{shortcut}} for tastaturgenveje",
+    "descRemux": "Overfører streams tabsfrit til en ny container",
+    "descDemux": "Opdeler en fils streams i separate outputfiler"
   },
   "gettingStarted": {
     "hint": "Ny her?",
@@ -125,7 +129,25 @@
     "showPreview": "Vis forhåndsvisning",
     "closePreview": "Luk forhåndsvisning",
     "viewMore": "Vis mere",
-    "viewLess": "Vis mindre"
+    "viewLess": "Vis mindre",
+    "filtersTitle": "Videofiltre",
+    "filtersHint": "Anvender FFmpeg-videofiltre (beskæring, billedhastighed, deinterlacing, støjreduktion, farve…) under genkodning. Alle filtre flettes sammen i én -vf-kæde efter skalering og rotation.",
+    "addPreset": "Tilføj forudindstillet filter…",
+    "addFilter": "Tilføj filter",
+    "customChainLabel": "Tilpasset filterkæde",
+    "customChainPlaceholder": "f.eks. fps=30, eq=brightness=0.1",
+    "customChainHint": "FFmpeg-filterudtryk adskilt med kommaer. Hvert element skal have balancerede runde og firkantede parenteser, matchende anførselstegn og ingen shell-metategn.",
+    "addCustom": "Tilføj tilpasset",
+    "removeFilter": "Fjern filter",
+    "moveUp": "Flyt op",
+    "moveDown": "Flyt ned",
+    "clearAll": "Ryd alle",
+    "noFilters": "Ingen filtre tilføjet.",
+    "filtersDisabledNote": "Videofiltre kræver genkodning. Slå tabsfri kopiering fra for at tilføje filtre.",
+    "filtersTurnOffCopy": "Slå tabsfri kopiering fra",
+    "filtersCopyWarning": "Tabsfri kopiering er slået til, så videofiltre ignoreres. Slå tabsfri kopiering fra for at anvende filtre.",
+    "chainPreview": "Forhåndsvisning: -vf {{chain}}",
+    "filtersInvalid": "Ugyldigt filter: {{error}}"
   },
   "mediaInfo": {
     "title": "Medieoplysninger",
@@ -165,7 +187,7 @@
     "bitsPerSample": "Bit pr. prøve",
     "frameCount": "Antal frames",
     "streamTitle": "Titel",
-    "disposition": "Disposition",
+    "disposition": "Placering",
     "tags": "Tags",
     "tagKeys": {
       "major_brand": "Hovedbrand",
@@ -190,7 +212,7 @@
       "lyrics": "Tekst",
       "language": "Sprog",
       "handler_name": "Handlernavn",
-      "timecode": "Timecode",
+      "timecode": "Tidskode",
       "location": "Placering"
     },
     "dispositionFlags": {
@@ -347,7 +369,7 @@
     "revealInFolder": "Vis i mappe",
     "copyPath": "Kopier sti",
     "stats": "{{queued}} i kø, {{running}} kører, {{done}} færdig, {{failed}} mislykkedes",
-    "etaEstimate": "ETA ~{{eta}}",
+    "etaEstimate": "Færdig om ~{{eta}}",
     "finished": "Batch færdig: {{done}} lykkedes, {{failed}} mislykkedes",
     "notificationTitle": "EncodeX-batch færdig",
     "filters": {
@@ -405,7 +427,7 @@
     "optionQscale": "Kvalitet (qscale)",
     "optionScale": "Skala",
     "optionPixelFormat": "Pixelformat",
-    "optionTrim": "Trim",
+    "optionTrim": "Beskær",
     "optionDuration": "Varighed",
     "optionCopy": "Kopier stream",
     "optionAudio": "Lyd",
@@ -427,13 +449,16 @@
     "optionsUpdateFailed": "Dette job kan ikke længere redigeres.",
     "condense": "Kollaps",
     "expand": "Udvid",
-    "clearAll": "Ryd alle"
+    "clearAll": "Ryd alle",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "Den container, strømmene kopieres til. \"Automatisk\" bevarer hver kildefils udvidelse."
   },
   "progress": {
     "title": "Konverteringsforløb",
     "time": "Tid",
     "speed": "Hastighed",
-    "eta": "ETA"
+    "eta": "Resterende tid"
   },
   "errorBoundary": {
     "title": "Noget gik galt",
@@ -460,10 +485,10 @@
     "download": "Download som TXT",
     "filter": "Filtrer efter niveau",
     "levelAll": "Alle",
-    "levelDebug": "DEBUG",
+    "levelDebug": "FEJLFINDING",
     "levelInfo": "INFO",
-    "levelWarn": "WARN",
-    "levelError": "ERROR",
+    "levelWarn": "ADVARSEL",
+    "levelError": "FEJL",
     "noEntries": "Ingen logposter endnu.",
     "entryCount": "{{count}} poster"
   },
@@ -495,7 +520,9 @@
     "updateAvailable": "Opdatering tilgængelig: v{{version}}",
     "updateNow": "Opdater nu",
     "updateDownloaded": "Opdatering v{{version}} downloadet",
-    "viewUpdate": "Vis"
+    "viewUpdate": "Vis",
+    "remuxed": "Remux fuldført",
+    "demuxed": "Streams udtrukket"
   },
   "profiles": {
     "searchPlaceholder": "Søg i profiler...",
@@ -523,7 +550,7 @@
     "original": "Original",
     "pixelFormatLabel": "Pixelformat",
     "videoBitrateLabel": "Videobithastighed",
-    "autoCrf": "Auto (CRF)",
+    "autoCrf": "Automatisk (CRF)",
     "audioBitrateLabel": "Lydbithastighed",
     "advancedOptions": "Avancerede indstillinger",
     "extensionOverrideLabel": "Skriv filtypenavn over",
@@ -590,15 +617,17 @@
     "title": "Tastaturgenveje",
     "close": "Luk",
     "sections": {
-      "global": "Global",
+      "global": "Globale",
       "convert": "Konverter",
       "mediaInfo": "Medieoplysninger",
       "imageCompress": "Billedkomprimering",
       "audioExtract": "Lydudtrækning",
       "videoCut": "Klip video",
       "batchQueue": "Batch-kø",
-      "logs": "Logs",
-      "dashboard": "Dashboard"
+      "logs": "Logfiler",
+      "dashboard": "Oversigt",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Vis tastaturgenveje",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Gå til Batch-kø",
       "navLogs": "Gå til Logs",
       "navSettings": "Gå til Indstillinger",
-      "themeToggle": "Skift tema"
+      "themeToggle": "Skift tema",
+      "navRemux": "Gå til Remux"
     },
     "convert": {
       "input": "Vælg inputfil",
@@ -655,7 +685,7 @@
     },
     "batchQueue": {
       "add": "Tilføj filer",
-      "start": "Start batch",
+      "start": "Start køen",
       "pause": "Sæt kø på pause eller genoptag",
       "cancelAll": "Annuller alle job",
       "clearCompleted": "Ryd fuldførte job",
@@ -671,7 +701,7 @@
     },
     "logs": {
       "clear": "Ryd logs",
-      "download": "Download logs"
+      "download": "Download logfiler"
     },
     "dashboard": {
       "convert": "Åbn Konverter",
@@ -679,7 +709,17 @@
       "image": "Åbn Billede",
       "audio": "Åbn Lyd",
       "cut": "Åbn Klip",
-      "batch": "Åbn Batch-kø"
+      "batch": "Åbn Batch-kø",
+      "remux": "Åbn Remux",
+      "demux": "Åbn Demux"
+    },
+    "remux": {
+      "input": "Vælg inputfil",
+      "start": "Start remux"
+    },
+    "demux": {
+      "input": "Vælg inputfil",
+      "start": "Start udtrækning"
     }
   },
   "about": {
@@ -692,7 +732,7 @@
     "builtWith": "Bygget med",
     "authorTitle": "Forfatter & feedback",
     "author": "Forfatter",
-    "repository": "Repository",
+    "repository": "Lager",
     "contact": "Kontakt",
     "feedback": "Fandt du en fejl, eller har du et forslag?",
     "reportIssue": "Åbn et issue på GitHub",
@@ -702,16 +742,16 @@
     "licenseSummary": "Udgivet under MIT-licensen. Frit at bruge, kopiere, ændre, flette, udgive, distribuere, underlicensere og sælge — også kommercielt — forudsat at ophavsretsmeddelelsen og tilladelsesmeddelelsen medtages i alle kopier eller væsentlige dele af softwaren. Softwaren leveres \"som den er\", uden garanti af nogen art.",
     "acknowledgements": "Lavet med ❤️ til open source — drevet af FFmpeg-projektet og fællesskabet.",
     "checkForUpdates": "Søg efter opdateringer",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Vilkår og betingelser",
+    "terms": "Vilkår",
+    "readTerms": "Læs vilkårene"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Vilkår og betingelser",
+    "accept": "Jeg accepterer",
+    "reject": "Jeg accepterer ikke",
+    "close": "Luk",
+    "lastUpdated": "Gældende fra: {{date}}"
   },
   "update": {
     "title": "Opdatering",
@@ -734,5 +774,167 @@
     "installOnRestart": "Installer ved næste genstart",
     "installScheduled": "Opdatering v{{version}} installeres ved næste app-genstart.",
     "cancelRestartInstall": "Annuller"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Beskæring",
+      "cropHint": "Beskærer videoen til den angivne bredde, højde og forskydning.",
+      "framerate": "Billedhastighed",
+      "framerateHint": "Ændrer outputets billedhastighed (billeder dupliceres eller kasseres).",
+      "deinterlace": "Deinterlacing",
+      "deinterlaceHint": "Konverterer interlaced video til progressiv.",
+      "denoise": "Støjreduktion",
+      "denoiseHint": "Reducerer støj, mens detaljer bevares (hqdn3d).",
+      "sharpen": "Skarphed",
+      "sharpenHint": "Øger den oplevede skarphed (unsharp).",
+      "color": "Farve",
+      "colorHint": "Justerer lysstyrke, kontrast, mætning og gamma (eq).",
+      "grayscale": "Gråskala",
+      "grayscaleHint": "Fjerner farve og efterlader et sort-hvidt billede.",
+      "blur": "Slør",
+      "blurHint": "Anvender bokssløring for at blødgøre billedet."
+    },
+    "params": {
+      "crop": {
+        "w": "Bredde",
+        "h": "Højde",
+        "x": "X-forskydning",
+        "y": "Y-forskydning"
+      },
+      "framerate": {
+        "fps": "Billeder i sekundet"
+      },
+      "deinterlace": {
+        "mode": "Felt rækkefølge",
+        "modes": {
+          "auto": "Automatisk",
+          "tff": "Øverste felt først",
+          "bff": "Nederste felt først"
+        }
+      },
+      "denoise": {
+        "strength": "Styrke"
+      },
+      "sharpen": {
+        "strength": "Styrke"
+      },
+      "color": {
+        "brightness": "Lysstyrke",
+        "contrast": "Kontrast",
+        "saturation": "Mætning",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Styrke"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Videofil",
+    "dropLabel": "Træk en videofil hertil, eller klik for at browse",
+    "videoFileHint": "Kildemediéfilen, hvis streams pakkes i destinationscontaineren. Streams kopieres uden genkodning.",
+    "selectedVideo": "Valgt video: {{file}}",
+    "streamCount": "{{selected}} af {{total}} streams valgt",
+    "container": "Container",
+    "containerHint": "Outputcontaineren for den remuxede fil. Vælg mellem almindelige videocontainere; outputudvidelsen følger containeren.",
+    "streams": "Kildestreams",
+    "streamsHint": "Vælg hvilke streams fra kildefilen der bevares i remux-outputtet. Streams, der ikke er valgt, kasseres.",
+    "streamIndex": "Nr.",
+    "kind": "Type",
+    "selectStream": "Vælg {{kind}}-stream nr. {{index}}",
+    "selectAll": "Behold alle",
+    "selectNone": "Behold ingen",
+    "audioSync": "Forsink lyd (sekunder)",
+    "audioSyncHint": "Forskyder hovedlydsporet relativt til videoen uden genkodning, f.eks. -0.5 for 0,5 s tidligere eller 1.5 for 1,5 s senere.",
+    "audioSyncLossless": "Tabsfrit: lyden kopieres som en stream med tidsstempel-forskydning, så kvaliteten ændres ikke.",
+    "subtitles": "Tilføjede undertekster",
+    "subtitlesHint": "Eksterne undertekstfiler (.srt, .ass, .vtt), der indlejres i remux-outputtet som ekstra inputspor.",
+    "addSubtitle": "Tilføj undertekstfil",
+    "subtitleCodec": "Destinationscodec",
+    "subtitleCodecHint": "Den undertekstcodec, der bruges til det indlejrede spor. Containere accepterer forskellige undertekstformater; at vælge et format, containeren ikke kan gemme, udløser en advarsel.",
+    "removeSubtitle": "Fjern underteksten",
+    "audioTracks": "Tilføjede lydspor",
+    "audioTracksHint": "Eksterne lydfiler (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav), der indlejres i remux-outputtet som ekstra inputspor.",
+    "addAudioTrack": "Tilføj lydspor",
+    "removeAudioTrack": "Fjern lydsporet",
+    "addedTrackDelay": "Forsink dette spor (sekunder)",
+    "addedTrackDelayHint": "Signeret forskydning af dette spor relativt til videoen (positivt = afspilles senere). Tabsfrit: anvendes som -itsoffset med streampkopi.",
+    "thumbnail": "Miniaturebillede / omslag",
+    "thumbnailHint": "Valgfrit omslagsbillede (.jpg, .jpeg, .png), der indlejres i den remuxede fil. MKV/WebM vedhæfter det som en billedstream; MP4/MOV indlejrer det som en videostream med attached_pic-placering.",
+    "addThumbnail": "Tilføj miniaturebillede",
+    "thumbnailUnsupported": "{{container}} kan ikke gemme omslagsbilleder. Skift til MKV, WebM, MP4 eller MOV for at vedhæfte et miniaturebillede.",
+    "removeThumbnail": "Fjern miniaturebilledet",
+    "thumbnailMode": "Indlejret som {{mode}}",
+    "thumbnailAttached": "vedhæftet billede",
+    "thumbnailDisposition": "attached_pic-omslagsstream",
+    "chapters": "Kapitler",
+    "chaptersHint": "Kapitler fra kilden bevares som standard. Importér en FFMETADATA-kapitelfil for at erstatte kildekapitlerne i den remuxede fil.",
+    "copyChapters": "Kopiér kildekapitler",
+    "copyChaptersHint": "Bevarer kildefilens kapitelmarkører i remux-outputtet (tabsfrit, -map_chapters 0).",
+    "importChapters": "Importér kapitelfil",
+    "chaptersUnsupported": "{{container}} gemmer ikke kapitelmetadata; kapitlerne kasseres.",
+    "removeChapters": "Fjern kapitelfilen",
+    "warnings": "Kompatibilitetsadvarsler",
+    "warningsHint": "Ikke-blokerende bemærkninger om, hvorvidt de valgte streams og indstillinger passer til den valgte container. Advarsler tillader start; fejl blokerer den.",
+    "outputFile": "Outputfil",
+    "outputFileHint": "Destinationsstien for den remuxede fil. Udvidelsen følger destinationscontaineren.",
+    "placeholderOutput": "output.mkv",
+    "start": "Start remux",
+    "remuxing": "Remuxer…",
+    "pause": "Pause",
+    "resume": "Fortsæt",
+    "cancel": "Annullér",
+    "cancelTitle": "Annullér remux",
+    "cancelMessage": "Er du sikker på, at du vil annullere den igangværende remux?",
+    "yes": "Ja",
+    "no": "Nej",
+    "filtersTitle": "Videofiltre",
+    "filtersHint": "Anvender FFmpeg-videofiltre under genkodning af de valgte videostreams. Filtre kan ikke anvendes på en tabsfri kopi, så tilføjes ét, bliver remux til en genkodning.",
+    "filtersReencodeWarning": "Videofiltre kan ikke køre på en streampkopi, så de {{count}} valgte filter(e) gør denne remux til en genkodning."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Videofil",
+    "videoFileHint": "Kildemediéfilen, hvis streams skal udtrækkes. Hver valgt stream skrives til sin egen outputfil.",
+    "dropLabel": "Træk en videofil hertil, eller klik for at browse",
+    "selectedVideo": "Valgt video: {{file}}",
+    "streamCount": "{{selected}} af {{total}} streams valgt",
+    "streams": "Kildestreams",
+    "streamsHint": "Vælg hvilke streams der skal udtrækkes. Hver valgt stream bliver sin egen outputfil; streams, der ikke er valgt, springes over.",
+    "extractStreams": "Streams der skal udtrækkes",
+    "streamGroup": "{{kind}}-streams",
+    "suggestedOutput": "Output",
+    "selectStream": "Vælg den {{kind}}-stream nr. {{index}}, der skal udtrækkes",
+    "videoContainer": "Videodestination",
+    "videoContainerHint": "Sådan skrives videostreams. \"Kopiér\" udtrækker dem tabsfrit uden genkodning; vælger du en container, genkodes videoen til det format.",
+    "audioCodec": "Lyddestination",
+    "audioCodecHint": "Sådan skrives lydstreams. \"Kopiér\" udtrækker dem tabsfrit uden genkodning; vælger du en codec, genkodes lyden.",
+    "subtitleFormat": "Undertiteldestination",
+    "subtitleFormatHint": "Sådan skrives undertitelstreams. \"Kopiér\" udtrækker dem tabsfrit uden genkodning; vælger du et format, konverteres underteksterne. Bitmap-undertekster (f.eks. PGS/DVDSUB) kan ikke blive tekst og forbliver kopieret.",
+    "subtitleWarning": "Advarsler om undertitelkonvertering",
+    "subtitleWarningHint": "Bitmap-undertitelstreams (f.eks. PGS/DVDSUB) kan ikke genkodes til tekst uden OCR, så de udtrækkes som tabsfri .mks-kopier. I udtrækningsplanen vises de som \"Kopiér\".",
+    "bitmapSubtitleWarning": "Denne bitmap-undertitelstream kan ikke genkodes til tekst uden OCR, så den udtrækkes som en tabsfri .mks-kopi.",
+    "copyOption": "Kopiér (tabsfrit)",
+    "outputDir": "Outputmappe",
+    "outputDirHint": "Mappen, de udtrukne streams skrives til. Som standard er det kildens mappe.",
+    "outputDirPlaceholder": "outputmappe",
+    "summary": "Udtrækningsplan",
+    "summaryHint": "Én outputfil pr. valgt stream, i den rækkefølge, de behandles. Filer markeret \"Kopiér\" udtrækkes tabsfrit; filer markeret \"Konvertér\" genkodes.",
+    "copyLabel": "Kopiér",
+    "convertLabel": "Konvertér til {{target}}",
+    "start": "Start demux",
+    "demuxing": "Udtrækker…",
+    "pause": "Pause",
+    "resume": "Fortsæt",
+    "cancel": "Annullér",
+    "cancelTitle": "Annullér demux",
+    "cancelMessage": "Er du sikker på, at du vil annullere den igangværende demux?",
+    "yes": "Ja",
+    "no": "Nej",
+    "currentStream": "Udtrækker {{kind}}-stream nr. {{index}}",
+    "filtersTitle": "Videofiltre",
+    "filtersHint": "Anvender FFmpeg-videofiltre (beskæring, billedhastighed, deinterlacing, støjreduktion, farve…) under genkodning af de valgte videostreams. \"Kopiér\" er tabsfrit, så filtre vises kun, når en destinationscontainer genkoder videoen.",
+    "filtersIgnoredCopy": "Videofiltre ignoreres, så længe videodestinationen er \"Kopiér\", fordi en streampkopi ikke kan genkode. Vælg en destinationscontainer for at anvende dem."
   }
 }

@@ -1,6 +1,6 @@
 # ✨ Features
 
-EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
+EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, remux streams losslessly, demux them into separate files, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
 
 ## 🔄 Feature Overview
 
@@ -11,6 +11,18 @@ Convert between video/audio formats with granular controls over codec selection 
 ### Media Rotation & Mirroring
 
 Rotate videos and images by 90°, 180°, or 270° clockwise and mirror them (horizontal/vertical flip) from both the Convert page and the Batch Queue (transcode and compress-image panels, plus the per-job options dialog). Rotation uses FFmpeg's `transpose` filter (`transpose=1` / `transpose=2,transpose=2` / `transpose=2`) combined with `hflip`/`vflip` into a single `-vf` filter chain alongside `scale`; mirrors always re-encode. In stream-copy mode, rotation is stored losslessly as `-metadata:s:v rotate=N` for MP4/MOV/MKV outputs only; other containers and image outputs always take the pixel (re-encode) path.
+
+### Video Filters
+
+Apply curated FFmpeg video filters — **crop**, **frame rate**, **deinterlace**, **denoise**, **sharpen**, **color** (brightness/contrast/saturation/gamma), **grayscale**, and **blur** — plus any free-form custom chain, from the Convert page, the Batch Queue (transcode panel and per-job dialog), the **Remux** page, the **Demux** page, the CLI (`convert --preset` / `--filters`, `remux --filters`, `demux --video-filters`), and the MCP tools (`convert_media` / `batch_convert` / `remux_media` / `demux_media` `presets` / `filters` / `videoFilters`). Presets expose per-parameter inputs with safe defaults and can be mixed with raw `-vf` expressions; the ordered list (scale → rotation/mirror → presets → custom entries) merges into **one** `-vf` argument. Entries are validated up front (length, balanced brackets, matched quotes, no shell metacharacters); invalid entries are either rejected or ignored and logged per backend. On the CLI and MCP surfaces a chain may also use the `preset.value` shorthand — `framerate.60` expands to `fps=60`, and anything that already looks like a full expression (`fps=30`, `eq=brightness=0.1`) passes through untouched.
+
+Filters require **re-encoding**, so each surface states the consequence before you commit:
+
+- **Convert page** — in lossless copy mode the section is disabled with a "turn off lossless copy" affordance; the CLI and MCP reject the combination with `FILTERS_REQUIRE_RE_ENCODE`.
+- **Remux page** — a remux is normally a lossless copy, so adding a filter re-encodes the selected streams. A prominent warning says so, and the compatibility panel reports it as `filters_force_reencode`. There is no copy toggle to conflict with, and the chapter/map behaviour is unchanged.
+- **Demux page** — the Filters section only appears once the video target container re-encodes. Switching that target back to **Copy** drops the chain and says so (`filtersIgnoredCopy`), because a stream copy has no decoder to filter.
+- **Demux CLI** — `--video-filters` without a `--video-container` that re-encodes is a usage error rather than a silent drop, so scripts cannot quietly lose their filters.
+- **Demux MCP** — the tool cannot see your intent, so it queues the copy and reports `filtersIgnoredCopy` in `warnings` instead of failing.
 
 ### Conversion Profiles
 
@@ -65,9 +77,34 @@ Extract audio tracks from video files. Output as AAC, MP3, AC3, FLAC, WAV, Vorbi
 
 Preview and cut video segments with frame-accurate start/end time or duration selection. Includes a built-in player that decodes video frames (via an FFmpeg rawvideo pipe to an HTML Canvas element) and audio (via a separate S16LE PCM pipe converted to float and fed to the Web Audio API) in lockstep, with a zoomable multi-track timeline: video thumbnail montage, audio waveform, keep/dim region shading, drag-to-trim handles, and a scrubbing playhead.
 
+### Media Remuxing
+
+Repackage a file's streams into a different container **without re-encoding** — every stream is stream-copied, so quality is bit-identical and the operation is fast. Pick a source file, choose a target container (the output extension follows it), and tick the streams to keep; unchecked streams are dropped.
+
+- **Stream composition** — each kept stream becomes an explicit `-map` spec; auxiliary inputs are appended in a fixed order (subtitles → audio → cover art) and mapped by 1-based input index (`1:0`, `2:0`, …).
+- **Added subtitles** — attach external `.srt`, `.ass`, or `.vtt` files as extra tracks, each with a target codec (the container's first allowed subtitle codec is the default; a codec the container cannot store raises a warning).
+- **Added audio tracks** — attach external `.m4a`, `.aac`, `.mp3`, `.flac`, `.opus`, `.ogg`, or `.wav` files; the source's own audio streams stay mappable, and the added track's codec/channel info is probed for display.
+- **Cover art** — attach a `.jpg`, `.jpeg`, or `.png` thumbnail. MKV/WebM store it as an `attached_pic` picture stream; MP4/MOV embed it as a video stream with an `attached_pic` disposition. Containers that cannot store cover art (e.g. AVI) surface a warning.
+- **Chapters** — source chapters are copied by default (`-map_chapters 0`); an FFMETADATA chapters file can be imported to replace them. Containers without chapter metadata (e.g. MP4) drop them with a warning.
+- **A/V sync and per-track delay** — shift the primary audio against the video, or delay any added track, with a signed seconds offset applied as `-itsoffset` during stream copy (e.g. `-0.5` = 0.5 s earlier). Lossless: only timestamps move.
+- **Live compatibility warnings** — a non-blocking panel reports container/codec mismatches for the current selection (error-level findings block the run, warning-level ones do not).
+
+Available from the GUI (`/remux`), the CLI (`encodex remux`), and the MCP `remux_media` tool, including per-file batch jobs.
+
+### Stream Demuxing
+
+Split a file into its individual streams — one output file per selected stream. Each stream kind has its own target, so you can mix lossless copies and re-encodes in a single run.
+
+- **Per-stream selection** — check the streams to extract; each becomes its own file, written in source order. `attached_pic` streams are never treated as video.
+- **Per-kind targets** — video, audio, and subtitle each choose `Copy` (lossless, no re-encode) or a conversion target (video container, audio codec, subtitle format). Mixed selections are normal: e.g. copy the video, re-encode the audio to FLAC, convert subtitles to SRT.
+- **Bitmap subtitle passthrough** — PGS/DVDSUB streams cannot become plain text without OCR, so they are always extracted as `.mks` stream copies and reported with an explanatory warning.
+- **Per-target warnings** — the extraction plan lists every output file with its action (Copy/Convert) plus any codec or format caveats, and the output folder defaults to the source file's folder.
+
+Available from the GUI (`/demux`), the CLI (`encodex demux`), and the MCP `demux_media` tool, including per-file batch jobs.
+
 ### Batch Queue
 
-Process multiple files with configurable operations (transcode, extract audio, compress image). Jobs are added through a review dialog where output names and options can be adjusted before they enter the queue.
+Process multiple files with configurable operations (transcode, remux, demux, extract audio, compress image). Jobs are added through a review dialog where output names and options can be adjusted before they enter the queue.
 
 - **Parallel processing** — run up to 4 jobs concurrently (`MAX_QUEUE_CONCURRENCY = 4`); the concurrency cap is configurable at runtime and persisted.
 - **Queue lifecycle** — start, pause, and resume the whole queue; cancel all; clear completed/failed jobs; remove individual jobs.
@@ -91,13 +128,14 @@ Dedicated settings page for theme, hardware acceleration (enable/disable, mode, 
 
 ### Keyboard Shortcuts
 
-A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 60+ shortcuts across nine sections (global, convert, media info, image compress, audio extract, video cut, batch queue, logs, dashboard). Highlights:
+A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 70 shortcuts across eleven sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Highlights:
 
 - `Ctrl+/` — open the shortcuts help dialog
 - `Alt+1`…`Alt+9` — jump directly to a page
 - `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — pick input / pick output / start the job (consistent across pages)
 - `Ctrl+Shift+P` / `Ctrl+Shift+C` — pause / cancel the active job
 - Batch queue: `Ctrl+E` export, `Ctrl+I` import, `1`–`5` status filters, `F` focus search
+- Remux / demux: pick input and start, same chords as the other pages
 - Video cut player: `Space` play/pause, `M` mute, arrow keys to seek
 
 Chords are matched by `event.code`, so they work independently of keyboard layout. Tooltips derive their hint text from the same registry.
@@ -112,7 +150,7 @@ Closing the window while jobs are active routes through a confirmation flow: the
 
 ### Dashboard
 
-A landing page with quick-action tiles for every tool (number keys `1`–`6` jump straight to them) and seasonal easter-egg branding (see below).
+A landing page with quick-action tiles for every tool (number keys `1`–`8` jump straight to them, `6` = Remux, `7` = Demux) and seasonal easter-egg branding (see below).
 
 ### Easter Eggs
 
@@ -179,6 +217,8 @@ Right-to-left layout support for Arabic and Hebrew locales (`ar-SA`, `ar-AE`, `a
 | Irish       | `ga-IE`                                    |
 | Finnish     | `fi-FI`                                    |
 | Danish      | `da-DK`                                    |
+
+Every locale file carries the exact same key set as `en-US.json` — enforced in CI by `npm run validate:locales` (`scripts/validate-locales.mjs`), which fails on missing *and* stray keys. New UI strings are added to `en-US.json` first and propagated with `npm run sync:locales` (`scripts/sync-locale-keys.mjs`), which fills the missing keys in the other 55 locales with the English value as a translation placeholder and never overwrites an existing translation.
 
 ### In-App Updates
 

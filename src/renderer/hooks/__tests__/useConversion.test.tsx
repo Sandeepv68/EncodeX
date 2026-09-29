@@ -27,6 +27,7 @@ function resetStores(): void {
     qscale: 23,
     scale: '1920x1080',
     pixelFormat: 'yuv420p',
+    videoFilters: [],
     copyMode: false,
     transcoder: 'FFMPEG',
     isConverting: false,
@@ -149,6 +150,7 @@ describe('useConversion', () => {
         qscale: 23,
         scale: '1920x1080',
         pixelFormat: 'yuv420p',
+        videoFilters: undefined,
         copy: false,
         hardwareAcceleration: true,
         hwaccelMode: 'auto',
@@ -186,6 +188,51 @@ describe('useConversion', () => {
     });
     expect(useErrorStore.getState().currentError?.detail).toBe('boom');
     expect(useConversionStore.getState().isConverting).toBe(false);
+  });
+
+  it('carries video filters into the start payload', async () => {
+    useConversionStore.setState({
+      inputFile: 'in.mp4',
+      outputFile: 'out.mp4',
+      outputUserSet: true,
+      videoFilters: ['fps=30', 'eq=brightness=0.1'],
+    });
+    const { result } = renderHook(() => useConversion());
+    await act(async () => {
+      await result.current.startConversion();
+    });
+    expect(convertFileMock).toHaveBeenCalledWith(
+      'in.mp4',
+      'out.mp4',
+      expect.objectContaining({ videoFilters: ['fps=30', 'eq=brightness=0.1'] }),
+      'FFMPEG',
+    );
+  });
+
+  it('blocks start with an invalid filter entry', async () => {
+    useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mp4', outputUserSet: true, videoFilters: ['fps=30;rm -rf /'] });
+    const { result } = renderHook(() => useConversion());
+    await act(async () => {
+      await result.current.startConversion();
+    });
+    expect(convertFileMock).not.toHaveBeenCalled();
+    expect(useErrorStore.getState().currentError?.code).toBe(ErrorCode.FILTERS_REQUIRE_RE_ENCODE);
+  });
+
+  it('blocks start when filters are combined with copy mode', async () => {
+    useConversionStore.setState({
+      inputFile: 'in.mp4',
+      outputFile: 'out.mp4',
+      outputUserSet: true,
+      copyMode: true,
+      videoFilters: ['fps=30'],
+    });
+    const { result } = renderHook(() => useConversion());
+    await act(async () => {
+      await result.current.startConversion();
+    });
+    expect(convertFileMock).not.toHaveBeenCalled();
+    expect(useErrorStore.getState().currentError?.code).toBe(ErrorCode.FILTERS_REQUIRE_RE_ENCODE);
   });
 
   it('pauseConversion sets isPaused', async () => {

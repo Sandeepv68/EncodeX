@@ -26,7 +26,9 @@
       "paused": "Kua tārea",
       "starting": "Ke tīmata",
       "parallel": "{{count}} tūtahi"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Nau mai, haere mai ki EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Tohaina te oro mā mai i ngā kōnae ataata",
     "descCut": "Tapahia te ataata me te tika ki te āma",
     "descBatch": "Huripokia ngā kōnae maha i te wā kotahi me te rārangi mōhio",
-    "shortcutsFooter": "Pēhia {{shortcut}} mō ngā poto aratohu papapātuhi"
+    "shortcutsFooter": "Pēhia {{shortcut}} mō ngā poto aratohu papapātuhi",
+    "descRemux": "Nekehia ngā awa kore-ngaro ki tētahi ipu hou",
+    "descDemux": "Wehewehea ngā awa o tētahi kōnae ki ngā kōnae putanga motuhake"
   },
   "gettingStarted": {
     "hint": "He tauhou koe?",
@@ -125,7 +129,25 @@
     "showPreview": "Whakaatu Tirohi",
     "closePreview": "Kati Tirohi",
     "viewMore": "Tirohia kia nui ake",
-    "viewLess": "Tirohia kia iti iho"
+    "viewLess": "Tirohia kia iti iho",
+    "filtersTitle": "Ngā tātari ataata",
+    "filtersHint": "Whakamahi i ngā tātari ataata FFmpeg (tapahi, reiti anga, whakaware-ā-rawhi, whakaiti haruru, tae…) i te wa o te whakawaehere. Ka whakakotahitia ngā tātari katoa ki tētahi meinga -vf kotahi i muri i te tauine me te hurihuri.",
+    "addPreset": "Tāpiri tātari kua tautuhi…",
+    "addFilter": "Tāpiri tātari",
+    "customChainLabel": "Meinga tātari ake",
+    "customChainPlaceholder": "Hei tauira: fps=30, eq=brightness=0.1",
+    "customChainHint": "Kīanga tātari FFmpeg kua wehea ki ngā piko. Ko ia tūemi me whai piko porohita me piko tapawhā rite, ngā tohutohu aruaru kua hāngai, ā, kāore he tohu matapae o te raki.",
+    "addCustom": "Tāpiri ake",
+    "removeFilter": "Tango tātari",
+    "moveUp": "Neke ake",
+    "moveDown": "Neke iho",
+    "clearAll": "Mukuna katoa",
+    "noFilters": "Kāore anō he tātari kia tāpiritia.",
+    "filtersDisabledNote": "Me whakawaehere anō ngā tātari ataata. Whakaweto te tārua kore-ngaro ki te tāpiri tātari.",
+    "filtersTurnOffCopy": "Whakaweto te tārua kore-ngaro",
+    "filtersCopyWarning": "Kua whakahohe te aratau tārua kore-ngaro, nō reira ka warewarehia ngā tātari ataata. Whakaweto te tārua kore-ngaro ki te whakamahi i ngā tātari.",
+    "chainPreview": "Tirohanga: -vf {{chain}}",
+    "filtersInvalid": "Tātari hē: {{error}}"
   },
   "mediaInfo": {
     "title": "Pārongo Pāpāho",
@@ -138,7 +160,7 @@
     "bitrate": "Pāraurau",
     "streams": "Ngā Ia",
     "stream": "Ia",
-    "codec": "Codec",
+    "codec": "Kōdeka",
     "resolution": "Mārama",
     "pixelFormat": "Hōputu Pikera",
     "frameRate": "Reiti Āma",
@@ -347,7 +369,7 @@
     "revealInFolder": "Whakaatu i te Kōpaki",
     "copyPath": "Kape i te Ara",
     "stats": "{{queued}} i te rārangi, {{running}} e rere ana, {{done}} oti, {{failed}} i rahua",
-    "etaEstimate": "ETA ~{{eta}}",
+    "etaEstimate": "Ka oti i roto i ~{{eta}}",
     "finished": "Kua oti te putunga: {{done}} angitu, {{failed}} i rahua",
     "notificationTitle": "Kua oti te putunga EncodeX",
     "filters": {
@@ -427,13 +449,16 @@
     "optionsUpdateFailed": "Kāore e taea te whakatika i tēnei mahi.",
     "condense": "Whakaiti",
     "expand": "Whakanui",
-    "clearAll": "Whakangaroa katoa"
+    "clearAll": "Whakangaroa katoa",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "Te ipu ka tāruatia ngā awa ki roto. \"Aunoa\" ka pupuri i te taapiri o ia kōnae taketake."
   },
   "progress": {
     "title": "Te ahunga whakamua o te hurihanga",
     "time": "Wā",
     "speed": "Tere",
-    "eta": "ETA"
+    "eta": "Wā e toe ana"
   },
   "errorBoundary": {
     "title": "He Hapa Kua Puta",
@@ -495,7 +520,9 @@
     "updateAvailable": "Kei te wātea he whakamāoritanga: v{{version}}",
     "updateNow": "Whakamāoritia ināianei",
     "updateDownloaded": "Kua tangohia te whakahoutanga v{{version}}",
-    "viewUpdate": "Tirohia"
+    "viewUpdate": "Tirohia",
+    "remuxed": "Kua oti te Remux",
+    "demuxed": "Kua oti te tango awa"
   },
   "profiles": {
     "searchPlaceholder": "Tuhia haupae...",
@@ -598,7 +625,9 @@
       "videoCut": "Tapahia te Ataata",
       "batchQueue": "Rārangi Tuinga",
       "logs": "Ngā Rauemi Kōrero",
-      "dashboard": "Papa Whakahaere"
+      "dashboard": "Papa Whakahaere",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Whakaatuhia ngā poto aratohu papapātuhi",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Haere ki te Rārangi Tuinga",
       "navLogs": "Haere ki ngā Rauemi Kōrero",
       "navSettings": "Haere ki ngā Tautuhinga",
-      "themeToggle": "Hurihia te kaupapa"
+      "themeToggle": "Hurihia te kaupapa",
+      "navRemux": "Haere ki Remux"
     },
     "convert": {
       "input": "Whiriwhiria te kōnae whakauru",
@@ -679,7 +709,17 @@
       "image": "Uakina te Pikitia",
       "audio": "Uakina te Oro",
       "cut": "Uakina te Tapahia",
-      "batch": "Uakina te Rārangi Tuinga"
+      "batch": "Uakina te Rārangi Tuinga",
+      "remux": "Uakina Remux",
+      "demux": "Uakina Demux"
+    },
+    "remux": {
+      "input": "Kōwhiri kōnae whakauru",
+      "start": "Tīmata Remux"
+    },
+    "demux": {
+      "input": "Kōwhiri kōnae whakauru",
+      "start": "Tīmata te tango"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "Kua puta i raro i te Raihana MIT. Noa atu te whakamahi, te kape, te whakarerekē, te whakakotahi, te whakaputa, te tohatoha, te raihana-iti me te hoko — tae atu ki te tauhokohoko — engari me whakauru ngā pānui manatāpapa me ngā pānui whakaaetanga ki ngā kape katoa, ki ngā wāhanga matua rānei o te pūmanawa. Ka tukua te pūmanawa \"pēnei tonu\", kāore he whakapūmau o tētahi momo.",
     "acknowledgements": "He mea hanga ki te ❤️ mō te puna waehere tuwhera — nā te kaupapa FFmpeg me te hapori i whakahaere.",
     "checkForUpdates": "Tirohia nga whakahou",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Ngā here me ngā tikanga",
+    "terms": "Ngā here",
+    "readTerms": "Pānui ngā here"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Ngā here me ngā tikanga",
+    "accept": "Whakaae ahau",
+    "reject": "Kāore ahau e whakaae",
+    "close": "Kati",
+    "lastUpdated": "Mana mai i: {{date}}"
   },
   "update": {
     "title": "Whakahou",
@@ -734,5 +774,167 @@
     "installOnRestart": "Whakauru i te tīmatanga anō e whai ake nei",
     "installScheduled": "Ka whakaurua te whakahoutanga v{{version}} i te tīmatanga anō o te taupānga i muri.",
     "cancelRestartInstall": "Whakakorehia"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Tapahi",
+      "cropHint": "Tapahia te ataata ki te whānui, teitei me ngā tāpae kua tautuhia.",
+      "framerate": "Reiti anga",
+      "framerateHint": "Panoni i te reiti anga putanga (ka tāruaruatia pekehia rānei ngā anga).",
+      "deinterlace": "Whakaware-ā-rawhi",
+      "deinterlaceHint": "Huri i te ataata rawhi-ruru ki te ataata atanga-whakaroto.",
+      "denoise": "Whakaiti haruru",
+      "denoiseHint": "Whakaiti i te haruru me te pupuri tonu i ngā taipitopito (hqdn3d).",
+      "sharpen": "Koi",
+      "sharpenHint": "Piki ake te koi e mōhiotia ana (unsharp).",
+      "color": "Tae",
+      "colorHint": "Whakatikaina te mārama, te rerekētanga, te hārau me te kama (eq).",
+      "grayscale": "Hinauri",
+      "grayscaleHint": "Tangohia te tae, waiho te ahua pango-mā.",
+      "blur": "Pōrekereke",
+      "blurHint": "Whakamahi i te pōrekereke pouaka kia māmā ai te atahanga."
+    },
+    "params": {
+      "crop": {
+        "w": "Te whānui",
+        "h": "Te teitei",
+        "x": "Tāpae X",
+        "y": "Tāpae Y"
+      },
+      "framerate": {
+        "fps": "Ngā anga ia hēkona"
+      },
+      "deinterlace": {
+        "mode": "Rautaki anga rawhi",
+        "modes": {
+          "auto": "Aunoa",
+          "tff": "Rawhi runga tuatahi",
+          "bff": "Rawhi raro tuatahi"
+        }
+      },
+      "denoise": {
+        "strength": "Te kaha"
+      },
+      "sharpen": {
+        "strength": "Te kaha"
+      },
+      "color": {
+        "brightness": "Te mārama",
+        "contrast": "Te rerekētanga",
+        "saturation": "Te hārau",
+        "gamma": "Te kama"
+      },
+      "blur": {
+        "strength": "Te kaha"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Kōnae ataata",
+    "dropLabel": "Tōia he kōnae ataata ki konei, ka pāwhiri rānei ki te kōwhiri",
+    "videoFileHint": "Te kōnae pāpāho taketake ka whakakōpaki anō ai ōna awa ki te ipu whāinga. Ka tāruatia ngā awa me te kore whakawaehere anō.",
+    "selectedVideo": "Ataata i kōwhiria: {{file}}",
+    "streamCount": "{{selected}} o ngā {{total}} awa i kōwhiria",
+    "container": "Ipu",
+    "containerHint": "Te ipu o te kōnae putanga i muri i te Remux. Kōwhiria mai i ngā ipu ataata noa; ka whai te taapiri putanga i te ipu.",
+    "streams": "Ngā awa taketake",
+    "streamsHint": "Kōwhiria ngā awa mai i te kōnae taketake hei pupuri i te putanga Remux. Ka maka ngā awa kāore i kōwhiria.",
+    "streamIndex": "Tau",
+    "kind": "Momo",
+    "selectStream": "Kōwhiri awa {{kind}} #{{index}}",
+    "selectAll": "Pupuri katoa",
+    "selectNone": "Kaua e pupuri",
+    "audioSync": "Hono oro (hēkona)",
+    "audioSyncHint": "Nekehia te rīpene oro matua ina whakaritea ki te ataata me te kore whakawaehere anō, hei tauira -0.5 mō te 0.5 hēkona tērā, 1.5 rānei mō te 1.5 hēkona ā muri.",
+    "audioSyncLossless": "Kore-ngaro: ka tāruatia te oro hei awa me te tāpae-wā, nō reira kāore e panoni te kounga.",
+    "subtitles": "Ngā hauraro kua tāpiria",
+    "subtitlesHint": "Ngā kōnae hauraro ō-roto (.srt, .ass, .vtt) ka whakakuhuna ki te putanga Remux hei rīpene whakauru āpiti.",
+    "addSubtitle": "Tāpiri kōnae hauraro",
+    "subtitleCodec": "Kōdeka whāinga",
+    "subtitleCodecHint": "Te kōdeka hauraro mō ngā rīpene kua whakakuhuna. Ka whakaae ngā ipu ki ngā hōputu hauraro rerekē; ko te kōwhiri hōputu e kore e taea e te ipu te pupuri ka puta te whakatūpato.",
+    "removeSubtitle": "Tango hauraro",
+    "audioTracks": "Ngā rīpene oro kua tāpiria",
+    "audioTracksHint": "Ngā kōnae oro ō-roto (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) ka whakakuhuna ki te putanga Remux hei rīpene whakauru āpiti.",
+    "addAudioTrack": "Tāpiri rīpene oro",
+    "removeAudioTrack": "Tango rīpene oro",
+    "addedTrackDelay": "Whakaroa i tēnei rīpene (hēkona)",
+    "addedTrackDelayHint": "Te tāpae kua tohua mō tēnei rīpene ina whakaritea ki te ataata (pai = purei ā muri). Kore-ngaro: ka whakamahia hei -itsoffset i te tārua o te awa.",
+    "thumbnail": "Karakaramata / ūpoko",
+    "thumbnailHint": "He atahanga uhi ōmeka (.jpg, .jpeg, .png) ka whakakuhuna ki te kōnae i muri i te Remux. Ka piri a MKV/WebM hei awa atahanga; ka whakakuhuna a MP4/MOV hei awa ataata me te tohu attached_pic.",
+    "addThumbnail": "Tāpiri karakaramata",
+    "thumbnailUnsupported": "Kāore e taea e {{container}} te pupuri ūpoko. Huri ki MKV, WebM, MP4, MOV rānei kia piri ai te karakaramata.",
+    "removeThumbnail": "Tango karakaramata",
+    "thumbnailMode": "Whakakuhu hei {{mode}}",
+    "thumbnailAttached": "Atahanga kua piri",
+    "thumbnailDisposition": "Awa ūpoko attached_pic",
+    "chapters": "Ngā upoko",
+    "chaptersHint": "Ko te taunoa ka pupuritia ngā upoko o te taketake. Kawemai he kōnae upoko FFMETADATA hei whakakapi i ngā upoko o te taketake i te kōnae i muri i te Remux.",
+    "copyChapters": "Tārua i ngā upoko o te taketake",
+    "copyChaptersHint": "Pupuri i ngā tohu upoko o te kōnae taketake i te putanga Remux (kore-ngaro, -map_chapters 0).",
+    "importChapters": "Kawemai kōnae upoko",
+    "chaptersUnsupported": "Kāore e pupuri ana a {{container}} i ngā mōhiohio upoko, nō reira ka maka ngā upoko.",
+    "removeChapters": "Tango kōnae upoko",
+    "warnings": "Ngā whakatūpato honotau",
+    "warningsHint": "Ngā pitopito kōrero kāore e ākaia ana mō te hononga o ngā awa me ngā tautuhinga kua kōwhiria ki te ipu kua kōwhiria. Ka taea tonu e ngā whakatūpato te tīmata; ka ākaia e ngā hē.",
+    "outputFile": "Kōnae putanga",
+    "outputFileHint": "Te ara whāinga mō te kōnae i muri i te Remux. Ka whai te taapiri i te ipu whāinga.",
+    "placeholderOutput": "output.mkv",
+    "start": "Tīmata Remux",
+    "remuxing": "Remux ana…",
+    "pause": "Whakatā",
+    "resume": "Whakaara ake",
+    "cancel": "Whakakore",
+    "cancelTitle": "Whakakore Remux",
+    "cancelMessage": "Kei te tino hiahia whakakore i te Remux o nāianei?",
+    "yes": "Āe",
+    "no": "Kāo",
+    "filtersTitle": "Ngā tātari ataata",
+    "filtersHint": "Whakamahi i ngā tātari ataata FFmpeg i te whakawaehere anō o te awa ataata i kōwhiria. Kāore e taea te whakamahi tātari ki te tārua kore-ngaro, nō reira mā te tāpiri kotahi ka huri tēnei Remux ki te whakawaehere anō.",
+    "filtersReencodeWarning": "Kāore e taea e ngā tātari ataata te mahi ki te tārua awa, nō reira ka huri ngā tātari i kōwhiria ({{count}}) i tēnei Remux ki te whakawaehere anō."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Kōnae ataata",
+    "videoFileHint": "Te kōnae pāpāho taketake ka tangohia ai ōna awa. Ka tuhia ia awa i kōwhiria ki tōna ake kōnae putanga.",
+    "dropLabel": "Tōia he kōnae ataata ki konei, ka pāwhiri rānei ki te kōwhiri",
+    "selectedVideo": "Ataata i kōwhiria: {{file}}",
+    "streamCount": "{{selected}} o ngā {{total}} awa i kōwhiria",
+    "streams": "Ngā awa taketake",
+    "streamsHint": "Kōwhiria ngā awa hei tango. Ka noho tētahi kōnae putanga motuhake mō ia awa i kōwhiria; ka pekehia ngā awa kāore i kōwhiria.",
+    "extractStreams": "Ngā awa hei tango",
+    "streamGroup": "Awa {{kind}}",
+    "suggestedOutput": "Putanga",
+    "selectStream": "Kōwhiri awa {{kind}} #{{index}} hei tango",
+    "videoContainer": "Whāinga ataata",
+    "videoContainerHint": "Te āhua o te tuhituhi i ngā awa ataata. \"Tārua\" ka tango i a rātou kore-ngaro me te kore whakawaehere anō; ko te kōwhiri ipu ka whakawaehere anō i te ataata ki tērā hōputu.",
+    "audioCodec": "Kōdeka orowhanga",
+    "audioCodecHint": "Te āhua o te tuhituhi i ngā awa oro. \"Tārua\" ka tango i a rātou kore-ngaro me te kore whakawaehere anō; ko te kōwhiri kōdeka ka whakawaehere anō i te oro.",
+    "subtitleFormat": "Hōputu hauraro-raraunga",
+    "subtitleFormatHint": "Te āhua o te tuhituhi i ngā awa hauraro. \"Tārua\" ka tango i a rātou kore-ngaro me te kore whakawaehere anō; ko te kōwhiri hōputu ka huri i te hauraro. Kāore e taea te noho tuhinga o ngā hauraro bitmap (hei tauira PGS/DVDSUB), nō reira ka noho tārua tonu.",
+    "subtitleWarning": "Whakatūpato whakahuri hauraro",
+    "subtitleWarningHint": "Kāore e taea te whakawaehere i ngā awa hauraro bitmap (hei tauira PGS/DVDSUB) ki tuhinga me te kore OCR, nō reira ka tangohia hei tārua .mks kore-ngaro. I roto i te mahere tango, ka puta hei \"Tārua\".",
+    "bitmapSubtitleWarning": "Kāore tēnei awa hauraro-raraunga (bitmap) e taea te huri ki tuhinga me te kore OCR, nō reira ka tangohia hei tārua .mks kore-ngaro.",
+    "copyOption": "Tārua (kore-ngaro)",
+    "outputDir": "Kōpaki putanga",
+    "outputDirHint": "Ko te kōpaki e tuhia ai ngā awa i tangohia. Ko te taunoa ko te kōpaki o te kōnae taketake.",
+    "outputDirPlaceholder": "Kōpaki putanga",
+    "summary": "Mahere tango",
+    "summaryHint": "Kōnae putanga kotahi mō ia awa i kōwhiria, i te raupapa mahina. Ko ngā kōnae kua tapaina hei \"Tārua\" ka tangohia kore-ngaro; ko ngā kōnae kua tapaina hei \"Huri\" ka whakawaehere anō.",
+    "copyLabel": "Tārua",
+    "convertLabel": "Huri ki {{target}}",
+    "start": "Tīmata Demux",
+    "demuxing": "Kei te tango…",
+    "pause": "Whakatā",
+    "resume": "Whakaara ake",
+    "cancel": "Whakakore",
+    "cancelTitle": "Whakakore Demux",
+    "cancelMessage": "Kei te tino hiahia whakakore i te Demux o nāianei?",
+    "yes": "Āe",
+    "no": "Kāo",
+    "currentStream": "Kei te tango awa {{kind}} #{{index}}",
+    "filtersTitle": "Ngā tātari ataata",
+    "filtersHint": "Whakamahi i ngā tātari ataata FFmpeg (tapahi, reiti anga, whakaware-ā-rawhi, whakaiti haruru, tae…) i te wa o te whakawaehere anō i te awa ataata kua kōwhiria. He kore-ngaro te \"Tārua\", nō reira ka puta noa ngā tātari ina whakawaehere anō te ipu whāinga i te ataata.",
+    "filtersIgnoredCopy": "Ka warewarehia ngā tātari ataata i te mea he \"Tārua\" te whāinga ataata, nā te mea e kore e taea te tārua awa kia whakawaehere anō. Kōwhiria he ipu whāinga kia whakamahia ai ngā tātari."
   }
 }

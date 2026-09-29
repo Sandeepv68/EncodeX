@@ -19,16 +19,22 @@ import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/tra
 import { suspendProcess, resumeProcess } from '../process-utils';
 import { mapFfprobeData } from './ffprobe-mapper';
 import { getHwAccelArgs } from './hwaccel';
-import { buildRotationFilters, metadataRotationValue } from './ffmpeg-utils';
+import { buildRotationFilters, metadataRotationValue, outputVideoIndexForInput, streamKindFromMap } from './ffmpeg-utils';
+import { validateVideoFilters } from '../../shared/video-filters';
 import { cancelledError } from '../../shared/errors';
 import {
+  LOG_ADDITIONAL_INPUT,
   LOG_ARROW,
+  LOG_ATTACH_COVER,
   LOG_AUDIO_BITRATE,
   LOG_AUDIO_CODEC,
   LOG_AUDIO_DISABLED_OUTPUT_WILL_HAVE_NO_AUDIO_STREAM,
   LOG_CANCELLING_CURRENT_FFMPEG_PROCESS,
+  LOG_CHAPTERS_FILE,
   LOG_CONVERT,
   LOG_COPY,
+  LOG_COPY_CHAPTERS,
+  LOG_DISPOSITION_KEYED,
   LOG_DURATION_CAPITALIZED,
   LOG_END_TIME,
   LOG_FFMPEG_PATH_SET_TO,
@@ -38,11 +44,14 @@ import {
   LOG_FFMPEG_PROCESS_KILLED,
   LOG_FFMPEG_PROCESS_STARTED,
   LOG_FFPROBE_PATH_SET_TO,
+  LOG_FILTER_INVALID,
+  LOG_FILTERS_IGNORED_COPY,
   LOG_FORCING_FULL_RANGE_COLOR_FOR_MJPEG_OUTPUT,
   LOG_GET_INFO,
   LOG_GET_INFO_COMPLETED,
   LOG_GET_INFO_FFPROBE_FAILED,
   LOG_HARDWARE_ACCELERATION_INPUT_OPTIONS,
+  LOG_MAP,
   LOG_PAUSING_FFMPEG_PROCESS,
   LOG_PIXEL_FORMAT,
   LOG_QSCALE,
@@ -53,10 +62,13 @@ import {
   LOG_SCALE,
   LOG_SCALE_KEEP_ASPECT_RATIO,
   LOG_START_TIME,
+  LOG_SUBTITLE_CODEC,
+  LOG_SYNC_OFFSET,
   LOG_USING_STREAM_COPY_MODE,
   LOG_VIDEO_BITRATE,
   LOG_VIDEO_CODEC,
   LOG_VIDEO_DISABLED_OUTPUT_WILL_HAVE_NO_VIDEO_STREAM,
+  LOG_VIDEO_FILTERS,
 } from '../../shared/log-constants';
 
 const log = new Logger('main/transcoders/ffmpeg-core');
@@ -181,15 +193,55 @@ export class FfmpegCore implements ITranscoder {
       cmd.inputOptions(options.inputArgs);
     }
 
+    for (const spec of options.map ?? []) {
+      log.debug(LOG_MAP, spec);
+      cmd.outputOptions(FFMPEG_FLAGS.MAP, spec);
+    }
+    for (const entry of options.additionalInputs ?? []) {
+      if (entry.attachment) continue;
+      for (const spec of entry.map) {
+        log.debug(LOG_MAP, spec);
+        cmd.outputOptions(FFMPEG_FLAGS.MAP, spec);
+      }
+    }
+
     if (options.copy) {
       log.debug(LOG_USING_STREAM_COPY_MODE);
       cmd.outputOptions(FFMPEG_FLAGS.COPY, FFMPEG_FLAGS.COPY_VALUE);
+      if (options.videoFilters?.length) {
+        log.warn(LOG_FILTERS_IGNORED_COPY);
+      }
       const rotation = metadataRotationValue(options, output);
       if (rotation) {
         log.debug(LOG_ROTATION_METADATA, rotation);
         cmd.outputOptions(FFMPEG_FLAGS.METADATA_ROTATE, `rotate=${rotation}`);
       } else if (options.rotate || options.flipH || options.flipV) {
         log.warn(LOG_ROTATION_COPY_UNSUPPORTED);
+      }
+      for (const entry of options.additionalInputs ?? []) {
+        if (entry.codec && entry.codec !== FFMPEG_FLAGS.COPY_VALUE) {
+          const kind = streamKindFromMap(entry.map);
+          log.debug(LOG_ADDITIONAL_INPUT, entry.path, LOG_ARROW, `-c:${kind} ${entry.codec}`);
+          cmd.outputOptions(`-c:${kind}`, entry.codec);
+        }
+      }
+      for (const entry of options.additionalInputs ?? []) {
+        if (entry.attachment) {
+          log.debug(LOG_ATTACH_COVER, entry.path);
+          cmd.outputOptions(FFMPEG_FLAGS.ATTACH, entry.path, FFMPEG_FLAGS.METADATA_STREAM_TYPE, 'mimetype=image/jpeg');
+        } else if (entry.disposition) {
+          const videoIndex = outputVideoIndexForInput(options, entry);
+          log.debug(LOG_DISPOSITION_KEYED, `v${videoIndex} ${entry.disposition}`);
+          cmd.outputOptions(`${FFMPEG_FLAGS.DISPOSITION}:v:${videoIndex}`, entry.disposition);
+        }
+      }
+      const addedInputs = (options.additionalInputs ?? []).filter((entry) => !entry.attachment);
+      if (options.chaptersFile) {
+        log.debug(LOG_CHAPTERS_FILE, options.chaptersFile);
+        cmd.outputOptions(FFMPEG_FLAGS.MAP_CHAPTERS, String(1 + addedInputs.length));
+      } else if (options.copyChapters !== false) {
+        log.debug(LOG_COPY_CHAPTERS);
+        cmd.outputOptions(FFMPEG_FLAGS.MAP_CHAPTERS, '0');
       }
     } else {
       if (options.videoCodec) {
@@ -213,9 +265,14 @@ export class FfmpegCore implements ITranscoder {
         cmd.outputOptions(`${FFMPEG_FLAGS.QSCALE} ${options.qscale}`);
       }
       const rotationFilters = buildRotationFilters(options);
-      if (rotationFilters.length > 0) {
+      if (rotationFilters.length > 0 || options.videoFilters?.length) {
         // fluent-ffmpeg emits videoFilters BEFORE sizeFilters in one -filter:v
         // chain, so scale must be part of the same chain to stay scale-first.
+        const invalidErrors = validateVideoFilters(options.videoFilters ?? []);
+        if (invalidErrors.length > 0) {
+          log.warn(LOG_FILTER_INVALID, invalidErrors.join(' | '));
+        }
+        const userFilters = (options.videoFilters ?? []).filter((entry) => validateVideoFilters([entry]).length === 0);
         const filters: string[] = [];
         if (options.scale) {
           filters.push(
@@ -225,6 +282,10 @@ export class FfmpegCore implements ITranscoder {
           );
         }
         filters.push(...rotationFilters);
+        if (userFilters?.length) {
+          log.debug(LOG_VIDEO_FILTERS, userFilters.join(','));
+          filters.push(...userFilters);
+        }
         cmd.videoFilters(filters.join(','));
         if (options.rotate) log.debug(LOG_ROTATION, options.rotate);
       } else if (options.scale) {
@@ -244,6 +305,11 @@ export class FfmpegCore implements ITranscoder {
         log.debug(LOG_FORCING_FULL_RANGE_COLOR_FOR_MJPEG_OUTPUT);
         cmd.outputOptions(FFMPEG_FLAGS.COLOR_RANGE, FFMPEG_FLAGS.COLOR_RANGE_FULL);
       }
+    }
+
+    if (options.subtitleCodec) {
+      log.debug(LOG_SUBTITLE_CODEC, options.subtitleCodec);
+      cmd.outputOptions(FFMPEG_FLAGS.SUBTITLE_CODEC, options.subtitleCodec);
     }
 
     if (options.audio === false) {
@@ -271,6 +337,22 @@ export class FfmpegCore implements ITranscoder {
 
     if (options.extraArgs?.length) {
       cmd.outputOptions(options.extraArgs);
+    }
+
+    for (const entry of options.additionalInputs ?? []) {
+      if (entry.attachment) continue;
+      cmd.input(entry.path);
+      if (entry.syncOffsetSeconds) {
+        log.debug(LOG_SYNC_OFFSET, entry.syncOffsetSeconds, LOG_ARROW, entry.path);
+        (cmd as unknown as { _currentInput: { options(...args: string[]): void } })._currentInput.options(
+          FFMPEG_FLAGS.ITSOFFSET,
+          String(entry.syncOffsetSeconds),
+        );
+      }
+    }
+    if (options.chaptersFile) {
+      cmd.input(options.chaptersFile);
+      log.debug(LOG_CHAPTERS_FILE, options.chaptersFile);
     }
 
     cmd.output(output);

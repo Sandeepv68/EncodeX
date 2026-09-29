@@ -26,7 +26,9 @@
       "paused": "Í bið",
       "starting": "Byrjar",
       "parallel": "{{count}} samtímis"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Velkomin í EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Draga hreint hljóð út úr myndbandsskrám",
     "descCut": "Klippa myndbönd með ramma-nákvæmni",
     "descBatch": "Umbreyta mörgum skrám samtímis með snjallri braut",
-    "shortcutsFooter": "Ýttu á {{shortcut}} fyrir flýtilykla"
+    "shortcutsFooter": "Ýttu á {{shortcut}} fyrir flýtilykla",
+    "descRemux": "Flytur strauma taplaus í nýja gáma",
+    "descDemux": "Skiptir straumum skráar í sérstakar útaplás"
   },
   "gettingStarted": {
     "hint": "Nýr hér?",
@@ -125,7 +129,25 @@
     "showPreview": "Sýna forskoðun",
     "closePreview": "Loka forskoðun",
     "viewMore": "Sýna meira",
-    "viewLess": "Sýna minna"
+    "viewLess": "Sýna minna",
+    "filtersTitle": "Myndarsíur",
+    "filtersHint": "Beitir FFmpeg myndarsíum (skerðing, rammatíðni, deinterlacing, hávaðaleysing, litur…) við umkóðun. Allar síurnar sameinast í eina -vf keðju eftir kvarðun og snúning.",
+    "addPreset": "Bæta við forstillu síu…",
+    "addFilter": "Bæta við síu",
+    "customChainLabel": "Sérstök síukeðja",
+    "customChainPlaceholder": "t.d. fps=30, eq=brightness=0.1",
+    "customChainHint": "FFmpeg síuformúlur aðskildar með kommu. Hver liður þarf að hafa jafnmörg sviga og hornklofa, passandi gæsalappi og engin skelstákn.",
+    "addCustom": "Bæta við sérstöku",
+    "removeFilter": "Fjarlægja síu",
+    "moveUp": "Færa upp",
+    "moveDown": "Færa niður",
+    "clearAll": "Hreinsa allt",
+    "noFilters": "Engar síur hafa verið viðbættar.",
+    "filtersDisabledNote": "Myndarsíur krefjast umkóðunar. Slökktu á taplausri afritun til að bæta við síum.",
+    "filtersTurnOffCopy": "Slökkva á taplausri afritun",
+    "filtersCopyWarning": "Taplaus afritun er í gangi svo myndarsíurnar verða hunsaðar. Slökktu á taplausri afritun til að beita síunum.",
+    "chainPreview": "Forskoðun: -vf {{chain}}",
+    "filtersInvalid": "Ógild sí: {{error}}"
   },
   "mediaInfo": {
     "title": "Miðlaupplýsingar",
@@ -138,7 +160,7 @@
     "bitrate": "Bithraði",
     "streams": "Straumur",
     "stream": "Straumur",
-    "codec": "Codec",
+    "codec": "Kóðari",
     "resolution": "Upplausn",
     "pixelFormat": "Pixlasnið",
     "frameRate": "Rammahlutfall",
@@ -347,7 +369,7 @@
     "revealInFolder": "Sýna í möppu",
     "copyPath": "Afrita slóð",
     "stats": "{{queued}} í bið, {{running}} í vinnslu, {{done}} lokið, {{failed}} mistókst",
-    "etaEstimate": "ETA ~{{eta}}",
+    "etaEstimate": "Lokið eftir ~{{eta}}",
     "finished": "Runu lokið: {{done}} tókst, {{failed}} mistókst",
     "notificationTitle": "EncodeX runu lokið",
     "filters": {
@@ -427,13 +449,16 @@
     "optionsUpdateFailed": "Ekki er lengur hægt að breyta þessu verki.",
     "condense": "Þjappa",
     "expand": "Stækka",
-    "clearAll": "Hreinsa allt"
+    "clearAll": "Hreinsa allt",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "Gáman sem straumarnir eru afritaðir í. \"Sjálfkrafa\" heldurfram Endingu hvers upprunnafiles."
   },
   "progress": {
     "title": "Framvinda umbreytingar",
     "time": "Tími",
     "speed": "Hraði",
-    "eta": "ETA"
+    "eta": "Tími eftir"
   },
   "errorBoundary": {
     "title": "Eitthvað fór úrskeiðis",
@@ -460,10 +485,10 @@
     "download": "Sækja sem TXT",
     "filter": "Sía eftir stigi",
     "levelAll": "Allt",
-    "levelDebug": "DEBUG",
-    "levelInfo": "INFO",
-    "levelWarn": "WARN",
-    "levelError": "ERROR",
+    "levelDebug": "KANNANIR",
+    "levelInfo": "UPPLÝSINGAR",
+    "levelWarn": "AÐVÖRKEN",
+    "levelError": "VILLA",
     "noEntries": "Engar annálafærslur ennþá.",
     "entryCount": "{{count}} færslur"
   },
@@ -495,7 +520,9 @@
     "updateAvailable": "Uppfærsla tiltæk: v{{version}}",
     "updateNow": "Uppfæra núna",
     "updateDownloaded": "Uppfærsla v{{version}} sótt",
-    "viewUpdate": "Skoða"
+    "viewUpdate": "Skoða",
+    "remuxed": "Remux lokið",
+    "demuxed": "Straumarnir voru dregnir úr"
   },
   "profiles": {
     "searchPlaceholder": "Leita að sniðum...",
@@ -598,7 +625,9 @@
       "videoCut": "Klippa myndband",
       "batchQueue": "Runubíðröð",
       "logs": "Annálar",
-      "dashboard": "Mælaborð"
+      "dashboard": "Mælaborð",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Sýna flýtilykla",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Fara í runubíðröð",
       "navLogs": "Fara í annála",
       "navSettings": "Fara í stillingar",
-      "themeToggle": "Skipta um þema"
+      "themeToggle": "Skipta um þema",
+      "navRemux": "Fara í Remux"
     },
     "convert": {
       "input": "Veldu inntaksskrá",
@@ -679,7 +709,17 @@
       "image": "Opna Mynd",
       "audio": "Opna Hljóð",
       "cut": "Opna Klippa",
-      "batch": "Opna runubíðröð"
+      "batch": "Opna runubíðröð",
+      "remux": "Opna Remux",
+      "demux": "Opna Demux"
+    },
+    "remux": {
+      "input": "Velja inngagnisskrá",
+      "start": "Ræsa remux"
+    },
+    "demux": {
+      "input": "Velja inngagnisskrá",
+      "start": "Ræsa útdrátt"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "Gefið út undir MIT-leyfinu. Frjálst að nota, afrita, breyta, sameina, birta, dreifa, undirleyfa og selja — þar með talið í atvinnuskyni — að því tilskildu að höfundarréttartilkynningin og leyfistilkynningin séu innifalin í öllum afritum eða verulegum hlutum hugbúnaðarins. Hugbúnaðurinn er veittur \"eins og hann er\", án nokkurrar ábyrgðar.",
     "acknowledgements": "Búið til með ❤️ fyrir opinn hugbúnað — knúið af FFmpeg-verkefninu og samfélaginu.",
     "checkForUpdates": "Leita að uppfærslum",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Skilmálar og ákvæði",
+    "terms": "Skilmálar",
+    "readTerms": "Lesa skilmála"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Skilmálar og ákvæði",
+    "accept": "Ég samþykkja",
+    "reject": "Ég samþykkja ekki",
+    "close": "Loka",
+    "lastUpdated": "Í gildi frá: {{date}}"
   },
   "update": {
     "title": "Uppfærsla",
@@ -734,5 +774,167 @@
     "installOnRestart": "Setja upp við næstu endurræsingu",
     "installScheduled": "Uppfærsla v{{version}} verður sett upp við næstu endurræsingu appsins.",
     "cancelRestartInstall": "Hætta við"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Skerðing",
+      "cropHint": "Sker myndina í tilgreindar breidd, hæð og hliðsjálf.",
+      "framerate": "Rammatíðni",
+      "framerateHint": "Breytir rammatíðni úttaksins (rammar eru tvískeytir eða felldir).",
+      "deinterlace": "Deinterlacing",
+      "deinterlaceHint": "Breytir samtvinnandi mynd í áreynandi.",
+      "denoise": "Hávaðaleysing",
+      "denoiseHint": "Dregur úr hávaða á meðan smáatriði eru varðveitt (hqdn3d).",
+      "sharpen": "Skörp",
+      "sharpenHint": "Auknar upplifða skörp (unsharp).",
+      "color": "Litur",
+      "colorHint": "Stillir birku, andstæðu, metningu og gammá (eq).",
+      "grayscale": "Grávleitar",
+      "grayscaleHint": "Fjarlægur lit og skilur eftir svart-hvítmynd.",
+      "blur": "Mökkun",
+      "blurHint": "Beitir kassamökkun til að mýkja myndina."
+    },
+    "params": {
+      "crop": {
+        "w": "Breidd",
+        "h": "Hæð",
+        "x": "X-hliðsjálf",
+        "y": "Y-hliðsjálf"
+      },
+      "framerate": {
+        "fps": "Rammar á sekúndu"
+      },
+      "deinterlace": {
+        "mode": "Röð svipa",
+        "modes": {
+          "auto": "Sjálfkrafa",
+          "tff": "Efri svip fyrst",
+          "bff": "Neðri svip fyrst"
+        }
+      },
+      "denoise": {
+        "strength": "Styrkur"
+      },
+      "sharpen": {
+        "strength": "Styrkur"
+      },
+      "color": {
+        "brightness": "Birka",
+        "contrast": "Andstæða",
+        "saturation": "Metning",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Styrkur"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Myndarskrá",
+    "dropLabel": "Dragðu myndarskrá hingað eða ýttu til að velja",
+    "videoFileHint": "Upprunnamídaskráin sem straumarnir verða pakkaðir í áhendingargámann. Straumarnir eru afritaðir án umkóðunar.",
+    "selectedVideo": "Valin mynd: {{file}}",
+    "streamCount": "{{selected}} af {{total}} straumum valið",
+    "container": "Gáma",
+    "containerHint": "Útgágugáma remux-skrárinnar. Veldu úr algengum myndagámum; ending úttaksins fylgir gámnum.",
+    "streams": "Upprunnastraumar",
+    "streamsHint": "Veldu hvaða straumur úr upprunnaflinum eiga að varðveitast í remux-útakinu. Straumar sem ekki eru valdir verða felldir.",
+    "streamIndex": "Nr.",
+    "kind": "Tegund",
+    "selectStream": "Veldu {{kind}} straum nr. {{index}}",
+    "selectAll": "Halda öllu",
+    "selectNone": "Halda engu",
+    "audioSync": "Seinka hljóði (sekúndur)",
+    "audioSyncHint": "Færir aðalhljóðlagið gagnvart myndinni án umkóðunar, t.d. -0.5 fyrir 0,5 s fyrr eða 1.5 fyrir 1,5 s síðar.",
+    "audioSyncLossless": "Taplost: hljóðið er afritað sem straumur með tímamerkjaskiptingu svo gæðin breytast ekki.",
+    "subtitles": "Viðbættur texti",
+    "subtitlesHint": "Utanhággskrár textaskrár (.srt, .ass, .vtt) innfelldar í remux-útakið sem viðbótar inngangslög.",
+    "addSubtitle": "Bæta við textaskrá",
+    "subtitleCodec": "Áhendingarkóðari",
+    "subtitleCodecHint": "Textakóðarinn sem notaður er fyrir innfelda laginu. Gámar taka við ólík textasnið; að velja snið sem gámurinn getur ekki geymt gefur aðvörkun.",
+    "removeSubtitle": "Fjarlægja textann",
+    "audioTracks": "Viðbætt hljóðlög",
+    "audioTracksHint": "Utanhággskrár hljóðfílur (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) innfelldar í remux-útakið sem viðbótar inngangslög.",
+    "addAudioTrack": "Bæta við hljóðlag",
+    "removeAudioTrack": "Fjarlægja hljóðlagið",
+    "addedTrackDelay": "Seinka þessu lagi (sekúndur)",
+    "addedTrackDelayHint": "Virk hliðsjálf þessa lags gagnvart myndinni (jákvætt = leikað síðar). Taplost: notað sem -itsoffset með straumafritun.",
+    "thumbnail": "Smáfynd / kynningarborð",
+    "thumbnailHint": "Valfrjálst kynningarmynd (.jpg, .jpeg, .png) innfelld í remux-skránni. MKV/WebM hengja hana við sem myndarstraum; MP4/MOV fellda hana inn sem myndarstraum með attached_pic-merki.",
+    "addThumbnail": "Bæta við smáfynd",
+    "thumbnailUnsupported": "{{container}} getur ekki geymt kynningarborð. Skiptu yfir í MKV, WebM, MP4 eða MOV til að hengja við smáfynd.",
+    "removeThumbnail": "Fjarlægja smáfyndið",
+    "thumbnailMode": "Innfeld sem {{mode}}",
+    "thumbnailAttached": "viðhengd mynd",
+    "thumbnailDisposition": "attached_pic kynningarstraumur",
+    "chapters": "Kafli",
+    "chaptersHint": "Kaflar upprunnafiles eru varðveittir sjálfgefið. Flyttu inn FFMETADATA kaflaskrá til að skrifa kafla upprunnafilsins yfir í remux-skránni.",
+    "copyChapters": "Afrita kafla upprunnafiles",
+    "copyChaptersHint": "Varðveitir kaflamerki upprunnafilsins í remux-útakinu (taplost, -map_chapters 0).",
+    "importChapters": "Flyta inn kaflaskrá",
+    "chaptersUnsupported": "{{container}} geymir ekki lýsingargögn kafla; kaflar verða felldir.",
+    "removeChapters": "Fjarlægja kaflaskrána",
+    "warnings": "Samhæfnaradvörkun",
+    "warningsHint": "Athugasemdir sem ekki hindra um varðandi hvort valdir straumar og stillingar passi við valinn gáma. Aðvörkun hindra ekki ræsingu; villur gera það.",
+    "outputFile": "Útplássskrá",
+    "outputFileHint": "Áfangur remux-skrárinnar. Endingin fylgir áhendingargámnum.",
+    "placeholderOutput": "uttak.mkv",
+    "start": "Ræsa remux",
+    "remuxing": "Í remux…",
+    "pause": "Gera hlé",
+    "resume": "Halda áfram",
+    "cancel": "Hætta við",
+    "cancelTitle": "Hætta við remux",
+    "cancelMessage": "Ertu viss um að þú vilt hætta við síðustu remux?",
+    "yes": "Já",
+    "no": "Nei",
+    "filtersTitle": "Myndarsíur",
+    "filtersHint": "Beitir FFmpeg myndarsíum þegar valdir myndarstraumar eru umkóðaðir. Síur er hægt að ekki beita á taplausri afritun svo að bæta við einni breytir remux í umkóðun.",
+    "filtersReencodeWarning": "Myndarsíur geta ekki keyrt á straumafritun svo {{count}} valdar sír breyta þessari remux í umkóðun."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Myndarskrá",
+    "videoFileHint": "Upprunnamídaskráin sem straumarnir verða dregnir úr. Hver valinn straumur er skrifaður í sína eigin útaplássskrá.",
+    "dropLabel": "Dragðu myndarskrá hingað eða ýttu til að velja",
+    "selectedVideo": "Valin mynd: {{file}}",
+    "streamCount": "{{selected}} af {{total}} straumum valið",
+    "streams": "Upprunnastraumar",
+    "streamsHint": "Veldu hvaða strauma á að draga úr. Hver valinn straumur verður sinn eigin útaplássskrá; straumar sem ekki eru valdir eru slepptir.",
+    "extractStreams": "Straumar sem á að draga úr",
+    "streamGroup": "{{kind}} straumar",
+    "suggestedOutput": "Úttak",
+    "selectStream": "Veldu {{kind}} straum nr. {{index}} til að draga úr",
+    "videoContainer": "Ákvörðun myndar",
+    "videoContainerHint": "Hvernig myndarstraumar eru skrifaðir. \"Afrita\" dregur þá úr taplaus án umkóðunar; að velja gámi umkóðar myndina í því sniði.",
+    "audioCodec": "Ákvörðun hljóðs",
+    "audioCodecHint": "Hvernig hljóðstraumar eru skrifaðir. \"Afrita\" dregur þá úr taplaus án umkóðunar; að velja kóðara umkóðar hljóðið.",
+    "subtitleFormat": "Ákvörðun texta",
+    "subtitleFormatHint": "Hvernig textastraumar eru skrifaðir. \"Afrita\" dregur þá úr taplaus án umkóðunar; að velja snið breytir textanum. Bita-mappa texti (t.d. PGS/DVDSUB) getur ekki orðið texti og heldur sér afrituðum.",
+    "subtitleWarning": "Aðvörkun um breytingu á texta",
+    "subtitleWarningHint": "Bita-mappa textastraumar (t.d. PGS/DVDSUB) geta ekki umkóðað í texta án OCR, svo þeir eru dregnir úr sem taplaus .mks afrit. Í útdráttinum birtast þeir sem \"Afrita\".",
+    "bitmapSubtitleWarning": "Þessum bita-mappe textastraum er ekki hægt að umkóða í texta án OCR, svo hann er dreginn úr sem taplaus .mks afrit.",
+    "copyOption": "Afrita (taplaus)",
+    "outputDir": "Útaplássskrá",
+    "outputDirHint": "Mappan sem drættu straumarnir eru skrifaðir í. Sjálfgefið er skráin upprunnafilsins.",
+    "outputDirPlaceholder": "útaplássskrá",
+    "summary": "Útdráttur",
+    "summaryHint": "Ein útaplássskrá fyrir hvern valinn straum, í þeirri röð sem þeir keyra. Skrár merktar \"Afrita\" eru dregnar úr taplost; skrár merktar \"Umbreyta\" eru umkóðaðar.",
+    "copyLabel": "Afrita",
+    "convertLabel": "Umbreyta í {{target}}",
+    "start": "Ræsa demux",
+    "demuxing": "Dreg út…",
+    "pause": "Gera hlé",
+    "resume": "Halda áfram",
+    "cancel": "Hætta við",
+    "cancelTitle": "Hætta við demux",
+    "cancelMessage": "Ertu viss um að þú vilt hætta við síðustu demux?",
+    "yes": "Já",
+    "no": "Nei",
+    "currentStream": "Dreg {{kind}} straum nr. {{index}}",
+    "filtersTitle": "Myndarsíur",
+    "filtersHint": "Beitir FFmpeg myndarsíum (skerðing, rammatíðni, deinterlacing, hávaðaleysing, litur…) þegar valdir myndarstraumar eru umkóðaðir. \"Afrita\" er taplost svo síur birtast aðeins þegar áhendingargámi umkóðar myndina.",
+    "filtersIgnoredCopy": "Myndarsíurnar eru hunsaðar á meðan myndarákvörðunin er \"Afrita\", því að straumafritun getur ekki umkóðað. Veldu áhendingargáma til að beita síunum."
   }
 }

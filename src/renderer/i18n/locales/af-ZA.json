@@ -26,7 +26,9 @@
       "paused": "Gepauseer",
       "starting": "Begin",
       "parallel": "{{count}} gelyktydig"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Welkom by EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Onthou skoon klanksnitte uit videolêers",
     "descCut": "Snoei en sny video met 'n raam-akkurate speler",
     "descBatch": "Skakel baie lêers gelyktydig om met 'n slim waglys",
-    "shortcutsFooter": "Druk {{shortcut}} vir sleutelbordkortpaaie"
+    "shortcutsFooter": "Druk {{shortcut}} vir sleutelbordkortpaaie",
+    "descRemux": "Oordra strome verliesvry na 'n nuwe houer",
+    "descDemux": "Skei die strome van 'n lêer in afsonderlike uitvoerlêers"
   },
   "gettingStarted": {
     "hint": "Nuut hier?",
@@ -125,7 +129,25 @@
     "showPreview": "Wys Voorskou",
     "closePreview": "Maak Voorskou Toe",
     "viewMore": "Sien meer",
-    "viewLess": "Sien minder"
+    "viewLess": "Sien minder",
+    "filtersTitle": "Videofilters",
+    "filtersHint": "Pas FFmpeg-videofilters (knip, raamtempo, dekruis, ruisvermindering, kleur…) toe tydens herkodeering. Alle filters word na skaling en rotasie saamgevoeg in een enkele -vf-ketting.",
+    "addPreset": "Voeg voorafgestelde filter by…",
+    "addFilter": "Voeg filter by",
+    "customChainLabel": "Eie filterketting",
+    "customChainPlaceholder": "bv. fps=30, eq=brightness=0.1",
+    "customChainHint": "FFmpeg-filteruitdrukkinge geskei deur kommas. Elke inskrywing moet gebalanseerde hakies en vierkante hakies hê, ooreenstemmende aanhalingstekens en geen skulpikale metakarakters bevat nie.",
+    "addCustom": "Voeg eie by",
+    "removeFilter": "Verwyder filter",
+    "moveUp": "Beweeg op",
+    "moveDown": "Beweeg af",
+    "clearAll": "Maak alles skoon",
+    "noFilters": "Geen filters bygevoeg nie.",
+    "filtersDisabledNote": "Videofilters vereis herkodeering. Skakel verliesvry kopieer uit om filters by te voeg.",
+    "filtersTurnOffCopy": "Skakel verliesvry kopieer uit",
+    "filtersCopyWarning": "Verliesvrye kopieermodus is aan, so videofilters sal geïgnoreer word. Skakel verliesvry kopieer uit om filters toe te pas.",
+    "chainPreview": "Voorskou: -vf {{chain}}",
+    "filtersInvalid": "Ongeldige filter: {{error}}"
   },
   "mediaInfo": {
     "title": "Media-inligting",
@@ -135,7 +157,7 @@
     "format": "Formaat",
     "size": "Grootte",
     "duration": "Duur",
-    "bitrate": "Bitrate",
+    "bitrate": "Bisk tempo",
     "streams": "Strome",
     "stream": "Stroom",
     "codec": "Kodek",
@@ -208,7 +230,7 @@
       "timed_thumbnails": "Getimede Miniatuurprente",
       "captions": "Byskrifte",
       "descriptions": "Beskrywings",
-      "metadata": "Metadata",
+      "metadata": "Metagegevens",
       "dependent": "Afhanklik",
       "still_image": "Stilstaande Beeld"
     },
@@ -248,7 +270,7 @@
     "dropLabel": "Los videolêer hier",
     "outputFile": "Uitvoerlêer",
     "audioCodec": "Klank-kodek",
-    "bitrate": "Bitrate",
+    "bitrate": "Bisk tempo",
     "videoFileHint": "Die bronvideo wat die klanksnit bevat wat jy wil onthou.",
     "outputFileHint": "Die bestemmingslêer waar die onthoude klank gestoor sal word. Sy uitbreiding pas die gekose kodek.",
     "audioCodecHint": "Die kodek wat gebruik word om die klankstroom te enkodeer, bv. AAC, MP3 of Opus.",
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "Hierdie taak kan nie meer geredigeer word nie.",
     "condense": "Vou in",
     "expand": "Brei uit",
-    "clearAll": "Maak alles skoon"
+    "clearAll": "Maak alles skoon",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "Die houer waarheen strome gekopieer word. \"Outomaties\" behou die uitbreiding van elke bronlêer."
   },
   "progress": {
     "title": "Omskakelingsvordering",
@@ -495,7 +520,9 @@
     "updateAvailable": "Opdatering beskikbaar: v{{version}}",
     "updateNow": "Dateer nou op",
     "updateDownloaded": "Opdatering v{{version}} afgelaai",
-    "viewUpdate": "Bekyk"
+    "viewUpdate": "Bekyk",
+    "remuxed": "Remux voltooi",
+    "demuxed": "Strome suksesvol onttrek"
   },
   "profiles": {
     "searchPlaceholder": "Soek profiele...",
@@ -597,8 +624,10 @@
       "audioExtract": "Oudiotrekking",
       "videoCut": "Video knip",
       "batchQueue": "Bondtou",
-      "logs": "Logs",
-      "dashboard": "Paneelbord"
+      "logs": "Logboeke",
+      "dashboard": "Paneelbord",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Wys sleutelbordkortpaaie",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Gaan na Bondtou",
       "navLogs": "Gaan na Logs",
       "navSettings": "Gaan na Instellings",
-      "themeToggle": "Skakel tema"
+      "themeToggle": "Skakel tema",
+      "navRemux": "Gaan na Remux"
     },
     "convert": {
       "input": "Kies invoerlêer",
@@ -679,7 +709,17 @@
       "image": "Maak Beeld oop",
       "audio": "Maak Oudio oop",
       "cut": "Maak Knip oop",
-      "batch": "Maak Bondtou oop"
+      "batch": "Maak Bondtou oop",
+      "remux": "Open Remux",
+      "demux": "Open Demux"
+    },
+    "remux": {
+      "input": "Kies die invoerlêer",
+      "start": "Begin die remux"
+    },
+    "demux": {
+      "input": "Kies die invoerlêer",
+      "start": "Begin die onttrekking"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "Vrygestel onder die MIT-lisensie. Vry om te gebruik, kopieer, wysig, saamsmelt, publiseer, versprei, sublisensieer en verkoop — insluitend kommersieel — mits die kopieregkennisgewing en toestemmingskennisgewing in alle kopieë of wesenlike dele van die sagteware ingesluit word. Die sagteware word verskaf \"soos is\", sonder enige waarborg.",
     "acknowledgements": "Gemaak met ❤️ vir oopbron — aangedryf deur die FFmpeg-projek en die gemeenskap.",
     "checkForUpdates": "Kontroleer vir opdaterings",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Voorwaardes en bepalings",
+    "terms": "Voorwaardes",
+    "readTerms": "Lees die voorwaardes"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Voorwaardes en bepalings",
+    "accept": "Ek aanvaar",
+    "reject": "Ek aanvaar nie",
+    "close": "Sluit",
+    "lastUpdated": "Geldig vanaf: {{date}}"
   },
   "update": {
     "title": "Opdatering",
@@ -734,5 +774,167 @@
     "installOnRestart": "Installeer met volgende herbegin",
     "installScheduled": "Opdatering v{{version}} sal met die volgende herbegin van die toepassing installeer.",
     "cancelRestartInstall": "Kanselleer"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Knip",
+      "cropHint": "Knip die video volgens die opgegewe breedte, hoogte en verskuifing.",
+      "framerate": "Raamtempo",
+      "framerateHint": "Wysig die raamtempo van die uitvoer (rame word gedupliseer of weggelaat).",
+      "deinterlace": "Dekruis",
+      "deinterlaceHint": "Skakel interlaced video om na progressief.",
+      "denoise": "Ruisvermindering",
+      "denoiseHint": "Verminder ruis terwyl detail behou word (hqdn3d).",
+      "sharpen": "Skerpte",
+      "sharpenHint": "Verhoog die waargenome skerpte (unsharp).",
+      "color": "Kleur",
+      "colorHint": "Pas helderheid, kontras, versadiging en gamma aan (eq).",
+      "grayscale": "Gryskaal",
+      "grayscaleHint": "Verwyder kleur en laat 'n swart-en-wit beeld oor.",
+      "blur": "Vervag",
+      "blurHint": "Pas 'n boksvervag aan om die beeld te versag."
+    },
+    "params": {
+      "crop": {
+        "w": "Breedte",
+        "h": "Hoogte",
+        "x": "X-verskuifing",
+        "y": "Y-verskuifing"
+      },
+      "framerate": {
+        "fps": "Rame per sekonde"
+      },
+      "deinterlace": {
+        "mode": "Veldvolgorde",
+        "modes": {
+          "auto": "Outomaties",
+          "tff": "Boonste veld eerste",
+          "bff": "Onderste veld eerste"
+        }
+      },
+      "denoise": {
+        "strength": "Sterkte"
+      },
+      "sharpen": {
+        "strength": "Sterkte"
+      },
+      "color": {
+        "brightness": "Helderheid",
+        "contrast": "Kontras",
+        "saturation": "Versadiging",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Sterkte"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Videolêer",
+    "dropLabel": "Sleep hier 'n videolêer of klik om te soek",
+    "videoFileHint": "Die bronmedi lêer waarvan die strome in die doelhouer herverpakk word. Die strome word sonder herkodeering gekopieer.",
+    "selectedVideo": "Gekose video: {{file}}",
+    "streamCount": "{{selected}} van {{total}} strome gekies",
+    "container": "Houer",
+    "containerHint": "Die uitvoerhouer van die remux-lêer. Kies uit algemene videohouers; die uitvoeruitbreiding volg die houer.",
+    "streams": "Bronstrome",
+    "streamsHint": "Kies watter strome uit die bronlêer in die remux-uitvoer behou moet word. Strome wat nie gekies is nie, word weggegooi.",
+    "streamIndex": "Nr.",
+    "kind": "Tipe",
+    "selectStream": "Kies die {{kind}}-stroom nr. {{index}}",
+    "selectAll": "Behou alles",
+    "selectNone": "Behou niks nie",
+    "audioSync": "Vertoog klank (sekondes)",
+    "audioSyncHint": "Skuif die hoofklankspoor teenoor die video sonder herkodeering, bv. -0.5 vir 0,5 s vroeër of 1.5 vir 1,5 s later.",
+    "audioSyncLossless": "Verliesvry: klank word as 'n stroom met tydsstempelverskuifing gekopieer, dus die kwaliteit verander nie.",
+    "subtitles": "Bygevoegde ondertitels",
+    "subtitlesHint": "Externe ondertitellêers (.srt, .ass, .vtt) wat as bykomende invoerspore in die remux-uitvoer ingebed word.",
+    "addSubtitle": "Voeg ondertitellêer by",
+    "subtitleCodec": "Doel-kodeek",
+    "subtitleCodecHint": "Die ondertitelkodeek wat vir die ingebelde spoor gebruik word. Houers aanvaar verskillende ondertitelformate; om 'n formaat te kies wat die houer nie kan stoor nie, geeft 'n waarskuwing.",
+    "removeSubtitle": "Verwyder die ondertitel",
+    "audioTracks": "Bygevoegde klankspore",
+    "audioTracksHint": "Externe klanklêers (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) wat as bykomende invoerspore in die remux-uitvoer ingebed word.",
+    "addAudioTrack": "Voeg klankspoor by",
+    "removeAudioTrack": "Verwyder die klankspoor",
+    "addedTrackDelay": "Vertoog hierdie spoor (sekondes)",
+    "addedTrackDelayHint": "Getekende verskuifing vir hierdie spoor teenoor die video (positief = later speel). Verliesvry: toegepas as -itsoffset met stroomkopie.",
+    "thumbnail": "Duinstuk / omslag",
+    "thumbnailHint": "Opsionele omslagprent (.jpg, .jpeg, .png) wat in die remux-lêer ingebed word. MKV/WebM heg dit aan as 'n prentstroom; MP4/MOV bed dit in as 'n videostroom met die attached_pic-posisie.",
+    "addThumbnail": "Voeg duinstuk by",
+    "thumbnailUnsupported": "{{container}} kan nie omslags stoor nie. Gaan oor na MKV, WebM, MP4 of MOV om 'n duinstuk aan te heg.",
+    "removeThumbnail": "Verwyder die duinstuk",
+    "thumbnailMode": "Ingebed as {{mode}}",
+    "thumbnailAttached": "aangehegte prent",
+    "thumbnailDisposition": "attached_pic-omslagstroom",
+    "chapters": "Hoofstukke",
+    "chaptersHint": "Hoofstukke uit die bron word standaard behou. Voer 'n FFMETADATA-hoofstuklêer in om die bron-hoofstukke in die remux-lêer te vervang.",
+    "copyChapters": "Kopieer bron-hoofstukke",
+    "copyChaptersHint": "Behou die hoofstukmerkers van die bronlêer in die remux-uitvoer (verliesvry, -map_chapters 0).",
+    "importChapters": "Voer hoofstuklêer in",
+    "chaptersUnsupported": "{{container}} stoor nie hoofstukmetagegevens nie; hoofstukke sal weggegooi word.",
+    "removeChapters": "Verwyder die hoofstuklêer",
+    "warnings": "Verenigbaarheidswaarskuwings",
+    "warningsHint": "Nie-blokkerende opmerkings oor of die gekose strome en instellings by die gekose houer pas. Waarskuwings laat toe dat daar begin word; foute verhoed dit.",
+    "outputFile": "Uitvoerlêer",
+    "outputFileHint": "Die bestemmingspad van die remux-lêer. Die uitbreiding volg die doelhouer.",
+    "placeholderOutput": "uitvoer.mkv",
+    "start": "Begin remux",
+    "remuxing": "Bezig met remux…",
+    "pause": "Pouseer",
+    "resume": "Hervat",
+    "cancel": "Kanselleer",
+    "cancelTitle": "Kanselleer remux",
+    "cancelMessage": "Is jy seker dat jy die lopende remux wil kanselleer?",
+    "yes": "Ja",
+    "no": "Nee",
+    "filtersTitle": "Videofilters",
+    "filtersHint": "Pas FFmpeg-videofilters toe terwyl gekose videostrome herkodeer word. Filters kan nie op 'n verliesvrye kopie toegepas word nie, dus om een by te voeg maak hierdie remux 'n herkodeering.",
+    "filtersReencodeWarning": "Videofilters kan nie op 'n stroomkopie loop nie, dus die {{count}} gekose filter(s) maak hierdie remux 'n herkodeering."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Videolêer",
+    "videoFileHint": "Die bronmedi lêer waarvan die strome onttrek sal word. Elke gekose stroom word na sy eie uitvoerlêer geskryf.",
+    "dropLabel": "Sleep hier 'n videolêer of klik om te soek",
+    "selectedVideo": "Gekose video: {{file}}",
+    "streamCount": "{{selected}} van {{total}} strome gekies",
+    "streams": "Bronstrome",
+    "streamsHint": "Kies watter strome om te onttrek. Elke gekose stroom word 'n eie uitvoerlêer; strome wat nie gekies is nie, word oorgeslaan.",
+    "extractStreams": "Strome om te onttrek",
+    "streamGroup": "{{kind}}-strome",
+    "suggestedOutput": "Uitvoer",
+    "selectStream": "Kies die {{kind}}-stroom nr. {{index}} om te onttrek",
+    "videoContainer": "Videobestemming",
+    "videoContainerHint": "Hoe videostrome geskryf word. \"Kopieer\" onttrek hulle verliesvry sonder herkodeering; om 'n houer te kies, herkodeer die video na daardie formaat.",
+    "audioCodec": "Klankbestemming",
+    "audioCodecHint": "Hoe klankstrome geskryf word. \"Kopieer\" onttrek hulle verliesvry sonder herkodeering; om 'n kodeek te kies, herkodeer die klank.",
+    "subtitleFormat": "Ondertitelbestemming",
+    "subtitleFormatHint": "Hoe ondertitelstrome geskryf word. \"Kopieer\" onttrek hulle verliesvry sonder herkodeering; om 'n formaat te kies, skakel ondertitels om. Bitmap-ondertitels (soos PGS/DVDSUB) kan nie teks word nie en bly gekopieer.",
+    "subtitleWarning": "Waarskuwings oor ondertitelomskakeling",
+    "subtitleWarningHint": "Bitmap-ondertitelstrome (soos PGS/DVDSUB) kan nie na teks herkodeer word sonder OCR nie, dus word hulle as verliesvrye .mks-kopieë onttrek. In die onttrekkingsplan verskyn hulle as \"Kopieer\".",
+    "bitmapSubtitleWarning": "Hierdie bitmap-ondertitelstroom kan nie na teks herkodeer word sonder OCR nie, dus word dit as 'n verliesvrye .mks-kopie onttrek.",
+    "copyOption": "Kopieer (verliesvry)",
+    "outputDir": "Uitvoergids",
+    "outputDirHint": "Die gids waarin onttrekte strome geskryf word. Standaard is dit die gids van die bronlêer.",
+    "outputDirPlaceholder": "uitvoergids",
+    "summary": "Onttrekkingsplan",
+    "summaryHint": "Een uitvoerlêer per gekose stroom, in uitvoervolgorde. Lêers gemerk \"Kopieer\" word verliesvry onttrek; dié gemerk \"Omskakel\" word herkodeer.",
+    "copyLabel": "Kopieer",
+    "convertLabel": "Omskakel na {{target}}",
+    "start": "Begin demux",
+    "demuxing": "Bezig met onttrekking…",
+    "pause": "Pouseer",
+    "resume": "Hervat",
+    "cancel": "Kanselleer",
+    "cancelTitle": "Kanselleer demux",
+    "cancelMessage": "Is jy seker dat jy die lopende demux wil kanselleer?",
+    "yes": "Ja",
+    "no": "Nee",
+    "currentStream": "Onttrek {{kind}}-stroom nr. {{index}}",
+    "filtersTitle": "Videofilters",
+    "filtersHint": "Pas FFmpeg-videofilters (knip, raamtempo, dekruis, ruisvermindering, kleur…) toe terwyl gekose videostrome herkodeer word. \"Kopieer\" is verliesvry, dus filters verskyn net wanneer 'n doelhouer die video herkodeer.",
+    "filtersIgnoredCopy": "Videofilters word geïgnoreer solank die videobestemming \"Kopieer\" is, omdat 'n stroomkopie nie kan herkodeer nie. Kies 'n doelhouer om hulle toe te pas."
   }
 }

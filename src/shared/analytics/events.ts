@@ -76,6 +76,12 @@ export type AnalyticsEventName =
   | 'conversion_cancelled'
   | 'conversion_completed'
   | 'conversion_failed'
+  | 'remux_started'
+  | 'remux_completed'
+  | 'remux_failed'
+  | 'demux_started'
+  | 'demux_completed'
+  | 'demux_failed'
   | 'copy_mode_toggled'
   | 'transcoder_changed'
   | 'preview_closed'
@@ -174,6 +180,9 @@ export type InputSource = 'dialog' | 'drop' | 'folder';
 /** Execution mode: GUI renderer vs CLI. */
 export type ExecutionMode = 'gui' | 'cli';
 
+/** Stream kinds a demux target can extract or convert. */
+export type DemuxTargetKind = 'video' | 'audio' | 'subtitle';
+
 /** Payload for each event. All fields MUST stay categorical (see privacy contract). */
 export interface AnalyticsEventPayloadMap {
   app_installed: { version: string; platform: string; arch: string };
@@ -206,6 +215,8 @@ export interface AnalyticsEventPayloadMap {
     copyMode?: boolean;
     presetClass?: string;
     container?: string;
+    hasVideoFilters?: boolean;
+    filterCount?: number;
     mode?: ExecutionMode;
   };
   conversion_paused: Record<string, never>;
@@ -217,11 +228,53 @@ export interface AnalyticsEventPayloadMap {
     hwAccel: boolean;
     presetClass?: string;
     container?: string;
+    hasVideoFilters?: boolean;
+    filterCount?: number;
     durationSec?: number;
     speedX?: number;
     mode?: ExecutionMode;
   };
   conversion_failed: { jobKind: 'single' | 'batch'; transcoder: string; hwAccel?: boolean; code?: string; mode?: ExecutionMode };
+  remux_started: {
+    container: string;
+    streamCount: number;
+    addedSubs: number;
+    addedAudio: number;
+    hasThumbnail: boolean;
+    hasChapters: boolean;
+    hasAudioSync: boolean;
+  };
+  remux_completed: {
+    container: string;
+    streamCount: number;
+    addedSubs: number;
+    addedAudio: number;
+    hasThumbnail: boolean;
+    hasChapters: boolean;
+    hasAudioSync: boolean;
+    durationSec?: number;
+  };
+  remux_failed: {
+    container: string;
+    code?: string;
+  };
+  demux_started: {
+    kindCounts: Partial<Record<DemuxTargetKind, number>>;
+    streamCount: number;
+    convertedKinds: DemuxTargetKind[];
+  };
+  demux_completed: {
+    kindCounts: Partial<Record<DemuxTargetKind, number>>;
+    streamCount: number;
+    convertedKinds: DemuxTargetKind[];
+    durationSec?: number;
+  };
+  demux_failed: {
+    kindCounts: Partial<Record<DemuxTargetKind, number>>;
+    streamCount: number;
+    convertedKinds: DemuxTargetKind[];
+    code?: string;
+  };
   copy_mode_toggled: { copyMode: boolean };
   transcoder_changed: { transcoder: string };
   preview_closed: Record<string, never>;
@@ -364,6 +417,12 @@ export const ANALYTICS_EVENT_GROUP: Record<AnalyticsEventName, AnalyticsGroup> =
   conversion_cancelled: 'convert',
   conversion_completed: 'convert',
   conversion_failed: 'convert',
+  remux_started: 'convert',
+  remux_completed: 'convert',
+  remux_failed: 'convert',
+  demux_started: 'convert',
+  demux_completed: 'convert',
+  demux_failed: 'convert',
   copy_mode_toggled: 'convert',
   transcoder_changed: 'convert',
   preview_closed: 'convert',
@@ -485,6 +544,12 @@ export const ANALYTICS_EVENT_TIER: Record<AnalyticsEventName, AnalyticsTier> = {
   conversion_cancelled: 'v1',
   conversion_completed: 'v1',
   conversion_failed: 'v1',
+  remux_started: 'v1',
+  remux_completed: 'v1',
+  remux_failed: 'v1',
+  demux_started: 'v1',
+  demux_completed: 'v1',
+  demux_failed: 'v1',
   copy_mode_toggled: 'v2',
   transcoder_changed: 'v2',
   preview_closed: 'v2',

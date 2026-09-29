@@ -195,6 +195,8 @@ export default function BatchControls({
     transcode: t('batchQueue.operationTranscode'),
     extract_audio: t('batchQueue.operationExtractAudio'),
     compress_image: t('batchQueue.operationCompressImage'),
+    remux: t('batchQueue.operationRemux'),
+    demux: t('batchQueue.operationDemux'),
   };
 
   /**

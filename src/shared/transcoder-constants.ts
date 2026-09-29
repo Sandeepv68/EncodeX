@@ -55,6 +55,14 @@ export const TRANSCODER_LABELS: Record<TranscoderType, string> = {
  * @property {string} COPYTS - Flag to copy timestamps (-copyts).
  * @property {string} METADATA_ROTATE - Flag to write rotation metadata on the
  *   video stream (-metadata:s:v).
+ * @property {string} MAP - Flag selecting input streams (-map).
+ * @property {string} SUBTITLE_CODEC - Flag for the subtitle encoder/format (-c:s).
+ * @property {string} MAP_CHAPTERS - Flag selecting the chapters input (-map_chapters).
+ * @property {string} DISPOSITION - Flag setting a stream disposition (-disposition).
+ * @property {string} ATTACH - Flag attaching a file as an MKV/WebM stream (-attach).
+ * @property {string} METADATA_STREAM_TYPE - Flag prefix for output stream metadata
+ *   keyed by stream type (-metadata:s:t).
+ * @property {string} ITSOFFSET - Flag shifting an input's timestamps in seconds (-itsoffset).
  */
 export const FFMPEG_FLAGS = {
   COPY: '-c',
@@ -84,6 +92,49 @@ export const FFMPEG_FLAGS = {
   REALTIME: '-re',
   COPYTS: '-copyts',
   METADATA_ROTATE: '-metadata:s:v',
+  MAP: '-map',
+  SUBTITLE_CODEC: '-c:s',
+  MAP_CHAPTERS: '-map_chapters',
+  DISPOSITION: '-disposition',
+  ATTACH: '-attach',
+  METADATA_STREAM_TYPE: '-metadata:s:t',
+  ITSOFFSET: '-itsoffset',
+} as const;
+
+/**
+ * FFmpeg `-map` stream-selection syntax (also used by the `map` and
+ * `additionalInputs[].map` fields of `ConversionOptions`):
+ *
+ *   `[input_index][:stream_type][:stream_index]` where the input index defaults
+ *   to 0 (the PRIMARY input). Forms: `0` (all streams), `0:v` (all video),
+ *   `0:v:0` (first video), `0:a:1` (second audio), `0:s:0` (first subtitle).
+ *   `-map` specs for additional inputs reference THEIR OWN input index
+ *   (primary = 0, additional inputs = 1..N, chapters file = N+1).
+ * @const {string} MAP_SPEC_SYNTAX
+ */
+export const MAP_SPEC_SYNTAX = '0[:v|a|s|d|t][:index] — input 0 = primary file; additional inputs are 1..N; chapters file is N+1.';
+
+/**
+ * Disposition flag marking a stream as cover art. Streams carrying it are
+ * re-added through a thumbnail input (MKV/WebM `-attach`, MP4/MOV
+ * `-disposition:v:<n> attached_pic`) instead of the primary `-map` selection.
+ * @const {string} ATTACHED_PIC_DISPOSITION
+ */
+export const ATTACHED_PIC_DISPOSITION = 'attached_pic';
+
+/**
+ * Subtitle formats accepted by each container for STREAM COPY embedding.
+ * Guidance for the compatibility guard: remux must warn (or hard-error) when a
+ * selected/added subtitle codec is not muxable into the target container.
+ * Empty list = container stores no subtitles at all.
+ * @const {Record<string, readonly string[]>} SUBTITLE_CODEC_CONTAINERS
+ */
+export const SUBTITLE_CODEC_CONTAINERS: Record<string, readonly string[]> = {
+  mp4: ['mov_text', 'subrip'],
+  mov: ['mov_text', 'subrip'],
+  mkv: ['subrip', 'ass', 'webvtt'],
+  webm: ['webvtt'],
+  ts: ['subrip'],
 } as const;
 
 /**

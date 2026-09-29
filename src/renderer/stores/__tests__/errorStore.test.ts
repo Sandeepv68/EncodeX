@@ -1,10 +1,19 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useErrorStore } from '../errorStore';
-import { createError, ErrorCode } from '../../../shared/errors';
+import { createError, ErrorCode, ERROR_MESSAGES } from '../../../shared/errors';
+
+vi.mock('../../../shared/analytics/AnalyticsService', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('../../../shared/analytics/AnalyticsService')>();
+  return { ...mod, recordAnalyticsEvent: vi.fn() };
+});
+import { recordAnalyticsEvent } from '../../../shared/analytics/AnalyticsService';
+
+const recordAnalyticsMock = vi.mocked(recordAnalyticsEvent);
 
 describe('errorStore', () => {
   beforeEach(() => {
     useErrorStore.setState({ currentError: null, errorHistory: [] });
+    recordAnalyticsMock.mockClear();
   });
 
   it('starts with no error', () => {
@@ -65,5 +74,33 @@ describe('errorStore', () => {
     const state = useErrorStore.getState();
     expect(state.currentError!.code).toBe('CONVERSION_FAILED');
     expect(state.currentError!.detail).toBe('conversion detail');
+  });
+
+  it('surfaces FILTERS_REQUIRE_RE_ENCODE with its canonical message', () => {
+    useErrorStore.getState().showErrorMessage(ErrorCode.FILTERS_REQUIRE_RE_ENCODE);
+    const state = useErrorStore.getState();
+    expect(state.currentError!.code).toBe('FILTERS_REQUIRE_RE_ENCODE');
+    expect(state.currentError!.message).toBe(ERROR_MESSAGES[ErrorCode.FILTERS_REQUIRE_RE_ENCODE]);
+    expect(state.currentError!.message).toMatch(/re-encod/i);
+    expect(state.errorHistory).toHaveLength(1);
+  });
+
+  it('keeps a caller-supplied detail alongside FILTERS_REQUIRE_RE_ENCODE', () => {
+    useErrorStore.getState().showErrorMessage(ErrorCode.FILTERS_REQUIRE_RE_ENCODE, '--video-filters needs a re-encoding target');
+    expect(useErrorStore.getState().currentError!.detail).toBe('--video-filters needs a re-encoding target');
+  });
+
+  it('surfaces INVALID_VIDEO_FILTERS with its canonical message', () => {
+    useErrorStore.getState().showErrorMessage(ErrorCode.INVALID_VIDEO_FILTERS, 'fps=30;rm -rf /');
+    const state = useErrorStore.getState();
+    expect(state.currentError!.code).toBe('INVALID_VIDEO_FILTERS');
+    expect(state.currentError!.message).toBe(ERROR_MESSAGES[ErrorCode.INVALID_VIDEO_FILTERS]);
+  });
+
+  it('buckets the filter error codes into a non-unknown analytics category', () => {
+    useErrorStore.getState().showErrorMessage(ErrorCode.FILTERS_REQUIRE_RE_ENCODE);
+    useErrorStore.getState().showErrorMessage(ErrorCode.INVALID_VIDEO_FILTERS);
+    const categories = recordAnalyticsMock.mock.calls.map((c) => (c[0] as { props?: { category?: string } })?.props?.category);
+    expect(categories).toEqual(['conversion', 'validation']);
   });
 });

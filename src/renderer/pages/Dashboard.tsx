@@ -64,6 +64,8 @@ const descKeys: Record<string, string> = {
   '/image-compress': 'descImage',
   '/audio-extract': 'descAudio',
   '/video-cut': 'descCut',
+  '/remux': 'descRemux',
+  '/demux': 'descDemux',
   '/batch': 'descBatch',
 };
 
@@ -199,7 +201,7 @@ export default function Dashboard() {
                   <CardBody>
                     <CardTitleText variant="h6" component="h2">
                       {t(
-                        `nav.${item.to === '/convert' ? 'convert' : item.to === '/media-info' ? 'mediaInfo' : item.to === '/image-compress' ? 'image' : item.to === '/audio-extract' ? 'audio' : item.to === '/video-cut' ? 'cut' : 'batchQueue'}`,
+                        `nav.${item.to === '/convert' ? 'convert' : item.to === '/media-info' ? 'mediaInfo' : item.to === '/image-compress' ? 'image' : item.to === '/audio-extract' ? 'audio' : item.to === '/video-cut' ? 'cut' : item.to === '/remux' ? 'remux' : item.to === '/demux' ? 'demux' : 'batchQueue'}`,
                       )}
                     </CardTitleText>
                     <CardDescription variant="body2" color="text.secondary">

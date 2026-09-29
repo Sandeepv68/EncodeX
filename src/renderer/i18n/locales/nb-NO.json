@@ -26,7 +26,9 @@
       "paused": "Pauset",
       "starting": "Starter",
       "parallel": "{{count}} parallelt"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Velkommen til EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Trekk ut rene lydspor fra videofiler",
     "descCut": "Trim og klipp video med en rammenøyaktig spiller",
     "descBatch": "Konverter mange filer samtidig med en smart kø",
-    "shortcutsFooter": "Trykk {{shortcut}} for tastatursnarveier"
+    "shortcutsFooter": "Trykk {{shortcut}} for tastatursnarveier",
+    "descRemux": "Overfører strømmer tapsfritt til en ny container",
+    "descDemux": "Deler strømmene i en fil i separate utdatafiler"
   },
   "gettingStarted": {
     "hint": "Ny her?",
@@ -125,7 +129,25 @@
     "showPreview": "Vis forhåndsvisning",
     "closePreview": "Lukk forhåndsvisning",
     "viewMore": "Vis mer",
-    "viewLess": "Vis mindre"
+    "viewLess": "Vis mindre",
+    "filtersTitle": "Videofiltre",
+    "filtersHint": "Bruker FFmpeg-videofiltre (beskjæring, bildefrekvens, deinterlacing, støyreduksjon, farge…) under omkoding. Alle filtre slås sammen i én -vf-kjede etter skalering og rotasjon.",
+    "addPreset": "Legg til forhåndsinnstilt filter…",
+    "addFilter": "Legg til filter",
+    "customChainLabel": "Egendefinert filterkjede",
+    "customChainPlaceholder": "f.eks. fps=30, eq=brightness=0.1",
+    "customChainHint": "FFmpeg-filteruttrykk adskilt med komma. Hvert element må ha balanserte parenteser og hakeparenteser, samsvarende anførselstegn og ingen skallmetategn.",
+    "addCustom": "Legg til egendefinert",
+    "removeFilter": "Fjern filter",
+    "moveUp": "Flytt opp",
+    "moveDown": "Flytt ned",
+    "clearAll": "Tøm alle",
+    "noFilters": "Ingen filtre er lagt til.",
+    "filtersDisabledNote": "Videofiltre krever omkoding. Slå av tapsfri kopiering for å legge til filtre.",
+    "filtersTurnOffCopy": "Slå av tapsfri kopiering",
+    "filtersCopyWarning": "Tapsfri kopiering er på, så videofiltrene blir ignorert. Slå av tapsfri kopiering for å bruke filtre.",
+    "chainPreview": "Forhåndsvisning: -vf {{chain}}",
+    "filtersInvalid": "Ugyldig filter: {{error}}"
   },
   "mediaInfo": {
     "title": "Mediainformasjon",
@@ -135,7 +157,7 @@
     "format": "Format",
     "size": "Størrelse",
     "duration": "Varighet",
-    "bitrate": "Bitrate",
+    "bitrate": "Bithastighet",
     "streams": "Strømmer",
     "stream": "Strøm",
     "codec": "Kodek",
@@ -248,7 +270,7 @@
     "dropLabel": "Slipp videofil her",
     "outputFile": "Utdatafil",
     "audioCodec": "Lydkodek",
-    "bitrate": "Bitrate",
+    "bitrate": "Bithastighet",
     "videoFileHint": "Kildevideoen som inneholder lydsporet du vil trekke ut.",
     "outputFileHint": "Destinasjonsfilen der den utpakkede lyden lagres. Utvidelsen matcher valgt kodek.",
     "audioCodecHint": "Kodeken som brukes til å kode lydstrømmen, f.eks. AAC, MP3 eller Opus.",
@@ -405,7 +427,7 @@
     "optionQscale": "Kvalitet (qscale)",
     "optionScale": "Skala",
     "optionPixelFormat": "Pikselformat",
-    "optionTrim": "Trim",
+    "optionTrim": "Beskjær",
     "optionDuration": "Varighet",
     "optionCopy": "Kopier strømmer",
     "optionAudio": "Lyd",
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "Denne jobben kan ikke lenger redigeres.",
     "condense": "Kollaps",
     "expand": "Utvid",
-    "clearAll": "Rydde alle"
+    "clearAll": "Rydde alle",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "Containeren strømmene kopieres til. \"Automatisk\" beholder filutvidelsen til hver kildefil."
   },
   "progress": {
     "title": "Konverteringsfremdrift",
@@ -460,7 +485,7 @@
     "download": "Last ned som TXT",
     "filter": "Filtrer etter nivå",
     "levelAll": "ALLE",
-    "levelDebug": "DEBUG",
+    "levelDebug": "FEILSØKING",
     "levelInfo": "INFO",
     "levelWarn": "ADVARSEL",
     "levelError": "FEIL",
@@ -495,7 +520,9 @@
     "updateAvailable": "Oppdatering tilgjengelig: v{{version}}",
     "updateNow": "Oppdater nå",
     "updateDownloaded": "Oppdatering v{{version}} lastet ned",
-    "viewUpdate": "Vis"
+    "viewUpdate": "Vis",
+    "remuxed": "Remux fullført",
+    "demuxed": "Strømmene ble hentet ut"
   },
   "profiles": {
     "searchPlaceholder": "Søk i profiler...",
@@ -523,7 +550,7 @@
     "original": "Original",
     "pixelFormatLabel": "Pixelformat",
     "videoBitrateLabel": "Videobitrate",
-    "autoCrf": "Auto (CRF)",
+    "autoCrf": "Automatisk (CRF)",
     "audioBitrateLabel": "Lydbitrate",
     "advancedOptions": "Avanserte alternativer",
     "extensionOverrideLabel": "Skriv over utvidelse",
@@ -590,7 +617,7 @@
     "title": "Tastatursnarveier",
     "close": "Lukk",
     "sections": {
-      "global": "Global",
+      "global": "Globale",
       "convert": "Konverter",
       "mediaInfo": "Medieinformasjon",
       "imageCompress": "Bildekomprimering",
@@ -598,7 +625,9 @@
       "videoCut": "Klipp video",
       "batchQueue": "Batch-kø",
       "logs": "Logger",
-      "dashboard": "Dashbord"
+      "dashboard": "Dashbord",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Vis tastatursnarveier",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Gå til Batch-kø",
       "navLogs": "Gå til Logger",
       "navSettings": "Gå til Innstillinger",
-      "themeToggle": "Bytt tema"
+      "themeToggle": "Bytt tema",
+      "navRemux": "Gå til Remux"
     },
     "convert": {
       "input": "Velg inndatafil",
@@ -655,7 +685,7 @@
     },
     "batchQueue": {
       "add": "Legg til filer",
-      "start": "Start batch",
+      "start": "Start køen",
       "pause": "Sett kø på pause eller fortsett",
       "cancelAll": "Avbryt alle jobber",
       "clearCompleted": "Tøm fullførte jobber",
@@ -679,7 +709,17 @@
       "image": "Åpne Bilde",
       "audio": "Åpne Lyd",
       "cut": "Åpne Klipp",
-      "batch": "Åpne Batch-kø"
+      "batch": "Åpne Batch-kø",
+      "remux": "Åpne Remux",
+      "demux": "Åpne Demux"
+    },
+    "remux": {
+      "input": "Velg inndatafil",
+      "start": "Start remux"
+    },
+    "demux": {
+      "input": "Velg inndatafil",
+      "start": "Start uttrekking"
     }
   },
   "about": {
@@ -692,7 +732,7 @@
     "builtWith": "Bygget med",
     "authorTitle": "Forfatter og tilbakemelding",
     "author": "Forfatter",
-    "repository": "Repository",
+    "repository": "Kodelager",
     "contact": "Kontakt",
     "feedback": "Fant du en feil eller har du et forslag?",
     "reportIssue": "Åpne en issue på GitHub",
@@ -702,16 +742,16 @@
     "licenseSummary": "Utgitt under MIT-lisensen. Fritt å bruke, kopiere, endre, slå sammen, publisere, distribuere, underlisensiere og selge — også kommersielt — forutsatt at opphavsrettsvarsel og tillatelsesvarsel inkluderes i alle kopier eller vesentlige deler av programvaren. Programvaren leveres \"som den er\", uten noen form for garanti.",
     "acknowledgements": "Laget med ❤️ for åpen kildekode — drevet av FFmpeg-prosjektet og fellesskapet.",
     "checkForUpdates": "Søk etter oppdateringer",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Vilkår og bestemmelser",
+    "terms": "Vilkår",
+    "readTerms": "Les vilkårene"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Vilkår og bestemmelser",
+    "accept": "Jeg godtar",
+    "reject": "Jeg godtar ikke",
+    "close": "Lukk",
+    "lastUpdated": "Gjelder fra: {{date}}"
   },
   "update": {
     "title": "Oppdatering",
@@ -734,5 +774,167 @@
     "installOnRestart": "Installer ved neste omstart",
     "installScheduled": "Oppdatering v{{version}} installeres ved neste omstart av appen.",
     "cancelRestartInstall": "Avbryt"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Beskjæring",
+      "cropHint": "Beskjærer videoen til angitt bredde, høyde og forskyvning.",
+      "framerate": "Bildefrekvens",
+      "framerateHint": "Endrer bildefrekvensen i utdata (bilder dupliseres eller forkastes).",
+      "deinterlace": "Deinterlacing",
+      "deinterlaceHint": "Konverterer interleacet video til progressivt.",
+      "denoise": "Støyreduksjon",
+      "denoiseHint": "Reduserer støy samtidig som detaljer bevares (hqdn3d).",
+      "sharpen": "Skarphet",
+      "sharpenHint": "Øker den oppfattede skarpheten (unsharp).",
+      "color": "Farge",
+      "colorHint": "Justerer lysstyrke, kontrast, metning og gamma (eq).",
+      "grayscale": "Gråtoner",
+      "grayscaleHint": "Fjerner farge og gir et svart-hvitt bilde.",
+      "blur": "Uskarp",
+      "blurHint": "Bruker boksuskarphet for å mykne bildet."
+    },
+    "params": {
+      "crop": {
+        "w": "Bredde",
+        "h": "Høyde",
+        "x": "X-forskyvning",
+        "y": "Y-forskyvning"
+      },
+      "framerate": {
+        "fps": "Bilder per sekund"
+      },
+      "deinterlace": {
+        "mode": "Feltrekkefølge",
+        "modes": {
+          "auto": "Automatisk",
+          "tff": "Øverste felt først",
+          "bff": "Nederste felt først"
+        }
+      },
+      "denoise": {
+        "strength": "Styrke"
+      },
+      "sharpen": {
+        "strength": "Styrke"
+      },
+      "color": {
+        "brightness": "Lysstyrke",
+        "contrast": "Kontrast",
+        "saturation": "Metning",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Styrke"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Videofil",
+    "dropLabel": "Dra en videofil hit, eller klikk for å bla",
+    "videoFileHint": "Kildemediéfilen hvis strømmer pakkes inn i målcontaineren. Strømmene kopieres uten omkoding.",
+    "selectedVideo": "Valgt video: {{file}}",
+    "streamCount": "{{selected}} av {{total}} strømmer valgt",
+    "container": "Container",
+    "containerHint": "Utdatacontaineren for den remuxede filen. Velg blant vanlige videocontainere; filutvidelsen følger containeren.",
+    "streams": "Kildestrømmer",
+    "streamsHint": "Velg hvilke strømmer fra kildefilen som skal beholdes i remux-utdata. Strømmer som ikke er valgt, forkastes.",
+    "streamIndex": "Nr.",
+    "kind": "Type",
+    "selectStream": "Velg {{kind}}-strøm nr. {{index}}",
+    "selectAll": "Behold alt",
+    "selectNone": "Behold ingenting",
+    "audioSync": "Forsink lyd (sekunder)",
+    "audioSyncHint": "Forskyver hovedlydsporet i forhold til videoen uten omkoding, f.eks. -0.5 for 0,5 s tidligere eller 1.5 for 1,5 s senere.",
+    "audioSyncLossless": "Tapsfritt: lyden kopieres som en strøm med tidsstempel-forskyvning, så kvaliteten endres ikke.",
+    "subtitles": "Lagt til undertekster",
+    "subtitlesHint": "Eksterne undertekstfiler (.srt, .ass, .vtt) som bygges inn i remux-utdata som ekstra innspor.",
+    "addSubtitle": "Legg til undertekstfil",
+    "subtitleCodec": "Målkodek",
+    "subtitleCodecHint": "Undertekstkodeken som brukes for det innebygde sporet. Containere godtar ulike undertekstformater; å velge et format containeren ikke kan lagre, gir en advarsel.",
+    "removeSubtitle": "Fjern underteksten",
+    "audioTracks": "Lagt til lydspor",
+    "audioTracksHint": "Eksterne lydfiler (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) som bygges inn i remux-utdata som ekstra innspor.",
+    "addAudioTrack": "Legg til lydspor",
+    "removeAudioTrack": "Fjern lydsporet",
+    "addedTrackDelay": "Forsink dette sporet (sekunder)",
+    "addedTrackDelayHint": "Signert forskyvning for dette sporet i forhold til videoen (positivt = spilles senere). Tapsfritt: brukes som -itsoffset med strømkopi.",
+    "thumbnail": "Miniatyrbilde / omslag",
+    "thumbnailHint": "Valgfritt omslagsbilde (.jpg, .jpeg, .png) som bygges inn i den remuxede filen. MKV/WebM legger det ved som en bildestrøm; MP4/MOV bygger det inn som en videostrøm med attached_pic-plassering.",
+    "addThumbnail": "Legg til miniatyrbilde",
+    "thumbnailUnsupported": "{{container}} kan ikke lagre omslag. Bytt til MKV, WebM, MP4 eller MOV for å legge ved et miniatyrbilde.",
+    "removeThumbnail": "Fjern miniatyrbildet",
+    "thumbnailMode": "Innebygd som {{mode}}",
+    "thumbnailAttached": "vedlagt bilde",
+    "thumbnailDisposition": "attached_pic-omslagsstrøm",
+    "chapters": "Kapitler",
+    "chaptersHint": "Kapitler fra kilden beholdes som standard. Importer en FFMETADATA-kapittelfil for å erstatte kildekapitlene i den remuxede filen.",
+    "copyChapters": "Kopier kildekapitler",
+    "copyChaptersHint": "Bevar kapittelmarkørene fra kildefilen i remux-utdata (tapsfritt, -map_chapters 0).",
+    "importChapters": "Importer kapittelfil",
+    "chaptersUnsupported": "{{container}} lagrer ikke kapittelmetadata; kapitlene forkastes.",
+    "removeChapters": "Fjern kapittelfilen",
+    "warnings": "Kompatibilitetsadvarsler",
+    "warningsHint": "Ikke-blokkerende merknader om hvorvidt de valgte strømmene og innstillingene passer til den valgte containeren. Advarsler tillater start; feil blokkerer den.",
+    "outputFile": "Utdatafil",
+    "outputFileHint": "Destinasjonsstien for den remuxede filen. Utvidelsen følger målcontaineren.",
+    "placeholderOutput": "utdata.mkv",
+    "start": "Start remux",
+    "remuxing": "Remuxer…",
+    "pause": "Pause",
+    "resume": "Fortsett",
+    "cancel": "Avbryt",
+    "cancelTitle": "Avbryt remux",
+    "cancelMessage": "Er du sikker på at du vil avbryte den pågående remuxen?",
+    "yes": "Ja",
+    "no": "Nei",
+    "filtersTitle": "Videofiltre",
+    "filtersHint": "Bruker FFmpeg-videofiltre mens valgte videostrømmer kodes på nytt. Filtre kan ikke brukes på en tapsfri kopi, så å legge til ett filter gjør remuxen til en omkoding.",
+    "filtersReencodeWarning": "Videofiltre kan ikke kjøres på en strømkopi, så de {{count}} valgte filtrene gjør denne remuxen til en omkoding."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Videofil",
+    "videoFileHint": "Kildemediéfilen hvis strømmer skal hentes ut. Hver valgt strøm skrives til sin egen utdatafil.",
+    "dropLabel": "Dra en videofil hit, eller klikk for å bla",
+    "selectedVideo": "Valgt video: {{file}}",
+    "streamCount": "{{selected}} av {{total}} strømmer valgt",
+    "streams": "Kildestrømmer",
+    "streamsHint": "Velg hvilke strømmer som skal hentes ut. Hver valgt strøm blir en egen utdatafil; strømmer som ikke er valgt, hoppes over.",
+    "extractStreams": "Strømmer som skal hentes ut",
+    "streamGroup": "{{kind}}-strømmer",
+    "suggestedOutput": "Utdata",
+    "selectStream": "Velg {{kind}}-strømmen nr. {{index}} som skal hentes ut",
+    "videoContainer": "Videodestinasjon",
+    "videoContainerHint": "Hvordan videostrømmer skrives. \"Kopier\" henter dem ut tapsfritt uten omkoding; å velge en container koder videoen på nytt til det formatet.",
+    "audioCodec": "Lyddestinasjon",
+    "audioCodecHint": "Hvordan lydstrømmer skrives. \"Kopier\" henter dem ut tapsfritt uten omkoding; å velge en kodek koder lyden på nytt.",
+    "subtitleFormat": "Undertekstdestinasjon",
+    "subtitleFormatHint": "Hvordan undertekststrømmer skrives. \"Kopier\" henter dem ut tapsfritt uten omkoding; å velge et format konverterer undertekstene. Bitmap-undertekster (f.eks. PGS/DVDSUB) kan ikke bli tekst og forblir kopiert.",
+    "subtitleWarning": "Advarsler om undertekstkonvertering",
+    "subtitleWarningHint": "Bitmap-undertekststrømmer (f.eks. PGS/DVDSUB) kan ikke kodes til tekst uten OCR, så de hentes ut som tapsfrie .mks-kopier. I uttrekkingsplanen vises de som \"Kopier\".",
+    "bitmapSubtitleWarning": "Denne bitmap-undertekststrømmen kan ikke kodes til tekst uten OCR, så den hentes ut som en tapsfri .mks-kopi.",
+    "copyOption": "Kopier (tapsfritt)",
+    "outputDir": "Utdatamappe",
+    "outputDirHint": "Mappen de hentede strømmene skrives til. Som standard er det mappen til kildefilen.",
+    "outputDirPlaceholder": "utdatamappe",
+    "summary": "Uttrekkingsplan",
+    "summaryHint": "Én utdatafil per valgt strøm, i rekkefølgen de kjøres. Filer merket \"Kopier\" hentes ut tapsfritt; filer merket \"Konverter\" kodes på nytt.",
+    "copyLabel": "Kopier",
+    "convertLabel": "Konverter til {{target}}",
+    "start": "Start demux",
+    "demuxing": "Henter ut…",
+    "pause": "Pause",
+    "resume": "Fortsett",
+    "cancel": "Avbryt",
+    "cancelTitle": "Avbryt demux",
+    "cancelMessage": "Er du sikker på at du vil avbryte den pågående demuxen?",
+    "yes": "Ja",
+    "no": "Nei",
+    "currentStream": "Henter ut {{kind}}-strøm nr. {{index}}",
+    "filtersTitle": "Videofiltre",
+    "filtersHint": "Bruker FFmpeg-videofiltre (beskjæring, bildefrekvens, deinterlacing, støyreduksjon, farge…) mens valgte videostrømmer kodes på nytt. \"Kopier\" er tapsfritt, så filtre vises bare når en målcontainer koder videoen på nytt.",
+    "filtersIgnoredCopy": "Videofiltrene blir ignorert så lenge videodestinasjonen er \"Kopier\", fordi en strømkopi ikke kan kode på nytt. Velg en målcontainer for å bruke dem."
   }
 }

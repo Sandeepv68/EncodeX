@@ -26,7 +26,9 @@
       "paused": "Pausad",
       "starting": "Startar",
       "parallel": "{{count}} parallellt"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Välkommen till EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Extrahera rena ljudspår från videofiler",
     "descCut": "Trimma och klipp video med en bildruteexakt spelare",
     "descBatch": "Konvertera många filer samtidigt med en smart kö",
-    "shortcutsFooter": "Tryck på {{shortcut}} för kortkommandon"
+    "shortcutsFooter": "Tryck på {{shortcut}} för kortkommandon",
+    "descRemux": "För över strömmar förlustfritt till en ny container",
+    "descDemux": "Delar en fils strömmar i separata utdatafiler"
   },
   "gettingStarted": {
     "hint": "Ny här?",
@@ -125,7 +129,25 @@
     "showPreview": "Visa förhandsvisning",
     "closePreview": "Stäng förhandsvisning",
     "viewMore": "Visa mer",
-    "viewLess": "Visa mindre"
+    "viewLess": "Visa mindre",
+    "filtersTitle": "Videofilter",
+    "filtersHint": "Tillämpar FFmpeg-videofilter (beskärning, bildfrekvens, deinterlacing, brusreducering, färg…) vid omkodning. Alla filter slås ihop till en enda -vf-kedja efter skalning och rotation.",
+    "addPreset": "Lägg till förinställt filter…",
+    "addFilter": "Lägg till filter",
+    "customChainLabel": "Anpassad filterkedja",
+    "customChainPlaceholder": "t.ex. fps=30, eq=brightness=0.1",
+    "customChainHint": "FFmpeg-filteruttryck åtskilda med kommatecken. Varje post måste ha balanserade parenteser och hakparenteser, matchande citattecken och inga skalmeta-tecken.",
+    "addCustom": "Lägg till anpassad",
+    "removeFilter": "Ta bort filter",
+    "moveUp": "Flytta upp",
+    "moveDown": "Flytta ned",
+    "clearAll": "Rensa allt",
+    "noFilters": "Inga filter har lagts till.",
+    "filtersDisabledNote": "Videofilter kräver omkodning. Stäng av förlustfri kopiering för att lägga till filter.",
+    "filtersTurnOffCopy": "Stäng av förlustfri kopiering",
+    "filtersCopyWarning": "Förlustfritt kopieringsläge är på, så videofiltren skulle ignoreras. Stäng av förlustfri kopiering för att tillämpa filter.",
+    "chainPreview": "Förhandsvisning: -vf {{chain}}",
+    "filtersInvalid": "Ogiltigt filter: {{error}}"
   },
   "mediaInfo": {
     "title": "Mediainformation",
@@ -138,7 +160,7 @@
     "bitrate": "Bithastighet",
     "streams": "Strömmar",
     "stream": "Ström",
-    "codec": "Codec",
+    "codec": "Kodare",
     "resolution": "Upplösning",
     "pixelFormat": "Pixelformat",
     "frameRate": "Bildhastighet",
@@ -347,7 +369,7 @@
     "revealInFolder": "Visa i mapp",
     "copyPath": "Kopiera sökväg",
     "stats": "{{queued}} i kö, {{running}} körs, {{done}} klara, {{failed}} misslyckade",
-    "etaEstimate": "ETA ~{{eta}}",
+    "etaEstimate": "Klar om ~{{eta}}",
     "finished": "Batch klar: {{done}} lyckades, {{failed}} misslyckades",
     "notificationTitle": "EncodeX-batch klar",
     "filters": {
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "Det här jobbet kan inte längre redigeras.",
     "condense": "Komprimera",
     "expand": "Expandera",
-    "clearAll": "Rensa allt"
+    "clearAll": "Rensa allt",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "Containern som strömmarna kopieras till. \"Automatiskt\" behåller varje källfils filändelse."
   },
   "progress": {
     "title": "Konverteringsförlopp",
@@ -459,11 +484,11 @@
     "clear": "Rensa",
     "download": "Ladda ner som TXT",
     "filter": "Filtrera efter nivå",
-    "levelAll": "ALL",
-    "levelDebug": "DEBUG",
+    "levelAll": "ALLA",
+    "levelDebug": "FELSÖKNING",
     "levelInfo": "INFO",
-    "levelWarn": "WARN",
-    "levelError": "ERROR",
+    "levelWarn": "VARNING",
+    "levelError": "FEL",
     "noEntries": "Inga loggposter än.",
     "entryCount": "{{count}} poster"
   },
@@ -495,7 +520,9 @@
     "updateAvailable": "Uppdatering tillgänglig: v{{version}}",
     "updateNow": "Uppdatera nu",
     "updateDownloaded": "Uppdatering v{{version}} nedladdad",
-    "viewUpdate": "Visa"
+    "viewUpdate": "Visa",
+    "remuxed": "Remuxen är klar",
+    "demuxed": "Strömmarna har extraherats"
   },
   "profiles": {
     "searchPlaceholder": "Sök profiler...",
@@ -523,7 +550,7 @@
     "original": "Original",
     "pixelFormatLabel": "Pixelformat",
     "videoBitrateLabel": "Videobithastighet",
-    "autoCrf": "Auto (CRF)",
+    "autoCrf": "Automatiskt (CRF)",
     "audioBitrateLabel": "Ljudbithastighet",
     "advancedOptions": "Avancerade alternativ",
     "extensionOverrideLabel": "Skriv över utökning",
@@ -598,7 +625,9 @@
       "videoCut": "Klipp video",
       "batchQueue": "Batchkö",
       "logs": "Loggar",
-      "dashboard": "Instrumentpanel"
+      "dashboard": "Instrumentpanel",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Visa kortkommandon",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Gå till batchkön",
       "navLogs": "Gå till loggar",
       "navSettings": "Gå till inställningar",
-      "themeToggle": "Växla tema"
+      "themeToggle": "Växla tema",
+      "navRemux": "Gå till Remux"
     },
     "convert": {
       "input": "Välj indatafil",
@@ -679,7 +709,17 @@
       "image": "Öppna Bild",
       "audio": "Öppna Ljud",
       "cut": "Öppna Klipp",
-      "batch": "Öppna batchkön"
+      "batch": "Öppna batchkön",
+      "remux": "Öppna Remux",
+      "demux": "Öppna Demux"
+    },
+    "remux": {
+      "input": "Välj infil",
+      "start": "Starta remux"
+    },
+    "demux": {
+      "input": "Välj infil",
+      "start": "Starta extraheringen"
     }
   },
   "about": {
@@ -692,7 +732,7 @@
     "builtWith": "Byggt med",
     "authorTitle": "Författare och feedback",
     "author": "Författare",
-    "repository": "Repository",
+    "repository": "Utvecklingskatalog",
     "contact": "Kontakt",
     "feedback": "Hittade du en bugg eller har du ett förslag?",
     "reportIssue": "Öppna en issue på GitHub",
@@ -702,16 +742,16 @@
     "licenseSummary": "Utgiven under MIT-licensen. Fritt att använda, kopiera, modifiera, slå samman, publicera, distribuera, underlicensiera och sälja — även kommersiellt — förutsatt att upphovsrättsmeddelandet och tillståndsmeddelandet ingår i alla kopior eller väsentliga delar av programvaran. Programvaran tillhandahålls \"i befintligt skick\", utan någon som helst garanti.",
     "acknowledgements": "Gjort med ❤️ för öppen källkod — drivs av FFmpeg-projektet och communityn.",
     "checkForUpdates": "Sök efter uppdateringar",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Villkor och bestämmelser",
+    "terms": "Villkor",
+    "readTerms": "Läs villkoren"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Villkor och bestämmelser",
+    "accept": "Jag godkänner",
+    "reject": "Jag godkänner inte",
+    "close": "Stäng",
+    "lastUpdated": "Gäller från: {{date}}"
   },
   "update": {
     "title": "Uppdatering",
@@ -734,5 +774,167 @@
     "installOnRestart": "Installera vid nästa omstart",
     "installScheduled": "Uppdatering v{{version}} installeras nästa gång appen startas om.",
     "cancelRestartInstall": "Avbryt"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Beskärning",
+      "cropHint": "Beskär videon till angiven bredd, höjd och förskjutning.",
+      "framerate": "Bildfrekvens",
+      "framerateHint": "Ändrar bildfrekvensen i utdatan (bilder dupliceras eller kastas bort).",
+      "deinterlace": "Deinterlacing",
+      "deinterlaceHint": "Konverterar interlacead video till progressiv.",
+      "denoise": "Brusreducering",
+      "denoiseHint": "Reducerar brus samtidigt som detaljer bevaras (hqdn3d).",
+      "sharpen": "Skärpa",
+      "sharpenHint": "Ökar den upplevda skärpan (unsharp).",
+      "color": "Färg",
+      "colorHint": "Justerar ljusstyrka, kontrast, mättnad och gamma (eq).",
+      "grayscale": "Gråskala",
+      "grayscaleHint": "Tar bort färg och lämnar en svartvit bild.",
+      "blur": "Oskärpa",
+      "blurHint": "Tillämpar boxoskarpa för att mjuka upp bilden."
+    },
+    "params": {
+      "crop": {
+        "w": "Bredd",
+        "h": "Höjd",
+        "x": "X-förskjutning",
+        "y": "Y-förskjutning"
+      },
+      "framerate": {
+        "fps": "Bilder per sekund"
+      },
+      "deinterlace": {
+        "mode": "Fältordning",
+        "modes": {
+          "auto": "Automatiskt",
+          "tff": "Övre fält först",
+          "bff": "Nedre fält först"
+        }
+      },
+      "denoise": {
+        "strength": "Styrka"
+      },
+      "sharpen": {
+        "strength": "Styrka"
+      },
+      "color": {
+        "brightness": "Ljusstyrka",
+        "contrast": "Kontrast",
+        "saturation": "Mättnad",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Styrka"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Videofil",
+    "dropLabel": "Dra hit en videofil eller klicka för att bläddra",
+    "videoFileHint": "Källmediefilen vars strömmar paketeras i destinationscontainern. Strömmarna kopieras utan omkodning.",
+    "selectedVideo": "Vald video: {{file}}",
+    "streamCount": "{{selected}} av {{total}} strömmar valda",
+    "container": "Container",
+    "containerHint": "Utdatacontainern för den remuxade filen. Välj bland vanliga videocontainrar; utdatafilens ändelse följer containern.",
+    "streams": "Källströmmar",
+    "streamsHint": "Välj vilka strömmar från källfilen som ska behållas i remux-utdatan. Strömmar som inte valts kastas bort.",
+    "streamIndex": "Nr",
+    "kind": "Typ",
+    "selectStream": "Välj {{kind}}-ström nr {{index}}",
+    "selectAll": "Behåll allt",
+    "selectNone": "Behåll inget",
+    "audioSync": "Fördröj ljudet (sekunder)",
+    "audioSyncHint": "Förskjuter huvudljudspåret relativt videon utan omkodning, t.ex. -0.5 för 0,5 s tidigare eller 1.5 för 1,5 s senare.",
+    "audioSyncLossless": "Förlustfritt: ljudet kopieras som en ström med tidsstämpelförskjutning, så kvaliteten ändras inte.",
+    "subtitles": "Tillagda undertexter",
+    "subtitlesHint": "Externa undertextfiler (.srt, .ass, .vtt) som bäddas in i remux-utdatan som extra inspår.",
+    "addSubtitle": "Lägg till undertextfil",
+    "subtitleCodec": "Destinationskodare",
+    "subtitleCodecHint": "Undertextkodaren som används för det inbäddade spåret. Containrar accepterar olika undertextformat; att välja ett format som containern inte kan lagra ger en varning.",
+    "removeSubtitle": "Ta bort undertexten",
+    "audioTracks": "Tillagda ljudspår",
+    "audioTracksHint": "Externa ljudfiler (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) som bäddas in i remux-utdatan som extra inspår.",
+    "addAudioTrack": "Lägg till ljudspår",
+    "removeAudioTrack": "Ta bort ljudspåret",
+    "addedTrackDelay": "Fördröj det här spåret (sekunder)",
+    "addedTrackDelayHint": "Teckenförskjutning för det här spåret relativt videon (positivt = spelas senare). Förlustfritt: tillämpas som -itsoffset med strömkopia.",
+    "thumbnail": "Miniatyrbild / omslag",
+    "thumbnailHint": "Valfri omslagsbild (.jpg, .jpeg, .png) som bäddas in i den remuxade filen. MKV/WebM bifogar den som en bildström; MP4/MOV bäddar in den som en videström med attached_pic-disposition.",
+    "addThumbnail": "Lägg till miniatyrbild",
+    "thumbnailUnsupported": "{{container}} kan inte lagra omslag. Byt till MKV, WebM, MP4 eller MOV för att bifoga en miniatyrbild.",
+    "removeThumbnail": "Ta bort miniatyrbilden",
+    "thumbnailMode": "Inbäddad som {{mode}}",
+    "thumbnailAttached": "bifogad bild",
+    "thumbnailDisposition": "attached_pic-omslagsström",
+    "chapters": "Kapitel",
+    "chaptersHint": "Kapitlen från källan bevaras som standard. Importera en FFMETADATA-kapitelfil för att ersätta källans kapitel i den remuxade filen.",
+    "copyChapters": "Kopiera källans kapitel",
+    "copyChaptersHint": "Bevarar källfilens kapitelmarkörer i remux-utdatan (förlustfritt, -map_chapters 0).",
+    "importChapters": "Importera kapitelfil",
+    "chaptersUnsupported": "{{container}} lagrar inte kapitelmetadata; kapitlen kastas bort.",
+    "removeChapters": "Ta bort kapitelfilen",
+    "warnings": "Kompatibilitetsvarningar",
+    "warningsHint": "Icke-blockerande anmärkningar om hur väl valda strömmar och inställningar passar containern. Varningar tillåter start; fel blockerar den.",
+    "outputFile": "Utdatafil",
+    "outputFileHint": "Sökvägen för den remuxade filen. Ändelsen följer destinationscontainern.",
+    "placeholderOutput": "utdata.mkv",
+    "start": "Starta remux",
+    "remuxing": "Remuxar…",
+    "pause": "Pausa",
+    "resume": "Fortsätt",
+    "cancel": "Avbryt",
+    "cancelTitle": "Avbryt remux",
+    "cancelMessage": "Är du säker på att du vill avbryta den pågående remuxen?",
+    "yes": "Ja",
+    "no": "Nej",
+    "filtersTitle": "Videofilter",
+    "filtersHint": "Tillämpar FFmpeg-videofilter när valda videoströmmar omkodas. Filter kan inte tillämpas på en förlustfri kopia, så att lägga till ett filter gör remuxen till en omkodning.",
+    "filtersReencodeWarning": "Videofilter kan inte köras på en strömkopia, så de {{count}} valda filtren gör den här remuxen till en omkodning."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Videofil",
+    "videoFileHint": "Källmediefilen vars strömmar kommer att extraheras. Varje vald ström skrivs till sin egen utdatafil.",
+    "dropLabel": "Dra hit en videofil eller klicka för att bläddra",
+    "selectedVideo": "Vald video: {{file}}",
+    "streamCount": "{{selected}} av {{total}} strömmar valda",
+    "streams": "Källströmmar",
+    "streamsHint": "Välj vilka strömmar som ska extraheras. Varje vald ström blir en egen utdatafil; strömmar som inte valts hoppas över.",
+    "extractStreams": "Strömmar att extrahera",
+    "streamGroup": "{{kind}}-strömmar",
+    "suggestedOutput": "Utdata",
+    "selectStream": "Välj den {{kind}}-ström nr {{index}} som ska extraheras",
+    "videoContainer": "Videodestination",
+    "videoContainerHint": "Hur videoströmmar skrivs. \"Kopiera\" extraherar dem förlustfritt utan omkodning; att välja en container omkodar videon till det formatet.",
+    "audioCodec": "Ljuddestination",
+    "audioCodecHint": "Hur ljudströmmar skrivs. \"Kopiera\" extraherar dem förlustfritt utan omkodning; att välja en kodare omkodar ljudet.",
+    "subtitleFormat": "Undertextdestination",
+    "subtitleFormatHint": "Hur undertextströmmar skrivs. \"Kopiera\" extraherar dem förlustfritt utan omkodning; att välja ett format konverterar undertexterna. Bitmap-undertexter (t.ex. PGS/DVDSUB) kan inte bli text och förblir kopierade.",
+    "subtitleWarning": "Varningar för undertextkonvertering",
+    "subtitleWarningHint": "Bitmap-undertextströmmar (t.ex. PGS/DVDSUB) kan inte omkodas till text utan OCR, så de extraheras som förlustfria .mks-kopior. I extraktionsplanen visas de som \"Kopiera\".",
+    "bitmapSubtitleWarning": "Den här bitmap-undertextströmmen kan inte omkodas till text utan OCR, så den extraheras som en förlustfri .mks-kopia.",
+    "copyOption": "Kopiera (förlustfritt)",
+    "outputDir": "Utdatamapp",
+    "outputDirHint": "Mappen dit extraherade strömmar skrivs. Som standard är det källfilens mapp.",
+    "outputDirPlaceholder": "utdatamapp",
+    "summary": "Extraktionsplan",
+    "summaryHint": "En utdatafil per vald ström, i den ordning de körs. Filer märkta \"Kopiera\" extraheras förlustfritt; filer märkta \"Konvertera\" omkodas.",
+    "copyLabel": "Kopiera",
+    "convertLabel": "Konvertera till {{target}}",
+    "start": "Starta demux",
+    "demuxing": "Extraherar…",
+    "pause": "Pausa",
+    "resume": "Fortsätt",
+    "cancel": "Avbryt",
+    "cancelTitle": "Avbryt demux",
+    "cancelMessage": "Är du säker på att du vill avbryta den pågående demuxen?",
+    "yes": "Ja",
+    "no": "Nej",
+    "currentStream": "Extraherar {{kind}}-ström nr {{index}}",
+    "filtersTitle": "Videofilter",
+    "filtersHint": "Tillämpar FFmpeg-videofilter (beskärning, bildfrekvens, deinterlacing, brusreducering, färg…) när valda videoströmmar omkodas. \"Kopiera\" är förlustfritt, så filter visas endast när en destinationscontainer omkodar videon.",
+    "filtersIgnoredCopy": "Videofiltren ignoreras så länge videodestinationen är \"Kopiera\", eftersom en strömkopia inte kan omkoda. Välj en destinationscontainer för att tillämpa dem."
   }
 }

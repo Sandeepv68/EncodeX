@@ -632,6 +632,59 @@ describe('JobQueue', () => {
       expect(queue.getJobs().every((j) => j.status === 'running')).toBe(true);
     });
 
+    it('restores remux and demux jobs with their stream-copy options intact', () => {
+      writeSnapshot([
+        {
+          id: 'remux',
+          input: 'a.mkv',
+          output: 'a_remux.mkv',
+          options: { copy: true, video: true, audio: true, map: ['0:v:0', '0:a:0'], hardwareAcceleration: false, hwaccelMode: 'auto' },
+          transcoder: 'FFMPEG',
+          status: 'queued',
+          progress: 0,
+          createdAt: 1,
+        },
+        {
+          id: 'demux',
+          input: 'b.mkv',
+          output: 'b.subtitle_0.srt',
+          options: { copy: false, video: false, audio: false, map: ['0:s:0'], subtitleCodec: 'srt' },
+          transcoder: 'FFMPEG',
+          status: 'queued',
+          progress: 0,
+          createdAt: 2,
+        },
+      ] as QueueJob[]);
+      queue = new JobQueue({ persistence });
+      const [remux, demux] = queue.getJobs();
+      expect(remux.options).toEqual({
+        copy: true,
+        video: true,
+        audio: true,
+        map: ['0:v:0', '0:a:0'],
+        hardwareAcceleration: false,
+        hwaccelMode: 'auto',
+      });
+      expect(demux.options).toEqual({ copy: false, video: false, audio: false, map: ['0:s:0'], subtitleCodec: 'srt' });
+    });
+
+    it('round-trips additive multi-input options through a save/load cycle', () => {
+      queue = new JobQueue({ persistence });
+      const options = {
+        videoCodec: 'libx264',
+        copy: true,
+        map: ['0:v:0', '1:v:0'],
+        additionalInputs: ['cover.png'],
+        chapters: 0,
+        hardwareAcceleration: true,
+        hwaccelMode: 'auto',
+      } as QueueJob['options'];
+      queue.addJob('in.mkv', 'out.mkv', options, 'FFMPEG');
+      queue.flushState();
+      const restored = new FileQueuePersistence(tempDir).load();
+      expect(restored?.jobs[0].options).toEqual(options);
+    });
+
     it('flushState writes the current jobs to disk', () => {
       queue = new JobQueue({ persistence });
       queue.addJob('in.mp4', 'out.mp4', { videoCodec: 'libx264' }, 'FFMPEG');

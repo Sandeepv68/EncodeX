@@ -29,6 +29,8 @@ interface TestContext {
   video: string;
   video2: string;
   image: string;
+  subtitle: string;
+  chapters: string;
 }
 
 async function ensureBuild(): Promise<void> {
@@ -77,6 +79,9 @@ async function generateFixtures(dir: string): Promise<void> {
   await clip('a.mp4', 1);
   await clip('b.mp4', 2);
   await runFfmpeg(['-f', 'lavfi', '-i', 'testsrc=duration=0.4:size=96x54:rate=5', '-frames:v', '1', path.join(dir, 'pic.jpg')]);
+
+  fs.writeFileSync(path.join(dir, 'forced.srt'), '1\n00:00:00,000 --> 00:00:00,500\nintegration test\n\n');
+  fs.writeFileSync(path.join(dir, 'meta.txt'), ';FFMETADATA1\n\n[CHAPTER]\nTIMEBASE=1/1000\nSTART=0\nEND=500\ntitle=Opening\n');
 }
 
 async function startServer(): Promise<{ client: Client; transport: StdioClientTransport; stderr: string }> {
@@ -92,16 +97,28 @@ async function startServer(): Promise<{ client: Client; transport: StdioClientTr
 }
 
 async function callTool(client: Client, name: string, args: Record<string, unknown>): Promise<any> {
+  const parsed = await callToolRaw(client, name, args);
+  if (parsed.ok === false) {
+    throw new Error(`${name} failed: ${parsed.code}: ${parsed.message}`);
+  }
+  return parsed;
+}
+
+/**
+ * Calls a tool and returns the parsed payload without asserting success, so
+ * error responses (`ok: false` + code) can be inspected.
+ * @param {Client} client - Connected MCP client.
+ * @param {string} name - Tool name.
+ * @param {Record<string, unknown>} args - Tool arguments.
+ * @returns {Promise<any>} The parsed tool response.
+ */
+async function callToolRaw(client: Client, name: string, args: Record<string, unknown>): Promise<any> {
   const result = await client.callTool({ name, arguments: args });
   const text = (result.content ?? [])
     .filter((c: { type?: string }) => c.type === 'text')
     .map((c: { text: string }) => c.text)
     .join('');
-  const parsed = JSON.parse(text);
-  if (parsed.ok === false) {
-    throw new Error(`${name} failed: ${parsed.code}: ${parsed.message}`);
-  }
-  return parsed;
+  return JSON.parse(text);
 }
 
 async function waitDone(client: Client, jobId: string, timeoutMs = 25000): Promise<Record<string, unknown>> {
@@ -130,6 +147,8 @@ describe('EncodeX MCP stdio server (integration)', () => {
       video: path.join(dir, 'a.mp4'),
       video2: path.join(dir, 'b.mp4'),
       image: path.join(dir, 'pic.jpg'),
+      subtitle: path.join(dir, 'forced.srt'),
+      chapters: path.join(dir, 'meta.txt'),
     };
   }, 120000);
 
@@ -209,5 +228,62 @@ describe('EncodeX MCP stdio server (integration)', () => {
     for (const out of outPaths) {
       expect(fs.existsSync(out)).toBe(true);
     }
+  });
+
+  it('remux_media stream-copies the clip into mkv', async () => {
+    const started = await callTool(ctx.client, 'remux_media', { input: ctx.video, container: 'mkv' });
+    expect(started.container).toBe('mkv');
+    expect(started.map).toEqual(['0:v:0', '0:a:0']);
+    await waitDone(ctx.client, started.jobId);
+    expect(started.output.toLowerCase()).toContain('a.mkv');
+    expect(fs.existsSync(started.output)).toBe(true);
+    expect(fs.statSync(started.output).size).toBeGreaterThan(0);
+  });
+
+  it('remux_media muxes an added subtitle, cover art, and chapters', async () => {
+    const started = await callTool(ctx.client, 'remux_media', {
+      input: ctx.video,
+      container: 'mkv',
+      addSubtitle: [{ file: ctx.subtitle, codec: 'srt' }],
+      thumbnail: { file: ctx.image },
+      chapters: { file: ctx.chapters },
+    });
+    await waitDone(ctx.client, started.jobId);
+    const info = await callTool(ctx.client, 'get_media_info', { input: started.output });
+    const kinds = (info.streams as Array<{ type: string }>).map((s) => s.type);
+    expect(kinds).toContain('subtitle');
+  });
+
+  it('demux_media extracts one job per stream and every output exists', async () => {
+    const outDir = path.join(ctx.dir, 'demuxed');
+    const started = await callTool(ctx.client, 'demux_media', { input: ctx.video2, outputDir: outDir });
+    expect(started.total).toBe(2);
+    for (const job of started.jobs) {
+      await waitDone(ctx.client, job.jobId);
+      expect(fs.existsSync(job.output)).toBe(true);
+      expect(fs.statSync(job.output).size).toBeGreaterThan(0);
+    }
+  });
+
+  it('maps remux/demux errors to readable codes', async () => {
+    const missingAux = await callToolRaw(ctx.client, 'remux_media', {
+      input: ctx.video,
+      container: 'mkv',
+      addSubtitle: [{ file: path.join(ctx.dir, 'ghost.srt') }],
+    });
+    expect(missingAux.ok).toBe(false);
+    expect(missingAux.code).toBe('AUXILIARY_INPUT_NOT_FOUND');
+
+    const incompatible = await callToolRaw(ctx.client, 'remux_media', {
+      input: ctx.video,
+      container: 'ts',
+      chapters: { file: ctx.chapters },
+    });
+    expect(incompatible.ok).toBe(false);
+    expect(incompatible.code).toBe('INCOMPATIBLE_CONTAINER');
+
+    const noStream = await callToolRaw(ctx.client, 'demux_media', { input: ctx.video, subtitles: true });
+    expect(noStream.ok).toBe(false);
+    expect(noStream.code).toBe('STREAM_NOT_FOUND');
   });
 });

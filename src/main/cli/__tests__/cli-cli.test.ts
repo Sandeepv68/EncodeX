@@ -15,12 +15,16 @@ describe('applyLegacyShim', () => {
     expect(applyLegacyShim(['info', 'in.mp4'])).toEqual(['info', 'in.mp4']);
     expect(applyLegacyShim(['convert', 'in.mp4', 'out.mp4', '--copy'])).toEqual(['convert', 'in.mp4', 'out.mp4', '--copy']);
     expect(applyLegacyShim(['batch', '*.mp4'])).toEqual(['batch', '*.mp4']);
+    expect(applyLegacyShim(['remux', 'in.mkv', '-f', 'mp4'])).toEqual(['remux', 'in.mkv', '-f', 'mp4']);
+    expect(applyLegacyShim(['demux', 'in.mkv', '--audio'])).toEqual(['demux', 'in.mkv', '--audio']);
   });
 
   it('leaves subcommand aliases unchanged', () => {
     expect(applyLegacyShim(['c', 'in.mp4', 'out.mp4'])).toEqual(['c', 'in.mp4', 'out.mp4']);
     expect(applyLegacyShim(['audio', 'in.mp4'])).toEqual(['audio', 'in.mp4']);
     expect(applyLegacyShim(['audio', 'in.mp4', '-o', 'out.mp3'])).toEqual(['audio', 'in.mp4', '-o', 'out.mp3']);
+    expect(applyLegacyShim(['rmx', 'in.mkv', '-f', 'mp4'])).toEqual(['rmx', 'in.mkv', '-f', 'mp4']);
+    expect(applyLegacyShim(['split', 'in.mkv', '--audio'])).toEqual(['split', 'in.mkv', '--audio']);
   });
 
   it('prepends convert for legacy positional usage', () => {

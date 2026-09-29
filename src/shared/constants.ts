@@ -66,7 +66,7 @@ export const CLI_CONVERSION_TIMEOUT_MS = 300000;
  * one of these names (in addition to the `--cli` flag and positional pairs).
  * @const {readonly string[]} CLI_SUBCOMMANDS
  */
-export const CLI_SUBCOMMANDS = ['convert', 'info', 'capabilities', 'batch', 'compress', 'extract-audio'] as const;
+export const CLI_SUBCOMMANDS = ['convert', 'info', 'capabilities', 'batch', 'compress', 'extract-audio', 'remux', 'demux'] as const;
 
 /**
  * Exit code used when the CLI receives invalid or incomplete arguments.

@@ -24,9 +24,9 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST_MCP = path.join(ROOT, 'dist', 'mcp', 'index.js');
 
 // The stdio surface (standalone `node dist/mcp/index.js` and the Electron
-// `--mcp` branch) exposes the 13 core tools. The 6 GUI-parity tools are only
+// `--mcp` branch) exposes the 15 core tools. The 6 GUI-parity tools are only
 // registered by the embedded HTTP server inside the running GUI.
-const EXPECTED_TOOL_COUNT = 13;
+const EXPECTED_TOOL_COUNT = 15;
 const REQUIRED_TOOLS = [
   'ping',
   'convert_media',
@@ -41,6 +41,8 @@ const REQUIRED_TOOLS = [
   'extract_audio',
   'cut_video',
   'batch_convert',
+  'remux_media',
+  'demux_media',
 ];
 
 /**

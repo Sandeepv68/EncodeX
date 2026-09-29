@@ -7,7 +7,7 @@
 
 import { EventEmitter } from 'events';
 import type { ITranscoder } from '../../main/transcoders/types';
-import type { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/types';
+import type { ConversionOptions, ConversionProgress, MediaInfo, MediaStreamInfo } from '../../shared/types';
 
 /**
  * Behavior knobs for a {@link FakeTranscoder}.
@@ -17,11 +17,14 @@ import type { ConversionOptions, ConversionProgress, MediaInfo } from '../../sha
  *   terminal event, keeping the job RUNNING indefinitely.
  * @property {ConversionProgress[]} [progress=[]] - Progress events emitted
  *   before completion (or failure).
+ * @property {MediaStreamInfo[]} [streams=[]] - Streams returned by `getInfo`,
+ *   for tools that probe the source before planning (remux_media, demux_media).
  */
 export interface FakeTranscoderOptions {
   fail?: boolean;
   hang?: boolean;
   progress?: ConversionProgress[];
+  streams?: MediaStreamInfo[];
 }
 
 /**
@@ -34,6 +37,12 @@ export class FakeTranscoder implements ITranscoder {
   /** How many times convert() has been called. */
   conversions = 0;
 
+  /** Options passed to the most recent convert() call. */
+  lastOptions?: ConversionOptions;
+
+  /** Output path passed to the most recent convert() call. */
+  lastOutput?: string;
+
   /**
    * Creates a fake transcoder.
    * @param {FakeTranscoderOptions} [options] - Behavior overrides.
@@ -44,11 +53,13 @@ export class FakeTranscoder implements ITranscoder {
    * Emits scripted progress/end or error on a microtask. Ignores the file paths.
    * @param {string} input - Input path (ignored).
    * @param {string} output - Output path (ignored).
-   * @param {ConversionOptions} _options - Options (ignored).
+   * @param {ConversionOptions} options - Options (recorded for assertions).
    * @returns {EventEmitter} An emitter that resolves asynchronously.
    */
-  convert(input: string, output: string, _options: ConversionOptions): EventEmitter {
+  convert(input: string, output: string, options: ConversionOptions): EventEmitter {
     this.conversions += 1;
+    this.lastOptions = options;
+    this.lastOutput = output;
     const emitter = new EventEmitter();
     if (this.options.hang) {
       return emitter;
@@ -67,12 +78,13 @@ export class FakeTranscoder implements ITranscoder {
   }
 
   /**
-   * Returns a minimal MediaInfo for the given input.
+   * Returns a minimal MediaInfo for the given input, reporting the configured
+   * probe streams (empty by default).
    * @param {string} input - Input path.
    * @returns {Promise<MediaInfo>} Probe stub.
    */
   async getInfo(input: string): Promise<MediaInfo> {
-    return { file: input, format: 'mov,mp4', size: 12345, duration: 60, bitrate: '2000k', streams: [] };
+    return { file: input, format: 'mov,mp4', size: 12345, duration: 60, bitrate: '2000k', streams: this.options.streams ?? [] };
   }
 
   /** No-op cancellation. @returns {void} */

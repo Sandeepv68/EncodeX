@@ -22,6 +22,11 @@ import type { ErrorCodeType, AppError } from './types';
  * @property {string} INPUT_NOT_SPECIFIED - No input file was provided.
  * @property {string} OUTPUT_EXISTS - The output file already exists and overwrite is disabled.
  * @property {string} INVALID_QUEUE_FILE - An imported queue file is missing, corrupt, or unsupported.
+ * @property {string} FILTERS_REQUIRE_RE_ENCODE - Video filters were combined with lossless stream-copy mode.
+ * @property {string} INVALID_VIDEO_FILTERS - A video filter chain or preset is invalid.
+ * @property {string} STREAM_NOT_FOUND - A `-map` spec matched no stream in the probed source.
+ * @property {string} INCOMPATIBLE_CONTAINER - A stream's codec cannot be muxed into the chosen container in stream-copy mode.
+ * @property {string} AUXILIARY_INPUT_NOT_FOUND - An added subtitle/audio/chapter/cover file is missing.
  * @property {string} PERMISSION_DENIED - Access to the file or directory was denied.
  * @property {string} UNKNOWN - An unrecognized error occurred.
  */
@@ -40,6 +45,11 @@ export const ErrorCode = {
   INPUT_NOT_SPECIFIED: 'INPUT_NOT_SPECIFIED',
   OUTPUT_EXISTS: 'OUTPUT_EXISTS',
   INVALID_QUEUE_FILE: 'INVALID_QUEUE_FILE',
+  FILTERS_REQUIRE_RE_ENCODE: 'FILTERS_REQUIRE_RE_ENCODE',
+  INVALID_VIDEO_FILTERS: 'INVALID_VIDEO_FILTERS',
+  STREAM_NOT_FOUND: 'STREAM_NOT_FOUND',
+  INCOMPATIBLE_CONTAINER: 'INCOMPATIBLE_CONTAINER',
+  AUXILIARY_INPUT_NOT_FOUND: 'AUXILIARY_INPUT_NOT_FOUND',
   PERMISSION_DENIED: 'PERMISSION_DENIED',
   UNKNOWN: 'UNKNOWN',
 } as const;
@@ -153,6 +163,11 @@ export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
   INPUT_NOT_SPECIFIED: 'Please select an input file before starting the conversion.',
   OUTPUT_EXISTS: 'The output file already exists. Enable overwrite to replace it.',
   INVALID_QUEUE_FILE: 'The queue file could not be read. It may be corrupted or in an unsupported format.',
+  FILTERS_REQUIRE_RE_ENCODE: 'Video filters require re-encoding. Disable lossless copy (stream copy) to apply filters.',
+  INVALID_VIDEO_FILTERS: 'The video filter chain or preset is invalid. Check the filter expressions and preset names.',
+  STREAM_NOT_FOUND: 'The requested stream does not exist in the source file. Check the stream selection.',
+  INCOMPATIBLE_CONTAINER: 'A selected stream cannot be stored in the chosen container without re-encoding.',
+  AUXILIARY_INPUT_NOT_FOUND: 'An added subtitle, audio, chapter, or cover file could not be found.',
   PERMISSION_DENIED: 'Permission denied. The application may not have access to the selected file or directory.',
   UNKNOWN: 'An unexpected error occurred. Please try again.',
 };
@@ -194,6 +209,7 @@ export function formatError(err: unknown): AppError {
 function inferErrorCode(message: string, err?: unknown): ErrorCodeType {
   const m = message.toLowerCase();
   const errCode = err && typeof err === 'object' && 'code' in err ? (err as Record<string, unknown>).code : undefined;
+  if (m.includes('auxiliary input') || m.includes('added subtitle, audio')) return ErrorCode.AUXILIARY_INPUT_NOT_FOUND;
   if (errCode === 'ENOENT' || m.includes('enoent') || m.includes('not found') || m.includes('no such file')) {
     if (m.includes('ffmpeg')) return ErrorCode.FFMPEG_NOT_FOUND;
     if (m.includes('ffprobe')) return ErrorCode.FFPROBE_NOT_FOUND;

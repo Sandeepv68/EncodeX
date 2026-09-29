@@ -35,6 +35,7 @@
     "lint:unused": "eslint -c scripts/eslint.unused.config.mjs src/renderer",
     "lint:unused:test": "node --test eslint-rules/no-unused.test.mjs",
     "validate:locales": "node scripts/validate-locales.mjs",
+    "sync:locales": "node scripts/sync-locale-keys.mjs",
     "typecheck:renderer": "tsc -p tsconfig.renderer.json --noEmit",
     "typecheck:main": "tsc -p tsconfig.main.json --noEmit",
     "typecheck:preload": "tsc -p tsconfig.preload.json --noEmit",
