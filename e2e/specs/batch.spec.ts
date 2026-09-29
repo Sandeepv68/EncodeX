@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import type { QueueJob } from '../../src/shared/types';
-import { launchApp, closeApp, AppSession } from '../fixtures/app';
+import { launchApp, closeApp, ensureLiveSession, reloadSession, AppSession } from '../fixtures/app';
 import { mockApi, emitQueueStatusChange, emitQueueProgress } from '../mocks/control';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
@@ -43,9 +43,10 @@ describe.runIf(IS_E2E)('Batch Queue page', () => {
   });
 
   beforeEach(async () => {
+    session = await ensureLiveSession(session);
+    await mockApi.reset(session.page);
+    session = await reloadSession(session);
     const { page } = session;
-    await mockApi.reset(page);
-    await page.reload();
     await gotoBatch(page);
     await page.getByText('Queue is empty. Add files to begin batch processing.').waitFor({ timeout: 15000 });
   }, 30000);

@@ -497,7 +497,10 @@ export default function ImageCompress() {
             value={scale}
             onChange={(e) => setScale(e.target.value)}
             data-testid="image-compress-scale"
-            slotProps={{ htmlInput: { 'aria-label': t('imageCompress.scale') } }}
+            slotProps={{
+              select: { displayEmpty: true },
+              htmlInput: { 'aria-label': t('imageCompress.scale') },
+            }}
           >
             <MenuItem value="">{t('imageCompress.noScale')}</MenuItem>
             {SCALE_OPTIONS.filter((s) => s !== '').map((s) => (

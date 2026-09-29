@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import type { Page } from 'playwright';
-import { launchApp, closeApp, AppSession } from '../fixtures/app';
+import { launchApp, closeApp, ensureLiveSession, reloadSession, AppSession } from '../fixtures/app';
 import { mockApi } from '../mocks/control';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
@@ -42,9 +42,10 @@ describe.runIf(IS_E2E)('Create Custom Profile', () => {
   });
 
   beforeEach(async () => {
+    session = await ensureLiveSession(session);
     await mockApi.reset(session.page);
     await session.page.evaluate(() => localStorage.clear());
-    await session.page.reload();
+    session = await reloadSession(session);
     await gotoConvert(session.page);
   });
 

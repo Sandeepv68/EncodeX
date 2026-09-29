@@ -167,7 +167,10 @@ export function VideoFiltersSection({
           size="small"
           data-testid="filters-preset-select"
           disabled={disabled}
-          slotProps={{ htmlInput: { 'aria-label': t('convert.addPreset') } }}
+          slotProps={{
+            select: { displayEmpty: true },
+            htmlInput: { 'aria-label': t('convert.addPreset') },
+          }}
           value={presetId}
           onChange={(e) => {
             setPresetId(e.target.value);

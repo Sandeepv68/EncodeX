@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
-import { launchApp, closeApp, AppSession } from '../fixtures/app';
+import { launchApp, closeApp, ensureLiveSession, reloadSession, AppSession } from '../fixtures/app';
 import { mockApi, emitLogMessage } from '../mocks/control';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
@@ -22,9 +22,10 @@ describe.runIf(IS_E2E)('Logs page', () => {
   });
 
   beforeEach(async () => {
+    session = await ensureLiveSession(session);
+    await mockApi.reset(session.page);
+    session = await reloadSession(session);
     const { page } = session;
-    await mockApi.reset(page);
-    await page.reload();
     await gotoLogs(page);
     await page.locator('[data-testid="logs-filter"] [role="combobox"]').waitFor({ timeout: 15000 });
   }, 30000);

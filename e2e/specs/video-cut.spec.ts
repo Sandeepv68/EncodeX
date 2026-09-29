@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import type { MediaInfo } from '../../src/shared/types';
-import { launchApp, closeApp, AppSession } from '../fixtures/app';
+import { launchApp, closeApp, ensureLiveSession, reloadSession, AppSession } from '../fixtures/app';
 import { mockApi, emitConversionProgress } from '../mocks/control';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
@@ -66,9 +66,10 @@ describe.runIf(IS_E2E)('Video Cut page', () => {
   });
 
   beforeEach(async () => {
+    session = await ensureLiveSession(session);
+    await mockApi.reset(session.page);
+    session = await reloadSession(session);
     const { page } = session;
-    await mockApi.reset(page);
-    await page.reload();
     await gotoVideoCut(page);
     await page.locator('[data-testid="file-drop-zone"]').waitFor({ timeout: 15000 });
   }, 30000);

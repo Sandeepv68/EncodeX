@@ -35,6 +35,13 @@ describe('ProfileEditorDialog', () => {
     useToastStore.setState({ toasts: [] });
   });
 
+  it('shows placeholders in the selects that default to an empty value', () => {
+    render(<ProfileEditorDialog open={true} onClose={vi.fn()} />);
+    const comboboxes = screen.getAllByRole('combobox');
+    expect(comboboxes[COMBOS.resolution]).toHaveTextContent('profiles.original');
+    expect(comboboxes[COMBOS.videoBitrate]).toHaveTextContent('profiles.autoCrf');
+  });
+
   it('does not render when closed', () => {
     render(<ProfileEditorDialog open={false} onClose={vi.fn()} />);
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();

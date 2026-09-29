@@ -622,7 +622,10 @@ export default function Convert() {
                   fullWidth
                   size="small"
                   data-testid="convert-video-bitrate"
-                  slotProps={{ htmlInput: { 'aria-label': t('convert.videoBitrate') } }}
+                  slotProps={{
+                    select: { displayEmpty: true },
+                    htmlInput: { 'aria-label': t('convert.videoBitrate') },
+                  }}
                   value={videoBitrate}
                   onChange={(e) => {
                     setVideoBitrate(e.target.value);
@@ -646,7 +649,10 @@ export default function Convert() {
                   fullWidth
                   size="small"
                   data-testid="convert-audio-bitrate"
-                  slotProps={{ htmlInput: { 'aria-label': t('convert.audioBitrate') } }}
+                  slotProps={{
+                    select: { displayEmpty: true },
+                    htmlInput: { 'aria-label': t('convert.audioBitrate') },
+                  }}
                   value={audioBitrate}
                   onChange={(e) => {
                     setAudioBitrate(e.target.value);
@@ -703,7 +709,10 @@ export default function Convert() {
                   fullWidth
                   size="small"
                   data-testid="convert-scale"
-                  slotProps={{ htmlInput: { 'aria-label': t('convert.scale') } }}
+                  slotProps={{
+                    select: { displayEmpty: true },
+                    htmlInput: { 'aria-label': t('convert.scale') },
+                  }}
                   value={scale}
                   onChange={(e) => {
                     setScale(e.target.value);
@@ -746,7 +755,10 @@ export default function Convert() {
               fullWidth
               size="small"
               data-testid="convert-rotation"
-              slotProps={{ htmlInput: { 'aria-label': t('convert.rotation') } }}
+              slotProps={{
+                select: { displayEmpty: true },
+                htmlInput: { 'aria-label': t('convert.rotation') },
+              }}
               value={rotate}
               onChange={(e) => setRotate(e.target.value)}
             >

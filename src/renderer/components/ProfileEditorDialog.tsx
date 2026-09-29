@@ -271,7 +271,15 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
           <Stack direction="row" spacing={2}>
             <FieldBox>
               <FieldLabel htmlFor="profile-scale">{t('profiles.resolutionLabel')}</FieldLabel>
-              <TextField id="profile-scale" select fullWidth size="small" value={scale} onChange={(e) => setScale(e.target.value)}>
+              <TextField
+                id="profile-scale"
+                select
+                fullWidth
+                size="small"
+                slotProps={{ select: { displayEmpty: true } }}
+                value={scale}
+                onChange={(e) => setScale(e.target.value)}
+              >
                 <MenuItem value="">{t('profiles.original')}</MenuItem>
                 {SCALE_OPTIONS.filter((s) => s !== '').map((s) => (
                   <MenuItem key={s} value={s}>
@@ -310,6 +318,7 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
                 size="small"
                 value={videoBitrate}
                 onChange={(e) => setVideoBitrate(e.target.value)}
+                slotProps={{ select: { displayEmpty: true } }}
               >
                 <MenuItem value="">{t('profiles.autoCrf')}</MenuItem>
                 {VIDEO_BITRATE_OPTIONS.filter((b) => b !== '').map((b) => (
