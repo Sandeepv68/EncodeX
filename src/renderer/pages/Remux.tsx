@@ -522,7 +522,11 @@ export default function RemuxPage() {
                       {stream.disposition && stream.disposition.length > 0 ? (
                         <DispositionRow>
                           {stream.disposition.map((flag) => (
-                            <DispositionChip key={flag} label={t(`mediaInfo.dispositionFlags.${flag}`, { defaultValue: flag })} size="small" />
+                            <DispositionChip
+                              key={flag}
+                              label={t(`mediaInfo.dispositionFlags.${flag}`, { defaultValue: flag })}
+                              size="small"
+                            />
                           ))}
                         </DispositionRow>
                       ) : (

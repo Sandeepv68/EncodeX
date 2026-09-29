@@ -37,7 +37,7 @@ export const PreviewBox = styled(Box)(({ theme }) => ({
  * and paints a placeholder fill while `imageSrc` is null, so the remove button
  * is anchored to the frame's top-end corner instead of floating loose.
  * @const PreviewImageBox
- */export const PreviewImageBox = styled(Box)<{ variant?: 'square' | 'wide' }>(({ theme, variant }) => {
+ */ export const PreviewImageBox = styled(Box)<{ variant?: 'square' | 'wide' }>(({ theme, variant }) => {
   const size = previewSize(variant);
   return {
     position: 'relative',

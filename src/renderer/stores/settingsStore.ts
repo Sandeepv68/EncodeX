@@ -265,10 +265,8 @@ function persistWhenDone(config: { enabled: boolean; action: WhenDoneAction; for
  * @returns {boolean} True when the drawer should start condensed.
  */
 export function readStoredDrawerCondensed(): boolean {
-  const raw = loadString(
-    DRAWER_CONDENSED_STORAGE_KEY,
-    String(DEFAULT_DRAWER_CONDENSED),
-    (err) => log.warn(LOG_FAILED_TO_READ_STORED_DRAWER_CONDENSED, err),
+  const raw = loadString(DRAWER_CONDENSED_STORAGE_KEY, String(DEFAULT_DRAWER_CONDENSED), (err) =>
+    log.warn(LOG_FAILED_TO_READ_STORED_DRAWER_CONDENSED, err),
   );
   if (raw === 'true' || raw === 'false') return raw === 'true';
   return DEFAULT_DRAWER_CONDENSED;
