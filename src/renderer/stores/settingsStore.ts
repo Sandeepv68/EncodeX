@@ -2,7 +2,9 @@
  * @fileoverview Zustand store for user application settings.
  * Manages the active transcoder backend, hardware acceleration preferences
  * (persisted to localStorage under 'encodex-hwaccel'), the always-on-top
- * window flag (persisted under 'encodex-always-on-top'), the launch-at-login
+ * window flag (persisted under 'encodex-always-on-top'), the navigation-drawer
+ * condensed flag (persisted under 'encodex-drawer-condensed', condensed by
+ * default), the launch-at-login
  * preference (persisted under 'encodex-launch-at-login'), the batch queue
  * concurrency (persisted under 'encodex-queue-concurrency'), and the batch
  * queue "when done" power-action config (persisted under 'encodex-when-done').
@@ -12,6 +14,7 @@
  *  - hardwareAcceleration / hwaccelMode / encoderType: hardware acceleration
  *    preferences, initialized from the persisted snapshot
  *  - alwaysOnTop: whether the window stays on top of other windows
+ *  - drawerCondensed: whether the navigation drawer shows icons only
  *  - launchAtLogin: whether the app launches at OS startup
  *  - queueConcurrency: batch jobs run in parallel (1-4)
  *  - whenDone: {enabled, action, force} power action for when the batch queue drains
@@ -22,6 +25,8 @@
  *    fall back to the defaults from HWACCEL_DEFAULTS / ENCODER_TYPE_DEFAULT.
  *  - setAlwaysOnTop persists the flag, forwards it to the main process via
  *    window.electronAPI.windowSetAlwaysOnTop, and then updates state.
+ *  - setDrawerCondensed persists the flag to localStorage and then updates
+ *    state, so the drawer opens in the layout the user last chose.
  *  - setLaunchAtLogin persists the flag, forwards it to the main process via
  *    window.electronAPI.setLaunchAtLogin, and then updates state.
  *  - setQueueConcurrency persists the value, forwards it to the main process
@@ -51,6 +56,8 @@ import {
   WINDOW_ALWAYS_ON_TOP_STORAGE_KEY,
   QUEUE_CONCURRENCY_STORAGE_KEY,
   LAUNCH_AT_LOGIN_STORAGE_KEY,
+  DRAWER_CONDENSED_STORAGE_KEY,
+  DEFAULT_DRAWER_CONDENSED,
   WHEN_DONE_STORAGE_KEY,
   DEFAULT_QUEUE_CONCURRENCY,
   MAX_QUEUE_CONCURRENCY,
@@ -59,16 +66,19 @@ import {
 } from '../../shared/constants';
 import {
   LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING,
+  LOG_FAILED_TO_PERSIST_DRAWER_CONDENSED,
   LOG_FAILED_TO_PERSIST_HARDWARE_ACCELERATION_SETTINGS,
   LOG_FAILED_TO_PERSIST_LAUNCH_AT_LOGIN_SETTING,
   LOG_FAILED_TO_PERSIST_QUEUE_CONCURRENCY,
   LOG_FAILED_TO_PERSIST_WHEN_DONE_CONFIG,
   LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING,
+  LOG_FAILED_TO_READ_STORED_DRAWER_CONDENSED,
   LOG_FAILED_TO_READ_STORED_HARDWARE_ACCELERATION_SETTINGS,
   LOG_FAILED_TO_READ_STORED_LAUNCH_AT_LOGIN_SETTING,
   LOG_FAILED_TO_READ_STORED_QUEUE_CONCURRENCY,
   LOG_FAILED_TO_READ_STORED_WHEN_DONE_CONFIG,
   LOG_SET_ALWAYS_ON_TOP,
+  LOG_SET_DRAWER_CONDENSED,
   LOG_SET_ENCODER_TYPE,
   LOG_SET_HARDWARE_ACCELERATION,
   LOG_SET_HWACCEL_MODE,
@@ -248,6 +258,33 @@ function persistWhenDone(config: { enabled: boolean; action: WhenDoneAction; for
 }
 
 /**
+ * Reads the persisted navigation-drawer condensed flag from localStorage
+ * ('encodex-drawer-condensed'); a stored value of 'false' means expanded. A
+ * missing or unrecognised value falls back to DEFAULT_DRAWER_CONDENSED, and
+ * storage failures are logged and treated as the default.
+ * @returns {boolean} True when the drawer should start condensed.
+ */
+export function readStoredDrawerCondensed(): boolean {
+  const raw = loadString(
+    DRAWER_CONDENSED_STORAGE_KEY,
+    String(DEFAULT_DRAWER_CONDENSED),
+    (err) => log.warn(LOG_FAILED_TO_READ_STORED_DRAWER_CONDENSED, err),
+  );
+  if (raw === 'true' || raw === 'false') return raw === 'true';
+  return DEFAULT_DRAWER_CONDENSED;
+}
+
+/**
+ * Persists the navigation-drawer condensed flag to localStorage
+ * ('encodex-drawer-condensed'). Failures are logged and swallowed.
+ * @param {boolean} condensed - The flag value to persist.
+ * @returns {void}
+ */
+function persistDrawerCondensed(condensed: boolean): void {
+  saveString(DRAWER_CONDENSED_STORAGE_KEY, String(condensed), (err) => log.warn(LOG_FAILED_TO_PERSIST_DRAWER_CONDENSED, err));
+}
+
+/**
  * Zustand store for user application settings.
  * Holds the transcoder backend, hardware acceleration preferences (persisted to
  * localStorage and validated at load via readStoredHwAccel), the always-on-top
@@ -322,6 +359,18 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     persistAlwaysOnTop(flag);
     window.electronAPI?.windowSetAlwaysOnTop(flag);
     set({ alwaysOnTop: flag });
+  },
+  drawerCondensed: readStoredDrawerCondensed(),
+  /**
+   * Sets whether the navigation drawer is condensed (icons only) or expanded
+   * (icons + labels). Persists the flag to localStorage so the choice survives
+   * a reload; the mobile temporary drawer ignores it (it is always full width).
+   * @param {boolean} condensed - True to start the drawer condensed.
+   */
+  setDrawerCondensed: (condensed) => {
+    log.debug(LOG_SET_DRAWER_CONDENSED, condensed);
+    persistDrawerCondensed(condensed);
+    set({ drawerCondensed: condensed });
   },
   launchAtLogin: readStoredLaunchAtLogin(),
   /**

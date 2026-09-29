@@ -75,6 +75,8 @@ export interface HwAccelStored {
  * @property {(type: EncoderType) => void} setEncoderType - Sets the encoder preference and persists the change.
  * @property {boolean} alwaysOnTop - Whether the window should stay on top of other windows.
  * @property {(flag: boolean) => void} setAlwaysOnTop - Sets always-on-top and persists it via localStorage + electronAPI.
+ * @property {boolean} drawerCondensed - Whether the navigation drawer is condensed (icons only).
+ * @property {(condensed: boolean) => void} setDrawerCondensed - Sets the drawer condensed flag and persists it.
  * @property {boolean} launchAtLogin - Whether the app should launch at OS startup.
  * @property {(enabled: boolean) => void} setLaunchAtLogin - Sets launch-at-login, persists it, and forwards it to the main process.
  * @property {boolean} monitoringEnabled - Whether error reporting (monitoring) is consented.
@@ -101,6 +103,8 @@ export interface SettingsState {
   setEncoderType: (type: EncoderType) => void;
   alwaysOnTop: boolean;
   setAlwaysOnTop: (flag: boolean) => void;
+  drawerCondensed: boolean;
+  setDrawerCondensed: (condensed: boolean) => void;
   launchAtLogin: boolean;
   setLaunchAtLogin: (enabled: boolean) => void;
   monitoringEnabled: boolean;

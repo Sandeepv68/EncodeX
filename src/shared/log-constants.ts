@@ -189,6 +189,8 @@ export const LOG_FAILED_TO_LOAD_MEDIA_INFO = 'Failed to load media info:';
 export const LOG_FAILED_TO_LOAD_MEDIA_INFO_FOR_PREVIEW = 'Failed to load media info for preview:';
 /** @const {string} Prefix when persisting the always-on-top setting fails. */
 export const LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING = 'Failed to persist always-on-top setting:';
+/** @const {string} Prefix when persisting the drawer condensed preference fails. */
+export const LOG_FAILED_TO_PERSIST_DRAWER_CONDENSED = 'Failed to persist drawer condensed preference:';
 /** @const {string} Prefix when persisting the launch-at-login setting fails. */
 export const LOG_FAILED_TO_PERSIST_LAUNCH_AT_LOGIN_SETTING = 'Failed to persist launch-at-login setting:';
 /** @const {string} Prefix when persisting the batch queue concurrency fails. */
@@ -207,6 +209,8 @@ export const LOG_FAILED_TO_READ_IMAGE_DIMENSIONS = 'Failed to read image dimensi
 export const LOG_FAILED_TO_READ_IMAGE_PREVIEW = 'Failed to read image preview:';
 /** @const {string} Prefix when reading the stored always-on-top setting fails. */
 export const LOG_FAILED_TO_READ_STORED_ALWAYS_ON_TOP_SETTING = 'Failed to read stored always-on-top setting:';
+/** @const {string} Prefix when reading the stored drawer condensed preference fails. */
+export const LOG_FAILED_TO_READ_STORED_DRAWER_CONDENSED = 'Failed to read stored drawer condensed preference:';
 /** @const {string} Prefix when reading the stored launch-at-login setting fails. */
 export const LOG_FAILED_TO_READ_STORED_LAUNCH_AT_LOGIN_SETTING = 'Failed to read stored launch-at-login setting:';
 /** @const {string} Prefix when reading the stored queue concurrency fails. */
@@ -690,6 +694,8 @@ export const LOG_SELECT_DIRECTORY_CALLED = 'selectDirectory called';
 export const LOG_SELECT_OUTPUT_FAILED = 'selectOutput failed:';
 /** @const {string} Prefix when setAlwaysOnTop is invoked. */
 export const LOG_SET_ALWAYS_ON_TOP = 'setAlwaysOnTop:';
+/** @const {string} Prefix when setDrawerCondensed is invoked. */
+export const LOG_SET_DRAWER_CONDENSED = 'setDrawerCondensed:';
 /** @const {string} Prefix when setLaunchAtLogin is invoked. */
 export const LOG_SET_LAUNCH_AT_LOGIN = 'setLaunchAtLogin:';
 /** @const {string} Prefix when setQueueConcurrency is invoked. */

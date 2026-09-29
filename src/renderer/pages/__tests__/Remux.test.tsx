@@ -1,15 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act, within } from '@testing-library/react';
 import Remux from '../Remux';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
 import { useRemuxStore } from '../../stores/remuxStore';
+import { clearPreviewCache } from '../../utils/preview-cache';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
 const selectFilesMock = vi.mocked(window.electronAPI.selectFiles);
 const selectOutputMock = vi.mocked(window.electronAPI.selectOutput);
 const convertFileMock = vi.mocked(window.electronAPI.convertFile);
 const getMediaInfoMock = vi.mocked(window.electronAPI.getMediaInfo);
+const getVideoPreviewMock = vi.mocked(window.electronAPI.getVideoPreview);
 const pauseConversionMock = vi.mocked(window.electronAPI.pauseConversion);
 const resumeConversionMock = vi.mocked(window.electronAPI.resumeConversion);
 const cancelConversionMock = vi.mocked(window.electronAPI.cancelConversion);
@@ -47,11 +49,14 @@ function renderPage() {
 describe('Remux', () => {
   beforeEach(() => {
     resetStore();
+    clearPreviewCache();
     selectFileMock.mockReset();
     selectFilesMock.mockReset();
     selectOutputMock.mockReset();
     convertFileMock.mockReset();
     getMediaInfoMock.mockReset();
+    getVideoPreviewMock.mockReset();
+    getVideoPreviewMock.mockResolvedValue(null);
     pauseConversionMock.mockReset();
     resumeConversionMock.mockReset();
     cancelConversionMock.mockReset();
@@ -548,5 +553,116 @@ describe('Remux', () => {
       expect.objectContaining({ copy: false, videoFilters: ['fps=30'] }),
       'FFMPEG',
     );
+  });
+
+  it('previews a still frame of the selected video', async () => {
+    getVideoPreviewMock.mockResolvedValue('data:image/png;base64,PREVIEW');
+    selectFileMock.mockResolvedValue('/in/video.mkv');
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/video.mkv',
+      format: 'matroska',
+      size: 1024,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [{ index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 }],
+    });
+    renderPage();
+    fireEvent.click(screen.getByText('remux.dropLabel'));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
+
+    const preview = within(screen.getByTestId('remux-video'));
+    expect(await preview.findByRole('img')).toHaveAttribute('src', 'data:image/png;base64,PREVIEW');
+  });
+
+  it('drops the video preview when the input is cleared', async () => {
+    getVideoPreviewMock.mockResolvedValue('data:image/png;base64,PREVIEW');
+    selectFileMock.mockResolvedValue('/in/video.mkv');
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/video.mkv',
+      format: 'matroska',
+      size: 1024,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [{ index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 }],
+    });
+    renderPage();
+    fireEvent.click(screen.getByText('remux.dropLabel'));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
+    await within(screen.getByTestId('remux-video')).findByRole('img');
+
+    fireEvent.click(screen.getByTestId('remove-remux-video'));
+    expect(screen.queryByTestId('remux-video')).not.toBeInTheDocument();
+    expect(screen.getByText('remux.dropLabel')).toBeInTheDocument();
+  });
+
+  it('lists the source streams as a table of codec, video, audio, and disposition details', async () => {
+    selectFileMock.mockResolvedValue('/in/movie.mkv');
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/movie.mkv',
+      format: 'matroska',
+      size: 1024,
+      duration: 60,
+      bitrate: '6500k',
+      streams: [
+        {
+          index: 0,
+          type: 'video',
+          codec: 'h264',
+          width: 1920,
+          height: 1080,
+          frameRate: '24/1',
+          bitrate: '5000000',
+          title: 'Main video',
+          disposition: ['default'],
+        },
+        {
+          index: 1,
+          type: 'audio',
+          codec: 'eac3',
+          sampleRate: 48000,
+          channels: 6,
+          channelLayout: '5.1',
+          language: 'eng',
+          bitrate: '1500000',
+        },
+        { index: 2, type: 'subtitle', codec: 'subrip', language: 'eng' },
+      ],
+    });
+    renderPage();
+    fireEvent.click(screen.getByText('remux.dropLabel'));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
+
+    const table = within(screen.getByRole('table', { name: 'remux.streams' }));
+    expect(table.getAllByRole('columnheader').map((header) => header.textContent)).toEqual([
+      '',
+      'remux.streamIndex',
+      'remux.kind',
+      'mediaInfo.codec',
+      'mediaInfo.resolution',
+      'mediaInfo.frameRate',
+      'mediaInfo.bitrate',
+      'mediaInfo.language',
+      'mediaInfo.sampleRate',
+      'mediaInfo.channels',
+      'mediaInfo.streamTitle',
+      'mediaInfo.disposition',
+    ]);
+
+    const [video, audio, subtitle] = table.getAllByTestId('remux-stream-row');
+
+    expect(within(video).getByText('1920×1080')).toBeInTheDocument();
+    expect(within(video).getByText('24/1 fps')).toBeInTheDocument();
+    expect(within(video).getByText('5.0 Mbps')).toBeInTheDocument();
+    expect(within(video).getByText('Main video')).toBeInTheDocument();
+    expect(within(video).getByText('Default')).toBeInTheDocument();
+    expect(within(video).getAllByText('—').length).toBe(3);
+
+    expect(within(audio).getByText('48 kHz')).toBeInTheDocument();
+    expect(within(audio).getByText('6 (5.1)')).toBeInTheDocument();
+    expect(within(audio).getByText('1.5 Mbps')).toBeInTheDocument();
+    expect(within(audio).getByText('eng')).toBeInTheDocument();
+
+    // A subtitle stream declares none of the video/audio properties.
+    expect(within(subtitle).getAllByText('—').length).toBe(7);
   });
 });
