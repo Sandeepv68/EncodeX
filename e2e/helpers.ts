@@ -128,22 +128,34 @@ export function generateTestAudio(outputDir: string, name = 'extra-audio.m4a'): 
   return outputPath;
 }
 
+/**
+ * Atomically writes a text fixture unless it already exists. Uses an exclusive
+ * create so an absent check and a later write cannot race (CWE-367).
+ */
+function writeTestFileIfAbsent(outputPath: string, content: string): void {
+  try {
+    const fd = fs.openSync(outputPath, 'wx');
+    try {
+      fs.writeFileSync(fd, content, 'utf8');
+    } finally {
+      fs.closeSync(fd);
+    }
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== 'EEXIST') throw err;
+  }
+}
+
 export function generateTestSubtitle(outputDir: string, name = 'extra-subs.srt'): string {
   const outputPath = path.join(outputDir, name);
-  if (fs.existsSync(outputPath)) return outputPath;
-
-  fs.writeFileSync(outputPath, '1\n00:00:00,000 --> 00:00:01,000\nEncodeX e2e subtitle\n', 'utf8');
+  writeTestFileIfAbsent(outputPath, '1\n00:00:00,000 --> 00:00:01,000\nEncodeX e2e subtitle\n');
   return outputPath;
 }
 
 export function generateTestChapters(outputDir: string, name = 'extra-chapters.ffmeta'): string {
   const outputPath = path.join(outputDir, name);
-  if (fs.existsSync(outputPath)) return outputPath;
-
-  fs.writeFileSync(
+  writeTestFileIfAbsent(
     outputPath,
     [';FFMETADATA1', '', '[CHAPTER]', 'TIMEBASE=1/1000', 'START=0', 'END=1000', 'title=EncodeX e2e chapter', ''].join('\n'),
-    'utf8',
   );
   return outputPath;
 }

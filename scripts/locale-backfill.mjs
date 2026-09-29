@@ -1,6 +1,7 @@
 /**
- * @fileoverview Applies hand-written translations from `scripts/locale-data/translations.json`
- * into the locale JSON files, and reports remaining untranslated keys.
+ * @fileoverview Applies hand-written translations from the flat per-group tables in
+ * `scripts/locale-data/<table>.json` (grouped by `manifest.json`) into the locale JSON
+ * files, and reports remaining untranslated keys.
  *
  * The locale files are the source of truth for the renderer; this script is the
  * same pattern as `update-translations.mjs` (script-driven bulk edits) but is
