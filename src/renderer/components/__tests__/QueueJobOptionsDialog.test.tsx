@@ -17,6 +17,7 @@ const DEFAULTS: BatchEncodingValues = {
   flipH: false,
   flipV: false,
   pixelFormat: 'yuv420p',
+  videoFilters: [],
 };
 
 function makeJob(overrides: Partial<QueueJob> = {}): QueueJob {
@@ -142,6 +143,17 @@ describe('QueueJobOptionsDialog', () => {
     );
   });
 
+  it('seeds and saves video filters for a transcode job', () => {
+    const { onSave } = renderDialog(makeJob({ options: { ...makeJob().options, videoFilters: ['hflip'] } }));
+    expect(screen.getByText('hflip')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'j1' }),
+      expect.objectContaining({ videoFilters: ['hflip'] }),
+      expect.any(String),
+    );
+  });
+
   it('edits an extract_audio job using its audio codec', () => {
     const { onSave } = renderDialog(
       makeJob({
@@ -162,5 +174,45 @@ describe('QueueJobOptionsDialog', () => {
   it('renders nothing when no job is provided', () => {
     const { container } = renderDialog(null);
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('seeds a remux job container from its output extension', () => {
+    const job = makeJob({
+      output: 'C:/videos/clip_encodex_converted.mkv',
+      options: { copy: true, video: true, audio: true, hardwareAcceleration: true, hwaccelMode: 'auto' },
+    });
+    const { onSave } = renderDialog(job);
+    expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toHaveTextContent('mkv');
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    expect(onSave).toHaveBeenCalledWith(job, expect.objectContaining({ copy: true }), 'C:/videos/clip_encodex_converted.mkv');
+  });
+
+  it('seeds a demux job from its stream and saves the per-stream map and target', () => {
+    const job = makeJob({
+      input: 'C:/videos/clip.mkv',
+      output: 'C:/videos/clip.audio_1_encodex_demux.m4a',
+      options: {
+        copy: false,
+        video: false,
+        audio: true,
+        map: ['0:1'],
+        audioCodec: 'aac',
+        hardwareAcceleration: true,
+        hwaccelMode: 'auto',
+      },
+    });
+    const { onSave } = renderDialog(job);
+    // The kind toggles reflect the page-level selection; the per-stream target
+    // and map are what this single job edits.
+    expect(screen.getByRole('combobox', { name: 'demux.audioCodec' })).toHaveTextContent('m4a');
+    expect(screen.getByRole('combobox', { name: 'demux.videoContainer' })).toHaveTextContent('demux.copyOption');
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    // 'm4a' is the selected target name, matching what the single-file Demux
+    // flow sends for the same target (demuxStore optionsForTarget).
+    expect(onSave).toHaveBeenCalledWith(
+      job,
+      expect.objectContaining({ copy: false, video: false, audio: true, map: ['0:1'], audioCodec: 'm4a' }),
+      'C:/videos/clip.audio_1_encodex_demux.m4a',
+    );
   });
 });

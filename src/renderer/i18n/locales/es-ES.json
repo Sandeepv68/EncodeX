@@ -26,7 +26,9 @@
       "paused": "En pausa",
       "starting": "Iniciando",
       "parallel": "{{count}} en paralelo"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Bienvenido a EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Extrae pistas de audio limpias de archivos de vídeo",
     "descCut": "Recorta y corta vídeo con un reproductor preciso por fotogramas",
     "descBatch": "Convierte muchos archivos a la vez con una cola inteligente",
-    "shortcutsFooter": "Pulsa {{shortcut}} para los atajos de teclado"
+    "shortcutsFooter": "Pulsa {{shortcut}} para los atajos de teclado",
+    "descRemux": "Transfiere los flujos sin pérdidas a un nuevo contenedor",
+    "descDemux": "Divide los flujos de un archivo en archivos de salida separados"
   },
   "gettingStarted": {
     "hint": "¿Nuevo por aquí?",
@@ -125,7 +129,25 @@
     "showPreview": "Mostrar vista previa",
     "closePreview": "Cerrar vista previa",
     "viewMore": "Ver más",
-    "viewLess": "Ver menos"
+    "viewLess": "Ver menos",
+    "filtersTitle": "Filtros de video",
+    "filtersHint": "Aplica filtros de video de FFmpeg (recorte, tasa de cuadros, desinterlazado, reducción de ruido, color…) durante la recodificación. Todos los filtros se combinan en una sola cadena -vf después de la escala y la rotación.",
+    "addPreset": "Añadir filtro predefinido…",
+    "addFilter": "Añadir filtro",
+    "customChainLabel": "Cadena de filtros personalizada",
+    "customChainPlaceholder": "p. ej. fps=30, eq=brightness=0.1",
+    "customChainHint": "Expresiones de filtro de FFmpeg separadas por comas. Cada entrada debe tener paréntesis y corchetes equilibrados, comillas coincidentes y ningún metacarácter de shell.",
+    "addCustom": "Añadir personalizado",
+    "removeFilter": "Quitar filtro",
+    "moveUp": "Subir",
+    "moveDown": "Bajar",
+    "clearAll": "Borrar todo",
+    "noFilters": "No se han añadido filtros.",
+    "filtersDisabledNote": "Los filtros de video requieren recodificar. Desactiva la copia sin pérdidas para añadir filtros.",
+    "filtersTurnOffCopy": "Desactivar copia sin pérdidas",
+    "filtersCopyWarning": "El modo de copia sin pérdidas está activo, por lo que se ignorarían los filtros de video. Desactiva la copia sin pérdidas para aplicar filtros.",
+    "chainPreview": "Vista previa: -vf {{chain}}",
+    "filtersInvalid": "Filtro no válido: {{error}}"
   },
   "mediaInfo": {
     "title": "Información Multimedia",
@@ -347,7 +369,7 @@
     "revealInFolder": "Mostrar en carpeta",
     "copyPath": "Copiar ruta",
     "stats": "{{queued}} en cola, {{running}} en ejecución, {{done}} completados, {{failed}} con error",
-    "etaEstimate": "ETA ~{{eta}}",
+    "etaEstimate": "Faltan ~{{eta}}",
     "finished": "Lote finalizado: {{done}} con éxito, {{failed}} con error",
     "notificationTitle": "Lote de EncodeX finalizado",
     "filters": {
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "Esta tarea ya no se puede editar.",
     "condense": "Contraer",
     "expand": "Expandir",
-    "clearAll": "Limpiar todo"
+    "clearAll": "Limpiar todo",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "El contenedor al que se copian los flujos. «Automático» conserva la extensión de cada archivo de origen."
   },
   "progress": {
     "title": "Progreso de la conversión",
@@ -459,10 +484,10 @@
     "clear": "Limpiar",
     "download": "Descargar como TXT",
     "filter": "Filtrar por nivel",
-    "levelAll": "ALL",
-    "levelDebug": "DEBUG",
+    "levelAll": "TODO",
+    "levelDebug": "DEPURACIÓN",
     "levelInfo": "INFO",
-    "levelWarn": "WARN",
+    "levelWarn": "ADVERTENCIA",
     "levelError": "ERROR",
     "noEntries": "Aún no hay entradas de registro.",
     "entryCount": "{{count}} entradas"
@@ -495,7 +520,9 @@
     "updateAvailable": "Actualización disponible: v{{version}}",
     "updateNow": "Actualizar ahora",
     "updateDownloaded": "Actualización v{{version}} descargada",
-    "viewUpdate": "Ver"
+    "viewUpdate": "Ver",
+    "remuxed": "Remux completado",
+    "demuxed": "Flujos extraídos correctamente"
   },
   "profiles": {
     "searchPlaceholder": "Buscar perfiles...",
@@ -523,7 +550,7 @@
     "original": "Original",
     "pixelFormatLabel": "Formato de píxel",
     "videoBitrateLabel": "Tasa de bits de video",
-    "autoCrf": "Auto (CRF)",
+    "autoCrf": "Automático (CRF)",
     "audioBitrateLabel": "Tasa de bits de audio",
     "advancedOptions": "Opciones avanzadas",
     "extensionOverrideLabel": "Sobrescritura de extensión de salida",
@@ -598,7 +625,9 @@
       "videoCut": "Recortar vídeo",
       "batchQueue": "Cola de lote",
       "logs": "Registros",
-      "dashboard": "Panel"
+      "dashboard": "Panel",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Mostrar atajos de teclado",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Ir a la Cola de lote",
       "navLogs": "Ir a Registros",
       "navSettings": "Ir a Configuración",
-      "themeToggle": "Cambiar tema"
+      "themeToggle": "Cambiar tema",
+      "navRemux": "Ir a Remux"
     },
     "convert": {
       "input": "Elegir archivo de entrada",
@@ -679,7 +709,17 @@
       "image": "Abrir Imagen",
       "audio": "Abrir Audio",
       "cut": "Abrir Recortar",
-      "batch": "Abrir la Cola de lote"
+      "batch": "Abrir la Cola de lote",
+      "remux": "Abrir Remux",
+      "demux": "Abrir Demux"
+    },
+    "remux": {
+      "input": "Elegir el archivo de entrada",
+      "start": "Iniciar el remux"
+    },
+    "demux": {
+      "input": "Elegir el archivo de entrada",
+      "start": "Iniciar la extracción"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "Publicado bajo la Licencia MIT. Libre de usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar y vender, incluso con fines comerciales, siempre que el aviso de derechos de autor y el aviso de permiso se incluyan en todas las copias o partes sustanciales del software. El software se proporciona \"tal cual\", sin garantía de ningún tipo.",
     "acknowledgements": "Hecho con ❤️ para el código abierto — impulsado por el proyecto FFmpeg y la comunidad.",
     "checkForUpdates": "Buscar actualizaciones",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Términos y condiciones",
+    "terms": "Términos",
+    "readTerms": "Leer los términos"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Términos y condiciones",
+    "accept": "Acepto",
+    "reject": "No acepto",
+    "close": "Cerrar",
+    "lastUpdated": "Vigente desde: {{date}}"
   },
   "update": {
     "title": "Actualización",
@@ -734,5 +774,167 @@
     "installOnRestart": "Instalar en el próximo reinicio",
     "installScheduled": "La actualización v{{version}} se instalará en el próximo reinicio de la aplicación.",
     "cancelRestartInstall": "Cancelar"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Recortar",
+      "cropHint": "Recorta el video al ancho, alto y desplazamiento indicados.",
+      "framerate": "Tasa de cuadros",
+      "framerateHint": "Cambia la tasa de cuadros de la salida (los fotogramas se duplican o se descartan).",
+      "deinterlace": "Desinterlazado",
+      "deinterlaceHint": "Convierte el video entrelazado en progresivo.",
+      "denoise": "Reducir ruido",
+      "denoiseHint": "Reduce el ruido conservando el detalle (hqdn3d).",
+      "sharpen": "Afilar",
+      "sharpenHint": "Aumenta la nitidez percibida (unsharp).",
+      "color": "Color",
+      "colorHint": "Ajusta el brillo, el contraste, la saturación y el gamma (eq).",
+      "grayscale": "Escala de grises",
+      "grayscaleHint": "Elimina el color y deja la imagen en blanco y negro.",
+      "blur": "Desenfocar",
+      "blurHint": "Aplica un desenfoque de caja para suavizar la imagen."
+    },
+    "params": {
+      "crop": {
+        "w": "Ancho",
+        "h": "Alto",
+        "x": "Desplazamiento X",
+        "y": "Desplazamiento Y"
+      },
+      "framerate": {
+        "fps": "Fotogramas por segundo"
+      },
+      "deinterlace": {
+        "mode": "Orden de campos",
+        "modes": {
+          "auto": "Automático",
+          "tff": "Campo superior primero",
+          "bff": "Campo inferior primero"
+        }
+      },
+      "denoise": {
+        "strength": "Intensidad"
+      },
+      "sharpen": {
+        "strength": "Intensidad"
+      },
+      "color": {
+        "brightness": "Brillo",
+        "contrast": "Contraste",
+        "saturation": "Saturación",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Intensidad"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Archivo de video",
+    "dropLabel": "Arrastra un archivo de video aquí o haz clic para buscarlo",
+    "videoFileHint": "El archivo multimedia de origen cuyos flujos se reempaquetarán en el contenedor de destino. Los flujos se copian sin recodificar.",
+    "selectedVideo": "Video seleccionado: {{file}}",
+    "streamCount": "{{selected}} de {{total}} flujos seleccionados",
+    "container": "Contenedor",
+    "containerHint": "El contenedor de salida del archivo remuxeado. Elige entre los contenedores de video habituales; la extensión de salida sigue al contenedor.",
+    "streams": "Flujos de origen",
+    "streamsHint": "Elige qué flujos del archivo de origen se conservan en la salida remuxeada. Los flujos no marcados se descartan.",
+    "streamIndex": "N.º",
+    "kind": "Tipo",
+    "selectStream": "Seleccionar el flujo de {{kind}} n.º {{index}}",
+    "selectAll": "Conservar todo",
+    "selectNone": "No conservar nada",
+    "audioSync": "Retrasar el audio (segundos)",
+    "audioSyncHint": "Desplaza la pista de audio principal respecto al video sin recodificar, p. ej. -0.5 para 0,5 s antes o 1.5 para 1,5 s después.",
+    "audioSyncLossless": "Sin pérdidas: el audio se copia como flujo con un desfase de marca de tiempo, por lo que la calidad no cambia.",
+    "subtitles": "Subtítulos añadidos",
+    "subtitlesHint": "Archivos de subtítulos externos (.srt, .ass, .vtt) incrustados en la salida remux como pistas de entrada adicionales.",
+    "addSubtitle": "Añadir archivo de subtítulos",
+    "subtitleCodec": "Códec de destino",
+    "subtitleCodecHint": "El códec de subtítulos usado para la pista incrustada. Los contenedores aceptan distintos formatos de subtítulos; elegir uno que el contenedor no pueda almacenar muestra una advertencia.",
+    "removeSubtitle": "Quitar los subtítulos",
+    "audioTracks": "Pistas de audio añadidas",
+    "audioTracksHint": "Archivos de audio externos (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) incrustados en la salida remux como pistas de entrada adicionales.",
+    "addAudioTrack": "Añadir pista de audio",
+    "removeAudioTrack": "Quitar la pista de audio",
+    "addedTrackDelay": "Retrasar esta pista (segundos)",
+    "addedTrackDelayHint": "Desplazamiento con signo aplicado a esta pista respecto al video (positivo = se reproduce más tarde). Sin pérdidas: se aplica como -itsoffset con copia de flujo.",
+    "thumbnail": "Miniatura / carátula",
+    "thumbnailHint": "Imagen de carátula opcional (.jpg, .jpeg, .png) incrustada en el archivo remuxeado. MKV/WebM la adjuntan como un flujo de imagen; MP4/MOV la incrustan como un flujo de video con la disposición attached_pic.",
+    "addThumbnail": "Añadir miniatura",
+    "thumbnailUnsupported": "{{container}} no puede almacenar carátulas. Cambia a MKV, WebM, MP4 o MOV para adjuntar una miniatura.",
+    "removeThumbnail": "Quitar la miniatura",
+    "thumbnailMode": "Incrustada como {{mode}}",
+    "thumbnailAttached": "imagen adjunta",
+    "thumbnailDisposition": "flujo de carátula attached_pic",
+    "chapters": "Capítulos",
+    "chaptersHint": "De forma predeterminada se conservan los capítulos del origen. Importa un archivo de capítulos FFMETADATA para sustituir los capítulos del origen en el archivo remuxeado.",
+    "copyChapters": "Copiar los capítulos del origen",
+    "copyChaptersHint": "Conserva los marcadores de capítulo del archivo de origen en la salida remuxeada (sin pérdidas, -map_chapters 0).",
+    "importChapters": "Importar archivo de capítulos",
+    "chaptersUnsupported": "{{container}} no almacena metadatos de capítulos; los capítulos se descartarán.",
+    "removeChapters": "Quitar el archivo de capítulos",
+    "warnings": "Advertencias de compatibilidad",
+    "warningsHint": "Hallazgos no bloqueantes sobre si los flujos y ajustes seleccionados encajan en el contenedor elegido. Las advertencias permiten continuar; los errores lo bloquean.",
+    "outputFile": "Archivo de salida",
+    "outputFileHint": "La ruta de destino del archivo remuxeado. Su extensión sigue al contenedor de destino.",
+    "placeholderOutput": "salida.mkv",
+    "start": "Iniciar remux",
+    "remuxing": "Remux en curso…",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "cancel": "Cancelar",
+    "cancelTitle": "Cancelar remux",
+    "cancelMessage": "¿Seguro que quieres cancelar el remux en curso?",
+    "yes": "Sí",
+    "no": "No",
+    "filtersTitle": "Filtros de video",
+    "filtersHint": "Aplica filtros de video de FFmpeg mientras se recodifican los flujos de video seleccionados. Los filtros no se pueden aplicar a una copia sin pérdidas, así que añadir uno convierte el remux en una recodificación.",
+    "filtersReencodeWarning": "Los filtros de video no pueden ejecutarse sobre una copia de flujo, así que los {{count}} filtro(s) seleccionado(s) convierten este remux en una recodificación."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Archivo de video",
+    "videoFileHint": "El archivo multimedia de origen cuyos flujos se extraerán. Cada flujo seleccionado se escribe en su propio archivo de salida.",
+    "dropLabel": "Arrastra un archivo de video aquí o haz clic para buscarlo",
+    "selectedVideo": "Video seleccionado: {{file}}",
+    "streamCount": "{{selected}} de {{total}} flujos seleccionados",
+    "streams": "Flujos de origen",
+    "streamsHint": "Elige qué flujos extraer. Cada flujo marcado se convierte en su propio archivo de salida; los que no estén marcados se omiten.",
+    "extractStreams": "Flujos a extraer",
+    "streamGroup": "Flujos de {{kind}}",
+    "suggestedOutput": "Salida",
+    "selectStream": "Seleccionar el flujo de {{kind}} n.º {{index}} que se extraerá",
+    "videoContainer": "Destino del video",
+    "videoContainerHint": "Cómo se escriben los flujos de video. «Copiar» los extrae sin pérdidas y sin recodificar; elegir un contenedor recodifica el video a ese formato.",
+    "audioCodec": "Destino del audio",
+    "audioCodecHint": "Cómo se escriben los flujos de audio. «Copiar» los extrae sin pérdidas y sin recodificar; elegir un códec recodifica el audio.",
+    "subtitleFormat": "Destino de los subtítulos",
+    "subtitleFormatHint": "Cómo se escriben los flujos de subtítulos. «Copiar» los extrae sin pérdidas y sin recodificar; elegir un formato convierte los subtítulos. Los subtítulos en imagen (p. ej. PGS/DVDSUB) no pueden convertirse a texto y se mantienen copiados.",
+    "subtitleWarning": "Advertencias sobre la conversión de subtítulos",
+    "subtitleWarningHint": "Los flujos de subtítulos en imagen (p. ej. PGS/DVDSUB) no pueden recodificarse a texto sin OCR, así que se extraen como copias .mks sin pérdidas. Aparecen como «Copiar» en el plan de extracción.",
+    "bitmapSubtitleWarning": "Este flujo de subtítulos en imagen no puede recodificarse a texto sin OCR, así que se extrae como una copia .mks sin pérdidas.",
+    "copyOption": "Copiar (sin pérdidas)",
+    "outputDir": "Carpeta de salida",
+    "outputDirHint": "La carpeta donde se escriben los flujos extraídos. De forma predeterminada es la carpeta del archivo de origen.",
+    "outputDirPlaceholder": "carpeta de salida",
+    "summary": "Plan de extracción",
+    "summaryHint": "Un archivo de salida por cada flujo marcado, en el orden en que se ejecutan. Los archivos marcados como «Copiar» se extraen sin pérdidas; los marcados como «Convertir» se recodifican.",
+    "copyLabel": "Copiar",
+    "convertLabel": "Convertir a {{target}}",
+    "start": "Iniciar demux",
+    "demuxing": "Extrayendo…",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "cancel": "Cancelar",
+    "cancelTitle": "Cancelar demux",
+    "cancelMessage": "¿Seguro que quieres cancelar el demux en curso?",
+    "yes": "Sí",
+    "no": "No",
+    "currentStream": "Extrayendo el flujo de {{kind}} n.º {{index}}",
+    "filtersTitle": "Filtros de video",
+    "filtersHint": "Aplica filtros de video de FFmpeg (recorte, tasa de cuadros, desinterlazado, reducción de ruido, color…) mientras se recodifican los flujos de video seleccionados. «Copiar» no tiene pérdidas, así que los filtros solo aparecen cuando un contenedor de destino recodifica el video.",
+    "filtersIgnoredCopy": "Los filtros de video se ignoran mientras el destino de video sea «Copiar», porque una copia de flujo no puede recodificar. Elige un contenedor de destino para aplicarlos."
   }
 }

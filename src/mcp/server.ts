@@ -30,8 +30,16 @@ import type { ConversionProfile } from '../shared/types';
 import { VIDEO_CODECS, AUDIO_CODECS } from '../shared/media-options';
 import { buildConversionOptions, resolveOutputPath, MCPConversionFields } from './conversion-options';
 import { MCPJobManager } from './jobs/manager';
-import { buildCompressPlan, buildExtractAudioPlan, buildCutPlan, buildBatchPlan } from './operations';
-import type { MCPCompressFields, MCPExtractAudioFields, MCPCutFields } from './operations';
+import {
+  buildCompressPlan,
+  buildExtractAudioPlan,
+  buildCutPlan,
+  buildBatchPlan,
+  buildRemuxPlan,
+  buildDemuxPlan,
+  buildDemuxJobOptions,
+} from './operations';
+import type { MCPCompressFields, MCPExtractAudioFields, MCPCutFields, MCPRemuxFields, MCPDemuxFields } from './operations';
 
 /**
  * Configuration accepted by {@link createMcpServer}.
@@ -148,6 +156,17 @@ const conversionSchema = z.object({
   video: z.boolean().optional().describe('Include video streams (default true; set false to exclude).'),
   hardwareAcceleration: z.boolean().optional().describe('Enable hardware acceleration.'),
   hwaccelMode: z.enum(['auto', 'encode']).optional().describe('Hardware acceleration mode.'),
+  videoFilters: z
+    .array(z.string().min(1))
+    .max(8)
+    .optional()
+    .describe('Ordered FFmpeg video filter expressions appended after scale/rotation (requires re-encoding).'),
+  filters: z.string().optional().describe('Comma-joined video filter chain (compact shorthand for videoFilters).'),
+  presets: z
+    .array(z.string().min(1))
+    .max(8)
+    .optional()
+    .describe('Curated filter preset ids (e.g. grayscale, crop, framerate) expanded before the custom chain.'),
   extraArgs: z.array(z.string()).optional().describe('Extra FFmpeg output arguments appended to the command.'),
   transcoder: z.enum(['FFMPEG', 'FFTOOL', 'BMF']).optional().describe('Transcoder backend (default FFMPEG).'),
   concurrency: z
@@ -217,6 +236,91 @@ const batchSchema = conversionSchema.omit({ input: true, output: true, concurren
 });
 
 /**
+ * The schema of arguments accepted by the `remux_media` tool. Every field maps
+ * to the shared remux planner, so a remux here selects the same streams, added
+ * inputs, and chapters handling as the `remux` CLI subcommand and the Remux page.
+ */
+const remuxSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the input media file.'),
+  container: z.string().optional().describe('Target container (mkv, mp4, mov, webm, ...). Defaults to the output, then input extension.'),
+  output: z.string().optional().describe('Absolute output path. Derived as `<name>.<container>` next to the input when omitted.'),
+  map: z.array(z.string().min(1)).optional().describe('Explicit -map specs (e.g. ["0:v:0", "0:a:0"]). Defaults to every probed stream.'),
+  subtitles: z.boolean().optional().describe('Keep source subtitle streams in the default selection (default true).'),
+  addSubtitle: z
+    .array(
+      z.object({
+        file: z.string().min(1).describe('Subtitle file to add.'),
+        codec: z.string().optional().describe('Per-file subtitle codec (e.g. srt, ass, mov_text).'),
+        syncOffsetSeconds: z.number().optional().describe('Signed -itsoffset for this track (positive = plays later).'),
+      }),
+    )
+    .optional()
+    .describe('External subtitle tracks to mux into the output.'),
+  addAudio: z
+    .array(
+      z.object({
+        file: z.string().min(1).describe('Audio file to add.'),
+        syncOffsetSeconds: z.number().optional().describe('Signed -itsoffset for this track (positive = plays later).'),
+      }),
+    )
+    .optional()
+    .describe('External audio tracks to mux into the output (stream-copied).'),
+  thumbnail: z
+    .object({
+      file: z.string().min(1).describe('Cover-art image path.'),
+      type: z
+        .enum(['attachment', 'disposition'])
+        .optional()
+        .describe('Cover-art mechanism; inferred from the container when omitted (mkv/webm attach, mp4/mov attached_pic).'),
+    })
+    .optional()
+    .describe('Cover art to embed in the output.'),
+  chapters: z
+    .union([z.literal('source'), z.object({ file: z.string().min(1).describe('FFMETADATA chapters file to import.') })])
+    .optional()
+    .describe('Chapters handling: "source" keeps the source chapters (default); an object imports a chapters file.'),
+  subtitleCodec: z.string().optional().describe('Default codec for added subtitles; overrides each addSubtitle.codec.'),
+  audioSyncSeconds: z.number().optional().describe("Signed seconds to shift the input's own audio (positive = audio plays later)."),
+  videoFilters: z
+    .array(z.string().min(1))
+    .max(8)
+    .optional()
+    .describe(
+      'Ordered FFmpeg video filter expressions (e.g. ["fps=30", "crop=640:480:0:0"]). Filters require re-encoding, ' +
+        'so their presence turns the stream copy into a re-encode of the selected streams.',
+    ),
+  transcoder: z.enum(['FFMPEG', 'FFTOOL', 'BMF']).optional().describe('Transcoder backend (default FFMPEG).'),
+});
+
+/**
+ * The schema of arguments accepted by the `demux_media` tool: one job per
+ * selected stream, named by the shared demux planner.
+ */
+const demuxSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the input media file.'),
+  outputDir: z
+    .string()
+    .optional()
+    .describe('Directory to write the extracted streams into (created when missing). Defaults to the input directory.'),
+  video: z.boolean().optional().describe('Extract video streams.'),
+  audio: z.boolean().optional().describe('Extract audio streams.'),
+  subtitles: z.boolean().optional().describe('Extract subtitle streams.'),
+  all: z.boolean().optional().describe('Extract every kind (the default).'),
+  videoContainer: z.string().optional().describe('Re-encode video into this container when it differs from the stream format.'),
+  audioCodec: z.string().optional().describe('Re-encode audio with this encoder (e.g. mp3, flac).'),
+  subtitleCodec: z.string().optional().describe('Convert text subtitles to this format (e.g. srt, ass); copy keeps them as-is.'),
+  videoFilters: z
+    .array(z.string().min(1))
+    .max(8)
+    .optional()
+    .describe(
+      'Ordered FFmpeg video filter expressions applied to video streams that are re-encoded (set videoContainer to a ' +
+        'different container). Stream-copied video targets ignore them and report a filtersIgnoredCopy warning.',
+    ),
+  transcoder: z.enum(['FFMPEG', 'FFTOOL', 'BMF']).optional().describe('Transcoder backend (default FFMPEG).'),
+});
+
+/**
  * Serializes an enqueued job into the shared tool response shape.
  * @param {ReturnType<MCPJobManager['enqueue']>} job - The enqueued job.
  * @param {string} transcoder - The transcoder backend used.
@@ -224,6 +328,20 @@ const batchSchema = conversionSchema.omit({ input: true, output: true, concurren
  */
 function enqueueResponse(job: ReturnType<MCPJobManager['enqueue']>, transcoder: string): Record<string, unknown> {
   return { jobId: job.id, input: job.input, output: job.output, status: job.status, transcoder };
+}
+
+/**
+ * Verifies that every auxiliary file a remux will read exists, so a missing
+ * subtitle, audio, cover, or chapters file fails before the job is queued.
+ * @param {string[]} files - Absolute paths of the added assets.
+ * @throws {Error} `AUXILIARY_INPUT_NOT_FOUND` When one of them is missing.
+ */
+function assertMcpAuxiliaryInputsExist(files: string[]): void {
+  for (const file of files) {
+    if (!fs.existsSync(file)) {
+      throw createError(ErrorCode.AUXILIARY_INPUT_NOT_FOUND, `Auxiliary input file not found: ${file}`);
+    }
+  }
 }
 
 /**
@@ -261,7 +379,9 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     {
       title: 'Convert Media',
       description:
-        'Start an asynchronous media conversion (re-encode, stream-copy, trim, scale, rotate). ' +
+        'Start an asynchronous media conversion (re-encode, stream-copy, trim, scale, rotate, video filters). ' +
+        'Video filters are given via filters (comma-joined chain), videoFilters (expression array), or presets ' +
+        '(curated ids); they require re-encoding and cannot be combined with copy. ' +
         'Returns a job id immediately; poll with get_job / list_jobs and cancel with cancel_job.',
       inputSchema: conversionSchema,
     },
@@ -494,6 +614,99 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
           return { file: job.input, output: job.output, jobId: running.id, status: running.status };
         });
         return ok(JSON.stringify({ total: queued.length, jobs: queued }));
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'remux_media',
+    {
+      title: 'Remux Media',
+      description:
+        'Stream-copy a media file into another container, changing the stream selection, adding subtitle/audio tracks, ' +
+        'cover art, or chapters without re-encoding. The source is probed first so the default selection is every ' +
+        'stream, and a stream the target container cannot store is rejected up front. Passing videoFilters is the one ' +
+        'exception to the lossless copy: the video is then re-encoded with the filter chain. ' +
+        'Returns a job id immediately; poll with get_job / list_jobs.',
+      inputSchema: remuxSchema,
+    },
+    async (args: z.infer<typeof remuxSchema>) => {
+      try {
+        if (!fs.existsSync(args.input)) {
+          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+        }
+        const chaptersFile = args.chapters && typeof args.chapters === 'object' ? args.chapters.file : undefined;
+        assertMcpAuxiliaryInputsExist([
+          ...(args.addSubtitle ?? []).map((entry) => entry.file),
+          ...(args.addAudio ?? []).map((entry) => entry.file),
+          ...(args.thumbnail ? [args.thumbnail.file] : []),
+          ...(chaptersFile ? [chaptersFile] : []),
+        ]);
+
+        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+        const fields: MCPRemuxFields = { ...args };
+        const info = await transcoderFactory(transcoder).getInfo(args.input);
+        const plan = buildRemuxPlan(args.input, fields, info.streams ?? []);
+        const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+        return ok(
+          JSON.stringify({
+            ...enqueueResponse(job, transcoder),
+            container: plan.container,
+            map: plan.options.map ?? [],
+            warnings: plan.warnings.map((finding) => finding.code ?? finding.message),
+          }),
+        );
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'demux_media',
+    {
+      title: 'Demux Media',
+      description:
+        'Split a media file into per-stream outputs (video, audio, subtitles), optionally re-encoding each kind ' +
+        '(videoContainer / audioCodec / subtitleCodec, plus videoFilters on a re-encoded video stream). The source is ' +
+        'probed first; cover-art video streams are skipped. ' +
+        'Returns one job id per extracted stream immediately; poll with get_job / list_jobs.',
+      inputSchema: demuxSchema,
+    },
+    async (args: z.infer<typeof demuxSchema>) => {
+      try {
+        if (!fs.existsSync(args.input)) {
+          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+        }
+        if (args.outputDir) {
+          fs.mkdirSync(args.outputDir, { recursive: true });
+        }
+        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+        const fields: MCPDemuxFields = { ...args };
+        const info = await transcoderFactory(transcoder).getInfo(args.input);
+        const plan = buildDemuxPlan(args.input, fields, info.streams ?? []);
+        const queued = plan.targets.map((target) => {
+          const job = jobManager.enqueue(args.input, target.output, buildDemuxJobOptions(target), transcoder);
+          return {
+            kind: target.kind,
+            streamIndex: target.index,
+            copy: target.copy,
+            codec: target.codec,
+            output: job.output,
+            jobId: job.id,
+            status: job.status,
+          };
+        });
+        return ok(
+          JSON.stringify({
+            total: queued.length,
+            transcoder,
+            jobs: queued,
+            warnings: plan.warnings.map((finding) => finding.code ?? finding.message),
+          }),
+        );
       } catch (err) {
         return fail(err);
       }

@@ -78,6 +78,11 @@ export interface CodecContainerInfo {
  *   stream-copy mode for MP4/MOV/MKV outputs.
  * @property {boolean} [flipH] - Mirror the output horizontally (hflip; requires re-encoding).
  * @property {boolean} [flipV] - Mirror the output vertically (vflip; requires re-encoding).
+ * @property {string[]} [videoFilters] - Ordered video-filter expressions
+ *   (e.g. 'crop=in_w/2:in_h/2', 'fps=30', 'eq=brightness=0.1'). Merged AFTER
+ *   scale and rotation/mirror into the single `-vf` chain. Only honored in
+ *   re-encode mode; ignored with a warning under `copy:true`. See
+ *   src/shared/video-filters.ts for validation.
  * @property {string} [pixelFormat] - Output pixel format (e.g. 'yuv420p').
  * @property {string} [startTime] - Trim start time (seconds or HH:MM:SS).
  * @property {string} [endTime] - Trim end time (seconds or HH:MM:SS).
@@ -89,6 +94,28 @@ export interface CodecContainerInfo {
  * @property {HwAccelMode} [hwaccelMode] - Hardware acceleration mode to use.
  * @property {string[]} [extraArgs] - Extra FFmpeg output arguments appended to the command.
  * @property {string[]} [inputArgs] - Extra FFmpeg input arguments prepended to the command.
+ * @property {string[]} [map] - FFmpeg `-map` stream-selection specs targeting the
+ *   PRIMARY input (e.g. ['0:v:0', '0:a:1']). Each entry becomes a repeated
+ *   `-map` flag. Used by remux (stream composition) and demux (single-stream
+ *   extraction). Empty or absent = default stream selection.
+ * @property {string} [subtitleCodec] - Subtitle encoder/format emitted as `-c:s`
+ *   (e.g. 'srt', 'mov_text', 'ass', 'copy'). Used when embedding subtitle
+ *   streams into containers that cannot hold the source subtitle codec.
+ * @property {RemuxInput[]} [additionalInputs] - External files appended as extra
+ *   `-i` inputs AFTER the primary input (index 0). Each entry may carry its own
+ *   `-map` specs, per-stream `-c` overrides, a cover-art disposition, or a
+ *   `-itsoffset` sync shift. See `RemuxInput`.
+ * @property {string} [chaptersFile] - Absolute path to an FFMETADATA chapters
+ *   file. Added as an extra `-i` input and selected with `-map_chapters <index>`,
+ *   where `<index>` is the chapters input's position among all inputs (N+1 when
+ *   no re-read entry is appended after it).
+ * @property {boolean} [copyChapters] - Preserve the source's chapters with
+ *   `-map_chapters 0`. Defaults to true for remux-style operations; explicit so
+ *   callers can suppress chapter copying (`--no-chapters`).
+ * @property {number} [audioSyncSeconds] - Signed seconds to shift the PRIMARY
+ *   file's audio streams relative to its video, via the lossless "re-read"
+ *   trick (a second `-i` of the same file is mapped only to audio and shifted
+ *   with `-itsoffset`). Positive = audio plays LATER. Absent = no adjustment.
  */
 export interface ConversionOptions {
   videoCodec?: string;
@@ -101,6 +128,7 @@ export interface ConversionOptions {
   rotate?: '90' | '180' | '270';
   flipH?: boolean;
   flipV?: boolean;
+  videoFilters?: string[];
   pixelFormat?: string;
   startTime?: string;
   endTime?: string;
@@ -112,6 +140,48 @@ export interface ConversionOptions {
   hwaccelMode?: HwAccelMode;
   extraArgs?: string[];
   inputArgs?: string[];
+  map?: string[];
+  subtitleCodec?: string;
+  additionalInputs?: RemuxInput[];
+  chaptersFile?: string;
+  copyChapters?: boolean;
+  audioSyncSeconds?: number;
+}
+
+/**
+ * An external file embedded into a remux output (added subtitle track, added
+ * audio track, cover art, or the primary file's "re-read" sync entry).
+ *
+ * Input-index contract: the PRIMARY input is always `0`; each `additionalInputs`
+ * entry consumes the next input index (`1..N`) in array order; a `chaptersFile`,
+ * when present, consumes index `N+1`. Consequently a re-read sync entry (whose
+ * `path` equals the primary path and whose `map` selects only the shifted
+ * streams) must be emitted AFTER any user-added inputs so its own input index
+ * is deterministic.
+ *
+ * @interface RemuxInput
+ * @property {string} path - Absolute path of the external file.
+ * @property {string[]} map - `-map` specs targeting THIS input (e.g. ['1:0'] for
+ *   the first additional input). Referenced by the entry's own input index.
+ * @property {string} [codec] - Per-stream codec(s) applied as `-c:<kind or
+ *   specifier>` AFTER the blanket `-c copy` (e.g. 'mov_text' for an MP4-bound
+ *   subtitle, 'copy' keyed per-stream). Order follows `map` order.
+ * @property {string} [disposition] - Stream disposition for a mapped stream,
+ *   e.g. 'attached_pic' for MP4/MOV cover art (emitted via `-disposition:v:<n>`).
+ * @property {boolean} [attachment] - MKV/WebM style: attach the file as a
+ *   stream (`-attach`) instead of `-i` (cover art). Mutually exclusive with
+ *   `map`/`disposition`.
+ * @property {number} [syncOffsetSeconds] - Signed `-itsoffset` applied to THIS
+ *   input BEFORE `-i` (positive = stream plays LATER). Used for added-track sync
+ *   and for the primary "re-read" entry (path === primary path).
+ */
+export interface RemuxInput {
+  path: string;
+  map: string[];
+  codec?: string;
+  disposition?: string;
+  attachment?: boolean;
+  syncOffsetSeconds?: number;
 }
 
 /**
@@ -444,6 +514,10 @@ export enum ConversionOperation {
   CreateGif = 'create_gif',
   /** Cut a segment out of a video. */
   CutVideo = 'cut_video',
+  /** Remux streams losslessly (or converted) into a new container. */
+  Remux = 'remux',
+  /** Split a file's streams into separate output files. */
+  Demux = 'demux',
 }
 
 /**

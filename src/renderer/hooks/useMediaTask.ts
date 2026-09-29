@@ -1,18 +1,28 @@
 /**
- * @fileoverview React hook that wraps media task execution with a shared
+ * @fileoverview React hooks that wrap media task execution with a shared
  * progress and "is converting" lifecycle.
  *
- * The hook owns the live progress state of a single operation and subscribes
- * once (at mount) to the main process's `onConversionProgress` push events,
- * gating them with a ref so progress is only applied while a task is actually
- * running. The returned `runTask` helper sets the converting flags, awaits the
- * caller-supplied task, records 100% progress (COMPLETED_PROGRESS) on success,
- * and surfaces any thrown error through the global error store. It is consumed
- * by media panels (audio extraction, GIF creation, etc.) that want a common
- * progress/converting experience without duplicating subscription logic.
+ * Two variants are exported:
+ *
+ *  - `useMediaTask` — for tasks whose run state lives in local component state
+ *    (Image Compress, Video Cut). It subscribes once (at mount) to the main
+ *    process's `onConversionProgress` push events, gating them with a ref so
+ *    progress is only applied while a task is actually running. The returned
+ *    `runTask` helper sets the converting flags, awaits the caller-supplied
+ *    task, records 100% progress (COMPLETED_PROGRESS) on success, and surfaces
+ *    any thrown error through the global error store.
+ *  - `useTaskRunControls` — for store-owned tasks (Remux, Demux) whose run
+ *    state (isConverting / isPaused / progress / current) lives in a Zustand
+ *    singleton store. It binds the common run-control surface directly to the
+ *    passed store so pages share one set of selectors without duplicating
+ *    subscription logic. Demux exposes its `current` sub-task label through the
+ *    returned `current` value; Remux (single invocation) leaves it null. The
+ *    store instance (and only the store instance) owns pause/resume/cancel, so
+ *    these wrappers are read-only views over the store.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useStore, type StoreApi, type UseBoundStore } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import type { ConversionProgress } from '../../shared/types';
@@ -99,4 +109,62 @@ export function useMediaTask() {
   );
 
   return { progress, setProgress, isConverting, runTask };
+}
+
+/**
+ * Structural subset of a store-owned media task that `useTaskRunControls` binds
+ * to. Both RemuxState and DemuxState satisfy it (Demux adds `current`, which is
+ * optional here so Remux single-invocation tasks simply report null).
+ * @typedef {Object} TaskRunStoreState
+ * @property {TaskProgress | null} progress - Live task progress, or null when idle.
+ * @property {boolean} isConverting - Whether a task is currently running.
+ * @property {boolean} isPaused - Whether the running task is paused.
+ * @property {string | null} [current] - Label of the current sub-task (Demux),
+ *   or null when the task is a single invocation.
+ * @property {() => Promise<void>} pause - Pauses the running task.
+ * @property {() => Promise<void>} resume - Resumes the paused task.
+ * @property {() => Promise<void>} cancel - Cancels the task.
+ */
+type TaskRunStoreState = {
+  progress: TaskProgress | null;
+  isConverting: boolean;
+  isPaused: boolean;
+  current?: string | null;
+  pause: () => Promise<void>;
+  resume: () => Promise<void>;
+  cancel: () => Promise<void>;
+};
+
+/**
+ * React hook exposing the shared run control surface of a store-owned media
+ * task (Remux / Demux) from its Zustand store.
+ *
+ * Unlike `useMediaTask` (local component state), the run state lives in the
+ * store itself, so this hook only reads the store's published fields — it never
+ * manages progress or the converting flag. The returned fields are therefore a
+ * consistent view over whichever store is passed; the `current` sub-task label
+ * is surfaced for Demux (null for Remux). Pause/resume/cancel are bound to the
+ * store actions, which delegate to the main process.
+ *
+ * @param {UseBoundStore<StoreApi<TaskRunStoreState>>} useStoreHook - The Zustand
+ *   store hook for the task (e.g. `useRemuxStore` or `useDemuxStore`).
+ * @returns {Object} The run control surface:
+ * @property {TaskProgress | null} progress - Live task progress, or null when idle.
+ * @property {boolean} isConverting - Whether a task is currently running.
+ * @property {boolean} isPaused - Whether the running task is paused.
+ * @property {string | null} current - Current sub-task label (null for Remux).
+ * @property {() => Promise<void>} pause - Pauses the running task.
+ * @property {() => Promise<void>} resume - Resumes the paused task.
+ * @property {() => Promise<void>} cancel - Cancels the task.
+ */
+export function useTaskRunControls<TState extends TaskRunStoreState>(useStoreHook: UseBoundStore<StoreApi<TState>>) {
+  const progress = useStore(useStoreHook, (s) => s.progress);
+  const isConverting = useStore(useStoreHook, (s) => s.isConverting);
+  const isPaused = useStore(useStoreHook, (s) => s.isPaused);
+  const current = useStore(useStoreHook, (s) => s.current ?? null);
+  const pause = useStore(useStoreHook, (s) => s.pause);
+  const resume = useStore(useStoreHook, (s) => s.resume);
+  const cancel = useStore(useStoreHook, (s) => s.cancel);
+
+  return { progress, isConverting, isPaused, current, pause, resume, cancel };
 }

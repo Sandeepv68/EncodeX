@@ -8,6 +8,8 @@
 
 /** @const {string} Logged when an 'activate' event fires while the main window is null. */
 export const LOG_ACTIVATE_EVENT_MAIN_WINDOW_NULL = 'Activate event, mainWindow null:';
+/** @const {string} Prefix when an external file is added as an extra input (remux). */
+export const LOG_ADDITIONAL_INPUT = 'Additional input:';
 /** @const {string} Logged when a batch queue job is added (addJob). */
 export const LOG_ADD_JOB = 'addJob:';
 /** @const {string} Logged with the current platform when all windows have closed. */
@@ -18,6 +20,8 @@ export const LOG_APP_READY_CREATING_SPLASH_AND_MAIN_WINDOWS = 'App ready, creati
 export const LOG_APPLYING_HARDWARE_ACCELERATION_FLAGS_FOR = 'Applying hardware acceleration flags for';
 /** @const {string} Arrow separator used in log messages. */
 export const LOG_ARROW = '->';
+/** @const {string} Prefix when a cover image is attached with -attach (MKV/WebM). */
+export const LOG_ATTACH_COVER = 'Attach cover:';
 /** @const {string} Prefix when logging an audio value. */
 export const LOG_AUDIO = 'audio:';
 /** @const {string} Prefix when logging an audio bitrate value. */
@@ -65,6 +69,10 @@ export const LOG_CANCELLING_CURRENT_BMF_PROCESS = 'Cancelling current BMF proces
 export const LOG_CANCELLING_CURRENT_FFMPEG_PROCESS = 'Cancelling current FFmpeg process';
 /** @const {string} Logged when a video cut job is being cancelled. */
 export const LOG_CANCELLING_CUT_JOB = 'Cancelling cut job';
+/** @const {string} Logged when the target container cannot store chapters. */
+export const LOG_CHAPTERS_COPY_UNSUPPORTED = 'Chapters not supported by target container, skipping';
+/** @const {string} Prefix when importing chapters from an FFMETADATA file. */
+export const LOG_CHAPTERS_FILE = 'Chapters file:';
 /** @const {string} Logged when the job list is cleared (clearJobs). */
 export const LOG_CLEAR_JOBS = 'clearJobs';
 /** @const {string} Logged when the current selection is cleared (clearSelection). */
@@ -101,6 +109,8 @@ export const LOG_CONVERT = 'convert:';
 export const LOG_CONVERT_FILE = 'convertFile:';
 /** @const {string} Prefix when logging a stream copy value. */
 export const LOG_COPY = 'copy:';
+/** @const {string} Logged when source chapters are copied to the output (map_chapters 0). */
+export const LOG_COPY_CHAPTERS = 'Copy chapters from source';
 /** @const {string} Prefix when logging a copy mode value. */
 export const LOG_COPY_MODE = 'copyMode:';
 /** @const {string} Logged when the main window is being created. */
@@ -123,6 +133,16 @@ export const LOG_DECODER_PROCESS_EXITED_WITH_CODE = 'Decoder process exited with
 export const LOG_DECODER_PROCESS_KILLED = 'Decoder process killed';
 /** @const {string} Prefix when FFmpeg capabilities have been detected. */
 export const LOG_DETECTED_FFMPEG_CAPABILITIES = 'Detected ffmpeg capabilities:';
+/** @const {string} Prefix when a stream disposition is set (e.g. attached_pic), keyed by stream. */
+export const LOG_DISPOSITION_KEYED = 'Disposition:';
+/** @const {string} Prefix when a demux operation completes successfully. */
+export const LOG_DEMUX_COMPLETE = 'Demux complete:';
+/** @const {string} Prefix when a demux target is re-encoded vs stream-copied. */
+export const LOG_DEMUX_CONVERT_KIND = 'Demux convert:';
+/** @const {string} Prefix when a demux target fails. */
+export const LOG_DEMUX_FAILED = 'Demux failed:';
+/** @const {string} Prefix when a demux stream is being extracted. */
+export const LOG_DEMUX_STREAM = 'Demux stream:';
 /** @const {string} Prefix when logging a duration value. */
 export const LOG_DURATION = 'duration:';
 /** @const {string} Prefix when logging a capitalized Duration value. */
@@ -443,6 +463,8 @@ export const LOG_LOADING_PRODUCTION_RENDERER = 'Loading production renderer';
 export const LOG_MAIN_WINDOW_CLOSED = 'Main window closed';
 /** @const {string} Logged when the main window is ready and being shown. */
 export const LOG_MAIN_WINDOW_READY_SHOWING = 'Main window ready, showing';
+/** @const {string} Prefix when a stream-mapping spec (-map) is emitted. */
+export const LOG_MAP = 'Map:';
 /** @const {string} Prefix when media info has been retrieved. */
 export const LOG_MEDIA_INFO_RETRIEVED = 'Media info retrieved:';
 /** @const {string} Logged when the React app is mounted. */
@@ -600,6 +622,10 @@ export const LOG_REGISTERING_IPC_HANDLERS = 'Registering IPC handlers';
 export const LOG_REMOVE_JOB = 'removeJob:';
 /** @const {string} Prefix when a partial output file is removed. */
 export const LOG_REMOVED_PARTIAL_OUTPUT = 'Removed partial output:';
+/** @const {string} Prefix when a remux completes successfully. */
+export const LOG_REMUX_COMPLETE = 'Remux complete:';
+/** @const {string} Prefix when a remux fails. */
+export const LOG_REMUX_FAILED = 'Remux failed:';
 /** @const {string} Prefix when the player render loop errors. */
 export const LOG_RENDER_LOOP_ERROR = 'renderLoop error:';
 /** @const {string} Logged when a form is reset. */
@@ -626,6 +652,18 @@ export const LOG_ROTATION = 'Rotation:';
 export const LOG_ROTATION_METADATA = 'Rotation (lossless metadata):';
 /** @const {string} Logged when a rotation/flip cannot apply in stream-copy mode. */
 export const LOG_ROTATION_COPY_UNSUPPORTED = 'Rotation/flip ignored: not supported in stream-copy mode for this container';
+/** @const {string} Prefix when logging the merged video filter chain (-vf). */
+export const LOG_VIDEO_FILTERS = 'Video filters:';
+/** @const {string} Logged when video filters are ignored because copy mode is active. */
+export const LOG_FILTERS_IGNORED_COPY = 'Video filters ignored: filters require re-encoding but copy mode is active';
+/** @const {string} Prefix when logging a rejected/invalid filter entry. */
+export const LOG_FILTER_INVALID = 'Invalid video filter:';
+/** @const {string} Logged when the user replaces the full video filter list. */
+export const LOG_SET_VIDEO_FILTERS = 'setVideoFilters:';
+/** @const {string} Logged when a single video filter entry is appended. */
+export const LOG_ADD_VIDEO_FILTER = 'addVideoFilter:';
+/** @const {string} Logged when a video filter entry is removed by index. */
+export const LOG_REMOVE_VIDEO_FILTER = 'removeVideoFilter:';
 /** @const {string} Prefix when scheduling one audio chunk fails. */
 export const LOG_SCHEDULE_ONE_CHUNK_ERROR = 'scheduleOneChunk error:';
 /** @const {string} Prefix when a seek is performed. */
@@ -736,12 +774,20 @@ export const LOG_START_CONVERSION = 'startConversion:';
 export const LOG_START_CONVERSION_NO_INPUT_FILE = 'startConversion: no input file';
 /** @const {string} Logged when startConversion is called without an output file. */
 export const LOG_START_CONVERSION_NO_OUTPUT_FILE = 'startConversion: no output file';
+/** @const {string} Prefix when a demux is started. */
+export const LOG_START_DEMUX = 'startDemux:';
 /** @const {string} Prefix when startExtract is invoked. */
 export const LOG_START_EXTRACT = 'startExtract:';
 /** @const {string} Logged when startExtract is called without an input file. */
 export const LOG_START_EXTRACT_NO_INPUT_FILE = 'startExtract: no input file';
 /** @const {string} Logged when startExtract is called without an output file. */
 export const LOG_START_EXTRACT_NO_OUTPUT_FILE = 'startExtract: no output file';
+/** @const {string} Prefix when a remux is started. */
+export const LOG_START_REMUX = 'startRemux:';
+/** @const {string} Logged when startRemux is called without an input file. */
+export const LOG_START_REMUX_NO_INPUT_FILE = 'startRemux: no input file';
+/** @const {string} Logged when startRemux is called without an output file. */
+export const LOG_START_REMUX_NO_OUTPUT_FILE = 'startRemux: no output file';
 /** @const {string} Prefix when logging a start time value. */
 export const LOG_START_TIME = 'Start time:';
 /** @const {string} Prefix when a conversion is starting. */
@@ -750,10 +796,18 @@ export const LOG_STARTING_CONVERSION = 'Starting conversion:';
 export const LOG_STARTING_IN_CLI_MODE_ARGV = 'Starting in CLI mode, argv:';
 /** @const {string} Prefix when logging stderr output. */
 export const LOG_STDERR = 'stderr:';
+/** @const {string} Logged when a mapped stream spec matches no input stream. */
+export const LOG_STREAM_SKIPPED_NO_MATCH = 'Stream spec skipped, no matching stream:';
 /** @const {string} Logged when subscribing to conversion progress events. */
 export const LOG_SUBSCRIBING_TO_CONVERSION_PROGRESS = 'Subscribing to conversion progress';
+/** @const {string} Prefix when a subtitle codec (-c:s) is emitted. */
+export const LOG_SUBTITLE_CODEC = 'Subtitle codec:';
 /** @const {string} Prefix when switching the UI language. */
 export const LOG_SWITCHING_LANGUAGE_TO = 'Switching language to:';
+/** @const {string} Prefix when an input's timestamps are shifted with -itsoffset. */
+export const LOG_SYNC_OFFSET = 'Sync offset:';
+/** @const {string} Prefix when a thumbnail/cover image is embedded into the output. */
+export const LOG_THUMBNAIL = 'Thumbnail:';
 /** @const {string} Logged when thumbnail extraction fails because no frames were decoded. */
 export const LOG_THUMBNAIL_EXTRACTION_FAILED_NO_FRAMES_DECODED = 'Thumbnail extraction failed: no frames decoded';
 /** @const {string} Prefix when a thumbnail segment fails with a code. */

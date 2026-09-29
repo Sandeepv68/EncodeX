@@ -198,6 +198,104 @@ describe('BatchQueue', () => {
     );
   });
 
+  it('adds files with the remux operation stream-copying into the source container', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/video.mkv']);
+    renderPage();
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.click(screen.getByText('batchQueue.operationRemux'));
+    openAddFiles();
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() =>
+      expect(queueAddMock).toHaveBeenCalledWith(
+        '/in/video.mkv',
+        '/in/video_encodex_converted.mkv',
+        { copy: true, video: undefined, audio: undefined, map: undefined, hardwareAcceleration: true, hwaccelMode: 'auto' },
+        'FFMPEG',
+        false,
+      ),
+    );
+  });
+
+  it('adds one job per extracted stream for the demux operation', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/movie.mkv']);
+    vi.mocked(window.electronAPI.getMediaInfo).mockResolvedValue({
+      file: '/in/movie.mkv',
+      format: 'matroska',
+      size: 100,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [
+        { index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 },
+        { index: 1, type: 'audio', codec: 'aac', sampleRate: 48000, channels: 2 },
+        { index: 2, type: 'subtitle', codec: 'subrip' },
+      ],
+    });
+    renderPage();
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.click(screen.getByText('batchQueue.operationDemux'));
+    openAddFiles();
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() => expect(queueAddMock).toHaveBeenCalledTimes(3));
+    expect(queueAddMock).toHaveBeenCalledWith(
+      '/in/movie.mkv',
+      '/in/movie.video_encodex_converted.mp4',
+      expect.objectContaining({ copy: true, video: true, audio: false, map: ['0:v:0'] }),
+      'FFMPEG',
+      false,
+    );
+    expect(queueAddMock).toHaveBeenCalledWith(
+      '/in/movie.mkv',
+      '/in/movie.audio_0_encodex_converted.m4a',
+      expect.objectContaining({ copy: true, video: false, audio: true, map: ['0:a:0'] }),
+      'FFMPEG',
+      false,
+    );
+    expect(queueAddMock).toHaveBeenCalledWith(
+      '/in/movie.mkv',
+      '/in/movie.subtitle_0_encodex_converted.srt',
+      expect.objectContaining({ copy: true, video: false, audio: false, map: ['0:s:0'] }),
+      'FFMPEG',
+      false,
+    );
+  });
+
+  it('applies the demux stream-kind selection and conversion target to new jobs', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/movie.mkv']);
+    vi.mocked(window.electronAPI.getMediaInfo).mockResolvedValue({
+      file: '/in/movie.mkv',
+      format: 'matroska',
+      size: 100,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [
+        { index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 },
+        { index: 1, type: 'audio', codec: 'aac', sampleRate: 48000, channels: 2 },
+      ],
+    });
+    renderPage();
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.click(screen.getByText('batchQueue.operationDemux'));
+    // Extract only the audio kind, re-encoding it to MP3.
+    fireEvent.click(screen.getByRole('switch', { name: 'Video' }));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'demux.audioCodec' }));
+    fireEvent.click(screen.getByText('mp3'));
+    openAddFiles();
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+    await waitFor(() =>
+      expect(queueAddMock).toHaveBeenCalledWith(
+        '/in/movie.mkv',
+        '/in/movie.audio_0_encodex_converted.mp3',
+        expect.objectContaining({ copy: false, video: false, audio: true, map: ['0:a:0'], audioCodec: 'mp3' }),
+        'FFMPEG',
+        false,
+      ),
+    );
+    expect(queueAddMock).toHaveBeenCalledTimes(1);
+  });
+
   it('adds files with the compress image operation dropping the audio codec', async () => {
     queueListMock.mockResolvedValue([]);
     selectFilesMock.mockResolvedValue(['/in/photo.png']);

@@ -31,6 +31,8 @@ describe('Dashboard', () => {
     expect(screen.getByText('nav.image')).toBeInTheDocument();
     expect(screen.getByText('nav.audio')).toBeInTheDocument();
     expect(screen.getByText('nav.cut')).toBeInTheDocument();
+    expect(screen.getByText('nav.remux')).toBeInTheDocument();
+    expect(screen.getByText('nav.demux')).toBeInTheDocument();
     expect(screen.getByText('nav.batchQueue')).toBeInTheDocument();
     expect(screen.queryByText('nav.logs')).not.toBeInTheDocument();
     expect(screen.queryByText('nav.settings')).not.toBeInTheDocument();
@@ -49,9 +51,17 @@ describe('Dashboard', () => {
     expect(screen.getByTestId('location')).toHaveTextContent('/batch');
   });
 
+  it('navigates to the demux page when its card is clicked', () => {
+    renderDashboard();
+    fireEvent.click(screen.getByText('nav.demux'));
+    expect(screen.getByTestId('location')).toHaveTextContent('/demux');
+  });
+
   it('renders the description text for each card', () => {
     renderDashboard();
     expect(screen.getByText('dashboard.descConvert')).toBeInTheDocument();
+    expect(screen.getByText('dashboard.descRemux')).toBeInTheDocument();
+    expect(screen.getByText('dashboard.descDemux')).toBeInTheDocument();
     expect(screen.getByText('dashboard.descBatch')).toBeInTheDocument();
   });
 
@@ -67,9 +77,21 @@ describe('Dashboard', () => {
     expect(screen.getByTestId('location')).toHaveTextContent('/audio-extract');
   });
 
-  it('navigates to the batch queue page when 6 is pressed', () => {
+  it('navigates to the remux page when 6 is pressed', () => {
     renderDashboard();
     fireEvent.keyDown(window, { code: 'Digit6', key: '6' });
+    expect(screen.getByTestId('location')).toHaveTextContent('/remux');
+  });
+
+  it('navigates to the demux page when 7 is pressed', () => {
+    renderDashboard();
+    fireEvent.keyDown(window, { code: 'Digit7', key: '7' });
+    expect(screen.getByTestId('location')).toHaveTextContent('/demux');
+  });
+
+  it('navigates to the batch queue page when 8 is pressed', () => {
+    renderDashboard();
+    fireEvent.keyDown(window, { code: 'Digit8', key: '8' });
     expect(screen.getByTestId('location')).toHaveTextContent('/batch');
   });
 

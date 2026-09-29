@@ -12,6 +12,8 @@
  *  - '/image-compress'-> faImage (image compression)
  *  - '/audio-extract' -> faMusic (audio extraction)
  *  - '/video-cut'     -> faScissors (video trimming/cutting)
+ *  - '/remux'         -> faLayerGroup (lossless remux)
+ *  - '/demux'         -> faScissors (stream demux/splitting)
  *  - '/batch'         -> faListCheck (batch queue)
  *  - '/logs'          -> faFileLines (log console)
  *  - '/settings'      -> faGear (settings)
@@ -27,6 +29,7 @@ import {
   faImage,
   faMusic,
   faScissors,
+  faLayerGroup,
   faListCheck,
   faFileLines,
   faGear,
@@ -45,6 +48,8 @@ export const pageIcons: Record<string, ReactNode> = {
   '/image-compress': <FontAwesomeIcon icon={faImage} />,
   '/audio-extract': <FontAwesomeIcon icon={faMusic} />,
   '/video-cut': <FontAwesomeIcon icon={faScissors} />,
+  '/remux': <FontAwesomeIcon icon={faLayerGroup} />,
+  '/demux': <FontAwesomeIcon icon={faScissors} />,
   '/batch': <FontAwesomeIcon icon={faListCheck} />,
   '/logs': <FontAwesomeIcon icon={faFileLines} />,
   '/settings': <FontAwesomeIcon icon={faGear} />,

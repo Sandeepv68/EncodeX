@@ -26,7 +26,9 @@
       "paused": "Ar sos",
       "starting": "Ag tosú",
       "parallel": "{{count}} comhthrách"
-    }
+    },
+    "remux": "Athchumhdach",
+    "demux": "Démhcseáil"
   },
   "dashboard": {
     "welcome": "Fáilte go EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Bain fuaim ghlan as comhaid físeáin",
     "descCut": "Gearr físeáin le cruinneas fráma",
     "descBatch": "Tiontaigh comhaid iolracha ag an am céanna le scuaine chliste",
-    "shortcutsFooter": "Brúigh {{shortcut}} le haghaidh aicearraí méarchláir"
+    "shortcutsFooter": "Brúigh {{shortcut}} le haghaidh aicearraí méarchláir",
+    "descRemux": "Aistríonn sruthanna gan chailliúint chuig coimeádán nua",
+    "descDemux": "Deighileann sruthanna comhaid ina gcomhaid aschuir ar leith"
   },
   "gettingStarted": {
     "hint": "Nua anseo?",
@@ -125,7 +129,25 @@
     "showPreview": "Taispeáin Réamhamharc",
     "closePreview": "Dún Réamhamharc",
     "viewMore": "Féach níos mó",
-    "viewLess": "Féach níos lú"
+    "viewLess": "Féach níos lú",
+    "filtersTitle": "Scagairí físeáin",
+    "filtersHint": "Cuireann scagairí físeáin FFmpeg i bhfeidhm (bearradh, ráta frámaí, neamhfhíodóireacht, laghdú torainn, dathanna…) le linn athionchódaithe. Comhcheanglaítear na scagairí uile in aon slabhra -vf amháin tar éis scálú agus rothlú.",
+    "addPreset": "Cuir scagaire réamhshocraithe leis…",
+    "addFilter": "Cuir scagaire leis",
+    "customChainLabel": "Slabhra scagairí saincheaptha",
+    "customChainPlaceholder": "m.sh. fps=30, eq=brightness=0.1",
+    "customChainHint": "Slonn scagairí FFmpeg scartha le camóga. Ní mór lúibíní agus lúibíní cearnacha cothromaithe a bheith i ngach mír, sleachta ag teacht le chéile, agus gan aon mheiteashiombail ó shlógairt.",
+    "addCustom": "Cuir saincheaptha leis",
+    "removeFilter": "Bain an scagaire",
+    "moveUp": "Bog suas",
+    "moveDown": "Bog síos",
+    "clearAll": "Glan go léir",
+    "noFilters": "Níor cuireadh aon scagaire leis.",
+    "filtersDisabledNote": "Bíonn atriallachantacht ag teastáil ó scagairí físeáin. Múch an chóipeáil gan chailliúint chun scagairí a chur leis.",
+    "filtersTurnOffCopy": "Múch an chóipeáil gan chailliúint",
+    "filtersCopyWarning": "Tá mód cóipeála gan chailliúint ar siúl, mar sin déanfar neamhaird de scagairí físeáin. Múch an chóipeáil gan chailliúint chun na scagairí a chur i bhfeidhm.",
+    "chainPreview": "Réamhamharc: -vf {{chain}}",
+    "filtersInvalid": "Scagaire neamhbhailí: {{error}}"
   },
   "mediaInfo": {
     "title": "Faisnéis Meán",
@@ -138,7 +160,7 @@
     "bitrate": "Giotáráta",
     "streams": "Sruthanna",
     "stream": "Sruth",
-    "codec": "Codec",
+    "codec": "Códaire",
     "resolution": "Taifeach",
     "pixelFormat": "Formáid Picteilín",
     "frameRate": "Ráta Fráma",
@@ -347,7 +369,7 @@
     "revealInFolder": "Taispeáin san Fhillteán",
     "copyPath": "Cóipeáil Cosán",
     "stats": "{{queued}} sa scuaine, {{running}} ag rith, {{done}} déanta, {{failed}} ar theip",
-    "etaEstimate": "ETA ~{{eta}}",
+    "etaEstimate": "Críochnófar i mbeagnach ~{{eta}}",
     "finished": "Bhaisc críochnaithe: {{done}} rathúil, {{failed}} ar theip",
     "notificationTitle": "Bhaisc EncodeX críochnaithe",
     "filters": {
@@ -427,13 +449,16 @@
     "optionsUpdateFailed": "Ní féidir an post seo a chur in eagar níos mó.",
     "condense": "Crap",
     "expand": "Leathnaigh",
-    "clearAll": "Glan Uile"
+    "clearAll": "Glan Uile",
+    "operationRemux": "Athchumhdach",
+    "operationDemux": "Démhcseáil",
+    "remuxContainerHint": "An coimeádán a chóipeáiltear na sruthanna chuige. Coinníonn \"Uathoibríoch\" síneadh gach físe foinseach."
   },
   "progress": {
     "title": "Dul chun cinn an chomhshó",
     "time": "Am",
     "speed": "Luas",
-    "eta": "ETA"
+    "eta": "Am fágtha"
   },
   "errorBoundary": {
     "title": "Chuaigh Rud Éigin Mícheart",
@@ -460,10 +485,10 @@
     "download": "Íoslódáil mar TXT",
     "filter": "Scag de réir leibhéil",
     "levelAll": "Uile",
-    "levelDebug": "DEBUG",
-    "levelInfo": "INFO",
-    "levelWarn": "WARN",
-    "levelError": "ERROR",
+    "levelDebug": "DIODMHEASÚNÚ",
+    "levelInfo": "EOLAS",
+    "levelWarn": "RABHADH",
+    "levelError": "EARRÁID",
     "noEntries": "Níl aon iontrálacha loga go fóill.",
     "entryCount": "{{count}} iontráil"
   },
@@ -495,7 +520,9 @@
     "updateAvailable": "Nuashonrú ar fáil: v{{version}}",
     "updateNow": "Nuashonraigh anois",
     "updateDownloaded": "Nuashonrú v{{version}} íoslódáilte",
-    "viewUpdate": "Féach"
+    "viewUpdate": "Féach",
+    "remuxed": "Críochnaíodh an t-athchumhdach",
+    "demuxed": "Asbhaineadh na sruthanna go rathúil"
   },
   "profiles": {
     "searchPlaceholder": "Cuardaigh próifílí...",
@@ -598,7 +625,9 @@
       "videoCut": "Gearr Físeán",
       "batchQueue": "Scuaine Baisc",
       "logs": "Logaí",
-      "dashboard": "Deais"
+      "dashboard": "Deais",
+      "remux": "Athchumhdach",
+      "demux": "Démhcseáil"
     },
     "global": {
       "help": "Taispeáin aicearraí méarchláir",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Téigh go dtí an Scuaine Baisc",
       "navLogs": "Téigh go Logaí",
       "navSettings": "Téigh go Socruithe",
-      "themeToggle": "Scaip téama"
+      "themeToggle": "Scaip téama",
+      "navRemux": "Téigh go Athchumhdach"
     },
     "convert": {
       "input": "Roghnaigh comhad ionchuir",
@@ -679,7 +709,17 @@
       "image": "Oscail Íomhá",
       "audio": "Oscail Fuaim",
       "cut": "Oscail Gearr",
-      "batch": "Oscail an Scuaine Baisc"
+      "batch": "Oscail an Scuaine Baisc",
+      "remux": "Oscail Athchumhdach",
+      "demux": "Oscail Démhcseáil"
+    },
+    "remux": {
+      "input": "Roghnaigh comhad ionchuir",
+      "start": "Tosaigh athchumhdach"
+    },
+    "demux": {
+      "input": "Roghnaigh comhad ionchuir",
+      "start": "Tosaigh asbhaint"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "Scaoileadh faoin gCeadúnas MIT. Saor le húsáid, cóipeáil, mionathrú, cónascadh, foilsiú, dáileadh, fo-cheadúnú agus díol — lena n-áirítear ar bhonn tráchtála — ar an gcoinníoll go gcuirtear an fógra cóipchirt agus an fógra ceadúnais san áireamh i ngach cóip nó i gcuid shuntasach den bhogearra. Soláthraítear an bogearra \"mar atá\", gan baránta de chineál ar bith.",
     "acknowledgements": "Déanta le ❤️ don fhoinse oscailte — á chumhachtú ag tionscadal FFmpeg agus an pobal.",
     "checkForUpdates": "Seiceáil le haghaidh nuashonruithe",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Téarmaí agus Coinníollacha",
+    "terms": "Téarmaí",
+    "readTerms": "Léigh na téarmaí"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Téarmaí agus Coinníollacha",
+    "accept": "Aontaím",
+    "reject": "Ní aontaím",
+    "close": "Dún",
+    "lastUpdated": "I bhfeidhm ó: {{date}}"
   },
   "update": {
     "title": "Nuashonrú",
@@ -734,5 +774,167 @@
     "installOnRestart": "Suiteáil ar an gcéad atosú eile",
     "installScheduled": "Suiteálfar nuashonrú v{{version}} ar an gcéad atosú eile den aip.",
     "cancelRestartInstall": "Cealaigh"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Bearradh",
+      "cropHint": "Bhearradh an físeán de réir leithid, airde agus fritháirimh shonraithe.",
+      "framerate": "Ráta frámaí",
+      "framerateHint": "Athraíonn ráta frámaí an aschuir (déantar frámaí a dhúbailt nó a scriosadh).",
+      "deinterlace": "Neamhfhíodóireacht",
+      "deinterlaceHint": "Iompaíonn físeán croscheilte ina fhíseán forásach.",
+      "denoise": "Laghdú torainn",
+      "denoiseHint": "Laghdaíonn torann agus sonraí á gcoimeád (hqdn3d).",
+      "sharpen": "Géire",
+      "sharpenHint": "Méadaíonn géire bhraite (unsharp).",
+      "color": "Dath",
+      "colorHint": "Coigeartaíonn gile, codarsnacht, sáithiú agus gáma (eq).",
+      "grayscale": "Scála liath",
+      "grayscaleHint": "Baineann dath, ag fágáil íomhá dubh-agus-bán.",
+      "blur": "Doiléiriú",
+      "blurHint": "Cuireann scagaire bosca i bhfeidhm chun an íomhá a bhogadh."
+    },
+    "params": {
+      "crop": {
+        "w": "Leithead",
+        "h": "Airde",
+        "x": "Fritháireamh X",
+        "y": "Fritháireamh Y"
+      },
+      "framerate": {
+        "fps": "Frámaí sa soicind"
+      },
+      "deinterlace": {
+        "mode": "Ord réimsí",
+        "modes": {
+          "auto": "Uathoibríoch",
+          "tff": "Réimse uachtarach ar dtús",
+          "bff": "Réimse íochtarach ar dtús"
+        }
+      },
+      "denoise": {
+        "strength": "Neart"
+      },
+      "sharpen": {
+        "strength": "Neart"
+      },
+      "color": {
+        "brightness": "Gile",
+        "contrast": "Codarsnacht",
+        "saturation": "Sáithiú",
+        "gamma": "Gáma"
+      },
+      "blur": {
+        "strength": "Neart"
+      }
+    }
+  },
+  "remux": {
+    "title": "Athchumhdach",
+    "videoFile": "Comhad físeáin",
+    "dropLabel": "Tarraing comhad físeáin anseo nó cliceáil chun roghnú",
+    "videoFileHint": "An comhad meán foinseach a dhéanfar a shruthanna a athphacáil isteach sa choimeádán ceann scríbe. Cóipeáiltear na sruthanna gan athionchódú.",
+    "selectedVideo": "Físeán roghnaithe: {{file}}",
+    "streamCount": "{{selected}} as {{total}} sruth roghnaithe",
+    "container": "Coimeádán",
+    "containerHint": "Coimeádán an chomhaid aschuir tar éis an athchumhdaigh. Roghnaigh ó na coimeádáin físeáin choitianta; leanann síneadh an aschuir an coimeádán.",
+    "streams": "Sruthanna foinseacha",
+    "streamsHint": "Roghnaigh cé na sruthanna ón gcomhad foinseach le coinneáil in aschur an athchumhdaigh. Scriostar sruthanna neamhroghnaithe.",
+    "streamIndex": "Uimh.",
+    "kind": "Cineál",
+    "selectStream": "Roghnaigh sruth {{kind}} #{{index}}",
+    "selectAll": "Coinnigh go léir",
+    "selectNone": "Ná coinnigh aon cheann",
+    "audioSync": "Aistrigh fuaim (soicind)",
+    "audioSyncHint": "Aistríonn an príomhrian fuaime i gcoibhneas leis an bhfíseán gan athionchódú, m.sh. -0.5 le bheith 0.5 soicind níos luaithe nó 1.5 le bheith 1.5 soicind níos déanaí.",
+    "audioSyncLossless": "Gan chailliúint: déantar fuaim a chóipeáil mar shruth le fritháireamh ama, mar sin ní athraíonn cáilíocht.",
+    "subtitles": "Fotheidil curtha leis",
+    "subtitlesHint": "Comhaid fotheidil sheachtracha (.srt, .ass, .vtt) atá leabaithe in aschur an athchumhdaigh mar rianta ionchuir bhreise.",
+    "addSubtitle": "Cuir comhad fotheidil leis",
+    "subtitleCodec": "Códaire ceann scríbe",
+    "subtitleCodecHint": "An códaire fotheidil don rian leabaithe. Faigheann coimeádáin formáidí éagsúla fotheidil; beidh rabhadh mar thoradh ar fhormáid a roghnú nach féidir leis an gcoimeádán a stóráil.",
+    "removeSubtitle": "Bain an fotheideal",
+    "audioTracks": "Rianta fuaime curtha leis",
+    "audioTracksHint": "Comhaid fuaime sheachtracha (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) atá leabaithe in aschur an athchumhdaigh mar rianta ionchuir bhreise.",
+    "addAudioTrack": "Cuir rian fuaime leis",
+    "removeAudioTrack": "Bain an rian fuaime",
+    "addedTrackDelay": "Frítháireamh an riain seo (soicind)",
+    "addedTrackDelayHint": "Fritháireamh sintithe don rian seo i gcoibhneas leis an bhfíseán (dearfach = seinntear níos déanaí). Gan chailliúint: cuirtear i bhfeidhm mar -itsoffset agus an sruth á chóipeáil.",
+    "thumbnail": "Mionsamhail / clúdach",
+    "thumbnailHint": "Íomhá clúdaigh roghnach (.jpg, .jpeg, .png) atá leabaithe sa chomhad tar éis an athchumhdaigh. Ceanglaíonn MKV/WebM é mar shruth íomhá; leabaíonn MP4/MOV é mar shruth físeáin le clib attached_pic.",
+    "addThumbnail": "Cuir mionsamhail leis",
+    "thumbnailUnsupported": "Ní féidir le {{container}} clúdaigh a stóráil. Athraigh go MKV, WebM, MP4 nó MOV chun mionsamhail a cheangal.",
+    "removeThumbnail": "Bain an mhionsamhail",
+    "thumbnailMode": "Leabaithe mar {{mode}}",
+    "thumbnailAttached": "íomhá cheangailte",
+    "thumbnailDisposition": "sruth clúdaigh attached_pic",
+    "chapters": "Caibidlí",
+    "chaptersHint": "Coimeádtar caibidlí an fhíse fhoinsigh de réir réamhshocraithe. Iompórtáil comhad caibidlí FFMETADATA chun caibidlí an fhíse fhoinsigh a ionadú sa chomhad tar éis an athchumhdaigh.",
+    "copyChapters": "Cóipeáil caibidlí an fhíse fhoinsigh",
+    "copyChaptersHint": "Coimeádann marcóirí caibidlí an chomhaid fhoinsigh in aschur an athchumhdaigh (gan chailliúint, -map_chapters 0).",
+    "importChapters": "Iompórtáil comhad caibidlí",
+    "chaptersUnsupported": "Ní bhíonn meiteashonraí caibidlí ag {{container}}, mar sin scriostar na caibidlí.",
+    "removeChapters": "Bain an comhad caibidlí",
+    "warnings": "Rabhaidh chomhoiriúnachta",
+    "warningsHint": "Nótaí neamhbhacacha faoi oiriúnacht na sruthanna agus na socruithe roghnaithe don choimeádán roghnaithe. Ceadaíonn rabhaidh an tosú fós; cuireann earráidí bac air.",
+    "outputFile": "Comhad aschuir",
+    "outputFileHint": "Conair cheann scríbe an chomhaid tar éis an athchumhdaigh. Leanann an síneadh an coimeádán ceann scríbe.",
+    "placeholderOutput": "aschur.mkv",
+    "start": "Tosaigh athchumhdach",
+    "remuxing": "Ag déanamh athchumhdaigh…",
+    "pause": "Sos",
+    "resume": "Lean ar aghaidh",
+    "cancel": "Cealaigh",
+    "cancelTitle": "Cealaigh athchumhdach",
+    "cancelMessage": "An bhfuil tú cinnte gur mian leat an athchumhdach reatha a chealú?",
+    "yes": "Tá",
+    "no": "Níl",
+    "filtersTitle": "Scagairí físeáin",
+    "filtersHint": "Cuireann scagairí físeáin FFmpeg i bhfeidhm le linn athionchódaithe na sruthanna físeáin roghnaithe. Ní féidir scagairí a chur i bhfeidhm ar chóipeáil gan chailliúint, mar sin athróidh fiú scagaire amháin an t-athchumhdach seo ina athionchódú.",
+    "filtersReencodeWarning": "Ní féidir scagairí físeáin a rith ar chóip srutha, mar sin déanann na {{count}} scagairí roghnaithe an t-athchumhdach seo ina athionchódú."
+  },
+  "demux": {
+    "title": "Démhcseáil",
+    "videoFile": "Comhad físeáin",
+    "videoFileHint": "An comhad meán foinseach a n-asbhainfear a sruthanna. Scríobhtar gach sruth roghnaithe ina chomhad aschuir féin.",
+    "dropLabel": "Tarraing comhad físeáin anseo nó cliceáil chun roghnú",
+    "selectedVideo": "Físeán roghnaithe: {{file}}",
+    "streamCount": "{{selected}} as {{total}} sruth roghnaithe",
+    "streams": "Sruthanna foinseacha",
+    "streamsHint": "Roghnaigh cé na sruthanna le hasbhaint. Beidh comhad aschuir ar leith i ngach sruth roghnaithe; scriostar na sruthanna neamhroghnaithe.",
+    "extractStreams": "Sruthanna le hasbhaint",
+    "streamGroup": "Sruthanna {{kind}}",
+    "suggestedOutput": "Aschur",
+    "selectStream": "Roghnaigh sruth {{kind}} #{{index}} le hasbhaint",
+    "videoContainer": "Ceann scríbe físeáin",
+    "videoContainerHint": "Conas a scríobhtar na sruthanna físeáin. Asbhaineann \"Cóipeáil\" iad gan chailliúint agus gan athionchódú; trí choimeádán a roghnú, déantar físeán a athionchódú sa bhformáid sin.",
+    "audioCodec": "Ceann scríbe fuaime",
+    "audioCodecHint": "Conas a scríobhtar na sruthanna fuaime. Asbhaineann \"Cóipeáil\" iad gan chailliúint agus gan athionchódú; trí chódaire a roghnú, déantar fuaim a athionchódú.",
+    "subtitleFormat": "Ceann scríbe fotheidil",
+    "subtitleFormatHint": "Conas a scríobhtar na sruthanna fotheidil. Asbhaineann \"Cóipeáil\" iad gan chailliúint agus gan athionchódú; trí fhormáid a roghnú, déantar na fotheidil a thiontú. Ní féidir fotheidil ghiotánmheasctha (m.sh. PGS/DVDSUB) a iompú ina dtéacs, mar sin fanann siad cóipeáilte.",
+    "subtitleWarning": "Rabhaidh tiontaithe fotheidil",
+    "subtitleWarningHint": "Ní féidir sruthanna fotheidil ghiotánmheasctha (m.sh. PGS/DVDSUB) a ionchódú mar théacs gan OCR, mar sin asbhaintear iad mar chóipeanna .mks gan chailliúint. Sa phlean asbhainte le feiceáil iad mar \"Cóipeáil\".",
+    "bitmapSubtitleWarning": "Ní féidir an sruth fotheideal giotáinmheasctha seo a iompú ina théacs gan OCR, mar sin déantar é a asbhaint mar chóip .mks gan chailliúint.",
+    "copyOption": "Cóipeáil (gan chailliúint)",
+    "outputDir": "Fillteán aschuir",
+    "outputDirHint": "An fillteán ina scríobhtar na sruthanna asbhainte. De réir réamhshocraithe is é fillteán an fhíse fhoinsigh é.",
+    "outputDirPlaceholder": "fillteán aschuir",
+    "summary": "Plean asbhainte",
+    "summaryHint": "Comhad aschuir amháin do gach sruth roghnaithe in ord rite. Asbhaintear comhaid a bhfuil \"Cóipeáil\" orthu gan chailliúint; déantar comhaid a bhfuil \"Tiontaigh\" orthu a athionchódú.",
+    "copyLabel": "Cóipeáil",
+    "convertLabel": "Ionchódaigh go {{target}}",
+    "start": "Tosaigh démhcseáil",
+    "demuxing": "Ag asbhaint…",
+    "pause": "Sos",
+    "resume": "Lean ar aghaidh",
+    "cancel": "Cealaigh",
+    "cancelTitle": "Cealaigh démhcseáil",
+    "cancelMessage": "An bhfuil tú cinnte gur mian leat an démhcseáil reatha a chealú?",
+    "yes": "Tá",
+    "no": "Níl",
+    "currentStream": "Ag asbhaint sruth {{kind}} #{{index}}",
+    "filtersTitle": "Scagairí físeáin",
+    "filtersHint": "Cuireann scagairí físeáin FFmpeg i bhfeidhm (bearradh, ráta frámaí, neamhfhíodóireacht, laghdú torainn, dathanna…) le linn athionchódaithe na sruthanna físeáin roghnaithe. Tá \"Cóipeáil\" gan chailliúint, mar sin ní thaispeántar na scagairí ach amháin nuair a dhéanann coimeádán an cheannsceir físeán a athionchódú.",
+    "filtersIgnoredCopy": "Déantar neamhaird de scagairí físeáin a fhad agus is é \"Cóipeáil\" an ceann scríbe físeáin, toisc nach féidir cóip srutha a athionchódú. Roghnaigh coimeádán ceann scríbe chun scagairí a chur i bhfeidhm."
   }
 }

@@ -36,6 +36,8 @@ import { ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
 import type { ConversionState } from './types';
 import {
   LOG_RESET_FORM,
+  LOG_ADD_VIDEO_FILTER,
+  LOG_REMOVE_VIDEO_FILTER,
   LOG_SET_AUDIO_BITRATE,
   LOG_SET_AUDIO_CODEC,
   LOG_SET_COPY_MODE,
@@ -54,6 +56,7 @@ import {
   LOG_SET_TRANSCODER,
   LOG_SET_VIDEO_BITRATE,
   LOG_SET_VIDEO_CODEC,
+  LOG_SET_VIDEO_FILTERS,
 } from '../../shared/log-constants';
 
 /**
@@ -81,6 +84,7 @@ const log = new Logger('renderer/stores/conversionStore');
  * @property {boolean} flipH - No horizontal mirroring.
  * @property {boolean} flipV - No vertical mirroring.
  * @property {string} pixelFormat - CONVERSION_DEFAULTS.PIXEL_FORMAT ('yuv420p').
+ * @property {string[]} videoFilters - No video filters.
  * @property {boolean} copyMode - Copy mode off.
  * @property {string} transcoder - TRANSCODER_TYPES[0] ('FFMPEG').
  * @property {EncoderType} encoderType - ENCODER_TYPE_DEFAULT ('auto').
@@ -103,6 +107,7 @@ const INITIAL_STATE = {
   flipH: false,
   flipV: false,
   pixelFormat: CONVERSION_DEFAULTS.PIXEL_FORMAT,
+  videoFilters: [] as string[],
   copyMode: false,
   transcoder: TRANSCODER_TYPES[0],
   encoderType: ENCODER_TYPE_DEFAULT,
@@ -232,6 +237,35 @@ export const useConversionStore = create<ConversionState>((set) => ({
   setPixelFormat: (f) => {
     log.debug(LOG_SET_PIXEL_FORMAT, f);
     set({ pixelFormat: f, isDirty: true });
+  },
+  /**
+   * Replaces the ordered video-filter entries (validated/normalized upstream via
+   * the shared video-filters module) and marks the form dirty.
+   * @param {string[]} filters - The full ordered filter list to store.
+   */
+  setVideoFilters: (filters) => {
+    log.debug(LOG_SET_VIDEO_FILTERS, filters.join(','));
+    set({ videoFilters: filters, isDirty: true });
+  },
+  /**
+   * Appends a single video-filter entry and marks the form dirty.
+   * @param {string} entry - The filter expression to append (e.g. 'fps=30').
+   */
+  addVideoFilter: (entry) => {
+    log.debug(LOG_ADD_VIDEO_FILTER, entry);
+    set((state) => ({ videoFilters: [...state.videoFilters, entry], isDirty: true }));
+  },
+  /**
+   * Removes the video-filter entry at the given index and marks the form dirty.
+   * @param {number} index - Index of the entry to remove (no-op when out of range).
+   */
+  removeVideoFilter: (index) => {
+    log.debug(LOG_REMOVE_VIDEO_FILTER, index);
+    set((state) => {
+      if (index < 0 || index >= state.videoFilters.length) return {};
+      const videoFilters = state.videoFilters.filter((_, i) => i !== index);
+      return { videoFilters, isDirty: true };
+    });
   },
   /**
    * Sets copy mode (stream-copy without re-encoding) and marks the form dirty.

@@ -19,9 +19,11 @@ const { ffmpegMock, setFfmpegPathMock, setFfprobePathMock, existsSyncMock, suspe
         'output',
         'run',
         'kill',
+        'input',
       ]) {
         self[method] = vi.fn(() => self);
       }
+      self._currentInput = { options: vi.fn(() => self._currentInput) };
       self.ffprobe = vi.fn();
       self.on = vi.fn(() => self);
       self.ffmpegProc = { pid: 4242 };
@@ -263,6 +265,40 @@ describe('FfmpegCore', () => {
     expect(cmd.videoFilters).toHaveBeenCalledWith('scale=1280:-2,transpose=2,transpose=2');
   });
 
+  it('appends user video filters after scale and rotation in one chain', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', {
+      scale: '1280x720',
+      rotate: '90',
+      videoFilters: ['fps=30', 'eq=brightness=0.1'],
+    });
+    const cmd = getCommand();
+    expect(cmd.videoFilters).toHaveBeenCalledWith('scale=1280x720,transpose=1,fps=30,eq=brightness=0.1');
+    expect(cmd.size).not.toHaveBeenCalled();
+  });
+
+  it('emits a video filter chain for user filters only', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { videoFilters: ['yadif=1', 'hqdn3d=4'] });
+    const cmd = getCommand();
+    expect(cmd.videoFilters).toHaveBeenCalledWith('yadif=1,hqdn3d=4');
+  });
+
+  it('keeps scale-only on the native size fast path', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { scale: '1280x720' });
+    const cmd = getCommand();
+    expect(cmd.size).toHaveBeenCalledWith('1280x720');
+    expect(cmd.videoFilters).not.toHaveBeenCalled();
+  });
+
+  it('drops invalid filter entries and keeps valid ones', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', { videoFilters: ['fps=30', 'fps=30;rm -rf /'] });
+    const cmd = getCommand();
+    expect(cmd.videoFilters).toHaveBeenCalledWith('fps=30');
+  });
+
   it('writes rotation metadata in copy mode for supported containers', () => {
     const core = new FfmpegCore();
     core.convert('in.mp4', 'out.mp4', { copy: true, rotate: '90' });
@@ -276,6 +312,64 @@ describe('FfmpegCore', () => {
     core.convert('in.webm', 'out.webm', { copy: true, rotate: '90' });
     const cmd = getCommand();
     expect(cmd.outputOptions).not.toHaveBeenCalledWith('-metadata:s:v', 'rotate=90');
+  });
+
+  it('adds additional inputs and applies -itsoffset to the correct input', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mkv', 'out.mkv', {
+      copy: true,
+      additionalInputs: [{ path: 'newsong.m4a', map: ['1:0'], codec: 'copy', syncOffsetSeconds: 2 }],
+    });
+    const cmd = getCommand();
+    expect(cmd.input).toHaveBeenCalledWith('newsong.m4a');
+    expect((cmd as Cmd)._currentInput.options).toHaveBeenCalledWith('-itsoffset', '2');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-map', '1:0');
+  });
+
+  it('emits maps, -c:s, -map_chapters, and cover disposition in copy mode', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mp4', 'out.mp4', {
+      copy: true,
+      map: ['0:v:0', '0:a:0'],
+      subtitleCodec: 'mov_text',
+      additionalInputs: [
+        { path: 'cover.jpg', map: ['1:0'], disposition: 'attached_pic' },
+        { path: 'subs.srt', map: ['2:0'], codec: 'mov_text' },
+      ],
+    });
+    const cmd = getCommand();
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-map', '0:v:0');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-map', '1:0');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-map', '2:0');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-c:s', 'mov_text');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-c:s', 'mov_text');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-disposition:v:1', 'attached_pic');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-map_chapters', '0');
+    expect(cmd.input).toHaveBeenCalledWith('cover.jpg');
+    expect(cmd.input).toHaveBeenCalledWith('subs.srt');
+  });
+
+  it('emits -c:s in re-encode mode for demux subtitle conversions', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mkv', 'out.srt', {
+      copy: false,
+      map: ['0:s:0'],
+      subtitleCodec: 'srt',
+      video: false,
+      audio: false,
+    });
+    const cmd = getCommand();
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-map', '0:s:0');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-c:s', 'srt');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-vn');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-an');
+  });
+
+  it('does not add -map_chapters when copyChapters is false', () => {
+    const core = new FfmpegCore();
+    core.convert('in.mkv', 'out.mkv', { copy: true, copyChapters: false });
+    const cmd = getCommand();
+    expect(cmd.outputOptions).not.toHaveBeenCalledWith('-map_chapters', '0');
   });
 
   it('emits progress with percent when provided', () => {

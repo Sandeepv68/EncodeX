@@ -25,7 +25,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import BatchEncodingPanel from './BatchEncodingPanel';
 import { useSettingsStore } from '../stores/settingsStore';
 import { IMAGE_FORMATS } from '../../shared/media-options';
-import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
+import { DEFAULT_VIDEO_ENCODERS, getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
 import type { QueueJob } from '../../shared/types';
 import type { QueueJobOptionsDialogProps } from './types';
 import type { BatchEncodingValues } from '../utils/batch-options';
@@ -51,16 +51,30 @@ function seedEncodingValues(job: QueueJob, defaults: BatchEncodingValues): Batch
   let container = defaults.container;
   const ext = basename(job.output).split('.').pop()?.toLowerCase();
   if (ext) {
+    // Remux jobs may carry any generic video container, so the dropdown reflects
+    // the job's actual output extension. Other operations require codec
+    // compatibility before the extension is offered.
     const compatible =
-      operation === 'compress_image'
-        ? IMAGE_FORMATS.some((f) => f.value === ext)
-        : options.videoCodec
-          ? getVideoCodecContainer(options.videoCodec).containers.includes(ext)
-          : options.audioCodec
-            ? getAudioCodecContainers(options.audioCodec).includes(ext)
-            : false;
+      operation === 'remux'
+        ? true
+        : operation === 'compress_image'
+          ? IMAGE_FORMATS.some((f) => f.value === ext)
+          : options.videoCodec
+            ? getVideoCodecContainer(options.videoCodec).containers.includes(ext)
+            : options.audioCodec
+              ? getAudioCodecContainers(options.audioCodec).includes(ext)
+              : false;
     if (compatible) container = ext;
   }
+
+  const demuxKind =
+    operation === 'demux'
+      ? options.video === true
+        ? 'video'
+        : options.audio === true || options.audioCodec
+          ? 'audio'
+          : 'subtitle'
+      : undefined;
 
   return {
     videoCodec,
@@ -74,6 +88,35 @@ function seedEncodingValues(job: QueueJob, defaults: BatchEncodingValues): Batch
     flipH: options.flipH ?? defaults.flipH,
     flipV: options.flipV ?? defaults.flipV,
     pixelFormat: options.pixelFormat ?? defaults.pixelFormat,
+    videoFilters: options.videoFilters ?? defaults.videoFilters,
+    demuxKinds: defaults.demuxKinds ?? ['video', 'audio', 'subtitle'],
+    // The stream this single job extracts: its content kind and its map index.
+    demuxKind,
+    demuxMap: operation === 'demux' ? options.map?.[0] : undefined,
+    demuxVideoContainer:
+      operation === 'demux' && demuxKind === 'video'
+        ? options.videoCodec
+          ? ['mkv', 'mp4'].includes(ext ?? '')
+            ? (ext ?? '')
+            : (Object.entries(DEFAULT_VIDEO_ENCODERS).find(([, encoder]) => encoder === options.videoCodec)?.[0] ?? '')
+          : ''
+        : '',
+    demuxAudioCodec:
+      operation === 'demux' && demuxKind === 'audio'
+        ? options.audioCodec
+          ? ext && ['mp3', 'm4a', 'flac', 'wav'].includes(ext)
+            ? ext
+            : options.audioCodec
+          : ''
+        : '',
+    demuxSubtitleFormat:
+      operation === 'demux' && demuxKind === 'subtitle'
+        ? options.subtitleCodec
+          ? ext && ['srt', 'ass'].includes(ext)
+            ? ext
+            : options.subtitleCodec
+          : ''
+        : '',
   };
 }
 
@@ -171,6 +214,7 @@ export default function QueueJobOptionsDialog({ open, job, defaults, onSave, onC
           flipH={values.flipH}
           flipV={values.flipV}
           pixelFormat={values.pixelFormat}
+          videoFilters={values.videoFilters}
           onVideoCodecChange={handleVideoCodecChange}
           onAudioCodecChange={handleAudioCodecChange}
           onContainerChange={(value) => setValues((prev) => ({ ...prev, container: value }))}
@@ -182,6 +226,15 @@ export default function QueueJobOptionsDialog({ open, job, defaults, onSave, onC
           onFlipHChange={(value) => setValues((prev) => ({ ...prev, flipH: value }))}
           onFlipVChange={(value) => setValues((prev) => ({ ...prev, flipV: value }))}
           onPixelFormatChange={(value) => setValues((prev) => ({ ...prev, pixelFormat: value }))}
+          onVideoFiltersChange={(value) => setValues((prev) => ({ ...prev, videoFilters: value }))}
+          demuxKinds={values.demuxKinds ?? []}
+          demuxVideoContainer={values.demuxVideoContainer ?? ''}
+          demuxAudioCodec={values.demuxAudioCodec ?? ''}
+          demuxSubtitleFormat={values.demuxSubtitleFormat ?? ''}
+          onDemuxKindsChange={(kinds) => setValues((prev) => ({ ...prev, demuxKinds: kinds }))}
+          onDemuxVideoContainerChange={(value) => setValues((prev) => ({ ...prev, demuxVideoContainer: value }))}
+          onDemuxAudioCodecChange={(value) => setValues((prev) => ({ ...prev, demuxAudioCodec: value }))}
+          onDemuxSubtitleFormatChange={(value) => setValues((prev) => ({ ...prev, demuxSubtitleFormat: value }))}
         />
       </DialogContent>
       <DialogActions>

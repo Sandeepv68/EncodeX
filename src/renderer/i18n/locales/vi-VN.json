@@ -26,7 +26,9 @@
       "paused": "Tạm dừng",
       "starting": "Đang bắt đầu",
       "parallel": "{{count}} song song"
-    }
+    },
+    "remux": "Đóng gói lại",
+    "demux": "Tách luồng"
   },
   "dashboard": {
     "welcome": "Chào mừng đến với EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Trích xuất âm thanh sạch từ tệp video",
     "descCut": "Cắt video với độ chính xác theo khung hình",
     "descBatch": "Chuyển đổi nhiều tệp cùng lúc với hàng đợi thông minh",
-    "shortcutsFooter": "Nhấn {{shortcut}} để xem phím tắt"
+    "shortcutsFooter": "Nhấn {{shortcut}} để xem phím tắt",
+    "descRemux": "Chuyển các luồng sang vùng chứa mới mà không tổn thất",
+    "descDemux": "Tách các luồng của một tệp thành những tệp đầu riêng biệt"
   },
   "gettingStarted": {
     "hint": "Mới đến đây?",
@@ -125,7 +129,25 @@
     "showPreview": "Hiển thị xem trước",
     "closePreview": "Đóng xem trước",
     "viewMore": "Xem thêm",
-    "viewLess": "Xem bớt"
+    "viewLess": "Xem bớt",
+    "filtersTitle": "Bộ lọc video",
+    "filtersHint": "Áp dụng bộ lọc video FFmpeg (cắt, tần số khung hình, khử xen kẽ, giảm nhiễu, màu sắc…) trong khi mã hoá lại. Tất cả bộ lọc được gộp thành một chuỗi -vf duy nhất sau khi thay đổi tỉ lệ và xoay.",
+    "addPreset": "Thêm bộ lọc đặt trước…",
+    "addFilter": "Thêm bộ lọc",
+    "customChainLabel": "Chuỗi bộ lọc tuỳ chỉnh",
+    "customChainPlaceholder": "ví dụ: fps=30, eq=brightness=0.1",
+    "customChainHint": "Các biểu thức bộ lọc FFmpeg phân tách bằng dấu phẩy. Mỗi mục phải có dấu ngoặc và dấu ngoặc vuông cân bằng, dấu nháy khớp và không chứa ký tự đặc biệt của shell.",
+    "addCustom": "Thêm bộ lọc tuỳ chỉnh",
+    "removeFilter": "Xoá bộ lọc",
+    "moveUp": "Chuyển lên",
+    "moveDown": "Chuyển xuống",
+    "clearAll": "Xoá tất cả",
+    "noFilters": "Chưa thêm bộ lọc nào.",
+    "filtersDisabledNote": "Bộ lọc video cần mã hoá lại. Hãy tắt sao chép không tổn thất để thêm bộ lọc.",
+    "filtersTurnOffCopy": "Tắt sao chép không tổn thất",
+    "filtersCopyWarning": "Chế độ sao chép không tổn thất đang bật nên bộ lọc video sẽ bị bỏ qua. Hãy tắt sao chép không tổn thất để áp dụng bộ lọc.",
+    "chainPreview": "Xem trước: -vf {{chain}}",
+    "filtersInvalid": "Bộ lọc không hợp lệ: {{error}}"
   },
   "mediaInfo": {
     "title": "Thông tin phương tiện",
@@ -135,10 +157,10 @@
     "format": "Định dạng",
     "size": "Kích thước",
     "duration": "Thời lượng",
-    "bitrate": "Bitrate",
+    "bitrate": "Tốc độ bit",
     "streams": "Luồng",
     "stream": "Luồng",
-    "codec": "Codec",
+    "codec": "Bộ mã hoá",
     "resolution": "Độ phân giải",
     "pixelFormat": "Định dạng pixel",
     "frameRate": "Tốc độ khung hình",
@@ -248,7 +270,7 @@
     "dropLabel": "Thả tệp video vào đây",
     "outputFile": "Tệp đầu ra",
     "audioCodec": "Codec âm thanh",
-    "bitrate": "Bitrate",
+    "bitrate": "Tốc độ bit",
     "videoFileHint": "Video nguồn có chứa luồng âm thanh bạn muốn trích xuất.",
     "outputFileHint": "Tệp đích nơi âm thanh đã trích xuất sẽ được lưu. Phần mở rộng của nó khớp với codec đã chọn.",
     "audioCodecHint": "Codec dùng để mã hóa luồng âm thanh, vd. AAC, MP3 hoặc Opus.",
@@ -347,7 +369,7 @@
     "revealInFolder": "Hiển thị trong thư mục",
     "copyPath": "Sao chép đường dẫn",
     "stats": "{{queued}} trong hàng đợi, {{running}} đang chạy, {{done}} hoàn thành, {{failed}} thất bại",
-    "etaEstimate": "ETA ~{{eta}}",
+    "etaEstimate": "Hoàn tất sau ~{{eta}}",
     "finished": "Hàng loạt đã kết thúc: {{done}} thành công, {{failed}} thất bại",
     "notificationTitle": "Đã hoàn tất hàng loạt EncodeX",
     "filters": {
@@ -427,13 +449,16 @@
     "optionsUpdateFailed": "Không còn có thể sửa công việc này.",
     "condense": "Thu gọn",
     "expand": "Mở rộng",
-    "clearAll": "Xóa tất cả"
+    "clearAll": "Xóa tất cả",
+    "operationRemux": "Đóng gói lại",
+    "operationDemux": "Tách luồng",
+    "remuxContainerHint": "Vùng chứa mà các luồng được sao chép vào. “Tự động” giữ nguyên phần mở rộng của từng tệp nguồn."
   },
   "progress": {
     "title": "Tiến trình chuyển đổi",
     "time": "Thời gian",
     "speed": "Tốc độ",
-    "eta": "ETA"
+    "eta": "Thời gian còn lại"
   },
   "errorBoundary": {
     "title": "Có gì đó không ổn",
@@ -460,10 +485,10 @@
     "download": "Tải xuống dưới dạng TXT",
     "filter": "Lọc theo cấp độ",
     "levelAll": "Tất cả",
-    "levelDebug": "DEBUG",
-    "levelInfo": "INFO",
-    "levelWarn": "WARN",
-    "levelError": "ERROR",
+    "levelDebug": "GỠ LỖI",
+    "levelInfo": "THÔNG TIN",
+    "levelWarn": "CẢNH BÁO",
+    "levelError": "LỖI",
     "noEntries": "Chưa có mục nhật ký nào.",
     "entryCount": "{{count}} mục"
   },
@@ -495,7 +520,9 @@
     "updateAvailable": "Có bản cập nhật: v{{version}}",
     "updateNow": "Cập nhật ngay",
     "updateDownloaded": "Đã tải xuống bản cập nhật v{{version}}",
-    "viewUpdate": "Xem"
+    "viewUpdate": "Xem",
+    "remuxed": "Đã đóng gói lại xong",
+    "demuxed": "Đã trích xuất các luồng thành công"
   },
   "profiles": {
     "searchPlaceholder": "Tìm kiếm hồ sơ...",
@@ -514,11 +541,11 @@
     "descriptionLabel": "Mô tả",
     "descriptionPlaceholder": "Mô tả ngắn (hiển thị trong bộ chọn)",
     "categoryLabel": "Danh mục",
-    "containerLabel": "Container",
+    "containerLabel": "Vùng chứa",
     "videoCodecLabel": "Codec video",
     "audioCodecLabel": "Codec âm thanh",
     "qualityLabel": "Chất lượng (CRF)",
-    "presetLabel": "Preset",
+    "presetLabel": "Đặt trước",
     "resolutionLabel": "Độ phân giải",
     "original": "Gốc",
     "pixelFormatLabel": "Định dạng pixel",
@@ -598,7 +625,9 @@
       "videoCut": "Cắt video",
       "batchQueue": "Hàng đợi hàng loạt",
       "logs": "Nhật ký",
-      "dashboard": "Bảng điều khiển"
+      "dashboard": "Bảng điều khiển",
+      "remux": "Đóng gói lại",
+      "demux": "Tách luồng"
     },
     "global": {
       "help": "Hiển thị phím tắt",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Đi tới Hàng đợi hàng loạt",
       "navLogs": "Đi tới Nhật ký",
       "navSettings": "Đi tới Cài đặt",
-      "themeToggle": "Chuyển đổi chủ đề"
+      "themeToggle": "Chuyển đổi chủ đề",
+      "navRemux": "Đến Đóng gói lại"
     },
     "convert": {
       "input": "Chọn tệp đầu vào",
@@ -679,7 +709,17 @@
       "image": "Mở Ảnh",
       "audio": "Mở Âm thanh",
       "cut": "Mở Cắt",
-      "batch": "Mở Hàng đợi hàng loạt"
+      "batch": "Mở Hàng đợi hàng loạt",
+      "remux": "Mở Đóng gói lại",
+      "demux": "Mở Tách luồng"
+    },
+    "remux": {
+      "input": "Chọn tệp vào",
+      "start": "Bắt đầu đóng gói lại"
+    },
+    "demux": {
+      "input": "Chọn tệp vào",
+      "start": "Bắt đầu trích xuất"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "Phát hành theo Giấy phép MIT. Được tự do sử dụng, sao chép, sửa đổi, hợp nhất, xuất bản, phân phối, cấp phép lại và bán — kể cả mục đích thương mại — với điều kiện thông báo bản quyền và thông báo cấp phép được bao gồm trong tất cả các bản sao hoặc phần quan trọng của phần mềm. Phần mềm được cung cấp \"nguyên trạng\", không có bất kỳ bảo hành nào.",
     "acknowledgements": "Làm bằng ❤️ cho mã nguồn mở — được hỗ trợ bởi dự án FFmpeg và cộng đồng.",
     "checkForUpdates": "Kiểm tra cập nhật",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Điều khoản và quy định",
+    "terms": "Điều khoản",
+    "readTerms": "Đọc điều khoản"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Điều khoản và quy định",
+    "accept": "Tôi đồng ý",
+    "reject": "Tôi không đồng ý",
+    "close": "Đóng",
+    "lastUpdated": "Có hiệu lực từ: {{date}}"
   },
   "update": {
     "title": "Cập nhật",
@@ -734,5 +774,167 @@
     "installOnRestart": "Cài đặt khi khởi động lại",
     "installScheduled": "Bản cập nhật v{{version}} sẽ được cài đặt khi ứng dụng khởi động lại.",
     "cancelRestartInstall": "Hủy"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Cắt",
+      "cropHint": "Cắt video theo chiều rộng, chiều cao và độ lệch đã nhập.",
+      "framerate": "Tần số khung hình",
+      "framerateHint": "Thay đổi tần số khung hình đầu ra (khung hình bị nhân bản hoặc bỏ qua).",
+      "deinterlace": "Khử xen kẽ",
+      "deinterlaceHint": "Chuyển video xen kẽ sang tiến trình.",
+      "denoise": "Giảm nhiễu",
+      "denoiseHint": "Giảm nhiễu mà vẫn giữ chi tiết (hqdn3d).",
+      "sharpen": "Tăng nét",
+      "sharpenHint": "Tăng độ nét cảm nhận được (unsharp).",
+      "color": "Màu sắc",
+      "colorHint": "Điều chỉnh độ sáng, độ tương phản, độ bão hoà và gamma (eq).",
+      "grayscale": "Thang xám",
+      "grayscaleHint": "Loại bỏ màu sắc, để lại hình ảnh đen trắng.",
+      "blur": "Làm mờ",
+      "blurHint": "Áp dụng làm mờ dạng hộp để làm mềm hình ảnh."
+    },
+    "params": {
+      "crop": {
+        "w": "Chiều rộng",
+        "h": "Chiều cao",
+        "x": "Lệch X",
+        "y": "Lệch Y"
+      },
+      "framerate": {
+        "fps": "Khung hình mỗi giây"
+      },
+      "deinterlace": {
+        "mode": "Thứ tự trường",
+        "modes": {
+          "auto": "Tự động",
+          "tff": "Trường trên trước",
+          "bff": "Trường dưới trước"
+        }
+      },
+      "denoise": {
+        "strength": "Cường độ"
+      },
+      "sharpen": {
+        "strength": "Cường độ"
+      },
+      "color": {
+        "brightness": "Độ sáng",
+        "contrast": "Độ tương phản",
+        "saturation": "Độ bão hoà",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Cường độ"
+      }
+    }
+  },
+  "remux": {
+    "title": "Đóng gói lại",
+    "videoFile": "Tệp video",
+    "dropLabel": "Kéo tệp video vào đây hoặc nhấp để duyệt",
+    "videoFileHint": "Tệp phương tiện nguồn mà các luồng sẽ được đóng gói lại vào vùng chứa đích. Các luồng được sao chép mà không mã hoá lại.",
+    "selectedVideo": "Video đã chọn: {{file}}",
+    "streamCount": "Đã chọn {{selected}} / {{total}} luồng",
+    "container": "Vùng chứa",
+    "containerHint": "Vùng chứa đầu ra của tệp sau khi đóng gói lại. Hãy chọn trong các vùng chứa video phổ biến; phần mở rộng đầu ra theo vùng chứa.",
+    "streams": "Luồng nguồn",
+    "streamsHint": "Chọn những luồng từ tệp nguồn cần giữ lại trong kết quả đóng gói lại. Những luồng không chọn sẽ bị loại bỏ.",
+    "streamIndex": "Số",
+    "kind": "Loại",
+    "selectStream": "Chọn luồng {{kind}} số {{index}}",
+    "selectAll": "Giữ tất cả",
+    "selectNone": "Không giữ gì cả",
+    "audioSync": "Trễ âm thanh (giây)",
+    "audioSyncHint": "Dịch luồng âm thanh chính so với video mà không mã hoá lại, ví dụ -0.5 để sớm 0,5 giây hoặc 1.5 để chậm 1,5 giây.",
+    "audioSyncLossless": "Không tổn thất: âm thanh được sao chép dưới dạng luồng với độ lệch dấu thời gian, nên chất lượng không thay đổi.",
+    "subtitles": "Phụ đề đã thêm",
+    "subtitlesHint": "Các tệp phụ đề bên ngoài (.srt, .ass, .vtt) được nhúng vào kết quả đóng gói lại dưới dạng luồng vào bổ sung.",
+    "addSubtitle": "Thêm tệp phụ đề",
+    "subtitleCodec": "Bộ mã hoá đích",
+    "subtitleCodecHint": "Bộ mã hoá phụ đề dùng cho luồng được nhúng. Các vùng chứa chấp nhận định dạng phụ đề khác nhau; chọn định dạng mà vùng chứa không lưu được sẽ gây cảnh báo.",
+    "removeSubtitle": "Xoá phụ đề",
+    "audioTracks": "Luồng âm thanh đã thêm",
+    "audioTracksHint": "Các tệp âm thanh bên ngoài (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) được nhúng vào kết quả đóng gói lại dưới dạng luồng vào bổ sung.",
+    "addAudioTrack": "Thêm luồng âm thanh",
+    "removeAudioTrack": "Xoá luồng âm thanh",
+    "addedTrackDelay": "Trễ luồng này (giây)",
+    "addedTrackDelayHint": "Độ lệch có dấu của luồng này so với video (dương = phát muộn hơn). Không tổn thất: áp dụng dưới dạng -itsoffset khi sao chép luồng.",
+    "thumbnail": "Ảnh thu nhỏ / ảnh bìa",
+    "thumbnailHint": "Ảnh bìa tuỳ chọn (.jpg, .jpeg, .png) được nhúng vào tệp sau khi đóng gói lại. MKV/WebM đính kèm dưới dạng luồng hình ảnh; MP4/MOV nhúng dưới dạng luồng video với thuộc tính attached_pic.",
+    "addThumbnail": "Thêm ảnh thu nhỏ",
+    "thumbnailUnsupported": "{{container}} không thể lưu ảnh bìa. Hãy chuyển sang MKV, WebM, MP4 hoặc MOV để đính kèm ảnh thu nhỏ.",
+    "removeThumbnail": "Xoá ảnh thu nhỏ",
+    "thumbnailMode": "Nhúng dưới dạng {{mode}}",
+    "thumbnailAttached": "ảnh đính kèm",
+    "thumbnailDisposition": "luồng bìa attached_pic",
+    "chapters": "Chương",
+    "chaptersHint": "Các chương từ nguồn được giữ lại theo mặc định. Hãy nhập một tệp chương FFMETADATA để thay thế chương của nguồn trong tệp sau khi đóng gói lại.",
+    "copyChapters": "Sao chép chương từ nguồn",
+    "copyChaptersHint": "Giữ lại các dấu chương của tệp nguồn trong kết quả đóng gói lại (không tổn thất, -map_chapters 0).",
+    "importChapters": "Nhập tệp chương",
+    "chaptersUnsupported": "{{container}} không lưu siêu dữ liệu chương; các chương sẽ bị loại bỏ.",
+    "removeChapters": "Xoá tệp chương",
+    "warnings": "Cảnh báo tương thích",
+    "warningsHint": "Những lưu ý không chặn về việc các luồng và thiết lập đã chọn có phù hợp với vùng chứa đã chọn hay không. Cảnh báo vẫn cho phép bắt đầu; lỗi sẽ chặn.",
+    "outputFile": "Tệp đầu ra",
+    "outputFileHint": "Đường dẫn đích cho tệp sau khi đóng gói lại. Phần mở rộng theo vùng chứa đích.",
+    "placeholderOutput": "ket-qua.mkv",
+    "start": "Bắt đầu đóng gói lại",
+    "remuxing": "Đang đóng gói lại…",
+    "pause": "Tạm dừng",
+    "resume": "Tiếp tục",
+    "cancel": "Huỷ",
+    "cancelTitle": "Huỷ đóng gói lại",
+    "cancelMessage": "Bạn có chắc muốn huỷ tiến trình đóng gói lại đang chạy không?",
+    "yes": "Có",
+    "no": "Không",
+    "filtersTitle": "Bộ lọc video",
+    "filtersHint": "Áp dụng bộ lọc video FFmpeg trong khi mã hoá lại các luồng video đã chọn. Bộ lọc không thể áp dụng cho bản sao không tổn thất, nên thêm một bộ lọc sẽ biến việc đóng gói lại thành mã hoá lại.",
+    "filtersReencodeWarning": "Bộ lọc video không thể chạy trên bản sao luồng, nên {{count}} bộ lọc đã chọn sẽ biến việc đóng gói lại này thành mã hoá lại."
+  },
+  "demux": {
+    "title": "Tách luồng",
+    "videoFile": "Tệp video",
+    "videoFileHint": "Tệp phương tiện nguồn mà các luồng sẽ được trích xuất. Mỗi luồng đã chọn được ghi vào tệp đầu riêng.",
+    "dropLabel": "Kéo tệp video vào đây hoặc nhấp để duyệt",
+    "selectedVideo": "Video đã chọn: {{file}}",
+    "streamCount": "Đã chọn {{selected}} / {{total}} luồng",
+    "streams": "Luồng nguồn",
+    "streamsHint": "Chọn những luồng cần trích xuất. Mỗi luồng được chọn sẽ thành một tệp đầu riêng; những luồng không chọn sẽ bị bỏ qua.",
+    "extractStreams": "Luồng cần trích xuất",
+    "streamGroup": "Luồng {{kind}}",
+    "suggestedOutput": "Đầu ra",
+    "selectStream": "Chọn luồng {{kind}} số {{index}} để trích xuất",
+    "videoContainer": "Đích video",
+    "videoContainerHint": "Cách ghi các luồng video. “Sao chép” trích xuất chúng không tổn thất và không mã hoá lại; chọn một vùng chứa sẽ mã hoá lại video sang định dạng đó.",
+    "audioCodec": "Đích âm thanh",
+    "audioCodecHint": "Cách ghi các luồng âm thanh. “Sao chép” trích xuất chúng không tổn thất và không mã hoá lại; chọn một bộ mã hoá sẽ mã hoá lại âm thanh.",
+    "subtitleFormat": "Đích phụ đề",
+    "subtitleFormatHint": "Cách ghi các luồng phụ đề. “Sao chép” trích xuất chúng không tổn thất và không mã hoá lại; chọn một định dạng sẽ chuyển đổi phụ đề. Phụ đề dạng ảnh (ví dụ PGS/DVDSUB) không thể thành văn bản nên vẫn được sao chép.",
+    "subtitleWarning": "Cảnh báo chuyển đổi phụ đề",
+    "subtitleWarningHint": "Các luồng phụ đề dạng ảnh (ví dụ PGS/DVDSUB) không thể mã hoá thành văn bản nếu không có OCR, nên được trích xuất dưới dạng bản sao .mks không tổn thất. Trong kế hoạch trích xuất, chúng hiện là “Sao chép”.",
+    "bitmapSubtitleWarning": "Luồng phụ đề ảnh này không thể mã hoá thành văn bản nếu không có OCR, nên được trích xuất dưới dạng bản sao .mks không tổn thất.",
+    "copyOption": "Sao chép (không tổn thất)",
+    "outputDir": "Thư mục đầu ra",
+    "outputDirHint": "Thư mục ghi các luồng đã trích xuất. Mặc định là thư mục chứa tệp nguồn.",
+    "outputDirPlaceholder": "thư mục đầu ra",
+    "summary": "Kế hoạch trích xuất",
+    "summaryHint": "Mỗi luồng đã chọn tạo ra một tệp đầu, theo thứ tự thực thi. Các tệp ghi “Sao chép” được trích xuất không tổn thất; các tệp ghi “Chuyển đổi” sẽ được mã hoá lại.",
+    "copyLabel": "Sao chép",
+    "convertLabel": "Chuyển đổi sang {{target}}",
+    "start": "Bắt đầu tách luồng",
+    "demuxing": "Đang trích xuất…",
+    "pause": "Tạm dừng",
+    "resume": "Tiếp tục",
+    "cancel": "Huỷ",
+    "cancelTitle": "Huỷ tách luồng",
+    "cancelMessage": "Bạn có chắc muốn huỷ tiến trình tách luồng đang chạy không?",
+    "yes": "Có",
+    "no": "Không",
+    "currentStream": "Đang trích xuất luồng {{kind}} số {{index}}",
+    "filtersTitle": "Bộ lọc video",
+    "filtersHint": "Áp dụng bộ lọc video FFmpeg (cắt, tần số khung hình, khử xen kẽ, giảm nhiễu, màu sắc…) trong khi mã hoá lại các luồng video đã chọn. “Sao chép” không tổn thất, nên bộ lọc chỉ hiện khi vùng chứa đích mã hoá lại video.",
+    "filtersIgnoredCopy": "Bộ lọc video bị bỏ qua khi đích video là “Sao chép”, vì bản sao luồng không thể mã hoá lại. Hãy chọn một vùng chứa đích để áp dụng."
   }
 }

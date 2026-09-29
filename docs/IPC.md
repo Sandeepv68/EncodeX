@@ -157,3 +157,26 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `onUpdateProgress(cb) -> () => void`
 - `onUpdateDownloaded(cb) -> () => void`
 - `onUpdateError(cb) -> () => void`
+
+## 📦 Remux & Demux reuse `CONVERT_FILE`
+
+Remux and demux add **no new IPC channels**. Both features plan their FFmpeg invocations in the renderer (or CLI/MCP layer) and then submit them through the existing channels:
+
+- `convert-file` (`CONVERT_FILE`) for a single-shot job, and
+- `queue-add` (`QUEUE_ADD`) for batched or multi-target work — demux enqueues one job per extracted stream.
+
+All stream-composition data rides inside the existing `options: ConversionOptions` payload, so the main process, the transcoder cores, progress events (`CONVERSION_PROGRESS`), and the queue's pause/resume/cancel plumbing are reused unchanged.
+
+### New `ConversionOptions` fields
+
+| Field                 | Type              | Notes                                                                                                                                                    |
+| --------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `map`                 | `string[]`        | Explicit `-map` specs for the primary input (index `0`), e.g. `['0:v:0', '0:a:1']`. Replaces FFmpeg's implicit best-stream selection.                       |
+| `additionalInputs`    | `RemuxInput[]`    | Extra inputs appended after the primary, each with its own `map` specs, optional `codec` (`-c:<kind>`), optional `disposition`, optional `syncOffsetSeconds` (`-itsoffset`), and `attachment` for cover art. |
+| `chaptersFile`        | `string`          | FFMETADATA chapters file; added as the last input and selected with `-map_chapters <index>`.                                                                 |
+| `copyChapters`        | `boolean`         | `true`/absent copies the source chapters (`-map_chapters 0`); `false` drops them. Defaults to copy for remux-style jobs.                                  |
+| `audioSyncSeconds`    | `number`          | Signed shift of the primary file's audio relative to its video, applied losslessly by re-reading the primary input and mapping only the shifted audio with `-itsoffset`. Positive = audio plays later. |
+
+`RemuxInput` input-index contract: primary is `0`, `additionalInputs` occupy `1..N` in array order, and `chaptersFile` takes `N+1`. Remux always appends the audio re-read entry last so its index is deterministic.
+
+Demux adds no option fields either — each extracted stream becomes a normal job whose `output` and codec options are derived from the demux target (copy or convert). See `docs/ARCHITECTURE_TRANSCODERS.md` for the full flag-building rules and `docs/FEATURES.md` for the user-facing behavior.

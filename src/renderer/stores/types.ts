@@ -33,10 +33,12 @@ import type {
   LogEntry,
   MediaStreamInfo,
   QueueJob,
+  RemuxInput,
   ThumbnailStrip,
   WaveformData,
   WhenDoneConfig,
 } from '../../shared/types';
+import type { DemuxMediaPreferences, DemuxTarget, RemuxWarning } from '../../shared/codec-containers';
 
 /**
  * Persisted hardware acceleration settings.
@@ -269,6 +271,9 @@ export interface ProgressData {
  * @property {boolean} flipH - Whether to mirror the output horizontally; default false.
  * @property {boolean} flipV - Whether to mirror the output vertically; default false.
  * @property {string} pixelFormat - Output pixel format (default 'yuv420p').
+ * @property {string[]} videoFilters - Ordered user video-filter expressions
+ *   merged into the single `-vf` chain after scale/rotation; only honored in
+ *   re-encode mode; default empty.
  * @property {boolean} copyMode - Whether to stream-copy streams instead of re-encoding.
  * @property {string} transcoder - Active transcoder backend ('FFMPEG' | 'FFTOOL' | 'BMF').
  * @property {EncoderType} encoderType - Encoder preference ('auto' | 'hardware' | 'software').
@@ -289,6 +294,9 @@ export interface ProgressData {
  * @property {(v: boolean) => void} setFlipH - Toggles horizontal mirroring and marks the form dirty.
  * @property {(v: boolean) => void} setFlipV - Toggles vertical mirroring and marks the form dirty.
  * @property {(f: string) => void} setPixelFormat - Sets the pixel format and marks the form dirty.
+ * @property {(filters: string[]) => void} setVideoFilters - Replaces the ordered video-filter entries and marks the form dirty.
+ * @property {(entry: string) => void} addVideoFilter - Appends a video-filter entry and marks the form dirty.
+ * @property {(index: number) => void} removeVideoFilter - Removes the filter entry at the given index and marks the form dirty.
  * @property {(c: boolean) => void} setCopyMode - Sets copy mode and marks the form dirty.
  * @property {(t: string) => void} setTranscoder - Sets the transcoder and marks the form dirty.
  * @property {(type: EncoderType) => void} setEncoderType - Sets the encoder type and marks the form dirty.
@@ -311,6 +319,7 @@ export interface ConversionState {
   flipH: boolean;
   flipV: boolean;
   pixelFormat: string;
+  videoFilters: string[];
   copyMode: boolean;
   transcoder: string;
   encoderType: EncoderType;
@@ -331,6 +340,9 @@ export interface ConversionState {
   setFlipH: (v: boolean) => void;
   setFlipV: (v: boolean) => void;
   setPixelFormat: (f: string) => void;
+  setVideoFilters: (filters: string[]) => void;
+  addVideoFilter: (entry: string) => void;
+  removeVideoFilter: (index: number) => void;
   setCopyMode: (c: boolean) => void;
   setTranscoder: (t: string) => void;
   setEncoderType: (type: EncoderType) => void;
@@ -494,4 +506,147 @@ export interface VideoCutState {
   setIsCutting: (v: boolean) => void;
   setProgress: (p: TaskProgress | null) => void;
   resetForm: () => void;
+}
+
+/**
+ * State of the remux store.
+ * Holds the remux form (input file, target container, probed source streams,
+ * selected `-map` specs, added subtitle/audio/cover assets, chapters file) plus
+ * the live warnings and run state of the remux operation. Remux is always a
+ * lossless `-c copy` re-mux; form changes rebuild `selectedMaps`/`additionalInputs`
+ * that `buildRemuxPlan` turns into `ConversionOptions`.
+ * @interface RemuxState
+ * @property {string} input - Absolute path of the source media file.
+ * @property {string} container - Target container extension (default 'mkv').
+ * @property {MediaStreamInfo[]} streams - Probed source streams.
+ * @property {string[]} selectedMaps - Ordered `-map` specs for the primary input.
+ * @property {RemuxInput[]} addedSubtitles - Added subtitle track inputs.
+ * @property {RemuxInput[]} addedAudio - Added audio track inputs.
+ * @property {MediaStreamInfo[]} addedAudioInfo - Probed info of added audio streams, parallel to addedAudio.
+ * @property {RemuxInput | null} thumbnail - Cover-art input, if any.
+ * @property {string | null} chaptersFile - FFMETADATA chapters file, if any.
+ * @property {boolean} copyChapters - Whether source chapters are preserved.
+ * @property {number | null} audioSyncSeconds - Signed audio delay (lossless re-read).
+ * @property {string[]} videoFilters - Ordered video filter chain; a non-empty
+ *   chain turns the remux into a re-encode.
+ * @property {string} output - Absolute path of the remuxed output file.
+ * @property {RemuxWarning[]} warnings - Live container-compatibility warnings.
+ * @property {boolean} isDirty - Whether the form has been configured by the user.
+ * @property {boolean} isConverting - Whether a remux is currently running.
+ * @property {boolean} isPaused - Whether the running remux is paused.
+ * @property {TaskProgress | null} progress - Live remux progress, or null.
+ * @property {(file: string) => void} setInput - Probes the input and populates streams.
+ * @property {(container: string) => void} setContainer - Sets the target container and recomputes warnings.
+ * @property {(map: string) => void} toggleStream - Adds/removes a `-map` spec.
+ * @property {(selected: boolean) => void} setAllStreamsSelected - Selects all (or none) source streams.
+ * @property {(input: RemuxInput) => void} addSubtitleFile - Adds Subtitle track.
+ * @property {(input: RemuxInput, info?: MediaStreamInfo) => void} addAudioFile - Adds an audio track.
+ * @property {(index: number) => void} removeAddedStream - Removes an added subtitle/audio input.
+ * @property {(index: number, seconds: number) => void} setAddedStreamSync - Sets per-input sync.
+ * @property {(index: number, codec: string) => void} setAddedStreamCodec - Sets per-input codec.
+ * @property {(seconds: number | null) => void} setAudioSync - Sets primary audio delay.
+ * @property {(input: RemuxInput | null) => void} setThumbnail - Sets/clears cover art.
+ * @property {(file: string | null) => void} setChaptersFile - Sets/clears the chapters file.
+ * @property {(v: boolean) => void} setCopyChapters - Toggles chapter copy.
+ * @property {(filters: string[]) => void} setVideoFilters - Replaces the video filter chain (a non-empty chain forces re-encoding).
+ * @property {(output: string) => void} setOutput - Sets the output path.
+ * @property {(p: TaskProgress | null) => void} setProgress - Sets the live remux progress (or null to clear).
+ * @property {() => Promise<void>} startRemux - Validates and runs the remux via convertFile.
+ * @property {() => Promise<void>} pause - Pauses the running remux.
+ * @property {() => Promise<void>} resume - Resumes the remux.
+ * @property {() => Promise<void>} cancel - Cancels the remux.
+ * @property {() => void} clearSelection - Resets the form to its initial state.
+ */
+export interface RemuxState {
+  input: string;
+  container: string;
+  streams: MediaStreamInfo[];
+  selectedMaps: string[];
+  addedSubtitles: RemuxInput[];
+  addedAudio: RemuxInput[];
+  addedAudioInfo: MediaStreamInfo[];
+  thumbnail: RemuxInput | null;
+  chaptersFile: string | null;
+  copyChapters: boolean;
+  audioSyncSeconds: number | null;
+  videoFilters: string[];
+  output: string;
+  warnings: RemuxWarning[];
+  isDirty: boolean;
+  isConverting: boolean;
+  isPaused: boolean;
+  progress: TaskProgress | null;
+  setInput: (file: string) => Promise<void>;
+  setContainer: (container: string) => void;
+  toggleStream: (map: string) => void;
+  setAllStreamsSelected: (selected: boolean) => void;
+  addSubtitleFile: (input: RemuxInput) => void;
+  addAudioFile: (input: RemuxInput, info?: MediaStreamInfo) => void;
+  removeAddedStream: (index: number) => void;
+  setAddedStreamSync: (index: number, seconds: number) => void;
+  setAddedStreamCodec: (index: number, codec: string) => void;
+  setAudioSync: (seconds: number | null) => void;
+  setThumbnail: (input: RemuxInput | null) => void;
+  setChaptersFile: (file: string | null) => void;
+  setCopyChapters: (v: boolean) => void;
+  setVideoFilters: (filters: string[]) => void;
+  setOutput: (output: string) => void;
+  setProgress: (p: TaskProgress | null) => void;
+  startRemux: () => Promise<void>;
+  pause: () => Promise<void>;
+  resume: () => Promise<void>;
+  cancel: () => Promise<void>;
+  clearSelection: () => void;
+}
+
+/**
+ * State of the demux store.
+ * Demux extracts *multiple* streams at once (one `convertFile` per selected
+ * stream); the store owns the sequential runner and aggregates progress over
+ * the individual targets.
+ * @interface DemuxState
+ * @property {string} input - Absolute path of the source media file.
+ * @property {MediaStreamInfo[]} streams - Probed source streams.
+ * @property {number[]} selectedIndices - Indices of streams selected for extraction.
+ * @property {string} outputDir - Directory where extracted streams are written.
+ * @property {DemuxTarget[]} targets - Per-stream extraction targets.
+ * @property {RemuxWarning[]} warnings - Live subtitle-conversion fallback warnings.
+ * @property {DemuxMediaPreferences} media - Per-kind conversion preferences.
+ * @property {boolean} isConverting - Whether a demux is currently running.
+ * @property {boolean} isPaused - Whether the running demux is paused.
+ * @property {TaskProgress | null} progress - Aggregated demux progress, or null.
+ * @property {string | null} current - Label of the stream currently being extracted.
+ * @property {(file: string) => void} setInput - Probes the input and generates targets.
+ * @property {(index: number) => void} toggleStream - Selects/deselects a stream.
+ * @property {(media: DemuxMediaPreferences) => void} setMedia - Sets conversion prefs and regenerates targets.
+ * @property {(dir: string) => void} setOutputDir - Sets the output directory.
+ * @property {(p: TaskProgress | null) => void} setProgress - Sets the aggregated demux progress (or null to clear).
+ * @property {() => Promise<void>} startDemux - Runs each target sequentially.
+ * @property {() => Promise<void>} pause - Pauses the running demux.
+ * @property {() => Promise<void>} resume - Resumes the demux.
+ * @property {() => Promise<void>} cancel - Cancels the demux.
+ * @property {() => void} clearSelection - Resets the form to its initial state.
+ */
+export interface DemuxState {
+  input: string;
+  streams: MediaStreamInfo[];
+  selectedIndices: number[];
+  outputDir: string;
+  targets: DemuxTarget[];
+  warnings: RemuxWarning[];
+  media: DemuxMediaPreferences;
+  isConverting: boolean;
+  isPaused: boolean;
+  progress: TaskProgress | null;
+  current: string | null;
+  setInput: (file: string) => Promise<void>;
+  toggleStream: (index: number) => void;
+  setMedia: (media: DemuxMediaPreferences) => void;
+  setOutputDir: (dir: string) => void;
+  setProgress: (p: TaskProgress | null) => void;
+  startDemux: () => Promise<void>;
+  pause: () => Promise<void>;
+  resume: () => Promise<void>;
+  cancel: () => Promise<void>;
+  clearSelection: () => void;
 }

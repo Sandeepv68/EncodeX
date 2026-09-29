@@ -202,6 +202,8 @@ describe('NAV_ITEMS', () => {
   it('has Dashboard and Convert routes', () => {
     expect(NAV_ITEMS.some((n) => n.to === '/')).toBe(true);
     expect(NAV_ITEMS.some((n) => n.to === '/convert')).toBe(true);
+    expect(NAV_ITEMS.some((n) => n.to === '/remux')).toBe(true);
+    expect(NAV_ITEMS.some((n) => n.to === '/demux')).toBe(true);
     expect(NAV_ITEMS.some((n) => n.to === '/batch')).toBe(true);
     expect(NAV_ITEMS.some((n) => n.to === '/settings')).toBe(true);
   });

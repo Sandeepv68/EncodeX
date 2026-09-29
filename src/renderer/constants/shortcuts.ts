@@ -28,7 +28,17 @@
  * @typedef {string} ShortcutSection
  */
 export type ShortcutSection =
-  'global' | 'convert' | 'mediaInfo' | 'imageCompress' | 'audioExtract' | 'videoCut' | 'batchQueue' | 'logs' | 'dashboard';
+  | 'global'
+  | 'convert'
+  | 'mediaInfo'
+  | 'imageCompress'
+  | 'audioExtract'
+  | 'videoCut'
+  | 'remux'
+  | 'demux'
+  | 'batchQueue'
+  | 'logs'
+  | 'dashboard';
 
 /**
  * One registered shortcut.
@@ -62,6 +72,8 @@ export const SHORTCUT_SECTIONS: readonly { id: ShortcutSection; labelKey: string
   { id: 'imageCompress', labelKey: 'shortcuts.sections.imageCompress' },
   { id: 'audioExtract', labelKey: 'shortcuts.sections.audioExtract' },
   { id: 'videoCut', labelKey: 'shortcuts.sections.videoCut' },
+  { id: 'remux', labelKey: 'shortcuts.sections.remux' },
+  { id: 'demux', labelKey: 'shortcuts.sections.demux' },
   { id: 'batchQueue', labelKey: 'shortcuts.sections.batchQueue' },
   { id: 'logs', labelKey: 'shortcuts.sections.logs' },
   { id: 'dashboard', labelKey: 'shortcuts.sections.dashboard' },
@@ -82,6 +94,7 @@ export const SHORTCUTS: readonly HotkeySpec[] = [
   { id: 'global.navBatchQueue', keys: 'Alt+7', labelKey: 'shortcuts.global.navBatchQueue', section: 'global', to: '/batch' },
   { id: 'global.navLogs', keys: 'Alt+8', labelKey: 'shortcuts.global.navLogs', section: 'global', to: '/logs' },
   { id: 'global.navSettings', keys: 'Alt+9', labelKey: 'shortcuts.global.navSettings', section: 'global', to: '/settings' },
+  { id: 'global.navRemux', keys: 'Alt+0', labelKey: 'shortcuts.global.navRemux', section: 'global', to: '/remux' },
   { id: 'global.themeToggle', keys: 'Ctrl+Alt+T', labelKey: 'shortcuts.global.themeToggle', section: 'global' },
   { id: 'convert.input', keys: 'Ctrl+O', labelKey: 'shortcuts.convert.input', section: 'convert' },
   { id: 'convert.output', keys: 'Ctrl+Shift+S', labelKey: 'shortcuts.convert.output', section: 'convert' },
@@ -113,6 +126,10 @@ export const SHORTCUTS: readonly HotkeySpec[] = [
   { id: 'videoCut.mute', keys: 'M', labelKey: 'shortcuts.videoCut.mute', section: 'videoCut' },
   { id: 'videoCut.seekBack', keys: 'ArrowLeft', labelKey: 'shortcuts.videoCut.seekBack', section: 'videoCut' },
   { id: 'videoCut.seekForward', keys: 'ArrowRight', labelKey: 'shortcuts.videoCut.seekForward', section: 'videoCut' },
+  { id: 'remux.input', keys: 'Ctrl+O', labelKey: 'shortcuts.remux.input', section: 'remux' },
+  { id: 'remux.start', keys: 'Ctrl+Enter', labelKey: 'shortcuts.remux.start', section: 'remux' },
+  { id: 'demux.input', keys: 'Ctrl+O', labelKey: 'shortcuts.demux.input', section: 'demux' },
+  { id: 'demux.start', keys: 'Ctrl+Enter', labelKey: 'shortcuts.demux.start', section: 'demux' },
   { id: 'batchQueue.add', keys: 'Ctrl+O', labelKey: 'shortcuts.batchQueue.add', section: 'batchQueue' },
   { id: 'batchQueue.start', keys: 'Ctrl+Enter', labelKey: 'shortcuts.batchQueue.start', section: 'batchQueue' },
   { id: 'batchQueue.pause', keys: 'Ctrl+Shift+P', labelKey: 'shortcuts.batchQueue.pause', section: 'batchQueue' },
@@ -134,7 +151,9 @@ export const SHORTCUTS: readonly HotkeySpec[] = [
   { id: 'dashboard.image', keys: '3', labelKey: 'shortcuts.dashboard.image', section: 'dashboard', to: '/image-compress' },
   { id: 'dashboard.audio', keys: '4', labelKey: 'shortcuts.dashboard.audio', section: 'dashboard', to: '/audio-extract' },
   { id: 'dashboard.cut', keys: '5', labelKey: 'shortcuts.dashboard.cut', section: 'dashboard', to: '/video-cut' },
-  { id: 'dashboard.batch', keys: '6', labelKey: 'shortcuts.dashboard.batch', section: 'dashboard', to: '/batch' },
+  { id: 'dashboard.remux', keys: '6', labelKey: 'shortcuts.dashboard.remux', section: 'dashboard', to: '/remux' },
+  { id: 'dashboard.demux', keys: '7', labelKey: 'shortcuts.dashboard.demux', section: 'dashboard', to: '/demux' },
+  { id: 'dashboard.batch', keys: '8', labelKey: 'shortcuts.dashboard.batch', section: 'dashboard', to: '/batch' },
 ];
 
 /**

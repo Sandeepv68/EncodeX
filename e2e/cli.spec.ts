@@ -1,8 +1,19 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
-import { generateTestMedia, generateTestImage, getBuildPaths, ensureBuildExists } from './helpers';
+import {
+  generateTestMedia,
+  generateTestImage,
+  generateTestJpeg,
+  generateTestAudio,
+  generateTestSubtitle,
+  generateTestChapters,
+  generateTestDemuxSource,
+  readContainerMagic,
+  getBuildPaths,
+  ensureBuildExists,
+} from './helpers';
 
 const electronBin = (() => {
   try {
@@ -11,6 +22,8 @@ const electronBin = (() => {
     return 'electron';
   }
 })();
+
+const ffprobeBin = (require('ffprobe-static') as { path: string }).path;
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
 
@@ -79,6 +92,12 @@ describe.runIf(IS_E2E)('CLI mode (subcommands)', () => {
   let tmpDir: string;
   let testMedia: string;
   let pngPath: string;
+  let remuxSource: string;
+  let demuxSource: string;
+  let coverJpeg: string;
+  let extraAudio: string;
+  let extraSubtitle: string;
+  let extraChapters: string;
   let batchDir: string;
   let batchA: string;
   let batchB: string;
@@ -91,6 +110,12 @@ describe.runIf(IS_E2E)('CLI mode (subcommands)', () => {
       tmpDir = fs.mkdtempSync(path.join(__dirname, '..', 'e2e-media-'));
       testMedia = generateTestMedia(tmpDir);
       pngPath = generateTestImage(tmpDir);
+      remuxSource = generateTestMedia(tmpDir, 'remux-source.mkv');
+      demuxSource = generateTestDemuxSource(tmpDir);
+      coverJpeg = generateTestJpeg(tmpDir);
+      extraAudio = generateTestAudio(tmpDir);
+      extraSubtitle = generateTestSubtitle(tmpDir);
+      extraChapters = generateTestChapters(tmpDir);
       batchDir = path.join(tmpDir, 'batch');
       fs.mkdirSync(batchDir, { recursive: true });
       batchA = generateTestMedia(batchDir, 'alpha.mp4');
@@ -118,6 +143,7 @@ describe.runIf(IS_E2E)('CLI mode (subcommands)', () => {
       expect(result.stdout).toContain('capabilities');
       expect(result.stdout).toContain('compress');
       expect(result.stdout).toContain('extract-audio');
+      expect(result.stdout).toContain('remux');
       expect(result.stdout).toContain('batch');
       expect(result.stdout).toContain('--transcoder');
     });
@@ -138,7 +164,7 @@ describe.runIf(IS_E2E)('CLI mode (subcommands)', () => {
     });
 
     it('should show help text for every subcommand', async () => {
-      const subcommands = ['convert', 'info', 'capabilities', 'compress', 'extract-audio', 'batch'];
+      const subcommands = ['convert', 'info', 'capabilities', 'compress', 'extract-audio', 'remux', 'demux', 'batch'];
       for (const sub of subcommands) {
         const result = await runCli([sub, '--help'], 15000);
         expect(result.status, `${sub} --help should exit 0`).toBe(EXIT.SUCCESS);
@@ -191,6 +217,48 @@ describe.runIf(IS_E2E)('CLI mode (subcommands)', () => {
       expect(result.status).toBe(EXIT.SUCCESS);
       expect(fs.existsSync(derivedPath)).toBe(true);
       expect(fs.statSync(derivedPath).size).toBeGreaterThan(0);
+    });
+
+    it('should apply --filters and rewrite the frame rate to 24 fps', async () => {
+      const outputPath = path.join(tmpDir, 'filtered-output.mp4');
+
+      const result = await runCli(['convert', '--filters', 'fps=24', testMedia, outputPath], 60000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      expect(fs.existsSync(outputPath)).toBe(true);
+      const probe = spawnSync(
+        ffprobeBin,
+        ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=r_frame_rate', '-of', 'csv=p=0', outputPath],
+        { encoding: 'utf8', timeout: 30000 },
+      );
+      expect(probe.stdout.trim()).toBe('24/1');
+    });
+
+    it('should expand --preset grayscale into the hue filter chain', async () => {
+      const outputPath = path.join(tmpDir, 'preset-output.mp4');
+
+      const result = await runCli(['convert', '--verbose', '--preset', 'grayscale', testMedia, outputPath], 60000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      expect(fs.existsSync(outputPath)).toBe(true);
+      expect(result.stdout).toContain('hue=s=0');
+    });
+
+    it('should reject --filters combined with --copy as a usage error', async () => {
+      const outputPath = path.join(tmpDir, 'never-copy-filtered.mp4');
+
+      const result = await runCli(['convert', '--filters', 'fps=24', '--copy', testMedia, outputPath], 30000);
+
+      expect(result.status).toBe(EXIT.USAGE);
+      expect(result.stderr).toMatch(/re-encod/i);
+      expect(fs.existsSync(outputPath)).toBe(false);
+    });
+
+    it('should reject an unknown --preset as a usage error', async () => {
+      const result = await runCli(['convert', '--preset', 'bogus', testMedia, 'out.mp4'], 15000);
+
+      expect(result.status).toBe(EXIT.USAGE);
+      expect(result.stderr).toMatch(/preset/i);
     });
 
     it('should convert with codec, bitrate, pix-fmt, scale and qscale options', async () => {
@@ -464,6 +532,221 @@ describe.runIf(IS_E2E)('CLI mode (subcommands)', () => {
 
       expect(result.status).toBe(EXIT.NOT_FOUND);
       expect(result.stderr).toBeTruthy();
+    });
+  });
+
+  describe('remux', () => {
+    it('should stream-copy an MKV into an MP4 with a derived output name', async () => {
+      const derivedPath = path.join(tmpDir, 'remux-source.mp4');
+
+      const result = await runCli(['remux', remuxSource, '-f', 'mp4'], 60000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      expect(fs.existsSync(derivedPath)).toBe(true);
+      expect(readContainerMagic(derivedPath).slice(8, 16)).toBe('66747970');
+      expect(result.stdout).toContain('Remuxed');
+    });
+
+    it('should honour -o/--output and the rmx alias', async () => {
+      const outputPath = path.join(tmpDir, 'remux-aliased.mp4');
+
+      const result = await runCli(['rmx', remuxSource, '-o', outputPath], 60000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      expect(fs.existsSync(outputPath)).toBe(true);
+      expect(readContainerMagic(outputPath).slice(8, 16)).toBe('66747970');
+    });
+
+    it('should add an external audio track with --add-audio', async () => {
+      const outputPath = path.join(tmpDir, 'remux-add-audio.mkv');
+
+      const result = await runCli(['remux', remuxSource, '-o', outputPath, '--add-audio', extraAudio], 60000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      expect(fs.existsSync(outputPath)).toBe(true);
+      const probe = spawnSync(
+        ffprobeBin,
+        ['-v', 'error', '-select_streams', 'a', '-show_entries', 'stream=index', '-of', 'csv=p=0', outputPath],
+        {
+          encoding: 'utf8',
+          timeout: 30000,
+        },
+      );
+      expect(probe.stdout.trim().split('\n').filter(Boolean)).toHaveLength(2);
+    });
+
+    it('should add a subtitle, cover art and chapters in one run', async () => {
+      const outputPath = path.join(tmpDir, 'remux-assets.mkv');
+
+      const result = await runCli(
+        [
+          'remux',
+          remuxSource,
+          '-o',
+          outputPath,
+          '--add-subtitle',
+          `${extraSubtitle}::srt`,
+          '--set-sync',
+          '0.25',
+          '--thumbnail',
+          coverJpeg,
+          '--chapters',
+          extraChapters,
+        ],
+        60000,
+      );
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      expect(fs.existsSync(outputPath)).toBe(true);
+      const probe = spawnSync(
+        ffprobeBin,
+        ['-v', 'error', '-show_entries', 'stream=codec_type:stream_disposition=attached_pic', '-show_chapters', '-of', 'json', outputPath],
+        { encoding: 'utf8', timeout: 30000 },
+      );
+      const parsed = JSON.parse(probe.stdout) as {
+        streams?: Array<{ codec_type: string; disposition?: { attached_pic?: number } }>;
+        chapters?: unknown[];
+      };
+      expect(parsed.streams?.filter((s) => s.codec_type === 'subtitle')).toHaveLength(1);
+      expect(parsed.streams?.filter((s) => s.disposition?.attached_pic === 1)).toHaveLength(1);
+      expect(parsed.chapters).toHaveLength(1);
+    });
+
+    it('should shift the primary audio with --audio-sync', async () => {
+      const outputPath = path.join(tmpDir, 'remux-audio-sync.mkv');
+
+      const result = await runCli(['remux', remuxSource, '-o', outputPath, '--audio-sync', '0.5'], 60000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      expect(fs.existsSync(outputPath)).toBe(true);
+      const probe = spawnSync(
+        ffprobeBin,
+        ['-v', 'error', '-select_streams', 'a', '-show_entries', 'stream=start_time', '-of', 'csv=p=0', outputPath],
+        {
+          encoding: 'utf8',
+          timeout: 30000,
+        },
+      );
+      const startTimes = probe.stdout.trim().split('\n').filter(Boolean).map(Number);
+      expect(startTimes).toHaveLength(1);
+      expect(startTimes[0]).toBeGreaterThanOrEqual(0.4);
+    });
+
+    it('should exit with usage error for a container that cannot hold a selected stream', async () => {
+      const result = await runCli(['remux', remuxSource, '-f', 'webm', '--map', '0:v:0'], 30000);
+
+      expect(result.status).toBe(EXIT.USAGE);
+      expect(fs.existsSync(path.join(tmpDir, 'remux-source.webm'))).toBe(false);
+    });
+
+    it('should exit with not-found error for a missing auxiliary input', async () => {
+      const result = await runCli(
+        ['remux', remuxSource, '-o', path.join(tmpDir, 'never.mkv'), '--add-audio', path.join(tmpDir, 'no-such.m4a')],
+        30000,
+      );
+
+      expect(result.status).toBe(EXIT.NOT_FOUND);
+      expect(result.stderr).toBeTruthy();
+    });
+  });
+
+  describe('demux', () => {
+    /**
+     * Creates an isolated output directory for one demux test.
+     * @param {string} name - Directory name.
+     * @returns {string} The created directory path.
+     */
+    function demuxOutDir(name: string): string {
+      const dir = path.join(tmpDir, name);
+      fs.mkdirSync(dir, { recursive: true });
+      return dir;
+    }
+
+    it('should extract every stream kind into a new output directory', async () => {
+      const outDir = path.join(tmpDir, 'demux-all-missing');
+
+      const result = await runCli(['demux', demuxSource, '--output-dir', outDir], 120000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      expect(fs.existsSync(outDir)).toBe(true);
+      const videoPath = path.join(outDir, 'demux-source.video.mp4');
+      const audioPath = path.join(outDir, 'demux-source.audio_0.m4a');
+      const subtitlePath = path.join(outDir, 'demux-source.subtitle_0.srt');
+      expect(fs.existsSync(videoPath)).toBe(true);
+      expect(fs.existsSync(audioPath)).toBe(true);
+      expect(fs.existsSync(subtitlePath)).toBe(true);
+      expect(readContainerMagic(videoPath).slice(8, 16)).toBe('66747970');
+      expect(result.stdout).toContain(videoPath);
+      expect(result.stdout).toContain(audioPath);
+      expect(result.stdout).toContain(subtitlePath);
+    });
+
+    it('should honour the split alias and write next to the input by default', async () => {
+      const sourceDir = demuxOutDir('demux-default-dir');
+      const source = generateTestDemuxSource(sourceDir, 'local-source.mkv');
+
+      const result = await runCli(['split', source, '--video'], 60000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      expect(fs.existsSync(path.join(sourceDir, 'local-source.video.mp4'))).toBe(true);
+    });
+
+    it('should extract only the requested kinds', async () => {
+      const outDir = demuxOutDir('demux-audio-only');
+
+      const result = await runCli(['demux', demuxSource, '--output-dir', outDir, '--audio'], 60000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      expect(fs.readdirSync(outDir)).toEqual(['demux-source.audio_0.m4a']);
+    });
+
+    it('should re-encode audio with --audio-codec', async () => {
+      const outDir = demuxOutDir('demux-audio-mp3');
+
+      const result = await runCli(['demux', demuxSource, '--output-dir', outDir, '--audio', '--audio-codec', 'mp3'], 60000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      const audioPath = path.join(outDir, 'demux-source.audio_0.mp3');
+      expect(fs.existsSync(audioPath)).toBe(true);
+      const probe = spawnSync(ffprobeBin, ['-v', 'error', '-show_entries', 'stream=codec_name', '-of', 'csv=p=0', audioPath], {
+        encoding: 'utf8',
+        timeout: 30000,
+      });
+      expect(probe.stdout.trim()).toBe('mp3');
+    });
+
+    it('should convert subtitles with --subtitle-format', async () => {
+      const outDir = demuxOutDir('demux-subs-ass');
+
+      const result = await runCli(['demux', demuxSource, '--output-dir', outDir, '--subtitles', '--subtitle-format', 'ass'], 60000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      const subtitlePath = path.join(outDir, 'demux-source.subtitle_0.ass');
+      expect(fs.existsSync(subtitlePath)).toBe(true);
+      expect(fs.readFileSync(subtitlePath, 'utf8')).toContain('EncodeX e2e subtitle');
+    });
+
+    it('should re-encode video with --video-container', async () => {
+      const outDir = demuxOutDir('demux-video-mkv');
+
+      const result = await runCli(['demux', demuxSource, '--output-dir', outDir, '--video', '--video-container', 'mkv'], 60000);
+
+      expect(result.status).toBe(EXIT.SUCCESS);
+      const videoPath = path.join(outDir, 'demux-source.video.mkv');
+      expect(fs.existsSync(videoPath)).toBe(true);
+      expect(readContainerMagic(videoPath).startsWith('1a45dfa3')).toBe(true);
+    });
+
+    it('should exit with usage error when a kind filter matches no stream', async () => {
+      const result = await runCli(['demux', remuxSource, '--output-dir', demuxOutDir('demux-empty'), '--subtitles'], 30000);
+
+      expect(result.status).toBe(EXIT.USAGE);
+    });
+
+    it('should exit with not-found error for a missing input', async () => {
+      const result = await runCli(['demux', path.join(tmpDir, 'no-such-source.mkv')], 30000);
+
+      expect(result.status).toBe(EXIT.NOT_FOUND);
     });
   });
 

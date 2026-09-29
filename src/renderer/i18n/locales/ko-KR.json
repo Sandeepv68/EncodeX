@@ -26,7 +26,9 @@
       "paused": "일시 중지됨",
       "starting": "시작 중",
       "parallel": "{{count}} 병렬"
-    }
+    },
+    "remux": "리멀텍스",
+    "demux": "디멀텍스"
   },
   "dashboard": {
     "welcome": "EncodeX에 오신 것을 환영합니다",
@@ -37,7 +39,9 @@
     "descAudio": "비디오 파일에서 깨끗한 오디오 트랙 추출",
     "descCut": "프레임 정확도 플레이어로 비디오 다듬기 및 자르기",
     "descBatch": "스마트 큐로 여러 파일을 한 번에 변환",
-    "shortcutsFooter": "키보드 단축키 보기: {{shortcut}}"
+    "shortcutsFooter": "키보드 단축키 보기: {{shortcut}}",
+    "descRemux": "스트림을 무손실 상태로 새 컨테이너에 담습니다",
+    "descDemux": "파일의 스트림을 개별 출력 파일로 분리합니다"
   },
   "gettingStarted": {
     "hint": "처음 오셨나요?",
@@ -125,7 +129,25 @@
     "showPreview": "미리보기 표시",
     "closePreview": "미리보기 닫기",
     "viewMore": "더 보기",
-    "viewLess": "덜 보기"
+    "viewLess": "덜 보기",
+    "filtersTitle": "비디오 필터",
+    "filtersHint": "재인코딩 중 FFmpeg 비디오 필터(자르기, 프레임레이트, 디인터레이싱, 노이즈 감소, 색상 등)를 적용합니다. 모든 필터는 스케일과 회전 이후 하나의 -vf 체인으로 합쳐집니다.",
+    "addPreset": "프리셋 필터 추가…",
+    "addFilter": "필터 추가",
+    "customChainLabel": "사용자 지정 필터 체인",
+    "customChainPlaceholder": "예: fps=30, eq=brightness=0.1",
+    "customChainHint": "쉼표로 구분한 FFmpeg 필터 표현식입니다. 각 항목은 괄호와 대괄호가 짝을 이루어야 하고, 따옴표가 일치해야 하며, 셸 메타문자를 포함하면 안 됩니다.",
+    "addCustom": "사용자 지정 추가",
+    "removeFilter": "필터 제거",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동",
+    "clearAll": "모두 지우기",
+    "noFilters": "추가된 필터가 없습니다.",
+    "filtersDisabledNote": "비디오 필터에는 재인코딩이 필요합니다. 필터를 추가하려면 무손실 복사를 끄세요.",
+    "filtersTurnOffCopy": "무손실 복사 끄기",
+    "filtersCopyWarning": "무손실 복사 모드가 켜져 있어 비디오 필터가 무시됩니다. 필터를 적용하려면 무손실 복사를 끄세요.",
+    "chainPreview": "미리보기: -vf {{chain}}",
+    "filtersInvalid": "잘못된 필터: {{error}}"
   },
   "mediaInfo": {
     "title": "미디어 정보",
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "이 작업은 더 이상 편집할 수 없습니다.",
     "condense": "접기",
     "expand": "펼치기",
-    "clearAll": "모두 지우기"
+    "clearAll": "모두 지우기",
+    "operationRemux": "리멀텍스",
+    "operationDemux": "디멀텍스",
+    "remuxContainerHint": "스트림이 복사될 컨테이너입니다. “자동”은 각 원본 파일의 확장자를 그대로 유지합니다."
   },
   "progress": {
     "title": "변환 진행률",
@@ -459,11 +484,11 @@
     "clear": "지우기",
     "download": "TXT로 다운로드",
     "filter": "수준별 필터",
-    "levelAll": "ALL",
-    "levelDebug": "DEBUG",
-    "levelInfo": "INFO",
-    "levelWarn": "WARN",
-    "levelError": "ERROR",
+    "levelAll": "전체",
+    "levelDebug": "디버그",
+    "levelInfo": "정보",
+    "levelWarn": "경고",
+    "levelError": "오류",
     "noEntries": "아직 로그 항목이 없습니다.",
     "entryCount": "{{count}}개 항목"
   },
@@ -495,7 +520,9 @@
     "updateAvailable": "업데이트 가능: v{{version}}",
     "updateNow": "지금 업데이트",
     "updateDownloaded": "업데이트 v{{version}} 다운로드 완료",
-    "viewUpdate": "보기"
+    "viewUpdate": "보기",
+    "remuxed": "리멀텍스가 완료되었습니다",
+    "demuxed": "스트림을 성공적으로 추출했습니다"
   },
   "profiles": {
     "searchPlaceholder": "프로필 검색...",
@@ -598,7 +625,9 @@
       "videoCut": "동영상 자르기",
       "batchQueue": "배치 큐",
       "logs": "로그",
-      "dashboard": "대시보드"
+      "dashboard": "대시보드",
+      "remux": "리멀텍스",
+      "demux": "디멀텍스"
     },
     "global": {
       "help": "키보드 단축키 표시",
@@ -611,7 +640,8 @@
       "navBatchQueue": "배치 큐로 이동",
       "navLogs": "로그로 이동",
       "navSettings": "설정으로 이동",
-      "themeToggle": "테마 전환"
+      "themeToggle": "테마 전환",
+      "navRemux": "리멀텍스로 이동"
     },
     "convert": {
       "input": "입력 파일 선택",
@@ -679,7 +709,17 @@
       "image": "이미지 열기",
       "audio": "오디오 열기",
       "cut": "자르기 열기",
-      "batch": "배치 큐 열기"
+      "batch": "배치 큐 열기",
+      "remux": "리멀텍스 열기",
+      "demux": "디멀텍스 열기"
+    },
+    "remux": {
+      "input": "입력 파일 선택",
+      "start": "리멀텍스 시작"
+    },
+    "demux": {
+      "input": "입력 파일 선택",
+      "start": "추출 시작"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "MIT 라이선스로 배포됩니다. 저작권 고지와 허가 고지가 소프트웨어의 모든 사본 또는 실질적인 부분에 포함되는 조건으로, 상업적 이용을 포함한 사용, 복사, 수정, 병합, 게시, 배포, 서브라이선스, 판매가 자유롭습니다. 본 소프트웨어는 어떤 종류의 보증도 없이 \"있는 그대로\" 제공됩니다.",
     "acknowledgements": "오픈 소스에 대한 ❤️와 함께 만들어졌습니다 — FFmpeg 프로젝트와 커뮤니티가 함께하고 있습니다.",
     "checkForUpdates": "업데이트 확인",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "약관 및 조건",
+    "terms": "약관",
+    "readTerms": "약관 읽기"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "약관 및 조건",
+    "accept": "동의합니다",
+    "reject": "동의하지 않습니다",
+    "close": "닫기",
+    "lastUpdated": "시행일: {{date}}"
   },
   "update": {
     "title": "업데이트",
@@ -734,5 +774,167 @@
     "installOnRestart": "다음 재시작 시 설치",
     "installScheduled": "업데이트 v{{version}}은(는) 다음 앱 재시작 시 설치됩니다.",
     "cancelRestartInstall": "취소"
+  },
+  "filters": {
+    "presets": {
+      "crop": "자르기",
+      "cropHint": "지정한 너비, 높이, 오프셋으로 비디오를 잘라냅니다.",
+      "framerate": "프레임레이트",
+      "framerateHint": "출력 프레임레이트를 변경합니다 (프레임이 복제되거나 버려집니다).",
+      "deinterlace": "디인터레이싱",
+      "deinterlaceHint": "인터레이스 비디오를 프로그레시브로 변환합니다.",
+      "denoise": "노이즈 감소",
+      "denoiseHint": "세부 구조를 유지하면서 노이즈를 줄입니다 (hqdn3d).",
+      "sharpen": "선명도",
+      "sharpenHint": "인지되는 선명도를 높입니다 (unsharp).",
+      "color": "색상",
+      "colorHint": "밝기, 대비, 채도, 감마를 조정합니다 (eq).",
+      "grayscale": "그레이스케일",
+      "grayscaleHint": "색상을 제거해 흑백 이미지로 만듭니다.",
+      "blur": "블러",
+      "blurHint": "박스 블러를 적용해 이미지를 부드럽게 만듭니다."
+    },
+    "params": {
+      "crop": {
+        "w": "너비",
+        "h": "높이",
+        "x": "가로 오프셋",
+        "y": "세로 오프셋"
+      },
+      "framerate": {
+        "fps": "초당 프레임 수"
+      },
+      "deinterlace": {
+        "mode": "필드 순서",
+        "modes": {
+          "auto": "자동",
+          "tff": "위 필드 우선",
+          "bff": "아래 필드 우선"
+        }
+      },
+      "denoise": {
+        "strength": "강도"
+      },
+      "sharpen": {
+        "strength": "강도"
+      },
+      "color": {
+        "brightness": "밝기",
+        "contrast": "대비",
+        "saturation": "채도",
+        "gamma": "감마"
+      },
+      "blur": {
+        "strength": "강도"
+      }
+    }
+  },
+  "remux": {
+    "title": "리멀텍스",
+    "videoFile": "비디오 파일",
+    "dropLabel": "비디오 파일을 여기로 끌어다 놓거나 클릭하여 찾아보세요",
+    "videoFileHint": "스트림을 대상 컨테이너에 다시 묶을 원본 미디어 파일입니다. 스트림은 재인코딩 없이 복사됩니다.",
+    "selectedVideo": "선택한 비디오: {{file}}",
+    "streamCount": "스트림 {{total}}개 중 {{selected}}개 선택",
+    "container": "컨테이너",
+    "containerHint": "리멀텍스된 파일의 출력 컨테이너입니다. 일반적인 비디오 컨테이너 중에서 선택하세요. 출력 확장자는 컨테이너를 따릅니다.",
+    "streams": "원본 스트림",
+    "streamsHint": "리멀텍스 출력에 유지할 원본 파일의 스트림을 선택하세요. 선택하지 않은 스트림은 삭제됩니다.",
+    "streamIndex": "번호",
+    "kind": "종류",
+    "selectStream": "{{kind}} 스트림 #{{index}} 선택",
+    "selectAll": "모두 유지",
+    "selectNone": "모두 제외",
+    "audioSync": "오디오 지연 (초)",
+    "audioSyncHint": "재인코딩 없이 기본 오디오 트랙을 비디오 기준으로 이동합니다. 예: -0.5는 0.5초 앞, 1.5는 1.5초 뒤입니다.",
+    "audioSyncLossless": "무손실: 오디오는 타임스탬프 오프셋을 가진 스트림으로 복사되므로 화질이 바뀌지 않습니다.",
+    "subtitles": "추가된 자막",
+    "subtitlesHint": "외부 자막 파일(.srt, .ass, .vtt)을 추가 입력 트랙으로 리멀텍스 출력에 포함합니다.",
+    "addSubtitle": "자막 파일 추가",
+    "subtitleCodec": "대상 코덱",
+    "subtitleCodecHint": "포함되는 트랙에 사용할 자막 코덱입니다. 컨테이너마다 지원하는 자막 형식이 다르며, 컨테이너가 저장할 수 없는 형식을 선택하면 경고가 표시됩니다.",
+    "removeSubtitle": "자막 제거",
+    "audioTracks": "추가된 오디오 트랙",
+    "audioTracksHint": "외부 오디오 파일(.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav)을 추가 입력 트랙으로 리멀텍스 출력에 포함합니다.",
+    "addAudioTrack": "오디오 트랙 추가",
+    "removeAudioTrack": "오디오 트랙 제거",
+    "addedTrackDelay": "이 트랙 지연 (초)",
+    "addedTrackDelayHint": "이 트랙에 비디오를 기준으로 한 부호 있는 오프셋입니다(양수 = 더 늦게 재생). 무손실: 스트림 복리와 함께 -itsoffset으로 적용됩니다.",
+    "thumbnail": "썸네일 / 커버",
+    "thumbnailHint": "선택적 커버 이미지(.jpg, .jpeg, .png)를 리멀텍스된 파일에 포함합니다. MKV/WebM은 이미지 스트림으로 첨부하고, MP4/MOV는 attached_pic 플래그를 가진 비디오 스트림으로 포함합니다.",
+    "addThumbnail": "썸네일 추가",
+    "thumbnailUnsupported": "{{container}}은(는) 커버를 저장할 수 없습니다. 썸네일을 첨부하려면 MKV, WebM, MP4 또는 MOV로 변경하세요.",
+    "removeThumbnail": "썸네일 제거",
+    "thumbnailMode": "{{mode}}(으)로 포함",
+    "thumbnailAttached": "첨부 이미지",
+    "thumbnailDisposition": "attached_pic 커버 스트림",
+    "chapters": "챕터",
+    "chaptersHint": "원본 챕터는 기본적으로 유지됩니다. FFMETADATA 챕터 파일을 가져오면 리멀텍스된 파일에서 원본 챕터를 대체합니다.",
+    "copyChapters": "원본 챕터 복사",
+    "copyChaptersHint": "원본 파일의 챕터 마커를 리멀텍스 출력에 유지합니다(무손실, -map_chapters 0).",
+    "importChapters": "챕터 파일 가져오기",
+    "chaptersUnsupported": "{{container}}은(는) 챕터 메타데이터를 저장하지 못하므로 챕터가 삭제됩니다.",
+    "removeChapters": "챕터 파일 제거",
+    "warnings": "호환성 경고",
+    "warningsHint": "선택한 스트림과 설정이 선택한 컨테이너에 적합한지에 대한 비차단 안내입니다. 경고는 시작을 막지 않지만 오류는 막습니다.",
+    "outputFile": "출력 파일",
+    "outputFileHint": "리멀텍스된 파일의 저장 경로입니다. 확장자는 대상 컨테이너를 따릅니다.",
+    "placeholderOutput": "output.mkv",
+    "start": "리멀텍스 시작",
+    "remuxing": "리멀텍스 중…",
+    "pause": "일시 정지",
+    "resume": "계속",
+    "cancel": "취소",
+    "cancelTitle": "리멀텍스 취소",
+    "cancelMessage": "진행 중인 리멀텍스를 취소하시겠습니까?",
+    "yes": "예",
+    "no": "아니요",
+    "filtersTitle": "비디오 필터",
+    "filtersHint": "선택한 비디오 스트림을 재인코딩하는 동안 FFmpeg 비디오 필터를 적용합니다. 필터는 무손실 복사에 적용할 수 없으므로, 하나라도 추가하면 리멀텍스가 재인코딩으로 바뀝니다.",
+    "filtersReencodeWarning": "비디오 필터는 스트림 복사 위에서 실행할 수 없으므로, 선택한 {{count}}개의 필터가 이 리멀텍스를 재인코딩으로 바꿉니다."
+  },
+  "demux": {
+    "title": "디멀텍스",
+    "videoFile": "비디오 파일",
+    "videoFileHint": "스트림을 추출할 원본 미디어 파일입니다. 선택한 각 스트림은 자체 출력 파일로 기록됩니다.",
+    "dropLabel": "비디오 파일을 여기로 끌어다 놓거나 클릭하여 찾아보세요",
+    "selectedVideo": "선택한 비디오: {{file}}",
+    "streamCount": "스트림 {{total}}개 중 {{selected}}개 선택",
+    "streams": "원본 스트림",
+    "streamsHint": "추출할 스트림을 선택하세요. 선택한 각 스트림은 별도의 출력 파일이 되고, 선택하지 않은 스트림은 건너뜁니다.",
+    "extractStreams": "추출할 스트림",
+    "streamGroup": "{{kind}} 스트림",
+    "suggestedOutput": "출력",
+    "selectStream": "추출할 {{kind}} 스트림 #{{index}} 선택",
+    "videoContainer": "비디오 출력 방식",
+    "videoContainerHint": "비디오 스트림을 기록하는 방식입니다. “복사”를 선택하면 재인코딩 없이 무손실로 추출하고, 컨테이너를 선택하면 해당 형식으로 비디오를 재인코딩합니다.",
+    "audioCodec": "오디오 출력 방식",
+    "audioCodecHint": "오디오 스트림을 기록하는 방식입니다. “복사”를 선택하면 재인코딩 없이 무손실로 추출하고, 코덱을 선택하면 오디오를 재인코딩합니다.",
+    "subtitleFormat": "자막 출력 방식",
+    "subtitleFormatHint": "자막 스트림을 기록하는 방식입니다. “복사”를 선택하면 재인코딩 없이 무손실로 추출하고, 형식을 선택하면 자막을 변환합니다. 이미지 자막(예: PGS/DVDSUB)은 텍스트로 바꿀 수 없어 복사 상태로 유지됩니다.",
+    "subtitleWarning": "자막 변환 경고",
+    "subtitleWarningHint": "이미지 자막 스트림(예: PGS/DVDSUB)은 OCR 없이는 텍스트로 재인코딩할 수 없어 무손실 .mks 사본으로 추출됩니다. 추출 계획에서는 “복사”로 표시됩니다.",
+    "bitmapSubtitleWarning": "이 이미지 자막 스트림은 OCR 없이는 텍스트로 재인코딩할 수 없어 무손실 .mks 사본으로 추출됩니다.",
+    "copyOption": "복사 (무손실)",
+    "outputDir": "출력 폴더",
+    "outputDirHint": "추출된 스트림을 기록할 폴더입니다. 기본값은 원본 파일이 있는 폴더입니다.",
+    "outputDirPlaceholder": "출력 폴더",
+    "summary": "추출 계획",
+    "summaryHint": "선택한 스트림마다 실행 순서대로 출력 파일 하나가 생성됩니다. “복사”로 표시된 파일은 무손실로 추출되고, “변환”으로 표시된 파일은 재인코딩됩니다.",
+    "copyLabel": "복사",
+    "convertLabel": "{{target}}(으)로 변환",
+    "start": "디멀텍스 시작",
+    "demuxing": "추출 중…",
+    "pause": "일시 정지",
+    "resume": "계속",
+    "cancel": "취소",
+    "cancelTitle": "디멀텍스 취소",
+    "cancelMessage": "진행 중인 디멀텍스를 취소하시겠습니까?",
+    "yes": "예",
+    "no": "아니요",
+    "currentStream": "{{kind}} 스트림 #{{index}} 추출 중",
+    "filtersTitle": "비디오 필터",
+    "filtersHint": "선택한 비디오 스트림을 재인코딩하는 동안 FFmpeg 비디오 필터(자르기, 프레임레이트, 디인터레이싱, 노이즈 감소, 색상 등)를 적용합니다. “복사”는 무손실이므로, 대상 컨테이너가 비디오를 재인코딩할 때만 필터가 표시됩니다.",
+    "filtersIgnoredCopy": "비디오 출력 방식이 “복사”인 동안 비디오 필터는 무시됩니다. 스트림 복사로는 재인코딩할 수 없기 때문입니다. 필터를 적용하려면 대상 컨테이너를 선택하세요."
   }
 }

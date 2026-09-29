@@ -26,7 +26,9 @@
       "paused": "Gepauzeerd",
       "starting": "Starten",
       "parallel": "{{count}} parallel"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "Welkom bij EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Haal schone audiotracks uit videobestanden",
     "descCut": "Knip en bewerk video met een frame-nauwkeurige speler",
     "descBatch": "Converteer veel bestanden tegelijk met een slimme wachtrij",
-    "shortcutsFooter": "Druk op {{shortcut}} voor sneltoetsen"
+    "shortcutsFooter": "Druk op {{shortcut}} voor sneltoetsen",
+    "descRemux": "Verplaatst streams verliesvrij naar een nieuwe container",
+    "descDemux": "Splitst de streams van een bestand in afzonderlijke uitvoerbestanden"
   },
   "gettingStarted": {
     "hint": "Nieuw hier?",
@@ -125,7 +129,25 @@
     "showPreview": "Voorbeeld tonen",
     "closePreview": "Voorbeeld sluiten",
     "viewMore": "Meer tonen",
-    "viewLess": "Minder tonen"
+    "viewLess": "Minder tonen",
+    "filtersTitle": "Videofilters",
+    "filtersHint": "Past FFmpeg-videofilters (bijsnijden, framerate, deinterlacing, ruisonderdrukking, kleur…) toe tijdens het opnieuw coderen. Alle filters worden na schalen en draaien samengevoegd tot één -vf-keten.",
+    "addPreset": "Voorinstelling toevoegen…",
+    "addFilter": "Filter toevoegen",
+    "customChainLabel": "Aangepaste filterketen",
+    "customChainPlaceholder": "bijv. fps=30, eq=brightness=0.1",
+    "customChainHint": "Door komma's gescheiden FFmpeg-filterexpressies. Elke invoer moet gebalanceerde haakjes en vierkante haken hebben, overeenkomende aanhalingstekens en geen shell-metatekens.",
+    "addCustom": "Aangepast toevoegen",
+    "removeFilter": "Filter verwijderen",
+    "moveUp": "Omhoog verplaatsen",
+    "moveDown": "Omlaag verplaatsen",
+    "clearAll": "Alles wissen",
+    "noFilters": "Geen filters toegevoegd.",
+    "filtersDisabledNote": "Videofilters vereisen opnieuw coderen. Schakel verliesvrij kopiëren uit om filters toe te voegen.",
+    "filtersTurnOffCopy": "Verliesvrij kopiëren uitschakelen",
+    "filtersCopyWarning": "De verliesvrije kopieermodus is actief, dus videofilters worden genegeerd. Schakel verliesvrij kopiëren uit om filters toe te passen.",
+    "chainPreview": "Voorbeeld: -vf {{chain}}",
+    "filtersInvalid": "Ongeldig filter: {{error}}"
   },
   "mediaInfo": {
     "title": "Media-informatie",
@@ -208,7 +230,7 @@
       "timed_thumbnails": "Getimede miniaturen",
       "captions": "Ondertitels",
       "descriptions": "Beschrijvingen",
-      "metadata": "Metadata",
+      "metadata": "Metagegevens",
       "dependent": "Afhankelijk",
       "still_image": "Stilstaand beeld"
     },
@@ -347,7 +369,7 @@
     "revealInFolder": "In map tonen",
     "copyPath": "Pad kopiëren",
     "stats": "{{queued}} in wachtrij, {{running}} actief, {{done}} klaar, {{failed}} mislukt",
-    "etaEstimate": "ETA ~{{eta}}",
+    "etaEstimate": "Klaar over ~{{eta}}",
     "finished": "Batch voltooid: {{done}} geslaagd, {{failed}} mislukt",
     "notificationTitle": "EncodeX-batch voltooid",
     "filters": {
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "Deze taak kan niet meer worden bewerkt.",
     "condense": "Samenvouwen",
     "expand": "Uitvouwen",
-    "clearAll": "Alles wissen"
+    "clearAll": "Alles wissen",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "De container waarop de streams worden gekopieerd. \"Automatisch\" behoudt de extensie van elk bronbestand."
   },
   "progress": {
     "title": "Conversievoortgang",
@@ -459,11 +484,11 @@
     "clear": "Wissen",
     "download": "Downloaden als TXT",
     "filter": "Filteren op niveau",
-    "levelAll": "ALL",
+    "levelAll": "ALLE",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
-    "levelWarn": "WARN",
-    "levelError": "ERROR",
+    "levelWarn": "WAARSCHUWING",
+    "levelError": "FOUT",
     "noEntries": "Nog geen loggegevens.",
     "entryCount": "{{count}} items"
   },
@@ -495,7 +520,9 @@
     "updateAvailable": "Update beschikbaar: v{{version}}",
     "updateNow": "Nu bijwerken",
     "updateDownloaded": "Update v{{version}} gedownload",
-    "viewUpdate": "Bekijk"
+    "viewUpdate": "Bekijk",
+    "remuxed": "Remux voltooid",
+    "demuxed": "Streams succesvol geëxtraheerd"
   },
   "profiles": {
     "searchPlaceholder": "Profielen zoeken...",
@@ -523,7 +550,7 @@
     "original": "Origineel",
     "pixelFormatLabel": "Pixelformaat",
     "videoBitrateLabel": "Video-bitsnelheid",
-    "autoCrf": "Auto (CRF)",
+    "autoCrf": "Automatisch (CRF)",
     "audioBitrateLabel": "Audio-bitsnelheid",
     "advancedOptions": "Geavanceerde opties",
     "extensionOverrideLabel": "Uitvoerextensie overschrijven",
@@ -597,8 +624,10 @@
       "audioExtract": "Audio extraheren",
       "videoCut": "Video knippen",
       "batchQueue": "Batchwachtrij",
-      "logs": "Logs",
-      "dashboard": "Dashboard"
+      "logs": "Logboeken",
+      "dashboard": "Dashboard",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "Sneltoetsen weergeven",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Naar Batchwachtrij",
       "navLogs": "Naar Logs",
       "navSettings": "Naar Instellingen",
-      "themeToggle": "Thema wisselen"
+      "themeToggle": "Thema wisselen",
+      "navRemux": "Ga naar Remux"
     },
     "convert": {
       "input": "Invoerbestand kiezen",
@@ -679,7 +709,17 @@
       "image": "Afbeelding openen",
       "audio": "Audio openen",
       "cut": "Knippen openen",
-      "batch": "Batchwachtrij openen"
+      "batch": "Batchwachtrij openen",
+      "remux": "Remux openen",
+      "demux": "Demux openen"
+    },
+    "remux": {
+      "input": "Invoerbestand kiezen",
+      "start": "Remux starten"
+    },
+    "demux": {
+      "input": "Invoerbestand kiezen",
+      "start": "Extractie starten"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "Uitgebracht onder de MIT-licentie. Vrij te gebruiken, kopiëren, wijzigen, samenvoegen, publiceren, distribueren, onderlicentiëren en verkopen — ook commercieel — op voorwaarde dat de copyrightmelding en de toestemmingsmelding in alle kopieën of substantiële delen van de software worden opgenomen. De software wordt \"as is\" geleverd, zonder enige garantie.",
     "acknowledgements": "Gemaakt met ❤️ voor open source — mogelijk gemaakt door het FFmpeg-project en de community.",
     "checkForUpdates": "Controleren op updates",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Voorwaarden en bepalingen",
+    "terms": "Voorwaarden",
+    "readTerms": "Voorwaarden lezen"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Voorwaarden en bepalingen",
+    "accept": "Ik ga akkoord",
+    "reject": "Ik ga niet akkoord",
+    "close": "Sluiten",
+    "lastUpdated": "In werking vanaf: {{date}}"
   },
   "update": {
     "title": "Update",
@@ -734,5 +774,167 @@
     "installOnRestart": "Installeren bij volgende herstart",
     "installScheduled": "Update v{{version}} wordt geïnstalleerd bij de volgende app-herstart.",
     "cancelRestartInstall": "Annuleren"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Bijsnijden",
+      "cropHint": "Snijdt de video bij op de opgegeven breedte, hoogte en verschuiving.",
+      "framerate": "Framerate",
+      "framerateHint": "Wijzigt de framerate van de uitvoer (frames worden gedupliceerd of weggelaten).",
+      "deinterlace": "Deinterlacing",
+      "deinterlaceHint": "Zet interlaced video om naar progressief.",
+      "denoise": "Ruisonderdrukking",
+      "denoiseHint": "Vermindert ruis met behoud van details (hqdn3d).",
+      "sharpen": "Scherpte",
+      "sharpenHint": "Verhoogt de waargenomen scherpte (unsharp).",
+      "color": "Kleur",
+      "colorHint": "Past helderheid, contrast, verzadiging en gamma aan (eq).",
+      "grayscale": "Grijswaarden",
+      "grayscaleHint": "Verwijdert kleur en laat een zwart-wit beeld over.",
+      "blur": "Vervagen",
+      "blurHint": "Past een boxvervaging toe om het beeld te verzachten."
+    },
+    "params": {
+      "crop": {
+        "w": "Breedte",
+        "h": "Hoogte",
+        "x": "X-verschuiving",
+        "y": "Y-verschuiving"
+      },
+      "framerate": {
+        "fps": "Frames per seconde"
+      },
+      "deinterlace": {
+        "mode": "Veldvolgorde",
+        "modes": {
+          "auto": "Automatisch",
+          "tff": "Bovenveld eerst",
+          "bff": "Onderveld eerst"
+        }
+      },
+      "denoise": {
+        "strength": "Sterkte"
+      },
+      "sharpen": {
+        "strength": "Sterkte"
+      },
+      "color": {
+        "brightness": "Helderheid",
+        "contrast": "Contrast",
+        "saturation": "Verzadiging",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Sterkte"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "Videobestand",
+    "dropLabel": "Sleep hier een videobestand of klik om te bladeren",
+    "videoFileHint": "Het bronmediabestand waarvan de streams in de doelcontainer worden verpakt. De streams worden zonder hercodering gekopieerd.",
+    "selectedVideo": "Geselecteerde video: {{file}}",
+    "streamCount": "{{selected}} van {{total}} streams geselecteerd",
+    "container": "Container",
+    "containerHint": "De uitvoercontainer van het remux-bestand. Kies uit gangbare videocontainers; de uitvoerextensie volgt de container.",
+    "streams": "Bronstreams",
+    "streamsHint": "Kies welke streams uit het bronbestand in de remux-uitvoer behouden blijven. Streams die niet geselecteerd zijn worden weggelaten.",
+    "streamIndex": "Nr.",
+    "kind": "Type",
+    "selectStream": "Selecteer de {{kind}}-stream #{{index}}",
+    "selectAll": "Alles behouden",
+    "selectNone": "Niets behouden",
+    "audioSync": "Audio vertragen (seconden)",
+    "audioSyncHint": "Verschuift de hoofd-audiotrack ten opzichte van de video zonder opnieuw coderen, bijv. -0.5 voor 0,5 s eerder of 1.5 voor 1,5 s later.",
+    "audioSyncLossless": "Verliesvrij: audio wordt als stream gekopieerd met een tijdstempelverschuiving, dus de kwaliteit verandert niet.",
+    "subtitles": "Toegevoegde ondertitels",
+    "subtitlesHint": "Externe ondertitelbestanden (.srt, .ass, .vtt) die als extra invoertracks in de remux-uitvoer worden ingesloten.",
+    "addSubtitle": "Ondertitelbestand toevoegen",
+    "subtitleCodec": "Doelcodec",
+    "subtitleCodecHint": "De ondertitelcodec voor de ingesloten track. Containers accepteren verschillende ondertitelformaten; een formaat kiezen dat de container niet kan opslaan geeft een waarschuwing.",
+    "removeSubtitle": "Ondertitels verwijderen",
+    "audioTracks": "Toegevoegde audiotracks",
+    "audioTracksHint": "Externe audiobestanden (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) die als extra invoertracks in de remux-uitvoer worden ingesloten.",
+    "addAudioTrack": "Audiotrack toevoegen",
+    "removeAudioTrack": "Audiotrack verwijderen",
+    "addedTrackDelay": "Deze track vertragen (seconden)",
+    "addedTrackDelayHint": "Gesigneerde verschuiving van deze track ten opzichte van de video (positief = later afspelen). Verliesvrij: toegepast als -itsoffset met streamkopie.",
+    "thumbnail": "Miniatuur / omslag",
+    "thumbnailHint": "Optionele omslagafbeelding (.jpg, .jpeg, .png) die in het remux-bestand wordt ingesloten. MKV/WebM voegen deze toe als afbeeldingsstream; MP4/MOV sluiten deze in als videostream met de markering attached_pic.",
+    "addThumbnail": "Miniatuur toevoegen",
+    "thumbnailUnsupported": "{{container}} kan geen omslag opslaan. Gebruik MKV, WebM, MP4 of MOV om een miniatuur toe te voegen.",
+    "removeThumbnail": "Miniatuur verwijderen",
+    "thumbnailMode": "Ingesloten als {{mode}}",
+    "thumbnailAttached": "bijgevoegde afbeelding",
+    "thumbnailDisposition": "attached_pic-omslagstream",
+    "chapters": "Hoofdstukken",
+    "chaptersHint": "Hoofdstukken uit de bron blijven standaard behouden. Importeer een FFMETADATA-hoofdstukbestand om de bronhoofdstukken in het remux-bestand te vervangen.",
+    "copyChapters": "Bronhoofdstukken kopiëren",
+    "copyChaptersHint": "Bewaart de hoofdstukmarkeringen van het bronbestand in de remux-uitvoer (verliesvrij, -map_chapters 0).",
+    "importChapters": "Hoofdstukbestand importeren",
+    "chaptersUnsupported": "{{container}} bewaart geen hoofdstukmetadata; hoofdstukken worden weggelaten.",
+    "removeChapters": "Hoofdstukbestand verwijderen",
+    "warnings": "Compatibiliteitswaarschuwingen",
+    "warningsHint": "Niet-blokkerende opmerkingen over of de geselecteerde streams en instellingen bij de gekozen container passen. Waarschuwingen laten starten toe; fouten blokkeren het.",
+    "outputFile": "Uitvoerbestand",
+    "outputFileHint": "Het doelpad van het remux-bestand. De extensie volgt de doelcontainer.",
+    "placeholderOutput": "uitvoer.mkv",
+    "start": "Remux starten",
+    "remuxing": "Bezig met remuxen…",
+    "pause": "Pauzeren",
+    "resume": "Hervatten",
+    "cancel": "Annuleren",
+    "cancelTitle": "Remux annuleren",
+    "cancelMessage": "Weet je zeker dat je de lopende remux wilt annuleren?",
+    "yes": "Ja",
+    "no": "Nee",
+    "filtersTitle": "Videofilters",
+    "filtersHint": "Past FFmpeg-videofilters toe terwijl geselecteerde videostreams opnieuw worden gecodeerd. Filters kunnen niet op een verliesvrije kopie worden toegepast, dus één filter maakt van deze remux een hercodering.",
+    "filtersReencodeWarning": "Videofilters kunnen niet op een streamkopie draaien, dus de {{count}} geselecteerde filter(s) maken van deze remux een hercodering."
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "Videobestand",
+    "videoFileHint": "Het bronmediabestand waarvan de streams worden geëxtraheerd. Elke geselecteerde stream wordt naar een eigen uitvoerbestand geschreven.",
+    "dropLabel": "Sleep hier een videobestand of klik om te bladeren",
+    "selectedVideo": "Geselecteerde video: {{file}}",
+    "streamCount": "{{selected}} van {{total}} streams geselecteerd",
+    "streams": "Bronstreams",
+    "streamsHint": "Kies welke streams worden geëxtraheerd. Elke geselecteerde stream wordt een eigen uitvoerbestand; streams die niet zijn geselecteerd worden overgeslagen.",
+    "extractStreams": "Te extraheren streams",
+    "streamGroup": "{{kind}}-streams",
+    "suggestedOutput": "Uitvoer",
+    "selectStream": "Selecteer de {{kind}}-stream #{{index}} om te extraheren",
+    "videoContainer": "Videobestemming",
+    "videoContainerHint": "Hoe videostreams worden geschreven. \"Kopiëren\" extraheert ze verliesvrij zonder opnieuw coderen; een container kiezen codeert de video opnieuw in dat formaat.",
+    "audioCodec": "Audiobestemming",
+    "audioCodecHint": "Hoe audiostreams worden geschreven. \"Kopiëren\" extraheert ze verliesvrij zonder opnieuw coderen; een codec kiezen codeert de audio opnieuw.",
+    "subtitleFormat": "Ondertitelbestemming",
+    "subtitleFormatHint": "Hoe ondertitelstreams worden geschreven. \"Kopiëren\" extraheert ze verliesvrij zonder opnieuw coderen; een formaat kiezen zet ondertitels om. Bitmapondertitels (zoals PGS/DVDSUB) kunnen geen tekst worden en blijven gekopieerd.",
+    "subtitleWarning": "Waarschuwingen bij ondertitelconversie",
+    "subtitleWarningHint": "Bitmap-ondertitelstreams (zoals PGS/DVDSUB) kunnen zonder OCR niet naar tekst worden gecodeerd en worden dus als verliesvrije .mks-kopieën geëxtraheerd. In het extractieplan verschijnen ze als \"Kopiëren\".",
+    "bitmapSubtitleWarning": "Deze bitmap-ondertitelstream kan zonder OCR niet naar tekst worden gecodeerd en wordt dus als verliesvrije .mks-kopie geëxtraheerd.",
+    "copyOption": "Kopiëren (verliesvrij)",
+    "outputDir": "Uitvoermap",
+    "outputDirHint": "De map waarin geëxtraheerde streams worden geschreven. Standaard is dit de map van het bronbestand.",
+    "outputDirPlaceholder": "uitvoermap",
+    "summary": "Extractieplan",
+    "summaryHint": "Eén uitvoerbestand per geselecteerde stream, in uitvoervolgorde. Bestanden met \"Kopiëren\" worden verliesvrij geëxtraheerd; bestanden met \"Converteren\" worden opnieuw gecodeerd.",
+    "copyLabel": "Kopiëren",
+    "convertLabel": "Converteren naar {{target}}",
+    "start": "Demux starten",
+    "demuxing": "Bezig met extraheren…",
+    "pause": "Pauzeren",
+    "resume": "Hervatten",
+    "cancel": "Annuleren",
+    "cancelTitle": "Demux annuleren",
+    "cancelMessage": "Weet je zeker dat je de lopende demux wilt annuleren?",
+    "yes": "Ja",
+    "no": "Nee",
+    "currentStream": "{{kind}}-stream #{{index}} extraheren",
+    "filtersTitle": "Videofilters",
+    "filtersHint": "Past FFmpeg-videofilters (bijsnijden, framerate, deinterlacing, ruisonderdrukking, kleur…) toe terwijl geselecteerde videostreams opnieuw worden gecodeerd. \"Kopiëren\" is verliesvrij, dus filters verschijnen alleen wanneer een doelcontainer de video opnieuw codeert.",
+    "filtersIgnoredCopy": "Videofilters worden genegeerd zolang de videobestemming \"Kopiëren\" is, omdat een streamkopie niet opnieuw kan coderen. Kies een doelcontainer om ze toe te passen."
   }
 }

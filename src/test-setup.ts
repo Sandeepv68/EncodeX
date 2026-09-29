@@ -38,6 +38,11 @@ vi.mock('react-i18next', () => ({
         'errorBoundary.tryAgain': 'Try Again',
         'imageCompress.selectedImage': 'Selected image: {{file}}',
         'audioExtract.selectedVideo': 'Selected video: {{file}}',
+        'remux.thumbnailMode': 'Embedded as {{mode}}',
+        'remux.thumbnailAttached': 'attached picture',
+        'remux.thumbnailDisposition': 'attached_pic cover stream',
+        'remux.thumbnailUnsupported': '{{container}} cannot store cover art. Switch to MKV, WebM, MP4, or MOV to attach a thumbnail.',
+        'remux.chaptersUnsupported': '{{container}} does not store chapter metadata; chapters will be dropped.',
         'mediaInfo.exifData': 'EXIF Data',
         'mediaInfo.noExif': 'No EXIF data found',
         'mediaInfo.tagKeys.encoder': 'Encoder',
@@ -56,6 +61,15 @@ vi.mock('react-i18next', () => ({
         'nav.blip.paused': 'Paused',
         'nav.blip.starting': 'Starting',
         'footer.downloading': 'Downloading v{{version}} — {{percent}}%',
+        'convert.addPreset': 'Add preset filter...',
+        'convert.addCustom': 'Add custom',
+        'convert.addFilter': 'Add filter',
+        'convert.customChainPlaceholder': 'e.g. fps=30, eq=brightness=0.1',
+        'convert.chainPreview': 'Preview: -vf {{chain}}',
+        'filters.presets.crop': 'Crop',
+        'filters.presets.sharpen': 'Sharpen',
+        'filters.presets.cropHint': 'Crops the video to the given width, height and offset.',
+        'filters.presets.sharpenHint': 'Increases perceived sharpness (unsharp).',
       };
       let text = map[key] || (opts?.defaultValue as string | undefined) || key;
       if (opts) {

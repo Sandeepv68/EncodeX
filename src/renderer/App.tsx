@@ -67,6 +67,10 @@ const ImageCompress = lazy(() => import('./pages/ImageCompress'));
 const AudioExtract = lazy(() => import('./pages/AudioExtract'));
 /** Lazy-loaded VideoCut page, loaded on the '/video-cut' route. @const {React.ComponentType} */
 const VideoCut = lazy(() => import('./pages/VideoCut'));
+/** Lazy-loaded Remux page, loaded on the '/remux' route. @const {React.ComponentType} */
+const Remux = lazy(() => import('./pages/Remux'));
+/** Lazy-loaded Demux page, loaded on the '/demux' route. @const {React.ComponentType} */
+const Demux = lazy(() => import('./pages/Demux'));
 /** Lazy-loaded BatchQueue page, loaded on the '/batch' route. @const {React.ComponentType} */
 const BatchQueue = lazy(() => import('./pages/BatchQueue'));
 /** Lazy-loaded Logs page, loaded on the '/logs' route. @const {React.ComponentType} */
@@ -159,6 +163,8 @@ function AppLayout() {
     { path: '/image-compress', element: <ImageCompress /> },
     { path: '/audio-extract', element: <AudioExtract /> },
     { path: '/video-cut', element: <VideoCut /> },
+    { path: '/remux', element: <Remux /> },
+    { path: '/demux', element: <Demux /> },
     { path: '/batch', element: <BatchQueue /> },
     { path: '/logs', element: <Logs /> },
     { path: '/settings', element: <Settings /> },

@@ -21,6 +21,8 @@ import { runConvert, createCliTranscoder } from './cli-convert';
 import { runInfo, runCapabilities } from './cli-info';
 import { runCompress, runExtractAudio } from './cli-compress';
 import { runBatch } from './cli-batch';
+import { runRemux, createRemuxAddCollector } from './cli-remux';
+import { runDemux } from './cli-demux';
 
 /**
  * Logger instance scoped to the CLI entry module.
@@ -51,7 +53,7 @@ function getUserArgs(): string[] {
  * detecting whether an invocation already names a subcommand.
  * @const {readonly string[]} CLI_ALIASES
  */
-const CLI_ALIASES = ['c', 'audio'] as const;
+const CLI_ALIASES = ['c', 'audio', 'rmx', 'split'] as const;
 
 /**
  * Converts legacy flat CLI usage into the equivalent subcommand form.
@@ -175,6 +177,8 @@ export async function runCli(): Promise<void> {
     .option('--no-video', 'Exclude video streams')
     .option('--hwaccel', 'Enable hardware acceleration')
     .option('--hwaccel-mode <mode>', 'Hardware acceleration mode (auto|encode)')
+    .option('--filters <chain>', 'Video filter chain (comma-separated)')
+    .option('--preset <preset_id>', 'Curated video filter preset (repeatable)', (value: string, prev: string[]) => prev.concat([value]), [])
     .option('--info', 'Print media info for the input and exit')
     .action(async function (this: Command, input: string | undefined, output: string | undefined, opts: Record<string, unknown>) {
       const global = this.optsWithGlobals() as Record<string, unknown>;
@@ -203,6 +207,8 @@ export async function runCli(): Promise<void> {
         video: opts.video as boolean | undefined,
         hwaccel: opts.hwaccel as boolean | undefined,
         hwaccelMode: opts.hwaccelMode as string | undefined,
+        filters: opts.filters as string | undefined,
+        presets: opts.preset as string[] | undefined,
       };
       await runConvert({
         input,
@@ -294,6 +300,8 @@ export async function runCli(): Promise<void> {
     .option('--copy', 'Lossless stream copy')
     .option('--no-audio', 'Exclude audio streams')
     .option('--no-video', 'Exclude video streams')
+    .option('--filters <chain>', 'Video filter chain (comma-separated)')
+    .option('--preset <preset_id>', 'Curated video filter preset (repeatable)', (value: string, prev: string[]) => prev.concat([value]), [])
     .action(async function (this: Command, inputs: string[], opts: Record<string, unknown>) {
       const global = this.optsWithGlobals() as Record<string, unknown>;
       applyGlobalOptions(global);
@@ -313,8 +321,102 @@ export async function runCli(): Promise<void> {
           copy: opts.copy as boolean | undefined,
           audio: opts.audio as boolean | undefined,
           video: opts.video as boolean | undefined,
+          filters: opts.filters as string | undefined,
+          presets: opts.preset as string[] | undefined,
         },
         transcoder: global.transcoder as string,
+        timeoutSeconds: parseTimeout(global),
+        themeId,
+      });
+    });
+
+  const addCollector = createRemuxAddCollector();
+  subcommand(program, 'remux', 'Stream-copy a media file into another container without re-encoding')
+    .alias('rmx')
+    .argument('<input>', 'Input media file')
+    .option('-o, --output <file>', 'Output file (defaults to the input path with the target extension)')
+    .option('-f, --format <container>', 'Target container (e.g. mkv, mp4, mov)')
+    .option(
+      '--map <spec>',
+      'Stream to copy as 0:<type>:<ordinal> (repeatable; default: all streams)',
+      (value: string, prev: string[]) => prev.concat([value]),
+      [],
+    )
+    .option('--add-subtitle <file[::codec]>', 'Embed an external subtitle file (repeatable)', addCollector.collect('subtitle'))
+    .option('--add-audio <file>', 'Embed an external audio file (repeatable)', addCollector.collect('audio'))
+    .option('--thumbnail <image>', 'Embed cover art (MKV/WebM attach, MP4/MOV disposition)')
+    .option('--chapters <file>', 'Import chapters from an FFMETADATA file')
+    .option('--no-chapters', 'Drop the source chapters instead of copying them')
+    .option('--subtitle-codec <codec>', "Subtitle codec for added subtitles (default: the container's first choice)")
+    .option('--no-subtitles', 'Drop source subtitle streams')
+    .option('--audio-sync <seconds>', "Signed seconds to shift the primary file's audio (positive = later)")
+    .option('--set-sync <seconds>', 'Shift the preceding --add-subtitle/--add-audio input (repeatable)', addCollector.collect('setSync'))
+    .option(
+      '--filters <chain>',
+      'Video filter chain (comma-separated, repeatable). Filters force a re-encode instead of a lossless copy.',
+      (value: string, prev: string[]) => prev.concat([value]),
+      [],
+    )
+    .action(async function (this: Command, input: string, opts: Record<string, unknown>) {
+      const global = this.optsWithGlobals() as Record<string, unknown>;
+      applyGlobalOptions(global);
+      const transcoder = createCliTranscoder(global.transcoder as string);
+      await runRemux({
+        input,
+        flags: {
+          output: opts.output as string | undefined,
+          format: opts.format as string | undefined,
+          map: opts.map as string[] | undefined,
+          addTokens: addCollector.tokens(),
+          thumbnail: opts.thumbnail as string | undefined,
+          chapters: typeof opts.chapters === 'string' ? opts.chapters : undefined,
+          copyChapters: opts.chapters === false ? false : undefined,
+          subtitleCodec: opts.subtitleCodec as string | undefined,
+          subtitles: opts.subtitles === false ? false : undefined,
+          audioSync: opts.audioSync as string | undefined,
+          filters: opts.filters as string[] | undefined,
+        },
+        transcoder,
+        timeoutSeconds: parseTimeout(global),
+        themeId,
+      });
+    });
+
+  subcommand(program, 'demux', 'Extract each stream of a media file into a separate file')
+    .alias('split')
+    .argument('<input>', 'Input media file')
+    .option('--output-dir <dir>', 'Directory to write the extracted streams into (created when missing)')
+    .option('--video', 'Extract video streams only')
+    .option('--audio', 'Extract audio streams only')
+    .option('--subtitles', 'Extract subtitle streams only')
+    .option('--all', 'Extract every stream kind (default)')
+    .option('--video-container <ext>', 'Re-encode video into this container (e.g. mp4, mkv)')
+    .option('--audio-codec <codec>', 'Re-encode audio with this encoder (e.g. mp3, flac, aac)')
+    .option('--subtitle-format <format>', 'Convert text subtitles to this format (srt, ass, copy)')
+    .option(
+      '--video-filters <chain>',
+      'Video filter chain for the re-encoded video stream (comma-separated, repeatable; the preset.value shorthand works too)',
+      (value: string, prev: string[]) => prev.concat([value]),
+      [],
+    )
+    .action(async function (this: Command, input: string, opts: Record<string, unknown>) {
+      const global = this.optsWithGlobals() as Record<string, unknown>;
+      applyGlobalOptions(global);
+      const transcoder = createCliTranscoder(global.transcoder as string);
+      await runDemux({
+        input,
+        flags: {
+          outputDir: opts.outputDir as string | undefined,
+          video: opts.video as boolean | undefined,
+          audio: opts.audio as boolean | undefined,
+          subtitles: opts.subtitles as boolean | undefined,
+          all: opts.all as boolean | undefined,
+          videoContainer: opts.videoContainer as string | undefined,
+          audioCodec: opts.audioCodec as string | undefined,
+          subtitleFormat: opts.subtitleFormat as string | undefined,
+          videoFilters: opts.videoFilters as string[] | undefined,
+        },
+        transcoder,
         timeoutSeconds: parseTimeout(global),
         themeId,
       });

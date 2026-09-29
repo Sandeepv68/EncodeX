@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EventEmitter } from 'events';
 import { IPC } from '../../../shared/ipc-channels';
 
-const { ipcMainMock, getHandlers, createTranscoderMock } = vi.hoisted(() => {
+const { ipcMainMock, getHandlers, createTranscoderMock, existsSyncMock, unlinkMock } = vi.hoisted(() => {
   const handlers: Record<string, (...args: unknown[]) => unknown> = {};
   return {
     ipcMainMock: {
@@ -12,11 +12,21 @@ const { ipcMainMock, getHandlers, createTranscoderMock } = vi.hoisted(() => {
     },
     createTranscoderMock: vi.fn(),
     getHandlers: () => handlers,
+    existsSyncMock: vi.fn(() => true),
+    unlinkMock: vi.fn(),
   };
 });
 
 vi.mock('electron', () => ({ ipcMain: ipcMainMock, BrowserWindow: class {} }));
 vi.mock('../../transcoders/factory', () => ({ createTranscoder: createTranscoderMock }));
+vi.mock('fs', () => ({
+  existsSync: existsSyncMock,
+  unlink: unlinkMock,
+  default: {
+    existsSync: existsSyncMock,
+    unlink: unlinkMock,
+  },
+}));
 
 const { registerConversionHandlers } = await import('../conversion');
 
@@ -106,6 +116,43 @@ describe('registerConversionHandlers', () => {
     await expect(getHandlers()[IPC.CONVERT_FILE]({}, 'in.mp4', 'out.mp4', {}, 'FFMPEG')).rejects.toMatchObject({
       detail: 'boom',
     });
+  });
+
+  it('CONVERT_FILE rejects with AUXILIARY_INPUT_NOT_FOUND when an added input is missing', async () => {
+    existsSyncMock.mockReturnValue(true);
+    const transcoder = makeTranscoder();
+    createTranscoderMock.mockReturnValue(transcoder);
+    const pending = getHandlers()[IPC.CONVERT_FILE](
+      {},
+      'in.mp4',
+      'out.mkv',
+      { additionalInputs: [{ path: 'subs.srt', map: ['1:0'], codec: 'subrip' }] },
+      'FFMPEG',
+    ) as Promise<void>;
+    transcoder.emitter.emit('end');
+    await pending;
+    expect(createTranscoderMock).toHaveBeenCalledTimes(1);
+
+    existsSyncMock.mockReturnValue(false);
+    await expect(
+      getHandlers()[IPC.CONVERT_FILE](
+        {},
+        'in.mp4',
+        'out.mkv',
+        { additionalInputs: [{ path: 'subs.srt', map: ['1:0'], codec: 'subrip' }] },
+        'FFMPEG',
+      ),
+    ).rejects.toMatchObject({ code: 'AUXILIARY_INPUT_NOT_FOUND', detail: 'subs.srt' });
+    expect(createTranscoderMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('CONVERT_FILE rejects with AUXILIARY_INPUT_NOT_FOUND when the chapters file is missing', async () => {
+    existsSyncMock.mockReturnValue(false);
+    await expect(getHandlers()[IPC.CONVERT_FILE]({}, 'in.mp4', 'out.mkv', { chaptersFile: 'chaps.txt' }, 'FFMPEG')).rejects.toMatchObject({
+      code: 'AUXILIARY_INPUT_NOT_FOUND',
+      detail: 'chaps.txt',
+    });
+    expect(createTranscoderMock).not.toHaveBeenCalled();
   });
 
   it('PAUSE, RESUME and CANCEL act on the current transcoder', async () => {

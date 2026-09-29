@@ -76,8 +76,8 @@ Everything runs **locally on your computer** — no accounts, no uploads, no wat
 - **🖼️ Image Compression** — JPEG/PNG/WebP/BMP/GIF/TIFF with quality/scale, EXIF viewer, RGB/luma histograms
 - **🎵 Audio Extraction** — Any of 27 audio codecs from any video file
 - **ℹ️ Media Info** — Full per-stream probe: codec, profile, resolution, color metadata, frame rate, etc.
-- **⌨️ CLI Mode** — Headless scripting with subcommands (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `batch`)
-- **🤖 MCP Server** — Built-in [Model Context Protocol](https://modelcontextprotocol.io) server: 13 core tools, 3 resources, and 4 prompts over stdio (`encodex --mcp`), plus an embedded localhost HTTP endpoint that adds 6 GUI-parity tools (live queue, preview, timeline, system info, updates). Run one-off conversions or manage async jobs from Claude Desktop, Claude Code, Cursor, VS Code, or any MCP client
+- **⌨️ CLI Mode** — Headless scripting with subcommands (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `remux`, `demux`, `batch`)
+- **🤖 MCP Server** — Built-in [Model Context Protocol](https://modelcontextprotocol.io) server: 15 core tools, 3 resources, and 4 prompts over stdio (`encodex --mcp`), plus an embedded localhost HTTP endpoint that adds 6 GUI-parity tools (live queue, preview, timeline, system info, updates) for 21 in total. Run one-off conversions or manage async jobs from Claude Desktop, Claude Code, Cursor, VS Code, or any MCP client
 - **⚙️ 3 Transcoder Cores** — FFmpeg API (fluent-ffmpeg), FFmpeg CLI (child_process), BMF Framework
 - **🌍 56 Locales** — 35 languages with RTL support (Arabic, Hebrew)
 - **⌨️ Keyboard Shortcuts** — 60+ shortcuts across every page with an in-app help dialog (`Ctrl+/`)

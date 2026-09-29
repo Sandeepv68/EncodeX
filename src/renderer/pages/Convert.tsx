@@ -73,6 +73,7 @@ import { focusFirstError } from '../utils/focusFirstError';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { useFieldId } from '../hooks/useFieldId';
+import { VideoFiltersSection } from '../components/VideoFiltersSection';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
@@ -159,6 +160,7 @@ export default function Convert() {
     flipH,
     flipV,
     pixelFormat,
+    videoFilters,
     copyMode,
     transcoder,
     encoderType,
@@ -175,6 +177,7 @@ export default function Convert() {
     setFlipH,
     setFlipV,
     setPixelFormat,
+    setVideoFilters,
     setCopyMode,
     setTranscoder,
     setEncoderType,
@@ -803,6 +806,31 @@ export default function Convert() {
             }
           >
             {t('convert.rotateCopyUnsupported')}
+          </CompatAlert>
+        )}
+
+        <FieldBox>
+          <FieldLabel>
+            {t('convert.filtersTitle')}
+            <InfoTooltip title={t('convert.filtersHint')} />
+          </FieldLabel>
+          <VideoFiltersSection filterEntries={videoFilters} onChange={setVideoFilters} disabled={copyMode} />
+        </FieldBox>
+        {copyMode && videoFilters.length > 0 && (
+          <CompatAlert
+            severity="warning"
+            action={
+              <Button size="small" color="inherit" onClick={() => setCopyMode(false)}>
+                {t('convert.filtersTurnOffCopy')}
+              </Button>
+            }
+          >
+            {t('convert.filtersCopyWarning')}
+          </CompatAlert>
+        )}
+        {copyMode && videoFilters.length === 0 && (
+          <CompatAlert severity="info" icon={false} role="status" data-testid="filters-disabled-note">
+            {t('convert.filtersDisabledNote')}
           </CompatAlert>
         )}
       </PageSection>

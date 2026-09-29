@@ -12,13 +12,13 @@
  */
 
 import { ipcMain, BrowserWindow } from 'electron';
-import { unlink } from 'fs';
+import { existsSync, unlink } from 'fs';
 import { createTranscoder } from '../transcoders/factory';
 import type { ITranscoder } from '../transcoders/types';
 import { Logger } from '../../shared/logger';
-import { ConversionOptions, TranscoderType, ConversionProgress } from '../../shared/types';
+import { ConversionOptions, TranscoderType, ConversionProgress, RemuxInput } from '../../shared/types';
 import { IPC } from '../../shared/ipc-channels';
-import { formatError } from '../../shared/errors';
+import { createError, ERROR_MESSAGES, ErrorCode, formatError } from '../../shared/errors';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import type { IpcSender } from './types';
@@ -118,6 +118,12 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
        */
       log.info(LOG_IPC_CONVERT_FILE, input, LOG_ARROW, output, LOG_TRANSCODER, transcoderType, LOG_OPTIONS, JSON.stringify(options));
       try {
+        const auxiliaryInputs: RemuxInput[] = options.additionalInputs ?? [];
+        const auxiliaryPaths = [...auxiliaryInputs.map((entry) => entry.path), ...(options.chaptersFile ? [options.chaptersFile] : [])];
+        const missingAuxiliary = auxiliaryPaths.find((path) => !existsSync(path));
+        if (missingAuxiliary !== undefined) {
+          throw createError(ErrorCode.AUXILIARY_INPUT_NOT_FOUND, ERROR_MESSAGES[ErrorCode.AUXILIARY_INPUT_NOT_FOUND], missingAuxiliary);
+        }
         const transcoder = createTranscoder(transcoderType);
         currentTranscoder = transcoder;
         const emitter = transcoder.convert(input, output, options);

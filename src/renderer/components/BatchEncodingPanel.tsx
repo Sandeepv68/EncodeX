@@ -5,7 +5,7 @@
  * controls depend on the selected batch operation:
  *
  *  - `transcode`: video codec, audio codec, container, video bitrate, audio
- *    bitrate, scale, rotation/mirror, and pixel format.
+ *    bitrate, scale, rotation/mirror, pixel format, and the video-filter chain.
  *  - `extract_audio`: audio codec, container (audio containers), and audio
  *    bitrate.
  *  - `compress_image`: output format, quality, scale, and rotation/mirror.
@@ -32,11 +32,50 @@ import CodecSelect from './CodecSelect';
 import GroupedSelect from './GroupedSelect';
 import ProfileSelector from './ProfileSelector';
 import ProfileEditorDialog from './ProfileEditorDialog';
+import InfoTooltip from './InfoTooltip';
+import { VideoFiltersSection } from './VideoFiltersSection';
 import { useFieldId } from '../hooks/useFieldId';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import type { BatchEncodingPanelProps } from './types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import { EncodingPaper, EncodingTitle, OptionsLockedAlert, OptionsEditableAlert } from '../styles/BatchEncodingPanel.styles';
+
+/**
+ * Container options for 'remux' batch jobs: the generic video-container set
+ * (source-extension agnostic), so any of these muxers can hold the stream copies.
+ * @const {readonly string[]} REMUX_CONTAINERS
+ */
+const REMUX_CONTAINERS: readonly string[] = getVideoCodecContainer('').containers;
+
+/**
+ * Stream kinds extractable by a 'demux' batch, in display order.
+ * @const {readonly ['video', 'audio', 'subtitle']} DEMUX_STREAM_KINDS
+ */
+const DEMUX_STREAM_KINDS = ['video', 'audio', 'subtitle'] as const;
+
+/**
+ * Target-container options for re-encoding the 'demux' video kind. `copy` keeps
+ * the lossless stream copy; the remaining extensions re-encode the video.
+ * Mirrors the single-file Demux page's VIDEO_TARGETS.
+ * @const {readonly string[]} DEMUX_VIDEO_TARGETS
+ */
+const DEMUX_VIDEO_TARGETS = ['copy', 'mkv', 'mp4'] as const;
+
+/**
+ * Target-encoder options for the 'demux' audio kind. `copy` keeps the lossless
+ * stream copy; the remaining values are FFmpeg encoder/format names. Mirrors
+ * the single-file Demux page's AUDIO_TARGETS.
+ * @const {readonly string[]} DEMUX_AUDIO_TARGETS
+ */
+const DEMUX_AUDIO_TARGETS = ['copy', 'mp3', 'm4a', 'flac', 'wav'] as const;
+
+/**
+ * Target-format options for the 'demux' subtitle kind. `copy` keeps the
+ * lossless stream copy; the remaining values are subtitle format names. Mirrors
+ * the single-file Demux page's SUBTITLE_TARGETS.
+ * @const {readonly string[]} DEMUX_SUBTITLE_TARGETS
+ */
+const DEMUX_SUBTITLE_TARGETS = ['copy', 'srt', 'ass'] as const;
 
 /**
  * Renders the batch encoding options panel.
@@ -59,6 +98,7 @@ import { EncodingPaper, EncodingTitle, OptionsLockedAlert, OptionsEditableAlert 
  * @param {boolean} props.flipH - Whether to mirror horizontally.
  * @param {boolean} props.flipV - Whether to mirror vertically.
  * @param {string} props.pixelFormat - Output pixel format.
+ * @param {string[]} props.videoFilters - Ordered video-filter chain entries.
  * @param {(value: string) => void} props.onVideoCodecChange - Video codec change callback.
  * @param {(value: string) => void} props.onAudioCodecChange - Audio codec change callback.
  * @param {(value: string) => void} props.onContainerChange - Container change callback.
@@ -70,6 +110,8 @@ import { EncodingPaper, EncodingTitle, OptionsLockedAlert, OptionsEditableAlert 
  * @param {(value: boolean) => void} props.onFlipHChange - Horizontal-mirror change callback.
  * @param {(value: boolean) => void} props.onFlipVChange - Vertical-mirror change callback.
  * @param {(value: string) => void} props.onPixelFormatChange - Pixel format change callback.
+ * @param {(value: string[]) => void} props.onVideoFiltersChange - Video-filter
+ *   chain change callback.
  * @returns {JSX.Element} The options panel.
  */
 export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
@@ -82,6 +124,8 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
   const showVideo = props.operation === 'transcode';
   const showAudio = props.operation === 'transcode' || props.operation === 'extract_audio';
   const showImage = props.operation === 'compress_image';
+  const showRemux = props.operation === 'remux';
+  const showDemux = props.operation === 'demux';
 
   const containerOptions = showVideo ? getVideoCodecContainer(props.videoCodec).containers : getAudioCodecContainers(props.audioCodec);
 
@@ -179,6 +223,33 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 {IMAGE_FORMATS.map((f) => (
                   <MenuItem key={f.value} value={f.value}>
                     {f.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </FieldBox>
+          </Grid>
+        )}
+        {showRemux && (
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+            <FieldBox>
+              <FieldLabel>
+                {t('batchQueue.container')}
+                <InfoTooltip title={t('batchQueue.remuxContainerHint')} />
+              </FieldLabel>
+              <TextField
+                select
+                fullWidth
+                size="small"
+                slotProps={{ htmlInput: { 'aria-label': t('batchQueue.container') } }}
+                value={props.container}
+                onChange={(e) => {
+                  props.onContainerChange(e.target.value);
+                }}
+              >
+                <MenuItem value="">{t('batchQueue.containerAuto')}</MenuItem>
+                {REMUX_CONTAINERS.map((container) => (
+                  <MenuItem key={container} value={container}>
+                    {container}
                   </MenuItem>
                 ))}
               </TextField>
@@ -347,6 +418,115 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
               />
             </FieldBox>
           </Grid>
+        )}
+        {showVideo && (
+          <Grid size={12}>
+            <FieldBox>
+              <FieldLabel>
+                {t('convert.filtersTitle')}
+                <InfoTooltip title={t('convert.filtersHint')} />
+              </FieldLabel>
+              <VideoFiltersSection
+                filterEntries={props.videoFilters}
+                onChange={props.onVideoFiltersChange}
+                disabled={props.optionsLocked === true}
+              />
+            </FieldBox>
+          </Grid>
+        )}
+        {showDemux && (
+          <>
+            <Grid size={12}>
+              <FieldBox>
+                <FieldLabel>
+                  {t('demux.extractStreams')}
+                  <InfoTooltip title={t('demux.streamsHint')} />
+                </FieldLabel>
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                  {DEMUX_STREAM_KINDS.map((kind) => (
+                    <Box key={kind} sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Switch
+                        size="small"
+                        checked={props.demuxKinds.includes(kind)}
+                        onChange={(e) => {
+                          props.onDemuxKindsChange(
+                            e.target.checked ? [...props.demuxKinds, kind] : props.demuxKinds.filter((k) => k !== kind),
+                          );
+                        }}
+                        slotProps={{ input: { 'aria-label': t(`mediaInfo.${kind}`) } }}
+                      />
+                      <Typography variant="caption" color="text.secondary">
+                        {t(`mediaInfo.${kind}`)}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </FieldBox>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+              <FieldBox>
+                <FieldLabel>{t('demux.videoContainer')}</FieldLabel>
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  slotProps={{ htmlInput: { 'aria-label': t('demux.videoContainer') } }}
+                  value={props.demuxVideoContainer || 'copy'}
+                  onChange={(e) => {
+                    props.onDemuxVideoContainerChange(e.target.value === 'copy' ? '' : e.target.value);
+                  }}
+                >
+                  {DEMUX_VIDEO_TARGETS.map((target) => (
+                    <MenuItem key={target} value={target}>
+                      {target === 'copy' ? t('demux.copyOption') : target}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </FieldBox>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+              <FieldBox>
+                <FieldLabel>{t('demux.audioCodec')}</FieldLabel>
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  slotProps={{ htmlInput: { 'aria-label': t('demux.audioCodec') } }}
+                  value={props.demuxAudioCodec || 'copy'}
+                  onChange={(e) => {
+                    props.onDemuxAudioCodecChange(e.target.value === 'copy' ? '' : e.target.value);
+                  }}
+                >
+                  {DEMUX_AUDIO_TARGETS.map((target) => (
+                    <MenuItem key={target} value={target}>
+                      {target === 'copy' ? t('demux.copyOption') : target}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </FieldBox>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+              <FieldBox>
+                <FieldLabel>{t('demux.subtitleFormat')}</FieldLabel>
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  slotProps={{ htmlInput: { 'aria-label': t('demux.subtitleFormat') } }}
+                  value={props.demuxSubtitleFormat || 'copy'}
+                  onChange={(e) => {
+                    props.onDemuxSubtitleFormatChange(e.target.value === 'copy' ? '' : e.target.value);
+                  }}
+                >
+                  {DEMUX_SUBTITLE_TARGETS.map((target) => (
+                    <MenuItem key={target} value={target}>
+                      {target === 'copy' ? t('demux.copyOption') : target}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </FieldBox>
+            </Grid>
+          </>
         )}
       </Grid>
     </EncodingPaper>

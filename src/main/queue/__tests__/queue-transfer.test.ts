@@ -39,6 +39,23 @@ describe('buildQueueExport', () => {
   it('produces an empty job list for an empty queue', () => {
     expect(buildQueueExport([], 1)).toEqual({ version: QUEUE_EXPORT_VERSION, concurrency: 1, jobs: [] });
   });
+
+  it('keeps remux/demux multi-input and metadata option fields', () => {
+    const options = {
+      copy: true,
+      video: true,
+      audio: true,
+      map: ['0:v:0', '0:a:0', '0:s:0'],
+      additionalInputs: ['cover.png'],
+      chapters: 0,
+      hardwareAcceleration: true,
+      hwaccelMode: 'auto',
+    } as QueueJob['options'];
+    const snapshot = buildQueueExport([makeJob({ input: 'in.mkv', output: 'out.mkv', options })], 1);
+    const raw = JSON.stringify(snapshot);
+    const parsed = parseQueueExport(raw);
+    expect(parsed?.jobs[0].options).toEqual(options);
+  });
 });
 
 describe('parseQueueExport', () => {

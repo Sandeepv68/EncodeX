@@ -26,7 +26,9 @@
       "paused": "一時停止中",
       "starting": "開始中",
       "parallel": "{{count}} 並列"
-    }
+    },
+    "remux": "Remux",
+    "demux": "Demux"
   },
   "dashboard": {
     "welcome": "EncodeX へようこそ",
@@ -37,7 +39,9 @@
     "descAudio": "動画ファイルからクリーンな音声トラックを抽出",
     "descCut": "フレーム精度のプレーヤーで動画をトリム・カット",
     "descBatch": "スマートなキューで多数のファイルをまとめて変換",
-    "shortcutsFooter": "キーボードショートカットには {{shortcut}} を押してください"
+    "shortcutsFooter": "キーボードショートカットには {{shortcut}} を押してください",
+    "descRemux": "ストリームを無損失で新しいコンテナーに移します",
+    "descDemux": "ファイルのストリームを個別の出力ファイルに分割します"
   },
   "gettingStarted": {
     "hint": "はじめてですか？",
@@ -125,7 +129,25 @@
     "showPreview": "プレビューを表示",
     "closePreview": "プレビューを閉じる",
     "viewMore": "もっと見る",
-    "viewLess": "表示を減らす"
+    "viewLess": "表示を減らす",
+    "filtersTitle": "ビデオフィルター",
+    "filtersHint": "再エンコード時に FFmpeg のビデオフィルター（トリミング、フレームレート、デインタレース、ノイズ低減、カラーなど）を適用します。すべてのフィルターはスケールと回転の後に 1 つの -vf チェーンへ統合されます。",
+    "addPreset": "プリセットフィルターを追加…",
+    "addFilter": "フィルターを追加",
+    "customChainLabel": "カスタムフィルター適用順",
+    "customChainPlaceholder": "例: fps=30, eq=brightness=0.1",
+    "customChainHint": "カンマ区切りの FFmpeg フィルター式です。各エントリは括弧が対応し、引用符が一致し、シェルメタ文字を含まない必要があります。",
+    "addCustom": "カスタムを追加",
+    "removeFilter": "フィルターを削除",
+    "moveUp": "上へ移動",
+    "moveDown": "下へ移動",
+    "clearAll": "すべて削除",
+    "noFilters": "フィルターは追加されていません。",
+    "filtersDisabledNote": "ビデオフィルターには再エンコードが必要です。フィルターを追加するには無損失コピーを無効にしてください。",
+    "filtersTurnOffCopy": "無損失コピーを無効にする",
+    "filtersCopyWarning": "無損失コピーモードが有効なため、ビデオフィルターは無視されます。フィルターを適用するには無損失コピーを無効にしてください。",
+    "chainPreview": "プレビュー: -vf {{chain}}",
+    "filtersInvalid": "無効なフィルター: {{error}}"
   },
   "mediaInfo": {
     "title": "メディア情報",
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "このジョブは編集できなくなりました。",
     "condense": "折りたたむ",
     "expand": "展開する",
-    "clearAll": "すべてクリア"
+    "clearAll": "すべてクリア",
+    "operationRemux": "Remux",
+    "operationDemux": "Demux",
+    "remuxContainerHint": "ストリームのコピー先コンテナー。「自動」では元のファイル拡張子をそのまま使います。"
   },
   "progress": {
     "title": "変換の進行状況",
@@ -459,11 +484,11 @@
     "clear": "クリア",
     "download": "TXTとしてダウンロード",
     "filter": "レベルでフィルター",
-    "levelAll": "ALL",
-    "levelDebug": "DEBUG",
-    "levelInfo": "INFO",
-    "levelWarn": "WARN",
-    "levelError": "ERROR",
+    "levelAll": "すべて",
+    "levelDebug": "デバッグ",
+    "levelInfo": "情報",
+    "levelWarn": "警告",
+    "levelError": "エラー",
     "noEntries": "まだログエントリがありません。",
     "entryCount": "{{count}} 件のログ"
   },
@@ -495,7 +520,9 @@
     "updateAvailable": "アップデートがあります: v{{version}}",
     "updateNow": "今すぐ更新",
     "updateDownloaded": "更新 v{{version}} をダウンロードしました",
-    "viewUpdate": "表示"
+    "viewUpdate": "表示",
+    "remuxed": "Remux が完了しました",
+    "demuxed": "ストリームを抽出しました"
   },
   "profiles": {
     "searchPlaceholder": "プロファイルを検索...",
@@ -598,7 +625,9 @@
       "videoCut": "動画カット",
       "batchQueue": "バッチキュー",
       "logs": "ログ",
-      "dashboard": "ダッシュボード"
+      "dashboard": "ダッシュボード",
+      "remux": "Remux",
+      "demux": "Demux"
     },
     "global": {
       "help": "キーボードショートカットを表示",
@@ -611,7 +640,8 @@
       "navBatchQueue": "バッチキューへ移動",
       "navLogs": "ログへ移動",
       "navSettings": "設定へ移動",
-      "themeToggle": "テーマを切り替え"
+      "themeToggle": "テーマを切り替え",
+      "navRemux": "Remux に移動"
     },
     "convert": {
       "input": "入力ファイルを選択",
@@ -679,7 +709,17 @@
       "image": "画像を開く",
       "audio": "音声を開く",
       "cut": "カットを開く",
-      "batch": "バッチキューを開く"
+      "batch": "バッチキューを開く",
+      "remux": "Remux を開く",
+      "demux": "Demux を開く"
+    },
+    "remux": {
+      "input": "入力ファイルを選択",
+      "start": "Remux を開始"
+    },
+    "demux": {
+      "input": "入力ファイルを選択",
+      "start": "抽出を開始"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "MIT ライセンスのもとで公開されています。著作権表示と許可表示をすべてのコピーまたはソフトウェアの重要な部分に含めることを条件に、商用を含む使用、複製、改変、結合、公開、配布、サブライセンス、販売を自由に行えます。本ソフトウェアは「現状のまま」提供され、いかなる保証もありません。",
     "acknowledgements": "オープンソースへの ❤️ を込めて — FFmpeg プロジェクトとコミュニティによって支えられています。",
     "checkForUpdates": "アップデートを確認",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "利用規約",
+    "terms": "規約",
+    "readTerms": "利用規約を読む"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "利用規約",
+    "accept": "同意する",
+    "reject": "同意しない",
+    "close": "閉じる",
+    "lastUpdated": "施行日: {{date}}"
   },
   "update": {
     "title": "アップデート",
@@ -734,5 +774,167 @@
     "installOnRestart": "次回の再起動時にインストール",
     "installScheduled": "更新 v{{version}} は次回アプリを再起動したときにインストールされます。",
     "cancelRestartInstall": "キャンセル"
+  },
+  "filters": {
+    "presets": {
+      "crop": "トリミング",
+      "cropHint": "指定した幅、高さ、オフセットで動画を切り取ります。",
+      "framerate": "フレームレート",
+      "framerateHint": "出力のフレームレートを変更します (フレームは複製または間引かれます)。",
+      "deinterlace": "デインタレース",
+      "deinterlaceHint": "インターレース映像をプログレッシブに変換します。",
+      "denoise": "ノイズ低減",
+      "denoiseHint": "ディテールを保ったままノイズを抑えます (hqdn3d)。",
+      "sharpen": "シャープネス",
+      "sharpenHint": "見かけのシャープネスを上げます (unsharp)。",
+      "color": "カラー",
+      "colorHint": "明るさ、コントラスト、彩度、ガンマを調整します (eq)。",
+      "grayscale": "グレースケール",
+      "grayscaleHint": "色を monochrome に落とし、白黒の画像にします。",
+      "blur": "ぼかし",
+      "blurHint": "ボックスぼかしを適用して画像をやわらかくします。"
+    },
+    "params": {
+      "crop": {
+        "w": "幅",
+        "h": "高さ",
+        "x": "オフセット X",
+        "y": "オフセット Y"
+      },
+      "framerate": {
+        "fps": "1 秒あたりのフレーム数"
+      },
+      "deinterlace": {
+        "mode": "フィールド順",
+        "modes": {
+          "auto": "自動",
+          "tff": "上フィールド優先",
+          "bff": "下フィールド優先"
+        }
+      },
+      "denoise": {
+        "strength": "強さ"
+      },
+      "sharpen": {
+        "strength": "強さ"
+      },
+      "color": {
+        "brightness": "明るさ",
+        "contrast": "コントラスト",
+        "saturation": "彩度",
+        "gamma": "ガンマ"
+      },
+      "blur": {
+        "strength": "強さ"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remux",
+    "videoFile": "動画ファイル",
+    "dropLabel": "動画ファイルをここにドロップするか、クリックして選択してください",
+    "videoFileHint": "ストリームが出力先コンテナーに再パッケージされる元のメディアファイル。ストリームは再エンコードせずにコピーされます。",
+    "selectedVideo": "選択した動画: {{file}}",
+    "streamCount": "{{total}} 件中 {{selected}} 件のストリームを選択中",
+    "container": "コンテナー",
+    "containerHint": "Remux したファイルの出力コンテナー。一般的な動画コンテナーから選択してください。出力拡張子はコンテナーに従います。",
+    "streams": "元のストリーム",
+    "streamsHint": "Remux 出力に残す元ファイルのストリームを選択します。チェックしないストリームは破棄されます。",
+    "streamIndex": "#",
+    "kind": "種類",
+    "selectStream": "{{kind}} ストリーム #{{index}} を選択",
+    "selectAll": "すべて保持",
+    "selectNone": "保持しない",
+    "audioSync": "音声を遅延 (秒)",
+    "audioSyncHint": "再エンコードせずにメインの音声トラックを動画に対して移動します。例: -0.5 は 0.5 秒早く、1.5 は 1.5 秒遅くします。",
+    "audioSyncLossless": "無損失: 音声はタイムスタンプのオフセット付きでストリームコピーされるため、画質は変わりません。",
+    "subtitles": "追加した字幕",
+    "subtitlesHint": "外部字幕ファイル (.srt, .ass, .vtt) を追加の入力トラックとして Remux 出力に埋め込みます。",
+    "addSubtitle": "字幕ファイルを追加",
+    "subtitleCodec": "出力コーデック",
+    "subtitleCodecHint": "埋め込むトラックに使う字幕コーデック。コンテナーごとに受け付ける字幕形式が異なるため、コンテナーが格納できない形式を選ぶと警告が表示されます。",
+    "removeSubtitle": "字幕を削除",
+    "audioTracks": "追加した音声トラック",
+    "audioTracksHint": "外部音声ファイル (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) を追加の入力トラックとして Remux 出力に埋め込みます。",
+    "addAudioTrack": "音声トラックを追加",
+    "removeAudioTrack": "音声トラックを削除",
+    "addedTrackDelay": "このトラックを遅延 (秒)",
+    "addedTrackDelayHint": "動画に対するこのトラックの符号付きオフセット (正の値は後で再生されます)。無損失: ストリームコピーのまま -itsoffset として適用されます。",
+    "thumbnail": "サムネイル / 表紙",
+    "thumbnailHint": "任意の表紙画像 (.jpg, .jpeg, .png) を Remux したファイルに埋め込みます。MKV/WebM は画像ストリームとして添付し、MP4/MOV は attached_pic 設定の動画ストリームとして埋め込みます。",
+    "addThumbnail": "サムネイルを追加",
+    "thumbnailUnsupported": "{{container}} は表紙画像を格納できません。サムネイルを添付するには MKV、WebM、MP4、または MOV に切り替えてください。",
+    "removeThumbnail": "サムネイルを削除",
+    "thumbnailMode": "{{mode}} として埋め込み",
+    "thumbnailAttached": "添付画像",
+    "thumbnailDisposition": "attached_pic 表紙ストリーム",
+    "chapters": "チャプター",
+    "chaptersHint": "元のチャプターは既定で保持されます。FFMETADATA のチャプターファイルを読み込むと、Remux したファイルで元のチャプターを置き換えられます。",
+    "copyChapters": "元のチャプターをコピー",
+    "copyChaptersHint": "元ファイルのチャプターポインターを Remux 出力に保持します (無損失、-map_chapters 0)。",
+    "importChapters": "チャプターファイルを読み込む",
+    "chaptersUnsupported": "{{container}} はチャプターメタデータを格納できないため、チャプターは破棄されます。",
+    "removeChapters": "チャプターファイルを削除",
+    "warnings": "互換性の警告",
+    "warningsHint": "選択したストリームと設定が出力先コンテナーに適合しているかの、実行を妨げない指摘です。警告があっても開始できますが、エラーは開始を妨げます。",
+    "outputFile": "出力ファイル",
+    "outputFileHint": "Remux したファイルの保存先パス。拡張子は出力先のコンテナーに従います。",
+    "placeholderOutput": "output.mkv",
+    "start": "Remux を開始",
+    "remuxing": "Remux 実行中…",
+    "pause": "一時停止",
+    "resume": "再開",
+    "cancel": "キャンセル",
+    "cancelTitle": "Remux をキャンセル",
+    "cancelMessage": "実行中の Remux をキャンセルしてもよろしいですか？",
+    "yes": "はい",
+    "no": "いいえ",
+    "filtersTitle": "ビデオフィルター",
+    "filtersHint": "選択した動画ストリームを再エンコードする間に FFmpeg のビデオフィルターを適用します。フィルターは無損失コピーには適用できないため、1 つ追加すると Remux が再エンコードになります。",
+    "filtersReencodeWarning": "ビデオフィルターはストリームコピーでは実行できないため、選択した {{count}} 件のフィルターによりこの Remux は再エンコードになります。"
+  },
+  "demux": {
+    "title": "Demux",
+    "videoFile": "動画ファイル",
+    "videoFileHint": "ストリームを抽出する元のメディアファイル。選択した各ストリームは個別の出力ファイルに書き出されます。",
+    "dropLabel": "動画ファイルをここにドロップするか、クリックして選択してください",
+    "selectedVideo": "選択した動画: {{file}}",
+    "streamCount": "{{total}} 件中 {{selected}} 件のストリームを選択中",
+    "streams": "元のストリーム",
+    "streamsHint": "抽出するストリームを選択します。チェックしたストリームはそれぞれ個別の出力ファイルになり、チェックしないストリームはスキップされます。",
+    "extractStreams": "抽出するストリーム",
+    "streamGroup": "{{kind}} ストリーム",
+    "suggestedOutput": "出力",
+    "selectStream": "抽出する {{kind}} ストリーム #{{index}} を選択",
+    "videoContainer": "動画の出力先",
+    "videoContainerHint": "動画ストリームの書き出し方法。「コピー」は再エンコードせずに無損失で書き出し、コンテナーを選ぶとその形式に動画を再エンコードします。",
+    "audioCodec": "音声の出力先",
+    "audioCodecHint": "音声ストリームの書き出し方法。「コピー」は再エンコードせずに無損失で書き出し、コーデックを選ぶと音声を再エンコードします。",
+    "subtitleFormat": "字幕の出力先",
+    "subtitleFormatHint": "字幕ストリームの書き出し方法。「コピー」は再エンコードせずに無損失で書き出し、形式を選ぶと字幕を変換します。画像字幕 (PGS/DVDSUB など) はテキストに変換できないためコピーのままになります。",
+    "subtitleWarning": "字幕変換の警告",
+    "subtitleWarningHint": "画像字幕ストリーム (PGS/DVDSUB など) は OCR なしではテキスト形式に再エンコードできないため、.mks の無損失コピーとして書き出します。抽出プランでは「コピー」と表示されます。",
+    "bitmapSubtitleWarning": "この画像字幕ストリームは OCR なしではテキスト形式に再エンコードできないため、.mks の無損失コピーとして書き出します。",
+    "copyOption": "コピー (無損失)",
+    "outputDir": "出力フォルダー",
+    "outputDirHint": "抽出したストリームの書き出し先フォルダー。既定では元ファイルのあるフォルダーです。",
+    "outputDirPlaceholder": "出力フォルダー",
+    "summary": "抽出プラン",
+    "summaryHint": "チェックしたストリームごとに 1 つの出力ファイルが、実行順に作成されます。「コピー」のファイルは無損失で抽出され、「変換」のファイルは再エンコードされます。",
+    "copyLabel": "コピー",
+    "convertLabel": "{{target}} に変換",
+    "start": "Demux を開始",
+    "demuxing": "抽出中…",
+    "pause": "一時停止",
+    "resume": "再開",
+    "cancel": "キャンセル",
+    "cancelTitle": "Demux をキャンセル",
+    "cancelMessage": "実行中の Demux をキャンセルしてもよろしいですか？",
+    "yes": "はい",
+    "no": "いいえ",
+    "currentStream": "{{kind}} ストリーム #{{index}} を抽出中",
+    "filtersTitle": "ビデオフィルター",
+    "filtersHint": "選択した動画ストリームを再エンコードする間に FFmpeg のビデオフィルター（トリミング、フレームレート、デインタレース、ノイズ低減、カラーなど）を適用します。コピーは無損失のため、フィルターの目的是動画の出力先コンテナーが再エンコードする場合にのみ表示されます。",
+    "filtersIgnoredCopy": "動画の出力先が「コピー」の間はビデオフィルターは無視されます。ストリームコピーは再エンコードできないためです。フィルターを適用するには動画の出力先コンテナーを選択してください。"
   }
 }

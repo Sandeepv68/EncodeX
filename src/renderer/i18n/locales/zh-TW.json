@@ -26,7 +26,9 @@
       "paused": "已暫停",
       "starting": "正在開始",
       "parallel": "{{count}} 並行"
-    }
+    },
+    "remux": "重新封裝",
+    "demux": "解封裝"
   },
   "dashboard": {
     "welcome": "歡迎使用 EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "從影片檔案中擷取乾淨的音訊軌",
     "descCut": "使用幀精確的播放器修剪和剪輯影片",
     "descBatch": "透過智慧佇列一次轉換多個檔案",
-    "shortcutsFooter": "按 {{shortcut}} 查看鍵盤快速鍵"
+    "shortcutsFooter": "按 {{shortcut}} 查看鍵盤快速鍵",
+    "descRemux": "將串流無損轉移到新的容器",
+    "descDemux": "將檔案的各個串流拆分成個別的輸出檔案"
   },
   "gettingStarted": {
     "hint": "第一次來？",
@@ -125,7 +129,25 @@
     "showPreview": "顯示預覽",
     "closePreview": "關閉預覽",
     "viewMore": "查看更多",
-    "viewLess": "顯示更少"
+    "viewLess": "顯示更少",
+    "filtersTitle": "影片篩選器",
+    "filtersHint": "在重新編碼時套用 FFmpeg 影片篩選器（裁切、影格率、去交錯、降噪、色彩等）。所有篩選器會在縮放與旋轉之後合併為單一 -vf 篩選器鏈。",
+    "addPreset": "新增預設篩選器…",
+    "addFilter": "新增篩選器",
+    "customChainLabel": "自訂篩選器鏈",
+    "customChainPlaceholder": "例如 fps=30, eq=brightness=0.1",
+    "customChainHint": "以逗號分隔的 FFmpeg 篩選器運算式。每個項目的括號與方括號必須成對、引號必須相符，且不得含有 shell 中繼字元。",
+    "addCustom": "新增自訂",
+    "removeFilter": "移除篩選器",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "clearAll": "全部清除",
+    "noFilters": "尚未新增篩選器。",
+    "filtersDisabledNote": "影片篩選器需要重新編碼。請關閉無損複製以新增篩選器。",
+    "filtersTurnOffCopy": "關閉無損複製",
+    "filtersCopyWarning": "目前已啟動無損複製模式，影片篩選器將被忽略。請關閉無損複製以套用篩選器。",
+    "chainPreview": "預覽：-vf {{chain}}",
+    "filtersInvalid": "無效的篩選器：{{error}}"
   },
   "mediaInfo": {
     "title": "媒體資訊",
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "此工作已無法編輯。",
     "condense": "收起",
     "expand": "展開",
-    "clearAll": "全部清除"
+    "clearAll": "全部清除",
+    "operationRemux": "重新封裝",
+    "operationDemux": "解封裝",
+    "remuxContainerHint": "串流要複製到的容器。「自動」會保留每個來源檔案的副檔名。"
   },
   "progress": {
     "title": "轉換進度",
@@ -495,7 +520,9 @@
     "updateAvailable": "有可用更新: v{{version}}",
     "updateNow": "立即更新",
     "updateDownloaded": "已下載更新 v{{version}}",
-    "viewUpdate": "檢視"
+    "viewUpdate": "檢視",
+    "remuxed": "重新封裝已完成",
+    "demuxed": "已成功擷取各個串流"
   },
   "profiles": {
     "searchPlaceholder": "搜尋設定檔...",
@@ -598,7 +625,9 @@
       "videoCut": "視訊裁剪",
       "batchQueue": "批次佇列",
       "logs": "記錄",
-      "dashboard": "儀表板"
+      "dashboard": "儀表板",
+      "remux": "重新封裝",
+      "demux": "解封裝"
     },
     "global": {
       "help": "顯示鍵盤快速鍵",
@@ -611,7 +640,8 @@
       "navBatchQueue": "移至批次佇列",
       "navLogs": "移至記錄",
       "navSettings": "移至設定",
-      "themeToggle": "切換主題"
+      "themeToggle": "切換主題",
+      "navRemux": "前往重新封裝"
     },
     "convert": {
       "input": "選擇輸入檔案",
@@ -679,7 +709,17 @@
       "image": "開啟圖片",
       "audio": "開啟音訊",
       "cut": "開啟裁剪",
-      "batch": "開啟批次佇列"
+      "batch": "開啟批次佇列",
+      "remux": "開啟重新封裝",
+      "demux": "開啟解封裝"
+    },
+    "remux": {
+      "input": "選擇輸入檔案",
+      "start": "開始重新封裝"
+    },
+    "demux": {
+      "input": "選擇輸入檔案",
+      "start": "開始擷取"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "以 MIT 授權條款發布。可以自由使用、複製、修改、合併、發布、散布、再授權和販售——包括商業用途——前提是軟體的所有副本或實質部分中都包含版權聲明和許可聲明。本軟體按「原樣」提供，不附帶任何形式的保證。",
     "acknowledgements": "為開源傾注 ❤️ — 由 FFmpeg 專案與社群共同驅動。",
     "checkForUpdates": "檢查更新",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "條款與條件",
+    "terms": "條款",
+    "readTerms": "閱讀條款"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "條款與條件",
+    "accept": "我接受",
+    "reject": "我不接受",
+    "close": "關閉",
+    "lastUpdated": "生效日期：{{date}}"
   },
   "update": {
     "title": "更新",
@@ -734,5 +774,167 @@
     "installOnRestart": "在下次重新啟動時安裝",
     "installScheduled": "更新 v{{version}} 將在應用程式下次重新啟動時安裝。",
     "cancelRestartInstall": "取消"
+  },
+  "filters": {
+    "presets": {
+      "crop": "裁切",
+      "cropHint": "依指定的寬度、高度與位移裁切影片。",
+      "framerate": "影格率",
+      "framerateHint": "變更輸出影格率（會複製或捨棄影格）。",
+      "deinterlace": "去交錯",
+      "deinterlaceHint": "將交錯影片轉換為循序掃描影片。",
+      "denoise": "降噪",
+      "denoiseHint": "在保留細節的同時降低雜訊（hqdn3d）。",
+      "sharpen": "銳利度",
+      "sharpenHint": "提升觀感上的銳利度（unsharp）。",
+      "color": "色彩",
+      "colorHint": "調整亮度、對比、飽和度與 gamma（eq）。",
+      "grayscale": "灰階",
+      "grayscaleHint": "移除色彩，產生黑白畫面。",
+      "blur": "模糊",
+      "blurHint": "套用方箱模糊，使畫面更柔和。"
+    },
+    "params": {
+      "crop": {
+        "w": "寬度",
+        "h": "高度",
+        "x": "X 位移",
+        "y": "Y 位移"
+      },
+      "framerate": {
+        "fps": "每秒影格數"
+      },
+      "deinterlace": {
+        "mode": "場序",
+        "modes": {
+          "auto": "自動",
+          "tff": "上場優先",
+          "bff": "下場優先"
+        }
+      },
+      "denoise": {
+        "strength": "強度"
+      },
+      "sharpen": {
+        "strength": "強度"
+      },
+      "color": {
+        "brightness": "亮度",
+        "contrast": "對比",
+        "saturation": "飽和度",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "強度"
+      }
+    }
+  },
+  "remux": {
+    "title": "重新封裝",
+    "videoFile": "影片檔案",
+    "dropLabel": "將影片檔案拖曳到此處，或點選瀏覽",
+    "videoFileHint": "其各個串流將會重新打包至目標容器的來源媒體檔案。各串流以複製方式寫入，不重新編碼。",
+    "selectedVideo": "已選擇影片：{{file}}",
+    "streamCount": "已選擇 {{selected}} / {{total}} 個串流",
+    "container": "容器",
+    "containerHint": "封裝檔案的輸出容器。可從常見影片容器中選擇；輸出副檔名會依容器而定。",
+    "streams": "來源串流",
+    "streamsHint": "選擇要保留到封裝輸出中的來源檔案各個串流。未勾選的串流會被捨棄。",
+    "streamIndex": "序號",
+    "kind": "類型",
+    "selectStream": "選擇第 {{index}} 個 {{kind}} 串流",
+    "selectAll": "全部保留",
+    "selectNone": "全部不保留",
+    "audioSync": "延後音訊（秒）",
+    "audioSyncHint": "在未重新編碼的情況下，將主要音軌相對於影片位移，例如 -0.5 表示提前 0.5 秒，1.5 表示延後 1.5 秒。",
+    "audioSyncLossless": "無損：音訊以帶時間戳位移的串流複製方式寫入，因此畫質不變。",
+    "subtitles": "已新增的字幕",
+    "subtitlesHint": "外部字幕檔案（.srt、.ass、.vtt），會作為額外的輸入軌道封裝進輸出。",
+    "addSubtitle": "新增字幕檔案",
+    "subtitleCodec": "目標編碼解碼器",
+    "subtitleCodecHint": "內嵌軌道所使用的字幕編碼解碼器。不同容器支援的字幕格式不一；若選擇容器無法儲存的格式，會顯示警告。",
+    "removeSubtitle": "移除字幕",
+    "audioTracks": "已新增的音軌",
+    "audioTracksHint": "外部音訊檔案（.m4a、.aac、.mp3、.flac、.opus、.ogg、.wav），會作為額外的輸入軌道封裝進輸出。",
+    "addAudioTrack": "新增音軌",
+    "removeAudioTrack": "移除音軌",
+    "addedTrackDelay": "延後此軌道（秒）",
+    "addedTrackDelayHint": "此軌道相對於影片的帶正負號位移（正數表示播放較晚）。無損：以 -itsoffset 搭配串流複製套用。",
+    "thumbnail": "縮圖 / 封面",
+    "thumbnailHint": "選用的封面圖片（.jpg、.jpeg、.png），會嵌入封裝後的檔案。MKV/WebM 會將其附加為圖片串流；MP4/MOV 則會將其嵌入為帶 attached_pic 標記的影片串流。",
+    "addThumbnail": "新增縮圖",
+    "thumbnailUnsupported": "{{container}} 無法儲存封面。請改用 MKV、WebM、MP4 或 MOV 以附加縮圖。",
+    "removeThumbnail": "移除縮圖",
+    "thumbnailMode": "以 {{mode}} 方式嵌入",
+    "thumbnailAttached": "附加圖片",
+    "thumbnailDisposition": "attached_pic 封面串流",
+    "chapters": "章節",
+    "chaptersHint": "預設會保留來源章節。匯入 FFMETADATA 章節檔案，即可在封裝後的檔案中取代來源章節。",
+    "copyChapters": "複製來源章節",
+    "copyChaptersHint": "將來源檔案的章節標記保留到封裝輸出中（無損，-map_chapters 0）。",
+    "importChapters": "匯入章節檔案",
+    "chaptersUnsupported": "{{container}} 不支援儲存章節中繼資料；章節將會被捨棄。",
+    "removeChapters": "移除章節檔案",
+    "warnings": "相容性警告",
+    "warningsHint": "關於所選串流與設定是否符合目標容器的非阻斷提示。警告不影響開始；錯誤則會阻止開始。",
+    "outputFile": "輸出檔案",
+    "outputFileHint": "封裝檔案的路徑。副檔名會依目標容器而定。",
+    "placeholderOutput": "output.mkv",
+    "start": "開始重新封裝",
+    "remuxing": "正在重新封裝…",
+    "pause": "暫停",
+    "resume": "繼續",
+    "cancel": "取消",
+    "cancelTitle": "取消重新封裝",
+    "cancelMessage": "確定要取消進行中的重新封裝嗎？",
+    "yes": "是",
+    "no": "否",
+    "filtersTitle": "影片篩選器",
+    "filtersHint": "在重新編碼所選影片串流時套用 FFmpeg 影片篩選器。篩選器無法套用於無損的串流複製，因此新增篩選器會使重新封裝變成重新編碼。",
+    "filtersReencodeWarning": "影片篩選器無法在串流複製上執行，因此所選的 {{count}} 個篩選器會使這次重新封裝變成重新編碼。"
+  },
+  "demux": {
+    "title": "解封裝",
+    "videoFile": "影片檔案",
+    "videoFileHint": "將要擷取其各個串流的來源媒體檔案。每個選取的串流都會寫入各自的輸出檔案。",
+    "dropLabel": "將影片檔案拖曳到此處，或點選瀏覽",
+    "selectedVideo": "已選擇影片：{{file}}",
+    "streamCount": "已選擇 {{selected}} / {{total}} 個串流",
+    "streams": "來源串流",
+    "streamsHint": "選擇要擷取的串流。每個勾選的串流都會產生各自的輸出檔案；未勾選者會被略過。",
+    "extractStreams": "要擷取的串流",
+    "streamGroup": "{{kind}} 串流",
+    "suggestedOutput": "輸出",
+    "selectStream": "選擇要擷取的第 {{index}} 個 {{kind}} 串流",
+    "videoContainer": "影片輸出方式",
+    "videoContainerHint": "影片串流的寫入方式。「複製」可無損擷取且不重新編碼；選擇容器則會將影片重新編碼為該格式。",
+    "audioCodec": "音訊輸出方式",
+    "audioCodecHint": "音訊串流的寫入方式。「複製」可無損擷取且不重新編碼；選擇編碼解碼器則會重新編碼音訊。",
+    "subtitleFormat": "字幕輸出方式",
+    "subtitleFormatHint": "字幕串流的寫入方式。「複製」可無損擷取且不重新編碼；選擇格式則會轉換字幕。點陣字幕（如 PGS/DVDSUB）無法轉為文字，將維持複製狀態。",
+    "subtitleWarning": "字幕轉換警告",
+    "subtitleWarningHint": "點陣字幕串流（如 PGS/DVDSUB）無法在沒有 OCR 的情況下轉碼為文字，因此會以無損 .mks 副本形式擷取。在擷取計畫中會顯示為「複製」。",
+    "bitmapSubtitleWarning": "此點陣字幕串流無法在沒有 OCR 的情況下轉碼為文字，因此會以無損 .mks 副本形式擷取。",
+    "copyOption": "複製（無損）",
+    "outputDir": "輸出資料夾",
+    "outputDirHint": "寫入已擷取串流的資料夾。預設為來源檔案所在的資料夾。",
+    "outputDirPlaceholder": "輸出資料夾",
+    "summary": "擷取計畫",
+    "summaryHint": "每個勾選的串流對應一個輸出檔案，依執行順序排列。標示為「複製」的檔案會以無損方式擷取；標示為「轉換」的檔案則會重新編碼。",
+    "copyLabel": "複製",
+    "convertLabel": "轉換為 {{target}}",
+    "start": "開始解封裝",
+    "demuxing": "正在擷取…",
+    "pause": "暫停",
+    "resume": "繼續",
+    "cancel": "取消",
+    "cancelTitle": "取消解封裝",
+    "cancelMessage": "確定要取消進行中的解封裝嗎？",
+    "yes": "是",
+    "no": "否",
+    "currentStream": "正在擷取第 {{index}} 個 {{kind}} 串流",
+    "filtersTitle": "影片篩選器",
+    "filtersHint": "在重新編碼所選影片串流時套用 FFmpeg 影片篩選器（裁切、影格率、去交錯、降噪、色彩等）。「複製」為無損方式，因此只有在目標容器會重新編碼影片時，才會顯示篩選器。",
+    "filtersIgnoredCopy": "當影片輸出方式為「複製」時，影片篩選器會被忽略，因為串流複製無法重新編碼。請選擇目標容器以套用篩選器。"
   }
 }

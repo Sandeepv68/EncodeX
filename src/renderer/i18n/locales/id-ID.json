@@ -26,7 +26,9 @@
       "paused": "Dijeda",
       "starting": "Memulai",
       "parallel": "{{count}} paralel"
-    }
+    },
+    "remux": "Remuks",
+    "demux": "Demuks"
   },
   "dashboard": {
     "welcome": "Selamat datang di EncodeX",
@@ -37,7 +39,9 @@
     "descAudio": "Ekstrak trek audio yang bersih dari file video",
     "descCut": "Pangkas dan potong video dengan pemutar presisi bingkai",
     "descBatch": "Konversi banyak file sekaligus dengan antrean cerdas",
-    "shortcutsFooter": "Tekan {{shortcut}} untuk pintasan keyboard"
+    "shortcutsFooter": "Tekan {{shortcut}} untuk pintasan keyboard",
+    "descRemux": "Memindahkan aliran tanpa kehilangan kualitas ke wadah baru",
+    "descDemux": "Memisahkan aliran sebuah file menjadi file keluaran terpisah"
   },
   "gettingStarted": {
     "hint": "Baru di sini?",
@@ -125,7 +129,25 @@
     "showPreview": "Tampilkan Pratinjau",
     "closePreview": "Tutup Pratinjau",
     "viewMore": "Lihat lainnya",
-    "viewLess": "Lihat lebih sedikit"
+    "viewLess": "Lihat lebih sedikit",
+    "filtersTitle": "Filter video",
+    "filtersHint": "Menerapkan filter video FFmpeg (potong, laju bingkai, deinterlace, reduksi noise, warna…) selama penyandian ulang. Semua filter digabung menjadi satu rantai -vf setelah penskalaan dan rotasi.",
+    "addPreset": "Tambahkan filter prasetel…",
+    "addFilter": "Tambahkan filter",
+    "customChainLabel": "Rantai filter kustom",
+    "customChainPlaceholder": "mis. fps=30, eq=brightness=0.1",
+    "customChainHint": "Ekspresi filter FFmpeg yang dipisahkan koma. Setiap item harus berisi tanda kurung dan tanda kurung siku yang seimbang, tanda kutip yang cocok, dan tidak mengandung karakter meta shell.",
+    "addCustom": "Tambahkan kustom",
+    "removeFilter": "Hapus filter",
+    "moveUp": "Pindah ke atas",
+    "moveDown": "Pindah ke bawah",
+    "clearAll": "Bersihkan semua",
+    "noFilters": "Belum ada filter yang ditambahkan.",
+    "filtersDisabledNote": "Filter video memerlukan penyandian ulang. Nonaktifkan salin lossless untuk menambahkan filter.",
+    "filtersTurnOffCopy": "Nonaktifkan salin lossless",
+    "filtersCopyWarning": "Mode salin lossless aktif, sehingga filter video akan diabaikan. Nonaktifkan salin lossless untuk menerapkan filter.",
+    "chainPreview": "Pratinjau: -vf {{chain}}",
+    "filtersInvalid": "Filter tidak valid: {{error}}"
   },
   "mediaInfo": {
     "title": "Informasi Media",
@@ -171,7 +193,7 @@
       "major_brand": "Merek utama",
       "minor_version": "Versi minor",
       "compatible_brands": "Merek yang kompatibel",
-      "encoder": "Encoder",
+      "encoder": "Penyandi",
       "creation_time": "Waktu pembuatan",
       "title": "Judul",
       "artist": "Artis",
@@ -394,7 +416,7 @@
     "detailsError": "Detail kesalahan",
     "detailsOutput": "Keluaran",
     "detailsOptions": "Opsi",
-    "detailsTranscoder": "Transcoder",
+    "detailsTranscoder": "Transkoder",
     "detailsCreatedAt": "Ditambahkan",
     "yes": "Ya",
     "no": "Tidak",
@@ -427,7 +449,10 @@
     "optionsUpdateFailed": "Pekerjaan ini tidak dapat diedit lagi.",
     "condense": "Ciutkan",
     "expand": "Kembangkan",
-    "clearAll": "Hapus Semua"
+    "clearAll": "Hapus Semua",
+    "operationRemux": "Remuks",
+    "operationDemux": "Demuks",
+    "remuxContainerHint": "Wadah tempat salinan aliran. \"Otomatis\" mempertahankan ekstensi setiap file sumber."
   },
   "progress": {
     "title": "Progres konversi",
@@ -459,11 +484,11 @@
     "clear": "Hapus",
     "download": "Unduh sebagai TXT",
     "filter": "Saring berdasarkan tingkat",
-    "levelAll": "ALL",
+    "levelAll": "SEMUA",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
-    "levelWarn": "WARN",
-    "levelError": "ERROR",
+    "levelWarn": "PERINGATAN",
+    "levelError": "GALAT",
     "noEntries": "Belum ada entri log.",
     "entryCount": "{{count}} entri"
   },
@@ -495,7 +520,9 @@
     "updateAvailable": "Pembaruan tersedia: v{{version}}",
     "updateNow": "Perbarui sekarang",
     "updateDownloaded": "Pembaruan v{{version}} diunduh",
-    "viewUpdate": "Lihat"
+    "viewUpdate": "Lihat",
+    "remuxed": "Remuks selesai",
+    "demuxed": "Aliran berhasil diekstrak"
   },
   "profiles": {
     "searchPlaceholder": "Cari profil...",
@@ -514,11 +541,11 @@
     "descriptionLabel": "Deskripsi",
     "descriptionPlaceholder": "Deskripsi singkat (ditampilkan di pemilih)",
     "categoryLabel": "Kategori",
-    "containerLabel": "Container",
+    "containerLabel": "Wadah",
     "videoCodecLabel": "Codec video",
     "audioCodecLabel": "Codec audio",
     "qualityLabel": "Kualitas (CRF)",
-    "presetLabel": "Preset",
+    "presetLabel": "Prasetel",
     "resolutionLabel": "Resolusi",
     "original": "Asli",
     "pixelFormatLabel": "Format piksel",
@@ -598,7 +625,9 @@
       "videoCut": "Potong Video",
       "batchQueue": "Antrean Batch",
       "logs": "Log",
-      "dashboard": "Dasbor"
+      "dashboard": "Dasbor",
+      "remux": "Remuks",
+      "demux": "Demuks"
     },
     "global": {
       "help": "Tampilkan pintasan keyboard",
@@ -611,7 +640,8 @@
       "navBatchQueue": "Buka Antrean Batch",
       "navLogs": "Buka Log",
       "navSettings": "Buka Pengaturan",
-      "themeToggle": "Ganti tema"
+      "themeToggle": "Ganti tema",
+      "navRemux": "Ke Remuks"
     },
     "convert": {
       "input": "Pilih berkas masukan",
@@ -679,7 +709,17 @@
       "image": "Buka Gambar",
       "audio": "Buka Audio",
       "cut": "Buka Potong",
-      "batch": "Buka Antrean Batch"
+      "batch": "Buka Antrean Batch",
+      "remux": "Buka Remuks",
+      "demux": "Buka Demuks"
+    },
+    "remux": {
+      "input": "Pilih file input",
+      "start": "Mulai remuks"
+    },
+    "demux": {
+      "input": "Pilih file input",
+      "start": "Mulai ekstraksi"
     }
   },
   "about": {
@@ -702,16 +742,16 @@
     "licenseSummary": "Dirilis di bawah Lisensi MIT. Bebas digunakan, disalin, dimodifikasi, digabung, diterbitkan, didistribusikan, dilisensikan kembali, dan dijual — termasuk secara komersial — dengan ketentuan pemberitahuan hak cipta dan pemberitahuan izin disertakan dalam semua salinan atau bagian substansial dari perangkat lunak. Perangkat lunak disediakan \"apa adanya\", tanpa jaminan apa pun.",
     "acknowledgements": "Dibuat dengan ❤️ untuk sumber terbuka — didukung oleh proyek FFmpeg dan komunitas.",
     "checkForUpdates": "Periksa pembaruan",
-    "termsTitle": "Terms & Conditions",
-    "terms": "Terms",
-    "readTerms": "Read Terms"
+    "termsTitle": "Ketentuan dan Aturan",
+    "terms": "Ketentuan",
+    "readTerms": "Baca ketentuan"
   },
   "terms": {
-    "title": "Terms and Conditions",
-    "accept": "I Agree",
-    "reject": "I Disagree",
-    "close": "Close",
-    "lastUpdated": "Effective: {{date}}"
+    "title": "Ketentuan dan Aturan",
+    "accept": "Saya setuju",
+    "reject": "Saya tidak setuju",
+    "close": "Tutup",
+    "lastUpdated": "Berlaku sejak: {{date}}"
   },
   "update": {
     "title": "Pembaruan",
@@ -734,5 +774,167 @@
     "installOnRestart": "Pasang saat restart berikutnya",
     "installScheduled": "Pembaruan v{{version}} akan dipasang saat aplikasi restart berikutnya.",
     "cancelRestartInstall": "Batal"
+  },
+  "filters": {
+    "presets": {
+      "crop": "Potong",
+      "cropHint": "Memotong video sesuai lebar, tinggi, dan offset yang ditentukan.",
+      "framerate": "Laju bingkai",
+      "framerateHint": "Mengubah laju bingkai keluaran (bingkai diduplikasi atau dilewati).",
+      "deinterlace": "Deinterlace",
+      "deinterlaceHint": "Mengubah video interlaced menjadi progresif.",
+      "denoise": "Reduksi noise",
+      "denoiseHint": "Mengurangi noise sembari mempertahankan detail (hqdn3d).",
+      "sharpen": "Ketajaman",
+      "sharpenHint": "Meningkatkan ketajaman yang dirasakan (unsharp).",
+      "color": "Warna",
+      "colorHint": "Menyesuaikan kecerahan, kontras, saturasi, dan gamma (eq).",
+      "grayscale": "Skala abu-abu",
+      "grayscaleHint": "Menghilangkan warna, menyisakan gambar hitam-putih.",
+      "blur": "Keburaman",
+      "blurHint": "Menerapkan blur kotak untuk melembutkan gambar."
+    },
+    "params": {
+      "crop": {
+        "w": "Lebar",
+        "h": "Tinggi",
+        "x": "Offset X",
+        "y": "Offset Y"
+      },
+      "framerate": {
+        "fps": "Bingkai per detik"
+      },
+      "deinterlace": {
+        "mode": "Urutan bidang",
+        "modes": {
+          "auto": "Otomatis",
+          "tff": "Bidang atas dahulu",
+          "bff": "Bidang bawah dahulu"
+        }
+      },
+      "denoise": {
+        "strength": "Kekuatan"
+      },
+      "sharpen": {
+        "strength": "Kekuatan"
+      },
+      "color": {
+        "brightness": "Kecerahan",
+        "contrast": "Kontras",
+        "saturation": "Saturasi",
+        "gamma": "Gamma"
+      },
+      "blur": {
+        "strength": "Kekuatan"
+      }
+    }
+  },
+  "remux": {
+    "title": "Remuks",
+    "videoFile": "File video",
+    "dropLabel": "Seret file video ke sini atau klik untuk memilih",
+    "videoFileHint": "File media sumber yang alirannya akan dikemas ulang ke wadah tujuan. Aliran disalin tanpa penyandian ulang.",
+    "selectedVideo": "Video dipilih: {{file}}",
+    "streamCount": "{{selected}} dari {{total}} aliran dipilih",
+    "container": "Wadah",
+    "containerHint": "Wadah file keluaran setelah remuks. Pilih dari wadah video umum; ekstensi keluaran sesuai wadah.",
+    "streams": "Aliran sumber",
+    "streamsHint": "Pilih aliran dari file sumber yang akan dipertahankan di keluaran remuks. Aliran yang tidak dipilih dibuang.",
+    "streamIndex": "No.",
+    "kind": "Jenis",
+    "selectStream": "Pilih aliran {{kind}} #{{index}}",
+    "selectAll": "Pertahankan semua",
+    "selectNone": "Jangan pertahankan apa pun",
+    "audioSync": "Geser audio (detik)",
+    "audioSyncHint": "Menggeser trek audio utama relatif terhadap video tanpa penyandian ulang, mis. -0.5 untuk 0,5 detik lebih cepat atau 1.5 untuk 1,5 detik lebih lambat.",
+    "audioSyncLossless": "Lossless: audio disalin sebagai aliran dengan offset stempel waktu, sehingga kualitas tidak berubah.",
+    "subtitles": "Subjudul yang ditambahkan",
+    "subtitlesHint": "File subjudul eksternal (.srt, .ass, .vtt) yang disematkan ke keluaran remuks sebagai trek input tambahan.",
+    "addSubtitle": "Tambahkan file subjudul",
+    "subtitleCodec": "Codec tujuan",
+    "subtitleCodecHint": "Codec subjudul untuk trek yang disematkan. Wadah mendukung format subjudul yang berbeda-beda; memilih format yang tidak dapat disimpan wadah akan memicu peringatan.",
+    "removeSubtitle": "Hapus subjudul",
+    "audioTracks": "Trek audio yang ditambahkan",
+    "audioTracksHint": "File audio eksternal (.m4a, .aac, .mp3, .flac, .opus, .ogg, .wav) yang disematkan ke keluaran remuks sebagai trek input tambahan.",
+    "addAudioTrack": "Tambahkan trek audio",
+    "removeAudioTrack": "Hapus trek audio",
+    "addedTrackDelay": "Tunda trek ini (detik)",
+    "addedTrackDelayHint": "Offset bertanda untuk trek ini relatif terhadap video (positif = diputar nanti). Lossless: diterapkan sebagai -itsoffset saat menyalin aliran.",
+    "thumbnail": "Thumbnail / sampul",
+    "thumbnailHint": "Gambar sampul opsional (.jpg, .jpeg, .png) yang disematkan ke file setelah remuks. MKV/WebM melampirkannya sebagai aliran gambar; MP4/MOV menyematkannya sebagai aliran video dengan tag attached_pic.",
+    "addThumbnail": "Tambahkan thumbnail",
+    "thumbnailUnsupported": "{{container}} tidak dapat menyimpan sampul. Beralihlah ke MKV, WebM, MP4, atau MOV untuk melampirkan thumbnail.",
+    "removeThumbnail": "Hapus thumbnail",
+    "thumbnailMode": "Disematkan sebagai {{mode}}",
+    "thumbnailAttached": "gambar terlampir",
+    "thumbnailDisposition": "aliran sampul attached_pic",
+    "chapters": "Bab",
+    "chaptersHint": "Bab dari sumber dipertahankan secara bawaan. Impor file bab FFMETADATA untuk mengganti bab sumber di file setelah remuks.",
+    "copyChapters": "Salin bab sumber",
+    "copyChaptersHint": "Mempertahankan penanda bab file sumber di keluaran remuks (lossless, -map_chapters 0).",
+    "importChapters": "Impor file bab",
+    "chaptersUnsupported": "{{container}} tidak menyimpan metadata bab, sehingga bab akan dibuang.",
+    "removeChapters": "Hapus file bab",
+    "warnings": "Peringatan kompatibilitas",
+    "warningsHint": "Catatan yang tidak memblokir tentang kesesuaian aliran dan pengaturan yang dipilih dengan wadah yang dipilih. Peringatan tetap mengizinkan mulai; kesalahan memblokirnya.",
+    "outputFile": "File keluaran",
+    "outputFileHint": "Jalur tujuan file setelah remuks. Ekstensi mengikuti wadah tujuan.",
+    "placeholderOutput": "keluaran.mkv",
+    "start": "Mulai remuks",
+    "remuxing": "Sedang meremuks…",
+    "pause": "Jeda",
+    "resume": "Lanjutkan",
+    "cancel": "Batal",
+    "cancelTitle": "Batalkan remuks",
+    "cancelMessage": "Yakin ingin membatalkan remuks yang sedang berjalan?",
+    "yes": "Ya",
+    "no": "Tidak",
+    "filtersTitle": "Filter video",
+    "filtersHint": "Menerapkan filter video FFmpeg selama penyandian ulang aliran video yang dipilih. Filter tidak dapat diterapkan pada salinan lossless, sehingga menambahkan satu filter mengubah remuks menjadi penyandian ulang.",
+    "filtersReencodeWarning": "Filter video tidak dapat berjalan pada salinan aliran, sehingga filter yang dipilih ({{count}}) mengubah remuks ini menjadi penyandian ulang."
+  },
+  "demux": {
+    "title": "Demuks",
+    "videoFile": "File video",
+    "videoFileHint": "File media sumber yang alirannya akan diekstrak. Setiap aliran yang dipilih ditulis ke file keluaran miliknya sendiri.",
+    "dropLabel": "Seret file video ke sini atau klik untuk memilih",
+    "selectedVideo": "Video dipilih: {{file}}",
+    "streamCount": "{{selected}} dari {{total}} aliran dipilih",
+    "streams": "Aliran sumber",
+    "streamsHint": "Pilih aliran yang akan diekstrak. Setiap aliran yang dipilih menjadi file keluaran terpisah; aliran yang tidak dipilih dilewati.",
+    "extractStreams": "Aliran yang diekstrak",
+    "streamGroup": "Aliran {{kind}}",
+    "suggestedOutput": "Keluaran",
+    "selectStream": "Pilih aliran {{kind}} #{{index}} untuk diekstrak",
+    "videoContainer": "Tujuan video",
+    "videoContainerHint": "Cara aliran video ditulis. \"Salin\" mengekstraknya tanpa kehilangan kualitas dan tanpa penyandian ulang; memilih wadah akan menyandikan ulang video ke format tersebut.",
+    "audioCodec": "Tujuan audio",
+    "audioCodecHint": "Cara aliran audio ditulis. \"Salin\" mengekstraknya tanpa kehilangan kualitas dan tanpa penyandian ulang; memilih codec akan menyandikan ulang audio.",
+    "subtitleFormat": "Tujuan subjudul",
+    "subtitleFormatHint": "Cara aliran subjudul ditulis. \"Salin\" mengekstraknya tanpa kehilangan kualitas dan tanpa penyandian ulang; memilih format akan mengonversi subjudul. Subjudul bitmap (mis. PGS/DVDSUB) tidak dapat menjadi teks, sehingga tetap disalin.",
+    "subtitleWarning": "Peringatan konversi subjudul",
+    "subtitleWarningHint": "Aliran subjudul bitmap (mis. PGS/DVDSUB) tidak dapat disandikan menjadi teks tanpa OCR, sehingga diekstrak sebagai salinan .mks lossless. Dalam rencana ekstraksi, aliran tersebut muncul sebagai \"Salin\".",
+    "bitmapSubtitleWarning": "Aliran subjudul bitmap ini tidak dapat diubah menjadi teks tanpa OCR, sehingga diekstrak sebagai salinan .mks lossless.",
+    "copyOption": "Salin (lossless)",
+    "outputDir": "Folder keluaran",
+    "outputDirHint": "Folder tempat aliran yang diekstrak ditulis. Secara bawaan adalah folder file sumber.",
+    "outputDirPlaceholder": "folder keluaran",
+    "summary": "Rencana ekstraksi",
+    "summaryHint": "Satu file keluaran untuk setiap aliran yang dipilih sesuai urutan eksekusi. File bertanda \"Salin\" diekstrak lossless; file bertanda \"Ubah\" disandikan ulang.",
+    "copyLabel": "Salin",
+    "convertLabel": "Ubah ke {{target}}",
+    "start": "Mulai demuks",
+    "demuxing": "Mengekstrak…",
+    "pause": "Jeda",
+    "resume": "Lanjutkan",
+    "cancel": "Batal",
+    "cancelTitle": "Batalkan demuks",
+    "cancelMessage": "Yakin ingin membatalkan demuks yang sedang berjalan?",
+    "yes": "Ya",
+    "no": "Tidak",
+    "currentStream": "Mengekstrak aliran {{kind}} #{{index}}",
+    "filtersTitle": "Filter video",
+    "filtersHint": "Menerapkan filter video FFmpeg (potong, laju bingkai, deinterlace, reduksi noise, warna…) selama penyandian ulang aliran video yang dipilih. \"Salin\" lossless, sehingga filter hanya muncul saat wadah tujuan menyandikan ulang video.",
+    "filtersIgnoredCopy": "Filter video diabaikan selama tujuan video adalah \"Salin\" karena salinan aliran tidak dapat disandikan ulang. Pilih wadah tujuan untuk menerapkan filter."
   }
 }

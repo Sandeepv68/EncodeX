@@ -10,15 +10,25 @@
 import { Logger } from '../../shared/logger';
 import { ConversionOptions } from '../../shared/types';
 import { FFMPEG_FLAGS, ROTATE_DEGREES, isMetadataRotationContainer } from '../../shared/transcoder-constants';
+import { buildFilterChain, buildRotationFilters as buildRotationFiltersShared, validateVideoFilters } from '../../shared/video-filters';
 import { getFfmpegPath, getFfprobePath } from '../media-binaries';
 import { getHwAccelArgs } from './hwaccel';
 import { getExtension } from '../../shared/codec-containers';
 import {
+  LOG_ADDITIONAL_INPUT,
+  LOG_ATTACH_COVER,
+  LOG_ARROW,
   LOG_AUDIO_BITRATE,
   LOG_AUDIO_CODEC,
   LOG_AUDIO_DISABLED_OUTPUT_WILL_HAVE_NO_AUDIO_STREAM,
+  LOG_CHAPTERS_FILE,
+  LOG_COPY_CHAPTERS,
+  LOG_DISPOSITION_KEYED,
   LOG_DURATION_CAPITALIZED,
   LOG_END_TIME,
+  LOG_FILTER_INVALID,
+  LOG_FILTERS_IGNORED_COPY,
+  LOG_MAP,
   LOG_PIXEL_FORMAT,
   LOG_QSCALE,
   LOG_ROTATION,
@@ -26,8 +36,11 @@ import {
   LOG_ROTATION_METADATA,
   LOG_SCALE,
   LOG_START_TIME,
+  LOG_SUBTITLE_CODEC,
+  LOG_SYNC_OFFSET,
   LOG_VIDEO_BITRATE,
   LOG_VIDEO_CODEC,
+  LOG_VIDEO_FILTERS,
   LOG_VIDEO_DISABLED_OUTPUT_WILL_HAVE_NO_VIDEO_STREAM,
 } from '../../shared/log-constants';
 
@@ -41,35 +54,20 @@ const log = new Logger('main/transcoders/ffmpeg-utils');
 export { getFfmpegPath, getFfprobePath };
 
 /**
- * Builds the rotation/mirror video filters for the given options.
- *
- * 90° clockwise maps to `transpose=1`, 90° counter-clockwise to `transpose=2`,
- * and 180° to a double transpose (interpolation-free). Horizontal and vertical
- * mirroring append `hflip`/`vflip`. Filters are ordered rotation-before-mirror.
+ * Maps rotate/flip conversion flags to their FFmpeg pixel-filter expressions.
+ * Re-exported from the shared video-filters module so the CLI-based builders
+ * (FFTool/Bmf) and the fluent-ffmpeg backend share one source of truth.
  * @param {ConversionOptions} options - Conversion options with rotation fields.
  * @returns {string[]} Ordered rotation filter strings (empty when none requested).
  */
 export function buildRotationFilters(options: ConversionOptions): string[] {
-  const filters: string[] = [];
-  if (options.rotate === '90') {
-    filters.push('transpose=1');
-  } else if (options.rotate === '180') {
-    filters.push('transpose=2', 'transpose=2');
-  } else if (options.rotate === '270') {
-    filters.push('transpose=2');
-  }
-  if (options.flipH) {
-    filters.push('hflip');
-  }
-  if (options.flipV) {
-    filters.push('vflip');
-  }
-  return filters;
+  return buildRotationFromOptions({ rotate: options.rotate, flipH: options.flipH, flipV: options.flipV });
 }
 
 /**
- * Builds a complete video filter chain from the conversion options: the scale
- * filter (when `options.scale` is set) followed by any rotation/mirror filters.
+ * Builds a complete video filter chain from conversion options: the `scale`
+ * filter (when `options.scale` is set), rotation/mirror filters, and any user
+ * `videoFilters` in array order.
  *
  * The result is a single comma-joined filter chain suitable for one `-vf`
  * argument (FFmpeg forbids emitting multiple `-vf` flags). Returns null when no
@@ -78,12 +76,25 @@ export function buildRotationFilters(options: ConversionOptions): string[] {
  * @returns {string | null} The filter chain, or null when no filter is needed.
  */
 export function buildVideoFilterChain(options: ConversionOptions): string | null {
-  const filters: string[] = [];
-  if (options.scale) {
-    filters.push(`${FFMPEG_FLAGS.SCALE}${options.scale}`);
-  }
-  filters.push(...buildRotationFilters(options));
-  return filters.length > 0 ? filters.join(',') : null;
+  return buildFilterChain({
+    scale: options.scale,
+    rotate: options.rotate,
+    flipH: options.flipH,
+    flipV: options.flipV,
+    videoFilters: options.videoFilters,
+  });
+}
+
+/**
+ * Delegates into the shared rotation-filter helper (which accepts a
+ * RotationOptions-shaped object rather than a full ConversionOptions).
+ * @private
+ * @param {{rotate?: string; flipH?: boolean; flipV?: boolean}} options -
+ *   Rotation/mirror flags.
+ * @returns {string[]} Ordered rotation filter strings.
+ */
+function buildRotationFromOptions(options: { rotate?: string; flipH?: boolean; flipV?: boolean }): string[] {
+  return buildRotationFiltersShared(options);
 }
 
 /**
@@ -113,17 +124,28 @@ export function metadataRotationValue(options: ConversionOptions, output: string
  * Argument assembly order:
  * 1. Hardware acceleration input flags (from {@link getHwAccelArgs}), prepended
  *    only when not in stream-copy mode (hwaccel is incompatible with `-c copy`).
- * 2. `-i <input>` input file.
- * 3. Copy mode: `-c copy`, plus `-metadata:s:v rotate=<deg>` when a rotation is
+ * 2. `-i <input>` primary input, then every non-attachment `additionalInputs`
+ *    entry as `-i <path>` (each optionally preceded by `-itsoffset <s>` for
+ *    added-track / re-read sync), then the `chaptersFile` as the final `-i`.
+ *    Input indices: primary = 0, additional inputs = 1..N in array order,
+ *    chapters file = N+1.
+ * 3. `-map <spec>` for every entry of `options.map` and every additional-input
+ *    map spec (stream selection, applies to copy and re-encode alike).
+ * 4. Copy mode: `-c copy`, plus `-metadata:s:v rotate=<deg>` when a rotation is
  *    requested and the output container stores rotation metadata (lossless). A
  *    rotation/flip that cannot be expressed in copy mode is skipped with a
- *    warning. Otherwise, in order: video codec (`-vcodec`), audio codec
- *    (`-acodec`), video bitrate (`-b:v`), audio bitrate (`-b:a`), quality scale
- *    (`-qscale:v`), a single video filter chain (`-vf scale=...,transpose=...,
- *    hflip,vflip`), and pixel format (`-pix_fmt`).
- * 4. Audio disable (`-an`) when `options.audio === false`.
- * 5. Trimming: start time (`-ss`), end time (`-to`), duration (`-t`).
- * 6. Overwrite flag (`-y`) and the output path last.
+ *    warning. Per-stream overrides follow the blanket `-c copy`: `-c:s
+ *    <subtitleCodec>` when set, `-c:<kind> <codec>` per additional input with a
+ *    non-copy codec, `-attach <path>` + `-metadata:s:t mimetype=image/jpeg` for
+ *    MKV/WebM cover entries, `-disposition:v:<n> <value>` for `-i`-mapped cover
+ *    streams, and `-map_chapters <index>` for chapter copy/import. Otherwise, in
+ *    order: video codec (`-vcodec`), audio codec (`-acodec`), video bitrate
+ *    (`-b:v`), audio bitrate (`-b:a`), quality scale (`-qscale:v`), a single
+ *    video filter chain (`-vf scale=...,transpose=...,hflip,vflip`), and pixel
+ *    format (`-pix_fmt`).
+ * 5. Audio disable (`-an`) when `options.audio === false`.
+ * 6. Trimming: start time (`-ss`), end time (`-to`), duration (`-t`).
+ * 7. Overwrite flag (`-y`) and the output path last.
  *
  * Note the scale filter is passed through verbatim (`scale=WxH`); callers
  * wanting aspect-ratio preservation supply the `:-2` variant themselves.
@@ -144,14 +166,67 @@ export function buildFfmpegArgs(input: string, output: string, options: Conversi
   }
   args.push(FFMPEG_FLAGS.INPUT, input);
 
+  const addedInputs = (options.additionalInputs ?? []).filter((entry) => !entry.attachment);
+  for (const entry of addedInputs) {
+    if (entry.syncOffsetSeconds) {
+      args.push(FFMPEG_FLAGS.ITSOFFSET, String(entry.syncOffsetSeconds));
+      log.debug(LOG_SYNC_OFFSET, entry.syncOffsetSeconds, LOG_ARROW, entry.path);
+    }
+    args.push(FFMPEG_FLAGS.INPUT, entry.path);
+    log.debug(LOG_ADDITIONAL_INPUT, entry.path);
+  }
+  let chaptersInputIndex: string | null = null;
+  if (options.chaptersFile) {
+    chaptersInputIndex = String(1 + addedInputs.length);
+    args.push(FFMPEG_FLAGS.INPUT, options.chaptersFile);
+    log.debug(LOG_CHAPTERS_FILE, options.chaptersFile);
+  }
+
+  for (const spec of options.map ?? []) {
+    args.push(FFMPEG_FLAGS.MAP, spec);
+    log.debug(LOG_MAP, spec);
+  }
+  for (const entry of options.additionalInputs ?? []) {
+    if (entry.attachment) continue;
+    for (const spec of entry.map) {
+      args.push(FFMPEG_FLAGS.MAP, spec);
+      log.debug(LOG_MAP, spec);
+    }
+  }
+
   if (options.copy) {
     args.push(FFMPEG_FLAGS.COPY, FFMPEG_FLAGS.COPY_VALUE);
+    if (options.videoFilters?.length) {
+      log.warn(LOG_FILTERS_IGNORED_COPY);
+    }
     const rotation = metadataRotationValue(options, output);
     if (rotation) {
       args.push(FFMPEG_FLAGS.METADATA_ROTATE, `rotate=${rotation}`);
       log.debug(LOG_ROTATION_METADATA, rotation);
     } else if (options.rotate || options.flipH || options.flipV) {
       log.warn(LOG_ROTATION_COPY_UNSUPPORTED);
+    }
+    for (const entry of options.additionalInputs ?? []) {
+      if (entry.codec && entry.codec !== FFMPEG_FLAGS.COPY_VALUE) {
+        args.push(`-c:${streamKindFromMap(entry.map)}`, entry.codec);
+        log.debug(LOG_ADDITIONAL_INPUT, entry.path, LOG_ARROW, `-c:${streamKindFromMap(entry.map)} ${entry.codec}`);
+      }
+    }
+    for (const entry of options.additionalInputs ?? []) {
+      if (entry.attachment) {
+        args.push(FFMPEG_FLAGS.ATTACH, entry.path, FFMPEG_FLAGS.METADATA_STREAM_TYPE, 'mimetype=image/jpeg');
+        log.debug(LOG_ATTACH_COVER, entry.path);
+      } else if (entry.disposition) {
+        const videoIndex = outputVideoIndexForInput(options, entry);
+        args.push(`${FFMPEG_FLAGS.DISPOSITION}:v:${videoIndex}`, entry.disposition);
+        log.debug(LOG_DISPOSITION_KEYED, `v${videoIndex} ${entry.disposition}`);
+      }
+    }
+    if (chaptersInputIndex) {
+      args.push(FFMPEG_FLAGS.MAP_CHAPTERS, chaptersInputIndex);
+    } else if (options.copyChapters !== false) {
+      args.push(FFMPEG_FLAGS.MAP_CHAPTERS, '0');
+      log.debug(LOG_COPY_CHAPTERS);
     }
   } else {
     if (options.videoCodec) {
@@ -174,8 +249,17 @@ export function buildFfmpegArgs(input: string, output: string, options: Conversi
       args.push(FFMPEG_FLAGS.QSCALE, String(options.qscale));
       log.debug(LOG_QSCALE, options.qscale);
     }
-    const filterChain = buildVideoFilterChain(options);
+    const invalidErrors = validateVideoFilters(options.videoFilters ?? []);
+    if (invalidErrors.length > 0) {
+      log.warn(LOG_FILTER_INVALID, invalidErrors.join(' | '));
+    }
+    const safeVideoFilters = (options.videoFilters ?? []).filter((entry) => validateVideoFilters([entry]).length === 0);
+    const chainOptions = options.videoFilters?.length ? { ...options, videoFilters: safeVideoFilters } : options;
+    const filterChain = buildVideoFilterChain(chainOptions);
     if (filterChain) {
+      if (safeVideoFilters.length > 0) {
+        log.debug(LOG_VIDEO_FILTERS, filterChain);
+      }
       args.push(FFMPEG_FLAGS.VIDEO_FILTER, filterChain);
       if (options.scale) log.debug(LOG_SCALE, options.scale);
       if (options.rotate) log.debug(LOG_ROTATION, options.rotate);
@@ -184,6 +268,11 @@ export function buildFfmpegArgs(input: string, output: string, options: Conversi
       args.push(FFMPEG_FLAGS.PIX_FMT, options.pixelFormat);
       log.debug(LOG_PIXEL_FORMAT, options.pixelFormat);
     }
+  }
+
+  if (options.subtitleCodec) {
+    args.push(FFMPEG_FLAGS.SUBTITLE_CODEC, options.subtitleCodec);
+    log.debug(LOG_SUBTITLE_CODEC, options.subtitleCodec);
   }
 
   if (options.audio === false) {
@@ -215,4 +304,60 @@ export function buildFfmpegArgs(input: string, output: string, options: Conversi
 
   args.push(FFMPEG_FLAGS.OVERWRITE, output);
   return args;
+}
+
+/**
+ * Infers the stream-kind token for a per-input `-c:<kind>` override from the
+ * input's first `-map` spec. A typed spec (`0:a:0`, `0:s:0`, `0:v:0`) yields
+ * 'a'/'s'/'v'; an untyped spec (`0:0`) defaults to 's' (the primary per-input
+ * codec use case is an added subtitle track needing e.g. `mov_text`). Due to
+ * the blanket `-c copy` already covering stream copies, 'copy' codec values
+ * never reach this helper.
+ * @param {string[]} mapSpecs - The input's `-map` specs.
+ * @returns {'v'|'a'|'s'} The stream-kind token ('s' when undeterminable).
+ */
+export function streamKindFromMap(mapSpecs: string[]): 'v' | 'a' | 's' {
+  for (const spec of mapSpecs ?? []) {
+    const type = /^\d+:(v|a|s|d|t):/.exec(spec)?.[1];
+    if (type) return type as 'v' | 'a' | 's';
+  }
+  return 's';
+}
+
+/**
+ * Computes the OUTPUT video-stream index for a disposition-carrying
+ * `-i`-mapped cover input. The index is the count of video-typed (`:v`) `-map`
+ * specs emitted BEFORE this input's own spec (typed video specs in
+ * `options.map`, then typed video specs of earlier non-attachment inputs).
+ * Untyped specs (e.g. added audio/subtitle `N:0`) are not counted, so a cover
+ * appended after a kept primary video stream lands at index 1
+ * (`-disposition:v:1 attached_pic`).
+ * @param {ConversionOptions} options - The conversion options.
+ * @param {ConversionOptions['additionalInputs'][number]} target - The cover input.
+ * @returns {number} The output video-stream index for the disposition flag.
+ */
+export function outputVideoIndexForInput(
+  options: ConversionOptions,
+  target: NonNullable<ConversionOptions['additionalInputs']>[number],
+): number {
+  let count = 0;
+  const priorSpecs: { spec: string; index: number }[] = [];
+  (options.map ?? []).forEach((spec) => priorSpecs.push({ spec, index: 0 }));
+  let runningInputIndex = 0;
+  for (const entry of options.additionalInputs ?? []) {
+    if (entry.attachment) continue;
+    runningInputIndex += 1;
+    if (entry === target) {
+      for (const { spec, index } of priorSpecs) {
+        if (index === 0) {
+          if (/:\s*v\s*:/.test(spec)) count += 1;
+        } else if (index < runningInputIndex && /:\s*v\s*:/.test(spec)) {
+          count += 1;
+        }
+      }
+      return count;
+    }
+    entry.map.forEach((spec) => priorSpecs.push({ spec, index: runningInputIndex }));
+  }
+  return 0;
 }

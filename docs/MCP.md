@@ -1,13 +1,13 @@
 # 🔌 MCP Integration
 
-EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can probe media, convert, compress, extract audio, cut, batch-process, and (opt-in) read live GUI state. It runs over the same media engine as the CLI, so behavior is identical across surfaces.
+EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can probe media, convert, compress, extract audio, cut, remux, demux, batch-process, and (opt-in) read live GUI state. It runs over the same media engine as the CLI, so behavior is identical across surfaces.
 
 There are two launch modes that share one tool/resource/prompt catalogue:
 
 | Mode | Transport | Launched by | Surface |
 | ---- | --------- | ----------- | ------- |
-| **Standalone** | stdio | `encodex --mcp` or `node dist/mcp/index.js` | 13 core tools |
-| **Embedded** | Streamable HTTP | Toggle in **Settings → MCP Server** | 13 core + 6 GUI-parity tools = **19** |
+| **Standalone** | stdio | `encodex --mcp` or `node dist/mcp/index.js` | 15 core tools |
+| **Embedded** | Streamable HTTP | Toggle in **Settings → MCP Server** | 15 core + 6 GUI-parity tools = **21** |
 
 Related docs: [`CLI.md`](CLI.md), [`IPC.md`](IPC.md), [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -129,7 +129,7 @@ All tools return a single JSON text payload. Failures set `isError` and return `
 | Tool | Key inputs | Returns |
 | ---- | ---------- | ------- |
 | `ping` | — | `{ pong: true }` |
-| `convert_media` | `input`, `output?`, `videoCodec?`, `audioCodec?`, `videoBitrate?`, `audioBitrate?`, `qscale?`, `scale?`, `keepAspectRatio?`, `rotate?`, `flipH?`, `flipV?`, `pixelFormat?`, `startTime?`, `endTime?`, `duration?`, `copy?`, `audio?`, `video?`, `hardwareAcceleration?`, `hwaccelMode?`, `extraArgs?`, `transcoder?`, `concurrency?` | `{ jobId, input, output, status, transcoder }` |
+| `convert_media` | `input`, `output?`, `videoCodec?`, `audioCodec?`, `videoBitrate?`, `audioBitrate?`, `qscale?`, `scale?`, `keepAspectRatio?`, `rotate?`, `flipH?`, `flipV?`, `pixelFormat?`, `startTime?`, `endTime?`, `duration?`, `copy?`, `audio?`, `video?`, `hardwareAcceleration?`, `hwaccelMode?`, `videoFilters?`, `filters?`, `presets?`, `extraArgs?`, `transcoder?`, `concurrency?` | `{ jobId, input, output, status, transcoder }` |
 | `get_job` | `jobId` | Job record (status, percent, time, speed, fps, eta, bitrate, error?) |
 | `list_jobs` | — | All jobs with status/progress |
 | `cancel_job` | `jobId` | `{ jobId, cancelled: true }` |
@@ -141,6 +141,8 @@ All tools return a single JSON text payload. Failures set `isError` and return `
 | `extract_audio` | `input`, `output?`, `audioCodec?`, `bitrate?`, `transcoder?` | `{ jobId, …, audioCodec, extension }` |
 | `cut_video` | `input`, `output?`, `startTime?`, `endTime?`, `duration?`, `copy?`, `audio?`, `extraArgs?`, `transcoder?` | `{ jobId, … }` |
 | `batch_convert` | `inputs[]`, `outputDir?`, `suffix?`, `concurrency?` + convert options | `{ total, jobs: [{ file, output, jobId, status }] }` |
+| `remux_media` | `input`, `container?`, `output?`, `map?`, `subtitles?`, `addSubtitle[]`, `addAudio[]`, `thumbnail?`, `chapters?`, `subtitleCodec?`, `audioSyncSeconds?`, `videoFilters?`, `transcoder?` | `{ jobId, …, container, map, warnings }` |
+| `demux_media` | `input`, `outputDir?`, `video?`, `audio?`, `subtitles?`, `all?`, `videoContainer?`, `audioCodec?`, `subtitleCodec?`, `videoFilters?`, `transcoder?` | `{ total, transcoder, jobs: [{ kind, streamIndex, copy, codec, output, jobId, status }], warnings }` |
 
 ### GUI-parity tools (embedded mode only)
 
@@ -174,11 +176,172 @@ All tools return a single JSON text payload. Failures set `isError` and return `
 
 > Prompt arguments follow the MCP string-only constraint, so `batch-convert` takes a comma-separated `inputs` string rather than an array.
 
+### Video filters (`convert_media` / `batch_convert`)
+
+`convert_media` (and `batch_convert`, which shares its field set) applies FFmpeg
+video filters via three independent inputs, merged in this order:
+
+1. **`presets`** — curated preset ids expanded to their default expressions
+   (`grayscale`, `crop`, `framerate`, `deinterlace`, `denoise`, `sharpen`,
+   `color`, `blur`).
+2. **`filters`** — a comma-joined free-form chain (`"fps=30,eq=brightness=0.1"`).
+3. **`videoFilters`** — an explicit array of filter expressions.
+
+Filters require **re-encoding**: combining them with `copy: true` fails with
+`FILTERS_REQUIRE_RE_ENCODE`, and an invalid entry or unknown preset fails with
+`INVALID_VIDEO_FILTERS` before any job is enqueued. `extraArgs` is independent —
+it appends raw output arguments while `videoFilters`/`filters`/`presets` build
+the single `-vf` chain.
+
+Example call:
+
+```json
+{
+  "input": "/media/clip.mp4",
+  "videoCodec": "libx264",
+  "presets": ["grayscale"],
+  "filters": "fps=30",
+  "scale": "1280x720"
+}
+```
+
+### Remux & demux (`remux_media` / `demux_media`)
+
+Both tools probe the source first (like the `remux` / `demux` CLI subcommands and
+the Remux / Demux pages), so the default stream selection and the output naming
+match those surfaces exactly.
+
+**`remux_media`** stream-copies into another container. `container` defaults to
+the output extension, then the input extension. `map` overrides the default
+selection (every probed stream, or every stream except subtitles when
+`subtitles: false`); `addSubtitle` / `addAudio` add external tracks in argument
+order; `thumbnail` embeds cover art (`attachment` for MKV/WebM, `attached_pic`
+for MP4/MOV — inferred from the container unless `type` says otherwise);
+`chapters` takes `"source"` (keep the source chapters, the default) or
+`{ "file": "meta.txt" }` to import an FFMETADATA file; `audioSyncSeconds` shifts
+the input's own audio (positive = audio plays later).
+
+`videoFilters` is the one escape from the lossless copy. A filter chain needs a
+decoder, so a non-empty `videoFilters` re-encodes the selected streams instead of
+stream-copying them and reports a `filters_force_reencode` warning (there is no
+`copy` field on `remux_media`, so the two never conflict). Each entry accepts the
+`preset.value` shorthand (`"framerate.60"` → `fps=60`); an invalid entry fails with
+`INVALID_VIDEO_FILTERS` before any job is enqueued.
+
+Example call:
+
+```json
+{
+  "input": "/media/movie.mp4",
+  "container": "mkv",
+  "addSubtitle": [{ "file": "/media/forced.srt", "syncOffsetSeconds": 0.5 }],
+  "addAudio": [{ "file": "/media/commentary.m4a" }],
+  "thumbnail": { "file": "/media/cover.jpg" },
+  "chapters": "source"
+}
+```
+
+Example response:
+
+```json
+{
+  "jobId": "6f1c…",
+  "input": "/media/movie.mp4",
+  "output": "/media/movie.mkv",
+  "status": "queued",
+  "transcoder": "FFMPEG",
+  "container": "mkv",
+  "map": ["0:v:0", "0:a:0", "0:s:0"],
+  "warnings": []
+}
+```
+
+Example call with a filter chain (re-encodes rather than copies):
+
+```json
+{
+  "input": "/media/movie.mp4",
+  "container": "mkv",
+  "videoFilters": ["fps=24", "framerate.60"]
+}
+```
+
+Example response:
+
+```json
+{
+  "jobId": "9a4d…",
+  "output": "/media/movie.mkv",
+  "container": "mkv",
+  "warnings": ["filters_force_reencode"]
+}
+```
+
+**`demux_media`** writes one output per selected stream. Pass any of `video`,
+`audio`, `subtitles` to select kinds (all kinds when none is given, or with
+`all: true`); `videoContainer`, `audioCodec`, and `subtitleCodec` re-encode a
+kind instead of copying it (`copy` or an omitted value keeps the stream as-is,
+and bitmap subtitles always stay stream-copied). Outputs land in `outputDir`
+(created when missing) or next to the input, named `<stem>.<kind>[_<n>].<ext>`.
+Cover-art video streams are skipped — remux them instead.
+
+`videoFilters` applies to a video target that re-encodes. A stream-copied video
+target cannot consume the chain, so it is dropped there and reported as a
+`filtersIgnoredCopy` warning; audio and subtitle targets never receive it. Unlike
+the `demux` CLI, the tool does not reject the combination — it queues the copy and
+tells you the filters were ignored. The `preset.value` shorthand is accepted
+(`"framerate.60"` → `fps=60`) and an invalid entry fails with
+`INVALID_VIDEO_FILTERS` before any job is enqueued.
+
+Example call:
+
+```json
+{ "input": "/media/movie.mkv", "audio": true, "audioCodec": "mp3" }
+```
+
+Example response:
+
+```json
+{
+  "total": 1,
+  "transcoder": "FFMPEG",
+  "jobs": [
+    {
+      "kind": "audio",
+      "streamIndex": 1,
+      "copy": false,
+      "codec": "mp3",
+      "output": "/media/movie.audio_0.mp3",
+      "jobId": "2b90…",
+      "status": "queued"
+    }
+  ],
+  "warnings": []
+}
+```
+
+Failure codes shared by both tools:
+
+| Code | Meaning |
+| ---- | ------- |
+| `FILE_NOT_FOUND` | The `input` file does not exist. |
+| `AUXILIARY_INPUT_NOT_FOUND` | A `remux_media` subtitle/audio/cover/chapters file does not exist. |
+| `INVALID_FORMAT` | No target container could be determined. |
+| `INCOMPATIBLE_CONTAINER` | A selected stream, the cover art, or an imported chapters file cannot be stored in the target container. |
+| `STREAM_NOT_FOUND` | `demux_media` found no stream of the requested kind. |
+| `INVALID_VIDEO_FILTERS` | A `videoFilters` entry is malformed, too long, or too numerous. |
+
+`warnings` carries the non-blocking findings as plain code strings — for example
+`filters_force_reencode` (`remux_media` re-encoding because of a filter chain),
+`filtersIgnoredCopy` (`demux_media` dropping filters on a copied video target), or
+a subtitle codec a container accepts only after conversion. The codes above are
+hard failures that reject the request before any job is enqueued.
+
 ---
 
 ## ⏳ Async job model
 
-Conversions run for seconds to minutes, so `convert_media`, `compress_image`, `extract_audio`, `cut_video`, and `batch_convert` return a `jobId` immediately rather than blocking the call. Poll with `get_job` / `list_jobs` (or `get_queue_state` in embedded mode) until the status is `done`, `error`, or `cancelled`; cancel with `cancel_job`.
+Conversions run for seconds to minutes, so `convert_media`, `compress_image`, `extract_audio`, `cut_video`, `batch_convert`, `remux_media`, and `demux_media` return a `jobId` immediately rather than blocking the call. Poll with `get_job` / `list_jobs` (or `get_queue_state` in embedded mode) until the status is `done`, `error`, or `cancelled`; cancel with `cancel_job`. `demux_media` returns one job id per extracted stream.
 
 Jobs are held in memory. In embedded mode the MCP job manager is **shared with the GUI queue**, so tools and the UI observe the same jobs and `cancel_all_jobs` affects the visible queue.
 
@@ -232,4 +395,4 @@ npm run mcp:smoke            # node dist/mcp/index.js
 npm run mcp:smoke:electron   # electron . --mcp (requires a display / xvfb on Linux)
 ```
 
-Both assert the handshake, the 13-tool stdio catalogue, and a live `ping`. (The 6 GUI-parity tools are only reachable through the embedded HTTP server.)
+Both assert the handshake, the 15-tool stdio catalogue, and a live `ping`. (The 6 GUI-parity tools are only reachable through the embedded HTTP server.)

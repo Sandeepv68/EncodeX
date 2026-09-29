@@ -38,6 +38,7 @@ describe('Convert', () => {
     expect(screen.getByRole('combobox', { name: 'convert.rotation' })).toBeInTheDocument();
     expect(screen.getByRole('switch', { name: 'convert.flipHorizontal' })).toBeInTheDocument();
     expect(screen.getByRole('switch', { name: 'convert.flipVertical' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'Add preset filter...' })).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'convert.pixelFormat' })).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'convert.transcoderCore' })).toBeInTheDocument();
   });
@@ -68,6 +69,7 @@ describe('Convert', () => {
       flipH: false,
       flipV: false,
       pixelFormat: 'yuv420p',
+      videoFilters: [],
       copyMode: false,
       transcoder: 'FFMPEG',
       encoderType: 'auto',
@@ -409,6 +411,7 @@ describe('Convert', () => {
       'convert.rotationHint',
       'convert.mirrorHint',
       'convert.pixelFormatHint',
+      'convert.filtersHint',
       'convert.transcoderCoreHint',
     ]);
     const seen = new Set<string>();
@@ -425,7 +428,7 @@ describe('Convert', () => {
   it('does not show the encoder type info tooltip when hardware acceleration is disabled', () => {
     useSettingsStore.setState({ hardwareAcceleration: false });
     renderPage();
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(14);
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(15);
   });
 
   it('shows a hardware acceleration alert above the encoder type field', () => {
@@ -485,5 +488,29 @@ describe('Convert', () => {
     expect(screen.getByRole('switch', { name: 'convert.losslessCopy' })).not.toBeChecked();
     fireEvent.keyDown(window, { code: 'KeyL', key: 'l' });
     expect(screen.getByRole('switch', { name: 'convert.losslessCopy' })).toBeChecked();
+  });
+
+  it('disables the filters section and shows the disabled note in lossless copy mode', () => {
+    useConversionStore.setState({ copyMode: true });
+    renderPage();
+    expect(screen.getByTestId('filters-disabled-note')).toHaveTextContent('convert.filtersDisabledNote');
+    expect(screen.getByRole('combobox', { name: 'Add preset filter...' })).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('shows the filters copy warning and can turn off lossless copy', () => {
+    useConversionStore.setState({ copyMode: true, videoFilters: ['fps=30'] });
+    renderPage();
+    expect(screen.getByRole('alert')).toHaveTextContent('convert.filtersCopyWarning');
+    fireEvent.click(screen.getByRole('button', { name: 'convert.filtersTurnOffCopy' }));
+    expect(useConversionStore.getState().copyMode).toBe(false);
+  });
+
+  it('adds a filter preset and shows the -vf chain preview', () => {
+    renderPage();
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Add preset filter...' }));
+    fireEvent.click(screen.getByRole('option', { name: 'Sharpen' }));
+    fireEvent.click(screen.getByTestId('filters-add-preset'));
+    expect(useConversionStore.getState().videoFilters).toEqual(['unsharp=5:5:0.5:5:5:0']);
+    expect(screen.getByTestId('filters-preview')).toHaveTextContent('-vf unsharp=5:5:0.5:5:5:0');
   });
 });

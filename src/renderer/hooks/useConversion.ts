@@ -17,6 +17,7 @@ import { useToastStore } from '../stores/toastStore';
 import { ConversionProgress, ConversionOptions } from '../../shared/types';
 import { toTaskProgress } from '../../shared/progress';
 import { ErrorCode } from '../../shared/errors';
+import { validateVideoFilters } from '../../shared/video-filters';
 import i18n from '../i18n/config';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getExtension, suggestedExtensionForVideoCodec } from '../../shared/codec-containers';
@@ -40,6 +41,8 @@ import {
   LOG_START_CONVERSION_NO_OUTPUT_FILE,
   LOG_SUBSCRIBING_TO_CONVERSION_PROGRESS,
   LOG_UNSUBSCRIBING_FROM_CONVERSION_PROGRESS,
+  LOG_FILTER_INVALID,
+  LOG_FILTERS_IGNORED_COPY,
 } from '../../shared/log-constants';
 
 const log = new Logger('renderer/hooks/useConversion');
@@ -129,6 +132,17 @@ export function useConversion() {
       showErrorMessage(ErrorCode.OUTPUT_NOT_SPECIFIED);
       return;
     }
+    const filterErrors = validateVideoFilters(store.videoFilters);
+    if (filterErrors.length > 0) {
+      log.warn(LOG_FILTER_INVALID, filterErrors.join(' | '));
+      showErrorMessage(ErrorCode.FILTERS_REQUIRE_RE_ENCODE);
+      return;
+    }
+    if (store.copyMode && store.videoFilters.length > 0) {
+      log.warn(LOG_FILTERS_IGNORED_COPY);
+      showErrorMessage(ErrorCode.FILTERS_REQUIRE_RE_ENCODE);
+      return;
+    }
     log.info(LOG_START_CONVERSION, store.inputFile, LOG_ARROW, store.outputFile, LOG_COPY_MODE, store.copyMode);
     useErrorStore.getState().clearError();
     store.setIsConverting(true);
@@ -148,6 +162,7 @@ export function useConversion() {
           flipH: store.flipH || undefined,
           flipV: store.flipV || undefined,
           pixelFormat: store.pixelFormat || undefined,
+          videoFilters: store.videoFilters.length ? store.videoFilters : undefined,
           copy: store.copyMode,
           hardwareAcceleration,
           hwaccelMode,
@@ -177,6 +192,7 @@ export function useConversion() {
     store.flipH,
     store.flipV,
     store.pixelFormat,
+    store.videoFilters,
     store.copyMode,
     store.transcoder,
     showError,
