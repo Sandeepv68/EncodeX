@@ -4,8 +4,10 @@
  * cover art, chapters), matching the `/remux` route and the Dashboard "Remux"
  * feature card.
  *
- * Workflow: drop or pick a video -> the file is probed (getMediaInfo) and its
- * streams are listed -> choose the target container, tick the streams to keep,
+ * Workflow: drop or pick a video -> a still frame is previewed and the file is
+ * probed (getMediaInfo) and its streams are listed in a table of codec,
+ * resolution, frame rate, bitrate, language, sample rate, channels, title, and
+ * disposition flags -> choose the target container, tick the streams to keep,
  * and set the output path -> Start Remux. While the remux runs a ProgressBar is
  * shown together with pause, resume, and cancel controls.
  *
@@ -18,7 +20,7 @@
  * `cancelConversion`, `revealFile`).
  */
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -28,9 +30,9 @@ import {
   Stack,
   Typography,
   Tooltip,
-  Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Checkbox,
@@ -78,10 +80,13 @@ import {
   type RemuxWarning,
 } from '../../shared/codec-containers';
 import { useRemuxStore } from '../stores/remuxStore';
-import { getResolvedPreviewThumbnail, getPreviewThumbnail } from '../utils/preview-cache';
+import { usePreviewThumbnail } from '../hooks/usePreviewThumbnail';
+import { formatBitrate, formatSampleRate } from '../utils/formatters';
 import type { MediaStreamInfo, RemuxInput } from '../../shared/types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import { CompatAlert } from '../styles/Convert.styles';
+import { DispositionChip, DispositionRow } from '../styles/StreamDetails.styles';
+import { StreamTable } from '../styles/StreamTable.styles';
 import { SelectedFileName, ActionRow } from '../styles/AudioExtract.styles';
 import { LOG_ARROW, LOG_START_CONVERSION, LOG_VALIDATION_FAILED, LOG_FAILED_TO_GET_MEDIA_INFO } from '../../shared/log-constants';
 
@@ -99,12 +104,34 @@ const log = new Logger('renderer/pages/Remux');
 const THUMBNAIL_EXTENSIONS: readonly string[] = ['jpg', 'jpeg', 'png'];
 
 /**
+ * Placeholder shown in a source-stream table cell whose property the probed
+ * media does not declare (a video has no sample rate, a subtitle has no
+ * resolution). An em dash keeps the cell from collapsing the row's rhythm.
+ * @const {string} EMPTY_CELL
+ */
+const EMPTY_CELL = '—';
+
+/**
+ * Renders the channel count of an audio stream together with its declared
+ * layout (e.g. `6 (5.1)`), falling back to whichever of the two the probe
+ * reported. Returns the empty-cell placeholder when neither is present.
+ * @param {MediaStreamInfo} stream - The probed stream to describe.
+ * @returns {string} The channel cell text.
+ */
+function channelCell(stream: MediaStreamInfo): string {
+  const layout = stream.channelLayout?.trim();
+  if (stream.channels == null) return layout || EMPTY_CELL;
+  return layout ? `${stream.channels} (${layout})` : String(stream.channels);
+}
+
+/**
  * Renders the remux page (`/remux`).
  *
- * Layout: a drop zone / selected-video box at the top, a target-container
- * select and a source stream table (with checkboxes bound to `selectedMaps`),
- * a live compatibility-warnings panel, the output file field, and the Remux
- * action buttons. While a remux runs a ProgressBar is shown together with
+ * Layout: a drop zone / selected-video box at the top (showing a cached still
+ * frame of the chosen file), a target-container select and a source stream
+ * table (with checkboxes bound to `selectedMaps`), a live
+ * compatibility-warnings panel, the output file field, and the Remux action
+ * buttons. While a remux runs a ProgressBar is shown together with
  * pause/resume/cancel buttons; a ConfirmDialog guards cancellation.
  *
  * Local state: only `cancelConfirmOpen` (whether the cancel dialog is open).
@@ -123,27 +150,19 @@ export default function RemuxPage() {
 
   /**
    * Data URL of the chosen cover-art image, or null while none is picked or the
-   * preview has not loaded. Seeded from the preview cache and refreshed via
-   * `getPreviewThumbnail` whenever the thumbnail path changes.
+   * preview has not loaded.
    * @type {string | null}
    */
-  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const thumbnailPreview = usePreviewThumbnail(store.thumbnail?.path);
 
-  useEffect(() => {
-    const path = store.thumbnail?.path;
-    if (!path) {
-      setThumbnailPreview(null);
-      return;
-    }
-    let cancelled = false;
-    setThumbnailPreview(getResolvedPreviewThumbnail(path));
-    getPreviewThumbnail(path).then((dataUrl) => {
-      if (!cancelled) setThumbnailPreview(dataUrl);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [store.thumbnail?.path]);
+  /**
+   * Data URL of a still frame from the selected video, or null while no input
+   * is chosen or the frame has not loaded. Rendered as the wide preview above
+   * the stream table so the user can confirm they picked the right file before
+   * remuxing.
+   * @type {string | null}
+   */
+  const inputPreview = usePreviewThumbnail(store.input);
 
   const run = useTaskRunControls(useRemuxStore);
 
@@ -380,7 +399,7 @@ export default function RemuxPage() {
         )}
         {store.input && (
           <MediaPreview
-            imageSrc={null}
+            imageSrc={inputPreview}
             alt={fileName(store.input)}
             removeLabel={t('batchQueue.remove')}
             testId="remux-video"
@@ -460,37 +479,65 @@ export default function RemuxPage() {
           </Stack>
         </Box>
         <ErrorBoundary fallback={null}>
-          <Table size="small" aria-label={t('remux.streams')}>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox" />
-                <TableCell>{t('remux.streamIndex')}</TableCell>
-                <TableCell>{t('remux.kind')}</TableCell>
-                <TableCell>{t('mediaInfo.codec')}</TableCell>
-                <TableCell>{t('mediaInfo.language')}</TableCell>
-                <TableCell>{t('mediaInfo.channels')}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {streamRows.map(({ stream, spec }) => (
-                <TableRow key={stream.index} hover data-testid="remux-stream-row">
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      size="small"
-                      checked={store.selectedMaps.includes(spec)}
-                      onChange={() => store.toggleStream(spec)}
-                      aria-label={t('remux.selectStream', { kind: t(`mediaInfo.${stream.type}`), index: stream.index })}
-                    />
-                  </TableCell>
-                  <TableCell>{stream.index}</TableCell>
-                  <TableCell>{t(`mediaInfo.${stream.type}`)}</TableCell>
-                  <TableCell>{stream.codec}</TableCell>
-                  <TableCell>{stream.language ?? '—'}</TableCell>
-                  <TableCell>{stream.channels != null ? stream.channels : '—'}</TableCell>
+          <TableContainer>
+            <StreamTable size="small" aria-label={t('remux.streams')}>
+              <TableHead>
+                <TableRow>
+                  <TableCell padding="checkbox" />
+                  <TableCell>{t('remux.streamIndex')}</TableCell>
+                  <TableCell>{t('remux.kind')}</TableCell>
+                  <TableCell>{t('mediaInfo.codec')}</TableCell>
+                  <TableCell>{t('mediaInfo.resolution')}</TableCell>
+                  <TableCell>{t('mediaInfo.frameRate')}</TableCell>
+                  <TableCell>{t('mediaInfo.bitrate')}</TableCell>
+                  <TableCell>{t('mediaInfo.language')}</TableCell>
+                  <TableCell>{t('mediaInfo.sampleRate')}</TableCell>
+                  <TableCell>{t('mediaInfo.channels')}</TableCell>
+                  <TableCell>{t('mediaInfo.streamTitle')}</TableCell>
+                  <TableCell>{t('mediaInfo.disposition')}</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {streamRows.map(({ stream, spec }) => (
+                  <TableRow key={stream.index} data-testid="remux-stream-row">
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        size="small"
+                        checked={store.selectedMaps.includes(spec)}
+                        onChange={() => store.toggleStream(spec)}
+                        aria-label={t('remux.selectStream', { kind: t(`mediaInfo.${stream.type}`), index: stream.index })}
+                      />
+                    </TableCell>
+                    <TableCell>{stream.index}</TableCell>
+                    <TableCell>{t(`mediaInfo.${stream.type}`)}</TableCell>
+                    <TableCell>{stream.codec}</TableCell>
+                    <TableCell>{stream.width && stream.height ? `${stream.width}×${stream.height}` : EMPTY_CELL}</TableCell>
+                    <TableCell>{stream.frameRate ? `${stream.frameRate} fps` : EMPTY_CELL}</TableCell>
+                    <TableCell>{stream.bitrate ? formatBitrate(stream.bitrate) : EMPTY_CELL}</TableCell>
+                    <TableCell>{stream.language ?? EMPTY_CELL}</TableCell>
+                    <TableCell>{formatSampleRate(stream.sampleRate) || EMPTY_CELL}</TableCell>
+                    <TableCell>{channelCell(stream)}</TableCell>
+                    <TableCell>{stream.title ?? EMPTY_CELL}</TableCell>
+                    <TableCell>
+                      {stream.disposition && stream.disposition.length > 0 ? (
+                        <DispositionRow>
+                          {stream.disposition.map((flag) => (
+                            <DispositionChip
+                              key={flag}
+                              label={t(`mediaInfo.dispositionFlags.${flag}`, { defaultValue: flag })}
+                              size="small"
+                            />
+                          ))}
+                        </DispositionRow>
+                      ) : (
+                        EMPTY_CELL
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </StreamTable>
+          </TableContainer>
         </ErrorBoundary>
       </FieldBox>
 

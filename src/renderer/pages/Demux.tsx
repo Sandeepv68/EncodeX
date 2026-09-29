@@ -32,7 +32,6 @@ import {
   Stack,
   Typography,
   Tooltip,
-  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -54,6 +53,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
 import { useTaskRunControls } from '../hooks/useMediaTask';
 import { useHotkeys } from '../hooks/useHotkeys';
+import { usePreviewThumbnail } from '../hooks/usePreviewThumbnail';
 import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { openFileDialog } from '../utils/fileDialog';
 import { fileName } from '../utils/path-utils';
@@ -62,6 +62,7 @@ import { suggestedExtensionForStream, type RemuxWarning } from '../../shared/cod
 import { useDemuxStore } from '../stores/demuxStore';
 import type { MediaStreamInfo } from '../../shared/types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
+import { StreamTable } from '../styles/StreamTable.styles';
 import { SelectedFileName, ActionRow } from '../styles/AudioExtract.styles';
 import { LOG_ARROW, LOG_START_CONVERSION } from '../../shared/log-constants';
 
@@ -121,6 +122,14 @@ export default function DemuxPage() {
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
 
   const run = useTaskRunControls(useDemuxStore);
+
+  /**
+   * Data URL of a still frame from the selected video, or null while no input
+   * is chosen or the frame has not loaded. Lets the user confirm they picked
+   * the right container source before demuxing.
+   * @type {string | null}
+   */
+  const inputPreview = usePreviewThumbnail(store.input);
 
   /**
    * Probed streams grouped by kind, each stream paired with the suggested
@@ -254,7 +263,7 @@ export default function DemuxPage() {
         )}
         {store.input && (
           <MediaPreview
-            imageSrc={null}
+            imageSrc={inputPreview}
             alt={fileName(store.input)}
             removeLabel={t('batchQueue.remove')}
             testId="demux-video"
@@ -298,7 +307,7 @@ export default function DemuxPage() {
                     <Typography variant="subtitle2" gutterBottom>
                       {t('demux.streamGroup', { kind: t(`mediaInfo.${kind}`) })}
                     </Typography>
-                    <Table size="small" aria-label={t(`mediaInfo.${kind}`)}>
+                    <StreamTable size="small" aria-label={t(`mediaInfo.${kind}`)}>
                       <TableHead>
                         <TableRow>
                           <TableCell padding="checkbox" />
@@ -313,7 +322,7 @@ export default function DemuxPage() {
                         {rows.map(({ stream, output }) => {
                           const selected = store.selectedIndices.includes(stream.index);
                           return (
-                            <TableRow key={stream.index} hover data-testid="demux-stream-row">
+                            <TableRow key={stream.index} data-testid="demux-stream-row">
                               <TableCell padding="checkbox">
                                 <Checkbox
                                   size="small"
@@ -336,7 +345,7 @@ export default function DemuxPage() {
                           );
                         })}
                       </TableBody>
-                    </Table>
+                    </StreamTable>
                   </Box>
                 ))}
               </Stack>

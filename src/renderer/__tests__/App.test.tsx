@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 import { useErrorStore } from '../stores/errorStore';
@@ -8,6 +8,8 @@ import { useToastStore } from '../stores/toastStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
 import { useTermsStore } from '../stores/termsStore';
+import { useSettingsStore } from '../stores/settingsStore';
+import { DRAWER_CONDENSED_STORAGE_KEY, DEFAULT_DRAWER_CONDENSED } from '../../shared/constants';
 import type { LogEntry } from '../../shared/types';
 
 const onLogMessageMock = vi.mocked(window.electronAPI.onLogMessage);
@@ -37,6 +39,8 @@ describe('App', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.unstubAllGlobals();
+    localStorage.clear();
+    useSettingsStore.setState({ drawerCondensed: DEFAULT_DRAWER_CONDENSED });
     useErrorStore.setState({ currentError: null, errorHistory: [] });
     useLogStore.setState({ entries: [] });
     useToastStore.setState({ toasts: [] });
@@ -61,10 +65,33 @@ describe('App', () => {
   it('navigates to the convert page via the drawer', async () => {
     renderApp();
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
-    const drawerItem = screen.getAllByText('nav.convert')[0].closest('[role="button"]')!;
-    fireEvent.click(drawerItem);
+    fireEvent.click(screen.getByTestId('nav-item-convert'));
     expect(await screen.findByText('convert.title', {}, { timeout: 10000 })).toBeInTheDocument();
   }, 20000);
+
+  it('opens the permanent drawer condensed with icon-only nav rows', async () => {
+    renderApp();
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+    const drawerItem = screen.getByTestId('nav-item-convert');
+    expect(within(drawerItem).queryByText('nav.convert')).not.toBeInTheDocument();
+    fireEvent.mouseOver(drawerItem);
+    expect((await screen.findByRole('tooltip')).textContent).toBe('nav.convert');
+  });
+
+  it('persists the drawer layout when the user expands the drawer', async () => {
+    renderApp();
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+
+    fireEvent.click(screen.getByTestId('drawer-condense-button'));
+    expect(useSettingsStore.getState().drawerCondensed).toBe(false);
+    expect(within(screen.getByTestId('nav-item-convert')).getByText('nav.convert')).toBeInTheDocument();
+    expect(localStorage.getItem(DRAWER_CONDENSED_STORAGE_KEY)).toBe('false');
+
+    fireEvent.click(screen.getByTestId('drawer-condense-button'));
+    expect(useSettingsStore.getState().drawerCondensed).toBe(true);
+    expect(within(screen.getByTestId('nav-item-convert')).queryByText('nav.convert')).not.toBeInTheDocument();
+    expect(localStorage.getItem(DRAWER_CONDENSED_STORAGE_KEY)).toBe('true');
+  });
 
   it('stores log messages received from the main process', async () => {
     renderApp();
@@ -91,8 +118,8 @@ describe('App', () => {
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     const menuButton = document.querySelector('[data-icon="bars"]')!.closest('button')!;
     fireEvent.click(menuButton);
-    fireEvent.click(screen.getAllByText('nav.convert')[0]);
-    expect(await screen.findByText('convert.title')).toBeInTheDocument();
+    fireEvent.click(await screen.findByTestId('nav-item-convert', {}, { timeout: 10000 }));
+    expect(await screen.findByText('convert.title', {}, { timeout: 10000 })).toBeInTheDocument();
   });
 
   it('shows a red blip on the audio-extract nav item while an extraction is running', async () => {

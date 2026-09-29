@@ -11,6 +11,11 @@ describe('VideoFiltersSection', () => {
     expect(screen.queryByTestId('filters-preview')).not.toBeInTheDocument();
   });
 
+  it('shows the placeholder in the preset dropdown before a selection is made', () => {
+    render(<VideoFiltersSection filterEntries={[]} onChange={() => {}} disabled={false} />);
+    expect(screen.getByRole('combobox')).toHaveTextContent('Add preset filter...');
+  });
+
   it('adds a preset filter with default parameters', () => {
     const onChange = vi.fn();
     render(<VideoFiltersSection filterEntries={[]} onChange={onChange} disabled={false} />);

@@ -54,9 +54,21 @@ export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}, terms: 'a
  * video-cut) route compositing through Chromium's GPU process, which crashes
  * randomly on headless Windows CI runners; the CLI harness already disables the
  * GPU for the same reason (see e2e/cli.spec.ts).
+ *
+ * The occlusion/backgrounding flags matter because the app window is never
+ * shown during a test run. Without them Windows' native occlusion detection
+ * reports the window as hidden, so Chromium backgrounds and throttles the
+ * renderer - the same condition that shows up as a renderer that dies on the
+ * next `page.reload()`.
  * @const {string[]} CHROMIUM_STABILITY_ARGS
  */
-const CHROMIUM_STABILITY_ARGS = ['--disable-gpu', '--disable-software-rasterizer'];
+const CHROMIUM_STABILITY_ARGS = [
+  '--disable-gpu',
+  '--disable-software-rasterizer',
+  '--disable-backgrounding-occluded-windows',
+  '--disable-renderer-backgrounding',
+  '--disable-features=CalculateNativeWinOcclusion',
+];
 
 /** Creates a throwaway Chromium/Electron user data directory for isolation. */
 export function createUserDataDir(): string {
@@ -118,6 +130,110 @@ export async function acceptTermsGate(page: Page): Promise<void> {
   await page.locator('[data-testid="terms-dialog"]').waitFor({ state: 'hidden', timeout: 10000 });
 }
 
+/**
+ * Probes whether the page's renderer is still usable.
+ *
+ * A crashed renderer leaves the `Page` object itself open, so `page.isClosed()`
+ * is false and every later call fails with an opaque "Target crashed". A cheap
+ * round-trip is the only reliable liveness signal.
+ * @param {Page} page - The page to probe.
+ * @returns {Promise<boolean>} True when the renderer still evaluates.
+ */
+export async function isPageAlive(page: Page): Promise<boolean> {
+  try {
+    await page.evaluate(() => 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Tears down a dead session and launches a replacement with the same options. */
+async function relaunch(session: AppSession, options: LaunchOptions): Promise<AppSession> {
+  await closeApp(session.app, session.userDataDir);
+  return launchApp(options);
+}
+
+/**
+ * Returns a session whose renderer is alive, relaunching the app when needed.
+ *
+ * Specs reload the page in `beforeEach` to reset renderer state. The Chromium
+ * renderer occasionally dies on Windows under sustained load, and without this
+ * helper the dead page poisons every remaining test in the file - one process
+ * crash turned into 6-9 failures. Reassigning the result in `beforeEach` keeps a
+ * single crash scoped to the test that hit it:
+ *
+ * ```ts
+ * beforeEach(async () => {
+ *   session = await ensureLiveSession(session);
+ *   ...
+ * });
+ * ```
+ *
+ * @param {AppSession} session - The current session; may be returned unchanged.
+ * @param {LaunchOptions} [options] - Launch options used if a relaunch is needed.
+ * @returns {Promise<AppSession>} The same session when healthy, else a fresh one.
+ */
+export async function ensureLiveSession(session: AppSession, options: LaunchOptions = {}): Promise<AppSession> {
+  if (await isPageAlive(session.page)) return session;
+  return relaunch(session, options);
+}
+
+/**
+ * Reloads the page, relaunching the app if the renderer is or becomes dead.
+ *
+ * Complements {@link ensureLiveSession}: that guard only covers a renderer that
+ * was *already* dead, but the crash more often lands on the reload itself, so
+ * the reload has to be guarded too. Specs that reload for isolation should use
+ * this in place of a bare `page.reload()` and must read the page from the
+ * returned session, since the app may have been swapped:
+ *
+ * ```ts
+ * beforeEach(async () => {
+ *   session = await reloadSession(session);
+ *   const { page } = session;
+ *   ...
+ * });
+ * ```
+ *
+ * @param {AppSession} session - The session to reload.
+ * @param {LaunchOptions} [options] - Launch options used if a relaunch is needed.
+ * @returns {Promise<AppSession>} The same session if the reload stuck, else a fresh one.
+ */
+export async function reloadSession(session: AppSession, options: LaunchOptions = {}): Promise<AppSession> {
+  if (await isPageAlive(session.page)) {
+    try {
+      await session.page.reload();
+      return session;
+    } catch {
+      // The renderer died during the reload itself; fall through and relaunch.
+    }
+  }
+  return relaunch(session, options);
+}
+
+/**
+ * Removes a throwaway user data directory, retrying until Windows lets go.
+ *
+ * Chromium's GPU and utility child processes keep handles on the profile for a
+ * few hundred ms after the parent is killed, so the first removal loses the
+ * race. `fs.rmSync`'s own `maxRetries` does not help: on Windows it does not
+ * retry the `EPERM` raised for a locked directory, it just throws straight
+ * away, which orphaned a profile per spec file on every run.
+ * @param {string} userDataDir - Directory to remove.
+ */
+async function removeUserDataDir(userDataDir: string): Promise<void> {
+  const deadline = Date.now() + 5000;
+  for (let attempt = 0; Date.now() <= deadline; attempt += 1) {
+    try {
+      fs.rmSync(userDataDir, { recursive: true, force: true });
+      return;
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 100 + attempt * 150));
+    }
+  }
+}
+
 /** Best-effort close that also force-kills the app process and cleans temp data. */
 export async function closeApp(app: ElectronApplication, userDataDir?: string): Promise<void> {
   if (!app) return;
@@ -127,7 +243,10 @@ export async function closeApp(app: ElectronApplication, userDataDir?: string): 
   } catch {
     // ElectronApplication connection already closed (app exited / crashed)
   }
-  await Promise.race([app.close(), new Promise((resolve) => setTimeout(resolve, 5000))]);
+  // Kill the tree before closing: once the main process exits, its Chromium
+  // GPU/utility children are re-parented and `taskkill /T` can no longer reach
+  // them, so a survivor keeps its handle on the profile and the directory is
+  // orphaned even though the test believes the app was cleaned up.
   if (pid) {
     try {
       if (process.platform === 'win32') {
@@ -139,11 +258,8 @@ export async function closeApp(app: ElectronApplication, userDataDir?: string): 
       /* already dead */
     }
   }
+  await Promise.race([app.close().catch(() => undefined), new Promise((resolve) => setTimeout(resolve, 5000))]);
   if (userDataDir) {
-    try {
-      fs.rmSync(userDataDir, { recursive: true, force: true });
-    } catch {
-      /* best-effort cleanup */
-    }
+    await removeUserDataDir(userDataDir);
   }
 }

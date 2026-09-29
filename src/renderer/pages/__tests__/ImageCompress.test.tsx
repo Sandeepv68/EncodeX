@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act, within } from '@testing-library/react';
 import ImageCompress from '../ImageCompress';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
@@ -39,6 +39,11 @@ describe('ImageCompress', () => {
     expect(screen.getByText('imageCompress.compress')).toBeInTheDocument();
   });
 
+  it('shows the placeholder in the scale select while it is empty', () => {
+    renderPage();
+    expect(screen.getByRole('combobox', { name: 'imageCompress.scale' })).toHaveTextContent('imageCompress.noScale');
+  });
+
   it('names the compress controls for screen readers', () => {
     renderPage();
     expect(screen.getByRole('combobox', { name: 'imageCompress.outputFormat' })).toBeInTheDocument();
@@ -72,7 +77,7 @@ describe('ImageCompress', () => {
     convertFileMock.mockResolvedValue(undefined);
     renderPage();
     fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
-    expect(screen.getByText('imageCompress.noScale')).toBeInTheDocument();
+    expect(within(screen.getByRole('listbox')).getByText('imageCompress.noScale')).toBeInTheDocument();
     fireEvent.click(screen.getByText('1920x1080'));
     fireEvent.click(screen.getByText('imageCompress.dropLabel'));
     await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());

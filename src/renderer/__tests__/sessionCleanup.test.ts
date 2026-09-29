@@ -7,6 +7,7 @@ import {
   QUEUE_CONCURRENCY_STORAGE_KEY,
   VIDEO_CUT_DRAFT_STORAGE_KEY,
   WINDOW_ALWAYS_ON_TOP_STORAGE_KEY,
+  DRAWER_CONDENSED_STORAGE_KEY,
 } from '../../shared/constants';
 import { HWACCEL_STORAGE_KEY } from '../../shared/hwaccel-settings';
 
@@ -17,6 +18,7 @@ const PREFERENCE_KEYS = [
   HWACCEL_STORAGE_KEY,
   LAUNCH_AT_LOGIN_STORAGE_KEY,
   QUEUE_CONCURRENCY_STORAGE_KEY,
+  DRAWER_CONDENSED_STORAGE_KEY,
 ];
 
 const seedStorage = () => {

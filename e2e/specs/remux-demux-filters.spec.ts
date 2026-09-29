@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import type { Page } from 'playwright';
 import type { MediaInfo } from '../../src/shared/types';
-import { launchApp, closeApp, AppSession } from '../fixtures/app';
+import { launchApp, closeApp, ensureLiveSession, reloadSession, AppSession } from '../fixtures/app';
 import { mockApi } from '../mocks/control';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
@@ -63,8 +63,9 @@ describe.runIf(IS_E2E)('Remux/Demux video filters', () => {
   });
 
   beforeEach(async () => {
+    session = await ensureLiveSession(session);
     await mockApi.reset(session.page);
-    await session.page.reload();
+    session = await reloadSession(session);
     await session.page.locator('[data-testid="nav-item-remux"]').waitFor({ timeout: 15000 });
   }, 30000);
 

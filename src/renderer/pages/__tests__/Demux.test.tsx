@@ -1,14 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act, within } from '@testing-library/react';
 import Demux from '../Demux';
 import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
 import { useDemuxStore } from '../../stores/demuxStore';
+import { clearPreviewCache } from '../../utils/preview-cache';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
 const selectDirectoryMock = vi.mocked(window.electronAPI.selectDirectory);
 const convertFileMock = vi.mocked(window.electronAPI.convertFile);
 const getMediaInfoMock = vi.mocked(window.electronAPI.getMediaInfo);
+const getVideoPreviewMock = vi.mocked(window.electronAPI.getVideoPreview);
 const pauseConversionMock = vi.mocked(window.electronAPI.pauseConversion);
 const resumeConversionMock = vi.mocked(window.electronAPI.resumeConversion);
 const cancelConversionMock = vi.mocked(window.electronAPI.cancelConversion);
@@ -40,14 +42,36 @@ function renderPage() {
 describe('Demux', () => {
   beforeEach(() => {
     resetStore();
+    clearPreviewCache();
     selectFileMock.mockReset();
     selectDirectoryMock.mockReset();
     convertFileMock.mockReset();
     getMediaInfoMock.mockReset();
+    getVideoPreviewMock.mockReset();
+    getVideoPreviewMock.mockResolvedValue(null);
     pauseConversionMock.mockReset();
     resumeConversionMock.mockReset();
     cancelConversionMock.mockReset();
     revealFileMock.mockReset();
+  });
+
+  it('previews a still frame of the selected video', async () => {
+    getVideoPreviewMock.mockResolvedValue('data:image/png;base64,PREVIEW');
+    selectFileMock.mockResolvedValue('/in/video.mkv');
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/video.mkv',
+      format: 'matroska',
+      size: 1024,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [{ index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 }],
+    });
+    renderPage();
+    fireEvent.click(screen.getByText('demux.dropLabel'));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
+
+    const preview = within(screen.getByTestId('demux-video'));
+    expect(await preview.findByRole('img')).toHaveAttribute('src', 'data:image/png;base64,PREVIEW');
   });
 
   it('renders the title and input picker when idle', () => {

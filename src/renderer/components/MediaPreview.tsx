@@ -2,11 +2,12 @@
  * @fileoverview Shared media preview thumbnail box used by the image-compression
  * and audio-extraction pages.
  *
- * Renders a compact preview row: an optional thumbnail image (square for
- * images, wide for videos) with a floating remove button, plus an info column
- * provided by the caller (file name, dimensions/size, stream details). The
- * thumbnail is omitted while `imageSrc` is null so a loading state can simply
- * leave the remove button and info text visible.
+ * Renders a compact preview row: a thumbnail frame (square for images, wide
+ * for videos) with a floating remove button straddling its top-end corner, plus
+ * an info column provided by the caller (file name, dimensions/size, stream
+ * details). The frame always reserves the thumbnail's footprint and shows a
+ * placeholder fill, so the remove button keeps its corner while `imageSrc` is
+ * null (loading, or a file with no extractable frame).
  *
  * Props (see {@link MediaPreviewProps}):
  *  - imageSrc: data URL of the thumbnail, or null while loading.
@@ -41,8 +42,8 @@ export default function MediaPreview({
 }: MediaPreviewProps) {
   return (
     <PreviewBox data-testid={testId}>
-      <PreviewImageBox>
-        {imageSrc && <PreviewImage src={imageSrc} alt={alt} variant={variant} />}
+      <PreviewImageBox variant={variant}>
+        {imageSrc && <PreviewImage src={imageSrc} alt={alt} />}
         <PreviewCloseButton size="small" aria-label={removeLabel} data-testid={removeTestId} onClick={onRemove}>
           <FontAwesomeIcon icon={faXmark} />
         </PreviewCloseButton>

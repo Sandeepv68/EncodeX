@@ -100,6 +100,23 @@ describe('Convert', () => {
     expect(screen.getByRole('spinbutton')).toHaveValue(23);
   });
 
+  it('shows the placeholder in every select whose value is empty', () => {
+    useConversionStore.setState({ videoBitrate: '', audioBitrate: '', scale: '', rotate: '' });
+    renderPage();
+    expect(screen.getByRole('combobox', { name: 'convert.videoBitrate' })).toHaveTextContent('status.auto');
+    expect(screen.getByRole('combobox', { name: 'convert.audioBitrate' })).toHaveTextContent('status.auto');
+    expect(screen.getByRole('combobox', { name: 'convert.scale' })).toHaveTextContent('status.none');
+    expect(screen.getByRole('combobox', { name: 'convert.rotation' })).toHaveTextContent('status.none');
+  });
+
+  it('shows the selected option once a value is chosen', () => {
+    useConversionStore.setState({ videoBitrate: '4000k', scale: '1280x720', rotate: '90' });
+    renderPage();
+    expect(screen.getByRole('combobox', { name: 'convert.videoBitrate' })).toHaveTextContent('4000k');
+    expect(screen.getByRole('combobox', { name: 'convert.scale' })).toHaveTextContent('1280x720');
+    expect(screen.getByRole('combobox', { name: 'convert.rotation' })).toHaveTextContent('convert.rotationDegrees');
+  });
+
   it('selects an input file and renders the media player', async () => {
     selectFileMock.mockResolvedValue('/in/video.mp4');
     renderPage();

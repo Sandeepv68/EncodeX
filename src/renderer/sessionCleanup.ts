@@ -6,7 +6,7 @@
  *
  * On window unload, {@link clearTransientStorage} removes every localStorage
  * entry except the persisted preference keys (theme, language, always-on-top,
- * hardware acceleration, launch-at-login, queue concurrency).
+ * hardware acceleration, launch-at-login, queue concurrency, drawer layout).
  * {@link setupSessionCleanup} wires that cleanup to the window's `beforeunload`
  * event; main.tsx calls it once at startup. Because the
  * renderer's `beforeunload` fires whenever the BrowserWindow closes (window
@@ -22,6 +22,7 @@ import {
   LAUNCH_AT_LOGIN_STORAGE_KEY,
   QUEUE_CONCURRENCY_STORAGE_KEY,
   TERMS_ACCEPTED_STORAGE_KEY,
+  DRAWER_CONDENSED_STORAGE_KEY,
 } from '../shared/constants';
 import { HWACCEL_STORAGE_KEY } from '../shared/hwaccel-settings';
 import { LOG_FAILED_TO_CLEAR_TRANSIENT_STORAGE } from '../shared/log-constants';
@@ -42,12 +43,14 @@ const PREFERENCE_STORAGE_KEYS: ReadonlySet<string> = new Set([
   LAUNCH_AT_LOGIN_STORAGE_KEY,
   QUEUE_CONCURRENCY_STORAGE_KEY,
   TERMS_ACCEPTED_STORAGE_KEY,
+  DRAWER_CONDENSED_STORAGE_KEY,
 ]);
 
 /**
  * Removes every localStorage entry that is not a persisted preference (theme,
  * language, always-on-top, hardware acceleration, launch-at-login, queue
- * concurrency, accepted terms version). Drafts and any other non-preference
+ * concurrency, accepted terms version, drawer condensed layout). Drafts and any
+ * other non-preference
  * data written during the session are dropped, so the next app launch starts
  * from a clean slate. The accepted terms record must survive so the
  * terms-of-use gate does not reappear on every launch.

@@ -189,7 +189,10 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 select
                 fullWidth
                 size="small"
-                slotProps={{ htmlInput: { 'aria-label': t('batchQueue.container') } }}
+                slotProps={{
+                  select: { displayEmpty: true },
+                  htmlInput: { 'aria-label': t('batchQueue.container') },
+                }}
                 value={props.container}
                 onChange={(e) => {
                   props.onContainerChange(e.target.value);
@@ -213,7 +216,10 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 select
                 fullWidth
                 size="small"
-                slotProps={{ htmlInput: { 'aria-label': t('imageCompress.outputFormat') } }}
+                slotProps={{
+                  select: { displayEmpty: true },
+                  htmlInput: { 'aria-label': t('imageCompress.outputFormat') },
+                }}
                 value={props.container}
                 onChange={(e) => {
                   props.onContainerChange(e.target.value);
@@ -240,7 +246,10 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 select
                 fullWidth
                 size="small"
-                slotProps={{ htmlInput: { 'aria-label': t('batchQueue.container') } }}
+                slotProps={{
+                  select: { displayEmpty: true },
+                  htmlInput: { 'aria-label': t('batchQueue.container') },
+                }}
                 value={props.container}
                 onChange={(e) => {
                   props.onContainerChange(e.target.value);
@@ -264,7 +273,10 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 select
                 fullWidth
                 size="small"
-                slotProps={{ htmlInput: { 'aria-label': t('convert.videoBitrate') } }}
+                slotProps={{
+                  select: { displayEmpty: true },
+                  htmlInput: { 'aria-label': t('convert.videoBitrate') },
+                }}
                 value={props.videoBitrate}
                 onChange={(e) => {
                   props.onVideoBitrateChange(e.target.value);
@@ -287,7 +299,10 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 select
                 fullWidth
                 size="small"
-                slotProps={{ htmlInput: { 'aria-label': t('convert.audioBitrate') } }}
+                slotProps={{
+                  select: { displayEmpty: true },
+                  htmlInput: { 'aria-label': t('convert.audioBitrate') },
+                }}
                 value={props.audioBitrate}
                 onChange={(e) => {
                   props.onAudioBitrateChange(e.target.value);
@@ -335,7 +350,10 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 select
                 fullWidth
                 size="small"
-                slotProps={{ htmlInput: { 'aria-label': showVideo ? t('convert.scale') : t('imageCompress.scale') } }}
+                slotProps={{
+                  select: { displayEmpty: true },
+                  htmlInput: { 'aria-label': showVideo ? t('convert.scale') : t('imageCompress.scale') },
+                }}
                 value={props.scale}
                 onChange={(e) => {
                   props.onScaleChange(e.target.value);
@@ -359,7 +377,10 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                 fullWidth
                 size="small"
                 data-testid="batch-rotation"
-                slotProps={{ htmlInput: { 'aria-label': t('convert.rotation') } }}
+                slotProps={{
+                  select: { displayEmpty: true },
+                  htmlInput: { 'aria-label': t('convert.rotation') },
+                }}
                 value={props.rotate}
                 onChange={(e) => {
                   props.onRotateChange(e.target.value);

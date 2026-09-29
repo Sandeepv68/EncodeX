@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useSettingsStore, readStoredHwAccel, readStoredQueueConcurrency, readStoredWhenDone } from '../settingsStore';
+import {
+  useSettingsStore,
+  readStoredHwAccel,
+  readStoredQueueConcurrency,
+  readStoredWhenDone,
+  readStoredDrawerCondensed,
+} from '../settingsStore';
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
 import {
   HWACCEL_DEFAULTS,
@@ -15,6 +21,8 @@ import {
   LAUNCH_AT_LOGIN_STORAGE_KEY,
   WHEN_DONE_STORAGE_KEY,
   DEFAULT_WHEN_DONE_ACTION,
+  DRAWER_CONDENSED_STORAGE_KEY,
+  DEFAULT_DRAWER_CONDENSED,
 } from '../../../shared/constants';
 
 describe('settingsStore', () => {
@@ -26,6 +34,7 @@ describe('settingsStore', () => {
       hwaccelMode: HWACCEL_DEFAULTS.MODE,
       encoderType: ENCODER_TYPE_DEFAULT,
       alwaysOnTop: false,
+      drawerCondensed: DEFAULT_DRAWER_CONDENSED,
       launchAtLogin: false,
       monitoringEnabled: true,
       analyticsEnabled: true,
@@ -79,6 +88,16 @@ describe('settingsStore', () => {
 
   it('defaults launch-at-login to false', () => {
     expect(useSettingsStore.getState().launchAtLogin).toBe(false);
+  });
+
+  it('setDrawerCondensed updates the value and persists it', () => {
+    useSettingsStore.getState().setDrawerCondensed(false);
+    expect(useSettingsStore.getState().drawerCondensed).toBe(false);
+    expect(localStorage.getItem(DRAWER_CONDENSED_STORAGE_KEY)).toBe('false');
+
+    useSettingsStore.getState().setDrawerCondensed(true);
+    expect(useSettingsStore.getState().drawerCondensed).toBe(true);
+    expect(localStorage.getItem(DRAWER_CONDENSED_STORAGE_KEY)).toBe('true');
   });
 
   it('setLaunchAtLogin updates the value and persists it', () => {
@@ -368,5 +387,30 @@ describe('readStoredWhenDone', () => {
   it('falls back to defaults for corrupted storage', () => {
     localStorage.setItem(WHEN_DONE_STORAGE_KEY, '{ not json');
     expect(readStoredWhenDone()).toEqual({ enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false });
+  });
+});
+
+describe('readStoredDrawerCondensed', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('defaults to a condensed drawer when nothing is stored', () => {
+    expect(readStoredDrawerCondensed()).toBe(DEFAULT_DRAWER_CONDENSED);
+  });
+
+  it('keeps a persisted expanded drawer', () => {
+    localStorage.setItem(DRAWER_CONDENSED_STORAGE_KEY, 'false');
+    expect(readStoredDrawerCondensed()).toBe(false);
+  });
+
+  it('keeps a persisted condensed drawer', () => {
+    localStorage.setItem(DRAWER_CONDENSED_STORAGE_KEY, 'true');
+    expect(readStoredDrawerCondensed()).toBe(true);
+  });
+
+  it('falls back to the default for a non-boolean value', () => {
+    localStorage.setItem(DRAWER_CONDENSED_STORAGE_KEY, 'yes');
+    expect(readStoredDrawerCondensed()).toBe(DEFAULT_DRAWER_CONDENSED);
   });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import type { ComponentProps } from 'react';
 import BatchEncodingPanel from '../BatchEncodingPanel';
 import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
@@ -43,6 +43,14 @@ function renderPanel(props: Partial<ComponentProps<typeof BatchEncodingPanel>> =
   };
   const utils = render(<BatchEncodingPanel {...all} />);
   return { props: all, ...utils };
+}
+
+function expectMenuOption(text: string) {
+  expect(within(screen.getByRole('listbox')).getByText(text)).toBeInTheDocument();
+}
+
+function expectNoMenuOption(text: string) {
+  expect(within(screen.getByRole('listbox')).queryByText(text)).not.toBeInTheDocument();
 }
 
 describe('BatchEncodingPanel', () => {
@@ -103,13 +111,33 @@ describe('BatchEncodingPanel', () => {
     expect(screen.getByTestId('video-filters-section')).toBeInTheDocument();
   });
 
+  it('shows placeholders in every transcode select whose value is empty', () => {
+    renderPanel({ container: '', videoBitrate: '', audioBitrate: '', scale: '', rotate: '' });
+    expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toHaveTextContent('batchQueue.containerAuto');
+    expect(screen.getByRole('combobox', { name: 'convert.videoBitrate' })).toHaveTextContent('status.auto');
+    expect(screen.getByRole('combobox', { name: 'convert.audioBitrate' })).toHaveTextContent('status.auto');
+    expect(screen.getByRole('combobox', { name: 'convert.scale' })).toHaveTextContent('status.none');
+    expect(screen.getByRole('combobox', { name: 'convert.rotation' })).toHaveTextContent('status.none');
+  });
+
+  it('shows placeholders in the image selects whose value is empty', () => {
+    renderPanel({ operation: 'compress_image', container: '', scale: '' });
+    expect(screen.getByRole('combobox', { name: 'imageCompress.outputFormat' })).toHaveTextContent('batchQueue.containerAuto');
+    expect(screen.getByRole('combobox', { name: 'imageCompress.scale' })).toHaveTextContent('status.none');
+  });
+
+  it('shows the placeholder in the remux container select while it is empty', () => {
+    renderPanel({ operation: 'remux', container: '' });
+    expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toHaveTextContent('batchQueue.containerAuto');
+  });
+
   it('lists the container options compatible with the selected video codec', () => {
     renderPanel();
     fireEvent.mouseDown(screen.getAllByRole('combobox')[3]);
-    expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
-    expect(screen.getByText('mp4')).toBeInTheDocument();
-    expect(screen.getByText('mkv')).toBeInTheDocument();
-    expect(screen.queryByText('webm')).not.toBeInTheDocument();
+    expectMenuOption('batchQueue.containerAuto');
+    expectMenuOption('mp4');
+    expectMenuOption('mkv');
+    expectNoMenuOption('webm');
   });
 
   it('fires onContainerChange when a container is chosen', () => {
@@ -137,17 +165,17 @@ describe('BatchEncodingPanel', () => {
   it('lists only containers compatible with the selected audio codec', () => {
     renderPanel({ operation: 'extract_audio', audioCodec: 'aac' });
     fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
-    expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
-    expect(screen.getByText('m4a')).toBeInTheDocument();
-    expect(screen.queryByText('mp3')).not.toBeInTheDocument();
+    expectMenuOption('batchQueue.containerAuto');
+    expectMenuOption('m4a');
+    expectNoMenuOption('mp3');
   });
 
   it('shows mp3 containers for the libmp3lame audio codec', () => {
     renderPanel({ operation: 'extract_audio', audioCodec: 'libmp3lame' });
     fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
-    expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
-    expect(screen.getByText('mp3')).toBeInTheDocument();
-    expect(screen.queryByText('m4a')).not.toBeInTheDocument();
+    expectMenuOption('batchQueue.containerAuto');
+    expectMenuOption('mp3');
+    expectNoMenuOption('m4a');
   });
 
   it('renders image controls for the compress image operation', () => {
@@ -169,9 +197,9 @@ describe('BatchEncodingPanel', () => {
   it('lists the image formats for the compress image operation', () => {
     renderPanel({ operation: 'compress_image' });
     fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
-    expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
+    expectMenuOption('batchQueue.containerAuto');
     expect(screen.getByText('JPEG')).toBeInTheDocument();
-    expect(screen.getByText('WebP')).toBeInTheDocument();
+    expectMenuOption('WebP');
   });
 
   it('names each control via its field label', () => {
@@ -244,9 +272,9 @@ describe('BatchEncodingPanel', () => {
     expect(screen.queryByRole('combobox', { name: 'convert.videoCodec' })).not.toBeInTheDocument();
     expect(screen.queryByRole('combobox', { name: 'convert.audioCodec' })).not.toBeInTheDocument();
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
-    expect(screen.getByText('batchQueue.containerAuto')).toBeInTheDocument();
-    expect(screen.getByText('mkv')).toBeInTheDocument();
-    expect(screen.getByText('mp4')).toBeInTheDocument();
+    expectMenuOption('batchQueue.containerAuto');
+    expectMenuOption('mkv');
+    expectMenuOption('mp4');
   });
 
   it('fires onContainerChange when a remux container is chosen', () => {

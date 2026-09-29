@@ -527,6 +527,21 @@ export const DEFAULT_LANGUAGE = 'en-US';
  */
 export const WINDOW_ALWAYS_ON_TOP_STORAGE_KEY = 'encodex-always-on-top';
 
+// --- App drawer ---
+/**
+ * localStorage key used to persist whether the navigation drawer starts
+ * condensed (icons only) or expanded (icons + labels).
+ * @const {string} DRAWER_CONDENSED_STORAGE_KEY
+ */
+export const DRAWER_CONDENSED_STORAGE_KEY = 'encodex-drawer-condensed';
+
+/**
+ * Default drawer state for a user who has never toggled it: condensed, so the
+ * video preview and page content get the extra width on first launch.
+ * @const {boolean} DEFAULT_DRAWER_CONDENSED
+ */
+export const DEFAULT_DRAWER_CONDENSED = true;
+
 // --- Terms & Conditions ---
 /**
  * localStorage key used to persist the accepted Terms & Conditions record
