@@ -25,6 +25,15 @@ function renderDrawer({ isMobile = false, condensed = false, onNavigate = vi.fn(
   );
 }
 
+/**
+ * Waits past MUI's tooltip enter delay so an assertion that no tooltip opened
+ * actually proves it stayed closed, rather than just checking too early.
+ * @returns {Promise<void>} Resolves once the delay has elapsed.
+ */
+function sleepPastTooltipDelay() {
+  return new Promise((resolve) => setTimeout(resolve, 300));
+}
+
 describe('AppDrawer', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -237,6 +246,32 @@ describe('AppDrawer', () => {
     renderDrawer({ condensed: true });
     expect(screen.queryByText('nav.convert')).not.toBeInTheDocument();
     expect(screen.queryByText('nav.dashboard')).not.toBeInTheDocument();
+  });
+
+  it('shows a nav label tooltip for each row when condensed', async () => {
+    renderDrawer({ condensed: true });
+    fireEvent.mouseOver(screen.getByTestId('nav-item-dashboard'));
+    const tooltip = await screen.findByRole('tooltip');
+    expect(tooltip).toHaveTextContent('nav.dashboard');
+  });
+
+  it('does not show nav tooltips when the drawer is expanded', async () => {
+    renderDrawer({ condensed: false });
+    fireEvent.mouseOver(screen.getByTestId('nav-item-dashboard'));
+    await sleepPastTooltipDelay();
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
+  it('withholds the row tooltip while the job popover is open', async () => {
+    useConversionStore.getState().setIsConverting(true);
+    useConversionStore.getState().setInputFile('/in/video.mp4');
+    useConversionStore.getState().setProgress({ percent: 42, time: '00:00:30', speed: '2.5x', eta: '12' });
+    renderDrawer({ condensed: true });
+    fireEvent.focus(screen.getByTestId('nav-item-convert'));
+    expect(screen.getByTestId('nav-job-popover')).toBeInTheDocument();
+    fireEvent.mouseOver(screen.getByTestId('nav-item-convert'));
+    await sleepPastTooltipDelay();
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
   it('still navigates from the icon when condensed', () => {

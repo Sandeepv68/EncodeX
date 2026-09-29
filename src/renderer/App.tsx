@@ -87,7 +87,9 @@ const About = lazy(() => import('./pages/About'));
  * navigation drawer on the side (a temporary/overlay drawer below the `md`
  * breakpoint, a permanent drawer at `md` and above), and a `MainContent` area
  * holding the routed pages plus the `Footer`. The mobile menu button (hamburger)
- * toggles the temporary drawer on small screens.
+ * toggles the temporary drawer on small screens. The permanent drawer opens
+ * condensed (icon-only) on load; the temporary drawer always renders expanded,
+ * as it has no condense toggle of its own.
  *
  * Renders the route table for every feature page, each wrapped in an
  *  `ErrorBoundary` and collectively in a `Suspense` fallback spinner. It also
@@ -106,7 +108,7 @@ function AppLayout() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { currentError, clearError } = useErrorStore();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [drawerCondensed, setDrawerCondensed] = useState(false);
+  const [drawerCondensed, setDrawerCondensed] = useState(true);
   const [helpOpen, setHelpOpen] = useState(false);
   const navigate = useNavigate();
   const { themeId, setTheme } = useColorMode();
@@ -174,7 +176,7 @@ function AppLayout() {
   const drawerContent = (
     <AppDrawer
       isMobile={isMobile}
-      condensed={drawerCondensed}
+      condensed={isMobile ? false : drawerCondensed}
       onToggleCondense={() => setDrawerCondensed((prev) => !prev)}
       onNavigate={() => {
         setMobileOpen(false);

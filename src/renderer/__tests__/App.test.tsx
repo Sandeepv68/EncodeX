@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 import { useErrorStore } from '../stores/errorStore';
@@ -61,10 +61,18 @@ describe('App', () => {
   it('navigates to the convert page via the drawer', async () => {
     renderApp();
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
-    const drawerItem = screen.getAllByText('nav.convert')[0].closest('[role="button"]')!;
-    fireEvent.click(drawerItem);
+    fireEvent.click(screen.getByTestId('nav-item-convert'));
     expect(await screen.findByText('convert.title', {}, { timeout: 10000 })).toBeInTheDocument();
   }, 20000);
+
+  it('opens the permanent drawer condensed with icon-only nav rows', async () => {
+    renderApp();
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+    const drawerItem = screen.getByTestId('nav-item-convert');
+    expect(within(drawerItem).queryByText('nav.convert')).not.toBeInTheDocument();
+    fireEvent.mouseOver(drawerItem);
+    expect((await screen.findByRole('tooltip')).textContent).toBe('nav.convert');
+  });
 
   it('stores log messages received from the main process', async () => {
     renderApp();
@@ -91,8 +99,8 @@ describe('App', () => {
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     const menuButton = document.querySelector('[data-icon="bars"]')!.closest('button')!;
     fireEvent.click(menuButton);
-    fireEvent.click(screen.getAllByText('nav.convert')[0]);
-    expect(await screen.findByText('convert.title')).toBeInTheDocument();
+    fireEvent.click(await screen.findByTestId('nav-item-convert', {}, { timeout: 10000 }));
+    expect(await screen.findByText('convert.title', {}, { timeout: 10000 })).toBeInTheDocument();
   });
 
   it('shows a red blip on the audio-extract nav item while an extraction is running', async () => {
