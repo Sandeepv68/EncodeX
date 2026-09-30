@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import path from 'path';
+import { COVERAGE_INCLUDE, COVERAGE_EXCLUDE } from './vitest.coverage-scope';
 
 export default defineConfig({
   resolve: {
@@ -22,21 +23,9 @@ export default defineConfig({
     maxWorkers: 6,
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'lcov', 'html'],
-      include: ['src/**/*.ts', 'src/**/*.tsx'],
-      exclude: [
-        'src/**/*.d.ts',
-        'src/**/__tests__/**',
-        'src/**/*.{test,spec}.{ts,tsx}',
-        'src/test-utils/**',
-        'src/test-setup.ts',
-        'src/test-setup.crash.ts',
-        'src/**/*.styles.ts',
-        'src/renderer/i18n/**',
-        'src/renderer/index.html',
-        'src/renderer/global.css',
-        'src/renderer/main.tsx',
-      ],
+      reporter: ['text', 'lcov', 'html', 'json', 'json-summary'],
+      include: COVERAGE_INCLUDE,
+      exclude: COVERAGE_EXCLUDE,
       thresholds: {
         statements: 85,
         branches: 75,

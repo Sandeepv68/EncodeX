@@ -1,6 +1,72 @@
 import { describe, it, expect } from 'vitest';
-import { buildRemuxPlan, buildAndValidateRemuxPlan } from '../remux-utils';
+import { buildRemuxPlan, buildAndValidateRemuxPlan, buildPrimaryStreamMaps } from '../remux-utils';
 import { ErrorCode } from '../errors';
+import { ATTACHED_PIC_DISPOSITION } from '../transcoder-constants';
+import type { MediaStreamInfo } from '../types';
+
+/**
+ * Builds a minimal MediaStreamInfo.
+ * @param {Partial<MediaStreamInfo>} overrides - Fields to set on the fixture.
+ * @returns {MediaStreamInfo} A stream the mapper accepts.
+ */
+function stream(overrides: Partial<MediaStreamInfo>): MediaStreamInfo {
+  return { index: 0, type: 'video', codec: 'h264', ...overrides };
+}
+
+describe('buildPrimaryStreamMaps', () => {
+  it('maps each stream to its per-type ordinal', () => {
+    const maps = buildPrimaryStreamMaps([
+      stream({ index: 0, type: 'video' }),
+      stream({ index: 1, type: 'audio', codec: 'aac' }),
+      stream({ index: 2, type: 'video' }),
+    ]);
+    expect(maps).toEqual(['0:v:0', '0:a:0', '0:v:1']);
+  });
+
+  it('drops attached_pic cover art and closes the ordinal gap', () => {
+    const maps = buildPrimaryStreamMaps([
+      stream({ index: 0, type: 'video' }),
+      stream({ index: 1, type: 'video', disposition: [ATTACHED_PIC_DISPOSITION] }),
+      stream({ index: 2, type: 'audio', codec: 'aac' }),
+    ]);
+    // The cover art must not appear, and the second real video must be v:1,
+    // not v:2 - a gap would emit an "index out of range" FFmpeg error.
+    expect(maps).toEqual(['0:v:0', '0:a:0']);
+  });
+
+  it('keeps streams whose disposition is default or forced_default', () => {
+    const maps = buildPrimaryStreamMaps([
+      stream({ index: 0, type: 'video', disposition: ['default'] }),
+      stream({ index: 1, type: 'audio', codec: 'aac', disposition: ['forced_default'] }),
+    ]);
+    expect(maps).toEqual(['0:v:0', '0:a:0']);
+  });
+
+  it('skips cover art wherever it sits in the stream order', () => {
+    const maps = buildPrimaryStreamMaps([
+      stream({ index: 0, type: 'video', disposition: [ATTACHED_PIC_DISPOSITION] }),
+      stream({ index: 1, type: 'video', disposition: ['default'] }),
+    ]);
+    // The kept stream carries a disposition of its own, so this also fails if
+    // the skip test ever degrades into "skip anything with a disposition".
+    expect(maps).toEqual(['0:v:0']);
+  });
+
+  it('does not let cover art consume an audio ordinal', () => {
+    const maps = buildPrimaryStreamMaps([
+      stream({ index: 0, type: 'audio', codec: 'aac' }),
+      stream({ index: 1, type: 'audio', codec: 'aac', disposition: [ATTACHED_PIC_DISPOSITION] }),
+      stream({ index: 2, type: 'audio', codec: 'aac' }),
+    ]);
+    expect(maps).toEqual(['0:a:0', '0:a:1']);
+  });
+
+  it('omits subtitles only when includeSubtitles is false', () => {
+    const streams = [stream({ index: 0, type: 'video' }), stream({ index: 1, type: 'subtitle', codec: 'subrip' })];
+    expect(buildPrimaryStreamMaps(streams)).toEqual(['0:v:0', '0:s:0']);
+    expect(buildPrimaryStreamMaps(streams, false)).toEqual(['0:v:0']);
+  });
+});
 
 describe('buildRemuxPlan', () => {
   it('derives the output path from the container', () => {
@@ -85,11 +151,11 @@ describe('buildRemuxPlan', () => {
 });
 
 describe('buildAndValidateRemuxPlan', () => {
-  const streams = [
+  const streams: MediaStreamInfo[] = [
     { index: 0, type: 'video', codec: 'h264' },
     { index: 1, type: 'audio', codec: 'aac' },
     { index: 2, type: 'subtitle', codec: 'subrip' },
-  ] as const;
+  ];
 
   function capturedError(fn: () => unknown): { code?: string; message?: string } {
     try {

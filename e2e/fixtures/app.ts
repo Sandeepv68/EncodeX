@@ -35,7 +35,19 @@ export interface LaunchOptions {
   env?: NodeJS.ProcessEnv;
 }
 
-export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}, terms: 'accept' | 'show' = 'accept'): NodeJS.ProcessEnv {
+/**
+ * Builds the environment for a launched app.
+ *
+ * Returns `Record<string, string>`, not `NodeJS.ProcessEnv`: Playwright types
+ * `launch({ env })` as a plain string map, and an inherited `undefined` is
+ * meaningless to a child process anyway. Entries whose value is `undefined`
+ * are dropped here rather than handed to Electron as the string "undefined".
+ * @param {boolean} mock - Whether to enable the mock transcode path.
+ * @param {NodeJS.ProcessEnv} [extra] - Variables merged over the inherited env.
+ * @param {'accept' | 'show'} [terms] - Terms-gate state for the child.
+ * @returns {Record<string, string>} The child process environment.
+ */
+export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}, terms: 'accept' | 'show' = 'accept'): Record<string, string> {
   const env: NodeJS.ProcessEnv = { ...process.env };
   if (mock) {
     env.ENCODEX_TEST_MODE = '1';
@@ -47,7 +59,11 @@ export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}, terms: 'a
   } else {
     delete env.ENCODEX_TERMS_GATE;
   }
-  return { ...env, ...extra };
+  const merged: Record<string, string> = {};
+  for (const [key, value] of Object.entries({ ...env, ...extra })) {
+    if (value !== undefined) merged[key] = value;
+  }
+  return merged;
 }
 
 /**

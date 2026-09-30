@@ -125,8 +125,6 @@ interface TripwireState {
   records: CrashRecord[];
   /** Declared-by-the-test allowances, reset per test. */
   expected: Array<{ kind: CrashKind; pattern: RegExp }>;
-  /** True when `ENCODEX_STRICT_TESTS=1`; promotes console warnings to fatal. */
-  strict: boolean;
   /** Records dropped in `beforeEach` that arrived after the previous test ended. */
   stale: number;
   /** Capped, cycle-safe recorder shared by the listeners and console wrappers. */

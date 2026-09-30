@@ -62,9 +62,12 @@ describe('embedded MCP HTTP server', () => {
     await transport.close();
     const names = tools.tools.map((t) => t.name);
     expect(names).toEqual(expect.arrayContaining(['ping', 'convert_media', 'get_queue_state', 'get_system_info', 'cancel_all_jobs']));
-    const text = (pong.content ?? [])
-      .filter((c: { type?: string }) => c.type === 'text')
-      .map((c: { text: string }) => c.text)
+    // Narrowed for the same reason as the stdio integration test: the SDK's
+    // `content` union does not survive `?? []` as anything but `{}`.
+    const blocks = (pong.content ?? []) as Array<{ type?: string; text?: string }>;
+    const text = blocks
+      .filter((c) => c.type === 'text')
+      .map((c) => c.text ?? '')
       .join('');
     expect(JSON.parse(text)).toEqual({ pong: true });
   }, 20000);

@@ -64,21 +64,32 @@ describe('clampMcpPort', () => {
   });
 });
 
+/**
+ * `sanitizeMcpSettings` is fed untyped JSON read off disk, so these specs hand
+ * it values its own signature forbids - that is the behaviour under test, not a
+ * mistake in the fixture. The cast is confined here.
+ * @param {Record<string, unknown>} raw - Deliberately ill-typed settings.
+ * @returns {McpSettings} The sanitized result.
+ */
+function sanitizeGarbage(raw: Record<string, unknown>): McpSettings {
+  return sanitizeMcpSettings(raw as Partial<McpSettings>);
+}
+
 describe('sanitizeMcpSettings', () => {
   it('treats only a literal true as enabled', () => {
     expect(sanitizeMcpSettings({ enabled: true }).enabled).toBe(true);
-    expect(sanitizeMcpSettings({ enabled: 'yes' }).enabled).toBe(false);
-    expect(sanitizeMcpSettings({ enabled: 1 }).enabled).toBe(false);
+    expect(sanitizeGarbage({ enabled: 'yes' }).enabled).toBe(false);
+    expect(sanitizeGarbage({ enabled: 1 }).enabled).toBe(false);
     expect(sanitizeMcpSettings({}).enabled).toBe(false);
   });
 
   it('clamps invalid ports and keeps string tokens', () => {
-    const s = sanitizeMcpSettings({ enabled: true, port: 8, token: 'secret' });
+    const s = sanitizeGarbage({ enabled: true, port: 8, token: 'secret' });
     expect(s).toEqual({ enabled: true, port: MCP_DEFAULT_PORT, token: 'secret' });
   });
 
   it('normalizes a non-string token to empty', () => {
-    expect(sanitizeMcpSettings({ token: 42 }).token).toBe('');
+    expect(sanitizeGarbage({ token: 42 }).token).toBe('');
   });
 });
 

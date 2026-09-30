@@ -87,6 +87,10 @@ async function generateFixtures(dir: string): Promise<void> {
 async function startServer(): Promise<{ client: Client; transport: StdioClientTransport; stderr: string }> {
   const transport = new StdioClientTransport({ command: process.execPath, args: [DIST_MCP], stderr: 'pipe' });
   let stderr = '';
+  // `stderr` is `Readable | null` in the SDK's types even though `stderr: 'pipe'`
+  // above guarantees it. Assert it rather than `!` so a future SDK change that
+  // drops the pipe fails here with a sentence instead of a TypeError.
+  if (!transport.stderr) throw new Error('StdioClientTransport did not expose a stderr stream despite stderr: "pipe"');
   transport.stderr.on('data', (d: Buffer) => {
     stderr += d.toString();
     if (stderr.length > 4096) stderr = stderr.slice(-4096);
@@ -114,9 +118,12 @@ async function callTool(client: Client, name: string, args: Record<string, unkno
  */
 async function callToolRaw(client: Client, name: string, args: Record<string, unknown>): Promise<any> {
   const result = await client.callTool({ name, arguments: args });
-  const text = (result.content ?? [])
-    .filter((c: { type?: string }) => c.type === 'text')
-    .map((c: { text: string }) => c.text)
+  // The SDK types `content` as a heterogeneous block union that `?? []` widens
+  // to `{}`; narrow it to the text shape this helper actually consumes.
+  const blocks = (result.content ?? []) as Array<{ type?: string; text?: string }>;
+  const text = blocks
+    .filter((c) => c.type === 'text')
+    .map((c) => c.text ?? '')
     .join('');
   return JSON.parse(text);
 }

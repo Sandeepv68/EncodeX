@@ -58,6 +58,8 @@ const { FfmpegCore } = await import('../ffmpeg-core');
 type Cmd = {
   on: ReturnType<typeof vi.fn>;
   ffprobe: ReturnType<typeof vi.fn>;
+  /** Spied on to assert the per-input `-itsoffset` for additional inputs. */
+  _currentInput: { options: ReturnType<typeof vi.fn> };
   [key: string]: unknown;
 };
 

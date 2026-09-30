@@ -186,8 +186,23 @@ describe('resolveRemuxMaps', () => {
   });
 
   it('skips existing cover-art streams in the default selection', () => {
-    const withCover = streams({ type: 'video', codec: 'mjpeg', disposition: 'attached_pic' }, { type: 'video', codec: 'h264' });
+    // `MediaStreamInfo.disposition` is `string[]`, not `string`. The bare
+    // string that used to sit here still made this pass, because
+    // `'attached_pic'.includes('attached_pic')` is true - substring matching on
+    // a string standing in for the array-membership check the code performs.
+    // The disposition rules themselves are pinned in
+    // `src/shared/__tests__/remux-utils.test.ts`, where a two-video fixture can
+    // also tell the value check apart from "take the first video".
+    const withCover = streams({ type: 'video', codec: 'mjpeg', disposition: ['attached_pic'] }, { type: 'video', codec: 'h264' });
     expect(resolveRemuxMaps(withCover, {})).toEqual(['0:v:0']);
+  });
+
+  it('keeps a video whose only disposition is default', () => {
+    // Catches the `if (stream.disposition) continue` shape: ffmpeg marks
+    // ordinary tracks `default`, so dropping every stream that has any
+    // disposition would silently empty the default selection.
+    const withDefault = streams({ type: 'video', disposition: ['default'] }, { type: 'audio' });
+    expect(resolveRemuxMaps(withDefault, {})).toEqual(['0:v:0', '0:a:0']);
   });
 
   it('passes explicit --map specs through', () => {

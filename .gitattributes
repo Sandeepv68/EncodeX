@@ -1,0 +1,13 @@
+# Normalize line endings so the worktree matches the index and Prettier's
+# `endOfLine: lf`.
+#
+# Without this, `core.autocrlf=true` rewrites files to CRLF on checkout on
+# Windows while the index and Prettier both expect LF. The result is a blocking
+# `npm run format:check` failure on files nobody edited, plus phantom
+# modifications in `git status` that show an empty `git diff`. That is not
+# cosmetic: it makes it impossible to tell a real edit from line-ending noise
+# when reviewing a diff.
+#
+# `text=auto` leaves binary assets (PNGs, fonts, media fixtures) alone; the repo
+# has no files that need an explicit override.
+* text=auto eol=lf

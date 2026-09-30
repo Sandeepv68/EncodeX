@@ -5,6 +5,7 @@ import * as path from 'path';
 import { FileQueuePersistence, QUEUE_STATE_FILENAME, QUEUE_STATE_VERSION } from '../queue/persistence';
 import { cancelledError } from '../../shared/errors';
 import { QueueJob } from '../../shared/types';
+import type { AppError, ConversionOptions } from '../../shared/types';
 
 vi.mock('../transcoders/ffmpeg-core', () => {
   const { EventEmitter } = require('events');
@@ -668,21 +669,88 @@ describe('JobQueue', () => {
       expect(demux.options).toEqual({ copy: false, video: false, audio: false, map: ['0:s:0'], subtitleCodec: 'srt' });
     });
 
+    /**
+     * Options that only mean something when they survive to the ffmpeg command
+     * line. `additionalInputs`, `map`, and `hwaccelMode` are the fields a plain
+     * `toEqual` on the saved blob proves nothing about: `FileQueuePersistence`
+     * stringifies the whole snapshot and `load()` blind-casts it back, so
+     * `JSON.parse(JSON.stringify(x))` always equals `x`.
+     */
+    const ADDITIVE_OPTIONS: ConversionOptions = {
+      videoCodec: 'libx264',
+      copy: true,
+      map: ['0:v:0', '1:v:0'],
+      additionalInputs: [{ path: 'cover.png', map: ['2:0'], disposition: 'attached_pic' }],
+      chaptersFile: '/media/chapters.txt',
+      copyChapters: true,
+      hardwareAcceleration: true,
+      hwaccelMode: 'auto',
+    };
+
     it('round-trips additive multi-input options through a save/load cycle', () => {
       queue = new JobQueue({ persistence });
-      const options = {
-        videoCodec: 'libx264',
-        copy: true,
-        map: ['0:v:0', '1:v:0'],
-        additionalInputs: ['cover.png'],
-        chapters: 0,
-        hardwareAcceleration: true,
-        hwaccelMode: 'auto',
-      } as QueueJob['options'];
-      queue.addJob('in.mkv', 'out.mkv', options, 'FFMPEG');
+      queue.addJob('in.mkv', 'out.mkv', ADDITIVE_OPTIONS, 'FFMPEG');
       queue.flushState();
       const restored = new FileQueuePersistence(tempDir).load();
-      expect(restored?.jobs[0].options).toEqual(options);
+      expect(restored?.jobs[0].options).toEqual(ADDITIVE_OPTIONS);
+    });
+
+    it('hands the transcoder the same additive options after a restart', () => {
+      // The assertion that actually has teeth. It walks the whole path a user
+      // hits after quitting mid-batch: persist, construct a *fresh* queue, let
+      // it restore, start it, and inspect what `convert` was called with. A
+      // `load()`-only round trip cannot fail on a field the app never reads.
+      queue = new JobQueue({ persistence });
+      queue.addJob('in.mkv', 'out.mkv', ADDITIVE_OPTIONS, 'FFMPEG');
+      queue.flushState();
+
+      const transcoders: ITranscoder[] = [];
+      const original = factory.createTranscoder;
+      vi.spyOn(factory, 'createTranscoder').mockImplementation((type) => {
+        const transcoder = original(type);
+        transcoders.push(transcoder);
+        return transcoder;
+      });
+
+      const revived = new JobQueue({ persistence });
+      expect(revived.getJobs()).toHaveLength(1);
+      revived.start();
+
+      expect(transcoders).toHaveLength(1);
+      const convert = (transcoders[0] as unknown as { convert: ReturnType<typeof vi.fn> }).convert;
+      expect(convert).toHaveBeenCalledTimes(1);
+      // `convert(input, output, options)` - options are the third argument.
+      expect(convert.mock.calls[0][0]).toBe('in.mkv');
+      expect(convert.mock.calls[0][1]).toBe('out.mkv');
+      expect(convert.mock.calls[0][2]).toMatchObject(ADDITIVE_OPTIONS);
+    });
+
+    it('ignores a snapshot written by an unknown state version', () => {
+      // Pinned deliberately: `loadPersistedState` reads `snapshot.concurrency`
+      // but never compares `snapshot.version` to `QUEUE_STATE_VERSION`, and
+      // `load()` returns `parsed as QueueSnapshot` after checking only
+      // `Array.isArray(jobs)`. This spec documents the current behaviour so the
+      // gap is visible rather than assumed; if version enforcement lands, this
+      // is the spec that must go red.
+      persistence.save({
+        version: QUEUE_STATE_VERSION + 99,
+        concurrency: 1,
+        jobs: [
+          {
+            id: 'a',
+            input: 'from-the-future.mp4',
+            output: 'from-the-future_out.mp4',
+            options: {},
+            transcoder: 'FFMPEG',
+            status: 'queued',
+            progress: 0,
+            createdAt: 1,
+          },
+        ],
+      });
+      queue = new JobQueue({ persistence });
+      // Currently restored. Should be `[]` once the version is enforced.
+      expect(queue.getJobs().map((j) => j.input)).toEqual(['from-the-future.mp4']);
     });
 
     it('flushState writes the current jobs to disk', () => {
@@ -764,7 +832,10 @@ describe('JobQueue', () => {
       (transcoders[index] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('end');
     }
 
-    function failWith(index: number, err: Error): void {
+    // `AppError` is a plain `{ code, message, timestamp }` object, not an `Error`
+    // subclass, and a cancelled job really does surface as one. Typing this
+    // helper `Error` only was a lie the compiler was kind enough to catch.
+    function failWith(index: number, err: Error | AppError): void {
       (transcoders[index] as unknown as { emitter: NodeJS.EventEmitter }).emitter.emit('error', err);
     }
 

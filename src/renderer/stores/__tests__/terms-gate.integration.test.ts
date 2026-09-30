@@ -61,7 +61,10 @@ function installEnvironment(): { rejectTerms: ReturnType<typeof vi.fn> } {
 
   const api = (window as { electronAPI?: { rejectTerms?: unknown } }).electronAPI;
   if (typeof api?.rejectTerms !== 'function') {
-    (window as { electronAPI: { rejectTerms: ReturnType<typeof vi.fn> } }).electronAPI = { rejectTerms: vi.fn() };
+    // The bridge is optional and only present with a real preload; replace it
+    // wholesale, which needs the `unknown` hop because `Window.electronAPI` is
+    // the full typed bridge and this stub is one method of it.
+    (window as unknown as { electronAPI: { rejectTerms: ReturnType<typeof vi.fn> } }).electronAPI = { rejectTerms: vi.fn() };
   }
   return { rejectTerms: (window as unknown as { electronAPI: { rejectTerms: ReturnType<typeof vi.fn> } }).electronAPI.rejectTerms };
 }

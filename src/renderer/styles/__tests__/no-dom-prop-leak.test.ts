@@ -34,6 +34,23 @@ function collectStyleModules(dir: string): string[] {
   });
 }
 
+/**
+ * One `styled()` call that declares `$`-prefixed props without a
+ * `shouldForwardProp` to strip them.
+ *
+ * This type was referenced but never declared - the guard had never been
+ * typechecked, which is precisely the gap `tsconfig.test.json` closes. It is
+ * the reason the plan insists that every guard gets a compile as well as a
+ * runtime check.
+ * @interface Violation
+ * @property {string[]} props - The transient prop names found on the call.
+ * @property {number} line - 1-based source line of the `styled()` call.
+ */
+interface Violation {
+  readonly props: string[];
+  readonly line: number;
+}
+
 interface StyleModule {
   /** Path relative to the styles directory, for readable failure output. */
   readonly name: string;

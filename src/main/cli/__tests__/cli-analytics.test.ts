@@ -131,7 +131,10 @@ describe('runRemux analytics', () => {
   });
 
   it('reports the failure code and rethrows', async () => {
-    runPreparedMock.mockRejectedValueOnce(createError(ErrorCode.TRANSCODE_FAILED, 'boom'));
+    // `ErrorCode.TRANSCODE_FAILED` never existed, so this used to reject with a
+    // code of `undefined` and then assert `undefined` equalled `undefined` -
+    // green, and checking nothing. The real code is `CONVERSION_FAILED`.
+    runPreparedMock.mockRejectedValueOnce(createError(ErrorCode.CONVERSION_FAILED, 'boom'));
     await expect(
       runRemux({
         input: SOURCE,
@@ -142,7 +145,7 @@ describe('runRemux analytics', () => {
       }),
     ).rejects.toThrow('boom');
 
-    expect(eventsNamed('remux_failed')).toEqual([{ container: 'mp4', code: ErrorCode.TRANSCODE_FAILED }]);
+    expect(eventsNamed('remux_failed')).toEqual([{ container: 'mp4', code: ErrorCode.CONVERSION_FAILED }]);
     expect(eventsNamed('remux_completed')).toEqual([]);
   });
 
@@ -180,7 +183,7 @@ describe('runDemux analytics', () => {
   });
 
   it('reports the failure code of the first failing target and rethrows', async () => {
-    runPreparedMock.mockRejectedValueOnce(createError(ErrorCode.TRANSCODE_FAILED, 'boom'));
+    runPreparedMock.mockRejectedValueOnce(createError(ErrorCode.CONVERSION_FAILED, 'boom'));
     await expect(
       runDemux({
         input: SOURCE,
@@ -193,7 +196,7 @@ describe('runDemux analytics', () => {
 
     expect(runPreparedMock).toHaveBeenCalledTimes(1);
     expect(eventsNamed('demux_failed')).toEqual([
-      { kindCounts: { video: 1, audio: 1, subtitle: 1 }, streamCount: 3, convertedKinds: [], code: ErrorCode.TRANSCODE_FAILED },
+      { kindCounts: { video: 1, audio: 1, subtitle: 1 }, streamCount: 3, convertedKinds: [], code: ErrorCode.CONVERSION_FAILED },
     ]);
     expect(eventsNamed('demux_completed')).toEqual([]);
   });

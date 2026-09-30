@@ -5,6 +5,7 @@ import BatchControls from '../BatchControls';
 import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
+import type { WhenDoneConfig } from '../../../shared/types';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 function renderControls(
@@ -15,7 +16,7 @@ function renderControls(
     hasRunning?: boolean;
     hasQueued?: boolean;
     hasActive?: boolean;
-    whenDone?: { enabled: boolean; action: string; force: boolean };
+    whenDone?: WhenDoneConfig;
     hardwareAccelAlert?: boolean;
   } = {},
 ) {

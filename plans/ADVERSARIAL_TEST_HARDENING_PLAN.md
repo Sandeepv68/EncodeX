@@ -16,14 +16,20 @@
 | 0.1b Tripwire self-tests | **DONE** | 19/19 in `src/test-utils/__tests__/crash-tripwire.test.ts` |
 | 0.1c DOM prop-leak AST guard | **DONE** | `src/renderer/styles/__tests__/no-dom-prop-leak.test.ts`, 47 style modules |
 | 0.2 E2E renderer tripwire | **DONE** | Tier A 154/154 (2 skipped), Tier B 9/9; `npm run lint` 0 errors; `npm run typecheck` clean; `npm run format:check` clean |
-| 0.3 Hostile-window / sandbox escape | TODO | — |
-| 0.4 Corrupted-media matrix | TODO | — |
-| 0.5 Race / concurrency stress | TODO | — |
-| 0.6 i18n, a11y, extreme window sizes | TODO | — |
-| 0.7 CLI / MCP / destructive paths | TODO | — |
-| 0.8 Updater rollback & signature matrix | TODO | — |
-| 0.9 Mutation testing & coverage ratchet | TODO | — |
-| 0.10 CI gates & nightly adversarial run | TODO | — |
+| 0.3 Typecheck the tests | **DONE** | 191 test files in program; 54 real errors fixed, 0 remain; `npm run typecheck` clean (5 projects, 38s); 2686/2686 unit, Tier A 154/154, Tier B 9/9 |
+| 0.4 Coverage: per-file floors + diff coverage | **DONE** | Merged 2-tier report (220 files, **30 below the 80/70 candidate floor**, non-blocking); blocking diff gate with added-line coverage; 4 merge/scope bugs found and fixed |
+| 0.5 Flake governance | TODO | — |
+| 0.6 Housekeeping debt | PARTIAL | `.gitattributes` (`* text=auto eol=lf`) landed in 0.4; `perf/**` + `eslint-rules/**` globs and the boot-time budget still TODO |
+| 1 Contract & input fuzzing | TODO | — |
+| 2 Media / byte-level fuzzing | TODO | — |
+| 3 IPC contract & abuse | TODO | — |
+| 4 State machines, lifecycle & races | TODO | — |
+| 5 UI robustness, i18n & a11y | TODO | — |
+| 6 CLI & MCP hostile input | TODO | — |
+| 7 Updater & network hostility | TODO | — |
+| 8 Resource limits & denial-of-service | TODO | — |
+| 9 Mutation testing | TODO | — |
+| 10 CI wiring, budgets & nightly chaos | TODO | — |
 
 ### Bugs the tripwire found (all fixed in the same change that surfaced them)
 
@@ -75,7 +81,8 @@ cannot fail is worse than no guard.
   (`e2e/fixtures/allowed-errors.json`, kind `consoleWarn`, review 2026-12-29) with the reason
   recorded. Proper fix is to move the policy to `session.webRequest.onHeadersReceived`, which
   the advisory *can* see; deferred because it changes how the preload bridge and custom
-  `aptabase-ipc` scheme are allowed, and that is Phase 0.3 work.
+  `aptabase-ipc` scheme are allowed; deferred as an open follow-up rather than a phase item,
+  because it touches the preload bridge and the custom scheme allowlist together.
 - `aptabase-ipc://trackEvent` reports `net::ERR_ABORTED` on teardown in Tier B. Recorded as a
   non-fatal `netfail`; it is the analytics call losing its race with window close, not a defect,
   but it means Tier B output always carries a tripwire warning. Worth a look when the analytics
@@ -84,6 +91,14 @@ cannot fail is worse than no guard.
   per full unit run under load and passes in isolation (~72 s alone vs ~92 s in-suite). The
   30 s `waitFor` budget is too tight for a 40-test file on a loaded machine. This is exactly the
   F10 flake-governance problem, deferred to Phase 0.5 rather than patched ad hoc here.
+- `tsconfig.renderer.json` excludes with `**/*.{test,spec}.{ts,tsx}`, which TypeScript does not
+  expand — the pattern matches nothing. The project is saved from actually typechecking its whole
+  suite only by the working `**/__tests__/**` entry beside it. One test file sits outside
+  `__tests__/` and so *was* in the renderer program by accident:
+  `src/renderer/hooks/usePreviewThumbnail.test.ts`. `tsconfig.test.json` now covers it
+  deliberately. Inert today (0 errors either way), so the broken pattern is folded into Phase
+  0.6 housekeeping rather than fixed here; leaving it is a trap, because the next spec written
+  at `src/renderer/<area>/<name>.test.tsx` will silently re-enter the renderer typecheck.
 
 ---
 
@@ -95,7 +110,7 @@ These are facts about the repo as of `b12f386`, not hypotheticals. Each maps to 
 |---|---|---|
 | F1 | **Zero** e2e specs attach `page.on('pageerror')` or `page.on('console')` (`e2e/**` grep: 0 hits). A renderer that throws on every mount still passes all 14 Tier A specs. | Critical — the whole GUI surface is unguarded. |
 | F2 | `src/test-setup.ts` installs no `unhandledrejection` / `error` listener. jsdom swallows renderer-side async throws; they never fail the test. | Critical — silent green tests. |
-| F3 | All three `tsconfig.*.json` **exclude every test file**, so ~29,300 lines of test code are never typechecked. | High — tests compile only by luck. |
+| F3 | The `tsconfig.*.json` projects **exclude every test file**, so ~29,300 lines of test code are never typechecked. | High — tests compile only by luck. |
 | F4 | Coverage gates are global only (85/75/80/85). No per-file floor, no diff coverage. A new 600-line file at 0% passes if the global average holds. | High. |
 | F5 | E2E "skips" real main-process IPC entirely: 13 of 14 specs use `e2e/mocks/preload.js` (a JS reimplementation of the bridge). The mock and `src/preload/index.ts` drift silently. | High — the real preload/main contract is untested in CI. |
 | F6 | No property-based, fuzz, or mutation testing anywhere. `frame-decoder.ts` (433 lines of raw `Buffer` parsing), `ffprobe-mapper.ts`, `queue-transfer.ts`, and `image-info.ts` are hand-tested only. | High. |
@@ -189,7 +204,7 @@ Verified: a temporary `throw new Error('ADVERSARIAL-TRIPWIRE-PROBE')` in
 Tier A 154/154 (2 skipped) and Tier B 9/9 green with the tripwire active. B8 and B9 came out of
 this phase.
 
-### 0.3 Typecheck the tests — new `tsconfig.test.json`
+### 0.3 Typecheck the tests — new `tsconfig.test.json` — **DONE**
 
 - `extends: ./tsconfig.json`, `include: ['src/**/*.{test,spec}.{ts,tsx}', 'e2e/**/*.ts', 'perf/**/*.ts']`,
   `types: ['vitest/globals', 'node']`, `noEmit: true`, `paths: { '@shared/*': ['src/shared/*'] }`.
@@ -198,14 +213,214 @@ this phase.
 - Add a separate, non-blocking `tsconfig.e2e.json` for `e2e/` (CommonJS `require` in
   `e2e/mocks/*.js` is fine since those stay `.js`).
 
+**As built, with the deviations that actually happened:**
+
+| Decision | Draft said | Built | Why |
+|---|---|---|---|
+| `tsconfig.test.json` include | brace globs | explicit `*.test.ts`, `*.test.tsx`, `*.spec.ts`, `*.spec.tsx` | TypeScript does not expand `{a,b}` in `include`/`exclude`. The drafted pattern matched **0 of 191** test files, so the first `tsc` run "passed" with an empty program. A file comment in the config records the trap. |
+| Ambient declarations | not mentioned | included `electron-api`, `vite-env`, `mui`, `simple-icons`, `ffprobe-static` `.d.ts` explicitly | Without them the run reports **450** errors, nearly all ambient-type-not-found noise, which hides the 54 real ones. |
+| `@shared/*` paths | add to base config | not added | `@shared` has zero TypeScript imports repo-wide. Adding a path mapping for an alias nothing uses is cargo-culting. |
+| `perf/**` | in `include` | left out, routed to 0.6 | The body already assigns `perf/**` its own `tsconfig.perf.json` in 0.6; duplicating it here would create two homes for one job. |
+| `tsconfig.e2e.json` | separate, **non-blocking** | separate **and chained** into `npm run typecheck` | It surfaced 14 real e2e errors; all 14 were fixed rather than allowlisted, so there was nothing left to be non-blocking about. The whole 5-project chain runs in 38 s, well inside the `typecheck` job's 10 min budget. Revert the chain if e2e-only type rot later turns noisy. |
+
+**Result:** 191 test files enter the program, 54 real errors, 0 remaining. `npm run typecheck`
+now covers renderer + main + preload + test + e2e. `tsconfig.main.json` was already correct
+(explicit `**/*.test.ts` / `**/*.spec.ts`, 0 test files in its program) and was left alone.
+
+#### What the typecheck found: tests that asserted nothing
+
+The phase surfaced **no production defects**. What it surfaced was worse in a way — a set of
+tests that were green because they could not fail. These are the same disease as the `no-dom-prop-leak`
+guard that "passed while the bug was present", so each is listed with why it was green:
+
+- **`cli-remux.test.ts` passed a type-invalid disposition fixture.** `MediaStreamInfo.disposition`
+  is `string[]`; the fixture passed the bare string `'attached_pic'`. It went green *by accident of
+  JS semantics*: `'attached_pic'.includes('attached_pic')` is true, so the production
+  `disposition?.includes(ATTACHED_PIC_DISPOSITION)` still fired. The test did reach the real code
+  path, so this was weaker than the other entries here — but the fixture was only ever valid
+  because nobody was typechecking, and `buildPrimaryStreamMaps` (which the GUI, CLI, and MCP all
+  share) had **no direct coverage at all**.
+  **Hardened:** direct `describe('buildPrimaryStreamMaps')` block in
+  `src/shared/__tests__/remux-utils.test.ts` pinning ordinal numbering, cover-art position
+  independence, and audio-ordinal isolation — plus the case that actually earns the test: a video
+  whose disposition is `['default']` or `['forced_default', 'default']` must **survive**, which
+  separates the real value check from the mutant `if (stream.disposition) continue`. ffmpeg marks
+  ordinary tracks `default`/`forced_default` routinely, so that mutant would empty the default
+  stream selection for real files, and the old two-video fixture could not see it.
+  *Correction to an earlier draft of this note:* I first wrote that the old spec "would have kept
+  passing if the real check were deleted." That was wrong. `buildPrimaryStreamMaps` maps **every**
+  stream with a per-type ordinal, so deleting the check yields `['0:v:0', '0:v:1']` and the old
+  assertion did fail. The real gap was the disposition-*value* check, not the skip's existence.
+- **`cli-analytics.test.ts` compared against a nonexistent enum member.** Three specs asserted
+  `ErrorCode.TRANSCODE_FAILED`, which does not exist, so both sides were `undefined`:
+  `expect(undefined).toBe(undefined)`. Now `ErrorCode.CONVERSION_FAILED`, and the emitted
+  `remux_failed` / `demux_failed` event carries `isAppError(err) ? err.code : undefined`, so the
+  assertion has real content on both sides. Verified: stubbing that expression to `code: undefined`
+  turns the remux spec red.
+- **`job-queue.test.ts` round-tripped a fixture through fields that do not exist.** The "preserves
+  options" spec used `chapters` and typed `additionalInputs` as a string. Because the round trip is
+  a `JSON.parse`/`stringify` of a bag, the unknown keys came back out anyway, so dropping the fields
+  the production code actually reads changed nothing the test could see.
+  **Hardened:** even with real field names, `expect(restored.jobs[0].options).toEqual(options)` only
+  proves `JSON.parse(JSON.stringify(x))` works — `save()` stringifies the whole snapshot and
+  `load()` returns it with a blind cast. Added a second spec that closes the loop the user actually
+  hits: persist, construct a **fresh** `JobQueue` so it restores, `start()` it, and assert on
+  `convert`'s arguments. Stubbing `save()` to strip `additionalInputs` turns it red.
+- **`profileStore.test.ts` claimed to load from `localStorage` on init** but there is no `init()` to
+  call — it `setState`d the same values it had just serialized, so `loadCustomProfiles()` was never
+  executed. The store builds `profiles: [...BUILTIN_PROFILES, ...loadCustomProfiles()]` at
+  **module scope**, so the only way to reach the real path is to seed storage and re-import.
+  **Hardened:** `importStore()` helper (`vi.resetModules()` + dynamic import) driving four specs — a
+  genuine load, the `builtin === false` + string `id`/`name` filter that keeps a corrupt
+  `encodex-custom-profiles` key from injecting junk profiles, corrupt-JSON fallback, and the
+  `MAX_RECENT` cap on `encodex-recent-profiles`. Verified: removing the filter, and removing the
+  `.slice(0, MAX_RECENT)`, each turn exactly one spec red.
+- **`terms-gate.integration.test.ts` cast `Window` to a bridge stub** without the `unknown` hop. Against
+  the real preload bridge that assignment throws at runtime; the cast was only "fine" because the test
+  supplies its own partial stub.
+- **`video-cut.spec.ts` did arithmetic on nullable `boundingBox()`.** Three unchecked calls; a timeline
+  handle that failed to render produced `TypeError: Cannot read properties of null` rather than a
+  sentence naming the handle. Replaced with a `boxOf(locator, label)` helper that throws a message.
+- **`buildEnv` in `e2e/fixtures/app.ts` returned `NodeJS.ProcessEnv`** where Playwright wants
+  `{ [key: string]: string }`. Now filters `undefined` entries instead of risking them reaching
+  Electron as the string `"undefined"`.
+- **`hwaccelMode: 'none'`** appeared in both a unit fixture and `batch.spec.ts`. `'none'` is not a
+  member of `HwAccelMode` (`'auto' | 'encode'`). It never reached production because it is a
+  test-only literal that the types correctly rejected and nobody was running the typecheck.
+  **Hardened:** `getHwAccelArgs` already had thorough unit coverage in
+  `src/main/transcoders/__tests__/hwaccel.test.ts`, including the auto-vs-encode-only split, so the
+  gap was narrower than it looked: nothing exercised the setting *from the batch side*.
+  `buildBatchOptions`' spec now walks all four `hardwareAcceleration` × `hwaccelMode` combinations
+  and asserts the resulting ffmpeg flags, so a `buildBatchOptions` that dropped the user's setting
+  can no longer hide behind a well-tested `getHwAccelArgs`. (The option passthrough itself was
+  already pinned by 11 existing `toEqual` specs — a mutation hardcoding
+  `hardwareAcceleration: false` turns all 12 red. The new spec's value is the end-to-end tie.)
+- **Dead `TripwireState.strict`** in `src/test-utils/crash-tripwire.ts` — declared on an interface no
+  producer ever set, so nothing caught it. Removed.
+
+#### Every one of these was verified negatively
+
+A green test that cannot go red is the whole problem, so each fix was mutation-tested: break the
+production code, confirm the spec fails, restore. **8/8 caught.**
+
+| # | Mutation | Specs that caught it |
+|---|---|---|
+| 1 | `buildPrimaryStreamMaps`: `if (stream.disposition) continue` | 2 (the ones the old suite could not see) |
+| 2 | `buildPrimaryStreamMaps`: drop the `attached_pic` skip | 3 |
+| 3 | `FileQueuePersistence.save`: strip `additionalInputs` | 2 |
+| 4 | `cli-remux`: `remux_failed` stops carrying `err.code` | 1 |
+| 5 | `loadPersistedState`: *hypothetical fix* enforcing `snapshot.version` | 1 (the gap pin — proves it is live, not decorative) |
+| 6 | `loadCustomProfiles`: stop filtering corrupt entries | 1 |
+| 7 | `loadRecentIds`: drop the `MAX_RECENT` slice | 1 |
+| 8 | `buildBatchOptions`: hardcode `hardwareAcceleration: false` | 12 |
+
+`npm run typecheck` 0 errors · `npm run lint` 0 errors · `npm run format:check` clean ·
+2698/2698 unit tests (was 2686; +12 new).
+
+#### B10: the queue snapshot version is written but never enforced
+
+Found while hardening the `job-queue` round-trip, and **not fixed here** — it is a production
+behaviour change, not a typecheck fix, so it needs its own decision.
+
+- `QUEUE_STATE_VERSION` is written by `save()` and read by nothing. `load()` validates only
+  `Array.isArray(parsed.jobs)` and then returns `parsed as QueueSnapshot`; `loadPersistedState()`
+  pushes every entry straight into the queue.
+- Consequence: a `queue-state.json` left by an older or newer build — or hand-edited, or truncated
+  in a way that still parses as an object with a `jobs` array — is trusted wholesale. Jobs with
+  wrong-shaped `options` reach `createTranscoder` and spawn ffmpeg with garbage arguments, and there
+  is no migration or rejection path.
+- `ignores a snapshot written by an unknown state version` in `job-queue.test.ts` documents the
+  current behaviour *on purpose*: it asserts the future job **is** restored, so the day someone adds
+  enforcement that spec goes red and the change is deliberate rather than silent. Flipping it to
+  `toEqual([])` alongside the fix is the whole migration.
+- Fix sketch: in `loadPersistedState`, `if (snapshot.version !== QUEUE_STATE_VERSION) return;`, plus
+  a per-job shape guard (string `id`/`input`/`output`, known `transcoder`, object `options`) so a
+  single bad entry is dropped instead of the whole queue being trusted. Not done unilaterally.
+
+#### Housekeeping note for 0.6: `core.autocrlf` with no `.gitattributes`
+
+Mutating files during the negative verification and restoring them with `git checkout --` left six
+sources showing as modified in `git status` with **zero** changed lines in `git diff`. Cause: the
+repo has `core.autocrlf=true` and no `.gitattributes`, so git expects CRLF in the working tree while
+every blob is stored LF. `git checkout` normalises CRLF→LF, decides the file is unchanged, and
+leaves the CRLF bytes on disk. A `.gitattributes` with `* text=auto eol=lf` is the real fix; it
+touches every file's checkout behaviour, so it belongs in 0.6 rather than mid-phase.
+
+
 ### 0.4 Coverage: per-file floors + diff coverage
 
-- Add `coverage/thresholds.perFile: true` in a **non-blocking** mode first (run 1 week, publish a
-  report, read the list, then set the floor).
-- Add a `test:coverage:diff` job that only measures files touched by the PR and fails if their
-  coverage dropped or is below 80/70.
-- Un-exclude `src/main/**` and `src/preload/**` from v8 ignore hints if any exist; v8 coverage of
-  `src/main/index.ts` currently under-reports because most of it only runs inside Electron.
+**Status: DONE (2026-09-30).** The floor is published as a report rather than enforced by enforced by
+`thresholds.perFile`, and the diff gate is stricter than the original sketch in one respect: it
+checks the lines the diff *added*, not just the file's percentage.
+
+What was built:
+
+| Piece | Where | Behaviour |
+| --- | --- | --- |
+| Shared coverage scope | `vitest.coverage-scope.ts` | One include/exclude list imported by **both** vitest configs. A union of two reports is only meaningful if both tiers measured the same file set. |
+| Raw two-tier merge | `scripts/coverage-summary.mjs` | Unions `coverage-final.json` from `coverage/` and `coverage-integration/` via `istanbul-lib-coverage`. |
+| Per-file report | `scripts/coverage-floor-report.mjs` | `npm run test:coverage:perfile`. Always exits 0. |
+| Diff gate | `scripts/coverage-diff.mjs` | `npm run test:coverage:diff [base]`. Blocking. |
+| CI | `.github/workflows/ci.yml` | `coverage-per-file` (`continue-on-error`) and `coverage-diff` jobs. |
+
+**Both tiers must be measured, or the numbers lie.** The unit config excludes
+`**/*.integration.{test,spec}.ts`, so a unit-only report shows the CLI and MCP sources this tier
+exists to exercise as untested: `cli-batch.ts` 0.0%, `cli-info.ts` 0.0%, `mcp/http-server.ts` 3.2%.
+Merged, those are 83.1%, 80.9%, and 83.9% - the difference between inventing work and not. Nine
+files gain real coverage from the merge.
+
+**Baseline (merged, both tiers):** 220 files measured, **30 below the candidate 80 lines / 70
+branches floor**. The worst offenders are `src/mcp/index.ts` (0.0%), `src/mcp/run.ts` (11.1%), and
+`src/main/mcp/settings-ipc.ts` (36.8%). The first two are entry points that only execute inside a
+real MCP host, so 0% is expected rather than a gap. This is why the floor is a report and not
+`thresholds.perFile`: 30 files fail it today, so enforcing it would block every PR until all are
+addressed.
+
+**The gate is per-file floor *and* added-line coverage.** A per-file floor alone is too weak for the
+case that motivates it: adding eight untested lines to a 100%-covered file leaves it at ~86%, still
+above an 80% floor. The gate therefore also requires that every added line the provider recorded as
+a statement start was executed. Restricting to statement starts is what keeps it honest - braces,
+comments, and multi-line statement interiors are not statements and must not be reported as
+uncovered. Both directions were verified against `src/shared/remux-utils.ts`: an uncovered addition
+was rejected (lines 209, 210, 212, 213, 215 flagged; braces 211, 214, 216 correctly not), and a
+covered addition passed.
+
+Four bugs were found and fixed while building this, each of which would have shipped a gate that
+passed while reporting nonsense:
+
+1. **A percentage-only merge reported 0 violators.** The first implementation rebuilt an istanbul
+   map from `json-summary`'s covered/total pairs, inventing one statement per file. Every file came
+   out 100% and the gate reported "0 violators". Fixed by merging the raw `coverage-final.json`, and
+   `assertMergeIsSane` now asserts the merged file set equals the union of the input file sets and
+   that per-file covered-statement counts never fall below an input's.
+2. **`istanbul-lib-coverage` 3.2.2 mangles Windows keys.** It splits keys on `\` and `:`, so
+   `C:\src\a.ts` parses as a nested tree; `files()` then returns 222 garbage single-character
+   entries ('C', 's') instead of 220 files. Fixed by normalizing keys to repo-relative POSIX. The
+   per-file `path` field must be rewritten too, because `toJSON()` rebuilds keys from it.
+3. **The scoped run still enforced the global thresholds.** `vitest.config.ts` sets 85/75/80/85, and
+   `--coverage.include` does not disable them, so gating a single file failed on the *global* numbers
+   before the per-file floor was ever evaluated. The gate now zeroes the global thresholds.
+4. **`execFileSync('npx', ...)` cannot execute `npx.cmd`** without a shell, so the gate failed
+   instantly on Windows. It now runs `node_modules/vitest/vitest.mjs` through `process.execPath`.
+
+A first attempt at `assertMergeIsSane` asserted that a union cannot exceed its best input. That is
+false for *percentages*: v8 emits a different `statementMap` per run depending on which functions
+were loaded, so a file's line set is not stable across tiers and the union can legitimately land
+above both. The invariant now runs on absolute statement counts, which are stable.
+
+**Two config files must stay in step.** `vitest.integration.config.ts` had no `exclude` list, so the
+integration tier was measuring `src/mcp/__tests__/test-helpers.ts` and naming it an uncovered
+"source file". `test:coverage:diff` mirrors `COVERAGE_EXCLUDE` in an `UNCOVERABLE` list so it never
+gates a file that structurally cannot have a coverage number.
+
+**Housekeeping pulled forward from Phase 0.6.** Added `.gitattributes` with `* text=auto eol=lf`.
+`core.autocrlf=true` with no `.gitattributes` checked files out as CRLF while the index and Prettier
+(`endOfLine: lf`) both expect LF, which made the blocking `format-check` CI job fail on six files
+nobody had edited and showed phantom ` M` entries with an empty `git diff`. After this, those six
+files are `i/lf w/lf` and clean.
+
+Also un-excluded nothing: `src/main/**` and `src/preload/**` were already in scope, so that item
+needed no change.
 
 ### 0.5 Flake governance
 
@@ -477,7 +692,8 @@ Without this, all of Phases 1–8 can be theatre: assertions that pass regardles
 ### New CI jobs
 | Job | Gate |
 |---|---|
-| `typecheck:test` | Blocks. Phase 0.3 |
+| `typecheck:test` | Blocks. Phase 0.3. **Live** — chained into `npm run typecheck`, so CI's `typecheck` job gates it |
+| `typecheck:e2e` | Blocks. Phase 0.3. **Live** — chained into `npm run typecheck`; was drafted as non-blocking, but all 14 e2e errors were fixed rather than allowlisted |
 | `test-strict` | Blocks. Unit+integration with `ENCODEX_STRICT_TESTS=1` |
 | `test-fuzz` | Blocks. Phases 1 + 2, seeded corpus, 5 min budget |
 | `test-ipc-abuse` | Blocks. Phase 3, ubuntu + windows |

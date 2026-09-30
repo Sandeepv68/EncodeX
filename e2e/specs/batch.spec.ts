@@ -10,7 +10,7 @@ function makeJob(overrides: Partial<QueueJob>): QueueJob {
     id: 'job-1',
     input: '/media/clip_a.mp4',
     output: '/media/clip_a_converted.mp4',
-    options: { videoCodec: 'libx264', audioCodec: 'aac', hardwareAcceleration: false, hwaccelMode: 'none' },
+    options: { videoCodec: 'libx264', audioCodec: 'aac', hardwareAcceleration: false, hwaccelMode: 'auto' },
     transcoder: 'FFMPEG',
     status: 'queued',
     progress: 0,

@@ -5,6 +5,15 @@ import { useConversionStore } from '../conversionStore';
 const STORAGE_KEY = 'encodex-custom-profiles';
 const RECENT_KEY = 'encodex-recent-profiles';
 
+/**
+ * Re-imports the store so its module-scope initial state re-reads localStorage.
+ * @returns {Promise<typeof import('../profileStore')>} A fresh store instance.
+ */
+async function importStore(): Promise<typeof import('../profileStore')> {
+  vi.resetModules();
+  return import('../profileStore');
+}
+
 let mockDate = 1000;
 vi.spyOn(Date, 'now').mockImplementation(() => ++mockDate);
 
@@ -208,17 +217,58 @@ describe('profileStore', () => {
     expect(useProfileStore.getState().recentProfileIds).toContain('recent-test');
   });
 
-  it('loads custom profiles from localStorage on init', () => {
-    const stored = [
-      { id: 'custom-1', name: 'Stored', category: 'audio', container: 'mp3', videoCodec: '', audioCodec: 'libmp3lame', builtin: false },
-    ];
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
-    useProfileStore.setState({
-      profiles: [...useProfileStore.getState().profiles.filter((p) => p.builtin), ...stored],
-    });
-    const custom = useProfileStore.getState().profiles.filter((p) => !p.builtin);
+  it('loads custom profiles from localStorage on init', async () => {
+    // The store builds its initial `profiles` at **module scope**
+    // (`[...BUILTIN_PROFILES, ...loadCustomProfiles()]`), and there is no
+    // `init()` to call. This spec used to write localStorage and then
+    // `setState` the same values straight back in, so `loadCustomProfiles` was
+    // never executed and the spec asserted nothing about loading. Seeding
+    // storage and re-importing the module is the only way to reach the real
+    // path.
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([customProfile({ id: 'custom-1', name: 'Stored', builtin: false })]));
+
+    const { useProfileStore: reloaded } = await importStore();
+    const custom = reloaded.getState().profiles.filter((p) => !p.builtin);
     expect(custom).toHaveLength(1);
     expect(custom[0].id).toBe('custom-1');
+    expect(custom[0].name).toBe('Stored');
+    // Builtins must still be present after a real load.
+    expect(reloaded.getState().profiles.some((p) => p.builtin)).toBe(true);
+  });
+
+  it('drops unusable entries from localStorage instead of injecting them as profiles', async () => {
+    // `loadCustomProfiles` filters on `builtin === false` plus string id/name.
+    // A corrupt or hand-edited key must not be able to inject a built-in
+    // duplicate or a nameless entry into the profile list.
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify([
+        customProfile({ id: 'good-1', name: 'Good', builtin: false }),
+        customProfile({ id: 'looks-builtin', name: 'Impostor', builtin: true }),
+        { id: 'nameless', builtin: false },
+        'not-an-object',
+        null,
+      ]),
+    );
+
+    const { useProfileStore: reloaded } = await importStore();
+    const custom = reloaded.getState().profiles.filter((p) => !p.builtin);
+    expect(custom.map((p) => p.id)).toEqual(['good-1']);
+  });
+
+  it('falls back to no custom profiles when the stored JSON is corrupt', async () => {
+    localStorage.setItem(STORAGE_KEY, '{not json');
+    const { useProfileStore: reloaded } = await importStore();
+    expect(reloaded.getState().profiles.every((p) => p.builtin)).toBe(true);
+  });
+
+  it('caps the restored recent ids', async () => {
+    // `loadRecentIds` slices to MAX_RECENT (5), so a stale key with more
+    // entries than the cap cannot grow the recents list.
+    const ids = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    localStorage.setItem(RECENT_KEY, JSON.stringify(ids));
+    const { useProfileStore: reloaded } = await importStore();
+    expect(reloaded.getState().recentProfileIds).toEqual(['a', 'b', 'c', 'd', 'e']);
   });
 
   it('loads recent ids from localStorage', () => {

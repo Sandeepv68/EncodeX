@@ -5,6 +5,21 @@ import { mockApi, emitConversionProgress } from '../mocks/control';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
 
+/**
+ * `Locator.boundingBox()` resolves to `null` when the element is not laid out,
+ * and this spec then does arithmetic straight off the result - so a handle that
+ * failed to render produced `TypeError: Cannot read properties of null` instead
+ * of a sentence naming the handle. Assert instead.
+ * @param {import('playwright').Locator} locator - The handle to measure.
+ * @param {string} label - Human-readable name used in the failure message.
+ * @returns {Promise<NonNullable<Awaited<ReturnType<import('playwright').Locator['boundingBox']>>>>} Its box.
+ */
+async function boxOf(locator: import('playwright').Locator, label: string) {
+  const box = await locator.boundingBox();
+  if (!box) throw new Error(`${label} has no layout box: the timeline handle did not render.`);
+  return box;
+}
+
 const VIDEO_INFO: MediaInfo = {
   file: '/media/clip.mp4',
   format: 'mov,mp4,m4a,3gp,3g2,mj2',
@@ -109,7 +124,7 @@ describe.runIf(IS_E2E)('Video Cut page', () => {
     await page.waitForTimeout(500);
     await selectVideo(page);
     const scroller = page.locator('[data-testid="timeline-scroller"]');
-    const box = await scroller.boundingBox();
+    const box = await boxOf(scroller, 'timeline scroller');
     const startHandle = page.locator('[data-testid="timeline-start-handle"]');
     const endHandle = page.locator('[data-testid="timeline-end-handle"]');
     await startHandle.waitFor({ timeout: 10000 });
@@ -117,8 +132,8 @@ describe.runIf(IS_E2E)('Video Cut page', () => {
     await scroller.scrollIntoViewIfNeeded();
     await startHandle.scrollIntoViewIfNeeded();
     await endHandle.scrollIntoViewIfNeeded();
-    const startBox = await startHandle.boundingBox();
-    const endBox = await endHandle.boundingBox();
+    const startBox = await boxOf(startHandle, 'timeline start handle');
+    const endBox = await boxOf(endHandle, 'timeline end handle');
     const zoom = (endBox.x - startBox.x) / 60;
 
     const dragX = startBox.x + startBox.width - 1;

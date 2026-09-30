@@ -3,8 +3,11 @@ import { QUEUE_STATUS } from '../../../shared/media-options';
 import type { MediaStreamInfo, QueueJob } from '../../../shared/types';
 import { isJobActive, statusChipColor, planEnqueues, type PlanEnqueuesContext } from '../queue-job-utils';
 
-function makeJob(status: string): QueueJob {
-  return { id: '1', input: '/a/b.mp4', output: '/a/out.mp4', operation: 'convert', status, createdAt: 0 } as QueueJob;
+function makeJob(status: QueueJob['status']): QueueJob {
+  // No `operation` field: `QueueJob` never had one, so the old fixture cast
+  // the whole object away and the tests ran against a shape the app never
+  // produces.
+  return { id: '1', input: '/a/b.mp4', output: '/a/out.mp4', options: {}, transcoder: 'FFMPEG', status, progress: 0, createdAt: 0 };
 }
 
 describe('isJobActive', () => {
@@ -66,8 +69,10 @@ function queuedJob(partial: Partial<QueueJob> = {}): QueueJob {
     id: 'j1',
     input: '/in/old.mp4',
     output: '/in/old_encodex_converted.mp4',
-    operation: 'convert',
+    options: {},
+    transcoder: 'FFMPEG',
     status: QUEUE_STATUS.QUEUED,
+    progress: 0,
     createdAt: 0,
     ...partial,
   };
