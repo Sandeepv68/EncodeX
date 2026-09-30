@@ -111,7 +111,7 @@ export function isFatal(kind: CrashKind, strictness: Strictness): boolean {
   return ALWAYS_FATAL.has(kind) || FATAL_AT[strictness].has(kind);
 }
 
-/** Guard so a reused worker installs the tripwire exactly once. @const */
+/** Guard so a reused worker installs the tripwire exactly once; see {@link install}. @const */
 const TRIPWIRE_FLAG = '__encodexCrashTripwire__';
 
 /** Hard cap so a crash loop cannot exhaust memory. @const */
@@ -249,10 +249,11 @@ function stackOf(value: unknown): string | undefined {
 /**
  * Installs the tripwire, or returns the already-installed one.
  *
- * `pool: 'forks'` reuses worker processes across test files, and the setup
- * file re-runs for each of them. Re-registering process listeners per file
- * would stack them up and trip Node's max-listeners warning, so installation
- * is memoised on `globalThis` and reused.
+ * `pool: 'forks'` with isolation on gives every test file its own child
+ * process, so this runs once per file - but it is still memoised, because a
+ * setup file that is ever loaded twice in one process (a `setupFiles` entry
+ * plus an explicit import, say) would otherwise stack a second pair of
+ * listeners on top of the first and start double-recording every fault.
  * @returns {TripwireState} The shared recorder state.
  */
 function install(): TripwireState {

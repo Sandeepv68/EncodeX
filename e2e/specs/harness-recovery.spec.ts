@@ -10,6 +10,7 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { launchApp, closeApp, ensureLiveSession, isPageAlive, AppSession } from '../fixtures/app';
+import { expectTripwire } from '../fixtures/tripwire';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
 
@@ -43,6 +44,12 @@ describe.runIf(IS_E2E)('e2e harness renderer recovery', () => {
   });
 
   it('relaunches a usable app after the renderer crashes', async () => {
+    // The one place in the e2e suite where a renderer crash is the point of the
+    // test rather than a defect, so it has to be declared. Anything *else* the
+    // app logs while recovering is still fatal, which is what keeps this from
+    // becoming a blanket mute.
+    expectTripwire('crash', /renderer process crashed/);
+
     await crashRenderer(session);
     expect(await isPageAlive(session.page)).toBe(false);
 

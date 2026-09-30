@@ -11,6 +11,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { ensureBuildExists, getBuildPaths } from '../helpers';
+import { attachTripwire } from './tripwire';
 
 export interface AppSession {
   app: ElectronApplication;
@@ -79,6 +80,12 @@ export function createUserDataDir(): string {
 /**
  * Launches the packaged/built Electron app and resolves the main window (the
  * one exposing `window.electronAPI`).
+ *
+ * The crash tripwire is attached here rather than in each spec, so every
+ * spec in both tiers fails on a renderer `pageerror`, a `console.error`, a
+ * renderer crash, or a main-process uncaught exception without having to opt
+ * in. Because a relaunch goes back through this function, the guards survive
+ * `ensureLiveSession` / `reloadSession` too.
  */
 export async function launchApp(options: LaunchOptions = {}): Promise<AppSession> {
   const { mock = true, terms = 'accept', args = [], env = {} } = options;
@@ -94,6 +101,8 @@ export async function launchApp(options: LaunchOptions = {}): Promise<AppSession
     cwd: getBuildPaths().root,
     env: buildEnv(mock, env, terms),
   });
+
+  attachTripwire(app);
 
   await app.firstWindow();
   const page = await getMainWindow(app);

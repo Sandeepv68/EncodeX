@@ -15,7 +15,7 @@
 | 0.1 Unit-level crash tripwire | **DONE** | 2683/2683 unit tests green; `npm run lint` 0 errors; `npm run typecheck` clean |
 | 0.1b Tripwire self-tests | **DONE** | 19/19 in `src/test-utils/__tests__/crash-tripwire.test.ts` |
 | 0.1c DOM prop-leak AST guard | **DONE** | `src/renderer/styles/__tests__/no-dom-prop-leak.test.ts`, 47 style modules |
-| 0.2 ipcHandlers fuzzer | TODO | — |
+| 0.2 E2E renderer tripwire | **DONE** | Tier A 154/154 (2 skipped), Tier B 9/9; `npm run lint` 0 errors; `npm run typecheck` clean; `npm run format:check` clean |
 | 0.3 Hostile-window / sandbox escape | TODO | — |
 | 0.4 Corrupted-media matrix | TODO | — |
 | 0.5 Race / concurrency stress | TODO | — |
@@ -38,6 +38,24 @@ These were live in `src/renderer` and would have shipped. None had a failing tes
 | B5 | 32 tests let React state updates escape `act()` | store mutations and async IPC probes drove updates outside the test's control | each update now driven inside `act()` / awaited via `findBy*` |
 | B6 | 4 `ProfileSelector` tests logged *"The current testing environment is not configured to support act(...)"* | `user.type()` is already act-wrapped; the tests wrapped it in a second, outer `act()`, unbalancing React's act scope | removed the redundant outer `act()` |
 | B7 | `src/test-setup.ts` never set `IS_REACT_ACT_ENVIRONMENT` | React's update accounting was partly disabled for the whole suite | set once in global setup |
+| B8 | Every page logged `Refused to load font … violates Content Security Policy` | Vite inlines the eight Roboto subsets as `data:` URIs, but the meta CSP had no `font-src`, so default-src blocked them | `font-src 'self' data:` in `src/renderer/index.html`, guarded by `src/renderer/__tests__/csp.test.ts` |
+| B9 | `src/main/__tests__/index.test.ts` leaked 10+ live `uncaughtException` / `unhandledRejection` listeners into the shared test process | `src/main/index.ts` calls `registerProcessCrashHandlers()` at module scope and the spec re-imports it in nearly every test after `vi.resetModules()` | `afterEach` sweeps every process listener added since a baseline captured before the first import |
+
+B8 was found by the Phase 0.2 e2e tripwire on its first run, and B9 by turning
+`NODE_OPTIONS=--trace-warnings` on after a bare run printed an unexplained
+`MaxListenersExceededWarning`. Both are recorded here because the *second* one is
+the more interesting failure: the warning was attributed to the wrong file for
+several iterations, and the leak was not inert — every surviving listener calls
+`log.error` and `captureException`, so one genuine unhandled rejection in that
+spec fanned out into a dozen monitoring reports. A warning nobody can trace back
+to a cause is worse than no warning, because it trains the team to ignore the
+one warning that mattered.
+
+**Guard added so B8 cannot recur:** `src/renderer/__tests__/csp.test.ts` parses the
+`content-security-policy` meta tag out of `index.html` and asserts the directives
+the bundled assets actually need, including that every `@fontsource/*` import in
+the renderer resolves to a source the policy permits. Verified negatively: deleting
+`font-src` makes it fail.
 
 **Guard added so B1–B4 cannot recur:** `no-dom-prop-leak.test.ts` walks the real TypeScript
 AST of every `*.styles.ts` and fails if any `styled()` call declares a `$`-prefixed prop without
@@ -52,6 +70,20 @@ cannot fail is worse than no guard.
 - A `Tooltip` wraps a disabled `button` in `BatchQueue`/`AppDrawer`, so the tooltip can never
   open. Real a11y defect; fix by wrapping the disabled button in a `span`.
 - `LanguageMenu.tsx:150` uses `autoFocus` (`jsx-a11y/no-autofocus` warning, pre-existing).
+- The CSP lives in a `<meta>` tag, so Electron's security advisory cannot see it and warns
+  about the missing policy on every launch. The warning is allowlisted
+  (`e2e/fixtures/allowed-errors.json`, kind `consoleWarn`, review 2026-12-29) with the reason
+  recorded. Proper fix is to move the policy to `session.webRequest.onHeadersReceived`, which
+  the advisory *can* see; deferred because it changes how the preload bridge and custom
+  `aptabase-ipc` scheme are allowed, and that is Phase 0.3 work.
+- `aptabase-ipc://trackEvent` reports `net::ERR_ABORTED` on teardown in Tier B. Recorded as a
+  non-fatal `netfail`; it is the analytics call losing its race with window close, not a defect,
+  but it means Tier B output always carries a tripwire warning. Worth a look when the analytics
+  bootstrap is next touched.
+- `Convert.test.tsx > hides the stream details behind the view more toggle` fails roughly once
+  per full unit run under load and passes in isolation (~72 s alone vs ~92 s in-suite). The
+  30 s `waitFor` budget is too tight for a 40-test file on a loaded machine. This is exactly the
+  F10 flake-governance problem, deferred to Phase 0.5 rather than patched ad hoc here.
 
 ---
 
@@ -127,6 +159,35 @@ app.process().stderr.on('data', b => /* main-process uncaughtException / unhandl
 
 **Exit criterion:** add a temporary `throw new Error('x')` in a `useEffect` and watch every
 affected spec go red.
+
+**Result — DONE, exit criterion met.** Implemented as `e2e/fixtures/tripwire.ts` (recorder) plus
+`e2e/fixtures/tripwire-setup.ts` (hooks), registered through `setupFiles` in both
+`e2e/vitest.e2e.config.ts` and `e2e/vitest.e2e.real.config.ts` so no spec has to opt in. What the
+plan sketched and what shipped differ in four places worth recording:
+
+- **The listener side is attached in `launchApp`, not in the setup file.** The app is launched from
+  a spec's `beforeAll` and may be relaunched mid-file, so `attachTripwire(app)` re-registers on
+  every launch and on every `reloadSession`. The *assertion* side has to be registered during
+  collection, which is why the two halves are separate modules.
+- **`app.evaluate()` is not enough on its own.** The main-process listener function is serialised
+  by Electron, so it cannot close over anything; it pushes onto a global on the main side and
+  `takeTripwireEntries` drains that global through `app.evaluate` at assertion time. A stderr
+  scanner is kept alongside it because a fault that kills the main process before `evaluate` can
+  round-trip only ever shows up on stderr.
+- **Severity is three-tier, not two.** `ENCODEX_STRICT_TESTS` is `0`/unset → `crash`
+  (`pageerror`, renderer `console.error`, page crash, main uncaught/rejection, `mainStderr`),
+  `1` → adds console warnings, `2` → adds `appWarn`. `netfail` is report-only at every level
+  because a teardown race produces one reliably and failing on it would be noise.
+- **Faults recorded between tests are kept, not dropped.** The first implementation marked them
+  `stale` and then cleared the array anyway, which silently discarded every fault raised while the
+  app was booting in `beforeAll` — the single most valuable place for the tripwire to look. Caught
+  by a probe: a `console.error` at renderer module scope made all four `logs.spec.ts` tests red with
+  `(recorded between tests)`, where the previous version reported nothing at all.
+
+Verified: a temporary `throw new Error('ADVERSARIAL-TRIPWIRE-PROBE')` in
+`src/renderer/pages/Convert.tsx` turned 10/10 convert tests red; probe reverted, renderer rebuilt,
+Tier A 154/154 (2 skipped) and Tier B 9/9 green with the tripwire active. B8 and B9 came out of
+this phase.
 
 ### 0.3 Typecheck the tests — new `tsconfig.test.json`
 

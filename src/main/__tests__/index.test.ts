@@ -142,6 +142,31 @@ const getMainWindows = () => registerIpcHandlersMock.mock.calls.map((call) => ca
  * Fires the app.whenReady callback and flushes the microtask chain so the
  * awaited autoInstallPendingUpdate().then(...) window creation has run.
  */
+/**
+ * `src/main/index.ts` calls `registerProcessCrashHandlers()` at module scope,
+ * and this file re-imports it in nearly every test after `vi.resetModules()`.
+ * Without the sweep below, each import stacks another `uncaughtException` /
+ * `unhandledRejection` pair onto the shared `process`, Node emits
+ * `MaxListenersExceededWarning` about the tenth import, and the survivors are
+ * not inert: every one of them logs and calls `captureException` when a real
+ * fault fires, so a single unhandled rejection in this file fans out into a
+ * dozen reports. The baseline is captured here, before the first dynamic
+ * import, so the crash tripwire's own listeners are never removed.
+ */
+const PROCESS_CRASH_EVENTS = ['uncaughtException', 'unhandledRejection'] as const;
+const baselineProcessListeners = PROCESS_CRASH_EVENTS.map((event) => process.listeners(event));
+
+/** Removes every `process` listener that a `../index` import added. */
+function removeProcessListenersAddedSinceBaseline(): void {
+  PROCESS_CRASH_EVENTS.forEach((event, index) => {
+    for (const listener of process.listeners(event)) {
+      if (!baselineProcessListeners[index].includes(listener)) {
+        process.removeListener(event, listener as () => void);
+      }
+    }
+  });
+}
+
 async function triggerStartup(): Promise<void> {
   getWhenReadyCbs()[0]();
   await Promise.resolve();
@@ -167,6 +192,7 @@ describe('main/index', () => {
     console.log = ORIGINAL_LOG;
     console.warn = ORIGINAL_WARN;
     console.error = ORIGINAL_ERROR;
+    removeProcessListenersAddedSinceBaseline();
     vi.resetModules();
     vi.useRealTimers();
     vi.restoreAllMocks();
