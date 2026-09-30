@@ -1,5 +1,5 @@
 import { afterEach, describe, it, expect } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import EllipsisTooltip from '../EllipsisTooltip';
 
 const originalScroll = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'scrollWidth');
@@ -47,7 +47,12 @@ describe('EllipsisTooltip', () => {
     );
     const value = screen.getByText('a very long value that overflows');
     expect(value).toHaveAttribute('tabindex', '0');
-    value.focus();
+    // A raw .focus() dispatches the component's focus handler outside React's
+    // event system, so it has to be driven inside act() or the resulting state
+    // updates escape the test's control.
+    await act(async () => {
+      value.focus();
+    });
     expect(await screen.findByRole('tooltip')).toHaveTextContent('a very long value that overflows');
   });
 

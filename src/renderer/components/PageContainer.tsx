@@ -42,7 +42,7 @@ import { PageRoot, PageBody, PageTitle, TitleIcon, ContentPaper } from '../style
  */
 export default function PageContainer({ title, icon, aside, paper = true, children }: PageContainerProps) {
   return (
-    <PageRoot hasAside={!!aside}>
+    <PageRoot $hasAside={!!aside}>
       <PageBody>
         <PageTitle variant="h5" component="h1">
           {icon && <TitleIcon>{icon}</TitleIcon>}

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 import { useTermsStore } from '../stores/termsStore';
@@ -47,8 +47,13 @@ describe('debug-terms', () => {
     renderApp();
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 }).catch(() => null);
     const drawerItem = screen.getAllByText('nav.convert')[0]?.closest('[role="button"]');
-    if (drawerItem) fireEvent.click(drawerItem);
-    await new Promise((r) => setTimeout(r, 1200));
+    // The route swap and its MUI transition animate over time, so the click and
+    // the settle window have to be driven inside act() or the resulting updates
+    // escape the test's control.
+    await act(async () => {
+      if (drawerItem) fireEvent.click(drawerItem);
+      await new Promise((r) => setTimeout(r, 1200));
+    });
     const snap = dump();
     console.log('CONVERT', JSON.stringify(snap));
     const found = await screen.findByText('convert.title', {}, { timeout: 10000 }).catch(() => null);

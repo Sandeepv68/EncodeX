@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import ProfileEditorDialog from '../ProfileEditorDialog';
 import { useProfileStore } from '../../stores/profileStore';
 import { useToastStore } from '../../stores/toastStore';
@@ -35,8 +35,13 @@ describe('ProfileEditorDialog', () => {
     useToastStore.setState({ toasts: [] });
   });
 
-  it('shows placeholders in the selects that default to an empty value', () => {
-    render(<ProfileEditorDialog open={true} onClose={vi.fn()} />);
+  it('shows placeholders in the selects that default to an empty value', async () => {
+    // The dialog's CodecSelects probe the encoder capabilities asynchronously,
+    // and the probe resolves into a state update, so the mount has to settle
+    // inside act() or the update escapes the test's control.
+    await act(async () => {
+      render(<ProfileEditorDialog open={true} onClose={vi.fn()} />);
+    });
     const comboboxes = screen.getAllByRole('combobox');
     expect(comboboxes[COMBOS.resolution]).toHaveTextContent('profiles.original');
     expect(comboboxes[COMBOS.videoBitrate]).toHaveTextContent('profiles.autoCrf');

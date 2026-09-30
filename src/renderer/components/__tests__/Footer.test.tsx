@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import Footer from '../Footer';
 import { useUpdateStore } from '../../stores/updateStore';
 import { useToastStore } from '../../stores/toastStore';
@@ -85,16 +85,20 @@ describe('Footer', () => {
     expect(openDialog).toHaveBeenCalled();
   });
 
-  it('shows toast when update becomes available', () => {
+  it('shows toast when update becomes available', async () => {
     const addToastSpy = vi.spyOn(useToastStore.getState(), 'addToast');
     useUpdateStore.setState({ status: 'idle' });
     const { rerender } = render(<Footer />);
 
-    useUpdateStore.setState({
-      status: 'available',
-      info: { version: '2.0.0', releaseNotes: '', releaseUrl: '', asset: { name: 'app.exe', url: '', size: 0 } },
+    // The store mutation notifies the already-mounted Footer, so it has to be
+    // driven inside act() or the update escapes the test's control.
+    await act(async () => {
+      useUpdateStore.setState({
+        status: 'available',
+        info: { version: '2.0.0', releaseNotes: '', releaseUrl: '', asset: { name: 'app.exe', url: '', size: 0 } },
+      });
+      rerender(<Footer />);
     });
-    rerender(<Footer />);
 
     expect(addToastSpy).toHaveBeenCalledWith(
       'info',
@@ -106,17 +110,21 @@ describe('Footer', () => {
     addToastSpy.mockRestore();
   });
 
-  it('only shows toast once for the same update', () => {
+  it('only shows toast once for the same update', async () => {
     const addToastSpy = vi.spyOn(useToastStore.getState(), 'addToast');
     useUpdateStore.setState({ status: 'idle' });
     const { rerender } = render(<Footer />);
 
     const updateInfo = { version: '2.0.0', releaseNotes: '', releaseUrl: '', asset: { name: 'app.exe', url: '', size: 0 } };
-    useUpdateStore.setState({ status: 'available', info: updateInfo });
-    rerender(<Footer />);
+    await act(async () => {
+      useUpdateStore.setState({ status: 'available', info: updateInfo });
+      rerender(<Footer />);
+    });
 
-    useUpdateStore.setState({ status: 'available', info: updateInfo });
-    rerender(<Footer />);
+    await act(async () => {
+      useUpdateStore.setState({ status: 'available', info: updateInfo });
+      rerender(<Footer />);
+    });
 
     expect(addToastSpy).toHaveBeenCalledTimes(1);
     addToastSpy.mockRestore();
@@ -171,17 +179,21 @@ describe('Footer', () => {
     expect(useUpdateStore.getState().restartScheduled).toBe(false);
   });
 
-  it('shows a downloaded toast with a view action once', () => {
+  it('shows a downloaded toast with a view action once', async () => {
     const addToastSpy = vi.spyOn(useToastStore.getState(), 'addToast');
     useUpdateStore.setState({ status: 'idle' });
     const { rerender } = render(<Footer />);
 
     const updateInfo = { version: '2.0.0', releaseNotes: '', releaseUrl: '', asset: { name: 'app.exe', url: '', size: 0 } };
-    useUpdateStore.setState({ status: 'downloaded', info: updateInfo, installerPath: '/tmp/app.exe' });
-    rerender(<Footer />);
+    await act(async () => {
+      useUpdateStore.setState({ status: 'downloaded', info: updateInfo, installerPath: '/tmp/app.exe' });
+      rerender(<Footer />);
+    });
 
-    useUpdateStore.setState({ status: 'downloaded', info: updateInfo, installerPath: '/tmp/app.exe' });
-    rerender(<Footer />);
+    await act(async () => {
+      useUpdateStore.setState({ status: 'downloaded', info: updateInfo, installerPath: '/tmp/app.exe' });
+      rerender(<Footer />);
+    });
 
     expect(addToastSpy).toHaveBeenCalledTimes(1);
     expect(addToastSpy).toHaveBeenCalledWith(

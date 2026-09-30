@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DEV_SERVER_URL, EXIT_CODES, WINDOW_SIZE, SPLASH_SIZE } from '../../shared/app-constants';
 import { IPC } from '../../shared/ipc-channels';
+import { expectCrash } from '../../test-utils/crash-tripwire';
 
 const {
   appMock,
@@ -277,6 +278,10 @@ describe('main/index', () => {
   });
 
   it('patches console to forward log messages to the window', async () => {
+    // The point of this test is to drive every console level, so the tripwire's
+    // own records of that output have to be declared up front.
+    expectCrash('consoleWarn', '{"a":1}');
+    expectCrash('consoleError', 'boom');
     process.argv = ['node', 'x.js'];
     await import('../index');
     await triggerStartup();

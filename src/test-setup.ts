@@ -9,10 +9,30 @@
  * stub mirroring the preload bridge so components can be rendered without a
  * real Electron context. Every IPC method resolves to a benign default so
  * tests only need to override the methods they exercise.
+ *
+ * The crash tripwire is registered last so it wraps whatever `console` the
+ * rest of this file leaves behind.
+ *
+ * @see src/test-utils/crash-tripwire.ts
  */
 
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
+import { registerCrashAssertions } from './test-utils/crash-tripwire';
+
+/**
+ * Tell React it is running under a test runner that understands `act()`.
+ *
+ * Without this flag React logs "The current testing environment is not
+ * configured to support act(...)" on every `act()` call and, worse, skips its
+ * own update accounting - so state updates escaping a test go unnoticed. It is
+ * set here, once, for the whole suite rather than per test file.
+ */
+declare global {
+  // eslint-disable-next-line no-var
+  var IS_REACT_ACT_ENVIRONMENT: boolean;
+}
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -169,3 +189,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
   },
   writable: true,
 });
+
+// Must run after the electronAPI stub is in place so a failure while building
+// it is still attributed to the test that provoked it.
+registerCrashAssertions();

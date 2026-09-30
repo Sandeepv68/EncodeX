@@ -37,8 +37,14 @@ export const PreviewBox = styled(Box)(({ theme }) => ({
  * and paints a placeholder fill while `imageSrc` is null, so the remove button
  * is anchored to the frame's top-end corner instead of floating loose.
  * @const PreviewImageBox
- */ export const PreviewImageBox = styled(Box)<{ variant?: 'square' | 'wide' }>(({ theme, variant }) => {
-  const size = previewSize(variant);
+ *
+ * `$variant` uses MUI's transient-prop (`$`) convention. `Box` has no `variant`
+ * prop, so an unprefixed one is forwarded to the DOM and rendered as a
+ * meaningless `variant="square"` attribute in the shipped app.
+ */ export const PreviewImageBox = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$variant',
+})<{ $variant?: 'square' | 'wide' }>(({ theme, $variant }) => {
+  const size = previewSize($variant);
   return {
     position: 'relative',
     flexShrink: 0,

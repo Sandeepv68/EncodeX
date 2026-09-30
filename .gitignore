@@ -16,3 +16,5 @@ site/.vitepress/cache/
 site/.vitepress/dist/
 screenshots/
 get.js
+# Machine-readable vitest output (tripwire baselines and triage dumps).
+reports/

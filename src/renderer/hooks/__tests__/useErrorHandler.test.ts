@@ -43,7 +43,13 @@ describe('useErrorHandler', () => {
   it('wrapAsync returns undefined on error', async () => {
     const { result } = renderHook(() => useErrorHandler());
     const failingFn = () => Promise.reject(new Error('fail'));
-    const val = await result.current.wrapAsync(failingFn);
+    // wrapAsync reports the rejection into the store the mounted hook subscribes
+    // to, so the call has to be driven inside act() or the re-render escapes the
+    // test's control.
+    let val: unknown;
+    await act(async () => {
+      val = await result.current.wrapAsync(failingFn);
+    });
     expect(val).toBeUndefined();
   });
 

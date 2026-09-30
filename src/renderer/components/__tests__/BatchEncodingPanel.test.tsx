@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import type { ComponentProps } from 'react';
 import BatchEncodingPanel from '../BatchEncodingPanel';
 import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
@@ -58,8 +58,13 @@ describe('BatchEncodingPanel', () => {
     useDismissedAlertsStore.setState({ dismissed: [] });
   });
 
-  it('renders the encoding options title', () => {
-    renderPanel();
+  it('renders the encoding options title', async () => {
+    // Every CodecSelect probes the encoder capabilities asynchronously, and the
+    // probe resolves into a state update, so the mount has to settle inside
+    // act() or the update escapes the test's control.
+    await act(async () => {
+      renderPanel();
+    });
     expect(screen.getByText('batchQueue.encodingOptions')).toBeInTheDocument();
   });
 

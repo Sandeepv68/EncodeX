@@ -257,8 +257,13 @@ describe('AppDrawer', () => {
 
   it('does not show nav tooltips when the drawer is expanded', async () => {
     renderDrawer({ condensed: false });
-    fireEvent.mouseOver(screen.getByTestId('nav-item-dashboard'));
-    await sleepPastTooltipDelay();
+    // MUI drives the tooltip's open state from a delayed timer, so the hover and
+    // the wait past that delay have to be driven inside act() or the update
+    // escapes the test's control.
+    await act(async () => {
+      fireEvent.mouseOver(screen.getByTestId('nav-item-dashboard'));
+      await sleepPastTooltipDelay();
+    });
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
@@ -267,10 +272,17 @@ describe('AppDrawer', () => {
     useConversionStore.getState().setInputFile('/in/video.mp4');
     useConversionStore.getState().setProgress({ percent: 42, time: '00:00:30', speed: '2.5x', eta: '12' });
     renderDrawer({ condensed: true });
-    fireEvent.focus(screen.getByTestId('nav-item-convert'));
+    // The popover and the row tooltip both open and animate from timers, so each
+    // interaction and the wait that follows it have to be driven inside act() or
+    // the resulting updates escape the test's control.
+    await act(async () => {
+      fireEvent.focus(screen.getByTestId('nav-item-convert'));
+    });
     expect(screen.getByTestId('nav-job-popover')).toBeInTheDocument();
-    fireEvent.mouseOver(screen.getByTestId('nav-item-convert'));
-    await sleepPastTooltipDelay();
+    await act(async () => {
+      fireEvent.mouseOver(screen.getByTestId('nav-item-convert'));
+      await sleepPastTooltipDelay();
+    });
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 

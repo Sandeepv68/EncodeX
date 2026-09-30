@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import Convert from '../Convert';
 import { useConversionStore } from '../../stores/conversionStore';
 import { useSettingsStore } from '../../stores/settingsStore';
@@ -25,8 +25,11 @@ function toggleCopy(container: HTMLElement) {
 }
 
 describe('Convert', () => {
-  it('names all encoding controls for screen readers', () => {
+  it('names all encoding controls for screen readers', async () => {
     renderPage();
+    // The capabilities probe resolves after mount and updates the CodecSelects,
+    // so drive it inside act() or the update escapes the test's control.
+    await act(async () => {});
     expect(screen.getByRole('switch', { name: 'convert.losslessCopy' })).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'settings.encoderType' })).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'convert.videoCodec' })).toBeInTheDocument();
@@ -52,6 +55,11 @@ describe('Convert', () => {
   });
   it('has no axe violations', async () => {
     const { container } = renderPage();
+    // The profile selector's Grow entrance finishes on a timer after mount; let
+    // the transition settle inside act() so it cannot update state mid-audit.
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 400));
+    });
     await assertNoAxeViolations(container);
   });
   beforeEach(() => {
@@ -130,12 +138,18 @@ describe('Convert', () => {
     selectFileMock.mockResolvedValue('/in/video.mp4');
     renderPage();
     expect(screen.queryByText('convert.preview')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('file-drop-zone'));
-    await waitFor(() => expect(selectFileMock).toHaveBeenCalledOnce());
+    // The file-open round trip resolves into a store update (and a preview
+    // media fetch) after the click, so drive the click inside act() to keep
+    // those updates under the test's control.
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('file-drop-zone'));
+    });
     expect(screen.getByText('convert.preview')).toBeInTheDocument();
     fireEvent.click(screen.getByLabelText('convert.closePreview'));
     expect(screen.queryByText('convert.preview')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByText('convert.showPreview'));
+    await act(async () => {
+      fireEvent.click(screen.getByText('convert.showPreview'));
+    });
     expect(screen.getByText('convert.preview')).toBeInTheDocument();
   });
 

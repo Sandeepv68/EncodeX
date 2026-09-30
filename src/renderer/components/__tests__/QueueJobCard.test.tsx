@@ -332,7 +332,13 @@ describe('QueueJobCard', () => {
 
     first.unmount();
 
-    const second = renderCard(<QueueJobCard job={job} onRemove={() => {}} />);
+    // The remount re-seeds the cached thumbnail synchronously, but its effect
+    // still awaits the preview cache, so the mount has to settle inside act() or
+    // the resulting state update escapes the test's control.
+    let second!: ReturnType<typeof renderCard>;
+    await act(async () => {
+      second = renderCard(<QueueJobCard job={job} onRemove={() => {}} />);
+    });
     expect(second.getByTestId('queue-job-thumbnail')).toHaveAttribute('src', 'data:image/png;base64,VIDEO');
     expect(getVideoPreviewMock).toHaveBeenCalledTimes(1);
   });

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import QueueJobOptionsDialog from '../QueueJobOptionsDialog';
 import { QUEUE_STATUS } from '../../../shared/media-options';
 import type { QueueJob } from '../../../shared/types';
@@ -59,8 +59,13 @@ describe('QueueJobOptionsDialog', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders the dialog title with the input basename', () => {
-    renderDialog(makeJob());
+  it('renders the dialog title with the input basename', async () => {
+    // The panel's CodecSelects probe the encoder capabilities asynchronously, and
+    // the probe resolves into a state update, so the mount has to settle inside
+    // act() or the update escapes the test's control.
+    await act(async () => {
+      renderDialog(makeJob());
+    });
     expect(screen.getByText('Edit options for clip.mp4')).toBeInTheDocument();
   });
 

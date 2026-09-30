@@ -76,38 +76,54 @@ describe('BatchQueue', () => {
     expect(screen.getByText(/photo\.png/)).toBeInTheDocument();
   });
 
-  it('pushes the persisted concurrency cap to the main process on mount', () => {
+  // BatchQueue kicks off async work on mount (job list, persisted encoding
+  // config, concurrency push). Tests that assert straight after `renderPage()`
+  // let those promises resolve outside act(), so the render is driven inside an
+  // async act() block to settle the mount before any assertion.
+  it('pushes the persisted concurrency cap to the main process on mount', async () => {
     queueListMock.mockResolvedValue([]);
-    renderPage();
+    await act(async () => {
+      renderPage();
+    });
     expect(queueSetConcurrencyMock).toHaveBeenCalledWith(1);
   });
 
-  it('shows the empty message when there are no jobs', () => {
+  it('shows the empty message when there are no jobs', async () => {
     queueListMock.mockResolvedValue([]);
-    renderPage();
+    await act(async () => {
+      renderPage();
+    });
     expect(screen.getByText('batchQueue.empty')).toBeInTheDocument();
   });
 
-  it('shows a hardware acceleration alert when acceleration is enabled', () => {
+  it('shows a hardware acceleration alert when acceleration is enabled', async () => {
     useSettingsStore.setState({ hardwareAcceleration: true });
     queueListMock.mockResolvedValue([]);
-    renderPage();
+    await act(async () => {
+      renderPage();
+    });
     expect(screen.getByRole('alert')).toHaveTextContent('convert.hardwareAccelAlert');
   });
 
-  it('does not show the hardware acceleration alert when acceleration is disabled', () => {
+  it('does not show the hardware acceleration alert when acceleration is disabled', async () => {
     useSettingsStore.setState({ hardwareAcceleration: false });
     queueListMock.mockResolvedValue([]);
-    renderPage();
+    await act(async () => {
+      renderPage();
+    });
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
-  it('dismisses the hardware acceleration alert via its close button', () => {
+  it('dismisses the hardware acceleration alert via its close button', async () => {
     useSettingsStore.setState({ hardwareAcceleration: true });
     queueListMock.mockResolvedValue([]);
-    renderPage();
+    await act(async () => {
+      renderPage();
+    });
     expect(screen.getByRole('alert')).toHaveTextContent('convert.hardwareAccelAlert');
-    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    });
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
@@ -1040,7 +1056,9 @@ describe('BatchQueue', () => {
       }),
     );
     queueListMock.mockResolvedValue([]);
-    renderPage();
+    await act(async () => {
+      renderPage();
+    });
     expect(screen.getByText('batchQueue.operationCompressImage')).toBeInTheDocument();
     expect(screen.getByText('WebP')).toBeInTheDocument();
   });
@@ -1210,9 +1228,11 @@ describe('BatchQueue', () => {
     expect(screen.getByRole('button', { name: 'batchQueue.editOptions' })).toBeDisabled();
   });
 
-  it('renders a title-level toggle that condenses the page to the queue', () => {
+  it('renders a title-level toggle that condenses the page to the queue', async () => {
     queueListMock.mockResolvedValue([]);
-    renderPage();
+    await act(async () => {
+      renderPage();
+    });
     const toggle = screen.getByTestId('batch-queue-condense');
     const controls = document.getElementById('batch-controls-section');
     const encoding = document.getElementById('encoding-options-section');
@@ -1222,23 +1242,31 @@ describe('BatchQueue', () => {
     expect(controls).toHaveAttribute('aria-hidden', 'false');
     expect(encoding).toHaveAttribute('aria-hidden', 'false');
 
-    fireEvent.click(toggle);
+    await act(async () => {
+      fireEvent.click(toggle);
+    });
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
     expect(controls).toHaveAttribute('aria-hidden', 'true');
     expect(encoding).toHaveAttribute('aria-hidden', 'true');
 
-    fireEvent.click(toggle);
+    await act(async () => {
+      fireEvent.click(toggle);
+    });
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
     expect(controls).toHaveAttribute('aria-hidden', 'false');
     expect(encoding).toHaveAttribute('aria-hidden', 'false');
   });
 
-  it('swaps the toggle label and persists the condensed preference', () => {
+  it('swaps the toggle label and persists the condensed preference', async () => {
     queueListMock.mockResolvedValue([]);
-    renderPage();
+    await act(async () => {
+      renderPage();
+    });
     const toggle = screen.getByTestId('batch-queue-condense');
     expect(toggle).toHaveAttribute('aria-label', 'batchQueue.condense');
-    fireEvent.click(toggle);
+    await act(async () => {
+      fireEvent.click(toggle);
+    });
     expect(toggle).toHaveAttribute('aria-label', 'batchQueue.expand');
     expect(localStorage.getItem('encodex-batch-condensed')).toBe('1');
   });
@@ -1261,10 +1289,14 @@ describe('BatchQueue', () => {
 
   it('condenses the page with C', async () => {
     queueListMock.mockResolvedValue([]);
-    renderPage();
+    await act(async () => {
+      renderPage();
+    });
     const toggle = screen.getByTestId('batch-queue-condense');
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
-    fireEvent.keyDown(window, { code: 'KeyC', key: 'c' });
+    await act(async () => {
+      fireEvent.keyDown(window, { code: 'KeyC', key: 'c' });
+    });
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, within, act } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ProfileSelector from '../ProfileSelector';
 import { useProfileStore } from '../../stores/profileStore';
@@ -72,9 +72,10 @@ describe('ProfileSelector', () => {
     fireEvent.mouseDown(screen.getByRole('combobox'));
     await screen.findByRole('listbox');
     const input = screen.getByRole('combobox');
-    await act(async () => {
-      await user.type(input, 'YouTube');
-    });
+    // user-event already drives its own act() internally. Wrapping it in a
+    // second, outer act() unbalances React's act scope and makes React log
+    // "The current testing environment is not configured to support act(...)".
+    await user.type(input, 'YouTube');
     const options = screen.getAllByRole('option');
     expect(options.length).toBeGreaterThan(0);
     expect(options.length).toBeLessThan(
@@ -206,9 +207,8 @@ describe('ProfileSelector', () => {
     fireEvent.mouseDown(screen.getByRole('combobox'));
     await screen.findByRole('listbox');
     const input = screen.getByRole('combobox');
-    await act(async () => {
-      await user.type(input, 'YouTube');
-    });
+    // user-event already drives its own act() internally - see note above.
+    await user.type(input, 'YouTube');
     const options = screen.getAllByRole('option');
     const firstOption = options[0];
     const spans = firstOption.querySelectorAll('span');
@@ -221,9 +221,7 @@ describe('ProfileSelector', () => {
     fireEvent.mouseDown(screen.getByRole('combobox'));
     await screen.findByRole('listbox');
     const input = screen.getByRole('combobox');
-    await act(async () => {
-      await user.type(input, 'youtube');
-    });
+    await user.type(input, 'youtube');
     const options = screen.getAllByRole('option');
     expect(options.length).toBeGreaterThan(0);
   });
@@ -242,9 +240,7 @@ describe('ProfileSelector', () => {
     fireEvent.mouseDown(screen.getByRole('combobox'));
     await screen.findByRole('listbox');
     const input = screen.getByRole('combobox');
-    await act(async () => {
-      await user.type(input, 'Unique description text');
-    });
+    await user.type(input, 'Unique description text');
     const options = screen.getAllByRole('option');
     expect(options.length).toBe(1);
   });
