@@ -39,14 +39,7 @@ import { afterEach, beforeEach } from 'vitest';
  * @const
  */
 export type CrashKind =
-  | 'unhandledRejection'
-  | 'uncaughtException'
-  | 'windowError'
-  | 'windowRejection'
-  | 'consoleError'
-  | 'consoleWarn'
-  | 'appError'
-  | 'appWarn';
+  'unhandledRejection' | 'uncaughtException' | 'windowError' | 'windowRejection' | 'consoleError' | 'consoleWarn' | 'appError' | 'appWarn';
 
 /** @interface */
 export interface CrashRecord {
@@ -297,9 +290,7 @@ function install(): TripwireState {
   // `node` environment where there is no `window`.
   if (typeof window !== 'undefined') {
     window.addEventListener('error', (event) => state.push('windowError', event.error ?? event.message, event.message));
-    window.addEventListener('unhandledrejection', (event) =>
-      state.push('windowRejection', (event as PromiseRejectionEvent).reason),
-    );
+    window.addEventListener('unhandledrejection', (event) => state.push('windowRejection', (event as PromiseRejectionEvent).reason));
   }
 
   return state;
@@ -392,9 +383,7 @@ export function expectCrash(kind: CrashKind, pattern: string | RegExp): void {
 export function expectAppLog(level: 'error' | 'warn', context: string | RegExp): void {
   const kind: CrashKind = level === 'error' ? 'appError' : 'appWarn';
   const pattern =
-    typeof context === 'string'
-      ? new RegExp(`\\[${escapeRegExp(level.toUpperCase())}\\] \\[${escapeRegExp(context)}\\]`)
-      : context;
+    typeof context === 'string' ? new RegExp(`\\[${escapeRegExp(level.toUpperCase())}\\] \\[${escapeRegExp(context)}\\]`) : context;
   install().expected.push({ kind, pattern });
 }
 

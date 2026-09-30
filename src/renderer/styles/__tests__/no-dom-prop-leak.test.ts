@@ -88,22 +88,13 @@ function hasShouldForwardProp(call: ts.CallExpression): boolean {
 }
 
 function inspect(file: string): StyleModule {
-  const source = ts.createSourceFile(
-    file,
-    readFileSync(file, 'utf8'),
-    ts.ScriptTarget.Latest,
-    true,
-  );
+  const source = ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true);
 
   const transientProps: string[] = [];
   const violations: Violation[] = [];
 
   const visit = (node: ts.Node): void => {
-    if (
-      ts.isCallExpression(node) &&
-      node.typeArguments?.length &&
-      calleeRoot(node.expression) === 'styled'
-    ) {
+    if (ts.isCallExpression(node) && node.typeArguments?.length && calleeRoot(node.expression) === 'styled') {
       const props = transientPropsOf(node);
       if (props.length > 0) {
         transientProps.push(...props);
@@ -121,10 +112,7 @@ function inspect(file: string): StyleModule {
 }
 
 const STYLE_MODULES = collectStyleModules(STYLES_DIR).map(inspect);
-const TOTAL_TRANSIENT_PROPS = STYLE_MODULES.reduce(
-  (sum, module) => sum + module.transientProps.length,
-  0,
-);
+const TOTAL_TRANSIENT_PROPS = STYLE_MODULES.reduce((sum, module) => sum + module.transientProps.length, 0);
 
 describe('styled transient props', () => {
   it('actually inspects the style modules it guards', () => {
@@ -133,19 +121,12 @@ describe('styled transient props', () => {
     // the real assertions operate on.
     expect(STYLE_MODULES.length).toBeGreaterThan(20);
     expect(TOTAL_TRANSIENT_PROPS).toBeGreaterThan(20);
-    expect(
-      STYLE_MODULES.filter((module) => module.transientProps.length > 0).length,
-    ).toBeGreaterThan(10);
+    expect(STYLE_MODULES.filter((module) => module.transientProps.length > 0).length).toBeGreaterThan(10);
   });
 
   it('leaks no transient props into the DOM', () => {
-    const summary = STYLE_MODULES.flatMap((module) =>
-      module.violations.map((v) => `${module.name}:${v.line} -> ${v.props.join(', ')}`),
-    );
+    const summary = STYLE_MODULES.flatMap((module) => module.violations.map((v) => `${module.name}:${v.line} -> ${v.props.join(', ')}`));
 
-    expect(
-      summary,
-      'styled() props on a non-host base must be filtered with shouldForwardProp',
-    ).toEqual([]);
+    expect(summary, 'styled() props on a non-host base must be filtered with shouldForwardProp').toEqual([]);
   });
 });

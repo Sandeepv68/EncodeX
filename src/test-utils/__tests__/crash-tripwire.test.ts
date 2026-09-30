@@ -15,14 +15,7 @@
 
 import { afterEach, describe, expect, it } from 'vitest';
 import type { CrashKind, Strictness } from '../crash-tripwire';
-import {
-  expectAppLog,
-  getAppLogs,
-  getStrictness,
-  isFatal,
-  silenceConsoleOutput,
-  takeRecordedCrashes,
-} from '../crash-tripwire';
+import { expectAppLog, getAppLogs, getStrictness, isFatal, silenceConsoleOutput, takeRecordedCrashes } from '../crash-tripwire';
 
 /** Drops the print side of the tripwire for the duration of a test. */
 let restoreConsole: (() => void) | null = null;
