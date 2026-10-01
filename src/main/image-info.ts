@@ -41,11 +41,42 @@ import {
 const log = new Logger('main/image-info');
 
 /**
+ * Deepest object nesting {@link flattenExif} will walk before ignoring
+ * anything deeper.
+ *
+ * Real EXIF nests at most a handful of levels (IFD0 to Exif/GPS/Interop IFDs).
+ * The cap exists so that a cyclic structure cannot exhaust the call stack.
+ * @const {number} MAX_EXIF_NESTING_DEPTH
+ */
+const MAX_EXIF_NESTING_DEPTH = 32;
+
+/**
+ * Total object nodes {@link flattenExif} will visit across a whole call.
+ *
+ * Bounding depth is not enough on its own. A structure whose nodes each hold
+ * several keys pointing back at the same ancestor reaches the depth cap along
+ * an exponential number of distinct paths, so a handful of bytes can otherwise
+ * keep the walk running indefinitely. Real EXIF graphs hold tens of nodes, so
+ * this budget is orders of magnitude above anything legitimate while keeping
+ * traversal time and the resulting map bounded.
+ * @const {number} MAX_EXIF_NODES_VISITED
+ */
+const MAX_EXIF_NODES_VISITED = 1024;
+
+/**
  * Recursively flattens nested EXIF objects into a flat `Record<string, string>`.
  *
  * Nested objects are joined with `.` separators (e.g. `GPS.Latitude`), arrays
  * are joined with `", "`, and all scalar values are stringified. `null` and
  * `undefined` values are skipped so they never appear in the result.
+ *
+ * Traversal is bounded two ways, and both are load bearing. Depth stops at
+ * {@link MAX_EXIF_NESTING_DEPTH} levels, so a self-referential object cannot
+ * exhaust the call stack. A separate budget of {@link MAX_EXIF_NODES_VISITED}
+ * nodes bounds the *total* work, because a structure with several keys per
+ * node reaching the same ancestor still offers exponentially many distinct
+ * paths within the depth limit. Shared subtrees are flattened once per branch
+ * that reaches them, until the budget runs out.
  *
  * @param {unknown} input - The parsed EXIF object (or any value) returned by
  *   `exifr.parse`.
@@ -57,18 +88,44 @@ const log = new Logger('main/image-info');
 export function flattenExif(input: unknown, prefix = ''): Record<string, string> {
   const out: Record<string, string> = {};
   if (!input || typeof input !== 'object') return out;
-  for (const [key, value] of Object.entries(input as Record<string, unknown>)) {
-    const name = prefix ? `${prefix}.${key}` : key;
-    if (value == null) continue;
-    if (Array.isArray(value)) {
-      out[name] = value.join(', ');
-    } else if (typeof value === 'object') {
-      Object.assign(out, flattenExif(value, name));
-    } else {
-      out[name] = String(value);
+  let nodesLeft = MAX_EXIF_NODES_VISITED;
+  const walk = (node: object, name: string, depth: number): void => {
+    if (depth > MAX_EXIF_NESTING_DEPTH || nodesLeft <= 0) return;
+    nodesLeft -= 1;
+    for (const [key, value] of Object.entries(node as Record<string, unknown>)) {
+      const path = name ? `${name}.${key}` : key;
+      if (value == null) continue;
+      if (Array.isArray(value)) {
+        out[path] = value.join(', ');
+      } else if (typeof value === 'object') {
+        walk(value, path, depth + 1);
+      } else {
+        out[path] = String(value);
+      }
     }
-  }
+  };
+  walk(input, prefix, 0);
   return out;
+}
+
+/**
+ * Removes the top-level `errors` array that `exifr` injects into its result
+ * when it recovers from a malformed metadata block.
+ *
+ * Without this, a file whose EXIF is entirely unreadable flattens to
+ * `{ errors: 'RangeError: ...' }`, which both leaks internal parser messages
+ * into user-visible metadata and makes {@link getImageInfo} report a file as
+ * having metadata when none was recovered. Genuine tags parsed alongside a
+ * failure are preserved, so partial recovery still surfaces.
+ *
+ * @param {Record<string, unknown>} parsed - Object returned by `exifr.parse`.
+ * @returns {Record<string, unknown>} The same object without `errors`; the
+ *   input is left untouched.
+ */
+function withoutParseErrors(parsed: Record<string, unknown>): Record<string, unknown> {
+  if (!('errors' in parsed)) return parsed;
+  const { errors, ...rest } = parsed;
+  return rest;
 }
 
 /**
@@ -208,6 +265,11 @@ export function decodeImageHistogram(filePath: string): Promise<{ buffer: Buffer
  * in which case the corresponding result is an empty object / `null`. When
  * neither step produced anything, `null` is returned.
  *
+ * A file whose EXIF is entirely unreadable yields no metadata: `exifr` reports
+ * the problem through an `errors` key on its result rather than by throwing,
+ * and that key is logged and dropped so partial parse failures are not
+ * mistaken for recovered tags.
+ *
  * @param {string} filePath - Path to the image file to analyze.
  * @returns {Promise<ImageExifData | null>} An object with the file path, flat
  *   EXIF map, and histogram (or `null`), or `null` when the file is not an
@@ -218,8 +280,14 @@ export async function getImageInfo(filePath: string): Promise<ImageExifData | nu
 
   let exif: Record<string, string> = {};
   try {
-    const parsed = await exifr.parse(filePath, { skipUnknown: true, reviveValues: false } as Parameters<typeof exifr.parse>[1]);
-    exif = flattenExif(parsed);
+    const parsed = (await exifr.parse(filePath, {
+      skipUnknown: true,
+      reviveValues: false,
+    } as Parameters<typeof exifr.parse>[1])) as Record<string, unknown> | undefined;
+    if (parsed) {
+      if ('errors' in parsed) log.warn(LOG_EXIF_PARSE_FAILED, parsed.errors);
+      exif = flattenExif(withoutParseErrors(parsed));
+    }
   } catch (err) {
     log.warn(LOG_EXIF_PARSE_FAILED, err);
   }

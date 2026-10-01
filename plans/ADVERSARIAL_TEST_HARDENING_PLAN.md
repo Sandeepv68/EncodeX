@@ -10,26 +10,26 @@
 
 ## Progress log
 
-| Phase                                         | Status      | Verified                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| --------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0.1 Unit-level crash tripwire                 | **DONE**    | 2683/2683 unit tests green; `npm run lint` 0 errors; `npm run typecheck` clean                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| 0.1b Tripwire self-tests                      | **DONE**    | 19/19 in `src/test-utils/__tests__/crash-tripwire.test.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| 0.1c DOM prop-leak AST guard                  | **DONE**    | `src/renderer/styles/__tests__/no-dom-prop-leak.test.ts`, 47 style modules                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| 0.2 E2E renderer tripwire                     | **DONE**    | Tier A 154/154 (2 skipped), Tier B 9/9; `npm run lint` 0 errors; `npm run typecheck` clean; `npm run format:check` clean                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| 0.3 Typecheck the tests                       | **DONE**    | 191 test files in program; 54 real errors fixed, 0 remain; `npm run typecheck` clean (5 projects, 38s); 2686/2686 unit, Tier A 154/154, Tier B 9/9                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| 0.4 Coverage: per-file floors + diff coverage | **DONE**    | Merged 2-tier report (220 files, **30 below the 80/70 candidate floor**, non-blocking); blocking diff gate with added-line coverage; 4 merge/scope bugs found and fixed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| 0.5 Flake governance                          | **DONE**    | `test:flake-detect` runs e2e 3× with `--retry=0` and fails on failure rate in (0,1), on partial runs, on lapsed/stale/**invalid** quarantine entries; 36 unit tests, 10 mutations caught; `test-flake` CI job. Sign-off audit closed two real holes: an undated **or typo-dated** entry exempted a test forever (`Date.parse` → `NaN`, and `NaN <= now` is false), so the schema is now validated and malformed entries fail closed; `actionlint` 1.7.12 + shellcheck clean over all 7 workflows                                                                                                                                                                                      |
-| 0.6 Housekeeping debt                         | **DONE**    | `perf/**` + `eslint-rules/**` in Prettier globs; `tsconfig.perf.json` wired as the 6th typecheck project; boot time recorded + asserted (median-of-3 vs `perf/baseline.json` budget +25%), 31 tests, 6 mutations caught. Typechecking `perf/` found Vitest 4 silently ignored `forks: { execArgv }`, so the memory tests had been measuring uncollected garbage                                                                                                                                                                                                                                                                                                                       |
-| 1 Contract & input fuzzing                    | **DONE**    | 9 new property-test files, 162 tests, all 10 rows covered. **8 source bugs found and fixed** (`isValidTime` accepted `00:60:00`; `formatSize(Infinity)`/`formatDuration(NaN)`/`formatClockTime` rendered `'Infinity TB'`/`'NaNs'`/`'Infinity:NaN:NaN'`; `validateQueueExport` had no job cap; `formatError` threw on hostile objects; `isContainerCompatibleWithStream` threw on a streamless payload; the i18n test mock threw on a RegExp-metacharacter key). `deriveOutputPath` traversal and all 6 store rehydration readers proved already-safe (mutation-verified). Typecheck 6/6, lint 0 errors, format clean, unit 199/2911, integration 50/50, e2e A 155+2skipped, e2e B 9/9 |
-| 2 Media / byte-level fuzzing                  | IN PROGRESS | `computeHistogram` fuzzed (`image-histogram.fuzz.test.ts`, 8 tests): found an unbounded loop (`total = width * height` unclamped → 3.6 × 10^9 iterations on a 60k×60k PNG, a real hang) plus a `NaN` written to the string key `"undefined"`, invisible to `.some(Number.isNaN)`. Fixed by clamping to the bytes present; mutation-verified (clamp removal fails 4/8). Subprocess watchdog **delivered** (`src/main/spawn-timeout.ts`): 5 bounded spawn sites killed+rejected, 7 unwired, 7 mutations caught. Remaining: `frame-decoder.ts` fuzz, EXIF bombs, real corpus                                                                                                             |
-| 3 IPC contract & abuse                        | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 4 State machines, lifecycle & races           | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 5 UI robustness, i18n & a11y                  | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 6 CLI & MCP hostile input                     | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 7 Updater & network hostility                 | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 8 Resource limits & denial-of-service         | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 9 Mutation testing                            | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 10 CI wiring, budgets & nightly chaos         | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Phase                                         | Status      | Verified                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| --------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0.1 Unit-level crash tripwire                 | **DONE**    | 2683/2683 unit tests green; `npm run lint` 0 errors; `npm run typecheck` clean                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| 0.1b Tripwire self-tests                      | **DONE**    | 19/19 in `src/test-utils/__tests__/crash-tripwire.test.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| 0.1c DOM prop-leak AST guard                  | **DONE**    | `src/renderer/styles/__tests__/no-dom-prop-leak.test.ts`, 47 style modules                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| 0.2 E2E renderer tripwire                     | **DONE**    | Tier A 154/154 (2 skipped), Tier B 9/9; `npm run lint` 0 errors; `npm run typecheck` clean; `npm run format:check` clean                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| 0.3 Typecheck the tests                       | **DONE**    | 191 test files in program; 54 real errors fixed, 0 remain; `npm run typecheck` clean (5 projects, 38s); 2686/2686 unit, Tier A 154/154, Tier B 9/9                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| 0.4 Coverage: per-file floors + diff coverage | **DONE**    | Merged 2-tier report (220 files, **30 below the 80/70 candidate floor**, non-blocking); blocking diff gate with added-line coverage; 4 merge/scope bugs found and fixed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| 0.5 Flake governance                          | **DONE**    | `test:flake-detect` runs e2e 3× with `--retry=0` and fails on failure rate in (0,1), on partial runs, on lapsed/stale/**invalid** quarantine entries; 36 unit tests, 10 mutations caught; `test-flake` CI job. Sign-off audit closed two real holes: an undated **or typo-dated** entry exempted a test forever (`Date.parse` → `NaN`, and `NaN <= now` is false), so the schema is now validated and malformed entries fail closed; `actionlint` 1.7.12 + shellcheck clean over all 7 workflows                                                                                                                                                                                                                                                                                                                                               |
+| 0.6 Housekeeping debt                         | **DONE**    | `perf/**` + `eslint-rules/**` in Prettier globs; `tsconfig.perf.json` wired as the 6th typecheck project; boot time recorded + asserted (median-of-3 vs `perf/baseline.json` budget +25%), 31 tests, 6 mutations caught. Typechecking `perf/` found Vitest 4 silently ignored `forks: { execArgv }`, so the memory tests had been measuring uncollected garbage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| 1 Contract & input fuzzing                    | **DONE**    | 9 new property-test files, 162 tests, all 10 rows covered. **8 source bugs found and fixed** (`isValidTime` accepted `00:60:00`; `formatSize(Infinity)`/`formatDuration(NaN)`/`formatClockTime` rendered `'Infinity TB'`/`'NaNs'`/`'Infinity:NaN:NaN'`; `validateQueueExport` had no job cap; `formatError` threw on hostile objects; `isContainerCompatibleWithStream` threw on a streamless payload; the i18n test mock threw on a RegExp-metacharacter key). `deriveOutputPath` traversal and all 6 store rehydration readers proved already-safe (mutation-verified). Typecheck 6/6, lint 0 errors, format clean, unit 199/2911, integration 50/50, e2e A 155+2skipped, e2e B 9/9                                                                                                                                                          |
+| 2 Media / byte-level fuzzing                  | IN PROGRESS | `computeHistogram` fuzzed (`image-histogram.fuzz.test.ts`, 8 tests): found an unbounded loop (`total = width * height` unclamped → 3.6 × 10^9 iterations on a 60k×60k PNG, a real hang) plus a `NaN` written to the string key `"undefined"`, invisible to `.some(Number.isNaN)`. Fixed by clamping to the bytes present; mutation-verified (clamp removal fails 4/8). Subprocess watchdog **delivered** (`src/main/spawn-timeout.ts`): 5 bounded spawn sites killed+rejected, 7 unwired, 7 mutations caught. `frame-decoder.ts` fuzz **delivered** (`frame-decoder.fuzz.test.ts`, 46 tests): found an **OOM process-killing hang** at `frameSize === 0` plus a silent `NaN`/`Infinity` stall and a throwing `Buffer.alloc`; fixed by validating the derivation, 5 mutations caught, 1 dead branch removed. EXIF bombs **delivered** (`image-exif.fuzz.test.ts`, 19 tests): `exifr` itself survives every hand-built TIFF bomb, but our layer leaked the parser's `errors` array as if it were an EXIF tag (garbage files reported as having metadata) and `flattenExif` bounded depth but not total work (a self-referential node with 2 child keys = 2^depth paths past the depth cap; >2e6 visits measured). Fixed; 3 mutations caught. Real corpus **delivered** (`corrupt-media.mediafuzz.test.ts`, 6 tests): 173 deterministic files from 11 real-ffmpeg seeds probed with real `ffmpeg`/`ffprobe` across 7 entry points; **no new production bug** — the work was proving the tier non-vacuous, which exposed 4 defects in the tests themselves (a waveform sweep that could never pass because its seed had no audio stream, a prefix-slice that never reached bit-flipped files, a vacuity guard for the fix, and a tally hidden by the crash tripwire). 2 production mutations caught. |
+| 3 IPC contract & abuse                        | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 4 State machines, lifecycle & races           | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 5 UI robustness, i18n & a11y                  | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 6 CLI & MCP hostile input                     | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 7 Updater & network hostility                 | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 8 Resource limits & denial-of-service         | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 9 Mutation testing                            | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 10 CI wiring, budgets & nightly chaos         | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 ### Bugs the tripwire found (all fixed in the same change that surfaced them)
 
@@ -755,10 +755,13 @@ in CLI mode` fail after 32s. It passed 13/13 in isolation and the full suite the
 Runs in a new suite `test:media-fuzz` against the _real_ ffmpeg-static binary. Corrupt-file handling is
 the #1 real-world crash source for a media tool and is currently untested.
 
-> **Status: IN PROGRESS — resume from "Phase 2 progress" below.** Done: `computeHistogram` fuzz and the
-> subprocess watchdog (`withTimeout`, 5 bounded sites). Next: `frame-decoder.ts` fuzz, EXIF bombs, real
-> corpus. The plan's file paths for three targets are wrong; the corrected locations are in the progress
-> section.
+> **Status: DONE (2026-10-01).** All five Phase 2 items are delivered: `computeHistogram` fuzz, the
+> subprocess watchdog (`withTimeout`, 5 bounded sites), the `FrameDecoder` fuzz (which found an OOM
+> process-killing hang), the EXIF bombs (which found an `errors`-leak and unbounded work in
+> `flattenExif`), and the real corpus → `test:media-fuzz`. The plan's file paths for three targets were
+> wrong; the corrected locations are in the progress section. The real corpus found **no** new production
+> bug, which is a legitimate result: a clean tier that has been shown to fail on injected defects is worth
+> more than a silent one.
 
 **Corpus generator** (`e2e/fixtures/corpus/generate-corpus.ts`):
 
@@ -801,10 +804,205 @@ across the run in a `perf`-style test).
 
 1. `computeHistogram` (`src/main/image-info.ts`) fuzzed; one real bug class found and fixed. New file
    `src/main/__tests__/image-histogram.fuzz.test.ts`, 8 tests, 1.74 s.
-2. The subprocess watchdog (`src/main/spawn-timeout.ts`); 5 bounded sites, 43 wrapper tests + 12 error-code
+2. `FrameDecoder` fuzzed; a **process-killing** bug found and fixed. New file
+   `src/main/player/__tests__/frame-decoder.fuzz.test.ts`, 46 tests. Detailed below.
+3. The subprocess watchdog (`src/main/spawn-timeout.ts`); 5 bounded sites, 43 wrapper tests + 12 error-code
    tests + 6 per-site hang tests, 7 mutations caught. Detailed below.
+4. EXIF bombs; two real bugs found and fixed. New file
+   `src/main/__tests__/image-exif.fuzz.test.ts`, 19 tests. Detailed below.
 
-**Next up: `frame-decoder.ts` fuzz → EXIF bombs → real corpus.**
+5. Real media corpus → `test:media-fuzz`. New files `src/test-utils/media-corpus.ts` and
+   `src/main/__tests__/corrupt-media.mediafuzz.test.ts`, 6 tests. Detailed below.
+
+### Real corpus → `test:media-fuzz` — clean, and the value was in proving it *could* fail (DELIVERED)
+
+Against the real `ffmpeg-static`/`ffprobe-static` binaries. **No new production bug was found** — unlike
+every previous item in this phase. That is the honest result, and the useful part is the evidence that
+the suite is capable of reporting a defect rather than passing vacuously.
+
+**Corpus** (`src/test-utils/media-corpus.ts`, deterministic, mulberry32 seeded from `0x5eed`, override with
+`MEDIA_FUZZ_SEED`). 11 seeds synthesised by real ffmpeg — MP4, MKV, WebM, MOV, AVI, JPEG, PNG, GIF, MP3,
+FLAC, SRT — expanded to **173 files** via truncation (byte offsets 0/1/2/8/64/512 and 1/5/25/50/99 %),
+single-bit flips in the header, all-zero and all-noise rewrites, and extension/content mismatches
+(`mkv-as.mp4`, `jpg-as.mkv`, `mp4-as.jpg`, header-plus-noise). Nothing is checked in; the corpus is
+regenerated per run, so it adds no repo weight and cannot rot.
+
+**Targets exercised** (all real, no mocks): `FFToolCore.getInfo()` over all 173 files; `getImagePreview()`,
+`getImageFileInfo()`, `getImageInfo()` over the image family; `getVideoPreview()`; `extractWaveform()` and
+`extractThumbnails()`. Each call is raced against a 20 s budget, and results are checked for non-finite
+numbers and for own-code rejections. `isPackaged()` returns `false` outside Electron, so the suite needs no
+Electron mock.
+
+**Four ways the suite was proven non-vacuous.** Each of these was a real defect *in the test*, found by
+inspecting what the sweep actually did:
+
+1. **A vacuous waveform test.** `extractWaveform()` returned `null` for all 16 sampled files, which looked
+   like a pass. It was not: the control group never asserted timeline output on *good* input, and the seed
+   it was using (`seed.mp4`) is **video-only**. Waveform extraction cannot ever succeed on a file with no
+   audio stream, so the whole waveform sweep was unfalsifiable. Fixed by adding `seed-av.mp4` (3 s, video +
+   AAC audio) and by extending the control group to require non-`null` waveform *and* thumbnail output from
+   it. The control now fails if either extractor is broken, which is what makes the all-`null` corrupt-file
+   result meaningful.
+2. **A sampling bias that hid every interesting case.** `.slice(0, N)` on the video corpus returned the
+   *prefix*, which is entirely the 0- and 1-byte truncations of one seed. Bit-flipped and mismatched files —
+   the ones most likely to slip past a decoder's header check — were never reached. Replaced with
+   round-robin bucketing over (seed, corruption kind).
+3. **A vacuity guard for the fix above.** Stratification is only correct if it keeps reaching the audio seed,
+   so the timeline test now asserts the sample contains a `seed-av.mp4` variant. Verified this guard can
+   fail: with `MEDIA_FUZZ_TIMELINE_LIMIT=1` the sample collapses to `seed.mp4` and the assertion fires.
+4. **A swallowed outcome counter.** `console.info` is stubbed by the suite's crash tripwire, so the first
+   tally implementation printed nothing at all. Moved to `process.stderr.write`, gated on
+   `MEDIA_FUZZ_VERBOSE`, because a sweep reporting "everything returned `null`" is indistinguishable from a
+   sweep that never reached the decoder.
+
+**Mutation verification** (2 production mutations, both caught, both restored):
+
+| Mutation | Result |
+| --- | --- |
+| `ffprobe-mapper.ts`: `duration` fallback `0` → `NaN` | **Caught** — 27 files flagged, and the control group failed too |
+| `video-preview.ts`: `extractPreviewFrame` never settles | **Caught** — all 30 files reported as hung past the 20 s budget |
+
+A third mutation (inverting the `BudgetExceeded` assertion) correctly did *not* fail, which was itself
+informative: it showed the hang assertion is only reached for calls that reject or hang, so a weak mutation
+proves nothing. The real hang mutation above was needed to cover it.
+
+**Outcome distribution** (`MEDIA_FUZZ_VERBOSE=1`): `getInfo` 70 values / 103 rejected — real ffprobe work on
+more than half the corpus; `getImageFileInfo` and `getImagePreview` 43 values / 1 `null`; `getImageInfo` 13 /
+31; `getVideoPreview` 2–3 / 27; waveform and thumbnails 0 / 16. The waveform and thumbnail zeros are
+*correct* — a corrupted file has no decodable audio or frame to extract — but they are only trustworthy
+because item 1 proves those paths work on pristine input.
+
+**Known upstream issue, deliberately not worked around.** The suite emits Node `DEP0137`
+("Closing a FileHandle object on garbage collection"). Root cause is in `exifr`, not here: its chunked
+reader calls `this.file.close && this.file.close()` in `parse()` **without awaiting it**, so the
+`fs.promises.FileHandle` from `readChunked()` can be collected mid-close. Confirmed pre-existing and
+scale-dependent — the 19-test EXIF suite builds tiny hand-written TIFFs that never enter chunked mode, so
+only the 44 real image files in this suite trigger it. Not worked around because the only clean fix is to
+pass `exifr` an in-memory buffer, which trades a deprecation warning for a whole-file read on large images.
+Tracked as upstream debt.
+
+**Tier separation.** The suite is excluded from `vitest.config.ts` and runs only via
+`npm run test:media-fuzz` (`vitest.media-fuzz.config.ts`), with `setupFiles: [src/test-setup.crash.ts]`,
+`maxWorkers: 2`, and a 900 s per-test ceiling. The unit suite is unaffected.
+
+**Final state:** `test:media-fuzz` 6/6 in ~14 s; unit 3060/3060 across 203 files; typecheck, format, and lint
+clean (lint keeps its one pre-existing `jsx-a11y/no-autofocus` warning). `git status` shows no leftover
+scratch files and no modified production sources.
+
+### EXIF bombs — the parser is hardened, *our* layer was not (DELIVERED)
+
+`exifr` 7.1.3 survived every hand-built TIFF bomb (IFD offset outside the buffer, 65535 entries, an
+`IFDCount` that reads as a negative int16, a self-referential `IFDNext`, a `Photoshop` IRB declaring
+4 GB, truncated entry tables, 64 KB of zeros) in 2–6 ms with no throw, hang, or oversized allocation.
+The bugs were both in `src/main/image-info.ts`:
+
+1. **A garbage file was reported as having metadata.** `exifr` does not throw on a malformed block; it
+   *recovers* and reports the problem in an `errors` array on its result. `flattenExif` flattened that
+   array like any tag, so a file with no readable EXIF at all produced
+   `{ errors: 'RangeError: Offset is outside the bounds of the DataView' }` — internal parser text
+   surfaced as user-visible metadata, and `getImageInfo` returned non-`null` for a garbage file. Fixed by
+   logging and dropping the top-level `errors` key before flattening; genuine tags parsed alongside a
+   failure still surface, so partial recovery is preserved. Mutation-verified (stripping removed →
+   7 tests fail).
+2. **Unbounded work in `flattenExif`.** Bounding recursion *depth* is not sufficient. A node holding
+   several keys that point back at the same ancestor reaches the depth cap along an **exponential
+   number of distinct paths**, so a handful of bytes kept the walk running indefinitely (measured:
+   >2,000,000 node visits at depth 31, still climbing, against a depth cap of 32). Fixed with a second,
+   independent guard — a budget of 1,024 nodes visited per call — which bounds traversal time, result
+   size, and stack depth together. 3 mutations caught: dropping the depth cap, dropping the node budget,
+   dropping the `errors` strip.
+
+Two notes for whoever extends this, both learned the hard way here:
+
+- **A guard that another guard already covers is untestable, and therefore unverified.** A
+  `WeakSet` cycle guard was written first and then removed: the depth cap already bounds recursion, so
+  no return-value test could ever observe the cycle guard missing, and *worse*, because the guard
+  deleted each node on backtrack it did not even stop the exponential case. The same masking happened
+  in reverse when a 50,000-node chain was used to test the depth cap — the node budget cut the walk
+  short first and the mutation survived. Each guard now has a test built to isolate it: the chain is
+  1,000 nodes (above the depth cap, *below* the node budget) and the branching tree is 14 levels deep
+  (below the depth cap, far above the budget).
+- **A test that hangs is worse than no test.** Mutation runs kept stalling the suite, because an
+  unbounded synchronous walk blocks the event loop and no `testTimeout` can interrupt it. The
+  adversarial structures are now sized to terminate either way, so a regression fails an assertion
+  instead of wedging a worker.
+
+A negative result worth recording: `x`/`y` and `StripByteCounts` of `0xFFFFFFFF` are **well-formed**
+LONG tags, not corruption. exifr parses them and the values are surfaced; an early draft wrongly
+grouped them with the unparseable bombs, and the test failed until it was corrected.
+
+
+### `FrameDecoder` fuzz — a hang that kills the process (DELIVERED)
+
+**The bug: `frameSize === 0` was an uncatchable OOM, not a hang that reports itself.** The stdout
+assembler drains with `while (framePartsLen >= frameSize) { …; framePartsLen -= frameSize; }`, which only
+makes progress when `frameSize` is a **positive integer**. `open()` computed
+`frameSize = width * height * 3` from caller-supplied dimensions with no validation, so:
+
+| Input                        | Old behaviour                                                                                                                                                                                                                          |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `width = 0` or `height = 0`  | Condition permanently true, subtraction a no-op. **One byte of stdout** spins forever pushing zero-length buffers onto `pendingFrames` until V8 dies: `FATAL ERROR: … JavaScript heap out of memory`, worker gone, _nothing catchable_ |
+| negative dimension           | `Buffer.alloc(-12)` throws a `RangeError` **inside an EventEmitter `data` handler**, where no caller can catch it                                                                                                                      |
+| `NaN` / `Infinity` dimension | `framePartsLen >= NaN` is false forever → **silent permanent stall**. No error anywhere; playback just never starts                                                                                                                    |
+
+In production this is the **Electron main process**, not a test worker — the player would freeze and then
+die rather than surface a failure.
+
+**Reachability, stated honestly.** The one production caller,
+`src/main/ipc/player.ts:132`, guards with `if (videoStream?.width && videoStream?.height)`, and `0` is
+falsy, so `frameSize === 0` is _not_ reachable through it today. That is a distant caller's truthiness
+check standing between a public method and a process-killing loop, with the invariant unenforced at the
+layer that actually owns the loop. `Math.max(PLAYER_MIN_DIMENSION, …)` guards the _scaled_ branch of
+`capResolution` but not its early-return branch. The fix therefore validates at the derivation rather
+than relying on the caller.
+
+**Fix.** `resolveFrameSize()` / `safeDimension()` / `resolveAudioTarget()` in
+`src/main/player/frame-decoder.ts` coerce dimensions to positive integers and non-finite audio configs
+to `AUDIO_TARGET_MIN_BYTES`. It returns the clamped **width and height alongside** the size, because
+passing the raw request to ffmpeg's `-s WxH` while assembling a different byte count would desynchronise
+the decoder from its own output. Clamping warns (`LOG_FFMPEG_DECODER_RESOLUTION_CLAMPED`) so a silent
+resolution change is still visible.
+
+**Deliberately _not_ clamped: an upper bound.** A `100000 × 100000` request is a legitimate 30 GB frame,
+not a hostile one, and `capResolution` already caps to 640×360 upstream. Clamping to a maximum here would
+reject valid 4K decodes, so that case is asserted to be _honored_ instead.
+
+**Dead branch removed, found by a mutation that nothing caught.** Reverting `spawnFfmpeg`'s dimension
+handling was caught by **zero** tests. The cause: that branch is **unreachable**. `open()` and `seek()`
+both call `spawnFfmpeg` with `undefined` for width and height, having already set the fields — so it was
+dead code carrying an unvalidated `frameSize` derivation and a landmine for the next caller. Removed, and
+its parameters dropped from the signature. This is the plan's own Phase 2 precedent ("dead guard removed
+rather than kept as decoration that no test can distinguish") applied to a method instead of a guard.
+
+**Mutation-verified — 5 mutations, all caught.** N1 and N4 kill the worker with an OOM, which _is_ the
+signal here: a "passing" suite cannot contain an unbounded loop.
+
+| #   | Mutation                                                  | Caught by                                              |
+| --- | --------------------------------------------------------- | ------------------------------------------------------ |
+| N1  | revert `open()` to `frameSize = width * height * 3`       | OOM, worker exits (`Tests 43 passed` of 78, file dies) |
+| N2  | drop the `Number.isFinite` guard in `safeDimension`       | 4 tests (the `NaN`/`Infinity` stalls)                  |
+| N3  | revert the audio target to `Math.max(512, Math.round(…))` | 4 tests (`Math.max(512, NaN)` is `NaN`)                |
+| N4  | `MIN_DECODE_DIMENSION = 0`                                | OOM, worker exits                                      |
+| N5  | bytes-per-pixel 3 → 4                                     | 18 tests (every frame-length and ledger assertion)     |
+
+**Two test bugs recorded, both of which first looked like source bugs:**
+
+- I asserted `residual % frameSize === 0` for a 1-byte feed against a 96-byte frame. The residual is
+  _supposed_ to be a partial frame. Corrected to pin the emitted count to
+  `floor(total / frameSize)` directly.
+- The emitted frame **count** is not a pure function of the byte stream: `emitAvailable` has a deliberate
+  200 ms emergency flush that emits a frame with an **estimated** PTS when showinfo lags, so a GC pause
+  alone makes the count nondeterministic. Feeding a PTS _surplus before_ each data chunk removes the time
+  dependence and makes the ledger assertion exact.
+
+**A vacuous assertion I had to strengthen.** The hostile-dimension tests originally asserted only "does not
+throw" — which a decoder that _stalls_ passes trivially, since a stall raises nothing. That is why N2's
+`NaN`/`Infinity` stalls initially went uncaught: 0 frames emitted, no error, green. The tests now require
+frames to actually be assembled. That tightening is what caught `huge dimensions` mis-classified as
+hostile when it is merely large.
+
+**Verified:** unit **3041/3041**, `npm run typecheck` 6/6, `npm run lint` 0 errors, `npm run
+format:check` clean.
 
 **The histogram bug: an unbounded loop plus an invisible `NaN`.** The original loop was
 `const total = width * height`, trusted outright. Those dimensions come from the ffmpeg _scale filter_,
@@ -843,10 +1041,8 @@ iterates. Dead guard removed rather than kept as decoration that no test can dis
 
 #### Remaining Phase 2 work, in suggested order
 
-1. ~~**`withTimeout`**~~ — **DELIVERED**, see "Subprocess watchdog" above. Next item is 2.
-2. **`frame-decoder.ts` fuzz** — pure and fast, no ffmpeg. Feeds 10k random buffers plus the structured
-   bad cases already enumerated above. Note `frame-decoder.ts:222` spawns ffmpeg, so the _spawn_ path
-   needs a mock; only the pure decode paths are directly fuzzable.
+1. ~~**`withTimeout`**~~ — **DELIVERED**, see "Subprocess watchdog" above.
+2. ~~**`frame-decoder.ts` fuzz**~~ — **DELIVERED**, see "`FrameDecoder` fuzz" above.
 3. **EXIF bombs** — hand-built TIFFs, no ffmpeg. Targets `getImageInfo` (`src/main/image-info.ts:191`,
    uses `exifr`) and the pure `flattenExif` (`:56`).
 4. **Real corpus + `test:media-fuzz`** — the most expensive item. Needs a genuine source file to corrupt;

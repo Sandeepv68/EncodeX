@@ -50,6 +50,7 @@
     "test:coverage:perfile": "npm run test:coverage && npm run test:integration && node scripts/coverage-floor-report.mjs",
     "test:coverage:diff": "node scripts/coverage-diff.mjs",
     "test:integration": "npm run build:main && vitest run --config vitest.integration.config.ts --passWithNoTests --silent --coverage",
+    "test:media-fuzz": "vitest run --config vitest.media-fuzz.config.ts",
     "test:e2e": "npm run build && vitest run --config e2e/vitest.e2e.config.ts",
     "test:e2e:real": "npm run build && vitest run --config e2e/vitest.e2e.real.config.ts --silent",
     "test:e2e:ci": "vitest run --config e2e/vitest.e2e.config.ts --silent",
