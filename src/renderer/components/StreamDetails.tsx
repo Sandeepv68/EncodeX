@@ -115,7 +115,7 @@ export default function StreamDetails({ streams, compact }: StreamDetailsProps) 
             <StreamTypeChip
               label={t(`mediaInfo.${stream.type}`).toUpperCase()}
               size="small"
-              tone={stream.type === 'video' ? 'video' : 'audio'}
+              $tone={stream.type === 'video' ? 'video' : 'audio'}
             />
             <StreamName variant="body2">
               {t('mediaInfo.stream')} #{stream.index}

@@ -3,12 +3,22 @@ import { Box, Typography, Paper } from '@mui/material';
 import type { ElementType } from 'react';
 import { SHADOWS } from '../colors';
 
-export const PageRoot = styled(Box)<{ hasAside?: boolean }>(({ theme, hasAside }) => ({
+/**
+ * Root layout for a page.
+ *
+ * `$hasAside` uses MUI's transient-prop (`$`) convention so Emotion consumes it
+ * instead of forwarding it. Without the prefix every page rendered an invalid
+ * `hasaside` attribute onto the DOM element, which React warns about on each
+ * mount and which is invalid HTML in the shipped app.
+ */
+export const PageRoot = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$hasAside',
+})<{ $hasAside?: boolean }>(({ theme, $hasAside }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'stretch',
   gap: theme.spacing(2),
-  ...(hasAside
+  ...($hasAside
     ? {
         [theme.breakpoints.up('md')]: {
           flexDirection: 'row',

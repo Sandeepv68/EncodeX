@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { inflateSync } from 'zlib';
 import { EventEmitter } from 'events';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
+import { KILL_SIGNAL } from '../../../shared/transcoder-constants';
+import { TIMELINE_EXTRACT_TIMEOUT_MS } from '../../spawn-timeout';
 
 const { spawnMock, existsSyncMock } = vi.hoisted(() => ({
   spawnMock: vi.fn(),
@@ -167,6 +170,52 @@ describe('timeline-media', () => {
       return proc;
     });
     await expect(extractWaveform('v.mp4', 60)).resolves.toBeNull();
+  });
+
+  // `spawnBuffer` is documented never to reject, so a hang has to degrade to
+  // `code: -1` rather than propagating. Without this spec a removed watchdog
+  // would leave the promise pending forever and `extractWaveform` would hang
+  // with it, which nothing else in this file would notice.
+  //
+  // Segments run under a concurrency semaphore, so a wedged file is drained in
+  // waves of `TIMELINE_EXTRACT_TIMEOUT_MS` rather than in one. The clock is
+  // advanced a wave at a time until the extractor settles, which also pins the
+  // fact that a hostile file cannot hold the semaphore open indefinitely.
+  it('kills a wedged ffmpeg and degrades a timed-out waveform to null', async () => {
+    expectAppLog('error', 'main/spawn-timeout');
+    const procs: ReturnType<typeof createFakeProcess>[] = [];
+    spawnMock.mockImplementation(() => {
+      const proc = createFakeProcess();
+      procs.push(proc);
+      return proc;
+    });
+
+    vi.useFakeTimers();
+    try {
+      const pending = extractWaveform('v.mp4', 60);
+      await vi.advanceTimersByTimeAsync(0);
+      expect(procs.length).toBeGreaterThan(0);
+
+      let settled = false;
+      const settledPromise = pending.then((value) => {
+        settled = true;
+        return value;
+      });
+
+      let waves = 0;
+      while (!settled && waves < 20) {
+        await vi.advanceTimersByTimeAsync(TIMELINE_EXTRACT_TIMEOUT_MS);
+        waves++;
+      }
+      expect(settled, 'extractWaveform never settled; a watchdog is missing').toBe(true);
+      await expect(settledPromise).resolves.toBeNull();
+      expect(waves).toBeGreaterThan(0);
+      for (const proc of procs) {
+        expect(proc.kill).toHaveBeenCalledWith(KILL_SIGNAL);
+      }
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('builds a montage PNG from parallel per-frame thumbnails', async () => {

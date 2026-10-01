@@ -41,16 +41,20 @@ describe('buildQueueExport', () => {
   });
 
   it('keeps remux/demux multi-input and metadata option fields', () => {
-    const options = {
+    // Real field names and shapes - see the identical fixture in
+    // `src/main/__tests__/job-queue.test.ts`, which asserted against
+    // `additionalInputs: string[]` and a non-existent `chapters` key.
+    const options: QueueJob['options'] = {
       copy: true,
       video: true,
       audio: true,
       map: ['0:v:0', '0:a:0', '0:s:0'],
-      additionalInputs: ['cover.png'],
-      chapters: 0,
+      additionalInputs: [{ path: 'cover.png', map: ['1:0'], disposition: 'attached_pic' }],
+      chaptersFile: '/media/chapters.txt',
+      copyChapters: true,
       hardwareAcceleration: true,
       hwaccelMode: 'auto',
-    } as QueueJob['options'];
+    };
     const snapshot = buildQueueExport([makeJob({ input: 'in.mkv', output: 'out.mkv', options })], 1);
     const raw = JSON.stringify(snapshot);
     const parsed = parseQueueExport(raw);

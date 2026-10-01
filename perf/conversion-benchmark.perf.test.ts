@@ -27,15 +27,30 @@ function runFfmpeg(args: string[], timeoutMs = 120_000): Promise<{ code: number;
   return new Promise((resolve, reject) => {
     const proc = spawn(ffmpegPath, args, { stdio: ['ignore', 'ignore', 'pipe'] });
     let stderr = '';
-    proc.stderr?.on('data', (chunk: Buffer) => { stderr += chunk.toString(); });
-    const timer = setTimeout(() => { proc.kill('SIGKILL'); reject(new Error('timeout')); }, timeoutMs);
-    proc.on('close', (code) => { clearTimeout(timer); resolve({ code: code ?? 1, stderr }); });
-    proc.on('error', (err) => { clearTimeout(timer); reject(err); });
+    proc.stderr?.on('data', (chunk: Buffer) => {
+      stderr += chunk.toString();
+    });
+    const timer = setTimeout(() => {
+      proc.kill('SIGKILL');
+      reject(new Error('timeout'));
+    }, timeoutMs);
+    proc.on('close', (code) => {
+      clearTimeout(timer);
+      resolve({ code: code ?? 1, stderr });
+    });
+    proc.on('error', (err) => {
+      clearTimeout(timer);
+      reject(err);
+    });
   });
 }
 
 function fileExists(p: string): boolean {
-  try { return fs.statSync(p).size > 0; } catch { return false; }
+  try {
+    return fs.statSync(p).size > 0;
+  } catch {
+    return false;
+  }
 }
 
 interface ConversionResult {
@@ -47,18 +62,20 @@ interface ConversionResult {
   memAfter: ReturnType<typeof memorySnapshot>;
 }
 
-async function benchmarkConversion(
-  input: string,
-  output: string,
-  codec: string,
-  extraArgs: string[] = [],
-): Promise<ConversionResult> {
+async function benchmarkConversion(input: string, output: string, codec: string, extraArgs: string[] = []): Promise<ConversionResult> {
   const args = [
-    '-y', '-hide_banner', '-loglevel', 'error',
-    '-i', input,
-    '-c:v', codec,
-    '-c:a', 'aac',
-    '-preset', 'ultrafast',
+    '-y',
+    '-hide_banner',
+    '-loglevel',
+    'error',
+    '-i',
+    input,
+    '-c:v',
+    codec,
+    '-c:a',
+    'aac',
+    '-preset',
+    'ultrafast',
     ...extraArgs,
     output,
   ];
@@ -74,7 +91,7 @@ async function benchmarkConversion(
   const outputSize = fs.statSync(output).size;
   // Parse input duration for real-time factor
   const inputSize = fs.statSync(input).size;
-  const realTimeFactor = inputSize > 0 ? (outputSize / inputSize) : 0;
+  const realTimeFactor = inputSize > 0 ? outputSize / inputSize : 0;
 
   return { codec, durationMs, realTimeFactor, outputSize, memBefore, memAfter };
 }
@@ -86,7 +103,11 @@ describe('Conversion Throughput Benchmark', () => {
   afterAll(() => {
     // Cleanup temp files
     for (const f of tmpOutputs) {
-      try { fs.unlinkSync(f); } catch { /* ignore */ }
+      try {
+        fs.unlinkSync(f);
+      } catch {
+        /* ignore */
+      }
     }
     const filePath = writeResults('phase1-conversion', results);
     logSummary(results);
@@ -155,12 +176,7 @@ describe('Conversion Throughput Benchmark', () => {
 
     const timer = new Timer();
     const memBefore = memorySnapshot();
-    const { code } = await runFfmpeg([
-      '-y', '-hide_banner', '-loglevel', 'error',
-      '-i', FIXTURE_10S_1080P,
-      '-c', 'copy',
-      output,
-    ]);
+    const { code } = await runFfmpeg(['-y', '-hide_banner', '-loglevel', 'error', '-i', FIXTURE_10S_1080P, '-c', 'copy', output]);
     const durationMs = timer.elapsedMs();
     const memAfter = memorySnapshot();
 
@@ -218,9 +234,17 @@ describe('Conversion Throughput Benchmark', () => {
     const timer = new Timer();
     const memBefore = memorySnapshot();
     const { code } = await runFfmpeg([
-      '-y', '-hide_banner', '-loglevel', 'error',
-      '-i', FIXTURE_10S_1080P,
-      '-vn', '-c:a', 'libmp3lame', '-b:a', '128k',
+      '-y',
+      '-hide_banner',
+      '-loglevel',
+      'error',
+      '-i',
+      FIXTURE_10S_1080P,
+      '-vn',
+      '-c:a',
+      'libmp3lame',
+      '-b:a',
+      '128k',
       output,
     ]);
     const durationMs = timer.elapsedMs();

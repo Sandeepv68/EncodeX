@@ -45,9 +45,14 @@ export class FakeTranscoder implements ITranscoder {
 
   /**
    * Creates a fake transcoder.
+   *
+   * `options` is public because the specs flip a knob *after* construction
+   * (`transcoders[0].options.fail = true`) to drive a job into failure - it was
+   * `private`, and reaching past that boundary is exactly what the test
+   * typecheck is for.
    * @param {FakeTranscoderOptions} [options] - Behavior overrides.
    */
-  constructor(private readonly options: FakeTranscoderOptions = {}) {}
+  constructor(readonly options: FakeTranscoderOptions = {}) {}
 
   /**
    * Emits scripted progress/end or error on a microtask. Ignores the file paths.

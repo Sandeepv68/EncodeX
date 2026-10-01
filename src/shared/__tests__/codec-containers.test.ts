@@ -18,6 +18,7 @@ import {
   buildDemuxTargets,
   demuxWarnings,
 } from '../codec-containers';
+import type { MediaStreamInfo } from '../types';
 
 describe('classifyVideoCodec', () => {
   it('classifies H.264 families', () => {
@@ -321,13 +322,15 @@ describe('audioCodecToExtension', () => {
 });
 
 describe('buildDemuxTargets', () => {
-  const streams = [
+  // Typed rather than `as const` for the same reason as `remux-utils.test.ts`:
+  // `buildDemuxTargets` takes a mutable `MediaStreamInfo[]`.
+  const streams: MediaStreamInfo[] = [
     SAMPLE_STREAMS.h264Video,
     { index: 1, type: 'audio', codec: 'aac', channels: 2 },
     { index: 2, type: 'audio', codec: 'ac3', channels: 6 },
     { index: 3, type: 'subtitle', codec: 'subrip' },
     { index: 4, type: 'subtitle', codec: 'hdmv_pgs_subtitle' },
-  ] as const;
+  ];
 
   it('names copy targets basename.kind[ordinal].ext in stream order', () => {
     const targets = buildDemuxTargets(

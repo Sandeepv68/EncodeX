@@ -55,7 +55,7 @@ import {
   readPendingInstall,
   autoInstallPendingUpdate,
 } from '../updater';
-import type { UpdateAsset } from '../../../shared/types';
+import type { UpdateAsset } from '../../shared/types';
 
 const ORIGINAL_PLATFORM = process.platform;
 const ORIGINAL_ARCH = process.arch;
@@ -372,7 +372,7 @@ describe('updater', () => {
 
     it('clears the marker but skips a missing installer', async () => {
       vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({ installerPath: '/tmp/missing.exe', version: '2.0.0' }));
-      vi.mocked(fs.existsSync).mockImplementation((p: string) => p !== '/tmp/missing.exe');
+      vi.mocked(fs.existsSync).mockImplementation((p: fs.PathLike) => p !== '/tmp/missing.exe');
       await autoInstallPendingUpdate();
       expect(fs.unlinkSync).toHaveBeenCalled();
       expect(openPathMock).not.toHaveBeenCalled();

@@ -109,7 +109,9 @@ describe('Startup & Cold Launch Performance', () => {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
       let stdout = '';
-      proc.stdout?.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
+      proc.stdout?.on('data', (chunk: Buffer) => {
+        stdout += chunk.toString();
+      });
       const t = new Timer();
       proc.on('close', () => resolve(t.elapsedMs()));
       proc.on('error', () => resolve(t.elapsedMs()));

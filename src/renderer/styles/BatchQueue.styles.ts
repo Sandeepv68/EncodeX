@@ -81,7 +81,9 @@ export const SearchField = styled(TextField)(({ theme }) => ({
  * @param {boolean} [$hidden] - True while the page is condensed (opacity 0).
  * @param {boolean} [$gone] - True once collapse finished (display none).
  */
-export const AnimatedSection = styled(Box)<{ $hidden?: boolean; $gone?: boolean }>(({ theme, $hidden, $gone }) => ({
+export const AnimatedSection = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$hidden' && prop !== '$gone',
+})<{ $hidden?: boolean; $gone?: boolean }>(({ theme, $hidden, $gone }) => ({
   display: $gone ? 'none' : undefined,
   opacity: $hidden ? 0 : 1,
   transition: `opacity ${theme.transitions.duration.standard}ms ease-in-out`,
@@ -93,7 +95,9 @@ export const AnimatedSection = styled(Box)<{ $hidden?: boolean; $gone?: boolean 
  * physical control.
  * @param {boolean} [$rotated] - True while the page is condensed.
  */
-export const CondenseIcon = styled('span')<{ $rotated?: boolean }>(({ $rotated }) => ({
+export const CondenseIcon = styled('span', {
+  shouldForwardProp: (prop) => prop !== '$rotated',
+})<{ $rotated?: boolean }>(({ $rotated }) => ({
   display: 'inline-flex',
   transition: 'transform 250ms ease-in-out',
   transform: $rotated ? 'rotate(180deg)' : 'rotate(0deg)',

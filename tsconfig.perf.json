@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vitest/globals"]
+  },
+  // Same brace-expansion caveat as tsconfig.test.json: `perf/**/*.{test,spec}.ts`
+  // would match nothing. `perf/**/*` is safe because every TS file here is
+  // either a perf spec, the shared helper, or the vitest config.
+  "include": ["perf/**/*.ts", "src/main/ffprobe-static.d.ts"]
+}

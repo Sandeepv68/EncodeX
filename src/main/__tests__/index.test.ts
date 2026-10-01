@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DEV_SERVER_URL, EXIT_CODES, WINDOW_SIZE, SPLASH_SIZE } from '../../shared/app-constants';
 import { IPC } from '../../shared/ipc-channels';
+import { expectCrash } from '../../test-utils/crash-tripwire';
 
 const {
   appMock,
@@ -141,6 +142,31 @@ const getMainWindows = () => registerIpcHandlersMock.mock.calls.map((call) => ca
  * Fires the app.whenReady callback and flushes the microtask chain so the
  * awaited autoInstallPendingUpdate().then(...) window creation has run.
  */
+/**
+ * `src/main/index.ts` calls `registerProcessCrashHandlers()` at module scope,
+ * and this file re-imports it in nearly every test after `vi.resetModules()`.
+ * Without the sweep below, each import stacks another `uncaughtException` /
+ * `unhandledRejection` pair onto the shared `process`, Node emits
+ * `MaxListenersExceededWarning` about the tenth import, and the survivors are
+ * not inert: every one of them logs and calls `captureException` when a real
+ * fault fires, so a single unhandled rejection in this file fans out into a
+ * dozen reports. The baseline is captured here, before the first dynamic
+ * import, so the crash tripwire's own listeners are never removed.
+ */
+const PROCESS_CRASH_EVENTS = ['uncaughtException', 'unhandledRejection'] as const;
+const baselineProcessListeners = PROCESS_CRASH_EVENTS.map((event) => process.listeners(event));
+
+/** Removes every `process` listener that a `../index` import added. */
+function removeProcessListenersAddedSinceBaseline(): void {
+  PROCESS_CRASH_EVENTS.forEach((event, index) => {
+    for (const listener of process.listeners(event)) {
+      if (!baselineProcessListeners[index].includes(listener)) {
+        process.removeListener(event, listener as () => void);
+      }
+    }
+  });
+}
+
 async function triggerStartup(): Promise<void> {
   getWhenReadyCbs()[0]();
   await Promise.resolve();
@@ -166,6 +192,7 @@ describe('main/index', () => {
     console.log = ORIGINAL_LOG;
     console.warn = ORIGINAL_WARN;
     console.error = ORIGINAL_ERROR;
+    removeProcessListenersAddedSinceBaseline();
     vi.resetModules();
     vi.useRealTimers();
     vi.restoreAllMocks();
@@ -277,6 +304,10 @@ describe('main/index', () => {
   });
 
   it('patches console to forward log messages to the window', async () => {
+    // The point of this test is to drive every console level, so the tripwire's
+    // own records of that output have to be declared up front.
+    expectCrash('consoleWarn', '{"a":1}');
+    expectCrash('consoleError', 'boom');
     process.argv = ['node', 'x.js'];
     await import('../index');
     await triggerStartup();

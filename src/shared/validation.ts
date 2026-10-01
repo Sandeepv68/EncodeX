@@ -15,7 +15,14 @@
 export function isValidTime(value: string): boolean {
   if (!value.trim()) return false;
   if (/^\d+(\.\d+)?$/.test(value)) return parseFloat(value) >= 0;
-  return /^\d{1,2}:\d{2}:\d{2}(\.\d+)?$/.test(value);
+  const clock = /^(\d{1,2}):(\d{2}):(\d{2})(\.\d+)?$/.exec(value);
+  if (!clock) return false;
+  // The shape alone is not enough: `00:60:00` matches a naive `\d{2}:\d{2}:\d{2}`
+  // pattern but is not a time, and it previously passed validation straight
+  // through to an ffmpeg seek argument.
+  const minutes = Number(clock[2]);
+  const seconds = Number(clock[3]);
+  return minutes <= 59 && seconds <= 59;
 }
 
 /**

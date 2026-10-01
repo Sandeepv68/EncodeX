@@ -17,9 +17,13 @@ export default defineConfig({
     pool: 'forks',
     maxWorkers: 1,
     reporters: ['verbose'],
-    forks: {
-      execArgv: ['--expose-gc'],
-    },
+    // Vitest 4 removed the `test.forks` sub-object and flattened its options
+    // onto `test`. The old `forks: { execArgv: [...] }` was silently ignored -
+    // an unknown key, not an error - so `--expose-gc` never reached the workers.
+    // The memory tests guard with `if (global.gc)`, so nothing crashed; they just
+    // measured uncollected garbage while reporting a pass. Typechecking this file
+    // (Phase 0.6) is what surfaced it.
+    execArgv: ['--expose-gc'],
     env: {
       LOG_LEVEL: 'ERROR',
       PERF_TEST: '1',

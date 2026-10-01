@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EventEmitter } from 'events';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
+import { ErrorCode, isAppError } from '../../../shared/errors';
+import { TRANSCODER_DEFAULTS, KILL_SIGNAL } from '../../../shared/transcoder-constants';
 
 const { spawnMock, suspendProcessMock, resumeProcessMock, getFfmpegPathMock, getFfprobePathMock, buildFfmpegArgsMock } = vi.hoisted(() => ({
   spawnMock: vi.fn(),
@@ -97,6 +100,28 @@ describe('FFToolCore', () => {
     getProc().stdout.emit('data', Buffer.from('not json'));
     getProc().emit('close', 0);
     await expect(promise).rejects.toThrow();
+  });
+
+  // Every other getInfo spec drives `close`. Only this one proves the probe
+  // budget is enforced, since a removed watchdog would leave `pending` settled
+  // forever and nothing else would notice.
+  it('getInfo kills a wedged ffprobe and rejects with OPERATION_TIMED_OUT', async () => {
+    expectAppLog('error', 'main/spawn-timeout');
+    const core = new FFToolCore();
+    const pending = core.getInfo('in.mp4').then(
+      () => ({ ok: true, error: undefined }),
+      (error: unknown) => ({ ok: false, error }),
+    );
+    const proc = getProc();
+
+    await vi.advanceTimersByTimeAsync(TRANSCODER_DEFAULTS.FFPROBE_TIMEOUT_MS - 1);
+    expect(proc.kill).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(1);
+    const outcome = await pending;
+    expect(outcome.ok).toBe(false);
+    expect(isAppError(outcome.error) && outcome.error.code).toBe(ErrorCode.OPERATION_TIMED_OUT);
+    expect(proc.kill).toHaveBeenCalledWith(KILL_SIGNAL);
   });
 
   it('convert emits progress from stderr timestamps and ends on close', async () => {

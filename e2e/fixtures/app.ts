@@ -11,11 +11,20 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { ensureBuildExists, getBuildPaths } from '../helpers';
+import { attachTripwire } from './tripwire';
+import { BOOT_POLL_CEILING_MS } from './boot-budget';
 
 export interface AppSession {
   app: ElectronApplication;
   page: Page;
   userDataDir: string;
+  /**
+   * Milliseconds from `_electron.launch()` to the moment a window exposing
+   * `window.electronAPI` was found. Recorded on every launch so boot cost is
+   * never silently absorbed as test latency; see `boot-budget.ts` (F11) and
+   * `e2e/specs/boot-budget.spec.ts` for the assertion that consumes it.
+   */
+  bootMs: number;
 }
 
 export interface LaunchOptions {
@@ -34,7 +43,19 @@ export interface LaunchOptions {
   env?: NodeJS.ProcessEnv;
 }
 
-export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}, terms: 'accept' | 'show' = 'accept'): NodeJS.ProcessEnv {
+/**
+ * Builds the environment for a launched app.
+ *
+ * Returns `Record<string, string>`, not `NodeJS.ProcessEnv`: Playwright types
+ * `launch({ env })` as a plain string map, and an inherited `undefined` is
+ * meaningless to a child process anyway. Entries whose value is `undefined`
+ * are dropped here rather than handed to Electron as the string "undefined".
+ * @param {boolean} mock - Whether to enable the mock transcode path.
+ * @param {NodeJS.ProcessEnv} [extra] - Variables merged over the inherited env.
+ * @param {'accept' | 'show'} [terms] - Terms-gate state for the child.
+ * @returns {Record<string, string>} The child process environment.
+ */
+export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}, terms: 'accept' | 'show' = 'accept'): Record<string, string> {
   const env: NodeJS.ProcessEnv = { ...process.env };
   if (mock) {
     env.ENCODEX_TEST_MODE = '1';
@@ -46,7 +67,11 @@ export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}, terms: 'a
   } else {
     delete env.ENCODEX_TERMS_GATE;
   }
-  return { ...env, ...extra };
+  const merged: Record<string, string> = {};
+  for (const [key, value] of Object.entries({ ...env, ...extra })) {
+    if (value !== undefined) merged[key] = value;
+  }
+  return merged;
 }
 
 /**
@@ -79,6 +104,12 @@ export function createUserDataDir(): string {
 /**
  * Launches the packaged/built Electron app and resolves the main window (the
  * one exposing `window.electronAPI`).
+ *
+ * The crash tripwire is attached here rather than in each spec, so every
+ * spec in both tiers fails on a renderer `pageerror`, a `console.error`, a
+ * renderer crash, or a main-process uncaught exception without having to opt
+ * in. Because a relaunch goes back through this function, the guards survive
+ * `ensureLiveSession` / `reloadSession` too.
  */
 export async function launchApp(options: LaunchOptions = {}): Promise<AppSession> {
   const { mock = true, terms = 'accept', args = [], env = {} } = options;
@@ -88,6 +119,7 @@ export async function launchApp(options: LaunchOptions = {}): Promise<AppSession
   const { _electron } = await import('playwright');
 
   const userDataDir = createUserDataDir();
+  const startedAt = Date.now();
 
   const app = await _electron.launch({
     args: [getBuildPaths().mainEntry, `--user-data-dir=${userDataDir}`, ...CHROMIUM_STABILITY_ARGS, ...args],
@@ -95,14 +127,27 @@ export async function launchApp(options: LaunchOptions = {}): Promise<AppSession
     env: buildEnv(mock, env, terms),
   });
 
+  attachTripwire(app);
+
   await app.firstWindow();
   const page = await getMainWindow(app);
-  return { app, page, userDataDir };
+  return { app, page, userDataDir, bootMs: Date.now() - startedAt };
 }
 
-/** Finds the BrowserWindow that exposes the preload bridge. */
+/**
+ * Finds the BrowserWindow that exposes the preload bridge.
+ *
+ * The poll is *budgeted*, not merely bounded: `BOOT_POLL_CEILING_MS` still caps
+ * the wait so a window that never appears fails fast instead of hanging, but the
+ * elapsed time is now reported on failure and recorded by `launchApp` on
+ * success, which is what turns a slow-boot regression from "slow tests" into a
+ * failed assertion.
+ * @param {ElectronApplication} app - The launched application.
+ * @returns {Promise<Page>} The first window exposing `window.electronAPI`.
+ */
 export async function getMainWindow(app: ElectronApplication): Promise<Page> {
-  const deadline = Date.now() + 30000;
+  const startedAt = Date.now();
+  const deadline = startedAt + BOOT_POLL_CEILING_MS;
   while (Date.now() < deadline) {
     for (const win of app.windows()) {
       try {
@@ -114,7 +159,9 @@ export async function getMainWindow(app: ElectronApplication): Promise<Page> {
     }
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
-  throw new Error('Main window (with electronAPI) was not found');
+  throw new Error(
+    `Main window (with electronAPI) was not found within ${BOOT_POLL_CEILING_MS} ms (searched ${app.windows().length} window(s) for ${Date.now() - startedAt} ms)`,
+  );
 }
 
 /**

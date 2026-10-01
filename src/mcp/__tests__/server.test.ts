@@ -69,6 +69,20 @@ function textOf(result: any): string {
 }
 
 /**
+ * Reads the first block of a `readResource` result.
+ *
+ * The SDK types `contents` as a union of a text block and a blob block, so
+ * `contents[0].text` is a compile error even though these resources always
+ * return text. Narrowing once here keeps the assertions below readable.
+ * @param {unknown} contents - The `contents` array from `readResource`.
+ * @returns {string} The first block's text, or an empty string.
+ */
+function firstTextBlock(contents: unknown): string {
+  const first = (contents as Array<{ text?: string }> | undefined)?.[0];
+  return first?.text ?? '';
+}
+
+/**
  * Creates a dummy media file and returns its path.
  * @param {string} prefix - Temp dir prefix.
  * @returns {string} Path to a temp input file.
@@ -538,13 +552,12 @@ describe('createMcpServer tools', () => {
     expect(uris).toEqual(expect.arrayContaining(['encodex://profiles', 'encodex://capabilities', 'encodex://codecs']));
 
     const profiles = await session.client.readResource({ uri: 'encodex://profiles' });
-    const profileText = profiles.contents[0]?.text ?? '';
-    const parsedProfiles = JSON.parse(profileText);
+    const parsedProfiles = JSON.parse(firstTextBlock(profiles.contents));
     expect(Array.isArray(parsedProfiles)).toBe(true);
     expect(parsedProfiles.length).toBeGreaterThan(0);
 
     const codecs = await session.client.readResource({ uri: 'encodex://codecs' });
-    const parsedCodecs = JSON.parse(codecs.contents[0]?.text ?? '{}');
+    const parsedCodecs = JSON.parse(firstTextBlock(codecs.contents));
     expect(Array.isArray(parsedCodecs.videoCodecs)).toBe(true);
     expect(Array.isArray(parsedCodecs.audioCodecs)).toBe(true);
     await session.close();

@@ -33,18 +33,16 @@ vi.mock('../src/main/transcoders/factory', () => ({
 const { createTranscoder } = await import('../src/main/transcoders/factory');
 
 function makeJobArgs(index: number): [string, string, ConversionOptions, 'FFMPEG'] {
-  return [
-    `input-${index}.mp4`,
-    `output-${index}.mp4`,
-    { videoCodec: 'libx264', audioCodec: 'aac' },
-    'FFMPEG',
-  ];
+  return [`input-${index}.mp4`, `output-${index}.mp4`, { videoCodec: 'libx264', audioCodec: 'aac' }, 'FFMPEG'];
 }
 
 function waitForDrain(queue: JobQueue, timeoutMs = 30_000): Promise<void> {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error('Drain timeout')), timeoutMs);
-    queue.once('drained', () => { clearTimeout(timer); resolve(); });
+    queue.once('drained', () => {
+      clearTimeout(timer);
+      resolve();
+    });
   });
 }
 
@@ -239,7 +237,9 @@ describe('Batch Queue Concurrency & Scheduling', () => {
 
     const rssDelta = memAfter.rss - memBefore.rss;
 
-    console.log(`  Stress: 50 jobs, concurrency 4: ${totalMs.toFixed(0)}ms, completed: ${completedCount}, RSS delta: ${formatBytes(rssDelta)}`);
+    console.log(
+      `  Stress: 50 jobs, concurrency 4: ${totalMs.toFixed(0)}ms, completed: ${completedCount}, RSS delta: ${formatBytes(rssDelta)}`,
+    );
 
     // All 50 jobs should have completed
     expect(completedCount).toBe(50);
@@ -265,7 +265,9 @@ describe('Batch Queue Concurrency & Scheduling', () => {
     const queue = new JobQueue({ concurrency: 2 });
     let drainCount = 0;
 
-    queue.on('drained', () => { drainCount++; });
+    queue.on('drained', () => {
+      drainCount++;
+    });
 
     for (let i = 0; i < 6; i++) {
       queue.addJob(...makeJobArgs(i));

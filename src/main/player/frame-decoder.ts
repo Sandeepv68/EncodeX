@@ -7,6 +7,12 @@
  * playback consumer. It supports realtime playback, fps capping, audio-only
  * decoding, and seek via process restarts with a generation counter so stale
  * data can be discarded.
+ *
+ * Deliberately **not** wrapped in `withTimeout`: this process is a continuous
+ * stream, not bounded work, so a wall-clock budget here would kill playback of
+ * any file longer than the budget. The "ffmpeg started but never produced a
+ * frame" hang is bounded one layer up instead, by
+ * `TRANSCODER_DEFAULTS.PLAYER_FRAME_TIMEOUT_MS` in `src/main/ipc/player.ts`.
  */
 
 import { EventEmitter } from 'events';

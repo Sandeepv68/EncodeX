@@ -47,6 +47,8 @@ describe('MediaPlayer', () => {
   it('has no axe violations', async () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const { container } = render(<MediaPlayer filePath="/v.mp4" />);
+    // Wait for the async media-info probe to settle before auditing the tree.
+    await screen.findByText(/1:00/);
     await assertNoAxeViolations(container);
   });
 
@@ -73,9 +75,11 @@ describe('MediaPlayer', () => {
     expect(playerClose).toHaveBeenCalled();
   });
 
-  it('starts paused and toggles playback on click', () => {
+  it('starts paused and toggles playback on click', async () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const { container } = render(<MediaPlayer filePath="/v.mp4" />);
+    // Let the media-info probe settle so its state update stays inside act().
+    await screen.findByText(/1:00/);
     const canvas = container.querySelector('canvas')!;
     expect(container.querySelector('[data-icon="play"]')).not.toBeNull();
     fireEvent.click(canvas);
@@ -86,9 +90,11 @@ describe('MediaPlayer', () => {
     expect(container.querySelector('[data-icon="play"]')).not.toBeNull();
   });
 
-  it('stops playback, resets the position, and reloads the start frame', () => {
+  it('stops playback, resets the position, and reloads the start frame', async () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const { container } = render(<MediaPlayer filePath="/v.mp4" />);
+    // Let the media-info probe settle so its state update stays inside act().
+    await screen.findByText(/1:00/);
     playerClose.mockClear();
     fireEvent.click(container.querySelector('[data-icon="stop"]')!);
     expect(playerSeek).toHaveBeenCalledWith('00:00:00');
@@ -189,9 +195,11 @@ describe('MediaPlayer', () => {
     expect(playerSeek).toHaveBeenCalled();
   });
 
-  it('renders a mute button that toggles its icon', () => {
+  it('renders a mute button that toggles its icon', async () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const { container } = render(<MediaPlayer filePath="/v.mp4" />);
+    // Let the media-info probe settle so its state update stays inside act().
+    await screen.findByText(/1:00/);
     expect(container.querySelector('[data-icon="volume-high"]')).not.toBeNull();
     fireEvent.click(container.querySelector('button[aria-label="player.mute"]')!);
     expect(container.querySelector('[data-icon="volume-xmark"]')).not.toBeNull();
@@ -199,9 +207,11 @@ describe('MediaPlayer', () => {
     expect(container.querySelector('[data-icon="volume-high"]')).not.toBeNull();
   });
 
-  it('exposes accessible names for the transport controls and seek slider', () => {
+  it('exposes accessible names for the transport controls and seek slider', async () => {
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     render(<MediaPlayer filePath="/v.mp4" />);
+    // Let the media-info probe settle so its state update stays inside act().
+    await screen.findByText(/1:00/);
     expect(screen.getByRole('button', { name: 'player.play' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'player.stop' })).toBeInTheDocument();
     expect(screen.getByRole('slider', { name: 'player.seek' })).toBeInTheDocument();
@@ -214,11 +224,13 @@ describe('MediaPlayer', () => {
     await waitFor(() => expect(onDurationChange).toHaveBeenCalledWith(60));
   });
 
-  it('exposes a seekTo handle that seeks and starts playback', () => {
+  it('exposes a seekTo handle that seeks and starts playback', async () => {
     vi.useFakeTimers();
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const ref = createRef<MediaPlayerHandle>();
     const { container } = render(<MediaPlayer filePath="/v.mp4" ref={ref} />);
+    // Let the media-info probe resolve so its state update happens inside act().
+    await act(async () => {});
     act(() => {
       ref.current?.seekTo(5);
     });

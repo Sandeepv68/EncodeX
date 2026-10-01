@@ -15,8 +15,9 @@ import { Logger } from '../../shared/logger';
 import { getFfmpegPath, getFfprobePath } from '../media-binaries';
 import type { ITranscoder } from './types';
 import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/types';
-import { FFMPEG_FLAGS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/transcoder-constants';
+import { FFMPEG_FLAGS, TRANSCODER_DEFAULTS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/transcoder-constants';
 import { suspendProcess, resumeProcess } from '../process-utils';
+import { withTimeout } from '../spawn-timeout';
 import { mapFfprobeData } from './ffprobe-mapper';
 import { getHwAccelArgs } from './hwaccel';
 import { buildRotationFilters, metadataRotationValue, outputVideoIndexForInput, streamKindFromMap } from './ffmpeg-utils';
@@ -121,25 +122,38 @@ export class FfmpegCore implements ITranscoder {
    * Probes the input with `ffmpeg(input).ffprobe(...)`. On success the raw
    * ffprobe payload is mapped through {@link mapFfprobeData} into a MediaInfo
    * and resolved; on failure the probe error is logged and the promise is
-   * rejected with it.
+   * rejected with it. The probe is bounded by
+   * `TRANSCODER_DEFAULTS.FFPROBE_TIMEOUT_MS`, after which the fluent-ffmpeg
+   * command is killed and the promise rejects with an `OPERATION_TIMED_OUT`
+   * error.
    * @param {string} input - Absolute path of the media file to probe
    * @returns {Promise<MediaInfo>} Resolves with mapped media information
-   * @throws {Error} Rejects with the underlying ffprobe error when probing fails
+   * @throws {Error} Rejects with the underlying ffprobe error when probing fails,
+   *   or with an `OPERATION_TIMED_OUT` error when the probe outlives its budget
    */
   getInfo(input: string): Promise<MediaInfo> {
     log.info(LOG_GET_INFO, input);
-    return new Promise((resolve, reject) => {
-      const proc = ffmpeg(input);
-      proc.ffprobe((err: Error | null, data: Ffmpeg.FfprobeData) => {
-        if (err) {
-          log.error(LOG_GET_INFO_FFPROBE_FAILED, err);
-          return reject(err);
-        }
-        const info = mapFfprobeData(data, input);
-        log.info(LOG_GET_INFO_COMPLETED, info.format, info.duration.toFixed(2) + 's');
-        resolve(info);
-      });
-    });
+    return withTimeout<MediaInfo>(
+      (onSpawn) =>
+        new Promise((resolve, reject) => {
+          const proc = ffmpeg(input);
+          // `ffprobe()` starts the child immediately and returns void, so the
+          // command object itself is the only handle available to kill. Its
+          // `kill(signal)` satisfies Killable structurally.
+          onSpawn(proc);
+          proc.ffprobe((err: Error | null, data: Ffmpeg.FfprobeData) => {
+            if (err) {
+              log.error(LOG_GET_INFO_FFPROBE_FAILED, err);
+              return reject(err);
+            }
+            const info = mapFfprobeData(data, input);
+            log.info(LOG_GET_INFO_COMPLETED, info.format, info.duration.toFixed(2) + 's');
+            resolve(info);
+          });
+        }),
+      TRANSCODER_DEFAULTS.FFPROBE_TIMEOUT_MS,
+      'ffprobe',
+    );
   }
 
   /**

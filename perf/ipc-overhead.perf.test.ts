@@ -59,13 +59,15 @@ describe('IPC Communication Overhead', () => {
     const emitter = new EventEmitter();
     let receivedCount = 0;
 
-    emitter.on('progress', () => { receivedCount++; });
+    emitter.on('progress', () => {
+      receivedCount++;
+    });
 
     const RUNS = 100_000;
     const start = performance.now();
 
     for (let i = 0; i < RUNS; i++) {
-      emitter.emit('progress', { percent: i / RUNS * 100, time: '00:00:01', fps: 30, speed: '1.0x', eta: '0', bitrate: '1000k' });
+      emitter.emit('progress', { percent: (i / RUNS) * 100, time: '00:00:01', fps: 30, speed: '1.0x', eta: '0', bitrate: '1000k' });
     }
 
     const totalMs = performance.now() - start;
@@ -92,7 +94,9 @@ describe('IPC Communication Overhead', () => {
     const emitter = new EventEmitter();
     const received: unknown[] = [];
 
-    emitter.on('progress', (data) => { received.push(data); });
+    emitter.on('progress', (data) => {
+      received.push(data);
+    });
 
     const start = performance.now();
 
@@ -171,13 +175,30 @@ describe('IPC Communication Overhead', () => {
   it('should measure typed channel string comparison overhead', () => {
     // Simulates the overhead of channel name matching
     const channels = [
-      'select-file', 'select-files', 'select-output', 'select-directory',
-      'get-media-info', 'get-image-info', 'get-image-preview',
-      'convert-file', 'cancel-conversion', 'pause-conversion', 'resume-conversion',
-      'queue-add', 'queue-remove', 'queue-list', 'queue-cancel-all',
-      'player-open', 'player-seek', 'player-close', 'player-get-frame',
-      'extract-waveform', 'extract-thumbnails',
-      'window-minimize', 'window-maximize-toggle', 'window-close',
+      'select-file',
+      'select-files',
+      'select-output',
+      'select-directory',
+      'get-media-info',
+      'get-image-info',
+      'get-image-preview',
+      'convert-file',
+      'cancel-conversion',
+      'pause-conversion',
+      'resume-conversion',
+      'queue-add',
+      'queue-remove',
+      'queue-list',
+      'queue-cancel-all',
+      'player-open',
+      'player-seek',
+      'player-close',
+      'player-get-frame',
+      'extract-waveform',
+      'extract-thumbnails',
+      'window-minimize',
+      'window-maximize-toggle',
+      'window-close',
     ];
 
     const RUNS = 100_000;

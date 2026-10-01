@@ -800,6 +800,12 @@ export const LOG_START_TIME = 'Start time:';
 export const LOG_STARTING_CONVERSION = 'Starting conversion:';
 /** @const {string} Prefix when the app starts in CLI mode with the given argv. */
 export const LOG_STARTING_IN_CLI_MODE_ARGV = 'Starting in CLI mode, argv:';
+/** @const {string} Prefix when a bounded subprocess exhausts its wall-clock budget. */
+export const LOG_SUBPROCESS_TIMED_OUT = 'Subprocess timed out:';
+/** @const {string} Prefix when killing an overrunning subprocess fails. */
+export const LOG_SUBPROCESS_TIMEOUT_KILL_FAILED = 'Subprocess timeout kill failed:';
+/** @const {string} Prefix when a bounded subprocess is refused a malformed timeout budget. */
+export const LOG_SUBPROCESS_TIMEOUT_INVALID = 'Subprocess timeout budget is unusable:';
 /** @const {string} Prefix when logging stderr output. */
 export const LOG_STDERR = 'stderr:';
 /** @const {string} Logged when a mapped stream spec matches no input stream. */

@@ -26,11 +26,17 @@ describe('useDevScreenshot', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     keydownHandler = null;
-    vi.spyOn(window, 'addEventListener').mockImplementation((event: string, handler: EventListener) => {
-      if (event === 'keydown') keydownHandler = handler as unknown as (event: KeyboardEvent) => void;
+    vi.spyOn(window, 'addEventListener').mockImplementation((type: string, listener: EventListenerOrEventListenerObject) => {
+      if (type === 'keydown') keydownHandler = listener as unknown as (event: KeyboardEvent) => void;
     });
     vi.spyOn(window, 'removeEventListener').mockImplementation(() => {});
-    (window.electronAPI as Record<string, unknown>).captureDevScreenshot = vi.fn().mockResolvedValue('/screenshots/dev/test.png');
+    // `captureDevScreenshot` is a required member of `ElectronAPI`, so injecting
+    // and then deleting it has to go through `unknown` - the cast says
+    // "pretend this bridge is a bag of anything", which is exactly the fiction
+    // these two tests need.
+    (window.electronAPI as unknown as Record<string, unknown>).captureDevScreenshot = vi
+      .fn()
+      .mockResolvedValue('/screenshots/dev/test.png');
   });
 
   afterEach(() => {
@@ -127,7 +133,7 @@ describe('useDevScreenshot', () => {
   });
 
   it('shows error when captureDevScreenshot API is unavailable', async () => {
-    (window.electronAPI as Record<string, unknown>).captureDevScreenshot = undefined;
+    (window.electronAPI as unknown as Record<string, unknown>).captureDevScreenshot = undefined;
     renderScreenshotHook();
 
     await act(async () => {

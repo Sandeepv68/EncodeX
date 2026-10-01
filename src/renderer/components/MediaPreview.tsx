@@ -42,7 +42,7 @@ export default function MediaPreview({
 }: MediaPreviewProps) {
   return (
     <PreviewBox data-testid={testId}>
-      <PreviewImageBox variant={variant}>
+      <PreviewImageBox $variant={variant}>
         {imageSrc && <PreviewImage src={imageSrc} alt={alt} />}
         <PreviewCloseButton size="small" aria-label={removeLabel} data-testid={removeTestId} onClick={onRemove}>
           <FontAwesomeIcon icon={faXmark} />

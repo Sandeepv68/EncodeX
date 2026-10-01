@@ -1,6 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ErrorBoundary } from '../ErrorBoundary';
+import { expectCrash } from '../../../test-utils/crash-tripwire';
+
+/** React reports every caught render error through `console.error`; declare it. */
+function expectReactRenderCrash(): void {
+  expectCrash('consoleError', 'Error: crash');
+}
 
 let throwError = true;
 function ConditionalBadChild() {
@@ -28,6 +34,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('renders fallback UI on error', () => {
+    expectReactRenderCrash();
     render(
       <ErrorBoundary>
         <BadChild />
@@ -38,6 +45,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('renders custom fallback when provided', () => {
+    expectReactRenderCrash();
     render(
       <ErrorBoundary fallback={<div>custom fallback</div>}>
         <BadChild />
@@ -47,6 +55,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('resets error state when Try Again is clicked', () => {
+    expectReactRenderCrash();
     render(
       <ErrorBoundary>
         <ConditionalBadChild />

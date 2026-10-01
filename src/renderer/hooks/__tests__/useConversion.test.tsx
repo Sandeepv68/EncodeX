@@ -58,7 +58,11 @@ describe('useConversion', () => {
     });
     renderHook(() => useConversion());
     expect(onConversionProgressMock).toHaveBeenCalledOnce();
-    useConversionStore.setState({ isConverting: true });
+    // The mounted hook subscribes to the store, so the mutation notifies it and
+    // has to be driven inside act() or the re-render escapes the test's control.
+    act(() => {
+      useConversionStore.setState({ isConverting: true });
+    });
     act(() => {
       progressCb?.({
         input: 'a',

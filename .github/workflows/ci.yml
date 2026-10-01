@@ -269,6 +269,94 @@ jobs:
       - run: npm ci
       - run: npm run test:integration
 
+  coverage-per-file:
+    name: Report - Per-file coverage floors
+    needs: [format-check, lint, typecheck]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    # Informational only. The per-file numbers describe a ratchet to climb, not
+    # a gate to satisfy: 30 files sit below the candidate 80/70 floor today, so
+    # making this blocking would fail every PR until all of them are fixed.
+    # Promote it to blocking once the floor is met repo-wide.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Generate merged per-file report (unit + integration)
+        # test:integration builds the main process itself, so no separate build.
+        run: npm run test:coverage:perfile 2>&1 | tee per-file-coverage.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: per-file-coverage
+          path: |
+            per-file-coverage.txt
+            coverage/
+            coverage-integration/
+          if-no-files-found: warn
+
+  coverage-diff:
+    name: Gate - Diff coverage
+    needs: [format-check, lint, typecheck]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so the gate can diff against the base branch. Without
+          # it the base lookup falls through to HEAD, the diff comes back empty,
+          # and the gate reports "nothing to gate" and passes every PR.
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Build main process (integration tier imports it)
+        run: npm run build:main
+      - name: Enforce coverage floor and added-line coverage on changed files
+        env:
+          # Pin the base instead of relying on auto-detection: a mis-resolved
+          # base produces an empty diff, which this gate treats as a pass.
+          COVERAGE_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: node scripts/coverage-diff.mjs "$COVERAGE_BASE"
+
+  test-flake:
+    name: Test - Flake detection (e2e x3)
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-ubuntu
+          path: dist
+      - name: Install xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+      # Three passes, retries disabled (see scripts/flake-detect.mjs). CI sets
+      # retry: 2 for the normal e2e job, which is right there and useless here:
+      # it would convert a one-in-three failure into a green result.
+      - name: Run e2e three times and fail on intermittent results
+        run: xvfb-run --auto-servernum npm run test:flake-detect
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flake-report
+          path: |
+            reports/flake.json
+            reports/flake/
+          if-no-files-found: warn
+
   test-mcp-smoke:
     name: Test - MCP server smoke
     needs: [build]

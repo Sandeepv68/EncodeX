@@ -130,7 +130,7 @@ describe('AptabaseMainProvider', () => {
     // Simulate a payload carrying non-categorical extra fields by feeding a raw object.
     provider.track({
       ...event,
-      props: { ...event.props, emptyString: '' } as event['props'],
+      props: { ...event.props, emptyString: '' } as typeof event.props,
     });
     expect(aptabaseMainMock.trackEvent).toHaveBeenCalledWith('app_launched', { version: '1', arch: 'x64', platform: 'win32' });
   });

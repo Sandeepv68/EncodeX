@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import path from 'path';
+import { COVERAGE_INCLUDE, COVERAGE_EXCLUDE } from './vitest.coverage-scope';
 
 export default defineConfig({
   resolve: {
@@ -15,25 +16,25 @@ export default defineConfig({
     },
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
-    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    // `scripts/**` holds the coverage and flake tooling. Those scripts decide
+    // whether a build passes, so they are tested like any other code rather than
+    // trusted because they are "just tooling".
+    include: [
+      'src/**/*.{test,spec}.{ts,tsx}',
+      'scripts/**/__tests__/*.{test,spec}.mjs',
+      // Pure helpers imported by the e2e harness (e.g. boot-budget) are unit
+      // tested here. The `.test` suffix keeps them out of `e2e/**/*.spec.ts`.
+      'e2e/**/__tests__/*.{test,spec}.ts',
+    ],
     exclude: ['node_modules', 'dist', '**/*.integration.{test,spec}.ts'],
     css: true,
     pool: 'forks',
     maxWorkers: 6,
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'lcov', 'html'],
-      include: ['src/**/*.ts', 'src/**/*.tsx'],
-      exclude: [
-        'src/**/*.d.ts',
-        'src/**/__tests__/**',
-        'src/**/*.{test,spec}.{ts,tsx}',
-        'src/**/*.styles.ts',
-        'src/renderer/i18n/**',
-        'src/renderer/index.html',
-        'src/renderer/global.css',
-        'src/renderer/main.tsx',
-      ],
+      reporter: ['text', 'lcov', 'html', 'json', 'json-summary'],
+      include: COVERAGE_INCLUDE,
+      exclude: COVERAGE_EXCLUDE,
       thresholds: {
         statements: 85,
         branches: 75,

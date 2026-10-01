@@ -27,10 +27,7 @@ export default {
         if (node.name.name !== 'style') return;
 
         // style={{ ... }}  —  JSXExpressionContainer wrapping an ObjectExpression
-        if (
-          node.value?.type === 'JSXExpressionContainer' &&
-          node.value.expression.type === 'ObjectExpression'
-        ) {
+        if (node.value?.type === 'JSXExpressionContainer' && node.value.expression.type === 'ObjectExpression') {
           context.report({ node, messageId: 'inlineStyle' });
           return;
         }

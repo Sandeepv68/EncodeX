@@ -13,10 +13,17 @@ import type { MediaStreamInfo } from '../../shared/types';
  * Formats a byte count as a human-readable size string.
  * Values below 1024 bytes are shown as plain bytes; larger values are scaled
  * up through KB/MB/GB/TB with one decimal place.
- * @param {number} bytes - The size in bytes (non-negative).
+ *
+ * Negative and non-finite inputs return '0 B', matching `formatBytes`. A
+ * corrupt or truncated file makes ffprobe report a `NaN`/negative size, which
+ * previously rendered as the literal text 'NaN B' or 'Infinity TB' in the file
+ * table; the guard moves that decision into the formatter where every caller
+ * inherits it.
+ * @param {number} bytes - The size in bytes.
  * @returns {string} The formatted size, e.g. '2048 B' or '1.5 GB'.
  */
 export function formatSize(bytes: number): string {
+  if (!Number.isFinite(bytes) || bytes < 0) return '0 B';
   if (bytes < 1024) return `${bytes} B`;
   const units = ['KB', 'MB', 'GB', 'TB'];
   let value = bytes / 1024;
@@ -43,10 +50,13 @@ export function formatBytes(bytes: number): string {
 
 /**
  * Formats a duration in seconds as a short string with two decimal places.
+ * Non-finite inputs return '0.00s': a corrupt file yields a `NaN` duration from
+ * ffprobe, and `NaN.toFixed(2)` renders as the literal 'NaNs'.
  * @param {number} seconds - The duration in seconds.
  * @returns {string} The formatted duration, e.g. '12.34s'.
  */
 export function formatDuration(seconds: number): string {
+  if (!Number.isFinite(seconds)) return '0.00s';
   return `${seconds.toFixed(2)}s`;
 }
 
@@ -60,7 +70,16 @@ export function formatDuration(seconds: number): string {
  * @returns {string} The formatted clock time, e.g. '01:05:09' or '00:00:03.250'.
  */
 export function formatClockTime(seconds: number, opts?: { alwaysShowMs?: boolean }): string {
-  const totalMs = Math.max(0, Math.round(seconds * 1000));
+  // `Math.max(0, NaN)` is NaN, not 0, so a non-finite duration reached the
+  // padding helpers and rendered as 'Infinity:NaN:NaN'. Clamp explicitly.
+  // Guard twice on purpose. A finite-but-enormous value (1.79e308) still
+  // overflows to Infinity on `seconds * 1000`, and `Math.max(0, Infinity)` is
+  // Infinity, so the hour/minute/second math below would emit
+  // 'Infinity:NaN:NaN'. Clamping the millisecond total is what actually keeps
+  // the rendered string well-formed.
+  const rawMs = seconds * 1000;
+  if (!Number.isFinite(rawMs)) return opts?.alwaysShowMs ? '00:00:00.000' : '00:00:00';
+  const totalMs = Math.max(0, Math.round(rawMs));
   const ms = totalMs % 1000;
   const totalSec = Math.floor(totalMs / 1000);
   const h = Math.floor(totalSec / 3600);

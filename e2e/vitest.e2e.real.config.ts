@@ -15,7 +15,7 @@ export default defineConfig({
     env: { E2E: 'true', E2E_REAL: '1', ENCODEX_TEST_MODE: '' },
     testTimeout: 120000,
     hookTimeout: 120000,
-    setupFiles: [],
+    setupFiles: ['e2e/fixtures/tripwire-setup.ts'],
     fileParallelism: false,
   },
 });

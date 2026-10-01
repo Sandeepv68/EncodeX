@@ -1,0 +1,28 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vitest/globals"]
+  },
+  // TypeScript's `include`/`exclude` support only `*`, `?` and `**/` - NOT brace
+  // expansion. Writing `src/**/*.{test,spec}.{ts,tsx}` silently matches nothing,
+  // which produced a typecheck "pass" over a program containing no test files
+  // at all. Every glob below is spelled out for that reason; do not collapse
+  // them back into braces.
+  "include": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "src/test-setup.ts",
+    "src/test-setup.crash.ts",
+    "src/test-utils/**/*.ts",
+    "src/renderer/electron-api.d.ts",
+    "src/renderer/vite-env.d.ts",
+    "src/renderer/mui.d.ts",
+    "src/renderer/simple-icons.d.ts",
+    "src/main/ffprobe-static.d.ts",
+    "e2e/fixtures/boot-budget.ts",
+    "e2e/fixtures/__tests__/**/*.ts"
+  ]
+}

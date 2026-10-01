@@ -54,8 +54,13 @@ describe('AudioExtract', () => {
     useToastStore.setState({ toasts: [] });
   });
 
-  it('renders the title, fields, and extract button', () => {
-    renderPage();
+  it('renders the title, fields, and extract button', async () => {
+    // The codec CodecSelect probes the encoder capabilities asynchronously, and
+    // the probe resolves into a state update, so the mount has to settle inside
+    // act() or the update escapes the test's control.
+    await act(async () => {
+      renderPage();
+    });
     expect(screen.getByText('audioExtract.title')).toBeInTheDocument();
     expect(screen.getByText('audioExtract.videoFile')).toBeInTheDocument();
     expect(screen.getByText('audioExtract.audioCodec')).toBeInTheDocument();

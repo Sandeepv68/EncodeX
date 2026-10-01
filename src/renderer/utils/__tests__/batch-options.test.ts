@@ -8,6 +8,7 @@ import {
   type BatchEncodingValues,
 } from '../batch-options';
 import type { QueueJob } from '../../../shared/types';
+import { getHwAccelArgs } from '../../../main/transcoders/hwaccel';
 
 const VALUES: BatchEncodingValues = {
   videoCodec: 'libx264',
@@ -158,10 +159,54 @@ describe('buildBatchOptions', () => {
     expect(buildBatchOptions('transcode', values, HW).rotate).toBeUndefined();
   });
 
-  it('reflects disabled hardware acceleration', () => {
-    const options = buildBatchOptions('transcode', VALUES, { hardwareAcceleration: false, hwaccelMode: 'none' });
-    expect(options.hardwareAcceleration).toBe(false);
-    expect(options.hwaccelMode).toBe('none');
+  it('carries the user hardware-acceleration setting through to the ffmpeg flags', () => {
+    // The mode used to be the invented value `'none'`, which is not a member of
+    // `HwAccelMode` ('auto' | 'encode'), so nothing about the real
+    // auto-vs-encode-only distinction was ever exercised from the batch side.
+    // This walks all four combinations end to end: the batch builder must
+    // pass the user's setting through unchanged, and `getHwAccelArgs` must
+    // turn it into the right flags. `buildBatchOptions` silently dropping
+    // `hardwareAcceleration`, or hardcoding a mode, would leave every user with
+    // hardware acceleration switched off while the settings UI still showed it
+    // as on - and `getHwAccelArgs`' own unit tests would stay green.
+    const nvenc = 'h264_nvenc';
+    const software = 'libx264';
+
+    const autoOn = buildBatchOptions('transcode', { ...VALUES, videoCodec: nvenc }, { hardwareAcceleration: true, hwaccelMode: 'auto' });
+    expect(autoOn.hardwareAcceleration).toBe(true);
+    expect(autoOn.hwaccelMode).toBe('auto');
+    expect(getHwAccelArgs(autoOn.videoCodec, autoOn.hardwareAcceleration, autoOn.hwaccelMode)).toEqual([
+      '-hwaccel',
+      'cuda',
+      '-hwaccel_output_format',
+      'cuda',
+    ]);
+
+    const encodeOnly = buildBatchOptions(
+      'transcode',
+      { ...VALUES, videoCodec: nvenc },
+      { hardwareAcceleration: true, hwaccelMode: 'encode' },
+    );
+    expect(encodeOnly.hwaccelMode).toBe('encode');
+    expect(getHwAccelArgs(encodeOnly.videoCodec, encodeOnly.hardwareAcceleration, encodeOnly.hwaccelMode)).toEqual([]);
+
+    const offWithMode = buildBatchOptions(
+      'transcode',
+      { ...VALUES, videoCodec: nvenc },
+      { hardwareAcceleration: false, hwaccelMode: 'auto' },
+    );
+    expect(offWithMode.hardwareAcceleration).toBe(false);
+    expect(offWithMode.hwaccelMode).toBe('auto');
+    expect(getHwAccelArgs(offWithMode.videoCodec, offWithMode.hardwareAcceleration, offWithMode.hwaccelMode)).toEqual([]);
+
+    // Acceleration on, but a software codec: enabled and auto, yet nothing to
+    // accelerate. Pins that the two gates are independent.
+    const softwareAuto = buildBatchOptions(
+      'transcode',
+      { ...VALUES, videoCodec: software },
+      { hardwareAcceleration: true, hwaccelMode: 'auto' },
+    );
+    expect(getHwAccelArgs(softwareAuto.videoCodec, softwareAuto.hardwareAcceleration, softwareAuto.hwaccelMode)).toEqual([]);
   });
 });
 

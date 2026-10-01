@@ -26,8 +26,17 @@ export const StreamPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
 }));
 
-export const StreamTypeChip = styled(Chip)<{ tone: 'video' | 'audio' }>(({ theme, tone }) => {
-  const main = tone === 'video' ? theme.palette.primary.main : theme.palette.warning.main;
+/**
+ * Chip labelling a stream's media type.
+ *
+ * `$tone` uses MUI's transient-prop (`$`) convention: `Chip` has no `tone` prop
+ * of its own, so an unprefixed one is forwarded to the root element and rendered
+ * as a meaningless `tone="video"` attribute in the shipped app.
+ */
+export const StreamTypeChip = styled(Chip, {
+  shouldForwardProp: (prop) => prop !== '$tone',
+})<{ $tone: 'video' | 'audio' }>(({ theme, $tone }) => {
+  const main = $tone === 'video' ? theme.palette.primary.main : theme.palette.warning.main;
   return {
     borderRadius: theme.typography.pxToRem(6),
     fontWeight: 600,

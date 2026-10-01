@@ -4,8 +4,23 @@ import type { ReactNode } from 'react';
 import QueueDropArea from '../QueueDropArea';
 import { INDICATOR_HEIGHT } from '../../styles/QueueDropArea.styles';
 
+/**
+ * Structural stand-ins for dnd-kit's `Active` / `Over`, carrying only the
+ * `rect` fields `QueueDropArea` actually reads. The library types also demand
+ * `data` refs, `index`, `collection` and `disabled`, none of which a unit test
+ * has any business faking - and the mock used to be typed `{ active: null,
+ * over: null }`, which inferred both properties as `null` and made every
+ * fixture below an assignment error.
+ */
+type PartialRect = { top: number; height: number; bottom: number };
+type PartialActive = { id: string; rect: { current: { translated: PartialRect | null } } };
+type PartialOver = { id: string; rect: PartialRect };
+
 const { dndState } = vi.hoisted(() => ({
-  dndState: { active: null, over: null },
+  dndState: {
+    active: null as PartialActive | null,
+    over: null as PartialOver | null,
+  },
 }));
 
 vi.mock('@dnd-kit/core', () => ({
@@ -14,7 +29,7 @@ vi.mock('@dnd-kit/core', () => ({
 
 const GAP = 16;
 
-function makeRect(top: number, height: number) {
+function makeRect(top: number, height: number): PartialRect {
   return { top, height, bottom: top + height };
 }
 

@@ -28,6 +28,7 @@ import type { ErrorCodeType, AppError } from './types';
  * @property {string} INCOMPATIBLE_CONTAINER - A stream's codec cannot be muxed into the chosen container in stream-copy mode.
  * @property {string} AUXILIARY_INPUT_NOT_FOUND - An added subtitle/audio/chapter/cover file is missing.
  * @property {string} PERMISSION_DENIED - Access to the file or directory was denied.
+ * @property {string} OPERATION_TIMED_OUT - A bounded subprocess exceeded its wall-clock budget and was killed.
  * @property {string} UNKNOWN - An unrecognized error occurred.
  */
 export const ErrorCode = {
@@ -51,6 +52,7 @@ export const ErrorCode = {
   INCOMPATIBLE_CONTAINER: 'INCOMPATIBLE_CONTAINER',
   AUXILIARY_INPUT_NOT_FOUND: 'AUXILIARY_INPUT_NOT_FOUND',
   PERMISSION_DENIED: 'PERMISSION_DENIED',
+  OPERATION_TIMED_OUT: 'OPERATION_TIMED_OUT',
   UNKNOWN: 'UNKNOWN',
 } as const;
 
@@ -138,8 +140,15 @@ export function invalidQueueFileError(detail?: string): AppError {
  */
 export function isAppError(err: unknown): err is AppError {
   if (!err || typeof err !== 'object') return false;
-  const obj = err as Record<string, unknown>;
-  return typeof obj.code === 'string' && typeof obj.message === 'string' && typeof obj.timestamp === 'number';
+  // A hostile or lazy `get` trap (Proxy, getter that throws) must not turn a
+  // structural type guard into a thrown error: this guard is called from
+  // `formatError`, which is the app's last line of defence for any thrown value.
+  try {
+    const obj = err as Record<string, unknown>;
+    return typeof obj.code === 'string' && typeof obj.message === 'string' && typeof obj.timestamp === 'number';
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -169,6 +178,7 @@ export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
   INCOMPATIBLE_CONTAINER: 'A selected stream cannot be stored in the chosen container without re-encoding.',
   AUXILIARY_INPUT_NOT_FOUND: 'An added subtitle, audio, chapter, or cover file could not be found.',
   PERMISSION_DENIED: 'Permission denied. The application may not have access to the selected file or directory.',
+  OPERATION_TIMED_OUT: 'The operation took too long and was stopped. The file may be corrupt, or the system may be under heavy load.',
   UNKNOWN: 'An unexpected error occurred. Please try again.',
 };
 
@@ -186,12 +196,29 @@ export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
 export function formatError(err: unknown): AppError {
   if (isAppError(err)) return err;
   if (err && typeof err === 'object') {
-    const msg = 'message' in err ? (err as Record<string, unknown>).message : undefined;
-    const message = typeof msg === 'string' ? msg : 'Unknown error';
-    const code = inferErrorCode(message, err);
-    return createError(code, ERROR_MESSAGES[code], message);
+    // Reading `message`/`code` off an arbitrary object can throw (getter, Proxy
+    // trap). Swallow that here rather than propagating out of the error path: a
+    // broken error dialog is far worse than a slightly less specific code.
+    let msg: unknown;
+    let code: ErrorCodeType;
+    try {
+      const obj = err as Record<string, unknown>;
+      msg = 'message' in obj ? obj.message : undefined;
+      const message = typeof msg === 'string' ? msg : 'Unknown error';
+      code = inferErrorCode(message, err);
+      return createError(code, ERROR_MESSAGES[code], message);
+    } catch {
+      code = ErrorCode.UNKNOWN;
+      return createError(code, ERROR_MESSAGES[code]);
+    }
   }
-  const strMessage = String(err);
+  // `String(err)` also throws for a Symbol or a throwing `toString`.
+  let strMessage: string;
+  try {
+    strMessage = String(err);
+  } catch {
+    strMessage = 'Unknown error';
+  }
   const code = inferErrorCode(strMessage);
   return createError(code, ERROR_MESSAGES[code], strMessage);
 }
@@ -209,6 +236,10 @@ export function formatError(err: unknown): AppError {
 function inferErrorCode(message: string, err?: unknown): ErrorCodeType {
   const m = message.toLowerCase();
   const errCode = err && typeof err === 'object' && 'code' in err ? (err as Record<string, unknown>).code : undefined;
+  // Checked first, and ahead of the `probe`/`failed` rules below: a timeout
+  // message names the tool that timed out ("ffprobe timed out after 30000ms"),
+  // so every later rule would misclassify it.
+  if (m.includes('timed out') || m.includes('timeout') || m.includes('etimedout')) return ErrorCode.OPERATION_TIMED_OUT;
   if (m.includes('auxiliary input') || m.includes('added subtitle, audio')) return ErrorCode.AUXILIARY_INPUT_NOT_FOUND;
   if (errCode === 'ENOENT' || m.includes('enoent') || m.includes('not found') || m.includes('no such file')) {
     if (m.includes('ffmpeg')) return ErrorCode.FFMPEG_NOT_FOUND;
