@@ -91,10 +91,18 @@ vi.mock('react-i18next', () => ({
         'filters.presets.cropHint': 'Crops the video to the given width, height and offset.',
         'filters.presets.sharpenHint': 'Increases perceived sharpness (unsharp).',
       };
-      let text = map[key] || (opts?.defaultValue as string | undefined) || key;
+      // `map[key]` on a plain object reaches Object.prototype for keys like
+      // '__proto__' or 'constructor', returning a non-string that then blew up
+      // on `.replace`. ownProperty first keeps the lookup on the dictionary.
+      let text = Object.prototype.hasOwnProperty.call(map, key) ? map[key] : (opts?.defaultValue as string | undefined) || key;
+      if (typeof text !== 'string') text = String(text);
       if (opts) {
         for (const [k, v] of Object.entries(opts)) {
-          text = text.replace(new RegExp(`{{\\s*${k}\\s*}}`, 'g'), String(v));
+          // The token name is interpolated into a RegExp, so it must be escaped.
+          // Without this, a key containing a metacharacter ('(') either throws
+          // an unterminated-group SyntaxError or silently matches nothing.
+          const token = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          text = text.replace(new RegExp(`{{\\s*${token}\\s*}}`, 'g'), String(v));
         }
       }
       return text;

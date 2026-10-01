@@ -14,6 +14,18 @@ import { ConversionOptions, QueueJob, TranscoderType } from '../../shared/types'
 export const QUEUE_EXPORT_VERSION = 1;
 
 /**
+ * Upper bound on the number of job records accepted from an import file.
+ *
+ * An import is attacker-controlled input: the file is read off disk and each
+ * record is turned into a queued job that later becomes an ffmpeg invocation.
+ * Without a cap, a crafted file declaring hundreds of thousands of records is
+ * validated one-by-one and then handed to the queue wholesale, turning a
+ * parse step into an allocation and scheduling DoS. 10 000 is far above any
+ * realistic batch while keeping the work bounded.
+ */
+export const QUEUE_EXPORT_MAX_JOBS = 10_000;
+
+/**
  * A single portable job record inside a {@link QueueExport} file.
  * @interface QueueExportJob
  * @property {string} input - Absolute path of the source file.
@@ -87,6 +99,7 @@ export function validateQueueExport(value: unknown): QueueExport | null {
   if (v.version !== QUEUE_EXPORT_VERSION) return null;
   if (typeof v.concurrency !== 'number') return null;
   if (!Array.isArray(v.jobs)) return null;
+  if (v.jobs.length > QUEUE_EXPORT_MAX_JOBS) return null;
   for (const job of v.jobs) {
     if (!job || typeof job !== 'object') return null;
     const j = job as Record<string, unknown>;

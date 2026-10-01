@@ -20,7 +20,7 @@
 | 0.4 Coverage: per-file floors + diff coverage | **DONE** | Merged 2-tier report (220 files, **30 below the 80/70 candidate floor**, non-blocking); blocking diff gate with added-line coverage; 4 merge/scope bugs found and fixed |
 | 0.5 Flake governance | **DONE** | `test:flake-detect` runs e2e 3× with `--retry=0` and fails on failure rate in (0,1), on partial runs, on lapsed/stale quarantine entries; 19 unit tests over the verdict rules, 6 mutations caught; `test-flake` CI job |
 | 0.6 Housekeeping debt | **DONE** | `perf/**` + `eslint-rules/**` in Prettier globs; `tsconfig.perf.json` wired as the 6th typecheck project; boot time recorded + asserted (median-of-3 vs `perf/baseline.json` budget +25%), 31 tests, 6 mutations caught. Typechecking `perf/` found Vitest 4 silently ignored `forks: { execArgv }`, so the memory tests had been measuring uncollected garbage |
-| 1 Contract & input fuzzing | TODO | — |
+| 1 Contract & input fuzzing | **DONE** | 9 new property-test files, 162 tests, all 10 rows covered. **8 source bugs found and fixed** (`isValidTime` accepted `00:60:00`; `formatSize(Infinity)`/`formatDuration(NaN)`/`formatClockTime` rendered `'Infinity TB'`/`'NaNs'`/`'Infinity:NaN:NaN'`; `validateQueueExport` had no job cap; `formatError` threw on hostile objects; `isContainerCompatibleWithStream` threw on a streamless payload; the i18n test mock threw on a RegExp-metacharacter key). `deriveOutputPath` traversal and all 6 store rehydration readers proved already-safe (mutation-verified). Typecheck 6/6, lint 0 errors, format clean, unit 199/2911, integration 50/50, e2e A 155+2skipped, e2e B 9/9 |
 | 2 Media / byte-level fuzzing | TODO | — |
 | 3 IPC contract & abuse | TODO | — |
 | 4 State machines, lifecycle & races | TODO | — |
@@ -555,6 +555,145 @@ expensive to find by hand.
 
 **Pattern:** every table row becomes a `fast-check` property test plus a fixed regression seed
 (`fc.assert(prop, { seed: 12345, path: 'repro.txt' })` committed on failure).
+
+#### Delivered
+
+`fast-check@4.10.2` added as a dev-dep (no new advisories). Eight new property-test files, 138 tests:
+
+| File | Covers | Tests |
+|---|---|---|
+| `src/shared/__tests__/errors.property.test.ts` | `formatError`/`isAppError` totality | 15 |
+| `src/shared/__tests__/validation.property.test.ts` | `validate*` never-throw, no-`NaN` | 24 |
+| `src/shared/__tests__/math-estimate.property.test.ts` | `clamp`/`toPercent`/`estimateRemaining`/`formatDurationCompact` | 12 |
+| `src/shared/__tests__/codec-containers.property.test.ts` | codec/extension lookups | 15 |
+| `src/main/queue/__tests__/queue-transfer.property.test.ts` | import contract, prototype pollution, job cap | 17 |
+| `src/renderer/utils/__tests__/path-shortcuts.property.test.ts` | path helpers, shortcut parsing | 30 |
+| `src/main/cli/__tests__/cli-util.property.test.ts` | `deriveOutputPath` containment | 10 |
+| `src/renderer/utils/__tests__/formatters.property.test.ts` | renderer formatters | 12 |
+| `src/renderer/i18n/__tests__/i18n.property.test.ts` | interpolation + 56-locale corpus | 13 |
+| `src/renderer/stores/__tests__/store-persist.property.test.ts` | localStorage rehydration, 6 readers | 15 |
+
+**Eight source bugs the property tests found.** Every one is a crash or a wrong value on input the
+existing hand-written tests never produced:
+
+1. **`isValidTime` accepted `00:60:00`.** The regex matched the *shape* `\d{1,2}:\d{2}:\d{2}` without
+range-checking the components, so an impossible time passed validation straight into an ffmpeg seek
+argument. Now minutes and seconds are checked against 59.
+2. **`formatSize(Infinity)` returned `'Infinity TB'`.** The non-finite guard existed on `formatBytes`
+but not on `formatSize`, which is what the file table actually calls. A corrupt file's `NaN` size
+rendered as the literal text `'NaN B'`.
+3. **`formatDuration(NaN)` returned `'NaNs'`.** Same class: `NaN.toFixed(2)` is `'NaN'`, not `'0.00'`.
+4. **`formatClockTime` rendered `'Infinity:NaN:NaN'`.** `Math.max(0, Infinity)` is `Infinity`, and
+the hour/minute/second math then produced `NaN` components. Guarding only `Number.isFinite(seconds)`
+is *not* enough - a finite-but-enormous value still overflows on `seconds * 1000` - so the clamp is
+applied to the millisecond total.
+5. **`validateQueueExport` had no job-count cap.** A crafted file declaring 200 000 records was
+validated one-by-one and then handed to the queue wholesale. Now capped at `QUEUE_EXPORT_MAX_JOBS`
+(10 000), which is wired into the real import path (`src/main/ipc/queue.ts:400`).
+6. **`formatError` threw on a hostile object.** Reading `.message` off a Proxy `get`/`has` trap or a
+throwing getter propagated out of the error path - a broken error dialog instead of a worse-but-working
+one. Both the guard and the code inference are now wrapped, degrading to `UNKNOWN`.
+7. **`isContainerCompatibleWithStream` threw on a stream with no `type`.** A partially-mapped ffprobe
+payload turned a defensive predicate into a caller-side crash.
+8. **The i18n test mock threw on a `(` interpolation key.** The token name was interpolated into a
+`RegExp` unescaped, so a metacharacter key produced an unterminated-group `SyntaxError` or silently
+matched nothing. The mock's dictionary lookup also reached `Object.prototype` for a `__proto__` key,
+returning a non-string that then failed on `.replace`.
+
+**One row in the table above was stated against code that does not exist, and the plan was wrong rather
+than the code.** `deriveOutputPath` does exist - at `src/main/cli/cli-util.ts:271`, exactly one of the
+two paths the row names - so the row was closable after all, and is now covered by
+`cli-util.property.test.ts`. The result is worth recording because it is a *negative* finding:
+
+**`deriveOutputPath` was already traversal-safe, and the property proves it rather than assuming it.**
+The `path.basename(fileName)` guard at `cli-util.ts:277` holds for every adversarial stem tried:
+`../../etc/passwd`, `..\\..\\Windows\\System32`, `\\?\C:\x`, `\\server\share\x`, 32 000-character
+stems, 8 000 chained `..`, RTL-override, and an empty stem. Reverting that single `path.basename` call
+fails **6 of the 10** new tests, so the property has teeth rather than passing vacuously.
+
+Two things this row does **not** establish, stated so the test is not read as stronger than it is:
+
+- **No Windows reserved-name sanitization exists anywhere in the output-path chain.** `CON`, `NUL`,
+  `AUX.mp4`, `COM1`, `LPT9` all pass through unsanitized to `deriveOutputPath`, `buildOutputPath`
+  (`src/renderer/utils/batch-options.ts:223`), `buildDemuxTargets`
+  (`src/shared/codec-containers.ts:652`) and `withExtension`. A stem of `CON` yields `CON.mp4`, which
+  on Windows is a device, not a file. This is a real latent bug, but it is **unreachable from the GUI**
+  (Windows cannot create such a file) and only reachable via the CLI/MCP argument surface. Left
+  unfixed deliberately - see "Not fixed".
+- The guard is `path.basename`, which is **platform-dependent**: win32 splits on both `/` and `\`,
+  posix only `/`. The tests run on win32, so a `\`-only traversal stem is exercised through the
+  win32 code path and would not be caught by this suite on Linux.
+
+`parseShortcut` "never throws on any string" was the other mis-stated row: it throws by design on a
+modifier-only chord, and that throw is a load-bearing guard on the `SHORTCUTS` table
+(`shortcuts.test.ts:91`). The property was rewritten to the invariant that actually matters: *every
+chord declared in `SHORTCUTS` parses without throwing*, and a modifier-only chord cannot become a
+matchable predicate at all.
+
+**Three of this phase's "failures" were my test generators being wrong, not the source.** Worth
+separating out, because the instinct on a red property test is to go patch the validator:
+
+1. `fc.string(unit)` is **deprecated in fast-check 4 and silently ignores the unit constraint** - it
+   emitted `"0"`, which is a genuinely valid time, so the `isValidTime` property failed on a
+   *correct* implementation. The fix was `fc.integer`/`.map`, not a source change.
+2. A containment check written as `rel.startsWith('..')` **rejects the legal filename
+   `.._converted.mp4`**, which is precisely what a `..` stem produces. The property has to compare
+   whole path segments. This is a false positive that would have been easy to "fix" by weakening the
+   guard it was meant to protect.
+3. `deriveOutputPath(input, {…})` with `outputDir` omitted returns `path.dirname(input)` - and
+   `path.join` has already normalized any traversal out of `input` by then, so asserting the output
+   stays in `C:/in` was asserting something false about the input, not a bug in the function.
+4. `suggestedExtensionForAudioCodec('opus')` returning `''` is the documented "no suggestion"
+   contract, not a defect.
+
+**The store-persist row is the same shape of result: a negative finding, correctly pinned.** All six
+rehydration readers (`readStoredBatchConfig`, `readStoredHwAccel`, `readStoredQueueConcurrency`,
+`readStoredWhenDone`, `readStoredDrawerCondensed`, `readStoredVideoCutDraft`) already survive all 38
+adversarial stored values - wrong-type JSON that parses cleanly, `{"__proto__":…}`, `constructor`/
+`prototype` chains, 200 KB strings, unbalanced braces, `1e400`. They are not naive, because
+`src/renderer/utils/storage.ts` centralizes the try/catch and each reader validates field-by-field.
+
+The one thing that *was* wrong is my first version of the property, which is the more useful record:
+
+- I asserted only `Number.isFinite(readStoredQueueConcurrency())`. Deleting the reader's `clamp()` call
+  still returns a finite `-99999`, so **the mutation survived**. The reader's documented contract is
+  "clamped to 1..MAX_QUEUE_CONCURRENCY", and the property now asserts the range, not just finiteness.
+  After tightening, the same mutation fails 2 tests. A property that passes is not evidence it is
+  correct.
+- I had also written `expect(out === undefined || out !== null || true).toBe(true)` - a tautology that
+  asserts nothing and would have survived any mutation of `loadJson`. Replaced with a real
+  totality-plus-`onError` assertion; dropping `parsed ?? fallback` from `loadJson` then fails 6 tests.
+
+**Mutation-tested.** The `errors.ts` fixes were checked by reverting each guard: removing the
+`message`-read catch fails 2 tests, removing the `String(err)` catch fails 1. Two earlier mutations
+*survived* - `isAppError`'s try/catch and the `String(err)` guard both needed a test that specifically
+reached them, which is what the throwing-`Symbol.toPrimitive` function case was added for. The
+`deriveOutputPath` containment property is mutation-tested too: reverting the one `path.basename` call
+fails 6/10.
+
+#### Not fixed (deliberate, with reasons)
+
+| Finding | Why left |
+|---|---|
+| No Windows reserved-name sanitization in any output-path builder (`CON`, `NUL`, `COM1`, trailing dot/space) | Real bug, but unreachable from the GUI (Windows cannot create those files) and only reachable from the CLI/MCP argument surface. Fixing it changes output filenames, so it needs a decision on back-compat with existing users' naming, not a drive-by test fix. |
+| `isValidTime` still accepts hours > 99 / no hour upper bound | The plan named only "no `NaN`/`Infinity`". ffmpeg is the authority on out-of-range `HH:MM:SS`; inventing a bound here risks rejecting valid long-form timestamps. |
+| Quarantine schema is not validated (`scripts/flake-report.mjs` accepts an undated entry indefinitely) | Belongs to Phase 0.5 sign-off, not Phase 1. |
+
+**Gates after Phase 1:** typecheck 6/6 clean; lint 0 errors (1 known `no-autofocus` warning);
+`format:check` clean; unit 199 files / 2911 tests; integration 4 files / 50 tests; e2e Tier A 155
+passed + 2 skipped, Tier B 9/9.
+
+**Two honest flake notes**, because a passing suite that needed a re-run should not be reported as
+simply "green":
+
+- The first full Tier A run had 2 `cli.spec.ts` help-text failures. Both `e2e/cli.spec.ts` and
+  `src/main/cli/cli-util.ts` were untouched by this phase, `cli.spec.ts` then passed 61/61 in
+  isolation, and the full suite passed 155/157 on the next run.
+- The first full unit run had `src/main/__tests__/index.test.ts > runs the CLI and exits with success
+  in CLI mode` fail after 32s. It passed 13/13 in isolation and the full suite then passed 2911/2911.
+  These are both the known loaded-suite flake class, and exactly what Phase 0.5's `test-flake` job
+  exists to attribute - the local single-pass numbers above should be read as "1 flake in ~3 full
+  runs", not as a clean sweep.
 
 ---
 

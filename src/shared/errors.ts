@@ -138,8 +138,15 @@ export function invalidQueueFileError(detail?: string): AppError {
  */
 export function isAppError(err: unknown): err is AppError {
   if (!err || typeof err !== 'object') return false;
-  const obj = err as Record<string, unknown>;
-  return typeof obj.code === 'string' && typeof obj.message === 'string' && typeof obj.timestamp === 'number';
+  // A hostile or lazy `get` trap (Proxy, getter that throws) must not turn a
+  // structural type guard into a thrown error: this guard is called from
+  // `formatError`, which is the app's last line of defence for any thrown value.
+  try {
+    const obj = err as Record<string, unknown>;
+    return typeof obj.code === 'string' && typeof obj.message === 'string' && typeof obj.timestamp === 'number';
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -186,12 +193,29 @@ export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
 export function formatError(err: unknown): AppError {
   if (isAppError(err)) return err;
   if (err && typeof err === 'object') {
-    const msg = 'message' in err ? (err as Record<string, unknown>).message : undefined;
-    const message = typeof msg === 'string' ? msg : 'Unknown error';
-    const code = inferErrorCode(message, err);
-    return createError(code, ERROR_MESSAGES[code], message);
+    // Reading `message`/`code` off an arbitrary object can throw (getter, Proxy
+    // trap). Swallow that here rather than propagating out of the error path: a
+    // broken error dialog is far worse than a slightly less specific code.
+    let msg: unknown;
+    let code: ErrorCodeType;
+    try {
+      const obj = err as Record<string, unknown>;
+      msg = 'message' in obj ? obj.message : undefined;
+      const message = typeof msg === 'string' ? msg : 'Unknown error';
+      code = inferErrorCode(message, err);
+      return createError(code, ERROR_MESSAGES[code], message);
+    } catch {
+      code = ErrorCode.UNKNOWN;
+      return createError(code, ERROR_MESSAGES[code]);
+    }
   }
-  const strMessage = String(err);
+  // `String(err)` also throws for a Symbol or a throwing `toString`.
+  let strMessage: string;
+  try {
+    strMessage = String(err);
+  } catch {
+    strMessage = 'Unknown error';
+  }
   const code = inferErrorCode(strMessage);
   return createError(code, ERROR_MESSAGES[code], strMessage);
 }

@@ -322,6 +322,10 @@ export function isContainerCompatibleWithChapters(extension: string): boolean {
  */
 export function isContainerCompatibleWithStream(extension: string, stream: MediaStreamInfo): boolean {
   const ext = extension.toLowerCase().replace(/^\./, '');
+  // A stream entry can be missing `type` when it comes from a hand-built or
+  // partially-mapped ffprobe payload; reading it unguarded turned a defensive
+  // predicate into a crash on the caller's side.
+  if (!stream?.type) return true;
   if (stream.type === 'video') return isExtensionCompatibleWithVideoCodec(ext, stream.codec);
   if (stream.type === 'subtitle') return isSubtitleCodecCompatibleWithContainer(stream.codec, ext);
   return true;
