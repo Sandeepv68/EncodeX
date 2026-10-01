@@ -21,7 +21,7 @@
 | 0.5 Flake governance                          | **DONE**    | `test:flake-detect` runs e2e 3× with `--retry=0` and fails on failure rate in (0,1), on partial runs, on lapsed/stale/**invalid** quarantine entries; 36 unit tests, 10 mutations caught; `test-flake` CI job. Sign-off audit closed two real holes: an undated **or typo-dated** entry exempted a test forever (`Date.parse` → `NaN`, and `NaN <= now` is false), so the schema is now validated and malformed entries fail closed; `actionlint` 1.7.12 + shellcheck clean over all 7 workflows                                                                                                                                                                                                                                                                                                                                               |
 | 0.6 Housekeeping debt                         | **DONE**    | `perf/**` + `eslint-rules/**` in Prettier globs; `tsconfig.perf.json` wired as the 6th typecheck project; boot time recorded + asserted (median-of-3 vs `perf/baseline.json` budget +25%), 31 tests, 6 mutations caught. Typechecking `perf/` found Vitest 4 silently ignored `forks: { execArgv }`, so the memory tests had been measuring uncollected garbage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | 1 Contract & input fuzzing                    | **DONE**    | 9 new property-test files, 162 tests, all 10 rows covered. **8 source bugs found and fixed** (`isValidTime` accepted `00:60:00`; `formatSize(Infinity)`/`formatDuration(NaN)`/`formatClockTime` rendered `'Infinity TB'`/`'NaNs'`/`'Infinity:NaN:NaN'`; `validateQueueExport` had no job cap; `formatError` threw on hostile objects; `isContainerCompatibleWithStream` threw on a streamless payload; the i18n test mock threw on a RegExp-metacharacter key). `deriveOutputPath` traversal and all 6 store rehydration readers proved already-safe (mutation-verified). Typecheck 6/6, lint 0 errors, format clean, unit 199/2911, integration 50/50, e2e A 155+2skipped, e2e B 9/9                                                                                                                                                          |
-| 2 Media / byte-level fuzzing                  | IN PROGRESS | `computeHistogram` fuzzed (`image-histogram.fuzz.test.ts`, 8 tests): found an unbounded loop (`total = width * height` unclamped → 3.6 × 10^9 iterations on a 60k×60k PNG, a real hang) plus a `NaN` written to the string key `"undefined"`, invisible to `.some(Number.isNaN)`. Fixed by clamping to the bytes present; mutation-verified (clamp removal fails 4/8). Subprocess watchdog **delivered** (`src/main/spawn-timeout.ts`): 5 bounded spawn sites killed+rejected, 7 unwired, 7 mutations caught. `frame-decoder.ts` fuzz **delivered** (`frame-decoder.fuzz.test.ts`, 46 tests): found an **OOM process-killing hang** at `frameSize === 0` plus a silent `NaN`/`Infinity` stall and a throwing `Buffer.alloc`; fixed by validating the derivation, 5 mutations caught, 1 dead branch removed. EXIF bombs **delivered** (`image-exif.fuzz.test.ts`, 19 tests): `exifr` itself survives every hand-built TIFF bomb, but our layer leaked the parser's `errors` array as if it were an EXIF tag (garbage files reported as having metadata) and `flattenExif` bounded depth but not total work (a self-referential node with 2 child keys = 2^depth paths past the depth cap; >2e6 visits measured). Fixed; 3 mutations caught. Remaining: real corpus |
+| 2 Media / byte-level fuzzing                  | IN PROGRESS | `computeHistogram` fuzzed (`image-histogram.fuzz.test.ts`, 8 tests): found an unbounded loop (`total = width * height` unclamped → 3.6 × 10^9 iterations on a 60k×60k PNG, a real hang) plus a `NaN` written to the string key `"undefined"`, invisible to `.some(Number.isNaN)`. Fixed by clamping to the bytes present; mutation-verified (clamp removal fails 4/8). Subprocess watchdog **delivered** (`src/main/spawn-timeout.ts`): 5 bounded spawn sites killed+rejected, 7 unwired, 7 mutations caught. `frame-decoder.ts` fuzz **delivered** (`frame-decoder.fuzz.test.ts`, 46 tests): found an **OOM process-killing hang** at `frameSize === 0` plus a silent `NaN`/`Infinity` stall and a throwing `Buffer.alloc`; fixed by validating the derivation, 5 mutations caught, 1 dead branch removed. EXIF bombs **delivered** (`image-exif.fuzz.test.ts`, 19 tests): `exifr` itself survives every hand-built TIFF bomb, but our layer leaked the parser's `errors` array as if it were an EXIF tag (garbage files reported as having metadata) and `flattenExif` bounded depth but not total work (a self-referential node with 2 child keys = 2^depth paths past the depth cap; >2e6 visits measured). Fixed; 3 mutations caught. Real corpus **delivered** (`corrupt-media.mediafuzz.test.ts`, 6 tests): 173 deterministic files from 11 real-ffmpeg seeds probed with real `ffmpeg`/`ffprobe` across 7 entry points; **no new production bug** — the work was proving the tier non-vacuous, which exposed 4 defects in the tests themselves (a waveform sweep that could never pass because its seed had no audio stream, a prefix-slice that never reached bit-flipped files, a vacuity guard for the fix, and a tally hidden by the crash tripwire). 2 production mutations caught. |
 | 3 IPC contract & abuse                        | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | 4 State machines, lifecycle & races           | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | 5 UI robustness, i18n & a11y                  | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -755,11 +755,13 @@ in CLI mode` fail after 32s. It passed 13/13 in isolation and the full suite the
 Runs in a new suite `test:media-fuzz` against the _real_ ffmpeg-static binary. Corrupt-file handling is
 the #1 real-world crash source for a media tool and is currently untested.
 
-> **Status: IN PROGRESS — resume from "Phase 2 progress" below.** Done: `computeHistogram` fuzz, the
+> **Status: DONE (2026-10-01).** All five Phase 2 items are delivered: `computeHistogram` fuzz, the
 > subprocess watchdog (`withTimeout`, 5 bounded sites), the `FrameDecoder` fuzz (which found an OOM
-> process-killing hang), and the EXIF bombs (which found an `errors`-leak and unbounded work in
-> `flattenExif`). Next: real corpus, `test:media-fuzz`. The plan's file paths for three targets are
-> wrong; the corrected locations are in the progress section.
+> process-killing hang), the EXIF bombs (which found an `errors`-leak and unbounded work in
+> `flattenExif`), and the real corpus → `test:media-fuzz`. The plan's file paths for three targets were
+> wrong; the corrected locations are in the progress section. The real corpus found **no** new production
+> bug, which is a legitimate result: a clean tier that has been shown to fail on injected defects is worth
+> more than a silent one.
 
 **Corpus generator** (`e2e/fixtures/corpus/generate-corpus.ts`):
 
@@ -809,7 +811,83 @@ across the run in a `perf`-style test).
 4. EXIF bombs; two real bugs found and fixed. New file
    `src/main/__tests__/image-exif.fuzz.test.ts`, 19 tests. Detailed below.
 
-**Next up: real corpus → `test:media-fuzz`.**
+5. Real media corpus → `test:media-fuzz`. New files `src/test-utils/media-corpus.ts` and
+   `src/main/__tests__/corrupt-media.mediafuzz.test.ts`, 6 tests. Detailed below.
+
+### Real corpus → `test:media-fuzz` — clean, and the value was in proving it *could* fail (DELIVERED)
+
+Against the real `ffmpeg-static`/`ffprobe-static` binaries. **No new production bug was found** — unlike
+every previous item in this phase. That is the honest result, and the useful part is the evidence that
+the suite is capable of reporting a defect rather than passing vacuously.
+
+**Corpus** (`src/test-utils/media-corpus.ts`, deterministic, mulberry32 seeded from `0x5eed`, override with
+`MEDIA_FUZZ_SEED`). 11 seeds synthesised by real ffmpeg — MP4, MKV, WebM, MOV, AVI, JPEG, PNG, GIF, MP3,
+FLAC, SRT — expanded to **173 files** via truncation (byte offsets 0/1/2/8/64/512 and 1/5/25/50/99 %),
+single-bit flips in the header, all-zero and all-noise rewrites, and extension/content mismatches
+(`mkv-as.mp4`, `jpg-as.mkv`, `mp4-as.jpg`, header-plus-noise). Nothing is checked in; the corpus is
+regenerated per run, so it adds no repo weight and cannot rot.
+
+**Targets exercised** (all real, no mocks): `FFToolCore.getInfo()` over all 173 files; `getImagePreview()`,
+`getImageFileInfo()`, `getImageInfo()` over the image family; `getVideoPreview()`; `extractWaveform()` and
+`extractThumbnails()`. Each call is raced against a 20 s budget, and results are checked for non-finite
+numbers and for own-code rejections. `isPackaged()` returns `false` outside Electron, so the suite needs no
+Electron mock.
+
+**Four ways the suite was proven non-vacuous.** Each of these was a real defect *in the test*, found by
+inspecting what the sweep actually did:
+
+1. **A vacuous waveform test.** `extractWaveform()` returned `null` for all 16 sampled files, which looked
+   like a pass. It was not: the control group never asserted timeline output on *good* input, and the seed
+   it was using (`seed.mp4`) is **video-only**. Waveform extraction cannot ever succeed on a file with no
+   audio stream, so the whole waveform sweep was unfalsifiable. Fixed by adding `seed-av.mp4` (3 s, video +
+   AAC audio) and by extending the control group to require non-`null` waveform *and* thumbnail output from
+   it. The control now fails if either extractor is broken, which is what makes the all-`null` corrupt-file
+   result meaningful.
+2. **A sampling bias that hid every interesting case.** `.slice(0, N)` on the video corpus returned the
+   *prefix*, which is entirely the 0- and 1-byte truncations of one seed. Bit-flipped and mismatched files —
+   the ones most likely to slip past a decoder's header check — were never reached. Replaced with
+   round-robin bucketing over (seed, corruption kind).
+3. **A vacuity guard for the fix above.** Stratification is only correct if it keeps reaching the audio seed,
+   so the timeline test now asserts the sample contains a `seed-av.mp4` variant. Verified this guard can
+   fail: with `MEDIA_FUZZ_TIMELINE_LIMIT=1` the sample collapses to `seed.mp4` and the assertion fires.
+4. **A swallowed outcome counter.** `console.info` is stubbed by the suite's crash tripwire, so the first
+   tally implementation printed nothing at all. Moved to `process.stderr.write`, gated on
+   `MEDIA_FUZZ_VERBOSE`, because a sweep reporting "everything returned `null`" is indistinguishable from a
+   sweep that never reached the decoder.
+
+**Mutation verification** (2 production mutations, both caught, both restored):
+
+| Mutation | Result |
+| --- | --- |
+| `ffprobe-mapper.ts`: `duration` fallback `0` → `NaN` | **Caught** — 27 files flagged, and the control group failed too |
+| `video-preview.ts`: `extractPreviewFrame` never settles | **Caught** — all 30 files reported as hung past the 20 s budget |
+
+A third mutation (inverting the `BudgetExceeded` assertion) correctly did *not* fail, which was itself
+informative: it showed the hang assertion is only reached for calls that reject or hang, so a weak mutation
+proves nothing. The real hang mutation above was needed to cover it.
+
+**Outcome distribution** (`MEDIA_FUZZ_VERBOSE=1`): `getInfo` 70 values / 103 rejected — real ffprobe work on
+more than half the corpus; `getImageFileInfo` and `getImagePreview` 43 values / 1 `null`; `getImageInfo` 13 /
+31; `getVideoPreview` 2–3 / 27; waveform and thumbnails 0 / 16. The waveform and thumbnail zeros are
+*correct* — a corrupted file has no decodable audio or frame to extract — but they are only trustworthy
+because item 1 proves those paths work on pristine input.
+
+**Known upstream issue, deliberately not worked around.** The suite emits Node `DEP0137`
+("Closing a FileHandle object on garbage collection"). Root cause is in `exifr`, not here: its chunked
+reader calls `this.file.close && this.file.close()` in `parse()` **without awaiting it**, so the
+`fs.promises.FileHandle` from `readChunked()` can be collected mid-close. Confirmed pre-existing and
+scale-dependent — the 19-test EXIF suite builds tiny hand-written TIFFs that never enter chunked mode, so
+only the 44 real image files in this suite trigger it. Not worked around because the only clean fix is to
+pass `exifr` an in-memory buffer, which trades a deprecation warning for a whole-file read on large images.
+Tracked as upstream debt.
+
+**Tier separation.** The suite is excluded from `vitest.config.ts` and runs only via
+`npm run test:media-fuzz` (`vitest.media-fuzz.config.ts`), with `setupFiles: [src/test-setup.crash.ts]`,
+`maxWorkers: 2`, and a 900 s per-test ceiling. The unit suite is unaffected.
+
+**Final state:** `test:media-fuzz` 6/6 in ~14 s; unit 3060/3060 across 203 files; typecheck, format, and lint
+clean (lint keeps its one pre-existing `jsx-a11y/no-autofocus` warning). `git status` shows no leftover
+scratch files and no modified production sources.
 
 ### EXIF bombs — the parser is hardened, *our* layer was not (DELIVERED)
 
