@@ -91,9 +91,87 @@ export function toRunResult(report, name, toPosixRelative) {
  * @returns {number|null} Epoch milliseconds, or null if the entry is undated.
  */
 export function expiryOf(entry, maxAgeDays) {
-  if (entry.expiresOn) return Date.parse(entry.expiresOn);
-  if (entry.addedOn) return Date.parse(entry.addedOn) + maxAgeDays * 24 * 60 * 60 * 1000;
+  if (entry.expiresOn) return parseDate(entry.expiresOn);
+  if (entry.addedOn) {
+    const added = parseDate(entry.addedOn);
+    return added === null ? null : added + maxAgeDays * 24 * 60 * 60 * 1000;
+  }
   return null;
+}
+
+/**
+ * Parses a required ISO date, treating anything unparseable as absent.
+ *
+ * `Date.parse` returns `NaN` for garbage rather than throwing, and every
+ * downstream comparison against `NaN` is `false`. That silently turned a typo
+ * like `"addedOn": "2026-13-45"` into a quarantine that never lapses - the exact
+ * permanent-pass hole the 21-day rule exists to close.
+ *
+ * @param {unknown} value - Candidate ISO date string.
+ * @returns {number|null} Epoch milliseconds, or null if unparseable.
+ */
+function parseDate(value) {
+  if (typeof value !== 'string' || value.trim() === '') return null;
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+/**
+ * Validates quarantine entries against the documented schema.
+ *
+ * The README promises every parked spec has "a tracking issue and a date". An
+ * entry missing either is not a quarantine, it is a silent permanent skip, so
+ * each violation is reported as a build problem rather than tolerated.
+ *
+ * Accepts both shapes `flake-detect.mjs` loads: a bare array, or an object
+ * with an `entries` array (the form the committed `quarantine.json` uses, so it
+ * can carry a `$comment`). Keeping both means a caller can validate the raw
+ * file without repeating the loader's normalization.
+ *
+ * @param {unknown} quarantine - Contents of quarantine.json.
+ * @returns {string[]} Human-readable schema violations, empty when valid.
+ */
+export function validateQuarantine(quarantine) {
+  /** @type {string[]} */
+  const problems = [];
+  if (!Array.isArray(quarantine)) {
+    const entries =
+      quarantine !== null && typeof quarantine === 'object' ? /** @type {{entries?: unknown}} */ (quarantine).entries : undefined;
+    if (!Array.isArray(entries)) {
+      return ['quarantine: must be an array of entries, or an object with an "entries" array'];
+    }
+    quarantine = entries;
+  }
+
+  quarantine.forEach((entry, index) => {
+    const where = `quarantine[${index}]`;
+    if (entry === null || typeof entry !== 'object' || Array.isArray(entry)) {
+      problems.push(`${where}: must be an object`);
+      return;
+    }
+
+    const spec = typeof entry.spec === 'string' ? entry.spec.trim() : '';
+    if (!spec) problems.push(`${where}: "spec" is required and must be a non-empty string`);
+
+    const issue = typeof entry.issue === 'string' ? entry.issue.trim() : '';
+    if (!issue) problems.push(`${where}${spec ? ` (${spec})` : ''}: "issue" is required and must be a non-empty string`);
+
+    if (parseDate(entry.addedOn) === null) {
+      problems.push(`${where}${spec ? ` (${spec})` : ''}: "addedOn" is required and must be a parseable date`);
+    }
+
+    if (entry.expiresOn !== undefined && parseDate(entry.expiresOn) === null) {
+      problems.push(`${where}${spec ? ` (${spec})` : ''}: "expiresOn" must be a parseable date when present`);
+    }
+
+    const added = parseDate(entry.addedOn);
+    const expires = parseDate(entry.expiresOn);
+    if (added !== null && expires !== null && expires <= added) {
+      problems.push(`${where}${spec ? ` (${spec})` : ''}: "expiresOn" must be after "addedOn"`);
+    }
+  });
+
+  return problems;
 }
 
 /**
@@ -153,13 +231,24 @@ export function analyzeRuns(runs, options = {}) {
   }
 
   const expiredQuarantine = [];
+  const malformedQuarantine = [];
   for (const entry of quarantine) {
     const expiry = expiryOf(entry, maxQuarantineDays);
-    if (expiry !== null && expiry <= now) {
+    // An entry that is *dated but not yet lapsed* stays live. An entry with no
+    // usable date is not a valid excuse at all, so it is quarantined from
+    // exempting anything: schema violations are reported and the entry is
+    // excluded, so a bad entry fails loudly instead of silently passing.
+    if (expiry === null) {
+      malformedQuarantine.push(entry);
+      continue;
+    }
+    if (expiry <= now) {
       expiredQuarantine.push({ entry, expiry });
     }
   }
-  const liveEntries = quarantine.filter((entry) => !expiredQuarantine.some((expired) => expired.entry === entry));
+  const liveEntries = quarantine.filter(
+    (entry) => !malformedQuarantine.includes(entry) && !expiredQuarantine.some((expired) => expired.entry === entry),
+  );
   /** @type {Set<number>} */
   const usedEntries = new Set();
 
@@ -205,7 +294,7 @@ export function analyzeRuns(runs, options = {}) {
   const staleQuarantine = liveEntries.filter((_, index) => !usedEntries.has(index));
 
   /** @type {string[]} */
-  const problems = [];
+  const problems = validateQuarantine(quarantine);
   for (const spec of flaky) {
     if (spec.quarantined) continue;
     problems.push(`flaky: ${spec.id} failed ${spec.failed}/${spec.seen} runs (${pct(spec.failureRate)})`);
@@ -235,6 +324,7 @@ export function analyzeRuns(runs, options = {}) {
     alwaysFailed,
     partial,
     expiredQuarantine,
+    malformedQuarantine,
     staleQuarantine,
     problems,
   };

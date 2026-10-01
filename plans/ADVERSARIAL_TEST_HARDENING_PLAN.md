@@ -18,7 +18,7 @@
 | 0.2 E2E renderer tripwire | **DONE** | Tier A 154/154 (2 skipped), Tier B 9/9; `npm run lint` 0 errors; `npm run typecheck` clean; `npm run format:check` clean |
 | 0.3 Typecheck the tests | **DONE** | 191 test files in program; 54 real errors fixed, 0 remain; `npm run typecheck` clean (5 projects, 38s); 2686/2686 unit, Tier A 154/154, Tier B 9/9 |
 | 0.4 Coverage: per-file floors + diff coverage | **DONE** | Merged 2-tier report (220 files, **30 below the 80/70 candidate floor**, non-blocking); blocking diff gate with added-line coverage; 4 merge/scope bugs found and fixed |
-| 0.5 Flake governance | **DONE** | `test:flake-detect` runs e2e 3× with `--retry=0` and fails on failure rate in (0,1), on partial runs, on lapsed/stale quarantine entries; 19 unit tests over the verdict rules, 6 mutations caught; `test-flake` CI job |
+| 0.5 Flake governance | **DONE** | `test:flake-detect` runs e2e 3× with `--retry=0` and fails on failure rate in (0,1), on partial runs, on lapsed/stale/**invalid** quarantine entries; 36 unit tests, 10 mutations caught; `test-flake` CI job. Sign-off audit closed two real holes: an undated **or typo-dated** entry exempted a test forever (`Date.parse` → `NaN`, and `NaN <= now` is false), so the schema is now validated and malformed entries fail closed; `actionlint` 1.7.12 + shellcheck clean over all 7 workflows |
 | 0.6 Housekeeping debt | **DONE** | `perf/**` + `eslint-rules/**` in Prettier globs; `tsconfig.perf.json` wired as the 6th typecheck project; boot time recorded + asserted (median-of-3 vs `perf/baseline.json` budget +25%), 31 tests, 6 mutations caught. Typechecking `perf/` found Vitest 4 silently ignored `forks: { execArgv }`, so the memory tests had been measuring uncollected garbage |
 | 1 Contract & input fuzzing | **DONE** | 9 new property-test files, 162 tests, all 10 rows covered. **8 source bugs found and fixed** (`isValidTime` accepted `00:60:00`; `formatSize(Infinity)`/`formatDuration(NaN)`/`formatClockTime` rendered `'Infinity TB'`/`'NaNs'`/`'Infinity:NaN:NaN'`; `validateQueueExport` had no job cap; `formatError` threw on hostile objects; `isContainerCompatibleWithStream` threw on a streamless payload; the i18n test mock threw on a RegExp-metacharacter key). `deriveOutputPath` traversal and all 6 store rehydration readers proved already-safe (mutation-verified). Typecheck 6/6, lint 0 errors, format clean, unit 199/2911, integration 50/50, e2e A 155+2skipped, e2e B 9/9 |
 | 2 Media / byte-level fuzzing | TODO | — |
@@ -533,6 +533,58 @@ Gates after 0.6: typecheck 6/6 projects clean; lint 0 errors (1 known `no-autofo
 `format:check` clean; unit 189 files / 2748 tests; integration 4 files / 50 tests; e2e Tier A 155
 passed + 2 skipped, Tier B 9/9.
 
+#### 0.5 sign-off audit (deferred, then closed)
+
+Two items were marked delivered while remaining unverified. Both are now checked.
+
+**`actionlint` — clean.** v1.7.12 over all 7 workflows (`ci.yml`, `codeql.yml`, `nightly.yml`,
+`release.yml`, `scorecard.yml`, `site.yml`, `wiki-sync.yml`): **exit 0, no findings**, re-run with
+`shellcheck` 0.11.0 on `PATH` so the `run:` blocks were analysed too rather than skipped. CI already
+gates on this via `reviewdog/action-actionlint`, so this is a local confirmation of a gate that exists,
+not a new one. The `test-flake` job's assumptions also check out: it `needs: [build]`, the build matrix
+uploads `dist-ubuntu` with `if-no-files-found: error` (so the download can't silently miss), and
+`xvfb-run --auto-servernum` is present. One inefficiency, not a bug: `needs: [build]` waits for the
+windows and macos legs too, so `test-flake` idles until the slowest build finishes.
+
+**Quarantine schema — a real hole, now closed.** The analyzer documented "a tracking issue and a date"
+but enforced neither. `expiryOf` returned `null` for an entry with no dates, the caller treated
+`null` as "not yet lapsed", and the entry stayed in `liveEntries` and matched by `spec` — so an
+undated entry exempted a test **forever**, defeating the 21-day rule entirely.
+
+The worse variant is the one that had no obvious smell: **`Date.parse` returns `NaN`, it does not
+throw.** `expiryOf` did `Date.parse(entry.expiresOn) ?? addedOn + …` on a value that was already
+either a valid string or `undefined`, so `expiresOn: "2026-13-45"` produced `NaN`, and
+`NaN <= now` is `false`. A typo'd date was silently immortal — the same permanent pass as no date at
+all, but it *looks* like a compliant entry in review.
+
+- `parseDate()` now treats unparseable input as absent (`Number.isFinite` guard), and
+  `validateQuarantine()` is exported and wired into `analyzeRuns`' problem list.
+- **Fail closed, not open.** A malformed entry is reported *and* excluded from `liveEntries`, so it
+  exempts nothing. An entry that cannot justify itself does not get the benefit of the doubt — the
+  flake is reported instead. `malformedQuarantine` is returned for diagnosis.
+- Schema: `spec` and `issue` required non-empty, `addedOn` required and parseable, `expiresOn`
+  optional but parseable and strictly after `addedOn`. Violations are indexed
+  (`quarantine[3]: …`) so the offending entry is findable.
+- `validateQuarantine` accepts **both** shapes `flake-detect.mjs` loads — bare array, or object with
+  `entries`. The committed `quarantine.json` uses the object form so it can carry a `$comment`, and my
+  first version rejected it. Worth catching: the analyzer was stricter than the file it validates.
+- The detector's failure message told users to add "an issue and an `expiresOn` date", which
+  contradicted the schema (`expiresOn` is optional; `addedOn` is required). Rewritten.
+- The `README.md` now carries the field table and the `NaN` explanation, so the rule is discoverable
+  without reading the analyzer.
+
+19 → **36 tests**. Four mutations, each caught: `parseDate` → raw `Date.parse` (4 failures), drop the
+`issue` check (3), drop the `addedOn` check (5), malformed entries silently exempt (2). The last one
+is the mutation that matters most — it is the "silently permanent pass" itself.
+
+Two of my own tests were wrong before the source was: `analyzeRuns(runs)` was called with a `now` of
+`2026-02-01` and an `addedOn` of `2026-01-01`, which the analyzer correctly reported as *already
+lapsed* — the fixture, not the code, was at fault. And an unescaped apostrophe in a test title
+(`typo'd`) broke the module's parse, which is why the file failed to load before any assertion ran.
+
+Gates after the audit: typecheck 6/6 clean; lint 0 errors (1 known warning); `format:check` clean;
+unit 199 files / 2928 tests.
+
 ---
 
 ## Phase 1 — Contract & input fuzzing (property-based)
@@ -677,7 +729,7 @@ fails 6/10.
 |---|---|
 | No Windows reserved-name sanitization in any output-path builder (`CON`, `NUL`, `COM1`, trailing dot/space) | Real bug, but unreachable from the GUI (Windows cannot create those files) and only reachable from the CLI/MCP argument surface. Fixing it changes output filenames, so it needs a decision on back-compat with existing users' naming, not a drive-by test fix. |
 | `isValidTime` still accepts hours > 99 / no hour upper bound | The plan named only "no `NaN`/`Infinity`". ffmpeg is the authority on out-of-range `HH:MM:SS`; inventing a bound here risks rejecting valid long-form timestamps. |
-| Quarantine schema is not validated (`scripts/flake-report.mjs` accepts an undated entry indefinitely) | Belongs to Phase 0.5 sign-off, not Phase 1. |
+| Quarantine schema is not validated (`scripts/flake-report.mjs` accepts an undated entry indefinitely) | **Closed in the Phase 0.5 audit** — see the schema section below |
 
 **Gates after Phase 1:** typecheck 6/6 clean; lint 0 errors (1 known `no-autofocus` warning);
 `format:check` clean; unit 199 files / 2911 tests; integration 4 files / 50 tests; e2e Tier A 155

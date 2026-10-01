@@ -147,8 +147,9 @@ if (verdict.ok) {
 console.error(`\n${verdict.problems.length} flake problem(s):\n`);
 for (const problem of verdict.problems) console.error(`  ${problem}`);
 console.error(
-  '\nA flaky spec must be fixed, or quarantined in e2e/quarantine.json with an issue\n' +
-    'and an expiresOn date. Quarantine entries lapse after ' +
-    `${MAX_QUARANTINE_DAYS} days and then fail this gate.`,
+  '\nA flaky spec must be fixed, or quarantined in e2e/quarantine.json with a "spec",\n' +
+    'a tracking "issue" and an "addedOn" date (optional "expiresOn" overrides it).\n' +
+    `Entries lapse after ${MAX_QUARANTINE_DAYS} days and then fail this gate. An entry\n` +
+    'with a missing or unparseable date is invalid and does not exempt anything.',
 );
 process.exit(1);

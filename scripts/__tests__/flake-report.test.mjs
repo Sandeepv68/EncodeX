@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { analyzeRuns, toRunResult, testId, expiryOf } from '../flake-report.mjs';
+import { analyzeRuns, toRunResult, testId, expiryOf, validateQuarantine } from '../flake-report.mjs';
 
 /**
  * Builds a run from a list of `[fullName, status]` pairs for one spec file.
@@ -255,5 +255,141 @@ describe('analyzeRuns', () => {
     ];
     const verdict = analyzeRuns(runs);
     expect(verdict.flaky.map((s) => s.name)).toEqual(['mostly-fails', 'half-fails']);
+  });
+});
+
+describe('validateQuarantine', () => {
+  const valid = { spec: 'e2e/specs/broken.spec.ts', issue: '#42', addedOn: '2026-01-01' };
+
+  it('accepts a well-formed entry', () => {
+    expect(validateQuarantine([valid])).toEqual([]);
+  });
+
+  it('accepts an entry with a later expiresOn', () => {
+    expect(validateQuarantine([{ ...valid, expiresOn: '2026-06-01' }])).toEqual([]);
+  });
+
+  it('accepts an empty manifest', () => {
+    expect(validateQuarantine([])).toEqual([]);
+    // The committed quarantine.json uses the object form so it can carry a
+    // $comment; the validator must accept exactly what the loader accepts.
+    expect(validateQuarantine({ $comment: 'why', entries: [] })).toEqual([]);
+    expect(validateQuarantine({ entries: [valid] })).toEqual([]);
+  });
+
+  it('rejects a missing spec', () => {
+    const problems = validateQuarantine([{ issue: '#1', addedOn: '2026-01-01' }]);
+    expect(problems.join('\n')).toMatch(/"spec" is required/);
+  });
+
+  it('rejects a missing issue', () => {
+    const problems = validateQuarantine([{ spec: 'a.spec.ts', addedOn: '2026-01-01' }]);
+    expect(problems.join('\n')).toMatch(/"issue" is required/);
+  });
+
+  it('rejects a missing addedOn - an undated entry is a permanent pass', () => {
+    const problems = validateQuarantine([{ spec: 'a.spec.ts', issue: '#1' }]);
+    expect(problems.join('\n')).toMatch(/"addedOn" is required/);
+  });
+
+  it('rejects a blank issue and a whitespace-only spec', () => {
+    expect(validateQuarantine([{ ...valid, issue: '   ' }]).join('\n')).toMatch(/"issue" is required/);
+    expect(validateQuarantine([{ ...valid, spec: '  ' }]).join('\n')).toMatch(/"spec" is required/);
+  });
+
+  it('rejects an unparseable addedOn', () => {
+    // Date.parse returns NaN here rather than throwing, which used to make the
+    // entry silently immortal.
+    expect(validateQuarantine([{ ...valid, addedOn: 'not-a-date' }]).join('\n')).toMatch(/"addedOn" is required/);
+    expect(validateQuarantine([{ ...valid, addedOn: '2026-13-45' }]).join('\n')).toMatch(/"addedOn" is required/);
+    expect(validateQuarantine([{ ...valid, addedOn: '' }]).join('\n')).toMatch(/"addedOn" is required/);
+    expect(validateQuarantine([{ ...valid, addedOn: 12345 }]).join('\n')).toMatch(/"addedOn" is required/);
+  });
+
+  it('rejects an unparseable expiresOn but allows it to be absent', () => {
+    expect(validateQuarantine([{ ...valid, expiresOn: 'soon' }]).join('\n')).toMatch(/"expiresOn" must be a parseable/);
+    expect(validateQuarantine([{ ...valid, expiresOn: undefined }])).toEqual([]);
+  });
+
+  it('rejects expiresOn at or before addedOn', () => {
+    expect(validateQuarantine([{ ...valid, expiresOn: '2025-01-01' }]).join('\n')).toMatch(/must be after/);
+    expect(validateQuarantine([{ ...valid, expiresOn: '2026-01-01' }]).join('\n')).toMatch(/must be after/);
+  });
+
+  it('rejects a root that is neither an array nor an object with entries', () => {
+    expect(validateQuarantine({}).join('\n')).toMatch(/must be an array of entries/);
+    expect(validateQuarantine({ entries: 'nope' }).join('\n')).toMatch(/must be an array of entries/);
+    expect(validateQuarantine(null).join('\n')).toMatch(/must be an array of entries/);
+    expect(validateQuarantine([null]).join('\n')).toMatch(/must be an object/);
+    expect(validateQuarantine(['a.spec.ts']).join('\n')).toMatch(/must be an object/);
+    expect(validateQuarantine([[]]).join('\n')).toMatch(/must be an object/);
+  });
+
+  it('reports every violation with its index so the offending entry is findable', () => {
+    const problems = validateQuarantine([valid, { spec: 'b.spec.ts' }]);
+    expect(problems).toHaveLength(2);
+    expect(problems.join('\n')).toMatch(/quarantine\[1\]/);
+  });
+});
+
+describe('undated and malformed quarantine entries fail the build', () => {
+  const FILE = 'e2e/specs/broken.spec.ts';
+  // One pass, two failures: a genuine flake that a quarantine entry is meant to excuse.
+  const runs = [
+    run(FILE, [['fails sometimes', 'passed']], 1),
+    run(FILE, [['fails sometimes', 'failed']], 2),
+    run(FILE, [['fails sometimes', 'failed']], 3),
+  ];
+  const now = Date.parse('2026-02-01');
+
+  it('an undated entry does not exempt a flaky test', () => {
+    const result = analyzeRuns(runs, {
+      now,
+      quarantine: [{ spec: FILE }],
+    });
+    expect(result.ok).toBe(false);
+    expect(result.malformedQuarantine).toHaveLength(1);
+    expect(result.problems.join('\n')).toMatch(/"addedOn" is required/);
+    // The whole point: the flake is reported, not swallowed by a bad excuse.
+    expect(result.problems.join('\n')).toMatch(/flaky/);
+  });
+
+  it('an entry with a malformed date does not exempt a flaky test', () => {
+    const result = analyzeRuns(runs, {
+      now,
+      quarantine: [{ spec: FILE, issue: '#1', addedOn: '2026-13-45' }],
+    });
+    expect(result.ok).toBe(false);
+    expect(result.problems.join('\n')).toMatch(/flaky/);
+  });
+
+  it('a well-formed live entry still exempts the flake', () => {
+    const result = analyzeRuns(runs, {
+      now,
+      // addedOn + 21d = 2026-02-20, which is still live at now = 2026-02-01.
+      quarantine: [{ spec: FILE, issue: '#1', addedOn: '2026-01-30' }],
+    });
+    expect(result.ok).toBe(true);
+    expect(result.malformedQuarantine).toHaveLength(0);
+  });
+
+  it('a well-formed but already-lapsed entry does not exempt the flake', () => {
+    const result = analyzeRuns(runs, {
+      now,
+      quarantine: [{ spec: FILE, issue: '#1', addedOn: '2026-01-01' }],
+    });
+    expect(result.ok).toBe(false);
+    expect(result.problems.join('\n')).toMatch(/expired quarantine/);
+    expect(result.problems.join('\n')).toMatch(/flaky/);
+  });
+
+  it('a schema violation fails even when no test is flaky', () => {
+    const stable = [run(FILE, [['always passes', 'passed']], 1), run(FILE, [['always passes', 'passed']], 2)];
+    const result = analyzeRuns(stable, {
+      now,
+      quarantine: [{ spec: FILE, issue: '#1', addedOn: 'garbage' }],
+    });
+    expect(result.ok).toBe(false);
+    expect(result.problems.join('\n')).toMatch(/"addedOn" is required/);
   });
 });
