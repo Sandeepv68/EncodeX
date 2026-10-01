@@ -233,6 +233,8 @@ export const LOG_FAILED_TO_SUSPEND_PROCESS = 'Failed to suspend process:';
 export const LOG_FFMPEG_COMMAND = 'FFmpeg command:';
 /** @const {string} Prefix when logging FFmpeg decoder arguments. */
 export const LOG_FFMPEG_DECODER_ARGS = 'FFmpeg decoder args:';
+/** @const {string} Prefix when the frame decoder clamps a requested resolution. */
+export const LOG_FFMPEG_DECODER_RESOLUTION_CLAMPED = 'FFmpeg decoder resolution clamped:';
 /** @const {string} Prefix when an FFmpeg process exits with a code. */
 export const LOG_FFMPEG_EXITED_WITH_CODE = 'FFmpeg exited with code:';
 /** @const {string} Prefix when the FFmpeg path is set. */
