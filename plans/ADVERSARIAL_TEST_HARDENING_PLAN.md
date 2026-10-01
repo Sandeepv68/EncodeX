@@ -21,7 +21,7 @@
 | 0.5 Flake governance                          | **DONE**    | `test:flake-detect` runs e2e 3× with `--retry=0` and fails on failure rate in (0,1), on partial runs, on lapsed/stale/**invalid** quarantine entries; 36 unit tests, 10 mutations caught; `test-flake` CI job. Sign-off audit closed two real holes: an undated **or typo-dated** entry exempted a test forever (`Date.parse` → `NaN`, and `NaN <= now` is false), so the schema is now validated and malformed entries fail closed; `actionlint` 1.7.12 + shellcheck clean over all 7 workflows                                                                                                                                                                                                                                                                                                                                               |
 | 0.6 Housekeeping debt                         | **DONE**    | `perf/**` + `eslint-rules/**` in Prettier globs; `tsconfig.perf.json` wired as the 6th typecheck project; boot time recorded + asserted (median-of-3 vs `perf/baseline.json` budget +25%), 31 tests, 6 mutations caught. Typechecking `perf/` found Vitest 4 silently ignored `forks: { execArgv }`, so the memory tests had been measuring uncollected garbage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | 1 Contract & input fuzzing                    | **DONE**    | 9 new property-test files, 162 tests, all 10 rows covered. **8 source bugs found and fixed** (`isValidTime` accepted `00:60:00`; `formatSize(Infinity)`/`formatDuration(NaN)`/`formatClockTime` rendered `'Infinity TB'`/`'NaNs'`/`'Infinity:NaN:NaN'`; `validateQueueExport` had no job cap; `formatError` threw on hostile objects; `isContainerCompatibleWithStream` threw on a streamless payload; the i18n test mock threw on a RegExp-metacharacter key). `deriveOutputPath` traversal and all 6 store rehydration readers proved already-safe (mutation-verified). Typecheck 6/6, lint 0 errors, format clean, unit 199/2911, integration 50/50, e2e A 155+2skipped, e2e B 9/9                                                                                                                                                          |
-| 2 Media / byte-level fuzzing                  | IN PROGRESS | `computeHistogram` fuzzed (`image-histogram.fuzz.test.ts`, 8 tests): found an unbounded loop (`total = width * height` unclamped → 3.6 × 10^9 iterations on a 60k×60k PNG, a real hang) plus a `NaN` written to the string key `"undefined"`, invisible to `.some(Number.isNaN)`. Fixed by clamping to the bytes present; mutation-verified (clamp removal fails 4/8). Subprocess watchdog **delivered** (`src/main/spawn-timeout.ts`): 5 bounded spawn sites killed+rejected, 7 unwired, 7 mutations caught. `frame-decoder.ts` fuzz **delivered** (`frame-decoder.fuzz.test.ts`, 46 tests): found an **OOM process-killing hang** at `frameSize === 0` plus a silent `NaN`/`Infinity` stall and a throwing `Buffer.alloc`; fixed by validating the derivation, 5 mutations caught, 1 dead branch removed. Remaining: EXIF bombs, real corpus |
+| 2 Media / byte-level fuzzing                  | IN PROGRESS | `computeHistogram` fuzzed (`image-histogram.fuzz.test.ts`, 8 tests): found an unbounded loop (`total = width * height` unclamped → 3.6 × 10^9 iterations on a 60k×60k PNG, a real hang) plus a `NaN` written to the string key `"undefined"`, invisible to `.some(Number.isNaN)`. Fixed by clamping to the bytes present; mutation-verified (clamp removal fails 4/8). Subprocess watchdog **delivered** (`src/main/spawn-timeout.ts`): 5 bounded spawn sites killed+rejected, 7 unwired, 7 mutations caught. `frame-decoder.ts` fuzz **delivered** (`frame-decoder.fuzz.test.ts`, 46 tests): found an **OOM process-killing hang** at `frameSize === 0` plus a silent `NaN`/`Infinity` stall and a throwing `Buffer.alloc`; fixed by validating the derivation, 5 mutations caught, 1 dead branch removed. EXIF bombs **delivered** (`image-exif.fuzz.test.ts`, 19 tests): `exifr` itself survives every hand-built TIFF bomb, but our layer leaked the parser's `errors` array as if it were an EXIF tag (garbage files reported as having metadata) and `flattenExif` bounded depth but not total work (a self-referential node with 2 child keys = 2^depth paths past the depth cap; >2e6 visits measured). Fixed; 3 mutations caught. Remaining: real corpus |
 | 3 IPC contract & abuse                        | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | 4 State machines, lifecycle & races           | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | 5 UI robustness, i18n & a11y                  | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -756,9 +756,10 @@ Runs in a new suite `test:media-fuzz` against the _real_ ffmpeg-static binary. C
 the #1 real-world crash source for a media tool and is currently untested.
 
 > **Status: IN PROGRESS — resume from "Phase 2 progress" below.** Done: `computeHistogram` fuzz, the
-> subprocess watchdog (`withTimeout`, 5 bounded sites), and the `FrameDecoder` fuzz (which found an OOM
-> process-killing hang). Next: EXIF bombs, real corpus. The plan's file paths for three targets are wrong;
-> the corrected locations are in the progress section.
+> subprocess watchdog (`withTimeout`, 5 bounded sites), the `FrameDecoder` fuzz (which found an OOM
+> process-killing hang), and the EXIF bombs (which found an `errors`-leak and unbounded work in
+> `flattenExif`). Next: real corpus, `test:media-fuzz`. The plan's file paths for three targets are
+> wrong; the corrected locations are in the progress section.
 
 **Corpus generator** (`e2e/fixtures/corpus/generate-corpus.ts`):
 
@@ -805,8 +806,53 @@ across the run in a `perf`-style test).
    `src/main/player/__tests__/frame-decoder.fuzz.test.ts`, 46 tests. Detailed below.
 3. The subprocess watchdog (`src/main/spawn-timeout.ts`); 5 bounded sites, 43 wrapper tests + 12 error-code
    tests + 6 per-site hang tests, 7 mutations caught. Detailed below.
+4. EXIF bombs; two real bugs found and fixed. New file
+   `src/main/__tests__/image-exif.fuzz.test.ts`, 19 tests. Detailed below.
 
-**Next up: EXIF bombs → real corpus.**
+**Next up: real corpus → `test:media-fuzz`.**
+
+### EXIF bombs — the parser is hardened, *our* layer was not (DELIVERED)
+
+`exifr` 7.1.3 survived every hand-built TIFF bomb (IFD offset outside the buffer, 65535 entries, an
+`IFDCount` that reads as a negative int16, a self-referential `IFDNext`, a `Photoshop` IRB declaring
+4 GB, truncated entry tables, 64 KB of zeros) in 2–6 ms with no throw, hang, or oversized allocation.
+The bugs were both in `src/main/image-info.ts`:
+
+1. **A garbage file was reported as having metadata.** `exifr` does not throw on a malformed block; it
+   *recovers* and reports the problem in an `errors` array on its result. `flattenExif` flattened that
+   array like any tag, so a file with no readable EXIF at all produced
+   `{ errors: 'RangeError: Offset is outside the bounds of the DataView' }` — internal parser text
+   surfaced as user-visible metadata, and `getImageInfo` returned non-`null` for a garbage file. Fixed by
+   logging and dropping the top-level `errors` key before flattening; genuine tags parsed alongside a
+   failure still surface, so partial recovery is preserved. Mutation-verified (stripping removed →
+   7 tests fail).
+2. **Unbounded work in `flattenExif`.** Bounding recursion *depth* is not sufficient. A node holding
+   several keys that point back at the same ancestor reaches the depth cap along an **exponential
+   number of distinct paths**, so a handful of bytes kept the walk running indefinitely (measured:
+   >2,000,000 node visits at depth 31, still climbing, against a depth cap of 32). Fixed with a second,
+   independent guard — a budget of 1,024 nodes visited per call — which bounds traversal time, result
+   size, and stack depth together. 3 mutations caught: dropping the depth cap, dropping the node budget,
+   dropping the `errors` strip.
+
+Two notes for whoever extends this, both learned the hard way here:
+
+- **A guard that another guard already covers is untestable, and therefore unverified.** A
+  `WeakSet` cycle guard was written first and then removed: the depth cap already bounds recursion, so
+  no return-value test could ever observe the cycle guard missing, and *worse*, because the guard
+  deleted each node on backtrack it did not even stop the exponential case. The same masking happened
+  in reverse when a 50,000-node chain was used to test the depth cap — the node budget cut the walk
+  short first and the mutation survived. Each guard now has a test built to isolate it: the chain is
+  1,000 nodes (above the depth cap, *below* the node budget) and the branching tree is 14 levels deep
+  (below the depth cap, far above the budget).
+- **A test that hangs is worse than no test.** Mutation runs kept stalling the suite, because an
+  unbounded synchronous walk blocks the event loop and no `testTimeout` can interrupt it. The
+  adversarial structures are now sized to terminate either way, so a regression fails an assertion
+  instead of wedging a worker.
+
+A negative result worth recording: `x`/`y` and `StripByteCounts` of `0xFFFFFFFF` are **well-formed**
+LONG tags, not corruption. exifr parses them and the values are surfaced; an early draft wrongly
+grouped them with the unparseable bombs, and the test failed until it was corrected.
+
 
 ### `FrameDecoder` fuzz — a hang that kills the process (DELIVERED)
 
