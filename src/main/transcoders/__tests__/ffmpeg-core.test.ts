@@ -1,4 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
+import { ErrorCode, isAppError } from '../../../shared/errors';
+import { TRANSCODER_DEFAULTS, KILL_SIGNAL } from '../../../shared/transcoder-constants';
 
 const { ffmpegMock, setFfmpegPathMock, setFfprobePathMock, existsSyncMock, suspendProcessMock, resumeProcessMock, makeCommand } =
   vi.hoisted(() => {
@@ -117,6 +120,33 @@ describe('FfmpegCore', () => {
     const cmd = getCommand(0);
     cmd.ffprobe.mock.calls[0][0](new Error('probe boom'));
     await expect(promise).rejects.toThrow('probe boom');
+  });
+
+  // The other getInfo specs all invoke the ffprobe callback. Only this one
+  // exercises the case fluent-ffmpeg never reports, so without it a removed
+  // watchdog would leave this promise pending forever.
+  it('getInfo kills a wedged ffprobe and rejects with OPERATION_TIMED_OUT', async () => {
+    expectAppLog('error', 'main/spawn-timeout');
+    vi.useFakeTimers();
+    try {
+      const core = new FfmpegCore();
+      const pending = core.getInfo('in.mp4').then(
+        () => ({ ok: true, error: undefined }),
+        (error: unknown) => ({ ok: false, error }),
+      );
+      const cmd = getCommand(0);
+
+      await vi.advanceTimersByTimeAsync(TRANSCODER_DEFAULTS.FFPROBE_TIMEOUT_MS - 1);
+      expect(cmd.kill).not.toHaveBeenCalled();
+
+      await vi.advanceTimersByTimeAsync(1);
+      const outcome = await pending;
+      expect(outcome.ok).toBe(false);
+      expect(isAppError(outcome.error) && outcome.error.code).toBe(ErrorCode.OPERATION_TIMED_OUT);
+      expect(cmd.kill).toHaveBeenCalledWith(KILL_SIGNAL);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('uses stream copy mode when copy is enabled', () => {
@@ -391,10 +421,17 @@ describe('FfmpegCore', () => {
     const emitter = core.convert('in.mp4', 'out.mp4', {});
     const infoCmd = getCommand(0);
     infoCmd.ffprobe.mock.calls[0][0](null, { format: { duration: '100' } });
-    await Promise.resolve();
     const cmd = getCommand();
     const listener = vi.fn();
     emitter.on('progress', listener);
+    // `getInfo` is wrapped in the spawn watchdog, so `sourceDuration` lands one
+    // microtask hop *after* the probe callback fires. Wait for the effect
+    // instead of assuming a fixed number of ticks — a hardcoded
+    // `await Promise.resolve()` here silently started passing for the wrong
+    // reason the moment the wrapper was introduced.
+    await vi.waitFor(() => {
+      expect((core as unknown as { sourceDuration: number }).sourceDuration).toBe(100);
+    });
     onHandler(cmd, 'progress')({ timemark: '00:01:00' });
     expect(listener).toHaveBeenCalledWith(expect.objectContaining({ percent: 60 }));
   });
@@ -404,10 +441,12 @@ describe('FfmpegCore', () => {
     const emitter = core.convert('in.mp4', 'out.mp4', {});
     const infoCmd = getCommand(0);
     infoCmd.ffprobe.mock.calls[0][0](new Error('probe fail'));
-    await Promise.resolve();
     const cmd = getCommand();
     const listener = vi.fn();
     emitter.on('progress', listener);
+    await vi.waitFor(() => {
+      expect((core as unknown as { sourceDuration: number }).sourceDuration).toBe(0);
+    });
     onHandler(cmd, 'progress')({ timemark: '00:01:00' });
     expect(listener).toHaveBeenCalledWith(expect.objectContaining({ percent: 0 }));
   });

@@ -1,6 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EventEmitter } from 'events';
 import { isImageFile } from '../../shared/file-extensions';
+import { expectAppLog } from '../../test-utils/crash-tripwire';
+import { ErrorCode, isAppError } from '../../shared/errors';
+import { KILL_SIGNAL } from '../../shared/transcoder-constants';
+import { IMAGE_HISTOGRAM_TIMEOUT_MS } from '../spawn-timeout';
 
 const { spawnMock, existsSyncMock, exifrParseMock } = vi.hoisted(() => ({
   spawnMock: vi.fn(),
@@ -140,6 +144,33 @@ describe('decodeImageHistogram', () => {
       return proc;
     });
     await expect(decodeImageHistogram('photo.jpg')).rejects.toThrow('ENOENT');
+  });
+
+  // The budget wiring is only meaningful if a *hung* decode is actually stopped.
+  // Every other spec in this file drives `close`, so without this one a removed
+  // `withTimeout` would leave the promise pending forever and nothing would fail.
+  it('kills a wedged ffmpeg and rejects when the decode never completes', async () => {
+    expectAppLog('error', 'main/spawn-timeout');
+    vi.useFakeTimers();
+    try {
+      const promise = decodeImageHistogram('photo.jpg');
+      const settled = promise.then(
+        () => ({ ok: true, error: undefined }),
+        (error: unknown) => ({ ok: false, error }),
+      );
+      const proc = spawnMock.mock.results[0].value;
+
+      await vi.advanceTimersByTimeAsync(IMAGE_HISTOGRAM_TIMEOUT_MS - 1);
+      expect(proc.kill).not.toHaveBeenCalled();
+
+      await vi.advanceTimersByTimeAsync(1);
+      const outcome = await settled;
+      expect(outcome.ok).toBe(false);
+      expect(isAppError(outcome.error) && outcome.error.code).toBe(ErrorCode.OPERATION_TIMED_OUT);
+      expect(proc.kill).toHaveBeenCalledWith(KILL_SIGNAL);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 

@@ -14,6 +14,7 @@ import { existsSync } from 'fs';
 import { deflateSync } from 'zlib';
 import { Logger } from '../../shared/logger';
 import { getFfmpegPath } from '../media-binaries';
+import { TIMELINE_EXTRACT_TIMEOUT_MS, withTimeout } from '../spawn-timeout';
 import { isVideoFile } from '../../shared/file-extensions';
 import { WaveformData, ThumbnailStrip } from '../../shared/types';
 import {
@@ -110,28 +111,51 @@ async function mapWithConcurrency<T, R>(items: T[], limit: number, worker: (item
  * Resolves (never rejects) with a record containing the exit code, the complete
  * stdout payload as a Buffer, and the accumulated stderr text. Spawn failures
  * (e.g. missing executable) resolve with code `-1` and the error message in
- * stderr so callers can log and degrade gracefully.
+ * stderr so callers can log and degrade gracefully. A run that outlives
+ * {@link TIMELINE_EXTRACT_TIMEOUT_MS} is killed and resolves the same way, with
+ * the timeout message in stderr — a wedged ffmpeg is a failed segment, not an
+ * exception, and both callers already handle `code !== 0` by skipping it.
  * @param {string[]} args - Full ffmpeg argument list (no binary name)
  * @returns {Promise<{code: number, data: Buffer, stderr: string}>} Exit code
- *   (or -1 on spawn error), captured stdout bytes, and stderr text
+ *   (or -1 on spawn error or timeout), captured stdout bytes, and stderr text
  */
 function spawnBuffer(args: string[]): Promise<{ code: number; data: Buffer; stderr: string }> {
-  return new Promise((resolve) => {
-    const child = spawn(getFfmpegPath(), args, { stdio: ['ignore', 'pipe', 'pipe'] });
-    const chunks: Buffer[] = [];
-    let stderr = '';
-    child.stdout.on('data', (chunk: Buffer) => chunks.push(chunk));
-    child.stderr.on('data', (chunk: Buffer) => {
-      stderr += chunk.toString();
-    });
-    child.on('error', (err: Error) => {
-      log.error(LOG_FFMPEG_SPAWN_ERROR, err);
-      resolve({ code: -1, data: Buffer.concat(chunks), stderr: err.message });
-    });
-    child.on('close', (code) => {
-      resolve({ code: code ?? -1, data: Buffer.concat(chunks), stderr });
-    });
-  });
+  return withTimeout<{ code: number; data: Buffer; stderr: string }>(
+    (onSpawn) =>
+      new Promise((resolve) => {
+        const child = spawn(getFfmpegPath(), args, { stdio: ['ignore', 'pipe', 'pipe'] });
+        onSpawn(child);
+        const chunks: Buffer[] = [];
+        let stderr = '';
+        child.stdout.on('data', (chunk: Buffer) => chunks.push(chunk));
+        child.stderr.on('data', (chunk: Buffer) => {
+          stderr += chunk.toString();
+        });
+        child.on('error', (err: Error) => {
+          log.error(LOG_FFMPEG_SPAWN_ERROR, err);
+          resolve({ code: -1, data: Buffer.concat(chunks), stderr: err.message });
+        });
+        child.on('close', (code) => {
+          resolve({ code: code ?? -1, data: Buffer.concat(chunks), stderr });
+        });
+      }),
+    TIMELINE_EXTRACT_TIMEOUT_MS,
+    'timeline extract',
+  ).catch((err: unknown) => ({ code: -1, data: Buffer.alloc(0), stderr: describeFailure(err) }));
+}
+
+/**
+ * Renders a rejected spawn result into the stderr string callers log.
+ *
+ * @param {unknown} err - The value the watchdog rejected with.
+ * @returns {string} A human-readable description, never empty.
+ */
+function describeFailure(err: unknown): string {
+  try {
+    return err instanceof Error ? err.message : String(err);
+  } catch {
+    return 'timeline extract failed';
+  }
 }
 
 /**

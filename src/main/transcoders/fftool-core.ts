@@ -24,6 +24,7 @@ import {
 import { getFfmpegPath, getFfprobePath, buildFfmpegArgs } from './ffmpeg-utils';
 import { mapFfprobeData } from './ffprobe-mapper';
 import { cancelledError } from '../../shared/errors';
+import { withTimeout } from '../spawn-timeout';
 import {
   LOG_ARROW,
   LOG_CANCELLING_CURRENT_FFMPEG_PROCESS,
@@ -87,49 +88,57 @@ export class FFToolCore implements ITranscoder {
    * parses the JSON and maps it through {@link mapFfprobeData}. A spawn error
    * rejects with the raw error; a non-zero exit rejects with an
    * `Error('ffprobe exited with code <n>')`; a JSON parse failure rejects with
-   * the parse error. No timeout is enforced here.
+   * the parse error. The whole spawn is bounded by
+   * `TRANSCODER_DEFAULTS.FFPROBE_TIMEOUT_MS`, after which the ffprobe child is
+   * killed and the promise rejects with an `OPERATION_TIMED_OUT` error.
    * @param {string} input - Absolute path of the media file to probe
    * @returns {Promise<MediaInfo>} Resolves with the mapped media information
-   * @throws {Error} Rejects on spawn failure, non-zero ffprobe exit, or
-   *   malformed JSON output
+   * @throws {Error} Rejects on spawn failure, non-zero ffprobe exit, malformed
+   *   JSON output, or the probe outliving its timeout budget
    */
   async getInfo(input: string): Promise<MediaInfo> {
     log.info(LOG_GET_INFO, input);
     const ffprobePath = getFfprobePath();
-    return new Promise((resolve, reject) => {
-      const args = [
-        FFPROBE_FLAGS.VERBOSE,
-        FFPROBE_FLAGS.QUIET,
-        FFPROBE_FLAGS.PRINT_FORMAT,
-        FFPROBE_FLAGS.FORMAT_JSON,
-        FFPROBE_FLAGS.SHOW_FORMAT,
-        FFPROBE_FLAGS.SHOW_STREAMS,
-        input,
-      ];
-      log.debug(LOG_FFPROBE_ARGS, args.join(' '));
-      const proc = spawn(ffprobePath, args);
-      let stdout = '';
-      proc.stdout.on('data', (chunk: Buffer) => {
-        stdout += chunk.toString();
-      });
-      proc.on('error', (err) => {
-        log.error(LOG_GET_INFO_FFPROBE_SPAWN_ERROR, err);
-        reject(err);
-      });
-      proc.on('close', (code: number | null) => {
-        log.debug(LOG_FFPROBE_EXITED_WITH_CODE, code);
-        if (code !== 0) return reject(new Error(`ffprobe exited with code ${code}`));
-        try {
-          const data = JSON.parse(stdout);
-          const info = mapFfprobeData(data, input);
-          log.info(LOG_GET_INFO_COMPLETED, info.format, info.duration);
-          resolve(info);
-        } catch (e) {
-          log.error(LOG_GET_INFO_JSON_PARSE_ERROR, e);
-          reject(e);
-        }
-      });
-    });
+    return withTimeout<MediaInfo>(
+      (onSpawn) =>
+        new Promise((resolve, reject) => {
+          const args = [
+            FFPROBE_FLAGS.VERBOSE,
+            FFPROBE_FLAGS.QUIET,
+            FFPROBE_FLAGS.PRINT_FORMAT,
+            FFPROBE_FLAGS.FORMAT_JSON,
+            FFPROBE_FLAGS.SHOW_FORMAT,
+            FFPROBE_FLAGS.SHOW_STREAMS,
+            input,
+          ];
+          log.debug(LOG_FFPROBE_ARGS, args.join(' '));
+          const proc = spawn(ffprobePath, args);
+          onSpawn(proc);
+          let stdout = '';
+          proc.stdout.on('data', (chunk: Buffer) => {
+            stdout += chunk.toString();
+          });
+          proc.on('error', (err) => {
+            log.error(LOG_GET_INFO_FFPROBE_SPAWN_ERROR, err);
+            reject(err);
+          });
+          proc.on('close', (code: number | null) => {
+            log.debug(LOG_FFPROBE_EXITED_WITH_CODE, code);
+            if (code !== 0) return reject(new Error(`ffprobe exited with code ${code}`));
+            try {
+              const data = JSON.parse(stdout);
+              const info = mapFfprobeData(data, input);
+              log.info(LOG_GET_INFO_COMPLETED, info.format, info.duration);
+              resolve(info);
+            } catch (e) {
+              log.error(LOG_GET_INFO_JSON_PARSE_ERROR, e);
+              reject(e);
+            }
+          });
+        }),
+      TRANSCODER_DEFAULTS.FFPROBE_TIMEOUT_MS,
+      'ffprobe',
+    );
   }
 
   /**

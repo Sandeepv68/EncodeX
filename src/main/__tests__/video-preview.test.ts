@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EventEmitter } from 'events';
+import { expectAppLog } from '../../test-utils/crash-tripwire';
+import { ErrorCode, isAppError } from '../../shared/errors';
+import { KILL_SIGNAL } from '../../shared/transcoder-constants';
+import { VIDEO_PREVIEW_TIMEOUT_MS } from '../spawn-timeout';
 
 const { spawnMock, existsSyncMock } = vi.hoisted(() => ({
   spawnMock: vi.fn(),
@@ -14,6 +18,7 @@ const { getVideoPreview } = await import('../video-preview');
 class FakeChild extends EventEmitter {
   stdout = new EventEmitter();
   stderr = new EventEmitter();
+  kill = vi.fn();
 }
 
 function emitStream(stream: EventEmitter, data: Buffer[]) {
@@ -109,5 +114,47 @@ describe('getVideoPreview', () => {
     spawnMock.mockReturnValue(child);
     queueMicrotask(() => child.emit('error', new Error('ENOENT')));
     await expect(getVideoPreview('video.mp4')).rejects.toThrow('ENOENT');
+  });
+
+  describe('when ffmpeg never closes', () => {
+    beforeEach(() => {
+      expectAppLog('error', 'main/spawn-timeout');
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('kills the wedged child and rejects once the budget expires', async () => {
+      const child = new FakeChild();
+      spawnMock.mockReturnValue(child);
+
+      const pending = getVideoPreview('video.mp4').then(
+        () => ({ ok: true, error: undefined }),
+        (error: unknown) => ({ ok: false, error }),
+      );
+
+      await vi.advanceTimersByTimeAsync(VIDEO_PREVIEW_TIMEOUT_MS - 1);
+      expect(child.kill).not.toHaveBeenCalled();
+
+      await vi.advanceTimersByTimeAsync(1);
+      const outcome = await pending;
+      expect(outcome.ok).toBe(false);
+      expect(isAppError(outcome.error) && outcome.error.code).toBe(ErrorCode.OPERATION_TIMED_OUT);
+      expect(child.kill).toHaveBeenCalledWith(KILL_SIGNAL);
+    });
+
+    // The retry exists for files that exit cleanly with no frame. A hang must
+    // not get a second budget, or a single hostile file could hold the watchdog
+    // twice as long.
+    it('does not spend a second budget on the fallback retry', async () => {
+      spawnMock.mockImplementation(() => new FakeChild());
+
+      const pending = getVideoPreview('video.mp4').catch(() => 'timed out' as const);
+      await vi.advanceTimersByTimeAsync(VIDEO_PREVIEW_TIMEOUT_MS);
+      expect(await pending).toBe('timed out');
+      expect(spawnMock).toHaveBeenCalledOnce();
+    });
   });
 });

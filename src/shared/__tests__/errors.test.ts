@@ -28,6 +28,7 @@ describe('ErrorCode', () => {
     expect(ErrorCode.PERMISSION_DENIED).toBe('PERMISSION_DENIED');
     expect(ErrorCode.OUTPUT_EXISTS).toBe('OUTPUT_EXISTS');
     expect(ErrorCode.INVALID_QUEUE_FILE).toBe('INVALID_QUEUE_FILE');
+    expect(ErrorCode.OPERATION_TIMED_OUT).toBe('OPERATION_TIMED_OUT');
     expect(ErrorCode.UNKNOWN).toBe('UNKNOWN');
   });
 });
@@ -186,6 +187,38 @@ describe('formatError', () => {
   it('formats invalid format errors', () => {
     const result = formatError(new Error('invalid format'));
     expect(result.code).toBe(ErrorCode.INVALID_FORMAT);
+  });
+
+  describe('timeout classification', () => {
+    it.each([
+      ['a watchdog rejection', 'image histogram decode timed out after 15000ms'],
+      ['the word timeout', 'ffmpeg timeout'],
+      ['a node ETIMEDOUT code', 'connect ETIMEDOUT 10.0.0.1:443'],
+      ['a timed-out frame decode', 'decoder timed out'],
+    ])('classifies %s as OPERATION_TIMED_OUT', (_label, message) => {
+      expect(formatError(new Error(message)).code).toBe(ErrorCode.OPERATION_TIMED_OUT);
+    });
+
+    // The timeout rule is checked first in `inferErrorCode`, so a message that
+    // would otherwise match a later rule still has to land on the timeout code.
+    it.each([
+      ['ffprobe', 'ffprobe timed out after 30000ms'],
+      ['conversion', 'conversion timed out'],
+      ['failed', 'operation timed out, job failed'],
+      ['format', 'ffmpeg timed out, invalid format'],
+    ])('does not let the %s rule shadow a timeout', (_shadow, message) => {
+      expect(formatError(new Error(message)).code).toBe(ErrorCode.OPERATION_TIMED_OUT);
+    });
+
+    it('preserves the original message as detail', () => {
+      const result = formatError(new Error('timeline extract timed out after 30000ms'));
+      expect(result.message).toBe(ERROR_MESSAGES.OPERATION_TIMED_OUT);
+      expect(result.detail).toBe('timeline extract timed out after 30000ms');
+    });
+
+    it('handles a thrown timeout string', () => {
+      expect(formatError('ETIMEDOUT').code).toBe(ErrorCode.OPERATION_TIMED_OUT);
+    });
   });
 
   it('formats invalid queue file errors', () => {

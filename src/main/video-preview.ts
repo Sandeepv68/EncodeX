@@ -16,13 +16,17 @@
  * (`VIDEO_PREVIEW_FALLBACK_SEEK_TIME`) so short clips still get a thumbnail.
  *
  * Invalid, missing, or undecodable files resolve to `null` (after logging)
- * rather than rejecting, so the UI can fall back to a placeholder.
+ * rather than rejecting, so the UI can fall back to a placeholder. Two cases
+ * still reject, as they always have: ffmpeg failing to spawn, and the attempt
+ * exceeding {@link VIDEO_PREVIEW_TIMEOUT_MS} (rejected as
+ * `OPERATION_TIMED_OUT`).
  */
 
 import { spawn } from 'child_process';
 import { existsSync } from 'fs';
 import { Logger } from '../shared/logger';
 import { getFfmpegPath } from './media-binaries';
+import { VIDEO_PREVIEW_TIMEOUT_MS, withTimeout } from './spawn-timeout';
 import { isVideoFile } from '../shared/file-extensions';
 import { VIDEO_PREVIEW_FALLBACK_SEEK_TIME, VIDEO_PREVIEW_MAX_WIDTH, VIDEO_PREVIEW_SEEK_TIME } from '../shared/constants';
 import {
@@ -87,23 +91,29 @@ function extractPreviewFrame(filePath: string, seekTime: string): Promise<Previe
     'png',
     'pipe:1',
   ];
-  return new Promise((resolve, reject) => {
-    const child = spawn(ffmpegPath, args, { stdio: ['ignore', 'pipe', 'pipe'] });
-    const chunks: Buffer[] = [];
-    let stderr = '';
-    child.stdout.on('data', (chunk: Buffer) => chunks.push(chunk));
-    child.stderr.on('data', (chunk: Buffer) => {
-      stderr += chunk.toString();
-    });
-    child.on('error', (err: Error) => {
-      log.error(LOG_VIDEO_PREVIEW_FFMPEG_ERROR, err);
-      reject(err);
-    });
-    child.on('close', (code) => {
-      const dataUrl = code === 0 && chunks.length > 0 ? `data:image/png;base64,${Buffer.concat(chunks).toString('base64')}` : null;
-      resolve({ dataUrl, code: code ?? null, stderr });
-    });
-  });
+  return withTimeout(
+    (onSpawn) =>
+      new Promise((resolve, reject) => {
+        const child = spawn(ffmpegPath, args, { stdio: ['ignore', 'pipe', 'pipe'] });
+        onSpawn(child);
+        const chunks: Buffer[] = [];
+        let stderr = '';
+        child.stdout.on('data', (chunk: Buffer) => chunks.push(chunk));
+        child.stderr.on('data', (chunk: Buffer) => {
+          stderr += chunk.toString();
+        });
+        child.on('error', (err: Error) => {
+          log.error(LOG_VIDEO_PREVIEW_FFMPEG_ERROR, err);
+          reject(err);
+        });
+        child.on('close', (code) => {
+          const dataUrl = code === 0 && chunks.length > 0 ? `data:image/png;base64,${Buffer.concat(chunks).toString('base64')}` : null;
+          resolve({ dataUrl, code: code ?? null, stderr });
+        });
+      }),
+    VIDEO_PREVIEW_TIMEOUT_MS,
+    'video preview extract',
+  );
 }
 
 /**
@@ -120,11 +130,19 @@ function extractPreviewFrame(filePath: string, seekTime: string): Promise<Previe
  * attempts fail, the failure (file path, exit codes, stderr) is logged and the
  * promise resolves to `null`.
  *
+ * Each attempt is individually bounded by {@link VIDEO_PREVIEW_TIMEOUT_MS}, so
+ * a wedged ffmpeg is killed rather than left running. Because a timed-out
+ * attempt rejects instead of resolving with no frame, it short-circuits the
+ * fallback retry: a fully unresponsive file settles after one budget, not two.
+ * The retry is only reached when ffmpeg exits on its own having produced no
+ * frame, so it can add a second budget to an already-slow-but-progressing file
+ * without ever stacking on top of a hang.
+ *
  * @param {string} filePath - Path to the video file to preview.
  * @returns {Promise<string | null>} A `data:image/png;base64,...` URL, or
  *   `null` when the file is invalid, missing, or the frame could not be
  *   decoded.
- * @throws {Error} When the ffmpeg process fails to spawn.
+ * @throws {Error} When the ffmpeg process fails to spawn or exceeds its budget.
  */
 export function getVideoPreview(filePath: string): Promise<string | null> {
   if (!isVideoFile(filePath) || !existsSync(filePath)) {
