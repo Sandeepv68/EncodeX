@@ -16,7 +16,16 @@ export default defineConfig({
     },
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
-    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    // `scripts/**` holds the coverage and flake tooling. Those scripts decide
+    // whether a build passes, so they are tested like any other code rather than
+    // trusted because they are "just tooling".
+    include: [
+      'src/**/*.{test,spec}.{ts,tsx}',
+      'scripts/**/__tests__/*.{test,spec}.mjs',
+      // Pure helpers imported by the e2e harness (e.g. boot-budget) are unit
+      // tested here. The `.test` suffix keeps them out of `e2e/**/*.spec.ts`.
+      'e2e/**/__tests__/*.{test,spec}.ts',
+    ],
     exclude: ['node_modules', 'dist', '**/*.integration.{test,spec}.ts'],
     css: true,
     pool: 'forks',

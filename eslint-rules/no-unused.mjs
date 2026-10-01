@@ -43,9 +43,9 @@ function isClassSelfBinding(def, variable) {
 /** True when the definition is consumed by an `export` declaration. */
 function isExported(def) {
   // Function and class name defs store the declaration in `def.node`.
-  const declaration =
-    def.node?.type === 'FunctionDeclaration' || def.node?.type === 'ClassDeclaration' ? def.node : null;
-  if (declaration && (declaration.parent?.type === 'ExportDefaultDeclaration' || declaration.parent?.type === 'ExportNamedDeclaration')) return true;
+  const declaration = def.node?.type === 'FunctionDeclaration' || def.node?.type === 'ClassDeclaration' ? def.node : null;
+  if (declaration && (declaration.parent?.type === 'ExportDefaultDeclaration' || declaration.parent?.type === 'ExportNamedDeclaration'))
+    return true;
   // `export const/let/var v = ...`: the variable def parent is the VariableDeclaration.
   return def.parent?.type === 'VariableDeclaration' && def.parent.parent?.type === 'ExportNamedDeclaration';
 }

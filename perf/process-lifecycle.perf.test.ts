@@ -23,7 +23,10 @@ function countFfmpegProcesses(): number {
   try {
     if (process.platform === 'win32') {
       const output = execSync('tasklist /FI "IMAGENAME eq ffmpeg.exe" /FO CSV /NH', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
-      const lines = output.trim().split('\n').filter((l) => l.includes('ffmpeg.exe'));
+      const lines = output
+        .trim()
+        .split('\n')
+        .filter((l) => l.includes('ffmpeg.exe'));
       return lines.length;
     } else {
       const output = execSync('pgrep -c ffmpeg || true', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
@@ -59,7 +62,11 @@ describe('FFmpeg Process Lifecycle & Resource Cleanup', () => {
 
   afterAll(() => {
     for (const f of tmpOutputs) {
-      try { fs.unlinkSync(f); } catch { /* ignore */ }
+      try {
+        fs.unlinkSync(f);
+      } catch {
+        /* ignore */
+      }
     }
     const filePath = writeResults('phase2-process-lifecycle', results);
     logSummary(results);
@@ -76,10 +83,18 @@ describe('FFmpeg Process Lifecycle & Resource Cleanup', () => {
     tmpOutputs.push(output);
 
     const { code } = await runFfmpeg([
-      '-y', '-hide_banner', '-loglevel', 'error',
-      '-i', FIXTURE,
-      '-c:v', 'libx264', '-preset', 'ultrafast',
-      '-c:a', 'aac',
+      '-y',
+      '-hide_banner',
+      '-loglevel',
+      'error',
+      '-i',
+      FIXTURE,
+      '-c:v',
+      'libx264',
+      '-preset',
+      'ultrafast',
+      '-c:a',
+      'aac',
       output,
     ]);
 
@@ -109,13 +124,25 @@ describe('FFmpeg Process Lifecycle & Resource Cleanup', () => {
     tmpOutputs.push(output);
 
     // Start a conversion that we'll kill
-    const proc = spawn(ffmpegPath, [
-      '-y', '-hide_banner', '-loglevel', 'error',
-      '-i', fixturePath('test-30s-1080p'),
-      '-c:v', 'libx264', '-preset', 'medium', // slower preset = more time to cancel
-      '-c:a', 'aac',
-      output,
-    ], { stdio: ['ignore', 'ignore', 'pipe'] });
+    const proc = spawn(
+      ffmpegPath,
+      [
+        '-y',
+        '-hide_banner',
+        '-loglevel',
+        'error',
+        '-i',
+        fixturePath('test-30s-1080p'),
+        '-c:v',
+        'libx264',
+        '-preset',
+        'medium', // slower preset = more time to cancel
+        '-c:a',
+        'aac',
+        output,
+      ],
+      { stdio: ['ignore', 'ignore', 'pipe'] },
+    );
 
     // Wait a bit for the process to start
     await new Promise((r) => setTimeout(r, 500));
@@ -145,7 +172,11 @@ describe('FFmpeg Process Lifecycle & Resource Cleanup', () => {
     expect(passed).toBe(true);
 
     // Cleanup partial output
-    try { fs.unlinkSync(output); } catch { /* ignore */ }
+    try {
+      fs.unlinkSync(output);
+    } catch {
+      /* ignore */
+    }
   });
 
   it('should handle rapid sequential conversions without process leaks', async () => {
@@ -161,10 +192,18 @@ describe('FFmpeg Process Lifecycle & Resource Cleanup', () => {
       const output = path.join(tmpDir, `rapid-${i}.mp4`);
       outputs.push(output);
       const { code } = await runFfmpeg([
-        '-y', '-hide_banner', '-loglevel', 'error',
-        '-i', fixturePath('test-5s-480p'),
-        '-c:v', 'libx264', '-preset', 'ultrafast',
-        '-c:a', 'aac',
+        '-y',
+        '-hide_banner',
+        '-loglevel',
+        'error',
+        '-i',
+        fixturePath('test-5s-480p'),
+        '-c:v',
+        'libx264',
+        '-preset',
+        'ultrafast',
+        '-c:a',
+        'aac',
         output,
       ]);
       expect(code).toBe(0);
@@ -177,9 +216,17 @@ describe('FFmpeg Process Lifecycle & Resource Cleanup', () => {
 
     // Cleanup
     for (const f of outputs) {
-      try { fs.unlinkSync(f); } catch { /* ignore */ }
+      try {
+        fs.unlinkSync(f);
+      } catch {
+        /* ignore */
+      }
     }
-    try { fs.rmSync(tmpDir, { recursive: true }); } catch { /* ignore */ }
+    try {
+      fs.rmSync(tmpDir, { recursive: true });
+    } catch {
+      /* ignore */
+    }
 
     const passed = afterCount <= baselineCount;
     results.push({
@@ -206,10 +253,18 @@ describe('FFmpeg Process Lifecycle & Resource Cleanup', () => {
     // Start 4 conversions simultaneously
     const promises = outputs.map((output, i) =>
       runFfmpeg([
-        '-y', '-hide_banner', '-loglevel', 'error',
-        '-i', fixturePath('test-5s-480p'),
-        '-c:v', 'libx264', '-preset', 'ultrafast',
-        '-c:a', 'aac',
+        '-y',
+        '-hide_banner',
+        '-loglevel',
+        'error',
+        '-i',
+        fixturePath('test-5s-480p'),
+        '-c:v',
+        'libx264',
+        '-preset',
+        'ultrafast',
+        '-c:a',
+        'aac',
         output,
       ]),
     );
@@ -227,9 +282,17 @@ describe('FFmpeg Process Lifecycle & Resource Cleanup', () => {
 
     // Cleanup
     for (const f of outputs) {
-      try { fs.unlinkSync(f); } catch { /* ignore */ }
+      try {
+        fs.unlinkSync(f);
+      } catch {
+        /* ignore */
+      }
     }
-    try { fs.rmSync(tmpDir, { recursive: true }); } catch { /* ignore */ }
+    try {
+      fs.rmSync(tmpDir, { recursive: true });
+    } catch {
+      /* ignore */
+    }
 
     // All should have succeeded
     const allSucceeded = codeResults.every((r) => r.code === 0);

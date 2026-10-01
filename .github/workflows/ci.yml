@@ -325,6 +325,38 @@ jobs:
           COVERAGE_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: node scripts/coverage-diff.mjs "$COVERAGE_BASE"
 
+  test-flake:
+    name: Test - Flake detection (e2e x3)
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-ubuntu
+          path: dist
+      - name: Install xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+      # Three passes, retries disabled (see scripts/flake-detect.mjs). CI sets
+      # retry: 2 for the normal e2e job, which is right there and useless here:
+      # it would convert a one-in-three failure into a green result.
+      - name: Run e2e three times and fail on intermittent results
+        run: xvfb-run --auto-servernum npm run test:flake-detect
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flake-report
+          path: |
+            reports/flake.json
+            reports/flake/
+          if-no-files-found: warn
+
   test-mcp-smoke:
     name: Test - MCP server smoke
     needs: [build]

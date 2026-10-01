@@ -21,6 +21,8 @@
     "src/renderer/vite-env.d.ts",
     "src/renderer/mui.d.ts",
     "src/renderer/simple-icons.d.ts",
-    "src/main/ffprobe-static.d.ts"
+    "src/main/ffprobe-static.d.ts",
+    "e2e/fixtures/boot-budget.ts",
+    "e2e/fixtures/__tests__/**/*.ts"
   ]
 }

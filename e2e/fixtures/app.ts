@@ -12,11 +12,19 @@ import * as os from 'os';
 import * as path from 'path';
 import { ensureBuildExists, getBuildPaths } from '../helpers';
 import { attachTripwire } from './tripwire';
+import { BOOT_POLL_CEILING_MS } from './boot-budget';
 
 export interface AppSession {
   app: ElectronApplication;
   page: Page;
   userDataDir: string;
+  /**
+   * Milliseconds from `_electron.launch()` to the moment a window exposing
+   * `window.electronAPI` was found. Recorded on every launch so boot cost is
+   * never silently absorbed as test latency; see `boot-budget.ts` (F11) and
+   * `e2e/specs/boot-budget.spec.ts` for the assertion that consumes it.
+   */
+  bootMs: number;
 }
 
 export interface LaunchOptions {
@@ -111,6 +119,7 @@ export async function launchApp(options: LaunchOptions = {}): Promise<AppSession
   const { _electron } = await import('playwright');
 
   const userDataDir = createUserDataDir();
+  const startedAt = Date.now();
 
   const app = await _electron.launch({
     args: [getBuildPaths().mainEntry, `--user-data-dir=${userDataDir}`, ...CHROMIUM_STABILITY_ARGS, ...args],
@@ -122,12 +131,23 @@ export async function launchApp(options: LaunchOptions = {}): Promise<AppSession
 
   await app.firstWindow();
   const page = await getMainWindow(app);
-  return { app, page, userDataDir };
+  return { app, page, userDataDir, bootMs: Date.now() - startedAt };
 }
 
-/** Finds the BrowserWindow that exposes the preload bridge. */
+/**
+ * Finds the BrowserWindow that exposes the preload bridge.
+ *
+ * The poll is *budgeted*, not merely bounded: `BOOT_POLL_CEILING_MS` still caps
+ * the wait so a window that never appears fails fast instead of hanging, but the
+ * elapsed time is now reported on failure and recorded by `launchApp` on
+ * success, which is what turns a slow-boot regression from "slow tests" into a
+ * failed assertion.
+ * @param {ElectronApplication} app - The launched application.
+ * @returns {Promise<Page>} The first window exposing `window.electronAPI`.
+ */
 export async function getMainWindow(app: ElectronApplication): Promise<Page> {
-  const deadline = Date.now() + 30000;
+  const startedAt = Date.now();
+  const deadline = startedAt + BOOT_POLL_CEILING_MS;
   while (Date.now() < deadline) {
     for (const win of app.windows()) {
       try {
@@ -139,7 +159,9 @@ export async function getMainWindow(app: ElectronApplication): Promise<Page> {
     }
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
-  throw new Error('Main window (with electronAPI) was not found');
+  throw new Error(
+    `Main window (with electronAPI) was not found within ${BOOT_POLL_CEILING_MS} ms (searched ${app.windows().length} window(s) for ${Date.now() - startedAt} ms)`,
+  );
 }
 
 /**

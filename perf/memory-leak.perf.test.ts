@@ -22,9 +22,18 @@ const ffmpegPath = (() => {
 function runFfmpeg(args: string[], timeoutMs = 30_000): Promise<number> {
   return new Promise((resolve, reject) => {
     const proc = spawn(ffmpegPath, args, { stdio: ['ignore', 'ignore', 'pipe'] });
-    const timer = setTimeout(() => { proc.kill('SIGKILL'); reject(new Error('timeout')); }, timeoutMs);
-    proc.on('close', (code) => { clearTimeout(timer); resolve(code ?? 1); });
-    proc.on('error', (err) => { clearTimeout(timer); reject(err); });
+    const timer = setTimeout(() => {
+      proc.kill('SIGKILL');
+      reject(new Error('timeout'));
+    }, timeoutMs);
+    proc.on('close', (code) => {
+      clearTimeout(timer);
+      resolve(code ?? 1);
+    });
+    proc.on('error', (err) => {
+      clearTimeout(timer);
+      reject(err);
+    });
   });
 }
 
@@ -39,7 +48,11 @@ describe('Memory Management & Leak Detection', () => {
 
   afterAll(() => {
     for (const f of tmpOutputs) {
-      try { fs.unlinkSync(f); } catch { /* ignore */ }
+      try {
+        fs.unlinkSync(f);
+      } catch {
+        /* ignore */
+      }
     }
     const filePath = writeResults('phase2-memory', results);
     logSummary(results);
@@ -64,10 +77,18 @@ describe('Memory Management & Leak Detection', () => {
       tmpOutputs.push(output);
 
       const code = await runFfmpeg([
-        '-y', '-hide_banner', '-loglevel', 'error',
-        '-i', FIXTURE,
-        '-c:v', 'libx264', '-preset', 'ultrafast',
-        '-c:a', 'aac',
+        '-y',
+        '-hide_banner',
+        '-loglevel',
+        'error',
+        '-i',
+        FIXTURE,
+        '-c:v',
+        'libx264',
+        '-preset',
+        'ultrafast',
+        '-c:a',
+        'aac',
         output,
       ]);
       expect(code).toBe(0);
@@ -92,7 +113,11 @@ describe('Memory Management & Leak Detection', () => {
     console.log(`  Peak RSS growth: ${formatBytes(peakRssGrowth)}`);
 
     // Cleanup
-    try { fs.rmSync(tmpDir, { recursive: true }); } catch { /* ignore */ }
+    try {
+      fs.rmSync(tmpDir, { recursive: true });
+    } catch {
+      /* ignore */
+    }
 
     // Allow up to 50MB growth or 15% growth
     const passed = rssGrowth < 50 * 1024 * 1024 && rssGrowthPct < 15;
@@ -130,13 +155,13 @@ describe('Memory Management & Leak Detection', () => {
 
     for (let i = 0; i < RUNS; i++) {
       await new Promise<number>((resolve, reject) => {
-        const proc = spawn(ffprobePath, [
-          '-v', 'quiet', '-print_format', 'json',
-          '-show_format', '-show_streams',
-          FIXTURE,
-        ], { stdio: ['ignore', 'pipe', 'pipe'] });
+        const proc = spawn(ffprobePath, ['-v', 'quiet', '-print_format', 'json', '-show_format', '-show_streams', FIXTURE], {
+          stdio: ['ignore', 'pipe', 'pipe'],
+        });
         let stdout = '';
-        proc.stdout?.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
+        proc.stdout?.on('data', (chunk: Buffer) => {
+          stdout += chunk.toString();
+        });
         proc.on('close', () => resolve(0));
         proc.on('error', reject);
       });

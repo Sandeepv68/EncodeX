@@ -2,6 +2,12 @@
   "version": 1,
   "generatedAt": "2026-09-20T11:16:07.732Z",
   "source": "perf/results/*.json",
+  "e2e": {
+    "bootBudgetMs": {
+      "win32-x64": 2500
+    },
+    "_note": "Budget consumed by e2e/specs/boot-budget.spec.ts via e2e/fixtures/boot-budget.ts. Keyed by <platform>-<arch>, matching scripts/perf-compare.mjs. Asserted with a 25% tolerance, so 2500 fails above 3125 ms. Set from the worst median-of-3 observed on the reference machine (observed medians 1639-2452 ms, spread driven by page-cache/AV warm-up rather than app changes), so the gate catches a genuine ~2x boot regression without flapping on noise. Only platforms listed here are enforced; others report and skip. Re-measure per machine class, never copy another platform's number."
+  },
   "platforms": {
     "win32-x64": {
       "phase1-conversion::H.264 1080p conversion": {
@@ -32,7 +38,7 @@
         "medianMs": 50.5,
         "samples": 4
       },
-      "phase1-queue::Queue dynamic concurrency 1→4": {
+      "phase1-queue::Queue dynamic concurrency 1â†’4": {
         "medianMs": 95,
         "samples": 7
       },

@@ -21,8 +21,12 @@ function runCli(args: string[], timeoutMs = 60_000): Promise<{ code: number; std
     });
     let stdout = '';
     let stderr = '';
-    proc.stdout?.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
-    proc.stderr?.on('data', (chunk: Buffer) => { stderr += chunk.toString(); });
+    proc.stdout?.on('data', (chunk: Buffer) => {
+      stdout += chunk.toString();
+    });
+    proc.stderr?.on('data', (chunk: Buffer) => {
+      stderr += chunk.toString();
+    });
     const timer = setTimeout(() => {
       proc.kill('SIGKILL');
       reject(new Error('CLI timeout'));
@@ -51,9 +55,17 @@ describe('CLI Batch Mode Performance', () => {
 
   afterAll(() => {
     for (const f of tmpOutputs) {
-      try { fs.unlinkSync(f); } catch { /* ignore */ }
+      try {
+        fs.unlinkSync(f);
+      } catch {
+        /* ignore */
+      }
     }
-    try { fs.rmSync(tmpDir, { recursive: true }); } catch { /* ignore */ }
+    try {
+      fs.rmSync(tmpDir, { recursive: true });
+    } catch {
+      /* ignore */
+    }
     const filePath = writeResults('phase3-cli', results);
     logSummary(results);
     console.log(`Results written to: ${filePath}`);
@@ -69,10 +81,15 @@ describe('CLI Batch Mode Performance', () => {
 
     const timer = new Timer();
     const { code } = await runCli([
-      'convert', FIXTURE, output,
-      '--video-codec', 'libx264',
-      '--audio-codec', 'aac',
-      '--preset', 'ultrafast',
+      'convert',
+      FIXTURE,
+      output,
+      '--video-codec',
+      'libx264',
+      '--audio-codec',
+      'aac',
+      '--preset',
+      'ultrafast',
     ]);
     const durationMs = timer.elapsedMs();
 

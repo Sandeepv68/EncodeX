@@ -35,7 +35,7 @@ ruleTester.run('no-unused', noUnused, {
     'export const v = 1;',
     'export default function f() { return 1; }',
     'export default class C {}',
-// Recursive functions / self-references count as usage.
+    // Recursive functions / self-references count as usage.
     'function f() { return f(); }',
     // Destructured bindings that are all used.
     'const { a, b } = obj; console.log(a, b);',

@@ -18,8 +18,8 @@
 | 0.2 E2E renderer tripwire | **DONE** | Tier A 154/154 (2 skipped), Tier B 9/9; `npm run lint` 0 errors; `npm run typecheck` clean; `npm run format:check` clean |
 | 0.3 Typecheck the tests | **DONE** | 191 test files in program; 54 real errors fixed, 0 remain; `npm run typecheck` clean (5 projects, 38s); 2686/2686 unit, Tier A 154/154, Tier B 9/9 |
 | 0.4 Coverage: per-file floors + diff coverage | **DONE** | Merged 2-tier report (220 files, **30 below the 80/70 candidate floor**, non-blocking); blocking diff gate with added-line coverage; 4 merge/scope bugs found and fixed |
-| 0.5 Flake governance | TODO | — |
-| 0.6 Housekeeping debt | PARTIAL | `.gitattributes` (`* text=auto eol=lf`) landed in 0.4; `perf/**` + `eslint-rules/**` globs and the boot-time budget still TODO |
+| 0.5 Flake governance | **DONE** | `test:flake-detect` runs e2e 3× with `--retry=0` and fails on failure rate in (0,1), on partial runs, on lapsed/stale quarantine entries; 19 unit tests over the verdict rules, 6 mutations caught; `test-flake` CI job |
+| 0.6 Housekeeping debt | **DONE** | `perf/**` + `eslint-rules/**` in Prettier globs; `tsconfig.perf.json` wired as the 6th typecheck project; boot time recorded + asserted (median-of-3 vs `perf/baseline.json` budget +25%), 31 tests, 6 mutations caught. Typechecking `perf/` found Vitest 4 silently ignored `forks: { execArgv }`, so the memory tests had been measuring uncollected garbage |
 | 1 Contract & input fuzzing | TODO | — |
 | 2 Media / byte-level fuzzing | TODO | — |
 | 3 IPC contract & abuse | TODO | — |
@@ -429,11 +429,109 @@ needed no change.
 - Introduce `e2e/quarantine/` (excluded from the default glob) + `quarantine.json` with
   `{ spec, issue, addedOn, expiresOn }`. Entries older than 21 days fail CI. No silent `.skip`.
 
+**Status: DONE (2026-09-30).** The rule that decides whether a build passes is a pure, unit-tested
+function; the process-spawning part is a thin wrapper around it.
+
+| Piece | Where | Role |
+| --- | --- | --- |
+| `analyzeRuns` (pure) | `scripts/flake-report.mjs` | Failure-rate and quarantine verdicts |
+| `toRunResult` (pure) | `scripts/flake-report.mjs` | Vitest JSON report → observed/failed sets |
+| CLI runner | `scripts/flake-detect.mjs` | Spawns N runs, aggregates, writes the summary |
+| Tests | `scripts/__tests__/flake-report.test.mjs` | 19 tests over the verdict rules |
+| Quarantine | `e2e/quarantine.json`, `e2e/quarantine/` | Time-limited, issue-linked exemptions |
+| CI | `.github/workflows/ci.yml` → `test-flake` | `needs: [build]`, 3 passes under xvfb |
+
+**`--retry=0` is the load-bearing detail.** `e2e/vitest.e2e.config.ts` sets `retry: 2` in CI, which
+is correct for a normal run (one retry absorbs a slow Electron boot) and precisely wrong for flake
+detection: it turns a one-in-three failure into a green result. The detector disables retries and
+judges the per-attempt outcomes itself.
+
+**A non-zero exit from an individual run is expected, not an error.** A flaky spec may fail in run 1
+and pass in runs 2 and 3, so the spawn failure is recorded rather than thrown; the verdict is only
+formed once all runs are read. `analyzeRuns` also *refuses* fewer than 2 runs, so a misconfigured
+single-iteration invocation fails instead of reporting a clean bill of health.
+
+**Verdicts are distinguished, not lumped together.** `flaky` (0 < failures < runs) and `stable-fail`
+(fails every run) both fail the build, but they are different problems needing different triage, and
+`partial` - a spec observed in only some runs - is reported separately, because a suite that
+intermittently does not run a spec is as broken as one that intermittently fails it.
+
+**Quarantine cannot become a graveyard.** An entry names either a whole spec file or an exact
+`file::describe > it` identifier, and matching is exact: a substring rule would let a typo quietly
+exempt a *different* test, which is the "silent skip" this phase exists to prevent. A lapsed entry
+fails the build *and* stops exempting its flake, so a forgotten entry cannot outlive its 21 days
+while still hiding a failure. An entry matching no test is a failure too, so entries cannot outlive
+the fix they were written for.
+
+Verified end-to-end against a deliberately flaky throwaway spec (1 failure in 3 runs): unquarantined
+→ exit 1 naming the spec and rate; with a live entry → exit 0; with an entry dated 2026-07-01 →
+exit 1 reporting both the flake and the lapsed entry. The analysis rules were mutation-tested - six
+mutations (never call anything flaky, skip the lapse check, substring matching, skip the partial
+check, never flag stale entries, allow a single run) each failed at least one test.
+
+**One robustness fix worth recording:** the first version crashed on a `e2e/quarantine.json` written
+by PowerShell's `Set-Content -Encoding utf8`, which emits a UTF-8 BOM that `JSON.parse` rejects.
+That file is hand-edited, so a BOM is the *expected* input on Windows, not an edge case. Reads now
+strip a leading BOM. The bug was found by the self-test, not by inspection.
+
 ### 0.6 Housekeeping debt
 
 - Add `perf/**` and `eslint-rules/**` to the Prettier globs and to a `tsconfig.perf.json` typecheck.
 - Replace the 30 s `getMainWindow` poll with a 30 s *budgeted* poll that records actual boot time and
   fails a perf assertion if boot exceeds the `perf/baseline.json` budget by 25%.
+
+#### Delivered
+
+| Item | Where | Notes |
+|---|---|---|
+| Prettier globs | `package.json` → `format`, `format:check` | `perf/**/*.{ts,tsx}` + `eslint-rules/**/*.mjs` |
+| Typecheck | `tsconfig.perf.json`, `typecheck:perf` | Chained as the 6th project in `typecheck` |
+| Boot accounting | `e2e/fixtures/app.ts`, `e2e/fixtures/boot-budget.ts` | `AppSession.bootMs`; 30 s ceiling kept |
+| Assertion | `e2e/specs/boot-budget.spec.ts` | Median-of-3 vs platform budget +25% |
+| Budget | `perf/baseline.json` → `e2e.bootBudgetMs` | `win32-x64: 2500` |
+| Unit tests | `e2e/fixtures/__tests__/boot-budget.test.ts` | 31 tests over the verdict rules |
+
+**Typechecking `perf/` immediately found a live bug, which is the whole argument for doing it.**
+`perf/vitest.perf.config.ts` set `forks: { execArgv: ['--expose-gc'] }`. Vitest 4 removed that
+sub-object, so `forks` was an unknown key that is *silently ignored* - not an error - and `--expose-gc`
+never reached the workers. `memory-leak.perf.test.ts` and `large-file.perf.test.ts` both call `gc()`
+behind `if (global.gc)`, so nothing crashed: the memory tests were measuring uncollected garbage and
+reporting a pass. Confirmed both directions with a probe spec - `typeof global.gc` was `undefined`
+before the fix and `function` after. Vitest 4 accepts `execArgv` directly on `test`.
+
+**A malformed budget throws; an absent one does not.** `perf/baseline.json` is hand-edited, so a
+typo'd `bootBudgetMs` must not quietly disable the gate - `parseBootBudgetMs` rejects 0, negative,
+`NaN`, `Infinity`, strings, and objects. A platform with *no* budget returns `no-budget` and the spec
+reports and skips, because `baseline.json` only ever contains data for the platform that generated it.
+Enforcing a threshold lifted from a different machine class would be worse than no gate at all. Note
+that `scripts/perf-compare.mjs --generate` rewrites the file; it merges into the existing
+`platforms[key]`, so the hand-written `e2e` section survives regeneration.
+
+**The measurement is a median of 3 launches, not one, and the first attempt showed why.** A single
+sample on this machine spanned 1907-3434 ms for an unchanged binary - antivirus and page-cache warm-up
+alone exceed the 25% tolerance, so a single-sample gate flaps red constantly and gets ignored, which is
+F11 with a different symptom. `boot-budget.spec.ts` launches 3 times and compares medians, matching the
+`medianMs` convention `baseline.json` already uses. Observed medians: 1639, 1725, 2115, 2452 ms.
+
+**The budget is set from the worst observed median (2500 ms → fails above 3125 ms), not the best.** At
+the plan's first-pass value of 2100 ms the gate passed, but with only 7% headroom over the worst
+observed median, which is a flake factory. The budget is per machine class and must be re-measured,
+never copied across platforms.
+
+**Boot cost fails one named spec, not 15.** Boot time is as much a property of the machine as of the
+app, so a duration threshold inside every functional spec would turn a busy runner into a wall of
+unrelated red. The harness records the boot once; only `boot-budget.spec.ts` asserts on it, so a red
+run reads as "boot regressed" instead of "media-info failed". The failure message prints every sample
+so a noisy run is diagnosable from CI output alone.
+
+31 unit tests cover the verdict rules, mutation-tested: six mutations (tolerance 0.25→0.5, inclusive
+`<=` → `<`, dropping the `undefined` budget case, malformed-budget → `null`, the 30 s ceiling, the
+platform-key separator) each failed at least one test. `median()` is pinned separately against
+empty input, even-length averaging, order independence, and caller-array mutation.
+
+Gates after 0.6: typecheck 6/6 projects clean; lint 0 errors (1 known `no-autofocus` warning);
+`format:check` clean; unit 189 files / 2748 tests; integration 4 files / 50 tests; e2e Tier A 155
+passed + 2 skipped, Tier B 9/9.
 
 ---
 

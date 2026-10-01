@@ -14,10 +14,7 @@
  */
 
 /** Modules allowed to reach for the Aptabase SDK, keyed by normalized path. */
-const ALLOWED_ADAPTERS = new Set([
-  'src/main/analytics/aptabaseMainProvider.ts',
-  'src/renderer/analytics/aptabaseRendererProvider.ts',
-]);
+const ALLOWED_ADAPTERS = new Set(['src/main/analytics/aptabaseMainProvider.ts', 'src/renderer/analytics/aptabaseRendererProvider.ts']);
 
 /** True when the given filename resolves to an allowed adapter module. */
 function isAllowedAdapter(filename) {

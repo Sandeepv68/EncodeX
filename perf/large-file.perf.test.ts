@@ -24,23 +24,55 @@ function runFfmpeg(args: string[], timeoutMs = 120_000): Promise<{ code: number;
   return new Promise((resolve, reject) => {
     const proc = spawn(ffmpegPath, args, { stdio: ['ignore', 'ignore', 'pipe'] });
     let stderr = '';
-    proc.stderr?.on('data', (chunk: Buffer) => { stderr += chunk.toString(); });
-    const timer = setTimeout(() => { proc.kill('SIGKILL'); reject(new Error('timeout')); }, timeoutMs);
-    proc.on('close', (code) => { clearTimeout(timer); resolve({ code: code ?? 1, stderr }); });
-    proc.on('error', (err) => { clearTimeout(timer); reject(err); });
+    proc.stderr?.on('data', (chunk: Buffer) => {
+      stderr += chunk.toString();
+    });
+    const timer = setTimeout(() => {
+      proc.kill('SIGKILL');
+      reject(new Error('timeout'));
+    }, timeoutMs);
+    proc.on('close', (code) => {
+      clearTimeout(timer);
+      resolve({ code: code ?? 1, stderr });
+    });
+    proc.on('error', (err) => {
+      clearTimeout(timer);
+      reject(err);
+    });
   });
 }
 
 function generateTestFile(output: string, duration: number, width: number, height: number): Promise<void> {
   return new Promise((resolve, reject) => {
-    const proc = spawn(ffmpegPath, [
-      '-y', '-hide_banner', '-loglevel', 'error',
-      '-f', 'lavfi', '-i', `testsrc=duration=${duration}:size=${width}x${height}:rate=30`,
-      '-f', 'lavfi', '-i', `sine=frequency=440:duration=${duration}`,
-      '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p',
-      '-c:a', 'aac', '-b:a', '128k',
-      output,
-    ], { stdio: ['ignore', 'ignore', 'pipe'] });
+    const proc = spawn(
+      ffmpegPath,
+      [
+        '-y',
+        '-hide_banner',
+        '-loglevel',
+        'error',
+        '-f',
+        'lavfi',
+        '-i',
+        `testsrc=duration=${duration}:size=${width}x${height}:rate=30`,
+        '-f',
+        'lavfi',
+        '-i',
+        `sine=frequency=440:duration=${duration}`,
+        '-c:v',
+        'libx264',
+        '-preset',
+        'ultrafast',
+        '-pix_fmt',
+        'yuv420p',
+        '-c:a',
+        'aac',
+        '-b:a',
+        '128k',
+        output,
+      ],
+      { stdio: ['ignore', 'ignore', 'pipe'] },
+    );
     proc.on('close', (code) => {
       if (code === 0) resolve();
       else reject(new Error(`FFmpeg generation failed with code ${code}`));
@@ -71,9 +103,17 @@ describe('Large File Handling', () => {
 
   afterAll(() => {
     for (const f of tmpOutputs) {
-      try { fs.unlinkSync(f); } catch { /* ignore */ }
+      try {
+        fs.unlinkSync(f);
+      } catch {
+        /* ignore */
+      }
     }
-    try { fs.rmSync(tmpDir, { recursive: true }); } catch { /* ignore */ }
+    try {
+      fs.rmSync(tmpDir, { recursive: true });
+    } catch {
+      /* ignore */
+    }
     const filePath = writeResults('phase2-large-file', results);
     logSummary(results);
     console.log(`Results written to: ${filePath}`);
@@ -89,10 +129,18 @@ describe('Large File Handling', () => {
     const timer = new Timer();
 
     const { code } = await runFfmpeg([
-      '-y', '-hide_banner', '-loglevel', 'error',
-      '-i', input,
-      '-c:v', 'libx264', '-preset', 'ultrafast',
-      '-c:a', 'aac',
+      '-y',
+      '-hide_banner',
+      '-loglevel',
+      'error',
+      '-i',
+      input,
+      '-c:v',
+      'libx264',
+      '-preset',
+      'ultrafast',
+      '-c:a',
+      'aac',
       output,
     ]);
 
@@ -149,10 +197,18 @@ describe('Large File Handling', () => {
       const output = path.join(batchDir, `batch-${completed}-out.mp4`);
       tmpOutputs.push(output);
       const { code } = await runFfmpeg([
-        '-y', '-hide_banner', '-loglevel', 'error',
-        '-i', input,
-        '-c:v', 'libx264', '-preset', 'ultrafast',
-        '-c:a', 'aac',
+        '-y',
+        '-hide_banner',
+        '-loglevel',
+        'error',
+        '-i',
+        input,
+        '-c:v',
+        'libx264',
+        '-preset',
+        'ultrafast',
+        '-c:a',
+        'aac',
         output,
       ]);
       expect(code).toBe(0);
@@ -169,7 +225,11 @@ describe('Large File Handling', () => {
     console.log(`  RSS delta: ${formatBytes(rssDelta)}`);
 
     // Cleanup batch outputs
-    try { fs.rmSync(batchDir, { recursive: true }); } catch { /* ignore */ }
+    try {
+      fs.rmSync(batchDir, { recursive: true });
+    } catch {
+      /* ignore */
+    }
 
     const passed = rssDelta < 50 * 1024 * 1024; // < 50MB
     results.push({
@@ -202,13 +262,13 @@ describe('Large File Handling', () => {
 
     const timer = new Timer();
     const probeResult = await new Promise<{ code: number; stdout: string }>((resolve, reject) => {
-      const proc = spawn(ffprobePath, [
-        '-v', 'quiet', '-print_format', 'json',
-        '-show_format', '-show_streams',
-        input,
-      ], { stdio: ['ignore', 'pipe', 'pipe'] });
+      const proc = spawn(ffprobePath, ['-v', 'quiet', '-print_format', 'json', '-show_format', '-show_streams', input], {
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
       let stdout = '';
-      proc.stdout?.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
+      proc.stdout?.on('data', (chunk: Buffer) => {
+        stdout += chunk.toString();
+      });
       proc.on('close', (code) => resolve({ code: code ?? 1, stdout }));
       proc.on('error', reject);
     });
