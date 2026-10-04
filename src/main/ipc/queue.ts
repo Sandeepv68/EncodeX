@@ -275,7 +275,12 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
    * @returns {Promise<void>} Resolves once the config is recorded.
    */
   ipcMain.handle(IPC.QUEUE_SET_WHEN_DONE, async (_event, config: WhenDoneConfig) => {
-    log.info(LOG_IPC_QUEUE_SET_WHEN_DONE, JSON.stringify(config));
+    // Logged as an object, not `JSON.stringify(config)`. Structured clone preserves reference
+    // cycles, so a cyclic object genuinely crosses this boundary and `JSON.stringify` threw
+    // "Converting circular structure to JSON" here - rejecting the renderer's promise with a
+    // raw TypeError. The logger sanitises non-serialisable values itself, so passing the object
+    // through is both safe and more informative.
+    log.info(LOG_IPC_QUEUE_SET_WHEN_DONE, config);
     whenDoneConfig = config;
   });
 

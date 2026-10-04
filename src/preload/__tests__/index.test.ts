@@ -154,4 +154,28 @@ describe('preload', () => {
     (api[method] as (flag: boolean) => void)(flag);
     expect(ipcRendererMock.send).toHaveBeenCalledWith(channel, flag);
   });
+
+  it('queueSetWhenDone returns a promise for a cyclic config instead of throwing synchronously', async () => {
+    // Found by `e2e/specs/ipc-abuse.spec.ts`. The log line used `JSON.stringify(config)`, and
+    // structured clone *preserves* cycles, so a cyclic object genuinely reaches the preload and
+    // made this Promise-returning method throw before `invoke` was ever called. A renderer's
+    // `.catch()` cannot see a synchronous throw, so the error escaped as an unhandled renderer
+    // exception with the main process never involved.
+    const cyclic: Record<string, unknown> = { enabled: true, action: 'shutdown', force: false };
+    cyclic.self = cyclic;
+    ipcRendererMock.invoke.mockResolvedValue(undefined);
+
+    const returned = (api.queueSetWhenDone as (config: unknown) => Promise<void>)(cyclic);
+
+    expect(returned, 'must hand back a promise, not throw').toBeInstanceOf(Promise);
+    await expect(returned).resolves.toBeUndefined();
+    expect(ipcRendererMock.invoke).toHaveBeenCalledWith(IPC.QUEUE_SET_WHEN_DONE, cyclic);
+  });
+
+  it('queueSetWhenDone survives a config that JSON.stringify cannot serialise', async () => {
+    ipcRendererMock.invoke.mockResolvedValue(undefined);
+    const withBigInt = { enabled: true, action: 'shutdown', force: false, extra: 10n ** 30n } as unknown;
+
+    await expect((api.queueSetWhenDone as (config: unknown) => Promise<void>)(withBigInt)).resolves.toBeUndefined();
+  });
 });

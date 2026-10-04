@@ -390,6 +390,18 @@ describe('registerQueueHandlers', () => {
     }
   });
 
+  it('QUEUE_SET_WHEN_DONE accepts a cyclic config rather than throwing on JSON.stringify', async () => {
+    // Found by `e2e/specs/ipc-abuse.spec.ts`. Structured clone *preserves* reference cycles, so a
+    // cyclic object genuinely reaches this handler, and the log line used `JSON.stringify(config)`
+    // and threw "Converting circular structure to JSON" - rejecting the renderer's promise with a
+    // raw TypeError. There was a second, identical `JSON.stringify` in the preload on top of this
+    // one; fixing only the preload leaves the channel broken.
+    const cyclic: Record<string, unknown> = { enabled: false, action: 'shutdown', force: false };
+    cyclic.self = cyclic;
+
+    await expect(getHandlers()[IPC.QUEUE_SET_WHEN_DONE]({}, cyclic)).resolves.toBeUndefined();
+  });
+
   it('QUEUE_SET_WHEN_DONE with enabled false never runs the power action', async () => {
     vi.useFakeTimers();
     try {

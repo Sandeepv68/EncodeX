@@ -51,6 +51,27 @@ describe('registerSystemHandlers', () => {
     expect(shellMock.showItemInFolder).toHaveBeenCalledWith('/out/video_converted.mp4');
   });
 
+  it('REVEAL_FILE ignores a payload that is not a usable string instead of crashing the handler', async () => {
+    // Found by `e2e/specs/ipc-abuse.spec.ts`: every one of these reached `shell.showItemInFolder`
+    // and made Electron throw a raw `TypeError: Argument must be a string`, so the renderer's
+    // promise rejected with a crash signature instead of a formatted AppError.
+    registerSystemHandlers({} as never);
+    for (const hostile of [10n ** 30n, 0, NaN, null, undefined, true, { path: '/out/a.mp4' }, ['/out/a.mp4'], '', '   ']) {
+      vi.clearAllMocks();
+      await expect(getHandleHandlers()[IPC.REVEAL_FILE]({}, hostile)).resolves.toBeUndefined();
+      expect(shellMock.showItemInFolder, `payload ${String(hostile)} must not reach the OS`).not.toHaveBeenCalled();
+    }
+  });
+
+  it('REVEAL_FILE ignores a string too long to be a path', async () => {
+    // A type check alone does not stop this one: a megabyte-long string *is* a string, it is
+    // simply not a path, and the OS layer still has to hold and reject it.
+    registerSystemHandlers({} as never);
+    vi.clearAllMocks();
+    await expect(getHandleHandlers()[IPC.REVEAL_FILE]({}, 'x'.repeat(1024 * 1024))).resolves.toBeUndefined();
+    expect(shellMock.showItemInFolder).not.toHaveBeenCalled();
+  });
+
   it('registers the SET_LAUNCH_AT_LOGIN handler', () => {
     registerSystemHandlers({} as never);
     expect(ipcMainMock.on).toHaveBeenCalledWith(IPC.SET_LAUNCH_AT_LOGIN, expect.any(Function));

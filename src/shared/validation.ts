@@ -75,3 +75,79 @@ export function isValidBitrate(value: string): boolean {
 export function isInRange(value: number, min: number, max: number): boolean {
   return Number.isFinite(value) && value >= min && value <= max;
 }
+
+/**
+ * Narrows an untrusted value to a usable string, or reports that it is not one.
+ *
+ * Every IPC argument arrives from a process this codebase does not control, so a value declared
+ * `string` in a handler signature is a *claim*, not a guarantee. Passing such a claim straight
+ * through to a native API is how a `shell.showItemInFolder(1n)` ends up rejecting the renderer's
+ * promise with a raw `TypeError: Argument must be a string` instead of a formatted `AppError`.
+ *
+ * This is deliberately a narrowing function rather than a predicate: the call sites are
+ * best-effort OS actions (reveal a file, open release notes, run an installer) where the correct
+ * response to nonsense is to do nothing and say so, not to reject a request the renderer believes
+ * is harmless. `String(value)` is never applied, because `"1"` and `"[object Object]"` are not
+ * paths anyone asked for.
+ *
+ * @param {unknown} value - The received IPC argument.
+ * @returns {string|null} `value` when it is a string with non-whitespace content, else null.
+ * @example
+ * coerceNonEmptyString('C:\\out.mp4') // 'C:\\out.mp4'
+ * coerceNonEmptyString(10n ** 30n) // null
+ * coerceNonEmptyString('   ') // null
+ */
+export function coerceNonEmptyString(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  return value.trim() === '' ? null : value;
+}
+
+/**
+ * The longest string this app will hand to an OS launch API.
+ *
+ * Found by `e2e/specs/ipc-abuse.spec.ts`, which passed a 1 MB string to `revealFile`,
+ * `openReleaseNotes` and `installUpdate` and watched all three forward it verbatim to
+ * `shell.*`. A type check alone does not stop that: the value *is* a string, it is simply not a
+ * path. Windows caps an extended-length path at 32,767 characters, so 4,096 leaves generous
+ * headroom for legitimate long paths while rejecting megabyte payloads outright.
+ */
+export const MAX_OS_STRING_LENGTH = 4096;
+
+/**
+ * Narrows an untrusted value to a string that is plausible as an OS path or URL.
+ *
+ * {@link coerceNonEmptyString} plus an upper bound on length. Use this - not the plain variant -
+ * for anything that will be handed to `shell.openPath`, `shell.openExternal` or
+ * `shell.showItemInFolder`, where a pathological string is expensive for the OS layer to reject
+ * and for the process to hold.
+ *
+ * @param {unknown} value - The received IPC argument.
+ * @returns {string|null} `value` when it is a non-blank string within the length bound, else null.
+ * @example
+ * coerceOsString('C:\\out.mp4') // 'C:\\out.mp4'
+ * coerceOsString('x'.repeat(1_048_576)) // null
+ */
+export function coerceOsString(value: unknown): string | null {
+  const text = coerceNonEmptyString(value);
+  if (text === null) return null;
+  return text.length > MAX_OS_STRING_LENGTH ? null : text;
+}
+
+/**
+ * Narrows an untrusted value to an array, reporting anything else as unusable.
+ *
+ * The companion to {@link coerceNonEmptyString}, for the same reason: a declared `string[]` is not
+ * guaranteed to be one. It matters more here, because a bare string *is* iterable - so without
+ * this guard an `expandPaths('/some/dir')` walks the filesystem once per character, and one of
+ * those characters is `.`, which expands the entire working directory.
+ *
+ * @param {unknown} value - The received IPC argument.
+ * @returns {unknown[]|null} `value` when it is a real array, else null.
+ * @example
+ * coerceNonEmptyArray(['a.mp4']) // ['a.mp4']
+ * coerceNonEmptyArray('a.mp4') // null
+ * coerceNonEmptyArray({ length: 1 }) // null
+ */
+export function coerceNonEmptyArray(value: unknown): unknown[] | null {
+  return Array.isArray(value) ? value : null;
+}

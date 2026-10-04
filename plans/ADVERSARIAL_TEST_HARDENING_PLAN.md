@@ -22,7 +22,7 @@
 | 0.6 Housekeeping debt                         | **DONE**    | `perf/**` + `eslint-rules/**` in Prettier globs; `tsconfig.perf.json` wired as the 6th typecheck project; boot time recorded + asserted (median-of-3 vs `perf/baseline.json` budget +25%), 31 tests, 6 mutations caught. Typechecking `perf/` found Vitest 4 silently ignored `forks: { execArgv }`, so the memory tests had been measuring uncollected garbage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | 1 Contract & input fuzzing                    | **DONE**    | 9 new property-test files, 162 tests, all 10 rows covered. **8 source bugs found and fixed** (`isValidTime` accepted `00:60:00`; `formatSize(Infinity)`/`formatDuration(NaN)`/`formatClockTime` rendered `'Infinity TB'`/`'NaNs'`/`'Infinity:NaN:NaN'`; `validateQueueExport` had no job cap; `formatError` threw on hostile objects; `isContainerCompatibleWithStream` threw on a streamless payload; the i18n test mock threw on a RegExp-metacharacter key). `deriveOutputPath` traversal and all 6 store rehydration readers proved already-safe (mutation-verified). Typecheck 6/6, lint 0 errors, format clean, unit 199/2911, integration 50/50, e2e A 155+2skipped, e2e B 9/9                                                                                                                                                          |
 | 2 Media / byte-level fuzzing                  | IN PROGRESS | `computeHistogram` fuzzed (`image-histogram.fuzz.test.ts`, 8 tests): found an unbounded loop (`total = width * height` unclamped → 3.6 × 10^9 iterations on a 60k×60k PNG, a real hang) plus a `NaN` written to the string key `"undefined"`, invisible to `.some(Number.isNaN)`. Fixed by clamping to the bytes present; mutation-verified (clamp removal fails 4/8). Subprocess watchdog **delivered** (`src/main/spawn-timeout.ts`): 5 bounded spawn sites killed+rejected, 7 unwired, 7 mutations caught. `frame-decoder.ts` fuzz **delivered** (`frame-decoder.fuzz.test.ts`, 46 tests): found an **OOM process-killing hang** at `frameSize === 0` plus a silent `NaN`/`Infinity` stall and a throwing `Buffer.alloc`; fixed by validating the derivation, 5 mutations caught, 1 dead branch removed. EXIF bombs **delivered** (`image-exif.fuzz.test.ts`, 19 tests): `exifr` itself survives every hand-built TIFF bomb, but our layer leaked the parser's `errors` array as if it were an EXIF tag (garbage files reported as having metadata) and `flattenExif` bounded depth but not total work (a self-referential node with 2 child keys = 2^depth paths past the depth cap; >2e6 visits measured). Fixed; 3 mutations caught. Real corpus **delivered** (`corrupt-media.mediafuzz.test.ts`, 6 tests): 173 deterministic files from 11 real-ffmpeg seeds probed with real `ffmpeg`/`ffprobe` across 7 entry points; **no new production bug** — the work was proving the tier non-vacuous, which exposed 4 defects in the tests themselves (a waveform sweep that could never pass because its seed had no audio stream, a prefix-slice that never reached bit-flipped files, a vacuity guard for the fix, and a tally hidden by the crash tripwire). 2 production mutations caught. |
-| 3 IPC contract & abuse                        | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 3 IPC contract & abuse                        | IN PROGRESS | 3.1 channel contract **delivered** (`src/main/ipc/__tests__/channel-contract.test.ts`, 8 tests): every real registrar plus the real preload run against a recording `electron` mock, so the channel set is discovered by execution, not by grep. 46 handlers + 7 listeners in `registerIpcHandlers`, +6 handlers from the three separately-wired bridges, 79 runtime preload members. Drift fails in both directions, plus a request/push overlap check and a runtime-vs-`electron-api.d.ts` member diff. 3 mutations caught. **No production bug yet** - but the first version was **vacuous in 5 of 8 tests** (see 3.1 notes), which is the argument for mutation-verifying the guard itself. 3.2 abuse harness **delivered** (`e2e/specs/ipc-abuse.spec.ts`, 20 tests, `mock: false`, all passing): 17 hostile inputs x every request method. **5 production bugs found and fixed**, 8/8 mutations caught - a bare-string `expandPaths` that walked the filesystem once per character (main-process stall >2 min), three unvalidated `shell.*` call sites (`installUpdate` quit the app even when the installer never started), and **two** `JSON.stringify` calls on a channel where structured clone *preserves* cycles, one of them in a Promise-returning preload method so it threw synchronously where a renderer's `.catch()` cannot see it. Fixing only the preload left the channel broken. Also added a 4096-char bound: a 1 MB string passes a type check but is not a path. 3 of the defects the suite reported were **in the harness**, not the app - including an audit that failed 16 tests for correctly rejecting hostile input. See 3.2 notes. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | 4 State machines, lifecycle & races           | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | 5 UI robustness, i18n & a11y                  | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | 6 CLI & MCP hostile input                     | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -1150,9 +1150,9 @@ the transcoder layer or the IPC layer, not by importing a function that isn't th
 
 This is the largest coverage hole: 13 of 14 Tier A specs replace the entire main process with a mock.
 
-### 3.1 Channel inventory test
+### 3.1 Channel inventory test - **DONE**
 
-New `src/main/ipc/__tests__/channel-contract.test.ts`:
+New `src/main/ipc/__tests__/channel-contract.test.ts`, 8 tests:
 
 - Import `registerIpcHandlers` with a fake `ipcMain` that records every channel → build the
   authoritative set.
@@ -1161,17 +1161,107 @@ New `src/main/ipc/__tests__/channel-contract.test.ts`:
 - **Fail on any drift in either direction.** This alone kills the F5 class of bug permanently.
 - Add a `data-testid`-style lint that every channel constant has a matching `ipcMain.handle`.
 
-### 3.2 Handler abuse harness
+**Result - DONE (2026-10-01), and the plan's own prescription had to be corrected.** The 8 tests pass
+(`3068/3068` unit across 204 files; typecheck, format, lint clean - lint has only the pre-existing
+`LanguageMenu.tsx` `no-autofocus` warning). Recorded counts: **46 handlers + 7 listeners** in
+`registerIpcHandlers` under non-dev, **+6 handlers** from the three separately-wired bridges, **79**
+runtime preload members.
+
+**The channel set is discovered by executing code, not by grepping source.** Each test calls the
+*real* `registerIpcHandlers` / `registerMonitoringIpcBridge` / `registerAnalyticsIpcBridge` /
+`registerMcpSettingsIpc` and the *real* preload against a recording `electron` mock, then invokes
+every API member. A source-grep version would have been weaker in the one place it matters most: the
+registrars are composed from a dozen modules and two of them are wired *outside* `registerIpcHandlers`.
+
+**Three registrars are wired directly by `src/main/index.ts`, not by `registerIpcHandlers`.**
+`registerMonitoringIpcBridge`, `registerAnalyticsIpcBridge`, and `registerMcpSettingsIpc` each
+contribute 2 handlers. A test that only called `registerIpcHandlers` would have classified 6 live
+channels as dead.
+
+**`DEV_CAPTURE_SCREENSHOT` is conditional, and this is a live footgun.** `registerDevHandlers` only
+registers it when `isDevMode()`. Because `NODE_ENV` is `test` under Vitest, the dev registrar
+contributes **zero** channels to the main surface in the unit tier - the single largest source of a
+passing-but-vacuous inventory. It is now covered by its own explicit test that flips `NODE_ENV` and
+`process.argv` to prove registration in dev and *absence* in production.
+
+**The first version passed 8/8 while 5 of those tests could not fail. This is the load-bearing
+finding.** An orphan handler added to `image.ts` (`get-image-info-orphan`) was detected; the same
+mutation re-run after a refactor that memoized `collectSurfaces()` **passed**. Cause: the dev-mode
+test cleared the shared `rec.handle` array and never restored it, so with a memoized surface every
+later test observed an empty handler list - `every(...)` over `[]` is `true`, so reachability,
+overlap, and classification all passed on nothing. Fixed by giving the recorder a dedicated
+`handleLog` the dev test owns, and by memoizing the surface collection so a second run cannot
+silently re-register. **A shared recorder plus a memoized collection is exactly the combination that
+makes a contract test lie**, and no amount of reading the test would have shown it; only re-running a
+known-caught mutation did.
+
+**Mutation evidence (3/3 caught, each with a backup and `try/finally` restore):**
+
+| Mutation                                                              | Caught by                                                                       |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Preload `invoke`s unregistered `capabilities-v2`                       | 3 tests - unregistered invoke, handler reachability, classification             |
+| Preload gains an undeclared `getCapabilitiesBrandNew`                  | runtime-vs-`electron-api.d.ts` member drift                                     |
+| Orphan `ipcMain.handle` in `image.ts`                                   | handler reachability (caught again after the memoization fix - see above)       |
+
+**Known limitation, recorded rather than hidden:** the two `getPathForFile` paths (preload
+`webUtils`, renderer `File.path`) cannot be exercised under a mock, so they are skipped by explicit
+name. And `src/shared/__tests__/ipc-channels.test.ts` only asserts hardcoded string literals - it
+provides no wiring coverage and does not overlap with this test.
+
+
+### 3.2 Handler abuse harness — **DONE**
 
 New `e2e/specs/ipc-abuse.spec.ts`, launched with `mock: false` (real preload + real main), driving
-handlers through `app.evaluate(() => require('electron').ipcMain)`:
+handlers through the public `window.electronAPI` rather than the drafted
+`app.evaluate(() => require('electron').ipcMain)`. `ipcMain.handle` exposes no way to *invoke* a
+registered handler, and `require` does not exist in the main realm Playwright evaluates in, so the
+drafted approach could not work as written; going through the real preload also means structured
+clone is genuinely exercised instead of bypassed. 20 tests, all passing, ~8.5 min.
 
-- Call **every** registered handler with: no args, `undefined`, `null`, `0`, `''`, `NaN`,
-  `'../../../../etc/passwd'`, a 1 MB string, a 10k-element array, a 200-key object, an object with
-  `__proto__` / `constructor` / `prototype` keys, a frozen object, a Proxy that throws on every get.
-- **Assertion:** the process does not emit `uncaughtException` (via the Phase 0 main-process
-  recorder), the window stays alive (`isPageAlive`), and any rejection is an `Error` with a
-  `formatError`-producible message — never a raw `TypeError: Cannot read properties of undefined`.
+**Deviation from the draft, and why.** The draft shares one app across every input. That turned a
+single hostile payload into a cascading failure: `big-array` leaves the main process walking ten
+thousand filesystem paths, and that work was still draining when the next input ran, so the app
+closed and the remaining nine tests reported "Target page, context or browser has been closed" —
+reporting a harness artefact as ten separate handler defects. **Each hostile input now gets its own
+Electron instance**, which also makes the boundary audit attributable to one input.
+
+**Five production bugs found and fixed** (all mutation-verified, 8/8):
+
+| # | Site                            | Bug                                                                                                                                                                   | Fix                                                             |
+| - | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 1 | `src/main/ipc/dialogs.ts`       | `expandPaths` iterated a bare string, so `expandPaths('../../../../etc/passwd')` walked the filesystem **once per character**; the `.` expanded the whole working directory. Main process stalled >2 min. | `coerceNonEmptyArray` shape guard, returns `[]`                   |
+| 2 | `src/main/ipc/system.ts`        | `revealFile` forwarded unvalidated args to `shell.showItemInFolder` → raw `TypeError: Argument must be a string`.                                                        | `coerceOsString` guard                                           |
+| 3 | `src/main/updater.ts`           | `openReleaseNotes` / `installUpdate` forwarded to `shell.openExternal` / `shell.openPath`; `installUpdate` then called `app.quit()` **regardless** of whether the installer started. | `coerceOsString` guards                                         |
+| 4 | `src/main/ipc/queue.ts`         | `JSON.stringify(config)` in the log line threw `Converting circular structure to JSON`. **Structured clone preserves cycles**, so a cyclic object genuinely reaches the handler. | Log the object; `sanitizeLogArg` already handles cycles           |
+| 5 | `src/preload/index.ts`          | Same `JSON.stringify` bug, but on a Promise-returning method, so it threw **synchronously** — a renderer's `.catch()` never sees it and the error escapes as an unhandled renderer exception before main is involved. | Log the object                                                   |
+
+Bug 4 is the interesting one: fixing bug 5 alone left the channel still broken. Two identical
+`JSON.stringify` calls on the same payload, in two processes.
+
+Also added `MAX_OS_STRING_LENGTH` (4096, under Windows' 32,767 extended-length limit): a type check
+alone does not stop a 1 MB string, because it *is* a string — it simply is not a path. All three
+`shell.*` sites forwarded one verbatim before this.
+
+**Three harness defects the suite found in itself**, all of which had been reporting production
+defects that did not exist:
+
+- A 5 s per-call budget raced `playerGetFrame`'s own 5 s `PLAYER_FRAME_TIMEOUT_MS` and failed 16 of
+  17 sweeps. Fixed by raising the budget to 15 s and allow-listing the two methods that block by
+  design (`playerGetFrame`, `checkForUpdates`) — with a separate assertion that they still *settle*,
+  so an unbounded wait is still caught.
+- An "oversized payload" check asserted on `preview.length`, but `preview` is deliberately truncated
+  to 400 chars, so it measured the truncation, not the payload, and flagged the app's own ~1 KB
+  file-filter list. Replaced with `maxArgLength`, measured on the untouched argument.
+- The boundary audit asserted that each sweep must *reach* a contract-checked boundary. That is
+  backwards: once the handlers correctly reject hostile input before the OS, nothing reaches
+  `shell.*`, and sixteen tests failed **demanding the regression back**. Liveness is now proved once,
+  separately, with a valid argument; the per-input audit passes vacuously when nothing bad happened.
+
+**Input catalogue extended** to 17: added `BigInt`, `Symbol`, and a function — values structured
+clone *can* carry, so they reach the main process and exercise the guards that a clone rejection
+would otherwise hide. The `expandPaths` element-level gap (a valid array of invalid entries) remains
+open and is not yet fixed; the `big-array` case currently survives because `expandMediaPaths`
+resolves each element.
 
 ### 3.3 Event-channel abuse
 

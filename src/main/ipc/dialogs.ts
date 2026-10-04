@@ -17,6 +17,7 @@ import { ipcMain, dialog, BrowserWindow } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import { FILE_EXTENSIONS } from '../../shared/file-extensions';
+import { coerceNonEmptyArray } from '../../shared/validation';
 import { collectMediaFiles, expandMediaPaths } from '../media-files';
 import {
   LOG_IPC_SELECT_DIRECTORY_CALLED,
@@ -133,8 +134,18 @@ export function registerDialogHandlers(win: BrowserWindow): void {
    *   given paths (an empty array when none are found).
    */
   ipcMain.handle(IPC.EXPAND_PATHS, (_event, paths: string[]) => {
-    log.debug(LOG_IPC_EXPAND_PATHS_CALLED, { count: paths?.length ?? 0 });
-    const files = expandMediaPaths(paths ?? []);
+    // The renderer contract is `string[]`, but a bare string is *iterable*, so passing one
+    // straight to `expandMediaPaths` walks the filesystem once per character - and one of those
+    // characters is '.', which expands the entire working directory. That turned a mistyped
+    // argument into a multi-minute stall of the main process. Anything that is not a real array
+    // therefore expands to nothing.
+    const candidates = coerceNonEmptyArray(paths);
+    if (candidates === null) {
+      log.warn(LOG_IPC_EXPAND_PATHS_CALLED, 'ignored an expand request whose payload was not an array');
+      return [];
+    }
+    log.debug(LOG_IPC_EXPAND_PATHS_CALLED, { count: candidates.length });
+    const files = expandMediaPaths(candidates as string[]);
     log.info(LOG_IPC_EXPAND_PATHS_RESULT, `${files.length} files`);
     return files;
   });

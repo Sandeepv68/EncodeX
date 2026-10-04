@@ -279,6 +279,28 @@ describe('updater', () => {
       expect(openPathMock).toHaveBeenCalledWith('/tmp/app.exe');
       expect(quitMock).toHaveBeenCalledOnce();
     });
+
+    it('does nothing when the installer path is not a usable string', async () => {
+      // Found by `e2e/specs/ipc-abuse.spec.ts`. These payloads came straight off the renderer and
+      // reached `shell.openPath`, and `app.quit()` would have run regardless of whether the
+      // installer ever started.
+      for (const hostile of [10n ** 30n, 0, null, undefined, true, { path: '/tmp/app.exe' }, '', '  ']) {
+        openPathMock.mockClear();
+        quitMock.mockClear();
+        await installUpdate(hostile as unknown as string);
+        expect(openPathMock, `payload ${String(hostile)} must not reach the OS`).not.toHaveBeenCalled();
+        expect(quitMock, `payload ${String(hostile)} must not quit the app`).not.toHaveBeenCalled();
+      }
+    });
+
+    it('does nothing when the installer path is a megabyte long', async () => {
+      // Long *and* a valid string, so only a length bound catches it.
+      openPathMock.mockClear();
+      quitMock.mockClear();
+      await installUpdate('x'.repeat(1024 * 1024));
+      expect(openPathMock).not.toHaveBeenCalled();
+      expect(quitMock).not.toHaveBeenCalled();
+    });
   });
 
   describe('scheduleInstallOnRestart', () => {
@@ -384,6 +406,21 @@ describe('updater', () => {
     it('calls shell.openExternal', async () => {
       await openReleaseNotes('https://github.com/releases');
       expect(openExternalMock).toHaveBeenCalledWith('https://github.com/releases');
+    });
+
+    it('does nothing when the URL is not a usable string', async () => {
+      // Same abuse-harness origin as the `installUpdate` case above.
+      for (const hostile of [10n ** 30n, 0, null, undefined, true, ['https://x.invalid'], '', '  ']) {
+        openExternalMock.mockClear();
+        await openReleaseNotes(hostile as unknown as string);
+        expect(openExternalMock, `payload ${String(hostile)} must not reach the OS`).not.toHaveBeenCalled();
+      }
+    });
+
+    it('does nothing when the URL is a megabyte long', async () => {
+      openExternalMock.mockClear();
+      await openReleaseNotes('x'.repeat(1024 * 1024));
+      expect(openExternalMock).not.toHaveBeenCalled();
     });
   });
 

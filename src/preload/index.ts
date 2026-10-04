@@ -517,7 +517,13 @@ const api = {
    * @returns {Promise<void>} Resolves once the config has been recorded.
    */
   queueSetWhenDone: (config: WhenDoneConfig) => {
-    log.info(LOG_QUEUE_SET_WHEN_DONE, JSON.stringify(config));
+    // The config is handed to the logger unserialised on purpose. `JSON.stringify` here threw on a
+    // cyclic payload - and structured clone preserves cycles, so a cyclic object really does reach
+    // the preload - which made this Promise-returning method throw *synchronously* instead of
+    // rejecting. A renderer `.catch()` never sees that, so the error escaped as an unhandled
+    // renderer exception before the main process was involved at all. `sanitizeLogArg` already
+    // falls back to `String(value)` for a value it cannot serialise.
+    log.info(LOG_QUEUE_SET_WHEN_DONE, config);
     return ipcRenderer.invoke(IPC.QUEUE_SET_WHEN_DONE, config) as Promise<void>;
   },
   /**

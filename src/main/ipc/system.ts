@@ -10,6 +10,7 @@ import { app, ipcMain, shell, BrowserWindow } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import { LOG_IPC_REVEAL_FILE, LOG_IPC_SET_LAUNCH_AT_LOGIN } from '../../shared/log-constants';
+import { coerceOsString } from '../../shared/validation';
 
 const log = new Logger('main/ipc/system');
 
@@ -32,8 +33,17 @@ export function registerSystemHandlers(win: BrowserWindow): void {
    * @returns {Promise<void>} Resolves after the reveal request is issued.
    */
   ipcMain.handle(IPC.REVEAL_FILE, async (_event, filePath: string) => {
-    log.debug(LOG_IPC_REVEAL_FILE, filePath);
-    shell.showItemInFolder(filePath);
+    // The renderer contract says `string`, but the value crossed a process boundary from code this
+    // process does not control. Forwarding a non-string to `shell.showItemInFolder` rejects the
+    // renderer's promise with a raw `TypeError: Argument must be a string` rather than a
+    // formatted AppError, so the payload is narrowed first and a bad one is simply ignored.
+    const target = coerceOsString(filePath);
+    if (target === null) {
+      log.warn(LOG_IPC_REVEAL_FILE, 'ignored a reveal request whose path was not a usable string');
+      return;
+    }
+    log.debug(LOG_IPC_REVEAL_FILE, target);
+    shell.showItemInFolder(target);
   });
 
   /**
