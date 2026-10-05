@@ -17,6 +17,7 @@
     "src/test-setup.ts",
     "src/test-setup.crash.ts",
     "src/test-utils/**/*.ts",
+    "src/test-utils/**/*.tsx",
     "src/renderer/electron-api.d.ts",
     "src/renderer/vite-env.d.ts",
     "src/renderer/mui.d.ts",
