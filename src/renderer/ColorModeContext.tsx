@@ -22,6 +22,7 @@ import { getTheme, isThemeId } from './colors';
 import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../shared/analytics/events';
 import type { ColorMode, ColorModeContextValue, ThemeId } from './types';
+import { loadString, saveString } from './utils/storage';
 
 /**
  * React context carrying the color mode state. Defaults to a no-op value so
@@ -65,7 +66,11 @@ export function useColorMode() {
 export function ColorModeProvider({ children }: { children: ReactNode }) {
   /** Currently selected theme palette id, restored from localStorage. @type {ThemeId} */
   const [themeId, setThemeId] = useState<ThemeId>(() => {
-    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    // Both sides go through the swallowing helpers: a throw in a lazy
+    // initializer surfaces during render, and a throw in the effect surfaces as
+    // an uncaught React error - and neither is behind an error boundary until
+    // after the first render has already failed.
+    const saved = loadString(THEME_STORAGE_KEY, '');
     if (isThemeId(saved)) return saved;
     return 'light';
   });
@@ -73,7 +78,7 @@ export function ColorModeProvider({ children }: { children: ReactNode }) {
   const [direction, setDirection] = useState<'ltr' | 'rtl'>('ltr');
 
   useEffect(() => {
-    localStorage.setItem(THEME_STORAGE_KEY, themeId);
+    saveString(THEME_STORAGE_KEY, themeId);
   }, [themeId]);
 
   /** Light/dark mode derived from the active theme definition. @type {ColorMode} */

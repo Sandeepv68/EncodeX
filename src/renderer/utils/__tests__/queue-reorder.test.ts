@@ -62,6 +62,22 @@ describe('reorderJob', () => {
     expect(reorderJob(jobs2, 'q2', -5).map((j) => j.id)).toEqual(['q2', 'q1']);
   });
 
+  it.each([
+    ['NaN', NaN],
+    ['Infinity', Infinity],
+    ['-Infinity', -Infinity],
+    ['undefined', undefined],
+    ['null', null],
+    ['string', '1'],
+  ])('leaves the order untouched for a non-finite target (%s)', (_label, value) => {
+    // `Math.floor(NaN)` stays NaN through `Math.max(0, Math.min(NaN, n))`, and
+    // `splice(NaN, 0, x)` writes at index 0 - so without the guard the card
+    // jumps to the front locally while `JobQueue.moveJobTo` refuses the same
+    // move, and the two views never reconverge.
+    const jobs = [job('q1', 'queued'), job('q2', 'queued'), job('q3', 'queued')];
+    expect(reorderJob(jobs, 'q3', value as number)).toBe(jobs);
+  });
+
   it('returns the same array for missing, non-queued, and no-op jobs', () => {
     const jobs = [job('q1', 'queued'), job('running', 'running'), job('q2', 'queued')];
     expect(reorderJob(jobs, 'missing', 0)).toBe(jobs);

@@ -508,6 +508,95 @@ describe('FfmpegCore', () => {
     expect(errorListener).toHaveBeenCalledWith(expect.objectContaining({ code: 'CANCELLED' }));
   });
 
+  it('a cancel issued before the process spawns is honoured once it spawns', () => {
+    // fluent-ffmpeg spawns asynchronously: `run()` first performs capability
+    // checks and argument building inside `_prepare`, and only then assigns
+    // `ffmpegProc`. Until that assignment `proto.kill` finds nothing to signal
+    // and merely logs a warning, so a cancel issued in that window used to be
+    // silently lost - the conversion ran to completion and wrote an output
+    // file the user had already abandoned.
+    const core = new FfmpegCore();
+    const emitter = core.convert('in.mp4', 'out.mp4', {});
+    const cmd = getCommand();
+    const proc = { pid: 99, kill: vi.fn(() => true) };
+    (cmd as { ffmpegProc?: unknown }).ffmpegProc = undefined;
+    const endListener = vi.fn();
+    const errorListener = vi.fn();
+    emitter.on('end', endListener);
+    emitter.on('error', errorListener);
+
+    core.cancel();
+    expect(proc.kill).not.toHaveBeenCalled(); // nothing to signal yet
+
+    (cmd as { ffmpegProc?: unknown }).ffmpegProc = proc;
+    onHandler(cmd, 'start')('ffmpeg -i in.mp4 out.mp4');
+    expect(proc.kill).toHaveBeenCalledWith('SIGKILL');
+
+    onHandler(cmd, 'end')();
+    expect(endListener).not.toHaveBeenCalled();
+    expect(errorListener).toHaveBeenCalledTimes(1);
+    expect(errorListener).toHaveBeenCalledWith(expect.objectContaining({ code: 'CANCELLED' }));
+  });
+
+  it('an end event that races a cancel reports a cancelled error, not success', () => {
+    const core = new FfmpegCore();
+    const emitter = core.convert('in.mp4', 'out.mp4', {});
+    const cmd = getCommand();
+    const endListener = vi.fn();
+    const errorListener = vi.fn();
+    emitter.on('end', endListener);
+    emitter.on('error', errorListener);
+
+    core.cancel();
+    onHandler(cmd, 'end')();
+
+    expect(endListener).not.toHaveBeenCalled();
+    expect(errorListener).toHaveBeenCalledWith(expect.objectContaining({ code: 'CANCELLED' }));
+  });
+
+  it('delivers exactly one terminal event per run', () => {
+    const core = new FfmpegCore();
+    const emitter = core.convert('in.mp4', 'out.mp4', {});
+    const cmd = getCommand();
+    const endListener = vi.fn();
+    const errorListener = vi.fn();
+    emitter.on('end', endListener);
+    emitter.on('error', errorListener);
+
+    onHandler(cmd, 'error')(new Error('boom'));
+    onHandler(cmd, 'end')();
+    expect(errorListener).toHaveBeenCalledTimes(1);
+    expect(endListener).not.toHaveBeenCalled();
+  });
+
+  it('normalises non-finite and out-of-range progress before emitting it', () => {
+    const core = new FfmpegCore();
+    const emitter = core.convert('in.mp4', 'out.mp4', {});
+    const cmd = getCommand();
+    const progress: Array<Record<string, unknown>> = [];
+    emitter.on('progress', (p: Record<string, unknown>) => progress.push(p));
+
+    onHandler(cmd, 'progress')({ percent: NaN, timemark: '00:00:01', currentFps: NaN, currentKbps: NaN });
+    onHandler(cmd, 'progress')({ percent: 150, timemark: '00:00:02', currentFps: 30, currentKbps: 1000 });
+    onHandler(cmd, 'progress')({ percent: -20, timemark: '00:00:03', currentFps: -5, currentKbps: 500 });
+
+    for (const p of progress) {
+      expect(Number.isFinite(p.percent as number)).toBe(true);
+      expect(p.percent as number).toBeGreaterThanOrEqual(0);
+      expect(p.percent as number).toBeLessThanOrEqual(100);
+      expect(Number.isFinite(p.fps as number)).toBe(true);
+      expect(typeof p.eta).toBe('string');
+      expect(typeof p.time).toBe('string');
+      expect(typeof p.speed).toBe('string');
+    }
+    expect(progress[0].percent).toBe(0);
+    expect(progress[0].bitrate).toBe(''); // non-finite kbps must not become 'NaNkbps'
+    expect(progress[1].percent).toBe(100);
+    expect(progress[1].bitrate).toBe('1000kbps');
+    expect(progress[2].percent).toBe(0);
+    expect(progress[2].fps).toBe(0);
+  });
+
   it('pause and resume are no-ops without a process', () => {
     const core = new FfmpegCore();
     core.pause();

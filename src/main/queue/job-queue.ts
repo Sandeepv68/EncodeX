@@ -37,6 +37,7 @@ import {
   LOG_QUEUE_CLEAR_COMPLETED,
   LOG_QUEUE_DRAINED,
   LOG_QUEUE_MOVE_TO,
+  LOG_QUEUE_MOVE_REJECTED_NON_FINITE,
   LOG_QUEUE_MOVE_SKIPPED,
   LOG_QUEUE_MOVE_TO_CLAMPED,
   LOG_QUEUE_UPDATE_OPTIONS,
@@ -60,6 +61,30 @@ const log = new Logger('main/queue/job-queue');
  * @const {number} DEFAULT_PERSIST_DELAY_MS
  */
 const DEFAULT_PERSIST_DELAY_MS = 500;
+
+/**
+ * Clamps a caller-supplied concurrency cap into the legal integer range.
+ *
+ * Every value that reaches this function arrives over IPC from the renderer or
+ * out of a JSON snapshot, and `structuredClone` carries `NaN` across the
+ * boundary while `1e999` parses to `Infinity`. Those are not theoretical:
+ * `Math.min(Math.max(NaN, 1), 4)` is `NaN`, and a queue whose cap is `NaN`
+ * satisfies `activeJobs.size < NaN` never - so `processNext` starts nothing,
+ * forever, with no error anywhere. The machine silently stops, which is worse
+ * than throwing because nothing reports it.
+ *
+ * Non-finite input is rejected rather than "fixed": an unrecognisable request
+ * must not change the state the queue is already in. Everything else is
+ * truncated (a cap of 2.5 would otherwise behave as 3, because `size < 2.5`
+ * admits three jobs) and clamped to `1..MAX_QUEUE_CONCURRENCY`.
+ * @param {unknown} value - The raw value received from the caller.
+ * @param {number} fallback - Value to use when `value` is not finite.
+ * @returns {number} An integer in `1..MAX_QUEUE_CONCURRENCY`.
+ */
+function clampConcurrency(value: unknown, fallback: number): number {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return fallback;
+  return Math.min(Math.max(Math.trunc(value), 1), MAX_QUEUE_CONCURRENCY);
+}
 
 /**
  * Construction options for a {@link JobQueue}.
@@ -142,6 +167,14 @@ export class JobQueue extends EventEmitter {
   private jobCompletedSinceLastDrain = false;
 
   /**
+   * True while a {@link drainToCap} pass is on the stack (possibly nested).
+   * Consulted by {@link startJob}'s synchronous failure path so that a batch
+   * whose jobs all throw does not add one stack frame per job.
+   * @type {boolean}
+   */
+  private draining = false;
+
+  /**
    * Creates a queue that runs up to `concurrency` conversions in parallel.
    * When a persistence adapter is provided, a previously saved snapshot is
    * loaded immediately: RUNNING jobs are remapped to QUEUED (progress reset)
@@ -154,7 +187,7 @@ export class JobQueue extends EventEmitter {
   constructor(options: number | JobQueueOptions = {}) {
     super();
     const resolved: JobQueueOptions = typeof options === 'number' ? { concurrency: options } : options;
-    this.concurrency = Math.min(Math.max(resolved.concurrency ?? 1, 1), MAX_QUEUE_CONCURRENCY);
+    this.concurrency = clampConcurrency(resolved.concurrency ?? 1, 1);
     this.persistence = resolved.persistence;
     this.persistDelayMs = resolved.persistDelayMs ?? DEFAULT_PERSIST_DELAY_MS;
     this.transcoderFactory = resolved.transcoderFactory ?? createTranscoder;
@@ -175,7 +208,7 @@ export class JobQueue extends EventEmitter {
     if (!this.persistence) return;
     const snapshot = this.persistence.load();
     if (!snapshot) return;
-    this.concurrency = Math.min(Math.max(snapshot.concurrency ?? 1, 1), MAX_QUEUE_CONCURRENCY);
+    this.concurrency = clampConcurrency(snapshot.concurrency, this.concurrency);
     for (const job of snapshot.jobs) {
       if (job.status === QUEUE_STATUS.RUNNING) {
         job.status = QUEUE_STATUS.QUEUED;
@@ -243,7 +276,7 @@ export class JobQueue extends EventEmitter {
    * @returns {void}
    */
   setConcurrency(concurrency: number): void {
-    this.concurrency = Math.min(Math.max(concurrency, 1), MAX_QUEUE_CONCURRENCY);
+    this.concurrency = clampConcurrency(concurrency, this.concurrency);
     log.info(LOG_QUEUE_SET_CONCURRENCY, this.concurrency);
     this.schedulePersist();
     if (this.activeJobs.size > 0) {
@@ -398,8 +431,22 @@ export class JobQueue extends EventEmitter {
     if (transcoder) {
       log.debug(LOG_CANCELLING_ACTIVE_JOB);
       transcoder.cancel();
+      // The job leaves the queue below, so it must not keep occupying a
+      // concurrency slot: an entry keyed by an id that no longer exists is a
+      // dangling reference, and if the transcoder's cancellation never lands
+      // (a backend that ignores `cancel()`, or a kill issued before the process
+      // was spawned) the slot is lost for the rest of the session and the queue
+      // silently runs one conversion short. Releasing it here means the dying
+      // process may briefly overlap the next one, which is the intended cost of
+      // an asynchronous kill - the alternative is a capacity leak nothing
+      // reports. A cancelled transcoder's late `error` is harmless: the job is
+      // no longer in the queue, so no `statusChange` is emitted for it.
+      this.activeJobs.delete(id);
     }
     this.removeJob(id);
+    if (transcoder) {
+      this.processNext();
+    }
   }
 
   /**
@@ -459,6 +506,16 @@ export class JobQueue extends EventEmitter {
    * @returns {boolean} True when the job was moved.
    */
   moveJobTo(id: string, toPosition: number): boolean {
+    // A non-finite target is refused rather than clamped. `Math.floor(NaN)` is
+    // `NaN`, which survives `Math.max(0, Math.min(NaN, n))` as `NaN`, and
+    // `Array.splice(NaN, 0, x)` is `splice(0, …)` - so the job would silently
+    // jump to the front while the `moved` event advertised `toPosition: NaN`.
+    // The preload then drops that event through `isQueueMovedEvent`, so the
+    // renderer keeps its old order and the operation looks like a no-op.
+    if (typeof toPosition !== 'number' || !Number.isFinite(toPosition)) {
+      log.debug(LOG_QUEUE_MOVE_REJECTED_NON_FINITE, id, toPosition);
+      return false;
+    }
     const queuedIndexes = this.queue.map((job, index) => (job.status === QUEUE_STATUS.QUEUED ? index : -1)).filter((index) => index !== -1);
     const fromPos = queuedIndexes.findIndex((index) => this.queue[index].id === id);
     if (fromPos === -1) {
@@ -552,6 +609,14 @@ export class JobQueue extends EventEmitter {
    * While fewer than `concurrency` conversions are in flight, takes the next
    * QUEUED job in insertion order and starts it via {@link startJob}. When no
    * QUEUED jobs remain or the cap is reached, returns silently.
+   *
+   * Reentrancy is deliberate and must be preserved: a `drained` listener is
+   * allowed to add a job and call {@link start} from inside a drain, and
+   * `start()` is expected to have those jobs RUNNING by the time it returns.
+   * What is *not* allowed is for {@link startJob}'s synchronous failure path to
+   * add one stack frame per job - a crafted queue import can make every job
+   * throw, and at the 10 000-job import cap that would overflow the stack and
+   * strand the remainder of the queue. See the `draining` guard.
    * @returns {void}
    */
   private processNext(): void {
@@ -559,17 +624,53 @@ export class JobQueue extends EventEmitter {
       log.debug(LOG_PROCESS_NEXT_NO_QUEUED_JOBS);
       return;
     }
-    while (this.activeJobs.size < this.concurrency) {
-      const queued = this.queue.filter((j) => j.status === QUEUE_STATUS.QUEUED);
-      if (queued.length === 0) {
-        log.debug(LOG_PROCESS_NEXT_NO_QUEUED_JOBS);
-        this.emitDrainedIfIdle();
-        return;
+    this.drainToCap();
+  }
+
+  /**
+   * One pass of {@link processNext}: starts QUEUED jobs until the concurrency
+   * cap is reached or nothing is left to start.
+   *
+   * `draining` records that a pass is on the stack. {@link startJob}'s `catch`
+   * consults it instead of recursing: after a job fails to start, `activeJobs`
+   * no longer holds it, so this method's own `while` condition is re-evaluated
+   * on the next iteration and picks up the next job without a new frame.
+   * @returns {void}
+   */
+  private drainToCap(): void {
+    const outer = this.draining;
+    this.draining = true;
+    try {
+      while (!this.paused && this.activeJobs.size < this.concurrency) {
+        const queued = this.queue.filter((j) => j.status === QUEUE_STATUS.QUEUED);
+        if (queued.length === 0) {
+          log.debug(LOG_PROCESS_NEXT_NO_QUEUED_JOBS);
+          this.emitDrainedIfIdle();
+          return;
+        }
+        const maxPriority = Math.max(...queued.map((j) => j.priority ?? 0));
+        const nextJob = queued.find((j) => (j.priority ?? 0) === maxPriority) as QueueJob;
+        this.startJob(nextJob);
       }
-      const maxPriority = Math.max(...queued.map((j) => j.priority ?? 0));
-      const nextJob = queued.find((j) => (j.priority ?? 0) === maxPriority) as QueueJob;
-      this.startJob(nextJob);
+    } finally {
+      this.draining = outer;
     }
+  }
+
+  /**
+   * True when the queue still holds the job with the given id.
+   *
+   * Terminal and progress handlers run after the fact, when the job may already
+   * have been cancelled or removed. Reporting a transition for a job the queue
+   * no longer holds is an illegal state observation: it costs an IPC round trip
+   * the renderer discards, and it makes the log claim a status change for a job
+   * that is not in the list. Job ids are UUIDs and are never reused, so this
+   * check cannot be fooled by a later job with the same id.
+   * @param {string} id - The job id to look for.
+   * @returns {boolean} True while the job is present in `this.queue`.
+   */
+  private holdsJob(id: string): boolean {
+    return this.queue.some((job) => job.id === id);
   }
 
   /**
@@ -578,12 +679,16 @@ export class JobQueue extends EventEmitter {
    * wires up the emitter lifecycle:
    * - `progress` updates `job.progress` and re-emits as `{ job, progress }`,
    * - `error` marks the job ERROR, stores `job.error`, removes the job from
-   *   `activeJobs` and recursively calls `processNext()` to drain the queue,
+   *   `activeJobs` and drains the queue,
    * - `end` marks the job DONE with 100% progress and drains the queue.
    *
-   * If `convert()` throws synchronously (e.g. spawn failure), the job is marked
+   * If the factory or `convert()` throws (an unknown transcoder type from an
+   * imported queue file, hostile `options`, a spawn failure), the job is marked
    * ERROR the same way. In every terminal branch the job is removed from
-   * `activeJobs` before `processNext()` so the next queued job can start.
+   * `activeJobs` before `processNext()` so the next queued job can start, and
+   * the `paused` flag is cleared so a job cancelled while the queue was paused
+   * cannot be persisted - or later re-emitted by {@link resume} - as a
+   * terminal job that is also flagged paused.
    * @param {QueueJob} nextJob - The QUEUED job to start.
    * @returns {void}
    */
@@ -603,19 +708,29 @@ export class JobQueue extends EventEmitter {
       }),
     );
 
-    const transcoder = this.transcoderFactory(nextJob.transcoder);
-    this.activeJobs.set(nextJob.id, transcoder);
-
     try {
+      const transcoder = this.transcoderFactory(nextJob.transcoder);
+      this.activeJobs.set(nextJob.id, transcoder);
       const emitter = transcoder.convert(nextJob.input, nextJob.output, nextJob.options);
       emitter.on('progress', (progress) => {
-        nextJob.progress = progress.percent;
+        // `isQueueJob` on the preload boundary rejects a job whose `progress` is
+        // not a finite number, so a single `NaN` from a backend does not render
+        // as a wrong value - it silently deletes every subsequent statusChange
+        // for that job, freezing its row for the rest of the run. It is also
+        // what `buildSnapshot` serializes, and `JSON.stringify(NaN)` writes
+        // `null`, which would then be restored as a permanent non-finite value.
+        // The range clamp matters for the same reason as `moveJobTo`: a percent
+        // outside 0..100 renders a bar that overflows its track.
+        const raw = Number.isFinite(progress?.percent) ? progress.percent : 0;
+        nextJob.progress = Math.min(Math.max(raw, 0), 100);
         this.schedulePersist();
-        this.emit('progress', { job: nextJob, progress });
+        if (this.holdsJob(nextJob.id)) {
+          this.emit('progress', { job: nextJob, progress: { ...progress, percent: nextJob.progress } });
+        }
       });
       emitter.on('error', (err) => {
         const wasActive = this.activeJobs.delete(nextJob.id);
-        log.error(LOG_JOB_FAILED, nextJob.id, err.message);
+        log.error(LOG_JOB_FAILED, nextJob.id, err?.message ?? String(err));
         recordAnalyticsEvent(
           createAnalyticsEvent('conversion_failed', {
             jobKind: 'batch',
@@ -626,10 +741,13 @@ export class JobQueue extends EventEmitter {
           }),
         );
         nextJob.status = QUEUE_STATUS.ERROR;
-        nextJob.error = err.message;
+        nextJob.paused = false;
+        nextJob.error = err?.message ?? String(err);
         this.schedulePersist();
-        this.emit('statusChange', nextJob);
-        if (wasActive && err.code !== ErrorCode.CANCELLED) {
+        if (this.holdsJob(nextJob.id)) {
+          this.emit('statusChange', nextJob);
+        }
+        if (wasActive && err?.code !== ErrorCode.CANCELLED) {
           this.jobCompletedSinceLastDrain = true;
         }
         this.processNext();
@@ -646,9 +764,12 @@ export class JobQueue extends EventEmitter {
           }),
         );
         nextJob.status = QUEUE_STATUS.DONE;
+        nextJob.paused = false;
         nextJob.progress = COMPLETED_PROGRESS.percent;
         this.schedulePersist();
-        this.emit('statusChange', nextJob);
+        if (this.holdsJob(nextJob.id)) {
+          this.emit('statusChange', nextJob);
+        }
         if (wasActive) {
           this.jobCompletedSinceLastDrain = true;
         }
@@ -658,11 +779,20 @@ export class JobQueue extends EventEmitter {
       this.activeJobs.delete(nextJob.id);
       log.error(LOG_JOB_THREW_ON_START, nextJob.id, err);
       nextJob.status = QUEUE_STATUS.ERROR;
+      nextJob.paused = false;
       nextJob.error = err instanceof Error ? err.message : String(err);
       this.schedulePersist();
-      this.emit('statusChange', nextJob);
+      if (this.holdsJob(nextJob.id)) {
+        this.emit('statusChange', nextJob);
+      }
       this.jobCompletedSinceLastDrain = true;
-      this.processNext();
+      // Recursing here would add a frame per failing job, and a crafted import
+      // can make all 10 000 jobs fail synchronously. Inside a drain pass the
+      // `while` loop re-evaluates the cap on its next iteration, so the next
+      // job is picked up without a new frame.
+      if (!this.draining) {
+        this.processNext();
+      }
     }
   }
 }

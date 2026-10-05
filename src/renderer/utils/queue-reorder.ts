@@ -57,6 +57,13 @@ export function computeQueuedTargetPosition(jobs: QueueJob[], movedId: string, n
  * @returns {QueueJob[]} A new array with the reorder applied.
  */
 export function reorderJob(jobs: QueueJob[], id: string, toPosition: number): QueueJob[] {
+  // Mirrors `JobQueue.moveJobTo`, which refuses a non-finite target outright.
+  // `Math.floor(NaN)` is `NaN`, and `Math.max(0, Math.min(NaN, n))` propagates
+  // it instead of clamping, so `ordered.splice(NaN, 0, moved)` would drop the
+  // job at index 0. The renderer would then show the card at the front while
+  // the main process refused the same move - a divergence that never
+  // self-corrects, because neither side reports an error.
+  if (typeof toPosition !== 'number' || !Number.isFinite(toPosition)) return jobs;
   const queuedIndexes = jobs.map((job, index) => (job.status === QUEUE_STATUS.QUEUED ? index : -1)).filter((index) => index !== -1);
   const fromPos = queuedIndexes.findIndex((index) => jobs[index].id === id);
   if (fromPos === -1) return jobs;

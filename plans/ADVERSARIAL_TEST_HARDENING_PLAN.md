@@ -23,7 +23,7 @@
 | 1 Contract & input fuzzing | **DONE** | 9 new property-test files, 162 tests, all 10 rows covered. **8 source bugs found and fixed** (`isValidTime` accepted `00:60:00`; `formatSize(Infinity)`/`formatDuration(NaN)`/`formatClockTime` rendered `'Infinity TB'`/`'NaNs'`/`'Infinity:NaN:NaN'`; `validateQueueExport` had no job cap; `formatError` threw on hostile objects; `isContainerCompatibleWithStream` threw on a streamless payload; the i18n test mock threw on a RegExp-metacharacter key). `deriveOutputPath` traversal and all 6 store rehydration readers proved already-safe (mutation-verified). Typecheck 6/6, lint 0 errors, format clean, unit 199/2911, integration 50/50, e2e A 155+2skipped, e2e B 9/9 |
 | 2 Media / byte-level fuzzing | **DONE** | `computeHistogram` fuzzed (`image-histogram.fuzz.test.ts`, 8 tests): found an unbounded loop (`total = width * height` unclamped → 3.6 × 10^9 iterations on a 60k×60k PNG, a real hang) plus a `NaN` written to the string key `"undefined"`, invisible to `.some(Number.isNaN)`. Fixed by clamping to the bytes present; mutation-verified (clamp removal fails 4/8). Subprocess watchdog **delivered** (`src/main/spawn-timeout.ts`): 5 bounded spawn sites killed+rejected, 7 unwired, 7 mutations caught. `frame-decoder.ts` fuzz **delivered** (`frame-decoder.fuzz.test.ts`, 46 tests): found an **OOM process-killing hang** at `frameSize === 0` plus a silent `NaN`/`Infinity` stall and a throwing `Buffer.alloc`; fixed by validating the derivation, 5 mutations caught, 1 dead branch removed. EXIF bombs **delivered** (`image-exif.fuzz.test.ts`, 19 tests): `exifr` itself survives every hand-built TIFF bomb, but our layer leaked the parser's `errors` array as if it were an EXIF tag (garbage files reported as having metadata) and `flattenExif` bounded depth but not total work (a self-referential node with 2 child keys = 2^depth paths past the depth cap; >2e6 visits measured). Fixed; 3 mutations caught. Real corpus **delivered** (`corrupt-media.mediafuzz.test.ts`, 6 tests): 173 deterministic files from 11 real-ffmpeg seeds probed with real `ffmpeg`/`ffprobe` across 7 entry points; **no new production bug** — the work was proving the tier non-vacuous, which exposed 4 defects in the tests themselves (a waveform sweep that could never pass because its seed had no audio stream, a prefix-slice that never reached bit-flipped files, a vacuity guard for the fix, and a tally hidden by the crash tripwire). 2 production mutations caught. |
 | 3 IPC contract & abuse | **DONE** | 3.1 channel contract **delivered** (8 tests, `src/main/ipc/__tests__/channel-contract.test.ts`): channel set discovered by running every real registrar, drift fails both directions, 3 mutations caught; first version was vacuous in 5/8 tests. 3.2 abuse harness **delivered** (`ipc-abuse.spec.ts`, 20 tests, `mock: false`): **5 production bugs** (a bare-string `expandPaths` that walked the filesystem per character, 3 unvalidated `shell.*` sites, 2 `JSON.stringify` calls on a cycle-preserving channel). 3.3 event-channel abuse **delivered** (`ipc-events.spec.ts`, 12 tests): 18 channels x 12 routes x 7 payload shapes; **3 production bugs** plus a 4th in the fix - a central guard across all 15 payload-bearing channels, then *that guard* became the bug via unbounded drop-logging. 3.4 hostile-bridge **delivered** (`hostile-bridge.spec.ts` + `hostile-preload.js`, 14 tests, real main): **4 production bugs, 2 of them permanent white screens** - an `await`ed boot dependency with no timeout, and `contextBridge` throwing *synchronously* where `?.` cannot help. All four phases also found harness bugs that reported confident wrong results. Full root causes, attributions and gate numbers: sections 3.1-3.4 below. |
-| 4 State machines, lifecycle & races | TODO | — |
+| 4 State machines, lifecycle & races | **IN PROGRESS** | 4.1 + 4.2(cancel/pause) **DONE**: 48 new tests in `job-queue-attacks.test.ts`, +4 in `ffmpeg-core.test.ts`, +6 in `queue-reorder.test.ts`; **9 production bugs fixed** (Q1-Q9: NaN concurrency bricking the queue, NaN move target diverging renderer/main, non-finite progress freezing a job's row, terminal jobs left flagged `paused`, statusChange for jobs no longer held, pause ignored mid-drain, cancelled job leaking its concurrency slot, cancel lost in fluent-ffmpeg's pre-spawn window, stack overflow on a crafted 10 000-job import); 6 of the first 47 tests were wrong expectations, one was unreachable and was removed. 4.4 **DONE**: 11 tests in `storage-hostility.test.tsx`, **3 production bugs** (S1-S3: a module-scope `localStorage` read that white-screened the renderer before any error boundary existed, a throw inside a `useState` lazy initializer, an unhandled rejection from an `async` language switch that also left the menu open). 4.5 **DONE**: 7 tests in `listener-leaks.test.tsx`, **1 production bug** (Q10: `VideoTimeline`'s `[]` cleanup removed first-render closures while the drag registered current-render ones, so unmounting mid-drag left both `window` pointer listeners attached) plus 2 harness bugs that had produced a green run (patching `EventTarget.prototype` misses `window.addEventListener`, which jsdom installs as an own property; and an idle-path-only test that never proved it armed anything). 4.6 **DONE**: 13 tests, all 12 pages under `<StrictMode>` + a subscription-disposal assertion (mutation-caught: `left 2 of 2 subscriptions live after unmount`); one jsdom `scrollIntoView` gap, not an app bug. 4.7 **DONE**: `src/test-utils/deferred.ts` + 20 self-tests, deadline handlers attached eagerly so a losing bound is inert. Unit 208+ files / **3200+ tests**, `npm run lint` 0 errors, `npm run typecheck` 6/6. Remaining: **4.3 reload/quit/restart persistence recovery** |
 | 5 UI robustness, i18n & a11y | TODO | — |
 | 6 CLI & MCP hostile input | TODO | — |
 | 7 Updater & network hostility | TODO | — |
@@ -1515,6 +1515,198 @@ and the `send` methods originally returned rejected promises in `reject-async`, 
 | **Timers/listeners** | `vi.useFakeTimers()` + `vi.getTimerCount()` after unmount must be 0; mount/unmount `MediaPlayer`, `VideoTimeline`, `BatchQueue` 100× and assert listener counts (`window`, `document`, `BroadcastChannel`, `ResizeObserver`) return to baseline — the classic Electron memory leak |
 | **React 19 StrictMode** | Every page test double-renders under `<StrictMode>`; the app already runs StrictMode in dev and this is untested |
 | **Race harness** | A reusable `deferred()` util + `Promise.race` timeouts so every "eventually" is a bounded assertion, not a `waitFor` that silently passes |
+
+### 4.1 Queue state machine & hostile numeric input — **DONE**
+
+New suite `src/main/queue/__tests__/job-queue-attacks.test.ts` (48 tests, four groups: hostile
+numeric input, illegal transitions, cancel/complete races, bulk & reentrancy), plus 6 cases added to
+`src/renderer/utils/__tests__/queue-reorder.test.ts`. Every argument under test arrives over IPC from
+the renderer or out of a JSON snapshot, and `structuredClone` carries `NaN` across the boundary while
+`1e999` parses to `Infinity` — so the input space is genuinely hostile, not hypothetical.
+
+**7 production bugs found and fixed** in `src/main/queue/job-queue.ts` (638 → 795 lines),
+`src/main/transcoders/ffmpeg-core.ts` and `src/renderer/utils/queue-reorder.ts`:
+
+| # | Attack | What actually happened | Fix |
+| --- | --- | --- | --- |
+| Q1 | `setConcurrency(NaN)` (also from the constructor and from `loadPersistedState`) | **The queue bricked permanently and silently.** `this.concurrency` became `NaN`, so `while (activeJobs.size < NaN)` was false forever: `start()` returned normally, no job ever ran, and nothing logged an error. Worse than throwing, because nothing reports it. `2.5` also behaved as `3` (`size < 2.5` admits three jobs). | `clampConcurrency(value, fallback)`: non-finite is **rejected** (an unrecognisable request must not change state the queue already has), everything else is truncated and clamped to `1..MAX_QUEUE_CONCURRENCY`. Used by the constructor, `setConcurrency` and `loadPersistedState`. |
+| Q2 | `moveJobTo(id, NaN)` / `undefined` / `'4'` | `Math.floor(NaN)` survives `Math.max(0, Math.min(NaN, n))` as `NaN`, and `Array.splice(NaN, 0, x)` is `splice(0, …)`. So the job **relocated to the front** while the emitted event advertised `toPosition: NaN` — which `isQueueMovedEvent` then dropped. The renderer kept its old order and the main process had already moved: a divergence neither side reports and that never self-corrects. | `moveJobTo` refuses a non-finite target outright (plus a dedicated log constant); `reorderJob` mirrors the guard so the local optimistic reorder cannot disagree with the refusal. |
+| Q3 | A backend emitting `percent: NaN` | `?? 0` only catches `null`/`undefined`. The `NaN` reached `job.progress`, `JSON.stringify` wrote `null` into the snapshot, and — the real damage — `isQueueJob` requires a finite `progress`, so **every subsequent `statusChange` for that job was dropped at the preload** and its row froze for the rest of the run. The single-file `conversion-progress` channel had the same hole via `isConversionProgress`, and `bitrate` rendered as `'NaNkbps'`. | `FfmpegCore` normalises `percent`/`fps`/`bitrate` before emitting (with a narrowing `isFiniteNumber`, since `Number.isFinite` does not narrow `number \| undefined`) and clamps to `0..100`/`≥0`; `JobQueue` re-normalises and range-clamps on receipt, and re-emits the clamped value so the two cannot disagree. |
+| Q4 | A job that completes while the queue is paused | It stayed flagged `paused: true` **on a DONE job**, persisted that way — and `resume()`, which selects on `job.paused`, re-emitted a `statusChange` for an already-terminal job. | `paused = false` on every terminal transition (`end`, `error`, and the `startJob` catch). |
+| Q5 | `removeJob` on a RUNNING job, then its late `end`; `cancelAll`, then a late `error` | The queue emitted `statusChange` for jobs it no longer held: an IPC round trip the renderer discards, and a log line claiming a change for a job that is not in the list. | `holdsJob(id)` guard on every terminal/`progress` emission. Job ids are UUIDs and are never reused, so the check cannot be fooled by a later job. |
+| Q6 | `pause()` called from a `statusChange` listener mid-drain | The drain loop had no `paused` check, so with a concurrency cap of 4 the remaining three jobs were started **in the same synchronous pass**, before `pause()` could ever return. | `!this.paused` in the drain loop condition. |
+| Q7 | `cancelJob` on a running job whose transcoder never reports back | `cancelJob` removed the job from the queue but left the `activeJobs` entry keyed by an id that no longer exists. If cancellation never landed, the slot was lost for the rest of the session and the queue **silently ran one conversion short** — the same class of unreported capacity leak as Q1. | Release the slot when the job leaves, then `processNext()` to refill it (only when a transcoder was actually cancelled, so cancelling a QUEUED job still cannot auto-start the queue). |
+
+### 4.2 Conversion lifecycle — cancel/pause/relaunch — **PARTIAL (cancel & pause done)**
+
+`src/main/transcoders/__tests__/ffmpeg-core.test.ts` grew from 39 to 43 tests.
+
+**The bug (Q8):** `fluent-ffmpeg`'s `run()` performs capability checks and argument building inside
+an asynchronous `_prepare` before it spawns, and `proto.kill` is a **silent no-op** whenever
+`this.ffmpegProc` is unset — it only logs *"No running ffmpeg process, cannot send signal"*. So a
+`cancel()` issued between `convert()` returning and `'start'` was **lost completely**: the process
+spawned anyway, ran to completion, and wrote the output file the user had already abandoned. Nothing
+reported it, because `cmd.on('end')` had no `cancelled` check at all and would have marked the job
+DONE.
+
+Fixed three ways, in the order they matter:
+
+1. the `'start'` hook kills the freshly spawned child when `cancelled` was already requested —
+   honouring the cancellation that could not be delivered earlier;
+2. `cmd.on('end')` now maps to `cancelledError()` when `cancelled` is set, so a run that finishes in
+   the same tick as its kill can never report success;
+3. a `settled` latch guarantees **exactly one** terminal event per run, so a consumer cannot see
+   `error` *and* `end`.
+
+Four new tests cover: cancel-before-spawn honoured on spawn, `end` racing a cancel, one terminal
+event per run, and non-finite/out-of-range progress normalisation.
+
+**Test-vs-bug discipline.** Six of the first 47 tests in the new suite were wrong, and the plan's
+rule — separate real reachable bugs from wrong test expectations — was applied to each rather than
+"fixing the code until the test passed":
+
+- `moveJobTo is refused for RUNNING, DONE and ERROR` — the setup left **no** QUEUED job at a
+  non-zero index, so the `toBe(true)` branch was unreachable; rewritten around five jobs with the
+  successful move last, where it cannot perturb scheduling.
+- `a statusChange listener that cancels the next job` — with `concurrency: 1` the next job never
+  starts, so the scenario was vacuous. Replaced by Q6, which is both reachable and a real contract.
+- `a throwing analytics/log listener inside one job does not strand the queue` — **unreachable**:
+  `recordAnalyticsEvent` is documented never to throw and `createSender` drops destroyed windows.
+  Removed rather than "fixed"; testing a speculative failure manufactures a finding.
+- `removing a RUNNING job then completing it` — asserted against the id set captured *after*
+  removal, so the legitimate pre-removal event failed it. Now asserts on the count after removal.
+- `200 jobs sharing one output path` — drove completions by firing `end` on every fake each round
+  and then reading a snapshot taken *before* those completions. Rewritten to finish the jobs the
+  machine actually started, so the loop asserts on state that is current by construction.
+- The harness itself: `transcoders[created++] ?? new FakeTranscoder()` silently produced **untracked**
+  transcoders once the pre-seeded ones ran out, turning later `transcoders[i].emitter` into an
+  undefined dereference. The factory now indexes by creation order and records what it creates.
+
+### 4.2b Reentrancy: a crafted import could blow the stack (Q9)
+
+`validateQueueExport` accepts any string as a `transcoder` type and any object as `options`, and
+`IPC.QUEUE_ADD` passes the renderer's `transcoderType` unchecked — so an imported file can make every
+job throw inside `startJob`. That path was `startJob`'s `catch` → `processNext` → `drainToCap` →
+`startJob`'s `catch`, i.e. **one stack frame per job**, and the factory call sat *outside* the `try`.
+At the documented `QUEUE_EXPORT_MAX_JOBS = 10_000` cap this throws `RangeError: Maximum call stack
+size exceeded` out of `start()`, stranding the remainder of the queue in QUEUED with no error
+anywhere.
+
+Fixed by moving `transcoderFactory(...)` inside the `try` and letting `startJob`'s catch consult a
+`draining` flag instead of recursing: after a job fails to start it is gone from `activeJobs`, so
+`drainToCap`'s own `while` condition re-evaluates and picks up the next job **without a new frame**.
+Reentrancy itself was deliberately *preserved* — an early attempt to defer all re-entry broke the
+`drained`-listener contract (a listener that adds a job and calls `start()` must see it RUNNING before
+`start()` returns), and that regression was caught by an existing test, not by reasoning.
+
+Mutation-verified: deleting the `draining` guard makes the test fail with exactly
+`RangeError: Maximum call stack size exceeded`. The test uses 10 000 jobs so the claim is literally
+"at the import cap"; it costs ~10 s, of which ~6.4 s is the 10 000 legitimate `log.error` lines (the
+`log.error` call alone accounts for two thirds of the runtime — removing it drops the test to 3.75 s).
+
+### 4.4 Hostile localStorage at boot and during render — **DONE**
+
+New suite `src/renderer/__tests__/storage-hostility.test.tsx` (11 tests).
+
+The row said "18 stores × adversarial localStorage + `migrate()` throwing". Two corrections came out
+of actually reading the code, both of which narrowed the target to where the bug was:
+
+- this app **does not use Zustand `persist()`** — no `persist(` appears in `src/renderer/stores/*.ts`.
+  Rehydration goes through the `loadJson`/`loadString` helpers, which Phase 1 already hammered with
+  arbitrary `getItem` payloads and swallowed `setItem` failures.
+- the remaining hole was not a *value* failing to parse but **access itself** failing —
+  `localStorage.getItem` throwing, or the `localStorage` property getter throwing — because that
+  happens before any helper runs, and because three call sites bypassed the helpers entirely.
+
+**3 production bugs found and fixed**, two of them on paths with no error boundary to catch them:
+
+| # | Attack | What actually happened | Fix |
+| --- | --- | --- | --- |
+| S1 | `localStorage.getItem` throws (storage disabled for the origin, partitioned/ephemeral session, locked userData directory) | **White screen.** `i18n/config.ts` read the persisted language at **module scope** (`const savedLang = localStorage.getItem(...)`), so the throw fired while the module was still importing — React never mounts, and no error boundary exists yet because none has been rendered. The module's own doc comment promised to fall back "when storage is unavailable"; the code did not. | Route the read through `loadString` (and keep the `\|\| DEFAULT_LANGUAGE`, which still covers an empty stored value). |
+| S2 | Same, during render | `ColorModeContext` read inside a `useState` **lazy initializer** — a throw fails the very first render, before any boundary is mounted — and wrote inside a `useEffect`, where a throw is an uncaught React error. | `loadString` / `saveString`. |
+| S3 | `localStorage.setItem` throws during a language switch | `LanguageMenu.switchLanguage` is `async`, so the throw became an **unhandled rejection** rather than anything the user could see, and it skipped `closeMenu()` — the menu stayed open over an app whose language had already changed. | `saveString`, which degrades to "the preference does not survive a restart". |
+
+`BatchQueue`, `GettingStartedCard`, `videoCutStore` and `sessionCleanup` were already guarded and were
+left alone; two further gaps in the *helpers* were closed by tests rather than by code: `saveJson` must
+swallow a value that cannot be serialized at all (a cyclic object or a `BigInt` throws inside
+`JSON.stringify`, a different path through the same `try` than `setItem` does), and `loadJson` must
+report a throwing read exactly once.
+
+Each fix is mutation-verified: reverting any one of S1, S2 or S3 individually fails exactly one test in
+the new suite.
+
+### 4.5 Timer, listener & observer leaks — **DONE**
+
+New suite `src/renderer/__tests__/listener-leaks.test.tsx` (7 tests): 100 mount/unmount cycles each for
+`VideoTimeline`, `useHotkeys`, `BatchQueue` and `AppDrawer`, 20 for `MediaPlayer`, plus two timer cases
+that assert *behaviour* rather than a count.
+
+**1 production bug found and fixed (Q10):**
+
+| # | Attack | What actually happened | Fix |
+| --- | --- | --- | --- |
+| Q10 | Unmount `VideoTimeline` while a scrub/drag is in flight | The component registers `window` `pointermove`/`pointerup` from `handlePointerDown`, i.e. with the closures of **whichever render is current at pointerdown**, while its cleanup effect has `[]` deps and therefore removes the closures from the **first** render. The timeline re-renders on scroll, zoom, trim and playhead — essentially always — so on any drag that begins after the first commit the two identities differ and unmount removes a pair nobody registered. The real pair stayed on `window` forever, keeping the detached component and its props reachable: a leak that grows one tree per abandoned drag. | Track the *registered* pair in `windowDragHandlersRef`; `releaseWindowDragListeners()` removes exactly what was registered and is called from both `pointerup` and the unmount effect. |
+
+**Two harness bugs had to be fixed before any of this was true**, and both are recorded because they
+produced confident green runs:
+
+- `window.addEventListener` is an **own property of the jsdom window**, so patching
+  `EventTarget.prototype` — the obvious way to count listeners — silently missed every `window`
+  registration while still counting `document` ones. The first harness reported `7 passed` and failed
+  to catch a mutation that removed each component's `window` cleanup outright. Both the prototype and
+  the window's own methods are now patched.
+- The first version of the `VideoTimeline` test only exercised the **idle** path: its `pointerdown`
+  was never asserted to have armed anything, so removing the `pointermove` cleanup changed nothing.
+  The cycle now asserts `window:pointermove === 1` while mounted — a non-vacuity guard that immediately
+  exposed Q10 as a growing count from cycle 1 onward.
+
+`vi.getTimerCount()` needed the same treatment as Q1: an absolute `=== 0` after unmount is measuring
+the harness (vitest's own bookkeeping timer, and `requestAnimationFrame`, which fake timers also count),
+not the component. The timer assertions therefore compare against the count **while mounted**, with a
+control that arms the timer and proves the count moves.
+
+Mutation-verified, all five cleanups caught individually: `VideoTimeline`'s release, `useHotkeys`'
+keydown, `BatchQueue`'s three drag listeners, `MediaPlayer`'s coalesced-seek timer and `AppDrawer`'s
+popover close timer.
+
+### 4.6 React 19 StrictMode page renders — **DONE**
+
+New suite `src/renderer/pages/__tests__/strict-mode.test.tsx` (13 tests): all 12 pages rendered inside
+`<StrictMode>` (the mode `main.tsx` actually runs in development), which mounts, unmounts and remounts
+every component and double-invokes every render and effect body — a path no existing page test covered.
+Each case asserts the render throws nothing, produced DOM (so "rendered an empty container" cannot
+pass), and unmounts cleanly; the crash tripwire converts any `console.error` or render throw into a
+failure.
+
+One `AggregateError` came back on the first run and was **a harness gap, not a bug**: `Logs`'s
+follow-tail effect calls `Element.prototype.scrollIntoView`, which jsdom does not implement.
+`Logs.test.tsx` already stubs it at module scope, so the same stub was applied and documented rather
+than "fixing" a call that is correct in every shipped browser.
+
+The 13th test is the non-vacuous one: it asserts that after a StrictMode remount **every** IPC
+subscription `BatchQueue` registers has been disposed — StrictMode runs each effect twice, so an effect
+that subscribes without unsubscribing leaves two live listeners and fails with
+`left 2 of 2 subscriptions live after unmount`. Mutation-verified: turning the `onQueueProgress`
+cleanup into a bare `void` call fails exactly that test.
+
+### 4.7 Race harness (`deferred()`) — **DONE**
+
+New `src/test-utils/deferred.ts` + 20 self-tests in `src/test-utils/__tests__/deferred.test.ts`:
+`deferred()`, `deadline(ms, label)`, `settles(promise, opts)`, `settlesWithin(fn, opts)`,
+`flushMicrotasks(n)` and `nextMacrotask()`.
+
+The design point is that **a losing deadline must be inert**. `deadline` attaches its rejection handler
+at creation rather than at race time, and cancels its timer in a `finally`, so a bound that loses
+leaves neither a pending timer nor an unhandled rejection for the crash tripwire to blame on an
+unrelated test. The self-test covers the case a `Promise.race`-based implementation cannot: a deadline
+created, never awaited, and dropped — `race` would attach handlers and hide the defect, so the test
+deliberately does *not* race it, and listens on `process.on('unhandledRejection')` for the four
+flush points Node needs.
+
+Mutation-verified: removing the eager handler fails 1/20, removing `clearTimeout` fails 4/20.
+
+The harness is deliberately not yet retrofitted onto existing `waitFor` calls — that belongs with the
+tests that need it, not as a mass rewrite whose only observable effect is churn.
 
 ---
 

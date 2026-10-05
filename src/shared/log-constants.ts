@@ -599,6 +599,8 @@ export const LOG_QUEUE_START_CALLED = 'queueStart called';
 export const LOG_QUEUE_MOVE_TO = 'moveJobTo:';
 /** @const {string} Logged when a move targets a job that is not queued. */
 export const LOG_QUEUE_MOVE_SKIPPED = 'moveJobTo skipped: not queued:';
+/** @const {string} Logged when a move is refused because its target index is NaN/Infinity. */
+export const LOG_QUEUE_MOVE_REJECTED_NON_FINITE = 'moveJobTo rejected: non-finite target index:';
 /** @const {string} Prefix when a queued job's options are updated. */
 export const LOG_QUEUE_UPDATE_OPTIONS = 'updateJobOptions:';
 /** @const {string} Logged when updateJobOptions targets a job that is not queued. */

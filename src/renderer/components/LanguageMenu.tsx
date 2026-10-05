@@ -20,6 +20,7 @@ import { Logger } from '../../shared/logger';
 import { LOCALES, LOCALE_MAP, isRtlLocale } from '../i18n/localeMeta';
 import { useColorMode } from '../ColorModeContext';
 import i18n from '../i18n/config';
+import { saveString } from '../utils/storage';
 import {
   LanguageMenuBox,
   LanguageButton,
@@ -112,7 +113,13 @@ export default function LanguageMenu({ condensed = false }: { condensed?: boolea
     setDirection(dir);
     document.dir = dir;
     await i18n.changeLanguage(lng);
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, lng);
+    // `switchLanguage` is async, so a throw here would surface as an unhandled
+    // rejection rather than an error the user sees - and it would skip
+    // `closeMenu()` below, leaving the menu open over an app whose language has
+    // already changed. Swallowing it degrades to "the preference does not
+    // survive a restart", which is the same failure the other storage call
+    // sites already degrade to.
+    saveString(LANGUAGE_STORAGE_KEY, lng);
     closeMenu();
     recordAnalyticsEvent(createAnalyticsEvent('locale_changed', { language: lng, rtl: dir === 'rtl' }));
   };

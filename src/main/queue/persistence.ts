@@ -11,6 +11,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { QueueJob } from '../../shared/types';
+import { QUEUE_STATUS } from '../../shared/media-options';
 
 /** File name of the queue snapshot inside the user-data directory. */
 export const QUEUE_STATE_FILENAME = 'queue-state.json';
@@ -77,15 +78,24 @@ export class FileQueuePersistence implements QueuePersistence {
     } catch {
       return null;
     }
+    let parsed: unknown;
     try {
-      const parsed = JSON.parse(raw) as Partial<QueueSnapshot>;
-      if (!parsed || typeof parsed !== 'object' || !Array.isArray(parsed.jobs)) {
-        return null;
-      }
-      return parsed as QueueSnapshot;
+      parsed = JSON.parse(raw);
     } catch {
       return null;
     }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return null;
+    }
+    const obj = parsed as Record<string, unknown>;
+    if (obj.version !== QUEUE_STATE_VERSION || !Array.isArray(obj.jobs)) {
+      return null;
+    }
+    const jobs = obj.jobs as unknown[];
+    if (!jobs.every((j) => isQueueJobLike(j))) {
+      return null;
+    }
+    return { version: obj.version as number, concurrency: obj.concurrency as number, jobs: jobs as QueueJob[] };
   }
 
   /**
@@ -109,4 +119,17 @@ export class FileQueuePersistence implements QueuePersistence {
       // No snapshot to clear - ignore.
     }
   }
+}
+
+/** Minimal shape check to keep a hostile snapshot from constructing. */
+function isQueueJobLike(value: unknown): value is QueueJob {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const v = value as Record<string, unknown>;
+  if (typeof v.id !== 'string') return false;
+  if (typeof v.input !== 'string') return false;
+  if (typeof v.output !== 'string') return false;
+  if (typeof v.status !== 'string') return false;
+  if (!Object.values(QUEUE_STATUS).includes(v.status as (typeof QUEUE_STATUS)[keyof typeof QUEUE_STATUS])) return false;
+  if (typeof v.progress !== 'number' || !Number.isFinite(v.progress)) return false;
+  return true;
 }
