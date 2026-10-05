@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DEV_SERVER_URL, EXIT_CODES, WINDOW_SIZE, SPLASH_SIZE } from '../../shared/app-constants';
 import { IPC } from '../../shared/ipc-channels';
-import { expectCrash } from '../../test-utils/crash-tripwire';
+import { expectAppLog, expectCrash } from '../../test-utils/crash-tripwire';
 
 const {
   appMock,
@@ -173,6 +173,28 @@ async function triggerStartup(): Promise<void> {
   await Promise.resolve();
 }
 
+/**
+ * Imports the main entry point and lets its fire-and-forget bootstraps settle.
+ *
+ * `index.ts` starts monitoring and analytics with `void bootstrap...()` on
+ * purpose, so module evaluation is not blocked and the SDKs register their IPC
+ * schemes in a defined order. The consequence here is that `await import()`
+ * resolves *before* those bootstraps finish, so their `log.error` calls arrive
+ * after the test has ended and are dropped by the tripwire as unattributed -
+ * two real errors that nothing ever checks.
+ *
+ * Draining to the next macrotask lets the whole promise chain finish, which
+ * keeps those failures inside the test that caused them. Both are expected: the
+ * SDKs have no DSN or App Key under test, and both call sites catch and swallow
+ * the failure by design, since neither may prevent startup.
+ */
+async function importIndex(): Promise<void> {
+  expectAppLog('error', 'shared/monitoring');
+  expectAppLog('error', 'main/analytics/aptabaseMainProvider');
+  await import('../index');
+  await new Promise((resolve) => setTimeout(resolve, 0));
+}
+
 describe('main/index', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -200,7 +222,7 @@ describe('main/index', () => {
 
   it('runs the CLI and exits with success in CLI mode', async () => {
     process.argv = ['node', 'C:\\project\\index.js', '--cli'];
-    await import('../index');
+    await importIndex();
     expect(appMock.whenReady).toHaveBeenCalled();
     await triggerStartup();
     await vi.waitFor(() => expect(appMock.exit).toHaveBeenCalledWith(EXIT_CODES.SUCCESS));
@@ -210,14 +232,14 @@ describe('main/index', () => {
   it('exits with an error when the CLI fails', async () => {
     process.argv = ['node', 'C:\\project\\index.js', '--cli'];
     runCliMock.mockRejectedValue(new Error('cli boom'));
-    await import('../index');
+    await importIndex();
     await triggerStartup();
     await vi.waitFor(() => expect(appMock.exit).toHaveBeenCalledWith(EXIT_CODES.ERROR));
   });
 
   it('creates a production window and registers IPC handlers', async () => {
     process.argv = ['node', 'x.js'];
-    await import('../index');
+    await importIndex();
     expect(appMock.whenReady).toHaveBeenCalled();
     await triggerStartup();
     const win = getMainWindows()[0];
@@ -237,7 +259,7 @@ describe('main/index', () => {
 
   it('shows a splash window that loads the splash image', async () => {
     process.argv = ['node', 'x.js'];
-    await import('../index');
+    await importIndex();
     await triggerStartup();
     expect(BrowserWindowMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -254,7 +276,7 @@ describe('main/index', () => {
 
   it('keeps the splash hidden until its content has finished loading', async () => {
     process.argv = ['node', 'x.js'];
-    await import('../index');
+    await importIndex();
     await triggerStartup();
     expect(BrowserWindowMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -271,7 +293,7 @@ describe('main/index', () => {
 
   it('shows the main window and closes the splash when ready', async () => {
     process.argv = ['node', 'x.js'];
-    await import('../index');
+    await importIndex();
     await triggerStartup();
     const splash = getWindowInstances()[0];
     const win = getMainWindows()[0];
@@ -284,7 +306,7 @@ describe('main/index', () => {
   it('loads the dev server URL in development mode', async () => {
     process.argv = ['node', 'x.js'];
     process.env.NODE_ENV = 'development';
-    await import('../index');
+    await importIndex();
     await triggerStartup();
     const win = getMainWindows()[0];
     expect(win.loadURL).toHaveBeenCalledWith(DEV_SERVER_URL);
@@ -293,7 +315,7 @@ describe('main/index', () => {
 
   it('opens external http(s) links in the system browser and denies new windows', async () => {
     process.argv = ['node', 'x.js'];
-    await import('../index');
+    await importIndex();
     await triggerStartup();
     const win = getMainWindows()[0];
     const handler = win.webContents.setWindowOpenHandler.mock.calls[0][0] as (details: { url: string }) => { action: string };
@@ -305,11 +327,13 @@ describe('main/index', () => {
 
   it('patches console to forward log messages to the window', async () => {
     // The point of this test is to drive every console level, so the tripwire's
-    // own records of that output have to be declared up front.
-    expectCrash('consoleWarn', '{"a":1}');
+    // own records of that output have to be declared up front. The patterns match
+    // what the tripwire *records* - `util.inspect` spacing, so `{ a: 1 }` - which
+    // is not the JSON form the IPC forwarding below asserts on.
+    expectCrash('consoleWarn', '{ a: 1 }');
     expectCrash('consoleError', 'boom');
     process.argv = ['node', 'x.js'];
-    await import('../index');
+    await importIndex();
     await triggerStartup();
     const win = getMainWindows()[0];
     console.log('hello');
@@ -333,7 +357,7 @@ describe('main/index', () => {
 
   it('skips forwarding when the window is destroyed', async () => {
     process.argv = ['node', 'x.js'];
-    await import('../index');
+    await importIndex();
     await triggerStartup();
     const win = getMainWindows()[0];
     win.isDestroyed.mockReturnValue(true);
@@ -344,7 +368,7 @@ describe('main/index', () => {
 
   it('recreates the window on activate after it was closed', async () => {
     process.argv = ['node', 'x.js'];
-    await import('../index');
+    await importIndex();
     await triggerStartup();
     const win = getMainWindows()[0];
     const closedCb = win.on.mock.calls.find((call: unknown[]) => call[0] === 'closed')?.[1] as () => void;
@@ -356,7 +380,7 @@ describe('main/index', () => {
   it('quits on window-all-closed on non-darwin platforms', async () => {
     Object.defineProperty(process, 'platform', { value: 'linux' });
     process.argv = ['node', 'x.js'];
-    await import('../index');
+    await importIndex();
     getAppOnHandlers()['window-all-closed']();
     expect(appMock.quit).toHaveBeenCalled();
   });
@@ -364,7 +388,7 @@ describe('main/index', () => {
   it('does not quit on window-all-closed on darwin', async () => {
     Object.defineProperty(process, 'platform', { value: 'darwin' });
     process.argv = ['node', 'x.js'];
-    await import('../index');
+    await importIndex();
     getAppOnHandlers()['window-all-closed']();
     expect(appMock.quit).not.toHaveBeenCalled();
   });

@@ -13,6 +13,7 @@ export default defineConfig({
     testTimeout: 30000,
     env: {
       LOG_LEVEL: 'WARN',
+      ENCODEX_STRICT_TESTS: process.env.ENCODEX_STRICT_TESTS ?? '1',
     },
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],

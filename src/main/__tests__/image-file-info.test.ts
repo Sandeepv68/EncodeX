@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { expectAppLog } from '../../test-utils/crash-tripwire';
 
 const { statMock, openMock } = vi.hoisted(() => ({
   statMock: vi.fn(),
@@ -175,11 +176,15 @@ describe('getImageFileInfo', () => {
   });
 
   it('returns null when the file cannot be opened', async () => {
+    expectAppLog('warn', 'main/image-file-info');
+
     openMock.mockRejectedValue(new Error('ENOENT'));
     await expect(getImageFileInfo('photo.jpg')).resolves.toBeNull();
   });
 
   it('returns null when stat fails', async () => {
+    expectAppLog('warn', 'main/image-file-info');
+
     statMock.mockRejectedValue(new Error('EACCES'));
     await expect(getImageFileInfo('photo.jpg')).resolves.toBeNull();
   });

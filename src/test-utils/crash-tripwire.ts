@@ -27,7 +27,7 @@
  */
 
 import { format as utilFormat } from 'node:util';
-import { afterEach, beforeEach } from 'vitest';
+import { afterEach, beforeEach, expect } from 'vitest';
 
 /**
  * Classification of a recorded fault.
@@ -125,8 +125,8 @@ interface TripwireState {
   records: CrashRecord[];
   /** Declared-by-the-test allowances, reset per test. */
   expected: Array<{ kind: CrashKind; pattern: RegExp }>;
-  /** Records dropped in `beforeEach` that arrived after the previous test ended. */
-  stale: number;
+  /** Name of the most recently finished test, used to attribute late faults. */
+  lastTestName: string;
   /** Capped, cycle-safe recorder shared by the listeners and console wrappers. */
   push: (kind: CrashKind, value: unknown, text?: string, context?: string) => void;
   /** How aggressive the gate is, from `ENCODEX_STRICT_TESTS`. */
@@ -263,7 +263,7 @@ function install(): TripwireState {
     records: [],
     expected: [],
     strictness: readStrictness(),
-    stale: 0,
+    lastTestName: 'unknown',
     push: () => undefined,
     passthroughError: console.error.bind(console),
     passthroughWarn: console.warn.bind(console),
@@ -442,40 +442,63 @@ export function getAppLogs(): CrashRecord[] {
 }
 
 /**
+ * Emits the "leaked async work" warning, naming the test that leaked and what it
+ * leaked.
+ *
+ * Surfaced through `process.emitWarning` rather than `console.warn`, which is
+ * itself a recorded kind and would recurse. Both halves matter: naming the
+ * *producing* test is what tells the reader where to look, and naming the kinds
+ * is what tells them what to grep for. An unnamed count is no more actionable
+ * than not warning at all.
+ * @param {CrashRecord[]} records - The faults that arrived too late.
+ * @param {string} testName - The test whose teardown let them escape.
+ */
+function reportStaleFaults(records: CrashRecord[], testName: string): void {
+  const summary = new Map<string, number>();
+  for (const entry of records) {
+    const key = entry.context ? `${entry.kind}(${entry.context})` : entry.kind;
+    summary.set(key, (summary.get(key) || 0) + 1);
+  }
+  const what = [...summary].map(([k, n]) => (n > 1 ? `${k} x${n}` : k)).join(', ');
+  process.emitWarning(
+    `crash-tripwire: dropped ${records.length} late fault(s) [${what}] that arrived after ${testName} ended ` +
+      `(leaked async work). That test did not await work it started, so these were never checked.`,
+    'EncodeXCrashTripwire',
+  );
+}
+
+/**
  * Registers the per-test clear/assert hooks.
  *
- * `beforeEach` drops faults that arrived after the previous test finished (a
- * leaked timer firing late). Those are recorded as `stale` and reported in
- * strict mode rather than being blamed on the next test, which would make the
- * failure unreadable.
+ * `beforeEach` reports and drops faults that arrived after the previous test
+ * finished (a leaked timer firing late). They are attributed to the test that
+ * produced them rather than blamed on the incoming one, which would both be
+ * wrong and produce an unreadable failure.
  */
 export function registerCrashAssertions(): void {
   install();
 
   beforeEach(() => {
     const state = ensureConsolePatched();
-    state.stale += state.records.length;
+    // The faults sitting in `records` right now were produced *after* the
+    // previous test finished, so they belong to `lastTestName` and not to this
+    // one. Attributing them to the incoming test would name an innocent test in
+    // the failure, which is the opposite of useful.
+    if (state.strictness !== 'crash' && state.records.length > 0) {
+      reportStaleFaults(state.records, state.lastTestName);
+    }
     state.records.length = 0;
     state.expected.length = 0;
   });
 
   afterEach(() => {
     const state = ensureConsolePatched();
+    state.lastTestName = expect.getState().currentTestName ?? 'unknown';
     const unexpected = state.records.filter(
       (entry) => !state.expected.some((allow) => allow.kind === entry.kind && allow.pattern.test(entry.text)),
     );
     state.records.length = 0;
     state.expected.length = 0;
-
-    if (state.strictness !== 'crash' && state.stale > 0) {
-      // Surfaced through process.emitWarning rather than console.warn, which is
-      // itself a recorded kind and would recurse.
-      process.emitWarning(
-        `crash-tripwire: dropped ${state.stale} fault(s) that arrived after the previous test ended (leaked async work)`,
-        'EncodeXCrashTripwire',
-      );
-    }
-    state.stale = 0;
 
     const fatal = unexpected.filter((entry) => isFatal(entry.kind, state.strictness));
     if (fatal.length === 0) return;

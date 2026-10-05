@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 import {
   MCP_DEFAULT_PORT,
   MCP_MAX_PORT,
@@ -117,6 +118,8 @@ describe('readMcpSettings / writeMcpSettings', () => {
   });
 
   it('falls back to defaults for a corrupt file without throwing', () => {
+    expectAppLog('warn', 'main/mcp/settings');
+
     fs.writeFileSync(path.join(userDataDir, MCP_SETTINGS_FILENAME), 'not json {{{');
     expect(() => readMcpSettings(userDataDir)).not.toThrow();
     expect(readMcpSettings(userDataDir)).toEqual(defaultMcpSettings());

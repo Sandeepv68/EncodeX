@@ -78,6 +78,8 @@ export default function Logs() {
    * @type {React.RefObject<HTMLDivElement>}
    */
   const bottomRef = useRef<HTMLDivElement>(null);
+  /** The scrolling container, used to detect whether the user is already pinned to the bottom. */
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   /**
    * Clears all buffered log entries and records the action for analytics.
@@ -116,12 +118,27 @@ export default function Logs() {
   };
 
   /**
-   * Scrolls the bottom sentinel into view (smoothly) whenever the underlying
-   * log entries change, keeping the newest entry on screen.
+   * Keeps the newest entry in view, but only while the user is already at the bottom.
+   *
+   * Two changes from the obvious `scrollIntoView({ behavior: 'smooth' })` on every append, both
+   * forced by Phase 3.3's event sweep:
+   *
+   * 1. `smooth` starts a fresh scroll animation on *every* entry. The store is capped at
+   *    `LOG_MAX_ENTRIES` (2000), so a busy session appends entries faster than the animation can
+   *    finish and the animations queue behind each other.
+   * 2. It scrolled unconditionally, so scrolling back to read an older entry was yanked away by the
+   *    next append. Following only when already pinned to the bottom is what a log tailer should do.
+   *
+   * `auto` is deliberate rather than cosmetic: an instant jump costs one layout, where a smooth
+   * animation keeps the compositor busy across many frames per entry.
    * @returns {void}
    */
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const body = bodyRef.current;
+    if (!body) return;
+    // A small tolerance: fractional layout heights mean an exact comparison flips near the bottom.
+    const pinnedToBottom = body.scrollHeight - body.scrollTop - body.clientHeight <= 8;
+    if (pinnedToBottom) bottomRef.current?.scrollIntoView({ behavior: 'auto', block: 'end' });
   }, [entries]);
 
   /**
@@ -180,7 +197,7 @@ export default function Logs() {
           {t('logs.entryCount', { count: entries.length })}
         </Typography>
       </LogsHeader>
-      <LogsBody>
+      <LogsBody ref={bodyRef} data-testid="logs-body">
         {filtered.length === 0 && <NoEntriesText variant="body2">{t('logs.noEntries')}</NoEntriesText>}
         {filtered.map((entry, i) => (
           <LogEntryRow key={i}>

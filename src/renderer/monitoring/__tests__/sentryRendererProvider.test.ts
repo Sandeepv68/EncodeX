@@ -16,6 +16,7 @@ vi.mock('@sentry/electron/renderer', () => sentryRendererMock);
 
 import { SentryRendererProvider } from '../sentryRendererProvider';
 import type { MonitoringConfig } from '../../../shared/monitoring/types';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const baseConfig = (overrides: Partial<MonitoringConfig> = {}): MonitoringConfig => ({
   enabled: true,
@@ -164,6 +165,8 @@ describe('SentryRendererProvider', () => {
   });
 
   it('flush returns false when SDK throws', async () => {
+    expectAppLog('warn', 'renderer/monitoring/sentryRendererProvider');
+
     sentryRendererMock.flush.mockRejectedValueOnce(new Error('flush failed'));
     const provider = new SentryRendererProvider();
     await provider.init(baseConfig());
@@ -199,6 +202,8 @@ describe('SentryRendererProvider', () => {
   });
 
   it('close returns false when SDK throws', async () => {
+    expectAppLog('warn', 'renderer/monitoring/sentryRendererProvider');
+
     sentryRendererMock.close.mockRejectedValueOnce(new Error('close failed'));
     const provider = new SentryRendererProvider();
     await provider.init(baseConfig());
@@ -217,6 +222,8 @@ describe('SentryRendererProvider', () => {
   });
 
   it('captures throw internally and return undefined', async () => {
+    expectAppLog('warn', 'renderer/monitoring/sentryRendererProvider');
+
     sentryRendererMock.captureException.mockImplementationOnce(() => {
       throw new Error('broken');
     });

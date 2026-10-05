@@ -93,7 +93,27 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
   const [searchQuery, setSearchQuery] = useState('');
   const [deletingProfile, setDeletingProfile] = useState<ConversionProfile | null>(null);
 
-  const visibleProfiles = useMemo(() => profiles.filter((p) => !HIDDEN_PROFILE_IDS.has(p.id)), [profiles]);
+  // MUI's `groupBy` renders one header per *run* of equal keys, so options must
+  // be sorted by that key for the categories to appear as single blocks. Left in
+  // store order, an "Audio" profile between two "Video" profiles produces the
+  // "Video / Audio / Video" interleaving that MUI warns about - and, more to the
+  // point, renders three headers where the user expects two.
+  const visibleProfiles = useMemo(
+    () =>
+      profiles
+        .filter((p) => !HIDDEN_PROFILE_IDS.has(p.id))
+        .map((profile, index) => ({
+          profile,
+          // An unlisted category sorts last rather than first: `indexOf` reports
+          // -1 for unknown keys, which would otherwise hoist them above
+          // "Web & Social" and defeat the ordering the category table defines.
+          rank: CATEGORY_ORDER.indexOf(profile.category) === -1 ? CATEGORY_ORDER.length : CATEGORY_ORDER.indexOf(profile.category),
+          index,
+        }))
+        .sort((a, b) => a.rank - b.rank || a.index - b.index)
+        .map((entry) => entry.profile),
+    [profiles],
+  );
 
   const activeProfile = useMemo(() => profiles.find((p) => p.id === activeProfileId) ?? null, [profiles, activeProfileId]);
 

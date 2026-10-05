@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { createMcpServer } from '../../../mcp/server';
@@ -73,14 +74,17 @@ describe('embedded MCP HTTP server', () => {
   }, 20000);
 
   it('rejects clients without the bearer token (401)', async () => {
+    expectAppLog('warn', 'main/mcp/http-server');
     await expect(connectClient()).rejects.toThrow();
   });
 
   it('rejects clients with the wrong bearer token (401)', async () => {
+    expectAppLog('warn', 'main/mcp/http-server');
     await expect(connectClient('wrong-token')).rejects.toThrow();
   });
 
   it('rejects browser origins not matching loopback (403)', async () => {
+    expectAppLog('warn', 'main/mcp/http-server');
     const res = await fetch(baseUrl, {
       method: 'GET',
       headers: { Authorization: `Bearer ${TOKEN}`, Origin: 'http://evil.example.com' },
@@ -89,6 +93,9 @@ describe('embedded MCP HTTP server', () => {
   });
 
   it('permits the loopback origin (past auth/origin, honors protocol rules)', async () => {
+    // The bare GET clears the origin/token gate and is then refused by the MCP
+    // transport itself, which the server logs before answering.
+    expectAppLog('warn', 'main/mcp/http-server');
     const res = await fetch(baseUrl, {
       method: 'GET',
       headers: { Authorization: `Bearer ${TOKEN}`, Origin: `http://127.0.0.1:${handle?.port()}` },
@@ -100,6 +107,7 @@ describe('embedded MCP HTTP server', () => {
   });
 
   it('returns 405 for unsupported methods', async () => {
+    expectAppLog('warn', 'main/mcp/http-server');
     const res = await fetch(baseUrl, {
       method: 'PUT',
       headers: { Authorization: `Bearer ${TOKEN}` },
@@ -109,6 +117,7 @@ describe('embedded MCP HTTP server', () => {
   });
 
   it('returns 404 for non-MCP paths', async () => {
+    expectAppLog('warn', 'main/mcp/http-server');
     const res = await fetch(`http://127.0.0.1:${handle?.port()}/nope`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },

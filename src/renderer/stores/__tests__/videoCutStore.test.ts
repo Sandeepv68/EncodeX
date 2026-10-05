@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useVideoCutStore, readStoredVideoCutDraft, isVideoCutDirty } from '../videoCutStore';
 import { VIDEO_CUT_DRAFT_STORAGE_KEY } from '../../../shared/constants';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const DEFAULT_DRAFT = {
   input: '',
@@ -207,6 +208,8 @@ describe('readStoredVideoCutDraft', () => {
   });
 
   it('falls back to defaults for corrupted storage', () => {
+    expectAppLog('warn', 'renderer/stores/videoCutStore');
+
     localStorage.setItem(VIDEO_CUT_DRAFT_STORAGE_KEY, '{ not json');
     expect(readStoredVideoCutDraft()).toEqual(DEFAULT_DRAFT);
   });

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useProfileStore } from '../profileStore';
 import { useConversionStore } from '../conversionStore';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const STORAGE_KEY = 'encodex-custom-profiles';
 const RECENT_KEY = 'encodex-recent-profiles';
@@ -257,6 +258,8 @@ describe('profileStore', () => {
   });
 
   it('falls back to no custom profiles when the stored JSON is corrupt', async () => {
+    expectAppLog('warn', 'renderer/stores/profileStore');
+
     localStorage.setItem(STORAGE_KEY, '{not json');
     const { useProfileStore: reloaded } = await importStore();
     expect(reloaded.getState().profiles.every((p) => p.builtin)).toBe(true);

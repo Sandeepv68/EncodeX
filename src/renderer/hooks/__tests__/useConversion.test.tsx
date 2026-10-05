@@ -6,6 +6,7 @@ import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
 import { ErrorCode } from '../../../shared/errors';
 import type { ConversionProgress } from '../../../shared/types';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const convertFileMock = vi.mocked(window.electronAPI.convertFile);
 const onConversionProgressMock = vi.mocked(window.electronAPI.onConversionProgress);
@@ -100,6 +101,8 @@ describe('useConversion', () => {
   });
 
   it('shows an error when no input file is selected', async () => {
+    expectAppLog('warn', 'renderer/hooks/useConversion');
+
     useConversionStore.setState({ inputFile: null, outputFile: 'out.mp4' });
     const { result } = renderHook(() => useConversion());
     await act(async () => {
@@ -110,6 +113,8 @@ describe('useConversion', () => {
   });
 
   it('shows an error when no output file is selected', async () => {
+    expectAppLog('warn', 'renderer/hooks/useConversion');
+
     useConversionStore.setState({ inputFile: 'in.mp4', outputFile: null, outputUserSet: true });
     const { result } = renderHook(() => useConversion());
     await act(async () => {
@@ -214,6 +219,8 @@ describe('useConversion', () => {
   });
 
   it('blocks start with an invalid filter entry', async () => {
+    expectAppLog('warn', 'renderer/hooks/useConversion');
+
     useConversionStore.setState({ inputFile: 'in.mp4', outputFile: 'out.mp4', outputUserSet: true, videoFilters: ['fps=30;rm -rf /'] });
     const { result } = renderHook(() => useConversion());
     await act(async () => {
@@ -224,6 +231,8 @@ describe('useConversion', () => {
   });
 
   it('blocks start when filters are combined with copy mode', async () => {
+    expectAppLog('warn', 'renderer/hooks/useConversion');
+
     useConversionStore.setState({
       inputFile: 'in.mp4',
       outputFile: 'out.mp4',

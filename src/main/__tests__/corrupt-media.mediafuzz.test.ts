@@ -193,7 +193,7 @@ const corrupt = (): CorpusFile[] => select((f) => f.kind !== 'pristine');
 function stratified(candidates: CorpusFile[], total: number): CorpusFile[] {
   const bySeedKind = new Map<string, CorpusFile[]>();
   for (const file of candidates) {
-    const key = `${file.seedName ?? file.name} ${file.kind}`;
+    const key = `${file.seedName ?? file.name}\x00${file.kind}`;
     const bucket = bySeedKind.get(key) ?? [];
     bucket.push(file);
     bySeedKind.set(key, bucket);

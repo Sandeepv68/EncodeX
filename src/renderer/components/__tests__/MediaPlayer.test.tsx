@@ -5,6 +5,7 @@ import MediaPlayer from '../MediaPlayer';
 import type { MediaPlayerHandle } from '../types';
 import type { MediaInfo, PlayerFrame } from '../../../shared/types';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const playerOpen = vi.mocked(window.electronAPI.playerOpen);
 const getMediaInfo = vi.mocked(window.electronAPI.getMediaInfo);
@@ -76,6 +77,8 @@ describe('MediaPlayer', () => {
   });
 
   it('starts paused and toggles playback on click', async () => {
+    expectAppLog('warn', 'renderer/components/MediaPlayer');
+
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     const { container } = render(<MediaPlayer filePath="/v.mp4" />);
     // Let the media-info probe settle so its state update stays inside act().
@@ -126,6 +129,8 @@ describe('MediaPlayer', () => {
   });
 
   it('ignores stale frames from an earlier generation after a seek', async () => {
+    expectAppLog('warn', 'renderer/components/MediaPlayer');
+
     vi.useFakeTimers();
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     playerOpen.mockResolvedValue(1 as never);
@@ -243,6 +248,8 @@ describe('MediaPlayer', () => {
   });
 
   it('baselines the media clock to the first frame pts for files with a start offset', async () => {
+    expectAppLog('warn', 'renderer/components/MediaPlayer');
+
     vi.useFakeTimers();
     getMediaInfo.mockResolvedValue(mediaInfo(60));
     playerOpen.mockResolvedValue(1 as never);

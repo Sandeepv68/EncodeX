@@ -20,6 +20,7 @@ vi.mock('electron', () => ({ ipcMain: ipcMainMock, dialog: dialogMock, BrowserWi
 
 const { registerDialogHandlers } = await import('../dialogs');
 import { IPC } from '../../../shared/ipc-channels';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 describe('registerDialogHandlers', () => {
   const win = {} as never;
@@ -41,6 +42,8 @@ describe('registerDialogHandlers', () => {
   });
 
   it('EXPAND_PATHS ignores a payload that is not a real array', () => {
+    expectAppLog('warn', 'main/ipc/dialogs');
+
     // Found by `e2e/specs/ipc-abuse.spec.ts`. A bare string is iterable, so `expandPaths` used to
     // walk the filesystem once per character - and the '.' inside '../../../../etc/passwd'
     // expanded the entire working directory, stalling the main process for over two minutes.

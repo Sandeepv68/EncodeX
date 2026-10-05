@@ -7,6 +7,7 @@ import {
   readStoredDrawerCondensed,
 } from '../settingsStore';
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 import {
   HWACCEL_DEFAULTS,
   HWACCEL_MODES,
@@ -162,6 +163,8 @@ describe('settingsStore', () => {
   });
 
   it('keeps the previous consent when the main-process call fails', async () => {
+    expectAppLog('warn', 'renderer/stores/settingsStore');
+
     Object.defineProperty(globalThis, 'electronAPI', {
       value: { ...window.electronAPI, monitoringSetEnabled: vi.fn().mockRejectedValue(new Error('ipc down')) },
       writable: true,
@@ -211,6 +214,8 @@ describe('settingsStore', () => {
   });
 
   it('keeps the previous telemetry consent when either main-process call fails', async () => {
+    expectAppLog('warn', 'renderer/stores/settingsStore');
+
     Object.defineProperty(globalThis, 'electronAPI', {
       value: {
         ...window.electronAPI,
@@ -278,6 +283,8 @@ describe('settingsStore', () => {
   });
 
   it('keeps the previous MCP state when the main-process call fails', async () => {
+    expectAppLog('warn', 'renderer/stores/settingsStore');
+
     Object.defineProperty(globalThis, 'electronAPI', {
       value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockRejectedValue(new Error('ipc down')) },
       writable: true,
@@ -328,6 +335,8 @@ describe('readStoredHwAccel', () => {
   });
 
   it('falls back to defaults for corrupted storage', () => {
+    expectAppLog('warn', 'renderer/stores/settingsStore');
+
     localStorage.setItem(HWACCEL_STORAGE_KEY, '{ not json');
     expect(readStoredHwAccel()).toEqual({ hardwareAcceleration: true, hwaccelMode: 'auto', encoderType: 'auto' });
   });
@@ -385,6 +394,8 @@ describe('readStoredWhenDone', () => {
   });
 
   it('falls back to defaults for corrupted storage', () => {
+    expectAppLog('warn', 'renderer/stores/settingsStore');
+
     localStorage.setItem(WHEN_DONE_STORAGE_KEY, '{ not json');
     expect(readStoredWhenDone()).toEqual({ enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false });
   });

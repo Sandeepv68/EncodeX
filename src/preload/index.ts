@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @fileoverview Preload script for the EncodeX application that acts as the secure,
  * sandboxed bridge between the renderer process and the main process.
  *
@@ -51,7 +51,21 @@
 
 import { contextBridge, ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
 import { Logger } from '../shared/logger';
+import { logDroppedPayload } from './event-drop-log';
 import { IPC } from '../shared/ipc-channels';
+import {
+  isBoolean,
+  isConversionProgressEvent,
+  isLogEntry,
+  isPlayerAudioChunk,
+  isPlayerFrame,
+  isQueueJob,
+  isQueueMovedEvent,
+  isQueueProgressEvent,
+  isString,
+  isUpdateInfo,
+  isUpdateProgress,
+} from '../shared/ipc-guards';
 import {
   ConversionOptions,
   ConversionProgress,
@@ -76,6 +90,8 @@ import {
   LOG_CANCEL_CONVERSION_CALLED,
   LOG_CONVERT_FILE,
   LOG_DURATION,
+  LOG_EVENT_PAYLOAD_INVALID,
+  LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
   LOG_EXTRACT_THUMBNAILS,
   LOG_EXTRACT_WAVEFORM,
   LOG_GET_CAPABILITIES_CALLED,
@@ -174,6 +190,27 @@ const log = new Logger('preload');
  * (src/shared/ipc-channels.ts); the renderer never supplies channel names itself.
  * @const {object} api
  */
+
+/**
+ * Why every `on*` listener below validates its payload before using it.
+ *
+ * A request channel can reject a bad argument, so handlers validate at the boundary and the
+ * renderer's `.catch()` sees the failure. An `on*` channel has no reply: a payload that does not
+ * match its declared shape is handed to store code and to React unconditionally, and the only
+ * outcome is a `TypeError` that takes the renderer down. `Phase 3.3`
+ * (`e2e/specs/ipc-events.spec.ts`) found exactly that by pushing `null` down `conversion-progress`:
+ * the log line dereferenced `data.input` and threw before any consumer ran.
+ *
+ * Dropping is deliberate. Forwarding a payload that fails its guard would only move the crash from
+ * here into the consumer, which is harder to attribute and can corrupt a store before it throws -
+ * and `main` is trusted, so the realistic cause is version skew between the two halves rather than
+ * an attacker, which makes a warning plus a skipped event the recoverable outcome.
+ *
+ * The checks are inlined rather than wrapped in a `guardEvent` helper because several of these
+ * handlers log from the payload *before* forwarding it, and those logs are the very first thing
+ * that throws. See `src/shared/ipc-guards.ts` for why each guard checks the fields it does.
+ */
+
 const api = {
   /**
    * Resolves the absolute file system path for a File object picked in the renderer.
@@ -922,7 +959,27 @@ const api = {
    *   during cleanup to prevent leaks.
    */
   onWindowMaximizedChange: (cb: (maximized: boolean) => void) => {
-    const handler = (_event: IpcRendererEvent, maximized: boolean) => {
+    const handler = (_event: IpcRendererEvent, maximized: unknown) => {
+      // `TitleBar` stores this straight into layout state, so anything other than a boolean has to
+      // be dropped rather than forwarded.
+      //
+      // The guard has to come *before* the log line, not after it. This handler used to log the raw
+      // payload first, which made a hostile sender able to write arbitrary bytes into the log store:
+      // the Tier B `big-blob` sweep pushed 5 MB strings here at 5 Hz, `sanitizeLogArg` serialised them
+      // happily, and the store filled with multi-megabyte entries. Every later route in the sweep was
+      // then measurably slower - `/logs` took 7.7 s to answer a round-trip while `/about` took 0.6 s -
+      // so the blast radius was the whole session, not this channel. Logging a value you have not yet
+      // checked is how untrusted data gets into your diagnostics.
+      if (!isBoolean(maximized)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.WINDOW_MAXIMIZED_CHANGED,
+          observed: typeof maximized,
+        });
+        return;
+      }
       log.debug(LOG_ON_WINDOW_MAXIMIZED_CHANGE, maximized);
       cb(maximized);
     };
@@ -941,7 +998,20 @@ const api = {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onConversionProgress: (cb: (data: { input: string; output: string; progress: ConversionProgress }) => void) => {
-    const handler = (_event: IpcRendererEvent, data: { input: string; output: string; progress: ConversionProgress }) => {
+    const handler = (_event: IpcRendererEvent, data: unknown) => {
+      // Guarded *before* the log line, which dereferences `data.input` and `data.progress.percent`.
+      // That log statement is the one thing every payload reaches first, so an unguarded read there
+      // is what turned a null event into a renderer crash (found by Phase 3.3).
+      if (!isConversionProgressEvent(data)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.CONVERSION_PROGRESS,
+          observed: typeof data,
+        });
+        return;
+      }
       log.debug(LOG_ON_CONVERSION_PROGRESS, data.input, data.progress.percent.toFixed(1) + '%');
       cb(data);
     };
@@ -956,7 +1026,17 @@ const api = {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onQueueAdded: (cb: (job: QueueJob) => void) => {
-    const handler = (_event: IpcRendererEvent, job: QueueJob) => {
+    const handler = (_event: IpcRendererEvent, job: unknown) => {
+      if (!isQueueJob(job)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.QUEUE_ADDED,
+          observed: typeof job,
+        });
+        return;
+      }
       log.info(LOG_ON_QUEUE_ADDED, job.id, job.input);
       cb(job);
     };
@@ -971,7 +1051,17 @@ const api = {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onQueueRemoved: (cb: (id: string) => void) => {
-    const handler = (_event: IpcRendererEvent, id: string) => {
+    const handler = (_event: IpcRendererEvent, id: unknown) => {
+      if (!isString(id)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.QUEUE_REMOVED,
+          observed: typeof id,
+        });
+        return;
+      }
       log.info(LOG_ON_QUEUE_REMOVED, id);
       cb(id);
     };
@@ -987,7 +1077,17 @@ const api = {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onQueueStatusChange: (cb: (job: QueueJob) => void) => {
-    const handler = (_event: IpcRendererEvent, job: QueueJob) => {
+    const handler = (_event: IpcRendererEvent, job: unknown) => {
+      if (!isQueueJob(job)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.QUEUE_STATUS_CHANGE,
+          observed: typeof job,
+        });
+        return;
+      }
       log.debug(LOG_ON_QUEUE_STATUS_CHANGE, job.id, job.status);
       cb(job);
     };
@@ -1004,7 +1104,19 @@ const api = {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onQueueProgress: (cb: (data: { job: QueueJob; progress: ConversionProgress }) => void) => {
-    const handler = (_event: IpcRendererEvent, data: { job: QueueJob; progress: ConversionProgress }) => {
+    const handler = (_event: IpcRendererEvent, data: unknown) => {
+      // BatchQueue destructures { job, progress } on arrival, so an unguarded payload throws
+      // inside the consumer rather than in the bridge.
+      if (!isQueueProgressEvent(data)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.QUEUE_PROGRESS,
+          observed: typeof data,
+        });
+        return;
+      }
       cb(data);
     };
     ipcRenderer.on(IPC.QUEUE_PROGRESS, handler);
@@ -1035,7 +1147,17 @@ const api = {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onQueueMoved: (cb: (data: { id: string; toPosition: number }) => void) => {
-    const handler = (_event: IpcRendererEvent, data: { id: string; toPosition: number }) => {
+    const handler = (_event: IpcRendererEvent, data: unknown) => {
+      if (!isQueueMovedEvent(data)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.QUEUE_MOVED,
+          observed: typeof data,
+        });
+        return;
+      }
       log.debug(LOG_ON_QUEUE_MOVED, data.id, data.toPosition);
       cb(data);
     };
@@ -1052,7 +1174,17 @@ const api = {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onPlayerFrame: (cb: (frame: PlayerFrame) => void) => {
-    const handler = (_event: IpcRendererEvent, frame: PlayerFrame) => {
+    const handler = (_event: IpcRendererEvent, frame: unknown) => {
+      if (!isPlayerFrame(frame)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.PLAYER_FRAME,
+          observed: typeof frame,
+        });
+        return;
+      }
       cb(frame);
     };
     ipcRenderer.on(IPC.PLAYER_FRAME, handler);
@@ -1068,7 +1200,17 @@ const api = {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onPlayerAudio: (cb: (chunk: PlayerAudioChunk) => void) => {
-    const handler = (_event: IpcRendererEvent, chunk: PlayerAudioChunk) => {
+    const handler = (_event: IpcRendererEvent, chunk: unknown) => {
+      if (!isPlayerAudioChunk(chunk)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.PLAYER_AUDIO,
+          observed: typeof chunk,
+        });
+        return;
+      }
       cb(chunk);
     };
     ipcRenderer.on(IPC.PLAYER_AUDIO, handler);
@@ -1083,7 +1225,17 @@ const api = {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onPlayerError: (cb: (message: string) => void) => {
-    const handler = (_event: IpcRendererEvent, message: string) => {
+    const handler = (_event: IpcRendererEvent, message: unknown) => {
+      if (!isString(message)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.PLAYER_ERROR,
+          observed: typeof message,
+        });
+        return;
+      }
       cb(message);
     };
     ipcRenderer.on(IPC.PLAYER_ERROR, handler);
@@ -1099,7 +1251,19 @@ const api = {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onLogMessage: (cb: (entry: LogEntry) => void) => {
-    const handler = (_event: IpcRendererEvent, entry: LogEntry) => {
+    const handler = (_event: IpcRendererEvent, entry: unknown) => {
+      // The Logs page filters on level and renders source, so a payload missing either
+      // produces a row the filter cannot classify.
+      if (!isLogEntry(entry)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.LOG_MESSAGE,
+          observed: typeof entry,
+        });
+        return;
+      }
       cb(entry);
     };
     ipcRenderer.on(IPC.LOG_MESSAGE, handler);
@@ -1139,7 +1303,17 @@ const api = {
     return ipcRenderer.invoke(IPC.GET_PENDING_INSTALL) as Promise<PendingInstall | null>;
   },
   onUpdateAvailable: (cb: (info: UpdateInfo) => void) => {
-    const handler = (_event: IpcRendererEvent, info: UpdateInfo) => {
+    const handler = (_event: IpcRendererEvent, info: unknown) => {
+      if (!isUpdateInfo(info)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.UPDATE_AVAILABLE,
+          observed: typeof info,
+        });
+        return;
+      }
       cb(info);
     };
     ipcRenderer.on(IPC.UPDATE_AVAILABLE, handler);
@@ -1153,21 +1327,51 @@ const api = {
     return () => ipcRenderer.removeListener(IPC.UPDATE_NOT_AVAILABLE, handler);
   },
   onUpdateProgress: (cb: (progress: UpdateProgress) => void) => {
-    const handler = (_event: IpcRendererEvent, progress: UpdateProgress) => {
+    const handler = (_event: IpcRendererEvent, progress: unknown) => {
+      if (!isUpdateProgress(progress)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.UPDATE_PROGRESS,
+          observed: typeof progress,
+        });
+        return;
+      }
       cb(progress);
     };
     ipcRenderer.on(IPC.UPDATE_PROGRESS, handler);
     return () => ipcRenderer.removeListener(IPC.UPDATE_PROGRESS, handler);
   },
   onUpdateDownloaded: (cb: (installerPath: string) => void) => {
-    const handler = (_event: IpcRendererEvent, installerPath: string) => {
+    const handler = (_event: IpcRendererEvent, installerPath: unknown) => {
+      if (!isString(installerPath)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.UPDATE_DOWNLOADED,
+          observed: typeof installerPath,
+        });
+        return;
+      }
       cb(installerPath);
     };
     ipcRenderer.on(IPC.UPDATE_DOWNLOADED, handler);
     return () => ipcRenderer.removeListener(IPC.UPDATE_DOWNLOADED, handler);
   },
   onUpdateError: (cb: (message: string) => void) => {
-    const handler = (_event: IpcRendererEvent, message: string) => {
+    const handler = (_event: IpcRendererEvent, message: unknown) => {
+      if (!isString(message)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.UPDATE_ERROR,
+          observed: typeof message,
+        });
+        return;
+      }
       cb(message);
     };
     ipcRenderer.on(IPC.UPDATE_ERROR, handler);

@@ -504,6 +504,19 @@ export const LOG_ON_QUEUE_STATUS_CHANGE = 'onQueueStatusChange:';
 export const LOG_ON_WINDOW_MAXIMIZED_CHANGE = 'onWindowMaximizedChange:';
 /** @const {string} Prefix when opening a file. */
 export const LOG_OPEN = 'open:';
+/**
+ * Logged when an `on*` (push) channel delivers a payload that fails its shape guard. The
+ * event is dropped rather than forwarded - see `guardEvent` in `src/preload/index.ts`.
+ */
+export const LOG_EVENT_PAYLOAD_INVALID = 'event payload dropped, does not match the declared channel shape:';
+/**
+ * @const {string} Throttled summary of malformed payloads that were not reported individually.
+ *
+ * Args are `(dropCount, channelCount)`. Reporting every drop on its own line turns a
+ * rejected-payload defence into a log-flooding amplifier, because the drop rate is controlled by the
+ * sender - see `logDroppedPayload` in `src/preload/event-drop-log.ts`.
+ */
+export const LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED = 'event payloads dropped, reported as a summary:';
 /** @const {string} Prefix when opening a file dialog with the given accept filter. */
 export const LOG_OPENING_FILE_DIALOG_ACCEPT = 'Opening file dialog, accept:';
 /** @const {string} Prefix when logging an options value. */

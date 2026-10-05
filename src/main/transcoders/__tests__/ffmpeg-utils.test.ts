@@ -12,6 +12,7 @@ vi.mock('fs', () => ({
 vi.mock('ffmpeg-static', () => ({ default: 'C:/static/ffmpeg.exe' }));
 
 import { getFfmpegPath, getFfprobePath, buildFfmpegArgs } from '../ffmpeg-utils';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 describe('getFfmpegPath', () => {
   beforeEach(() => {
@@ -162,11 +163,15 @@ describe('buildFfmpegArgs', () => {
   });
 
   it('does not write rotation metadata for unsupported containers', () => {
+    expectAppLog('warn', 'main/transcoders/ffmpeg-utils');
+
     const args = buildFfmpegArgs('in.webm', 'out.webm', { copy: true, rotate: '90' });
     expect(args).toEqual(['-i', 'in.webm', '-c', 'copy', '-map_chapters', '0', '-y', 'out.webm']);
   });
 
   it('does not write rotation metadata when mirroring is requested', () => {
+    expectAppLog('warn', 'main/transcoders/ffmpeg-utils');
+
     const args = buildFfmpegArgs('in.mp4', 'out.mp4', { copy: true, rotate: '90', flipH: true });
     expect(args).not.toContain('-metadata:s:v');
   });
@@ -186,12 +191,16 @@ describe('buildFfmpegArgs', () => {
   });
 
   it('ignores video filters in copy mode without emitting a chain', () => {
+    expectAppLog('warn', 'main/transcoders/ffmpeg-utils');
+
     const args = buildFfmpegArgs('in.mp4', 'out.mp4', { copy: true, videoFilters: ['fps=30'], rotate: '90' });
     expect(args).toEqual(['-i', 'in.mp4', '-c', 'copy', '-metadata:s:v', 'rotate=90', '-map_chapters', '0', '-y', 'out.mp4']);
     expect(args).not.toContain('-vf');
   });
 
   it('drops invalid filter entries while keeping scale and rotation', () => {
+    expectAppLog('warn', 'main/transcoders/ffmpeg-utils');
+
     const args = buildFfmpegArgs('in.mp4', 'out.mp4', {
       scale: '1280x720',
       rotate: '90',

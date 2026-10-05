@@ -36,6 +36,7 @@ import { Logger } from '../../shared/logger';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import type { ConversionProgress, MediaStreamInfo, RemuxInput } from '../../shared/types';
 import { toTaskProgress } from '../../shared/progress';
+import { callBridgeVoid } from '../utils/bridge-call';
 import { ErrorCode } from '../../shared/errors';
 import { withExtension, remuxWarnings } from '../../shared/codec-containers';
 import { buildAndValidateRemuxPlan, buildPrimaryStreamMaps } from '../../shared/remux-utils';
@@ -506,8 +507,10 @@ export const useRemuxStore = create<RemuxState>((set, get) => ({
  * singleton, the subscription is never unsubscribed (there is no off() call).
  * @type {void}
  */
-window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
-  const state = useRemuxStore.getState();
-  if (!state.isConverting) return;
-  useRemuxStore.getState().setProgress(toTaskProgress(data.progress));
-});
+callBridgeVoid(() => {
+  window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
+    const state = useRemuxStore.getState();
+    if (!state.isConverting) return;
+    useRemuxStore.getState().setProgress(toTaskProgress(data.progress));
+  });
+}, 'remux conversion progress subscription');

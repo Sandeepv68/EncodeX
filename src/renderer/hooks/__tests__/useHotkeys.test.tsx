@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useHotkeys } from '../useHotkeys';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 /**
  * Harness rendering the fired-count of a single bare-key binding.
@@ -127,6 +128,8 @@ describe('useHotkeys', () => {
   });
 
   it('ignores bindings whose id is not in the registry', () => {
+    expectAppLog('warn', 'renderer/hooks/useHotkeys');
+
     const handler = vi.fn();
     function Harness() {
       useHotkeys([{ id: 'does.not.exist', handler }]);

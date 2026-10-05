@@ -29,6 +29,7 @@ import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { BITRATE_OPTIONS } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
+import { callBridgeVoid } from '../utils/bridge-call';
 import type { ConversionProgress, MediaStreamInfo } from '../../shared/types';
 import { toTaskProgress } from '../../shared/progress';
 import { ErrorCode } from '../../shared/errors';
@@ -262,8 +263,10 @@ export const useAudioExtractStore = create<AudioExtractState>((set, get) => ({
  * singleton, the subscription is never unsubscribed (there is no off() call).
  * @type {void}
  */
-window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
-  const state = useAudioExtractStore.getState();
-  if (!state.isConverting) return;
-  useAudioExtractStore.getState().setProgress(toTaskProgress(data.progress));
-});
+callBridgeVoid(() => {
+  window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
+    const state = useAudioExtractStore.getState();
+    if (!state.isConverting) return;
+    useAudioExtractStore.getState().setProgress(toTaskProgress(data.progress));
+  });
+}, 'audio extract conversion progress subscription');

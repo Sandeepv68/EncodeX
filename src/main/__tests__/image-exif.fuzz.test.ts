@@ -4,6 +4,7 @@ import { mkdtempSync, writeFileSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import fc from 'fast-check';
+import { expectAppLog } from '../../test-utils/crash-tripwire';
 
 const { spawnMock } = vi.hoisted(() => ({ spawnMock: vi.fn() }));
 
@@ -170,6 +171,9 @@ describe('image EXIF: hand-built TIFF bombs against the real parser', () => {
    * hand-built bytes genuinely produce EXIF when well formed.
    */
   it('reads real tags from a hand-built TIFF and from a JPEG wrapping one', async () => {
+    expectAppLog('warn', 'main/image-info');
+    expectAppLog('warn', 'main/media-binaries');
+
     const tiffPath = onDisk(
       tiffWithAscii([
         { tag: 0x010f, text: 'ACME' },
@@ -196,6 +200,9 @@ describe('image EXIF: hand-built TIFF bombs against the real parser', () => {
   });
 
   it('reads resolution tags whose values are the maximum 32-bit integer', async () => {
+    expectAppLog('warn', 'main/image-info');
+    expectAppLog('warn', 'main/media-binaries');
+
     const path = onDisk(
       tiff([
         { tag: 0x011a, type: 4, count: 1, value: 0xffffffff },
@@ -213,6 +220,9 @@ describe('image EXIF: hand-built TIFF bombs against the real parser', () => {
    * rather than being swallowed alongside genuinely corrupt files.
    */
   it('treats a strip byte count of 0xFFFFFFFF as a real tag, not a failure', async () => {
+    expectAppLog('warn', 'main/image-info');
+    expectAppLog('warn', 'main/media-binaries');
+
     const path = onDisk(tiff([{ tag: 0x0117, type: 4, count: 1, value: 0xffffffff }]));
     const info = await withinBudget(path, () => getImageInfo(path));
     expect(info?.exif.StripByteCounts).toBe('4294967295');
@@ -242,6 +252,10 @@ describe('image EXIF: hand-built TIFF bombs against the real parser', () => {
     ],
     ['64 KB of zero bytes', Buffer.alloc(65536)],
   ])('reports no metadata for a file with %s', async (_label, buf) => {
+    // Every case here feeds the parser a structurally impossible file, so both
+    // the media probe and the EXIF reader log on the way to recovering from it.
+    expectAppLog('warn', 'main/media-binaries');
+    expectAppLog('warn', 'main/image-info');
     const path = onDisk(buf);
     const info = await withinBudget(_label, () => getImageInfo(path));
 
@@ -250,6 +264,9 @@ describe('image EXIF: hand-built TIFF bombs against the real parser', () => {
   });
 
   it('keeps a self-referential IFDNext chain from looping or duplicating tags', async () => {
+    expectAppLog('warn', 'main/image-info');
+    expectAppLog('warn', 'main/media-binaries');
+
     const path = onDisk(tiffWithAscii([{ tag: 0x010f, text: 'ACME' }], 8));
     const info = await withinBudget('self-referential IFDNext', () => getImageInfo(path));
     expect(info?.exif.Make).toBe('ACME');
@@ -257,6 +274,9 @@ describe('image EXIF: hand-built TIFF bombs against the real parser', () => {
   });
 
   it('drops the errors key even when a frame decodes successfully', async () => {
+    expectAppLog('warn', 'main/image-info');
+    expectAppLog('warn', 'main/media-binaries');
+
     spawnMock.mockImplementation(() => fakeFfmpegSuccess());
     const path = onDisk(tiff([{ tag: 0x010f, type: 2, count: 5, value: 8 }], { ifdOffset: 0x7fffffff }));
     const info = await withinBudget('errors key with histogram', () => getImageInfo(path));

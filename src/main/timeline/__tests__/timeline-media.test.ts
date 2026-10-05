@@ -130,6 +130,8 @@ describe('timeline-media', () => {
   });
 
   it('fills waveform buckets when a segment fails to decode', async () => {
+    expectAppLog('warn', 'main/timeline/timeline-media');
+
     spawnMock.mockImplementation((bin: string, args: string[]) => {
       const start = seekTimeFromArgs(args);
       const proc = createFakeProcess();
@@ -151,6 +153,8 @@ describe('timeline-media', () => {
   });
 
   it('resolves null when every waveform segment fails', async () => {
+    expectAppLog('warn', 'main/timeline/timeline-media');
+
     spawnMock.mockImplementation(() => {
       const proc = createFakeProcess();
       process.nextTick(() => {
@@ -162,6 +166,8 @@ describe('timeline-media', () => {
   });
 
   it('resolves null when the waveform process spawn fails', async () => {
+    expectAppLog('warn', 'main/timeline/timeline-media');
+
     spawnMock.mockImplementation(() => {
       const proc = createFakeProcess();
       process.nextTick(() => {
@@ -182,6 +188,8 @@ describe('timeline-media', () => {
   // advanced a wave at a time until the extractor settles, which also pins the
   // fact that a hostile file cannot hold the semaphore open indefinitely.
   it('kills a wedged ffmpeg and degrades a timed-out waveform to null', async () => {
+    expectAppLog('warn', 'main/timeline/timeline-media');
+
     expectAppLog('error', 'main/spawn-timeout');
     const procs: ReturnType<typeof createFakeProcess>[] = [];
     spawnMock.mockImplementation(() => {
@@ -250,6 +258,8 @@ describe('timeline-media', () => {
   });
 
   it('caps thumbnail count and grows the montage rows for long videos', async () => {
+    expectAppLog('warn', 'main/timeline/timeline-media');
+
     let call = 0;
     spawnMock.mockImplementation(() => {
       const proc = createFakeProcess();
@@ -272,6 +282,8 @@ describe('timeline-media', () => {
   });
 
   it('resolves null when every thumbnail fails', async () => {
+    expectAppLog('warn', 'main/timeline/timeline-media');
+
     spawnMock.mockImplementation(() => {
       const proc = createFakeProcess();
       process.nextTick(() => {
@@ -283,6 +295,8 @@ describe('timeline-media', () => {
   });
 
   it('resolves null when the thumbnail process spawn fails', async () => {
+    expectAppLog('warn', 'main/timeline/timeline-media');
+
     spawnMock.mockImplementation(() => {
       const proc = createFakeProcess();
       process.nextTick(() => {

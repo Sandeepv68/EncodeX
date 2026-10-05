@@ -10,6 +10,7 @@ vi.mock('../../../shared/analytics/AnalyticsService', async (importOriginal) => 
   return { ...mod, recordAnalyticsEvent: vi.fn() };
 });
 import { recordAnalyticsEvent } from '../../../shared/analytics/AnalyticsService';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const recordAnalyticsMock = vi.mocked(recordAnalyticsEvent);
 
@@ -218,6 +219,8 @@ describe('demuxStore', () => {
   });
 
   it('startDemux shows INPUT_NOT_SPECIFIED without an input', async () => {
+    expectAppLog('warn', 'renderer/stores/demuxStore');
+
     useDemuxStore.setState({ input: '', targets: [{ index: 0, kind: 'video', map: '0:v:0', copy: true, output: '/out/movie.video.mp4' }] });
     await useDemuxStore.getState().startDemux();
     expect(convertFileMock).not.toHaveBeenCalled();

@@ -17,6 +17,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 import { TERMS_ACCEPTED_STORAGE_KEY } from '../../../shared/constants';
 import { TERMS_VERSION } from '../../../shared/terms';
 
@@ -138,6 +139,9 @@ describe('Terms gate consent contract (store x session cleanup)', () => {
   });
 
   it('treats a malformed record as no consent and overwrites it on accept', async () => {
+    // The unreadable record is the subject of the test: the store logs and falls
+    // back to "no consent" rather than throwing.
+    expectAppLog('warn', 'renderer/stores/termsStore');
     installEnvironment();
     localStorage.setItem(STORAGE_KEY, '{not-json');
     const { useTermsStore } = await loadStore();
