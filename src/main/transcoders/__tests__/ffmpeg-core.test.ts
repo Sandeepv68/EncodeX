@@ -325,6 +325,8 @@ describe('FfmpegCore', () => {
   });
 
   it('drops invalid filter entries and keeps valid ones', () => {
+    expectAppLog('warn', 'main/transcoders/ffmpeg-core');
+
     const core = new FfmpegCore();
     core.convert('in.mp4', 'out.mp4', { videoFilters: ['fps=30', 'fps=30;rm -rf /'] });
     const cmd = getCommand();
@@ -340,6 +342,8 @@ describe('FfmpegCore', () => {
   });
 
   it('does not write rotation metadata for unsupported containers', () => {
+    expectAppLog('warn', 'main/transcoders/ffmpeg-core');
+
     const core = new FfmpegCore();
     core.convert('in.webm', 'out.webm', { copy: true, rotate: '90' });
     const cmd = getCommand();

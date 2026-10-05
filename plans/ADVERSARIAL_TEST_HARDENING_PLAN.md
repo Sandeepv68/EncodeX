@@ -10,42 +10,42 @@
 
 ## Progress log
 
-| Phase                                         | Status      | Verified                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| --------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0.1 Unit-level crash tripwire                 | **DONE**    | 2683/2683 unit tests green; `npm run lint` 0 errors; `npm run typecheck` clean                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| 0.1b Tripwire self-tests                      | **DONE**    | 19/19 in `src/test-utils/__tests__/crash-tripwire.test.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| 0.1c DOM prop-leak AST guard                  | **DONE**    | `src/renderer/styles/__tests__/no-dom-prop-leak.test.ts`, 47 style modules                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| 0.2 E2E renderer tripwire                     | **DONE**    | Tier A 154/154 (2 skipped), Tier B 9/9; `npm run lint` 0 errors; `npm run typecheck` clean; `npm run format:check` clean                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| 0.3 Typecheck the tests                       | **DONE**    | 191 test files in program; 54 real errors fixed, 0 remain; `npm run typecheck` clean (5 projects, 38s); 2686/2686 unit, Tier A 154/154, Tier B 9/9                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| 0.4 Coverage: per-file floors + diff coverage | **DONE**    | Merged 2-tier report (220 files, **30 below the 80/70 candidate floor**, non-blocking); blocking diff gate with added-line coverage; 4 merge/scope bugs found and fixed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| 0.5 Flake governance                          | **DONE**    | `test:flake-detect` runs e2e 3× with `--retry=0` and fails on failure rate in (0,1), on partial runs, on lapsed/stale/**invalid** quarantine entries; 36 unit tests, 10 mutations caught; `test-flake` CI job. Sign-off audit closed two real holes: an undated **or typo-dated** entry exempted a test forever (`Date.parse` → `NaN`, and `NaN <= now` is false), so the schema is now validated and malformed entries fail closed; `actionlint` 1.7.12 + shellcheck clean over all 7 workflows                                                                                                                                                                                      |
-| 0.6 Housekeeping debt                         | **DONE**    | `perf/**` + `eslint-rules/**` in Prettier globs; `tsconfig.perf.json` wired as the 6th typecheck project; boot time recorded + asserted (median-of-3 vs `perf/baseline.json` budget +25%), 31 tests, 6 mutations caught. Typechecking `perf/` found Vitest 4 silently ignored `forks: { execArgv }`, so the memory tests had been measuring uncollected garbage                                                                                                                                                                                                                                                                                                                       |
-| 1 Contract & input fuzzing                    | **DONE**    | 9 new property-test files, 162 tests, all 10 rows covered. **8 source bugs found and fixed** (`isValidTime` accepted `00:60:00`; `formatSize(Infinity)`/`formatDuration(NaN)`/`formatClockTime` rendered `'Infinity TB'`/`'NaNs'`/`'Infinity:NaN:NaN'`; `validateQueueExport` had no job cap; `formatError` threw on hostile objects; `isContainerCompatibleWithStream` threw on a streamless payload; the i18n test mock threw on a RegExp-metacharacter key). `deriveOutputPath` traversal and all 6 store rehydration readers proved already-safe (mutation-verified). Typecheck 6/6, lint 0 errors, format clean, unit 199/2911, integration 50/50, e2e A 155+2skipped, e2e B 9/9 |
-| 2 Media / byte-level fuzzing                  | IN PROGRESS | `computeHistogram` fuzzed (`image-histogram.fuzz.test.ts`, 8 tests): found an unbounded loop (`total = width * height` unclamped → 3.6 × 10^9 iterations on a 60k×60k PNG, a real hang) plus a `NaN` written to the string key `"undefined"`, invisible to `.some(Number.isNaN)`. Fixed by clamping to the bytes present; mutation-verified (clamp removal fails 4/8). Subprocess watchdog **delivered** (`src/main/spawn-timeout.ts`): 5 bounded spawn sites killed+rejected, 7 unwired, 7 mutations caught. Remaining: `frame-decoder.ts` fuzz, EXIF bombs, real corpus                                                                                                             |
-| 3 IPC contract & abuse                        | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 4 State machines, lifecycle & races           | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 5 UI robustness, i18n & a11y                  | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 6 CLI & MCP hostile input                     | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 7 Updater & network hostility                 | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 8 Resource limits & denial-of-service         | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 9 Mutation testing                            | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 10 CI wiring, budgets & nightly chaos         | TODO        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Phase | Status | Verified |
+| --- | --- | --- |
+| 0.1 Unit-level crash tripwire | **DONE** | 2683/2683 unit tests green; `npm run lint` 0 errors; `npm run typecheck` clean |
+| 0.1b Tripwire self-tests | **DONE** | 19/19 in `src/test-utils/__tests__/crash-tripwire.test.ts` |
+| 0.1c DOM prop-leak AST guard | **DONE** | `src/renderer/styles/__tests__/no-dom-prop-leak.test.ts`, 47 style modules |
+| 0.2 E2E renderer tripwire | **DONE** | Tier A 154/154 (2 skipped), Tier B 9/9; `npm run lint` 0 errors; `npm run typecheck` clean; `npm run format:check` clean |
+| 0.3 Typecheck the tests | **DONE** | 191 test files in program; 54 real errors fixed, 0 remain; `npm run typecheck` clean (5 projects, 38s); 2686/2686 unit, Tier A 154/154, Tier B 9/9 |
+| 0.4 Coverage: per-file floors + diff coverage | **DONE** | Merged 2-tier report (220 files, **30 below the 80/70 candidate floor**, non-blocking); blocking diff gate with added-line coverage; 4 merge/scope bugs found and fixed |
+| 0.5 Flake governance | **DONE** | `test:flake-detect` runs e2e 3× with `--retry=0` and fails on failure rate in (0,1), on partial runs, on lapsed/stale/**invalid** quarantine entries; 36 unit tests, 10 mutations caught; `test-flake` CI job. Sign-off audit closed two real holes: an undated **or typo-dated** entry exempted a test forever (`Date.parse` → `NaN`, and `NaN <= now` is false), so the schema is now validated and malformed entries fail closed; `actionlint` 1.7.12 + shellcheck clean over all 7 workflows |
+| 0.6 Housekeeping debt | **DONE** | `perf/**` + `eslint-rules/**` in Prettier globs; `tsconfig.perf.json` wired as the 6th typecheck project; boot time recorded + asserted (median-of-3 vs `perf/baseline.json` budget +25%), 31 tests, 6 mutations caught. Typechecking `perf/` found Vitest 4 silently ignored `forks: { execArgv }`, so the memory tests had been measuring uncollected garbage |
+| 1 Contract & input fuzzing | **DONE** | 9 new property-test files, 162 tests, all 10 rows covered. **8 source bugs found and fixed** (`isValidTime` accepted `00:60:00`; `formatSize(Infinity)`/`formatDuration(NaN)`/`formatClockTime` rendered `'Infinity TB'`/`'NaNs'`/`'Infinity:NaN:NaN'`; `validateQueueExport` had no job cap; `formatError` threw on hostile objects; `isContainerCompatibleWithStream` threw on a streamless payload; the i18n test mock threw on a RegExp-metacharacter key). `deriveOutputPath` traversal and all 6 store rehydration readers proved already-safe (mutation-verified). Typecheck 6/6, lint 0 errors, format clean, unit 199/2911, integration 50/50, e2e A 155+2skipped, e2e B 9/9 |
+| 2 Media / byte-level fuzzing | **DONE** | `computeHistogram` fuzzed (`image-histogram.fuzz.test.ts`, 8 tests): found an unbounded loop (`total = width * height` unclamped → 3.6 × 10^9 iterations on a 60k×60k PNG, a real hang) plus a `NaN` written to the string key `"undefined"`, invisible to `.some(Number.isNaN)`. Fixed by clamping to the bytes present; mutation-verified (clamp removal fails 4/8). Subprocess watchdog **delivered** (`src/main/spawn-timeout.ts`): 5 bounded spawn sites killed+rejected, 7 unwired, 7 mutations caught. `frame-decoder.ts` fuzz **delivered** (`frame-decoder.fuzz.test.ts`, 46 tests): found an **OOM process-killing hang** at `frameSize === 0` plus a silent `NaN`/`Infinity` stall and a throwing `Buffer.alloc`; fixed by validating the derivation, 5 mutations caught, 1 dead branch removed. EXIF bombs **delivered** (`image-exif.fuzz.test.ts`, 19 tests): `exifr` itself survives every hand-built TIFF bomb, but our layer leaked the parser's `errors` array as if it were an EXIF tag (garbage files reported as having metadata) and `flattenExif` bounded depth but not total work (a self-referential node with 2 child keys = 2^depth paths past the depth cap; >2e6 visits measured). Fixed; 3 mutations caught. Real corpus **delivered** (`corrupt-media.mediafuzz.test.ts`, 6 tests): 173 deterministic files from 11 real-ffmpeg seeds probed with real `ffmpeg`/`ffprobe` across 7 entry points; **no new production bug** — the work was proving the tier non-vacuous, which exposed 4 defects in the tests themselves (a waveform sweep that could never pass because its seed had no audio stream, a prefix-slice that never reached bit-flipped files, a vacuity guard for the fix, and a tally hidden by the crash tripwire). 2 production mutations caught. |
+| 3 IPC contract & abuse | **DONE** | 3.1 channel contract **delivered** (8 tests, `src/main/ipc/__tests__/channel-contract.test.ts`): channel set discovered by running every real registrar, drift fails both directions, 3 mutations caught; first version was vacuous in 5/8 tests. 3.2 abuse harness **delivered** (`ipc-abuse.spec.ts`, 20 tests, `mock: false`): **5 production bugs** (a bare-string `expandPaths` that walked the filesystem per character, 3 unvalidated `shell.*` sites, 2 `JSON.stringify` calls on a cycle-preserving channel). 3.3 event-channel abuse **delivered** (`ipc-events.spec.ts`, 12 tests): 18 channels x 12 routes x 7 payload shapes; **3 production bugs** plus a 4th in the fix - a central guard across all 15 payload-bearing channels, then *that guard* became the bug via unbounded drop-logging. 3.4 hostile-bridge **delivered** (`hostile-bridge.spec.ts` + `hostile-preload.js`, 14 tests, real main): **4 production bugs, 2 of them permanent white screens** - an `await`ed boot dependency with no timeout, and `contextBridge` throwing *synchronously* where `?.` cannot help. All four phases also found harness bugs that reported confident wrong results. Full root causes, attributions and gate numbers: sections 3.1-3.4 below. |
+| 4 State machines, lifecycle & races | TODO | — |
+| 5 UI robustness, i18n & a11y | TODO | — |
+| 6 CLI & MCP hostile input | TODO | — |
+| 7 Updater & network hostility | TODO | — |
+| 8 Resource limits & denial-of-service | TODO | — |
+| 9 Mutation testing | TODO | — |
+| 10 CI wiring, budgets & nightly chaos | TODO | — |
 
 ### Bugs the tripwire found (all fixed in the same change that surfaced them)
 
 These were live in `src/renderer` and would have shipped. None had a failing test.
 
-| #   | Bug                                                                                                                                  | Root cause                                                                                                                                           | Fix                                                                                                   |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| B1  | Every page rendered an invalid `hasaside` DOM attribute                                                                              | `PageRoot` declared `$hasAside` but never filtered it; `styled(Box)` forwards all props                                                              | `shouldForwardProp` + transient prop                                                                  |
-| B2  | `StreamDetails` leaked a `tone` attribute                                                                                            | same, `$tone`                                                                                                                                        | `shouldForwardProp` + transient prop                                                                  |
-| B3  | `MediaPreview` leaked a `variant` attribute                                                                                          | same, `$variant`                                                                                                                                     | `shouldForwardProp` + transient prop                                                                  |
-| B4  | `BatchQueue` leaked `$hidden` / `$gone` and React warned on every mount                                                              | `AnimatedSection` used the `$` convention but omitted `shouldForwardProp` entirely                                                                   | `shouldForwardProp`; same applied to `CondenseIcon`                                                   |
-| B5  | 32 tests let React state updates escape `act()`                                                                                      | store mutations and async IPC probes drove updates outside the test's control                                                                        | each update now driven inside `act()` / awaited via `findBy*`                                         |
-| B6  | 4 `ProfileSelector` tests logged _"The current testing environment is not configured to support act(...)"_                           | `user.type()` is already act-wrapped; the tests wrapped it in a second, outer `act()`, unbalancing React's act scope                                 | removed the redundant outer `act()`                                                                   |
-| B7  | `src/test-setup.ts` never set `IS_REACT_ACT_ENVIRONMENT`                                                                             | React's update accounting was partly disabled for the whole suite                                                                                    | set once in global setup                                                                              |
-| B8  | Every page logged `Refused to load font … violates Content Security Policy`                                                          | Vite inlines the eight Roboto subsets as `data:` URIs, but the meta CSP had no `font-src`, so default-src blocked them                               | `font-src 'self' data:` in `src/renderer/index.html`, guarded by `src/renderer/__tests__/csp.test.ts` |
-| B9  | `src/main/__tests__/index.test.ts` leaked 10+ live `uncaughtException` / `unhandledRejection` listeners into the shared test process | `src/main/index.ts` calls `registerProcessCrashHandlers()` at module scope and the spec re-imports it in nearly every test after `vi.resetModules()` | `afterEach` sweeps every process listener added since a baseline captured before the first import     |
+| # | Bug | Root cause | Fix |
+| --- | --- | --- | --- |
+| B1 | Every page rendered an invalid `hasaside` DOM attribute | `PageRoot` declared `$hasAside` but never filtered it; `styled(Box)` forwards all props | `shouldForwardProp` + transient prop |
+| B2 | `StreamDetails` leaked a `tone` attribute | same, `$tone` | `shouldForwardProp` + transient prop |
+| B3 | `MediaPreview` leaked a `variant` attribute | same, `$variant` | `shouldForwardProp` + transient prop |
+| B4 | `BatchQueue` leaked `$hidden` / `$gone` and React warned on every mount | `AnimatedSection` used the `$` convention but omitted `shouldForwardProp` entirely | `shouldForwardProp`; same applied to `CondenseIcon` |
+| B5 | 32 tests let React state updates escape `act()` | store mutations and async IPC probes drove updates outside the test's control | each update now driven inside `act()` / awaited via `findBy*` |
+| B6 | 4 `ProfileSelector` tests logged _"The current testing environment is not configured to support act(...)"_ | `user.type()` is already act-wrapped; the tests wrapped it in a second, outer `act()`, unbalancing React's act scope | removed the redundant outer `act()` |
+| B7 | `src/test-setup.ts` never set `IS_REACT_ACT_ENVIRONMENT` | React's update accounting was partly disabled for the whole suite | set once in global setup |
+| B8 | Every page logged `Refused to load font … violates Content Security Policy` | Vite inlines the eight Roboto subsets as `data:` URIs, but the meta CSP had no `font-src`, so default-src blocked them | `font-src 'self' data:` in `src/renderer/index.html`, guarded by `src/renderer/__tests__/csp.test.ts` |
+| B9 | `src/main/__tests__/index.test.ts` leaked 10+ live `uncaughtException` / `unhandledRejection` listeners into the shared test process | `src/main/index.ts` calls `registerProcessCrashHandlers()` at module scope and the spec re-imports it in nearly every test after `vi.resetModules()` | `afterEach` sweeps every process listener added since a baseline captured before the first import |
 
 B8 was found by the Phase 0.2 e2e tripwire on its first run, and B9 by turning
 `NODE_OPTIONS=--trace-warnings` on after a bare run printed an unexplained
@@ -71,10 +71,20 @@ cannot fail is worse than no guard.
 
 ### Known follow-ups (recorded, not fixed)
 
-- `ProfileSelector` passes options to MUI `Autocomplete` with `groupBy`, producing duplicated
-  group headers. Cosmetic, but MUI flags it on every render.
-- A `Tooltip` wraps a disabled `button` in `BatchQueue`/`AppDrawer`, so the tooltip can never
-  open. Real a11y defect; fix by wrapping the disabled button in a `span`.
+- **`Logs.tsx` renders up to 2000 unvirtualized rows** (`logStore` caps at `LOG_MAX_ENTRIES` = 2000 and
+  every entry is mounted, so the route holds 2001 mounted children: the 2000 rows plus the bottom
+  autoscroll sentinel), and re-renders the whole list on each append. Measured in Phase 3.3: worst
+  renderer round-trip 5.5–7 s on `/logs` against 0.2–0.6 s on every other route, with main at 1–2 ms
+  and `rows=2001` vs `-1` elsewhere. Not event abuse — it reproduces in any busy session — and the fix
+  is windowing the list. The cheap half is done (autoscroll no longer animates per entry and only
+  follows when already pinned to the bottom). `e2e/specs/ipc-events.spec.ts` carries an explicit
+  documented budget for this route so a regression past it still fails; **raise that budget when the
+  list is windowed, do not tune it upward.**
+- **The renderer applies every inbound event with no coalescing or back-pressure.** Phase 3.3 measured
+  the ceiling: ~650 events/sec across 15 channels saturates it (worst round-trip 1483–2823 ms) while
+  main stays at 1–20 ms; ~150 events/sec is clean. The `player-frame` / `player-audio` / `queue-progress`
+  trio is the plausible real-world source. Fix is coalescing or a per-channel rate limit in the preload
+  handlers or the stores.
 - `LanguageMenu.tsx:150` uses `autoFocus` (`jsx-a11y/no-autofocus` warning, pre-existing).
 - The CSP lives in a `<meta>` tag, so Electron's security advisory cannot see it and warns
   about the missing policy on every launch. The warning is allowlisted
@@ -87,6 +97,12 @@ cannot fail is worse than no guard.
   non-fatal `netfail`; it is the analytics call losing its race with window close, not a defect,
   but it means Tier B output always carries a tripwire warning. Worth a look when the analytics
   bootstrap is next touched.
+- **`e2e/cli.spec.ts` "should reject an unknown --preset as a usage error" is flaky under full-suite
+  parallel load** (seen 2026-10-05, Phase 3.4): `runCli` returned `status: null` — the child was killed
+  rather than exiting — while the same spec passed 61/61 in isolation and in the next full Tier A run.
+  The assertion itself is sound; `status: null` is the symptom of a starved/spawn-timeout subprocess
+  under 19 concurrent spec files, and `runCli` does not distinguish "killed" from "exited with a signal
+  it expected". Candidate for `e2e/quarantine/` per 0.5 if the 3× `test:flake-detect` run reproduces it.
 - `Convert.test.tsx > hides the stream details behind the view more toggle` fails roughly once
   per full unit run under load and passes in isolation (~72 s alone vs ~92 s in-suite). The
   30 s `waitFor` budget is too tight for a 40-test file on a loaded machine. This is exactly the
@@ -100,26 +116,63 @@ cannot fail is worse than no guard.
   0.6 housekeeping rather than fixed here; leaving it is a trap, because the next spec written
   at `src/renderer/<area>/<name>.test.tsx` will silently re-enter the renderer typecheck.
 
+- **Strict mode is now the default (2026-10-05).** `ENCODEX_STRICT_TESTS` defaults to `1` in both
+  `vitest.config.ts` and `vitest.integration.config.ts`, satisfying the exit criterion at the bottom
+  of this plan. Enabling it turned the suite from green to **32 failed files / 88 failing tests** (248
+  `console.warn`, 211 `appWarn`), and draining it found things a red tripwire never reported:
+
+  - **Two real Autocomplete defects.** `ProfileSelector` grouped options by `CATEGORY_ORDER` but only
+    _within_ each category's own slice, so a category header could be emitted more than once once
+    more than one category had entries - MUI logs a duplicate-key warning and the header renders
+    twice. `ProfileEditorDialog` rendered a user-editable profile's stored `videoBitrate` (`320k`,
+    added by a later version) as **blank and out of range**, because it validated against the
+    hard-coded option list rather than the list plus the current value.
+  - **A disabled-control Tooltip that could never be read.** A MUI `Tooltip` on a `disabled` button
+    fires no events on its child, so the explanation attached to resume/pause/start/clear-completed
+    was unreachable - by pointer _and_ keyboard. `TooltipIfEnabled` wraps only the disabled case in a
+    focusable, string-labelled target, so keyboard users can reach it and the tip renders; the
+    enabled case is left unwrapped so no phantom tab stop appears. 8 tests; swapping the
+    implementation back to plain MUI `Tooltip` fails 5 of them.
+  - **Two real application errors that nothing was checking.** `index.ts` starts monitoring and
+    analytics with `void bootstrap...()` on purpose, so `await import('../index')` resolves before
+    either finishes; their `log.error` calls landed after the test ended and the tripwire dropped
+    them as unattributed - `appError(shared/monitoring)` and
+    `appError(main/analytics/aptabaseMainProvider)`, one pair per test. A helper now drains to the
+    next macrotask so they land inside the test that caused them, where they are declared. Both are
+    expected: the SDKs have no DSN/App Key under test and both call sites swallow the failure by
+    design. This is the argument for attributing late faults rather than only reporting them - without
+    it, the report is the only place these errors are ever visible.
+  - The remaining failures were tests deliberately provoking a logged error, now declared with narrow
+    `expectAppLog(level, context)`. Every declaration is load-bearing: rewriting one context to a
+    non-existent value fails the test.
+  - Four test files contained raw NUL/control bytes in `HEAD`, so `git diff` rendered them as binary
+    and the tripwire's own console patching could mangle them. Repaired in the working tree;
+    `git diff --text` shows ordinary text.
+
+  **Gates:** unit `205 files / 3101 tests`, integration `4 files / 50 tests`, `npm run typecheck`
+  clean, `npm run lint` 0 errors (1 pre-existing `jsx-a11y/no-autofocus` warning in
+  `LanguageMenu.tsx`), `npm run format:check` clean.
+
 ---
 
 ## 0. Why this plan exists (findings from the current repo)
 
 These are facts about the repo as of `b12f386`, not hypotheticals. Each maps to a phase below.
 
-| #   | Finding                                                                                                                                                                                            | Impact                                                   |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| F1  | **Zero** e2e specs attach `page.on('pageerror')` or `page.on('console')` (`e2e/**` grep: 0 hits). A renderer that throws on every mount still passes all 14 Tier A specs.                          | Critical — the whole GUI surface is unguarded.           |
-| F2  | `src/test-setup.ts` installs no `unhandledrejection` / `error` listener. jsdom swallows renderer-side async throws; they never fail the test.                                                      | Critical — silent green tests.                           |
-| F3  | The `tsconfig.*.json` projects **exclude every test file**, so ~29,300 lines of test code are never typechecked.                                                                                   | High — tests compile only by luck.                       |
-| F4  | Coverage gates are global only (85/75/80/85). No per-file floor, no diff coverage. A new 600-line file at 0% passes if the global average holds.                                                   | High.                                                    |
-| F5  | E2E "skips" real main-process IPC entirely: 13 of 14 specs use `e2e/mocks/preload.js` (a JS reimplementation of the bridge). The mock and `src/preload/index.ts` drift silently.                   | High — the real preload/main contract is untested in CI. |
-| F6  | No property-based, fuzz, or mutation testing anywhere. `frame-decoder.ts` (433 lines of raw `Buffer` parsing), `ffprobe-mapper.ts`, `queue-transfer.ts`, and `image-info.ts` are hand-tested only. | High.                                                    |
-| F7  | 56 locale JSON files; the i18n mock in `test-setup.ts` hardcodes ~50 English strings. No test renders a page in a non-English locale.                                                              | High — most users don't speak `en-US`.                   |
-| F8  | No test asserts an IPC handler survives garbage input. `ipc-channels.ts` declares ~90 channels; there is no test that calls each registered handler with zero args, wrong arity, or `__proto__`.   | High.                                                    |
-| F9  | `perf/**` and `eslint-rules/**` are outside `npm run format` and outside every `typecheck`.                                                                                                        | Medium.                                                  |
-| F10 | E2E `retry: 2` in CI with no flake accounting. A genuinely broken test is indistinguishable from a flaky one; flakes get rerouted, not fixed.                                                      | Medium.                                                  |
-| F11 | `getMainWindow()` polls for 30 s (`e2e/fixtures/app.ts:104`). A slow-boot regression is absorbed as test latency forever.                                                                          | Medium.                                                  |
-| F12 | No `test.skip` governance; no quarantine mechanism; no bug-for-bug regression protocol.                                                                                                            | Medium.                                                  |
+| # | Finding | Impact |
+| --- | --- | --- |
+| F1 | **Zero** e2e specs attach `page.on('pageerror')` or `page.on('console')` (`e2e/**` grep: 0 hits). A renderer that throws on every mount still passes all 14 Tier A specs. | Critical — the whole GUI surface is unguarded. |
+| F2 | `src/test-setup.ts` installs no `unhandledrejection` / `error` listener. jsdom swallows renderer-side async throws; they never fail the test. | Critical — silent green tests. |
+| F3 | The `tsconfig.*.json` projects **exclude every test file**, so ~29,300 lines of test code are never typechecked. | High — tests compile only by luck. |
+| F4 | Coverage gates are global only (85/75/80/85). No per-file floor, no diff coverage. A new 600-line file at 0% passes if the global average holds. | High. |
+| F5 | E2E "skips" real main-process IPC entirely: 13 of 14 specs use `e2e/mocks/preload.js` (a JS reimplementation of the bridge). The mock and `src/preload/index.ts` drift silently. | High — the real preload/main contract is untested in CI. |
+| F6 | No property-based, fuzz, or mutation testing anywhere. `frame-decoder.ts` (433 lines of raw `Buffer` parsing), `ffprobe-mapper.ts`, `queue-transfer.ts`, and `image-info.ts` are hand-tested only. | High. |
+| F7 | 56 locale JSON files; the i18n mock in `test-setup.ts` hardcodes ~50 English strings. No test renders a page in a non-English locale. | High — most users don't speak `en-US`. |
+| F8 | No test asserts an IPC handler survives garbage input. `ipc-channels.ts` declares ~90 channels; there is no test that calls each registered handler with zero args, wrong arity, or `__proto__`. | High. |
+| F9 | `perf/**` and `eslint-rules/**` are outside `npm run format` and outside every `typecheck`. | Medium. |
+| F10 | E2E `retry: 2` in CI with no flake accounting. A genuinely broken test is indistinguishable from a flaky one; flakes get rerouted, not fixed. | Medium. |
+| F11 | `getMainWindow()` polls for 30 s (`e2e/fixtures/app.ts:104`). A slow-boot regression is absorbed as test latency forever. | Medium. |
+| F12 | No `test.skip` governance; no quarantine mechanism; no bug-for-bug regression protocol. | Medium. |
 
 ---
 
@@ -217,13 +270,13 @@ this phase.
 
 **As built, with the deviations that actually happened:**
 
-| Decision                     | Draft said                 | Built                                                                                           | Why                                                                                                                                                                                                                                                                              |
-| ---------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tsconfig.test.json` include | brace globs                | explicit `*.test.ts`, `*.test.tsx`, `*.spec.ts`, `*.spec.tsx`                                   | TypeScript does not expand `{a,b}` in `include`/`exclude`. The drafted pattern matched **0 of 191** test files, so the first `tsc` run "passed" with an empty program. A file comment in the config records the trap.                                                            |
-| Ambient declarations         | not mentioned              | included `electron-api`, `vite-env`, `mui`, `simple-icons`, `ffprobe-static` `.d.ts` explicitly | Without them the run reports **450** errors, nearly all ambient-type-not-found noise, which hides the 54 real ones.                                                                                                                                                              |
-| `@shared/*` paths            | add to base config         | not added                                                                                       | `@shared` has zero TypeScript imports repo-wide. Adding a path mapping for an alias nothing uses is cargo-culting.                                                                                                                                                               |
-| `perf/**`                    | in `include`               | left out, routed to 0.6                                                                         | The body already assigns `perf/**` its own `tsconfig.perf.json` in 0.6; duplicating it here would create two homes for one job.                                                                                                                                                  |
-| `tsconfig.e2e.json`          | separate, **non-blocking** | separate **and chained** into `npm run typecheck`                                               | It surfaced 14 real e2e errors; all 14 were fixed rather than allowlisted, so there was nothing left to be non-blocking about. The whole 5-project chain runs in 38 s, well inside the `typecheck` job's 10 min budget. Revert the chain if e2e-only type rot later turns noisy. |
+| Decision | Draft said | Built | Why |
+| --- | --- | --- | --- |
+| `tsconfig.test.json` include | brace globs | explicit `*.test.ts`, `*.test.tsx`, `*.spec.ts`, `*.spec.tsx` | TypeScript does not expand `{a,b}` in `include`/`exclude`. The drafted pattern matched **0 of 191** test files, so the first `tsc` run "passed" with an empty program. A file comment in the config records the trap. |
+| Ambient declarations | not mentioned | included `electron-api`, `vite-env`, `mui`, `simple-icons`, `ffprobe-static` `.d.ts` explicitly | Without them the run reports **450** errors, nearly all ambient-type-not-found noise, which hides the 54 real ones. |
+| `@shared/*` paths | add to base config | not added | `@shared` has zero TypeScript imports repo-wide. Adding a path mapping for an alias nothing uses is cargo-culting. |
+| `perf/**` | in `include` | left out, routed to 0.6 | The body already assigns `perf/**` its own `tsconfig.perf.json` in 0.6; duplicating it here would create two homes for one job. |
+| `tsconfig.e2e.json` | separate, **non-blocking** | separate **and chained** into `npm run typecheck` | It surfaced 14 real e2e errors; all 14 were fixed rather than allowlisted, so there was nothing left to be non-blocking about. The whole 5-project chain runs in 38 s, well inside the `typecheck` job's 10 min budget. Revert the chain if e2e-only type rot later turns noisy. |
 
 **Result:** 191 test files enter the program, 54 real errors, 0 remaining. `npm run typecheck`
 now covers renderer + main + preload + test + e2e. `tsconfig.main.json` was already correct
@@ -305,16 +358,16 @@ guard that "passed while the bug was present", so each is listed with why it was
 A green test that cannot go red is the whole problem, so each fix was mutation-tested: break the
 production code, confirm the spec fails, restore. **8/8 caught.**
 
-| #   | Mutation                                                              | Specs that caught it                                |
-| --- | --------------------------------------------------------------------- | --------------------------------------------------- |
-| 1   | `buildPrimaryStreamMaps`: `if (stream.disposition) continue`          | 2 (the ones the old suite could not see)            |
-| 2   | `buildPrimaryStreamMaps`: drop the `attached_pic` skip                | 3                                                   |
-| 3   | `FileQueuePersistence.save`: strip `additionalInputs`                 | 2                                                   |
-| 4   | `cli-remux`: `remux_failed` stops carrying `err.code`                 | 1                                                   |
-| 5   | `loadPersistedState`: _hypothetical fix_ enforcing `snapshot.version` | 1 (the gap pin — proves it is live, not decorative) |
-| 6   | `loadCustomProfiles`: stop filtering corrupt entries                  | 1                                                   |
-| 7   | `loadRecentIds`: drop the `MAX_RECENT` slice                          | 1                                                   |
-| 8   | `buildBatchOptions`: hardcode `hardwareAcceleration: false`           | 12                                                  |
+| # | Mutation | Specs that caught it |
+| --- | --- | --- |
+| 1 | `buildPrimaryStreamMaps`: `if (stream.disposition) continue` | 2 (the ones the old suite could not see) |
+| 2 | `buildPrimaryStreamMaps`: drop the `attached_pic` skip | 3 |
+| 3 | `FileQueuePersistence.save`: strip `additionalInputs` | 2 |
+| 4 | `cli-remux`: `remux_failed` stops carrying `err.code` | 1 |
+| 5 | `loadPersistedState`: _hypothetical fix_ enforcing `snapshot.version` | 1 (the gap pin — proves it is live, not decorative) |
+| 6 | `loadCustomProfiles`: stop filtering corrupt entries | 1 |
+| 7 | `loadRecentIds`: drop the `MAX_RECENT` slice | 1 |
+| 8 | `buildBatchOptions`: hardcode `hardwareAcceleration: false` | 12 |
 
 `npm run typecheck` 0 errors · `npm run lint` 0 errors · `npm run format:check` clean ·
 2698/2698 unit tests (was 2686; +12 new).
@@ -356,13 +409,13 @@ checks the lines the diff _added_, not just the file's percentage.
 
 What was built:
 
-| Piece                 | Where                               | Behaviour                                                                                                                                         |
-| --------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Shared coverage scope | `vitest.coverage-scope.ts`          | One include/exclude list imported by **both** vitest configs. A union of two reports is only meaningful if both tiers measured the same file set. |
-| Raw two-tier merge    | `scripts/coverage-summary.mjs`      | Unions `coverage-final.json` from `coverage/` and `coverage-integration/` via `istanbul-lib-coverage`.                                            |
-| Per-file report       | `scripts/coverage-floor-report.mjs` | `npm run test:coverage:perfile`. Always exits 0.                                                                                                  |
-| Diff gate             | `scripts/coverage-diff.mjs`         | `npm run test:coverage:diff [base]`. Blocking.                                                                                                    |
-| CI                    | `.github/workflows/ci.yml`          | `coverage-per-file` (`continue-on-error`) and `coverage-diff` jobs.                                                                               |
+| Piece | Where | Behaviour |
+| --- | --- | --- |
+| Shared coverage scope | `vitest.coverage-scope.ts` | One include/exclude list imported by **both** vitest configs. A union of two reports is only meaningful if both tiers measured the same file set. |
+| Raw two-tier merge | `scripts/coverage-summary.mjs` | Unions `coverage-final.json` from `coverage/` and `coverage-integration/` via `istanbul-lib-coverage`. |
+| Per-file report | `scripts/coverage-floor-report.mjs` | `npm run test:coverage:perfile`. Always exits 0. |
+| Diff gate | `scripts/coverage-diff.mjs` | `npm run test:coverage:diff [base]`. Blocking. |
+| CI | `.github/workflows/ci.yml` | `coverage-per-file` (`continue-on-error`) and `coverage-diff` jobs. |
 
 **Both tiers must be measured, or the numbers lie.** The unit config excludes
 `**/*.integration.{test,spec}.ts`, so a unit-only report shows the CLI and MCP sources this tier
@@ -433,14 +486,14 @@ needed no change.
 **Status: DONE (2026-09-30).** The rule that decides whether a build passes is a pure, unit-tested
 function; the process-spawning part is a thin wrapper around it.
 
-| Piece                | Where                                     | Role                                          |
-| -------------------- | ----------------------------------------- | --------------------------------------------- |
-| `analyzeRuns` (pure) | `scripts/flake-report.mjs`                | Failure-rate and quarantine verdicts          |
-| `toRunResult` (pure) | `scripts/flake-report.mjs`                | Vitest JSON report → observed/failed sets     |
-| CLI runner           | `scripts/flake-detect.mjs`                | Spawns N runs, aggregates, writes the summary |
-| Tests                | `scripts/__tests__/flake-report.test.mjs` | 19 tests over the verdict rules               |
-| Quarantine           | `e2e/quarantine.json`, `e2e/quarantine/`  | Time-limited, issue-linked exemptions         |
-| CI                   | `.github/workflows/ci.yml` → `test-flake` | `needs: [build]`, 3 passes under xvfb         |
+| Piece | Where | Role |
+| --- | --- | --- |
+| `analyzeRuns` (pure) | `scripts/flake-report.mjs` | Failure-rate and quarantine verdicts |
+| `toRunResult` (pure) | `scripts/flake-report.mjs` | Vitest JSON report → observed/failed sets |
+| CLI runner | `scripts/flake-detect.mjs` | Spawns N runs, aggregates, writes the summary |
+| Tests | `scripts/__tests__/flake-report.test.mjs` | 19 tests over the verdict rules |
+| Quarantine | `e2e/quarantine.json`, `e2e/quarantine/` | Time-limited, issue-linked exemptions |
+| CI | `.github/workflows/ci.yml` → `test-flake` | `needs: [build]`, 3 passes under xvfb |
 
 **`--retry=0` is the load-bearing detail.** `e2e/vitest.e2e.config.ts` sets `retry: 2` in CI, which
 is correct for a normal run (one retry absorbs a slow Electron boot) and precisely wrong for flake
@@ -483,14 +536,14 @@ strip a leading BOM. The bug was found by the self-test, not by inspection.
 
 #### Delivered
 
-| Item            | Where                                                | Notes                                          |
-| --------------- | ---------------------------------------------------- | ---------------------------------------------- |
-| Prettier globs  | `package.json` → `format`, `format:check`            | `perf/**/*.{ts,tsx}` + `eslint-rules/**/*.mjs` |
-| Typecheck       | `tsconfig.perf.json`, `typecheck:perf`               | Chained as the 6th project in `typecheck`      |
-| Boot accounting | `e2e/fixtures/app.ts`, `e2e/fixtures/boot-budget.ts` | `AppSession.bootMs`; 30 s ceiling kept         |
-| Assertion       | `e2e/specs/boot-budget.spec.ts`                      | Median-of-3 vs platform budget +25%            |
-| Budget          | `perf/baseline.json` → `e2e.bootBudgetMs`            | `win32-x64: 2500`                              |
-| Unit tests      | `e2e/fixtures/__tests__/boot-budget.test.ts`         | 31 tests over the verdict rules                |
+| Item | Where | Notes |
+| --- | --- | --- |
+| Prettier globs | `package.json` → `format`, `format:check` | `perf/**/*.{ts,tsx}` + `eslint-rules/**/*.mjs` |
+| Typecheck | `tsconfig.perf.json`, `typecheck:perf` | Chained as the 6th project in `typecheck` |
+| Boot accounting | `e2e/fixtures/app.ts`, `e2e/fixtures/boot-budget.ts` | `AppSession.bootMs`; 30 s ceiling kept |
+| Assertion | `e2e/specs/boot-budget.spec.ts` | Median-of-3 vs platform budget +25% |
+| Budget | `perf/baseline.json` → `e2e.bootBudgetMs` | `win32-x64: 2500` |
+| Unit tests | `e2e/fixtures/__tests__/boot-budget.test.ts` | 31 tests over the verdict rules |
 
 **Typechecking `perf/` immediately found a live bug, which is the whole argument for doing it.**
 `perf/vitest.perf.config.ts` set `forks: { execArgv: ['--expose-gc'] }`. Vitest 4 removed that
@@ -593,18 +646,18 @@ unit 199 files / 2928 tests.
 New dev-dep: **`fast-check`**. These target the pure logic where crashes are cheap to trigger and
 expensive to find by hand.
 
-| Target                 | Property / attack                                                                                                                                                                                                                                                    | Location                                                       |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| Queue import           | `parseQueueExport`/`validateQueueExport` must never throw, never return a job with a prototype-polluted key, and cap job count                                                                                                                                       | `src/main/queue/queue-transfer.ts` (123 lines tested)          |
-| Error mapping          | `formatError` must return a non-empty string for **any** `unknown` input (strings, `null`, `undefined`, symbols, BigInt, cyclic objects, thrown classes with/without `code`, `AggregateError`)                                                                       | `src/shared/errors.ts`                                         |
-| Validation             | `validate*` never throws; always boolean; never mutates input                                                                                                                                                                                                        | `src/shared/validation.ts`                                     |
-| Math/progress/estimate | No `NaN`/`Infinity` in output for any non-negative finite input; no divide-by-zero                                                                                                                                                                                   | `src/shared/math.ts`, `progress.ts`, `estimate.ts`             |
-| Formatters             | Never throws; never returns `NaN`/`undefined` bytes or `Invalid Date`                                                                                                                                                                                                | `src/renderer/utils/formatters.ts`                             |
-| Path utils             | `deriveOutputPath`, `resolveOutputPath`, `path-utils` never escape the intended dir for adversarial stems: `..`, `../..`, `CON`, `NUL`, `\\\\?\\C:\\x`, 32k-char names, `/`, `\\`, `:` , trailing dots/spaces (Windows), reserved device names, unicode RTL-override | `src/renderer/utils/path-utils.ts`, `src/main/cli/cli-util.ts` |
-| i18n                   | Interpolation with missing/extra/malformed `{{x}}` tokens never throws and never leaves `{{}}` in the output; keys with `__proto__` don't leak                                                                                                                       | `src/renderer/i18n/config.ts`                                  |
-| Store persist          | Every one of the 18 zustand stores rehydrates from adversarial localStorage JSON without throwing: `null`, `"undefined"`, `[]`, `123`, `{"__proto__":{...}}`, 5 MB string, old schema version, missing keys                                                          | `src/renderer/stores/*`                                        |
-| Shortcuts              | `parseShortcut` never throws on any string; `shortcutMatches` never matches a bare modifier                                                                                                                                                                          | `src/renderer/constants/shortcuts.ts`                          |
-| Codec/container        | `canContain`, `getCodecSupport` etc. never throw on unknown container/codec pairs                                                                                                                                                                                    | `src/shared/codec-containers.ts` (660 lines)                   |
+| Target | Property / attack | Location |
+| --- | --- | --- |
+| Queue import | `parseQueueExport`/`validateQueueExport` must never throw, never return a job with a prototype-polluted key, and cap job count | `src/main/queue/queue-transfer.ts` (123 lines tested) |
+| Error mapping | `formatError` must return a non-empty string for **any** `unknown` input (strings, `null`, `undefined`, symbols, BigInt, cyclic objects, thrown classes with/without `code`, `AggregateError`) | `src/shared/errors.ts` |
+| Validation | `validate*` never throws; always boolean; never mutates input | `src/shared/validation.ts` |
+| Math/progress/estimate | No `NaN`/`Infinity` in output for any non-negative finite input; no divide-by-zero | `src/shared/math.ts`, `progress.ts`, `estimate.ts` |
+| Formatters | Never throws; never returns `NaN`/`undefined` bytes or `Invalid Date` | `src/renderer/utils/formatters.ts` |
+| Path utils | `deriveOutputPath`, `resolveOutputPath`, `path-utils` never escape the intended dir for adversarial stems: `..`, `../..`, `CON`, `NUL`, `\\\\?\\C:\\x`, 32k-char names, `/`, `\\`, `:` , trailing dots/spaces (Windows), reserved device names, unicode RTL-override | `src/renderer/utils/path-utils.ts`, `src/main/cli/cli-util.ts` |
+| i18n | Interpolation with missing/extra/malformed `{{x}}` tokens never throws and never leaves `{{}}` in the output; keys with `__proto__` don't leak | `src/renderer/i18n/config.ts` |
+| Store persist | Every one of the 18 zustand stores rehydrates from adversarial localStorage JSON without throwing: `null`, `"undefined"`, `[]`, `123`, `{"__proto__":{...}}`, 5 MB string, old schema version, missing keys | `src/renderer/stores/*` |
+| Shortcuts | `parseShortcut` never throws on any string; `shortcutMatches` never matches a bare modifier | `src/renderer/constants/shortcuts.ts` |
+| Codec/container | `canContain`, `getCodecSupport` etc. never throw on unknown container/codec pairs | `src/shared/codec-containers.ts` (660 lines) |
 
 **Pattern:** every table row becomes a `fast-check` property test plus a fixed regression seed
 (`fc.assert(prop, { seed: 12345, path: 'repro.txt' })` committed on failure).
@@ -613,18 +666,18 @@ expensive to find by hand.
 
 `fast-check@4.10.2` added as a dev-dep (no new advisories). Ten new property-test files, 163 tests, all 10 rows of the table above covered:
 
-| File                                                           | Covers                                                          | Tests |
-| -------------------------------------------------------------- | --------------------------------------------------------------- | ----- |
-| `src/shared/__tests__/errors.property.test.ts`                 | `formatError`/`isAppError` totality                             | 15    |
-| `src/shared/__tests__/validation.property.test.ts`             | `validate*` never-throw, no-`NaN`                               | 24    |
-| `src/shared/__tests__/math-estimate.property.test.ts`          | `clamp`/`toPercent`/`estimateRemaining`/`formatDurationCompact` | 12    |
-| `src/shared/__tests__/codec-containers.property.test.ts`       | codec/extension lookups                                         | 15    |
-| `src/main/queue/__tests__/queue-transfer.property.test.ts`     | import contract, prototype pollution, job cap                   | 17    |
-| `src/renderer/utils/__tests__/path-shortcuts.property.test.ts` | path helpers, shortcut parsing                                  | 30    |
-| `src/main/cli/__tests__/cli-util.property.test.ts`             | `deriveOutputPath` containment                                  | 10    |
-| `src/renderer/utils/__tests__/formatters.property.test.ts`     | renderer formatters                                             | 12    |
-| `src/renderer/i18n/__tests__/i18n.property.test.ts`            | interpolation + 56-locale corpus                                | 13    |
-| `src/renderer/stores/__tests__/store-persist.property.test.ts` | localStorage rehydration, 6 readers                             | 15    |
+| File | Covers | Tests |
+| --- | --- | --- |
+| `src/shared/__tests__/errors.property.test.ts` | `formatError`/`isAppError` totality | 15 |
+| `src/shared/__tests__/validation.property.test.ts` | `validate*` never-throw, no-`NaN` | 24 |
+| `src/shared/__tests__/math-estimate.property.test.ts` | `clamp`/`toPercent`/`estimateRemaining`/`formatDurationCompact` | 12 |
+| `src/shared/__tests__/codec-containers.property.test.ts` | codec/extension lookups | 15 |
+| `src/main/queue/__tests__/queue-transfer.property.test.ts` | import contract, prototype pollution, job cap | 17 |
+| `src/renderer/utils/__tests__/path-shortcuts.property.test.ts` | path helpers, shortcut parsing | 30 |
+| `src/main/cli/__tests__/cli-util.property.test.ts` | `deriveOutputPath` containment | 10 |
+| `src/renderer/utils/__tests__/formatters.property.test.ts` | renderer formatters | 12 |
+| `src/renderer/i18n/__tests__/i18n.property.test.ts` | interpolation + 56-locale corpus | 13 |
+| `src/renderer/stores/__tests__/store-persist.property.test.ts` | localStorage rehydration, 6 readers | 15 |
 
 **Eight source bugs the property tests found.** Every one is a crash or a wrong value on input the
 existing hand-written tests never produced:
@@ -726,11 +779,11 @@ fails 6/10.
 
 #### Not fixed (deliberate, with reasons)
 
-| Finding                                                                                                     | Why left                                                                                                                                                                                                                                                         |
-| ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Finding | Why left |
+| --- | --- |
 | No Windows reserved-name sanitization in any output-path builder (`CON`, `NUL`, `COM1`, trailing dot/space) | Real bug, but unreachable from the GUI (Windows cannot create those files) and only reachable from the CLI/MCP argument surface. Fixing it changes output filenames, so it needs a decision on back-compat with existing users' naming, not a drive-by test fix. |
-| `isValidTime` still accepts hours > 99 / no hour upper bound                                                | The plan named only "no `NaN`/`Infinity`". ffmpeg is the authority on out-of-range `HH:MM:SS`; inventing a bound here risks rejecting valid long-form timestamps.                                                                                                |
-| Quarantine schema is not validated (`scripts/flake-report.mjs` accepts an undated entry indefinitely)       | **Closed in the Phase 0.5 audit** — see the schema section below                                                                                                                                                                                                 |
+| `isValidTime` still accepts hours > 99 / no hour upper bound | The plan named only "no `NaN`/`Infinity`". ffmpeg is the authority on out-of-range `HH:MM:SS`; inventing a bound here risks rejecting valid long-form timestamps. |
+| Quarantine schema is not validated (`scripts/flake-report.mjs` accepts an undated entry indefinitely) | **Closed in the Phase 0.5 audit** — see the schema section below |
 
 **Gates after Phase 1:** typecheck 6/6 clean; lint 0 errors (1 known `no-autofocus` warning);
 `format:check` clean; unit 199 files / 2911 tests; integration 4 files / 50 tests; e2e Tier A 155
@@ -755,10 +808,13 @@ in CLI mode` fail after 32s. It passed 13/13 in isolation and the full suite the
 Runs in a new suite `test:media-fuzz` against the _real_ ffmpeg-static binary. Corrupt-file handling is
 the #1 real-world crash source for a media tool and is currently untested.
 
-> **Status: IN PROGRESS — resume from "Phase 2 progress" below.** Done: `computeHistogram` fuzz and the
-> subprocess watchdog (`withTimeout`, 5 bounded sites). Next: `frame-decoder.ts` fuzz, EXIF bombs, real
-> corpus. The plan's file paths for three targets are wrong; the corrected locations are in the progress
-> section.
+> **Status: DONE (2026-10-01).** All five Phase 2 items are delivered: `computeHistogram` fuzz, the
+> subprocess watchdog (`withTimeout`, 5 bounded sites), the `FrameDecoder` fuzz (which found an OOM
+> process-killing hang), the EXIF bombs (which found an `errors`-leak and unbounded work in
+> `flattenExif`), and the real corpus → `test:media-fuzz`. The plan's file paths for three targets were
+> wrong; the corrected locations are in the progress section. The real corpus found **no** new production
+> bug, which is a legitimate result: a clean tier that has been shown to fail on injected defects is worth
+> more than a silent one.
 
 **Corpus generator** (`e2e/fixtures/corpus/generate-corpus.ts`):
 
@@ -770,13 +826,13 @@ the #1 real-world crash source for a media tool and is currently untested.
 
 **Test matrix** (each must degrade gracefully, never hang, never crash the process):
 
-| Path under test                                               | Assertion                                                                   |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `getMediaInfo` (`ffprobe-mapper.ts`)                          | Resolves to an error or `null`; never throws; never returns `duration: NaN` |
-| `getVideoPreview` / `getImagePreview` / `getImageFileInfo`    | Same                                                                        |
-| `getImageInfo` (`image-info.ts`, EXIF via `exifr`)            | No OOM, no `computeHistogram` NaN, no crash on a 60k×60k PNG                |
-| `extractWaveform` / `extractThumbnails` (`timeline-media.ts`) | Terminates within 10 s; returns `null`, not garbage                         |
-| `getCapabilities`, `convertFile`, `queueAdd`                  | Reject with a `formatError`-shaped error                                    |
+| Path under test | Assertion |
+| --- | --- |
+| `getMediaInfo` (`ffprobe-mapper.ts`) | Resolves to an error or `null`; never throws; never returns `duration: NaN` |
+| `getVideoPreview` / `getImagePreview` / `getImageFileInfo` | Same |
+| `getImageInfo` (`image-info.ts`, EXIF via `exifr`) | No OOM, no `computeHistogram` NaN, no crash on a 60k×60k PNG |
+| `extractWaveform` / `extractThumbnails` (`timeline-media.ts`) | Terminates within 10 s; returns `null`, not garbage |
+| `getCapabilities`, `convertFile`, `queueAdd` | Reject with a `formatError`-shaped error |
 
 **Hangs are bugs:** every spawn in `src/main/**` that must terminate on its own is now wrapped by
 `src/main/spawn-timeout.ts`'s `withTimeout` — 5 sites, delivered. Conversions and the persistent
@@ -801,10 +857,204 @@ across the run in a `perf`-style test).
 
 1. `computeHistogram` (`src/main/image-info.ts`) fuzzed; one real bug class found and fixed. New file
    `src/main/__tests__/image-histogram.fuzz.test.ts`, 8 tests, 1.74 s.
-2. The subprocess watchdog (`src/main/spawn-timeout.ts`); 5 bounded sites, 43 wrapper tests + 12 error-code
+2. `FrameDecoder` fuzzed; a **process-killing** bug found and fixed. New file
+   `src/main/player/__tests__/frame-decoder.fuzz.test.ts`, 46 tests. Detailed below.
+3. The subprocess watchdog (`src/main/spawn-timeout.ts`); 5 bounded sites, 43 wrapper tests + 12 error-code
    tests + 6 per-site hang tests, 7 mutations caught. Detailed below.
+4. EXIF bombs; two real bugs found and fixed. New file
+   `src/main/__tests__/image-exif.fuzz.test.ts`, 19 tests. Detailed below.
 
-**Next up: `frame-decoder.ts` fuzz → EXIF bombs → real corpus.**
+5. Real media corpus → `test:media-fuzz`. New files `src/test-utils/media-corpus.ts` and
+   `src/main/__tests__/corrupt-media.mediafuzz.test.ts`, 6 tests. Detailed below.
+
+### Real corpus → `test:media-fuzz` — clean, and the value was in proving it _could_ fail (DELIVERED)
+
+Against the real `ffmpeg-static`/`ffprobe-static` binaries. **No new production bug was found** — unlike
+every previous item in this phase. That is the honest result, and the useful part is the evidence that
+the suite is capable of reporting a defect rather than passing vacuously.
+
+**Corpus** (`src/test-utils/media-corpus.ts`, deterministic, mulberry32 seeded from `0x5eed`, override with
+`MEDIA_FUZZ_SEED`). 11 seeds synthesised by real ffmpeg — MP4, MKV, WebM, MOV, AVI, JPEG, PNG, GIF, MP3,
+FLAC, SRT — expanded to **173 files** via truncation (byte offsets 0/1/2/8/64/512 and 1/5/25/50/99 %),
+single-bit flips in the header, all-zero and all-noise rewrites, and extension/content mismatches
+(`mkv-as.mp4`, `jpg-as.mkv`, `mp4-as.jpg`, header-plus-noise). Nothing is checked in; the corpus is
+regenerated per run, so it adds no repo weight and cannot rot.
+
+**Targets exercised** (all real, no mocks): `FFToolCore.getInfo()` over all 173 files; `getImagePreview()`,
+`getImageFileInfo()`, `getImageInfo()` over the image family; `getVideoPreview()`; `extractWaveform()` and
+`extractThumbnails()`. Each call is raced against a 20 s budget, and results are checked for non-finite
+numbers and for own-code rejections. `isPackaged()` returns `false` outside Electron, so the suite needs no
+Electron mock.
+
+**Four ways the suite was proven non-vacuous.** Each of these was a real defect _in the test_, found by
+inspecting what the sweep actually did:
+
+1. **A vacuous waveform test.** `extractWaveform()` returned `null` for all 16 sampled files, which looked
+   like a pass. It was not: the control group never asserted timeline output on _good_ input, and the seed
+   it was using (`seed.mp4`) is **video-only**. Waveform extraction cannot ever succeed on a file with no
+   audio stream, so the whole waveform sweep was unfalsifiable. Fixed by adding `seed-av.mp4` (3 s, video +
+   AAC audio) and by extending the control group to require non-`null` waveform _and_ thumbnail output from
+   it. The control now fails if either extractor is broken, which is what makes the all-`null` corrupt-file
+   result meaningful.
+2. **A sampling bias that hid every interesting case.** `.slice(0, N)` on the video corpus returned the
+   _prefix_, which is entirely the 0- and 1-byte truncations of one seed. Bit-flipped and mismatched files —
+   the ones most likely to slip past a decoder's header check — were never reached. Replaced with
+   round-robin bucketing over (seed, corruption kind).
+3. **A vacuity guard for the fix above.** Stratification is only correct if it keeps reaching the audio seed,
+   so the timeline test now asserts the sample contains a `seed-av.mp4` variant. Verified this guard can
+   fail: with `MEDIA_FUZZ_TIMELINE_LIMIT=1` the sample collapses to `seed.mp4` and the assertion fires.
+4. **A swallowed outcome counter.** `console.info` is stubbed by the suite's crash tripwire, so the first
+   tally implementation printed nothing at all. Moved to `process.stderr.write`, gated on
+   `MEDIA_FUZZ_VERBOSE`, because a sweep reporting "everything returned `null`" is indistinguishable from a
+   sweep that never reached the decoder.
+
+**Mutation verification** (2 production mutations, both caught, both restored):
+
+| Mutation | Result |
+| --- | --- |
+| `ffprobe-mapper.ts`: `duration` fallback `0` → `NaN` | **Caught** — 27 files flagged, and the control group failed too |
+| `video-preview.ts`: `extractPreviewFrame` never settles | **Caught** — all 30 files reported as hung past the 20 s budget |
+
+A third mutation (inverting the `BudgetExceeded` assertion) correctly did _not_ fail, which was itself
+informative: it showed the hang assertion is only reached for calls that reject or hang, so a weak mutation
+proves nothing. The real hang mutation above was needed to cover it.
+
+**Outcome distribution** (`MEDIA_FUZZ_VERBOSE=1`): `getInfo` 70 values / 103 rejected — real ffprobe work on
+more than half the corpus; `getImageFileInfo` and `getImagePreview` 43 values / 1 `null`; `getImageInfo` 13 /
+31; `getVideoPreview` 2–3 / 27; waveform and thumbnails 0 / 16. The waveform and thumbnail zeros are
+_correct_ — a corrupted file has no decodable audio or frame to extract — but they are only trustworthy
+because item 1 proves those paths work on pristine input.
+
+**Known upstream issue, deliberately not worked around.** The suite emits Node `DEP0137`
+("Closing a FileHandle object on garbage collection"). Root cause is in `exifr`, not here: its chunked
+reader calls `this.file.close && this.file.close()` in `parse()` **without awaiting it**, so the
+`fs.promises.FileHandle` from `readChunked()` can be collected mid-close. Confirmed pre-existing and
+scale-dependent — the 19-test EXIF suite builds tiny hand-written TIFFs that never enter chunked mode, so
+only the 44 real image files in this suite trigger it. Not worked around because the only clean fix is to
+pass `exifr` an in-memory buffer, which trades a deprecation warning for a whole-file read on large images.
+Tracked as upstream debt.
+
+**Tier separation.** The suite is excluded from `vitest.config.ts` and runs only via
+`npm run test:media-fuzz` (`vitest.media-fuzz.config.ts`), with `setupFiles: [src/test-setup.crash.ts]`,
+`maxWorkers: 2`, and a 900 s per-test ceiling. The unit suite is unaffected.
+
+**Final state:** `test:media-fuzz` 6/6 in ~14 s; unit 3060/3060 across 203 files; typecheck, format, and lint
+clean (lint keeps its one pre-existing `jsx-a11y/no-autofocus` warning). `git status` shows no leftover
+scratch files and no modified production sources.
+
+### EXIF bombs — the parser is hardened, _our_ layer was not (DELIVERED)
+
+`exifr` 7.1.3 survived every hand-built TIFF bomb (IFD offset outside the buffer, 65535 entries, an
+`IFDCount` that reads as a negative int16, a self-referential `IFDNext`, a `Photoshop` IRB declaring
+4 GB, truncated entry tables, 64 KB of zeros) in 2–6 ms with no throw, hang, or oversized allocation.
+The bugs were both in `src/main/image-info.ts`:
+
+1. **A garbage file was reported as having metadata.** `exifr` does not throw on a malformed block; it
+   _recovers_ and reports the problem in an `errors` array on its result. `flattenExif` flattened that
+   array like any tag, so a file with no readable EXIF at all produced
+   `{ errors: 'RangeError: Offset is outside the bounds of the DataView' }` — internal parser text
+   surfaced as user-visible metadata, and `getImageInfo` returned non-`null` for a garbage file. Fixed by
+   logging and dropping the top-level `errors` key before flattening; genuine tags parsed alongside a
+   failure still surface, so partial recovery is preserved. Mutation-verified (stripping removed →
+   7 tests fail).
+2. **Unbounded work in `flattenExif`.** Bounding recursion _depth_ is not sufficient. A node holding
+   several keys that point back at the same ancestor reaches the depth cap along an **exponential
+   number of distinct paths**, so a handful of bytes kept the walk running indefinitely (measured:
+   > 2,000,000 node visits at depth 31, still climbing, against a depth cap of 32). Fixed with a second,
+   > independent guard — a budget of 1,024 nodes visited per call — which bounds traversal time, result
+   > size, and stack depth together. 3 mutations caught: dropping the depth cap, dropping the node budget,
+   > dropping the `errors` strip.
+
+Two notes for whoever extends this, both learned the hard way here:
+
+- **A guard that another guard already covers is untestable, and therefore unverified.** A
+  `WeakSet` cycle guard was written first and then removed: the depth cap already bounds recursion, so
+  no return-value test could ever observe the cycle guard missing, and _worse_, because the guard
+  deleted each node on backtrack it did not even stop the exponential case. The same masking happened
+  in reverse when a 50,000-node chain was used to test the depth cap — the node budget cut the walk
+  short first and the mutation survived. Each guard now has a test built to isolate it: the chain is
+  1,000 nodes (above the depth cap, _below_ the node budget) and the branching tree is 14 levels deep
+  (below the depth cap, far above the budget).
+- **A test that hangs is worse than no test.** Mutation runs kept stalling the suite, because an
+  unbounded synchronous walk blocks the event loop and no `testTimeout` can interrupt it. The
+  adversarial structures are now sized to terminate either way, so a regression fails an assertion
+  instead of wedging a worker.
+
+A negative result worth recording: `x`/`y` and `StripByteCounts` of `0xFFFFFFFF` are **well-formed**
+LONG tags, not corruption. exifr parses them and the values are surfaced; an early draft wrongly
+grouped them with the unparseable bombs, and the test failed until it was corrected.
+
+### `FrameDecoder` fuzz — a hang that kills the process (DELIVERED)
+
+**The bug: `frameSize === 0` was an uncatchable OOM, not a hang that reports itself.** The stdout
+assembler drains with `while (framePartsLen >= frameSize) { …; framePartsLen -= frameSize; }`, which only
+makes progress when `frameSize` is a **positive integer**. `open()` computed
+`frameSize = width * height * 3` from caller-supplied dimensions with no validation, so:
+
+| Input | Old behaviour |
+| --- | --- |
+| `width = 0` or `height = 0` | Condition permanently true, subtraction a no-op. **One byte of stdout** spins forever pushing zero-length buffers onto `pendingFrames` until V8 dies: `FATAL ERROR: … JavaScript heap out of memory`, worker gone, _nothing catchable_ |
+| negative dimension | `Buffer.alloc(-12)` throws a `RangeError` **inside an EventEmitter `data` handler**, where no caller can catch it |
+| `NaN` / `Infinity` dimension | `framePartsLen >= NaN` is false forever → **silent permanent stall**. No error anywhere; playback just never starts |
+
+In production this is the **Electron main process**, not a test worker — the player would freeze and then
+die rather than surface a failure.
+
+**Reachability, stated honestly.** The one production caller,
+`src/main/ipc/player.ts:132`, guards with `if (videoStream?.width && videoStream?.height)`, and `0` is
+falsy, so `frameSize === 0` is _not_ reachable through it today. That is a distant caller's truthiness
+check standing between a public method and a process-killing loop, with the invariant unenforced at the
+layer that actually owns the loop. `Math.max(PLAYER_MIN_DIMENSION, …)` guards the _scaled_ branch of
+`capResolution` but not its early-return branch. The fix therefore validates at the derivation rather
+than relying on the caller.
+
+**Fix.** `resolveFrameSize()` / `safeDimension()` / `resolveAudioTarget()` in
+`src/main/player/frame-decoder.ts` coerce dimensions to positive integers and non-finite audio configs
+to `AUDIO_TARGET_MIN_BYTES`. It returns the clamped **width and height alongside** the size, because
+passing the raw request to ffmpeg's `-s WxH` while assembling a different byte count would desynchronise
+the decoder from its own output. Clamping warns (`LOG_FFMPEG_DECODER_RESOLUTION_CLAMPED`) so a silent
+resolution change is still visible.
+
+**Deliberately _not_ clamped: an upper bound.** A `100000 × 100000` request is a legitimate 30 GB frame,
+not a hostile one, and `capResolution` already caps to 640×360 upstream. Clamping to a maximum here would
+reject valid 4K decodes, so that case is asserted to be _honored_ instead.
+
+**Dead branch removed, found by a mutation that nothing caught.** Reverting `spawnFfmpeg`'s dimension
+handling was caught by **zero** tests. The cause: that branch is **unreachable**. `open()` and `seek()`
+both call `spawnFfmpeg` with `undefined` for width and height, having already set the fields — so it was
+dead code carrying an unvalidated `frameSize` derivation and a landmine for the next caller. Removed, and
+its parameters dropped from the signature. This is the plan's own Phase 2 precedent ("dead guard removed
+rather than kept as decoration that no test can distinguish") applied to a method instead of a guard.
+
+**Mutation-verified — 5 mutations, all caught.** N1 and N4 kill the worker with an OOM, which _is_ the
+signal here: a "passing" suite cannot contain an unbounded loop.
+
+| # | Mutation | Caught by |
+| --- | --- | --- |
+| N1 | revert `open()` to `frameSize = width * height * 3` | OOM, worker exits (`Tests 43 passed` of 78, file dies) |
+| N2 | drop the `Number.isFinite` guard in `safeDimension` | 4 tests (the `NaN`/`Infinity` stalls) |
+| N3 | revert the audio target to `Math.max(512, Math.round(…))` | 4 tests (`Math.max(512, NaN)` is `NaN`) |
+| N4 | `MIN_DECODE_DIMENSION = 0` | OOM, worker exits |
+| N5 | bytes-per-pixel 3 → 4 | 18 tests (every frame-length and ledger assertion) |
+
+**Two test bugs recorded, both of which first looked like source bugs:**
+
+- I asserted `residual % frameSize === 0` for a 1-byte feed against a 96-byte frame. The residual is
+  _supposed_ to be a partial frame. Corrected to pin the emitted count to
+  `floor(total / frameSize)` directly.
+- The emitted frame **count** is not a pure function of the byte stream: `emitAvailable` has a deliberate
+  200 ms emergency flush that emits a frame with an **estimated** PTS when showinfo lags, so a GC pause
+  alone makes the count nondeterministic. Feeding a PTS _surplus before_ each data chunk removes the time
+  dependence and makes the ledger assertion exact.
+
+**A vacuous assertion I had to strengthen.** The hostile-dimension tests originally asserted only "does not
+throw" — which a decoder that _stalls_ passes trivially, since a stall raises nothing. That is why N2's
+`NaN`/`Infinity` stalls initially went uncaught: 0 frames emitted, no error, green. The tests now require
+frames to actually be assembled. That tightening is what caught `huge dimensions` mis-classified as
+hostile when it is merely large.
+
+**Verified:** unit **3041/3041**, `npm run typecheck` 6/6, `npm run lint` 0 errors, `npm run
+format:check` clean.
 
 **The histogram bug: an unbounded loop plus an invisible `NaN`.** The original loop was
 `const total = width * height`, trusted outright. Those dimensions come from the ffmpeg _scale filter_,
@@ -843,10 +1093,8 @@ iterates. Dead guard removed rather than kept as decoration that no test can dis
 
 #### Remaining Phase 2 work, in suggested order
 
-1. ~~**`withTimeout`**~~ — **DELIVERED**, see "Subprocess watchdog" above. Next item is 2.
-2. **`frame-decoder.ts` fuzz** — pure and fast, no ffmpeg. Feeds 10k random buffers plus the structured
-   bad cases already enumerated above. Note `frame-decoder.ts:222` spawns ffmpeg, so the _spawn_ path
-   needs a mock; only the pure decode paths are directly fuzzable.
+1. ~~**`withTimeout`**~~ — **DELIVERED**, see "Subprocess watchdog" above.
+2. ~~**`frame-decoder.ts` fuzz**~~ — **DELIVERED**, see "`FrameDecoder` fuzz" above.
 3. **EXIF bombs** — hand-built TIFFs, no ffmpeg. Targets `getImageInfo` (`src/main/image-info.ts:191`,
    uses `exifr`) and the pure `flattenExif` (`:56`).
 4. **Real corpus + `test:media-fuzz`** — the most expensive item. Needs a genuine source file to corrupt;
@@ -857,19 +1105,19 @@ iterates. Dead guard removed rather than kept as decoration that no test can dis
 
 **The survey that decided the scope.** All 10 ffmpeg/ffprobe spawn sites, re-checked:
 
-| Site                                                                         | Bounded?                                           |
-| ---------------------------------------------------------------------------- | -------------------------------------------------- |
-| `src/main/transcoders/fftool-core.ts` (`getInfo`, raw ffprobe)               | **yes** — `TRANSCODER_DEFAULTS.FFPROBE_TIMEOUT_MS` |
-| `src/main/transcoders/ffmpeg-core.ts` (`getInfo`, fluent-ffprobe `.ffprobe`) | **yes** — same constant                            |
-| `src/main/image-info.ts` (`decodeImageHistogram`)                            | **yes** — `IMAGE_HISTOGRAM_TIMEOUT_MS` (15 s)      |
-| `src/main/video-preview.ts` (`extractPreviewFrame`)                          | **yes** — `VIDEO_PREVIEW_TIMEOUT_MS` (15 s)        |
-| `src/main/timeline/timeline-media.ts` (`spawnBuffer`)                        | **yes** — `TIMELINE_EXTRACT_TIMEOUT_MS` (30 s)     |
-| `src/main/transcoders/fftool-core.ts` (convert)                              | no — user-initiated, unbounded by design           |
-| `src/main/transcoders/ffmpeg-core.ts` (convert)                              | no — same                                          |
-| `src/main/transcoders/bmf-core.ts:99`                                        | already bounded (`BMF_TIMEOUT_MS`)                 |
-| `src/main/transcoders/bmf-core.ts:143` (convert)                             | no — same as the other converts                    |
-| `src/main/capabilities.ts:116`                                               | already bounded (`CAPABILITY_PROBE_TIMEOUT_MS`)    |
-| `src/main/player/frame-decoder.ts`                                           | no — **deliberately**, see below                   |
+| Site | Bounded? |
+| --- | --- |
+| `src/main/transcoders/fftool-core.ts` (`getInfo`, raw ffprobe) | **yes** — `TRANSCODER_DEFAULTS.FFPROBE_TIMEOUT_MS` |
+| `src/main/transcoders/ffmpeg-core.ts` (`getInfo`, fluent-ffprobe `.ffprobe`) | **yes** — same constant |
+| `src/main/image-info.ts` (`decodeImageHistogram`) | **yes** — `IMAGE_HISTOGRAM_TIMEOUT_MS` (15 s) |
+| `src/main/video-preview.ts` (`extractPreviewFrame`) | **yes** — `VIDEO_PREVIEW_TIMEOUT_MS` (15 s) |
+| `src/main/timeline/timeline-media.ts` (`spawnBuffer`) | **yes** — `TIMELINE_EXTRACT_TIMEOUT_MS` (30 s) |
+| `src/main/transcoders/fftool-core.ts` (convert) | no — user-initiated, unbounded by design |
+| `src/main/transcoders/ffmpeg-core.ts` (convert) | no — same |
+| `src/main/transcoders/bmf-core.ts:99` | already bounded (`BMF_TIMEOUT_MS`) |
+| `src/main/transcoders/bmf-core.ts:143` (convert) | no — same as the other converts |
+| `src/main/capabilities.ts:116` | already bounded (`CAPABILITY_PROBE_TIMEOUT_MS`) |
+| `src/main/player/frame-decoder.ts` | no — **deliberately**, see below |
 
 **Five wired, not six.** The wrapper only bounds work that must terminate on its own. A user-initiated
 conversion is _supposed_ to run for as long as the input needs; a wall-clock kill there would abort
@@ -912,15 +1160,15 @@ production** — the gap was a declared-but-dead constant. It is now wired at bo
 **Mutation-verified — 7 mutations, all caught.** Per this phase's earlier lesson, each ran inside
 `try { ... } finally { restore }`:
 
-| #   | Mutation                                                                                 | Caught by                         |
-| --- | ---------------------------------------------------------------------------------------- | --------------------------------- |
-| M1  | drop `killQuietly(target, label)`                                                        | 2 tests                           |
-| M2  | drop the invalid-budget guard (runs unbounded)                                           | 5 tests                           |
-| M3  | never `clearTimeout` the watchdog                                                        | 3 tests                           |
-| M4  | reject with a plain `Error` instead of the `AppError`                                    | 5 tests                           |
-| M5  | let a synchronous `start()` throw escape                                                 | 2 tests                           |
-| M6  | move the timeout rule _below_ the `failed`/`conversion` rules in `inferErrorCode`        | 5 tests                           |
-| M7  | reduce `withTimeout` to `start(() => undefined)` — every site stays wired, nothing fires | **all 6 new per-site hang tests** |
+| # | Mutation | Caught by |
+| --- | --- | --- |
+| M1 | drop `killQuietly(target, label)` | 2 tests |
+| M2 | drop the invalid-budget guard (runs unbounded) | 5 tests |
+| M3 | never `clearTimeout` the watchdog | 3 tests |
+| M4 | reject with a plain `Error` instead of the `AppError` | 5 tests |
+| M5 | let a synchronous `start()` throw escape | 2 tests |
+| M6 | move the timeout rule _below_ the `failed`/`conversion` rules in `inferErrorCode` | 5 tests |
+| M7 | reduce `withTimeout` to `start(() => undefined)` — every site stays wired, nothing fires | **all 6 new per-site hang tests** |
 
 M7 is the important one. Wiring tests alone do not prove a budget is _enforced_: every pre-existing spec
 drove `close`/`ffprobe` explicitly, so a completely absent watchdog passed all of them. Each of the five
@@ -938,10 +1186,10 @@ renderer warning), `npm run format:check` clean.
 
 #### Path corrections (three of this phase's targets were filed under paths that do not exist)
 
-| Plan says                              | Actually is                                                           |
-| -------------------------------------- | --------------------------------------------------------------------- |
-| `src/main/ffprobe-mapper.ts`           | `src/main/transcoders/ffprobe-mapper.ts`                              |
-| `src/main/timeline-media.ts`           | `src/main/timeline/timeline-media.ts`                                 |
+| Plan says | Actually is |
+| --- | --- |
+| `src/main/ffprobe-mapper.ts` | `src/main/transcoders/ffprobe-mapper.ts` |
+| `src/main/timeline-media.ts` | `src/main/timeline/timeline-media.ts` |
 | `process-utils.ts:128` (`withTimeout`) | does not exist; the file is 133 lines and exports only suspend/resume |
 
 Also: `getMediaInfo` and `convertFile` are **not** exported functions — they are IPC handlers at
@@ -954,9 +1202,9 @@ the transcoder layer or the IPC layer, not by importing a function that isn't th
 
 This is the largest coverage hole: 13 of 14 Tier A specs replace the entire main process with a mock.
 
-### 3.1 Channel inventory test
+### 3.1 Channel inventory test - **DONE**
 
-New `src/main/ipc/__tests__/channel-contract.test.ts`:
+New `src/main/ipc/__tests__/channel-contract.test.ts`, 8 tests:
 
 - Import `registerIpcHandlers` with a fake `ipcMain` that records every channel → build the
   authoritative set.
@@ -965,56 +1213,308 @@ New `src/main/ipc/__tests__/channel-contract.test.ts`:
 - **Fail on any drift in either direction.** This alone kills the F5 class of bug permanently.
 - Add a `data-testid`-style lint that every channel constant has a matching `ipcMain.handle`.
 
-### 3.2 Handler abuse harness
+**Result - DONE (2026-10-01), and the plan's own prescription had to be corrected.** The 8 tests pass
+(`3068/3068` unit across 204 files; typecheck, format, lint clean - lint has only the pre-existing
+`LanguageMenu.tsx` `no-autofocus` warning). Recorded counts: **46 handlers + 7 listeners** in
+`registerIpcHandlers` under non-dev, **+6 handlers** from the three separately-wired bridges, **79**
+runtime preload members.
+
+**The channel set is discovered by executing code, not by grepping source.** Each test calls the
+_real_ `registerIpcHandlers` / `registerMonitoringIpcBridge` / `registerAnalyticsIpcBridge` /
+`registerMcpSettingsIpc` and the _real_ preload against a recording `electron` mock, then invokes
+every API member. A source-grep version would have been weaker in the one place it matters most: the
+registrars are composed from a dozen modules and two of them are wired _outside_ `registerIpcHandlers`.
+
+**Three registrars are wired directly by `src/main/index.ts`, not by `registerIpcHandlers`.**
+`registerMonitoringIpcBridge`, `registerAnalyticsIpcBridge`, and `registerMcpSettingsIpc` each
+contribute 2 handlers. A test that only called `registerIpcHandlers` would have classified 6 live
+channels as dead.
+
+**`DEV_CAPTURE_SCREENSHOT` is conditional, and this is a live footgun.** `registerDevHandlers` only
+registers it when `isDevMode()`. Because `NODE_ENV` is `test` under Vitest, the dev registrar
+contributes **zero** channels to the main surface in the unit tier - the single largest source of a
+passing-but-vacuous inventory. It is now covered by its own explicit test that flips `NODE_ENV` and
+`process.argv` to prove registration in dev and _absence_ in production.
+
+**The first version passed 8/8 while 5 of those tests could not fail. This is the load-bearing
+finding.** An orphan handler added to `image.ts` (`get-image-info-orphan`) was detected; the same
+mutation re-run after a refactor that memoized `collectSurfaces()` **passed**. Cause: the dev-mode
+test cleared the shared `rec.handle` array and never restored it, so with a memoized surface every
+later test observed an empty handler list - `every(...)` over `[]` is `true`, so reachability,
+overlap, and classification all passed on nothing. Fixed by giving the recorder a dedicated
+`handleLog` the dev test owns, and by memoizing the surface collection so a second run cannot
+silently re-register. **A shared recorder plus a memoized collection is exactly the combination that
+makes a contract test lie**, and no amount of reading the test would have shown it; only re-running a
+known-caught mutation did.
+
+**Mutation evidence (3/3 caught, each with a backup and `try/finally` restore):**
+
+| Mutation | Caught by |
+| --- | --- |
+| Preload `invoke`s unregistered `capabilities-v2` | 3 tests - unregistered invoke, handler reachability, classification |
+| Preload gains an undeclared `getCapabilitiesBrandNew` | runtime-vs-`electron-api.d.ts` member drift |
+| Orphan `ipcMain.handle` in `image.ts` | handler reachability (caught again after the memoization fix - see above) |
+
+**Known limitation, recorded rather than hidden:** the two `getPathForFile` paths (preload
+`webUtils`, renderer `File.path`) cannot be exercised under a mock, so they are skipped by explicit
+name. And `src/shared/__tests__/ipc-channels.test.ts` only asserts hardcoded string literals - it
+provides no wiring coverage and does not overlap with this test.
+
+### 3.2 Handler abuse harness — **DONE**
 
 New `e2e/specs/ipc-abuse.spec.ts`, launched with `mock: false` (real preload + real main), driving
-handlers through `app.evaluate(() => require('electron').ipcMain)`:
+handlers through the public `window.electronAPI` rather than the drafted
+`app.evaluate(() => require('electron').ipcMain)`. `ipcMain.handle` exposes no way to _invoke_ a
+registered handler, and `require` does not exist in the main realm Playwright evaluates in, so the
+drafted approach could not work as written; going through the real preload also means structured
+clone is genuinely exercised instead of bypassed. 20 tests, all passing, ~8.5 min.
 
-- Call **every** registered handler with: no args, `undefined`, `null`, `0`, `''`, `NaN`,
-  `'../../../../etc/passwd'`, a 1 MB string, a 10k-element array, a 200-key object, an object with
-  `__proto__` / `constructor` / `prototype` keys, a frozen object, a Proxy that throws on every get.
-- **Assertion:** the process does not emit `uncaughtException` (via the Phase 0 main-process
-  recorder), the window stays alive (`isPageAlive`), and any rejection is an `Error` with a
-  `formatError`-producible message — never a raw `TypeError: Cannot read properties of undefined`.
+**Deviation from the draft, and why.** The draft shares one app across every input. That turned a
+single hostile payload into a cascading failure: `big-array` leaves the main process walking ten
+thousand filesystem paths, and that work was still draining when the next input ran, so the app
+closed and the remaining nine tests reported "Target page, context or browser has been closed" —
+reporting a harness artefact as ten separate handler defects. **Each hostile input now gets its own
+Electron instance**, which also makes the boundary audit attributable to one input.
 
-### 3.3 Event-channel abuse
+**Five production bugs found and fixed** (all mutation-verified, 8/8):
+
+| # | Site | Bug | Fix |
+| --- | --- | --- | --- |
+| 1 | `src/main/ipc/dialogs.ts` | `expandPaths` iterated a bare string, so `expandPaths('../../../../etc/passwd')` walked the filesystem **once per character**; the `.` expanded the whole working directory. Main process stalled >2 min. | `coerceNonEmptyArray` shape guard, returns `[]` |
+| 2 | `src/main/ipc/system.ts` | `revealFile` forwarded unvalidated args to `shell.showItemInFolder` → raw `TypeError: Argument must be a string`. | `coerceOsString` guard |
+| 3 | `src/main/updater.ts` | `openReleaseNotes` / `installUpdate` forwarded to `shell.openExternal` / `shell.openPath`; `installUpdate` then called `app.quit()` **regardless** of whether the installer started. | `coerceOsString` guards |
+| 4 | `src/main/ipc/queue.ts` | `JSON.stringify(config)` in the log line threw `Converting circular structure to JSON`. **Structured clone preserves cycles**, so a cyclic object genuinely reaches the handler. | Log the object; `sanitizeLogArg` already handles cycles |
+| 5 | `src/preload/index.ts` | Same `JSON.stringify` bug, but on a Promise-returning method, so it threw **synchronously** — a renderer's `.catch()` never sees it and the error escapes as an unhandled renderer exception before main is involved. | Log the object |
+
+Bug 4 is the interesting one: fixing bug 5 alone left the channel still broken. Two identical
+`JSON.stringify` calls on the same payload, in two processes.
+
+Also added `MAX_OS_STRING_LENGTH` (4096, under Windows' 32,767 extended-length limit): a type check
+alone does not stop a 1 MB string, because it _is_ a string — it simply is not a path. All three
+`shell.*` sites forwarded one verbatim before this.
+
+**Three harness defects the suite found in itself**, all of which had been reporting production
+defects that did not exist:
+
+- A 5 s per-call budget raced `playerGetFrame`'s own 5 s `PLAYER_FRAME_TIMEOUT_MS` and failed 16 of
+  17 sweeps. Fixed by raising the budget to 15 s and allow-listing the two methods that block by
+  design (`playerGetFrame`, `checkForUpdates`) — with a separate assertion that they still _settle_,
+  so an unbounded wait is still caught.
+- An "oversized payload" check asserted on `preview.length`, but `preview` is deliberately truncated
+  to 400 chars, so it measured the truncation, not the payload, and flagged the app's own ~1 KB
+  file-filter list. Replaced with `maxArgLength`, measured on the untouched argument.
+- The boundary audit asserted that each sweep must _reach_ a contract-checked boundary. That is
+  backwards: once the handlers correctly reject hostile input before the OS, nothing reaches
+  `shell.*`, and sixteen tests failed **demanding the regression back**. Liveness is now proved once,
+  separately, with a valid argument; the per-input audit passes vacuously when nothing bad happened.
+
+**Input catalogue extended** to 17: added `BigInt`, `Symbol`, and a function — values structured
+clone _can_ carry, so they reach the main process and exercise the guards that a clone rejection
+would otherwise hide. The `expandPaths` element-level gap (a valid array of invalid entries) remains
+open and is not yet fixed; the `big-array` case currently survives because `expandMediaPaths`
+resolves each element.
+
+### 3.3 Event-channel abuse — **DONE (2026-10-05)**
 
 New `e2e/specs/ipc-events.spec.ts` — main emits **every** `on*` channel with: garbage payload, `null`,
 wrong-shaped object, 10k-element arrays, and 5 MB blobs, at 100 Hz for 2 s, while the renderer is on
 each of the 12 routes. Assert: no `pageerror`, no crash, and the app stays interactive.
 
-### 3.4 The "hostile preload" E2E suite (highest value-per-hour in this plan)
+Delivered as specified, plus `cyclic` and `deep`, which the original five shapes did not cover and
+which turned out to matter (§ below). 12 tests, all green; whole Tier B suite 4 files / 41 tests.
 
-New `e2e/mocks/hostile-preload.js` + `e2e/specs/hostile-bridge.spec.ts`. Launch with
+#### What the sweep found, in the order it found it
+
+**1. Two unguarded payload dereferences crashed the renderer.** `onConversionProgress` and
+`onQueueProgress` read `data.input` / `data.progress.percent` before validating anything, so a `null`
+event threw inside the preload listener:
+
+```
+TypeError: Cannot read properties of null (reading 'input')
+TypeError: Cannot read properties of undefined (reading 'percent')
+```
+
+Fixed centrally rather than per handler: `src/shared/ipc-guards.ts` exports type-predicate
+validators, and all **15** payload-bearing push channels now validate before dereferencing, log, or
+forwarding. The other 13 had the same latent shape even though this sweep only tripped two.
+
+**2. The guard I added then became the bug.** Logging every drop is an amplification vector, because
+the drop rate is controlled by the sender: 15 channels × 100 Hz = 1500 log lines/second. Worse,
+`onWindowMaximizedChange` logged the raw payload _before_ its guard, so `big-blob` wrote 5 MB strings
+straight into the log store (`sanitizeLogArg` serialises them happily). The store filled with
+multi-megabyte entries and **every subsequent route got slower** — `/logs` took 7.7 s to answer a
+round-trip while `/about` took 0.6 s, so one unguarded `log.debug` degraded the whole session. Two
+fixes:
+
+- the guard now runs _before_ the log line in that handler (and the comment says why);
+- drops are rate-limited by `src/preload/event-drop-log.ts`: first 3 per channel are reported
+  individually, then counted and summarised — bounded by _both_ time (5 s) and count (every 50), so
+  a flood delivered inside one millisecond still reports and a flood that stops still gets its count
+  flushed. A 1000-payload flood now produces ≤ 25 lines. Suite-wide `appWarn` volume fell from
+  thousands to 30.
+
+Logging a value you have not checked is how untrusted data gets into your diagnostics.
+
+**3. The renderer has no event-throughput ceiling.** `cyclic` is the only shape that _passes_
+validation, so it is the only one that reaches the handlers at rate. With an attribution control in
+the harness (a main-side sample on the same cadence — `getCapabilities` resolves in main, so a slow
+sample there indicts the generator rather than the app):
+
+| Rate | Worst renderer | Worst main | Result |
+| --- | --- | --- | --- |
+| 100 Hz requested (~650 ev/s, ~43/ch) | 1483–2823 ms | 1–20 ms | 10 of 12 routes stall |
+| 10 Hz (~150 ev/s) | all under 2 s | 1–4 ms | 12 of 12 pass |
+
+Main is idle throughout, so the renderer is genuinely saturated: **it applies every incoming event
+with no coalescing or back-pressure.** Real and worth fixing, but 100 Hz on 15 channels at once is
+a load the app cannot produce by itself, so the gate sits at 10 Hz and the ceiling is recorded here
+and at the call site rather than deleted. Re-triage any rate with `E2E_SHAPE_HZ=<n>`.
+
+**4. Open follow-up: `/logs` renders 2001 unvirtualized rows.** `logStore` is capped at
+`LOG_MAX_ENTRIES` (2000) and `Logs.tsx` renders every entry, re-rendering the whole list on each
+append. Measured `rows=2001` on `/logs` against `-1` on every other route, worst renderer 5.5–7 s
+under `big-blob` with main at 1–2 ms. **This is a real defect but not event abuse** — it reproduces
+in any busy session with no hostile sender, and the fix is windowing the list, not anything in the IPC
+path. Delivered the cheap half now (the autoscroll no longer starts a smooth animation per entry, and
+only follows when already pinned to the bottom, which also stops yanking the view away while reading
+history). The list itself is still unvirtualized: **tracked, not fixed.** `/logs` carries an explicit
+documented budget in the suite so a regression past it still fails — raise that budget when the list
+is windowed, do not tune it upward.
+
+#### Harness bugs this phase found (all would have been reported as production faults)
+
+Worth recording, because each one produced a confident, wrong failure:
+
+- **Wrong window.** `BrowserWindow.getAllWindows()[0]` selected the splash, which main destroys after
+  loading. Eight cells reported `TypeError: Object has been destroyed`. Now resolved via
+  `app.browserWindow(page)`.
+- **`window-close-requested` is a command, not a data channel.** `CloseConfirmDialog`'s handler calls
+  `windowCloseConfirmed()`, and main closes the window — so firing it at 100 Hz closed the app _by
+  design_ and the sweep reported correct behaviour as a dozen failures. It and the two other no-payload
+  channels are now classified from the `(cb: () => void)` annotation and tested for their actual
+  effect.
+- **Case mismatch that silently disabled the fix above.** The classifier returned `QueueCancelled`;
+  the constants are `QUEUE_CANCELLED`. The exclusion matched nothing, so the command channel stayed in
+  the sweep and the bug survived a full green-looking run.
+- **`getSettings` does not exist** (it is `mcpGetSettings`). Found mid-run as
+  `api[method] is not a function`. `SANITY_CALLS` is now typed against `ElectronAPI`, so `tsc` checks it.
+- **Shared-session cascade.** One dead renderer left every later cell reporting "Target page closed",
+  and cells that never ran looked like passes. Liveness is now re-checked before every cell.
+- **`log.warn` detached.** The new throttle took `log.warn` as a value; `Logger.warn` reads instance
+  state, so the _first_ dropped payload in production threw
+  `Cannot read properties of undefined (reading 'context')`. Caught by an existing preload test.
+
+### 3.4 The "hostile preload" E2E suite — **DONE (2026-10-05)**
+
+`e2e/mocks/hostile-preload.js` + `e2e/specs/hostile-bridge.spec.ts` (14 tests). Launch with
 `ENCODEX_HOSTILE_MODE=<mode>`, and the mock preload makes **every** `electronAPI` method:
 
-| Mode           | Behaviour                                                                                                                           |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `reject-sync`  | throws synchronously                                                                                                                |
-| `reject-async` | returns a rejected promise with a random `Error` shape                                                                              |
-| `never`        | returns a promise that never settles (tests loading/timeout UX)                                                                     |
-| `wrong-type`   | resolves the right _kind_ of value with a wrong shape (`null` where an object is expected, array where object, string where number) |
-| `garbage`      | resolves 1 MB of random bytes / deeply nested cyclic object                                                                         |
-| `partial`      | 30% of methods work, 70% fail — the realistic partial-failure case                                                                  |
+| Mode | Behaviour |
+| --- | --- |
+| `reject-sync` | throws synchronously |
+| `reject-async` | returns a rejected promise with a random `Error` shape |
+| `never` | returns a promise that never settles (tests loading/timeout UX) |
+| `wrong-type` | resolves the right _kind_ of value with a wrong shape (`null` where an object is expected, array where object, string where number) |
+| `garbage` | resolves 1 MB of random bytes / deeply nested cyclic object |
+| `partial` | 30% of methods work, 70% fail — the realistic partial-failure case |
 
 Then walk all 12 routes and, for each, run the primary user journey. **Assertion for every case:**
-no `pageerror`, an `ErrorBanner`/`ErrorSnackbar` is shown, navigation still works, and a recovery
-action (retry / reselect file) succeeds once the mode flips to `partial`-healthy. This is the suite
-that will find most of the real "unhandled exception" reports.
+no `pageerror`, navigation still works, and a recovery action succeeds once the mode flips to
+`partial`-healthy. This is the suite that will find most of the real "unhandled exception" reports.
+
+**Delivered as specified, with three deliberate departures**, all recorded because each one replaced a
+weaker test with a stronger one:
+
+- **`ErrorBanner`/`ErrorSnackbar` is observed, not asserted.** Requiring a banner is wrong (most routes
+  have nothing to report when a passive `getCapabilities` fails); requiring _none_ would forbid the error
+  surfacing this phase exists to encourage. The tripwire already fails the suite on an unhandled
+  exception, so the assertion that matters is enforced centrally and the banner count is recorded for
+  human review.
+- **The load-bearing assertion is recovery, not liveness.** "Still alive" passes for a renderer with
+  fifty rejected promises and spinners that never resolve. Each mode therefore flips the live bridge to
+  `healthy` and requires a **real round-trip** (`getCapabilities`) to succeed, then walks a route again.
+- **The preload proxies the real IPC channels** instead of answering locally, so `main` stays real and
+  recovery is a genuine round-trip. A stub that answered everything would make recovery untestable.
+
+#### What it found: 4 production defects, 2 of them white screens
+
+Every one of these is invisible to a suite that only supplies well-formed or fast-failing bridges.
+
+1. **The first paint was gated on an IPC call with no timeout — a permanent white screen.**
+   `main.tsx` mounted React from `bootstrapRendererMonitoring().finally(...)`, and that function
+   `await`ed `monitoringGetState()`. The `try/catch` handled a _rejection_ but nothing could handle a
+   promise that never settles, so a wedged main process meant no app, no error, no spinner, and nothing
+   in the log. Confirmed by one-failure-per-launch attribution: `never` mode failing **only**
+   `monitoringGetState` reproduced it; failing any of the other seven boot calls did not. (The
+   corroborating detail: `analyticsGetState` hangs are harmless precisely because that bootstrap is not
+   awaited.) Fixed with `withBridgeTimeout` (2 s), which keeps the intent — monitoring live before first
+   render — while making the worst case late coverage instead of a blank window.
+2. **A synchronous throw from the bridge crashed the renderer, and `?.` does not prevent it.**
+   `contextBridge` propagates a synchronous throw straight into the caller, so `window.electronAPI
+?.method(x)` covers a _missing_ API and nothing else. Unguarded: two fire-and-forget `send`s in
+   `App.tsx`'s mount effect and in two store actions, four module-scope `on*` subscriptions, three
+   module-scope hydration chains, `useCapabilities.loadCapabilities`, and seven `updateStore` actions.
+   Three distinct consequences, all found:
+   - In `App.tsx`'s mount effect the throw propagated out of the effect and took the tree down.
+   - **At module scope it aborted the bundle.** `updateStore` subscribes _inside_ its Zustand
+     initializer, so a throwing subscription meant `create()` never returned a state object and every
+     later `get()` was `undefined` — surfacing as `Cannot read properties of undefined (reading
+'checkForUpdates')` from the 3-second update check and from `About`/`UpdateDialog` destructuring.
+     That indirectness cost several debugging rounds: the stack pointed at a scheduled timer, not at the
+     subscription 3 s earlier that had actually broken the store.
+   - In `useCapabilities` it became a `console.error` during render, from the lazy `CodecSelect` chunk.
+3. **Fire-and-forget `async` calls left unhandled rejections.** Containing the synchronous throw was
+   necessary but not sufficient: `callBridgeVoid` catches only a sync throw by design, so an `async`
+   bridge call used fire-and-forget still produced a rejection with no handler — three of them, traced
+   to `windowSetAlwaysOnTop` / `setLaunchAtLogin`. A 16-site sweep found the rest (`playerClose`,
+   `queueSetConcurrency`, `queueSetWhenDone`, `queueUpdateOptions`, `queueRemove`, `queueMoveTo`,
+   `rejectTerms`, `windowCloseConfirmed`) plus two `.then()` chains with no `.catch` at all
+   (`BatchQueue`'s `queueList` and `queueGetState`). Fixed with a separate `fireAndForgetBridge`
+   primitive, because the two cases need genuinely different handling and conflating them is how the
+   unhandled rejections survived the first fix.
+4. **The store adopted unvalidated bridge fields, so a wrong-typed result crashed a route.**
+   `mcpGetSettings` hydration copied `settings.token` straight into the store; under `garbage` mode that
+   is a 1 MB `ArrayBuffer`, whose `.token` is `undefined`, and `Settings.tsx` then read `token.length`.
+   The same hydration is where `clampMcpPort` already existed and was not being used. Fixed by coercing
+   at the boundary (`enabled === true`, `clampMcpPort(port)`, `typeof token === 'string'`).
+
+All four are the same root cause with different blast radii: **the renderer assumed a bridge it does not
+own would answer, in the right shape, on the first try.** `src/renderer/utils/bridge-call.ts` now carries
+the four primitives that express the actual contract (`callBridgeVoid`, `fireAndForgetBridge`,
+`bridgePromise`, `withBridgeTimeout`), with 18 unit tests written so that reverting a fix fails them.
+
+#### Harness defects found and fixed (2, both would have produced false confidence)
+
+- **A bisection that proved nothing.** The first attribution attempt set the failure set through
+  `__hostile.setFailures(...)` and then called `page.reload()`. A reload **re-runs the preload**, so the
+  injected state was discarded and every row silently re-measured the launch mode — all six
+  single-method failures reported "mounted". It looked like a clean negative result. The fix was to seed
+  the set from `ENCODEX_HOSTILE_FAILURES` at load time so one failure per launch is possible; that is
+  what turned "the app does not boot" into the specific `monitoringGetState` attribution above.
+- **Recovery leaked into later tests.** `__hostile` state is per-window and long-lived, so the recovery
+  test's deliberate flip to `healthy` left `partial` healed for every subsequent test — which reported
+  "no call ever rejected" and would have turned a real mode into a no-op. Each test now restores its mode
+  first (`restoreMode`).
+
+Two harness-faithfulness issues were also corrected, both of which had manufactured fake findings:
+`reject-sync` originally threw non-`Error` values, which `contextBridge` cannot carry (it substitutes a
+generic "An unknown exception occurred in the isolated context", testing Electron rather than the app);
+and the `send` methods originally returned rejected promises in `reject-async`, changing the API's shape
+— a `void` method has no reply, so its entire space of real failures is a synchronous throw or silence.
 
 ---
 
 ## Phase 4 — State machines, lifecycle & races
 
-| Area                                  | Attacks                                                                                                                                                                                                                                                                            |
-| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Queue** (`job-queue.ts`, 638 lines) | Illegal transitions: `done→running`, `error→running`, cancel-during-completion, `queueMoveTo` out-of-range index, `queueUpdateOptions` on a `done` job, 200 concurrent `queueAdd`s writing the **same** output path, `queueImport` while running, `concurrency: 0` / `99`          |
-| **Conversion lifecycle**              | `convertFile` → `cancelConversion` before spawn resolves; `pause` mid-progress; `resume` after `done`; `cancel` twice; close window mid-conversion then relaunch and assert recovery                                                                                               |
-| **Reload/quit**                       | Reload the renderer 50× mid-conversion; quit the app mid-update-download; kill the main process mid-queue and relaunch against the same userDataDir — assert the persisted queue is valid and the app starts                                                                       |
-| **Zustand persist**                   | 18 stores × adversarial localStorage (Phase 1) + `localStorage.setItem` throwing (quota) + `migrate()` throwing → app must not white-screen                                                                                                                                        |
-| **Timers/listeners**                  | `vi.useFakeTimers()` + `vi.getTimerCount()` after unmount must be 0; mount/unmount `MediaPlayer`, `VideoTimeline`, `BatchQueue` 100× and assert listener counts (`window`, `document`, `BroadcastChannel`, `ResizeObserver`) return to baseline — the classic Electron memory leak |
-| **React 19 StrictMode**               | Every page test double-renders under `<StrictMode>`; the app already runs StrictMode in dev and this is untested                                                                                                                                                                   |
-| **Race harness**                      | A reusable `deferred()` util + `Promise.race` timeouts so every "eventually" is a bounded assertion, not a `waitFor` that silently passes                                                                                                                                          |
+| Area | Attacks |
+| --- | --- |
+| **Queue** (`job-queue.ts`, 638 lines) | Illegal transitions: `done→running`, `error→running`, cancel-during-completion, `queueMoveTo` out-of-range index, `queueUpdateOptions` on a `done` job, 200 concurrent `queueAdd`s writing the **same** output path, `queueImport` while running, `concurrency: 0` / `99` |
+| **Conversion lifecycle** | `convertFile` → `cancelConversion` before spawn resolves; `pause` mid-progress; `resume` after `done`; `cancel` twice; close window mid-conversion then relaunch and assert recovery |
+| **Reload/quit** | Reload the renderer 50× mid-conversion; quit the app mid-update-download; kill the main process mid-queue and relaunch against the same userDataDir — assert the persisted queue is valid and the app starts |
+| **Zustand persist** | 18 stores × adversarial localStorage (Phase 1) + `localStorage.setItem` throwing (quota) + `migrate()` throwing → app must not white-screen |
+| **Timers/listeners** | `vi.useFakeTimers()` + `vi.getTimerCount()` after unmount must be 0; mount/unmount `MediaPlayer`, `VideoTimeline`, `BatchQueue` 100× and assert listener counts (`window`, `document`, `BroadcastChannel`, `ResizeObserver`) return to baseline — the classic Electron memory leak |
+| **React 19 StrictMode** | Every page test double-renders under `<StrictMode>`; the app already runs StrictMode in dev and this is untested |
+| **Race harness** | A reusable `deferred()` util + `Promise.race` timeouts so every "eventually" is a bounded assertion, not a `waitFor` that silently passes |
 
 ---
 
@@ -1113,16 +1613,16 @@ New `src/mcp/__tests__/hostile.integration.test.ts` + `e2e/specs/mcp-http-hostil
 
 ## Phase 8 — Resource limits & denial-of-service
 
-| Scenario                                                                           | Budget / assertion                                                          |
-| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| 100,000 files dropped on a folder (`expandPaths`/`collectMediaFiles`)              | completes < 5 s, no OOM, UI stays responsive                                |
-| 10,000 jobs in the queue, concurrency 8                                            | scheduler doesn't starve, memory < 500 MB delta                             |
-| 1,000-filter video filter chain                                                    | parsed, validated, previewed < 200 ms; ffmpeg argv stays under the OS limit |
-| Catastrophic-backtracking regex in `ffmpeg-utils` / `video-filters` / `formatters` | a 100 KB adversarial input must not hang > 1 s (add a regex-scan CI step)   |
-| 100 MB SRT / 10 MB JSON queue export                                               | parse time and memory bounded                                               |
-| 20 GB sparse file (truncated seek)                                                 | no full read into memory                                                    |
-| 1,000 rapid route changes during a conversion                                      | no leaked listeners, no state corruption                                    |
-| 10,000 rapid clicks on Convert                                                     | exactly one job created (double-submit guard)                               |
+| Scenario | Budget / assertion |
+| --- | --- |
+| 100,000 files dropped on a folder (`expandPaths`/`collectMediaFiles`) | completes < 5 s, no OOM, UI stays responsive |
+| 10,000 jobs in the queue, concurrency 8 | scheduler doesn't starve, memory < 500 MB delta |
+| 1,000-filter video filter chain | parsed, validated, previewed < 200 ms; ffmpeg argv stays under the OS limit |
+| Catastrophic-backtracking regex in `ffmpeg-utils` / `video-filters` / `formatters` | a 100 KB adversarial input must not hang > 1 s (add a regex-scan CI step) |
+| 100 MB SRT / 10 MB JSON queue export | parse time and memory bounded |
+| 20 GB sparse file (truncated seek) | no full read into memory |
+| 1,000 rapid route changes during a conversion | no leaked listeners, no state corruption |
+| 10,000 rapid clicks on Convert | exactly one job created (double-submit guard) |
 
 ---
 
@@ -1151,17 +1651,17 @@ Without this, all of Phases 1–8 can be theatre: assertions that pass regardles
 
 ### New CI jobs
 
-| Job                   | Gate                                                                                                                                                  |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `typecheck:test`      | Blocks. Phase 0.3. **Live** — chained into `npm run typecheck`, so CI's `typecheck` job gates it                                                      |
-| `typecheck:e2e`       | Blocks. Phase 0.3. **Live** — chained into `npm run typecheck`; was drafted as non-blocking, but all 14 e2e errors were fixed rather than allowlisted |
-| `test-strict`         | Blocks. Unit+integration with `ENCODEX_STRICT_TESTS=1`                                                                                                |
-| `test-fuzz`           | Blocks. Phases 1 + 2, seeded corpus, 5 min budget                                                                                                     |
-| `test-ipc-abuse`      | Blocks. Phase 3, ubuntu + windows                                                                                                                     |
-| `test-mutation-delta` | Advisory for 4 weeks, then blocks                                                                                                                     |
-| `test-locale-matrix`  | Blocks. Phase 5.1 (ubuntu, 56 locales × 12 routes)                                                                                                    |
-| `flake-detect`        | Advisory, posts a PR comment                                                                                                                          |
-| `nightly-chaos`       | Nightly: full corpus fuzz with a random seed, 3× e2e, 30-min soak, long-file, memory-leak re-run                                                      |
+| Job | Gate |
+| --- | --- |
+| `typecheck:test` | Blocks. Phase 0.3. **Live** — chained into `npm run typecheck`, so CI's `typecheck` job gates it |
+| `typecheck:e2e` | Blocks. Phase 0.3. **Live** — chained into `npm run typecheck`; was drafted as non-blocking, but all 14 e2e errors were fixed rather than allowlisted |
+| `test-strict` | Blocks. Unit+integration with `ENCODEX_STRICT_TESTS=1` |
+| `test-fuzz` | Blocks. Phases 1 + 2, seeded corpus, 5 min budget |
+| `test-ipc-abuse` | Blocks. Phase 3, ubuntu + windows |
+| `test-mutation-delta` | Advisory for 4 weeks, then blocks |
+| `test-locale-matrix` | Blocks. Phase 5.1 (ubuntu, 56 locales × 12 routes) |
+| `flake-detect` | Advisory, posts a PR comment |
+| `nightly-chaos` | Nightly: full corpus fuzz with a random seed, 3× e2e, 30-min soak, long-file, memory-leak re-run |
 
 ### Budgets to add to `perf/baseline.json` (regression-gated)
 
@@ -1197,15 +1697,15 @@ hangs hide.
 
 ## Execution order & effort
 
-| Sprint | Phase                                            | Effort | Ships                                                                                                             |
-| ------ | ------------------------------------------------ | ------ | ----------------------------------------------------------------------------------------------------------------- |
-| **1**  | 0.1–0.3 (tripwires + typecheck) + 0.6            | 3–4 d  | CI suddenly catches real crashes. Expect a noisy first run — that is the point. Drain the noise before moving on. |
-| **2**  | 0.4–0.5 + Phase 1 (fuzz)                         | 4 d    | `fast-check` suite, per-file coverage floor set from the week-1 report, flake detector                            |
-| **3**  | Phase 3 (IPC contract + abuse + hostile preload) | 5 d    | The highest-yield suite. Expect a top-10 bug list.                                                                |
-| **4**  | Phase 2 (media fuzz) + 8 (resource limits)       | 4 d    | Corruption + DoS                                                                                                  |
-| **5**  | Phase 4 (state/race/leaks) + Phase 6 (CLI/MCP)   | 5 d    |                                                                                                                   |
-| **6**  | Phase 5 (i18n/a11y/keyboard) + Phase 7 (updater) | 4 d    |                                                                                                                   |
-| **7**  | Phase 9 (mutation) + Phase 10 (CI/nightly)       | 4 d    | Last, because it needs the assertions from 1–6 to be real.                                                        |
+| Sprint | Phase | Effort | Ships |
+| --- | --- | --- | --- |
+| **1** | 0.1–0.3 (tripwires + typecheck) + 0.6 | 3–4 d | CI suddenly catches real crashes. Expect a noisy first run — that is the point. Drain the noise before moving on. |
+| **2** | 0.4–0.5 + Phase 1 (fuzz) | 4 d | `fast-check` suite, per-file coverage floor set from the week-1 report, flake detector |
+| **3** | Phase 3 (IPC contract + abuse + hostile preload) | 5 d | The highest-yield suite. Expect a top-10 bug list. |
+| **4** | Phase 2 (media fuzz) + 8 (resource limits) | 4 d | Corruption + DoS |
+| **5** | Phase 4 (state/race/leaks) + Phase 6 (CLI/MCP) | 5 d | |
+| **6** | Phase 5 (i18n/a11y/keyboard) + Phase 7 (updater) | 4 d | |
+| **7** | Phase 9 (mutation) + Phase 10 (CI/nightly) | 4 d | Last, because it needs the assertions from 1–6 to be real. |
 
 **Total ≈ 6–7 weeks** for one engineer, or ~3 weeks for two.
 

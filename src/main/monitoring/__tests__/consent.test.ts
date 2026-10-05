@@ -10,6 +10,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { MONITORING_CONSENT_FILENAME, readMonitoringConsent, writeMonitoringConsent } from '../consent';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 describe('monitoring consent', () => {
   let dir: string;
@@ -38,6 +39,8 @@ describe('monitoring consent', () => {
   });
 
   it('treats a corrupt file as enabled', () => {
+    expectAppLog('warn', 'main/monitoring/consent');
+
     fs.writeFileSync(path.join(dir, MONITORING_CONSENT_FILENAME), '{not json', 'utf-8');
     expect(readMonitoringConsent(dir)).toBe(true);
   });

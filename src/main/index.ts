@@ -231,9 +231,20 @@ registerProcessCrashHandlers();
  * drive `window.electronAPI` deterministically. The branch is inert outside of
  * e2e runs.
  *
+ * When `ENCODEX_HOSTILE_MODE` is set, e2e/mocks/hostile-preload.js is used
+ * instead. It proxies the *real* IPC channels - so main stays real and recovery
+ * is a genuine round-trip - but injects a chosen failure into every
+ * `electronAPI` method (Phase 3.4). Checked before test mode because it is the
+ * more specific override, and it must keep `ENCODEX_TEST_MODE` unset so the
+ * host-side IPC handlers are the real ones rather than the Tier A stub store.
+ *
  * @returns {string} Absolute path of the preload script to use.
  */
 function resolvePreloadPath(): string {
+  const hostileMode = process.env.ENCODEX_HOSTILE_MODE;
+  if (hostileMode) {
+    return path.join(__dirname, '..', '..', 'e2e', 'mocks', 'hostile-preload.js');
+  }
   if (process.env.ENCODEX_TEST_MODE === '1') {
     return path.join(__dirname, '..', '..', 'e2e', 'mocks', 'preload.js');
   }

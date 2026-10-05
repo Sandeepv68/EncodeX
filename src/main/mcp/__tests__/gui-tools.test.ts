@@ -8,6 +8,7 @@ import { FakeTranscoder } from '../../../mcp/__tests__/test-helpers';
 import type { ITranscoder } from '../../transcoders/types';
 import type { MediaInfo } from '../../../shared/types';
 import type { GuiToolsDeps } from '../gui-tools';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 /**
  * A media-info-capable fake whose probe reports a 1920x1080, 30fps video.
@@ -201,6 +202,8 @@ describe('registerGuiTools', () => {
   });
 
   it('check_for_updates surfaces failures as tool errors', async () => {
+    expectAppLog('warn', 'main/mcp/gui-tools');
+
     const session = await setup({ checkForUpdate: async () => Promise.reject(new Error('network down')) });
     const result = await session.client.callTool({ name: 'check_for_updates', arguments: {} });
     await session.close();

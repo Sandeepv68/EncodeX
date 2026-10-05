@@ -7,6 +7,7 @@ import { useSettingsStore } from '../../stores/settingsStore';
 import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
 import { useVideoCutStore } from '../../stores/videoCutStore';
 import type { MediaInfo, ConversionProgress } from '../../../shared/types';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
 const selectOutputMock = vi.mocked(window.electronAPI.selectOutput);
@@ -220,6 +221,8 @@ describe('VideoCut', () => {
   });
 
   it('requires a duration when duration mode is enabled', async () => {
+    expectAppLog('warn', 'renderer/pages/VideoCut');
+
     renderPage();
     await selectVideo();
     fireEvent.change(screen.getByPlaceholderText('videoCut.placeholderOutput'), { target: { value: '/out/cut.mp4' } });

@@ -41,6 +41,7 @@ import { THEMES } from './colors';
 import { useErrorStore } from './stores/errorStore';
 import { useLogStore } from './stores/logStore';
 import { useSettingsStore } from './stores/settingsStore';
+import { callBridgeVoid, fireAndForgetBridge } from './utils/bridge-call';
 import { useLanguageDirection } from './useLanguageDirection';
 import {
   AppRoot,
@@ -118,15 +119,27 @@ function AppLayout() {
   useDevScreenshot();
 
   useEffect(() => {
-    const cleanup = window.electronAPI?.onLogMessage((entry) => {
-      useLogStore.getState().addEntry(entry);
-    });
+    let cleanup: (() => void) | undefined;
+    // Guarded for the same reason as the mount effect below: this is fire-and-forget, and a
+    // synchronous throw from `contextBridge` would otherwise propagate out of the effect and take the
+    // tree down - losing the log stream that would have explained why.
+    callBridgeVoid(() => {
+      cleanup = window.electronAPI?.onLogMessage((entry) => {
+        useLogStore.getState().addEntry(entry);
+      });
+    }, 'onLogMessage subscription');
     return () => cleanup?.();
   }, []);
 
   useEffect(() => {
-    window.electronAPI?.windowSetAlwaysOnTop(useSettingsStore.getState().alwaysOnTop);
-    window.electronAPI?.setLaunchAtLogin(useSettingsStore.getState().launchAtLogin);
+    // Both calls are fire-and-forget `send`s: their results are discarded, and neither has a reply to
+    // wait on. Optional chaining covers a missing method but not one that throws, and `contextBridge`
+    // propagates a synchronous throw into the caller - so unguarded, a preload that throws here took
+    // the entire tree down on first paint with a blank window. `bootstrapRendererMonitoring` is gated
+    // the same way, and the two together were the entire Phase 3.4 finding.
+    const { alwaysOnTop, launchAtLogin } = useSettingsStore.getState();
+    fireAndForgetBridge(() => window.electronAPI?.windowSetAlwaysOnTop(alwaysOnTop), 'windowSetAlwaysOnTop on mount');
+    fireAndForgetBridge(() => window.electronAPI?.setLaunchAtLogin(launchAtLogin), 'setLaunchAtLogin on mount');
   }, []);
 
   /**

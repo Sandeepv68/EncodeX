@@ -20,6 +20,7 @@
 import { create } from 'zustand';
 import type { UpdateInfo, UpdateProgress } from '../../shared/types';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { callBridgeVoid, fireAndForgetBridge } from '../utils/bridge-call';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 
 /**
@@ -108,11 +109,25 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
     });
   }
 
-  subscribeToEvents();
+  /**
+   * Subscribing here is guarded because it runs *inside* the store initializer. A bridge method that
+   * throws synchronously would otherwise abort `create()` before it returns a state object, leaving a
+   * store whose every `get()` is `undefined` - so the 3-second update check below, and any component
+   * destructuring an action from this store, would fail with an unrelated-looking
+   * `Cannot read properties of undefined`. See `utils/bridge-call.ts`.
+   */
+  callBridgeVoid(subscribeToEvents, 'update store event subscriptions');
 
-  setTimeout(() => {
-    get().checkForUpdates();
-  }, 3000);
+  callBridgeVoid(
+    () =>
+      setTimeout(() => {
+        // The store exists by now, but a defensive guard costs nothing: this is the only caller and it
+        // fires 3s after boot with no error path of its own.
+        const action = get().checkForUpdates;
+        if (typeof action === 'function') action();
+      }, 3000),
+    'scheduled update check',
+  );
 
   /**
    * Restores a previously armed next-restart install after an app restart.
@@ -137,7 +152,9 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
       });
   }
 
-  hydratePendingInstall();
+  // Guarded for the same reason as `subscribeToEvents`: this is the last thing the initializer does
+  // before returning, so a synchronous throw here would leave the store with no state object at all.
+  callBridgeVoid(hydratePendingInstall, 'pending install hydration');
 
   return {
     status: 'idle',
@@ -151,18 +168,18 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
 
     checkForUpdates: () => {
       set({ status: 'checking', errorMessage: null, progress: null });
-      window.electronAPI?.checkForUpdates();
+      fireAndForgetBridge(() => window.electronAPI?.checkForUpdates(), 'checkForUpdates');
       recordAnalyticsEvent(createAnalyticsEvent('update_check_triggered', { source: 'manual' }));
     },
 
     downloadUpdate: () => {
       set({ status: 'downloading', progress: null, errorMessage: null, restartScheduled: false });
-      window.electronAPI?.downloadUpdate();
+      fireAndForgetBridge(() => window.electronAPI?.downloadUpdate(), 'downloadUpdate');
       recordAnalyticsEvent(createAnalyticsEvent('update_download_started', {}));
     },
 
     cancelDownload: () => {
-      window.electronAPI?.cancelDownload();
+      fireAndForgetBridge(() => window.electronAPI?.cancelDownload(), 'cancelDownload');
       set({ status: 'available', progress: null });
       recordAnalyticsEvent(createAnalyticsEvent('update_download_cancelled', {}));
     },
@@ -170,7 +187,7 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
     installUpdate: () => {
       const { installerPath } = get();
       if (installerPath) {
-        window.electronAPI?.installUpdate(installerPath);
+        fireAndForgetBridge(() => window.electronAPI?.installUpdate(installerPath), 'installUpdate');
         recordAnalyticsEvent(createAnalyticsEvent('update_install_now', {}));
       }
     },
@@ -179,19 +196,19 @@ export const useUpdateStore = create<UpdateState>((set, get) => {
       const { installerPath, info, scheduledVersion } = get();
       if (!installerPath) return;
       const version = info?.version || scheduledVersion || '';
-      window.electronAPI?.scheduleInstallOnRestart(installerPath, version);
+      fireAndForgetBridge(() => window.electronAPI?.scheduleInstallOnRestart(installerPath, version), 'scheduleInstallOnRestart');
       set({ status: 'restart-scheduled', restartScheduled: true, scheduledVersion: version });
       recordAnalyticsEvent(createAnalyticsEvent('update_install_on_restart', {}));
     },
 
     cancelRestartInstall: () => {
-      window.electronAPI?.cancelRestartInstall();
+      fireAndForgetBridge(() => window.electronAPI?.cancelRestartInstall(), 'cancelRestartInstall');
       set({ status: 'downloaded', restartScheduled: false });
       recordAnalyticsEvent(createAnalyticsEvent('update_restart_install_cancelled', {}));
     },
 
     openReleaseNotes: (url: string) => {
-      window.electronAPI?.openReleaseNotes(url);
+      fireAndForgetBridge(() => window.electronAPI?.openReleaseNotes(url), 'openReleaseNotes');
       recordAnalyticsEvent(createAnalyticsEvent('update_release_notes_opened', {}));
     },
 

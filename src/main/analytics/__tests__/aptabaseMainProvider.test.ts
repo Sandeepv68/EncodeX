@@ -10,6 +10,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AptabaseMainProvider, ANALYTICS_GROUPS_ENV_VAR } from '../aptabaseMainProvider';
 import { createAnalyticsEvent } from '../../../shared/analytics/events';
 import type { AnalyticsConfig } from '../../../shared/analytics/types';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const aptabaseMainMock = vi.hoisted(() => ({
   initialize: vi.fn(async () => undefined),
@@ -100,6 +101,8 @@ describe('AptabaseMainProvider', () => {
   });
 
   it('stays inactive when the SDK self-disables without registering the transport', async () => {
+    expectAppLog('warn', 'main/analytics/aptabaseMainProvider');
+
     electronMock.protocol.isProtocolHandled.mockReturnValueOnce(false);
     const provider = new AptabaseMainProvider();
     await provider.init(baseConfig());

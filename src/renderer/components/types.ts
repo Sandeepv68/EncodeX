@@ -19,6 +19,7 @@ import type {
   WaveformData,
   WhenDoneConfig,
 } from '../../shared/types';
+import type { TooltipProps } from '@mui/material/Tooltip';
 import type { BatchEncodingValues } from '../utils/batch-options';
 
 /**
@@ -333,6 +334,20 @@ export type DragKind = 'playhead' | 'start' | 'end' | 'move' | 'scrub';
 export interface EllipsisTooltipProps {
   title: string;
   children: ReactElement<{ ref?: Ref<HTMLElement> }>;
+}
+
+/**
+ * Props for the disabled-safe tooltip component.
+ *
+ * `placement` is optional rather than required because most call sites do not
+ * set it, and MUI already defaults it; making it required would push
+ * `placement="bottom"` noise into every one of them.
+ * @interface TooltipIfEnabledProps
+ */
+export interface TooltipIfEnabledProps {
+  title: TooltipProps['title'];
+  placement?: TooltipProps['placement'];
+  children: ReactElement;
 }
 
 /**

@@ -7,6 +7,7 @@ import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../../stores/dismissedAlertsStore';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
 const selectOutputMock = vi.mocked(window.electronAPI.selectOutput);
@@ -304,6 +305,8 @@ describe('Convert', () => {
   });
 
   it('shows a qscale validation error and refuses to start', async () => {
+    expectAppLog('warn', 'renderer/pages/Convert');
+
     selectFileMock.mockResolvedValue('/in/video.mp4');
     selectOutputMock.mockResolvedValue('/out/video.mkv');
     renderPage();

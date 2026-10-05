@@ -38,6 +38,7 @@ import { Logger } from '../../shared/logger';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import type { ConversionProgress, MediaStreamInfo } from '../../shared/types';
 import { toTaskProgress } from '../../shared/progress';
+import { callBridgeVoid } from '../utils/bridge-call';
 import { ErrorCode } from '../../shared/errors';
 import {
   buildDemuxTargets,
@@ -385,14 +386,16 @@ function optionsForTarget(target: DemuxTarget): Record<string, unknown> {
  * is a module-level singleton, the subscription is never unsubscribed.
  * @type {void}
  */
-window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
-  const state = useDemuxStore.getState();
-  if (!demuxActive || !state.isConverting) return;
-  const total = state.targets.length;
-  if (total === 0) return;
-  const idx = state.targets.findIndex((t) => t.output === data.output);
-  if (idx < 0) return;
-  const perTarget = 100 / total;
-  const overall = Math.round(idx * perTarget + (data.progress.percent * perTarget) / 100);
-  useDemuxStore.getState().setProgress({ ...toTaskProgress(data.progress), percent: overall });
-});
+callBridgeVoid(() => {
+  window.electronAPI?.onConversionProgress((data: { input: string; output: string; progress: ConversionProgress }) => {
+    const state = useDemuxStore.getState();
+    if (!demuxActive || !state.isConverting) return;
+    const total = state.targets.length;
+    if (total === 0) return;
+    const idx = state.targets.findIndex((t) => t.output === data.output);
+    if (idx < 0) return;
+    const perTarget = 100 / total;
+    const overall = Math.round(idx * perTarget + (data.progress.percent * perTarget) / 100);
+    useDemuxStore.getState().setProgress({ ...toTaskProgress(data.progress), percent: overall });
+  });
+}, 'demux conversion progress subscription');

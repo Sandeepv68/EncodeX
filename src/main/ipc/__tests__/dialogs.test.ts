@@ -20,6 +20,7 @@ vi.mock('electron', () => ({ ipcMain: ipcMainMock, dialog: dialogMock, BrowserWi
 
 const { registerDialogHandlers } = await import('../dialogs');
 import { IPC } from '../../../shared/ipc-channels';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 describe('registerDialogHandlers', () => {
   const win = {} as never;
@@ -38,6 +39,21 @@ describe('registerDialogHandlers', () => {
     expect(ipcMainMock.handle).toHaveBeenCalledWith(IPC.SELECT_FILES, expect.any(Function));
     expect(ipcMainMock.handle).toHaveBeenCalledWith(IPC.SELECT_OUTPUT, expect.any(Function));
     expect(ipcMainMock.handle).toHaveBeenCalledWith(IPC.SELECT_DIRECTORY, expect.any(Function));
+  });
+
+  it('EXPAND_PATHS ignores a payload that is not a real array', () => {
+    expectAppLog('warn', 'main/ipc/dialogs');
+
+    // Found by `e2e/specs/ipc-abuse.spec.ts`. A bare string is iterable, so `expandPaths` used to
+    // walk the filesystem once per character - and the '.' inside '../../../../etc/passwd'
+    // expanded the entire working directory, stalling the main process for over two minutes.
+    for (const hostile of ['../../../../etc/passwd', '/some/dir', 10n ** 30n, 0, NaN, null, undefined, true, { length: 1 }]) {
+      expect(getHandlers()[IPC.EXPAND_PATHS]({}, hostile)).toEqual([]);
+    }
+  });
+
+  it('EXPAND_PATHS accepts an empty array without throwing', () => {
+    expect(getHandlers()[IPC.EXPAND_PATHS]({}, [])).toEqual([]);
   });
 
   it('SELECT_FILE returns the selected path', async () => {

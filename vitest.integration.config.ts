@@ -12,6 +12,7 @@ export default defineConfig({
     globals: true,
     env: {
       LOG_LEVEL: 'WARN',
+      ENCODEX_STRICT_TESTS: process.env.ENCODEX_STRICT_TESTS ?? '1',
     },
     environment: 'node',
     include: ['src/**/*.integration.{test,spec}.{ts,tsx}'],

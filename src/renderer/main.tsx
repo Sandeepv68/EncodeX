@@ -36,6 +36,7 @@ import { DirectionProvider } from './i18n/DirectionProvider';
 import { useLanguageDirection } from './useLanguageDirection';
 import { useLogStore } from './stores/logStore';
 import { setupSessionCleanup } from './sessionCleanup';
+import { withBridgeTimeout } from './utils/bridge-call';
 import { LOG_MOUNTING_REACT_APP } from '../shared/log-constants';
 
 /** Logger instance used by this module. @const {Logger} */
@@ -105,6 +106,26 @@ setupSessionCleanup();
 log.info(LOG_MOUNTING_REACT_APP);
 
 /**
+ * How long the first paint waits for renderer monitoring before giving up on early coverage.
+ *
+ * React is mounted from `bootstrapRendererMonitoring().finally(...)`, so this is a hard ceiling on how
+ * long the user sees nothing. The original code had no ceiling at all: `bootstrapRendererMonitoring`
+ * guards its bridge call with try/catch, which handles a *rejection* but not a promise that never
+ * settles. `ipcRenderer.invoke` is a round-trip to another process and nothing guarantees an answer,
+ * so a wedged main process produced a permanently blank window - no app, no error, no spinner, and
+ * nothing in the log to explain it. Every other suite in this plan passed, because they only ever
+ * supplied well-formed or fast-failing bridges.
+ *
+ * Bounding the read keeps the intent (monitoring is live before the first render, so errors thrown
+ * during boot are captured) while making the worst case a late-but-working app instead of a white
+ * screen. The bootstrap itself still runs to completion afterwards and wires its handlers, so coverage
+ * improves as soon as main answers.
+ *
+ * @const {number}
+ */
+const MONITORING_BOOT_TIMEOUT_MS = 2000;
+
+/**
  * Initializes renderer-side monitoring before React mounts so early errors
  * are covered. The backend choice mirrors the main process (which owns the
  * DSN) via `window.electronAPI.monitoringGetState()`; consent is enforced
@@ -118,7 +139,7 @@ async function bootstrapRendererMonitoring(): Promise<void> {
   let backend = 'noop';
   let enabled = false;
   try {
-    const state = await window.electronAPI?.monitoringGetState();
+    const state = await withBridgeTimeout(window.electronAPI?.monitoringGetState(), MONITORING_BOOT_TIMEOUT_MS, undefined);
     backend = state?.backend ?? 'noop';
     enabled = state?.enabled === true && backend !== 'noop';
   } catch (err) {

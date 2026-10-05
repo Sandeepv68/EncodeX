@@ -10,6 +10,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { MonitorProvider } from '../types';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 async function loadFresh() {
   vi.resetModules();
@@ -78,6 +79,8 @@ describe('Logger monitoring bridge', () => {
   });
 
   it('forwards Logger.warn as a warning message event', async () => {
+    expectAppLog('warn', 'main/queue');
+
     const provider = createMockProvider();
     await svc.initMonitoring({ enabled: true }, () => provider);
 
@@ -91,6 +94,8 @@ describe('Logger monitoring bridge', () => {
   });
 
   it('forwards warn records carrying an Error argument as messages, not exceptions', async () => {
+    expectAppLog('warn', 'main/io');
+
     const provider = createMockProvider();
     await svc.initMonitoring({ enabled: true }, () => provider);
 
@@ -150,6 +155,8 @@ describe('Logger monitoring bridge', () => {
   });
 
   it('does not report while uninitialized or consent is off', async () => {
+    expectAppLog('warn', 'main/test');
+
     const provider = createMockProvider();
 
     new Logger('main/test').error('before init');
@@ -170,6 +177,8 @@ describe('Logger monitoring bridge', () => {
   });
 
   it('keeps logging working when the sink throws', async () => {
+    expectAppLog('warn', 'x');
+
     registerLoggerSink(() => {
       throw new Error('sink exploded');
     });

@@ -56,6 +56,7 @@ import {
   autoInstallPendingUpdate,
 } from '../updater';
 import type { UpdateAsset } from '../../shared/types';
+import { expectAppLog } from '../../test-utils/crash-tripwire';
 
 const ORIGINAL_PLATFORM = process.platform;
 const ORIGINAL_ARCH = process.arch;
@@ -195,6 +196,8 @@ describe('updater', () => {
     });
 
     it('returns null when no matching asset exists', async () => {
+      expectAppLog('warn', 'main/updater');
+
       Object.defineProperty(process, 'platform', { value: 'win32' });
       Object.defineProperty(process, 'arch', { value: 'x64' });
       const data = JSON.stringify({
@@ -279,6 +282,32 @@ describe('updater', () => {
       expect(openPathMock).toHaveBeenCalledWith('/tmp/app.exe');
       expect(quitMock).toHaveBeenCalledOnce();
     });
+
+    it('does nothing when the installer path is not a usable string', async () => {
+      expectAppLog('warn', 'main/updater');
+
+      // Found by `e2e/specs/ipc-abuse.spec.ts`. These payloads came straight off the renderer and
+      // reached `shell.openPath`, and `app.quit()` would have run regardless of whether the
+      // installer ever started.
+      for (const hostile of [10n ** 30n, 0, null, undefined, true, { path: '/tmp/app.exe' }, '', '  ']) {
+        openPathMock.mockClear();
+        quitMock.mockClear();
+        await installUpdate(hostile as unknown as string);
+        expect(openPathMock, `payload ${String(hostile)} must not reach the OS`).not.toHaveBeenCalled();
+        expect(quitMock, `payload ${String(hostile)} must not quit the app`).not.toHaveBeenCalled();
+      }
+    });
+
+    it('does nothing when the installer path is a megabyte long', async () => {
+      expectAppLog('warn', 'main/updater');
+
+      // Long *and* a valid string, so only a length bound catches it.
+      openPathMock.mockClear();
+      quitMock.mockClear();
+      await installUpdate('x'.repeat(1024 * 1024));
+      expect(openPathMock).not.toHaveBeenCalled();
+      expect(quitMock).not.toHaveBeenCalled();
+    });
   });
 
   describe('scheduleInstallOnRestart', () => {
@@ -292,6 +321,8 @@ describe('updater', () => {
     });
 
     it('does not throw when the marker cannot be written', () => {
+      expectAppLog('warn', 'main/updater');
+
       vi.mocked(fs.writeFileSync).mockImplementationOnce(() => {
         throw new Error('disk full');
       });
@@ -312,6 +343,8 @@ describe('updater', () => {
     });
 
     it('does not throw when unlink fails', () => {
+      expectAppLog('warn', 'main/updater');
+
       vi.mocked(fs.unlinkSync).mockImplementationOnce(() => {
         throw new Error('permission denied');
       });
@@ -337,6 +370,8 @@ describe('updater', () => {
     });
 
     it('returns null for corrupt JSON', () => {
+      expectAppLog('warn', 'main/updater');
+
       vi.mocked(fs.readFileSync).mockReturnValue('not-json');
       expect(readPendingInstall()).toBeNull();
     });
@@ -371,6 +406,8 @@ describe('updater', () => {
     });
 
     it('clears the marker but skips a missing installer', async () => {
+      expectAppLog('warn', 'main/updater');
+
       vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({ installerPath: '/tmp/missing.exe', version: '2.0.0' }));
       vi.mocked(fs.existsSync).mockImplementation((p: fs.PathLike) => p !== '/tmp/missing.exe');
       await autoInstallPendingUpdate();
@@ -384,6 +421,25 @@ describe('updater', () => {
     it('calls shell.openExternal', async () => {
       await openReleaseNotes('https://github.com/releases');
       expect(openExternalMock).toHaveBeenCalledWith('https://github.com/releases');
+    });
+
+    it('does nothing when the URL is not a usable string', async () => {
+      expectAppLog('warn', 'main/updater');
+
+      // Same abuse-harness origin as the `installUpdate` case above.
+      for (const hostile of [10n ** 30n, 0, null, undefined, true, ['https://x.invalid'], '', '  ']) {
+        openExternalMock.mockClear();
+        await openReleaseNotes(hostile as unknown as string);
+        expect(openExternalMock, `payload ${String(hostile)} must not reach the OS`).not.toHaveBeenCalled();
+      }
+    });
+
+    it('does nothing when the URL is a megabyte long', async () => {
+      expectAppLog('warn', 'main/updater');
+
+      openExternalMock.mockClear();
+      await openReleaseNotes('x'.repeat(1024 * 1024));
+      expect(openExternalMock).not.toHaveBeenCalled();
     });
   });
 

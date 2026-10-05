@@ -12,6 +12,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { ANALYTICS_CONSENT_FILENAME, readAnalyticsConsent, writeAnalyticsConsent } from '../consent';
 import { MONITORING_CONSENT_FILENAME, writeMonitoringConsent } from '../../monitoring/consent';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 describe('analytics consent', () => {
   let dir: string;
@@ -50,6 +51,8 @@ describe('analytics consent', () => {
   });
 
   it('treats a corrupt analytics file as the monitoring seed', () => {
+    expectAppLog('warn', 'main/analytics/consent');
+
     fs.writeFileSync(path.join(dir, ANALYTICS_CONSENT_FILENAME), '{not json', 'utf-8');
     writeMonitoringConsent(dir, false);
     expect(readAnalyticsConsent(dir)).toBe(false);

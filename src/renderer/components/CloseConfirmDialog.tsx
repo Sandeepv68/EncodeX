@@ -16,6 +16,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ConfirmDialog from './ConfirmDialog';
+import { fireAndForgetBridge } from '../utils/bridge-call';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { useConversionStore } from '../stores/conversionStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
@@ -87,7 +88,7 @@ export default function CloseConfirmDialog() {
         recordAnalyticsEvent(createAnalyticsEvent('window_close_deferred', { reason: 'pending' }));
         setOpen(true);
       } else {
-        window.electronAPI?.windowCloseConfirmed();
+        fireAndForgetBridge(() => window.electronAPI?.windowCloseConfirmed(), 'windowCloseConfirmed');
       }
     });
     return () => cleanup?.();
@@ -100,7 +101,7 @@ export default function CloseConfirmDialog() {
    */
   const handleConfirm = () => {
     setOpen(false);
-    window.electronAPI?.windowCloseConfirmed();
+    fireAndForgetBridge(() => window.electronAPI?.windowCloseConfirmed(), 'windowCloseConfirmed');
   };
 
   /**

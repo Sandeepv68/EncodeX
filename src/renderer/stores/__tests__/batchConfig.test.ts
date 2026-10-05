@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { readStoredBatchConfig, persistBatchConfig, DEFAULT_BATCH_CONFIG, type BatchConfig } from '../batchConfig';
 import { BATCH_CONFIG_STORAGE_KEY } from '../../../shared/constants';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 describe('batchConfig', () => {
   beforeEach(() => {
@@ -51,6 +52,8 @@ describe('batchConfig', () => {
   });
 
   it('returns defaults when the stored value is malformed', () => {
+    expectAppLog('warn', 'renderer/stores/batchConfig');
+
     localStorage.setItem(BATCH_CONFIG_STORAGE_KEY, 'not json');
     expect(readStoredBatchConfig()).toEqual(DEFAULT_BATCH_CONFIG);
   });

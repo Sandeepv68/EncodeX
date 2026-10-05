@@ -28,6 +28,7 @@
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { loadJson, saveJson } from '../utils/storage';
+import { fireAndForgetBridge } from '../utils/bridge-call';
 import { TERMS_VERSION } from '../../shared/terms';
 import { TERMS_ACCEPTED_STORAGE_KEY } from '../../shared/constants';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
@@ -127,7 +128,7 @@ export const useTermsStore = create<TermsState>((set) => ({
   rejectTerms: () => {
     log.info('Terms rejected; quitting');
     recordAnalyticsEvent(createAnalyticsEvent('terms_rejected', {}));
-    window.electronAPI?.rejectTerms();
+    fireAndForgetBridge(() => window.electronAPI?.rejectTerms(), 'rejectTerms');
   },
 
   openViewer: () => {

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TERMS_VERSION } from '../../../shared/terms';
 import { TERMS_ACCEPTED_STORAGE_KEY } from '../../../shared/constants';
 import type { useTermsStore as UseTermsStoreType } from '../termsStore';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const STORAGE_KEY = TERMS_ACCEPTED_STORAGE_KEY;
 const CURRENT_VERSION = TERMS_VERSION;
@@ -55,6 +56,8 @@ describe('termsStore', () => {
   });
 
   it('treats a malformed record as not accepted', async () => {
+    expectAppLog('warn', 'renderer/stores/termsStore');
+
     localStorage.setItem(STORAGE_KEY, 'not-json');
     const store = await freshStore();
     expect(store.getState().requiresAcceptance).toBe(true);

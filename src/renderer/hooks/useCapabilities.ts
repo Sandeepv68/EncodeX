@@ -12,6 +12,7 @@
 
 import { useEffect, useState } from 'react';
 import { AUDIO_CODECS, VIDEO_CODECS } from '../../shared/media-options';
+import { bridgePromise } from '../utils/bridge-call';
 import type { EncoderCapabilities } from '../../shared/types';
 import type { CodecOption } from './types';
 
@@ -42,8 +43,7 @@ let loadPromise: Promise<EncoderCapabilities | null> | null = null;
  */
 function loadCapabilities(): Promise<EncoderCapabilities | null> {
   if (!loadPromise) {
-    loadPromise = window.electronAPI
-      .getCapabilities()
+    loadPromise = bridgePromise(() => window.electronAPI.getCapabilities())
       .then((caps) => {
         cached = caps;
         return caps;

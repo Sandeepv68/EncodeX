@@ -3,6 +3,7 @@ import { useAudioExtractStore } from '../audioExtractStore';
 import { useErrorStore } from '../errorStore';
 import { useToastStore } from '../toastStore';
 import { ErrorCode } from '../../../shared/errors';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const convertFileMock = vi.mocked(window.electronAPI.convertFile);
 const pauseConversionMock = vi.mocked(window.electronAPI.pauseConversion);
@@ -120,6 +121,8 @@ describe('audioExtractStore', () => {
   });
 
   it('startExtract shows INPUT_NOT_SPECIFIED without an input', async () => {
+    expectAppLog('warn', 'renderer/stores/audioExtractStore');
+
     useAudioExtractStore.setState({ input: '', output: 'out.mp3' });
     await useAudioExtractStore.getState().startExtract();
     expect(convertFileMock).not.toHaveBeenCalled();
@@ -128,6 +131,8 @@ describe('audioExtractStore', () => {
   });
 
   it('startExtract shows OUTPUT_NOT_SPECIFIED without an output', async () => {
+    expectAppLog('warn', 'renderer/stores/audioExtractStore');
+
     useAudioExtractStore.setState({ input: 'in.mp4', output: '' });
     await useAudioExtractStore.getState().startExtract();
     expect(convertFileMock).not.toHaveBeenCalled();

@@ -13,6 +13,7 @@ export default defineConfig({
     testTimeout: 30000,
     env: {
       LOG_LEVEL: 'WARN',
+      ENCODEX_STRICT_TESTS: process.env.ENCODEX_STRICT_TESTS ?? '1',
     },
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
@@ -26,7 +27,9 @@ export default defineConfig({
       // tested here. The `.test` suffix keeps them out of `e2e/**/*.spec.ts`.
       'e2e/**/__tests__/*.{test,spec}.ts',
     ],
-    exclude: ['node_modules', 'dist', '**/*.integration.{test,spec}.ts'],
+    // The `mediafuzz` tier spawns real ffmpeg against a generated corpus and
+    // takes minutes; it has its own config and script (`test:media-fuzz`).
+    exclude: ['node_modules', 'dist', '**/*.integration.{test,spec}.ts', '**/*.mediafuzz.{test,spec}.ts'],
     css: true,
     pool: 'forks',
     maxWorkers: 6,

@@ -87,6 +87,8 @@ describe('getVideoPreview', () => {
   });
 
   it('returns null when ffmpeg exits with a non-zero code', async () => {
+    expectAppLog('warn', 'main/video-preview');
+
     resolveWith(1, [Buffer.from([1, 2, 3])], 'no video stream');
     resolveWith(1, [], 'no video stream');
     await expect(getVideoPreview('video.mp4')).resolves.toBeNull();
@@ -94,6 +96,8 @@ describe('getVideoPreview', () => {
   });
 
   it('returns null when both attempts produce no output', async () => {
+    expectAppLog('warn', 'main/video-preview');
+
     resolveWith(0, []);
     resolveWith(0, []);
     await expect(getVideoPreview('video.mp4')).resolves.toBeNull();

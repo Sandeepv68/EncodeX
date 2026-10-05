@@ -28,6 +28,7 @@ import {
   DEFAULT_FRAME_DURATION,
   AUDIO_TARGET_MIN_BYTES,
   FRAME_BUFFER_OVERFLOW_WARN,
+  RGB_BYTES_PER_PIXEL,
 } from '../../shared/constants';
 import type { DecodedFrame, DecodedAudio, AudioDecodeConfig, FrameDecoderOptions } from './types';
 import {
@@ -38,6 +39,7 @@ import {
   LOG_DECODER_PROCESS_EXITED_WITH_CODE,
   LOG_DECODER_PROCESS_KILLED,
   LOG_FFMPEG_DECODER_ARGS,
+  LOG_FFMPEG_DECODER_RESOLUTION_CLAMPED,
   LOG_OPEN,
   LOG_OPTIONS,
   LOG_RESOLUTION,
@@ -45,6 +47,77 @@ import {
 } from '../../shared/log-constants';
 
 const log = new Logger('main/player/frame-decoder');
+
+/**
+ * Smallest decode dimension the frame assembler will accept, in pixels.
+ *
+ * The stdout assembler drains `frameParts` with
+ * `while (framePartsLen >= frameSize)`, subtracting exactly `frameSize` each
+ * pass. That loop only makes progress when `frameSize` is a positive integer.
+ * At `frameSize === 0` the condition is always true and the subtraction is a
+ * no-op, so a single byte of stdout spins forever and grows `pendingFrames`
+ * until the process dies; a negative `frameSize` throws out of a
+ * `Buffer.alloc` inside an EventEmitter handler, where nothing can catch it.
+ * Clamping to 1 keeps the loop finite and keeps the emitted frame metadata
+ * consistent with the bytes actually assembled.
+ * @const {number} MIN_DECODE_DIMENSION
+ */
+const MIN_DECODE_DIMENSION = 1;
+
+/**
+ * Coerces a caller-supplied pixel dimension into a positive integer.
+ *
+ * Anything non-finite (`NaN`, `Infinity`), non-positive, or fractional is
+ * replaced by {@link MIN_DECODE_DIMENSION}. `NaN` is the dangerous one: it
+ * makes `framePartsLen >= frameSize` false forever, so frames are silently
+ * never assembled and playback stalls with no error anywhere.
+ *
+ * @param {number} value - The requested dimension in pixels.
+ * @returns {number} A positive integer safe to use as a frame dimension.
+ */
+function safeDimension(value: number): number {
+  if (!Number.isFinite(value)) return MIN_DECODE_DIMENSION;
+  return Math.max(MIN_DECODE_DIMENSION, Math.floor(value));
+}
+
+/**
+ * Resolves a requested resolution into the dimensions and byte size the frame
+ * assembler will actually use.
+ *
+ * Returns the clamped dimensions alongside the size so callers store all three;
+ * using the raw request for `-s WxH` while assembling a different number of
+ * bytes would desynchronise the decoder from ffmpeg's output.
+ *
+ * @param {number} width - Requested decode width in pixels.
+ * @param {number} height - Requested decode height in pixels.
+ * @param {string} label - Log label identifying the caller path.
+ * @returns {{width: number, height: number, frameSize: number}} The clamped
+ *   dimensions and `width * height * 3`.
+ */
+function resolveFrameSize(width: number, height: number, label: string): { width: number; height: number; frameSize: number } {
+  const safeWidth = safeDimension(width);
+  const safeHeight = safeDimension(height);
+  if (safeWidth !== width || safeHeight !== height) {
+    log.warn(LOG_FFMPEG_DECODER_RESOLUTION_CLAMPED, label, `${width}x${height}`, `${safeWidth}x${safeHeight}`);
+  }
+  return { width: safeWidth, height: safeHeight, frameSize: safeWidth * safeHeight * RGB_BYTES_PER_PIXEL };
+}
+
+/**
+ * Resolves the byte size of one audio chunk emitted on the fd 3 pipe.
+ *
+ * `Math.max(AUDIO_TARGET_MIN_BYTES, NaN)` is `NaN`, so a non-finite sample rate
+ * or channel count would silently disable audio assembly rather than fall back
+ * to the minimum chunk size.
+ *
+ * @param {AudioDecodeConfig} audio - The requested audio decode configuration.
+ * @returns {number} The chunk size in bytes, always positive.
+ */
+function resolveAudioTarget(audio: AudioDecodeConfig): number {
+  const scaled = Math.round(audio.sampleRate * audio.channels * 2 * AUDIO_CHUNK_SECONDS);
+  if (!Number.isFinite(scaled)) return AUDIO_TARGET_MIN_BYTES;
+  return Math.max(AUDIO_TARGET_MIN_BYTES, scaled);
+}
 
 /**
  * Decodes video frames and audio from a media file via a spawned ffmpeg
@@ -134,21 +207,22 @@ export class FrameDecoder extends EventEmitter {
    * was superseded (stale process or `running === false`).
    * @param {string} [seekTo] - Seek position passed to ffmpeg as `-ss`; when
    *   undefined decoding starts from the beginning of the file
-   * @param {number} [width] - Decode width; when provided also (re)derives the
-   *   height fallback and the per-frame byte size
-   * @param {number} [height] - Decode height, only applied if `width` is given
    * @param {AudioDecodeConfig} [audio] - Optional audio decode config; when
    *   present enables the fd 3 PCM pipe (video pipe 1 stays active unless
    *   audioOnly is set)
    * @param {FrameDecoderOptions} [options] - Session options merged over the
    *   defaults `{ realtime: true, audioOnly: false, fpsCap: 0 }`
+   *
+   * Dimensions are deliberately **not** a parameter. They are validated once, in
+   * `open()`, via {@link resolveFrameSize}; this method previously re-derived
+   * `frameSize` from its own `width`/`height` arguments, but no caller has ever
+   * passed them (`open` and `seek` both pass `undefined`, having already set
+   * the fields), so that branch was unreachable - dead code carrying an
+   * unvalidated derivation and a landmine for the next caller. A fuzz mutation
+   * that reverted it was caught by no test, which is how the dead branch was
+   * found.
    */
-  private spawnFfmpeg(seekTo?: string, width?: number, height?: number, audio?: AudioDecodeConfig, options?: FrameDecoderOptions): void {
-    if (width !== undefined) {
-      this.width = width;
-      this.height = height ?? this.height;
-      this.frameSize = this.width * this.height * 3;
-    }
+  private spawnFfmpeg(seekTo?: string, audio?: AudioDecodeConfig, options?: FrameDecoderOptions): void {
     this.frameParts = [];
     this.framePartsLen = 0;
     this.running = true;
@@ -323,7 +397,7 @@ export class FrameDecoder extends EventEmitter {
     }
 
     if (audio) {
-      const audioTarget = Math.max(AUDIO_TARGET_MIN_BYTES, Math.round(audio.sampleRate * audio.channels * 2 * AUDIO_CHUNK_SECONDS));
+      const audioTarget = resolveAudioTarget(audio);
       let audioParts: Buffer[] = [];
       let audioPartsLen = 0;
       currentProcess.stdio?.[3]?.on('data', (chunk: Buffer) => {
@@ -406,13 +480,14 @@ export class FrameDecoder extends EventEmitter {
 
     log.info(LOG_OPEN, input, LOG_RESOLUTION, width, 'x', height, LOG_AUDIO, audio, LOG_OPTIONS, options);
     this.inputPath = input;
-    this.width = width;
-    this.height = height;
-    this.frameSize = width * height * 3;
+    const resolved = resolveFrameSize(width, height, 'open');
+    this.width = resolved.width;
+    this.height = resolved.height;
+    this.frameSize = resolved.frameSize;
     this.audioSampleRate = audio?.sampleRate ?? 0;
     this.audioChannels = audio?.channels ?? 0;
 
-    this.spawnFfmpeg(undefined, undefined, undefined, audio, options);
+    this.spawnFfmpeg(undefined, audio, options);
   }
 
   /**
@@ -433,8 +508,6 @@ export class FrameDecoder extends EventEmitter {
     if (this.inputPath) {
       this.spawnFfmpeg(
         seekTo,
-        undefined,
-        undefined,
         this.audioSampleRate ? { sampleRate: this.audioSampleRate, channels: this.audioChannels } : undefined,
         this.options,
       );

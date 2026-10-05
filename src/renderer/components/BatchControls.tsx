@@ -70,6 +70,7 @@ import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { MAX_QUEUE_CONCURRENCY, WHEN_DONE_ACTIONS } from '../../shared/constants';
 import type { TranscoderType, WhenDoneAction } from '../../shared/types';
 import type { BatchControlsProps } from './types';
+import TooltipIfEnabled from './TooltipIfEnabled';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import {
@@ -257,25 +258,25 @@ export default function BatchControls({
               </OutlinedIconButton>
             </Tooltip>
             {paused ? (
-              <Tooltip title={t('batchQueue.resume')}>
+              <TooltipIfEnabled title={t('batchQueue.resume')}>
                 <OutlinedIconButton size="small" color="success" aria-label={t('batchQueue.resume')} onClick={onResume}>
                   <FontAwesomeIcon icon={faPlay} />
                 </OutlinedIconButton>
-              </Tooltip>
+              </TooltipIfEnabled>
             ) : hasRunning ? (
-              <Tooltip title={t('batchQueue.pause')}>
+              <TooltipIfEnabled title={t('batchQueue.pause')}>
                 <OutlinedIconButton size="small" color="warning" aria-label={t('batchQueue.pause')} onClick={onPause} disabled={!hasActive}>
                   <FontAwesomeIcon icon={faPause} />
                 </OutlinedIconButton>
-              </Tooltip>
+              </TooltipIfEnabled>
             ) : (
-              <Tooltip title={shortcutHint(t, 'batchQueue.start', SHORTCUT_BY_ID['batchQueue.start'].keys)}>
+              <TooltipIfEnabled title={shortcutHint(t, 'batchQueue.start', SHORTCUT_BY_ID['batchQueue.start'].keys)}>
                 <OutlinedIconButton size="small" color="success" aria-label={t('batchQueue.start')} onClick={onStart} disabled={!hasQueued}>
                   <FontAwesomeIcon icon={faPlay} />
                 </OutlinedIconButton>
-              </Tooltip>
+              </TooltipIfEnabled>
             )}
-            <Tooltip title={t('batchQueue.clearCompleted')}>
+            <TooltipIfEnabled title={t('batchQueue.clearCompleted')}>
               <OutlinedIconButton
                 size="small"
                 aria-label={t('batchQueue.clearCompleted')}
@@ -284,7 +285,7 @@ export default function BatchControls({
               >
                 <FontAwesomeIcon icon={faCheckDouble} />
               </OutlinedIconButton>
-            </Tooltip>
+            </TooltipIfEnabled>
             <Tooltip title={t('batchQueue.exportQueue')}>
               <OutlinedIconButton size="small" aria-label={t('batchQueue.exportQueue')} onClick={onExport}>
                 <FontAwesomeIcon icon={faFileExport} />

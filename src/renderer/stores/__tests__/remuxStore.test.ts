@@ -4,6 +4,7 @@ import { useErrorStore } from '../errorStore';
 import { useToastStore } from '../toastStore';
 import { ErrorCode } from '../../../shared/errors';
 import type { MediaInfo, MediaStreamInfo } from '../../../shared/types';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const getMediaInfoMock = vi.mocked(window.electronAPI.getMediaInfo);
 const convertFileMock = vi.mocked(window.electronAPI.convertFile);
@@ -312,6 +313,8 @@ describe('remuxStore', () => {
   });
 
   it('startRemux shows INPUT_NOT_SPECIFIED without an input', async () => {
+    expectAppLog('warn', 'renderer/stores/remuxStore');
+
     useRemuxStore.setState({ input: '', output: 'out.mkv' });
     await useRemuxStore.getState().startRemux();
     expect(convertFileMock).not.toHaveBeenCalled();
@@ -319,6 +322,8 @@ describe('remuxStore', () => {
   });
 
   it('startRemux shows OUTPUT_NOT_SPECIFIED without an output', async () => {
+    expectAppLog('warn', 'renderer/stores/remuxStore');
+
     useRemuxStore.setState({
       input: 'in.mkv',
       output: '',

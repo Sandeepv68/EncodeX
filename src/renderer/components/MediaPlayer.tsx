@@ -22,6 +22,7 @@
 
 import { useRef, useEffect, useCallback, useState, forwardRef, useImperativeHandle, memo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { fireAndForgetBridge } from '../utils/bridge-call';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faStop, faVolumeHigh, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
 import { Logger } from '../../shared/logger';
@@ -633,7 +634,7 @@ const MediaPlayer = memo(
           if (resetToStartRef.current) {
             resetToStartRef.current = false;
             drawFrame({ data: new Uint8Array(frame.data), width: frame.width, height: frame.height, pts: frame.pts });
-            window.electronAPI.playerClose();
+            fireAndForgetBridge(() => window.electronAPI.playerClose(), 'playerClose');
             return;
           }
 
@@ -679,7 +680,7 @@ const MediaPlayer = memo(
             window.clearTimeout(pendingSeekRef.current.timer);
             pendingSeekRef.current.timer = null;
           }
-          window.electronAPI.playerClose();
+          fireAndForgetBridge(() => window.electronAPI.playerClose(), 'playerClose');
           cleanupFrame();
           cleanupAudio();
           cleanupError?.();
@@ -794,7 +795,7 @@ const MediaPlayer = memo(
         if (isPlaying) {
           closeAudio();
           setIsPlaying(false);
-          window.electronAPI.playerClose();
+          fireAndForgetBridge(() => window.electronAPI.playerClose(), 'playerClose');
           onTogglePlay?.(false);
           return;
         }

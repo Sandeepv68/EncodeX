@@ -19,6 +19,11 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { bridgePromise, fireAndForgetBridge } from '../utils/bridge-call';
+import { Logger } from '../../shared/logger';
+
+/** Logger instance used by this module. @const {Logger} */
+const log = new Logger('renderer/BatchQueue');
 import { Box, Stack, Typography, Collapse, IconButton, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListOl, faLayerGroup, faTrashCan } from '@fortawesome/free-solid-svg-icons';
@@ -450,7 +455,12 @@ export default function BatchQueue() {
    * @returns {void}
    */
   useEffect(() => {
-    window.electronAPI?.queueList().then((jobs: QueueJob[]) => useQueueStore.getState().setJobs(jobs));
+    // `bridgePromise` so a synchronous throw from the bridge reaches the same `.catch`: `contextBridge`
+    // propagates those straight into the caller, and without it the page logs an unhandled error while
+    // silently keeping the previous job list.
+    bridgePromise(() => window.electronAPI?.queueList() ?? Promise.resolve<QueueJob[]>([]))
+      .then((jobs: QueueJob[]) => useQueueStore.getState().setJobs(jobs))
+      .catch((err) => log.warn('Failed to refresh queue jobs:', err));
   }, []);
 
   /**
@@ -459,7 +469,9 @@ export default function BatchQueue() {
    * @returns {void}
    */
   useEffect(() => {
-    window.electronAPI?.queueGetState().then((state: { paused: boolean }) => setPaused(state.paused));
+    bridgePromise(() => window.electronAPI?.queueGetState() ?? Promise.resolve({ paused: false }))
+      .then((state: { paused: boolean }) => setPaused(state.paused))
+      .catch((err) => log.warn('Failed to read queue paused state:', err));
   }, []);
 
   /**
@@ -569,7 +581,7 @@ export default function BatchQueue() {
         skippedNames.push(basename(job.input));
         continue;
       }
-      window.electronAPI?.queueUpdateOptions(job.id, options, output);
+      fireAndForgetBridge(() => window.electronAPI?.queueUpdateOptions(job.id, options, output), 'queueUpdateOptions');
     }
     if (skippedNames.length > 0) {
       useToastStore
@@ -604,7 +616,7 @@ export default function BatchQueue() {
    * @returns {void}
    */
   useEffect(() => {
-    window.electronAPI?.queueSetConcurrency(useSettingsStore.getState().queueConcurrency);
+    fireAndForgetBridge(() => window.electronAPI?.queueSetConcurrency(useSettingsStore.getState().queueConcurrency), 'queueSetConcurrency');
   }, []);
 
   /**
@@ -614,7 +626,7 @@ export default function BatchQueue() {
    * @returns {void}
    */
   useEffect(() => {
-    window.electronAPI?.queueSetWhenDone(useSettingsStore.getState().whenDone);
+    fireAndForgetBridge(() => window.electronAPI?.queueSetWhenDone(useSettingsStore.getState().whenDone), 'queueSetWhenDone');
   }, []);
 
   /**
@@ -890,7 +902,7 @@ export default function BatchQueue() {
     try {
       await window.electronAPI.queueAdd(failedJob.input, failedJob.output, failedJob.options, failedJob.transcoder, true);
       removeJob(failedJob.id);
-      window.electronAPI.queueRemove(failedJob.id);
+      fireAndForgetBridge(() => window.electronAPI.queueRemove(failedJob.id), 'queueRemove');
       useToastStore.getState().success(t('toast.jobAdded'));
       recordAnalyticsEvent(createAnalyticsEvent('batch_job_retried', { operation: inferJobOperation(failedJob.options) }));
     } catch (err) {
@@ -1281,7 +1293,7 @@ export default function BatchQueue() {
       const reordered = reorderJob(state.jobs, activeId, toPosition);
       return reordered === state.jobs ? {} : { jobs: reordered };
     });
-    window.electronAPI.queueMoveTo(activeId, toPosition);
+    fireAndForgetBridge(() => window.electronAPI.queueMoveTo(activeId, toPosition), 'queueMoveTo');
     const moved = jobs.find((job: QueueJob) => job.id === activeId);
     if (moved) {
       recordAnalyticsEvent(createAnalyticsEvent('batch_job_reordered', { movedBy: Math.abs(to - from) }));
@@ -1464,7 +1476,7 @@ export default function BatchQueue() {
                       progress={progress[job.id]}
                       onRemove={(id) => {
                         const removed = jobs.find((j: QueueJob) => j.id === id);
-                        window.electronAPI.queueRemove(id);
+                        fireAndForgetBridge(() => window.electronAPI.queueRemove(id), 'queueRemove');
                         if (removed) {
                           recordAnalyticsEvent(createAnalyticsEvent('batch_job_removed', { status: removed.status }));
                         }

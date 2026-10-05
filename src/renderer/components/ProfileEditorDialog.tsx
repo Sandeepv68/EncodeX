@@ -52,6 +52,24 @@ const CONTAINER_OPTIONS = [
 const PRESET_OPTIONS = ['ultrafast', 'superfast', 'veryfast', 'faster', 'fast', 'medium', 'slow', 'slower', 'veryslow'];
 const CRF_OPTIONS = Array.from({ length: 32 }, (_, i) => i);
 
+/**
+ * Adds the currently selected value to a fixed option list when it is not already
+ * present.
+ *
+ * Profiles are read from user-editable JSON on disk, so a stored bitrate is not
+ * guaranteed to be one of today's presets - an older profile, or a hand-edited
+ * file, can hold anything. MUI's `Select` renders a value with no matching
+ * `MenuItem` as blank, which silently hides the setting the user actually has,
+ * so the stored value is appended to keep the control faithful to the profile.
+ * @param {readonly string[]} options - The preset option values.
+ * @param {string} value - The value currently held by the field.
+ * @returns {string[]} The options to render, including `value` when needed.
+ */
+function withUnknownValue(options: readonly string[], value: string): string[] {
+  if (!value || options.includes(value)) return [...options];
+  return [...options, value];
+}
+
 interface ProfileEditorDialogProps {
   open: boolean;
   onClose: () => void;
@@ -321,7 +339,10 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
                 slotProps={{ select: { displayEmpty: true } }}
               >
                 <MenuItem value="">{t('profiles.autoCrf')}</MenuItem>
-                {VIDEO_BITRATE_OPTIONS.filter((b) => b !== '').map((b) => (
+                {withUnknownValue(
+                  VIDEO_BITRATE_OPTIONS.filter((b) => b !== ''),
+                  videoBitrate,
+                ).map((b) => (
                   <MenuItem key={b} value={b}>
                     {b}
                   </MenuItem>
@@ -339,7 +360,7 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
                 value={audioBitrate}
                 onChange={(e) => setAudioBitrate(e.target.value)}
               >
-                {BITRATE_OPTIONS.map((b) => (
+                {withUnknownValue(BITRATE_OPTIONS, audioBitrate).map((b) => (
                   <MenuItem key={b} value={b}>
                     {b}
                   </MenuItem>

@@ -46,9 +46,10 @@
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { loadJson, saveJson, loadString, saveString } from '../utils/storage';
+import { fireAndForgetBridge, bridgePromise } from '../utils/bridge-call';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { HWACCEL_DEFAULTS, HWACCEL_MODES, HWACCEL_STORAGE_KEY, ENCODER_TYPES, ENCODER_TYPE_DEFAULT } from '../../shared/hwaccel-settings';
-import { defaultMcpSettings } from '../../shared/mcp-settings';
+import { defaultMcpSettings, clampMcpPort } from '../../shared/mcp-settings';
 import type { McpSettings } from '../../shared/mcp-settings';
 import type { HwAccelMode, EncoderType, WhenDoneAction } from '../../shared/types';
 import type { HwAccelStored, SettingsState } from './types';
@@ -355,7 +356,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setAlwaysOnTop: (flag) => {
     log.debug(LOG_SET_ALWAYS_ON_TOP, flag);
     persistAlwaysOnTop(flag);
-    window.electronAPI?.windowSetAlwaysOnTop(flag);
+    fireAndForgetBridge(() => window.electronAPI?.windowSetAlwaysOnTop(flag), 'windowSetAlwaysOnTop');
     set({ alwaysOnTop: flag });
   },
   drawerCondensed: readStoredDrawerCondensed(),
@@ -381,7 +382,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setLaunchAtLogin: (enabled) => {
     log.debug(LOG_SET_LAUNCH_AT_LOGIN, enabled);
     persistLaunchAtLogin(enabled);
-    window.electronAPI?.setLaunchAtLogin(enabled);
+    fireAndForgetBridge(() => window.electronAPI?.setLaunchAtLogin(enabled), 'setLaunchAtLogin');
     set({ launchAtLogin: enabled });
   },
   monitoringEnabled: true,
@@ -416,7 +417,9 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         window.electronAPI?.monitoringSetEnabled(enabled) ?? Promise.resolve({ enabled }),
       ]);
       await enableAnalyticsFacade(enabled);
-      set({ analyticsEnabled: analyticsState.enabled, monitoringEnabled: monitoringState.enabled });
+      // Coerced, not adopted: a wrong-typed bridge result would otherwise store a non-boolean and the
+      // Settings toggles would render from garbage. See the module-scope hydrations below.
+      set({ analyticsEnabled: analyticsState?.enabled === true, monitoringEnabled: monitoringState?.enabled === true });
     };
     if (enabled) {
       void apply()
@@ -469,7 +472,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setQueueConcurrency: (concurrency) => {
     log.debug(LOG_SET_QUEUE_CONCURRENCY, concurrency);
     persistQueueConcurrency(concurrency);
-    window.electronAPI?.queueSetConcurrency(concurrency);
+    fireAndForgetBridge(() => window.electronAPI?.queueSetConcurrency(concurrency), 'queueSetConcurrency');
     set({ queueConcurrency: concurrency });
   },
   whenDone: readStoredWhenDone(),
@@ -485,7 +488,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setWhenDone: (config) => {
     log.debug(LOG_SET_WHEN_DONE, JSON.stringify(config));
     persistWhenDone(config);
-    window.electronAPI?.queueSetWhenDone(config);
+    fireAndForgetBridge(() => window.electronAPI?.queueSetWhenDone(config), 'queueSetWhenDone');
     set({ whenDone: config });
   },
 }));
@@ -519,9 +522,8 @@ function applyMcpSettings(patch: Partial<McpSettings>): void {
  * optimistic default (enabled) in place.
  */
 if (typeof window !== 'undefined' && window.electronAPI?.monitoringGetState) {
-  window.electronAPI
-    .monitoringGetState()
-    .then((state) => useSettingsStore.setState({ monitoringEnabled: state.enabled }))
+  bridgePromise(() => window.electronAPI.monitoringGetState())
+    .then((state) => useSettingsStore.setState({ monitoringEnabled: state?.enabled === true }))
     .catch((err) => log.warn('Failed to hydrate monitoring consent:', err));
 }
 
@@ -531,9 +533,8 @@ if (typeof window !== 'undefined' && window.electronAPI?.monitoringGetState) {
  * optimistic default (enabled) in place.
  */
 if (typeof window !== 'undefined' && window.electronAPI?.analyticsGetState) {
-  window.electronAPI
-    .analyticsGetState()
-    .then((state) => useSettingsStore.setState({ analyticsEnabled: state.enabled }))
+  bridgePromise(() => window.electronAPI.analyticsGetState())
+    .then((state) => useSettingsStore.setState({ analyticsEnabled: state?.enabled === true }))
     .catch((err) => log.warn('Failed to hydrate analytics consent:', err));
 }
 
@@ -543,8 +544,13 @@ if (typeof window !== 'undefined' && window.electronAPI?.analyticsGetState) {
  * leave the disabled-by-default snapshot in place.
  */
 if (typeof window !== 'undefined' && window.electronAPI?.mcpGetSettings) {
-  window.electronAPI
-    .mcpGetSettings()
-    .then((settings) => useSettingsStore.setState({ mcpEnabled: settings.enabled, mcpPort: settings.port, mcpToken: settings.token }))
+  bridgePromise(() => window.electronAPI.mcpGetSettings())
+    .then((settings) =>
+      useSettingsStore.setState({
+        mcpEnabled: settings?.enabled === true,
+        mcpPort: clampMcpPort(settings?.port),
+        mcpToken: typeof settings?.token === 'string' ? settings.token : '',
+      }),
+    )
     .catch((err) => log.warn('Failed to hydrate MCP settings:', err));
 }

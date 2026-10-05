@@ -18,6 +18,7 @@ import { Logger } from '../shared/logger';
 import type { UpdateInfo, UpdateAsset, UpdateProgress, PendingInstall } from '../shared/types';
 import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../shared/analytics/events';
+import { coerceOsString } from '../shared/validation';
 import {
   LOG_UPDATER_CHECKING,
   LOG_UPDATER_AVAILABLE,
@@ -500,7 +501,14 @@ export function cancelDownload(): void {
  * @returns {Promise<void>}
  */
 export async function installUpdate(installerPath: string): Promise<void> {
-  log.info(LOG_UPDATER_INSTALLING, installerPath);
+  // `shell.openPath` needs a string and `app.quit()` must not run unless the installer actually
+  // started, so an unvalidated payload is dropped up front rather than half-applying the update.
+  const target = coerceOsString(installerPath);
+  if (target === null) {
+    log.warn(LOG_UPDATER_ERROR, 'ignored install request whose path was not a usable string');
+    return;
+  }
+  log.info(LOG_UPDATER_INSTALLING, target);
   cancelRestartInstall();
   const pending = readPendingInstall();
   recordAnalyticsEvent(
@@ -509,7 +517,7 @@ export async function installUpdate(installerPath: string): Promise<void> {
       newVersion: pending?.version || '',
     }),
   );
-  await shell.openPath(installerPath);
+  await shell.openPath(target);
   app.quit();
 }
 
@@ -520,6 +528,14 @@ export async function installUpdate(installerPath: string): Promise<void> {
  * @returns {Promise<void>}
  */
 export async function openReleaseNotes(url: string): Promise<void> {
-  log.info(LOG_UPDATER_OPEN_RELEASE_NOTES, url);
-  await shell.openExternal(url);
+  // Narrowed before it reaches `shell.openExternal`, which requires a string. An unvalidated
+  // payload from the renderer would otherwise make Electron throw a raw `TypeError` from
+  // inside a native call. Nothing to open is not an error worth surfacing to the renderer.
+  const target = coerceOsString(url);
+  if (target === null) {
+    log.warn(LOG_UPDATER_ERROR, 'ignored release-notes request whose URL was not a usable string');
+    return;
+  }
+  log.info(LOG_UPDATER_OPEN_RELEASE_NOTES, target);
+  await shell.openExternal(target);
 }
