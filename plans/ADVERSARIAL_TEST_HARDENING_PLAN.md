@@ -28,7 +28,7 @@
 | 7 Updater & network hostility | **DONE**  | `src/main/__tests__/updater-hostile.test.ts` rewritten as 62 real tests that drive `src/main/updater.ts` through mocked `electron` / `https` / `fs`. **13 defects found and fixed** (U1-U13 table below); the suite was then inverted so it now asserts the *refusing* behaviour instead of documenting the vulnerable one. Mutation-verified: `path.basename` on the download filename, `coerceOsString` in `autoInstallPendingUpdate`, and build-metadata stripping in `compareVersions` each break the matching test. Clean at `ENCODEX_STRICT_TESTS=2` |
 | 8 Resource limits & denial-of-service | **PARTIAL** | Committed Phase-8 budget suites (2026-10-06): `src/shared/__tests__/resource-budget.test.ts` (1000-filter refusal, worst-case chain under the 32k Windows argv limit, adversarial/budgeted parsing), `src/main/queue/__tests__/queue-import-budget.test.ts` (10 MB export parse, beyond-cap refusal, hostile 10 MB JSON bodies incl. 100k-deep nesting), `src/main/__tests__/media-scan-budget.test.ts` (30,000-file tree < 3 s + dedupe + 300-deep walk), `src/renderer/pages/__tests__/convert-click-budget.test.tsx` (10,000 rapid clicks -> exactly one job). All strict-clean at `ENCODEX_STRICT_TESTS=2`. *Remaining:* 100k-file scan / 20 GB sparse file / 10k-jobs memory / 100 MB SRT rows need the perf or integration tier; 1,000 rapid route changes partly covered by strict-mode + listener-leaks suites |
 | 9 Mutation testing | **PARTIAL** | Property/fuzz suites provide real mutation resistance (several mutations explicitly killed). *Remaining:* no Stryker config, no mutation-delta CI gate |
-| 10 CI wiring, budgets & nightly chaos | **PARTIAL** | Existing `typecheck` / coverage-diff / `test-flake` jobs are wired. `test-fuzz` + `nightly-chaos` are **DONE (2026-10-06)** -- blocking `test-fuzz` job in ci.yml (`npm run test:media-fuzz`, ubuntu), random-seed `nightly-chaos` media fuzz in nightly.yml. *Remaining:* `test-ipc-abuse`, `test-locale-matrix`, `test-a11y`, perf budgets in `perf/baseline.json`, release gate |
+| 10 CI wiring, budgets & nightly chaos | **PARTIAL** | Existing `typecheck` / coverage-diff / `test-flake` jobs are wired. `test-fuzz` + `nightly-chaos` are **DONE (2026-10-06)** -- blocking `test-fuzz` job in ci.yml (`npm run test:media-fuzz`, ubuntu), random-seed `nightly-chaos` media fuzz in nightly.yml. `test-ipc-abuse` is **DONE (2026-10-06)** -- blocking `test-ipc-abuse` job in ci.yml running the Tier B ipc-abuse sweep on ubuntu + windows. *Remaining:* `test-locale-matrix`, `test-a11y`, perf budgets in `perf/baseline.json`, release gate |
 
 ### Bugs the tripwire found (all fixed in the same change that surfaced them)
 
@@ -1907,7 +1907,7 @@ Without this, all of Phases 1â€“8 can be theatre: assertions that pass rega
 | `typecheck:e2e` | Blocks. Phase 0.3. **Live** -- chained into `npm run typecheck`; was drafted as non-blocking, but all 14 e2e errors were fixed rather than allowlisted |
 | `test-strict` | Blocks. Unit+integration with `ENCODEX_STRICT_TESTS=1`  |
 | `test-fuzz` | Blocks. Phases 1 + 2, seeded corpus, 5 min budget  |
-| `test-ipc-abuse` | Blocks. Phase 3, ubuntu + windows  |
+| `test-ipc-abuse` | Blocks. Phase 3, ubuntu + windows. **Live (2026-10-06)** |
 | `test-mutation-delta` | Advisory for 4 weeks, then blocks  |
 | `test-locale-matrix` | Blocks. Phase 5.1 (ubuntu, 56 locales Ã— 12 routes)  |
 | `flake-detect` | Advisory, posts a PR comment  |

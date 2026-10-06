@@ -474,3 +474,41 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y xvfb
       - name: Run real conversion e2e
         run: xvfb-run --auto-servernum npm run test:e2e:real:ci
+
+  test-ipc-abuse:
+    # Phase 3 adversarial gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10):
+    # the Tier B IPC handler-abuse sweep driven through the *real* preload +
+    # real main, on both platforms the release supports. The cheaper unit-tier
+    # equivalent runs in test-unit; this job is the faithful surface.
+    name: Test - IPC abuse (real main, ${{ matrix.os }})
+    needs: [build, test-unit, test-integration]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu
+            runner: ubuntu-latest
+          - os: windows
+            runner: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          path: dist
+      - run: npm ci
+      - name: Install xvfb
+        if: matrix.os == 'ubuntu'
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+      - name: Run IPC abuse sweep (Linux)
+        if: matrix.os == 'ubuntu'
+        run: xvfb-run --auto-servernum npm run test:e2e:real:ci e2e/specs/ipc-abuse.spec.ts
+      - name: Run IPC abuse sweep (Windows)
+        if: matrix.os == 'windows'
+        run: npm run test:e2e:real:ci e2e/specs/ipc-abuse.spec.ts
