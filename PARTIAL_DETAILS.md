@@ -11,7 +11,8 @@
 
 ## 6. CLI & MCP hostile input (PARTIAL)
 - DONE: e2e/specs/cli-hostile.spec.ts (5 E2E tests), src/main/cli/__tests__/cli-argv-fuzz.test.ts (5 fast-check tests on the real parse layer via exported createCliProgram; 300 hostile-argv cases + shim totality), src/mcp/__tests__/hostile.test.ts (29 unit tests driving the real MCP server over InMemoryTransport), src/mcp/__tests__/hostile.integration.test.ts (8 spawn-level stdio-frame tests: malformed/primitive/invalid-UTF-8/wrong-framing lines dropped, truncated-frame swallow, unknown-method -32601, >10 MB cap fail-closed)
-- MISSING: real-subprocess CLI rows (signal handling, disk-full, 32k-char filenames, stderr stack-trace shape), MCP HTTP transport hostile (no production HTTP server exists yet; SDK StreamableHTTPServerTransport is available)
+- DONE (MCP HTTP transport, 2026-10-06): production module src/mcp/http.ts + standalone entry src/mcp/http-server.ts (loopback-only bind, optional bearer auth with constant-time compare, query-string token refusal, per-request Host/Origin loopback checks, one McpServer per session sharing a single MCPJobManager, session cap that counts in-flight creations so a burst cannot overshoot, 10 MB body cap via Content-Length and chunked read, deterministic 404/405/415/400/413/503, clientError guard). src/mcp/__tests__/http.test.ts (23 unit, strict-clean at ENCODEX_STRICT_TESTS=2) + src/mcp/__tests__/http-hostile.integration.test.ts (8 spawn-level against `node dist/mcp/http-server.js`, incl. 100-concurrent never-overflowing cap, EADDRINUSE exit 1, prompt SIGTERM)
+- MISSING: real-subprocess CLI rows (signal handling, disk-full, 32k-char filenames, stderr stack-trace shape)
 
 ## 7. Updater & network hostility (DONE)
 - DONE: src/main/__tests__/updater-hostile.test.ts (62 real tests), updated updater.test.ts (42 tests); 13 defects (U1-U13) found and fixed in updater.ts; strict-clean

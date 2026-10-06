@@ -24,7 +24,7 @@
 | 3 IPC contract & abuse testing | **PARTIAL** | 3.1 channel inventory **DONE** (every registrar validated). 3.2 handler abuse harness **DONE**. 3.3 event-channel abuse **DONE (2026-10-05)** -- measured the ~650 ev/sec saturation ceiling. 3.4 hostile-preload E2E **DONE (2026-10-05)**. *Remaining:* the abuse sweeps live in E2E (`mock:false`) only; no committed unit-level sweep, and no CI job yet |
 | 4 State machines, lifecycle & races | **DONE**  | job-queue attacks (48 tests); ffmpeg-core cancel/race fixes; queue reordering guards; 4.4 hostile localStorage at boot and during render (11); 4.5 timer/listener/observer leaks (7); 4.6 React 19 StrictMode across all 12 pages (13); 4.7 race harness `deferred()` (20). Bugs Q1-Q10 addressed; mutations verified |
 | 5 UI robustness, i18n & a11y | **PARTIAL** | Harness in place and self-tested: `src/test-utils/page-render.tsx` (12 routes, 17 self-tests), `src/test-utils/axe.ts`, `src/test-utils/deferred.ts`. *Remaining:* 5.1 locale matrix (subset validated, **not** the full 56x12), RTL mirror, longest-string stress; 5.2 missing-degradation cases beyond storage/listener; 5.3 axe across pages x theme x width, keyboard smoke, focus return, hotkey conflicts |
-| 6 CLI & MCP hostile input | **PARTIAL** | `e2e/specs/cli-hostile.spec.ts` (5 E2E: usage errors, unknown `--preset`, bad argv); `src/main/cli/__tests__/cli-argv-fuzz.test.ts` (5 fast-check parse-layer tests, 2026-10-06; `createCliProgram` extracted from `runCli`); `src/mcp/__tests__/hostile.test.ts` (29 unit, rewritten 2026-10-06 -- it had been 4 tests on literals that never imported `src/mcp/**`); `src/mcp/__tests__/hostile.integration.test.ts` (8 spawn-level stdio-frame tests, 2026-10-06). *Remaining:* real-subprocess CLI rows (signals, disk-full, 32k-char filenames, stack-trace-free stderr shape), MCP HTTP transport (no production HTTP server exists yet) + its hostile spec |
+| 6 CLI & MCP hostile input | **PARTIAL** | `e2e/specs/cli-hostile.spec.ts` (5 E2E: usage errors, unknown `--preset`, bad argv); `src/main/cli/__tests__/cli-argv-fuzz.test.ts` (5 fast-check parse-layer tests, 2026-10-06; `createCliProgram` extracted from `runCli`); `src/mcp/__tests__/hostile.test.ts` (29 unit, rewritten 2026-10-06 -- it had been 4 tests on literals that never imported `src/mcp/**`); `src/mcp/__tests__/hostile.integration.test.ts` (8 spawn-level stdio-frame tests, 2026-10-06). **MCP HTTP transport is DONE (2026-10-06)** -- new production module `src/mcp/http.ts`+`src/mcp/http-server.ts` (`node dist/mcp/http-server.js`, defaults to 127.0.0.1 + an auto-generated bearer token) plus `src/mcp/__tests__/http.test.ts` (23 unit, strict-clean) and `src/mcp/__tests__/http-hostile.integration.test.ts` (8 spawn-level: 401 auth, query-string token, non-loopback Host/Origin 403, 413 over-cap, 100-concurrent session cap never overflowed, EADDRINUSE exit 1, prompt SIGTERM). *Remaining:* real-subprocess CLI rows (signals, disk-full, 32k-char filenames, stack-trace-free stderr shape) |
 | 7 Updater & network hostility | **DONE**  | `src/main/__tests__/updater-hostile.test.ts` rewritten as 62 real tests that drive `src/main/updater.ts` through mocked `electron` / `https` / `fs`. **13 defects found and fixed** (U1-U13 table below); the suite was then inverted so it now asserts the *refusing* behaviour instead of documenting the vulnerable one. Mutation-verified: `path.basename` on the download filename, `coerceOsString` in `autoInstallPendingUpdate`, and build-metadata stripping in `compareVersions` each break the matching test. Clean at `ENCODEX_STRICT_TESTS=2` |
 | 8 Resource limits & denial-of-service | **PARTIAL** | Committed Phase-8 budget suites (2026-10-06): `src/shared/__tests__/resource-budget.test.ts` (1000-filter refusal, worst-case chain under the 32k Windows argv limit, adversarial/budgeted parsing), `src/main/queue/__tests__/queue-import-budget.test.ts` (10 MB export parse, beyond-cap refusal, hostile 10 MB JSON bodies incl. 100k-deep nesting), `src/main/__tests__/media-scan-budget.test.ts` (30,000-file tree < 3 s + dedupe + 300-deep walk), `src/renderer/pages/__tests__/convert-click-budget.test.tsx` (10,000 rapid clicks -> exactly one job). All strict-clean at `ENCODEX_STRICT_TESTS=2`. *Remaining:* 100k-file scan / 20 GB sparse file / 10k-jobs memory / 100 MB SRT rows need the perf or integration tier; 1,000 rapid route changes partly covered by strict-mode + listener-leaks suites |
 | 9 Mutation testing | **PARTIAL** | Property/fuzz suites provide real mutation resistance (several mutations explicitly killed). *Remaining:* no Stryker config, no mutation-delta CI gate |
@@ -1743,10 +1743,57 @@ here instead: error envelopes echo attacker input without a truncation bound, an
 `fs.existsSync` accepts a directory so a directory reaches the queue. Both need fixes, and pinning
 the vulnerable behaviour as "expected" is exactly what made the previous updater suite useless.
 
-*Still remaining:* the HTTP transport spec (missing/incorrect bearer token, `Origin` checks,
-non-loopback bind, port-in-use), which needs a production HTTP transport module (the SDK ships
-`StreamableHTTPServerTransport`, but EncodeX has no HTTP server code yet) plus its hostile
-spec, and the CLI rows (argv fuzzing, real-subprocess signal handling).
+**MCP HTTP transport is DONE (2026-10-06).** A production module exists now:
+`src/mcp/http.ts` (`createMcpHttpHandler` / `createMcpHttpServer` / `runMcpHttpServer`)
+and the standalone entry `src/mcp/http-server.ts`. The SDK ships
+`StreamableHTTPServerTransport` but EncodeX had no HTTP server code, so this closes
+that gap as a feature + hostile-spec row. Design decisions (all hostile-input driven):
+
+- **One McpServer per session, shared `MCPJobManager`.** `Protocol.connect`
+  rejects a second `connect`, so every session gets its own `McpServer` but they
+  all share one job manager (job state crosses sessions -- pinned by a two-session
+  test). The session is registered in the Map only after `handleRequest` returns,
+  because the SDK assigns `transport.sessionId` during *initialization*, not in
+  the constructor; orphan transports (sessionless first POST) are closed.
+- **Loopback-only by default.** `runMcpHttpServer` refuses any non-loopback bind
+  host outright, and each request's `Host`/`Origin` header must resolve to a
+  loopback hostname (403 otherwise), which is our own deterministic replacement
+  for the SDK's opt-in exact-string `allowedHosts`/`allowedOrigins` list check.
+- **Bearer auth on by default** in the standalone entry: `--token <v>` /
+  `ENCODEX_MCP_TOKEN` / `--no-auth`, else a random token is generated and printed
+  (`MCP_HTTP_TOKEN=...`). Compared in constant time; a token in the query string
+  (`access_token`/`token`/`auth`/`authorization`) is refused.
+- **Bounded sessions and bodies.** Session cap (`--max-sessions`, default 64;
+  refusal 503) counts in-flight creations (`sessions.size + reserving`) so a
+  concurrent burst can never overshoot the cap -- pinned by the 100-concurrent
+  spawn test (exactly 8/8 with `--max-sessions 8`). Body cap 10 MB (413),
+  enforced via both the declared `Content-Length` and a streaming read for
+  chunked uploads.
+- **Deterministic status codes.** Unknown paths 404; unsupported methods 405
+  with `Allow: GET, POST, DELETE`; non-JSON `Content-Type` 415; unparseable
+  JSON 400; sessionless/sessionless-after-DELETE traffic 400/404; `clientError`
+  on the socket answers 400 and keeps serving. The transport's own rules are
+  delegated: POST `Accept` must carry both `application/json` and
+  `text/event-stream` (406), and JSON (`enableJsonResponse: true`) is the only
+  response-mode toggle -- SSE is always on for GET.
+- Ready line is `console.log` (not Logger), so spawn harnesses can parse the
+  actual port even when `LOG_LEVEL` suppresses info.
+
+Tests: `src/mcp/__tests__/http.test.ts` (23 unit: session lifecycle incl. a
+full `convert_media` round-trip and cross-session job visibility, DELETE, routing
+guards 404/405/415/406/400, orphan-session rejection, session cap with slot
+freed by DELETE, body cap with declared and chunked lengths, Host/Origin guard
+matrix, bearer/auth matrix, query-token refusal, server-name identity; all
+strict-clean at `ENCODEX_STRICT_TESTS=2`) and
+`src/mcp/__tests__/http-hostile.integration.test.ts` (8 spawn-level against
+`node dist/mcp/http-server.js`: 401 auth matrix, `--no-auth`, query-string
+token, non-loopback Host/Origin 403, 413 over-cap then serving, 100 concurrent
+connections with a never-overflowed cap, bind-to-used-port exits 1 with stderr,
+and prompt SIGTERM termination with a session hanging open).
+
+*Still remaining in Phase 6:* the CLI rows (argv fuzzing, real-subprocess signal
+handling). Two hostile-but-not-refused MCP behaviours remain recorded (not
+pinned) as above.
 
 ---
 

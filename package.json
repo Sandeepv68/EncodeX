@@ -17,6 +17,7 @@
     "build": "npm run gen:sentry-config && npm run gen:aptabase-config && npm run build:renderer && npm run build:main && npm run build:preload",
     "start": "electron .",
     "mcp": "node dist/mcp/index.js",
+    "mcp:http": "node dist/mcp/http-server.js",
     "mcp:smoke": "node scripts/mcp-smoke.mjs",
     "mcp:smoke:electron": "node scripts/mcp-smoke.mjs --electron",
     "electron:dev": "concurrently -k \"npm run dev:renderer\" \"wait-on http://localhost:5173 && tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && electron . --dev\"",
