@@ -18,8 +18,8 @@
 - MISSING (E2E only, needs real filesystem/net): disk-full / installer-locked-file launch simulation, live-network smoke
 
 ## 8. Resource limits & denial-of-service (PARTIAL)
-- DONE: Guards exist in codebase; resource-related unit tests (video-filters 30 tests, queue operations)
-- MISSING: Explicit DoS/load tests (100k files, 10k jobs, regex backtrack) as committed tests
+- DONE (2026-10-06): src/shared/__tests__/resource-budget.test.ts (1000-filter refusal, worst-case chain under 32k Windows argv limit, adversarial 100 KB/50k-entry parsing bounded < 1 s), src/main/queue/__tests__/queue-import-budget.test.ts (10 MB export parse < 3 s, 10,001-job refusal, hostile 10 MB JSON incl. 100k-deep nesting), src/main/__tests__/media-scan-budget.test.ts (30,000-file tree < 3 s, dedupe, 300-deep walk), src/renderer/pages/__tests__/convert-click-budget.test.tsx (10,000 rapid clicks -> exactly one conversion). All strict-clean at ENCODEX_STRICT_TESTS=2
+- MISSING: Perf-tier rows (100k-file scan at full count, 100 MB SRT, 20 GB sparse file, 10k-job queue memory) and a 1,000-rapid-route-change harness (partially covered by strict-mode/listener-leaks suites)
 
 ## 9. Mutation testing (PARTIAL)
 - DONE: Property/fuzz coverage provides strong assertions

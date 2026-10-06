@@ -26,7 +26,7 @@
 | 5 UI robustness, i18n & a11y | **PARTIAL** | Harness in place and self-tested: `src/test-utils/page-render.tsx` (12 routes, 17 self-tests), `src/test-utils/axe.ts`, `src/test-utils/deferred.ts`. *Remaining:* 5.1 locale matrix (subset validated, **not** the full 56x12), RTL mirror, longest-string stress; 5.2 missing-degradation cases beyond storage/listener; 5.3 axe across pages x theme x width, keyboard smoke, focus return, hotkey conflicts |
 | 6 CLI & MCP hostile input | **PARTIAL** | `e2e/specs/cli-hostile.spec.ts` (5 E2E: usage errors, unknown `--preset`, bad argv); `src/main/cli/__tests__/cli-argv-fuzz.test.ts` (5 fast-check parse-layer tests, 2026-10-06; `createCliProgram` extracted from `runCli`); `src/mcp/__tests__/hostile.test.ts` (29 unit, rewritten 2026-10-06 -- it had been 4 tests on literals that never imported `src/mcp/**`); `src/mcp/__tests__/hostile.integration.test.ts` (8 spawn-level stdio-frame tests, 2026-10-06). *Remaining:* real-subprocess CLI rows (signals, disk-full, 32k-char filenames, stack-trace-free stderr shape), MCP HTTP transport (no production HTTP server exists yet) + its hostile spec |
 | 7 Updater & network hostility | **DONE**  | `src/main/__tests__/updater-hostile.test.ts` rewritten as 62 real tests that drive `src/main/updater.ts` through mocked `electron` / `https` / `fs`. **13 defects found and fixed** (U1-U13 table below); the suite was then inverted so it now asserts the *refusing* behaviour instead of documenting the vulnerable one. Mutation-verified: `path.basename` on the download filename, `coerceOsString` in `autoInstallPendingUpdate`, and build-metadata stripping in `compareVersions` each break the matching test. Clean at `ENCODEX_STRICT_TESTS=2` |
-| 8 Resource limits & denial-of-service | **PARTIAL** | Guards exist in source; `src/shared/__tests__/video-filters.test.ts` (30) and the queue suites cover some limits. *Remaining:* none of the plan's budget rows are asserted as tests -- 100k-file scan, 100 MB SRT, 10 MB queue export, 20 GB sparse file, 1000-filter chain, 1000 rapid route changes, 10,000 rapid Convert clicks |
+| 8 Resource limits & denial-of-service | **PARTIAL** | Committed Phase-8 budget suites (2026-10-06): `src/shared/__tests__/resource-budget.test.ts` (1000-filter refusal, worst-case chain under the 32k Windows argv limit, adversarial/budgeted parsing), `src/main/queue/__tests__/queue-import-budget.test.ts` (10 MB export parse, beyond-cap refusal, hostile 10 MB JSON bodies incl. 100k-deep nesting), `src/main/__tests__/media-scan-budget.test.ts` (30,000-file tree < 3 s + dedupe + 300-deep walk), `src/renderer/pages/__tests__/convert-click-budget.test.tsx` (10,000 rapid clicks -> exactly one job). All strict-clean at `ENCODEX_STRICT_TESTS=2`. *Remaining:* 100k-file scan / 20 GB sparse file / 10k-jobs memory / 100 MB SRT rows need the perf or integration tier; 1,000 rapid route changes partly covered by strict-mode + listener-leaks suites |
 | 9 Mutation testing | **PARTIAL** | Property/fuzz suites provide real mutation resistance (several mutations explicitly killed). *Remaining:* no Stryker config, no mutation-delta CI gate |
 | 10 CI wiring, budgets & nightly chaos | **PARTIAL** | Existing `typecheck` / coverage-diff / `test-flake` jobs are wired. *Remaining:* none of the new adversarial jobs exist -- `test-fuzz`, `test-ipc-abuse`, `test-locale-matrix`, `test-a11y`, `nightly-chaos`; no release gate |
 
@@ -1791,6 +1791,22 @@ leaks `NaN` for a missing/negative/duplicated `Content-Length`.
 | 20 GB sparse file (truncated seek) | no full read into memory  |
 | 1,000 rapid route changes during a conversion | no leaked listeners, no state corruption  |
 | 10,000 rapid clicks on Convert | exactly one job created (double-submit guard)  | ---
+
+### Phase 8 status (2026-10-06)
+
+Committed budget suites cover the in-process rows as real, bounded assertions:
+
+| Row | Committed test | Assertion |
+| --- | --- | --- |
+| 1,000-filter chain | `src/shared/__tests__/resource-budget.test.ts` | A 1,000-entry chain is **refused** (`Too many filters (max 8)`); worst-case accepted chain (8 x 200 chars) validates and stays under the 32k-char Windows `CreateProcess` limit; both within 1 s |
+| Catastrophic-backtracking regex | `src/shared/__tests__/resource-budget.test.ts` | `timeToSeconds`, `formatBitrate`, `formatSize`, `formatDuration`, `formatClockTime`, `normalizeFilterChain`, `validateVideoFilters` all finish < 1 s on 100 KB / 50k-entry / 1 MB-string / pathological-number inputs (the actual regexes are linear; this pins that property against regression) |
+| 10 MB JSON queue export | `src/main/queue/__tests__/queue-import-budget.test.ts` | A ~10 MB export at the 10,000-job cap parses+validates < 3 s; a 10,001-job file is refused; 10 MB whitespace / unterminated / 100k-deep-nested bodies return null < 3 s |
+| Folder scan | `src/main/__tests__/media-scan-budget.test.ts` | 30,000 real files across 30 dirs: `collectMediaFiles` < 3 s, unique+sorted, `expandMediaPaths` dedupes overlapping roots; 300-deep chain walks without stack overflow. Setup bounded at 30 s (beforeAll/afterAll explicit timeouts) |
+| 10,000 rapid Convert clicks | `src/renderer/pages/__tests__/convert-click-budget.test.tsx` | Button disabled synchronously via `setIsConverting(true)` (useConversion.ts:148) before the bridge await; 10,000 clicks -> `convertFile` called exactly once |
+
+Still **remaining** (deferred to perf/integration tiers, need real IO or a scheduler under load):
+- 100,000-file scan at full count, 100 MB SRT probe, 20 GB sparse file (truncated seek, no full read), 10,000-job queue memory delta.
+- 1,000 rapid route changes: partially covered by `strict-mode.test.tsx` and `listener-leaks.test.tsx`; a dedicated harness remains optional.
 
 ## Phase 9 -- Mutation testing (the actual "offensive" instrument)
 
