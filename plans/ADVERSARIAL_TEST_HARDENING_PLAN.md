@@ -20,12 +20,17 @@
 | 0.5 Flake governance | **DONE**  | `test:flake-detect` runs e2e 3Ã— with `--retry=0` and fails on failure rate in (0,1), on partial runs, on lapsed/stale/**invalid** quarantine entries; 36 unit tests, 10 mutations caught; `test-flake` CI job. Sign-off audit closed two real holes: an undated **or typo-dated** entry exempted a test forever (`Date.parse` -> `NaN`, and `NaN <= now` is false), so the schema is now validated and malformed entries fail closed; `actionlint` 1.7.12 + shellcheck clean over all 7 workflows |
 | 0.6 Housekeeping debt | **DONE**  | `perf/**` + `eslint-rules/**` in Prettier globs; `tsconfig.perf.json` wired as the 6th typecheck project; boot time recorded + asserted (median-of-3 vs `perf/baseline.json` budget +25%), 31 tests, 6 mutations caught. Typechecking `perf/` found Vitest 4 silently ignored `forks: { execArgv }`, so the memory tests had been measuring uncollected garbage |
 | 1 Contract & input fuzzing | **DONE**  | 9 new property-test files, 162 tests, all 10 rows covered. **8 source bugs found and fixed** (`isValidTime` accepted `00:60:00`; `formatSize(Infinity)`/`formatDuration(NaN)`/`formatClockTime` rendered `'Infinity TB'`/`'NaNs'`/`'Infinity:NaN:NaN'`; `validateQueueExport` had no job cap; `formatError` threw on hostile objects; `isContainerCompatibleWithStream` threw on a streamless payload; the i18n test mock threw on a RegExp-metacharacter key). `deriveOutputPath` traversal and all 6 store rehydration readers proved already-safe (mutation-verified). Typecheck 6/6, lint 0 errors, format clean, unit 199/2911, integration 50/50, e2e A 155+2skipped, e2e B 9/9 |
-| 5 UI robustness, i18n & a11y | TODO  | -- |
-| 6 CLI & MCP hostile input | TODO  | -- |
-| 7 Updater & network hostility | TODO  | -- |
-| 8 Resource limits & denial-of-service | TODO  | -- |
-| 9 Mutation testing | TODO  | -- |
-| 10 CI wiring, budgets & nightly chaos | TODO  | -- | ### Bugs the tripwire found (all fixed in the same change that surfaced them)
+| 2 Media / byte-level fuzzing | **DONE**  | `computeHistogram` fuzz; `FrameDecoder` fuzz (a **hang** that killed the process, fixed); subprocess watchdog `src/main/spawn-timeout.ts` (5 call sites); EXIF bombs -- parser hardened but **our** layer was not; generated real corpus behind `test:media-fuzz` (`vitest.media-fuzz.config.ts`), 6 tests against real ffmpeg; bugs fixed and mutation-verified |
+| 3 IPC contract & abuse testing | **PARTIAL** | 3.1 channel inventory **DONE** (every registrar validated). 3.2 handler abuse harness **DONE**. 3.3 event-channel abuse **DONE (2026-10-05)** -- measured the ~650 ev/sec saturation ceiling. 3.4 hostile-preload E2E **DONE (2026-10-05)**. *Remaining:* the abuse sweeps live in E2E (`mock:false`) only; no committed unit-level sweep, and no CI job yet |
+| 4 State machines, lifecycle & races | **DONE**  | job-queue attacks (48 tests); ffmpeg-core cancel/race fixes; queue reordering guards; 4.4 hostile localStorage at boot and during render (11); 4.5 timer/listener/observer leaks (7); 4.6 React 19 StrictMode across all 12 pages (13); 4.7 race harness `deferred()` (20). Bugs Q1-Q10 addressed; mutations verified |
+| 5 UI robustness, i18n & a11y | **PARTIAL** | Harness in place and self-tested: `src/test-utils/page-render.tsx` (12 routes, 17 self-tests), `src/test-utils/axe.ts`, `src/test-utils/deferred.ts`. *Remaining:* 5.1 locale matrix (subset validated, **not** the full 56x12), RTL mirror, longest-string stress; 5.2 missing-degradation cases beyond storage/listener; 5.3 axe across pages x theme x width, keyboard smoke, focus return, hotkey conflicts |
+| 6 CLI & MCP hostile input | **PARTIAL** | `e2e/specs/cli-hostile.spec.ts` (5 E2E: usage errors, unknown `--preset`, bad argv); `src/mcp/__tests__/hostile.test.ts` (29 unit, rewritten 2026-10-06 -- it had been 4 tests on literals that never imported `src/mcp/**`). *Remaining:* argv fuzzing, signal handling, MCP HTTP-transport hostility, stdio frame hostility |
+| 7 Updater & network hostility | **DONE**  | `src/main/__tests__/updater-hostile.test.ts` rewritten as 62 real tests that drive `src/main/updater.ts` through mocked `electron` / `https` / `fs`. **13 defects found and fixed** (U1-U13 table below); the suite was then inverted so it now asserts the *refusing* behaviour instead of documenting the vulnerable one. Mutation-verified: `path.basename` on the download filename, `coerceOsString` in `autoInstallPendingUpdate`, and build-metadata stripping in `compareVersions` each break the matching test. Clean at `ENCODEX_STRICT_TESTS=2` |
+| 8 Resource limits & denial-of-service | **PARTIAL** | Guards exist in source; `src/shared/__tests__/video-filters.test.ts` (30) and the queue suites cover some limits. *Remaining:* none of the plan's budget rows are asserted as tests -- 100k-file scan, 100 MB SRT, 10 MB queue export, 20 GB sparse file, 1000-filter chain, 1000 rapid route changes, 10,000 rapid Convert clicks |
+| 9 Mutation testing | **PARTIAL** | Property/fuzz suites provide real mutation resistance (several mutations explicitly killed). *Remaining:* no Stryker config, no mutation-delta CI gate |
+| 10 CI wiring, budgets & nightly chaos | **PARTIAL** | Existing `typecheck` / coverage-diff / `test-flake` jobs are wired. *Remaining:* none of the new adversarial jobs exist -- `test-fuzz`, `test-ipc-abuse`, `test-locale-matrix`, `test-a11y`, `nightly-chaos`; no release gate |
+
+### Bugs the tripwire found (all fixed in the same change that surfaced them)
 
 These were live in `src/renderer` and would have shipped. None had a failing test. | # | Bug  | Root cause | Fix  |
 | B1 | Every page rendered an invalid `hasaside` DOM attribute  | `PageRoot` declared `$hasAside` but never filtered it; `styled(Box)` forwards all props | `shouldForwardProp` + transient prop  |
@@ -57,6 +62,48 @@ AST of every `*.styles.ts` and fails if any `styled()` call declares a `$`-prefi
 a `shouldForwardProp`. It includes a self-check that pins the shape of the data it inspects,
 because an earlier regex version of this test passed _while the bug was present_ -- a guard that
 cannot fail is worse than no guard.
+
+### Bugs the Phase 7 updater suite found and fixed
+
+The previous `updater-hostile.test.ts` asserted on literals and never imported `src/main/updater.ts`,
+so Phase 7's log counted 4 tests that proved nothing about the updater. It is rewritten as 62 tests
+that drive the real module. That run found 13 defects in today's code (below); each was fixed and the
+test that had documented the vulnerable behaviour was inverted to assert the refusing behaviour, so
+the suite is green because the guards hold, not because the defects are pinned as contracts
+(2026-10-06).
+
+| # | Defect | Source fix |
+|---|---|---|
+| U1 | **Arbitrary write.** A release asset named `../../../../evil.exe` is selected and written outside the update dir | `resolveInstallerTarget` now accepts only a plain installer file name (or the exact resolved path inside the update dir) and asserts containment via `path.relative` |
+| U2 | A NUL byte in an asset name reaches `fs.createWriteStream`, which throws `ERR_INVALID_ARG_VALUE` **from inside the HTTPS response callback** -- uncaught, not a rejection | the same name validator rejects `\0` before any write; `selectAsset` filters it out |
+| U3 | **Any file the marker names is launched at startup, with no validation.** `C:\Windows\System32\cmd.exe` in `pending-install.json` gets `shell.openPath`'d before any window exists | `readPendingInstall` runs the payload through `resolveInstallerTarget`: containment in the update dir + installer extension + `coerceOsString` length bound |
+| U4 | An **empty** `version` in the marker bypasses the version guard, so the installer runs unconditionally | an empty/unparseable version is now "cannot apply"; the marker is cleared but nothing is launched |
+| U5 | A **megabyte-long** marker path reaches `shell.openPath` | `readPendingInstall` applies `MAX_OS_STRING_LENGTH` to the raw payload and every string field |
+| U6 | **Unbounded response body.** No size cap and no timeout, so a hostile endpoint can exhaust the main process | `MAX_RELEASE_JSON_BYTES` (4 MB) cap on the release body, `API_TIMEOUT_MS` (15 s) `AbortSignal.timeout`, and `DOWNLOAD_IDLE_TIMEOUT_MS` (60 s) idle abort on downloads |
+| U7 | **Redirects are followed to any host, over any scheme, with no hop budget.** `http://evil.invalid` is fetched as the installer | `ALLOWED_DOWNLOAD_HOSTS` (github.com + three CDN hosts) and https-only, with `MAX_REDIRECTS` (5) hop budget |
+| U8 | A 302 **without** a `Location` header makes the real `https.get(undefined, ...)` throw `ERR_INVALID_ARG_TYPE` synchronously inside the response callback -- uncaught, and the download promise never settles | the header is validated (string, non-empty) and the download is rejected cleanly |
+| U9 | **Disk-full / locked file leaves the app hung.** The `WriteStream` has no `error` listener, so the emit throws on a listener-less emitter (uncaught) *and* nothing ever settles the promise | the stream has an `error` handler that fails the download, teardowns the stream and removes the partial file |
+| U10 | **No integrity check.** A truncated body, or an HTML error page served as 200, resolves as a successful download -- and the corrupt file is what `shell.openPath` later launches | `Content-Length` is asserted (received == advertised), HTML `Content-Type` is refused, progress is capped and clamps to a 0-100 scale, and a published `sha256:`/`sha512:` digest is verified before the installer is offered |
+| U11 | **`compareVersions` violates semver 2.0.0.** `1.0.0+build.7` outranks `1.0.0`, so a rebuild is offered as an update; an unparseable tag collapses to `0.0.0` | build metadata is stripped (§10), unparseable entire-version strings throw/are refused, and prerelease identifiers follow §9 (alphanumerics + hyphens, no leading zeros) |
+| U12 | **No single-flight.** 200 concurrent `checkForUpdate()` calls become 200 HTTPS requests; the renderer can trigger this alone, since `CHECK_FOR_UPDATES` has no debounce | `checkForUpdate` shares one `inFlightCheck` promise across all callers |
+| U13 | **A body of literal `null` is indistinguishable from "no release".** `fetchLatestRelease` resolved `null` for 404, so `runCheck` treated a JSON `null` body as "up to date" | 404 now resolves a `NO_RELEASE` symbol; every other payload (including `null`) is validated |
+
+Smaller items the same suite pins, listed so they are not rediscovered: progress percent can exceed
+100 when a server under-reports `Content-Length` (**fixed**: `Math.min(100, ...)` and a mismatch is a
+hard failure); `asset.size` is copied across the IPC boundary with no type or range check (`-1`,
+`2**53` and `'4 GB'` all pass) (**fixed**: requires a safe, finite, non-negative integer at most
+`MAX_ASSET_SIZE_BYTES` = 4 GiB, else 0); a 429's `Retry-After` is discarded (**still true**, recorded);
+and `installer.bat.exe` / `setup.sh.AppImage` are selected because the filter only looks at the
+trailing extension (**kept**: they correctly carry the platform installer extension, and the download
+and launch are digest- and containment-verified regardless).
+
+**Decisions taken when these landed (2026-10-06).** U1-U4 and U7 were security-relevant and recorded
+for a decision rather than a drive-by patch; the follow-up chose the two flagged options explicitly:
+
+- **U3/U7 - containment + allowlist, fail closed.** An installer must be a plain file name
+  carrying the platform extension and must resolve inside `tempdir/EncodeX-updater`; downloads may
+  only be fetched from (and redirected among) github.com and the three GitHub CDN hosts, over https,
+  within the hop budget. Both were the options the original "fix direction" column named.
 
 ### Known follow-ups (recorded, not fixed)
 
@@ -1661,6 +1708,24 @@ New `src/mcp/__tests__/hostile.integration.test.ts` + `e2e/specs/mcp-http-hostil
   server shutdown with in-flight jobs. **Assert nothing is exposed on a non-loopback bind.**
 - `MCPJobManager` under 1,000 rapid start/cancel cycles -> no unbounded array growth, no double-free.
 
+**Status (2026-10-06).** The unit half is done: `src/mcp/__tests__/hostile.test.ts` was rewritten
+from 4 literal assertions to 29 tests that drive a real `McpServer`/`Client` over
+`InMemoryTransport`. Covered: the zod boundary on every class of wrong-typed/missing/oversized
+argument, unknown tools, non-record `arguments`, unknown-extra-key stripping, `__proto__`
+pollution through arguments and job ids, path/traversal inputs, shell metacharacters and unknown
+presets refused as `INVALID_VIDEO_FILTERS`, container/stream/auxiliary/glob refusals, job-id
+hostility, and `MCPJobManager` concurrency clamping + 1,000 enqueue/cancel cycles.
+
+Two hostile-but-not-refused behaviours were deliberately not pinned as contracts, and are recorded
+here instead: error envelopes echo attacker input without a truncation bound, and
+`fs.existsSync` accepts a directory so a directory reaches the queue. Both need fixes, and pinning
+the vulnerable behaviour as "expected" is exactly what made the previous updater suite useless.
+
+*Still remaining:* stdio frame hostility (malformed `Content-Length`, 10 MB body) and the HTTP
+transport spec (missing/incorrect bearer token, `Origin` checks, non-loopback bind, port-in-use),
+which need the subprocess/real-socket harnesses of `hostile.integration.test.ts` /
+`mcp-http-hostile.spec.ts`.
+
 ---
 
 ## Phase 7 -- Updater & network hostility
@@ -1677,6 +1742,21 @@ New `src/mcp/__tests__/hostile.integration.test.ts` + `e2e/specs/mcp-http-hostil
 - Offline mid-check, DNS failure, 500/403/404/429 with `Retry-After`.
 - Timer storm: `checkForUpdates` called 1,000Ã— concurrently -> exactly one in-flight check.
 - Assert the update flow never writes outside the app's update dir (a real arbitrary-write risk).
+
+**Status (2026-10-06, later pass).** All of the above is covered by
+`src/main/__tests__/updater-hostile.test.ts` (62 tests) except two rows, and the two gaps are
+recorded rather than silently dropped:
+
+- *Timer storm* is asserted at 200 concurrent calls rather than 1,000 -- 200 already proves the
+  guard, and 1,000 mocked requests buys no extra signal for ~5 s of suite time.
+- *Output path not writable / installer locked by another process* needs a real filesystem, so it
+  belongs in an E2E spec rather than behind an `fs` mock; it is folded into the same gap as U9,
+  whose unit-level half (the missing `error` listener) is covered.
+
+The suite found 13 defects; see the **U1-U13** table above. They are fixed and the corresponding
+test rows were inverted to assert the refusing behaviour. Guard rows that came back clean are kept
+as regression guards: the marker cannot pollute `Object.prototype`, and `progress.percent` never
+leaks `NaN` for a missing/negative/duplicated `Content-Length`.
 
 ---
 

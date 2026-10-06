@@ -596,12 +596,15 @@ export interface WhenDoneConfig {
  * @interface UpdateAsset
  * @property {string} name - The asset filename (e.g. 'EncodeX-1.1.0-x64-setup.exe').
  * @property {string} url - The direct browser_download_url for the asset.
- * @property {number} size - File size in bytes.
+ * @property {number} size - File size in bytes. Zero when the release did not report a usable one.
+ * @property {string} [digest] - GitHub-published digest, e.g. `sha256:ab12...`. Absent when the
+ *   release did not publish one, in which case the download is not checksum-verified.
  */
 export interface UpdateAsset {
   name: string;
   url: string;
   size: number;
+  digest?: string;
 }
 
 /**
