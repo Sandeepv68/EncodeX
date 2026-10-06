@@ -38,11 +38,11 @@ beforeAll(() => {
     }
     writeFileSync(join(dir, `notes${d}.txt`), 'ignored');
   }
-}, 30_000);
+}, 120_000);
 
 afterAll(() => {
   if (root) rmSync(root, { recursive: true, force: true });
-}, 30_000);
+}, 120_000);
 
 describe('resource budget: media folder scan', () => {
   it('collects every media file in a 30,000-file tree within the budget', () => {

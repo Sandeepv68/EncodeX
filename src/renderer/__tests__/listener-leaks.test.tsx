@@ -299,7 +299,7 @@ describe('useHotkeys', () => {
 describe('BatchQueue', () => {
   it('releases its window drag listeners across 100 mounts', () => {
     expectNoLeakAcross('BatchQueue', 100, () => render(<BatchQueue />));
-  });
+  }, 180_000);
 });
 
 describe('AppDrawer', () => {

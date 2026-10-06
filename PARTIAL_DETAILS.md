@@ -18,7 +18,7 @@
   - src/main/cli/cli.ts: `cliErrorMessage` flattens embedded newlines so the human message stays single-line.
   - Signal cancel (registerCliSignalCancel) + convert/batch cancellation from earlier in the phase.
 - DONE (MCP HTTP transport, 2026-10-06): production module src/mcp/http.ts + standalone entry src/mcp/http-server.ts (loopback-only bind, optional bearer auth with constant-time compare, query-string token refusal, per-request Host/Origin loopback checks, one McpServer per session sharing a single MCPJobManager, session cap that counts in-flight creations so a burst cannot overshoot, 10 MB body cap via Content-Length and chunked read, deterministic 404/405/415/400/413/503, clientError guard). src/mcp/__tests__/http.test.ts (23 unit, strict-clean at ENCODEX_STRICT_TESTS=2) + src/mcp/__tests__/http-hostile.integration.test.ts (8 spawn-level against `node dist/mcp/http-server.js`, incl. 100-concurrent never-overflowing cap, EADDRINUSE exit 1, prompt SIGTERM)
-- MISSING: CI jobs for the hostile suites (argv fuzz, MCP stdio/http, CLI real-subprocess rows)
+- DONE (CI wiring, 2026-10-06): all hostile suites are wired into CI. The MCP stdio/http unit suites (hostile.test.ts, http.test.ts) run in the `test-unit` job via the `vitest.config.ts` include; the spawn-level MCP integration suites (hostile.integration.test.ts, http-hostile.integration.test.ts) run in `test-integration`; the CLI real-subprocess + hostile-input rows (cli-hostile.spec.ts, cli-argv-fuzz.test.ts) run in `test-e2e`/`test-unit` (ubuntu + windows for the e2e tier). The `test-fuzz` media-corruption tier (corrupt-media.mediafuzz.test.ts, real ffmpeg/ffprobe) gained a blocking `test-fuzz` job in ci.yml plus a random-seed `nightly-chaos` run in nightly.yml (`MEDIA_FUZZ_SEED=${{ github.run_id }}`).
 
 ## 7. Updater & network hostility (DONE)
 - DONE: src/main/__tests__/updater-hostile.test.ts (62 real tests), updated updater.test.ts (42 tests); 13 defects (U1-U13) found and fixed in updater.ts; strict-clean
@@ -34,4 +34,5 @@
 
 ## 10. CI wiring, budgets & nightly chaos (PARTIAL)
 - DONE: Existing typecheck/coverage/flake jobs present
-- MISSING: New adversarial jobs (test-fuzz, test-ipc-abuse, test-locale-matrix, nightly-chaos) and release gates
+- DONE (2026-10-06): `test-fuzz` job (blocking, media-fuzz tier) in ci.yml + `nightly-chaos` random-seed media fuzz in nightly.yml
+- MISSING: test-ipc-abuse, test-locale-matrix, test-a11y jobs; perf budget baselines (boot_ms, max_rss_mb, queue_10k_ms, ipc_roundtrip_p99_ms, fuzz_seeds_per_min); release gates in release.yml

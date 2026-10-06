@@ -78,6 +78,22 @@ jobs:
       - name: Smoke test Electron --mcp mode
         run: xvfb-run --auto-servernum npm run mcp:smoke:electron -- --no-sandbox
 
+  nightly-chaos:
+    name: Nightly Chaos - media fuzz with random seed
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run media fuzz tier under a random seed
+        env:
+          MEDIA_FUZZ_SEED: ${{ github.run_id }}
+        run: npm run test:media-fuzz
+
   test-perf:
     name: Test - Performance Benchmarks (nightly)
     runs-on: ubuntu-latest
