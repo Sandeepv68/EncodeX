@@ -12,6 +12,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useHotkeys } from '../useHotkeys';
 import { expectAppLog } from '../../../test-utils/crash-tripwire';
+import { SHORTCUTS, parseShortcut, type HotkeySpec, type ParsedShortcut } from '../../constants/shortcuts';
 
 /**
  * Harness rendering the fired-count of a single bare-key binding.
@@ -152,5 +153,119 @@ describe('useHotkeys', () => {
     unmount();
     pressWindow({ code: 'KeyL', key: 'l' });
     expect(onLossless).toHaveBeenCalledTimes(1);
+  });
+});
+
+/**
+ * A canonical identity for a parsed chord, distinct when modifiers or the key
+ * code differ.
+ * @param {ParsedShortcut} parsed - The parsed chord.
+ * @returns {string} The chord signature.
+ */
+function chordSignature(parsed: ParsedShortcut): string {
+  return `${parsed.primary ? 1 : 0}${parsed.alt ? 1 : 0}${parsed.shift ? 1 : 0}${parsed.code}`;
+}
+
+/**
+ * The `event.key` value a chord's key token corresponds to, for dispatching a
+ * matching keyboard event.
+ * @param {ParsedShortcut} parsed - The parsed chord.
+ * @returns {string} The key value for the chord's code.
+ */
+function keyForChord(parsed: ParsedShortcut): string {
+  if (parsed.code.startsWith('Key')) return parsed.code.slice(3).toLowerCase();
+  if (parsed.code.startsWith('Digit')) return parsed.code.slice(5);
+  const named: Record<string, string> = {
+    Slash: '/',
+    Space: ' ',
+    Enter: 'Enter',
+    Escape: 'Escape',
+    ArrowLeft: 'ArrowLeft',
+    ArrowRight: 'ArrowRight',
+  };
+  return named[parsed.code] ?? parsed.code;
+}
+
+/**
+ * One spec per distinct parsed chord, first registration winning. Several
+ * registry entries share a chord across sections; both the hook's
+ * first-match-wins dispatch and these tests only ever exercise one of them.
+ * @returns {Array<{spec: HotkeySpec; parsed: ParsedShortcut}>} Deduplicated chords.
+ */
+function uniqueChordSpecs(): Array<{ spec: HotkeySpec; parsed: ParsedShortcut }> {
+  const bySignature = new Map<string, { spec: HotkeySpec; parsed: ParsedShortcut }>();
+  for (const spec of SHORTCUTS) {
+    const parsed = parseShortcut(spec.keys);
+    const signature = chordSignature(parsed);
+    if (!bySignature.has(signature)) bySignature.set(signature, { spec, parsed });
+  }
+  return [...bySignature.values()];
+}
+
+describe('useHotkeys registry-wide typing guard (row 5.3)', () => {
+  it.each(['input', 'select', 'textarea'] as const)(
+    'suppresses every bare-key registry chord while focus is inside a %s',
+    (controlType) => {
+      const bare = uniqueChordSpecs().filter(({ parsed }) => !parsed.primary && !parsed.alt);
+      expect(bare.length, 'the registry should expose bare-key chords to guard').toBeGreaterThan(5);
+
+      const spyById = new Map(bare.map(({ spec }) => [spec.id, vi.fn()]));
+      function Harness() {
+        useHotkeys(bare.map(({ spec }) => ({ id: spec.id, handler: spyById.get(spec.id)! })));
+        if (controlType === 'select') {
+          return (
+            <select data-testid="field">
+              <option>a</option>
+            </select>
+          );
+        }
+        if (controlType === 'textarea') return <textarea data-testid="field" />;
+        return <input data-testid="field" />;
+      }
+
+      render(<Harness />);
+      const field = screen.getByTestId('field');
+      field.focus();
+
+      for (const { parsed } of bare) {
+        fireEvent.keyDown(field, {
+          code: parsed.code,
+          key: keyForChord(parsed),
+          ctrlKey: parsed.primary,
+          altKey: parsed.alt,
+          shiftKey: parsed.shift,
+        });
+      }
+
+      for (const [id, spy] of spyById) {
+        expect(spy, `${id} fired while a ${controlType} had focus`).not.toHaveBeenCalled();
+      }
+    },
+  );
+
+  it('fires every modifier-chord registry binding while focus is inside a text input', () => {
+    const modified = uniqueChordSpecs().filter(({ parsed }) => parsed.primary || parsed.alt);
+    expect(modified.length, 'the registry should expose modifier chords to exercise').toBeGreaterThan(10);
+
+    const spyById = new Map(modified.map(({ spec }) => [spec.id, vi.fn()]));
+    function Harness() {
+      useHotkeys(modified.map(({ spec }) => ({ id: spec.id, handler: spyById.get(spec.id)! })));
+      return <input data-testid="field" />;
+    }
+
+    render(<Harness />);
+    const field = screen.getByTestId('field');
+    field.focus();
+
+    for (const { spec, parsed } of modified) {
+      fireEvent.keyDown(field, {
+        code: parsed.code,
+        key: keyForChord(parsed),
+        ctrlKey: parsed.primary,
+        altKey: parsed.alt,
+        shiftKey: parsed.shift,
+      });
+      expect(spyById.get(spec.id), `${spec.id} did not fire inside a text input`).toHaveBeenCalledTimes(1);
+    }
   });
 });
