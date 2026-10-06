@@ -132,25 +132,15 @@ export function mapCliErrorToExitCode(err: unknown): number {
 }
 
 /**
- * Parses process arguments and runs the requested CLI subcommand.
- *
- * Sets up the Commander program with all six subcommands and the shared global
- * options, prints the themed logo, and dispatches to the subcommand handlers.
- * Commander failures (unknown command / usage) are converted into a
- * {@link CliExitError} with the usage exit code.
- *
- * @returns {Promise<void>} Resolves when the CLI operation completes.
- * @throws {Error} Re-throws handler errors; Commander errors are wrapped as
- *   {@link CliExitError} (usage exit code) unless they merely displayed help.
+ * Builds the fully-registered Commander program (all subcommands plus the
+ * shared global options). Extracted from {@link runCli} so the parse layer can
+ * be fuzzed and unit-tested in isolation; registering a program executes no
+ * handler. RTL/theme selection and output-flag pre-application stay with the
+ * entry point.
+ * @param {CliThemeId} themeId - Resolved CLI theme, forwarded to handlers.
+ * @returns {Command} A configured, ready-to-parse Commander program.
  */
-export async function runCli(): Promise<void> {
-  const rawArgs = getUserArgs();
-  const themeId: CliThemeId = resolveThemeId(rawArgs);
-  const args = applyLegacyShim(rawArgs);
-
-  preApplyOutputFlags(args);
-
-  const { Command } = await import('commander');
+export function createCliProgram(themeId: CliThemeId): Command {
   const program = new Command();
 
   program.name(APP_NAME).description('Multimedia conversion tool').showHelpAfterError().showSuggestionAfterError().exitOverride();
@@ -421,6 +411,30 @@ export async function runCli(): Promise<void> {
         themeId,
       });
     });
+
+  return program;
+}
+
+/**
+ * Parses process arguments and runs the requested CLI subcommand.
+ *
+ * Builds the Commander program via {@link createCliProgram}, prints the
+ * themed logo, and dispatches to the subcommand handlers. Commander failures
+ * (unknown command / usage) are converted into a {@link CliExitError} with the
+ * usage exit code.
+ *
+ * @returns {Promise<void>} Resolves when the CLI operation completes.
+ * @throws {Error} Re-throws handler errors; Commander errors are wrapped as
+ *   {@link CliExitError} (usage exit code) unless they merely displayed help.
+ */
+export async function runCli(): Promise<void> {
+  const rawArgs = getUserArgs();
+  const themeId: CliThemeId = resolveThemeId(rawArgs);
+  const args = applyLegacyShim(rawArgs);
+
+  preApplyOutputFlags(args);
+
+  const program = createCliProgram(themeId);
 
   if (args.length === 0) {
     printCliLogo(themeId);

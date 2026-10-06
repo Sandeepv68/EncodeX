@@ -749,8 +749,9 @@ describe('JobQueue', () => {
         ],
       });
       queue = new JobQueue({ persistence });
-      // Currently restored. Should be `[]` once the version is enforced.
-      expect(queue.getJobs().map((j) => j.input)).toEqual(['from-the-future.mp4']);
+      // Version is enforced now: hostile snapshots are rejected by the
+      // persistence layer, so the queue loads an empty state.
+      expect(queue.getJobs().map((j) => j.input)).toEqual([]);
     });
 
     it('flushState writes the current jobs to disk', () => {

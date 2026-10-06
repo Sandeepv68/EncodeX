@@ -171,6 +171,14 @@ export default function VideoTimeline({
    */
   const dragRef = useRef<DragKind | null>(null);
   /**
+   * The window handlers registered for the drag currently in flight, or null
+   * when idle. Held in a ref so the unmount cleanup removes the exact pair that
+   * was registered rather than whichever pair the first render happened to
+   * create - see {@link releaseWindowDragListeners}.
+   * @type {React.MutableRefObject<{ move: (e: PointerEvent) => void; up: () => void } | null>}
+   */
+  const windowDragHandlersRef = useRef<{ move: (e: PointerEvent) => void; up: () => void } | null>(null);
+  /**
    * Media time at which a 'move' drag started.
    * @type {React.MutableRefObject<number>}
    */
@@ -266,14 +274,34 @@ export default function VideoTimeline({
   };
 
   /**
+   * Detaches the window listeners of an in-flight drag, if any.
+   *
+   * The registered pair is tracked in a ref rather than reconstructed here:
+   * `handlePointerDown` registers whichever `onWindowPointerMove` /
+   * `onWindowPointerUp` the *current* render produced, while a `[]` cleanup
+   * effect would close over the ones from the first render. The component
+   * re-renders constantly (scroll, zoom, trim, playhead), so on any drag that
+   * starts after the first commit those identities differ - unmounting mid-drag
+   * then removed a pair nobody had registered and left the real pair attached
+   * to `window` forever, keeping the detached component reachable.
+   * @returns {void}
+   */
+  const releaseWindowDragListeners = () => {
+    const handlers = windowDragHandlersRef.current;
+    if (handlers === null) return;
+    windowDragHandlersRef.current = null;
+    window.removeEventListener('pointermove', handlers.move);
+    window.removeEventListener('pointerup', handlers.up);
+  };
+
+  /**
    * Ends the active drag: clears dragRef and removes the window pointer
    * listeners.
    * @returns {void}
    */
   const onWindowPointerUp = () => {
     dragRef.current = null;
-    window.removeEventListener('pointermove', onWindowPointerMove);
-    window.removeEventListener('pointerup', onWindowPointerUp);
+    releaseWindowDragListeners();
   };
 
   /**
@@ -299,8 +327,11 @@ export default function VideoTimeline({
       onSeek(timeFromEvent(e.clientX));
     }
     e.preventDefault();
-    window.addEventListener('pointermove', onWindowPointerMove);
-    window.addEventListener('pointerup', onWindowPointerUp);
+    releaseWindowDragListeners();
+    const handlers = { move: onWindowPointerMove, up: onWindowPointerUp };
+    windowDragHandlersRef.current = handlers;
+    window.addEventListener('pointermove', handlers.move);
+    window.addEventListener('pointerup', handlers.up);
   };
 
   /**
@@ -309,8 +340,7 @@ export default function VideoTimeline({
    */
   useEffect(() => {
     return () => {
-      window.removeEventListener('pointermove', onWindowPointerMove);
-      window.removeEventListener('pointerup', onWindowPointerUp);
+      releaseWindowDragListeners();
     };
   }, []);
 

@@ -599,6 +599,8 @@ export const LOG_QUEUE_START_CALLED = 'queueStart called';
 export const LOG_QUEUE_MOVE_TO = 'moveJobTo:';
 /** @const {string} Logged when a move targets a job that is not queued. */
 export const LOG_QUEUE_MOVE_SKIPPED = 'moveJobTo skipped: not queued:';
+/** @const {string} Logged when a move is refused because its target index is NaN/Infinity. */
+export const LOG_QUEUE_MOVE_REJECTED_NON_FINITE = 'moveJobTo rejected: non-finite target index:';
 /** @const {string} Prefix when a queued job's options are updated. */
 export const LOG_QUEUE_UPDATE_OPTIONS = 'updateJobOptions:';
 /** @const {string} Logged when updateJobOptions targets a job that is not queued. */
@@ -950,6 +952,22 @@ export const LOG_UPDATER_READ_PENDING_INSTALL = 'Reading pending restart install
 export const LOG_UPDATER_APPLYING_PENDING_INSTALL = 'Applying pending restart install:';
 /** @const {string} Logged when a scheduled restart install is skipped (no pending marker). */
 export const LOG_UPDATER_NO_PENDING_INSTALL = 'No pending restart install';
+/** @const {string} Logged when a release asset name is not a plain file name and is dropped. */
+export const LOG_UPDATER_REJECTED_ASSET = 'Rejected release asset name:';
+/** @const {string} Logged when an install target is not an installer inside the update dir. */
+export const LOG_UPDATER_REJECTED_INSTALLER = 'Rejected update installer path:';
+/** @const {string} Logged when a download redirect is off-allowlist, non-https, or over budget. */
+export const LOG_UPDATER_REJECTED_REDIRECT = 'Rejected update download redirect:';
+/** @const {string} Logged when a download ends before its Content-Length. */
+export const LOG_UPDATER_INCOMPLETE_DOWNLOAD = 'Update download incomplete:';
+/** @const {string} Logged when a downloaded asset fails its published digest. */
+export const LOG_UPDATER_CHECKSUM_MISMATCH = 'Update checksum mismatch:';
+/** @const {string} Logged when a release payload does not match the shape the updater needs. */
+export const LOG_UPDATER_BAD_RELEASE = 'Unusable release payload:';
+/** @const {string} Logged when a pending marker cannot be applied and is skipped. */
+export const LOG_UPDATER_REJECTED_PENDING = 'Refusing pending install:';
+/** @const {string} Logged when a GitHub API request exceeds its timeout. */
+export const LOG_UPDATER_CHECK_TIMEOUT = 'GitHub API request timed out';
 /** @const {string} Logged when monitoring initialization begins. */
 export const LOG_MONITORING_INITIALIZING = 'Initializing monitoring provider:';
 /** @const {string} Prefix when monitoring initialization fails. */

@@ -57,6 +57,7 @@ import nlBE from './locales/nl-BE.json';
 import frBE from './locales/fr-BE.json';
 import deBE from './locales/de-BE.json';
 import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from '../../shared/constants';
+import { loadString } from '../utils/storage';
 
 /**
  * @fileoverview i18next configuration and initialization for the renderer.
@@ -74,7 +75,15 @@ import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from '../../shared/constants';
  * DEFAULT_LANGUAGE ('en-US') when nothing is stored or storage is unavailable.
  * @type {string}
  */
-const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY) || DEFAULT_LANGUAGE;
+// This runs at module scope, before React mounts and before any error boundary
+// exists, so a throw here is a guaranteed white screen - there is nothing
+// upstream to catch it. `localStorage.getItem` does throw in practice (storage
+// disabled for the origin, a partitioned/ephemeral session, a locked userData
+// directory), and the comment above promised the fallback: a bare read delivered
+// neither. `loadString` swallows the failure, and the `||` still covers an
+// empty stored value, which the original `|| DEFAULT_LANGUAGE` also treated as
+// absent.
+const savedLang = loadString(LANGUAGE_STORAGE_KEY, DEFAULT_LANGUAGE) || DEFAULT_LANGUAGE;
 
 /**
  * Registers the react-i18next plugin and initializes the i18next instance.

@@ -14,7 +14,7 @@ import type Ffmpeg from 'fluent-ffmpeg';
 import { Logger } from '../../shared/logger';
 import { getFfmpegPath, getFfprobePath } from '../media-binaries';
 import type { ITranscoder } from './types';
-import { ConversionOptions, ConversionProgress, MediaInfo } from '../../shared/types';
+import { ConversionOptions, ConversionProgress, MediaInfo, type AppError } from '../../shared/types';
 import { FFMPEG_FLAGS, TRANSCODER_DEFAULTS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/transcoder-constants';
 import { suspendProcess, resumeProcess } from '../process-utils';
 import { withTimeout } from '../spawn-timeout';
@@ -73,6 +73,25 @@ import {
 } from '../../shared/log-constants';
 
 const log = new Logger('main/transcoders/ffmpeg-core');
+
+/** The slice of a spawned child process this class relies on. */
+interface ChildProcessLike {
+  pid?: number;
+  kill(signal?: string): boolean;
+}
+
+/**
+ * Narrowing wrapper around `Number.isFinite`.
+ *
+ * `Number.isFinite(x)` does not narrow `number | undefined`, and every numeric
+ * field fluent-ffmpeg reports (`percent`, `currentFps`, `currentKbps`) is
+ * optional and has been observed arriving as `NaN`.
+ * @param {unknown} value - The value to test.
+ * @returns {boolean} True when `value` is a finite number.
+ */
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value);
+}
 
 const ffmpegPath = getFfmpegPath();
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -370,15 +389,44 @@ export class FfmpegCore implements ITranscoder {
     }
 
     cmd.output(output);
+    // fluent-ffmpeg can only deliver one of `error` / `end`, and a consumer
+    // treats whichever arrives as the job's outcome. The wrapper must not
+    // deliver both: a cancelled run that somehow reaches `end` would otherwise
+    // report a completed conversion for work the user aborted.
+    let settled = false;
+    const settleError = (err: Error | AppError): void => {
+      if (settled) return;
+      settled = true;
+      emitter.emit('error', err);
+    };
+    const settleEnd = (): void => {
+      if (settled) return;
+      settled = true;
+      emitter.emit('end');
+    };
     cmd.on('start', (commandLine) => {
+      const childProc = (cmd as unknown as { ffmpegProc?: ChildProcessLike }).ffmpegProc;
+      if (childProc) this.processPid = childProc.pid ?? null;
       log.debug(LOG_FFMPEG_PROCESS_STARTED, commandLine);
-      const childProc = (cmd as any).ffmpegProc;
-      if (childProc) this.processPid = childProc.pid;
+      if (this.cancelled) {
+        // `cancel()` may have landed while fluent-ffmpeg was still inside its
+        // asynchronous `_prepare` phase (capability checks and argument
+        // building run before the spawn), where `proto.kill` finds no
+        // `ffmpegProc` and only logs a warning. Without this hook the process
+        // spawns anyway, runs to completion, and writes an output file the user
+        // already asked to abandon - nothing reports it because the queue has
+        // already dropped the job. Honour the cancellation now that there is
+        // something to signal.
+        if (childProc) {
+          log.info(LOG_CANCELLING_CURRENT_FFMPEG_PROCESS);
+          childProc.kill('SIGKILL');
+        }
+      }
       emitter.emit('start', commandLine);
     });
     cmd.on('codecData', (data) => {
-      const childProc = (cmd as any).ffmpegProc;
-      if (childProc) this.processPid = childProc.pid;
+      const childProc = (cmd as unknown as { ffmpegProc?: ChildProcessLike }).ffmpegProc;
+      if (childProc) this.processPid = childProc.pid ?? null;
       emitter.emit('codecData', data);
     });
     cmd.on('progress', (info: { percent?: number; timemark?: string; currentFps?: number; speed?: string; currentKbps?: number }) => {
@@ -389,7 +437,13 @@ export class FfmpegCore implements ITranscoder {
           ? timemarkParts[0] * 3600 + timemarkParts[1] * 60 + timemarkParts[2]
           : 0;
 
-      let percent = info.percent;
+      // `?? 0` below only catches `null`/`undefined`, not `NaN`: a backend that
+      // reports a non-finite percent passes straight through it and out over
+      // `queue-progress`, where `isConversionProgress` rejects the payload and
+      // the progress bar silently stops for the rest of the run. `percent` is
+      // also `NaN`-producing by construction whenever `sourceDuration` is still
+      // unset and the fallback branch is skipped.
+      let percent = Number.isFinite(info.percent) ? info.percent : undefined;
       if (percent == null && this.sourceDuration > 0 && currentSec > 0) {
         percent = (currentSec / this.sourceDuration) * 100;
       }
@@ -411,27 +465,37 @@ export class FfmpegCore implements ITranscoder {
       }
 
       const progress: ConversionProgress = {
-        percent: percent ?? 0,
+        percent: Math.min(Math.max(percent ?? 0, 0), 100),
         time: info.timemark ?? EMPTY_PROGRESS.time,
-        fps: info.currentFps ?? 0,
+        fps: Math.max(isFiniteNumber(info.currentFps) ? info.currentFps : 0, 0),
         speed: speed ?? EMPTY_PROGRESS.speed,
         eta,
-        bitrate: info.currentKbps ? `${info.currentKbps}kbps` : '',
+        bitrate: isFiniteNumber(info.currentKbps) && info.currentKbps > 0 ? `${info.currentKbps}kbps` : '',
       };
       emitter.emit('progress', progress);
     });
     cmd.on('error', (err: Error) => {
       if (this.cancelled) {
         log.info(LOG_FFMPEG_PROCESS_CANCELLED);
-        emitter.emit('error', cancelledError());
+        settleError(cancelledError());
         return;
       }
       log.error(LOG_FFMPEG_PROCESS_ERROR, err);
-      emitter.emit('error', err);
+      settleError(err);
     });
     cmd.on('end', () => {
+      if (this.cancelled) {
+        // The kill was requested before the process existed (see the `start`
+        // hook) and did not take effect, or the run finished inside the same
+        // tick as the kill. Either way this conversion was abandoned: emitting
+        // `end` would report a successful conversion for cancelled work, and
+        // `JobQueue` would mark the job DONE.
+        log.info(LOG_FFMPEG_PROCESS_CANCELLED);
+        settleError(cancelledError());
+        return;
+      }
       log.info(LOG_FFMPEG_PROCESS_ENDED_SUCCESSFULLY);
-      emitter.emit('end');
+      settleEnd();
     });
 
     this.currentProcess = cmd;
