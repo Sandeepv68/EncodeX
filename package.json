@@ -52,6 +52,7 @@
     "test:coverage:diff": "node scripts/coverage-diff.mjs",
     "test:integration": "npm run build:main && vitest run --config vitest.integration.config.ts --passWithNoTests --silent --coverage",
     "test:media-fuzz": "vitest run --config vitest.media-fuzz.config.ts",
+    "test:locale-matrix": "vitest run --config vitest.locale-matrix.config.ts --silent",
     "test:e2e": "npm run build && vitest run --config e2e/vitest.e2e.config.ts",
     "test:e2e:real": "npm run build && vitest run --config e2e/vitest.e2e.real.config.ts --silent",
     "test:e2e:ci": "vitest run --config e2e/vitest.e2e.config.ts --silent",
