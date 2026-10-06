@@ -319,13 +319,13 @@ export default function VideoCut() {
    * First video stream of the probed media info, or null when none is found.
    * @type {import('../../shared/types').MediaStreamInfo | null}
    */
-  const videoStream = mediaInfo?.streams.find((s) => s.type === 'video') ?? null;
+  const videoStream = mediaInfo?.streams?.find((s) => s.type === 'video') ?? null;
 
   /**
    * First audio stream of the probed media info, or null when none is found.
    * @type {import('../../shared/types').MediaStreamInfo | null}
    */
-  const audioStream = mediaInfo?.streams.find((s) => s.type === 'audio') ?? null;
+  const audioStream = mediaInfo?.streams?.find((s) => s.type === 'audio') ?? null;
 
   /**
    * Whether the form holds any unsaved input (file, output, or any non-default

@@ -41,6 +41,9 @@ export default defineConfig({
       'src/renderer/__tests__/rtl-direction.test.tsx',
       'src/renderer/__tests__/longest-string.test.tsx',
       'src/renderer/__tests__/axe-all-pages.test.tsx',
+      // The big-list render budgets (50k rows / 3k MUI cards) would OOM a
+      // shared-tier fork; they run in their own config (`test:big-lists`).
+      'src/renderer/__tests__/big-list-budget.test.tsx',
     ],
     css: true,
     pool: 'forks',

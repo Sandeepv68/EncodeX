@@ -327,6 +327,28 @@ jobs:
       - name: Run axe matrix (strict, 12 routes x light/dark x 320/768/1440)
         run: npm run test:a11y
 
+  test-big-lists:
+    # Phase 5.2 gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10): renderer
+    # stress budgets -- 50,000 log rows and 3,000 MUI job cards -- asserting
+    # `performance.now()` bounds and that the queue stays responsive. The
+    # 5,000-job render needs a ~6 GB heap (over GitHub's 7 GB ubuntu runner),
+    # so the gate renders 3,000 cards and the full-scale render lives in the
+    # perf tier (row 8 pattern). Runs as its own job because either render would
+    # exhaust a shared unit-tier fork.
+    name: Test - big-list render budgets (50k log rows / 3k job cards)
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run big-list render budget suite (strict)
+        run: npm run test:big-lists
+
   coverage-per-file:
     name: Report - Per-file coverage floors
     needs: [format-check, lint, typecheck]
