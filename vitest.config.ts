@@ -40,6 +40,7 @@ export default defineConfig({
       'src/renderer/__tests__/i18n-matrix.test.tsx',
       'src/renderer/__tests__/rtl-direction.test.tsx',
       'src/renderer/__tests__/longest-string.test.tsx',
+      'src/renderer/__tests__/axe-all-pages.test.tsx',
     ],
     css: true,
     pool: 'forks',

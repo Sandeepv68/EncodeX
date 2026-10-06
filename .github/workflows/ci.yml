@@ -306,6 +306,27 @@ jobs:
       - name: Run locale matrix + RTL mirror (real i18next, 56 locales x 12 routes)
         run: npm run test:locale-matrix
 
+  test-a11y:
+    # Phase 5.3 gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10): axe in
+    # strict mode on every routed page in both themes at the three layout
+    # breakpoints the app ships (320 / 768 / 1440), so the DOM-structural rules
+    # (region, landmark-one-main, scrollable-region-focusable) can be judged
+    # inside the single <main> landmark the real app provides. Runs as its own
+    # job because 72 axe passes are too slow for the shared unit tier.
+    name: Test - axe matrix (12 routes x light/dark x 320/768/1440)
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run axe matrix (strict, 12 routes x light/dark x 320/768/1440)
+        run: npm run test:a11y
+
   coverage-per-file:
     name: Report - Per-file coverage floors
     needs: [format-check, lint, typecheck]

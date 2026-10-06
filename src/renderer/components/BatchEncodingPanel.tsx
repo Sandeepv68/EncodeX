@@ -133,7 +133,7 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
 
   return (
     <EncodingPaper>
-      <EncodingTitle variant="subtitle2" color="text.secondary">
+      <EncodingTitle variant="subtitle2" variantMapping={{ subtitle2: 'h2' }} color="text.secondary">
         {t('batchQueue.encodingOptions')}
       </EncodingTitle>
 
