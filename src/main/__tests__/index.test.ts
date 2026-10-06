@@ -123,6 +123,7 @@ vi.mock('@aptabase/electron/main', () => aptabaseMainMock);
 vi.mock('../cli/cli', () => ({
   runCli: runCliMock,
   mapCliErrorToExitCode: (err: unknown) => (err instanceof Error && err.message === 'usage' ? 2 : 1),
+  cliErrorMessage: (err: unknown) => (err instanceof Error ? err.message : String(err)),
 }));
 vi.mock('../ipc/handlers', () => ({ registerIpcHandlers: registerIpcHandlersMock }));
 vi.mock('../updater', () => ({

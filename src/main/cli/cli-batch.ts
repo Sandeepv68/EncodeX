@@ -14,7 +14,7 @@ import { MAX_QUEUE_CONCURRENCY, CLI_EXIT_TIMEOUT, CLI_EXIT_CANCELLED, CLI_EXIT_N
 import { suggestedExtensionForVideoCodec } from '../../shared/codec-containers';
 import { createError, ErrorCode } from '../../shared/errors';
 import { createMultiBar, status, success, warn, cliConfig } from './cli-ui';
-import { expandInputs, deriveOutputPath, getInputExtension } from './cli-util';
+import { expandInputs, deriveOutputPath, getInputExtension, registerCliSignalCancel } from './cli-util';
 import { buildConversionOptions } from './cli-convert';
 import type { ConvertCliFlags } from './cli-convert';
 import { resolveTranscoderType, transcoderLabel, CliExitError } from './cli-options';
@@ -145,13 +145,14 @@ export async function runBatch(params: RunBatchParams): Promise<void> {
 
   queue.start();
 
-  const onSigint = (): void => queue.cancelAll();
-  process.once('SIGINT', onSigint);
+  // SIGINT (Ctrl-C) and SIGTERM both drain the queue and map to the CLI
+  // cancellation exit code, reaping every in-flight ffmpeg child on the way out.
+  const unregisterSignals = registerCliSignalCancel(() => queue.cancelAll());
 
   try {
     await finished;
   } finally {
-    process.removeListener('SIGINT', onSigint);
+    unregisterSignals();
     multibar?.stop();
   }
 

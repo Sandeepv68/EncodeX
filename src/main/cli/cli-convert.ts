@@ -17,7 +17,7 @@ import { suggestedExtensionForVideoCodec } from '../../shared/codec-containers';
 import { createError, ErrorCode, ERROR_MESSAGES } from '../../shared/errors';
 import { presetById, buildPresetFilter, normalizeFilterChain, validateVideoFilters } from '../../shared/video-filters';
 import { createProgressBar, status, success, cliConfig } from './cli-ui';
-import { deriveOutputPath, percentFromTimemark, getInputExtension } from './cli-util';
+import { deriveOutputPath, percentFromTimemark, getInputExtension, registerCliSignalCancel } from './cli-util';
 import { CliExitError, resolveTranscoderType, transcoderLabel } from './cli-options';
 import { CLI_EXIT_USAGE } from '../../shared/constants';
 import type { CliThemeId } from '../cli-logo';
@@ -263,6 +263,14 @@ export async function runPreparedConversion(params: RunPreparedParams): Promise<
       reject(new CliExitError('Conversion timed out', CLI_EXIT_TIMEOUT));
     }, timeoutSeconds * 1000);
 
+    // Interrupt signals cancel the active conversion instead of killing the
+    // process outright, so the transcoder's child process is reaped and no
+    // orphaned ffmpeg survives (see cli-util.ts registerCliSignalCancel).
+    const unregisterSignals = registerCliSignalCancel(() => {
+      clearTimeout(timeout);
+      transcoder.cancel();
+    });
+
     emitter.on('progress', (progress: ConversionProgress) => {
       let percent = progress.percent;
       if (percent <= 0 && sourceDuration !== undefined && progress.time) {
@@ -279,6 +287,7 @@ export async function runPreparedConversion(params: RunPreparedParams): Promise<
 
     emitter.on('end', () => {
       clearTimeout(timeout);
+      unregisterSignals();
       bar?.update(100);
       bar?.stop();
       success(params.successText ?? `Converted ${path.basename(input)} → ${output}`);
@@ -287,6 +296,7 @@ export async function runPreparedConversion(params: RunPreparedParams): Promise<
 
     emitter.on('error', (err: Error) => {
       clearTimeout(timeout);
+      unregisterSignals();
       bar?.stop();
       reject(err);
     });

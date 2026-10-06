@@ -29,7 +29,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { format as formatArgs } from 'util';
 import { registerIpcHandlers } from './ipc/handlers';
-import { runCli, mapCliErrorToExitCode } from './cli/cli';
+import { runCli, mapCliErrorToExitCode, cliErrorMessage } from './cli/cli';
+import { cliConfig, error as printCliError } from './cli/cli-ui';
 import { runMcpServer } from '../mcp/run';
 import { createMcpServer } from '../mcp/server';
 import { MCPJobManager } from '../mcp/jobs/manager';
@@ -339,7 +340,11 @@ if (process.argv.includes('--mcp')) {
         app.exit(EXIT_CODES.SUCCESS);
       })
       .catch(async (err) => {
-        log.error(LOG_CLI_FAILED, err);
+        // CLI failures surface as a single-line human message on stderr - never
+        // a Node stack trace (the "stack-trace-free stderr" contract). The full
+        // diagnostic (including the normalized stack) stays behind `--verbose`.
+        printCliError(cliErrorMessage(err));
+        if (cliConfig.verbose) log.error(LOG_CLI_FAILED, err);
         captureException(err, { tags: { handler: 'cli', process: 'main' } });
         recordAnalyticsEvent(
           createAnalyticsEvent('cli_completed', {

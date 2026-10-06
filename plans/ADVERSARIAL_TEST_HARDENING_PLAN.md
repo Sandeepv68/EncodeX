@@ -24,7 +24,7 @@
 | 3 IPC contract & abuse testing | **PARTIAL** | 3.1 channel inventory **DONE** (every registrar validated). 3.2 handler abuse harness **DONE**. 3.3 event-channel abuse **DONE (2026-10-05)** -- measured the ~650 ev/sec saturation ceiling. 3.4 hostile-preload E2E **DONE (2026-10-05)**. *Remaining:* the abuse sweeps live in E2E (`mock:false`) only; no committed unit-level sweep, and no CI job yet |
 | 4 State machines, lifecycle & races | **DONE**  | job-queue attacks (48 tests); ffmpeg-core cancel/race fixes; queue reordering guards; 4.4 hostile localStorage at boot and during render (11); 4.5 timer/listener/observer leaks (7); 4.6 React 19 StrictMode across all 12 pages (13); 4.7 race harness `deferred()` (20). Bugs Q1-Q10 addressed; mutations verified |
 | 5 UI robustness, i18n & a11y | **PARTIAL** | Harness in place and self-tested: `src/test-utils/page-render.tsx` (12 routes, 17 self-tests), `src/test-utils/axe.ts`, `src/test-utils/deferred.ts`. *Remaining:* 5.1 locale matrix (subset validated, **not** the full 56x12), RTL mirror, longest-string stress; 5.2 missing-degradation cases beyond storage/listener; 5.3 axe across pages x theme x width, keyboard smoke, focus return, hotkey conflicts |
-| 6 CLI & MCP hostile input | **PARTIAL** | `e2e/specs/cli-hostile.spec.ts` (5 E2E: usage errors, unknown `--preset`, bad argv); `src/main/cli/__tests__/cli-argv-fuzz.test.ts` (5 fast-check parse-layer tests, 2026-10-06; `createCliProgram` extracted from `runCli`); `src/mcp/__tests__/hostile.test.ts` (29 unit, rewritten 2026-10-06 -- it had been 4 tests on literals that never imported `src/mcp/**`); `src/mcp/__tests__/hostile.integration.test.ts` (8 spawn-level stdio-frame tests, 2026-10-06). **MCP HTTP transport is DONE (2026-10-06)** -- new production module `src/mcp/http.ts`+`src/mcp/http-server.ts` (`node dist/mcp/http-server.js`, defaults to 127.0.0.1 + an auto-generated bearer token) plus `src/mcp/__tests__/http.test.ts` (23 unit, strict-clean) and `src/mcp/__tests__/http-hostile.integration.test.ts` (8 spawn-level: 401 auth, query-string token, non-loopback Host/Origin 403, 413 over-cap, 100-concurrent session cap never overflowed, EADDRINUSE exit 1, prompt SIGTERM). *Remaining:* real-subprocess CLI rows (signals, disk-full, 32k-char filenames, stack-trace-free stderr shape) |
+| 6 CLI & MCP hostile input | **PARTIAL** | `e2e/specs/cli-hostile.spec.ts` (**17 E2E: usage errors, unknown `--preset`, bad argv, disk-full simulation, read-only output dir, input-is-a-directory, 32k-char filename, SIGINT-cancel**, 2026-10-06); `src/main/cli/__tests__/cli-argv-fuzz.test.ts` (5 fast-check parse-layer tests, 2026-10-06; `createCliProgram` extracted from `runCli`); `src/mcp/__tests__/hostile.test.ts` (29 unit, rewritten 2026-10-06 -- it had been 4 tests on literals that never imported `src/mcp/**`); `src/mcp/__tests__/hostile.integration.test.ts` (8 spawn-level stdio-frame tests, 2026-10-06). **MCP HTTP transport is DONE (2026-10-06)** -- new production module `src/mcp/http.ts`+`src/mcp/http-server.ts` (`node dist/mcp/http-server.js`, defaults to 127.0.0.1 + an auto-generated bearer token) plus `src/mcp/__tests__/http.test.ts` (23 unit, strict-clean) and `src/mcp/__tests__/http-hostile.integration.test.ts` (8 spawn-level: 401 auth, query-string token, non-loopback Host/Origin 403, 413 over-cap, 100-concurrent session cap never overflowed, EADDRINUSE exit 1, prompt SIGTERM). **CLI real-subprocess rows are DONE (2026-10-06)** -- stack-trace-free stderr contract enforced test-side, with product fixes in `logger.ts` (message-only console Errors unless `--verbose`), `errors.ts` (runtime ffmpeg failures -> `CONVERSION_FAILED`, `PERMISSION_DENIED` preserved), `cli-info.ts` (no duplicate `✖`), `cli.ts` (single-line `cliErrorMessage`). *Remaining for row 6:* CI jobs for the hostile suites |
 | 7 Updater & network hostility | **DONE**  | `src/main/__tests__/updater-hostile.test.ts` rewritten as 62 real tests that drive `src/main/updater.ts` through mocked `electron` / `https` / `fs`. **13 defects found and fixed** (U1-U13 table below); the suite was then inverted so it now asserts the *refusing* behaviour instead of documenting the vulnerable one. Mutation-verified: `path.basename` on the download filename, `coerceOsString` in `autoInstallPendingUpdate`, and build-metadata stripping in `compareVersions` each break the matching test. Clean at `ENCODEX_STRICT_TESTS=2` |
 | 8 Resource limits & denial-of-service | **PARTIAL** | Committed Phase-8 budget suites (2026-10-06): `src/shared/__tests__/resource-budget.test.ts` (1000-filter refusal, worst-case chain under the 32k Windows argv limit, adversarial/budgeted parsing), `src/main/queue/__tests__/queue-import-budget.test.ts` (10 MB export parse, beyond-cap refusal, hostile 10 MB JSON bodies incl. 100k-deep nesting), `src/main/__tests__/media-scan-budget.test.ts` (30,000-file tree < 3 s + dedupe + 300-deep walk), `src/renderer/pages/__tests__/convert-click-budget.test.tsx` (10,000 rapid clicks -> exactly one job). All strict-clean at `ENCODEX_STRICT_TESTS=2`. *Remaining:* 100k-file scan / 20 GB sparse file / 10k-jobs memory / 100 MB SRT rows need the perf or integration tier; 1,000 rapid route changes partly covered by strict-mode + listener-leaks suites |
 | 9 Mutation testing | **PARTIAL** | Property/fuzz suites provide real mutation resistance (several mutations explicitly killed). *Remaining:* no Stryker config, no mutation-delta CI gate |
@@ -1701,9 +1701,34 @@ options, values, traversal/metachar/control-byte junk, each under a 5 s fast-che
 (so a hang fails the fuzz); (2) `applyLegacyShim` is total, idempotent, and rewrites only by
 prepending a single `convert`/`info` and dropping `--info` tokens. Non-vacuity is pinned: one test
 asserts every subcommand, alias, and legacy-positional form reaches its handler, and the generator
-is sampled to prove it exercises every shim branch. CLI rows still remaining are the
-real-subprocess ones (signals, disk-full, 32k-char filenames, stack-traces in stderr shape), which
-belong in the E2E spec.
+is sampled to prove it exercises every shim branch.
+
+**Real-subprocess CLI rows are DONE (2026-10-06).** `e2e/specs/cli-hostile.spec.ts` grew from 5 to
+**17 real-subprocess E2E tests** (spawn `electron dist/main/index.js --cli ...`, assert exit code +
+single-line `✖` human message + a stack-trace-free stderr contract -- no `^\s+at`, no
+`file.ts:line`, no `node:internal/`, no `TypeError/ReferenceError/RangeError/SyntaxError`).
+Rows covered: usage-error exits (2/3/4) and `--verbose` disagreement; unreadable input;
+**disk-full simulation** (output under a regular file); **read-only output directory**;
+**input-is-a-directory** (info + convert); **32,000-char input filename**; a 30 s
+`SIGINT`-then-prompt-hard-kill convert (Windows; platform-split with a POSIX graceful-cancel branch);
+and clean-success rows. Fixes landed in the same change:
+- `src/shared/logger.ts` -- new `consoleErrorStacksIncluded` toggle (default `true`). In CLI
+  non-verbose mode the console renderer prints Errors with `message` only, never `err.stack`, so an
+  internal `[ERROR] [transcoders/ffmpeg-core]` diagnostic line cannot leak a `node:internal/...`
+  frame into user stderr; the sink still receives the raw arg, so `--verbose` (which enables the
+  toggle back on) keeps full diagnostics. `src/main/cli/cli-ui.ts` `configureCliOutput` now syncs
+  the toggle from `cliConfig.verbose` (`cli.ts:89-96` + `runCli` apply it before handlers run).
+- `src/shared/errors.ts` `inferErrorCode` -- reordered so runtime ffmpeg/ffprobe failures
+  (`error opening output`, `exited with code`) map to `CONVERSION_FAILED` instead of being
+  misdiagnosed as `FFMPEG_NOT_FOUND` (the disk-full row previously printed the "binary not found"
+  message); `EACCES`/`permission denied` still wins first so a read-only output keeps
+  `PERMISSION_DENIED`.
+- `src/main/cli/cli-info.ts` -- `runInfo`/`runCapabilities` no longer print the `✖` before throwing;
+  the top-level CLI catch is the single print (previously the message appeared twice on stderr).
+- `src/main/cli/cli.ts` `cliErrorMessage` -- flattens embedded newlines so an ffprobe/ffmpeg banner
+  embedded in an error message cannot expand the human `✖` line across multiple lines.
+- Signal handling from earlier in this phase already ships `cli-util.ts:registerCliSignalCancel` +
+  `cli-convert.ts`/`cli-batch.ts` cancellation (replacing a `process.once('SIGINT')`).
 
 ### 6.2 MCP (21 tools, 2 transports)
 
@@ -1791,8 +1816,7 @@ token, non-loopback Host/Origin 403, 413 over-cap then serving, 100 concurrent
 connections with a never-overflowed cap, bind-to-used-port exits 1 with stderr,
 and prompt SIGTERM termination with a session hanging open).
 
-*Still remaining in Phase 6:* the CLI rows (argv fuzzing, real-subprocess signal
-handling). Two hostile-but-not-refused MCP behaviours remain recorded (not
+*Still remaining in Phase 6:* only the CI wiring for the hostile suites (argv fuzz, MCP stdio/http, and the CLI real-subprocess rows are all committed and green). Two hostile-but-not-refused MCP behaviours remain recorded (not
 pinned) as above.
 
 ---

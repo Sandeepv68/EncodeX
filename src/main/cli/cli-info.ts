@@ -8,7 +8,7 @@ import type { ITranscoder } from '../transcoders/types';
 import type { MediaInfo, MediaStreamInfo, EncoderCapabilities } from '../../shared/types';
 import { getEncoderCapabilities } from '../capabilities';
 import { createError, ErrorCode } from '../../shared/errors';
-import { spinner, printTable, data, success, error as printError } from './cli-ui';
+import { spinner, printTable, data, success } from './cli-ui';
 import { formatBytes, formatDurationCompact } from './cli-util';
 import type { CliThemeId } from '../cli-logo';
 
@@ -28,7 +28,8 @@ export async function runInfo(transcoder: ITranscoder, input: string, json: bool
     info = await transcoder.getInfo(input);
   } catch (err) {
     spin.stop();
-    printError(`Failed to read media info: ${(err as Error).message}`);
+    // Top-level CLI catch prints the single `✖` line (index.ts); printing here
+    // too would duplicate the human message on stderr.
     throw createError(ErrorCode.PROBE_FAILED, `Failed to read media info: ${(err as Error).message}`);
   }
   spin.succeed('Media info');
@@ -97,7 +98,7 @@ export async function runCapabilities(json: boolean, _themeId: CliThemeId): Prom
   spin.succeed('Capabilities');
 
   if (!caps) {
-    printError('Could not determine encoder capabilities (ffmpeg probe failed).');
+    // Top-level CLI catch prints the single `✖` line (index.ts).
     throw createError(ErrorCode.FFMPEG_NOT_FOUND, 'Could not determine encoder capabilities');
   }
 
