@@ -287,9 +287,11 @@ jobs:
   test-locale-matrix:
     # Phase 5.1 gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10): every
     # routed page rendered under the real i18next instance in every one of the
-    # 56 shipped locales. Runs in its own job because 56 x 12 mounts with real
-    # i18next would slow the shared unit tier to minutes.
-    name: Test - Locale matrix (56 locales x 12 routes)
+    # 56 shipped locales, plus the RTL mirror suite (direction wiring, emotion
+    # rtl-cache CSS flip, pages under the rtl cache, ltr/rtl shortcut parity).
+    # Runs in its own job because 56 x 12 mounts with real i18next would slow
+    # the shared unit tier to minutes.
+    name: Test - i18n matrix (56 locales x 12 routes) + RTL mirror
     needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -300,7 +302,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - name: Run locale matrix (real i18next, 56 locales x 12 routes)
+      - name: Run locale matrix + RTL mirror (real i18next, 56 locales x 12 routes)
         run: npm run test:locale-matrix
 
   coverage-per-file:

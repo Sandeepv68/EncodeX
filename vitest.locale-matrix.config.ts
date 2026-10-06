@@ -25,7 +25,7 @@ export default defineConfig({
     },
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
-    include: ['src/renderer/__tests__/i18n-matrix.test.tsx'],
+    include: ['src/renderer/__tests__/i18n-matrix.test.tsx', 'src/renderer/__tests__/rtl-direction.test.tsx'],
     css: true,
     pool: 'forks',
     maxWorkers: 6,

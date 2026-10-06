@@ -38,6 +38,7 @@ export default defineConfig({
       '**/*.integration.{test,spec}.ts',
       '**/*.mediafuzz.{test,spec}.ts',
       'src/renderer/__tests__/i18n-matrix.test.tsx',
+      'src/renderer/__tests__/rtl-direction.test.tsx',
     ],
     css: true,
     pool: 'forks',
