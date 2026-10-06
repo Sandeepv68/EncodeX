@@ -24,7 +24,7 @@
 | 3 IPC contract & abuse testing | **PARTIAL** | 3.1 channel inventory **DONE** (every registrar validated). 3.2 handler abuse harness **DONE**. 3.3 event-channel abuse **DONE (2026-10-05)** -- measured the ~650 ev/sec saturation ceiling. 3.4 hostile-preload E2E **DONE (2026-10-05)**. *Remaining:* the abuse sweeps live in E2E (`mock:false`) only; no committed unit-level sweep, and no CI job yet |
 | 4 State machines, lifecycle & races | **DONE**  | job-queue attacks (48 tests); ffmpeg-core cancel/race fixes; queue reordering guards; 4.4 hostile localStorage at boot and during render (11); 4.5 timer/listener/observer leaks (7); 4.6 React 19 StrictMode across all 12 pages (13); 4.7 race harness `deferred()` (20). Bugs Q1-Q10 addressed; mutations verified |
 | 5 UI robustness, i18n & a11y | **PARTIAL** | Harness in place and self-tested: `src/test-utils/page-render.tsx` (12 routes, 17 self-tests), `src/test-utils/axe.ts`, `src/test-utils/deferred.ts`. *Remaining:* 5.1 locale matrix (subset validated, **not** the full 56x12), RTL mirror, longest-string stress; 5.2 missing-degradation cases beyond storage/listener; 5.3 axe across pages x theme x width, keyboard smoke, focus return, hotkey conflicts |
-| 6 CLI & MCP hostile input | **PARTIAL** | `e2e/specs/cli-hostile.spec.ts` (5 E2E: usage errors, unknown `--preset`, bad argv); `src/mcp/__tests__/hostile.test.ts` (29 unit, rewritten 2026-10-06 -- it had been 4 tests on literals that never imported `src/mcp/**`). *Remaining:* argv fuzzing, signal handling, MCP HTTP-transport hostility, stdio frame hostility |
+| 6 CLI & MCP hostile input | **PARTIAL** | `e2e/specs/cli-hostile.spec.ts` (5 E2E: usage errors, unknown `--preset`, bad argv); `src/main/cli/__tests__/cli-argv-fuzz.test.ts` (5 fast-check parse-layer tests, 2026-10-06; `createCliProgram` extracted from `runCli`); `src/mcp/__tests__/hostile.test.ts` (29 unit, rewritten 2026-10-06 -- it had been 4 tests on literals that never imported `src/mcp/**`); `src/mcp/__tests__/hostile.integration.test.ts` (8 spawn-level stdio-frame tests, 2026-10-06). *Remaining:* real-subprocess CLI rows (signals, disk-full, 32k-char filenames, stack-trace-free stderr shape), MCP HTTP transport (no production HTTP server exists yet) + its hostile spec |
 | 7 Updater & network hostility | **DONE**  | `src/main/__tests__/updater-hostile.test.ts` rewritten as 62 real tests that drive `src/main/updater.ts` through mocked `electron` / `https` / `fs`. **13 defects found and fixed** (U1-U13 table below); the suite was then inverted so it now asserts the *refusing* behaviour instead of documenting the vulnerable one. Mutation-verified: `path.basename` on the download filename, `coerceOsString` in `autoInstallPendingUpdate`, and build-metadata stripping in `compareVersions` each break the matching test. Clean at `ENCODEX_STRICT_TESTS=2` |
 | 8 Resource limits & denial-of-service | **PARTIAL** | Guards exist in source; `src/shared/__tests__/video-filters.test.ts` (30) and the queue suites cover some limits. *Remaining:* none of the plan's budget rows are asserted as tests -- 100k-file scan, 100 MB SRT, 10 MB queue export, 20 GB sparse file, 1000-filter chain, 1000 rapid route changes, 10,000 rapid Convert clicks |
 | 9 Mutation testing | **PARTIAL** | Property/fuzz suites provide real mutation resistance (several mutations explicitly killed). *Remaining:* no Stryker config, no mutation-delta CI gate |
@@ -1691,6 +1691,20 @@ New `e2e/specs/cli-hostile.spec.ts`, asserting **exit codes, stderr shape, and n
 - Exit-code map test: assert the full `--help` output parses and every documented exit code is
   reachable (this catches help-text drift, which is a real support burden).
 
+**Status (2026-10-06).** The unit-level argv fuzz is done: `src/main/cli/__tests__/cli-argv-fuzz.test.ts`
+(5 tests, fast-check). The parse layer was extracted from `runCli` into an exported
+`createCliProgram()` so hostile argv can be driven without side effects (the `run*` handlers are
+mocked, so a syntactically-valid draw cannot reach ffmpeg). Two properties: (1) parsing any hostile
+argv -- raw or legacy-shimmed -- resolves or throws only a `CommanderError`/`CliExitError`/`AppError`
+(never an arbitrary crash), 300 generated cases against a vocabulary of subcommands, aliases,
+options, values, traversal/metachar/control-byte junk, each under a 5 s fast-check run timeout
+(so a hang fails the fuzz); (2) `applyLegacyShim` is total, idempotent, and rewrites only by
+prepending a single `convert`/`info` and dropping `--info` tokens. Non-vacuity is pinned: one test
+asserts every subcommand, alias, and legacy-positional form reaches its handler, and the generator
+is sampled to prove it exercises every shim branch. CLI rows still remaining are the
+real-subprocess ones (signals, disk-full, 32k-char filenames, stack-traces in stderr shape), which
+belong in the E2E spec.
+
 ### 6.2 MCP (21 tools, 2 transports)
 
 New `src/mcp/__tests__/hostile.integration.test.ts` + `e2e/specs/mcp-http-hostile.spec.ts`:
@@ -1715,16 +1729,24 @@ argument, unknown tools, non-record `arguments`, unknown-extra-key stripping, `_
 pollution through arguments and job ids, path/traversal inputs, shell metacharacters and unknown
 presets refused as `INVALID_VIDEO_FILTERS`, container/stream/auxiliary/glob refusals, job-id
 hostility, and `MCPJobManager` concurrency clamping + 1,000 enqueue/cancel cycles.
+**Stdio frame hostility is done too:** `src/mcp/__tests__/hostile.integration.test.ts` (8 tests)
+spawns the real `dist/mcp/index.js` and asserts the server fails closed and survives -- garbage /
+non-message / primitive / invalid-UTF-8 / legacy-`Content-Length`-framing lines are all dropped
+with no stdout pollution, a truncated frame swallows only up to the next newline, unknown methods
+answer `-32601` with the echoed id, and a > 10 MB unterminated line makes the transport's
+`ReadBuffer` refuse and shut down instead of allocating without bound. Note the SDK's stdio
+transport is newline-framed (no `Content-Length` headers); the plan row is expressed as
+"wrong framing" + "over-cap line" accordingly.
 
 Two hostile-but-not-refused behaviours were deliberately not pinned as contracts, and are recorded
 here instead: error envelopes echo attacker input without a truncation bound, and
 `fs.existsSync` accepts a directory so a directory reaches the queue. Both need fixes, and pinning
 the vulnerable behaviour as "expected" is exactly what made the previous updater suite useless.
 
-*Still remaining:* stdio frame hostility (malformed `Content-Length`, 10 MB body) and the HTTP
-transport spec (missing/incorrect bearer token, `Origin` checks, non-loopback bind, port-in-use),
-which need the subprocess/real-socket harnesses of `hostile.integration.test.ts` /
-`mcp-http-hostile.spec.ts`.
+*Still remaining:* the HTTP transport spec (missing/incorrect bearer token, `Origin` checks,
+non-loopback bind, port-in-use), which needs a production HTTP transport module (the SDK ships
+`StreamableHTTPServerTransport`, but EncodeX has no HTTP server code yet) plus its hostile
+spec, and the CLI rows (argv fuzzing, real-subprocess signal handling).
 
 ---
 
