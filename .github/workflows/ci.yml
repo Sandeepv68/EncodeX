@@ -506,6 +506,36 @@ jobs:
           path: perf/results/
           if-no-files-found: warn
 
+  test-mutation-delta:
+    # Phase 9 gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 9): mutation
+    # scores for the logic that decides what ffmpeg runs and what is stored.
+    # Runs the full Stryker suite then compares its score against the committed
+    # mutation/baseline.json; fails when the score drops more than MUTATION_DELTA
+    # points. Advisory for four weeks (unless a baseline is committed and the
+    # team flips the flag): a failing PR shows the number without blocking merge.
+    name: Gate - Mutation score delta (advisory)
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run mutation testing
+        run: npm run test:mutate -- --concurrency 2
+      - name: Compare against baseline (delta gate)
+        run: npm run test:mutation-delta
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-report
+          path: reports/mutation/
+          if-no-files-found: warn
+
   test-e2e:
     name: Test - E2E Automation (${{ matrix.os }})
     needs: [build, test-unit, test-integration]

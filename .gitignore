@@ -20,3 +20,8 @@ screenshots/
 get.js
 # Machine-readable vitest output (tripwire baselines and triage dumps).
 reports/
+
+# Stryker sandbox and incremental state (Phase 9).
+.stryker/
+.stryker-tmp/
+.stryker-tmp-*/

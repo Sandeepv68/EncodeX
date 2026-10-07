@@ -1,0 +1,111 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`phase 9 ffmpeg argv contract > matches the added-track sync argv 1`] = `
+[
+  "-i",
+  "in.mp4",
+  "-i",
+  "subs.srt",
+  "-i",
+  "cover.jpg",
+  "-map",
+  "1:0",
+  "-map",
+  "2:0",
+  "-c",
+  "copy",
+  "-c:s",
+  "mov_text",
+  "-disposition:v:0",
+  "attached_pic",
+  "-map_chapters",
+  "0",
+  "-y",
+  "out.mp4",
+]
+`;
+
+exports[`phase 9 ffmpeg argv contract > matches the audio-disabled + map + input-args argv 1`] = `
+[
+  "-ss",
+  "5",
+  "-i",
+  "in.mp4",
+  "-map",
+  "0:0",
+  "-c",
+  "copy",
+  "-map_chapters",
+  "0",
+  "-c:s",
+  "mov_text",
+  "-an",
+  "-y",
+  "out.mp4",
+]
+`;
+
+exports[`phase 9 ffmpeg argv contract > matches the copy/remux argv 1`] = `
+[
+  "-i",
+  "in.mp4",
+  "-c",
+  "copy",
+  "-map_chapters",
+  "0",
+  "-y",
+  "out.mp4",
+]
+`;
+
+exports[`phase 9 ffmpeg argv contract > matches the filter-chain contract 1`] = `"scale=1920x1080,transpose=2,vflip,hue=s=0"`;
+
+exports[`phase 9 ffmpeg argv contract > matches the filter-chain contract 2`] = `null`;
+
+exports[`phase 9 ffmpeg argv contract > matches the full re-encode argv 1`] = `
+[
+  "-i",
+  "in.mp4",
+  "-vcodec",
+  "libx265",
+  "-acodec",
+  "aac",
+  "-b:v",
+  "1000k",
+  "-b:a",
+  "192k",
+  "-qscale:v",
+  "23",
+  "-vf",
+  "scale=1280x720,transpose=1,hflip,eq=contrast=1.1",
+  "-pix_fmt",
+  "yuv420p",
+  "-ss",
+  "10",
+  "-to",
+  "20",
+  "-t",
+  "30",
+  "-y",
+  "out.mkv",
+]
+`;
+
+exports[`phase 9 ffmpeg argv contract > matches the hardware-accelerated argv 1`] = `
+[
+  "-hwaccel",
+  "cuda",
+  "-hwaccel_output_format",
+  "cuda",
+  "-i",
+  "in.mkv",
+  "-vcodec",
+  "h264_nvenc",
+  "-acodec",
+  "aac",
+  "-preset",
+  "p5",
+  "-y",
+  "out.mp4",
+]
+`;

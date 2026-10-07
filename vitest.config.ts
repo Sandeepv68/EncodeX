@@ -44,6 +44,10 @@ export default defineConfig({
       // The big-list render budgets (50k rows / 3k MUI cards) would OOM a
       // shared-tier fork; they run in their own config (`test:big-lists`).
       'src/renderer/__tests__/big-list-budget.test.tsx',
+      // The 1,000-navigation route-change walk re-renders the full shell per
+      // hop and only stays deterministic under a single worker; it runs in its
+      // own config (`test:route-changes`), not a contended shared-tier fork.
+      'src/renderer/__tests__/route-change-stress.test.tsx',
     ],
     css: true,
     pool: 'forks',
