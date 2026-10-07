@@ -171,14 +171,15 @@ for a decision rather than a drive-by patch; the follow-up chose the two flagged
   per full unit run under load and passes in isolation (~72 s alone vs ~92 s in-suite). The
   30 s `waitFor` budget is too tight for a 40-test file on a loaded machine. This is exactly the
   F10 flake-governance problem, deferred to Phase 0.5 rather than patched ad hoc here.
-- `tsconfig.renderer.json` excludes with `**/*.{test,spec}.{ts,tsx}`, which TypeScript does not
-  expand -- the pattern matches nothing. The project is saved from actually typechecking its whole
-  suite only by the working `**/__tests__/**` entry beside it. One test file sits outside
-  `__tests__/` and so _was_ in the renderer program by accident:
-  `src/renderer/hooks/usePreviewThumbnail.test.ts`. `tsconfig.test.json` now covers it
-  deliberately. Inert today (0 errors either way), so the broken pattern is folded into Phase
-  0.6 housekeeping rather than fixed here; leaving it is a trap, because the next spec written
-  at `src/renderer/<area>/<name>.test.tsx` will silently re-enter the renderer typecheck.
+- **The renderer exclude glob is fixed (2026-10-07).** `tsconfig.renderer.json` excluded with
+  `**/*.{test,spec}.{ts,tsx}`, which TypeScript does not expand -- the pattern matched nothing, so the
+  accidental test-harness leak into the renderer program was guarded only by the working
+  `**/__tests__/**` entry beside it, and any spec written outside `__tests__/` (like the former
+  `src/renderer/hooks/usePreviewThumbnail.test.ts`) silently re-entered the renderer typecheck. The
+  exclude now lists the four explicit globs (`*.test.ts`, `*.test.tsx`, `*.spec.ts`, `*.spec.tsx`,
+  matching `tsconfig.main.json`/`tsconfig.preload.json`), so specs can no longer join the renderer
+  program by accident; `usePreviewThumbnail.test.ts` stays covered by `tsconfig.test.json`
+  deliberately. `typecheck:renderer` and the full `npm run typecheck` stay green.
 
 - **Row 5 follow-ups (browser-tier, live outside the unit tier):** the axe E2E sweep and the browser
   focus-order probes; the full 5,000-card job-card render requires a ~6 GB jsdom heap (over GitHub's
