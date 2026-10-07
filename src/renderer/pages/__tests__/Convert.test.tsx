@@ -168,8 +168,14 @@ describe('Convert', () => {
     });
     selectFileMock.mockResolvedValue('/in/video.mp4');
     renderPage();
-    fireEvent.click(screen.getByTestId('file-drop-zone'));
-    await waitFor(() => expect(screen.getByTestId('convert-toggle-streams')).toBeInTheDocument());
+    // The file-open round trip resolves into the store (and a preview media
+    // fetch) after the click, so drive the click inside act() to keep those
+    // updates under the test's control. Without it the 1-second findBy window
+    // races machine load and flakes ~once per full run.
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('file-drop-zone'));
+    });
+    expect(await screen.findByTestId('convert-toggle-streams')).toBeInTheDocument();
     expect(screen.queryByText('mediaInfo.streams')).not.toBeInTheDocument();
     const toggle = screen.getByTestId('convert-toggle-streams');
     expect(toggle).toHaveTextContent('convert.viewMore');
@@ -181,7 +187,12 @@ describe('Convert', () => {
     expect(toggleExpanded).toHaveTextContent('convert.viewLess');
     expect(toggleExpanded).toHaveAttribute('aria-expanded', 'true');
     fireEvent.click(toggleExpanded);
-    await waitFor(() => expect(screen.queryByText('mediaInfo.streams')).not.toBeInTheDocument());
+    // The close animation is a real ~300ms MUI Collapse timer before the
+    // unmountOnExit child is removed; give it a bounded real-timer window so a
+    // loaded worker cannot starve the 1-second default.
+    await waitFor(() => expect(screen.queryByText('mediaInfo.streams')).not.toBeInTheDocument(), {
+      timeout: 5000,
+    });
   });
 
   it('selects an output file via save as', async () => {

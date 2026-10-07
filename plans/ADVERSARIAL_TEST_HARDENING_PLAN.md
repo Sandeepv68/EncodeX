@@ -167,10 +167,16 @@ for a decision rather than a drive-by patch; the follow-up chose the two flagged
   The assertion itself is sound; `status: null` is the symptom of a starved/spawn-timeout subprocess
   under 19 concurrent spec files, and `runCli` does not distinguish "killed" from "exited with a signal
   it expected". Candidate for `e2e/quarantine/` per 0.5 if the 3Ã— `test:flake-detect` run reproduces it.
-- `Convert.test.tsx > hides the stream details behind the view more toggle` fails roughly once
-  per full unit run under load and passes in isolation (~72 s alone vs ~92 s in-suite). The
-  30 s `waitFor` budget is too tight for a 40-test file on a loaded machine. This is exactly the
-  F10 flake-governance problem, deferred to Phase 0.5 rather than patched ad hoc here.
+- **`Convert.test.tsx` "hides the stream details" flake is fixed (2026-10-07).** It failed roughly
+  once per full unit run under load and passed in isolation. The cause was structural, not a budget
+  problem: the file-drop click starts an async round trip (`openFileDialog` -> store update ->
+  preview media fetch) that settles entirely outside `fireEvent`'s act scope, so the test's
+  1-second `findBy`/`waitFor` raced machine load. The sibling "toggles the preview panel" test
+  already drove the click inside `act()` for exactly this reason; the flaky test was the one that
+  did not. The click is now wrapped in `await act(async () => ...)` so the whole chain flushes under
+  the test's control, and the trailing close-animation `waitFor` (a real ~300 ms MUI Collapse timer
+  before `unmountOnExit`) got a bounded 5 s window instead of the 1 s default. Full unit suite
+  green (233 files / 3,556 tests), 3 loaded re-runs of the heaviest page suites green.
 - **The renderer exclude glob is fixed (2026-10-07).** `tsconfig.renderer.json` excluded with
   `**/*.{test,spec}.{ts,tsx}`, which TypeScript does not expand -- the pattern matched nothing, so the
   accidental test-harness leak into the renderer program was guarded only by the working
