@@ -189,6 +189,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     scheduleInstallOnRestart: vi.fn().mockResolvedValue(undefined),
     cancelRestartInstall: vi.fn().mockResolvedValue(undefined),
     getPendingInstall: vi.fn().mockResolvedValue(null),
+    captureDevScreenshot: vi.fn().mockResolvedValue(null),
     onUpdateAvailable: vi.fn(() => vi.fn()),
     onUpdateNotAvailable: vi.fn(() => vi.fn()),
     onUpdateProgress: vi.fn(() => vi.fn()),
