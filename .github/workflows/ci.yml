@@ -349,6 +349,27 @@ jobs:
       - name: Run big-list render budget suite (strict)
         run: npm run test:big-lists
 
+  test-route-changes:
+    # Phase 8 gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 8): the
+    # dedicated 1,000-rapid-route-change harness. Mounts the real App shell once
+    # and drives 1,000 react-router navigations across all lazy routes while a
+    # conversion is RUNNING, proving no listener growth, no error-store fault,
+    # and no queue-state corruption. Runs as its own job because it mounts the
+    # whole app tree and takes well over a minute on its own.
+    name: Test - 1,000 rapid route-change harness
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run rapid route-change harness (strict)
+        run: npm run test:route-changes
+
   coverage-per-file:
     name: Report - Per-file coverage floors
     needs: [format-check, lint, typecheck]

@@ -28,7 +28,7 @@ import { useAudioExtractStore } from '../stores/audioExtractStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
 import { useTermsStore } from '../stores/termsStore';
 import { useSettingsStore } from '../stores/settingsStore';
-import { DRAWER_CONDENSED_STORAGE_KEY, DEFAULT_DRAWER_CONDENSED } from '../../shared/constants';
+import { DEFAULT_DRAWER_CONDENSED } from '../../shared/constants';
 
 describe('5.3 keyboard smoke (app shell: global shortcuts, dialogs, focus return)', () => {
   beforeEach(() => {

@@ -22,7 +22,7 @@
  * 72 axe runs are too slow for the shared unit tier.
  */
 
-import { describe, it, expect, afterAll, beforeAll, vi } from 'vitest';
+import { describe, it, expect, afterAll, beforeAll } from 'vitest';
 import { act } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { PAGE_ROUTES, renderPage, stubScrollIntoView, stubViewportWidth } from '../../test-utils/page-render';

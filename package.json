@@ -55,6 +55,7 @@
     "test:locale-matrix": "vitest run --config vitest.locale-matrix.config.ts --silent",
     "test:a11y": "vitest run --config vitest.a11y.config.ts --silent",
     "test:big-lists": "vitest run --config vitest.big-lists.config.ts --silent",
+    "test:route-changes": "vitest run --config vitest.route-change.config.ts --silent",
     "test:e2e": "npm run build && vitest run --config e2e/vitest.e2e.config.ts",
     "test:e2e:real": "npm run build && vitest run --config e2e/vitest.e2e.real.config.ts --silent",
     "test:e2e:ci": "vitest run --config e2e/vitest.e2e.config.ts --silent",
