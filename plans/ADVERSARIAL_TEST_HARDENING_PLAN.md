@@ -148,9 +148,10 @@ for a decision rather than a drive-by patch; the follow-up chose the two flagged
   per-route renderer `<ErrorBoundary>`, asserting every route mounts with no unhandled error and no
   armed boundary, on a single bridge instance retargeted per mode via `control.setMode`. Fidelity:
   the hostile half is byte-identical to the E2E preload (same `bucketOf` hash, same rejection/garbage
-  shapes); the pass-through half resolves benign per-method defaults instead of real IPC (see the
-  caveat on these follow-ups). Runs in the shared unit tier under strict. The sweep caught a real gap
-  the E2E's page-alive bar was blind to: a wrong-shaped `queueList` result reached
+  shapes); the pass-through half resolves benign per-method defaults instead of real IPC (so
+  module-scope hydration that runs at import time exercises the benign half, never a hostile mode -
+  the mode applies from that point on). Runs in the shared unit tier under strict. The sweep caught a
+  real gap the E2E's page-alive bar was blind to: a wrong-shaped `queueList` result reached
   `useQueueStore.setJobs` and crashed the next render to the boundary (the E2E counted that "alive");
   `setJobs` now drops non-array payloads (`src/renderer/stores/queueStore.ts`), pinned by
   `queueStore.test.ts`, and the app's "reports the failure" warns are declared on the sweep so only
@@ -179,12 +180,6 @@ for a decision rather than a drive-by patch; the follow-up chose the two flagged
   0.6 housekeeping rather than fixed here; leaving it is a trap, because the next spec written
   at `src/renderer/<area>/<name>.test.tsx` will silently re-enter the renderer typecheck.
 
-- **Row 3 follow-up: a committed unit-tier hostile-preload sweep.** The abuse sweeps all live in the
-  E2E tier (`mock:false`): `channel-contract` (8 tests), `ipc-abuse.spec.ts`, `ipc-events.spec.ts`, and
-  the hostile-preload matrix (`hostile-bridge.spec.ts`, 14). The hostile-preload modes are not
-  exhaustively exercised in committed unit-tier tests; `test-ipc-abuse` (ubuntu + windows, real
-  main, needs `test-integration`) covers the faithful surface in CI, so this is a depth/cheapness
-  follow-up, not a gap.
 - **Row 5 follow-ups (browser-tier, live outside the unit tier):** the axe E2E sweep and the browser
   focus-order probes; the full 5,000-card job-card render requires a ~6 GB jsdom heap (over GitHub's
   7 GB ubuntu runner) and is prescribed to the perf tier (row 8 pattern) -- the gate's 3,000-card
