@@ -107,15 +107,17 @@ for a decision rather than a drive-by patch; the follow-up chose the two flagged
 
 ### Known follow-ups (recorded, not fixed)
 
-- **`Logs.tsx` renders up to 2000 unvirtualized rows** (`logStore` caps at `LOG_MAX_ENTRIES` = 2000 and
-  every entry is mounted, so the route holds 2001 mounted children: the 2000 rows plus the bottom
-  autoscroll sentinel), and re-renders the whole list on each append. Measured in Phase 3.3: worst
-  renderer round-trip 5.5â€“7 s on `/logs` against 0.2â€“0.6 s on every other route, with main at 1â€“2 ms
-  and `rows=2001` vs `-1` elsewhere. Not event abuse -- it reproduces in any busy session -- and the fix
-  is windowing the list. The cheap half is done (autoscroll no longer animates per entry and only
-  follows when already pinned to the bottom). `e2e/specs/ipc-events.spec.ts` carries an explicit
-  documented budget for this route so a regression past it still fails; **raise that budget when the
-  list is windowed, do not tune it upward.**
+- **`Logs.tsx` now windows its list (2026-10-07).** Follow-up 4 is closed: only the ~viewport slice
+  of rows is mounted (`LOG_WINDOW_OVERSCAN` above/below + fixed `LOG_ROW_HEIGHT` estimate), held open
+  by transparent spacers so the scrollbar still spans every filtered row, and the window re-mounts as
+  the user scrolls or new entries append. The `/logs` budget in `e2e/specs/ipc-events.spec.ts` was
+  tightened from 10,000 ms to 4,000 ms (measured, pre-windowing worst was ~5.5-7 s; tighten again
+  after a full sweep). The `big-list-budget` gate now asserts the slice stays <= 60 mounted rows at
+  50,000 backing entries and that scrolling reaches the tail. Residual edge: rows that wrap to
+  multiple lines are taller than the fixed estimate, so their extra lines can drift a few rows' worth
+  against the spacer geometry; the overscan absorbs it, and line length is bounded (log lines come
+  pre-split by the logger). The old cap note "raise that budget when the list is windowed, do not
+  tune it upward" is now done -- the budget was tightened, not tuned.
 - **The renderer applies every inbound event with no coalescing or back-pressure.** Phase 3.3 measured
   the ceiling: ~650 events/sec across 15 channels saturates it (worst round-trip 1483â€“2823 ms) while
   main stays at 1â€“20 ms; ~150 events/sec is clean. The `player-frame` / `player-audio` / `queue-progress`
@@ -1329,16 +1331,17 @@ with no coalescing or back-pressure.** Real and worth fixing, but 100 Hz on 15 c
 a load the app cannot produce by itself, so the gate sits at 10 Hz and the ceiling is recorded here
 and at the call site rather than deleted. Re-triage any rate with `E2E_SHAPE_HZ=<n>`.
 
-**4. Open follow-up: `/logs` renders 2001 unvirtualized rows.** `logStore` is capped at
-`LOG_MAX_ENTRIES` (2000) and `Logs.tsx` renders every entry, re-rendering the whole list on each
+**4. Follow-up closed: `/logs` now windows its list (2026-10-07).** `logStore` is capped at
+`LOG_MAX_ENTRIES` (2000) and `Logs.tsx` used to render every entry, re-rendering the whole list on each
 append. Measured `rows=2001` on `/logs` against `-1` on every other route, worst renderer 5.5â€“7 s
-under `big-blob` with main at 1â€“2 ms. **This is a real defect but not event abuse** -- it reproduces
-in any busy session with no hostile sender, and the fix is windowing the list, not anything in the IPC
-path. Delivered the cheap half now (the autoscroll no longer starts a smooth animation per entry, and
-only follows when already pinned to the bottom, which also stops yanking the view away while reading
-history). The list itself is still unvirtualized: **tracked, not fixed.** `/logs` carries an explicit
-documented budget in the suite so a regression past it still fails -- raise that budget when the list
-is windowed, do not tune it upward.
+under `big-blob` with main at 1â€“2 ms. **A real defect but not event abuse** -- it reproduced
+in any busy session with no hostile sender, and the fix was windowing the list, not anything in the IPC
+path. Delivered in stages: first the autoscroll stopped starting a smooth animation per entry and only
+follows when already pinned to the bottom (which also stops yanking the view away while reading
+history); then (2026-10-07) the list itself became windowed -- only the ~viewport slice of rows is
+mounted, held open by transparent spacers, and the `/logs` budget in the suite was tightened from
+10,000 ms to 4,000 ms (see the Known follow-ups bullet) so the regression ceiling reflects the
+windowed list.
 
 #### Harness bugs this phase found (all would have been reported as production faults)
 

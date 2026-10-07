@@ -1,17 +1,21 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderPage, stubScrollIntoView } from '../../test-utils/page-render';
 import { expectAppLog, expectCrash } from '../../test-utils/crash-tripwire';
 import { useLogStore } from '../stores/logStore';
 import { useQueueStore } from '../stores/queueStore';
+import { LOG_ROW_HEIGHT } from '../pages/Logs';
 import type { LogEntry, QueueJob } from '../../shared/types';
 
 /**
  * Renderer stress budget for the two pathological list sizes the renderer can
- * legally reach without virtualization: every queued job (BatchQueue) and the
- * complete captured log (Logs). Both pages render eagerly, so the budgets scale
- * linearly and the thresholds below keep regressions from hiding behind a DOM
- * that is merely slow.
+ * reach: every queued job (BatchQueue) and the complete captured log (Logs).
+ *
+ * BatchQueue pages render eagerly, so its budget scales linearly and the
+ * threshold keeps regressions from hiding behind a DOM that is merely slow.
+ * Logs is windowed (known follow-up 4, close 2026-10-07): only the configured
+ * viewport slice is mounted, so the budget here proves the window stays
+ * bounded at the 50,000-row scale AND that scrolling reaches the tail.
  *
  * This suite owns most of the process heap (50,000 rows / 3,000 MUI cards), so
  * it runs in its own config (`vitest.big-lists.config.ts`) with a dedicated
@@ -24,6 +28,9 @@ import type { LogEntry, QueueJob } from '../../shared/types';
  */
 const LOG_COUNT = 50_000;
 const JOB_COUNT = 3_000;
+
+/** The largest mounted slice the window may legally reach (viewport + 2x overscan). */
+const MAX_LOG_WINDOW = 60;
 
 function makeLogEntries(): LogEntry[] {
   return Array.from({ length: LOG_COUNT }, (_, i) => ({
@@ -53,15 +60,29 @@ beforeEach(() => {
 });
 
 describe('5.2 missing-degradation (large-list render budgets)', () => {
-  it(`renders ${LOG_COUNT.toLocaleString('en-US')} log entries within budget without erroring`, () => {
+  it(`windows ${LOG_COUNT.toLocaleString('en-US')} log entries: only the viewport slice mounts and scrolling reaches the tail`, () => {
     useLogStore.setState({ entries: makeLogEntries() });
     stubScrollIntoView();
     const started = performance.now();
     const { getByTestId, unmount } = renderPage('Logs');
     const elapsed = performance.now() - started;
-    expect(getByTestId('logs-body').children.length, 'every row plus the tail anchor must render').toBe(LOG_COUNT + 1);
+
+    const rows = () => document.querySelectorAll('[data-testid="log-entry-row"]');
+    // The windowed slice must be nowhere near the 50,000 backing rows.
+    expect(rows().length, 'only the windowed slice may be mounted').toBeLessThanOrEqual(MAX_LOG_WINDOW);
+    // The top of the list is reachable first.
+    expect(screen.getByText(/log line 0/)).toBeInTheDocument();
+
+    // Scrolling to the last estimated row moves the window to the tail.
+    act(() => {
+      getByTestId('logs-body').scrollTop = (LOG_COUNT - 1) * LOG_ROW_HEIGHT;
+      fireEvent.scroll(getByTestId('logs-body'));
+    });
+    expect(screen.getByText(/log line 49999/)).toBeInTheDocument();
+    expect(rows().length, 'window stays bounded while scrolled').toBeLessThanOrEqual(MAX_LOG_WINDOW);
+
     expect(screen.getByText('logs.entryCount')).toBeInTheDocument();
-    expect(elapsed, `${LOG_COUNT.toLocaleString('en-US')} rows must render within budget`).toBeLessThan(12_000);
+    expect(elapsed, `${LOG_COUNT.toLocaleString('en-US')} rows must stay windowed and render within budget`).toBeLessThan(12_000);
     unmount();
   });
 
