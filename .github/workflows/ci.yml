@@ -172,21 +172,23 @@ jobs:
       - run: npm run validate:locales
 
   audit:
-    name: Check - Dependency audit
+    name: Check - Dependency audit (blocking, exception-listed)
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Non-blocking: npm audit --audit-level=high still exits non-zero (1 high
-    # + 6 moderate, electron-builder already at 26.x). See
-    # plans/CI_IMPROVEMENTS.md O1 + plans/CI_CD_EXPANSION_PLAN.md N4. Flip
-    # continue-on-error to false once the audit exits 0.
-    continue-on-error: true
+    # Blocking since Phase 10 (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10):
+    # `npm audit` alone still exits non-zero on a known, tracked set of dev-
+    # toolchain advisories (vite/vue/source-map-js, @modelcontextprotocol/sdk,
+    # shell-quote/concurrently -- see scripts/audit-allowlist.json). The gate
+    # fails on any NEW high/critical advisory not on that list, which is the
+    # plan's "blocking with a documented exception list" (supersedes
+    # CI_IMPROVEMENTS.md O1 + CI_CD_EXPANSION_PLAN.md N4 "flip when exit 0").
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-      - name: npm audit
-        run: npm audit --audit-level=high
+      - name: Blocking audit gate (new high/critical fails)
+        run: npm run audit:gate
 
   actionlint:
     name: Check - GitHub Actions workflow lint

@@ -28,7 +28,7 @@
 | 7 Updater & network hostility | **DONE**  | `src/main/__tests__/updater-hostile.test.ts` rewritten as 62 real tests that drive `src/main/updater.ts` through mocked `electron` / `https` / `fs`. **13 defects found and fixed** (U1-U13 table below); the suite was then inverted so it now asserts the *refusing* behaviour instead of documenting the vulnerable one. Mutation-verified: `path.basename` on the download filename, `coerceOsString` in `autoInstallPendingUpdate`, and build-metadata stripping in `compareVersions` each break the matching test. Clean at `ENCODEX_STRICT_TESTS=2` |
 | 8 Resource limits & denial-of-service | **DONE** | Committed Phase-8 budget suites (2026-10-06): `src/shared/__tests__/resource-budget.test.ts` (1000-filter refusal, worst-case chain under the 32k Windows argv limit, adversarial/budgeted parsing), `src/main/queue/__tests__/queue-import-budget.test.ts` (10 MB export parse, beyond-cap refusal, hostile 10 MB JSON bodies incl. 100k-deep nesting), `src/main/__tests__/media-scan-budget.test.ts` (30,000-file tree < 3 s + dedupe + 300-deep walk), `src/renderer/pages/__tests__/convert-click-budget.test.tsx` (10,000 rapid clicks -> exactly one job). All strict-clean at `ENCODEX_STRICT_TESTS=2`. **Completed (2026-10-07):** full-scale IO + scheduler budgets in `perf/phase8-io.perf.test.ts` (100,000-file scan 649 ms / +165 MB RSS under the 5 s / 200 MB rows, 20 GB sparse file scanned in 0.5 ms with no full read, 100 MB SRT remux plan 0.3 ms) and `perf/phase8-queue.perf.test.ts` (10,000 jobs at the concurrency-4 cap: add 14 ms, drain 3.5 s, +20.75 MB RSS, all jobs DONE - no starvation), joining the existing `test-perf` CI gate; plus the dedicated 1,000-rapid-route-change harness `src/renderer/__tests__/route-change-stress.test.tsx` behind its own blocking `test-route-changes` CI job (`vitest.route-change.config.ts`). The plan's concurrency-8 row exceeds `MAX_QUEUE_CONCURRENCY=4`, so the budget runs at the physical cap |
 | 9 Mutation testing | **LIVE (2026-10-07)** | Stryker v10 + `@stryker-mutator/vitest-runner` installed; `stryker.config.mjs` mutates the Phase-9 targets (shared validation/math/ffmpeg helpers, `ffmpeg-utils`/`ffprobe-mapper`, `job-queue`/`queue-transfer`, renderer stores + utils) with five mutator families -- ConditionalExpression, LogicalOperator, ArithmeticOperator, BlockStatement, ArrowFunction, the babel-era mapping of the plan's list (v10 selects by exclusion); `npm run test:mutate` scores through the narrowed `vitest.mutation.config.ts`; delta gate `scripts/mutation-delta.mjs` fails when the score drops more than `MUTATION_DELTA` (default 2.0 points) below committed `mutation/baseline.json`; wired as the **advisory** `test-mutation-delta` CI job (plan: advisory 4 weeks, then blocks). ffmpeg argv contracts pinned by snapshot: `src/main/transcoders/__tests__/argv-contract.test.ts` (6 contract cases). *Remaining:* commit a full-run baseline + flip the job to blocking; drain survivors per "every surviving mutant on a money-path rule is a bug" |
-| 10 CI wiring, budgets & nightly chaos | **PARTIAL** | Existing `typecheck` / coverage-diff / `test-flake` jobs are wired. `test-fuzz` + `nightly-chaos` are **DONE (2026-10-06)** -- blocking `test-fuzz` job in ci.yml (`npm run test:media-fuzz`, ubuntu), random-seed `nightly-chaos` media fuzz in nightly.yml. `test-ipc-abuse` is **DONE (2026-10-06)** -- blocking `test-ipc-abuse` job in ci.yml running the Tier B ipc-abuse sweep on ubuntu + windows. `test-locale-matrix` is **DONE (2026-10-06)** -- blocking `test-locale-matrix` job in ci.yml (`npm run test:locale-matrix`, ubuntu). `test-a11y` is **DONE (2026-10-06)** -- blocking `test-a11y` job in ci.yml (`npm run test:a11y`, ubuntu). *Remaining:* perf budgets in `perf/baseline.json`, release gate |
+| 10 CI wiring, budgets & nightly chaos | **LIVE (2026-10-07)** | Existing `typecheck` / coverage-diff / `test-flake` jobs were wired; `test-fuzz` + `nightly-chaos` **DONE (2026-10-06)** (blocking `test-fuzz` job, random-seed `nightly-chaos` in nightly.yml), `test-ipc-abuse` **DONE (2026-10-06)** (blocking, ubuntu + windows, real main), `test-locale-matrix` **DONE (2026-10-06)**, `test-a11y` **DONE (2026-10-06)**. **This row (2026-10-07):** perf budgets are regression-gated in `perf/baseline.json` on the win32-x64 reference (re-generated from a full local run; adds the phase-8 IO + 10k-queue budget rows, 47 tests total); the release gate is live in `release.yml` -- a tag cannot cut until `test-fuzz` + `test-strict` + `test-ipc-abuse` (built + real main, ubuntu + windows) are green, chained into `validate-version`; `npm audit` is now **blocking** via `scripts/audit-gate.mjs`, failing on any HIGH/CRITICAL advisory not in the documented exception list `scripts/audit-allowlist.json` (5 known advisories -- vite, @vue/server-renderer, source-map-js, @modelcontextprotocol/sdk, shell-quote/concurrently). *Remaining:* drain the audit exception list (each entry clears with its owning dependency's fix); nightly-chaos already runs on schedule  |
 
 ### Bugs the tripwire found (all fixed in the same change that surfaced them)
 
@@ -1966,14 +1966,14 @@ Without this, all of Phases 1â€“8 can be theatre: assertions that pass rega
 ### New CI jobs | Job  | Gate |
 | `typecheck:test` | Blocks. Phase 0.3. **Live** -- chained into `npm run typecheck`, so CI's `typecheck` job gates it  |
 | `typecheck:e2e` | Blocks. Phase 0.3. **Live** -- chained into `npm run typecheck`; was drafted as non-blocking, but all 14 e2e errors were fixed rather than allowlisted |
-| `test-strict` | Blocks. Unit+integration with `ENCODEX_STRICT_TESTS=1`  |
-| `test-fuzz` | Blocks. Phases 1 + 2, seeded corpus, 5 min budget  |
+| `test-strict` | Blocks. Unit+integration with `ENCODEX_STRICT_TESTS=1`. **Live (2026-10-07)** -- strict is the config default across tiers, and the blocking `test-strict` gate (unit + integration) is wired into `release.yml` before packaging  |
+| `test-fuzz` | Blocks. Phases 1 + 2, seeded corpus, 5 min budget. **Live (2026-10-06)** |
 | `test-ipc-abuse` | Blocks. Phase 3, ubuntu + windows. **Live (2026-10-06)** |
 | `test-mutation-delta` | Advisory for 4 weeks, then blocks. **Live (2026-10-07)** -- advisory (`continue-on-error`) pending the first full-run baseline |
 | `test-locale-matrix` | Blocks. Phase 5.1 (ubuntu, 56 locales Ã— 12 routes + RTL mirror + longest-string). **Live (2026-10-06)** |
 | `test-a11y` | Blocks. Phase 5.3 (ubuntu, 12 routes x light/dark x 320/768/1440, strict axe). **Live (2026-10-06)** |
-| `flake-detect` | Advisory, posts a PR comment  |
-| `nightly-chaos` | Nightly: full corpus fuzz with a random seed, 3Ã— e2e, 30-min soak, long-file, memory-leak re-run  | ### Budgets to add to `perf/baseline.json` (regression-gated)
+| `flake-detect` | Run 3x and fail on intermittent results. **Implemented (2026-10-06)** as the blocking `test-flake` job (fail-on-flake instead of the draft advisory PR comment; a flaky test is a bug either way)  |
+| `nightly-chaos` | Nightly: full corpus fuzz with a random seed, 3Ã— e2e, 30-min soak, long-file, memory-leak re-run. **Live (2026-10-06)**  | ### Budgets to add to `perf/baseline.json` (regression-gated)
 
 `boot_ms`, `max_rss_mb`, `queue_10k_ms`, `ipc_roundtrip_p99_ms`, `fuzz_seeds_per_min`.
 
@@ -1982,6 +1982,22 @@ Without this, all of Phases 1â€“8 can be theatre: assertions that pass rega
 Add a required `test-fuzz` + `test-ipc-abuse` + `test-strict` pass to the `validate-version` job so a
 tag cannot be cut with a red adversarial suite. Also flip `npm audit` from
 `continue-on-error: true` to blocking with a documented exception list.
+
+### Phase 10 status (2026-10-07)
+
+| Piece | Location | State |
+| --- | --- | --- |
+| perf budgets | `perf/baseline.json` (win32-x64 reference) | Re-generated from a full local run (11 files / 51 tests, all green). 47 tests recorded; adds the phase-8 IO budgets (100k-line scan 648.9 ms, 20 GB sparse 0.7 ms, 100 MB SRT 0.3 ms) and the phase-8 queue budget (10k jobs, drain 3,638.3 ms, bounded ~RSS). `perf:compare` returns x1.00 vs baseline. Maps to the plan's budget list: `boot_ms` -> `e2e.bootBudgetMs` (already committed), `queue_10k_ms` -> `phase8-queue`, `ipc_roundtrip_p99_ms` -> `phase1-ipc-overhead` suite, `max_rss_mb` -> `phase2-memory` suite, `fuzz_seeds_per_min` -> the media-fuzz tier's CI time budget (seeds/min is corpus throughput, not a machine-runnable median) |
+| release gate | `release.yml` | `validate-version` now needs `test-fuzz` + `test-strict` + `test-ipc-abuse` (blocking; ipc-abuse runs against real main on ubuntu + windows from a `build` job), so a tag cannot be cut with a red adversarial suite |
+| audit gate | `scripts/audit-gate.mjs` + `scripts/audit-allowlist.json`, `audit` job in ci.yml | **Blocking.** Fails on any HIGH/CRITICAL advisory not on the documented exception list (currently 5 known: vite, @vue/server-renderer, source-map-js, @modelcontextprotocol/sdk, shell-quote/concurrently). Supersedes CI_IMPROVEMENTS.md O1 + CI_CD_EXPANSION_PLAN.md N4 ("flip only when `npm audit` exits 0" -- npm now reports a larger known set than that note assumed). Gate script is tested (7 tests) |
+| `test-strict` | blocking gate in `release.yml` + config default | `ENCODEX_STRICT_TESTS=1` is the default in the vitest configs, so the shared unit + integration tiers have run strict all along; the release gate makes it explicit |
+| `flake-detect` | `test-flake` in ci.yml | Implemented as blocking (fail on intermittent), stronger than the draft advisory PR-comment design |
+
+Removed from the plan's "remaining": the `perf/baseline.json` budgets and the release gate are done.
+Outstanding poll items the plan left open: the audit exception list drains as each owning dependency
+fixes forward; the phase-8 `regex-scan` CI step stays a possible follow-up (in-process bound already
+pinned); the mutation-delta job flips from advisory to blocking once the first full-run baseline is
+committed.
 
 ---
 

@@ -59,6 +59,7 @@
     "test:mutate": "stryker run",
     "test:mutation-delta": "node scripts/mutation-delta.mjs",
     "test:mutation-baseline": "node scripts/mutation-delta.mjs --generate",
+    "audit:gate": "node scripts/audit-gate.mjs",
     "test:e2e": "npm run build && vitest run --config e2e/vitest.e2e.config.ts",
     "test:e2e:real": "npm run build && vitest run --config e2e/vitest.e2e.real.config.ts --silent",
     "test:e2e:ci": "vitest run --config e2e/vitest.e2e.config.ts --silent",

@@ -60,7 +60,7 @@ Legend: `done` / `in-progress` / `pending` / `blocked` / `cancelled`
 ### CP2 — `ci.yml` restructure
 - **Top level:** add `permissions: contents: read`; `timeout-minutes: 60`; keep `concurrency`; add `paths-ignore` for `docs/**`, `assets/**`, `*.md`, `README.md`.
 - **Quick checks (parallel, `needs: []`):** `format-check`, `lint`, `typecheck`, `validate-locales`, `audit`.
-  - `audit`: `npm audit --audit-level=high`; **non-blocking** (`continue-on-error: true`) because current deps have known `high` advisories in `electron-builder` toolchain (see Open Items O1). No `npm ci` needed (uses lockfile only).
+  - `audit`: **blocking** since Phase 10 (2026-10-07) via `npm run audit:gate` (`scripts/audit-gate.mjs`): fails on any HIGH/CRITICAL advisory not on the `scripts/audit-allowlist.json` exception list (known set: vite, @vue/server-renderer, source-map-js, @modelcontextprotocol/sdk, shell-quote/concurrently). No `npm ci` needed (uses lockfile only).
 - **`build`:** `needs: [format-check, lint, typecheck, validate-locales]`, matrix `[ubuntu, windows, macos]`, runs `npm run build`, uploads artifact `dist-<os>` (`path: dist`, no trailing slash so folder is preserved).
 - **`test-unit`:** `needs: [format-check, lint, typecheck, validate-locales]` (runs in parallel with `build`). Runs `npm run test:coverage`; uploads `coverage/` (`if: always()`); Codecov upload step gated on `env.CODECOV_TOKEN`.
 - **`test-integration`:** same deps as `test-unit`.
@@ -115,7 +115,7 @@ isolation and with `--maxWorkers=3`. Not a code defect — see O7.
 
 | ID | Item | Owner |
 |----|------|-------|
-| O1 | Upgrade `electron-builder` to fixed major (`26.x`) to clear `npm audit` high/critical advisories, then flip `audit` job to blocking (`continue-on-error: false`) | future PR |
+| O1 | Upgrade `electron-builder` to fixed major (`26.x`) to clear `npm audit` high/critical advisories, then flip `audit` job to blocking (`continue-on-error: false`) | ~superseded~ (2026-10-07): `npm audit` still reports known advisories; the Phase-10 blocking gate now fails on any HIGH/CRITICAL advisory NOT in `scripts/audit-allowlist.json` (see ADVERSARIAL_TEST_HARDENING_PLAN.md row 10) |
 | O2 | Add test-file type-checking to the gate (currently excluded; 3 known errors in `*.test.tsx`) | future PR |
 | O3 | Configure code signing (Windows cert + Apple notarization) and validate per-OS icon formats (`.icns`/`.ico`) for the release workflow | future PR |
 | O4 | Move `test-e2e-real` (heavy real FFmpeg conversions) to scheduled/nightly if PR latency becomes an issue | decision |
