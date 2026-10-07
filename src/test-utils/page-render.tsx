@@ -179,7 +179,7 @@ export function stubViewportWidth(width: number): () => void {
     configurable: true,
     writable: true,
     value: (query: string) => {
-      const px = /(-?\d*\.?\d+)px/.exec(query);
+      const px = /(-?\d*\.\d+|-?\d+)px/.exec(query);
       let matches = false;
       if (px) {
         const bound = Number(px[1]);

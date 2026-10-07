@@ -145,6 +145,19 @@ jobs:
       - run: npm run lint:aptabase:test
       - run: npm run lint:aptabase
 
+  lint-regex:
+    name: Check - No super-linear backtracking regexes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:regex
+
   typecheck:
     name: Check - TypeScript typecheck
     runs-on: ubuntu-latest
@@ -202,7 +215,7 @@ jobs:
 
   build:
     name: Build - ${{ matrix.os }}
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     strategy:
@@ -231,7 +244,7 @@ jobs:
 
   test-unit:
     name: Test - Unit Tests (coverage)
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -259,7 +272,7 @@ jobs:
 
   test-integration:
     name: Test - Integration Tests
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -273,7 +286,7 @@ jobs:
 
   test-fuzz:
     name: Test - Media Fuzz
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -295,7 +308,7 @@ jobs:
     # Runs in its own job because 56 x 12 mounts with real i18next would slow
     # the shared unit tier to minutes.
     name: Test - i18n matrix (56 locales x 12 routes) + RTL mirror + longest-string
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -316,7 +329,7 @@ jobs:
     # inside the single <main> landmark the real app provides. Runs as its own
     # job because 72 axe passes are too slow for the shared unit tier.
     name: Test - axe matrix (12 routes x light/dark x 320/768/1440)
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -338,7 +351,7 @@ jobs:
     # perf tier (row 8 pattern). Runs as its own job because either render would
     # exhaust a shared unit-tier fork.
     name: Test - big-list render budgets (50k log rows / 3k job cards)
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -359,7 +372,7 @@ jobs:
     # and no queue-state corruption. Runs as its own job because it mounts the
     # whole app tree and takes well over a minute on its own.
     name: Test - 1,000 rapid route-change harness
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -485,7 +498,7 @@ jobs:
 
   test-perf:
     name: Test - Performance Benchmarks
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -519,7 +532,7 @@ jobs:
     # a single runner; the weekly mutation-ratchet workflow turns a green run's
     # `--generate` output into the next committed baseline.
     name: Gate - Mutation score delta (advisory)
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 360
     continue-on-error: true

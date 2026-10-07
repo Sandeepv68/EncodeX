@@ -126,7 +126,7 @@ function safeEqual(a: string, b: string): boolean {
 /** Extracts a `Bearer <token>` token, or null when the scheme is missing/wrong. */
 function extractBearer(auth: string | undefined): string | null {
   if (!auth) return null;
-  const match = /^Bearer\s+(.+)$/i.exec(auth.trim());
+  const match = /^Bearer\s+(\S.*)$/i.exec(auth.trim());
   return match ? match[1] : null;
 }
 
