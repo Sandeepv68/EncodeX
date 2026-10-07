@@ -24,7 +24,7 @@
 import { config as loadDotenv } from 'dotenv';
 loadDotenv({ quiet: true });
 
-import { app, BrowserWindow, Menu, shell } from 'electron';
+import { app, BrowserWindow, Menu, session, shell } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import { format as formatArgs } from 'util';
@@ -89,6 +89,7 @@ import { SENTRY_BUILD_CONFIG } from './generated/sentryBuildConfig';
 import { APTABASE_BUILD_CONFIG } from './generated/aptabaseBuildConfig';
 import { readMonitoringConsent } from './monitoring/consent';
 import { registerMonitoringIpcBridge } from './monitoring/ipcBridge';
+import { installContentSecurityPolicy } from './security/csp';
 import { resolveMainMonitorProvider } from './monitoring/providerFactory';
 import { readAnalyticsConsent } from './analytics/consent';
 import { registerAnalyticsIpcBridge } from './analytics/ipcBridge';
@@ -582,6 +583,9 @@ if (process.argv.includes('--mcp')) {
 
   app.whenReady().then(() => {
     log.info(LOG_APP_READY_CREATING_SPLASH_AND_MAIN_WINDOWS);
+    // The renderer CSP ships as a response header (see src/shared/csp.ts) so Electron's security
+    // advisory sees it; it must be registered before any window loads a document.
+    installContentSecurityPolicy(session.defaultSession);
     recordAppInstalledOnce(app.getPath('userData'));
     recordAnalyticsEvent(
       createAnalyticsEvent('app_launched', {

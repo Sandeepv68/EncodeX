@@ -131,13 +131,16 @@ for a decision rather than a drive-by patch; the follow-up chose the two flagged
   which the wrapper preserves by design. Re-triaging the 100 Hz sweep with `E2E_SHAPE_HZ=100` now
   exercises the ceiling with those four channels capped at ~200 deliveries/s total instead of ~650/s.
 - `LanguageMenu.tsx:150` uses `autoFocus` (`jsx-a11y/no-autofocus` warning, pre-existing).
-- The CSP lives in a `<meta>` tag, so Electron's security advisory cannot see it and warns
-  about the missing policy on every launch. The warning is allowlisted
-  (`e2e/fixtures/allowed-errors.json`, kind `consoleWarn`, review 2026-12-29) with the reason
-  recorded. Proper fix is to move the policy to `session.webRequest.onHeadersReceived`, which
-  the advisory _can_ see; deferred because it changes how the preload bridge and custom
-  `aptabase-ipc` scheme are allowed; deferred as an open follow-up rather than a phase item,
-  because it touches the preload bridge and the custom scheme allowlist together.
+- **The CSP now ships as a response header (2026-10-07).** Follow-up 6 is closed:
+  `src/main/security/csp.ts` injects `Content-Security-Policy` via
+  `session.webRequest.onHeadersReceived` on the default session before any window loads, so
+  Electron's security advisory sees the policy (the `<meta http-equiv>` tag, which the advisory does
+  not inspect, is gone from `src/renderer/index.html`). The policy string lives once, in
+  `src/shared/csp.ts`, and is covered on the main side by `src/main/security/__tests__/csp.test.ts`
+  and on the renderer side by `src/renderer/__tests__/csp.test.ts`. The `aptabase-ipc:` `connect-src`
+  allowance is preserved (same string, same semantics; dev, `file://`, and splash are now all
+  covered by the header). The `allowed-errors.json` consoleWarn entry for the advisory has been
+  deleted; the warning no longer fires.
 - `aptabase-ipc://trackEvent` reports `net::ERR_ABORTED` on teardown in Tier B. Recorded as a
   non-fatal `netfail`; it is the analytics call losing its race with window close, not a defect,
   but it means Tier B output always carries a tripwire warning. Worth a look when the analytics
