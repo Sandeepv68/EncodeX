@@ -118,11 +118,18 @@ for a decision rather than a drive-by patch; the follow-up chose the two flagged
   against the spacer geometry; the overscan absorbs it, and line length is bounded (log lines come
   pre-split by the logger). The old cap note "raise that budget when the list is windowed, do not
   tune it upward" is now done -- the budget was tightened, not tuned.
-- **The renderer applies every inbound event with no coalescing or back-pressure.** Phase 3.3 measured
-  the ceiling: ~650 events/sec across 15 channels saturates it (worst round-trip 1483â€“2823 ms) while
-  main stays at 1â€“20 ms; ~150 events/sec is clean. The `player-frame` / `player-audio` / `queue-progress`
-  trio is the plausible real-world source. Fix is coalescing or a per-channel rate limit in the preload
-  handlers or the stores.
+- **The renderer now coalesces high-frequency inbound events (2026-10-07).** Follow-up 5 is closed:
+  `src/preload/coalesce.ts` wraps the four channels that can legitimately exceed burn-in cadence -
+  `onConversionProgress` and `onQueueProgress` (50 ms latest-wins windows, ~20 deliveries/s each),
+  `onPlayerFrame` (16 ms, near video rate), `onPlayerAudio` (10 ms - the one channel where dropping
+  is audible, so real chunk cadence passes untouched while floods are capped) - so a flood can no
+  longer re-apply the renderer once per event. The first event of a window still applies immediately
+  (quiet traffic is delayed zero) and the tail is never lost (the newest event is always delivered);
+  unsubscribe cancels a pending delivery. `onLogMessage` and the queue/job lifecycle channels are
+  intentionally NOT coalesced - each line or transition is additive and must not be dropped. Covered
+  by `src/preload/__tests__/coalesce.test.ts` (6 tests) plus the existing single-event bridge tests,
+  which the wrapper preserves by design. Re-triaging the 100 Hz sweep with `E2E_SHAPE_HZ=100` now
+  exercises the ceiling with those four channels capped at ~200 deliveries/s total instead of ~650/s.
 - `LanguageMenu.tsx:150` uses `autoFocus` (`jsx-a11y/no-autofocus` warning, pre-existing).
 - The CSP lives in a `<meta>` tag, so Electron's security advisory cannot see it and warns
   about the missing policy on every launch. The warning is allowlisted
@@ -1329,7 +1336,14 @@ sample there indicts the generator rather than the app): | Rate  | Worst rendere
 | 10 Hz (~150 ev/s) | all under 2 s  | 1â€“4 ms | 12 of 12 pass  | Main is idle throughout, so the renderer is genuinely saturated: **it applies every incoming event
 with no coalescing or back-pressure.** Real and worth fixing, but 100 Hz on 15 channels at once is
 a load the app cannot produce by itself, so the gate sits at 10 Hz and the ceiling is recorded here
-and at the call site rather than deleted. Re-triage any rate with `E2E_SHAPE_HZ=<n>`.
+  and at the call site rather than deleted. Re-triage any rate with `E2E_SHAPE_HZ=<n>`.
+
+  **Closed (2026-10-07).** The preload now coalesces the four high-frequency channels
+  (`player-frame`, `player-audio`, `queue-progress`, `conversion-progress`) with latest-wins windows -
+  see the Known follow-ups bullet for the closure write-up. The 10 Hz gate is unchanged: at 10 Hz the
+  events are 100 ms apart, wider than every window, so nothing coalesces. What changed is the ceiling
+  shape: a 100 Hz re-run still sends the same raw volume, but those four channels now deliver at most
+  ~200 events/s combined to the renderer, so "the renderer applies every incoming event" no longer holds.
 
 **4. Follow-up closed: `/logs` now windows its list (2026-10-07).** `logStore` is capped at
 `LOG_MAX_ENTRIES` (2000) and `Logs.tsx` used to render every entry, re-rendering the whole list on each

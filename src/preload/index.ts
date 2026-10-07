@@ -52,6 +52,7 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
 import { Logger } from '../shared/logger';
 import { logDroppedPayload } from './event-drop-log';
+import { coalescingSubscription } from './coalesce';
 import { IPC } from '../shared/ipc-channels';
 import {
   isBoolean,
@@ -164,6 +165,31 @@ import {
  * @const {Logger} log
  */
 const log = new Logger('preload');
+
+/**
+ * Coalescing window, in milliseconds, per high-frequency push channel.
+ *
+ * These are the channels Phase 3.3 identified as the plausible real-world saturation source. Each
+ * window caps the renderer-applied event rate to roughly `1 / intervalMs` no matter how fast main
+ * pushes - the renderer never re-applies every frame/progress event again. The windows are chosen so
+ * that normal cadence is untouched (events spaced wider than the window still pass through
+ * immediately) while a flood collapses into latest-wins:
+ *
+ * - `queueProgress`/`conversionProgress` at 50 ms: ~20 snapshots/s, far more than a progress bar
+ *   shows, and normal progress pushes (a few a second) are never coalesced.
+ * - `playerFrame` at 16 ms: keeps preview near video rate (~60/s) while a hostile frame flood stops
+ *   at 60/s instead of saturating the canvas.
+ * - `playerAudio` at 10 ms: audio is the one channel where dropping is audible, so the window is
+ *   kept tight - real chunk cadence (~40/s) passes through effectively untouched, and only a flood
+ *   is capped, at ~100/s.
+ * @const {object} EVENT_COALESCE_INTERVALS
+ */
+const EVENT_COALESCE_INTERVALS = {
+  conversionProgress: 50,
+  queueProgress: 50,
+  playerFrame: 16,
+  playerAudio: 10,
+} as const;
 
 /**
  * The full API surface exposed to the renderer as `window.electronAPI` via
@@ -989,35 +1015,40 @@ const api = {
 
   /**
    * Subscribes to real-time progress events for the active single-file conversion,
-   * pushed over `IPC.CONVERSION_PROGRESS` ('conversion-progress'). Logs the progress
-   * percentage (one decimal place) at debug level.
+   * pushed over `IPC.CONVERSION_PROGRESS` ('conversion-progress'). Coalesced to the
+   * latest snapshot per `EVENT_COALESCE_INTERVALS.conversionProgress` ms so a flood of
+   * progress events cannot re-render the app once per event; the debug log line below
+   * is written on delivery, at the coalesced rate, for the same reason.
    *
    * @param {(data: { input: string; output: string; progress: ConversionProgress }) => void} cb -
    *   Callback receiving the source path, destination path, and the progress snapshot
    *   (percent, elapsed time, fps, speed, ETA, bitrate).
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
-  onConversionProgress: (cb: (data: { input: string; output: string; progress: ConversionProgress }) => void) => {
-    const handler = (_event: IpcRendererEvent, data: unknown) => {
-      // Guarded *before* the log line, which dereferences `data.input` and `data.progress.percent`.
-      // That log statement is the one thing every payload reaches first, so an unguarded read there
-      // is what turned a null event into a renderer crash (found by Phase 3.3).
-      if (!isConversionProgressEvent(data)) {
-        logDroppedPayload({
-          log,
-          constant: LOG_EVENT_PAYLOAD_INVALID,
-          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
-          channel: IPC.CONVERSION_PROGRESS,
-          observed: typeof data,
-        });
-        return;
-      }
+  onConversionProgress: (cb: (data: { input: string; output: string; progress: ConversionProgress }) => void) =>
+    coalescingSubscription((deliver: (data: { input: string; output: string; progress: ConversionProgress }) => void) => {
+      const handler = (_event: IpcRendererEvent, data: unknown) => {
+        // Guarded *before* the log line, which dereferences `data.input` and `data.progress.percent`.
+        // That log statement is the one thing every payload reaches first, so an unguarded read there
+        // is what turned a null event into a renderer crash (found by Phase 3.3).
+        if (!isConversionProgressEvent(data)) {
+          logDroppedPayload({
+            log,
+            constant: LOG_EVENT_PAYLOAD_INVALID,
+            summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+            channel: IPC.CONVERSION_PROGRESS,
+            observed: typeof data,
+          });
+          return;
+        }
+        deliver(data);
+      };
+      ipcRenderer.on(IPC.CONVERSION_PROGRESS, handler);
+      return () => ipcRenderer.removeListener(IPC.CONVERSION_PROGRESS, handler);
+    }, EVENT_COALESCE_INTERVALS.conversionProgress)((data: { input: string; output: string; progress: ConversionProgress }) => {
       log.debug(LOG_ON_CONVERSION_PROGRESS, data.input, data.progress.percent.toFixed(1) + '%');
       cb(data);
-    };
-    ipcRenderer.on(IPC.CONVERSION_PROGRESS, handler);
-    return () => ipcRenderer.removeListener(IPC.CONVERSION_PROGRESS, handler);
-  },
+    }),
   /**
    * Subscribes to job-added events from the conversion queue, pushed over
    * `IPC.QUEUE_ADDED` ('queue-added'). Logs the job id and input path at info level.
@@ -1098,12 +1129,13 @@ const api = {
    * Subscribes to per-job progress events from the conversion queue, pushed over
    * `IPC.QUEUE_PROGRESS` ('queue-progress'). Unlike `onConversionProgress`, which covers
    * only the standalone conversion, this covers jobs managed by the queue manager.
+   * Coalesced to the latest snapshot per `EVENT_COALESCE_INTERVALS.queueProgress` ms.
    *
    * @param {(data: { job: QueueJob; progress: ConversionProgress }) => void} cb - Callback
    *   receiving the queued job and its progress snapshot.
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
-  onQueueProgress: (cb: (data: { job: QueueJob; progress: ConversionProgress }) => void) => {
+  onQueueProgress: coalescingSubscription((deliver: (data: { job: QueueJob; progress: ConversionProgress }) => void) => {
     const handler = (_event: IpcRendererEvent, data: unknown) => {
       // BatchQueue destructures { job, progress } on arrival, so an unguarded payload throws
       // inside the consumer rather than in the bridge.
@@ -1117,11 +1149,11 @@ const api = {
         });
         return;
       }
-      cb(data);
+      deliver(data);
     };
     ipcRenderer.on(IPC.QUEUE_PROGRESS, handler);
     return () => ipcRenderer.removeListener(IPC.QUEUE_PROGRESS, handler);
-  },
+  }, EVENT_COALESCE_INTERVALS.queueProgress),
   /**
    * Subscribes to the notification that the whole queue has been cancelled, pushed over
    * `IPC.QUEUE_CANCELLED` ('queue-cancelled'). Logs the event at info level.
@@ -1168,12 +1200,14 @@ const api = {
    * Subscribes to decoded video frames emitted by the native player, pushed over
    * `IPC.PLAYER_FRAME` ('player-frame'). Frames carry raw pixel data as an ArrayBuffer
    * and must be drawn by the renderer (e.g. into a canvas); frames tagged with a stale
-   * generation should be discarded after a seek or reopen.
+   * generation should be discarded after a seek or reopen. Coalesced to the latest
+   * frame per `EVENT_COALESCE_INTERVALS.playerFrame` ms - the preview draws the newest
+   * frame, so intermediate frames are safe to skip.
    *
-   * @param {(frame: PlayerFrame) => void} cb - Callback invoked for each decoded frame.
+   * @param {(frame: PlayerFrame) => void} cb - Callback invoked for each delivered frame.
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
-  onPlayerFrame: (cb: (frame: PlayerFrame) => void) => {
+  onPlayerFrame: coalescingSubscription((deliver: (frame: PlayerFrame) => void) => {
     const handler = (_event: IpcRendererEvent, frame: unknown) => {
       if (!isPlayerFrame(frame)) {
         logDroppedPayload({
@@ -1185,21 +1219,23 @@ const api = {
         });
         return;
       }
-      cb(frame);
+      deliver(frame);
     };
     ipcRenderer.on(IPC.PLAYER_FRAME, handler);
     return () => ipcRenderer.removeListener(IPC.PLAYER_FRAME, handler);
-  },
+  }, EVENT_COALESCE_INTERVALS.playerFrame),
   /**
    * Subscribes to decoded audio chunks emitted by the native player, pushed over
    * `IPC.PLAYER_AUDIO` ('player-audio'). Chunks carry raw PCM data as an ArrayBuffer
    * that the renderer feeds to the Web Audio API; chunks tagged with a stale generation
-   * should be discarded after a seek or reopen.
+   * should be discarded after a seek or reopen. Coalesced per
+   * `EVENT_COALESCE_INTERVALS.playerAudio` ms - the tightest window of the four channels,
+   * because dropping audio is audible, so only floods are capped.
    *
-   * @param {(chunk: PlayerAudioChunk) => void} cb - Callback invoked for each audio chunk.
+   * @param {(chunk: PlayerAudioChunk) => void} cb - Callback invoked for each delivered chunk.
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
-  onPlayerAudio: (cb: (chunk: PlayerAudioChunk) => void) => {
+  onPlayerAudio: coalescingSubscription((deliver: (chunk: PlayerAudioChunk) => void) => {
     const handler = (_event: IpcRendererEvent, chunk: unknown) => {
       if (!isPlayerAudioChunk(chunk)) {
         logDroppedPayload({
@@ -1211,11 +1247,11 @@ const api = {
         });
         return;
       }
-      cb(chunk);
+      deliver(chunk);
     };
     ipcRenderer.on(IPC.PLAYER_AUDIO, handler);
     return () => ipcRenderer.removeListener(IPC.PLAYER_AUDIO, handler);
-  },
+  }, EVENT_COALESCE_INTERVALS.playerAudio),
   /**
    * Subscribes to player error notifications, pushed over `IPC.PLAYER_ERROR`
    * ('player-error'). The main process forwards the decoder's error message text.
