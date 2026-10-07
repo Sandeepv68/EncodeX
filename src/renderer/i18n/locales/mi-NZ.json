@@ -6,7 +6,10 @@
     "language": "Reo",
     "searchLanguage": "Rapua ngā reo",
     "condense": "Whakaiti te pae taha",
-    "expand": "Whakanui te pae taha"
+    "expand": "Whakanui te pae taha",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Papa Whakahaere",
@@ -238,7 +241,8 @@
     "audio": "Oro",
     "subtitle": "Tapanga Raro",
     "exifData": "Raraunga EXIF",
-    "noExif": "Kāore i kitea ngā raraunga EXIF"
+    "noExif": "Kāore i kitea ngā raraunga EXIF",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Kōmitimiti Whakaahua",

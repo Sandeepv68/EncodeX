@@ -1,20 +1,17 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
-      `font-src` is required, not optional: Vite inlines the @fontsource Roboto
-      subsets below its 4 KB asset limit as `data:` URIs, and without an explicit
-      `font-src` they fall back to `default-src 'self'` and get blocked. That
-      shipped a build where every label rendered in a fallback face while the
-      console filled with CSP violations. `data:` is required for the same
-      reason `img-src` already allows it; the fonts are bundled, not remote.
+      The Content-Security-Policy is NOT declared here. It ships as a `Content-Security-Policy`
+      response header injected by the main process (`session.webRequest.onHeadersReceived`, see
+      `src/shared/csp.ts` and `src/main/security/csp.ts`), so Electron's security advisory detects it
+      and the renderer can never run a frame without the header regardless of how it is loaded
+      (packaged `file://`, dev server, splash). Keep that policy string and `src/renderer/
+      __tests__/csp.test.ts` in sync - in particular `font-src 'self' data:` (bundled fonts are
+      inlined as data: URIs) and `connect-src 'self' aptabase-ipc:` (renderer analytics).
     -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self' aptabase-ipc:"
-    />
     <title>EncodeX</title>
   </head>
   <body>

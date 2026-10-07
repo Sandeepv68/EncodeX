@@ -1,10 +1,8 @@
 import { styled } from '@mui/material/styles';
 import { Box, Chip, Alert, Stack } from '@mui/material';
-import { COLORS } from '../colors';
 
 export const AccelAlert = styled(Alert)(({}) => ({
   fontWeight: 500,
-  color: COLORS.alert.info,
 }));
 
 export const SectionsStack = styled(Box)(({ theme }) => ({

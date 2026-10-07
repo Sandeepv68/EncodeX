@@ -6,7 +6,10 @@
     "language": "Taal",
     "searchLanguage": "Soek tale",
     "condense": "Vou sybalk in",
-    "expand": "Brei sybalk uit"
+    "expand": "Brei sybalk uit",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Paneelbord",
@@ -238,7 +241,8 @@
     "audio": "Klank",
     "subtitle": "Onderskrif",
     "exifData": "EXIF-data",
-    "noExif": "Geen EXIF-data gevind nie"
+    "noExif": "Geen EXIF-data gevind nie",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Komprimeer Beeld",

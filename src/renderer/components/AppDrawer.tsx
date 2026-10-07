@@ -27,7 +27,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { NAV_ITEMS } from '../../shared/app-constants';
@@ -292,92 +292,94 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
 
   return (
     <>
-      <NavList>
-        {NAV_ITEMS.map((item, index) => {
-          const label = t(`nav.${navKeyMap[item.to]}`);
-          // The job popover already names the page it is anchored to and pins to
-          // the same edge of the drawer, so the row tooltip stands down while
-          // that popover is open instead of stacking two cards on top of
-          // each other.
-          const tooltipTitle = condensed && !(popoverBlip !== null && blipForRoute(item.to) === popoverBlip) ? label : '';
-          return (
-            <Tooltip key={item.to} title={tooltipTitle} placement="right">
-              <NavItemButton
-                $condensed={condensed}
-                data-testid={`nav-item-${item.to === '/' ? 'dashboard' : item.to.slice(1)}`}
-                selected={location.pathname === item.to}
-                sx={{ animationDelay: `${index * 0.05}s` }}
-                onMouseLeave={scheduleClose}
-                onFocus={(e) => openPopover(e, item.to)}
-                onBlur={scheduleClose}
-                onClick={() => {
-                  closePopover();
-                  navigate(item.to);
-                  // Journey anchor (D9): every interaction is attributed to the tool
-                  // it happened in via the route badge stamped on subsequent events.
-                  recordAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: item.to }));
-                  setAnalyticsContext({ route: item.to, jobKind: item.to === '/batch' ? 'batch' : undefined });
-                  if (isMobile) onNavigate();
-                }}
+      <Box component="nav" aria-label={t('app.navigation')} sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+        <NavList>
+          {NAV_ITEMS.map((item, index) => {
+            const label = t(`nav.${navKeyMap[item.to]}`);
+            // The job popover already names the page it is anchored to and pins to
+            // the same edge of the drawer, so the row tooltip stands down while
+            // that popover is open instead of stacking two cards on top of
+            // each other.
+            const tooltipTitle = condensed && !(popoverBlip !== null && blipForRoute(item.to) === popoverBlip) ? label : '';
+            return (
+              <Tooltip key={item.to} title={tooltipTitle} placement="right">
+                <NavItemButton
+                  $condensed={condensed}
+                  data-testid={`nav-item-${item.to === '/' ? 'dashboard' : item.to.slice(1)}`}
+                  selected={location.pathname === item.to}
+                  sx={{ animationDelay: `${index * 0.05}s` }}
+                  onMouseLeave={scheduleClose}
+                  onFocus={(e) => openPopover(e, item.to)}
+                  onBlur={scheduleClose}
+                  onClick={() => {
+                    closePopover();
+                    navigate(item.to);
+                    // Journey anchor (D9): every interaction is attributed to the tool
+                    // it happened in via the route badge stamped on subsequent events.
+                    recordAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: item.to }));
+                    setAnalyticsContext({ route: item.to, jobKind: item.to === '/batch' ? 'batch' : undefined });
+                    if (isMobile) onNavigate();
+                  }}
+                >
+                  <NavItemIcon $active={location.pathname === item.to} $condensed={condensed}>
+                    {pageIcons[item.to]}
+                  </NavItemIcon>
+                  {!condensed && <NavItemText primary={label} />}
+                  {item.to === '/convert' && isConverting && (
+                    <NavBlip
+                      $condensed={condensed}
+                      aria-hidden="true"
+                      data-testid="nav-convert-blip"
+                      onMouseEnter={(e) => openPopover(e, item.to)}
+                    />
+                  )}
+                  {item.to === '/audio-extract' && isExtractingAudio && (
+                    <NavBlip
+                      $condensed={condensed}
+                      aria-hidden="true"
+                      data-testid="nav-audio-extract-blip"
+                      onMouseEnter={(e) => openPopover(e, item.to)}
+                    />
+                  )}
+                  {item.to === '/video-cut' && isCutting && (
+                    <NavBlip
+                      $condensed={condensed}
+                      aria-hidden="true"
+                      data-testid="nav-video-cut-blip"
+                      onMouseEnter={(e) => openPopover(e, item.to)}
+                    />
+                  )}
+                  {item.to === '/batch' && batchJobCount > 0 && (
+                    <NavCountBadge
+                      $condensed={condensed}
+                      data-testid="nav-batch-blip"
+                      aria-label={t('batchQueue.badgeCount', { count: batchJobCount })}
+                      onMouseEnter={(e) => openPopover(e, item.to)}
+                    >
+                      {batchJobCount}
+                    </NavCountBadge>
+                  )}
+                </NavItemButton>
+              </Tooltip>
+            );
+          })}
+        </NavList>
+        <DrawerDivider />
+        <NavFooter>
+          {!isMobile && (
+            <Tooltip title={t(condensed ? 'app.expand' : 'app.condense')}>
+              <CondenseButton
+                data-testid="drawer-condense-button"
+                aria-label={t(condensed ? 'app.expand' : 'app.condense')}
+                onClick={onToggleCondense}
               >
-                <NavItemIcon $active={location.pathname === item.to} $condensed={condensed}>
-                  {pageIcons[item.to]}
-                </NavItemIcon>
-                {!condensed && <NavItemText primary={label} />}
-                {item.to === '/convert' && isConverting && (
-                  <NavBlip
-                    $condensed={condensed}
-                    aria-hidden="true"
-                    data-testid="nav-convert-blip"
-                    onMouseEnter={(e) => openPopover(e, item.to)}
-                  />
-                )}
-                {item.to === '/audio-extract' && isExtractingAudio && (
-                  <NavBlip
-                    $condensed={condensed}
-                    aria-hidden="true"
-                    data-testid="nav-audio-extract-blip"
-                    onMouseEnter={(e) => openPopover(e, item.to)}
-                  />
-                )}
-                {item.to === '/video-cut' && isCutting && (
-                  <NavBlip
-                    $condensed={condensed}
-                    aria-hidden="true"
-                    data-testid="nav-video-cut-blip"
-                    onMouseEnter={(e) => openPopover(e, item.to)}
-                  />
-                )}
-                {item.to === '/batch' && batchJobCount > 0 && (
-                  <NavCountBadge
-                    $condensed={condensed}
-                    data-testid="nav-batch-blip"
-                    aria-label={t('batchQueue.badgeCount', { count: batchJobCount })}
-                    onMouseEnter={(e) => openPopover(e, item.to)}
-                  >
-                    {batchJobCount}
-                  </NavCountBadge>
-                )}
-              </NavItemButton>
+                <FontAwesomeIcon icon={condensed ? faChevronRight : faChevronLeft} />
+              </CondenseButton>
             </Tooltip>
-          );
-        })}
-      </NavList>
-      <DrawerDivider />
-      <NavFooter>
-        {!isMobile && (
-          <Tooltip title={t(condensed ? 'app.expand' : 'app.condense')}>
-            <CondenseButton
-              data-testid="drawer-condense-button"
-              aria-label={t(condensed ? 'app.expand' : 'app.condense')}
-              onClick={onToggleCondense}
-            >
-              <FontAwesomeIcon icon={condensed ? faChevronRight : faChevronLeft} />
-            </CondenseButton>
-          </Tooltip>
-        )}
-        <LanguageMenu condensed={condensed} />
-      </NavFooter>
+          )}
+          <LanguageMenu condensed={condensed} />
+        </NavFooter>
+      </Box>
       <NavJobPopover
         active={popoverBlip}
         anchorEl={popoverAnchor}

@@ -36,9 +36,19 @@ export const useQueueStore = create<QueueState>((set) => ({
   progress: {},
   /**
    * Replaces the entire job list with the given array.
+   *
+   * Rejects a non-array payload instead of storing it verbatim: `queueList` is
+   * the one setter fed straight by the preload bridge, and a version-skewed or
+   * corrupted response must not replace the list with a value that crashes the
+   * next `jobs.some(...)` render. The page renders its empty state instead.
    * @param {QueueJob[]} jobs - The new job list.
    */
   setJobs: (jobs) => {
+    if (!Array.isArray(jobs)) {
+      log.warn('Ignoring non-array queue list from main process', typeof jobs);
+      set({ jobs: [] });
+      return;
+    }
     log.debug(LOG_SET_JOBS, jobs.length, 'jobs');
     set({ jobs });
   },

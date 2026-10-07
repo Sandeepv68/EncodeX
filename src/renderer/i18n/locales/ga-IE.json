@@ -6,7 +6,10 @@
     "language": "Teanga",
     "searchLanguage": "Cuardaigh teangacha",
     "condense": "Crap an barra taoibh",
-    "expand": "Leathnaigh an barra taoibh"
+    "expand": "Leathnaigh an barra taoibh",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Deais",
@@ -238,7 +241,8 @@
     "audio": "Fuaim",
     "subtitle": "Fotheideal",
     "exifData": "Sonraí EXIF",
-    "noExif": "Níor aimsíodh aon sonraí EXIF"
+    "noExif": "Níor aimsíodh aon sonraí EXIF",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Comhbhrúigh Íomhá",

@@ -148,7 +148,7 @@ describe('Remux', () => {
     await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalled());
     fireEvent.click(screen.getByText('remux.selectNone'));
     expect(useRemuxStore.getState().selectedMaps).toEqual([]);
-    fireEvent.click(screen.getByText('remux.selectAll'));
+    fireEvent.click(screen.getByTestId('remux-select-all'));
     expect(useRemuxStore.getState().selectedMaps).toEqual(['0:v:0', '0:a:0', '0:s:0']);
   });
 
@@ -634,7 +634,7 @@ describe('Remux', () => {
 
     const table = within(screen.getByRole('table', { name: 'remux.streams' }));
     expect(table.getAllByRole('columnheader').map((header) => header.textContent)).toEqual([
-      '',
+      'remux.selectAll',
       'remux.streamIndex',
       'remux.kind',
       'mediaInfo.codec',

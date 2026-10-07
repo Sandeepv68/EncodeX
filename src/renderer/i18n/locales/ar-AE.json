@@ -6,7 +6,10 @@
     "language": "اللغة",
     "searchLanguage": "ابحث عن اللغات",
     "condense": "طي الشريط الجانبي",
-    "expand": "توسيع الشريط الجانبي"
+    "expand": "توسيع الشريط الجانبي",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -238,7 +241,8 @@
     "audio": "صوت",
     "subtitle": "ترجمة",
     "exifData": "بيانات EXIF",
-    "noExif": "لا توجد بيانات EXIF"
+    "noExif": "لا توجد بيانات EXIF",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "ضغط الصورة",

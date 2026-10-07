@@ -6,7 +6,10 @@
     "language": "ภาษา",
     "searchLanguage": "ค้นหาภาษา",
     "condense": "ย่อแถบด้านข้าง",
-    "expand": "ขยายแถบด้านข้าง"
+    "expand": "ขยายแถบด้านข้าง",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "แดชบอร์ด",
@@ -238,7 +241,8 @@
     "audio": "เสียง",
     "subtitle": "คำบรรยาย",
     "exifData": "ข้อมูล EXIF",
-    "noExif": "ไม่พบข้อมูล EXIF"
+    "noExif": "ไม่พบข้อมูล EXIF",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "บีบอัดรูปภาพ",

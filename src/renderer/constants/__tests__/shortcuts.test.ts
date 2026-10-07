@@ -20,6 +20,7 @@ import {
   formatKeyToken,
   formatShortcut,
   shortcutHint,
+  type ParsedShortcut,
 } from '../shortcuts';
 
 /**
@@ -191,6 +192,53 @@ describe('SHORTCUTS registry', () => {
     }
     for (const spec of SHORTCUTS) {
       expect(resolveKey(enUS, spec.labelKey), spec.labelKey).toBeTruthy();
+    }
+  });
+});
+
+/**
+ * A canonical identity for a parsed chord, distinct when modifiers or the key
+ * code differ.
+ * @param {ParsedShortcut} parsed - The parsed chord.
+ * @returns {string} The chord signature.
+ */
+function chordSignature(parsed: ParsedShortcut): string {
+  return `${parsed.primary ? 1 : 0}${parsed.alt ? 1 : 0}${parsed.shift ? 1 : 0}${parsed.code}`;
+}
+
+describe('SHORTCUTS conflict discipline (row 5.3, finding F7)', () => {
+  it('binds no duplicate chord within the same section', () => {
+    // Only one page mounts at a time, so a chord may legitimately repeat across
+    // sections (Ctrl+O is "open input" on every converter). Within one section
+    // the bindings are all live together, and `useHotkeys` fires the first
+    // match only -- a duplicate would silently win over its sibling.
+    for (const section of SHORTCUT_SECTIONS) {
+      const signatures = SHORTCUTS.filter((spec) => spec.section === section.id).map((spec) => chordSignature(parseShortcut(spec.keys)));
+      expect(new Set(signatures).size, `${section.id} binds the same chord twice`).toBe(signatures.length);
+    }
+  });
+
+  it('keeps global chords disjoint from every page-scoped chord', () => {
+    // Global bindings are registered at the App shell and live for the whole
+    // session, so a page chord colliding with one would fight the shell on every
+    // keypress rather than only when its page is mounted.
+    const global = new Set(SHORTCUTS.filter((spec) => spec.section === 'global').map((spec) => chordSignature(parseShortcut(spec.keys))));
+    for (const spec of SHORTCUTS) {
+      if (spec.section === 'global') continue;
+      expect(global.has(chordSignature(parseShortcut(spec.keys))), `${spec.id} collides with a global shortcut`).toBe(false);
+    }
+  });
+
+  it('gives every global and dashboard navigation shortcut a distinct route', () => {
+    for (const section of ['global', 'dashboard'] as const) {
+      const targets = SHORTCUTS.filter((spec) => spec.section === section && spec.to).map((spec) => spec.to!);
+      expect(new Set(targets).size, `${section} navigation targets must be distinct`).toBe(targets.length);
+    }
+  });
+
+  it('prefixes every id with its own section', () => {
+    for (const spec of SHORTCUTS) {
+      expect(spec.id.startsWith(`${spec.section}.`), spec.id).toBe(true);
     }
   });
 });

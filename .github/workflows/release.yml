@@ -13,7 +13,11 @@ env:
 
 jobs:
   validate-version:
-    name: Validate tag matches package.json
+    # Phase 10 (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10): a tag cannot
+    # be cut with a red adversarial suite, so the release gates on the fuzz,
+    # strict, and real-main IPC-abuse passes before packaging even starts.
+    name: Validate tag matches package.json (after adversarial gates)
+    needs: [test-fuzz, test-strict, test-ipc-abuse]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -27,6 +31,98 @@ jobs:
             exit 1
           fi
           echo "Tag $GITHUB_REF_NAME matches package.json version"
+
+  build:
+    name: Build - ${{ matrix.os }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu
+            runner: ubuntu-latest
+          - os: windows
+            runner: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          path: dist
+          if-no-files-found: error
+
+  test-fuzz:
+    name: Gate - Media fuzz (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run media fuzz tier (corrupt-media corpus, real ffmpeg/ffprobe)
+        run: npm run test:media-fuzz
+
+  test-strict:
+    name: Gate - Strict unit + integration (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      ENCODEX_STRICT_TESTS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run unit tier with strict tripwires
+        run: npm test
+      - name: Run integration tier with strict tripwires
+        run: npm run test:integration
+
+  test-ipc-abuse:
+    name: Gate - IPC abuse (real main, ${{ matrix.os }}) (blocking)
+    needs: [build]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu
+            runner: ubuntu-latest
+          - os: windows
+            runner: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          path: dist
+      - run: npm ci
+      - name: Install xvfb
+        if: matrix.os == 'ubuntu'
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+      - name: Run IPC abuse sweep (Linux)
+        if: matrix.os == 'ubuntu'
+        run: xvfb-run --auto-servernum npm run test:e2e:real:ci e2e/specs/ipc-abuse.spec.ts
+      - name: Run IPC abuse sweep (Windows)
+        if: matrix.os == 'windows'
+        run: npm run test:e2e:real:ci e2e/specs/ipc-abuse.spec.ts
 
   package:
     name: Package - ${{ matrix.os }} (${{ matrix.arch }})

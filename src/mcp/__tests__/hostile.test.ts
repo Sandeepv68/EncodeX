@@ -447,7 +447,11 @@ describe('MCP hostile input', () => {
     it('refuses a batch whose glob matches nothing', async () => {
       const session = await setup();
       try {
-        const envelope = expectErrorEnvelope(await callTool(session, 'batch_convert', { inputs: ['**/*.does-not-exist'] }));
+        const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-hostile-glob-'));
+        const subdir = path.join(dir, 'sub');
+        fs.mkdirSync(subdir);
+        fs.writeFileSync(path.join(subdir, 'clip.mp4'), 'not really a video');
+        const envelope = expectErrorEnvelope(await callTool(session, 'batch_convert', { inputs: [`${dir}/**/*.does-not-exist`] }));
         expect(envelope.code).toBe('FILE_NOT_FOUND');
         expect(envelope.message).toContain('No input files matched');
       } finally {

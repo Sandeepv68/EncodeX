@@ -6,7 +6,10 @@
     "language": "언어",
     "searchLanguage": "언어 검색",
     "condense": "사이드바 접기",
-    "expand": "사이드바 펼치기"
+    "expand": "사이드바 펼치기",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "대시보드",
@@ -238,7 +241,8 @@
     "audio": "오디오",
     "subtitle": "자막",
     "exifData": "EXIF 데이터",
-    "noExif": "EXIF 데이터가 없습니다"
+    "noExif": "EXIF 데이터가 없습니다",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "이미지 압축",

@@ -1,0 +1,51 @@
+name: Mutation Ratchet
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: mutation-ratchet
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: 22
+
+jobs:
+  ratchet:
+    name: Ratchet - mutation baseline candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      # Full Stryker suite over the phase-9 scope. On GitHub's runners the
+      # ~6k-mutant run fits in the 6h budget at concurrency 4.
+      - name: Run mutation testing
+        run: npm run test:mutate -- --concurrency 4
+      # Compare against the committed baseline first: if the score dropped,
+      # the job fails here and the committed baseline is never lowered. Only a
+      # green (or higher) run moves on to --generate below.
+      - name: Compare against committed baseline (protect the floor)
+        run: npm run test:mutation-delta
+      - name: Produce ratchet candidate baseline
+        run: npm run test:mutation-baseline
+      # Expose the report + candidate so a "chore: ratchet mutation baseline"
+      # PR can commit the new number. Upload is stepped even if the delta gate
+      # fails, so the drop stays triageable.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-ratchet
+          path: |
+            mutation/baseline.json
+            reports/mutation/
+          if-no-files-found: warn

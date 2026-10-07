@@ -57,6 +57,7 @@ import { usePreviewThumbnail } from '../hooks/usePreviewThumbnail';
 import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { openFileDialog } from '../utils/fileDialog';
 import { fileName } from '../utils/path-utils';
+import { visuallyHidden } from '../utils/a11y';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { suggestedExtensionForStream, type RemuxWarning } from '../../shared/codec-containers';
 import { useDemuxStore } from '../stores/demuxStore';
@@ -310,7 +311,9 @@ export default function DemuxPage() {
                     <StreamTable size="small" aria-label={t(`mediaInfo.${kind}`)}>
                       <TableHead>
                         <TableRow>
-                          <TableCell padding="checkbox" />
+                          <TableCell padding="checkbox">
+                            <span style={visuallyHidden}>{t('demux.extractStreams')}</span>
+                          </TableCell>
                           <TableCell>{t('remux.streamIndex')}</TableCell>
                           <TableCell>{t('mediaInfo.codec')}</TableCell>
                           <TableCell>{t('mediaInfo.language')}</TableCell>

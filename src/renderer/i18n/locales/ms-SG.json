@@ -6,7 +6,10 @@
     "language": "Bahasa",
     "searchLanguage": "Cari bahasa",
     "condense": "Ciutkan bar sisi",
-    "expand": "Kembangkan bar sisi"
+    "expand": "Kembangkan bar sisi",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Papan Pemuka",
@@ -238,7 +241,8 @@
     "audio": "Audio",
     "subtitle": "Sari kata",
     "exifData": "Data EXIF",
-    "noExif": "Tiada data EXIF ditemui"
+    "noExif": "Tiada data EXIF ditemui",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Mampat Imej",

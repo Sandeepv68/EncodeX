@@ -89,7 +89,11 @@ export const ThemeCard = styled('button', {
   borderRadius: theme.shape.borderRadius,
   background: 'none',
   cursor: 'pointer',
-  color: $selected ? theme.palette.primary.main : theme.palette.text.secondary,
+  color: $selected
+    ? theme.palette.mode === 'dark'
+      ? theme.palette.primary.light
+      : theme.palette.primary.main
+    : theme.palette.text.secondary,
   '&:hover': {
     borderColor: $selected ? theme.palette.primary.main : theme.palette.text.secondary,
   },

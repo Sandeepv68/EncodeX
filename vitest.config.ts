@@ -29,7 +29,26 @@ export default defineConfig({
     ],
     // The `mediafuzz` tier spawns real ffmpeg against a generated corpus and
     // takes minutes; it has its own config and script (`test:media-fuzz`).
-    exclude: ['node_modules', 'dist', '**/*.integration.{test,spec}.ts', '**/*.mediafuzz.{test,spec}.ts'],
+    // The Phase 5.1 locale matrix renders all 12 pages under the *real*
+    // i18next for all 56 locales (~100s) and is too slow for the shared tier;
+    // it has its own config and script (`test:locale-matrix`).
+    exclude: [
+      'node_modules',
+      'dist',
+      '**/*.integration.{test,spec}.ts',
+      '**/*.mediafuzz.{test,spec}.ts',
+      'src/renderer/__tests__/i18n-matrix.test.tsx',
+      'src/renderer/__tests__/rtl-direction.test.tsx',
+      'src/renderer/__tests__/longest-string.test.tsx',
+      'src/renderer/__tests__/axe-all-pages.test.tsx',
+      // The big-list render budgets (50k rows / 3k MUI cards) would OOM a
+      // shared-tier fork; they run in their own config (`test:big-lists`).
+      'src/renderer/__tests__/big-list-budget.test.tsx',
+      // The 1,000-navigation route-change walk re-renders the full shell per
+      // hop and only stays deterministic under a single worker; it runs in its
+      // own config (`test:route-changes`), not a contended shared-tier fork.
+      'src/renderer/__tests__/route-change-stress.test.tsx',
+    ],
     css: true,
     pool: 'forks',
     maxWorkers: 6,

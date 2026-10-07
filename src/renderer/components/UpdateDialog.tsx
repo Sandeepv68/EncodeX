@@ -81,7 +81,7 @@ export default function UpdateDialog() {
         <UpdateDialogContent>
           {status === 'idle' || status === 'checking' ? (
             <UpdateStatusMessage>
-              <CircularProgress size={24} sx={{ mr: 1, verticalAlign: 'middle' }} />
+              <CircularProgress size={24} sx={{ mr: 1, verticalAlign: 'middle' }} aria-label={t('update.checking')} />
               {t('update.checking')}
             </UpdateStatusMessage>
           ) : status === 'not-available' ? (

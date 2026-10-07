@@ -85,18 +85,18 @@ export const DropZoneRoot = styled('button', {
   '& .MuiTypography-root': {
     fontSize: theme.typography.pxToRem(12),
     fontWeight: theme.typography.fontWeightMedium,
-    color: theme.palette.text.secondary,
+    color: theme.palette.mode === 'dark' ? theme.palette.text.secondary : theme.palette.text.primary,
   },
   '& .MuiTypography-caption': {
     fontSize: theme.typography.pxToRem(11),
     fontWeight: theme.typography.fontWeightRegular,
-    color: theme.palette.text.disabled,
+    color: theme.palette.mode === 'dark' ? theme.palette.text.secondary : alpha(theme.palette.text.primary, 0.68),
     marginTop: theme.spacing(0.5),
   },
 }));
 
 export const UploadIcon = styled(FontAwesomeIcon)(({ theme }) => ({
   fontSize: theme.typography.pxToRem(48),
-  color: theme.palette.text.secondary,
+  color: theme.palette.mode === 'dark' ? theme.palette.text.secondary : theme.palette.text.primary,
   marginBottom: theme.spacing(1),
 }));

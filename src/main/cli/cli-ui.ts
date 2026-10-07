@@ -21,6 +21,7 @@ import chalk from 'chalk';
 import ora, { Ora } from 'ora';
 import cliProgress from 'cli-progress';
 import { CliThemeId } from '../cli-logo';
+import { setConsoleErrorStacksIncluded } from '../../shared/logger';
 
 /**
  * Mutable output configuration shared across CLI subcommands. Set once argument
@@ -57,7 +58,14 @@ export const cliConfig: CliOutputConfig = {
  */
 export function configureCliOutput(config: Partial<CliOutputConfig>, color = true): void {
   if (config.quiet !== undefined) cliConfig.quiet = config.quiet;
-  if (config.verbose !== undefined) cliConfig.verbose = config.verbose;
+  if (config.verbose !== undefined) {
+    cliConfig.verbose = config.verbose;
+    // Stack-trace-free stderr contract: internal `[ERROR]` lines (which run
+    // through the shared Logger and normally render `err.stack`) must not leak
+    // `at ...`/`node:*` frames onto the CLI's user-facing surface; only
+    // `--verbose` opts back into full stacks.
+    setConsoleErrorStacksIncluded(config.verbose);
+  }
   if (config.machine !== undefined) cliConfig.machine = config.machine;
   setColor(color);
 }

@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-07",
+  "policy": "The `audit` job blocks on any HIGH or CRITICAL advisory from 'npm audit --json' that is NOT on this list. Each entry below is a known, tracked, unresolvable-now advisory (fix is a dependency that must land upstream or a deliberate pinned-range exception). A new entry is only added with a tracked issue; a NEW advisory not listed here fails the build even if 'npm audit' itself is still red for these known items. Moderate and lower are below the gate line but SHOULD still be drained opportunistically.",
+  "advisories": [
+    {
+      "url": "https://github.com/advisories/GHSA-fx2h-pf6j-xcff",
+      "severity": "high",
+      "package": "vite",
+      "note": "Vite dev-server advisory via the vitepress/vitest toolchain; fix must land in a resolved vite range."
+    },
+    {
+      "url": "https://github.com/advisories/GHSA-g2v6-rqmx-r4w6",
+      "severity": "high",
+      "package": "@vue/server-renderer",
+      "note": "Vue SSR advisory; propagates to 'vue'."
+    },
+    {
+      "url": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+      "severity": "high",
+      "package": "source-map-js",
+      "note": "source-map-js advisory in the vite/vue toolchain."
+    },
+    {
+      "url": "https://github.com/advisories/GHSA-6qxp-vccf-f47h",
+      "severity": "high",
+      "package": "@modelcontextprotocol/sdk",
+      "note": "MCP SDK advisory; fix tracked by the SDK release we pin next."
+    },
+    {
+      "url": "https://github.com/advisories/GHSA-pqg4-j6r4-53mv",
+      "severity": "critical",
+      "package": "shell-quote",
+      "note": "shell-quote quote() command injection; propagates to 'concurrently'. Fix must land in a resolved shell-quote range."
+    }
+  ]
+}

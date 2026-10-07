@@ -55,7 +55,7 @@ export default function FileSummary({ info, compact }: FileSummaryProps) {
     { label: t('mediaInfo.bitrate'), value: formatBitrate(info.bitrate), size: short },
     ...(info.startTime != null ? [{ label: t('mediaInfo.startTime'), value: String(info.startTime), size: short }] : []),
     ...(info.probeScore != null ? [{ label: t('mediaInfo.probeScore'), value: String(info.probeScore), size: short }] : []),
-    { label: t('mediaInfo.streamsCount'), value: String(info.streams.length), size: short },
+    { label: t('mediaInfo.streamsCount'), value: String((info.streams ?? []).length), size: short },
   ];
 
   const tags = info.tags ? Object.entries(info.tags) : [];

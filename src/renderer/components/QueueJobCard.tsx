@@ -433,6 +433,7 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onEditO
   return (
     <JobCard
       ref={setNodeRef}
+      data-testid={`queue-job-card-${job.id}`}
       $status={job.status}
       variant="outlined"
       // eslint-disable-next-line encodex/no-inline-styles -- dnd-kit provides runtime transform values

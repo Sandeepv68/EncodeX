@@ -355,6 +355,44 @@ export function formatDurationCompact(seconds: number): string {
 }
 
 /**
+ * Registers one-shot interrupt handlers that cancel the active long-running
+ * CLI operation on SIGINT/SIGTERM.
+ *
+ * Installed around every long-running CLI conversion so an interactive Ctrl-C
+ * or `kill -TERM` cancels the underlying transcoder instead of leaving a
+ * dangling child process behind. On Windows the synthesized signals delivered
+ * by `child.kill()`/`TerminateProcess` never reach a JS handler, so the hook
+ * is inert there, but registering it is harmless and keeps the POSIX path
+ * (where it fully works) consistent.
+ * @param {() => void} cancel - Cancellation action for the active operation.
+ * @param {readonly string[]} [signals] - Signals to intercept (defaults to
+ *   `['SIGINT', 'SIGTERM']`).
+ * @returns {() => void} A function that removes the installed handlers.
+ * @example
+ * const release = registerCliSignalCancel(() => transcoder.cancel());
+ * try { await convert(); } finally { release(); }
+ */
+export function registerCliSignalCancel(cancel: () => void, signals: readonly string[] = ['SIGINT', 'SIGTERM']): () => void {
+  const onSignal = (): void => cancel();
+  for (const signal of signals) {
+    try {
+      process.on(signal as NodeJS.Signals, onSignal);
+    } catch {
+      /* signal unsupported on this platform - nothing to intercept */
+    }
+  }
+  return () => {
+    for (const signal of signals) {
+      try {
+        process.removeListener(signal as NodeJS.Signals, onSignal);
+      } catch {
+        /* no-op */
+      }
+    }
+  };
+}
+
+/**
  * Parses a CLI time argument into seconds.
  *
  * Accepts plain seconds (e.g. `90`) or `HH:MM:SS`/`MM:SS` strings. Returns

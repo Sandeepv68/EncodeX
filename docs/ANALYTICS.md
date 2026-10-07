@@ -36,13 +36,14 @@ process over the SDK's own `aptabase-ipc` transport (registered when the
 main-process SDK initializes), so backend delivery still happens on the main
 side.
 
-> **CSP requirement:** the renderer's `index.html` Content-Security-Policy must
-> allow that custom scheme. The SDK delivers events with a `fetch` to
+> **CSP requirement:** the renderer Content-Security-Policy must allow that
+> custom scheme. The SDK delivers events with a `fetch` to
 > `aptabase-ipc://trackEvent`, which falls under `connect-src`. Since
-> `connect-src` defaults to `default-src 'self'`, ensure the meta policy
-> includes `connect-src 'self' aptabase-ipc` — otherwise renderer events are
-> silently dropped (the adapter's fetch is rejected and logged as a
-> `TypeError: Failed to fetch`).
+> `connect-src` defaults to `default-src 'self'`, the policy (see
+> `src/shared/csp.ts`, injected as a `Content-Security-Policy` response header
+> by `src/main/security/csp.ts`) includes `connect-src 'self' aptabase-ipc` —
+> otherwise renderer events are silently dropped (the adapter's fetch is
+> rejected and logged as a `TypeError: Failed to fetch`).
 
 ## Configuration
 

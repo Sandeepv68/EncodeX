@@ -392,7 +392,7 @@ export default function Convert() {
               </PreviewSectionTitle>
               {mediaInfoLoading && !mediaInfo && (
                 <LoadingBox>
-                  <CircularProgress size={24} />
+                  <CircularProgress size={24} aria-label={t('mediaInfo.loading')} />
                 </LoadingBox>
               )}
               {mediaInfo && (

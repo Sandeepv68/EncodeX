@@ -145,6 +145,19 @@ jobs:
       - run: npm run lint:aptabase:test
       - run: npm run lint:aptabase
 
+  lint-regex:
+    name: Check - No super-linear backtracking regexes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:regex
+
   typecheck:
     name: Check - TypeScript typecheck
     runs-on: ubuntu-latest
@@ -172,21 +185,23 @@ jobs:
       - run: npm run validate:locales
 
   audit:
-    name: Check - Dependency audit
+    name: Check - Dependency audit (blocking, exception-listed)
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Non-blocking: npm audit --audit-level=high still exits non-zero (1 high
-    # + 6 moderate, electron-builder already at 26.x). See
-    # plans/CI_IMPROVEMENTS.md O1 + plans/CI_CD_EXPANSION_PLAN.md N4. Flip
-    # continue-on-error to false once the audit exits 0.
-    continue-on-error: true
+    # Blocking since Phase 10 (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10):
+    # `npm audit` alone still exits non-zero on a known, tracked set of dev-
+    # toolchain advisories (vite/vue/source-map-js, @modelcontextprotocol/sdk,
+    # shell-quote/concurrently -- see scripts/audit-allowlist.json). The gate
+    # fails on any NEW high/critical advisory not on that list, which is the
+    # plan's "blocking with a documented exception list" (supersedes
+    # CI_IMPROVEMENTS.md O1 + CI_CD_EXPANSION_PLAN.md N4 "flip when exit 0").
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-      - name: npm audit
-        run: npm audit --audit-level=high
+      - name: Blocking audit gate (new high/critical fails)
+        run: npm run audit:gate
 
   actionlint:
     name: Check - GitHub Actions workflow lint
@@ -200,7 +215,7 @@ jobs:
 
   build:
     name: Build - ${{ matrix.os }}
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     strategy:
@@ -229,7 +244,7 @@ jobs:
 
   test-unit:
     name: Test - Unit Tests (coverage)
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -257,7 +272,7 @@ jobs:
 
   test-integration:
     name: Test - Integration Tests
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -268,6 +283,107 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run test:integration
+
+  test-fuzz:
+    name: Test - Media Fuzz
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run media fuzz tier (corrupt-media corpus, real ffmpeg/ffprobe binaries)
+        run: npm run test:media-fuzz
+
+  test-locale-matrix:
+    # Phase 5.1 gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10): every
+    # routed page rendered under the real i18next instance in every one of the
+    # 56 shipped locales, plus the RTL mirror suite (direction wiring, emotion
+    # rtl-cache CSS flip, pages under the rtl cache, ltr/rtl shortcut parity),
+    # plus the longest-string stress (de-DE + 3x synthetic pseudo-locale).
+    # Runs in its own job because 56 x 12 mounts with real i18next would slow
+    # the shared unit tier to minutes.
+    name: Test - i18n matrix (56 locales x 12 routes) + RTL mirror + longest-string
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run locale matrix + RTL mirror (real i18next, 56 locales x 12 routes)
+        run: npm run test:locale-matrix
+
+  test-a11y:
+    # Phase 5.3 gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10): axe in
+    # strict mode on every routed page in both themes at the three layout
+    # breakpoints the app ships (320 / 768 / 1440), so the DOM-structural rules
+    # (region, landmark-one-main, scrollable-region-focusable) can be judged
+    # inside the single <main> landmark the real app provides. Runs as its own
+    # job because 72 axe passes are too slow for the shared unit tier.
+    name: Test - axe matrix (12 routes x light/dark x 320/768/1440)
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run axe matrix (strict, 12 routes x light/dark x 320/768/1440)
+        run: npm run test:a11y
+
+  test-big-lists:
+    # Phase 5.2 gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10): renderer
+    # stress budgets -- 50,000 log rows and 3,000 MUI job cards -- asserting
+    # `performance.now()` bounds and that the queue stays responsive. The
+    # 5,000-job render needs a ~6 GB heap (over GitHub's 7 GB ubuntu runner),
+    # so the gate renders 3,000 cards and the full-scale render lives in the
+    # perf tier (row 8 pattern). Runs as its own job because either render would
+    # exhaust a shared unit-tier fork.
+    name: Test - big-list render budgets (50k log rows / 3k job cards)
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run big-list render budget suite (strict)
+        run: npm run test:big-lists
+
+  test-route-changes:
+    # Phase 8 gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 8): the
+    # dedicated 1,000-rapid-route-change harness. Mounts the real App shell once
+    # and drives 1,000 react-router navigations across all lazy routes while a
+    # conversion is RUNNING, proving no listener growth, no error-store fault,
+    # and no queue-state corruption. Runs as its own job because it mounts the
+    # whole app tree and takes well over a minute on its own.
+    name: Test - 1,000 rapid route-change harness
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run rapid route-change harness (strict)
+        run: npm run test:route-changes
 
   coverage-per-file:
     name: Report - Per-file coverage floors
@@ -382,7 +498,7 @@ jobs:
 
   test-perf:
     name: Test - Performance Benchmarks
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -403,6 +519,39 @@ jobs:
         with:
           name: perf-results
           path: perf/results/
+          if-no-files-found: warn
+
+  test-mutation-delta:
+    # Phase 9 gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 9): mutation
+    # scores for the logic that decides what ffmpeg runs and what is stored.
+    # Runs the full Stryker suite then compares its score against the committed
+    # mutation/baseline.json; fails when the score drops more than MUTATION_DELTA
+    # points. Advisory until the first completing run records the baseline
+    # (then flip to blocking): a failing PR shows the number without blocking
+    # merge. Concurrency 4 keeps the ~6k-mutant full run inside the 6h budget on
+    # a single runner; the weekly mutation-ratchet workflow turns a green run's
+    # `--generate` output into the next committed baseline.
+    name: Gate - Mutation score delta (advisory)
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run mutation testing
+        run: npm run test:mutate -- --concurrency 4
+      - name: Compare against baseline (delta gate)
+        run: npm run test:mutation-delta
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-report
+          path: reports/mutation/
           if-no-files-found: warn
 
   test-e2e:
@@ -459,3 +608,41 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y xvfb
       - name: Run real conversion e2e
         run: xvfb-run --auto-servernum npm run test:e2e:real:ci
+
+  test-ipc-abuse:
+    # Phase 3 adversarial gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10):
+    # the Tier B IPC handler-abuse sweep driven through the *real* preload +
+    # real main, on both platforms the release supports. The cheaper unit-tier
+    # equivalent runs in test-unit; this job is the faithful surface.
+    name: Test - IPC abuse (real main, ${{ matrix.os }})
+    needs: [build, test-unit, test-integration]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu
+            runner: ubuntu-latest
+          - os: windows
+            runner: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          path: dist
+      - run: npm ci
+      - name: Install xvfb
+        if: matrix.os == 'ubuntu'
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+      - name: Run IPC abuse sweep (Linux)
+        if: matrix.os == 'ubuntu'
+        run: xvfb-run --auto-servernum npm run test:e2e:real:ci e2e/specs/ipc-abuse.spec.ts
+      - name: Run IPC abuse sweep (Windows)
+        if: matrix.os == 'windows'
+        run: npm run test:e2e:real:ci e2e/specs/ipc-abuse.spec.ts

@@ -7,5 +7,10 @@
   // Same brace-expansion caveat as tsconfig.test.json: `perf/**/*.{test,spec}.ts`
   // would match nothing. `perf/**/*` is safe because every TS file here is
   // either a perf spec, the shared helper, or the vitest config.
-  "include": ["perf/**/*.ts", "src/main/ffprobe-static.d.ts"]
+  "include": [
+    "perf/**/*.ts",
+    "perf/**/*.tsx",
+    "src/renderer/electron-api.d.ts",
+    "src/main/ffprobe-static.d.ts"
+  ]
 }

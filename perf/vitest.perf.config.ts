@@ -10,7 +10,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['perf/**/*.perf.test.ts'],
+    include: ['perf/**/*.perf.test.ts', 'perf/**/*.perf.test.tsx'],
     exclude: ['node_modules', 'dist', 'perf/results', 'perf/fixtures'],
     testTimeout: 120_000,
     hookTimeout: 60_000,

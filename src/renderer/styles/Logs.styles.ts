@@ -37,6 +37,11 @@ export const NoEntriesText = styled(Typography)(({ theme }) => ({
 
 export const LogEntryRow = styled(Box)({ lineHeight: 1.5 });
 
+/** Transparent spacer row keeping the windowed list's scrollbar proportional. */
+export const LogsSpacer = styled(Box, { shouldForwardProp: (prop) => prop !== '$height' })<{ $height: number }>(({ $height }) => ({
+  height: $height,
+}));
+
 export const TimestampSpan = styled('span')({ color: COLORS.log.muted });
 
 export const LevelSpan = styled('span', {

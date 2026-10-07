@@ -169,7 +169,7 @@ E2E/scorecard/SLSA exercise only on GitHub (first Actions run pending; authorita
 | N1 | Seed a `linux-x64` perf baseline from an Actions runner (`workflow_dispatch` + `npm run perf:baseline`, commit result) so the CP3 gate is armed on CI | after first green run |
 | N2 | Wire `CODECOV_TOKEN` repo secret (currently absent → Codecov steps are no-ops despite CP10 config) | maintainer |
 | N3 | Code signing (Windows cert + macOS notarization) remains O3 from prior plan — release stays `draft` until signing lands | future PR |
-| N4 | Re-check `npm audit --audit-level=high`: electron-builder `26.x` (O1) has landed but exit is still 1; when it exits 0, flip `audit` job to blocking (CP in prior plan O1) | future PR |
+| N4 | Re-check `npm audit --audit-level=high`: electron-builder `26.x` (O1) has landed but exit is still 1; when it exits 0, flip `audit` job to blocking (CP in prior plan O1) | ~superseded~ (2026-10-07): `npm audit` exit is still 1 on a larger known set than the note assumed; the Phase-10 blocking audit gate (`scripts/audit-gate.mjs`) fails on any HIGH/CRITICAL advisory NOT on the `scripts/audit-allowlist.json` exception list |
 | N5 | Consider GitHub Actions merge queue on `main` once `main` branch-protection rules are enforced | future PR |
 | N6 | Consider posting Scorecards badge in README once the SARIF upload surfaces | future PR |
 

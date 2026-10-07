@@ -15,7 +15,7 @@ import { printCliLogo, CliThemeId } from '../cli-logo';
 import { Logger } from '../../shared/logger';
 import { APP_NAME, EXIT_CODES } from '../../shared/app-constants';
 import { CLI_SUBCOMMANDS, CLI_EXIT_USAGE } from '../../shared/constants';
-import { isAppError, ErrorCode } from '../../shared/errors';
+import { isAppError, formatError, ErrorCode } from '../../shared/errors';
 import { addGlobalOptions, applyGlobalOptions, resolveThemeId, parseTimeout, CliExitError } from './cli-options';
 import { runConvert, createCliTranscoder } from './cli-convert';
 import { runInfo, runCapabilities } from './cli-info';
@@ -413,6 +413,23 @@ export function createCliProgram(themeId: CliThemeId): Command {
     });
 
   return program;
+}
+
+/**
+ * Produces the single-line, user-facing error message for a thrown CLI failure.
+ *
+ * `CliExitError` and `AppError` messages are already written for humans and
+ * returned verbatim. Anything else is normalized through
+ * {@link formatError}, so a stack trace or raw internal detail never reaches
+ * the user's stderr.
+ * @param {unknown} err - The error thrown by the CLI run.
+ * @returns {string} A single-line human-readable message.
+ */
+export function cliErrorMessage(err: unknown): string {
+  const singleLine = (message: string): string => message.replace(/[\r\n\u2028\u2029]+/g, ' ');
+  if (err instanceof CliExitError) return singleLine(err.message);
+  if (isAppError(err)) return singleLine(err.message);
+  return formatError(err).message;
 }
 
 /**

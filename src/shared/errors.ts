@@ -241,12 +241,16 @@ function inferErrorCode(message: string, err?: unknown): ErrorCodeType {
   // so every later rule would misclassify it.
   if (m.includes('timed out') || m.includes('timeout') || m.includes('etimedout')) return ErrorCode.OPERATION_TIMED_OUT;
   if (m.includes('auxiliary input') || m.includes('added subtitle, audio')) return ErrorCode.AUXILIARY_INPUT_NOT_FOUND;
+  if (errCode === 'EACCES' || m.includes('permission denied') || m.includes('eacces')) return ErrorCode.PERMISSION_DENIED;
+  // A runtime ffmpeg/ffprobe failure (the binary ran but could not open its
+  // output, or exited non-zero) is a conversion failure - never a missing
+  // binary heuristic like "no such file or directory" above.
+  if (m.includes('error opening output') || m.includes('exited with code')) return ErrorCode.CONVERSION_FAILED;
   if (errCode === 'ENOENT' || m.includes('enoent') || m.includes('not found') || m.includes('no such file')) {
     if (m.includes('ffmpeg')) return ErrorCode.FFMPEG_NOT_FOUND;
     if (m.includes('ffprobe')) return ErrorCode.FFPROBE_NOT_FOUND;
     return ErrorCode.FILE_NOT_FOUND;
   }
-  if (errCode === 'EACCES' || m.includes('permission denied') || m.includes('eacces')) return ErrorCode.PERMISSION_DENIED;
   if (m.includes('already exists') || m.includes('output exists')) return ErrorCode.OUTPUT_EXISTS;
   if (m.includes('bmf') && (m.includes('not available') || m.includes('not installed'))) return ErrorCode.BMF_NOT_AVAILABLE;
   if (m.includes('cancelled') || m.includes('cancel') || m.includes('killed') || m.includes('sigkill')) return ErrorCode.CANCELLED;

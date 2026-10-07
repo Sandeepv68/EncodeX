@@ -70,6 +70,7 @@ import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { focusFirstError } from '../utils/focusFirstError';
 import { openFileDialog } from '../utils/fileDialog';
 import { fileName } from '../utils/path-utils';
+import { visuallyHidden } from '../utils/a11y';
 import { SUBTITLE_EXTENSIONS } from '../../shared/file-extensions';
 import { VIDEO_DROPZONE_ACCEPT, OUTPUT_VIDEO_EXTENSIONS, AUDIO_EXTENSIONS } from '../../shared/file-extensions';
 import { ATTACHED_PIC_DISPOSITION, SUBTITLE_CODEC_CONTAINERS, TRANSCODER_TYPES } from '../../shared/transcoder-constants';
@@ -479,11 +480,13 @@ export default function RemuxPage() {
           </Stack>
         </Box>
         <ErrorBoundary fallback={null}>
-          <TableContainer>
+          <TableContainer tabIndex={0}>
             <StreamTable size="small" aria-label={t('remux.streams')}>
               <TableHead>
                 <TableRow>
-                  <TableCell padding="checkbox" />
+                  <TableCell padding="checkbox">
+                    <span style={visuallyHidden}>{t('remux.selectAll')}</span>
+                  </TableCell>
                   <TableCell>{t('remux.streamIndex')}</TableCell>
                   <TableCell>{t('remux.kind')}</TableCell>
                   <TableCell>{t('mediaInfo.codec')}</TableCell>

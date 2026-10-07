@@ -24,12 +24,13 @@
 import { config as loadDotenv } from 'dotenv';
 loadDotenv({ quiet: true });
 
-import { app, BrowserWindow, Menu, shell } from 'electron';
+import { app, BrowserWindow, Menu, session, shell } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import { format as formatArgs } from 'util';
 import { registerIpcHandlers } from './ipc/handlers';
-import { runCli, mapCliErrorToExitCode } from './cli/cli';
+import { runCli, mapCliErrorToExitCode, cliErrorMessage } from './cli/cli';
+import { cliConfig, error as printCliError } from './cli/cli-ui';
 import { runMcpServer } from '../mcp/run';
 import { createMcpServer } from '../mcp/server';
 import { MCPJobManager } from '../mcp/jobs/manager';
@@ -88,6 +89,7 @@ import { SENTRY_BUILD_CONFIG } from './generated/sentryBuildConfig';
 import { APTABASE_BUILD_CONFIG } from './generated/aptabaseBuildConfig';
 import { readMonitoringConsent } from './monitoring/consent';
 import { registerMonitoringIpcBridge } from './monitoring/ipcBridge';
+import { installContentSecurityPolicy } from './security/csp';
 import { resolveMainMonitorProvider } from './monitoring/providerFactory';
 import { readAnalyticsConsent } from './analytics/consent';
 import { registerAnalyticsIpcBridge } from './analytics/ipcBridge';
@@ -339,7 +341,11 @@ if (process.argv.includes('--mcp')) {
         app.exit(EXIT_CODES.SUCCESS);
       })
       .catch(async (err) => {
-        log.error(LOG_CLI_FAILED, err);
+        // CLI failures surface as a single-line human message on stderr - never
+        // a Node stack trace (the "stack-trace-free stderr" contract). The full
+        // diagnostic (including the normalized stack) stays behind `--verbose`.
+        printCliError(cliErrorMessage(err));
+        if (cliConfig.verbose) log.error(LOG_CLI_FAILED, err);
         captureException(err, { tags: { handler: 'cli', process: 'main' } });
         recordAnalyticsEvent(
           createAnalyticsEvent('cli_completed', {
@@ -577,6 +583,9 @@ if (process.argv.includes('--mcp')) {
 
   app.whenReady().then(() => {
     log.info(LOG_APP_READY_CREATING_SPLASH_AND_MAIN_WINDOWS);
+    // The renderer CSP ships as a response header (see src/shared/csp.ts) so Electron's security
+    // advisory sees it; it must be registered before any window loads a document.
+    installContentSecurityPolicy(session.defaultSession);
     recordAppInstalledOnce(app.getPath('userData'));
     recordAnalyticsEvent(
       createAnalyticsEvent('app_launched', {

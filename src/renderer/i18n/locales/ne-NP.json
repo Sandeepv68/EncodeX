@@ -6,7 +6,10 @@
     "language": "भाषा",
     "searchLanguage": "भाषाहरू खोज्नुहोस्",
     "condense": "साइडबार साँघुरो बनाउनुहोस्",
-    "expand": "साइडबार फराकिलो बनाउनुहोस्"
+    "expand": "साइडबार फराकिलो बनाउनुहोस्",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "ड्यासबोर्ड",
@@ -238,7 +241,8 @@
     "audio": "अडियो",
     "subtitle": "उपशीर्षक",
     "exifData": "EXIF डाटा",
-    "noExif": "कुनै EXIF डाटा फेला परेन"
+    "noExif": "कुनै EXIF डाटा फेला परेन",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "तस्बिर कम्प्रेस गर्नुहोस्",

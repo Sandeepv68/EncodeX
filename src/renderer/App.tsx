@@ -19,6 +19,7 @@
 import type { ReactNode } from 'react';
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -108,6 +109,7 @@ const About = lazy(() => import('./pages/About'));
 function AppLayout() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { t } = useTranslation();
   const { currentError, clearError } = useErrorStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { drawerCondensed, setDrawerCondensed } = useSettingsStore();
@@ -214,7 +216,7 @@ function AppLayout() {
         <ColumnLayout>
           <MainContent>
             {isMobile && (
-              <MobileMenuButton onClick={() => setMobileOpen(true)}>
+              <MobileMenuButton onClick={() => setMobileOpen(true)} aria-label={t('app.menu')} data-testid="mobile-menu-button">
                 <FontAwesomeIcon icon={faBars} />
               </MobileMenuButton>
             )}
@@ -223,7 +225,7 @@ function AppLayout() {
                 <Suspense
                   fallback={
                     <PageFallback>
-                      <CircularProgress />
+                      <CircularProgress aria-label={t('app.loading')} />
                     </PageFallback>
                   }
                 >

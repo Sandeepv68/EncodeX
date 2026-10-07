@@ -6,7 +6,10 @@
     "language": "ພາສາ",
     "searchLanguage": "ຄົ້ນຫາພາສາ",
     "condense": "ຫຍໍ້ແຖບຂ້າງ",
-    "expand": "ຂະຫຍາຍແຖບຂ້າງ"
+    "expand": "ຂະຫຍາຍແຖບຂ້າງ",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "ໜ້າຄຸມຄອງ",
@@ -238,7 +241,8 @@
     "audio": "ສຽງ",
     "subtitle": "ຄຳບັນຍາຍໃຕ້ຮູບ",
     "exifData": "ຂໍ້ມູນ EXIF",
-    "noExif": "ບໍ່ພົບຂໍ້ມູນ EXIF"
+    "noExif": "ບໍ່ພົບຂໍ້ມູນ EXIF",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "ບີບອັດຮູບພາບ",

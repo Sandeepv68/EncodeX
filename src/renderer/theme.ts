@@ -57,6 +57,7 @@ export function createAppTheme(themeId: ThemeId, direction: 'ltr' | 'rtl') {
       error: { main: COLORS.error },
       success: { main: COLORS.success },
       warning: { main: COLORS.warning },
+      info: { main: COLORS.info },
     },
     typography: { fontFamily: FONT_FAMILY },
     shape: { borderRadius: 8 },
@@ -152,6 +153,14 @@ export function createAppTheme(themeId: ThemeId, direction: 'ltr' | 'rtl') {
             '&:hover': {
               boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
             },
+            ...(theme.palette.mode === 'dark'
+              ? {
+                  '&.MuiButton-colorPrimary': {
+                    '--variant-textColor': theme.palette.primary.light,
+                    '--variant-outlinedColor': theme.palette.primary.light,
+                  },
+                }
+              : {}),
           }),
           sizeMedium: ({ theme }) => ({ height: theme.typography.pxToRem(40) }),
           sizeLarge: ({ theme }) => ({ height: theme.typography.pxToRem(48) }),
@@ -161,6 +170,13 @@ export function createAppTheme(themeId: ThemeId, direction: 'ltr' | 'rtl') {
           endIcon: {
             '& > *:nth-of-type(1)': { fontSize: 'inherit' },
           },
+        },
+      },
+      MuiLink: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
+          }),
         },
       },
       MuiMenu: {

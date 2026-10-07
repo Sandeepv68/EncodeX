@@ -44,7 +44,19 @@ function electronArgs(scriptArgs: string[]): string[] {
   return ['--no-sandbox', '--disable-gpu', ...baseArgs];
 }
 
-function spawnElectron(args: string[], timeout: number): Promise<{ status: number | null; stdout: string; stderr: string }> {
+interface SpawnResult {
+  status: number | null;
+  stdout: string;
+  stderr: string;
+  /**
+   * True only when the harness timeout killed the child before it exited on its
+   * own (a `status` of `null`). Distinguishes a starved Electron boot from a
+   * process that exited abnormally, which `status: null` alone cannot.
+   */
+  timedOut: boolean;
+}
+
+function spawnElectron(args: string[], timeout: number): Promise<SpawnResult> {
   return new Promise((resolve) => {
     const child = spawn(electronBin, electronArgs(args));
     let stdout = '';
@@ -58,12 +70,12 @@ function spawnElectron(args: string[], timeout: number): Promise<{ status: numbe
 
     child.on('error', () => {
       clearTimeout(timer);
-      resolve({ status: null, stdout, stderr });
+      resolve({ status: null, stdout, stderr, timedOut });
     });
 
     child.on('close', (code) => {
       clearTimeout(timer);
-      resolve({ status: timedOut ? null : code, stdout, stderr });
+      resolve({ status: timedOut ? null : code, stdout, stderr, timedOut });
     });
 
     child.stdout?.on('data', (data: Buffer) => {
@@ -75,8 +87,25 @@ function spawnElectron(args: string[], timeout: number): Promise<{ status: numbe
   });
 }
 
-function runCli(args: string[], timeout: number): Promise<{ status: number | null; stdout: string; stderr: string }> {
-  return spawnElectron(['--cli', ...args], timeout);
+/**
+ * Runs a CLI subcommand in a fresh Electron instance.
+ *
+ * `retries` re-invokes the command only when the harness timeout killed the
+ * child before it booted - the starved-boot signature on a heavily loaded
+ * machine. It MUST only be passed to fast-exit commands with no side effects
+ * (no output file is written): a `convert`/`batch` test that times out may be
+ * mid-write and must not be re-run into the same path.
+ * @param {string[]} args - Extra CLI arguments after `--cli`.
+ * @param {number} timeout - Per-attempt kill timeout in milliseconds.
+ * @param {number} [retries] - Extra attempts after a timeout-kill (default 0).
+ * @returns {Promise<SpawnResult>} The last attempt's result.
+ */
+async function runCli(args: string[], timeout: number, retries = 0): Promise<SpawnResult> {
+  let result = await spawnElectron(['--cli', ...args], timeout);
+  for (let attempt = 0; result.timedOut && attempt < retries; attempt += 1) {
+    result = await spawnElectron(['--cli', ...args], timeout);
+  }
+  return result;
 }
 
 function parseJsonFromStdout(stdout: string): unknown {
@@ -255,7 +284,12 @@ describe.runIf(IS_E2E)('CLI mode (subcommands)', () => {
     });
 
     it('should reject an unknown --preset as a usage error', async () => {
-      const result = await runCli(['convert', '--preset', 'bogus', testMedia, 'out.mp4'], 15000);
+      // Fast-exit command: the preset id is validated in memory before any
+      // ffmpeg spawn, so a `status: null` can only mean the harness timeout
+      // killed a starved Electron boot rather than a real hang. The bounded
+      // retry absorbs that environmental hiccup without touching a file output;
+      // the assertion still requires a genuine usage exit code (2).
+      const result = await runCli(['convert', '--preset', 'bogus', testMedia, 'out.mp4'], 15000, 2);
 
       expect(result.status).toBe(EXIT.USAGE);
       expect(result.stderr).toMatch(/preset/i);

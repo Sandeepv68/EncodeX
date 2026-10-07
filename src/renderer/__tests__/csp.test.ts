@@ -8,28 +8,23 @@
  * every Roboto weight and the renderer console filled with CSP violations. The
  * e2e crash tripwire found it on its first run; nothing else in the repo could,
  * because the CSS is only bundled at build time and no other test reads
- * `index.html`.
+ * `index.html` (which no longer even declares the policy - it ships as a
+ * response header from `src/main/security/csp.ts`, sourced from
+ * `src/shared/csp.ts`).
  *
  * The invariant worth pinning is not the exact policy string - that churns -
  * but the relationship between it and the fonts the renderer imports.
  *
- * @see e2e/fixtures/tripwire.ts
+ * @see src/shared/csp.ts
+ * @see src/main/security/csp.ts
  */
 
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
+import { CONTENT_SECURITY_POLICY } from '../../shared/csp';
 
-const RENDERER_DIR = join(__dirname, '..');
-const INDEX_HTML = join(RENDERER_DIR, 'index.html');
-
-/** @returns {string} The `content` of the CSP `<meta>` tag. */
-function readCsp(): string {
-  const html = readFileSync(INDEX_HTML, 'utf8');
-  const match = /<meta\s+http-equiv="Content-Security-Policy"\s+content="([^"]*)"/i.exec(html);
-  expect(match, 'src/renderer/index.html must declare a Content-Security-Policy meta tag').not.toBeNull();
-  return (match as RegExpExecArray)[1];
-}
+const RENDERER_DIR = join(__dirname, '..', '..', 'renderer');
 
 /**
  * Splits a CSP into a `directive -> source list` map, lower-cased.
@@ -75,7 +70,7 @@ function importsBundledFonts(): boolean {
   return false;
 }
 
-const directives = parseCsp(readCsp());
+const directives = parseCsp(CONTENT_SECURITY_POLICY);
 
 describe('renderer Content-Security-Policy', () => {
   it('declares script-src and style-src explicitly rather than leaning on default-src', () => {
@@ -95,5 +90,12 @@ describe('renderer Content-Security-Policy', () => {
   it('never allows unsafe-eval in script-src', () => {
     // A regression here would be a remote-code-execution hole, not a font bug.
     expect(directives.get('script-src')).not.toContain("'unsafe-eval'");
+  });
+
+  it('keeps the aptabase-ipc connect-src allowance so renderer analytics can reach main', () => {
+    // The renderer adapter delivers events with a fetch to `aptabase-ipc://trackEvent`, which falls
+    // under `connect-src`. Without this entry every analytics event is silently dropped with a
+    // `TypeError: Failed to fetch`.
+    expect(directives.get('connect-src')).toContain('aptabase-ipc:');
   });
 });

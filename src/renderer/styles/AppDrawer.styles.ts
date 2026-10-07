@@ -1,6 +1,6 @@
 import { alpha, styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
-import { Box, Divider, IconButton, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Divider, IconButton, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { COLORS } from '../colors';
 import { DRAWER_WIDTH_CONDENSED, FOOTER_HEIGHT } from '../../shared/app-constants';
 
@@ -38,7 +38,7 @@ export const CondenseButton = styled(IconButton)(({ theme }) => ({
   '& svg': { fontSize: theme.typography.pxToRem(12) },
 }));
 
-export const NavList = styled(List)(({ theme }) => ({
+export const NavList = styled('div')(({ theme }) => ({
   flex: 1,
   paddingInline: theme.spacing(1),
 }));

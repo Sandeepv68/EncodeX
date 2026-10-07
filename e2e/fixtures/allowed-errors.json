@@ -1,9 +1,2 @@
 [
-  {
-    "kind": "consoleWarn",
-    "pattern": "Electron Security Warning \\(Insecure Content-Security-Policy\\)",
-    "reason": "False positive. EncodeX does set a Content-Security-Policy, but via the <meta http-equiv> tag in src/renderer/index.html, and Electron's advisory only inspects response headers - which a file:// load has none of. Move the policy to session.webRequest.onHeadersReceived in src/main/index.ts and this entry can be deleted; tracked as a follow-up in plans/ADVERSARIAL_TEST_HARDENING_PLAN.md.",
-    "addedOn": "2026-09-30",
-    "reviewBy": "2026-12-29"
-  }
 ]

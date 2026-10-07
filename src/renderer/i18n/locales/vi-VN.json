@@ -6,7 +6,10 @@
     "language": "Ngôn ngữ",
     "searchLanguage": "Tìm kiếm ngôn ngữ",
     "condense": "Thu gọn thanh bên",
-    "expand": "Mở rộng thanh bên"
+    "expand": "Mở rộng thanh bên",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Bảng điều khiển",
@@ -238,7 +241,8 @@
     "audio": "Âm thanh",
     "subtitle": "Phụ đề",
     "exifData": "Dữ liệu EXIF",
-    "noExif": "Không tìm thấy dữ liệu EXIF"
+    "noExif": "Không tìm thấy dữ liệu EXIF",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Nén hình ảnh",

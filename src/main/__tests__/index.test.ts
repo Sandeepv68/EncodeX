@@ -14,6 +14,7 @@ const {
   menuMock,
   shellMock,
   aptabaseMainMock,
+  sessionMock,
 } = vi.hoisted(() => {
   const whenReadyCbs: Array<() => void> = [];
   const appOnHandlers: Record<string, (...args: unknown[]) => void> = {};
@@ -109,6 +110,13 @@ const {
     menuMock,
     shellMock,
     aptabaseMainMock,
+    sessionMock: {
+      defaultSession: {
+        webRequest: {
+          onHeadersReceived: vi.fn(),
+        },
+      },
+    },
   };
 });
 
@@ -117,12 +125,14 @@ vi.mock('electron', () => ({
   BrowserWindow: BrowserWindowMock,
   Menu: menuMock,
   shell: shellMock,
+  session: sessionMock,
   ipcMain: { handle: vi.fn() },
 }));
 vi.mock('@aptabase/electron/main', () => aptabaseMainMock);
 vi.mock('../cli/cli', () => ({
   runCli: runCliMock,
   mapCliErrorToExitCode: (err: unknown) => (err instanceof Error && err.message === 'usage' ? 2 : 1),
+  cliErrorMessage: (err: unknown) => (err instanceof Error ? err.message : String(err)),
 }));
 vi.mock('../ipc/handlers', () => ({ registerIpcHandlers: registerIpcHandlersMock }));
 vi.mock('../updater', () => ({
@@ -255,6 +265,15 @@ describe('main/index', () => {
     expect(registerIpcHandlersMock).toHaveBeenCalledWith(win);
     expect(win.loadFile).toHaveBeenCalledWith(expect.stringContaining('index.html'));
     expect(win.loadURL).not.toHaveBeenCalled();
+  });
+
+  it('registers the Content-Security-Policy response-header hook before any window loads', async () => {
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    await triggerStartup();
+    expect(sessionMock.defaultSession.webRequest.onHeadersReceived).toHaveBeenCalledTimes(1);
+    const children = sessionMock.defaultSession.webRequest.onHeadersReceived.mock.calls[0]?.[0];
+    expect(children).toBeTypeOf('function');
   });
 
   it('shows a splash window that loads the splash image', async () => {

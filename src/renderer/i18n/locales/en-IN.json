@@ -6,7 +6,10 @@
     "language": "Language",
     "searchLanguage": "Search languages",
     "condense": "Condense sidebar",
-    "expand": "Expand sidebar"
+    "expand": "Expand sidebar",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -238,7 +241,8 @@
     "audio": "Audio",
     "subtitle": "Subtitle",
     "exifData": "EXIF Data",
-    "noExif": "No EXIF data found"
+    "noExif": "No EXIF data found",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Compress Image",

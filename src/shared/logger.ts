@@ -48,9 +48,33 @@ function getTimestamp(): string {
 }
 
 /**
+ * Whether console output may include the full `Error.stack` for thrown errors.
+ * Defaults to true (full diagnostics). CLI mode toggles this off unless
+ * `--verbose`, so the "stderr carries only single-line human messages, never a
+ * Node stack trace" contract holds on the user-facing surface. The sink passed
+ * to {@link registerLoggerSink} always receives the raw arguments (including
+ * stacks) regardless of this flag, so telemetry keeps full fidelity.
+ * @type {boolean}
+ */
+let consoleErrorStacksIncluded = true;
+
+/**
+ * Enables or disables full-stack rendering for Error values in console output.
+ * When disabled, an Error logged to the console is rendered as its message
+ * only (still flattened to a single line), never its `node:*`/`at ...` frames.
+ * @param {boolean} included - True to include full stacks, false for message-only.
+ * @returns {void}
+ */
+export function setConsoleErrorStacksIncluded(included: boolean): void {
+  consoleErrorStacksIncluded = included;
+}
+
+/**
  * Sanitizes a single log argument to prevent log injection (CWE-117).
  * All values are normalized to text and have line-breaking characters replaced
- * with spaces so user-provided input cannot forge additional log lines.
+ * with spaces so user-provided input cannot forge additional log lines. Error
+ * values render their message (or their full stack for console diagnostics
+ * when {@link setConsoleErrorStacksIncluded} has been left enabled).
  * @param {unknown} value - A raw log argument.
  * @returns {string} The sanitized value as a single-line string.
  */
@@ -59,7 +83,7 @@ function sanitizeLogArg(value: unknown): string {
   if (typeof value === 'string') {
     normalized = value;
   } else if (value instanceof Error) {
-    normalized = value.stack || value.message;
+    normalized = consoleErrorStacksIncluded ? value.stack || value.message : value.message;
   } else {
     try {
       normalized = JSON.stringify(value);

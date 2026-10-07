@@ -219,24 +219,20 @@ const INTERACTIVE_BUDGET_MS = 2_000;
 /**
  * Per-route override for {@link INTERACTIVE_BUDGET_MS}.
  *
- * `/logs` is the one route whose cost scales with something other than the event rate: the log store
- * is capped at `LOG_MAX_ENTRIES` (2000) and `Logs.tsx` renders every entry with no windowing, then
- * re-renders the whole list on each append. A sweep run fills the store, and `/logs` ends up mounting
- * 2001 rows - measured, in the report as `rows=2001` against `-1` on every other route. Its worst
- * renderer round-trip under `big-blob` is ~5.5-7 s while main answers in 1-2 ms.
+ * `/logs` is the route whose per-event cost used to scale with the log store:
+ * `Logs.tsx` rendered every stored entry on every append, and a sweep run
+ * filled the store to `LOG_MAX_ENTRIES` (2000) -- measured, in the report as
+ * `rows=2001` against `-1` on every other route, with a worst renderer
+ * round-trip of ~5.5-7 s under `big-blob` while main answered in 1-2 ms.
  *
- * That is a genuine defect and it is *not* event abuse: it reproduces in any busy session, with or
- * without a hostile sender, and it is fixed by virtualising the list rather than by anything in the
- * IPC path. Phase 3.3's question is whether hostile event traffic wedges the app, and the answer is
- * no - the app stays alive, stays on its route, and keeps answering on all twelve routes. So rather
- * than let an unrelated UI performance issue masquerade as an event-abuse failure, `/logs` gets its
- * own budget with a ceiling, so a regression *past* what is documented still fails here.
- *
- * Tracked as follow-up work in `plans/ADVERSARIAL_TEST_HARDENING_PLAN.md`. Raise this when it is fixed
- * rather than tuning it upward.
+ * The list is now windowed (2026-10-07, plans follow-up 4): only the viewport
+ * slice mounts, so `/logs` behaves like the other routes and 10,000 ms of
+ * headroom is no longer honest. It keeps its own ceiling at 4,000 ms (still a
+ * wide margin over a windowed render) so a regression past it fails here;
+ * tighten further once a full sweep has been run against the windowed list.
  */
 const ROUTE_BUDGET_MS: Record<string, number> = {
-  '/logs': 10_000,
+  '/logs': 4_000,
 };
 
 /**
@@ -727,9 +723,10 @@ describe.runIf(IS_REAL)('IPC event-channel abuse (Tier B, real main + real prelo
           const hash = await session.page.evaluate(() => window.location.hash);
           expect(hash, `${shape} navigated away from ${route.path}`).toContain(route.path === '/' ? '#/' : `#${route.path}`);
           expect(await isPageAlive(session.page), `${shape} killed the renderer on ${route.path}`).toBe(true);
-          // How much the route is actually maintaining. `/logs` renders every stored entry and
-          // re-renders the whole list on each append, so its cost scales with the log store while every
-          // other route's does not - and that is exactly the axis along which it behaves differently.
+          // How much of the list is actually mounted. `/logs` is the only route with a varying
+          // count: the list is windowed (2026-10-07), so this is the mounted DOM slice (~viewport,
+          // two spacers, the tail anchor) rather than the stored entry count - rows must therefore
+          // no longer be read as 'entries synchronously rendered'.
           cell.renderedRows = await session.page
             .evaluate(() => {
               const body = document.querySelector('[data-testid="logs-body"]');

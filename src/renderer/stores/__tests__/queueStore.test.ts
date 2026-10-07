@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useQueueStore } from '../queueStore';
 import { QUEUE_STATUS } from '../../../shared/media-options';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 function makeJob(id: string) {
   return {
@@ -66,6 +67,17 @@ describe('queueStore', () => {
     const jobs = [makeJob('a'), makeJob('b')];
     useQueueStore.getState().setJobs(jobs);
     expect(useQueueStore.getState().jobs).toHaveLength(2);
+  });
+
+  it('does not store a non-array job list from the bridge', () => {
+    // `queueList` is the only setter fed straight by the preload bridge. A
+    // version-skewed or corrupted response can resolve a wrong-shaped value in
+    // spite of the `QueueJob[]` annotation; the store must drop it and leave
+    // the page renderable instead of letting the next `jobs.some` throw.
+    expectAppLog('warn', /queueStore/);
+    useQueueStore.setState({ jobs: [makeJob('keep')] });
+    useQueueStore.getState().setJobs({ notAnArray: true } as unknown as never[]);
+    expect(useQueueStore.getState().jobs).toEqual([]);
   });
 
   it('clears all jobs and progress', () => {

@@ -4,5 +4,5 @@
     "noEmit": true
   },
   "include": ["src/renderer/**/*", "src/shared/**/*"],
-  "exclude": ["**/__tests__/**", "**/*.{test,spec}.{ts,tsx}"]
+  "exclude": ["**/__tests__/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
 }
