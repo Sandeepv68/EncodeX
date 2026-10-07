@@ -161,12 +161,18 @@ for a decision rather than a drive-by patch; the follow-up chose the two flagged
   non-fatal `netfail`; it is the analytics call losing its race with window close, not a defect,
   but it means Tier B output always carries a tripwire warning. Worth a look when the analytics
   bootstrap is next touched.
-- **`e2e/cli.spec.ts` "should reject an unknown --preset as a usage error" is flaky under full-suite
-  parallel load** (seen 2026-10-05, Phase 3.4): `runCli` returned `status: null` -- the child was killed
-  rather than exiting -- while the same spec passed 61/61 in isolation and in the next full Tier A run.
-  The assertion itself is sound; `status: null` is the symptom of a starved/spawn-timeout subprocess
-  under 19 concurrent spec files, and `runCli` does not distinguish "killed" from "exited with a signal
-  it expected". Candidate for `e2e/quarantine/` per 0.5 if the 3Ã— `test:flake-detect` run reproduces it.
+- **`e2e/cli.spec.ts` "should reject an unknown --preset as a usage error" flake is addressed
+  (2026-10-07).** Under full-suite load `runCli` could return `status: null` -- the child was killed by
+  the harness timeout rather than exiting -- while the same spec passed 61/61 in isolation; the
+  assertion itself was sound, and `status: null` was the starved-boot signature of a subprocess that
+  the 15 s window had not finished booting under 19 concurrent spec files, indistinguishable from an
+  abnormal exit. The harness now records `timedOut` on the `SpawnResult` when its own timeout did the
+  kill (e2e/cli.spec.ts), and `runCli` retries only that signature, which is side-effect-free here
+  because an unknown `--preset` is rejected in memory (`resolveCliVideoFilters` -> `presetById`
+  throws) before any ffmpeg write could start. The unknown-preset case is called with `retries = 2`;
+  every other case keeps `retries = 0`, so no convert/batch test can re-enter the same output path.
+  `typecheck:e2e` is clean; not quarantined -- the aim is that the next full Tier A run stops showing
+  the flake at all.
 - **`Convert.test.tsx` "hides the stream details" flake is fixed (2026-10-07).** It failed roughly
   once per full unit run under load and passed in isolation. The cause was structural, not a budget
   problem: the file-drop click starts an async round trip (`openFileDialog` -> store update ->
