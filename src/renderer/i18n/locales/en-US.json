@@ -6,7 +6,10 @@
     "language": "Language",
     "searchLanguage": "Search languages",
     "condense": "Condense sidebar",
-    "expand": "Expand sidebar"
+    "expand": "Expand sidebar",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "filters": {
     "presets": {
@@ -227,6 +230,7 @@
     "probeScore": "Probe Score",
     "profile": "Profile",
     "level": "Level",
+    "loading": "Loading media info...",
     "aspectRatio": "Aspect Ratio",
     "colorSpace": "Color Space",
     "colorTransfer": "Color Transfer",

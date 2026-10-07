@@ -6,7 +6,10 @@
     "language": "Språk",
     "searchLanguage": "Søk språk",
     "condense": "Kollaps sidepanelet",
-    "expand": "Utvid sidepanelet"
+    "expand": "Utvid sidepanelet",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Startside",
@@ -238,7 +241,8 @@
     "audio": "Lyd",
     "subtitle": "Undertekst",
     "exifData": "EXIF-data",
-    "noExif": "Ingen EXIF-data funnet"
+    "noExif": "Ingen EXIF-data funnet",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Komprimer bilde",

@@ -6,7 +6,10 @@
     "language": "語言",
     "searchLanguage": "搜尋語言",
     "condense": "收起側邊欄",
-    "expand": "展開側邊欄"
+    "expand": "展開側邊欄",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "儀表板",
@@ -238,7 +241,8 @@
     "audio": "音訊",
     "subtitle": "字幕",
     "exifData": "EXIF 資料",
-    "noExif": "找不到 EXIF 資料"
+    "noExif": "找不到 EXIF 資料",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "壓縮圖片",

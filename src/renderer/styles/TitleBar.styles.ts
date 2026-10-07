@@ -7,7 +7,7 @@ import { TITLE_BAR_HEIGHT } from '../../shared/constants';
 const dragRegion = { WebkitAppRegion: 'drag' } as React.CSSProperties;
 const noDragRegion = { WebkitAppRegion: 'no-drag' } as React.CSSProperties;
 
-export const TitleBarRoot = styled(Box)(({ theme }) => ({
+export const TitleBarRoot = styled('header')(({ theme }) => ({
   ...dragRegion,
   height: theme.typography.pxToRem(TITLE_BAR_HEIGHT),
   minHeight: theme.typography.pxToRem(TITLE_BAR_HEIGHT),

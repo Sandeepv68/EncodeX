@@ -6,7 +6,10 @@
     "language": "Idioma",
     "searchLanguage": "Buscar idiomas",
     "condense": "Contraer barra lateral",
-    "expand": "Expandir barra lateral"
+    "expand": "Expandir barra lateral",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Panel",
@@ -238,7 +241,8 @@
     "audio": "Audio",
     "subtitle": "Subtítulo",
     "exifData": "Datos EXIF",
-    "noExif": "No se encontraron datos EXIF"
+    "noExif": "No se encontraron datos EXIF",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Comprimir imagen",

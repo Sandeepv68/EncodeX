@@ -42,7 +42,7 @@ export const UpdateLoader = styled(CircularProgress)(({ theme }) => ({
 
 export const UpdateLink = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
-  color: theme.palette.primary.main,
+  color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
   cursor: 'pointer',
   fontSize: theme.typography.pxToRem(11),
   '&:hover': {

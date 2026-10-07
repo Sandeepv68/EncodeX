@@ -6,7 +6,10 @@
     "language": "Språk",
     "searchLanguage": "Sök språk",
     "condense": "Komprimera sidofältet",
-    "expand": "Expandera sidofältet"
+    "expand": "Expandera sidofältet",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Instrumentpanel",
@@ -238,7 +241,8 @@
     "audio": "Ljud",
     "subtitle": "Undertext",
     "exifData": "EXIF-data",
-    "noExif": "Inga EXIF-data hittades"
+    "noExif": "Inga EXIF-data hittades",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Komprimera bild",

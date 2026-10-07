@@ -261,7 +261,7 @@ export default function Logs() {
           {t('logs.entryCount', { count: entries.length })}
         </Typography>
       </LogsHeader>
-      <LogsBody ref={bodyRef} onScroll={handleScroll} data-testid="logs-body">
+      <LogsBody ref={bodyRef} onScroll={handleScroll} data-testid="logs-body" tabIndex={0}>
         {filtered.length === 0 && <NoEntriesText variant="body2">{t('logs.noEntries')}</NoEntriesText>}
         {window.start > 0 && <LogsSpacer aria-hidden="true" $height={window.start * LOG_ROW_HEIGHT} />}
         {filtered.slice(window.start, window.start + window.count).map((entry, localIndex) => {

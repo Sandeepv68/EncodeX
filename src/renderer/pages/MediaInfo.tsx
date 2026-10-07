@@ -173,7 +173,7 @@ export default function MediaInfo() {
         </ErrorBoundary>
         {loading && (
           <LoadingBox>
-            <CircularProgress size={24} />
+            <CircularProgress size={24} aria-label={t('mediaInfo.loading')} />
           </LoadingBox>
         )}
         {info && (

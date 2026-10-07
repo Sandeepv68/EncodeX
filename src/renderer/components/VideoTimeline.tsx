@@ -548,7 +548,7 @@ export default function VideoTimeline({
             size="small"
             variant="outlined"
             color="warning"
-            icon={<CircularProgress size={12} color="inherit" />}
+            icon={<CircularProgress size={12} color="inherit" aria-hidden="true" />}
             label={t('videoCut.generatingPreview')}
             data-testid="timeline-generating"
             role="status"

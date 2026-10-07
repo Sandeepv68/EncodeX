@@ -480,7 +480,7 @@ export default function RemuxPage() {
           </Stack>
         </Box>
         <ErrorBoundary fallback={null}>
-          <TableContainer>
+          <TableContainer tabIndex={0}>
             <StreamTable size="small" aria-label={t('remux.streams')}>
               <TableHead>
                 <TableRow>

@@ -6,7 +6,10 @@
     "language": "Langue",
     "searchLanguage": "Rechercher des langues",
     "condense": "Réduire la barre latérale",
-    "expand": "Agrandir la barre latérale"
+    "expand": "Agrandir la barre latérale",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Tableau de Bord",
@@ -238,7 +241,8 @@
     "audio": "Audio",
     "subtitle": "Sous-titre",
     "exifData": "Données EXIF",
-    "noExif": "Aucune donnée EXIF trouvée"
+    "noExif": "Aucune donnée EXIF trouvée",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Compresser une Image",

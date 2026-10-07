@@ -6,7 +6,10 @@
     "language": "Sprog",
     "searchLanguage": "Søg sprog",
     "condense": "Kollaps sidepanelet",
-    "expand": "Udvid sidepanelet"
+    "expand": "Udvid sidepanelet",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Oversigt",
@@ -238,7 +241,8 @@
     "audio": "Lyd",
     "subtitle": "Undertekst",
     "exifData": "EXIF-data",
-    "noExif": "Ingen EXIF-data fundet"
+    "noExif": "Ingen EXIF-data fundet",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Komprimer billede",

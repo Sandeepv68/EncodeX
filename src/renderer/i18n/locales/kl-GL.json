@@ -6,7 +6,10 @@
     "language": "Oqaatsit",
     "searchLanguage": "Oqaatsit ujaruk",
     "condense": "Mikissusaruk sidelinje",
-    "expand": "Annertusaruk sidelinje"
+    "expand": "Annertusaruk sidelinje",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Oqarfigissaaneq",
@@ -238,7 +241,8 @@
     "audio": "Nipilersorneq",
     "subtitle": "Subtitle",
     "exifData": "EXIF data",
-    "noExif": "EXIF data takussaaqanngilaq"
+    "noExif": "EXIF data takussaaqanngilaq",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Assersuut qitornaqqusaat",

@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Typography, Stack, Box, Chip, TextField, Alert } from '@mui/material';
 import type { ElementType } from 'react';
-import { COLORS, OVERLAY_COLORS, SHADOWS } from '../colors';
+import { OVERLAY_COLORS, SHADOWS } from '../colors';
 
 export const PageTitle = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   display: 'flex',
@@ -12,13 +12,11 @@ export const PageTitle = styled(Typography)<{ component?: ElementType }>(({ them
 
 export const AccelAlert = styled(Alert)(({ theme }) => ({
   fontWeight: 500,
-  color: COLORS.alert.info,
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
 export const LockedAlert = styled(Alert)(({ theme }) => ({
   fontWeight: 500,
-  color: COLORS.alert.warning,
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 

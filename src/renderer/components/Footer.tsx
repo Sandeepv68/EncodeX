@@ -108,7 +108,7 @@ export default function Footer() {
             <FooterVersionText variant="caption" color="text.secondary">
               |
             </FooterVersionText>
-            <UpdateLoader size={14} />
+            <UpdateLoader size={14} aria-label={t('footer.checkingForUpdates')} />
             <FooterVersionText variant="caption" color="text.secondary">
               {t('footer.checkingForUpdates')}
             </FooterVersionText>

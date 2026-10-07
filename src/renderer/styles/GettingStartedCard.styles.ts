@@ -48,7 +48,7 @@ export const GettingStartedHint = styled(Typography)<{ component?: ElementType }
     letterSpacing: '0.08em',
     fontSize: theme.typography.pxToRem(11.5),
     fontWeight: 600,
-    color: alpha(isDark ? theme.palette.primary.light : theme.palette.primary.dark, 0.7),
+    color: isDark ? theme.palette.primary.light : theme.palette.primary.dark,
     marginBottom: theme.spacing(0.5),
   };
 });
@@ -67,7 +67,7 @@ export const GettingStartedTitle = styled(Typography)<{ component?: ElementType 
 export const GettingStartedBody = styled(Typography)(({ theme }) => {
   const isDark = theme.palette.mode === 'dark';
   return {
-    color: alpha(isDark ? theme.palette.primary.light : theme.palette.primary.dark, 0.72),
+    color: isDark ? theme.palette.primary.light : theme.palette.primary.dark,
     marginBottom: theme.spacing(1),
   };
 });

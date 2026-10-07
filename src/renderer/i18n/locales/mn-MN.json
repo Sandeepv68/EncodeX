@@ -6,7 +6,10 @@
     "language": "Хэл",
     "searchLanguage": "Хэл хайх",
     "condense": "Хажуугийн самбарыг хумих",
-    "expand": "Хажуугийн самбарыг дэлгэх"
+    "expand": "Хажуугийн самбарыг дэлгэх",
+    "menu": "Open navigation menu",
+    "loading": "Loading...",
+    "navigation": "Main navigation"
   },
   "nav": {
     "dashboard": "Хянах самбар",
@@ -238,7 +241,8 @@
     "audio": "Аудио",
     "subtitle": "Хадмал",
     "exifData": "EXIF өгөгдөл",
-    "noExif": "EXIF өгөгдөл олдсонгүй"
+    "noExif": "EXIF өгөгдөл олдсонгүй",
+    "loading": "Loading media info..."
   },
   "imageCompress": {
     "title": "Зураг шахах",
