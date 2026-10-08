@@ -16,8 +16,26 @@
  *   fallback face while the console filled with CSP violations.
  * - `connect-src 'self' aptabase-ipc:` keeps the analytics channel working: the renderer adapter
  *   delivers events with a `fetch` to `aptabase-ipc://trackEvent`, which falls under `connect-src`.
+ * - `DEV_CONTENT_SECURITY_POLICY` exists for one reason: in dev Vite injects the
+ *   `@vitejs/plugin-react` refresh preamble as an *inline* module script, and `script-src 'self'`
+ *   refuses it. The refusal surfaces as an uncaught `can't detect preamble` error, the module graph
+ *   aborts, and the window paints white with no other symptom. The relaxed policy is used only when
+ *   the main process is running in development mode (`--dev` / `NODE_ENV=development`); packaged
+ *   builds serve a bundle with no inline scripts and keep the strict policy below.
  *
  * Keep the guard in `src/renderer/__tests__/csp.test.ts` green when this string changes.
  */
-export const CONTENT_SECURITY_POLICY =
-  "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self' aptabase-ipc:";
+const POLICY_PREFIX = "default-src 'self'";
+const POLICY_SUFFIX =
+  "style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self' aptabase-ipc:";
+
+/** The strict policy shipped in production builds. @const {string} */
+export const CONTENT_SECURITY_POLICY = `${POLICY_PREFIX}; script-src 'self'; ${POLICY_SUFFIX}`;
+
+/**
+ * The development policy: identical to the production one except that
+ * `script-src` also permits inline scripts, which Vite's React refresh preamble
+ * requires. Never used outside development mode.
+ * @const {string}
+ */
+export const DEV_CONTENT_SECURITY_POLICY = `${POLICY_PREFIX}; script-src 'self' 'unsafe-inline'; ${POLICY_SUFFIX}`;

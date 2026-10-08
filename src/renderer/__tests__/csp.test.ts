@@ -22,7 +22,7 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
-import { CONTENT_SECURITY_POLICY } from '../../shared/csp';
+import { CONTENT_SECURITY_POLICY, DEV_CONTENT_SECURITY_POLICY } from '../../shared/csp';
 
 const RENDERER_DIR = join(__dirname, '..', '..', 'renderer');
 
@@ -97,5 +97,19 @@ describe('renderer Content-Security-Policy', () => {
     // under `connect-src`. Without this entry every analytics event is silently dropped with a
     // `TypeError: Failed to fetch`.
     expect(directives.get('connect-src')).toContain('aptabase-ipc:');
+  });
+
+  it('keeps inline scripts blocked in the production policy', () => {
+    expect(directives.get('script-src')).not.toContain("'unsafe-inline'");
+  });
+
+  it('permits the Vite inline preamble only in the dev policy', () => {
+    // Regression guard for the dev blank window: Vite injects the
+    // `@vitejs/plugin-react` refresh preamble as an inline module script, and blocking it aborts
+    // the module graph before React mounts. Dev must be relaxed; production must not.
+    const devDirectives = parseCsp(DEV_CONTENT_SECURITY_POLICY);
+    expect(devDirectives.get('script-src')).toContain("'unsafe-inline'");
+    expect(devDirectives.get('script-src')).toContain("'self'");
+    expect(directives.get('script-src')).not.toContain("'unsafe-inline'");
   });
 });
