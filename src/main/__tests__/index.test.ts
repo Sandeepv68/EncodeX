@@ -201,6 +201,12 @@ async function triggerStartup(): Promise<void> {
 async function importIndex(): Promise<void> {
   expectAppLog('error', 'shared/monitoring');
   expectAppLog('error', 'main/analytics/aptabaseMainProvider');
+  // This suite pins `process.platform` to win32, so on a non-Windows host
+  // `ffmpeg-static` resolves to `ffmpeg.exe`, which does not exist. The module
+  // scope of `ffmpeg-core` then calls `getFfmpegPath()` and falls back to the
+  // system ffmpeg with a warning - an environment artifact of the platform pin,
+  // not a fault this file provokes.
+  expectAppLog('warn', 'main/media-binaries');
   await import('../index');
   await new Promise((resolve) => setTimeout(resolve, 0));
 }

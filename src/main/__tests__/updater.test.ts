@@ -66,9 +66,17 @@ const ORIGINAL_ARCH = process.arch;
  *
  * `resolve`d rather than `join`ed so the expectation matches what `path.resolve` hands back on
  * this platform (`C:\tmp\...` on Windows, `/tmp/...` elsewhere).
+ *
+ * The extension follows the host platform because `resolveInstallerTarget` only accepts
+ * `installerExtensions()` for the running platform (`.exe` / `.dmg` / `.appimage`), so a
+ * hard-coded `.exe` would be rejected outright by the Linux CI runner instead of reaching
+ * the behaviour these tests pin.
  */
 const UPDATE_DIR = nodePath.resolve('/tmp', 'EncodeX-updater');
-const INSTALLER = nodePath.join(UPDATE_DIR, 'EncodeX-2.0.0-x64-setup.exe');
+const INSTALLER_NAME = `EncodeX-2.0.0-x64-setup${
+  ORIGINAL_PLATFORM === 'win32' ? '.exe' : ORIGINAL_PLATFORM === 'darwin' ? '.dmg' : '.appimage'
+}`;
+const INSTALLER = nodePath.join(UPDATE_DIR, INSTALLER_NAME);
 
 describe('updater', () => {
   beforeEach(() => {
