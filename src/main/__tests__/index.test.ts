@@ -1,7 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 import { DEV_SERVER_URL, EXIT_CODES, WINDOW_SIZE, SPLASH_SIZE } from '../../shared/app-constants';
 import { IPC } from '../../shared/ipc-channels';
-import { expectAppLog, expectCrash } from '../../test-utils/crash-tripwire';
+import type { McpSettings } from '../../shared/mcp-settings';
+import { expectAppLog, expectCrash, getAppLogs } from '../../test-utils/crash-tripwire';
 
 const {
   appMock,
@@ -15,9 +19,18 @@ const {
   shellMock,
   aptabaseMainMock,
   sessionMock,
+  runMcpServerMock,
+  registerMcpSettingsIpcMock,
+  startMcpHttpServerMock,
+  getMcpHandles,
+  createMcpServerMock,
+  registerGuiToolsMock,
+  MCPJobManagerMock,
 } = vi.hoisted(() => {
   const whenReadyCbs: Array<() => void> = [];
   const appOnHandlers: Record<string, (...args: unknown[]) => void> = {};
+  /** Handles handed out by the `startMcpHttpServer` stub, oldest first. */
+  const mcpHandles: Array<{ close: ReturnType<typeof vi.fn> }> = [];
   const windowInstances: Array<{
     loadURL: ReturnType<typeof vi.fn>;
     loadFile: ReturnType<typeof vi.fn>;
@@ -49,6 +62,7 @@ const {
     commandLine: {
       appendSwitch: vi.fn(),
     },
+    disableHardwareAcceleration: vi.fn(),
     on: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
       appOnHandlers[event] = cb;
     }),
@@ -117,6 +131,20 @@ const {
         },
       },
     },
+    runMcpServerMock: vi.fn(),
+    registerMcpSettingsIpcMock: vi.fn(),
+    startMcpHttpServerMock: vi.fn(() => {
+      const handle = { close: vi.fn(() => Promise.resolve(undefined)) };
+      mcpHandles.push(handle);
+      return Promise.resolve(handle);
+    }),
+    getMcpHandles: () => mcpHandles,
+    createMcpServerMock: vi.fn(() => ({ registerTool: vi.fn() })),
+    registerGuiToolsMock: vi.fn(),
+    // A `function` implementation, because index.ts does `new MCPJobManager`.
+    MCPJobManagerMock: vi.fn(function MCPJobManagerMock(_options: unknown) {
+      return {};
+    }),
   };
 });
 
@@ -139,6 +167,16 @@ vi.mock('../updater', () => ({
   autoInstallPendingUpdate: vi.fn().mockResolvedValue(undefined),
   checkForUpdate: vi.fn().mockResolvedValue(null),
 }));
+// The MCP surface is exercised through `index.ts`'s own glue - mode dispatch,
+// session-server construction, and settings reconciliation - so the collaborators
+// behind it are stubbed: a real HTTP server would bind a port, and the real
+// server factory would build a protocol object this file has no opinion about.
+vi.mock('../../mcp/run', () => ({ runMcpServer: runMcpServerMock }));
+vi.mock('../../mcp/server', () => ({ createMcpServer: createMcpServerMock }));
+vi.mock('../../mcp/jobs/manager', () => ({ MCPJobManager: MCPJobManagerMock }));
+vi.mock('../mcp/gui-tools', () => ({ registerGuiTools: registerGuiToolsMock }));
+vi.mock('../mcp/http-server', () => ({ startMcpHttpServer: startMcpHttpServerMock }));
+vi.mock('../mcp/settings-ipc', () => ({ registerMcpSettingsIpc: registerMcpSettingsIpcMock }));
 
 const ORIGINAL_ARGV = process.argv;
 const ORIGINAL_PLATFORM = process.platform;
@@ -147,6 +185,19 @@ const ORIGINAL_WARN = console.warn;
 const ORIGINAL_ERROR = console.error;
 
 const getMainWindows = () => registerIpcHandlersMock.mock.calls.map((call) => call[0]);
+
+/** Application error/warning records emitted by `main/index`'s own logger. */
+const mainIndexLogs = () => getAppLogs().filter((entry) => entry.context === 'main/index');
+
+/** Options of the most recently constructed window - the main window, after the splash. */
+const mainWindowOptions = (): { webPreferences: { preload?: string } } => {
+  const constructor = BrowserWindowMock as unknown as { mock: { calls: unknown[][] } };
+  return constructor.mock.calls.at(-1)![0] as { webPreferences: { preload?: string } };
+};
+
+/** The `registerMcpSettingsIpc` options captured when this test started the app. */
+const mcpSettingsOptions = (): { apply: (settings: McpSettings) => void } =>
+  registerMcpSettingsIpcMock.mock.calls[0]?.[0] as { apply: (settings: McpSettings) => void };
 
 /**
  * Fires the app.whenReady callback and flushes the microtask chain so the
@@ -219,6 +270,8 @@ describe('main/index', () => {
     delete getAppOnHandlers()['window-all-closed'];
     delete getAppOnHandlers()['activate'];
     runCliMock.mockResolvedValue(undefined);
+    runMcpServerMock.mockResolvedValue(undefined);
+    getMcpHandles().length = 0;
     Object.defineProperty(process, 'platform', { value: 'win32' });
     process.env.NODE_ENV = 'production';
   });
@@ -226,6 +279,11 @@ describe('main/index', () => {
   afterEach(() => {
     process.argv = ORIGINAL_ARGV;
     delete process.env.NODE_ENV;
+    delete process.env.ENCODEX_HOSTILE_MODE;
+    delete process.env.ENCODEX_TEST_MODE;
+    // Tests that point userData at a temp directory must not leak that path
+    // into the next test: `vi.clearAllMocks()` keeps mock implementations.
+    appMock.getPath.mockImplementation((_name: string) => 'C:\\tmp\\encodex-userdata');
     Object.defineProperty(process, 'platform', { value: ORIGINAL_PLATFORM });
     console.log = ORIGINAL_LOG;
     console.warn = ORIGINAL_WARN;
@@ -416,5 +474,262 @@ describe('main/index', () => {
     await importIndex();
     getAppOnHandlers()['window-all-closed']();
     expect(appMock.quit).not.toHaveBeenCalled();
+  });
+
+  it('enters CLI mode for a bare subcommand', async () => {
+    process.argv = ['node', 'C:\\project\\index.js', 'convert'];
+    await importIndex();
+    await triggerStartup();
+    await vi.waitFor(() => expect(appMock.exit).toHaveBeenCalledWith(EXIT_CODES.SUCCESS));
+    expect(runCliMock).toHaveBeenCalled();
+  });
+
+  it('enters CLI mode when two positional arguments follow the script path', async () => {
+    process.argv = ['node', 'C:\\project\\index.js', 'input.mp4', 'output.mp4'];
+    await importIndex();
+    await triggerStartup();
+    await vi.waitFor(() => expect(appMock.exit).toHaveBeenCalledWith(EXIT_CODES.SUCCESS));
+    expect(runCliMock).toHaveBeenCalled();
+  });
+
+  it('redirects CLI-mode stdout to stderr so --json output stays parseable', async () => {
+    process.argv = ['node', 'C:\\project\\index.js', '--cli'];
+    await importIndex();
+    await triggerStartup();
+    await vi.waitFor(() => expect(runCliMock).toHaveBeenCalled());
+    const written: string[] = [];
+    const originalWrite = process.stderr.write;
+    process.stderr.write = ((chunk: unknown) => {
+      written.push(String(chunk));
+      return true;
+    }) as unknown as typeof process.stderr.write;
+    try {
+      console.log('cli stdout probe');
+    } finally {
+      process.stderr.write = originalWrite;
+    }
+    expect(written.join('')).toContain('cli stdout probe');
+  });
+
+  it('logs the full CLI failure when verbose output is enabled', async () => {
+    process.argv = ['node', 'C:\\project\\index.js', '--cli'];
+    runCliMock.mockRejectedValue(new Error('cli boom'));
+    expectAppLog('error', 'main/index');
+    await importIndex();
+    // `vi.resetModules()` gives index.ts a fresh cli-ui instance on every
+    // import, so the flag has to be set on that instance, not a static one.
+    const { cliConfig } = await import('../cli/cli-ui');
+    cliConfig.verbose = true;
+    await triggerStartup();
+    await vi.waitFor(() => expect(appMock.exit).toHaveBeenCalledWith(EXIT_CODES.ERROR));
+    expect(getAppLogs().some((entry) => entry.context === 'main/index' && entry.text.includes('cli boom'))).toBe(true);
+  });
+
+  it('loads the hostile e2e preload when ENCODEX_HOSTILE_MODE is set', async () => {
+    process.argv = ['node', 'x.js'];
+    process.env.ENCODEX_HOSTILE_MODE = '1';
+    await importIndex();
+    await triggerStartup();
+    expect(mainWindowOptions().webPreferences.preload).toContain(path.join('e2e', 'mocks', 'hostile-preload.js'));
+  });
+
+  it('loads the mock e2e preload when ENCODEX_TEST_MODE is set', async () => {
+    process.argv = ['node', 'x.js'];
+    process.env.ENCODEX_TEST_MODE = '1';
+    await importIndex();
+    await triggerStartup();
+    expect(mainWindowOptions().webPreferences.preload).toContain(path.join('e2e', 'mocks', 'preload.js'));
+  });
+
+  it('reports an unexpected renderer death and ignores a clean exit', async () => {
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    await triggerStartup();
+    const win = getMainWindows()[0];
+    const handler = win.webContents.on.mock.calls.find((call: unknown[]) => call[0] === 'render-process-gone')?.[1] as
+      ((event: unknown, details: { reason: string; exitCode: number }) => void) | undefined;
+    expect(handler).toBeTypeOf('function');
+    handler!({}, { reason: 'clean-exit', exitCode: 0 });
+    expect(mainIndexLogs()).toHaveLength(0);
+    handler!({}, { reason: 'crashed', exitCode: 139 });
+    expect(mainIndexLogs()).toEqual([expect.objectContaining({ kind: 'appError' })]);
+  });
+
+  it('reports an unclean child-process death and ignores a clean one', async () => {
+    expectAppLog('warn', 'main/index');
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    const handler = getAppOnHandlers()['child-process-gone'];
+    expect(handler).toBeTypeOf('function');
+    handler('child-process-gone', { type: 'GPU', reason: 'clean-exit' });
+    expect(mainIndexLogs()).toHaveLength(0);
+    handler('child-process-gone', { type: 'Utility', reason: 'crashed' });
+    expect(mainIndexLogs()).toEqual([expect.objectContaining({ kind: 'appWarn' })]);
+  });
+
+  it('ignores a late splash load after the splash window has closed', async () => {
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    await triggerStartup();
+    const splash = getWindowInstances()[0];
+    const closed = splash.on.mock.calls.find((call: unknown[]) => call[0] === 'closed')?.[1] as (() => void) | undefined;
+    expect(closed).toBeTypeOf('function');
+    closed!();
+    // The module-level splash reference is cleared by `closed`, so a
+    // did-finish-load landing afterwards must not resurrect the window.
+    splash.onceHandlers['did-finish-load']!();
+    expect(splash.show).not.toHaveBeenCalled();
+  });
+
+  it('writes the install marker on the first launch of a version', async () => {
+    const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-marker-'));
+    appMock.getPath.mockImplementation((name: string) => (name === 'userData' ? userDataDir : 'C:\\tmp\\encodex-userdata'));
+    process.argv = ['node', 'x.js'];
+    let marker: string | undefined;
+    try {
+      await importIndex();
+      await triggerStartup();
+      marker = fs.readFileSync(path.join(userDataDir, 'analytics-install-marker.json'), 'utf8');
+    } finally {
+      fs.rmSync(userDataDir, { recursive: true, force: true });
+    }
+    expect(marker).toBe(appMock.getVersion());
+  });
+
+  it('keeps the install marker when it already matches the running version', async () => {
+    const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-marker-'));
+    fs.writeFileSync(path.join(userDataDir, 'analytics-install-marker.json'), '1.0.0', 'utf8');
+    appMock.getPath.mockImplementation((name: string) => (name === 'userData' ? userDataDir : 'C:\\tmp\\encodex-userdata'));
+    process.argv = ['node', 'x.js'];
+    let marker: string | undefined;
+    try {
+      await importIndex();
+      await triggerStartup();
+      // Startup got past the early return: the main window still exists.
+      expect(getMainWindows()).toHaveLength(1);
+      marker = fs.readFileSync(path.join(userDataDir, 'analytics-install-marker.json'), 'utf8');
+    } finally {
+      fs.rmSync(userDataDir, { recursive: true, force: true });
+    }
+    expect(marker).toBe('1.0.0');
+  });
+
+  it('starts the MCP server in --mcp mode and exits cleanly', async () => {
+    process.argv = ['node', 'x.js', '--mcp'];
+    await importIndex();
+    expect(appMock.disableHardwareAcceleration).toHaveBeenCalledTimes(1);
+    expect(runMcpServerMock).not.toHaveBeenCalled();
+    await triggerStartup();
+    await vi.waitFor(() => expect(appMock.exit).toHaveBeenCalledWith(EXIT_CODES.SUCCESS));
+    expect(runMcpServerMock).toHaveBeenCalledTimes(1);
+    // No windows are created in headless MCP mode.
+    expect(getWindowInstances()).toHaveLength(0);
+  });
+
+  it('exits with an error when the MCP server fails', async () => {
+    process.argv = ['node', 'x.js', '--mcp'];
+    runMcpServerMock.mockRejectedValue(new Error('mcp boom'));
+    expectAppLog('error', 'main/index');
+    await importIndex();
+    await triggerStartup();
+    await vi.waitFor(() => expect(appMock.exit).toHaveBeenCalledWith(EXIT_CODES.ERROR));
+    expect(appMock.exit).not.toHaveBeenCalledWith(EXIT_CODES.SUCCESS);
+    expect(getAppLogs().some((entry) => entry.context === 'main/index' && entry.text.includes('mcp boom'))).toBe(true);
+  });
+
+  it('redirects MCP-mode stdout to stderr so the JSON-RPC stream stays parseable', async () => {
+    process.argv = ['node', 'x.js', '--mcp'];
+    await importIndex();
+    const written: string[] = [];
+    const originalWrite = process.stderr.write;
+    process.stderr.write = ((chunk: unknown) => {
+      written.push(String(chunk));
+      return true;
+    }) as unknown as typeof process.stderr.write;
+    try {
+      console.log('mcp stdout probe');
+    } finally {
+      process.stderr.write = originalWrite;
+    }
+    expect(written.join('')).toContain('mcp stdout probe');
+  });
+
+  it('starts the embedded MCP server when settings enable it', async () => {
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    await triggerStartup();
+    const options = mcpSettingsOptions();
+    expect(options.apply).toBeTypeOf('function');
+    options.apply({ enabled: true, port: 3847, token: 'secret' });
+    await vi.waitFor(() => expect(startMcpHttpServerMock).toHaveBeenCalledTimes(1));
+    const startCalls = (startMcpHttpServerMock as unknown as { mock: { calls: [unknown, unknown][] } }).mock.calls;
+    expect(startCalls[0]?.[1]).toEqual({ enabled: true, port: 3847, token: 'secret' });
+    // Each HTTP session gets a server, but they share one job manager so
+    // queue operations observe every conversion regardless of the session.
+    const factory = startCalls[0]?.[0] as (() => unknown) | undefined;
+    expect(factory).toBeTypeOf('function');
+    factory!();
+    factory!();
+    expect(MCPJobManagerMock).toHaveBeenCalledTimes(1);
+    expect(createMcpServerMock).toHaveBeenCalledTimes(2);
+    expect(registerGuiToolsMock).toHaveBeenCalledTimes(2);
+    // Enabling again restarts the server so a changed port or token takes effect.
+    options.apply({ enabled: true, port: 3848, token: 'secret' });
+    await vi.waitFor(() => expect(startMcpHttpServerMock).toHaveBeenCalledTimes(2));
+    expect(getMcpHandles()[0]!.close).toHaveBeenCalled();
+  });
+
+  it('stops the embedded MCP server when settings disable it', async () => {
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    await triggerStartup();
+    const options = mcpSettingsOptions();
+    options.apply({ enabled: true, port: 3847, token: '' });
+    await vi.waitFor(() => expect(startMcpHttpServerMock).toHaveBeenCalledTimes(1));
+    const handle = getMcpHandles()[0]!;
+    options.apply({ enabled: false, port: 3847, token: '' });
+    await vi.waitFor(() => expect(handle.close).toHaveBeenCalled());
+    expect(startMcpHttpServerMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('logs a failure to start the embedded server and keeps the app alive', async () => {
+    expectAppLog('error', 'main/index');
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    await triggerStartup();
+    startMcpHttpServerMock.mockRejectedValueOnce(new Error('port in use'));
+    mcpSettingsOptions().apply({ enabled: true, port: 3847, token: '' });
+    await vi.waitFor(() => expect(startMcpHttpServerMock).toHaveBeenCalledTimes(1));
+    await vi.waitFor(() =>
+      expect(getAppLogs().some((entry) => entry.context === 'main/index' && entry.text.includes('port in use'))).toBe(true),
+    );
+    // The failed handle is dropped, so a later disable has nothing to close.
+    expect(getMcpHandles()).toHaveLength(0);
+  });
+
+  it('swallows a failure to close the embedded server', async () => {
+    expectAppLog('warn', 'main/index');
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    await triggerStartup();
+    const options = mcpSettingsOptions();
+    options.apply({ enabled: true, port: 3847, token: '' });
+    await vi.waitFor(() => expect(startMcpHttpServerMock).toHaveBeenCalledTimes(1));
+    const handle = getMcpHandles()[0]!;
+    handle.close.mockRejectedValueOnce(new Error('close boom'));
+    options.apply({ enabled: false, port: 3847, token: '' });
+    await vi.waitFor(() => expect(getAppLogs().some((entry) => entry.kind === 'appWarn' && entry.text.includes('close boom'))).toBe(true));
+  });
+
+  it('flushes telemetry and stops the embedded server on will-quit', async () => {
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    await triggerStartup();
+    const options = mcpSettingsOptions();
+    options.apply({ enabled: true, port: 3847, token: '' });
+    await vi.waitFor(() => expect(startMcpHttpServerMock).toHaveBeenCalledTimes(1));
+    const handle = getMcpHandles()[0]!;
+    getAppOnHandlers()['will-quit']!();
+    await vi.waitFor(() => expect(handle.close).toHaveBeenCalled());
   });
 });
