@@ -7,9 +7,9 @@
     "searchLanguage": "Поиск языков",
     "condense": "Свернуть боковую панель",
     "expand": "Развернуть боковую панель",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Открыть меню навигации",
+    "loading": "Загрузка...",
+    "navigation": "Основная навигация"
   },
   "nav": {
     "dashboard": "Главная",
@@ -242,7 +242,7 @@
     "subtitle": "Субтитры",
     "exifData": "Данные EXIF",
     "noExif": "Данные EXIF не найдены",
-    "loading": "Loading media info..."
+    "loading": "Загрузка информации о медиа..."
   },
   "imageCompress": {
     "title": "Сжать изображение",

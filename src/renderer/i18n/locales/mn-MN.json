@@ -7,9 +7,9 @@
     "searchLanguage": "Хэл хайх",
     "condense": "Хажуугийн самбарыг хумих",
     "expand": "Хажуугийн самбарыг дэлгэх",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Навигацийн цэсийг нээх",
+    "loading": "Ачаалж байна...",
+    "navigation": "Үндсэн навигаци"
   },
   "nav": {
     "dashboard": "Хянах самбар",
@@ -242,7 +242,7 @@
     "subtitle": "Хадмал",
     "exifData": "EXIF өгөгдөл",
     "noExif": "EXIF өгөгдөл олдсонгүй",
-    "loading": "Loading media info..."
+    "loading": "Медиа мэдээлэл ачаалж байна..."
   },
   "imageCompress": {
     "title": "Зураг шахах",

@@ -7,9 +7,9 @@
     "searchLanguage": "Hae kieliä",
     "condense": "Tiivistä sivupalkki",
     "expand": "Laajenna sivupalkki",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Avaa navigointivalikko",
+    "loading": "Ladataan...",
+    "navigation": "Päänavigointi"
   },
   "nav": {
     "dashboard": "Hallintapaneeli",
@@ -242,7 +242,7 @@
     "subtitle": "Tekstitys",
     "exifData": "EXIF-tiedot",
     "noExif": "EXIF-tietoja ei löytynyt",
-    "loading": "Loading media info..."
+    "loading": "Ladataan mediatietoja..."
   },
   "imageCompress": {
     "title": "Pakkaa kuva",

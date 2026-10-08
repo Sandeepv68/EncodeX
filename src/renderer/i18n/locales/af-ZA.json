@@ -7,9 +7,9 @@
     "searchLanguage": "Soek tale",
     "condense": "Vou sybalk in",
     "expand": "Brei sybalk uit",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Maak navigasiemenu oop",
+    "loading": "Laai...",
+    "navigation": "Hoofnavigasie"
   },
   "nav": {
     "dashboard": "Paneelbord",
@@ -242,7 +242,7 @@
     "subtitle": "Onderskrif",
     "exifData": "EXIF-data",
     "noExif": "Geen EXIF-data gevind nie",
-    "loading": "Loading media info..."
+    "loading": "Laai mediainfo..."
   },
   "imageCompress": {
     "title": "Komprimeer Beeld",

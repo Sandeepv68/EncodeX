@@ -7,9 +7,9 @@
     "searchLanguage": "Oqaatsit ujaruk",
     "condense": "Mikissusaruk sidelinje",
     "expand": "Annertusaruk sidelinje",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Navigaasiimut meni matoqqigit",
+    "loading": "Ilaaqqivoq...",
+    "navigation": "Peqqaasoq navigaasia"
   },
   "nav": {
     "dashboard": "Oqarfigissaaneq",
@@ -242,7 +242,7 @@
     "subtitle": "Subtitle",
     "exifData": "EXIF data",
     "noExif": "EXIF data takussaaqanngilaq",
-    "loading": "Loading media info..."
+    "loading": "Media info ilaaqqivoq..."
   },
   "imageCompress": {
     "title": "Assersuut qitornaqqusaat",

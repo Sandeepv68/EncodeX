@@ -7,9 +7,9 @@
     "searchLanguage": "Cari bahasa",
     "condense": "Ciutkan sidebar",
     "expand": "Kembangkan sidebar",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Buka menu navigasi",
+    "loading": "Memuat...",
+    "navigation": "Navigasi utama"
   },
   "nav": {
     "dashboard": "Dasbor",
@@ -242,7 +242,7 @@
     "subtitle": "Subjudul",
     "exifData": "Data EXIF",
     "noExif": "Tidak ada data EXIF ditemukan",
-    "loading": "Loading media info..."
+    "loading": "Memuat info media..."
   },
   "imageCompress": {
     "title": "Kompres Gambar",

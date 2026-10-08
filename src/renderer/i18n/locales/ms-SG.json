@@ -7,9 +7,9 @@
     "searchLanguage": "Cari bahasa",
     "condense": "Ciutkan bar sisi",
     "expand": "Kembangkan bar sisi",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Buka menu navigasi",
+    "loading": "Memuat...",
+    "navigation": "Navigasi utama"
   },
   "nav": {
     "dashboard": "Papan Pemuka",
@@ -242,7 +242,7 @@
     "subtitle": "Sari kata",
     "exifData": "Data EXIF",
     "noExif": "Tiada data EXIF ditemui",
-    "loading": "Loading media info..."
+    "loading": "Memuatkan maklumat media..."
   },
   "imageCompress": {
     "title": "Mampat Imej",

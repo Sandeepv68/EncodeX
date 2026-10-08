@@ -7,9 +7,9 @@
     "searchLanguage": "ຄົ້ນຫາພາສາ",
     "condense": "ຫຍໍ້ແຖບຂ້າງ",
     "expand": "ຂະຫຍາຍແຖບຂ້າງ",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "ເປີດເມນູນຳເທົ່າ",
+    "loading": "ກຳລັງໂຫຼດ...",
+    "navigation": "ການນຳເທົ່າຫຼັກ"
   },
   "nav": {
     "dashboard": "ໜ້າຄຸມຄອງ",
@@ -242,7 +242,7 @@
     "subtitle": "ຄຳບັນຍາຍໃຕ້ຮູບ",
     "exifData": "ຂໍ້ມູນ EXIF",
     "noExif": "ບໍ່ພົບຂໍ້ມູນ EXIF",
-    "loading": "Loading media info..."
+    "loading": "ກຳລັງໂຫຼດຂໍ້ມູນສື່..."
   },
   "imageCompress": {
     "title": "ບີບອັດຮູບພາບ",

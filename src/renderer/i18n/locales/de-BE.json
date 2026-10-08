@@ -7,9 +7,9 @@
     "searchLanguage": "Sprachen suchen",
     "condense": "Seitenleiste einklappen",
     "expand": "Seitenleiste ausklappen",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Navigationsmenü öffnen",
+    "loading": "Wird geladen...",
+    "navigation": "Hauptnavigation"
   },
   "nav": {
     "dashboard": "Armaturenbrett",
@@ -242,7 +242,7 @@
     "subtitle": "Untertitel",
     "exifData": "EXIF-Daten",
     "noExif": "Keine EXIF-Daten gefunden",
-    "loading": "Loading media info..."
+    "loading": "Medieninformationen werden geladen..."
   },
   "imageCompress": {
     "title": "Bild komprimieren",

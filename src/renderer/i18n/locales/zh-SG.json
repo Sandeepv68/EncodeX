@@ -7,9 +7,9 @@
     "searchLanguage": "搜索语言",
     "condense": "收起侧边栏",
     "expand": "展开侧边栏",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "打开导航菜单",
+    "loading": "加载中...",
+    "navigation": "主导航"
   },
   "nav": {
     "dashboard": "仪表板",
@@ -242,7 +242,7 @@
     "subtitle": "字幕",
     "exifData": "EXIF 数据",
     "noExif": "未找到 EXIF 数据",
-    "loading": "Loading media info..."
+    "loading": "正在加载媒体信息..."
   },
   "imageCompress": {
     "title": "压缩图像",

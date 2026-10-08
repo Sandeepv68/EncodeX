@@ -7,9 +7,9 @@
     "searchLanguage": "Rapua ngā reo",
     "condense": "Whakaiti te pae taha",
     "expand": "Whakanui te pae taha",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Uakina te tahua ara",
+    "loading": "E utaina ana...",
+    "navigation": "Ara matua"
   },
   "nav": {
     "dashboard": "Papa Whakahaere",
@@ -242,7 +242,7 @@
     "subtitle": "Tapanga Raro",
     "exifData": "Raraunga EXIF",
     "noExif": "Kāore i kitea ngā raraunga EXIF",
-    "loading": "Loading media info..."
+    "loading": "E utaina ana ngā pārongo pāpāho..."
   },
   "imageCompress": {
     "title": "Kōmitimiti Whakaahua",

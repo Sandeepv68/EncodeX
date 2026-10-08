@@ -7,9 +7,9 @@
     "searchLanguage": "Cuardaigh teangacha",
     "condense": "Crap an barra taoibh",
     "expand": "Leathnaigh an barra taoibh",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Oscail an roghchlár nascleanúna",
+    "loading": "Á lódáil...",
+    "navigation": "Príomhnascleanúint"
   },
   "nav": {
     "dashboard": "Deais",
@@ -242,7 +242,7 @@
     "subtitle": "Fotheideal",
     "exifData": "Sonraí EXIF",
     "noExif": "Níor aimsíodh aon sonraí EXIF",
-    "loading": "Loading media info..."
+    "loading": "Faisnéis na meán á lódáil..."
   },
   "imageCompress": {
     "title": "Comhbhrúigh Íomhá",
