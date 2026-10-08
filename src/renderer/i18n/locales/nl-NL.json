@@ -7,9 +7,9 @@
     "searchLanguage": "Talen zoeken",
     "condense": "Zijbalk samenvouwen",
     "expand": "Zijbalk uitvouwen",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Navigatiemenu openen",
+    "loading": "Laden...",
+    "navigation": "Hoofdnavigatie"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -242,7 +242,7 @@
     "subtitle": "Ondertitel",
     "exifData": "EXIF-gegevens",
     "noExif": "Geen EXIF-gegevens gevonden",
-    "loading": "Loading media info..."
+    "loading": "Mediainfo laden..."
   },
   "imageCompress": {
     "title": "Afbeelding comprimeren",

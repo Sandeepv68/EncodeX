@@ -268,7 +268,16 @@ describe('MCP hostile input', () => {
     it('reports a missing traversal input as FILE_NOT_FOUND rather than crashing', async () => {
       const session = await setup();
       try {
-        for (const input of ['../../etc/passwd', '..\\..\\Windows\\System32\\cmd.exe', '/etc/shadow', '\\\\server\\share\\clip.mp4']) {
+        // `/etc/shadow` cannot be used as the absolute-path case: it exists on the Linux CI
+        // runner, so the existsSync guard passes and the call succeeds instead of erroring.
+        // A path inside a freshly made temp dir is missing by construction on every host.
+        const missingAbsolute = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-hostile-missing-')), 'shadow.mp4');
+        // A bare `../../etc/passwd` is only missing while the suite runs from a directory at
+        // least three levels below the filesystem root; from a shallow working directory it
+        // resolves to a real file. Traversing to a leaf name that exists nowhere keeps the
+        // input hostile-looking and absent at any cwd depth.
+        const traversal = path.join('..', '..', 'etc', 'encodex-missing-input');
+        for (const input of [traversal, '..\\..\\Windows\\System32\\cmd.exe', missingAbsolute, '\\\\server\\share\\clip.mp4']) {
           const envelope = expectErrorEnvelope(await callTool(session, 'convert_media', { input }));
           expect(envelope.code, `input ${input}`).toBe('FILE_NOT_FOUND');
           expect(envelope.message).toContain(input);

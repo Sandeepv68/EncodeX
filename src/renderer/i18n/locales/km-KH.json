@@ -7,9 +7,9 @@
     "searchLanguage": "ស្វែងរកភាសា",
     "condense": "បង្រួមរបារចំហៀង",
     "expand": "ពង្រីករបារចំហៀង",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "បើកម៉ឺនុយរុករក",
+    "loading": "កំពុងផ្ទុក...",
+    "navigation": "ការរុករកសំខាន់"
   },
   "nav": {
     "dashboard": "ផ្ទាំងគ្រប់គ្រង",
@@ -242,7 +242,7 @@
     "subtitle": "ចំណងជើងរង",
     "exifData": "ទិន្នន័យ EXIF",
     "noExif": "មិនបានរកឃើញទិន្នន័យ EXIF",
-    "loading": "Loading media info..."
+    "loading": "កំពុងផ្ទុកព័ត៌មានមេឌៀ..."
   },
   "imageCompress": {
     "title": "បង្ហាប់រូបភាព",

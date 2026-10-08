@@ -7,9 +7,9 @@
     "searchLanguage": "Søk språk",
     "condense": "Kollaps sidepanelet",
     "expand": "Utvid sidepanelet",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Åpne navigasjonsmeny",
+    "loading": "Laster...",
+    "navigation": "Hovednavigasjon"
   },
   "nav": {
     "dashboard": "Startside",
@@ -242,7 +242,7 @@
     "subtitle": "Undertekst",
     "exifData": "EXIF-data",
     "noExif": "Ingen EXIF-data funnet",
-    "loading": "Loading media info..."
+    "loading": "Laster medieinformasjon..."
   },
   "imageCompress": {
     "title": "Komprimer bilde",

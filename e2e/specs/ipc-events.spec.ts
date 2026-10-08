@@ -162,6 +162,11 @@ const HZ_BY_SHAPE: Record<PayloadShapeId, number> = {
   deep: 100,
   'big-array': 5,
   'big-blob': 5,
+  // The wiring probe's shape: a *valid* LogEntry envoy carrying hostile extras. The webContents
+  // hop, the structured-clone boundary, the preload `isLogEntry` guard and the contextBridge
+  // callback all have to let it through for the probe test to see a single delivery, and the
+  // rate stays modest so the renderer is not saturated before the read.
+  'valid-log-entry': 20,
   // `cyclic` is the only shape whose payloads *pass* the preload guards, so it is also the only one
   // that reaches the renderer's handlers and stresses them. That makes its rate worth overriding when
   // triaging: sweeping it at 100 Hz and at 10 Hz separates two very different defects. High rate
@@ -192,7 +197,7 @@ const HZ_BY_SHAPE: Record<PayloadShapeId, number> = {
  */
 const PAYLOAD_SHAPES = ['null', 'garbage-primitive', 'wrong-shape', 'cyclic', 'deep', 'big-array', 'big-blob'] as const;
 
-type PayloadShapeId = (typeof PAYLOAD_SHAPES)[number];
+type PayloadShapeId = (typeof PAYLOAD_SHAPES)[number] | 'valid-log-entry';
 
 /** Duration of one burst, per the plan. */
 const BURST_MS = 2_000;
@@ -399,6 +404,11 @@ async function ensureTermsAccepted(page: AppSession['page']): Promise<void> {
  * untouched. Every other `on*` handler dereferences its argument before calling back - five of them
  * crash on `null` - so probing through one of those would make the *probe* the thing that throws and
  * the harness would report its own bug as a production defect.
+ *
+ * The handler does validate the entry envelope against `isLogEntry` and drops a `wrong-shape`
+ * payload before it reaches the callback, so the probe bursts are sent as a **valid** `LogEntry`
+ * envelope with hostile *extras* (nested structures, cycled clones) hidden inside fields the guard
+ * ignores. The envelope is what demonstrates the wiring; the extras are what stress it.
  */
 async function installDeliveryProbe(page: AppSession['page']): Promise<void> {
   await page.evaluate(() => {
@@ -503,6 +513,25 @@ async function burst(
               installerPath: {},
               maximized: 'yes',
             };
+          case 'valid-log-entry': {
+            // Passes `isLogEntry` (the guard the real preload runs) so `onLogMessage` forwards it,
+            // while the ignored extras stress the boundary exactly like the sweep's hostile shapes:
+            // a deeply nested graph and a large array that both must survive structured clone.
+            let host: Record<string, unknown> = { leaf: true };
+            const root = host;
+            for (let depth = 0; depth < deepLevels; depth += 1) {
+              host.next = { depth };
+              host = host.next as Record<string, unknown>;
+            }
+            return {
+              timestamp: new Date().toISOString(),
+              level: 'WARN',
+              text: 'delivery probe',
+              source: 'main',
+              host: root,
+              extra: new Array(Math.min(arrayLength, 500)).fill({ id: cycle, ok: true }),
+            };
+          }
           case 'cyclic': {
             // Structured clone preserves the cycle, so this genuinely arrives in the renderer.
             const root: Record<string, unknown> = { id: 'root', input: 'root' };
@@ -625,11 +654,16 @@ describe.runIf(IS_REAL)('IPC event-channel abuse (Tier B, real main + real prelo
       // Proves the whole path works before the sweep is trusted: main -> structured clone -> preload
       // listener -> contextBridge -> renderer callback. Without it, "the app survived" could mean
       // "nothing arrived".
+      //
+      // `log-message` is the one channel whose preload handler forwards rather than dereferences,
+      // but it validates the entry envelope, so the burst uses `valid-log-entry` - a valid envelope
+      // with hostile *extras* - rather than `wrong-shape`, whose `isLogEntry`-failing envelope is
+      // dropped before it ever reaches the renderer callback.
       const probeChannel = 'log-message';
       expect(channels, `expected the preload to subscribe to ${probeChannel}`).toContain(probeChannel);
       await installDeliveryProbe(session.page);
 
-      const sent = await burst(session.app, await mainWindowId(session.app, session.page), [probeChannel], 'wrong-shape');
+      const sent = await burst(session.app, await mainWindowId(session.app, session.page), [probeChannel], 'valid-log-entry');
       expect(sent.emitted, 'the burst emitted nothing').toBeGreaterThan(0);
 
       // The burst and this read are separate IPC turns; give the renderer a turn to drain.

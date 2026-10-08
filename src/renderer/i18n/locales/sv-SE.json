@@ -7,9 +7,9 @@
     "searchLanguage": "Sök språk",
     "condense": "Komprimera sidofältet",
     "expand": "Expandera sidofältet",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Öppna navigationsmeny",
+    "loading": "Laddar...",
+    "navigation": "Huvudnavigering"
   },
   "nav": {
     "dashboard": "Instrumentpanel",
@@ -242,7 +242,7 @@
     "subtitle": "Undertext",
     "exifData": "EXIF-data",
     "noExif": "Inga EXIF-data hittades",
-    "loading": "Loading media info..."
+    "loading": "Laddar mediainformation..."
   },
   "imageCompress": {
     "title": "Komprimera bild",

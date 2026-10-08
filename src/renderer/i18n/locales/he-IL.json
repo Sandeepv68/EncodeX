@@ -7,9 +7,9 @@
     "searchLanguage": "חיפוש שפות",
     "condense": "כווץ את סרגל הצד",
     "expand": "הרחב את סרגל הצד",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "פתח את תפריט הניווט",
+    "loading": "טוען...",
+    "navigation": "ניווט ראשי"
   },
   "nav": {
     "dashboard": "לוח בקרה",
@@ -242,7 +242,7 @@
     "subtitle": "כתוביות",
     "exifData": "נתוני EXIF",
     "noExif": "לא נמצאו נתוני EXIF",
-    "loading": "Loading media info..."
+    "loading": "טוען מידע מדיה..."
   },
   "imageCompress": {
     "title": "דחיסת תמונה",

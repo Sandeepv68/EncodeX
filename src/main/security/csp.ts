@@ -14,7 +14,7 @@
  */
 
 import type { Session } from 'electron';
-import { CONTENT_SECURITY_POLICY } from '../../shared/csp';
+import { CONTENT_SECURITY_POLICY, DEV_CONTENT_SECURITY_POLICY } from '../../shared/csp';
 
 /** Response header that carries the renderer policy. @const {string} */
 export const CSP_HEADER_NAME = 'Content-Security-Policy';
@@ -24,14 +24,19 @@ export const CSP_HEADER_NAME = 'Content-Security-Policy';
  *
  * @param {Session} session - The session whose responses get the header; pass
  *   `session.defaultSession` to cover the main and splash windows.
+ * @param {object} [options] - Optional install options.
+ * @param {boolean} [options.dev=false] - True in development mode, where the
+ *   Vite dev server injects an inline React-refresh preamble that the strict
+ *   production `script-src 'self'` would block (blank window).
  * @returns {() => void} A cleanup that removes the registered handler.
  */
-export function installContentSecurityPolicy(session: Session): () => void {
+export function installContentSecurityPolicy(session: Session, options: { dev?: boolean } = {}): () => void {
+  const policy = options.dev ? DEV_CONTENT_SECURITY_POLICY : CONTENT_SECURITY_POLICY;
   session.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
         ...(details.responseHeaders ?? {}),
-        [CSP_HEADER_NAME]: [CONTENT_SECURITY_POLICY],
+        [CSP_HEADER_NAME]: [policy],
       },
     });
   });

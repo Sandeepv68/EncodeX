@@ -7,9 +7,9 @@
     "searchLanguage": "භාෂා සොයන්න",
     "condense": "පැති තීරුව හකුළන්න",
     "expand": "පැති තීරුව විහිදුවන්න",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "නැවිගේෂන් මෙනුව විවෘත කරන්න",
+    "loading": "පූරණය වෙමින්...",
+    "navigation": "ප්‍රධාන නැවිගේෂන්"
   },
   "nav": {
     "dashboard": "උපකරණ පුවරුව",
@@ -242,7 +242,7 @@
     "subtitle": "උපසිරැසි",
     "exifData": "EXIF දත්ත",
     "noExif": "EXIF දත්ත හමු නොවීය",
-    "loading": "Loading media info..."
+    "loading": "මාධ්‍ය තොරතුරු පූරණය වෙමින්..."
   },
   "imageCompress": {
     "title": "රූපය සම්පීඩනය කරන්න",

@@ -271,8 +271,13 @@ function expandGlob(pattern: string): string[] {
 export function deriveOutputPath(input: string, opts: DeriveOutputOptions = {}): string {
   const ext = opts.outputExt ?? (opts.keepExt === false ? '' : getInputExtension(input));
   const extName = path.extname(input);
-  const stem = extName ? input.slice(0, -extName.length) : input;
-  const fileName = `${stem}${opts.suffix ?? ''}${ext ? `.${ext}` : ''}`;
+  let stem = extName ? input.slice(0, -extName.length) : input;
+  // Normalize path separators to prevent Windows-style separators from becoming
+  // part of the filename on POSIX systems (security hardening for cross-platform)
+  stem = stem.replace(/[\\/]+/g, path.sep === '\\' ? '\\' : '/');
+  // Extract basename to strip any directory traversal components
+  const baseStem = path.basename(stem);
+  const fileName = `${baseStem === '.' || baseStem === '..' ? baseStem : baseStem}${opts.suffix ?? ''}${ext ? `.${ext}` : ''}`;
   const dir = opts.outputDir ? path.resolve(opts.outputDir) : path.dirname(input);
   return path.join(dir, path.basename(fileName));
 }

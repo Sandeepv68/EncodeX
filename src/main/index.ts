@@ -29,6 +29,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { format as formatArgs } from 'util';
 import { registerIpcHandlers } from './ipc/handlers';
+import { isDevMode } from './ipc/dev';
 import { runCli, mapCliErrorToExitCode, cliErrorMessage } from './cli/cli';
 import { cliConfig, error as printCliError } from './cli/cli-ui';
 import { runMcpServer } from '../mcp/run';
@@ -584,8 +585,10 @@ if (process.argv.includes('--mcp')) {
   app.whenReady().then(() => {
     log.info(LOG_APP_READY_CREATING_SPLASH_AND_MAIN_WINDOWS);
     // The renderer CSP ships as a response header (see src/shared/csp.ts) so Electron's security
-    // advisory sees it; it must be registered before any window loads a document.
-    installContentSecurityPolicy(session.defaultSession);
+    // advisory sees it; it must be registered before any window loads a document. Development mode
+    // needs the relaxed variant: Vite's inline React-refresh preamble is blocked by
+    // `script-src 'self'`, which kills the module graph and leaves a blank window.
+    installContentSecurityPolicy(session.defaultSession, { dev: isDevMode() });
     recordAppInstalledOnce(app.getPath('userData'));
     recordAnalyticsEvent(
       createAnalyticsEvent('app_launched', {

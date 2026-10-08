@@ -166,8 +166,12 @@ console.log(`Floor: lines >= ${lineFloor}%, branches >= ${branchFloor}%\n`);
 
 // Scope the run to the changed files. `--coverage.include` replaces the config
 // list, so untested files elsewhere in `src` are neither measured nor counted
-// against the thresholds.
-const includes = ['--coverage.include=' + changed.join(',')];
+// against the thresholds. One flag per file: vitest treats a repeated array
+// option as a list but does NOT split a comma-joined value, so
+// `--coverage.include=a.ts,b.ts` is a single glob that matches nothing - the
+// report then contains zero files and every changed file reads as
+// "not measured (no module loaded it)".
+const includes = changed.map((file) => `--coverage.include=${file}`);
 const reporters = ['--coverage.reporter=json', '--coverage.reporter=json-summary'];
 
 // The config's global thresholds (85/75/80/85) describe the whole suite, not

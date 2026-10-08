@@ -1,19 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { CONTENT_SECURITY_POLICY } from '../../../shared/csp';
+import { CONTENT_SECURITY_POLICY, DEV_CONTENT_SECURITY_POLICY } from '../../../shared/csp';
 import { CSP_HEADER_NAME, installContentSecurityPolicy } from '../csp';
 
 /**
  * Captures the `onHeadersReceived` handler registered on a fake session so tests can drive it like
  * Electron does, with `(details, callback)`.
  */
-function openSession() {
+function openSession(options?: { dev?: boolean }) {
   let handler: ((details: { responseHeaders?: Record<string, string[]> }, callback: (input?: unknown) => void) => void) | undefined;
   const onHeadersReceived = vi.fn((listener: typeof handler) => {
     handler = listener as typeof handler;
   });
-  const cleanup = installContentSecurityPolicy({
-    webRequest: { onHeadersReceived },
-  } as never);
+  const cleanup = installContentSecurityPolicy(
+    {
+      webRequest: { onHeadersReceived },
+    } as never,
+    options,
+  );
   return {
     onHeadersReceived,
     fire: (details: { responseHeaders?: Record<string, string[]> }) => {
@@ -64,5 +67,34 @@ describe('installContentSecurityPolicy', () => {
     const { onHeadersReceived, cleanup } = openSession();
     cleanup();
     expect(onHeadersReceived).toHaveBeenLastCalledWith(null);
+  });
+
+  it('serves the strict policy when the dev flag is absent', () => {
+    const { fire } = openSession();
+    expect(fire({}).mock.calls[0][0]).toEqual({
+      responseHeaders: { [CSP_HEADER_NAME]: [CONTENT_SECURITY_POLICY] },
+    });
+    const scriptSrc = CONTENT_SECURITY_POLICY.split(';')
+      .map((part) => part.trim())
+      .find((part) => part.startsWith('script-src'));
+    expect(scriptSrc).toBe("script-src 'self'");
+  });
+
+  it('serves the dev policy when dev is true so Vite can inject its inline preamble', () => {
+    const { fire } = openSession({ dev: true });
+    const callback = fire({});
+    expect(callback).toHaveBeenCalledWith({
+      responseHeaders: { [CSP_HEADER_NAME]: [DEV_CONTENT_SECURITY_POLICY] },
+    });
+    expect(DEV_CONTENT_SECURITY_POLICY).toContain("script-src 'self' 'unsafe-inline'");
+  });
+
+  it('keeps every non-script directive identical between dev and production policies', () => {
+    const stripScriptSrc = (csp: string) =>
+      csp
+        .split(';')
+        .map((part) => part.trim())
+        .filter((part) => !part.startsWith('script-src'));
+    expect(stripScriptSrc(DEV_CONTENT_SECURITY_POLICY)).toEqual(stripScriptSrc(CONTENT_SECURITY_POLICY));
   });
 });

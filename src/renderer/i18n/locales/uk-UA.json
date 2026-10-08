@@ -7,9 +7,9 @@
     "searchLanguage": "Пошук мов",
     "condense": "Згорнути бічну панель",
     "expand": "Розгорнути бічну панель",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Відкрити меню навігації",
+    "loading": "Завантаження...",
+    "navigation": "Основна навігація"
   },
   "nav": {
     "dashboard": "Панель керування",
@@ -242,7 +242,7 @@
     "subtitle": "Субтитри",
     "exifData": "Дані EXIF",
     "noExif": "Дані EXIF не знайдено",
-    "loading": "Loading media info..."
+    "loading": "Завантаження інформації про медіа..."
   },
   "imageCompress": {
     "title": "Стиснути зображення",

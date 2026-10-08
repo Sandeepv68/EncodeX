@@ -7,9 +7,9 @@
     "searchLanguage": "ابحث عن اللغات",
     "condense": "طي الشريط الجانبي",
     "expand": "توسيع الشريط الجانبي",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "فتح قائمة التنقل",
+    "loading": "جارٍ التحميل...",
+    "navigation": "التنقل الرئيسي"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -242,7 +242,7 @@
     "subtitle": "ترجمة",
     "exifData": "بيانات EXIF",
     "noExif": "لا توجد بيانات EXIF",
-    "loading": "Loading media info..."
+    "loading": "جارٍ تحميل معلومات الوسائط..."
   },
   "imageCompress": {
     "title": "ضغط الصورة",

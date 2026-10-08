@@ -7,9 +7,9 @@
     "searchLanguage": "搜尋語言",
     "condense": "收起側邊欄",
     "expand": "展開側邊欄",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "開啟導覽選單",
+    "loading": "載入中...",
+    "navigation": "主要導覽"
   },
   "nav": {
     "dashboard": "儀表板",
@@ -242,7 +242,7 @@
     "subtitle": "字幕",
     "exifData": "EXIF 資料",
     "noExif": "找不到 EXIF 資料",
-    "loading": "Loading media info..."
+    "loading": "正在載入媒體資訊..."
   },
   "imageCompress": {
     "title": "壓縮圖片",

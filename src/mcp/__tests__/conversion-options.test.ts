@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import * as nodePath from 'path';
 import { buildConversionOptions, resolveOutputPath } from '../conversion-options';
 import { ErrorCode } from '../../shared/errors';
 
@@ -119,21 +120,31 @@ describe('buildConversionOptions', () => {
 describe('resolveOutputPath', () => {
   const input = 'C:\\media\\clip.mp4';
 
+  /**
+   * The expected output sits next to the input, so only the directory half is host
+   * dependent: `path.dirname` of a Windows drive path is `C:\media` on Windows but `.`
+   * on POSIX, where backslashes are ordinary filename characters. The stem, suffix and
+   * extension stay literal below - that is what each test pins.
+   * @param {string} fileName - Expected output file name.
+   * @returns {string} The expected path on this platform.
+   */
+  const besideInput = (fileName: string): string => nodePath.join(nodePath.dirname(input), fileName).toLowerCase();
+
   it('uses the fallback container extension and _converted suffix when no codec is set', () => {
     // Mirrors the CLI: an unset codec classifies as 'other' -> mkv.
     const path = resolveOutputPath(input, {}, {});
-    expect(path.toLowerCase()).toBe('c:\\media\\clip_converted.mkv');
+    expect(path.toLowerCase()).toBe(besideInput('clip_converted.mkv'));
   });
 
   it('switches the extension to the video codec suggestion', () => {
     const path = resolveOutputPath(input, { videoCodec: 'libvpx-vp9' }, { videoCodec: 'libvpx-vp9' });
-    expect(path.toLowerCase()).toBe('c:\\media\\clip_converted.webm');
+    expect(path.toLowerCase()).toBe(besideInput('clip_converted.webm'));
   });
 
   it('keeps the input extension in copy mode and when video is disabled', () => {
     const copyPath = resolveOutputPath(input, {}, { copy: true });
-    expect(copyPath.toLowerCase()).toBe('c:\\media\\clip_converted.mp4');
+    expect(copyPath.toLowerCase()).toBe(besideInput('clip_converted.mp4'));
     const noVideoPath = resolveOutputPath(input, {}, { video: false });
-    expect(noVideoPath.toLowerCase()).toBe('c:\\media\\clip_converted.mp4');
+    expect(noVideoPath.toLowerCase()).toBe(besideInput('clip_converted.mp4'));
   });
 });

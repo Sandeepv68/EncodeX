@@ -7,9 +7,9 @@
     "searchLanguage": "Tìm kiếm ngôn ngữ",
     "condense": "Thu gọn thanh bên",
     "expand": "Mở rộng thanh bên",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Mở menu điều hướng",
+    "loading": "Đang tải...",
+    "navigation": "Điều hướng chính"
   },
   "nav": {
     "dashboard": "Bảng điều khiển",
@@ -242,7 +242,7 @@
     "subtitle": "Phụ đề",
     "exifData": "Dữ liệu EXIF",
     "noExif": "Không tìm thấy dữ liệu EXIF",
-    "loading": "Loading media info..."
+    "loading": "Đang tải thông tin phương tiện..."
   },
   "imageCompress": {
     "title": "Nén hình ảnh",

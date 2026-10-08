@@ -7,9 +7,9 @@
     "searchLanguage": "言語を検索",
     "condense": "サイドバーを折りたたむ",
     "expand": "サイドバーを展開する",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "ナビゲーションメニューを開く",
+    "loading": "読み込み中...",
+    "navigation": "メインナビゲーション"
   },
   "nav": {
     "dashboard": "ダッシュボード",
@@ -242,7 +242,7 @@
     "subtitle": "字幕",
     "exifData": "EXIF データ",
     "noExif": "EXIF データが見つかりません",
-    "loading": "Loading media info..."
+    "loading": "メディア情報を読み込み中..."
   },
   "imageCompress": {
     "title": "画像圧縮",

@@ -7,9 +7,9 @@
     "searchLanguage": "Maghanap ng wika",
     "condense": "Paliitin ang sidebar",
     "expand": "Palakihin ang sidebar",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Buksan ang menu ng nabigasyon",
+    "loading": "Naglo-load...",
+    "navigation": "Pangunahing nabigasyon"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -242,7 +242,7 @@
     "subtitle": "Subtitle",
     "exifData": "Data ng EXIF",
     "noExif": "Walang nakitang EXIF data",
-    "loading": "Loading media info..."
+    "loading": "Naglo-load ang impormasyon ng media..."
   },
   "imageCompress": {
     "title": "I-compress ang Larawan",

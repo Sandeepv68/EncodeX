@@ -7,9 +7,9 @@
     "searchLanguage": "Leita að tungumálum",
     "condense": "Þjappa hliðarstiku",
     "expand": "Stækka hliðarstiku",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "Opna navigationsvalmynd",
+    "loading": "Hleð...",
+    "navigation": "Aðalnavigering"
   },
   "nav": {
     "dashboard": "Mælaborð",
@@ -242,7 +242,7 @@
     "subtitle": "Texti",
     "exifData": "EXIF-gögn",
     "noExif": "Engin EXIF-gögn fundust",
-    "loading": "Loading media info..."
+    "loading": "Hleð miðlaupplýsingar..."
   },
   "imageCompress": {
     "title": "Þjappa mynd",

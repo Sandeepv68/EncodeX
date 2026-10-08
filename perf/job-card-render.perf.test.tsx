@@ -14,13 +14,23 @@
  * heap regression in the card itself -- the unit that scales with job count --
  * cannot hide behind page chrome.
  *
- * The suite self-skips on machines without ~8 GB of free memory (the reference
- * machines and CI boxes below that bar cannot run it; `ENCODEX_PERF_FORCE=1`
- * overrides the guard for big-iron baselining). A skipped run writes nothing,
- * so `perf-compare` treats the row as "no baseline yet" (a pass) until a
- * machine big enough records one. Results are written under the `phase8-queue`
- * phase so the card budget sits next to the scheduler budget in the same row
- * set and the shared perf gate.
+ * The suite self-skips on machines without ~8 GB of free memory and on CI
+ * (the reference machines and CI boxes below that bar cannot run it;
+ * `ENCODEX_PERF_FORCE=1` overrides the guard for big-iron baselining).
+ *
+ * CI is excluded explicitly, not just via the memory probe: the RENDERER bots
+ * run `ubuntu-latest`, which has 16 GB of physical RAM since it moved off the
+ * old 7 GB image, and on Linux `os.freemem()` counts reclaimable page cache -
+ * so after a checkout/download the probe reports well over 8 GB "free" and the
+ * guard lets the 6 GB jsdom render through, which OOMs and kills the forked
+ * vitest worker ("Worker exited unexpectedly") instead of skipping. The perf
+ * tier is for the dedicated reference machines, so a shared CI runner always
+ * skips unless `ENCODEX_PERF_FORCE=1` says the operator wants it to try.
+ *
+ * A skipped run writes nothing, so `perf-compare` treats the row as "no
+ * baseline yet" (a pass) until a machine big enough records one. Results are
+ * written under the `phase8-queue` phase so the card budget sits next to the
+ * scheduler budget in the same row set and the shared perf gate.
  *
  * @see plans/ADVERSARIAL_TEST_HARDENING_PLAN.md, Phase 5.2 / Phase 8
  */
@@ -51,7 +61,9 @@ const RENDER_BUDGET_MS = 180_000;
 const HEAP_BUDGET = 6.5 * 1024 * 1024 * 1024;
 const MIN_FREE_MEM = 8 * 1024 * 1024 * 1024;
 
-const canRun = process.env.ENCODEX_PERF_FORCE === '1' || os.freemem() >= MIN_FREE_MEM;
+const forced = process.env.ENCODEX_PERF_FORCE === '1';
+const onCi = process.env.CI === 'true';
+const canRun = forced || (!onCi && os.freemem() >= MIN_FREE_MEM);
 
 declare global {
   // eslint-disable-next-line no-var
@@ -98,8 +110,8 @@ describe('Phase 8 job-card render: full 5,000-job card render', () => {
   afterAll(() => {
     if (results.length === 0) {
       console.warn(
-        `  [SKIP] ${JOB_COUNT}-card render requires ${formatBytes(MIN_FREE_MEM)} free RAM ` +
-          `(have ${formatBytes(os.freemem())}); run on a reference machine or set ENCODEX_PERF_FORCE=1.`,
+        `  [SKIP] ${JOB_COUNT}-card render requires ${formatBytes(MIN_FREE_MEM)} free RAM and a non-CI ` +
+          `machine (have ${formatBytes(os.freemem())}); run on a reference machine or set ENCODEX_PERF_FORCE=1.`,
       );
       return;
     }

@@ -7,9 +7,9 @@
     "searchLanguage": "ค้นหาภาษา",
     "condense": "ย่อแถบด้านข้าง",
     "expand": "ขยายแถบด้านข้าง",
-    "menu": "Open navigation menu",
-    "loading": "Loading...",
-    "navigation": "Main navigation"
+    "menu": "เปิดเมนูการนำทาง",
+    "loading": "กำลังโหลด...",
+    "navigation": "การนำทางหลัก"
   },
   "nav": {
     "dashboard": "แดชบอร์ด",
@@ -242,7 +242,7 @@
     "subtitle": "คำบรรยาย",
     "exifData": "ข้อมูล EXIF",
     "noExif": "ไม่พบข้อมูล EXIF",
-    "loading": "Loading media info..."
+    "loading": "กำลังโหลดข้อมูลสื่อ..."
   },
   "imageCompress": {
     "title": "บีบอัดรูปภาพ",

@@ -356,7 +356,10 @@ function installerExtensions(): string[] {
  */
 function isInstallerFileName(name: string): boolean {
   if (name === '' || name.includes('\0')) return false;
-  if (path.basename(name) !== name) return false;
+  // Check for Windows/Unix path separators (including backslash on all platforms for security)
+  if (name.includes('/') || name.includes('\\')) return false;
+  const base = path.basename(name);
+  if (base !== name) return false;
   const lower = name.toLowerCase();
   return installerExtensions().some((ext) => lower.endsWith(ext));
 }
