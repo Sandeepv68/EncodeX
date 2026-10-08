@@ -16,10 +16,17 @@
  * `<main>` landmark (see the Phase 5.3 axe-all-pages suite). `color-contrast`
  * stays disabled: jsdom resolves every color to its empty/initial value, so
  * axe can never observe a real pair here.
+ *
+ * `axe.run` is async, so a pending React timer (e.g. an MUI dialog's
+ * transition) can fire a state update while the scan awaits and outside any
+ * act scope -- React logs "not wrapped in act(...)", which the strict
+ * crash-tripwire treats as a test fault. The scan therefore runs inside
+ * act(); assertions stay outside so violation messages surface unchanged.
  */
 
 import axe from 'axe-core';
 import { expect } from 'vitest';
+import { act } from '@testing-library/react';
 
 const DEFAULT_DISABLED_RULES = [
   'bypass',
@@ -49,9 +56,11 @@ export interface AxeAssertOptions {
  */
 export async function assertNoAxeViolations(container: HTMLElement, options: AxeAssertOptions = {}): Promise<void> {
   const disabled = options.strict ? DEFAULT_DISABLED_RULES.filter((id) => !STRICT_REENABLED_RULES.includes(id)) : DEFAULT_DISABLED_RULES;
-  const results = await axe.run(container, {
-    rules: Object.fromEntries(disabled.map((id) => [id, { enabled: false }])),
-  });
+  const results = await act<axe.AxeResults>(async () =>
+    axe.run(container, {
+      rules: Object.fromEntries(disabled.map((id) => [id, { enabled: false }])),
+    }),
+  );
   const messages = results.violations.map(
     (v) => `${v.id}: ${v.help} -> ${v.nodes.map((n) => `${n.target.join(' ')} (${n.html})`).join(', ')}`,
   );

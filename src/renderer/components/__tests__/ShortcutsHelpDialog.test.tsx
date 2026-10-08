@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { act, render, screen, fireEvent } from '@testing-library/react';
 import { SHORTCUT_SECTIONS, SHORTCUTS } from '../../constants/shortcuts';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
 import ShortcutsHelpDialog from '../ShortcutsHelpDialog';
@@ -42,6 +42,13 @@ describe('ShortcutsHelpDialog', () => {
 
   it('has no axe violations', async () => {
     const { container } = render(<ShortcutsHelpDialog open onClose={vi.fn()} />);
-    await assertNoAxeViolations(container);
+    await act(async () => {
+      // The dialog's Grow enter-transition fires from a ~225ms timer; keep the
+      // act scope open past it so the Transition's setState can't land outside
+      // act (the strict crash-tripwire treats that console.error as a fault),
+      // then scan the settled tree.
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      await assertNoAxeViolations(container);
+    });
   });
 });
