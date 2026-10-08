@@ -26,8 +26,7 @@
  * Keep the guard in `src/renderer/__tests__/csp.test.ts` green when this string changes.
  */
 const POLICY_PREFIX = "default-src 'self'";
-const POLICY_SUFFIX =
-  "style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self' aptabase-ipc:";
+const POLICY_SUFFIX = "style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self' aptabase-ipc:";
 
 /** The strict policy shipped in production builds. @const {string} */
 export const CONTENT_SECURITY_POLICY = `${POLICY_PREFIX}; script-src 'self'; ${POLICY_SUFFIX}`;
