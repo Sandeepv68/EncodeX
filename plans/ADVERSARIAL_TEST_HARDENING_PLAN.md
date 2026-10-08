@@ -141,6 +141,30 @@ for a decision rather than a drive-by patch; the follow-up chose the two flagged
   allowance is preserved (same string, same semantics; dev, `file://`, and splash are now all
   covered by the header). The `allowed-errors.json` consoleWarn entry for the advisory has been
   deleted; the warning no longer fires.
+  **Regression found and fixed the next day (2026-10-08): the header change made every dev launch a
+  blank window.** The `<meta>` tag it replaced only governed the packaged `file://` document, but
+  `session.webRequest.onHeadersReceived` fires for *every* response in the session -- including the
+  Vite dev server -- so in `npm run electron:dev` the strict `script-src 'self'` refused the inline
+  `@vitejs/plugin-react` refresh preamble that Vite injects into `index.html`. The refusal logged
+  `Executing inline script violates ... directive 'script-src 'self''`, the module graph then died on
+  an uncaught `@vitejs/plugin-react can't detect preamble. Something is wrong.` thrown from the first
+  transformed module (`components/SelectArrowIcon.tsx`), and React never mounted: white window, no
+  error UI, no tripwire -- every suite in this plan runs against the built `dist/renderer` bundle,
+  which contains no inline scripts, so none of them could see it. Reproduced and attributed by
+  relaunching Electron under `--enable-logging` and reading the renderer console, which is exactly
+  the "silent white page has no error surface" gap this plan keeps flagging (see 3.4 finding 1).
+  Fix keeps production byte-identical: `src/shared/csp.ts` now also exports
+  `DEV_CONTENT_SECURITY_POLICY` (the same policy with `script-src 'self' 'unsafe-inline'`),
+  `installContentSecurityPolicy(session, { dev })` selects which one to emit, and
+  `src/main/index.ts` passes `dev: isDevMode()` so the relaxation exists only in development mode --
+  it can never reach a packaged build, because the packaged window loads `file://` under the strict
+  string. Guards added so the split cannot silently collapse: both `csp.test.ts` files now pin the
+  production `script-src` to exactly `script-src 'self'`, assert the dev variant carries
+  `'unsafe-inline'`, assert every non-`script-src` directive is identical between the two strings
+  (a divergence there would be a silent policy drift), and assert production never gains
+  `'unsafe-inline'`. Verified end-to-end both directions: under `--enable-logging` the dev launch
+  logs no CSP violation, no preamble error, and reaches `Dashboard rendered`; the strict string is
+  unchanged, so the Electron security advisory and the B8 font guard stay satisfied.
 - **The unit tier now runs the hostile-preload sweep (2026-10-07).** Follow-up 7 is closed:
   `src/test-utils/hostile-api.ts` + `src/renderer/__tests__/hostile-bridge-matrix.test.tsx` (12
   tests) mirror the E2E matrix (`e2e/mocks/hostile-preload.js`): all seven modes (healthy,
