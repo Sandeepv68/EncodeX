@@ -64,6 +64,8 @@ const defaults = {
   closeRequestedSubscribers: 0,
   termsRejectCalls: 0,
   pendingInstallResult: null,
+  mcpSettings: { enabled: false, port: 8765, token: '' },
+  mcpSetCalls: [],
 };
 
 const state = JSON.parse(JSON.stringify(defaults));
