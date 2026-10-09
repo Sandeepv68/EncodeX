@@ -19,6 +19,9 @@
  *    all sessions are torn down on server close. Requests without a session id
  *    are served statelessly (a fresh transport + server per request), so
  *    clients that do not keep a session id are not rejected.
+ *  - Protocol-version tolerant: an `MCP-Protocol-Version` this build's SDK does
+ *    not recognize is downgraded to the newest supported version, so the
+ *    transport falls back instead of answering 400.
  */
 
 import * as http from 'http';
@@ -26,6 +29,7 @@ import type { Server } from 'http';
 import { randomUUID } from 'crypto';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { SUPPORTED_PROTOCOL_VERSIONS, LATEST_PROTOCOL_VERSION } from '@modelcontextprotocol/sdk/types.js';
 import { Logger } from '../../shared/logger';
 import { LOG_MCP_HTTP_STARTED, LOG_MCP_HTTP_START_FAILED, LOG_MCP_HTTP_STOPPED, LOG_MCP_HTTP_REJECTED } from '../../shared/log-constants';
 import type { McpSettings } from './settings';
@@ -108,6 +112,32 @@ function isAuthorized(req: http.IncomingMessage, token: string): boolean {
     diff |= expected.charCodeAt(i) ^ header.charCodeAt(i);
   }
   return diff === 0;
+}
+
+/**
+ * Rewrites an `MCP-Protocol-Version` header the bundled SDK does not know to
+ * the newest version this build does support.
+ *
+ * The SDK rejects any post-initialize request whose `MCP-Protocol-Version` is
+ * not in {@link SUPPORTED_PROTOCOL_VERSIONS} with a 400. Because this build pins
+ * the SDK, a client speaking a newer MCP revision (ahead of
+ * `LATEST_PROTOCOL_VERSION`) would otherwise fail every follow-up call.
+ * Downgrading the header to `LATEST_PROTOCOL_VERSION` lets the transport accept
+ * the request and keeps its version handling consistent; the JSON-RPC surface
+ * this server exposes is unaffected. Both `req.headers` and `req.rawHeaders`
+ * are updated, because the HTTP transport materializes the web `Request` headers
+ * from `rawHeaders`.
+ * @param {http.IncomingMessage} req - Incoming request (mutated in place).
+ */
+function normalizeIncomingProtocolVersion(req: http.IncomingMessage): void {
+  const raw = req.headers['mcp-protocol-version'];
+  const version = Array.isArray(raw) ? raw[0] : raw;
+  if (!version || SUPPORTED_PROTOCOL_VERSIONS.includes(version)) return;
+  req.headers['mcp-protocol-version'] = LATEST_PROTOCOL_VERSION;
+  for (let i = 0; i < req.rawHeaders.length; i += 2) {
+    if (req.rawHeaders[i].toLowerCase() === 'mcp-protocol-version') req.rawHeaders[i + 1] = LATEST_PROTOCOL_VERSION;
+  }
+  log.warn(LOG_MCP_HTTP_REJECTED, 'unsupported protocol version, falling back from', version);
 }
 
 /**
@@ -213,6 +243,9 @@ function createRequestHandler(
     }
 
     const sessionId = typeof req.headers['mcp-session-id'] === 'string' ? req.headers['mcp-session-id'] : undefined;
+    // Tolerate a protocol revision newer than the pinned SDK supports (see
+    // normalizeIncomingProtocolVersion) before the transport validates it.
+    normalizeIncomingProtocolVersion(req);
     const id = sessionId;
     const existing = id ? sessions.get(id) : undefined;
 

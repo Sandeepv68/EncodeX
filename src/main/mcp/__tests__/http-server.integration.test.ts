@@ -134,6 +134,27 @@ describe('embedded MCP HTTP server', () => {
     expect(listBody).toContain('"name":"ping"');
   });
 
+  it('serves a request whose MCP-Protocol-Version is newer than the SDK supports', async () => {
+    // The bundled SDK rejects any unrecognized `MCP-Protocol-Version` with a
+    // 400; the server drops it so the transport falls back to its negotiated
+    // version instead of failing every follow-up call from a newer client.
+    expectAppLog('warn', 'main/mcp/http-server');
+    const res = await fetch(baseUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+        Authorization: `Bearer ${TOKEN}`,
+        'MCP-Protocol-Version': '2026-07-28',
+      },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 3, method: 'tools/list', params: {} }),
+    });
+    expect(res.status).toBe(200);
+    const body = await res.text();
+    expect(body).toContain('"tools"');
+    expect(body).toContain('"name":"ping"');
+  });
+
   it('returns 405 for unsupported methods', async () => {
     expectAppLog('warn', 'main/mcp/http-server');
     const res = await fetch(baseUrl, {
