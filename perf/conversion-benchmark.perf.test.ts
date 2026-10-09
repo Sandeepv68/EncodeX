@@ -45,14 +45,6 @@ function runFfmpeg(args: string[], timeoutMs = 120_000): Promise<{ code: number;
   });
 }
 
-function fileExists(p: string): boolean {
-  try {
-    return fs.statSync(p).size > 0;
-  } catch {
-    return false;
-  }
-}
-
 interface ConversionResult {
   codec: string;
   durationMs: number;

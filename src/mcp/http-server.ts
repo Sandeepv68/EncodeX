@@ -21,7 +21,6 @@
 import { randomBytes } from 'crypto';
 import { runMcpHttpServer } from './http';
 
-const TOKEN_FLAGS = ['--token', '--token='] as const;
 const NO_AUTH_FLAGS = ['--no-auth', '--noauth'] as const;
 
 function argValue(argv: string[], flag: string): string | undefined {

@@ -61,7 +61,7 @@ function installObserverProbe(): ObserverProbe {
   class StubResizeObserver {
     private readonly record: { connected: boolean };
 
-    constructor() {
+    constructor(_callback?: ResizeObserverCallback) {
       this.record = { connected: true };
       state.push(this.record);
     }

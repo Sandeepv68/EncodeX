@@ -620,19 +620,6 @@ function updateDirPath(): string {
 }
 
 /**
- * Returns the path to the update cache directory, creating it if necessary.
- *
- * @returns {string} Absolute path of the update directory.
- */
-function getUpdateDir(): string {
-  const dir = updateDirPath();
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  return dir;
-}
-
-/**
  * The single choke point for anything that will reach `shell.openPath`.
  *
  * Accepts a value only when it is a usable OS string, a plain file name
@@ -944,7 +931,7 @@ function downloadFile(url: string, filename: string, win: BrowserWindow, digest?
       reject(new Error(`Refusing to download an asset named ${filename}`));
       return;
     }
-    if (!isAllowedDownloadUrl(url)) {
+    if (!isAllowedDownloadUrl(url) || !url.startsWith('https://')) {
       log.warn(LOG_UPDATER_REJECTED_REDIRECT, url);
       reject(new Error('Refusing to download the update from an untrusted host'));
       return;
