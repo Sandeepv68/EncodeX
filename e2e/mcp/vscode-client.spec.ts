@@ -13,14 +13,26 @@
  *
  * This is the tier-A (node) half of the VS Code story; the visible VS Code UI
  * drive is W9 (`e2e/mcp/vscode-ui.spec.ts`, real tier).
+ *
+ * Beyond the session handshake, this spec also runs the *entire* real-ffmpeg
+ * core tool suite — `convert_media`, `extract_audio`, `compress_image`,
+ * `cut_video`, `batch_convert`, `remux_media` (plain + subtitle/thumbnail/
+ * chapters), `demux_media`, and the error-code contracts — over the exact
+ * loopback endpoint `.vscode/mcp.json` declares. That is the same wire VS Code
+ * uses: VS Code 1.141 surfaces MCP tools only through Copilot Chat (no
+ * deterministic GUI "run tool" path), so the full feature matrix is exercised
+ * at the client-contract level while W9 proves the live session reachable from
+ * the VS Code server picker.
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import * as fs from 'fs';
-import { connectHttp, call } from './client';
+import * as os from 'os';
+import * as path from 'path';
+import { connectHttp, call, runCoreSuite } from './client';
 import type { McpHandle } from './client';
-import { rawHttp, startHttpServer, stopProcess, CORE_TOOLS, VSCODE_MCP_FIXTURE_PATH } from './harness';
-import type { HttpServerHarness } from './harness';
+import { rawHttp, startHttpServer, stopProcess, createMediaFixtures, CORE_TOOLS, VSCODE_MCP_FIXTURE_PATH } from './harness';
+import type { HttpServerHarness, MediaFixtures } from './harness';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
 const MCP_JSON_PATH = VSCODE_MCP_FIXTURE_PATH;
@@ -57,6 +69,7 @@ describe.runIf(IS_E2E)('VS Code MCP client contract (.vscode/mcp.json)', () => {
   let endpoint: VscodeEndpoint;
   let ownServer: HttpServerHarness | null = null;
   let handle: McpHandle | null = null;
+  let fx: MediaFixtures;
   let isOwnedInstance = false;
 
   beforeAll(async () => {
@@ -72,11 +85,17 @@ describe.runIf(IS_E2E)('VS Code MCP client contract (.vscode/mcp.json)', () => {
       isOwnedInstance = true;
     }
     handle = await connectHttp(endpoint.url, { retries: 5, timeoutMs: 20000, name: 'encodex-e2e-vscode-client' });
+    fx = createMediaFixtures(fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-mcp-vscode-')));
   }, 30000);
 
   afterAll(async () => {
     await handle?.close();
     if (ownServer) await stopProcess(ownServer.child);
+    try {
+      if (fx.dir) fs.rmSync(fx.dir, { recursive: true, force: true });
+    } catch {
+      /* best-effort cleanup */
+    }
   });
 
   it('records a valid loopback /mcp server on a 1024-65535 port', () => {
@@ -114,5 +133,9 @@ describe.runIf(IS_E2E)('VS Code MCP client contract (.vscode/mcp.json)', () => {
   it('answers a minimal initialize round-trip like a VS Code MCP session', async () => {
     const pong = await call<{ pong: boolean }>(handle!.client, 'ping', {});
     expect(pong.pong).toBe(true);
+  });
+
+  it('runs the full ffmpeg core suite (convert, cut, remux, demux, ...) over the VS Code endpoint', { timeout: 300000 }, async () => {
+    await runCoreSuite(handle!, fx, { mode: 'full', outDir: fx.outHttp });
   });
 });

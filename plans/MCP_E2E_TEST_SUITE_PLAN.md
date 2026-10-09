@@ -184,6 +184,18 @@ Node-env, cheap:
    only spawn when nothing is listening.
 3. The token value, when the setting is non-empty, round-trips through `mcpSetSettings`
    → server requires it (Tier B, mirrors W6-B below).
+4. **Full feature matrix over the VS Code wire**: run the entire real-ffmpeg core
+   suite (`runCoreSuite` in `e2e/mcp/client.ts`, `mode: 'full'`) against the exact
+   loopback endpoint `.vscode/mcp.json` declares — `convert_media`, `extract_audio`,
+   `compress_image`, `cut_video`, `batch_convert`, `remux_media` (plain + subtitle/
+   thumbnail/chapters), `demux_media`, the `AUXILIARY_INPUT_NOT_FOUND` /
+   `INCOMPATIBLE_CONTAINER` / `STREAM_NOT_FOUND` error contracts, and the
+   `encodex://` resources + prompts. This is the deterministic end-to-end delivery of
+   "file conversions, cut, remux, demux, etc. from VS Code": VS Code 1.141 surfaces
+   MCP tools only through Copilot Chat (no GUI "run tool" quick-pick — verified by
+   palette + action-menu probe on 1.141), so the feature matrix is exercised over the
+   identical wire VS Code uses while W9 proves the live session in the VS Code server
+   picker.
 
 ### W7 — Settings UI e2e (two tiers)
 
@@ -243,6 +255,12 @@ client:
 5. Interact through raw mouse coordinates on the Monaco list rows: Playwright's
    actionability gate flakes on those rows (box-less / "not visible"), so the spec
    reads bounding boxes from the DOM and clicks their centres.
+6. **1.141 tool-invocation probe finding**: the running-server action menu exposes
+   `Stop Server` / `Restart Server` / `Show Configuration` / `Show Output` /
+   `Configure Model Access` / `Browse Resources` and no "Run Tool"; the palette has
+   `MCP: Add Server…`, `MCP: Browse Resources…`, `MCP: List Servers`, etc. Tools are
+   surfaced to Copilot Chat only. There is no deterministic GUI tool-run path, so the
+   real tool matrix stays in W6 (same wire) and W9 just proves the live session.
 
 ## Files to create / modify
 
