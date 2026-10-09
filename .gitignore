@@ -25,3 +25,4 @@ reports/
 .stryker/
 .stryker-tmp/
 .stryker-tmp-*/
+.vscode/

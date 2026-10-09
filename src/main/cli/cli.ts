@@ -277,7 +277,7 @@ export function createCliProgram(themeId: CliThemeId): Command {
 
   subcommand(program, 'batch', 'Convert multiple files through the queue')
     .argument('<inputs...>', 'Input files or glob patterns')
-    .option('--output-dir <dir>', 'Output directory')
+    .option('--output-dir <dir>', 'Output directory (created when missing)')
     .option('--suffix <suffix>', 'Output name suffix')
     .option('--concurrency <n>', 'Max parallel conversions', parseInt)
     .option('-v, --video-codec <codec>', 'Video encoder (e.g. libx264, copy)')

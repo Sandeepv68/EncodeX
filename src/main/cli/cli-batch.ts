@@ -7,6 +7,7 @@
  */
 
 import * as path from 'path';
+import * as fs from 'fs';
 import { JobQueue } from '../queue/job-queue';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { DEFAULT_SUFFIX } from '../../shared/media-options';
@@ -25,7 +26,7 @@ import type { CliThemeId } from '../cli-logo';
  * Parameters for a batch conversion run.
  * @interface RunBatchParams
  * @property {string[]} inputs - Input file paths or glob patterns.
- * @property {string} [outputDir] - Directory to write outputs into (`--output-dir`).
+ * @property {string} [outputDir] - Directory to write outputs into (`--output-dir`); created when missing.
  * @property {string} [suffix] - Suffix appended to each output stem (default `_encodex_converted`).
  * @property {ConvertCliFlags} flags - Conversion flags shared by every job.
  * @property {string} transcoder - Raw `--transcoder` backend value.
@@ -54,6 +55,10 @@ export async function runBatch(params: RunBatchParams): Promise<void> {
   const files = expandInputs(params.inputs);
   if (files.length === 0) {
     throw new CliExitError(`No input files matched: ${params.inputs.join(', ')}`, CLI_EXIT_NOT_FOUND);
+  }
+
+  if (params.outputDir) {
+    fs.mkdirSync(params.outputDir, { recursive: true });
   }
 
   const transcoderType = resolveTranscoderType(params.transcoder);

@@ -396,3 +396,10 @@ npm run mcp:smoke:electron   # electron . --mcp (requires a display / xvfb on Li
 ```
 
 Both assert the handshake, the 15-tool stdio catalogue, and a live `ping`. (The 6 GUI-parity tools are only reachable through the embedded HTTP server.)
+
+For the complete local surface — every stdio tool with real FFmpeg conversions, the standalone HTTP transport with its auth/topology guards, and the 21-tool embedded server exactly as `.vscode/mcp.json` dials it:
+
+```bash
+npm run build
+npm run mcp:full-test   # --skip-stdio / --skip-http / --skip-gui / --keep-tmp
+```

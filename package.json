@@ -20,6 +20,7 @@
     "mcp:http": "node dist/mcp/http-server.js",
     "mcp:smoke": "node scripts/mcp-smoke.mjs",
     "mcp:smoke:electron": "node scripts/mcp-smoke.mjs --electron",
+    "mcp:full-test": "node scripts/mcp-full-test.mjs",
     "electron:dev": "concurrently -k \"npm run dev:renderer\" \"wait-on http://localhost:5173 && tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && electron . --dev\"",
     "dev:start": "tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && concurrently -k \"npm run dev:renderer\" \"electron .\"",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"e2e/**/*.{ts,tsx}\" \"perf/**/*.{ts,tsx}\" \"eslint-rules/**/*.mjs\" \"scripts/**/*.{ts,tsx,mjs,js}\" \"*.{ts,mjs,js}\" \"bin/**/*.js\"",

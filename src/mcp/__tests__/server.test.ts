@@ -367,6 +367,20 @@ describe('createMcpServer tools', () => {
     }
   });
 
+  it('batch_convert creates a missing outputDir and lands outputs inside it', async () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-batch-mkdir-'));
+    fs.writeFileSync(path.join(dir, 'a.mp4'), 'x');
+    const outDir = path.join(dir, 'converted');
+    const session = await setup();
+    const parsed = JSON.parse(
+      textOf(await callTool(session, 'batch_convert', { inputs: [`${dir}/*.mp4`], outputDir: outDir, videoCodec: 'libx264' })),
+    );
+    await session.close();
+    expect(parsed.total).toBe(1);
+    expect(fs.existsSync(outDir)).toBe(true);
+    expect(path.dirname(parsed.jobs[0].output)).toBe(outDir);
+  });
+
   it('batch_convert reports FILE_NOT_FOUND when nothing matches', async () => {
     const session = await setup();
     const parsed = JSON.parse(textOf(await callTool(session, 'batch_convert', { inputs: ['C:\\ghost\\dir\\*.mp4'] })));

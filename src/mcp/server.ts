@@ -223,7 +223,7 @@ const cutSchema = z.object({
  */
 const batchSchema = conversionSchema.omit({ input: true, output: true, concurrency: true, transcoder: true }).extend({
   inputs: z.array(z.string().min(1)).min(1).describe('Input paths, directories, or glob patterns; one job per matched file.'),
-  outputDir: z.string().optional().describe('Directory to write all outputs into.'),
+  outputDir: z.string().optional().describe('Directory to write all outputs into (created when missing).'),
   suffix: z.string().optional().describe('Output file suffix (default `_encodex_converted`).'),
   concurrency: z
     .number()
@@ -604,6 +604,9 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         const { jobs } = buildBatchPlan(args.inputs, fields, args.outputDir, args.suffix);
         if (jobs.length === 0) {
           throw createError(ErrorCode.FILE_NOT_FOUND, `No input files matched: ${args.inputs.join(', ')}`);
+        }
+        if (args.outputDir) {
+          fs.mkdirSync(args.outputDir, { recursive: true });
         }
         if (args.concurrency !== undefined) {
           jobManager.setConcurrency(args.concurrency);
