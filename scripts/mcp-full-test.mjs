@@ -778,11 +778,10 @@ function electronUserDataDir() {
   return path.join(process.env.XDG_CONFIG_HOME ?? path.join(os.homedir(), '.config'), APP_USER_DATA_DIR);
 }
 
-async function isReachable(url, token) {
+async function isReachable(url) {
   try {
     await fetch(url, {
       method: 'GET',
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
       signal: AbortSignal.timeout(3000),
     });
     return true;
@@ -791,14 +790,13 @@ async function isReachable(url, token) {
   }
 }
 
-async function waitHttpReachable(url, token, timeoutMs) {
+async function waitHttpReachable(url, timeoutMs) {
   const deadline = Date.now() + timeoutMs;
   let lastError;
   while (Date.now() < deadline) {
     try {
       await fetch(url, {
         method: 'GET',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
         signal: AbortSignal.timeout(3000),
       });
       return;
@@ -885,7 +883,7 @@ async function runEmbeddedSuite(fx, endpoint, { ownsInstance }) {
 }
 
 async function runEmbeddedPhase(fx, endpoint) {
-  const reachable = await isReachable(endpoint.url, endpoint.token);
+  const reachable = await isReachable(endpoint.url);
   let settingsPath = null;
   let settingsBackup;
   let seeded = false;
@@ -916,7 +914,11 @@ async function runEmbeddedPhase(fx, endpoint) {
       ownsInstance = true;
       settingsPath = path.join(electronUserDataDir(), MCP_SETTINGS_FILE);
       const seededOk = await check('seed mcp-settings.json to enable the embedded server', () => {
-        if (fs.existsSync(settingsPath)) settingsBackup = fs.readFileSync(settingsPath, 'utf8');
+        try {
+          settingsBackup = fs.readFileSync(settingsPath, 'utf8');
+        } catch {
+          settingsBackup = undefined;
+        }
         fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
         fs.writeFileSync(settingsPath, JSON.stringify({ enabled: true, port: endpoint.port, token: endpoint.token }, null, 2), 'utf8');
         seeded = true;
@@ -937,7 +939,7 @@ async function runEmbeddedPhase(fx, endpoint) {
       const spawnFailure = new Promise((resolve, reject) => child.once('error', reject));
       const launched = await check('launch the EncodeX GUI with the embedded MCP server', async () => {
         assert(child.pid, 'no pid');
-        await Promise.race([waitHttpReachable(endpoint.url, endpoint.token, 90000), spawnFailure]);
+        await Promise.race([waitHttpReachable(endpoint.url, 90000), spawnFailure]);
       });
       if (!launched) {
         if (guiStderr.trim()) console.error(`  [gui stderr]\n${guiStderr.trim()}`);
