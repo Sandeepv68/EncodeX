@@ -40,9 +40,19 @@
 
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { tmpdir } from 'os';
+import { mkdtempSync } from 'node:fs';
+import { join } from 'node:path';
 import { IPC } from '../../../shared/ipc-channels';
 import { formatError } from '../../../shared/errors';
 import { expectAppLog } from '../../../test-utils/crash-tripwire';
+
+let mockDataDir: string | undefined;
+
+/** A unique, owner-only userData directory, never the shared OS temp root. */
+function mockUserDataDir(): string {
+  mockDataDir ??= mkdtempSync(join(tmpdir(), 'encodex-ipc-abuse-'));
+  return mockDataDir;
+}
 
 interface StubCall {
   boundary: string;
@@ -106,7 +116,7 @@ vi.mock('electron', () => ({
     on: () => undefined,
   },
   app: {
-    getPath: () => tmpdir(),
+    getPath: () => mockUserDataDir(),
     on: () => undefined,
     quit: () => undefined,
     getVersion: () => '0.0.0-test',
@@ -297,9 +307,9 @@ async function registerEverything(): Promise<RequestChannel[]> {
 
   const win = makeFakeWindow() as never;
   registerIpcHandlers(win);
-  registerMonitoringIpcBridge({ userDataDir: tmpdir(), consentEnabled: false });
-  registerAnalyticsIpcBridge({ userDataDir: tmpdir(), consentEnabled: false });
-  registerMcpSettingsIpc({ userDataDir: tmpdir() });
+  registerMonitoringIpcBridge({ userDataDir: mockUserDataDir(), consentEnabled: false });
+  registerAnalyticsIpcBridge({ userDataDir: mockUserDataDir(), consentEnabled: false });
+  registerMcpSettingsIpc({ userDataDir: mockUserDataDir() });
 
   return Object.entries(rec.handlers).map(([channel, handler]) => ({ channel, handler }));
 }

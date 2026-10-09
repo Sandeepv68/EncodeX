@@ -26,8 +26,16 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { tmpdir } from 'os';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { mkdtempSync, readFileSync } from 'fs';
+import { join, resolve } from 'path';
+
+let mockDataDir: string | undefined;
+
+/** A unique, owner-only userData directory, never the shared OS temp root. */
+function mockUserDataDir(): string {
+  mockDataDir ??= mkdtempSync(join(tmpdir(), 'encodex-channel-contract-'));
+  return mockDataDir;
+}
 
 const rec = vi.hoisted(() => ({
   /** Channels registered with `ipcMain.handle` (request/response). */
@@ -85,7 +93,7 @@ vi.mock('electron', () => ({
     },
   },
   app: {
-    getPath: () => tmpdir(),
+    getPath: () => mockUserDataDir(),
     on: vi.fn(),
     isPackaged: false,
     setLoginItemSettings: vi.fn(),
@@ -158,9 +166,9 @@ async function collectSurfaces(): Promise<{
   const { registerMcpSettingsIpc } = await import('../../mcp/settings-ipc');
 
   registerIpcHandlers(makeFakeWindow() as never);
-  registerMonitoringIpcBridge({ userDataDir: tmpdir(), consentEnabled: false });
-  registerAnalyticsIpcBridge({ userDataDir: tmpdir(), consentEnabled: false });
-  registerMcpSettingsIpc({ userDataDir: tmpdir() });
+  registerMonitoringIpcBridge({ userDataDir: mockUserDataDir(), consentEnabled: false });
+  registerAnalyticsIpcBridge({ userDataDir: mockUserDataDir(), consentEnabled: false });
+  registerMcpSettingsIpc({ userDataDir: mockUserDataDir() });
 
   await import('../../../preload/index');
 
