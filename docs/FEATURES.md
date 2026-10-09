@@ -278,6 +278,22 @@ Structured error system with typed error codes (`ErrorCode`), user-facing locali
 | Image    | `jpg`, `jpeg`, `png`, `webp`, `bmp`, `gif`, `tiff`, `tif`, `svg`, `ico`, `heic`, `heif`, `avif`, `ppm`, `pgm`, `pbm`, `xbm`                                                                                   |
 | Subtitle | `srt`, `ass`, `ssa`, `vtt`, `sub`, `idx`, `smi`                                                                                                                                                               |
 
+## 🔌 MCP Server
+
+EncodeX ships a built-in [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can drive the same media engine as the GUI and CLI.
+
+- **Standalone (stdio):** `encodex --mcp` / `node dist/mcp/index.js` exposes the 15 core tools.
+- **Embedded (Streamable HTTP):** toggled in **Settings → MCP Server** (`http://127.0.0.1:8765/mcp`, loopback-only, optional bearer token); adds 6 GUI-parity tools for **21** total.
+- **Resources:** `encodex://profiles`, `encodex://capabilities`, `encodex://codecs` (JSON), plus four interactive `ui://` views.
+- **Prompts:** `convert-video`, `extract-audio`, `compress-image`, `batch-convert`.
+- **Async jobs:** conversion tools return a `jobId` immediately; poll with `get_job` / `list_jobs`, cancel with `cancel_job`.
+
+### Interactive views (MCP Apps / SEP-1865)
+
+The server is MCP Apps compliant: it advertises the `io.modelcontextprotocol/ui` extension and serves four self-contained `ui://` views that compatible hosts render in a sandboxed iframe — a **live queue** dashboard, a **per-job** progress card, a **media-info** table, and a **conversion form**. Views pass data via `structuredContent` (never HTML interpolation) and can call tools back, including confirm-gated `cancel_job`. Hosts without the extension fall back to the JSON text payload. See [`MCP_UI.md`](MCP_UI.md).
+
+Full reference: [`MCP.md`](MCP.md) and [`MCP_UI.md`](MCP_UI.md).
+
 ## ✔️ Validation Utilities
 
 | Function                     | Description                | Accepted Formats                                      |

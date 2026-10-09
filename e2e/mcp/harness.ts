@@ -79,8 +79,16 @@ export const GUI_TOOLS = ['get_queue_state', 'cancel_all_jobs', 'get_timeline', 
 /** Every tool the embedded (GUI) server advertises. @const {string[]} */
 export const ALL_TOOLS = [...CORE_TOOLS, ...GUI_TOOLS];
 
-/** Resource URIs served by every surface. @const {string[]} */
-export const RESOURCE_URIS = ['encodex://profiles', 'encodex://capabilities', 'encodex://codecs'];
+/** Resource URIs served by every surface (JSON data + MCP App views). @const {string[]} */
+export const RESOURCE_URIS = [
+  'encodex://profiles',
+  'encodex://capabilities',
+  'encodex://codecs',
+  'ui://encodex/queue',
+  'ui://encodex/job',
+  'ui://encodex/media-info',
+  'ui://encodex/convert',
+];
 
 /** Prompt names rendered by every surface. @const {string[]} */
 export const PROMPT_NAMES = ['convert-video', 'extract-audio', 'compress-image', 'batch-convert'];

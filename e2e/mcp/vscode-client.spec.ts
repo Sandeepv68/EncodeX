@@ -29,7 +29,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { connectHttp, call, runCoreSuite } from './client';
+import { connectHttp, call, runCoreSuite, assertMcpAppsSurface, ALL_RESOURCE_URIS } from './client';
 import type { McpHandle } from './client';
 import { rawHttp, startHttpServer, stopProcess, createMediaFixtures, CORE_TOOLS, VSCODE_MCP_FIXTURE_PATH } from './harness';
 import type { HttpServerHarness, MediaFixtures } from './harness';
@@ -124,7 +124,8 @@ describe.runIf(IS_E2E)('VS Code MCP client contract (.vscode/mcp.json)', () => {
     for (const expected of CORE_TOOLS) expect(names).toContain(expected);
     for (const tool of tools) expect(String(tool.description ?? '').length).toBeGreaterThan(10);
     const { resources } = await handle!.client.listResources();
-    expect(resources.length).toBe(3);
+    expect(resources.map((resource) => resource.uri).sort()).toEqual(ALL_RESOURCE_URIS);
+    await assertMcpAppsSurface(handle!);
     const { prompts } = await handle!.client.listPrompts();
     expect(prompts.length).toBe(4);
     if (isOwnedInstance) expect(names.sort()).toEqual([...CORE_TOOLS].sort());

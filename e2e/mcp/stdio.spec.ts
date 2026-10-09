@@ -14,7 +14,18 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { connectStdio, waitForJob, call, callRaw, probeCodec, toolErrorCode, assertToolSurface, fileSizeBytes } from './client';
+import {
+  connectStdio,
+  waitForJob,
+  call,
+  callRaw,
+  probeCodec,
+  toolErrorCode,
+  assertToolSurface,
+  assertMcpAppsSurface,
+  fileSizeBytes,
+  ALL_RESOURCE_URIS,
+} from './client';
 import type { McpHandle } from './client';
 import { nodeStdioTarget, createMediaFixtures, CORE_TOOLS } from './harness';
 import type { MediaFixtures } from './harness';
@@ -254,14 +265,15 @@ describe.runIf(IS_E2E && HAS_MEDIA)('MCP stdio server (e2e)', () => {
       .toBe(false);
   });
 
-  it('resources list/read serve the three encodex:// documents', async () => {
+  it('resources list/read serve the encodex:// documents and MCP App views', async () => {
     const { resources } = await handle.client.listResources();
-    expect(resources.map((resource) => resource.uri).sort()).toEqual(['encodex://capabilities', 'encodex://codecs', 'encodex://profiles']);
-    for (const resource of resources) {
+    expect(resources.map((resource) => resource.uri).sort()).toEqual(ALL_RESOURCE_URIS);
+    for (const resource of resources.filter((candidate) => candidate.uri.startsWith('encodex://'))) {
       const { contents } = await handle.client.readResource({ uri: resource.uri });
       expect(contents.length).toBeGreaterThan(0);
       expect(() => JSON.parse((contents[0] as { text: string }).text)).not.toThrow();
     }
+    await assertMcpAppsSurface(handle);
   });
 
   it('prompts list/get render all four prompts', async () => {
