@@ -13,7 +13,8 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { createMcpServer } from '../server';
 import { FakeTranscoder } from './test-helpers';
-import { MCP_UI_EXTENSION_ID, MCP_UI_RESOURCE_MIME_TYPE, MCP_UI_VIEW_URIS } from '../../shared/mcp-ui';
+import { MCP_UI_EXTENSION_ID, MCP_UI_RESOURCE_MIME_TYPE, MCP_UI_VIEW_URIS, supportsMcpUi } from '../../shared/mcp-ui';
+import { findUiView, MCP_UI_VIEWS } from '../ui/registry';
 
 /**
  * Connected in-memory MCP session for UI tests.
@@ -149,5 +150,36 @@ describe('MCP Apps server surface', () => {
     } finally {
       await session.close();
     }
+  });
+});
+
+describe('MCP Apps view registry', () => {
+  it('resolves a registered view by URI and returns undefined for an unknown URI', () => {
+    const view = findUiView(MCP_UI_VIEW_URIS.queue);
+    expect(view?.uri).toBe(MCP_UI_VIEW_URIS.queue);
+    expect(findUiView('ui://encodex/does-not-exist')).toBeUndefined();
+  });
+
+  it('serves a self-contained HTML document for every registered view', () => {
+    for (const view of MCP_UI_VIEWS) {
+      expect(view.html(), `${view.uri} html`).toContain('<!doctype html>');
+    }
+  });
+});
+
+describe('supportsMcpUi', () => {
+  it('detects the MCP App MIME type in client capabilities', () => {
+    expect(supportsMcpUi({ mimeTypes: [MCP_UI_RESOURCE_MIME_TYPE] })).toBe(true);
+  });
+
+  it('rejects capabilities without the MCP App MIME type', () => {
+    expect(supportsMcpUi({ mimeTypes: ['text/html'] })).toBe(false);
+    expect(supportsMcpUi({})).toBe(false);
+  });
+
+  it('rejects non-object capabilities', () => {
+    expect(supportsMcpUi(null)).toBe(false);
+    expect(supportsMcpUi(undefined)).toBe(false);
+    expect(supportsMcpUi('io.modelcontextprotocol/ui')).toBe(false);
   });
 });

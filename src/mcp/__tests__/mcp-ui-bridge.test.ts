@@ -16,7 +16,7 @@ import { CONVERT_VIEW_HTML } from '../ui/views/convert';
  * @returns {string[]} The script sources (without tags).
  */
 function extractScripts(html: string): string[] {
-  const matches = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+  const matches = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script[^>]*>/gi)];
   if (matches.length === 0) throw new Error('view HTML has no inline script');
   return matches.map((match) => match[1]);
 }
@@ -55,6 +55,10 @@ function startHost(respond?: (name: string, args: Record<string, unknown>) => un
   const seen: Array<Record<string, unknown>> = [];
   const calls: Array<{ name: unknown; args: unknown }> = [];
   const onHostMessage = (event: MessageEvent): void => {
+    // Trust only same-origin messages. jsdom's postMessage leaves event.origin
+    // empty, so treat that as the local test window; any other origin is a
+    // foreign window and must not be serviced.
+    if (event.origin !== '' && event.origin !== window.location.origin) return;
     const message = event.data as Record<string, unknown> | null;
     if (!message || message.jsonrpc !== '2.0') return;
     seen.push(message);

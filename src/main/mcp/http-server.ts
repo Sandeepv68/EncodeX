@@ -159,6 +159,18 @@ function createRequestHandler(
     const sessionId = typeof req.headers['mcp-session-id'] === 'string' ? req.headers['mcp-session-id'] : undefined;
     const id = sessionId;
     const existing = id ? sessions.get(id) : undefined;
+
+    // An unknown session id (expired, torn down, or from a previous process)
+    // can never be serviced by a fresh transport: its Protocol is uninitialized,
+    // so the SDK would reject every non-initialize request. Per the MCP spec a
+    // missing session must yield 404 so the client re-initializes.
+    if (id && !existing) {
+      log.warn(LOG_MCP_HTTP_REJECTED, 'unknown session', id);
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ jsonrpc: '2.0', error: { code: -32001, message: 'Session not found' }, id: null }));
+      return;
+    }
+
     let transport = existing?.transport;
 
     if (!transport) {
@@ -185,7 +197,7 @@ function createRequestHandler(
       }
       transport = created;
       created.onclose = () => {
-        if (id) sessions.delete(id);
+        if (created.sessionId) sessions.delete(created.sessionId);
         void sessionServer.close().catch((err: Error) => log.warn(LOG_MCP_HTTP_REJECTED, 'session close failed:', err));
       };
       created.onerror = (err: Error) => log.warn(LOG_MCP_HTTP_REJECTED, 'transport error:', err);
