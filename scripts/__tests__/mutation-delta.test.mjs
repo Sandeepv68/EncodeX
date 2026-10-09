@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { computeMutationMetrics, evaluateMutationDelta, parseDelta } from '../mutation-delta.mjs';
+import { computeMutationMetrics, computeFileMetrics, evaluateMutationDelta, evaluateFileDeltas, parseDelta } from '../mutation-delta.mjs';
 
 function reportWith(statuses) {
   const files = {};
@@ -47,6 +47,55 @@ describe('computeMutationMetrics', () => {
   it('tolerates a missing files object', () => {
     expect(computeMutationMetrics({}).score).toBe(100);
     expect(computeMutationMetrics(null).total).toBe(0);
+  });
+});
+
+describe('computeFileMetrics', () => {
+  it('computes a score per file', () => {
+    const metrics = computeFileMetrics({
+      files: {
+        'src/a.ts': { mutants: [{ status: 'Killed' }, { status: 'Survived' }] },
+        'src/b.ts': { mutants: [{ status: 'Killed' }] },
+      },
+    });
+    expect(metrics['src/a.ts'].score).toBeCloseTo(50);
+    expect(metrics['src/b.ts'].score).toBeCloseTo(100);
+  });
+
+  it('tolerates a missing files object', () => {
+    expect(computeFileMetrics(null)).toEqual({});
+  });
+});
+
+describe('evaluateFileDeltas', () => {
+  const fileMetrics = computeFileMetrics(
+    reportWith(['Killed', 'Killed', 'Killed', 'Killed', 'Killed', 'Killed', 'Killed', 'Survived', 'Survived', 'Survived']),
+  );
+
+  it('fails only the files that fall more than delta below their floor', () => {
+    const baseline = { 'src/f0.ts': { score: 80 } };
+    const { failed, comparisons } = evaluateFileDeltas(
+      { 'src/f0.ts': { score: 70 }, 'src/f1.ts': { score: 90 }, 'src/f2.ts': { score: 50 } },
+      baseline,
+      2,
+    );
+    expect(failed).toBe(true);
+    expect(comparisons).toEqual([
+      { file: 'src/f0.ts', current: 70, floor: 78, status: 'fail' },
+      { file: 'src/f1.ts', current: 90, floor: null, status: 'new' },
+      { file: 'src/f2.ts', current: 50, floor: null, status: 'new' },
+    ]);
+  });
+
+  it('passes when no baseline exists', () => {
+    const { failed, comparisons } = evaluateFileDeltas(fileMetrics, undefined, 2);
+    expect(failed).toBe(false);
+    expect(comparisons.every((comparison) => comparison.status === 'new')).toBe(true);
+  });
+
+  it('passes when every file holds at or above its floor', () => {
+    const baseline = { 'src/f0.ts': { score: 80 } };
+    expect(evaluateFileDeltas({ 'src/f0.ts': { score: 78 } }, baseline, 2).failed).toBe(false);
   });
 });
 

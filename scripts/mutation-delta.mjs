@@ -58,6 +58,22 @@ export function computeMutationMetrics(report) {
 }
 
 /**
+ * Computes {@link computeMutationMetrics} per source file. A scoped CI run
+ * (only the files a PR touched) is compared against per-file baselines rather
+ * than the whole-project number, which a subset of files cannot be measured
+ * against.
+ * @param {object} report - Parsed report (`{ files: { [path]: { mutants } } }`).
+ * @returns {Object<string, object>} Metrics keyed by repo-relative path.
+ */
+export function computeFileMetrics(report) {
+  const result = {};
+  for (const [file, data] of Object.entries(report?.files ?? {})) {
+    result[file] = computeMutationMetrics({ files: { [file]: data } });
+  }
+  return result;
+}
+
+/**
  * Applies the delta rule: the current score may not fall more than `delta`
  * points below the baseline score. A missing baseline counts as "record
  * first, arm next run" and never fails.
@@ -73,6 +89,35 @@ export function evaluateMutationDelta(metrics, baseline, delta) {
   }
   const floor = baseline.score - delta;
   return { failed: current < floor, armed: true, current, floor };
+}
+
+/**
+ * Applies the delta rule per file: every file in the current report may not
+ * fall more than `delta` points below its recorded per-file score. Files the
+ * baseline has never seen are reported as `new` and never fail (they have no
+ * floor yet); files absent from the report are not compared (they were not
+ * mutated on this run).
+ * @param {Object<string, object>} fileMetrics - Result of {@link computeFileMetrics}.
+ * @param {Object<string, { score: number }> | undefined} baselineFiles - Per-file baseline entries.
+ * @param {number} delta - Maximum allowed drop in percentage points.
+ * @returns {{ failed: boolean, comparisons: Array<{ file: string, current: number, floor: number|null, status: string }> }}
+ */
+export function evaluateFileDeltas(fileMetrics, baselineFiles, delta) {
+  const comparisons = [];
+  let failed = false;
+  for (const [file, metrics] of Object.entries(fileMetrics)) {
+    const current = Math.round(metrics.score * 10) / 10;
+    const base = baselineFiles?.[file];
+    if (!base || typeof base.score !== 'number') {
+      comparisons.push({ file, current, floor: null, status: 'new' });
+      continue;
+    }
+    const floor = Math.round((base.score - delta) * 10) / 10;
+    const fileFailed = current < floor;
+    if (fileFailed) failed = true;
+    comparisons.push({ file, current, floor, status: fileFailed ? 'fail' : 'pass' });
+  }
+  return { failed, comparisons };
 }
 
 export function parseDelta(raw = process.env.MUTATION_DELTA) {
@@ -102,31 +147,58 @@ function loadBaseline(baselineFile) {
   }
 }
 
-function generateBaseline(metrics, baselineFile) {
+function generateBaseline(metrics, fileMetrics, baselineFile) {
+  const files = {};
+  for (const [file, entry] of Object.entries(fileMetrics)) {
+    files[file] = {
+      score: Math.round(entry.score * 10) / 10,
+      coveredScore: Math.round(entry.coveredScore * 10) / 10,
+      mutants: entry.total,
+      detected: entry.detected,
+    };
+  }
   const baseline = {
-    version: 1,
+    version: 2,
     updatedAt: new Date().toISOString(),
     source: 'Stryker reports/mutation/mutation.json',
     score: Math.round(metrics.score * 10) / 10,
     coveredScore: Math.round(metrics.coveredScore * 10) / 10,
     mutants: metrics.total,
     detected: metrics.detected,
+    files,
   };
   fs.mkdirSync(fileURLToPath(new URL('../mutation/', import.meta.url)), { recursive: true });
   fs.writeFileSync(baselineFile, JSON.stringify(baseline, null, 2) + '\n');
-  console.log(`Recorded mutation baseline -> ${baselineFile}`);
+  console.log(`Recorded mutation baseline -> ${baselineFile} (${Object.keys(files).length} file(s))`);
   return baseline;
 }
 
-function compareToBaseline(metrics, baseline) {
-  const { failed, armed, current, floor } = evaluateMutationDelta(metrics, baseline, parseDelta());
+function compareToBaseline(metrics, fileMetrics, baseline) {
+  const delta = parseDelta();
   console.log('');
   console.log('='.repeat(72));
-  console.log(`Mutation compare: score ${current.toFixed(1)}%, covered ${metrics.coveredScore.toFixed(1)}%`);
+  console.log(`Mutation compare: score ${metrics.score.toFixed(1)}%, covered ${metrics.coveredScore.toFixed(1)}%`);
   console.log('='.repeat(72));
   console.log(
     `  detected ${metrics.detected} / ${metrics.valid} valid mutants (${metrics.survived} survived, ${metrics.noCoverage} uncovered)`,
   );
+
+  if (baseline.files && typeof baseline.files === 'object') {
+    const { failed, comparisons } = evaluateFileDeltas(fileMetrics, baseline.files, delta);
+    const regressions = comparisons.filter((comparison) => comparison.status === 'fail');
+    const fresh = comparisons.filter((comparison) => comparison.status === 'new');
+    console.log(`  per-file compare over ${comparisons.length} file(s), delta ${delta} point(s)`);
+    for (const comparison of regressions) {
+      console.log(`    FAIL ${comparison.file}: ${comparison.current}% < floor ${comparison.floor}%`);
+    }
+    if (fresh.length > 0) console.log(`    ${fresh.length} file(s) not in the baseline yet (no floor)`);
+    console.log('='.repeat(72));
+    return failed;
+  }
+
+  // Legacy v1 baseline: a single whole-project score, only meaningful for a
+  // full-scope run.
+  const { failed, armed, current, floor } = evaluateMutationDelta(metrics, baseline, delta);
   if (armed) {
     console.log(`  baseline ${baseline.score.toFixed(1)}% -> floor ${floor.toFixed(1)}%`);
   } else {
@@ -139,18 +211,19 @@ function compareToBaseline(metrics, baseline) {
 const main = () => {
   const reportFile = fileURLToPath(new URL('../reports/mutation/mutation.json', import.meta.url));
   const baselineFile = fileURLToPath(new URL('../mutation/baseline.json', import.meta.url));
-  const metrics = computeMutationMetrics(loadReport(reportFile));
+  const report = loadReport(reportFile);
+  const metrics = computeMutationMetrics(report);
+  const fileMetrics = computeFileMetrics(report);
   if (process.argv.includes('--generate')) {
-    generateBaseline(metrics, baselineFile);
+    generateBaseline(metrics, fileMetrics, baselineFile);
     return;
   }
   const baseline = loadBaseline(baselineFile);
-  if (!baseline || typeof baseline.score !== 'number') {
-    generateBaseline(metrics, baselineFile);
-    console.log('No committed baseline existed; recorded this run as the reference (gate armed next run).');
+  if (!baseline) {
+    console.log('No committed baseline yet; nothing to compare (the weekly ratchet records it).');
     return;
   }
-  if (compareToBaseline(metrics, baseline)) {
+  if (compareToBaseline(metrics, fileMetrics, baseline)) {
     console.error('FAIL: mutation score dropped below the baseline floor.');
     process.exit(1);
   }

@@ -59,6 +59,8 @@
     "test:big-lists": "vitest run --config vitest.big-lists.config.ts --silent",
     "test:route-changes": "vitest run --config vitest.route-change.config.ts --silent",
     "test:mutate": "stryker run",
+    "test:mutation-scope": "node scripts/mutation-scope.mjs",
+    "test:mutation-merge": "node scripts/mutation-merge.mjs",
     "test:mutation-delta": "node scripts/mutation-delta.mjs",
     "test:mutation-baseline": "node scripts/mutation-delta.mjs --generate",
     "audit:gate": "node scripts/audit-gate.mjs",

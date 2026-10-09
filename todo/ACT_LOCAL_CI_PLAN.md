@@ -131,7 +131,7 @@ extras are marked ★.
 | `big-lists` | Test - big-list render budgets | |
 | `route-changes` | Test - 1,000 rapid route-change harness | |
 | `perf` | Test - Performance Benchmarks | |
-| `mutation` | Gate - Mutation score delta | ⚠ advisory, ~6h |
+| `mutation` | Gate - Mutation score delta | ⚠ advisory; now a `mutation-scope` → `test-mutation-delta` (matrix) → `mutation-gate` pipeline — the matrix/gate stages cannot run under act (see §5); local mutation = `npm run test:mutate` directly |
 | `coverage-per-file` | Report - Per-file coverage floors | informational (`continue-on-error`) |
 | `coverage-diff` | Gate - Diff coverage | needs only format+lint+typecheck; base-sha caveat §5 |
 
@@ -216,7 +216,7 @@ const STAGES = {
   'big-lists': ['test-big-lists'],
   'route-changes': ['test-route-changes'],
   perf: ['test-perf'],
-  mutation: ['test-mutation-delta'],
+  mutation: ['mutation-scope'], // plan-only: the matrix shards + gate can't run under act (see §5)
   'coverage-per-file': ['coverage-per-file'],
   'coverage-diff': ['coverage-diff'],
 
@@ -318,6 +318,14 @@ keep out of scope for now.)
   drift risk — don't use before a real push).
 - **`all` runs mutation (~6h, advisory) + flake (~90m)** — expected slow;
   prefer targeted stages.
+- **`mutation` stage is matrix-driven now (2026-10-09).** The gate is
+  `mutation-scope` → `test-mutation-delta` (matrix expanded from
+  `fromJSON(needs.mutation-scope.outputs.matrix)`, `if:
+  needs.mutation-scope.outputs.has_mutants`) → `mutation-gate`. act 0.2.89
+  cannot expand a matrix from a job output, so the shards/gate can't run
+  under act; the `mutation` stage maps to the plan-only `mutation-scope`
+  job. For real local mutation runs skip act entirely: `npm run test:mutate`
+  (full scope) or a scoped scratch via `npx stryker run --mutate "<files>"`.
 - **`coverage-diff` base-sha:** pins base via
   `github.event.pull_request.base.sha` — branch should be synced with
   `origin/main`, otherwise the gate sees an empty diff (see comment in
