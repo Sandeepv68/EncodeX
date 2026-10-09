@@ -173,9 +173,10 @@ Real-preload tier (add to `vitest.e2e.real.config.ts` include).
 
 Node-env, cheap:
 
-1. `.vscode/mcp.json` parses; defines `servers.encodex` with `type: "http"`,
-   loopback host, `/mcp` path, port in 1024-65535; any `Authorization` header, if
-   present, is `Bearer <token>`.
+1. The canonical VS Code config (`e2e/mcp/fixtures/vscode-mcp.json` — tracked,
+   because `.vscode/` is gitignored) parses; defines `servers.encodex` with
+   `type: "http"`, loopback host, `/mcp` path, port in 1024-65535; any
+   `Authorization` header, if present, is `Bearer <token>`.
 2. Spawn the standalone HTTP server on **exactly the configured port/URL** and confirm
    a handshake succeeds against it (guards the documented default `8765`).
    Implementation detail: if port 8765 is already a live EncodeX instance (player
@@ -233,8 +234,9 @@ client:
 2. Boot the standalone HTTP server with _no token_ on **exactly** the shipped
    `http://127.0.0.1:8765/mcp` (the `.vscode/mcp.json` URL has no `Authorization`).
 3. Launch that binary via Playwright `_electron` against a scratch workspace whose
-   `.vscode/mcp.json` is a verbatim copy of the repo's, with a throwaway
-   `--user-data-dir` pre-seeded with trust/update/telemetry off.
+   `.vscode/mcp.json` is a verbatim copy of the tracked fixture
+   (`e2e/mcp/fixtures/vscode-mcp.json`), with a throwaway `--user-data-dir`
+   pre-seeded with trust/update/telemetry off.
 4. Dismiss the onboarding overlay, drive the command palette to `MCP: List Servers`,
    and assert the `encodex` entry appears _sourced from `.vscode/mcp.json`_
    (previously `Stopped`; after `Start Server`, poll until it reads `Running`).
@@ -253,6 +255,7 @@ client:
 | `e2e/mcp/embedded-gui.spec.ts` (new)           | W5                                                                                     |
 | `e2e/mcp/vscode-client.spec.ts` (new)          | W6                                                                                     |
 | `e2e/mcp/vscode-ui.spec.ts` (new)              | W9 (visible VS Code UI drive)                                                          |
+| `e2e/mcp/fixtures/vscode-mcp.json` (new)       | canonical VS Code config (`.vscode/` is gitignored, so the contract is tracked here)   |
 | `e2e/mcp/gui-settings.spec.ts` (new)           | W7 Tier A                                                                              |
 | `e2e/mocks/preload.js` (edit)                  | MCP-settings seed/record controllers                                                   |
 | `e2e/mocks/control.ts` (edit)                  | `setMcpSettings` / `getMcpSetCalls` + snapshot field                                   |
@@ -290,6 +293,9 @@ client:
   config already).
 - **Port collisions** → ephemeral `--port 0` everywhere except the explicit 8765
   VS Code-contract test, which prefers the live instance before spawning.
+- **`.vscode/` gitignored** → the VS Code contract lives in a tracked fixture
+  (`e2e/mcp/fixtures/vscode-mcp.json`); specs read/copy that, never the repo's own
+  `.vscode/mcp.json`, so a fresh CI checkout stays green.
 - **Tier B cost** → each Tier B spec launches the GUI once per file (existing pattern);
   keep the Settings Tier B group to 1-2 tests.
 

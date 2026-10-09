@@ -1,13 +1,15 @@
 /**
  * @fileoverview W6 e2e spec for the `.vscode/mcp.json` client contract.
  *
- * Parses the shipped VS Code MCP config, asserts it describes a loopback `/mcp`
- * HTTP server on a 1024-65535 port, then dials `http://127.0.0.1:8765/mcp` the
- * way VS Code would: no bearer-token header (the config has none), a plain
- * Streamable-HTTP session. To stay deterministic on CI, where no EncodeX GUI is
- * running, a preferred live endpoint is used when one already answers and a
- * standalone server (started with `--no-auth` so the config's no-header client
- * is honoured verbatim) is spawned otherwise.
+ * Parses the canonical VS Code MCP config (tracked as the
+ * `e2e/mcp/fixtures/vscode-mcp.json` fixture, since `.vscode/` is gitignored),
+ * asserts it describes a loopback `/mcp` HTTP server on a 1024-65535 port, then
+ * dials `http://127.0.0.1:8765/mcp` the way VS Code would: no bearer-token
+ * header (the config has none), a plain Streamable-HTTP session. To stay
+ * deterministic on CI, where no EncodeX GUI is running, a preferred live
+ * endpoint is used when one already answers and a standalone server (started
+ * with `--no-auth` so the config's no-header client is honoured verbatim) is
+ * spawned otherwise.
  *
  * This is the tier-A (node) half of the VS Code story; the visible VS Code UI
  * drive is W9 (`e2e/mcp/vscode-ui.spec.ts`, real tier).
@@ -15,15 +17,13 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import * as fs from 'fs';
-import * as path from 'path';
 import { connectHttp, call } from './client';
 import type { McpHandle } from './client';
-import { getBuildPaths } from '../helpers';
-import { rawHttp, startHttpServer, stopProcess, CORE_TOOLS } from './harness';
+import { rawHttp, startHttpServer, stopProcess, CORE_TOOLS, VSCODE_MCP_FIXTURE_PATH } from './harness';
 import type { HttpServerHarness } from './harness';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
-const MCP_JSON_PATH = path.join(getBuildPaths().root, '.vscode', 'mcp.json');
+const MCP_JSON_PATH = VSCODE_MCP_FIXTURE_PATH;
 
 interface VscodeEndpoint {
   url: string;

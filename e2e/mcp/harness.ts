@@ -46,6 +46,14 @@ import type { McpSettings } from '../../src/shared/mcp-settings';
  */
 const MCP_SETTINGS_FILENAME = 'mcp-settings.json';
 
+/**
+ * Canonical VS Code MCP client config. `.vscode/` is gitignored (editor-local),
+ * so the shipped contract is tracked here instead and both the W6 and W9 specs
+ * read/copy it verbatim rather than the repo's own `.vscode/mcp.json`.
+ * @const {string}
+ */
+export const VSCODE_MCP_FIXTURE_PATH = path.join(__dirname, 'fixtures', 'vscode-mcp.json');
+
 /** The 15 tools registered by the core MCP server (`src/mcp/server.ts`). @const {string[]} */
 export const CORE_TOOLS = [
   'ping',

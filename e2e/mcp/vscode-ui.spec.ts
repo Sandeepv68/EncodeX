@@ -1,11 +1,12 @@
 /**
  * @fileoverview W9 e2e spec driving the *visible* VS Code MCP UI against the
- * shipped `.vscode/mcp.json`.
+ * canonical VS Code MCP config.
  *
  * Launches a real VS Code binary (`Code.exe`) with a throwaway user-data dir
  * pointed at a scratch workspace whose `.vscode/mcp.json` is a verbatim copy of
- * the repo's shipped one. A standalone EncodeX MCP HTTP server (no auth, on the
- * exact loopback port the config names) runs behind it. Then it drives the
+ * the canonical one (`e2e/mcp/fixtures/vscode-mcp.json`, tracked because
+ * `.vscode/` is gitignored). A standalone EncodeX MCP HTTP server (no auth, on
+ * the exact loopback port the config names) runs behind it. Then it drives the
  * command palette's `MCP: List Servers` quick pick: asserts the `encodex` entry
  * appears sourced from `.vscode/mcp.json`, and that selecting `Start Server`
  * flips its UI status from `Stopped` to `Running` - the user-visible proof that
@@ -23,7 +24,7 @@ import * as os from 'os';
 import * as path from 'path';
 import type { Page } from 'playwright';
 import { getBuildPaths } from '../helpers';
-import { startHttpServer, stopProcess } from './harness';
+import { startHttpServer, stopProcess, VSCODE_MCP_FIXTURE_PATH } from './harness';
 import type { HttpServerHarness } from './harness';
 
 const IS_REAL = process.env.E2E_REAL === '1';
@@ -156,7 +157,7 @@ describe.runIf(IS_REAL && !!VSCODE_EXECUTABLE)('MCP visible VS Code UI (.vscode/
 
     workspaceDir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-vscode-ws-'));
     fs.mkdirSync(path.join(workspaceDir, '.vscode'), { recursive: true });
-    fs.copyFileSync(path.join(getBuildPaths().root, '.vscode', 'mcp.json'), path.join(workspaceDir, '.vscode', 'mcp.json'));
+    fs.copyFileSync(VSCODE_MCP_FIXTURE_PATH, path.join(workspaceDir, '.vscode', 'mcp.json'));
 
     userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-vscode-udd-'));
     const settingsDir = path.join(userDataDir, 'User');
