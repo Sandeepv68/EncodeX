@@ -69,7 +69,7 @@
     "test:e2e:ci": "vitest run --config e2e/vitest.e2e.config.ts --silent=true",
     "test:e2e:real:ci": "vitest run --config e2e/vitest.e2e.real.config.ts --silent=true",
     "test:e2e:mcp": "npm run build && vitest run --config e2e/vitest.e2e.config.ts e2e/mcp e2e/specs/settings-mcp.spec.ts",
-    "test:e2e:mcp:real": "npm run build && vitest run --config e2e/vitest.e2e.real.config.ts e2e/mcp/embedded-gui.spec.ts",
+    "test:e2e:mcp:real": "npm run build && vitest run --config e2e/vitest.e2e.real.config.ts e2e/mcp/embedded-gui.spec.ts e2e/mcp/vscode-ui.spec.ts",
     "test:flake-detect": "node scripts/flake-detect.mjs",
     "fetch:binaries": "node scripts/fetch-media-binaries.mjs",
     "gen:sentry-config": "node scripts/generate-sentry-config.mjs",

@@ -20,19 +20,19 @@ assertions. Orchestration (chosen): **existing Vitest + Playwright `_electron` s
 
 ## Current state (what already exists, so we extend, not rebuild)
 
-| Asset | Location | What it covers |
-|---|---|---|
-| Tool registry (15 core tools, 3 resources, 4 prompts) | `src/mcp/server.ts` | `ping convert_media get_job list_jobs cancel_job get_media_info list_capabilities list_profiles get_profile compress_image extract_audio cut_video batch_convert remux_media demux_media` + `encodex://{profiles,capabilities,codecs}` + 4 prompts |
-| GUI-parity tools (+6) | `src/main/mcp/gui-tools.ts` | `get_queue_state cancel_all_jobs get_timeline extract_preview get_system_info check_for_updates` |
-| stdio entry/runner | `src/mcp/index.ts`, `src/mcp/run.ts` | fd 0/1 transport (Windows/Electron-safe) |
-| HTTP entry/handler | `src/mcp/http-server.ts`, `src/mcp/http.ts` | Streamable-HTTP, bearer auth, loopback/DNS-rebinding guards, session caps, body caps |
-| Settings persistence + IPC | `src/main/mcp/settings.ts`, `settings-ipc.ts`, `src/shared/mcp-settings.ts` | `mcp-settings.json` (`enabled/port/token`), clamps 1024-65535, IPC channels |
-| VS Code client config | `.vscode/mcp.json` | `encodex` → `http://127.0.0.1:8765/mcp` |
-| MCP fork tests | `src/mcp/__tests__/*.test.ts` | In-memory, **fake transcoders**, process-free |
-| Smoke/full scripts | `scripts/mcp-smoke.mjs`, `scripts/mcp-full-test.mjs` | Real media + real servers, but **custom assertion harness, not CI-gated, not in Vitest** |
-| GUI e2e suite | `e2e/specs/*.spec.ts`, `e2e/cli.spec.ts` | Playwright `_electron` Tier A (mock preload) + Tier B (real preload) |
-| E2E infra | `e2e/helpers.ts`, `e2e/fixtures/{app,tripwire,tripwire-setup,boot-budget}.ts`, `e2e/mocks/{preload,control}.js` | launch/teardown, crash tripwire, mock API control |
-| E2E configs | `e2e/vitest.e2e.config.ts`, `e2e/vitest.e2e.real.config.ts` | Vitest orchestrator; `fileParallelism:false`; tripwire setup; retry in CI |
+| Asset                                                 | Location                                                                                                        | What it covers                                                                                                                                                                                                                                     |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tool registry (15 core tools, 3 resources, 4 prompts) | `src/mcp/server.ts`                                                                                             | `ping convert_media get_job list_jobs cancel_job get_media_info list_capabilities list_profiles get_profile compress_image extract_audio cut_video batch_convert remux_media demux_media` + `encodex://{profiles,capabilities,codecs}` + 4 prompts |
+| GUI-parity tools (+6)                                 | `src/main/mcp/gui-tools.ts`                                                                                     | `get_queue_state cancel_all_jobs get_timeline extract_preview get_system_info check_for_updates`                                                                                                                                                   |
+| stdio entry/runner                                    | `src/mcp/index.ts`, `src/mcp/run.ts`                                                                            | fd 0/1 transport (Windows/Electron-safe)                                                                                                                                                                                                           |
+| HTTP entry/handler                                    | `src/mcp/http-server.ts`, `src/mcp/http.ts`                                                                     | Streamable-HTTP, bearer auth, loopback/DNS-rebinding guards, session caps, body caps                                                                                                                                                               |
+| Settings persistence + IPC                            | `src/main/mcp/settings.ts`, `settings-ipc.ts`, `src/shared/mcp-settings.ts`                                     | `mcp-settings.json` (`enabled/port/token`), clamps 1024-65535, IPC channels                                                                                                                                                                        |
+| VS Code client config                                 | `.vscode/mcp.json`                                                                                              | `encodex` → `http://127.0.0.1:8765/mcp`                                                                                                                                                                                                            |
+| MCP fork tests                                        | `src/mcp/__tests__/*.test.ts`                                                                                   | In-memory, **fake transcoders**, process-free                                                                                                                                                                                                      |
+| Smoke/full scripts                                    | `scripts/mcp-smoke.mjs`, `scripts/mcp-full-test.mjs`                                                            | Real media + real servers, but **custom assertion harness, not CI-gated, not in Vitest**                                                                                                                                                           |
+| GUI e2e suite                                         | `e2e/specs/*.spec.ts`, `e2e/cli.spec.ts`                                                                        | Playwright `_electron` Tier A (mock preload) + Tier B (real preload)                                                                                                                                                                               |
+| E2E infra                                             | `e2e/helpers.ts`, `e2e/fixtures/{app,tripwire,tripwire-setup,boot-budget}.ts`, `e2e/mocks/{preload,control}.js` | launch/teardown, crash tripwire, mock API control                                                                                                                                                                                                  |
+| E2E configs                                           | `e2e/vitest.e2e.config.ts`, `e2e/vitest.e2e.real.config.ts`                                                     | Vitest orchestrator; `fileParallelism:false`; tripwire setup; retry in CI                                                                                                                                                                          |
 
 **Gaps this plan closes**
 
@@ -99,7 +99,7 @@ Process lifecycle + fixture management, reused by every spec.
 - `callRaw(...)` → full result including `isError` for negative-path asserts.
 - `waitForJob(client, jobId, { status = 'done', timeout })`.
 - `assertToolSurface(client, { tools, resources, prompts })` shared by all three
-  transports so stdio/http/embedded assert the *same* contract.
+  transports so stdio/http/embedded assert the _same_ contract.
 
 ### W3 — Stdio spec (`e2e/mcp/stdio.spec.ts`)
 
@@ -223,31 +223,52 @@ Node-env, cheap:
 - Add `e2e/mcp/` to Prettier scope (package.json `format`/`format:check` already glob
   `e2e/**/*.{ts,tsx}` — verify).
 
+### W9 — Visible VS Code UI drive (`e2e/mcp/vscode-ui.spec.ts`)
+
+Tier B (real tier only), complements the tier-A W6 contract with the user-visible
+client:
+
+1. Resolve a real VS Code `Code.exe` (env `VSCODE_EXE` override, then standard
+   install paths); skip the whole describe when absent (no VS Code on Linux CI).
+2. Boot the standalone HTTP server with _no token_ on **exactly** the shipped
+   `http://127.0.0.1:8765/mcp` (the `.vscode/mcp.json` URL has no `Authorization`).
+3. Launch that binary via Playwright `_electron` against a scratch workspace whose
+   `.vscode/mcp.json` is a verbatim copy of the repo's, with a throwaway
+   `--user-data-dir` pre-seeded with trust/update/telemetry off.
+4. Dismiss the onboarding overlay, drive the command palette to `MCP: List Servers`,
+   and assert the `encodex` entry appears _sourced from `.vscode/mcp.json`_
+   (previously `Stopped`; after `Start Server`, poll until it reads `Running`).
+5. Interact through raw mouse coordinates on the Monaco list rows: Playwright's
+   actionability gate flakes on those rows (box-less / "not visible"), so the spec
+   reads bounding boxes from the DOM and clicks their centres.
+
 ## Files to create / modify
 
-| File | Change |
-|---|---|
-| `e2e/mcp/harness.ts` (new) | spawn/parse/seed/wait helpers + fixture assembly |
-| `e2e/mcp/client.ts` (new) | MCP SDK client wrappers + `assertToolSurface` + `waitForJob` |
-| `e2e/mcp/stdio.spec.ts` (new) | W3 |
-| `e2e/mcp/http-standalone.spec.ts` (new) | W4 incl. security probes + cross-session queue |
-| `e2e/mcp/embedded-gui.spec.ts` (new) | W5 |
-| `e2e/mcp/vscode-client.spec.ts` (new) | W6 |
-| `e2e/mcp/gui-settings.spec.ts` (new) | W7 Tier A |
-| `e2e/mocks/preload.js` (edit) | MCP-settings seed/record controllers |
-| `e2e/mocks/control.ts` (edit) | `setMcpSettings` / `getMcpSetCalls` + snapshot field |
-| `e2e/vitest.e2e.real.config.ts` (edit) | add `e2e/mcp/embedded-gui.spec.ts` (Tier B settings spec if separate file) to `include` |
-| `e2e/quarantine.json` (edit) | park new specs until green |
-| `package.json` (edit) | `test:e2e:mcp*` scripts |
-| `plans/MCP_E2E_TEST_SUITE_PLAN.md` (this file) | — |
+| File                                           | Change                                                                                 |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `e2e/mcp/harness.ts` (new)                     | spawn/parse/seed/wait helpers + fixture assembly                                       |
+| `e2e/mcp/client.ts` (new)                      | MCP SDK client wrappers + `assertToolSurface` + `waitForJob`                           |
+| `e2e/mcp/stdio.spec.ts` (new)                  | W3                                                                                     |
+| `e2e/mcp/http-standalone.spec.ts` (new)        | W4 incl. security probes + cross-session queue                                         |
+| `e2e/mcp/embedded-gui.spec.ts` (new)           | W5                                                                                     |
+| `e2e/mcp/vscode-client.spec.ts` (new)          | W6                                                                                     |
+| `e2e/mcp/vscode-ui.spec.ts` (new)              | W9 (visible VS Code UI drive)                                                          |
+| `e2e/mcp/gui-settings.spec.ts` (new)           | W7 Tier A                                                                              |
+| `e2e/mocks/preload.js` (edit)                  | MCP-settings seed/record controllers                                                   |
+| `e2e/mocks/control.ts` (edit)                  | `setMcpSettings` / `getMcpSetCalls` + snapshot field                                   |
+| `e2e/vitest.e2e.real.config.ts` (edit)         | add `e2e/mcp/embedded-gui.spec.ts` + `e2e/mcp/vscode-ui.spec.ts` (Tier B) to `include` |
+| `e2e/quarantine.json` (edit)                   | park new specs until green                                                             |
+| `package.json` (edit)                          | `test:e2e:mcp*` scripts                                                                |
+| `plans/MCP_E2E_TEST_SUITE_PLAN.md` (this file) | —                                                                                      |
 
 ## Verification
 
 - `npm run typecheck:e2e` — must pass.
 - `npm run format:check` — Prettier on `e2e/**`.
 - `npm run test:e2e:mcp` (stdio + HTTP + VS Code contract + Tier A settings) locally.
-- `npm run test:e2e:mcp:gui` (embedded + Tier B settings) locally; on Linux CI run
-  under xvfb like the existing Playwright specs.
+- `npm run test:e2e:mcp:real` (embedded + visible VS Code UI) locally; on Linux CI run
+  under xvfb like the existing Playwright specs (the VS Code UI spec self-skips when
+  no `Code.exe` is installed).
 - `npm run test:flake-detect` before de-quarantining.
 - No production `src/` changes expected; if a bug is found, fix in the same PR and
   record it in the plan's Result notes.
@@ -258,7 +279,7 @@ Node-env, cheap:
   `CHROMIUM_STABILITY_ARGS` + `taskkill /T` teardown; MCP stdio/HTTP Node spawns keep
   `--disable-gpu`-free normal args (they never open windows; `--mcp` already disables
   GPU in `src/main/index.ts`).
-- **Skill-level body caps / auth drift** → security probes assert status *codes only*,
+- **Skill-level body caps / auth drift** → security probes assert status _codes only_,
   tolerant of message wording.
 - **`check_for_updates` offline** → assert response shape when reachable, documented
   warning otherwise (existing repo precedent).
@@ -283,10 +304,10 @@ Node-env, cheap:
 
 ## Decisions
 
-| # | Decision | Rationale |
-|---|----------|-----------|
-| 1 | MCP SDK client over raw JSON-RPC | Same client VS Code uses; one contract, less drift |
-| 2 | Embedded spec in real-preload tier | Requires the real `--mcp` settings/IPC path |
-| 3 | Share one `assertToolSurface` across all three transports | Parity is a feature: stdio/http/gui must advertise identically |
-| 4 | Only status codes asserted on security probes | Guards wording drift while pinning policy |
-| 5 | No production code changes unless a bug is found | Suite is regression net, not refactor vehicle |
+| #   | Decision                                                  | Rationale                                                      |
+| --- | --------------------------------------------------------- | -------------------------------------------------------------- |
+| 1   | MCP SDK client over raw JSON-RPC                          | Same client VS Code uses; one contract, less drift             |
+| 2   | Embedded spec in real-preload tier                        | Requires the real `--mcp` settings/IPC path                    |
+| 3   | Share one `assertToolSurface` across all three transports | Parity is a feature: stdio/http/gui must advertise identically |
+| 4   | Only status codes asserted on security probes             | Guards wording drift while pinning policy                      |
+| 5   | No production code changes unless a bug is found          | Suite is regression net, not refactor vehicle                  |
