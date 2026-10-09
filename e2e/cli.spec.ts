@@ -150,7 +150,6 @@ describe.runIf(IS_E2E)('CLI mode (subcommands)', () => {
       batchA = generateTestMedia(batchDir, 'alpha.mp4');
       batchB = generateTestMedia(batchDir, 'beta.mp4');
       batchOut = path.join(tmpDir, 'batch-out');
-      fs.mkdirSync(batchOut, { recursive: true });
     }
   });
 

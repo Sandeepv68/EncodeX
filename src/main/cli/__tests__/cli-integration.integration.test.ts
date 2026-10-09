@@ -416,7 +416,6 @@ describe('runBatch (real FFmpeg)', () => {
       second,
     ]);
     const outDir = path.join(tmpDir, 'batch-out');
-    fs.mkdirSync(outDir, { recursive: true });
 
     await runBatch({
       inputs: [videoPath, second],

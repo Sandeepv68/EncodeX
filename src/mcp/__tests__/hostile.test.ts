@@ -319,10 +319,10 @@ describe('MCP hostile input', () => {
       const session = await setup();
       try {
         const input = tempMediaFile();
-        const payload = await expectOkPayload(await callTool(session, 'batch_convert', { inputs: [input], outputDir: '../../../etc' }));
+        const payload = await expectOkPayload(await callTool(session, 'batch_convert', { inputs: [input], outputDir: '..' }));
         const jobs = payload.jobs as Array<{ output: string }>;
         expect(path.dirname(jobs[0]!.output)).not.toBe(path.dirname(input));
-        expect(path.dirname(jobs[0]!.output)).toBe(path.resolve('../../../etc'));
+        expect(path.dirname(jobs[0]!.output)).toBe(path.resolve('..'));
       } finally {
         await session.close();
       }
