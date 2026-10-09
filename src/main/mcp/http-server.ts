@@ -14,9 +14,11 @@
  *  - Optional bearer token: when `token` is configured every request must send
  *    `Authorization: Bearer <token>` (401 otherwise). This keeps a local
  *    malicious web page (via DNS rebinding / CORS) from driving conversions.
- *  - Stateful sessions: each initialize creates a session via a random UUID;
- *    follow-up requests carry `Mcp-Session-Id`. DELETE closes a session; all
- *    sessions are torn down on server close.
+ *  - Session-optional: an initialize mints a session (random UUID) that
+ *    follow-up requests may carry via `Mcp-Session-Id`; DELETE closes it and
+ *    all sessions are torn down on server close. Requests without a session id
+ *    are served statelessly (a fresh transport + server per request), so
+ *    clients that do not keep a session id are not rejected.
  */
 
 import * as http from 'http';
@@ -109,6 +111,60 @@ function isAuthorized(req: http.IncomingMessage, token: string): boolean {
 }
 
 /**
+ * Cap on a session-less request body read by {@link readRequestBody} before it
+ * is replayed to the transport. MCP JSON-RPC requests are tiny; the cap only
+ * exists so a hostile local client cannot make us buffer unbounded data.
+ * @const {number}
+ */
+const MAX_REQUEST_BODY_BYTES = 1 * 1024 * 1024;
+
+/**
+ * Reads a request body into a UTF-8 string, capped. A session-less POST is
+ * inspected (to tell an `initialize`, which opens a session, from a stateless
+ * call) and replayed to the transport via its `parsedBody` option, so the
+ * stream is consumed exactly once.
+ * @param {http.IncomingMessage} req - Incoming request.
+ * @returns {Promise<{ ok: true; raw: string } | { ok: false; tooLarge: boolean }>}
+ *   The body text, or a failure describing why it could not be read.
+ */
+function readRequestBody(req: http.IncomingMessage): Promise<{ ok: true; raw: string } | { ok: false; tooLarge: boolean }> {
+  return new Promise((resolve) => {
+    const chunks: Buffer[] = [];
+    let size = 0;
+    let settled = false;
+    const settle = (result: { ok: true; raw: string } | { ok: false; tooLarge: boolean }): void => {
+      if (settled) return;
+      settled = true;
+      resolve(result);
+    };
+    req.on('data', (chunk: Buffer) => {
+      if (settled) return;
+      size += chunk.length;
+      if (size > MAX_REQUEST_BODY_BYTES) {
+        settle({ ok: false, tooLarge: true });
+        req.resume(); // drain the remainder so the socket can be reused
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on('end', () => settle({ ok: true, raw: Buffer.concat(chunks).toString('utf-8') }));
+    req.on('error', () => settle({ ok: false, tooLarge: false }));
+  });
+}
+
+/**
+ * True when a parsed JSON-RPC body (single message or batch) contains an
+ * `initialize` request — the one session-less request that still opens a
+ * stateful session so clients that keep a session id keep working.
+ * @param {unknown} message - Parsed JSON-RPC body.
+ * @returns {boolean} True when an initialize request is present.
+ */
+function bodyHasInitialize(message: unknown): boolean {
+  const items = Array.isArray(message) ? message : [message];
+  return items.some((item) => typeof item === 'object' && item !== null && (item as { method?: unknown }).method === 'initialize');
+}
+
+/**
  * Builds the request handler shared per lifetime of one MCP server settings
  * snapshot. Captures `settings.token` and the resolved port for rejection
  * decisions.
@@ -172,22 +228,62 @@ function createRequestHandler(
     }
 
     let transport = existing?.transport;
+    // Pre-parsed body for a session-less POST: we read it once (to tell an
+    // `initialize` from a stateless call) and replay it to the transport.
+    let parsedBody: unknown;
 
     if (!transport) {
+      // Session-less requests are served statelessly — a fresh transport +
+      // server per request, no session validation — except an `initialize`,
+      // which still mints a session so clients that keep the session id keep
+      // working. This is what lets clients that never echo `Mcp-Session-Id`
+      // (many remote hosts and inspectors) drive the server.
+      let stateful = false;
+      if (!id && req.method === 'POST') {
+        const body = await readRequestBody(req);
+        if (!body.ok) {
+          log.warn(LOG_MCP_HTTP_REJECTED, body.tooLarge ? 'request body too large' : 'unreadable request body');
+          res.writeHead(body.tooLarge ? 413 : 400, { 'Content-Type': 'application/json' });
+          res.end(
+            JSON.stringify({
+              jsonrpc: '2.0',
+              error: { code: body.tooLarge ? -32000 : -32700, message: body.tooLarge ? 'Payload too large' : 'Parse error' },
+              id: null,
+            }),
+          );
+          return;
+        }
+        try {
+          parsedBody = JSON.parse(body.raw);
+        } catch {
+          log.warn(LOG_MCP_HTTP_REJECTED, 'invalid JSON body');
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ jsonrpc: '2.0', error: { code: -32700, message: 'Parse error' }, id: null }));
+          return;
+        }
+        stateful = bodyHasInitialize(parsedBody);
+      }
+
+      // `sessionIdGenerator` is only set for a stateful (initialize) request;
+      // leaving it undefined makes the transport stateless, so it accepts
+      // non-initialize requests without demanding a session id. `keepAliveMs`
+      // keeps minimal server-initiated SSE streams alive without a prime event.
       const created = new StreamableHTTPServerTransport({
-        sessionIdGenerator: () => randomUUID(),
-        // Short keep-alive so SSE headers flush quickly after connect (keeps
-        // minimal server-initiated streams alive without a priming event).
+        ...(stateful ? { sessionIdGenerator: () => randomUUID() } : {}),
         keepAliveMs: 1000,
-        onsessioninitialized: (sid) => {
-          sessions.set(sid, { transport: created, server: sessionServer });
-        },
+        ...(stateful
+          ? {
+              onsessioninitialized: (sid: string) => {
+                sessions.set(sid, { transport: created, server: sessionServer });
+              },
+            }
+          : {}),
       });
       let sessionServer: McpServer;
       try {
         sessionServer = await serverFactory();
-        // Wire this session's transport into its own McpServer so incoming
-        // JSON-RPC messages are dispatched and responses flow back over SSE.
+        // Wire this transport into its own McpServer so incoming JSON-RPC
+        // messages are dispatched and responses flow back over SSE.
         await sessionServer.connect(created);
       } catch (err) {
         log.warn(LOG_MCP_HTTP_REJECTED, 'session start failed:', err);
@@ -196,15 +292,27 @@ function createRequestHandler(
         return;
       }
       transport = created;
-      created.onclose = () => {
-        if (created.sessionId) sessions.delete(created.sessionId);
-        void sessionServer.close().catch((err: Error) => log.warn(LOG_MCP_HTTP_REJECTED, 'session close failed:', err));
-      };
       created.onerror = (err: Error) => log.warn(LOG_MCP_HTTP_REJECTED, 'transport error:', err);
+      if (stateful) {
+        created.onclose = () => {
+          if (created.sessionId) sessions.delete(created.sessionId);
+          void sessionServer.close().catch((err: Error) => log.warn(LOG_MCP_HTTP_REJECTED, 'session close failed:', err));
+        };
+      } else {
+        // The throwaway server is torn down once its single response has been
+        // sent; nothing outlives the request (the shared engine holds state).
+        created.onclose = () => {
+          void sessionServer.close().catch((err: Error) => log.warn(LOG_MCP_HTTP_REJECTED, 'session close failed:', err));
+        };
+        res.on('close', () => {
+          void created.close().catch(() => undefined);
+          void sessionServer.close().catch(() => undefined);
+        });
+      }
     }
 
     try {
-      await transport.handleRequest(req, res);
+      await transport.handleRequest(req, res, parsedBody);
     } catch (err) {
       log.warn(LOG_MCP_HTTP_REJECTED, 'handler error:', err);
       if (!res.writableEnded) {

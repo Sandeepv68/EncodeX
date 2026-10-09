@@ -93,17 +93,45 @@ describe('embedded MCP HTTP server', () => {
   });
 
   it('permits the loopback origin (past auth/origin, honors protocol rules)', async () => {
-    // The bare GET clears the origin/token gate and is then refused by the MCP
-    // transport itself, which the server logs before answering.
-    expectAppLog('warn', 'main/mcp/http-server');
     const res = await fetch(baseUrl, {
       method: 'GET',
-      headers: { Authorization: `Bearer ${TOKEN}`, Origin: `http://127.0.0.1:${handle?.port()}` },
+      headers: { Authorization: `Bearer ${TOKEN}`, Accept: 'text/event-stream', Origin: `http://127.0.0.1:${handle?.port()}` },
     });
-    // The request passes the origin + token gate; the exact status is decided by
-    // the MCP protocol transport (a bare GET without a session can be 406/404).
+    // The request passes the origin + token gate and is served statelessly: a
+    // session-less GET opens an SSE stream (200) instead of being rejected.
     expect(res.status).not.toBe(401);
     expect(res.status).not.toBe(403);
+    await res.body?.cancel();
+  });
+
+  it('serves a session-less client statelessly (no Mcp-Session-Id)', async () => {
+    // A client that ignores the session id keeps sending every request without
+    // `Mcp-Session-Id`; each must still be answered rather than rejected with
+    // "Server not initialized".
+    const headers = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', Authorization: `Bearer ${TOKEN}` };
+
+    const initRes = await fetch(baseUrl, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'initialize',
+        params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'stateless-client', version: '1.0.0' } },
+      }),
+    });
+    expect(initRes.status).toBe(200);
+    await initRes.text();
+
+    const listRes = await fetch(baseUrl, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} }),
+    });
+    expect(listRes.status).toBe(200);
+    const listBody = await listRes.text();
+    expect(listBody).toContain('"tools"');
+    expect(listBody).toContain('"name":"ping"');
   });
 
   it('returns 405 for unsupported methods', async () => {
