@@ -16,6 +16,8 @@ export default defineConfig({
       'e2e/specs/ipc-abuse.spec.ts',
       'e2e/specs/ipc-events.spec.ts',
       'e2e/specs/hostile-bridge.spec.ts',
+      'e2e/mcp/embedded-gui.spec.ts',
+      'e2e/mcp/vscode-ui.spec.ts',
     ],
     exclude: ['node_modules', 'dist'],
     env: { E2E: 'true', E2E_REAL: '1', ENCODEX_TEST_MODE: '' },

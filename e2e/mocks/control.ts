@@ -19,6 +19,7 @@ import type {
   ThumbnailStrip,
   WaveformData,
 } from '../../src/shared/types';
+import type { McpSettings } from '../../src/shared/mcp-settings';
 
 export interface TestSnapshot {
   windowCalls: string[];
@@ -28,6 +29,7 @@ export interface TestSnapshot {
   queueState: { paused: boolean; concurrency: number };
   closeRequestedSubscribers: number;
   termsRejectCalls: number;
+  mcpSetCalls: McpSettings[];
 }
 
 function invoke(page: Page, method: string, args: unknown[]): Promise<unknown> {
@@ -65,6 +67,8 @@ export const mockApi = {
   setPlayerFrame: (page: Page, v: PlayerFrame | null) => invoke(page, 'setPlayerFrame', [v]),
   setWaveform: (page: Page, v: WaveformData | null) => invoke(page, 'setWaveform', [v]),
   setThumbnails: (page: Page, v: ThumbnailStrip | null) => invoke(page, 'setThumbnails', [v]),
+  setMcpSettings: (page: Page, v: McpSettings) => invoke(page, 'setMcpSettings', [v]),
+  getMcpSetCalls: (page: Page) => invoke(page, 'get', []).then((snapshot) => (snapshot as TestSnapshot).mcpSetCalls ?? []),
   emit: (page: Page, channel: string, payload: unknown) => invoke(page, 'emit', [channel, payload]),
   reset: (page: Page) => invoke(page, 'reset', []),
   get: (page: Page) => invoke(page, 'get', []) as Promise<TestSnapshot>,

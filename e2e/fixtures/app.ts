@@ -85,9 +85,12 @@ export function buildEnv(mock: boolean, extra: NodeJS.ProcessEnv = {}, terms: 'a
  * reports the window as hidden, so Chromium backgrounds and throttles the
  * renderer - the same condition that shows up as a renderer that dies on the
  * next `page.reload()`.
+ *
+ * Exported so the MCP e2e harness (`e2e/mcp/harness.ts`) can launch the
+ * embedded-server GUI with the same switches without duplicating the list.
  * @const {string[]} CHROMIUM_STABILITY_ARGS
  */
-const CHROMIUM_STABILITY_ARGS = [
+export const CHROMIUM_STABILITY_ARGS = [
   '--disable-gpu',
   '--disable-software-rasterizer',
   '--disable-backgrounding-occluded-windows',

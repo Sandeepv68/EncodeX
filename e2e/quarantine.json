@@ -1,4 +1,4 @@
-﻿{
+{
   "$comment": "Time-limited excuses for tests that fail intermittently. One entry per test. An entry must name either a whole spec file or an exact `file::describe > it` identifier, and must carry a tracking issue and a date. `test:flake-detect` fails the build when an entry lapses (21 days after addedOn unless expiresOn says otherwise), when it matches no test, or when a flaky test is not listed here. Delete the entry as soon as the test is fixed - a stale entry is itself a failure. Prefer fixing the flake over adding an entry.",
   "entries": []
 }

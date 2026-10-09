@@ -20,7 +20,12 @@ import { fileURLToPath } from 'url';
 import * as http from 'http';
 
 const DIST_MCP_HTTP = fileURLToPath(new URL('../../../dist/mcp/http-server.js', import.meta.url));
-const TYPICAL_RESPONSE_TIMEOUT_MS = 7000;
+// Startup-detection budget for a freshly spawned child. Generous on purpose:
+// under CI the shared runner cold-loads `dist/mcp/http-server.js` (a hefty
+// module graph) while vitest is also collecting v8 coverage, and that has been
+// observed to exceed a 7s budget without any real defect. This is not a
+// per-request timeout; the standalone servers answer in tens of milliseconds.
+const TYPICAL_RESPONSE_TIMEOUT_MS = 15000;
 
 /** Accept header the MCP Streamable HTTP client contract requires on POSTs. */
 const OPEN_ACCEPT = 'application/json, text/event-stream';
@@ -99,7 +104,7 @@ async function waitForReady(harness: HttpHarness, timeoutMs = TYPICAL_RESPONSE_T
 async function waitForToken(harness: HttpHarness, timeoutMs = TYPICAL_RESPONSE_TIMEOUT_MS): Promise<string> {
   await vi.waitFor(
     () => {
-      expect(harness.token, 'server never printed MCP_HTTP_TOKEN').toBeDefined();
+      expect(harness.token, `server never printed MCP_HTTP_TOKEN. stderr: ${harness.stderr}`).toBeDefined();
     },
     { timeout: timeoutMs, interval: 25 },
   );

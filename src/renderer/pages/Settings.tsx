@@ -22,7 +22,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useToastStore } from '../stores/toastStore';
 import InfoTooltip from '../components/InfoTooltip';
 import { HWACCEL_MODES, ENCODER_TYPES } from '../../shared/hwaccel-settings';
-import { MCP_MIN_PORT, MCP_MAX_PORT, MCP_DEFAULT_PORT } from '../../shared/mcp-settings';
+import { MCP_MIN_PORT, MCP_MAX_PORT, MCP_DEFAULT_PORT, clampMcpPort } from '../../shared/mcp-settings';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { THEMES } from '../colors';
@@ -169,8 +169,15 @@ function McpSettingsSection() {
   const commitPort = () => {
     const parsed = Number.parseInt(portText, 10);
     if (Number.isInteger(parsed)) {
-      setMcpPort(parsed);
-      recordAnalyticsEvent(createAnalyticsEvent('mcp_port_committed', { isDefaultPort: parsed === MCP_DEFAULT_PORT }));
+      // Clamp locally so the field immediately reflects the authoritative
+      // value: out-of-range drafts (e.g. "80") snap to the canonical port even
+      // when the main process returns the same value we already hold (a
+      // no-change zustand update would otherwise leave the invalid draft in the
+      // input). The main process independently clamps as a backstop.
+      const clamped = clampMcpPort(parsed);
+      setMcpPort(clamped);
+      setPortText(String(clamped));
+      recordAnalyticsEvent(createAnalyticsEvent('mcp_port_committed', { isDefaultPort: clamped === MCP_DEFAULT_PORT }));
     } else setPortText(String(port));
   };
 

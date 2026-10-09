@@ -14,6 +14,88 @@
 const { contextBridge } = require('electron');
 const { state, subscribe, emit } = require('./main-store');
 
+const MCP_SETTINGS_FILENAME = 'mcp-settings.json';
+
+/**
+ * Resolves the app userData directory from the `--user-data-dir` flag the e2e
+ * launcher always injects (e2e/fixtures/app.ts), so mock "main-process"
+ * persistence mirrors the real mcp-settings.json location and survives
+ * renderer reloads (page.reload re-runs the mock preload and its main-store,
+ * so an in-memory snapshot alone would be lost and hydration could never see
+ * the persisted value). Returns null if the flag is absent (defensive; mock
+ * mode always passes it).
+ * @returns {string|null} Absolute userData directory.
+ */
+function userDataDir() {
+  const flag = process.argv.find((arg) => arg.startsWith('--user-data-dir='));
+  return flag ? flag.slice('--user-data-dir='.length) : null;
+}
+
+/**
+ * Mirrors the main-process sanitation contract in
+ * `src/shared/mcp-settings.ts`: ports outside 1024-65535 fall back to the
+ * canonical default (8765), the enabled flag is coerced to boolean, and a
+ * non-string token is dropped.
+ * @param {unknown} raw - Raw snapshot from storage or the renderer.
+ * @returns {{ enabled: boolean; port: number; token: string }} Sanitized snapshot.
+ */
+function sanitizeMcpSettings(raw) {
+  const value = raw || {};
+  const port = Number(value.port);
+  const sanitizedPort = Number.isFinite(port) && port >= 1024 && port <= 65535 ? Math.floor(port) : 8765;
+  return {
+    enabled: value.enabled === true,
+    port: sanitizedPort,
+    token: typeof value.token === 'string' ? value.token : '',
+  };
+}
+
+/** @returns {string|null} Absolute path of the mock mcp-settings.json. */
+function mcpSettingsFile() {
+  const dir = userDataDir();
+  return dir ? require('path').join(dir, MCP_SETTINGS_FILENAME) : null;
+}
+
+/**
+ * Writes a sanitized MCP settings snapshot to the in-memory store AND to
+ * `<userData>/mcp-settings.json` (mirroring `writeMcpSettings` in
+ * src/main/mcp/settings.ts), so `mcpGetSettings` answers the same value on this
+ * load and on any later renderer reload.
+ * @param {{ enabled: boolean; port: number; token: string }} next - Sanitized snapshot.
+ * @returns {void}
+ */
+function persistMcpSettings(next) {
+  state.mcpSettings = next;
+  const file = mcpSettingsFile();
+  if (!file) return;
+  try {
+    require('fs').mkdirSync(require('path').dirname(file), { recursive: true });
+    require('fs').writeFileSync(file, JSON.stringify(next, null, 2), 'utf-8');
+  } catch {
+    /* persistence is a best-effort mirror of the real main-process write */
+  }
+}
+
+/**
+ * Seeds `state.mcpSettings` from the persisted userData file. Called once at
+ * preload evaluation, before the renderer's settingsStore first asks for
+ * `mcpGetSettings`, so a reload hydrates the prior settings exactly like the
+ * real main process reads its mcp-settings.json.
+ * @returns {void}
+ */
+function seedMcpSettingsFromUserData() {
+  const file = mcpSettingsFile();
+  if (!file) return;
+  try {
+    const raw = require('fs').readFileSync(file, 'utf-8').replace(/^\uFEFF/, '');
+    state.mcpSettings = sanitizeMcpSettings(JSON.parse(raw));
+  } catch {
+    /* missing/corrupt seed: keep the default snapshot */
+  }
+}
+
+seedMcpSettingsFromUserData();
+
 const noop = () => {};
 
 // Tier A specs opt out of the terms-of-use gate by default so the existing
@@ -198,6 +280,20 @@ const api = {
     return Promise.resolve({ enabled: !!enabled, backend: 'noop' });
   },
 
+  // --- Embedded MCP server settings --------------------------------------------
+  // Mirrors the main-process sanitation contract (src/shared/mcp-settings.ts)
+  // and - because state.mcpSettings alone would be lost on a renderer reload,
+  // which re-runs this preload and its main-store - also persists the snapshot
+  // to `<userData>/mcp-settings.json` exactly like `writeMcpSettings` does, so
+  // `mcpGetSettings` hydrates the same value after reload.
+  mcpGetSettings: () => Promise.resolve({ ...state.mcpSettings }),
+  mcpSetSettings: (candidate) => {
+    const next = sanitizeMcpSettings(candidate || {});
+    state.mcpSetCalls.push(JSON.parse(JSON.stringify(next)));
+    persistMcpSettings(next);
+    return Promise.resolve({ ...next });
+  },
+
   // --- Event subscriptions (each returns an unsubscribe) -----------------------
   onWindowMaximizedChange: (cb) => subscribe('window-maximized-change', cb),
   onWindowCloseRequested: (cb) => {
@@ -312,12 +408,32 @@ const api = {
     setPendingInstall: (v) => {
       state.pendingInstallResult = v;
     },
+    setMcpSettings: (v) => {
+      persistMcpSettings(sanitizeMcpSettings(v || {}));
+    },
     reset: () => {
+      const file = mcpSettingsFile();
+      if (file) {
+        try {
+          require('fs').unlinkSync(file);
+        } catch {
+          /* no seed file to remove */
+        }
+      }
       const { reset } = require('./main-store');
       reset();
     },
     get: () => {
-      const { windowCalls, loginCalls, revealCalls, queueJobs, queueState, closeRequestedSubscribers, termsRejectCalls } = state;
+      const {
+        windowCalls,
+        loginCalls,
+        revealCalls,
+        queueJobs,
+        queueState,
+        closeRequestedSubscribers,
+        termsRejectCalls,
+        mcpSetCalls,
+      } = state;
       return {
         windowCalls,
         loginCalls,
@@ -326,6 +442,7 @@ const api = {
         queueState,
         closeRequestedSubscribers,
         termsRejectCalls,
+        mcpSetCalls,
       };
     },
   },
