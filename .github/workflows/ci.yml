@@ -521,21 +521,53 @@ jobs:
           path: perf/results/
           if-no-files-found: warn
 
-  test-mutation-delta:
-    # Phase 9 gate (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 9): mutation
-    # scores for the logic that decides what ffmpeg runs and what is stored.
-    # Runs the full Stryker suite then compares its score against the committed
-    # mutation/baseline.json; fails when the score drops more than MUTATION_DELTA
-    # points. Advisory until the first completing run records the baseline
-    # (then flip to blocking): a failing PR shows the number without blocking
-    # merge. Concurrency 4 keeps the ~6k-mutant full run inside the 6h budget on
-    # a single runner; the weekly mutation-ratchet workflow turns a green run's
-    # `--generate` output into the next committed baseline.
-    name: Gate - Mutation score delta (advisory)
+  mutation-scope:
+    # Phase 9 gate, CI-cost pass (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 9):
+    # plans the mutation run. On a PR only the in-scope files the branch touched
+    # are mutated (a one-file PR pays for a handful of mutants, not ~6k), and the
+    # work is split into shards (MUTATION_SHARDS) that run on parallel runners.
+    # The weekly mutation-ratchet workflow still runs the full scope.
+    name: Gate - Mutation scope (plan shards)
     needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 10
+    outputs:
+      shard_count: ${{ steps.scope.outputs.shard_count }}
+      has_mutants: ${{ steps.scope.outputs.has_mutants }}
+      matrix: ${{ steps.scope.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          # The scope is the diff against the base commit, so the base must be
+          # fetched; `hashFiles` for the cache keys also reads the worktree.
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      # No `npm ci`: the scope script imports only stryker.config.mjs (a pure
+      # object) and Node built-ins, so it runs on a bare runner.
+      - name: Resolve scope and shards
+        id: scope
+        env:
+          MUTATION_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          MUTATION_SHARDS: '4'
+        run: node scripts/mutation-scope.mjs --github-output
+
+  test-mutation-delta:
+    # Phase 9 gate: one job per shard, run in parallel instead of one 6h job.
+    # Each shard mutates its own disjoint file set (`--mutate`) with the same
+    # narrowed vitest tier; `mutation-gate` stitches the reports and compares.
+    # Advisory until the first completing run records the baseline (then flip to
+    # blocking): a failing shard shows the number without blocking merge.
+    name: Test - Mutation shard ${{ matrix.shard }}
+    needs: [mutation-scope]
+    if: needs.mutation-scope.outputs.has_mutants == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
     continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.mutation-scope.outputs.matrix) }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -543,8 +575,46 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - name: Run mutation testing
-        run: npm run test:mutate -- --concurrency 4
+      - name: Restore Stryker incremental state (shard ${{ matrix.shard }})
+        # Keyed per shard: each shard owns a slice of the incremental file, and
+        # the restore-key lets a re-shuffled slice reuse the previous run's work.
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .stryker/incremental.json
+          key: stryker-incremental-${{ runner.os }}-shard${{ matrix.shard }}-${{ hashFiles('stryker.config.mjs', 'vitest.mutation.config.ts', 'package-lock.json') }}
+          restore-keys: |
+            stryker-incremental-${{ runner.os }}-shard${{ matrix.shard }}-
+      - name: Run mutation testing (shard ${{ matrix.shard }})
+        run: npm run test:mutate -- --concurrency 4 --mutate "${{ matrix.files }}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: mutation-report-shard-${{ matrix.shard }}
+          path: reports/mutation/
+          if-no-files-found: warn
+
+  mutation-gate:
+    # Phase 9 gate fan-in: merge the shard reports, then compare per-file against
+    # the committed baseline. Advisory (continue-on-error) mirrors the single-job
+    # gate it replaces; a missing shard fails the merge instead of recording a
+    # partial score.
+    name: Gate - Mutation score delta (advisory)
+    needs: [mutation-scope, test-mutation-delta]
+    if: always() && needs.mutation-scope.outputs.has_mutants == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: mutation-report-shard-*
+          path: shards
+      - name: Merge shard reports
+        run: node scripts/mutation-merge.mjs shards --expect ${{ needs.mutation-scope.outputs.shard_count }}
       - name: Compare against baseline (delta gate)
         run: npm run test:mutation-delta
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

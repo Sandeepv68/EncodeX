@@ -14,12 +14,36 @@ permissions:
 
 env:
   NODE_VERSION: 22
+  # Full-scope run, split across this many parallel runners.
+  MUTATION_SHARDS: 4
 
 jobs:
-  ratchet:
-    name: Ratchet - mutation baseline candidate
+  scope:
+    # Full-scope plan (no base ref): every mutation target, sharded. No `npm ci`
+    # because the planner imports only stryker.config.mjs and Node built-ins.
+    name: Plan full-scope shards
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 10
+    outputs:
+      shard_count: ${{ steps.scope.outputs.shard_count }}
+      matrix: ${{ steps.scope.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Plan shards
+        id: scope
+        run: node scripts/mutation-scope.mjs --github-output
+
+  mutate:
+    name: Mutation shard ${{ matrix.shard }}
+    needs: [scope]
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.scope.outputs.matrix) }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -27,10 +51,43 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      # Full Stryker suite over the phase-9 scope. On GitHub's runners the
-      # ~6k-mutant run fits in the 6h budget at concurrency 4.
-      - name: Run mutation testing
-        run: npm run test:mutate -- --concurrency 4
+      - name: Restore Stryker incremental state (shard ${{ matrix.shard }})
+        # Incremental mode is on in stryker.config.mjs; caching the per-shard
+        # state means a weekly run only re-tests mutants whose source changed.
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .stryker/incremental.json
+          key: stryker-incremental-${{ runner.os }}-shard${{ matrix.shard }}-${{ hashFiles('stryker.config.mjs', 'vitest.mutation.config.ts', 'package-lock.json') }}
+          restore-keys: |
+            stryker-incremental-${{ runner.os }}-shard${{ matrix.shard }}-
+      - name: Run mutation testing (shard ${{ matrix.shard }})
+        run: npm run test:mutate -- --concurrency 4 --mutate "${{ matrix.files }}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: mutation-report-shard-${{ matrix.shard }}
+          path: reports/mutation/
+          if-no-files-found: warn
+
+  ratchet:
+    name: Ratchet - mutation baseline candidate
+    needs: [scope, mutate]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: mutation-report-shard-*
+          path: shards
+      # Requires every planned shard: a partial run must not be recorded as a
+      # baseline. A missing report fails here and the candidate is never written.
+      - name: Merge shard reports
+        run: node scripts/mutation-merge.mjs shards --expect ${{ needs.scope.outputs.shard_count }}
       # Compare against the committed baseline first: if the score dropped,
       # the job fails here and the committed baseline is never lowered. Only a
       # green (or higher) run moves on to --generate below.
