@@ -2,6 +2,8 @@
 
 EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can probe media, convert, compress, extract audio, cut, remux, demux, batch-process, and (opt-in) read live GUI state. It runs over the same media engine as the CLI, so behavior is identical across surfaces.
 
+The server is also [MCP Apps](https://modelcontextprotocol.io) (SEP-1865) compliant: in hosts that support the extension, the job tools render as interactive views (queue dashboard, job progress card, media-info table, conversion form). See [`MCP_UI.md`](MCP_UI.md) for the view catalogue; hosts without the extension fall back to the JSON text payloads documented here.
+
 There are two launch modes that share one tool/resource/prompt catalogue:
 
 | Mode | Transport | Launched by | Surface |
@@ -164,6 +166,19 @@ All tools return a single JSON text payload. Failures set `isError` and return `
 | `encodex://profiles` | Full `BUILTIN_PROFILES` catalogue as JSON |
 | `encodex://capabilities` | FFmpeg encoders and hardware accelerations detected on this system |
 | `encodex://codecs` | UI-ordered video/audio codecs with labels and groups |
+
+### MCP Apps views
+
+When a host supports MCP Apps, four `ui://` resources render as interactive views (MIME `text/html;profile=mcp-app`):
+
+| URI | Rendered by |
+| --- | ----------- |
+| `ui://encodex/queue` | `list_jobs` |
+| `ui://encodex/job` | `get_job` |
+| `ui://encodex/media-info` | `get_media_info` |
+| `ui://encodex/convert` | `convert_media` |
+
+See [`MCP_UI.md`](MCP_UI.md) for what each view shows, the `structuredContent` shapes, and the bidirectional actions (including confirm-gated cancel).
 
 ## 💬 Prompts
 
@@ -395,7 +410,7 @@ npm run mcp:smoke            # node dist/mcp/index.js
 npm run mcp:smoke:electron   # electron . --mcp (requires a display / xvfb on Linux)
 ```
 
-Both assert the handshake, the 15-tool stdio catalogue, and a live `ping`. (The 6 GUI-parity tools are only reachable through the embedded HTTP server.)
+Both assert the handshake, the 15-tool stdio catalogue, the MCP Apps surface (the `io.modelcontextprotocol/ui` capability plus every `ui://` view resource), and a live `ping`. (The 6 GUI-parity tools are only reachable through the embedded HTTP server.)
 
 For the complete local surface — every stdio tool with real FFmpeg conversions, the standalone HTTP transport with its auth/topology guards, and the 21-tool embedded server exactly as `.vscode/mcp.json` dials it:
 

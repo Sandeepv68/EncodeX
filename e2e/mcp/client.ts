@@ -29,6 +29,24 @@ export interface McpHandle {
 const STDERR_LIMIT = 8192;
 
 /**
+ * The MCP Apps (SEP-1865) extension id advertised on every surface.
+ * @const {string}
+ */
+export const UI_EXTENSION_ID = 'io.modelcontextprotocol/ui';
+
+/**
+ * The MIME type a host requires to render a `ui://` view in its sandboxed iframe.
+ * @const {string}
+ */
+export const UI_RESOURCE_MIME = 'text/html;profile=mcp-app';
+
+/** Renderable MCP App view resources served by every surface. @const {string[]} */
+export const UI_VIEW_URIS = ['ui://encodex/queue', 'ui://encodex/job', 'ui://encodex/media-info', 'ui://encodex/convert'];
+
+/** Every resource URI served by every surface, sorted for exact comparison. @const {string[]} */
+export const ALL_RESOURCE_URIS = ['encodex://capabilities', 'encodex://codecs', 'encodex://profiles', ...UI_VIEW_URIS].sort();
+
+/**
  * Spawns a local stdio MCP server and starts a session, mirroring the SDK
  * setup of `scripts/mcp-full-test.mjs`. Generations of the server are piped to
  * a rolling buffer so a failing spec can print the server's own last words.
@@ -224,7 +242,7 @@ export async function assertToolSurface(handle: McpHandle, expectedTools: string
 
   const { resources } = await client.listResources();
   const uris = resources.map((resource) => resource.uri).sort();
-  if (JSON.stringify(uris) !== JSON.stringify(['encodex://capabilities', 'encodex://codecs', 'encodex://profiles'])) {
+  if (JSON.stringify(uris) !== JSON.stringify(ALL_RESOURCE_URIS)) {
     throw new Error(`resources/list mismatch: [${uris.join(', ')}]`);
   }
 
@@ -432,6 +450,40 @@ export async function runCoreSuite(
   }
 
   await assertResourcesAndPrompts(handle);
+}
+
+/**
+ * Asserts the MCP Apps (SEP-1865) surface: the `io.modelcontextprotocol/ui`
+ * capability and every `ui://` view served as self-contained
+ * `text/html;profile=mcp-app` HTML (no external script/style, so it renders
+ * under a host's restrictive default CSP).
+ * @param {McpHandle} handle - The connected session.
+ * @returns {Promise<void>}
+ */
+export async function assertMcpAppsSurface(handle: McpHandle): Promise<void> {
+  const { client } = handle;
+  const capabilities = client.getServerCapabilities();
+  if (!capabilities?.extensions || !(UI_EXTENSION_ID in capabilities.extensions)) {
+    throw new Error(`missing MCP Apps capability: ${UI_EXTENSION_ID}`);
+  }
+
+  const { resources } = await client.listResources();
+  for (const uri of UI_VIEW_URIS) {
+    const view = resources.find((resource) => resource.uri === uri);
+    if (!view) throw new Error(`missing view resource: ${uri}`);
+    if (view.mimeType !== UI_RESOURCE_MIME) throw new Error(`${uri} has mime ${view.mimeType}, expected ${UI_RESOURCE_MIME}`);
+  }
+
+  for (const uri of UI_VIEW_URIS) {
+    const { contents } = await client.readResource({ uri });
+    const html = ((contents[0] as { text?: string }).text ?? '').toString();
+    if (!html.includes('<!doctype html>') || !html.includes('ui/initialize')) {
+      throw new Error(`${uri} is not a self-contained MCP App document`);
+    }
+    if (/<script\b[^>]*\bsrc=/i.test(html) || /<link\b[^>]*\bstylesheet/i.test(html)) {
+      throw new Error(`${uri} references an external script or stylesheet`);
+    }
+  }
 }
 
 /** Asserts the three `encodex://` resources and the four prompts. */

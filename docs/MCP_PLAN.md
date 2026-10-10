@@ -483,3 +483,11 @@ src/main/mcp/
 - Remote MCP deployment (Cloudflare/SaaS) — requires auth redesign, out of scope.
 - Exposing renderer-side operations (player timeline scrubbing, hotkeys) via MCP.
 - i18n for MCP tool descriptions (currently English, matching CLI/engine strings).
+
+## 12. MCP Apps (SEP-1865) — follow-on, delivered
+
+The interactive-UI layer is implemented on top of this plan: the server advertises the `io.modelcontextprotocol/ui` extension and serves self-contained `ui://` views (`queue`, `job`, `media-info`, `convert`) for the job tools, with a conversion form and confirm-gated cancel actions. Full details live in [`MCP_UI.md`](MCP_UI.md); the implementation plan is `plans/MCP_APPS_SERVER_PLAN.md`.
+
+- **Dependency:** `@modelcontextprotocol/ext-apps@^1.7.5` (keeps the legacy `@modelcontextprotocol/sdk@1.x` monolith). The `ext-apps@2.x` split-package migration remains future work.
+- **Backward compatible:** non-UI hosts still receive the JSON text payload; `structuredContent` is additive.
+- **View pipeline:** currently self-contained HTML string modules + an inline bridge; the target is Vite single-file React bundles using the `ext-apps` `App` API.

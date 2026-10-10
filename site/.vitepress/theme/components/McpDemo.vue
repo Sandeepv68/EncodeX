@@ -46,6 +46,7 @@
     </div>
 
     <p class="mcp-demo-tagline">{{ t.tagline }}</p>
+    <p class="mcp-demo-note">{{ t.appsNote }}</p>
   </div>
 </template>
 
@@ -62,6 +63,7 @@ const STRINGS: Record<string, { [k: string]: string }> = {
     assistantReply: "I'll convert 12 videos using EncodeX.",
     percent: '████████████████░░ 87%',
     tagline: 'Your AI assistant can now operate your local media toolkit.',
+    appsNote: 'Now with interactive views — queue, progress, and a conversion form, rendered right inside your AI assistant.',
   },
   es: {
     assistant: 'Claude · EncodeX',
@@ -71,6 +73,7 @@ const STRINGS: Record<string, { [k: string]: string }> = {
     assistantReply: 'Convertiré 12 vídeos con EncodeX.',
     percent: '████████████████░░ 87%',
     tagline: 'Tu asistente de IA ya puede manejar tu kit de medios local.',
+    appsNote: 'Ahora con vistas interactivas: cola, progreso y un formulario de conversión, dentro de tu asistente de IA.',
   },
   fr: {
     assistant: 'Claude · EncodeX',
@@ -80,6 +83,7 @@ const STRINGS: Record<string, { [k: string]: string }> = {
     assistantReply: "Je vais convertir 12 vidéos avec EncodeX.",
     percent: '████████████████░░ 87%',
     tagline: 'Votre assistant IA peut maintenant piloter votre boîte à outils média locale.',
+    appsNote: "Désormais avec des vues interactives — file d'attente, progression et formulaire de conversion, directement dans votre assistant IA.",
   },
   de: {
     assistant: 'Claude · EncodeX',
@@ -89,6 +93,7 @@ const STRINGS: Record<string, { [k: string]: string }> = {
     assistantReply: 'Ich konvertiere 12 Videos mit EncodeX.',
     percent: '████████████████░░ 87%',
     tagline: 'Ihr KI-Assistent kann jetzt Ihre lokale Medien-Werkzeugkiste bedienen.',
+    appsNote: 'Jetzt mit interaktiven Ansichten — Warteschlange, Fortschritt und ein Konvertierungsformular, direkt in Ihrem KI-Assistenten.',
   },
   pt: {
     assistant: 'Claude · EncodeX',
@@ -98,6 +103,7 @@ const STRINGS: Record<string, { [k: string]: string }> = {
     assistantReply: 'Vou converter 12 vídeos com o EncodeX.',
     percent: '████████████████░░ 87%',
     tagline: 'Seu assistente de IA agora pode operar seu kit de mídia local.',
+    appsNote: 'Agora com visualizações interativas — fila, progresso e um formulário de conversão, dentro do seu assistente de IA.',
   },
   zh: {
     assistant: 'Claude · EncodeX',
@@ -107,6 +113,7 @@ const STRINGS: Record<string, { [k: string]: string }> = {
     assistantReply: '我将使用 EncodeX 转换 12 个视频。',
     percent: '████████████████░░ 87%',
     tagline: '您的 AI 助手现在可以操作您的本地媒体工具包。',
+    appsNote: '现在支持交互式视图——队列、进度和转换表单，直接在您的 AI 助手中呈现。',
   },
   hi: {
     assistant: 'Claude · EncodeX',
@@ -116,6 +123,7 @@ const STRINGS: Record<string, { [k: string]: string }> = {
     assistantReply: 'मैं EncodeX से 12 वीडियो कन्वर्ट करूँगा।',
     percent: '████████████████░░ 87%',
     tagline: 'आपका AI असिस्टेंट अब आपके लोकल मीडिया टूलकिट को चला सकता है।',
+    appsNote: 'अब इंटरैक्टिव व्यू के साथ — कतार, प्रगति और कन्वर्ज़न फ़ॉर्म, सीधे आपके AI असिस्टेंट में।',
   },
 };
 
@@ -305,6 +313,14 @@ const t = computed(() => {
   font-size: 15px;
   font-weight: 600;
   color: var(--vp-c-text-1);
+}
+
+.mcp-demo-note {
+  margin: 6px 0 0;
+  text-align: center;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--vp-c-text-2);
 }
 
 @media (prefers-reduced-motion: reduce) {

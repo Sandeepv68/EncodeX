@@ -43,6 +43,8 @@ The MCP server exposes **19 tools, 3 resources, and 4 prompts**:
 - **Trim** and cut clips
 - **Run and track async batch jobs** — queue work, check status, get results
 
+In hosts that support [MCP Apps](https://modelcontextprotocol.io) (Claude, VS Code, ChatGPT, Goose), the job tools also render as **interactive views** right in the conversation — a **live queue dashboard**, a **per-job progress card**, a **media-info table**, and a **conversion form** you can fill in, with confirm-gated cancel. Clients without the extension keep the normal JSON tool results, so nothing breaks.
+
 The full tool catalogue is in the [feature reference](/docs/features-reference#mcp-server).
 
 ## Two Ways to Connect

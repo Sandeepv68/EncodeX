@@ -45,6 +45,12 @@ const REQUIRED_TOOLS = [
   'demux_media',
 ];
 
+// MCP Apps (SEP-1865) surface: the extension capability plus the renderable
+// `ui://` view resources and their required MIME type.
+const UI_EXTENSION_ID = 'io.modelcontextprotocol/ui';
+const UI_RESOURCE_MIME = 'text/html;profile=mcp-app';
+const REQUIRED_VIEW_URIS = ['ui://encodex/queue', 'ui://encodex/job', 'ui://encodex/media-info', 'ui://encodex/convert'];
+
 /**
  * Resolves the spawn command for the requested target.
  * @returns {Promise<{command: string, args: string[]}>} The command + args.
@@ -99,6 +105,28 @@ async function main() {
       throw new Error(`Expected at least ${EXPECTED_TOOL_COUNT} tools, got ${tools.length}`);
     }
 
+    const capabilities = client.getServerCapabilities();
+    if (!capabilities?.extensions || !(UI_EXTENSION_ID in capabilities.extensions)) {
+      throw new Error(`Missing MCP Apps capability: ${UI_EXTENSION_ID}`);
+    }
+
+    const { resources } = await client.listResources();
+    for (const uri of REQUIRED_VIEW_URIS) {
+      const view = resources.find((resource) => resource.uri === uri);
+      if (!view) {
+        throw new Error(`Missing view resource: ${uri}`);
+      }
+      if (view.mimeType !== UI_RESOURCE_MIME) {
+        throw new Error(`View ${uri} has MIME ${view.mimeType}, expected ${UI_RESOURCE_MIME}`);
+      }
+    }
+
+    const viewRead = await client.readResource({ uri: 'ui://encodex/queue' });
+    const viewHtml = (viewRead.contents?.[0]?.text ?? '').toString();
+    if (!viewHtml.includes('ui/initialize') || !viewHtml.includes('<!doctype html>')) {
+      throw new Error('Queue view HTML is not a self-contained MCP App document');
+    }
+
     const result = await client.callTool({ name: 'ping', arguments: {} });
     const text = (result.content ?? [])
       .filter((item) => item.type === 'text')
@@ -109,7 +137,7 @@ async function main() {
       throw new Error(`Unexpected ping response: ${text}`);
     }
 
-    console.log(`[mcp-smoke] OK — ${tools.length} tools registered, ping returned pong`);
+    console.log(`[mcp-smoke] OK — ${tools.length} tools + ${REQUIRED_VIEW_URIS.length} MCP App views registered, ping returned pong`);
   } catch (error) {
     console.error(`[mcp-smoke] FAILED: ${error instanceof Error ? error.message : String(error)}`);
     if (stderr.trim()) console.error(`[mcp-smoke] server stderr:\n${stderr.trim()}`);

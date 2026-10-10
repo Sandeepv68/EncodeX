@@ -29,6 +29,9 @@ import { BUILTIN_PROFILES } from '../shared/profiles/builtin';
 import type { ConversionProfile } from '../shared/types';
 import { VIDEO_CODECS, AUDIO_CODECS } from '../shared/media-options';
 import { buildConversionOptions, resolveOutputPath, MCPConversionFields } from './conversion-options';
+import { MCP_UI_EXTENSION_ID, MCP_UI_VIEW_URIS } from '../shared/mcp-ui';
+import { registerAppTool } from '@modelcontextprotocol/ext-apps/server';
+import { registerUiResources } from './ui/resources';
 import { MCPJobManager } from './jobs/manager';
 import {
   buildCompressPlan,
@@ -83,6 +86,21 @@ function resolveAppVersion(): string {
  */
 export function ok(text: string): { content: Array<{ type: 'text'; text: string }> } {
   return { content: [{ type: 'text', text }] };
+}
+
+/**
+ * Builds a successful tool result that carries both the text fallback and
+ * machine-readable `structuredContent` for an MCP App view. Non-UI hosts ignore
+ * `structuredContent` and render the text exactly as they do today.
+ * @param {string} text - The text fallback (typically `JSON.stringify(data)`).
+ * @param {Record<string, unknown>} structuredContent - Data for the view to render.
+ * @returns {{content: Array<{type: 'text'; text: string}>; structuredContent: Record<string, unknown>}} MCP tool result.
+ */
+export function okUi(
+  text: string,
+  structuredContent: Record<string, unknown>,
+): { content: Array<{ type: 'text'; text: string }>; structuredContent: Record<string, unknown> } {
+  return { content: [{ type: 'text', text }], structuredContent };
 }
 
 /**
@@ -356,10 +374,19 @@ function assertMcpAuxiliaryInputsExist(files: string[]): void {
  *   transport (stdio or Streamable HTTP).
  */
 export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer {
-  const server = new McpServer({
-    name: options.name ?? APP_NAME,
-    version: options.version ?? resolveAppVersion(),
-  });
+  const server = new McpServer(
+    {
+      name: options.name ?? APP_NAME,
+      version: options.version ?? resolveAppVersion(),
+    },
+    {
+      capabilities: {
+        extensions: {
+          [MCP_UI_EXTENSION_ID]: {},
+        },
+      },
+    },
+  );
 
   const transcoderFactory = options.transcoderFactory ?? createTranscoder;
   const jobManager = options.jobManager ?? new MCPJobManager({ transcoderFactory });
@@ -374,7 +401,8 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     async () => ok(JSON.stringify({ pong: true })),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'convert_media',
     {
       title: 'Convert Media',
@@ -384,6 +412,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         '(curated ids); they require re-encoding and cannot be combined with copy. ' +
         'Returns a job id immediately; poll with get_job / list_jobs and cancel with cancel_job.',
       inputSchema: conversionSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.convert } },
     },
     async (args: z.infer<typeof conversionSchema>) => {
       try {
@@ -397,45 +426,48 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
           jobManager.setConcurrency(args.concurrency);
         }
         const job = jobManager.enqueue(args.input, output, options, (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG');
-        return ok(
-          JSON.stringify({
-            jobId: job.id,
-            input: job.input,
-            output: job.output,
-            status: job.status,
-            transcoder: args.transcoder ?? 'FFMPEG',
-          }),
-        );
+        const transcoder = args.transcoder ?? 'FFMPEG';
+        return okUi(JSON.stringify({ jobId: job.id, input: job.input, output: job.output, status: job.status, transcoder }), {
+          job: { id: job.id, input: job.input, output: job.output, status: job.status, progress: job.progress },
+          transcoder,
+        });
       } catch (err) {
         return fail(err);
       }
     },
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'get_job',
     {
       title: 'Get Job',
       description: 'Returns the current status and progress of a queued conversion job by id.',
       inputSchema: z.object({ jobId: z.string().min(1).describe('The job id returned by convert_media.') }),
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.job } },
     },
     async ({ jobId }: { jobId: string }) => {
       const job = jobManager.getJob(jobId);
       if (!job) {
         return fail(createError(ErrorCode.UNKNOWN, `Job not found: ${jobId}`));
       }
-      return ok(JSON.stringify(job));
+      return okUi(JSON.stringify(job), { job });
     },
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'list_jobs',
     {
       title: 'List Jobs',
       description: 'Lists all known conversion jobs with their current status and progress.',
       inputSchema: z.object({}),
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.queue } },
     },
-    async () => ok(JSON.stringify(jobManager.listJobs())),
+    async () => {
+      const jobs = jobManager.listJobs();
+      return okUi(JSON.stringify(jobs), { jobs, count: jobs.length, generatedAt: Date.now() });
+    },
   );
 
   server.registerTool(
@@ -454,12 +486,14 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     },
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'get_media_info',
     {
       title: 'Get Media Info',
       description: 'Probes a media file and returns container and stream metadata (codecs, resolution, duration, bitrate).',
       inputSchema: z.object({ input: z.string().min(1).describe('Absolute path of the media file to inspect.') }),
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.mediaInfo } },
     },
     async ({ input }: { input: string }) => {
       try {
@@ -468,7 +502,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         }
         const transcoder = transcoderFactory('FFMPEG');
         const info = await transcoder.getInfo(input);
-        return ok(JSON.stringify(info));
+        return okUi(JSON.stringify(info), { media: info });
       } catch (err) {
         return fail(err);
       }
@@ -897,6 +931,8 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       ],
     }),
   );
+
+  registerUiResources(server);
 
   return server;
 }

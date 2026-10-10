@@ -3,6 +3,11 @@
   "compilerOptions": {
     "module": "CommonJS",
     "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@modelcontextprotocol/ext-apps": ["node_modules/@modelcontextprotocol/ext-apps/dist/src/app.d.ts"],
+      "@modelcontextprotocol/ext-apps/server": ["node_modules/@modelcontextprotocol/ext-apps/dist/src/server/index.d.ts"]
+    },
     "outDir": "dist",
     "rootDir": "src",
     "sourceMap": true,

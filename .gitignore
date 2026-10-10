@@ -26,3 +26,4 @@ reports/
 .stryker-tmp/
 .stryker-tmp-*/
 .vscode/
+.cursor/
