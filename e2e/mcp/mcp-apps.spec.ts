@@ -44,6 +44,12 @@ describe.runIf(IS_E2E)('MCP Apps surface (e2e)', () => {
       get_job: 'ui://encodex/job',
       get_media_info: 'ui://encodex/media-info',
       convert_media: 'ui://encodex/convert',
+      compress_image: 'ui://encodex/confirm',
+      extract_audio: 'ui://encodex/confirm',
+      cut_video: 'ui://encodex/confirm',
+      batch_convert: 'ui://encodex/confirm',
+      remux_media: 'ui://encodex/confirm',
+      demux_media: 'ui://encodex/confirm',
     };
     for (const [name, uri] of Object.entries(expected)) {
       const tool = tools.find((candidate) => candidate.name === name);

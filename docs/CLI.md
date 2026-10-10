@@ -245,7 +245,7 @@ node dist/mcp/index.js
 npx electron . --mcp
 ```
 
-stdout is reserved for MCP JSON-RPC messages; all status and logging output is redirected to stderr, and the process stays alive until stdin closes. The server exposes 21 tools, 3 resources, and 4 prompts — see [`MCP.md`](MCP.md) for the full catalogue and client configuration.
+stdout is reserved for MCP JSON-RPC messages; all status and logging output is redirected to stderr, and the process stays alive until stdin closes. The server exposes 16 tools (15 operations plus the app-only `commit_operation`), 3 resources, and 4 prompts — see [`MCP.md`](MCP.md) for the full catalogue and client configuration.
 
 | Option  | Description                                                        |
 | ------- | ------------------------------------------------------------------ |

@@ -47,6 +47,7 @@ export const MCP_UI_VIEW_URIS = {
   job: 'ui://encodex/job',
   mediaInfo: 'ui://encodex/media-info',
   convert: 'ui://encodex/convert',
+  confirm: 'ui://encodex/confirm',
   profiles: 'ui://encodex/profiles',
   capabilities: 'ui://encodex/capabilities',
 } as const;
@@ -77,6 +78,51 @@ export interface McpUiJob {
 }
 
 /**
+ * One label/value row of a confirmation rendered before an operation runs.
+ * @interface McpUiConfirmationField
+ * @property {string} label - Short field name (e.g. "Output").
+ * @property {string} value - Human-readable value.
+ */
+export interface McpUiConfirmationField {
+  label: string;
+  value: string;
+}
+
+/**
+ * A mutating operation awaiting explicit user approval.
+ *
+ * When the host supports MCP Apps, the server never runs a mutating tool from
+ * a model call: it returns a confirmation instead, the app renders the details,
+ * and only a user click replays {@link McpUiConfirmation.args} into the
+ * app-only `commit_operation` tool. Hosts without the extension keep the old
+ * headless behaviour and execute immediately (see `approval.ts`).
+ * @interface McpUiConfirmation
+ * @property {string} operation - Executor tool that the approval runs.
+ * @property {string} title - Short imperative heading (e.g. "Cut video").
+ * @property {string} summary - One-line summary of the effect.
+ * @property {Record<string, unknown>} args - Raw arguments replayed verbatim.
+ * @property {McpUiConfirmationField[]} [details] - Key/value rows to show.
+ * @property {string[]} [warnings] - Warnings surfaced before running.
+ */
+export interface McpUiConfirmation {
+  operation: string;
+  title: string;
+  summary: string;
+  args: Record<string, unknown>;
+  details?: McpUiConfirmationField[];
+  warnings?: string[];
+}
+
+/**
+ * Structured content delivered to the confirm view for a pending operation.
+ * @interface McpUiConfirmationPayload
+ * @property {McpUiConfirmation} confirmation - The pending confirmation.
+ */
+export interface McpUiConfirmationPayload {
+  confirmation: McpUiConfirmation;
+}
+
+/**
  * Client capability payload advertised by MCP Apps hosts under
  * {@link MCP_UI_EXTENSION_ID}; presence of the MIME type signals support.
  * @interface McpUiClientCapabilities
@@ -87,14 +133,19 @@ export interface McpUiClientCapabilities {
 }
 
 /**
- * True when the given client capabilities advertise MCP Apps support with the
- * HTML view MIME type. Kept host-agnostic (no SDK dependency) so tool
- * registration and tests can branch on capability support.
+ * True when the given client capabilities advertise MCP Apps support.
+ *
+ * Presence of the {@link MCP_UI_EXTENSION_ID} extension is the signal (matching
+ * the reference `getUiCapability` helper): unless the payload lists explicit
+ * `mimeTypes` that omit the HTML view MIME type, the host can render EncodeX
+ * views. Kept host-agnostic (no SDK dependency) so tool registration and tests
+ * can branch on capability support.
  * @param {unknown} capabilities - The `extensions` value from client caps.
  * @returns {boolean} True when the host can render EncodeX views.
  */
 export function supportsMcpUi(capabilities: unknown): boolean {
   if (!capabilities || typeof capabilities !== 'object') return false;
   const mimeTypes = (capabilities as McpUiClientCapabilities).mimeTypes;
-  return Array.isArray(mimeTypes) && mimeTypes.includes(MCP_UI_RESOURCE_MIME_TYPE);
+  if (!Array.isArray(mimeTypes)) return true;
+  return mimeTypes.includes(MCP_UI_RESOURCE_MIME_TYPE);
 }

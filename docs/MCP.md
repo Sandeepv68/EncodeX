@@ -8,8 +8,8 @@ There are two launch modes that share one tool/resource/prompt catalogue:
 
 | Mode | Transport | Launched by | Surface |
 | ---- | --------- | ----------- | ------- |
-| **Standalone** | stdio | `encodex --mcp` or `node dist/mcp/index.js` | 15 core tools |
-| **Embedded** | Streamable HTTP | Toggle in **Settings → MCP Server** | 15 core + 6 GUI-parity tools = **21** |
+| **Standalone** | stdio | `encodex --mcp` or `node dist/mcp/index.js` | 15 core tools + app-only `commit_operation` = **16** |
+| **Embedded** | Streamable HTTP | Toggle in **Settings → MCP Server** | 15 core + app-only `commit_operation` + 6 GUI-parity tools = **22** |
 
 Related docs: [`CLI.md`](CLI.md), [`IPC.md`](IPC.md), [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -126,6 +126,8 @@ Add to `~/.cursor/mcp.json` (same shape as Claude Desktop for stdio). For the em
 
 All tools return a single JSON text payload. Failures set `isError` and return `{ ok: false, code, message, detail }`.
 
+When a client advertises MCP Apps, the mutating tools below answer with a confirmation instead of running, and the app-only `commit_operation` tool performs the work after the user approves (see [MCP_UI.md](MCP_UI.md#user-approval-gate)). Plain clients keep the exact behaviour documented here.
+
 ### Core tools (both modes)
 
 | Tool | Key inputs | Returns |
@@ -145,6 +147,7 @@ All tools return a single JSON text payload. Failures set `isError` and return `
 | `batch_convert` | `inputs[]`, `outputDir?`, `suffix?`, `concurrency?` + convert options | `{ total, jobs: [{ file, output, jobId, status }] }` |
 | `remux_media` | `input`, `container?`, `output?`, `map?`, `subtitles?`, `addSubtitle[]`, `addAudio[]`, `thumbnail?`, `chapters?`, `subtitleCodec?`, `audioSyncSeconds?`, `videoFilters?`, `transcoder?` | `{ jobId, …, container, map, warnings }` |
 | `demux_media` | `input`, `outputDir?`, `video?`, `audio?`, `subtitles?`, `all?`, `videoContainer?`, `audioCodec?`, `subtitleCodec?`, `videoFilters?`, `transcoder?` | `{ total, transcoder, jobs: [{ kind, streamIndex, copy, codec, output, jobId, status }], warnings }` |
+| `commit_operation` | `tool` (the confirmed operation), `args` (its exact arguments) | The confirmed operation's result. App-only (`_meta.ui.visibility: ['app']`); never callable by the model. |
 
 ### GUI-parity tools (embedded mode only)
 
@@ -169,7 +172,7 @@ All tools return a single JSON text payload. Failures set `isError` and return `
 
 ### MCP Apps views
 
-When a host supports MCP Apps, four `ui://` resources render as interactive views (MIME `text/html;profile=mcp-app`):
+When a host supports MCP Apps, five `ui://` resources render as interactive views (MIME `text/html;profile=mcp-app`):
 
 | URI | Rendered by |
 | --- | ----------- |
@@ -177,8 +180,9 @@ When a host supports MCP Apps, four `ui://` resources render as interactive view
 | `ui://encodex/job` | `get_job` |
 | `ui://encodex/media-info` | `get_media_info` |
 | `ui://encodex/convert` | `convert_media` |
+| `ui://encodex/confirm` | all other mutating tools (proposal the user approves) |
 
-See [`MCP_UI.md`](MCP_UI.md) for what each view shows, the `structuredContent` shapes, and the bidirectional actions (including confirm-gated cancel).
+See [`MCP_UI.md`](MCP_UI.md) for what each view shows, the `structuredContent` shapes, the user-approval gate, and the bidirectional actions (including confirm-gated cancel).
 
 ## 💬 Prompts
 
@@ -410,9 +414,9 @@ npm run mcp:smoke            # node dist/mcp/index.js
 npm run mcp:smoke:electron   # electron . --mcp (requires a display / xvfb on Linux)
 ```
 
-Both assert the handshake, the 15-tool stdio catalogue, the MCP Apps surface (the `io.modelcontextprotocol/ui` capability plus every `ui://` view resource), and a live `ping`. (The 6 GUI-parity tools are only reachable through the embedded HTTP server.)
+Both assert the handshake, the 16-tool stdio catalogue, the MCP Apps surface (the `io.modelcontextprotocol/ui` capability plus every `ui://` view resource), and a live `ping`. (The 6 GUI-parity tools are only reachable through the embedded HTTP server.)
 
-For the complete local surface — every stdio tool with real FFmpeg conversions, the standalone HTTP transport with its auth/topology guards, and the 21-tool embedded server exactly as `.vscode/mcp.json` dials it:
+For the complete local surface — every stdio tool with real FFmpeg conversions, the standalone HTTP transport with its auth/topology guards, and the 22-tool embedded server exactly as `.vscode/mcp.json` dials it:
 
 ```bash
 npm run build

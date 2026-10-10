@@ -9,6 +9,7 @@ import { QUEUE_VIEW_HTML } from '../ui/views/queue';
 import { JOB_VIEW_HTML } from '../ui/views/job';
 import { MEDIA_INFO_VIEW_HTML } from '../ui/views/media-info';
 import { CONVERT_VIEW_HTML } from '../ui/views/convert';
+import { CONFIRM_VIEW_HTML } from '../ui/views/confirm';
 
 /**
  * Extracts every inline `<script>` body from a view document, in order.
@@ -192,10 +193,15 @@ describe('MCP Apps view bridges', () => {
     }
   });
 
-  it('convert: submits the form, starts a job, and renders it', async () => {
+  it('convert: submits the form through commit_operation and renders the job', async () => {
     const host = startHost((name, args) => {
-      if (name === 'convert_media') {
-        return { structuredContent: { job: { id: 'c1', input: args.input, output: 'C:/out/movie.mp4', status: 'queued', progress: 0 } } };
+      if (name === 'commit_operation') {
+        const inner = (args.args ?? {}) as Record<string, unknown>;
+        return {
+          structuredContent: {
+            job: { id: 'c1', input: inner.input, output: 'C:/out/movie.mp4', status: 'queued', progress: 0 },
+          },
+        };
       }
       return { structuredContent: {} };
     });
@@ -205,13 +211,76 @@ describe('MCP Apps view bridges', () => {
       (document.getElementById('videoCodec') as HTMLInputElement).value = 'libx264';
       (document.getElementById('submit') as HTMLButtonElement).click();
 
-      await vi.waitFor(() => expect(host.calls.some((call) => call.name === 'convert_media')).toBe(true));
-      const call = host.calls.find((candidate) => candidate.name === 'convert_media');
-      expect(call?.args).toMatchObject({ input: 'C:/in/movie.mov', videoCodec: 'libx264' });
+      await vi.waitFor(() => expect(host.calls.some((call) => call.name === 'commit_operation')).toBe(true));
+      const call = host.calls.find((candidate) => candidate.name === 'commit_operation');
+      expect(call?.args).toMatchObject({ tool: 'convert_media', args: { input: 'C:/in/movie.mov', videoCodec: 'libx264' } });
 
       await vi.waitFor(() => expect(document.getElementById('result')?.hidden).toBe(false));
       expect(document.getElementById('status')?.textContent).toBe('queued - 0%');
       expect(document.getElementById('r-output')?.textContent).toBe('C:/out/movie.mp4');
+    } finally {
+      host.stop();
+    }
+  });
+
+  it('convert: pre-fills the form from a model proposal without running it', async () => {
+    const host = startHost(() => ({ structuredContent: {} }));
+    try {
+      bootView(CONVERT_VIEW_HTML);
+      pushToolResult({
+        confirmation: {
+          operation: 'convert_media',
+          title: 'Convert video',
+          summary: 'movie.mov -> movie.mp4',
+          args: { input: 'C:/in/movie.mov', videoCodec: 'libx264', copy: true },
+        },
+      });
+
+      await vi.waitFor(() => expect((document.getElementById('input') as HTMLInputElement).value).toBe('C:/in/movie.mov'));
+      expect((document.getElementById('videoCodec') as HTMLInputElement).value).toBe('libx264');
+      expect((document.getElementById('copy') as HTMLInputElement).checked).toBe(true);
+      expect(document.getElementById('proposal')?.hidden).toBe(false);
+      expect(document.getElementById('proposal')?.textContent).toContain('movie.mov -> movie.mp4');
+      expect(host.calls).toHaveLength(0);
+    } finally {
+      host.stop();
+    }
+  });
+
+  it('confirm: shows a proposal and runs it only after the user approves', async () => {
+    const host = startHost((name) => {
+      if (name === 'commit_operation') {
+        return {
+          structuredContent: { job: { id: 'r1', input: 'C:/in/movie.mov', output: 'C:/out/movie.mkv', status: 'queued', progress: 0 } },
+        };
+      }
+      return { structuredContent: {} };
+    });
+    try {
+      bootView(CONFIRM_VIEW_HTML);
+      pushToolResult({
+        confirmation: {
+          operation: 'remux_media',
+          title: 'Remux media',
+          summary: 'movie.mov -> movie.mkv',
+          args: { input: 'C:/in/movie.mov', container: 'mkv' },
+          details: [{ label: 'Container', value: 'mkv' }],
+        },
+      });
+
+      await vi.waitFor(() => expect(document.getElementById('title')?.textContent).toBe('Remux media'));
+      expect(document.getElementById('summary')?.textContent).toBe('movie.mov -> movie.mkv');
+      expect(host.calls).toHaveLength(0);
+
+      (document.getElementById('run') as HTMLButtonElement).click();
+      await vi.waitFor(() => expect(host.calls.some((call) => call.name === 'commit_operation')).toBe(true));
+      expect(host.calls.find((candidate) => candidate.name === 'commit_operation')?.args).toMatchObject({
+        tool: 'remux_media',
+        args: { input: 'C:/in/movie.mov', container: 'mkv' },
+      });
+
+      await vi.waitFor(() => expect(document.getElementById('progress')?.hidden).toBe(false));
+      expect(document.getElementById('p-status')?.textContent).toBe('queued - 0%');
     } finally {
       host.stop();
     }

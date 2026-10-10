@@ -41,7 +41,13 @@ export const UI_EXTENSION_ID = 'io.modelcontextprotocol/ui';
 export const UI_RESOURCE_MIME = 'text/html;profile=mcp-app';
 
 /** Renderable MCP App view resources served by every surface. @const {string[]} */
-export const UI_VIEW_URIS = ['ui://encodex/queue', 'ui://encodex/job', 'ui://encodex/media-info', 'ui://encodex/convert'];
+export const UI_VIEW_URIS = [
+  'ui://encodex/queue',
+  'ui://encodex/job',
+  'ui://encodex/media-info',
+  'ui://encodex/convert',
+  'ui://encodex/confirm',
+];
 
 /** Every resource URI served by every surface, sorted for exact comparison. @const {string[]} */
 export const ALL_RESOURCE_URIS = ['encodex://capabilities', 'encodex://codecs', 'encodex://profiles', ...UI_VIEW_URIS].sort();
@@ -463,8 +469,12 @@ export async function runCoreSuite(
 export async function assertMcpAppsSurface(handle: McpHandle): Promise<void> {
   const { client } = handle;
   const capabilities = client.getServerCapabilities();
-  if (!capabilities?.extensions || !(UI_EXTENSION_ID in capabilities.extensions)) {
+  const uiCapability = capabilities?.extensions?.[UI_EXTENSION_ID] as { mimeTypes?: string[] } | undefined;
+  if (!uiCapability) {
     throw new Error(`missing MCP Apps capability: ${UI_EXTENSION_ID}`);
+  }
+  if (!Array.isArray(uiCapability.mimeTypes) || !uiCapability.mimeTypes.includes(UI_RESOURCE_MIME)) {
+    throw new Error(`MCP Apps capability must declare ${UI_RESOURCE_MIME} in mimeTypes: ${JSON.stringify(uiCapability)}`);
   }
 
   const { resources } = await client.listResources();

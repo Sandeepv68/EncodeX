@@ -24,9 +24,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST_MCP = path.join(ROOT, 'dist', 'mcp', 'index.js');
 
 // The stdio surface (standalone `node dist/mcp/index.js` and the Electron
-// `--mcp` branch) exposes the 15 core tools. The 6 GUI-parity tools are only
-// registered by the embedded HTTP server inside the running GUI.
-const EXPECTED_TOOL_COUNT = 15;
+// `--mcp` branch) exposes the 15 core tools plus the app-only `commit_operation`
+// executor. The 6 GUI-parity tools are only registered by the embedded HTTP
+// server inside the running GUI.
+const EXPECTED_TOOL_COUNT = 16;
 const REQUIRED_TOOLS = [
   'ping',
   'convert_media',
@@ -43,13 +44,20 @@ const REQUIRED_TOOLS = [
   'batch_convert',
   'remux_media',
   'demux_media',
+  'commit_operation',
 ];
 
 // MCP Apps (SEP-1865) surface: the extension capability plus the renderable
 // `ui://` view resources and their required MIME type.
 const UI_EXTENSION_ID = 'io.modelcontextprotocol/ui';
 const UI_RESOURCE_MIME = 'text/html;profile=mcp-app';
-const REQUIRED_VIEW_URIS = ['ui://encodex/queue', 'ui://encodex/job', 'ui://encodex/media-info', 'ui://encodex/convert'];
+const REQUIRED_VIEW_URIS = [
+  'ui://encodex/queue',
+  'ui://encodex/job',
+  'ui://encodex/media-info',
+  'ui://encodex/convert',
+  'ui://encodex/confirm',
+];
 
 /**
  * Resolves the spawn command for the requested target.
@@ -106,8 +114,15 @@ async function main() {
     }
 
     const capabilities = client.getServerCapabilities();
-    if (!capabilities?.extensions || !(UI_EXTENSION_ID in capabilities.extensions)) {
+    const uiCapability = capabilities?.extensions?.[UI_EXTENSION_ID];
+    if (!uiCapability) {
       throw new Error(`Missing MCP Apps capability: ${UI_EXTENSION_ID}`);
+    }
+    const declaredMimeTypes = Array.isArray(uiCapability.mimeTypes) ? uiCapability.mimeTypes : [];
+    if (!declaredMimeTypes.includes(UI_RESOURCE_MIME)) {
+      throw new Error(
+        `MCP Apps capability is missing ${UI_RESOURCE_MIME} in mimeTypes (hosts require it to render views): ${JSON.stringify(uiCapability)}`,
+      );
     }
 
     const { resources } = await client.listResources();

@@ -16,6 +16,7 @@
  */
 
 import * as fs from 'fs';
+import * as path from 'path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import * as z from 'zod';
 import { APP_NAME } from '../shared/app-constants';
@@ -29,9 +30,18 @@ import { BUILTIN_PROFILES } from '../shared/profiles/builtin';
 import type { ConversionProfile } from '../shared/types';
 import { VIDEO_CODECS, AUDIO_CODECS } from '../shared/media-options';
 import { buildConversionOptions, resolveOutputPath, MCPConversionFields } from './conversion-options';
-import { MCP_UI_EXTENSION_ID, MCP_UI_VIEW_URIS } from '../shared/mcp-ui';
+import { MCP_UI_EXTENSION_ID, MCP_UI_RESOURCE_MIME_TYPE, MCP_UI_VIEW_URIS } from '../shared/mcp-ui';
+import type { McpUiConfirmationField, McpUiJob } from '../shared/mcp-ui';
 import { registerAppTool } from '@modelcontextprotocol/ext-apps/server';
 import { registerUiResources } from './ui/resources';
+import {
+  hostSupportsMcpApps,
+  confirmationResult,
+  confirmationField,
+  confirmationViewUri,
+  COMMIT_OPERATION_TOOL,
+  CONFIRMABLE_OPERATIONS,
+} from './ui/approval';
 import { MCPJobManager } from './jobs/manager';
 import {
   buildCompressPlan,
@@ -382,7 +392,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     {
       capabilities: {
         extensions: {
-          [MCP_UI_EXTENSION_ID]: {},
+          [MCP_UI_EXTENSION_ID]: { mimeTypes: [MCP_UI_RESOURCE_MIME_TYPE] },
         },
       },
     },
@@ -390,6 +400,368 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
 
   const transcoderFactory = options.transcoderFactory ?? createTranscoder;
   const jobManager = options.jobManager ?? new MCPJobManager({ transcoderFactory });
+
+  /**
+   * Drops the confirmation rows a tool left unset, keeping views tidy.
+   * @param {Array<McpUiConfirmationField | undefined>} rows - Candidate rows.
+   * @returns {McpUiConfirmationField[]} The non-empty rows.
+   */
+  function confirmationRows(rows: Array<McpUiConfirmationField | undefined>): McpUiConfirmationField[] {
+    return rows.filter((row): row is McpUiConfirmationField => row !== undefined);
+  }
+
+  /**
+   * Serializes an enqueued job into the shape the job/queue/confirm views read.
+   * @param {ReturnType<MCPJobManager['enqueue']>} job - The enqueued job.
+   * @returns {McpUiJob} The view-shaped job.
+   */
+  function viewJob(job: ReturnType<MCPJobManager['enqueue']>): McpUiJob {
+    return { id: job.id, input: job.input, output: job.output, status: job.status, progress: job.progress };
+  }
+
+  /**
+   * Runs (or proposes) a conversion. When `confirm` is true the call returns a
+   * confirmation and enqueues nothing; otherwise it behaves exactly as the
+   * headless tool always has.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runConvert(raw: unknown, confirm: boolean) {
+    try {
+      const args = conversionSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const fields: MCPConversionFields = { ...args };
+      const options = buildConversionOptions(fields);
+      const output = args.output ?? resolveOutputPath(args.input, fields, options);
+      if (confirm) {
+        return confirmationResult({
+          operation: 'convert_media',
+          title: 'Convert video',
+          summary: `${path.basename(args.input)} -> ${path.basename(output)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Output', output),
+            confirmationField('Video codec', args.videoCodec),
+            confirmationField('Audio codec', args.audioCodec),
+            confirmationField('Video bitrate', args.videoBitrate),
+            confirmationField('Audio bitrate', args.audioBitrate),
+            confirmationField('Scale', args.scale),
+            confirmationField('Quality', args.qscale),
+            args.copy ? { label: 'Mode', value: 'Lossless stream copy' } : undefined,
+          ]),
+        });
+      }
+      if (args.concurrency !== undefined) {
+        jobManager.setConcurrency(args.concurrency);
+      }
+      const job = jobManager.enqueue(args.input, output, options, (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG');
+      const transcoder = args.transcoder ?? 'FFMPEG';
+      return okUi(JSON.stringify({ jobId: job.id, input: job.input, output: job.output, status: job.status, transcoder }), {
+        job: viewJob(job),
+        transcoder,
+      });
+    } catch (err) {
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) an image compression.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runCompress(raw: unknown, confirm: boolean) {
+    try {
+      const args = compressSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const fields: MCPCompressFields = { ...args };
+      const plan = buildCompressPlan(args.input, fields);
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      if (confirm) {
+        return confirmationResult({
+          operation: 'compress_image',
+          title: 'Compress image',
+          summary: `${path.basename(args.input)} -> ${path.basename(plan.output)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Output', plan.output),
+            confirmationField('Format', plan.format),
+            confirmationField('Quality', args.quality),
+            confirmationField('Scale', args.scale),
+          ]),
+        });
+      }
+      const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      return okUi(JSON.stringify({ ...enqueueResponse(job, transcoder), format: plan.format }), {
+        job: viewJob(job),
+        transcoder,
+        format: plan.format,
+      });
+    } catch (err) {
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) an audio extraction.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runExtract(raw: unknown, confirm: boolean) {
+    try {
+      const args = extractSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const fields: MCPExtractAudioFields = { ...args };
+      const plan = buildExtractAudioPlan(args.input, fields);
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      if (confirm) {
+        return confirmationResult({
+          operation: 'extract_audio',
+          title: 'Extract audio',
+          summary: `${path.basename(args.input)} -> ${path.basename(plan.output)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Output', plan.output),
+            confirmationField('Audio codec', plan.audioCodec),
+            confirmationField('Bitrate', args.bitrate),
+          ]),
+        });
+      }
+      const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      return okUi(JSON.stringify({ ...enqueueResponse(job, transcoder), audioCodec: plan.audioCodec, extension: plan.ext }), {
+        job: viewJob(job),
+        transcoder,
+        audioCodec: plan.audioCodec,
+        extension: plan.ext,
+      });
+    } catch (err) {
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) a cut/trim.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runCut(raw: unknown, confirm: boolean) {
+    try {
+      const args = cutSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const fields: MCPCutFields = { ...args };
+      const plan = buildCutPlan(args.input, fields);
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      if (confirm) {
+        return confirmationResult({
+          operation: 'cut_video',
+          title: 'Cut video',
+          summary: `${path.basename(args.input)} -> ${path.basename(plan.output)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Output', plan.output),
+            confirmationField('Start', args.startTime),
+            confirmationField('End', args.endTime),
+            confirmationField('Duration', args.duration),
+            args.copy === false ? { label: 'Mode', value: 'Re-encode' } : { label: 'Mode', value: 'Lossless stream copy' },
+          ]),
+        });
+      }
+      const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      return okUi(JSON.stringify(enqueueResponse(job, transcoder)), { job: viewJob(job), transcoder });
+    } catch (err) {
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) a batch conversion.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runBatch(raw: unknown, confirm: boolean) {
+    try {
+      const args = batchSchema.parse(raw);
+      const fields: MCPConversionFields = { ...args };
+      const { jobs } = buildBatchPlan(args.inputs, fields, args.outputDir, args.suffix);
+      if (jobs.length === 0) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `No input files matched: ${args.inputs.join(', ')}`);
+      }
+      if (confirm) {
+        return confirmationResult({
+          operation: 'batch_convert',
+          title: 'Batch convert',
+          summary: `Convert ${jobs.length} file${jobs.length === 1 ? '' : 's'}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Files', jobs.length),
+            confirmationField('Output directory', args.outputDir),
+            confirmationField('Suffix', args.suffix),
+          ]),
+        });
+      }
+      if (args.outputDir) {
+        fs.mkdirSync(args.outputDir, { recursive: true });
+      }
+      if (args.concurrency !== undefined) {
+        jobManager.setConcurrency(args.concurrency);
+      }
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      const queued = jobs.map((job) => {
+        const running = jobManager.enqueue(job.input, job.output, job.options, transcoder);
+        return { file: job.input, output: job.output, jobId: running.id, status: running.status, progress: running.progress };
+      });
+      return okUi(JSON.stringify({ total: queued.length, jobs: queued }), {
+        total: queued.length,
+        jobs: queued.map((entry) => ({
+          id: entry.jobId,
+          input: entry.file,
+          output: entry.output,
+          status: entry.status,
+          progress: entry.progress,
+        })),
+      });
+    } catch (err) {
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) a remux. The source is always probed first so an
+   * incompatible target or missing auxiliary file fails before confirmation.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runRemux(raw: unknown, confirm: boolean) {
+    try {
+      const args = remuxSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const chaptersFile = args.chapters && typeof args.chapters === 'object' ? args.chapters.file : undefined;
+      assertMcpAuxiliaryInputsExist([
+        ...(args.addSubtitle ?? []).map((entry) => entry.file),
+        ...(args.addAudio ?? []).map((entry) => entry.file),
+        ...(args.thumbnail ? [args.thumbnail.file] : []),
+        ...(chaptersFile ? [chaptersFile] : []),
+      ]);
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      const fields: MCPRemuxFields = { ...args };
+      const info = await transcoderFactory(transcoder).getInfo(args.input);
+      const plan = buildRemuxPlan(args.input, fields, info.streams ?? []);
+      const warnings = plan.warnings.map((finding) => finding.code ?? finding.message);
+      if (confirm) {
+        return confirmationResult({
+          operation: 'remux_media',
+          title: 'Remux media',
+          summary: `${path.basename(args.input)} -> ${path.basename(plan.output)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Output', plan.output),
+            confirmationField('Container', plan.container),
+            confirmationField('Streams', (plan.options.map ?? []).join(', ')),
+          ]),
+          warnings,
+        });
+      }
+      const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      return okUi(
+        JSON.stringify({
+          ...enqueueResponse(job, transcoder),
+          container: plan.container,
+          map: plan.options.map ?? [],
+          warnings,
+        }),
+        { job: viewJob(job), transcoder, container: plan.container, map: plan.options.map ?? [], warnings },
+      );
+    } catch (err) {
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) a demux.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runDemux(raw: unknown, confirm: boolean) {
+    try {
+      const args = demuxSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      const fields: MCPDemuxFields = { ...args };
+      const info = await transcoderFactory(transcoder).getInfo(args.input);
+      const plan = buildDemuxPlan(args.input, fields, info.streams ?? []);
+      const warnings = plan.warnings.map((finding) => finding.code ?? finding.message);
+      if (confirm) {
+        return confirmationResult({
+          operation: 'demux_media',
+          title: 'Demux media',
+          summary: `Extract ${plan.targets.length} stream${plan.targets.length === 1 ? '' : 's'} from ${path.basename(args.input)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Streams', plan.targets.length),
+            confirmationField('Output directory', args.outputDir),
+          ]),
+          warnings,
+        });
+      }
+      if (args.outputDir) {
+        fs.mkdirSync(args.outputDir, { recursive: true });
+      }
+      const queued = plan.targets.map((target) => {
+        const job = jobManager.enqueue(args.input, target.output, buildDemuxJobOptions(target), transcoder);
+        return {
+          kind: target.kind,
+          streamIndex: target.index,
+          copy: target.copy,
+          codec: target.codec,
+          output: job.output,
+          jobId: job.id,
+          status: job.status,
+          progress: job.progress,
+        };
+      });
+      return okUi(JSON.stringify({ total: queued.length, transcoder, jobs: queued, warnings }), {
+        total: queued.length,
+        jobs: queued.map((entry) => ({
+          id: entry.jobId,
+          input: args.input,
+          output: entry.output,
+          status: entry.status,
+          progress: entry.progress,
+        })),
+        warnings,
+      });
+    } catch (err) {
+      return fail(err);
+    }
+  }
+
+  /**
+   * Whether the current call should be gated on user approval. Re-evaluated
+   * per call so it reflects the live client capabilities from `initialize`.
+   * @returns {boolean} True when the host renders MCP Apps.
+   */
+  function shouldConfirm(): boolean {
+    return hostSupportsMcpApps(server);
+  }
 
   server.registerTool(
     'ping',
@@ -410,31 +782,13 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         'Start an asynchronous media conversion (re-encode, stream-copy, trim, scale, rotate, video filters). ' +
         'Video filters are given via filters (comma-joined chain), videoFilters (expression array), or presets ' +
         '(curated ids); they require re-encoding and cannot be combined with copy. ' +
-        'Returns a job id immediately; poll with get_job / list_jobs and cancel with cancel_job.',
+        'When the client renders MCP Apps the conversion is proposed in the app and only starts once the user ' +
+        'confirms it; in other clients it starts immediately. ' +
+        'Returns a job id; poll with get_job / list_jobs and cancel with cancel_job.',
       inputSchema: conversionSchema,
-      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.convert } },
+      _meta: { ui: { resourceUri: confirmationViewUri('convert_media') } },
     },
-    async (args: z.infer<typeof conversionSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        const fields: MCPConversionFields = { ...args };
-        const options = buildConversionOptions(fields);
-        const output = args.output ?? resolveOutputPath(args.input, fields, options);
-        if (args.concurrency !== undefined) {
-          jobManager.setConcurrency(args.concurrency);
-        }
-        const job = jobManager.enqueue(args.input, output, options, (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG');
-        const transcoder = args.transcoder ?? 'FFMPEG';
-        return okUi(JSON.stringify({ jobId: job.id, input: job.input, output: job.output, status: job.status, transcoder }), {
-          job: { id: job.id, input: job.input, output: job.output, status: job.status, progress: job.progress },
-          transcoder,
-        });
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof conversionSchema>) => runConvert(args, shouldConfirm()),
   );
 
   registerAppTool(
@@ -548,116 +902,72 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     },
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'compress_image',
     {
       title: 'Compress Image',
       description:
         'Lossily compress an image (re-encode to jpg/png/webp/gif/bmp/tiff). ' +
-        'Returns a job id immediately; poll with get_job / list_jobs.',
+        'When the client renders MCP Apps the compression is proposed in the app and only starts once the user ' +
+        'confirms it; in other clients it starts immediately. ' +
+        'Returns a job id; poll with get_job / list_jobs.',
       inputSchema: compressSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('compress_image') } },
     },
-    async (args: z.infer<typeof compressSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        const fields: MCPCompressFields = { ...args };
-        const plan = buildCompressPlan(args.input, fields);
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
-        return ok(JSON.stringify({ ...enqueueResponse(job, transcoder), format: plan.format }));
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof compressSchema>) => runCompress(args, shouldConfirm()),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'extract_audio',
     {
       title: 'Extract Audio',
       description:
         'Extract the audio track from a media file, dropping the video stream. ' +
-        'Returns a job id immediately; poll with get_job / list_jobs.',
+        'When the client renders MCP Apps the extraction is proposed in the app and only starts once the user ' +
+        'confirms it; in other clients it starts immediately. ' +
+        'Returns a job id; poll with get_job / list_jobs.',
       inputSchema: extractSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('extract_audio') } },
     },
-    async (args: z.infer<typeof extractSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        const fields: MCPExtractAudioFields = { ...args };
-        const plan = buildExtractAudioPlan(args.input, fields);
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
-        return ok(JSON.stringify({ ...enqueueResponse(job, transcoder), audioCodec: plan.audioCodec, extension: plan.ext }));
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof extractSchema>) => runExtract(args, shouldConfirm()),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'cut_video',
     {
       title: 'Cut Video',
       description:
         'Cut (trim) a video by start/end time or duration. Defaults to lossless stream copy. ' +
-        'Returns a job id immediately; poll with get_job / list_jobs.',
+        'When the client renders MCP Apps the cut is proposed in the app and only starts once the user confirms it; ' +
+        'in other clients it starts immediately. ' +
+        'Returns a job id; poll with get_job / list_jobs.',
       inputSchema: cutSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('cut_video') } },
     },
-    async (args: z.infer<typeof cutSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        const fields: MCPCutFields = { ...args };
-        const plan = buildCutPlan(args.input, fields);
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
-        return ok(JSON.stringify(enqueueResponse(job, transcoder)));
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof cutSchema>) => runCut(args, shouldConfirm()),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'batch_convert',
     {
       title: 'Batch Convert',
       description:
         'Queue conversions for multiple files (paths, directories, or glob patterns) sharing the same options. ' +
-        'Returns a job id per input immediately; poll with get_job / list_jobs and cancel with cancel_job.',
+        'When the client renders MCP Apps the batch is proposed in the app and only starts once the user confirms it; ' +
+        'in other clients it starts immediately. ' +
+        'Returns a job id per input; poll with get_job / list_jobs and cancel with cancel_job.',
       inputSchema: batchSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('batch_convert') } },
     },
-    async (args: z.infer<typeof batchSchema>) => {
-      try {
-        const fields: MCPConversionFields = { ...args };
-        const { jobs } = buildBatchPlan(args.inputs, fields, args.outputDir, args.suffix);
-        if (jobs.length === 0) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `No input files matched: ${args.inputs.join(', ')}`);
-        }
-        if (args.outputDir) {
-          fs.mkdirSync(args.outputDir, { recursive: true });
-        }
-        if (args.concurrency !== undefined) {
-          jobManager.setConcurrency(args.concurrency);
-        }
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const queued = jobs.map((job) => {
-          const running = jobManager.enqueue(job.input, job.output, job.options, transcoder);
-          return { file: job.input, output: job.output, jobId: running.id, status: running.status };
-        });
-        return ok(JSON.stringify({ total: queued.length, jobs: queued }));
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof batchSchema>) => runBatch(args, shouldConfirm()),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'remux_media',
     {
       title: 'Remux Media',
@@ -666,42 +976,17 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         'cover art, or chapters without re-encoding. The source is probed first so the default selection is every ' +
         'stream, and a stream the target container cannot store is rejected up front. Passing videoFilters is the one ' +
         'exception to the lossless copy: the video is then re-encoded with the filter chain. ' +
-        'Returns a job id immediately; poll with get_job / list_jobs.',
+        'When the client renders MCP Apps the remux is proposed in the app and only starts once the user confirms it; ' +
+        'in other clients it starts immediately. ' +
+        'Returns a job id; poll with get_job / list_jobs.',
       inputSchema: remuxSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('remux_media') } },
     },
-    async (args: z.infer<typeof remuxSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        const chaptersFile = args.chapters && typeof args.chapters === 'object' ? args.chapters.file : undefined;
-        assertMcpAuxiliaryInputsExist([
-          ...(args.addSubtitle ?? []).map((entry) => entry.file),
-          ...(args.addAudio ?? []).map((entry) => entry.file),
-          ...(args.thumbnail ? [args.thumbnail.file] : []),
-          ...(chaptersFile ? [chaptersFile] : []),
-        ]);
-
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const fields: MCPRemuxFields = { ...args };
-        const info = await transcoderFactory(transcoder).getInfo(args.input);
-        const plan = buildRemuxPlan(args.input, fields, info.streams ?? []);
-        const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
-        return ok(
-          JSON.stringify({
-            ...enqueueResponse(job, transcoder),
-            container: plan.container,
-            map: plan.options.map ?? [],
-            warnings: plan.warnings.map((finding) => finding.code ?? finding.message),
-          }),
-        );
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof remuxSchema>) => runRemux(args, shouldConfirm()),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'demux_media',
     {
       title: 'Demux Media',
@@ -709,43 +994,47 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         'Split a media file into per-stream outputs (video, audio, subtitles), optionally re-encoding each kind ' +
         '(videoContainer / audioCodec / subtitleCodec, plus videoFilters on a re-encoded video stream). The source is ' +
         'probed first; cover-art video streams are skipped. ' +
-        'Returns one job id per extracted stream immediately; poll with get_job / list_jobs.',
+        'When the client renders MCP Apps the demux is proposed in the app and only starts once the user confirms it; ' +
+        'in other clients it starts immediately. ' +
+        'Returns one job id per extracted stream; poll with get_job / list_jobs.',
       inputSchema: demuxSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('demux_media') } },
     },
-    async (args: z.infer<typeof demuxSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        if (args.outputDir) {
-          fs.mkdirSync(args.outputDir, { recursive: true });
-        }
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const fields: MCPDemuxFields = { ...args };
-        const info = await transcoderFactory(transcoder).getInfo(args.input);
-        const plan = buildDemuxPlan(args.input, fields, info.streams ?? []);
-        const queued = plan.targets.map((target) => {
-          const job = jobManager.enqueue(args.input, target.output, buildDemuxJobOptions(target), transcoder);
-          return {
-            kind: target.kind,
-            streamIndex: target.index,
-            copy: target.copy,
-            codec: target.codec,
-            output: job.output,
-            jobId: job.id,
-            status: job.status,
-          };
-        });
-        return ok(
-          JSON.stringify({
-            total: queued.length,
-            transcoder,
-            jobs: queued,
-            warnings: plan.warnings.map((finding) => finding.code ?? finding.message),
-          }),
-        );
-      } catch (err) {
-        return fail(err);
+    async (args: z.infer<typeof demuxSchema>) => runDemux(args, shouldConfirm()),
+  );
+
+  registerAppTool(
+    server,
+    COMMIT_OPERATION_TOOL,
+    {
+      title: 'Commit Operation',
+      description:
+        'App-only. Runs a mutating EncodeX operation after the user confirmed it in the app UI. ' +
+        'The model cannot call this tool; only the confirmation view can.',
+      inputSchema: z.object({
+        tool: z.enum(CONFIRMABLE_OPERATIONS).describe('The mutating operation the user confirmed.'),
+        args: z.record(z.string(), z.unknown()).describe('The exact arguments from the confirmed proposal.'),
+      }),
+      _meta: { ui: { visibility: ['app'] } },
+    },
+    async ({ tool, args }) => {
+      switch (tool) {
+        case 'convert_media':
+          return runConvert(args, false);
+        case 'compress_image':
+          return runCompress(args, false);
+        case 'extract_audio':
+          return runExtract(args, false);
+        case 'cut_video':
+          return runCut(args, false);
+        case 'batch_convert':
+          return runBatch(args, false);
+        case 'remux_media':
+          return runRemux(args, false);
+        case 'demux_media':
+          return runDemux(args, false);
+        default:
+          return fail(createError(ErrorCode.UNKNOWN, `Unknown operation: ${String(tool)}`));
       }
     },
   );

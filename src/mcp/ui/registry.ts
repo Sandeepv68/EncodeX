@@ -12,6 +12,7 @@ import { QUEUE_VIEW_HTML } from './views/queue';
 import { JOB_VIEW_HTML } from './views/job';
 import { MEDIA_INFO_VIEW_HTML } from './views/media-info';
 import { CONVERT_VIEW_HTML } from './views/convert';
+import { CONFIRM_VIEW_HTML } from './views/confirm';
 
 /**
  * One servable MCP App view.
@@ -55,8 +56,14 @@ export const MCP_UI_VIEWS: McpUiView[] = [
   {
     id: 'EncodeX convert view',
     uri: MCP_UI_VIEW_URIS.convert,
-    description: 'Conversion setup form that starts a job and tracks its progress.',
+    description: 'Setup form for a conversion, pre-filled from a model proposal and tracked live.',
     html: () => CONVERT_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX confirm view',
+    uri: MCP_UI_VIEW_URIS.confirm,
+    description: 'Confirmation card for a proposed operation; runs it only when the user approves.',
+    html: () => CONFIRM_VIEW_HTML,
   },
 ];
 
