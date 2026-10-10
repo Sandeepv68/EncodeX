@@ -47,6 +47,9 @@ export const UI_VIEW_URIS = [
   'ui://encodex/media-info',
   'ui://encodex/convert',
   'ui://encodex/confirm',
+  'ui://encodex/inspector',
+  'ui://encodex/plan',
+  'ui://encodex/lab',
 ];
 
 /** Every resource URI served by every surface, sorted for exact comparison. @const {string[]} */

@@ -53,6 +53,7 @@ const UI_TOOL_ARGS: Record<string, Record<string, unknown>> = {
   analyze_media: { input: '' },
   recommend_settings: { input: '', intent: 'make this work on my iPhone' },
   estimate_conversion: { input: '' },
+  compress_to_target: { input: '', maxBytes: 50 * 1024 * 1024 },
   list_jobs: {},
 };
 

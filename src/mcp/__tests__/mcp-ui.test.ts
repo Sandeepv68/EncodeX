@@ -84,6 +84,7 @@ describe('MCP Apps server surface', () => {
         MCP_UI_VIEW_URIS.confirm,
         MCP_UI_VIEW_URIS.inspector,
         MCP_UI_VIEW_URIS.plan,
+        MCP_UI_VIEW_URIS.lab,
       ]) {
         const view = resources.find((resource) => resource.uri === uri);
         expect(view, `missing view ${uri}`).toBeDefined();
@@ -157,6 +158,7 @@ describe('MCP Apps server surface', () => {
         MCP_UI_VIEW_URIS.confirm,
         MCP_UI_VIEW_URIS.inspector,
         MCP_UI_VIEW_URIS.plan,
+        MCP_UI_VIEW_URIS.lab,
       ]) {
         const result = await session.client.readResource({ uri });
         const html = (result.contents[0] as { text?: string }).text ?? '';
@@ -239,6 +241,7 @@ describe('MCP Apps server surface', () => {
         analyze_media: MCP_UI_VIEW_URIS.inspector,
         recommend_settings: MCP_UI_VIEW_URIS.plan,
         estimate_conversion: MCP_UI_VIEW_URIS.plan,
+        compress_to_target: MCP_UI_VIEW_URIS.lab,
       };
       for (const [name, uri] of Object.entries(expected)) {
         const tool = tools.find((candidate) => candidate.name === name);

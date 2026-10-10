@@ -38,10 +38,28 @@ const CORE_TOOLS = [
   'batch_convert',
   'remux_media',
   'demux_media',
+  'commit_operation',
+  'analyze_media',
+  'recommend_settings',
+  'estimate_conversion',
+  'validate_output',
+  'compress_to_target',
+  'analyze_folder',
 ];
 const GUI_TOOLS = ['get_queue_state', 'cancel_all_jobs', 'get_timeline', 'extract_preview', 'get_system_info', 'check_for_updates'];
 const ALL_TOOLS = [...CORE_TOOLS, ...GUI_TOOLS];
 const RESOURCE_URIS = ['encodex://profiles', 'encodex://capabilities', 'encodex://codecs'];
+const VIEW_URIS = [
+  'ui://encodex/queue',
+  'ui://encodex/job',
+  'ui://encodex/media-info',
+  'ui://encodex/convert',
+  'ui://encodex/confirm',
+  'ui://encodex/inspector',
+  'ui://encodex/plan',
+  'ui://encodex/lab',
+];
+const ALL_RESOURCE_URIS = [...RESOURCE_URIS, ...VIEW_URIS];
 const PROMPT_NAMES = ['convert-video', 'extract-audio', 'compress-image', 'batch-convert'];
 
 let section = 'setup';
@@ -542,12 +560,13 @@ async function runCoreSuite(client, fx, { expectedTools, mode, outDir }) {
 }
 
 async function runResourcesAndPrompts(client) {
-  await check('resources list/read serve the three encodex:// documents', async () => {
+  await check('resources list/read serve every documented resource', async () => {
     const { resources } = await client.listResources();
     const uris = resources.map((resource) => resource.uri).sort();
-    assert(JSON.stringify(uris) === JSON.stringify([...RESOURCE_URIS].sort()), `got ${uris.join(', ')}`);
+    assert(JSON.stringify(uris) === JSON.stringify([...ALL_RESOURCE_URIS].sort()), `got ${uris.join(', ')}`);
     for (const resource of resources) {
-      assert(resource.mimeType === 'application/json', `${resource.uri} mime ${resource.mimeType}`);
+      const expectedMime = VIEW_URIS.includes(resource.uri) ? 'text/html;profile=mcp-app' : 'application/json';
+      assert(resource.mimeType === expectedMime, `${resource.uri} mime ${resource.mimeType}`);
     }
     for (const uri of RESOURCE_URIS) {
       const { contents } = await client.readResource({ uri });

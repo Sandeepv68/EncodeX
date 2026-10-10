@@ -28,9 +28,22 @@ import { MAX_QUEUE_CONCURRENCY } from '../shared/constants';
 import { getEncoderCapabilities } from '../main/capabilities';
 import { BUILTIN_PROFILES } from '../shared/profiles/builtin';
 import type { ConversionProfile } from '../shared/types';
-import { analyzeMedia, estimateConversion, extractMediaFacts, recommendSettings, validateOutput } from '../shared/ai';
-import type { PlanRequest } from '../shared/ai';
+import {
+  analyzeMedia,
+  estimateConversion,
+  extractMediaFacts,
+  libraryRow,
+  parseIntent,
+  parseBitrateKbps,
+  planTargetSizeCandidates,
+  recommendSettings,
+  summarizeLibrary,
+  validateOutput,
+} from '../shared/ai';
+import type { LibraryRow, PlanRequest } from '../shared/ai';
 import { VIDEO_CODECS, AUDIO_CODECS } from '../shared/media-options';
+import { suggestedExtensionForVideoCodec } from '../shared/codec-containers';
+import { expandInputs, getInputExtension } from '../main/cli/cli-util';
 import { buildConversionOptions, resolveOutputPath, MCPConversionFields } from './conversion-options';
 import { MCP_UI_EXTENSION_ID, MCP_UI_RESOURCE_MIME_TYPE, MCP_UI_VIEW_URIS } from '../shared/mcp-ui';
 import type { McpUiConfirmationField, McpUiJob } from '../shared/mcp-ui';
@@ -45,6 +58,7 @@ import {
   CONFIRMABLE_OPERATIONS,
 } from './ui/approval';
 import { MCPJobManager } from './jobs/manager';
+import type { MCPJob } from './jobs/manager';
 import {
   buildCompressPlan,
   buildExtractAudioPlan,
@@ -453,6 +467,89 @@ const validateSchema = z.object({
 });
 
 /**
+ * Schema for the `compress_to_target` tool: encode until the measured output
+ * fits a hard byte ceiling, keeping the best quality that does.
+ */
+const compressToTargetSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the input media file.'),
+  maxBytes: z.number().int().positive().describe('Hard output size ceiling in bytes.'),
+  intent: z.string().optional().describe("Quality intent, e.g. 'keep the best quality' or 'smallest possible'."),
+  videoCodec: z.string().optional().describe('Video encoder (default libx264).'),
+  audioCodec: z.string().optional().describe('Audio encoder (default aac).'),
+  audioBitrate: z.string().optional().describe('Audio bitrate (default derives from the target size).'),
+  maxCandidates: z.number().int().min(1).max(5).optional().describe('How many bitrate candidates to try (1-5, default 3).'),
+  output: z.string().optional().describe('Base output path; each candidate is suffixed with its bitrate.'),
+  transcoder: z.enum(['FFMPEG', 'FFTOOL', 'BMF']).optional().describe('Transcoder backend (default FFMPEG).'),
+});
+
+/**
+ * Schema for the `analyze_folder` tool: project the space a re-encode would save.
+ */
+const analyzeFolderSchema = z.object({
+  path: z.string().min(1).describe('Directory (or glob) containing media to analyze.'),
+  intent: z.string().optional().describe("Planning intent, e.g. 'compress to save space' or 'keep quality'."),
+  recursive: z.boolean().optional().describe('Recurse into subdirectories (default false).'),
+  maxFiles: z.number().int().min(1).max(500).optional().describe('Maximum files to probe (default 200).'),
+  transcoder: z.enum(['FFMPEG', 'FFTOOL', 'BMF']).optional().describe('Transcoder backend (default FFMPEG).'),
+});
+
+/**
+ * Media file extensions the folder analysis projects. Non-media files found in
+ * a directory are skipped so the report only covers things that can be encoded.
+ * @const {Set<string>}
+ */
+const MEDIA_EXTENSIONS = new Set([
+  'mp4',
+  'm4v',
+  'mkv',
+  'mov',
+  'avi',
+  'webm',
+  'flv',
+  'wmv',
+  'mpg',
+  'mpeg',
+  'ts',
+  'm2ts',
+  'mp3',
+  'aac',
+  'm4a',
+  'flac',
+  'wav',
+  'ogg',
+  'opus',
+  'wma',
+  'jpg',
+  'jpeg',
+  'png',
+  'webp',
+  'gif',
+  'bmp',
+  'tiff',
+  'tif',
+  'avif',
+  'heic',
+]);
+
+/**
+ * Tests whether a path looks like a media file by extension.
+ * @param {string} file - The candidate file path.
+ * @returns {boolean} True when the extension is in {@link MEDIA_EXTENSIONS}.
+ */
+function isMediaPath(file: string): boolean {
+  return MEDIA_EXTENSIONS.has(path.extname(file).slice(1).toLowerCase());
+}
+
+/**
+ * Extracts a human-readable message from an unknown thrown value.
+ * @param {unknown} err - The thrown value.
+ * @returns {string} The error message.
+ */
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
+/**
  * Serializes an enqueued job into the shared tool response shape.
  * @param {ReturnType<MCPJobManager['enqueue']>} job - The enqueued job.
  * @param {string} transcoder - The transcoder backend used.
@@ -545,6 +642,255 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${input}`);
     }
     return transcoderFactory('FFMPEG').getInfo(input);
+  }
+
+  /**
+   * Maps a natural-language intent onto a target-size candidate-ladder bias.
+   * @param {string} [intent] - The optional intent text.
+   * @returns {'quality'|'balanced'|'size'} The ladder to walk.
+   */
+  function targetBias(intent?: string): 'quality' | 'balanced' | 'size' {
+    const signals = parseIntent(intent ?? '');
+    if (signals.wantsSmall) return 'size';
+    if (signals.wantsQuality) return 'quality';
+    return 'balanced';
+  }
+
+  /**
+   * The fraction of a source's size a folder projection tries to reach.
+   * @param {string} [intent] - The optional intent text.
+   * @returns {number} A ratio in (0, 1].
+   */
+  function projectionRatio(intent?: string): number {
+    const signals = parseIntent(intent ?? '');
+    if (signals.wantsQuality) return 0.85;
+    if (signals.wantsSmall) return 0.5;
+    return 0.7;
+  }
+
+  /**
+   * Polls a job until it reaches a terminal state or the timeout elapses.
+   * @param {string} jobId - The job to watch.
+   * @param {number} [timeoutMs=30000] - Per-candidate timeout.
+   * @param {number} [intervalMs=50] - Poll interval.
+   * @returns {Promise<MCPJob>} The terminal job.
+   * @throws {AppError} When the job vanishes or the timeout elapses.
+   */
+  async function waitForJob(jobId: string, timeoutMs = 30000, intervalMs = 50): Promise<MCPJob> {
+    const deadline = Date.now() + timeoutMs;
+    for (;;) {
+      const job = jobManager.getJob(jobId);
+      if (!job) throw createError(ErrorCode.UNKNOWN, `Job not found while waiting: ${jobId}`);
+      if (job.status === 'done' || job.status === 'error') return job;
+      if (Date.now() >= deadline) throw createError(ErrorCode.UNKNOWN, `Timed out waiting for job ${jobId}`);
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+  }
+
+  /**
+   * Builds a candidate output path by inserting a suffix before the extension.
+   * @param {string} base - Base output (or input) path.
+   * @param {string} suffix - Suffix to insert before the extension.
+   * @param {string} ext - Output extension without the leading dot.
+   * @returns {string} The suffixed output path.
+   */
+  function suffixedOutput(base: string, suffix: string, ext: string): string {
+    const parsed = path.parse(base);
+    return path.join(parsed.dir, `${parsed.name}${suffix}.${ext}`);
+  }
+
+  /**
+   * Encodes an input through a ladder of size-target candidates, measuring each
+   * produced output and stopping at the first one that fits the ceiling. This is
+   * the F3 measured loop; the winning quality is decided by bytes on disk, not by
+   * the estimate (roadmap §7.3, D4).
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @returns {Promise<object>} The MCP tool result (lab view data).
+   */
+  async function runCompressToTarget(raw: unknown) {
+    try {
+      const args = compressToTargetSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const info = await probeMedia(args.input);
+      const facts = extractMediaFacts(info);
+      const plan = planTargetSizeCandidates(facts, args.maxBytes, {
+        maxCandidates: args.maxCandidates,
+        bias: targetBias(args.intent),
+        audioBitrateKbps: parseBitrateKbps(args.audioBitrate),
+      });
+      if (plan.candidates.length === 0) {
+        throw createError(ErrorCode.UNKNOWN, plan.notes.join(' ') || 'No size-target candidates could be planned.');
+      }
+
+      const videoCodec = args.videoCodec ?? 'libx264';
+      const audioCodec = args.audioCodec ?? 'aac';
+      const transcoder = args.transcoder ?? 'FFMPEG';
+      const ext = suggestedExtensionForVideoCodec(videoCodec) || getInputExtension(args.input);
+      const base = args.output ?? args.input;
+      const attempts: Array<Record<string, unknown>> = [];
+      let chosen: Record<string, unknown> | undefined;
+
+      for (const candidate of plan.candidates) {
+        const output = suffixedOutput(base, `_target_${candidate.videoBitrateKbps}k`, ext);
+        const fields: MCPConversionFields = { videoCodec, videoBitrate: `${candidate.videoBitrateKbps}k` };
+        if (facts.hasAudio) {
+          fields.audioCodec = audioCodec;
+          fields.audioBitrate = args.audioBitrate ?? `${candidate.audioBitrateKbps}k`;
+        }
+        const options = buildConversionOptions(fields);
+
+        let job: MCPJob;
+        try {
+          job = jobManager.enqueue(args.input, output, options, transcoder);
+        } catch (err) {
+          attempts.push({
+            candidate: candidate.id,
+            videoBitrateKbps: candidate.videoBitrateKbps,
+            output,
+            status: 'error',
+            error: errorMessage(err),
+          });
+          continue;
+        }
+
+        let terminal: MCPJob;
+        try {
+          terminal = await waitForJob(job.id);
+        } catch (err) {
+          attempts.push({
+            candidate: candidate.id,
+            videoBitrateKbps: candidate.videoBitrateKbps,
+            jobId: job.id,
+            output,
+            status: 'timeout',
+            error: errorMessage(err),
+          });
+          continue;
+        }
+        if (terminal.status === 'error') {
+          attempts.push({
+            candidate: candidate.id,
+            videoBitrateKbps: candidate.videoBitrateKbps,
+            jobId: job.id,
+            output,
+            status: 'error',
+            error: terminal.error,
+          });
+          continue;
+        }
+
+        let sizeBytes: number;
+        let validation;
+        try {
+          const outputInfo = await transcoderFactory(transcoder).getInfo(output);
+          sizeBytes = extractMediaFacts(outputInfo).sizeBytes;
+          validation = validateOutput(outputInfo, { maxBytes: args.maxBytes });
+        } catch (err) {
+          attempts.push({
+            candidate: candidate.id,
+            videoBitrateKbps: candidate.videoBitrateKbps,
+            jobId: job.id,
+            output,
+            status: 'unreadable',
+            error: errorMessage(err),
+          });
+          continue;
+        }
+
+        const attempt: Record<string, unknown> = {
+          candidate: candidate.id,
+          videoBitrateKbps: candidate.videoBitrateKbps,
+          audioBitrateKbps: candidate.audioBitrateKbps,
+          jobId: job.id,
+          output,
+          status: 'done',
+          sizeBytes,
+          fits: validation.passed,
+          checks: validation.checks,
+        };
+        attempts.push(attempt);
+        if (validation.passed) {
+          chosen = attempt;
+          break;
+        }
+      }
+
+      const result: Record<string, unknown> = {
+        input: args.input,
+        maxBytes: args.maxBytes,
+        videoCodec,
+        audioCodec,
+        plan,
+        attempts,
+        converged: chosen !== undefined,
+      };
+      if (chosen) result.chosen = chosen;
+      return okUi(JSON.stringify(result), { lab: result });
+    } catch (err) {
+      return fail(err);
+    }
+  }
+
+  /**
+   * Projects the space a batch re-encode would save across a folder: probes each
+   * media file, plans a size target for it and sums the projections. Headless
+   * (no MCP App view) — the report is text plus structured JSON.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @returns {Promise<object>} The MCP tool result (library summary).
+   */
+  async function runAnalyzeFolder(raw: unknown) {
+    try {
+      const args = analyzeFolderSchema.parse(raw);
+      const root = args.path.replace(/[\\/]+$/, '');
+      if (!fs.existsSync(root) && !/[?*[\]]/.test(args.path)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Folder not found: ${args.path}`);
+      }
+      const patterns = args.recursive ? [`${root}/**/*`] : [args.path];
+      const all = expandInputs(patterns).filter((file) => isMediaPath(file));
+      const maxFiles = args.maxFiles ?? 200;
+      const files = all.slice(0, maxFiles);
+      const intent = args.intent ?? 'compress to save space';
+      const ratio = projectionRatio(args.intent);
+      const capabilities = capabilitiesOrEmpty();
+
+      const rows: LibraryRow[] = [];
+      for (const file of files) {
+        try {
+          const info = await probeMedia(file);
+          const facts = extractMediaFacts(info);
+          const targetBytes = Math.round(facts.sizeBytes * ratio);
+          const projected = planTargetSizeCandidates(facts, targetBytes);
+          const baseline = projected.candidates.find((c) => c.videoBitrateKbps === projected.baselineVideoKbps) ?? projected.candidates[0];
+          if (!baseline) {
+            rows.push({ ...libraryRow(file, facts.sizeBytes, facts.sizeBytes, { targetBytes }), error: 'No video stream to size-target.' });
+            continue;
+          }
+          const estimate = estimateConversion(
+            { videoBitrate: `${baseline.videoBitrateKbps}k`, audioBitrate: facts.hasAudio ? `${baseline.audioBitrateKbps}k` : undefined },
+            facts,
+            capabilities,
+          );
+          rows.push(libraryRow(file, facts.sizeBytes, estimate.estimatedSizeBytes, { targetBytes }));
+        } catch (err) {
+          rows.push({ ...libraryRow(file, 0, 0), error: errorMessage(err) });
+        }
+      }
+
+      const summary = summarizeLibrary(rows);
+      const result = {
+        path: args.path,
+        intent,
+        scanned: all.length,
+        analyzed: files.length,
+        truncated: all.length > files.length,
+        ...summary,
+      };
+      return ok(JSON.stringify(result), { library: result });
+    } catch (err) {
+      return fail(err);
+    }
   }
 
   /**
@@ -1085,6 +1431,33 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         return fail(err);
       }
     },
+  );
+
+  registerAppTool(
+    server,
+    'compress_to_target',
+    {
+      title: 'Compress To Target',
+      description:
+        'Encodes a file through an ordered ladder of size-target candidates and stops at the first measured output that ' +
+        'fits a hard byte ceiling, returning the winning candidate, every attempt, and the estimates. This is a measured ' +
+        'loop: the result is only claimed once the produced output is re-probed and validated.',
+      inputSchema: compressToTargetSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.lab } },
+    },
+    async (raw: z.infer<typeof compressToTargetSchema>) => runCompressToTarget(raw),
+  );
+
+  server.registerTool(
+    'analyze_folder',
+    {
+      title: 'Analyze Folder',
+      description:
+        'Projects how much disk space a batch re-encode would reclaim across a folder of media, returning a per-file ' +
+        'breakdown and a folder total (the "Media Librarian" savings report). Projections are estimates, not measurements.',
+      inputSchema: analyzeFolderSchema,
+    },
+    async (raw: z.infer<typeof analyzeFolderSchema>) => runAnalyzeFolder(raw),
   );
 
   server.registerTool(

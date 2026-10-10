@@ -14,3 +14,5 @@ export * from './estimate';
 export * from './validate';
 export * from './recommend';
 export * from './provider';
+export * from './target-size';
+export * from './folder';

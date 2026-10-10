@@ -50,6 +50,7 @@ export const MCP_UI_VIEW_URIS = {
   confirm: 'ui://encodex/confirm',
   inspector: 'ui://encodex/inspector',
   plan: 'ui://encodex/plan',
+  lab: 'ui://encodex/lab',
   profiles: 'ui://encodex/profiles',
   capabilities: 'ui://encodex/capabilities',
 } as const;

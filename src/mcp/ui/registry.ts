@@ -15,6 +15,7 @@ import { CONVERT_VIEW_HTML } from './views/convert';
 import { CONFIRM_VIEW_HTML } from './views/confirm';
 import { INSPECTOR_VIEW_HTML } from './views/inspector';
 import { PLAN_VIEW_HTML } from './views/plan';
+import { LAB_VIEW_HTML } from './views/lab';
 
 /**
  * One servable MCP App view.
@@ -78,6 +79,12 @@ export const MCP_UI_VIEWS: McpUiView[] = [
     uri: MCP_UI_VIEW_URIS.plan,
     description: 'Conversion plan (settings + rationale) and output size estimate for review.',
     html: () => PLAN_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX lab view',
+    uri: MCP_UI_VIEW_URIS.lab,
+    description: 'Measured size-target compression: candidate ladder, every attempt, and the best measured fit.',
+    html: () => LAB_VIEW_HTML,
   },
 ];
 
