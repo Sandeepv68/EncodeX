@@ -23,11 +23,13 @@ import { APP_NAME } from '../shared/app-constants';
 import { createTranscoder } from '../main/transcoders/factory';
 import type { ITranscoder } from '../main/transcoders/types';
 import { createError, formatError, isAppError, ErrorCode } from '../shared/errors';
-import type { TranscoderType } from '../shared/types';
+import type { EncoderCapabilities, MediaInfo, TranscoderType } from '../shared/types';
 import { MAX_QUEUE_CONCURRENCY } from '../shared/constants';
 import { getEncoderCapabilities } from '../main/capabilities';
 import { BUILTIN_PROFILES } from '../shared/profiles/builtin';
 import type { ConversionProfile } from '../shared/types';
+import { analyzeMedia, estimateConversion, extractMediaFacts, recommendSettings, validateOutput } from '../shared/ai';
+import type { PlanRequest } from '../shared/ai';
 import { VIDEO_CODECS, AUDIO_CODECS } from '../shared/media-options';
 import { buildConversionOptions, resolveOutputPath, MCPConversionFields } from './conversion-options';
 import { MCP_UI_EXTENSION_ID, MCP_UI_RESOURCE_MIME_TYPE, MCP_UI_VIEW_URIS } from '../shared/mcp-ui';
@@ -376,6 +378,81 @@ const demuxSchema = z.object({
 });
 
 /**
+ * Schema for the `analyze_media` tool: a probe reduced to a plain-language
+ * diagnosis, optionally focused on compatibility, quality, or size.
+ */
+const analyzeSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the media file to diagnose.'),
+  focus: z.enum(['compat', 'quality', 'size']).optional().describe("Framing of the diagnosis (default 'compat')."),
+});
+
+/**
+ * Hard constraints accepted by `recommend_settings`.
+ */
+const constraintsSchema = z.object({
+  maxBytes: z.number().int().positive().optional().describe('Hard output size ceiling in bytes.'),
+  targetDevice: z.string().optional().describe("Target device/ecosystem (e.g. 'iphone', 'android', 'appletv')."),
+  platform: z.string().optional().describe("Target platform (e.g. 'youtube', 'web')."),
+  maxWidth: z.number().int().positive().optional().describe('Maximum output width in pixels.'),
+  maxHeight: z.number().int().positive().optional().describe('Maximum output height in pixels.'),
+});
+
+/**
+ * Schema for the `recommend_settings` tool: intent plus facts -> a typed plan.
+ */
+const recommendSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the input media file.'),
+  intent: z.string().min(1).describe("The user's natural-language goal (e.g. 'make this work on my iPhone')."),
+  constraints: constraintsSchema.optional().describe('Optional hard constraints steering the plan.'),
+});
+
+/**
+ * Schema for the `estimate_conversion` tool. `args` mirrors the size-affecting
+ * fields of `convert_media` so a plan can be estimated before it runs.
+ */
+const estimateSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the input media file.'),
+  args: z
+    .object({
+      videoCodec: z.string().optional().describe('Video encoder (e.g. libx264, copy).'),
+      audioCodec: z.string().optional().describe('Audio encoder (e.g. aac, copy).'),
+      videoBitrate: z.string().optional().describe('Target video bitrate (e.g. 2000k).'),
+      audioBitrate: z.string().optional().describe('Target audio bitrate (e.g. 192k).'),
+      scale: z.string().optional().describe('Output resolution (WxH or percent).'),
+      startTime: z.string().optional().describe('Trim start time (HH:MM:SS or seconds).'),
+      endTime: z.string().optional().describe('Trim end time (HH:MM:SS or seconds).'),
+      duration: z.string().optional().describe('Maximum output duration.'),
+      copy: z.boolean().optional().describe('Lossless stream copy (size is preserved).'),
+      audio: z.boolean().optional().describe('Include audio streams (default true).'),
+      video: z.boolean().optional().describe('Include video streams (default true).'),
+    })
+    .optional()
+    .describe('The conversion arguments to estimate (the size-affecting subset of convert_media).'),
+});
+
+/**
+ * Expected properties checked by `validate_output`.
+ */
+const validationExpectSchema = z.object({
+  maxBytes: z.number().int().positive().optional().describe('Maximum allowed output size in bytes.'),
+  minResolution: z.string().optional().describe("Minimum video resolution ('WxH')."),
+  codec: z.string().optional().describe("Required video codec (e.g. 'h264')."),
+  container: z.string().optional().describe('Required container/format substring (e.g. mp4).'),
+  hasAudio: z.boolean().optional().describe('Require an audio stream.'),
+  hasVideo: z.boolean().optional().describe('Require a video stream.'),
+  minDurationSeconds: z.number().optional().describe('Minimum duration in seconds.'),
+  maxDurationSeconds: z.number().optional().describe('Maximum duration in seconds.'),
+});
+
+/**
+ * Schema for the `validate_output` tool: re-probe the output and check it.
+ */
+const validateSchema = z.object({
+  output: z.string().min(1).describe('Absolute path of the produced output file to verify.'),
+  expect: validationExpectSchema.optional().describe('Constraints the output must satisfy.'),
+});
+
+/**
  * Serializes an enqueued job into the shared tool response shape.
  * @param {ReturnType<MCPJobManager['enqueue']>} job - The enqueued job.
  * @param {string} transcoder - The transcoder backend used.
@@ -444,6 +521,30 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
    */
   function viewJob(job: ReturnType<MCPJobManager['enqueue']>): McpUiJob {
     return { id: job.id, input: job.input, output: job.output, status: job.status, progress: job.progress };
+  }
+
+  /**
+   * Returns the detected encoder capabilities, degrading to an empty set when
+   * the capability probe is unavailable (offline/headless), so AI tools still
+   * plan instead of failing.
+   * @returns {EncoderCapabilities} Capabilities, never null.
+   */
+  function capabilitiesOrEmpty(): EncoderCapabilities {
+    return getEncoderCapabilities() ?? { videoEncoders: [], audioEncoders: [], hwaccels: [] };
+  }
+
+  /**
+   * Probes a file for the AI tools and the resources they read, failing clearly
+   * when the path does not exist.
+   * @param {string} input - Absolute path of the file to probe.
+   * @returns {Promise<MediaInfo>} The probed media info.
+   * @throws {AppError} `FILE_NOT_FOUND` when the path does not exist.
+   */
+  async function probeMedia(input: string): Promise<MediaInfo> {
+    if (!fs.existsSync(input)) {
+      throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${input}`);
+    }
+    return transcoderFactory('FFMPEG').getInfo(input);
   }
 
   /**
@@ -884,6 +985,96 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         const transcoder = transcoderFactory('FFMPEG');
         const info = await transcoder.getInfo(input);
         return okUi(JSON.stringify(info), { media: info });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'analyze_media',
+    {
+      title: 'Analyze Media',
+      description:
+        'Diagnoses a media file in plain language: streams, HDR, interlacing, uncommon codecs, multichannel audio, ' +
+        'resolution and size, each with a severity and suggested next steps. Deterministic — no model call.',
+      inputSchema: analyzeSchema,
+    },
+    async ({ input, focus }: z.infer<typeof analyzeSchema>) => {
+      try {
+        const info = await probeMedia(input);
+        const analysis = analyzeMedia(info, focus);
+        return ok(JSON.stringify(analysis), { analysis });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'recommend_settings',
+    {
+      title: 'Recommend Settings',
+      description:
+        'Maps a natural-language intent plus the probed media facts onto a concrete, reviewable conversion plan ' +
+        '(convert_media arguments + profile id + rationale + confidence). Deterministic rules-based provider — the ' +
+        'settings are selected from the built-in profiles, never invented.',
+      inputSchema: recommendSchema,
+    },
+    async ({ input, intent, constraints }: z.infer<typeof recommendSchema>) => {
+      try {
+        const info = await probeMedia(input);
+        const request: PlanRequest = {
+          input,
+          intent,
+          facts: extractMediaFacts(info),
+          profiles: BUILTIN_PROFILES,
+          capabilities: capabilitiesOrEmpty(),
+          constraints,
+        };
+        const plan = recommendSettings(request);
+        return ok(JSON.stringify(plan), { plan });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'estimate_conversion',
+    {
+      title: 'Estimate Conversion',
+      description:
+        'Estimates the output size and duration of a conversion from the probed duration and the target bitrates, ' +
+        'plus hardware-encoder availability. The result is always an estimate (isEstimated: true), never a measurement.',
+      inputSchema: estimateSchema,
+    },
+    async ({ input, args }: z.infer<typeof estimateSchema>) => {
+      try {
+        const info = await probeMedia(input);
+        const estimate = estimateConversion(args ?? {}, extractMediaFacts(info), capabilitiesOrEmpty());
+        return ok(JSON.stringify(estimate), { estimate });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'validate_output',
+    {
+      title: 'Validate Output',
+      description:
+        'Re-probes a produced output and checks it against the expectations (size ceiling, resolution, codec, ' +
+        'container, audio/video presence, duration), returning pass/fail per constraint. Use it before claiming a ' +
+        'conversion succeeded.',
+      inputSchema: validateSchema,
+    },
+    async ({ output, expect }: z.infer<typeof validateSchema>) => {
+      try {
+        const info = await probeMedia(output);
+        const validation = validateOutput(info, expect);
+        return ok(JSON.stringify(validation), { validation });
       } catch (err) {
         return fail(err);
       }
