@@ -30,6 +30,8 @@ import type { ErrorCodeType, AppError } from './types';
  * @property {string} PERMISSION_DENIED - Access to the file or directory was denied.
  * @property {string} OPERATION_TIMED_OUT - A bounded subprocess exceeded its wall-clock budget and was killed.
  * @property {string} UNSAFE_ARGUMENTS - A tool passed arguments that contain shell metacharacters or a second command.
+ * @property {string} TRANSCRIPTION_UNAVAILABLE - No speech-to-text engine is available to transcribe the media.
+ * @property {string} TRANSLATION_UNAVAILABLE - No subtitle translation backend is available or configured.
  * @property {string} UNKNOWN - An unrecognized error occurred.
  */
 export const ErrorCode = {
@@ -55,6 +57,8 @@ export const ErrorCode = {
   PERMISSION_DENIED: 'PERMISSION_DENIED',
   OPERATION_TIMED_OUT: 'OPERATION_TIMED_OUT',
   UNSAFE_ARGUMENTS: 'UNSAFE_ARGUMENTS',
+  TRANSCRIPTION_UNAVAILABLE: 'TRANSCRIPTION_UNAVAILABLE',
+  TRANSLATION_UNAVAILABLE: 'TRANSLATION_UNAVAILABLE',
   UNKNOWN: 'UNKNOWN',
 } as const;
 
@@ -182,6 +186,9 @@ export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
   PERMISSION_DENIED: 'Permission denied. The application may not have access to the selected file or directory.',
   OPERATION_TIMED_OUT: 'The operation took too long and was stopped. The file may be corrupt, or the system may be under heavy load.',
   UNSAFE_ARGUMENTS: 'The request contained arguments that are not allowed (shell metacharacters or a second command were detected).',
+  TRANSCRIPTION_UNAVAILABLE:
+    'No speech-to-text engine is available. Install a supported local ASR tool (e.g. whisper.cpp) or configure one.',
+  TRANSLATION_UNAVAILABLE: 'No subtitle translation backend is available. Configure a local model runtime or another provider.',
   UNKNOWN: 'An unexpected error occurred. Please try again.',
 };
 
@@ -243,6 +250,8 @@ function inferErrorCode(message: string, err?: unknown): ErrorCodeType {
   // message names the tool that timed out ("ffprobe timed out after 30000ms"),
   // so every later rule would misclassify it.
   if (m.includes('timed out') || m.includes('timeout') || m.includes('etimedout')) return ErrorCode.OPERATION_TIMED_OUT;
+  if (m.includes('speech-to-text') || m.includes('transcrib')) return ErrorCode.TRANSCRIPTION_UNAVAILABLE;
+  if (m.includes('translation') || m.includes('translator') || m.includes('subtitle translation')) return ErrorCode.TRANSLATION_UNAVAILABLE;
   if (m.includes('auxiliary input') || m.includes('added subtitle, audio')) return ErrorCode.AUXILIARY_INPUT_NOT_FOUND;
   if (errCode === 'EACCES' || m.includes('permission denied') || m.includes('eacces')) return ErrorCode.PERMISSION_DENIED;
   // A runtime ffmpeg/ffprobe failure (the binary ran but could not open its

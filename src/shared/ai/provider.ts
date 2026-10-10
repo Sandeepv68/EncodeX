@@ -12,6 +12,18 @@ import type { AIProvider, AIProviderDescriptor, AIProviderId, PlanRequest, Recom
 import { recommendSettings } from './recommend';
 
 /**
+ * Minimal text-generation transport a local model runtime must provide. Keeping
+ * it to a single `generate(prompt)` call lets the provider stay transport-free
+ * (the HTTP/Ollama adapter lives in `src/mcp`), so it is trivially fakeable in
+ * tests.
+ * @interface LocalModelClient
+ * @property {(prompt: string) => Promise<string>} generate - Returns the model's raw text.
+ */
+export interface LocalModelClient {
+  generate(prompt: string): Promise<string>;
+}
+
+/**
  * Raised when a provider is requested that this build cannot construct.
  * @augments Error
  */
@@ -107,27 +119,149 @@ export function createRulesProvider(): AIProvider {
 }
 
 /**
+ * Extracts the first balanced `{...}` JSON object from free text, ignoring
+ * braces inside string literals. Returns `undefined` when none is found.
+ * @param {string} text - The model output.
+ * @returns {string | undefined} The JSON substring, if any.
+ */
+export function extractJsonObject(text: string): string | undefined {
+  const source = String(text ?? '');
+  const start = source.indexOf('{');
+  if (start < 0) return undefined;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let index = start; index < source.length; index += 1) {
+    const char = source[index];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (char === '\\') escaped = true;
+      else if (char === '"') inString = false;
+      continue;
+    }
+    if (char === '"') inString = true;
+    else if (char === '{') depth += 1;
+    else if (char === '}') {
+      depth -= 1;
+      if (depth === 0) return source.slice(start, index + 1);
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Builds the planning prompt handed to a local model. The model is asked to
+ * return strictly-JSON so the plan can be re-validated before it is trusted.
+ * @param {PlanRequest} request - The grounded planning request.
+ * @returns {string} The prompt text.
+ */
+export function buildLocalPlanPrompt(request: PlanRequest): string {
+  const profileList = request.profiles.map((profile) => `${profile.id} (${profile.name})`).join(', ');
+  return [
+    'You are an expert video-encoding assistant. Choose encoding settings.',
+    'Respond with a single JSON object and nothing else, using this shape:',
+    '{"args": {"videoCodec": string, "audioCodec": string, "crf": number, "preset": string}, ' +
+      '"profileId": string, "rationale": string[], "confidence": number}',
+    'Do not include markdown fences. Do not invent FFmpeg flags.',
+    '',
+    `Goal: ${request.intent}`,
+    `Input: ${request.input}`,
+    `Source: ${request.facts.durationSeconds}s, ` +
+      `${request.facts.video ? `${request.facts.video.width}x${request.facts.video.height} ${request.facts.video.codec}` : 'no video'}, ` +
+      `${request.facts.audio ? `audio ${request.facts.audio.codec}` : 'no audio'}.`,
+    `Available profiles: ${profileList || 'none'}.`,
+    `Video encoders: ${request.capabilities.videoEncoders.join(', ') || 'none'}.`,
+    request.constraints ? `Constraints: ${JSON.stringify(request.constraints)}.` : '',
+  ]
+    .filter(Boolean)
+    .join('\n');
+}
+
+/**
+ * Parses a local model's reply into a validated plan. Falls back to the
+ * deterministic rules plan (still fully local) when the reply is not usable, so
+ * a malformed model output degrades gracefully instead of failing the request.
+ * @param {string} response - The model's raw text.
+ * @param {PlanRequest} request - The originating request.
+ * @returns {RecommendedSettings} A plan with `providerId: 'local'`.
+ */
+export function parseLocalPlan(response: string, request: PlanRequest): RecommendedSettings {
+  const json = extractJsonObject(response);
+  if (json) {
+    try {
+      const parsed = JSON.parse(json) as Record<string, unknown>;
+      const args = parsed.args;
+      if (args && typeof args === 'object' && !Array.isArray(args)) {
+        const rationale = Array.isArray(parsed.rationale)
+          ? parsed.rationale.filter((line): line is string => typeof line === 'string')
+          : ['Local model plan.'];
+        const confidence = typeof parsed.confidence === 'number' ? Math.max(0, Math.min(1, parsed.confidence)) : 0.5;
+        return {
+          args: args as Record<string, unknown>,
+          ...(typeof parsed.profileId === 'string' ? { profileId: parsed.profileId } : {}),
+          rationale,
+          confidence,
+          providerId: 'local',
+          isEstimated: true,
+        };
+      }
+    } catch {
+      /* fall through to the rules plan */
+    }
+  }
+  const fallback = recommendSettings(request);
+  return {
+    ...fallback,
+    providerId: 'local',
+    rationale: [...fallback.rationale, 'Local model reply was not usable; used the deterministic rules plan.'],
+  };
+}
+
+/**
+ * The local-model provider (decision D3, shipped in R4). Delegates generation to
+ * an injected {@link LocalModelClient}; when no runtime is configured the plan
+ * call fails loudly rather than silently changing privacy posture.
+ * @param {LocalModelClient} [client] - The local model transport.
+ * @returns {AIProvider} The local provider.
+ */
+export function createLocalProvider(client?: LocalModelClient): AIProvider {
+  return {
+    descriptor: PROVIDER_DESCRIPTORS.local,
+    plan: async (request: PlanRequest): Promise<RecommendedSettings> => {
+      if (!client) {
+        throw new AIProviderUnavailableError('local', 'no local model runtime is configured.');
+      }
+      const response = await client.generate(buildLocalPlanPrompt(request));
+      return parseLocalPlan(response, request);
+    },
+  };
+}
+
+/**
  * Whether a provider id resolves to a working implementation in this build.
  * @param {AIProviderId} id - The provider id.
  * @returns {boolean} True when the provider can be constructed.
  */
 export function isProviderImplemented(id: AIProviderId): boolean {
-  return id === 'rules';
+  return id === 'rules' || id === 'local';
 }
 
 /**
  * Constructs the provider implementation for an id.
  *
- * Only `rules` is implemented in R1 (D3 defers the local adapter to R4 and the
- * remote adapters past the first AI release). Requesting any other id throws
- * {@link AIProviderUnavailableError} rather than silently falling back, so a
- * misconfiguration is visible instead of quietly changing privacy posture.
+ * `rules` is always available. `local` was shipped in R4 (decision D3): it
+ * needs a {@link LocalModelClient}, supplied by the host (the MCP server wires
+ * the HTTP adapter). The remote adapters remain unimplemented. Requesting an
+ * unimplemented id throws {@link AIProviderUnavailableError} rather than
+ * silently falling back, so a misconfiguration is visible instead of quietly
+ * changing privacy posture.
  * @param {AIProviderId} id - The provider id.
+ * @param {{ localClient?: LocalModelClient }} [options] - Host-supplied adapters.
  * @returns {AIProvider} The constructed provider.
  * @throws {AIProviderUnavailableError} When the provider is not implemented.
  */
-export function createProvider(id: AIProviderId): AIProvider {
+export function createProvider(id: AIProviderId, options: { localClient?: LocalModelClient } = {}): AIProvider {
   if (id === 'rules') return createRulesProvider();
-  if (id === 'local') throw new AIProviderUnavailableError(id, 'the local adapter ships in R4 (decision D3).');
+  if (id === 'local') return createLocalProvider(options.localClient);
   throw new AIProviderUnavailableError(id, 'remote provider adapters are not part of the first AI release (R1).');
 }

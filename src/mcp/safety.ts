@@ -46,6 +46,12 @@ export const TOOL_SAFETY_TIERS: Record<string, SafetyTier> = {
   list_capabilities: SAFETY_TIERS.READ,
   list_profiles: SAFETY_TIERS.READ,
   get_profile: SAFETY_TIERS.READ,
+  find_similar_media: SAFETY_TIERS.READ,
+  transcribe_media: SAFETY_TIERS.READ,
+  translate_subtitles: SAFETY_TIERS.READ,
+  generate_chapters: SAFETY_TIERS.READ,
+  search_transcript: SAFETY_TIERS.READ,
+  summarize_media: SAFETY_TIERS.READ,
   recommend_settings: SAFETY_TIERS.PLAN,
   convert_media: SAFETY_TIERS.WRITE,
   compress_image: SAFETY_TIERS.WRITE,
@@ -109,11 +115,7 @@ export function findUnsafeExtraArgs(extraArgs?: string[]): string[] {
 export function assertSafeExtraArgs(extraArgs?: string[]): void {
   const unsafe = findUnsafeExtraArgs(extraArgs);
   if (unsafe.length > 0) {
-    throw createError(
-      ErrorCode.UNSAFE_ARGUMENTS,
-      ERROR_MESSAGES[ErrorCode.UNSAFE_ARGUMENTS],
-      `Rejected extraArgs: ${unsafe.join(', ')}`,
-    );
+    throw createError(ErrorCode.UNSAFE_ARGUMENTS, ERROR_MESSAGES[ErrorCode.UNSAFE_ARGUMENTS], `Rejected extraArgs: ${unsafe.join(', ')}`);
   }
 }
 

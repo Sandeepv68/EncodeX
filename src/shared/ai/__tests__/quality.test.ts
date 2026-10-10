@@ -45,9 +45,7 @@ describe('compareQuality', () => {
     const report = compareQuality(makeInfo(), output);
     expect(report.passed).toBe(false);
     expect(report.checks.find((check) => check.name === 'resolutionPreserved')?.passed).toBe(false);
-    expect(report.findings).toContainEqual(
-      expect.objectContaining({ code: 'resolution_reduced', severity: 'warning' }),
-    );
+    expect(report.findings).toContainEqual(expect.objectContaining({ code: 'resolution_reduced', severity: 'warning' }));
   });
 
   it('flags dropped audio', () => {
@@ -67,9 +65,7 @@ describe('compareQuality', () => {
     });
     const report = compareQuality(makeInfo(), output);
     expect(report.passed).toBe(true);
-    expect(report.findings).toContainEqual(
-      expect.objectContaining({ code: 'video_codec_changed', severity: 'info' }),
-    );
+    expect(report.findings).toContainEqual(expect.objectContaining({ code: 'video_codec_changed', severity: 'info' }));
   });
 
   it('flags a duration drift beyond the tolerance', () => {

@@ -162,7 +162,11 @@ describe('preload', () => {
     ['onPlayerAudio', IPC.PLAYER_AUDIO, { data: new ArrayBuffer(0), sampleRate: 48000, channels: 2, generation: 0 }],
     ['onPlayerError', IPC.PLAYER_ERROR, 'decoder crashed'],
     ['onLogMessage', IPC.LOG_MESSAGE, { timestamp: 't', level: 'INFO', text: 'hello', source: 'main' }],
-    ['onAuditEntry', IPC.AUDIT_ENTRY, { id: 'audit-1', timestamp: 't', tool: 'convert_media', tier: 2, argsDigest: 'deadbeef', result: 'ok' }],
+    [
+      'onAuditEntry',
+      IPC.AUDIT_ENTRY,
+      { id: 'audit-1', timestamp: 't', tool: 'convert_media', tier: 2, argsDigest: 'deadbeef', result: 'ok' },
+    ],
     ['onWindowMaximizedChange', IPC.WINDOW_MAXIMIZED_CHANGED, true],
     ['onWindowCloseRequested', IPC.WINDOW_CLOSE_REQUESTED, undefined],
   ])('%s subscribes and unsubscribes on the %s channel', (method, channel, payload) => {

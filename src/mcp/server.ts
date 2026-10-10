@@ -31,23 +31,47 @@ import type { ConversionProfile } from '../shared/types';
 import {
   adviseEncoding,
   analyzeMedia,
+  buildTranscript,
+  chaptersToFfmpeg,
+  chaptersToYouTube,
+  clusterSignatures,
   compareQuality,
+  deriveSubtitlePath,
   estimateConversion,
   explainError,
   extractMediaFacts,
+  formatSubtitles,
+  generateChapters,
   libraryRow,
   parseIntent,
   parseBitrateKbps,
   planTargetSizeCandidates,
   recommendSettings,
+  searchTranscript,
   summarizeLibrary,
+  summarizeTranscript,
   validateOutput,
 } from '../shared/ai';
 import { createAuditEntry } from '../shared/audit';
 import type { AuditEntry } from '../shared/audit';
 import { batchEnvelopeExceeds, tierForTool } from './safety';
 import type { BatchEnvelope } from './safety';
-import type { LibraryRow, PlanRequest } from '../shared/ai';
+import { defaultFrameSampler } from './frame-sampler';
+import { createWhisperCliEngine } from './stt-engine';
+import { createLocalTranslationProvider } from './translate-engine';
+import { createHttpLocalModelClient } from './local-model-client';
+import type {
+  FrameSampler,
+  LibraryRow,
+  LocalModelClient,
+  MediaSignature,
+  PlanRequest,
+  SttEngine,
+  SubtitleFormat,
+  Transcript,
+  TranscriptSegment,
+  TranslationProvider,
+} from '../shared/ai';
 import { VIDEO_CODECS, AUDIO_CODECS } from '../shared/media-options';
 import { suggestedExtensionForVideoCodec } from '../shared/codec-containers';
 import { expandInputs, getInputExtension } from '../main/cli/cli-util';
@@ -93,6 +117,15 @@ import type { MCPCompressFields, MCPExtractAudioFields, MCPCutFields, MCPRemuxFi
  *   for every committed (or headlessly executed) mutating operation, so the
  *   Electron main process can surface an audit trail in the renderer. Errors
  *   thrown by the sink are swallowed.
+ * @property {FrameSampler} [frameSampler] - Samples a frame hash for
+ *   `find_similar_media`; defaults to the FFmpeg-backed sampler.
+ * @property {SttEngine} [sttEngine] - Speech-to-text engine for the transcript
+ *   tools; defaults to the whisper.cpp CLI adapter.
+ * @property {TranslationProvider} [translator] - Subtitle translation backend;
+ *   defaults to the local-model provider built from {@link localModelClient}.
+ * @property {LocalModelClient} [localModelClient] - Local model transport used
+ *   by translation (and available to the AI provider layer). Defaults to the
+ *   HTTP adapter when `ENCODEX_LOCAL_MODEL_URL` is set.
  */
 export interface CreateMcpServerOptions {
   name?: string;
@@ -100,6 +133,10 @@ export interface CreateMcpServerOptions {
   transcoderFactory?: (type: TranscoderType) => ITranscoder;
   jobManager?: MCPJobManager;
   onAudit?: (entry: AuditEntry) => void;
+  frameSampler?: FrameSampler;
+  sttEngine?: SttEngine;
+  translator?: TranslationProvider;
+  localModelClient?: LocalModelClient;
 }
 
 /**
@@ -537,6 +574,107 @@ const qualityReportSchema = z.object({
 });
 
 /**
+ * A single timed transcript segment, shared by the transcript-based tools so a
+ * caller can supply an existing transcript instead of running STT.
+ */
+const transcriptSegmentSchema = z.object({
+  start: z.number().min(0).describe('Segment start in seconds.'),
+  end: z.number().min(0).describe('Segment end in seconds.'),
+  text: z.string().describe('Spoken text.'),
+  speaker: z.string().optional().describe('Optional speaker label.'),
+});
+
+/**
+ * Supported subtitle output formats.
+ */
+const subtitleFormatSchema = z.enum(['srt', 'vtt', 'ass']);
+
+/**
+ * Schema for the `find_similar_media` tool: perceptual-hash dedupe clustering.
+ */
+const findSimilarMediaSchema = z.object({
+  inputs: z
+    .array(z.string().min(1))
+    .min(1)
+    .max(500)
+    .describe('Media files, directories, or globs to compare (all compared against each other).'),
+  method: z
+    .enum(['hash', 'metadata'])
+    .optional()
+    .describe('Comparison method (default hash; falls back to metadata when frames cannot be sampled).'),
+  threshold: z.number().min(0).max(1).optional().describe('Minimum similarity to cluster (default 0.75).'),
+  recursive: z.boolean().optional().describe('Recurse into subdirectories (default false).'),
+  maxCandidates: z.number().int().min(1).max(500).optional().describe('Maximum files to compare (default 200).'),
+});
+
+/**
+ * Schema for the `transcribe_media` tool: local speech-to-text.
+ */
+const transcribeMediaSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the media file to transcribe.'),
+  language: z.string().optional().describe('Source language hint (BCP-47 or ISO-639-1).'),
+  format: subtitleFormatSchema.optional().describe('Also return subtitles in this format (srt/vtt/ass).'),
+  modelPath: z.string().optional().describe('Path to a whisper model file (overrides ENCODEX_WHISPER_MODEL).'),
+  timeoutMs: z.number().int().min(1000).max(3600000).optional().describe('Transcription timeout in ms.'),
+});
+
+/**
+ * Schema for the `translate_subtitles` tool: local-first subtitle translation.
+ */
+const translateSubtitlesSchema = z.object({
+  input: z.string().min(1).optional().describe('Media file to transcribe first (when segments are not supplied).'),
+  segments: z.array(transcriptSegmentSchema).optional().describe('Existing timed segments to translate.'),
+  durationSeconds: z.number().min(0).optional().describe('Duration when segments are supplied.'),
+  targetLanguage: z.string().min(1).describe('Target language code.'),
+  sourceLanguage: z.string().optional().describe('Source language hint.'),
+  format: subtitleFormatSchema.optional().describe('Also return subtitles in this format.'),
+  provider: z.string().optional().describe('Translation provider id (default local).'),
+  language: z.string().optional().describe('STT language hint when transcribing an input.'),
+  modelPath: z.string().optional().describe('STT model path when transcribing an input.'),
+});
+
+/**
+ * Schema for the `generate_chapters` tool: auto chapters + YouTube timestamps.
+ */
+const generateChaptersSchema = z.object({
+  input: z.string().min(1).optional().describe('Media file to transcribe first (when segments are not supplied).'),
+  segments: z.array(transcriptSegmentSchema).optional().describe('Existing timed segments to chapter.'),
+  durationSeconds: z.number().min(0).optional().describe('Duration when segments are supplied.'),
+  minChapterSeconds: z.number().min(5).max(3600).optional().describe('Shortest chapter before a pause can split (default 45).'),
+  maxChapterSeconds: z.number().min(10).max(7200).optional().describe('Hard cap that forces a split (default 300).'),
+  maxChapters: z.number().int().min(1).max(100).optional().describe('Maximum chapters (default 20).'),
+  language: z.string().optional().describe('STT language hint when transcribing an input.'),
+  modelPath: z.string().optional().describe('STT model path when transcribing an input.'),
+});
+
+/**
+ * Schema for the `search_transcript` tool: find a passage and propose a clip.
+ */
+const searchTranscriptSchema = z.object({
+  input: z.string().min(1).optional().describe('Media file to transcribe first (when segments are not supplied).'),
+  segments: z.array(transcriptSegmentSchema).optional().describe('Existing timed segments to search.'),
+  durationSeconds: z.number().min(0).optional().describe('Duration when segments are supplied.'),
+  query: z.string().min(1).describe('The natural-language passage to find.'),
+  maxMatches: z.number().int().min(1).max(50).optional().describe('Maximum matches to return (default 10).'),
+  context: z.number().min(0).max(60).optional().describe('Seconds of padding around the proposed clip (default 0).'),
+  language: z.string().optional().describe('STT language hint when transcribing an input.'),
+  modelPath: z.string().optional().describe('STT model path when transcribing an input.'),
+});
+
+/**
+ * Schema for the `summarize_media` tool: extractive summary + topics.
+ */
+const summarizeMediaSchema = z.object({
+  input: z.string().min(1).optional().describe('Media file to transcribe first (when segments are not supplied).'),
+  segments: z.array(transcriptSegmentSchema).optional().describe('Existing timed segments to summarize.'),
+  durationSeconds: z.number().min(0).optional().describe('Duration when segments are supplied.'),
+  maxSentences: z.number().int().min(1).max(30).optional().describe('Summary length in sentences (default 5).'),
+  maxTopics: z.number().int().min(1).max(30).optional().describe('Number of topics to report (default 8).'),
+  language: z.string().optional().describe('STT language hint when transcribing an input.'),
+  modelPath: z.string().optional().describe('STT model path when transcribing an input.'),
+});
+
+/**
  * Media file extensions the folder analysis projects. Non-media files found in
  * a directory are skipped so the report only covers things that can be encoded.
  * @const {Set<string>}
@@ -645,6 +783,10 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
   const transcoderFactory = options.transcoderFactory ?? createTranscoder;
   const jobManager = options.jobManager ?? new MCPJobManager({ transcoderFactory });
   const onAudit = options.onAudit;
+  const frameSampler = options.frameSampler ?? defaultFrameSampler;
+  const sttEngine = options.sttEngine ?? createWhisperCliEngine();
+  const localModelClient = options.localModelClient ?? createHttpLocalModelClient();
+  const translator = options.translator ?? createLocalTranslationProvider(localModelClient);
 
   /**
    * Reports a committed (or headlessly executed) mutating operation to the
@@ -747,6 +889,148 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${input}`);
     }
     return transcoderFactory('FFMPEG').getInfo(input);
+  }
+
+  /**
+   * Probes a media file, returning `undefined` instead of throwing when it
+   * cannot be read. Used by similarity comparison where one unreadable file must
+   * not fail the whole batch.
+   * @param {string} input - Absolute path of the file to probe.
+   * @returns {Promise<MediaInfo | undefined>} The probe result, or `undefined`.
+   */
+  async function tryProbe(input: string): Promise<MediaInfo | undefined> {
+    try {
+      return await probeMedia(input);
+    } catch {
+      return undefined;
+    }
+  }
+
+  /**
+   * Collects media files from a mix of files, directories, and globs.
+   * @param {string[]} inputs - Raw input paths.
+   * @param {boolean} recursive - Whether to descend into subdirectories.
+   * @param {number} max - Maximum number of files to return.
+   * @returns {string[]} Sorted, unique media paths.
+   */
+  function collectMediaPaths(inputs: string[], recursive: boolean, max: number): string[] {
+    const collected = new Set<string>();
+    const visit = (candidate: string): void => {
+      if (collected.size >= max) return;
+      let stat: fs.Stats;
+      try {
+        stat = fs.statSync(candidate);
+      } catch {
+        return;
+      }
+      if (stat.isDirectory()) {
+        let entries: string[];
+        try {
+          entries = fs.readdirSync(candidate);
+        } catch {
+          return;
+        }
+        for (const entry of entries) {
+          if (collected.size >= max) return;
+          const child = path.join(candidate, entry);
+          let childStat: fs.Stats;
+          try {
+            childStat = fs.statSync(child);
+          } catch {
+            continue;
+          }
+          if (childStat.isDirectory()) {
+            if (recursive) visit(child);
+          } else if (isMediaPath(child)) {
+            collected.add(child);
+          }
+        }
+      } else if (isMediaPath(candidate)) {
+        collected.add(candidate);
+      }
+    };
+    for (const input of inputs) {
+      if (collected.size >= max) break;
+      for (const expanded of expandInputs([input])) {
+        if (collected.size >= max) break;
+        visit(expanded);
+      }
+    }
+    return [...collected].sort();
+  }
+
+  /**
+   * Builds a similarity signature for one file: size, probed duration and
+   * resolution, and (for the `hash` method) a sampled frame hash.
+   * @param {string} file - Absolute media path.
+   * @param {'hash' | 'metadata'} method - Comparison method.
+   * @returns {Promise<MediaSignature>} The signature.
+   */
+  async function buildSignature(file: string, method: 'hash' | 'metadata'): Promise<MediaSignature> {
+    const signature: MediaSignature = { file };
+    try {
+      signature.sizeBytes = fs.statSync(file).size;
+    } catch {
+      /* size is optional */
+    }
+    const info = await tryProbe(file);
+    if (info) {
+      const facts = extractMediaFacts(info);
+      signature.durationSeconds = facts.durationSeconds;
+      if (facts.sizeBytes) signature.sizeBytes = facts.sizeBytes;
+      if (facts.video) {
+        signature.width = facts.video.width;
+        signature.height = facts.video.height;
+      }
+    }
+    if (method === 'hash') {
+      const duration = signature.durationSeconds ?? 0;
+      const at = duration > 5 ? Math.min(10, duration * 0.1) : 0;
+      const hash = await frameSampler(file, at);
+      if (hash) signature.hash = hash;
+    }
+    return signature;
+  }
+
+  /**
+   * Resolves a transcript for the transcript-based tools: either from
+   * caller-supplied segments or by running the STT engine on an input file.
+   * @param {object} args - The tool arguments.
+   * @param {string} [args.input] - A media file to transcribe.
+   * @param {TranscriptSegment[]} [args.segments] - Pre-supplied segments.
+   * @param {number} [args.durationSeconds] - Duration when segments are supplied.
+   * @param {string} [args.language] - Language hint.
+   * @param {string} [args.modelPath] - STT model path.
+   * @param {number} [args.timeoutMs] - STT timeout.
+   * @returns {Promise<Transcript>} The transcript.
+   * @throws {AppError} `INPUT_NOT_SPECIFIED` when neither input nor segments are given.
+   */
+  async function resolveTranscript(args: {
+    input?: string;
+    segments?: TranscriptSegment[];
+    durationSeconds?: number;
+    language?: string;
+    modelPath?: string;
+    timeoutMs?: number;
+  }): Promise<Transcript> {
+    if (args.segments && args.segments.length > 0) {
+      return buildTranscript(args.segments, {
+        engine: 'provided',
+        durationSeconds: args.durationSeconds,
+        language: args.language,
+      });
+    }
+    if (!args.input) {
+      throw createError(ErrorCode.INPUT_NOT_SPECIFIED, 'Provide either an input media file to transcribe or a segments array.');
+    }
+    if (!fs.existsSync(args.input)) {
+      throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+    }
+    const options: { language?: string; modelPath?: string; timeoutMs?: number } = {};
+    if (args.language) options.language = args.language;
+    if (args.modelPath) options.modelPath = args.modelPath;
+    if (args.timeoutMs) options.timeoutMs = args.timeoutMs;
+    return sttEngine.transcribe(args.input, options);
   }
 
   /**
@@ -1211,7 +1495,9 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
           summary: `The inputs now match ${jobs.length} file${jobs.length === 1 ? '' : 's'}; re-approve to continue.`,
           args: { ...(args as Record<string, unknown>), __envelope: envelope },
           details: batchDetails,
-          warnings: [`The matched set grew from ${approved.fileCount} to ${jobs.length} file${jobs.length === 1 ? '' : 's'} since you approved it.`],
+          warnings: [
+            `The matched set grew from ${approved.fileCount} to ${jobs.length} file${jobs.length === 1 ? '' : 's'} since you approved it.`,
+          ],
         });
       }
       if (args.outputDir) {
@@ -1659,6 +1945,197 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         const outputInfo = await probeMedia(output);
         const report = compareQuality(sourceInfo, outputInfo, expect);
         return ok(JSON.stringify(report), { report });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'find_similar_media',
+    {
+      title: 'Find Similar Media',
+      description:
+        'Detects duplicate and near-duplicate media across the given files/folders using a perceptual frame hash plus ' +
+        'duration/resolution/size similarity, and clusters them. Method defaults to hash and falls back to metadata ' +
+        'for files whose frames cannot be sampled.',
+      inputSchema: findSimilarMediaSchema,
+    },
+    async ({ inputs, method, threshold, recursive, maxCandidates }: z.infer<typeof findSimilarMediaSchema>) => {
+      try {
+        const chosenMethod = method ?? 'hash';
+        const files = collectMediaPaths(inputs, recursive ?? false, maxCandidates ?? 200);
+        if (files.length === 0) {
+          throw createError(ErrorCode.FILE_NOT_FOUND, 'No media files matched the given inputs.');
+        }
+        const signatures: MediaSignature[] = [];
+        for (const file of files) signatures.push(await buildSignature(file, chosenMethod));
+        const report = clusterSignatures(signatures, threshold === undefined ? {} : { threshold });
+        return ok(JSON.stringify(report), { report });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'transcribe_media',
+    {
+      title: 'Transcribe Media',
+      description:
+        'Transcribes a media file with a local speech-to-text engine (whisper.cpp by default) and returns timed ' +
+        'segments, optionally also formatted as SRT/VTT/ASS. Runs on-device; no media leaves the machine.',
+      inputSchema: transcribeMediaSchema,
+    },
+    async (args: z.infer<typeof transcribeMediaSchema>) => {
+      try {
+        const transcript = await resolveTranscript(args);
+        const transcription: Record<string, unknown> = {
+          input: args.input,
+          engine: transcript.engine,
+          durationSeconds: transcript.durationSeconds,
+          segmentCount: transcript.segments.length,
+          segments: transcript.segments,
+        };
+        if (transcript.language) transcription.language = transcript.language;
+        if (args.format) {
+          transcription.subtitles = formatSubtitles(transcript.segments, args.format as SubtitleFormat);
+          transcription.suggestedOutput = deriveSubtitlePath(args.input, args.format as SubtitleFormat);
+        }
+        return ok(JSON.stringify(transcription), { transcription });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'translate_subtitles',
+    {
+      title: 'Translate Subtitles',
+      description:
+        'Translates subtitles into another language, timing preserved. Provide either a media file (transcribed first) ' +
+        'or an existing segments array. Uses the local model runtime by default (no egress); cloud providers are labeled ' +
+        'and not wired in this release.',
+      inputSchema: translateSubtitlesSchema,
+    },
+    async (args: z.infer<typeof translateSubtitlesSchema>) => {
+      try {
+        if (args.provider && args.provider !== translator.id) {
+          throw createError(
+            ErrorCode.TRANSLATION_UNAVAILABLE,
+            `Translation provider "${args.provider}" is not available in this release (only "${translator.id}").`,
+          );
+        }
+        const source = await resolveTranscript(args);
+        const translationRequest = {
+          segments: source.segments,
+          targetLanguage: args.targetLanguage,
+          ...(args.sourceLanguage ? { sourceLanguage: args.sourceLanguage } : {}),
+        };
+        const translated = await translator.translate(translationRequest);
+        const translation: Record<string, unknown> = {
+          provider: translator.id,
+          targetLanguage: args.targetLanguage,
+          sourceLanguage: source.language ?? args.sourceLanguage,
+          segmentCount: translated.length,
+          segments: translated,
+        };
+        if (args.format) {
+          translation.subtitles = formatSubtitles(translated, args.format as SubtitleFormat);
+        }
+        return ok(JSON.stringify(translation), { translation });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'generate_chapters',
+    {
+      title: 'Generate Chapters',
+      description:
+        'Generates chapters from speech, with YouTube-style timestamps and an optional FFmpeg chapter-metadata ' +
+        'document. Provide either a media file (transcribed first) or an existing segments array. Deterministic.',
+      inputSchema: generateChaptersSchema,
+    },
+    async (args: z.infer<typeof generateChaptersSchema>) => {
+      try {
+        const transcript = await resolveTranscript(args);
+        const chapters = generateChapters(transcript, {
+          ...(args.minChapterSeconds !== undefined ? { minChapterSeconds: args.minChapterSeconds } : {}),
+          ...(args.maxChapterSeconds !== undefined ? { maxChapterSeconds: args.maxChapterSeconds } : {}),
+          ...(args.maxChapters !== undefined ? { maxChapters: args.maxChapters } : {}),
+        });
+        const result: Record<string, unknown> = {
+          chapterCount: chapters.length,
+          youtube: chaptersToYouTube(chapters),
+          chapters,
+        };
+        if (chapters.length > 0) {
+          result.ffmpeg = chaptersToFfmpeg(chapters, transcript.durationSeconds);
+        }
+        return ok(JSON.stringify(result), { result });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'search_transcript',
+    {
+      title: 'Search Transcript',
+      description:
+        'Finds the spoken passage that best answers a query and proposes a clip. Provide either a media file ' +
+        '(transcribed first) or an existing segments array. Returns ranked matches, a best span, and ready-to-use ' +
+        '`cut_video` clip arguments.',
+      inputSchema: searchTranscriptSchema,
+    },
+    async (args: z.infer<typeof searchTranscriptSchema>) => {
+      try {
+        const transcript = await resolveTranscript(args);
+        const result = searchTranscript(transcript.segments, args.query, {
+          ...(args.maxMatches !== undefined ? { maxMatches: args.maxMatches } : {}),
+          ...(args.context !== undefined ? { context: args.context } : {}),
+        });
+        const payload: Record<string, unknown> = {
+          query: result.query,
+          matches: result.matches,
+          ...(result.bestRange ? { bestRange: result.bestRange } : {}),
+        };
+        if (result.bestRange && args.input) {
+          payload.clip = {
+            input: args.input,
+            startTime: result.bestRange.start.toFixed(3),
+            endTime: result.bestRange.end.toFixed(3),
+          };
+        }
+        return ok(JSON.stringify(payload), { result: payload });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'summarize_media',
+    {
+      title: 'Summarize Media',
+      description:
+        'Summarizes what was said in a media file with an extractive summary and a topic list. Provide either a media ' +
+        'file (transcribed first) or an existing segments array. Deterministic — no model call.',
+      inputSchema: summarizeMediaSchema,
+    },
+    async (args: z.infer<typeof summarizeMediaSchema>) => {
+      try {
+        const transcript = await resolveTranscript(args);
+        const result = summarizeTranscript(transcript, {
+          ...(args.maxSentences !== undefined ? { maxSentences: args.maxSentences } : {}),
+          ...(args.maxTopics !== undefined ? { maxTopics: args.maxTopics } : {}),
+        });
+        return ok(JSON.stringify(result), { result });
       } catch (err) {
         return fail(err);
       }

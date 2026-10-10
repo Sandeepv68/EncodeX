@@ -90,21 +90,35 @@ export function adviseEncoding(facts: MediaFacts, capabilities: EncoderCapabilit
   if (useHardware && gpuEncoder) {
     rationale.push(`Using the detected hardware encoder ${gpuEncoder} will be substantially faster.`);
     findings.push({ severity: 'info', code: 'hardware_encoder_available', message: `Hardware encoder available: ${gpuEncoder}.` });
-    notes.push('Hardware encoders are faster but can produce a slightly larger file or lower quality at the same bitrate than libx264/libx265.');
+    notes.push(
+      'Hardware encoders are faster but can produce a slightly larger file or lower quality at the same bitrate than libx264/libx265.',
+    );
   } else if (hardware.available) {
-    rationale.push(`Hardware acceleration is available (${hardware.methods.join(', ')}) but no ${family} GPU encoder was detected; using the software encoder.`);
-    findings.push({ severity: 'info', code: 'hardware_available_no_match', message: `Hardware acceleration exists (${hardware.methods.join(', ')}), but not for ${family}.` });
+    rationale.push(
+      `Hardware acceleration is available (${hardware.methods.join(', ')}) but no ${family} GPU encoder was detected; using the software encoder.`,
+    );
+    findings.push({
+      severity: 'info',
+      code: 'hardware_available_no_match',
+      message: `Hardware acceleration exists (${hardware.methods.join(', ')}), but not for ${family}.`,
+    });
   } else {
     rationale.push('No hardware encoder was detected; using the software encoder.');
     findings.push({ severity: 'info', code: 'software_only', message: 'No hardware encoder detected; encoding will use the CPU.' });
   }
 
   if (facts.video?.hdr) {
-    findings.push({ severity: 'warning', code: 'hdr_source', message: 'The source is HDR; make sure the target codec and container preserve HDR metadata.' });
+    findings.push({
+      severity: 'warning',
+      code: 'hdr_source',
+      message: 'The source is HDR; make sure the target codec and container preserve HDR metadata.',
+    });
     notes.push('HDR will be lost unless the output codec/container carry the color metadata through.');
   }
   if (sourceCodec && family && recommendedVideoCodec.startsWith(family)) {
-    notes.push(`Re-encoding ${family} to ${family} is only worthwhile for size or editing changes; a stream copy avoids generational loss.`);
+    notes.push(
+      `Re-encoding ${family} to ${family} is only worthwhile for size or editing changes; a stream copy avoids generational loss.`,
+    );
   }
 
   return {

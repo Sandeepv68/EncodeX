@@ -34,7 +34,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 | Layer | State | Evidence |
 | --- | --- | --- |
 | FFmpeg engine + 3 transcoder cores | done | `src/main/transcoders/{ffmpeg,fftool,bmf}-core.ts` |
-| Typed errors — **23 codes** | done | `src/shared/errors.ts:35-58` |
+| Typed errors — **25 codes** | done | `src/shared/errors.ts` |
 | Job queue, 4 states, persistence, concurrency 4 | done | `src/main/queue/job-queue.ts:145`, `src/shared/media-options.ts:271` |
 | MCP job manager (`queued/running/done/error`) | done | `src/mcp/jobs/manager.ts:83` |
 | Batch planner with path/dir/glob expansion | done | `src/mcp/operations.ts:247` |
@@ -164,10 +164,15 @@ plus GUI-parity `get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_p
 | `validate_output` | `{ output, expect?: { maxBytes?, minResolution?, codec? } }` | Re-probes the output and returns pass/fail per constraint. This is what makes "validate before claiming success" real | R1 | `[x]` |
 | `compress_to_target` | `{ input, maxBytes, intent?, videoCodec?, audioCodec?, audioBitrate?, maxCandidates?, output?, transcoder? }` | Target-size encode loop (F3): plans an ordered bitrate ladder, encodes each candidate, re-probes the output, and stops at the highest quality that fits. Returns `{ converged, chosen, attempts, plan }` | R3 | `[x]` |
 | `analyze_folder` | `{ path, intent?, recursive?, maxFiles?, transcoder? }` | Media Librarian (F9): projects per-file savings and a folder total without encoding. Returns a `LibrarySummary` | R3 | `[x]` |
-| `explain_error` | `{ jobId }` or `{ message }` | Maps `ErrorCode` (23 typed codes) + FFmpeg stderr to plain language + a suggested retry args patch | R2 | `[x]` |
+| `explain_error` | `{ jobId }` or `{ message }` | Maps `ErrorCode` (25 typed codes) + FFmpeg stderr to plain language + a suggested retry args patch | R2 | `[x]` |
 | `advise_encoding` | `{ input }` | F7 encoding advisor: recommends a target video encoder + whether to use the GPU from the probed source and this machine's real encoder/hwaccel capabilities, with the trade-offs; deterministic (no model call) | R2 | `[x]` |
 | `quality_report` | `{ source, output, expect? }` | F8 post-encode quality report: re-probes the output, compares it to the source (resolution, audio, codec, duration) and returns per-check pass/fail plus plain-language findings | R2 | `[x]` |
-| `find_similar_media` | `{ inputs[], method: 'hash'\|'metadata' }` | Dedupe/redundancy detection (PAN #6) — perceptual hash + duration/resolution similarity | R4 | `[ ]` |
+| `find_similar_media` | `{ inputs[], method?, threshold?, recursive?, maxCandidates? }` | Dedupe/redundancy detection (F10, PAN #6) — perceptual hash + duration/resolution similarity, clustered into duplicate groups | R4 | `[x]` |
+| `transcribe_media` | `{ input, language?, format?, modelPath?, timeoutMs? }` | F11 local speech-to-text (Whisper) → `Transcript` and SRT/VTT/ASS subtitle text | R4 | `[x]` |
+| `translate_subtitles` | `{ input?/segments?, durationSeconds?, targetLanguage, sourceLanguage?, format?, ... }` | F12 subtitle translation via the local model adapter, preserving segment timing | R4 | `[x]` |
+| `generate_chapters` | `{ input?/segments?, durationSeconds?, minChapterSeconds?, maxChapterSeconds?, maxChapters? }` | F13 auto chapters with YouTube + ffmpeg-metadata timestamp formats | R4 | `[x]` |
+| `search_transcript` | `{ input?/segments?, durationSeconds?, query, maxMatches?, context? }` | F14 transcript search returning matches plus ready `cut_video` args (string seconds) | R4 | `[x]` |
+| `summarize_media` | `{ input?/segments?, durationSeconds?, maxSentences?, maxTopics? }` | F15 extractive video summary + topic/keyword list | R4 | `[x]` |
 | `plan_workflow` / `execute_workflow` | typed DAG JSON | Multi-step automation (PAN #17) with dry-run | R5 | `[ ]` |
 
 ### 4.3 Result contract (all tools)
@@ -292,7 +297,7 @@ Scoring: **V** value · **D** difficulty (1 low – 5 very high) · **Dep** what
 | F1 | Natural-language → typed conversion plan (`recommend_settings`) | 5 | 2 | AI layer 7.1-7.2 | P1 |
 | F2 | Profile selection/explanation over the 115 built-ins | 5 | 1 | `list_profiles` (exists) | P1 |
 | F3 | Target-size encoding with measured retry loop | 5 | 3 | `estimate`+`validate` | P1 |
-| F4 | Error explanation + one-click switch & retry | 5 | 1 | 23 `ErrorCode`s (exists) | P1 |
+| F4 | Error explanation + one-click switch & retry | 5 | 1 | 25 `ErrorCode`s (exists) | P1 |
 | F5 | "Explain this media file" / compatibility diagnosis | 4 | 1 | `get_media_info` (exists) | P1 |
 | F6 | AI-optimized batch ("compress >500 MB, keep originals, skip already-optimized") | 5 | 3 | `batch_convert` (exists) + F1 | P2 |
 | F7 | Encoding advisor using real hardware caps | 4 | 2 | `capabilities.ts` (exists) | P2 |
@@ -414,13 +419,43 @@ Shipped:
 
 **Verify:** `npm run test`, `npm run typecheck`, `npm run mcp:smoke`, `npm run mcp:full-test`.
 
-### R4 — Media intelligence (local-first)
+### R4 — Media intelligence (local-first) `[x]`
 
 `find_similar_media` (F10); local STT → subtitles (F11), translation (F12), chapters (F13),
 transcript→clip (F14), summary (F15). Model runs locally where possible — this is the privacy
 differentiator. Every cloud fallback labeled in-UI.
 
 **Deliverable:** EncodeX understands media, not just converts it.
+
+Shipped:
+
+- `[x]` F10 duplicate/near-duplicate detection — `src/shared/ai/similarity.ts` (averageHash /
+  differenceHash, hamming distance, `clusterSignatures`) + `find_similar_media` tool; frame
+  extraction adapter `src/mcp/frame-sampler.ts`.
+- `[x]` F11 local speech-to-text → subtitles — `src/shared/ai/transcript.ts`,
+  `src/shared/ai/subtitles.ts` (SRT/VTT/ASS), `src/shared/ai/stt.ts` + `transcribe_media` tool;
+  Whisper CLI adapter `src/mcp/stt-engine.ts` (`ENCODEX_WHISPER_BIN`/`ENCODEX_WHISPER_MODEL`).
+- `[x]` F12 subtitle translation — `src/shared/ai/translate.ts` + `translate_subtitles` tool;
+  local model adapter `src/mcp/translate-engine.ts`.
+- `[x]` F13 auto chapters + YouTube timestamps — `src/shared/ai/chapters.ts`
+  (`generateChapters`, `chaptersToYouTube`, `chaptersToFfmpeg`) + `generate_chapters` tool.
+- `[x]` F14 transcript search → clip cut — `src/shared/ai/transcript-search.ts`
+  (`searchTranscript`) + `search_transcript` tool, returning ready `cut_video` args.
+- `[x]` F15 video summarization — `src/shared/ai/summarize.ts` + `summarize_media` tool; shared
+  keyword/sentence helpers in `src/shared/ai/text.ts`.
+- `[x]` D3 local model adapter — `createLocalProvider` + `LocalModelClient`
+  (`src/shared/ai/provider.ts`); HTTP adapter `src/mcp/local-model-client.ts`
+  (`ENCODEX_LOCAL_MODEL_URL`/`ENCODEX_LOCAL_MODEL_MODEL`, Ollama `/api/generate`).
+- `[x]` New `ErrorCode`s `TRANSCRIPTION_UNAVAILABLE` / `TRANSLATION_UNAVAILABLE` (23 → 25 codes)
+  plus `error-explain` entries and `inferErrorCode` hints.
+- `[x]` All six R4 tools are **READ** tier (no file writes) — they return subtitle text/content;
+  persisting subtitles goes through existing paths, keeping "model proposes, app commits".
+- `[x]` Contract refresh (`CORE_TOOLS` 25 → 31) across `scripts/mcp-full-test.mjs`,
+  `scripts/mcp-smoke.mjs`, `e2e/mcp/harness.ts`.
+- `[x]` Unit tests: `src/shared/ai/__tests__/{transcript,subtitles,chapters,transcript-search,summarize,similarity,stt,translate}.test.ts`,
+  updated `src/shared/ai/__tests__/provider.test.ts`, and `src/mcp/__tests__/media-intelligence.test.ts`.
+
+**Verify:** `npm run test`, `npm run typecheck`, `npm run mcp:smoke`, `npm run mcp:full-test`.
 
 ### R5 — Workflows + host reachability spike
 
@@ -469,5 +504,6 @@ Milestones are scope boxes, not date commitments; sizing depends on how much of 
 
 **Start here:** R0 (close the gaps in what already ships) `[x]` → R1 (`recommend_settings` +
 plan card) `[x]` → R3 (Compression Lab) `[x]` → R2 (reliability: errors, batch, dashboard)
-`[x]`. Next: R4 (media intelligence: `find_similar_media` + local STT → subtitles); the
-workflow agent waits until R2 is boring.
+`[x]` → R4 (media intelligence: `find_similar_media` + local STT → subtitles, translation,
+chapters, transcript search, summarization) `[x]`. Next: R5 (typed workflow DAG with dry-run and
+the ChatGPT reachability spike); the workflow agent waits until R4 is boring.

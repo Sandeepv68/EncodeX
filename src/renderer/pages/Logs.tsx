@@ -297,7 +297,12 @@ export default function Logs() {
               {t('logs.auditCount', { defaultValue: '{{count}} operations', count: auditEntries.length })}
             </Typography>
             <Tooltip title={t('logs.auditClear', { defaultValue: 'Clear audit trail' })}>
-              <IconButton size="small" onClick={handleClearAudit} aria-label={t('logs.auditClear', { defaultValue: 'Clear audit trail' })} data-testid="audit-clear">
+              <IconButton
+                size="small"
+                onClick={handleClearAudit}
+                aria-label={t('logs.auditClear', { defaultValue: 'Clear audit trail' })}
+                data-testid="audit-clear"
+              >
                 <LogActionIcon icon={faEraser} />
               </IconButton>
             </Tooltip>

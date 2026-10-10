@@ -57,9 +57,7 @@ async function setup(
   await server.connect(serverTransport);
   const client = new Client(
     { name: 'mcp-r2-test', version: '1.0.0' },
-    options.uiCapable
-      ? { capabilities: { extensions: { [MCP_UI_EXTENSION_ID]: { mimeTypes: [MCP_UI_RESOURCE_MIME_TYPE] } } } }
-      : undefined,
+    options.uiCapable ? { capabilities: { extensions: { [MCP_UI_EXTENSION_ID]: { mimeTypes: [MCP_UI_RESOURCE_MIME_TYPE] } } } } : undefined,
   );
   await client.connect(clientTransport);
   return { client, close: () => client.close() };

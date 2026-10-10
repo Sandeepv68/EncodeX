@@ -106,7 +106,11 @@ const ERROR_HELP: Record<ErrorCodeType, { title: string; causes: string[] }> = {
   },
   CONVERSION_FAILED: {
     title: 'Conversion failed',
-    causes: ['An option is incompatible with the source streams.', 'The output format cannot carry the selected codec.', 'Hardware encoding is unavailable or unstable.'],
+    causes: [
+      'An option is incompatible with the source streams.',
+      'The output format cannot carry the selected codec.',
+      'Hardware encoding is unavailable or unstable.',
+    ],
   },
   INVALID_FORMAT: {
     title: 'Unsupported format',
@@ -179,6 +183,17 @@ const ERROR_HELP: Record<ErrorCodeType, { title: string; causes: string[] }> = {
   UNSAFE_ARGUMENTS: {
     title: 'Unsafe arguments',
     causes: ['The request contained shell metacharacters or a second command.'],
+  },
+  TRANSCRIPTION_UNAVAILABLE: {
+    title: 'Transcription unavailable',
+    causes: [
+      'No local speech-to-text engine (e.g. whisper.cpp) is installed or on the PATH.',
+      'No model file was configured (ENCODEX_WHISPER_MODEL / modelPath).',
+    ],
+  },
+  TRANSLATION_UNAVAILABLE: {
+    title: 'Translation unavailable',
+    causes: ['No local model runtime is configured (ENCODEX_LOCAL_MODEL_URL).', 'The provider returned no usable translation.'],
   },
   UNKNOWN: {
     title: 'Unexpected error',
@@ -271,7 +286,13 @@ function buildFixes(
     }
   }
 
-  if (hasCall && (code === ErrorCode.CONVERSION_FAILED || code === ErrorCode.OPERATION_TIMED_OUT || code === ErrorCode.CANCELLED || code === ErrorCode.PROBE_FAILED)) {
+  if (
+    hasCall &&
+    (code === ErrorCode.CONVERSION_FAILED ||
+      code === ErrorCode.OPERATION_TIMED_OUT ||
+      code === ErrorCode.CANCELLED ||
+      code === ErrorCode.PROBE_FAILED)
+  ) {
     retry = { tool: tool as string, args: sameArgs() };
     fixes.push({
       kind: 'retry',

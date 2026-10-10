@@ -14,6 +14,9 @@ import {
   isProviderImplemented,
   listProviderDescriptors,
   AIProviderUnavailableError,
+  buildLocalPlanPrompt,
+  extractJsonObject,
+  parseLocalPlan,
 } from '../provider';
 
 /** Minimal plan request. */
@@ -63,16 +66,62 @@ describe('createProvider', () => {
 
   it('reports which providers are implemented', () => {
     expect(isProviderImplemented('rules')).toBe(true);
-    expect(isProviderImplemented('local')).toBe(false);
+    expect(isProviderImplemented('local')).toBe(true);
     expect(isProviderImplemented('openai')).toBe(false);
   });
 
   it('throws for unimplemented providers instead of silently falling back', () => {
     expect(() => createProvider('openai')).toThrow(AIProviderUnavailableError);
-    expect(() => createProvider('local')).toThrow(AIProviderUnavailableError);
+    expect(() => createProvider('anthropic')).toThrow(AIProviderUnavailableError);
+  });
+
+  it('builds the local provider (D3) that fails loudly without a runtime', async () => {
+    const provider = createProvider('local');
+    expect(provider.descriptor).toBe(PROVIDER_DESCRIPTORS.local);
+    await expect(provider.plan(REQUEST)).rejects.toThrow(AIProviderUnavailableError);
+  });
+
+  it('plans via an injected local model client', async () => {
+    const provider = createProvider('local', {
+      localClient: {
+        generate: async () => JSON.stringify({ args: { videoCodec: 'libx264', crf: 23 }, rationale: ['small'], confidence: 0.8 }),
+      },
+    });
+    const plan = await provider.plan(REQUEST);
+    expect(plan.providerId).toBe('local');
+    expect(plan.args).toEqual({ videoCodec: 'libx264', crf: 23 });
+    expect(plan.confidence).toBe(0.8);
   });
 
   it('exposes a rules provider with the right descriptor', () => {
     expect(createRulesProvider().descriptor).toBe(PROVIDER_DESCRIPTORS.rules);
+  });
+});
+
+describe('local plan helpers', () => {
+  it('extracts a balanced JSON object, ignoring braces in strings', () => {
+    expect(extractJsonObject('prefix {"a":"}"} suffix')).toBe('{"a":"}"}');
+    expect(extractJsonObject('no object here')).toBeUndefined();
+  });
+
+  it('builds a grounded prompt naming the intent and profiles', () => {
+    const prompt = buildLocalPlanPrompt(REQUEST);
+    expect(prompt).toContain('make this work on my iPhone');
+    expect(prompt).toContain('iphone-1080p');
+  });
+
+  it('parses a model plan and clamps confidence', () => {
+    const plan = parseLocalPlan('```json\n{"args":{"crf":20},"profileId":"iphone-1080p","rationale":["x"],"confidence":5}\n```', REQUEST);
+    expect(plan.providerId).toBe('local');
+    expect(plan.args).toEqual({ crf: 20 });
+    expect(plan.confidence).toBe(1);
+    expect(plan.profileId).toBe('iphone-1080p');
+  });
+
+  it('falls back to the deterministic rules plan on unusable output', () => {
+    const plan = parseLocalPlan('sorry, I cannot help with that', REQUEST);
+    expect(plan.providerId).toBe('local');
+    expect(plan.profileId).toBe('iphone-1080p');
+    expect(plan.rationale.some((line) => line.includes('deterministic rules plan'))).toBe(true);
   });
 });

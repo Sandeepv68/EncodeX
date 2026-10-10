@@ -48,6 +48,12 @@ const CORE_TOOLS = [
   'explain_error',
   'advise_encoding',
   'quality_report',
+  'find_similar_media',
+  'transcribe_media',
+  'translate_subtitles',
+  'generate_chapters',
+  'search_transcript',
+  'summarize_media',
 ];
 const GUI_TOOLS = ['get_queue_state', 'cancel_all_jobs', 'get_timeline', 'extract_preview', 'get_system_info', 'check_for_updates'];
 const ALL_TOOLS = [...CORE_TOOLS, ...GUI_TOOLS];
