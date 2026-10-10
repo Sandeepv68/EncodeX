@@ -15,9 +15,10 @@
 
 import { useRef, useEffect, useLayoutEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IconButton, Tooltip, Typography, MenuItem } from '@mui/material';
+import { Box, IconButton, Tooltip, Typography, MenuItem } from '@mui/material';
 import { faEraser, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { useLogStore } from '../stores/logStore';
+import { useAuditStore } from '../stores/auditStore';
 import { useToastStore } from '../stores/toastStore';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { COLORS } from '../colors';
@@ -33,6 +34,11 @@ import {
   LevelSpan,
   SourceSpan,
   LogActionIcon,
+  AuditPanel,
+  AuditRow,
+  AuditTool,
+  AuditStatus,
+  AuditMuted,
 } from '../styles/Logs.styles';
 import { PageTitle } from '../styles/BatchQueue.styles';
 import { LOG_EXPORT_FILENAME_PREFIX } from '../../shared/constants';
@@ -70,6 +76,9 @@ export const LOG_ROW_HEIGHT = 18;
 /** Extra rows kept mounted above and below the visible viewport. */
 const LOG_WINDOW_OVERSCAN = 20;
 
+/** Maximum number of audit rows shown in the audit panel (newest first). */
+const AUDIT_DISPLAY_LIMIT = 50;
+
 /**
  * Renders the log viewer page (`/logs`).
  *
@@ -89,6 +98,15 @@ export default function Logs() {
   const { t } = useTranslation();
   const entries = useLogStore((s) => s.entries);
   const clear = useLogStore((s) => s.clear);
+  const auditEntries = useAuditStore((s) => s.entries);
+  const clearAudit = useAuditStore((s) => s.clear);
+
+  /**
+   * The most recent audit records, newest first, capped at
+   * {@link AUDIT_DISPLAY_LIMIT} so the panel stays bounded.
+   * @type {Array<import('../../shared/audit').AuditEntry>}
+   */
+  const recentAudit = useMemo(() => auditEntries.slice(-AUDIT_DISPLAY_LIMIT).reverse(), [auditEntries]);
 
   /**
    * Active log level filter; 'ALL' shows every level.
@@ -166,6 +184,14 @@ export default function Logs() {
   const handleClear = () => {
     clear();
     recordAnalyticsEvent(createAnalyticsEvent('logs_cleared', {}));
+  };
+
+  /**
+   * Clears the mutating-operation audit trail.
+   * @returns {void}
+   */
+  const handleClearAudit = () => {
+    clearAudit();
   };
 
   /**
@@ -261,6 +287,38 @@ export default function Logs() {
           {t('logs.entryCount', { count: entries.length })}
         </Typography>
       </LogsHeader>
+      {auditEntries.length > 0 && (
+        <AuditPanel data-testid="audit-panel">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="subtitle2" component="h2" sx={{ flex: 1 }}>
+              {t('logs.auditTitle', { defaultValue: 'Operation audit trail' })}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {t('logs.auditCount', { defaultValue: '{{count}} operations', count: auditEntries.length })}
+            </Typography>
+            <Tooltip title={t('logs.auditClear', { defaultValue: 'Clear audit trail' })}>
+              <IconButton
+                size="small"
+                onClick={handleClearAudit}
+                aria-label={t('logs.auditClear', { defaultValue: 'Clear audit trail' })}
+                data-testid="audit-clear"
+              >
+                <LogActionIcon icon={faEraser} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          {recentAudit.map((entry) => (
+            <AuditRow key={entry.id} data-testid="audit-row">
+              <TimestampSpan>{entry.timestamp.slice(11, 19)}</TimestampSpan>
+              <AuditTool>{entry.tool}</AuditTool>
+              <AuditMuted>{t('logs.auditTier', { tier: entry.tier, defaultValue: 'T{{tier}}' })}</AuditMuted>
+              <AuditStatus $ok={entry.result === 'ok'}>{entry.result === 'ok' ? 'ok' : 'failed'}</AuditStatus>
+              <AuditMuted>#{entry.argsDigest}</AuditMuted>
+              {entry.detail ? <span>{entry.detail}</span> : null}
+            </AuditRow>
+          ))}
+        </AuditPanel>
+      )}
       <LogsBody ref={bodyRef} onScroll={handleScroll} data-testid="logs-body" tabIndex={0}>
         {filtered.length === 0 && <NoEntriesText variant="body2">{t('logs.noEntries')}</NoEntriesText>}
         {window.start > 0 && <LogsSpacer aria-hidden="true" $height={window.start * LOG_ROW_HEIGHT} />}

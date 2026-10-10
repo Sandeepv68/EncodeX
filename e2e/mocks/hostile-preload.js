@@ -124,6 +124,7 @@ const SUBSCRIBERS = [
   'onPlayerAudio',
   'onPlayerError',
   'onLogMessage',
+  'onAuditEntry',
   'onUpdateAvailable',
   'onUpdateNotAvailable',
   'onUpdateProgress',

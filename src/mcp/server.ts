@@ -16,23 +16,84 @@
  */
 
 import * as fs from 'fs';
+import * as path from 'path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import * as z from 'zod';
 import { APP_NAME } from '../shared/app-constants';
 import { createTranscoder } from '../main/transcoders/factory';
 import type { ITranscoder } from '../main/transcoders/types';
 import { createError, formatError, isAppError, ErrorCode } from '../shared/errors';
-import type { TranscoderType } from '../shared/types';
+import type { ConversionOptions, EncoderCapabilities, MediaInfo, TranscoderType } from '../shared/types';
 import { MAX_QUEUE_CONCURRENCY } from '../shared/constants';
 import { getEncoderCapabilities } from '../main/capabilities';
 import { BUILTIN_PROFILES } from '../shared/profiles/builtin';
 import type { ConversionProfile } from '../shared/types';
+import {
+  adviseEncoding,
+  analyzeMedia,
+  buildTranscript,
+  chaptersToFfmpeg,
+  chaptersToYouTube,
+  clusterSignatures,
+  compareQuality,
+  deriveSubtitlePath,
+  estimateConversion,
+  explainError,
+  extractMediaFacts,
+  formatSubtitles,
+  generateChapters,
+  libraryRow,
+  parseIntent,
+  parseBitrateKbps,
+  planTargetSizeCandidates,
+  planWorkflow,
+  recommendSettings,
+  resolveReferences,
+  searchTranscript,
+  summarizeLibrary,
+  summarizeTranscript,
+  validateOutput,
+  WORKFLOW_TOOLS,
+} from '../shared/ai';
+import { createAuditEntry } from '../shared/audit';
+import type { AuditEntry } from '../shared/audit';
+import { batchEnvelopeExceeds, tierForTool } from './safety';
+import type { BatchEnvelope } from './safety';
+import { defaultFrameSampler } from './frame-sampler';
+import { createWhisperCliEngine } from './stt-engine';
+import { createLocalTranslationProvider } from './translate-engine';
+import { createHttpLocalModelClient } from './local-model-client';
+import type {
+  FrameSampler,
+  LibraryRow,
+  LocalModelClient,
+  MediaSignature,
+  PlanRequest,
+  SttEngine,
+  SubtitleFormat,
+  Transcript,
+  TranscriptSegment,
+  TranslationProvider,
+  WorkflowTool,
+} from '../shared/ai';
 import { VIDEO_CODECS, AUDIO_CODECS } from '../shared/media-options';
+import { suggestedExtensionForVideoCodec } from '../shared/codec-containers';
+import { expandInputs, getInputExtension } from '../main/cli/cli-util';
 import { buildConversionOptions, resolveOutputPath, MCPConversionFields } from './conversion-options';
-import { MCP_UI_EXTENSION_ID, MCP_UI_VIEW_URIS } from '../shared/mcp-ui';
+import { MCP_UI_EXTENSION_ID, MCP_UI_RESOURCE_MIME_TYPE, MCP_UI_VIEW_URIS } from '../shared/mcp-ui';
+import type { McpUiConfirmationField, McpUiJob } from '../shared/mcp-ui';
 import { registerAppTool } from '@modelcontextprotocol/ext-apps/server';
 import { registerUiResources } from './ui/resources';
+import {
+  hostSupportsMcpApps,
+  confirmationResult,
+  confirmationField,
+  confirmationViewUri,
+  COMMIT_OPERATION_TOOL,
+  CONFIRMABLE_OPERATIONS,
+} from './ui/approval';
 import { MCPJobManager } from './jobs/manager';
+import type { MCPJob } from './jobs/manager';
 import {
   buildCompressPlan,
   buildExtractAudioPlan,
@@ -56,12 +117,30 @@ import type { MCPCompressFields, MCPExtractAudioFields, MCPCutFields, MCPRemuxFi
  * @property {MCPJobManager} [jobManager] - Job manager backing the conversion
  *   tools. Shared across tool calls so agents can poll/queue/cancel; a fresh
  *   manager is created when omitted.
+ * @property {function(AuditEntry): void} [onAudit] - Optional sink invoked once
+ *   for every committed (or headlessly executed) mutating operation, so the
+ *   Electron main process can surface an audit trail in the renderer. Errors
+ *   thrown by the sink are swallowed.
+ * @property {FrameSampler} [frameSampler] - Samples a frame hash for
+ *   `find_similar_media`; defaults to the FFmpeg-backed sampler.
+ * @property {SttEngine} [sttEngine] - Speech-to-text engine for the transcript
+ *   tools; defaults to the whisper.cpp CLI adapter.
+ * @property {TranslationProvider} [translator] - Subtitle translation backend;
+ *   defaults to the local-model provider built from {@link localModelClient}.
+ * @property {LocalModelClient} [localModelClient] - Local model transport used
+ *   by translation (and available to the AI provider layer). Defaults to the
+ *   HTTP adapter when `ENCODEX_LOCAL_MODEL_URL` is set.
  */
 export interface CreateMcpServerOptions {
   name?: string;
   version?: string;
   transcoderFactory?: (type: TranscoderType) => ITranscoder;
   jobManager?: MCPJobManager;
+  onAudit?: (entry: AuditEntry) => void;
+  frameSampler?: FrameSampler;
+  sttEngine?: SttEngine;
+  translator?: TranslationProvider;
+  localModelClient?: LocalModelClient;
 }
 
 /**
@@ -80,18 +159,36 @@ function resolveAppVersion(): string {
 }
 
 /**
- * Builds a successful tool result carrying a single text payload.
+ * Builds a successful tool result carrying a single text payload and, when
+ * provided, the machine-readable `structuredContent` an MCP App view renders.
+ *
+ * Every EncodeX tool returns `structuredContent` (SEP-1865 / R0.2) so hosts can
+ * read typed data instead of re-parsing prose; the text block remains the
+ * mandatory fallback for hosts that do not render views (SEP-2133). Passing no
+ * payload keeps the historic text-only shape used by simple acknowledgement
+ * results.
  * @param {string} text - The JSON text result.
- * @returns {{content: Array<{type: 'text'; text: string}>}} MCP tool result.
+ * @param {Record<string, unknown>} [structuredContent] - Typed data for the view.
+ * @returns {{content: Array<{type: 'text'; text: string}>; structuredContent?: Record<string, unknown>}} MCP tool result.
  */
-export function ok(text: string): { content: Array<{ type: 'text'; text: string }> } {
-  return { content: [{ type: 'text', text }] };
+export function ok(
+  text: string,
+  structuredContent?: Record<string, unknown>,
+): { content: Array<{ type: 'text'; text: string }>; structuredContent?: Record<string, unknown> } {
+  const base: { content: Array<{ type: 'text'; text: string }>; structuredContent?: Record<string, unknown> } = {
+    content: [{ type: 'text', text }],
+  };
+  if (structuredContent !== undefined) {
+    base.structuredContent = structuredContent;
+  }
+  return base;
 }
 
 /**
  * Builds a successful tool result that carries both the text fallback and
  * machine-readable `structuredContent` for an MCP App view. Non-UI hosts ignore
- * `structuredContent` and render the text exactly as they do today.
+ * `structuredContent` and render the text exactly as they do today. Thin wrapper
+ * over {@link ok} that makes the structured payload required at the call site.
  * @param {string} text - The text fallback (typically `JSON.stringify(data)`).
  * @param {Record<string, unknown>} structuredContent - Data for the view to render.
  * @returns {{content: Array<{type: 'text'; text: string}>; structuredContent: Record<string, unknown>}} MCP tool result.
@@ -106,19 +203,28 @@ export function okUi(
 /**
  * Builds a failed tool result from any thrown error. AppErrors keep their
  * categorized code; everything else is normalized through {@link formatError}.
+ * The machine-readable `structuredContent` mirrors the JSON text (`ok:false` +
+ * stable code) so a model or view can branch on the error code, while `isError`
+ * preserves the MCP error contract.
  * @param {unknown} err - The thrown error.
- * @returns {{content: Array<{type: 'text'; text: string}>; isError: boolean}} Error result.
+ * @returns {{content: Array<{type: 'text'; text: string}>; isError: boolean; structuredContent: Record<string, unknown>}} Error result.
  */
-export function fail(err: unknown): { content: Array<{ type: 'text'; text: string }>; isError: boolean } {
+export function fail(err: unknown): {
+  content: Array<{ type: 'text'; text: string }>;
+  isError: boolean;
+  structuredContent: Record<string, unknown>;
+} {
   const appErr = isAppError(err) ? err : formatError(err);
+  const structuredContent: Record<string, unknown> = {
+    ok: false,
+    code: appErr.code,
+    message: appErr.message,
+    detail: appErr.detail,
+  };
   return {
-    content: [
-      {
-        type: 'text',
-        text: JSON.stringify({ ok: false, code: appErr.code, message: appErr.message, detail: appErr.detail }),
-      },
-    ],
+    content: [{ type: 'text', text: JSON.stringify(structuredContent) }],
     isError: true,
+    structuredContent,
   };
 }
 
@@ -339,6 +445,320 @@ const demuxSchema = z.object({
 });
 
 /**
+ * Schema for the `analyze_media` tool: a probe reduced to a plain-language
+ * diagnosis, optionally focused on compatibility, quality, or size.
+ */
+const analyzeSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the media file to diagnose.'),
+  focus: z.enum(['compat', 'quality', 'size']).optional().describe("Framing of the diagnosis (default 'compat')."),
+});
+
+/**
+ * Hard constraints accepted by `recommend_settings`.
+ */
+const constraintsSchema = z.object({
+  maxBytes: z.number().int().positive().optional().describe('Hard output size ceiling in bytes.'),
+  targetDevice: z.string().optional().describe("Target device/ecosystem (e.g. 'iphone', 'android', 'appletv')."),
+  platform: z.string().optional().describe("Target platform (e.g. 'youtube', 'web')."),
+  maxWidth: z.number().int().positive().optional().describe('Maximum output width in pixels.'),
+  maxHeight: z.number().int().positive().optional().describe('Maximum output height in pixels.'),
+});
+
+/**
+ * Schema for the `recommend_settings` tool: intent plus facts -> a typed plan.
+ */
+const recommendSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the input media file.'),
+  intent: z.string().min(1).describe("The user's natural-language goal (e.g. 'make this work on my iPhone')."),
+  constraints: constraintsSchema.optional().describe('Optional hard constraints steering the plan.'),
+});
+
+/**
+ * Schema for the `estimate_conversion` tool. `args` mirrors the size-affecting
+ * fields of `convert_media` so a plan can be estimated before it runs.
+ */
+const estimateSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the input media file.'),
+  args: z
+    .object({
+      videoCodec: z.string().optional().describe('Video encoder (e.g. libx264, copy).'),
+      audioCodec: z.string().optional().describe('Audio encoder (e.g. aac, copy).'),
+      videoBitrate: z.string().optional().describe('Target video bitrate (e.g. 2000k).'),
+      audioBitrate: z.string().optional().describe('Target audio bitrate (e.g. 192k).'),
+      scale: z.string().optional().describe('Output resolution (WxH or percent).'),
+      startTime: z.string().optional().describe('Trim start time (HH:MM:SS or seconds).'),
+      endTime: z.string().optional().describe('Trim end time (HH:MM:SS or seconds).'),
+      duration: z.string().optional().describe('Maximum output duration.'),
+      copy: z.boolean().optional().describe('Lossless stream copy (size is preserved).'),
+      audio: z.boolean().optional().describe('Include audio streams (default true).'),
+      video: z.boolean().optional().describe('Include video streams (default true).'),
+    })
+    .optional()
+    .describe('The conversion arguments to estimate (the size-affecting subset of convert_media).'),
+});
+
+/**
+ * Expected properties checked by `validate_output`.
+ */
+const validationExpectSchema = z.object({
+  maxBytes: z.number().int().positive().optional().describe('Maximum allowed output size in bytes.'),
+  minResolution: z.string().optional().describe("Minimum video resolution ('WxH')."),
+  codec: z.string().optional().describe("Required video codec (e.g. 'h264')."),
+  container: z.string().optional().describe('Required container/format substring (e.g. mp4).'),
+  hasAudio: z.boolean().optional().describe('Require an audio stream.'),
+  hasVideo: z.boolean().optional().describe('Require a video stream.'),
+  minDurationSeconds: z.number().optional().describe('Minimum duration in seconds.'),
+  maxDurationSeconds: z.number().optional().describe('Maximum duration in seconds.'),
+});
+
+/**
+ * Schema for the `validate_output` tool: re-probe the output and check it.
+ */
+const validateSchema = z.object({
+  output: z.string().min(1).describe('Absolute path of the produced output file to verify.'),
+  expect: validationExpectSchema.optional().describe('Constraints the output must satisfy.'),
+});
+
+/**
+ * Schema for the `compress_to_target` tool: encode until the measured output
+ * fits a hard byte ceiling, keeping the best quality that does.
+ */
+const compressToTargetSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the input media file.'),
+  maxBytes: z.number().int().positive().describe('Hard output size ceiling in bytes.'),
+  intent: z.string().optional().describe("Quality intent, e.g. 'keep the best quality' or 'smallest possible'."),
+  videoCodec: z.string().optional().describe('Video encoder (default libx264).'),
+  audioCodec: z.string().optional().describe('Audio encoder (default aac).'),
+  audioBitrate: z.string().optional().describe('Audio bitrate (default derives from the target size).'),
+  maxCandidates: z.number().int().min(1).max(5).optional().describe('How many bitrate candidates to try (1-5, default 3).'),
+  output: z.string().optional().describe('Base output path; each candidate is suffixed with its bitrate.'),
+  transcoder: z.enum(['FFMPEG', 'FFTOOL', 'BMF']).optional().describe('Transcoder backend (default FFMPEG).'),
+});
+
+/**
+ * Schema for the `analyze_folder` tool: project the space a re-encode would save.
+ */
+const analyzeFolderSchema = z.object({
+  path: z.string().min(1).describe('Directory (or glob) containing media to analyze.'),
+  intent: z.string().optional().describe("Planning intent, e.g. 'compress to save space' or 'keep quality'."),
+  recursive: z.boolean().optional().describe('Recurse into subdirectories (default false).'),
+  maxFiles: z.number().int().min(1).max(500).optional().describe('Maximum files to probe (default 200).'),
+  transcoder: z.enum(['FFMPEG', 'FFTOOL', 'BMF']).optional().describe('Transcoder backend (default FFMPEG).'),
+});
+
+/**
+ * Schema for the `explain_error` tool: a raw failure (or a failed job id) mapped
+ * to a plain-language explanation with likely causes and one-click fixes.
+ */
+const explainErrorSchema = z.object({
+  code: z.string().optional().describe('The EncodeX error code (e.g. CONVERSION_FAILED).'),
+  message: z.string().optional().describe('The raw error message; used to infer the code when code is omitted.'),
+  detail: z.string().optional().describe('The optional error detail line.'),
+  jobId: z.string().optional().describe('A failed job id to explain (its error is folded into the explanation).'),
+  input: z.string().optional().describe('The input file the operation ran on, when known.'),
+  tool: z.string().optional().describe('The tool that produced the error, when known.'),
+  args: z.record(z.string(), z.unknown()).optional().describe('The arguments the tool was called with, when known.'),
+});
+
+/**
+ * Schema for the `advise_encoding` tool: pick an encoder + hardware usage from
+ * the real machine capabilities.
+ */
+const adviseEncodingSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the input media file to advise on.'),
+});
+
+/**
+ * Schema for the `quality_report` tool: compare a produced output to its source.
+ */
+const qualityReportSchema = z.object({
+  source: z.string().min(1).describe('Absolute path of the source media file.'),
+  output: z.string().min(1).describe('Absolute path of the produced output file to compare.'),
+  expect: validationExpectSchema.optional().describe('Optional explicit expectations for the output.'),
+});
+
+/**
+ * A single timed transcript segment, shared by the transcript-based tools so a
+ * caller can supply an existing transcript instead of running STT.
+ */
+const transcriptSegmentSchema = z.object({
+  start: z.number().min(0).describe('Segment start in seconds.'),
+  end: z.number().min(0).describe('Segment end in seconds.'),
+  text: z.string().describe('Spoken text.'),
+  speaker: z.string().optional().describe('Optional speaker label.'),
+});
+
+/**
+ * Supported subtitle output formats.
+ */
+const subtitleFormatSchema = z.enum(['srt', 'vtt', 'ass']);
+
+/**
+ * Schema for the `find_similar_media` tool: perceptual-hash dedupe clustering.
+ */
+const findSimilarMediaSchema = z.object({
+  inputs: z
+    .array(z.string().min(1))
+    .min(1)
+    .max(500)
+    .describe('Media files, directories, or globs to compare (all compared against each other).'),
+  method: z
+    .enum(['hash', 'metadata'])
+    .optional()
+    .describe('Comparison method (default hash; falls back to metadata when frames cannot be sampled).'),
+  threshold: z.number().min(0).max(1).optional().describe('Minimum similarity to cluster (default 0.75).'),
+  recursive: z.boolean().optional().describe('Recurse into subdirectories (default false).'),
+  maxCandidates: z.number().int().min(1).max(500).optional().describe('Maximum files to compare (default 200).'),
+});
+
+/**
+ * Schema for the `transcribe_media` tool: local speech-to-text.
+ */
+const transcribeMediaSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the media file to transcribe.'),
+  language: z.string().optional().describe('Source language hint (BCP-47 or ISO-639-1).'),
+  format: subtitleFormatSchema.optional().describe('Also return subtitles in this format (srt/vtt/ass).'),
+  modelPath: z.string().optional().describe('Path to a whisper model file (overrides ENCODEX_WHISPER_MODEL).'),
+  timeoutMs: z.number().int().min(1000).max(3600000).optional().describe('Transcription timeout in ms.'),
+});
+
+/**
+ * Schema for the `translate_subtitles` tool: local-first subtitle translation.
+ */
+const translateSubtitlesSchema = z.object({
+  input: z.string().min(1).optional().describe('Media file to transcribe first (when segments are not supplied).'),
+  segments: z.array(transcriptSegmentSchema).optional().describe('Existing timed segments to translate.'),
+  durationSeconds: z.number().min(0).optional().describe('Duration when segments are supplied.'),
+  targetLanguage: z.string().min(1).describe('Target language code.'),
+  sourceLanguage: z.string().optional().describe('Source language hint.'),
+  format: subtitleFormatSchema.optional().describe('Also return subtitles in this format.'),
+  provider: z.string().optional().describe('Translation provider id (default local).'),
+  language: z.string().optional().describe('STT language hint when transcribing an input.'),
+  modelPath: z.string().optional().describe('STT model path when transcribing an input.'),
+});
+
+/**
+ * Schema for the `generate_chapters` tool: auto chapters + YouTube timestamps.
+ */
+const generateChaptersSchema = z.object({
+  input: z.string().min(1).optional().describe('Media file to transcribe first (when segments are not supplied).'),
+  segments: z.array(transcriptSegmentSchema).optional().describe('Existing timed segments to chapter.'),
+  durationSeconds: z.number().min(0).optional().describe('Duration when segments are supplied.'),
+  minChapterSeconds: z.number().min(5).max(3600).optional().describe('Shortest chapter before a pause can split (default 45).'),
+  maxChapterSeconds: z.number().min(10).max(7200).optional().describe('Hard cap that forces a split (default 300).'),
+  maxChapters: z.number().int().min(1).max(100).optional().describe('Maximum chapters (default 20).'),
+  language: z.string().optional().describe('STT language hint when transcribing an input.'),
+  modelPath: z.string().optional().describe('STT model path when transcribing an input.'),
+});
+
+/**
+ * Schema for the `search_transcript` tool: find a passage and propose a clip.
+ */
+const searchTranscriptSchema = z.object({
+  input: z.string().min(1).optional().describe('Media file to transcribe first (when segments are not supplied).'),
+  segments: z.array(transcriptSegmentSchema).optional().describe('Existing timed segments to search.'),
+  durationSeconds: z.number().min(0).optional().describe('Duration when segments are supplied.'),
+  query: z.string().min(1).describe('The natural-language passage to find.'),
+  maxMatches: z.number().int().min(1).max(50).optional().describe('Maximum matches to return (default 10).'),
+  context: z.number().min(0).max(60).optional().describe('Seconds of padding around the proposed clip (default 0).'),
+  language: z.string().optional().describe('STT language hint when transcribing an input.'),
+  modelPath: z.string().optional().describe('STT model path when transcribing an input.'),
+});
+
+/**
+ * Schema for the `summarize_media` tool: extractive summary + topics.
+ */
+const summarizeMediaSchema = z.object({
+  input: z.string().min(1).optional().describe('Media file to transcribe first (when segments are not supplied).'),
+  segments: z.array(transcriptSegmentSchema).optional().describe('Existing timed segments to summarize.'),
+  durationSeconds: z.number().min(0).optional().describe('Duration when segments are supplied.'),
+  maxSentences: z.number().int().min(1).max(30).optional().describe('Summary length in sentences (default 5).'),
+  maxTopics: z.number().int().min(1).max(30).optional().describe('Number of topics to report (default 8).'),
+  language: z.string().optional().describe('STT language hint when transcribing an input.'),
+  modelPath: z.string().optional().describe('STT model path when transcribing an input.'),
+});
+
+/**
+ * One node of a workflow DAG.
+ */
+const workflowStepSchema = z.object({
+  id: z.string().min(1).max(64).describe('Unique step id referenced by later steps (letters, digits, _, -).'),
+  tool: z.enum(WORKFLOW_TOOLS).describe('The single-output operation this step runs.'),
+  args: z.record(z.string(), z.unknown()).optional().describe('Tool arguments; use {{<stepId>.output}} to consume an earlier step output.'),
+  dependsOn: z.array(z.string()).optional().describe('Explicit dependency step ids (references infer deps too).'),
+});
+
+/**
+ * Schema for the `plan_workflow` / `execute_workflow` tools: a typed workflow DAG.
+ */
+const workflowSchema = z.object({
+  steps: z.array(workflowStepSchema).min(1).max(50).describe('The workflow steps forming the DAG.'),
+});
+
+/**
+ * Wall-clock budget for a single workflow step job before `execute_workflow`
+ * gives up waiting and reports the step as failed.
+ * @const {number}
+ */
+const WORKFLOW_STEP_TIMEOUT_MS = 120000;
+
+/**
+ * Media file extensions the folder analysis projects. Non-media files found in
+ * a directory are skipped so the report only covers things that can be encoded.
+ * @const {Set<string>}
+ */
+const MEDIA_EXTENSIONS = new Set([
+  'mp4',
+  'm4v',
+  'mkv',
+  'mov',
+  'avi',
+  'webm',
+  'flv',
+  'wmv',
+  'mpg',
+  'mpeg',
+  'ts',
+  'm2ts',
+  'mp3',
+  'aac',
+  'm4a',
+  'flac',
+  'wav',
+  'ogg',
+  'opus',
+  'wma',
+  'jpg',
+  'jpeg',
+  'png',
+  'webp',
+  'gif',
+  'bmp',
+  'tiff',
+  'tif',
+  'avif',
+  'heic',
+]);
+
+/**
+ * Tests whether a path looks like a media file by extension.
+ * @param {string} file - The candidate file path.
+ * @returns {boolean} True when the extension is in {@link MEDIA_EXTENSIONS}.
+ */
+function isMediaPath(file: string): boolean {
+  return MEDIA_EXTENSIONS.has(path.extname(file).slice(1).toLowerCase());
+}
+
+/**
+ * Extracts a human-readable message from an unknown thrown value.
+ * @param {unknown} err - The thrown value.
+ * @returns {string} The error message.
+ */
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
+/**
  * Serializes an enqueued job into the shared tool response shape.
  * @param {ReturnType<MCPJobManager['enqueue']>} job - The enqueued job.
  * @param {string} transcoder - The transcoder backend used.
@@ -382,7 +802,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     {
       capabilities: {
         extensions: {
-          [MCP_UI_EXTENSION_ID]: {},
+          [MCP_UI_EXTENSION_ID]: { mimeTypes: [MCP_UI_RESOURCE_MIME_TYPE] },
         },
       },
     },
@@ -390,6 +810,1014 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
 
   const transcoderFactory = options.transcoderFactory ?? createTranscoder;
   const jobManager = options.jobManager ?? new MCPJobManager({ transcoderFactory });
+  const onAudit = options.onAudit;
+  const frameSampler = options.frameSampler ?? defaultFrameSampler;
+  const sttEngine = options.sttEngine ?? createWhisperCliEngine();
+  const localModelClient = options.localModelClient ?? createHttpLocalModelClient();
+  const translator = options.translator ?? createLocalTranslationProvider(localModelClient);
+
+  /**
+   * Reports a committed (or headlessly executed) mutating operation to the
+   * audit sink. Never throws: an audit failure must not break a tool call.
+   * @param {string} tool - The mutating tool that ran.
+   * @param {unknown} args - The arguments it ran with.
+   * @param {boolean} success - Whether it was accepted.
+   * @param {string} [detail] - Error summary when it failed.
+   * @returns {void}
+   */
+  function emitAudit(tool: string, args: unknown, success: boolean, detail?: string): void {
+    if (!onAudit) return;
+    try {
+      const fields: { tool: string; tier: number; args: unknown; result: 'ok' | 'error'; detail?: string } = {
+        tool,
+        tier: tierForTool(tool),
+        args,
+        result: success ? 'ok' : 'error',
+      };
+      if (detail) fields.detail = detail;
+      onAudit(createAuditEntry(fields));
+    } catch {
+      /* swallow: auditing is best-effort */
+    }
+  }
+
+  /**
+   * Reads the approved size envelope a confirmation round-tripped back in the
+   * batch arguments. Unknown to the schema (which strips it), so it only ever
+   * reaches the commit path.
+   * @param {unknown} raw - The raw tool arguments.
+   * @returns {BatchEnvelope | undefined} The approved envelope, when present.
+   */
+  function batchApprovedEnvelope(raw: unknown): BatchEnvelope | undefined {
+    if (!raw || typeof raw !== 'object') return undefined;
+    const envelope = (raw as Record<string, unknown>).__envelope;
+    if (!envelope || typeof envelope !== 'object') return undefined;
+    const record = envelope as Record<string, unknown>;
+    if (typeof record.fileCount === 'number' && typeof record.totalBytes === 'number') {
+      return { fileCount: record.fileCount, totalBytes: record.totalBytes };
+    }
+    return undefined;
+  }
+
+  /**
+   * Sums the input sizes of a batch plan, tolerating files that vanish between
+   * planning and stat'ing (they simply contribute zero bytes).
+   * @param {Array<{ input: string }>} jobs - The planned jobs.
+   * @returns {number} The total input size in bytes.
+   */
+  function batchPlanBytes(jobs: Array<{ input: string }>): number {
+    let total = 0;
+    for (const job of jobs) {
+      try {
+        total += fs.statSync(job.input).size;
+      } catch {
+        /* ignore */
+      }
+    }
+    return total;
+  }
+
+  /**
+   * Drops the confirmation rows a tool left unset, keeping views tidy.
+   * @param {Array<McpUiConfirmationField | undefined>} rows - Candidate rows.
+   * @returns {McpUiConfirmationField[]} The non-empty rows.
+   */
+  function confirmationRows(rows: Array<McpUiConfirmationField | undefined>): McpUiConfirmationField[] {
+    return rows.filter((row): row is McpUiConfirmationField => row !== undefined);
+  }
+
+  /**
+   * Serializes an enqueued job into the shape the job/queue/confirm views read.
+   * @param {ReturnType<MCPJobManager['enqueue']>} job - The enqueued job.
+   * @returns {McpUiJob} The view-shaped job.
+   */
+  function viewJob(job: ReturnType<MCPJobManager['enqueue']>): McpUiJob {
+    return { id: job.id, input: job.input, output: job.output, status: job.status, progress: job.progress };
+  }
+
+  /**
+   * Returns the detected encoder capabilities, degrading to an empty set when
+   * the capability probe is unavailable (offline/headless), so AI tools still
+   * plan instead of failing.
+   * @returns {EncoderCapabilities} Capabilities, never null.
+   */
+  function capabilitiesOrEmpty(): EncoderCapabilities {
+    return getEncoderCapabilities() ?? { videoEncoders: [], audioEncoders: [], hwaccels: [] };
+  }
+
+  /**
+   * Probes a file for the AI tools and the resources they read, failing clearly
+   * when the path does not exist.
+   * @param {string} input - Absolute path of the file to probe.
+   * @returns {Promise<MediaInfo>} The probed media info.
+   * @throws {AppError} `FILE_NOT_FOUND` when the path does not exist.
+   */
+  async function probeMedia(input: string): Promise<MediaInfo> {
+    if (!fs.existsSync(input)) {
+      throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${input}`);
+    }
+    return transcoderFactory('FFMPEG').getInfo(input);
+  }
+
+  /**
+   * Probes a media file, returning `undefined` instead of throwing when it
+   * cannot be read. Used by similarity comparison where one unreadable file must
+   * not fail the whole batch.
+   * @param {string} input - Absolute path of the file to probe.
+   * @returns {Promise<MediaInfo | undefined>} The probe result, or `undefined`.
+   */
+  async function tryProbe(input: string): Promise<MediaInfo | undefined> {
+    try {
+      return await probeMedia(input);
+    } catch {
+      return undefined;
+    }
+  }
+
+  /**
+   * Collects media files from a mix of files, directories, and globs.
+   * @param {string[]} inputs - Raw input paths.
+   * @param {boolean} recursive - Whether to descend into subdirectories.
+   * @param {number} max - Maximum number of files to return.
+   * @returns {string[]} Sorted, unique media paths.
+   */
+  function collectMediaPaths(inputs: string[], recursive: boolean, max: number): string[] {
+    const collected = new Set<string>();
+    const visit = (candidate: string): void => {
+      if (collected.size >= max) return;
+      let stat: fs.Stats;
+      try {
+        stat = fs.statSync(candidate);
+      } catch {
+        return;
+      }
+      if (stat.isDirectory()) {
+        let entries: string[];
+        try {
+          entries = fs.readdirSync(candidate);
+        } catch {
+          return;
+        }
+        for (const entry of entries) {
+          if (collected.size >= max) return;
+          const child = path.join(candidate, entry);
+          let childStat: fs.Stats;
+          try {
+            childStat = fs.statSync(child);
+          } catch {
+            continue;
+          }
+          if (childStat.isDirectory()) {
+            if (recursive) visit(child);
+          } else if (isMediaPath(child)) {
+            collected.add(child);
+          }
+        }
+      } else if (isMediaPath(candidate)) {
+        collected.add(candidate);
+      }
+    };
+    for (const input of inputs) {
+      if (collected.size >= max) break;
+      for (const expanded of expandInputs([input])) {
+        if (collected.size >= max) break;
+        visit(expanded);
+      }
+    }
+    return [...collected].sort();
+  }
+
+  /**
+   * Builds a similarity signature for one file: size, probed duration and
+   * resolution, and (for the `hash` method) a sampled frame hash.
+   * @param {string} file - Absolute media path.
+   * @param {'hash' | 'metadata'} method - Comparison method.
+   * @returns {Promise<MediaSignature>} The signature.
+   */
+  async function buildSignature(file: string, method: 'hash' | 'metadata'): Promise<MediaSignature> {
+    const signature: MediaSignature = { file };
+    try {
+      signature.sizeBytes = fs.statSync(file).size;
+    } catch {
+      /* size is optional */
+    }
+    const info = await tryProbe(file);
+    if (info) {
+      const facts = extractMediaFacts(info);
+      signature.durationSeconds = facts.durationSeconds;
+      if (facts.sizeBytes) signature.sizeBytes = facts.sizeBytes;
+      if (facts.video) {
+        signature.width = facts.video.width;
+        signature.height = facts.video.height;
+      }
+    }
+    if (method === 'hash') {
+      const duration = signature.durationSeconds ?? 0;
+      const at = duration > 5 ? Math.min(10, duration * 0.1) : 0;
+      const hash = await frameSampler(file, at);
+      if (hash) signature.hash = hash;
+    }
+    return signature;
+  }
+
+  /**
+   * Resolves a transcript for the transcript-based tools: either from
+   * caller-supplied segments or by running the STT engine on an input file.
+   * @param {object} args - The tool arguments.
+   * @param {string} [args.input] - A media file to transcribe.
+   * @param {TranscriptSegment[]} [args.segments] - Pre-supplied segments.
+   * @param {number} [args.durationSeconds] - Duration when segments are supplied.
+   * @param {string} [args.language] - Language hint.
+   * @param {string} [args.modelPath] - STT model path.
+   * @param {number} [args.timeoutMs] - STT timeout.
+   * @returns {Promise<Transcript>} The transcript.
+   * @throws {AppError} `INPUT_NOT_SPECIFIED` when neither input nor segments are given.
+   */
+  async function resolveTranscript(args: {
+    input?: string;
+    segments?: TranscriptSegment[];
+    durationSeconds?: number;
+    language?: string;
+    modelPath?: string;
+    timeoutMs?: number;
+  }): Promise<Transcript> {
+    if (args.segments && args.segments.length > 0) {
+      return buildTranscript(args.segments, {
+        engine: 'provided',
+        durationSeconds: args.durationSeconds,
+        language: args.language,
+      });
+    }
+    if (!args.input) {
+      throw createError(ErrorCode.INPUT_NOT_SPECIFIED, 'Provide either an input media file to transcribe or a segments array.');
+    }
+    if (!fs.existsSync(args.input)) {
+      throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+    }
+    const options: { language?: string; modelPath?: string; timeoutMs?: number } = {};
+    if (args.language) options.language = args.language;
+    if (args.modelPath) options.modelPath = args.modelPath;
+    if (args.timeoutMs) options.timeoutMs = args.timeoutMs;
+    return sttEngine.transcribe(args.input, options);
+  }
+
+  /**
+   * Maps a natural-language intent onto a target-size candidate-ladder bias.
+   * @param {string} [intent] - The optional intent text.
+   * @returns {'quality'|'balanced'|'size'} The ladder to walk.
+   */
+  function targetBias(intent?: string): 'quality' | 'balanced' | 'size' {
+    const signals = parseIntent(intent ?? '');
+    if (signals.wantsSmall) return 'size';
+    if (signals.wantsQuality) return 'quality';
+    return 'balanced';
+  }
+
+  /**
+   * The fraction of a source's size a folder projection tries to reach.
+   * @param {string} [intent] - The optional intent text.
+   * @returns {number} A ratio in (0, 1].
+   */
+  function projectionRatio(intent?: string): number {
+    const signals = parseIntent(intent ?? '');
+    if (signals.wantsQuality) return 0.85;
+    if (signals.wantsSmall) return 0.5;
+    return 0.7;
+  }
+
+  /**
+   * Polls a job until it reaches a terminal state or the timeout elapses.
+   * @param {string} jobId - The job to watch.
+   * @param {number} [timeoutMs=30000] - Per-candidate timeout.
+   * @param {number} [intervalMs=50] - Poll interval.
+   * @returns {Promise<MCPJob>} The terminal job.
+   * @throws {AppError} When the job vanishes or the timeout elapses.
+   */
+  async function waitForJob(jobId: string, timeoutMs = 30000, intervalMs = 50): Promise<MCPJob> {
+    const deadline = Date.now() + timeoutMs;
+    for (;;) {
+      const job = jobManager.getJob(jobId);
+      if (!job) throw createError(ErrorCode.UNKNOWN, `Job not found while waiting: ${jobId}`);
+      if (job.status === 'done' || job.status === 'error') return job;
+      if (Date.now() >= deadline) throw createError(ErrorCode.UNKNOWN, `Timed out waiting for job ${jobId}`);
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+  }
+
+  /**
+   * Builds a candidate output path by inserting a suffix before the extension.
+   * @param {string} base - Base output (or input) path.
+   * @param {string} suffix - Suffix to insert before the extension.
+   * @param {string} ext - Output extension without the leading dot.
+   * @returns {string} The suffixed output path.
+   */
+  function suffixedOutput(base: string, suffix: string, ext: string): string {
+    const parsed = path.parse(base);
+    return path.join(parsed.dir, `${parsed.name}${suffix}.${ext}`);
+  }
+
+  /**
+   * Encodes an input through a ladder of size-target candidates, measuring each
+   * produced output and stopping at the first one that fits the ceiling. This is
+   * the F3 measured loop; the winning quality is decided by bytes on disk, not by
+   * the estimate (roadmap §7.3, D4).
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @returns {Promise<object>} The MCP tool result (lab view data).
+   */
+  async function runCompressToTarget(raw: unknown) {
+    try {
+      const args = compressToTargetSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const info = await probeMedia(args.input);
+      const facts = extractMediaFacts(info);
+      const plan = planTargetSizeCandidates(facts, args.maxBytes, {
+        maxCandidates: args.maxCandidates,
+        bias: targetBias(args.intent),
+        audioBitrateKbps: parseBitrateKbps(args.audioBitrate),
+      });
+      if (plan.candidates.length === 0) {
+        throw createError(ErrorCode.UNKNOWN, plan.notes.join(' ') || 'No size-target candidates could be planned.');
+      }
+
+      const videoCodec = args.videoCodec ?? 'libx264';
+      const audioCodec = args.audioCodec ?? 'aac';
+      const transcoder = args.transcoder ?? 'FFMPEG';
+      const ext = suggestedExtensionForVideoCodec(videoCodec) || getInputExtension(args.input);
+      const base = args.output ?? args.input;
+      const attempts: Array<Record<string, unknown>> = [];
+      let chosen: Record<string, unknown> | undefined;
+
+      for (const candidate of plan.candidates) {
+        const output = suffixedOutput(base, `_target_${candidate.videoBitrateKbps}k`, ext);
+        const fields: MCPConversionFields = { videoCodec, videoBitrate: `${candidate.videoBitrateKbps}k` };
+        if (facts.hasAudio) {
+          fields.audioCodec = audioCodec;
+          fields.audioBitrate = args.audioBitrate ?? `${candidate.audioBitrateKbps}k`;
+        }
+        const options = buildConversionOptions(fields);
+
+        let job: MCPJob;
+        try {
+          job = jobManager.enqueue(args.input, output, options, transcoder);
+        } catch (err) {
+          attempts.push({
+            candidate: candidate.id,
+            videoBitrateKbps: candidate.videoBitrateKbps,
+            output,
+            status: 'error',
+            error: errorMessage(err),
+          });
+          continue;
+        }
+
+        let terminal: MCPJob;
+        try {
+          terminal = await waitForJob(job.id);
+        } catch (err) {
+          attempts.push({
+            candidate: candidate.id,
+            videoBitrateKbps: candidate.videoBitrateKbps,
+            jobId: job.id,
+            output,
+            status: 'timeout',
+            error: errorMessage(err),
+          });
+          continue;
+        }
+        if (terminal.status === 'error') {
+          attempts.push({
+            candidate: candidate.id,
+            videoBitrateKbps: candidate.videoBitrateKbps,
+            jobId: job.id,
+            output,
+            status: 'error',
+            error: terminal.error,
+          });
+          continue;
+        }
+
+        let sizeBytes: number;
+        let validation;
+        try {
+          const outputInfo = await transcoderFactory(transcoder).getInfo(output);
+          sizeBytes = extractMediaFacts(outputInfo).sizeBytes;
+          validation = validateOutput(outputInfo, { maxBytes: args.maxBytes });
+        } catch (err) {
+          attempts.push({
+            candidate: candidate.id,
+            videoBitrateKbps: candidate.videoBitrateKbps,
+            jobId: job.id,
+            output,
+            status: 'unreadable',
+            error: errorMessage(err),
+          });
+          continue;
+        }
+
+        const attempt: Record<string, unknown> = {
+          candidate: candidate.id,
+          videoBitrateKbps: candidate.videoBitrateKbps,
+          audioBitrateKbps: candidate.audioBitrateKbps,
+          jobId: job.id,
+          output,
+          status: 'done',
+          sizeBytes,
+          fits: validation.passed,
+          checks: validation.checks,
+        };
+        attempts.push(attempt);
+        if (validation.passed) {
+          chosen = attempt;
+          break;
+        }
+      }
+
+      const result: Record<string, unknown> = {
+        input: args.input,
+        maxBytes: args.maxBytes,
+        videoCodec,
+        audioCodec,
+        plan,
+        attempts,
+        converged: chosen !== undefined,
+      };
+      if (chosen) result.chosen = chosen;
+      emitAudit('compress_to_target', raw, true);
+      return okUi(JSON.stringify(result), { lab: result });
+    } catch (err) {
+      emitAudit('compress_to_target', raw, false, errorMessage(err));
+      return fail(err);
+    }
+  }
+
+  /**
+   * Projects the space a batch re-encode would save across a folder: probes each
+   * media file, plans a size target for it and sums the projections. Headless
+   * (no MCP App view) — the report is text plus structured JSON.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @returns {Promise<object>} The MCP tool result (library summary).
+   */
+  async function runAnalyzeFolder(raw: unknown) {
+    try {
+      const args = analyzeFolderSchema.parse(raw);
+      const root = args.path.replace(/[\\/]+$/, '');
+      if (!fs.existsSync(root) && !/[?*[\]]/.test(args.path)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Folder not found: ${args.path}`);
+      }
+      const patterns = args.recursive ? [`${root}/**/*`] : [args.path];
+      const all = expandInputs(patterns).filter((file) => isMediaPath(file));
+      const maxFiles = args.maxFiles ?? 200;
+      const files = all.slice(0, maxFiles);
+      const intent = args.intent ?? 'compress to save space';
+      const ratio = projectionRatio(args.intent);
+      const capabilities = capabilitiesOrEmpty();
+
+      const rows: LibraryRow[] = [];
+      for (const file of files) {
+        try {
+          const info = await probeMedia(file);
+          const facts = extractMediaFacts(info);
+          const targetBytes = Math.round(facts.sizeBytes * ratio);
+          const projected = planTargetSizeCandidates(facts, targetBytes);
+          const baseline = projected.candidates.find((c) => c.videoBitrateKbps === projected.baselineVideoKbps) ?? projected.candidates[0];
+          if (!baseline) {
+            rows.push({ ...libraryRow(file, facts.sizeBytes, facts.sizeBytes, { targetBytes }), error: 'No video stream to size-target.' });
+            continue;
+          }
+          const estimate = estimateConversion(
+            { videoBitrate: `${baseline.videoBitrateKbps}k`, audioBitrate: facts.hasAudio ? `${baseline.audioBitrateKbps}k` : undefined },
+            facts,
+            capabilities,
+          );
+          rows.push(libraryRow(file, facts.sizeBytes, estimate.estimatedSizeBytes, { targetBytes }));
+        } catch (err) {
+          rows.push({ ...libraryRow(file, 0, 0), error: errorMessage(err) });
+        }
+      }
+
+      const summary = summarizeLibrary(rows);
+      const result = {
+        path: args.path,
+        intent,
+        scanned: all.length,
+        analyzed: files.length,
+        truncated: all.length > files.length,
+        ...summary,
+      };
+      return ok(JSON.stringify(result), { library: result });
+    } catch (err) {
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) a conversion. When `confirm` is true the call returns a
+   * confirmation and enqueues nothing; otherwise it behaves exactly as the
+   * headless tool always has.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runConvert(raw: unknown, confirm: boolean) {
+    try {
+      const args = conversionSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const fields: MCPConversionFields = { ...args };
+      const options = buildConversionOptions(fields);
+      const output = args.output ?? resolveOutputPath(args.input, fields, options);
+      if (confirm) {
+        return confirmationResult({
+          operation: 'convert_media',
+          title: 'Convert video',
+          summary: `${path.basename(args.input)} -> ${path.basename(output)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Output', output),
+            confirmationField('Video codec', args.videoCodec),
+            confirmationField('Audio codec', args.audioCodec),
+            confirmationField('Video bitrate', args.videoBitrate),
+            confirmationField('Audio bitrate', args.audioBitrate),
+            confirmationField('Scale', args.scale),
+            confirmationField('Quality', args.qscale),
+            args.copy ? { label: 'Mode', value: 'Lossless stream copy' } : undefined,
+          ]),
+        });
+      }
+      if (args.concurrency !== undefined) {
+        jobManager.setConcurrency(args.concurrency);
+      }
+      const job = jobManager.enqueue(args.input, output, options, (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG');
+      const transcoder = args.transcoder ?? 'FFMPEG';
+      emitAudit('convert_media', raw, true);
+      return okUi(JSON.stringify({ jobId: job.id, input: job.input, output: job.output, status: job.status, transcoder }), {
+        job: viewJob(job),
+        transcoder,
+      });
+    } catch (err) {
+      emitAudit('convert_media', raw, false, errorMessage(err));
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) an image compression.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runCompress(raw: unknown, confirm: boolean) {
+    try {
+      const args = compressSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const fields: MCPCompressFields = { ...args };
+      const plan = buildCompressPlan(args.input, fields);
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      if (confirm) {
+        return confirmationResult({
+          operation: 'compress_image',
+          title: 'Compress image',
+          summary: `${path.basename(args.input)} -> ${path.basename(plan.output)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Output', plan.output),
+            confirmationField('Format', plan.format),
+            confirmationField('Quality', args.quality),
+            confirmationField('Scale', args.scale),
+          ]),
+        });
+      }
+      const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      emitAudit('compress_image', raw, true);
+      return okUi(JSON.stringify({ ...enqueueResponse(job, transcoder), format: plan.format }), {
+        job: viewJob(job),
+        transcoder,
+        format: plan.format,
+      });
+    } catch (err) {
+      emitAudit('compress_image', raw, false, errorMessage(err));
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) an audio extraction.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runExtract(raw: unknown, confirm: boolean) {
+    try {
+      const args = extractSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const fields: MCPExtractAudioFields = { ...args };
+      const plan = buildExtractAudioPlan(args.input, fields);
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      if (confirm) {
+        return confirmationResult({
+          operation: 'extract_audio',
+          title: 'Extract audio',
+          summary: `${path.basename(args.input)} -> ${path.basename(plan.output)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Output', plan.output),
+            confirmationField('Audio codec', plan.audioCodec),
+            confirmationField('Bitrate', args.bitrate),
+          ]),
+        });
+      }
+      const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      emitAudit('extract_audio', raw, true);
+      return okUi(JSON.stringify({ ...enqueueResponse(job, transcoder), audioCodec: plan.audioCodec, extension: plan.ext }), {
+        job: viewJob(job),
+        transcoder,
+        audioCodec: plan.audioCodec,
+        extension: plan.ext,
+      });
+    } catch (err) {
+      emitAudit('extract_audio', raw, false, errorMessage(err));
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) a cut/trim.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runCut(raw: unknown, confirm: boolean) {
+    try {
+      const args = cutSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const fields: MCPCutFields = { ...args };
+      const plan = buildCutPlan(args.input, fields);
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      if (confirm) {
+        return confirmationResult({
+          operation: 'cut_video',
+          title: 'Cut video',
+          summary: `${path.basename(args.input)} -> ${path.basename(plan.output)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Output', plan.output),
+            confirmationField('Start', args.startTime),
+            confirmationField('End', args.endTime),
+            confirmationField('Duration', args.duration),
+            args.copy === false ? { label: 'Mode', value: 'Re-encode' } : { label: 'Mode', value: 'Lossless stream copy' },
+          ]),
+        });
+      }
+      const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      emitAudit('cut_video', raw, true);
+      return okUi(JSON.stringify(enqueueResponse(job, transcoder)), { job: viewJob(job), transcoder });
+    } catch (err) {
+      emitAudit('cut_video', raw, false, errorMessage(err));
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) a batch conversion.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runBatch(raw: unknown, confirm: boolean) {
+    try {
+      const approved = batchApprovedEnvelope(raw);
+      const args = batchSchema.parse(raw);
+      const fields: MCPConversionFields = { ...args };
+      const { jobs } = buildBatchPlan(args.inputs, fields, args.outputDir, args.suffix);
+      if (jobs.length === 0) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `No input files matched: ${args.inputs.join(', ')}`);
+      }
+      const envelope: BatchEnvelope = { fileCount: jobs.length, totalBytes: batchPlanBytes(jobs) };
+      const batchDetails = confirmationRows([
+        confirmationField('Files', jobs.length),
+        confirmationField('Output directory', args.outputDir),
+        confirmationField('Suffix', args.suffix),
+      ]);
+      if (confirm) {
+        return confirmationResult({
+          operation: 'batch_convert',
+          title: 'Batch convert',
+          summary: `Convert ${jobs.length} file${jobs.length === 1 ? '' : 's'}`,
+          args: { ...(args as Record<string, unknown>), __envelope: envelope },
+          details: batchDetails,
+        });
+      }
+      if (approved && batchEnvelopeExceeds(approved, envelope)) {
+        return confirmationResult({
+          operation: 'batch_convert',
+          title: 'Batch grew - confirm again',
+          summary: `The inputs now match ${jobs.length} file${jobs.length === 1 ? '' : 's'}; re-approve to continue.`,
+          args: { ...(args as Record<string, unknown>), __envelope: envelope },
+          details: batchDetails,
+          warnings: [
+            `The matched set grew from ${approved.fileCount} to ${jobs.length} file${jobs.length === 1 ? '' : 's'} since you approved it.`,
+          ],
+        });
+      }
+      if (args.outputDir) {
+        fs.mkdirSync(args.outputDir, { recursive: true });
+      }
+      if (args.concurrency !== undefined) {
+        jobManager.setConcurrency(args.concurrency);
+      }
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      const queued = jobs.map((job) => {
+        const running = jobManager.enqueue(job.input, job.output, job.options, transcoder);
+        return { file: job.input, output: job.output, jobId: running.id, status: running.status, progress: running.progress };
+      });
+      emitAudit('batch_convert', raw, true);
+      return okUi(JSON.stringify({ total: queued.length, jobs: queued }), {
+        total: queued.length,
+        jobs: queued.map((entry) => ({
+          id: entry.jobId,
+          input: entry.file,
+          output: entry.output,
+          status: entry.status,
+          progress: entry.progress,
+        })),
+      });
+    } catch (err) {
+      emitAudit('batch_convert', raw, false, errorMessage(err));
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) a remux. The source is always probed first so an
+   * incompatible target or missing auxiliary file fails before confirmation.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runRemux(raw: unknown, confirm: boolean) {
+    try {
+      const args = remuxSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const chaptersFile = args.chapters && typeof args.chapters === 'object' ? args.chapters.file : undefined;
+      assertMcpAuxiliaryInputsExist([
+        ...(args.addSubtitle ?? []).map((entry) => entry.file),
+        ...(args.addAudio ?? []).map((entry) => entry.file),
+        ...(args.thumbnail ? [args.thumbnail.file] : []),
+        ...(chaptersFile ? [chaptersFile] : []),
+      ]);
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      const fields: MCPRemuxFields = { ...args };
+      const info = await transcoderFactory(transcoder).getInfo(args.input);
+      const plan = buildRemuxPlan(args.input, fields, info.streams ?? []);
+      const warnings = plan.warnings.map((finding) => finding.code ?? finding.message);
+      if (confirm) {
+        return confirmationResult({
+          operation: 'remux_media',
+          title: 'Remux media',
+          summary: `${path.basename(args.input)} -> ${path.basename(plan.output)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Output', plan.output),
+            confirmationField('Container', plan.container),
+            confirmationField('Streams', (plan.options.map ?? []).join(', ')),
+          ]),
+          warnings,
+        });
+      }
+      const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      emitAudit('remux_media', raw, true);
+      return okUi(
+        JSON.stringify({
+          ...enqueueResponse(job, transcoder),
+          container: plan.container,
+          map: plan.options.map ?? [],
+          warnings,
+        }),
+        { job: viewJob(job), transcoder, container: plan.container, map: plan.options.map ?? [], warnings },
+      );
+    } catch (err) {
+      emitAudit('remux_media', raw, false, errorMessage(err));
+      return fail(err);
+    }
+  }
+
+  /**
+   * Runs (or proposes) a demux.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result.
+   */
+  async function runDemux(raw: unknown, confirm: boolean) {
+    try {
+      const args = demuxSchema.parse(raw);
+      if (!fs.existsSync(args.input)) {
+        throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+      }
+      const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+      const fields: MCPDemuxFields = { ...args };
+      const info = await transcoderFactory(transcoder).getInfo(args.input);
+      const plan = buildDemuxPlan(args.input, fields, info.streams ?? []);
+      const warnings = plan.warnings.map((finding) => finding.code ?? finding.message);
+      if (confirm) {
+        return confirmationResult({
+          operation: 'demux_media',
+          title: 'Demux media',
+          summary: `Extract ${plan.targets.length} stream${plan.targets.length === 1 ? '' : 's'} from ${path.basename(args.input)}`,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Streams', plan.targets.length),
+            confirmationField('Output directory', args.outputDir),
+          ]),
+          warnings,
+        });
+      }
+      if (args.outputDir) {
+        fs.mkdirSync(args.outputDir, { recursive: true });
+      }
+      const queued = plan.targets.map((target) => {
+        const job = jobManager.enqueue(args.input, target.output, buildDemuxJobOptions(target), transcoder);
+        return {
+          kind: target.kind,
+          streamIndex: target.index,
+          copy: target.copy,
+          codec: target.codec,
+          output: job.output,
+          jobId: job.id,
+          status: job.status,
+          progress: job.progress,
+        };
+      });
+      emitAudit('demux_media', raw, true);
+      return okUi(JSON.stringify({ total: queued.length, transcoder, jobs: queued, warnings }), {
+        total: queued.length,
+        jobs: queued.map((entry) => ({
+          id: entry.jobId,
+          input: args.input,
+          output: entry.output,
+          status: entry.status,
+          progress: entry.progress,
+        })),
+        warnings,
+      });
+    } catch (err) {
+      emitAudit('demux_media', raw, false, errorMessage(err));
+      return fail(err);
+    }
+  }
+
+  /**
+   * Enqueues one workflow step's operation and waits for it to finish,
+   * returning the job id and resolved output path. Reuses the same builders as
+   * the standalone tools so a workflow step and a direct call plan identically.
+   * @param {WorkflowTool} tool - The step operation.
+   * @param {Record<string, unknown>} args - The resolved step arguments.
+   * @returns {Promise<{ jobId: string; output: string }>} The finished job.
+   * @throws {AppError} `FILE_NOT_FOUND` when the input is missing, or
+   *   `CONVERSION_FAILED` when the job ends in error.
+   */
+  async function executeWorkflowStep(tool: WorkflowTool, args: Record<string, unknown>): Promise<{ jobId: string; output: string }> {
+    const rawInput = args.input;
+    if (typeof rawInput === 'string' && !fs.existsSync(rawInput)) {
+      throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${rawInput}`);
+    }
+    const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+    let input: string;
+    let output: string;
+    let options: ConversionOptions;
+    switch (tool) {
+      case 'convert_media': {
+        const parsed = conversionSchema.parse(args);
+        input = parsed.input;
+        const fields: MCPConversionFields = { ...parsed };
+        options = buildConversionOptions(fields);
+        output = parsed.output ?? resolveOutputPath(input, fields, options);
+        break;
+      }
+      case 'compress_image': {
+        const parsed = compressSchema.parse(args);
+        input = parsed.input;
+        const plan = buildCompressPlan(input, { ...parsed });
+        output = plan.output;
+        options = plan.options;
+        break;
+      }
+      case 'extract_audio': {
+        const parsed = extractSchema.parse(args);
+        input = parsed.input;
+        const plan = buildExtractAudioPlan(input, { ...parsed });
+        output = plan.output;
+        options = plan.options;
+        break;
+      }
+      case 'cut_video': {
+        const parsed = cutSchema.parse(args);
+        input = parsed.input;
+        const plan = buildCutPlan(input, { ...parsed });
+        output = plan.output;
+        options = plan.options;
+        break;
+      }
+      case 'remux_media': {
+        const parsed = remuxSchema.parse(args);
+        input = parsed.input;
+        const chaptersFile = parsed.chapters && typeof parsed.chapters === 'object' ? parsed.chapters.file : undefined;
+        assertMcpAuxiliaryInputsExist([
+          ...(parsed.addSubtitle ?? []).map((entry) => entry.file),
+          ...(parsed.addAudio ?? []).map((entry) => entry.file),
+          ...(parsed.thumbnail ? [parsed.thumbnail.file] : []),
+          ...(chaptersFile ? [chaptersFile] : []),
+        ]);
+        const info = await transcoderFactory(transcoder).getInfo(input);
+        const plan = buildRemuxPlan(input, { ...parsed }, info.streams ?? []);
+        output = plan.output;
+        options = plan.options;
+        break;
+      }
+      default: {
+        throw createError(ErrorCode.UNKNOWN, `Unsupported workflow tool: ${String(tool)}`);
+      }
+    }
+    const job = jobManager.enqueue(input, output, options, transcoder);
+    const done = await waitForJob(job.id, WORKFLOW_STEP_TIMEOUT_MS);
+    if (done.status === 'error') {
+      throw createError(ErrorCode.CONVERSION_FAILED, done.error ?? `Workflow step ${tool} failed.`);
+    }
+    return { jobId: job.id, output };
+  }
+
+  /**
+   * Validates and runs (or proposes) a typed workflow DAG. Steps run in
+   * dependency order; each step's `{{<id>.output}}` references are resolved from
+   * the results of the steps before it. Execution stops at the first failure and
+   * reports what completed.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result (workflow view data).
+   */
+  async function runWorkflow(raw: unknown, confirm: boolean) {
+    try {
+      const args = workflowSchema.parse(raw);
+      const plan = planWorkflow(args);
+      if (!plan.valid) {
+        throw createError(ErrorCode.UNKNOWN, `Invalid workflow: ${plan.issues.map((issue) => issue.message).join(' ')}`);
+      }
+      if (confirm) {
+        return confirmationResult({
+          operation: 'execute_workflow',
+          title: 'Run workflow',
+          summary: plan.summary,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Steps', plan.steps.length),
+            ...plan.steps.map((step) => confirmationField(`Step ${step.order + 1}`, `${step.tool} (${step.id})`)),
+          ]),
+        });
+      }
+      const context: Record<string, Record<string, unknown>> = {};
+      const results: Array<Record<string, unknown>> = [];
+      let failed: Record<string, unknown> | undefined;
+      for (const step of plan.steps) {
+        const resolved = resolveReferences(step.args, context) as Record<string, unknown>;
+        try {
+          const { jobId, output } = await executeWorkflowStep(step.tool, resolved);
+          context[step.id] = { output, jobId };
+          results.push({ id: step.id, tool: step.tool, jobId, output, status: 'done' });
+        } catch (err) {
+          const message = errorMessage(err);
+          failed = { id: step.id, tool: step.tool, message };
+          results.push({ id: step.id, tool: step.tool, status: 'error', error: message });
+          break;
+        }
+      }
+      const completed = failed === undefined;
+      emitAudit('execute_workflow', raw, completed, failed ? String(failed.message) : undefined);
+      const result = { completed, failed, steps: results };
+      return okUi(JSON.stringify(result), { result });
+    } catch (err) {
+      emitAudit('execute_workflow', raw, false, errorMessage(err));
+      return fail(err);
+    }
+  }
+
+  /**
+   * Whether the current call should be gated on user approval. Re-evaluated
+   * per call so it reflects the live client capabilities from `initialize`.
+   * @returns {boolean} True when the host renders MCP Apps.
+   */
+  function shouldConfirm(): boolean {
+    return hostSupportsMcpApps(server);
+  }
 
   server.registerTool(
     'ping',
@@ -398,7 +1826,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       description: 'Checks that the EncodeX MCP server is responsive and returns "pong".',
       inputSchema: z.object({}),
     },
-    async () => ok(JSON.stringify({ pong: true })),
+    async () => ok(JSON.stringify({ pong: true }), { pong: true }),
   );
 
   registerAppTool(
@@ -410,31 +1838,13 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         'Start an asynchronous media conversion (re-encode, stream-copy, trim, scale, rotate, video filters). ' +
         'Video filters are given via filters (comma-joined chain), videoFilters (expression array), or presets ' +
         '(curated ids); they require re-encoding and cannot be combined with copy. ' +
-        'Returns a job id immediately; poll with get_job / list_jobs and cancel with cancel_job.',
+        'When the client renders MCP Apps the conversion is proposed in the app and only starts once the user ' +
+        'confirms it; in other clients it starts immediately. ' +
+        'Returns a job id; poll with get_job / list_jobs and cancel with cancel_job.',
       inputSchema: conversionSchema,
-      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.convert } },
+      _meta: { ui: { resourceUri: confirmationViewUri('convert_media') } },
     },
-    async (args: z.infer<typeof conversionSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        const fields: MCPConversionFields = { ...args };
-        const options = buildConversionOptions(fields);
-        const output = args.output ?? resolveOutputPath(args.input, fields, options);
-        if (args.concurrency !== undefined) {
-          jobManager.setConcurrency(args.concurrency);
-        }
-        const job = jobManager.enqueue(args.input, output, options, (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG');
-        const transcoder = args.transcoder ?? 'FFMPEG';
-        return okUi(JSON.stringify({ jobId: job.id, input: job.input, output: job.output, status: job.status, transcoder }), {
-          job: { id: job.id, input: job.input, output: job.output, status: job.status, progress: job.progress },
-          transcoder,
-        });
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof conversionSchema>) => runConvert(args, shouldConfirm()),
   );
 
   registerAppTool(
@@ -482,7 +1892,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       if (!cancelled) {
         return fail(createError(ErrorCode.UNKNOWN, `Job not found: ${jobId}`));
       }
-      return ok(JSON.stringify({ jobId, cancelled: true }));
+      return ok(JSON.stringify({ jobId, cancelled: true }), { jobId, cancelled: true });
     },
   );
 
@@ -509,6 +1919,424 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     },
   );
 
+  registerAppTool(
+    server,
+    'analyze_media',
+    {
+      title: 'Analyze Media',
+      description:
+        'Diagnoses a media file in plain language: streams, HDR, interlacing, uncommon codecs, multichannel audio, ' +
+        'resolution and size, each with a severity and suggested next steps. Deterministic — no model call.',
+      inputSchema: analyzeSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.inspector } },
+    },
+    async ({ input, focus }: z.infer<typeof analyzeSchema>) => {
+      try {
+        const info = await probeMedia(input);
+        const analysis = analyzeMedia(info, focus);
+        return okUi(JSON.stringify(analysis), { analysis });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  registerAppTool(
+    server,
+    'recommend_settings',
+    {
+      title: 'Recommend Settings',
+      description:
+        'Maps a natural-language intent plus the probed media facts onto a concrete, reviewable conversion plan ' +
+        '(convert_media arguments + profile id + rationale + confidence). Deterministic rules-based provider — the ' +
+        'settings are selected from the built-in profiles, never invented.',
+      inputSchema: recommendSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.plan } },
+    },
+    async ({ input, intent, constraints }: z.infer<typeof recommendSchema>) => {
+      try {
+        const info = await probeMedia(input);
+        const request: PlanRequest = {
+          input,
+          intent,
+          facts: extractMediaFacts(info),
+          profiles: BUILTIN_PROFILES,
+          capabilities: capabilitiesOrEmpty(),
+          constraints,
+        };
+        const plan = recommendSettings(request);
+        return okUi(JSON.stringify(plan), { plan });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  registerAppTool(
+    server,
+    'estimate_conversion',
+    {
+      title: 'Estimate Conversion',
+      description:
+        'Estimates the output size and duration of a conversion from the probed duration and the target bitrates, ' +
+        'plus hardware-encoder availability. The result is always an estimate (isEstimated: true), never a measurement.',
+      inputSchema: estimateSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.plan } },
+    },
+    async ({ input, args }: z.infer<typeof estimateSchema>) => {
+      try {
+        const info = await probeMedia(input);
+        const estimate = estimateConversion(args ?? {}, extractMediaFacts(info), capabilitiesOrEmpty());
+        return okUi(JSON.stringify(estimate), { estimate });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'validate_output',
+    {
+      title: 'Validate Output',
+      description:
+        'Re-probes a produced output and checks it against the expectations (size ceiling, resolution, codec, ' +
+        'container, audio/video presence, duration), returning pass/fail per constraint. Use it before claiming a ' +
+        'conversion succeeded.',
+      inputSchema: validateSchema,
+    },
+    async ({ output, expect }: z.infer<typeof validateSchema>) => {
+      try {
+        const info = await probeMedia(output);
+        const validation = validateOutput(info, expect);
+        return ok(JSON.stringify(validation), { validation });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  registerAppTool(
+    server,
+    'compress_to_target',
+    {
+      title: 'Compress To Target',
+      description:
+        'Encodes a file through an ordered ladder of size-target candidates and stops at the first measured output that ' +
+        'fits a hard byte ceiling, returning the winning candidate, every attempt, and the estimates. This is a measured ' +
+        'loop: the result is only claimed once the produced output is re-probed and validated.',
+      inputSchema: compressToTargetSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.lab } },
+    },
+    async (raw: z.infer<typeof compressToTargetSchema>) => runCompressToTarget(raw),
+  );
+
+  server.registerTool(
+    'analyze_folder',
+    {
+      title: 'Analyze Folder',
+      description:
+        'Projects how much disk space a batch re-encode would reclaim across a folder of media, returning a per-file ' +
+        'breakdown and a folder total (the "Media Librarian" savings report). Projections are estimates, not measurements.',
+      inputSchema: analyzeFolderSchema,
+    },
+    async (raw: z.infer<typeof analyzeFolderSchema>) => runAnalyzeFolder(raw),
+  );
+
+  registerAppTool(
+    server,
+    'explain_error',
+    {
+      title: 'Explain Error',
+      description:
+        'Turns an EncodeX error code (or a raw error message / failed job id) into a plain-language explanation ' +
+        'with likely causes and suggested fixes. Deterministic — no model call. Pass jobId to explain a failed job.',
+      inputSchema: explainErrorSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.error } },
+    },
+    async ({ code, message, detail, jobId, input, tool, args }: z.infer<typeof explainErrorSchema>) => {
+      try {
+        let resolvedMessage = message;
+        let resolvedDetail = detail;
+        if (jobId) {
+          const job = jobManager.getJob(jobId);
+          if (job) {
+            resolvedMessage = resolvedMessage ?? job.error ?? `Job ${jobId} failed.`;
+            resolvedDetail = resolvedDetail ?? job.error;
+          }
+        }
+        const explanation = explainError({ code, message: resolvedMessage, detail: resolvedDetail, input, tool, args });
+        return okUi(JSON.stringify(explanation), { error: explanation });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'advise_encoding',
+    {
+      title: 'Advise Encoding',
+      description:
+        'Recommends a target video encoder and whether to use the GPU, based on the probed source and the real ' +
+        'encoder/hwaccel capabilities of this machine, with the trade-offs. Deterministic — no model call.',
+      inputSchema: adviseEncodingSchema,
+    },
+    async ({ input }: z.infer<typeof adviseEncodingSchema>) => {
+      try {
+        const info = await probeMedia(input);
+        const advice = adviseEncoding(extractMediaFacts(info), capabilitiesOrEmpty());
+        return ok(JSON.stringify(advice), { advice });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'quality_report',
+    {
+      title: 'Quality Report',
+      description:
+        'Re-probes a produced output and compares it to its source (resolution, audio, codec, duration), returning ' +
+        'pass/fail checks and plain-language findings. Use it to verify a conversion before claiming success.',
+      inputSchema: qualityReportSchema,
+    },
+    async ({ source, output, expect }: z.infer<typeof qualityReportSchema>) => {
+      try {
+        const sourceInfo = await probeMedia(source);
+        const outputInfo = await probeMedia(output);
+        const report = compareQuality(sourceInfo, outputInfo, expect);
+        return ok(JSON.stringify(report), { report });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'find_similar_media',
+    {
+      title: 'Find Similar Media',
+      description:
+        'Detects duplicate and near-duplicate media across the given files/folders using a perceptual frame hash plus ' +
+        'duration/resolution/size similarity, and clusters them. Method defaults to hash and falls back to metadata ' +
+        'for files whose frames cannot be sampled.',
+      inputSchema: findSimilarMediaSchema,
+    },
+    async ({ inputs, method, threshold, recursive, maxCandidates }: z.infer<typeof findSimilarMediaSchema>) => {
+      try {
+        const chosenMethod = method ?? 'hash';
+        const files = collectMediaPaths(inputs, recursive ?? false, maxCandidates ?? 200);
+        if (files.length === 0) {
+          throw createError(ErrorCode.FILE_NOT_FOUND, 'No media files matched the given inputs.');
+        }
+        const signatures: MediaSignature[] = [];
+        for (const file of files) signatures.push(await buildSignature(file, chosenMethod));
+        const report = clusterSignatures(signatures, threshold === undefined ? {} : { threshold });
+        return ok(JSON.stringify(report), { report });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'transcribe_media',
+    {
+      title: 'Transcribe Media',
+      description:
+        'Transcribes a media file with a local speech-to-text engine (whisper.cpp by default) and returns timed ' +
+        'segments, optionally also formatted as SRT/VTT/ASS. Runs on-device; no media leaves the machine.',
+      inputSchema: transcribeMediaSchema,
+    },
+    async (args: z.infer<typeof transcribeMediaSchema>) => {
+      try {
+        const transcript = await resolveTranscript(args);
+        const transcription: Record<string, unknown> = {
+          input: args.input,
+          engine: transcript.engine,
+          durationSeconds: transcript.durationSeconds,
+          segmentCount: transcript.segments.length,
+          segments: transcript.segments,
+        };
+        if (transcript.language) transcription.language = transcript.language;
+        if (args.format) {
+          transcription.subtitles = formatSubtitles(transcript.segments, args.format as SubtitleFormat);
+          transcription.suggestedOutput = deriveSubtitlePath(args.input, args.format as SubtitleFormat);
+        }
+        return ok(JSON.stringify(transcription), { transcription });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'translate_subtitles',
+    {
+      title: 'Translate Subtitles',
+      description:
+        'Translates subtitles into another language, timing preserved. Provide either a media file (transcribed first) ' +
+        'or an existing segments array. Uses the local model runtime by default (no egress); cloud providers are labeled ' +
+        'and not wired in this release.',
+      inputSchema: translateSubtitlesSchema,
+    },
+    async (args: z.infer<typeof translateSubtitlesSchema>) => {
+      try {
+        if (args.provider && args.provider !== translator.id) {
+          throw createError(
+            ErrorCode.TRANSLATION_UNAVAILABLE,
+            `Translation provider "${args.provider}" is not available in this release (only "${translator.id}").`,
+          );
+        }
+        const source = await resolveTranscript(args);
+        const translationRequest = {
+          segments: source.segments,
+          targetLanguage: args.targetLanguage,
+          ...(args.sourceLanguage ? { sourceLanguage: args.sourceLanguage } : {}),
+        };
+        const translated = await translator.translate(translationRequest);
+        const translation: Record<string, unknown> = {
+          provider: translator.id,
+          targetLanguage: args.targetLanguage,
+          sourceLanguage: source.language ?? args.sourceLanguage,
+          segmentCount: translated.length,
+          segments: translated,
+        };
+        if (args.format) {
+          translation.subtitles = formatSubtitles(translated, args.format as SubtitleFormat);
+        }
+        return ok(JSON.stringify(translation), { translation });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'generate_chapters',
+    {
+      title: 'Generate Chapters',
+      description:
+        'Generates chapters from speech, with YouTube-style timestamps and an optional FFmpeg chapter-metadata ' +
+        'document. Provide either a media file (transcribed first) or an existing segments array. Deterministic.',
+      inputSchema: generateChaptersSchema,
+    },
+    async (args: z.infer<typeof generateChaptersSchema>) => {
+      try {
+        const transcript = await resolveTranscript(args);
+        const chapters = generateChapters(transcript, {
+          ...(args.minChapterSeconds !== undefined ? { minChapterSeconds: args.minChapterSeconds } : {}),
+          ...(args.maxChapterSeconds !== undefined ? { maxChapterSeconds: args.maxChapterSeconds } : {}),
+          ...(args.maxChapters !== undefined ? { maxChapters: args.maxChapters } : {}),
+        });
+        const result: Record<string, unknown> = {
+          chapterCount: chapters.length,
+          youtube: chaptersToYouTube(chapters),
+          chapters,
+        };
+        if (chapters.length > 0) {
+          result.ffmpeg = chaptersToFfmpeg(chapters, transcript.durationSeconds);
+        }
+        return ok(JSON.stringify(result), { result });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'search_transcript',
+    {
+      title: 'Search Transcript',
+      description:
+        'Finds the spoken passage that best answers a query and proposes a clip. Provide either a media file ' +
+        '(transcribed first) or an existing segments array. Returns ranked matches, a best span, and ready-to-use ' +
+        '`cut_video` clip arguments.',
+      inputSchema: searchTranscriptSchema,
+    },
+    async (args: z.infer<typeof searchTranscriptSchema>) => {
+      try {
+        const transcript = await resolveTranscript(args);
+        const result = searchTranscript(transcript.segments, args.query, {
+          ...(args.maxMatches !== undefined ? { maxMatches: args.maxMatches } : {}),
+          ...(args.context !== undefined ? { context: args.context } : {}),
+        });
+        const payload: Record<string, unknown> = {
+          query: result.query,
+          matches: result.matches,
+          ...(result.bestRange ? { bestRange: result.bestRange } : {}),
+        };
+        if (result.bestRange && args.input) {
+          payload.clip = {
+            input: args.input,
+            startTime: result.bestRange.start.toFixed(3),
+            endTime: result.bestRange.end.toFixed(3),
+          };
+        }
+        return ok(JSON.stringify(payload), { result: payload });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'summarize_media',
+    {
+      title: 'Summarize Media',
+      description:
+        'Summarizes what was said in a media file with an extractive summary and a topic list. Provide either a media ' +
+        'file (transcribed first) or an existing segments array. Deterministic — no model call.',
+      inputSchema: summarizeMediaSchema,
+    },
+    async (args: z.infer<typeof summarizeMediaSchema>) => {
+      try {
+        const transcript = await resolveTranscript(args);
+        const result = summarizeTranscript(transcript, {
+          ...(args.maxSentences !== undefined ? { maxSentences: args.maxSentences } : {}),
+          ...(args.maxTopics !== undefined ? { maxTopics: args.maxTopics } : {}),
+        });
+        return ok(JSON.stringify(result), { result });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  registerAppTool(
+    server,
+    'plan_workflow',
+    {
+      title: 'Plan Workflow',
+      description:
+        'Validates a typed workflow DAG and returns a dry-run: the execution order, per-step dependencies and ' +
+        'references, and any validation issues. Nothing runs. Deterministic — no model call.',
+      inputSchema: workflowSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.workflow } },
+    },
+    async (args: z.infer<typeof workflowSchema>) => {
+      const plan = planWorkflow(args);
+      return okUi(JSON.stringify(plan), { plan });
+    },
+  );
+
+  registerAppTool(
+    server,
+    'execute_workflow',
+    {
+      title: 'Execute Workflow',
+      description:
+        'Runs a typed workflow DAG: each step runs in dependency order and later steps can consume earlier outputs ' +
+        'with {{<stepId>.output}}. Stops at the first failing step and reports what completed. ' +
+        'When the client renders MCP Apps the workflow is proposed in the app and only starts once the user confirms ' +
+        'it; in other clients it starts immediately. Returns a per-step report with job ids and output paths.',
+      inputSchema: workflowSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.workflow } },
+    },
+    async (args: z.infer<typeof workflowSchema>) => runWorkflow(args, shouldConfirm()),
+  );
+
   server.registerTool(
     'list_capabilities',
     {
@@ -518,7 +2346,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     },
     async () => {
       const caps = getEncoderCapabilities();
-      return ok(JSON.stringify(caps));
+      return ok(JSON.stringify(caps), { capabilities: caps });
     },
   );
 
@@ -529,7 +2357,10 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       description: 'Lists the built-in conversion profiles (id, name, category, container, codecs, presets).',
       inputSchema: z.object({}),
     },
-    async () => ok(JSON.stringify(BUILTIN_PROFILES.map((p) => profileToJson(p)))),
+    async () => {
+      const profiles = BUILTIN_PROFILES.map((p) => profileToJson(p));
+      return ok(JSON.stringify(profiles), { profiles });
+    },
   );
 
   server.registerTool(
@@ -544,120 +2375,77 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       if (!profile) {
         return fail(createError(ErrorCode.UNKNOWN, `Profile not found: ${profileId}`));
       }
-      return ok(JSON.stringify(profileToJson(profile)));
+      const json = profileToJson(profile);
+      return ok(JSON.stringify(json), { profile: json });
     },
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'compress_image',
     {
       title: 'Compress Image',
       description:
         'Lossily compress an image (re-encode to jpg/png/webp/gif/bmp/tiff). ' +
-        'Returns a job id immediately; poll with get_job / list_jobs.',
+        'When the client renders MCP Apps the compression is proposed in the app and only starts once the user ' +
+        'confirms it; in other clients it starts immediately. ' +
+        'Returns a job id; poll with get_job / list_jobs.',
       inputSchema: compressSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('compress_image') } },
     },
-    async (args: z.infer<typeof compressSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        const fields: MCPCompressFields = { ...args };
-        const plan = buildCompressPlan(args.input, fields);
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
-        return ok(JSON.stringify({ ...enqueueResponse(job, transcoder), format: plan.format }));
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof compressSchema>) => runCompress(args, shouldConfirm()),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'extract_audio',
     {
       title: 'Extract Audio',
       description:
         'Extract the audio track from a media file, dropping the video stream. ' +
-        'Returns a job id immediately; poll with get_job / list_jobs.',
+        'When the client renders MCP Apps the extraction is proposed in the app and only starts once the user ' +
+        'confirms it; in other clients it starts immediately. ' +
+        'Returns a job id; poll with get_job / list_jobs.',
       inputSchema: extractSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('extract_audio') } },
     },
-    async (args: z.infer<typeof extractSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        const fields: MCPExtractAudioFields = { ...args };
-        const plan = buildExtractAudioPlan(args.input, fields);
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
-        return ok(JSON.stringify({ ...enqueueResponse(job, transcoder), audioCodec: plan.audioCodec, extension: plan.ext }));
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof extractSchema>) => runExtract(args, shouldConfirm()),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'cut_video',
     {
       title: 'Cut Video',
       description:
         'Cut (trim) a video by start/end time or duration. Defaults to lossless stream copy. ' +
-        'Returns a job id immediately; poll with get_job / list_jobs.',
+        'When the client renders MCP Apps the cut is proposed in the app and only starts once the user confirms it; ' +
+        'in other clients it starts immediately. ' +
+        'Returns a job id; poll with get_job / list_jobs.',
       inputSchema: cutSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('cut_video') } },
     },
-    async (args: z.infer<typeof cutSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        const fields: MCPCutFields = { ...args };
-        const plan = buildCutPlan(args.input, fields);
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
-        return ok(JSON.stringify(enqueueResponse(job, transcoder)));
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof cutSchema>) => runCut(args, shouldConfirm()),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'batch_convert',
     {
       title: 'Batch Convert',
       description:
         'Queue conversions for multiple files (paths, directories, or glob patterns) sharing the same options. ' +
-        'Returns a job id per input immediately; poll with get_job / list_jobs and cancel with cancel_job.',
+        'When the client renders MCP Apps the batch is proposed in the app and only starts once the user confirms it; ' +
+        'in other clients it starts immediately. ' +
+        'Returns a job id per input; poll with get_job / list_jobs and cancel with cancel_job.',
       inputSchema: batchSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('batch_convert') } },
     },
-    async (args: z.infer<typeof batchSchema>) => {
-      try {
-        const fields: MCPConversionFields = { ...args };
-        const { jobs } = buildBatchPlan(args.inputs, fields, args.outputDir, args.suffix);
-        if (jobs.length === 0) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `No input files matched: ${args.inputs.join(', ')}`);
-        }
-        if (args.outputDir) {
-          fs.mkdirSync(args.outputDir, { recursive: true });
-        }
-        if (args.concurrency !== undefined) {
-          jobManager.setConcurrency(args.concurrency);
-        }
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const queued = jobs.map((job) => {
-          const running = jobManager.enqueue(job.input, job.output, job.options, transcoder);
-          return { file: job.input, output: job.output, jobId: running.id, status: running.status };
-        });
-        return ok(JSON.stringify({ total: queued.length, jobs: queued }));
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof batchSchema>) => runBatch(args, shouldConfirm()),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'remux_media',
     {
       title: 'Remux Media',
@@ -666,42 +2454,17 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         'cover art, or chapters without re-encoding. The source is probed first so the default selection is every ' +
         'stream, and a stream the target container cannot store is rejected up front. Passing videoFilters is the one ' +
         'exception to the lossless copy: the video is then re-encoded with the filter chain. ' +
-        'Returns a job id immediately; poll with get_job / list_jobs.',
+        'When the client renders MCP Apps the remux is proposed in the app and only starts once the user confirms it; ' +
+        'in other clients it starts immediately. ' +
+        'Returns a job id; poll with get_job / list_jobs.',
       inputSchema: remuxSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('remux_media') } },
     },
-    async (args: z.infer<typeof remuxSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        const chaptersFile = args.chapters && typeof args.chapters === 'object' ? args.chapters.file : undefined;
-        assertMcpAuxiliaryInputsExist([
-          ...(args.addSubtitle ?? []).map((entry) => entry.file),
-          ...(args.addAudio ?? []).map((entry) => entry.file),
-          ...(args.thumbnail ? [args.thumbnail.file] : []),
-          ...(chaptersFile ? [chaptersFile] : []),
-        ]);
-
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const fields: MCPRemuxFields = { ...args };
-        const info = await transcoderFactory(transcoder).getInfo(args.input);
-        const plan = buildRemuxPlan(args.input, fields, info.streams ?? []);
-        const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
-        return ok(
-          JSON.stringify({
-            ...enqueueResponse(job, transcoder),
-            container: plan.container,
-            map: plan.options.map ?? [],
-            warnings: plan.warnings.map((finding) => finding.code ?? finding.message),
-          }),
-        );
-      } catch (err) {
-        return fail(err);
-      }
-    },
+    async (args: z.infer<typeof remuxSchema>) => runRemux(args, shouldConfirm()),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'demux_media',
     {
       title: 'Demux Media',
@@ -709,43 +2472,49 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         'Split a media file into per-stream outputs (video, audio, subtitles), optionally re-encoding each kind ' +
         '(videoContainer / audioCodec / subtitleCodec, plus videoFilters on a re-encoded video stream). The source is ' +
         'probed first; cover-art video streams are skipped. ' +
-        'Returns one job id per extracted stream immediately; poll with get_job / list_jobs.',
+        'When the client renders MCP Apps the demux is proposed in the app and only starts once the user confirms it; ' +
+        'in other clients it starts immediately. ' +
+        'Returns one job id per extracted stream; poll with get_job / list_jobs.',
       inputSchema: demuxSchema,
+      _meta: { ui: { resourceUri: confirmationViewUri('demux_media') } },
     },
-    async (args: z.infer<typeof demuxSchema>) => {
-      try {
-        if (!fs.existsSync(args.input)) {
-          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
-        }
-        if (args.outputDir) {
-          fs.mkdirSync(args.outputDir, { recursive: true });
-        }
-        const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
-        const fields: MCPDemuxFields = { ...args };
-        const info = await transcoderFactory(transcoder).getInfo(args.input);
-        const plan = buildDemuxPlan(args.input, fields, info.streams ?? []);
-        const queued = plan.targets.map((target) => {
-          const job = jobManager.enqueue(args.input, target.output, buildDemuxJobOptions(target), transcoder);
-          return {
-            kind: target.kind,
-            streamIndex: target.index,
-            copy: target.copy,
-            codec: target.codec,
-            output: job.output,
-            jobId: job.id,
-            status: job.status,
-          };
-        });
-        return ok(
-          JSON.stringify({
-            total: queued.length,
-            transcoder,
-            jobs: queued,
-            warnings: plan.warnings.map((finding) => finding.code ?? finding.message),
-          }),
-        );
-      } catch (err) {
-        return fail(err);
+    async (args: z.infer<typeof demuxSchema>) => runDemux(args, shouldConfirm()),
+  );
+
+  registerAppTool(
+    server,
+    COMMIT_OPERATION_TOOL,
+    {
+      title: 'Commit Operation',
+      description:
+        'App-only. Runs a mutating EncodeX operation after the user confirmed it in the app UI. ' +
+        'The model cannot call this tool; only the confirmation view can.',
+      inputSchema: z.object({
+        tool: z.enum(CONFIRMABLE_OPERATIONS).describe('The mutating operation the user confirmed.'),
+        args: z.record(z.string(), z.unknown()).describe('The exact arguments from the confirmed proposal.'),
+      }),
+      _meta: { ui: { visibility: ['app'] } },
+    },
+    async ({ tool, args }) => {
+      switch (tool) {
+        case 'convert_media':
+          return runConvert(args, false);
+        case 'compress_image':
+          return runCompress(args, false);
+        case 'extract_audio':
+          return runExtract(args, false);
+        case 'cut_video':
+          return runCut(args, false);
+        case 'batch_convert':
+          return runBatch(args, false);
+        case 'remux_media':
+          return runRemux(args, false);
+        case 'demux_media':
+          return runDemux(args, false);
+        case 'execute_workflow':
+          return runWorkflow(args, false);
+        default:
+          return fail(createError(ErrorCode.UNKNOWN, `Unknown operation: ${String(tool)}`));
       }
     },
   );

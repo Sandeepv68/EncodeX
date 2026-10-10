@@ -27,6 +27,7 @@ import {
   PendingInstall,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
+import type { AuditEntry } from '../shared/audit';
 
 /**
  * The bridge API exposed to the renderer as `window.electronAPI`.
@@ -578,6 +579,14 @@ export interface ElectronAPI {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onLogMessage(cb: (entry: LogEntry) => void): () => void;
+  /**
+   * Subscribes to the mutating-operation audit stream, pushed from the main
+   * process over `IPC.AUDIT_ENTRY` ('audit-entry'). Each record names the tool
+   * that ran, its safety tier, an argument digest, and the result.
+   * @param {(entry: AuditEntry) => void} cb - Callback invoked for each audit record.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onAuditEntry(cb: (entry: AuditEntry) => void): () => void;
   checkForUpdates(): Promise<void>;
   downloadUpdate(): Promise<void>;
   installUpdate(installerPath: string): Promise<void>;

@@ -12,6 +12,13 @@ import { QUEUE_VIEW_HTML } from './views/queue';
 import { JOB_VIEW_HTML } from './views/job';
 import { MEDIA_INFO_VIEW_HTML } from './views/media-info';
 import { CONVERT_VIEW_HTML } from './views/convert';
+import { CONFIRM_VIEW_HTML } from './views/confirm';
+import { INSPECTOR_VIEW_HTML } from './views/inspector';
+import { PLAN_VIEW_HTML } from './views/plan';
+import { LAB_VIEW_HTML } from './views/lab';
+import { ERROR_VIEW_HTML } from './views/error';
+import { BATCH_VIEW_HTML } from './views/batch';
+import { WORKFLOW_VIEW_HTML } from './views/workflow';
 
 /**
  * One servable MCP App view.
@@ -55,8 +62,50 @@ export const MCP_UI_VIEWS: McpUiView[] = [
   {
     id: 'EncodeX convert view',
     uri: MCP_UI_VIEW_URIS.convert,
-    description: 'Conversion setup form that starts a job and tracks its progress.',
+    description: 'Setup form for a conversion, pre-filled from a model proposal and tracked live.',
     html: () => CONVERT_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX confirm view',
+    uri: MCP_UI_VIEW_URIS.confirm,
+    description: 'Confirmation card for a proposed operation; runs it only when the user approves.',
+    html: () => CONFIRM_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX inspector view',
+    uri: MCP_UI_VIEW_URIS.inspector,
+    description: 'Plain-language media diagnosis: key facts, findings by severity, and next steps.',
+    html: () => INSPECTOR_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX plan view',
+    uri: MCP_UI_VIEW_URIS.plan,
+    description: 'Conversion plan (settings + rationale) and output size estimate for review.',
+    html: () => PLAN_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX lab view',
+    uri: MCP_UI_VIEW_URIS.lab,
+    description: 'Measured size-target compression: candidate ladder, every attempt, and the best measured fit.',
+    html: () => LAB_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX error view',
+    uri: MCP_UI_VIEW_URIS.error,
+    description: 'Plain-language error explanation with likely causes and one-click fixes.',
+    html: () => ERROR_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX batch view',
+    uri: MCP_UI_VIEW_URIS.batch,
+    description: 'Batch confirmation plus a live per-file dashboard over the shared job queue.',
+    html: () => BATCH_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX workflow view',
+    uri: MCP_UI_VIEW_URIS.workflow,
+    description: 'Typed workflow dry-run (ordered steps and dependencies) and its per-step execution report.',
+    html: () => WORKFLOW_VIEW_HTML,
   },
 ];
 

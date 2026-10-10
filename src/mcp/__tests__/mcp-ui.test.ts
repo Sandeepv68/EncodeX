@@ -9,6 +9,9 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { createMcpServer } from '../server';
@@ -28,15 +31,30 @@ interface UiSession {
 }
 
 /**
+ * Creates a throwaway media file so mutating tools pass their existence guard.
+ * @returns {string} Absolute path to a temporary file.
+ */
+function tempMediaFile(): string {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-ui-'));
+  const file = path.join(dir, 'clip.mp4');
+  fs.writeFileSync(file, 'not-a-real-video');
+  return file;
+}
+
+/**
  * Builds a server with fake transcoders and connects a client over a linked
  * in-memory transport pair.
+ * @param {{ uiCapable?: boolean }} [options] - Whether the client advertises MCP Apps.
  * @returns {Promise<UiSession>} The connected session.
  */
-async function connect(): Promise<UiSession> {
+async function connect(options: { uiCapable?: boolean } = {}): Promise<UiSession> {
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   const server = createMcpServer({ transcoderFactory: () => new FakeTranscoder() });
   await server.connect(serverTransport);
-  const client = new Client({ name: 'mcp-ui-test-client', version: '1.0.0' });
+  const client = new Client(
+    { name: 'mcp-ui-test-client', version: '1.0.0' },
+    options.uiCapable ? { capabilities: { extensions: { [MCP_UI_EXTENSION_ID]: { mimeTypes: [MCP_UI_RESOURCE_MIME_TYPE] } } } } : undefined,
+  );
   await client.connect(clientTransport);
   return { client, close: () => client.close() };
 }
@@ -46,7 +64,9 @@ describe('MCP Apps server surface', () => {
     const session = await connect();
     try {
       const capabilities = session.client.getServerCapabilities();
-      expect(capabilities?.extensions).toHaveProperty(MCP_UI_EXTENSION_ID);
+      const uiCapability = capabilities?.extensions?.[MCP_UI_EXTENSION_ID] as { mimeTypes?: string[] } | undefined;
+      expect(uiCapability).toBeDefined();
+      expect(uiCapability?.mimeTypes).toContain(MCP_UI_RESOURCE_MIME_TYPE);
     } finally {
       await session.close();
     }
@@ -56,10 +76,57 @@ describe('MCP Apps server surface', () => {
     const session = await connect();
     try {
       const { resources } = await session.client.listResources();
-      for (const uri of [MCP_UI_VIEW_URIS.queue, MCP_UI_VIEW_URIS.job, MCP_UI_VIEW_URIS.mediaInfo, MCP_UI_VIEW_URIS.convert]) {
+      for (const uri of [
+        MCP_UI_VIEW_URIS.queue,
+        MCP_UI_VIEW_URIS.job,
+        MCP_UI_VIEW_URIS.mediaInfo,
+        MCP_UI_VIEW_URIS.convert,
+        MCP_UI_VIEW_URIS.confirm,
+        MCP_UI_VIEW_URIS.inspector,
+        MCP_UI_VIEW_URIS.plan,
+        MCP_UI_VIEW_URIS.lab,
+        MCP_UI_VIEW_URIS.error,
+        MCP_UI_VIEW_URIS.batch,
+        MCP_UI_VIEW_URIS.workflow,
+      ]) {
         const view = resources.find((resource) => resource.uri === uri);
         expect(view, `missing view ${uri}`).toBeDefined();
         expect(view?.mimeType).toBe(MCP_UI_RESOURCE_MIME_TYPE);
+      }
+    } finally {
+      await session.close();
+    }
+  });
+
+  it('declares restrictive CSP metadata on every view resource (listing)', async () => {
+    const session = await connect();
+    try {
+      const { resources } = await session.client.listResources();
+      for (const uri of MCP_UI_VIEWS.map((view) => view.uri)) {
+        const view = resources.find((resource) => resource.uri === uri);
+        const meta = view?._meta as { ui?: { csp?: Record<string, unknown> } } | undefined;
+        expect(meta?.ui?.csp, `${uri} ui.csp`).toBeDefined();
+        for (const directive of ['connectDomains', 'resourceDomains', 'frameDomains', 'baseUriDomains']) {
+          expect(meta?.ui?.csp?.[directive], `${uri} csp.${directive}`).toEqual([]);
+        }
+      }
+    } finally {
+      await session.close();
+    }
+  });
+
+  it('declares restrictive CSP metadata on every read view content item', async () => {
+    const session = await connect();
+    try {
+      for (const uri of MCP_UI_VIEWS.map((view) => view.uri)) {
+        const result = await session.client.readResource({ uri });
+        const first = result.contents[0] as { _meta?: { ui?: { csp?: Record<string, unknown> } } };
+        const csp = first._meta?.ui?.csp;
+        expect(csp, `${uri} content ui.csp`).toBeDefined();
+        expect(csp?.connectDomains).toEqual([]);
+        expect(csp?.resourceDomains).toEqual([]);
+        expect(csp?.frameDomains).toEqual([]);
+        expect(csp?.baseUriDomains).toEqual([]);
       }
     } finally {
       await session.close();
@@ -86,7 +153,19 @@ describe('MCP Apps server surface', () => {
   it('serves every view self-contained and within the size budget', async () => {
     const session = await connect();
     try {
-      for (const uri of [MCP_UI_VIEW_URIS.queue, MCP_UI_VIEW_URIS.job, MCP_UI_VIEW_URIS.mediaInfo, MCP_UI_VIEW_URIS.convert]) {
+      for (const uri of [
+        MCP_UI_VIEW_URIS.queue,
+        MCP_UI_VIEW_URIS.job,
+        MCP_UI_VIEW_URIS.mediaInfo,
+        MCP_UI_VIEW_URIS.convert,
+        MCP_UI_VIEW_URIS.confirm,
+        MCP_UI_VIEW_URIS.inspector,
+        MCP_UI_VIEW_URIS.plan,
+        MCP_UI_VIEW_URIS.lab,
+        MCP_UI_VIEW_URIS.error,
+        MCP_UI_VIEW_URIS.batch,
+        MCP_UI_VIEW_URIS.workflow,
+      ]) {
         const result = await session.client.readResource({ uri });
         const html = (result.contents[0] as { text?: string }).text ?? '';
         expect(html.length, `${uri} size budget`).toBeLessThan(100_000);
@@ -94,6 +173,42 @@ describe('MCP Apps server surface', () => {
         expect(html).not.toMatch(/<script\b[^>]*\bsrc=/i);
         expect(html).not.toMatch(/<link\b[^>]*\bstylesheet/i);
       }
+    } finally {
+      await session.close();
+    }
+  });
+
+  it('proposes mutating operations instead of running them for MCP Apps clients', async () => {
+    const input = tempMediaFile();
+    const session = await connect({ uiCapable: true });
+    try {
+      const { tools } = await session.client.listTools();
+      const commit = tools.find((tool) => tool.name === 'commit_operation');
+      expect(commit).toBeDefined();
+      const meta = commit?._meta as { ui?: { visibility?: string[] } } | undefined;
+      expect(meta?.ui?.visibility).toEqual(['app']);
+
+      const result = await session.client.callTool({ name: 'convert_media', arguments: { input } });
+      const structured = (result as { structuredContent?: { confirmation?: { operation?: string; args?: Record<string, unknown> } } })
+        .structuredContent;
+      expect(structured?.confirmation?.operation).toBe('convert_media');
+      expect(structured?.confirmation?.args?.input).toBe(input);
+
+      const jobs = await session.client.callTool({ name: 'list_jobs', arguments: {} });
+      expect((jobs as { structuredContent?: { count?: number } }).structuredContent?.count).toBe(0);
+    } finally {
+      await session.close();
+    }
+  });
+
+  it('runs mutating operations immediately for plain clients (headless fallback)', async () => {
+    const input = tempMediaFile();
+    const session = await connect();
+    try {
+      const result = await session.client.callTool({ name: 'convert_media', arguments: { input } });
+      const structured = (result as { structuredContent?: { job?: { id?: string }; confirmation?: unknown } }).structuredContent;
+      expect(structured?.confirmation).toBeUndefined();
+      expect(structured?.job?.id).toBeTruthy();
     } finally {
       await session.close();
     }
@@ -129,6 +244,14 @@ describe('MCP Apps server surface', () => {
         get_job: MCP_UI_VIEW_URIS.job,
         convert_media: MCP_UI_VIEW_URIS.convert,
         get_media_info: MCP_UI_VIEW_URIS.mediaInfo,
+        analyze_media: MCP_UI_VIEW_URIS.inspector,
+        recommend_settings: MCP_UI_VIEW_URIS.plan,
+        estimate_conversion: MCP_UI_VIEW_URIS.plan,
+        compress_to_target: MCP_UI_VIEW_URIS.lab,
+        explain_error: MCP_UI_VIEW_URIS.error,
+        batch_convert: MCP_UI_VIEW_URIS.batch,
+        plan_workflow: MCP_UI_VIEW_URIS.workflow,
+        execute_workflow: MCP_UI_VIEW_URIS.workflow,
       };
       for (const [name, uri] of Object.entries(expected)) {
         const tool = tools.find((candidate) => candidate.name === name);
@@ -172,9 +295,12 @@ describe('supportsMcpUi', () => {
     expect(supportsMcpUi({ mimeTypes: [MCP_UI_RESOURCE_MIME_TYPE] })).toBe(true);
   });
 
-  it('rejects capabilities without the MCP App MIME type', () => {
+  it('treats a bare extension object as support (matches the reference helper)', () => {
+    expect(supportsMcpUi({})).toBe(true);
+  });
+
+  it('rejects capabilities whose mimeTypes omit the MCP App MIME type', () => {
     expect(supportsMcpUi({ mimeTypes: ['text/html'] })).toBe(false);
-    expect(supportsMcpUi({})).toBe(false);
   });
 
   it('rejects non-object capabilities', () => {

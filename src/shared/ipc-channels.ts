@@ -71,6 +71,7 @@
  *   within the QUEUED subsequence.
  * @property {string} PLAYER_FRAME - Push a decoded frame to the renderer player.
  * @property {string} LOG_MESSAGE - Forward a log entry to the renderer.
+ * @property {string} AUDIT_ENTRY - Forward a mutating-operation audit record to the renderer.
  * @property {string} CHECK_FOR_UPDATES - Start an update check.
  * @property {string} DOWNLOAD_UPDATE - Download the matched update asset.
  * @property {string} INSTALL_UPDATE - Launch the downloaded installer and quit.
@@ -154,6 +155,7 @@ export const IPC = {
   QUEUE_MOVED: 'queue-moved',
   PLAYER_FRAME: 'player-frame',
   LOG_MESSAGE: 'log-message',
+  AUDIT_ENTRY: 'audit-entry',
 
   CHECK_FOR_UPDATES: 'check-for-updates',
   DOWNLOAD_UPDATE: 'download-update',

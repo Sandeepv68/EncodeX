@@ -38,10 +38,42 @@ const CORE_TOOLS = [
   'batch_convert',
   'remux_media',
   'demux_media',
+  'commit_operation',
+  'analyze_media',
+  'recommend_settings',
+  'estimate_conversion',
+  'validate_output',
+  'compress_to_target',
+  'analyze_folder',
+  'explain_error',
+  'advise_encoding',
+  'quality_report',
+  'find_similar_media',
+  'transcribe_media',
+  'translate_subtitles',
+  'generate_chapters',
+  'search_transcript',
+  'summarize_media',
+  'plan_workflow',
+  'execute_workflow',
 ];
 const GUI_TOOLS = ['get_queue_state', 'cancel_all_jobs', 'get_timeline', 'extract_preview', 'get_system_info', 'check_for_updates'];
 const ALL_TOOLS = [...CORE_TOOLS, ...GUI_TOOLS];
 const RESOURCE_URIS = ['encodex://profiles', 'encodex://capabilities', 'encodex://codecs'];
+const VIEW_URIS = [
+  'ui://encodex/queue',
+  'ui://encodex/job',
+  'ui://encodex/media-info',
+  'ui://encodex/convert',
+  'ui://encodex/confirm',
+  'ui://encodex/inspector',
+  'ui://encodex/plan',
+  'ui://encodex/lab',
+  'ui://encodex/error',
+  'ui://encodex/batch',
+  'ui://encodex/workflow',
+];
+const ALL_RESOURCE_URIS = [...RESOURCE_URIS, ...VIEW_URIS];
 const PROMPT_NAMES = ['convert-video', 'extract-audio', 'compress-image', 'batch-convert'];
 
 let section = 'setup';
@@ -287,8 +319,8 @@ async function validateVscodeConfig() {
     return { url: 'http://127.0.0.1:8765/mcp', port: 8765, token: '' };
   }
   const hasServer = await check('defines the "encodex" server with type "http"', () => {
-    const server = raw.servers && raw.servers.encodex;
-    assert(server, 'servers.encodex is missing');
+    const server = raw.servers && (raw.servers.encodex || raw.servers['encodex-gui']);
+    assert(server, 'servers.encodex (or servers["encodex-gui"]) is missing');
     assert(server.type === 'http', `type is "${server.type}", expected "http"`);
     assert(typeof server.url === 'string', 'server.url is missing');
   });
@@ -296,9 +328,10 @@ async function validateVscodeConfig() {
     warn('falling back to the default endpoint http://127.0.0.1:8765/mcp');
     return { url: 'http://127.0.0.1:8765/mcp', port: 8765, token: '' };
   }
+  const serverConfig = raw.servers.encodex || raw.servers['encodex-gui'];
   let endpoint = null;
   await check('endpoint is a loopback /mcp URL on a valid port', () => {
-    const url = new URL(raw.servers.encodex.url);
+    const url = new URL(serverConfig.url);
     assert(['127.0.0.1', 'localhost', '::1'].includes(url.hostname), `hostname ${url.hostname} is not loopback`);
     assert(url.pathname === '/mcp', `path ${url.pathname} does not match the server route /mcp`);
     const port = Number(url.port || (url.protocol === 'https:' ? 443 : 80));
@@ -310,7 +343,7 @@ async function validateVscodeConfig() {
     return { url: 'http://127.0.0.1:8765/mcp', port: 8765, token: '' };
   }
   await check('Authorization header (if any) carries a bearer token', () => {
-    const auth = raw.servers.encodex.headers && raw.servers.encodex.headers.Authorization;
+    const auth = serverConfig.headers && serverConfig.headers.Authorization;
     if (auth === undefined) return;
     assert(/^Bearer\s+\S+$/i.test(String(auth)), `malformed Authorization header: ${auth}`);
     endpoint.token = String(auth).replace(/^Bearer\s+/i, '');
@@ -542,12 +575,13 @@ async function runCoreSuite(client, fx, { expectedTools, mode, outDir }) {
 }
 
 async function runResourcesAndPrompts(client) {
-  await check('resources list/read serve the three encodex:// documents', async () => {
+  await check('resources list/read serve every documented resource', async () => {
     const { resources } = await client.listResources();
     const uris = resources.map((resource) => resource.uri).sort();
-    assert(JSON.stringify(uris) === JSON.stringify([...RESOURCE_URIS].sort()), `got ${uris.join(', ')}`);
+    assert(JSON.stringify(uris) === JSON.stringify([...ALL_RESOURCE_URIS].sort()), `got ${uris.join(', ')}`);
     for (const resource of resources) {
-      assert(resource.mimeType === 'application/json', `${resource.uri} mime ${resource.mimeType}`);
+      const expectedMime = VIEW_URIS.includes(resource.uri) ? 'text/html;profile=mcp-app' : 'application/json';
+      assert(resource.mimeType === expectedMime, `${resource.uri} mime ${resource.mimeType}`);
     }
     for (const uri of RESOURCE_URIS) {
       const { contents } = await client.readResource({ uri });

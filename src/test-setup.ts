@@ -181,6 +181,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     onPlayerFrame: vi.fn(() => vi.fn()),
     onPlayerAudio: vi.fn(() => vi.fn()),
     onLogMessage: vi.fn(() => vi.fn()),
+    onAuditEntry: vi.fn(() => vi.fn()),
     checkForUpdates: vi.fn().mockResolvedValue(undefined),
     downloadUpdate: vi.fn().mockResolvedValue(undefined),
     installUpdate: vi.fn().mockResolvedValue(undefined),

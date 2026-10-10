@@ -3,7 +3,7 @@
  * (`node dist/mcp/index.js`).
  *
  * Spawns the real server as a child process, opens a session through the MCP
- * SDK, and exercises every one of the 15 core tools with real ffmpeg fixtures.
+ * SDK, and exercises every one of the 16 core tools with real ffmpeg fixtures.
  * Assertions mirror the unit-visible behaviour in `scripts/mcp-full-test.mjs`
  * but are split into individual `it` blocks so a regression names the exact
  * tool. Heavy conversions carry an explicit per-test timeout (the default

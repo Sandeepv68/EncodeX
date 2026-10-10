@@ -57,6 +57,7 @@ import { IPC } from '../shared/ipc-channels';
 import {
   isBoolean,
   isConversionProgressEvent,
+  isAuditEntry,
   isLogEntry,
   isPlayerAudioChunk,
   isPlayerFrame,
@@ -86,6 +87,7 @@ import {
   PendingInstall,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
+import type { AuditEntry } from '../shared/audit';
 import {
   LOG_ARROW,
   LOG_CANCEL_CONVERSION_CALLED,
@@ -1304,6 +1306,34 @@ const api = {
     };
     ipcRenderer.on(IPC.LOG_MESSAGE, handler);
     return () => ipcRenderer.removeListener(IPC.LOG_MESSAGE, handler);
+  },
+
+  /**
+   * Subscribes to the mutating-operation audit stream, pushed over
+   * `IPC.AUDIT_ENTRY` ('audit-entry'). Each entry records the tool that ran,
+   * its safety tier, a digest of its arguments, and whether it was accepted -
+   * so the renderer can show an audit trail without any Electron in the MCP
+   * server layer.
+   *
+   * @param {(entry: AuditEntry) => void} cb - Callback invoked for each audit entry.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onAuditEntry: (cb: (entry: AuditEntry) => void) => {
+    const handler = (_event: IpcRendererEvent, entry: unknown) => {
+      if (!isAuditEntry(entry)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.AUDIT_ENTRY,
+          observed: typeof entry,
+        });
+        return;
+      }
+      cb(entry);
+    };
+    ipcRenderer.on(IPC.AUDIT_ENTRY, handler);
+    return () => ipcRenderer.removeListener(IPC.AUDIT_ENTRY, handler);
   },
 
   checkForUpdates: () => {

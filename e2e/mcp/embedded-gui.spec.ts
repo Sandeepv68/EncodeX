@@ -51,7 +51,7 @@ describe.runIf(IS_REAL && HAS_MEDIA)('MCP embedded GUI server (e2e, real tier)',
     }
   });
 
-  it('handshake advertises tools, resources, prompts and all 21 tools', async () => {
+  it('handshake advertises tools, resources, prompts and all 22 tools', async () => {
     await assertToolSurface(handle, ALL_TOOLS);
   });
 

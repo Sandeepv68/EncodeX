@@ -132,6 +132,7 @@ const SUBSCRIBERS: readonly string[] = [
   'onPlayerAudio',
   'onPlayerError',
   'onLogMessage',
+  'onAuditEntry',
   'onUpdateAvailable',
   'onUpdateNotAvailable',
   'onUpdateProgress',

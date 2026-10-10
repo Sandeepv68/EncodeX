@@ -310,6 +310,7 @@ const api = {
   onPlayerFrame: (cb) => subscribe('player-frame', cb),
   onPlayerAudio: (cb) => subscribe('player-audio', cb),
   onLogMessage: (cb) => subscribe('log-message', cb),
+  onAuditEntry: (cb) => subscribe('audit-entry', cb),
 
   // --- Update manager ----------------------------------------------------------
   checkForUpdates: () => Promise.resolve(),

@@ -40,6 +40,7 @@ import { deriveOutputPath, getInputExtension, expandInputs } from '../main/cli/c
 import type { ConversionOptions, MediaStreamInfo, RemuxInput } from '../shared/types';
 import { buildConversionOptions } from './conversion-options';
 import type { MCPConversionFields } from './conversion-options';
+import { assertSafeExtraArgs, MAX_BATCH_FILES } from './safety';
 
 /**
  * Fields accepted by the `compress_image` MCP tool, mirroring
@@ -191,7 +192,10 @@ export function buildCutPlan(input: string, fields: MCPCutFields): CutPlan {
   if (fields.endTime) options.endTime = fields.endTime;
   if (fields.duration) options.duration = fields.duration;
   if (fields.audio === false) options.audio = false;
-  if (fields.extraArgs?.length) options.extraArgs = fields.extraArgs;
+  if (fields.extraArgs?.length) {
+    assertSafeExtraArgs(fields.extraArgs);
+    options.extraArgs = fields.extraArgs;
+  }
   const output = fields.output ?? deriveOutputPath(input, { suffix: '_cut', outputExt: getInputExtension(input) });
   return { options, output };
 }
@@ -246,6 +250,12 @@ function batchOutputExtension(file: string, options: ConversionOptions): string 
  */
 export function buildBatchPlan(inputs: string[], fields: MCPConversionFields, outputDir?: string, suffix?: string): BatchPlan {
   const files = expandInputs(inputs);
+  if (files.length > MAX_BATCH_FILES) {
+    throw createError(
+      ErrorCode.UNSAFE_ARGUMENTS,
+      `Batch matches ${files.length} files, over the ${MAX_BATCH_FILES}-file cap. Narrow the inputs.`,
+    );
+  }
   const options = buildConversionOptions(fields);
   const effectiveSuffix = suffix ?? DEFAULT_SUFFIX;
   const jobs = files.map((file) => {

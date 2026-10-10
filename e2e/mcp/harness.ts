@@ -54,7 +54,7 @@ const MCP_SETTINGS_FILENAME = 'mcp-settings.json';
  */
 export const VSCODE_MCP_FIXTURE_PATH = path.join(__dirname, 'fixtures', 'vscode-mcp.json');
 
-/** The 15 tools registered by the core MCP server (`src/mcp/server.ts`). @const {string[]} */
+/** The 33 tools registered by the core MCP server (`src/mcp/server.ts`); `commit_operation` is app-only. @const {string[]} */
 export const CORE_TOOLS = [
   'ping',
   'convert_media',
@@ -71,6 +71,24 @@ export const CORE_TOOLS = [
   'batch_convert',
   'remux_media',
   'demux_media',
+  'commit_operation',
+  'analyze_media',
+  'recommend_settings',
+  'estimate_conversion',
+  'validate_output',
+  'compress_to_target',
+  'analyze_folder',
+  'explain_error',
+  'advise_encoding',
+  'quality_report',
+  'find_similar_media',
+  'transcribe_media',
+  'translate_subtitles',
+  'generate_chapters',
+  'search_transcript',
+  'summarize_media',
+  'plan_workflow',
+  'execute_workflow',
 ];
 
 /** The 6 GUI-parity tools registered only on the embedded server. @const {string[]} */
@@ -88,6 +106,13 @@ export const RESOURCE_URIS = [
   'ui://encodex/job',
   'ui://encodex/media-info',
   'ui://encodex/convert',
+  'ui://encodex/confirm',
+  'ui://encodex/inspector',
+  'ui://encodex/plan',
+  'ui://encodex/lab',
+  'ui://encodex/error',
+  'ui://encodex/batch',
+  'ui://encodex/workflow',
 ];
 
 /** Prompt names rendered by every surface. @const {string[]} */

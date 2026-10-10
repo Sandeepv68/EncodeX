@@ -6,6 +6,10 @@
  * implementation of that handshake plus the notifications EncodeX views consume:
  *
  *  - sends `ui/initialize`, then `ui/notifications/initialized`;
+ *  - reports its content size with `ui/notifications/size-changed` (via a
+ *    `ResizeObserver` and after every render) so hosts that size the iframe
+ *    from the view — the default when `containerDimensions` is flexible or
+ *    omitted — do not leave it at zero height;
  *  - applies host theme CSS variables from `ui/notifications/host-context-changed`;
  *  - calls the view's `render(structuredContent)` on `ui/notifications/tool-result`;
  *  - when the host proxies server tools, polls the view's tool via `tools/call`
@@ -44,6 +48,8 @@ export const VIEW_BRIDGE_SCRIPT = `<script>
   var nextId = 1;
   var pending = new Map();
   var polling = null;
+  var lastSize = null;
+  var sizeFrame = null;
 
   function send(message) {
     window.parent.postMessage(message, '*');
@@ -67,8 +73,44 @@ export const VIEW_BRIDGE_SCRIPT = `<script>
     send({ jsonrpc: '2.0', method: method, params: params || {} });
   }
 
+  function reportSize() {
+    var root = document.documentElement;
+    if (!root) return;
+    var previous = root.style.height;
+    root.style.height = 'max-content';
+    var height = Math.ceil(root.getBoundingClientRect().height);
+    root.style.height = previous;
+    var width = Math.ceil(window.innerWidth);
+    if (lastSize && lastSize.width === width && lastSize.height === height) return;
+    lastSize = { width: width, height: height };
+    notify('ui/notifications/size-changed', { width: width, height: height });
+  }
+
+  function scheduleSizeReport() {
+    if (sizeFrame !== null) return;
+    if (typeof requestAnimationFrame === 'function') {
+      sizeFrame = requestAnimationFrame(function () {
+        sizeFrame = null;
+        reportSize();
+      });
+    } else {
+      reportSize();
+    }
+  }
+
+  function setupSizeObserver() {
+    scheduleSizeReport();
+    if (typeof ResizeObserver === 'undefined') return;
+    var observer = new ResizeObserver(function () {
+      scheduleSizeReport();
+    });
+    observer.observe(document.documentElement);
+    if (document.body) observer.observe(document.body);
+  }
+
   function renderPayload(payload) {
     if (typeof view.render === 'function') view.render(payload || {});
+    scheduleSizeReport();
   }
 
   function applyTheme(hostContext) {
@@ -140,6 +182,7 @@ export const VIEW_BRIDGE_SCRIPT = `<script>
       .then(function (result) {
         applyTheme(result && result.hostContext);
         notify('ui/notifications/initialized');
+        setupSizeObserver();
         if (result && result.hostCapabilities && result.hostCapabilities.serverTools && view.autostart !== false) startPolling();
       })
       .catch(function () {

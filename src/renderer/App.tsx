@@ -41,6 +41,7 @@ import { SHORTCUTS } from './constants/shortcuts';
 import { THEMES } from './colors';
 import { useErrorStore } from './stores/errorStore';
 import { useLogStore } from './stores/logStore';
+import { useAuditStore } from './stores/auditStore';
 import { useSettingsStore } from './stores/settingsStore';
 import { callBridgeVoid, fireAndForgetBridge } from './utils/bridge-call';
 import { useLanguageDirection } from './useLanguageDirection';
@@ -130,6 +131,19 @@ function AppLayout() {
         useLogStore.getState().addEntry(entry);
       });
     }, 'onLogMessage subscription');
+    return () => cleanup?.();
+  }, []);
+
+  useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    // Same guarded pattern as the log subscription above: audit records are a
+    // fire-and-forget push, and a synchronous contextBridge throw must not take
+    // the tree down.
+    callBridgeVoid(() => {
+      cleanup = window.electronAPI?.onAuditEntry((entry) => {
+        useAuditStore.getState().addEntry(entry);
+      });
+    }, 'onAuditEntry subscription');
     return () => cleanup?.();
   }, []);
 

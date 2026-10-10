@@ -1,10 +1,11 @@
 /**
  * @fileoverview The EncodeX conversion MCP App view (`ui://encodex/convert`).
  *
- * A setup form that calls `convert_media` from within the view (via the host's
- * `tools/call` proxy) and then tracks the resulting job, polling `get_job` for
- * live progress with a confirm-gated cancel. It also renders a job delivered by
- * the host when the model itself invoked `convert_media`.
+ * A setup form that calls the app-only `commit_operation` from within the view
+ * (via the host's `tools/call` proxy) and then tracks the resulting job,
+ * polling `get_job` for live progress with a confirm-gated cancel. When the
+ * model proposes a conversion the host delivers it as a confirmation and the
+ * form is pre-filled for the user to review and start.
  *
  * Self-contained (inline CSS + shared inline bridge); all user- and path-derived
  * strings are written with `textContent`.
@@ -119,6 +120,10 @@ export const CONVERT_VIEW_HTML = `<!doctype html>
         margin: 10px 0 0;
         color: var(--encodex-danger);
       }
+      .proposal {
+        margin: 0 0 12px;
+        color: var(--encodex-muted);
+      }
       header {
         display: flex;
         align-items: baseline;
@@ -171,6 +176,7 @@ export const CONVERT_VIEW_HTML = `<!doctype html>
   <body>
     <div class="card">
       <h1>New conversion</h1>
+      <p class="proposal" id="proposal" hidden></p>
       <div class="grid">
         <label>Input <input type="text" id="input" placeholder="Absolute input path" /></label>
         <label>Output <input type="text" id="output" placeholder="Derived when empty" /></label>
@@ -287,7 +293,7 @@ export const CONVERT_VIEW_HTML = `<!doctype html>
           button.disabled = true;
           message('');
           window
-            .__encodexCallTool('convert_media', args)
+            .__encodexCallTool('commit_operation', { tool: 'convert_media', args: args })
             .then(function (result) {
               var job = result && result.structuredContent ? result.structuredContent.job : null;
               if (job) {
@@ -304,7 +310,29 @@ export const CONVERT_VIEW_HTML = `<!doctype html>
               button.disabled = false;
             });
         }
+        function prefill(confirmation) {
+          var args = confirmation && confirmation.args ? confirmation.args : {};
+          var fields = ['input', 'output', 'videoCodec', 'audioCodec', 'videoBitrate', 'audioBitrate', 'scale'];
+          for (var i = 0; i < fields.length; i++) {
+            var el = document.getElementById(fields[i]);
+            if (el && args[fields[i]] !== undefined && args[fields[i]] !== null) el.value = String(args[fields[i]]);
+          }
+          var qscale = document.getElementById('qscale');
+          if (qscale && args.qscale !== undefined && args.qscale !== null) qscale.value = String(args.qscale);
+          var copy = document.getElementById('copy');
+          if (copy && args.copy) copy.checked = true;
+          var note = document.getElementById('proposal');
+          if (note) {
+            note.textContent =
+              (confirmation.summary ? confirmation.summary + ' - ' : '') + 'review the settings, then start the conversion.';
+            note.hidden = false;
+          }
+        }
         function render(payload) {
+          if (payload && payload.confirmation) {
+            prefill(payload.confirmation);
+            return;
+          }
           var job = payload && payload.job ? payload.job : payload;
           renderJob(job);
           trackJob(job);
