@@ -126,6 +126,23 @@ describe('MCP Apps view bridges', () => {
     }
   });
 
+  it('reports its content size so hosts can size the iframe', async () => {
+    const host = startHost();
+    try {
+      bootView(QUEUE_VIEW_HTML);
+
+      await vi.waitFor(() => {
+        const message = host.seen.find((candidate) => candidate.method === 'ui/notifications/size-changed');
+        expect(message).toBeDefined();
+        const params = message?.params as { width?: unknown; height?: unknown } | undefined;
+        expect(typeof params?.width).toBe('number');
+        expect(typeof params?.height).toBe('number');
+      });
+    } finally {
+      host.stop();
+    }
+  });
+
   it('job: renders a single job with paths and progress', async () => {
     const host = startHost();
     try {
