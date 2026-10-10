@@ -13,6 +13,8 @@ import { JOB_VIEW_HTML } from './views/job';
 import { MEDIA_INFO_VIEW_HTML } from './views/media-info';
 import { CONVERT_VIEW_HTML } from './views/convert';
 import { CONFIRM_VIEW_HTML } from './views/confirm';
+import { INSPECTOR_VIEW_HTML } from './views/inspector';
+import { PLAN_VIEW_HTML } from './views/plan';
 
 /**
  * One servable MCP App view.
@@ -64,6 +66,18 @@ export const MCP_UI_VIEWS: McpUiView[] = [
     uri: MCP_UI_VIEW_URIS.confirm,
     description: 'Confirmation card for a proposed operation; runs it only when the user approves.',
     html: () => CONFIRM_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX inspector view',
+    uri: MCP_UI_VIEW_URIS.inspector,
+    description: 'Plain-language media diagnosis: key facts, findings by severity, and next steps.',
+    html: () => INSPECTOR_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX plan view',
+    uri: MCP_UI_VIEW_URIS.plan,
+    description: 'Conversion plan (settings + rationale) and output size estimate for review.',
+    html: () => PLAN_VIEW_HTML,
   },
 ];
 

@@ -48,6 +48,8 @@ export const MCP_UI_VIEW_URIS = {
   mediaInfo: 'ui://encodex/media-info',
   convert: 'ui://encodex/convert',
   confirm: 'ui://encodex/confirm',
+  inspector: 'ui://encodex/inspector',
+  plan: 'ui://encodex/plan',
   profiles: 'ui://encodex/profiles',
   capabilities: 'ui://encodex/capabilities',
 } as const;

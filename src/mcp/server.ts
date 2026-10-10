@@ -991,7 +991,8 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     },
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'analyze_media',
     {
       title: 'Analyze Media',
@@ -999,19 +1000,21 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         'Diagnoses a media file in plain language: streams, HDR, interlacing, uncommon codecs, multichannel audio, ' +
         'resolution and size, each with a severity and suggested next steps. Deterministic — no model call.',
       inputSchema: analyzeSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.inspector } },
     },
     async ({ input, focus }: z.infer<typeof analyzeSchema>) => {
       try {
         const info = await probeMedia(input);
         const analysis = analyzeMedia(info, focus);
-        return ok(JSON.stringify(analysis), { analysis });
+        return okUi(JSON.stringify(analysis), { analysis });
       } catch (err) {
         return fail(err);
       }
     },
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'recommend_settings',
     {
       title: 'Recommend Settings',
@@ -1020,6 +1023,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         '(convert_media arguments + profile id + rationale + confidence). Deterministic rules-based provider — the ' +
         'settings are selected from the built-in profiles, never invented.',
       inputSchema: recommendSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.plan } },
     },
     async ({ input, intent, constraints }: z.infer<typeof recommendSchema>) => {
       try {
@@ -1033,14 +1037,15 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
           constraints,
         };
         const plan = recommendSettings(request);
-        return ok(JSON.stringify(plan), { plan });
+        return okUi(JSON.stringify(plan), { plan });
       } catch (err) {
         return fail(err);
       }
     },
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'estimate_conversion',
     {
       title: 'Estimate Conversion',
@@ -1048,12 +1053,13 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         'Estimates the output size and duration of a conversion from the probed duration and the target bitrates, ' +
         'plus hardware-encoder availability. The result is always an estimate (isEstimated: true), never a measurement.',
       inputSchema: estimateSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.plan } },
     },
     async ({ input, args }: z.infer<typeof estimateSchema>) => {
       try {
         const info = await probeMedia(input);
         const estimate = estimateConversion(args ?? {}, extractMediaFacts(info), capabilitiesOrEmpty());
-        return ok(JSON.stringify(estimate), { estimate });
+        return okUi(JSON.stringify(estimate), { estimate });
       } catch (err) {
         return fail(err);
       }

@@ -50,6 +50,9 @@ const UI_TOOL_ARGS: Record<string, Record<string, unknown>> = {
   demux_media: { input: '' },
   get_job: { jobId: 'does-not-exist' },
   get_media_info: { input: '' },
+  analyze_media: { input: '' },
+  recommend_settings: { input: '', intent: 'make this work on my iPhone' },
+  estimate_conversion: { input: '' },
   list_jobs: {},
 };
 
