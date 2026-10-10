@@ -63,4 +63,20 @@ describe.runIf(IS_E2E)('MCP Apps surface (e2e)', () => {
     const jobs = await call<unknown[]>(handle.client, 'list_jobs', {});
     expect(Array.isArray(jobs)).toBe(true);
   });
+
+  it('returns structuredContent alongside the text fallback for every tool (R0.2)', async () => {
+    const result = await handle.client.callTool({ name: 'list_jobs', arguments: {} });
+    const blocks = (result.content ?? []) as Array<{ type?: string; text?: string }>;
+    const text = blocks
+      .filter((block) => block.type === 'text')
+      .map((block) => block.text ?? '')
+      .join('');
+    expect(text.trim().length).toBeGreaterThan(0);
+    const structured = (result as { structuredContent?: { jobs?: unknown[]; count?: number } }).structuredContent;
+    expect(structured).toBeDefined();
+    expect(structured?.jobs).toEqual([]);
+
+    const pong = await handle.client.callTool({ name: 'ping', arguments: {} });
+    expect((pong as { structuredContent?: { pong?: boolean } }).structuredContent?.pong).toBe(true);
+  });
 });

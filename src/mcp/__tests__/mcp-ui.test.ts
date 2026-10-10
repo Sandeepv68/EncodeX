@@ -92,6 +92,41 @@ describe('MCP Apps server surface', () => {
     }
   });
 
+  it('declares restrictive CSP metadata on every view resource (listing)', async () => {
+    const session = await connect();
+    try {
+      const { resources } = await session.client.listResources();
+      for (const uri of MCP_UI_VIEWS.map((view) => view.uri)) {
+        const view = resources.find((resource) => resource.uri === uri);
+        const meta = view?._meta as { ui?: { csp?: Record<string, unknown> } } | undefined;
+        expect(meta?.ui?.csp, `${uri} ui.csp`).toBeDefined();
+        for (const directive of ['connectDomains', 'resourceDomains', 'frameDomains', 'baseUriDomains']) {
+          expect(meta?.ui?.csp?.[directive], `${uri} csp.${directive}`).toEqual([]);
+        }
+      }
+    } finally {
+      await session.close();
+    }
+  });
+
+  it('declares restrictive CSP metadata on every read view content item', async () => {
+    const session = await connect();
+    try {
+      for (const uri of MCP_UI_VIEWS.map((view) => view.uri)) {
+        const result = await session.client.readResource({ uri });
+        const first = result.contents[0] as { _meta?: { ui?: { csp?: Record<string, unknown> } } };
+        const csp = first._meta?.ui?.csp;
+        expect(csp, `${uri} content ui.csp`).toBeDefined();
+        expect(csp?.connectDomains).toEqual([]);
+        expect(csp?.resourceDomains).toEqual([]);
+        expect(csp?.frameDomains).toEqual([]);
+        expect(csp?.baseUriDomains).toEqual([]);
+      }
+    } finally {
+      await session.close();
+    }
+  });
+
   it('serves the queue view as self-contained HTML', async () => {
     const session = await connect();
     try {

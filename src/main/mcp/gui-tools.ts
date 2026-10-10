@@ -70,13 +70,10 @@ export function registerGuiTools(server: McpServer, deps: GuiToolsDeps): void {
       description: 'Returns every known conversion job with status/progress plus the count of pending (queued or running) jobs.',
       inputSchema: z.object({}),
     },
-    async () =>
-      ok(
-        JSON.stringify({
-          jobs: deps.jobManager.listJobs(),
-          pending: deps.jobManager.pendingCount(),
-        }),
-      ),
+    async () => {
+      const state = { jobs: deps.jobManager.listJobs(), pending: deps.jobManager.pendingCount() };
+      return ok(JSON.stringify(state), { ...state });
+    },
   );
 
   server.registerTool(
@@ -88,7 +85,7 @@ export function registerGuiTools(server: McpServer, deps: GuiToolsDeps): void {
     },
     async () => {
       deps.jobManager.cancelAll();
-      return ok(JSON.stringify({ cancelled: true }));
+      return ok(JSON.stringify({ cancelled: true }), { cancelled: true });
     },
   );
 
@@ -104,17 +101,16 @@ export function registerGuiTools(server: McpServer, deps: GuiToolsDeps): void {
         try {
           const info = await transcoderFactory('FFMPEG').getInfo(input);
           const video = info.streams.find((s) => s.type === 'video');
-          return ok(
-            JSON.stringify({
-              file: info.file,
-              format: info.format,
-              duration: info.duration,
-              fps: video?.avgFrameRate ?? video?.frameRate ?? null,
-              width: video?.width ?? null,
-              height: video?.height ?? null,
-              codec: video?.codec ?? null,
-            }),
-          );
+          const timeline = {
+            file: info.file,
+            format: info.format,
+            duration: info.duration,
+            fps: video?.avgFrameRate ?? video?.frameRate ?? null,
+            width: video?.width ?? null,
+            height: video?.height ?? null,
+            codec: video?.codec ?? null,
+          };
+          return ok(JSON.stringify(timeline), { ...timeline });
         } catch (err) {
           log.warn(LOG_MCP_GUI_TOOL_ERROR, 'get_timeline:', err);
           return fail(createError(ErrorCode.UNKNOWN, `Failed to probe timeline: ${err instanceof Error ? err.message : String(err)}`));
@@ -138,7 +134,7 @@ export function registerGuiTools(server: McpServer, deps: GuiToolsDeps): void {
           if (!dataUrl) {
             return fail(createError(ErrorCode.UNKNOWN, `Could not extract a preview frame from: ${input}`));
           }
-          return ok(JSON.stringify({ dataUrl }));
+          return ok(JSON.stringify({ dataUrl }), { dataUrl });
         } catch (err) {
           log.warn(LOG_MCP_GUI_TOOL_ERROR, 'extract_preview:', err);
           return fail(err);
@@ -154,22 +150,22 @@ export function registerGuiTools(server: McpServer, deps: GuiToolsDeps): void {
       description: 'Returns OS/hardware information plus the running EncodeX version.',
       inputSchema: z.object({}),
     },
-    async () =>
-      ok(
-        JSON.stringify({
-          appVersion: deps.appVersion,
-          platform: process.platform,
-          arch: process.arch,
-          os: {
-            type: os.type(),
-            release: os.release(),
-            cpu: os.cpus()[0]?.model ?? 'unknown',
-            cpuCount: os.cpus().length,
-            totalMemory: os.totalmem(),
-            freeMemory: os.freemem(),
-          },
-        }),
-      ),
+    async () => {
+      const system = {
+        appVersion: deps.appVersion,
+        platform: process.platform,
+        arch: process.arch,
+        os: {
+          type: os.type(),
+          release: os.release(),
+          cpu: os.cpus()[0]?.model ?? 'unknown',
+          cpuCount: os.cpus().length,
+          totalMemory: os.totalmem(),
+          freeMemory: os.freemem(),
+        },
+      };
+      return ok(JSON.stringify(system), { ...system });
+    },
   );
 
   if (updateCheck) {
@@ -185,16 +181,16 @@ export function registerGuiTools(server: McpServer, deps: GuiToolsDeps): void {
         try {
           const update = await updateCheck();
           if (!update) {
-            return ok(JSON.stringify({ available: false, current: deps.appVersion }));
+            const none = { available: false, current: deps.appVersion };
+            return ok(JSON.stringify(none), { ...none });
           }
-          return ok(
-            JSON.stringify({
-              available: true,
-              current: deps.appVersion,
-              latest: update.version,
-              releaseUrl: update.releaseUrl,
-            }),
-          );
+          const found = {
+            available: true,
+            current: deps.appVersion,
+            latest: update.version,
+            releaseUrl: update.releaseUrl,
+          };
+          return ok(JSON.stringify(found), { ...found });
         } catch (err) {
           log.warn(LOG_MCP_GUI_TOOL_ERROR, 'check_for_updates:', err);
           return fail(err);

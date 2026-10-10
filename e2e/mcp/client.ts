@@ -482,16 +482,29 @@ export async function assertMcpAppsSurface(handle: McpHandle): Promise<void> {
     const view = resources.find((resource) => resource.uri === uri);
     if (!view) throw new Error(`missing view resource: ${uri}`);
     if (view.mimeType !== UI_RESOURCE_MIME) throw new Error(`${uri} has mime ${view.mimeType}, expected ${UI_RESOURCE_MIME}`);
+    const csp = (view._meta as { ui?: { csp?: Record<string, unknown> } } | undefined)?.ui?.csp;
+    if (!csp) throw new Error(`${uri} declares no ui.csp metadata in resources/list`);
+    for (const directive of ['connectDomains', 'resourceDomains', 'frameDomains', 'baseUriDomains']) {
+      const value = csp[directive];
+      if (!Array.isArray(value) || value.length !== 0) {
+        throw new Error(`${uri} csp.${directive} must be an empty allowlist (self-contained view), got ${JSON.stringify(value)}`);
+      }
+    }
   }
 
   for (const uri of UI_VIEW_URIS) {
     const { contents } = await client.readResource({ uri });
-    const html = ((contents[0] as { text?: string }).text ?? '').toString();
+    const first = contents[0] as { text?: string; _meta?: { ui?: { csp?: Record<string, unknown> } } };
+    const html = (first.text ?? '').toString();
     if (!html.includes('<!doctype html>') || !html.includes('ui/initialize')) {
       throw new Error(`${uri} is not a self-contained MCP App document`);
     }
     if (/<script\b[^>]*\bsrc=/i.test(html) || /<link\b[^>]*\bstylesheet/i.test(html)) {
       throw new Error(`${uri} references an external script or stylesheet`);
+    }
+    const csp = first._meta?.ui?.csp;
+    if (!csp || !Array.isArray(csp.connectDomains) || csp.connectDomains.length !== 0) {
+      throw new Error(`${uri} content item is missing the empty connectDomains CSP allowlist`);
     }
   }
 }

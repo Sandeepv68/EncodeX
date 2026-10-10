@@ -90,18 +90,36 @@ function resolveAppVersion(): string {
 }
 
 /**
- * Builds a successful tool result carrying a single text payload.
+ * Builds a successful tool result carrying a single text payload and, when
+ * provided, the machine-readable `structuredContent` an MCP App view renders.
+ *
+ * Every EncodeX tool returns `structuredContent` (SEP-1865 / R0.2) so hosts can
+ * read typed data instead of re-parsing prose; the text block remains the
+ * mandatory fallback for hosts that do not render views (SEP-2133). Passing no
+ * payload keeps the historic text-only shape used by simple acknowledgement
+ * results.
  * @param {string} text - The JSON text result.
- * @returns {{content: Array<{type: 'text'; text: string}>}} MCP tool result.
+ * @param {Record<string, unknown>} [structuredContent] - Typed data for the view.
+ * @returns {{content: Array<{type: 'text'; text: string}>; structuredContent?: Record<string, unknown>}} MCP tool result.
  */
-export function ok(text: string): { content: Array<{ type: 'text'; text: string }> } {
-  return { content: [{ type: 'text', text }] };
+export function ok(
+  text: string,
+  structuredContent?: Record<string, unknown>,
+): { content: Array<{ type: 'text'; text: string }>; structuredContent?: Record<string, unknown> } {
+  const base: { content: Array<{ type: 'text'; text: string }>; structuredContent?: Record<string, unknown> } = {
+    content: [{ type: 'text', text }],
+  };
+  if (structuredContent !== undefined) {
+    base.structuredContent = structuredContent;
+  }
+  return base;
 }
 
 /**
  * Builds a successful tool result that carries both the text fallback and
  * machine-readable `structuredContent` for an MCP App view. Non-UI hosts ignore
- * `structuredContent` and render the text exactly as they do today.
+ * `structuredContent` and render the text exactly as they do today. Thin wrapper
+ * over {@link ok} that makes the structured payload required at the call site.
  * @param {string} text - The text fallback (typically `JSON.stringify(data)`).
  * @param {Record<string, unknown>} structuredContent - Data for the view to render.
  * @returns {{content: Array<{type: 'text'; text: string}>; structuredContent: Record<string, unknown>}} MCP tool result.
@@ -116,19 +134,28 @@ export function okUi(
 /**
  * Builds a failed tool result from any thrown error. AppErrors keep their
  * categorized code; everything else is normalized through {@link formatError}.
+ * The machine-readable `structuredContent` mirrors the JSON text (`ok:false` +
+ * stable code) so a model or view can branch on the error code, while `isError`
+ * preserves the MCP error contract.
  * @param {unknown} err - The thrown error.
- * @returns {{content: Array<{type: 'text'; text: string}>; isError: boolean}} Error result.
+ * @returns {{content: Array<{type: 'text'; text: string}>; isError: boolean; structuredContent: Record<string, unknown>}} Error result.
  */
-export function fail(err: unknown): { content: Array<{ type: 'text'; text: string }>; isError: boolean } {
+export function fail(err: unknown): {
+  content: Array<{ type: 'text'; text: string }>;
+  isError: boolean;
+  structuredContent: Record<string, unknown>;
+} {
   const appErr = isAppError(err) ? err : formatError(err);
+  const structuredContent: Record<string, unknown> = {
+    ok: false,
+    code: appErr.code,
+    message: appErr.message,
+    detail: appErr.detail,
+  };
   return {
-    content: [
-      {
-        type: 'text',
-        text: JSON.stringify({ ok: false, code: appErr.code, message: appErr.message, detail: appErr.detail }),
-      },
-    ],
+    content: [{ type: 'text', text: JSON.stringify(structuredContent) }],
     isError: true,
+    structuredContent,
   };
 }
 
@@ -770,7 +797,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       description: 'Checks that the EncodeX MCP server is responsive and returns "pong".',
       inputSchema: z.object({}),
     },
-    async () => ok(JSON.stringify({ pong: true })),
+    async () => ok(JSON.stringify({ pong: true }), { pong: true }),
   );
 
   registerAppTool(
@@ -836,7 +863,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       if (!cancelled) {
         return fail(createError(ErrorCode.UNKNOWN, `Job not found: ${jobId}`));
       }
-      return ok(JSON.stringify({ jobId, cancelled: true }));
+      return ok(JSON.stringify({ jobId, cancelled: true }), { jobId, cancelled: true });
     },
   );
 
@@ -872,7 +899,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     },
     async () => {
       const caps = getEncoderCapabilities();
-      return ok(JSON.stringify(caps));
+      return ok(JSON.stringify(caps), { capabilities: caps });
     },
   );
 
@@ -883,7 +910,10 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       description: 'Lists the built-in conversion profiles (id, name, category, container, codecs, presets).',
       inputSchema: z.object({}),
     },
-    async () => ok(JSON.stringify(BUILTIN_PROFILES.map((p) => profileToJson(p)))),
+    async () => {
+      const profiles = BUILTIN_PROFILES.map((p) => profileToJson(p));
+      return ok(JSON.stringify(profiles), { profiles });
+    },
   );
 
   server.registerTool(
@@ -898,7 +928,8 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       if (!profile) {
         return fail(createError(ErrorCode.UNKNOWN, `Profile not found: ${profileId}`));
       }
-      return ok(JSON.stringify(profileToJson(profile)));
+      const json = profileToJson(profile);
+      return ok(JSON.stringify(json), { profile: json });
     },
   );
 
