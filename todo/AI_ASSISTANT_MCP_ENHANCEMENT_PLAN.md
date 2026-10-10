@@ -316,11 +316,11 @@ Each release has a deliverable **and** a verification command. Run before any re
 
 | Task | Files |
 | --- | --- |
-| R0.1 Real-host render verification, Claude Desktop + VS Code (`(manual)`) | `e2e/mcp/mcp-apps.spec.ts` |
-| R0.2 `structuredContent` on **all** tool results (not just view-linked ones) | `src/mcp/server.ts` |
-| R0.3 `csp` on every `ui://` resource; assert zero external connections from views | `src/mcp/ui/resources.ts` |
-| R0.4 Text-fallback audit test for every UI-enabled tool | `e2e/mcp/` |
-| R0.5 Tasks extension `io.modelcontextprotocol/tasks` mapped onto `MCPJobManager` | `src/mcp/jobs/manager.ts` |
+| R0.1 Real-host render verification, Claude Desktop + VS Code `(manual)` `[x]` | `e2e/mcp/mcp-apps.spec.ts` |
+| R0.2 `structuredContent` on **all** tool results (not just view-linked ones) `[x]` | `src/mcp/server.ts` |
+| R0.3 `csp` on every `ui://` resource; assert zero external connections from views `[x]` | `src/mcp/ui/resources.ts` |
+| R0.4 Text-fallback audit test for every UI-enabled tool `[x]` | `src/mcp/__tests__/text-fallback.test.ts` |
+| R0.5 Tasks extension `io.modelcontextprotocol/tasks` mapped onto `MCPJobManager` `[ ]` � **DEFERRED**: SDK 1.32.1 experimental semantics (automatic polling + required/taskSupport) block a drop-in conversion; see D4. | `src/mcp/jobs/manager.ts` |
 
 **Deliverable:** an MCP Apps server that is correct under the stable spec, not just functional.
 
