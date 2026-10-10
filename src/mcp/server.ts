@@ -23,7 +23,7 @@ import { APP_NAME } from '../shared/app-constants';
 import { createTranscoder } from '../main/transcoders/factory';
 import type { ITranscoder } from '../main/transcoders/types';
 import { createError, formatError, isAppError, ErrorCode } from '../shared/errors';
-import type { EncoderCapabilities, MediaInfo, TranscoderType } from '../shared/types';
+import type { ConversionOptions, EncoderCapabilities, MediaInfo, TranscoderType } from '../shared/types';
 import { MAX_QUEUE_CONCURRENCY } from '../shared/constants';
 import { getEncoderCapabilities } from '../main/capabilities';
 import { BUILTIN_PROFILES } from '../shared/profiles/builtin';
@@ -46,11 +46,14 @@ import {
   parseIntent,
   parseBitrateKbps,
   planTargetSizeCandidates,
+  planWorkflow,
   recommendSettings,
+  resolveReferences,
   searchTranscript,
   summarizeLibrary,
   summarizeTranscript,
   validateOutput,
+  WORKFLOW_TOOLS,
 } from '../shared/ai';
 import { createAuditEntry } from '../shared/audit';
 import type { AuditEntry } from '../shared/audit';
@@ -71,6 +74,7 @@ import type {
   Transcript,
   TranscriptSegment,
   TranslationProvider,
+  WorkflowTool,
 } from '../shared/ai';
 import { VIDEO_CODECS, AUDIO_CODECS } from '../shared/media-options';
 import { suggestedExtensionForVideoCodec } from '../shared/codec-containers';
@@ -673,6 +677,30 @@ const summarizeMediaSchema = z.object({
   language: z.string().optional().describe('STT language hint when transcribing an input.'),
   modelPath: z.string().optional().describe('STT model path when transcribing an input.'),
 });
+
+/**
+ * One node of a workflow DAG.
+ */
+const workflowStepSchema = z.object({
+  id: z.string().min(1).max(64).describe('Unique step id referenced by later steps (letters, digits, _, -).'),
+  tool: z.enum(WORKFLOW_TOOLS).describe('The single-output operation this step runs.'),
+  args: z.record(z.string(), z.unknown()).optional().describe('Tool arguments; use {{<stepId>.output}} to consume an earlier step output.'),
+  dependsOn: z.array(z.string()).optional().describe('Explicit dependency step ids (references infer deps too).'),
+});
+
+/**
+ * Schema for the `plan_workflow` / `execute_workflow` tools: a typed workflow DAG.
+ */
+const workflowSchema = z.object({
+  steps: z.array(workflowStepSchema).min(1).max(50).describe('The workflow steps forming the DAG.'),
+});
+
+/**
+ * Wall-clock budget for a single workflow step job before `execute_workflow`
+ * gives up waiting and reports the step as failed.
+ * @const {number}
+ */
+const WORKFLOW_STEP_TIMEOUT_MS = 120000;
 
 /**
  * Media file extensions the folder analysis projects. Non-media files found in
@@ -1649,6 +1677,140 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
   }
 
   /**
+   * Enqueues one workflow step's operation and waits for it to finish,
+   * returning the job id and resolved output path. Reuses the same builders as
+   * the standalone tools so a workflow step and a direct call plan identically.
+   * @param {WorkflowTool} tool - The step operation.
+   * @param {Record<string, unknown>} args - The resolved step arguments.
+   * @returns {Promise<{ jobId: string; output: string }>} The finished job.
+   * @throws {AppError} `FILE_NOT_FOUND` when the input is missing, or
+   *   `CONVERSION_FAILED` when the job ends in error.
+   */
+  async function executeWorkflowStep(tool: WorkflowTool, args: Record<string, unknown>): Promise<{ jobId: string; output: string }> {
+    const rawInput = args.input;
+    if (typeof rawInput === 'string' && !fs.existsSync(rawInput)) {
+      throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${rawInput}`);
+    }
+    const transcoder = (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG';
+    let input: string;
+    let output: string;
+    let options: ConversionOptions;
+    switch (tool) {
+      case 'convert_media': {
+        const parsed = conversionSchema.parse(args);
+        input = parsed.input;
+        const fields: MCPConversionFields = { ...parsed };
+        options = buildConversionOptions(fields);
+        output = parsed.output ?? resolveOutputPath(input, fields, options);
+        break;
+      }
+      case 'compress_image': {
+        const parsed = compressSchema.parse(args);
+        input = parsed.input;
+        const plan = buildCompressPlan(input, { ...parsed });
+        output = plan.output;
+        options = plan.options;
+        break;
+      }
+      case 'extract_audio': {
+        const parsed = extractSchema.parse(args);
+        input = parsed.input;
+        const plan = buildExtractAudioPlan(input, { ...parsed });
+        output = plan.output;
+        options = plan.options;
+        break;
+      }
+      case 'cut_video': {
+        const parsed = cutSchema.parse(args);
+        input = parsed.input;
+        const plan = buildCutPlan(input, { ...parsed });
+        output = plan.output;
+        options = plan.options;
+        break;
+      }
+      case 'remux_media': {
+        const parsed = remuxSchema.parse(args);
+        input = parsed.input;
+        const chaptersFile = parsed.chapters && typeof parsed.chapters === 'object' ? parsed.chapters.file : undefined;
+        assertMcpAuxiliaryInputsExist([
+          ...(parsed.addSubtitle ?? []).map((entry) => entry.file),
+          ...(parsed.addAudio ?? []).map((entry) => entry.file),
+          ...(parsed.thumbnail ? [parsed.thumbnail.file] : []),
+          ...(chaptersFile ? [chaptersFile] : []),
+        ]);
+        const info = await transcoderFactory(transcoder).getInfo(input);
+        const plan = buildRemuxPlan(input, { ...parsed }, info.streams ?? []);
+        output = plan.output;
+        options = plan.options;
+        break;
+      }
+      default: {
+        throw createError(ErrorCode.UNKNOWN, `Unsupported workflow tool: ${String(tool)}`);
+      }
+    }
+    const job = jobManager.enqueue(input, output, options, transcoder);
+    const done = await waitForJob(job.id, WORKFLOW_STEP_TIMEOUT_MS);
+    if (done.status === 'error') {
+      throw createError(ErrorCode.CONVERSION_FAILED, done.error ?? `Workflow step ${tool} failed.`);
+    }
+    return { jobId: job.id, output };
+  }
+
+  /**
+   * Validates and runs (or proposes) a typed workflow DAG. Steps run in
+   * dependency order; each step's `{{<id>.output}}` references are resolved from
+   * the results of the steps before it. Execution stops at the first failure and
+   * reports what completed.
+   * @param {unknown} raw - Untrusted tool arguments.
+   * @param {boolean} confirm - Whether to gate on user approval.
+   * @returns {Promise<object>} The MCP tool result (workflow view data).
+   */
+  async function runWorkflow(raw: unknown, confirm: boolean) {
+    try {
+      const args = workflowSchema.parse(raw);
+      const plan = planWorkflow(args);
+      if (!plan.valid) {
+        throw createError(ErrorCode.UNKNOWN, `Invalid workflow: ${plan.issues.map((issue) => issue.message).join(' ')}`);
+      }
+      if (confirm) {
+        return confirmationResult({
+          operation: 'execute_workflow',
+          title: 'Run workflow',
+          summary: plan.summary,
+          args: args as unknown as Record<string, unknown>,
+          details: confirmationRows([
+            confirmationField('Steps', plan.steps.length),
+            ...plan.steps.map((step) => confirmationField(`Step ${step.order + 1}`, `${step.tool} (${step.id})`)),
+          ]),
+        });
+      }
+      const context: Record<string, Record<string, unknown>> = {};
+      const results: Array<Record<string, unknown>> = [];
+      let failed: Record<string, unknown> | undefined;
+      for (const step of plan.steps) {
+        const resolved = resolveReferences(step.args, context) as Record<string, unknown>;
+        try {
+          const { jobId, output } = await executeWorkflowStep(step.tool, resolved);
+          context[step.id] = { output, jobId };
+          results.push({ id: step.id, tool: step.tool, jobId, output, status: 'done' });
+        } catch (err) {
+          const message = errorMessage(err);
+          failed = { id: step.id, tool: step.tool, message };
+          results.push({ id: step.id, tool: step.tool, status: 'error', error: message });
+          break;
+        }
+      }
+      const completed = failed === undefined;
+      emitAudit('execute_workflow', raw, completed, failed ? String(failed.message) : undefined);
+      const result = { completed, failed, steps: results };
+      return okUi(JSON.stringify(result), { result });
+    } catch (err) {
+      emitAudit('execute_workflow', raw, false, errorMessage(err));
+      return fail(err);
+    }
+  }
+
+  /**
    * Whether the current call should be gated on user approval. Re-evaluated
    * per call so it reflects the live client capabilities from `initialize`.
    * @returns {boolean} True when the host renders MCP Apps.
@@ -2142,6 +2304,39 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     },
   );
 
+  registerAppTool(
+    server,
+    'plan_workflow',
+    {
+      title: 'Plan Workflow',
+      description:
+        'Validates a typed workflow DAG and returns a dry-run: the execution order, per-step dependencies and ' +
+        'references, and any validation issues. Nothing runs. Deterministic — no model call.',
+      inputSchema: workflowSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.workflow } },
+    },
+    async (args: z.infer<typeof workflowSchema>) => {
+      const plan = planWorkflow(args);
+      return okUi(JSON.stringify(plan), { plan });
+    },
+  );
+
+  registerAppTool(
+    server,
+    'execute_workflow',
+    {
+      title: 'Execute Workflow',
+      description:
+        'Runs a typed workflow DAG: each step runs in dependency order and later steps can consume earlier outputs ' +
+        'with {{<stepId>.output}}. Stops at the first failing step and reports what completed. ' +
+        'When the client renders MCP Apps the workflow is proposed in the app and only starts once the user confirms ' +
+        'it; in other clients it starts immediately. Returns a per-step report with job ids and output paths.',
+      inputSchema: workflowSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.workflow } },
+    },
+    async (args: z.infer<typeof workflowSchema>) => runWorkflow(args, shouldConfirm()),
+  );
+
   server.registerTool(
     'list_capabilities',
     {
@@ -2316,6 +2511,8 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
           return runRemux(args, false);
         case 'demux_media':
           return runDemux(args, false);
+        case 'execute_workflow':
+          return runWorkflow(args, false);
         default:
           return fail(createError(ErrorCode.UNKNOWN, `Unknown operation: ${String(tool)}`));
       }

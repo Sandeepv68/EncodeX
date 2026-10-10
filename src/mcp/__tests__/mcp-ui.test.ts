@@ -87,6 +87,7 @@ describe('MCP Apps server surface', () => {
         MCP_UI_VIEW_URIS.lab,
         MCP_UI_VIEW_URIS.error,
         MCP_UI_VIEW_URIS.batch,
+        MCP_UI_VIEW_URIS.workflow,
       ]) {
         const view = resources.find((resource) => resource.uri === uri);
         expect(view, `missing view ${uri}`).toBeDefined();
@@ -163,6 +164,7 @@ describe('MCP Apps server surface', () => {
         MCP_UI_VIEW_URIS.lab,
         MCP_UI_VIEW_URIS.error,
         MCP_UI_VIEW_URIS.batch,
+        MCP_UI_VIEW_URIS.workflow,
       ]) {
         const result = await session.client.readResource({ uri });
         const html = (result.contents[0] as { text?: string }).text ?? '';
@@ -248,6 +250,8 @@ describe('MCP Apps server surface', () => {
         compress_to_target: MCP_UI_VIEW_URIS.lab,
         explain_error: MCP_UI_VIEW_URIS.error,
         batch_convert: MCP_UI_VIEW_URIS.batch,
+        plan_workflow: MCP_UI_VIEW_URIS.workflow,
+        execute_workflow: MCP_UI_VIEW_URIS.workflow,
       };
       for (const [name, uri] of Object.entries(expected)) {
         const tool = tools.find((candidate) => candidate.name === name);

@@ -54,7 +54,7 @@ const MCP_SETTINGS_FILENAME = 'mcp-settings.json';
  */
 export const VSCODE_MCP_FIXTURE_PATH = path.join(__dirname, 'fixtures', 'vscode-mcp.json');
 
-/** The 31 tools registered by the core MCP server (`src/mcp/server.ts`); `commit_operation` is app-only. @const {string[]} */
+/** The 33 tools registered by the core MCP server (`src/mcp/server.ts`); `commit_operation` is app-only. @const {string[]} */
 export const CORE_TOOLS = [
   'ping',
   'convert_media',
@@ -87,6 +87,8 @@ export const CORE_TOOLS = [
   'generate_chapters',
   'search_transcript',
   'summarize_media',
+  'plan_workflow',
+  'execute_workflow',
 ];
 
 /** The 6 GUI-parity tools registered only on the embedded server. @const {string[]} */
@@ -110,6 +112,7 @@ export const RESOURCE_URIS = [
   'ui://encodex/lab',
   'ui://encodex/error',
   'ui://encodex/batch',
+  'ui://encodex/workflow',
 ];
 
 /** Prompt names rendered by every surface. @const {string[]} */

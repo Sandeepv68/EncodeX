@@ -54,6 +54,8 @@ const CORE_TOOLS = [
   'generate_chapters',
   'search_transcript',
   'summarize_media',
+  'plan_workflow',
+  'execute_workflow',
 ];
 const GUI_TOOLS = ['get_queue_state', 'cancel_all_jobs', 'get_timeline', 'extract_preview', 'get_system_info', 'check_for_updates'];
 const ALL_TOOLS = [...CORE_TOOLS, ...GUI_TOOLS];
@@ -69,6 +71,7 @@ const VIEW_URIS = [
   'ui://encodex/lab',
   'ui://encodex/error',
   'ui://encodex/batch',
+  'ui://encodex/workflow',
 ];
 const ALL_RESOURCE_URIS = [...RESOURCE_URIS, ...VIEW_URIS];
 const PROMPT_NAMES = ['convert-video', 'extract-audio', 'compress-image', 'batch-convert'];

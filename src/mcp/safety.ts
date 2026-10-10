@@ -52,6 +52,7 @@ export const TOOL_SAFETY_TIERS: Record<string, SafetyTier> = {
   generate_chapters: SAFETY_TIERS.READ,
   search_transcript: SAFETY_TIERS.READ,
   summarize_media: SAFETY_TIERS.READ,
+  plan_workflow: SAFETY_TIERS.READ,
   recommend_settings: SAFETY_TIERS.PLAN,
   convert_media: SAFETY_TIERS.WRITE,
   compress_image: SAFETY_TIERS.WRITE,
@@ -60,6 +61,7 @@ export const TOOL_SAFETY_TIERS: Record<string, SafetyTier> = {
   batch_convert: SAFETY_TIERS.WRITE,
   remux_media: SAFETY_TIERS.WRITE,
   demux_media: SAFETY_TIERS.WRITE,
+  execute_workflow: SAFETY_TIERS.WRITE,
   compress_to_target: SAFETY_TIERS.WRITE,
   commit_operation: SAFETY_TIERS.WRITE,
 };

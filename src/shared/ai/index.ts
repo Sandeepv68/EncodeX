@@ -28,3 +28,4 @@ export * from './summarize';
 export * from './similarity';
 export * from './stt';
 export * from './translate';
+export * from './workflow';

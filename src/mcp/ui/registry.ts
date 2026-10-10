@@ -18,6 +18,7 @@ import { PLAN_VIEW_HTML } from './views/plan';
 import { LAB_VIEW_HTML } from './views/lab';
 import { ERROR_VIEW_HTML } from './views/error';
 import { BATCH_VIEW_HTML } from './views/batch';
+import { WORKFLOW_VIEW_HTML } from './views/workflow';
 
 /**
  * One servable MCP App view.
@@ -99,6 +100,12 @@ export const MCP_UI_VIEWS: McpUiView[] = [
     uri: MCP_UI_VIEW_URIS.batch,
     description: 'Batch confirmation plus a live per-file dashboard over the shared job queue.',
     html: () => BATCH_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX workflow view',
+    uri: MCP_UI_VIEW_URIS.workflow,
+    description: 'Typed workflow dry-run (ordered steps and dependencies) and its per-step execution report.',
+    html: () => WORKFLOW_VIEW_HTML,
   },
 ];
 

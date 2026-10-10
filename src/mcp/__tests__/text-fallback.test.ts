@@ -56,6 +56,8 @@ const UI_TOOL_ARGS: Record<string, Record<string, unknown>> = {
   compress_to_target: { input: '', maxBytes: 50 * 1024 * 1024 },
   list_jobs: {},
   explain_error: { code: 'CONVERSION_FAILED' },
+  plan_workflow: { steps: [{ id: 'cut', tool: 'cut_video', args: { input: '' } }] },
+  execute_workflow: { steps: [{ id: 'cut', tool: 'cut_video', args: { input: '' } }] },
 };
 
 /**
@@ -70,6 +72,23 @@ function tempMediaFile(): string {
 }
 
 /**
+ * Recursively substitutes empty-string placeholders with the temp media path,
+ * descending into arrays and objects so nested arguments (e.g. workflow steps)
+ * are filled in without replacing whole arrays.
+ * @param {unknown} value - The value to fill in.
+ * @param {string} input - The temp media path to substitute.
+ * @returns {unknown} The value with placeholders replaced.
+ */
+function fillInput(value: unknown, input: string): unknown {
+  if (value === '') return input;
+  if (Array.isArray(value)) return value.map((entry) => fillInput(entry, input));
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, entry]) => [key, fillInput(entry, input)]));
+  }
+  return value;
+}
+
+/**
  * Replaces the empty-string placeholders in {@link UI_TOOL_ARGS} with a real
  * temp file path, so path-taking tools resolve to an existing file.
  * @param {Record<string, unknown>} template - The per-tool argument template.
@@ -77,13 +96,7 @@ function tempMediaFile(): string {
  * @returns {Record<string, unknown>} Arguments with paths filled in.
  */
 function materializeArgs(template: Record<string, unknown>, input: string): Record<string, unknown> {
-  return Object.fromEntries(
-    Object.entries(template).map(([key, value]) => {
-      if (value === '') return [key, input];
-      if (Array.isArray(value)) return [key, value.map(() => input)];
-      return [key, value];
-    }),
-  );
+  return Object.fromEntries(Object.entries(template).map(([key, value]) => [key, fillInput(value, input)]));
 }
 
 /**

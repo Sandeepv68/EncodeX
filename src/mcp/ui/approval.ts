@@ -37,6 +37,7 @@ export const CONFIRMABLE_OPERATIONS = [
   'batch_convert',
   'remux_media',
   'demux_media',
+  'execute_workflow',
 ] as const;
 
 /**

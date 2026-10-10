@@ -173,7 +173,7 @@ plus GUI-parity `get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_p
 | `generate_chapters` | `{ input?/segments?, durationSeconds?, minChapterSeconds?, maxChapterSeconds?, maxChapters? }` | F13 auto chapters with YouTube + ffmpeg-metadata timestamp formats | R4 | `[x]` |
 | `search_transcript` | `{ input?/segments?, durationSeconds?, query, maxMatches?, context? }` | F14 transcript search returning matches plus ready `cut_video` args (string seconds) | R4 | `[x]` |
 | `summarize_media` | `{ input?/segments?, durationSeconds?, maxSentences?, maxTopics? }` | F15 extractive video summary + topic/keyword list | R4 | `[x]` |
-| `plan_workflow` / `execute_workflow` | typed DAG JSON | Multi-step automation (PAN #17) with dry-run | R5 | `[ ]` |
+| `plan_workflow` / `execute_workflow` | typed DAG JSON (`steps[]` with `{{step.field}}` refs) | Multi-step automation (PAN #17) with dry-run (`plan_workflow`) and dependency-ordered execution (F19) | R5 | `[x]` |
 
 ### 4.3 Result contract (all tools)
 
@@ -221,7 +221,7 @@ capability handshake, `_meta.ui.resourceUri` on 15 tools, confirmation bridge
 | Batch Dashboard | `ui://encodex/batch` | `batch_convert`, `get_queue_state` | R2 | `[x]` |
 | Error explainer + retry | `ui://encodex/error` | `explain_error`, `commit_operation` | R2 | `[x]` |
 | Compression Lab (A/B candidates) | `ui://encodex/lab` | `compress_to_target`, `validate_output` | R3 | `[x]` |
-| Workflow Builder | `ui://encodex/workflow` | `plan_workflow`, `execute_workflow` | R5 | `[ ]` |
+| Workflow Builder | `ui://encodex/workflow` | `plan_workflow`, `execute_workflow` | R5 | `[x]` |
 
 Views are plain HTML strings from `src/mcp/ui/views/*` — **no build step, no framework, no
 bundler**, matching the existing pipeline. Data arrives as `structuredContent`, never by
@@ -457,13 +457,40 @@ Shipped:
 
 **Verify:** `npm run test`, `npm run typecheck`, `npm run mcp:smoke`, `npm run mcp:full-test`.
 
-### R5 — Workflows + host reachability spike
+### R5 — Workflows + host reachability spike `[x]`
 
 Typed workflow DAG with dry-run (`plan_workflow`/`execute_workflow`, `ui://encodex/workflow`,
 F19); decision **D1** spike (opt-in tunnel for ChatGPT) with a written go/no-go; OAuth 2.1 +
 resource indicators if any remote path ships.
 
 **Deliverable:** multi-step automation + a documented answer on ChatGPT.
+
+Shipped:
+
+- `[x]` F19 typed workflow DAG + dry-run — pure planner `src/shared/ai/workflow.ts`
+  (`validateWorkflow`, `topologicalOrder`, `planWorkflow`, `resolveReferences`); reference
+  syntax `{{<stepId>.<field>}}` infers implicit dependencies; cycles/unknown tools/bad ids are
+  reported as stable issue codes, never run.
+- `[x]` `plan_workflow` (READ) returns the validated dry-run — execution order, per-step
+  dependencies/references, and issues — with nothing executed.
+- `[x]` `execute_workflow` (WRITE, confirmable) runs steps in dependency order, resolves
+  `{{step.output}}` from earlier results, stops at the first failing step, and returns a
+  per-step report (job id + output path, or the error). Bodies: `executeWorkflowStep` +
+  `runWorkflow` in `src/mcp/server.ts`.
+- `[x]` `ui://encodex/workflow` view (`src/mcp/ui/views/workflow.ts`) renders the plan and/or
+  the execution report.
+- `[x]` D1 spike written: `todo/D1_CHATGPT_REACHABILITY_SPIKE.md` — **no-go** on a hosted relay;
+  **conditional go** for a documented, user-supplied tunnel; default stays loopback-only
+  (option **a**). No auto-tunnel and no OAuth in R5.
+- `[x]` Contract refresh (`CORE_TOOLS` 31 → 33, views 10 → 11) across `scripts/mcp-full-test.mjs`,
+  `scripts/mcp-smoke.mjs`, `e2e/mcp/harness.ts`, `e2e/mcp/client.ts`, `e2e/mcp/mcp-apps.spec.ts`,
+  `src/mcp/__tests__/{mcp-ui,text-fallback}.test.ts`.
+- `[x]` Unit + integration tests: `src/shared/ai/__tests__/workflow.test.ts`,
+  `src/mcp/__tests__/workflow.test.ts`. The text-fallback drift detector now substitutes
+  placeholders deeply so nested workflow args are exercised.
+
+**Verify:** `npm run test`, `npm run typecheck`, `npm run mcp:smoke`, `npm run mcp:full-test`.
+
 
 ### R6 — Agent & optional Copilot surface
 
@@ -481,7 +508,7 @@ Milestones are scope boxes, not date commitments; sizing depends on how much of 
 
 | ID | Decision | Options | Recommendation |
 | --- | --- | --- | --- |
-| D1 | Reach ChatGPT (remote-only) | a) document unsupported b) opt-in tunnel c) hosted relay | **a)** through R4; spike **b)** in R5 |
+| D1 | Reach ChatGPT (remote-only) | a) document unsupported b) opt-in tunnel c) hosted relay | **a)** default. **Spiked in R5** (`todo/D1_CHATGPT_REACHABILITY_SPIKE.md`): no-go on (c) hosted relay; conditional go on (b) as a documented user-run tunnel only, no auto-tunnel/OAuth shipped |
 | D2 | Desktop Copilot panel | ship now / ship R6 / never | **R6** — MCP delivers the value first with zero new renderer surface |
 | D3 | Local model default | ship local adapter in R1 vs R4 | **R4**, alongside F11 which needs it anyway |
 | D4 | Tasks extension vs custom polling | both / tasks-only | **both** — tasks for capable clients, `get_job` retained as fallback |
@@ -505,5 +532,6 @@ Milestones are scope boxes, not date commitments; sizing depends on how much of 
 **Start here:** R0 (close the gaps in what already ships) `[x]` → R1 (`recommend_settings` +
 plan card) `[x]` → R3 (Compression Lab) `[x]` → R2 (reliability: errors, batch, dashboard)
 `[x]` → R4 (media intelligence: `find_similar_media` + local STT → subtitles, translation,
-chapters, transcript search, summarization) `[x]`. Next: R5 (typed workflow DAG with dry-run and
-the ChatGPT reachability spike); the workflow agent waits until R4 is boring.
+chapters, transcript search, summarization) `[x]` → R5 (typed workflow DAG with dry-run +
+ChatGPT reachability spike) `[x]`. Next: R6 (agent & optional Copilot surface); the long-term
+vision waits until the workflow layer is boring.

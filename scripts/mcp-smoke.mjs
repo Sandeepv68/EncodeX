@@ -27,7 +27,7 @@ const DIST_MCP = path.join(ROOT, 'dist', 'mcp', 'index.js');
 // `--mcp` branch) exposes the 24 core tools plus the app-only `commit_operation`
 // executor. The 6 GUI-parity tools are only registered by the embedded HTTP
 // server inside the running GUI.
-const EXPECTED_TOOL_COUNT = 31;
+const EXPECTED_TOOL_COUNT = 33;
 const REQUIRED_TOOLS = [
   'ping',
   'convert_media',
@@ -60,6 +60,8 @@ const REQUIRED_TOOLS = [
   'generate_chapters',
   'search_transcript',
   'summarize_media',
+  'plan_workflow',
+  'execute_workflow',
 ];
 
 // MCP Apps (SEP-1865) surface: the extension capability plus the renderable
@@ -77,6 +79,7 @@ const REQUIRED_VIEW_URIS = [
   'ui://encodex/lab',
   'ui://encodex/error',
   'ui://encodex/batch',
+  'ui://encodex/workflow',
 ];
 
 /**
