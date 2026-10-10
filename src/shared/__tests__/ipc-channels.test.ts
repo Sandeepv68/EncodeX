@@ -51,6 +51,7 @@ describe('IPC channels', () => {
     expect(IPC.PLAYER_AUDIO).toBe('player-audio');
     expect(IPC.PLAYER_ERROR).toBe('player-error');
     expect(IPC.LOG_MESSAGE).toBe('log-message');
+    expect(IPC.AUDIT_ENTRY).toBe('audit-entry');
     expect(IPC.WINDOW_CLOSE_REQUESTED).toBe('window-close-requested');
   });
 });

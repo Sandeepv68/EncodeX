@@ -50,6 +50,8 @@ export const UI_VIEW_URIS = [
   'ui://encodex/inspector',
   'ui://encodex/plan',
   'ui://encodex/lab',
+  'ui://encodex/error',
+  'ui://encodex/batch',
 ];
 
 /** Every resource URI served by every surface, sorted for exact comparison. @const {string[]} */

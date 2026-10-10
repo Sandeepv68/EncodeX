@@ -29,6 +29,7 @@ import type { ErrorCodeType, AppError } from './types';
  * @property {string} AUXILIARY_INPUT_NOT_FOUND - An added subtitle/audio/chapter/cover file is missing.
  * @property {string} PERMISSION_DENIED - Access to the file or directory was denied.
  * @property {string} OPERATION_TIMED_OUT - A bounded subprocess exceeded its wall-clock budget and was killed.
+ * @property {string} UNSAFE_ARGUMENTS - A tool passed arguments that contain shell metacharacters or a second command.
  * @property {string} UNKNOWN - An unrecognized error occurred.
  */
 export const ErrorCode = {
@@ -53,6 +54,7 @@ export const ErrorCode = {
   AUXILIARY_INPUT_NOT_FOUND: 'AUXILIARY_INPUT_NOT_FOUND',
   PERMISSION_DENIED: 'PERMISSION_DENIED',
   OPERATION_TIMED_OUT: 'OPERATION_TIMED_OUT',
+  UNSAFE_ARGUMENTS: 'UNSAFE_ARGUMENTS',
   UNKNOWN: 'UNKNOWN',
 } as const;
 
@@ -179,6 +181,7 @@ export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
   AUXILIARY_INPUT_NOT_FOUND: 'An added subtitle, audio, chapter, or cover file could not be found.',
   PERMISSION_DENIED: 'Permission denied. The application may not have access to the selected file or directory.',
   OPERATION_TIMED_OUT: 'The operation took too long and was stopped. The file may be corrupt, or the system may be under heavy load.',
+  UNSAFE_ARGUMENTS: 'The request contained arguments that are not allowed (shell metacharacters or a second command were detected).',
   UNKNOWN: 'An unexpected error occurred. Please try again.',
 };
 

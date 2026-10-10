@@ -16,6 +16,8 @@ import { CONFIRM_VIEW_HTML } from './views/confirm';
 import { INSPECTOR_VIEW_HTML } from './views/inspector';
 import { PLAN_VIEW_HTML } from './views/plan';
 import { LAB_VIEW_HTML } from './views/lab';
+import { ERROR_VIEW_HTML } from './views/error';
+import { BATCH_VIEW_HTML } from './views/batch';
 
 /**
  * One servable MCP App view.
@@ -85,6 +87,18 @@ export const MCP_UI_VIEWS: McpUiView[] = [
     uri: MCP_UI_VIEW_URIS.lab,
     description: 'Measured size-target compression: candidate ladder, every attempt, and the best measured fit.',
     html: () => LAB_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX error view',
+    uri: MCP_UI_VIEW_URIS.error,
+    description: 'Plain-language error explanation with likely causes and one-click fixes.',
+    html: () => ERROR_VIEW_HTML,
+  },
+  {
+    id: 'EncodeX batch view',
+    uri: MCP_UI_VIEW_URIS.batch,
+    description: 'Batch confirmation plus a live per-file dashboard over the shared job queue.',
+    html: () => BATCH_VIEW_HTML,
   },
 ];
 

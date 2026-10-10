@@ -55,6 +55,7 @@ const UI_TOOL_ARGS: Record<string, Record<string, unknown>> = {
   estimate_conversion: { input: '' },
   compress_to_target: { input: '', maxBytes: 50 * 1024 * 1024 },
   list_jobs: {},
+  explain_error: { code: 'CONVERSION_FAILED' },
 };
 
 /**

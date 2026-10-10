@@ -102,11 +102,13 @@ export function confirmationResult(confirmation: McpUiConfirmation): {
 
 /**
  * The `ui://` resource a tool should advertise so the host renders the right
- * view: the rich convert form keeps its bespoke view, everything else uses the
- * generic confirmation view.
+ * view: the rich convert form keeps its bespoke view, batches use the batch
+ * dashboard, everything else uses the generic confirmation view.
  * @param {string} tool - The mutating tool name.
  * @returns {string} The view URI to attach to the tool metadata.
  */
 export function confirmationViewUri(tool: string): string {
-  return tool === 'convert_media' ? MCP_UI_VIEW_URIS.convert : MCP_UI_VIEW_URIS.confirm;
+  if (tool === 'convert_media') return MCP_UI_VIEW_URIS.convert;
+  if (tool === 'batch_convert') return MCP_UI_VIEW_URIS.batch;
+  return MCP_UI_VIEW_URIS.confirm;
 }

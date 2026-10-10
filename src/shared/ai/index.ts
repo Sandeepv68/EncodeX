@@ -16,3 +16,6 @@ export * from './recommend';
 export * from './provider';
 export * from './target-size';
 export * from './folder';
+export * from './error-explain';
+export * from './quality';
+export * from './advisor';

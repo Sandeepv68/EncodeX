@@ -24,10 +24,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST_MCP = path.join(ROOT, 'dist', 'mcp', 'index.js');
 
 // The stdio surface (standalone `node dist/mcp/index.js` and the Electron
-// `--mcp` branch) exposes the 21 core tools plus the app-only `commit_operation`
+// `--mcp` branch) exposes the 24 core tools plus the app-only `commit_operation`
 // executor. The 6 GUI-parity tools are only registered by the embedded HTTP
 // server inside the running GUI.
-const EXPECTED_TOOL_COUNT = 22;
+const EXPECTED_TOOL_COUNT = 25;
 const REQUIRED_TOOLS = [
   'ping',
   'convert_media',
@@ -51,6 +51,9 @@ const REQUIRED_TOOLS = [
   'validate_output',
   'compress_to_target',
   'analyze_folder',
+  'explain_error',
+  'advise_encoding',
+  'quality_report',
 ];
 
 // MCP Apps (SEP-1865) surface: the extension capability plus the renderable
@@ -66,6 +69,8 @@ const REQUIRED_VIEW_URIS = [
   'ui://encodex/inspector',
   'ui://encodex/plan',
   'ui://encodex/lab',
+  'ui://encodex/error',
+  'ui://encodex/batch',
 ];
 
 /**

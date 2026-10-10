@@ -51,6 +51,8 @@ export const MCP_UI_VIEW_URIS = {
   inspector: 'ui://encodex/inspector',
   plan: 'ui://encodex/plan',
   lab: 'ui://encodex/lab',
+  error: 'ui://encodex/error',
+  batch: 'ui://encodex/batch',
   profiles: 'ui://encodex/profiles',
   capabilities: 'ui://encodex/capabilities',
 } as const;

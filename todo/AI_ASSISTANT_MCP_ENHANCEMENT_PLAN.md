@@ -4,7 +4,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 
 > **What changed in v2.** v1 was written as if EncodeX had no MCP Apps support and no tools.
 > That is no longer true. v2 is grounded in the actual repository (verified 2026-10-10):
-> the MCP server exposes **22 core tools + 6 GUI-parity tools**, MCP Apps is **already
+> the MCP server exposes **25 core tools + 6 GUI-parity tools**, MCP Apps is **already
 > shipped** (`M0`–`M4` complete in `plans/MCP_APPS_SERVER_PLAN.md`), and **115 built-in
 > profiles** exist. v2 therefore describes *extension and completion*, not greenfield
 > invention. It also merges and de-duplicates the 20 ideas in `todo/AI_ASSISTANT_PAN.md`
@@ -22,9 +22,9 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 | Claim in v1 / PAN | Verified reality |
 | --- | --- |
 | "140+ profiles" | **115** built-in profiles, `src/shared/profiles/builtin.ts:3`, 8 categories |
-| No MCP Apps support; "build the Conversion Studio MCP App" | **8 `ui://` views registered and served** — `queue`, `job`, `media-info`, `convert`, `confirm`, `inspector`, `plan`, `lab` (`src/shared/mcp-ui.ts:45-55`, `src/mcp/ui/registry.ts`) |
-| Proposed tool names `media.inspect`, `conversion.plan`, `jobs.get`, … | Real surface is `convert_media`, `get_media_info`, `get_job`, `list_jobs`, `cancel_job`, `batch_convert`, `cut_video`, `extract_audio`, `compress_image`, `remux_media`, `demux_media`, `list_profiles`, `get_profile`, `list_capabilities`, `ping`, `commit_operation`, `analyze_media`, `recommend_settings`, `estimate_conversion`, `validate_output`, `compress_to_target`, `analyze_folder` (`src/mcp/server.ts`) |
-| "Design the MCP tools around the apps" | Tool→UI linkage via `_meta.ui.resourceUri` is **already on 13 tools** (`src/mcp/server.ts`) |
+| No MCP Apps support; "build the Conversion Studio MCP App" | **10 `ui://` views registered and served** — `queue`, `job`, `media-info`, `convert`, `confirm`, `inspector`, `plan`, `lab`, `error`, `batch` (`src/shared/mcp-ui.ts:45-57`, `src/mcp/ui/registry.ts`) |
+| Proposed tool names `media.inspect`, `conversion.plan`, `jobs.get`, … | Real surface is `convert_media`, `get_media_info`, `get_job`, `list_jobs`, `cancel_job`, `batch_convert`, `cut_video`, `extract_audio`, `compress_image`, `remux_media`, `demux_media`, `list_profiles`, `get_profile`, `list_capabilities`, `ping`, `commit_operation`, `analyze_media`, `recommend_settings`, `estimate_conversion`, `validate_output`, `compress_to_target`, `analyze_folder`, `explain_error`, `advise_encoding`, `quality_report` (`src/mcp/server.ts`) |
+| "Design the MCP tools around the apps" | Tool→UI linkage via `_meta.ui.resourceUri` is **already on 15 tools** (`src/mcp/server.ts`) |
 | MCP Apps spec "marked stable January 26, 2026" | **Correct.** SEP-1865, spec `2026-01-26`, Status Stable; SDK v1.0.0 same day |
 | ChatGPT is a target host | **Blocked by design today.** Both HTTP servers refuse non-loopback binds (`src/mcp/http.ts:107`, `assertLoopbackBind`) and ChatGPT is remote-only. See decision **D1** |
 | In-MCP agent can "plan multi-step jobs" | MCP **sampling is deprecated** as of core spec `2026-07-28` (SEP-2577). An agent must call the LLM provider API directly — do not build on `sampling` or `roots` |
@@ -34,7 +34,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 | Layer | State | Evidence |
 | --- | --- | --- |
 | FFmpeg engine + 3 transcoder cores | done | `src/main/transcoders/{ffmpeg,fftool,bmf}-core.ts` |
-| Typed errors — **22 codes** | done | `src/shared/errors.ts:34-57` |
+| Typed errors — **23 codes** | done | `src/shared/errors.ts:35-58` |
 | Job queue, 4 states, persistence, concurrency 4 | done | `src/main/queue/job-queue.ts:145`, `src/shared/media-options.ts:271` |
 | MCP job manager (`queued/running/done/error`) | done | `src/mcp/jobs/manager.ts:83` |
 | Batch planner with path/dir/glob expansion | done | `src/mcp/operations.ts:247` |
@@ -164,7 +164,9 @@ plus GUI-parity `get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_p
 | `validate_output` | `{ output, expect?: { maxBytes?, minResolution?, codec? } }` | Re-probes the output and returns pass/fail per constraint. This is what makes "validate before claiming success" real | R1 | `[x]` |
 | `compress_to_target` | `{ input, maxBytes, intent?, videoCodec?, audioCodec?, audioBitrate?, maxCandidates?, output?, transcoder? }` | Target-size encode loop (F3): plans an ordered bitrate ladder, encodes each candidate, re-probes the output, and stops at the highest quality that fits. Returns `{ converged, chosen, attempts, plan }` | R3 | `[x]` |
 | `analyze_folder` | `{ path, intent?, recursive?, maxFiles?, transcoder? }` | Media Librarian (F9): projects per-file savings and a folder total without encoding. Returns a `LibrarySummary` | R3 | `[x]` |
-| `explain_error` | `{ jobId }` or `{ message }` | Maps `ErrorCode` (22 typed codes) + FFmpeg stderr to plain language + a suggested retry args patch | R2 | `[ ]` |
+| `explain_error` | `{ jobId }` or `{ message }` | Maps `ErrorCode` (23 typed codes) + FFmpeg stderr to plain language + a suggested retry args patch | R2 | `[x]` |
+| `advise_encoding` | `{ input }` | F7 encoding advisor: recommends a target video encoder + whether to use the GPU from the probed source and this machine's real encoder/hwaccel capabilities, with the trade-offs; deterministic (no model call) | R2 | `[x]` |
+| `quality_report` | `{ source, output, expect? }` | F8 post-encode quality report: re-probes the output, compares it to the source (resolution, audio, codec, duration) and returns per-check pass/fail plus plain-language findings | R2 | `[x]` |
 | `find_similar_media` | `{ inputs[], method: 'hash'\|'metadata' }` | Dedupe/redundancy detection (PAN #6) — perceptual hash + duration/resolution similarity | R4 | `[ ]` |
 | `plan_workflow` / `execute_workflow` | typed DAG JSON | Multi-step automation (PAN #17) with dry-run | R5 | `[ ]` |
 
@@ -190,8 +192,8 @@ polling `get_job`. No behavior change for existing clients.
 
 ## 5. MCP Apps — what exists and what to add
 
-**Shipped (`[x]`):** `ui://encodex/{queue,job,media-info,convert,confirm,inspector,plan,lab}`,
-capability handshake, `_meta.ui.resourceUri` on 13 tools, confirmation bridge
+**Shipped (`[x]`):** `ui://encodex/{queue,job,media-info,convert,confirm,inspector,plan,lab,error,batch}`,
+capability handshake, `_meta.ui.resourceUri` on 15 tools, confirmation bridge
 (`src/mcp/ui/approval.ts`), hostile-metadata tests, `mcp:smoke` green.
 
 **Remaining hardening for the shipped set:**
@@ -211,8 +213,8 @@ capability handshake, `_meta.ui.resourceUri` on 13 tools, confirmation bridge
 | Media Inspector | `ui://encodex/inspector` | `analyze_media`, `get_media_info` | R1 | `[x]` |
 | Plan & Estimate card | `ui://encodex/plan` | `recommend_settings`, `estimate_conversion` | R1 | `[x]` |
 | Approval card (upgraded `confirm`) | `ui://encodex/confirm` | `commit_operation` | R1 | `[x]` |
-| Batch Dashboard | `ui://encodex/batch` | `batch_convert`, `get_queue_state` | R2 | `[ ]` |
-| Error explainer + retry | `ui://encodex/error` | `explain_error`, `commit_operation` | R2 | `[ ]` |
+| Batch Dashboard | `ui://encodex/batch` | `batch_convert`, `get_queue_state` | R2 | `[x]` |
+| Error explainer + retry | `ui://encodex/error` | `explain_error`, `commit_operation` | R2 | `[x]` |
 | Compression Lab (A/B candidates) | `ui://encodex/lab` | `compress_to_target`, `validate_output` | R3 | `[x]` |
 | Workflow Builder | `ui://encodex/workflow` | `plan_workflow`, `execute_workflow` | R5 | `[ ]` |
 
@@ -236,16 +238,21 @@ app can commit** (`commit_operation` is `visibility:['app']`). Extend it into fo
 
 Additional rules:
 
-- `[ ]` Validate **all** tool inputs on the server with the existing Zod schemas; reject
-  `extraArgs` that contain shell metacharacters or a second command.
-- `[ ]` Never build a shell string — argv array only (already true of the transcoder layer;
-  add a lint/test guard so it stays true).
-- `[ ]` Cap `batch_convert` fan-out and require re-approval when a plan's file count or total
-  bytes grow beyond the approved envelope.
-- `[ ]` Every mutating tool emits a `commit_operation` audit entry (tool, args digest, result)
-  surfaced in the Logs page.
-- `[ ]` Post-execution validation is mandatory: job `done` + output exists + probe readable +
-  `validate_output` constraints satisfied, else report failure honestly.
+- `[x]` Validate **all** tool inputs on the server with the existing Zod schemas; reject
+  `extraArgs` that contain shell metacharacters or a second command
+  (`src/mcp/safety.ts` — `findUnsafeExtraArgs`/`assertSafeExtraArgs`, wired into
+  `buildConversionOptions`/`buildCutPlan`; new `UNSAFE_ARGUMENTS` code).
+- `[x]` Never build a shell string — argv array only (already true of the transcoder layer;
+  guarded by `src/main/transcoders/__tests__/argv-contract.test.ts`).
+- `[x]` Cap `batch_convert` fan-out (`MAX_BATCH_FILES = 500`) and require re-approval when a
+  plan's file count or total bytes grow beyond the approved envelope
+  (`batchApprovedEnvelope` pre-parse check → new confirmation instead of running).
+- `[x]` Every mutating tool emits a `commit_operation` audit entry (tool, args digest, result)
+  surfaced in the Logs page (`src/shared/audit.ts`, `onAudit` sink → IPC `audit-entry` →
+  `useAuditStore` → Logs audit panel).
+- `[~]` Post-execution validation: `validate_output`/`quality_report` ship and
+  `compress_to_target` re-probes every candidate; auto-running validation after **every**
+  mutating tool is deferred to the R4+ agent loop.
 
 ---
 
@@ -285,7 +292,7 @@ Scoring: **V** value · **D** difficulty (1 low – 5 very high) · **Dep** what
 | F1 | Natural-language → typed conversion plan (`recommend_settings`) | 5 | 2 | AI layer 7.1-7.2 | P1 |
 | F2 | Profile selection/explanation over the 115 built-ins | 5 | 1 | `list_profiles` (exists) | P1 |
 | F3 | Target-size encoding with measured retry loop | 5 | 3 | `estimate`+`validate` | P1 |
-| F4 | Error explanation + one-click switch & retry | 5 | 1 | 22 `ErrorCode`s (exists) | P1 |
+| F4 | Error explanation + one-click switch & retry | 5 | 1 | 23 `ErrorCode`s (exists) | P1 |
 | F5 | "Explain this media file" / compatibility diagnosis | 4 | 1 | `get_media_info` (exists) | P1 |
 | F6 | AI-optimized batch ("compress >500 MB, keep originals, skip already-optimized") | 5 | 3 | `batch_convert` (exists) + F1 | P2 |
 | F7 | Encoding advisor using real hardware caps | 4 | 2 | `capabilities.ts` (exists) | P2 |
@@ -337,13 +344,48 @@ execution → verified output — inside Claude or VS Code.
 
 **Verify:** `npm run mcp:full-test`, `npm run test:e2e:mcp`.
 
-### R2 — Reliability: errors, batch, dashboard
+### R2 — Reliability: errors, batch, dashboard `[x]`
 
 `explain_error` + `ui://encodex/error`; `ui://encodex/batch` over `batch_convert`;
 tiered T0–T3 gating (§6) incl. audit log in the Logs page; F4, F6, F7, F8.
 
 **Deliverable:** failures become plain language with a one-click retry; bulk work is
 manageable from a conversation.
+
+Shipped:
+
+- `[x]` F4 error explainer — `src/shared/ai/error-explain.ts` + `explain_error` tool
+  (`src/mcp/server.ts`): maps a job id or raw message/`ErrorCode` to plain language and a
+  suggested retry args patch; `ui://encodex/error` (`src/mcp/ui/views/error.ts`) renders the
+  explanation plus one-click retry/switch fix.
+- `[x]` F7 encoding advisor — `src/shared/ai/advisor.ts` + `advise_encoding` tool: picks an
+  encoder + hardware usage from the probed source and this machine's real capabilities, with
+  trade-offs. Deterministic; no model call.
+- `[x]` F8 quality report — `src/shared/ai/quality.ts` + `quality_report` tool: re-probes the
+  output, compares it to the source (resolution, audio, codec, duration) and returns per-check
+  pass/fail + plain-language findings (labels the `resolution_reduced` finding when the output
+  is downscaled).
+- `[x]` Batch dashboard — `ui://encodex/batch` (`src/mcp/ui/views/batch.ts`) over
+  `batch_convert`/`get_queue_state`: confirmation card → `commit_operation`, then a jobs
+  dashboard that polls `list_jobs`.
+- `[x]` Safety model (§6) — `src/mcp/safety.ts` (T0–T3 tiers, `findUnsafeExtraArgs`,
+  `MAX_BATCH_FILES = 500`), `assertSafeExtraArgs` wired into `buildConversionOptions`/
+  `buildCutPlan`, `UNSAFE_ARGUMENTS` `ErrorCode` (23rd code), and batch re-approval on envelope
+  growth.
+- `[x]` Audit trail — `src/shared/audit.ts` (`createAuditEntry`, `digestArgs`) + `onAudit` sink
+  on the MCP server → IPC `audit-entry` → `useAuditStore` → audit panel in `Logs.tsx`.
+- `[x]` Contract refresh (`CORE_TOOLS` 22 → 25, resources 11 → 13, views 8 → 10) across
+  `scripts/mcp-full-test.mjs`, `scripts/mcp-smoke.mjs`, `e2e/mcp/{harness,client}.ts`,
+  `e2e/mcp/mcp-apps.spec.ts`, `src/mcp/__tests__/{mcp-ui,text-fallback}.test.ts`.
+- `[x]` Unit tests: `src/shared/ai/__tests__/{advisor,quality}.test.ts`,
+  `src/shared/__tests__/audit.test.ts`, `src/mcp/__tests__/{safety,r2-tools}.test.ts`,
+  `src/renderer/stores/__tests__/auditStore.test.ts`, Logs audit-panel tests.
+- `[-]` F6 AI-optimized batch policy (">500 MB, keep originals, skip already-optimized") —
+  **deferred**: no dedicated tool; it is a model-side composition of the shipped
+  `batch_convert` + `recommend_settings` (F1) and the batch dashboard, so it lands with the R4+
+  agent loop rather than as server code.
+
+**Verify:** `npm run test`, `npm run typecheck`, `npm run mcp:smoke`, `npm run mcp:full-test`.
 
 ### R3 — Compression Lab (measurable differentiation) `[x]`
 
@@ -426,5 +468,6 @@ Milestones are scope boxes, not date commitments; sizing depends on how much of 
    over their library only because the gate is visible.
 
 **Start here:** R0 (close the gaps in what already ships) `[x]` → R1 (`recommend_settings` +
-plan card) `[x]` → R3 (Compression Lab) `[x]`. Next: R2 (reliability: errors, batch, dashboard);
-the workflow agent waits until R2 is boring.
+plan card) `[x]` → R3 (Compression Lab) `[x]` → R2 (reliability: errors, batch, dashboard)
+`[x]`. Next: R4 (media intelligence: `find_similar_media` + local STT → subtitles); the
+workflow agent waits until R2 is boring.

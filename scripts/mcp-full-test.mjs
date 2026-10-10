@@ -45,6 +45,9 @@ const CORE_TOOLS = [
   'validate_output',
   'compress_to_target',
   'analyze_folder',
+  'explain_error',
+  'advise_encoding',
+  'quality_report',
 ];
 const GUI_TOOLS = ['get_queue_state', 'cancel_all_jobs', 'get_timeline', 'extract_preview', 'get_system_info', 'check_for_updates'];
 const ALL_TOOLS = [...CORE_TOOLS, ...GUI_TOOLS];
@@ -58,6 +61,8 @@ const VIEW_URIS = [
   'ui://encodex/inspector',
   'ui://encodex/plan',
   'ui://encodex/lab',
+  'ui://encodex/error',
+  'ui://encodex/batch',
 ];
 const ALL_RESOURCE_URIS = [...RESOURCE_URIS, ...VIEW_URIS];
 const PROMPT_NAMES = ['convert-video', 'extract-audio', 'compress-image', 'batch-convert'];

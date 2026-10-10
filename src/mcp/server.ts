@@ -29,8 +29,11 @@ import { getEncoderCapabilities } from '../main/capabilities';
 import { BUILTIN_PROFILES } from '../shared/profiles/builtin';
 import type { ConversionProfile } from '../shared/types';
 import {
+  adviseEncoding,
   analyzeMedia,
+  compareQuality,
   estimateConversion,
+  explainError,
   extractMediaFacts,
   libraryRow,
   parseIntent,
@@ -40,6 +43,10 @@ import {
   summarizeLibrary,
   validateOutput,
 } from '../shared/ai';
+import { createAuditEntry } from '../shared/audit';
+import type { AuditEntry } from '../shared/audit';
+import { batchEnvelopeExceeds, tierForTool } from './safety';
+import type { BatchEnvelope } from './safety';
 import type { LibraryRow, PlanRequest } from '../shared/ai';
 import { VIDEO_CODECS, AUDIO_CODECS } from '../shared/media-options';
 import { suggestedExtensionForVideoCodec } from '../shared/codec-containers';
@@ -82,12 +89,17 @@ import type { MCPCompressFields, MCPExtractAudioFields, MCPCutFields, MCPRemuxFi
  * @property {MCPJobManager} [jobManager] - Job manager backing the conversion
  *   tools. Shared across tool calls so agents can poll/queue/cancel; a fresh
  *   manager is created when omitted.
+ * @property {function(AuditEntry): void} [onAudit] - Optional sink invoked once
+ *   for every committed (or headlessly executed) mutating operation, so the
+ *   Electron main process can surface an audit trail in the renderer. Errors
+ *   thrown by the sink are swallowed.
  */
 export interface CreateMcpServerOptions {
   name?: string;
   version?: string;
   transcoderFactory?: (type: TranscoderType) => ITranscoder;
   jobManager?: MCPJobManager;
+  onAudit?: (entry: AuditEntry) => void;
 }
 
 /**
@@ -494,6 +506,37 @@ const analyzeFolderSchema = z.object({
 });
 
 /**
+ * Schema for the `explain_error` tool: a raw failure (or a failed job id) mapped
+ * to a plain-language explanation with likely causes and one-click fixes.
+ */
+const explainErrorSchema = z.object({
+  code: z.string().optional().describe('The EncodeX error code (e.g. CONVERSION_FAILED).'),
+  message: z.string().optional().describe('The raw error message; used to infer the code when code is omitted.'),
+  detail: z.string().optional().describe('The optional error detail line.'),
+  jobId: z.string().optional().describe('A failed job id to explain (its error is folded into the explanation).'),
+  input: z.string().optional().describe('The input file the operation ran on, when known.'),
+  tool: z.string().optional().describe('The tool that produced the error, when known.'),
+  args: z.record(z.string(), z.unknown()).optional().describe('The arguments the tool was called with, when known.'),
+});
+
+/**
+ * Schema for the `advise_encoding` tool: pick an encoder + hardware usage from
+ * the real machine capabilities.
+ */
+const adviseEncodingSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the input media file to advise on.'),
+});
+
+/**
+ * Schema for the `quality_report` tool: compare a produced output to its source.
+ */
+const qualityReportSchema = z.object({
+  source: z.string().min(1).describe('Absolute path of the source media file.'),
+  output: z.string().min(1).describe('Absolute path of the produced output file to compare.'),
+  expect: validationExpectSchema.optional().describe('Optional explicit expectations for the output.'),
+});
+
+/**
  * Media file extensions the folder analysis projects. Non-media files found in
  * a directory are skipped so the report only covers things that can be encoded.
  * @const {Set<string>}
@@ -601,6 +644,68 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
 
   const transcoderFactory = options.transcoderFactory ?? createTranscoder;
   const jobManager = options.jobManager ?? new MCPJobManager({ transcoderFactory });
+  const onAudit = options.onAudit;
+
+  /**
+   * Reports a committed (or headlessly executed) mutating operation to the
+   * audit sink. Never throws: an audit failure must not break a tool call.
+   * @param {string} tool - The mutating tool that ran.
+   * @param {unknown} args - The arguments it ran with.
+   * @param {boolean} success - Whether it was accepted.
+   * @param {string} [detail] - Error summary when it failed.
+   * @returns {void}
+   */
+  function emitAudit(tool: string, args: unknown, success: boolean, detail?: string): void {
+    if (!onAudit) return;
+    try {
+      const fields: { tool: string; tier: number; args: unknown; result: 'ok' | 'error'; detail?: string } = {
+        tool,
+        tier: tierForTool(tool),
+        args,
+        result: success ? 'ok' : 'error',
+      };
+      if (detail) fields.detail = detail;
+      onAudit(createAuditEntry(fields));
+    } catch {
+      /* swallow: auditing is best-effort */
+    }
+  }
+
+  /**
+   * Reads the approved size envelope a confirmation round-tripped back in the
+   * batch arguments. Unknown to the schema (which strips it), so it only ever
+   * reaches the commit path.
+   * @param {unknown} raw - The raw tool arguments.
+   * @returns {BatchEnvelope | undefined} The approved envelope, when present.
+   */
+  function batchApprovedEnvelope(raw: unknown): BatchEnvelope | undefined {
+    if (!raw || typeof raw !== 'object') return undefined;
+    const envelope = (raw as Record<string, unknown>).__envelope;
+    if (!envelope || typeof envelope !== 'object') return undefined;
+    const record = envelope as Record<string, unknown>;
+    if (typeof record.fileCount === 'number' && typeof record.totalBytes === 'number') {
+      return { fileCount: record.fileCount, totalBytes: record.totalBytes };
+    }
+    return undefined;
+  }
+
+  /**
+   * Sums the input sizes of a batch plan, tolerating files that vanish between
+   * planning and stat'ing (they simply contribute zero bytes).
+   * @param {Array<{ input: string }>} jobs - The planned jobs.
+   * @returns {number} The total input size in bytes.
+   */
+  function batchPlanBytes(jobs: Array<{ input: string }>): number {
+    let total = 0;
+    for (const job of jobs) {
+      try {
+        total += fs.statSync(job.input).size;
+      } catch {
+        /* ignore */
+      }
+    }
+    return total;
+  }
 
   /**
    * Drops the confirmation rows a tool left unset, keeping views tidy.
@@ -827,8 +932,10 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         converged: chosen !== undefined,
       };
       if (chosen) result.chosen = chosen;
+      emitAudit('compress_to_target', raw, true);
       return okUi(JSON.stringify(result), { lab: result });
     } catch (err) {
+      emitAudit('compress_to_target', raw, false, errorMessage(err));
       return fail(err);
     }
   }
@@ -933,11 +1040,13 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       }
       const job = jobManager.enqueue(args.input, output, options, (args.transcoder as TranscoderType | undefined) ?? 'FFMPEG');
       const transcoder = args.transcoder ?? 'FFMPEG';
+      emitAudit('convert_media', raw, true);
       return okUi(JSON.stringify({ jobId: job.id, input: job.input, output: job.output, status: job.status, transcoder }), {
         job: viewJob(job),
         transcoder,
       });
     } catch (err) {
+      emitAudit('convert_media', raw, false, errorMessage(err));
       return fail(err);
     }
   }
@@ -972,12 +1081,14 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         });
       }
       const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      emitAudit('compress_image', raw, true);
       return okUi(JSON.stringify({ ...enqueueResponse(job, transcoder), format: plan.format }), {
         job: viewJob(job),
         transcoder,
         format: plan.format,
       });
     } catch (err) {
+      emitAudit('compress_image', raw, false, errorMessage(err));
       return fail(err);
     }
   }
@@ -1011,6 +1122,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         });
       }
       const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      emitAudit('extract_audio', raw, true);
       return okUi(JSON.stringify({ ...enqueueResponse(job, transcoder), audioCodec: plan.audioCodec, extension: plan.ext }), {
         job: viewJob(job),
         transcoder,
@@ -1018,6 +1130,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         extension: plan.ext,
       });
     } catch (err) {
+      emitAudit('extract_audio', raw, false, errorMessage(err));
       return fail(err);
     }
   }
@@ -1053,8 +1166,10 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         });
       }
       const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      emitAudit('cut_video', raw, true);
       return okUi(JSON.stringify(enqueueResponse(job, transcoder)), { job: viewJob(job), transcoder });
     } catch (err) {
+      emitAudit('cut_video', raw, false, errorMessage(err));
       return fail(err);
     }
   }
@@ -1067,23 +1182,36 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
    */
   async function runBatch(raw: unknown, confirm: boolean) {
     try {
+      const approved = batchApprovedEnvelope(raw);
       const args = batchSchema.parse(raw);
       const fields: MCPConversionFields = { ...args };
       const { jobs } = buildBatchPlan(args.inputs, fields, args.outputDir, args.suffix);
       if (jobs.length === 0) {
         throw createError(ErrorCode.FILE_NOT_FOUND, `No input files matched: ${args.inputs.join(', ')}`);
       }
+      const envelope: BatchEnvelope = { fileCount: jobs.length, totalBytes: batchPlanBytes(jobs) };
+      const batchDetails = confirmationRows([
+        confirmationField('Files', jobs.length),
+        confirmationField('Output directory', args.outputDir),
+        confirmationField('Suffix', args.suffix),
+      ]);
       if (confirm) {
         return confirmationResult({
           operation: 'batch_convert',
           title: 'Batch convert',
           summary: `Convert ${jobs.length} file${jobs.length === 1 ? '' : 's'}`,
-          args: args as unknown as Record<string, unknown>,
-          details: confirmationRows([
-            confirmationField('Files', jobs.length),
-            confirmationField('Output directory', args.outputDir),
-            confirmationField('Suffix', args.suffix),
-          ]),
+          args: { ...(args as Record<string, unknown>), __envelope: envelope },
+          details: batchDetails,
+        });
+      }
+      if (approved && batchEnvelopeExceeds(approved, envelope)) {
+        return confirmationResult({
+          operation: 'batch_convert',
+          title: 'Batch grew - confirm again',
+          summary: `The inputs now match ${jobs.length} file${jobs.length === 1 ? '' : 's'}; re-approve to continue.`,
+          args: { ...(args as Record<string, unknown>), __envelope: envelope },
+          details: batchDetails,
+          warnings: [`The matched set grew from ${approved.fileCount} to ${jobs.length} file${jobs.length === 1 ? '' : 's'} since you approved it.`],
         });
       }
       if (args.outputDir) {
@@ -1097,6 +1225,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         const running = jobManager.enqueue(job.input, job.output, job.options, transcoder);
         return { file: job.input, output: job.output, jobId: running.id, status: running.status, progress: running.progress };
       });
+      emitAudit('batch_convert', raw, true);
       return okUi(JSON.stringify({ total: queued.length, jobs: queued }), {
         total: queued.length,
         jobs: queued.map((entry) => ({
@@ -1108,6 +1237,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         })),
       });
     } catch (err) {
+      emitAudit('batch_convert', raw, false, errorMessage(err));
       return fail(err);
     }
   }
@@ -1152,6 +1282,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         });
       }
       const job = jobManager.enqueue(args.input, plan.output, plan.options, transcoder);
+      emitAudit('remux_media', raw, true);
       return okUi(
         JSON.stringify({
           ...enqueueResponse(job, transcoder),
@@ -1162,6 +1293,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         { job: viewJob(job), transcoder, container: plan.container, map: plan.options.map ?? [], warnings },
       );
     } catch (err) {
+      emitAudit('remux_media', raw, false, errorMessage(err));
       return fail(err);
     }
   }
@@ -1212,6 +1344,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
           progress: job.progress,
         };
       });
+      emitAudit('demux_media', raw, true);
       return okUi(JSON.stringify({ total: queued.length, transcoder, jobs: queued, warnings }), {
         total: queued.length,
         jobs: queued.map((entry) => ({
@@ -1224,6 +1357,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         warnings,
       });
     } catch (err) {
+      emitAudit('demux_media', raw, false, errorMessage(err));
       return fail(err);
     }
   }
@@ -1458,6 +1592,77 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       inputSchema: analyzeFolderSchema,
     },
     async (raw: z.infer<typeof analyzeFolderSchema>) => runAnalyzeFolder(raw),
+  );
+
+  registerAppTool(
+    server,
+    'explain_error',
+    {
+      title: 'Explain Error',
+      description:
+        'Turns an EncodeX error code (or a raw error message / failed job id) into a plain-language explanation ' +
+        'with likely causes and suggested fixes. Deterministic — no model call. Pass jobId to explain a failed job.',
+      inputSchema: explainErrorSchema,
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.error } },
+    },
+    async ({ code, message, detail, jobId, input, tool, args }: z.infer<typeof explainErrorSchema>) => {
+      try {
+        let resolvedMessage = message;
+        let resolvedDetail = detail;
+        if (jobId) {
+          const job = jobManager.getJob(jobId);
+          if (job) {
+            resolvedMessage = resolvedMessage ?? job.error ?? `Job ${jobId} failed.`;
+            resolvedDetail = resolvedDetail ?? job.error;
+          }
+        }
+        const explanation = explainError({ code, message: resolvedMessage, detail: resolvedDetail, input, tool, args });
+        return okUi(JSON.stringify(explanation), { error: explanation });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'advise_encoding',
+    {
+      title: 'Advise Encoding',
+      description:
+        'Recommends a target video encoder and whether to use the GPU, based on the probed source and the real ' +
+        'encoder/hwaccel capabilities of this machine, with the trade-offs. Deterministic — no model call.',
+      inputSchema: adviseEncodingSchema,
+    },
+    async ({ input }: z.infer<typeof adviseEncodingSchema>) => {
+      try {
+        const info = await probeMedia(input);
+        const advice = adviseEncoding(extractMediaFacts(info), capabilitiesOrEmpty());
+        return ok(JSON.stringify(advice), { advice });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'quality_report',
+    {
+      title: 'Quality Report',
+      description:
+        'Re-probes a produced output and compares it to its source (resolution, audio, codec, duration), returning ' +
+        'pass/fail checks and plain-language findings. Use it to verify a conversion before claiming success.',
+      inputSchema: qualityReportSchema,
+    },
+    async ({ source, output, expect }: z.infer<typeof qualityReportSchema>) => {
+      try {
+        const sourceInfo = await probeMedia(source);
+        const outputInfo = await probeMedia(output);
+        const report = compareQuality(sourceInfo, outputInfo, expect);
+        return ok(JSON.stringify(report), { report });
+      } catch (err) {
+        return fail(err);
+      }
+    },
   );
 
   server.registerTool(

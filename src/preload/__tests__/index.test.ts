@@ -162,6 +162,7 @@ describe('preload', () => {
     ['onPlayerAudio', IPC.PLAYER_AUDIO, { data: new ArrayBuffer(0), sampleRate: 48000, channels: 2, generation: 0 }],
     ['onPlayerError', IPC.PLAYER_ERROR, 'decoder crashed'],
     ['onLogMessage', IPC.LOG_MESSAGE, { timestamp: 't', level: 'INFO', text: 'hello', source: 'main' }],
+    ['onAuditEntry', IPC.AUDIT_ENTRY, { id: 'audit-1', timestamp: 't', tool: 'convert_media', tier: 2, argsDigest: 'deadbeef', result: 'ok' }],
     ['onWindowMaximizedChange', IPC.WINDOW_MAXIMIZED_CHANGED, true],
     ['onWindowCloseRequested', IPC.WINDOW_CLOSE_REQUESTED, undefined],
   ])('%s subscribes and unsubscribes on the %s channel', (method, channel, payload) => {
@@ -202,6 +203,7 @@ describe('preload', () => {
     // A payload array is an object, so an `isRecord`-style check that forgets the array case would
     // let `[...]` through and fail later on a `.id` read.
     ['onLogMessage', IPC.LOG_MESSAGE, [{ timestamp: 't', level: 'INFO', text: 'x', source: 'main' }]],
+    ['onAuditEntry', IPC.AUDIT_ENTRY, { id: 'audit-1' }],
     ['onPlayerFrame', IPC.PLAYER_FRAME, { data: new ArrayBuffer(0), width: 1, height: 1, pts: 0 }],
     ['onPlayerAudio', IPC.PLAYER_AUDIO, { data: 'not-an-ArrayBuffer', sampleRate: 48000, channels: 2, generation: 0 }],
     ['onPlayerError', IPC.PLAYER_ERROR, { message: 'decoder crashed' }],

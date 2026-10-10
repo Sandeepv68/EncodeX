@@ -39,6 +39,7 @@ import type {
   WhenDoneConfig,
 } from '../../shared/types';
 import type { DemuxMediaPreferences, DemuxTarget, RemuxWarning } from '../../shared/codec-containers';
+import type { AuditEntry } from '../../shared/audit';
 
 /**
  * Persisted hardware acceleration settings.
@@ -234,6 +235,21 @@ export interface QueueState {
 export interface LogState {
   entries: LogEntry[];
   addEntry: (entry: LogEntry) => void;
+  clear: () => void;
+}
+
+/**
+ * State of the audit store.
+ * Holds the in-memory ring of mutating-operation audit records (AuditEntry)
+ * surfaced by the embedded MCP server, capped at LOG_MAX_ENTRIES (2000).
+ * @interface AuditState
+ * @property {AuditEntry[]} entries - Audit records in chronological order, oldest first.
+ * @property {(entry: AuditEntry) => void} addEntry - Appends a record, trimming the oldest when at capacity.
+ * @property {() => void} clear - Empties the audit trail.
+ */
+export interface AuditState {
+  entries: AuditEntry[];
+  addEntry: (entry: AuditEntry) => void;
   clear: () => void;
 }
 
