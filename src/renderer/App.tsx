@@ -76,6 +76,8 @@ const Remux = lazy(() => import('./pages/Remux'));
 const Demux = lazy(() => import('./pages/Demux'));
 /** Lazy-loaded BatchQueue page, loaded on the '/batch' route. @const {React.ComponentType} */
 const BatchQueue = lazy(() => import('./pages/BatchQueue'));
+/** Lazy-loaded Copilot page, loaded on the '/copilot' route. @const {React.ComponentType} */
+const Copilot = lazy(() => import('./pages/Copilot'));
 /** Lazy-loaded Logs page, loaded on the '/logs' route. @const {React.ComponentType} */
 const Logs = lazy(() => import('./pages/Logs'));
 /** Lazy-loaded Settings page, loaded on the '/settings' route. @const {React.ComponentType} */
@@ -198,6 +200,7 @@ function AppLayout() {
     { path: '/remux', element: <Remux /> },
     { path: '/demux', element: <Demux /> },
     { path: '/batch', element: <BatchQueue /> },
+    { path: '/copilot', element: <Copilot /> },
     { path: '/logs', element: <Logs /> },
     { path: '/settings', element: <Settings /> },
     { path: '/about', element: <About /> },

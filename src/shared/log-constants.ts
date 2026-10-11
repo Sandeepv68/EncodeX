@@ -695,6 +695,12 @@ export const LOG_SELECT_FILE_CALLED = 'selectFile called';
 export const LOG_SELECT_FILES_CALLED = 'selectFiles called';
 /** @const {string} Logged when selectFolderFiles is invoked. */
 export const LOG_SELECT_FOLDER_FILES_CALLED = 'selectFolderFiles called';
+/** @const {string} Logged when the Copilot plan IPC is invoked. */
+export const LOG_COPILOT_PLAN_CALLED = 'copilotPlan called';
+/** @const {string} Logged when a Copilot plan completes with its outcome. */
+export const LOG_COPILOT_PLAN_COMPLETED = 'copilotPlan completed:';
+/** @const {string} Logged when a Copilot plan request fails. */
+export const LOG_COPILOT_PLAN_FAILED = 'copilotPlan failed:';
 /** @const {string} Logged when expandPaths is invoked. */
 export const LOG_EXPAND_PATHS_CALLED = 'expandPaths called';
 /** @const {string} Prefix when selectInput is invoked. */

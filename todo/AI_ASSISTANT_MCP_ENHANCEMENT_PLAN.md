@@ -535,8 +535,11 @@ Shipped (MCP/AI core):
 
 Remaining (optional, tracked as R6.1):
 
-- `[ ]` Desktop Copilot panel (7.4): a renderer surface that calls the same AI layer through
+- `[x]` Desktop Copilot panel (7.4): a renderer surface that calls the same AI layer through
   IPC and routes Apply through the existing conversion/approval flow (no second approval system).
+  - `[x]` Shared contract `src/shared/copilot.ts` + `IPC.COPILOT_PLAN`.
+  - `[x]` Main handler `src/main/ipc/copilot.ts`: scan, probe, deterministic `planAgent`, maps
+    actions to `ConversionOptions`, workflow dry-run; shipped in a later commit than the core.
 
 **Verify:** `npm run test`, `npm run typecheck`, `npm run mcp:smoke`, `npm run mcp:full-test`.
 

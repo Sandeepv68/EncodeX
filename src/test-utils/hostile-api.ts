@@ -54,6 +54,7 @@ const API_TABLE: Record<string, MethodEntry> = {
   selectFile: { kind: 'invoke', params: ['filters'] },
   selectFiles: { kind: 'invoke', params: ['filters'] },
   selectFolderFiles: { kind: 'invoke', params: [] },
+  copilotPlan: { kind: 'invoke', params: ['request'] },
   expandPaths: { kind: 'invoke', params: ['paths'] },
   selectOutput: { kind: 'invoke', params: [] },
   selectDirectory: { kind: 'invoke', params: [] },
@@ -222,6 +223,16 @@ function benignResolveFor(name: string): unknown {
     case 'expandPaths':
     case 'queueList':
       return [];
+    case 'copilotPlan':
+      return {
+        goal: '',
+        actions: [],
+        skips: [],
+        rationale: [],
+        notes: [],
+        plan: { isoPercent: 0, quantiles: [], minSavings: 0, files: [] },
+        isEstimated: true,
+      };
     case 'getMediaInfo':
       return { file: '', format: '', size: 0, duration: 0, bitrate: '', streams: [] };
     case 'getImageInfo':

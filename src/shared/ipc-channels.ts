@@ -22,6 +22,8 @@
  * @property {string} GET_IMAGE_FILE_INFO - Read image file size and dimensions.
  * @property {string} GET_VIDEO_PREVIEW - Extract a preview frame from a video.
  * @property {string} GET_CAPABILITIES - Enumerate encoder and hwaccel capabilities.
+ * @property {string} COPILOT_PLAN - Build a deterministic conversion plan for a
+ *   goal against a folder of media files.
  * @property {string} CONVERT_FILE - Start a conversion job.
  * @property {string} CANCEL_CONVERSION - Cancel the active conversion.
  * @property {string} PAUSE_CONVERSION - Pause the active conversion.
@@ -107,6 +109,7 @@ export const IPC = {
   GET_IMAGE_FILE_INFO: 'get-image-file-info',
   GET_VIDEO_PREVIEW: 'get-video-preview',
   GET_CAPABILITIES: 'get-capabilities',
+  COPILOT_PLAN: 'copilot-plan',
   CONVERT_FILE: 'convert-file',
   CANCEL_CONVERSION: 'cancel-conversion',
   PAUSE_CONVERSION: 'pause-conversion',

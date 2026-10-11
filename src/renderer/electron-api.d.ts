@@ -28,6 +28,7 @@ import {
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
 import type { AuditEntry } from '../shared/audit';
+import type { CopilotPlan, CopilotPlanRequest } from '../shared/copilot';
 
 /**
  * The bridge API exposed to the renderer as `window.electronAPI`.
@@ -72,6 +73,17 @@ export interface ElectronAPI {
    *   folder, or an empty array if the user cancelled the dialog.
    */
   selectFolderFiles(): Promise<string[]>;
+  /**
+   * Builds a deterministic conversion plan for a goal against a folder of
+   * media over the `IPC.COPILOT_PLAN` ('copilot-plan') channel. Main scans and
+   * probes the inputs, plans one conversion per file with the shared AI layer,
+   * and returns the actions plus their ready-to-enqueue options. The plan is a
+   * proposal only; committing goes through the Batch Queue.
+   * @param {CopilotPlanRequest} request - The goal and the inputs to plan.
+   * @returns {Promise<CopilotPlan>} The planned actions, skips, and workflow
+   *   dry-run. Rejects with a formatted AppError when planning fails.
+   */
+  copilotPlan(request: CopilotPlanRequest): Promise<CopilotPlan>;
   /**
    * Expands a mixed list of existing file/directory paths (e.g. drag-and-drop
    * targets) into the supported media files they contain over the

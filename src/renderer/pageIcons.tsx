@@ -15,6 +15,7 @@
  *  - '/remux'         -> faLayerGroup (lossless remux)
  *  - '/demux'         -> faFileExport (stream demux/splitting)
  *  - '/batch'         -> faListCheck (batch queue)
+ *  - '/copilot'       -> faRobot (AI copilot)
  *  - '/logs'          -> faFileLines (log console)
  *  - '/settings'      -> faGear (settings)
  *  - '/about'         -> faCircleQuestion (about)
@@ -32,6 +33,7 @@ import {
   faLayerGroup,
   faFileExport,
   faListCheck,
+  faRobot,
   faFileLines,
   faGear,
   faCircleQuestion,
@@ -52,6 +54,7 @@ export const pageIcons: Record<string, ReactNode> = {
   '/remux': <FontAwesomeIcon icon={faLayerGroup} />,
   '/demux': <FontAwesomeIcon icon={faFileExport} />,
   '/batch': <FontAwesomeIcon icon={faListCheck} />,
+  '/copilot': <FontAwesomeIcon icon={faRobot} />,
   '/logs': <FontAwesomeIcon icon={faFileLines} />,
   '/settings': <FontAwesomeIcon icon={faGear} />,
   '/about': <FontAwesomeIcon icon={faCircleQuestion} />,

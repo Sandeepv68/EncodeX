@@ -31,7 +31,8 @@
       "parallel": "{{count}} พร้อมกัน"
     },
     "remux": "เปลี่ยนคอนเทนเนอร์",
-    "demux": "แยกสตรีม"
+    "demux": "แยกสตรีม",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "ยินดีต้อนรับสู่ EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "แปลงหลายไฟล์พร้อมกันด้วยคิวอัจฉริยะ",
     "shortcutsFooter": "กด {{shortcut}} สำหรับแป้นพิมพ์ลัด",
     "descRemux": "ย้ายสตรีมแบบไม่สูญเสียไปยังคอนเทนเนอร์ใหม่",
-    "descDemux": "แยกสตรีมของไฟล์ออกเป็นไฟล์ผลลัพธ์แยกกัน"
+    "descDemux": "แยกสตรีมของไฟล์ออกเป็นไฟล์ผลลัพธ์แยกกัน",
+    "descCopilot": "Plan conversions by describing a goal"
   },
   "gettingStarted": {
     "hint": "ใหม่ที่นี่หรือ?",
@@ -940,5 +942,31 @@
     "filtersTitle": "ตัวกรองวิดีโอ",
     "filtersHint": "ใช้ตัวกรองวิดีโอของ FFmpeg (ตัด อัตราเฟรม ตัดการสลับภาพ ลดสัญญาณรบกวน สี…) ระหว่างการเข้ารหัสสตรีมวิดีโอที่เลือกใหม่ “คัดลอก” ไม่สูญเสีย ตัวกรองจึงแสดงเมื่อคอนเทนเนอร์ปลายทางเข้ารหัดวิดีโอใหม่เท่านั้น",
     "filtersIgnoredCopy": "ตัวกรองวิดีโอจะถูกข้ามตราบใดที่ปลายทางวิดีโอเป็น “คัดลอก” เพราะสำเนาสตรีมเข้ารหัสใหม่ไม่ได้ เลือกคอนเทนเนอร์ปลายทางเพื่อใช้ตัวกรอง"
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Describe a goal and let Copilot plan the conversions, then push the plan to the Batch Queue.",
+    "goalLabel": "Goal",
+    "goalPlaceholder": "e.g. shrink these videos for the web",
+    "chooseFolder": "Choose folder",
+    "selectedCount": "{{count}} file(s) selected",
+    "selectedNone": "No files selected",
+    "plan": "Plan",
+    "planning": "Planning...",
+    "folderEmpty": "No supported media was found in that folder.",
+    "errorNoGoal": "Enter a goal before planning.",
+    "errorNoInputs": "Choose a folder of media before planning.",
+    "errorFallback": "Copilot could not build a plan for that goal.",
+    "errorEnqueue": "None of the planned jobs could be added to the queue.",
+    "actionsTitle": "Planned actions",
+    "noActions": "Copilot found nothing to change for this goal.",
+    "savings": "Estimated saving ~{{pct}}%",
+    "output": "to {{output}}",
+    "skipsTitle": "Skipped files",
+    "rationaleTitle": "Why",
+    "addToQueue": "Add {{count}} to queue",
+    "applyNote": "Jobs are added to the Batch Queue; nothing runs until you start it there.",
+    "addedToQueue": "Added {{count}} job(s) to the queue",
+    "partiallyAdded": "Some jobs could not be added to the queue."
   }
 }

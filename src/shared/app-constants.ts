@@ -134,6 +134,7 @@ export const NAV_ITEMS = [
   { to: '/remux', label: 'Remux' },
   { to: '/demux', label: 'Demux' },
   { to: '/batch', label: 'Batch Queue' },
+  { to: '/copilot', label: 'Copilot' },
   { to: '/logs', label: 'Logs' },
   { to: '/settings', label: 'Settings' },
   { to: '/about', label: 'About' },

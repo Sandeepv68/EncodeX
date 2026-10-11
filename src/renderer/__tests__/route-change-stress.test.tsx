@@ -4,7 +4,7 @@
  *
  * This is the dedicated harness the plan listed as "partly covered" by the
  * strict-mode + listener-leaks suites: it mounts the real App shell once and
- * drives 1,000 react-router navigations across all 12 routes while a conversion
+ * drives 1,000 react-router navigations across all 13 routes while a conversion
  * is RUNNING, then proves the shell is unchanged in the ways a missed effect
  * cleanup would corrupt:
  *

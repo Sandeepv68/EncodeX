@@ -31,7 +31,8 @@
       "parallel": "{{count}} sabay-sabay"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Maligayang Pagdating sa EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "I-convert ang maraming file nang sabay-sabay gamit ang smart queue",
     "shortcutsFooter": "Pindutin ang {{shortcut}} para sa mga keyboard shortcut",
     "descRemux": "Inililipat nang walang kabawasang-kalidad ang mga stream sa bagong container",
-    "descDemux": "Hinahati ang mga stream ng isang file sa magkakahiwalay na output na file"
+    "descDemux": "Hinahati ang mga stream ng isang file sa magkakahiwalay na output na file",
+    "descCopilot": "Plan conversions by describing a goal"
   },
   "gettingStarted": {
     "hint": "Bago ka ba rito?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Mga filter ng video",
     "filtersHint": "Nag-aplay ng mga filter ng video ng FFmpeg (trim, frame rate, deinterlace, pagbawas ng ingay, kulay…) habang nagre-re-encode ng piniling mga video stream. Ang \"Kopyahin\" ay walang kabawasan, kaya ang mga filter ay lalabas lamang kapag ang destinasyong container ay nagre-re-encode ng video.",
     "filtersIgnoredCopy": "Hindi pinapansin ang mga filter ng video habang ang destinasyon ng video ay \"Kopyahin,\" dahil hindi maaaring mag-re-encode ang kopya ng stream. Pumili ng destinasyong container para mailapat ang mga filter."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Describe a goal and let Copilot plan the conversions, then push the plan to the Batch Queue.",
+    "goalLabel": "Goal",
+    "goalPlaceholder": "e.g. shrink these videos for the web",
+    "chooseFolder": "Choose folder",
+    "selectedCount": "{{count}} file(s) selected",
+    "selectedNone": "No files selected",
+    "plan": "Plan",
+    "planning": "Planning...",
+    "folderEmpty": "No supported media was found in that folder.",
+    "errorNoGoal": "Enter a goal before planning.",
+    "errorNoInputs": "Choose a folder of media before planning.",
+    "errorFallback": "Copilot could not build a plan for that goal.",
+    "errorEnqueue": "None of the planned jobs could be added to the queue.",
+    "actionsTitle": "Planned actions",
+    "noActions": "Copilot found nothing to change for this goal.",
+    "savings": "Estimated saving ~{{pct}}%",
+    "output": "to {{output}}",
+    "skipsTitle": "Skipped files",
+    "rationaleTitle": "Why",
+    "addToQueue": "Add {{count}} to queue",
+    "applyNote": "Jobs are added to the Batch Queue; nothing runs until you start it there.",
+    "addedToQueue": "Added {{count}} job(s) to the queue",
+    "partiallyAdded": "Some jobs could not be added to the queue."
   }
 }

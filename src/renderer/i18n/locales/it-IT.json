@@ -31,7 +31,8 @@
       "parallel": "{{count}} in parallelo"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Benvenuto in EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Converti molti file in una volta con una coda intelligente",
     "shortcutsFooter": "Premi {{shortcut}} per le scorciatoie da tastiera",
     "descRemux": "Trasferisce i flussi senza perdita in un nuovo contenitore",
-    "descDemux": "Divide i flussi di un file in file di output separati"
+    "descDemux": "Divide i flussi di un file in file di output separati",
+    "descCopilot": "Plan conversions by describing a goal"
   },
   "gettingStarted": {
     "hint": "Nuovo qui?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Filtri video",
     "filtersHint": "Applica i filtri video FFmpeg (ritaglio, frequenza dei fotogrammi, deinterlacciamento, riduzione del rumore, colore…) mentre i flussi video selezionati vengono ricodificati. La copia è senza perdita, quindi i filtri compaiono solo quando un contenitore di destinazione ricodifica il video.",
     "filtersIgnoredCopy": "I filtri video vengono ignorati finché la destinazione video è «Copia», perché una copia di flusso non può ricodificare. Scegli un contenitore di destinazione per applicarli."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Describe a goal and let Copilot plan the conversions, then push the plan to the Batch Queue.",
+    "goalLabel": "Goal",
+    "goalPlaceholder": "e.g. shrink these videos for the web",
+    "chooseFolder": "Choose folder",
+    "selectedCount": "{{count}} file(s) selected",
+    "selectedNone": "No files selected",
+    "plan": "Plan",
+    "planning": "Planning...",
+    "folderEmpty": "No supported media was found in that folder.",
+    "errorNoGoal": "Enter a goal before planning.",
+    "errorNoInputs": "Choose a folder of media before planning.",
+    "errorFallback": "Copilot could not build a plan for that goal.",
+    "errorEnqueue": "None of the planned jobs could be added to the queue.",
+    "actionsTitle": "Planned actions",
+    "noActions": "Copilot found nothing to change for this goal.",
+    "savings": "Estimated saving ~{{pct}}%",
+    "output": "to {{output}}",
+    "skipsTitle": "Skipped files",
+    "rationaleTitle": "Why",
+    "addToQueue": "Add {{count}} to queue",
+    "applyNote": "Jobs are added to the Batch Queue; nothing runs until you start it there.",
+    "addedToQueue": "Added {{count}} job(s) to the queue",
+    "partiallyAdded": "Some jobs could not be added to the queue."
   }
 }

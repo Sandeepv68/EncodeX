@@ -7,7 +7,7 @@
  * suite reproduces the same matrix against the shared unit tier - every
  * `test:unit` CI pass - by installing {@link createHostileElectronAPI} (the
  * exact behavioural mirror of `e2e/mocks/hostile-preload.js`) over the
- * test-setup stub and rendering all 12 routed pages under each mode.
+ * test-setup stub and rendering all 13 routed pages under each mode.
  *
  * Fidelity notes (what the unit tier cannot reproduce, and how the gap is kept
  * honest):
@@ -99,7 +99,7 @@ describe('hostile preload: unit-tier bridge matrix (mirror of e2e/specs/hostile-
   });
 
   it('covers the declared axes (guard against a narrowing matrix)', () => {
-    expect(PAGE_ROUTES).toHaveLength(12);
+    expect(PAGE_ROUTES).toHaveLength(13);
     expect(MODES).toEqual(['healthy', 'reject-sync', 'reject-async', 'never', 'wrong-type', 'garbage', 'partial']);
     expect(HOSTILE_MODES).toEqual(['reject-sync', 'reject-async', 'never', 'wrong-type', 'garbage', 'partial']);
   });
@@ -111,7 +111,7 @@ describe('hostile preload: unit-tier bridge matrix (mirror of e2e/specs/hostile-
   });
 
   for (const mode of MODES) {
-    it(`mode ${mode}: all twelve routes mount with no unhandled error and no armed boundary`, async () => {
+    it(`mode ${mode}: all thirteen routes mount with no unhandled error and no armed boundary`, async () => {
       bridge.control.setMode(mode);
       bridge.control.setFailures(null);
       // Capabilities are cached at module scope (useCapabilities.ts); a prior
@@ -139,7 +139,7 @@ describe('hostile preload: unit-tier bridge matrix (mirror of e2e/specs/hostile-
         result.unmount();
       }
 
-      // Twelve distinct routes each navigated; without this the loop could
+      // Thirteen distinct routes each navigated; without this the loop could
       // pass while every render was ignored and the suite sat on one page.
       expect(new Set(observed).size).toBe(PAGE_ROUTES.length);
 

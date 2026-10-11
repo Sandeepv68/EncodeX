@@ -73,6 +73,7 @@ const navKeyMap: Record<string, string> = {
   '/remux': 'remux',
   '/demux': 'demux',
   '/batch': 'batchQueue',
+  '/copilot': 'copilot',
   '/logs': 'logs',
   '/settings': 'settings',
   '/about': 'about',

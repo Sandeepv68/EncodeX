@@ -31,7 +31,8 @@
       "parallel": "{{count}} 병렬"
     },
     "remux": "리멀텍스",
-    "demux": "디멀텍스"
+    "demux": "디멀텍스",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "EncodeX에 오신 것을 환영합니다",
@@ -44,7 +45,8 @@
     "descBatch": "스마트 큐로 여러 파일을 한 번에 변환",
     "shortcutsFooter": "키보드 단축키 보기: {{shortcut}}",
     "descRemux": "스트림을 무손실 상태로 새 컨테이너에 담습니다",
-    "descDemux": "파일의 스트림을 개별 출력 파일로 분리합니다"
+    "descDemux": "파일의 스트림을 개별 출력 파일로 분리합니다",
+    "descCopilot": "Plan conversions by describing a goal"
   },
   "gettingStarted": {
     "hint": "처음 오셨나요?",
@@ -940,5 +942,31 @@
     "filtersTitle": "비디오 필터",
     "filtersHint": "선택한 비디오 스트림을 재인코딩하는 동안 FFmpeg 비디오 필터(자르기, 프레임레이트, 디인터레이싱, 노이즈 감소, 색상 등)를 적용합니다. “복사”는 무손실이므로, 대상 컨테이너가 비디오를 재인코딩할 때만 필터가 표시됩니다.",
     "filtersIgnoredCopy": "비디오 출력 방식이 “복사”인 동안 비디오 필터는 무시됩니다. 스트림 복사로는 재인코딩할 수 없기 때문입니다. 필터를 적용하려면 대상 컨테이너를 선택하세요."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Describe a goal and let Copilot plan the conversions, then push the plan to the Batch Queue.",
+    "goalLabel": "Goal",
+    "goalPlaceholder": "e.g. shrink these videos for the web",
+    "chooseFolder": "Choose folder",
+    "selectedCount": "{{count}} file(s) selected",
+    "selectedNone": "No files selected",
+    "plan": "Plan",
+    "planning": "Planning...",
+    "folderEmpty": "No supported media was found in that folder.",
+    "errorNoGoal": "Enter a goal before planning.",
+    "errorNoInputs": "Choose a folder of media before planning.",
+    "errorFallback": "Copilot could not build a plan for that goal.",
+    "errorEnqueue": "None of the planned jobs could be added to the queue.",
+    "actionsTitle": "Planned actions",
+    "noActions": "Copilot found nothing to change for this goal.",
+    "savings": "Estimated saving ~{{pct}}%",
+    "output": "to {{output}}",
+    "skipsTitle": "Skipped files",
+    "rationaleTitle": "Why",
+    "addToQueue": "Add {{count}} to queue",
+    "applyNote": "Jobs are added to the Batch Queue; nothing runs until you start it there.",
+    "addedToQueue": "Added {{count}} job(s) to the queue",
+    "partiallyAdded": "Some jobs could not be added to the queue."
   }
 }

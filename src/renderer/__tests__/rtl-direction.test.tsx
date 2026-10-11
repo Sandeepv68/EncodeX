@@ -21,7 +21,7 @@
  *  (b) the RTL emotion cache physically flips a styled rule while the LTR
  *      cache does not (pins `DirectionProvider` + `stylis-plugin-rtl`, i.e.
  *      the mechanism that mirrors the whole MUI tree);
- *  (c) all 12 routes render cleanly under the full RTL stack (Ar/Hebrew
+ *  (c) all 13 routes render cleanly under the full RTL stack (Ar/Hebrew
  *      locales + rtl cache): no page error, no raw token, no leaked key;
  *  (d) keyboard shortcuts keep firing under an RTL locale, and the
  *      interactive-target guard still suppresses bare keys while typing.
@@ -180,7 +180,7 @@ describe('5.1 RTL pages (Ar/Hebrew locales under the rtl cache)', () => {
   });
 
   for (const { code } of RTL_LOCALES) {
-    it(`renders all 12 routes in ${code} under the rtl cache`, async () => {
+    it(`renders all 13 routes in ${code} under the rtl cache`, async () => {
       expectAppLog('warn', /\[WARN\] \[[^\]]*\]/);
 
       await act(async () => {

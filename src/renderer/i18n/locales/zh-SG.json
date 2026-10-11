@@ -31,7 +31,8 @@
       "parallel": "{{count}} 并行"
     },
     "remux": "封装",
-    "demux": "解复用"
+    "demux": "解复用",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "欢迎使用 EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "通过智能队列一次转换多个文件",
     "shortcutsFooter": "按 {{shortcut}} 查看键盘快捷键",
     "descRemux": "将流无损转移到新的容器中",
-    "descDemux": "将文件的各个流拆分到独立的输出文件"
+    "descDemux": "将文件的各个流拆分到独立的输出文件",
+    "descCopilot": "Plan conversions by describing a goal"
   },
   "gettingStarted": {
     "hint": "第一次来？",
@@ -940,5 +942,31 @@
     "filtersTitle": "视频滤镜",
     "filtersHint": "在重新编码选中的视频流时应用 FFmpeg 视频滤镜（裁剪、帧率、去隔行、降噪、色彩等）。“复制”为无损方式，因此只有当输出容器会重新编码视频时，才会显示滤镜选项。",
     "filtersIgnoredCopy": "当视频输出方式为“复制”时，视频滤镜会被忽略，因为流复制无法重新编码。请选择输出容器以应用滤镜。"
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Describe a goal and let Copilot plan the conversions, then push the plan to the Batch Queue.",
+    "goalLabel": "Goal",
+    "goalPlaceholder": "e.g. shrink these videos for the web",
+    "chooseFolder": "Choose folder",
+    "selectedCount": "{{count}} file(s) selected",
+    "selectedNone": "No files selected",
+    "plan": "Plan",
+    "planning": "Planning...",
+    "folderEmpty": "No supported media was found in that folder.",
+    "errorNoGoal": "Enter a goal before planning.",
+    "errorNoInputs": "Choose a folder of media before planning.",
+    "errorFallback": "Copilot could not build a plan for that goal.",
+    "errorEnqueue": "None of the planned jobs could be added to the queue.",
+    "actionsTitle": "Planned actions",
+    "noActions": "Copilot found nothing to change for this goal.",
+    "savings": "Estimated saving ~{{pct}}%",
+    "output": "to {{output}}",
+    "skipsTitle": "Skipped files",
+    "rationaleTitle": "Why",
+    "addToQueue": "Add {{count}} to queue",
+    "applyNote": "Jobs are added to the Batch Queue; nothing runs until you start it there.",
+    "addedToQueue": "Added {{count}} job(s) to the queue",
+    "partiallyAdded": "Some jobs could not be added to the queue."
   }
 }

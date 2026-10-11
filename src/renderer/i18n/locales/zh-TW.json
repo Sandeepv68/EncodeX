@@ -31,7 +31,8 @@
       "parallel": "{{count}} 並行"
     },
     "remux": "重新封裝",
-    "demux": "解封裝"
+    "demux": "解封裝",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "歡迎使用 EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "透過智慧佇列一次轉換多個檔案",
     "shortcutsFooter": "按 {{shortcut}} 查看鍵盤快速鍵",
     "descRemux": "將串流無損轉移到新的容器",
-    "descDemux": "將檔案的各個串流拆分成個別的輸出檔案"
+    "descDemux": "將檔案的各個串流拆分成個別的輸出檔案",
+    "descCopilot": "Plan conversions by describing a goal"
   },
   "gettingStarted": {
     "hint": "第一次來？",
@@ -940,5 +942,31 @@
     "filtersTitle": "影片篩選器",
     "filtersHint": "在重新編碼所選影片串流時套用 FFmpeg 影片篩選器（裁切、影格率、去交錯、降噪、色彩等）。「複製」為無損方式，因此只有在目標容器會重新編碼影片時，才會顯示篩選器。",
     "filtersIgnoredCopy": "當影片輸出方式為「複製」時，影片篩選器會被忽略，因為串流複製無法重新編碼。請選擇目標容器以套用篩選器。"
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Describe a goal and let Copilot plan the conversions, then push the plan to the Batch Queue.",
+    "goalLabel": "Goal",
+    "goalPlaceholder": "e.g. shrink these videos for the web",
+    "chooseFolder": "Choose folder",
+    "selectedCount": "{{count}} file(s) selected",
+    "selectedNone": "No files selected",
+    "plan": "Plan",
+    "planning": "Planning...",
+    "folderEmpty": "No supported media was found in that folder.",
+    "errorNoGoal": "Enter a goal before planning.",
+    "errorNoInputs": "Choose a folder of media before planning.",
+    "errorFallback": "Copilot could not build a plan for that goal.",
+    "errorEnqueue": "None of the planned jobs could be added to the queue.",
+    "actionsTitle": "Planned actions",
+    "noActions": "Copilot found nothing to change for this goal.",
+    "savings": "Estimated saving ~{{pct}}%",
+    "output": "to {{output}}",
+    "skipsTitle": "Skipped files",
+    "rationaleTitle": "Why",
+    "addToQueue": "Add {{count}} to queue",
+    "applyNote": "Jobs are added to the Batch Queue; nothing runs until you start it there.",
+    "addedToQueue": "Added {{count}} job(s) to the queue",
+    "partiallyAdded": "Some jobs could not be added to the queue."
   }
 }
