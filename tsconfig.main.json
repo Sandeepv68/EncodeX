@@ -6,7 +6,10 @@
     "baseUrl": ".",
     "paths": {
       "@modelcontextprotocol/ext-apps": ["node_modules/@modelcontextprotocol/ext-apps/dist/src/app.d.ts"],
-      "@modelcontextprotocol/ext-apps/server": ["node_modules/@modelcontextprotocol/ext-apps/dist/src/server/index.d.ts"]
+      "@modelcontextprotocol/ext-apps/server": ["node_modules/@modelcontextprotocol/ext-apps/dist/src/server/index.d.ts"],
+      "@modelcontextprotocol/sdk/experimental/tasks": [
+        "node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/index.d.ts"
+      ]
     },
     "outDir": "dist",
     "rootDir": "src",

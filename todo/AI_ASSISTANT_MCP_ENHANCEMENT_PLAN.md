@@ -47,7 +47,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 | **LLM provider integration** | **none** | 0 matches for `openai|anthropic|llm|copilot` in `src/` |
 | **Chat / Copilot UI in the renderer** | **none** | only a Settings link, `src/renderer/pages/Settings.tsx:241` |
 | **`structuredContent` on tool results** | done | every tool returns typed `structuredContent` (R0.2); text fallback retained (SEP-2133) |
-| **Tasks extension / standard long-job protocol** | **none** | custom job IDs only |
+| **Tasks extension / standard long-job protocol** | done | non-blocking `CreateTaskResult` receipt over `MCPJobManager` (R0.5); `tasks/get`/`result`/`cancel`/`list` |
 | **Remote/tunneled MCP transport** | **none** | loopback enforced by design |
 
 ### 1.3 Spec facts that constrain the design
@@ -67,8 +67,8 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` ski
 - **`structuredContent` is any JSON value**; `inputSchema`/`outputSchema` are full
   **JSON Schema 2020-12** (SEP-2106). Use it to ship typed media metadata instead of prose.
 - **Long-running jobs → Tasks extension** (`io.modelcontextprotocol/tasks`, SEP-2663):
-  `CreateTaskResult` with `taskId`/`ttlMs`/`pollIntervalMs`, driven by `tasks/get`,
-  `tasks/update`, `tasks/cancel`. Maps 1:1 onto the existing `MCPJobManager`.
+  `CreateTaskResult` with `taskId`/`ttl`/`pollInterval`, driven by `tasks/get`, `tasks/result`,
+  `tasks/cancel`, `tasks/list` (SDK 1.32.1 method set) and backed by a `TaskStore`.
 - **Elicitation / MRTR** (SEP-2260 normative, SEP-2322) is the standard way to ask
   "overwrite? choose quality?" — the network transport for what `commit_operation` does today.
 - **Do not build on `sampling` or `roots`** — both deprecated in `2026-07-28`.
@@ -192,10 +192,17 @@ Adopt the shared `ErrorCode` as the machine-readable error channel so the model 
 
 ### 4.4 Long-running jobs → Tasks extension
 
-Add `io.modelcontextprotocol/tasks`: `convert_media` / `batch_convert` return a
-`CreateTaskResult` (`taskId`, `ttlMs`, `pollIntervalMs`) backed by `MCPJobManager` job IDs;
-clients that declare the extension drive `tasks/get`/`tasks/update`/`tasks/cancel`, others keep
-polling `get_job`. No behavior change for existing clients.
+Add `io.modelcontextprotocol/tasks`: `convert_media` / `batch_convert` are registered via
+`server.experimental.tasks.registerToolTask` (`taskSupport: 'optional'`) and return a
+`CreateTaskResult` (`taskId`, `ttl`, `pollInterval`) backed by the new `MCPTaskStore`
+(`src/mcp/jobs/task-store.ts`), which the `McpServer` receives as its `taskStore`. Clients that
+declare the extension drive `tasks/get` / `tasks/result` / `tasks/cancel` / `tasks/list`; others
+keep polling `get_job`. **No behavior change for existing clients:** the SDK's automatic polling
+(`handleAutomaticTaskPolling`) transparently returns the same immediate receipt, because the task
+is created already-`completed` with that receipt as its stored result. The task is therefore a
+protocol-level receipt over the existing job id, not a live mirror of the encode — task clients
+still follow the returned `jobId` with `get_job` for progress. `get_job`/`list_jobs`/`cancel_job`
+are retained unchanged as the fallback (decision D4).
 
 ---
 
@@ -338,7 +345,7 @@ Each release has a deliverable **and** a verification command. Run before any re
 | R0.2 `structuredContent` on **all** tool results (not just view-linked ones) `[x]` | `src/mcp/server.ts` |
 | R0.3 `csp` on every `ui://` resource; assert zero external connections from views `[x]` | `src/mcp/ui/resources.ts` |
 | R0.4 Text-fallback audit test for every UI-enabled tool `[x]` | `src/mcp/__tests__/text-fallback.test.ts` |
-| R0.5 Tasks extension `io.modelcontextprotocol/tasks` mapped onto `MCPJobManager` `[ ]` � **DEFERRED**: SDK 1.32.1 experimental semantics (automatic polling + required/taskSupport) block a drop-in conversion; see D4. | `src/mcp/jobs/manager.ts` |
+| R0.5 Tasks extension `io.modelcontextprotocol/tasks` mapped onto `MCPJobManager` `[x]` | `src/mcp/jobs/task-store.ts`, `src/mcp/server.ts` |
 
 **Deliverable:** an MCP Apps server that is correct under the stable spec, not just functional.
 
@@ -496,7 +503,7 @@ Shipped:
 **Verify:** `npm run test`, `npm run typecheck`, `npm run mcp:smoke`, `npm run mcp:full-test`.
 
 
-### R6 — Agent & optional Copilot surface
+### R6 — Agent & optional Copilot surface `[x]`
 
 Highlights/thumbnails (F16), social repurposing (F17), NL editing (F18), agent loop (F20),
 and only then the optional in-app Copilot panel (7.4) reusing the same AI layer and approval gate.
@@ -552,7 +559,7 @@ Remaining (optional, tracked as R6.1):
 | D1 | Reach ChatGPT (remote-only) | a) document unsupported b) opt-in tunnel c) hosted relay | **a)** default. **Spiked in R5** (`todo/D1_CHATGPT_REACHABILITY_SPIKE.md`): no-go on (c) hosted relay; conditional go on (b) as a documented user-run tunnel only, no auto-tunnel/OAuth shipped |
 | D2 | Desktop Copilot panel | ship now / ship R6 / never | **R6** — MCP delivers the value first with zero new renderer surface |
 | D3 | Local model default | ship local adapter in R1 vs R4 | **R4**, alongside F11 which needs it anyway |
-| D4 | Tasks extension vs custom polling | both / tasks-only | **both** — tasks for capable clients, `get_job` retained as fallback |
+| D4 | Tasks extension vs custom polling | both / tasks-only | **both** — tasks for capable clients, `get_job` retained as fallback. Shipped in R0.5 as a non-blocking receipt: `convert_media`/`batch_convert` are task tools whose `CreateTaskResult` carries the same immediate `jobId` receipt, so existing clients are unaffected and task clients additionally get `tasks/get`/`tasks/result`/`tasks/cancel`/`tasks/list` |
 | D5 | ext-apps 2.x migration | now / later | **later** — requires `@modelcontextprotocol/{server,client,core}@2`; revisit after R3 |
 
 ---
@@ -575,6 +582,7 @@ plan card) `[x]` → R3 (Compression Lab) `[x]` → R2 (reliability: errors, bat
 `[x]` → R4 (media intelligence: `find_similar_media` + local STT → subtitles, translation,
 chapters, transcript search, summarization) `[x]` → R5 (typed workflow DAG with dry-run +
 ChatGPT reachability spike) `[x]` → R6 MCP/AI core (highlights, social pack, NL editing,
-agent; `find_highlights`/`plan_social_pack`/`plan_edit`/`plan_agent`) `[x]`. Next: R6.1, the
-optional desktop Copilot panel (7.4); the long-term vision waits until the workflow layer is
-boring.
+agent; `find_highlights`/`plan_social_pack`/`plan_edit`/`plan_agent`) `[x]` → R6.1 desktop
+Copilot panel (7.4) `[x]` → R0.5 Tasks extension (`convert_media`/`batch_convert` as non-blocking
+task tools; see §4.4 / D4) `[x]`. **Everything on the roadmap has shipped.** The long-term vision
+now waits until the workflow layer is boring.
