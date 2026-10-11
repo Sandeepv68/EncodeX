@@ -174,6 +174,10 @@ plus GUI-parity `get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_p
 | `search_transcript` | `{ input?/segments?, durationSeconds?, query, maxMatches?, context? }` | F14 transcript search returning matches plus ready `cut_video` args (string seconds) | R4 | `[x]` |
 | `summarize_media` | `{ input?/segments?, durationSeconds?, maxSentences?, maxTopics? }` | F15 extractive video summary + topic/keyword list | R4 | `[x]` |
 | `plan_workflow` / `execute_workflow` | typed DAG JSON (`steps[]` with `{{step.field}}` refs) | Multi-step automation (PAN #17) with dry-run (`plan_workflow`) and dependency-ordered execution (F19) | R5 | `[x]` |
+| `find_highlights` | `{ input, durationSeconds?, samples?, sceneThreshold?, maxHighlights?, maxThumbnails? }` | F16 frame analysis: scene boundaries, ranked highlight spans, and distinct thumbnail-candidate time offsets. Deterministic | R6 | `[x]` |
+| `plan_social_pack` | `{ input, platforms?, maxDurationSeconds?, outputDir? }` | F17 per-platform repurposing clips (aspect crop + resolution + length cap) plus a runnable workflow | R6 | `[x]` |
+| `plan_edit` | `{ input?/segments?, durationSeconds?, scenes?, intent }` | F18 resolves a structured edit intent (intro/outro/silence/keep-range) into exact `cut_video` arguments | R6 | `[x]` |
+| `plan_agent` | `{ inputs[], intent, constraints?, recursive?, maxFiles?, minSavings?, outputDir? }` | F20 library-wide agent: probes a folder, plans one optimize action per file, returns actions, skips and a runnable workflow | R6 | `[x]` |
 
 ### 4.3 Result contract (all tools)
 
@@ -500,7 +504,41 @@ and only then the optional in-app Copilot panel (7.4) reusing the same AI layer 
 **Deliverable:** the long-term vision — user asks, AI plans, EncodeX executes, app reports
 verified results.
 
-Milestones are scope boxes, not date commitments; sizing depends on how much of R0 lands quickly.
+Shipped (MCP/AI core):
+
+- `[x]` F16 frame analysis — pure module `src/shared/ai/highlight.ts`
+  (`analyzeFrames`, `detectScenes`, `detectHighlights`, `selectThumbnailCandidates`); scene
+  boundaries from frame-to-frame Hamming jumps, ranked highlight spans, and greedy
+  farthest-point thumbnail candidates, all deterministic with time-based fallbacks.
+- `[x]` `find_highlights` (READ) samples frames via the injectable frame sampler and returns
+  `{ method, framesSampled, scenes, highlights, thumbnails, notes }`.
+- `[x]` F17 social repurposing — pure module `src/shared/ai/social.ts` (`SOCIAL_PRESETS`,
+  `buildSocialPack`) emits per-platform `convert_media` steps (aspect scale+crop, resolution,
+  codecs, length cap) collected into a runnable `Workflow`.
+- `[x]` `plan_social_pack` (READ) returns the clips plus the validated workflow; commit with
+  `execute_workflow`.
+- `[x]` F18 NL editing — pure module `src/shared/ai/edit.ts` (`resolveEdit`); a structured
+  `EditIntent` (remove-intro/outro/silence, keep-range/first/last) resolves against transcript
+  and/or scene boundaries into exact `cut_video` arguments.
+- `[x]` `plan_edit` (READ) returns the resolved keep span and `cut_video` args.
+- `[x]` F20 agent — pure module `src/shared/ai/agent.ts` (`planAgent`); plans one optimize
+  `convert_media` action per file by composing `recommendSettings` + `estimateConversion`,
+  applies a `minSavings` gate when the plan carries a target bitrate, and returns actions,
+  skips, and a runnable workflow.
+- `[x]` `plan_agent` (READ) probes a folder and returns the plan; commit with `execute_workflow`.
+- `[x]` All four tools are READ and return `structuredContent`; the model proposes, the R5 gate
+  commits.
+- `[x]` Contract refresh (core tools 33 → 37; views unchanged at 11) across
+  `scripts/mcp-full-test.mjs`, `scripts/mcp-smoke.mjs`, `e2e/mcp/harness.ts`.
+- `[x]` Tests: `src/shared/ai/__tests__/{highlight,social,edit,agent}.test.ts` and
+  `src/mcp/__tests__/r6-planning.test.ts`.
+
+Remaining (optional, tracked as R6.1):
+
+- `[ ]` Desktop Copilot panel (7.4): a renderer surface that calls the same AI layer through
+  IPC and routes Apply through the existing conversion/approval flow (no second approval system).
+
+**Verify:** `npm run test`, `npm run typecheck`, `npm run mcp:smoke`, `npm run mcp:full-test`.
 
 ---
 
@@ -533,5 +571,7 @@ Milestones are scope boxes, not date commitments; sizing depends on how much of 
 plan card) `[x]` → R3 (Compression Lab) `[x]` → R2 (reliability: errors, batch, dashboard)
 `[x]` → R4 (media intelligence: `find_similar_media` + local STT → subtitles, translation,
 chapters, transcript search, summarization) `[x]` → R5 (typed workflow DAG with dry-run +
-ChatGPT reachability spike) `[x]`. Next: R6 (agent & optional Copilot surface); the long-term
-vision waits until the workflow layer is boring.
+ChatGPT reachability spike) `[x]` → R6 MCP/AI core (highlights, social pack, NL editing,
+agent; `find_highlights`/`plan_social_pack`/`plan_edit`/`plan_agent`) `[x]`. Next: R6.1, the
+optional desktop Copilot panel (7.4); the long-term vision waits until the workflow layer is
+boring.

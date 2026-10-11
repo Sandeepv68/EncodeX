@@ -29,3 +29,7 @@ export * from './similarity';
 export * from './stt';
 export * from './translate';
 export * from './workflow';
+export * from './highlight';
+export * from './social';
+export * from './edit';
+export * from './agent';

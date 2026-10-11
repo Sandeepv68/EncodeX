@@ -30,7 +30,9 @@ import { BUILTIN_PROFILES } from '../shared/profiles/builtin';
 import type { ConversionProfile } from '../shared/types';
 import {
   adviseEncoding,
+  analyzeFrames,
   analyzeMedia,
+  buildSocialPack,
   buildTranscript,
   chaptersToFfmpeg,
   chaptersToYouTube,
@@ -47,8 +49,10 @@ import {
   parseBitrateKbps,
   planTargetSizeCandidates,
   planWorkflow,
+  planAgent,
   recommendSettings,
   resolveReferences,
+  resolveEdit,
   searchTranscript,
   summarizeLibrary,
   summarizeTranscript,
@@ -68,7 +72,12 @@ import type {
   LibraryRow,
   LocalModelClient,
   MediaSignature,
+  MediaFacts,
   PlanRequest,
+  SampledFrame,
+  SceneBoundary,
+  EditIntent,
+  SocialClip,
   SttEngine,
   SubtitleFormat,
   Transcript,
@@ -696,6 +705,83 @@ const workflowSchema = z.object({
 });
 
 /**
+ * Schema for the `find_highlights` tool: frame-based scene/highlight/thumbnail
+ * analysis.
+ */
+const findHighlightsSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the media file to analyze.'),
+  durationSeconds: z.number().min(0).optional().describe('Known duration; probed when omitted.'),
+  samples: z.number().int().min(2).max(240).optional().describe('Frames to sample across the file (default 24).'),
+  sceneThreshold: z.number().min(0).max(1).optional().describe('Frame-change fraction that opens a scene (default 0.15).'),
+  maxHighlights: z.number().int().min(1).max(20).optional().describe('Maximum highlight spans (default 5).'),
+  maxThumbnails: z.number().int().min(1).max(30).optional().describe('Maximum thumbnail candidates (default 6).'),
+});
+
+/**
+ * Schema for the `plan_social_pack` tool: per-platform repurposing clips.
+ */
+const planSocialPackSchema = z.object({
+  input: z.string().min(1).describe('Absolute path of the source file to repurpose.'),
+  platforms: z.array(z.string().min(1)).optional().describe('Preset ids (e.g. youtube-shorts, tiktok); defaults to all.'),
+  maxDurationSeconds: z.number().positive().optional().describe('Overrides every preset length cap.'),
+  outputDir: z.string().optional().describe('Directory for the derived clip outputs (defaults next to the source).'),
+});
+
+/**
+ * Schema for one structured editing intent (F18).
+ */
+const editIntentSchema = z.discriminatedUnion('kind', [
+  z.object({
+    kind: z.literal('remove-intro'),
+    maxSeconds: z.number().min(0).optional().describe('How far in an intro may end (default 30).'),
+  }),
+  z.object({
+    kind: z.literal('remove-outro'),
+    maxSeconds: z.number().min(0).optional().describe('How far back an outro may start (default 30).'),
+  }),
+  z.object({
+    kind: z.literal('remove-silence'),
+    minGapSeconds: z.number().min(0).optional().describe('Only trim silence longer than this (default 0).'),
+  }),
+  z.object({
+    kind: z.literal('keep-range'),
+    start: z.number().min(0).describe('Keep-span start in seconds.'),
+    end: z.number().min(0).describe('Keep-span end in seconds.'),
+  }),
+  z.object({ kind: z.literal('keep-first'), seconds: z.number().min(0).describe('Seconds to keep from the start.') }),
+  z.object({ kind: z.literal('keep-last'), seconds: z.number().min(0).describe('Seconds to keep from the end.') }),
+]);
+
+/**
+ * Schema for the `plan_edit` tool: resolve a structured edit to a cut span.
+ */
+const planEditSchema = z.object({
+  input: z.string().min(1).optional().describe('Media file to transcribe first (when segments are not supplied).'),
+  segments: z.array(transcriptSegmentSchema).optional().describe('Existing timed speech segments.'),
+  durationSeconds: z.number().min(0).optional().describe('Source duration when segments are supplied.'),
+  scenes: z
+    .array(z.object({ atSeconds: z.number().min(0), change: z.number().min(0) }))
+    .optional()
+    .describe('Scene boundaries (from find_highlights) to sharpen intro/outro detection.'),
+  intent: editIntentSchema.describe('The structured edit to resolve.'),
+  language: z.string().optional().describe('STT language hint when transcribing an input.'),
+  modelPath: z.string().optional().describe('STT model path when transcribing an input.'),
+});
+
+/**
+ * Schema for the `plan_agent` tool: a library-wide conversion plan + workflow.
+ */
+const planAgentSchema = z.object({
+  inputs: z.array(z.string().min(1)).min(1).max(500).describe('Files, directories, or globs the agent should plan across.'),
+  intent: z.string().min(1).describe('The goal shared by every planned file (natural language).'),
+  constraints: constraintsSchema.optional().describe('Optional hard constraints (size ceiling, resolution, platform).'),
+  recursive: z.boolean().optional().describe('Recurse into subdirectories (default false).'),
+  maxFiles: z.number().int().min(1).max(200).optional().describe('Maximum actions to plan (default 50).'),
+  minSavings: z.number().min(0).max(1).optional().describe('Skip files projected to shrink by less than this fraction.'),
+  outputDir: z.string().optional().describe('Directory for the derived outputs (defaults next to each source).'),
+});
+
+/**
  * Wall-clock budget for a single workflow step job before `execute_workflow`
  * gives up waiting and reports the step as failed.
  * @const {number}
@@ -1059,6 +1145,60 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     if (args.modelPath) options.modelPath = args.modelPath;
     if (args.timeoutMs) options.timeoutMs = args.timeoutMs;
     return sttEngine.transcribe(args.input, options);
+  }
+
+  /**
+   * Samples evenly-spaced frame hashes across a media file for the highlight
+   * analysis. A sampling failure is tolerated (the frame is recorded without a
+   * hash) so one bad seek never fails the whole analysis.
+   * @param {string} file - Absolute media path.
+   * @param {number} durationSeconds - Source duration (0 when unknown).
+   * @param {number} count - Number of frames to sample.
+   * @returns {Promise<SampledFrame[]>} The sampled frames in time order.
+   */
+  async function sampleFrames(file: string, durationSeconds: number, count: number): Promise<SampledFrame[]> {
+    const total = Math.max(1, Math.floor(count));
+    const frames: SampledFrame[] = [];
+    for (let index = 0; index < total; index += 1) {
+      const at = durationSeconds > 0 ? (durationSeconds * (index + 0.5)) / total : 0;
+      let hash: string | undefined;
+      try {
+        hash = await frameSampler(file, at);
+      } catch {
+        hash = undefined;
+      }
+      frames.push(hash ? { atSeconds: at, hash } : { atSeconds: at });
+    }
+    return frames;
+  }
+
+  /**
+   * Derives a per-platform clip output path next to the source (or inside
+   * `outputDir`), suffixed with the platform id.
+   * @param {string} input - Source file path.
+   * @param {SocialClip} clip - The planned clip.
+   * @param {string} [outputDir] - Optional output directory.
+   * @returns {string} The output path.
+   */
+  function clipOutputPath(input: string, clip: SocialClip, outputDir?: string): string {
+    const suffix = `_${clip.platform}`;
+    return outputDir
+      ? path.join(outputDir, `${path.parse(input).name}${suffix}.${clip.container}`)
+      : suffixedOutput(input, suffix, clip.container);
+  }
+
+  /**
+   * Derives an agent action output path next to the source (or inside
+   * `outputDir`), suffixed per index so multiple files never collide.
+   * @param {string} input - Source file path.
+   * @param {number} index - The action index.
+   * @param {string} [outputDir] - Optional output directory.
+   * @returns {string} The output path.
+   */
+  function agentOutputPath(input: string, index: number, outputDir?: string): string {
+    const suffix = index === 0 ? '_optimized' : `_optimized_${index + 1}`;
+    const ext = getInputExtension(input);
+    return outputDir ? path.join(outputDir, `${path.parse(input).name}${suffix}.${ext}`) : suffixedOutput(input, suffix, ext);
   }
 
   /**
@@ -2298,6 +2438,135 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
           ...(args.maxTopics !== undefined ? { maxTopics: args.maxTopics } : {}),
         });
         return ok(JSON.stringify(result), { result });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'find_highlights',
+    {
+      title: 'Find Highlights',
+      description:
+        'Analyzes a media file by sampling frames and returns detected scene boundaries, ranked highlight spans, and ' +
+        'thumbnail candidates (the most visually distinct frames), plus thumbnail time offsets. Deterministic — no model call.',
+      inputSchema: findHighlightsSchema,
+    },
+    async (args: z.infer<typeof findHighlightsSchema>) => {
+      try {
+        let duration = args.durationSeconds;
+        if (duration === undefined) {
+          const info = await probeMedia(args.input);
+          duration = extractMediaFacts(info).durationSeconds;
+        }
+        const frames = await sampleFrames(args.input, duration, args.samples ?? 24);
+        const report = analyzeFrames(frames, {
+          durationSeconds: duration,
+          ...(args.sceneThreshold !== undefined ? { sceneThreshold: args.sceneThreshold } : {}),
+          ...(args.maxHighlights !== undefined ? { maxHighlights: args.maxHighlights } : {}),
+          ...(args.maxThumbnails !== undefined ? { maxThumbnails: args.maxThumbnails } : {}),
+        });
+        return ok(JSON.stringify(report), { report });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'plan_social_pack',
+    {
+      title: 'Plan Social Pack',
+      description:
+        'Plans a per-platform repurposing pack (crop/scale to each platform aspect, resolution, codec, and length cap) ' +
+        'and returns the clips plus a runnable workflow. Nothing runs here; commit it with execute_workflow. Deterministic.',
+      inputSchema: planSocialPackSchema,
+    },
+    async (args: z.infer<typeof planSocialPackSchema>) => {
+      try {
+        if (!fs.existsSync(args.input)) {
+          throw createError(ErrorCode.FILE_NOT_FOUND, `Input file not found: ${args.input}`);
+        }
+        const pack = buildSocialPack(args.input, {
+          ...(args.platforms ? { platforms: args.platforms } : {}),
+          ...(args.maxDurationSeconds !== undefined ? { maxDurationSeconds: args.maxDurationSeconds } : {}),
+          resolveOutput: (clip) => clipOutputPath(args.input, clip, args.outputDir),
+        });
+        const plan = planWorkflow(pack.workflow);
+        const payload = { ...pack, plan };
+        return ok(JSON.stringify(payload), { pack: payload });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'plan_edit',
+    {
+      title: 'Plan Edit',
+      description:
+        'Resolves a structured edit intent (remove intro/outro/silence, or keep a range) into an exact cut span with ' +
+        'ready-to-use cut_video arguments, using a transcript and/or scene boundaries. Deterministic — no model call.',
+      inputSchema: planEditSchema,
+    },
+    async (args: z.infer<typeof planEditSchema>) => {
+      try {
+        const hasSegments = Array.isArray(args.segments) && args.segments.length > 0;
+        const transcript = hasSegments || args.input ? await resolveTranscript(args) : undefined;
+        const duration = args.durationSeconds ?? transcript?.durationSeconds ?? 0;
+        const edit = resolveEdit(
+          {
+            durationSeconds: duration,
+            ...(transcript ? { transcript } : {}),
+            ...(args.scenes ? { scenes: args.scenes as SceneBoundary[] } : {}),
+          },
+          args.intent as EditIntent,
+        );
+        return ok(JSON.stringify(edit), { edit });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'plan_agent',
+    {
+      title: 'Plan Agent',
+      description:
+        'Plans a library-wide conversion run toward a goal: probes every matched file, plans one optimize action per ' +
+        'file (reusing the deterministic recommender), and returns the actions, skips, and a runnable workflow. ' +
+        'Commit it with execute_workflow. Deterministic — no model call.',
+      inputSchema: planAgentSchema,
+    },
+    async (args: z.infer<typeof planAgentSchema>) => {
+      try {
+        const files = collectMediaPaths(args.inputs, args.recursive ?? false, args.maxFiles ?? 50);
+        if (files.length === 0) {
+          throw createError(ErrorCode.FILE_NOT_FOUND, 'No media files matched the given inputs.');
+        }
+        const facts: MediaFacts[] = [];
+        for (const file of files) {
+          const info = await tryProbe(file);
+          if (info) facts.push(extractMediaFacts(info));
+        }
+        const agentPlan = planAgent({
+          intent: args.intent,
+          files: facts,
+          profiles: BUILTIN_PROFILES,
+          capabilities: capabilitiesOrEmpty(),
+          ...(args.constraints ? { constraints: args.constraints } : {}),
+          options: {
+            ...(args.maxFiles !== undefined ? { maxFiles: args.maxFiles } : {}),
+            ...(args.minSavings !== undefined ? { minSavings: args.minSavings } : {}),
+          },
+          resolveOutput: (fact, index) => agentOutputPath(fact.file, index, args.outputDir),
+        });
+        const plan = planWorkflow(agentPlan.workflow);
+        const payload = { ...agentPlan, plan };
+        return ok(JSON.stringify(payload), { plan: payload });
       } catch (err) {
         return fail(err);
       }

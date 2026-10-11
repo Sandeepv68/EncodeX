@@ -56,6 +56,10 @@ const CORE_TOOLS = [
   'summarize_media',
   'plan_workflow',
   'execute_workflow',
+  'find_highlights',
+  'plan_social_pack',
+  'plan_edit',
+  'plan_agent',
 ];
 const GUI_TOOLS = ['get_queue_state', 'cancel_all_jobs', 'get_timeline', 'extract_preview', 'get_system_info', 'check_for_updates'];
 const ALL_TOOLS = [...CORE_TOOLS, ...GUI_TOOLS];
