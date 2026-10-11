@@ -126,6 +126,8 @@ function auditTables(tables, enFlat) {
     'mediaInfo.file',
     'mediaInfo.stream',
     'nav.audio',
+    'nav.copilot',
+    'copilot.title',
     'nav.demux',
     'nav.image',
     'nav.remux',
