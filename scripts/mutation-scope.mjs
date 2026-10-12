@@ -50,18 +50,28 @@ export const MUTATE_GLOBS = strykerConfig.mutate;
 /**
  * Expands the mutation globs to a sorted, de-duplicated list of repo-relative
  * POSIX paths.
- * @param {string[]} globs - Glob patterns (brace expansion included).
+ *
+ * A pattern prefixed with `!` is a negation, matching Stryker's own `mutate`
+ * semantics (see ProjectReader.resolveFileDescriptions). It is handled here
+ * rather than passed to `fs.globSync`, which silently returns nothing for a
+ * negated glob: without this, adding `!path` to the config would exclude the
+ * file from a local Stryker run but leave it in every CI shard.
+ * @param {string[]} globs - Glob patterns (brace expansion included, `!` negation).
  * @param {string} [cwd] - Directory to resolve against.
  * @returns {string[]} Concrete file paths.
  */
 export function expandScope(globs, cwd = repoRoot()) {
-  const files = new Set();
+  const included = new Set();
+  const excluded = new Set();
   for (const pattern of globs) {
-    for (const match of fs.globSync(pattern, { cwd })) {
-      files.add(match.split(path.sep).join('/'));
+    const negated = pattern.startsWith('!');
+    const body = negated ? pattern.slice(1) : pattern;
+    const target = negated ? excluded : included;
+    for (const match of fs.globSync(body, { cwd })) {
+      target.add(match.split(path.sep).join('/'));
     }
   }
-  return [...files].sort();
+  return [...included].filter((file) => !excluded.has(file)).sort();
 }
 
 /**

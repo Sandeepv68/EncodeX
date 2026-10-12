@@ -56,4 +56,10 @@ describe('deriveSubtitlePath', () => {
     expect(deriveSubtitlePath('C:\\media\\movie.mkv', 'srt')).toBe('C:\\media\\movie.srt');
     expect(deriveSubtitlePath('/home/u/clip.mp4', 'vtt')).toBe('/home/u/clip.vtt');
   });
+
+  it('handles paths without a directory or extension', () => {
+    expect(deriveSubtitlePath('movie', 'srt')).toBe('movie.srt');
+    expect(deriveSubtitlePath('.hidden', 'srt')).toBe('.hidden.srt');
+    expect(deriveSubtitlePath(null as unknown as string, 'srt')).toBe('.srt');
+  });
 });

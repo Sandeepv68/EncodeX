@@ -6,7 +6,7 @@ import { describe, it, expect } from 'vitest';
 import { BUILTIN_PROFILES } from '../../profiles/builtin';
 import type { EncoderCapabilities } from '../../types';
 import type { MediaFacts, PlanRequest } from '../types';
-import { recommendSettings, parseIntent, selectProfile, codecFamily } from '../recommend';
+import { recommendSettings, parseIntent, selectProfile, codecFamily, sourceClass } from '../recommend';
 
 /** 1080p H.264/AAC source facts. */
 const FACTS: MediaFacts = {
@@ -65,6 +65,35 @@ describe('parseIntent', () => {
     const signals = parseIntent('convert this', { targetDevice: 'android', maxHeight: 720 });
     expect(signals.profileHints).toContain('android');
     expect(signals.targetClass).toBe(720);
+  });
+
+  it('maps console device constraints to profile hints', () => {
+    expect(parseIntent('convert this', { targetDevice: 'ps5' }).profileHints).toContain('ps5');
+    expect(parseIntent('convert this', { targetDevice: 'ps4' }).profileHints).toContain('ps4');
+    expect(parseIntent('convert this', { targetDevice: 'xbox one' }).profileHints).toContain('xbox');
+  });
+
+  it('leaves device hints empty for an unrecognised device', () => {
+    const signals = parseIntent('convert this', { targetDevice: 'windows' });
+    expect(signals.categories).toContain('devices');
+    expect(signals.profileHints).not.toContain('ps5');
+    expect(signals.profileHints).not.toContain('xbox');
+  });
+
+  it('maps platform constraints to web-social signals', () => {
+    const youtube = parseIntent('convert this', { platform: 'youtube' });
+    expect(youtube.categories).toContain('web-social');
+    expect(youtube.profileHints).toContain('yt');
+    expect(parseIntent('convert this', { platform: 'facebook' }).categories).toContain('web-social');
+    expect(parseIntent('convert this', { platform: 'instagram' }).categories).toContain('web-social');
+    expect(parseIntent('convert this', { platform: 'tiktok' }).categories).toContain('web-social');
+    expect(parseIntent('convert this', { platform: 'twitter' }).categories).toContain('web-social');
+    expect(parseIntent('convert this', { platform: 'x' }).categories).toContain('web-social');
+    expect(parseIntent('convert this', { platform: 'web' }).categories).toContain('web-social');
+  });
+
+  it('leaves the platform category empty for an unrecognised platform', () => {
+    expect(parseIntent('convert this', { platform: 'desktop' }).categories).not.toContain('web-social');
   });
 });
 
@@ -135,5 +164,23 @@ describe('recommendSettings', () => {
     const plan = recommendSettings(makeRequest('do something', { profiles: [] }));
     expect(plan.confidence).toBe(0);
     expect(plan.args).toEqual({ input: FACTS.file });
+  });
+
+  it('notes when a byte ceiling cannot be targeted without a duration', () => {
+    const plan = recommendSettings(
+      makeRequest('compress this', { facts: { ...FACTS, durationSeconds: 0 }, constraints: { maxBytes: 1_000_000 } }),
+    );
+    expect(plan.rationale.join(' ')).toContain('duration is unknown');
+  });
+
+  it('notes the quality-first encode when the intent asks for it', () => {
+    const plan = recommendSettings(makeRequest('give me the best quality'));
+    expect(plan.rationale.join(' ')).toMatch(/Quality-first encode/);
+  });
+});
+
+describe('sourceClass', () => {
+  it('defaults to 1080 when the source has no video dimensions', () => {
+    expect(sourceClass({ ...FACTS, video: undefined })).toBe(1080);
   });
 });

@@ -62,4 +62,9 @@ describe('validateOutput', () => {
     const result = validateOutput(makeInfo(), { minDurationSeconds: 120 });
     expect(result.checks.find((check) => check.name === 'minDurationSeconds')?.passed).toBe(false);
   });
+
+  it('checks the upper duration bound', () => {
+    expect(validateOutput(makeInfo(), { maxDurationSeconds: 30 }).passed).toBe(false);
+    expect(validateOutput(makeInfo(), { maxDurationSeconds: 120 }).passed).toBe(true);
+  });
 });

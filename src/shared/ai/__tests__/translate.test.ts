@@ -31,6 +31,10 @@ describe('extractJsonArray', () => {
     expect(extractJsonArray('prefix ["a]b","c"] suffix')).toBe('["a]b","c"]');
     expect(extractJsonArray('none')).toBeUndefined();
   });
+
+  it('returns undefined for an unbalanced array', () => {
+    expect(extractJsonArray('[1, 2')).toBeUndefined();
+  });
 });
 
 describe('parseTranslatedLines', () => {
@@ -45,6 +49,10 @@ describe('parseTranslatedLines', () => {
 
   it('returns undefined when there is no array', () => {
     expect(parseTranslatedLines('no json here', 2)).toBeUndefined();
+  });
+
+  it('returns undefined when the extracted array is not valid JSON', () => {
+    expect(parseTranslatedLines('[not json]', 2)).toBeUndefined();
   });
 });
 

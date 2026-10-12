@@ -80,4 +80,33 @@ describe('analyzeMedia', () => {
     );
     expect(analysis.findings.map((finding) => finding.code)).toContain('SIZE_REPORT');
   });
+
+  it('flags interlaced video with a deinterlace recommendation', () => {
+    const analysis = analyzeMedia(
+      makeInfo({
+        streams: [stream({ type: 'video', codec: 'h264', width: 1920, height: 1080, fieldOrder: 'tt' })],
+      }),
+    );
+    expect(analysis.findings.map((finding) => finding.code)).toContain('INTERLACED');
+    expect(analysis.recommendations.join(' ')).toContain('yadif');
+  });
+
+  it('notes high bit depth under the quality focus', () => {
+    const analysis = analyzeMedia(
+      makeInfo({
+        streams: [stream({ type: 'video', codec: 'h264', width: 1920, height: 1080, bitDepth: 10 })],
+      }),
+      'quality',
+    );
+    expect(analysis.findings.map((finding) => finding.code)).toContain('HIGH_BIT_DEPTH');
+  });
+
+  it('warns when the file has audio but no video stream', () => {
+    const analysis = analyzeMedia(
+      makeInfo({
+        streams: [stream({ type: 'audio', codec: 'aac', channels: 2 })],
+      }),
+    );
+    expect(analysis.findings.map((finding) => finding.code)).toContain('NO_VIDEO');
+  });
 });

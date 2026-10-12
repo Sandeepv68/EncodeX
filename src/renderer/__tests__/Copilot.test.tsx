@@ -9,7 +9,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderPage } from '../../test-utils/page-render';
-import { screen, waitFor, fireEvent } from '@testing-library/react';
+import { screen, waitFor, fireEvent, act } from '@testing-library/react';
 import type { CopilotPlan } from '../../shared/copilot';
 
 const PLAN_FIXTURE: CopilotPlan = {
@@ -42,6 +42,60 @@ const PLAN_FIXTURE: CopilotPlan = {
   plan: { valid: true, order: ['convert_0', 'convert_1'], steps: [], issues: [], summary: '2 steps' },
   isEstimated: true,
 };
+
+/** Minimal shape of a React fiber node needed to walk up to the page handler. */
+interface ReactFiberNode {
+  memoizedProps?: { onClick?: unknown };
+  return?: ReactFiberNode | null;
+  alternate?: ReactFiberNode | null;
+}
+
+/**
+ * Finds the first `onClick` a fiber's ancestors received, walking past MUI's
+ * own click wrapper (which it passes down to the host `<button>`).
+ * @param {ReactFiberNode} start - The fiber to begin walking from.
+ * @param {unknown} muiOnClick - MUI's wrapper, ignored while searching.
+ * @returns {(() => unknown) | undefined} The page handler, if found.
+ */
+function findPageHandler(start: ReactFiberNode | null | undefined, muiOnClick: unknown): (() => unknown) | undefined {
+  let fiber = start?.return ?? null;
+  while (fiber) {
+    const onClick = fiber.memoizedProps?.onClick;
+    const isMuiWrapper = typeof onClick === 'function' && (onClick as { name?: string }).name === 'handleClick';
+    if (typeof onClick === 'function' && onClick !== muiOnClick && !isMuiWrapper) return onClick as () => unknown;
+    fiber = fiber.return ?? null;
+  }
+  return undefined;
+}
+
+/**
+ * Invokes the page's committed `onClick` even while the Plan button is
+ * `disabled`.
+ *
+ * The button mirrors `buildPlan`'s own guards (`goal.trim() === ''` /
+ * `inputs.length === 0`) in its `disabled` prop, so the two error branches are
+ * unreachable by a real click: a disabled native button swallows mouse events,
+ * and MUI's own click wrapper short-circuits on `disabled`. The harness walks
+ * the committed React fiber (and its `alternate`, which carries the newest
+ * render) up to the `ButtonBase` that received the page's handler, then calls
+ * it inside `act` -- exercising the same code a user could only reach if the
+ * guard order in the component ever drifts.
+ * @param {HTMLElement} element - The button whose page handler should run.
+ * @returns {Promise<void>} Resolves once the handler and its state updates settle.
+ */
+async function invokeOnClick(element: HTMLElement): Promise<void> {
+  const fiberKey = Object.keys(element).find((key) => key.startsWith('__reactFiber'));
+  expect(fiberKey).toBeDefined();
+  const hostFiber = (element as unknown as Record<string, ReactFiberNode | undefined>)[fiberKey!];
+  expect(hostFiber).toBeDefined();
+  const muiOnClick = hostFiber!.memoizedProps?.onClick;
+  const handler = findPageHandler(hostFiber!.alternate, muiOnClick) ?? findPageHandler(hostFiber, muiOnClick);
+  expect(typeof handler).toBe('function');
+  const pageHandler = handler!;
+  await act(async () => {
+    await pageHandler();
+  });
+}
 
 describe('Copilot page', () => {
   beforeEach(() => {
@@ -138,5 +192,55 @@ describe('Copilot page', () => {
     await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
     fireEvent.click(screen.getByTestId('copilot-plan'));
     expect(await screen.findByTestId('copilot-error')).toBeDefined();
+  });
+
+  it('shows a notice when the chosen folder contains no media files', async () => {
+    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue([]);
+    renderPage('Copilot');
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    expect(await screen.findByTestId('copilot-notice')).toBeInTheDocument();
+    expect(window.electronAPI.copilotPlan).not.toHaveBeenCalled();
+  });
+
+  it('flags a missing goal when the plan guard runs without one', async () => {
+    renderPage('Copilot');
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    await invokeOnClick(screen.getByTestId('copilot-plan'));
+    expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.errorNoGoal');
+    expect(window.electronAPI.copilotPlan).not.toHaveBeenCalled();
+  });
+
+  it('flags missing inputs when the plan guard runs without a folder', async () => {
+    renderPage('Copilot');
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
+    await waitFor(() => expect((screen.getByRole('textbox') as HTMLInputElement).value).toBe('compress for web'));
+    await invokeOnClick(screen.getByTestId('copilot-plan'));
+    expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.errorNoInputs');
+    expect(window.electronAPI.copilotPlan).not.toHaveBeenCalled();
+  });
+
+  it('reports a partial enqueue when some queueAdd calls fail', async () => {
+    renderPage('Copilot');
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+    vi.mocked(window.electronAPI.queueAdd).mockResolvedValueOnce('').mockRejectedValueOnce(new Error('boom'));
+    fireEvent.click(screen.getByTestId('copilot-add-to-queue'));
+    expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.partiallyAdded');
+  });
+
+  it('reports a total enqueue failure when every queueAdd call fails', async () => {
+    renderPage('Copilot');
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+    vi.mocked(window.electronAPI.queueAdd).mockRejectedValue(new Error('boom'));
+    fireEvent.click(screen.getByTestId('copilot-add-to-queue'));
+    expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.errorEnqueue');
   });
 });

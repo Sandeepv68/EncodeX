@@ -71,6 +71,20 @@ describe('compareSignatures', () => {
     expect(report.matches[0].findings).toContain('sampled frames are identical');
   });
 
+  it('notes visually near-identical frames within the hash tolerance', () => {
+    const base: MediaSignature = {
+      file: 'a.mp4',
+      durationSeconds: 10,
+      width: 1920,
+      height: 1080,
+      sizeBytes: 1000,
+      hash: '0000000000000000',
+    };
+    const report = compareSignatures(base, [{ ...base, file: 'b.mp4', hash: '0000000000000001' }]);
+    expect(report.matches[0].hashDistance).toBe(1);
+    expect(report.matches[0].findings).toContain('sampled frames are visually near-identical');
+  });
+
   it('notes same content with a different file size', () => {
     const base: MediaSignature = { file: 'a.mp4', durationSeconds: 10, sizeBytes: 1000000, hash: '0000000000000000' };
     const report = compareSignatures(base, [{ file: 'b.mp4', durationSeconds: 10, sizeBytes: 2000000, hash: '0000000000000000' }]);

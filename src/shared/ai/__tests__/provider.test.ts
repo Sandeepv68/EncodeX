@@ -104,6 +104,10 @@ describe('local plan helpers', () => {
     expect(extractJsonObject('no object here')).toBeUndefined();
   });
 
+  it('returns undefined for an unbalanced object', () => {
+    expect(extractJsonObject('{ "a": 1 ')).toBeUndefined();
+  });
+
   it('builds a grounded prompt naming the intent and profiles', () => {
     const prompt = buildLocalPlanPrompt(REQUEST);
     expect(prompt).toContain('make this work on my iPhone');

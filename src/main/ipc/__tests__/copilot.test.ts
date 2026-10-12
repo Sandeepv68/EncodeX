@@ -14,9 +14,27 @@ import * as os from 'os';
 import * as path from 'path';
 import type { MediaInfo } from '../../../shared/types';
 import type { CopilotPlan } from '../../../shared/copilot';
+import type { MCPConversionFields } from '../../../mcp/conversion-options';
 
-const { ipcMainMock, transcoderFactoryMock, capabilitiesMock, getHandlers } = vi.hoisted(() => {
+const {
+  ipcMainMock,
+  transcoderFactoryMock,
+  capabilitiesMock,
+  getHandlers,
+  buildConversionOptionsMock,
+  conversionOptionsRef,
+  fsRef,
+  readdirSyncMock,
+  statSyncMock,
+  realFs,
+} = vi.hoisted(() => {
   const handlers: Record<string, (...args: unknown[]) => unknown> = {};
+  // Node builtins are pulled in through `createRequire` so the sync `vi.mock`
+  // factory can spread the real module while overriding two exports below.
+  const { createRequire } = require('module') as typeof import('module');
+  const realFs = createRequire(import.meta.url)('fs') as typeof import('fs');
+  const readdirSyncMock = vi.fn((...args: unknown[]) => (realFs.readdirSync as (...a: unknown[]) => unknown)(...args));
+  const statSyncMock = vi.fn((...args: unknown[]) => (realFs.statSync as (...a: unknown[]) => unknown)(...args));
   return {
     ipcMainMock: {
       handle: vi.fn((channel: string, fn: (...args: unknown[]) => unknown) => {
@@ -29,6 +47,15 @@ const { ipcMainMock, transcoderFactoryMock, capabilitiesMock, getHandlers } = vi
     capabilitiesMock: {
       getEncoderCapabilities: vi.fn(),
     },
+    buildConversionOptionsMock: vi.fn(),
+    conversionOptionsRef: { current: undefined as undefined | typeof import('../../../mcp/conversion-options') },
+    fsRef: {
+      readdirSync: realFs.readdirSync,
+      statSync: realFs.statSync,
+    },
+    readdirSyncMock,
+    statSyncMock,
+    realFs,
     getHandlers: () => handlers,
   };
 });
@@ -36,6 +63,25 @@ const { ipcMainMock, transcoderFactoryMock, capabilitiesMock, getHandlers } = vi
 vi.mock('electron', () => ({ ipcMain: ipcMainMock }));
 vi.mock('../../transcoders/factory', () => transcoderFactoryMock);
 vi.mock('../../capabilities', () => capabilitiesMock);
+// The happy path still runs through the real option builder; the mock only
+// exists so a single test can force one action to fail option conversion and
+// exercise the pipeline's per-action drop-and-record path.
+vi.mock('../../../mcp/conversion-options', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../mcp/conversion-options')>();
+  conversionOptionsRef.current = actual;
+  return { ...actual, buildConversionOptions: buildConversionOptionsMock };
+});
+// `readdirSync`/`statSync` are mocked so two hostile-filesystem cases can force
+// an unreadable directory and an unreadable child without depending on OS
+// permissions. Everything delegates to the real function, so every other call
+// behaves exactly as before. The overrides are repeated on `default` because
+// the source module's named `fs` imports are interop-resolved from `default`.
+vi.mock('fs', () => ({
+  ...realFs,
+  readdirSync: readdirSyncMock,
+  statSync: statSyncMock,
+  default: { ...realFs, readdirSync: readdirSyncMock, statSync: statSyncMock },
+}));
 
 const { registerCopilotHandlers } = await import('../copilot');
 import { IPC } from '../../../shared/ipc-channels';
@@ -84,6 +130,13 @@ describe('registerCopilotHandlers', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // `vi.restoreAllMocks()` in afterEach wipes the factory-set implementations,
+    // so re-apply the real builders here before every test.
+    buildConversionOptionsMock.mockImplementation((fields: unknown) =>
+      conversionOptionsRef.current!.buildConversionOptions(fields as MCPConversionFields),
+    );
+    readdirSyncMock.mockImplementation(fsRef.readdirSync as never);
+    statSyncMock.mockImplementation(fsRef.statSync as never);
     capabilitiesMock.getEncoderCapabilities.mockReturnValue({
       videoEncoders: ['libx264', 'libx265', 'libvpx-vp9'],
       audioEncoders: ['aac', 'libmp3lame', 'opus'],
@@ -159,5 +212,46 @@ describe('registerCopilotHandlers', () => {
     await expect(plan({ goal: 'compress', inputs: [path.join(tempDir, 'missing')] })).rejects.toMatchObject({
       code: ErrorCode.FILE_NOT_FOUND,
     });
+  });
+
+  it('recurses into subdirectories when the request asks for it', async () => {
+    const root = makeFolder([]);
+    const nested = fs.mkdtempSync(path.join(root, 'nested-'));
+    fs.writeFileSync(path.join(nested, 'deep.mp4'), 'stub');
+    const result = await plan({ goal: 'compress for web', inputs: [root], recursive: true });
+    expect(result.actions.map((a) => path.basename(a.input))).toContain('deep.mp4');
+  });
+
+  it('accepts a media file path directly instead of a folder', async () => {
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: 'compress', inputs: [file] });
+    expect(result.actions[0].input).toBe(file);
+  });
+
+  it('skips a folder that cannot be read instead of failing the plan', async () => {
+    readdirSyncMock.mockImplementation(((dir: fs.PathLike) => {
+      if (String(dir) === scanDir) throw new Error('EACCES');
+      return fsRef.readdirSync!(dir);
+    }) as never);
+    await expect(plan({ goal: 'compress', inputs: [scanDir] })).rejects.toMatchObject({ code: ErrorCode.FILE_NOT_FOUND });
+  });
+
+  it('skips a child entry whose stat fails instead of aborting the scan', async () => {
+    const root = makeFolder(['one.mp4', 'two.mkv']);
+    statSyncMock.mockImplementation(((p: fs.PathLike) => {
+      if (String(p).endsWith('two.mkv')) throw new Error('EACCES');
+      return fsRef.statSync!(p);
+    }) as never);
+    const result = await plan({ goal: 'compress', inputs: [root] });
+    expect(result.actions.map((a) => a.input)).toEqual([path.join(root, 'one.mp4')]);
+  });
+
+  it('drops an action whose options cannot be built and records it as a skip', async () => {
+    buildConversionOptionsMock.mockImplementationOnce(() => {
+      throw new Error('bad options');
+    });
+    const result = await plan({ goal: 'compress for web', inputs: [scanDir] });
+    expect(result.actions).toHaveLength(1);
+    expect(result.skips.some((s) => s.reason.includes('could not be turned into conversion options'))).toBe(true);
   });
 });

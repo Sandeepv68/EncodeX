@@ -104,4 +104,12 @@ describe('planAgent', () => {
     expect(plan.actions).toHaveLength(0);
     expect(plan.notes.some((note) => note.includes('No files'))).toBe(true);
   });
+
+  it('skips a facts entry that has no file path', () => {
+    const noPath = { ...facts('C:/media/a.mp4'), file: undefined } as unknown as MediaFacts;
+    const plan = planAgent(request({ files: [noPath] }));
+    expect(plan.actions).toHaveLength(0);
+    expect(plan.skips).toHaveLength(1);
+    expect(plan.skips[0]).toMatchObject({ input: '', reason: 'The file has no path.' });
+  });
 });

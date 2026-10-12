@@ -107,4 +107,23 @@ describe('resolveEdit', () => {
     expect(plan).toMatchObject({ valid: true, start: 0, end: 100 });
     expect(plan.rationale[0]).toMatch(/no speech timing/i);
   });
+
+  it('leaves the outro in place when there is no trailing speech', () => {
+    const plan = resolveEdit({ durationSeconds: 120 }, { kind: 'remove-outro' });
+    expect(plan).toMatchObject({ valid: true, start: 0, end: 120 });
+    expect(plan.notes[0]).toMatch(/left in place/);
+  });
+
+  it('leaves the outro in place when the last speech is outside the region', () => {
+    const transcript = buildTranscript([{ start: 0, end: 10, text: 'hi' }], { engine: 'test', durationSeconds: 120 });
+    const plan = resolveEdit({ durationSeconds: 120, transcript }, { kind: 'remove-outro', maxSeconds: 30 });
+    expect(plan).toMatchObject({ valid: true, start: 0, end: 120 });
+    expect(plan.notes[0]).toMatch(/left in place/);
+  });
+
+  it('rejects an unsupported intent kind', () => {
+    const plan = resolveEdit({ durationSeconds: 60 }, { kind: 'nonsense' } as unknown as EditIntent);
+    expect(plan.valid).toBe(false);
+    expect(plan.issues[0]).toMatch(/Unsupported/);
+  });
 });

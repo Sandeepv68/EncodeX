@@ -86,4 +86,21 @@ describe('compareQuality', () => {
     const report = compareQuality(silent, silent, { hasAudio: false });
     expect(report.passed).toBe(true);
   });
+
+  it('flags reduced audio channels', () => {
+    const source = makeInfo({
+      streams: [
+        { index: 0, type: 'video', codec: 'h264', width: 1280, height: 720 },
+        { index: 1, type: 'audio', codec: 'ac3', channels: 6 },
+      ],
+    });
+    const output = makeInfo({
+      streams: [
+        { index: 0, type: 'video', codec: 'h264', width: 1280, height: 720 },
+        { index: 1, type: 'audio', codec: 'aac', channels: 2 },
+      ],
+    });
+    const report = compareQuality(source, output);
+    expect(report.findings).toContainEqual(expect.objectContaining({ code: 'channels_reduced', severity: 'warning' }));
+  });
 });
