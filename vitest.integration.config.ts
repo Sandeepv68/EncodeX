@@ -25,7 +25,7 @@ export default defineConfig({
       // `test:coverage:diff` can merge it with the unit tier's. Without it the
       // CLI and MCP sources this tier exists to exercise read as ~0%, and a
       // per-file floor built on that would demand tests that already pass.
-      reporter: ['text', 'json', 'json-summary'],
+      reporter: ['text', 'lcov', 'json', 'json-summary'],
       reportsDirectory: 'coverage-integration',
       // Same scope as the unit tier on purpose; see vitest.coverage-scope.ts.
       include: COVERAGE_INCLUDE,

@@ -279,6 +279,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/lcov.info
+          flags: unit
           fail_ci_if_error: false
       - name: Upload test results to Codecov
         # Test Analytics: feeds Vitest's junit.xml (builtin junit reporter in
@@ -294,6 +295,10 @@ jobs:
     needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Exposed so the integration-tier coverage upload (distinct Codecov flag)
+    # can authenticate. Empty on fork PRs and local `act` runs -> self-skips.
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -302,6 +307,14 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run test:integration
+      - name: Upload coverage to Codecov (integration flag)
+        if: always() && env.CODECOV_TOKEN != ''
+        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage-integration/lcov.info
+          flags: integration
+          fail_ci_if_error: false
 
   test-fuzz:
     name: Test - Media Fuzz

@@ -8,6 +8,31 @@ coverage:
       default:
         target: 80%
 
+# Flags group the two independent test tiers this repo runs. The unit tier
+# (`-F unit`) and integration tier (`-F integration`) both measure the same
+# src/** file set but exercise different code paths (unit simulates, the
+# integration tier drives the real build's CLI/MCP surfaces). Uploading each
+# tier as its own flag lets Codecov attribute coverage in PR comments, status
+# checks, and source overlay to the tier that produced it. carryforward:true
+# keeps flag history from collapsing when a commit only runs part of a suite.
+flag_management:
+  default_rules: # applied to any flag not named under individual_flags
+    carryforward: true
+    statuses:
+      - type: project
+        target: auto
+        threshold: 1%
+      - type: patch
+        target: 80%
+  individual_flags:
+    - name: unit # grips the whole src/ report
+      carryforward: true
+    - name: integration # flag stats only for the CLI/MCP code this tier targets
+      paths:
+        - src/main/**
+        - src/mcp/**
+      carryforward: true
+
 comment:
   layout: "reach, diff, flags, files"
   behavior: default
