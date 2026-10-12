@@ -33,7 +33,43 @@ flag_management:
         - src/mcp/**
       carryforward: true
 
+# Components are virtual path filters defined entirely here (unlike flags, they
+# are not declared at upload time). Both test tiers measure the same src/** file
+# set, so components carve that single report into the architectural areas of
+# the app. This yields per-area coverage in the PR comment and independent
+# project/patch statuses without splitting the uploads.
+component_management:
+  default_rules: # inherited by every component that does not define its own statuses
+    statuses:
+      - type: project
+        target: auto
+        threshold: 1%
+      - type: patch
+        target: 80%
+  individual_components:
+    - component_id: main # Electron main process
+      name: main
+      paths:
+        - src/main/**
+    - component_id: mcp # embedded + standalone MCP server
+      name: mcp
+      paths:
+        - src/mcp/**
+        - src/main/mcp/**
+    - component_id: renderer # React UI
+      name: renderer
+      paths:
+        - src/renderer/**
+    - component_id: shared # code shared between processes
+      name: shared
+      paths:
+        - src/shared/**
+    - component_id: preload # contextBridge surface
+      name: preload
+      paths:
+        - src/preload/**
+
 comment:
-  layout: "reach, diff, flags, files"
+  layout: "reach, diff, flags, components, files"
   behavior: default
   require_changes: false
