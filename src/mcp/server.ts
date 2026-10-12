@@ -19,7 +19,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import type { CreateTaskRequestHandlerExtra, CreateTaskResult } from '@modelcontextprotocol/sdk/experimental/tasks';
+import type { CreateTaskRequestHandlerExtra, CreateTaskResult, ToolTaskHandler } from '@modelcontextprotocol/sdk/experimental/tasks';
 import * as z from 'zod';
 import { APP_NAME } from '../shared/app-constants';
 import { createTranscoder } from '../main/transcoders/factory';
@@ -883,19 +883,11 @@ const MCP_TASK_TTL_MS = 3_600_000;
  * registered through `server.experimental.tasks.registerToolTask` still exposes
  * the confirmation view URI under both the nested (`ui.resourceUri`) and legacy
  * (`ui/resourceUri`) keys, preserving MCP Apps rendering and the smoke tests.
- * @param {Record<string, unknown>} meta - The `_meta` object passed by the caller.
+ * @param {{ ui: { resourceUri: string } }} meta - The `_meta` object passed by the caller.
  * @returns {Record<string, unknown>} The normalized `_meta` object.
  */
-function normalizeAppToolMeta(meta: Record<string, unknown>): Record<string, unknown> {
-  const ui = meta.ui as { resourceUri?: string } | undefined;
-  const legacy = meta['ui/resourceUri'] as string | undefined;
-  if (ui?.resourceUri && !legacy) {
-    return { ...meta, 'ui/resourceUri': ui.resourceUri };
-  }
-  if (legacy && !ui?.resourceUri) {
-    return { ...meta, ui: { ...(ui ?? {}), resourceUri: legacy } };
-  }
-  return meta;
+function normalizeAppToolMeta(meta: { ui: { resourceUri: string } }): Record<string, unknown> {
+  return { ...meta, 'ui/resourceUri': meta.ui.resourceUri };
 }
 
 /**
@@ -1059,53 +1051,21 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
   }
 
   /**
-   * Collects media files from a mix of files, directories, and globs.
+   * Collects media files from a mix of files, directories, and globs. Path
+   * expansion — including directory listing and glob matching — is delegated to
+   * {@link expandInputs}, which already yields only existing files, so here we
+   * just keep the ones that look like media.
    * @param {string[]} inputs - Raw input paths.
-   * @param {boolean} recursive - Whether to descend into subdirectories.
    * @param {number} max - Maximum number of files to return.
    * @returns {string[]} Sorted, unique media paths.
    */
-  function collectMediaPaths(inputs: string[], recursive: boolean, max: number): string[] {
+  function collectMediaPaths(inputs: string[], max: number): string[] {
     const collected = new Set<string>();
-    const visit = (candidate: string): void => {
-      if (collected.size >= max) return;
-      let stat: fs.Stats;
-      try {
-        stat = fs.statSync(candidate);
-      } catch {
-        return;
-      }
-      if (stat.isDirectory()) {
-        let entries: string[];
-        try {
-          entries = fs.readdirSync(candidate);
-        } catch {
-          return;
-        }
-        for (const entry of entries) {
-          if (collected.size >= max) return;
-          const child = path.join(candidate, entry);
-          let childStat: fs.Stats;
-          try {
-            childStat = fs.statSync(child);
-          } catch {
-            continue;
-          }
-          if (childStat.isDirectory()) {
-            if (recursive) visit(child);
-          } else if (isMediaPath(child)) {
-            collected.add(child);
-          }
-        }
-      } else if (isMediaPath(candidate)) {
-        collected.add(candidate);
-      }
-    };
     for (const input of inputs) {
       if (collected.size >= max) break;
-      for (const expanded of expandInputs([input])) {
+      for (const file of expandInputs([input])) {
         if (collected.size >= max) break;
-        visit(expanded);
+        if (isMediaPath(file)) collected.add(file);
       }
     }
     return [...collected].sort();
@@ -1922,9 +1882,6 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         options = plan.options;
         break;
       }
-      default: {
-        throw createError(ErrorCode.UNKNOWN, `Unsupported workflow tool: ${String(tool)}`);
-      }
     }
     const job = jobManager.enqueue(input, output, options, transcoder);
     const done = await waitForJob(job.id, WORKFLOW_STEP_TIMEOUT_MS);
@@ -2066,9 +2023,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     },
     {
       createTask: convertCreateTask,
-      getTask: async (args, extra) => extra.taskStore.getTask(extra.taskId),
-      getTaskResult: async (args, extra) => extra.taskStore.getTaskResult(extra.taskId) as Promise<CallToolResult>,
-    },
+    } as ToolTaskHandler<typeof conversionSchema>,
   );
 
   registerAppTool(
@@ -2347,10 +2302,10 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         'for files whose frames cannot be sampled.',
       inputSchema: findSimilarMediaSchema,
     },
-    async ({ inputs, method, threshold, recursive, maxCandidates }: z.infer<typeof findSimilarMediaSchema>) => {
+    async ({ inputs, method, threshold, maxCandidates }: z.infer<typeof findSimilarMediaSchema>) => {
       try {
         const chosenMethod = method ?? 'hash';
-        const files = collectMediaPaths(inputs, recursive ?? false, maxCandidates ?? 200);
+        const files = collectMediaPaths(inputs, maxCandidates ?? 200);
         if (files.length === 0) {
           throw createError(ErrorCode.FILE_NOT_FOUND, 'No media files matched the given inputs.');
         }
@@ -2627,7 +2582,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     },
     async (args: z.infer<typeof planAgentSchema>) => {
       try {
-        const files = collectMediaPaths(args.inputs, args.recursive ?? false, args.maxFiles ?? 50);
+        const files = collectMediaPaths(args.inputs, args.maxFiles ?? 50);
         if (files.length === 0) {
           throw createError(ErrorCode.FILE_NOT_FOUND, 'No media files matched the given inputs.');
         }
@@ -2798,9 +2753,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     },
     {
       createTask: batchCreateTask,
-      getTask: async (args, extra) => extra.taskStore.getTask(extra.taskId),
-      getTaskResult: async (args, extra) => extra.taskStore.getTaskResult(extra.taskId) as Promise<CallToolResult>,
-    },
+    } as ToolTaskHandler<typeof batchSchema>,
   );
 
   registerAppTool(
@@ -2855,26 +2808,17 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
       _meta: { ui: { visibility: ['app'] } },
     },
     async ({ tool, args }) => {
-      switch (tool) {
-        case 'convert_media':
-          return runConvert(args, false);
-        case 'compress_image':
-          return runCompress(args, false);
-        case 'extract_audio':
-          return runExtract(args, false);
-        case 'cut_video':
-          return runCut(args, false);
-        case 'batch_convert':
-          return runBatch(args, false);
-        case 'remux_media':
-          return runRemux(args, false);
-        case 'demux_media':
-          return runDemux(args, false);
-        case 'execute_workflow':
-          return runWorkflow(args, false);
-        default:
-          return fail(createError(ErrorCode.UNKNOWN, `Unknown operation: ${String(tool)}`));
-      }
+      const runners = {
+        convert_media: runConvert,
+        compress_image: runCompress,
+        extract_audio: runExtract,
+        cut_video: runCut,
+        batch_convert: runBatch,
+        remux_media: runRemux,
+        demux_media: runDemux,
+        execute_workflow: runWorkflow,
+      };
+      return runners[tool](args, false);
     },
   );
 
