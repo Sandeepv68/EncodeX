@@ -110,6 +110,22 @@ describe('buildCutPlan', () => {
     const plan = buildCutPlan(input, { output: 'C:\\out\\segment.mp4' });
     expect(plan.output).toBe('C:\\out\\segment.mp4');
   });
+
+  it('carries validated extraArgs onto the plan', () => {
+    const input = tempMedia('mp4');
+    const plan = buildCutPlan(input, { extraArgs: ['-preset', 'ultrafast'] });
+    expect(plan.options.extraArgs).toEqual(['-preset', 'ultrafast']);
+  });
+
+  it('rejects shell-metacharacter extraArgs with UNSAFE_ARGUMENTS', () => {
+    const input = tempMedia('mp4');
+    try {
+      buildCutPlan(input, { extraArgs: ['-y; rm -rf /'] });
+      expect.unreachable('expected UNSAFE_ARGUMENTS');
+    } catch (err) {
+      expect((err as { code?: string }).code).toBe('UNSAFE_ARGUMENTS');
+    }
+  });
 });
 
 describe('buildBatchPlan', () => {
@@ -146,6 +162,24 @@ describe('buildBatchPlan', () => {
   it('returns an empty plan when nothing matches', () => {
     const plan = buildBatchPlan(['C:\\no-such-dir\\**\\*.mp4'], {});
     expect(plan.jobs).toHaveLength(0);
+  });
+
+  it('rejects a batch that expands past the file cap with UNSAFE_ARGUMENTS', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'batch-cap-'));
+    try {
+      for (let index = 0; index < 501; index += 1) {
+        fs.writeFileSync(path.join(dir, `clip-${index}.mp4`), 'x');
+      }
+      try {
+        buildBatchPlan([dir], {});
+        expect.unreachable('expected UNSAFE_ARGUMENTS');
+      } catch (err) {
+        expect((err as { code?: string }).code).toBe('UNSAFE_ARGUMENTS');
+        expect(String((err as { message?: string }).message)).toContain('500-file cap');
+      }
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 

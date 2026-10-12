@@ -109,7 +109,7 @@ describe('5.1 longest-string stress', () => {
   });
 
   for (const code of ['de-DE', PSEUDO_LOCALE]) {
-    it(`renders all 12 routes in ${code} without errors, raw tokens, or leaked keys`, async () => {
+    it(`renders all 13 routes in ${code} without errors, raw tokens, or leaked keys`, async () => {
       expectAppLog('warn', /\[WARN\] \[[^\]]*\]/);
 
       await act(async () => {

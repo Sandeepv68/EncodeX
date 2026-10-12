@@ -39,6 +39,7 @@
  */
 
 import type { ConversionProgress, LogEntry, PlayerAudioChunk, PlayerFrame, QueueJob, UpdateInfo, UpdateProgress } from './types';
+import type { AuditEntry } from './audit';
 
 /** Narrow an unknown value to a plain (non-null, non-array) object. */
 export function isRecord(value: unknown): value is Record<string, unknown> {
@@ -126,6 +127,19 @@ export function isLogEntry(value: unknown): value is LogEntry {
     (value.level === 'DEBUG' || value.level === 'INFO' || value.level === 'WARN' || value.level === 'ERROR') &&
     isString(value.text) &&
     (value.source === 'main' || value.source === 'renderer')
+  );
+}
+
+/** True when `value` is an `AuditEntry`. `result` is narrowed to the declared union and the fields the Logs page renders are type-checked. */
+export function isAuditEntry(value: unknown): value is AuditEntry {
+  if (!isRecord(value)) return false;
+  return (
+    isString(value.id) &&
+    isString(value.timestamp) &&
+    isString(value.tool) &&
+    isFiniteNumber(value.tier) &&
+    isString(value.argsDigest) &&
+    (value.result === 'ok' || value.result === 'error')
   );
 }
 

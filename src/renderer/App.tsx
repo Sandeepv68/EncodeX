@@ -41,6 +41,7 @@ import { SHORTCUTS } from './constants/shortcuts';
 import { THEMES } from './colors';
 import { useErrorStore } from './stores/errorStore';
 import { useLogStore } from './stores/logStore';
+import { useAuditStore } from './stores/auditStore';
 import { useSettingsStore } from './stores/settingsStore';
 import { callBridgeVoid, fireAndForgetBridge } from './utils/bridge-call';
 import { useLanguageDirection } from './useLanguageDirection';
@@ -75,6 +76,8 @@ const Remux = lazy(() => import('./pages/Remux'));
 const Demux = lazy(() => import('./pages/Demux'));
 /** Lazy-loaded BatchQueue page, loaded on the '/batch' route. @const {React.ComponentType} */
 const BatchQueue = lazy(() => import('./pages/BatchQueue'));
+/** Lazy-loaded Copilot page, loaded on the '/copilot' route. @const {React.ComponentType} */
+const Copilot = lazy(() => import('./pages/Copilot'));
 /** Lazy-loaded Logs page, loaded on the '/logs' route. @const {React.ComponentType} */
 const Logs = lazy(() => import('./pages/Logs'));
 /** Lazy-loaded Settings page, loaded on the '/settings' route. @const {React.ComponentType} */
@@ -134,6 +137,19 @@ function AppLayout() {
   }, []);
 
   useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    // Same guarded pattern as the log subscription above: audit records are a
+    // fire-and-forget push, and a synchronous contextBridge throw must not take
+    // the tree down.
+    callBridgeVoid(() => {
+      cleanup = window.electronAPI?.onAuditEntry((entry) => {
+        useAuditStore.getState().addEntry(entry);
+      });
+    }, 'onAuditEntry subscription');
+    return () => cleanup?.();
+  }, []);
+
+  useEffect(() => {
     // Both calls are fire-and-forget `send`s: their results are discarded, and neither has a reply to
     // wait on. Optional chaining covers a missing method but not one that throws, and `contextBridge`
     // propagates a synchronous throw into the caller - so unguarded, a preload that throws here took
@@ -184,6 +200,7 @@ function AppLayout() {
     { path: '/remux', element: <Remux /> },
     { path: '/demux', element: <Demux /> },
     { path: '/batch', element: <BatchQueue /> },
+    { path: '/copilot', element: <Copilot /> },
     { path: '/logs', element: <Logs /> },
     { path: '/settings', element: <Settings /> },
     { path: '/about', element: <About /> },

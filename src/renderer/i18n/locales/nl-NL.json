@@ -31,7 +31,8 @@
       "parallel": "{{count}} parallel"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Welkom bij EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Converteer veel bestanden tegelijk met een slimme wachtrij",
     "shortcutsFooter": "Druk op {{shortcut}} voor sneltoetsen",
     "descRemux": "Verplaatst streams verliesvrij naar een nieuwe container",
-    "descDemux": "Splitst de streams van een bestand in afzonderlijke uitvoerbestanden"
+    "descDemux": "Splitst de streams van een bestand in afzonderlijke uitvoerbestanden",
+    "descCopilot": "Conversies plannen door een doel te beschrijven"
   },
   "gettingStarted": {
     "hint": "Nieuw hier?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Videofilters",
     "filtersHint": "Past FFmpeg-videofilters (bijsnijden, framerate, deinterlacing, ruisonderdrukking, kleur…) toe terwijl geselecteerde videostreams opnieuw worden gecodeerd. \"Kopiëren\" is verliesvrij, dus filters verschijnen alleen wanneer een doelcontainer de video opnieuw codeert.",
     "filtersIgnoredCopy": "Videofilters worden genegeerd zolang de videobestemming \"Kopiëren\" is, omdat een streamkopie niet opnieuw kan coderen. Kies een doelcontainer om ze toe te passen."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Beschrijf een doel en laat Copilot de conversies plannen, en duw het plan vervolgens naar de batchwachtrij.",
+    "goalLabel": "Doel",
+    "goalPlaceholder": "bijv. deze video's voor het web verkleinen",
+    "chooseFolder": "Map kiezen",
+    "selectedCount": "{{count}} bestand(en) geselecteerd",
+    "selectedNone": "Geen bestanden geselecteerd",
+    "plan": "Plannen",
+    "planning": "Bezig met plannen…",
+    "folderEmpty": "Er is geen ondersteunde media gevonden in die map.",
+    "errorNoGoal": "Voer een doel in voordat u gaat plannen.",
+    "errorNoInputs": "Kies een map met media voordat u gaat plannen.",
+    "errorFallback": "Copilot kon geen plan maken voor dat doel.",
+    "errorEnqueue": "Geen van de geplande taken kon aan de wachtrij worden toegevoegd.",
+    "actionsTitle": "Geplande acties",
+    "noActions": "Copilot vond niets om te wijzigen voor dit doel.",
+    "savings": "Geschatte besparing ~{{pct}}%",
+    "output": "naar {{output}}",
+    "skipsTitle": "Overgeslagen bestanden",
+    "rationaleTitle": "Waarom",
+    "addToQueue": "{{count}} aan wachtrij toevoegen",
+    "applyNote": "Taken worden aan de batchwachtrij toegevoegd; er wordt niets uitgevoerd tot u deze daar start.",
+    "addedToQueue": "{{count}} ta(a)k(en) aan wachtrij toegevoegd",
+    "partiallyAdded": "Sommige taken konden niet aan de wachtrij worden toegevoegd."
   }
 }

@@ -31,7 +31,8 @@
       "parallel": "{{count}} comhthrách"
     },
     "remux": "Athchumhdach",
-    "demux": "Démhcseáil"
+    "demux": "Démhcseáil",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Fáilte go EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Tiontaigh comhaid iolracha ag an am céanna le scuaine chliste",
     "shortcutsFooter": "Brúigh {{shortcut}} le haghaidh aicearraí méarchláir",
     "descRemux": "Aistríonn sruthanna gan chailliúint chuig coimeádán nua",
-    "descDemux": "Deighileann sruthanna comhaid ina gcomhaid aschuir ar leith"
+    "descDemux": "Deighileann sruthanna comhaid ina gcomhaid aschuir ar leith",
+    "descCopilot": "Pleanáil tiontuithe trí chur síos a dhéanamh ar sprioc"
   },
   "gettingStarted": {
     "hint": "Nua anseo?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Scagairí físeáin",
     "filtersHint": "Cuireann scagairí físeáin FFmpeg i bhfeidhm (bearradh, ráta frámaí, neamhfhíodóireacht, laghdú torainn, dathanna…) le linn athionchódaithe na sruthanna físeáin roghnaithe. Tá \"Cóipeáil\" gan chailliúint, mar sin ní thaispeántar na scagairí ach amháin nuair a dhéanann coimeádán an cheannsceir físeán a athionchódú.",
     "filtersIgnoredCopy": "Déantar neamhaird de scagairí físeáin a fhad agus is é \"Cóipeáil\" an ceann scríbe físeáin, toisc nach féidir cóip srutha a athionchódú. Roghnaigh coimeádán ceann scríbe chun scagairí a chur i bhfeidhm."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Déan cur síos ar sprioc agus lig do Copilot na tiontuithe a phleanáil, ansin brúigh an plean chuig an Scuaine Bhaisc.",
+    "goalLabel": "Sprioc",
+    "goalPlaceholder": "m.sh. laghdaigh na físeáin seo don ghréasán",
+    "chooseFolder": "Roghnaigh fillteán",
+    "selectedCount": "{{count}} comhad roghnaithe",
+    "selectedNone": "Níl aon chomhad roghnaithe",
+    "plan": "Pleanáil",
+    "planning": "Ag pleanáil…",
+    "folderEmpty": "Níor aimsíodh aon mheán tacaithe sa bhfillteán sin.",
+    "errorNoGoal": "Cuir sprioc isteach sula bpleanálann tú.",
+    "errorNoInputs": "Roghnaigh fillteán meán sula bpleanálann tú.",
+    "errorFallback": "Níorbh fhéidir le Copilot plean a chruthú don sprioc sin.",
+    "errorEnqueue": "Níorbh fhéidir aon cheann de na poist phleanáilte a chur leis an scuaine.",
+    "actionsTitle": "Gníomhartha pleanáilte",
+    "noActions": "Níor aimsigh Copilot aon rud le hathrú don sprioc seo.",
+    "savings": "Coigilteas measta ~{{pct}}%",
+    "output": "chuig {{output}}",
+    "skipsTitle": "Comhaid scipeáilte",
+    "rationaleTitle": "Cén fáth",
+    "addToQueue": "Cuir {{count}} leis an scuaine",
+    "applyNote": "Cuirtear poist leis an Scuaine Bhaisc; ní ritheann aon rud go dtí go dtosaíonn tú é ansin.",
+    "addedToQueue": "Cuireadh {{count}} phost leis an scuaine",
+    "partiallyAdded": "Níorbh fhéidir roinnt post a chur leis an scuaine."
   }
 }

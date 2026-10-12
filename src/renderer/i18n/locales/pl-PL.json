@@ -31,7 +31,8 @@
       "parallel": "{{count}} równolegle"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Witamy w EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Konwertuj wiele plików naraz dzięki inteligentnej kolejce",
     "shortcutsFooter": "Naciśnij {{shortcut}}, aby wyświetlić skróty klawiszowe",
     "descRemux": "Przenosi strumienie bezstratnie do nowego kontenera",
-    "descDemux": "Dzieli strumienie pliku na osobne pliki wyjściowe"
+    "descDemux": "Dzieli strumienie pliku na osobne pliki wyjściowe",
+    "descCopilot": "Planuj konwersje, opisując cel"
   },
   "gettingStarted": {
     "hint": "Nowy tutaj?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Filtry wideo",
     "filtersHint": "Stosuje filtry wideo FFmpeg (przycinanie, liczba klatek, deinterlacing, redukcja szumu, kolor…) podczas ponownego kodowania wybranych strumieni wideo. „Kopiuj” jest bezstratne, więc filtry pojawiają się tylko wtedy, gdy kontener docelowy przekodowuje wideo.",
     "filtersIgnoredCopy": "Filtry wideo są ignorowane, dopóki przeznaczenie wideo to „Kopiuj”, ponieważ kopia strumienia nie może kodować ponownie. Wybierz kontener docelowy, aby je zastosować."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Opisz cel, a Copilot zaplanuje konwersje, a następnie przenieś plan do kolejki zbiorczej.",
+    "goalLabel": "Cel",
+    "goalPlaceholder": "np. zmniejsz te filmy dla sieci web",
+    "chooseFolder": "Wybierz folder",
+    "selectedCount": "Wybrano {{count}} plik(i)",
+    "selectedNone": "Nie wybrano żadnych plików",
+    "plan": "Planuj",
+    "planning": "Planowanie…",
+    "folderEmpty": "Nie znaleziono obsługiwanego nośnika w tym folderze.",
+    "errorNoGoal": "Wprowadź cel przed planowaniem.",
+    "errorNoInputs": "Wybierz folder z nośnikami przed planowaniem.",
+    "errorFallback": "Copilot nie mógł zbudować planu dla tego celu.",
+    "errorEnqueue": "Żadne z zaplanowanych zadań nie mogło zostać dodane do kolejki.",
+    "actionsTitle": "Zaplanowane działania",
+    "noActions": "Copilot nie znalazł nic do zmiany dla tego celu.",
+    "savings": "Szacowana oszczędność ~{{pct}}%",
+    "output": "do {{output}}",
+    "skipsTitle": "Pominięte pliki",
+    "rationaleTitle": "Dlaczego",
+    "addToQueue": "Dodaj {{count}} do kolejki",
+    "applyNote": "Zadania są dodawane do kolejki zbiorczej; nic nie zostanie uruchomione, dopóki nie zaczniesz ich tam.",
+    "addedToQueue": "Dodano {{count}} zadania do kolejki",
+    "partiallyAdded": "Niektóre zadania nie mogły zostać dodane do kolejki."
   }
 }

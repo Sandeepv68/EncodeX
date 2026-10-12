@@ -31,7 +31,8 @@
       "parallel": "{{count}} 병렬"
     },
     "remux": "리멀텍스",
-    "demux": "디멀텍스"
+    "demux": "디멀텍스",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "EncodeX에 오신 것을 환영합니다",
@@ -44,7 +45,8 @@
     "descBatch": "스마트 큐로 여러 파일을 한 번에 변환",
     "shortcutsFooter": "키보드 단축키 보기: {{shortcut}}",
     "descRemux": "스트림을 무손실 상태로 새 컨테이너에 담습니다",
-    "descDemux": "파일의 스트림을 개별 출력 파일로 분리합니다"
+    "descDemux": "파일의 스트림을 개별 출력 파일로 분리합니다",
+    "descCopilot": "목표를 설명하여 변환 계획 세우기"
   },
   "gettingStarted": {
     "hint": "처음 오셨나요?",
@@ -940,5 +942,31 @@
     "filtersTitle": "비디오 필터",
     "filtersHint": "선택한 비디오 스트림을 재인코딩하는 동안 FFmpeg 비디오 필터(자르기, 프레임레이트, 디인터레이싱, 노이즈 감소, 색상 등)를 적용합니다. “복사”는 무손실이므로, 대상 컨테이너가 비디오를 재인코딩할 때만 필터가 표시됩니다.",
     "filtersIgnoredCopy": "비디오 출력 방식이 “복사”인 동안 비디오 필터는 무시됩니다. 스트림 복사로는 재인코딩할 수 없기 때문입니다. 필터를 적용하려면 대상 컨테이너를 선택하세요."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "목표를 설명하면 Copilot이 변환을 계획하고, 그 계획을 일괄 큐로 보냅니다.",
+    "goalLabel": "목표",
+    "goalPlaceholder": "예: 이 영상들을 웹용으로 축소",
+    "chooseFolder": "폴더 선택",
+    "selectedCount": "파일 {{count}}개 선택됨",
+    "selectedNone": "선택된 파일 없음",
+    "plan": "계획",
+    "planning": "계획 중…",
+    "folderEmpty": "해당 폴더에서 지원되는 미디어를 찾지 못했습니다.",
+    "errorNoGoal": "계획을 세우기 전에 목표를 입력하세요.",
+    "errorNoInputs": "계획을 세우기 전에 미디어 폴더를 선택하세요.",
+    "errorFallback": "Copilot이 해당 목표에 대한 계획을 만들 수 없었습니다.",
+    "errorEnqueue": "계획된 작업 중 큐에 추가할 수 있는 항목이 없습니다.",
+    "actionsTitle": "계획된 작업",
+    "noActions": "Copilot이 이 목표에 대해 변경할 항목을 찾지 못했습니다.",
+    "savings": "예상 절감 ~{{pct}}%",
+    "output": "{{output}}로",
+    "skipsTitle": "건너뛴 파일",
+    "rationaleTitle": "이유",
+    "addToQueue": "{{count}}개를 큐에 추가",
+    "applyNote": "작업은 일괄 큐에 추가되며, 거기서 시작하기 전까지는 아무것도 실행되지 않습니다.",
+    "addedToQueue": "작업 {{count}}개를 큐에 추가했습니다",
+    "partiallyAdded": "일부 작업을 큐에 추가할 수 없었습니다."
   }
 }

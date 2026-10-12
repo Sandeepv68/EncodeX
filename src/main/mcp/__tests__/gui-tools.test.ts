@@ -209,4 +209,67 @@ describe('registerGuiTools', () => {
     await session.close();
     expect(result.isError).toBe(true);
   });
+
+  it('get_timeline falls back to frameRate and nulls when optional video fields are absent', async () => {
+    const session = await setup({
+      transcoderFactory: () =>
+        new FakeTranscoder({
+          streams: [
+            { index: 0, type: 'video', codec: 'h264', frameRate: '25/1' },
+            { index: 1, type: 'audio', codec: 'aac' },
+          ],
+        }),
+    });
+    const parsed = JSON.parse(textOf(await session.client.callTool({ name: 'get_timeline', arguments: { input: 'C:\\clip.mkv' } })));
+    await session.close();
+    expect(parsed.fps).toBe('25/1');
+    expect(parsed.width).toBeNull();
+    expect(parsed.height).toBeNull();
+    expect(parsed.codec).toBe('h264');
+  });
+
+  it('get_timeline reports null fields when the probe has no video stream', async () => {
+    const session = await setup({
+      transcoderFactory: () => new FakeTranscoder({ streams: [{ index: 0, type: 'audio', codec: 'aac' }] }),
+    });
+    const parsed = JSON.parse(textOf(await session.client.callTool({ name: 'get_timeline', arguments: { input: 'C:\\audio.mp3' } })));
+    await session.close();
+    expect(parsed.fps).toBeNull();
+    expect(parsed.width).toBeNull();
+    expect(parsed.height).toBeNull();
+    expect(parsed.codec).toBeNull();
+  });
+
+  it('get_timeline surfaces a probe failure as a tool error', async () => {
+    expectAppLog('warn', 'main/mcp/gui-tools');
+
+    const session = await setup({
+      transcoderFactory: () => ({ getInfo: async () => Promise.reject(new Error('probe boom')) }) as unknown as ITranscoder,
+    });
+    const result = await session.client.callTool({ name: 'get_timeline', arguments: { input: 'C:\\broken.mp4' } });
+    await session.close();
+    expect(result.isError).toBe(true);
+    expect(textOf(result)).toContain('probe boom');
+  });
+
+  it('get_timeline tolerates a non-Error probe failure', async () => {
+    expectAppLog('warn', 'main/mcp/gui-tools');
+
+    const session = await setup({
+      transcoderFactory: () => ({ getInfo: async () => Promise.reject('boom') }) as unknown as ITranscoder,
+    });
+    const result = await session.client.callTool({ name: 'get_timeline', arguments: { input: 'C:\\broken.mp4' } });
+    await session.close();
+    expect(result.isError).toBe(true);
+    expect(textOf(result)).toContain('boom');
+  });
+
+  it('extract_preview surfaces a thrown error as a tool error', async () => {
+    expectAppLog('warn', 'main/mcp/gui-tools');
+
+    const session = await setup({ getPreviewFrame: async () => Promise.reject(new Error('decode boom')) });
+    const result = await session.client.callTool({ name: 'extract_preview', arguments: { input: 'C:\\broken.mp4' } });
+    await session.close();
+    expect(result.isError).toBe(true);
+  });
 });

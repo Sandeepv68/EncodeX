@@ -31,7 +31,8 @@
       "parallel": "{{count}} en parallèle"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Bienvenue sur EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Convertissez plusieurs fichiers à la fois avec une file d'attente intelligente",
     "shortcutsFooter": "Appuyez sur {{shortcut}} pour les raccourcis clavier",
     "descRemux": "Transpose les flux sans perte dans un nouveau conteneur",
-    "descDemux": "Sépare les flux d'un fichier en fichiers de sortie distincts"
+    "descDemux": "Sépare les flux d'un fichier en fichiers de sortie distincts",
+    "descCopilot": "Planifier des conversions en décrivant un objectif"
   },
   "gettingStarted": {
     "hint": "Nouveau ici ?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Filtres vidéo",
     "filtersHint": "Applique des filtres vidéo FFmpeg (recadrage, fréquence d'images, désentrelacement, réduction du bruit, couleur…) pendant le réencodage des flux vidéo sélectionnés. La copie est sans perte : les filtres n'apparaissent donc que lorsqu'un conteneur cible réencode la vidéo.",
     "filtersIgnoredCopy": "Les filtres vidéo sont ignorés tant que la cible vidéo est « Copier », car une copie de flux ne peut pas réencoder. Choisissez un conteneur cible pour les appliquer."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Décrivez un objectif et laissez Copilot planifier les conversions, puis poussez le plan dans la File d'attente.",
+    "goalLabel": "Objectif",
+    "goalPlaceholder": "ex. réduire ces vidéos pour le web",
+    "chooseFolder": "Choisir un dossier",
+    "selectedCount": "{{count}} fichier(s) sélectionné(s)",
+    "selectedNone": "Aucun fichier sélectionné",
+    "plan": "Planifier",
+    "planning": "Planification…",
+    "folderEmpty": "Aucun média pris en charge n'a été trouvé dans ce dossier.",
+    "errorNoGoal": "Saisissez un objectif avant de planifier.",
+    "errorNoInputs": "Choisissez un dossier de médias avant de planifier.",
+    "errorFallback": "Copilot n'a pas pu construire un plan pour cet objectif.",
+    "errorEnqueue": "Aucune des tâches planifiées n'a pu être ajoutée à la file d'attente.",
+    "actionsTitle": "Actions planifiées",
+    "noActions": "Copilot n'a rien trouvé à changer pour cet objectif.",
+    "savings": "Économie estimée ~{{pct}}%",
+    "output": "vers {{output}}",
+    "skipsTitle": "Fichiers ignorés",
+    "rationaleTitle": "Pourquoi",
+    "addToQueue": "Ajouter {{count}} à la file d'attente",
+    "applyNote": "Les tâches sont ajoutées à la File d'attente ; rien ne s'exécute tant que vous ne la démarrez pas là-bas.",
+    "addedToQueue": "{{count}} tâche(s) ajoutée(s) à la file d'attente",
+    "partiallyAdded": "Certaines tâches n'ont pas pu être ajoutées à la file d'attente."
   }
 }

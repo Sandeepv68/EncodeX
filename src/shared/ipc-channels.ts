@@ -22,6 +22,8 @@
  * @property {string} GET_IMAGE_FILE_INFO - Read image file size and dimensions.
  * @property {string} GET_VIDEO_PREVIEW - Extract a preview frame from a video.
  * @property {string} GET_CAPABILITIES - Enumerate encoder and hwaccel capabilities.
+ * @property {string} COPILOT_PLAN - Build a deterministic conversion plan for a
+ *   goal against a folder of media files.
  * @property {string} CONVERT_FILE - Start a conversion job.
  * @property {string} CANCEL_CONVERSION - Cancel the active conversion.
  * @property {string} PAUSE_CONVERSION - Pause the active conversion.
@@ -71,6 +73,7 @@
  *   within the QUEUED subsequence.
  * @property {string} PLAYER_FRAME - Push a decoded frame to the renderer player.
  * @property {string} LOG_MESSAGE - Forward a log entry to the renderer.
+ * @property {string} AUDIT_ENTRY - Forward a mutating-operation audit record to the renderer.
  * @property {string} CHECK_FOR_UPDATES - Start an update check.
  * @property {string} DOWNLOAD_UPDATE - Download the matched update asset.
  * @property {string} INSTALL_UPDATE - Launch the downloaded installer and quit.
@@ -106,6 +109,7 @@ export const IPC = {
   GET_IMAGE_FILE_INFO: 'get-image-file-info',
   GET_VIDEO_PREVIEW: 'get-video-preview',
   GET_CAPABILITIES: 'get-capabilities',
+  COPILOT_PLAN: 'copilot-plan',
   CONVERT_FILE: 'convert-file',
   CANCEL_CONVERSION: 'cancel-conversion',
   PAUSE_CONVERSION: 'pause-conversion',
@@ -154,6 +158,7 @@ export const IPC = {
   QUEUE_MOVED: 'queue-moved',
   PLAYER_FRAME: 'player-frame',
   LOG_MESSAGE: 'log-message',
+  AUDIT_ENTRY: 'audit-entry',
 
   CHECK_FOR_UPDATES: 'check-for-updates',
   DOWNLOAD_UPDATE: 'download-update',

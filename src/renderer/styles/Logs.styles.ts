@@ -53,3 +53,40 @@ export const SourceSpan = styled('span')({ color: COLORS.log.muted });
 export const LogActionIcon = styled(FontAwesomeIcon)(({ theme }) => ({
   fontSize: theme.typography.pxToRem(20),
 }));
+
+/** Fixed-height panel showing the mutating-operation audit trail above the log body. */
+export const AuditPanel = styled(Paper)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(0.5),
+  marginBottom: theme.spacing(1),
+  flexShrink: 0,
+  maxHeight: theme.typography.pxToRem(180),
+  overflow: 'auto',
+  padding: theme.spacing(1.5),
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+}));
+
+/** One audit-trail row. */
+export const AuditRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'baseline',
+  gap: theme.spacing(1),
+  fontFamily: 'monospace',
+  fontSize: theme.typography.pxToRem(12),
+  overflow: 'hidden',
+}));
+
+/** The tool name in an audit row, emphasized and truncated. */
+export const AuditTool = styled('span')({ fontWeight: 600, whiteSpace: 'nowrap' });
+
+/** A tinted status chip in an audit row. */
+export const AuditStatus = styled('span', {
+  shouldForwardProp: (prop) => prop !== '$ok',
+})<{ $ok: boolean }>(({ theme, $ok }) => ({
+  color: $ok ? theme.palette.success.main : theme.palette.error.main,
+  whiteSpace: 'nowrap',
+}));
+
+/** Muted detail text in an audit row (digest, timestamp, error). */
+export const AuditMuted = styled('span')({ color: COLORS.log.muted, whiteSpace: 'nowrap' });

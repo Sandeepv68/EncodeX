@@ -1,7 +1,7 @@
 /**
  * @fileoverview Shared page-render harness for the Phase 5 suites.
  *
- * Phase 5 puts the same twelve pages through three very different hostile
+ * Phase 5 puts the same thirteen pages through three very different hostile
  * environments -- all 56 locales (5.1), a missing/lying preload bridge (5.2),
  * and axe at three viewport widths in both themes (5.3). Each of those suites
  * previously would have had to re-derive the provider stack, and the parts of
@@ -39,6 +39,7 @@ import About from '../renderer/pages/About';
 import AudioExtract from '../renderer/pages/AudioExtract';
 import BatchQueue from '../renderer/pages/BatchQueue';
 import Convert from '../renderer/pages/Convert';
+import Copilot from '../renderer/pages/Copilot';
 import Dashboard from '../renderer/pages/Dashboard';
 import Demux from '../renderer/pages/Demux';
 import ImageCompress from '../renderer/pages/ImageCompress';
@@ -83,6 +84,7 @@ export const PAGE_ROUTES: readonly PageSpec[] = [
   { name: 'Remux', path: '/remux', Page: Remux },
   { name: 'Demux', path: '/demux', Page: Demux },
   { name: 'BatchQueue', path: '/batch', Page: BatchQueue },
+  { name: 'Copilot', path: '/copilot', Page: Copilot },
   { name: 'Logs', path: '/logs', Page: Logs },
   { name: 'Settings', path: '/settings', Page: Settings },
   { name: 'About', path: '/about', Page: About },

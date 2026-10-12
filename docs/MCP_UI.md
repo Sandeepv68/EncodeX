@@ -22,7 +22,7 @@ tool result = { text (model fallback) + structuredContent (view data) }
 3. The host renders the HTML in a sandboxed iframe and wires up a `postMessage` JSON-RPC channel.
 4. The view reads live data from `structuredContent` and can call tools back through the host proxy.
 
-EncodeX advertises the `io.modelcontextprotocol/ui` extension in its `initialize` capabilities, so a compliant host knows views are available.
+EncodeX advertises the `io.modelcontextprotocol/ui` extension in its `initialize` capabilities, declaring the view MIME type (`{ mimeTypes: ["text/html;profile=mcp-app"] }`). Hosts validate that MIME type before they will render a `ui://` resource, so a bare (empty) capability object is not enough.
 
 > **Data passing:** view data is delivered as `structuredContent` at runtime and written with `textContent`. Untrusted values (file paths, codec names, error text) are **never** interpolated into the served HTML, so they cannot inject markup or script.
 
@@ -35,7 +35,8 @@ EncodeX advertises the `io.modelcontextprotocol/ui` extension in its `initialize
 | `ui://encodex/queue` | `list_jobs` | Live job dashboard: one row per job with status, progress bar, and a confirm-gated **Cancel** button |
 | `ui://encodex/job` | `get_job` | Single-job card: input/output paths, progress, error text, confirm-gated **Cancel** |
 | `ui://encodex/media-info` | `get_media_info` | Container facts (format, duration, size, bitrate) plus a per-stream table (codec, resolution, sample rate, channels) |
-| `ui://encodex/convert` | `convert_media` | Conversion setup form (input, output, codecs, bitrates, quality, scale, stream-copy) that starts a job and tracks it |
+| `ui://encodex/convert` | `convert_media` | Conversion form, pre-filled from a model proposal, that starts the job only when the user clicks **Start** and then tracks it |
+| `ui://encodex/confirm` | all other mutating tools | Confirmation card for a proposed operation (details + warnings); runs it only when the user clicks **Run** |
 
 Each view is a small, self-contained HTML document: inline CSS plus an inline bridge script, **no external scripts or stylesheets**, so it renders under a host's restrictive default CSP. The views are intentionally kept well under a ~100 KB budget.
 
@@ -47,18 +48,27 @@ Two extra view URIs are reserved for later work and are not yet served: `ui://en
 | ---- | ---------------------- | ------------------- |
 | `list_jobs` | `ui://encodex/queue` | `{ jobs: Job[], count, generatedAt }` |
 | `get_job` | `ui://encodex/job` | `{ job: Job }` |
-| `convert_media` | `ui://encodex/convert` | `{ job: Job, transcoder }` |
 | `get_media_info` | `ui://encodex/media-info` | `{ media: MediaInfo }` |
+| `convert_media` | `ui://encodex/convert` | `{ confirmation }` while awaiting the user, else `{ job, transcoder }` |
+| `compress_image`, `extract_audio`, `cut_video`, `batch_convert`, `remux_media`, `demux_media` | `ui://encodex/confirm` | `{ confirmation }` while awaiting the user, else `{ job }` / `{ total, jobs }` |
+| `commit_operation` (app-only) | — | whatever the confirmed operation returns |
 
 Non-UI hosts receive the same JSON as the tool's `text` content and ignore `structuredContent`.
+
+### User-approval gate
+
+When the connected client advertises MCP Apps, the server refuses to run a mutating operation straight from a model call: it answers with a confirmation (`{ operation, title, summary, args, details?, warnings? }`), the app renders it, and the operation only runs once the user approves — at which point the view replays the exact arguments into the app-only `commit_operation` tool. Clients without the extension keep the historical headless behaviour and run immediately, so agents and CLIs are unaffected.
+
+`commit_operation` is registered with `_meta.ui.visibility: ['app']`, so the model cannot call it — only the sandboxed view can. The confirmable-operation list lives in `src/mcp/ui/approval.ts` and drives both the tool enum and the gating logic.
 
 ---
 
 ## Bidirectional actions
 
-MCP Apps views may call tools back through the host's `tools/call` proxy (EncodeX tools default to `visibility: ["model", "app"]`, so no extra tools are needed). EncodeX uses this in two ways:
+MCP Apps views may call tools back through the host's `tools/call` proxy. EncodeX uses this in three ways:
 
-- **The convert form** calls `convert_media` with the fields the user filled in, then tracks the returned job with `get_job`.
+- **The convert form and the generic confirm view** call the app-only `commit_operation` tool with the user's settings, then track the returned job(s) with `get_job` / `list_jobs`.
+- **`commit_operation`** is the single path that actually runs a mutating operation; the model-facing tools never do so under an MCP Apps host (see *User-approval gate*).
 - **Destructive actions** (`cancel_job`) require an explicit in-view confirmation: the first click arms the button (**Confirm**), and only a second click issues the call. This prevents an accidental cancel from a stray click.
 
 Views auto-refresh by polling their tool (for example, the queue view calls `list_jobs` on an interval) and stop polling when the tool starts failing.
@@ -69,12 +79,13 @@ Views auto-refresh by polling their tool (for example, the queue view calls `lis
 
 | File | Responsibility |
 | ---- | -------------- |
-| `src/shared/mcp-ui.ts` | Extension id, MIME type, view URIs, and the `McpUiJob` / view payload types |
+| `src/shared/mcp-ui.ts` | Extension id, MIME type, view URIs, and the `McpUiJob` / `McpUiConfirmation` payload types |
+| `src/mcp/ui/approval.ts` | `hostSupportsMcpApps`, the confirmable-operation list, and the confirmation result builder |
 | `src/mcp/ui/registry.ts` | `viewId → { uri, title, description, html }` registry |
 | `src/mcp/ui/resources.ts` | `registerUiResources(server)` — registers every view via `registerAppResource` |
 | `src/mcp/ui/bridge.ts` | `VIEW_BRIDGE_SCRIPT` — the inline `postMessage` bridge (handshake, theme, render, polling, `tools/call`) |
 | `src/mcp/ui/views/*.ts` | One self-contained HTML document per view |
-| `src/mcp/server.ts` | Advertises the extension; registers UI-enabled tools with `registerAppTool` + `_meta.ui`; `okUi(text, structuredContent)` |
+| `src/mcp/server.ts` | Advertises the extension; registers UI/mutating tools with `registerAppTool` + `_meta.ui`; gates them behind `commit_operation`; `okUi(text, structuredContent)` |
 
 **Pipeline:** views are currently hand-written, self-contained HTML string modules (zero network, CSP-clean, no extra bundler). The production target is to author them as React components and bundle each to a single HTML file with `vite-plugin-singlefile`, replacing the hand-written bridge with the `ext-apps` `App` API.
 

@@ -44,6 +44,19 @@ describe.runIf(IS_E2E)('MCP Apps surface (e2e)', () => {
       get_job: 'ui://encodex/job',
       get_media_info: 'ui://encodex/media-info',
       convert_media: 'ui://encodex/convert',
+      compress_image: 'ui://encodex/confirm',
+      extract_audio: 'ui://encodex/confirm',
+      cut_video: 'ui://encodex/confirm',
+      batch_convert: 'ui://encodex/batch',
+      remux_media: 'ui://encodex/confirm',
+      demux_media: 'ui://encodex/confirm',
+      analyze_media: 'ui://encodex/inspector',
+      recommend_settings: 'ui://encodex/plan',
+      estimate_conversion: 'ui://encodex/plan',
+      compress_to_target: 'ui://encodex/lab',
+      explain_error: 'ui://encodex/error',
+      plan_workflow: 'ui://encodex/workflow',
+      execute_workflow: 'ui://encodex/workflow',
     };
     for (const [name, uri] of Object.entries(expected)) {
       const tool = tools.find((candidate) => candidate.name === name);
@@ -56,5 +69,21 @@ describe.runIf(IS_E2E)('MCP Apps surface (e2e)', () => {
   it('keeps the plain text fallback for a view-backed tool', async () => {
     const jobs = await call<unknown[]>(handle.client, 'list_jobs', {});
     expect(Array.isArray(jobs)).toBe(true);
+  });
+
+  it('returns structuredContent alongside the text fallback for every tool (R0.2)', async () => {
+    const result = await handle.client.callTool({ name: 'list_jobs', arguments: {} });
+    const blocks = (result.content ?? []) as Array<{ type?: string; text?: string }>;
+    const text = blocks
+      .filter((block) => block.type === 'text')
+      .map((block) => block.text ?? '')
+      .join('');
+    expect(text.trim().length).toBeGreaterThan(0);
+    const structured = (result as { structuredContent?: { jobs?: unknown[]; count?: number } }).structuredContent;
+    expect(structured).toBeDefined();
+    expect(structured?.jobs).toEqual([]);
+
+    const pong = await handle.client.callTool({ name: 'ping', arguments: {} });
+    expect((pong as { structuredContent?: { pong?: boolean } }).structuredContent?.pong).toBe(true);
   });
 });

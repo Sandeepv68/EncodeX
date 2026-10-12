@@ -31,7 +31,8 @@
       "parallel": "{{count}} samtímis"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Velkomin í EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Umbreyta mörgum skrám samtímis með snjallri braut",
     "shortcutsFooter": "Ýttu á {{shortcut}} fyrir flýtilykla",
     "descRemux": "Flytur strauma taplaus í nýja gáma",
-    "descDemux": "Skiptir straumum skráar í sérstakar útaplás"
+    "descDemux": "Skiptir straumum skráar í sérstakar útaplás",
+    "descCopilot": "Skipuleggðu umbreytingar með því að lýsa markmiði"
   },
   "gettingStarted": {
     "hint": "Nýr hér?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Myndarsíur",
     "filtersHint": "Beitir FFmpeg myndarsíum (skerðing, rammatíðni, deinterlacing, hávaðaleysing, litur…) þegar valdir myndarstraumar eru umkóðaðir. \"Afrita\" er taplost svo síur birtast aðeins þegar áhendingargámi umkóðar myndina.",
     "filtersIgnoredCopy": "Myndarsíurnar eru hunsaðar á meðan myndarákvörðunin er \"Afrita\", því að straumafritun getur ekki umkóðað. Veldu áhendingargáma til að beita síunum."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Lýstu markmiði og leyfðu Copilot að skipuleggja umbreytingarnar, ýttu síðan áætluninni inn í runu biðröðina.",
+    "goalLabel": "Markmið",
+    "goalPlaceholder": "t.d. minnka þessi myndbönd fyrir vefinn",
+    "chooseFolder": "Velja möppu",
+    "selectedCount": "{{count}} skrá valin",
+    "selectedNone": "Engar skrár valdar",
+    "plan": "Skipuleggja",
+    "planning": "Er að skipuleggja…",
+    "folderEmpty": "Engir studdir miðlar fundust í þeirri möppu.",
+    "errorNoGoal": "Sláðu inn markmið áður en þú skipuleggur.",
+    "errorNoInputs": "Veldu möppu með miðlum áður en þú skipuleggur.",
+    "errorFallback": "Copilot gat ekki byggt áætlun fyrir það markmið.",
+    "errorEnqueue": "Engu af þeim skipulögðu verkum var hægt að bæta við biðröðina.",
+    "actionsTitle": "Skipulögð verk",
+    "noActions": "Copilot fann ekkert til að breyta fyrir þetta markmið.",
+    "savings": "Áætlaður sparnaður ~{{pct}}%",
+    "output": "í {{output}}",
+    "skipsTitle": "Skrár sem var sleppt",
+    "rationaleTitle": "Af hverju",
+    "addToQueue": "Bæta {{count}} við biðröð",
+    "applyNote": "Verkum er bætt við runu biðröðina; ekkert keyrir þar til þú byrjar það þar.",
+    "addedToQueue": "Bætti {{count}} verk(um) við biðröð",
+    "partiallyAdded": "Ekki var hægt að bæta sumum verkum við biðröðina."
   }
 }

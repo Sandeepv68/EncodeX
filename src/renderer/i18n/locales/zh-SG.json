@@ -31,7 +31,8 @@
       "parallel": "{{count}} 并行"
     },
     "remux": "封装",
-    "demux": "解复用"
+    "demux": "解复用",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "欢迎使用 EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "通过智能队列一次转换多个文件",
     "shortcutsFooter": "按 {{shortcut}} 查看键盘快捷键",
     "descRemux": "将流无损转移到新的容器中",
-    "descDemux": "将文件的各个流拆分到独立的输出文件"
+    "descDemux": "将文件的各个流拆分到独立的输出文件",
+    "descCopilot": "通过描述目标来规划转换"
   },
   "gettingStarted": {
     "hint": "第一次来？",
@@ -940,5 +942,31 @@
     "filtersTitle": "视频滤镜",
     "filtersHint": "在重新编码选中的视频流时应用 FFmpeg 视频滤镜（裁剪、帧率、去隔行、降噪、色彩等）。“复制”为无损方式，因此只有当输出容器会重新编码视频时，才会显示滤镜选项。",
     "filtersIgnoredCopy": "当视频输出方式为“复制”时，视频滤镜会被忽略，因为流复制无法重新编码。请选择输出容器以应用滤镜。"
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "描述一个目标，让 Copilot 规划转换，然后将计划推送到批量队列。",
+    "goalLabel": "目标",
+    "goalPlaceholder": "例如：压缩这些视频以供网络使用",
+    "chooseFolder": "选择文件夹",
+    "selectedCount": "已选择 {{count}} 个文件",
+    "selectedNone": "未选择文件",
+    "plan": "规划",
+    "planning": "规划中…",
+    "folderEmpty": "该文件夹中未找到支持的媒体。",
+    "errorNoGoal": "请先输入目标再规划。",
+    "errorNoInputs": "请先选择媒体文件夹再规划。",
+    "errorFallback": "Copilot 无法为这个目标制定计划。",
+    "errorEnqueue": "计划的任务均无法加入队列。",
+    "actionsTitle": "计划的操作",
+    "noActions": "Copilot 没有找到需要为此目标更改的内容。",
+    "savings": "预计节省约 {{pct}}%",
+    "output": "至 {{output}}",
+    "skipsTitle": "跳过的文件",
+    "rationaleTitle": "原因",
+    "addToQueue": "将 {{count}} 项加入队列",
+    "applyNote": "任务会添加到批量队列；只有在那里启动后才会运行。",
+    "addedToQueue": "已将 {{count}} 个任务加入队列",
+    "partiallyAdded": "部分任务无法加入队列。"
   }
 }

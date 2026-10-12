@@ -31,7 +31,8 @@
       "parallel": "{{count}} rinnakkain"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Tervetuloa EncodeX:ään",
@@ -44,7 +45,8 @@
     "descBatch": "Muunna useita tiedostoja kerralla älykkäällä jonolla",
     "shortcutsFooter": "Paina {{shortcut}} näppäimistöoikoteitä varten",
     "descRemux": "Siirtää virrat häviöttömästi uuteen säilöön",
-    "descDemux": "Jakaa tiedoston virrat erillisiin tulostiedostoihin"
+    "descDemux": "Jakaa tiedoston virrat erillisiin tulostiedostoihin",
+    "descCopilot": "Suunnittele muunnokset kuvailemalla tavoite"
   },
   "gettingStarted": {
     "hint": "Uusi täällä?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Videosuodattimet",
     "filtersHint": "Soveltaa FFmpeg-videosuodattimia (rajaus, ruutunopeus, deinterlacing, kohinan vaimennus, väri…) valittujen videovirtojen uudelleenkoodauksen aikana. \"Kopioi\" on häviötön, joten suodattimet näkyvät vain, kun kohdesäilö koodaa videon uudelleen.",
     "filtersIgnoredCopy": "Videosuodattimet ohitetaan, kun videon kohde on \"Kopioi\", koska virran kopiointi ei voi koodata uudelleen. Suodattimet otetaan käyttöön valitsemalla kohdesäilö."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Kuvaile tavoite ja anna Copilotin suunnitella muunnokset, siirrä sitten suunnitelma eräjonoon.",
+    "goalLabel": "Tavoite",
+    "goalPlaceholder": "esim. pienennä nämä videot verkkoa varten",
+    "chooseFolder": "Valitse kansio",
+    "selectedCount": "{{count}} tiedostoa valittu",
+    "selectedNone": "Ei valittuja tiedostoja",
+    "plan": "Suunnittele",
+    "planning": "Suunnitellaan…",
+    "folderEmpty": "Kyseisestä kansiosta ei löytynyt tuettua mediaa.",
+    "errorNoGoal": "Kirjoita tavoite ennen suunnittelua.",
+    "errorNoInputs": "Valitse mediakansio ennen suunnittelua.",
+    "errorFallback": "Copilot ei pystynyt laatimaan suunnitelmaa tälle tavoitteelle.",
+    "errorEnqueue": "Mikään suunnitelluista töistä ei voitu lisätä jonoon.",
+    "actionsTitle": "Suunnitellut toimenpiteet",
+    "noActions": "Copilot ei löytänyt mitään muutettavaa tälle tavoitteelle.",
+    "savings": "Arvioitu säästö ~{{pct}}%",
+    "output": "kohteeseen {{output}}",
+    "skipsTitle": "Ohitetut tiedostot",
+    "rationaleTitle": "Miksi",
+    "addToQueue": "Lisää {{count}} jonoon",
+    "applyNote": "Työt lisätään eräjonoon; mikään ei käynnisty ennen kuin käynnistät ne siellä.",
+    "addedToQueue": "Lisättiin {{count}} työtä jonoon",
+    "partiallyAdded": "Joitakin töitä ei voitu lisätä jonoon."
   }
 }

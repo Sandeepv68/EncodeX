@@ -31,7 +31,8 @@
       "parallel": "{{count}} in parallelo"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Benvenuto in EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Converti molti file in una volta con una coda intelligente",
     "shortcutsFooter": "Premi {{shortcut}} per le scorciatoie da tastiera",
     "descRemux": "Trasferisce i flussi senza perdita in un nuovo contenitore",
-    "descDemux": "Divide i flussi di un file in file di output separati"
+    "descDemux": "Divide i flussi di un file in file di output separati",
+    "descCopilot": "Pianifica conversioni descrivendo un obiettivo"
   },
   "gettingStarted": {
     "hint": "Nuovo qui?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Filtri video",
     "filtersHint": "Applica i filtri video FFmpeg (ritaglio, frequenza dei fotogrammi, deinterlacciamento, riduzione del rumore, colore…) mentre i flussi video selezionati vengono ricodificati. La copia è senza perdita, quindi i filtri compaiono solo quando un contenitore di destinazione ricodifica il video.",
     "filtersIgnoredCopy": "I filtri video vengono ignorati finché la destinazione video è «Copia», perché una copia di flusso non può ricodificare. Scegli un contenitore di destinazione per applicarli."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Descrivi un obiettivo e lascia che Copilot pianifichi le conversioni, poi invia il piano alla coda di processi.",
+    "goalLabel": "Obiettivo",
+    "goalPlaceholder": "es. riduci questi video per il web",
+    "chooseFolder": "Scegli cartella",
+    "selectedCount": "{{count}} file selezionati",
+    "selectedNone": "Nessun file selezionato",
+    "plan": "Pianifica",
+    "planning": "Pianificazione in corso…",
+    "folderEmpty": "Nessun media supportato trovato in quella cartella.",
+    "errorNoGoal": "Inserisci un obiettivo prima di pianificare.",
+    "errorNoInputs": "Scegli una cartella di media prima di pianificare.",
+    "errorFallback": "Copilot non ha potuto creare un piano per questo obiettivo.",
+    "errorEnqueue": "Nessuno dei lavori pianificati ha potuto essere aggiunto alla coda.",
+    "actionsTitle": "Azioni pianificate",
+    "noActions": "Copilot non ha trovato nulla da modificare per questo obiettivo.",
+    "savings": "Risparmio stimato ~{{pct}}%",
+    "output": "in {{output}}",
+    "skipsTitle": "File saltati",
+    "rationaleTitle": "Perché",
+    "addToQueue": "Aggiungi {{count}} alla coda",
+    "applyNote": "I lavori vengono aggiunti alla coda di processi; non viene eseguito nulla finché non la avvii lì.",
+    "addedToQueue": "{{count}} lavoro(i) aggiunti alla coda",
+    "partiallyAdded": "Alcuni lavori non hanno potuto essere aggiunti alla coda."
   }
 }

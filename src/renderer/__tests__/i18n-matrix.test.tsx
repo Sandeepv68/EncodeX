@@ -7,7 +7,7 @@
  * cannot tell you whether `de-DE` ships a value whose interpolation token is
  * never satisfied, or whether `ja-JP` renders a raw translation key because a
  * component calls `t('typo.ed.key')`. This suite unmocks `react-i18next` and
- * renders the real twelve pages against the real i18next instance loaded with
+ * renders the real thirteen pages against the real i18next instance loaded with
  * all 56 locale files, asserting the three things the plan demands:
  *
  *  (a) no page error -- the crash tripwire makes any `window.error`,
@@ -106,8 +106,8 @@ describe('5.1 locale matrix', () => {
   });
 
   it('knows every route by heart (harness guard so the loop cannot empty out)', () => {
-    expect(PAGE_ROUTES).toHaveLength(12);
-    expect(new Set(PAGE_ROUTES.map((r) => r.name)).size).toBe(12);
+    expect(PAGE_ROUTES).toHaveLength(13);
+    expect(new Set(PAGE_ROUTES.map((r) => r.name)).size).toBe(13);
   });
 
   it('reads real, non-English resources for a sample of locales', async () => {
@@ -134,7 +134,7 @@ describe('5.1 locale matrix', () => {
   });
 
   for (const { code } of LOCALES) {
-    it(`renders all 12 routes in ${code} without errors, raw tokens, or leaked keys`, async () => {
+    it(`renders all 13 routes in ${code} without errors, raw tokens, or leaked keys`, async () => {
       // Rendering pages in a benign default state legitimately produces app
       // WARNs (empty queue, no selection, ...). The matrix's job is i18n
       // integrity, not warning hygiene, so the app's own warnings are

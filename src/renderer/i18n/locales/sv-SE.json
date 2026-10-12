@@ -31,7 +31,8 @@
       "parallel": "{{count}} parallellt"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Välkommen till EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Konvertera många filer samtidigt med en smart kö",
     "shortcutsFooter": "Tryck på {{shortcut}} för kortkommandon",
     "descRemux": "För över strömmar förlustfritt till en ny container",
-    "descDemux": "Delar en fils strömmar i separata utdatafiler"
+    "descDemux": "Delar en fils strömmar i separata utdatafiler",
+    "descCopilot": "Planera konverteringar genom att beskriva ett mål"
   },
   "gettingStarted": {
     "hint": "Ny här?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Videofilter",
     "filtersHint": "Tillämpar FFmpeg-videofilter (beskärning, bildfrekvens, deinterlacing, brusreducering, färg…) när valda videoströmmar omkodas. \"Kopiera\" är förlustfritt, så filter visas endast när en destinationscontainer omkodar videon.",
     "filtersIgnoredCopy": "Videofiltren ignoreras så länge videodestinationen är \"Kopiera\", eftersom en strömkopia inte kan omkoda. Välj en destinationscontainer för att tillämpa dem."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Beskriv ett mål och låt Copilot planera konverteringarna, och skicka sedan planen till batchkön.",
+    "goalLabel": "Mål",
+    "goalPlaceholder": "t.ex. krympa dessa videor för webben",
+    "chooseFolder": "Välj mapp",
+    "selectedCount": "{{count}} fil(er) valda",
+    "selectedNone": "Inga filer valda",
+    "plan": "Planera",
+    "planning": "Planerar…",
+    "folderEmpty": "Inga medier som stöds hittades i den mappen.",
+    "errorNoGoal": "Ange ett mål innan du planerar.",
+    "errorNoInputs": "Välj en mapp med medier innan du planerar.",
+    "errorFallback": "Copilot kunde inte skapa en plan för det målet.",
+    "errorEnqueue": "Ingen av de planerade uppgifterna kunde läggas till i kön.",
+    "actionsTitle": "Planerade åtgärder",
+    "noActions": "Copilot hittade ingenting att ändra för det här målet.",
+    "savings": "Beräknad besparing ~{{pct}}%",
+    "output": "till {{output}}",
+    "skipsTitle": "Hoppade över filer",
+    "rationaleTitle": "Varför",
+    "addToQueue": "Lägg till {{count}} i kön",
+    "applyNote": "Uppgifterna läggs till i batchkön; ingenting körs förrän du startar den där.",
+    "addedToQueue": "{{count}} uppgift(er) lades till i kön",
+    "partiallyAdded": "Vissa uppgifter kunde inte läggas till i kön."
   }
 }

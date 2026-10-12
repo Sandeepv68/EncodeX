@@ -54,9 +54,11 @@ import { Logger } from '../shared/logger';
 import { logDroppedPayload } from './event-drop-log';
 import { coalescingSubscription } from './coalesce';
 import { IPC } from '../shared/ipc-channels';
+import type { CopilotPlan, CopilotPlanRequest } from '../shared/copilot';
 import {
   isBoolean,
   isConversionProgressEvent,
+  isAuditEntry,
   isLogEntry,
   isPlayerAudioChunk,
   isPlayerFrame,
@@ -86,6 +88,7 @@ import {
   PendingInstall,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
+import type { AuditEntry } from '../shared/audit';
 import {
   LOG_ARROW,
   LOG_CANCEL_CONVERSION_CALLED,
@@ -296,6 +299,20 @@ const api = {
   selectFolderFiles: () => {
     log.debug(LOG_SELECT_FOLDER_FILES_CALLED);
     return ipcRenderer.invoke(IPC.SELECT_FOLDER_FILES) as Promise<string[]>;
+  },
+  /**
+   * Builds a deterministic conversion plan for a goal against a folder of
+   * media. Invokes the main process over the `IPC.COPILOT_PLAN`
+   * ('copilot-plan') channel; main scans and probes the inputs, plans one
+   * conversion per file with the shared AI layer, and returns the actions plus
+   * their ready-to-enqueue options. The plan is a proposal only.
+   *
+   * @param {CopilotPlanRequest} request - The goal and the inputs to plan.
+   * @returns {Promise<CopilotPlan>} The planned actions, skips and workflow
+   *   dry-run. Rejects with a formatted AppError when planning fails.
+   */
+  copilotPlan: (request: CopilotPlanRequest) => {
+    return ipcRenderer.invoke(IPC.COPILOT_PLAN, request) as Promise<CopilotPlan>;
   },
   /**
    * Expands a mixed list of existing file/directory paths (e.g. drag-and-drop
@@ -1304,6 +1321,34 @@ const api = {
     };
     ipcRenderer.on(IPC.LOG_MESSAGE, handler);
     return () => ipcRenderer.removeListener(IPC.LOG_MESSAGE, handler);
+  },
+
+  /**
+   * Subscribes to the mutating-operation audit stream, pushed over
+   * `IPC.AUDIT_ENTRY` ('audit-entry'). Each entry records the tool that ran,
+   * its safety tier, a digest of its arguments, and whether it was accepted -
+   * so the renderer can show an audit trail without any Electron in the MCP
+   * server layer.
+   *
+   * @param {(entry: AuditEntry) => void} cb - Callback invoked for each audit entry.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onAuditEntry: (cb: (entry: AuditEntry) => void) => {
+    const handler = (_event: IpcRendererEvent, entry: unknown) => {
+      if (!isAuditEntry(entry)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.AUDIT_ENTRY,
+          observed: typeof entry,
+        });
+        return;
+      }
+      cb(entry);
+    };
+    ipcRenderer.on(IPC.AUDIT_ENTRY, handler);
+    return () => ipcRenderer.removeListener(IPC.AUDIT_ENTRY, handler);
   },
 
   checkForUpdates: () => {

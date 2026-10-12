@@ -31,7 +31,8 @@
       "parallel": "{{count}} paasisuutigalugu"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "EncodeX-imut tikilluaritsi",
@@ -44,7 +45,8 @@
     "descBatch": "Assersuutit arlallit ataatsimut allanngortit",
     "shortcutsFooter": "Tastaturikkumut aaliangersakkanut {{shortcut}} atuartit",
     "descRemux": "Stream-it timersoqutissanut nuakkut, tamannalu anneralugu",
-    "descDemux": "Fileup stream-it annilarutinut immikkoortinnaveersaarpaa"
+    "descDemux": "Fileup stream-it annilarutinut immikkoortinnaveersaarpaa",
+    "descCopilot": "Plaaneri tassaaneq allaqillugu allanngortitaasunik"
   },
   "gettingStarted": {
     "hint": "Nutaaq?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Video-filtrit",
     "filtersHint": "FFmpeg-video-filterit atatseq (trim, frame rate, deinterlace, noiseunerit, qalipaatsit…) video-streamit enkoderineqarpat. \"Kopi\" lossless-uvoq, taamaammat filterit takunneqartarput videoq enkoderineqaraangat.",
     "filtersIgnoredCopy": "Video-filterit atatoginassanngillat, video-ip kingullugu inissaq \"Kopi\"-pasilluni, stream-kopik enkoderineqarsinnaanngimmat. Filterit atatseq patsiornissaat container toqqaruk."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Tassaaneq allaqillugu Copilot-ip allanngortitaanik plaaneriuk, taava plaaniraq batch queue-mut iluatinnguuk.",
+    "goalLabel": "Tassaaneq",
+    "goalPlaceholder": "assersuut: videotit webimut minnerulersiguk",
+    "chooseFolder": "Mapa toqqaruk",
+    "selectedCount": "{{count}} fili toqqarneqarpoq",
+    "selectedNone": "Fili toqqarneqanngilaq",
+    "plan": "Plaaneriuk",
+    "planning": "Plaanerineq…",
+    "folderEmpty": "Tamanna mapami tapersersorneqartut media qanoq atorneqarsimanngilaq.",
+    "errorNoGoal": "Plaaneriarnissamut sianerisut tassaaneq allakkit.",
+    "errorNoInputs": "Plaaneriarnissamut sianerisut media mapa toqqaruk.",
+    "errorFallback": "Copilot-ip tassaani plansiorneq ajornartorsiutigaa.",
+    "errorEnqueue": "Plaanerinngu taassuma job-ia queue-mut ilanngunneq ajornarnikuuvoq.",
+    "actionsTitle": "Plaaneet sulisuusat",
+    "noActions": "Copilot-p tamanna tassaanequt allanngortitsisamik nanersuunngilaq.",
+    "savings": "Ukiutissatut annikillisariaq ~{{pct}}%",
+    "output": "{{output}}-mut",
+    "skipsTitle": "Qinmerneqartut filiit",
+    "rationaleTitle": "Sunik",
+    "addToQueue": "{{count}} queue-mut ilannguk",
+    "applyNote": "Job-it batch queue-mut ilanngunneqarput; tamani aallartivissakkuunilu soqanngitsoq aallartinneqanngilaq.",
+    "addedToQueue": "{{count}} job queue-mut ilanngunneqarpoq",
+    "partiallyAdded": "Job-it ilaalli queue-mut ilanngunneq ajornarpoq."
   }
 }

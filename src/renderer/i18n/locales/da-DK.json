@@ -31,7 +31,8 @@
       "parallel": "{{count}} parallelt"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Velkommen til EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Konverter flere filer på én gang med en intelligent kø",
     "shortcutsFooter": "Tryk på {{shortcut}} for tastaturgenveje",
     "descRemux": "Overfører streams tabsfrit til en ny container",
-    "descDemux": "Opdeler en fils streams i separate outputfiler"
+    "descDemux": "Opdeler en fils streams i separate outputfiler",
+    "descCopilot": "Planlæg konverteringer ved at beskrive et mål"
   },
   "gettingStarted": {
     "hint": "Ny her?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Videofiltre",
     "filtersHint": "Anvender FFmpeg-videofiltre (beskæring, billedhastighed, deinterlacing, støjreduktion, farve…) under genkodning af de valgte videostreams. \"Kopiér\" er tabsfrit, så filtre vises kun, når en destinationscontainer genkoder videoen.",
     "filtersIgnoredCopy": "Videofiltre ignoreres, så længe videodestinationen er \"Kopiér\", fordi en streampkopi ikke kan genkode. Vælg en destinationscontainer for at anvende dem."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Beskriv et mål, og lad Copilot planlægge konverteringerne, og send derefter planen til køen.",
+    "goalLabel": "Mål",
+    "goalPlaceholder": "fx formindsk disse videoer til nettet",
+    "chooseFolder": "Vælg mappe",
+    "selectedCount": "{{count}} fil(er) valgt",
+    "selectedNone": "Ingen filer valgt",
+    "plan": "Plan",
+    "planning": "Planlægger…",
+    "folderEmpty": "Der blev ikke fundet noget understøttet medie i den mappe.",
+    "errorNoGoal": "Angiv et mål, før du planlægger.",
+    "errorNoInputs": "Vælg en mappe med medier, før du planlægger.",
+    "errorFallback": "Copilot kunne ikke bygge en plan for det mål.",
+    "errorEnqueue": "Ingen af de planlagte opgaver kunne tilføjes til køen.",
+    "actionsTitle": "Planlagte handlinger",
+    "noActions": "Copilot fandt intet at ændre for dette mål.",
+    "savings": "Estimeret besparelse ~{{pct}}%",
+    "output": "til {{output}}",
+    "skipsTitle": "Sprunget over filer",
+    "rationaleTitle": "Hvorfor",
+    "addToQueue": "Tilføj {{count}} til køen",
+    "applyNote": "Opgaver tilføjes til køen; intet kører, før du starter den der.",
+    "addedToQueue": "Tilføjede {{count}} opgave(r) til køen",
+    "partiallyAdded": "Nogle opgaver kunne ikke tilføjes til køen."
   }
 }

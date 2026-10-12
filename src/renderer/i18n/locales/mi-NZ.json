@@ -31,7 +31,8 @@
       "parallel": "{{count}} tūtahi"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Nau mai, haere mai ki EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Huripokia ngā kōnae maha i te wā kotahi me te rārangi mōhio",
     "shortcutsFooter": "Pēhia {{shortcut}} mō ngā poto aratohu papapātuhi",
     "descRemux": "Nekehia ngā awa kore-ngaro ki tētahi ipu hou",
-    "descDemux": "Wehewehea ngā awa o tētahi kōnae ki ngā kōnae putanga motuhake"
+    "descDemux": "Wehewehea ngā awa o tētahi kōnae ki ngā kōnae putanga motuhake",
+    "descCopilot": "Whakamahere tahuri mā te whakamārama i tētahi whāinga"
   },
   "gettingStarted": {
     "hint": "He tauhou koe?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Ngā tātari ataata",
     "filtersHint": "Whakamahi i ngā tātari ataata FFmpeg (tapahi, reiti anga, whakaware-ā-rawhi, whakaiti haruru, tae…) i te wa o te whakawaehere anō i te awa ataata kua kōwhiria. He kore-ngaro te \"Tārua\", nō reira ka puta noa ngā tātari ina whakawaehere anō te ipu whāinga i te ataata.",
     "filtersIgnoredCopy": "Ka warewarehia ngā tātari ataata i te mea he \"Tārua\" te whāinga ataata, nā te mea e kore e taea te tārua awa kia whakawaehere anō. Kōwhiria he ipu whāinga kia whakamahia ai ngā tātari."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Whakamāramatia he whāinga, mā Copilot e whakamahere i ngā tahuri, kātahi ka tōia te mahere ki te Rārangi Puranga.",
+    "goalLabel": "Whāinga",
+    "goalPlaceholder": "hei tauira, whakaitihia ēnei ataata mō te ipurangi",
+    "chooseFolder": "Kōwhiria he kōpaki",
+    "selectedCount": "{{count}} kōnae kua tīpakohia",
+    "selectedNone": "Kāore he kōnae i tīpakohia",
+    "plan": "Whakamahere",
+    "planning": "Kei te whakamahere…",
+    "folderEmpty": "Kāore i kitea he pāpāho tautoko i roto i taua kōpaki.",
+    "errorNoGoal": "Tāuruhia he whāinga i mua i te whakamahere.",
+    "errorNoInputs": "Kōwhiria he kōpaki pāpāho i mua i te whakamahere.",
+    "errorFallback": "Kāore i taea e Copilot te hanga mahere mō taua whāinga.",
+    "errorEnqueue": "Kāore i taea te tāpiri tētahi o ngā mahi i whakamaheretia ki te rārangi.",
+    "actionsTitle": "Ngā mahi kua whakamaheretia",
+    "noActions": "Kāore i kitea e Copilot tētahi mea hei whakarerekē mō tēnei whāinga.",
+    "savings": "Te penapena tata ~{{pct}}%",
+    "output": "ki {{output}}",
+    "skipsTitle": "Ngā kōnae i pekehia",
+    "rationaleTitle": "He aha",
+    "addToQueue": "Tāpiri {{count}} ki te rārangi",
+    "applyNote": "Ka tāpirihia ngā mahi ki te Rārangi Puranga; kāore e whakahaere kia tīmata rawa koe i reira.",
+    "addedToQueue": "Kua tāpiritia {{count}} mahi ki te rārangi",
+    "partiallyAdded": "Kāore i taea te tāpiri ētahi mahi ki te rārangi."
   }
 }

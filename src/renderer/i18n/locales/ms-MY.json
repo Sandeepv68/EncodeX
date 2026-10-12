@@ -31,7 +31,8 @@
       "parallel": "{{count}} selari"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Selamat Datang ke EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Tukar banyak fail sekaligus dengan baris giliran pintar",
     "shortcutsFooter": "Tekan {{shortcut}} untuk pintasan papan kekunci",
     "descRemux": "Pindahkan strim tanpa-rugi ke bekas baharu",
-    "descDemux": "Pisahkan strim fail kepada fail output berasingan"
+    "descDemux": "Pisahkan strim fail kepada fail output berasingan",
+    "descCopilot": "Rancang penukaran dengan menerangkan matlamat"
   },
   "gettingStarted": {
     "hint": "Baru di sini?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Penapis video",
     "filtersHint": "Gunakan penapis video FFmpeg (pangkas, kadar bingkai, nyah-selang, pengurang hingar, warna…) semasa mengekod semula strim video terpilih. \"Salin\" adalah tanpa-rugi, jadi penapis hanya muncul apabila bekas sasaran mengekod semula video.",
     "filtersIgnoredCopy": "Penapis video diabaikan selagi sasaran video ialah \"Salin\" kerana salinan strim tidak boleh mengekod semula. Pilih bekas sasaran untuk menggunakan penapis."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Terangkan matlamat dan biarkan Copilot merancang penukaran, kemudian tolak rancangan itu ke Baris Gilir Kelompok.",
+    "goalLabel": "Matlamat",
+    "goalPlaceholder": "cth. kecilkan video ini untuk web",
+    "chooseFolder": "Pilih folder",
+    "selectedCount": "{{count}} fail dipilih",
+    "selectedNone": "Tiada fail dipilih",
+    "plan": "Rancang",
+    "planning": "Merancang…",
+    "folderEmpty": "Tiada media yang disokong ditemui dalam folder itu.",
+    "errorNoGoal": "Masukkan matlamat sebelum merancang.",
+    "errorNoInputs": "Pilih folder media sebelum merancang.",
+    "errorFallback": "Copilot tidak dapat membina rancangan untuk matlamat itu.",
+    "errorEnqueue": "Tiada pekerjaan yang dirancang dapat ditambah ke baris gilir.",
+    "actionsTitle": "Tindakan terancang",
+    "noActions": "Copilot tidak menemui apa-apa untuk diubah bagi matlamat ini.",
+    "savings": "Jimatan anggaran ~{{pct}}%",
+    "output": "ke {{output}}",
+    "skipsTitle": "Fail yang dilangkau",
+    "rationaleTitle": "Mengapa",
+    "addToQueue": "Tambah {{count}} ke baris gilir",
+    "applyNote": "Pekerjaan ditambah ke Baris Gilir Kelompok; tiada apa-apa berjalan sehingga anda memulakannya di sana.",
+    "addedToQueue": "{{count}} pekerjaan ditambah ke baris gilir",
+    "partiallyAdded": "Sebilangan pekerjaan tidak dapat ditambah ke baris gilir."
   }
 }

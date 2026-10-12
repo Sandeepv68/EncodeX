@@ -31,7 +31,8 @@
       "parallel": "{{count}} paralel"
     },
     "remux": "Remuks",
-    "demux": "Demuks"
+    "demux": "Demuks",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Selamat datang di EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Konversi banyak file sekaligus dengan antrean cerdas",
     "shortcutsFooter": "Tekan {{shortcut}} untuk pintasan keyboard",
     "descRemux": "Memindahkan aliran tanpa kehilangan kualitas ke wadah baru",
-    "descDemux": "Memisahkan aliran sebuah file menjadi file keluaran terpisah"
+    "descDemux": "Memisahkan aliran sebuah file menjadi file keluaran terpisah",
+    "descCopilot": "Rencanakan konversi dengan menjelaskan sebuah tujuan"
   },
   "gettingStarted": {
     "hint": "Baru di sini?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Filter video",
     "filtersHint": "Menerapkan filter video FFmpeg (potong, laju bingkai, deinterlace, reduksi noise, warna…) selama penyandian ulang aliran video yang dipilih. \"Salin\" lossless, sehingga filter hanya muncul saat wadah tujuan menyandikan ulang video.",
     "filtersIgnoredCopy": "Filter video diabaikan selama tujuan video adalah \"Salin\" karena salinan aliran tidak dapat disandikan ulang. Pilih wadah tujuan untuk menerapkan filter."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Jelaskan tujuan dan biarkan Copilot merencanakan konversinya, lalu dorong rencana tersebut ke Antrean Batch.",
+    "goalLabel": "Tujuan",
+    "goalPlaceholder": "mis. perkecil video ini untuk web",
+    "chooseFolder": "Pilih folder",
+    "selectedCount": "{{count}} file dipilih",
+    "selectedNone": "Tidak ada file yang dipilih",
+    "plan": "Rencanakan",
+    "planning": "Merencanakan…",
+    "folderEmpty": "Tidak ada media yang didukung ditemukan di folder tersebut.",
+    "errorNoGoal": "Masukkan tujuan sebelum merencanakan.",
+    "errorNoInputs": "Pilih folder media sebelum merencanakan.",
+    "errorFallback": "Copilot tidak dapat menyusun rencana untuk tujuan tersebut.",
+    "errorEnqueue": "Tidak ada pekerjaan terencana yang dapat ditambahkan ke antrean.",
+    "actionsTitle": "Tindakan terencana",
+    "noActions": "Copilot tidak menemukan apa pun untuk diubah untuk tujuan ini.",
+    "savings": "Perkiraan penghematan ~{{pct}}%",
+    "output": "ke {{output}}",
+    "skipsTitle": "File yang dilewati",
+    "rationaleTitle": "Mengapa",
+    "addToQueue": "Tambahkan {{count}} ke antrean",
+    "applyNote": "Pekerjaan ditambahkan ke Antrean Batch; tidak ada yang berjalan sampai Anda memulainya di sana.",
+    "addedToQueue": "{{count}} pekerjaan ditambahkan ke antrean",
+    "partiallyAdded": "Beberapa pekerjaan tidak dapat ditambahkan ke antrean."
   }
 }

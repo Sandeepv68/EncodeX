@@ -34,6 +34,11 @@ describe('expandScope', () => {
       'src/shared/b.ts',
     ]);
   });
+
+  it('removes files matched by a `!` negation, whatever the order', () => {
+    expect(expandScope(['src/shared/*.ts', '!src/shared/a.ts'], dir)).toEqual(['src/shared/a.test.ts', 'src/shared/b.ts']);
+    expect(expandScope(['!src/shared/a.ts', 'src/shared/*.ts'], dir)).toEqual(['src/shared/a.test.ts', 'src/shared/b.ts']);
+  });
 });
 
 describe('resolveChangedScope', () => {

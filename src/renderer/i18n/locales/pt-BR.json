@@ -31,7 +31,8 @@
       "parallel": "{{count}} em paralelo"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Bem-vindo ao EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Converta vários arquivos de uma vez com uma fila inteligente",
     "shortcutsFooter": "Pressione {{shortcut}} para atalhos de teclado",
     "descRemux": "Transfere os fluxos sem perdas para um novo contêiner",
-    "descDemux": "Divide os fluxos de um arquivo em arquivos de saída separados"
+    "descDemux": "Divide os fluxos de um arquivo em arquivos de saída separados",
+    "descCopilot": "Planeje conversões descrevendo uma meta"
   },
   "gettingStarted": {
     "hint": "Novo por aqui?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Filtros de vídeo",
     "filtersHint": "Aplica filtros de vídeo do FFmpeg (recorte, taxa de quadros, desentrelaçamento, redução de ruído, cor…) enquanto os fluxos de vídeo selecionados são recodificados. “Copiar” é sem perdas, então os filtros só aparecem quando um contêiner de destino recodifica o vídeo.",
     "filtersIgnoredCopy": "Os filtros de vídeo são ignorados enquanto o destino de vídeo for “Copiar”, porque uma cópia de fluxo não pode recodificar. Escolha um contêiner de destino para aplicá-los."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Descreva uma meta e deixe o Copilot planejar as conversões; depois envie o plano para a fila de lote.",
+    "goalLabel": "Meta",
+    "goalPlaceholder": "ex.: reduzir estes vídeos para a web",
+    "chooseFolder": "Escolher pasta",
+    "selectedCount": "{{count}} arquivo(s) selecionado(s)",
+    "selectedNone": "Nenhum arquivo selecionado",
+    "plan": "Planejar",
+    "planning": "Planejando…",
+    "folderEmpty": "Nenhuma mídia compatível foi encontrada nessa pasta.",
+    "errorNoGoal": "Informe uma meta antes de planejar.",
+    "errorNoInputs": "Escolha uma pasta de mídia antes de planejar.",
+    "errorFallback": "O Copilot não pôde criar um plano para essa meta.",
+    "errorEnqueue": "Nenhum dos trabalhos planejados pôde ser adicionado à fila.",
+    "actionsTitle": "Ações planejadas",
+    "noActions": "O Copilot não encontrou nada para alterar para esta meta.",
+    "savings": "Economia estimada de ~{{pct}}%",
+    "output": "para {{output}}",
+    "skipsTitle": "Arquivos ignorados",
+    "rationaleTitle": "Por quê",
+    "addToQueue": "Adicionar {{count}} à fila",
+    "applyNote": "Os trabalhos são adicionados à fila de lote; nada é executado até você iniciá-la lá.",
+    "addedToQueue": "{{count}} trabalho(s) adicionado(s) à fila",
+    "partiallyAdded": "Alguns trabalhos não puderam ser adicionados à fila."
   }
 }

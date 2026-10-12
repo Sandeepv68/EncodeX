@@ -13,6 +13,7 @@ import { suggestedExtensionForVideoCodec } from '../shared/codec-containers';
 import { deriveOutputPath, getInputExtension } from '../main/cli/cli-util';
 import { createError, ErrorCode, ERROR_MESSAGES } from '../shared/errors';
 import { presetById, buildPresetFilter, normalizeFilterChain, validateVideoFilters } from '../shared/video-filters';
+import { assertSafeExtraArgs } from './safety';
 
 /**
  * Conversion fields accepted by the `convert_media` MCP tool, mirroring the
@@ -153,7 +154,10 @@ export function buildConversionOptions(fields: MCPConversionFields): ConversionO
     }
     options.videoFilters = videoFilters;
   }
-  if (fields.extraArgs?.length) options.extraArgs = fields.extraArgs;
+  if (fields.extraArgs?.length) {
+    assertSafeExtraArgs(fields.extraArgs);
+    options.extraArgs = fields.extraArgs;
+  }
   return options;
 }
 

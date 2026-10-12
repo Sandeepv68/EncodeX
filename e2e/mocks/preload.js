@@ -87,7 +87,9 @@ function seedMcpSettingsFromUserData() {
   const file = mcpSettingsFile();
   if (!file) return;
   try {
-    const raw = require('fs').readFileSync(file, 'utf-8').replace(/^\uFEFF/, '');
+    const raw = require('fs')
+      .readFileSync(file, 'utf-8')
+      .replace(/^\uFEFF/, '');
     state.mcpSettings = sanitizeMcpSettings(JSON.parse(raw));
   } catch {
     /* missing/corrupt seed: keep the default snapshot */
@@ -121,6 +123,7 @@ const api = {
   selectFile: () => Promise.resolve(state.selectFileResult),
   selectFiles: () => Promise.resolve(state.selectFilesResult),
   selectFolderFiles: () => Promise.resolve(state.selectFolderFilesResult),
+  copilotPlan: () => Promise.resolve(state.copilotPlanResult),
   expandPaths: (paths) => Promise.resolve(state.expandPathsResult),
   selectOutput: () => Promise.resolve(state.selectOutputResult),
   selectDirectory: () => Promise.resolve(state.selectDirectoryResult),
@@ -310,6 +313,7 @@ const api = {
   onPlayerFrame: (cb) => subscribe('player-frame', cb),
   onPlayerAudio: (cb) => subscribe('player-audio', cb),
   onLogMessage: (cb) => subscribe('log-message', cb),
+  onAuditEntry: (cb) => subscribe('audit-entry', cb),
 
   // --- Update manager ----------------------------------------------------------
   checkForUpdates: () => Promise.resolve(),
@@ -339,6 +343,9 @@ const api = {
     },
     setSelectFolderFiles: (v) => {
       state.selectFolderFilesResult = v;
+    },
+    setCopilotPlan: (v) => {
+      state.copilotPlanResult = v;
     },
     setExpandPaths: (v) => {
       state.expandPathsResult = v;
@@ -424,16 +431,8 @@ const api = {
       reset();
     },
     get: () => {
-      const {
-        windowCalls,
-        loginCalls,
-        revealCalls,
-        queueJobs,
-        queueState,
-        closeRequestedSubscribers,
-        termsRejectCalls,
-        mcpSetCalls,
-      } = state;
+      const { windowCalls, loginCalls, revealCalls, queueJobs, queueState, closeRequestedSubscribers, termsRejectCalls, mcpSetCalls } =
+        state;
       return {
         windowCalls,
         loginCalls,

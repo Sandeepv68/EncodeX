@@ -31,7 +31,8 @@
       "parallel": "{{count}} song song"
     },
     "remux": "Đóng gói lại",
-    "demux": "Tách luồng"
+    "demux": "Tách luồng",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Chào mừng đến với EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Chuyển đổi nhiều tệp cùng lúc với hàng đợi thông minh",
     "shortcutsFooter": "Nhấn {{shortcut}} để xem phím tắt",
     "descRemux": "Chuyển các luồng sang vùng chứa mới mà không tổn thất",
-    "descDemux": "Tách các luồng của một tệp thành những tệp đầu riêng biệt"
+    "descDemux": "Tách các luồng của một tệp thành những tệp đầu riêng biệt",
+    "descCopilot": "Lên kế hoạch chuyển đổi bằng cách mô tả một mục tiêu"
   },
   "gettingStarted": {
     "hint": "Mới đến đây?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Bộ lọc video",
     "filtersHint": "Áp dụng bộ lọc video FFmpeg (cắt, tần số khung hình, khử xen kẽ, giảm nhiễu, màu sắc…) trong khi mã hoá lại các luồng video đã chọn. “Sao chép” không tổn thất, nên bộ lọc chỉ hiện khi vùng chứa đích mã hoá lại video.",
     "filtersIgnoredCopy": "Bộ lọc video bị bỏ qua khi đích video là “Sao chép”, vì bản sao luồng không thể mã hoá lại. Hãy chọn một vùng chứa đích để áp dụng."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Mô tả một mục tiêu và để Copilot lên kế hoạch chuyển đổi, sau đó đưa kế hoạch vào hàng đợi hàng loạt.",
+    "goalLabel": "Mục tiêu",
+    "goalPlaceholder": "ví dụ: thu nhỏ các video này cho web",
+    "chooseFolder": "Chọn thư mục",
+    "selectedCount": "Đã chọn {{count}} tệp",
+    "selectedNone": "Chưa chọn tệp nào",
+    "plan": "Lên kế hoạch",
+    "planning": "Đang lên kế hoạch…",
+    "folderEmpty": "Không tìm thấy phương tiện được hỗ trợ nào trong thư mục đó.",
+    "errorNoGoal": "Nhập mục tiêu trước khi lên kế hoạch.",
+    "errorNoInputs": "Chọn thư mục phương tiện trước khi lên kế hoạch.",
+    "errorFallback": "Copilot không thể xây dựng kế hoạch cho mục tiêu đó.",
+    "errorEnqueue": "Không thể thêm công việc đã lên kế hoạch nào vào hàng đợi.",
+    "actionsTitle": "Các hành động đã lên kế hoạch",
+    "noActions": "Copilot không tìm thấy gì để thay đổi cho mục tiêu này.",
+    "savings": "Tiết kiệm ước tính ~{{pct}}%",
+    "output": "đến {{output}}",
+    "skipsTitle": "Các tệp đã bỏ qua",
+    "rationaleTitle": "Vì sao",
+    "addToQueue": "Thêm {{count}} vào hàng đợi",
+    "applyNote": "Các công việc được thêm vào hàng đợi hàng loạt; không có gì chạy cho đến khi bạn bắt đầu ở đó.",
+    "addedToQueue": "Đã thêm {{count}} công việc vào hàng đợi",
+    "partiallyAdded": "Một số công việc không thể thêm vào hàng đợi."
   }
 }

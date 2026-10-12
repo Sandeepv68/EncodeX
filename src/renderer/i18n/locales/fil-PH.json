@@ -31,7 +31,8 @@
       "parallel": "{{count}} sabay-sabay"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Maligayang Pagdating sa EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "I-convert ang maraming file nang sabay-sabay gamit ang smart queue",
     "shortcutsFooter": "Pindutin ang {{shortcut}} para sa mga keyboard shortcut",
     "descRemux": "Inililipat nang walang kabawasang-kalidad ang mga stream sa bagong container",
-    "descDemux": "Hinahati ang mga stream ng isang file sa magkakahiwalay na output na file"
+    "descDemux": "Hinahati ang mga stream ng isang file sa magkakahiwalay na output na file",
+    "descCopilot": "Magplano ng mga conversion sa pamamagitan ng paglalarawan ng layunin"
   },
   "gettingStarted": {
     "hint": "Bago ka ba rito?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Mga video filter",
     "filtersHint": "Nag-aplay ng mga video filter ng FFmpeg (trim, frame rate, deinterlace, pagbawas ng ingay, kulay…) habang nagre-re-encode ng piniling mga video stream. Ang \"Kopyahin\" ay walang kabawasan, kaya ang mga filter ay lalabas lamang kapag ang destinasyong container ay nagre-re-encode ng video.",
     "filtersIgnoredCopy": "Hindi papansinin ang mga video filter habang ang destinasyon ng video ay \"Kopyahin,\" dahil hindi maaaring mag-re-encode ang kopya ng stream. Pumili ng destinasyong container upang mailapat ang mga filter."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Ilarawan ang isang layunin at hayaang iplano ng Copilot ang mga conversion, pagkatapos ay ipadala ang plano sa Batch Queue.",
+    "goalLabel": "Layunin",
+    "goalPlaceholder": "hal. i-compress ang mga video na ito para sa web",
+    "chooseFolder": "Pumili ng folder",
+    "selectedCount": "{{count}} file napili",
+    "selectedNone": "Walang napiling file",
+    "plan": "Magplano",
+    "planning": "Naglalaplano…",
+    "folderEmpty": "Walang nahanap na sinusuportahang media sa folder na iyon.",
+    "errorNoGoal": "Maglagay ng layunin bago magplano.",
+    "errorNoInputs": "Pumili ng folder ng media bago magplano.",
+    "errorFallback": "Hindi nakagawa ang Copilot ng plano para sa layuning iyon.",
+    "errorEnqueue": "Wala sa mga nakaplanong trabaho ang maidaragdag sa queue.",
+    "actionsTitle": "Mga nakaplanong aksyon",
+    "noActions": "Walang nahanap ang Copilot na dapat baguhin para sa layuning ito.",
+    "savings": "Tinatayang matitipid ~{{pct}}%",
+    "output": "sa {{output}}",
+    "skipsTitle": "Mga nilaktawang file",
+    "rationaleTitle": "Bakit",
+    "addToQueue": "Idagdag ang {{count}} sa queue",
+    "applyNote": "Idinaragdag ang mga trabaho sa Batch Queue; walang tatakbo hanggang simulan mo ito doon.",
+    "addedToQueue": "Idinagdag ang {{count}} trabaho sa queue",
+    "partiallyAdded": "Hindi maidaragdag sa queue ang ilang trabaho."
   }
 }

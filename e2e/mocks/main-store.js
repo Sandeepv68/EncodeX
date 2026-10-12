@@ -34,6 +34,7 @@ const defaults = {
   selectFileResult: null,
   selectFilesResult: [],
   selectFolderFilesResult: [],
+  copilotPlanResult: null,
   expandPathsResult: [],
   selectOutputResult: null,
   selectDirectoryResult: null,

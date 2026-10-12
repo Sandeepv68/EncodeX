@@ -384,7 +384,14 @@ if (process.argv.includes('--mcp')) {
     if (!mcpJobManager) {
       mcpJobManager = new MCPJobManager({ transcoderFactory: createTranscoder });
     }
-    const server = createMcpServer({ jobManager: mcpJobManager });
+    const server = createMcpServer({
+      jobManager: mcpJobManager,
+      onAudit: (entry) => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          mainWindow.webContents.send(IPC.AUDIT_ENTRY, entry);
+        }
+      },
+    });
     registerGuiTools(server, {
       jobManager: mcpJobManager,
       appVersion: app.getVersion(),

@@ -2,8 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Logs from '../Logs';
 import { useLogStore } from '../../stores/logStore';
+import { useAuditStore } from '../../stores/auditStore';
 import { useToastStore } from '../../stores/toastStore';
 import type { LogEntry } from '../../../shared/types';
+import type { AuditEntry } from '../../../shared/audit';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 function entry(overrides: Partial<LogEntry>): LogEntry {
@@ -16,10 +18,23 @@ function entry(overrides: Partial<LogEntry>): LogEntry {
   };
 }
 
+function auditEntry(overrides: Partial<AuditEntry> = {}): AuditEntry {
+  return {
+    id: 'audit-1',
+    timestamp: '2026-07-31T10:00:00.000Z',
+    tool: 'convert_media',
+    tier: 2,
+    argsDigest: 'deadbeef',
+    result: 'ok',
+    ...overrides,
+  };
+}
+
 describe('Logs', () => {
   beforeEach(() => {
     Element.prototype.scrollIntoView = vi.fn();
     useLogStore.setState({ entries: [] });
+    useAuditStore.setState({ entries: [] });
     useToastStore.setState({ toasts: [] });
     vi.restoreAllMocks();
   });
@@ -120,5 +135,54 @@ describe('Logs', () => {
     fireEvent.keyDown(window, { code: 'KeyD', key: 'd', ctrlKey: true, shiftKey: true });
     expect(createObjectURL).toHaveBeenCalledOnce();
     expect(clickSpy).toHaveBeenCalledOnce();
+  });
+
+  it('hides the audit panel when there are no audit entries', () => {
+    render(<Logs />);
+    expect(screen.queryByTestId('audit-panel')).not.toBeInTheDocument();
+  });
+
+  it('renders the audit trail with tool, tier, result and digest', () => {
+    useAuditStore.setState({
+      entries: [
+        auditEntry({ id: 'a1', tool: 'convert_media', tier: 2, result: 'ok', argsDigest: 'aaaa1111' }),
+        auditEntry({ id: 'a2', tool: 'cut_video', tier: 3, result: 'error', argsDigest: 'bbbb2222', detail: 'boom' }),
+      ],
+    });
+    render(<Logs />);
+    expect(screen.getByTestId('audit-panel')).toBeInTheDocument();
+    expect(screen.getAllByTestId('audit-row')).toHaveLength(2);
+    expect(screen.getByText('convert_media')).toBeInTheDocument();
+    expect(screen.getByText('T3')).toBeInTheDocument();
+    expect(screen.getByText('ok')).toBeInTheDocument();
+    expect(screen.getByText('failed')).toBeInTheDocument();
+    expect(screen.getByText('#aaaa1111')).toBeInTheDocument();
+    expect(screen.getByText('boom')).toBeInTheDocument();
+  });
+
+  it('shows the newest audit entries first and caps the panel', () => {
+    useAuditStore.setState({
+      entries: Array.from({ length: 60 }, (_, i) => auditEntry({ id: `a${i}`, tool: `tool-${i}` })),
+    });
+    render(<Logs />);
+    const rows = screen.getAllByTestId('audit-row');
+    expect(rows).toHaveLength(50);
+    expect(screen.getByText('tool-59')).toBeInTheDocument();
+    expect(screen.queryByText('tool-0')).not.toBeInTheDocument();
+  });
+
+  it('clears the audit trail from the panel button', () => {
+    useAuditStore.setState({ entries: [auditEntry()] });
+    render(<Logs />);
+    fireEvent.click(screen.getByTestId('audit-clear'));
+    expect(useAuditStore.getState().entries).toHaveLength(0);
+    expect(screen.queryByTestId('audit-panel')).not.toBeInTheDocument();
+  });
+
+  it('has no axe violations with an audit trail present', async () => {
+    useLogStore.setState({ entries: [entry({ text: 'first line' })] });
+    useAuditStore.setState({ entries: [auditEntry()] });
+    const { container } = render(<Logs />);
+    await assertNoAxeViolations(container);
   });
 });

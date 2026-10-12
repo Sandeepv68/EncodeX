@@ -31,7 +31,8 @@
       "parallel": "{{count}} parallelt"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Velkommen til EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Konverter mange filer samtidig med en smart kø",
     "shortcutsFooter": "Trykk {{shortcut}} for tastatursnarveier",
     "descRemux": "Overfører strømmer tapsfritt til en ny container",
-    "descDemux": "Deler strømmene i en fil i separate utdatafiler"
+    "descDemux": "Deler strømmene i en fil i separate utdatafiler",
+    "descCopilot": "Planlegg konverteringer ved å beskrive et mål"
   },
   "gettingStarted": {
     "hint": "Ny her?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Videofiltre",
     "filtersHint": "Bruker FFmpeg-videofiltre (beskjæring, bildefrekvens, deinterlacing, støyreduksjon, farge…) mens valgte videostrømmer kodes på nytt. \"Kopier\" er tapsfritt, så filtre vises bare når en målcontainer koder videoen på nytt.",
     "filtersIgnoredCopy": "Videofiltrene blir ignorert så lenge videodestinasjonen er \"Kopier\", fordi en strømkopi ikke kan kode på nytt. Velg en målcontainer for å bruke dem."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Beskriv et mål og la Copilot planlegge konverteringene, og send deretter planen til batch-køen.",
+    "goalLabel": "Mål",
+    "goalPlaceholder": "f.eks. krymp disse videoene for nettet",
+    "chooseFolder": "Velg mappe",
+    "selectedCount": "{{count}} fil(er) valgt",
+    "selectedNone": "Ingen filer valgt",
+    "plan": "Planlegg",
+    "planning": "Planlegger…",
+    "folderEmpty": "Fant ingen støttede medier i denne mappen.",
+    "errorNoGoal": "Angi et mål før du planlegger.",
+    "errorNoInputs": "Velg en mappe med medier før du planlegger.",
+    "errorFallback": "Copilot kunne ikke bygge en plan for dette målet.",
+    "errorEnqueue": "Ingen av de planlagte jobbene kunne legges til køen.",
+    "actionsTitle": "Planlagte handlinger",
+    "noActions": "Copilot fant ingenting å endre for dette målet.",
+    "savings": "Estimert besparelse ~{{pct}}%",
+    "output": "til {{output}}",
+    "skipsTitle": "Hoppet over filer",
+    "rationaleTitle": "Hvorfor",
+    "addToQueue": "Legg til {{count}} i køen",
+    "applyNote": "Jobber legges til batch-køen; ingenting kjører før du starter det der.",
+    "addedToQueue": "La til {{count}} jobb(er) i køen",
+    "partiallyAdded": "Noen jobber kunne ikke legges til i køen."
   }
 }

@@ -30,6 +30,13 @@ export default {
     'src/main/transcoders/{ffmpeg-utils,ffprobe-mapper}.ts',
     'src/main/queue/{job-queue,queue-transfer}.ts',
     'src/renderer/stores/*.ts',
+    // Type-only declarations (no runtime code) have nothing to mutate, and a
+    // shard holding only such a file fails the initial test run: vitest finds
+    // no test related to it, so Stryker reports "No tests were executed" and
+    // exits before producing a report the gate can merge. `!` is Stryker's
+    // negation (see ProjectReader.resolveFileDescriptions); the scope planner
+    // understands it too, so the file never reaches a shard.
+    '!src/renderer/stores/types.ts',
     'src/renderer/utils/*.ts',
   ],
   // Stryker v10 selects mutators by exclusion. The plan's five families

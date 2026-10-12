@@ -31,7 +31,8 @@
       "parallel": "{{count}} parallel"
     },
     "remux": "Remux",
-    "demux": "Demux"
+    "demux": "Demux",
+    "copilot": "Copilot"
   },
   "dashboard": {
     "welcome": "Willkommen bei EncodeX",
@@ -44,7 +45,8 @@
     "descBatch": "Viele Dateien auf einmal mit einer intelligenten Warteschlange konvertieren",
     "shortcutsFooter": "Drücken Sie {{shortcut}} für Tastenkombinationen",
     "descRemux": "Streams verlustfrei in einen neuen Container übertragen",
-    "descDemux": "Streams einer Datei in einzelne Ausgabedateien aufteilen"
+    "descDemux": "Streams einer Datei in einzelne Ausgabedateien aufteilen",
+    "descCopilot": "Konvertierungen durch Beschreiben eines Ziels planen"
   },
   "gettingStarted": {
     "hint": "Neu hier?",
@@ -940,5 +942,31 @@
     "filtersTitle": "Videofilter",
     "filtersHint": "Wendet FFmpeg-Videofilter an (Zuschneiden, Bildrate, Deinterlacing, Entrauschen, Farbe …), während die ausgewählten Videostreams neu kodiert werden. Kopieren ist verlustfrei, daher erscheinen Filter nur, wenn ein Video-Zielcontainer das Video neu kodiert.",
     "filtersIgnoredCopy": "Videofilter werden ignoriert, solange das Videoziel „Kopieren“ ist, da eine Stream-Kopie nicht neu kodieren kann. Wählen Sie einen Video-Zielcontainer, um sie anzuwenden."
+  },
+  "copilot": {
+    "title": "Copilot",
+    "subtitle": "Beschreibe ein Ziel und lass Copilot die Konvertierungen planen, dann übernimm den Plan in die Stapel-Warteschlange.",
+    "goalLabel": "Ziel",
+    "goalPlaceholder": "z. B. diese Videos für das Web verkleinern",
+    "chooseFolder": "Ordner auswählen",
+    "selectedCount": "{{count}} Datei(en) ausgewählt",
+    "selectedNone": "Keine Dateien ausgewählt",
+    "plan": "Planen",
+    "planning": "Wird geplant…",
+    "folderEmpty": "In diesem Ordner wurde kein unterstütztes Medium gefunden.",
+    "errorNoGoal": "Gib ein Ziel ein, bevor du planst.",
+    "errorNoInputs": "Wähle einen Ordner mit Medien, bevor du planst.",
+    "errorFallback": "Copilot konnte für dieses Ziel keinen Plan erstellen.",
+    "errorEnqueue": "Keine der geplanten Aufgaben konnte zur Warteschlange hinzugefügt werden.",
+    "actionsTitle": "Geplante Aktionen",
+    "noActions": "Copilot hat für dieses Ziel nichts zu ändern gefunden.",
+    "savings": "Geschätzte Ersparnis ~{{pct}}%",
+    "output": "in {{output}}",
+    "skipsTitle": "Übersprungene Dateien",
+    "rationaleTitle": "Warum",
+    "addToQueue": "{{count}} zur Warteschlange hinzufügen",
+    "applyNote": "Aufgaben werden zur Stapel-Warteschlange hinzugefügt; nichts läuft, bis du sie dort startest.",
+    "addedToQueue": "{{count}} Aufgabe(n) zur Warteschlange hinzugefügt",
+    "partiallyAdded": "Einige Aufgaben konnten nicht zur Warteschlange hinzugefügt werden."
   }
 }

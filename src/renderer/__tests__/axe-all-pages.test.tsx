@@ -1,6 +1,6 @@
 /**
  * @fileoverview Phase 5.3 axe matrix (finding F7): `assertNoAxeViolations` on
- * all 12 routed pages in both themes at the three layout breakpoints the app
+ * all 13 routed pages in both themes at the three layout breakpoints the app
  * ships.
  *
  * Before this suite, axe ran ad hoc on a handful of pages/components in their
@@ -40,7 +40,7 @@ const WIDTHS: readonly number[] = [320, 768, 1440];
 /** Wraps a page subtree in the single landmark the real app provides. */
 const inMain = (children: ReactNode): ReactNode => <main>{children}</main>;
 
-describe('5.3 axe matrix (12 routes x light/dark x 320/768/1440)', () => {
+describe('5.3 axe matrix (13 routes x light/dark x 320/768/1440)', () => {
   let restoreScrollIntoView: (() => void) | undefined;
 
   beforeAll(() => {
@@ -52,7 +52,7 @@ describe('5.3 axe matrix (12 routes x light/dark x 320/768/1440)', () => {
   });
 
   it('covers the declared axes (guard against a loop that cannot empty out)', () => {
-    expect(PAGE_ROUTES).toHaveLength(12);
+    expect(PAGE_ROUTES).toHaveLength(13);
     expect(THEMES).toEqual(['light', 'dark']);
     expect(WIDTHS).toEqual([320, 768, 1440]);
   });

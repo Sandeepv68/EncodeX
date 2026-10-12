@@ -692,6 +692,28 @@ describe('main/index', () => {
     expect(startMcpHttpServerMock).toHaveBeenCalledTimes(1);
   });
 
+  it('forwards MCP audit entries to the live main window and skips a destroyed one', async () => {
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    await triggerStartup();
+    const options = mcpSettingsOptions();
+    options.apply({ enabled: true, port: 3847, token: '' });
+    await vi.waitFor(() => expect(startMcpHttpServerMock).toHaveBeenCalledTimes(1));
+    const startCalls = (startMcpHttpServerMock as unknown as { mock: { calls: [unknown, unknown][] } }).mock.calls;
+    const factory = startCalls[0]?.[0] as (() => unknown) | undefined;
+    factory!();
+    const onAudit = (createMcpServerMock as unknown as { mock: { calls: unknown[][] } }).mock.calls[0]?.[0] as
+      { onAudit: (entry: unknown) => void } | undefined;
+    const win = getMainWindows()[0];
+    const entry = { id: 'audit-1' };
+    onAudit!.onAudit(entry);
+    expect(win.webContents.send).toHaveBeenCalledWith(IPC.AUDIT_ENTRY, entry);
+    win.isDestroyed.mockReturnValue(true);
+    win.webContents.send.mockClear();
+    onAudit!.onAudit(entry);
+    expect(win.webContents.send).not.toHaveBeenCalled();
+  });
+
   it('logs a failure to start the embedded server and keeps the app alive', async () => {
     expectAppLog('error', 'main/index');
     process.argv = ['node', 'x.js'];

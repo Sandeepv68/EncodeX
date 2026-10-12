@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 import { useErrorStore } from '../stores/errorStore';
 import { useLogStore } from '../stores/logStore';
+import { useAuditStore } from '../stores/auditStore';
 import { useToastStore } from '../stores/toastStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
@@ -11,8 +12,10 @@ import { useTermsStore } from '../stores/termsStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { DRAWER_CONDENSED_STORAGE_KEY, DEFAULT_DRAWER_CONDENSED } from '../../shared/constants';
 import type { LogEntry } from '../../shared/types';
+import type { AuditEntry } from '../../shared/audit';
 
 const onLogMessageMock = vi.mocked(window.electronAPI.onLogMessage);
+const onAuditEntryMock = vi.mocked(window.electronAPI.onAuditEntry);
 
 function renderApp(initialEntries = ['/']) {
   return render(
@@ -43,6 +46,7 @@ describe('App', () => {
     useSettingsStore.setState({ drawerCondensed: DEFAULT_DRAWER_CONDENSED });
     useErrorStore.setState({ currentError: null, errorHistory: [] });
     useLogStore.setState({ entries: [] });
+    useAuditStore.setState({ entries: [] });
     useToastStore.setState({ toasts: [] });
     useAudioExtractStore.setState({ isConverting: false });
     useVideoCutStore.getState().setIsCutting(false);
@@ -100,6 +104,22 @@ describe('App', () => {
     const entry: LogEntry = { timestamp: '2026-07-31T12:00:00.000Z', level: 'INFO', text: 'incoming log', source: 'main' };
     callback(entry);
     expect(useLogStore.getState().entries).toContainEqual(entry);
+  });
+
+  it('stores audit entries received from the main process', async () => {
+    renderApp();
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+    const callback = onAuditEntryMock.mock.calls[0][0];
+    const entry: AuditEntry = {
+      id: 'audit-1',
+      timestamp: '2026-07-31T12:00:00.000Z',
+      tool: 'convert_media',
+      tier: 2,
+      argsDigest: 'deadbeef',
+      result: 'ok',
+    };
+    callback(entry);
+    expect(useAuditStore.getState().entries).toContainEqual(entry);
   });
 
   it('shows the error snackbar when the error store has an error', async () => {
