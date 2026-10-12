@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
+import { codecovVitePlugin } from '@codecov/vite-plugin';
 
 /**
  * Sentry sourcemap upload is enabled only when CI provides the auth token
@@ -10,6 +11,13 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
  */
 const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
 const shouldUploadSourcemaps = Boolean(sentryAuthToken && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT);
+
+/**
+ * Codecov bundle analysis uploads a bundle stats report at build time. It is
+ * enabled only when CI provides the token; local builds stay plugin-free.
+ */
+const codecovUploadToken = process.env.CODECOV_TOKEN;
+const shouldUploadBundle = Boolean(codecovUploadToken);
 
 export default defineConfig({
   plugins: [
@@ -24,6 +32,15 @@ export default defineConfig({
             sourcemaps: {
               assets: ['./dist/renderer/**'],
             },
+          }),
+        ]
+      : []),
+    ...(shouldUploadBundle
+      ? [
+          codecovVitePlugin({
+            enableBundleAnalysis: true,
+            bundleName: 'encodex-renderer',
+            uploadToken: codecovUploadToken,
           }),
         ]
       : []),
