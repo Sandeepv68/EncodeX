@@ -13,7 +13,7 @@
 
 [![Ask DeepWiki](https://img.shields.io/badge/Ask_DeepWiki-10B981?style=for-the-badge)](https://deepwiki.com/Sandeepv68/EncodeX)
 ![CI](https://img.shields.io/github/actions/workflow/status/Sandeepv68/EncodeX/ci.yml?style=for-the-badge)
-[![codecov](https://codecov.io/gh/Sandeepv68/EncodeX/graph/badge.svg?token=UVW4DMY7CB)](https://codecov.io/gh/Sandeepv68/EncodeX)
+[![codecov](https://codecov.io/gh/Sandeepv68/EncodeX/graph/badge.svg?token=UVW4DMY7CB&style=for-the-badge)](https://codecov.io/gh/Sandeepv68/EncodeX)
 ![लाइसेंस](https://img.shields.io/github/license/Sandeepv68/EncodeX?style=for-the-badge)
 ![रिलीज़](https://img.shields.io/github/v/release/Sandeepv68/EncodeX?style=for-the-badge)
 ![डाउनलोड](https://img.shields.io/github/downloads/Sandeepv68/EncodeX/total?style=for-the-badge&logo=github&logoColor=white)
