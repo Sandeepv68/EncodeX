@@ -261,7 +261,8 @@ function inferErrorCode(message: string, err?: unknown): ErrorCodeType {
   // AI connector failures are checked before the generic `not found`/`failed`
   // rules: a provider HTTP error or a missing key must not be misclassified as
   // a filesystem or conversion problem.
-  if (m.includes('ai connector') || m.includes('provider responded') || m.includes('could not reach the ai')) return ErrorCode.AI_CONNECTOR_FAILED;
+  if (m.includes('ai connector') || m.includes('provider responded') || m.includes('could not reach the ai'))
+    return ErrorCode.AI_CONNECTOR_FAILED;
   if (m.includes('no api key') || m.includes('ai not configured') || m.includes('no ai provider')) return ErrorCode.AI_NOT_CONFIGURED;
   if (m.includes('empty completion') || m.includes('ai response') || m.includes('unusable response')) return ErrorCode.AI_RESPONSE_INVALID;
   if (m.includes('auxiliary input') || m.includes('added subtitle, audio')) return ErrorCode.AUXILIARY_INPUT_NOT_FOUND;

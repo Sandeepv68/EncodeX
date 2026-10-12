@@ -59,7 +59,8 @@ function deps(overrides: Partial<IntelligenceDeps> = {}): IntelligenceDeps {
       label: 'Fake',
       dataEgress: 'none',
       available: async () => true,
-      translate: async (request) => request.segments.map((segment) => ({ ...segment, text: `[${request.targetLanguage}] ${segment.text}` })),
+      translate: async (request) =>
+        request.segments.map((segment) => ({ ...segment, text: `[${request.targetLanguage}] ${segment.text}` })),
     },
     sampleFrame: vi.fn(async (file: string) => (file.includes('same') ? 'ffffffff' : '00000000')),
     ...overrides,

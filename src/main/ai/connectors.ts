@@ -101,8 +101,14 @@ async function postJson(
  * @returns {{ system: string; user: string }} The split messages.
  */
 function splitMessages(request: ConnectorRequest): { system: string; user: string } {
-  const system = request.messages.filter((message) => message.role === 'system').map((message) => message.content).join('\n\n');
-  const user = request.messages.filter((message) => message.role === 'user').map((message) => message.content).join('\n\n');
+  const system = request.messages
+    .filter((message) => message.role === 'system')
+    .map((message) => message.content)
+    .join('\n\n');
+  const user = request.messages
+    .filter((message) => message.role === 'user')
+    .map((message) => message.content)
+    .join('\n\n');
   return { system, user };
 }
 
@@ -131,10 +137,7 @@ export function createOpenAICompatibleConnector(options: {
     defaultModel: model,
     async complete(request: ConnectorRequest): Promise<ConnectorResponse> {
       const { system, user } = splitMessages(request);
-      const messages = [
-        ...(system ? [{ role: 'system', content: system }] : []),
-        { role: 'user', content: user },
-      ];
+      const messages = [...(system ? [{ role: 'system', content: system }] : []), { role: 'user', content: user }];
       const body: Record<string, unknown> = { model, messages, temperature: request.temperature ?? 0 };
       if (request.jsonMode) body.response_format = { type: 'json_object' };
       const signal = request.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
@@ -233,11 +236,7 @@ export function createGeminiConnector(options: { apiKey: string; model?: string;
  * @param {FetchLike} [fetchImpl] - Injectable fetch (tests).
  * @returns {AIConnector} The connector for the configured provider.
  */
-export function createConnectorFromSettings(
-  settings: AiServerSettings,
-  apiKey: string,
-  fetchImpl?: FetchLike,
-): AIConnector {
+export function createConnectorFromSettings(settings: AiServerSettings, apiKey: string, fetchImpl?: FetchLike): AIConnector {
   const model = effectiveModel(settings);
   switch (settings.providerId) {
     case 'anthropic':
@@ -245,7 +244,12 @@ export function createConnectorFromSettings(
     case 'gemini':
       return createGeminiConnector({ apiKey, model, ...(fetchImpl ? { fetchImpl } : {}) });
     case 'openai':
-      return createOpenAICompatibleConnector({ apiKey, model, ...(settings.baseUrl ? { baseUrl: settings.baseUrl } : {}), ...(fetchImpl ? { fetchImpl } : {}) });
+      return createOpenAICompatibleConnector({
+        apiKey,
+        model,
+        ...(settings.baseUrl ? { baseUrl: settings.baseUrl } : {}),
+        ...(fetchImpl ? { fetchImpl } : {}),
+      });
     default:
       throw createError(ErrorCode.AI_NOT_CONFIGURED, `Provider "${settings.providerId}" does not use a network connector.`);
   }

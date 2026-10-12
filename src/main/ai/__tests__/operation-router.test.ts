@@ -10,12 +10,7 @@ import { describe, it, expect } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import {
-  buildOperationActions,
-  detectOperation,
-  extractFields,
-  routeOperationDeterministic,
-} from '../operation-router';
+import { buildOperationActions, detectOperation, extractFields, routeOperationDeterministic } from '../operation-router';
 import type { ProbedEntry } from '../operation-router';
 import type { MediaFacts } from '../../../shared/ai/types';
 import type { MediaInfo, MediaStreamInfo } from '../../../shared/types';
@@ -157,7 +152,9 @@ describe('buildOperationActions', () => {
 
   it('builds a remux action', () => {
     const input = tempMedia('mp4');
-    const built = buildOperationActions('remux', { container: 'mkv' }, [entry(input, [stream({ type: 'video', codec: 'h264' })])], 0.5, ['why']);
+    const built = buildOperationActions('remux', { container: 'mkv' }, [entry(input, [stream({ type: 'video', codec: 'h264' })])], 0.5, [
+      'why',
+    ]);
     expect(built.actions).toHaveLength(1);
     expect(built.actions[0]).toMatchObject({ operation: 'remux', input, id: 'remux_0' });
     expect(built.actions[0]?.output?.endsWith('.mkv')).toBe(true);

@@ -107,11 +107,7 @@ function readNumber(fields: Record<string, unknown>, key: string): number | unde
  * @param {IntelligenceDeps} deps - The injected capabilities.
  * @returns {Promise<Transcript>} The transcript.
  */
-async function transcribeEntry(
-  entry: ProbedEntry,
-  fields: Record<string, unknown>,
-  deps: IntelligenceDeps,
-): Promise<Transcript> {
+async function transcribeEntry(entry: ProbedEntry, fields: Record<string, unknown>, deps: IntelligenceDeps): Promise<Transcript> {
   const language = typeof fields.language === 'string' ? fields.language : undefined;
   return deps.transcribe(entry.file, language ? { language } : undefined);
 }
@@ -198,8 +194,12 @@ export async function buildIntelligenceResults(
         }
         case 'chapters': {
           const options = {
-            ...(readNumber(fields, 'minChapterSeconds') !== undefined ? { minChapterSeconds: readNumber(fields, 'minChapterSeconds') } : {}),
-            ...(readNumber(fields, 'maxChapterSeconds') !== undefined ? { maxChapterSeconds: readNumber(fields, 'maxChapterSeconds') } : {}),
+            ...(readNumber(fields, 'minChapterSeconds') !== undefined
+              ? { minChapterSeconds: readNumber(fields, 'minChapterSeconds') }
+              : {}),
+            ...(readNumber(fields, 'maxChapterSeconds') !== undefined
+              ? { maxChapterSeconds: readNumber(fields, 'maxChapterSeconds') }
+              : {}),
             ...(readNumber(fields, 'maxChapters') !== undefined ? { maxChapters: readNumber(fields, 'maxChapters') } : {}),
           };
           const chapters = generateChapters(transcript, options);
@@ -207,7 +207,10 @@ export async function buildIntelligenceResults(
             operation,
             input: file,
             title: `${chapters.length} chapters`,
-            summary: chapters.map((chapter) => chapter.title).slice(0, 3).join(' · '),
+            summary: chapters
+              .map((chapter) => chapter.title)
+              .slice(0, 3)
+              .join(' · '),
             content: { chapters, youtube: chaptersToYouTube(chapters) },
           });
           break;
@@ -223,10 +226,7 @@ export async function buildIntelligenceResults(
             operation,
             input: file,
             title: search.matches.length > 0 ? `"${query}" found` : `"${query}" not found`,
-            summary:
-              search.matches.length > 0
-                ? `${search.matches.length} matching passage(s).`
-                : `No passage matched "${query}".`,
+            summary: search.matches.length > 0 ? `${search.matches.length} matching passage(s).` : `No passage matched "${query}".`,
             content: search,
           });
           break;

@@ -86,7 +86,12 @@ describe('createOpenAICompatibleConnector', () => {
 
 describe('createAnthropicConnector', () => {
   it('concatenates text blocks and sends the system prompt', async () => {
-    const fetchImpl = fetchReturning({ content: [{ type: 'text', text: 'a' }, { type: 'text', text: 'b' }] });
+    const fetchImpl = fetchReturning({
+      content: [
+        { type: 'text', text: 'a' },
+        { type: 'text', text: 'b' },
+      ],
+    });
     const connector = createAnthropicConnector({ apiKey: 'k', fetchImpl });
     const response = await connector.complete(request);
     expect(response.text).toBe('ab');
@@ -122,7 +127,9 @@ describe('createConnectorFromSettings', () => {
   });
 
   it('throws for a provider that has no network connector', () => {
-    expect(() => createConnectorFromSettings({ providerId: 'rules', model: '', key: 'k' }, 'k')).toThrow(/does not use a network connector/);
+    expect(() => createConnectorFromSettings({ providerId: 'rules', model: '', key: 'k' }, 'k')).toThrow(
+      /does not use a network connector/,
+    );
   });
 });
 

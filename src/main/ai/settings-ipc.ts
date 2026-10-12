@@ -18,7 +18,14 @@ import { LOG_FAILED_TO_PERSIST_MCP_SETTINGS } from '../../shared/log-constants';
 import { formatError } from '../../shared/errors';
 import { isAiProviderId } from '../../shared/ai/settings';
 import type { AiConnectTestResult, AiSettingsUpdate, AiSettingsView } from '../../shared/ai/settings';
-import { applyAiSettingsUpdate, decryptApiKey, isEncryptionAvailable, readAiSettings, sanitizeAiSettings, toAiSettingsView } from './settings';
+import {
+  applyAiSettingsUpdate,
+  decryptApiKey,
+  isEncryptionAvailable,
+  readAiSettings,
+  sanitizeAiSettings,
+  toAiSettingsView,
+} from './settings';
 import { createConnectorFromSettings, isRemoteProvider } from './connectors';
 
 /** Per-module logger for the AI settings IPC bridge. @const {Logger} */

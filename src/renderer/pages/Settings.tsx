@@ -505,13 +505,7 @@ function AiProviderSettingsSection() {
   return (
     <ModeSettingsSection>
       <SettingsLabel variant="body1">{t('settings.ai.title')}</SettingsLabel>
-      <Button
-        size="small"
-        startIcon={<FontAwesomeIcon icon={faGear} />}
-        onClick={toggle}
-        sx={{ mt: 1 }}
-        data-testid="settings-ai-toggle"
-      >
+      <Button size="small" startIcon={<FontAwesomeIcon icon={faGear} />} onClick={toggle} sx={{ mt: 1 }} data-testid="settings-ai-toggle">
         {t('settings.ai.configure')}
       </Button>
       {open && (

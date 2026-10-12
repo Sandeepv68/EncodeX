@@ -52,11 +52,7 @@ const PLAN_TIMEOUT_MS = 60_000;
 const FOLDER_TIMEOUT_MS = 30_000;
 
 /** The selectable operations, in menu order (auto first, then queue, then read-only). */
-const OPERATION_CHOICES: CopilotOperationChoice[] = [
-  'auto',
-  ...COPILOT_QUEUE_OPERATIONS,
-  ...COPILOT_INTELLIGENCE_OPERATIONS,
-];
+const OPERATION_CHOICES: CopilotOperationChoice[] = ['auto', ...COPILOT_QUEUE_OPERATIONS, ...COPILOT_INTELLIGENCE_OPERATIONS];
 
 /**
  * Renders the Copilot page (`/copilot`).
@@ -228,11 +224,25 @@ export default function Copilot() {
           fullWidth
           data-testid="copilot-goal"
         />
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ alignItems: { xs: 'flex-start', sm: 'center' }, flexWrap: 'wrap' }}>
-          <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faFolderOpen} />} onClick={chooseFolder} data-testid="copilot-choose-folder">
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1}
+          sx={{ alignItems: { xs: 'flex-start', sm: 'center' }, flexWrap: 'wrap' }}
+        >
+          <Button
+            variant="outlined"
+            startIcon={<FontAwesomeIcon icon={faFolderOpen} />}
+            onClick={chooseFolder}
+            data-testid="copilot-choose-folder"
+          >
             {t('copilot.chooseFolder')}
           </Button>
-          <Button variant="outlined" startIcon={<FontAwesomeIcon icon={faFileImport} />} onClick={chooseFiles} data-testid="copilot-choose-files">
+          <Button
+            variant="outlined"
+            startIcon={<FontAwesomeIcon icon={faFileImport} />}
+            onClick={chooseFiles}
+            data-testid="copilot-choose-files"
+          >
             {t('copilot.chooseFiles')}
           </Button>
           <TextField

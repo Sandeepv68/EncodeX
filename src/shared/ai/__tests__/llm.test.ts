@@ -6,13 +6,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import {
-  OPERATION_IDS,
-  buildOperationPrompt,
-  createLLMOperationRouter,
-  isCopilotOperation,
-  parseOperationPlan,
-} from '../llm';
+import { OPERATION_IDS, buildOperationPrompt, createLLMOperationRouter, isCopilotOperation, parseOperationPlan } from '../llm';
 import type { OperationRoutingRequest } from '../llm';
 import type { AIConnector, ConnectorRequest } from '../connector';
 import type { MediaFacts } from '../types';

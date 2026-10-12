@@ -90,14 +90,24 @@ const CONTAINERS = ['mp4', 'm4v', 'mkv', 'mov', 'webm', 'avi', 'ts'];
  */
 export function detectOperation(goal: string): CopilotOperation {
   const text = ` ${String(goal ?? '').toLowerCase()} `;
-  if (/\b(remux|repackage|repack|container change|change (the )?container|no re-?encode|without re-?encoding|stream copy)\b/.test(text)) return 'remux';
+  if (/\b(remux|repackage|repack|container change|change (the )?container|no re-?encode|without re-?encoding|stream copy)\b/.test(text))
+    return 'remux';
   if (/\b(demux|extract (all )?streams?|separate streams?|split (in)?to streams?)\b/.test(text)) return 'demux';
-  if (/\b(extract|rip|strip|pull).{0,24}(audio|sound|music|track)\b/.test(text) || /\b(audio only|mp3 only)\b/.test(text)) return 'extract_audio';
-  if (/\b(compress|reduce|shrink|resize|convert).{0,24}(image|photo|picture|png|jpe?g|webp|tiff|bmp)\b/.test(text) || /\b(image|photo)\b.*\b(compress|smaller|reduce)\b/.test(text)) return 'compress_image';
+  if (/\b(extract|rip|strip|pull).{0,24}(audio|sound|music|track)\b/.test(text) || /\b(audio only|mp3 only)\b/.test(text))
+    return 'extract_audio';
+  if (
+    /\b(compress|reduce|shrink|resize|convert).{0,24}(image|photo|picture|png|jpe?g|webp|tiff|bmp)\b/.test(text) ||
+    /\b(image|photo)\b.*\b(compress|smaller|reduce)\b/.test(text)
+  )
+    return 'compress_image';
   if (/\b(cut|trim|clip|slice|crop in time)\b/.test(text) || /\bfrom\b.+\bto\b/.test(text)) return 'cut';
   // Media-intelligence rules run before the generic `analyze` rule so a goal
   // that names a specific intelligence task (summarize/transcribe/...) wins.
-  if (/\b(transcribe|transcription|captions?|speech[- ]to[- ]text)\b/.test(text) || /\bsubtitles?\b.{0,24}\b(speech|audio|speech-to-text)\b/.test(text)) return 'transcribe';
+  if (
+    /\b(transcribe|transcription|captions?|speech[- ]to[- ]text)\b/.test(text) ||
+    /\bsubtitles?\b.{0,24}\b(speech|audio|speech-to-text)\b/.test(text)
+  )
+    return 'transcribe';
   if (/\b(summar(?:y|ize|ise)|tl;?dr|recap|key ?points?|takeaways?)\b/.test(text)) return 'summarize';
   if (/\b(chapters?|chapter markers?|table of contents)\b/.test(text)) return 'chapters';
   if (/\b(find|search|locate)\b.{0,32}\b(says?|said|mentions?|talks? about|passage|quote|scene)\b/.test(text)) return 'search_transcript';

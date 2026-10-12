@@ -16,12 +16,7 @@ import * as path from 'path';
 import { safeStorage } from 'electron';
 import { Logger } from '../../shared/logger';
 import { LOG_FAILED_TO_PERSIST_MCP_SETTINGS, LOG_FAILED_TO_READ_STORED_MCP_SETTINGS } from '../../shared/log-constants';
-import {
-  AI_DEFAULT_MODELS,
-  defaultAiSettings,
-  sanitizeAiSettings,
-  toAiSettingsView,
-} from '../../shared/ai/settings';
+import { AI_DEFAULT_MODELS, defaultAiSettings, sanitizeAiSettings, toAiSettingsView } from '../../shared/ai/settings';
 import type { AiServerSettings, AiSettingsUpdate, AiSettingsView } from '../../shared/ai/settings';
 
 /** Per-module logger for AI settings. @const {Logger} */

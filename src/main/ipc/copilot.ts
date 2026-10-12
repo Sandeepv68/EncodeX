@@ -309,7 +309,16 @@ export function registerCopilotHandlers(): void {
         notes.push('Media-intelligence results are read-only and were not added to the queue.');
       }
       notes.push(`Operation chosen by "${routed.providerId}".`);
-      log.info(LOG_COPILOT_PLAN_COMPLETED, goal, built.actions.length, 'actions,', built.results.length, 'results,', built.skips.length, 'skips');
+      log.info(
+        LOG_COPILOT_PLAN_COMPLETED,
+        goal,
+        built.actions.length,
+        'actions,',
+        built.results.length,
+        'results,',
+        built.skips.length,
+        'skips',
+      );
       return {
         goal,
         operation: routed.operation,

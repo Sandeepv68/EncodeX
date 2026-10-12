@@ -201,7 +201,11 @@ const ERROR_HELP: Record<ErrorCodeType, { title: string; causes: string[] }> = {
   },
   AI_CONNECTOR_FAILED: {
     title: 'Could not reach the AI provider',
-    causes: ['The network is offline or the endpoint is wrong.', 'The API key is invalid or expired.', 'The model name is not available to this key.'],
+    causes: [
+      'The network is offline or the endpoint is wrong.',
+      'The API key is invalid or expired.',
+      'The model name is not available to this key.',
+    ],
   },
   AI_RESPONSE_INVALID: {
     title: 'The AI reply was unusable',

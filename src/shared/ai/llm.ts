@@ -26,18 +26,33 @@ import { extractJsonObject } from './provider';
  * @const {Record<CopilotOperation, { summary: string; fields: string[] }>}
  */
 export const OPERATION_VOCABULARY: Record<CopilotOperation, { summary: string; fields: string[] }> = {
-  convert: { summary: 'Transcode/re-encode media toward a goal (profiles, codecs, resolution).', fields: ['videoCodec', 'audioCodec', 'videoBitrate', 'audioBitrate', 'scale', 'pixelFormat', 'copy'] },
+  convert: {
+    summary: 'Transcode/re-encode media toward a goal (profiles, codecs, resolution).',
+    fields: ['videoCodec', 'audioCodec', 'videoBitrate', 'audioBitrate', 'scale', 'pixelFormat', 'copy'],
+  },
   remux: { summary: 'Losslessly repackage into another container (no re-encode).', fields: ['container'] },
-  demux: { summary: 'Extract individual streams (video/audio/subtitles) to separate files.', fields: ['video', 'audio', 'subtitles', 'all'] },
+  demux: {
+    summary: 'Extract individual streams (video/audio/subtitles) to separate files.',
+    fields: ['video', 'audio', 'subtitles', 'all'],
+  },
   extract_audio: { summary: 'Extract the audio track to a standalone audio file.', fields: ['audioCodec', 'bitrate'] },
   compress_image: { summary: 'Compress or convert a still image.', fields: ['format', 'quality', 'scale'] },
   cut: { summary: 'Trim/cut a clip to a time range (lossless by default).', fields: ['startTime', 'endTime', 'duration', 'copy'] },
   analyze: { summary: 'Inspect a file and report facts/findings (read-only).', fields: [] },
   transcribe: { summary: 'Transcribe speech to timed subtitles with a local STT engine (read-only).', fields: ['language', 'format'] },
   summarize: { summary: 'Summarize the spoken content and list topics (read-only).', fields: ['maxSentences', 'maxTopics'] },
-  chapters: { summary: 'Generate chapter markers and YouTube-style timestamps from speech (read-only).', fields: ['minChapterSeconds', 'maxChapterSeconds', 'maxChapters'] },
-  search_transcript: { summary: 'Find a spoken passage and propose a clip around it (read-only).', fields: ['query', 'maxMatches', 'context'] },
-  translate: { summary: 'Translate subtitles into another language, timing preserved (read-only).', fields: ['targetLanguage', 'sourceLanguage', 'format'] },
+  chapters: {
+    summary: 'Generate chapter markers and YouTube-style timestamps from speech (read-only).',
+    fields: ['minChapterSeconds', 'maxChapterSeconds', 'maxChapters'],
+  },
+  search_transcript: {
+    summary: 'Find a spoken passage and propose a clip around it (read-only).',
+    fields: ['query', 'maxMatches', 'context'],
+  },
+  translate: {
+    summary: 'Translate subtitles into another language, timing preserved (read-only).',
+    fields: ['targetLanguage', 'sourceLanguage', 'format'],
+  },
   find_similar: { summary: 'Detect duplicate and near-duplicate media across the inputs (read-only).', fields: ['method', 'threshold'] },
 };
 
@@ -155,7 +170,8 @@ export function parseOperationPlan(text: string, providerId: AIProviderId): Rout
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return undefined;
   const record = parsed as Record<string, unknown>;
   if (!isCopilotOperation(record.operation)) return undefined;
-  const fields = record.fields && typeof record.fields === 'object' && !Array.isArray(record.fields) ? (record.fields as Record<string, unknown>) : {};
+  const fields =
+    record.fields && typeof record.fields === 'object' && !Array.isArray(record.fields) ? (record.fields as Record<string, unknown>) : {};
   const rationale = Array.isArray(record.rationale)
     ? record.rationale.filter((line): line is string => typeof line === 'string')
     : ['Operation chosen by the AI provider.'];
