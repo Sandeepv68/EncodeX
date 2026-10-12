@@ -160,14 +160,15 @@ E2E/scorecard/SLSA exercise only on GitHub (first Actions run pending; authorita
 | 2026-09-20 | CP8: `dist-<os>` uploaded for all OS; e2e matrix ubuntu+windows | `` `done` `` |
 | 2026-09-20 | CP9: `nightly.yml` (scheduled heavy suite) | `` `done` `` |
 | 2026-09-20 | CP10: `codecov.yml` PR-comment config; corrected stale `audit` comment | `` `done` `` |
-| 2026-09-20 | CP11: verification (see §6) — all green | `` `done` `` |
+ | 2026-09-20 | CP11: verification (see §6) — all green | `` `done` `` |
+ | 2026-10-12 | N2: `CODECOV_TOKEN` repo secret wired via `gh`; `test-unit` Codecov step now passes `token:` and gates on job-level `env.CODECOV_TOKEN` (a step `if` cannot read its own `env`, and `secrets` is disallowed in `if`) | `` `done` `` |
 
 ## 8. Open items / follow-ups (NOT part of this plan)
 
 | ID | Item | Owner |
 |----|------|-------|
 | N1 | Seed a `linux-x64` perf baseline from an Actions runner (`workflow_dispatch` + `npm run perf:baseline`, commit result) so the CP3 gate is armed on CI | after first green run |
-| N2 | Wire `CODECOV_TOKEN` repo secret (currently absent → Codecov steps are no-ops despite CP10 config) | maintainer |
+| N2 | ~Wire `CODECOV_TOKEN` repo secret~ **done** (2026-10-12): secret wired; `test-unit` step passes `token:` and gates on job-level `env.CODECOV_TOKEN` (fork/act runs self-skip) | maintainer |
 | N3 | Code signing (Windows cert + macOS notarization) remains O3 from prior plan — release stays `draft` until signing lands | future PR |
 | N4 | Re-check `npm audit --audit-level=high`: electron-builder `26.x` (O1) has landed but exit is still 1; when it exits 0, flip `audit` job to blocking (CP in prior plan O1) | ~superseded~ (2026-10-07): `npm audit` exit is still 1 on a larger known set than the note assumed; the Phase-10 blocking audit gate (`scripts/audit-gate.mjs`) fails on any HIGH/CRITICAL advisory NOT on the `scripts/audit-allowlist.json` exception list |
 | N5 | Consider GitHub Actions merge queue on `main` once `main` branch-protection rules are enforced | future PR |
