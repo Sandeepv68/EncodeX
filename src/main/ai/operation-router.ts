@@ -210,7 +210,7 @@ export function extractFields(operation: CopilotOperation, goal: string, inputEx
           break;
         }
       }
-      const quality = /\b(?:quality|q)\s*=?\s*(\d{1,2})\b/.exec(lower);
+      const quality = /\b(?:quality|q)\s*(?:=\s*)?(\d{1,2})\b/.exec(lower);
       if (quality) fields.quality = Number(quality[1]);
       return fields;
     }
