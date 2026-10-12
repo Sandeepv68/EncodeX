@@ -482,4 +482,52 @@ describe('Settings', () => {
     const status = await screen.findByTestId('settings-ai-status');
     expect(status).toHaveTextContent('Connected (42 ms)');
   });
+
+  it('edits the AI model and API key fields', async () => {
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    const model = screen.getByRole('textbox', { name: 'settings.ai.model' });
+    fireEvent.change(model, { target: { value: 'gpt-4o-mini' } });
+    expect(model).toHaveValue('gpt-4o-mini');
+    const key = screen.getByLabelText('settings.ai.apiKey') as HTMLInputElement;
+    fireEvent.change(key, { target: { value: 'sk-1' } });
+    expect(key).toHaveValue('sk-1');
+  });
+
+  it('shows a save error when the bridge returns an unusable view', async () => {
+    vi.mocked(window.electronAPI.aiSetSettings).mockResolvedValue({} as never);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-save'));
+    expect(await screen.findByTestId('settings-ai-error')).toHaveTextContent('settings.ai.saveFailed');
+  });
+
+  it('surfaces a save rejection as an error', async () => {
+    vi.mocked(window.electronAPI.aiSetSettings).mockRejectedValue(new Error('boom'));
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-save'));
+    expect(await screen.findByTestId('settings-ai-error')).toBeInTheDocument();
+  });
+
+  it('reports a failed connection test with a generic status', async () => {
+    vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: false } as never);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-test'));
+    expect(await screen.findByTestId('settings-ai-status')).toHaveTextContent('settings.ai.testFailed');
+  });
+
+  it('surfaces a connection-test rejection as an error', async () => {
+    vi.mocked(window.electronAPI.aiConnectTest).mockRejectedValue(new Error('boom'));
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-test'));
+    expect(await screen.findByTestId('settings-ai-error')).toBeInTheDocument();
+  });
 });

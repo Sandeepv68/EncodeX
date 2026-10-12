@@ -125,6 +125,11 @@ describe('extractFields', () => {
   it('returns no fields for find_similar', () => {
     expect(extractFields('find_similar', 'find duplicates')).toEqual({});
   });
+
+  it('accepts a bare two-letter language code and ignores unknown words', () => {
+    expect(extractFields('transcribe', 'transcribe in xy')).toEqual({ language: 'xy' });
+    expect(extractFields('transcribe', 'transcribe in zzz')).toEqual({});
+  });
 });
 
 describe('routeOperationDeterministic', () => {
@@ -174,5 +179,45 @@ describe('buildOperationActions', () => {
     expect(built.actions).toHaveLength(0);
     expect(built.skips).toHaveLength(1);
     expect(built.skips[0].reason).toContain('not available');
+  });
+
+  it('builds an extract_audio action', () => {
+    const input = tempMedia('mp4');
+    const built = buildOperationActions('extract_audio', { audioCodec: 'libmp3lame' }, [entry(input, [stream({ type: 'audio' })])], 0.5, [
+      'why',
+    ]);
+    expect(built.actions).toHaveLength(1);
+    expect(built.actions[0]).toMatchObject({ operation: 'extract_audio', input, id: 'extract_audio_0' });
+  });
+
+  it('builds a compress_image action', () => {
+    const input = tempMedia('png');
+    const built = buildOperationActions(
+      'compress_image',
+      { format: 'webp', quality: 70 },
+      [entry(input, [stream({ type: 'video' })])],
+      0.5,
+      ['why'],
+    );
+    expect(built.actions).toHaveLength(1);
+    expect(built.actions[0]).toMatchObject({ operation: 'compress_image', input, id: 'compress_image_0' });
+  });
+
+  it('builds a cut action', () => {
+    const input = tempMedia('mp4');
+    const built = buildOperationActions('cut', { startTime: '00:10', endTime: '00:20' }, [entry(input, [stream({ type: 'video' })])], 0.5, [
+      'why',
+    ]);
+    expect(built.actions).toHaveLength(1);
+    expect(built.actions[0]).toMatchObject({ operation: 'cut', input, id: 'cut_0' });
+  });
+
+  it('isolates a builder failure into a skip', () => {
+    const input = tempMedia('mp4');
+    const built = buildOperationActions('demux', {}, [entry(input, [])], 0.5, ['why']);
+    expect(built.actions).toHaveLength(0);
+    expect(built.skips).toHaveLength(1);
+    expect(built.skips[0].input).toBe(input);
+    expect(built.skips[0].reason).toContain('No');
   });
 });

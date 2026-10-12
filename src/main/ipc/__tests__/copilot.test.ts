@@ -63,6 +63,18 @@ const {
 vi.mock('electron', () => ({ ipcMain: ipcMainMock }));
 vi.mock('../../transcoders/factory', () => transcoderFactoryMock);
 vi.mock('../../capabilities', () => capabilitiesMock);
+// The provider resolver and the intelligence builder are stubbed so the LLM
+// routing branch and the media-intelligence note can be exercised without a
+// configured provider or a real whisper/ffmpeg engine.
+const { providerRegistryMock, intelligenceMock } = vi.hoisted(() => ({
+  providerRegistryMock: { resolveLLMOperationRouter: vi.fn() },
+  intelligenceMock: { buildIntelligenceResults: vi.fn() },
+}));
+vi.mock('../../ai/provider-registry', () => providerRegistryMock);
+vi.mock('../../ai/intelligence', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../ai/intelligence')>();
+  return { ...actual, buildIntelligenceResults: intelligenceMock.buildIntelligenceResults };
+});
 // The happy path still runs through the real option builder; the mock only
 // exists so a single test can force one action to fail option conversion and
 // exercise the pipeline's per-action drop-and-record path.
@@ -142,6 +154,8 @@ describe('registerCopilotHandlers', () => {
       audioEncoders: ['aac', 'libmp3lame', 'opus'],
       hwaccels: ['none', 'vaapi', 'nvenc'],
     });
+    providerRegistryMock.resolveLLMOperationRouter.mockReturnValue(null);
+    intelligenceMock.buildIntelligenceResults.mockResolvedValue({ actions: [], results: [], skips: [] });
     transcoderFactoryMock.createTranscoder.mockImplementation(() => ({
       getInfo: (input: string) => Promise.resolve(videoInfo(input)),
     }));
@@ -273,5 +287,46 @@ describe('registerCopilotHandlers', () => {
     const result = await plan({ goal: 'compress for web', inputs: [scanDir] });
     expect(result.actions).toHaveLength(1);
     expect(result.skips.some((s) => s.reason.includes('could not be turned into conversion options'))).toBe(true);
+  });
+
+  it('routes through the configured AI provider when a router is available', async () => {
+    providerRegistryMock.resolveLLMOperationRouter.mockReturnValue(
+      vi.fn().mockResolvedValue({
+        operation: 'analyze',
+        fields: {},
+        rationale: ['chosen by the model'],
+        confidence: 0.9,
+        providerId: 'openai',
+      }),
+    );
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: 'do something vague', inputs: [file] });
+    expect(result.operation).toBe('analyze');
+    expect(result.providerId).toBe('openai');
+    expect(result.results).toHaveLength(1);
+  });
+
+  it('falls back to the deterministic router when the provider yields nothing', async () => {
+    providerRegistryMock.resolveLLMOperationRouter.mockReturnValue(vi.fn().mockResolvedValue(undefined));
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: 'remux to mkv', inputs: [file] });
+    expect(result.operation).toBe('remux');
+    expect(result.providerId).toBe('rules');
+  });
+
+  it('forwards an explicit target language and flags intelligence results as read-only', async () => {
+    intelligenceMock.buildIntelligenceResults.mockResolvedValue({
+      actions: [],
+      results: [{ operation: 'translate', input: '/in/one.mp4', title: 'ES subtitles', summary: 'translated', content: {} }],
+      skips: [],
+    });
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: 'translate', inputs: [file], operation: 'translate', targetLanguage: 'es' });
+    expect(intelligenceMock.buildIntelligenceResults).toHaveBeenCalledWith(
+      'translate',
+      expect.objectContaining({ targetLanguage: 'es' }),
+      expect.anything(),
+    );
+    expect(result.notes).toContain('Media-intelligence results are read-only and were not added to the queue.');
   });
 });

@@ -8,12 +8,16 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { buildIntelligenceResults, isIntelligenceOperation, INTELLIGENCE_OPERATIONS } from '../intelligence';
+import { buildIntelligenceResults, defaultIntelligenceDeps, isIntelligenceOperation, INTELLIGENCE_OPERATIONS } from '../intelligence';
 import type { IntelligenceDeps } from '../intelligence';
 import type { ProbedEntry } from '../operation-router';
 import type { MediaFacts } from '../../../shared/ai/types';
 import type { Transcript } from '../../../shared/ai/transcript';
 import type { MediaInfo } from '../../../shared/types';
+
+const transcribeMock = vi.hoisted(() => vi.fn(async () => ({ language: 'en', durationSeconds: 1, engine: 'fake', segments: [] })));
+
+vi.mock('../../../mcp/stt-engine', () => ({ createWhisperCliEngine: () => ({ transcribe: transcribeMock }) }));
 
 /** Reduced facts for a probed file. */
 function facts(file: string, overrides: Partial<MediaFacts> = {}): MediaFacts {
@@ -163,5 +167,71 @@ describe('buildIntelligenceResults', () => {
     );
     expect(built.results).toHaveLength(1);
     expect(built.results[0].title).toContain('No duplicate');
+  });
+
+  it('isolates a similarity failure into a single skip', async () => {
+    const failing = deps({
+      sampleFrame: vi.fn(async () => {
+        throw new Error('no frame sampler');
+      }),
+    });
+    const built = await buildIntelligenceResults('find_similar', {}, [entry('/a/clip.mp4')], failing);
+    expect(built.results).toHaveLength(0);
+    expect(built.skips).toHaveLength(1);
+    expect(built.skips[0].input).toBe('/a/clip.mp4');
+  });
+
+  it('skips an operation that has no intelligence handler', async () => {
+    const built = await buildIntelligenceResults('convert', {}, [entry('/a/clip.mp4')], deps());
+    expect(built.results).toHaveLength(0);
+    expect(built.skips).toHaveLength(1);
+    expect(built.skips[0].reason).toContain('not available');
+  });
+
+  it('honours the optional summarize/chapters/search/format fields', async () => {
+    const summary = await buildIntelligenceResults('summarize', { maxSentences: 2, maxTopics: 3 }, [entry('/a/clip.mp4')], deps());
+    expect(summary.results).toHaveLength(1);
+
+    const chapters = await buildIntelligenceResults(
+      'chapters',
+      { minChapterSeconds: 2, maxChapterSeconds: 120, maxChapters: 4 },
+      [entry('/a/clip.mp4')],
+      deps(),
+    );
+    expect(chapters.results).toHaveLength(1);
+
+    const search = await buildIntelligenceResults(
+      'search_transcript',
+      { query: ' nothing here ', maxMatches: 2, context: 1 },
+      [entry('/a/clip.mp4')],
+      deps(),
+    );
+    expect(search.results).toHaveLength(1);
+
+    const vtt = await buildIntelligenceResults('transcribe', { format: 'vtt' }, [entry('/a/clip.mp4')], deps());
+    expect((vtt.results[0].content as { format: string }).format).toBe('vtt');
+  });
+
+  it('translates when the transcript carries no source language', async () => {
+    const silentDeps = deps({
+      transcribe: vi.fn(async (file: string) => ({ ...transcriptFor(file), language: undefined })),
+    });
+    const built = await buildIntelligenceResults('translate', { targetLanguage: 'de' }, [entry('/a/clip.mp4')], silentDeps);
+    expect(built.results).toHaveLength(1);
+    expect((built.results[0].content as { segments: unknown[] }).segments).toHaveLength(3);
+  });
+});
+
+describe('defaultIntelligenceDeps', () => {
+  it('constructs the real engine adapters and forwards transcription', async () => {
+    const deps = defaultIntelligenceDeps();
+    expect(typeof deps.transcribe).toBe('function');
+    expect(typeof deps.sampleFrame).toBe('function');
+    expect(deps.translate).toBeDefined();
+
+    await deps.transcribe('/a/clip.mp4');
+    expect(transcribeMock).toHaveBeenCalledWith('/a/clip.mp4', {});
+    await deps.transcribe('/a/clip.mp4', { language: 'en' });
+    expect(transcribeMock).toHaveBeenLastCalledWith('/a/clip.mp4', { language: 'en' });
   });
 });

@@ -10,6 +10,12 @@ import { OPERATION_IDS, buildOperationPrompt, createLLMOperationRouter, isCopilo
 import type { OperationRoutingRequest } from '../llm';
 import type { AIConnector, ConnectorRequest } from '../connector';
 import type { MediaFacts } from '../types';
+import type { ConversionProfile } from '../../types';
+
+/** A minimal conversion profile. */
+function profile(id: string): ConversionProfile {
+  return { id, name: id, category: 'video', container: 'mp4', videoCodec: 'libx264', audioCodec: 'aac', builtin: false };
+}
 
 /** A minimal video facts object. */
 function videoFacts(file: string): MediaFacts {
@@ -63,6 +69,17 @@ describe('buildOperationPrompt', () => {
     expect(prompt).toContain('one.mp4');
     expect(prompt).not.toContain('/in/one.mp4');
   });
+
+  it('renders an explicit empty file list when no files are given', () => {
+    const prompt = buildOperationPrompt({ ...request('anything'), files: [] });
+    expect(prompt).toContain('- (none)');
+    expect(prompt).toContain('Profiles: none.');
+  });
+
+  it('lists profile ids when profiles are supplied', () => {
+    const prompt = buildOperationPrompt({ ...request('anything'), files: [], profiles: [profile('web'), profile('tv')] });
+    expect(prompt).toContain('Profiles: web, tv.');
+  });
 });
 
 describe('parseOperationPlan', () => {
@@ -87,6 +104,10 @@ describe('parseOperationPlan', () => {
     const routed = parseOperationPlan('{"operation":"cut"}', 'rules');
     expect(routed?.confidence).toBe(0.5);
     expect(routed?.rationale.length).toBeGreaterThan(0);
+  });
+
+  it('rejects an object-shaped reply that is not valid JSON', () => {
+    expect(parseOperationPlan('{not valid json}', 'openai')).toBeUndefined();
   });
 });
 

@@ -150,6 +150,21 @@ describe('Copilot page', () => {
     expect(window.electronAPI.queueAdd).not.toHaveBeenCalled();
   });
 
+  it('lists read-only results when the plan reports them', async () => {
+    vi.mocked(window.electronAPI.copilotPlan).mockResolvedValue({
+      ...PLAN_FIXTURE,
+      results: [{ operation: 'analyze', input: '/in/one.mp4', summary: 'H.264, 1080p' }],
+    });
+    renderPage('Copilot');
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'analyze this' } });
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+    expect(screen.getByTestId('copilot-result')).toBeDefined();
+    expect(screen.getByText('H.264, 1080p')).toBeDefined();
+  });
+
   it('adds every planned action to the Batch Queue via queueAdd', async () => {
     renderPage('Copilot');
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
@@ -261,6 +276,42 @@ describe('Copilot page', () => {
     await waitFor(() =>
       expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(
         expect.objectContaining({ operation: 'search_transcript', query: 'pricing' }),
+      ),
+    );
+  });
+
+  it('adds files chosen through the file dialog to the inputs', async () => {
+    vi.mocked(window.electronAPI.selectFiles).mockResolvedValue(['/in/one.mp4', '/in/two.mkv']);
+    renderPage('Copilot');
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
+    fireEvent.click(screen.getByTestId('copilot-choose-files'));
+    await waitFor(() => expect(window.electronAPI.selectFiles).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await waitFor(() =>
+      expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(expect.objectContaining({ inputs: ['/in/one.mp4', '/in/two.mkv'] })),
+    );
+  });
+
+  it('shows a notice when the file dialog returns no files', async () => {
+    vi.mocked(window.electronAPI.selectFiles).mockResolvedValue([]);
+    renderPage('Copilot');
+    fireEvent.click(screen.getByTestId('copilot-choose-files'));
+    expect(await screen.findByTestId('copilot-notice')).toBeInTheDocument();
+    expect(window.electronAPI.copilotPlan).not.toHaveBeenCalled();
+  });
+
+  it('passes a target language when the translate operation is chosen', async () => {
+    renderPage('Copilot');
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'translate the subtitles' } });
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'copilot.operationLabel' }));
+    fireEvent.click(await screen.findByText('copilot.op.translate'));
+    fireEvent.change(await screen.findByRole('textbox', { name: 'copilot.targetLanguageLabel' }), { target: { value: 'es' } });
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await waitFor(() =>
+      expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(
+        expect.objectContaining({ operation: 'translate', targetLanguage: 'es' }),
       ),
     );
   });
