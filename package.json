@@ -128,6 +128,7 @@
     "zustand": "^5.0.0"
   },
   "devDependencies": {
+    "@codecov/vite-plugin": "^2.0.1",
     "@sentry/vite-plugin": "^5.4.0",
     "@stryker-mutator/core": "^10.0.0",
     "@stryker-mutator/vitest-runner": "^10.0.0",
