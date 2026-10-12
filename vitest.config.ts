@@ -11,6 +11,8 @@ export default defineConfig({
   test: {
     globals: true,
     testTimeout: 30000,
+    reporters: ['default', 'junit'],
+    outputFile: { junit: './junit.xml' },
     env: {
       LOG_LEVEL: 'WARN',
       ENCODEX_STRICT_TESTS: process.env.ENCODEX_STRICT_TESTS ?? '1',

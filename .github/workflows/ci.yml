@@ -280,6 +280,14 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/lcov.info
           fail_ci_if_error: false
+      - name: Upload test results to Codecov
+        # Test Analytics: feeds Vitest's junit.xml (builtin junit reporter in
+        # vitest.config.ts) to Codecov for flakiness/failure-rate insights.
+        if: always() && env.CODECOV_TOKEN != ''
+        uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: junit.xml
 
   test-integration:
     name: Test - Integration Tests
