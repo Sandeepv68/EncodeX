@@ -268,7 +268,9 @@ jobs:
           path: coverage/
           if-no-files-found: warn
       - name: Upload coverage to Codecov
-        if: env.CODECOV_TOKEN != ''
+        # `always()` so a flaky unit test (or any earlier failure) still uploads
+        # the coverage vitest already wrote, matching the artifact step above.
+        if: always() && env.CODECOV_TOKEN != ''
         uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
