@@ -1,6 +1,8 @@
 node_modules/
 dist/
 coverage/
+# JUnit report for Codecov Test Analytics; emitted by the junit vitest reporter.
+junit.xml
 # Integration-tier coverage output; see vitest.integration.config.ts.
 coverage-integration/
 release/
