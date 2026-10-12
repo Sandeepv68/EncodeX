@@ -180,28 +180,24 @@ Object.defineProperty(globalThis, 'electronAPI', {
     analyticsSetEnabled: vi.fn().mockResolvedValue({ enabled: true, backend: 'noop' }),
     mcpGetSettings: vi.fn().mockResolvedValue({ enabled: false, port: 8765, token: '' }),
     mcpSetSettings: vi.fn().mockImplementation((settings) => Promise.resolve(settings)),
-    aiGetSettings: vi
-      .fn()
-      .mockResolvedValue({
-        providerId: 'rules',
-        model: '',
+    aiGetSettings: vi.fn().mockResolvedValue({
+      providerId: 'rules',
+      model: '',
+      hasKey: false,
+      keyHint: '',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+    }),
+    aiSetSettings: vi.fn().mockImplementation((update) =>
+      Promise.resolve({
+        providerId: update?.providerId ?? 'rules',
+        model: update?.model ?? '',
         hasKey: false,
         keyHint: '',
         storedInsecurely: false,
         encryptionAvailable: true,
       }),
-    aiSetSettings: vi
-      .fn()
-      .mockImplementation((update) =>
-        Promise.resolve({
-          providerId: update?.providerId ?? 'rules',
-          model: update?.model ?? '',
-          hasKey: false,
-          keyHint: '',
-          storedInsecurely: false,
-          encryptionAvailable: true,
-        }),
-      ),
+    ),
     aiConnectTest: vi.fn().mockResolvedValue({ ok: false, message: '' }),
     onWindowMaximizedChange: vi.fn(() => vi.fn()),
     onConversionProgress: vi.fn(() => vi.fn()),
