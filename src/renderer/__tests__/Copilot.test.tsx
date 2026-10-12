@@ -14,9 +14,11 @@ import type { CopilotPlan } from '../../shared/copilot';
 
 const PLAN_FIXTURE: CopilotPlan = {
   goal: 'compress for web',
+  operation: 'convert',
   actions: [
     {
       id: 'convert_0',
+      operation: 'convert',
       input: '/in/one.mp4',
       output: '/in/one_optimized.mp4',
       confidence: 0.8,
@@ -27,6 +29,7 @@ const PLAN_FIXTURE: CopilotPlan = {
     },
     {
       id: 'convert_1',
+      operation: 'convert',
       input: '/in/two.mkv',
       output: '/in/two_optimized.mkv',
       confidence: 0.7,
@@ -36,10 +39,12 @@ const PLAN_FIXTURE: CopilotPlan = {
       options: { videoCodec: 'libx265' },
     },
   ],
+  results: [],
   skips: [{ input: '/in/broken.mov', reason: 'read failed' }],
   rationale: ['Planned 2 conversion(s) toward "compress for web".'],
   notes: [],
   plan: { valid: true, order: ['convert_0', 'convert_1'], steps: [], issues: [], summary: '2 steps' },
+  providerId: 'rules',
   isEstimated: true,
 };
 
@@ -242,5 +247,27 @@ describe('Copilot page', () => {
     vi.mocked(window.electronAPI.queueAdd).mockRejectedValue(new Error('boom'));
     fireEvent.click(screen.getByTestId('copilot-add-to-queue'));
     expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.errorEnqueue');
+  });
+
+  it('passes a search phrase when the transcript-search operation is chosen', async () => {
+    renderPage('Copilot');
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'find the pricing bit' } });
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'copilot.operationLabel' }));
+    fireEvent.click(await screen.findByText('copilot.op.search_transcript'));
+    fireEvent.change(await screen.findByRole('textbox', { name: 'copilot.queryLabel' }), { target: { value: 'pricing' } });
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await waitFor(() =>
+      expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(
+        expect.objectContaining({ operation: 'search_transcript', query: 'pricing' }),
+      ),
+    );
+  });
+
+  it('links to Settings for AI provider configuration without calling the bridge', () => {
+    renderPage('Copilot');
+    fireEvent.click(screen.getByTestId('copilot-ai-settings'));
+    expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
   });
 });

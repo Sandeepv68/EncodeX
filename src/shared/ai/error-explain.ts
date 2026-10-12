@@ -195,6 +195,18 @@ const ERROR_HELP: Record<ErrorCodeType, { title: string; causes: string[] }> = {
     title: 'Translation unavailable',
     causes: ['No local model runtime is configured (ENCODEX_LOCAL_MODEL_URL).', 'The provider returned no usable translation.'],
   },
+  AI_NOT_CONFIGURED: {
+    title: 'No AI provider configured',
+    causes: ['No provider or API key is set in Settings.', 'The selected provider does not use a network connector.'],
+  },
+  AI_CONNECTOR_FAILED: {
+    title: 'Could not reach the AI provider',
+    causes: ['The network is offline or the endpoint is wrong.', 'The API key is invalid or expired.', 'The model name is not available to this key.'],
+  },
+  AI_RESPONSE_INVALID: {
+    title: 'The AI reply was unusable',
+    causes: ['The model did not return the expected JSON shape.', 'The reply was empty or truncated.'],
+  },
   UNKNOWN: {
     title: 'Unexpected error',
     causes: ['An unrecognized failure occurred.'],

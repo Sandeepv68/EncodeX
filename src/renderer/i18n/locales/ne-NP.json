@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "सफ्टवेयर",
     "hardwareAccelerationHint": "भिडियो एन्कोडिङ र डिकोडिङका लागि तपाईंको GPU (NVIDIA NVENC, Intel QSV, AMD AMF) प्रयोग गर्छ। सफ्टवेयर-मात्र एन्कोडिङका लागि बन्द गर्नुहोस्।",
     "hwaccelModeHint": "स्वचालित: GPU ले डिकोडिङ र एन्कोडिङ दुवै गर्छ (छिटो, सधैं अनुकूल नहुने)। केवल एन्कोड: GPU ले एन्कोड गर्छ र CPU ले डिकोड गर्छ (सबैभन्दा सुरक्षित)।",
-    "encoderTypeHint": "भिडियो कोडेक सूची फिल्टर गर्छ। स्वचालितले सबै उपलब्ध एन्कोडरहरू देखाउँछ, हार्डवेयरले GPU एन्कोडरहरू मात्र, सफ्टवेयरले CPU एन्कोडरहरू मात्र।"
+    "encoderTypeHint": "भिडियो कोडेक सूची फिल्टर गर्छ। स्वचालितले सबै उपलब्ध एन्कोडरहरू देखाउँछ, हार्डवेयरले GPU एन्कोडरहरू मात्र, सफ्टवेयरले CPU एन्कोडरहरू मात्र।",
+    "ai": {
+      "title": "AI प्रदायक",
+      "provider": "प्रदायक",
+      "providers": {
+        "rules": "निर्मित नियमहरू (अफलाइन)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "स्थानीय मोडेल"
+      },
+      "model": "मोडेल",
+      "modelPlaceholder": "प्रदायकको पूर्वनिर्धारित",
+      "apiKey": "API कुञ्जी",
+      "apiKeyPlaceholder": "आफ्नो API कुञ्जी टाँस्नुहोस्",
+      "keyNotRequired": "यस प्रदायकका लागि कुञ्जी आवश्यक छैन",
+      "keyStored": "एउटा कुञ्जी भण्डारण गरिएको छ ({{hint}})।",
+      "keyNone": "कुनै कुञ्जी भण्डारण गरिएको छैन।",
+      "save": "सुरक्षित गर्नुहोस्",
+      "saved": "सेटिङ्स सुरक्षित गरियो।",
+      "saveFailed": "सेटिङ्स सुरक्षित गर्न सकिएन।",
+      "test": "जडान परीक्षण",
+      "testing": "परीक्षण हुँदै…",
+      "testFailed": "प्रदायकबाट कुनै प्रतिक्रिया छैन।",
+      "privacy": "जाँचका तथ्यहरू र तपाईंको लक्ष्य पाठ मात्र पठाइन्छ; मिडिया फाइलहरू कहिल्यै अपलोड हुँदैनन्।"
+    }
   },
   "shortcuts": {
     "title": "किबोर्ड सर्टकट",
@@ -967,6 +992,56 @@
     "addToQueue": "{{count}} कतारमा थप्नुहोस्",
     "applyNote": "कार्यहरू ब्याच कतारमा थपिन्छन्; तपाईंले त्यहाँ सुरु नगरेसम्म केही चल्दैन।",
     "addedToQueue": "{{count}} कार्यहरू कतारमा थपियो",
-    "partiallyAdded": "केही कार्यहरू कतारमा थप्न सकिएन।"
+    "partiallyAdded": "केही कार्यहरू कतारमा थप्न सकिएन।",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "ट्रान्सक्राइब गर्नुहोस्",
+      "summarize": "सारांश",
+      "chapters": "अध्यायहरू",
+      "search_transcript": "ट्रान्सक्रिप्टमा खोज्नुहोस्",
+      "translate": "सबटाइटल अनुवाद गर्नुहोस्",
+      "find_similar": "समान मिडिया खोज्नुहोस्"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "AI प्रदायक कन्फिगर गर्नुहोस्",
+      "locationNote": "AI प्रदायकहरू सेटिङ्समा कन्फिगर गरिन्छन्।"
+    },
+    "queryLabel": "खोज वाक्यांश",
+    "queryPlaceholder": "जस्तै: मूल्य निर्धारणको खण्ड",
+    "targetLanguageLabel": "लक्षित भाषा",
+    "targetLanguagePlaceholder": "जस्तै: स्पेनिस"
   }
 }

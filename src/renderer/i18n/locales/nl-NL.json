@@ -617,6 +617,31 @@
       "rose": "Roos",
       "slate": "Leisteen",
       "dark": "Donker"
+    },
+    "ai": {
+      "title": "AI-provider",
+      "provider": "Aanbieder",
+      "providers": {
+        "rules": "Ingebouwde regels (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Lokaal model"
+      },
+      "model": "Model",
+      "modelPlaceholder": "Standaard van de provider",
+      "apiKey": "API-sleutel",
+      "apiKeyPlaceholder": "Plak je API-sleutel",
+      "keyNotRequired": "Geen sleutel vereist voor deze provider",
+      "keyStored": "Er is een sleutel opgeslagen ({{hint}}).",
+      "keyNone": "Geen sleutel opgeslagen.",
+      "save": "Opslaan",
+      "saved": "Instellingen opgeslagen.",
+      "saveFailed": "De instellingen konden niet worden opgeslagen.",
+      "test": "Verbinding testen",
+      "testing": "Bezig met testen…",
+      "testFailed": "Geen reactie van de provider.",
+      "privacy": "Alleen de analysegegevens en de tekst van je doel worden verzonden; mediabestanden worden nooit geüpload."
     }
   },
   "shortcuts": {
@@ -967,6 +992,56 @@
     "addToQueue": "{{count}} aan wachtrij toevoegen",
     "applyNote": "Taken worden aan de batchwachtrij toegevoegd; er wordt niets uitgevoerd tot u deze daar start.",
     "addedToQueue": "{{count}} ta(a)k(en) aan wachtrij toegevoegd",
-    "partiallyAdded": "Sommige taken konden niet aan de wachtrij worden toegevoegd."
+    "partiallyAdded": "Sommige taken konden niet aan de wachtrij worden toegevoegd.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Transcriberen",
+      "summarize": "Samenvatten",
+      "chapters": "Hoofdstukken",
+      "search_transcript": "Zoek in transcriptie",
+      "translate": "Ondertitels vertalen",
+      "find_similar": "Soortgelijke media vinden"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "AI-provider configureren",
+      "locationNote": "AI-providers worden geconfigureerd in Instellingen."
+    },
+    "queryLabel": "Zoekterm",
+    "queryPlaceholder": "bijv. het deel over prijzen",
+    "targetLanguageLabel": "Doeltaal",
+    "targetLanguagePlaceholder": "bijv. Spaans"
   }
 }

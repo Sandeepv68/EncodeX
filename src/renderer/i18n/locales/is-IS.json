@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "Hugbúnaður",
     "hardwareAccelerationHint": "Notaðu GPU-ið þitt (NVIDIA NVENC, Intel QSV, AMD AMF) til kóðunar og afkóðunar myndbanda. Slökktu fyrir eingöngu hugbúnaðarkóðun.",
     "hwaccelModeHint": "Sjálfvirkt: GPU-ið afkóðar og kóðar (hraðast, ekki alltaf samhæft). Aðeins kóðari: GPU-ið kóðar og örgjörvinn afkóðar (öruggast).",
-    "encoderTypeHint": "Síar myndbandscodec-listann. Sjálfvirkt sýnir alla kóðara, Vélbúnaður sýnir aðeins GPU-kóðara, Hugbúnaður sýnir aðeins CPU-kóðara."
+    "encoderTypeHint": "Síar myndbandscodec-listann. Sjálfvirkt sýnir alla kóðara, Vélbúnaður sýnir aðeins GPU-kóðara, Hugbúnaður sýnir aðeins CPU-kóðara.",
+    "ai": {
+      "title": "AI-þjónustuaðili",
+      "provider": "Þjónustuaðili",
+      "providers": {
+        "rules": "Innbyggðar reglur (án nettengingar)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Staðbundið líkan"
+      },
+      "model": "Líkan",
+      "modelPlaceholder": "Sjálfgefið þjónustuaðila",
+      "apiKey": "API-lykill",
+      "apiKeyPlaceholder": "Límdu API-lykilinn þinn",
+      "keyNotRequired": "Enginn lykill nauðsynlegur fyrir þennan þjónustuaðila",
+      "keyStored": "Lykill er vistuð ({{hint}}).",
+      "keyNone": "Enginn lykill vistaður.",
+      "save": "Vista",
+      "saved": "Stillingar vistaðar.",
+      "saveFailed": "Ekki tókst að vista stillingarnar.",
+      "test": "Prófa tengingu",
+      "testing": "Prófa…",
+      "testFailed": "Engin svörun frá þjónustuaðila.",
+      "privacy": "Aðeins skoðunarstaðreyndir og texti markmiðs þíns er sendur; skrár eru aldrei hlaðnar upp."
+    }
   },
   "shortcuts": {
     "title": "Flýtilyklar",
@@ -967,6 +992,56 @@
     "addToQueue": "Bæta {{count}} við biðröð",
     "applyNote": "Verkum er bætt við runu biðröðina; ekkert keyrir þar til þú byrjar það þar.",
     "addedToQueue": "Bætti {{count}} verk(um) við biðröð",
-    "partiallyAdded": "Ekki var hægt að bæta sumum verkum við biðröðina."
+    "partiallyAdded": "Ekki var hægt að bæta sumum verkum við biðröðina.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Rita af",
+      "summarize": "Draga saman",
+      "chapters": "Kaflar",
+      "search_transcript": "Leita í afritun",
+      "translate": "Þýða texta",
+      "find_similar": "Finna svipað efni"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Skerpðu AI-þjónustuaðila",
+      "locationNote": "AI-þjónustuaðilar eru stilltir í Stillingum."
+    },
+    "queryLabel": "Leitarorð",
+    "queryPlaceholder": "t.d. hlutann um verðlagningu",
+    "targetLanguageLabel": "Marktungumál",
+    "targetLanguagePlaceholder": "t.d. spænsku"
   }
 }

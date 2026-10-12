@@ -228,6 +228,26 @@ describe('registerCopilotHandlers', () => {
     expect(result.actions[0].input).toBe(file);
   });
 
+  it('routes a forced analyze to read-only results, not actions', async () => {
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: 'inspect this file', inputs: [file], operation: 'analyze' });
+    expect(result.operation).toBe('analyze');
+    expect(result.providerId).toBe('rules');
+    expect(result.actions).toHaveLength(0);
+    expect(result.results).toHaveLength(1);
+    expect(result.results[0]).toMatchObject({ operation: 'analyze', input: file });
+  });
+
+  it('routes a forced non-convert operation into a queue-able action', async () => {
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: 'remux to mkv', inputs: [file], operation: 'remux' });
+    expect(result.operation).toBe('remux');
+    expect(result.providerId).toBe('rules');
+    expect(result.actions).toHaveLength(1);
+    expect(result.actions[0]).toMatchObject({ operation: 'remux', input: file });
+    expect(result.actions[0].output?.endsWith('.mkv')).toBe(true);
+  });
+
   it('skips a folder that cannot be read instead of failing the plan', async () => {
     readdirSyncMock.mockImplementation(((dir: fs.PathLike) => {
       if (String(dir) === scanDir) throw new Error('EACCES');

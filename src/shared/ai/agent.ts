@@ -11,7 +11,7 @@
  */
 
 import type { ConversionProfile, EncoderCapabilities } from '../types';
-import type { ConversionConstraints, MediaFacts } from './types';
+import type { ConversionConstraints, MediaFacts, PlanRequest, RecommendedSettings } from './types';
 import type { Workflow, WorkflowStep } from './workflow';
 import { recommendSettings } from './recommend';
 import { estimateConversion } from './estimate';
@@ -75,6 +75,9 @@ export interface AgentOptions {
  * @property {AgentOptions} [options] - Tuning.
  * @property {(facts: MediaFacts, index: number) => string} [resolveOutput] -
  *   Supplies each action's output path (the MCP layer derives these).
+ * @property {(request: PlanRequest) => Promise<RecommendedSettings>} [planner] -
+ *   Optional async planner (an LLM provider). Defaults to the deterministic,
+ *   offline {@link recommendSettings}, so behavior is unchanged when omitted.
  */
 export interface AgentRequest {
   intent: string;
@@ -84,6 +87,7 @@ export interface AgentRequest {
   constraints?: ConversionConstraints;
   options?: AgentOptions;
   resolveOutput?: (facts: MediaFacts, index: number) => string;
+  planner?: (request: PlanRequest) => Promise<RecommendedSettings>;
 }
 
 /**
@@ -132,22 +136,23 @@ function hasTargetBitrate(args: Record<string, unknown>): boolean {
  * @param {AgentRequest} request - The overall request.
  * @param {number} index - The action index (for ids and output naming).
  * @param {number} minSavings - Minimum required size reduction.
- * @returns {{ action: AgentAction; args: Record<string, unknown> } | { skip: AgentSkip }} The outcome.
+ * @returns {Promise<{ action: AgentAction; args: Record<string, unknown> } | { skip: AgentSkip }>} The outcome.
  */
-function planFile(
+async function planFile(
   facts: MediaFacts,
   request: AgentRequest,
   index: number,
   minSavings: number,
-): { action: AgentAction; args: Record<string, unknown> } | { skip: AgentSkip } {
-  const settings = recommendSettings({
+): Promise<{ action: AgentAction; args: Record<string, unknown> } | { skip: AgentSkip }> {
+  const planRequest: PlanRequest = {
     input: facts.file,
     intent: request.intent,
     facts,
     profiles: request.profiles,
     capabilities: request.capabilities,
     ...(request.constraints ? { constraints: request.constraints } : {}),
-  });
+  };
+  const settings = request.planner ? await request.planner(planRequest) : recommendSettings(planRequest);
   if (!settings.profileId) {
     return { skip: { input: facts.file, reason: 'No built-in profile matched the goal for this file.' } };
   }
@@ -186,9 +191,9 @@ function planFile(
  * workflow. Files are planned in the order given; the workflow has no
  * inter-step dependencies, so the R5 executor can run them independently.
  * @param {AgentRequest} request - Goal, facts, profiles and capabilities.
- * @returns {AgentPlan} The actions, skips, and runnable workflow.
+ * @returns {Promise<AgentPlan>} The actions, skips, and runnable workflow.
  */
-export function planAgent(request: AgentRequest): AgentPlan {
+export async function planAgent(request: AgentRequest): Promise<AgentPlan> {
   const maxFiles = Math.max(1, request.options?.maxFiles ?? DEFAULT_MAX_FILES);
   const minSavings = Math.max(0, Math.min(1, request.options?.minSavings ?? 0));
   const files = Array.isArray(request.files) ? request.files : [];
@@ -207,7 +212,7 @@ export function planAgent(request: AgentRequest): AgentPlan {
       notes.push(`Stopped after ${maxFiles} actions (the maxFiles cap).`);
       break;
     }
-    const outcome = planFile(facts, request, actions.length, minSavings);
+    const outcome = await planFile(facts, request, actions.length, minSavings);
     if ('skip' in outcome) {
       skips.push(outcome.skip);
       continue;

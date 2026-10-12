@@ -23,6 +23,7 @@ function renderSettings() {
 describe('Settings', () => {
   beforeEach(() => {
     localStorage.clear();
+    vi.clearAllMocks();
     useSettingsStore.setState({
       hardwareAcceleration: HWACCEL_DEFAULTS.ENABLED,
       hwaccelMode: HWACCEL_DEFAULTS.MODE,
@@ -428,5 +429,57 @@ describe('Settings', () => {
     renderSettings();
     fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[1]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.launchAtLoginHint');
+  });
+
+  it('keeps the AI provider editor collapsed until the toggle is clicked', () => {
+    renderSettings();
+    expect(screen.getByText('settings.ai.title')).toBeInTheDocument();
+    expect(screen.queryByTestId('settings-ai')).not.toBeInTheDocument();
+    expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
+  });
+
+  it('loads the stored AI settings when the editor is expanded', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'openai',
+      model: 'gpt-4o',
+      hasKey: true,
+      keyHint: '••••',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+    });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    expect(await screen.findByTestId('settings-ai')).toBeInTheDocument();
+    await waitFor(() => expect(window.electronAPI.aiGetSettings).toHaveBeenCalledTimes(1));
+    expect(screen.getByRole('textbox', { name: 'settings.ai.model' })).toHaveValue('gpt-4o');
+  });
+
+  it('saves the AI provider selection through the bridge', async () => {
+    const spy = vi.fn().mockResolvedValue({
+      providerId: 'anthropic',
+      model: '',
+      hasKey: false,
+      keyHint: '',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+    });
+    vi.mocked(window.electronAPI.aiSetSettings).mockImplementation(spy);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-anthropic'));
+    fireEvent.click(screen.getByTestId('settings-ai-save'));
+    await waitFor(() => expect(spy).toHaveBeenCalledWith(expect.objectContaining({ providerId: 'anthropic' })));
+    expect(await screen.findByTestId('settings-ai-status')).toHaveTextContent('settings.ai.saved');
+  });
+
+  it('tests the AI provider connection and shows the latency', async () => {
+    vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: true, message: 'Connected', latencyMs: 42 });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-test'));
+    const status = await screen.findByTestId('settings-ai-status');
+    expect(status).toHaveTextContent('Connected (42 ms)');
   });
 });

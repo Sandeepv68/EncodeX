@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "Програм хангамж",
     "hardwareAccelerationHint": "Видео кодлох, декодлоход таны GPU (NVIDIA NVENC, Intel QSV, AMD AMF) ашиглана. Зөвхөн программ кодлохын тулд унтраана.",
     "hwaccelModeHint": "Автомат: GPU декод, код хоёрыг гүйцэтгэнэ (хамгийн хурдан, үргэлж нийцэхгүй). Зөвхөн кодлох: GPU кодлоно, CPU декодлоно (хамгийн аюулгүй).",
-    "encoderTypeHint": "Видео кодек жагсаалтыг шүүнэ. Автомат бүх кодлогчийг, Тоног төхөөрөмж зөвхөн GPU кодлогчийг, Програм хангамж зөвхөн CPU кодлогчийг харуулна."
+    "encoderTypeHint": "Видео кодек жагсаалтыг шүүнэ. Автомат бүх кодлогчийг, Тоног төхөөрөмж зөвхөн GPU кодлогчийг, Програм хангамж зөвхөн CPU кодлогчийг харуулна.",
+    "ai": {
+      "title": "AI үйлчилгээ үзүүлэгч",
+      "provider": "Үзүүлэгч",
+      "providers": {
+        "rules": "Суулгасан дүрмүүд (офлайн)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Орон нутгийн загвар"
+      },
+      "model": "Загвар",
+      "modelPlaceholder": "Үзүүлэгчийн стандарт",
+      "apiKey": "API түлхүүр",
+      "apiKeyPlaceholder": "API түлхүүрээ буулгана уу",
+      "keyNotRequired": "Энэ үзүүлэгчид түлхүүр шаардлагагүй",
+      "keyStored": "Түлхүүр хадгалагдсан байна ({{hint}}).",
+      "keyNone": "Түлхүүр хадгалагдаагүй байна.",
+      "save": "Хадгалах",
+      "saved": "Тохиргоо хадгалагдлаа.",
+      "saveFailed": "Тохиргоог хадгалах боломжгүй байна.",
+      "test": "Холболт шалгах",
+      "testing": "Шалгаж байна…",
+      "testFailed": "Үзүүлэгчээс хариу ирээгүй.",
+      "privacy": "Зөвхөн шалгалтын баримт болон таны зорилтын текст илгээгдэнэ; медиа файлыг хэзээ ч байршуулахгүй."
+    }
   },
   "shortcuts": {
     "title": "Гарны товчлолууд",
@@ -967,6 +992,56 @@
     "addToQueue": "{{count}}-г дараалалд нэмэх",
     "applyNote": "Ажлууд багц дараалалд нэмэгдэнэ; та тэнд эхлүүлэх хүртэл юу ч ажиллахгүй.",
     "addedToQueue": "{{count}} ажлыг дараалалд нэмсэн",
-    "partiallyAdded": "Зарим ажлыг дараалалд нэмж чадсангүй."
+    "partiallyAdded": "Зарим ажлыг дараалалд нэмж чадсангүй.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Хуулбарлах",
+      "summarize": "Дүгнэх",
+      "chapters": "Бүлгүүд",
+      "search_transcript": "Хуулбар текст хайх",
+      "translate": "Хадмалыг орчуулах",
+      "find_similar": "Төстэй медиа хайх"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "AI үйлчилгээ үзүүлэгчийг тохируулах",
+      "locationNote": "AI үйлчилгээ үзүүлэгчийг Тохиргоонд тохируулна."
+    },
+    "queryLabel": "Хайх хэллэг",
+    "queryPlaceholder": "жишээ нь үнийн тухай хэсэг",
+    "targetLanguageLabel": "Зорилтот хэл",
+    "targetLanguagePlaceholder": "жишээ нь испани"
   }
 }

@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "Programvare",
     "hardwareAccelerationHint": "Bruker GPU-en din (NVIDIA NVENC, Intel QSV, AMD AMF) til videokoding og -dekoding. Slå av for ren programvarekoding.",
     "hwaccelModeHint": "Automatisk: GPU-en utfører både dekoding og koding (raskest, ikke alltid kompatibelt). Kun koding: GPU-en koder og CPU-en dekoder (sikrest).",
-    "encoderTypeHint": "Filtrerer videokodeklisten. Automatisk viser alle tilgjengelige kodere, Maskinvare viser kun GPU-kodere, Programvare viser kun CPU-kodere."
+    "encoderTypeHint": "Filtrerer videokodeklisten. Automatisk viser alle tilgjengelige kodere, Maskinvare viser kun GPU-kodere, Programvare viser kun CPU-kodere.",
+    "ai": {
+      "title": "KI-leverandør",
+      "provider": "Leverandør",
+      "providers": {
+        "rules": "Innebygde regler (frafkoblet)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Lokal modell"
+      },
+      "model": "Modell",
+      "modelPlaceholder": "Leverandørens standard",
+      "apiKey": "API-nøkkel",
+      "apiKeyPlaceholder": "Lim inn API-nøkkelen din",
+      "keyNotRequired": "Ingen nøkkel kreves for denne leverandøren",
+      "keyStored": "En nøkkel er lagret ({{hint}}).",
+      "keyNone": "Ingen nøkkel lagret.",
+      "save": "Lagre",
+      "saved": "Innstillinger lagret.",
+      "saveFailed": "Kunne ikke lagre innstillingene.",
+      "test": "Test tilkoblingen",
+      "testing": "Tester…",
+      "testFailed": "Ingen svar fra leverandøren.",
+      "privacy": "Kun undersøkte data og målteksten din sendes; mediefiler lastes aldri opp."
+    }
   },
   "shortcuts": {
     "title": "Tastatursnarveier",
@@ -967,6 +992,56 @@
     "addToQueue": "Legg til {{count}} i køen",
     "applyNote": "Jobber legges til batch-køen; ingenting kjører før du starter det der.",
     "addedToQueue": "La til {{count}} jobb(er) i køen",
-    "partiallyAdded": "Noen jobber kunne ikke legges til i køen."
+    "partiallyAdded": "Noen jobber kunne ikke legges til i køen.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Transkriber",
+      "summarize": "Oppsummer",
+      "chapters": "Kapitler",
+      "search_transcript": "Søk i transkripsjon",
+      "translate": "Oversett undertekster",
+      "find_similar": "Finn lignende medier"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Konfigurer KI-leverandør",
+      "locationNote": "KI-leverandører konfigureres i Innstillinger."
+    },
+    "queryLabel": "Søkefrase",
+    "queryPlaceholder": "f.eks. delen om priser",
+    "targetLanguageLabel": "Målspråk",
+    "targetLanguagePlaceholder": "f.eks. spansk"
   }
 }

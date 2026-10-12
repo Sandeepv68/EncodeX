@@ -10,13 +10,32 @@
  * encoder type selects). Every persisted value lives in the `useSettingsStore`
  * zustand store, which synchronizes it to disk and to the main process; this
  * page only reads and writes store state and makes no direct IPC calls.
+ *
+ * The one exception is the AI-provider section (AI connector plan §8): provider
+ * settings live in `userData/ai-settings.json` rather than the settings store,
+ * so that section talks to the `ai-*` preload bridge directly, guarded by
+ * {@link bridgePromise} so a hostile bridge degrades to offline defaults.
  */
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Switch, MenuItem, IconButton, Tooltip, InputAdornment, Link } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Stack,
+  Switch,
+  MenuItem,
+  IconButton,
+  Tooltip,
+  Typography,
+  InputAdornment,
+  Link,
+  ToggleButton,
+  ToggleButtonGroup,
+} from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCopy, faEye, faEyeSlash, faTrashCan, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faEye, faEyeSlash, faTrashCan, faWandMagicSparkles, faGear } from '@fortawesome/free-solid-svg-icons';
 import { useColorMode } from '../ColorModeContext';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useToastStore } from '../stores/toastStore';
@@ -28,6 +47,11 @@ import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { THEMES } from '../colors';
 import type { ThemeDefinition } from '../colors';
 import type { HwAccelMode, EncoderType } from '../../shared/types';
+import type { AiSettingsView } from '../../shared/ai/settings';
+import { AI_PROVIDER_CHOICES, AI_PROVIDERS_REQUIRING_KEY, isAiProviderId } from '../../shared/ai/settings';
+import type { AIProviderId } from '../../shared/ai/types';
+import { bridgePromise } from '../utils/bridge-call';
+import { formatError } from '../../shared/errors';
 import {
   SettingsRoot,
   SettingsHeader,
@@ -374,6 +398,186 @@ function McpSettingsSection() {
 }
 
 /**
+ * Renders the AI-provider settings (AI connector plan §8): a provider chooser,
+ * a model field, and an API-key field with save and connectivity-test actions.
+ *
+ * Provider settings live in `userData/ai-settings.json` (not the settings
+ * store), so this section is the one direct-IPC exception on the page. To keep
+ * the page inert on mount (so every hostile/renderer suite can mount it
+ * safely), the editor loads its settings only when the user expands it. Every
+ * bridge call goes through {@link bridgePromise} and a shape check, so a
+ * missing, throwing, or garbage bridge leaves the form at its offline defaults
+ * instead of crashing the tree.
+ * @returns {JSX.Element} The AI-provider settings rows.
+ */
+function AiProviderSettingsSection() {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [view, setView] = useState<AiSettingsView | null>(null);
+  const [providerId, setProviderId] = useState<AIProviderId>('rules');
+  const [model, setModel] = useState('');
+  const [apiKey, setApiKey] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  /**
+   * Expands/collapses the editor, loading the stored settings the first time it
+   * opens.
+   * @returns {Promise<void>} Resolves after the settings (if any) load.
+   */
+  const toggle = async (): Promise<void> => {
+    const next = !open;
+    setOpen(next);
+    if (!next || view) return;
+    try {
+      const loaded = await bridgePromise(() => window.electronAPI.aiGetSettings());
+      if (!loaded || typeof loaded !== 'object' || !isAiProviderId(loaded.providerId)) return;
+      setView(loaded);
+      setProviderId(loaded.providerId);
+      setModel(typeof loaded.model === 'string' ? loaded.model : '');
+    } catch {
+      // Hostile/unavailable bridge: keep the offline defaults.
+    }
+  };
+
+  /**
+   * Persists the current AI settings through the bridge.
+   * @returns {Promise<void>} Resolves once the save settles.
+   */
+  const save = async (): Promise<void> => {
+    setBusy(true);
+    setStatus(null);
+    setError(null);
+    try {
+      const updated = await bridgePromise(() =>
+        window.electronAPI.aiSetSettings({
+          providerId,
+          model,
+          ...(apiKey ? { apiKey } : {}),
+        }),
+      );
+      if (updated && typeof updated === 'object' && isAiProviderId(updated.providerId)) {
+        setView(updated);
+        setApiKey('');
+        setStatus(t('settings.ai.saved'));
+      } else {
+        setError(t('settings.ai.saveFailed'));
+      }
+    } catch (err) {
+      setError(formatError(err).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  /**
+   * Tests connectivity to the selected provider through the bridge.
+   * @returns {Promise<void>} Resolves once the test settles.
+   */
+  const test = async (): Promise<void> => {
+    setBusy(true);
+    setStatus(t('settings.ai.testing'));
+    setError(null);
+    try {
+      const result = await bridgePromise(() =>
+        window.electronAPI.aiConnectTest({
+          providerId,
+          model,
+          ...(apiKey ? { apiKey } : {}),
+        }),
+      );
+      if (result && typeof result.message === 'string') {
+        const latency = typeof result.latencyMs === 'number' ? ` (${result.latencyMs} ms)` : '';
+        setStatus(result.ok ? `${result.message}${latency}` : result.message);
+      } else {
+        setStatus(t('settings.ai.testFailed'));
+      }
+    } catch (err) {
+      setError(formatError(err).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const needsKey = AI_PROVIDERS_REQUIRING_KEY.has(providerId);
+
+  return (
+    <ModeSettingsSection>
+      <SettingsLabel variant="body1">{t('settings.ai.title')}</SettingsLabel>
+      <Button
+        size="small"
+        startIcon={<FontAwesomeIcon icon={faGear} />}
+        onClick={toggle}
+        sx={{ mt: 1 }}
+        data-testid="settings-ai-toggle"
+      >
+        {t('settings.ai.configure')}
+      </Button>
+      {open && (
+        <Stack spacing={1} sx={{ mt: 1, maxWidth: 560 }} data-testid="settings-ai">
+          <ToggleButtonGroup
+            exclusive
+            size="small"
+            value={providerId}
+            onChange={(_event, next: AIProviderId | null) => {
+              if (next) setProviderId(next);
+            }}
+            aria-label={t('settings.ai.provider')}
+            data-testid="settings-ai-provider"
+          >
+            {AI_PROVIDER_CHOICES.map((id) => (
+              <ToggleButton key={id} value={id} data-testid={`settings-ai-provider-${id}`}>
+                {t(`settings.ai.providers.${id}`)}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+          <McpField
+            size="small"
+            data-testid="settings-ai-model"
+            slotProps={{ htmlInput: { 'aria-label': t('settings.ai.model') } }}
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            placeholder={t('settings.ai.modelPlaceholder')}
+          />
+          <McpField
+            type="password"
+            size="small"
+            data-testid="settings-ai-key"
+            slotProps={{ htmlInput: { 'aria-label': t('settings.ai.apiKey') } }}
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            placeholder={needsKey ? t('settings.ai.apiKeyPlaceholder') : t('settings.ai.keyNotRequired')}
+            helperText={view?.hasKey ? t('settings.ai.keyStored', { hint: view.keyHint }) : t('settings.ai.keyNone')}
+          />
+          <Stack direction="row" spacing={1}>
+            <Button size="small" variant="outlined" onClick={save} disabled={busy} data-testid="settings-ai-save">
+              {t('settings.ai.save')}
+            </Button>
+            <Button size="small" variant="outlined" onClick={test} disabled={busy} data-testid="settings-ai-test">
+              {t('settings.ai.test')}
+            </Button>
+          </Stack>
+          {status && (
+            <Typography variant="caption" color="text.secondary" data-testid="settings-ai-status">
+              {status}
+            </Typography>
+          )}
+          {error && (
+            <Alert severity="error" data-testid="settings-ai-error">
+              {error}
+            </Alert>
+          )}
+          <Typography variant="caption" color="text.secondary">
+            {t('settings.ai.privacy')}
+          </Typography>
+        </Stack>
+      )}
+    </ModeSettingsSection>
+  );
+}
+
+/**
  * Renders the settings page (`/settings`).
  *
  * Layout: a theme section whose cards call `setTheme` from `useColorMode`, and
@@ -384,7 +588,8 @@ function McpSettingsSection() {
  * `useSettingsStore`; store setters update persisted state and the main process
  * automatically.
  *
- * No IPC calls are made directly from this page.
+ * The AI-provider section is the one exception and calls the `ai-*` bridge
+ * directly; all other settings are store-backed.
  *
  * @returns {JSX.Element} The page content.
  */
@@ -471,6 +676,7 @@ export default function Settings() {
         </ToggleRow>
       </SettingsSection>
       <McpSettingsSection />
+      <AiProviderSettingsSection />
       <SettingsSection>
         <ToggleRow>
           <Switch

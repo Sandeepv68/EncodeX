@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "תוכנה",
     "hardwareAccelerationHint": "משתמש בכרטיס המסך שלך (NVIDIA NVENC, Intel QSV, AMD AMF) לקידוד ולפענוח וידאו. כבה עבור קידוד תוכנה בלבד.",
     "hwaccelModeHint": "אוטומטי: כרטיס המסך מבצע גם פענוח וגם קידוד (המהיר ביותר, לא תמיד נתמך). קידוד בלבד: כרטיס המסך מקודד והמעבד מפענח (הבטוח ביותר).",
-    "encoderTypeHint": "מסנן את רשימת קודקי הווידאו. אוטומטי מציג את כל המקודדים הזמינים, חומרה מציג רק מקודדי כרטיס מסך, תוכנה מציג רק מקודדי מעבד."
+    "encoderTypeHint": "מסנן את רשימת קודקי הווידאו. אוטומטי מציג את כל המקודדים הזמינים, חומרה מציג רק מקודדי כרטיס מסך, תוכנה מציג רק מקודדי מעבד.",
+    "ai": {
+      "title": "ספק בינה מלאכותית",
+      "provider": "ספק",
+      "providers": {
+        "rules": "כללים מובנים (ללא חיבור)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "מודל מקומי"
+      },
+      "model": "מודל",
+      "modelPlaceholder": "ברירת מחדל של הספק",
+      "apiKey": "מפתח API",
+      "apiKeyPlaceholder": "הדבק את מפתח ה-API שלך",
+      "keyNotRequired": "לא נדרש מפתח עבור ספק זה",
+      "keyStored": "מפתח שמור ({{hint}}).",
+      "keyNone": "אין מפתח שמור.",
+      "save": "שמור",
+      "saved": "ההגדרות נשמרו.",
+      "saveFailed": "לא ניתן היה לשמור את ההגדרות.",
+      "test": "בדיקת חיבור",
+      "testing": "נבדק…",
+      "testFailed": "אין תגובה מהספק.",
+      "privacy": "נשלחים רק נתוני הבדיקה וטקסט המטרה שלך; קבצי מדיה לעולם לא מועלים."
+    }
   },
   "shortcuts": {
     "title": "קיצורי מקלדת",
@@ -967,6 +992,56 @@
     "addToQueue": "הוסף {{count}} לתור",
     "applyNote": "המשימות מתווספות לתור המשימות; שום דבר לא רץ עד שתפעיל אותו שם.",
     "addedToQueue": "נוספו {{count}} משימות לתור",
-    "partiallyAdded": "לא ניתן היה להוסיף חלק מהמשימות לתור."
+    "partiallyAdded": "לא ניתן היה להוסיף חלק מהמשימות לתור.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "תמלול",
+      "summarize": "סיכום",
+      "chapters": "פרקים",
+      "search_transcript": "חיפוש בתמלול",
+      "translate": "תרגום כתוביות",
+      "find_similar": "מציאת מדיה דומה"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "הגדרת ספק בינה מלאכותית",
+      "locationNote": "ספקי בינה מלאכותית מוגדרים בהגדרות."
+    },
+    "queryLabel": "ביטוי חיפוש",
+    "queryPlaceholder": "למשל: החלק על התמחור",
+    "targetLanguageLabel": "שפת יעד",
+    "targetLanguagePlaceholder": "למשל: ספרדית"
   }
 }

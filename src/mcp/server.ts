@@ -2591,7 +2591,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
           const info = await tryProbe(file);
           if (info) facts.push(extractMediaFacts(info));
         }
-        const agentPlan = planAgent({
+        const agentPlan = await planAgent({
           intent: args.intent,
           files: facts,
           profiles: BUILTIN_PROFILES,

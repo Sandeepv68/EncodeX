@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "软件",
     "hardwareAccelerationHint": "使用您的 GPU（NVIDIA NVENC、Intel QSV、AMD AMF）进行视频编码和解码。关闭以仅使用软件编码。",
     "hwaccelModeHint": "自动：GPU 同时执行解码和编码（最快，并非总是兼容）。仅编码：GPU 编码，CPU 解码（最安全）。",
-    "encoderTypeHint": "过滤视频编码器列表。自动显示所有可用的编码器，硬件仅显示 GPU 编码器，软件仅显示 CPU 编码器。"
+    "encoderTypeHint": "过滤视频编码器列表。自动显示所有可用的编码器，硬件仅显示 GPU 编码器，软件仅显示 CPU 编码器。",
+    "ai": {
+      "title": "AI 提供商",
+      "provider": "提供商",
+      "providers": {
+        "rules": "内置规则（离线）",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "本地模型"
+      },
+      "model": "模型",
+      "modelPlaceholder": "提供商默认",
+      "apiKey": "API 密钥",
+      "apiKeyPlaceholder": "粘贴您的 API 密钥",
+      "keyNotRequired": "此提供商无需密钥",
+      "keyStored": "已存储密钥（{{hint}}）。",
+      "keyNone": "未存储密钥。",
+      "save": "保存",
+      "saved": "设置已保存。",
+      "saveFailed": "无法保存设置。",
+      "test": "测试连接",
+      "testing": "正在测试…",
+      "testFailed": "提供商无响应。",
+      "privacy": "仅发送分析信息和您的目标文本；媒体文件绝不会被上传。"
+    }
   },
   "shortcuts": {
     "title": "键盘快捷键",
@@ -967,6 +992,56 @@
     "addToQueue": "将 {{count}} 项加入队列",
     "applyNote": "任务会添加到批量队列；只有在那里启动后才会运行。",
     "addedToQueue": "已将 {{count}} 个任务加入队列",
-    "partiallyAdded": "部分任务无法加入队列。"
+    "partiallyAdded": "部分任务无法加入队列。",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "转录",
+      "summarize": "总结",
+      "chapters": "章节",
+      "search_transcript": "搜索转录文本",
+      "translate": "翻译字幕",
+      "find_similar": "查找相似媒体"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "配置 AI 提供商",
+      "locationNote": "AI 提供商在设置中配置。"
+    },
+    "queryLabel": "搜索短语",
+    "queryPlaceholder": "例如：关于定价的部分",
+    "targetLanguageLabel": "目标语言",
+    "targetLanguagePlaceholder": "例如：西班牙语"
   }
 }
