@@ -247,6 +247,12 @@ jobs:
     needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Exposed at job level so the step-level `if` can read it: a step's own
+    # `env` is not visible to that step's `if`, and the `secrets` context is
+    # not allowed in `if` at all. Empty (thus the upload self-skips) when the
+    # secret is unset, e.g. local `act` runs and fork PRs.
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -263,10 +269,9 @@ jobs:
           if-no-files-found: warn
       - name: Upload coverage to Codecov
         if: env.CODECOV_TOKEN != ''
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/lcov.info
           fail_ci_if_error: false
 
