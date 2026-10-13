@@ -34,6 +34,28 @@ declare global {
 }
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
+/**
+ * jsdom does not implement the geometry methods on `Range`, which Lexical calls
+ * when it moves the DOM selection (for example after a Shift+Enter line break
+ * inside a focused editor). Without them Lexical throws
+ * "selectionTarget.getBoundingClientRect is not a function". A zeroed rect is
+ * enough: the tests assert behaviour, not scroll position.
+ */
+const emptyRect = {
+  x: 0,
+  y: 0,
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  width: 0,
+  height: 0,
+  toJSON: () => ({}),
+} as unknown as DOMRect;
+Range.prototype.getBoundingClientRect = () => emptyRect;
+Range.prototype.getClientRects = () =>
+  ({ length: 0, item: () => null, [Symbol.iterator]: function* () {} }) as unknown as DOMRectList;
+
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, opts?: Record<string, string | number>) => {
