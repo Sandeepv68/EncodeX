@@ -610,7 +610,7 @@ jobs:
       - name: Restore Stryker incremental state (shard ${{ matrix.shard }})
         # Keyed per shard: each shard owns a slice of the incremental file, and
         # the restore-key lets a re-shuffled slice reuse the previous run's work.
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .stryker/incremental.json
           key: stryker-incremental-${{ runner.os }}-shard${{ matrix.shard }}-${{ hashFiles('stryker.config.mjs', 'vitest.mutation.config.ts', 'package-lock.json') }}
