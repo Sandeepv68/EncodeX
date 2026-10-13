@@ -617,6 +617,31 @@
       "rose": "Rose",
       "slate": "Slate",
       "dark": "Dark"
+    },
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "apiKeyPlaceholder": "Paste your API key",
+      "keyNotRequired": "No key required for this provider",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded."
     }
   },
   "shortcuts": {
@@ -967,6 +992,56 @@
     "addToQueue": "Add {{count}} to queue",
     "applyNote": "Jobs are added to the Batch Queue; nothing runs until you start it there.",
     "addedToQueue": "Added {{count}} job(s) to the queue",
-    "partiallyAdded": "Some jobs could not be added to the queue."
+    "partiallyAdded": "Some jobs could not be added to the queue.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Transcribe",
+      "summarize": "Summarize",
+      "chapters": "Chapters",
+      "search_transcript": "Search transcript",
+      "translate": "Translate subtitles",
+      "find_similar": "Find similar media"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Configure AI provider",
+      "locationNote": "AI providers are configured in Settings."
+    },
+    "queryLabel": "Search phrase",
+    "queryPlaceholder": "e.g. the part about pricing",
+    "targetLanguageLabel": "Target language",
+    "targetLanguagePlaceholder": "e.g. Spanish"
   }
 }

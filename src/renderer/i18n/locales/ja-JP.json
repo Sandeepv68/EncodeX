@@ -617,6 +617,31 @@
       "rose": "ローズ",
       "slate": "スレート",
       "dark": "ダーク"
+    },
+    "ai": {
+      "title": "AIプロバイダー",
+      "provider": "プロバイダー",
+      "providers": {
+        "rules": "内蔵ルール（オフライン）",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "ローカルモデル"
+      },
+      "model": "モデル",
+      "modelPlaceholder": "プロバイダーの既定",
+      "apiKey": "APIキー",
+      "apiKeyPlaceholder": "APIキーを貼り付け",
+      "keyNotRequired": "このプロバイダーはキーを必要としません",
+      "keyStored": "キーが保存されています（{{hint}}）。",
+      "keyNone": "キーは保存されていません。",
+      "save": "保存",
+      "saved": "設定を保存しました。",
+      "saveFailed": "設定を保存できませんでした。",
+      "test": "接続をテスト",
+      "testing": "テスト中…",
+      "testFailed": "プロバイダーからの応答がありません。",
+      "privacy": "送信されるのは調査結果と目標テキストのみで、メディアファイルがアップロードされることはありません。"
     }
   },
   "shortcuts": {
@@ -967,6 +992,56 @@
     "addToQueue": "{{count}} 件をキューに追加",
     "applyNote": "ジョブはバッチキューに追加されます。そこで開始するまで何も実行されません。",
     "addedToQueue": "{{count}} 件のジョブをキューに追加しました",
-    "partiallyAdded": "一部のジョブをキューに追加できませんでした。"
+    "partiallyAdded": "一部のジョブをキューに追加できませんでした。",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "文字起こし",
+      "summarize": "要約",
+      "chapters": "チャプター",
+      "search_transcript": "書き起こしを検索",
+      "translate": "字幕を翻訳",
+      "find_similar": "類似メディアを検索"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "AIプロバイダーを設定",
+      "locationNote": "AIプロバイダーは「設定」で構成します。"
+    },
+    "queryLabel": "検索フレーズ",
+    "queryPlaceholder": "例: 価格設定の部分",
+    "targetLanguageLabel": "翻訳先の言語",
+    "targetLanguagePlaceholder": "例: スペイン語"
   }
 }

@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "මෘදුකාංග",
     "hardwareAccelerationHint": "වීඩියෝ කේතනය සහ විකේතනය සඳහා ඔබේ GPU (NVIDIA NVENC, Intel QSV, AMD AMF) භාවිතා කරයි. මෘදුකාංග-පමණක් කේතනය සඳහා අක්‍රීය කරන්න.",
     "hwaccelModeHint": "ස්වයංක්‍රීය: GPU විකේතනය සහ කේතනය යන දෙකම කරයි (වේගවත්ම, සැමවිටම ගැළපෙන්නේ නැත). කේතනය පමණි: GPU කේතනය කරන අතර CPU විකේතනය කරයි (ආරක්ෂිතම).",
-    "encoderTypeHint": "වීඩියෝ කෝඩෙක් ලැයිස්තුව පෙරා ගනී. ස්වයංක්‍රීය සියලු ලබා ගත හැකි එන්කෝඩර පෙන්වයි, දෘඪාංග GPU එන්කෝඩර පමණක් ද, මෘදුකාංග CPU එන්කෝඩර පමණක් ද පෙන්වයි."
+    "encoderTypeHint": "වීඩියෝ කෝඩෙක් ලැයිස්තුව පෙරා ගනී. ස්වයංක්‍රීය සියලු ලබා ගත හැකි එන්කෝඩර පෙන්වයි, දෘඪාංග GPU එන්කෝඩර පමණක් ද, මෘදුකාංග CPU එන්කෝඩර පමණක් ද පෙන්වයි.",
+    "ai": {
+      "title": "AI සපයන්නා",
+      "provider": "සපයන්නා",
+      "providers": {
+        "rules": "සාදන ලද රීති (සම්බන්ධතාව නොමැතිව)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "දේශීය ආකෘතිය"
+      },
+      "model": "ආකෘතිය",
+      "modelPlaceholder": "සපයන්නාගේ පෙරනිමිය",
+      "apiKey": "API යතුර",
+      "apiKeyPlaceholder": "ඔබගේ API යතුර අලවන්න",
+      "keyNotRequired": "මෙම සපයන්නාට යතුරක් අවශ්‍ය නොවේ",
+      "keyStored": "යතුරක් ගබඩා වී ඇත ({{hint}}).",
+      "keyNone": "යතුරක් ගබඩා වී නොමැත.",
+      "save": "සුරකින්න",
+      "saved": "සැකසුම් සුරැකිණි.",
+      "saveFailed": "සැකසුම් සුරැකිය නොහැකි විය.",
+      "test": "සම්බන්ධතාව පරීක්ෂා කරන්න",
+      "testing": "පරීක්ෂා කරමින්…",
+      "testFailed": "සපයන්නාගෙන් ප්‍රතිචාරයක් නැත.",
+      "privacy": "යවනු ලබන්නේ පරීක්ෂණ කරුණු සහ ඔබේ ඉලක්ක පෙළ පමණි; මාධ්‍ය ගොනු කිසි විටෙක උඩුගත නොකෙරේ."
+    }
   },
   "shortcuts": {
     "title": "යතුරුපුවරු කෙටිමං",
@@ -967,6 +992,56 @@
     "addToQueue": "{{count}} පෝලිමට එක් කරන්න",
     "applyNote": "කාර්යයන් කණ්ඩායම් පෝලිමට එක් වේ; ඔබ එය එහි ආරම්භ කරන තුරු කිසිවක් ධාවනය නොවේ.",
     "addedToQueue": "කාර්යයන් {{count}} ක් පෝලිමට එක් කෙරිණි",
-    "partiallyAdded": "සමහර කාර්යයන් පෝලිමට එක් කිරීමට නොහැකි විය."
+    "partiallyAdded": "සමහර කාර්යයන් පෝලිමට එක් කිරීමට නොහැකි විය.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "පිටපත් කරන්න",
+      "summarize": "සාරාංශය",
+      "chapters": "පරිච්ඡේද",
+      "search_transcript": "පිටපතෙහි සොයන්න",
+      "translate": "උපසිරැසි පරිවර්තනය",
+      "find_similar": "සමාන මාධ්‍ය සොයන්න"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "AI සපයන්නා වින්‍යාස කරන්න",
+      "locationNote": "AI සපයන්නන් සැකසුම් තුළ වින්‍යාස කරනු ලැබේ."
+    },
+    "queryLabel": "සෙවුම් වාක්‍යාංශය",
+    "queryPlaceholder": "උදා: මිල නියම කිරීම පිළිබඳ කොටස",
+    "targetLanguageLabel": "ඉලක්ක භාෂාව",
+    "targetLanguagePlaceholder": "උදා: ස්පාඤ්ඤ"
   }
 }

@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "Software",
     "hardwareAccelerationHint": "GPU-at (NVIDIA NVENC, Intel QSV, AMD AMF) encoding-imut aamma decoding-imut atoruk. Software encoding-imut qaamaassuut.",
     "hwaccelModeHint": "Automatisk: GPU decoding aamma encoding (sukkanerpaaq, kisianni tamanut naapertuunngilaq). Encoder taamaallaat: GPU encoding, CPU decoding (sikkerpaaq).",
-    "encoderTypeHint": "Video codec list-ip filter-imikkut. Automatisk-imi encoder-it tamarmik, Hardware-imi GPU encoder-it taamaallaat, Software-imi CPU encoder-it taamaallaat."
+    "encoderTypeHint": "Video codec list-ip filter-imikkut. Automatisk-imi encoder-it tamarmik, Hardware-imi GPU encoder-it taamaallaat, Software-imi CPU encoder-it taamaallaat.",
+    "ai": {
+      "title": "AI-nik inissisimasut",
+      "provider": "Inissisimasut",
+      "providers": {
+        "rules": "Innariilu aaqqissugaasut (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Nunaniittumi naatsorsueqaat"
+      },
+      "model": "Naatsorsueqaat",
+      "modelPlaceholder": "Inissisimasut naapertorlugu piffissaq",
+      "apiKey": "API-p matuaraat",
+      "apiKeyPlaceholder": "API-p matuaraatit ilalugit",
+      "keyNotRequired": "Inissisimasut matuaraatamik pisariaqartinngilaq",
+      "keyStored": "Matuaraat toqqorsimavoq ({{hint}}).",
+      "keyNone": "Matuaraat toqqorsimamgilaq.",
+      "save": "Toqqaruk",
+      "saved": "Aaqqissuutissat toqqorsimapput.",
+      "saveFailed": "Aaqqissuutissat toqqorisinnaanngillat.",
+      "test": "Attaveqarfiup misissorsua",
+      "testing": "Misissorsuivoq…",
+      "testFailed": "Inissisimasunit kiinniatagaasaasut.",
+      "privacy": "Misissorsuuummata ilusissat aamma isumassarsiannit allassimasat naapertuutissaatigineqarput; mediafilerit nammineeersissutigineqanngisaannarput."
+    }
   },
   "shortcuts": {
     "title": "Tastaturimi aaliangersagat",
@@ -967,6 +992,56 @@
     "addToQueue": "{{count}} queue-mut ilannguk",
     "applyNote": "Job-it batch queue-mut ilanngunneqarput; tamani aallartivissakkuunilu soqanngitsoq aallartinneqanngilaq.",
     "addedToQueue": "{{count}} job queue-mut ilanngunneqarpoq",
-    "partiallyAdded": "Job-it ilaalli queue-mut ilanngunneq ajornarpoq."
+    "partiallyAdded": "Job-it ilaalli queue-mut ilanngunneq ajornarpoq.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Allaaserisit",
+      "summarize": "Inernummiusserit",
+      "chapters": "Kapiteliit",
+      "search_transcript": "Allaaserisinernik ujarlerit",
+      "translate": "Naqitsinerit nuallakkit",
+      "find_similar": "Assigiinnartunik ujarlerit"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "AI-nik inissisimasut aaqqissuerit",
+      "locationNote": "AI-nik inissisimasut Aaqqissuutissat iluani aaqqissorneqarput."
+    },
+    "queryLabel": "Ujarleqqissaarut",
+    "queryPlaceholder": "soorlu prisinik oqaluttuassaaq",
+    "targetLanguageLabel": "Isumassarsiaq oqaatsit",
+    "targetLanguagePlaceholder": "soorlu Spanaalimiutut"
   }
 }

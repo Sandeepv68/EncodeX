@@ -617,6 +617,31 @@
       "rose": "Rosa",
       "slate": "Ardósia",
       "dark": "Escuro"
+    },
+    "ai": {
+      "title": "Provedor de IA",
+      "provider": "Provedor",
+      "providers": {
+        "rules": "Regras integradas (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Modelo local"
+      },
+      "model": "Modelo",
+      "modelPlaceholder": "Padrão do provedor",
+      "apiKey": "Chave de API",
+      "apiKeyPlaceholder": "Cole sua chave de API",
+      "keyNotRequired": "Nenhuma chave necessária para este provedor",
+      "keyStored": "Uma chave está armazenada ({{hint}}).",
+      "keyNone": "Nenhuma chave armazenada.",
+      "save": "Salvar",
+      "saved": "Configurações salvas.",
+      "saveFailed": "Não foi possível salvar as configurações.",
+      "test": "Testar conexão",
+      "testing": "Testando…",
+      "testFailed": "Nenhuma resposta do provedor.",
+      "privacy": "Somente os dados da análise e o texto do seu objetivo são enviados; arquivos de mídia nunca são carregados."
     }
   },
   "shortcuts": {
@@ -967,6 +992,56 @@
     "addToQueue": "Adicionar {{count}} à fila",
     "applyNote": "Os trabalhos são adicionados à fila de lote; nada é executado até você iniciá-la lá.",
     "addedToQueue": "{{count}} trabalho(s) adicionado(s) à fila",
-    "partiallyAdded": "Alguns trabalhos não puderam ser adicionados à fila."
+    "partiallyAdded": "Alguns trabalhos não puderam ser adicionados à fila.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Transcrever",
+      "summarize": "Resumir",
+      "chapters": "Capítulos",
+      "search_transcript": "Pesquisar na transcrição",
+      "translate": "Traduzir legendas",
+      "find_similar": "Encontrar mídias semelhantes"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Configurar provedor de IA",
+      "locationNote": "Os provedores de IA são configurados nas Configurações."
+    },
+    "queryLabel": "Frase de pesquisa",
+    "queryPlaceholder": "por exemplo, a parte sobre preços",
+    "targetLanguageLabel": "Idioma de destino",
+    "targetLanguagePlaceholder": "por exemplo, espanhol"
   }
 }

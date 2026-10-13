@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "Pūmanawa",
     "hardwareAccelerationHint": "Whakamahia tō GPU (NVIDIA NVENC, Intel QSV, AMD AMF) mō te whakawaehere me te whakawehikore ataata. Whakamomoehia mō te whakawaehere pūmanawa anake.",
     "hwaccelModeHint": "Aunoa: ka mahi te GPU i te whakawehikore me te whakawaehere (tere rawa, kāore e hototahi tonu). Encoder anake: ko te GPU te whakawaehere, ko te CPU te whakawehikore (haumaru rawa).",
-    "encoderTypeHint": "Tātari i te rārangi codec ataata. Ka whakaatu te Aunoa i ngā encoder katoa, ka whakaatu te Marohi i ngā encoder GPU anake, ka whakaatu te Pūmanawa i ngā encoder CPU anake."
+    "encoderTypeHint": "Tātari i te rārangi codec ataata. Ka whakaatu te Aunoa i ngā encoder katoa, ka whakaatu te Marohi i ngā encoder GPU anake, ka whakaatu te Pūmanawa i ngā encoder CPU anake.",
+    "ai": {
+      "title": "Kaiwhakarato AI",
+      "provider": "Kaiwhakarato",
+      "providers": {
+        "rules": "He ture kōmana (tuimotu)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Tauira ā-rohe"
+      },
+      "model": "Tauira",
+      "modelPlaceholder": "Taunoa a te kaiwhakarato",
+      "apiKey": "Kī API",
+      "apiKeyPlaceholder": "Whakapiri atu i tō kī API",
+      "keyNotRequired": "Kāore he kī e hiahiatia ana mō tēnei kaiwhakarato",
+      "keyStored": "Kua rongoa tētahi kī ({{hint}}).",
+      "keyNone": "Kāore kī i rongoa.",
+      "save": "Tiaki",
+      "saved": "Kua tiakina ngā tautuhinga.",
+      "saveFailed": "Kāore i taea te tiaki ngā tautuhinga.",
+      "test": "Whakamātau i te hononga",
+      "testing": "E whakamātau ana…",
+      "testFailed": "Kāore he whakautu mai i te kaiwhakarato.",
+      "privacy": "Ko ngā mēka tātari me te kuputuhi tino pai anake ka tukuna; kāore ngā kōnae pāpāho e tukuna ake."
+    }
   },
   "shortcuts": {
     "title": "Ngā Poto Aratohu Papapātuhi",
@@ -967,6 +992,56 @@
     "addToQueue": "Tāpiri {{count}} ki te rārangi",
     "applyNote": "Ka tāpirihia ngā mahi ki te Rārangi Puranga; kāore e whakahaere kia tīmata rawa koe i reira.",
     "addedToQueue": "Kua tāpiritia {{count}} mahi ki te rārangi",
-    "partiallyAdded": "Kāore i taea te tāpiri ētahi mahi ki te rārangi."
+    "partiallyAdded": "Kāore i taea te tāpiri ētahi mahi ki te rārangi.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Tuhia",
+      "summarize": "Whakarāpopoto",
+      "chapters": "Upoko",
+      "search_transcript": "Rapua i te tuhinga kōrero",
+      "translate": "Whakamāori ngā kupu tāpiri",
+      "find_similar": "Kimihia ngā pāpāho ōrite"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Whirihora i te kaiwhakarato AI",
+      "locationNote": "Ka whirihorahia ngā kaiwhakarato AI ki ngā Tautuhinga."
+    },
+    "queryLabel": "Kīanga rapu",
+    "queryPlaceholder": "hei tauira, te wāhanga mō te utu",
+    "targetLanguageLabel": "Reo whāinga",
+    "targetLanguagePlaceholder": "hei tauira, Pāniora"
   }
 }

@@ -617,6 +617,31 @@
       "rose": "Rosa",
       "slate": "Pizarra",
       "dark": "Oscuro"
+    },
+    "ai": {
+      "title": "Proveedor de IA",
+      "provider": "Proveedor",
+      "providers": {
+        "rules": "Reglas integradas (sin conexión)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Modelo local"
+      },
+      "model": "Modelo",
+      "modelPlaceholder": "Valor predeterminado del proveedor",
+      "apiKey": "Clave de API",
+      "apiKeyPlaceholder": "Pega tu clave de API",
+      "keyNotRequired": "No se requiere clave para este proveedor",
+      "keyStored": "Hay una clave guardada ({{hint}}).",
+      "keyNone": "No hay ninguna clave guardada.",
+      "save": "Guardar",
+      "saved": "Ajustes guardados.",
+      "saveFailed": "No se pudieron guardar los ajustes.",
+      "test": "Probar conexión",
+      "testing": "Probando…",
+      "testFailed": "Sin respuesta del proveedor.",
+      "privacy": "Solo se envían los datos del análisis y el texto de tu objetivo; los archivos de medios nunca se suben."
     }
   },
   "shortcuts": {
@@ -967,6 +992,56 @@
     "addToQueue": "Añadir {{count}} a la cola",
     "applyNote": "Las tareas se añaden a la cola de procesos; nada se ejecuta hasta que la inicias allí.",
     "addedToQueue": "Se añadieron {{count}} tarea(s) a la cola",
-    "partiallyAdded": "Algunas tareas no pudieron añadirse a la cola."
+    "partiallyAdded": "Algunas tareas no pudieron añadirse a la cola.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Transcribir",
+      "summarize": "Resumir",
+      "chapters": "Capítulos",
+      "search_transcript": "Buscar en la transcripción",
+      "translate": "Traducir subtítulos",
+      "find_similar": "Buscar medios similares"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Configurar proveedor de IA",
+      "locationNote": "Los proveedores de IA se configuran en Ajustes."
+    },
+    "queryLabel": "Frase de búsqueda",
+    "queryPlaceholder": "p. ej. la parte sobre precios",
+    "targetLanguageLabel": "Idioma de destino",
+    "targetLanguagePlaceholder": "p. ej. español"
   }
 }

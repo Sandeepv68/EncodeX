@@ -1,47 +1,61 @@
 /**
- * @fileoverview Copilot page (roadmap 7.4, R6).
+ * @fileoverview Copilot page (roadmap 7.4, R6; AI connector plan §7.2).
  *
- * A renderer surface for the deterministic AI planner (F20): the user describes
- * a goal and picks a folder; the main process scans and probes the media, plans
- * one conversion per file, and returns the actions plus their ready-to-enqueue
- * options. This page renders the plan as a proposal and lets the user push the
- * actions into the existing Batch Queue — it never starts a conversion itself,
- * so there is no second approval system.
+ * A renderer surface for the EncodeX planner: the user describes a goal, picks
+ * files and/or a folder, optionally forces an operation, and the main process
+ * scans and probes the media, routes the goal to one operation, and returns the
+ * plan — ready-to-enqueue options for queue-backed operations, read-only
+ * findings for `analyze`. This page renders the plan as a proposal and lets the
+ * user push the actions into the existing Batch Queue; it never starts a
+ * conversion itself, so there is no second approval system.
  *
  * The page is deliberately inert on mount: it calls the preload bridge only in
- * the two event handlers, so every hostile/renderer suite can mount it safely.
- * Bridge calls are wrapped in {@link bridgePromise} + {@link withBridgeTimeout}
- * so a missing, throwing, or hung bridge degrades to an inline error instead of
- * crashing the tree.
+ * event handlers, so every hostile/renderer suite can mount it safely. AI
+ * provider configuration lives on the Settings page; this page only links
+ * there. Bridge calls are wrapped in {@link bridgePromise} +
+ * {@link withBridgeTimeout} so a missing, throwing, or hung bridge degrades to
+ * an inline error instead of crashing the tree.
  */
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Alert, Box, Button, Chip, Divider, List, ListItem, ListItemIcon, ListItemText, Stack, TextField, Typography } from '@mui/material';
-import { faFolderOpen, faListCheck, faRobot, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
+import {
+  Alert,
+  Box,
+  Button,
+  Chip,
+  Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { faFolderOpen, faListCheck, faRobot, faWandMagicSparkles, faGear, faFileImport } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PageContainer from '../components/PageContainer';
 import { pageIcons } from '../pageIcons';
 import { bridgePromise, withBridgeTimeout } from '../utils/bridge-call';
 import { useToastStore } from '../stores/toastStore';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
-import type { CopilotPlan } from '../../shared/copilot';
+import type { CopilotOperationChoice, CopilotPlan } from '../../shared/copilot';
+import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../shared/copilot';
 import { formatError } from '../../shared/errors';
 
 /** How long the plan request may take before the page shows a failure. */
 const PLAN_TIMEOUT_MS = 60_000;
-/** How long the folder dialog may take before the page gives up. */
+/** How long a file/folder dialog may take before the page gives up. */
 const FOLDER_TIMEOUT_MS = 30_000;
+
+/** The selectable operations, in menu order (auto first, then queue, then read-only). */
+const OPERATION_CHOICES: CopilotOperationChoice[] = ['auto', ...COPILOT_QUEUE_OPERATIONS, ...COPILOT_INTELLIGENCE_OPERATIONS];
 
 /**
  * Renders the Copilot page (`/copilot`).
- *
- * Lays out a goal input and a folder picker, a "Plan" action that asks main for
- * the agent plan, the resulting actions/skips/rationale, and an "add to queue"
- * action that enqueues every planned job into the Batch Queue. All copy is
- * localized; no bridge call runs during render.
- *
  * @returns {JSX.Element} The page content.
  */
 export default function Copilot() {
@@ -50,19 +64,25 @@ export default function Copilot() {
 
   /** The user's natural-language goal. */
   const [goal, setGoal] = useState('');
-  /** Media files picked by the user (or absent until a folder is chosen). */
+  /** Media files picked by the user (files and/or a folder). */
   const [inputs, setInputs] = useState<string[]>([]);
+  /** The forced operation, or 'auto' to let the planner decide. */
+  const [operation, setOperation] = useState<CopilotOperationChoice>('auto');
   /** The latest plan, once one has been produced. */
   const [plan, setPlan] = useState<CopilotPlan | null>(null);
   /** True while a plan is being built or jobs are being enqueued. */
   const [busy, setBusy] = useState(false);
   /** Inline error message, or null when healthy. */
   const [error, setError] = useState<string | null>(null);
-  /** True while feedback from the previous action has been shown. */
+  /** Informational notice, or null. */
   const [notice, setNotice] = useState<string | null>(null);
+  /** Passage to look for when searching a transcript. */
+  const [query, setQuery] = useState('');
+  /** Target language when translating subtitles. */
+  const [targetLanguage, setTargetLanguage] = useState('');
 
   /**
-   * Opens the folder dialog and remembers the media files it returns.
+   * Opens the folder dialog (recursively) and replaces the current inputs.
    * @returns {Promise<void>} Resolves after the selection is stored.
    */
   const chooseFolder = async (): Promise<void> => {
@@ -78,6 +98,26 @@ export default function Copilot() {
       setPlan(null);
     } else if (Array.isArray(files)) {
       setNotice(t('copilot.folderEmpty'));
+    }
+  };
+
+  /**
+   * Opens the multi-file dialog and appends the chosen files to the inputs.
+   * @returns {Promise<void>} Resolves after the selection is merged.
+   */
+  const chooseFiles = async (): Promise<void> => {
+    setError(null);
+    setNotice(null);
+    const files = await withBridgeTimeout(
+      bridgePromise(() => window.electronAPI.selectFiles()),
+      FOLDER_TIMEOUT_MS,
+      null,
+    );
+    if (files && Array.isArray(files) && files.length > 0) {
+      setInputs((current) => [...new Set([...current, ...files])]);
+      setPlan(null);
+    } else if (Array.isArray(files) && files.length === 0) {
+      setNotice(t('copilot.filesEmpty'));
     }
   };
 
@@ -108,6 +148,9 @@ export default function Copilot() {
             inputs,
             recursive: true,
             maxFiles: 50,
+            ...(operation !== 'auto' ? { operation } : {}),
+            ...(operation === 'search_transcript' && query.trim() ? { query: query.trim() } : {}),
+            ...(operation === 'translate' && targetLanguage.trim() ? { targetLanguage: targetLanguage.trim() } : {}),
           }),
         ),
         PLAN_TIMEOUT_MS,
@@ -159,6 +202,14 @@ export default function Copilot() {
     }
   };
 
+  /**
+   * Opens the Settings page where AI providers are configured.
+   * @returns {void} Nothing is returned.
+   */
+  const openSettings = (): void => {
+    navigate('/settings');
+  };
+
   return (
     <PageContainer title={t('copilot.title')} icon={pageIcons['/copilot']}>
       <Typography variant="body2" color="text.secondary" data-testid="copilot-subtitle">
@@ -173,7 +224,11 @@ export default function Copilot() {
           fullWidth
           data-testid="copilot-goal"
         />
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ alignItems: { xs: 'flex-start', sm: 'center' } }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1}
+          sx={{ alignItems: { xs: 'flex-start', sm: 'center' }, flexWrap: 'wrap' }}
+        >
           <Button
             variant="outlined"
             startIcon={<FontAwesomeIcon icon={faFolderOpen} />}
@@ -182,6 +237,51 @@ export default function Copilot() {
           >
             {t('copilot.chooseFolder')}
           </Button>
+          <Button
+            variant="outlined"
+            startIcon={<FontAwesomeIcon icon={faFileImport} />}
+            onClick={chooseFiles}
+            data-testid="copilot-choose-files"
+          >
+            {t('copilot.chooseFiles')}
+          </Button>
+          <TextField
+            select
+            size="small"
+            label={t('copilot.operationLabel')}
+            value={operation}
+            onChange={(event) => setOperation(event.target.value as CopilotOperationChoice)}
+            sx={{ minWidth: 200 }}
+            data-testid="copilot-operation"
+          >
+            {OPERATION_CHOICES.map((choice) => (
+              <MenuItem key={choice} value={choice}>
+                {t(`copilot.op.${choice}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+          {operation === 'search_transcript' && (
+            <TextField
+              size="small"
+              label={t('copilot.queryLabel')}
+              placeholder={t('copilot.queryPlaceholder')}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              sx={{ minWidth: 220 }}
+              data-testid="copilot-query"
+            />
+          )}
+          {operation === 'translate' && (
+            <TextField
+              size="small"
+              label={t('copilot.targetLanguageLabel')}
+              placeholder={t('copilot.targetLanguagePlaceholder')}
+              value={targetLanguage}
+              onChange={(event) => setTargetLanguage(event.target.value)}
+              sx={{ minWidth: 180 }}
+              data-testid="copilot-target-language"
+            />
+          )}
           <Chip
             icon={<FontAwesomeIcon icon={faRobot} />}
             label={inputs.length > 0 ? t('copilot.selectedCount', { count: inputs.length }) : t('copilot.selectedNone')}
@@ -199,6 +299,15 @@ export default function Copilot() {
           </Button>
         </Stack>
 
+        <Box>
+          <Button size="small" startIcon={<FontAwesomeIcon icon={faGear} />} onClick={openSettings} data-testid="copilot-ai-settings">
+            {t('copilot.ai.configure')}
+          </Button>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+            {t('copilot.ai.locationNote')}
+          </Typography>
+        </Box>
+
         {error && (
           <Alert severity="error" data-testid="copilot-error">
             {error}
@@ -213,6 +322,9 @@ export default function Copilot() {
         {plan && (
           <Box data-testid="copilot-plan-summary">
             <Divider sx={{ my: 1 }} />
+            {plan.operation && (
+              <Chip size="small" label={t('copilot.routedAs', { operation: t(`copilot.op.${plan.operation}`) })} sx={{ mb: 1 }} />
+            )}
             <Typography variant="h6" component="h2">
               {t('copilot.actionsTitle')}
             </Typography>
@@ -243,6 +355,21 @@ export default function Copilot() {
                   </ListItem>
                 ))}
               </List>
+            )}
+
+            {plan.results.length > 0 && (
+              <>
+                <Typography variant="h6" component="h2">
+                  {t('copilot.resultsTitle')}
+                </Typography>
+                <List dense>
+                  {plan.results.map((result, index) => (
+                    <ListItem key={`${result.input}-${index}`} data-testid="copilot-result">
+                      <ListItemText primary={result.input} secondary={result.summary ?? result.title ?? ''} />
+                    </ListItem>
+                  ))}
+                </List>
+              </>
             )}
 
             {plan.skips.length > 0 && (

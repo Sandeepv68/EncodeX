@@ -617,6 +617,31 @@
       "rose": "وردة",
       "slate": "أردواز",
       "dark": "داكن"
+    },
+    "ai": {
+      "title": "مزوّد الذكاء الاصطناعي",
+      "provider": "المزوّد",
+      "providers": {
+        "rules": "قواعد مدمجة (دون اتصال)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "نموذج محلي"
+      },
+      "model": "النموذج",
+      "modelPlaceholder": "النموذج الافتراضي للمزوّد",
+      "apiKey": "مفتاح API",
+      "apiKeyPlaceholder": "الصق مفتاح API الخاص بك",
+      "keyNotRequired": "لا يتطلّب هذا المزوّد مفتاحًا",
+      "keyStored": "يوجد مفتاح مخزّن ({{hint}}).",
+      "keyNone": "لا يوجد مفتاح مخزّن.",
+      "save": "حفظ",
+      "saved": "تم حفظ الإعدادات.",
+      "saveFailed": "تعذّر حفظ الإعدادات.",
+      "test": "اختبار الاتصال",
+      "testing": "جارٍ الاختبار…",
+      "testFailed": "لا استجابة من المزوّد.",
+      "privacy": "يتم إرسال بيانات الفحص ونص هدفك فقط؛ ولا يتم تحميل ملفات الوسائط مطلقًا."
     }
   },
   "shortcuts": {
@@ -967,6 +992,56 @@
     "addToQueue": "أضف {{count}} إلى قائمة الانتظار",
     "applyNote": "تُضاف المهام إلى قائمة الدفعات؛ لا يعمل شيء حتى تبدأها هناك.",
     "addedToQueue": "أُضيفت {{count}} مهام إلى قائمة الانتظار",
-    "partiallyAdded": "تعذّرت إضافة بعض المهام إلى قائمة الانتظار."
+    "partiallyAdded": "تعذّرت إضافة بعض المهام إلى قائمة الانتظار.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "نسخ نصي",
+      "summarize": "تلخيص",
+      "chapters": "الفصول",
+      "search_transcript": "البحث في النص",
+      "translate": "ترجمة الترجمة المصاحبة",
+      "find_similar": "إيجاد ملفات وسائط متشابهة"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "ضبط مزوّد الذكاء الاصطناعي",
+      "locationNote": "يتم إعداد مزوّدي الذكاء الاصطناعي في الإعدادات."
+    },
+    "queryLabel": "عبارة البحث",
+    "queryPlaceholder": "مثال: الجزء المتعلّق بالتسعير",
+    "targetLanguageLabel": "اللغة الهدف",
+    "targetLanguagePlaceholder": "مثال: الإسبانية"
   }
 }

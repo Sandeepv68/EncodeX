@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "Sagteware",
     "hardwareAccelerationHint": "Gebruik jou GPU (NVIDIA NVENC, Intel QSV, AMD AMF) vir video-enkodering en -dekodering. Skakel af vir sagteware-alleen-enkodering.",
     "hwaccelModeHint": "Outomaties: die GPU doen beide dekodering en enkodering (vinnigste, nie altyd versoenbaar nie). Slegs enkodeer: die GPU enkodeer en die CPU dekodeer (veiligste).",
-    "encoderTypeHint": "Filtreer die video-kodeklys. Outomaties wys alle beskikbare enkodeerders, Hardeware wys slegs GPU-enkodeerders, Sagteware wys slegs CPU-enkodeerders."
+    "encoderTypeHint": "Filtreer die video-kodeklys. Outomaties wys alle beskikbare enkodeerders, Hardeware wys slegs GPU-enkodeerders, Sagteware wys slegs CPU-enkodeerders.",
+    "ai": {
+      "title": "AI-verskaffer",
+      "provider": "Verskaffer",
+      "providers": {
+        "rules": "Ingeboude reëls (aanlyn af)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Plaaslike model"
+      },
+      "model": "Model",
+      "modelPlaceholder": "Verskaffer-standaard",
+      "apiKey": "API-sleutel",
+      "apiKeyPlaceholder": "Plak jou API-sleutel",
+      "keyNotRequired": "Geen sleutel nodig vir hierdie verskaffer nie",
+      "keyStored": "'n Sleutel word gestoor ({{hint}}).",
+      "keyNone": "Geen sleutel gestoor nie.",
+      "save": "Stoor",
+      "saved": "Instellings gestoor.",
+      "saveFailed": "Kon nie die instellings stoor nie.",
+      "test": "Toets verbinding",
+      "testing": "Besig om te toets…",
+      "testFailed": "Geen reaksie van die verskaffer nie.",
+      "privacy": "Slegs ondersoekfeite en jou doel teks word gestuur; media-lêers word nooit opgelaai nie."
+    }
   },
   "shortcuts": {
     "title": "Sleutelbordkortpaaie",
@@ -967,6 +992,56 @@
     "addToQueue": "Voeg {{count}} by die waglys",
     "applyNote": "Take word by die Bondel-waglys gevoeg; niks loop voordat jy dit daar begin nie.",
     "addedToQueue": "{{count}} taak by die waglys gevoeg",
-    "partiallyAdded": "Sommige take kon nie by die waglys gevoeg word nie."
+    "partiallyAdded": "Sommige take kon nie by die waglys gevoeg word nie.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Transkribeer",
+      "summarize": "Opsom",
+      "chapters": "Hoofstukke",
+      "search_transcript": "Transkripsie deursoek",
+      "translate": "Onderskrifte vertaal",
+      "find_similar": "Soortgelyke media vind"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "AI-verskaffer instel",
+      "locationNote": "AI-verskaffers word in Instellings opgestel."
+    },
+    "queryLabel": "Soekfrase",
+    "queryPlaceholder": "bv. die deel oor pryse",
+    "targetLanguageLabel": "Doeltaal",
+    "targetLanguagePlaceholder": "bv. Spaans"
   }
 }

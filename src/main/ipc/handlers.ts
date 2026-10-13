@@ -27,6 +27,7 @@ import { registerTimelineHandlers } from './timeline';
 import { registerUpdaterHandlers } from './updater';
 import { registerDevHandlers } from './dev';
 import { registerCopilotHandlers } from './copilot';
+import { registerAiSettingsIpc } from '../ai/settings-ipc';
 import { LOG_REGISTERING_IPC_HANDLERS } from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/handlers');
@@ -50,6 +51,7 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   registerDialogHandlers(win);
   registerCapabilityHandlers();
   registerCopilotHandlers();
+  registerAiSettingsIpc();
   registerConversionHandlers(win, send);
   registerQueueHandlers(win, send);
   registerSystemHandlers(win);

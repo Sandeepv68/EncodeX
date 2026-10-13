@@ -27,6 +27,7 @@ import {
   PendingInstall,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
+import type { AiConnectTestResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
 import type { CopilotPlan, CopilotPlanRequest } from '../shared/copilot';
 
@@ -487,6 +488,27 @@ export interface ElectronAPI {
    * @returns {Promise<McpSettings>} The resulting sanitized settings.
    */
   mcpSetSettings(settings: McpSettings): Promise<McpSettings>;
+  /**
+   * Queries the Copilot's AI provider settings over `IPC.AI_SETTINGS_GET`
+   * ('ai-settings-get'). The API key is never returned; the view reports
+   * `hasKey` and a masked `keyHint`.
+   * @returns {Promise<AiSettingsView>} The sanitized AI provider settings.
+   */
+  aiGetSettings(): Promise<AiSettingsView>;
+  /**
+   * Updates the Copilot's AI provider settings over `IPC.AI_SETTINGS_SET`
+   * ('ai-settings-set'). A supplied key is encrypted in the main process.
+   * @param {AiSettingsUpdate} update - The provider/model/baseUrl/key change.
+   * @returns {Promise<AiSettingsView>} The resulting sanitized settings.
+   */
+  aiSetSettings(update: AiSettingsUpdate): Promise<AiSettingsView>;
+  /**
+   * Tests connectivity to the configured AI provider over `IPC.AI_CONNECT_TEST`
+   * ('ai-connect-test') by sending a one-token ping.
+   * @param {Partial<AiSettingsUpdate>} [candidate] - Optional override to test.
+   * @returns {Promise<AiConnectTestResult>} Whether the provider answered.
+   */
+  aiConnectTest(candidate?: Partial<AiSettingsUpdate>): Promise<AiConnectTestResult>;
   /**
    * Captures the current window contents and saves them as a PNG under the
    * project's `screenshots/dev/` directory over `IPC.DEV_CAPTURE_SCREENSHOT`

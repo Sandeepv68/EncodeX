@@ -33,3 +33,6 @@ export * from './highlight';
 export * from './social';
 export * from './edit';
 export * from './agent';
+export * from './connector';
+export * from './llm';
+export * from './settings';

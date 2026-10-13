@@ -617,6 +617,31 @@
       "rose": "Mawar",
       "slate": "Batu tulis",
       "dark": "Gelap"
+    },
+    "ai": {
+      "title": "Penyedia AI",
+      "provider": "Penyedia",
+      "providers": {
+        "rules": "Aturan bawaan (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Model lokal"
+      },
+      "model": "Model",
+      "modelPlaceholder": "Default penyedia",
+      "apiKey": "Kunci API",
+      "apiKeyPlaceholder": "Tempel kunci API Anda",
+      "keyNotRequired": "Tidak perlu kunci untuk penyedia ini",
+      "keyStored": "Sebuah kunci disimpan ({{hint}}).",
+      "keyNone": "Tidak ada kunci yang disimpan.",
+      "save": "Simpan",
+      "saved": "Pengaturan disimpan.",
+      "saveFailed": "Tidak dapat menyimpan pengaturan.",
+      "test": "Uji koneksi",
+      "testing": "Menguji…",
+      "testFailed": "Tidak ada respons dari penyedia.",
+      "privacy": "Hanya fakta pemeriksaan dan teks tujuan Anda yang dikirim; file media tidak pernah diunggah."
     }
   },
   "shortcuts": {
@@ -967,6 +992,56 @@
     "addToQueue": "Tambahkan {{count}} ke antrean",
     "applyNote": "Pekerjaan ditambahkan ke Antrean Batch; tidak ada yang berjalan sampai Anda memulainya di sana.",
     "addedToQueue": "{{count}} pekerjaan ditambahkan ke antrean",
-    "partiallyAdded": "Beberapa pekerjaan tidak dapat ditambahkan ke antrean."
+    "partiallyAdded": "Beberapa pekerjaan tidak dapat ditambahkan ke antrean.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Transkripsikan",
+      "summarize": "Ringkas",
+      "chapters": "Bab",
+      "search_transcript": "Cari di transkripsi",
+      "translate": "Terjemahkan subtitle",
+      "find_similar": "Temukan media serupa"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Konfigurasi penyedia AI",
+      "locationNote": "Penyedia AI dikonfigurasi di Pengaturan."
+    },
+    "queryLabel": "Frasa pencarian",
+    "queryPlaceholder": "mis. bagian tentang harga",
+    "targetLanguageLabel": "Bahasa target",
+    "targetLanguagePlaceholder": "mis. Spanyol"
   }
 }

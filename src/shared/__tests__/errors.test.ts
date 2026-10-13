@@ -246,6 +246,32 @@ describe('formatError', () => {
     expect(result.code).toBe(ErrorCode.UNKNOWN);
   });
 
+  it.each([
+    ['an ai connector failure', 'ai connector request failed'],
+    ['a provider HTTP error', 'provider responded with HTTP 401'],
+    ['an unreachable provider', 'could not reach the ai provider'],
+  ])('classifies %s as AI_CONNECTOR_FAILED', (_label, message) => {
+    expect(formatError(new Error(message)).code).toBe(ErrorCode.AI_CONNECTOR_FAILED);
+  });
+
+  it('classifies missing-key and unconfigured messages as AI_NOT_CONFIGURED', () => {
+    expect(formatError(new Error('no api key is set')).code).toBe(ErrorCode.AI_NOT_CONFIGURED);
+    expect(formatError(new Error('ai not configured')).code).toBe(ErrorCode.AI_NOT_CONFIGURED);
+  });
+
+  it('classifies malformed provider output as AI_RESPONSE_INVALID', () => {
+    expect(formatError(new Error('empty completion returned')).code).toBe(ErrorCode.AI_RESPONSE_INVALID);
+    expect(formatError(new Error('unusable response from provider')).code).toBe(ErrorCode.AI_RESPONSE_INVALID);
+  });
+
+  it('classifies speech-to-text failures as TRANSCRIPTION_UNAVAILABLE', () => {
+    expect(formatError(new Error('speech-to-text engine missing')).code).toBe(ErrorCode.TRANSCRIPTION_UNAVAILABLE);
+  });
+
+  it('classifies translation failures as TRANSLATION_UNAVAILABLE', () => {
+    expect(formatError(new Error('subtitle translation provider missing')).code).toBe(ErrorCode.TRANSLATION_UNAVAILABLE);
+  });
+
   it('handles string input', () => {
     const result = formatError('just a string');
     expect(result.code).toBe(ErrorCode.UNKNOWN);

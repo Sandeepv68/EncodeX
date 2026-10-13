@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "ซอฟต์แวร์",
     "hardwareAccelerationHint": "ใช้ GPU ของคุณ (NVIDIA NVENC, Intel QSV, AMD AMF) สำหรับการเข้ารหัสและถอดรหัสวิดีโอ ปิดเพื่อใช้ซอฟต์แวร์ล้วน",
     "hwaccelModeHint": "อัตโนมัติ: GPU ทำทั้งถอดรหัสและเข้ารหัส (เร็วที่สุด ไม่เข้ากันได้เสมอไป) เข้ารหัสเท่านั้น: GPU เข้ารหัส และ CPU ถอดรหัส (ปลอดภัยที่สุด)",
-    "encoderTypeHint": "กรองรายการวิดีโอโคเดก อัตโนมัติแสดงตัวเข้ารหัสทั้งหมดที่มี ฮาร์ดแวร์แสดงเฉพาะตัวเข้ารหัส GPU ซอฟต์แวร์แสดงเฉพาะตัวเข้ารหัส CPU"
+    "encoderTypeHint": "กรองรายการวิดีโอโคเดก อัตโนมัติแสดงตัวเข้ารหัสทั้งหมดที่มี ฮาร์ดแวร์แสดงเฉพาะตัวเข้ารหัส GPU ซอฟต์แวร์แสดงเฉพาะตัวเข้ารหัส CPU",
+    "ai": {
+      "title": "ผู้ให้บริการ AI",
+      "provider": "ผู้ให้บริการ",
+      "providers": {
+        "rules": "กฎในตัว (ออฟไลน์)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "โมเดลท้องถิ่น"
+      },
+      "model": "โมเดล",
+      "modelPlaceholder": "ค่าเริ่มต้นของผู้ให้บริการ",
+      "apiKey": "คีย์ API",
+      "apiKeyPlaceholder": "วางคีย์ API ของคุณ",
+      "keyNotRequired": "ผู้ให้บริการนี้ไม่ต้องใช้คีย์",
+      "keyStored": "มีคีย์ที่จัดเก็บอยู่ ({{hint}}).",
+      "keyNone": "ไม่มีคีย์ที่จัดเก็บไว้",
+      "save": "บันทึก",
+      "saved": "บันทึกการตั้งค่าแล้ว",
+      "saveFailed": "ไม่สามารถบันทึกการตั้งค่าได้",
+      "test": "ทดสอบการเชื่อมต่อ",
+      "testing": "กำลังทดสอบ…",
+      "testFailed": "ไม่มีคำตอบจากผู้ให้บริการ",
+      "privacy": "ส่งเฉพาะข้อเท็จจริงจากการตรวจสอบและข้อความเป้าหมายของคุณเท่านั้น ไฟล์สื่อจะไม่ถูกอัปโหลดเด็ดขาด"
+    }
   },
   "shortcuts": {
     "title": "แป้นพิมพ์ลัด",
@@ -967,6 +992,56 @@
     "addToQueue": "เพิ่ม {{count}} ไปยังคิว",
     "applyNote": "งานจะถูกเพิ่มไปยังคิวแบบกลุ่ม จะไม่มีอะไรทำงานจนกว่าคุณจะเริ่มที่นั่น",
     "addedToQueue": "เพิ่มงาน {{count}} งานไปยังคิวแล้ว",
-    "partiallyAdded": "ไม่สามารถเพิ่มบางงานไปยังคิวได้"
+    "partiallyAdded": "ไม่สามารถเพิ่มบางงานไปยังคิวได้",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "ถอดเสียง",
+      "summarize": "สรุปใจความ",
+      "chapters": "บท",
+      "search_transcript": "ค้นหาในการถอดเสียง",
+      "translate": "แปลคำบรรยาย",
+      "find_similar": "ค้นหาสื่อที่คล้ายกัน"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "กำหนดค่าผู้ให้บริการ AI",
+      "locationNote": "ผู้ให้บริการ AI ถูกกำหนดค่าในการตั้งค่า"
+    },
+    "queryLabel": "คำค้นหา",
+    "queryPlaceholder": "เช่น ส่วนเกี่ยวกับราคา",
+    "targetLanguageLabel": "ภาษาปลายทาง",
+    "targetLanguagePlaceholder": "เช่น สเปน"
   }
 }

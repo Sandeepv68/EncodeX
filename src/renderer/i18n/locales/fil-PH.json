@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "Software",
     "hardwareAccelerationHint": "Ginagamit ang iyong GPU (NVIDIA NVENC, Intel QSV, AMD AMF) para sa video encoding at decoding. I-off para sa software-only encoding.",
     "hwaccelModeHint": "Automatic: ginagawa ng GPU ang parehong decoding at encoding (pinakamabilis, hindi palaging compatible). Encode lang: ang GPU ay nag-encode at ang CPU ay nag-decode (pinakaligtas).",
-    "encoderTypeHint": "Sinasala ang listahan ng video codec. Ipinapakita ng Automatic ang lahat ng available na encoder, ipinapakita ng Hardware ang mga GPU encoder lang, ipinapakita ng Software ang mga CPU encoder lang."
+    "encoderTypeHint": "Sinasala ang listahan ng video codec. Ipinapakita ng Automatic ang lahat ng available na encoder, ipinapakita ng Hardware ang mga GPU encoder lang, ipinapakita ng Software ang mga CPU encoder lang.",
+    "ai": {
+      "title": "Tagapagbigay ng AI",
+      "provider": "Tagapagbigay",
+      "providers": {
+        "rules": "Built-in na mga panuntunan (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Lokal na modelo"
+      },
+      "model": "Modelo",
+      "modelPlaceholder": "Default ng provider",
+      "apiKey": "Susi ng API",
+      "apiKeyPlaceholder": "Idikit ang iyong API key",
+      "keyNotRequired": "Walang key na kailangan para sa provider na ito",
+      "keyStored": "May naka-imbak na key ({{hint}}).",
+      "keyNone": "Walang naka-imbak na key.",
+      "save": "I-save",
+      "saved": "Nai-save ang mga setting.",
+      "saveFailed": "Hindi mai-save ang mga setting.",
+      "test": "Subukan ang koneksyon",
+      "testing": "Sinusubukan…",
+      "testFailed": "Walang tugon mula sa provider.",
+      "privacy": "Tanging ang mga naprosesong impormasyon at ang teksto ng iyong layunin ang ipinapadala; hindi kailanman ina-upload ang mga media file."
+    }
   },
   "shortcuts": {
     "title": "Mga Keyboard Shortcut",
@@ -967,6 +992,56 @@
     "addToQueue": "Idagdag ang {{count}} sa queue",
     "applyNote": "Idinaragdag ang mga trabaho sa Batch Queue; walang tatakbo hanggang simulan mo ito doon.",
     "addedToQueue": "Idinagdag ang {{count}} trabaho sa queue",
-    "partiallyAdded": "Hindi maidaragdag sa queue ang ilang trabaho."
+    "partiallyAdded": "Hindi maidaragdag sa queue ang ilang trabaho.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "I-transcribe",
+      "summarize": "Ibuod",
+      "chapters": "Mga kabanata",
+      "search_transcript": "Hanapin sa transcript",
+      "translate": "Isalin ang mga subtitle",
+      "find_similar": "Maghanap ng magkatulad na media"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "I-configure ang AI provider",
+      "locationNote": "Ang mga AI provider ay naka-configure sa Settings."
+    },
+    "queryLabel": "Pariralang hahanapin",
+    "queryPlaceholder": "hal. ang bahagi tungkol sa presyo",
+    "targetLanguageLabel": "Layuning wika",
+    "targetLanguagePlaceholder": "hal. Espanyol"
   }
 }

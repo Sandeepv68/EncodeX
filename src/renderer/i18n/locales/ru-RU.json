@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "Программный",
     "hardwareAccelerationHint": "Использует ваш GPU (NVIDIA NVENC, Intel QSV, AMD AMF) для кодирования и декодирования видео. Выключите для чисто программного кодирования.",
     "hwaccelModeHint": "Автоматически: GPU выполняет и декодирование, и кодирование (быстрее всего, но не всегда совместимо). Только кодирование: GPU кодирует, а CPU декодирует (самый безопасный вариант).",
-    "encoderTypeHint": "Фильтрует список видеокодеков. Автоматически показывает все доступные энкодеры, Аппаратный — только GPU-энкодеры, Программный — только CPU-энкодеры."
+    "encoderTypeHint": "Фильтрует список видеокодеков. Автоматически показывает все доступные энкодеры, Аппаратный — только GPU-энкодеры, Программный — только CPU-энкодеры.",
+    "ai": {
+      "title": "ИИ-провайдер",
+      "provider": "Провайдер",
+      "providers": {
+        "rules": "Встроенные правила (офлайн)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Локальная модель"
+      },
+      "model": "Модель",
+      "modelPlaceholder": "По умолчанию у провайдера",
+      "apiKey": "API-ключ",
+      "apiKeyPlaceholder": "Вставьте ваш API-ключ",
+      "keyNotRequired": "Для этого провайдера ключ не требуется",
+      "keyStored": "Ключ сохранён ({{hint}}).",
+      "keyNone": "Ключ не сохранён.",
+      "save": "Сохранить",
+      "saved": "Параметры сохранены.",
+      "saveFailed": "Не удалось сохранить параметры.",
+      "test": "Проверить соединение",
+      "testing": "Проверка…",
+      "testFailed": "Нет ответа от провайдера.",
+      "privacy": "Отправляются только данные анализа и текст вашей цели; медиафайлы никогда не загружаются."
+    }
   },
   "shortcuts": {
     "title": "Горячие клавиши",
@@ -967,6 +992,56 @@
     "addToQueue": "Добавить {{count}} в очередь",
     "applyNote": "Задачи добавляются в очередь пакетной обработки; ничего не запускается, пока вы не запустите её там.",
     "addedToQueue": "Добавлено задач в очередь: {{count}}",
-    "partiallyAdded": "Некоторые задачи не удалось добавить в очередь."
+    "partiallyAdded": "Некоторые задачи не удалось добавить в очередь.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Транскрибировать",
+      "summarize": "Резюмировать",
+      "chapters": "Главы",
+      "search_transcript": "Поиск в расшифровке",
+      "translate": "Перевести субтитры",
+      "find_similar": "Найти похожие медиафайлы"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Настроить ИИ-провайдера",
+      "locationNote": "ИИ-провайдеры настраиваются в параметрах."
+    },
+    "queryLabel": "Поисковая фраза",
+    "queryPlaceholder": "например, часть о ценах",
+    "targetLanguageLabel": "Целевой язык",
+    "targetLanguagePlaceholder": "например, испанский"
   }
 }

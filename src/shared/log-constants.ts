@@ -1052,3 +1052,9 @@ export const LOG_MCP_EMBEDDED_DISABLED = 'Embedded MCP server is disabled in set
 export const LOG_IPC_MCP_GET_SETTINGS = 'mcpGetSettings called';
 /** @const {string} Prefix when the renderer updates the MCP settings. */
 export const LOG_IPC_MCP_SET_SETTINGS = 'mcpSetSettings:';
+/** @const {string} Logged when the renderer requests the stored AI provider settings. */
+export const LOG_IPC_AI_GET_SETTINGS = 'aiGetSettings called';
+/** @const {string} Prefix when the renderer updates the AI provider settings. */
+export const LOG_IPC_AI_SET_SETTINGS = 'aiSetSettings:';
+/** @const {string} Prefix when the renderer tests AI provider connectivity. */
+export const LOG_IPC_AI_CONNECT_TEST = 'aiConnectTest:';

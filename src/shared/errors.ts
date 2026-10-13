@@ -59,6 +59,9 @@ export const ErrorCode = {
   UNSAFE_ARGUMENTS: 'UNSAFE_ARGUMENTS',
   TRANSCRIPTION_UNAVAILABLE: 'TRANSCRIPTION_UNAVAILABLE',
   TRANSLATION_UNAVAILABLE: 'TRANSLATION_UNAVAILABLE',
+  AI_NOT_CONFIGURED: 'AI_NOT_CONFIGURED',
+  AI_CONNECTOR_FAILED: 'AI_CONNECTOR_FAILED',
+  AI_RESPONSE_INVALID: 'AI_RESPONSE_INVALID',
   UNKNOWN: 'UNKNOWN',
 } as const;
 
@@ -189,6 +192,9 @@ export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
   TRANSCRIPTION_UNAVAILABLE:
     'No speech-to-text engine is available. Install a supported local ASR tool (e.g. whisper.cpp) or configure one.',
   TRANSLATION_UNAVAILABLE: 'No subtitle translation backend is available. Configure a local model runtime or another provider.',
+  AI_NOT_CONFIGURED: 'No AI provider is configured. Add an API key in Settings to use AI-powered planning.',
+  AI_CONNECTOR_FAILED: 'Could not reach the AI provider. Check your network connection, API key, and model name.',
+  AI_RESPONSE_INVALID: 'The AI provider returned an unusable response. Try again or switch to the deterministic planner.',
   UNKNOWN: 'An unexpected error occurred. Please try again.',
 };
 
@@ -252,6 +258,13 @@ function inferErrorCode(message: string, err?: unknown): ErrorCodeType {
   if (m.includes('timed out') || m.includes('timeout') || m.includes('etimedout')) return ErrorCode.OPERATION_TIMED_OUT;
   if (m.includes('speech-to-text') || m.includes('transcrib')) return ErrorCode.TRANSCRIPTION_UNAVAILABLE;
   if (m.includes('translation') || m.includes('translator') || m.includes('subtitle translation')) return ErrorCode.TRANSLATION_UNAVAILABLE;
+  // AI connector failures are checked before the generic `not found`/`failed`
+  // rules: a provider HTTP error or a missing key must not be misclassified as
+  // a filesystem or conversion problem.
+  if (m.includes('ai connector') || m.includes('provider responded') || m.includes('could not reach the ai'))
+    return ErrorCode.AI_CONNECTOR_FAILED;
+  if (m.includes('no api key') || m.includes('ai not configured') || m.includes('no ai provider')) return ErrorCode.AI_NOT_CONFIGURED;
+  if (m.includes('empty completion') || m.includes('ai response') || m.includes('unusable response')) return ErrorCode.AI_RESPONSE_INVALID;
   if (m.includes('auxiliary input') || m.includes('added subtitle, audio')) return ErrorCode.AUXILIARY_INPUT_NOT_FOUND;
   if (errCode === 'EACCES' || m.includes('permission denied') || m.includes('eacces')) return ErrorCode.PERMISSION_DENIED;
   // A runtime ffmpeg/ffprobe failure (the binary ran but could not open its

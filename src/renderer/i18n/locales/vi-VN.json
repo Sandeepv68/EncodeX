@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "Phần mềm",
     "hardwareAccelerationHint": "Sử dụng GPU của bạn (NVIDIA NVENC, Intel QSV, AMD AMF) để mã hóa và giải mã video. Tắt để chỉ mã hóa bằng phần mềm.",
     "hwaccelModeHint": "Tự động: GPU thực hiện cả giải mã và mã hóa (nhanh nhất, không phải lúc nào cũng tương thích). Chỉ mã hóa: GPU mã hóa và CPU giải mã (an toàn nhất).",
-    "encoderTypeHint": "Lọc danh sách codec video. Tự động hiển thị tất cả bộ mã hóa, Phần cứng chỉ hiển thị bộ mã hóa GPU, Phần mềm chỉ hiển thị bộ mã hóa CPU."
+    "encoderTypeHint": "Lọc danh sách codec video. Tự động hiển thị tất cả bộ mã hóa, Phần cứng chỉ hiển thị bộ mã hóa GPU, Phần mềm chỉ hiển thị bộ mã hóa CPU.",
+    "ai": {
+      "title": "Nhà cung cấp AI",
+      "provider": "Nhà cung cấp",
+      "providers": {
+        "rules": "Quy tắc tích hợp (ngoại tuyến)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Mô hình cục bộ"
+      },
+      "model": "Mô hình",
+      "modelPlaceholder": "Mặc định của nhà cung cấp",
+      "apiKey": "Khóa API",
+      "apiKeyPlaceholder": "Dán khóa API của bạn",
+      "keyNotRequired": "Không cần khóa cho nhà cung cấp này",
+      "keyStored": "Một khóa đã được lưu ({{hint}}).",
+      "keyNone": "Chưa có khóa nào được lưu.",
+      "save": "Lưu",
+      "saved": "Đã lưu cài đặt.",
+      "saveFailed": "Không thể lưu cài đặt.",
+      "test": "Kiểm tra kết nối",
+      "testing": "Đang kiểm tra…",
+      "testFailed": "Không có phản hồi từ nhà cung cấp.",
+      "privacy": "Chỉ có các dữ liệu phân tích và văn bản mục tiêu của bạn được gửi; tệp phương tiện không bao giờ được tải lên."
+    }
   },
   "shortcuts": {
     "title": "Phím tắt",
@@ -967,6 +992,56 @@
     "addToQueue": "Thêm {{count}} vào hàng đợi",
     "applyNote": "Các công việc được thêm vào hàng đợi hàng loạt; không có gì chạy cho đến khi bạn bắt đầu ở đó.",
     "addedToQueue": "Đã thêm {{count}} công việc vào hàng đợi",
-    "partiallyAdded": "Một số công việc không thể thêm vào hàng đợi."
+    "partiallyAdded": "Một số công việc không thể thêm vào hàng đợi.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Phiên âm",
+      "summarize": "Tóm tắt",
+      "chapters": "Chương",
+      "search_transcript": "Tìm trong bản phiên âm",
+      "translate": "Dịch phụ đề",
+      "find_similar": "Tìm phương tiện tương tự"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Định cấu hình nhà cung cấp AI",
+      "locationNote": "Các nhà cung cấp AI được định cấu hình trong Cài đặt."
+    },
+    "queryLabel": "Cụm từ tìm kiếm",
+    "queryPlaceholder": "vd: phần về định giá",
+    "targetLanguageLabel": "Ngôn ngữ đích",
+    "targetLanguagePlaceholder": "vd: tiếng Tây Ban Nha"
   }
 }

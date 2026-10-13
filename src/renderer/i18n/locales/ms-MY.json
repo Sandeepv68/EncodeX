@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "Perisian",
     "hardwareAccelerationHint": "Menggunakan GPU anda (NVIDIA NVENC, Intel QSV, AMD AMF) untuk pengekodan dan penyahkodan video. Matikan untuk pengekodan perisian sahaja.",
     "hwaccelModeHint": "Automatik: GPU melakukan kedua-dua penyahkodan dan pengekodan (paling pantas, tidak selalu serasi). Kod sahaja: GPU mengekod dan CPU menyahkod (paling selamat).",
-    "encoderTypeHint": "Menapis senarai codec video. Automatik menunjukkan semua pengekod tersedia, Perkakasan menunjukkan pengekod GPU sahaja, Perisian menunjukkan pengekod CPU sahaja."
+    "encoderTypeHint": "Menapis senarai codec video. Automatik menunjukkan semua pengekod tersedia, Perkakasan menunjukkan pengekod GPU sahaja, Perisian menunjukkan pengekod CPU sahaja.",
+    "ai": {
+      "title": "Pembekal AI",
+      "provider": "Pembekal",
+      "providers": {
+        "rules": "Peraturan terbina dalam (luar talian)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Model setempat"
+      },
+      "model": "Model",
+      "modelPlaceholder": "Lalai pembekal",
+      "apiKey": "Kunci API",
+      "apiKeyPlaceholder": "Tampal kunci API anda",
+      "keyNotRequired": "Tiada kunci diperlukan untuk pembekal ini",
+      "keyStored": "Kunci disimpan ({{hint}}).",
+      "keyNone": "Tiada kunci disimpan.",
+      "save": "Simpan",
+      "saved": "Tetapan disimpan.",
+      "saveFailed": "Tetapan tidak dapat disimpan.",
+      "test": "Uji sambungan",
+      "testing": "Menguji…",
+      "testFailed": "Tiada tindak balas daripada pembekal.",
+      "privacy": "Hanya fakta pemeriksaan dan teks matlamat anda yang dihantar; fail media tidak pernah dimuat naik."
+    }
   },
   "shortcuts": {
     "title": "Pintasan Papan Kekunci",
@@ -967,6 +992,56 @@
     "addToQueue": "Tambah {{count}} ke baris gilir",
     "applyNote": "Pekerjaan ditambah ke Baris Gilir Kelompok; tiada apa-apa berjalan sehingga anda memulakannya di sana.",
     "addedToQueue": "{{count}} pekerjaan ditambah ke baris gilir",
-    "partiallyAdded": "Sebilangan pekerjaan tidak dapat ditambah ke baris gilir."
+    "partiallyAdded": "Sebilangan pekerjaan tidak dapat ditambah ke baris gilir.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Transkripsi",
+      "summarize": "Ringkaskan",
+      "chapters": "Bab",
+      "search_transcript": "Cari dalam transkripsi",
+      "translate": "Terjemahkan sari kata",
+      "find_similar": "Cari media serupa"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Konfigurasikan pembekal AI",
+      "locationNote": "Pembekal AI dikonfigurasikan dalam Tetapan."
+    },
+    "queryLabel": "Frasa carian",
+    "queryPlaceholder": "cth. bahagian tentang harga",
+    "targetLanguageLabel": "Bahasa sasaran",
+    "targetLanguagePlaceholder": "cth. Sepanyol"
   }
 }

@@ -103,6 +103,9 @@ const API_TABLE: Record<string, MethodEntry> = {
   analyticsSetEnabled: { kind: 'invoke', params: ['enabled'] },
   mcpGetSettings: { kind: 'invoke', params: [] },
   mcpSetSettings: { kind: 'invoke', params: ['settings'] },
+  aiGetSettings: { kind: 'invoke', params: [] },
+  aiSetSettings: { kind: 'invoke', params: ['update'] },
+  aiConnectTest: { kind: 'invoke', params: ['candidate'] },
   captureDevScreenshot: { kind: 'invoke', params: [] },
   checkForUpdates: { kind: 'invoke', params: [] },
   downloadUpdate: { kind: 'invoke', params: [] },
@@ -257,6 +260,11 @@ function benignResolveFor(name: string): unknown {
       return false;
     case 'queueAdd':
       return '';
+    case 'aiGetSettings':
+    case 'aiSetSettings':
+      return { providerId: 'rules', model: '', hasKey: false, keyHint: '', storedInsecurely: false, encryptionAvailable: true };
+    case 'aiConnectTest':
+      return { ok: false, message: '' };
     default:
       return undefined;
   }

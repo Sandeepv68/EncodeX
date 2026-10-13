@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "軟體",
     "hardwareAccelerationHint": "使用您的 GPU（NVIDIA NVENC、Intel QSV、AMD AMF）進行影片編碼和解碼。關閉以僅使用軟體編碼。",
     "hwaccelModeHint": "自動：GPU 同時執行解碼和編碼（最快，並非總是相容）。僅編碼：GPU 編碼，CPU 解碼（最安全）。",
-    "encoderTypeHint": "篩選影片編解碼器清單。自動顯示所有可用的編碼器，硬體僅顯示 GPU 編碼器，軟體僅顯示 CPU 編碼器。"
+    "encoderTypeHint": "篩選影片編解碼器清單。自動顯示所有可用的編碼器，硬體僅顯示 GPU 編碼器，軟體僅顯示 CPU 編碼器。",
+    "ai": {
+      "title": "AI 提供者",
+      "provider": "提供者",
+      "providers": {
+        "rules": "內建規則（離線）",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "本機模型"
+      },
+      "model": "模型",
+      "modelPlaceholder": "提供者預設",
+      "apiKey": "API 金鑰",
+      "apiKeyPlaceholder": "貼上您的 API 金鑰",
+      "keyNotRequired": "此提供者不需要金鑰",
+      "keyStored": "已儲存金鑰（{{hint}}）。",
+      "keyNone": "未儲存任何金鑰。",
+      "save": "儲存",
+      "saved": "設定已儲存。",
+      "saveFailed": "無法儲存設定。",
+      "test": "測試連線",
+      "testing": "測試中…",
+      "testFailed": "提供者沒有回應。",
+      "privacy": "僅會傳送分析資訊與您的目標文字；絕不會上傳媒體檔案。"
+    }
   },
   "shortcuts": {
     "title": "鍵盤快速鍵",
@@ -967,6 +992,56 @@
     "addToQueue": "將 {{count}} 項加入佇列",
     "applyNote": "工作會加入批次佇列；只有在那裡啟動後才會執行。",
     "addedToQueue": "已將 {{count}} 個工作加入佇列",
-    "partiallyAdded": "部分工作無法加入佇列。"
+    "partiallyAdded": "部分工作無法加入佇列。",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "轉錄",
+      "summarize": "總結",
+      "chapters": "章節",
+      "search_transcript": "搜尋轉錄文字",
+      "translate": "翻譯字幕",
+      "find_similar": "尋找相似媒體"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "設定 AI 提供者",
+      "locationNote": "AI 提供者會在設定中設定。"
+    },
+    "queryLabel": "搜尋片語",
+    "queryPlaceholder": "例如：關於定價的部分",
+    "targetLanguageLabel": "目標語言",
+    "targetLanguagePlaceholder": "例如：西班牙文"
   }
 }

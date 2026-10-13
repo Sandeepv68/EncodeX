@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "កម្មវិធី",
     "hardwareAccelerationHint": "ប្រើ GPU របស់អ្នក (NVIDIA NVENC, Intel QSV, AMD AMF) សម្រាប់អ៊ិនកូដ និង decod វីដេអូ។ បិទសម្រាប់ការអ៊ិនកូដកម្មវិធីតែប៉ុណ្ណោះ។",
     "hwaccelModeHint": "ស្វ័យប្រវត្តិ: GPU ធ្វើទាំង decod និងអ៊ិនកូដ (លឿនបំផុត មិនតែងតែឆបគ្នា)។ អ៊ិនកូដតែប៉ុណ្ណោះ: GPU អ៊ិនកូដ និង CPU decod (សុវត្ថិភាពបំផុត)។",
-    "encoderTypeHint": "ត្រងបញ្ជី codec វីដេអូ។ ស្វ័យប្រវត្តិបង្ហាញ encoder ដែលមានទាំងអស់, ផ្នែករឹងបង្ហាញតែ encoder GPU, កម្មវិធីបង្ហាញតែ encoder CPU ។"
+    "encoderTypeHint": "ត្រងបញ្ជី codec វីដេអូ។ ស្វ័យប្រវត្តិបង្ហាញ encoder ដែលមានទាំងអស់, ផ្នែករឹងបង្ហាញតែ encoder GPU, កម្មវិធីបង្ហាញតែ encoder CPU ។",
+    "ai": {
+      "title": "អ្នកផ្តល់ AI",
+      "provider": "អ្នកផ្តល់",
+      "providers": {
+        "rules": "ច្បាប់ភ្ជាប់មកជាមួយ (មិនភ្ជាប់អ៊ីនធឺណិត)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "ម៉ូដែលក្នុងមូលដ្ឋាន"
+      },
+      "model": "ម៉ូដែល",
+      "modelPlaceholder": "លំនាំដើមរបស់អ្នកផ្តល់",
+      "apiKey": "សោ API",
+      "apiKeyPlaceholder": "បិទភ្ជាប់សោ API របស់អ្នក",
+      "keyNotRequired": "មិនត្រូវការសោសម្រាប់អ្នកផ្តល់នេះទេ",
+      "keyStored": "សោមួយត្រូវបានរក្សាទុក ({{hint}}).",
+      "keyNone": "មិនមានសោដែលបានរក្សាទុកទេ។",
+      "save": "រក្សាទុក",
+      "saved": "ការកំណត់ត្រូវបានរក្សាទុក។",
+      "saveFailed": "មិនអាចរក្សាទុកការកំណត់បានទេ។",
+      "test": "សាកល្បងការតភ្ជាប់",
+      "testing": "កំពុងសាកល្បង…",
+      "testFailed": "គ្មានការឆ្លើយតបពីអ្នកផ្តល់ទេ។",
+      "privacy": "មានតែការពិតនៃការពិនិត្យ និងអត្ថបទគោលដៅរបស់អ្នកប៉ុណ្ណោះដែលត្រូវបានផ្ញើ; ឯកសារមេឌៀមិនត្រូវបានផ្ទុកឡើងណាមួយទេ។"
+    }
   },
   "shortcuts": {
     "title": "ផ្លូវកាត់ក្តារចុច",
@@ -967,6 +992,56 @@
     "addToQueue": "បន្ថែម {{count}} ទៅជួរដេក",
     "applyNote": "កិច្ចការត្រូវបានបន្ថែមទៅជួរដេកបាច។ គ្មានអ្វីដំណើរការទេ រហូតទាល់តែអ្នកចាប់ផ្តើមវានៅទីនោះ។",
     "addedToQueue": "បានបន្ថែម {{count}} កិច្ចការទៅជួរដេក",
-    "partiallyAdded": "កិច្ចការខ្លះមិនអាចត្រូវបានបន្ថែមទៅជួរដេកទេ។"
+    "partiallyAdded": "កិច្ចការខ្លះមិនអាចត្រូវបានបន្ថែមទៅជួរដេកទេ។",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "ចម្លងសំឡេង",
+      "summarize": "សង្ខេប",
+      "chapters": "ជំពូក",
+      "search_transcript": "ស្វែងរកក្នុងការចម្លង",
+      "translate": "បកប្រែអក្សររត់",
+      "find_similar": "ស្វែងរកមេឌៀស្រដៀងគ្នា"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "កំណត់រចនាសម្ព័ន្ធអ្នកផ្តល់ AI",
+      "locationNote": "អ្នកផ្តល់ AI ត្រូវបានកំណត់រចនាសម្ព័ន្ធនៅក្នុងការកំណត់។"
+    },
+    "queryLabel": "ឃ្លាស្វែងរក",
+    "queryPlaceholder": "ឧ. ផ្នែកអំពីកំណត់តម្លៃ",
+    "targetLanguageLabel": "ភាសាគោលដៅ",
+    "targetLanguagePlaceholder": "ឧ. អេស្ប៉ាញ"
   }
 }

@@ -617,6 +617,31 @@
       "rose": "रोज़",
       "slate": "स्लेट",
       "dark": "डार्क"
+    },
+    "ai": {
+      "title": "AI प्रदाता",
+      "provider": "प्रदाता",
+      "providers": {
+        "rules": "अंतर्निर्मित नियम (ऑफ़लाइन)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "स्थानीय मॉडल"
+      },
+      "model": "मॉडल",
+      "modelPlaceholder": "प्रदाता का डिफ़ॉल्ट",
+      "apiKey": "API कुंजी",
+      "apiKeyPlaceholder": "अपनी API कुंजी पेस्ट करें",
+      "keyNotRequired": "इस प्रदाता के लिए कुंजी आवश्यक नहीं है",
+      "keyStored": "एक कुंजी संग्रहीत है ({{hint}}).",
+      "keyNone": "कोई कुंजी संग्रहीत नहीं है।",
+      "save": "सहेजें",
+      "saved": "सेटिंग्स सहेजी गईं।",
+      "saveFailed": "सेटिंग्स सहेजी नहीं जा सकीं।",
+      "test": "कनेक्शन परीक्षण",
+      "testing": "परीक्षण हो रहा है…",
+      "testFailed": "प्रदाता से कोई प्रतिक्रिया नहीं।",
+      "privacy": "केवल जांच तथ्य और आपके लक्ष्य का पाठ भेजा जाता है; मीडिया फ़ाइलें कभी अपलोड नहीं की जातीं।"
     }
   },
   "shortcuts": {
@@ -967,6 +992,56 @@
     "addToQueue": "{{count}} कतार में जोड़ें",
     "applyNote": "कार्य बैच कतार में जुड़ते हैं; जब तक आप वहाँ इसे शुरू नहीं करते, कुछ नहीं चलता।",
     "addedToQueue": "{{count}} कार्य कतार में जोड़े गए",
-    "partiallyAdded": "कुछ कार्य कतार में नहीं जोड़े जा सके।"
+    "partiallyAdded": "कुछ कार्य कतार में नहीं जोड़े जा सके।",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "लिप्यंतरण",
+      "summarize": "सारांश बनाएं",
+      "chapters": "अध्याय",
+      "search_transcript": "ट्रांसक्रिप्ट में खोजें",
+      "translate": "उपशीर्षक का अनुवाद करें",
+      "find_similar": "समान मीडिया खोजें"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "AI प्रदाता कॉन्फ़िगर करें",
+      "locationNote": "AI प्रदाताओं को सेटिंग्स में कॉन्फ़िगर किया जाता है।"
+    },
+    "queryLabel": "खोज वाक्यांश",
+    "queryPlaceholder": "जैसे: मूल्य निर्धारण वाला भाग",
+    "targetLanguageLabel": "लक्ष्य भाषा",
+    "targetLanguagePlaceholder": "जैसे: स्पेनिश"
   }
 }

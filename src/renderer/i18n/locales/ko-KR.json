@@ -617,6 +617,31 @@
       "rose": "로즈",
       "slate": "슬레이트",
       "dark": "다크"
+    },
+    "ai": {
+      "title": "AI 공급자",
+      "provider": "공급자",
+      "providers": {
+        "rules": "내장 규칙(오프라인)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "로컬 모델"
+      },
+      "model": "모델",
+      "modelPlaceholder": "공급자 기본값",
+      "apiKey": "API 키",
+      "apiKeyPlaceholder": "API 키 붙여넣기",
+      "keyNotRequired": "이 공급자는 키가 필요하지 않습니다",
+      "keyStored": "저장된 키가 있습니다({{hint}}).",
+      "keyNone": "저장된 키가 없습니다.",
+      "save": "저장",
+      "saved": "설정이 저장되었습니다.",
+      "saveFailed": "설정을 저장할 수 없습니다.",
+      "test": "연결 테스트",
+      "testing": "테스트 중…",
+      "testFailed": "공급자의 응답이 없습니다.",
+      "privacy": "검사 결과와 목표 텍스트만 전송되며 미디어 파일은 절대 업로드되지 않습니다."
     }
   },
   "shortcuts": {
@@ -967,6 +992,56 @@
     "addToQueue": "{{count}}개를 큐에 추가",
     "applyNote": "작업은 일괄 큐에 추가되며, 거기서 시작하기 전까지는 아무것도 실행되지 않습니다.",
     "addedToQueue": "작업 {{count}}개를 큐에 추가했습니다",
-    "partiallyAdded": "일부 작업을 큐에 추가할 수 없었습니다."
+    "partiallyAdded": "일부 작업을 큐에 추가할 수 없었습니다.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "전사",
+      "summarize": "요약",
+      "chapters": "챕터",
+      "search_transcript": "전사본 검색",
+      "translate": "자막 번역",
+      "find_similar": "유사한 미디어 찾기"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "AI 공급자 구성",
+      "locationNote": "AI 공급자는 설정에서 구성됩니다."
+    },
+    "queryLabel": "검색 구문",
+    "queryPlaceholder": "예: 가격 책정에 관한 부분",
+    "targetLanguageLabel": "대상 언어",
+    "targetLanguagePlaceholder": "예: 스페인어"
   }
 }

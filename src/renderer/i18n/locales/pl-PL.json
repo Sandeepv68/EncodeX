@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "Programowy",
     "hardwareAccelerationHint": "Używa GPU (NVIDIA NVENC, Intel QSV, AMD AMF) do kodowania i dekodowania wideo. Wyłącz dla kodowania tylko programowego.",
     "hwaccelModeHint": "Automatycznie: GPU wykonuje zarówno dekodowanie, jak i kodowanie (najszybciej, nie zawsze kompatybilne). Tylko kodowanie: GPU koduje, a CPU dekoduje (najbezpieczniej).",
-    "encoderTypeHint": "Filtruje listę kodeków wideo. Automatycznie pokazuje wszystkie dostępne kodery, Sprzętowy tylko kodery GPU, Programowy tylko kodery CPU."
+    "encoderTypeHint": "Filtruje listę kodeków wideo. Automatycznie pokazuje wszystkie dostępne kodery, Sprzętowy tylko kodery GPU, Programowy tylko kodery CPU.",
+    "ai": {
+      "title": "Dostawca AI",
+      "provider": "Dostawca",
+      "providers": {
+        "rules": "Wbudowane reguły (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Model lokalny"
+      },
+      "model": "Model",
+      "modelPlaceholder": "Domyślny dostawcy",
+      "apiKey": "Klucz API",
+      "apiKeyPlaceholder": "Wklej swój klucz API",
+      "keyNotRequired": "Ten dostawca nie wymaga klucza",
+      "keyStored": "Klucz jest zapisany ({{hint}}).",
+      "keyNone": "Nie zapisano klucza.",
+      "save": "Zapisz",
+      "saved": "Ustawienia zapisane.",
+      "saveFailed": "Nie udało się zapisać ustawień.",
+      "test": "Przetestuj połączenie",
+      "testing": "Testowanie…",
+      "testFailed": "Brak odpowiedzi od dostawcy.",
+      "privacy": "Wysyłane są tylko dane analizy i tekst celu; pliki multimedialne nigdy nie są wysyłane."
+    }
   },
   "shortcuts": {
     "title": "Skróty klawiszowe",
@@ -967,6 +992,56 @@
     "addToQueue": "Dodaj {{count}} do kolejki",
     "applyNote": "Zadania są dodawane do kolejki zbiorczej; nic nie zostanie uruchomione, dopóki nie zaczniesz ich tam.",
     "addedToQueue": "Dodano {{count}} zadania do kolejki",
-    "partiallyAdded": "Niektóre zadania nie mogły zostać dodane do kolejki."
+    "partiallyAdded": "Niektóre zadania nie mogły zostać dodane do kolejki.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Transkrybuj",
+      "summarize": "Podsumuj",
+      "chapters": "Rozdziały",
+      "search_transcript": "Szukaj w transkrypcji",
+      "translate": "Tłumacz napisy",
+      "find_similar": "Znajdź podobne media"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Skonfiguruj dostawcę AI",
+      "locationNote": "Dostawcy AI są konfigurowani w Ustawieniach."
+    },
+    "queryLabel": "Fraza wyszukiwania",
+    "queryPlaceholder": "np. część o cenach",
+    "targetLanguageLabel": "Język docelowy",
+    "targetLanguagePlaceholder": "np. hiszpański"
   }
 }

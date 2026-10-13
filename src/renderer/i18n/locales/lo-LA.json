@@ -617,7 +617,32 @@
     "encoderTypeSoftware": "ຊອບແວ",
     "hardwareAccelerationHint": "ໃຊ້ GPU ຂອງທ່ານ (NVIDIA NVENC, Intel QSV, AMD AMF) ສຳລັບການເຂົ້າລະຫັດ ແລະ ຖອດລະຫັດວິດີໂອ. ປິດເພື່ອໃຊ້ການເຂົ້າລະຫັດຊອບແວເທົ່ານັ້ນ.",
     "hwaccelModeHint": "ອັດຕະໂນມັດ: GPU ເຮັດທັງຖອດລະຫັດ ແລະ ເຂົ້າລະຫັດ (ໄວທີ່ສຸດ, ບໍ່ເຂົ້າກັນໄດ້ສະເໝີ). ພຽງ encoder: GPU ເຂົ້າລະຫັດ ແລະ CPU ຖອດລະຫັດ (ປອດໄພທີ່ສຸດ).",
-    "encoderTypeHint": "ກັ່ນກອງລາຍຊື່ codec ວິດີໂອ. ອັດຕະໂນມັດສະແດງ encoder ທີ່ມີທັງໝົດ, ຮາດແວສະແດງພຽງ encoder GPU, ຊອບແວສະແດງພຽງ encoder CPU."
+    "encoderTypeHint": "ກັ່ນກອງລາຍຊື່ codec ວິດີໂອ. ອັດຕະໂນມັດສະແດງ encoder ທີ່ມີທັງໝົດ, ຮາດແວສະແດງພຽງ encoder GPU, ຊອບແວສະແດງພຽງ encoder CPU.",
+    "ai": {
+      "title": "ຜູ້ໃຫ້ບໍລິການ AI",
+      "provider": "ຜູ້ໃຫ້ບໍລິການ",
+      "providers": {
+        "rules": "ກົດລະບຽບໃນຕົວ (ອອບລາຍ)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "ໂມເດວທ້ອງຖິ່ນ"
+      },
+      "model": "ໂມເດວ",
+      "modelPlaceholder": "ຄ່າເລີ່ມຕົ້ນຂອງຜູ້ໃຫ້ບໍລິການ",
+      "apiKey": "ຄີ API",
+      "apiKeyPlaceholder": "ວາງຄີ API ຂອງທ່ານ",
+      "keyNotRequired": "ບໍ່ຕ້ອງການຄີສຳລັບຜູ້ໃຫ້ບໍລິການນີ້",
+      "keyStored": "ມີຄີທີ່ເກັບໄວ້ແລ້ວ ({{hint}}).",
+      "keyNone": "ບໍ່ມີຄີທີ່ເກັບໄວ້.",
+      "save": "ບັນທຶກ",
+      "saved": "ບັນທຶກການຕັ້ງຄ່າແລ້ວ.",
+      "saveFailed": "ບໍ່ສາມາດບັນທຶກການຕັ້ງຄ່າໄດ້.",
+      "test": "ທົດສອບການເຊື່ອມຕໍ່",
+      "testing": "ກຳລັງທົດສອບ…",
+      "testFailed": "ບໍ່ມີການຕອບສະໜອງຈາກຜູ້ໃຫ້ບໍລິການ.",
+      "privacy": "ມີແຕ່ຂໍ້ເທັດຈິງຂອງການກວດເບິ່ງ ແລະຂໍ້ຄວາມເປົ້າໝາຍຂອງທ່ານເທົ່ານັ້ນທີ່ຖືກສົ່ງ; ບໍ່ມີການອັບໂຫຼດໄຟລ໌ສື່ເລີຍ."
+    }
   },
   "shortcuts": {
     "title": "ປຸ່ມລັດແປ້ນພິມ",
@@ -967,6 +992,56 @@
     "addToQueue": "ເພີ່ມ {{count}} ໃສ່ຄິວ",
     "applyNote": "ວຽກຈະຖືກເພີ່ມໃສ່ Batch Queue; ຈະບໍ່ມີຫຍັງເຮັດວຽກຈົນກວ່າທ່ານຈະເລີ່ມມັນຢູ່ທີ່ນັ້ນ",
     "addedToQueue": "ເພີ່ມ {{count}} ວຽກໃສ່ຄິວແລ້ວ",
-    "partiallyAdded": "ບາງວຽກບໍ່ສາມາດເພີ່ມໃສ່ຄິວໄດ້"
+    "partiallyAdded": "ບາງວຽກບໍ່ສາມາດເພີ່ມໃສ່ຄິວໄດ້",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "ຖອດຄວາມ",
+      "summarize": "ສະຫຼຸບ",
+      "chapters": "ບົດ",
+      "search_transcript": "ຄົ້ນຫາໃນການຖອດຄວາມ",
+      "translate": "ແປຄຳບັນຍາຍ",
+      "find_similar": "ຄົ້ນຫາສື່ທີ່ຄ້າຍຄືກັນ"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "ຕັ້ງຄ່າຜູ້ໃຫ້ບໍລິການ AI",
+      "locationNote": "ຜູ້ໃຫ້ບໍລິການ AI ຖືກຕັ້ງຄ່າຢູ່ໃນການຕັ້ງຄ່າ."
+    },
+    "queryLabel": "ຄຳສຳລັບຄົ້ນຫາ",
+    "queryPlaceholder": "ຕົວຢ່າງ: ສ່ວນກ່ຽວກັບລາຄາ",
+    "targetLanguageLabel": "ພາສາເປົ້າໝາຍ",
+    "targetLanguagePlaceholder": "ຕົວຢ່າງ: ສະເປນ"
   }
 }

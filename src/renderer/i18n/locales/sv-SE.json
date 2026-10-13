@@ -617,6 +617,31 @@
       "rose": "Ros",
       "slate": "Skiffer",
       "dark": "Mörk"
+    },
+    "ai": {
+      "title": "AI-leverantör",
+      "provider": "Leverantör",
+      "providers": {
+        "rules": "Inbyggda regler (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Lokal modell"
+      },
+      "model": "Modell",
+      "modelPlaceholder": "Leverantörens standard",
+      "apiKey": "API-nyckel",
+      "apiKeyPlaceholder": "Klistra in din API-nyckel",
+      "keyNotRequired": "Ingen nyckel krävs för den här leverantören",
+      "keyStored": "En nyckel är lagrad ({{hint}}).",
+      "keyNone": "Ingen nyckel lagrad.",
+      "save": "Spara",
+      "saved": "Inställningar sparade.",
+      "saveFailed": "Det gick inte att spara inställningarna.",
+      "test": "Testa anslutningen",
+      "testing": "Testar…",
+      "testFailed": "Inget svar från leverantören.",
+      "privacy": "Endast analysdata och måltexten skickas; mediafiler laddas aldrig upp."
     }
   },
   "shortcuts": {
@@ -967,6 +992,56 @@
     "addToQueue": "Lägg till {{count}} i kön",
     "applyNote": "Uppgifterna läggs till i batchkön; ingenting körs förrän du startar den där.",
     "addedToQueue": "{{count}} uppgift(er) lades till i kön",
-    "partiallyAdded": "Vissa uppgifter kunde inte läggas till i kön."
+    "partiallyAdded": "Vissa uppgifter kunde inte läggas till i kön.",
+    "chooseFiles": "Choose files",
+    "operationLabel": "Operation",
+    "op": {
+      "auto": "Auto (let Copilot decide)",
+      "convert": "Convert",
+      "remux": "Remux",
+      "demux": "Demux",
+      "extract_audio": "Extract audio",
+      "compress_image": "Compress image",
+      "cut": "Cut",
+      "analyze": "Analyze",
+      "transcribe": "Transkribera",
+      "summarize": "Sammanfatta",
+      "chapters": "Kapitel",
+      "search_transcript": "Sök i transkriberingen",
+      "translate": "Översätt undertexter",
+      "find_similar": "Hitta liknande media"
+    },
+    "filesEmpty": "No supported media was selected.",
+    "routedAs": "Operation: {{operation}}",
+    "resultsTitle": "Findings",
+    "ai": {
+      "title": "AI provider",
+      "provider": "Provider",
+      "model": "Model",
+      "modelPlaceholder": "Provider default",
+      "apiKey": "API key",
+      "keyStored": "A key is stored ({{hint}}).",
+      "keyNone": "No key stored.",
+      "save": "Save",
+      "test": "Test connection",
+      "testing": "Testing...",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save the settings.",
+      "testFailed": "No response from the provider.",
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "providers": {
+        "rules": "Built-in rules (offline)",
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "gemini": "Google Gemini",
+        "local": "Local model"
+      },
+      "configure": "Konfigurera AI-leverantör",
+      "locationNote": "AI-leverantörer konfigureras i Inställningar."
+    },
+    "queryLabel": "Sökfras",
+    "queryPlaceholder": "t.ex. delen om prissättning",
+    "targetLanguageLabel": "Målspråk",
+    "targetLanguagePlaceholder": "t.ex. spanska"
   }
 }

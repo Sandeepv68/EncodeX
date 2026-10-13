@@ -88,6 +88,7 @@ import {
   PendingInstall,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
+import type { AiConnectTestResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
 import {
   LOG_ARROW,
@@ -158,6 +159,9 @@ import {
   LOG_IPC_ANALYTICS_SET_ENABLED,
   LOG_IPC_MCP_GET_SETTINGS,
   LOG_IPC_MCP_SET_SETTINGS,
+  LOG_IPC_AI_GET_SETTINGS,
+  LOG_IPC_AI_SET_SETTINGS,
+  LOG_IPC_AI_CONNECT_TEST,
 } from '../shared/log-constants';
 
 /**
@@ -975,6 +979,44 @@ const api = {
   mcpSetSettings: (settings: McpSettings) => {
     log.debug(LOG_IPC_MCP_SET_SETTINGS, settings);
     return ipcRenderer.invoke(IPC.MCP_SETTINGS_SET, settings) as Promise<McpSettings>;
+  },
+
+  /**
+   * Queries the Copilot's AI provider settings from the main process. The API
+   * key never crosses IPC; the view reports `hasKey` and a masked `keyHint`
+   * instead. Invokes `IPC.AI_SETTINGS_GET` ('ai-settings-get').
+   *
+   * @returns {Promise<AiSettingsView>} The sanitized AI provider settings.
+   */
+  aiGetSettings: () => {
+    log.debug(LOG_IPC_AI_GET_SETTINGS);
+    return ipcRenderer.invoke(IPC.AI_SETTINGS_GET) as Promise<AiSettingsView>;
+  },
+
+  /**
+   * Updates the Copilot's AI provider settings. A supplied `apiKey` is
+   * encrypted in the main process before it is stored; `clearKey` removes any
+   * stored key. Invokes `IPC.AI_SETTINGS_SET` ('ai-settings-set').
+   *
+   * @param {AiSettingsUpdate} update - The provider/model/baseUrl/key change.
+   * @returns {Promise<AiSettingsView>} The resulting sanitized settings.
+   */
+  aiSetSettings: (update: AiSettingsUpdate) => {
+    log.debug(LOG_IPC_AI_SET_SETTINGS, { providerId: update?.providerId });
+    return ipcRenderer.invoke(IPC.AI_SETTINGS_SET, update) as Promise<AiSettingsView>;
+  },
+
+  /**
+   * Tests connectivity to the configured AI provider by sending a one-token
+   * ping. Uses the supplied `apiKey` when present, else the stored key. Invokes
+   * `IPC.AI_CONNECT_TEST` ('ai-connect-test').
+   *
+   * @param {Partial<AiSettingsUpdate>} [candidate] - Optional override to test.
+   * @returns {Promise<AiConnectTestResult>} Whether the provider answered.
+   */
+  aiConnectTest: (candidate?: Partial<AiSettingsUpdate>) => {
+    log.debug(LOG_IPC_AI_CONNECT_TEST, { providerId: candidate?.providerId });
+    return ipcRenderer.invoke(IPC.AI_CONNECT_TEST, candidate) as Promise<AiConnectTestResult>;
   },
 
   /**
