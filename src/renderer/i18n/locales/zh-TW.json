@@ -1042,6 +1042,15 @@
     "queryLabel": "搜尋片語",
     "queryPlaceholder": "例如：關於定價的部分",
     "targetLanguageLabel": "目標語言",
-    "targetLanguagePlaceholder": "例如：西班牙文"
+    "targetLanguagePlaceholder": "例如：西班牙文",
+    "welcome": "How can I help?",
+    "goal": "Describe what you want EncodeX to do, then attach files or a folder.",
+    "placeholder": "Describe what you want EncodeX to do...",
+    "inputAria": "Message Copilot",
+    "send": "Send",
+    "advanced": "Advanced",
+    "advancedTitle": "Advanced options",
+    "bridgeTimeout": "EncodeX did not respond in time. Try again.",
+    "planFailed": "Copilot could not build a plan for that goal."
   }
 }

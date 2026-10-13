@@ -1042,6 +1042,15 @@
     "queryLabel": "Frasa carian",
     "queryPlaceholder": "cth. bahagian tentang harga",
     "targetLanguageLabel": "Bahasa sasaran",
-    "targetLanguagePlaceholder": "cth. Sepanyol"
+    "targetLanguagePlaceholder": "cth. Sepanyol",
+    "welcome": "How can I help?",
+    "goal": "Describe what you want EncodeX to do, then attach files or a folder.",
+    "placeholder": "Describe what you want EncodeX to do...",
+    "inputAria": "Message Copilot",
+    "send": "Send",
+    "advanced": "Advanced",
+    "advancedTitle": "Advanced options",
+    "bridgeTimeout": "EncodeX did not respond in time. Try again.",
+    "planFailed": "Copilot could not build a plan for that goal."
   }
 }
