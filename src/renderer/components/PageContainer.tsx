@@ -25,12 +25,13 @@ import { PageRoot, PageBody, PageTitle, TitleIcon, ContentPaper } from '../style
  *
  * Renders a PageRoot (styled with an aside-aware flag when `aside` is present)
  * containing a PageBody with a PageTitle heading — prefixed by the optional
- * `icon` inside a TitleIcon — followed by the content. Content is wrapped in a
- * ContentPaper card when `paper` is true, otherwise rendered bare. The optional
- * `aside` node is placed after the body as a side column.
+ * `icon` inside a TitleIcon — followed by the content. The heading is omitted
+ * entirely when `title` is empty, so a page can opt out of a header. Content is
+ * wrapped in a ContentPaper card when `paper` is true, otherwise rendered bare.
+ * The optional `aside` node is placed after the body as a side column.
  *
  * @param {PageContainerProps} props - Component props.
- * @param {string} props.title - The page heading text.
+ * @param {string} props.title - The page heading text; empty omits the heading.
  * @param {React.ReactNode} [props.icon] - Optional icon rendered before the
  *   title.
  * @param {React.ReactNode} [props.aside] - Optional node rendered in the side
@@ -44,10 +45,12 @@ export default function PageContainer({ title, icon, aside, paper = true, childr
   return (
     <PageRoot $hasAside={!!aside}>
       <PageBody>
-        <PageTitle variant="h5" component="h1">
-          {icon && <TitleIcon>{icon}</TitleIcon>}
-          {title}
-        </PageTitle>
+        {title ? (
+          <PageTitle variant="h5" component="h1">
+            {icon && <TitleIcon>{icon}</TitleIcon>}
+            {title}
+          </PageTitle>
+        ) : null}
         {paper ? <ContentPaper>{children}</ContentPaper> : children}
       </PageBody>
       {aside}

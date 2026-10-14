@@ -11,7 +11,6 @@ export const ComposerBar = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1),
   paddingInline: theme.spacing(1),
   paddingBottom: theme.spacing(2),
-  borderTop: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   backgroundColor: theme.palette.background.default,
   [theme.breakpoints.up('sm')]: { paddingInline: theme.spacing(2) },
   [theme.breakpoints.up('md')]: { paddingInline: theme.spacing(3) },

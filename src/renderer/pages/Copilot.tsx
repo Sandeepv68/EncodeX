@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Box } from '@mui/material';
 import PageContainer from '../components/PageContainer';
-import { pageIcons } from '../pageIcons';
 import { bridgePromise, withBridgeTimeout } from '../utils/bridge-call';
 import { useToastStore } from '../stores/toastStore';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
@@ -232,7 +231,7 @@ export default function Copilot() {
   };
 
   return (
-    <PageContainer title={t('copilot.title')} icon={pageIcons['/copilot']}>
+    <PageContainer title="" paper={false}>
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
         {globalError && (
           <Box sx={{ paddingInline: 2, paddingTop: 2 }}>

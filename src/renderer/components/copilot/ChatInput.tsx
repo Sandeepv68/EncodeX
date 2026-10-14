@@ -8,6 +8,7 @@
  */
 
 import { useCallback, useEffect, useRef } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -127,6 +128,27 @@ function ValueSyncPlugin({ value, onChange }: { value: string; onChange: (v: str
 }
 
 /**
+ * Wraps the composer shell and routes a click anywhere in it to the editor, so
+ * pressing the padding around the single-line field still focuses the input
+ * instead of doing nothing.
+ * @param {object} props - Plugin props.
+ * @param {ReactNode} props.children - The shell content.
+ * @returns {JSX.Element} The focusable composer shell.
+ */
+function FocusableShell({ children }: { children: ReactNode }) {
+  const [editor] = useLexicalComposerContext();
+
+  const handleMouseDown = (event: MouseEvent<HTMLDivElement>): void => {
+    const target = event.target as HTMLElement;
+    if (target.closest('button')) return;
+    const root = editor.getRootElement();
+    if (root && !root.contains(target)) editor.focus();
+  };
+
+  return <ComposerShell onMouseDown={handleMouseDown}>{children}</ComposerShell>;
+}
+
+/**
  * Renders the Lexical composer input and its send button.
  * @param {ChatInputProps} props - Component props.
  * @returns {JSX.Element} The composer input.
@@ -144,7 +166,7 @@ export default function ChatInput({ value, onChange, onSubmit, disabled = false,
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <ComposerShell>
+      <FocusableShell>
         <EditorArea>
           <RichTextPlugin
             contentEditable={<ContentEditable tabIndex={0} aria-label={t('copilot.inputAria')} />}
@@ -164,11 +186,10 @@ export default function ChatInput({ value, onChange, onSubmit, disabled = false,
           aria-label={t('copilot.send')}
           title={t('copilot.send')}
           data-testid="copilot-send"
-          sx={{ marginBottom: 0.25 }}
         >
           <FontAwesomeIcon icon={faPaperPlane} aria-hidden />
         </IconButton>
-      </ComposerShell>
+      </FocusableShell>
     </LexicalComposer>
   );
 }

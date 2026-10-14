@@ -41,7 +41,7 @@ const TITLES: Record<string, string> = {
   Remux: 'remux.title',
   Demux: 'demux.title',
   BatchQueue: 'batchQueue.title',
-  Copilot: 'copilot.title',
+  Copilot: 'copilot.welcome',
   Logs: 'logs.noEntries',
   Settings: 'settings.title',
   About: 'about.title',
