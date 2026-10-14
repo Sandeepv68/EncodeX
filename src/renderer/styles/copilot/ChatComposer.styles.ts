@@ -24,7 +24,7 @@ export const AttachmentRow = styled(Box)(({ theme }) => ({
   paddingTop: theme.spacing(1),
 }));
 
-/** Row holding the attachment/settings actions on the left and Plan on the right. */
+/** Row holding the attachment/settings actions below the input. */
 export const ActionsRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',

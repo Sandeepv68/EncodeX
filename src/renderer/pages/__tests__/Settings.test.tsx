@@ -24,6 +24,25 @@ describe('Settings', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'rules',
+      model: '',
+      hasKey: false,
+      keyHint: '',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+    });
+    vi.mocked(window.electronAPI.aiSetSettings).mockImplementation((update) =>
+      Promise.resolve({
+        providerId: update?.providerId ?? 'rules',
+        model: update?.model ?? '',
+        hasKey: false,
+        keyHint: '',
+        storedInsecurely: false,
+        encryptionAvailable: true,
+      }),
+    );
+    vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: false, message: '' });
     useSettingsStore.setState({
       hardwareAcceleration: HWACCEL_DEFAULTS.ENABLED,
       hwaccelMode: HWACCEL_DEFAULTS.MODE,
@@ -38,6 +57,7 @@ describe('Settings', () => {
 
   afterEach(() => {
     Object.defineProperty(globalThis, 'electronAPI', { value: defaultElectronAPI, writable: true });
+    Reflect.deleteProperty(navigator, 'clipboard');
   });
 
   it('has no axe violations', async () => {
@@ -438,6 +458,51 @@ describe('Settings', () => {
     expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
   });
 
+  it('renders a provider button for every AI provider', async () => {
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    for (const id of ['rules', 'openai', 'anthropic', 'gemini', 'local']) {
+      expect(screen.getByTestId(`settings-ai-provider-${id}`)).toBeInTheDocument();
+    }
+  });
+
+  it('hides connect, advanced, and settings fields for the built-in rules provider', async () => {
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    expect(screen.queryByTestId('settings-ai-connect')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('settings-ai-advanced')).not.toBeInTheDocument();
+    expect(screen.getByTestId('settings-ai-rules-note')).toBeInTheDocument();
+    expect(screen.queryByTestId('settings-ai-key')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('settings-ai-base-url')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    expect(screen.getByTestId('settings-ai-connect')).toBeInTheDocument();
+    expect(screen.getByTestId('settings-ai-advanced')).toBeInTheDocument();
+    expect(screen.queryByTestId('settings-ai-rules-note')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('settings-ai-provider-rules'));
+    expect(screen.queryByTestId('settings-ai-connect')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('settings-ai-advanced')).not.toBeInTheDocument();
+    expect(screen.getByTestId('settings-ai-rules-note')).toBeInTheDocument();
+  });
+
+  it('persists the built-in rules choice when switching back from a saved provider', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'openai',
+      model: 'gpt-4o',
+      hasKey: true,
+      keyHint: '••••',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+    });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-rules'));
+    await waitFor(() => expect(window.electronAPI.aiSetSettings).toHaveBeenCalledWith({ providerId: 'rules' }));
+    expect(screen.getByTestId('settings-ai-provider-rules')).toHaveAttribute('aria-pressed', 'true');
+  });
+
   it('loads the stored AI settings when the editor is expanded', async () => {
     vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
       providerId: 'openai',
@@ -451,10 +516,12 @@ describe('Settings', () => {
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     expect(await screen.findByTestId('settings-ai')).toBeInTheDocument();
     await waitFor(() => expect(window.electronAPI.aiGetSettings).toHaveBeenCalledTimes(1));
+    expect(screen.getByTestId('settings-ai-provider-openai')).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
     expect(screen.getByRole('textbox', { name: 'settings.ai.model' })).toHaveValue('gpt-4o');
   });
 
-  it('saves the AI provider selection through the bridge', async () => {
+  it('saves and tests the selected provider in one connect step', async () => {
     const spy = vi.fn().mockResolvedValue({
       providerId: 'anthropic',
       model: '',
@@ -464,35 +531,60 @@ describe('Settings', () => {
       encryptionAvailable: true,
     });
     vi.mocked(window.electronAPI.aiSetSettings).mockImplementation(spy);
-    renderSettings();
-    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
-    await screen.findByTestId('settings-ai');
-    fireEvent.click(screen.getByTestId('settings-ai-provider-anthropic'));
-    fireEvent.click(screen.getByTestId('settings-ai-save'));
-    await waitFor(() => expect(spy).toHaveBeenCalledWith(expect.objectContaining({ providerId: 'anthropic' })));
-    expect(await screen.findByTestId('settings-ai-status')).toHaveTextContent('settings.ai.saved');
-  });
-
-  it('tests the AI provider connection and shows the latency', async () => {
     vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: true, message: 'Connected', latencyMs: 42 });
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
-    fireEvent.click(screen.getByTestId('settings-ai-test'));
-    const status = await screen.findByTestId('settings-ai-status');
-    expect(status).toHaveTextContent('Connected (42 ms)');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-anthropic'));
+    fireEvent.click(screen.getByTestId('settings-ai-connect'));
+    await waitFor(() => expect(spy).toHaveBeenCalledWith(expect.objectContaining({ providerId: 'anthropic' })));
+    await waitFor(() => expect(screen.getByTestId('settings-ai-status')).toHaveTextContent('Connected (42 ms)'));
+  });
+
+  it('deep-links to the provider key page for remote providers', async () => {
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    const link = screen.getByTestId('settings-ai-get-key');
+    expect(link).toHaveAttribute('href', 'https://platform.openai.com/api-keys');
+    expect(link).toHaveAttribute('target', '_blank');
+  });
+
+  it('pastes the clipboard into the API key field', async () => {
+    const readText = vi.fn().mockResolvedValue('sk-clip');
+    Object.defineProperty(navigator, 'clipboard', { value: { readText }, configurable: true });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-paste'));
+    await waitFor(() => expect(screen.getByLabelText('settings.ai.apiKey')).toHaveValue('sk-clip'));
   });
 
   it('edits the AI model and API key fields', async () => {
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
-    const model = screen.getByRole('textbox', { name: 'settings.ai.model' });
-    fireEvent.change(model, { target: { value: 'gpt-4o-mini' } });
-    expect(model).toHaveValue('gpt-4o-mini');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
     const key = screen.getByLabelText('settings.ai.apiKey') as HTMLInputElement;
     fireEvent.change(key, { target: { value: 'sk-1' } });
     expect(key).toHaveValue('sk-1');
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    const model = screen.getByRole('textbox', { name: 'settings.ai.model' });
+    fireEvent.change(model, { target: { value: 'gpt-4o-mini' } });
+    expect(model).toHaveValue('gpt-4o-mini');
+  });
+
+  it('shows the endpoint for local and the model under Advanced', async () => {
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-local'));
+    expect(screen.getByTestId('settings-ai-base-url')).toBeInTheDocument();
+    expect(screen.queryByTestId('settings-ai-model')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    expect(screen.getByTestId('settings-ai-model')).toBeInTheDocument();
   });
 
   it('shows a save error when the bridge returns an unusable view', async () => {
@@ -500,7 +592,8 @@ describe('Settings', () => {
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
-    fireEvent.click(screen.getByTestId('settings-ai-save'));
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-connect'));
     expect(await screen.findByTestId('settings-ai-error')).toHaveTextContent('settings.ai.saveFailed');
   });
 
@@ -509,7 +602,8 @@ describe('Settings', () => {
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
-    fireEvent.click(screen.getByTestId('settings-ai-save'));
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-connect'));
     expect(await screen.findByTestId('settings-ai-error')).toBeInTheDocument();
   });
 
@@ -518,8 +612,9 @@ describe('Settings', () => {
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
-    fireEvent.click(screen.getByTestId('settings-ai-test'));
-    expect(await screen.findByTestId('settings-ai-status')).toHaveTextContent('settings.ai.testFailed');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-connect'));
+    await waitFor(() => expect(screen.getByTestId('settings-ai-status')).toHaveTextContent('settings.ai.testFailed'));
   });
 
   it('surfaces a connection-test rejection as an error', async () => {
@@ -527,7 +622,15 @@ describe('Settings', () => {
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
-    fireEvent.click(screen.getByTestId('settings-ai-test'));
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-connect'));
     expect(await screen.findByTestId('settings-ai-error')).toBeInTheDocument();
+  });
+
+  it('has no axe violations with the AI editor expanded', async () => {
+    const { container } = renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    await assertNoAxeViolations(container);
   });
 });

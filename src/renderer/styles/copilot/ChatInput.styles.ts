@@ -2,7 +2,8 @@ import { alpha, styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
 
 /**
- * Rounded composer surface that holds the Lexical editor and the send button.
+ * Rounded composer surface that holds the Lexical editor and the inline send
+ * and plan buttons.
  * The focus ring is applied to the shell rather than the bare contenteditable so
  * keyboard focus is visible around the whole control.
  */

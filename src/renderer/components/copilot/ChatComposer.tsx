@@ -7,7 +7,7 @@
 import { useState } from 'react';
 import { Box, Button, Chip, MenuItem, Popover, TextField, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileImport, faFolderOpen, faGear, faSliders, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
+import { faFileImport, faFolderOpen, faGear, faSliders } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import ChatInput from './ChatInput';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
@@ -65,8 +65,6 @@ export default function ChatComposer({
   const { t } = useTranslation();
   const [advancedAnchor, setAdvancedAnchor] = useState<HTMLElement | null>(null);
 
-  const canSubmit = !disabled && !busy && input.trim() !== '';
-
   return (
     <ComposerBar>
       {inputs.length > 0 && (
@@ -87,6 +85,8 @@ export default function ChatComposer({
         onSubmit={onSubmit}
         disabled={busy || disabled}
         placeholder={t('copilot.placeholder')}
+        busy={busy}
+        hasInputs={hasInputs}
       />
       <ActionsRow>
         <LeftActions>
@@ -129,15 +129,6 @@ export default function ChatComposer({
             {t('copilot.ai.configure')}
           </Button>
         </LeftActions>
-        <Button
-          variant="contained"
-          startIcon={<FontAwesomeIcon icon={faWandMagicSparkles} />}
-          onClick={onSubmit}
-          disabled={!canSubmit || !hasInputs}
-          data-testid="copilot-plan"
-        >
-          {busy ? t('copilot.planning') : t('copilot.plan')}
-        </Button>
       </ActionsRow>
       <Typography variant="caption" color="text.secondary" sx={{ paddingInline: 0.5 }}>
         {t('copilot.ai.locationNote')}

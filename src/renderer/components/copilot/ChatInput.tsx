@@ -17,9 +17,9 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $getRoot, COMMAND_PRIORITY_LOW, INSERT_LINE_BREAK_COMMAND, KEY_ENTER_COMMAND } from 'lexical';
 import type { EditorState } from 'lexical';
-import { IconButton } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { ComposerShell, EditorArea, EditorPlaceholder } from '../../styles/copilot/ChatInput.styles';
 
@@ -41,6 +41,8 @@ interface ChatInputProps {
   onSubmit: () => void;
   disabled?: boolean;
   placeholder?: string;
+  busy?: boolean;
+  hasInputs?: boolean;
 }
 
 /**
@@ -149,11 +151,19 @@ function FocusableShell({ children }: { children: ReactNode }) {
 }
 
 /**
- * Renders the Lexical composer input and its send button.
+ * Renders the Lexical composer input with its inline send and plan buttons.
  * @param {ChatInputProps} props - Component props.
  * @returns {JSX.Element} The composer input.
  */
-export default function ChatInput({ value, onChange, onSubmit, disabled = false, placeholder }: ChatInputProps) {
+export default function ChatInput({
+  value,
+  onChange,
+  onSubmit,
+  disabled = false,
+  placeholder,
+  busy = false,
+  hasInputs = false,
+}: ChatInputProps) {
   const { t } = useTranslation();
   const placeholderText = placeholder ?? t('copilot.placeholder');
 
@@ -189,6 +199,16 @@ export default function ChatInput({ value, onChange, onSubmit, disabled = false,
         >
           <FontAwesomeIcon icon={faPaperPlane} aria-hidden />
         </IconButton>
+        <Button
+          variant="contained"
+          size="small"
+          startIcon={<FontAwesomeIcon icon={faWandMagicSparkles} />}
+          onClick={onSubmit}
+          disabled={disabled || busy || value.trim() === '' || !hasInputs}
+          data-testid="copilot-plan"
+        >
+          {busy ? t('copilot.planning') : t('copilot.plan')}
+        </Button>
       </FocusableShell>
     </LexicalComposer>
   );
