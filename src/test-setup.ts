@@ -53,8 +53,7 @@ const emptyRect = {
   toJSON: () => ({}),
 } as unknown as DOMRect;
 Range.prototype.getBoundingClientRect = () => emptyRect;
-Range.prototype.getClientRects = () =>
-  ({ length: 0, item: () => null, [Symbol.iterator]: function* () {} }) as unknown as DOMRectList;
+Range.prototype.getClientRects = () => ({ length: 0, item: () => null, [Symbol.iterator]: function* () {} }) as unknown as DOMRectList;
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({

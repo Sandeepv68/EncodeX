@@ -363,9 +363,7 @@ describe('Copilot page', () => {
     fireEvent.click(screen.getAllByTestId('CancelIcon')[0]);
     await waitFor(() => expect(screen.queryByText('one.mp4')).toBeNull());
     fireEvent.click(screen.getByTestId('copilot-plan'));
-    await waitFor(() =>
-      expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(expect.objectContaining({ inputs: ['/in/two.mkv'] })),
-    );
+    await waitFor(() => expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(expect.objectContaining({ inputs: ['/in/two.mkv'] })));
   });
 
   it('passes a target language when the translate operation is chosen', async () => {

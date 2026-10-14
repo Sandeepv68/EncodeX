@@ -183,9 +183,7 @@ export default function Copilot() {
 
       if (Array.isArray(result.actions) && Array.isArray(result.skips)) {
         setMessages((prev) =>
-          prev.map((m) =>
-            m.id === assistantMessageId ? { ...m, plan: result as CopilotPlan, error: null, notice: null } : m,
-          ),
+          prev.map((m) => (m.id === assistantMessageId ? { ...m, plan: result as CopilotPlan, error: null, notice: null } : m)),
         );
       } else {
         failWith(t('copilot.planFailed'));

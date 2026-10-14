@@ -7,31 +7,15 @@
 import { useState } from 'react';
 import { Box, Button, Chip, MenuItem, Popover, TextField, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faFileImport,
-  faFolderOpen,
-  faGear,
-  faSliders,
-  faWandMagicSparkles,
-} from '@fortawesome/free-solid-svg-icons';
+import { faFileImport, faFolderOpen, faGear, faSliders, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import ChatInput from './ChatInput';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
-import {
-  ActionsRow,
-  AdvancedPanel,
-  AttachmentRow,
-  ComposerBar,
-  LeftActions,
-} from '../../styles/copilot/ChatComposer.styles';
+import { ActionsRow, AdvancedPanel, AttachmentRow, ComposerBar, LeftActions } from '../../styles/copilot/ChatComposer.styles';
 
 /** The selectable operations, in menu order (auto first, then queue, then read-only). */
-const OPERATION_CHOICES: CopilotOperationChoice[] = [
-  'auto',
-  ...COPILOT_QUEUE_OPERATIONS,
-  ...COPILOT_INTELLIGENCE_OPERATIONS,
-];
+const OPERATION_CHOICES: CopilotOperationChoice[] = ['auto', ...COPILOT_QUEUE_OPERATIONS, ...COPILOT_INTELLIGENCE_OPERATIONS];
 
 interface ChatComposerProps {
   input: string;

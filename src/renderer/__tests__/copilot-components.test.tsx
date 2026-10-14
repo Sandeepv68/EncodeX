@@ -152,9 +152,7 @@ describe('Conversation', () => {
 
   it('renders an assistant plan and invokes onAddToQueue', () => {
     const onAddToQueue = vi.fn();
-    const messages: ConversationMessage[] = [
-      { id: 'a1', role: 'assistant', plan: PLAN, timestamp: 2, ...baseMessage },
-    ];
+    const messages: ConversationMessage[] = [{ id: 'a1', role: 'assistant', plan: PLAN, timestamp: 2, ...baseMessage }];
     render(
       <ColorModeProvider>
         <Conversation messages={messages} onAddToQueue={onAddToQueue} />

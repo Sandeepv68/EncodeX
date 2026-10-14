@@ -2,16 +2,7 @@
  * @fileoverview Assistant message rendering plan details in conversation.
  */
 
-import {
-  Box,
-  Button,
-  Chip,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Chip, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListCheck, faRobot, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import type { CopilotAction, CopilotPlan, CopilotResult } from '../../../shared/copilot';
@@ -48,7 +39,7 @@ export default function AssistantMessage({ plan, onAddToQueue, busy = false, err
   if (!plan) return null;
 
   return (
-        <Box sx={{ width: '100%' }} data-testid="copilot-plan-summary">
+    <Box sx={{ width: '100%' }} data-testid="copilot-plan-summary">
       {plan.operation && (
         <Chip
           size="small"
