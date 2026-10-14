@@ -19,17 +19,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Box,
-  Button,
-  Switch,
-  MenuItem,
-  IconButton,
-  Tooltip,
-  Typography,
-  InputAdornment,
-  Link,
-} from '@mui/material';
+import { Box, Button, Switch, MenuItem, IconButton, Tooltip, Typography, InputAdornment, Link } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCopy,
@@ -619,73 +609,63 @@ function AiProviderSettingsSection() {
             ))}
           </ProviderGrid>
 
-          {configurable && (needsKey ? (
-            <McpField
-              type="password"
-              size="small"
-              label={t('settings.ai.apiKey')}
-              data-testid="settings-ai-key"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder={t('settings.ai.apiKeyPlaceholder')}
-              helperText={
-                <AiKeyHelper>
-                  <span>{view?.hasKey ? t('settings.ai.keyStored', { hint: view.keyHint }) : t('settings.ai.keyNone')}</span>
-                  {keyUrl && (
-                    <Link
-                      href={keyUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      variant="body2"
-                      underline="hover"
-                      data-testid="settings-ai-get-key"
-                    >
-                      <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-                      {t('settings.ai.getKey')}
-                    </Link>
-                  )}
-                </AiKeyHelper>
-              }
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Tooltip title={t('settings.ai.paste')}>
-                        <IconButton
-                          size="small"
-                          onClick={pasteKey}
-                          aria-label={t('settings.ai.paste')}
-                          data-testid="settings-ai-paste"
-                        >
-                          <FontAwesomeIcon icon={faPaste} />
-                        </IconButton>
-                      </Tooltip>
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-          ) : (
-            <McpField
-              size="small"
-              label={t('settings.ai.baseUrl')}
-              data-testid="settings-ai-base-url"
-              value={baseUrl}
-              onChange={(e) => setBaseUrl(e.target.value)}
-              placeholder={t('settings.ai.baseUrlPlaceholder')}
-            />
-          ))}
+          {configurable &&
+            (needsKey ? (
+              <McpField
+                type="password"
+                size="small"
+                label={t('settings.ai.apiKey')}
+                data-testid="settings-ai-key"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder={t('settings.ai.apiKeyPlaceholder')}
+                helperText={
+                  <AiKeyHelper>
+                    <span>{view?.hasKey ? t('settings.ai.keyStored', { hint: view.keyHint }) : t('settings.ai.keyNone')}</span>
+                    {keyUrl && (
+                      <Link
+                        href={keyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="body2"
+                        underline="hover"
+                        data-testid="settings-ai-get-key"
+                      >
+                        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                        {t('settings.ai.getKey')}
+                      </Link>
+                    )}
+                  </AiKeyHelper>
+                }
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Tooltip title={t('settings.ai.paste')}>
+                          <IconButton size="small" onClick={pasteKey} aria-label={t('settings.ai.paste')} data-testid="settings-ai-paste">
+                            <FontAwesomeIcon icon={faPaste} />
+                          </IconButton>
+                        </Tooltip>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            ) : (
+              <McpField
+                size="small"
+                label={t('settings.ai.baseUrl')}
+                data-testid="settings-ai-base-url"
+                value={baseUrl}
+                onChange={(e) => setBaseUrl(e.target.value)}
+                placeholder={t('settings.ai.baseUrlPlaceholder')}
+              />
+            ))}
 
           {configurable && (
             <>
               <AiActionRow>
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={connect}
-                  disabled={busy}
-                  data-testid="settings-ai-connect"
-                >
+                <Button size="small" variant="contained" onClick={connect} disabled={busy} data-testid="settings-ai-connect">
                   {busy ? t('settings.ai.connecting') : t('settings.ai.connect')}
                 </Button>
 
