@@ -649,7 +649,10 @@
       "test": "Kiểm tra kết nối",
       "testing": "Đang kiểm tra…",
       "testFailed": "Không có phản hồi từ nhà cung cấp.",
-      "privacy": "Chỉ có các dữ liệu phân tích và văn bản mục tiêu của bạn được gửi; tệp phương tiện không bao giờ được tải lên."
+      "privacy": "Chỉ có các dữ liệu phân tích và văn bản mục tiêu của bạn được gửi; tệp phương tiện không bao giờ được tải lên.",
+      "modelHint": "Id mô hình sẽ dùng. Để trống để dùng giá trị mặc định của nhà cung cấp (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "Khóa API của nhà cung cấp bạn. Khóa được mã hóa bằng kho khóa của hệ điều hành trước khi lưu, và sau đó chỉ hiển thị một gợi ý đã được che.",
+      "baseUrlHint": "Điểm cuối tương thích với OpenAI. Trỏ nó tới OpenRouter, Groq, Ollama hoặc LM Studio thay vì API của chính OpenAI."
     }
   },
   "shortcuts": {

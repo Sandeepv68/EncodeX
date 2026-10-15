@@ -649,7 +649,10 @@
       "test": "Subukan ang koneksyon",
       "testing": "Sinusubukan…",
       "testFailed": "Walang tugon mula sa provider.",
-      "privacy": "Tanging ang mga naprosesong impormasyon at ang teksto ng iyong layunin ang ipinapadala; hindi kailanman ina-upload ang mga media file."
+      "privacy": "Tanging ang mga naprosesong impormasyon at ang teksto ng iyong layunin ang ipinapadala; hindi kailanman ina-upload ang mga media file.",
+      "modelHint": "Ang model id na gagamitin. Iwanang blangko upang gamitin ang default ng provider (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "Ang API key ng iyong provider. Naka-encrypt ito gamit ang keystore ng iyong operating system bago i-save, at pagkatapos ay isang naka-mask na hint lamang ang ipinapakita.",
+      "baseUrlHint": "Endpoint na compatible sa OpenAI. Ituro ito sa OpenRouter, Groq, Ollama, o LM Studio sa halip na sa sariling API ng OpenAI."
     }
   },
   "shortcuts": {

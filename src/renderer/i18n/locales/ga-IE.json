@@ -649,7 +649,10 @@
       "test": "Tástáil an nasc",
       "testing": "Ag tástáil…",
       "testFailed": "Uimh fhreagra ón soláthraí.",
-      "privacy": "Ní sheoltar ach fíricí an anailíse agus téacs do chuspóra; ní uaslódáiltear comhaid meán riamh."
+      "privacy": "Ní sheoltar ach fíricí an anailíse agus téacs do chuspóra; ní uaslódáiltear comhaid meán riamh.",
+      "modelHint": "An t-aitheantóir samhla le húsáid. Fág seo folamh chun réamhshocrú an tsoláthraí a úsáid (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "Eochair API do sholáthraí. Déantar í a chriptiú le stór eochracha do chórais oibriúcháin sula sábhálfar í, agus ní thaispeántar ina dhiaidh sin ach leid mhascáilte.",
+      "baseUrlHint": "Críochphointe atá comhoiriúnach le OpenAI. Treoraigh é chuig OpenRouter, Groq, Ollama nó LM Studio seachas API OpenAI féin."
     }
   },
   "shortcuts": {

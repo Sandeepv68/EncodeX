@@ -649,7 +649,10 @@
       "test": "Prófa tengingu",
       "testing": "Prófa…",
       "testFailed": "Engin svörun frá þjónustuaðila.",
-      "privacy": "Aðeins skoðunarstaðreyndir og texti markmiðs þíns er sendur; skrár eru aldrei hlaðnar upp."
+      "privacy": "Aðeins skoðunarstaðreyndir og texti markmiðs þíns er sendur; skrár eru aldrei hlaðnar upp.",
+      "modelHint": "Auðkenni líkansins sem á að nota. Skildu það eftir autt til að nota sjálfgefið gildi þjónustuaðilans (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "API-lykill þjónustuaðilans þíns. Hann er dulkóðaður með lyklageymslu stýrikerfisins áður en hann er vistaður, og eftir það er aðeins sýnd dulbúin vísbending.",
+      "baseUrlHint": "Endapunktur sem er samhæfður við OpenAI. Beindu honum að OpenRouter, Groq, Ollama eða LM Studio í stað API OpenAI sjálfs."
     }
   },
   "shortcuts": {

@@ -649,7 +649,10 @@
       "test": "Test connection",
       "testing": "Testing...",
       "testFailed": "No response from the provider.",
-      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded."
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "modelHint": "The model id to use. Leave this blank to use the provider default (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "Your provider API key. It is encrypted with your operating system's keystore before it is saved, and only a masked hint is shown afterwards.",
+      "baseUrlHint": "OpenAI-compatible endpoint. Point this at OpenRouter, Groq, Ollama, or LM Studio instead of OpenAI's own API."
     }
   },
   "shortcuts": {

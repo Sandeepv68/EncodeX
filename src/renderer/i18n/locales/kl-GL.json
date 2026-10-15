@@ -649,7 +649,10 @@
       "test": "Attaveqarfiup misissorsua",
       "testing": "Misissorsuivoq…",
       "testFailed": "Inissisimasunit kiinniatagaasaasut.",
-      "privacy": "Misissorsuuummata ilusissat aamma isumassarsiannit allassimasat naapertuutissaatigineqarput; mediafilerit nammineeersissutigineqanngisaannarput."
+      "privacy": "Misissorsuuummata ilusissat aamma isumassarsiannit allassimasat naapertuutissaatigineqarput; mediafilerit nammineeersissutigineqanngisaannarput.",
+      "modelHint": "Naatsorsueqaatsip ID-a atorneqassaaq. Manngertinnagu inissisimasut naapertorlugu atorneqassaaq (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "Inissisimasut API-p matuaraatit. Toqqortinnagu systemi-p toqqortarfiani kryptorneqartarpoq, kingorna matuaraat-mik maskerneqqamik taamaallaat takutitarpoq.",
+      "baseUrlHint": "OpenAI-mut naapertuuttumik endpointi. OpenAI-p nammineq API-ata tungaanut nannisinagu, OpenRouter, Groq, Ollama imaluunniit LM Studio tungaanut ataatiguk."
     }
   },
   "shortcuts": {

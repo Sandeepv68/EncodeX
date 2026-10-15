@@ -649,7 +649,10 @@
       "test": "Testa anslutningen",
       "testing": "Testar…",
       "testFailed": "Inget svar från leverantören.",
-      "privacy": "Endast analysdata och måltexten skickas; mediafiler laddas aldrig upp."
+      "privacy": "Endast analysdata och måltexten skickas; mediafiler laddas aldrig upp.",
+      "modelHint": "Det modell-ID som ska användas. Lämna tomt för att använda leverantörens standard (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "Din leverantörs API-nyckel. Den krypteras med operativsystemets nyckelarkiv innan den sparas, och därefter visas endast en maskerad ledtråd.",
+      "baseUrlHint": "OpenAI-kompatibel slutpunkt. Peka den mot OpenRouter, Groq, Ollama eller LM Studio i stället för OpenAIs egen API."
     }
   },
   "shortcuts": {

@@ -649,7 +649,10 @@
       "test": "测试连接",
       "testing": "正在测试…",
       "testFailed": "提供商无响应。",
-      "privacy": "仅发送分析信息和您的目标文本；媒体文件绝不会被上传。"
+      "privacy": "仅发送分析信息和您的目标文本；媒体文件绝不会被上传。",
+      "modelHint": "要使用的模型 ID。留空则使用提供商默认值（OpenAI：gpt-4o-mini，Anthropic：claude-3-5-haiku-latest，Gemini：gemini-2.0-flash）。",
+      "apiKeyHint": "你的提供商 API 密钥。保存前会使用操作系统的密钥库进行加密，之后只显示经过掩码的提示。",
+      "baseUrlHint": "兼容 OpenAI 的端点。将其指向 OpenRouter、Groq、Ollama 或 LM Studio，而不是 OpenAI 自己的 API。"
     }
   },
   "shortcuts": {

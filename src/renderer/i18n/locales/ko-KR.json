@@ -649,7 +649,10 @@
       "test": "연결 테스트",
       "testing": "테스트 중…",
       "testFailed": "공급자의 응답이 없습니다.",
-      "privacy": "검사 결과와 목표 텍스트만 전송되며 미디어 파일은 절대 업로드되지 않습니다."
+      "privacy": "검사 결과와 목표 텍스트만 전송되며 미디어 파일은 절대 업로드되지 않습니다.",
+      "modelHint": "사용할 모델 ID입니다. 비워 두면 공급자의 기본값이 사용됩니다(OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "공급자의 API 키입니다. 저장하기 전에 운영 체제의 키 저장소로 암호화되며, 이후에는 마스킹된 힌트만 표시됩니다.",
+      "baseUrlHint": "OpenAI 호환 엔드포인트입니다. OpenAI 자체 API 대신 OpenRouter, Groq, Ollama 또는 LM Studio를 지정할 수 있습니다."
     }
   },
   "shortcuts": {

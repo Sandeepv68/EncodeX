@@ -84,6 +84,14 @@ export const ProviderLogo = styled('img')({
   objectFit: 'contain',
 });
 
+export const AiField = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(0.5),
+  width: '100%',
+  minWidth: 0,
+}));
+
 export const AiKeyRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'baseline',

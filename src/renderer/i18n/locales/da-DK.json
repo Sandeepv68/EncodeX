@@ -649,7 +649,10 @@
       "test": "Test forbindelsen",
       "testing": "Tester…",
       "testFailed": "Ingen svar fra udbyderen.",
-      "privacy": "Kun undersøgte data og din målsætning-tekst sendes; mediefiler uploades aldrig."
+      "privacy": "Kun undersøgte data og din målsætning-tekst sendes; mediefiler uploades aldrig.",
+      "modelHint": "Det model-id, der skal bruges. Lad feltet stå tomt for at bruge udbyderens standard (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "Din udbyders API-nøgle. Den krypteres med dit styresystems nøglelager, før den gemmes, og derefter vises kun et maskeret hint.",
+      "baseUrlHint": "OpenAI-kompatibelt endepunkt. Peg det mod OpenRouter, Groq, Ollama eller LM Studio i stedet for OpenAIs egen API."
     }
   },
   "shortcuts": {

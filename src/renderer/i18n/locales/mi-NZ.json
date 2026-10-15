@@ -649,7 +649,10 @@
       "test": "Whakamātau i te hononga",
       "testing": "E whakamātau ana…",
       "testFailed": "Kāore he whakautu mai i te kaiwhakarato.",
-      "privacy": "Ko ngā mēka tātari me te kuputuhi tino pai anake ka tukuna; kāore ngā kōnae pāpāho e tukuna ake."
+      "privacy": "Ko ngā mēka tātari me te kuputuhi tino pai anake ka tukuna; kāore ngā kōnae pāpāho e tukuna ake.",
+      "modelHint": "Te ID tauira hei whakamahi. Waiho kia wātea hei whakamahi i te taunoa a te kaiwhakarato (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "Tō kī API a te kaiwhakarato. Ka whakamunatia ki te keystore o tō pūnaha whakahaere i mua i te tiakitanga, ā, ka whakaaturia he tohu huna anake i muri mai.",
+      "baseUrlHint": "Te pito mutunga e hototahi ana ki a OpenAI. Tukuna ki OpenRouter, Groq, Ollama, LM Studio rānei, kaua ki te API ake a OpenAI."
     }
   },
   "shortcuts": {

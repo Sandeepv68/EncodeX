@@ -649,7 +649,10 @@
       "test": "Testaa yhteys",
       "testing": "Testataan…",
       "testFailed": "Ei vastausta tarjoajalta.",
-      "privacy": "Vain tutkitut tiedot ja tavoitteesi teksti lähetetään; mediatiedostoja ei koskaan lähetetä."
+      "privacy": "Vain tutkitut tiedot ja tavoitteesi teksti lähetetään; mediatiedostoja ei koskaan lähetetä.",
+      "modelHint": "Käytettävän mallin tunniste. Jätä tyhjäksi, jos haluat käyttää tarjoajan oletusta (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "Tarjoajasi API-avain. Se salataan käyttöjärjestelmäsi avainsäilöllä ennen tallennusta, ja sen jälkeen näytetään vain peitetty vihje.",
+      "baseUrlHint": "OpenAI-yhteensopiva päätepiste. Kohdista se OpenRouteriin, Groqiin, Ollamaan tai LM Studioon OpenAI:n oman API:n sijaan."
     }
   },
   "shortcuts": {

@@ -649,7 +649,10 @@
       "test": "Uji koneksi",
       "testing": "Menguji…",
       "testFailed": "Tidak ada respons dari penyedia.",
-      "privacy": "Hanya fakta pemeriksaan dan teks tujuan Anda yang dikirim; file media tidak pernah diunggah."
+      "privacy": "Hanya fakta pemeriksaan dan teks tujuan Anda yang dikirim; file media tidak pernah diunggah.",
+      "modelHint": "ID model yang akan digunakan. Biarkan kosong untuk memakai default penyedia (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "Kunci API penyedia Anda. Kunci ini dienkripsi dengan keystore sistem operasi Anda sebelum disimpan, dan setelah itu hanya petunjuk bertopeng yang ditampilkan.",
+      "baseUrlHint": "Endpoint yang kompatibel dengan OpenAI. Arahkan ke OpenRouter, Groq, Ollama, atau LM Studio alih-alih ke API OpenAI sendiri."
     }
   },
   "shortcuts": {

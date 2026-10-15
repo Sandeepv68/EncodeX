@@ -649,7 +649,10 @@
       "test": "Probar conexión",
       "testing": "Probando…",
       "testFailed": "Sin respuesta del proveedor.",
-      "privacy": "Solo se envían los datos del análisis y el texto de tu objetivo; los archivos de medios nunca se suben."
+      "privacy": "Solo se envían los datos del análisis y el texto de tu objetivo; los archivos de medios nunca se suben.",
+      "modelHint": "El id del modelo que se va a usar. Déjalo en blanco para usar el valor predeterminado del proveedor (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "La clave de API de tu proveedor. Se cifra con el almacén de claves de tu sistema operativo antes de guardarse, y después solo se muestra una pista enmascarada.",
+      "baseUrlHint": "Punto de conexión compatible con OpenAI. Dirígelo a OpenRouter, Groq, Ollama o LM Studio en lugar de la propia API de OpenAI."
     }
   },
   "shortcuts": {

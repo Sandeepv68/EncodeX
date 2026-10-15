@@ -649,7 +649,10 @@
       "test": "Testa connessione",
       "testing": "Verifica in corso…",
       "testFailed": "Nessuna risposta dal provider.",
-      "privacy": "Vengono inviati solo i dati dell’analisi e il testo del tuo obiettivo; i file non vengono mai caricati."
+      "privacy": "Vengono inviati solo i dati dell’analisi e il testo del tuo obiettivo; i file non vengono mai caricati.",
+      "modelHint": "L’id del modello da usare. Lascia vuoto per usare il valore predefinito del provider (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "La chiave API del tuo provider. Viene crittografata con il keystore del tuo sistema operativo prima di essere salvata e, in seguito, viene mostrato solo un suggerimento mascherato.",
+      "baseUrlHint": "Endpoint compatibile con OpenAI. Puntalo su OpenRouter, Groq, Ollama o LM Studio invece che sull’API di OpenAI stessa."
     }
   },
   "shortcuts": {

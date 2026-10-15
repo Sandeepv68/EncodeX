@@ -649,7 +649,10 @@
       "test": "Verbinding testen",
       "testing": "Bezig met testen…",
       "testFailed": "Geen reactie van de provider.",
-      "privacy": "Alleen de analysegegevens en de tekst van je doel worden verzonden; mediabestanden worden nooit geüpload."
+      "privacy": "Alleen de analysegegevens en de tekst van je doel worden verzonden; mediabestanden worden nooit geüpload.",
+      "modelHint": "De te gebruiken model-id. Laat dit leeg om de standaard van de provider te gebruiken (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "apiKeyHint": "De API-sleutel van je provider. Deze wordt met de sleutelopslag van je besturingssysteem versleuteld voordat hij wordt opgeslagen, en daarna wordt alleen een gemaskeerde hint getoond.",
+      "baseUrlHint": "OpenAI-compatibel eindpunt. Richt het op OpenRouter, Groq, Ollama of LM Studio in plaats van op de eigen API van OpenAI."
     }
   },
   "shortcuts": {
