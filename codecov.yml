@@ -28,8 +28,14 @@ flag_management:
     - name: unit # grips the whole src/ report
       carryforward: true
     - name: integration # flag stats only for the CLI/MCP code this tier targets
+      # Scoped to the CLI/MCP surfaces the integration suite actually drives.
+      # The rest of src/main (AI connectors, settings IPC, the Electron IPC
+      # layer) is reached only through the Electron main process, which the
+      # integration tier never boots, so gating its patch coverage here would
+      # be permanently unsatisfiable. Those files stay covered by the unit flag.
       paths:
-        - src/main/**
+        - src/main/cli/**
+        - src/main/mcp/**
         - src/mcp/**
       carryforward: true
 
