@@ -271,6 +271,28 @@ describe('Copilot page', () => {
     expect(await screen.findByTestId('copilot-error')).toBeDefined();
   });
 
+  it('shows a timeout error when the plan request never settles', async () => {
+    vi.mocked(window.electronAPI.copilotPlan).mockReturnValue(new Promise<CopilotPlan>(() => {}));
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(60_000);
+    });
+    vi.useRealTimers();
+    expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.bridgeTimeout');
+  });
+
+  it('closes the advanced popover on Escape', async () => {
+    renderPage('Copilot');
+    fireEvent.click(screen.getByTestId('copilot-advanced'));
+    const operation = await screen.findByTestId('copilot-operation');
+    fireEvent.keyDown(operation, { key: 'Escape' });
+    await waitFor(() => expect(screen.queryByTestId('copilot-operation')).toBeNull());
+  });
+
   it('shows a notice when the chosen folder contains no media files', async () => {
     vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue([]);
     renderPage('Copilot');

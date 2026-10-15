@@ -124,6 +124,31 @@ describe('ChatInput', () => {
     expect((screen.getByTestId('copilot-send') as HTMLButtonElement).disabled).toBe(true);
     await waitFor(() => expect(getEditor().getAttribute('contenteditable')).toBe('false'));
   });
+
+  it('focuses the editor when the composer shell is pressed', async () => {
+    render(<Harness onSubmit={vi.fn()} />);
+    const editor = getEditor();
+    const lexical = (editor as unknown as { __lexicalEditor: { focus: () => void } }).__lexicalEditor;
+    const focusSpy = vi.spyOn(lexical, 'focus');
+    const shell = editor.parentElement as HTMLElement;
+    await act(async () => {
+      fireEvent.mouseDown(shell);
+    });
+    expect(focusSpy).toHaveBeenCalled();
+  });
+
+  it('reports an editor error through console.error', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(<Harness onSubmit={vi.fn()} />);
+    const editor = (getEditor() as unknown as { __lexicalEditor: { update: (fn: () => void) => void } }).__lexicalEditor;
+    await act(async () => {
+      editor.update(() => {
+        throw new Error('boom');
+      });
+    });
+    expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
 });
 
 describe('Conversation', () => {

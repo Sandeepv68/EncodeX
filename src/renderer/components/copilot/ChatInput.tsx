@@ -11,6 +11,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
@@ -181,7 +182,7 @@ export default function ChatInput({
           <RichTextPlugin
             contentEditable={<ContentEditable tabIndex={0} aria-label={t('copilot.inputAria')} />}
             placeholder={<EditorPlaceholder>{placeholderText}</EditorPlaceholder>}
-            ErrorBoundary={({ children }) => <>{children}</>}
+            ErrorBoundary={LexicalErrorBoundary}
           />
           <HistoryPlugin />
           <SubmitOnEnterPlugin onSubmit={onSubmit} />

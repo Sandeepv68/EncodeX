@@ -246,7 +246,7 @@ describe('Settings', () => {
   });
 
   it('commits the MCP port on blur and adopts the sanitized result', async () => {
-    const spy = vi.fn().mockResolvedValue({ enabled: true, port: 9000, token: '' });
+    const spy = vi.fn((settings) => Promise.resolve(settings));
     Object.defineProperty(globalThis, 'electronAPI', {
       value: { ...window.electronAPI, mcpSetSettings: spy },
       writable: true,
@@ -258,6 +258,65 @@ describe('Settings', () => {
     fireEvent.blur(port);
     expect(spy).toHaveBeenCalledWith({ enabled: true, port: 9000, token: '' });
     await waitFor(() => expect(useSettingsStore.getState().mcpPort).toBe(9000));
+  });
+
+  it('commits the MCP port on Enter', async () => {
+    const spy = vi.fn((settings) => Promise.resolve(settings));
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: spy },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    const port = await screen.findByRole('spinbutton', { name: 'settings.mcpPort' });
+    fireEvent.change(port, { target: { value: '9050' } });
+    fireEvent.keyDown(port, { key: 'Enter' });
+    await waitFor(() => expect(useSettingsStore.getState().mcpPort).toBe(9050));
+  });
+
+  it('reverts a non-numeric MCP port draft on blur', async () => {
+    const spy = vi.fn((settings) => Promise.resolve(settings));
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: spy },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    const port = (await screen.findByRole('spinbutton', { name: 'settings.mcpPort' })) as HTMLInputElement;
+    fireEvent.change(port, { target: { value: '' } });
+    fireEvent.blur(port);
+    await waitFor(() => expect(port.value).toBe('8765'));
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(useSettingsStore.getState().mcpPort).toBe(8765);
+  });
+
+  it('commits an edited MCP token on Enter', async () => {
+    const spy = vi.fn((settings) => Promise.resolve(settings));
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: spy },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    fireEvent.click(await screen.findByTestId('settings-mcp-generate-token'));
+    await waitFor(() => expect(mcpTokenInput().value).toHaveLength(43));
+    fireEvent.change(mcpTokenInput(), { target: { value: 'secret' } });
+    fireEvent.keyDown(mcpTokenInput(), { key: 'Enter' });
+    await waitFor(() => expect(useSettingsStore.getState().mcpToken).toBe('secret'));
+  });
+
+  it('copies the Authorization header row to the clipboard', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: 'secret' }) },
+      writable: true,
+    });
+    renderSettings();
+    fireEvent.click(mcpSwitch());
+    await screen.findByTestId('settings-mcp-copy-token');
+    fireEvent.click(screen.getByTestId('settings-mcp-copy-token'));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith('Bearer secret'));
   });
 
   it('commits an edited MCP token on blur', async () => {
@@ -585,6 +644,27 @@ describe('Settings', () => {
     expect(screen.queryByTestId('settings-ai-model')).not.toBeInTheDocument();
     fireEvent.click(screen.getByTestId('settings-ai-advanced'));
     expect(screen.getByTestId('settings-ai-model')).toBeInTheDocument();
+  });
+
+  it('edits the local provider base URL', async () => {
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-local'));
+    const base = screen.getByRole('textbox', { name: 'settings.ai.baseUrl' }) as HTMLInputElement;
+    fireEvent.change(base, { target: { value: 'http://127.0.0.1:11434/v1' } });
+    expect(base).toHaveValue('http://127.0.0.1:11434/v1');
+  });
+
+  it('edits the OpenAI base URL from the advanced panel', async () => {
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    const base = screen.getByRole('textbox', { name: 'settings.ai.baseUrl' }) as HTMLInputElement;
+    fireEvent.change(base, { target: { value: 'https://proxy.example/v1' } });
+    expect(base).toHaveValue('https://proxy.example/v1');
   });
 
   it('shows a save error when the bridge returns an unusable view', async () => {
