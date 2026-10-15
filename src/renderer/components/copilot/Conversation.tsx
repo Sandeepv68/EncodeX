@@ -57,7 +57,7 @@ export default function Conversation({ messages, isThinking = false, onAddToQueu
                   {message.content}
                 </Typography>
                 {message.attachments && message.attachments.length > 0 && (
-                  <Typography variant="caption" sx={{ display: 'block', marginTop: 1, opacity: 0.9 }}>
+                  <Typography variant="caption" sx={{ display: 'block', marginTop: 1 }}>
                     {t('copilot.selectedCount', { count: message.attachments.length })}
                   </Typography>
                 )}

@@ -80,6 +80,14 @@ describe('buildOperationPrompt', () => {
     const prompt = buildOperationPrompt({ ...request('anything'), files: [], profiles: [profile('web'), profile('tv')] });
     expect(prompt).toContain('Profiles: web, tv.');
   });
+
+  it('caps the file list at 20 files', () => {
+    const files = Array.from({ length: 25 }, (_, index) => videoFacts(`/in/f${index}.mp4`));
+    const prompt = buildOperationPrompt({ ...request('anything'), files });
+    expect(prompt).toContain('f19.mp4');
+    expect(prompt).not.toContain('f20.mp4');
+    expect(prompt).not.toContain('f24.mp4');
+  });
 });
 
 describe('parseOperationPlan', () => {
@@ -109,6 +117,12 @@ describe('parseOperationPlan', () => {
   it('rejects an object-shaped reply that is not valid JSON', () => {
     expect(parseOperationPlan('{not valid json}', 'openai')).toBeUndefined();
   });
+
+  it('filters non-string rationale lines and clamps a negative confidence', () => {
+    const routed = parseOperationPlan('{"operation":"cut","rationale":["keep",7,null],"confidence":-3}', 'openai');
+    expect(routed?.rationale).toEqual(['keep']);
+    expect(routed?.confidence).toBe(0);
+  });
 });
 
 describe('createLLMOperationRouter', () => {
@@ -132,6 +146,21 @@ describe('createLLMOperationRouter', () => {
 
   it('returns undefined when the reply is unusable', async () => {
     const connector = fakeConnector('no json here');
+    const router = createLLMOperationRouter(connector, 'openai');
+    await expect(router(request('anything'))).resolves.toBeUndefined();
+  });
+
+  it('sends a JSON-mode request with an abort signal', async () => {
+    const complete = vi.fn(async (_req: ConnectorRequest) => ({ text: '{"operation":"analyze"}', model: 'm' }));
+    const router = createLLMOperationRouter({ id: 'openai', defaultModel: 'm', complete }, 'openai');
+    await router(request('anything'));
+    const arg = complete.mock.calls[0][0];
+    expect(arg.jsonMode).toBe(true);
+    expect(arg.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it('returns undefined when the transport rejects with a non-Error value', async () => {
+    const connector: AIConnector = { id: 'openai', defaultModel: 'x', complete: vi.fn().mockRejectedValue('boom') };
     const router = createLLMOperationRouter(connector, 'openai');
     await expect(router(request('anything'))).resolves.toBeUndefined();
   });

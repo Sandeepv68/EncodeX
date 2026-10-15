@@ -61,4 +61,25 @@ describe('resolveLLMOperationRouter', () => {
     });
     expect(resolveLLMOperationRouter()).toBeNull();
   });
+
+  it('returns null when the key decryption throws', () => {
+    settingsMock.decryptApiKey.mockImplementation(() => {
+      throw new Error('cannot decrypt');
+    });
+    expect(resolveLLMOperationRouter()).toBeNull();
+  });
+
+  it('returns null when the connector factory throws', () => {
+    connectorsMock.createConnectorFromSettings.mockImplementation(() => {
+      throw new Error('bad provider');
+    });
+    expect(resolveLLMOperationRouter()).toBeNull();
+  });
+
+  it('returns null when the router builder throws', () => {
+    llmMock.createLLMOperationRouter.mockImplementation(() => {
+      throw new Error('bad router');
+    });
+    expect(resolveLLMOperationRouter()).toBeNull();
+  });
 });

@@ -53,6 +53,13 @@ describe('provider descriptors', () => {
     expect(getProviderDescriptor('rules')?.id).toBe('rules');
     expect(getProviderDescriptor('local')?.id).toBe('local');
   });
+
+  it('gives every descriptor a non-empty label and note', () => {
+    for (const descriptor of listProviderDescriptors()) {
+      expect(descriptor.label.length).toBeGreaterThan(0);
+      expect((descriptor.note ?? '').length).toBeGreaterThan(0);
+    }
+  });
 });
 
 describe('createProvider', () => {
@@ -68,6 +75,8 @@ describe('createProvider', () => {
     expect(isProviderImplemented('rules')).toBe(true);
     expect(isProviderImplemented('local')).toBe(true);
     expect(isProviderImplemented('openai')).toBe(false);
+    expect(isProviderImplemented('anthropic')).toBe(false);
+    expect(isProviderImplemented('gemini')).toBe(false);
   });
 
   it('throws for unimplemented providers instead of silently falling back', () => {
@@ -127,5 +136,28 @@ describe('local plan helpers', () => {
     expect(plan.providerId).toBe('local');
     expect(plan.profileId).toBe('iphone-1080p');
     expect(plan.rationale.some((line) => line.includes('deterministic rules plan'))).toBe(true);
+  });
+
+  it('falls back when the parsed object has no usable args object', () => {
+    const plan = parseLocalPlan('{"args":[1,2],"confidence":0.9}', REQUEST);
+    expect(plan.rationale.some((line) => line.includes('deterministic rules plan'))).toBe(true);
+  });
+
+  it('defaults the rationale and confidence for a sparse but valid object', () => {
+    const plan = parseLocalPlan('{"args":{"crf":23}}', REQUEST);
+    expect(plan.providerId).toBe('local');
+    expect(plan.args).toEqual({ crf: 23 });
+    expect(plan.rationale).toEqual(['Local model plan.']);
+    expect(plan.confidence).toBe(0.5);
+  });
+
+  it('filters non-string rationale lines', () => {
+    const plan = parseLocalPlan('{"args":{},"rationale":["ok",5,null]}', REQUEST);
+    expect(plan.rationale).toEqual(['ok']);
+  });
+
+  it('tolerates a non-string response', () => {
+    const plan = parseLocalPlan(undefined as unknown as string, REQUEST);
+    expect(plan.providerId).toBe('local');
   });
 });

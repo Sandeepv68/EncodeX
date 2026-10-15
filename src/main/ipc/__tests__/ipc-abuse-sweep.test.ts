@@ -520,6 +520,18 @@ describe('IPC handler abuse (committed unit-tier sweep)', () => {
     expect(channels.length).toBeGreaterThan(40);
   });
 
+  it('sweeps the AI provider settings channels', () => {
+    // These are new AI-provider channels. The sweep drives every registered
+    // handler generically, so they are covered automatically - but if
+    // `registerAiSettingsIpc()` were dropped from `handlers.ts` the sweep
+    // would keep passing on a smaller set. Pin their presence so coverage
+    // cannot silently shrink.
+    const swept = new Set(channels.map((c) => c.channel));
+    expect(swept).toContain(IPC.AI_SETTINGS_GET);
+    expect(swept).toContain(IPC.AI_SETTINGS_SET);
+    expect(swept).toContain(IPC.AI_CONNECT_TEST);
+  });
+
   for (const inputId of HOSTILE_INPUT_IDS) {
     it(`survives every request handler called with ${inputId}`, async () => {
       // Hostile input legitimately triggers app warnings (coerced-away reveal

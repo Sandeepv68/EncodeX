@@ -98,6 +98,7 @@ vi.mock('fs', () => ({
 const { registerCopilotHandlers } = await import('../copilot');
 import { IPC } from '../../../shared/ipc-channels';
 import { ErrorCode } from '../../../shared/errors';
+import * as sharedAi from '../../../shared/ai';
 
 /** Root temp directory for the media scanned by the handler. */
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-copilot-'));
@@ -328,5 +329,112 @@ describe('registerCopilotHandlers', () => {
       expect.anything(),
     );
     expect(result.notes).toContain('Media-intelligence results are read-only and were not added to the queue.');
+  });
+
+  it('caps the scanned files at the default maximum', async () => {
+    const names = Array.from({ length: 55 }, (_, i) => `clip-${String(i).padStart(3, '0')}.mp4`);
+    const big = makeFolder(names);
+    const result = await plan({ goal: 'compress for web', inputs: [big] });
+    expect(result.actions).toHaveLength(50);
+  });
+
+  it('honors a smaller maxFiles bound', async () => {
+    const result = await plan({ goal: 'compress for web', inputs: [scanDir], maxFiles: 2 });
+    expect(result.actions).toHaveLength(2);
+  });
+
+  it('treats a zero or missing maxFiles as the default', async () => {
+    for (const maxFiles of [0, undefined]) {
+      const result = await plan({ goal: 'compress for web', inputs: [scanDir], maxFiles });
+      expect(result.actions).toHaveLength(2);
+    }
+  });
+
+  it('clamps a negative maxFiles to at least one', async () => {
+    const result = await plan({ goal: 'compress for web', inputs: [scanDir], maxFiles: -5 });
+    expect(result.actions).toHaveLength(1);
+  });
+
+  it('falls back to the default maxFiles when the value is not numeric', async () => {
+    const result = await plan({ goal: 'compress for web', inputs: [scanDir], maxFiles: 'not-a-number' });
+    expect(result.actions.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('does not recurse into subdirectories unless explicitly asked', async () => {
+    const root = makeFolder(['top.mp4']);
+    const nested = fs.mkdtempSync(path.join(root, 'nested-'));
+    fs.writeFileSync(path.join(nested, 'deep.mp4'), 'stub');
+    const result = await plan({ goal: 'compress for web', inputs: [root] });
+    const inputs = result.actions.map((a) => path.basename(a.input));
+    expect(inputs).toContain('top.mp4');
+    expect(inputs).not.toContain('deep.mp4');
+  });
+
+  it('treats an explicit "auto" operation as unforced and consults the provider resolver', async () => {
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: 'remux to mkv', inputs: [file], operation: 'auto' });
+    expect(providerRegistryMock.resolveLLMOperationRouter).toHaveBeenCalled();
+    expect(result.operation).toBe('remux');
+    expect(result.providerId).toBe('rules');
+  });
+
+  it('forwards an explicit search phrase into the intelligence builder', async () => {
+    const file = path.join(scanDir, 'one.mp4');
+    await plan({ goal: 'find the pricing bit', inputs: [file], operation: 'search_transcript', query: 'pricing' });
+    expect(intelligenceMock.buildIntelligenceResults).toHaveBeenCalledWith(
+      'search_transcript',
+      expect.objectContaining({ query: 'pricing' }),
+      expect.anything(),
+    );
+  });
+
+  it('records the operation-run note and the analyze read-only note', async () => {
+    const file = path.join(scanDir, 'one.mp4');
+    const analyze = await plan({ goal: 'inspect this file', inputs: [file], operation: 'analyze' });
+    expect(analyze.notes).toContain('Ran the "analyze" operation for 1 file(s).');
+    expect(analyze.notes).toContain('Analysis results are read-only and were not added to the queue.');
+
+    const remux = await plan({ goal: 'remux to mkv', inputs: [file], operation: 'remux' });
+    expect(remux.notes).toContain('Ran the "remux" operation for 1 file(s).');
+    expect(remux.notes).toContain('Operation chosen by "rules".');
+  });
+
+  it('stamps the provider note and concatenates rationale for a convert plan', async () => {
+    const result = await plan({ goal: 'compress for web', inputs: [scanDir] });
+    expect(result.operation).toBe('convert');
+    expect(result.notes).toContain('Operation chosen by "rules".');
+    expect(result.rationale.length).toBeGreaterThan(0);
+  });
+
+  it('falls back to empty capabilities when the encoder probe returns null', async () => {
+    capabilitiesMock.getEncoderCapabilities.mockReturnValue(null);
+    const result = await plan({ goal: 'compress for web', inputs: [scanDir] });
+    expect(result.actions).toHaveLength(2);
+  });
+
+  it('accepts an image file for the compress_image operation', async () => {
+    const imageDir = makeFolder(['photo.jpg']);
+    const result = await plan({
+      goal: 'shrink this image',
+      inputs: [path.join(imageDir, 'photo.jpg')],
+      operation: 'compress_image',
+    });
+    expect(result.operation).toBe('compress_image');
+    expect(result.actions[0].input.endsWith('photo.jpg')).toBe(true);
+  });
+
+  it('forwards minSavings to the planning agent when provided', async () => {
+    const spy = vi.spyOn(sharedAi, 'planAgent');
+    const file = path.join(scanDir, 'one.mp4');
+    await plan({ goal: 'compress for web', inputs: [file], minSavings: 0.5 });
+    expect(spy).toHaveBeenCalledWith(expect.objectContaining({ options: expect.objectContaining({ minSavings: 0.5 }) }));
+  });
+
+  it('omits minSavings from the agent options when it is not provided', async () => {
+    const spy = vi.spyOn(sharedAi, 'planAgent');
+    const file = path.join(scanDir, 'one.mp4');
+    await plan({ goal: 'compress for web', inputs: [file] });
+    const call = spy.mock.calls[0][0] as unknown as { options: Record<string, unknown> };
+    expect(call.options).not.toHaveProperty('minSavings');
   });
 });

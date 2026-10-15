@@ -105,3 +105,56 @@ describe('explainError', () => {
     expect(explainError({ code: 'FILE_NOT_FOUND', tool: 'convert_media', args: { input: 'a.mp4' } }).fixes).toEqual([]);
   });
 });
+
+describe('explainError: AI and translation codes', () => {
+  it('explains AI_NOT_CONFIGURED from the help table with no auto-fix', () => {
+    const explanation = explainError({ code: 'AI_NOT_CONFIGURED' });
+    expect(explanation.code).toBe('AI_NOT_CONFIGURED');
+    expect(explanation.title).toBe('No AI provider configured');
+    expect(explanation.explanation.trim().length).toBeGreaterThan(0);
+    expect(explanation.causes.length).toBeGreaterThan(0);
+    expect(explanation.fixes).toEqual([]);
+    expect(explanation.retry).toBeUndefined();
+    expect(explanation.detail).toBeUndefined();
+  });
+
+  it.each([
+    ['AI_CONNECTOR_FAILED', 'Could not reach the AI provider'],
+    ['AI_RESPONSE_INVALID', 'The AI reply was unusable'],
+    ['TRANSLATION_UNAVAILABLE', 'Translation unavailable'],
+  ] as const)('explains %s with causes, non-empty message and no auto-fix', (code, title) => {
+    const explanation = explainError({ code });
+    expect(explanation.code).toBe(code);
+    expect(explanation.title).toBe(title);
+    expect(explanation.explanation.trim().length).toBeGreaterThan(0);
+    expect(explanation.causes.length).toBeGreaterThan(0);
+    expect(explanation.fixes).toEqual([]);
+  });
+
+  it('preserves a raw connector failure detail verbatim', () => {
+    const explanation = explainError({ code: 'AI_CONNECTOR_FAILED', detail: 'HTTP 401: invalid api key' });
+    expect(explanation.code).toBe('AI_CONNECTOR_FAILED');
+    expect(explanation.detail).toBe('HTTP 401: invalid api key');
+  });
+
+  it.each([
+    ['the ai connector failed', 'AI_CONNECTOR_FAILED'],
+    ['no api key is configured', 'AI_NOT_CONFIGURED'],
+    ['the provider returned an empty completion', 'AI_RESPONSE_INVALID'],
+    ['subtitle translation backend is unavailable', 'TRANSLATION_UNAVAILABLE'],
+    ['speech-to-text engine missing', 'TRANSCRIPTION_UNAVAILABLE'],
+  ] as const)('infers the AI/translation code from the message %j', (message, code) => {
+    const explanation = explainError({ message });
+    expect(explanation.code).toBe(code);
+    expect(explanation.detail).toBe(message);
+    expect(explanation.causes.length).toBeGreaterThan(0);
+  });
+
+  it('never offers a retry for an AI code even when the failing call is known', () => {
+    // AI failures are re-tested explicitly by the UI, not auto-retried, so a
+    // known tool/args must still produce no fix.
+    const explanation = explainError({ code: 'AI_CONNECTOR_FAILED', tool: 'copilot_plan', args: { goal: 'x' } });
+    expect(explanation.fixes).toEqual([]);
+    expect(explanation.retry).toBeUndefined();
+  });
+});

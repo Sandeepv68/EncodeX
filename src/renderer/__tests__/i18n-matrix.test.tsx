@@ -48,8 +48,10 @@ import {
   loadLocale,
   LOCALES_DIR,
   BASE_LOCALE,
+  NON_ENGLISH_REQUIRED,
   RAW_TOKEN_PATTERN,
   rawKeysInBody,
+  untranslatedRequiredKeys,
 } from './i18n-matrix-utils';
 
 // The global suite mocks `react-i18next` for speed. This suite needs the real
@@ -102,6 +104,33 @@ describe('5.1 locale matrix', () => {
       expect(problems, `${fileName}: locale file failed integrity checks:\n - ${problems.sort().slice(0, 40).join('\n - ')}`).toHaveLength(
         0,
       );
+    }
+  });
+
+  it('ships a real translation for every copilot.* and settings.ai.errors.* key', () => {
+    // Stage 3d guard: the Copilot UI and the AI connector error copy must not
+    // fall back to English placeholders in any shipped locale. Product names
+    // (Copilot, OpenAI, Anthropic, Google Gemini, Remux, Demux) and true
+    // cognates are exempted in the helper; everything else must differ from the
+    // en-US string. The target set is non-trivial, else the check is vacuous.
+    expect(NON_ENGLISH_REQUIRED.size).toBeGreaterThan(80);
+
+    // English variants (en-AU, en-GB, ...) legitimately share the source
+    // strings, so the "must be translated" rule only applies to non-English
+    // locales.
+    const fileNames = readdirSync(LOCALES_DIR)
+      .filter((name) => name.endsWith('.json') && !name.startsWith('en-'))
+      .sort();
+    expect(fileNames.length).toBeGreaterThan(40);
+
+    for (const fileName of fileNames) {
+      const localeCode = fileName.replace(/\.json$/, '');
+      const locale = loadLocale(fileName);
+      const untranslated = untranslatedRequiredKeys(localeCode, locale.entries);
+      expect(
+        untranslated,
+        `${localeCode}: these keys are still byte-identical to en-US, so the ${localeCode} file ships English placeholders:\n - ${untranslated.join('\n - ')}`,
+      ).toHaveLength(0);
     }
   });
 

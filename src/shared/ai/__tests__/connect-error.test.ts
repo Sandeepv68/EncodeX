@@ -177,4 +177,68 @@ describe('classifyAiConnectError', () => {
     expect(classifyAiConnectError(null, 'anthropic')).toEqual({ reason: 'unknown' });
     expect(classifyAiConnectError('nope', 'gemini')).toEqual({ reason: 'unknown' });
   });
+
+  describe('application error codes', () => {
+    it('maps the AI_NOT_CONFIGURED app error to unknown', () => {
+      const err = createError(ErrorCode.AI_NOT_CONFIGURED, 'No key stored.');
+      expect(classifyAiConnectError(err, 'openai')).toEqual({ reason: 'unknown' });
+    });
+  });
+
+  describe('Gemini gRPC status edge cases', () => {
+    it.each([
+      ['INVALID_ARGUMENT', 'Invalid value', 'badRequest'],
+      ['UNAVAILABLE', 'Service temporarily unavailable', 'serverError'],
+      ['DEADLINE_EXCEEDED', 'Deadline exceeded', 'serverError'],
+      ['UNKNOWN', 'Unknown error', 'serverError'],
+    ])('maps %s to %s', (status, message, reason) => {
+      const err = httpError(500, { error: { code: 500, status, message } });
+      expect(classifyAiConnectError(err, 'gemini')).toEqual({ reason, status: 500 });
+    });
+
+    it.each([['The model is not supported for this request'], ['The requested model does not exist']])(
+      'maps the message %j to modelNotFound',
+      (message) => {
+        const err = httpError(400, { error: { code: 400, status: 'INVALID_ARGUMENT', message } });
+        expect(classifyAiConnectError(err, 'gemini')).toEqual({ reason: 'modelNotFound', status: 400 });
+      },
+    );
+  });
+
+  describe('OpenAI-specific codes', () => {
+    it('maps billing_hard_limit_reached to quota', () => {
+      const err = httpError(429, { error: { code: 'billing_hard_limit_reached', message: 'Billing hard limit reached' } });
+      expect(classifyAiConnectError(err, 'openai')).toEqual({ reason: 'quota', status: 429 });
+    });
+
+    it('maps model_not_available to modelNotFound', () => {
+      const err = httpError(404, { error: { code: 'model_not_available', message: 'Model is not available' } });
+      expect(classifyAiConnectError(err, 'openai')).toEqual({ reason: 'modelNotFound', status: 404 });
+    });
+
+    it('maps the api_error type to serverError', () => {
+      const err = httpError(500, { error: { type: 'api_error', message: 'The server had an error' } });
+      expect(classifyAiConnectError(err, 'openai')).toEqual({ reason: 'serverError', status: 500 });
+    });
+  });
+
+  describe('hostile structures never throw', () => {
+    it('tolerates an array, a throwing Proxy and a cyclic object', () => {
+      expect(classifyAiConnectError([1, 2, 3] as unknown, 'openai')).toEqual({ reason: 'unknown' });
+
+      const proxy = new Proxy(
+        {},
+        {
+          get() {
+            throw new Error('nope');
+          },
+        },
+      );
+      expect(classifyAiConnectError(proxy, 'gemini')).toEqual({ reason: 'unknown' });
+
+      const cyclic: Record<string, unknown> = { status: 500 };
+      cyclic.self = cyclic;
+      expect(classifyAiConnectError(cyclic, 'anthropic')).toEqual({ reason: 'serverError', status: 500 });
+    });
+  });
 });

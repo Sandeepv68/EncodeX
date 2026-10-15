@@ -20,6 +20,8 @@ import type {
   WaveformData,
 } from '../../src/shared/types';
 import type { McpSettings } from '../../src/shared/mcp-settings';
+import type { CopilotPlan } from '../../src/shared/copilot';
+import type { AiConnectTestResult, AiSettingsUpdate, AiSettingsView } from '../../src/shared/ai/settings';
 
 export interface TestSnapshot {
   windowCalls: string[];
@@ -30,6 +32,7 @@ export interface TestSnapshot {
   closeRequestedSubscribers: number;
   termsRejectCalls: number;
   mcpSetCalls: McpSettings[];
+  aiSetCalls: AiSettingsUpdate[];
 }
 
 function invoke(page: Page, method: string, args: unknown[]): Promise<unknown> {
@@ -47,6 +50,10 @@ export const mockApi = {
   setSelectFile: (page: Page, v: string | null) => invoke(page, 'setSelectFile', [v]),
   setSelectFiles: (page: Page, v: string[]) => invoke(page, 'setSelectFiles', [v]),
   setSelectFolderFiles: (page: Page, v: string[]) => invoke(page, 'setSelectFolderFiles', [v]),
+  setCopilotPlan: (page: Page, v: CopilotPlan | null) => invoke(page, 'setCopilotPlan', [v]),
+  setCopilotPlanBehavior: (page: Page, v: 'resolve' | 'reject') => invoke(page, 'setCopilotPlanBehavior', [v]),
+  setAiSettingsView: (page: Page, v: Partial<AiSettingsView>) => invoke(page, 'setAiSettingsView', [v]),
+  setAiConnectResult: (page: Page, v: AiConnectTestResult) => invoke(page, 'setAiConnectResult', [v]),
   setExpandPaths: (page: Page, v: string[]) => invoke(page, 'setExpandPaths', [v]),
   setPathForFile: (page: Page, v: string | null) => invoke(page, 'setPathForFile', [v]),
   setSelectOutput: (page: Page, v: string | null) => invoke(page, 'setSelectOutput', [v]),
@@ -69,6 +76,7 @@ export const mockApi = {
   setThumbnails: (page: Page, v: ThumbnailStrip | null) => invoke(page, 'setThumbnails', [v]),
   setMcpSettings: (page: Page, v: McpSettings) => invoke(page, 'setMcpSettings', [v]),
   getMcpSetCalls: (page: Page) => invoke(page, 'get', []).then((snapshot) => (snapshot as TestSnapshot).mcpSetCalls ?? []),
+  getAiSetCalls: (page: Page) => invoke(page, 'get', []).then((snapshot) => (snapshot as TestSnapshot).aiSetCalls ?? []),
   emit: (page: Page, channel: string, payload: unknown) => invoke(page, 'emit', [channel, payload]),
   reset: (page: Page) => invoke(page, 'reset', []),
   get: (page: Page) => invoke(page, 'get', []) as Promise<TestSnapshot>,

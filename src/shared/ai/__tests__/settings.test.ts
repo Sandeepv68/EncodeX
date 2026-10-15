@@ -75,10 +75,50 @@ describe('sanitizeAiSettings', () => {
   });
 
   it('truncates an over-long model and base URL', () => {
-    const long = 'a'.repeat(500);
-    const sanitized = sanitizeAiSettings({ providerId: 'openai', model: long, baseUrl: long });
+    const longModel = 'a'.repeat(500);
+    const longUrl = `https://x/v1/${'a'.repeat(500)}`;
+    const sanitized = sanitizeAiSettings({ providerId: 'openai', model: longModel, baseUrl: longUrl });
     expect(sanitized.model).toHaveLength(200);
     expect(sanitized.baseUrl).toHaveLength(500);
+  });
+
+  it('accepts only http(s) base URLs, dropping other schemes', () => {
+    expect(sanitizeAiSettings({ providerId: 'openai', baseUrl: 'javascript:alert(1)' }).baseUrl).toBeUndefined();
+    expect(sanitizeAiSettings({ providerId: 'openai', baseUrl: 'data:text/html,x' }).baseUrl).toBeUndefined();
+    expect(sanitizeAiSettings({ providerId: 'openai', baseUrl: 'file:///etc/passwd' }).baseUrl).toBeUndefined();
+    expect(sanitizeAiSettings({ providerId: 'openai', baseUrl: 'HTTP://x/v1' }).baseUrl).toBe('HTTP://x/v1');
+    expect(sanitizeAiSettings({ providerId: 'openai', baseUrl: 'http://localhost:11434' }).baseUrl).toBe('http://localhost:11434');
+  });
+
+  it('strips CR/LF from a base URL so a header newline cannot survive', () => {
+    expect(sanitizeAiSettings({ providerId: 'openai', baseUrl: 'https://x/v1\r\nX-Injected: 1' }).baseUrl).toBe(
+      'https://x/v1X-Injected: 1',
+    );
+  });
+
+  it('drops a whitespace-only base URL and a non-string one', () => {
+    expect(sanitizeAiSettings({ providerId: 'openai', baseUrl: '   ' }).baseUrl).toBeUndefined();
+    expect(sanitizeAiSettings({ providerId: 'openai', baseUrl: 7 }).baseUrl).toBeUndefined();
+  });
+
+  it('drops a non-string key and a non-finite keySetAt', () => {
+    expect(sanitizeAiSettings({ providerId: 'openai', key: 7 }).key).toBeNull();
+    expect(sanitizeAiSettings({ providerId: 'openai', key: null, keySetAt: Number.POSITIVE_INFINITY }).keySetAt).toBeUndefined();
+    expect(sanitizeAiSettings({ providerId: 'openai', key: null, keySetAt: Number.NaN }).keySetAt).toBeUndefined();
+    expect(sanitizeAiSettings({ providerId: 'openai', key: 'enc', keySetAt: 123 }).keySetAt).toBe(123);
+  });
+
+  it('strips a leading BOM from the model and base URL', () => {
+    expect(sanitizeAiSettings({ providerId: 'openai', model: '\uFEFFgpt-4o' }).model).toBe('gpt-4o');
+    expect(sanitizeAiSettings({ providerId: 'openai', baseUrl: '\uFEFFhttps://x/v1' }).baseUrl).toBe('https://x/v1');
+  });
+
+  it('is not vulnerable to prototype pollution from a hostile document', () => {
+    const hostile = JSON.parse('{"__proto__":{"polluted":true},"constructor":"x","prototype":"y"}') as unknown;
+    const sanitized = sanitizeAiSettings(hostile) as unknown as Record<string, unknown>;
+    expect(sanitized.polluted).toBeUndefined();
+    expect(({} as Record<string, unknown>).polluted).toBeUndefined();
+    expect(sanitized).toEqual({ providerId: 'rules', model: '', key: null });
   });
 });
 

@@ -123,7 +123,10 @@ const api = {
   selectFile: () => Promise.resolve(state.selectFileResult),
   selectFiles: () => Promise.resolve(state.selectFilesResult),
   selectFolderFiles: () => Promise.resolve(state.selectFolderFilesResult),
-  copilotPlan: () => Promise.resolve(state.copilotPlanResult),
+  copilotPlan: () => {
+    if (state.copilotPlanBehavior === 'reject') return Promise.reject(new Error('mock copilot plan failed'));
+    return Promise.resolve(state.copilotPlanResult);
+  },
   expandPaths: (paths) => Promise.resolve(state.expandPathsResult),
   selectOutput: () => Promise.resolve(state.selectOutputResult),
   selectDirectory: () => Promise.resolve(state.selectDirectoryResult),
@@ -297,6 +300,33 @@ const api = {
     return Promise.resolve({ ...next });
   },
 
+  // --- AI provider settings ----------------------------------------------------
+  // The stored key never crosses this boundary (mirroring src/main/ai/settings.ts,
+  // which encrypts it at rest and sends only a masked `AiSettingsView`), so
+  // `aiGetSettings`/`aiSetSettings` answer with the sanitized view in state.
+  aiGetSettings: () => Promise.resolve({ ...state.aiSettingsView }),
+  aiSetSettings: (update) => {
+    const next = update || {};
+    state.aiSetCalls.push(JSON.parse(JSON.stringify(next)));
+    const view = {
+      ...state.aiSettingsView,
+      ...(typeof next.providerId === 'string' ? { providerId: next.providerId } : {}),
+      ...(typeof next.model === 'string' ? { model: next.model } : {}),
+      ...(typeof next.baseUrl === 'string' ? { baseUrl: next.baseUrl } : {}),
+    };
+    if (typeof next.apiKey === 'string' && next.apiKey.length > 0) {
+      view.hasKey = true;
+      view.keyHint = '••••••••';
+    }
+    if (next.clearKey) {
+      view.hasKey = false;
+      view.keyHint = '';
+    }
+    state.aiSettingsView = view;
+    return Promise.resolve({ ...view });
+  },
+  aiConnectTest: () => Promise.resolve(state.aiConnectResult),
+
   // --- Event subscriptions (each returns an unsubscribe) -----------------------
   onWindowMaximizedChange: (cb) => subscribe('window-maximized-change', cb),
   onWindowCloseRequested: (cb) => {
@@ -346,6 +376,9 @@ const api = {
     },
     setCopilotPlan: (v) => {
       state.copilotPlanResult = v;
+    },
+    setCopilotPlanBehavior: (v) => {
+      state.copilotPlanBehavior = v;
     },
     setExpandPaths: (v) => {
       state.expandPathsResult = v;
@@ -418,6 +451,12 @@ const api = {
     setMcpSettings: (v) => {
       persistMcpSettings(sanitizeMcpSettings(v || {}));
     },
+    setAiSettingsView: (v) => {
+      state.aiSettingsView = Object.assign({}, state.aiSettingsView, v || {});
+    },
+    setAiConnectResult: (v) => {
+      state.aiConnectResult = v;
+    },
     reset: () => {
       const file = mcpSettingsFile();
       if (file) {
@@ -431,8 +470,17 @@ const api = {
       reset();
     },
     get: () => {
-      const { windowCalls, loginCalls, revealCalls, queueJobs, queueState, closeRequestedSubscribers, termsRejectCalls, mcpSetCalls } =
-        state;
+      const {
+        windowCalls,
+        loginCalls,
+        revealCalls,
+        queueJobs,
+        queueState,
+        closeRequestedSubscribers,
+        termsRejectCalls,
+        mcpSetCalls,
+        aiSetCalls,
+      } = state;
       return {
         windowCalls,
         loginCalls,
@@ -442,6 +490,7 @@ const api = {
         closeRequestedSubscribers,
         termsRejectCalls,
         mcpSetCalls,
+        aiSetCalls,
       };
     },
   },

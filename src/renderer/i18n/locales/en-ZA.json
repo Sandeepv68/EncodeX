@@ -1008,6 +1008,7 @@
     "folderEmpty": "No supported media was found in that folder.",
     "errorNoGoal": "Enter a goal before planning.",
     "errorNoInputs": "Choose a folder of media before planning.",
+    "dialogFailed": "Could not open the file picker. Try again.",
     "errorFallback": "Copilot could not build a plan for that goal.",
     "errorEnqueue": "None of the planned jobs could be added to the queue.",
     "actionsTitle": "Planned actions",

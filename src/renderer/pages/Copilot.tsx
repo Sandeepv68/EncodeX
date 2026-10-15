@@ -67,15 +67,19 @@ export default function Copilot() {
   const chooseFolder = async (): Promise<void> => {
     setGlobalError(null);
     setNotice(null);
-    const files = await withBridgeTimeout(
-      bridgePromise(() => window.electronAPI.selectFolderFiles()),
-      FOLDER_TIMEOUT_MS,
-      null,
-    );
-    if (files && Array.isArray(files) && files.length > 0) {
-      setInputs(files);
-    } else if (Array.isArray(files) && files.length === 0) {
-      setNotice(t('copilot.folderEmpty'));
+    try {
+      const files = await withBridgeTimeout(
+        bridgePromise(() => window.electronAPI.selectFolderFiles()),
+        FOLDER_TIMEOUT_MS,
+        null,
+      );
+      if (files && Array.isArray(files) && files.length > 0) {
+        setInputs(files);
+      } else if (Array.isArray(files) && files.length === 0) {
+        setNotice(t('copilot.folderEmpty'));
+      }
+    } catch {
+      setGlobalError(t('copilot.dialogFailed'));
     }
   };
 
@@ -86,15 +90,19 @@ export default function Copilot() {
   const chooseFiles = async (): Promise<void> => {
     setGlobalError(null);
     setNotice(null);
-    const files = await withBridgeTimeout(
-      bridgePromise(() => window.electronAPI.selectFiles()),
-      FOLDER_TIMEOUT_MS,
-      null,
-    );
-    if (files && Array.isArray(files) && files.length > 0) {
-      setInputs((current) => [...new Set([...current, ...files])]);
-    } else if (Array.isArray(files) && files.length === 0) {
-      setNotice(t('copilot.filesEmpty'));
+    try {
+      const files = await withBridgeTimeout(
+        bridgePromise(() => window.electronAPI.selectFiles()),
+        FOLDER_TIMEOUT_MS,
+        null,
+      );
+      if (files && Array.isArray(files) && files.length > 0) {
+        setInputs((current) => [...new Set([...current, ...files])]);
+      } else if (Array.isArray(files) && files.length === 0) {
+        setNotice(t('copilot.filesEmpty'));
+      }
+    } catch {
+      setGlobalError(t('copilot.dialogFailed'));
     }
   };
 
