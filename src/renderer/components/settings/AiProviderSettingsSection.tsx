@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, IconButton, Tooltip, Typography, InputAdornment, Link } from '@mui/material';
+import { Button, IconButton, Tooltip, InputAdornment } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWandMagicSparkles,
@@ -33,7 +33,7 @@ import {
   ProviderName,
   ProviderLogo,
   AiKeyHelper,
-  AiActionRow,
+  AiKeyRow,
   AdvancedPanel,
   AiAlert,
 } from '../../styles/settings/AiProviderSettingsSection.styles';
@@ -240,62 +240,65 @@ export default function AiProviderSettingsSection() {
             ))}
           </ProviderGrid>
 
-          {configurable &&
-            (needsKey ? (
-              <McpField
-                type="password"
-                size="small"
-                label={t('settings.ai.apiKey')}
-                data-testid="settings-ai-key"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder={t('settings.ai.apiKeyPlaceholder')}
-                helperText={
-                  <AiKeyHelper>
-                    <span>{view?.hasKey ? t('settings.ai.keyStored', { hint: view.keyHint }) : t('settings.ai.keyNone')}</span>
-                    {keyUrl && (
-                      <Link
-                        href={keyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        variant="body2"
-                        underline="hover"
-                        data-testid="settings-ai-get-key"
-                      >
-                        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-                        {t('settings.ai.getKey')}
-                      </Link>
-                    )}
-                  </AiKeyHelper>
-                }
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Tooltip title={t('settings.ai.paste')}>
-                          <IconButton size="small" onClick={pasteKey} aria-label={t('settings.ai.paste')} data-testid="settings-ai-paste">
-                            <FontAwesomeIcon icon={faPaste} />
-                          </IconButton>
-                        </Tooltip>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
-            ) : (
-              <McpField
-                size="small"
-                label={t('settings.ai.baseUrl')}
-                data-testid="settings-ai-base-url"
-                value={baseUrl}
-                onChange={(e) => setBaseUrl(e.target.value)}
-                placeholder={t('settings.ai.baseUrlPlaceholder')}
-              />
-            ))}
-
           {configurable && (
             <>
-              <AiActionRow>
+              <AiKeyRow>
+                {needsKey ? (
+                  <McpField
+                    type="password"
+                    size="small"
+                    label={t('settings.ai.apiKey')}
+                    data-testid="settings-ai-key"
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
+                    placeholder={t('settings.ai.apiKeyPlaceholder')}
+                    fullWidth
+                    helperText={
+                      <AiKeyHelper>
+                        <span>{view?.hasKey ? t('settings.ai.keyStored', { hint: view.keyHint }) : t('settings.ai.keyNone')}</span>
+                      </AiKeyHelper>
+                    }
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Tooltip title={t('settings.ai.paste')}>
+                              <IconButton size="small" onClick={pasteKey} aria-label={t('settings.ai.paste')} data-testid="settings-ai-paste">
+                                <FontAwesomeIcon icon={faPaste} />
+                              </IconButton>
+                            </Tooltip>
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
+                  />
+                ) : (
+                  <McpField
+                    size="small"
+                    label={t('settings.ai.baseUrl')}
+                    data-testid="settings-ai-base-url"
+                    value={baseUrl}
+                    onChange={(e) => setBaseUrl(e.target.value)}
+                    placeholder={t('settings.ai.baseUrlPlaceholder')}
+                    fullWidth
+                  />
+                )}
+
+                {keyUrl && (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    component="a"
+                    href={keyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    startIcon={<FontAwesomeIcon icon={faArrowUpRightFromSquare} />}
+                    data-testid="settings-ai-get-key"
+                  >
+                    {t('settings.ai.getKey')}
+                  </Button>
+                )}
+
                 <Button size="small" variant="contained" onClick={connect} disabled={busy} data-testid="settings-ai-connect">
                   {busy ? t('settings.ai.connecting') : t('settings.ai.connect')}
                 </Button>
@@ -309,7 +312,7 @@ export default function AiProviderSettingsSection() {
                 >
                   {t('settings.ai.advanced')}
                 </Button>
-              </AiActionRow>
+              </AiKeyRow>
 
               {advanced && (
                 <AdvancedPanel>
@@ -337,9 +340,9 @@ export default function AiProviderSettingsSection() {
           )}
 
           {status && (
-            <Typography variant="caption" color="text.secondary" data-testid="settings-ai-status">
+            <AiAlert severity="info" data-testid="settings-ai-status">
               {status}
-            </Typography>
+            </AiAlert>
           )}
           {error && (
             <AiAlert severity="error" data-testid="settings-ai-error">
@@ -347,9 +350,9 @@ export default function AiProviderSettingsSection() {
             </AiAlert>
           )}
           {configurable ? (
-            <Typography variant="caption" color="text.secondary">
+            <AiAlert severity="info" data-testid="settings-ai-privacy-note">
               {t('settings.ai.privacy')}
-            </Typography>
+            </AiAlert>
           ) : (
             <AiAlert severity="info" data-testid="settings-ai-rules-note">
               {t('settings.ai.rulesNote')}

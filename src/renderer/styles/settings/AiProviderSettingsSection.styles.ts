@@ -84,18 +84,32 @@ export const ProviderLogo = styled('img')({
   objectFit: 'contain',
 });
 
+export const AiKeyRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'baseline',
+  gap: theme.spacing(1),
+  flexWrap: 'nowrap',
+  '& .MuiTextField-root': {
+    flex: 1,
+    minWidth: 0,
+  },
+  '& .MuiButton-root': {
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+  },
+  [theme.breakpoints.down('sm')]: {
+    flexWrap: 'wrap',
+    '& .MuiTextField-root': {
+      width: '100%',
+    },
+  },
+}));
+
 export const AiKeyHelper = styled('span')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   gap: theme.spacing(1),
-}));
-
-export const AiActionRow = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: theme.spacing(1),
-  flexWrap: 'wrap',
 }));
 
 export const AdvancedPanel = styled(Box)(({ theme }) => ({
