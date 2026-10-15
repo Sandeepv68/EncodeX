@@ -205,6 +205,18 @@ describe('classifyAiConnectError', () => {
     );
   });
 
+  describe('unclassified fallbacks', () => {
+    it('falls back to unknown with the status when no rule matches an HTTP status', () => {
+      const err = httpError(208, '<html>already reported</html>');
+      expect(classifyAiConnectError(err, 'openai')).toEqual({ reason: 'unknown', status: 208 });
+    });
+
+    it('falls through to the HTTP fallback when the Gemini mapper does not recognise the status', () => {
+      const err = httpError(418, { error: { code: 418, status: 'DATA_LOSS', message: 'Data loss detected' } });
+      expect(classifyAiConnectError(err, 'gemini')).toEqual({ reason: 'unknown', status: 418 });
+    });
+  });
+
   describe('OpenAI-specific codes', () => {
     it('maps billing_hard_limit_reached to quota', () => {
       const err = httpError(429, { error: { code: 'billing_hard_limit_reached', message: 'Billing hard limit reached' } });
