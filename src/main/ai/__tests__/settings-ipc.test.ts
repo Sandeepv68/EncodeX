@@ -99,14 +99,15 @@ describe('registerAiSettingsIpc', () => {
 
   it('CONNECT_TEST refuses an offline provider', async () => {
     connectorsMock.isRemoteProvider.mockReturnValue(false);
-    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'rules' })).resolves.toMatchObject({ ok: false });
+    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'rules' })).resolves.toMatchObject({ ok: false, reason: 'offline' });
     expect(connectorsMock.createConnectorFromSettings).not.toHaveBeenCalled();
   });
 
   it('CONNECT_TEST refuses when no API key is available', async () => {
     settingsMock.decryptApiKey.mockReturnValue(null);
-    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' })).resolves.toEqual({
+    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' })).resolves.toMatchObject({
       ok: false,
+      reason: 'noKey',
       message: 'No API key is available to test.',
     });
   });
@@ -123,14 +124,25 @@ describe('registerAiSettingsIpc', () => {
     expect((result as { latencyMs: number }).latencyMs).toBeGreaterThanOrEqual(0);
   });
 
-  it('CONNECT_TEST surfaces a connector failure as a message', async () => {
+  it('CONNECT_TEST surfaces a classified connector failure', async () => {
     expectAppLog('warn', 'main/ai/settings-ipc');
     settingsMock.decryptApiKey.mockReturnValue('sk-1');
-    connectorsMock.createConnectorFromSettings.mockReturnValue({
-      complete: vi.fn().mockRejectedValue(new Error('HTTP 401')),
+    const providerError = Object.assign(new Error('Provider responded with HTTP 401'), {
+      status: 401,
+      body: JSON.stringify({ error: { code: 'invalid_api_key', message: 'Incorrect API key provided' } }),
     });
-    const result = (await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' })) as { ok: boolean; message: string };
+    connectorsMock.createConnectorFromSettings.mockReturnValue({
+      complete: vi.fn().mockRejectedValue(providerError),
+    });
+    const result = (await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' })) as {
+      ok: boolean;
+      message: string;
+      reason: string;
+      status: number;
+    };
     expect(result.ok).toBe(false);
     expect(result.message.length).toBeGreaterThan(0);
+    expect(result.reason).toBe('invalidKey');
+    expect(result.status).toBe(401);
   });
 });

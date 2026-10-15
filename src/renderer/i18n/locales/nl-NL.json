@@ -652,7 +652,23 @@
       "privacy": "Alleen de analysegegevens en de tekst van je doel worden verzonden; mediabestanden worden nooit geüpload.",
       "modelHint": "De te gebruiken model-id. Laat dit leeg om de standaard van de provider te gebruiken (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "De API-sleutel van je provider. Deze wordt met de sleutelopslag van je besturingssysteem versleuteld voordat hij wordt opgeslagen, en daarna wordt alleen een gemaskeerde hint getoond.",
-      "baseUrlHint": "OpenAI-compatibel eindpunt. Richt het op OpenRouter, Groq, Ollama of LM Studio in plaats van op de eigen API van OpenAI."
+      "baseUrlHint": "OpenAI-compatibel eindpunt. Richt het op OpenRouter, Groq, Ollama of LM Studio in plaats van op de eigen API van OpenAI.",
+      "errors": {
+        "invalidKey": "De API-sleutel is geweigerd. Controleer of hij correct en nog actief is, en probeer het opnieuw.",
+        "forbidden": "Deze API-sleutel mag het gevraagde model of eindpunt niet gebruiken. Controleer de machtigingen van je account.",
+        "modelNotFound": "Het geselecteerde model is niet gevonden. Controleer of de model-id correct is.",
+        "notFound": "Het eindpunt is niet gevonden. Controleer de basis-URL en probeer het opnieuw.",
+        "rateLimit": "De provider ontvangt te veel verzoeken. Wacht even en probeer het opnieuw.",
+        "quota": "Je account heeft zijn quotum bereikt of heeft een factureringsprobleem. Controleer je provideraccount.",
+        "badRequest": "De provider heeft het verzoek geweigerd (HTTP {{status}}). Controleer de instellingen voor model en eindpunt.",
+        "serverError": "De provider had een serverfout (HTTP {{status}}). Probeer het later opnieuw.",
+        "timeout": "De verbinding is verlopen. Controleer je netwerkverbinding en probeer het opnieuw.",
+        "network": "Kon de provider niet bereiken. Controleer je internetverbinding en de basis-URL.",
+        "emptyResponse": "De provider maakte verbinding maar gaf een leeg antwoord terug. Controleer de model-id.",
+        "noKey": "Er is geen API-sleutel beschikbaar om te testen. Voer eerst een sleutel in.",
+        "offline": "De geselecteerde provider werkt offline en heeft geen verbindingstest nodig.",
+        "unknown": "De verbindingstest is mislukt. Controleer de instellingen en probeer het opnieuw."
+      }
     }
   },
   "shortcuts": {

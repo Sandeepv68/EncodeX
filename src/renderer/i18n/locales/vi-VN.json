@@ -652,7 +652,23 @@
       "privacy": "Chỉ có các dữ liệu phân tích và văn bản mục tiêu của bạn được gửi; tệp phương tiện không bao giờ được tải lên.",
       "modelHint": "Id mô hình sẽ dùng. Để trống để dùng giá trị mặc định của nhà cung cấp (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Khóa API của nhà cung cấp bạn. Khóa được mã hóa bằng kho khóa của hệ điều hành trước khi lưu, và sau đó chỉ hiển thị một gợi ý đã được che.",
-      "baseUrlHint": "Điểm cuối tương thích với OpenAI. Trỏ nó tới OpenRouter, Groq, Ollama hoặc LM Studio thay vì API của chính OpenAI."
+      "baseUrlHint": "Điểm cuối tương thích với OpenAI. Trỏ nó tới OpenRouter, Groq, Ollama hoặc LM Studio thay vì API của chính OpenAI.",
+      "errors": {
+        "invalidKey": "Khóa API đã bị từ chối. Hãy kiểm tra xem khóa có đúng và còn hiệu lực không, rồi thử lại.",
+        "forbidden": "Khóa API này không được phép sử dụng mô hình hoặc điểm cuối được yêu cầu. Kiểm tra quyền của tài khoản bạn.",
+        "modelNotFound": "Không tìm thấy mô hình đã chọn. Kiểm tra xem id mô hình có đúng không.",
+        "notFound": "Không tìm thấy điểm cuối. Kiểm tra URL cơ sở và thử lại.",
+        "rateLimit": "Nhà cung cấp đang nhận quá nhiều yêu cầu. Chờ một lát rồi thử lại.",
+        "quota": "Tài khoản của bạn đã đạt hạn mức hoặc gặp vấn đề thanh toán. Kiểm tra tài khoản nhà cung cấp của bạn.",
+        "badRequest": "Nhà cung cấp đã từ chối yêu cầu (HTTP {{status}}). Kiểm tra cài đặt mô hình và điểm cuối.",
+        "serverError": "Nhà cung cấp gặp lỗi máy chủ (HTTP {{status}}). Thử lại sau.",
+        "timeout": "Kết nối đã hết thời gian. Kiểm tra kết nối mạng và thử lại.",
+        "network": "Không thể kết nối tới nhà cung cấp. Kiểm tra kết nối internet và URL cơ sở của bạn.",
+        "emptyResponse": "Nhà cung cấp đã kết nối nhưng trả về phản hồi rỗng. Kiểm tra id mô hình.",
+        "noKey": "Không có khóa API nào để kiểm tra. Hãy nhập khóa trước.",
+        "offline": "Nhà cung cấp đã chọn chạy ngoại tuyến và không cần kiểm tra kết nối.",
+        "unknown": "Kiểm tra kết nối thất bại. Kiểm tra cài đặt và thử lại."
+      }
     }
   },
   "shortcuts": {

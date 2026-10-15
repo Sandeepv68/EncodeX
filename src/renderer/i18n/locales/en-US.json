@@ -899,7 +899,23 @@
       "test": "Test connection",
       "testing": "Testing...",
       "testFailed": "No response from the provider.",
-      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded."
+      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
+      "errors": {
+        "invalidKey": "The API key was rejected. Check that it is correct and still active, then try again.",
+        "forbidden": "This API key is not allowed to use the requested model or endpoint. Check your account permissions.",
+        "modelNotFound": "The selected model could not be found. Check that the model id is correct.",
+        "notFound": "The endpoint could not be found. Check the base URL and try again.",
+        "rateLimit": "The provider is receiving too many requests. Wait a moment and try again.",
+        "quota": "Your account has reached its quota or has a billing problem. Check your provider account.",
+        "badRequest": "The provider rejected the request (HTTP {{status}}). Check the model and endpoint settings.",
+        "serverError": "The provider had a server error (HTTP {{status}}). Try again later.",
+        "timeout": "The connection timed out. Check your network connection and try again.",
+        "network": "Could not reach the provider. Check your internet connection and the base URL.",
+        "emptyResponse": "The provider connected but returned an empty response. Check the model id.",
+        "noKey": "No API key is available to test. Enter a key first.",
+        "offline": "The selected provider runs offline and needs no connection test.",
+        "unknown": "The connection test failed. Check the settings and try again."
+      }
     }
   },
   "shortcuts": {

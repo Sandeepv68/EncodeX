@@ -652,7 +652,23 @@
       "privacy": "Vengono inviati solo i dati dell’analisi e il testo del tuo obiettivo; i file non vengono mai caricati.",
       "modelHint": "L’id del modello da usare. Lascia vuoto per usare il valore predefinito del provider (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "La chiave API del tuo provider. Viene crittografata con il keystore del tuo sistema operativo prima di essere salvata e, in seguito, viene mostrato solo un suggerimento mascherato.",
-      "baseUrlHint": "Endpoint compatibile con OpenAI. Puntalo su OpenRouter, Groq, Ollama o LM Studio invece che sull’API di OpenAI stessa."
+      "baseUrlHint": "Endpoint compatibile con OpenAI. Puntalo su OpenRouter, Groq, Ollama o LM Studio invece che sull’API di OpenAI stessa.",
+      "errors": {
+        "invalidKey": "La chiave API è stata rifiutata. Verifica che sia corretta e ancora attiva, poi riprova.",
+        "forbidden": "Questa chiave API non è autorizzata a usare il modello o l’endpoint richiesti. Controlla i permessi del tuo account.",
+        "modelNotFound": "Il modello selezionato non è stato trovato. Verifica che l’id del modello sia corretto.",
+        "notFound": "L’endpoint non è stato trovato. Controlla l’URL di base e riprova.",
+        "rateLimit": "Il provider sta ricevendo troppe richieste. Attendi un momento e riprova.",
+        "quota": "Il tuo account ha raggiunto la quota o ha un problema di fatturazione. Controlla il tuo account del provider.",
+        "badRequest": "Il provider ha rifiutato la richiesta (HTTP {{status}}). Controlla le impostazioni del modello e dell’endpoint.",
+        "serverError": "Il provider ha riscontrato un errore del server (HTTP {{status}}). Riprova più tardi.",
+        "timeout": "La connessione è scaduta. Controlla la connessione di rete e riprova.",
+        "network": "Impossibile raggiungere il provider. Controlla la connessione a Internet e l’URL di base.",
+        "emptyResponse": "Il provider si è connesso ma ha restituito una risposta vuota. Controlla l’id del modello.",
+        "noKey": "Nessuna chiave API disponibile per il test. Inserisci prima una chiave.",
+        "offline": "Il provider selezionato funziona offline e non richiede un test di connessione.",
+        "unknown": "Il test di connessione non è riuscito. Controlla le impostazioni e riprova."
+      }
     }
   },
   "shortcuts": {

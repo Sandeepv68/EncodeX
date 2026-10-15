@@ -652,7 +652,23 @@
       "privacy": "Aðeins skoðunarstaðreyndir og texti markmiðs þíns er sendur; skrár eru aldrei hlaðnar upp.",
       "modelHint": "Auðkenni líkansins sem á að nota. Skildu það eftir autt til að nota sjálfgefið gildi þjónustuaðilans (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "API-lykill þjónustuaðilans þíns. Hann er dulkóðaður með lyklageymslu stýrikerfisins áður en hann er vistaður, og eftir það er aðeins sýnd dulbúin vísbending.",
-      "baseUrlHint": "Endapunktur sem er samhæfður við OpenAI. Beindu honum að OpenRouter, Groq, Ollama eða LM Studio í stað API OpenAI sjálfs."
+      "baseUrlHint": "Endapunktur sem er samhæfður við OpenAI. Beindu honum að OpenRouter, Groq, Ollama eða LM Studio í stað API OpenAI sjálfs.",
+      "errors": {
+        "invalidKey": "API-lyklinum var hafnað. Athugaðu að hann sé réttur og enn virkur, og reyndu aftur.",
+        "forbidden": "Þessi API-lykill má ekki nota umbeðið líkan eða endapunkt. Athugaðu heimildir reikningsins þíns.",
+        "modelNotFound": "Valið líkan fannst ekki. Athugaðu að auðkenni líkansins sé rétt.",
+        "notFound": "Endapunkturinn fannst ekki. Athugaðu grunnslóðina og reyndu aftur.",
+        "rateLimit": "Þjónustuaðilinn fær of margar beiðnir. Bíddu aðeins og reyndu aftur.",
+        "quota": "Reikningurinn þinn hefur náð kvóta sínum eða er með greiðsluvandamál. Athugaðu reikninginn hjá þjónustuaðilanum.",
+        "badRequest": "Þjónustuaðilinn hafnaði beiðninni (HTTP {{status}}). Athugaðu stillingar líkansins og endapunktsins.",
+        "serverError": "Villa kom upp á netþjóni þjónustuaðilans (HTTP {{status}}). Reyndu aftur síðar.",
+        "timeout": "Tengingin rann út á tíma. Athugaðu nettenginguna þína og reyndu aftur.",
+        "network": "Náði ekki sambandi við þjónustuaðilann. Athugaðu internettenginguna þína og grunnslóðina.",
+        "emptyResponse": "Þjónustuaðilinn náði sambandi en skilaði tómu svari. Athugaðu auðkenni líkansins.",
+        "noKey": "Enginn API-lykill er tiltækur til að prófa. Sláðu fyrst inn lykil.",
+        "offline": "Valið þjónustuaðili keyrir án nettengingar og þarf ekki tengiprófun.",
+        "unknown": "Tengiprófið mistókst. Athugaðu stillingarnar og reyndu aftur."
+      }
     }
   },
   "shortcuts": {

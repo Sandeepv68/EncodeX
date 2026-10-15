@@ -652,7 +652,23 @@
       "privacy": "Apenas os dados da análise e o texto do seu objetivo são enviados; os ficheiros multimédia nunca são carregados.",
       "modelHint": "O id do modelo a usar. Deixe em branco para usar a predefinição do fornecedor (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "A chave de API do seu fornecedor. É encriptada com o cofre de chaves do seu sistema operativo antes de ser guardada, e depois apenas é mostrada uma dica mascarada.",
-      "baseUrlHint": "Endpoint compatível com OpenAI. Aponte-o para o OpenRouter, Groq, Ollama ou LM Studio em vez da própria API da OpenAI."
+      "baseUrlHint": "Endpoint compatível com OpenAI. Aponte-o para o OpenRouter, Groq, Ollama ou LM Studio em vez da própria API da OpenAI.",
+      "errors": {
+        "invalidKey": "A chave de API foi rejeitada. Verifique se está correta e ainda ativa e tente novamente.",
+        "forbidden": "Esta chave de API não tem permissão para usar o modelo ou o endpoint solicitados. Verifique as permissões da sua conta.",
+        "modelNotFound": "O modelo selecionado não foi encontrado. Verifique se o id do modelo está correto.",
+        "notFound": "O endpoint não foi encontrado. Verifique o URL base e tente novamente.",
+        "rateLimit": "O fornecedor está a receber demasiados pedidos. Aguarde um momento e tente novamente.",
+        "quota": "A sua conta atingiu a quota ou tem um problema de faturação. Verifique a sua conta do fornecedor.",
+        "badRequest": "O fornecedor rejeitou o pedido (HTTP {{status}}). Verifique as definições de modelo e endpoint.",
+        "serverError": "O fornecedor teve um erro de servidor (HTTP {{status}}). Tente novamente mais tarde.",
+        "timeout": "A ligação expirou. Verifique a sua ligação de rede e tente novamente.",
+        "network": "Não foi possível contactar o fornecedor. Verifique a sua ligação à internet e o URL base.",
+        "emptyResponse": "O fornecedor ligou-se, mas devolveu uma resposta vazia. Verifique o id do modelo.",
+        "noKey": "Não há nenhuma chave de API disponível para testar. Introduza primeiro uma chave.",
+        "offline": "O fornecedor selecionado funciona offline e não precisa de teste de ligação.",
+        "unknown": "O teste de ligação falhou. Verifique as definições e tente novamente."
+      }
     }
   },
   "shortcuts": {

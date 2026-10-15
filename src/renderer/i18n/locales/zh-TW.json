@@ -652,7 +652,23 @@
       "privacy": "僅會傳送分析資訊與您的目標文字；絕不會上傳媒體檔案。",
       "modelHint": "要使用的模型 ID。留空則使用提供者預設值（OpenAI：gpt-4o-mini，Anthropic：claude-3-5-haiku-latest，Gemini：gemini-2.0-flash）。",
       "apiKeyHint": "你的提供者 API 金鑰。儲存前會使用作業系統的金鑰庫進行加密，之後只會顯示經過遮蔽的提示。",
-      "baseUrlHint": "相容於 OpenAI 的端點。將其指向 OpenRouter、Groq、Ollama 或 LM Studio，而非 OpenAI 自己的 API。"
+      "baseUrlHint": "相容於 OpenAI 的端點。將其指向 OpenRouter、Groq、Ollama 或 LM Studio，而非 OpenAI 自己的 API。",
+      "errors": {
+        "invalidKey": "API 金鑰遭到拒絕。請檢查金鑰是否正確且仍有效，然後重試。",
+        "forbidden": "此 API 金鑰無權使用所要求的模型或端點。請檢查你的帳戶權限。",
+        "modelNotFound": "找不到所選模型。請檢查模型 ID 是否正確。",
+        "notFound": "找不到端點。請檢查基礎 URL 並重試。",
+        "rateLimit": "提供者收到的要求過多。請稍候片刻再重試。",
+        "quota": "你的帳戶已達到配額或發生帳務問題。請檢查你的提供者帳戶。",
+        "badRequest": "提供者拒絕了要求（HTTP {{status}}）。請檢查模型與端點設定。",
+        "serverError": "提供者發生伺服器錯誤（HTTP {{status}}）。請稍後重試。",
+        "timeout": "連線逾時。請檢查網路連線並重試。",
+        "network": "無法連線至提供者。請檢查你的網際網路連線與基礎 URL。",
+        "emptyResponse": "提供者已連線，但傳回空白回應。請檢查模型 ID。",
+        "noKey": "沒有可用於測試的 API 金鑰。請先輸入金鑰。",
+        "offline": "所選提供者以離線方式執行，不需要連線測試。",
+        "unknown": "連線測試失敗。請檢查設定並重試。"
+      }
     }
   },
   "shortcuts": {

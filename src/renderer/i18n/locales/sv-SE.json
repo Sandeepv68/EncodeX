@@ -652,7 +652,23 @@
       "privacy": "Endast analysdata och måltexten skickas; mediafiler laddas aldrig upp.",
       "modelHint": "Det modell-ID som ska användas. Lämna tomt för att använda leverantörens standard (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Din leverantörs API-nyckel. Den krypteras med operativsystemets nyckelarkiv innan den sparas, och därefter visas endast en maskerad ledtråd.",
-      "baseUrlHint": "OpenAI-kompatibel slutpunkt. Peka den mot OpenRouter, Groq, Ollama eller LM Studio i stället för OpenAIs egen API."
+      "baseUrlHint": "OpenAI-kompatibel slutpunkt. Peka den mot OpenRouter, Groq, Ollama eller LM Studio i stället för OpenAIs egen API.",
+      "errors": {
+        "invalidKey": "API-nyckeln avvisades. Kontrollera att den är korrekt och fortfarande aktiv och försök igen.",
+        "forbidden": "Denna API-nyckel får inte använda den begärda modellen eller slutpunkten. Kontrollera ditt kontos behörigheter.",
+        "modelNotFound": "Den valda modellen hittades inte. Kontrollera att modell-ID:t är korrekt.",
+        "notFound": "Slutpunkten hittades inte. Kontrollera bas-URL:en och försök igen.",
+        "rateLimit": "Leverantören tar emot för många förfrågningar. Vänta ett ögonblick och försök igen.",
+        "quota": "Ditt konto har nått sin kvot eller har ett faktureringsproblem. Kontrollera ditt leverantörskonto.",
+        "badRequest": "Leverantören avvisade begäran (HTTP {{status}}). Kontrollera inställningarna för modell och slutpunkt.",
+        "serverError": "Leverantören hade ett serverfel (HTTP {{status}}). Försök igen senare.",
+        "timeout": "Anslutningen tog för lång tid. Kontrollera din nätverksanslutning och försök igen.",
+        "network": "Kunde inte nå leverantören. Kontrollera din internetanslutning och bas-URL:en.",
+        "emptyResponse": "Leverantören anslöt men returnerade ett tomt svar. Kontrollera modell-ID:t.",
+        "noKey": "Det finns ingen API-nyckel att testa. Ange en nyckel först.",
+        "offline": "Den valda leverantören körs offline och behöver inget anslutningstest.",
+        "unknown": "Anslutningstestet misslyckades. Kontrollera inställningarna och försök igen."
+      }
     }
   },
   "shortcuts": {

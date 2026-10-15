@@ -652,7 +652,23 @@
       "privacy": "Nur Prüfdaten und Ihr Zieltext werden gesendet; Mediendateien werden nie hochgeladen.",
       "modelHint": "Die zu verwendende Modell-ID. Leer lassen, um den Anbieter-Standard zu verwenden (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Ihr API-Schlüssel des Anbieters. Er wird vor dem Speichern mit dem Schlüsselspeicher Ihres Betriebssystems verschlüsselt, und danach wird nur ein maskierter Hinweis angezeigt.",
-      "baseUrlHint": "OpenAI-kompatibler Endpunkt. Richten Sie ihn auf OpenRouter, Groq, Ollama oder LM Studio statt auf die API von OpenAI selbst."
+      "baseUrlHint": "OpenAI-kompatibler Endpunkt. Richten Sie ihn auf OpenRouter, Groq, Ollama oder LM Studio statt auf die API von OpenAI selbst.",
+      "errors": {
+        "invalidKey": "Der API-Schlüssel wurde abgelehnt. Prüfen Sie, ob er korrekt und noch aktiv ist, und versuchen Sie es erneut.",
+        "forbidden": "Dieser API-Schlüssel darf das angeforderte Modell oder den Endpunkt nicht verwenden. Prüfen Sie die Berechtigungen Ihres Kontos.",
+        "modelNotFound": "Das ausgewählte Modell wurde nicht gefunden. Prüfen Sie, ob die Modell-ID korrekt ist.",
+        "notFound": "Der Endpunkt wurde nicht gefunden. Prüfen Sie die Basis-URL und versuchen Sie es erneut.",
+        "rateLimit": "Der Anbieter erhält zu viele Anfragen. Warten Sie einen Moment und versuchen Sie es erneut.",
+        "quota": "Ihr Konto hat sein Kontingent erreicht oder hat ein Abrechnungsproblem. Prüfen Sie Ihr Anbieterkonto.",
+        "badRequest": "Der Anbieter hat die Anfrage abgelehnt (HTTP {{status}}). Prüfen Sie die Modell- und Endpunkt-Einstellungen.",
+        "serverError": "Beim Anbieter ist ein Serverfehler aufgetreten (HTTP {{status}}). Versuchen Sie es später erneut.",
+        "timeout": "Die Verbindung hat das Zeitlimit überschritten. Prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut.",
+        "network": "Der Anbieter konnte nicht erreicht werden. Prüfen Sie Ihre Internetverbindung und die Basis-URL.",
+        "emptyResponse": "Der Anbieter hat sich verbunden, aber eine leere Antwort zurückgegeben. Prüfen Sie die Modell-ID.",
+        "noKey": "Es ist kein API-Schlüssel zum Testen verfügbar. Geben Sie zuerst einen Schlüssel ein.",
+        "offline": "Der ausgewählte Anbieter läuft offline und benötigt keinen Verbindungstest.",
+        "unknown": "Der Verbindungstest ist fehlgeschlagen. Prüfen Sie die Einstellungen und versuchen Sie es erneut."
+      }
     }
   },
   "shortcuts": {

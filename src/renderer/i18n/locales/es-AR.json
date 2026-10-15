@@ -652,7 +652,23 @@
       "privacy": "Solo se envían los datos del análisis y el texto de tu objetivo; los archivos de medios nunca se suben.",
       "modelHint": "El id del modelo que se va a usar. Déjalo en blanco para usar el valor predeterminado del proveedor (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "La clave de API de tu proveedor. Se cifra con el almacén de claves de tu sistema operativo antes de guardarse, y después solo se muestra una pista enmascarada.",
-      "baseUrlHint": "Punto de conexión compatible con OpenAI. Dirígelo a OpenRouter, Groq, Ollama o LM Studio en lugar de la propia API de OpenAI."
+      "baseUrlHint": "Punto de conexión compatible con OpenAI. Dirígelo a OpenRouter, Groq, Ollama o LM Studio en lugar de la propia API de OpenAI.",
+      "errors": {
+        "invalidKey": "Se rechazó la clave de API. Comprueba que sea correcta y siga activa, y vuelve a intentarlo.",
+        "forbidden": "Esta clave de API no tiene permiso para usar el modelo o el punto de conexión solicitados. Revisa los permisos de tu cuenta.",
+        "modelNotFound": "No se encontró el modelo seleccionado. Comprueba que el id del modelo sea correcto.",
+        "notFound": "No se encontró el punto de conexión. Revisa la URL base y vuelve a intentarlo.",
+        "rateLimit": "El proveedor está recibiendo demasiadas solicitudes. Espera un momento y vuelve a intentarlo.",
+        "quota": "Tu cuenta alcanzó su cuota o tiene un problema de facturación. Revisa tu cuenta del proveedor.",
+        "badRequest": "El proveedor rechazó la solicitud (HTTP {{status}}). Revisa la configuración del modelo y del punto de conexión.",
+        "serverError": "El proveedor tuvo un error de servidor (HTTP {{status}}). Vuelve a intentarlo más tarde.",
+        "timeout": "Se agotó el tiempo de conexión. Revisa tu conexión de red y vuelve a intentarlo.",
+        "network": "No se pudo contactar con el proveedor. Revisa tu conexión a internet y la URL base.",
+        "emptyResponse": "El proveedor se conectó, pero devolvió una respuesta vacía. Revisa el id del modelo.",
+        "noKey": "No hay ninguna clave de API disponible para probar. Introduce una clave primero.",
+        "offline": "El proveedor seleccionado funciona sin conexión y no necesita una prueba de conexión.",
+        "unknown": "La prueba de conexión falló. Revisa la configuración y vuelve a intentarlo."
+      }
     }
   },
   "shortcuts": {

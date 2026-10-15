@@ -652,7 +652,23 @@
       "privacy": "Ko ngā mēka tātari me te kuputuhi tino pai anake ka tukuna; kāore ngā kōnae pāpāho e tukuna ake.",
       "modelHint": "Te ID tauira hei whakamahi. Waiho kia wātea hei whakamahi i te taunoa a te kaiwhakarato (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Tō kī API a te kaiwhakarato. Ka whakamunatia ki te keystore o tō pūnaha whakahaere i mua i te tiakitanga, ā, ka whakaaturia he tohu huna anake i muri mai.",
-      "baseUrlHint": "Te pito mutunga e hototahi ana ki a OpenAI. Tukuna ki OpenRouter, Groq, Ollama, LM Studio rānei, kaua ki te API ake a OpenAI."
+      "baseUrlHint": "Te pito mutunga e hototahi ana ki a OpenAI. Tukuna ki OpenRouter, Groq, Ollama, LM Studio rānei, kaua ki te API ake a OpenAI.",
+      "errors": {
+        "invalidKey": "I whakakāhoretia te kī API. Tirohia kei te tika, kei te hohe tonu, kātahi anō whakamātau anō.",
+        "forbidden": "Kāore tēnei kī API e whakaaetia ki te whakamahi i te tauira, i te pito mutunga rānei i tonoa. Tirohia ngā whakaaetanga o tō pūkete.",
+        "modelNotFound": "Kāore i kitea te tauira i tīpakohia. Tirohia kei te tika te ID tauira.",
+        "notFound": "Kāore i kitea te pito mutunga. Tirohia te URL taketake, kātahi anō whakamātau anō.",
+        "rateLimit": "He nui rawa ngā tono e tae ana ki te kaiwhakarato. Tatari mō tētahi wā, kātahi anō whakamātau anō.",
+        "quota": "Kua eke tō pūkete ki tōna rahinga, kua raru rānei te utu. Tirohia tō pūkete kaiwhakarato.",
+        "badRequest": "I whakakāhoretia e te kaiwhakarato te tono (HTTP {{status}}). Tirohia ngā tautuhinga tauira me te pito mutunga.",
+        "serverError": "I puta he hapa tūmau i te kaiwhakarato (HTTP {{status}}). Whakamātau anō ā muri ake.",
+        "timeout": "Kua pau te wā o te hononga. Tirohia tō hononga whatunga, kātahi anō whakamātau anō.",
+        "network": "Kāore i taea te toro atu ki te kaiwhakarato. Tirohia tō hononga ipurangi me te URL taketake.",
+        "emptyResponse": "I hono te kaiwhakarato engari i whakahokia he whakautu kau. Tirohia te ID tauira.",
+        "noKey": "Kāore he kī API hei whakamātau. Whakauruhia he kī i te tuatahi.",
+        "offline": "Ka rere tuimotu te kaiwhakarato i tīpakohia, ā, kāore e hiahiatia he whakamātautau hononga.",
+        "unknown": "I rahua te whakamātautau hononga. Tirohia ngā tautuhinga, kātahi anō whakamātau anō."
+      }
     }
   },
   "shortcuts": {

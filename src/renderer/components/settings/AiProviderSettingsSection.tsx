@@ -166,10 +166,21 @@ export default function AiProviderSettingsSection() {
         }),
       );
       if (result && typeof result.message === 'string') {
-        const latency = typeof result.latencyMs === 'number' ? ` (${result.latencyMs} ms)` : '';
-        setStatus(result.ok ? `${result.message}${latency}` : result.message);
+        if (result.ok) {
+          const latency = typeof result.latencyMs === 'number' ? ` (${result.latencyMs} ms)` : '';
+          setStatus(`${result.message}${latency}`);
+        } else if (typeof result.reason === 'string') {
+          // Show a localized message for the classified provider failure instead
+          // of the raw payload returned by the service.
+          setStatus(null);
+          setError(t(`settings.ai.errors.${result.reason}`, { status: result.status ?? '' }));
+        } else {
+          setStatus(null);
+          setError(t('settings.ai.testFailed'));
+        }
       } else {
-        setStatus(t('settings.ai.testFailed'));
+        setStatus(null);
+        setError(t('settings.ai.testFailed'));
       }
     } catch (err) {
       setError(formatError(err).message);

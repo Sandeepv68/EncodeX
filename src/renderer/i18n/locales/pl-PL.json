@@ -652,7 +652,23 @@
       "privacy": "Wysyłane są tylko dane analizy i tekst celu; pliki multimedialne nigdy nie są wysyłane.",
       "modelHint": "Identyfikator modelu do użycia. Pozostaw puste, aby użyć domyślnego ustawienia dostawcy (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Klucz API Twojego dostawcy. Jest szyfrowany za pomocą magazynu kluczy systemu operacyjnego przed zapisaniem, a później wyświetlana jest tylko zamaskowana podpowiedź.",
-      "baseUrlHint": "Punkt końcowy zgodny z OpenAI. Skieruj go na OpenRouter, Groq, Ollama lub LM Studio zamiast na własne API OpenAI."
+      "baseUrlHint": "Punkt końcowy zgodny z OpenAI. Skieruj go na OpenRouter, Groq, Ollama lub LM Studio zamiast na własne API OpenAI.",
+      "errors": {
+        "invalidKey": "Klucz API został odrzucony. Sprawdź, czy jest poprawny i nadal aktywny, a następnie spróbuj ponownie.",
+        "forbidden": "Ten klucz API nie ma uprawnień do korzystania z żądanego modelu ani punktu końcowego. Sprawdź uprawnienia swojego konta.",
+        "modelNotFound": "Nie znaleziono wybranego modelu. Sprawdź, czy identyfikator modelu jest poprawny.",
+        "notFound": "Nie znaleziono punktu końcowego. Sprawdź podstawowy adres URL i spróbuj ponownie.",
+        "rateLimit": "Dostawca otrzymuje zbyt wiele żądań. Poczekaj chwilę i spróbuj ponownie.",
+        "quota": "Twoje konto osiągnęło limit lub ma problem z rozliczeniami. Sprawdź konto u dostawcy.",
+        "badRequest": "Dostawca odrzucił żądanie (HTTP {{status}}). Sprawdź ustawienia modelu i punktu końcowego.",
+        "serverError": "U dostawcy wystąpił błąd serwera (HTTP {{status}}). Spróbuj ponownie później.",
+        "timeout": "Przekroczono limit czasu połączenia. Sprawdź połączenie sieciowe i spróbuj ponownie.",
+        "network": "Nie można połączyć się z dostawcą. Sprawdź połączenie internetowe i podstawowy adres URL.",
+        "emptyResponse": "Dostawca połączył się, ale zwrócił pustą odpowiedź. Sprawdź identyfikator modelu.",
+        "noKey": "Brak klucza API do przetestowania. Najpierw wprowadź klucz.",
+        "offline": "Wybrany dostawca działa offline i nie wymaga testu połączenia.",
+        "unknown": "Test połączenia nie powiódł się. Sprawdź ustawienia i spróbuj ponownie."
+      }
     }
   },
   "shortcuts": {

@@ -652,7 +652,23 @@
       "privacy": "Hanya fakta pemeriksaan dan teks tujuan Anda yang dikirim; file media tidak pernah diunggah.",
       "modelHint": "ID model yang akan digunakan. Biarkan kosong untuk memakai default penyedia (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Kunci API penyedia Anda. Kunci ini dienkripsi dengan keystore sistem operasi Anda sebelum disimpan, dan setelah itu hanya petunjuk bertopeng yang ditampilkan.",
-      "baseUrlHint": "Endpoint yang kompatibel dengan OpenAI. Arahkan ke OpenRouter, Groq, Ollama, atau LM Studio alih-alih ke API OpenAI sendiri."
+      "baseUrlHint": "Endpoint yang kompatibel dengan OpenAI. Arahkan ke OpenRouter, Groq, Ollama, atau LM Studio alih-alih ke API OpenAI sendiri.",
+      "errors": {
+        "invalidKey": "Kunci API ditolak. Periksa apakah sudah benar dan masih aktif, lalu coba lagi.",
+        "forbidden": "Kunci API ini tidak diizinkan menggunakan model atau endpoint yang diminta. Periksa izin akun Anda.",
+        "modelNotFound": "Model yang dipilih tidak ditemukan. Periksa apakah id model sudah benar.",
+        "notFound": "Endpoint tidak ditemukan. Periksa URL dasar dan coba lagi.",
+        "rateLimit": "Penyedia menerima terlalu banyak permintaan. Tunggu sebentar lalu coba lagi.",
+        "quota": "Akun Anda telah mencapai kuota atau memiliki masalah penagihan. Periksa akun penyedia Anda.",
+        "badRequest": "Penyedia menolak permintaan (HTTP {{status}}). Periksa pengaturan model dan endpoint.",
+        "serverError": "Penyedia mengalami kesalahan server (HTTP {{status}}). Coba lagi nanti.",
+        "timeout": "Koneksi habis waktu. Periksa koneksi jaringan Anda dan coba lagi.",
+        "network": "Tidak dapat menjangkau penyedia. Periksa koneksi internet dan URL dasar Anda.",
+        "emptyResponse": "Penyedia terhubung tetapi mengembalikan respons kosong. Periksa id model.",
+        "noKey": "Tidak ada kunci API yang tersedia untuk diuji. Masukkan kunci terlebih dahulu.",
+        "offline": "Penyedia yang dipilih berjalan offline dan tidak memerlukan uji koneksi.",
+        "unknown": "Uji koneksi gagal. Periksa pengaturan dan coba lagi."
+      }
     }
   },
   "shortcuts": {

@@ -687,14 +687,24 @@ describe('Settings', () => {
     expect(await screen.findByTestId('settings-ai-error')).toBeInTheDocument();
   });
 
-  it('reports a failed connection test with a generic status', async () => {
+  it('reports a failed connection test without a reason as a generic error', async () => {
     vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: false } as never);
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
     fireEvent.click(screen.getByTestId('settings-ai-connect'));
-    await waitFor(() => expect(screen.getByTestId('settings-ai-status')).toHaveTextContent('settings.ai.testFailed'));
+    expect(await screen.findByTestId('settings-ai-error')).toHaveTextContent('settings.ai.testFailed');
+  });
+
+  it('shows a localized message for a classified connection failure', async () => {
+    vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: false, message: 'x', reason: 'invalidKey', status: 401 } as never);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-connect'));
+    expect(await screen.findByTestId('settings-ai-error')).toHaveTextContent('settings.ai.errors.invalidKey');
   });
 
   it('surfaces a connection-test rejection as an error', async () => {

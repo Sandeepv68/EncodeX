@@ -652,7 +652,23 @@
       "privacy": "Kun undersøkte data og målteksten din sendes; mediefiler lastes aldri opp.",
       "modelHint": "Modell-ID-en som skal brukes. La feltet stå tomt for å bruke leverandørens standard (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Leverandørens API-nøkkel. Den krypteres med operativsystemets nøkkellager før den lagres, og etterpå vises bare et maskert hint.",
-      "baseUrlHint": "OpenAI-kompatibelt endepunkt. Pek det mot OpenRouter, Groq, Ollama eller LM Studio i stedet for OpenAIs egen API."
+      "baseUrlHint": "OpenAI-kompatibelt endepunkt. Pek det mot OpenRouter, Groq, Ollama eller LM Studio i stedet for OpenAIs egen API.",
+      "errors": {
+        "invalidKey": "API-nøkkelen ble avvist. Kontroller at den er riktig og fortsatt aktiv, og prøv igjen.",
+        "forbidden": "Denne API-nøkkelen har ikke lov til å bruke den forespurte modellen eller endepunktet. Sjekk kontotillatelsene dine.",
+        "modelNotFound": "Den valgte modellen ble ikke funnet. Kontroller at modell-ID-en er riktig.",
+        "notFound": "Endepunktet ble ikke funnet. Kontroller basis-URL-en, og prøv igjen.",
+        "rateLimit": "Leverandøren mottar for mange forespørsler. Vent et øyeblikk, og prøv igjen.",
+        "quota": "Kontoen din har nådd kvoten eller har et faktureringsproblem. Sjekk leverandørkontoen din.",
+        "badRequest": "Leverandøren avviste forespørselen (HTTP {{status}}). Sjekk innstillingene for modell og endepunkt.",
+        "serverError": "Leverandøren fikk en serverfeil (HTTP {{status}}). Prøv igjen senere.",
+        "timeout": "Tilkoblingen nådde tidsavbrudd. Sjekk nettverkstilkoblingen din, og prøv igjen.",
+        "network": "Kunne ikke nå leverandøren. Sjekk internettforbindelsen din og basis-URL-en.",
+        "emptyResponse": "Leverandøren koblet til, men returnerte et tomt svar. Sjekk modell-ID-en.",
+        "noKey": "Ingen API-nøkkel er tilgjengelig for test. Skriv inn en nøkkel først.",
+        "offline": "Den valgte leverandøren kjører offline og trenger ingen tilkoblingstest.",
+        "unknown": "Tilkoblingstesten mislyktes. Sjekk innstillingene, og prøv igjen."
+      }
     }
   },
   "shortcuts": {

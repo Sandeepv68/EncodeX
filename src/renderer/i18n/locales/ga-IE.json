@@ -652,7 +652,23 @@
       "privacy": "Ní sheoltar ach fíricí an anailíse agus téacs do chuspóra; ní uaslódáiltear comhaid meán riamh.",
       "modelHint": "An t-aitheantóir samhla le húsáid. Fág seo folamh chun réamhshocrú an tsoláthraí a úsáid (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Eochair API do sholáthraí. Déantar í a chriptiú le stór eochracha do chórais oibriúcháin sula sábhálfar í, agus ní thaispeántar ina dhiaidh sin ach leid mhascáilte.",
-      "baseUrlHint": "Críochphointe atá comhoiriúnach le OpenAI. Treoraigh é chuig OpenRouter, Groq, Ollama nó LM Studio seachas API OpenAI féin."
+      "baseUrlHint": "Críochphointe atá comhoiriúnach le OpenAI. Treoraigh é chuig OpenRouter, Groq, Ollama nó LM Studio seachas API OpenAI féin.",
+      "errors": {
+        "invalidKey": "Diúltaíodh don eochair API. Deimhnigh go bhfuil sí ceart agus fós gníomhach, ansin triail arís.",
+        "forbidden": "Níl cead ag an eochair API seo an tsamhail nó an críochphointe iarrtha a úsáid. Seiceáil ceadanna do chuntais.",
+        "modelNotFound": "Níorbh fhéidir an tsamhail roghnaithe a aimsiú. Deimhnigh go bhfuil aitheantóir na samhla ceart.",
+        "notFound": "Níorbh fhéidir an críochphointe a aimsiú. Seiceáil an bun-URL agus triail arís.",
+        "rateLimit": "Tá an iomarca iarratas ag teacht chuig an soláthraí. Fan nóiméad agus triail arís.",
+        "quota": "Tá a chuóta sroichte ag do chuntas nó tá fadhb bhilleála aige. Seiceáil do chuntas soláthraí.",
+        "badRequest": "Dhiúltaigh an soláthraí don iarratas (HTTP {{status}}). Seiceáil socruithe na samhla agus an chríochphointe.",
+        "serverError": "Bhí earráid freastalaí ag an soláthraí (HTTP {{status}}). Triail arís níos déanaí.",
+        "timeout": "Chuaigh an nasc thar am. Seiceáil do nasc líonra agus triail arís.",
+        "network": "Níorbh fhéidir an soláthraí a bhaint amach. Seiceáil do nasc idirlín agus an bun-URL.",
+        "emptyResponse": "Cheangail an soláthraí ach thug sé freagra folamh ar ais. Seiceáil aitheantóir na samhla.",
+        "noKey": "Níl aon eochair API ar fáil le tástáil. Iontráil eochair ar dtús.",
+        "offline": "Ritheann an soláthraí roghnaithe as líne agus ní theastaíonn tástáil naisc uaidh.",
+        "unknown": "Theip ar an tástáil naisc. Seiceáil na socruithe agus triail arís."
+      }
     }
   },
   "shortcuts": {

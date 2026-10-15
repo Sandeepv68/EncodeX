@@ -652,7 +652,23 @@
       "privacy": "Seules les données d’analyse et le texte de votre objectif sont envoyés ; les fichiers multimédias ne sont jamais téléversés.",
       "modelHint": "L’identifiant du modèle à utiliser. Laissez ce champ vide pour utiliser la valeur par défaut du fournisseur (OpenAI : gpt-4o-mini, Anthropic : claude-3-5-haiku-latest, Gemini : gemini-2.0-flash).",
       "apiKeyHint": "Votre clé API du fournisseur. Elle est chiffrée avec le trousseau de clés de votre système d’exploitation avant d’être enregistrée, et seul un indice masqué est affiché ensuite.",
-      "baseUrlHint": "Point de terminaison compatible OpenAI. Pointez-le vers OpenRouter, Groq, Ollama ou LM Studio au lieu de l’API d’OpenAI elle-même."
+      "baseUrlHint": "Point de terminaison compatible OpenAI. Pointez-le vers OpenRouter, Groq, Ollama ou LM Studio au lieu de l’API d’OpenAI elle-même.",
+      "errors": {
+        "invalidKey": "La clé API a été refusée. Vérifiez qu’elle est correcte et toujours active, puis réessayez.",
+        "forbidden": "Cette clé API n’est pas autorisée à utiliser le modèle ou le point de terminaison demandé. Vérifiez les autorisations de votre compte.",
+        "modelNotFound": "Le modèle sélectionné est introuvable. Vérifiez que l’identifiant du modèle est correct.",
+        "notFound": "Le point de terminaison est introuvable. Vérifiez l’URL de base et réessayez.",
+        "rateLimit": "Le fournisseur reçoit trop de requêtes. Patientez un instant et réessayez.",
+        "quota": "Votre compte a atteint son quota ou présente un problème de facturation. Vérifiez votre compte fournisseur.",
+        "badRequest": "Le fournisseur a refusé la requête (HTTP {{status}}). Vérifiez les paramètres du modèle et du point de terminaison.",
+        "serverError": "Le fournisseur a rencontré une erreur de serveur (HTTP {{status}}). Réessayez plus tard.",
+        "timeout": "La connexion a expiré. Vérifiez votre connexion réseau et réessayez.",
+        "network": "Impossible de joindre le fournisseur. Vérifiez votre connexion Internet et l’URL de base.",
+        "emptyResponse": "Le fournisseur s’est connecté mais a renvoyé une réponse vide. Vérifiez l’identifiant du modèle.",
+        "noKey": "Aucune clé API n’est disponible pour le test. Saisissez d’abord une clé.",
+        "offline": "Le fournisseur sélectionné fonctionne hors ligne et n’a pas besoin de test de connexion.",
+        "unknown": "Le test de connexion a échoué. Vérifiez les paramètres et réessayez."
+      }
     }
   },
   "shortcuts": {

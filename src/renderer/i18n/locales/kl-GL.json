@@ -652,7 +652,23 @@
       "privacy": "Misissorsuuummata ilusissat aamma isumassarsiannit allassimasat naapertuutissaatigineqarput; mediafilerit nammineeersissutigineqanngisaannarput.",
       "modelHint": "Naatsorsueqaatsip ID-a atorneqassaaq. Manngertinnagu inissisimasut naapertorlugu atorneqassaaq (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Inissisimasut API-p matuaraatit. Toqqortinnagu systemi-p toqqortarfiani kryptorneqartarpoq, kingorna matuaraat-mik maskerneqqamik taamaallaat takutitarpoq.",
-      "baseUrlHint": "OpenAI-mut naapertuuttumik endpointi. OpenAI-p nammineq API-ata tungaanut nannisinagu, OpenRouter, Groq, Ollama imaluunniit LM Studio tungaanut ataatiguk."
+      "baseUrlHint": "OpenAI-mut naapertuuttumik endpointi. OpenAI-p nammineq API-ata tungaanut nannisinagu, OpenRouter, Groq, Ollama imaluunniit LM Studio tungaanut ataatiguk.",
+      "errors": {
+        "invalidKey": "API-nøglit akuerineqanngilaq. Takukkit tulluartuuneranik suli atuuttuuneranilu, misileqqigit.",
+        "forbidden": "API-nøgle una modelimik endpointimiluunniit atorsinnaanngilaq. Kontomit permisit takukkit.",
+        "modelNotFound": "Modeli toqqakkat nassaarineqanngilaq. Modeli-ID tulluartuuneranik takukkit.",
+        "notFound": "Endpointi nassaarineqanngilaq. Base-URL takukkit misileqqillu.",
+        "rateLimit": "Provideri requestit amerlanngitsumik pissarsiarai. Uatsiilaarit misileqqillu.",
+        "quota": "Kontot quota-raq qaangiuppaa imaluunniit billing-ajortorsiorpoq. Provideri-kontot takukkit.",
+        "badRequest": "Provideri requesti akuerinngilaa (HTTP {{status}}). Modeli endpointilu inissisimaffii takukkit.",
+        "serverError": "Providerimi server-ajortorsiorpoq (HTTP {{status}}). Kingusinnerusukkut misileqqigit.",
+        "timeout": "Attaveqarneq naammassivoq. Netværkit attaveqarnera takukkit misileqqillu.",
+        "network": "Providerimut attaveqarsinnaanngilagut. Internetit attaveqarnera base-URL takukkit.",
+        "emptyResponse": "Provideri attaveqarpoq, kisianni akissut mannittoq uterpoq. Modeli-ID takukkit.",
+        "noKey": "Misiliisoqarnissaanut API-nøgle qanngilaq. Nøgle ilanngukkit.",
+        "offline": "Provideri toqqakkat offline-imi ingerlasarpoq, attaveqarnermik misilisarnissaq pisariaqanngilaq.",
+        "unknown": "Attaveqarnermik misilisarneq ajortorsiorpoq. Inissisimaffit takukkit misileqqillu."
+      }
     }
   },
   "shortcuts": {

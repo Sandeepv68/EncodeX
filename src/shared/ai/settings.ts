@@ -12,6 +12,7 @@
  */
 
 import type { AIProviderId } from './types';
+import type { AiConnectErrorReason } from './connect-error';
 
 /**
  * The provider ids a user may select for Copilot planning. `rules` is the
@@ -98,13 +99,18 @@ export interface AiSettingsUpdate {
  * The result of a connectivity test.
  * @interface AiConnectTestResult
  * @property {boolean} ok - Whether the connector answered.
- * @property {string} message - A human message (success detail or error).
+ * @property {string} message - A human message (success detail or a fallback).
+ * @property {AiConnectErrorReason} [reason] - The classified failure reason, so
+ *   the renderer can show a localized message instead of the raw payload.
+ * @property {number} [status] - The provider HTTP status, when it answered.
  * @property {string} [model] - The model that answered, on success.
  * @property {number} [latencyMs] - Round-trip time of the test, on success.
  */
 export interface AiConnectTestResult {
   ok: boolean;
   message: string;
+  reason?: AiConnectErrorReason;
+  status?: number;
   model?: string;
   latencyMs?: number;
 }

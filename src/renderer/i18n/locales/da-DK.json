@@ -652,7 +652,23 @@
       "privacy": "Kun undersøgte data og din målsætning-tekst sendes; mediefiler uploades aldrig.",
       "modelHint": "Det model-id, der skal bruges. Lad feltet stå tomt for at bruge udbyderens standard (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Din udbyders API-nøgle. Den krypteres med dit styresystems nøglelager, før den gemmes, og derefter vises kun et maskeret hint.",
-      "baseUrlHint": "OpenAI-kompatibelt endepunkt. Peg det mod OpenRouter, Groq, Ollama eller LM Studio i stedet for OpenAIs egen API."
+      "baseUrlHint": "OpenAI-kompatibelt endepunkt. Peg det mod OpenRouter, Groq, Ollama eller LM Studio i stedet for OpenAIs egen API.",
+      "errors": {
+        "invalidKey": "API-nøglen blev afvist. Kontrollér, at den er korrekt og stadig aktiv, og prøv igen.",
+        "forbidden": "Denne API-nøgle må ikke bruge den ønskede model eller det ønskede endepunkt. Kontrollér dine kontotilladelser.",
+        "modelNotFound": "Den valgte model blev ikke fundet. Kontrollér, at model-id'et er korrekt.",
+        "notFound": "Endepunktet blev ikke fundet. Kontrollér basis-URL'en, og prøv igen.",
+        "rateLimit": "Udbyderen modtager for mange anmodninger. Vent et øjeblik, og prøv igen.",
+        "quota": "Din konto har nået sin kvote eller har et faktureringsproblem. Kontrollér din udbyderkonto.",
+        "badRequest": "Udbyderen afviste anmodningen (HTTP {{status}}). Kontrollér model- og endepunktindstillingerne.",
+        "serverError": "Udbyderen havde en serverfejl (HTTP {{status}}). Prøv igen senere.",
+        "timeout": "Forbindelsen fik timeout. Kontrollér din netværksforbindelse, og prøv igen.",
+        "network": "Kunne ikke nå udbyderen. Kontrollér din internetforbindelse og basis-URL'en.",
+        "emptyResponse": "Udbyderen oprettede forbindelse, men returnerede et tomt svar. Kontrollér model-id'et.",
+        "noKey": "Der er ingen API-nøgle tilgængelig til testen. Indtast en nøgle først.",
+        "offline": "Den valgte udbyder kører offline og kræver ingen forbindelsestest.",
+        "unknown": "Forbindelsestesten mislykkedes. Kontrollér indstillingerne, og prøv igen."
+      }
     }
   },
   "shortcuts": {

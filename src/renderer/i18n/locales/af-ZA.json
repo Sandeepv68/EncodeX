@@ -652,7 +652,23 @@
       "privacy": "Slegs ondersoekfeite en jou doel teks word gestuur; media-lêers word nooit opgelaai nie.",
       "modelHint": "Die model-ID om te gebruik. Laat dit leeg om die verskaffer se standaard te gebruik (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Jou verskaffer se API-sleutel. Dit word met jou bedryfstelsel se sleutelstoor geïnkripteer voordat dit gestoor word, en daarna word slegs 'n gemaskeerde wenk gewys.",
-      "baseUrlHint": "OpenAI-versoenbare eindpunt. Wys dit na OpenRouter, Groq, Ollama of LM Studio in plaas van OpenAI se eie API."
+      "baseUrlHint": "OpenAI-versoenbare eindpunt. Wys dit na OpenRouter, Groq, Ollama of LM Studio in plaas van OpenAI se eie API.",
+      "errors": {
+        "invalidKey": "Die API-sleutel is verwerp. Maak seker dit is korrek en nog aktief, en probeer weer.",
+        "forbidden": "Hierdie API-sleutel mag nie die versoekte model of eindpunt gebruik nie. Gaan jou rekeningtoestemmings na.",
+        "modelNotFound": "Die gekose model kon nie gevind word nie. Maak seker die model-ID is korrek.",
+        "notFound": "Die eindpunt kon nie gevind word nie. Gaan die basis-URL na en probeer weer.",
+        "rateLimit": "Die verskaffer ontvang te veel versoeke. Wag 'n oomblik en probeer weer.",
+        "quota": "Jou rekening het sy kwota bereik of het 'n faktureringsprobleem. Gaan jou verskafferrekening na.",
+        "badRequest": "Die verskaffer het die versoek verwerp (HTTP {{status}}). Gaan die model- en eindpuntinstellings na.",
+        "serverError": "Die verskaffer het 'n bedienerfout ondervind (HTTP {{status}}). Probeer later weer.",
+        "timeout": "Die verbinding het uitgetel. Gaan jou netwerkverbinding na en probeer weer.",
+        "network": "Kon nie die verskaffer bereik nie. Gaan jou internetverbinding en die basis-URL na.",
+        "emptyResponse": "Die verskaffer het gekoppel, maar 'n leë antwoord teruggegee. Gaan die model-ID na.",
+        "noKey": "Daar is geen API-sleutel beskikbaar om te toets nie. Voer eers 'n sleutel in.",
+        "offline": "Die gekose verskaffer werk vanlyn en het geen verbindingstoets nodig nie.",
+        "unknown": "Die verbindingstoets het misluk. Gaan die instellings na en probeer weer."
+      }
     }
   },
   "shortcuts": {

@@ -652,7 +652,23 @@
       "privacy": "Tanging ang mga naprosesong impormasyon at ang teksto ng iyong layunin ang ipinapadala; hindi kailanman ina-upload ang mga media file.",
       "modelHint": "Ang model id na gagamitin. Iwanang blangko upang gamitin ang default ng provider (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
       "apiKeyHint": "Ang API key ng iyong provider. Naka-encrypt ito gamit ang keystore ng iyong operating system bago i-save, at pagkatapos ay isang naka-mask na hint lamang ang ipinapakita.",
-      "baseUrlHint": "Endpoint na compatible sa OpenAI. Ituro ito sa OpenRouter, Groq, Ollama, o LM Studio sa halip na sa sariling API ng OpenAI."
+      "baseUrlHint": "Endpoint na compatible sa OpenAI. Ituro ito sa OpenRouter, Groq, Ollama, o LM Studio sa halip na sa sariling API ng OpenAI.",
+      "errors": {
+        "invalidKey": "Tinanggihan ang API key. Tiyaking tama ito at aktibo pa, pagkatapos ay subukan muli.",
+        "forbidden": "Hindi pinapayagan ang API key na ito na gamitin ang hiniling na modelo o endpoint. Suriin ang mga pahintulot ng iyong account.",
+        "modelNotFound": "Hindi mahanap ang napiling modelo. Tiyaking tama ang model id.",
+        "notFound": "Hindi mahanap ang endpoint. Suriin ang base URL at subukan muli.",
+        "rateLimit": "Masyadong maraming kahilingan ang natatanggap ng provider. Maghintay sandali at subukan muli.",
+        "quota": "Naabot na ng iyong account ang quota nito o may problema sa pagsingil. Suriin ang iyong account sa provider.",
+        "badRequest": "Tinanggihan ng provider ang kahilingan (HTTP {{status}}). Suriin ang mga setting ng modelo at endpoint.",
+        "serverError": "Nagkaroon ng error sa server ang provider (HTTP {{status}}). Subukan muli mamaya.",
+        "timeout": "Nag-timeout ang koneksyon. Suriin ang iyong koneksyon sa network at subukan muli.",
+        "network": "Hindi maabot ang provider. Suriin ang iyong koneksyon sa internet at ang base URL.",
+        "emptyResponse": "Kumonekta ang provider ngunit nagbalik ng walang laman na tugon. Suriin ang model id.",
+        "noKey": "Walang available na API key para subukan. Maglagay muna ng key.",
+        "offline": "Ang napiling provider ay tumatakbo offline at hindi nangangailangan ng pagsubok ng koneksyon.",
+        "unknown": "Nabigo ang pagsubok ng koneksyon. Suriin ang mga setting at subukan muli."
+      }
     }
   },
   "shortcuts": {
