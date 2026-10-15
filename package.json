@@ -125,7 +125,12 @@
     "stylis-plugin-rtl": "^2.1.1",
     "vitepress-plugin-mermaid": "^2.0.17",
     "zod": "^4.6.5",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.0",
+    "lexical": "^0.28.0",
+    "@lexical/react": "^0.28.0",
+    "@lexical/rich-text": "^0.28.0",
+    "@lexical/history": "^0.28.0",
+    "@lexical/utils": "^0.28.0"
   },
   "devDependencies": {
     "@codecov/vite-plugin": "^2.0.1",

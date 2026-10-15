@@ -65,18 +65,18 @@ import {
  */
 const navKeyMap: Record<string, string> = {
   '/': 'dashboard',
+  '/copilot': 'copilot',
   '/convert': 'convert',
-  '/media-info': 'mediaInfo',
-  '/image-compress': 'image',
-  '/audio-extract': 'audio',
-  '/video-cut': 'cut',
   '/remux': 'remux',
   '/demux': 'demux',
+  '/video-cut': 'cut',
+  '/audio-extract': 'audio',
+  '/image-compress': 'image',
   '/batch': 'batchQueue',
-  '/copilot': 'copilot',
-  '/logs': 'logs',
+  '/media-info': 'mediaInfo',
   '/settings': 'settings',
   '/about': 'about',
+  '/logs': 'logs',
 };
 
 /**

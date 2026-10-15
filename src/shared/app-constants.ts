@@ -126,16 +126,16 @@ export const EXIT_CODES = {
  */
 export const NAV_ITEMS = [
   { to: '/', label: 'Dashboard' },
+  { to: '/copilot', label: 'Copilot' },
   { to: '/convert', label: 'Convert' },
-  { to: '/media-info', label: 'Media Info' },
-  { to: '/image-compress', label: 'Image' },
-  { to: '/audio-extract', label: 'Audio' },
-  { to: '/video-cut', label: 'Cut' },
   { to: '/remux', label: 'Remux' },
   { to: '/demux', label: 'Demux' },
+  { to: '/video-cut', label: 'Cut' },
+  { to: '/audio-extract', label: 'Audio' },
+  { to: '/image-compress', label: 'Image' },
   { to: '/batch', label: 'Batch Queue' },
-  { to: '/copilot', label: 'Copilot' },
-  { to: '/logs', label: 'Logs' },
+  { to: '/media-info', label: 'Media Info' },
   { to: '/settings', label: 'Settings' },
   { to: '/about', label: 'About' },
+  { to: '/logs', label: 'Logs' },
 ] as const;

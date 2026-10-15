@@ -1,10 +1,12 @@
 /**
- * @fileoverview Unit tests for the Copilot page (roadmap 7.4, R6).
+ * @fileoverview Unit tests for the Copilot page (roadmap 7.4, R6) and its
+ * ChatGPT-style conversation UI.
  *
- * The page must be inert on mount (no bridge calls while rendering, so every
- * hostile/i18n matrix suite can mount it), plan only on user intent through the
- * existing bridge, and commit through the Batch Queue rather than inventing a
- * second approval system. These are exactly the four behaviours exercised here.
+ * The page must be inert on mount (no bridge calls while rendering), plan only
+ * on user intent through the existing bridge, and commit through the Batch Queue
+ * rather than inventing a second approval system. The composer is a Lexical
+ * editor, so these tests drive it the way the browser does: an `input` event
+ * carrying the inserted text, and a `keydown` for Enter/Shift+Enter.
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -75,16 +77,7 @@ function findPageHandler(start: ReactFiberNode | null | undefined, muiOnClick: u
 
 /**
  * Invokes the page's committed `onClick` even while the Plan button is
- * `disabled`.
- *
- * The button mirrors `buildPlan`'s own guards (`goal.trim() === ''` /
- * `inputs.length === 0`) in its `disabled` prop, so the two error branches are
- * unreachable by a real click: a disabled native button swallows mouse events,
- * and MUI's own click wrapper short-circuits on `disabled`. The harness walks
- * the committed React fiber (and its `alternate`, which carries the newest
- * render) up to the `ButtonBase` that received the page's handler, then calls
- * it inside `act` -- exercising the same code a user could only reach if the
- * guard order in the component ever drifts.
+ * `disabled`, exercising the guards a real click cannot reach.
  * @param {HTMLElement} element - The button whose page handler should run.
  * @returns {Promise<void>} Resolves once the handler and its state updates settle.
  */
@@ -102,6 +95,51 @@ async function invokeOnClick(element: HTMLElement): Promise<void> {
   });
 }
 
+/** Returns the Lexical contenteditable root. */
+function getEditor(): HTMLElement {
+  const el = document.querySelector('[data-lexical-editor="true"]');
+  if (!el) throw new Error('Lexical editor not found');
+  return el as HTMLElement;
+}
+
+/**
+ * Types text into the Lexical composer the way the browser does.
+ * @param {string} text - The text to insert.
+ * @returns {Promise<void>} Resolves once the change has settled.
+ */
+async function typeMessage(text: string): Promise<void> {
+  const editor = getEditor();
+  await act(async () => {
+    editor.focus();
+    fireEvent.input(editor, { data: text, inputType: 'insertText' });
+  });
+}
+
+/**
+ * Opens the advanced-options popover and selects an operation.
+ * @param {string} operationKey - The `copilot.op.*` label of the operation.
+ * @returns {Promise<void>} Resolves once the operation is selected.
+ */
+async function chooseOperation(operationKey: string): Promise<void> {
+  fireEvent.click(screen.getByTestId('copilot-advanced'));
+  fireEvent.mouseDown(screen.getByRole('combobox', { name: 'copilot.operationLabel' }));
+  fireEvent.click(await screen.findByText(operationKey));
+}
+
+/**
+ * Chooses the fixture folder and waits for the selection to flush into state.
+ * @param {boolean} [waitEnabled] - When a goal is present, also wait for Plan to
+ *   become enabled (which proves the chosen inputs reached the page state).
+ * @returns {Promise<void>} Resolves once the folder has been applied.
+ */
+async function chooseFolder(waitEnabled = true): Promise<void> {
+  fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+  await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+  if (waitEnabled) {
+    await waitFor(() => expect((screen.getByTestId('copilot-plan') as HTMLButtonElement).disabled).toBe(false));
+  }
+}
+
 describe('Copilot page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -115,22 +153,24 @@ describe('Copilot page', () => {
     expect(window.electronAPI.selectFolderFiles).not.toHaveBeenCalled();
     expect(window.electronAPI.queueAdd).not.toHaveBeenCalled();
     expect(screen.getByTestId('copilot-plan')).toBeDefined();
+    expect(getEditor()).toBeDefined();
   });
 
-  it('keeps Plan disabled until both a goal and a folder are provided', () => {
+  it('keeps Plan disabled until both a goal and a folder are provided', async () => {
     renderPage('Copilot');
     expect((screen.getByTestId('copilot-plan') as HTMLButtonElement).disabled).toBe(true);
-    const goalInput = screen.getByRole('textbox');
-    fireEvent.change(goalInput, { target: { value: 'compress for web' } });
+    await typeMessage('compress for web');
     expect((screen.getByTestId('copilot-plan') as HTMLButtonElement).disabled).toBe(true);
+
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect((screen.getByTestId('copilot-plan') as HTMLButtonElement).disabled).toBe(false));
   });
 
   it('asks the bridge to plan only after the user clicks Plan', async () => {
     renderPage('Copilot');
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
-
-    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
-    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    await typeMessage('compress for web');
+    await chooseFolder();
+    expect(window.electronAPI.copilotPlan).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByTestId('copilot-plan'));
     await waitFor(() =>
@@ -142,12 +182,33 @@ describe('Copilot page', () => {
       }),
     );
 
-    const summary = await screen.findByTestId('copilot-plan-summary');
-    expect(summary).toBeDefined();
+    expect(await screen.findByTestId('copilot-plan-summary')).toBeDefined();
     expect(screen.getByTestId('copilot-action-convert_0')).toBeDefined();
     expect(screen.getByTestId('copilot-action-convert_1')).toBeDefined();
     expect(screen.getAllByTestId('copilot-skip')).toHaveLength(1);
     expect(window.electronAPI.queueAdd).not.toHaveBeenCalled();
+  });
+
+  it('submits on Enter', async () => {
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+
+    await act(async () => {
+      fireEvent.keyDown(getEditor(), { key: 'Enter' });
+    });
+    await waitFor(() => expect(window.electronAPI.copilotPlan).toHaveBeenCalledTimes(1));
+  });
+
+  it('does not submit on Shift+Enter', async () => {
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+
+    await act(async () => {
+      fireEvent.keyDown(getEditor(), { key: 'Enter', shiftKey: true });
+    });
+    expect(window.electronAPI.copilotPlan).not.toHaveBeenCalled();
   });
 
   it('lists read-only results when the plan reports them', async () => {
@@ -156,9 +217,8 @@ describe('Copilot page', () => {
       results: [{ operation: 'analyze', input: '/in/one.mp4', summary: 'H.264, 1080p' }],
     });
     renderPage('Copilot');
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'analyze this' } });
-    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
-    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    await typeMessage('analyze this');
+    await chooseFolder();
     fireEvent.click(screen.getByTestId('copilot-plan'));
     await screen.findByTestId('copilot-plan-summary');
     expect(screen.getByTestId('copilot-result')).toBeDefined();
@@ -167,9 +227,8 @@ describe('Copilot page', () => {
 
   it('adds every planned action to the Batch Queue via queueAdd', async () => {
     renderPage('Copilot');
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
-    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
-    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    await typeMessage('compress for web');
+    await chooseFolder();
     fireEvent.click(screen.getByTestId('copilot-plan'));
     await screen.findByTestId('copilot-plan-summary');
 
@@ -196,9 +255,8 @@ describe('Copilot page', () => {
   it('survives a malformed plan payload with an inline error', async () => {
     vi.mocked(window.electronAPI.copilotPlan).mockResolvedValue({ actions: 'nope', skips: [] } as never);
     renderPage('Copilot');
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
-    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
-    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    await typeMessage('compress for web');
+    await chooseFolder();
     fireEvent.click(screen.getByTestId('copilot-plan'));
     expect(await screen.findByTestId('copilot-error')).toBeDefined();
     expect(screen.queryByTestId('copilot-plan-summary')).toBeNull();
@@ -207,11 +265,32 @@ describe('Copilot page', () => {
   it('surfaces a rejected plan request as an inline error', async () => {
     vi.mocked(window.electronAPI.copilotPlan).mockRejectedValue(Object.assign(new Error('nope'), { code: 'PROBE_FAILED' }));
     renderPage('Copilot');
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress' } });
-    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
-    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    await typeMessage('compress');
+    await chooseFolder();
     fireEvent.click(screen.getByTestId('copilot-plan'));
     expect(await screen.findByTestId('copilot-error')).toBeDefined();
+  });
+
+  it('shows a timeout error when the plan request never settles', async () => {
+    vi.mocked(window.electronAPI.copilotPlan).mockReturnValue(new Promise<CopilotPlan>(() => {}));
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(60_000);
+    });
+    vi.useRealTimers();
+    expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.bridgeTimeout');
+  });
+
+  it('closes the advanced popover on Escape', async () => {
+    renderPage('Copilot');
+    fireEvent.click(screen.getByTestId('copilot-advanced'));
+    const operation = await screen.findByTestId('copilot-operation');
+    fireEvent.keyDown(operation, { key: 'Escape' });
+    await waitFor(() => expect(screen.queryByTestId('copilot-operation')).toBeNull());
   });
 
   it('shows a notice when the chosen folder contains no media files', async () => {
@@ -224,8 +303,7 @@ describe('Copilot page', () => {
 
   it('flags a missing goal when the plan guard runs without one', async () => {
     renderPage('Copilot');
-    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
-    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    await chooseFolder(false);
     await invokeOnClick(screen.getByTestId('copilot-plan'));
     expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.errorNoGoal');
     expect(window.electronAPI.copilotPlan).not.toHaveBeenCalled();
@@ -233,8 +311,7 @@ describe('Copilot page', () => {
 
   it('flags missing inputs when the plan guard runs without a folder', async () => {
     renderPage('Copilot');
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
-    await waitFor(() => expect((screen.getByRole('textbox') as HTMLInputElement).value).toBe('compress for web'));
+    await typeMessage('compress for web');
     await invokeOnClick(screen.getByTestId('copilot-plan'));
     expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.errorNoInputs');
     expect(window.electronAPI.copilotPlan).not.toHaveBeenCalled();
@@ -242,9 +319,8 @@ describe('Copilot page', () => {
 
   it('reports a partial enqueue when some queueAdd calls fail', async () => {
     renderPage('Copilot');
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
-    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
-    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    await typeMessage('compress for web');
+    await chooseFolder();
     fireEvent.click(screen.getByTestId('copilot-plan'));
     await screen.findByTestId('copilot-plan-summary');
     vi.mocked(window.electronAPI.queueAdd).mockResolvedValueOnce('').mockRejectedValueOnce(new Error('boom'));
@@ -254,9 +330,8 @@ describe('Copilot page', () => {
 
   it('reports a total enqueue failure when every queueAdd call fails', async () => {
     renderPage('Copilot');
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
-    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
-    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    await typeMessage('compress for web');
+    await chooseFolder();
     fireEvent.click(screen.getByTestId('copilot-plan'));
     await screen.findByTestId('copilot-plan-summary');
     vi.mocked(window.electronAPI.queueAdd).mockRejectedValue(new Error('boom'));
@@ -266,12 +341,11 @@ describe('Copilot page', () => {
 
   it('passes a search phrase when the transcript-search operation is chosen', async () => {
     renderPage('Copilot');
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'find the pricing bit' } });
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'copilot.operationLabel' }));
-    fireEvent.click(await screen.findByText('copilot.op.search_transcript'));
-    fireEvent.change(await screen.findByRole('textbox', { name: 'copilot.queryLabel' }), { target: { value: 'pricing' } });
-    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
-    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    await typeMessage('find the pricing bit');
+    await chooseOperation('copilot.op.search_transcript');
+    fireEvent.change(screen.getByRole('textbox', { name: 'copilot.queryLabel' }), { target: { value: 'pricing' } });
+    fireEvent.click(screen.getByTestId('copilot-advanced-close'));
+    await chooseFolder();
     fireEvent.click(screen.getByTestId('copilot-plan'));
     await waitFor(() =>
       expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(
@@ -283,9 +357,10 @@ describe('Copilot page', () => {
   it('adds files chosen through the file dialog to the inputs', async () => {
     vi.mocked(window.electronAPI.selectFiles).mockResolvedValue(['/in/one.mp4', '/in/two.mkv']);
     renderPage('Copilot');
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'compress for web' } });
+    await typeMessage('compress for web');
     fireEvent.click(screen.getByTestId('copilot-choose-files'));
     await waitFor(() => expect(window.electronAPI.selectFiles).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect((screen.getByTestId('copilot-plan') as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(screen.getByTestId('copilot-plan'));
     await waitFor(() =>
       expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(expect.objectContaining({ inputs: ['/in/one.mp4', '/in/two.mkv'] })),
@@ -300,14 +375,26 @@ describe('Copilot page', () => {
     expect(window.electronAPI.copilotPlan).not.toHaveBeenCalled();
   });
 
+  it('removes an attachment when its chip delete icon is clicked', async () => {
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+    expect(screen.getByText('one.mp4')).toBeInTheDocument();
+    expect(screen.getByText('two.mkv')).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByTestId('CancelIcon')[0]);
+    await waitFor(() => expect(screen.queryByText('one.mp4')).toBeNull());
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await waitFor(() => expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(expect.objectContaining({ inputs: ['/in/two.mkv'] })));
+  });
+
   it('passes a target language when the translate operation is chosen', async () => {
     renderPage('Copilot');
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'translate the subtitles' } });
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'copilot.operationLabel' }));
-    fireEvent.click(await screen.findByText('copilot.op.translate'));
-    fireEvent.change(await screen.findByRole('textbox', { name: 'copilot.targetLanguageLabel' }), { target: { value: 'es' } });
-    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
-    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    await typeMessage('translate the subtitles');
+    await chooseOperation('copilot.op.translate');
+    fireEvent.change(screen.getByRole('textbox', { name: 'copilot.targetLanguageLabel' }), { target: { value: 'es' } });
+    fireEvent.click(screen.getByTestId('copilot-advanced-close'));
+    await chooseFolder();
     fireEvent.click(screen.getByTestId('copilot-plan'));
     await waitFor(() =>
       expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(
