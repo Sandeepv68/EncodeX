@@ -15,7 +15,7 @@
  *  - '/remux'         -> faLayerGroup (lossless remux)
  *  - '/demux'         -> faFileExport (stream demux/splitting)
  *  - '/batch'         -> faListCheck (batch queue)
- *  - '/copilot'       -> faRobot (AI copilot)
+ *  - '/copilot'       -> EncodeX logo (AI copilot)
  *  - '/logs'          -> faFileLines (log console)
  *  - '/settings'      -> faGear (settings)
  *  - '/about'         -> faCircleQuestion (about)
@@ -33,11 +33,11 @@ import {
   faLayerGroup,
   faFileExport,
   faListCheck,
-  faRobot,
   faFileLines,
   faGear,
   faCircleQuestion,
 } from '@fortawesome/free-solid-svg-icons';
+import EncodexLogoIcon from './components/EncodexLogoIcon';
 
 /**
  * Registry of Font Awesome icons keyed by route path. Looked up by the
@@ -54,7 +54,7 @@ export const pageIcons: Record<string, ReactNode> = {
   '/remux': <FontAwesomeIcon icon={faLayerGroup} />,
   '/demux': <FontAwesomeIcon icon={faFileExport} />,
   '/batch': <FontAwesomeIcon icon={faListCheck} />,
-  '/copilot': <FontAwesomeIcon icon={faRobot} />,
+  '/copilot': <EncodexLogoIcon />,
   '/logs': <FontAwesomeIcon icon={faFileLines} />,
   '/settings': <FontAwesomeIcon icon={faGear} />,
   '/about': <FontAwesomeIcon icon={faCircleQuestion} />,

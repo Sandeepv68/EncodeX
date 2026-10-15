@@ -94,6 +94,63 @@ function interpolationTokens(value: string): string[] {
 }
 
 /**
+ * Product names, protocol terms, and file-type words that legitimately render
+ * as the English string in every locale, so they are exempt from the
+ * "must be translated" check. Mirrors the `allowIdentical` set in
+ * `scripts/locale-backfill.mjs`.
+ */
+const ALWAYS_IDENTICAL = new Set([
+  'copilot.title',
+  'copilot.op.remux',
+  'copilot.op.demux',
+  'copilot.ai.providers.openai',
+  'copilot.ai.providers.anthropic',
+  'copilot.ai.providers.gemini',
+]);
+
+/**
+ * Keys that are identical to the English source only in specific locales
+ * because the target language happens to use the same word (true cognates such
+ * as Danish "Send"/"Plan" or Dutch "Model"). Being cognates, they are not
+ * English placeholders and must not be flagged.
+ */
+const COGNATE_IDENTICAL: Record<string, Set<string>> = {
+  'copilot.ai.model': new Set(['af-ZA', 'da-DK', 'id-ID', 'ms-MY', 'ms-SG', 'nl-BE', 'nl-NL', 'pl-PL']),
+  'copilot.advanced': new Set(['fil-PH', 'kl-GL', 'tl-PH']),
+  'copilot.send': new Set(['da-DK', 'nb-NO']),
+  'copilot.plan': new Set(['da-DK']),
+};
+
+/**
+ * The Copilot UI and AI-connector error keys that must carry a real,
+ * non-English translation in every non-English locale (plan stage 3d). Key
+ * *existence* is already guaranteed by parity in `assertLocaleIntegrity`; this
+ * set drives the stricter "was actually translated" check.
+ */
+export const NON_ENGLISH_REQUIRED = new Set(
+  [...baseLocale.keys].filter((key) => key.startsWith('copilot.') || key.startsWith('settings.ai.errors.')),
+);
+
+/** English source values, keyed by dotted key, for identity comparison. */
+const enValues = new Map(baseLocale.entries.map((e) => [e.key, e.value]));
+
+/**
+ * Returns the `copilot.*` / `settings.ai.errors.*` keys whose value is still
+ * byte-identical to the English source in `entries`, excluding product terms
+ * and true cognates. Empty means every required key carries a real translation.
+ */
+export function untranslatedRequiredKeys(localeCode: string, entries: FlatEntry[]): string[] {
+  const problems: string[] = [];
+  for (const { key, value } of entries) {
+    if (!NON_ENGLISH_REQUIRED.has(key)) continue;
+    if (ALWAYS_IDENTICAL.has(key)) continue;
+    if (COGNATE_IDENTICAL[key]?.has(localeCode)) continue;
+    if (value === enValues.get(key)) problems.push(key);
+  }
+  return problems.sort();
+}
+
+/**
  * Verifies a locale file against the reference: key parity, no empty values,
  * no value that is just its own key, and well-formed interpolation tokens.
  * Returns a list of problems (empty = healthy).

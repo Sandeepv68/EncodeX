@@ -99,14 +99,15 @@ describe('registerAiSettingsIpc', () => {
 
   it('CONNECT_TEST refuses an offline provider', async () => {
     connectorsMock.isRemoteProvider.mockReturnValue(false);
-    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'rules' })).resolves.toMatchObject({ ok: false });
+    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'rules' })).resolves.toMatchObject({ ok: false, reason: 'offline' });
     expect(connectorsMock.createConnectorFromSettings).not.toHaveBeenCalled();
   });
 
   it('CONNECT_TEST refuses when no API key is available', async () => {
     settingsMock.decryptApiKey.mockReturnValue(null);
-    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' })).resolves.toEqual({
+    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' })).resolves.toMatchObject({
       ok: false,
+      reason: 'noKey',
       message: 'No API key is available to test.',
     });
   });
@@ -123,14 +124,84 @@ describe('registerAiSettingsIpc', () => {
     expect((result as { latencyMs: number }).latencyMs).toBeGreaterThanOrEqual(0);
   });
 
-  it('CONNECT_TEST surfaces a connector failure as a message', async () => {
+  it('CONNECT_TEST surfaces a classified connector failure', async () => {
     expectAppLog('warn', 'main/ai/settings-ipc');
     settingsMock.decryptApiKey.mockReturnValue('sk-1');
-    connectorsMock.createConnectorFromSettings.mockReturnValue({
-      complete: vi.fn().mockRejectedValue(new Error('HTTP 401')),
+    const providerError = Object.assign(new Error('Provider responded with HTTP 401'), {
+      status: 401,
+      body: JSON.stringify({ error: { code: 'invalid_api_key', message: 'Incorrect API key provided' } }),
     });
-    const result = (await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' })) as { ok: boolean; message: string };
+    connectorsMock.createConnectorFromSettings.mockReturnValue({
+      complete: vi.fn().mockRejectedValue(providerError),
+    });
+    const result = (await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' })) as {
+      ok: boolean;
+      message: string;
+      reason: string;
+      status: number;
+    };
     expect(result.ok).toBe(false);
     expect(result.message.length).toBeGreaterThan(0);
+    expect(result.reason).toBe('invalidKey');
+    expect(result.status).toBe(401);
+  });
+
+  it('CONNECT_TEST falls back to the stored provider for an invalid candidate id', async () => {
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'anthropic', model: 'claude-3', key: 'enc' });
+    settingsMock.decryptApiKey.mockReturnValue('sk-1');
+    connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockResolvedValue({ model: 'm', text: 'OK' }) });
+    await invoke(IPC.AI_CONNECT_TEST, { providerId: 'bogus' });
+    expect(connectorsMock.createConnectorFromSettings).toHaveBeenCalledWith(expect.objectContaining({ providerId: 'anthropic' }), 'sk-1');
+  });
+
+  it('CONNECT_TEST prefers the candidate key/model/baseUrl over the stored values', async () => {
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: 'stored-model', baseUrl: 'https://stored/v1', key: 'enc' });
+    settingsMock.decryptApiKey.mockReturnValue('stored-key');
+    connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockResolvedValue({ model: 'm', text: 'OK' }) });
+    await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai', apiKey: 'live-key', model: 'live-model', baseUrl: 'https://live/v1' });
+    expect(settingsMock.decryptApiKey).not.toHaveBeenCalled();
+    expect(connectorsMock.createConnectorFromSettings).toHaveBeenCalledWith(
+      expect.objectContaining({ providerId: 'openai', model: 'live-model', baseUrl: 'https://live/v1' }),
+      'live-key',
+    );
+  });
+
+  it('CONNECT_TEST keeps the stored model/baseUrl when the candidate omits them', async () => {
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: 'stored-model', baseUrl: 'https://stored/v1', key: 'enc' });
+    settingsMock.decryptApiKey.mockReturnValue('stored-key');
+    connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockResolvedValue({ model: 'm', text: 'OK' }) });
+    await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' });
+    expect(connectorsMock.createConnectorFromSettings).toHaveBeenCalledWith(
+      expect.objectContaining({ model: 'stored-model', baseUrl: 'https://stored/v1' }),
+      'stored-key',
+    );
+  });
+
+  it('CONNECT_TEST falls back to the decrypted key when the candidate key is empty', async () => {
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: '', key: 'enc' });
+    settingsMock.decryptApiKey.mockReturnValue('stored-key');
+    connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockResolvedValue({ model: 'm', text: 'OK' }) });
+    await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai', apiKey: '' });
+    expect(connectorsMock.createConnectorFromSettings).toHaveBeenCalledWith(expect.anything(), 'stored-key');
+  });
+
+  it('CONNECT_TEST never echoes the API key in its result', async () => {
+    settingsMock.decryptApiKey.mockReturnValue('sk-super-secret');
+    connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockResolvedValue({ model: 'm', text: 'OK' }) });
+    const result = await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' });
+    expect((result as { ok: boolean }).ok).toBe(true);
+    expect(JSON.stringify(result)).not.toContain('sk-super-secret');
+  });
+
+  it('SET tolerates cyclic and oversized payloads', async () => {
+    settingsMock.applyAiSettingsUpdate.mockReturnValue({ providerId: 'openai' });
+    const cyclic: Record<string, unknown> = {
+      providerId: 'openai',
+      model: 'm'.repeat(100_000),
+      baseUrl: `https://x/${'h'.repeat(100_000)}`,
+    };
+    cyclic.self = cyclic;
+    expect(() => invoke(IPC.AI_SETTINGS_SET, cyclic)).not.toThrow();
+    expect(settingsMock.applyAiSettingsUpdate).toHaveBeenCalled();
   });
 });

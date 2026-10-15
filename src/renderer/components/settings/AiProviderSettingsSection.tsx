@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, IconButton, Tooltip, Typography, InputAdornment, Link } from '@mui/material';
+import { Button, IconButton, Tooltip, InputAdornment } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWandMagicSparkles,
@@ -33,10 +33,12 @@ import {
   ProviderName,
   ProviderLogo,
   AiKeyHelper,
-  AiActionRow,
+  AiKeyRow,
+  AiField,
   AdvancedPanel,
   AiAlert,
 } from '../../styles/settings/AiProviderSettingsSection.styles';
+import SettingLabel from './SettingLabel';
 
 /**
  * The page where users create an API key for each remote AI provider. Opened in
@@ -164,10 +166,21 @@ export default function AiProviderSettingsSection() {
         }),
       );
       if (result && typeof result.message === 'string') {
-        const latency = typeof result.latencyMs === 'number' ? ` (${result.latencyMs} ms)` : '';
-        setStatus(result.ok ? `${result.message}${latency}` : result.message);
+        if (result.ok) {
+          const latency = typeof result.latencyMs === 'number' ? ` (${result.latencyMs} ms)` : '';
+          setStatus(`${result.message}${latency}`);
+        } else if (typeof result.reason === 'string') {
+          // Show a localized message for the classified provider failure instead
+          // of the raw payload returned by the service.
+          setStatus(null);
+          setError(t(`settings.ai.errors.${result.reason}`, { status: result.status ?? '' }));
+        } else {
+          setStatus(null);
+          setError(t('settings.ai.testFailed'));
+        }
       } else {
-        setStatus(t('settings.ai.testFailed'));
+        setStatus(null);
+        setError(t('settings.ai.testFailed'));
       }
     } catch (err) {
       setError(formatError(err).message);
@@ -240,96 +253,115 @@ export default function AiProviderSettingsSection() {
             ))}
           </ProviderGrid>
 
-          {configurable &&
-            (needsKey ? (
-              <McpField
-                type="password"
-                size="small"
-                label={t('settings.ai.apiKey')}
-                data-testid="settings-ai-key"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder={t('settings.ai.apiKeyPlaceholder')}
-                helperText={
-                  <AiKeyHelper>
-                    <span>{view?.hasKey ? t('settings.ai.keyStored', { hint: view.keyHint }) : t('settings.ai.keyNone')}</span>
-                    {keyUrl && (
-                      <Link
-                        href={keyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        variant="body2"
-                        underline="hover"
-                        data-testid="settings-ai-get-key"
-                      >
-                        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-                        {t('settings.ai.getKey')}
-                      </Link>
-                    )}
-                  </AiKeyHelper>
-                }
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Tooltip title={t('settings.ai.paste')}>
-                          <IconButton size="small" onClick={pasteKey} aria-label={t('settings.ai.paste')} data-testid="settings-ai-paste">
-                            <FontAwesomeIcon icon={faPaste} />
-                          </IconButton>
-                        </Tooltip>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
-            ) : (
-              <McpField
-                size="small"
-                label={t('settings.ai.baseUrl')}
-                data-testid="settings-ai-base-url"
-                value={baseUrl}
-                onChange={(e) => setBaseUrl(e.target.value)}
-                placeholder={t('settings.ai.baseUrlPlaceholder')}
-              />
-            ))}
-
           {configurable && (
             <>
-              <AiActionRow>
-                <Button size="small" variant="contained" onClick={connect} disabled={busy} data-testid="settings-ai-connect">
-                  {busy ? t('settings.ai.connecting') : t('settings.ai.connect')}
-                </Button>
-
-                <Button
-                  size="small"
-                  variant="text"
-                  onClick={() => setAdvanced((value) => !value)}
-                  startIcon={<FontAwesomeIcon icon={advanced ? faChevronUp : faChevronDown} />}
-                  data-testid="settings-ai-advanced"
-                >
-                  {t('settings.ai.advanced')}
-                </Button>
-              </AiActionRow>
-
-              {advanced && (
-                <AdvancedPanel>
-                  <McpField
-                    size="small"
-                    label={t('settings.ai.model')}
-                    data-testid="settings-ai-model"
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                    placeholder={t('settings.ai.modelPlaceholder')}
-                  />
-                  {showBaseUrl && needsKey && (
+              <AiField>
+                <SettingLabel
+                  text={needsKey ? t('settings.ai.apiKey') : t('settings.ai.baseUrl')}
+                  hint={needsKey ? t('settings.ai.apiKeyHint') : t('settings.ai.baseUrlHint')}
+                />
+                <AiKeyRow>
+                  {needsKey ? (
+                    <McpField
+                      type="password"
+                      size="small"
+                      data-testid="settings-ai-key"
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
+                      placeholder={t('settings.ai.apiKeyPlaceholder')}
+                      fullWidth
+                      helperText={
+                        <AiKeyHelper>
+                          <span>{view?.hasKey ? t('settings.ai.keyStored', { hint: view.keyHint }) : t('settings.ai.keyNone')}</span>
+                        </AiKeyHelper>
+                      }
+                      slotProps={{
+                        htmlInput: { 'aria-label': t('settings.ai.apiKey') },
+                        input: {
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <Tooltip title={t('settings.ai.paste')}>
+                                <IconButton
+                                  size="small"
+                                  onClick={pasteKey}
+                                  aria-label={t('settings.ai.paste')}
+                                  data-testid="settings-ai-paste"
+                                >
+                                  <FontAwesomeIcon icon={faPaste} />
+                                </IconButton>
+                              </Tooltip>
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                  ) : (
                     <McpField
                       size="small"
-                      label={t('settings.ai.baseUrl')}
                       data-testid="settings-ai-base-url"
                       value={baseUrl}
                       onChange={(e) => setBaseUrl(e.target.value)}
                       placeholder={t('settings.ai.baseUrlPlaceholder')}
+                      slotProps={{ htmlInput: { 'aria-label': t('settings.ai.baseUrl') } }}
                     />
+                  )}
+
+                  {keyUrl && (
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      component="a"
+                      href={keyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      startIcon={<FontAwesomeIcon icon={faArrowUpRightFromSquare} />}
+                      data-testid="settings-ai-get-key"
+                    >
+                      {t('settings.ai.getKey')}
+                    </Button>
+                  )}
+
+                  <Button size="small" variant="contained" onClick={connect} disabled={busy} data-testid="settings-ai-connect">
+                    {busy ? t('settings.ai.connecting') : t('settings.ai.connect')}
+                  </Button>
+
+                  <Button
+                    size="small"
+                    variant="text"
+                    onClick={() => setAdvanced((value) => !value)}
+                    startIcon={<FontAwesomeIcon icon={advanced ? faChevronUp : faChevronDown} />}
+                    data-testid="settings-ai-advanced"
+                  >
+                    {t('settings.ai.advanced')}
+                  </Button>
+                </AiKeyRow>
+              </AiField>
+
+              {advanced && (
+                <AdvancedPanel>
+                  <AiField>
+                    <SettingLabel text={t('settings.ai.model')} hint={t('settings.ai.modelHint')} />
+                    <McpField
+                      size="small"
+                      data-testid="settings-ai-model"
+                      value={model}
+                      onChange={(e) => setModel(e.target.value)}
+                      placeholder={t('settings.ai.modelPlaceholder')}
+                      slotProps={{ htmlInput: { 'aria-label': t('settings.ai.model') } }}
+                    />
+                  </AiField>
+                  {showBaseUrl && needsKey && (
+                    <AiField>
+                      <SettingLabel text={t('settings.ai.baseUrl')} hint={t('settings.ai.baseUrlHint')} />
+                      <McpField
+                        size="small"
+                        data-testid="settings-ai-base-url"
+                        value={baseUrl}
+                        onChange={(e) => setBaseUrl(e.target.value)}
+                        placeholder={t('settings.ai.baseUrlPlaceholder')}
+                        slotProps={{ htmlInput: { 'aria-label': t('settings.ai.baseUrl') } }}
+                      />
+                    </AiField>
                   )}
                 </AdvancedPanel>
               )}
@@ -337,9 +369,9 @@ export default function AiProviderSettingsSection() {
           )}
 
           {status && (
-            <Typography variant="caption" color="text.secondary" data-testid="settings-ai-status">
+            <AiAlert severity="info" data-testid="settings-ai-status">
               {status}
-            </Typography>
+            </AiAlert>
           )}
           {error && (
             <AiAlert severity="error" data-testid="settings-ai-error">
@@ -347,9 +379,9 @@ export default function AiProviderSettingsSection() {
             </AiAlert>
           )}
           {configurable ? (
-            <Typography variant="caption" color="text.secondary">
+            <AiAlert severity="info" data-testid="settings-ai-privacy-note">
               {t('settings.ai.privacy')}
-            </Typography>
+            </AiAlert>
           ) : (
             <AiAlert severity="info" data-testid="settings-ai-rules-note">
               {t('settings.ai.rulesNote')}

@@ -18,6 +18,7 @@ import { LOG_FAILED_TO_PERSIST_MCP_SETTINGS } from '../../shared/log-constants';
 import { formatError } from '../../shared/errors';
 import { isAiProviderId } from '../../shared/ai/settings';
 import type { AiConnectTestResult, AiSettingsUpdate, AiSettingsView } from '../../shared/ai/settings';
+import { classifyAiConnectError } from '../../shared/ai/connect-error';
 import {
   applyAiSettingsUpdate,
   decryptApiKey,
@@ -66,10 +67,10 @@ export function registerAiSettingsIpc(): void {
     const record = candidate && typeof candidate === 'object' ? (candidate as Record<string, unknown>) : {};
     const providerId = isAiProviderId(record.providerId) ? record.providerId : stored.providerId;
     if (!isRemoteProvider(providerId)) {
-      return { ok: false, message: 'The selected provider runs offline and needs no connection test.' };
+      return { ok: false, reason: 'offline', message: 'The selected provider runs offline and needs no connection test.' };
     }
     const apiKey = typeof record.apiKey === 'string' && record.apiKey ? record.apiKey : decryptApiKey(stored);
-    if (!apiKey) return { ok: false, message: 'No API key is available to test.' };
+    if (!apiKey) return { ok: false, reason: 'noKey', message: 'No API key is available to test.' };
     const merged = sanitizeAiSettings({
       ...stored,
       providerId,
@@ -89,7 +90,8 @@ export function registerAiSettingsIpc(): void {
       return { ok: true, message: `Connected to ${providerId}.`, model: response.model, latencyMs: Date.now() - startedAt };
     } catch (err) {
       log.warn(LOG_FAILED_TO_PERSIST_MCP_SETTINGS, 'connect test failed:', err);
-      return { ok: false, message: formatError(err).message };
+      const { reason, status } = classifyAiConnectError(err, providerId);
+      return { ok: false, message: formatError(err).message, reason, ...(status !== undefined ? { status } : {}) };
     }
   });
 }

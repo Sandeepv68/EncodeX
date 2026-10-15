@@ -12,6 +12,7 @@
  */
 
 import type { AIProviderId } from './types';
+import type { AiConnectErrorReason } from './connect-error';
 
 /**
  * The provider ids a user may select for Copilot planning. `rules` is the
@@ -98,13 +99,18 @@ export interface AiSettingsUpdate {
  * The result of a connectivity test.
  * @interface AiConnectTestResult
  * @property {boolean} ok - Whether the connector answered.
- * @property {string} message - A human message (success detail or error).
+ * @property {string} message - A human message (success detail or a fallback).
+ * @property {AiConnectErrorReason} [reason] - The classified failure reason, so
+ *   the renderer can show a localized message instead of the raw payload.
+ * @property {number} [status] - The provider HTTP status, when it answered.
  * @property {string} [model] - The model that answered, on success.
  * @property {number} [latencyMs] - Round-trip time of the test, on success.
  */
 export interface AiConnectTestResult {
   ok: boolean;
   message: string;
+  reason?: AiConnectErrorReason;
+  status?: number;
   model?: string;
   latencyMs?: number;
 }
@@ -127,6 +133,22 @@ export function isAiProviderId(value: unknown): value is AIProviderId {
 }
 
 /**
+ * Coerces a candidate `baseUrl` into a safe value, or `undefined` when there is
+ * none. The value is trimmed, any CR/LF is stripped (a base URL is later
+ * concatenated into a request URL and a header-bearing newline must never
+ * survive), and only `http:`/`https:` schemes are accepted so a hostile
+ * `javascript:` (or any other) scheme can never reach `fetch`.
+ * @param {unknown} value - The candidate base URL.
+ * @returns {string | undefined} A safe base URL, or undefined.
+ */
+function sanitizeBaseUrl(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.replace(/[\r\n]+/g, '').trim();
+  if (!trimmed || !/^https?:\/\//i.test(trimmed)) return undefined;
+  return trimmed.slice(0, 500);
+}
+
+/**
  * Coerces arbitrary input into a valid, complete settings document. Unknown
  * providers fall back to `rules`; the key is preserved verbatim (already
  * encrypted by the caller) or dropped.
@@ -137,7 +159,7 @@ export function sanitizeAiSettings(input: unknown): AiServerSettings {
   const record = input && typeof input === 'object' && !Array.isArray(input) ? (input as Record<string, unknown>) : {};
   const providerId = isAiProviderId(record.providerId) ? record.providerId : 'rules';
   const model = typeof record.model === 'string' ? record.model.trim().slice(0, 200) : '';
-  const baseUrl = typeof record.baseUrl === 'string' && record.baseUrl.trim() ? record.baseUrl.trim().slice(0, 500) : undefined;
+  const baseUrl = sanitizeBaseUrl(record.baseUrl);
   const key = typeof record.key === 'string' && record.key.length > 0 ? record.key : null;
   const keySetAt = typeof record.keySetAt === 'number' && Number.isFinite(record.keySetAt) ? record.keySetAt : undefined;
   const storedInsecurely = record.storedInsecurely === true;

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">EncodeX AI</title>
+  <desc id="desc">EncodeX infinity-arrow logo with a flashing multicolor outline.</desc>
+  <defs>
+    <linearGradient id="logoFill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0864b8"/>
+      <stop offset="0.48" stop-color="#009bd1"/>
+      <stop offset="1" stop-color="#08d5df"/>
+    </linearGradient>
+    <linearGradient id="rainbow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="18%" stop-color="#1685ff"/>
+      <stop offset="38%" stop-color="#8b5cf6"/>
+      <stop offset="57%" stop-color="#ff3bd4"/>
+      <stop offset="76%" stop-color="#ff8a24"/>
+      <stop offset="100%" stop-color="#eaff52"/>
+      <animate attributeName="x1" values="0;1;0" dur="3.2s" repeatCount="indefinite"/>
+      <animate attributeName="y1" values="0;1;0" dur="3.2s" repeatCount="indefinite"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <path id="mark" d="M 469,311
+      C 432,280 395,255 355,255
+      C 229,255 127,357 127,502
+      C 127,646 229,750 355,750
+      C 426,750 481,713 533,650
+      L 594,576
+      C 612,554 632,535 653,523
+      L 653,601
+      L 774,500
+      L 653,401
+      L 653,459
+      C 604,472 565,505 529,549
+      L 467,624
+      C 435,662 399,685 355,685
+      C 286,685 222,630 220,544
+      L 374,544
+      C 435,544 480,519 519,473
+      L 576,405
+      C 607,368 638,342 678,342
+      C 756,342 817,410 817,502
+      C 817,592 758,662 679,662
+      C 649,662 620,648 594,623
+      L 537,692
+      C 578,729 626,750 678,750
+      C 804,750 903,644 903,502
+      C 903,359 804,255 678,255
+      C 609,255 555,291 508,347
+      L 454,411
+      C 429,441 405,458 373,458
+      L 220,458
+      C 238,390 291,341 355,341
+      C 386,341 414,355 442,378 Z"/>
+  </defs>
+  <!-- Original silhouette: transparent canvas, no background. -->
+  <use href="#mark" fill="url(#logoFill)"/>
+  <!-- Moving rainbow edge creates a multicolor flash while retaining the exact silhouette. -->
+  <use href="#mark" fill="none" stroke="url(#rainbow)" stroke-width="4" stroke-linejoin="round" filter="url(#glow)" opacity="0.95">
+    <animate attributeName="opacity" values="0.55;1;0.7;1;0.55" dur="2.1s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width" values="2.5;5;3;5;2.5" dur="2.1s" repeatCount="indefinite"/>
+  </use>
+  <!-- Subtle traveling highlight along the outline. -->
+  <use href="#mark" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="100 2600" opacity="0.75">
+    <animate attributeName="stroke-dashoffset" from="0" to="-2700" dur="3.8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0.8;0.25;0.8;0" dur="3.8s" repeatCount="indefinite"/>
+  </use>
+</svg>

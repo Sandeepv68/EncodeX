@@ -35,6 +35,7 @@ const defaults = {
   selectFilesResult: [],
   selectFolderFilesResult: [],
   copilotPlanResult: null,
+  copilotPlanBehavior: 'resolve',
   expandPathsResult: [],
   selectOutputResult: null,
   selectDirectoryResult: null,
@@ -67,6 +68,16 @@ const defaults = {
   pendingInstallResult: null,
   mcpSettings: { enabled: false, port: 8765, token: '' },
   mcpSetCalls: [],
+  aiSettingsView: {
+    providerId: 'rules',
+    model: '',
+    hasKey: false,
+    keyHint: '',
+    storedInsecurely: false,
+    encryptionAvailable: true,
+  },
+  aiConnectResult: { ok: true, message: 'Connection OK', model: 'gpt-4o-mini', latencyMs: 42 },
+  aiSetCalls: [],
 };
 
 const state = JSON.parse(JSON.stringify(defaults));

@@ -43,7 +43,7 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { act } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { PAGE_ROUTES, renderPage, stubScrollIntoView } from '../../test-utils/page-render';
@@ -146,6 +146,52 @@ describe('hostile preload: unit-tier bridge matrix (mirror of e2e/specs/hostile-
       // The bridge must have been exercised; a sweep that never called a
       // hostile method is a sweep that proves nothing.
       expect(bridge.control.getCalls().length, `${mode} made no bridge calls at all`).toBeGreaterThan(0);
+    });
+  }
+
+  // The base sweep above only *mounts* Settings; the AI provider editor is
+  // inert on mount and loads its settings lazily on expand (see
+  // `AiProviderSettingsSection#toggle`). These cases open the editor and drive
+  // its save + connect flow under every hostile mode, which is where the
+  // `aiGetSettings`/`aiSetSettings`/`aiConnectTest` bridge calls actually run
+  // against enemy fire.
+  for (const mode of MODES) {
+    it(`mode ${mode}: the AI provider editor opens and its connect flow fails soft`, async () => {
+      bridge.control.setMode(mode);
+      bridge.control.setFailures(null);
+      resetCapabilitiesCache();
+      expectCrash('consoleWarn', /Bridge call "/);
+      expectAppLog('warn', /\[WARN\] \[[^\]]*\]/);
+
+      const result = renderPage('Settings', { wrap: inBoundary });
+      await settleMountEffects();
+
+      const toggle = result.container.querySelector<HTMLElement>('[data-testid="settings-ai-toggle"]');
+      expect(toggle, 'Settings must expose the AI provider toggle').toBeTruthy();
+      fireEvent.click(toggle!);
+      await settleMountEffects();
+
+      // Expanding mounts the well without arming the per-route boundary, even
+      // when `aiGetSettings` rejects, never resolves, or returns garbage.
+      expect(result.container.querySelector('[data-testid="settings-ai"]')).toBeTruthy();
+      expect(result.container.textContent).not.toContain(BOUNDARY_FALLBACK_TITLE);
+
+      // Drive the connect flow for a configurable provider so aiSetSettings and
+      // aiConnectTest run under the hostile bridge. Every mode must fail soft
+      // (an error/status panel or a still-usable form), never by crashing.
+      const provider = result.container.querySelector<HTMLElement>('[data-testid="settings-ai-provider-openai"]');
+      if (provider) {
+        fireEvent.click(provider);
+        await settleMountEffects();
+        const connect = result.container.querySelector<HTMLElement>('[data-testid="settings-ai-connect"]');
+        if (connect) {
+          fireEvent.click(connect);
+          await settleMountEffects();
+        }
+      }
+      expect(result.container.textContent).not.toContain(BOUNDARY_FALLBACK_TITLE);
+      expect(bridge.control.getCalls().length, `${mode} made no bridge calls at all`).toBeGreaterThan(0);
+      result.unmount();
     });
   }
 

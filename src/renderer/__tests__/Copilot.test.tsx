@@ -12,7 +12,42 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderPage } from '../../test-utils/page-render';
 import { screen, waitFor, fireEvent, act } from '@testing-library/react';
+import { useLocation } from 'react-router-dom';
+import { useToastStore } from '../stores/toastStore';
 import type { CopilotPlan } from '../../shared/copilot';
+
+/** The most recent route the page navigated to, captured by {@link LocationProbe}. */
+let lastPath = '';
+
+/**
+ * Composes the current router location into a module-level variable so a test
+ * can assert where the page navigated without rendering the whole route table.
+ * @returns {null} Renders nothing.
+ */
+function LocationProbe() {
+  lastPath = useLocation().pathname;
+  return null;
+}
+
+/**
+ * Flushes React work and asserts the router landed on `expected`.
+ *
+ * A `navigate` issued from an async click handler re-renders the provider tree
+ * without touching the page's own DOM, so `waitFor`'s DOM polling alone does
+ * not observe it; each turn is pushed through `act` until the probe sees the
+ * new path.
+ * @param {string} expected - The pathname the probe should report.
+ * @returns {Promise<void>} Resolves once the path matches.
+ */
+async function expectPath(expected: string): Promise<void> {
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    if (lastPath === expected) return;
+    await act(async () => {
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    });
+  }
+  expect(lastPath).toBe(expected);
+}
 
 const PLAN_FIXTURE: CopilotPlan = {
   goal: 'compress for web',
@@ -143,7 +178,11 @@ async function chooseFolder(waitEnabled = true): Promise<void> {
 describe('Copilot page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    useToastStore.setState({ toasts: [] });
+    lastPath = '';
     vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue(['/in/one.mp4', '/in/two.mkv']);
+    vi.mocked(window.electronAPI.selectFiles).mockReset().mockResolvedValue([]);
+    vi.mocked(window.electronAPI.queueAdd).mockReset().mockResolvedValue('');
     vi.mocked(window.electronAPI.copilotPlan).mockResolvedValue(PLAN_FIXTURE);
   });
 
@@ -407,5 +446,179 @@ describe('Copilot page', () => {
     renderPage('Copilot');
     fireEvent.click(screen.getByTestId('copilot-ai-settings'));
     expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
+  });
+
+  it('shows a success toast and navigates to the batch queue after a full enqueue', async () => {
+    renderPage('Copilot', {
+      wrap: (children) => (
+        <>
+          <LocationProbe />
+          {children}
+        </>
+      ),
+    });
+    await typeMessage('compress for web');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+
+    fireEvent.click(screen.getByTestId('copilot-add-to-queue'));
+    await waitFor(() => expect(window.electronAPI.queueAdd).toHaveBeenCalledTimes(2));
+    await expectPath('/batch');
+    const toasts = useToastStore.getState().toasts;
+    expect(toasts.map((toast) => toast.message)).toContain('copilot.addedToQueue');
+    expect(toasts[0].type).toBe('success');
+  });
+
+  it('does not toast when every enqueue call fails', async () => {
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+
+    vi.mocked(window.electronAPI.queueAdd).mockRejectedValue(new Error('boom'));
+    fireEvent.click(screen.getByTestId('copilot-add-to-queue'));
+    expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.errorEnqueue');
+    expect(useToastStore.getState().toasts).toHaveLength(0);
+  });
+
+  it('shows an inline error when the folder dialog rejects', async () => {
+    vi.mocked(window.electronAPI.selectFolderFiles).mockRejectedValue(new Error('nope'));
+    renderPage('Copilot');
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.dialogFailed');
+  });
+
+  it('shows an inline error when the file dialog rejects', async () => {
+    vi.mocked(window.electronAPI.selectFiles).mockRejectedValue(new Error('nope'));
+    renderPage('Copilot');
+    fireEvent.click(screen.getByTestId('copilot-choose-files'));
+    expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.dialogFailed');
+  });
+
+  it('ignores a folder dialog that never settles', async () => {
+    vi.mocked(window.electronAPI.selectFolderFiles).mockReturnValue(new Promise<string[]>(() => {}));
+    renderPage('Copilot');
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(30_000);
+    });
+    vi.useRealTimers();
+    expect(screen.queryByTestId('copilot-error')).toBeNull();
+    expect(screen.queryByTestId('copilot-notice')).toBeNull();
+  });
+
+  it('shows the thinking state while a plan request is in flight', async () => {
+    vi.mocked(window.electronAPI.copilotPlan).mockReturnValue(new Promise<CopilotPlan>(() => {}));
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await waitFor(() => expect(screen.getByText('copilot.planning', { selector: 'button' })).toBeDefined());
+    expect((screen.getByTestId('copilot-plan') as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it('de-duplicates a file chosen through both the folder and file dialogs', async () => {
+    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue(['/in/one.mp4']);
+    vi.mocked(window.electronAPI.selectFiles).mockResolvedValue(['/in/one.mp4', '/in/two.mkv']);
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-choose-files'));
+    await waitFor(() => expect(window.electronAPI.selectFiles).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await waitFor(() =>
+      expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(expect.objectContaining({ inputs: ['/in/one.mp4', '/in/two.mkv'] })),
+    );
+  });
+
+  it('clears a previous error when a new plan starts', async () => {
+    renderPage('Copilot');
+    await invokeOnClick(screen.getByTestId('copilot-plan'));
+    expect(await screen.findByTestId('copilot-error')).toHaveTextContent('copilot.errorNoGoal');
+    await typeMessage('compress for web');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+    expect(screen.queryByTestId('copilot-error')).toBeNull();
+  });
+
+  it('resets the busy state and drops the placeholder when planning fails', async () => {
+    vi.mocked(window.electronAPI.copilotPlan).mockRejectedValue(new Error('boom'));
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    expect(await screen.findByTestId('copilot-error')).toBeDefined();
+    expect(screen.queryByText('copilot.planning')).toBeNull();
+    expect(screen.getByTestId('copilot-plan')).toHaveTextContent('copilot.plan');
+  });
+
+  it('sends only the operation for a forced remux plan', async () => {
+    renderPage('Copilot');
+    await typeMessage('remux to mkv');
+    await chooseOperation('copilot.op.remux');
+    fireEvent.click(screen.getByTestId('copilot-advanced-close'));
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await waitFor(() => expect(window.electronAPI.copilotPlan).toHaveBeenCalled());
+    const arg = vi.mocked(window.electronAPI.copilotPlan).mock.calls[0][0] as unknown as Record<string, unknown>;
+    expect(arg).toMatchObject({ operation: 'remux' });
+    expect(arg).not.toHaveProperty('query');
+    expect(arg).not.toHaveProperty('targetLanguage');
+  });
+
+  it('does not send a stale search phrase for a non-search operation', async () => {
+    renderPage('Copilot');
+    await typeMessage('plan this media');
+    fireEvent.click(screen.getByTestId('copilot-advanced'));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'copilot.operationLabel' }));
+    fireEvent.click(await screen.findByText('copilot.op.search_transcript'));
+    fireEvent.change(screen.getByRole('textbox', { name: 'copilot.queryLabel' }), { target: { value: 'pricing' } });
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'copilot.operationLabel' }));
+    fireEvent.click(await screen.findByText('copilot.op.remux'));
+    fireEvent.click(screen.getByTestId('copilot-advanced-close'));
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await waitFor(() => expect(window.electronAPI.copilotPlan).toHaveBeenCalled());
+    const arg = vi.mocked(window.electronAPI.copilotPlan).mock.calls[0][0] as unknown as Record<string, unknown>;
+    expect(arg).toMatchObject({ operation: 'remux' });
+    expect(arg).not.toHaveProperty('query');
+  });
+
+  it('does not send a stale target language for a non-translate operation', async () => {
+    renderPage('Copilot');
+    await typeMessage('plan this media');
+    fireEvent.click(screen.getByTestId('copilot-advanced'));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'copilot.operationLabel' }));
+    fireEvent.click(await screen.findByText('copilot.op.translate'));
+    fireEvent.change(screen.getByRole('textbox', { name: 'copilot.targetLanguageLabel' }), { target: { value: 'es' } });
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'copilot.operationLabel' }));
+    fireEvent.click(await screen.findByText('copilot.op.remux'));
+    fireEvent.click(screen.getByTestId('copilot-advanced-close'));
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await waitFor(() => expect(window.electronAPI.copilotPlan).toHaveBeenCalled());
+    const arg = vi.mocked(window.electronAPI.copilotPlan).mock.calls[0][0] as unknown as Record<string, unknown>;
+    expect(arg).not.toHaveProperty('targetLanguage');
+  });
+
+  it('renders an empty-action plan without an add-to-queue button', async () => {
+    vi.mocked(window.electronAPI.copilotPlan).mockResolvedValue({
+      ...PLAN_FIXTURE,
+      actions: [],
+      plan: { ...PLAN_FIXTURE.plan, steps: [] },
+    });
+    renderPage('Copilot');
+    await typeMessage('nothing to change');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+    expect(screen.getByText('copilot.noActions')).toBeDefined();
+    expect(screen.queryByTestId('copilot-add-to-queue')).toBeNull();
+    expect(window.electronAPI.queueAdd).not.toHaveBeenCalled();
   });
 });

@@ -24,6 +24,30 @@ export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
 /** Default per-request timeout. @const {number} */
 const DEFAULT_TIMEOUT_MS = 30_000;
 
+/** Maximum provider error body kept for classification. @const {number} */
+const MAX_ERROR_BODY = 4000;
+
+/**
+ * Error thrown when a provider answers with a non-2xx status. Carries the raw
+ * status and response body so the settings bridge can classify the failure into
+ * a localized message instead of surfacing the provider's raw payload.
+ */
+export class ProviderHttpError extends Error {
+  readonly status: number;
+  readonly body: string;
+
+  /**
+   * @param {number} status - The HTTP status code.
+   * @param {string} body - The (truncated) response body.
+   */
+  constructor(status: number, body: string) {
+    super(`Provider responded with HTTP ${status}`);
+    this.name = 'ProviderHttpError';
+    this.status = status;
+    this.body = body;
+  }
+}
+
 /**
  * Reads the assistant text out of an OpenAI-compatible chat completion body.
  * @param {unknown} data - The parsed response body.
@@ -84,13 +108,13 @@ async function postJson(
     ...(signal ? { signal } : {}),
   });
   if (!response.ok) {
-    let detail = '';
+    let body = '';
     try {
-      detail = (await response.text()).slice(0, 300);
+      body = (await response.text()).slice(0, MAX_ERROR_BODY);
     } catch {
       /* ignore */
     }
-    throw createError(ErrorCode.AI_CONNECTOR_FAILED, `Provider responded with HTTP ${response.status}${detail ? `: ${detail}` : ''}`);
+    throw new ProviderHttpError(response.status, body);
   }
   return response.json();
 }
