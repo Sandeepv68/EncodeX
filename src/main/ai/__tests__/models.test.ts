@@ -44,7 +44,7 @@ describe('listProviderModels', () => {
     const res = await run({ ...baseSettings, providerId: 'openai' } as AiServerSettings, 'key');
     expect(fetchImpl).toHaveBeenCalled();
     const [url, opts] = fetchImpl.mock.calls[0];
-    expect(url).toMatch(/\/v1\/models$/);
+    expect(new URL(url).pathname).toBe('/v1/models');
     expect(opts?.headers).toMatchObject({ authorization: 'Bearer key' });
     expect(res).toContain('gpt-4o-mini');
     expect(res).not.toContain('dall-e-3');
@@ -88,7 +88,7 @@ describe('listProviderModels', () => {
     });
     const res = await run({ ...baseSettings, providerId: 'gemini' } as AiServerSettings, 'key');
     const [url, opts] = fetchImpl.mock.calls[0];
-    expect(url).toMatch(/generativelanguage\.googleapis\.com/);
+    expect(new URL(url).hostname).toBe('generativelanguage.googleapis.com');
     expect(opts?.headers).toMatchObject({ 'x-goog-api-key': 'key' });
     expect(res).toContain('gemini-3.8-flash');
     expect(res).not.toContain('gemini-embedding-001');
