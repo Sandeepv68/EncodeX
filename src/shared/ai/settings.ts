@@ -208,13 +208,10 @@ export function sanitizeAiSettings(input: unknown): AiServerSettings {
   const key = typeof record.key === 'string' && record.key.length > 0 ? record.key : null;
   const keySetAt = typeof record.keySetAt === 'number' && Number.isFinite(record.keySetAt) ? record.keySetAt : undefined;
   const storedInsecurely = record.storedInsecurely === true;
-  const connectedAt =
-    typeof record.connectedAt === 'number' && Number.isFinite(record.connectedAt) ? record.connectedAt : undefined;
+  const connectedAt = typeof record.connectedAt === 'number' && Number.isFinite(record.connectedAt) ? record.connectedAt : undefined;
   const connectedProvider = isAiProviderId(record.connectedProvider) ? record.connectedProvider : undefined;
   const connectedModel =
-    typeof record.connectedModel === 'string' && record.connectedModel.trim()
-      ? record.connectedModel.trim().slice(0, 200)
-      : undefined;
+    typeof record.connectedModel === 'string' && record.connectedModel.trim() ? record.connectedModel.trim().slice(0, 200) : undefined;
   return {
     providerId,
     model,
@@ -245,8 +242,7 @@ export function keyHint(_key: string | null): string {
  * @returns {AiSettingsView} The sanitized view.
  */
 export function toAiSettingsView(settings: AiServerSettings, encryptionAvailable: boolean): AiSettingsView {
-  const connected =
-    settings.key !== null && settings.connectedAt !== undefined && settings.connectedProvider === settings.providerId;
+  const connected = settings.key !== null && settings.connectedAt !== undefined && settings.connectedProvider === settings.providerId;
   return {
     providerId: settings.providerId,
     model: settings.model,

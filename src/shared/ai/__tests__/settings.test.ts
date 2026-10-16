@@ -193,16 +193,13 @@ describe('keyHint / toAiSettingsView', () => {
     expect(connected.connectedModel).toBe('gpt-4o');
 
     // A connection verified for a different provider does not count.
-    const stale = toAiSettingsView(
-      { providerId: 'anthropic', model: '', key: 'enc', connectedAt: 1, connectedProvider: 'openai' },
-      true,
-    );
+    const stale = toAiSettingsView({ providerId: 'anthropic', model: '', key: 'enc', connectedAt: 1, connectedProvider: 'openai' }, true);
     expect(stale.connected).toBe(false);
     expect(stale).not.toHaveProperty('connectedAt');
 
     // A missing key can never be "connected".
-    expect(toAiSettingsView({ providerId: 'openai', model: '', key: null, connectedAt: 1, connectedProvider: 'openai' }, true).connected).toBe(
-      false,
-    );
+    expect(
+      toAiSettingsView({ providerId: 'openai', model: '', key: null, connectedAt: 1, connectedProvider: 'openai' }, true).connected,
+    ).toBe(false);
   });
 });

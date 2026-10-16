@@ -180,7 +180,7 @@ export default function AiProviderSettingsSection() {
         if (result.ok) {
           const refreshed = result.view;
           if (refreshed && typeof refreshed === 'object' && isAiProviderId(refreshed.providerId)) setView(refreshed);
-       if (advanced) void loadModels();
+          if (advanced) void loadModels();
           const latency = typeof result.latencyMs === 'number' ? ` (${result.latencyMs} ms)` : '';
           setStatus(`${result.message}${latency}`);
         } else if (typeof result.reason === 'string') {
@@ -299,33 +299,33 @@ export default function AiProviderSettingsSection() {
       {open && (
         <AiWell data-testid="settings-ai">
           <ProviderGrid role="group" aria-label={t('settings.ai.provider')} data-testid="settings-ai-provider">
-           {AI_PROVIDER_CHOICES.map((id) => {
-             const isRemote = AI_PROVIDERS_REQUIRING_NETWORK.has(id);
-             const disabled = isRemote && !online;
-             const button = (
-               <ProviderButton
-                 key={id}
-                 type="button"
-                 $selected={id === providerId}
-                 aria-pressed={id === providerId}
-                 onClick={() => selectProvider(id)}
-                 data-testid={`settings-ai-provider-${id}`}
-                 disabled={disabled}
-               >
-                 <ProviderIcon id={id} />
-                 <ProviderSeparator aria-hidden="true" />
-                 <ProviderName>{t(`settings.ai.providers.${id}`)}</ProviderName>
-               </ProviderButton>
-             );
-             if (disabled) {
-               return (
-                 <Tooltip key={id} title={t('settings.ai.requiresNetwork')} placement="top">
-                   <span>{button}</span>
-                 </Tooltip>
-               );
-             }
-             return button;
-           })}
+            {AI_PROVIDER_CHOICES.map((id) => {
+              const isRemote = AI_PROVIDERS_REQUIRING_NETWORK.has(id);
+              const disabled = isRemote && !online;
+              const button = (
+                <ProviderButton
+                  key={id}
+                  type="button"
+                  $selected={id === providerId}
+                  aria-pressed={id === providerId}
+                  onClick={() => selectProvider(id)}
+                  data-testid={`settings-ai-provider-${id}`}
+                  disabled={disabled}
+                >
+                  <ProviderIcon id={id} />
+                  <ProviderSeparator aria-hidden="true" />
+                  <ProviderName>{t(`settings.ai.providers.${id}`)}</ProviderName>
+                </ProviderButton>
+              );
+              if (disabled) {
+                return (
+                  <Tooltip key={id} title={t('settings.ai.requiresNetwork')} placement="top">
+                    <span>{button}</span>
+                  </Tooltip>
+                );
+              }
+              return button;
+            })}
           </ProviderGrid>
 
           {configurable && (
@@ -416,26 +416,26 @@ export default function AiProviderSettingsSection() {
                 <AdvancedPanel>
                   <AiField>
                     <SettingLabel text={t('settings.ai.model')} hint={t('settings.ai.modelHint')} />
-                     <Autocomplete
-                       freeSolo
-                       size="small"
-                       options={modelOptions}
-                       loading={modelsLoading}
-                       value={model}
-                       onChange={(_event, value) => setModel(typeof value === 'string' ? value : '')}
-                       onInputChange={(_event, value) => setModel(value)}
-                       data-testid="settings-ai-model"
-                       renderInput={(params) => (
-                         <McpField
-                           {...params}
-                           placeholder={t('settings.ai.modelPlaceholder')}
-                           slotProps={{
-                             ...params.slotProps,
-                             htmlInput: { ...params.slotProps.htmlInput, 'aria-label': t('settings.ai.model') },
-                           }}
-                         />
-                       )}
-                     />
+                    <Autocomplete
+                      freeSolo
+                      size="small"
+                      options={modelOptions}
+                      loading={modelsLoading}
+                      value={model}
+                      onChange={(_event, value) => setModel(typeof value === 'string' ? value : '')}
+                      onInputChange={(_event, value) => setModel(value)}
+                      data-testid="settings-ai-model"
+                      renderInput={(params) => (
+                        <McpField
+                          {...params}
+                          placeholder={t('settings.ai.modelPlaceholder')}
+                          slotProps={{
+                            ...params.slotProps,
+                            htmlInput: { ...params.slotProps.htmlInput, 'aria-label': t('settings.ai.model') },
+                          }}
+                        />
+                      )}
+                    />
                   </AiField>
                   {showBaseUrl && needsKey && (
                     <AiField>
@@ -455,12 +455,12 @@ export default function AiProviderSettingsSection() {
             </>
           )}
 
-           {fellBackOffline && (
-             <AiAlert severity="info" data-testid="settings-ai-offline-fallback">
-               {t('settings.ai.offlineFallback')}
-             </AiAlert>
-           )}
-           {showConnected && !error && (
+          {fellBackOffline && (
+            <AiAlert severity="info" data-testid="settings-ai-offline-fallback">
+              {t('settings.ai.offlineFallback')}
+            </AiAlert>
+          )}
+          {showConnected && !error && (
             <AiAlert severity="success" data-testid="settings-ai-connected">
               {t('settings.ai.statusConnected')}
             </AiAlert>

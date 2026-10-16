@@ -264,7 +264,15 @@ function benignResolveFor(name: string): unknown {
       return '';
     case 'aiGetSettings':
     case 'aiSetSettings':
-      return { providerId: 'rules', model: '', hasKey: false, keyHint: '', storedInsecurely: false, encryptionAvailable: true, connected: false };
+      return {
+        providerId: 'rules',
+        model: '',
+        hasKey: false,
+        keyHint: '',
+        storedInsecurely: false,
+        encryptionAvailable: true,
+        connected: false,
+      };
     case 'aiConnectTest':
       return { ok: false, message: '' };
     case 'aiListModels':
