@@ -283,9 +283,7 @@ export default function AiProviderSettingsSection() {
   };
 
   useEffect(() => {
-    if (advanced && configurable && AI_PROVIDERS_REQUIRING_NETWORK.has(providerId)) {
-      void loadModels();
-    }
+    if (advanced) void loadModels();
   }, [advanced, providerId, baseUrl, view?.hasKey, apiKey]);
 
   return (

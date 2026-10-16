@@ -10,7 +10,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
-const { appMock, handlers, settingsMock, connectorsMock } = vi.hoisted(() => {
+const { appMock, handlers, settingsMock, connectorsMock, modelsMock } = vi.hoisted(() => {
   const handlers: Record<string, (...args: unknown[]) => unknown> = {};
   return {
     appMock: { getPath: vi.fn(() => '/userData') },
@@ -25,6 +25,7 @@ const { appMock, handlers, settingsMock, connectorsMock } = vi.hoisted(() => {
       toAiSettingsView: vi.fn((settings: unknown) => settings),
     },
     connectorsMock: { createConnectorFromSettings: vi.fn(), isRemoteProvider: vi.fn() },
+    modelsMock: { listProviderModels: vi.fn() },
   };
 });
 
@@ -38,6 +39,7 @@ vi.mock('electron', () => ({
 }));
 vi.mock('../settings', () => settingsMock);
 vi.mock('../connectors', () => connectorsMock);
+vi.mock('../models', () => modelsMock);
 
 const { registerAiSettingsIpc } = await import('../settings-ipc');
 const { IPC } = await import('../../../shared/ipc-channels');
@@ -60,10 +62,11 @@ describe('registerAiSettingsIpc', () => {
     registerAiSettingsIpc();
   });
 
-  it('registers the three AI settings channels', () => {
+  it('registers the four AI settings channels', () => {
     expect(handlers[IPC.AI_SETTINGS_GET]).toBeTypeOf('function');
     expect(handlers[IPC.AI_SETTINGS_SET]).toBeTypeOf('function');
     expect(handlers[IPC.AI_CONNECT_TEST]).toBeTypeOf('function');
+    expect(handlers[IPC.AI_MODELS_LIST]).toBeTypeOf('function');
   });
 
   it('GET projects the stored settings into the renderer view', () => {
@@ -221,5 +224,79 @@ describe('registerAiSettingsIpc', () => {
     cyclic.self = cyclic;
     expect(() => invoke(IPC.AI_SETTINGS_SET, cyclic)).not.toThrow();
     expect(settingsMock.applyAiSettingsUpdate).toHaveBeenCalled();
+  });
+
+  it('MODELS_LIST refuses an offline provider without listing', async () => {
+    connectorsMock.isRemoteProvider.mockReturnValue(false);
+    await expect(invoke(IPC.AI_MODELS_LIST, { providerId: 'rules' })).resolves.toEqual({
+      ok: false,
+      models: [],
+      reason: 'offline',
+    });
+    expect(modelsMock.listProviderModels).not.toHaveBeenCalled();
+  });
+
+  it('MODELS_LIST refuses when no API key is available', async () => {
+    settingsMock.decryptApiKey.mockReturnValue(null);
+    await expect(invoke(IPC.AI_MODELS_LIST, { providerId: 'openai' })).resolves.toMatchObject({
+      ok: false,
+      models: [],
+      reason: 'noKey',
+    });
+    expect(modelsMock.listProviderModels).not.toHaveBeenCalled();
+  });
+
+  it('MODELS_LIST returns the provider models on success', async () => {
+    modelsMock.listProviderModels.mockResolvedValue(['gpt-4o-mini', 'gpt-4o']);
+    const result = await invoke(IPC.AI_MODELS_LIST, { providerId: 'openai', apiKey: 'sk-live' });
+    expect(modelsMock.listProviderModels).toHaveBeenCalledWith(expect.objectContaining({ providerId: 'openai' }), 'sk-live');
+    expect(result).toEqual({ ok: true, models: ['gpt-4o-mini', 'gpt-4o'] });
+  });
+
+  it('MODELS_LIST prefers the candidate key/baseUrl and falls back to the decrypted key', async () => {
+    modelsMock.listProviderModels.mockResolvedValue([]);
+    await invoke(IPC.AI_MODELS_LIST, { providerId: 'openai', apiKey: 'live-key', baseUrl: 'https://live/v1' });
+    expect(settingsMock.decryptApiKey).not.toHaveBeenCalled();
+    expect(modelsMock.listProviderModels).toHaveBeenCalledWith(expect.objectContaining({ baseUrl: 'https://live/v1' }), 'live-key');
+
+    settingsMock.decryptApiKey.mockReturnValue('stored-key');
+    await invoke(IPC.AI_MODELS_LIST, { providerId: 'openai' });
+    expect(modelsMock.listProviderModels).toHaveBeenCalledWith(expect.anything(), 'stored-key');
+  });
+
+  it('MODELS_LIST falls back to the stored provider for an invalid candidate id', async () => {
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'anthropic', model: 'claude-3', key: 'enc' });
+    settingsMock.decryptApiKey.mockReturnValue('sk-1');
+    modelsMock.listProviderModels.mockResolvedValue([]);
+    await invoke(IPC.AI_MODELS_LIST, { providerId: 'bogus' });
+    expect(modelsMock.listProviderModels).toHaveBeenCalledWith(expect.objectContaining({ providerId: 'anthropic' }), 'sk-1');
+  });
+
+  it('MODELS_LIST surfaces a classified listing failure', async () => {
+    expectAppLog('warn', 'main/ai/settings-ipc');
+    settingsMock.decryptApiKey.mockReturnValue('sk-1');
+    const providerError = Object.assign(new Error('Provider responded with HTTP 401'), {
+      status: 401,
+      body: JSON.stringify({ error: { code: 'invalid_api_key', message: 'Incorrect API key provided' } }),
+    });
+    modelsMock.listProviderModels.mockRejectedValue(providerError);
+    const result = (await invoke(IPC.AI_MODELS_LIST, { providerId: 'openai' })) as {
+      ok: boolean;
+      models: unknown[];
+      reason: string;
+      status: number;
+    };
+    expect(result.ok).toBe(false);
+    expect(result.models).toEqual([]);
+    expect(result.reason).toBe('invalidKey');
+    expect(result.status).toBe(401);
+  });
+
+  it('MODELS_LIST tolerates a non-object payload', async () => {
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: '', key: 'enc' });
+    settingsMock.decryptApiKey.mockReturnValue('sk-1');
+    modelsMock.listProviderModels.mockResolvedValue([]);
+    await invoke(IPC.AI_MODELS_LIST, 'nope');
+    expect(modelsMock.listProviderModels).toHaveBeenCalledWith(expect.objectContaining({ providerId: 'openai' }), 'sk-1');
   });
 });

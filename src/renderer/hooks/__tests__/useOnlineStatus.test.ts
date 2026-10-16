@@ -14,6 +14,13 @@ describe('useOnlineStatus', () => {
     spy.mockRestore();
   });
 
+  it('defaults to online when navigator is unavailable', () => {
+    vi.stubGlobal('navigator', undefined);
+    const { result } = renderHook(() => useOnlineStatus());
+    expect(result.current).toBe(true);
+    vi.unstubAllGlobals();
+  });
+
   it('updates when the window emits online and offline events', () => {
     const spy = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true);
     const { result } = renderHook(() => useOnlineStatus());

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Settings from '../Settings';
 import { ColorModeProvider } from '../../ColorModeContext';
@@ -676,6 +676,64 @@ describe('Settings', () => {
     expect(within(listbox).getByText('gpt-6-astra')).toBeInTheDocument();
     await user.click(within(listbox).getByText('gpt-6-astra'));
     expect(model).toHaveValue('gpt-6-astra');
+  });
+
+  it('disables remote providers while offline and shows the network tooltip', async () => {
+    const spy = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    for (const id of ['openai', 'anthropic', 'gemini']) {
+      expect(screen.getByTestId(`settings-ai-provider-${id}`)).toBeDisabled();
+    }
+    expect(screen.getByTestId('settings-ai-provider-rules')).toBeEnabled();
+    expect(screen.getByTestId('settings-ai-provider-local')).toBeEnabled();
+    const remote = screen.getByTestId('settings-ai-provider-openai');
+    fireEvent.mouseOver(remote.closest('span') as HTMLElement);
+    expect(await screen.findByText('settings.ai.requiresNetwork')).toBeInTheDocument();
+    spy.mockRestore();
+  });
+
+  it('falls back to the built-in rules provider when the connection drops', async () => {
+    let online = true;
+    const spy = vi.spyOn(navigator, 'onLine', 'get').mockImplementation(() => online);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    online = false;
+    act(() => {
+      window.dispatchEvent(new Event('offline'));
+    });
+    expect(await screen.findByTestId('settings-ai-offline-fallback')).toHaveTextContent('settings.ai.offlineFallback');
+    expect(screen.getByTestId('settings-ai-provider-rules')).toHaveAttribute('aria-pressed', 'true');
+    await waitFor(() => expect(window.electronAPI.aiSetSettings).toHaveBeenCalledWith({ providerId: 'rules' }));
+    spy.mockRestore();
+  });
+
+  it('keeps the model field usable when the provider list fetch fails', async () => {
+    vi.mocked(window.electronAPI.aiListModels).mockRejectedValue(new Error('offline'));
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
+    const model = screen.getByRole('combobox', { name: 'settings.ai.model' });
+    expect(model).toBeEnabled();
+    fireEvent.change(model, { target: { value: 'my-own-model' } });
+    expect(model).toHaveValue('my-own-model');
+  });
+
+  it('ignores a malformed model-list result', async () => {
+    vi.mocked(window.electronAPI.aiListModels).mockResolvedValue({ ok: true } as never);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
+    expect(screen.getByRole('combobox', { name: 'settings.ai.model' })).toBeEnabled();
   });
 
   it('shows the persisted connected status when the editor loads a verified view', async () => {
