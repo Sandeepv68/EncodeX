@@ -2,10 +2,11 @@
  * @fileoverview IPC bridge for the Copilot's AI provider settings (AI connector
  * plan §6).
  *
- * Three invoke handlers, all main-process only (the key never crosses IPC):
+ * Four invoke handlers, all main-process only (the key never crosses IPC):
  *  - {@link IPC.AI_SETTINGS_GET} returns the sanitized {@link AiSettingsView}.
  *  - {@link IPC.AI_SETTINGS_SET} persists a provider/model/baseUrl/key change.
  *  - {@link IPC.AI_CONNECT_TEST} builds the connector and sends a one-token ping.
+ *  - {@link IPC.AI_MODELS_LIST} lists the models the provider's API reports.
  *
  * Policy (sanitization, encryption, file IO) lives in `settings.ts`; this module
  * stays thin.
@@ -17,17 +18,19 @@ import { IPC } from '../../shared/ipc-channels';
 import { LOG_FAILED_TO_PERSIST_MCP_SETTINGS } from '../../shared/log-constants';
 import { formatError } from '../../shared/errors';
 import { isAiProviderId } from '../../shared/ai/settings';
-import type { AiConnectTestResult, AiSettingsUpdate, AiSettingsView } from '../../shared/ai/settings';
+import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../../shared/ai/settings';
 import { classifyAiConnectError } from '../../shared/ai/connect-error';
 import {
   applyAiSettingsUpdate,
   decryptApiKey,
   isEncryptionAvailable,
   readAiSettings,
+  recordAiConnection,
   sanitizeAiSettings,
   toAiSettingsView,
 } from './settings';
 import { createConnectorFromSettings, isRemoteProvider } from './connectors';
+import { listProviderModels } from './models';
 
 /** Per-module logger for the AI settings IPC bridge. @const {Logger} */
 const log = new Logger('main/ai/settings-ipc');
@@ -87,11 +90,34 @@ export function registerAiSettingsIpc(): void {
         ],
         temperature: 0,
       });
-      return { ok: true, message: `Connected to ${providerId}.`, model: response.model, latencyMs: Date.now() - startedAt };
+      const view = recordAiConnection(userDataDir, { providerId, model: response.model });
+      return { ok: true, message: `Connected to ${providerId}.`, model: response.model, latencyMs: Date.now() - startedAt, view };
     } catch (err) {
       log.warn(LOG_FAILED_TO_PERSIST_MCP_SETTINGS, 'connect test failed:', err);
       const { reason, status } = classifyAiConnectError(err, providerId);
       return { ok: false, message: formatError(err).message, reason, ...(status !== undefined ? { status } : {}) };
+    }
+  });
+
+  ipcMain.handle(IPC.AI_MODELS_LIST, async (_event, candidate: unknown): Promise<AiModelsListResult> => {
+    const stored = readAiSettings(app.getPath('userData'));
+    const record = candidate && typeof candidate === 'object' ? (candidate as Record<string, unknown>) : {};
+    const providerId = isAiProviderId(record.providerId) ? record.providerId : stored.providerId;
+    if (!isRemoteProvider(providerId)) return { ok: false, models: [], reason: 'offline' };
+    const apiKey = typeof record.apiKey === 'string' && record.apiKey ? record.apiKey : decryptApiKey(stored);
+    if (!apiKey) return { ok: false, models: [], reason: 'noKey' };
+    const merged = sanitizeAiSettings({
+      ...stored,
+      providerId,
+      baseUrl: typeof record.baseUrl === 'string' ? record.baseUrl : stored.baseUrl,
+    });
+    try {
+      const models = await listProviderModels(merged, apiKey);
+      return { ok: true, models };
+    } catch (err) {
+      log.warn(LOG_FAILED_TO_PERSIST_MCP_SETTINGS, 'model list failed:', err);
+      const { reason, status } = classifyAiConnectError(err, providerId);
+      return { ok: false, models: [], reason, ...(status !== undefined ? { status } : {}) };
     }
   });
 }

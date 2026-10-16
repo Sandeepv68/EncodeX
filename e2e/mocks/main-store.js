@@ -75,8 +75,10 @@ const defaults = {
     keyHint: '',
     storedInsecurely: false,
     encryptionAvailable: true,
+    connected: false,
   },
   aiConnectResult: { ok: true, message: 'Connection OK', model: 'gpt-4o-mini', latencyMs: 42 },
+  aiModelsResult: { ok: true, models: [] },
   aiSetCalls: [],
 };
 

@@ -3,9 +3,9 @@
  * (AI connector plan §8).
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, IconButton, Tooltip, InputAdornment } from '@mui/material';
+import { Autocomplete, Button, IconButton, Tooltip, InputAdornment } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWandMagicSparkles,
@@ -18,7 +18,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useColorMode } from '../../ColorModeContext';
 import type { AiSettingsView } from '../../../shared/ai/settings';
-import { AI_PROVIDER_CHOICES, AI_PROVIDERS_REQUIRING_KEY, isAiProviderId } from '../../../shared/ai/settings';
+import {
+  AI_PROVIDER_CHOICES,
+  AI_PROVIDERS_REQUIRING_KEY,
+  AI_PROVIDERS_REQUIRING_NETWORK,
+  isAiProviderId,
+} from '../../../shared/ai/settings';
 import type { AIProviderId } from '../../../shared/ai/types';
 import { bridgePromise } from '../../utils/bridge-call';
 import { aiProviderLogo } from '../../utils/ai-provider-icons';
@@ -31,6 +36,7 @@ import {
   ProviderGrid,
   ProviderButton,
   ProviderName,
+  ProviderSeparator,
   ProviderLogo,
   AiKeyHelper,
   AiKeyRow,
@@ -39,6 +45,7 @@ import {
   AiAlert,
 } from '../../styles/settings/AiProviderSettingsSection.styles';
 import SettingLabel from './SettingLabel';
+import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 
 /**
  * The page where users create an API key for each remote AI provider. Opened in
@@ -94,6 +101,10 @@ export default function AiProviderSettingsSection() {
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [advanced, setAdvanced] = useState(false);
+  const [modelOptions, setModelOptions] = useState<string[]>([]);
+  const [modelsLoading, setModelsLoading] = useState(false);
+  const [fellBackOffline, setFellBackOffline] = useState(false);
+  const online = useOnlineStatus();
 
   /**
    * Expands/collapses the editor, loading the stored settings the first time it
@@ -167,6 +178,9 @@ export default function AiProviderSettingsSection() {
       );
       if (result && typeof result.message === 'string') {
         if (result.ok) {
+          const refreshed = result.view;
+          if (refreshed && typeof refreshed === 'object' && isAiProviderId(refreshed.providerId)) setView(refreshed);
+       if (advanced) void loadModels();
           const latency = typeof result.latencyMs === 'number' ? ` (${result.latencyMs} ms)` : '';
           setStatus(`${result.message}${latency}`);
         } else if (typeof result.reason === 'string') {
@@ -223,9 +237,56 @@ export default function AiProviderSettingsSection() {
   const needsKey = AI_PROVIDERS_REQUIRING_KEY.has(providerId);
   const keyUrl = AI_PROVIDER_KEY_URLS[providerId];
   const showBaseUrl = providerId === 'openai' || providerId === 'local';
+  // The persisted connection is only meaningful for the provider it was recorded
+  // for; selecting a different provider shows the stale view until reconnecting.
+  const showConnected = view?.connected === true && view.providerId === providerId;
   // The built-in rules engine is offline: no key, no model call, no endpoint, so
   // it has nothing to connect to or configure.
   const configurable = providerId !== 'rules';
+
+  useEffect(() => {
+    if (online) {
+      setFellBackOffline(false);
+      return;
+    }
+    if (AI_PROVIDERS_REQUIRING_NETWORK.has(providerId)) {
+      setProviderId('rules');
+      setFellBackOffline(true);
+      void persistProvider('rules');
+    }
+  }, [online, providerId]);
+
+  const loadModels = async (): Promise<void> => {
+    if (!configurable || !AI_PROVIDERS_REQUIRING_NETWORK.has(providerId)) {
+      setModelOptions([]);
+      return;
+    }
+    setModelsLoading(true);
+    try {
+      const result = await bridgePromise(() =>
+        window.electronAPI.aiListModels({
+          providerId,
+          ...(baseUrl ? { baseUrl } : {}),
+          ...(apiKey ? { apiKey } : {}),
+        }),
+      );
+      if (result && typeof result === 'object' && Array.isArray(result.models)) {
+        setModelOptions(result.models);
+      } else {
+        setModelOptions([]);
+      }
+    } catch {
+      setModelOptions([]);
+    } finally {
+      setModelsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (advanced && configurable && AI_PROVIDERS_REQUIRING_NETWORK.has(providerId)) {
+      void loadModels();
+    }
+  }, [advanced, providerId, baseUrl, view?.hasKey, apiKey]);
 
   return (
     <AiSettingsSection>
@@ -238,19 +299,33 @@ export default function AiProviderSettingsSection() {
       {open && (
         <AiWell data-testid="settings-ai">
           <ProviderGrid role="group" aria-label={t('settings.ai.provider')} data-testid="settings-ai-provider">
-            {AI_PROVIDER_CHOICES.map((id) => (
-              <ProviderButton
-                key={id}
-                type="button"
-                $selected={id === providerId}
-                aria-pressed={id === providerId}
-                onClick={() => selectProvider(id)}
-                data-testid={`settings-ai-provider-${id}`}
-              >
-                <ProviderIcon id={id} />
-                <ProviderName>{t(`settings.ai.providers.${id}`)}</ProviderName>
-              </ProviderButton>
-            ))}
+           {AI_PROVIDER_CHOICES.map((id) => {
+             const isRemote = AI_PROVIDERS_REQUIRING_NETWORK.has(id);
+             const disabled = isRemote && !online;
+             const button = (
+               <ProviderButton
+                 key={id}
+                 type="button"
+                 $selected={id === providerId}
+                 aria-pressed={id === providerId}
+                 onClick={() => selectProvider(id)}
+                 data-testid={`settings-ai-provider-${id}`}
+                 disabled={disabled}
+               >
+                 <ProviderIcon id={id} />
+                 <ProviderSeparator aria-hidden="true" />
+                 <ProviderName>{t(`settings.ai.providers.${id}`)}</ProviderName>
+               </ProviderButton>
+             );
+             if (disabled) {
+               return (
+                 <Tooltip key={id} title={t('settings.ai.requiresNetwork')} placement="top">
+                   <span>{button}</span>
+                 </Tooltip>
+               );
+             }
+             return button;
+           })}
           </ProviderGrid>
 
           {configurable && (
@@ -341,14 +416,26 @@ export default function AiProviderSettingsSection() {
                 <AdvancedPanel>
                   <AiField>
                     <SettingLabel text={t('settings.ai.model')} hint={t('settings.ai.modelHint')} />
-                    <McpField
-                      size="small"
-                      data-testid="settings-ai-model"
-                      value={model}
-                      onChange={(e) => setModel(e.target.value)}
-                      placeholder={t('settings.ai.modelPlaceholder')}
-                      slotProps={{ htmlInput: { 'aria-label': t('settings.ai.model') } }}
-                    />
+                     <Autocomplete
+                       freeSolo
+                       size="small"
+                       options={modelOptions}
+                       loading={modelsLoading}
+                       value={model}
+                       onChange={(_event, value) => setModel(typeof value === 'string' ? value : '')}
+                       onInputChange={(_event, value) => setModel(value)}
+                       data-testid="settings-ai-model"
+                       renderInput={(params) => (
+                         <McpField
+                           {...params}
+                           placeholder={t('settings.ai.modelPlaceholder')}
+                           slotProps={{
+                             ...params.slotProps,
+                             htmlInput: { ...params.slotProps.htmlInput, 'aria-label': t('settings.ai.model') },
+                           }}
+                         />
+                       )}
+                     />
                   </AiField>
                   {showBaseUrl && needsKey && (
                     <AiField>
@@ -368,7 +455,17 @@ export default function AiProviderSettingsSection() {
             </>
           )}
 
-          {status && (
+           {fellBackOffline && (
+             <AiAlert severity="info" data-testid="settings-ai-offline-fallback">
+               {t('settings.ai.offlineFallback')}
+             </AiAlert>
+           )}
+           {showConnected && !error && (
+            <AiAlert severity="success" data-testid="settings-ai-connected">
+              {t('settings.ai.statusConnected')}
+            </AiAlert>
+          )}
+          {status && !showConnected && (
             <AiAlert severity="info" data-testid="settings-ai-status">
               {status}
             </AiAlert>

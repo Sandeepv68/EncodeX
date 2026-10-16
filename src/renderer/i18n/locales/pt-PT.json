@@ -641,7 +641,7 @@
       "advanced": "Avançado",
       "baseUrl": "URL base",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Uma chave está armazenada ({{hint}}).",
+      "keyStored": "As chaves são armazenadas como texto ofuscado ({{hint}}).",
       "keyNone": "Nenhuma chave armazenada.",
       "save": "Guardar",
       "saved": "Definições guardadas.",
@@ -650,7 +650,7 @@
       "testing": "A testar…",
       "testFailed": "Sem resposta do fornecedor.",
       "privacy": "Apenas os dados da análise e o texto do seu objetivo são enviados; os ficheiros multimédia nunca são carregados.",
-      "modelHint": "O id do modelo a usar. Deixe em branco para usar a predefinição do fornecedor (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "O id do modelo a usar. Deixe em branco para usar a predefinição do fornecedor (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "A chave de API do seu fornecedor. É encriptada com o cofre de chaves do seu sistema operativo antes de ser guardada, e depois apenas é mostrada uma dica mascarada.",
       "baseUrlHint": "Endpoint compatível com OpenAI. Aponte-o para o OpenRouter, Groq, Ollama ou LM Studio em vez da própria API da OpenAI.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Não há nenhuma chave de API disponível para testar. Introduza primeiro uma chave.",
         "offline": "O fornecedor selecionado funciona offline e não precisa de teste de ligação.",
         "unknown": "O teste de ligação falhou. Verifique as definições e tente novamente."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Modelo",
       "modelPlaceholder": "Predefinição do fornecedor",
       "apiKey": "Chave de API",
-      "keyStored": "Uma chave está armazenada ({{hint}}).",
+      "keyStored": "As chaves são armazenadas como texto ofuscado ({{hint}}).",
       "keyNone": "Nenhuma chave armazenada.",
       "save": "Guardar",
       "test": "Testar ligação",

@@ -106,6 +106,8 @@ const API_TABLE: Record<string, MethodEntry> = {
   aiGetSettings: { kind: 'invoke', params: [] },
   aiSetSettings: { kind: 'invoke', params: ['update'] },
   aiConnectTest: { kind: 'invoke', params: ['candidate'] },
+
+  aiListModels: { kind: 'invoke', params: ['candidate'] },
   captureDevScreenshot: { kind: 'invoke', params: [] },
   checkForUpdates: { kind: 'invoke', params: [] },
   downloadUpdate: { kind: 'invoke', params: [] },
@@ -262,9 +264,11 @@ function benignResolveFor(name: string): unknown {
       return '';
     case 'aiGetSettings':
     case 'aiSetSettings':
-      return { providerId: 'rules', model: '', hasKey: false, keyHint: '', storedInsecurely: false, encryptionAvailable: true };
+      return { providerId: 'rules', model: '', hasKey: false, keyHint: '', storedInsecurely: false, encryptionAvailable: true, connected: false };
     case 'aiConnectTest':
       return { ok: false, message: '' };
+    case 'aiListModels':
+      return { ok: true, models: [] };
     default:
       return undefined;
   }

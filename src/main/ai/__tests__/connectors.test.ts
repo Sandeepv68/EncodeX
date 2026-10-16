@@ -174,6 +174,25 @@ describe('createGeminiConnector', () => {
     expect(JSON.parse(String(init.body)).generationConfig.responseMimeType).toBe('application/json');
   });
 
+  it('omits sampling parameters that Gemini 3.6+ ignores or rejects', async () => {
+    const fetchImpl = fetchReturning({ candidates: [{ content: { parts: [{ text: 'hi' }] } }] });
+    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    await connector.complete(request);
+    const [, init] = fetchImpl.mock.calls[0];
+    const { generationConfig } = JSON.parse(String(init.body));
+    expect(generationConfig.temperature).toBeUndefined();
+    expect(generationConfig.topP).toBeUndefined();
+    expect(generationConfig.topK).toBeUndefined();
+  });
+
+  it('omits generationConfig entirely when json mode is off', async () => {
+    const fetchImpl = fetchReturning({ candidates: [{ content: { parts: [{ text: 'plain' }] } }] });
+    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    await connector.complete({ ...request, jsonMode: false });
+    const [, init] = fetchImpl.mock.calls[0];
+    expect(JSON.parse(String(init.body)).generationConfig).toBeUndefined();
+  });
+
   it('throws when the completion is empty', async () => {
     const fetchImpl = fetchReturning({ candidates: [] });
     const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });

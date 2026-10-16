@@ -641,7 +641,7 @@
       "advanced": "Lisäasetukset",
       "baseUrl": "Perus-URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Avain on tallennettu ({{hint}}).",
+      "keyStored": "Avaimet tallennetaan sumennettuna tekstinä ({{hint}}).",
       "keyNone": "Ei tallennettua avainta.",
       "save": "Tallenna",
       "saved": "Asetukset tallennettu.",
@@ -650,7 +650,7 @@
       "testing": "Testataan…",
       "testFailed": "Ei vastausta tarjoajalta.",
       "privacy": "Vain tutkitut tiedot ja tavoitteesi teksti lähetetään; mediatiedostoja ei koskaan lähetetä.",
-      "modelHint": "Käytettävän mallin tunniste. Jätä tyhjäksi, jos haluat käyttää tarjoajan oletusta (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "Käytettävän mallin tunniste. Jätä tyhjäksi, jos haluat käyttää tarjoajan oletusta (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Tarjoajasi API-avain. Se salataan käyttöjärjestelmäsi avainsäilöllä ennen tallennusta, ja sen jälkeen näytetään vain peitetty vihje.",
       "baseUrlHint": "OpenAI-yhteensopiva päätepiste. Kohdista se OpenRouteriin, Groqiin, Ollamaan tai LM Studioon OpenAI:n oman API:n sijaan.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Testattavaksi ei ole API-avainta. Anna avain ensin.",
         "offline": "Valittu tarjoaja toimii offline-tilassa eikä vaadi yhteystestiä.",
         "unknown": "Yhteystesti epäonnistui. Tarkista asetukset ja yritä uudelleen."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Malli",
       "modelPlaceholder": "Tarjoajan oletus",
       "apiKey": "API-avain",
-      "keyStored": "Avain on tallennettu ({{hint}}).",
+      "keyStored": "Avaimet tallennetaan sumennettuna tekstinä ({{hint}}).",
       "keyNone": "Ei tallennettua avainta.",
       "save": "Tallenna",
       "test": "Testaa yhteys",

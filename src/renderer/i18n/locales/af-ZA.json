@@ -641,7 +641,7 @@
       "advanced": "Gevorderd",
       "baseUrl": "Basis-URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "'n Sleutel word gestoor ({{hint}}).",
+      "keyStored": "Sleutels word as geobfuskeerde teks gestoor ({{hint}}).",
       "keyNone": "Geen sleutel gestoor nie.",
       "save": "Stoor",
       "saved": "Instellings gestoor.",
@@ -650,7 +650,7 @@
       "testing": "Besig om te toets…",
       "testFailed": "Geen reaksie van die verskaffer nie.",
       "privacy": "Slegs ondersoekfeite en jou doel teks word gestuur; media-lêers word nooit opgelaai nie.",
-      "modelHint": "Die model-ID om te gebruik. Laat dit leeg om die verskaffer se standaard te gebruik (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "Die model-ID om te gebruik. Laat dit leeg om die verskaffer se standaard te gebruik (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Jou verskaffer se API-sleutel. Dit word met jou bedryfstelsel se sleutelstoor geïnkripteer voordat dit gestoor word, en daarna word slegs 'n gemaskeerde wenk gewys.",
       "baseUrlHint": "OpenAI-versoenbare eindpunt. Wys dit na OpenRouter, Groq, Ollama of LM Studio in plaas van OpenAI se eie API.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Daar is geen API-sleutel beskikbaar om te toets nie. Voer eers 'n sleutel in.",
         "offline": "Die gekose verskaffer werk vanlyn en het geen verbindingstoets nodig nie.",
         "unknown": "Die verbindingstoets het misluk. Gaan die instellings na en probeer weer."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Model",
       "modelPlaceholder": "Verskaffer-standaard",
       "apiKey": "API-sleutel",
-      "keyStored": "'n Sleutel word gestoor ({{hint}}).",
+      "keyStored": "Sleutels word as geobfuskeerde teks gestoor ({{hint}}).",
       "keyNone": "Geen sleutel gestoor nie.",
       "save": "Stoor",
       "test": "Toets verbinding",

@@ -641,7 +641,7 @@
       "advanced": "進階",
       "baseUrl": "基礎 URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "已儲存金鑰（{{hint}}）。",
+      "keyStored": "金鑰以混淆文字形式儲存（{{hint}}）。",
       "keyNone": "未儲存任何金鑰。",
       "save": "儲存",
       "saved": "設定已儲存。",
@@ -650,7 +650,7 @@
       "testing": "測試中…",
       "testFailed": "提供者沒有回應。",
       "privacy": "僅會傳送分析資訊與您的目標文字；絕不會上傳媒體檔案。",
-      "modelHint": "要使用的模型 ID。留空則使用提供者預設值（OpenAI：gpt-4o-mini，Anthropic：claude-3-5-haiku-latest，Gemini：gemini-2.0-flash）。",
+      "modelHint": "要使用的模型 ID。留空則使用提供者預設值（OpenAI：gpt-4o-mini，Anthropic：claude-3-5-haiku-latest，Gemini：gemini-3.8-flash）。",
       "apiKeyHint": "你的提供者 API 金鑰。儲存前會使用作業系統的金鑰庫進行加密，之後只會顯示經過遮蔽的提示。",
       "baseUrlHint": "相容於 OpenAI 的端點。將其指向 OpenRouter、Groq、Ollama 或 LM Studio，而非 OpenAI 自己的 API。",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "沒有可用於測試的 API 金鑰。請先輸入金鑰。",
         "offline": "所選提供者以離線方式執行，不需要連線測試。",
         "unknown": "連線測試失敗。請檢查設定並重試。"
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "模型",
       "modelPlaceholder": "提供者預設",
       "apiKey": "API 金鑰",
-      "keyStored": "已儲存金鑰（{{hint}}）。",
+      "keyStored": "金鑰以混淆文字形式儲存（{{hint}}）。",
       "keyNone": "未儲存任何金鑰。",
       "save": "儲存",
       "test": "測試連線",

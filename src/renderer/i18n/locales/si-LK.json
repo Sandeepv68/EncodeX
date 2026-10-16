@@ -641,7 +641,7 @@
       "advanced": "උසස්",
       "baseUrl": "මූලික URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "යතුරක් ගබඩා වී ඇත ({{hint}}).",
+      "keyStored": "යතුරු සැඟවුම් කළ පෙළ ලෙස ගබඩා කෙරේ ({{hint}}).",
       "keyNone": "යතුරක් ගබඩා වී නොමැත.",
       "save": "සුරකින්න",
       "saved": "සැකසුම් සුරැකිණි.",
@@ -650,7 +650,7 @@
       "testing": "පරීක්ෂා කරමින්…",
       "testFailed": "සපයන්නාගෙන් ප්‍රතිචාරයක් නැත.",
       "privacy": "යවනු ලබන්නේ පරීක්ෂණ කරුණු සහ ඔබේ ඉලක්ක පෙළ පමණි; මාධ්‍ය ගොනු කිසි විටෙක උඩුගත නොකෙරේ.",
-      "modelHint": "භාවිත කළ යුතු ආකෘති ID. සපයන්නාගේ පෙරනිමිය භාවිත කිරීමට මෙය හිස්ව තබන්න (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "භාවිත කළ යුතු ආකෘති ID. සපයන්නාගේ පෙරනිමිය භාවිත කිරීමට මෙය හිස්ව තබන්න (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "ඔබේ සපයන්නාගේ API යතුර. සුරැකීමට පෙර එය ඔබේ මෙහෙයුම් පද්ධතියේ යතුරු ගබඩාව මගින් සංකේතනය වන අතර, ඉන්පසු වැසූ ඉඟියක් පමණක් පෙන්වයි.",
       "baseUrlHint": "OpenAI සමඟ ගැළපෙන අන්ත ලක්ෂ්‍යය. OpenAI හිම API වෙනුවට මෙය OpenRouter, Groq, Ollama හෝ LM Studio වෙත යොමු කරන්න.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "පරීක්ෂා කිරීමට API යතුරක් නොමැත. පළමුව යතුරක් ඇතුළත් කරන්න.",
         "offline": "තෝරාගත් සපයන්නා නොබැඳිව ක්‍රියා කරන අතර සම්බන්ධතා පරීක්ෂණයක් අවශ්‍ය නැත.",
         "unknown": "සම්බන්ධතා පරීක්ෂණය අසාර්ථක විය. සැකසුම් පරීක්ෂා කර නැවත උත්සාහ කරන්න."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "ආකෘතිය",
       "modelPlaceholder": "සපයන්නාගේ පෙරනිමිය",
       "apiKey": "API යතුර",
-      "keyStored": "යතුරක් ගබඩා වී ඇත ({{hint}}).",
+      "keyStored": "යතුරු සැඟවුම් කළ පෙළ ලෙස ගබඩා කෙරේ ({{hint}}).",
       "keyNone": "යතුරක් ගබඩා වී නොමැත.",
       "save": "සුරකින්න",
       "test": "සම්බන්ධතාව පරීක්ෂා කරන්න",

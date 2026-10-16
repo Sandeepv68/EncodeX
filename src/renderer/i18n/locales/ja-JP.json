@@ -641,7 +641,7 @@
       "advanced": "詳細",
       "baseUrl": "ベースURL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "キーが保存されています（{{hint}}）。",
+      "keyStored": "キーは難読化されたテキストとして保存されます（{{hint}}）。",
       "keyNone": "キーは保存されていません。",
       "save": "保存",
       "saved": "設定を保存しました。",
@@ -650,7 +650,7 @@
       "testing": "テスト中…",
       "testFailed": "プロバイダーからの応答がありません。",
       "privacy": "送信されるのは調査結果と目標テキストのみで、メディアファイルがアップロードされることはありません。",
-      "modelHint": "使用するモデル ID です。空欄にするとプロバイダーの既定値が使われます（OpenAI: gpt-4o-mini、Anthropic: claude-3-5-haiku-latest、Gemini: gemini-2.0-flash）。",
+      "modelHint": "使用するモデル ID です。空欄にするとプロバイダーの既定値が使われます（OpenAI: gpt-4o-mini、Anthropic: claude-3-5-haiku-latest、Gemini: gemini-3.8-flash）。",
       "apiKeyHint": "プロバイダーの API キーです。保存前にオペレーティングシステムのキーストアで暗号化され、その後はマスクされたヒントだけが表示されます。",
       "baseUrlHint": "OpenAI 互換のエンドポイントです。OpenAI 自身の API の代わりに OpenRouter、Groq、Ollama、LM Studio を指定できます。",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "テストに使用できる API キーがありません。先にキーを入力してください。",
         "offline": "選択したプロバイダーはオフラインで動作するため、接続テストは不要です。",
         "unknown": "接続テストに失敗しました。設定を確認して、もう一度お試しください。"
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "モデル",
       "modelPlaceholder": "プロバイダーの既定",
       "apiKey": "APIキー",
-      "keyStored": "キーが保存されています（{{hint}}）。",
+      "keyStored": "キーは難読化されたテキストとして保存されます（{{hint}}）。",
       "keyNone": "キーは保存されていません。",
       "save": "保存",
       "test": "接続をテスト",

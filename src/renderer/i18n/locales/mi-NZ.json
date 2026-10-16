@@ -641,7 +641,7 @@
       "advanced": "Aro nui",
       "baseUrl": "URL taketake",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Kua rongoa tētahi kī ({{hint}}).",
+      "keyStored": "Ka tiakina ngā kī hei kupu huna ({{hint}}).",
       "keyNone": "Kāore kī i rongoa.",
       "save": "Tiaki",
       "saved": "Kua tiakina ngā tautuhinga.",
@@ -650,7 +650,7 @@
       "testing": "E whakamātau ana…",
       "testFailed": "Kāore he whakautu mai i te kaiwhakarato.",
       "privacy": "Ko ngā mēka tātari me te kuputuhi tino pai anake ka tukuna; kāore ngā kōnae pāpāho e tukuna ake.",
-      "modelHint": "Te ID tauira hei whakamahi. Waiho kia wātea hei whakamahi i te taunoa a te kaiwhakarato (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "Te ID tauira hei whakamahi. Waiho kia wātea hei whakamahi i te taunoa a te kaiwhakarato (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Tō kī API a te kaiwhakarato. Ka whakamunatia ki te keystore o tō pūnaha whakahaere i mua i te tiakitanga, ā, ka whakaaturia he tohu huna anake i muri mai.",
       "baseUrlHint": "Te pito mutunga e hototahi ana ki a OpenAI. Tukuna ki OpenRouter, Groq, Ollama, LM Studio rānei, kaua ki te API ake a OpenAI.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Kāore he kī API hei whakamātau. Whakauruhia he kī i te tuatahi.",
         "offline": "Ka rere tuimotu te kaiwhakarato i tīpakohia, ā, kāore e hiahiatia he whakamātautau hononga.",
         "unknown": "I rahua te whakamātautau hononga. Tirohia ngā tautuhinga, kātahi anō whakamātau anō."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Tauira",
       "modelPlaceholder": "Taunoa a te kaiwhakarato",
       "apiKey": "Kī API",
-      "keyStored": "Kua rongoa tētahi kī ({{hint}}).",
+      "keyStored": "Ka tiakina ngā kī hei kupu huna ({{hint}}).",
       "keyNone": "Kāore kī i rongoa.",
       "save": "Tiaki",
       "test": "Whakamātau i te hononga",

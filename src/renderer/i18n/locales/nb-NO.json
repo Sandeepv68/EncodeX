@@ -641,7 +641,7 @@
       "advanced": "Avansert",
       "baseUrl": "Basis-URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "En nøkkel er lagret ({{hint}}).",
+      "keyStored": "Nøkler lagres som ofuscert tekst ({{hint}}).",
       "keyNone": "Ingen nøkkel lagret.",
       "save": "Lagre",
       "saved": "Innstillinger lagret.",
@@ -650,7 +650,7 @@
       "testing": "Tester…",
       "testFailed": "Ingen svar fra leverandøren.",
       "privacy": "Kun undersøkte data og målteksten din sendes; mediefiler lastes aldri opp.",
-      "modelHint": "Modell-ID-en som skal brukes. La feltet stå tomt for å bruke leverandørens standard (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "Modell-ID-en som skal brukes. La feltet stå tomt for å bruke leverandørens standard (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Leverandørens API-nøkkel. Den krypteres med operativsystemets nøkkellager før den lagres, og etterpå vises bare et maskert hint.",
       "baseUrlHint": "OpenAI-kompatibelt endepunkt. Pek det mot OpenRouter, Groq, Ollama eller LM Studio i stedet for OpenAIs egen API.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Ingen API-nøkkel er tilgjengelig for test. Skriv inn en nøkkel først.",
         "offline": "Den valgte leverandøren kjører offline og trenger ingen tilkoblingstest.",
         "unknown": "Tilkoblingstesten mislyktes. Sjekk innstillingene, og prøv igjen."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Modell",
       "modelPlaceholder": "Leverandørens standard",
       "apiKey": "API-nøkkel",
-      "keyStored": "En nøkkel er lagret ({{hint}}).",
+      "keyStored": "Nøkler lagres som ofuscert tekst ({{hint}}).",
       "keyNone": "Ingen nøkkel lagret.",
       "save": "Lagre",
       "test": "Test tilkoblingen",

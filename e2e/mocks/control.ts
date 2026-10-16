@@ -21,7 +21,7 @@ import type {
 } from '../../src/shared/types';
 import type { McpSettings } from '../../src/shared/mcp-settings';
 import type { CopilotPlan } from '../../src/shared/copilot';
-import type { AiConnectTestResult, AiSettingsUpdate, AiSettingsView } from '../../src/shared/ai/settings';
+import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../../src/shared/ai/settings';
 
 export interface TestSnapshot {
   windowCalls: string[];
@@ -54,6 +54,7 @@ export const mockApi = {
   setCopilotPlanBehavior: (page: Page, v: 'resolve' | 'reject') => invoke(page, 'setCopilotPlanBehavior', [v]),
   setAiSettingsView: (page: Page, v: Partial<AiSettingsView>) => invoke(page, 'setAiSettingsView', [v]),
   setAiConnectResult: (page: Page, v: AiConnectTestResult) => invoke(page, 'setAiConnectResult', [v]),
+  setAiModelsResult: (page: Page, v: AiModelsListResult) => invoke(page, 'setAiModelsResult', [v]),
   setExpandPaths: (page: Page, v: string[]) => invoke(page, 'setExpandPaths', [v]),
   setPathForFile: (page: Page, v: string | null) => invoke(page, 'setPathForFile', [v]),
   setSelectOutput: (page: Page, v: string | null) => invoke(page, 'setSelectOutput', [v]),

@@ -78,6 +78,24 @@ describe.runIf(IS_E2E)('Settings page - AI provider editor', () => {
     expect(bodyText).not.toContain(SECRET_KEY);
   });
 
+  it('records a successful connection and shows the persisted status after a reload', async () => {
+    let { page } = session;
+    // The default mock connectivity test succeeds.
+    await mockApi.setAiSettingsView(page, { providerId: 'openai', hasKey: true, keyHint: '••••••••' });
+
+    await openAiEditor(page);
+    await page.locator('[data-testid="settings-ai-provider-openai"]').click();
+    await page.locator('[data-testid="settings-ai-connect"]').click();
+    await page.locator('[data-testid="settings-ai-connected"]').waitFor({ timeout: 15000 });
+
+    // Reloading the window re-reads the stored view: the status must persist.
+    session = await reloadSession(session);
+    page = session.page;
+    await gotoSettings(page);
+    await openAiEditor(page);
+    await expect.poll(() => page.locator('[data-testid="settings-ai-connected"]').count()).toBe(1);
+  });
+
   it('persists a switch to the offline rules provider and never renders a stored key', async () => {
     const { page } = session;
     // Start from a stored remote selection so selecting `rules` is a real change.

@@ -641,7 +641,7 @@
       "advanced": "កម្រិតខ្ពស់",
       "baseUrl": "URL មូលដ្ឋាន",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "សោមួយត្រូវបានរក្សាទុក ({{hint}}).",
+      "keyStored": "សោទាំងអស់ត្រូវបានរក្សាទុកជាអក្សរដែលបានលាក់ ({{hint}}).",
       "keyNone": "មិនមានសោដែលបានរក្សាទុកទេ។",
       "save": "រក្សាទុក",
       "saved": "ការកំណត់ត្រូវបានរក្សាទុក។",
@@ -650,7 +650,7 @@
       "testing": "កំពុងសាកល្បង…",
       "testFailed": "គ្មានការឆ្លើយតបពីអ្នកផ្តល់ទេ។",
       "privacy": "មានតែការពិតនៃការពិនិត្យ និងអត្ថបទគោលដៅរបស់អ្នកប៉ុណ្ណោះដែលត្រូវបានផ្ញើ; ឯកសារមេឌៀមិនត្រូវបានផ្ទុកឡើងណាមួយទេ។",
-      "modelHint": "ID ម៉ូដែលដែលត្រូវប្រើ។ ទុកទទេដើម្បីប្រើលំនាំដើមរបស់អ្នកផ្តល់ (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash)។",
+      "modelHint": "ID ម៉ូដែលដែលត្រូវប្រើ។ ទុកទទេដើម្បីប្រើលំនាំដើមរបស់អ្នកផ្តល់ (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash)។",
       "apiKeyHint": "សោ API របស់អ្នកផ្តល់របស់អ្នក។ វាត្រូវបានអ៊ិនគ្រីបដោយឃ្លាំងសោនៃប្រព័ន្ធប្រតិបត្តិការរបស់អ្នកមុនពេលរក្សាទុក ហើយបន្ទាប់មកមានតែការណែនាំដែលបានបិទបាំងប៉ុណ្ណោះដែលត្រូវបានបង្ហាញ។",
       "baseUrlHint": "ចំណុចបញ្ចប់ដែលត្រូវគ្នានឹង OpenAI។ ចង្អុលវាទៅ OpenRouter, Groq, Ollama ឬ LM Studio ជំនួសឱ្យ API ផ្ទាល់របស់ OpenAI។",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "គ្មានសោ API សម្រាប់សាកល្បងទេ។ បញ្ចូលសោជាមុនសិន។",
         "offline": "អ្នកផ្តល់ដែលបានជ្រើសដំណើរការក្រៅបណ្តាញ ហើយមិនត្រូវការសាកល្បងតភ្ជាប់ទេ។",
         "unknown": "ការសាកល្បងតភ្ជាប់បានបរាជ័យ។ ពិនិត្យការកំណត់ ហើយព្យាយាមម្តងទៀត។"
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "ម៉ូដែល",
       "modelPlaceholder": "លំនាំដើមរបស់អ្នកផ្តល់",
       "apiKey": "សោ API",
-      "keyStored": "សោមួយត្រូវបានរក្សាទុក ({{hint}}).",
+      "keyStored": "សោទាំងអស់ត្រូវបានរក្សាទុកជាអក្សរដែលបានលាក់ ({{hint}}).",
       "keyNone": "មិនមានសោដែលបានរក្សាទុកទេ។",
       "save": "រក្សាទុក",
       "test": "សាកល្បងការតភ្ជាប់",

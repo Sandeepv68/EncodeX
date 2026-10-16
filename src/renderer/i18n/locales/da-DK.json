@@ -641,7 +641,7 @@
       "advanced": "Avanceret",
       "baseUrl": "Basis-URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "En nøgle er gemt ({{hint}}).",
+      "keyStored": "Nøgler gemmes som ofuskeret tekst ({{hint}}).",
       "keyNone": "Ingen nøgle gemt.",
       "save": "Gem",
       "saved": "Indstillinger gemt.",
@@ -650,7 +650,7 @@
       "testing": "Tester…",
       "testFailed": "Ingen svar fra udbyderen.",
       "privacy": "Kun undersøgte data og din målsætning-tekst sendes; mediefiler uploades aldrig.",
-      "modelHint": "Det model-id, der skal bruges. Lad feltet stå tomt for at bruge udbyderens standard (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "Det model-id, der skal bruges. Lad feltet stå tomt for at bruge udbyderens standard (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Din udbyders API-nøgle. Den krypteres med dit styresystems nøglelager, før den gemmes, og derefter vises kun et maskeret hint.",
       "baseUrlHint": "OpenAI-kompatibelt endepunkt. Peg det mod OpenRouter, Groq, Ollama eller LM Studio i stedet for OpenAIs egen API.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Der er ingen API-nøgle tilgængelig til testen. Indtast en nøgle først.",
         "offline": "Den valgte udbyder kører offline og kræver ingen forbindelsestest.",
         "unknown": "Forbindelsestesten mislykkedes. Kontrollér indstillingerne, og prøv igen."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Model",
       "modelPlaceholder": "Udbyderens standard",
       "apiKey": "API-nøgle",
-      "keyStored": "En nøgle er gemt ({{hint}}).",
+      "keyStored": "Nøgler gemmes som ofuskeret tekst ({{hint}}).",
       "keyNone": "Ingen nøgle gemt.",
       "save": "Gem",
       "test": "Test forbindelsen",

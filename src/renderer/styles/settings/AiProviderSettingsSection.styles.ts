@@ -38,7 +38,7 @@ export const AiWell = styled(Box)(({ theme }) => ({
 
 export const ProviderGrid = styled(Box)(({ theme }) => ({
   display: 'grid',
-  gridTemplateColumns: `repeat(auto-fit, minmax(${theme.spacing(15)}, 1fr))`,
+  gridTemplateColumns: `repeat(auto-fit, minmax(${theme.spacing(18)}, 1fr))`,
   gap: theme.spacing(1.5),
 }));
 
@@ -46,20 +46,25 @@ export const ProviderButton = styled('button', {
   shouldForwardProp: (prop) => prop !== '$selected',
 })<{ $selected: boolean }>(({ theme, $selected }) => ({
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: theme.spacing(1),
-  minHeight: theme.spacing(12),
-  padding: theme.spacing(2),
+  gap: theme.spacing(1.5),
+  minHeight: theme.spacing(8),
+  padding: theme.spacing(1.5, 2),
   border: `${theme.typography.pxToRem(2)} solid ${$selected ? theme.palette.primary.main : theme.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
   backgroundColor: $selected ? alpha(theme.palette.primary.main, 0.12) : theme.palette.background.paper,
   cursor: 'pointer',
   fontFamily: 'inherit',
-  fontSize: theme.typography.pxToRem(32),
+  fontSize: theme.typography.pxToRem(14),
   color: $selected ? theme.palette.primary.main : theme.palette.text.primary,
   transition: theme.transitions.create(['border-color', 'background-color', 'color']),
+  '& > svg': {
+    width: theme.spacing(6),
+    height: theme.spacing(6),
+    flexShrink: 0,
+  },
   '&:hover': {
     borderColor: $selected ? theme.palette.primary.main : theme.palette.text.primary,
     backgroundColor: $selected ? alpha(theme.palette.primary.main, 0.18) : theme.palette.action.hover,
@@ -71,18 +76,26 @@ export const ProviderButton = styled('button', {
 }));
 
 export const ProviderName = styled('span')(({ theme }) => ({
-  fontSize: theme.typography.pxToRem(13),
+  fontSize: theme.typography.pxToRem(16),
   fontWeight: 600,
   lineHeight: 1.2,
-  textAlign: 'center',
+  textAlign: 'left',
 }));
 
-export const ProviderLogo = styled('img')({
-  width: '1em',
-  height: '1em',
+export const ProviderSeparator = styled('span')(({ theme }) => ({
+  alignSelf: 'stretch',
+  width: theme.typography.pxToRem(1),
+  flexShrink: 0,
+  backgroundColor: theme.palette.divider,
+}));
+
+export const ProviderLogo = styled('img')(({ theme }) => ({
+  width: theme.spacing(6),
+  height: theme.spacing(6),
   display: 'block',
+  flexShrink: 0,
   objectFit: 'contain',
-});
+}));
 
 export const AiField = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -118,6 +131,8 @@ export const AiKeyHelper = styled('span')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'space-between',
   gap: theme.spacing(1),
+  color: theme.palette.warning.main,
+  fontWeight: 600,
 }));
 
 export const AdvancedPanel = styled(Box)(({ theme }) => ({

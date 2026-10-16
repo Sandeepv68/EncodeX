@@ -18,6 +18,7 @@ import { Logger } from '../../shared/logger';
 import { LOG_FAILED_TO_PERSIST_MCP_SETTINGS, LOG_FAILED_TO_READ_STORED_MCP_SETTINGS } from '../../shared/log-constants';
 import { AI_DEFAULT_MODELS, defaultAiSettings, sanitizeAiSettings, toAiSettingsView } from '../../shared/ai/settings';
 import type { AiServerSettings, AiSettingsUpdate, AiSettingsView } from '../../shared/ai/settings';
+import type { AIProviderId } from '../../shared/ai/types';
 
 /** Per-module logger for AI settings. @const {Logger} */
 const log = new Logger('main/ai/settings');
@@ -148,6 +149,31 @@ export function applyAiSettingsUpdate(userDataDir: string, update: AiSettingsUpd
     if (storedInsecurely) next.storedInsecurely = true;
     else delete next.storedInsecurely;
   }
+  delete next.connectedAt;
+  delete next.connectedProvider;
+  delete next.connectedModel;
+  writeAiSettings(userDataDir, next);
+  return toAiSettingsView(next, isEncryptionAvailable());
+}
+
+/**
+ * Records a successful connection test so the UI can show an accurate
+ * "connected" status after a restart. Any change to the config clears this
+ * again via {@link applyAiSettingsUpdate}.
+ * @param {string} userDataDir - Electron `app.getPath('userData')` value.
+ * @param {{ providerId: AIProviderId; model: string }} info - The verified provider and model.
+ * @returns {AiSettingsView} The resulting renderer-safe view (now connected).
+ */
+export function recordAiConnection(userDataDir: string, info: { providerId: AIProviderId; model: string }): AiSettingsView {
+  const current = readAiSettings(userDataDir);
+  const next: AiServerSettings = {
+    ...current,
+    connectedAt: Date.now(),
+    connectedProvider: info.providerId,
+  };
+  const model = info.model.trim();
+  if (model) next.connectedModel = model;
+  else delete next.connectedModel;
   writeAiSettings(userDataDir, next);
   return toAiSettingsView(next, isEncryptionAvailable());
 }

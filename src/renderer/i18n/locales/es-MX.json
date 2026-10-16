@@ -641,7 +641,7 @@
       "advanced": "Avanzado",
       "baseUrl": "URL base",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Hay una clave guardada ({{hint}}).",
+      "keyStored": "Las claves se almacenan como texto ofuscado ({{hint}}).",
       "keyNone": "No hay ninguna clave guardada.",
       "save": "Guardar",
       "saved": "Ajustes guardados.",
@@ -650,7 +650,7 @@
       "testing": "Probando…",
       "testFailed": "Sin respuesta del proveedor.",
       "privacy": "Solo se envían los datos del análisis y el texto de tu objetivo; los archivos de medios nunca se suben.",
-      "modelHint": "El id del modelo que se va a usar. Déjalo en blanco para usar el valor predeterminado del proveedor (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "El id del modelo que se va a usar. Déjalo en blanco para usar el valor predeterminado del proveedor (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "La clave de API de tu proveedor. Se cifra con el almacén de claves de tu sistema operativo antes de guardarse, y después solo se muestra una pista enmascarada.",
       "baseUrlHint": "Punto de conexión compatible con OpenAI. Dirígelo a OpenRouter, Groq, Ollama o LM Studio en lugar de la propia API de OpenAI.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "No hay ninguna clave de API disponible para probar. Introduce una clave primero.",
         "offline": "El proveedor seleccionado funciona sin conexión y no necesita una prueba de conexión.",
         "unknown": "La prueba de conexión falló. Revisa la configuración y vuelve a intentarlo."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Modelo",
       "modelPlaceholder": "Valor predeterminado del proveedor",
       "apiKey": "Clave de API",
-      "keyStored": "Hay una clave guardada ({{hint}}).",
+      "keyStored": "Las claves se almacenan como texto ofuscado ({{hint}}).",
       "keyNone": "No hay ninguna clave guardada.",
       "save": "Guardar",
       "test": "Probar conexión",

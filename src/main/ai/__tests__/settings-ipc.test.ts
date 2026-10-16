@@ -20,6 +20,7 @@ const { appMock, handlers, settingsMock, connectorsMock } = vi.hoisted(() => {
       decryptApiKey: vi.fn(),
       isEncryptionAvailable: vi.fn(() => true),
       readAiSettings: vi.fn(),
+      recordAiConnection: vi.fn(),
       sanitizeAiSettings: vi.fn((value: unknown) => value),
       toAiSettingsView: vi.fn((settings: unknown) => settings),
     },
@@ -50,6 +51,11 @@ describe('registerAiSettingsIpc', () => {
     settingsMock.readAiSettings.mockReturnValue({ providerId: 'rules', model: '', key: null });
     settingsMock.toAiSettingsView.mockImplementation((settings: unknown) => settings);
     settingsMock.sanitizeAiSettings.mockImplementation((value: unknown) => value);
+    settingsMock.recordAiConnection.mockImplementation((_dir: string, info: { providerId: string; model: string }) => ({
+      providerId: info.providerId,
+      connected: true,
+      connectedModel: info.model,
+    }));
     connectorsMock.isRemoteProvider.mockReturnValue(true);
     registerAiSettingsIpc();
   });
@@ -122,6 +128,18 @@ describe('registerAiSettingsIpc', () => {
     );
     expect(result).toMatchObject({ ok: true, model: 'gpt-4o-mini' });
     expect((result as { latencyMs: number }).latencyMs).toBeGreaterThanOrEqual(0);
+    // A successful test records the verified connection and returns the refreshed view.
+    expect(settingsMock.recordAiConnection).toHaveBeenCalledWith('/userData', { providerId: 'openai', model: 'gpt-4o-mini' });
+    expect((result as { view: unknown }).view).toMatchObject({ providerId: 'openai', connected: true });
+  });
+
+  it('CONNECT_TEST does not record a connection when the test fails', async () => {
+    expectAppLog('warn', 'main/ai/settings-ipc');
+    settingsMock.decryptApiKey.mockReturnValue('sk-1');
+    connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockRejectedValue(new Error('boom')) });
+    const result = await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' });
+    expect((result as { ok: boolean }).ok).toBe(false);
+    expect(settingsMock.recordAiConnection).not.toHaveBeenCalled();
   });
 
   it('CONNECT_TEST surfaces a classified connector failure', async () => {

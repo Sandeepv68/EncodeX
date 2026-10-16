@@ -15,6 +15,7 @@ const { contextBridge } = require('electron');
 const { state, subscribe, emit } = require('./main-store');
 
 const MCP_SETTINGS_FILENAME = 'mcp-settings.json';
+const AI_SETTINGS_FILENAME = 'ai-settings.json';
 
 /**
  * Resolves the app userData directory from the `--user-data-dir` flag the e2e
@@ -97,6 +98,54 @@ function seedMcpSettingsFromUserData() {
 }
 
 seedMcpSettingsFromUserData();
+
+/** @returns {string|null} Absolute path of the mock ai-settings.json. */
+function aiSettingsFile() {
+  const dir = userDataDir();
+  return dir ? require('path').join(dir, AI_SETTINGS_FILENAME) : null;
+}
+
+/**
+ * Writes an AI settings view to the in-memory store AND to
+ * `<userData>/ai-settings.json` (mirroring `writeAiSettings` in
+ * src/main/ai/settings.ts), so `aiGetSettings` answers the same value on this
+ * load and on any later renderer reload - including the recorded `connected`
+ * state.
+ * @param {object} next - The sanitized view to persist.
+ * @returns {void}
+ */
+function persistAiSettings(next) {
+  state.aiSettingsView = next;
+  const file = aiSettingsFile();
+  if (!file) return;
+  try {
+    require('fs').mkdirSync(require('path').dirname(file), { recursive: true });
+    require('fs').writeFileSync(file, JSON.stringify(next, null, 2), 'utf-8');
+  } catch {
+    /* persistence is a best-effort mirror of the real main-process write */
+  }
+}
+
+/**
+ * Seeds `state.aiSettingsView` from the persisted userData file. Called once at
+ * preload evaluation so a reload hydrates the prior selection exactly like the
+ * real main process reads its ai-settings.json.
+ * @returns {void}
+ */
+function seedAiSettingsFromUserData() {
+  const file = aiSettingsFile();
+  if (!file) return;
+  try {
+    const raw = require('fs')
+      .readFileSync(file, 'utf-8')
+      .replace(/^\uFEFF/, '');
+    state.aiSettingsView = Object.assign({}, state.aiSettingsView, JSON.parse(raw));
+  } catch {
+    /* missing/corrupt seed: keep the default snapshot */
+  }
+}
+
+seedAiSettingsFromUserData();
 
 const noop = () => {};
 
@@ -322,10 +371,32 @@ const api = {
       view.hasKey = false;
       view.keyHint = '';
     }
-    state.aiSettingsView = view;
+    // Any config change invalidates the previously verified connection.
+    view.connected = false;
+    delete view.connectedAt;
+    delete view.connectedModel;
+    persistAiSettings(view);
     return Promise.resolve({ ...view });
   },
-  aiConnectTest: () => Promise.resolve(state.aiConnectResult),
+  aiConnectTest: () => {
+    const result = state.aiConnectResult;
+    if (result && result.ok) {
+      // Mirror src/main/ai/settings.ts: a successful test records the verified
+      // provider/model so the connected status survives a reload.
+      const view = {
+        ...state.aiSettingsView,
+        connected: true,
+        connectedAt: Date.now(),
+        connectedModel: result.model || state.aiSettingsView.model,
+      };
+      persistAiSettings(view);
+      return Promise.resolve({ ...result, view: { ...view } });
+    }
+    return Promise.resolve(result);
+  },
+  aiListModels: () => {
+    return Promise.resolve(state.aiModelsResult);
+  },
 
   // --- Event subscriptions (each returns an unsubscribe) -----------------------
   onWindowMaximizedChange: (cb) => subscribe('window-maximized-change', cb),
@@ -452,14 +523,17 @@ const api = {
       persistMcpSettings(sanitizeMcpSettings(v || {}));
     },
     setAiSettingsView: (v) => {
-      state.aiSettingsView = Object.assign({}, state.aiSettingsView, v || {});
+      persistAiSettings(Object.assign({}, state.aiSettingsView, v || {}));
     },
     setAiConnectResult: (v) => {
       state.aiConnectResult = v;
     },
+    setAiModelsResult: (v) => {
+      state.aiModelsResult = v;
+    },
     reset: () => {
-      const file = mcpSettingsFile();
-      if (file) {
+      for (const file of [mcpSettingsFile(), aiSettingsFile()]) {
+        if (!file) continue;
         try {
           require('fs').unlinkSync(file);
         } catch {
@@ -480,6 +554,7 @@ const api = {
         termsRejectCalls,
         mcpSetCalls,
         aiSetCalls,
+        aiModelsResult,
       } = state;
       return {
         windowCalls,
@@ -491,6 +566,7 @@ const api = {
         termsRejectCalls,
         mcpSetCalls,
         aiSetCalls,
+        aiModelsResult,
       };
     },
   },

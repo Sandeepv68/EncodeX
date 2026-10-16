@@ -134,13 +134,16 @@ All use Node's global `fetch` + `AbortSignal.timeout(ms)`, JSON only, `dataEgres
 | --- | --- | --- | --- | --- |
 | **OpenAI** | `POST https://api.openai.com/v1/chat/completions`, `Authorization: Bearer <key>` | 2 messages (system+user) | `response_format: { type: 'json_object' }` | `gpt-4o-mini` |
 | **Anthropic** | `POST https://api.anthropic.com/v1/messages`, `x-api-key`, `anthropic-version: 2023-06-01` | `system` + user | ask for strict JSON; `prefill: '{'` + `extractJsonObject` | `claude-3-5-haiku-latest` |
-| **Gemini** | `POST https://generativelanguage.googleapis.com/v1beta/models/<m>:generateContent`, `x-goog-api-key` header | systemInstruction + user | `generationConfig.responseMimeType = 'application/json'` (+ optional `responseSchema`) | `gemini-2.0-flash` |
+| **Gemini** | `POST https://generativelanguage.googleapis.com/v1beta/models/<m>:generateContent`, `x-goog-api-key` header | systemInstruction + user | `generationConfig.responseMimeType = 'application/json'` (+ optional `responseSchema`) | `gemini-3.8-flash` |
 | **OpenAI-compatible** | custom `baseUrl` (OpenRouter/Groq/Ollama/LM Studio/vLLM…) | same as OpenAI | `response_format.json_object` when supported, else `extractJsonObject` fallback | provider's own default |
 
 - **Model names are user-overridable** and centralized in one constants module; any default can be
   bumped without code changes.
 - **`baseUrl` override** (+ required model) applies to the OpenAI connector; HTTPS enforced except
   `http://127.0.0.1` / `http://localhost` (local-compatible gateways only).
+- **Gemini omits sampling parameters**: Gemini 3.6+ ignores custom `temperature`/`top_p`/`top_k`
+  (and rejects them on Gemini 4), so the Gemini connector never sends them; the neutral
+  `request.temperature` is honored by the OpenAI and Anthropic connectors only.
 
 ## 6. Settings & API-key storage (main process only)
 

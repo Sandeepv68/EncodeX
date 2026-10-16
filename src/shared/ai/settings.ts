@@ -28,13 +28,21 @@ export const AI_PROVIDER_CHOICES: readonly AIProviderId[] = ['rules', 'openai', 
 export const AI_PROVIDERS_REQUIRING_KEY: ReadonlySet<AIProviderId> = new Set(['openai', 'anthropic', 'gemini']);
 
 /**
+ * Providers that call a remote host and therefore need an active network
+ * connection. The renderer disables these while the app is offline; the
+ * built-in `rules` engine and a `local` runtime keep working without a network.
+ * @const {ReadonlySet<AIProviderId>} AI_PROVIDERS_REQUIRING_NETWORK
+ */
+export const AI_PROVIDERS_REQUIRING_NETWORK: ReadonlySet<AIProviderId> = new Set(['openai', 'anthropic', 'gemini']);
+
+/**
  * Default models per remote provider, used when the user leaves the model blank.
  * @const {Record<string, string>} AI_DEFAULT_MODELS
  */
 export const AI_DEFAULT_MODELS: Record<string, string> = {
   openai: 'gpt-4o-mini',
   anthropic: 'claude-3-5-haiku-latest',
-  gemini: 'gemini-2.0-flash',
+  gemini: 'gemini-3.8-flash',
 };
 
 /**
@@ -47,6 +55,12 @@ export const AI_DEFAULT_MODELS: Record<string, string> = {
  * @property {number} [keySetAt] - Epoch ms the key was last set.
  * @property {boolean} [storedInsecurely] - True when the key is plaintext
  *   because `safeStorage` was unavailable and the user accepted the risk.
+ * @property {number} [connectedAt] - Epoch ms of the last successful connection
+ *   test. Cleared whenever the settings change.
+ * @property {AIProviderId} [connectedProvider] - The provider verified by the
+ *   last successful test.
+ * @property {string} [connectedModel] - The model that answered the last
+ *   successful test.
  */
 export interface AiServerSettings {
   providerId: AIProviderId;
@@ -55,6 +69,9 @@ export interface AiServerSettings {
   key: string | null;
   keySetAt?: number;
   storedInsecurely?: boolean;
+  connectedAt?: number;
+  connectedProvider?: AIProviderId;
+  connectedModel?: string;
 }
 
 /**
@@ -67,6 +84,10 @@ export interface AiServerSettings {
  * @property {string} keyHint - A non-secret hint (e.g. `•••• 1234`).
  * @property {boolean} storedInsecurely - Whether the key is stored in plaintext.
  * @property {boolean} encryptionAvailable - Whether `safeStorage` is usable.
+ * @property {boolean} connected - Whether the stored config passed a connection
+ *   test (has a key, and the verified provider matches the selected provider).
+ * @property {number} [connectedAt] - Epoch ms of the successful test, when connected.
+ * @property {string} [connectedModel] - The verified model, when connected.
  */
 export interface AiSettingsView {
   providerId: AIProviderId;
@@ -76,6 +97,9 @@ export interface AiSettingsView {
   keyHint: string;
   storedInsecurely: boolean;
   encryptionAvailable: boolean;
+  connected: boolean;
+  connectedAt?: number;
+  connectedModel?: string;
 }
 
 /**
@@ -105,6 +129,9 @@ export interface AiSettingsUpdate {
  * @property {number} [status] - The provider HTTP status, when it answered.
  * @property {string} [model] - The model that answered, on success.
  * @property {number} [latencyMs] - Round-trip time of the test, on success.
+ * @property {AiSettingsView} [view] - The refreshed settings view after a
+ *   successful test (the connection is recorded), so the renderer can show the
+ *   persisted status without a second round-trip.
  */
 export interface AiConnectTestResult {
   ok: boolean;
@@ -113,6 +140,24 @@ export interface AiConnectTestResult {
   status?: number;
   model?: string;
   latencyMs?: number;
+  view?: AiSettingsView;
+}
+
+/**
+ * The result of listing the available models from a provider's own API, so the
+ * settings editor can offer a live pick-list instead of a hardcoded catalog.
+ * @interface AiModelsListResult
+ * @property {boolean} ok - Whether the provider answered with a model list.
+ * @property {string[]} models - The model ids the provider reported (empty on failure).
+ * @property {AiConnectErrorReason} [reason] - The classified failure reason, so the
+ *   renderer can show a localized message instead of the raw payload.
+ * @property {number} [status] - The provider HTTP status, when it answered.
+ */
+export interface AiModelsListResult {
+  ok: boolean;
+  models: string[];
+  reason?: AiConnectErrorReason;
+  status?: number;
 }
 
 /**
@@ -163,6 +208,13 @@ export function sanitizeAiSettings(input: unknown): AiServerSettings {
   const key = typeof record.key === 'string' && record.key.length > 0 ? record.key : null;
   const keySetAt = typeof record.keySetAt === 'number' && Number.isFinite(record.keySetAt) ? record.keySetAt : undefined;
   const storedInsecurely = record.storedInsecurely === true;
+  const connectedAt =
+    typeof record.connectedAt === 'number' && Number.isFinite(record.connectedAt) ? record.connectedAt : undefined;
+  const connectedProvider = isAiProviderId(record.connectedProvider) ? record.connectedProvider : undefined;
+  const connectedModel =
+    typeof record.connectedModel === 'string' && record.connectedModel.trim()
+      ? record.connectedModel.trim().slice(0, 200)
+      : undefined;
   return {
     providerId,
     model,
@@ -170,6 +222,9 @@ export function sanitizeAiSettings(input: unknown): AiServerSettings {
     key,
     ...(keySetAt !== undefined ? { keySetAt } : {}),
     ...(storedInsecurely ? { storedInsecurely: true } : {}),
+    ...(connectedAt !== undefined ? { connectedAt } : {}),
+    ...(connectedProvider !== undefined ? { connectedProvider } : {}),
+    ...(connectedModel !== undefined ? { connectedModel } : {}),
   };
 }
 
@@ -190,6 +245,8 @@ export function keyHint(_key: string | null): string {
  * @returns {AiSettingsView} The sanitized view.
  */
 export function toAiSettingsView(settings: AiServerSettings, encryptionAvailable: boolean): AiSettingsView {
+  const connected =
+    settings.key !== null && settings.connectedAt !== undefined && settings.connectedProvider === settings.providerId;
   return {
     providerId: settings.providerId,
     model: settings.model,
@@ -198,5 +255,8 @@ export function toAiSettingsView(settings: AiServerSettings, encryptionAvailable
     keyHint: keyHint(settings.key),
     storedInsecurely: settings.storedInsecurely === true,
     encryptionAvailable,
+    connected,
+    ...(connected && settings.connectedAt !== undefined ? { connectedAt: settings.connectedAt } : {}),
+    ...(connected && settings.connectedModel !== undefined ? { connectedModel: settings.connectedModel } : {}),
   };
 }

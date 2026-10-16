@@ -641,7 +641,7 @@
       "advanced": "Nâng cao",
       "baseUrl": "URL cơ sở",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Một khóa đã được lưu ({{hint}}).",
+      "keyStored": "Các khóa được lưu dưới dạng văn bản bị xáo trộn ({{hint}}).",
       "keyNone": "Chưa có khóa nào được lưu.",
       "save": "Lưu",
       "saved": "Đã lưu cài đặt.",
@@ -650,7 +650,7 @@
       "testing": "Đang kiểm tra…",
       "testFailed": "Không có phản hồi từ nhà cung cấp.",
       "privacy": "Chỉ có các dữ liệu phân tích và văn bản mục tiêu của bạn được gửi; tệp phương tiện không bao giờ được tải lên.",
-      "modelHint": "Id mô hình sẽ dùng. Để trống để dùng giá trị mặc định của nhà cung cấp (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "Id mô hình sẽ dùng. Để trống để dùng giá trị mặc định của nhà cung cấp (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Khóa API của nhà cung cấp bạn. Khóa được mã hóa bằng kho khóa của hệ điều hành trước khi lưu, và sau đó chỉ hiển thị một gợi ý đã được che.",
       "baseUrlHint": "Điểm cuối tương thích với OpenAI. Trỏ nó tới OpenRouter, Groq, Ollama hoặc LM Studio thay vì API của chính OpenAI.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Không có khóa API nào để kiểm tra. Hãy nhập khóa trước.",
         "offline": "Nhà cung cấp đã chọn chạy ngoại tuyến và không cần kiểm tra kết nối.",
         "unknown": "Kiểm tra kết nối thất bại. Kiểm tra cài đặt và thử lại."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Mô hình",
       "modelPlaceholder": "Mặc định của nhà cung cấp",
       "apiKey": "Khóa API",
-      "keyStored": "Một khóa đã được lưu ({{hint}}).",
+      "keyStored": "Các khóa được lưu dưới dạng văn bản bị xáo trộn ({{hint}}).",
       "keyNone": "Chưa có khóa nào được lưu.",
       "save": "Lưu",
       "test": "Kiểm tra kết nối",

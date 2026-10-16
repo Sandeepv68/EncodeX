@@ -641,7 +641,7 @@
       "advanced": "Дэвшилтэт",
       "baseUrl": "Үндсэн URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Түлхүүр хадгалагдсан байна ({{hint}}).",
+      "keyStored": "Түлхүүрүүдийг нууцалсан текстээр хадгалдаг ({{hint}}).",
       "keyNone": "Түлхүүр хадгалагдаагүй байна.",
       "save": "Хадгалах",
       "saved": "Тохиргоо хадгалагдлаа.",
@@ -650,7 +650,7 @@
       "testing": "Шалгаж байна…",
       "testFailed": "Үзүүлэгчээс хариу ирээгүй.",
       "privacy": "Зөвхөн шалгалтын баримт болон таны зорилтын текст илгээгдэнэ; медиа файлыг хэзээ ч байршуулахгүй.",
-      "modelHint": "Ашиглах загварын ID. Үзүүлэгчийн стандартыг ашиглахын тулд хоосон орхино уу (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "Ашиглах загварын ID. Үзүүлэгчийн стандартыг ашиглахын тулд хоосон орхино уу (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Таны үзүүлэгчийн API түлхүүр. Хадгалахаас өмнө үйлдлийн системийн түлхүүр хадгалах санд шифрлэгдэх бөгөөд дараа нь зөвхөн далдлагдсан зөвлөмж харагдана.",
       "baseUrlHint": "OpenAI-тай нийцэх төгсгөлийн цэг. Үүнийг OpenAI-ийн өөрийн API биш харин OpenRouter, Groq, Ollama эсвэл LM Studio рүү чиглүүлнэ үү.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Туршихад API түлхүүр байхгүй. Эхлээд түлхүүр оруулна уу.",
         "offline": "Сонгосон үзүүлэгч офлайн ажилладаг бөгөөд холболтын туршилт шаардлагагүй.",
         "unknown": "Холболтын туршилт амжилтгүй болсон. Тохиргоог шалгаад дахин оролдоно уу."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Загвар",
       "modelPlaceholder": "Үзүүлэгчийн стандарт",
       "apiKey": "API түлхүүр",
-      "keyStored": "Түлхүүр хадгалагдсан байна ({{hint}}).",
+      "keyStored": "Түлхүүрүүдийг нууцалсан текстээр хадгалдаг ({{hint}}).",
       "keyNone": "Түлхүүр хадгалагдаагүй байна.",
       "save": "Хадгалах",
       "test": "Холболт шалгах",
