@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Settings from '../Settings';
 import { ColorModeProvider } from '../../ColorModeContext';
@@ -31,6 +31,7 @@ describe('Settings', () => {
       keyHint: '',
       storedInsecurely: false,
       encryptionAvailable: true,
+      connected: false,
     });
     vi.mocked(window.electronAPI.aiSetSettings).mockImplementation((update) =>
       Promise.resolve({
@@ -40,6 +41,7 @@ describe('Settings', () => {
         keyHint: '',
         storedInsecurely: false,
         encryptionAvailable: true,
+        connected: false,
       }),
     );
     vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: false, message: '' });
@@ -526,6 +528,23 @@ describe('Settings', () => {
     }
   });
 
+  it('renders each provider as a horizontal icon | separator | name button', async () => {
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    for (const id of ['rules', 'openai', 'anthropic', 'gemini', 'local']) {
+      const button = screen.getByTestId(`settings-ai-provider-${id}`);
+      expect(button.querySelectorAll(':scope > span[aria-hidden="true"]')).toHaveLength(1);
+      expect(within(button).getByText(`settings.ai.providers.${id}`)).toBeInTheDocument();
+    }
+    const button = screen.getByTestId('settings-ai-provider-openai');
+    const icon = within(button).getByTestId('settings-ai-logo-openai');
+    const separator = button.querySelector(':scope > span[aria-hidden="true"]')!;
+    const name = within(button).getByText('settings.ai.providers.openai');
+    expect(icon.compareDocumentPosition(separator) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(separator.compareDocumentPosition(name) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it('hides connect, advanced, and settings fields for the built-in rules provider', async () => {
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
@@ -553,6 +572,7 @@ describe('Settings', () => {
       keyHint: '••••',
       storedInsecurely: false,
       encryptionAvailable: true,
+      connected: false,
     });
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
@@ -570,6 +590,7 @@ describe('Settings', () => {
       keyHint: '••••',
       storedInsecurely: false,
       encryptionAvailable: true,
+      connected: false,
     });
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
@@ -577,7 +598,8 @@ describe('Settings', () => {
     await waitFor(() => expect(window.electronAPI.aiGetSettings).toHaveBeenCalledTimes(1));
     expect(screen.getByTestId('settings-ai-provider-openai')).toHaveAttribute('aria-pressed', 'true');
     fireEvent.click(screen.getByTestId('settings-ai-advanced'));
-    expect(screen.getByRole('textbox', { name: 'settings.ai.model' })).toHaveValue('gpt-4o');
+    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
+    expect(screen.getByRole('combobox', { name: 'settings.ai.model' })).toHaveValue('gpt-4o');
   });
 
   it('saves and tests the selected provider in one connect step', async () => {
@@ -588,6 +610,7 @@ describe('Settings', () => {
       keyHint: '',
       storedInsecurely: false,
       encryptionAvailable: true,
+      connected: false,
     });
     vi.mocked(window.electronAPI.aiSetSettings).mockImplementation(spy);
     vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: true, message: 'Connected', latencyMs: 42 });
@@ -630,9 +653,131 @@ describe('Settings', () => {
     fireEvent.change(key, { target: { value: 'sk-1' } });
     expect(key).toHaveValue('sk-1');
     fireEvent.click(screen.getByTestId('settings-ai-advanced'));
-    const model = screen.getByRole('textbox', { name: 'settings.ai.model' });
+    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
+    const model = screen.getByRole('combobox', { name: 'settings.ai.model' });
     fireEvent.change(model, { target: { value: 'gpt-4o-mini' } });
     expect(model).toHaveValue('gpt-4o-mini');
+  });
+
+  it('loads model suggestions from the provider API when advanced is opened', async () => {
+    const user = userEvent.setup();
+    vi.mocked(window.electronAPI.aiListModels).mockResolvedValue({
+      ok: true,
+      models: ['gpt-4o-mini', 'gpt-6-astra', 'gpt-4.1'],
+    });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    const model = screen.getByRole('combobox', { name: 'settings.ai.model' });
+    await user.click(model);
+    const listbox = await screen.findByRole('listbox');
+    expect(within(listbox).getByText('gpt-6-astra')).toBeInTheDocument();
+    await user.click(within(listbox).getByText('gpt-6-astra'));
+    expect(model).toHaveValue('gpt-6-astra');
+  });
+
+  it('disables remote providers while offline and shows the network tooltip', async () => {
+    const spy = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    for (const id of ['openai', 'anthropic', 'gemini']) {
+      expect(screen.getByTestId(`settings-ai-provider-${id}`)).toBeDisabled();
+    }
+    expect(screen.getByTestId('settings-ai-provider-rules')).toBeEnabled();
+    expect(screen.getByTestId('settings-ai-provider-local')).toBeEnabled();
+    const remote = screen.getByTestId('settings-ai-provider-openai');
+    fireEvent.mouseOver(remote.closest('span') as HTMLElement);
+    expect(await screen.findByText('settings.ai.requiresNetwork')).toBeInTheDocument();
+    spy.mockRestore();
+  });
+
+  it('falls back to the built-in rules provider when the connection drops', async () => {
+    let online = true;
+    const spy = vi.spyOn(navigator, 'onLine', 'get').mockImplementation(() => online);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    online = false;
+    act(() => {
+      window.dispatchEvent(new Event('offline'));
+    });
+    expect(await screen.findByTestId('settings-ai-offline-fallback')).toHaveTextContent('settings.ai.offlineFallback');
+    expect(screen.getByTestId('settings-ai-provider-rules')).toHaveAttribute('aria-pressed', 'true');
+    await waitFor(() => expect(window.electronAPI.aiSetSettings).toHaveBeenCalledWith({ providerId: 'rules' }));
+    spy.mockRestore();
+  });
+
+  it('keeps the model field usable when the provider list fetch fails', async () => {
+    vi.mocked(window.electronAPI.aiListModels).mockRejectedValue(new Error('offline'));
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
+    const model = screen.getByRole('combobox', { name: 'settings.ai.model' });
+    expect(model).toBeEnabled();
+    fireEvent.change(model, { target: { value: 'my-own-model' } });
+    expect(model).toHaveValue('my-own-model');
+  });
+
+  it('ignores a malformed model-list result', async () => {
+    vi.mocked(window.electronAPI.aiListModels).mockResolvedValue({ ok: true } as never);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
+    expect(screen.getByRole('combobox', { name: 'settings.ai.model' })).toBeEnabled();
+  });
+
+  it('shows the persisted connected status when the editor loads a verified view', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'openai',
+      model: 'gpt-4o',
+      hasKey: true,
+      keyHint: '••••',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: true,
+      connectedAt: 1,
+      connectedModel: 'gpt-4o',
+    });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    expect(await screen.findByTestId('settings-ai-connected')).toHaveTextContent('settings.ai.statusConnected');
+  });
+
+  it('shows the connected status from the refreshed view after a successful connect', async () => {
+    vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({
+      ok: true,
+      message: 'Connected to openai.',
+      latencyMs: 42,
+      model: 'gpt-4o-mini',
+      view: {
+        providerId: 'openai',
+        model: 'gpt-4o-mini',
+        hasKey: true,
+        keyHint: '••••',
+        storedInsecurely: false,
+        encryptionAvailable: true,
+        connected: true,
+        connectedAt: 2,
+        connectedModel: 'gpt-4o-mini',
+      },
+    });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-connect'));
+    expect(await screen.findByTestId('settings-ai-connected')).toBeInTheDocument();
   });
 
   it('shows the endpoint for local and the model under Advanced', async () => {
@@ -662,9 +807,12 @@ describe('Settings', () => {
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
     fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
+    await waitFor(() => expect(screen.getByRole('textbox', { name: 'settings.ai.baseUrl' })).toBeInTheDocument());
     const base = screen.getByRole('textbox', { name: 'settings.ai.baseUrl' }) as HTMLInputElement;
+    await waitFor(() => expect(base).toBeEnabled());
     fireEvent.change(base, { target: { value: 'https://proxy.example/v1' } });
-    expect(base).toHaveValue('https://proxy.example/v1');
+    await waitFor(() => expect(base).toHaveValue('https://proxy.example/v1'));
   });
 
   it('shows a save error when the bridge returns an unusable view', async () => {

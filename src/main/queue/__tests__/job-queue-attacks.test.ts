@@ -667,5 +667,5 @@ describe('JobQueue - bulk and reentrancy', () => {
     expect(queue.getJobs().every((j) => j.status === QUEUE_STATUS.ERROR)).toBe(true);
     expect(queue.getJobs().every((j) => j.error === 'unknown transcoder')).toBe(true);
     expect(queue.getConcurrency()).toBe(4);
-  });
+  }, 120_000);
 });

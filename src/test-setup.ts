@@ -208,6 +208,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
       keyHint: '',
       storedInsecurely: false,
       encryptionAvailable: true,
+      connected: false,
     }),
     aiSetSettings: vi.fn().mockImplementation((update) =>
       Promise.resolve({
@@ -217,9 +218,11 @@ Object.defineProperty(globalThis, 'electronAPI', {
         keyHint: '',
         storedInsecurely: false,
         encryptionAvailable: true,
+        connected: false,
       }),
     ),
     aiConnectTest: vi.fn().mockResolvedValue({ ok: false, message: '' }),
+    aiListModels: vi.fn().mockResolvedValue({ ok: true, models: [] }),
     onWindowMaximizedChange: vi.fn(() => vi.fn()),
     onConversionProgress: vi.fn(() => vi.fn()),
     onQueueAdded: vi.fn(() => vi.fn()),

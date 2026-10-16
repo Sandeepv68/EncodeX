@@ -641,7 +641,7 @@
       "advanced": "उन्नत",
       "baseUrl": "आधार URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "एउटा कुञ्जी भण्डारण गरिएको छ ({{hint}})।",
+      "keyStored": "कुञ्जीहरू अस्पष्ट पाठको रूपमा संग्रह गरिएका छन् ({{hint}})।",
       "keyNone": "कुनै कुञ्जी भण्डारण गरिएको छैन।",
       "save": "सुरक्षित गर्नुहोस्",
       "saved": "सेटिङ्स सुरक्षित गरियो।",
@@ -650,7 +650,7 @@
       "testing": "परीक्षण हुँदै…",
       "testFailed": "प्रदायकबाट कुनै प्रतिक्रिया छैन।",
       "privacy": "जाँचका तथ्यहरू र तपाईंको लक्ष्य पाठ मात्र पठाइन्छ; मिडिया फाइलहरू कहिल्यै अपलोड हुँदैनन्।",
-      "modelHint": "प्रयोग गर्ने मोडेल आईडी। प्रदायकको पूर्वनिर्धारित प्रयोग गर्न यसलाई खाली छोड्नुहोस् (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash)।",
+      "modelHint": "प्रयोग गर्ने मोडेल आईडी। प्रदायकको पूर्वनिर्धारित प्रयोग गर्न यसलाई खाली छोड्नुहोस् (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash)।",
       "apiKeyHint": "तपाईंको प्रदायकको API कुञ्जी। यसलाई सुरक्षित गर्नुअघि तपाईंको सञ्चालन प्रणालीको कीस्टोरले इन्क्रिप्ट गर्छ, र त्यसपछि मास्क गरिएको सङ्केत मात्र देखाइन्छ।",
       "baseUrlHint": "OpenAI-संगत अन्त्यबिन्दु। OpenAI को आफ्नै API को सट्टा यसलाई OpenRouter, Groq, Ollama वा LM Studio तर्फ निर्देशित गर्नुहोस्।",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "परीक्षणका लागि कुनै API कुञ्जी उपलब्ध छैन। पहिले कुञ्जी हाल्नुहोस्।",
         "offline": "चयन गरिएको प्रदायक अफलाइन चल्छ र जडान परीक्षण आवश्यक पर्दैन।",
         "unknown": "जडान परीक्षण असफल भयो। सेटिङ जाँच्नुहोस् र पुनः प्रयास गर्नुहोस्।"
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "मोडेल",
       "modelPlaceholder": "प्रदायकको पूर्वनिर्धारित",
       "apiKey": "API कुञ्जी",
-      "keyStored": "एउटा कुञ्जी भण्डारण गरिएको छ ({{hint}})।",
+      "keyStored": "कुञ्जीहरू अस्पष्ट पाठको रूपमा संग्रह गरिएका छन् ({{hint}})।",
       "keyNone": "कुनै कुञ्जी भण्डारण गरिएको छैन।",
       "save": "सुरक्षित गर्नुहोस्",
       "test": "जडान परीक्षण",

@@ -641,7 +641,7 @@
       "advanced": "ขั้นสูง",
       "baseUrl": "URL ฐาน",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "มีคีย์ที่จัดเก็บอยู่ ({{hint}}).",
+      "keyStored": "คีย์จะถูกจัดเก็บเป็นข้อความที่อ่านไม่ออก ({{hint}}).",
       "keyNone": "ไม่มีคีย์ที่จัดเก็บไว้",
       "save": "บันทึก",
       "saved": "บันทึกการตั้งค่าแล้ว",
@@ -650,7 +650,7 @@
       "testing": "กำลังทดสอบ…",
       "testFailed": "ไม่มีคำตอบจากผู้ให้บริการ",
       "privacy": "ส่งเฉพาะข้อเท็จจริงจากการตรวจสอบและข้อความเป้าหมายของคุณเท่านั้น ไฟล์สื่อจะไม่ถูกอัปโหลดเด็ดขาด",
-      "modelHint": "ID โมเดลที่จะใช้ เว้นว่างไว้เพื่อใช้ค่าเริ่มต้นของผู้ให้บริการ (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash)",
+      "modelHint": "ID โมเดลที่จะใช้ เว้นว่างไว้เพื่อใช้ค่าเริ่มต้นของผู้ให้บริการ (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash)",
       "apiKeyHint": "คีย์ API ของผู้ให้บริการของคุณ คีย์จะถูกเข้ารหัสด้วยที่เก็บคีย์ของระบบปฏิบัติการก่อนบันทึก และหลังจากนั้นจะแสดงเฉพาะคำใบ้ที่ถูกปิดบังเท่านั้น",
       "baseUrlHint": "ปลายทางที่เข้ากันได้กับ OpenAI ชี้ไปที่ OpenRouter, Groq, Ollama หรือ LM Studio แทน API ของ OpenAI เอง",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "ไม่มีคีย์ API สำหรับทดสอบ โปรดป้อนคีย์ก่อน",
         "offline": "ผู้ให้บริการที่เลือกทำงานแบบออฟไลน์และไม่ต้องทดสอบการเชื่อมต่อ",
         "unknown": "การทดสอบการเชื่อมต่อล้มเหลว ตรวจสอบการตั้งค่าแล้วลองอีกครั้ง"
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "โมเดล",
       "modelPlaceholder": "ค่าเริ่มต้นของผู้ให้บริการ",
       "apiKey": "คีย์ API",
-      "keyStored": "มีคีย์ที่จัดเก็บอยู่ ({{hint}}).",
+      "keyStored": "คีย์จะถูกจัดเก็บเป็นข้อความที่อ่านไม่ออก ({{hint}}).",
       "keyNone": "ไม่มีคีย์ที่จัดเก็บไว้",
       "save": "บันทึก",
       "test": "ทดสอบการเชื่อมต่อ",

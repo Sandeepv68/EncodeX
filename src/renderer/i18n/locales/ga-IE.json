@@ -641,7 +641,7 @@
       "advanced": "Ardghnéithe",
       "baseUrl": "URL bonn",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Tá eochair stóráilte ({{hint}}).",
+      "keyStored": "Stóráiltear eochracha mar téacs doiléir ({{hint}}).",
       "keyNone": "Níl aon eochair stóráilte.",
       "save": "Sábháil",
       "saved": "Socruithe sábháilte.",
@@ -650,7 +650,7 @@
       "testing": "Ag tástáil…",
       "testFailed": "Uimh fhreagra ón soláthraí.",
       "privacy": "Ní sheoltar ach fíricí an anailíse agus téacs do chuspóra; ní uaslódáiltear comhaid meán riamh.",
-      "modelHint": "An t-aitheantóir samhla le húsáid. Fág seo folamh chun réamhshocrú an tsoláthraí a úsáid (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "An t-aitheantóir samhla le húsáid. Fág seo folamh chun réamhshocrú an tsoláthraí a úsáid (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Eochair API do sholáthraí. Déantar í a chriptiú le stór eochracha do chórais oibriúcháin sula sábhálfar í, agus ní thaispeántar ina dhiaidh sin ach leid mhascáilte.",
       "baseUrlHint": "Críochphointe atá comhoiriúnach le OpenAI. Treoraigh é chuig OpenRouter, Groq, Ollama nó LM Studio seachas API OpenAI féin.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Níl aon eochair API ar fáil le tástáil. Iontráil eochair ar dtús.",
         "offline": "Ritheann an soláthraí roghnaithe as líne agus ní theastaíonn tástáil naisc uaidh.",
         "unknown": "Theip ar an tástáil naisc. Seiceáil na socruithe agus triail arís."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Samhail",
       "modelPlaceholder": "Réamhshocrú an tsoláthraí",
       "apiKey": "Eochair API",
-      "keyStored": "Tá eochair stóráilte ({{hint}}).",
+      "keyStored": "Stóráiltear eochracha mar téacs doiléir ({{hint}}).",
       "keyNone": "Níl aon eochair stóráilte.",
       "save": "Sábháil",
       "test": "Tástáil an nasc",

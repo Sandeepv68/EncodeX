@@ -11,6 +11,7 @@ import { describe, it, expect } from 'vitest';
 import {
   AI_DEFAULT_MODELS,
   AI_PROVIDERS_REQUIRING_KEY,
+  AI_PROVIDERS_REQUIRING_NETWORK,
   AI_PROVIDER_CHOICES,
   defaultAiSettings,
   isAiProviderId,
@@ -25,6 +26,20 @@ describe('settings constants', () => {
     expect(AI_PROVIDERS_REQUIRING_KEY.has('openai')).toBe(true);
     expect(AI_PROVIDERS_REQUIRING_KEY.has('rules')).toBe(false);
     expect(Object.keys(AI_DEFAULT_MODELS).sort()).toEqual(['anthropic', 'gemini', 'openai']);
+  });
+
+  it('pins the default model ids, including the current Gemini GA model', () => {
+    expect(AI_DEFAULT_MODELS.openai).toBe('gpt-4o-mini');
+    expect(AI_DEFAULT_MODELS.anthropic).toBe('claude-3-5-haiku-latest');
+    expect(AI_DEFAULT_MODELS.gemini).toBe('gemini-3.8-flash');
+  });
+
+  it('marks the remote providers as requiring a network connection', () => {
+    for (const id of ['openai', 'anthropic', 'gemini'] as const) {
+      expect(AI_PROVIDERS_REQUIRING_NETWORK.has(id)).toBe(true);
+    }
+    expect(AI_PROVIDERS_REQUIRING_NETWORK.has('rules')).toBe(false);
+    expect(AI_PROVIDERS_REQUIRING_NETWORK.has('local')).toBe(false);
   });
 });
 
@@ -113,6 +128,16 @@ describe('sanitizeAiSettings', () => {
     expect(sanitizeAiSettings({ providerId: 'openai', baseUrl: '\uFEFFhttps://x/v1' }).baseUrl).toBe('https://x/v1');
   });
 
+  it('preserves a recorded connection and drops malformed connection fields', () => {
+    expect(
+      sanitizeAiSettings({ providerId: 'openai', key: 'enc', connectedAt: 5, connectedProvider: 'openai', connectedModel: '  gpt-4o  ' }),
+    ).toMatchObject({ connectedAt: 5, connectedProvider: 'openai', connectedModel: 'gpt-4o' });
+    const malformed = sanitizeAiSettings({ providerId: 'openai', connectedAt: 'x', connectedProvider: 'bogus', connectedModel: 7 });
+    expect(malformed).not.toHaveProperty('connectedAt');
+    expect(malformed).not.toHaveProperty('connectedProvider');
+    expect(malformed).not.toHaveProperty('connectedModel');
+  });
+
   it('is not vulnerable to prototype pollution from a hostile document', () => {
     const hostile = JSON.parse('{"__proto__":{"polluted":true},"constructor":"x","prototype":"y"}') as unknown;
     const sanitized = sanitizeAiSettings(hostile) as unknown as Record<string, unknown>;
@@ -141,6 +166,7 @@ describe('keyHint / toAiSettingsView', () => {
       keyHint: '••••••••',
       storedInsecurely: true,
       encryptionAvailable: false,
+      connected: false,
     });
   });
 
@@ -153,6 +179,27 @@ describe('keyHint / toAiSettingsView', () => {
       keyHint: '',
       storedInsecurely: false,
       encryptionAvailable: true,
+      connected: false,
     });
+  });
+
+  it('reports connected only when a key exists and the verified provider matches', () => {
+    const connected = toAiSettingsView(
+      { providerId: 'openai', model: 'gpt-4o', key: 'enc', connectedAt: 111, connectedProvider: 'openai', connectedModel: 'gpt-4o' },
+      true,
+    );
+    expect(connected.connected).toBe(true);
+    expect(connected.connectedAt).toBe(111);
+    expect(connected.connectedModel).toBe('gpt-4o');
+
+    // A connection verified for a different provider does not count.
+    const stale = toAiSettingsView({ providerId: 'anthropic', model: '', key: 'enc', connectedAt: 1, connectedProvider: 'openai' }, true);
+    expect(stale.connected).toBe(false);
+    expect(stale).not.toHaveProperty('connectedAt');
+
+    // A missing key can never be "connected".
+    expect(
+      toAiSettingsView({ providerId: 'openai', model: '', key: null, connectedAt: 1, connectedProvider: 'openai' }, true).connected,
+    ).toBe(false);
   });
 });

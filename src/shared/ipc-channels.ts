@@ -97,6 +97,7 @@
  * @property {string} AI_SETTINGS_GET - Query the Copilot AI provider settings (key redacted).
  * @property {string} AI_SETTINGS_SET - Update the AI provider settings (key encrypted in main).
  * @property {string} AI_CONNECT_TEST - Test connectivity to the configured AI provider.
+ * @property {string} AI_MODELS_LIST - List the models a provider's API reports (key never crosses IPC).
  * @property {string} DEV_CAPTURE_SCREENSHOT - Dev-only: capture the window and save a PNG.
  */
 export const IPC = {
@@ -189,6 +190,7 @@ export const IPC = {
   AI_SETTINGS_GET: 'ai-settings-get',
   AI_SETTINGS_SET: 'ai-settings-set',
   AI_CONNECT_TEST: 'ai-connect-test',
+  AI_MODELS_LIST: 'ai-models-list',
 
   DEV_CAPTURE_SCREENSHOT: 'dev-capture-screenshot',
 } as const;

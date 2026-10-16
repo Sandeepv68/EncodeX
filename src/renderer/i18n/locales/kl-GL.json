@@ -641,7 +641,7 @@
       "advanced": "Advanced",
       "baseUrl": "Base URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Matuaraat toqqorsimavoq ({{hint}}).",
+      "keyStored": "Umiagaat allanngoriikkavit oqaatsit tassaavoq ({{hint}}).",
       "keyNone": "Matuaraat toqqorsimamgilaq.",
       "save": "Toqqaruk",
       "saved": "Aaqqissuutissat toqqorsimapput.",
@@ -650,7 +650,7 @@
       "testing": "Misissorsuivoq…",
       "testFailed": "Inissisimasunit kiinniatagaasaasut.",
       "privacy": "Misissorsuuummata ilusissat aamma isumassarsiannit allassimasat naapertuutissaatigineqarput; mediafilerit nammineeersissutigineqanngisaannarput.",
-      "modelHint": "Naatsorsueqaatsip ID-a atorneqassaaq. Manngertinnagu inissisimasut naapertorlugu atorneqassaaq (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "Naatsorsueqaatsip ID-a atorneqassaaq. Manngertinnagu inissisimasut naapertorlugu atorneqassaaq (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Inissisimasut API-p matuaraatit. Toqqortinnagu systemi-p toqqortarfiani kryptorneqartarpoq, kingorna matuaraat-mik maskerneqqamik taamaallaat takutitarpoq.",
       "baseUrlHint": "OpenAI-mut naapertuuttumik endpointi. OpenAI-p nammineq API-ata tungaanut nannisinagu, OpenRouter, Groq, Ollama imaluunniit LM Studio tungaanut ataatiguk.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Misiliisoqarnissaanut API-nøgle qanngilaq. Nøgle ilanngukkit.",
         "offline": "Provideri toqqakkat offline-imi ingerlasarpoq, attaveqarnermik misilisarnissaq pisariaqanngilaq.",
         "unknown": "Attaveqarnermik misilisarneq ajortorsiorpoq. Inissisimaffit takukkit misileqqillu."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Naatsorsueqaat",
       "modelPlaceholder": "Inissisimasut naapertorlugu piffissaq",
       "apiKey": "API-p matuaraat",
-      "keyStored": "Matuaraat toqqorsimavoq ({{hint}}).",
+      "keyStored": "Umiagaat allanngoriikkavit oqaatsit tassaavoq ({{hint}}).",
       "keyNone": "Matuaraat toqqorsimamgilaq.",
       "save": "Toqqaruk",
       "test": "Attaveqarfiup misissorsua",

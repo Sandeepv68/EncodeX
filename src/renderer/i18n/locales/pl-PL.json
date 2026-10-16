@@ -641,7 +641,7 @@
       "advanced": "Zaawansowane",
       "baseUrl": "Adres bazowy",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Klucz jest zapisany ({{hint}}).",
+      "keyStored": "Klucze są przechowywane jako tekst obfuskowany ({{hint}}).",
       "keyNone": "Nie zapisano klucza.",
       "save": "Zapisz",
       "saved": "Ustawienia zapisane.",
@@ -650,7 +650,7 @@
       "testing": "Testowanie…",
       "testFailed": "Brak odpowiedzi od dostawcy.",
       "privacy": "Wysyłane są tylko dane analizy i tekst celu; pliki multimedialne nigdy nie są wysyłane.",
-      "modelHint": "Identyfikator modelu do użycia. Pozostaw puste, aby użyć domyślnego ustawienia dostawcy (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "Identyfikator modelu do użycia. Pozostaw puste, aby użyć domyślnego ustawienia dostawcy (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Klucz API Twojego dostawcy. Jest szyfrowany za pomocą magazynu kluczy systemu operacyjnego przed zapisaniem, a później wyświetlana jest tylko zamaskowana podpowiedź.",
       "baseUrlHint": "Punkt końcowy zgodny z OpenAI. Skieruj go na OpenRouter, Groq, Ollama lub LM Studio zamiast na własne API OpenAI.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Brak klucza API do przetestowania. Najpierw wprowadź klucz.",
         "offline": "Wybrany dostawca działa offline i nie wymaga testu połączenia.",
         "unknown": "Test połączenia nie powiódł się. Sprawdź ustawienia i spróbuj ponownie."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Model",
       "modelPlaceholder": "Domyślny dostawcy",
       "apiKey": "Klucz API",
-      "keyStored": "Klucz jest zapisany ({{hint}}).",
+      "keyStored": "Klucze są przechowywane jako tekst obfuskowany ({{hint}}).",
       "keyNone": "Nie zapisano klucza.",
       "save": "Zapisz",
       "test": "Przetestuj połączenie",

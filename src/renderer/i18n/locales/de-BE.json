@@ -641,7 +641,7 @@
       "advanced": "Erweitert",
       "baseUrl": "Basis-URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Ein Schlüssel ist gespeichert ({{hint}}).",
+      "keyStored": "Schlüssel werden als obfuskierter Text gespeichert ({{hint}}).",
       "keyNone": "Kein Schlüssel gespeichert.",
       "save": "Speichern",
       "saved": "Einstellungen gespeichert.",
@@ -650,7 +650,7 @@
       "testing": "Testen…",
       "testFailed": "Keine Antwort vom Anbieter.",
       "privacy": "Nur Prüfdaten und Ihr Zieltext werden gesendet; Mediendateien werden nie hochgeladen.",
-      "modelHint": "Die zu verwendende Modell-ID. Leer lassen, um den Anbieter-Standard zu verwenden (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "Die zu verwendende Modell-ID. Leer lassen, um den Anbieter-Standard zu verwenden (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Ihr API-Schlüssel des Anbieters. Er wird vor dem Speichern mit dem Schlüsselspeicher Ihres Betriebssystems verschlüsselt, und danach wird nur ein maskierter Hinweis angezeigt.",
       "baseUrlHint": "OpenAI-kompatibler Endpunkt. Richten Sie ihn auf OpenRouter, Groq, Ollama oder LM Studio statt auf die API von OpenAI selbst.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Es ist kein API-Schlüssel zum Testen verfügbar. Geben Sie zuerst einen Schlüssel ein.",
         "offline": "Der ausgewählte Anbieter läuft offline und benötigt keinen Verbindungstest.",
         "unknown": "Der Verbindungstest ist fehlgeschlagen. Prüfen Sie die Einstellungen und versuchen Sie es erneut."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Modell",
       "modelPlaceholder": "Anbieter-Standard",
       "apiKey": "API-Schlüssel",
-      "keyStored": "Ein Schlüssel ist gespeichert ({{hint}}).",
+      "keyStored": "Schlüssel werden als obfuskierter Text gespeichert ({{hint}}).",
       "keyNone": "Kein Schlüssel gespeichert.",
       "save": "Speichern",
       "test": "Verbindung testen",

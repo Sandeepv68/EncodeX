@@ -27,7 +27,7 @@ import {
   PendingInstall,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
-import type { AiConnectTestResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
+import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
 import type { CopilotPlan, CopilotPlanRequest } from '../shared/copilot';
 
@@ -509,6 +509,15 @@ export interface ElectronAPI {
    * @returns {Promise<AiConnectTestResult>} Whether the provider answered.
    */
   aiConnectTest(candidate?: Partial<AiSettingsUpdate>): Promise<AiConnectTestResult>;
+  /**
+   * Lists the models the configured provider's own API reports over
+   * `IPC.AI_MODELS_LIST` ('ai-models-list'), so the settings editor can offer a
+   * live pick-list. The key is never returned and may be supplied in the
+   * candidate when not yet saved.
+   * @param {Partial<AiSettingsUpdate>} [candidate] - Optional provider/baseUrl/key override.
+   * @returns {Promise<AiModelsListResult>} The model ids and any classified failure.
+   */
+  aiListModels(candidate?: Partial<AiSettingsUpdate>): Promise<AiModelsListResult>;
   /**
    * Captures the current window contents and saves them as a PNG under the
    * project's `screenshots/dev/` directory over `IPC.DEV_CAPTURE_SCREENSHOT`

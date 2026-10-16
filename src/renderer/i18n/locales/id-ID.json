@@ -641,7 +641,7 @@
       "advanced": "Lanjutan",
       "baseUrl": "URL dasar",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Sebuah kunci disimpan ({{hint}}).",
+      "keyStored": "Kunci disimpan sebagai teks yang disamarkan ({{hint}}).",
       "keyNone": "Tidak ada kunci yang disimpan.",
       "save": "Simpan",
       "saved": "Pengaturan disimpan.",
@@ -650,7 +650,7 @@
       "testing": "Menguji…",
       "testFailed": "Tidak ada respons dari penyedia.",
       "privacy": "Hanya fakta pemeriksaan dan teks tujuan Anda yang dikirim; file media tidak pernah diunggah.",
-      "modelHint": "ID model yang akan digunakan. Biarkan kosong untuk memakai default penyedia (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "ID model yang akan digunakan. Biarkan kosong untuk memakai default penyedia (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Kunci API penyedia Anda. Kunci ini dienkripsi dengan keystore sistem operasi Anda sebelum disimpan, dan setelah itu hanya petunjuk bertopeng yang ditampilkan.",
       "baseUrlHint": "Endpoint yang kompatibel dengan OpenAI. Arahkan ke OpenRouter, Groq, Ollama, atau LM Studio alih-alih ke API OpenAI sendiri.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Tidak ada kunci API yang tersedia untuk diuji. Masukkan kunci terlebih dahulu.",
         "offline": "Penyedia yang dipilih berjalan offline dan tidak memerlukan uji koneksi.",
         "unknown": "Uji koneksi gagal. Periksa pengaturan dan coba lagi."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Model",
       "modelPlaceholder": "Default penyedia",
       "apiKey": "Kunci API",
-      "keyStored": "Sebuah kunci disimpan ({{hint}}).",
+      "keyStored": "Kunci disimpan sebagai teks yang disamarkan ({{hint}}).",
       "keyNone": "Tidak ada kunci yang disimpan.",
       "save": "Simpan",
       "test": "Uji koneksi",

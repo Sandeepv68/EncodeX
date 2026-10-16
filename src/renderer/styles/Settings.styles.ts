@@ -34,6 +34,7 @@ export const SettingsSection = styled(Box)(({ theme }) => ({
 }));
 
 export const SettingsLabel = styled(Typography)(({ theme }) => ({
+  fontSize: theme.typography.pxToRem(14),
   fontWeight: 600,
   color: theme.palette.text.primary,
 }));

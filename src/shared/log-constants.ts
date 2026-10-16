@@ -1058,3 +1058,5 @@ export const LOG_IPC_AI_GET_SETTINGS = 'aiGetSettings called';
 export const LOG_IPC_AI_SET_SETTINGS = 'aiSetSettings:';
 /** @const {string} Prefix when the renderer tests AI provider connectivity. */
 export const LOG_IPC_AI_CONNECT_TEST = 'aiConnectTest:';
+/** @const {string} Logged when the renderer requests the provider model list. */
+export const LOG_IPC_AI_LIST_MODELS = 'aiListModels:';

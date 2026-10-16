@@ -229,12 +229,11 @@ export function createGeminiConnector(options: { apiKey: string; model?: string;
     defaultModel: model,
     async complete(request: ConnectorRequest): Promise<ConnectorResponse> {
       const { system, user } = splitMessages(request);
+      const generationConfig: Record<string, unknown> = {};
+      if (request.jsonMode) generationConfig.responseMimeType = 'application/json';
       const body: Record<string, unknown> = {
         contents: [{ role: 'user', parts: [{ text: user }] }],
-        generationConfig: {
-          temperature: request.temperature ?? 0,
-          ...(request.jsonMode ? { responseMimeType: 'application/json' } : {}),
-        },
+        ...(Object.keys(generationConfig).length > 0 ? { generationConfig } : {}),
       };
       if (system) body.systemInstruction = { parts: [{ text: system }] };
       const signal = request.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);

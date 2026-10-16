@@ -94,6 +94,7 @@ const API_TABLE = {
   aiGetSettings: { kind: 'invoke', channel: IPC.AI_SETTINGS_GET, params: [] },
   aiSetSettings: { kind: 'invoke', channel: IPC.AI_SETTINGS_SET, params: ['update'] },
   aiConnectTest: { kind: 'invoke', channel: IPC.AI_CONNECT_TEST, params: ['candidate'] },
+  aiListModels: { kind: 'invoke', channel: IPC.AI_MODELS_LIST, params: ['candidate'] },
   captureDevScreenshot: { kind: 'invoke', channel: IPC.DEV_CAPTURE_SCREENSHOT, params: [] },
   checkForUpdates: { kind: 'invoke', channel: IPC.CHECK_FOR_UPDATES, params: [] },
   downloadUpdate: { kind: 'invoke', channel: IPC.DOWNLOAD_UPDATE, params: [] },

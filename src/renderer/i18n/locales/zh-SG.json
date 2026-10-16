@@ -641,7 +641,7 @@
       "advanced": "高级",
       "baseUrl": "基础 URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "已存储密钥（{{hint}}）。",
+      "keyStored": "密钥以混淆文本形式存储（{{hint}}）。",
       "keyNone": "未存储密钥。",
       "save": "保存",
       "saved": "设置已保存。",
@@ -650,7 +650,7 @@
       "testing": "正在测试…",
       "testFailed": "提供商无响应。",
       "privacy": "仅发送分析信息和您的目标文本；媒体文件绝不会被上传。",
-      "modelHint": "要使用的模型 ID。留空则使用提供商默认值（OpenAI：gpt-4o-mini，Anthropic：claude-3-5-haiku-latest，Gemini：gemini-2.0-flash）。",
+      "modelHint": "要使用的模型 ID。留空则使用提供商默认值（OpenAI：gpt-4o-mini，Anthropic：claude-3-5-haiku-latest，Gemini：gemini-3.8-flash）。",
       "apiKeyHint": "你的提供商 API 密钥。保存前会使用操作系统的密钥库进行加密，之后只显示经过掩码的提示。",
       "baseUrlHint": "兼容 OpenAI 的端点。将其指向 OpenRouter、Groq、Ollama 或 LM Studio，而不是 OpenAI 自己的 API。",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "没有可用于测试的 API 密钥。请先输入密钥。",
         "offline": "所选的提供商离线运行，无需连接测试。",
         "unknown": "连接测试失败。请检查设置并重试。"
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "模型",
       "modelPlaceholder": "提供商默认",
       "apiKey": "API 密钥",
-      "keyStored": "已存储密钥（{{hint}}）。",
+      "keyStored": "密钥以混淆文本形式存储（{{hint}}）。",
       "keyNone": "未存储密钥。",
       "save": "保存",
       "test": "测试连接",

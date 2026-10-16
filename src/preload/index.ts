@@ -88,7 +88,7 @@ import {
   PendingInstall,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
-import type { AiConnectTestResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
+import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
 import {
   LOG_ARROW,
@@ -162,6 +162,7 @@ import {
   LOG_IPC_AI_GET_SETTINGS,
   LOG_IPC_AI_SET_SETTINGS,
   LOG_IPC_AI_CONNECT_TEST,
+  LOG_IPC_AI_LIST_MODELS,
 } from '../shared/log-constants';
 
 /**
@@ -1017,6 +1018,21 @@ const api = {
   aiConnectTest: (candidate?: Partial<AiSettingsUpdate>) => {
     log.debug(LOG_IPC_AI_CONNECT_TEST, { providerId: candidate?.providerId });
     return ipcRenderer.invoke(IPC.AI_CONNECT_TEST, candidate) as Promise<AiConnectTestResult>;
+  },
+
+  /**
+   * Lists the models the configured provider's own API reports, so the settings
+   * editor can offer a live pick-list instead of a hardcoded catalog. Uses the
+   * supplied `apiKey` when present, else the stored key (decrypted in main - the
+   * key never crosses this boundary). Invokes `IPC.AI_MODELS_LIST`
+   * ('ai-models-list').
+   *
+   * @param {Partial<AiSettingsUpdate>} [candidate] - Optional provider/baseUrl/key override.
+   * @returns {Promise<AiModelsListResult>} The model ids, or a classified failure.
+   */
+  aiListModels: (candidate?: Partial<AiSettingsUpdate>) => {
+    log.debug(LOG_IPC_AI_LIST_MODELS, { providerId: candidate?.providerId });
+    return ipcRenderer.invoke(IPC.AI_MODELS_LIST, candidate) as Promise<AiModelsListResult>;
   },
 
   /**

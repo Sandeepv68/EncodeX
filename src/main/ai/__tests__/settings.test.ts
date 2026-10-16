@@ -22,6 +22,7 @@ import {
   effectiveModel,
   isEncryptionAvailable,
   readAiSettings,
+  recordAiConnection,
   writeAiSettings,
 } from '../settings';
 import type { AiServerSettings } from '../settings';
@@ -167,6 +168,41 @@ describe('applyAiSettingsUpdate', () => {
     expect(stored.key).toBeNull();
     expect(stored.keySetAt).toBeUndefined();
     expect(stored.storedInsecurely).toBeUndefined();
+  });
+
+  it('clears a previously recorded connection on any update', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini', apiKey: 'sk-1' });
+    expect(recordAiConnection(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini' }).connected).toBe(true);
+    // Re-saving (even the same values) invalidates the verified connection.
+    const view = applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini' });
+    expect(view.connected).toBe(false);
+    expect(readAiSettings(userDataDir)).not.toHaveProperty('connectedAt');
+    expect(readAiSettings(userDataDir)).not.toHaveProperty('connectedProvider');
+    expect(readAiSettings(userDataDir)).not.toHaveProperty('connectedModel');
+  });
+});
+
+describe('recordAiConnection', () => {
+  it('persists the verified provider/model and returns a connected view', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: '', apiKey: 'sk-1' });
+    const view = recordAiConnection(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini' });
+    expect(view.connected).toBe(true);
+    expect(view.connectedModel).toBe('gpt-4o-mini');
+    expect(typeof view.connectedAt).toBe('number');
+    expect(readAiSettings(userDataDir)).toMatchObject({ connectedProvider: 'openai', connectedModel: 'gpt-4o-mini' });
+  });
+
+  it('does not report connected while no key is stored', () => {
+    const view = recordAiConnection(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini' });
+    expect(view.connected).toBe(false);
+    expect(view).not.toHaveProperty('connectedAt');
+  });
+
+  it('drops an empty model id from the recorded connection', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', apiKey: 'sk-1' });
+    const view = recordAiConnection(userDataDir, { providerId: 'openai', model: '   ' });
+    expect(view.connected).toBe(true);
+    expect(view).not.toHaveProperty('connectedModel');
   });
 });
 

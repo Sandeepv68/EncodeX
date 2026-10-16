@@ -641,7 +641,7 @@
       "advanced": "Lanjutan",
       "baseUrl": "URL asas",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "Kunci disimpan ({{hint}}).",
+      "keyStored": "Kunci disimpan sebagai teks tersamar ({{hint}}).",
       "keyNone": "Tiada kunci disimpan.",
       "save": "Simpan",
       "saved": "Tetapan disimpan.",
@@ -650,7 +650,7 @@
       "testing": "Menguji…",
       "testFailed": "Tiada tindak balas daripada pembekal.",
       "privacy": "Hanya fakta pemeriksaan dan teks matlamat anda yang dihantar; fail media tidak pernah dimuat naik.",
-      "modelHint": "ID model yang hendak digunakan. Biarkan kosong untuk menggunakan lalai pembekal (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "ID model yang hendak digunakan. Biarkan kosong untuk menggunakan lalai pembekal (OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "Kunci API pembekal anda. Ia disulitkan dengan keystore sistem pengendalian anda sebelum disimpan, dan selepas itu hanya petunjuk bertopeng dipaparkan.",
       "baseUrlHint": "Titik akhir yang serasi dengan OpenAI. Halakan ia ke OpenRouter, Groq, Ollama atau LM Studio dan bukan ke API OpenAI sendiri.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "Tiada kunci API tersedia untuk diuji. Masukkan kunci dahulu.",
         "offline": "Pembekal yang dipilih berjalan di luar talian dan tidak memerlukan ujian sambungan.",
         "unknown": "Ujian sambungan gagal. Semak tetapan dan cuba lagi."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "Model",
       "modelPlaceholder": "Lalai pembekal",
       "apiKey": "Kunci API",
-      "keyStored": "Kunci disimpan ({{hint}}).",
+      "keyStored": "Kunci disimpan sebagai teks tersamar ({{hint}}).",
       "keyNone": "Tiada kunci disimpan.",
       "save": "Simpan",
       "test": "Uji sambungan",

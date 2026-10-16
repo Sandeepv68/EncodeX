@@ -641,7 +641,7 @@
       "advanced": "고급",
       "baseUrl": "기본 URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
-      "keyStored": "저장된 키가 있습니다({{hint}}).",
+      "keyStored": "키는 난독화된 텍스트로 저장됩니다({{hint}}).",
       "keyNone": "저장된 키가 없습니다.",
       "save": "저장",
       "saved": "설정이 저장되었습니다.",
@@ -650,7 +650,7 @@
       "testing": "테스트 중…",
       "testFailed": "공급자의 응답이 없습니다.",
       "privacy": "검사 결과와 목표 텍스트만 전송되며 미디어 파일은 절대 업로드되지 않습니다.",
-      "modelHint": "사용할 모델 ID입니다. 비워 두면 공급자의 기본값이 사용됩니다(OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-2.0-flash).",
+      "modelHint": "사용할 모델 ID입니다. 비워 두면 공급자의 기본값이 사용됩니다(OpenAI: gpt-4o-mini, Anthropic: claude-3-5-haiku-latest, Gemini: gemini-3.8-flash).",
       "apiKeyHint": "공급자의 API 키입니다. 저장하기 전에 운영 체제의 키 저장소로 암호화되며, 이후에는 마스킹된 힌트만 표시됩니다.",
       "baseUrlHint": "OpenAI 호환 엔드포인트입니다. OpenAI 자체 API 대신 OpenRouter, Groq, Ollama 또는 LM Studio를 지정할 수 있습니다.",
       "errors": {
@@ -668,7 +668,12 @@
         "noKey": "테스트에 사용할 API 키가 없습니다. 먼저 키를 입력하세요.",
         "offline": "선택한 공급자는 오프라인으로 실행되며 연결 테스트가 필요하지 않습니다.",
         "unknown": "연결 테스트에 실패했습니다. 설정을 확인하고 다시 시도하세요."
-      }
+      },
+      "statusConnected": "Connected and verified.",
+      "requiresNetwork": "This provider needs an active network connection.",
+      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
+      "modelsLoading": "Loading models...",
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
     }
   },
   "shortcuts": {
@@ -1048,7 +1053,7 @@
       "model": "모델",
       "modelPlaceholder": "공급자 기본값",
       "apiKey": "API 키",
-      "keyStored": "저장된 키가 있습니다({{hint}}).",
+      "keyStored": "키는 난독화된 텍스트로 저장됩니다({{hint}}).",
       "keyNone": "저장된 키가 없습니다.",
       "save": "저장",
       "test": "연결 테스트",
