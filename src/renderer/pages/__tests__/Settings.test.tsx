@@ -813,6 +813,43 @@ describe('Settings', () => {
     await waitFor(() => expect(screen.queryByTestId('settings-ai-remove-key')).not.toBeInTheDocument());
   });
 
+  it('shows a save error when removing the key returns an unusable view', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'openai',
+      model: '',
+      hasKey: true,
+      keyHint: '••••••••',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: false,
+    });
+    vi.mocked(window.electronAPI.aiSetSettings).mockResolvedValue({} as never);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-remove-key'));
+    expect(await screen.findByTestId('settings-ai-error')).toHaveTextContent('settings.ai.saveFailed');
+    expect(screen.getByTestId('settings-ai-remove-key')).toBeInTheDocument();
+  });
+
+  it('surfaces a key-removal rejection as an error', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'openai',
+      model: '',
+      hasKey: true,
+      keyHint: '••••••••',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: false,
+    });
+    vi.mocked(window.electronAPI.aiSetSettings).mockRejectedValue(new Error('boom'));
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-remove-key'));
+    expect(await screen.findByTestId('settings-ai-error')).toBeInTheDocument();
+  });
+
   it('switches the connect button to a connected state after a successful test', async () => {
     vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({
       ok: true,
