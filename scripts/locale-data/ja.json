@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "映像トラック",
   "videoTimeline.zoomIn": "拡大",
-  "videoTimeline.zoomOut": "縮小"
+  "videoTimeline.zoomOut": "縮小",
+  "settings.ai.keySavedPlaceholder": "キーは保存されています。置き換えるには新しいキーを貼り付けてください。",
+  "settings.ai.connected": "接続済み",
+  "settings.ai.testAgain": "接続を再テスト",
+  "settings.ai.keySaved": "キーが保存されています（{{hint}}）。置き換えるには新しいキーを貼り付けてください。",
+  "settings.ai.removeKey": "キーを削除",
+  "settings.ai.keyRemoved": "保存されたキーを削除しました。",
+  "settings.ai.statusConnected": "接続と確認が完了しました。",
+  "settings.ai.staleStatus": "設定が変更されました。確認するには再接続してください。",
+  "settings.ai.headerConnected": "接続済み · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "このプロバイダーには有効なネットワーク接続が必要です。",
+  "settings.ai.offlineFallback": "オフラインです。内蔵のルールプロバイダーに切り替えました。リモートプロバイダーには有効なネットワーク接続が必要です。",
+  "settings.ai.modelsLoading": "モデルを読み込み中...",
+  "settings.ai.modelsUnavailable": "プロバイダーからモデルを読み込めませんでした。モデルIDは引き続き入力できます。"
 }

@@ -669,11 +669,19 @@
         "offline": "Den valgte leverandøren kjører offline og trenger ingen tilkoblingstest.",
         "unknown": "Tilkoblingstesten mislyktes. Sjekk innstillingene, og prøv igjen."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Tilkoblet og bekreftet.",
+      "requiresNetwork": "Denne leverandøren trenger en aktiv nettverksforbindelse.",
+      "offlineFallback": "Du er frakoblet. Byttet til den innebygde regelleverandøren. Eksterne leverandører trenger en aktiv nettverksforbindelse.",
+      "modelsLoading": "Laster inn modeller...",
+      "modelsUnavailable": "Kunne ikke laste inn modeller fra leverandøren. Du kan fortsatt skrive en modell-id.",
+      "keySavedPlaceholder": "Nøkkel lagret. Lim inn en ny nøkkel for å erstatte den.",
+      "connected": "Tilkoblet",
+      "testAgain": "Test tilkoblingen på nytt",
+      "keySaved": "En nøkkel er lagret ({{hint}}). Lim inn en ny nøkkel for å erstatte den.",
+      "removeKey": "Fjern nøkkel",
+      "keyRemoved": "Den lagrede nøkkelen ble fjernet.",
+      "staleStatus": "Innstillingene er endret. Koble til på nytt for å bekrefte.",
+      "headerConnected": "Tilkoblet · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

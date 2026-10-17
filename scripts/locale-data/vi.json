@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Luồng video",
   "videoTimeline.zoomIn": "Phóng to",
-  "videoTimeline.zoomOut": "Thu nhỏ"
+  "videoTimeline.zoomOut": "Thu nhỏ",
+  "settings.ai.keySavedPlaceholder": "Đã lưu khóa. Dán khóa mới để thay thế.",
+  "settings.ai.connected": "Đã kết nối",
+  "settings.ai.testAgain": "Kiểm tra lại kết nối",
+  "settings.ai.keySaved": "Một khóa đã được lưu ({{hint}}). Dán khóa mới để thay thế.",
+  "settings.ai.removeKey": "Xóa khóa",
+  "settings.ai.keyRemoved": "Khóa đã lưu đã bị xóa.",
+  "settings.ai.statusConnected": "Đã kết nối và xác minh.",
+  "settings.ai.staleStatus": "Cài đặt đã thay đổi. Kết nối lại để xác minh.",
+  "settings.ai.headerConnected": "Đã kết nối · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Nhà cung cấp này cần kết nối mạng đang hoạt động.",
+  "settings.ai.offlineFallback": "Bạn đang ngoại tuyến. Đã chuyển sang nhà cung cấp quy tắc tích hợp. Nhà cung cấp từ xa cần kết nối mạng đang hoạt động.",
+  "settings.ai.modelsLoading": "Đang tải mô hình...",
+  "settings.ai.modelsUnavailable": "Không thể tải mô hình từ nhà cung cấp. Bạn vẫn có thể nhập id mô hình."
 }

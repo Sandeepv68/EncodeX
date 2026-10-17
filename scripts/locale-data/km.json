@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "បទវីដេអូ",
   "videoTimeline.zoomIn": "ពង្រីក",
-  "videoTimeline.zoomOut": "បង្រួម"
+  "videoTimeline.zoomOut": "បង្រួម",
+  "settings.ai.keySavedPlaceholder": "បានរក្សាទុកសោ។ បិទភ្ជាប់សោថ្មីដើម្បីជំនួសវា។",
+  "settings.ai.connected": "បានភ្ជាប់",
+  "settings.ai.testAgain": "សាកល្បងការតភ្ជាប់ម្តងទៀត",
+  "settings.ai.keySaved": "សោមួយត្រូវបានរក្សាទុក ({{hint}})។ បិទភ្ជាប់សោថ្មីដើម្បីជំនួសវា។",
+  "settings.ai.removeKey": "លុបសោ",
+  "settings.ai.keyRemoved": "សោដែលបានរក្សាទុកត្រូវបានលុប។",
+  "settings.ai.statusConnected": "បានភ្ជាប់ និងផ្ទៀងផ្ទាត់។",
+  "settings.ai.staleStatus": "ការកំណត់បានផ្លាស់ប្តូរ។ ភ្ជាប់ឡើងវិញដើម្បីផ្ទៀងផ្ទាត់។",
+  "settings.ai.headerConnected": "បានភ្ជាប់ · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "អ្នកផ្តល់នេះត្រូវការការតភ្ជាប់បណ្តាញសកម្ម។",
+  "settings.ai.offlineFallback": "អ្នកកំពុងគ្មានអ៊ីនធឺណិត។ បានប្តូរទៅអ្នកផ្តល់ច្បាប់ដែលបានបង្កប់។ អ្នកផ្តល់ពីចម្ងាយត្រូវការការតភ្ជាប់បណ្តាញសកម្ម។",
+  "settings.ai.modelsLoading": "កំពុងផ្ទុកម៉ូដែល...",
+  "settings.ai.modelsUnavailable": "មិនអាចផ្ទុកម៉ូដែលពីអ្នកផ្តល់បានទេ។ អ្នកនៅតែអាចវាយ id ម៉ូដែល។"
 }

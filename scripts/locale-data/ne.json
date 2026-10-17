@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "भिडियो ट्र्याक",
   "videoTimeline.zoomIn": "ठूलो",
-  "videoTimeline.zoomOut": "सानो"
+  "videoTimeline.zoomOut": "सानो",
+  "settings.ai.keySavedPlaceholder": "कुञ्जी सुरक्षित गरियो। प्रतिस्थापन गर्न नयाँ कुञ्जी टाँस्नुहोस्।",
+  "settings.ai.connected": "जडित",
+  "settings.ai.testAgain": "जडान फेरि परीक्षण गर्नुहोस्",
+  "settings.ai.keySaved": "एउटा कुञ्जी सुरक्षित गरिएको छ ({{hint}})। प्रतिस्थापन गर्न नयाँ कुञ्जी टाँस्नुहोस्।",
+  "settings.ai.removeKey": "कुञ्जी हटाउनुहोस्",
+  "settings.ai.keyRemoved": "भण्डारित कुञ्जी हटाइयो।",
+  "settings.ai.statusConnected": "जडित र प्रमाणित।",
+  "settings.ai.staleStatus": "सेटिङ्स परिवर्तन भयो। प्रमाणित गर्न फेरि जडान गर्नुहोस्।",
+  "settings.ai.headerConnected": "जडित · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "यो प्रदायकलाई सक्रिय नेटवर्क जडान चाहिन्छ।",
+  "settings.ai.offlineFallback": "तपाईं अफलाइन हुनुहुन्छ। निर्मित नियम प्रदायकमा स्विच गरियो। टाढाका प्रदायकलाई सक्रिय नेटवर्क जडान चाहिन्छ।",
+  "settings.ai.modelsLoading": "मोडेलहरू लोड हुँदै...",
+  "settings.ai.modelsUnavailable": "प्रदायकबाट मोडेलहरू लोड गर्न सकिएन। तपाईं अझै मोडेल आईडी टाइप गर्न सक्नुहुन्छ।"
 }

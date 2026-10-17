@@ -107,12 +107,13 @@ describe('5.1 locale matrix', () => {
     }
   });
 
-  it('ships a real translation for every copilot.* and settings.ai.errors.* key', () => {
-    // Stage 3d guard: the Copilot UI and the AI connector error copy must not
+  it('ships a real translation for every copilot.* and settings.ai.* key', () => {
+    // Stage 3d guard: the Copilot UI and the AI provider settings copy must not
     // fall back to English placeholders in any shipped locale. Product names
-    // (Copilot, OpenAI, Anthropic, Google Gemini, Remux, Demux) and true
-    // cognates are exempted in the helper; everything else must differ from the
-    // en-US string. The target set is non-trivial, else the check is vacuous.
+    // (Copilot, OpenAI, Anthropic, Google Gemini, Remux, Demux), the API
+    // base-URL placeholder, and true cognates are exempted in the helper;
+    // everything else must differ from the en-US string. The target set is
+    // non-trivial, else the check is vacuous.
     expect(NON_ENGLISH_REQUIRED.size).toBeGreaterThan(80);
 
     // English variants (en-AU, en-GB, ...) legitimately share the source

@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "ເພງວິດີໂອ",
   "videoTimeline.zoomIn": "ຂະຫຍາຍເຂົ້າ",
-  "videoTimeline.zoomOut": "ຂະຫຍາຍອອກ"
+  "videoTimeline.zoomOut": "ຂະຫຍາຍອອກ",
+  "settings.ai.keySavedPlaceholder": "ບັນທຶກຄີແລ້ວ. ວາງຄີໃໝ່ເພື່ອທົດແທນ.",
+  "settings.ai.connected": "ເຊື່ອມຕໍ່ແລ້ວ",
+  "settings.ai.testAgain": "ທົດສອບການເຊື່ອມຕໍ່ອີກຄັ້ງ",
+  "settings.ai.keySaved": "ມີຄີທີ່ບັນທຶກໄວ້ ({{hint}}). ວາງຄີໃໝ່ເພື່ອທົດແທນ.",
+  "settings.ai.removeKey": "ລຶບຄີ",
+  "settings.ai.keyRemoved": "ລຶບຄີທີ່ບັນທຶກໄວ້ແລ້ວ.",
+  "settings.ai.statusConnected": "ເຊື່ອມຕໍ່ ແລະ ຢືນຢັນແລ້ວ.",
+  "settings.ai.staleStatus": "ການຕັ້ງຄ່າປ່ຽນແປງ. ເຊື່ອມຕໍ່ອີກຄັ້ງເພື່ອຢືນຢັນ.",
+  "settings.ai.headerConnected": "ເຊື່ອມຕໍ່ແລ້ວ · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "ຜູ້ໃຫ້ບໍລິການນີ້ຕ້ອງການການເຊື່ອມຕໍ່ເຄືອຂ່າຍທີ່ໃຊ້ໄດ້.",
+  "settings.ai.offlineFallback": "ທ່ານອອບລາຍ. ປ່ຽນໄປໃຊ້ຜູ້ໃຫ້ບໍລິການກົດລະບຽບໃນຕົວ. ຜູ້ໃຫ້ບໍລິການທາງໄກຕ້ອງການການເຊື່ອມຕໍ່ເຄືອຂ່າຍທີ່ໃຊ້ໄດ້.",
+  "settings.ai.modelsLoading": "ກຳລັງໂຫຼດໂມເດວ...",
+  "settings.ai.modelsUnavailable": "ບໍ່ສາມາດໂຫຼດໂມເດວຈາກຜູ້ໃຫ້ບໍລິການໄດ້. ທ່ານຍັງສາມາດພິມ id ໂມເດວໄດ້."
 }

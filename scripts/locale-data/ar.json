@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "مسار الفيديو",
   "videoTimeline.zoomIn": "تكبير",
-  "videoTimeline.zoomOut": "تصغير"
+  "videoTimeline.zoomOut": "تصغير",
+  "settings.ai.keySavedPlaceholder": "تم حفظ المفتاح. الصق مفتاحًا جديدًا لاستبداله.",
+  "settings.ai.connected": "متصل",
+  "settings.ai.testAgain": "اختبار الاتصال مرة أخرى",
+  "settings.ai.keySaved": "تم حفظ مفتاح ({{hint}}). الصق مفتاحًا جديدًا لاستبداله.",
+  "settings.ai.removeKey": "إزالة المفتاح",
+  "settings.ai.keyRemoved": "تمت إزالة المفتاح المخزّن.",
+  "settings.ai.statusConnected": "متصل وتم التحقق منه.",
+  "settings.ai.staleStatus": "تغيّرت الإعدادات. اتصل مرة أخرى للتحقق.",
+  "settings.ai.headerConnected": "متصل · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "يحتاج هذا المزوّد إلى اتصال شبكة نشط.",
+  "settings.ai.offlineFallback": "أنت غير متصل. تم التبديل إلى مزوّد القواعد المدمج. يحتاج المزوّدون الخارجيون إلى اتصال شبكة نشط.",
+  "settings.ai.modelsLoading": "جارٍ تحميل النماذج...",
+  "settings.ai.modelsUnavailable": "تعذّر تحميل النماذج من المزوّد. لا يزال بإمكانك كتابة معرّف نموذج."
 }

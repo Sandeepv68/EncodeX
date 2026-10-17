@@ -669,11 +669,19 @@
         "offline": "所选的提供商离线运行，无需连接测试。",
         "unknown": "连接测试失败。请检查设置并重试。"
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "已连接并验证。",
+      "requiresNetwork": "此提供商需要有效的网络连接。",
+      "offlineFallback": "你已离线。已切换到内置规则提供商。远程提供商需要有效的网络连接。",
+      "modelsLoading": "正在加载模型...",
+      "modelsUnavailable": "无法从提供商加载模型。你仍可以输入模型 ID。",
+      "keySavedPlaceholder": "密钥已保存。粘贴新密钥以替换。",
+      "connected": "已连接",
+      "testAgain": "再次测试连接",
+      "keySaved": "已保存密钥（{{hint}}）。粘贴新密钥以替换。",
+      "removeKey": "移除密钥",
+      "keyRemoved": "已移除存储的密钥。",
+      "staleStatus": "设置已更改。请重新连接以验证。",
+      "headerConnected": "已连接 · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

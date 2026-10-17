@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Videotrack",
   "videoTimeline.zoomIn": "Inzoomen",
-  "videoTimeline.zoomOut": "Uitzoomen"
+  "videoTimeline.zoomOut": "Uitzoomen",
+  "settings.ai.keySavedPlaceholder": "Sleutel opgeslagen. Plak een nieuwe sleutel om deze te vervangen.",
+  "settings.ai.connected": "Verbonden",
+  "settings.ai.testAgain": "Verbinding opnieuw testen",
+  "settings.ai.keySaved": "Er is een sleutel opgeslagen ({{hint}}). Plak een nieuwe sleutel om deze te vervangen.",
+  "settings.ai.removeKey": "Sleutel verwijderen",
+  "settings.ai.keyRemoved": "De opgeslagen sleutel is verwijderd.",
+  "settings.ai.statusConnected": "Verbonden en geverifieerd.",
+  "settings.ai.staleStatus": "Instellingen gewijzigd. Verbind opnieuw om te verifiëren.",
+  "settings.ai.headerConnected": "Verbonden · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Deze aanbieder vereist een actieve netwerkverbinding.",
+  "settings.ai.offlineFallback": "U bent offline. Overgeschakeld naar de ingebouwde regelaanbieder. Externe aanbieders vereisen een actieve netwerkverbinding.",
+  "settings.ai.modelsLoading": "Modellen laden...",
+  "settings.ai.modelsUnavailable": "Modellen konden niet van de aanbieder worden geladen. U kunt nog steeds een model-id typen."
 }

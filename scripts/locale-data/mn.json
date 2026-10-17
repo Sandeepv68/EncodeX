@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Видео дуу",
   "videoTimeline.zoomIn": "Томруулах",
-  "videoTimeline.zoomOut": "Жижиглэх"
+  "videoTimeline.zoomOut": "Жижиглэх",
+  "settings.ai.keySavedPlaceholder": "Түлхүүр хадгалагдлаа. Солихын тулд шинэ түлхүүр буулгана уу.",
+  "settings.ai.connected": "Холбогдсон",
+  "settings.ai.testAgain": "Холболтыг дахин шалгах",
+  "settings.ai.keySaved": "Түлхүүр хадгалагдсан байна ({{hint}}). Солихын тулд шинэ түлхүүр буулгана уу.",
+  "settings.ai.removeKey": "Түлхүүр устгах",
+  "settings.ai.keyRemoved": "Хадгалагдсан түлхүүрийг устгалаа.",
+  "settings.ai.statusConnected": "Холбогдсон бөгөөд баталгаажсан.",
+  "settings.ai.staleStatus": "Тохиргоо өөрчлөгдлөө. Баталгаажуулахын тулд дахин холбоно уу.",
+  "settings.ai.headerConnected": "Холбогдсон · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Энэ үзүүлэгчид идэвхтэй сүлжээний холболт шаардлагатай.",
+  "settings.ai.offlineFallback": "Та офлайн байна. Суулгасан дүрмийн үзүүлэгч рүү шилжлээ. Алсын үзүүлэгчид идэвхтэй сүлжээний холболт шаардлагатай.",
+  "settings.ai.modelsLoading": "Загваруудыг ачаалж байна...",
+  "settings.ai.modelsUnavailable": "Үзүүлэгчээс загваруудыг ачаалж чадсангүй. Та загварын id-г бичиж болно."
 }

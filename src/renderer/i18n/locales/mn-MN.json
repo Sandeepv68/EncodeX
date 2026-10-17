@@ -669,11 +669,19 @@
         "offline": "Сонгосон үзүүлэгч офлайн ажилладаг бөгөөд холболтын туршилт шаардлагагүй.",
         "unknown": "Холболтын туршилт амжилтгүй болсон. Тохиргоог шалгаад дахин оролдоно уу."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Холбогдсон бөгөөд баталгаажсан.",
+      "requiresNetwork": "Энэ үзүүлэгчид идэвхтэй сүлжээний холболт шаардлагатай.",
+      "offlineFallback": "Та офлайн байна. Суулгасан дүрмийн үзүүлэгч рүү шилжлээ. Алсын үзүүлэгчид идэвхтэй сүлжээний холболт шаардлагатай.",
+      "modelsLoading": "Загваруудыг ачаалж байна...",
+      "modelsUnavailable": "Үзүүлэгчээс загваруудыг ачаалж чадсангүй. Та загварын id-г бичиж болно.",
+      "keySavedPlaceholder": "Түлхүүр хадгалагдлаа. Солихын тулд шинэ түлхүүр буулгана уу.",
+      "connected": "Холбогдсон",
+      "testAgain": "Холболтыг дахин шалгах",
+      "keySaved": "Түлхүүр хадгалагдсан байна ({{hint}}). Солихын тулд шинэ түлхүүр буулгана уу.",
+      "removeKey": "Түлхүүр устгах",
+      "keyRemoved": "Хадгалагдсан түлхүүрийг устгалаа.",
+      "staleStatus": "Тохиргоо өөрчлөгдлөө. Баталгаажуулахын тулд дахин холбоно уу.",
+      "headerConnected": "Холбогдсон · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

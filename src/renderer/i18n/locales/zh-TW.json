@@ -669,11 +669,19 @@
         "offline": "所選提供者以離線方式執行，不需要連線測試。",
         "unknown": "連線測試失敗。請檢查設定並重試。"
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "已連線並驗證。",
+      "requiresNetwork": "此提供者需要作用中的網路連線。",
+      "offlineFallback": "你已離線。已切換至內建規則提供者。遠端提供者需要作用中的網路連線。",
+      "modelsLoading": "正在載入模型...",
+      "modelsUnavailable": "無法從提供者載入模型。你仍可以輸入模型 ID。",
+      "keySavedPlaceholder": "金鑰已儲存。貼上新的金鑰以取代。",
+      "connected": "已連線",
+      "testAgain": "再次測試連線",
+      "keySaved": "已儲存金鑰（{{hint}}）。貼上新的金鑰以取代。",
+      "removeKey": "移除金鑰",
+      "keyRemoved": "已移除儲存的金鑰。",
+      "staleStatus": "設定已變更。請重新連線以驗證。",
+      "headerConnected": "已連線 · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

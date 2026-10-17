@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "वीडियो ट्रैक",
   "videoTimeline.zoomIn": "ज़ूम इन",
-  "videoTimeline.zoomOut": "ज़ूम आउट"
+  "videoTimeline.zoomOut": "ज़ूम आउट",
+  "settings.ai.keySavedPlaceholder": "कुंजी सहेजी गई। बदलने के लिए नई कुंजी चिपकाएँ।",
+  "settings.ai.connected": "कनेक्टेड",
+  "settings.ai.testAgain": "कनेक्शन फिर से जाँचें",
+  "settings.ai.keySaved": "एक कुंजी सहेजी गई है ({{hint}})। बदलने के लिए नई कुंजी चिपकाएँ।",
+  "settings.ai.removeKey": "कुंजी हटाएँ",
+  "settings.ai.keyRemoved": "सहेजी गई कुंजी हटा दी गई।",
+  "settings.ai.statusConnected": "कनेक्टेड और सत्यापित।",
+  "settings.ai.staleStatus": "सेटिंग्स बदल गईं। सत्यापित करने के लिए फिर से कनेक्ट करें।",
+  "settings.ai.headerConnected": "कनेक्टेड · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "इस प्रदाता को सक्रिय नेटवर्क कनेक्शन चाहिए।",
+  "settings.ai.offlineFallback": "आप ऑफ़लाइन हैं। अंतर्निहित नियम प्रदाता पर स्विच किया। दूरस्थ प्रदाताओं को सक्रिय नेटवर्क कनेक्शन चाहिए।",
+  "settings.ai.modelsLoading": "मॉडल लोड हो रहे हैं...",
+  "settings.ai.modelsUnavailable": "प्रदाता से मॉडल लोड नहीं हो सके। आप अभी भी मॉडल आईडी टाइप कर सकते हैं।"
 }

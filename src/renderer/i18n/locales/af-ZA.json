@@ -669,11 +669,19 @@
         "offline": "Die gekose verskaffer werk vanlyn en het geen verbindingstoets nodig nie.",
         "unknown": "Die verbindingstoets het misluk. Gaan die instellings na en probeer weer."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Gekoppel en bevestig.",
+      "requiresNetwork": "Hierdie verskaffer benodig 'n aktiewe netwerkverbinding.",
+      "offlineFallback": "Jy is vanlyn. Oorgeskakel na die ingeboude reëls-verskaffer. Afgeleë verskaffers benodig 'n aktiewe netwerkverbinding.",
+      "modelsLoading": "Modelle word gelaai...",
+      "modelsUnavailable": "Kon nie modelle van die verskaffer laai nie. Jy kan steeds 'n model-ID tik.",
+      "keySavedPlaceholder": "Sleutel gestoor. Plak 'n nuwe sleutel om dit te vervang.",
+      "connected": "Gekoppel",
+      "testAgain": "Toets weer die verbinding",
+      "keySaved": "'n Sleutel is gestoor ({{hint}}). Plak 'n nuwe sleutel om dit te vervang.",
+      "removeKey": "Verwyder sleutel",
+      "keyRemoved": "Die gestoorde sleutel is verwyder.",
+      "staleStatus": "Instellings het verander. Koppel weer om te bevestig.",
+      "headerConnected": "Gekoppel · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

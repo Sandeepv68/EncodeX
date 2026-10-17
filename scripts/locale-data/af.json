@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Videospoor",
   "videoTimeline.zoomIn": "Inzoem",
-  "videoTimeline.zoomOut": "Uitzoem"
+  "videoTimeline.zoomOut": "Uitzoem",
+  "settings.ai.keySavedPlaceholder": "Sleutel gestoor. Plak 'n nuwe sleutel om dit te vervang.",
+  "settings.ai.connected": "Gekoppel",
+  "settings.ai.testAgain": "Toets weer die verbinding",
+  "settings.ai.keySaved": "'n Sleutel is gestoor ({{hint}}). Plak 'n nuwe sleutel om dit te vervang.",
+  "settings.ai.removeKey": "Verwyder sleutel",
+  "settings.ai.keyRemoved": "Die gestoorde sleutel is verwyder.",
+  "settings.ai.statusConnected": "Gekoppel en bevestig.",
+  "settings.ai.staleStatus": "Instellings het verander. Koppel weer om te bevestig.",
+  "settings.ai.headerConnected": "Gekoppel · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Hierdie verskaffer benodig 'n aktiewe netwerkverbinding.",
+  "settings.ai.offlineFallback": "Jy is vanlyn. Oorgeskakel na die ingeboude reëls-verskaffer. Afgeleë verskaffers benodig 'n aktiewe netwerkverbinding.",
+  "settings.ai.modelsLoading": "Modelle word gelaai...",
+  "settings.ai.modelsUnavailable": "Kon nie modelle van die verskaffer laai nie. Jy kan steeds 'n model-ID tik."
 }

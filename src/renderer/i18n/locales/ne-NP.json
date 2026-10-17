@@ -669,11 +669,19 @@
         "offline": "चयन गरिएको प्रदायक अफलाइन चल्छ र जडान परीक्षण आवश्यक पर्दैन।",
         "unknown": "जडान परीक्षण असफल भयो। सेटिङ जाँच्नुहोस् र पुनः प्रयास गर्नुहोस्।"
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "जडित र प्रमाणित।",
+      "requiresNetwork": "यो प्रदायकलाई सक्रिय नेटवर्क जडान चाहिन्छ।",
+      "offlineFallback": "तपाईं अफलाइन हुनुहुन्छ। निर्मित नियम प्रदायकमा स्विच गरियो। टाढाका प्रदायकलाई सक्रिय नेटवर्क जडान चाहिन्छ।",
+      "modelsLoading": "मोडेलहरू लोड हुँदै...",
+      "modelsUnavailable": "प्रदायकबाट मोडेलहरू लोड गर्न सकिएन। तपाईं अझै मोडेल आईडी टाइप गर्न सक्नुहुन्छ।",
+      "keySavedPlaceholder": "कुञ्जी सुरक्षित गरियो। प्रतिस्थापन गर्न नयाँ कुञ्जी टाँस्नुहोस्।",
+      "connected": "जडित",
+      "testAgain": "जडान फेरि परीक्षण गर्नुहोस्",
+      "keySaved": "एउटा कुञ्जी सुरक्षित गरिएको छ ({{hint}})। प्रतिस्थापन गर्न नयाँ कुञ्जी टाँस्नुहोस्।",
+      "removeKey": "कुञ्जी हटाउनुहोस्",
+      "keyRemoved": "भण्डारित कुञ्जी हटाइयो।",
+      "staleStatus": "सेटिङ्स परिवर्तन भयो। प्रमाणित गर्न फेरि जडान गर्नुहोस्।",
+      "headerConnected": "जडित · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

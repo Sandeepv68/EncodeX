@@ -151,7 +151,7 @@
     "filtersDisabledNote": "Nangangailangan ng re-encoding ang mga filter ng video. I-off ang lossless copy para makapagdagdag ng mga filter.",
     "filtersTurnOffCopy": "I-off ang lossless copy",
     "filtersCopyWarning": "Naka-on ang lossless copy mode, kaya hindi papansinin ang mga filter ng video. I-off ang lossless copy para mailapat ang mga filter.",
-    "chainPreview": "Preview: -vf {{chain}}",
+    "chainPreview": "Paunang tingin: -vf {{chain}}",
     "filtersInvalid": "Hindi balidong filter: {{error}}"
   },
   "mediaInfo": {
@@ -638,8 +638,8 @@
       "paste": "I-paste",
       "connect": "Kumonekta",
       "connecting": "Kumokonekta...",
-      "advanced": "Advanced",
-      "baseUrl": "Base URL",
+      "advanced": "Makabago",
+      "baseUrl": "Batayang URL",
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Naka-imbak ang mga key bilang nakatagong teksto ({{hint}}).",
       "keyNone": "Walang naka-imbak na key.",
@@ -669,11 +669,19 @@
         "offline": "Ang napiling provider ay tumatakbo offline at hindi nangangailangan ng pagsubok ng koneksyon.",
         "unknown": "Nabigo ang pagsubok ng koneksyon. Suriin ang mga setting at subukan muli."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Nakakonekta at na-verify.",
+      "requiresNetwork": "Kailangan ng tagapagbigay na ito ng aktibong koneksyon sa network.",
+      "offlineFallback": "Offline ka. Lumipat sa nakapaloob na tagapagbigay ng panuntunan. Ang malalayong tagapagbigay ay nangangailangan ng aktibong koneksyon sa network.",
+      "modelsLoading": "Naglo-load ng mga modelo...",
+      "modelsUnavailable": "Hindi ma-load ang mga modelo mula sa tagapagbigay. Maaari ka pa ring mag-type ng model id.",
+      "keySavedPlaceholder": "Nai-save ang key. I-paste ang bagong key para palitan ito.",
+      "connected": "Nakakonekta",
+      "testAgain": "Subukan muli ang koneksyon",
+      "keySaved": "May naka-imbak na key ({{hint}}). I-paste ang bagong key para palitan ito.",
+      "removeKey": "Alisin ang key",
+      "keyRemoved": "Inalis ang naka-imbak na key.",
+      "staleStatus": "Nagbago ang mga setting. Kumonekta muli para i-verify.",
+      "headerConnected": "Nakakonekta · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

@@ -669,11 +669,19 @@
         "offline": "អ្នកផ្តល់ដែលបានជ្រើសដំណើរការក្រៅបណ្តាញ ហើយមិនត្រូវការសាកល្បងតភ្ជាប់ទេ។",
         "unknown": "ការសាកល្បងតភ្ជាប់បានបរាជ័យ។ ពិនិត្យការកំណត់ ហើយព្យាយាមម្តងទៀត។"
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "បានភ្ជាប់ និងផ្ទៀងផ្ទាត់។",
+      "requiresNetwork": "អ្នកផ្តល់នេះត្រូវការការតភ្ជាប់បណ្តាញសកម្ម។",
+      "offlineFallback": "អ្នកកំពុងគ្មានអ៊ីនធឺណិត។ បានប្តូរទៅអ្នកផ្តល់ច្បាប់ដែលបានបង្កប់។ អ្នកផ្តល់ពីចម្ងាយត្រូវការការតភ្ជាប់បណ្តាញសកម្ម។",
+      "modelsLoading": "កំពុងផ្ទុកម៉ូដែល...",
+      "modelsUnavailable": "មិនអាចផ្ទុកម៉ូដែលពីអ្នកផ្តល់បានទេ។ អ្នកនៅតែអាចវាយ id ម៉ូដែល។",
+      "keySavedPlaceholder": "បានរក្សាទុកសោ។ បិទភ្ជាប់សោថ្មីដើម្បីជំនួសវា។",
+      "connected": "បានភ្ជាប់",
+      "testAgain": "សាកល្បងការតភ្ជាប់ម្តងទៀត",
+      "keySaved": "សោមួយត្រូវបានរក្សាទុក ({{hint}})។ បិទភ្ជាប់សោថ្មីដើម្បីជំនួសវា។",
+      "removeKey": "លុបសោ",
+      "keyRemoved": "សោដែលបានរក្សាទុកត្រូវបានលុប។",
+      "staleStatus": "ការកំណត់បានផ្លាស់ប្តូរ។ ភ្ជាប់ឡើងវិញដើម្បីផ្ទៀងផ្ទាត់។",
+      "headerConnected": "បានភ្ជាប់ · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

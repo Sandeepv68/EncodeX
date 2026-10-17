@@ -669,11 +669,19 @@
         "offline": "De geselecteerde provider werkt offline en heeft geen verbindingstest nodig.",
         "unknown": "De verbindingstest is mislukt. Controleer de instellingen en probeer het opnieuw."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Verbonden en geverifieerd.",
+      "requiresNetwork": "Deze aanbieder vereist een actieve netwerkverbinding.",
+      "offlineFallback": "U bent offline. Overgeschakeld naar de ingebouwde regelaanbieder. Externe aanbieders vereisen een actieve netwerkverbinding.",
+      "modelsLoading": "Modellen laden...",
+      "modelsUnavailable": "Modellen konden niet van de aanbieder worden geladen. U kunt nog steeds een model-id typen.",
+      "keySavedPlaceholder": "Sleutel opgeslagen. Plak een nieuwe sleutel om deze te vervangen.",
+      "connected": "Verbonden",
+      "testAgain": "Verbinding opnieuw testen",
+      "keySaved": "Er is een sleutel opgeslagen ({{hint}}). Plak een nieuwe sleutel om deze te vervangen.",
+      "removeKey": "Sleutel verwijderen",
+      "keyRemoved": "De opgeslagen sleutel is verwijderd.",
+      "staleStatus": "Instellingen gewijzigd. Verbind opnieuw om te verifiëren.",
+      "headerConnected": "Verbonden · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

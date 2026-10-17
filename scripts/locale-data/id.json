@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Trek video",
   "videoTimeline.zoomIn": "Perbesar",
-  "videoTimeline.zoomOut": "Perkecil"
+  "videoTimeline.zoomOut": "Perkecil",
+  "settings.ai.keySavedPlaceholder": "Kunci disimpan. Tempel kunci baru untuk menggantinya.",
+  "settings.ai.connected": "Terhubung",
+  "settings.ai.testAgain": "Uji koneksi lagi",
+  "settings.ai.keySaved": "Kunci telah disimpan ({{hint}}). Tempel kunci baru untuk menggantinya.",
+  "settings.ai.removeKey": "Hapus kunci",
+  "settings.ai.keyRemoved": "Kunci tersimpan telah dihapus.",
+  "settings.ai.statusConnected": "Terhubung dan terverifikasi.",
+  "settings.ai.staleStatus": "Pengaturan berubah. Hubungkan lagi untuk memverifikasi.",
+  "settings.ai.headerConnected": "Terhubung · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Penyedia ini memerlukan koneksi jaringan yang aktif.",
+  "settings.ai.offlineFallback": "Anda offline. Beralih ke penyedia aturan bawaan. Penyedia jarak jauh memerlukan koneksi jaringan yang aktif.",
+  "settings.ai.modelsLoading": "Memuat model...",
+  "settings.ai.modelsUnavailable": "Tidak dapat memuat model dari penyedia. Anda tetap dapat mengetik id model."
 }

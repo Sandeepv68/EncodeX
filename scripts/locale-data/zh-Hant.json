@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "影片軌道",
   "videoTimeline.zoomIn": "放大",
-  "videoTimeline.zoomOut": "縮小"
+  "videoTimeline.zoomOut": "縮小",
+  "settings.ai.keySavedPlaceholder": "金鑰已儲存。貼上新的金鑰以取代。",
+  "settings.ai.connected": "已連線",
+  "settings.ai.testAgain": "再次測試連線",
+  "settings.ai.keySaved": "已儲存金鑰（{{hint}}）。貼上新的金鑰以取代。",
+  "settings.ai.removeKey": "移除金鑰",
+  "settings.ai.keyRemoved": "已移除儲存的金鑰。",
+  "settings.ai.statusConnected": "已連線並驗證。",
+  "settings.ai.staleStatus": "設定已變更。請重新連線以驗證。",
+  "settings.ai.headerConnected": "已連線 · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "此提供者需要作用中的網路連線。",
+  "settings.ai.offlineFallback": "你已離線。已切換至內建規則提供者。遠端提供者需要作用中的網路連線。",
+  "settings.ai.modelsLoading": "正在載入模型...",
+  "settings.ai.modelsUnavailable": "無法從提供者載入模型。你仍可以輸入模型 ID。"
 }

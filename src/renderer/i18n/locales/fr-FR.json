@@ -669,11 +669,19 @@
         "offline": "Le fournisseur sélectionné fonctionne hors ligne et n’a pas besoin de test de connexion.",
         "unknown": "Le test de connexion a échoué. Vérifiez les paramètres et réessayez."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Connecté et vérifié.",
+      "requiresNetwork": "Ce fournisseur nécessite une connexion réseau active.",
+      "offlineFallback": "Vous êtes hors ligne. Passage au fournisseur de règles intégré. Les fournisseurs distants nécessitent une connexion réseau active.",
+      "modelsLoading": "Chargement des modèles...",
+      "modelsUnavailable": "Impossible de charger les modèles depuis le fournisseur. Vous pouvez toujours saisir un id de modèle.",
+      "keySavedPlaceholder": "Clé enregistrée. Collez une nouvelle clé pour la remplacer.",
+      "connected": "Connecté",
+      "testAgain": "Tester à nouveau la connexion",
+      "keySaved": "Une clé est enregistrée ({{hint}}). Collez une nouvelle clé pour la remplacer.",
+      "removeKey": "Supprimer la clé",
+      "keyRemoved": "La clé enregistrée a été supprimée.",
+      "staleStatus": "Les paramètres ont changé. Reconnectez-vous pour vérifier.",
+      "headerConnected": "Connecté · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

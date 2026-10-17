@@ -669,11 +669,19 @@
         "offline": "තෝරාගත් සපයන්නා නොබැඳිව ක්‍රියා කරන අතර සම්බන්ධතා පරීක්ෂණයක් අවශ්‍ය නැත.",
         "unknown": "සම්බන්ධතා පරීක්ෂණය අසාර්ථක විය. සැකසුම් පරීක්ෂා කර නැවත උත්සාහ කරන්න."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "සම්බන්ධයි සහ තහවුරු කරන ලදී.",
+      "requiresNetwork": "මෙම සපයන්නාට ක්‍රියාකාරී ජාල සම්බන්ධතාවක් අවශ්‍යයි.",
+      "offlineFallback": "ඔබ නොබැඳිව සිටී. සාදන ලද රීති සපයන්නාට මාරු විය. දුරස්ථ සපයන්නන්ට ක්‍රියාකාරී ජාල සම්බන්ධතාවක් අවශ්‍යයි.",
+      "modelsLoading": "ආකෘති පූරණය වෙමින්...",
+      "modelsUnavailable": "සපයන්නාගෙන් ආකෘති පූරණය කළ නොහැකි විය. ඔබට තවමත් ආකෘති හැඳුනුමක් ටයිප් කළ හැක.",
+      "keySavedPlaceholder": "යතුර සුරැකිණි. එය ප්‍රතිස්ථාපනය කිරීමට නව යතුරක් අලවන්න.",
+      "connected": "සම්බන්ධයි",
+      "testAgain": "සම්බන්ධතාව නැවත පරීක්ෂා කරන්න",
+      "keySaved": "යතුරක් සුරකින ලදී ({{hint}}). එය ප්‍රතිස්ථාපනය කිරීමට නව යතුරක් අලවන්න.",
+      "removeKey": "යතුර ඉවත් කරන්න",
+      "keyRemoved": "ගබඩා කළ යතුර ඉවත් කරන ලදී.",
+      "staleStatus": "සැකසුම් වෙනස් විය. තහවුරු කිරීමට නැවත සම්බන්ධ කරන්න.",
+      "headerConnected": "සම්බන්ධයි · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

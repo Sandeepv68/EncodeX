@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "视频轨道",
   "videoTimeline.zoomIn": "放大",
-  "videoTimeline.zoomOut": "缩小"
+  "videoTimeline.zoomOut": "缩小",
+  "settings.ai.keySavedPlaceholder": "密钥已保存。粘贴新密钥以替换。",
+  "settings.ai.connected": "已连接",
+  "settings.ai.testAgain": "再次测试连接",
+  "settings.ai.keySaved": "已保存密钥（{{hint}}）。粘贴新密钥以替换。",
+  "settings.ai.removeKey": "移除密钥",
+  "settings.ai.keyRemoved": "已移除存储的密钥。",
+  "settings.ai.statusConnected": "已连接并验证。",
+  "settings.ai.staleStatus": "设置已更改。请重新连接以验证。",
+  "settings.ai.headerConnected": "已连接 · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "此提供商需要有效的网络连接。",
+  "settings.ai.offlineFallback": "你已离线。已切换到内置规则提供商。远程提供商需要有效的网络连接。",
+  "settings.ai.modelsLoading": "正在加载模型...",
+  "settings.ai.modelsUnavailable": "无法从提供商加载模型。你仍可以输入模型 ID。"
 }

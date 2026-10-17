@@ -669,11 +669,19 @@
         "offline": "चयनित प्रदाता ऑफ़लाइन चलता है और उसे कनेक्शन परीक्षण की आवश्यकता नहीं है।",
         "unknown": "कनेक्शन परीक्षण विफल रहा। सेटिंग्स जाँचें और पुनः प्रयास करें।"
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "कनेक्टेड और सत्यापित।",
+      "requiresNetwork": "इस प्रदाता को सक्रिय नेटवर्क कनेक्शन चाहिए।",
+      "offlineFallback": "आप ऑफ़लाइन हैं। अंतर्निहित नियम प्रदाता पर स्विच किया। दूरस्थ प्रदाताओं को सक्रिय नेटवर्क कनेक्शन चाहिए।",
+      "modelsLoading": "मॉडल लोड हो रहे हैं...",
+      "modelsUnavailable": "प्रदाता से मॉडल लोड नहीं हो सके। आप अभी भी मॉडल आईडी टाइप कर सकते हैं।",
+      "keySavedPlaceholder": "कुंजी सहेजी गई। बदलने के लिए नई कुंजी चिपकाएँ।",
+      "connected": "कनेक्टेड",
+      "testAgain": "कनेक्शन फिर से जाँचें",
+      "keySaved": "एक कुंजी सहेजी गई है ({{hint}})। बदलने के लिए नई कुंजी चिपकाएँ।",
+      "removeKey": "कुंजी हटाएँ",
+      "keyRemoved": "सहेजी गई कुंजी हटा दी गई।",
+      "staleStatus": "सेटिंग्स बदल गईं। सत्यापित करने के लिए फिर से कनेक्ट करें।",
+      "headerConnected": "कनेक्टेड · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

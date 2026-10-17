@@ -669,11 +669,19 @@
         "offline": "المزوّد المحدد يعمل دون اتصال ولا يحتاج إلى اختبار اتصال.",
         "unknown": "فشل اختبار الاتصال. تحقق من الإعدادات وحاول مرة أخرى."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "متصل وتم التحقق منه.",
+      "requiresNetwork": "يحتاج هذا المزوّد إلى اتصال شبكة نشط.",
+      "offlineFallback": "أنت غير متصل. تم التبديل إلى مزوّد القواعد المدمج. يحتاج المزوّدون الخارجيون إلى اتصال شبكة نشط.",
+      "modelsLoading": "جارٍ تحميل النماذج...",
+      "modelsUnavailable": "تعذّر تحميل النماذج من المزوّد. لا يزال بإمكانك كتابة معرّف نموذج.",
+      "keySavedPlaceholder": "تم حفظ المفتاح. الصق مفتاحًا جديدًا لاستبداله.",
+      "connected": "متصل",
+      "testAgain": "اختبار الاتصال مرة أخرى",
+      "keySaved": "تم حفظ مفتاح ({{hint}}). الصق مفتاحًا جديدًا لاستبداله.",
+      "removeKey": "إزالة المفتاح",
+      "keyRemoved": "تمت إزالة المفتاح المخزّن.",
+      "staleStatus": "تغيّرت الإعدادات. اتصل مرة أخرى للتحقق.",
+      "headerConnected": "متصل · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

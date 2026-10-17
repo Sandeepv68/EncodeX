@@ -669,11 +669,19 @@
         "offline": "ຜູ້ໃຫ້ບໍລິການທີ່ເລືອກເຮັດວຽກແບບອອບລາຍ ແລະ ບໍ່ຕ້ອງການທົດສອບການເຊື່ອມຕໍ່.",
         "unknown": "ການທົດສອບການເຊື່ອມຕໍ່ລົ້ມເຫຼວ. ກວດສອບການຕັ້ງຄ່າ ແລະ ລອງອີກຄັ້ງ."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "ເຊື່ອມຕໍ່ ແລະ ຢືນຢັນແລ້ວ.",
+      "requiresNetwork": "ຜູ້ໃຫ້ບໍລິການນີ້ຕ້ອງການການເຊື່ອມຕໍ່ເຄືອຂ່າຍທີ່ໃຊ້ໄດ້.",
+      "offlineFallback": "ທ່ານອອບລາຍ. ປ່ຽນໄປໃຊ້ຜູ້ໃຫ້ບໍລິການກົດລະບຽບໃນຕົວ. ຜູ້ໃຫ້ບໍລິການທາງໄກຕ້ອງການການເຊື່ອມຕໍ່ເຄືອຂ່າຍທີ່ໃຊ້ໄດ້.",
+      "modelsLoading": "ກຳລັງໂຫຼດໂມເດວ...",
+      "modelsUnavailable": "ບໍ່ສາມາດໂຫຼດໂມເດວຈາກຜູ້ໃຫ້ບໍລິການໄດ້. ທ່ານຍັງສາມາດພິມ id ໂມເດວໄດ້.",
+      "keySavedPlaceholder": "ບັນທຶກຄີແລ້ວ. ວາງຄີໃໝ່ເພື່ອທົດແທນ.",
+      "connected": "ເຊື່ອມຕໍ່ແລ້ວ",
+      "testAgain": "ທົດສອບການເຊື່ອມຕໍ່ອີກຄັ້ງ",
+      "keySaved": "ມີຄີທີ່ບັນທຶກໄວ້ ({{hint}}). ວາງຄີໃໝ່ເພື່ອທົດແທນ.",
+      "removeKey": "ລຶບຄີ",
+      "keyRemoved": "ລຶບຄີທີ່ບັນທຶກໄວ້ແລ້ວ.",
+      "staleStatus": "ການຕັ້ງຄ່າປ່ຽນແປງ. ເຊື່ອມຕໍ່ອີກຄັ້ງເພື່ອຢືນຢັນ.",
+      "headerConnected": "ເຊື່ອມຕໍ່ແລ້ວ · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

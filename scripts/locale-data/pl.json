@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Ścieżka wideo",
   "videoTimeline.zoomIn": "Powiększ",
-  "videoTimeline.zoomOut": "Pomniejsz"
+  "videoTimeline.zoomOut": "Pomniejsz",
+  "settings.ai.keySavedPlaceholder": "Klucz zapisany. Wklej nowy klucz, aby go zastąpić.",
+  "settings.ai.connected": "Połączono",
+  "settings.ai.testAgain": "Przetestuj połączenie ponownie",
+  "settings.ai.keySaved": "Klucz jest zapisany ({{hint}}). Wklej nowy klucz, aby go zastąpić.",
+  "settings.ai.removeKey": "Usuń klucz",
+  "settings.ai.keyRemoved": "Zapisany klucz został usunięty.",
+  "settings.ai.statusConnected": "Połączono i zweryfikowano.",
+  "settings.ai.staleStatus": "Ustawienia zmienione. Połącz ponownie, aby zweryfikować.",
+  "settings.ai.headerConnected": "Połączono · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Ten dostawca wymaga aktywnego połączenia sieciowego.",
+  "settings.ai.offlineFallback": "Jesteś offline. Przełączono na wbudowanego dostawcę reguł. Zdalni dostawcy wymagają aktywnego połączenia sieciowego.",
+  "settings.ai.modelsLoading": "Ładowanie modeli...",
+  "settings.ai.modelsUnavailable": "Nie udało się załadować modeli od dostawcy. Nadal możesz wpisać identyfikator modelu."
 }
