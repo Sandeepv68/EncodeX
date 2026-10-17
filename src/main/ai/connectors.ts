@@ -28,6 +28,20 @@ const DEFAULT_TIMEOUT_MS = 30_000;
 const MAX_ERROR_BODY = 4000;
 
 /**
+ * Statuses that describe a temporary condition (provider overload, gateway
+ * blips, rate limiting) and therefore succeed on a later attempt. Google's own
+ * docs answer 503 UNAVAILABLE with "wait a bit and retry your request".
+ * @const {ReadonlySet<number>} TRANSIENT_STATUSES
+ */
+const TRANSIENT_STATUSES: ReadonlySet<number> = new Set([429, 500, 502, 503, 504]);
+
+/** Extra attempts made after the first when a transient status answers. @const {number} */
+const RETRY_ATTEMPTS = 2;
+
+/** Base backoff between attempts; doubles each retry (250ms, then 500ms). @const {number} */
+const RETRY_BASE_DELAY_MS = 250;
+
+/**
  * Error thrown when a provider answers with a non-2xx status. Carries the raw
  * status and response body so the settings bridge can classify the failure into
  * a localized message instead of surfacing the provider's raw payload.
@@ -85,6 +99,55 @@ function geminiText(data: unknown): string {
 }
 
 /**
+ * Waits `ms` milliseconds, then fails when the request's signal already
+ * aborted, so a retry backoff can never outlive the caller's timeout.
+ * @param {number} ms - The backoff duration.
+ * @param {AbortSignal} [signal] - The request signal.
+ * @returns {Promise<void>} Resolves once the backoff elapsed.
+ */
+async function backoff(ms: number, signal?: AbortSignal): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+  if (signal?.aborted) throw signal.reason ?? new Error('Request aborted.');
+}
+
+/**
+ * Sends a JSON request and returns the parsed body, throwing a concise
+ * {@link ProviderHttpError} on a non-2xx status. Transient statuses
+ * ({@link TRANSIENT_STATUSES}) are retried with a short doubling backoff, so a
+ * one-off "model overloaded" answer does not fail the caller's ping.
+ * @param {FetchLike} fetchImpl - The fetch implementation.
+ * @param {string} url - The request URL.
+ * @param {{ method: string; headers: Record<string, string>; body?: string }} init - The request shape.
+ * @param {AbortSignal} [signal] - Cancellation/timeout signal shared by every attempt.
+ * @returns {Promise<unknown>} The parsed JSON body.
+ */
+export async function requestJson(
+  fetchImpl: FetchLike,
+  url: string,
+  init: { method: string; headers: Record<string, string>; body?: string },
+  signal?: AbortSignal,
+): Promise<unknown> {
+  for (let attempt = 0; ; attempt += 1) {
+    const response = await fetchImpl(url, { ...init, ...(signal ? { signal } : {}) });
+    if (!response.ok) {
+      let body = '';
+      try {
+        body = (await response.text()).slice(0, MAX_ERROR_BODY);
+      } catch {
+        /* ignore */
+      }
+      const error = new ProviderHttpError(response.status, body);
+      if (attempt < RETRY_ATTEMPTS && TRANSIENT_STATUSES.has(response.status)) {
+        await backoff(RETRY_BASE_DELAY_MS * 2 ** attempt, signal);
+        continue;
+      }
+      throw error;
+    }
+    return response.json();
+  }
+}
+
+/**
  * POSTs a JSON request and returns the parsed body, throwing a concise error on
  * a non-2xx status so the caller can surface a readable message.
  * @param {FetchLike} fetchImpl - The fetch implementation.
@@ -101,22 +164,12 @@ async function postJson(
   body: unknown,
   signal?: AbortSignal,
 ): Promise<unknown> {
-  const response = await fetchImpl(url, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', ...headers },
-    body: JSON.stringify(body),
-    ...(signal ? { signal } : {}),
-  });
-  if (!response.ok) {
-    let body = '';
-    try {
-      body = (await response.text()).slice(0, MAX_ERROR_BODY);
-    } catch {
-      /* ignore */
-    }
-    throw new ProviderHttpError(response.status, body);
-  }
-  return response.json();
+  return requestJson(
+    fetchImpl,
+    url,
+    { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) },
+    signal,
+  );
 }
 
 /**

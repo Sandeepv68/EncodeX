@@ -1060,3 +1060,7 @@ export const LOG_IPC_AI_SET_SETTINGS = 'aiSetSettings:';
 export const LOG_IPC_AI_CONNECT_TEST = 'aiConnectTest:';
 /** @const {string} Logged when the renderer requests the provider model list. */
 export const LOG_IPC_AI_LIST_MODELS = 'aiListModels:';
+/** @const {string} Prefix when the AI provider connection test fails. */
+export const LOG_AI_CONNECT_TEST_FAILED = 'AI connect test failed:';
+/** @const {string} Prefix when the provider model list cannot be fetched. */
+export const LOG_AI_MODEL_LIST_FAILED = 'AI model list failed:';

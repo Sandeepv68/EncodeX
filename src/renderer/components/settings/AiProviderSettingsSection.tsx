@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWandMagicSparkles,
   faArrowUpRightFromSquare,
+  faCheck,
   faChevronDown,
   faChevronUp,
   faPaste,
@@ -43,9 +44,13 @@ import {
   AiField,
   AdvancedPanel,
   AiAlert,
+  ConnectedDot,
+  HeaderActions,
+  HeaderStatus,
 } from '../../styles/settings/AiProviderSettingsSection.styles';
 import SettingLabel from './SettingLabel';
 import { useOnlineStatus } from '../../hooks/useOnlineStatus';
+import { useAiSettingsStore } from '../../stores/aiSettingsStore';
 
 /**
  * The page where users create an API key for each remote AI provider. Opened in
@@ -83,19 +88,23 @@ function ProviderIcon({ id }: { id: AIProviderId }) {
  * Provider settings live in `userData/ai-settings.json` (not the settings
  * store), so this section is the one direct-IPC exception on the page. To keep
  * the page inert on mount (so every hostile/renderer suite can mount it
- * safely), the editor loads its settings only when the user expands it. Every
- * bridge call goes through {@link bridgePromise} and a shape check, so a
- * missing, throwing, or garbage bridge leaves the form at its offline defaults
- * instead of crashing the tree.
+ * safely), the editor never fetches on mount; it hydrates from the session
+ * cache in {@link useAiSettingsStore} (so navigating away and back restores
+ * the provider, saved-key, and connected state instantly) and loads fresh
+ * settings over IPC only when the user expands the section for the first time
+ * in a session with no cached view. Every bridge call goes through
+ * {@link bridgePromise} and a shape check, so a missing, throwing, or garbage
+ * bridge leaves the form at its offline defaults instead of crashing the tree.
  * @returns {JSX.Element} The AI-provider settings rows.
  */
 export default function AiProviderSettingsSection() {
   const { t } = useTranslation();
+  const cached = useAiSettingsStore.getState();
   const [open, setOpen] = useState(false);
-  const [view, setView] = useState<AiSettingsView | null>(null);
-  const [providerId, setProviderId] = useState<AIProviderId>('rules');
-  const [model, setModel] = useState('');
-  const [baseUrl, setBaseUrl] = useState('');
+  const [view, setView] = useState<AiSettingsView | null>(cached.view);
+  const [providerId, setProviderId] = useState<AIProviderId>(cached.providerId);
+  const [model, setModel] = useState(cached.model);
+  const [baseUrl, setBaseUrl] = useState(cached.baseUrl);
   const [apiKey, setApiKey] = useState('');
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
@@ -106,19 +115,36 @@ export default function AiProviderSettingsSection() {
   const [fellBackOffline, setFellBackOffline] = useState(false);
   const online = useOnlineStatus();
 
+  useEffect(() => {
+    useAiSettingsStore.getState().patch({ view, providerId, model, baseUrl });
+  }, [view, providerId, model, baseUrl]);
+
   /**
-   * Expands/collapses the editor, loading the stored settings the first time it
-   * opens.
+   * Adopts a freshly loaded or saved settings view, locally and in the session
+   * cache, so the collapsed header and a later remount stay in sync.
+   * @param {AiSettingsView} next - The view to adopt.
+   * @returns {void}
+   */
+  const applyView = (next: AiSettingsView): void => {
+    setView(next);
+    useAiSettingsStore.getState().patch({ view: next });
+  };
+
+  /**
+   * Expands/collapses the editor. When a cached view from this session exists
+   * it is shown instantly and no IPC is made; otherwise the stored settings
+   * load the first time the section opens (and retry on later opens if the
+   * bridge failed).
    * @returns {Promise<void>} Resolves after the settings (if any) load.
    */
   const toggle = async (): Promise<void> => {
     const next = !open;
     setOpen(next);
-    if (!next || view) return;
+    if (!next || useAiSettingsStore.getState().view) return;
     try {
       const loaded = await bridgePromise(() => window.electronAPI.aiGetSettings());
       if (!loaded || typeof loaded !== 'object' || !isAiProviderId(loaded.providerId)) return;
-      setView(loaded);
+      applyView(loaded);
       setProviderId(loaded.providerId);
       setModel(typeof loaded.model === 'string' ? loaded.model : '');
       setBaseUrl(typeof loaded.baseUrl === 'string' ? loaded.baseUrl : '');
@@ -166,7 +192,7 @@ export default function AiProviderSettingsSection() {
         setError(t('settings.ai.saveFailed'));
         return;
       }
-      setView(updated);
+      applyView(updated);
       setApiKey('');
       setStatus(t('settings.ai.testing'));
       const result = await bridgePromise(() =>
@@ -179,7 +205,7 @@ export default function AiProviderSettingsSection() {
       if (result && typeof result.message === 'string') {
         if (result.ok) {
           const refreshed = result.view;
-          if (refreshed && typeof refreshed === 'object' && isAiProviderId(refreshed.providerId)) setView(refreshed);
+          if (refreshed && typeof refreshed === 'object' && isAiProviderId(refreshed.providerId)) applyView(refreshed);
           if (advanced) void loadModels();
           const latency = typeof result.latencyMs === 'number' ? ` (${result.latencyMs} ms)` : '';
           setStatus(`${result.message}${latency}`);
@@ -204,6 +230,35 @@ export default function AiProviderSettingsSection() {
   };
 
   /**
+   * Removes the stored API key of the persisted provider document. The key is
+   * stored encrypted in main and only ever surfaced as `hasKey`/`keyHint`, so
+   * removal is the only way to undo a saved key from the UI. Best-effort: an
+   * unusable bridge surfaces as a save error and leaves the editor open.
+   * @returns {Promise<void>} Resolves once the flow settles.
+   */
+  const removeKey = async (): Promise<void> => {
+    setBusy(true);
+    setStatus(null);
+    setError(null);
+    try {
+      const updated = await bridgePromise(() =>
+        window.electronAPI.aiSetSettings({ providerId: view?.providerId ?? providerId, clearKey: true }),
+      );
+      if (!updated || typeof updated !== 'object' || !isAiProviderId(updated.providerId)) {
+        setError(t('settings.ai.saveFailed'));
+        return;
+      }
+      applyView(updated);
+      setApiKey('');
+      setStatus(t('settings.ai.keyRemoved'));
+    } catch (err) {
+      setError(formatError(err).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  /**
    * Persists the selected provider when it needs no configuration (the built-in
    * rules engine has no key/model/endpoint and no Connect button to save it).
    * Best-effort: a failed persist leaves the editor usable.
@@ -214,7 +269,7 @@ export default function AiProviderSettingsSection() {
     try {
       const updated = await bridgePromise(() => window.electronAPI.aiSetSettings({ providerId: id }));
       if (updated && typeof updated === 'object' && isAiProviderId(updated.providerId)) {
-        setView(updated);
+        applyView(updated);
       }
     } catch {
       // Persisting the offline default is best-effort; keep the editor usable.
@@ -240,6 +295,13 @@ export default function AiProviderSettingsSection() {
   // The persisted connection is only meaningful for the provider it was recorded
   // for; selecting a different provider shows the stale view until reconnecting.
   const showConnected = view?.connected === true && view.providerId === providerId;
+  // A key/model/endpoint typed after the last successful connect makes the
+  // recorded connection stale, so the UI must not keep claiming "Connected".
+  const dirty = showConnected && (apiKey !== '' || model !== (view?.model ?? '') || baseUrl !== (view?.baseUrl ?? ''));
+  const connectedNow = showConnected && !error && !dirty;
+  // The key field stays empty after save by design (the plaintext never leaves
+  // main); "saved" is the affordance that tells the user a key is stored.
+  const keySaved = view?.hasKey === true && apiKey === '';
   // The built-in rules engine is offline: no key, no model call, no endpoint, so
   // it has nothing to connect to or configure.
   const configurable = providerId !== 'rules';
@@ -290,9 +352,20 @@ export default function AiProviderSettingsSection() {
     <AiSettingsSection>
       <AiHeaderRow>
         <SettingsLabel variant="body1">{t('settings.ai.title')}</SettingsLabel>
-        <Button size="small" startIcon={<FontAwesomeIcon icon={faGear} />} onClick={toggle} data-testid="settings-ai-toggle">
-          {t('settings.ai.configure')}
-        </Button>
+        <HeaderActions>
+          {!open && view?.connected && (
+            <HeaderStatus data-testid="settings-ai-header-status">
+              <ConnectedDot aria-hidden="true" />
+              {t('settings.ai.headerConnected', {
+                provider: t(`settings.ai.providers.${view.providerId}`),
+                model: view.connectedModel || t('settings.ai.modelPlaceholder'),
+              })}
+            </HeaderStatus>
+          )}
+          <Button size="small" startIcon={<FontAwesomeIcon icon={faGear} />} onClick={toggle} data-testid="settings-ai-toggle">
+            {t('settings.ai.configure')}
+          </Button>
+        </HeaderActions>
       </AiHeaderRow>
       {open && (
         <AiWell data-testid="settings-ai">
@@ -313,6 +386,9 @@ export default function AiProviderSettingsSection() {
                   <ProviderIcon id={id} />
                   <ProviderSeparator aria-hidden="true" />
                   <ProviderName>{t(`settings.ai.providers.${id}`)}</ProviderName>
+                  {view?.connected === true && view.providerId === id && (
+                    <ConnectedDot aria-hidden="true" data-testid={`settings-ai-connected-dot-${id}`} />
+                  )}
                 </ProviderButton>
               );
               if (disabled) {
@@ -341,11 +417,17 @@ export default function AiProviderSettingsSection() {
                       data-testid="settings-ai-key"
                       value={apiKey}
                       onChange={(e) => setApiKey(e.target.value)}
-                      placeholder={t('settings.ai.apiKeyPlaceholder')}
+                      placeholder={keySaved ? t('settings.ai.keySavedPlaceholder') : t('settings.ai.apiKeyPlaceholder')}
                       fullWidth
                       helperText={
-                        <AiKeyHelper>
-                          <span>{view?.hasKey ? t('settings.ai.keyStored', { hint: view.keyHint }) : t('settings.ai.keyNone')}</span>
+                        <AiKeyHelper $saved={keySaved}>
+                          <span>
+                            {view?.hasKey
+                              ? keySaved
+                                ? t('settings.ai.keySaved', { hint: view.keyHint })
+                                : t('settings.ai.keyStored', { hint: view.keyHint })
+                              : t('settings.ai.keyNone')}
+                          </span>
                         </AiKeyHelper>
                       }
                       slotProps={{
@@ -394,8 +476,30 @@ export default function AiProviderSettingsSection() {
                     </Button>
                   )}
 
-                  <Button size="small" variant="contained" onClick={connect} disabled={busy} data-testid="settings-ai-connect">
-                    {busy ? t('settings.ai.connecting') : t('settings.ai.connect')}
+                  {needsKey && view?.hasKey && (
+                    <Button
+                      size="small"
+                      variant="text"
+                      color="error"
+                      onClick={removeKey}
+                      disabled={busy}
+                      data-testid="settings-ai-remove-key"
+                    >
+                      {t('settings.ai.removeKey')}
+                    </Button>
+                  )}
+
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color={connectedNow ? 'success' : 'primary'}
+                    onClick={connect}
+                    disabled={busy}
+                    startIcon={connectedNow ? <FontAwesomeIcon icon={faCheck} /> : undefined}
+                    title={connectedNow ? t('settings.ai.testAgain') : undefined}
+                    data-testid="settings-ai-connect"
+                  >
+                    {busy ? t('settings.ai.connecting') : connectedNow ? t('settings.ai.connected') : t('settings.ai.connect')}
                   </Button>
 
                   <Button
@@ -458,12 +562,17 @@ export default function AiProviderSettingsSection() {
               {t('settings.ai.offlineFallback')}
             </AiAlert>
           )}
-          {showConnected && !error && (
+          {connectedNow && (
             <AiAlert severity="success" data-testid="settings-ai-connected">
               {t('settings.ai.statusConnected')}
             </AiAlert>
           )}
-          {status && !showConnected && (
+          {dirty && !error && (
+            <AiAlert severity="warning" data-testid="settings-ai-stale">
+              {t('settings.ai.staleStatus')}
+            </AiAlert>
+          )}
+          {status && !connectedNow && !dirty && (
             <AiAlert severity="info" data-testid="settings-ai-status">
               {status}
             </AiAlert>

@@ -126,12 +126,14 @@ export const AiKeyRow = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const AiKeyHelper = styled('span')(({ theme }) => ({
+export const AiKeyHelper = styled('span', {
+  shouldForwardProp: (prop) => prop !== '$saved',
+})<{ $saved: boolean }>(({ theme, $saved }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   gap: theme.spacing(1),
-  color: theme.palette.warning.main,
+  color: $saved ? theme.palette.success.main : theme.palette.warning.main,
   fontWeight: 600,
 }));
 
@@ -146,4 +148,40 @@ export const AdvancedPanel = styled(Box)(({ theme }) => ({
 export const AiAlert = styled(Alert)(({ theme }) => ({
   fontWeight: 500,
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+}));
+
+/**
+ * The small green dot that marks a provider tile (and the collapsed header
+ * status) as connected. Decorative only; the connected state is also announced
+ * by the success alert inside the expanded editor.
+ */
+export const ConnectedDot = styled('span')(({ theme }) => ({
+  width: theme.spacing(0.75),
+  height: theme.spacing(0.75),
+  borderRadius: '50%',
+  backgroundColor: theme.palette.success.main,
+  flexShrink: 0,
+}));
+
+/**
+ * Right-hand cluster of the collapsed section header: the cached connection
+ * summary (when known) next to the Configure button.
+ */
+export const HeaderActions = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1.5),
+}));
+
+/**
+ * The collapsed header connection summary ("Connected · Google Gemini · …"),
+ * hydrated from the session cache so status survives Settings navigation.
+ */
+export const HeaderStatus = styled('span')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.75),
+  fontSize: theme.typography.pxToRem(13),
+  fontWeight: 600,
+  color: theme.palette.success.main,
 }));

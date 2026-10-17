@@ -240,3 +240,59 @@ describe('isRemoteProvider', () => {
     expect(isRemoteProvider('local')).toBe(false);
   });
 });
+
+describe('transient provider failures', () => {
+  it('retries a 503 overload and succeeds on the next attempt', async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(errorResponse(503, '{"error":{"code":503,"status":"UNAVAILABLE"}}'))
+      .mockResolvedValueOnce(jsonResponse({ candidates: [{ content: { parts: [{ text: 'ok' }] } }] })) as unknown as SpyFetch;
+    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    const response = await connector.complete(request);
+    expect(response.text).toBe('ok');
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+
+  it('stops after the retry budget and surfaces the last provider error', async () => {
+    const fetchImpl = vi.fn(async () => errorResponse(503, 'overloaded')) as unknown as SpyFetch;
+    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    let caught: unknown;
+    try {
+      await connector.complete(request);
+    } catch (err) {
+      caught = err;
+    }
+    expect(caught).toBeInstanceOf(ProviderHttpError);
+    expect((caught as ProviderHttpError).status).toBe(503);
+    expect(fetchImpl).toHaveBeenCalledTimes(3);
+  });
+
+  it('retries a 429 rate limit as well', async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(errorResponse(429, 'rate limited'))
+      .mockResolvedValueOnce(jsonResponse({ choices: [{ message: { content: 'hello' } }] })) as unknown as SpyFetch;
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', fetchImpl });
+    const response = await connector.complete(request);
+    expect(response.text).toBe('hello');
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not retry a client error', async () => {
+    const fetchImpl = vi.fn(async () => errorResponse(400, 'bad request')) as unknown as SpyFetch;
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', fetchImpl });
+    await expect(connector.complete(request)).rejects.toThrow(/HTTP 400/);
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
+  it('abandons the backoff once the request signal aborted', async () => {
+    const controller = new AbortController();
+    const fetchImpl = vi.fn(async () => {
+      controller.abort(new Error('cancelled'));
+      return errorResponse(503, 'overloaded');
+    }) as unknown as SpyFetch;
+    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    await expect(connector.complete({ ...request, signal: controller.signal })).rejects.toThrow(/cancelled/);
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+});
