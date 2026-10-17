@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Rian físeáin",
   "videoTimeline.zoomIn": "Zúmáil isteach",
-  "videoTimeline.zoomOut": "Zúmáil amach"
+  "videoTimeline.zoomOut": "Zúmáil amach",
+  "settings.ai.keySavedPlaceholder": "Eochair sábháilte. Greamaigh eochair nua chun í a athsholáthar.",
+  "settings.ai.connected": "Ceangailte",
+  "settings.ai.testAgain": "Tástáil an nasc arís",
+  "settings.ai.keySaved": "Tá eochair sábháilte ({{hint}}). Greamaigh eochair nua chun í a athsholáthar.",
+  "settings.ai.removeKey": "Bain an eochair",
+  "settings.ai.keyRemoved": "Baineadh an eochair stóráilte.",
+  "settings.ai.statusConnected": "Ceangailte agus fíoraithe.",
+  "settings.ai.staleStatus": "Athraíodh na socruithe. Ceangail arís chun fíorú.",
+  "settings.ai.headerConnected": "Ceangailte · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Teastaíonn nasc líonra gníomhach ón soláthraí seo.",
+  "settings.ai.offlineFallback": "Tá tú as líne. Aistríodh chuig an soláthraí rialacha ionsuite. Teastaíonn nasc líonra gníomhach ó sholáthraithe cianda.",
+  "settings.ai.modelsLoading": "Ag lódáil samhlacha...",
+  "settings.ai.modelsUnavailable": "Níorbh fhéidir samhlacha a lódáil ón soláthraí. Is féidir leat id samhla a chlóscríobh fós."
 }

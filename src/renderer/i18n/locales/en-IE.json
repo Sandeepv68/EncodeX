@@ -673,7 +673,15 @@
       "requiresNetwork": "This provider needs an active network connection.",
       "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
       "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id.",
+      "keySavedPlaceholder": "Key saved. Paste a new key to replace it.",
+      "connected": "Connected",
+      "testAgain": "Test the connection again",
+      "keySaved": "A key is saved ({{hint}}). Paste a new key to replace it.",
+      "removeKey": "Remove key",
+      "keyRemoved": "The stored key was removed.",
+      "staleStatus": "Settings changed. Connect again to verify.",
+      "headerConnected": "Connected · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

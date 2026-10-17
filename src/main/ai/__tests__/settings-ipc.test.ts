@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { expectAppLog } from '../../../test-utils/crash-tripwire';
+import { expectAppLog, takeRecordedCrashes } from '../../../test-utils/crash-tripwire';
 
 const { appMock, handlers, settingsMock, connectorsMock, modelsMock } = vi.hoisted(() => {
   const handlers: Record<string, (...args: unknown[]) => unknown> = {};
@@ -165,6 +165,13 @@ describe('registerAiSettingsIpc', () => {
     expect(result.message.length).toBeGreaterThan(0);
     expect(result.reason).toBe('invalidKey');
     expect(result.status).toBe(401);
+    // The warn must name the AI connect test (not the MCP settings prefix) and
+    // carry the provider's own error body so the log explains *why* it failed.
+    const warned = takeRecordedCrashes()
+      .map((record) => record.text)
+      .join('\n');
+    expect(warned).toContain('AI connect test failed:');
+    expect(warned).toContain('Incorrect API key provided');
   });
 
   it('CONNECT_TEST falls back to the stored provider for an invalid candidate id', async () => {

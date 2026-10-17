@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "වීඩියෝ ධාවන පථය",
   "videoTimeline.zoomIn": "විශාලනය",
-  "videoTimeline.zoomOut": "කුඩාකරණය"
+  "videoTimeline.zoomOut": "කුඩාකරණය",
+  "settings.ai.keySavedPlaceholder": "යතුර සුරැකිණි. එය ප්‍රතිස්ථාපනය කිරීමට නව යතුරක් අලවන්න.",
+  "settings.ai.connected": "සම්බන්ධයි",
+  "settings.ai.testAgain": "සම්බන්ධතාව නැවත පරීක්ෂා කරන්න",
+  "settings.ai.keySaved": "යතුරක් සුරකින ලදී ({{hint}}). එය ප්‍රතිස්ථාපනය කිරීමට නව යතුරක් අලවන්න.",
+  "settings.ai.removeKey": "යතුර ඉවත් කරන්න",
+  "settings.ai.keyRemoved": "ගබඩා කළ යතුර ඉවත් කරන ලදී.",
+  "settings.ai.statusConnected": "සම්බන්ධයි සහ තහවුරු කරන ලදී.",
+  "settings.ai.staleStatus": "සැකසුම් වෙනස් විය. තහවුරු කිරීමට නැවත සම්බන්ධ කරන්න.",
+  "settings.ai.headerConnected": "සම්බන්ධයි · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "මෙම සපයන්නාට ක්‍රියාකාරී ජාල සම්බන්ධතාවක් අවශ්‍යයි.",
+  "settings.ai.offlineFallback": "ඔබ නොබැඳිව සිටී. සාදන ලද රීති සපයන්නාට මාරු විය. දුරස්ථ සපයන්නන්ට ක්‍රියාකාරී ජාල සම්බන්ධතාවක් අවශ්‍යයි.",
+  "settings.ai.modelsLoading": "ආකෘති පූරණය වෙමින්...",
+  "settings.ai.modelsUnavailable": "සපයන්නාගෙන් ආකෘති පූරණය කළ නොහැකි විය. ඔබට තවමත් ආකෘති හැඳුනුමක් ටයිප් කළ හැක."
 }

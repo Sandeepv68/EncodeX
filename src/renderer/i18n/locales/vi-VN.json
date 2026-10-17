@@ -669,11 +669,19 @@
         "offline": "Nhà cung cấp đã chọn chạy ngoại tuyến và không cần kiểm tra kết nối.",
         "unknown": "Kiểm tra kết nối thất bại. Kiểm tra cài đặt và thử lại."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Đã kết nối và xác minh.",
+      "requiresNetwork": "Nhà cung cấp này cần kết nối mạng đang hoạt động.",
+      "offlineFallback": "Bạn đang ngoại tuyến. Đã chuyển sang nhà cung cấp quy tắc tích hợp. Nhà cung cấp từ xa cần kết nối mạng đang hoạt động.",
+      "modelsLoading": "Đang tải mô hình...",
+      "modelsUnavailable": "Không thể tải mô hình từ nhà cung cấp. Bạn vẫn có thể nhập id mô hình.",
+      "keySavedPlaceholder": "Đã lưu khóa. Dán khóa mới để thay thế.",
+      "connected": "Đã kết nối",
+      "testAgain": "Kiểm tra lại kết nối",
+      "keySaved": "Một khóa đã được lưu ({{hint}}). Dán khóa mới để thay thế.",
+      "removeKey": "Xóa khóa",
+      "keyRemoved": "Khóa đã lưu đã bị xóa.",
+      "staleStatus": "Cài đặt đã thay đổi. Kết nối lại để xác minh.",
+      "headerConnected": "Đã kết nối · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

@@ -106,6 +106,10 @@ const ALWAYS_IDENTICAL = new Set([
   'copilot.ai.providers.openai',
   'copilot.ai.providers.anthropic',
   'copilot.ai.providers.gemini',
+  'settings.ai.providers.openai',
+  'settings.ai.providers.anthropic',
+  'settings.ai.providers.gemini',
+  'settings.ai.baseUrlPlaceholder',
 ]);
 
 /**
@@ -116,19 +120,21 @@ const ALWAYS_IDENTICAL = new Set([
  */
 const COGNATE_IDENTICAL: Record<string, Set<string>> = {
   'copilot.ai.model': new Set(['af-ZA', 'da-DK', 'id-ID', 'ms-MY', 'ms-SG', 'nl-BE', 'nl-NL', 'pl-PL']),
+  'settings.ai.model': new Set(['af-ZA', 'da-DK', 'id-ID', 'ms-MY', 'ms-SG', 'nl-BE', 'nl-NL', 'pl-PL']),
   'copilot.advanced': new Set(['fil-PH', 'kl-GL', 'tl-PH']),
   'copilot.send': new Set(['da-DK', 'nb-NO']),
   'copilot.plan': new Set(['da-DK']),
 };
 
 /**
- * The Copilot UI and AI-connector error keys that must carry a real,
+ * The Copilot UI and AI-provider settings keys that must carry a real,
  * non-English translation in every non-English locale (plan stage 3d). Key
  * *existence* is already guaranteed by parity in `assertLocaleIntegrity`; this
- * set drives the stricter "was actually translated" check.
+ * set drives the stricter "was actually translated" check. Product names and
+ * true cognates are exempted via `ALWAYS_IDENTICAL` / `COGNATE_IDENTICAL`.
  */
 export const NON_ENGLISH_REQUIRED = new Set(
-  [...baseLocale.keys].filter((key) => key.startsWith('copilot.') || key.startsWith('settings.ai.errors.')),
+  [...baseLocale.keys].filter((key) => key.startsWith('copilot.') || key.startsWith('settings.ai.')),
 );
 
 /** English source values, keyed by dotted key, for identity comparison. */

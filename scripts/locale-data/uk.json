@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Відеодоріжка",
   "videoTimeline.zoomIn": "Збільшити",
-  "videoTimeline.zoomOut": "Зменшити"
+  "videoTimeline.zoomOut": "Зменшити",
+  "settings.ai.keySavedPlaceholder": "Ключ збережено. Вставте новий ключ, щоб замінити його.",
+  "settings.ai.connected": "Підключено",
+  "settings.ai.testAgain": "Перевірити підключення знову",
+  "settings.ai.keySaved": "Ключ збережено ({{hint}}). Вставте новий ключ, щоб замінити його.",
+  "settings.ai.removeKey": "Видалити ключ",
+  "settings.ai.keyRemoved": "Збережений ключ видалено.",
+  "settings.ai.statusConnected": "Підключено та перевірено.",
+  "settings.ai.staleStatus": "Параметри змінено. Підключіться знову для перевірки.",
+  "settings.ai.headerConnected": "Підключено · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Цьому провайдеру потрібне активне мережеве підключення.",
+  "settings.ai.offlineFallback": "Ви офлайн. Перемкнуто на вбудованого провайдера правил. Віддаленим провайдерам потрібне активне мережеве підключення.",
+  "settings.ai.modelsLoading": "Завантаження моделей...",
+  "settings.ai.modelsUnavailable": "Не вдалося завантажити моделі від провайдера. Ви все ще можете ввести ідентифікатор моделі."
 }

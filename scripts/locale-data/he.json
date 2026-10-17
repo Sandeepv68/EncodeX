@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "רצועת וידאו",
   "videoTimeline.zoomIn": "התקרבות",
-  "videoTimeline.zoomOut": "התרחקות"
+  "videoTimeline.zoomOut": "התרחקות",
+  "settings.ai.keySavedPlaceholder": "המפתח נשמר. הדבק מפתח חדש כדי להחליפו.",
+  "settings.ai.connected": "מחובר",
+  "settings.ai.testAgain": "בדוק שוב את החיבור",
+  "settings.ai.keySaved": "מפתח נשמר ({{hint}}). הדבק מפתח חדש כדי להחליפו.",
+  "settings.ai.removeKey": "הסר מפתח",
+  "settings.ai.keyRemoved": "המפתח השמור הוסר.",
+  "settings.ai.statusConnected": "מחובר ומאומת.",
+  "settings.ai.staleStatus": "ההגדרות השתנו. התחבר שוב כדי לאמת.",
+  "settings.ai.headerConnected": "מחובר · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "ספק זה דורש חיבור רשת פעיל.",
+  "settings.ai.offlineFallback": "אתה במצב לא מקוון. עבר לספק הכללים המובנה. ספקים מרוחקים דורשים חיבור רשת פעיל.",
+  "settings.ai.modelsLoading": "טוען מודלים...",
+  "settings.ai.modelsUnavailable": "לא ניתן לטעון מודלים מהספק. עדיין ניתן להקליד מזהה מודל."
 }

@@ -13,14 +13,11 @@
 
 import type { AiServerSettings } from './settings';
 import { effectiveModel } from './settings';
-import { ProviderHttpError } from './connectors';
+import { ProviderHttpError, requestJson } from './connectors';
 import type { FetchLike } from './connectors';
 
 /** Default per-request timeout for a model-list call. @const {number} */
 const DEFAULT_TIMEOUT_MS = 30_000;
-
-/** Maximum provider error body kept for classification. @const {number} */
-const MAX_ERROR_BODY = 4000;
 
 /** Default Anthropic page size for the models endpoint. @const {number} */
 const ANTHROPIC_PAGE_SIZE = 100;
@@ -28,27 +25,14 @@ const ANTHROPIC_PAGE_SIZE = 100;
 /**
  * GETs a JSON document, throwing a {@link ProviderHttpError} on a non-2xx status
  * so the caller can classify the failure exactly like a connection test.
+ * Transient statuses share the connectors' retry budget.
  * @param {FetchLike} fetchImpl - The fetch implementation.
  * @param {string} url - The request URL.
  * @param {Record<string, string>} headers - Request headers.
  * @returns {Promise<unknown>} The parsed JSON body.
  */
 async function getJson(fetchImpl: FetchLike, url: string, headers: Record<string, string>): Promise<unknown> {
-  const response = await fetchImpl(url, {
-    method: 'GET',
-    headers,
-    signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS),
-  });
-  if (!response.ok) {
-    let body = '';
-    try {
-      body = (await response.text()).slice(0, MAX_ERROR_BODY);
-    } catch {
-      /* ignore */
-    }
-    throw new ProviderHttpError(response.status, body);
-  }
-  return response.json();
+  return requestJson(fetchImpl, url, { method: 'GET', headers }, AbortSignal.timeout(DEFAULT_TIMEOUT_MS));
 }
 
 /**

@@ -669,11 +669,19 @@
         "offline": "Den valda leverantören körs offline och behöver inget anslutningstest.",
         "unknown": "Anslutningstestet misslyckades. Kontrollera inställningarna och försök igen."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Ansluten och verifierad.",
+      "requiresNetwork": "Denna leverantör kräver en aktiv nätverksanslutning.",
+      "offlineFallback": "Du är offline. Bytte till den inbyggda regelleverantören. Fjärrleverantörer kräver en aktiv nätverksanslutning.",
+      "modelsLoading": "Laddar modeller...",
+      "modelsUnavailable": "Kunde inte ladda modeller från leverantören. Du kan fortfarande skriva ett modell-id.",
+      "keySavedPlaceholder": "Nyckel sparad. Klistra in en ny nyckel för att ersätta den.",
+      "connected": "Ansluten",
+      "testAgain": "Testa anslutningen igen",
+      "keySaved": "En nyckel är sparad ({{hint}}). Klistra in en ny nyckel för att ersätta den.",
+      "removeKey": "Ta bort nyckel",
+      "keyRemoved": "Den sparade nyckeln togs bort.",
+      "staleStatus": "Inställningarna ändrades. Anslut igen för att verifiera.",
+      "headerConnected": "Ansluten · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

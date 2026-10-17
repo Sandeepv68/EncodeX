@@ -669,11 +669,19 @@
         "offline": "Ka rere tuimotu te kaiwhakarato i tīpakohia, ā, kāore e hiahiatia he whakamātautau hononga.",
         "unknown": "I rahua te whakamātautau hononga. Tirohia ngā tautuhinga, kātahi anō whakamātau anō."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Kua hono, kua whakamanatia.",
+      "requiresNetwork": "Me whai hononga whatunga hohe tēnei kaiwhakarato.",
+      "offlineFallback": "Kei te tuimotu koe. Kua huri ki te kaiwhakarato ture whakauru. Me whai hononga whatunga hohe ngā kaiwhakarato mamao.",
+      "modelsLoading": "E utaina ana ngā tauira...",
+      "modelsUnavailable": "Kāore i taea ngā tauira te uta mai i te kaiwhakarato. Ka taea tonu e koe te pato i tētahi id tauira.",
+      "keySavedPlaceholder": "Kua rongoa te kī. Whakapiri he kī hou hei whakakapi.",
+      "connected": "Kua hono",
+      "testAgain": "Whakamātauria anō te hononga",
+      "keySaved": "Kua rongoa tētahi kī ({{hint}}). Whakapiri he kī hou hei whakakapi.",
+      "removeKey": "Tango kī",
+      "keyRemoved": "Kua tangohia te kī i rongoatia.",
+      "staleStatus": "Kua rereke ngā tautuhinga. Hono anō hei whakamana.",
+      "headerConnected": "Kua hono · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

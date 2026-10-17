@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Videospår",
   "videoTimeline.zoomIn": "Zooma in",
-  "videoTimeline.zoomOut": "Zooma ut"
+  "videoTimeline.zoomOut": "Zooma ut",
+  "settings.ai.keySavedPlaceholder": "Nyckel sparad. Klistra in en ny nyckel för att ersätta den.",
+  "settings.ai.connected": "Ansluten",
+  "settings.ai.testAgain": "Testa anslutningen igen",
+  "settings.ai.keySaved": "En nyckel är sparad ({{hint}}). Klistra in en ny nyckel för att ersätta den.",
+  "settings.ai.removeKey": "Ta bort nyckel",
+  "settings.ai.keyRemoved": "Den sparade nyckeln togs bort.",
+  "settings.ai.statusConnected": "Ansluten och verifierad.",
+  "settings.ai.staleStatus": "Inställningarna ändrades. Anslut igen för att verifiera.",
+  "settings.ai.headerConnected": "Ansluten · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Denna leverantör kräver en aktiv nätverksanslutning.",
+  "settings.ai.offlineFallback": "Du är offline. Bytte till den inbyggda regelleverantören. Fjärrleverantörer kräver en aktiv nätverksanslutning.",
+  "settings.ai.modelsLoading": "Laddar modeller...",
+  "settings.ai.modelsUnavailable": "Kunde inte ladda modeller från leverantören. Du kan fortfarande skriva ett modell-id."
 }

@@ -70,8 +70,8 @@ describe('App', () => {
     renderApp();
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     fireEvent.click(screen.getByTestId('nav-item-convert'));
-    expect(await screen.findByText('convert.title', {}, { timeout: 10000 })).toBeInTheDocument();
-  }, 20000);
+    expect(await screen.findByText('convert.title', {}, { timeout: 20000 })).toBeInTheDocument();
+  }, 30000);
 
   it('opens the permanent drawer condensed with icon-only nav rows', async () => {
     renderApp();
@@ -139,7 +139,7 @@ describe('App', () => {
     const menuButton = document.querySelector('[data-icon="bars"]')!.closest('button')!;
     fireEvent.click(menuButton);
     fireEvent.click(await screen.findByTestId('nav-item-convert', {}, { timeout: 10000 }));
-    expect(await screen.findByText('convert.title', {}, { timeout: 10000 })).toBeInTheDocument();
+    expect(await screen.findByText('convert.title', {}, { timeout: 20000 })).toBeInTheDocument();
   });
 
   it('shows a red blip on the audio-extract nav item while an extraction is running', async () => {

@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Rīpene ataata",
   "videoTimeline.zoomIn": "Whakanui",
-  "videoTimeline.zoomOut": "Whakamāmā"
+  "videoTimeline.zoomOut": "Whakamāmā",
+  "settings.ai.keySavedPlaceholder": "Kua rongoa te kī. Whakapiri he kī hou hei whakakapi.",
+  "settings.ai.connected": "Kua hono",
+  "settings.ai.testAgain": "Whakamātauria anō te hononga",
+  "settings.ai.keySaved": "Kua rongoa tētahi kī ({{hint}}). Whakapiri he kī hou hei whakakapi.",
+  "settings.ai.removeKey": "Tango kī",
+  "settings.ai.keyRemoved": "Kua tangohia te kī i rongoatia.",
+  "settings.ai.statusConnected": "Kua hono, kua whakamanatia.",
+  "settings.ai.staleStatus": "Kua rereke ngā tautuhinga. Hono anō hei whakamana.",
+  "settings.ai.headerConnected": "Kua hono · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Me whai hononga whatunga hohe tēnei kaiwhakarato.",
+  "settings.ai.offlineFallback": "Kei te tuimotu koe. Kua huri ki te kaiwhakarato ture whakauru. Me whai hononga whatunga hohe ngā kaiwhakarato mamao.",
+  "settings.ai.modelsLoading": "E utaina ana ngā tauira...",
+  "settings.ai.modelsUnavailable": "Kāore i taea ngā tauira te uta mai i te kaiwhakarato. Ka taea tonu e koe te pato i tētahi id tauira."
 }

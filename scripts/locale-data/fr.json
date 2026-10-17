@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Piste vidéo",
   "videoTimeline.zoomIn": "Zoom avant",
-  "videoTimeline.zoomOut": "Zoom arrière"
+  "videoTimeline.zoomOut": "Zoom arrière",
+  "settings.ai.keySavedPlaceholder": "Clé enregistrée. Collez une nouvelle clé pour la remplacer.",
+  "settings.ai.connected": "Connecté",
+  "settings.ai.testAgain": "Tester à nouveau la connexion",
+  "settings.ai.keySaved": "Une clé est enregistrée ({{hint}}). Collez une nouvelle clé pour la remplacer.",
+  "settings.ai.removeKey": "Supprimer la clé",
+  "settings.ai.keyRemoved": "La clé enregistrée a été supprimée.",
+  "settings.ai.statusConnected": "Connecté et vérifié.",
+  "settings.ai.staleStatus": "Les paramètres ont changé. Reconnectez-vous pour vérifier.",
+  "settings.ai.headerConnected": "Connecté · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Ce fournisseur nécessite une connexion réseau active.",
+  "settings.ai.offlineFallback": "Vous êtes hors ligne. Passage au fournisseur de règles intégré. Les fournisseurs distants nécessitent une connexion réseau active.",
+  "settings.ai.modelsLoading": "Chargement des modèles...",
+  "settings.ai.modelsUnavailable": "Impossible de charger les modèles depuis le fournisseur. Vous pouvez toujours saisir un id de modèle."
 }

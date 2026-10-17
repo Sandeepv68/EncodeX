@@ -669,11 +669,19 @@
         "offline": "選択したプロバイダーはオフラインで動作するため、接続テストは不要です。",
         "unknown": "接続テストに失敗しました。設定を確認して、もう一度お試しください。"
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "接続と確認が完了しました。",
+      "requiresNetwork": "このプロバイダーには有効なネットワーク接続が必要です。",
+      "offlineFallback": "オフラインです。内蔵のルールプロバイダーに切り替えました。リモートプロバイダーには有効なネットワーク接続が必要です。",
+      "modelsLoading": "モデルを読み込み中...",
+      "modelsUnavailable": "プロバイダーからモデルを読み込めませんでした。モデルIDは引き続き入力できます。",
+      "keySavedPlaceholder": "キーは保存されています。置き換えるには新しいキーを貼り付けてください。",
+      "connected": "接続済み",
+      "testAgain": "接続を再テスト",
+      "keySaved": "キーが保存されています（{{hint}}）。置き換えるには新しいキーを貼り付けてください。",
+      "removeKey": "キーを削除",
+      "keyRemoved": "保存されたキーを削除しました。",
+      "staleStatus": "設定が変更されました。確認するには再接続してください。",
+      "headerConnected": "接続済み · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

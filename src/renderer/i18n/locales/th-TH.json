@@ -669,11 +669,19 @@
         "offline": "ผู้ให้บริการที่เลือกทำงานแบบออฟไลน์และไม่ต้องทดสอบการเชื่อมต่อ",
         "unknown": "การทดสอบการเชื่อมต่อล้มเหลว ตรวจสอบการตั้งค่าแล้วลองอีกครั้ง"
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "เชื่อมต่อและยืนยันแล้ว",
+      "requiresNetwork": "ผู้ให้บริการนี้ต้องมีการเชื่อมต่อเครือข่ายที่ใช้งานได้",
+      "offlineFallback": "คุณออฟไลน์อยู่ สลับไปใช้ผู้ให้บริการกฎในตัวแล้ว ผู้ให้บริการระยะไกลต้องมีการเชื่อมต่อเครือข่ายที่ใช้งานได้",
+      "modelsLoading": "กำลังโหลดโมเดล...",
+      "modelsUnavailable": "ไม่สามารถโหลดโมเดลจากผู้ให้บริการได้ คุณยังสามารถพิมพ์ id โมเดลได้",
+      "keySavedPlaceholder": "บันทึกคีย์แล้ว วางคีย์ใหม่เพื่อแทนที่",
+      "connected": "เชื่อมต่อแล้ว",
+      "testAgain": "ทดสอบการเชื่อมต่ออีกครั้ง",
+      "keySaved": "มีคีย์ที่บันทึกไว้ ({{hint}}) วางคีย์ใหม่เพื่อแทนที่",
+      "removeKey": "ลบคีย์",
+      "keyRemoved": "ลบคีย์ที่จัดเก็บไว้แล้ว",
+      "staleStatus": "การตั้งค่าเปลี่ยนแปลง เชื่อมต่ออีกครั้งเพื่อยืนยัน",
+      "headerConnected": "เชื่อมต่อแล้ว · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

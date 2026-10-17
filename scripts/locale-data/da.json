@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Videospor",
   "videoTimeline.zoomIn": "Zoom ind",
-  "videoTimeline.zoomOut": "Zoom ud"
+  "videoTimeline.zoomOut": "Zoom ud",
+  "settings.ai.keySavedPlaceholder": "Nøgle gemt. Indsæt en ny nøgle for at erstatte den.",
+  "settings.ai.connected": "Forbundet",
+  "settings.ai.testAgain": "Test forbindelsen igen",
+  "settings.ai.keySaved": "En nøgle er gemt ({{hint}}). Indsæt en ny nøgle for at erstatte den.",
+  "settings.ai.removeKey": "Fjern nøgle",
+  "settings.ai.keyRemoved": "Den gemte nøgle blev fjernet.",
+  "settings.ai.statusConnected": "Forbundet og bekræftet.",
+  "settings.ai.staleStatus": "Indstillingerne er ændret. Forbind igen for at bekræfte.",
+  "settings.ai.headerConnected": "Forbundet · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Denne udbyder kræver en aktiv netværksforbindelse.",
+  "settings.ai.offlineFallback": "Du er offline. Skiftede til den indbyggede regeludbyder. Fjernudbydere kræver en aktiv netværksforbindelse.",
+  "settings.ai.modelsLoading": "Indlæser modeller...",
+  "settings.ai.modelsUnavailable": "Kunne ikke indlæse modeller fra udbyderen. Du kan stadig skrive et model-id."
 }

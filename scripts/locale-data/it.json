@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Traccia video",
   "videoTimeline.zoomIn": "Ingrandisci",
-  "videoTimeline.zoomOut": "Riduci"
+  "videoTimeline.zoomOut": "Riduci",
+  "settings.ai.keySavedPlaceholder": "Chiave salvata. Incolla una nuova chiave per sostituirla.",
+  "settings.ai.connected": "Connesso",
+  "settings.ai.testAgain": "Testa di nuovo la connessione",
+  "settings.ai.keySaved": "Una chiave è salvata ({{hint}}). Incolla una nuova chiave per sostituirla.",
+  "settings.ai.removeKey": "Rimuovi chiave",
+  "settings.ai.keyRemoved": "La chiave salvata è stata rimossa.",
+  "settings.ai.statusConnected": "Connesso e verificato.",
+  "settings.ai.staleStatus": "Le impostazioni sono cambiate. Riconnetti per verificare.",
+  "settings.ai.headerConnected": "Connesso · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Questo fornitore richiede una connessione di rete attiva.",
+  "settings.ai.offlineFallback": "Sei offline. Passato al fornitore di regole integrato. I fornitori remoti richiedono una connessione di rete attiva.",
+  "settings.ai.modelsLoading": "Caricamento dei modelli...",
+  "settings.ai.modelsUnavailable": "Impossibile caricare i modelli dal fornitore. Puoi comunque digitare un id del modello."
 }

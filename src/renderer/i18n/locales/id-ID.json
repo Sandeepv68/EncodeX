@@ -669,11 +669,19 @@
         "offline": "Penyedia yang dipilih berjalan offline dan tidak memerlukan uji koneksi.",
         "unknown": "Uji koneksi gagal. Periksa pengaturan dan coba lagi."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Terhubung dan terverifikasi.",
+      "requiresNetwork": "Penyedia ini memerlukan koneksi jaringan yang aktif.",
+      "offlineFallback": "Anda offline. Beralih ke penyedia aturan bawaan. Penyedia jarak jauh memerlukan koneksi jaringan yang aktif.",
+      "modelsLoading": "Memuat model...",
+      "modelsUnavailable": "Tidak dapat memuat model dari penyedia. Anda tetap dapat mengetik id model.",
+      "keySavedPlaceholder": "Kunci disimpan. Tempel kunci baru untuk menggantinya.",
+      "connected": "Terhubung",
+      "testAgain": "Uji koneksi lagi",
+      "keySaved": "Kunci telah disimpan ({{hint}}). Tempel kunci baru untuk menggantinya.",
+      "removeKey": "Hapus kunci",
+      "keyRemoved": "Kunci tersimpan telah dihapus.",
+      "staleStatus": "Pengaturan berubah. Hubungkan lagi untuk memverifikasi.",
+      "headerConnected": "Terhubung · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

@@ -669,11 +669,19 @@
         "offline": "הספק שנבחר פועל ללא חיבור ואינו זקוק לבדיקת חיבור.",
         "unknown": "בדיקת החיבור נכשלה. בדוק את ההגדרות ונסה שוב."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "מחובר ומאומת.",
+      "requiresNetwork": "ספק זה דורש חיבור רשת פעיל.",
+      "offlineFallback": "אתה במצב לא מקוון. עבר לספק הכללים המובנה. ספקים מרוחקים דורשים חיבור רשת פעיל.",
+      "modelsLoading": "טוען מודלים...",
+      "modelsUnavailable": "לא ניתן לטעון מודלים מהספק. עדיין ניתן להקליד מזהה מודל.",
+      "keySavedPlaceholder": "המפתח נשמר. הדבק מפתח חדש כדי להחליפו.",
+      "connected": "מחובר",
+      "testAgain": "בדוק שוב את החיבור",
+      "keySaved": "מפתח נשמר ({{hint}}). הדבק מפתח חדש כדי להחליפו.",
+      "removeKey": "הסר מפתח",
+      "keyRemoved": "המפתח השמור הוסר.",
+      "staleStatus": "ההגדרות השתנו. התחבר שוב כדי לאמת.",
+      "headerConnected": "מחובר · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

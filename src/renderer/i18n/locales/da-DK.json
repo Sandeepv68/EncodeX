@@ -669,11 +669,19 @@
         "offline": "Den valgte udbyder kører offline og kræver ingen forbindelsestest.",
         "unknown": "Forbindelsestesten mislykkedes. Kontrollér indstillingerne, og prøv igen."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Forbundet og bekræftet.",
+      "requiresNetwork": "Denne udbyder kræver en aktiv netværksforbindelse.",
+      "offlineFallback": "Du er offline. Skiftede til den indbyggede regeludbyder. Fjernudbydere kræver en aktiv netværksforbindelse.",
+      "modelsLoading": "Indlæser modeller...",
+      "modelsUnavailable": "Kunne ikke indlæse modeller fra udbyderen. Du kan stadig skrive et model-id.",
+      "keySavedPlaceholder": "Nøgle gemt. Indsæt en ny nøgle for at erstatte den.",
+      "connected": "Forbundet",
+      "testAgain": "Test forbindelsen igen",
+      "keySaved": "En nøgle er gemt ({{hint}}). Indsæt en ny nøgle for at erstatte den.",
+      "removeKey": "Fjern nøgle",
+      "keyRemoved": "Den gemte nøgle blev fjernet.",
+      "staleStatus": "Indstillingerne er ændret. Forbind igen for at bekræfte.",
+      "headerConnected": "Forbundet · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

@@ -669,11 +669,19 @@
         "offline": "Pembekal yang dipilih berjalan di luar talian dan tidak memerlukan ujian sambungan.",
         "unknown": "Ujian sambungan gagal. Semak tetapan dan cuba lagi."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Bersambung dan disahkan.",
+      "requiresNetwork": "Pembekal ini memerlukan sambungan rangkaian yang aktif.",
+      "offlineFallback": "Anda di luar talian. Bertukar kepada pembekal peraturan terbina dalam. Pembekal jauh memerlukan sambungan rangkaian yang aktif.",
+      "modelsLoading": "Memuatkan model...",
+      "modelsUnavailable": "Tidak dapat memuatkan model daripada pembekal. Anda masih boleh menaip id model.",
+      "keySavedPlaceholder": "Kunci disimpan. Tampal kunci baharu untuk menggantikannya.",
+      "connected": "Bersambung",
+      "testAgain": "Uji sambungan sekali lagi",
+      "keySaved": "Kunci telah disimpan ({{hint}}). Tampal kunci baharu untuk menggantikannya.",
+      "removeKey": "Buang kunci",
+      "keyRemoved": "Kunci tersimpan telah dibuang.",
+      "staleStatus": "Tetapan berubah. Sambung semula untuk mengesahkan.",
+      "headerConnected": "Bersambung · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

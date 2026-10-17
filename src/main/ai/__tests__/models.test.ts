@@ -108,6 +108,15 @@ describe('listProviderModels', () => {
     await expect(run({ ...baseSettings, providerId: 'openai' } as AiServerSettings, 'key')).rejects.toThrow('network down');
   });
 
+  it('retries a transient provider failure before giving up', async () => {
+    fetchImpl
+      .mockResolvedValueOnce({ ok: false, status: 503, text: async () => 'overloaded' })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ data: [{ id: 'gpt-4o' }] }) });
+    const res = await run({ ...baseSettings, providerId: 'openai' } as AiServerSettings, 'key');
+    expect(res).toEqual(['gpt-4o']);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+
   it('leads with the configured model when the provider reports it', async () => {
     fetchImpl.mockResolvedValueOnce({
       ok: true,

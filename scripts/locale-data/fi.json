@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Videoraita",
   "videoTimeline.zoomIn": "Lähennä",
-  "videoTimeline.zoomOut": "Kaukenna"
+  "videoTimeline.zoomOut": "Kaukenna",
+  "settings.ai.keySavedPlaceholder": "Avain tallennettu. Liitä uusi avain korvataksesi sen.",
+  "settings.ai.connected": "Yhdistetty",
+  "settings.ai.testAgain": "Testaa yhteys uudelleen",
+  "settings.ai.keySaved": "Avain on tallennettu ({{hint}}). Liitä uusi avain korvataksesi sen.",
+  "settings.ai.removeKey": "Poista avain",
+  "settings.ai.keyRemoved": "Tallennettu avain poistettiin.",
+  "settings.ai.statusConnected": "Yhdistetty ja vahvistettu.",
+  "settings.ai.staleStatus": "Asetukset muuttuivat. Yhdistä uudelleen vahvistaaksesi.",
+  "settings.ai.headerConnected": "Yhdistetty · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Tämä tarjoaja tarvitsee aktiivisen verkkoyhteyden.",
+  "settings.ai.offlineFallback": "Olet offline-tilassa. Vaihdettiin sisäänrakennettuun sääntötarjoajaan. Etätarjoajat tarvitsevat aktiivisen verkkoyhteyden.",
+  "settings.ai.modelsLoading": "Ladataan malleja...",
+  "settings.ai.modelsUnavailable": "Malleja ei voitu ladata tarjoajalta. Voit silti kirjoittaa mallitunnuksen."
 }

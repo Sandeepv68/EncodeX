@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Faixa de vídeo",
   "videoTimeline.zoomIn": "Ampliar",
-  "videoTimeline.zoomOut": "Reduzir"
+  "videoTimeline.zoomOut": "Reduzir",
+  "settings.ai.keySavedPlaceholder": "Chave salva. Cole uma nova chave para substituí-la.",
+  "settings.ai.connected": "Conectado",
+  "settings.ai.testAgain": "Testar a conexão novamente",
+  "settings.ai.keySaved": "Uma chave está salva ({{hint}}). Cole uma nova chave para substituí-la.",
+  "settings.ai.removeKey": "Remover chave",
+  "settings.ai.keyRemoved": "A chave armazenada foi removida.",
+  "settings.ai.statusConnected": "Conectado e verificado.",
+  "settings.ai.staleStatus": "As configurações mudaram. Conecte novamente para verificar.",
+  "settings.ai.headerConnected": "Conectado · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Este provedor precisa de uma conexão de rede ativa.",
+  "settings.ai.offlineFallback": "Você está offline. Alternado para o provedor de regras integrado. Provedores remotos precisam de uma conexão de rede ativa.",
+  "settings.ai.modelsLoading": "Carregando modelos...",
+  "settings.ai.modelsUnavailable": "Não foi possível carregar os modelos do provedor. Você ainda pode digitar um id de modelo."
 }

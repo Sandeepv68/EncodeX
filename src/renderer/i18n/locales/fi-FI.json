@@ -669,11 +669,19 @@
         "offline": "Valittu tarjoaja toimii offline-tilassa eikä vaadi yhteystestiä.",
         "unknown": "Yhteystesti epäonnistui. Tarkista asetukset ja yritä uudelleen."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Yhdistetty ja vahvistettu.",
+      "requiresNetwork": "Tämä tarjoaja tarvitsee aktiivisen verkkoyhteyden.",
+      "offlineFallback": "Olet offline-tilassa. Vaihdettiin sisäänrakennettuun sääntötarjoajaan. Etätarjoajat tarvitsevat aktiivisen verkkoyhteyden.",
+      "modelsLoading": "Ladataan malleja...",
+      "modelsUnavailable": "Malleja ei voitu ladata tarjoajalta. Voit silti kirjoittaa mallitunnuksen.",
+      "keySavedPlaceholder": "Avain tallennettu. Liitä uusi avain korvataksesi sen.",
+      "connected": "Yhdistetty",
+      "testAgain": "Testaa yhteys uudelleen",
+      "keySaved": "Avain on tallennettu ({{hint}}). Liitä uusi avain korvataksesi sen.",
+      "removeKey": "Poista avain",
+      "keyRemoved": "Tallennettu avain poistettiin.",
+      "staleStatus": "Asetukset muuttuivat. Yhdistä uudelleen vahvistaaksesi.",
+      "headerConnected": "Yhdistetty · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

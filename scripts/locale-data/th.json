@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "แทร็กวิดีโอ",
   "videoTimeline.zoomIn": "ซูมเข้า",
-  "videoTimeline.zoomOut": "ซูมออก"
+  "videoTimeline.zoomOut": "ซูมออก",
+  "settings.ai.keySavedPlaceholder": "บันทึกคีย์แล้ว วางคีย์ใหม่เพื่อแทนที่",
+  "settings.ai.connected": "เชื่อมต่อแล้ว",
+  "settings.ai.testAgain": "ทดสอบการเชื่อมต่ออีกครั้ง",
+  "settings.ai.keySaved": "มีคีย์ที่บันทึกไว้ ({{hint}}) วางคีย์ใหม่เพื่อแทนที่",
+  "settings.ai.removeKey": "ลบคีย์",
+  "settings.ai.keyRemoved": "ลบคีย์ที่จัดเก็บไว้แล้ว",
+  "settings.ai.statusConnected": "เชื่อมต่อและยืนยันแล้ว",
+  "settings.ai.staleStatus": "การตั้งค่าเปลี่ยนแปลง เชื่อมต่ออีกครั้งเพื่อยืนยัน",
+  "settings.ai.headerConnected": "เชื่อมต่อแล้ว · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "ผู้ให้บริการนี้ต้องมีการเชื่อมต่อเครือข่ายที่ใช้งานได้",
+  "settings.ai.offlineFallback": "คุณออฟไลน์อยู่ สลับไปใช้ผู้ให้บริการกฎในตัวแล้ว ผู้ให้บริการระยะไกลต้องมีการเชื่อมต่อเครือข่ายที่ใช้งานได้",
+  "settings.ai.modelsLoading": "กำลังโหลดโมเดล...",
+  "settings.ai.modelsUnavailable": "ไม่สามารถโหลดโมเดลจากผู้ให้บริการได้ คุณยังสามารถพิมพ์ id โมเดลได้"
 }

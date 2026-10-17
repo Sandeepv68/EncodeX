@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Videospur",
   "videoTimeline.zoomIn": "Vergrößern",
-  "videoTimeline.zoomOut": "Verkleinern"
+  "videoTimeline.zoomOut": "Verkleinern",
+  "settings.ai.keySavedPlaceholder": "Schlüssel gespeichert. Fügen Sie einen neuen Schlüssel ein, um ihn zu ersetzen.",
+  "settings.ai.connected": "Verbunden",
+  "settings.ai.testAgain": "Verbindung erneut testen",
+  "settings.ai.keySaved": "Ein Schlüssel ist gespeichert ({{hint}}). Fügen Sie einen neuen Schlüssel ein, um ihn zu ersetzen.",
+  "settings.ai.removeKey": "Schlüssel entfernen",
+  "settings.ai.keyRemoved": "Der gespeicherte Schlüssel wurde entfernt.",
+  "settings.ai.statusConnected": "Verbunden und verifiziert.",
+  "settings.ai.staleStatus": "Einstellungen geändert. Erneut verbinden, um zu verifizieren.",
+  "settings.ai.headerConnected": "Verbunden · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Dieser Anbieter benötigt eine aktive Netzwerkverbindung.",
+  "settings.ai.offlineFallback": "Sie sind offline. Zum integrierten Regel-Anbieter gewechselt. Remote-Anbieter benötigen eine aktive Netzwerkverbindung.",
+  "settings.ai.modelsLoading": "Modelle werden geladen...",
+  "settings.ai.modelsUnavailable": "Modelle konnten nicht vom Anbieter geladen werden. Sie können trotzdem eine Modell-ID eingeben."
 }

@@ -15,7 +15,7 @@
 import { app, ipcMain } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
-import { LOG_FAILED_TO_PERSIST_MCP_SETTINGS } from '../../shared/log-constants';
+import { LOG_AI_CONNECT_TEST_FAILED, LOG_AI_MODEL_LIST_FAILED } from '../../shared/log-constants';
 import { formatError } from '../../shared/errors';
 import { isAiProviderId } from '../../shared/ai/settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../../shared/ai/settings';
@@ -34,6 +34,19 @@ import { listProviderModels } from './models';
 
 /** Per-module logger for the AI settings IPC bridge. @const {Logger} */
 const log = new Logger('main/ai/settings-ipc');
+
+/**
+ * Builds the warn arguments for a failed provider call: the thrown error plus,
+ * when the provider answered with an HTTP error, its own response body — the
+ * status code alone never says *why* the provider refused. The body is read
+ * structurally (like {@link classifyAiConnectError}) so it survives mocks.
+ * @param {unknown} err - The thrown value.
+ * @returns {unknown[]} Arguments for {@link Logger.warn}.
+ */
+function providerFailureLogArgs(err: unknown): unknown[] {
+  const body = err && typeof err === 'object' && 'body' in err ? (err as { body?: unknown }).body : undefined;
+  return typeof body === 'string' && body ? [err, `provider response: ${body}`] : [err];
+}
 
 /**
  * Coerces an IPC payload into a validated {@link AiSettingsUpdate}.
@@ -93,7 +106,7 @@ export function registerAiSettingsIpc(): void {
       const view = recordAiConnection(userDataDir, { providerId, model: response.model });
       return { ok: true, message: `Connected to ${providerId}.`, model: response.model, latencyMs: Date.now() - startedAt, view };
     } catch (err) {
-      log.warn(LOG_FAILED_TO_PERSIST_MCP_SETTINGS, 'connect test failed:', err);
+      log.warn(LOG_AI_CONNECT_TEST_FAILED, ...providerFailureLogArgs(err));
       const { reason, status } = classifyAiConnectError(err, providerId);
       return { ok: false, message: formatError(err).message, reason, ...(status !== undefined ? { status } : {}) };
     }
@@ -115,7 +128,7 @@ export function registerAiSettingsIpc(): void {
       const models = await listProviderModels(merged, apiKey);
       return { ok: true, models };
     } catch (err) {
-      log.warn(LOG_FAILED_TO_PERSIST_MCP_SETTINGS, 'model list failed:', err);
+      log.warn(LOG_AI_MODEL_LIST_FAILED, ...providerFailureLogArgs(err));
       const { reason, status } = classifyAiConnectError(err, providerId);
       return { ok: false, models: [], reason, ...(status !== undefined ? { status } : {}) };
     }

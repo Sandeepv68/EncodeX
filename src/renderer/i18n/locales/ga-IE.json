@@ -669,11 +669,19 @@
         "offline": "Ritheann an soláthraí roghnaithe as líne agus ní theastaíonn tástáil naisc uaidh.",
         "unknown": "Theip ar an tástáil naisc. Seiceáil na socruithe agus triail arís."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Ceangailte agus fíoraithe.",
+      "requiresNetwork": "Teastaíonn nasc líonra gníomhach ón soláthraí seo.",
+      "offlineFallback": "Tá tú as líne. Aistríodh chuig an soláthraí rialacha ionsuite. Teastaíonn nasc líonra gníomhach ó sholáthraithe cianda.",
+      "modelsLoading": "Ag lódáil samhlacha...",
+      "modelsUnavailable": "Níorbh fhéidir samhlacha a lódáil ón soláthraí. Is féidir leat id samhla a chlóscríobh fós.",
+      "keySavedPlaceholder": "Eochair sábháilte. Greamaigh eochair nua chun í a athsholáthar.",
+      "connected": "Ceangailte",
+      "testAgain": "Tástáil an nasc arís",
+      "keySaved": "Tá eochair sábháilte ({{hint}}). Greamaigh eochair nua chun í a athsholáthar.",
+      "removeKey": "Bain an eochair",
+      "keyRemoved": "Baineadh an eochair stóráilte.",
+      "staleStatus": "Athraíodh na socruithe. Ceangail arís chun fíorú.",
+      "headerConnected": "Ceangailte · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

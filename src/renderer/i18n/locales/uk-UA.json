@@ -669,11 +669,19 @@
         "offline": "Вибраний провайдер працює офлайн і не потребує перевірки підключення.",
         "unknown": "Перевірка підключення не вдалася. Перевірте налаштування та повторіть спробу."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Підключено та перевірено.",
+      "requiresNetwork": "Цьому провайдеру потрібне активне мережеве підключення.",
+      "offlineFallback": "Ви офлайн. Перемкнуто на вбудованого провайдера правил. Віддаленим провайдерам потрібне активне мережеве підключення.",
+      "modelsLoading": "Завантаження моделей...",
+      "modelsUnavailable": "Не вдалося завантажити моделі від провайдера. Ви все ще можете ввести ідентифікатор моделі.",
+      "keySavedPlaceholder": "Ключ збережено. Вставте новий ключ, щоб замінити його.",
+      "connected": "Підключено",
+      "testAgain": "Перевірити підключення знову",
+      "keySaved": "Ключ збережено ({{hint}}). Вставте новий ключ, щоб замінити його.",
+      "removeKey": "Видалити ключ",
+      "keyRemoved": "Збережений ключ видалено.",
+      "staleStatus": "Параметри змінено. Підключіться знову для перевірки.",
+      "headerConnected": "Підключено · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

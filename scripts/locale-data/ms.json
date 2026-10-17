@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Trek video",
   "videoTimeline.zoomIn": "Zum masuk",
-  "videoTimeline.zoomOut": "Zum keluar"
+  "videoTimeline.zoomOut": "Zum keluar",
+  "settings.ai.keySavedPlaceholder": "Kunci disimpan. Tampal kunci baharu untuk menggantikannya.",
+  "settings.ai.connected": "Bersambung",
+  "settings.ai.testAgain": "Uji sambungan sekali lagi",
+  "settings.ai.keySaved": "Kunci telah disimpan ({{hint}}). Tampal kunci baharu untuk menggantikannya.",
+  "settings.ai.removeKey": "Buang kunci",
+  "settings.ai.keyRemoved": "Kunci tersimpan telah dibuang.",
+  "settings.ai.statusConnected": "Bersambung dan disahkan.",
+  "settings.ai.staleStatus": "Tetapan berubah. Sambung semula untuk mengesahkan.",
+  "settings.ai.headerConnected": "Bersambung · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Pembekal ini memerlukan sambungan rangkaian yang aktif.",
+  "settings.ai.offlineFallback": "Anda di luar talian. Bertukar kepada pembekal peraturan terbina dalam. Pembekal jauh memerlukan sambungan rangkaian yang aktif.",
+  "settings.ai.modelsLoading": "Memuatkan model...",
+  "settings.ai.modelsUnavailable": "Tidak dapat memuatkan model daripada pembekal. Anda masih boleh menaip id model."
 }

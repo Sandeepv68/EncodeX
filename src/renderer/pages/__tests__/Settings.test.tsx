@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import Settings from '../Settings';
 import { ColorModeProvider } from '../../ColorModeContext';
 import { useSettingsStore } from '../../stores/settingsStore';
+import { useAiSettingsStore } from '../../stores/aiSettingsStore';
 import { useToastStore } from '../../stores/toastStore';
 import { HWACCEL_DEFAULTS, ENCODER_TYPE_DEFAULT } from '../../../shared/hwaccel-settings';
 import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, LAUNCH_AT_LOGIN_STORAGE_KEY } from '../../../shared/constants';
@@ -24,6 +25,7 @@ describe('Settings', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
+    useAiSettingsStore.getState().reset();
     vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
       providerId: 'rules',
       model: '',
@@ -762,7 +764,7 @@ describe('Settings', () => {
       model: 'gpt-4o-mini',
       view: {
         providerId: 'openai',
-        model: 'gpt-4o-mini',
+        model: '',
         hasKey: true,
         keyHint: '••••',
         storedInsecurely: false,
@@ -778,6 +780,137 @@ describe('Settings', () => {
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
     fireEvent.click(screen.getByTestId('settings-ai-connect'));
     expect(await screen.findByTestId('settings-ai-connected')).toBeInTheDocument();
+  });
+
+  const connectedOpenAiView = {
+    providerId: 'openai' as const,
+    model: '',
+    hasKey: true,
+    keyHint: '••••••••',
+    storedInsecurely: false,
+    encryptionAvailable: true,
+    connected: true,
+    connectedAt: 2,
+    connectedModel: 'gpt-4o-mini',
+  };
+
+  it('shows a saved-key affordance and removes the stored key', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'openai',
+      model: '',
+      hasKey: true,
+      keyHint: '••••••••',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: false,
+    });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    expect(screen.getByLabelText('settings.ai.apiKey')).toHaveAttribute('placeholder', 'settings.ai.keySavedPlaceholder');
+    fireEvent.click(screen.getByTestId('settings-ai-remove-key'));
+    await waitFor(() => expect(window.electronAPI.aiSetSettings).toHaveBeenCalledWith({ providerId: 'openai', clearKey: true }));
+    await waitFor(() => expect(screen.queryByTestId('settings-ai-remove-key')).not.toBeInTheDocument());
+  });
+
+  it('shows a save error when removing the key returns an unusable view', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'openai',
+      model: '',
+      hasKey: true,
+      keyHint: '••••••••',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: false,
+    });
+    vi.mocked(window.electronAPI.aiSetSettings).mockResolvedValue({} as never);
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-remove-key'));
+    expect(await screen.findByTestId('settings-ai-error')).toHaveTextContent('settings.ai.saveFailed');
+    expect(screen.getByTestId('settings-ai-remove-key')).toBeInTheDocument();
+  });
+
+  it('surfaces a key-removal rejection as an error', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'openai',
+      model: '',
+      hasKey: true,
+      keyHint: '••••••••',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: false,
+    });
+    vi.mocked(window.electronAPI.aiSetSettings).mockRejectedValue(new Error('boom'));
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-remove-key'));
+    expect(await screen.findByTestId('settings-ai-error')).toBeInTheDocument();
+  });
+
+  it('switches the connect button to a connected state after a successful test', async () => {
+    vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({
+      ok: true,
+      message: 'Connected to openai.',
+      latencyMs: 42,
+      model: 'gpt-4o-mini',
+      view: connectedOpenAiView,
+    });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-connect'));
+    await screen.findByTestId('settings-ai-connected');
+    expect(screen.getByTestId('settings-ai-connect')).toHaveTextContent('settings.ai.connected');
+    expect(screen.getByTestId('settings-ai-connected-dot-openai')).toBeInTheDocument();
+  });
+
+  it('marks the connection stale when settings change after connecting', async () => {
+    vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({
+      ok: true,
+      message: 'Connected to openai.',
+      latencyMs: 42,
+      model: 'gpt-4o-mini',
+      view: connectedOpenAiView,
+    });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-connect'));
+    await screen.findByTestId('settings-ai-connected');
+    fireEvent.change(screen.getByLabelText('settings.ai.apiKey'), { target: { value: 'sk-new' } });
+    expect(screen.queryByTestId('settings-ai-connected')).not.toBeInTheDocument();
+    expect(screen.getByTestId('settings-ai-stale')).toHaveTextContent('settings.ai.staleStatus');
+    expect(screen.getByTestId('settings-ai-connect')).toHaveTextContent('settings.ai.connect');
+  });
+
+  it('restores the connected state from the session cache when remounted', async () => {
+    vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({
+      ok: true,
+      message: 'Connected to openai.',
+      latencyMs: 42,
+      model: 'gpt-4o-mini',
+      view: connectedOpenAiView,
+    });
+    const first = renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-connect'));
+    await screen.findByTestId('settings-ai-connected');
+    first.unmount();
+    vi.mocked(window.electronAPI.aiGetSettings).mockClear();
+    renderSettings();
+    expect(screen.getByTestId('settings-ai-header-status')).toHaveTextContent('settings.ai.headerConnected');
+    expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
+    expect(screen.getByTestId('settings-ai-connected')).toBeInTheDocument();
   });
 
   it('shows the endpoint for local and the model under Advanced', async () => {

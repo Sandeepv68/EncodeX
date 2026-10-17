@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Videospor",
   "videoTimeline.zoomIn": "Zoom inn",
-  "videoTimeline.zoomOut": "Zoom ut"
+  "videoTimeline.zoomOut": "Zoom ut",
+  "settings.ai.keySavedPlaceholder": "Nøkkel lagret. Lim inn en ny nøkkel for å erstatte den.",
+  "settings.ai.connected": "Tilkoblet",
+  "settings.ai.testAgain": "Test tilkoblingen på nytt",
+  "settings.ai.keySaved": "En nøkkel er lagret ({{hint}}). Lim inn en ny nøkkel for å erstatte den.",
+  "settings.ai.removeKey": "Fjern nøkkel",
+  "settings.ai.keyRemoved": "Den lagrede nøkkelen ble fjernet.",
+  "settings.ai.statusConnected": "Tilkoblet og bekreftet.",
+  "settings.ai.staleStatus": "Innstillingene er endret. Koble til på nytt for å bekrefte.",
+  "settings.ai.headerConnected": "Tilkoblet · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Denne leverandøren trenger en aktiv nettverksforbindelse.",
+  "settings.ai.offlineFallback": "Du er frakoblet. Byttet til den innebygde regelleverandøren. Eksterne leverandører trenger en aktiv nettverksforbindelse.",
+  "settings.ai.modelsLoading": "Laster inn modeller...",
+  "settings.ai.modelsUnavailable": "Kunne ikke laste inn modeller fra leverandøren. Du kan fortsatt skrive en modell-id."
 }

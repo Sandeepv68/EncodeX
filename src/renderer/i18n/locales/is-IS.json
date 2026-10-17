@@ -669,11 +669,19 @@
         "offline": "Valið þjónustuaðili keyrir án nettengingar og þarf ekki tengiprófun.",
         "unknown": "Tengiprófið mistókst. Athugaðu stillingarnar og reyndu aftur."
       },
-      "statusConnected": "Connected and verified.",
-      "requiresNetwork": "This provider needs an active network connection.",
-      "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id."
+      "statusConnected": "Tengt og staðfest.",
+      "requiresNetwork": "Þessi þjónustuaðili þarf virka nettengingu.",
+      "offlineFallback": "Þú ert ótengd(ur). Skipt yfir í innbyggða regluþjónustuaðilann. Fjarlægir þjónustuaðilar þurfa virka nettengingu.",
+      "modelsLoading": "Hleð inn líkönum...",
+      "modelsUnavailable": "Gat ekki hlaðið líkönum frá þjónustuaðilanum. Þú getur samt slegið inn líkanaauðkenni.",
+      "keySavedPlaceholder": "Lykill vistaður. Límdu nýjan lykil til að skipta honum út.",
+      "connected": "Tengt",
+      "testAgain": "Prófa tenginguna aftur",
+      "keySaved": "Lykill er vistaður ({{hint}}). Límdu nýjan lykil til að skipta honum út.",
+      "removeKey": "Fjarlægja lykil",
+      "keyRemoved": "Vistaði lykillinn var fjarlægður.",
+      "staleStatus": "Stillingar breyttust. Tengdu aftur til að staðfesta.",
+      "headerConnected": "Tengt · {{provider}} · {{model}}"
     }
   },
   "shortcuts": {

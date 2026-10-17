@@ -397,5 +397,18 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Myndalag",
   "videoTimeline.zoomIn": "Stækka",
-  "videoTimeline.zoomOut": "Minnka"
+  "videoTimeline.zoomOut": "Minnka",
+  "settings.ai.keySavedPlaceholder": "Lykill vistaður. Límdu nýjan lykil til að skipta honum út.",
+  "settings.ai.connected": "Tengt",
+  "settings.ai.testAgain": "Prófa tenginguna aftur",
+  "settings.ai.keySaved": "Lykill er vistaður ({{hint}}). Límdu nýjan lykil til að skipta honum út.",
+  "settings.ai.removeKey": "Fjarlægja lykil",
+  "settings.ai.keyRemoved": "Vistaði lykillinn var fjarlægður.",
+  "settings.ai.statusConnected": "Tengt og staðfest.",
+  "settings.ai.staleStatus": "Stillingar breyttust. Tengdu aftur til að staðfesta.",
+  "settings.ai.headerConnected": "Tengt · {{provider}} · {{model}}",
+  "settings.ai.requiresNetwork": "Þessi þjónustuaðili þarf virka nettengingu.",
+  "settings.ai.offlineFallback": "Þú ert ótengd(ur). Skipt yfir í innbyggða regluþjónustuaðilann. Fjarlægir þjónustuaðilar þurfa virka nettengingu.",
+  "settings.ai.modelsLoading": "Hleð inn líkönum...",
+  "settings.ai.modelsUnavailable": "Gat ekki hlaðið líkönum frá þjónustuaðilanum. Þú getur samt slegið inn líkanaauðkenni."
 }
