@@ -16,10 +16,12 @@ import {
   defaultAiSettings,
   isAiProviderId,
   keyHint,
+  resolveAiProviderSettings,
   sanitizeAiSettings,
   toAiSettingsView,
   viewForProvider,
 } from '../settings';
+import type { AiServerSettings } from '../settings';
 
 describe('settings constants', () => {
   it('lists every provider and the default model for each remote provider', () => {
@@ -277,5 +279,56 @@ describe('viewForProvider', () => {
       true,
     );
     expect(viewForProvider(connected, 'anthropic').activeConnection).toEqual({ providerId: 'openai', model: 'gpt-4o', at: 7 });
+  });
+});
+
+describe('resolveAiProviderSettings', () => {
+  const stored: AiServerSettings = {
+    providerId: 'openai',
+    model: 'gpt-4o',
+    key: 'enc-openai',
+    baseUrl: 'https://api.openai.com/v1',
+    keySetAt: 111,
+    providers: {
+      anthropic: {
+        model: 'claude-x',
+        key: 'enc-anthropic',
+        baseUrl: 'https://api.anthropic.com',
+        keySetAt: 222,
+        storedInsecurely: true,
+      },
+      gemini: { model: '', key: null },
+    },
+  };
+
+  it('returns the document unchanged for the selected provider', () => {
+    expect(resolveAiProviderSettings(stored, 'openai')).toBe(stored);
+  });
+
+  it('projects a stored slot onto a flat document, carrying every optional field', () => {
+    expect(resolveAiProviderSettings(stored, 'anthropic')).toEqual({
+      providerId: 'anthropic',
+      model: 'claude-x',
+      key: 'enc-anthropic',
+      baseUrl: 'https://api.anthropic.com',
+      keySetAt: 222,
+      storedInsecurely: true,
+    });
+  });
+
+  it('omits optional fields the slot does not carry', () => {
+    expect(resolveAiProviderSettings(stored, 'gemini')).toEqual({ providerId: 'gemini', model: '', key: null });
+  });
+
+  it('yields a blank document for a provider with no stored slot', () => {
+    expect(resolveAiProviderSettings(stored, 'local')).toEqual({ providerId: 'local', model: '', key: null });
+  });
+
+  it('tolerates a document with no providers map at all', () => {
+    expect(resolveAiProviderSettings({ providerId: 'rules', model: '', key: null }, 'openai')).toEqual({
+      providerId: 'openai',
+      model: '',
+      key: null,
+    });
   });
 });
