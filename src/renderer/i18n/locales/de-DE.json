@@ -1078,7 +1078,8 @@
         "local": "Lokales Modell"
       },
       "configure": "KI-Anbieter konfigurieren",
-      "locationNote": "KI-Anbieter werden in den Einstellungen konfiguriert."
+      "locationNote": "KI-Anbieter werden in den Einstellungen konfiguriert.",
+      "notConnected": "Nicht verbunden"
     },
     "queryLabel": "Suchbegriff",
     "queryPlaceholder": "z. B. den Teil zum Preis",

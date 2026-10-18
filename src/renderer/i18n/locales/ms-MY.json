@@ -1078,7 +1078,8 @@
         "local": "Model setempat"
       },
       "configure": "Konfigurasikan pembekal AI",
-      "locationNote": "Pembekal AI dikonfigurasikan dalam Tetapan."
+      "locationNote": "Pembekal AI dikonfigurasikan dalam Tetapan.",
+      "notConnected": "Tidak bersambung"
     },
     "queryLabel": "Frasa carian",
     "queryPlaceholder": "cth. bahagian tentang harga",

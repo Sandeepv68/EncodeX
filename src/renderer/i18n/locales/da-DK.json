@@ -1078,7 +1078,8 @@
         "local": "Lokal model"
       },
       "configure": "Konfigurér AI-udbyder",
-      "locationNote": "AI-udbydere konfigureres i Indstillinger."
+      "locationNote": "AI-udbydere konfigureres i Indstillinger.",
+      "notConnected": "Ikke forbundet"
     },
     "queryLabel": "Søgefraser",
     "queryPlaceholder": "fx delen om priser",

@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "AI प्रदायकहरू सेटिङ्समा कन्फिगर गरिन्छन्।",
   "copilot.ai.model": "मोडेल",
   "copilot.ai.modelPlaceholder": "प्रदायकको पूर्वनिर्धारित",
+  "copilot.ai.notConnected": "जोडिएको छैन",
   "copilot.ai.privacy": "जाँचका तथ्यहरू र तपाईंको लक्ष्य पाठ मात्र पठाइन्छ; मिडिया फाइलहरू कहिल्यै अपलोड हुँदैनन्।",
   "copilot.ai.provider": "प्रदायक",
   "copilot.ai.providers.anthropic": "Anthropic",

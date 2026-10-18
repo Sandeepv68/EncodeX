@@ -1078,7 +1078,8 @@
         "local": "Lokal modell"
       },
       "configure": "Konfigurer KI-leverandør",
-      "locationNote": "KI-leverandører konfigureres i Innstillinger."
+      "locationNote": "KI-leverandører konfigureres i Innstillinger.",
+      "notConnected": "Ikke koblet"
     },
     "queryLabel": "Søkefrase",
     "queryPlaceholder": "f.eks. delen om priser",

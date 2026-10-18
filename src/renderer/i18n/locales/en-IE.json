@@ -1078,7 +1078,8 @@
         "local": "Local model"
       },
       "configure": "Configure AI provider",
-      "locationNote": "AI providers are configured in Settings."
+      "locationNote": "AI providers are configured in Settings.",
+      "notConnected": "Not connected"
     },
     "queryLabel": "Search phrase",
     "queryPlaceholder": "e.g. the part about pricing",

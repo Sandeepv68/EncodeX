@@ -170,7 +170,7 @@ describe('applyAiSettingsUpdate', () => {
     expect(stored.storedInsecurely).toBeUndefined();
   });
 
-  it('clears a previously recorded connection on any update', () => {
+  it('clears a previously recorded connection on any config change', () => {
     applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini', apiKey: 'sk-1' });
     expect(recordAiConnection(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini' }).connected).toBe(true);
     // Re-saving (even the same values) invalidates the verified connection.
@@ -179,6 +179,45 @@ describe('applyAiSettingsUpdate', () => {
     expect(readAiSettings(userDataDir)).not.toHaveProperty('connectedAt');
     expect(readAiSettings(userDataDir)).not.toHaveProperty('connectedProvider');
     expect(readAiSettings(userDataDir)).not.toHaveProperty('connectedModel');
+  });
+
+  it('keeps a provider own key/model when the selection switches away and back', () => {
+    // Connect OpenAI first so it becomes the selected provider.
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o', apiKey: 'sk-oa' });
+    // A pure provider switch (no config change) stashes OpenAI's own config.
+    const switched = applyAiSettingsUpdate(userDataDir, { providerId: 'anthropic', model: 'claude-x', apiKey: 'sk-an' });
+    const stored = readAiSettings(userDataDir);
+    expect(stored.providerId).toBe('anthropic');
+    expect(switched.hasKey).toBe(true);
+    expect(stored.key).toBeTruthy();
+    expect(stored.providers?.openai).toMatchObject({ model: 'gpt-4o' });
+    // Switching back restores OpenAI's model so the editor shows it again.
+    const back = applyAiSettingsUpdate(userDataDir, { providerId: 'openai' });
+    expect(back.providerId).toBe('openai');
+    expect(back.model).toBe('gpt-4o');
+    expect(back.hasKey).toBe(true);
+    expect(readAiSettings(userDataDir).providers?.anthropic).toMatchObject({ model: 'claude-x' });
+  });
+
+  it('preserves a verified connection across a provider switch', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini', apiKey: 'sk-1' });
+    recordAiConnection(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini' });
+    // Selecting another provider does not touch the global connection pointer.
+    const view = applyAiSettingsUpdate(userDataDir, { providerId: 'rules' });
+    expect(readAiSettings(userDataDir)).toMatchObject({ connectedProvider: 'openai', connectedModel: 'gpt-4o-mini' });
+    expect(view.activeConnection).toEqual(expect.objectContaining({ providerId: 'openai', model: 'gpt-4o-mini' }));
+  });
+
+  it('summarizes the other providers so the editor can scope the saved key', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o', apiKey: 'sk-1' });
+    applyAiSettingsUpdate(userDataDir, { providerId: 'anthropic', model: '', apiKey: 'sk-2' });
+    const view = applyAiSettingsUpdate(userDataDir, { providerId: 'gemini', model: '' });
+    expect(view.providerSummaries).toEqual(
+      expect.objectContaining({
+        openai: expect.objectContaining({ model: 'gpt-4o', hasKey: true }),
+        anthropic: expect.objectContaining({ model: '', hasKey: true }),
+      }),
+    );
   });
 });
 

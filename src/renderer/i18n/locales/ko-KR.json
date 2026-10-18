@@ -1078,7 +1078,8 @@
         "local": "로컬 모델"
       },
       "configure": "AI 공급자 구성",
-      "locationNote": "AI 공급자는 설정에서 구성됩니다."
+      "locationNote": "AI 공급자는 설정에서 구성됩니다.",
+      "notConnected": "연결되지 않음"
     },
     "queryLabel": "검색 구문",
     "queryPlaceholder": "예: 가격 책정에 관한 부분",

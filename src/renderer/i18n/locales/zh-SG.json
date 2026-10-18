@@ -1078,7 +1078,8 @@
         "local": "本地模型"
       },
       "configure": "配置 AI 提供商",
-      "locationNote": "AI 提供商在设置中配置。"
+      "locationNote": "AI 提供商在设置中配置。",
+      "notConnected": "未连接"
     },
     "queryLabel": "搜索短语",
     "queryPlaceholder": "例如：关于定价的部分",

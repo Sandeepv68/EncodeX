@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "AI 공급자는 설정에서 구성됩니다.",
   "copilot.ai.model": "모델",
   "copilot.ai.modelPlaceholder": "공급자 기본값",
+  "copilot.ai.notConnected": "연결되지 않음",
   "copilot.ai.privacy": "검사 결과와 목표 텍스트만 전송되며 미디어 파일은 절대 업로드되지 않습니다.",
   "copilot.ai.provider": "공급자",
   "copilot.ai.providers.anthropic": "Anthropic",

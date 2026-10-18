@@ -1078,7 +1078,8 @@
         "local": "Lokal modell"
       },
       "configure": "Konfigurera AI-leverantör",
-      "locationNote": "AI-leverantörer konfigureras i Inställningar."
+      "locationNote": "AI-leverantörer konfigureras i Inställningar.",
+      "notConnected": "Inte ansluten"
     },
     "queryLabel": "Sökfras",
     "queryPlaceholder": "t.ex. delen om prissättning",

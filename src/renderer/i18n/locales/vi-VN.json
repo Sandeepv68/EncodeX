@@ -1078,7 +1078,8 @@
         "local": "Mô hình cục bộ"
       },
       "configure": "Định cấu hình nhà cung cấp AI",
-      "locationNote": "Các nhà cung cấp AI được định cấu hình trong Cài đặt."
+      "locationNote": "Các nhà cung cấp AI được định cấu hình trong Cài đặt.",
+      "notConnected": "Chưa kết nối"
     },
     "queryLabel": "Cụm từ tìm kiếm",
     "queryPlaceholder": "vd: phần về định giá",

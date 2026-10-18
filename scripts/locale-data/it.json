@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "I provider IA si configurano nelle Impostazioni.",
   "copilot.ai.model": "Modello",
   "copilot.ai.modelPlaceholder": "Predefinito del provider",
+  "copilot.ai.notConnected": "Non connesso",
   "copilot.ai.privacy": "Vengono inviati solo i dati dell’analisi e il testo del tuo obiettivo; i file non vengono mai caricati.",
   "copilot.ai.provider": "Fornitore",
   "copilot.ai.providers.anthropic": "Anthropic",

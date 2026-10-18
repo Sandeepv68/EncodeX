@@ -1078,7 +1078,8 @@
         "local": "Plaaslike model"
       },
       "configure": "AI-verskaffer instel",
-      "locationNote": "AI-verskaffers word in Instellings opgestel."
+      "locationNote": "AI-verskaffers word in Instellings opgestel.",
+      "notConnected": "Nie gekoppel nie"
     },
     "queryLabel": "Soekfrase",
     "queryPlaceholder": "bv. die deel oor pryse",

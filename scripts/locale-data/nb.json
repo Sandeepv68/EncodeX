@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "KI-leverandører konfigureres i Innstillinger.",
   "copilot.ai.model": "Modell",
   "copilot.ai.modelPlaceholder": "Leverandørens standard",
+  "copilot.ai.notConnected": "Ikke koblet",
   "copilot.ai.privacy": "Kun undersøkte data og målteksten din sendes; mediefiler lastes aldri opp.",
   "copilot.ai.provider": "Leverandør",
   "copilot.ai.providers.anthropic": "Anthropic",

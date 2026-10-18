@@ -18,6 +18,7 @@ import {
   keyHint,
   sanitizeAiSettings,
   toAiSettingsView,
+  viewForProvider,
 } from '../settings';
 
 describe('settings constants', () => {
@@ -201,5 +202,80 @@ describe('keyHint / toAiSettingsView', () => {
     expect(
       toAiSettingsView({ providerId: 'openai', model: '', key: null, connectedAt: 1, connectedProvider: 'openai' }, true).connected,
     ).toBe(false);
+  });
+
+  it('exposes the global active connection even when a different provider is selected', () => {
+    const view = toAiSettingsView(
+      { providerId: 'anthropic', model: '', key: null, connectedAt: 2, connectedProvider: 'openai', connectedModel: 'gpt-4o-mini' },
+      true,
+    );
+    expect(view.connected).toBe(false);
+    expect(view.activeConnection).toEqual({ providerId: 'openai', model: 'gpt-4o-mini', at: 2 });
+  });
+
+  it('summarizes the non-selected providers for the editor', () => {
+    const view = toAiSettingsView(
+      {
+        providerId: 'openai',
+        model: 'gpt-4o',
+        key: 'enc',
+        providers: {
+          openai: { model: 'gpt-4o', key: 'enc' },
+          anthropic: { model: 'claude-x', key: 'enc2' },
+          gemini: { model: '', key: null },
+        },
+      },
+      true,
+    );
+    expect(view.hasKey).toBe(true);
+    expect(view.keyHint).toBe('••••••••');
+    expect(view.providerSummaries).toEqual({
+      anthropic: { model: 'claude-x', hasKey: true, keyHint: '••••••••', storedInsecurely: false },
+      gemini: { model: '', hasKey: false, keyHint: '', storedInsecurely: false },
+    });
+  });
+});
+
+describe('viewForProvider', () => {
+  const base = toAiSettingsView(
+    {
+      providerId: 'openai',
+      model: 'gpt-4o',
+      key: 'enc',
+      providers: { anthropic: { model: 'claude-x', key: 'enc2', baseUrl: 'https://api.anthropic.com', storedInsecurely: true } },
+    },
+    true,
+  );
+
+  it('returns the base view unchanged for the selected provider', () => {
+    expect(viewForProvider(base, 'openai')).toBe(base);
+  });
+
+  it('projects another provider own summary onto a flat view', () => {
+    const resolved = viewForProvider(base, 'anthropic');
+    expect(resolved).toMatchObject({
+      providerId: 'anthropic',
+      model: 'claude-x',
+      baseUrl: 'https://api.anthropic.com',
+      hasKey: true,
+      keyHint: '••••••••',
+      storedInsecurely: true,
+      encryptionAvailable: true,
+      connected: false,
+    });
+  });
+
+  it('yields a blank view for a provider with no stored config', () => {
+    const resolved = viewForProvider(base, 'gemini');
+    expect(resolved).toMatchObject({ providerId: 'gemini', model: '', hasKey: false, keyHint: '', connected: false });
+    expect(resolved).not.toHaveProperty('baseUrl');
+  });
+
+  it('carries the active connection through to the resolved view', () => {
+    const connected = toAiSettingsView(
+      { providerId: 'openai', model: 'gpt-4o', key: 'enc', connectedAt: 7, connectedProvider: 'openai', connectedModel: 'gpt-4o' },
+      true,
+    );
+    expect(viewForProvider(connected, 'anthropic').activeConnection).toEqual({ providerId: 'openai', model: 'gpt-4o', at: 7 });
   });
 });

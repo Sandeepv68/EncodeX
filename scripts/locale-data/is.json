@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "AI-þjónustuaðilar eru stilltir í Stillingum.",
   "copilot.ai.model": "Líkan",
   "copilot.ai.modelPlaceholder": "Sjálfgefið þjónustuaðila",
+  "copilot.ai.notConnected": "Ekki tengt",
   "copilot.ai.privacy": "Aðeins skoðunarstaðreyndir og texti markmiðs þíns er sendur; skrár eru aldrei hlaðnar upp.",
   "copilot.ai.provider": "Þjónustuaðili",
   "copilot.ai.providers.anthropic": "Anthropic",

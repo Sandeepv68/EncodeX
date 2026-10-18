@@ -46,7 +46,48 @@ export const AI_DEFAULT_MODELS: Record<string, string> = {
 };
 
 /**
+ * One provider's own configuration (API key, model, endpoint). Kept separate
+ * from {@link AiServerSettings}'s flat fields so every provider remembers its
+ * own key instead of sharing a single global one.
+ * @interface AiProviderConfig
+ * @property {string} model - The model id (empty means "provider default").
+ * @property {string} [baseUrl] - OpenAI-compatible base URL override.
+ * @property {string | null} key - Encrypted (base64) key, or null when unset.
+ * @property {number} [keySetAt] - Epoch ms the key was last set.
+ * @property {boolean} [storedInsecurely] - True when the key is plaintext
+ *   because `safeStorage` was unavailable and the user accepted the risk.
+ */
+export interface AiProviderConfig {
+  model: string;
+  baseUrl?: string;
+  key: string | null;
+  keySetAt?: number;
+  storedInsecurely?: boolean;
+}
+
+/**
+ * The single active connection: which provider answered the last successful
+ * connectivity test and with which model. Independent of the *selected*
+ * provider, so switching the editor's selection never clears it.
+ * @interface AiActiveConnection
+ * @property {AIProviderId} providerId - The provider that answered.
+ * @property {string} [model] - The model that answered.
+ * @property {number} at - Epoch ms of the successful test.
+ */
+export interface AiActiveConnection {
+  providerId: AIProviderId;
+  model?: string;
+  at: number;
+}
+
+/**
  * The persisted AI settings document (written to `userData/ai-settings.json`).
+ *
+ * The flat fields always describe the **selected** provider so existing
+ * consumers (`decryptApiKey`, `effectiveModel`, `createConnectorFromSettings`)
+ * keep working unchanged. Every *other* provider's config lives in
+ * {@link AiServerSettings.providers}; the selected provider is never duplicated
+ * there, and the connection pointer below is global (one active connection).
  * @interface AiServerSettings
  * @property {AIProviderId} providerId - The selected provider.
  * @property {string} model - The model id (empty means "provider default").
@@ -55,8 +96,10 @@ export const AI_DEFAULT_MODELS: Record<string, string> = {
  * @property {number} [keySetAt] - Epoch ms the key was last set.
  * @property {boolean} [storedInsecurely] - True when the key is plaintext
  *   because `safeStorage` was unavailable and the user accepted the risk.
+ * @property {Partial<Record<AIProviderId, AiProviderConfig>>} [providers] -
+ *   Configs of the providers that are *not* selected.
  * @property {number} [connectedAt] - Epoch ms of the last successful connection
- *   test. Cleared whenever the settings change.
+ *   test. Cleared only when the connected provider's own config changes.
  * @property {AIProviderId} [connectedProvider] - The provider verified by the
  *   last successful test.
  * @property {string} [connectedModel] - The model that answered the last
@@ -69,9 +112,30 @@ export interface AiServerSettings {
   key: string | null;
   keySetAt?: number;
   storedInsecurely?: boolean;
+  providers?: Partial<Record<AIProviderId, AiProviderConfig>>;
   connectedAt?: number;
   connectedProvider?: AIProviderId;
   connectedModel?: string;
+}
+
+/**
+ * A non-secret summary of one provider's stored config, so the renderer can
+ * show the correct saved-key/model/endpoint for a provider the user selects in
+ * the editor without a round-trip (the selected provider's own config is the
+ * flat {@link AiSettingsView} fields; every other provider is summarized here).
+ * @interface AiProviderSummary
+ * @property {string} model - The model id (empty means "provider default").
+ * @property {string} [baseUrl] - Base URL override, if any.
+ * @property {boolean} hasKey - Whether a key is stored for this provider.
+ * @property {string} keyHint - A non-secret hint (e.g. `••••••••`).
+ * @property {boolean} storedInsecurely - Whether the key is stored in plaintext.
+ */
+export interface AiProviderSummary {
+  model: string;
+  baseUrl?: string;
+  hasKey: boolean;
+  keyHint: string;
+  storedInsecurely: boolean;
 }
 
 /**
@@ -88,6 +152,13 @@ export interface AiServerSettings {
  *   test (has a key, and the verified provider matches the selected provider).
  * @property {number} [connectedAt] - Epoch ms of the successful test, when connected.
  * @property {string} [connectedModel] - The verified model, when connected.
+ * @property {AiActiveConnection} [activeConnection] - The single active
+ *   connection, when one is recorded. Present regardless of which provider is
+ *   currently selected, so the UI can show a connection that lives elsewhere.
+ * @property {Partial<Record<AIProviderId, AiProviderSummary>>} [providerSummaries] -
+ *   Non-secret summaries of the providers that are *not* selected, so the editor
+ *   can show each provider's own saved key/model/endpoint the instant it is
+ *   selected, without persisting the selection or a round-trip.
  */
 export interface AiSettingsView {
   providerId: AIProviderId;
@@ -100,6 +171,8 @@ export interface AiSettingsView {
   connected: boolean;
   connectedAt?: number;
   connectedModel?: string;
+  activeConnection?: AiActiveConnection;
+  providerSummaries?: Partial<Record<AIProviderId, AiProviderSummary>>;
 }
 
 /**
@@ -194,9 +267,75 @@ function sanitizeBaseUrl(value: unknown): string | undefined {
 }
 
 /**
+ * Coerces an arbitrary candidate into one provider's config, or null when the
+ * result would be indistinguishable from the blank default (so a persisted
+ * document never grows empty slots).
+ * @param {unknown} input - The candidate config.
+ * @returns {AiProviderConfig | null} A sanitized config, or null when blank.
+ */
+function sanitizeProviderConfig(input: unknown): AiProviderConfig | null {
+  const record = input && typeof input === 'object' && !Array.isArray(input) ? (input as Record<string, unknown>) : {};
+  const model = typeof record.model === 'string' ? record.model.trim().slice(0, 200) : '';
+  const baseUrl = sanitizeBaseUrl(record.baseUrl);
+  const key = typeof record.key === 'string' && record.key.length > 0 ? record.key : null;
+  const keySetAt = typeof record.keySetAt === 'number' && Number.isFinite(record.keySetAt) ? record.keySetAt : undefined;
+  const storedInsecurely = record.storedInsecurely === true;
+  const config: AiProviderConfig = { model, key };
+  if (baseUrl) config.baseUrl = baseUrl;
+  if (keySetAt !== undefined) config.keySetAt = keySetAt;
+  if (storedInsecurely) config.storedInsecurely = true;
+  return isBlankProviderConfig(config) ? null : config;
+}
+
+/**
+ * Whether a provider config carries nothing but defaults (no key, no model, no
+ * endpoint), so it does not need a slot in the persisted map.
+ * @param {AiProviderConfig} config - The candidate config.
+ * @returns {boolean} True when the config is effectively empty.
+ */
+export function isBlankProviderConfig(config: AiProviderConfig): boolean {
+  return config.model === '' && config.key === null && config.baseUrl === undefined;
+}
+
+/**
+ * Projects the flat (selected-provider) fields of a document onto a standalone
+ * provider config, dropping the global connection pointer.
+ * @param {AiServerSettings} settings - The stored settings.
+ * @returns {AiProviderConfig} The selected provider's config.
+ */
+export function toAiProviderConfig(settings: AiServerSettings): AiProviderConfig {
+  const config: AiProviderConfig = { model: settings.model, key: settings.key };
+  if (settings.baseUrl) config.baseUrl = settings.baseUrl;
+  if (settings.keySetAt !== undefined) config.keySetAt = settings.keySetAt;
+  if (settings.storedInsecurely === true) config.storedInsecurely = true;
+  return config;
+}
+
+/**
+ * Builds the flat settings document for one provider, reading the selected
+ * provider's own flat fields or the stored slot for any other provider. The
+ * returned document never carries the connection pointer (that stays global)
+ * and never carries the `providers` map.
+ * @param {AiServerSettings} settings - The stored settings document.
+ * @param {AIProviderId} providerId - The provider whose config is wanted.
+ * @returns {AiServerSettings} A flat document for that provider.
+ */
+export function resolveAiProviderSettings(settings: AiServerSettings, providerId: AIProviderId): AiServerSettings {
+  if (providerId === settings.providerId) return settings;
+  const config = settings.providers?.[providerId];
+  if (!config) return { providerId, model: '', key: null };
+  const resolved: AiServerSettings = { providerId, model: config.model, key: config.key };
+  if (config.baseUrl) resolved.baseUrl = config.baseUrl;
+  if (config.keySetAt !== undefined) resolved.keySetAt = config.keySetAt;
+  if (config.storedInsecurely === true) resolved.storedInsecurely = true;
+  return resolved;
+}
+
+/**
  * Coerces arbitrary input into a valid, complete settings document. Unknown
  * providers fall back to `rules`; the key is preserved verbatim (already
- * encrypted by the caller) or dropped.
+ * encrypted by the caller) or dropped. The `providers` map is normalized to
+ * known ids only and never duplicates the selected provider.
  * @param {unknown} input - The candidate document.
  * @returns {AiServerSettings} A sanitized document.
  */
@@ -212,6 +351,22 @@ export function sanitizeAiSettings(input: unknown): AiServerSettings {
   const connectedProvider = isAiProviderId(record.connectedProvider) ? record.connectedProvider : undefined;
   const connectedModel =
     typeof record.connectedModel === 'string' && record.connectedModel.trim() ? record.connectedModel.trim().slice(0, 200) : undefined;
+
+  // Normalize the per-provider slots. Iterating the known choices (instead of
+  // the input's own keys) keeps prototype-polluting names out.
+  const source = record.providers && typeof record.providers === 'object' && !Array.isArray(record.providers)
+    ? (record.providers as Record<string, unknown>)
+    : null;
+  let providers: Partial<Record<AIProviderId, AiProviderConfig>> | undefined;
+  if (source) {
+    for (const candidate of AI_PROVIDER_CHOICES) {
+      if (candidate === providerId) continue;
+      if (!Object.prototype.hasOwnProperty.call(source, candidate)) continue;
+      const config = sanitizeProviderConfig(source[candidate]);
+      if (config) (providers ??= {})[candidate] = config;
+    }
+  }
+
   return {
     providerId,
     model,
@@ -219,9 +374,37 @@ export function sanitizeAiSettings(input: unknown): AiServerSettings {
     key,
     ...(keySetAt !== undefined ? { keySetAt } : {}),
     ...(storedInsecurely ? { storedInsecurely: true } : {}),
+    ...(providers ? { providers } : {}),
     ...(connectedAt !== undefined ? { connectedAt } : {}),
     ...(connectedProvider !== undefined ? { connectedProvider } : {}),
     ...(connectedModel !== undefined ? { connectedModel } : {}),
+  };
+}
+
+/**
+ * Derives the renderer-safe view for a provider the user selected in the editor,
+ * without persisting the selection. When the provider is the one the view
+ * already describes the view is returned unchanged; otherwise the provider's
+ * own non-secret summary is projected onto a flat view (its connection status is
+ * false, because the single active connection always lives on the base view and
+ * is surfaced separately via {@link AiActiveConnection}).
+ * @param {AiSettingsView} view - The server-provided view (the selected provider's).
+ * @param {AIProviderId} providerId - The provider the editor now shows.
+ * @returns {AiSettingsView} The view for that provider.
+ */
+export function viewForProvider(view: AiSettingsView, providerId: AIProviderId): AiSettingsView {
+  if (providerId === view.providerId) return view;
+  const summary = view.providerSummaries?.[providerId];
+  return {
+    providerId,
+    model: summary?.model ?? '',
+    ...(summary?.baseUrl ? { baseUrl: summary.baseUrl } : {}),
+    hasKey: summary?.hasKey ?? false,
+    keyHint: summary?.keyHint ?? '',
+    storedInsecurely: summary?.storedInsecurely ?? false,
+    encryptionAvailable: view.encryptionAvailable,
+    connected: false,
+    ...(view.activeConnection ? { activeConnection: view.activeConnection } : {}),
   };
 }
 
@@ -243,6 +426,33 @@ export function keyHint(_key: string | null): string {
  */
 export function toAiSettingsView(settings: AiServerSettings, encryptionAvailable: boolean): AiSettingsView {
   const connected = settings.key !== null && settings.connectedAt !== undefined && settings.connectedProvider === settings.providerId;
+  // The active connection is global: it reports whichever provider answered the
+  // last test, even when a different provider is currently selected.
+  const activeConnection =
+    settings.connectedAt !== undefined && settings.connectedProvider !== undefined
+      ? {
+          providerId: settings.connectedProvider,
+          ...(settings.connectedModel !== undefined ? { model: settings.connectedModel } : {}),
+          at: settings.connectedAt,
+        }
+      : undefined;
+  // Summarize the non-selected providers so the editor can show the correct
+  // saved-key/model/endpoint immediately when the user switches selection.
+  let providerSummaries: Partial<Record<AIProviderId, AiProviderSummary>> | undefined;
+  if (settings.providers) {
+    for (const candidate of AI_PROVIDER_CHOICES) {
+      if (candidate === settings.providerId) continue;
+      const config = settings.providers[candidate];
+      if (!config) continue;
+      (providerSummaries ??= {})[candidate] = {
+        model: config.model,
+        ...(config.baseUrl ? { baseUrl: config.baseUrl } : {}),
+        hasKey: config.key !== null,
+        keyHint: keyHint(config.key),
+        storedInsecurely: config.storedInsecurely === true,
+      };
+    }
+  }
   return {
     providerId: settings.providerId,
     model: settings.model,
@@ -254,5 +464,7 @@ export function toAiSettingsView(settings: AiServerSettings, encryptionAvailable
     connected,
     ...(connected && settings.connectedAt !== undefined ? { connectedAt: settings.connectedAt } : {}),
     ...(connected && settings.connectedModel !== undefined ? { connectedModel: settings.connectedModel } : {}),
+    ...(activeConnection ? { activeConnection } : {}),
+    ...(providerSummaries ? { providerSummaries } : {}),
   };
 }

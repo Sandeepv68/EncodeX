@@ -1078,7 +1078,8 @@
         "local": "Samhail áitiúil"
       },
       "configure": "Cumraigh soláthraí AI",
-      "locationNote": "Cumraítear soláthraithe AI sna Socruithe."
+      "locationNote": "Cumraítear soláthraithe AI sna Socruithe.",
+      "notConnected": "Gan nasc"
     },
     "queryLabel": "Frása cuardaigh",
     "queryPlaceholder": "m.sh. an chuid faoi phraghsáil",

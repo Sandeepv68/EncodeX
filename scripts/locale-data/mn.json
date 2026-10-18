@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "AI үйлчилгээ үзүүлэгчийг Тохиргоонд тохируулна.",
   "copilot.ai.model": "Загвар",
   "copilot.ai.modelPlaceholder": "Үзүүлэгчийн стандарт",
+  "copilot.ai.notConnected": "Холбогдоогүй",
   "copilot.ai.privacy": "Зөвхөн шалгалтын баримт болон таны зорилтын текст илгээгдэнэ; медиа файлыг хэзээ ч байршуулахгүй.",
   "copilot.ai.provider": "Үзүүлэгч",
   "copilot.ai.providers.anthropic": "Anthropic",

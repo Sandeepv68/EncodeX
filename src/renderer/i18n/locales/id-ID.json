@@ -1078,7 +1078,8 @@
         "local": "Model lokal"
       },
       "configure": "Konfigurasi penyedia AI",
-      "locationNote": "Penyedia AI dikonfigurasi di Pengaturan."
+      "locationNote": "Penyedia AI dikonfigurasi di Pengaturan.",
+      "notConnected": "Tidak terhubung"
     },
     "queryLabel": "Frasa pencarian",
     "queryPlaceholder": "mis. bagian tentang harga",

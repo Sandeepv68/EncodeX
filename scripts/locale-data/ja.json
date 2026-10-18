@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "AIプロバイダーは「設定」で構成します。",
   "copilot.ai.model": "モデル",
   "copilot.ai.modelPlaceholder": "プロバイダーの既定",
+  "copilot.ai.notConnected": "未接続",
   "copilot.ai.privacy": "送信されるのは調査結果と目標テキストのみで、メディアファイルがアップロードされることはありません。",
   "copilot.ai.provider": "プロバイダー",
   "copilot.ai.providers.anthropic": "Anthropic",

@@ -1078,7 +1078,8 @@
         "local": "Modèle local"
       },
       "configure": "Configurer le fournisseur d’IA",
-      "locationNote": "Les fournisseurs d’IA se configurent dans les paramètres."
+      "locationNote": "Les fournisseurs d’IA se configurent dans les paramètres.",
+      "notConnected": "Non connecté"
     },
     "queryLabel": "Phrase de recherche",
     "queryPlaceholder": "p. ex. la partie sur les prix",

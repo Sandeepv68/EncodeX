@@ -813,6 +813,70 @@ describe('Settings', () => {
     await waitFor(() => expect(screen.queryByTestId('settings-ai-remove-key')).not.toBeInTheDocument());
   });
 
+  it('shows only the selected provider own saved-key state when switching', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'openai',
+      model: 'gpt-4o',
+      hasKey: true,
+      keyHint: '••••••••',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: false,
+      providerSummaries: {
+        anthropic: { model: 'claude-x', hasKey: false, keyHint: '', storedInsecurely: false },
+        gemini: { model: '', hasKey: true, keyHint: '••••••••', storedInsecurely: false },
+      },
+    });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+
+    // OpenAI has a key: the saved-key affordance shows and no key is typed in.
+    expect(screen.getByTestId('settings-ai-remove-key')).toBeInTheDocument();
+    expect(screen.getByLabelText('settings.ai.apiKey')).toHaveAttribute('placeholder', 'settings.ai.keySavedPlaceholder');
+
+    // Anthropic stores no key: the editor must not claim one is saved.
+    fireEvent.click(screen.getByTestId('settings-ai-provider-anthropic'));
+    expect(screen.getByTestId('settings-ai-provider-anthropic')).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.queryByTestId('settings-ai-remove-key')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('settings.ai.apiKey')).toHaveAttribute('placeholder', 'settings.ai.apiKeyPlaceholder');
+
+    // Gemini stores a key: its own affordance comes back for it.
+    fireEvent.click(screen.getByTestId('settings-ai-provider-gemini'));
+    expect(screen.getByTestId('settings-ai-remove-key')).toBeInTheDocument();
+    expect(screen.getByLabelText('settings.ai.apiKey')).toHaveAttribute('placeholder', 'settings.ai.keySavedPlaceholder');
+
+    // Switching never persists the selection (that would activate the provider).
+    expect(window.electronAPI.aiSetSettings).not.toHaveBeenCalled();
+  });
+
+  it('keeps showing the connected provider in the header and dots after selecting another', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'openai',
+      model: 'gpt-4o-mini',
+      hasKey: true,
+      keyHint: '••••••••',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: true,
+      connectedAt: 5,
+      connectedModel: 'gpt-4o-mini',
+      activeConnection: { providerId: 'openai', model: 'gpt-4o-mini', at: 5 },
+    });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    expect(screen.getByTestId('settings-ai-connected-dot-openai')).toBeInTheDocument();
+
+    // Selecting a different provider must not hide the one connection.
+    fireEvent.click(screen.getByTestId('settings-ai-provider-anthropic'));
+    expect(screen.getByTestId('settings-ai-connected-dot-openai')).toBeInTheDocument();
+    expect(screen.queryByTestId('settings-ai-connected-dot-anthropic')).not.toBeInTheDocument();
+    // And it must not claim the freshly selected provider is connected.
+    expect(screen.queryByTestId('settings-ai-connected')).not.toBeInTheDocument();
+    expect(window.electronAPI.aiSetSettings).not.toHaveBeenCalled();
+  });
+
   it('shows a save error when removing the key returns an unusable view', async () => {
     vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
       providerId: 'openai',

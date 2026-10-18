@@ -1078,7 +1078,8 @@
         "local": "Staðbundið líkan"
       },
       "configure": "Skerpðu AI-þjónustuaðila",
-      "locationNote": "AI-þjónustuaðilar eru stilltir í Stillingum."
+      "locationNote": "AI-þjónustuaðilar eru stilltir í Stillingum.",
+      "notConnected": "Ekki tengt"
     },
     "queryLabel": "Leitarorð",
     "queryPlaceholder": "t.d. hlutann um verðlagningu",

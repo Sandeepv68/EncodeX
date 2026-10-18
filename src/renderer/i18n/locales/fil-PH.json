@@ -1078,7 +1078,8 @@
         "local": "Lokal na modelo"
       },
       "configure": "I-configure ang AI provider",
-      "locationNote": "Ang mga AI provider ay naka-configure sa Settings."
+      "locationNote": "Ang mga AI provider ay naka-configure sa Settings.",
+      "notConnected": "Walang koneksyon"
     },
     "queryLabel": "Pariralang hahanapin",
     "queryPlaceholder": "hal. ang bahagi tungkol sa presyo",

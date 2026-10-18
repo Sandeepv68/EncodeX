@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "KI-Anbieter werden in den Einstellungen konfiguriert.",
   "copilot.ai.model": "Modell",
   "copilot.ai.modelPlaceholder": "Anbieter-Standard",
+  "copilot.ai.notConnected": "Nicht verbunden",
   "copilot.ai.privacy": "Nur Prüfdaten und Ihr Zieltext werden gesendet; Mediendateien werden nie hochgeladen.",
   "copilot.ai.provider": "Anbieter",
   "copilot.ai.providers.anthropic": "Anthropic",
