@@ -354,9 +354,10 @@ export function sanitizeAiSettings(input: unknown): AiServerSettings {
 
   // Normalize the per-provider slots. Iterating the known choices (instead of
   // the input's own keys) keeps prototype-polluting names out.
-  const source = record.providers && typeof record.providers === 'object' && !Array.isArray(record.providers)
-    ? (record.providers as Record<string, unknown>)
-    : null;
+  const source =
+    record.providers && typeof record.providers === 'object' && !Array.isArray(record.providers)
+      ? (record.providers as Record<string, unknown>)
+      : null;
   let providers: Partial<Record<AIProviderId, AiProviderConfig>> | undefined;
   if (source) {
     for (const candidate of AI_PROVIDER_CHOICES) {

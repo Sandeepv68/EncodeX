@@ -244,9 +244,7 @@ export default function AiProviderSettingsSection() {
     setStatus(null);
     setError(null);
     try {
-      const updated = await bridgePromise(() =>
-        window.electronAPI.aiSetSettings({ providerId, clearKey: true }),
-      );
+      const updated = await bridgePromise(() => window.electronAPI.aiSetSettings({ providerId, clearKey: true }));
       if (!updated || typeof updated !== 'object' || !isAiProviderId(updated.providerId)) {
         setError(t('settings.ai.saveFailed'));
         return;
@@ -402,9 +400,7 @@ export default function AiProviderSettingsSection() {
                   <ProviderIcon id={id} />
                   <ProviderSeparator aria-hidden="true" />
                   <ProviderName>{t(`settings.ai.providers.${id}`)}</ProviderName>
-                  {active?.providerId === id && (
-                    <ConnectedDot aria-hidden="true" data-testid={`settings-ai-connected-dot-${id}`} />
-                  )}
+                  {active?.providerId === id && <ConnectedDot aria-hidden="true" data-testid={`settings-ai-connected-dot-${id}`} />}
                 </ProviderButton>
               );
               if (disabled) {
