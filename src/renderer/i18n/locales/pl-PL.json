@@ -1078,7 +1078,8 @@
         "local": "Model lokalny"
       },
       "configure": "Skonfiguruj dostawcę AI",
-      "locationNote": "Dostawcy AI są konfigurowani w Ustawieniach."
+      "locationNote": "Dostawcy AI są konfigurowani w Ustawieniach.",
+      "notConnected": "Niepołączono"
     },
     "queryLabel": "Fraza wyszukiwania",
     "queryPlaceholder": "np. część o cenach",

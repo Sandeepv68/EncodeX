@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "AI 提供商在设置中配置。",
   "copilot.ai.model": "模型",
   "copilot.ai.modelPlaceholder": "提供商默认",
+  "copilot.ai.notConnected": "未连接",
   "copilot.ai.privacy": "仅发送分析信息和您的目标文本；媒体文件绝不会被上传。",
   "copilot.ai.provider": "提供商",
   "copilot.ai.providers.anthropic": "Anthropic",

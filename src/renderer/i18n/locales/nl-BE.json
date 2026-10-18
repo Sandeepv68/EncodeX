@@ -1078,7 +1078,8 @@
         "local": "Lokaal model"
       },
       "configure": "AI-provider configureren",
-      "locationNote": "AI-providers worden geconfigureerd in Instellingen."
+      "locationNote": "AI-providers worden geconfigureerd in Instellingen.",
+      "notConnected": "Niet verbonden"
     },
     "queryLabel": "Zoekterm",
     "queryPlaceholder": "bijv. het deel over prijzen",

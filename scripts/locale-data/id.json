@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "Penyedia AI dikonfigurasi di Pengaturan.",
   "copilot.ai.model": "Model",
   "copilot.ai.modelPlaceholder": "Default penyedia",
+  "copilot.ai.notConnected": "Tidak terhubung",
   "copilot.ai.privacy": "Hanya fakta pemeriksaan dan teks tujuan Anda yang dikirim; file media tidak pernah diunggah.",
   "copilot.ai.provider": "Penyedia",
   "copilot.ai.providers.anthropic": "Anthropic",

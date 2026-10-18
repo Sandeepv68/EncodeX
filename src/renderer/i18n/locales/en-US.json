@@ -576,6 +576,7 @@
       "provider": "Provider",
       "model": "Model",
       "modelPlaceholder": "Provider default",
+      "notConnected": "Not connected",
       "apiKey": "API key",
       "keyStored": "Keys are stored as obfuscated text ({{hint}}).",
       "keyNone": "No key stored.",

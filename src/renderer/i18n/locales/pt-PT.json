@@ -1078,7 +1078,8 @@
         "local": "Modelo local"
       },
       "configure": "Configurar fornecedor de IA",
-      "locationNote": "Os fornecedores de IA são configurados nas Definições."
+      "locationNote": "Os fornecedores de IA são configurados nas Definições.",
+      "notConnected": "Não ligado"
     },
     "queryLabel": "Frase de pesquisa",
     "queryPlaceholder": "por exemplo, a parte sobre preços",

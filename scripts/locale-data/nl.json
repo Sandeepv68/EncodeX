@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "AI-providers worden geconfigureerd in Instellingen.",
   "copilot.ai.model": "Model",
   "copilot.ai.modelPlaceholder": "Standaard van de provider",
+  "copilot.ai.notConnected": "Niet verbonden",
   "copilot.ai.privacy": "Alleen de analysegegevens en de tekst van je doel worden verzonden; mediabestanden worden nooit geüpload.",
   "copilot.ai.provider": "Aanbieder",
   "copilot.ai.providers.anthropic": "Anthropic",

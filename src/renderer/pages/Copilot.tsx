@@ -25,6 +25,7 @@ import type { CopilotOperationChoice, CopilotPlan } from '../../shared/copilot';
 import { formatError } from '../../shared/errors';
 import Conversation, { type ConversationMessage } from '../components/copilot/Conversation';
 import ChatComposer from '../components/copilot/ChatComposer';
+import { activeConnectionOf, useAiConnectionStore } from '../stores/aiConnectionStore';
 
 /** How long the plan request may take before the page shows a failure. */
 const PLAN_TIMEOUT_MS = 60_000;
@@ -59,6 +60,10 @@ export default function Copilot() {
   const [globalError, setGlobalError] = useState<string | null>(null);
   /** Informational notice, or null. */
   const [notice, setNotice] = useState<string | null>(null);
+  /** The mirrored AI settings view, hydrated once at store load. */
+  const aiView = useAiConnectionStore((state) => state.view);
+  /** The single active AI connection, if any. */
+  const aiConnection = activeConnectionOf(aiView);
 
   /**
    * Opens the folder dialog (recursively) and replaces the current inputs.
@@ -274,6 +279,10 @@ export default function Copilot() {
           disabled={busy}
           busy={busy}
           hasInputs={inputs.length > 0}
+          connection={{
+            connected: aiConnection !== null,
+            ...(aiConnection ? { providerId: aiConnection.providerId, model: aiConnection.model } : {}),
+          }}
         />
       </Box>
     </PageContainer>

@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "يتم إعداد مزوّدي الذكاء الاصطناعي في الإعدادات.",
   "copilot.ai.model": "النموذج",
   "copilot.ai.modelPlaceholder": "النموذج الافتراضي للمزوّد",
+  "copilot.ai.notConnected": "غير متصل",
   "copilot.ai.privacy": "يتم إرسال بيانات الفحص ونص هدفك فقط؛ ولا يتم تحميل ملفات الوسائط مطلقًا.",
   "copilot.ai.provider": "المزوّد",
   "copilot.ai.providers.anthropic": "Anthropic",

@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "ШІ-провайдери налаштовуються в параметрах.",
   "copilot.ai.model": "Модель",
   "copilot.ai.modelPlaceholder": "За замовчуванням у провайдера",
+  "copilot.ai.notConnected": "Не підключено",
   "copilot.ai.privacy": "Надсилаються лише дані аналізу та текст вашої мети; медіафайли ніколи не завантажуються.",
   "copilot.ai.provider": "Провайдер",
   "copilot.ai.providers.anthropic": "Anthropic",

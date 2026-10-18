@@ -41,6 +41,37 @@ export const LeftActions = styled(Box)(({ theme }) => ({
   flexWrap: 'wrap',
 }));
 
+/** Right-hand cluster of the action row: the AI connection status. */
+export const RightActions = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.75),
+  marginInlineStart: 'auto',
+}));
+
+/** Caption naming the connected AI provider (or the disconnected state). */
+export const ConnectionStatus = styled('span', {
+  shouldForwardProp: (prop) => prop !== '$connected',
+})<{ $connected?: boolean }>(({ theme, $connected }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.75),
+  fontSize: theme.typography.pxToRem(13),
+  fontWeight: $connected ? 600 : 400,
+  color: $connected ? theme.palette.success.main : theme.palette.text.secondary,
+}));
+
+/** Status dot: green when a provider is connected, muted otherwise. */
+export const ConnectionDot = styled('span', {
+  shouldForwardProp: (prop) => prop !== '$connected',
+})<{ $connected?: boolean }>(({ theme, $connected }) => ({
+  width: theme.spacing(0.75),
+  height: theme.spacing(0.75),
+  borderRadius: '50%',
+  flexShrink: 0,
+  backgroundColor: $connected ? theme.palette.success.main : theme.palette.text.disabled,
+}));
+
 /** Popover panel for the advanced controls (operation, query, target language). */
 export const AdvancedPanel = styled(Box)(({ theme }) => ({
   display: 'flex',

@@ -371,10 +371,32 @@ const api = {
       view.hasKey = false;
       view.keyHint = '';
     }
-    // Any config change invalidates the previously verified connection.
-    view.connected = false;
-    delete view.connectedAt;
-    delete view.connectedModel;
+    // Mirror src/main/ai/settings.ts: the connection is only invalidated when
+    // the *connected* provider's own config actually changes - a pure provider
+    // switch (just `providerId`) never clears it, so a previously connected
+    // provider stays connected after the user browses to another one.
+    const configChanged =
+      typeof next.model === 'string' ||
+      typeof next.baseUrl === 'string' ||
+      next.clearKey === true ||
+      (typeof next.apiKey === 'string' && next.apiKey.length > 0);
+    const connectedProviderChanged =
+      configChanged && view.connectedAt !== undefined && view.connectedProvider === view.providerId;
+    if (connectedProviderChanged) {
+      view.connected = false;
+      delete view.connectedAt;
+      delete view.connectedProvider;
+      delete view.connectedModel;
+      delete view.activeConnection;
+    } else if (view.connectedAt !== undefined && view.connectedProvider !== undefined) {
+      // Keep the global connection pointer (and its activeConnection view).
+      view.connected = view.connectedProvider === view.providerId;
+      view.activeConnection = {
+        providerId: view.connectedProvider,
+        ...(view.connectedModel !== undefined ? { model: view.connectedModel } : {}),
+        at: view.connectedAt,
+      };
+    }
     persistAiSettings(view);
     return Promise.resolve({ ...view });
   },
@@ -383,11 +405,19 @@ const api = {
     if (result && result.ok) {
       // Mirror src/main/ai/settings.ts: a successful test records the verified
       // provider/model so the connected status survives a reload.
+      const activeProvider = state.aiSettingsView.providerId;
+      const connectedModel = result.model || state.aiSettingsView.model;
       const view = {
         ...state.aiSettingsView,
         connected: true,
         connectedAt: Date.now(),
-        connectedModel: result.model || state.aiSettingsView.model,
+        connectedProvider: activeProvider,
+        connectedModel,
+        activeConnection: {
+          providerId: activeProvider,
+          ...(connectedModel !== undefined ? { model: connectedModel } : {}),
+          at: Date.now(),
+        },
       };
       persistAiSettings(view);
       return Promise.resolve({ ...result, view: { ...view } });

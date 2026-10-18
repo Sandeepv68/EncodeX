@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "Los proveedores de IA se configuran en Ajustes.",
   "copilot.ai.model": "Modelo",
   "copilot.ai.modelPlaceholder": "Valor predeterminado del proveedor",
+  "copilot.ai.notConnected": "Sin conexión",
   "copilot.ai.privacy": "Solo se envían los datos del análisis y el texto de tu objetivo; los archivos de medios nunca se suben.",
   "copilot.ai.provider": "Proveedor",
   "copilot.ai.providers.anthropic": "Anthropic",

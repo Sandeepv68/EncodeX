@@ -14,6 +14,7 @@ import { renderPage } from '../../test-utils/page-render';
 import { screen, waitFor, fireEvent, act } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
 import { useToastStore } from '../stores/toastStore';
+import { useAiConnectionStore } from '../stores/aiConnectionStore';
 import type { CopilotPlan } from '../../shared/copilot';
 
 /** The most recent route the page navigated to, captured by {@link LocationProbe}. */
@@ -179,6 +180,7 @@ describe('Copilot page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     useToastStore.setState({ toasts: [] });
+    useAiConnectionStore.getState().reset();
     lastPath = '';
     vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue(['/in/one.mp4', '/in/two.mkv']);
     vi.mocked(window.electronAPI.selectFiles).mockReset().mockResolvedValue([]);
@@ -193,6 +195,37 @@ describe('Copilot page', () => {
     expect(window.electronAPI.queueAdd).not.toHaveBeenCalled();
     expect(screen.getByTestId('copilot-plan')).toBeDefined();
     expect(getEditor()).toBeDefined();
+  });
+
+  it('shows the disconnected AI status without fetching settings on mount', () => {
+    renderPage('Copilot');
+    expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
+    const status = screen.getByTestId('copilot-ai-status');
+    expect(status).toHaveTextContent('copilot.ai.notConnected');
+  });
+
+  it('shows the connected provider and model from the mirrored connection', async () => {
+    renderPage('Copilot');
+    act(() => {
+      useAiConnectionStore.setState({
+        view: {
+          providerId: 'openai',
+          model: 'gpt-4o-mini',
+          hasKey: true,
+          keyHint: '••••••••',
+          storedInsecurely: false,
+          encryptionAvailable: true,
+          connected: false,
+          activeConnection: { providerId: 'openai', model: 'gpt-4o-mini', at: 9 },
+        },
+      });
+    });
+    const status = await screen.findByTestId('copilot-ai-status');
+    // The test i18n mock returns keys, so assert on the connected branch's key
+    // (the interpolated provider/model live in the localized string).
+    expect(status).toHaveTextContent('settings.ai.headerConnected');
+    expect(status).not.toHaveTextContent('copilot.ai.notConnected');
+    expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
   });
 
   it('keeps Plan disabled until both a goal and a folder are provided', async () => {

@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "ผู้ให้บริการ AI ถูกกำหนดค่าในการตั้งค่า",
   "copilot.ai.model": "โมเดล",
   "copilot.ai.modelPlaceholder": "ค่าเริ่มต้นของผู้ให้บริการ",
+  "copilot.ai.notConnected": "ไม่ได้เชื่อมต่อ",
   "copilot.ai.privacy": "ส่งเฉพาะข้อเท็จจริงจากการตรวจสอบและข้อความเป้าหมายของคุณเท่านั้น ไฟล์สื่อจะไม่ถูกอัปโหลดเด็ดขาด",
   "copilot.ai.provider": "ผู้ให้บริการ",
   "copilot.ai.providers.anthropic": "Anthropic",

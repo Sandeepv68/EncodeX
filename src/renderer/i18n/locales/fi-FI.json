@@ -1078,7 +1078,8 @@
         "local": "Paikallinen malli"
       },
       "configure": "Määritä tekoälyn tarjoaja",
-      "locationNote": "Tekoälyn tarjoajat määritetään asetuksissa."
+      "locationNote": "Tekoälyn tarjoajat määritetään asetuksissa.",
+      "notConnected": "Ei yhteyttä"
     },
     "queryLabel": "Hakulause",
     "queryPlaceholder": "esim. osuus hinnoittelusta",

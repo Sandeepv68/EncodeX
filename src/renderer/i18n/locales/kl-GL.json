@@ -1078,7 +1078,8 @@
         "local": "Nunaniittumi naatsorsueqaat"
       },
       "configure": "AI-nik inissisimasut aaqqissuerit",
-      "locationNote": "AI-nik inissisimasut Aaqqissuutissat iluani aaqqissorneqarput."
+      "locationNote": "AI-nik inissisimasut Aaqqissuutissat iluani aaqqissorneqarput.",
+      "notConnected": "Atortuumaanngillat"
     },
     "queryLabel": "Ujarleqqissaarut",
     "queryPlaceholder": "soorlu prisinik oqaluttuassaaq",

@@ -1078,7 +1078,8 @@
         "local": "Tauira ā-rohe"
       },
       "configure": "Whirihora i te kaiwhakarato AI",
-      "locationNote": "Ka whirihorahia ngā kaiwhakarato AI ki ngā Tautuhinga."
+      "locationNote": "Ka whirihorahia ngā kaiwhakarato AI ki ngā Tautuhinga.",
+      "notConnected": "Kore hono"
     },
     "queryLabel": "Kīanga rapu",
     "queryPlaceholder": "hei tauira, te wāhanga mō te utu",

@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "ຜູ້ໃຫ້ບໍລິການ AI ຖືກຕັ້ງຄ່າຢູ່ໃນການຕັ້ງຄ່າ.",
   "copilot.ai.model": "ໂມເດວ",
   "copilot.ai.modelPlaceholder": "ຄ່າເລີ່ມຕົ້ນຂອງຜູ້ໃຫ້ບໍລິການ",
+  "copilot.ai.notConnected": "ບໍ່ໄດ້ເຊື່ອມຕໍ່",
   "copilot.ai.privacy": "ມີແຕ່ຂໍ້ເທັດຈິງຂອງການກວດເບິ່ງ ແລະຂໍ້ຄວາມເປົ້າໝາຍຂອງທ່ານເທົ່ານັ້ນທີ່ຖືກສົ່ງ; ບໍ່ມີການອັບໂຫຼດໄຟລ໌ສື່ເລີຍ.",
   "copilot.ai.provider": "ຜູ້ໃຫ້ບໍລິການ",
   "copilot.ai.providers.anthropic": "Anthropic",

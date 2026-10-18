@@ -69,6 +69,7 @@
   "copilot.ai.locationNote": "Các nhà cung cấp AI được định cấu hình trong Cài đặt.",
   "copilot.ai.model": "Mô hình",
   "copilot.ai.modelPlaceholder": "Mặc định của nhà cung cấp",
+  "copilot.ai.notConnected": "Chưa kết nối",
   "copilot.ai.privacy": "Chỉ có các dữ liệu phân tích và văn bản mục tiêu của bạn được gửi; tệp phương tiện không bao giờ được tải lên.",
   "copilot.ai.provider": "Nhà cung cấp",
   "copilot.ai.providers.anthropic": "Anthropic",

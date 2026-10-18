@@ -1078,7 +1078,8 @@
         "local": "Modelo local"
       },
       "configure": "Configurar proveedor de IA",
-      "locationNote": "Los proveedores de IA se configuran en Ajustes."
+      "locationNote": "Los proveedores de IA se configuran en Ajustes.",
+      "notConnected": "Sin conexión"
     },
     "queryLabel": "Frase de búsqueda",
     "queryPlaceholder": "p. ej. la parte sobre precios",

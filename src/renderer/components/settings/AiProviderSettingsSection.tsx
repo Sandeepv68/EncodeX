@@ -24,6 +24,7 @@ import {
   AI_PROVIDERS_REQUIRING_KEY,
   AI_PROVIDERS_REQUIRING_NETWORK,
   isAiProviderId,
+  viewForProvider,
 } from '../../../shared/ai/settings';
 import type { AIProviderId } from '../../../shared/ai/types';
 import { bridgePromise } from '../../utils/bridge-call';
@@ -51,6 +52,7 @@ import {
 import SettingLabel from './SettingLabel';
 import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 import { useAiSettingsStore } from '../../stores/aiSettingsStore';
+import { activeConnectionOf, useAiConnectionStore } from '../../stores/aiConnectionStore';
 
 /**
  * The page where users create an API key for each remote AI provider. Opened in
@@ -128,6 +130,7 @@ export default function AiProviderSettingsSection() {
   const applyView = (next: AiSettingsView): void => {
     setView(next);
     useAiSettingsStore.getState().patch({ view: next });
+    useAiConnectionStore.getState().patch(next);
   };
 
   /**
@@ -241,9 +244,7 @@ export default function AiProviderSettingsSection() {
     setStatus(null);
     setError(null);
     try {
-      const updated = await bridgePromise(() =>
-        window.electronAPI.aiSetSettings({ providerId: view?.providerId ?? providerId, clearKey: true }),
-      );
+      const updated = await bridgePromise(() => window.electronAPI.aiSetSettings({ providerId, clearKey: true }));
       if (!updated || typeof updated !== 'object' || !isAiProviderId(updated.providerId)) {
         setError(t('settings.ai.saveFailed'));
         return;
@@ -259,49 +260,62 @@ export default function AiProviderSettingsSection() {
   };
 
   /**
-   * Persists the selected provider when it needs no configuration (the built-in
-   * rules engine has no key/model/endpoint and no Connect button to save it).
-   * Best-effort: a failed persist leaves the editor usable.
+   * Persists the built-in rules choice (the offline fallback has no Connect
+   * button), moving the outgoing provider's config into its own slot without
+   * touching the recorded connection. Best-effort: a failed persist leaves the
+   * editor usable.
    * @param {AIProviderId} id - The provider id to store.
    * @returns {Promise<void>} Resolves once the save settles.
    */
   const persistProvider = async (id: AIProviderId): Promise<void> => {
     try {
       const updated = await bridgePromise(() => window.electronAPI.aiSetSettings({ providerId: id }));
-      if (updated && typeof updated === 'object' && isAiProviderId(updated.providerId)) {
-        applyView(updated);
-      }
+      if (!updated || typeof updated !== 'object' || !isAiProviderId(updated.providerId) || updated.providerId !== id) return;
+      applyView(updated);
     } catch {
-      // Persisting the offline default is best-effort; keep the editor usable.
+      // Persisting the fallback is best-effort; keep the editor usable.
     }
   };
 
   /**
-   * Selects a provider. Non-configurable providers (rules) are saved immediately
-   * since they have no Connect button; the rest save when the user connects.
+   * Selects a provider for editing. Selecting never persists the choice (so a
+   * remote provider is never activated for Copilot until the user connects) and
+   * never connects: only the built-in rules engine — which has no Connect button
+   * and is the offline fallback — is saved on selection. The key/model/endpoint
+   * shown are resolved from that provider's own stored config, so switching
+   * providers cannot leak the previous provider's saved-key state.
    * @param {AIProviderId} id - The provider to select.
    * @returns {void}
    */
   const selectProvider = (id: AIProviderId): void => {
     setProviderId(id);
+    setApiKey('');
     setStatus(null);
     setError(null);
+    const target = view ? viewForProvider(view, id) : null;
+    setModel(target?.model ?? '');
+    setBaseUrl(target?.baseUrl ?? '');
     if (id === 'rules' && view?.providerId !== 'rules') void persistProvider(id);
   };
 
   const needsKey = AI_PROVIDERS_REQUIRING_KEY.has(providerId);
   const keyUrl = AI_PROVIDER_KEY_URLS[providerId];
   const showBaseUrl = providerId === 'openai' || providerId === 'local';
-  // The persisted connection is only meaningful for the provider it was recorded
-  // for; selecting a different provider shows the stale view until reconnecting.
-  const showConnected = view?.connected === true && view.providerId === providerId;
+  // The config shown belongs to the provider the editor has selected, resolved
+  // locally from the stored summaries so it never leaks another provider's key.
+  const resolvedView = view ? viewForProvider(view, providerId) : null;
+  // The single active connection, regardless of which provider is selected, so
+  // the header and the provider dots reflect the connected provider even when a
+  // different one is being edited.
+  const active = activeConnectionOf(view);
+  const showConnected = active?.providerId === providerId;
   // A key/model/endpoint typed after the last successful connect makes the
   // recorded connection stale, so the UI must not keep claiming "Connected".
-  const dirty = showConnected && (apiKey !== '' || model !== (view?.model ?? '') || baseUrl !== (view?.baseUrl ?? ''));
+  const dirty = showConnected && (apiKey !== '' || model !== (resolvedView?.model ?? '') || baseUrl !== (resolvedView?.baseUrl ?? ''));
   const connectedNow = showConnected && !error && !dirty;
   // The key field stays empty after save by design (the plaintext never leaves
   // main); "saved" is the affordance that tells the user a key is stored.
-  const keySaved = view?.hasKey === true && apiKey === '';
+  const keySaved = resolvedView?.hasKey === true && apiKey === '';
   // The built-in rules engine is offline: no key, no model call, no endpoint, so
   // it has nothing to connect to or configure.
   const configurable = providerId !== 'rules';
@@ -346,19 +360,19 @@ export default function AiProviderSettingsSection() {
 
   useEffect(() => {
     if (advanced) void loadModels();
-  }, [advanced, providerId, baseUrl, view?.hasKey, apiKey]);
+  }, [advanced, providerId, baseUrl, resolvedView?.hasKey, apiKey]);
 
   return (
     <AiSettingsSection>
       <AiHeaderRow>
         <SettingsLabel variant="body1">{t('settings.ai.title')}</SettingsLabel>
         <HeaderActions>
-          {!open && view?.connected && (
+          {!open && active && (
             <HeaderStatus data-testid="settings-ai-header-status">
               <ConnectedDot aria-hidden="true" />
               {t('settings.ai.headerConnected', {
-                provider: t(`settings.ai.providers.${view.providerId}`),
-                model: view.connectedModel || t('settings.ai.modelPlaceholder'),
+                provider: t(`settings.ai.providers.${active.providerId}`),
+                model: active.model || t('settings.ai.modelPlaceholder'),
               })}
             </HeaderStatus>
           )}
@@ -386,9 +400,7 @@ export default function AiProviderSettingsSection() {
                   <ProviderIcon id={id} />
                   <ProviderSeparator aria-hidden="true" />
                   <ProviderName>{t(`settings.ai.providers.${id}`)}</ProviderName>
-                  {view?.connected === true && view.providerId === id && (
-                    <ConnectedDot aria-hidden="true" data-testid={`settings-ai-connected-dot-${id}`} />
-                  )}
+                  {active?.providerId === id && <ConnectedDot aria-hidden="true" data-testid={`settings-ai-connected-dot-${id}`} />}
                 </ProviderButton>
               );
               if (disabled) {
@@ -422,10 +434,10 @@ export default function AiProviderSettingsSection() {
                       helperText={
                         <AiKeyHelper $saved={keySaved}>
                           <span>
-                            {view?.hasKey
+                            {resolvedView?.hasKey
                               ? keySaved
-                                ? t('settings.ai.keySaved', { hint: view.keyHint })
-                                : t('settings.ai.keyStored', { hint: view.keyHint })
+                                ? t('settings.ai.keySaved', { hint: resolvedView.keyHint })
+                                : t('settings.ai.keyStored', { hint: resolvedView.keyHint })
                               : t('settings.ai.keyNone')}
                           </span>
                         </AiKeyHelper>
@@ -476,7 +488,7 @@ export default function AiProviderSettingsSection() {
                     </Button>
                   )}
 
-                  {needsKey && view?.hasKey && (
+                  {needsKey && resolvedView?.hasKey && (
                     <Button
                       size="small"
                       variant="text"

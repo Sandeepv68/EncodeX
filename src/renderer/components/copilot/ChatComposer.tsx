@@ -12,10 +12,27 @@ import { useTranslation } from 'react-i18next';
 import ChatInput from './ChatInput';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
-import { ActionsRow, AdvancedPanel, AttachmentRow, ComposerBar, LeftActions } from '../../styles/copilot/ChatComposer.styles';
+import type { AIProviderId } from '../../../shared/ai/types';
+import {
+  ActionsRow,
+  AdvancedPanel,
+  AttachmentRow,
+  ComposerBar,
+  ConnectionDot,
+  ConnectionStatus,
+  LeftActions,
+  RightActions,
+} from '../../styles/copilot/ChatComposer.styles';
 
 /** The selectable operations, in menu order (auto first, then queue, then read-only). */
 const OPERATION_CHOICES: CopilotOperationChoice[] = ['auto', ...COPILOT_QUEUE_OPERATIONS, ...COPILOT_INTELLIGENCE_OPERATIONS];
+
+/** The active AI connection shown under the composer, when known. */
+interface ComposerConnection {
+  connected: boolean;
+  providerId?: AIProviderId;
+  model?: string;
+}
 
 interface ChatComposerProps {
   input: string;
@@ -35,6 +52,7 @@ interface ChatComposerProps {
   disabled?: boolean;
   busy?: boolean;
   hasInputs?: boolean;
+  connection?: ComposerConnection;
 }
 
 /**
@@ -61,6 +79,7 @@ export default function ChatComposer({
   disabled = false,
   busy = false,
   hasInputs = false,
+  connection,
 }: ChatComposerProps) {
   const { t } = useTranslation();
   const [advancedAnchor, setAdvancedAnchor] = useState<HTMLElement | null>(null);
@@ -129,6 +148,19 @@ export default function ChatComposer({
             {t('copilot.ai.configure')}
           </Button>
         </LeftActions>
+        {connection && (
+          <RightActions data-testid="copilot-ai-status">
+            <ConnectionStatus $connected={connection.connected}>
+              <ConnectionDot $connected={connection.connected} aria-hidden="true" />
+              {connection.connected
+                ? t('settings.ai.headerConnected', {
+                    provider: t(`settings.ai.providers.${connection.providerId}`),
+                    model: connection.model || t('settings.ai.modelPlaceholder'),
+                  })
+                : t('copilot.ai.notConnected')}
+            </ConnectionStatus>
+          </RightActions>
+        )}
       </ActionsRow>
       <Typography variant="caption" color="text.secondary" sx={{ paddingInline: 0.5 }}>
         {t('copilot.ai.locationNote')}

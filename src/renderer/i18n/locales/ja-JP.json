@@ -1078,7 +1078,8 @@
         "local": "ローカルモデル"
       },
       "configure": "AIプロバイダーを設定",
-      "locationNote": "AIプロバイダーは「設定」で構成します。"
+      "locationNote": "AIプロバイダーは「設定」で構成します。",
+      "notConnected": "未接続"
     },
     "queryLabel": "検索フレーズ",
     "queryPlaceholder": "例: 価格設定の部分",
