@@ -275,7 +275,7 @@ jobs:
         # `always()` so a flaky unit test (or any earlier failure) still uploads
         # the coverage vitest already wrote, matching the artifact step above.
         if: always() && env.CODECOV_TOKEN != ''
-        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/lcov.info
@@ -309,7 +309,7 @@ jobs:
       - run: npm run test:integration
       - name: Upload coverage to Codecov (integration flag)
         if: always() && env.CODECOV_TOKEN != ''
-        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage-integration/lcov.info
