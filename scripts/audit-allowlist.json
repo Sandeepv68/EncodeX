@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-07",
+  "updatedAt": "2026-10-21",
   "policy": "The `audit` job blocks on any HIGH or CRITICAL advisory from 'npm audit --json' that is NOT on this list. Each entry below is a known, tracked, unresolvable-now advisory (fix is a dependency that must land upstream or a deliberate pinned-range exception). A new entry is only added with a tracked issue; a NEW advisory not listed here fails the build even if 'npm audit' itself is still red for these known items. Moderate and lower are below the gate line but SHOULD still be drained opportunistically.",
   "advisories": [
     {
@@ -8,6 +8,12 @@
       "severity": "high",
       "package": "vite",
       "note": "Vite dev-server advisory via the vitepress/vitest toolchain; fix must land in a resolved vite range."
+    },
+    {
+      "url": "https://github.com/advisories/GHSA-587h-7wmj-h5pm",
+      "severity": "high",
+      "package": "vite",
+      "note": "launch-editor fs.existsSync bypass on Windows. The pinned vitepress 1.6.x still resolves vite 5.x (advisory range <=6.4.3); clearing it needs a vitepress major. Dev-server only."
     },
     {
       "url": "https://github.com/advisories/GHSA-g2v6-rqmx-r4w6",
