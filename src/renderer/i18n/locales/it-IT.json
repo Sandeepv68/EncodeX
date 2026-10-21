@@ -490,13 +490,24 @@
     "clear": "Cancella",
     "download": "Scarica come TXT",
     "filter": "Filtra per livello",
+    "search": "Cerca nei registri",
+    "searchPlaceholder": "Cerca nei registri...",
+    "clearSearch": "Cancella ricerca",
     "levelAll": "TUTTO",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "AVVISO",
     "levelError": "ERRORE",
     "noEntries": "Nessuna voce di registro ancora.",
-    "entryCount": "{{count}} voci"
+    "noMatches": "Nessuna voce di registro corrisponde alla ricerca.",
+    "entryCount": "{{count}} voci",
+    "filteredCount": "{{count}} di {{total}} voci",
+    "auditTitle": "Registro di controllo delle operazioni",
+    "auditCount": "{{count}} operazioni",
+    "auditClear": "Cancella il registro di controllo",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Non riuscito"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Azzera registri",
-      "download": "Scarica registri"
+      "download": "Scarica registri",
+      "focusSearch": "Concentrati sul campo di ricerca dei registri"
     },
     "dashboard": {
       "convert": "Apri Converti",

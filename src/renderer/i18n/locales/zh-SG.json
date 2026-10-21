@@ -490,13 +490,24 @@
     "clear": "清除",
     "download": "下载为 TXT",
     "filter": "按级别筛选",
+    "search": "搜索日志",
+    "searchPlaceholder": "搜索日志...",
+    "clearSearch": "清除搜索",
     "levelAll": "全部",
     "levelDebug": "调试",
     "levelInfo": "信息",
     "levelWarn": "警告",
     "levelError": "错误",
     "noEntries": "尚无日志条目。",
-    "entryCount": "{{count}} 条"
+    "noMatches": "没有符合搜索条件的日志条目。",
+    "entryCount": "{{count}} 条",
+    "filteredCount": "{{total}} 条中的 {{count}} 条",
+    "auditTitle": "操作审计日志",
+    "auditCount": "{{count}} 项操作",
+    "auditClear": "清除审计日志",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "成功",
+    "auditStatusFailed": "失败"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "清除日志",
-      "download": "下载日志"
+      "download": "下载日志",
+      "focusSearch": "聚焦日志搜索框"
     },
     "dashboard": {
       "convert": "打开转换",

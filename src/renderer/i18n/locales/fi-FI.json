@@ -490,13 +490,24 @@
     "clear": "Tyhjennä",
     "download": "Lataa TXT-muodossa",
     "filter": "Suodata tason mukaan",
+    "search": "Hae lokeista",
+    "searchPlaceholder": "Hae lokeista...",
+    "clearSearch": "Tyhjennä haku",
     "levelAll": "Kaikki",
     "levelDebug": "VIRHEENETSINTÄ",
     "levelInfo": "TIETO",
     "levelWarn": "VAROITUS",
     "levelError": "VIRHE",
     "noEntries": "Ei lokimerkintöjä vielä.",
-    "entryCount": "{{count}} merkintää"
+    "noMatches": "Hakua vastaavia lokimerkintöjä ei ole.",
+    "entryCount": "{{count}} merkintää",
+    "filteredCount": "{{count}} / {{total}} merkintää",
+    "auditTitle": "Operaatioiden tarkastusloki",
+    "auditCount": "{{count}} operaatiota",
+    "auditClear": "Tyhjennä tarkastusloki",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Epäonnistui"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Tyhjennä lokit",
-      "download": "Lataa lokit"
+      "download": "Lataa lokit",
+      "focusSearch": "Kohdista lokien hakukenttään"
     },
     "dashboard": {
       "convert": "Avaa Muunna",

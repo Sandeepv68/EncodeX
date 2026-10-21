@@ -490,13 +490,24 @@
     "clear": "Limpiar",
     "download": "Descargar como TXT",
     "filter": "Filtrar por nivel",
+    "search": "Buscar en los registros",
+    "searchPlaceholder": "Buscar en los registros...",
+    "clearSearch": "Limpiar búsqueda",
     "levelAll": "TODO",
     "levelDebug": "DEPURACIÓN",
     "levelInfo": "INFO",
     "levelWarn": "ADVERTENCIA",
     "levelError": "ERROR",
     "noEntries": "Aún no hay entradas de registro.",
-    "entryCount": "{{count}} entradas"
+    "noMatches": "Ninguna entrada de registro coincide con la búsqueda.",
+    "entryCount": "{{count}} entradas",
+    "filteredCount": "{{count}} de {{total}} entradas",
+    "auditTitle": "Traza de auditoría de operaciones",
+    "auditCount": "{{count}} operaciones",
+    "auditClear": "Limpiar la traza de auditoría",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "Correcto",
+    "auditStatusFailed": "Fallido"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Limpiar registros",
-      "download": "Descargar registros"
+      "download": "Descargar registros",
+      "focusSearch": "Enfocar el campo de búsqueda de registros"
     },
     "dashboard": {
       "convert": "Abrir Convertir",

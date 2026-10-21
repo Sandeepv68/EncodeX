@@ -490,13 +490,24 @@
     "clear": "හිස් කරන්න",
     "download": "TXT ලෙස බාගන්න",
     "filter": "මට්ටම අනුව පෙරීම",
+    "search": "ලඝු සොයන්න",
+    "searchPlaceholder": "ලඝු සොයන්න...",
+    "clearSearch": "සෙවුම හිස් කරන්න",
     "levelAll": "සියල්ල",
     "levelDebug": "දෝෂ නිරාකරණය",
     "levelInfo": "තොරතුරු",
     "levelWarn": "අවවාදය",
     "levelError": "දෝෂය",
     "noEntries": "තවම ලොග ඇතුළත් කිරීම් නැත.",
-    "entryCount": "ඇතුළත් කිරීම් {{count}}"
+    "noMatches": "සෙවුමට ගැලපෙන ලඝු ඇතුළත් කිරීම් නොමැත.",
+    "entryCount": "ඇතුළත් කිරීම් {{count}}",
+    "filteredCount": "{{total}} න් {{count}} ඇතුළත් කිරීම්",
+    "auditTitle": "ක්‍රියා අධික්ෂණ පෙරළිය",
+    "auditCount": "ක්‍රියා {{count}}",
+    "auditClear": "අධික්ෂණ පෙරළිය හිස් කරන්න",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "සාර්ථක",
+    "auditStatusFailed": "අසාර්ථක"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "ලඝු හිස් කරන්න",
-      "download": "ලඝු බාගන්න"
+      "download": "ලඝු බාගන්න",
+      "focusSearch": "ලඝු සෙවුම් ක්ෂේත්‍රයට අවධානය යොමු කරන්න"
     },
     "dashboard": {
       "convert": "පරිවර්තනය විවෘත කරන්න",

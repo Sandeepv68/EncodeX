@@ -490,13 +490,24 @@
     "clear": "ล้าง",
     "download": "ดาวน์โหลดเป็น TXT",
     "filter": "กรองตามระดับ",
+    "search": "ค้นหาบันทึก",
+    "searchPlaceholder": "ค้นหาบันทึก...",
+    "clearSearch": "ล้างการค้นหา",
     "levelAll": "ทั้งหมด",
     "levelDebug": "ดีบัก",
     "levelInfo": "ข้อมูล",
     "levelWarn": "คำเตือน",
     "levelError": "ข้อผิดพลาด",
     "noEntries": "ยังไม่มีรายการบันทึก",
-    "entryCount": "{{count}} รายการ"
+    "noMatches": "ไม่มีรายการบันทึกที่ตรงกับการค้นหา",
+    "entryCount": "{{count}} รายการ",
+    "filteredCount": "{{count}} จาก {{total}} รายการ",
+    "auditTitle": "บันทึกการตรวจสอบการดำเนินการ",
+    "auditCount": "{{count}} การดำเนินการ",
+    "auditClear": "ล้างบันทึกการตรวจสอบ",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "สำเร็จ",
+    "auditStatusFailed": "ล้มเหลว"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "ล้างบันทึก",
-      "download": "ดาวน์โหลดบันทึก"
+      "download": "ดาวน์โหลดบันทึก",
+      "focusSearch": "โฟกัสที่ช่องค้นหาบันทึก"
     },
     "dashboard": {
       "convert": "เปิดการแปลง",

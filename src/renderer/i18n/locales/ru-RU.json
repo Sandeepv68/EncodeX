@@ -490,13 +490,24 @@
     "clear": "Очистить",
     "download": "Скачать как TXT",
     "filter": "Фильтр по уровню",
+    "search": "Поиск по журналу",
+    "searchPlaceholder": "Поиск по журналу...",
+    "clearSearch": "Очистить поиск",
     "levelAll": "ВСЕ",
     "levelDebug": "ОТЛАДКА",
     "levelInfo": "ИНФО",
     "levelWarn": "ПРЕДУПР.",
     "levelError": "ОШИБКА",
     "noEntries": "Записей в журнале пока нет.",
-    "entryCount": "Записей: {{count}}"
+    "noMatches": "Нет записей журнала, соответствующих запросу.",
+    "entryCount": "Записей: {{count}}",
+    "filteredCount": "Записей: {{count}} из {{total}}",
+    "auditTitle": "Журнал аудита операций",
+    "auditCount": "Операций: {{count}}",
+    "auditClear": "Очистить журнал аудита",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "ОК",
+    "auditStatusFailed": "Ошибка"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Очистить журналы",
-      "download": "Скачать журналы"
+      "download": "Скачать журналы",
+      "focusSearch": "Сфокусироваться на поле поиска по журналу"
     },
     "dashboard": {
       "convert": "Открыть конвертацию",

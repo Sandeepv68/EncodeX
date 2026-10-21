@@ -490,13 +490,24 @@
     "clear": "साफ़ करें",
     "download": "TXT के रूप में डाउनलोड करें",
     "filter": "स्तर के अनुसार फ़िल्टर करें",
+    "search": "लॉग खोजें",
+    "searchPlaceholder": "लॉग खोजें...",
+    "clearSearch": "खोज साफ़ करें",
     "levelAll": "सभी",
     "levelDebug": "डीबग",
     "levelInfo": "जानकारी",
     "levelWarn": "चेतावनी",
     "levelError": "त्रुटि",
     "noEntries": "अभी तक कोई लॉग प्रविष्टियाँ नहीं.",
-    "entryCount": "{{count}} प्रविष्टियाँ"
+    "noMatches": "खोज से मेल खाती कोई लॉग प्रविष्टि नहीं मिली.",
+    "entryCount": "{{count}} प्रविष्टियाँ",
+    "filteredCount": "{{total}} में से {{count}} प्रविष्टियाँ",
+    "auditTitle": "ऑपरेशन ऑडिट ट्रेल",
+    "auditCount": "{{count}} संचालन",
+    "auditClear": "ऑडिट ट्रेल साफ़ करें",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "सफल",
+    "auditStatusFailed": "विफल"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "लॉग साफ़ करें",
-      "download": "लॉग डाउनलोड करें"
+      "download": "लॉग डाउनलोड करें",
+      "focusSearch": "लॉग खोज क्षेत्र पर फ़ोकस करें"
     },
     "dashboard": {
       "convert": "कन्वर्ट खोलें",

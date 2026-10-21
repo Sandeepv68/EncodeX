@@ -490,13 +490,24 @@
     "clear": "Mukua",
     "download": "Tango hei TXT",
     "filter": "Tātari mā te taumata",
+    "search": "Rapu i ngā rauemi kōrero",
+    "searchPlaceholder": "Rapu i ngā rauemi kōrero...",
+    "clearSearch": "Whakapūtia te rapu",
     "levelAll": "Katoa",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "WARN",
     "levelError": "ERROR",
     "noEntries": "Kāore anō kia whai rārangi kōrero.",
-    "entryCount": "{{count}} tūemi"
+    "noMatches": "Kāore anō kia whai rārangi kōrero e hāngai ana ki te rapu.",
+    "entryCount": "{{count}} tūemi",
+    "filteredCount": "{{count}} o {{total}} tūemi",
+    "auditTitle": "Tohu arotake o ngā mahi",
+    "auditCount": "{{count}} mahi",
+    "auditClear": "Whakapūtia te tohu arotake",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "I angia",
+    "auditStatusFailed": "I rahua"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Horoi ngā rauemi kōrero",
-      "download": "Tangohia ngā rauemi kōrero"
+      "download": "Tangohia ngā rauemi kōrero",
+      "focusSearch": "Arotahi ki te pouaka rapu rauemi kōrero"
     },
     "dashboard": {
       "convert": "Uakina te Hurihuri",

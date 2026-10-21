@@ -490,13 +490,24 @@
     "clear": "Kosongkan",
     "download": "Muat Turun sebagai TXT",
     "filter": "Tapis mengikut tahap",
+    "search": "Cari log",
+    "searchPlaceholder": "Cari log...",
+    "clearSearch": "Kosongkan carian",
     "levelAll": "SEMUA",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "AMARAN",
     "levelError": "RALAT",
     "noEntries": "Belum ada entri log.",
-    "entryCount": "{{count}} entri"
+    "noMatches": "Tiada entri log sepadan dengan carian.",
+    "entryCount": "{{count}} entri",
+    "filteredCount": "{{count}} daripada {{total}} entri",
+    "auditTitle": "Jejak audit operasi",
+    "auditCount": "{{count}} operasi",
+    "auditClear": "Kosongkan jejak audit",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "Berjaya",
+    "auditStatusFailed": "Gagal"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Kosongkan log",
-      "download": "Muat turun log"
+      "download": "Muat turun log",
+      "focusSearch": "Fokus pada medan carian log"
     },
     "dashboard": {
       "convert": "Buka Tukar",

@@ -490,13 +490,24 @@
     "clear": "Leeren",
     "download": "Als TXT herunterladen",
     "filter": "Nach Ebene filtern",
+    "search": "Protokolle durchsuchen",
+    "searchPlaceholder": "Protokolle durchsuchen...",
+    "clearSearch": "Suche zurücksetzen",
     "levelAll": "ALLE",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "WARNUNG",
     "levelError": "FEHLER",
     "noEntries": "Noch keine Protokolleinträge.",
-    "entryCount": "{{count}} Einträge"
+    "noMatches": "Keine Protokolleinträge stimmen mit der Suche überein.",
+    "entryCount": "{{count}} Einträge",
+    "filteredCount": "{{count}} von {{total}} Einträgen",
+    "auditTitle": "Audit-Protokoll der Operationen",
+    "auditCount": "{{count}} Operationen",
+    "auditClear": "Audit-Protokoll leeren",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Fehlgeschlagen"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Protokolle leeren",
-      "download": "Protokolle herunterladen"
+      "download": "Protokolle herunterladen",
+      "focusSearch": "Suchfeld für Protokolle fokussieren"
     },
     "dashboard": {
       "convert": "Konvertieren öffnen",

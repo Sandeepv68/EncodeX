@@ -490,13 +490,24 @@
     "clear": "クリア",
     "download": "TXTとしてダウンロード",
     "filter": "レベルでフィルター",
+    "search": "ログを検索",
+    "searchPlaceholder": "ログを検索...",
+    "clearSearch": "検索をクリア",
     "levelAll": "すべて",
     "levelDebug": "デバッグ",
     "levelInfo": "情報",
     "levelWarn": "警告",
     "levelError": "エラー",
     "noEntries": "まだログエントリがありません。",
-    "entryCount": "{{count}} 件のログ"
+    "noMatches": "検索に一致するログエントリがありません。",
+    "entryCount": "{{count}} 件のログ",
+    "filteredCount": "{{total}} 件中 {{count}} 件",
+    "auditTitle": "操作監査証跡",
+    "auditCount": "{{count}} 件の操作",
+    "auditClear": "監査証跡を消去",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "成功",
+    "auditStatusFailed": "失敗"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "ログをクリア",
-      "download": "ログをダウンロード"
+      "download": "ログをダウンロード",
+      "focusSearch": "ログの検索フィールドにフォーカス"
     },
     "dashboard": {
       "convert": "変換を開く",

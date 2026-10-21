@@ -111,6 +111,12 @@ vi.mock('react-i18next', () => ({
         'filters.presets.sharpen': 'Sharpen',
         'filters.presets.cropHint': 'Crops the video to the given width, height and offset.',
         'filters.presets.sharpenHint': 'Increases perceived sharpness (unsharp).',
+        'logs.auditTitle': 'Operation audit trail',
+        'logs.auditCount': '{{count}} operations',
+        'logs.auditClear': 'Clear audit trail',
+        'logs.auditTier': 'T{{tier}}',
+        'logs.auditStatusOk': 'ok',
+        'logs.auditStatusFailed': 'failed',
       };
       // `map[key]` on a plain object reaches Object.prototype for keys like
       // '__proto__' or 'constructor', returning a non-string that then blew up

@@ -739,13 +739,24 @@
     "clear": "Clear",
     "download": "Download as TXT",
     "filter": "Filter by level",
+    "search": "Search logs",
+    "searchPlaceholder": "Search logs...",
+    "clearSearch": "Clear search",
     "levelAll": "ALL",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "WARN",
     "levelError": "ERROR",
     "noEntries": "No log entries yet.",
-    "entryCount": "{{count}} entries"
+    "noMatches": "No log entries match the search.",
+    "entryCount": "{{count}} entries",
+    "filteredCount": "{{count}} of {{total}} entries",
+    "auditTitle": "Operation audit trail",
+    "auditCount": "{{count}} operations",
+    "auditClear": "Clear audit trail",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "ok",
+    "auditStatusFailed": "failed"
   },
   "footer": {
     "version": "v{{version}}",
@@ -1029,7 +1040,8 @@
     },
     "logs": {
       "clear": "Clear logs",
-      "download": "Download logs"
+      "download": "Download logs",
+      "focusSearch": "Focus log search"
     },
     "dashboard": {
       "convert": "Open Convert",

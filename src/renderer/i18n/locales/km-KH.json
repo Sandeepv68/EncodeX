@@ -490,13 +490,24 @@
     "clear": "សម្អាត",
     "download": "ទាញយកជា TXT",
     "filter": "ច្រោះតាមកម្រិត",
+    "search": "ស្វែងរកកំណត់ហេតុ",
+    "searchPlaceholder": "ស្វែងរកកំណត់ហេតុ...",
+    "clearSearch": "សម្អាតការស្វែងរក",
     "levelAll": "ទាំងអស់",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "WARN",
     "levelError": "ERROR",
     "noEntries": "មិនទាន់មានធាតុកំណត់ហេតុនៅឡើយទេ។",
-    "entryCount": "{{count}} ធាតុ"
+    "noMatches": "មិនមានធាតុកំណត់ហេតុណាស់ផ្លែមជាមួយការស្វែងរកទេ។",
+    "entryCount": "{{count}} ធាតុ",
+    "filteredCount": "{{count}} នៃ {{total}} ធាតុ",
+    "auditTitle": "កំណត់ត្រានស្វែងរកប្រតិបត្តិកិច្ច",
+    "auditCount": "{{count}} ប្រតិបត្តិកិច្ច",
+    "auditClear": "សម្អាតកំណត់ត្រានស្វែងរកប្រតិបត្តិកិច្ច",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "បានជោគជ័យ",
+    "auditStatusFailed": "បរាជ័យ"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "សម្អាតកំណត់ហេតុ",
-      "download": "ទាញយកកំណត់ហេតុ"
+      "download": "ទាញយកកំណត់ហេតុ",
+      "focusSearch": "ផ្តោតលើប្រអប់ស្វែងរកកំណត់ហេតុ"
     },
     "dashboard": {
       "convert": "បើកការបំប្លែង",

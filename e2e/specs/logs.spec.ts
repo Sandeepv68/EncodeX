@@ -76,4 +76,29 @@ describe.runIf(IS_E2E)('Logs page', () => {
     await page.locator('[data-testid="logs-download"]').click();
     await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'Logs downloaded' }).count()).toBeGreaterThan(0);
   });
+
+  it('filters entries by the search text', async () => {
+    const { page } = session;
+    await emitLogMessage(page, { text: 'searchable entry' });
+    await emitLogMessage(page, { text: 'unrelated entry' });
+    await expect.poll(() => page.getByText('searchable entry').count()).toBeGreaterThan(0);
+    await expect.poll(() => page.getByText('unrelated entry').count()).toBeGreaterThan(0);
+
+    await page.locator('[data-testid="logs-search"] input').fill('searchable');
+    await expect.poll(() => page.getByText('searchable entry').count()).toBeGreaterThan(0);
+    await expect.poll(() => page.getByText('unrelated entry').count()).toBe(0);
+  });
+
+  it('clears the search from the clear button', async () => {
+    const { page } = session;
+    await emitLogMessage(page, { text: 'searchable entry' });
+    await emitLogMessage(page, { text: 'unrelated entry' });
+    await expect.poll(() => page.getByText('unrelated entry').count()).toBeGreaterThan(0);
+
+    await page.locator('[data-testid="logs-search"] input').fill('searchable');
+    await expect.poll(() => page.getByText('unrelated entry').count()).toBe(0);
+
+    await page.locator('[data-testid="logs-search-clear"]').click();
+    await expect.poll(() => page.getByText('unrelated entry').count()).toBeGreaterThan(0);
+  });
 });

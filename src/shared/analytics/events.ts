@@ -134,6 +134,7 @@ export type AnalyticsEventName =
   | 'batch_filter_changed'
   | 'media_info_probed'
   | 'logs_filter_changed'
+  | 'logs_search_changed'
   | 'logs_cleared'
   | 'logs_exported'
   | 'profile_applied'
@@ -332,6 +333,7 @@ export interface AnalyticsEventPayloadMap {
 
   media_info_probed: { kind: 'video' | 'image'; streamCountBucket: string; hasExif: boolean };
   logs_filter_changed: { level: string };
+  logs_search_changed: { queryLength: number };
   logs_cleared: Record<string, never>;
   logs_exported: { entryCount: number };
 
@@ -475,6 +477,7 @@ export const ANALYTICS_EVENT_GROUP: Record<AnalyticsEventName, AnalyticsGroup> =
   batch_filter_changed: 'queue',
   media_info_probed: 'ux',
   logs_filter_changed: 'ux',
+  logs_search_changed: 'ux',
   logs_cleared: 'ux',
   logs_exported: 'ux',
   profile_applied: 'profiles',
@@ -602,6 +605,7 @@ export const ANALYTICS_EVENT_TIER: Record<AnalyticsEventName, AnalyticsTier> = {
   batch_filter_changed: 'v2',
   media_info_probed: 'v1',
   logs_filter_changed: 'v2',
+  logs_search_changed: 'v2',
   logs_cleared: 'v2',
   logs_exported: 'v2',
   profile_applied: 'v1',

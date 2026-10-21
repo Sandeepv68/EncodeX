@@ -490,13 +490,24 @@
     "clear": "Hapus",
     "download": "Unduh sebagai TXT",
     "filter": "Saring berdasarkan tingkat",
+    "search": "Cari log",
+    "searchPlaceholder": "Cari log...",
+    "clearSearch": "Hapus pencarian",
     "levelAll": "SEMUA",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "PERINGATAN",
     "levelError": "GALAT",
     "noEntries": "Belum ada entri log.",
-    "entryCount": "{{count}} entri"
+    "noMatches": "Tidak ada entri log yang cocok dengan pencarian.",
+    "entryCount": "{{count}} entri",
+    "filteredCount": "{{count}} dari {{total}} entri",
+    "auditTitle": "Jejak audit operasi",
+    "auditCount": "{{count}} operasi",
+    "auditClear": "Hapus jejak audit",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "Berhasil",
+    "auditStatusFailed": "Gagal"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Bersihkan log",
-      "download": "Unduh log"
+      "download": "Unduh log",
+      "focusSearch": "Fokus pada kolom pencarian log"
     },
     "dashboard": {
       "convert": "Buka Konversi",

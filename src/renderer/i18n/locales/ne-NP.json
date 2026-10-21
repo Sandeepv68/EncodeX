@@ -490,13 +490,24 @@
     "clear": "खाली गर्नुहोस्",
     "download": "TXT को रूपमा डाउनलोड गर्नुहोस्",
     "filter": "स्तर अनुसार फिल्टर गर्नुहोस्",
+    "search": "लग खोज्नुहोस्",
+    "searchPlaceholder": "लग खोज्नुहोस्...",
+    "clearSearch": "खोज हटाउनुहोस्",
     "levelAll": "सबै",
     "levelDebug": "डिबग",
     "levelInfo": "जानकारी",
     "levelWarn": "चेतावनी",
     "levelError": "त्रुटि",
     "noEntries": "अहिलेसम्म कुनै लग प्रविष्टिहरू छैनन्।",
-    "entryCount": "{{count}} प्रविष्टिहरू"
+    "noMatches": "खोजसँग मिल्ने कुनै लग प्रविष्टि भेटिएन।",
+    "entryCount": "{{count}} प्रविष्टिहरू",
+    "filteredCount": "{{total}} मध्ये {{count}} प्रविष्टिहरू",
+    "auditTitle": "अपरेटन अडिट ट्रेल",
+    "auditCount": "{{count}} अपरेटनहरू",
+    "auditClear": "अडिट ट्रेल हटाउनुहोस्",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "सफल",
+    "auditStatusFailed": "असफल"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "लग खाली गर्नुहोस्",
-      "download": "लग डाउनलोड गर्नुहोस्"
+      "download": "लग डाउनलोड गर्नुहोस्",
+      "focusSearch": "लग खोज क्षेत्रमा फोकस गर्नुहोस्"
     },
     "dashboard": {
       "convert": "रूपान्तरण खोल्नुहोस्",

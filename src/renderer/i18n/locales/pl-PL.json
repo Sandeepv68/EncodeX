@@ -490,13 +490,24 @@
     "clear": "Wyczyść",
     "download": "Pobierz jako TXT",
     "filter": "Filtruj według poziomu",
+    "search": "Szukaj w dziennikach",
+    "searchPlaceholder": "Szukaj w dziennikach...",
+    "clearSearch": "Wyczyść wyszukiwanie",
     "levelAll": "WSZYSTKIE",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "OSTRZ.",
     "levelError": "BŁĄD",
     "noEntries": "Brak wpisów dziennika.",
-    "entryCount": "{{count}} wpisów"
+    "noMatches": "Brak wpisów dziennika pasujących do wyszukiwania.",
+    "entryCount": "{{count}} wpisów",
+    "filteredCount": "{{count}} z {{total}} wpisów",
+    "auditTitle": "Dziennik audytu operacji",
+    "auditCount": "{{count}} operacji",
+    "auditClear": "Wyczyść dziennik audytu",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Niepowodzenie"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Wyczyść dzienniki",
-      "download": "Pobierz dzienniki"
+      "download": "Pobierz dzienniki",
+      "focusSearch": "Skoncentruj się na polu wyszukiwania dzienników"
     },
     "dashboard": {
       "convert": "Otwórz Konwertuj",

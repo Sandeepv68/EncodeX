@@ -490,13 +490,24 @@
     "clear": "مسح",
     "download": "قم بالتنزيل بصيغة TXT",
     "filter": "تصفية حسب المستوى",
+    "search": "البحث في السجلات",
+    "searchPlaceholder": "البحث في السجلات...",
+    "clearSearch": "مسح البحث",
     "levelAll": "الكل",
     "levelDebug": "تصحيح",
     "levelInfo": "معلومة",
     "levelWarn": "تحذير",
     "levelError": "خطأ",
     "noEntries": "لا توجد إدخالات السجل حتى الآن.",
-    "entryCount": "{{count}} إدخال"
+    "noMatches": "لا توجد إدخالات سجل تطابق البحث.",
+    "entryCount": "{{count}} إدخال",
+    "filteredCount": "{{count}} من {{total}} إدخال",
+    "auditTitle": "سجل تدقيق العمليات",
+    "auditCount": "{{count}} عملية",
+    "auditClear": "مسح سجل التدقيق",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "تم",
+    "auditStatusFailed": "فشل"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "مسح السجلات",
-      "download": "تنزيل السجلات"
+      "download": "تنزيل السجلات",
+      "focusSearch": "التركيز على حقل البحث في السجلات"
     },
     "dashboard": {
       "convert": "فتح التحويل",

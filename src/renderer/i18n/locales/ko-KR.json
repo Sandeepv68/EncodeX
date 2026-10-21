@@ -490,13 +490,24 @@
     "clear": "지우기",
     "download": "TXT로 다운로드",
     "filter": "수준별 필터",
+    "search": "로그 검색",
+    "searchPlaceholder": "로그 검색...",
+    "clearSearch": "검색 지우기",
     "levelAll": "전체",
     "levelDebug": "디버그",
     "levelInfo": "정보",
     "levelWarn": "경고",
     "levelError": "오류",
     "noEntries": "아직 로그 항목이 없습니다.",
-    "entryCount": "{{count}}개 항목"
+    "noMatches": "검색과 일치하는 로그 항목이 없습니다.",
+    "entryCount": "{{count}}개 항목",
+    "filteredCount": "{{total}}개 중 {{count}}개 항목",
+    "auditTitle": "작업 감사 추적",
+    "auditCount": "{{count}}개 작업",
+    "auditClear": "감사 추적 지우기",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "성공",
+    "auditStatusFailed": "실패"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "로그 지우기",
-      "download": "로그 다운로드"
+      "download": "로그 다운로드",
+      "focusSearch": "로그 검색 필드에 초점"
     },
     "dashboard": {
       "convert": "변환 열기",

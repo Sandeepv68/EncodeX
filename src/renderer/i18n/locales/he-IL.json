@@ -490,13 +490,24 @@
     "clear": "נקה",
     "download": "הורד כקובץ TXT",
     "filter": "סינון לפי רמה",
+    "search": "חיפוש ביומנים",
+    "searchPlaceholder": "חיפוש ביומנים...",
+    "clearSearch": "נקה חיפוש",
     "levelAll": "הכל",
     "levelDebug": "דיבאג",
     "levelInfo": "מידע",
     "levelWarn": "אזהרה",
     "levelError": "שגיאה",
     "noEntries": "אין עדיין רשומות יומן.",
-    "entryCount": "{{count}} רשומות"
+    "noMatches": "אין רשומות יומן התואמות לחיפוש.",
+    "entryCount": "{{count}} רשומות",
+    "filteredCount": "{{count}} מתוך {{total}} רשומות",
+    "auditTitle": "יומן ביקורת של פעולות",
+    "auditCount": "{{count}} פעולות",
+    "auditClear": "נקה יומן הביקורת",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "הצליח",
+    "auditStatusFailed": "נכשל"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "נקה יומנים",
-      "download": "הורד יומנים"
+      "download": "הורד יומנים",
+      "focusSearch": "רכז פוקוס בשדה החיפוש של היומנים"
     },
     "dashboard": {
       "convert": "פתח המרה",

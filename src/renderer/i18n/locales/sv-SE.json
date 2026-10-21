@@ -490,13 +490,24 @@
     "clear": "Rensa",
     "download": "Ladda ner som TXT",
     "filter": "Filtrera efter nivå",
+    "search": "Sök loggar",
+    "searchPlaceholder": "Sök loggar...",
+    "clearSearch": "Rensa sökningen",
     "levelAll": "ALLA",
     "levelDebug": "FELSÖKNING",
     "levelInfo": "INFO",
     "levelWarn": "VARNING",
     "levelError": "FEL",
     "noEntries": "Inga loggposter än.",
-    "entryCount": "{{count}} poster"
+    "noMatches": "Inga loggposter matchar sökningen.",
+    "entryCount": "{{count}} poster",
+    "filteredCount": "{{count}} av {{total}} poster",
+    "auditTitle": "Revisionslogg för åtgärder",
+    "auditCount": "{{count}} åtgärder",
+    "auditClear": "Rensa revisionsloggen",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Misslyckades"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Rensa loggar",
-      "download": "Ladda ner loggar"
+      "download": "Ladda ner loggar",
+      "focusSearch": "Fokusera sökfältet för loggar"
     },
     "dashboard": {
       "convert": "Öppna Konvertera",
