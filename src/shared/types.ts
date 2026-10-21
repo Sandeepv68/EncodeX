@@ -111,7 +111,10 @@ export interface CodecContainerInfo {
  *   no re-read entry is appended after it).
  * @property {boolean} [copyChapters] - Preserve the source's chapters with
  *   `-map_chapters 0`. Defaults to true for remux-style operations; explicit so
- *   callers can suppress chapter copying (`--no-chapters`).
+ *   callers can suppress chapter copying (`--no-chapters`), which emits
+ *   `-map_chapters -1` (omitting the flag would keep the chapters). Trimmed
+ *   copies always drop the source chapters so the output duration stays the
+ *   length of the cut.
  * @property {number} [audioSyncSeconds] - Signed seconds to shift the PRIMARY
  *   file's audio streams relative to its video, via the lossless "re-read"
  *   trick (a second `-i` of the same file is mapped only to audio and shifted

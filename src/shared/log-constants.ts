@@ -111,6 +111,11 @@ export const LOG_CONVERT_FILE = 'convertFile:';
 export const LOG_COPY = 'copy:';
 /** @const {string} Logged when source chapters are copied to the output (map_chapters 0). */
 export const LOG_COPY_CHAPTERS = 'Copy chapters from source';
+/** @const {string} Logged when source chapters are skipped because the output is trimmed. */
+export const LOG_SKIP_CHAPTERS_TRIMMED =
+  'Source chapters skipped: the output is a trimmed excerpt, and the source chapter timeline would stretch it back to the full source length';
+/** @const {string} Logged when source chapters are dropped because copying them was turned off. */
+export const LOG_SKIP_CHAPTERS = 'Source chapters skipped: chapter copying is disabled';
 /** @const {string} Prefix when logging a copy mode value. */
 export const LOG_COPY_MODE = 'copyMode:';
 /** @const {string} Logged when the main window is being created. */

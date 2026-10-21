@@ -35,6 +35,8 @@ import {
   LOG_ROTATION_COPY_UNSUPPORTED,
   LOG_ROTATION_METADATA,
   LOG_SCALE,
+  LOG_SKIP_CHAPTERS,
+  LOG_SKIP_CHAPTERS_TRIMMED,
   LOG_START_TIME,
   LOG_SUBTITLE_CODEC,
   LOG_SYNC_OFFSET,
@@ -119,6 +121,69 @@ export function metadataRotationValue(options: ConversionOptions, output: string
 }
 
 /**
+ * Parses a trim time option into seconds.
+ *
+ * Accepts the shapes the app's time fields and the CLI flags produce: a plain
+ * number of seconds (`42.5`) or an `HH:MM:SS[.mmm]` clock value. An absent,
+ * blank, or malformed value yields null so callers treat it as "no usable
+ * bound" instead of guessing a position.
+ * @param {string | undefined} value - The raw trim time option.
+ * @returns {number | null} The time in seconds, or null when absent/invalid.
+ */
+export function trimTimeToSeconds(value: string | undefined): number | null {
+  if (value == null) return null;
+  const text = value.trim();
+  if (!text) return null;
+  if (/^\d+(\.\d+)?$/.test(text)) return parseFloat(text);
+  const clock = /^(\d+):(\d{2}):(\d{2})(\.\d+)?$/.exec(text);
+  if (!clock) return null;
+  const hours = parseInt(clock[1], 10);
+  const minutes = parseInt(clock[2], 10);
+  const seconds = parseInt(clock[3], 10);
+  return hours * 3600 + minutes * 60 + seconds + (clock[4] ? parseFloat(clock[4]) : 0);
+}
+
+/**
+ * Returns whether a conversion trims the output to a strict sub-range of the
+ * source file.
+ *
+ * A trim is present when the output has an end bound (`endTime` / `duration`)
+ * or when it starts after the beginning of the source (a non-zero
+ * `startTime`). The check is deliberately shape-based: the values are opaque
+ * strings handed to ffmpeg, so only the presence of a bound and the position
+ * of the start are inspected.
+ * @param {ConversionOptions} options - Conversion options to inspect.
+ * @returns {boolean} True when the output is a strict excerpt of the source.
+ */
+export function isTrimmedConversion(options: ConversionOptions): boolean {
+  if (options.endTime != null && options.endTime.trim() !== '') return true;
+  if (options.duration != null && options.duration.trim() !== '') return true;
+  const start = trimTimeToSeconds(options.startTime);
+  return start != null && start > 0;
+}
+
+/**
+ * Returns whether the source's chapter timeline should be carried into the
+ * output.
+ *
+ * Chapters are container metadata, not demuxed streams: the trim bounds
+ * (`-ss`, `-to`, `-t`) do not apply to them. ffmpeg rebases the chapter times
+ * by the seek start but keeps the remaining entries, so on a trimmed output
+ * the chapter timeline still spans the whole source file. In MP4/MOV chapters
+ * become a real track, and because a container's duration is the longest
+ * track, the cut output then reports the SOURCE's length while containing
+ * only the cut segment (it plays the cut part, but its duration is wrong).
+ *
+ * A trimmed output is therefore a standalone excerpt that must not inherit the
+ * source's chapter markers; an untrimmed copy still keeps them.
+ * @param {ConversionOptions} options - Conversion options to inspect.
+ * @returns {boolean} True when `-map_chapters 0` should be emitted.
+ */
+export function shouldCopySourceChapters(options: ConversionOptions): boolean {
+  return options.copyChapters !== false && !isTrimmedConversion(options);
+}
+
+/**
  * Builds a complete ffmpeg CLI argument array from conversion options.
  *
  * Argument assembly order:
@@ -138,7 +203,10 @@ export function metadataRotationValue(options: ConversionOptions, output: string
  *    <subtitleCodec>` when set, `-c:<kind> <codec>` per additional input with a
  *    non-copy codec, `-attach <path>` + `-metadata:s:t mimetype=image/jpeg` for
  *    MKV/WebM cover entries, `-disposition:v:<n> <value>` for `-i`-mapped cover
- *    streams, and `-map_chapters <index>` for chapter copy/import. Otherwise, in
+ *    streams, and `-map_chapters <index>` for chapter copy/import. The source's
+ *    own chapter timeline is only copied (`-map_chapters 0`) for an untrimmed
+ *    output - see {@link shouldCopySourceChapters} for why a trimmed output
+ *    must drop it. Otherwise, in
  *    order: video codec (`-vcodec`), audio codec (`-acodec`), video bitrate
  *    (`-b:v`), audio bitrate (`-b:a`), quality scale (`-qscale:v`), a single
  *    video filter chain (`-vf scale=...,transpose=...,hflip,vflip`), and pixel
@@ -224,9 +292,18 @@ export function buildFfmpegArgs(input: string, output: string, options: Conversi
     }
     if (chaptersInputIndex) {
       args.push(FFMPEG_FLAGS.MAP_CHAPTERS, chaptersInputIndex);
-    } else if (options.copyChapters !== false) {
-      args.push(FFMPEG_FLAGS.MAP_CHAPTERS, '0');
+    } else if (shouldCopySourceChapters(options)) {
+      args.push(FFMPEG_FLAGS.MAP_CHAPTERS, FFMPEG_FLAGS.MAP_CHAPTERS_SOURCE);
       log.debug(LOG_COPY_CHAPTERS);
+    } else {
+      // `-map_chapters -1` has to be explicit: omitting the flag does not drop
+      // the chapters, ffmpeg copies them from the first input by default.
+      args.push(FFMPEG_FLAGS.MAP_CHAPTERS, FFMPEG_FLAGS.MAP_CHAPTERS_NONE);
+      if (isTrimmedConversion(options)) {
+        log.debug(LOG_SKIP_CHAPTERS_TRIMMED);
+      } else {
+        log.debug(LOG_SKIP_CHAPTERS);
+      }
     }
   } else {
     if (options.videoCodec) {
