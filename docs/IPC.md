@@ -174,7 +174,7 @@ All stream-composition data rides inside the existing `options: ConversionOption
 | `map`                 | `string[]`        | Explicit `-map` specs for the primary input (index `0`), e.g. `['0:v:0', '0:a:1']`. Replaces FFmpeg's implicit best-stream selection.                       |
 | `additionalInputs`    | `RemuxInput[]`    | Extra inputs appended after the primary, each with its own `map` specs, optional `codec` (`-c:<kind>`), optional `disposition`, optional `syncOffsetSeconds` (`-itsoffset`), and `attachment` for cover art. |
 | `chaptersFile`        | `string`          | FFMETADATA chapters file; added as the last input and selected with `-map_chapters <index>`.                                                                 |
-| `copyChapters`        | `boolean`         | `true`/absent copies the source chapters (`-map_chapters 0`); `false` drops them. Defaults to copy for remux-style jobs.                                  |
+| `copyChapters`        | `boolean`         | `true`/absent copies the source chapters (`-map_chapters 0`); `false` drops them (`-map_chapters -1`). Defaults to copy for remux-style jobs. Trimmed copies always drop the source chapters. |
 | `audioSyncSeconds`    | `number`          | Signed shift of the primary file's audio relative to its video, applied losslessly by re-reading the primary input and mapping only the shifted audio with `-itsoffset`. Positive = audio plays later. |
 
 `RemuxInput` input-index contract: primary is `0`, `additionalInputs` occupy `1..N` in array order, and `chaptersFile` takes `N+1`. Remux always appends the audio re-read entry last so its index is deterministic.

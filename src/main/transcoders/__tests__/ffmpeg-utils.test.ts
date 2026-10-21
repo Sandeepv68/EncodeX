@@ -11,7 +11,7 @@ vi.mock('fs', () => ({
 
 vi.mock('ffmpeg-static', () => ({ default: 'C:/static/ffmpeg.exe' }));
 
-import { getFfmpegPath, getFfprobePath, buildFfmpegArgs } from '../ffmpeg-utils';
+import { getFfmpegPath, getFfprobePath, buildFfmpegArgs, isTrimmedConversion } from '../ffmpeg-utils';
 import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 describe('getFfmpegPath', () => {
@@ -232,6 +232,8 @@ describe('buildFfmpegArgs', () => {
       '1:0',
       '-c',
       'copy',
+      '-map_chapters',
+      '-1',
       '-y',
       'out.mkv',
     ]);
@@ -283,8 +285,7 @@ describe('buildFfmpegArgs', () => {
       copyChapters: false,
     });
     const i = args.indexOf('-c:s');
-    expect(args[i - 2]).toBe('-c');
-    expect(args[i - 1]).toBe('copy');
+    expect(args[args.indexOf('-c') + 1]).toBe('copy');
     expect(args[i + 1]).toBe('mov_text');
     expect(args).toContain('-map');
   });
@@ -323,9 +324,42 @@ describe('buildFfmpegArgs', () => {
     expect(args[args.indexOf('-disposition:v:1') + 1]).toBe('attached_pic');
   });
 
-  it('skips chapters entirely when copyChapters is false and no chapters file exists', () => {
+  it('disables source chapters with an explicit -map_chapters -1 when copyChapters is false', () => {
     const args = buildFfmpegArgs('in.mkv', 'out.mkv', { copy: true, copyChapters: false });
+    expect(args[args.indexOf('-map_chapters') + 1]).toBe('-1');
+    expect(args).toEqual(['-i', 'in.mkv', '-c', 'copy', '-map_chapters', '-1', '-y', 'out.mkv']);
+  });
+
+  it('drops the source chapters when the output is trimmed', () => {
+    const args = buildFfmpegArgs('in.mkv', 'out.mp4', { copy: true, startTime: '00:00:00', endTime: '00:05:00' });
+    expect(args[args.indexOf('-map_chapters') + 1]).toBe('-1');
+  });
+
+  it('drops the source chapters for a duration-trimmed output', () => {
+    const args = buildFfmpegArgs('in.mkv', 'out.mp4', { copy: true, startTime: '01:00:00', duration: '00:05:00' });
+    expect(args[args.indexOf('-map_chapters') + 1]).toBe('-1');
+  });
+
+  it('keeps the source chapters for an untrimmed copy', () => {
+    const args = buildFfmpegArgs('in.mkv', 'out.mp4', { copy: true, startTime: '00:00:00' });
+    expect(args[args.indexOf('-map_chapters') + 1]).toBe('0');
+  });
+
+  it('leaves the chapter handling to ffmpeg for a re-encode of a trimmed range', () => {
+    const args = buildFfmpegArgs('in.mkv', 'out.mp4', {
+      copy: false,
+      startTime: '00:00:00',
+      endTime: '00:05:00',
+    });
     expect(args).not.toContain('-map_chapters');
-    expect(args).toEqual(['-i', 'in.mkv', '-c', 'copy', '-y', 'out.mkv']);
+  });
+
+  it('treats a bounded range as trimmed and a full-range copy as untrimmed', () => {
+    expect(isTrimmedConversion({ endTime: '00:05:00' })).toBe(true);
+    expect(isTrimmedConversion({ duration: '00:05:00' })).toBe(true);
+    expect(isTrimmedConversion({ startTime: '00:01:00' })).toBe(true);
+    expect(isTrimmedConversion({ startTime: '00:00:00', endTime: '' })).toBe(false);
+    expect(isTrimmedConversion({ startTime: '00:00:00' })).toBe(false);
+    expect(isTrimmedConversion({})).toBe(false);
   });
 });

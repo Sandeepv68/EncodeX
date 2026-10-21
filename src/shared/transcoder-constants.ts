@@ -58,6 +58,11 @@ export const TRANSCODER_LABELS: Record<TranscoderType, string> = {
  * @property {string} MAP - Flag selecting input streams (-map).
  * @property {string} SUBTITLE_CODEC - Flag for the subtitle encoder/format (-c:s).
  * @property {string} MAP_CHAPTERS - Flag selecting the chapters input (-map_chapters).
+ * @property {string} MAP_CHAPTERS_SOURCE - Value selecting the primary input's
+ *   chapters (-map_chapters 0).
+ * @property {string} MAP_CHAPTERS_NONE - Value disabling chapter copying
+ *   (-map_chapters -1). Must be explicit: omitting `-map_chapters` does NOT
+ *   drop the chapters, ffmpeg copies them from the first input by default.
  * @property {string} DISPOSITION - Flag setting a stream disposition (-disposition).
  * @property {string} ATTACH - Flag attaching a file as an MKV/WebM stream (-attach).
  * @property {string} METADATA_STREAM_TYPE - Flag prefix for output stream metadata
@@ -95,6 +100,8 @@ export const FFMPEG_FLAGS = {
   MAP: '-map',
   SUBTITLE_CODEC: '-c:s',
   MAP_CHAPTERS: '-map_chapters',
+  MAP_CHAPTERS_SOURCE: '0',
+  MAP_CHAPTERS_NONE: '-1',
   DISPOSITION: '-disposition',
   ATTACH: '-attach',
   METADATA_STREAM_TYPE: '-metadata:s:t',

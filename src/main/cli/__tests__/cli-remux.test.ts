@@ -267,7 +267,8 @@ describe('buildRemuxCliPlan', () => {
   it('drops the source chapters for --no-chapters', () => {
     const plan = buildRemuxCliPlan(SOURCE, { format: 'mkv', copyChapters: false }, DEFAULT_STREAMS);
     expect(plan.options.copyChapters).toBe(false);
-    expect(buildFfmpegArgs(SOURCE, plan.output, plan.options)).not.toContain('-map_chapters');
+    const args = buildFfmpegArgs(SOURCE, plan.output, plan.options);
+    expect(args[args.indexOf('-map_chapters') + 1]).toBe('-1');
   });
 
   it('rejects a chapters file for a container that drops chapters', () => {

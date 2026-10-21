@@ -82,7 +82,7 @@ Remux and demux are **not** new transcoder cores. Both are expressed as `Convers
 | `map?: string[]`            | Explicit `-map` specs for the **primary** input (index `0`). Presence switches FFmpeg out of its implicit best-stream selection.                    |
 | `additionalInputs?: RemuxInput[]` | Extra `-i` inputs appended after the primary, each with its own `-map` specs, optional `-c:<kind>` override, cover disposition, or sync shift. |
 | `chaptersFile?: string`     | FFMETADATA chapters file added as the **last** `-i` and selected with `-map_chapters <index>`.                                                   |
-| `copyChapters?: boolean`    | `true`/absent → `-map_chapters 0` (keep the source's chapters); `false` → no flag (drop them). Defaults to true for remux-style work.           |
+| `copyChapters?: boolean`    | `true`/absent → `-map_chapters 0` (keep the source's chapters); `false` → `-map_chapters -1` (drop them). Defaults to true for remux-style work. Trimmed copies always drop the source chapters. |
 | `audioSyncSeconds?: number` | Signed shift for the primary file's own audio (see the re-read trick below). Positive = audio plays later.                                       |
 
 `RemuxInput` (see `src/shared/types.ts`) carries `path`, `map`, optional `codec`, optional `disposition`, optional `syncOffsetSeconds`, and `attachment`.

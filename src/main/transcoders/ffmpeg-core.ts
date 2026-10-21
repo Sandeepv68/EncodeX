@@ -20,7 +20,14 @@ import { suspendProcess, resumeProcess } from '../process-utils';
 import { withTimeout } from '../spawn-timeout';
 import { mapFfprobeData } from './ffprobe-mapper';
 import { getHwAccelArgs } from './hwaccel';
-import { buildRotationFilters, metadataRotationValue, outputVideoIndexForInput, streamKindFromMap } from './ffmpeg-utils';
+import {
+  buildRotationFilters,
+  isTrimmedConversion,
+  metadataRotationValue,
+  outputVideoIndexForInput,
+  shouldCopySourceChapters,
+  streamKindFromMap,
+} from './ffmpeg-utils';
 import { validateVideoFilters } from '../../shared/video-filters';
 import { cancelledError } from '../../shared/errors';
 import {
@@ -62,6 +69,8 @@ import {
   LOG_ROTATION_METADATA,
   LOG_SCALE,
   LOG_SCALE_KEEP_ASPECT_RATIO,
+  LOG_SKIP_CHAPTERS,
+  LOG_SKIP_CHAPTERS_TRIMMED,
   LOG_START_TIME,
   LOG_SUBTITLE_CODEC,
   LOG_SYNC_OFFSET,
@@ -183,9 +192,11 @@ export class FfmpegCore implements ITranscoder {
    * for percent fallback, then builds the command chain. When not in copy mode
    * and hardware acceleration resolves, hwaccel flags are applied as input
    * options. In copy mode `-c copy` is applied; otherwise codecs/bitrates/
-   * qscale/scale/pixel format/mjpeg color range are configured. Then optional
-   * audio disable and start/end/duration trimming are applied, the output is
-   * set, and `cmd.run()` starts the process.
+   * qscale/scale/pixel format/mjpeg color range are configured. In copy mode
+   * the source's chapter timeline is copied only for an untrimmed output (see
+   * {@link shouldCopySourceChapters}). Then optional audio disable and
+   * start/end/duration trimming are applied, the output is set, and
+   * `cmd.run()` starts the process.
    *
    * The emitter relays fluent-ffmpeg events: 'start' forwards the command line
    * and records the child PID; 'codecData' records the PID and forwards the
@@ -272,9 +283,14 @@ export class FfmpegCore implements ITranscoder {
       if (options.chaptersFile) {
         log.debug(LOG_CHAPTERS_FILE, options.chaptersFile);
         cmd.outputOptions(FFMPEG_FLAGS.MAP_CHAPTERS, String(1 + addedInputs.length));
-      } else if (options.copyChapters !== false) {
+      } else if (shouldCopySourceChapters(options)) {
         log.debug(LOG_COPY_CHAPTERS);
-        cmd.outputOptions(FFMPEG_FLAGS.MAP_CHAPTERS, '0');
+        cmd.outputOptions(FFMPEG_FLAGS.MAP_CHAPTERS, FFMPEG_FLAGS.MAP_CHAPTERS_SOURCE);
+      } else {
+        // `-map_chapters -1` has to be explicit: omitting the flag does not drop
+        // the chapters, ffmpeg copies them from the first input by default.
+        log.debug(isTrimmedConversion(options) ? LOG_SKIP_CHAPTERS_TRIMMED : LOG_SKIP_CHAPTERS);
+        cmd.outputOptions(FFMPEG_FLAGS.MAP_CHAPTERS, FFMPEG_FLAGS.MAP_CHAPTERS_NONE);
       }
     } else {
       if (options.videoCodec) {

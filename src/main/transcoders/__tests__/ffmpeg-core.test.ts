@@ -401,11 +401,11 @@ describe('FfmpegCore', () => {
     expect(cmd.outputOptions).toHaveBeenCalledWith('-an');
   });
 
-  it('does not add -map_chapters when copyChapters is false', () => {
+  it('disables source chapters with an explicit -map_chapters -1 when copyChapters is false', () => {
     const core = new FfmpegCore();
     core.convert('in.mkv', 'out.mkv', { copy: true, copyChapters: false });
     const cmd = getCommand();
-    expect(cmd.outputOptions).not.toHaveBeenCalledWith('-map_chapters', '0');
+    expect(cmd.outputOptions).toHaveBeenCalledWith('-map_chapters', '-1');
   });
 
   it('emits progress with percent when provided', () => {
