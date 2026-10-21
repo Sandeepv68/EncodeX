@@ -5,9 +5,10 @@
  *
  * Log entries are read from the `useLogStore` zustand store, which is populated
  * by the renderer-side IPC subscription registered in App. The page offers a
- * level filter (ALL/DEBUG/INFO/WARN/ERROR), a clear button, and a download
- * button that exports the filtered entries to a timestamped `.txt` file. The
- * visible list is memoized from the store entries and the active filter.
+ * level filter (ALL/DEBUG/INFO/WARN/ERROR), a free-text search over the
+ * entries, a clear button, and a download button that exports the visible
+ * entries to a timestamped `.txt` file. The visible list is memoized from the
+ * store entries, the active filter and the active search query.
  *
  * No direct IPC calls are made from this page; clearing and exporting operate on
  * the store and the browser Blob/download APIs respectively.
@@ -15,8 +16,8 @@
 
 import { useRef, useEffect, useLayoutEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, IconButton, Tooltip, Typography, MenuItem } from '@mui/material';
-import { faEraser, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { Box, IconButton, InputAdornment, Tooltip, Typography, MenuItem } from '@mui/material';
+import { faEraser, faDownload, faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useLogStore } from '../stores/logStore';
 import { useAuditStore } from '../stores/auditStore';
 import { useToastStore } from '../stores/toastStore';
@@ -26,6 +27,9 @@ import {
   LogsRoot,
   LogsHeader,
   FilterSelect,
+  SearchField,
+  SearchIcon,
+  EntryCount,
   LogsBody,
   NoEntriesText,
   LogEntryRow,
@@ -46,6 +50,7 @@ import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
+import type { LogEntry } from '../../shared/types';
 
 /**
  * Maps each log level to the display color used by `LevelSpan`. Unknown levels
@@ -80,17 +85,30 @@ const LOG_WINDOW_OVERSCAN = 20;
 const AUDIT_DISPLAY_LIMIT = 50;
 
 /**
+ * Builds the haystack a search query is matched against: everything the entry
+ * renders (timestamp, level, source and text) joined into one lower-cased
+ * string, so a query matches the row the user sees.
+ * @param {LogEntry} entry - The log entry to index.
+ * @returns {string} The lower-cased searchable text of the entry.
+ */
+function searchHaystack(entry: LogEntry): string {
+  return `${entry.timestamp} ${entry.level} ${entry.source} ${entry.text}`.toLowerCase();
+}
+
+/**
  * Renders the log viewer page (`/logs`).
  *
- * Shows a header with the level `FilterSelect`, a clear button, a download
- * button, and an entry counter, followed by a scrollable `LogsBody`. Each entry
- * row shows the time portion of the timestamp, the colored level, the source,
- * and the log text. A bottom sentinel element is kept in view so the list
- * auto-scrolls to the newest entry whenever `entries` change.
+ * Shows a header with the level `FilterSelect`, a free-text `SearchField`, a
+ * clear button, a download button, and an entry counter, followed by a
+ * scrollable `LogsBody`. Each entry row shows the time portion of the
+ * timestamp, the colored level, the source, and the log text. A bottom sentinel
+ * element is kept in view so the list auto-scrolls to the newest entry whenever
+ * `entries` change.
  *
  * State managed: the active `filter` level (local `useState`, default 'ALL'),
- * and `bottomRef` for the auto-scroll sentinel. The visible entries are derived
- * with `useMemo` by filtering the store's `entries` against the filter.
+ * the `search` text, and `bottomRef` for the auto-scroll sentinel. The visible
+ * entries are derived with `useMemo` by filtering the store's `entries` against
+ * the filter and the search query.
  *
  * @returns {JSX.Element} The page content.
  */
@@ -115,12 +133,31 @@ export default function Logs() {
   const [filter, setFilter] = useState('ALL');
 
   /**
-   * The log entries to display, recomputed when either the store entries or the
-   * active filter change. Returns all entries for the 'ALL' filter, otherwise
-   * only entries whose level matches.
-   * @type {Array<import('../../shared/types').LogEntry>}
+   * The raw text typed in the search box. Kept verbatim so the input can echo
+   * what the user typed (including surrounding spaces); the filtering itself
+   * uses the trimmed, lower-cased {@link query}.
+   * @type {string}
    */
-  const filtered = useMemo(() => (filter === 'ALL' ? entries : entries.filter((e) => e.level === filter)), [entries, filter]);
+  const [search, setSearch] = useState('');
+
+  /**
+   * The normalized search query: trimmed and lower-cased so matching is
+   * case-insensitive and whitespace-only input does not narrow the list.
+   * @type {string}
+   */
+  const query = search.trim().toLowerCase();
+
+  /**
+   * The log entries to display, recomputed when the store entries, the active
+   * filter or the search query change. The level filter and the search are
+   * combined: an entry has to satisfy both to stay visible.
+   * @type {Array<LogEntry>}
+   */
+  const filtered = useMemo(() => {
+    const byLevel = filter === 'ALL' ? entries : entries.filter((e) => e.level === filter);
+    if (!query) return byLevel;
+    return byLevel.filter((e) => searchHaystack(e).includes(query));
+  }, [entries, filter, query]);
 
   /**
    * Ref to the sentinel `<div>` at the bottom of the log list. Scrolled into
@@ -130,6 +167,8 @@ export default function Logs() {
   const bottomRef = useRef<HTMLDivElement>(null);
   /** The scrolling container, used to detect whether the user is already pinned to the bottom. */
   const bodyRef = useRef<HTMLDivElement>(null);
+  /** The search input, focused by the `F` shortcut. */
+  const searchRef = useRef<HTMLInputElement>(null);
 
   /**
    * The current window into the filtered list: `start` is the first mounted
@@ -169,6 +208,19 @@ export default function Logs() {
   }, [filtered.length, recompute]);
 
   /**
+   * Rewinds the list to the top whenever the search query changes. The result
+   * set is a different one, so keeping the previous scroll offset would land
+   * the user in the middle of an unrelated part of the log.
+   * @returns {void}
+   */
+  useLayoutEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+    body.scrollTop = 0;
+    recompute(filtered.length);
+  }, [query, recompute]);
+
+  /**
    * Recomputes the window while the user scrolls. No rAF throttle is needed:
    * the math is two arithmetic steps and `setWindow` bails out when the
    * numbers did not move, so a high-frequency scroll costs an event handler
@@ -195,11 +247,14 @@ export default function Logs() {
   };
 
   /**
-   * Exports the currently filtered entries as a plain-text file. Each line is
+   * Exports the currently visible entries as a plain-text file. Each line is
    * formatted as `<timestamp> [<level>] [<source>] <text>`. The file is
    * downloaded via a temporary Blob object URL whose name is prefixed with
    * `LOG_EXPORT_FILENAME_PREFIX` and stamped with the current UTC time. A
    * success toast is shown afterwards and the object URL is revoked.
+   *
+   * The export covers what the list shows, so an active level filter or search
+   * narrows the downloaded file as well.
    * @returns {void}
    */
   const downloadLogs = () => {
@@ -240,13 +295,15 @@ export default function Logs() {
   }, [entries]);
 
   /**
-   * Registers the page keyboard shortcuts (Ctrl+L clear, Ctrl+Shift+D download).
-   * Bindings mirror the enabled state of the equivalent on-page buttons.
+   * Registers the page keyboard shortcuts (Ctrl+L clear, Ctrl+Shift+D download,
+   * F focus search). Bindings mirror the enabled state of the equivalent
+   * on-page buttons.
    * @returns {void}
    */
   useHotkeys([
     { id: 'logs.clear', handler: () => handleClear(), enabled: entries.length > 0 },
     { id: 'logs.download', handler: () => downloadLogs(), enabled: filtered.length > 0 },
+    { id: 'logs.focusSearch', handler: () => searchRef.current?.focus() },
   ]);
 
   return (
@@ -273,6 +330,41 @@ export default function Logs() {
           <MenuItem value="WARN">{t('logs.levelWarn')}</MenuItem>
           <MenuItem value="ERROR">{t('logs.levelError')}</MenuItem>
         </FilterSelect>
+        <SearchField
+          size="small"
+          value={search}
+          onChange={(e) => {
+            const next = e.target.value;
+            setSearch(next);
+            recordAnalyticsEvent(createAnalyticsEvent('logs_search_changed', { queryLength: next.trim().length }));
+          }}
+          placeholder={t('logs.searchPlaceholder')}
+          data-testid="logs-search"
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon icon={faMagnifyingGlass} />
+                </InputAdornment>
+              ),
+              endAdornment: search ? (
+                <InputAdornment position="end">
+                  <Tooltip title={t('logs.clearSearch')}>
+                    <IconButton
+                      size="small"
+                      onClick={() => setSearch('')}
+                      aria-label={t('logs.clearSearch')}
+                      data-testid="logs-search-clear"
+                    >
+                      <LogActionIcon icon={faXmark} />
+                    </IconButton>
+                  </Tooltip>
+                </InputAdornment>
+              ) : null,
+            },
+            htmlInput: { 'aria-label': t('logs.search'), ref: searchRef },
+          }}
+        />
         <Tooltip title={t('logs.clear')}>
           <IconButton size="small" onClick={handleClear} aria-label={t('logs.clear')} data-testid="logs-clear">
             <LogActionIcon icon={faEraser} />
@@ -283,26 +375,23 @@ export default function Logs() {
             <LogActionIcon icon={faDownload} />
           </IconButton>
         </Tooltip>
-        <Typography variant="caption" color="text.secondary">
-          {t('logs.entryCount', { count: entries.length })}
-        </Typography>
+        <EntryCount variant="caption" color="text.secondary">
+          {filter === 'ALL' && !query
+            ? t('logs.entryCount', { count: entries.length })
+            : t('logs.filteredCount', { count: filtered.length, total: entries.length })}
+        </EntryCount>
       </LogsHeader>
       {auditEntries.length > 0 && (
         <AuditPanel data-testid="audit-panel">
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="subtitle2" component="h2" sx={{ flex: 1 }}>
-              {t('logs.auditTitle', { defaultValue: 'Operation audit trail' })}
+              {t('logs.auditTitle')}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              {t('logs.auditCount', { defaultValue: '{{count}} operations', count: auditEntries.length })}
+              {t('logs.auditCount', { count: auditEntries.length })}
             </Typography>
-            <Tooltip title={t('logs.auditClear', { defaultValue: 'Clear audit trail' })}>
-              <IconButton
-                size="small"
-                onClick={handleClearAudit}
-                aria-label={t('logs.auditClear', { defaultValue: 'Clear audit trail' })}
-                data-testid="audit-clear"
-              >
+            <Tooltip title={t('logs.auditClear')}>
+              <IconButton size="small" onClick={handleClearAudit} aria-label={t('logs.auditClear')} data-testid="audit-clear">
                 <LogActionIcon icon={faEraser} />
               </IconButton>
             </Tooltip>
@@ -311,8 +400,10 @@ export default function Logs() {
             <AuditRow key={entry.id} data-testid="audit-row">
               <TimestampSpan>{entry.timestamp.slice(11, 19)}</TimestampSpan>
               <AuditTool>{entry.tool}</AuditTool>
-              <AuditMuted>{t('logs.auditTier', { tier: entry.tier, defaultValue: 'T{{tier}}' })}</AuditMuted>
-              <AuditStatus $ok={entry.result === 'ok'}>{entry.result === 'ok' ? 'ok' : 'failed'}</AuditStatus>
+              <AuditMuted>{t('logs.auditTier', { tier: entry.tier })}</AuditMuted>
+              <AuditStatus $ok={entry.result === 'ok'}>
+                {t(entry.result === 'ok' ? 'logs.auditStatusOk' : 'logs.auditStatusFailed')}
+              </AuditStatus>
               <AuditMuted>#{entry.argsDigest}</AuditMuted>
               {entry.detail ? <span>{entry.detail}</span> : null}
             </AuditRow>
@@ -320,7 +411,7 @@ export default function Logs() {
         </AuditPanel>
       )}
       <LogsBody ref={bodyRef} onScroll={handleScroll} data-testid="logs-body" tabIndex={0}>
-        {filtered.length === 0 && <NoEntriesText variant="body2">{t('logs.noEntries')}</NoEntriesText>}
+        {filtered.length === 0 && <NoEntriesText variant="body2">{query ? t('logs.noMatches') : t('logs.noEntries')}</NoEntriesText>}
         {window.start > 0 && <LogsSpacer aria-hidden="true" $height={window.start * LOG_ROW_HEIGHT} />}
         {filtered.slice(window.start, window.start + window.count).map((entry, localIndex) => {
           const i = window.start + localIndex;

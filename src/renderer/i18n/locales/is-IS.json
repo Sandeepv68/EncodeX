@@ -490,13 +490,24 @@
     "clear": "Hreinsa",
     "download": "Sækja sem TXT",
     "filter": "Sía eftir stigi",
+    "search": "Leita í annálum",
+    "searchPlaceholder": "Leita í annálum...",
+    "clearSearch": "Hreinsa leit",
     "levelAll": "Allt",
     "levelDebug": "KANNANIR",
     "levelInfo": "UPPLÝSINGAR",
     "levelWarn": "AÐVÖRKEN",
     "levelError": "VILLA",
     "noEntries": "Engar annálafærslur ennþá.",
-    "entryCount": "{{count}} færslur"
+    "noMatches": "Engar annálafærslur passa við leitina.",
+    "entryCount": "{{count}} færslur",
+    "filteredCount": "{{count}} af {{total}} færslum",
+    "auditTitle": "Ferilskrá aðgerða",
+    "auditCount": "{{count}} aðgerðir",
+    "auditClear": "Hreinsa ferilskrána",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Mistókst"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Hreinsa annála",
-      "download": "Sækja annála"
+      "download": "Sækja annála",
+      "focusSearch": "Einbeita leitarreit í annálum"
     },
     "dashboard": {
       "convert": "Opna Umbreyta",

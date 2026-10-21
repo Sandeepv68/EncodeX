@@ -490,13 +490,24 @@
     "clear": "Ryd",
     "download": "Download som TXT",
     "filter": "Filtrer efter niveau",
+    "search": "Søg i logfiler",
+    "searchPlaceholder": "Søg i logfiler...",
+    "clearSearch": "Ryd søgning",
     "levelAll": "Alle",
     "levelDebug": "FEJLFINDING",
     "levelInfo": "INFO",
     "levelWarn": "ADVARSEL",
     "levelError": "FEJL",
     "noEntries": "Ingen logposter endnu.",
-    "entryCount": "{{count}} poster"
+    "noMatches": "Ingen logposter matcher søgningen.",
+    "entryCount": "{{count}} poster",
+    "filteredCount": "{{count}} af {{total}} poster",
+    "auditTitle": "Revision af operationer",
+    "auditCount": "{{count}} operationer",
+    "auditClear": "Ryd revisionen",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Mislykkedes"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Ryd logs",
-      "download": "Download logfiler"
+      "download": "Download logfiler",
+      "focusSearch": "Fokuser søgefelt for logfiler"
     },
     "dashboard": {
       "convert": "Åbn Konverter",

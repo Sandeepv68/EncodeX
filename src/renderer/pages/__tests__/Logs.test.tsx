@@ -185,4 +185,110 @@ describe('Logs', () => {
     const { container } = render(<Logs />);
     await assertNoAxeViolations(container);
   });
+
+  it('labels the search field for screen readers', () => {
+    render(<Logs />);
+    expect(screen.getByRole('textbox', { name: 'logs.search' })).toBeInTheDocument();
+  });
+
+  it('filters the entries by the search text', () => {
+    useLogStore.setState({
+      entries: [entry({ text: 'conversion started' }), entry({ text: 'something else' })],
+    });
+    render(<Logs />);
+    fireEvent.change(screen.getByRole('textbox', { name: 'logs.search' }), { target: { value: 'conversion' } });
+    expect(screen.getByText(/conversion started/)).toBeInTheDocument();
+    expect(screen.queryByText(/something else/)).not.toBeInTheDocument();
+  });
+
+  it('matches the search case-insensitively', () => {
+    useLogStore.setState({
+      entries: [entry({ text: 'conversion started' }), entry({ text: 'something else' })],
+    });
+    render(<Logs />);
+    fireEvent.change(screen.getByRole('textbox', { name: 'logs.search' }), { target: { value: 'CONVERSION' } });
+    expect(screen.getByText(/conversion started/)).toBeInTheDocument();
+    expect(screen.queryByText(/something else/)).not.toBeInTheDocument();
+  });
+
+  it('matches the search against the level and the source', () => {
+    useLogStore.setState({
+      entries: [entry({ level: 'ERROR', text: 'boom', source: 'main' }), entry({ level: 'INFO', text: 'fine', source: 'renderer' })],
+    });
+    render(<Logs />);
+    const search = screen.getByRole('textbox', { name: 'logs.search' });
+    fireEvent.change(search, { target: { value: 'error' } });
+    expect(screen.getByText(/boom/)).toBeInTheDocument();
+    expect(screen.queryByText(/fine/)).not.toBeInTheDocument();
+    fireEvent.change(search, { target: { value: 'renderer' } });
+    expect(screen.getByText(/fine/)).toBeInTheDocument();
+    expect(screen.queryByText(/boom/)).not.toBeInTheDocument();
+  });
+
+  it('combines the level filter with the search', () => {
+    useLogStore.setState({
+      entries: [
+        entry({ level: 'INFO', text: 'alpha entry' }),
+        entry({ level: 'ERROR', text: 'alpha failure' }),
+        entry({ level: 'ERROR', text: 'beta failure' }),
+      ],
+    });
+    render(<Logs />);
+    fireEvent.change(screen.getByRole('textbox', { name: 'logs.search' }), { target: { value: 'alpha' } });
+    fireEvent.mouseDown(screen.getByRole('combobox'));
+    fireEvent.click(screen.getByText('logs.levelError'));
+    expect(screen.getByText(/alpha failure/)).toBeInTheDocument();
+    expect(screen.queryByText(/alpha entry/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/beta failure/)).not.toBeInTheDocument();
+  });
+
+  it('shows the no-match message when the search matches nothing', () => {
+    useLogStore.setState({ entries: [entry({ text: 'conversion started' })] });
+    render(<Logs />);
+    fireEvent.change(screen.getByRole('textbox', { name: 'logs.search' }), { target: { value: 'nothing matches this' } });
+    expect(screen.getByText('logs.noMatches')).toBeInTheDocument();
+    expect(screen.queryByText('logs.noEntries')).not.toBeInTheDocument();
+  });
+
+  it('clears the search from the clear button', () => {
+    useLogStore.setState({ entries: [entry({ text: 'conversion started' }), entry({ text: 'something else' })] });
+    render(<Logs />);
+    const search = screen.getByRole('textbox', { name: 'logs.search' });
+    fireEvent.change(search, { target: { value: 'conversion' } });
+    expect(screen.queryByText(/something else/)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('logs-search-clear'));
+    expect(search).toHaveValue('');
+    expect(screen.getByText(/something else/)).toBeInTheDocument();
+  });
+
+  it('focuses the search field with F', () => {
+    render(<Logs />);
+    fireEvent.keyDown(window, { code: 'KeyF', key: 'f' });
+    expect(screen.getByRole('textbox', { name: 'logs.search' })).toHaveFocus();
+  });
+
+  it('shows the filtered entry count while the list is narrowed', () => {
+    useLogStore.setState({ entries: [entry({ text: 'conversion started' }), entry({ text: 'something else' })] });
+    render(<Logs />);
+    expect(screen.getByText('logs.entryCount')).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('textbox', { name: 'logs.search' }), { target: { value: 'conversion' } });
+    expect(screen.getByText('logs.filteredCount')).toBeInTheDocument();
+    expect(screen.queryByText('logs.entryCount')).not.toBeInTheDocument();
+  });
+
+  it('exports only the entries that match the search', async () => {
+    useLogStore.setState({ entries: [entry({ text: 'download me' }), entry({ text: 'keep me out' })] });
+    const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:fake');
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    render(<Logs />);
+    fireEvent.change(screen.getByRole('textbox', { name: 'logs.search' }), { target: { value: 'download' } });
+    fireEvent.click(document.querySelector('[data-icon="download"]')!);
+    expect(createObjectURL).toHaveBeenCalledOnce();
+    const blob = createObjectURL.mock.calls[0][0] as Blob;
+    const exported = await blob.text();
+    expect(exported).toContain('download me');
+    expect(exported).not.toContain('keep me out');
+    expect(clickSpy).toHaveBeenCalledOnce();
+  });
 });

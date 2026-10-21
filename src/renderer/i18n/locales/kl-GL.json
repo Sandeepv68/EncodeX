@@ -490,13 +490,24 @@
     "clear": "Piiaruk",
     "download": "TXT-mik nuiaatit",
     "filter": "Saggaassaq kisimik",
+    "search": "Logit sallugit",
+    "searchPlaceholder": "Logit sallugit...",
+    "clearSearch": "Salluni piiaruk",
     "levelAll": "Tamarmik",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "NALLIAAVIT",
     "levelError": "KUSANERUQ",
     "noEntries": "Allaaserisat taamaallaat ilaanaqanngilaq.",
-    "entryCount": "{{count}} inissisimanitut"
+    "noMatches": "Logit sallugikka sallunngitut.",
+    "entryCount": "{{count}} inissisimanitut",
+    "filteredCount": "{{count}} {{total}}-mi inissisimanitut",
+    "auditTitle": "Pisortutit inissisimanitut",
+    "auditCount": "{{count}} inissisimanitut",
+    "auditClear": "Pisortutit piiaruk",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Illituarneq"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Logit piiaruk",
-      "download": "Logit igaaruk"
+      "download": "Logit igaaruk",
+      "focusSearch": "Logit sallugit qinersivik qinersinernut isiginnaaruk"
     },
     "dashboard": {
       "convert": "Allanngornerit matoqqigit",

@@ -490,13 +490,24 @@
     "clear": "Очистити",
     "download": "Завантажити як TXT",
     "filter": "Фільтр за рівнем",
+    "search": "Пошук у журналі",
+    "searchPlaceholder": "Пошук у журналі...",
+    "clearSearch": "Очистити пошук",
     "levelAll": "УСІ",
     "levelDebug": "НАЛАГОДЖЕННЯ",
     "levelInfo": "ІНФО",
     "levelWarn": "ПОПЕРЕДЖЕННЯ",
     "levelError": "ПОМИЛКА",
     "noEntries": "Записів у журналі ще немає.",
-    "entryCount": "{{count}} записів"
+    "noMatches": "Немає записів журналу, що відповідають пошуку.",
+    "entryCount": "{{count}} записів",
+    "filteredCount": "{{count}} з {{total}} записів",
+    "auditTitle": "Журнал аудиту операцій",
+    "auditCount": "Операцій: {{count}}",
+    "auditClear": "Очистити журнал аудиту",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "ОК",
+    "auditStatusFailed": "Помилка"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Очистити журнали",
-      "download": "Завантажити журнали"
+      "download": "Завантажити журнали",
+      "focusSearch": "Сфокусуватися на полі пошуку журналу"
     },
     "dashboard": {
       "convert": "Відкрити конвертацію",

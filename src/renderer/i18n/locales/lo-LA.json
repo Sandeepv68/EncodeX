@@ -490,13 +490,24 @@
     "clear": "ລຶບ",
     "download": "ດາວໂຫຼດເປັນ TXT",
     "filter": "ກັ່ນຕອງຕາມລະດັບ",
+    "search": "ຊອກຫາບັນທຶກ",
+    "searchPlaceholder": "ຊອກຫາບັນທຶກ...",
+    "clearSearch": "ລ້າງການຊອກຫາ",
     "levelAll": "ທັງໝົດ",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "WARN",
     "levelError": "ERROR",
     "noEntries": "ຍັງບໍ່ມີລາຍການບັນທຶກ.",
-    "entryCount": "{{count}} ລາຍການ"
+    "noMatches": "ບໍ່ມີລາຍການບັນທຶກທີ່ຕົງກັບການຊອກຫາ.",
+    "entryCount": "{{count}} ລາຍການ",
+    "filteredCount": "{{count}} ຈາກ {{total}} ລາຍການ",
+    "auditTitle": "ບົນທຶກການຕົກຈັດຕິດຕາມ",
+    "auditCount": "{{count}} ລາຍການ",
+    "auditClear": "ລ້າງບົນທຶກການຕົກຈັດຕິດຕາມ",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "ສຳເລັດ",
+    "auditStatusFailed": "ລົ້ມເຫລວ"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "ລຶບລ້າງບັນທຶກ",
-      "download": "ດາວໂຫຼດບັນທຶກ"
+      "download": "ດາວໂຫຼດບັນທຶກ",
+      "focusSearch": "ໃສ່ຈຸດສຸມທີ່ຊອກຫາບັນທຶກ"
     },
     "dashboard": {
       "convert": "ເປີດການປ່ຽນຮູບແບບ",

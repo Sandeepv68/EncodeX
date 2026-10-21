@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Typography, Select, Paper } from '@mui/material';
+import { Box, Typography, Select, Paper, TextField } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { COLORS, SHADOWS } from '../colors';
 
@@ -16,6 +16,34 @@ export const LogsHeader = styled(Paper)(({ theme }) => ({
 }));
 
 export const FilterSelect = styled(Select)(({ theme }) => ({ minWidth: theme.typography.pxToRem(100) }));
+
+/**
+ * Free-text search input in the logs header. It grows into the free space
+ * between the level filter and the action buttons, but stops widening past its
+ * max width so the header stays readable on wide windows.
+ */
+export const SearchField = styled(TextField)(({ theme }) => ({
+  flex: 1,
+  minWidth: theme.typography.pxToRem(160),
+  maxWidth: theme.typography.pxToRem(420),
+  '& .MuiInputBase-root': {
+    height: theme.typography.pxToRem(28),
+    fontSize: theme.typography.pxToRem(13),
+    boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+  },
+  '& .MuiOutlinedInput-input': {
+    padding: `0 ${theme.spacing(1)}`,
+  },
+}));
+
+/** Magnifier glyph shown at the start of the search input. */
+export const SearchIcon = styled(FontAwesomeIcon)(({ theme }) => ({
+  fontSize: theme.typography.pxToRem(14),
+  color: theme.palette.text.secondary,
+}));
+
+/** Entry counter caption, pushed to the far right of the header row. */
+export const EntryCount = styled(Typography)({ marginInlineStart: 'auto' });
 
 export const LogsBody = styled(Box)(({ theme }) => ({
   flex: 1,

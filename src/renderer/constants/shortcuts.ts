@@ -146,6 +146,7 @@ export const SHORTCUTS: readonly HotkeySpec[] = [
   { id: 'batchQueue.filterFailed', keys: '5', labelKey: 'shortcuts.batchQueue.filterFailed', section: 'batchQueue' },
   { id: 'logs.clear', keys: 'Ctrl+L', labelKey: 'shortcuts.logs.clear', section: 'logs' },
   { id: 'logs.download', keys: 'Ctrl+Shift+D', labelKey: 'shortcuts.logs.download', section: 'logs' },
+  { id: 'logs.focusSearch', keys: 'F', labelKey: 'shortcuts.logs.focusSearch', section: 'logs' },
   { id: 'dashboard.convert', keys: '1', labelKey: 'shortcuts.dashboard.convert', section: 'dashboard', to: '/convert' },
   { id: 'dashboard.mediaInfo', keys: '2', labelKey: 'shortcuts.dashboard.mediaInfo', section: 'dashboard', to: '/media-info' },
   { id: 'dashboard.image', keys: '3', labelKey: 'shortcuts.dashboard.image', section: 'dashboard', to: '/image-compress' },

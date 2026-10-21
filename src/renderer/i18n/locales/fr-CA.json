@@ -490,13 +490,24 @@
     "clear": "Effacer",
     "download": "Télécharger au format TXT",
     "filter": "Filtrer par niveau",
+    "search": "Rechercher dans les journaux",
+    "searchPlaceholder": "Rechercher dans les journaux...",
+    "clearSearch": "Effacer la recherche",
     "levelAll": "TOUT",
     "levelDebug": "DÉBOGAGE",
     "levelInfo": "INFO",
     "levelWarn": "AVERTISSEMENT",
     "levelError": "ERREUR",
     "noEntries": "Aucune entrée de journal pour l'instant.",
-    "entryCount": "{{count}} entrées"
+    "noMatches": "Aucune entrée de journal ne correspond à la recherche.",
+    "entryCount": "{{count}} entrées",
+    "filteredCount": "{{count}} entrées sur {{total}}",
+    "auditTitle": "Journal d'audit des opérations",
+    "auditCount": "{{count}} opérations",
+    "auditClear": "Effacer le journal d'audit",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Échec"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Effacer les journaux",
-      "download": "Télécharger les journaux"
+      "download": "Télécharger les journaux",
+      "focusSearch": "Se concentrer sur le champ de recherche des journaux"
     },
     "dashboard": {
       "convert": "Ouvrir Convertir",

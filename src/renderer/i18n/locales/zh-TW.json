@@ -490,13 +490,24 @@
     "clear": "清除",
     "download": "下載為 TXT",
     "filter": "依層級篩選",
+    "search": "搜尋記錄",
+    "searchPlaceholder": "搜尋記錄...",
+    "clearSearch": "清除搜尋",
     "levelAll": "全部",
     "levelDebug": "偵錯",
     "levelInfo": "資訊",
     "levelWarn": "警告",
     "levelError": "錯誤",
     "noEntries": "尚無記錄項目。",
-    "entryCount": "{{count}} 個項目"
+    "noMatches": "沒有符合搜尋條件的記錄項目。",
+    "entryCount": "{{count}} 個項目",
+    "filteredCount": "{{total}} 個項目中的 {{count}} 個",
+    "auditTitle": "操作稽核記錄",
+    "auditCount": "{{count}} 項操作",
+    "auditClear": "清除稽核記錄",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "成功",
+    "auditStatusFailed": "失敗"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "清除記錄",
-      "download": "下載記錄"
+      "download": "下載記錄",
+      "focusSearch": "聚焦記錄搜尋欄位"
     },
     "dashboard": {
       "convert": "開啟轉換",

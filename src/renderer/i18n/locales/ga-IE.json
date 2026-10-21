@@ -490,13 +490,24 @@
     "clear": "Glan",
     "download": "Íoslódáil mar TXT",
     "filter": "Scag de réir leibhéil",
+    "search": "Cuardaigh sa loganna",
+    "searchPlaceholder": "Cuardaigh sa loganna...",
+    "clearSearch": "Glan an cuardach",
     "levelAll": "Uile",
     "levelDebug": "DIODMHEASÚNÚ",
     "levelInfo": "EOLAS",
     "levelWarn": "RABHADH",
     "levelError": "EARRÁID",
     "noEntries": "Níl aon iontrálacha loga go fóill.",
-    "entryCount": "{{count}} iontráil"
+    "noMatches": "Níl aon iontráil loga a mheaitseálann an cuardach.",
+    "entryCount": "{{count}} iontráil",
+    "filteredCount": "{{count}} as {{total}} iontráil",
+    "auditTitle": "Léiriú oibrí",
+    "auditCount": "{{count}} oibrí",
+    "auditClear": "Glan an léiriú",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "Ceart go leor",
+    "auditStatusFailed": "Theip ar fail"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Glan logaí",
-      "download": "Íoslódáil logaí"
+      "download": "Íoslódáil logaí",
+      "focusSearch": "Dírigh ar réimse cuardaigh na loganna"
     },
     "dashboard": {
       "convert": "Oscail Tiontaigh",

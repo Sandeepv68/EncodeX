@@ -490,13 +490,24 @@
     "clear": "Wissen",
     "download": "Downloaden als TXT",
     "filter": "Filteren op niveau",
+    "search": "Logs doorzoeken",
+    "searchPlaceholder": "Logs doorzoeken...",
+    "clearSearch": "Zoekopdracht wissen",
     "levelAll": "ALLE",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "WAARSCHUWING",
     "levelError": "FOUT",
     "noEntries": "Nog geen loggegevens.",
-    "entryCount": "{{count}} items"
+    "noMatches": "Geen loggegevens komen overeen met de zoekopdracht.",
+    "entryCount": "{{count}} items",
+    "filteredCount": "{{count}} van {{total}} items",
+    "auditTitle": "Auditlogboek van bewerkingen",
+    "auditCount": "{{count}} bewerkingen",
+    "auditClear": "Auditlogboek wissen",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Mislukt"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Logs wissen",
-      "download": "Logs downloaden"
+      "download": "Logs downloaden",
+      "focusSearch": "Zoekveld voor logs focussen"
     },
     "dashboard": {
       "convert": "Converteren openen",

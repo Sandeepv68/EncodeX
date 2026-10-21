@@ -490,13 +490,24 @@
     "clear": "Tøm",
     "download": "Last ned som TXT",
     "filter": "Filtrer etter nivå",
+    "search": "Søk i logger",
+    "searchPlaceholder": "Søk i logger...",
+    "clearSearch": "Tøm søket",
     "levelAll": "ALLE",
     "levelDebug": "FEILSØKING",
     "levelInfo": "INFO",
     "levelWarn": "ADVARSEL",
     "levelError": "FEIL",
     "noEntries": "Ingen loggposter ennå.",
-    "entryCount": "{{count}} oppføringer"
+    "noMatches": "Ingen loggoppføringer samsvarer med søket.",
+    "entryCount": "{{count}} oppføringer",
+    "filteredCount": "{{count}} av {{total}} oppføringer",
+    "auditTitle": "Revisjonslogg for operasjoner",
+    "auditCount": "{{count}} operasjoner",
+    "auditClear": "Tøm revisjonsloggen",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Mislyktes"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Tøm logger",
-      "download": "Last ned logger"
+      "download": "Last ned logger",
+      "focusSearch": "Fokuser søkefelt for logger"
     },
     "dashboard": {
       "convert": "Åpne Konverter",

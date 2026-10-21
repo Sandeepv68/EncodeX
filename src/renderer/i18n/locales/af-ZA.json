@@ -490,13 +490,24 @@
     "clear": "Maak skoon",
     "download": "Laai Af as TXT",
     "filter": "Filtreer per vlak",
+    "search": "Soek logs",
+    "searchPlaceholder": "Soek logs...",
+    "clearSearch": "Maak soekopdrag skoon",
     "levelAll": "ALLES",
     "levelDebug": "ONTT",
     "levelInfo": "INLIG",
     "levelWarn": "WAARSKUWING",
     "levelError": "FOUT",
     "noEntries": "Nog geen loginskrywings nie.",
-    "entryCount": "{{count}} inskrywings"
+    "noMatches": "Geen loginskrywings kom ooreen met die soekopdrag nie.",
+    "entryCount": "{{count}} inskrywings",
+    "filteredCount": "{{count}} van {{total}} inskrywings",
+    "auditTitle": "Oudit van operaties",
+    "auditCount": "{{count}} operaties",
+    "auditClear": "Maak oudit skoon",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Misluk"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Maak logs skoon",
-      "download": "Laai logs af"
+      "download": "Laai logs af",
+      "focusSearch": "Fokus logsoekveld"
     },
     "dashboard": {
       "convert": "Maak Omskakel oop",

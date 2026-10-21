@@ -490,13 +490,24 @@
     "clear": "Цэвэрлэх",
     "download": "TXT-ээр татах",
     "filter": "Түвшингөөр шүүх",
+    "search": "Лог хайх",
+    "searchPlaceholder": "Лог хайх...",
+    "clearSearch": "Хайлтыг цэвэрлэх",
     "levelAll": "БҮГД",
     "levelDebug": "ДЕБАГ",
     "levelInfo": "МЭДЭЭ",
     "levelWarn": "АНХААРУУЛГА",
     "levelError": "АЛДАА",
     "noEntries": "Логийн оруулга байхгүй байна.",
-    "entryCount": "{{count}} оруулга"
+    "noMatches": "Хайлттай таарч байгаа логийн оруулга байхгүй байна.",
+    "entryCount": "{{count}} оруулга",
+    "filteredCount": "{{total}}-ийн {{count}} оруулга",
+    "auditTitle": "Үйлдлийн аудит мөр",
+    "auditCount": "{{count}} үйлдэл",
+    "auditClear": "Аудит мөрийг цэвэрлэх",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "Амжилттай",
+    "auditStatusFailed": "Амжилтгүй"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Логуудыг арилгах",
-      "download": "Логуудыг татах"
+      "download": "Логуудыг татах",
+      "focusSearch": "Логийн хайлтын талбарт анхаарлаа төвлөрүүлэх"
     },
     "dashboard": {
       "convert": "Хөрвүүлэхийг нээх",

@@ -490,13 +490,24 @@
     "clear": "Limpar",
     "download": "Transferir como TXT",
     "filter": "Filtrar por nível",
+    "search": "Procurar nos registos",
+    "searchPlaceholder": "Procurar nos registos...",
+    "clearSearch": "Limpar pesquisa",
     "levelAll": "TODOS",
     "levelDebug": "DEPURAÇÃO",
     "levelInfo": "INFO",
     "levelWarn": "AVISO",
     "levelError": "ERRO",
     "noEntries": "Ainda não existem entradas de registo.",
-    "entryCount": "{{count}} entradas"
+    "noMatches": "Nenhuma entrada de registo corresponde à pesquisa.",
+    "entryCount": "{{count}} entradas",
+    "filteredCount": "{{count}} de {{total}} entradas",
+    "auditTitle": "Trilha de auditoria de operações",
+    "auditCount": "{{count}} operações",
+    "auditClear": "Limpar trilha de auditoria",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Falhou"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Limpar registos",
-      "download": "Descarregar registos"
+      "download": "Descarregar registos",
+      "focusSearch": "Focar o campo de pesquisa de registos"
     },
     "dashboard": {
       "convert": "Abrir Converter",

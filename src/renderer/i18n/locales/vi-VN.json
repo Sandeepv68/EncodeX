@@ -490,13 +490,24 @@
     "clear": "Xóa",
     "download": "Tải xuống dưới dạng TXT",
     "filter": "Lọc theo cấp độ",
+    "search": "Tìm kiếm nhật ký",
+    "searchPlaceholder": "Tìm kiếm nhật ký...",
+    "clearSearch": "Xóa tìm kiếm",
     "levelAll": "Tất cả",
     "levelDebug": "GỠ LỖI",
     "levelInfo": "THÔNG TIN",
     "levelWarn": "CẢNH BÁO",
     "levelError": "LỖI",
     "noEntries": "Chưa có mục nhật ký nào.",
-    "entryCount": "{{count}} mục"
+    "noMatches": "Không có mục nhật ký nào khớp với tìm kiếm.",
+    "entryCount": "{{count}} mục",
+    "filteredCount": "{{count}} trong {{total}} mục",
+    "auditTitle": "Nhật ký kiểm tra thao tác",
+    "auditCount": "{{count}} thao tác",
+    "auditClear": "Xóa nhật ký kiểm tra",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "Thành công",
+    "auditStatusFailed": "Thất bại"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "Xóa nhật ký",
-      "download": "Tải xuống nhật ký"
+      "download": "Tải xuống nhật ký",
+      "focusSearch": "Tập trung vào ô tìm kiếm nhật ký"
     },
     "dashboard": {
       "convert": "Mở Chuyển đổi",

@@ -490,13 +490,24 @@
     "clear": "I-clear",
     "download": "I-download bilang TXT",
     "filter": "I-filter ayon sa antas",
+    "search": "Maghanap ng mga log",
+    "searchPlaceholder": "Maghanap ng mga log...",
+    "clearSearch": "I-clear ang paghahanap",
     "levelAll": "LAHAT",
     "levelDebug": "DEBUG",
     "levelInfo": "INFO",
     "levelWarn": "BABALA",
     "levelError": "ERROR",
     "noEntries": "Wala pang log entries.",
-    "entryCount": "{{count}} mga entry"
+    "noMatches": "Walang log entry na tumutugma sa paghahanap.",
+    "entryCount": "{{count}} mga entry",
+    "filteredCount": "{{count}} ng {{total}} na entry",
+    "auditTitle": "Audit trail ng mga operasyon",
+    "auditCount": "{{count}} mga operasyon",
+    "auditClear": "I-clear ang audit trail",
+    "auditTier": "T{{tier}}",
+    "auditStatusOk": "OK",
+    "auditStatusFailed": "Nabigo"
   },
   "footer": {
     "version": "v{{version}}",
@@ -772,7 +783,8 @@
     },
     "logs": {
       "clear": "I-clear ang mga log",
-      "download": "I-download ang mga log"
+      "download": "I-download ang mga log",
+      "focusSearch": "I-focus ang search field ng log"
     },
     "dashboard": {
       "convert": "Buksan ang I-convert",
