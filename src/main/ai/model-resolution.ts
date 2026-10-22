@@ -30,20 +30,13 @@ import type { FetchLike } from './connectors';
  * @param {FetchLike} [fetchImpl] - Injectable fetch (tests).
  * @returns {Promise<string>} The model id to use.
  */
-export async function resolveProviderModel(
-  settings: AiServerSettings,
-  apiKey: string,
-  fetchImpl?: FetchLike,
-): Promise<string> {
+export async function resolveProviderModel(settings: AiServerSettings, apiKey: string, fetchImpl?: FetchLike): Promise<string> {
   const configured = effectiveModel(settings);
   if (configured) return configured;
   const models = await listProviderModels(settings, apiKey, fetchImpl);
   const picked = models[0];
   if (!picked) {
-    throw createError(
-      ErrorCode.AI_NOT_CONFIGURED,
-      'No model is configured and the provider reported no usable model to pick.',
-    );
+    throw createError(ErrorCode.AI_NOT_CONFIGURED, 'No model is configured and the provider reported no usable model to pick.');
   }
   return picked;
 }

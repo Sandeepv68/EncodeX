@@ -576,6 +576,8 @@
       "provider": "Provider",
       "model": "Model",
       "modelPlaceholder": "Provider default",
+      "modelPlaceholderNoKey": "Add an API key to load models",
+      "modelNoKeyHelp": "Save your API key to list models from the provider.",
       "notConnected": "Not connected",
       "apiKey": "API key",
       "keyStored": "Keys are stored as obfuscated text ({{hint}}).",

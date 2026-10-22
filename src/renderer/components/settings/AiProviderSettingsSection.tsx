@@ -122,6 +122,7 @@ export default function AiProviderSettingsSection() {
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [advanced, setAdvanced] = useState(false);
+  const [advancedByProvider, setAdvancedByProvider] = useState<Partial<Record<AIProviderId, boolean>>>({});
   const [modelOptions, setModelOptions] = useState<string[]>([]);
   const [modelsLoading, setModelsLoading] = useState(false);
   const [fellBackOffline, setFellBackOffline] = useState(false);
@@ -360,38 +361,13 @@ export default function AiProviderSettingsSection() {
    * @param {AIProviderId} id - The provider to select.
    * @returns {void}
    */
-  const selectProvider = (id: AIProviderId): void => {
-    setProviderId(id);
-    setApiKey('');
-    setStatus(null);
-    setError(null);
-    const target = view ? viewForProvider(view, id) : null;
-    setModel(target?.model ?? '');
-    setBaseUrl(target?.baseUrl ?? '');
-    void persistSelection(id);
+  const toggleAdvanced = (): void => {
+    setAdvancedByProvider((prev) => ({ ...prev, [providerId]: !prev[providerId] }));
   };
 
-  const needsKey = AI_PROVIDERS_REQUIRING_KEY.has(providerId);
-  const keyUrl = AI_PROVIDER_KEY_URLS[providerId];
-  const showBaseUrl = providerId === 'openai' || providerId === 'local';
-  // The config shown belongs to the provider the editor has selected, resolved
-  // locally from the stored summaries so it never leaks another provider's key.
-  const resolvedView = view ? viewForProvider(view, providerId) : null;
-  // The single active connection, regardless of which provider is selected, so
-  // the header and the provider dots reflect the connected provider even when a
-  // different one is being edited.
-  const active = activeConnectionOf(view);
-  const showConnected = active?.providerId === providerId;
-  // A key/model/endpoint typed after the last successful connect makes the
-  // recorded connection stale, so the UI must not keep claiming "Connected".
-  const dirty = showConnected && (apiKey !== '' || model !== (resolvedView?.model ?? '') || baseUrl !== (resolvedView?.baseUrl ?? ''));
-  const connectedNow = showConnected && !error && !dirty;
-  // The key field stays empty after save by design (the plaintext never leaves
-  // main); "saved" is the affordance that tells the user a key is stored.
-  const keySaved = resolvedView?.hasKey === true && apiKey === '';
-  // The built-in rules engine is offline: no key, no model call, no endpoint, so
-  // it has nothing to connect to or configure.
-  const configurable = providerId !== 'rules';
+  const advanced = advancedByProvider[providerId] === true;
+  const hasKeyForProvider = resolvedView?.hasKey === true;
+  const canListModels = needsKey ? hasKeyForProvider || apiKey.trim().length > 0 : true;
 
   useEffect(() => {
     if (online) {
@@ -407,6 +383,10 @@ export default function AiProviderSettingsSection() {
 
   const loadModels = async (): Promise<void> => {
     if (!configurable || !AI_PROVIDERS_REQUIRING_NETWORK.has(providerId)) {
+      setModelOptions([]);
+      return;
+    }
+    if (!canListModels) {
       setModelOptions([]);
       return;
     }
@@ -590,7 +570,7 @@ export default function AiProviderSettingsSection() {
                   <Button
                     size="small"
                     variant="text"
-                    onClick={() => setAdvanced((value) => !value)}
+                    onClick={toggleAdvanced}
                     startIcon={<FontAwesomeIcon icon={advanced ? faChevronUp : faChevronDown} />}
                     data-testid="settings-ai-advanced"
                   >
@@ -608,6 +588,7 @@ export default function AiProviderSettingsSection() {
                       size="small"
                       options={modelOptions}
                       loading={modelsLoading}
+                      disabled={needsKey && !canListModels}
                       value={model}
                       onChange={(_event, value) => setModel(typeof value === 'string' ? value : '')}
                       onInputChange={(_event, value) => setModel(value)}
@@ -615,7 +596,8 @@ export default function AiProviderSettingsSection() {
                       renderInput={(params) => (
                         <McpField
                           {...params}
-                          placeholder={t('settings.ai.modelPlaceholder')}
+                          placeholder={needsKey && !canListModels ? t('settings.ai.modelPlaceholderNoKey') : t('settings.ai.modelPlaceholder')}
+                          helperText={needsKey && !canListModels ? t('settings.ai.modelNoKeyHelp') : undefined}
                           slotProps={{
                             ...params.slotProps,
                             htmlInput: { ...params.slotProps.htmlInput, 'aria-label': t('settings.ai.model') },
