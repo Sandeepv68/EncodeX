@@ -641,6 +641,8 @@
       },
       "model": "モデル",
       "modelPlaceholder": "プロバイダーの既定",
+      "modelPlaceholderNoKey": "モデルを読み込むには API キーを追加してください",
+      "modelNoKeyHelp": "API キーを保存すると、プロバイダーのモデルを一覧表示できます。",
       "apiKey": "APIキー",
       "configure": "AIプロバイダーを設定",
       "apiKeyPlaceholder": "APIキーを貼り付け",

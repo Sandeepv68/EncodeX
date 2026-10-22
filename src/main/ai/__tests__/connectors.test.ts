@@ -63,7 +63,7 @@ const request = {
 describe('createOpenAICompatibleConnector', () => {
   it('posts to /chat/completions and reads the assistant text', async () => {
     const fetchImpl = fetchReturning({ choices: [{ message: { content: 'hello' } }] });
-    const connector = createOpenAICompatibleConnector({ apiKey: 'k', fetchImpl });
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     const response = await connector.complete(request);
     expect(response.text).toBe('hello');
     expect(connector.id).toBe('openai');
@@ -75,7 +75,12 @@ describe('createOpenAICompatibleConnector', () => {
 
   it('uses the openai-compatible id when a baseUrl override is set', async () => {
     const fetchImpl = fetchReturning({ choices: [{ message: { content: 'ok' } }] });
-    const connector = createOpenAICompatibleConnector({ apiKey: 'k', baseUrl: 'https://openrouter.ai/api/v1/', fetchImpl });
+    const connector = createOpenAICompatibleConnector({
+      apiKey: 'k',
+      model: 'test-model',
+      baseUrl: 'https://openrouter.ai/api/v1/',
+      fetchImpl,
+    });
     expect(connector.id).toBe('openai-compatible');
     await connector.complete(request);
     const [url] = fetchImpl.mock.calls[0];
@@ -84,19 +89,19 @@ describe('createOpenAICompatibleConnector', () => {
 
   it('throws on a non-2xx response with the status in the message', async () => {
     const fetchImpl = fetchReturning({ error: 'nope' }, 401);
-    const connector = createOpenAICompatibleConnector({ apiKey: 'k', fetchImpl });
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     await expect(connector.complete(request)).rejects.toThrow(/HTTP 401/);
   });
 
   it('throws when the completion is empty', async () => {
     const fetchImpl = fetchReturning({ choices: [] });
-    const connector = createOpenAICompatibleConnector({ apiKey: 'k', fetchImpl });
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     await expect(connector.complete(request)).rejects.toThrow(/empty completion/);
   });
 
   it('omits response_format when json mode is off', async () => {
     const fetchImpl = fetchReturning({ choices: [{ message: { content: 'plain' } }] });
-    const connector = createOpenAICompatibleConnector({ apiKey: 'k', fetchImpl });
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     await connector.complete({ ...request, jsonMode: false });
     const [, init] = fetchImpl.mock.calls[0];
     expect(JSON.parse(String(init.body)).response_format).toBeUndefined();
@@ -104,7 +109,7 @@ describe('createOpenAICompatibleConnector', () => {
 
   it('keeps only the first 4000 characters of a provider error body', async () => {
     const fetchImpl = vi.fn(async () => errorResponse(400, 'y'.repeat(10_000))) as unknown as SpyFetch;
-    const connector = createOpenAICompatibleConnector({ apiKey: 'k', fetchImpl });
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     let caught: unknown;
     try {
       await connector.complete(request);
@@ -125,7 +130,7 @@ describe('createOpenAICompatibleConnector', () => {
       },
     } as unknown as Response;
     const fetchImpl = vi.fn(async () => failing) as unknown as SpyFetch;
-    const connector = createOpenAICompatibleConnector({ apiKey: 'k', fetchImpl });
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     let caught: unknown;
     try {
       await connector.complete(request);
@@ -146,7 +151,7 @@ describe('createAnthropicConnector', () => {
         { type: 'text', text: 'b' },
       ],
     });
-    const connector = createAnthropicConnector({ apiKey: 'k', fetchImpl });
+    const connector = createAnthropicConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     const response = await connector.complete(request);
     expect(response.text).toBe('ab');
     expect(connector.id).toBe('anthropic');
@@ -158,7 +163,7 @@ describe('createAnthropicConnector', () => {
 
   it('throws when the completion is empty', async () => {
     const fetchImpl = fetchReturning({ content: [] });
-    const connector = createAnthropicConnector({ apiKey: 'k', fetchImpl });
+    const connector = createAnthropicConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     await expect(connector.complete(request)).rejects.toThrow(/empty completion/);
   });
 });
@@ -166,7 +171,7 @@ describe('createAnthropicConnector', () => {
 describe('createGeminiConnector', () => {
   it('reads candidate parts and sets responseMimeType in json mode', async () => {
     const fetchImpl = fetchReturning({ candidates: [{ content: { parts: [{ text: 'hi' }, { text: '!' }] } }] });
-    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    const connector = createGeminiConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     const response = await connector.complete(request);
     expect(response.text).toBe('hi!');
     const [, init] = fetchImpl.mock.calls[0];
@@ -176,7 +181,7 @@ describe('createGeminiConnector', () => {
 
   it('omits sampling parameters that Gemini 3.6+ ignores or rejects', async () => {
     const fetchImpl = fetchReturning({ candidates: [{ content: { parts: [{ text: 'hi' }] } }] });
-    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    const connector = createGeminiConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     await connector.complete(request);
     const [, init] = fetchImpl.mock.calls[0];
     const { generationConfig } = JSON.parse(String(init.body));
@@ -187,7 +192,7 @@ describe('createGeminiConnector', () => {
 
   it('omits generationConfig entirely when json mode is off', async () => {
     const fetchImpl = fetchReturning({ candidates: [{ content: { parts: [{ text: 'plain' }] } }] });
-    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    const connector = createGeminiConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     await connector.complete({ ...request, jsonMode: false });
     const [, init] = fetchImpl.mock.calls[0];
     expect(JSON.parse(String(init.body)).generationConfig).toBeUndefined();
@@ -195,7 +200,7 @@ describe('createGeminiConnector', () => {
 
   it('throws when the completion is empty', async () => {
     const fetchImpl = fetchReturning({ candidates: [] });
-    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    const connector = createGeminiConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     await expect(connector.complete(request)).rejects.toThrow(/empty completion/);
   });
 
@@ -210,15 +215,20 @@ describe('createGeminiConnector', () => {
 });
 
 describe('createConnectorFromSettings', () => {
-  const base: AiServerSettings = { providerId: 'openai', model: '', key: 'k', baseUrl: 'https://x/v1' };
+  const base: AiServerSettings = { providerId: 'openai', model: 'test-model', key: 'k', baseUrl: 'https://x/v1' };
 
   it('builds an openai-compatible connector when a baseUrl is present', () => {
     expect(createConnectorFromSettings(base, 'k', fetchReturning({})).id).toBe('openai-compatible');
   });
 
   it('builds anthropic and gemini connectors by provider id', () => {
-    expect(createConnectorFromSettings({ providerId: 'anthropic', model: '', key: 'k' }, 'k').id).toBe('anthropic');
-    expect(createConnectorFromSettings({ providerId: 'gemini', model: '', key: 'k' }, 'k').id).toBe('gemini');
+    expect(createConnectorFromSettings({ providerId: 'anthropic', model: 'test-model', key: 'k' }, 'k').id).toBe('anthropic');
+    expect(createConnectorFromSettings({ providerId: 'gemini', model: 'test-model', key: 'k' }, 'k').id).toBe('gemini');
+  });
+
+  it('rejects a provider with no model rather than guessing one', () => {
+    expect(() => createConnectorFromSettings({ providerId: 'anthropic', model: '', key: 'k' }, 'k')).toThrow(/No model is configured/);
+    expect(() => createConnectorFromSettings({ providerId: 'openai', model: '   ', key: 'k' }, 'k')).toThrow(/No model is configured/);
   });
 
   it('throws for a provider that has no network connector', () => {
@@ -228,6 +238,24 @@ describe('createConnectorFromSettings', () => {
     expect(() => createConnectorFromSettings({ providerId: 'local', model: '', key: null }, 'k')).toThrow(
       /does not use a network connector/,
     );
+  });
+});
+
+describe('no built-in model', () => {
+  it('refuses to build a connector without a model instead of inventing one', () => {
+    expect(() => createOpenAICompatibleConnector({ apiKey: 'k', model: '', fetchImpl: fetchReturning({}) })).toThrow(
+      /No model is configured/,
+    );
+    expect(() => createAnthropicConnector({ apiKey: 'k', model: '   ' })).toThrow(/No model is configured/);
+    expect(() => createGeminiConnector({ apiKey: 'k', model: '' })).toThrow(/No model is configured/);
+  });
+
+  it('sends the configured model and reports it back', async () => {
+    const fetchImpl = fetchReturning({ choices: [{ message: { content: 'ok' } }] });
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: '  my-model  ', fetchImpl });
+    const response = await connector.complete(request);
+    expect(JSON.parse(String(fetchImpl.mock.calls[0][1].body)).model).toBe('my-model');
+    expect(response.model).toBe('my-model');
   });
 });
 
@@ -247,7 +275,7 @@ describe('transient provider failures', () => {
       .fn()
       .mockResolvedValueOnce(errorResponse(503, '{"error":{"code":503,"status":"UNAVAILABLE"}}'))
       .mockResolvedValueOnce(jsonResponse({ candidates: [{ content: { parts: [{ text: 'ok' }] } }] })) as unknown as SpyFetch;
-    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    const connector = createGeminiConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     const response = await connector.complete(request);
     expect(response.text).toBe('ok');
     expect(fetchImpl).toHaveBeenCalledTimes(2);
@@ -255,7 +283,7 @@ describe('transient provider failures', () => {
 
   it('stops after the retry budget and surfaces the last provider error', async () => {
     const fetchImpl = vi.fn(async () => errorResponse(503, 'overloaded')) as unknown as SpyFetch;
-    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    const connector = createGeminiConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     let caught: unknown;
     try {
       await connector.complete(request);
@@ -272,7 +300,7 @@ describe('transient provider failures', () => {
       .fn()
       .mockResolvedValueOnce(errorResponse(429, 'rate limited'))
       .mockResolvedValueOnce(jsonResponse({ choices: [{ message: { content: 'hello' } }] })) as unknown as SpyFetch;
-    const connector = createOpenAICompatibleConnector({ apiKey: 'k', fetchImpl });
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     const response = await connector.complete(request);
     expect(response.text).toBe('hello');
     expect(fetchImpl).toHaveBeenCalledTimes(2);
@@ -280,7 +308,7 @@ describe('transient provider failures', () => {
 
   it('does not retry a client error', async () => {
     const fetchImpl = vi.fn(async () => errorResponse(400, 'bad request')) as unknown as SpyFetch;
-    const connector = createOpenAICompatibleConnector({ apiKey: 'k', fetchImpl });
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     await expect(connector.complete(request)).rejects.toThrow(/HTTP 400/);
     expect(fetchImpl).toHaveBeenCalledTimes(1);
   });
@@ -291,7 +319,7 @@ describe('transient provider failures', () => {
       controller.abort(new Error('cancelled'));
       return errorResponse(503, 'overloaded');
     }) as unknown as SpyFetch;
-    const connector = createGeminiConnector({ apiKey: 'k', fetchImpl });
+    const connector = createGeminiConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     await expect(connector.complete({ ...request, signal: controller.signal })).rejects.toThrow(/cancelled/);
     expect(fetchImpl).toHaveBeenCalledTimes(1);
   });

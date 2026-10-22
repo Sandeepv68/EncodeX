@@ -641,6 +641,8 @@
       },
       "model": "โมเดล",
       "modelPlaceholder": "ค่าเริ่มต้นของผู้ให้บริการ",
+      "modelPlaceholderNoKey": "เพิ่มคีย์ API เพื่อโหลดโมเดล",
+      "modelNoKeyHelp": "บันทึกคีย์ API ของคุณเพื่อแสดงรายการโมเดลจากผู้ให้บริการ",
       "apiKey": "คีย์ API",
       "configure": "กำหนดค่าผู้ให้บริการ AI",
       "apiKeyPlaceholder": "วางคีย์ API ของคุณ",

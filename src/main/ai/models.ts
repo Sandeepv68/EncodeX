@@ -52,36 +52,67 @@ function isOpenAiChatModel(id: string): boolean {
 }
 
 /**
- * Reads the model ids out of an OpenAI-compatible `/v1/models` body.
- * @param {unknown} data - The parsed response body.
- * @returns {string[]} The model ids.
+ * One model a provider reported, with the creation date it published (when the
+ * provider reports one). The date is what orders the pick-list: the newest
+ * model a provider offers is the one least likely to be retired, so it is the
+ * safest automatic choice.
+ * @interface ProviderModelEntry
+ * @property {string} id - The model id.
+ * @property {number} [created] - Epoch ms the model was created, when reported.
  */
-function openAiModels(data: unknown): string[] {
-  const rows = (data as { data?: Array<{ id?: unknown }> }).data;
-  if (!Array.isArray(rows)) return [];
-  return rows
-    .map((row) => (row && typeof row.id === 'string' ? row.id : ''))
-    .filter((id): id is string => Boolean(id) && isOpenAiChatModel(id));
+export interface ProviderModelEntry {
+  id: string;
+  created?: number;
 }
 
 /**
- * Reads the model ids out of an Anthropic `/v1/models` body.
+ * Reads the model ids out of an OpenAI-compatible `/v1/models` body. Each row
+ * carries a `created` unix timestamp, which the pick-list uses to lead with the
+ * newest model.
  * @param {unknown} data - The parsed response body.
- * @returns {string[]} The model ids.
+ * @returns {ProviderModelEntry[]} The chat-capable model entries.
  */
-function anthropicModels(data: unknown): string[] {
-  const rows = (data as { data?: Array<{ id?: unknown }> }).data;
+function openAiModels(data: unknown): ProviderModelEntry[] {
+  const rows = (data as { data?: Array<{ id?: unknown; created?: unknown }> }).data;
   if (!Array.isArray(rows)) return [];
-  return rows.map((row) => (row && typeof row.id === 'string' ? row.id : '')).filter((id): id is string => Boolean(id));
+  return rows
+    .map((row) => {
+      const id = row && typeof row.id === 'string' ? row.id : '';
+      if (!id || !isOpenAiChatModel(id)) return null;
+      const created = row && typeof row.created === 'number' && Number.isFinite(row.created) ? row.created * 1000 : undefined;
+      return created === undefined ? { id } : { id, created };
+    })
+    .filter((entry): entry is ProviderModelEntry => entry !== null);
+}
+
+/**
+ * Reads the model ids out of an Anthropic `/v1/models` body. Each row carries a
+ * `created_at` ISO timestamp.
+ * @param {unknown} data - The parsed response body.
+ * @returns {ProviderModelEntry[]} The model entries.
+ */
+function anthropicModels(data: unknown): ProviderModelEntry[] {
+  const rows = (data as { data?: Array<{ id?: unknown; created_at?: unknown }> }).data;
+  if (!Array.isArray(rows)) return [];
+  return rows
+    .map((row) => {
+      const id = row && typeof row.id === 'string' ? row.id : '';
+      if (!id) return null;
+      const raw = row && typeof row.created_at === 'string' ? row.created_at : '';
+      const created = raw ? Date.parse(raw) : Number.NaN;
+      return Number.isFinite(created) ? { id, created } : { id };
+    })
+    .filter((entry): entry is ProviderModelEntry => entry !== null);
 }
 
 /**
  * Reads the model ids out of a Gemini `models.list` body. Only models that
  * advertise `generateContent` are kept; the `models/` path prefix is stripped.
+ * Gemini reports no creation date, so these entries stay in name order.
  * @param {unknown} data - The parsed response body.
- * @returns {string[]} The model ids.
+ * @returns {ProviderModelEntry[]} The model entries.
  */
-function geminiModels(data: unknown): string[] {
+function geminiModels(data: unknown): ProviderModelEntry[] {
   const rows = (data as { models?: Array<{ name?: unknown; supportedGenerationMethods?: unknown }> }).models;
   if (!Array.isArray(rows)) return [];
   return rows
@@ -90,20 +121,36 @@ function geminiModels(data: unknown): string[] {
       const methods = row.supportedGenerationMethods;
       return Array.isArray(methods) && methods.includes('generateContent');
     })
-    .map((row) => (row.name as string).replace(/^models\//, ''));
+    .map((row) => ({ id: (row.name as string).replace(/^models\//, '') }));
 }
 
 /**
- * Orders the provider's model ids for the pick-list: alphabetically, but with
- * the provider's default model (when the API reports it) leading.
- * @param {string[]} ids - The model ids.
- * @param {string} preferred - The default model id to lead with.
- * @returns {string[]} The de-duplicated, ordered ids.
+ * Orders two model entries: dated models come first (newest first), undated
+ * ones keep their name order.
+ * @param {ProviderModelEntry} a - The first entry.
+ * @param {ProviderModelEntry} b - The second entry.
+ * @returns {number} The sort order.
  */
-function orderModels(ids: string[], preferred: string): string[] {
-  const unique = Array.from(new Set(ids)).sort((a, b) => a.localeCompare(b));
-  if (preferred && unique.includes(preferred)) {
-    return [preferred, ...unique.filter((id) => id !== preferred)];
+function compareEntries(a: ProviderModelEntry, b: ProviderModelEntry): number {
+  if (a.created !== undefined && b.created !== undefined) return b.created - a.created;
+  if (a.created !== undefined) return -1;
+  if (b.created !== undefined) return 1;
+  return a.id.localeCompare(b.id);
+}
+
+/**
+ * Orders the provider's model ids for the pick-list: the provider's newest
+ * models first (the ones least likely to be retired), with the configured
+ * model leading when the provider reports it.
+ * @param {ProviderModelEntry[]} entries - The model entries.
+ * @param {string} preferred - The configured model id to lead with.
+ * @returns {ProviderModelEntry[]} The de-duplicated, ordered entries.
+ */
+function orderModels(entries: ProviderModelEntry[], preferred: string): ProviderModelEntry[] {
+  const unique = Array.from(new Map(entries.map((entry) => [entry.id, entry])).values()).sort(compareEntries);
+  if (preferred) {
+    const index = unique.findIndex((entry) => entry.id === preferred);
+    if (index >= 0) return [unique[index], ...unique.filter((_, position) => position !== index)];
   }
   return unique;
 }
@@ -127,20 +174,20 @@ export async function listProviderModels(
     case 'openai': {
       const baseUrl = (settings.baseUrl || 'https://api.openai.com/v1').replace(/\/+$/, '');
       const data = await getJson(fetchImpl, `${baseUrl}/models`, { authorization: `Bearer ${apiKey}` });
-      return orderModels(openAiModels(data), preferred);
+      return orderModels(openAiModels(data), preferred).map((entry) => entry.id);
     }
     case 'anthropic': {
       const data = await getJson(fetchImpl, `https://api.anthropic.com/v1/models?limit=${ANTHROPIC_PAGE_SIZE}`, {
         'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
       });
-      return orderModels(anthropicModels(data), preferred);
+      return orderModels(anthropicModels(data), preferred).map((entry) => entry.id);
     }
     case 'gemini': {
       const data = await getJson(fetchImpl, 'https://generativelanguage.googleapis.com/v1beta/models', {
         'x-goog-api-key': apiKey,
       });
-      return orderModels(geminiModels(data), preferred);
+      return orderModels(geminiModels(data), preferred).map((entry) => entry.id);
     }
     default:
       return [];

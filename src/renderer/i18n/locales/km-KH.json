@@ -641,6 +641,8 @@
       },
       "model": "ម៉ូដែល",
       "modelPlaceholder": "លំនាំដើមរបស់អ្នកផ្តល់",
+      "modelPlaceholderNoKey": "បន្ថែមសោ API ដើម្បីផ្ទុកម៉ូដែល",
+      "modelNoKeyHelp": "រក្សាទុកសោ API របស់អ្នក ដើម្បីបង្ហាញបញ្ជីម៉ូដែលពីអ្នកផ្តល់។",
       "apiKey": "សោ API",
       "configure": "កំណត់រចនាសម្ព័ន្ធអ្នកផ្តល់ AI",
       "apiKeyPlaceholder": "បិទភ្ជាប់សោ API របស់អ្នក",

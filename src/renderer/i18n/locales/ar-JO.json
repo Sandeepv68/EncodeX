@@ -641,6 +641,8 @@
       },
       "model": "النموذج",
       "modelPlaceholder": "النموذج الافتراضي للمزوّد",
+      "modelPlaceholderNoKey": "أضف مفتاح API لتحميل النماذج",
+      "modelNoKeyHelp": "احفظ مفتاح API الخاص بك لعرض نماذج المزوّد.",
       "apiKey": "مفتاح API",
       "configure": "ضبط مزوّد الذكاء الاصطناعي",
       "apiKeyPlaceholder": "الصق مفتاح API الخاص بك",

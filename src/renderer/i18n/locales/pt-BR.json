@@ -641,6 +641,8 @@
       },
       "model": "Modelo",
       "modelPlaceholder": "Padrão do provedor",
+      "modelPlaceholderNoKey": "Adicione uma chave de API para carregar modelos",
+      "modelNoKeyHelp": "Salve sua chave de API para listar os modelos do provedor.",
       "apiKey": "Chave de API",
       "configure": "Configurar provedor de IA",
       "apiKeyPlaceholder": "Cole sua chave de API",

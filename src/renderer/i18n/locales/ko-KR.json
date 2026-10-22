@@ -641,6 +641,8 @@
       },
       "model": "모델",
       "modelPlaceholder": "공급자 기본값",
+      "modelPlaceholderNoKey": "모델을 불러오려면 API 키를 추가하세요",
+      "modelNoKeyHelp": "API 키를 저장하면 공급자의 모델을 나열할 수 있습니다.",
       "apiKey": "API 키",
       "configure": "AI 공급자 구성",
       "apiKeyPlaceholder": "API 키 붙여넣기",

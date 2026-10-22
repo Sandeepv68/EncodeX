@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Uma chave está armazenada ({{hint}}).",
   "settings.ai.model": "Modelo",
   "settings.ai.modelPlaceholder": "Padrão do provedor",
+  "settings.ai.modelPlaceholderNoKey": "Adicione uma chave de API para carregar modelos",
+  "settings.ai.modelNoKeyHelp": "Salve sua chave de API para listar os modelos do provedor.",
   "settings.ai.paste": "Colar",
   "settings.ai.privacy": "Somente os dados da análise e o texto do seu objetivo são enviados; arquivos de mídia nunca são carregados.",
   "settings.ai.provider": "Provedor",

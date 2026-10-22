@@ -10,7 +10,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { expectAppLog, takeRecordedCrashes } from '../../../test-utils/crash-tripwire';
 
-const { appMock, handlers, settingsMock, connectorsMock, modelsMock } = vi.hoisted(() => {
+const { appMock, handlers, settingsMock, connectorsMock, modelsMock, modelMock } = vi.hoisted(() => {
   const handlers: Record<string, (...args: unknown[]) => unknown> = {};
   return {
     appMock: { getPath: vi.fn(() => '/userData') },
@@ -19,13 +19,16 @@ const { appMock, handlers, settingsMock, connectorsMock, modelsMock } = vi.hoist
       applyAiSettingsUpdate: vi.fn(),
       decryptApiKey: vi.fn(),
       isEncryptionAvailable: vi.fn(() => true),
+      persistProviderModel: vi.fn((dir: string, providerId: string, model: string) => ({ providerId, model })),
       readAiSettings: vi.fn(),
       recordAiConnection: vi.fn(),
+      resolveProviderModel: vi.fn(),
       sanitizeAiSettings: vi.fn((value: unknown) => value),
       toAiSettingsView: vi.fn((settings: unknown) => settings),
     },
     connectorsMock: { createConnectorFromSettings: vi.fn(), isRemoteProvider: vi.fn() },
     modelsMock: { listProviderModels: vi.fn() },
+    modelMock: { resolveProviderModel: vi.fn() },
   };
 });
 
@@ -40,6 +43,7 @@ vi.mock('electron', () => ({
 vi.mock('../settings', () => settingsMock);
 vi.mock('../connectors', () => connectorsMock);
 vi.mock('../models', () => modelsMock);
+vi.mock('../model-resolution', () => modelMock);
 
 const { registerAiSettingsIpc } = await import('../settings-ipc');
 const { IPC } = await import('../../../shared/ipc-channels');
@@ -58,7 +62,11 @@ describe('registerAiSettingsIpc', () => {
       connected: true,
       connectedModel: info.model,
     }));
+    settingsMock.resolveProviderModel.mockResolvedValue('gpt-4o-mini');
+    settingsMock.persistProviderModel.mockClear();
+    modelMock.resolveProviderModel.mockResolvedValue('gpt-4o-mini');
     connectorsMock.isRemoteProvider.mockReturnValue(true);
+    modelsMock.listProviderModels.mockResolvedValue(['gpt-4o-mini']);
     registerAiSettingsIpc();
   });
 
@@ -138,16 +146,20 @@ describe('registerAiSettingsIpc', () => {
 
   it('CONNECT_TEST does not record a connection when the test fails', async () => {
     expectAppLog('warn', 'main/ai/settings-ipc');
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: 'gpt-4o-mini', key: 'enc' });
     settingsMock.decryptApiKey.mockReturnValue('sk-1');
+    settingsMock.resolveProviderModel.mockResolvedValue('gpt-4o-mini');
     connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockRejectedValue(new Error('boom')) });
-    const result = await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' });
+    const result = await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai', model: 'gpt-4o-mini' });
     expect((result as { ok: boolean }).ok).toBe(false);
     expect(settingsMock.recordAiConnection).not.toHaveBeenCalled();
   });
 
   it('CONNECT_TEST surfaces a classified connector failure', async () => {
     expectAppLog('warn', 'main/ai/settings-ipc');
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: 'gpt-4o-mini', key: 'enc' });
     settingsMock.decryptApiKey.mockReturnValue('sk-1');
+    settingsMock.resolveProviderModel.mockResolvedValue('gpt-4o-mini');
     const providerError = Object.assign(new Error('Provider responded with HTTP 401'), {
       status: 401,
       body: JSON.stringify({ error: { code: 'invalid_api_key', message: 'Incorrect API key provided' } }),
@@ -155,7 +167,7 @@ describe('registerAiSettingsIpc', () => {
     connectorsMock.createConnectorFromSettings.mockReturnValue({
       complete: vi.fn().mockRejectedValue(providerError),
     });
-    const result = (await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' })) as {
+    const result = (await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai', model: 'gpt-4o-mini' })) as {
       ok: boolean;
       message: string;
       reason: string;
@@ -185,20 +197,40 @@ describe('registerAiSettingsIpc', () => {
   it('CONNECT_TEST prefers the candidate key/model/baseUrl over the stored values', async () => {
     settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: 'stored-model', baseUrl: 'https://stored/v1', key: 'enc' });
     settingsMock.decryptApiKey.mockReturnValue('stored-key');
+    settingsMock.resolveProviderModel.mockResolvedValue('live-model');
     connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockResolvedValue({ model: 'm', text: 'OK' }) });
     await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai', apiKey: 'live-key', model: 'live-model', baseUrl: 'https://live/v1' });
     expect(settingsMock.decryptApiKey).not.toHaveBeenCalled();
+    expect(settingsMock.resolveProviderModel).not.toHaveBeenCalled();
     expect(connectorsMock.createConnectorFromSettings).toHaveBeenCalledWith(
       expect.objectContaining({ providerId: 'openai', model: 'live-model', baseUrl: 'https://live/v1' }),
       'live-key',
     );
   });
 
+  it('CONNECT_TEST resolves and persists a model when none is configured', async () => {
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: '', key: 'enc' });
+    settingsMock.decryptApiKey.mockReturnValue('sk-1');
+    modelMock.resolveProviderModel.mockResolvedValue('resolved-model');
+    connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockResolvedValue({ model: 'm', text: 'OK' }) });
+
+    await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' });
+
+    expect(modelMock.resolveProviderModel).toHaveBeenCalledWith(expect.objectContaining({ providerId: 'openai', model: '' }), 'sk-1');
+    expect(settingsMock.persistProviderModel).toHaveBeenCalledWith('/userData', 'openai', 'resolved-model');
+    expect(connectorsMock.createConnectorFromSettings).toHaveBeenCalledWith(
+      expect.objectContaining({ providerId: 'openai', model: 'resolved-model' }),
+      'sk-1',
+    );
+  });
+
   it('CONNECT_TEST keeps the stored model/baseUrl when the candidate omits them', async () => {
     settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: 'stored-model', baseUrl: 'https://stored/v1', key: 'enc' });
     settingsMock.decryptApiKey.mockReturnValue('stored-key');
+    settingsMock.resolveProviderModel.mockResolvedValue('stored-model');
     connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockResolvedValue({ model: 'm', text: 'OK' }) });
     await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' });
+    expect(settingsMock.resolveProviderModel).not.toHaveBeenCalled();
     expect(connectorsMock.createConnectorFromSettings).toHaveBeenCalledWith(
       expect.objectContaining({ model: 'stored-model', baseUrl: 'https://stored/v1' }),
       'stored-key',
@@ -206,15 +238,19 @@ describe('registerAiSettingsIpc', () => {
   });
 
   it('CONNECT_TEST falls back to the decrypted key when the candidate key is empty', async () => {
-    settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: '', key: 'enc' });
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: 'stored-model', key: 'enc' });
     settingsMock.decryptApiKey.mockReturnValue('stored-key');
+    settingsMock.resolveProviderModel.mockResolvedValue('stored-model');
     connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockResolvedValue({ model: 'm', text: 'OK' }) });
     await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai', apiKey: '' });
+    expect(settingsMock.resolveProviderModel).not.toHaveBeenCalled();
     expect(connectorsMock.createConnectorFromSettings).toHaveBeenCalledWith(expect.anything(), 'stored-key');
   });
 
   it('CONNECT_TEST never echoes the API key in its result', async () => {
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: 'stored-model', key: 'enc' });
     settingsMock.decryptApiKey.mockReturnValue('sk-super-secret');
+    settingsMock.resolveProviderModel.mockResolvedValue('stored-model');
     connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockResolvedValue({ model: 'm', text: 'OK' }) });
     const result = await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' });
     expect((result as { ok: boolean }).ok).toBe(true);

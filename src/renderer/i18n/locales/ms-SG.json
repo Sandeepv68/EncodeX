@@ -641,6 +641,8 @@
       },
       "model": "Model",
       "modelPlaceholder": "Lalai pembekal",
+      "modelPlaceholderNoKey": "Tambah kunci API untuk memuatkan model",
+      "modelNoKeyHelp": "Simpan kunci API anda untuk menyenaraikan model daripada pembekal.",
       "apiKey": "Kunci API",
       "configure": "Konfigurasikan pembekal AI",
       "apiKeyPlaceholder": "Tampal kunci API anda",

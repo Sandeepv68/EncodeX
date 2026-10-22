@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Ein Schlüssel ist gespeichert ({{hint}}).",
   "settings.ai.model": "Modell",
   "settings.ai.modelPlaceholder": "Anbieter-Standard",
+  "settings.ai.modelPlaceholderNoKey": "Fügen Sie einen API-Schlüssel hinzu, um Modelle zu laden",
+  "settings.ai.modelNoKeyHelp": "Speichern Sie Ihren API-Schlüssel, um Modelle vom Anbieter aufzulisten.",
   "settings.ai.paste": "Einfügen",
   "settings.ai.privacy": "Nur Prüfdaten und Ihr Zieltext werden gesendet; Mediendateien werden nie hochgeladen.",
   "settings.ai.provider": "Anbieter",

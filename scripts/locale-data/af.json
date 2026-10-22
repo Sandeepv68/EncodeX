@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "'n Sleutel word gestoor ({{hint}}).",
   "settings.ai.model": "Model",
   "settings.ai.modelPlaceholder": "Verskaffer-standaard",
+  "settings.ai.modelPlaceholderNoKey": "Voeg 'n API-sleutel by om modelle te laai",
+  "settings.ai.modelNoKeyHelp": "Stoor jou API-sleutel om modelle van die verskaffer te lys.",
   "settings.ai.paste": "Plak",
   "settings.ai.privacy": "Slegs ondersoekfeite en jou doel teks word gestuur; media-lêers word nooit opgelaai nie.",
   "settings.ai.provider": "Verskaffer",

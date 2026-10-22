@@ -641,6 +641,8 @@
       },
       "model": "मोडेल",
       "modelPlaceholder": "प्रदायकको पूर्वनिर्धारित",
+      "modelPlaceholderNoKey": "मोडेलहरू लोड गर्न API कुञ्जी थप्नुहोस्",
+      "modelNoKeyHelp": "प्रदायकका मोडेलहरू सूचीबद्ध गर्न आफ्नो API कुञ्जी सुरक्षित गर्नुहोस्।",
       "apiKey": "API कुञ्जी",
       "configure": "AI प्रदायक कन्फिगर गर्नुहोस्",
       "apiKeyPlaceholder": "आफ्नो API कुञ्जी टाँस्नुहोस्",

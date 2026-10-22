@@ -641,6 +641,8 @@
       },
       "model": "Modello",
       "modelPlaceholder": "Predefinito del provider",
+      "modelPlaceholderNoKey": "Aggiungi una chiave API per caricare i modelli",
+      "modelNoKeyHelp": "Salva la chiave API per elencare i modelli del provider.",
       "apiKey": "Chiave API",
       "configure": "Configura provider IA",
       "apiKeyPlaceholder": "Incolla la tua chiave API",

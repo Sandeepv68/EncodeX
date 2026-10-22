@@ -641,6 +641,8 @@
       },
       "model": "模型",
       "modelPlaceholder": "提供者預設",
+      "modelPlaceholderNoKey": "新增 API 金鑰以載入模型",
+      "modelNoKeyHelp": "儲存您的 API 金鑰以列出提供者提供的模型。",
       "apiKey": "API 金鑰",
       "configure": "設定 AI 提供者",
       "apiKeyPlaceholder": "貼上您的 API 金鑰",

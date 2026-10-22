@@ -641,6 +641,8 @@
       },
       "model": "Modell",
       "modelPlaceholder": "Anbieter-Standard",
+      "modelPlaceholderNoKey": "Fügen Sie einen API-Schlüssel hinzu, um Modelle zu laden",
+      "modelNoKeyHelp": "Speichern Sie Ihren API-Schlüssel, um Modelle vom Anbieter aufzulisten.",
       "apiKey": "API-Schlüssel",
       "configure": "KI-Anbieter konfigurieren",
       "apiKeyPlaceholder": "API-Schlüssel einfügen",

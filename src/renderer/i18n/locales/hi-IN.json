@@ -641,6 +641,8 @@
       },
       "model": "मॉडल",
       "modelPlaceholder": "प्रदाता का डिफ़ॉल्ट",
+      "modelPlaceholderNoKey": "मॉडल लोड करने के लिए API कुंजी जोड़ें",
+      "modelNoKeyHelp": "प्रदाता के मॉडल की सूची देखने के लिए अपनी API कुंजी सहेजें।",
       "apiKey": "API कुंजी",
       "configure": "AI प्रदाता कॉन्फ़िगर करें",
       "apiKeyPlaceholder": "अपनी API कुंजी पेस्ट करें",

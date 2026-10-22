@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Matuaraat toqqorsimavoq ({{hint}}).",
   "settings.ai.model": "Naatsorsueqaat",
   "settings.ai.modelPlaceholder": "Inissisimasut naapertorlugu piffissaq",
+  "settings.ai.modelPlaceholderNoKey": "API-p matuaraa ilannguk naatsorsueqaat atorniarlugit",
+  "settings.ai.modelNoKeyHelp": "API-p matuaraa toqqoruk inissisimasunit naatsorsueqaat takuniarlugit.",
   "settings.ai.paste": "Ilaguk",
   "settings.ai.privacy": "Misissorsuuummata ilusissat aamma isumassarsiannit allassimasat naapertuutissaatigineqarput; mediafilerit nammineeersissutigineqanngisaannarput.",
   "settings.ai.provider": "Inissisimasut",

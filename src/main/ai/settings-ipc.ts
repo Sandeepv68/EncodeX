@@ -24,11 +24,13 @@ import {
   applyAiSettingsUpdate,
   decryptApiKey,
   isEncryptionAvailable,
+  persistProviderModel,
   readAiSettings,
   recordAiConnection,
   sanitizeAiSettings,
   toAiSettingsView,
 } from './settings';
+import { resolveProviderModel } from './model-resolution';
 import { createConnectorFromSettings, isRemoteProvider } from './connectors';
 import { listProviderModels } from './models';
 
@@ -61,6 +63,9 @@ function sanitizeUpdate(candidate: unknown): AiSettingsUpdate {
     ...(typeof record.baseUrl === 'string' ? { baseUrl: record.baseUrl } : {}),
     ...(typeof record.apiKey === 'string' ? { apiKey: record.apiKey } : {}),
     ...(record.clearKey === true ? { clearKey: true } : {}),
+    // Only an explicit `false` keeps the targeted provider from becoming the
+    // active one; anything else activates it (the historical default).
+    ...(record.activate === false ? { activate: false } : {}),
   };
 }
 
@@ -97,7 +102,13 @@ export function registerAiSettingsIpc(): void {
       baseUrl: typeof record.baseUrl === 'string' ? record.baseUrl : resolved.baseUrl,
     });
     try {
-      const connector = createConnectorFromSettings(merged, apiKey);
+      // No model is hardcoded anywhere: the user's own model wins, otherwise
+      // one is resolved from the provider's own model list and persisted, so
+      // the choice shows up in the settings and can be changed.
+      const configured = (merged.model ?? '').trim();
+      const model = configured || (await resolveProviderModel(merged, apiKey));
+      if (!configured) persistProviderModel(userDataDir, providerId, model);
+      const connector = createConnectorFromSettings({ ...merged, model }, apiKey);
       const startedAt = Date.now();
       const response = await connector.complete({
         messages: [

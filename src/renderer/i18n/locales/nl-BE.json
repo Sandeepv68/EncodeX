@@ -641,6 +641,8 @@
       },
       "model": "Model",
       "modelPlaceholder": "Standaard van de provider",
+      "modelPlaceholderNoKey": "Voeg een API-sleutel toe om modellen te laden",
+      "modelNoKeyHelp": "Sla uw API-sleutel op om modellen van de provider te vermelden.",
       "apiKey": "API-sleutel",
       "configure": "AI-provider configureren",
       "apiKeyPlaceholder": "Plak je API-sleutel",

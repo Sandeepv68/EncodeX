@@ -9,7 +9,6 @@
 
 import { describe, it, expect } from 'vitest';
 import {
-  AI_DEFAULT_MODELS,
   AI_PROVIDERS_REQUIRING_KEY,
   AI_PROVIDERS_REQUIRING_NETWORK,
   AI_PROVIDER_CHOICES,
@@ -18,23 +17,26 @@ import {
   keyHint,
   resolveAiProviderSettings,
   sanitizeAiSettings,
+  selectedProviderOf,
   toAiSettingsView,
   viewForProvider,
 } from '../settings';
-import type { AiServerSettings } from '../settings';
+import type { AiServerSettings, AiSettingsView } from '../settings';
 
 describe('settings constants', () => {
-  it('lists every provider and the default model for each remote provider', () => {
+  it('lists every provider and which of them need a key', () => {
     expect(AI_PROVIDER_CHOICES).toContain('rules');
     expect(AI_PROVIDERS_REQUIRING_KEY.has('openai')).toBe(true);
     expect(AI_PROVIDERS_REQUIRING_KEY.has('rules')).toBe(false);
-    expect(Object.keys(AI_DEFAULT_MODELS).sort()).toEqual(['anthropic', 'gemini', 'openai']);
   });
 
-  it('pins the default model ids, including the current Gemini GA model', () => {
-    expect(AI_DEFAULT_MODELS.openai).toBe('gpt-4o-mini');
-    expect(AI_DEFAULT_MODELS.anthropic).toBe('claude-3-5-haiku-latest');
-    expect(AI_DEFAULT_MODELS.gemini).toBe('gemini-3.8-flash');
+  it('ships no default model ids: the provider is the source of truth', () => {
+    // The contract must never pin a model name: they go stale whenever a
+    // provider retires one, so a blank model is resolved from the provider's
+    // own model list at connect/request time instead.
+    expect(defaultAiSettings().model).toBe('');
+    const stored = sanitizeAiSettings({ providerId: 'openai', model: '   ', key: null });
+    expect(stored.model).toBe('');
   });
 
   it('marks the remote providers as requiring a network connection', () => {
@@ -141,6 +143,11 @@ describe('sanitizeAiSettings', () => {
     expect(malformed).not.toHaveProperty('connectedModel');
   });
 
+  it('keeps a known selection and drops a malformed one', () => {
+    expect(sanitizeAiSettings({ providerId: 'openai', selectedProviderId: 'anthropic' }).selectedProviderId).toBe('anthropic');
+    expect(sanitizeAiSettings({ providerId: 'openai', selectedProviderId: 'bogus' })).not.toHaveProperty('selectedProviderId');
+  });
+
   it('is not vulnerable to prototype pollution from a hostile document', () => {
     const hostile = JSON.parse('{"__proto__":{"polluted":true},"constructor":"x","prototype":"y"}') as unknown;
     const sanitized = sanitizeAiSettings(hostile) as unknown as Record<string, unknown>;
@@ -170,6 +177,7 @@ describe('keyHint / toAiSettingsView', () => {
       storedInsecurely: true,
       encryptionAvailable: false,
       connected: false,
+      selectedProviderId: 'openai',
     });
   });
 
@@ -183,7 +191,17 @@ describe('keyHint / toAiSettingsView', () => {
       storedInsecurely: false,
       encryptionAvailable: true,
       connected: false,
+      selectedProviderId: 'rules',
     });
+  });
+
+  it('reports the persisted selection and falls back to the active provider', () => {
+    const selected = toAiSettingsView({ providerId: 'openai', model: '', key: null, selectedProviderId: 'anthropic' }, true);
+    expect(selected.providerId).toBe('openai');
+    expect(selected.selectedProviderId).toBe('anthropic');
+    // Documents written before the selection was persisted fall back.
+    const legacy = toAiSettingsView({ providerId: 'openai', model: '', key: null }, true);
+    expect(legacy.selectedProviderId).toBe('openai');
   });
 
   it('reports connected only when a key exists and the verified provider matches', () => {
@@ -279,6 +297,27 @@ describe('viewForProvider', () => {
       true,
     );
     expect(viewForProvider(connected, 'anthropic').activeConnection).toEqual({ providerId: 'openai', model: 'gpt-4o', at: 7 });
+  });
+
+  it('reports the projected provider as the selection', () => {
+    expect(viewForProvider(base, 'anthropic').selectedProviderId).toBe('anthropic');
+    // The active provider's flat config is kept, only the reported selection moves.
+    const active = viewForProvider({ ...base, selectedProviderId: 'anthropic' }, 'openai');
+    expect(active).toMatchObject({ providerId: 'openai', model: 'gpt-4o', hasKey: true, selectedProviderId: 'openai' });
+  });
+});
+
+describe('selectedProviderOf', () => {
+  it('prefers the persisted selection over the active provider', () => {
+    expect(selectedProviderOf({ providerId: 'openai', selectedProviderId: 'anthropic' } as AiSettingsView)).toBe('anthropic');
+  });
+
+  it('falls back to the active provider for a legacy view', () => {
+    expect(selectedProviderOf({ providerId: 'openai' } as AiSettingsView)).toBe('openai');
+  });
+
+  it('returns null without a view', () => {
+    expect(selectedProviderOf(null)).toBeNull();
   });
 });
 

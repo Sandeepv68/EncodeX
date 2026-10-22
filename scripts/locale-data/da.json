@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "En nøgle er gemt ({{hint}}).",
   "settings.ai.model": "Model",
   "settings.ai.modelPlaceholder": "Udbyderens standard",
+  "settings.ai.modelPlaceholderNoKey": "Tilføj en API-nøgle for at indlæse modeller",
+  "settings.ai.modelNoKeyHelp": "Gem din API-nøgle for at vise modeller fra udbyderen.",
   "settings.ai.paste": "Indsæt",
   "settings.ai.privacy": "Kun undersøgte data og din målsætning-tekst sendes; mediefiler uploades aldrig.",
   "settings.ai.provider": "Udbyder",

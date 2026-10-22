@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "מפתח שמור ({{hint}}).",
   "settings.ai.model": "מודל",
   "settings.ai.modelPlaceholder": "ברירת מחדל של הספק",
+  "settings.ai.modelPlaceholderNoKey": "הוסף מפתח API כדי לטעון מודלים",
+  "settings.ai.modelNoKeyHelp": "שמור את מפתח ה-API שלך כדי להציג את המודלים של הספק.",
   "settings.ai.paste": "הדבק",
   "settings.ai.privacy": "נשלחים רק נתוני הבדיקה וטקסט המטרה שלך; קבצי מדיה לעולם לא מועלים.",
   "settings.ai.provider": "ספק",

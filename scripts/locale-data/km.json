@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "សោមួយត្រូវបានរក្សាទុក ({{hint}}).",
   "settings.ai.model": "ម៉ូដែល",
   "settings.ai.modelPlaceholder": "លំនាំដើមរបស់អ្នកផ្តល់",
+  "settings.ai.modelPlaceholderNoKey": "បន្ថែមសោ API ដើម្បីផ្ទុកម៉ូដែល",
+  "settings.ai.modelNoKeyHelp": "រក្សាទុកសោ API របស់អ្នក ដើម្បីបង្ហាញបញ្ជីម៉ូដែលពីអ្នកផ្តល់។",
   "settings.ai.paste": "បិទភ្ជាប់",
   "settings.ai.privacy": "មានតែការពិតនៃការពិនិត្យ និងអត្ថបទគោលដៅរបស់អ្នកប៉ុណ្ណោះដែលត្រូវបានផ្ញើ; ឯកសារមេឌៀមិនត្រូវបានផ្ទុកឡើងណាមួយទេ។",
   "settings.ai.provider": "អ្នកផ្តល់",

@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Kunci disimpan ({{hint}}).",
   "settings.ai.model": "Model",
   "settings.ai.modelPlaceholder": "Lalai pembekal",
+  "settings.ai.modelPlaceholderNoKey": "Tambah kunci API untuk memuatkan model",
+  "settings.ai.modelNoKeyHelp": "Simpan kunci API anda untuk menyenaraikan model daripada pembekal.",
   "settings.ai.paste": "Tampal",
   "settings.ai.privacy": "Hanya fakta pemeriksaan dan teks matlamat anda yang dihantar; fail media tidak pernah dimuat naik.",
   "settings.ai.provider": "Pembekal",

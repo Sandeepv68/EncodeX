@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Lykill er vistuð ({{hint}}).",
   "settings.ai.model": "Líkan",
   "settings.ai.modelPlaceholder": "Sjálfgefið þjónustuaðila",
+  "settings.ai.modelPlaceholderNoKey": "Bættu við API-lykli til að hlaða líkön",
+  "settings.ai.modelNoKeyHelp": "Vistaðu API-lykilinn þinn til að lista líkön frá þjónustuaðilanum.",
   "settings.ai.paste": "Líma",
   "settings.ai.privacy": "Aðeins skoðunarstaðreyndir og texti markmiðs þíns er sendur; skrár eru aldrei hlaðnar upp.",
   "settings.ai.provider": "Þjónustuaðili",

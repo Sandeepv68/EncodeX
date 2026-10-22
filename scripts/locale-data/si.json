@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "යතුරක් ගබඩා වී ඇත ({{hint}}).",
   "settings.ai.model": "ආකෘතිය",
   "settings.ai.modelPlaceholder": "සපයන්නාගේ පෙරනිමිය",
+  "settings.ai.modelPlaceholderNoKey": "ආකෘති පූරණය කිරීමට API යතුරක් එක් කරන්න",
+  "settings.ai.modelNoKeyHelp": "සපයන්නාගේ ආකෘති ලැයිස්තුගත කිරීමට ඔබේ API යතුර සුරකින්න.",
   "settings.ai.paste": "අලවන්න",
   "settings.ai.privacy": "යවනු ලබන්නේ පරීක්ෂණ කරුණු සහ ඔබේ ඉලක්ක පෙළ පමණි; මාධ්‍ය ගොනු කිසි විටෙක උඩුගත නොකෙරේ.",
   "settings.ai.provider": "සපයන්නා",

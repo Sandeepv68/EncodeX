@@ -641,6 +641,8 @@
       },
       "model": "Modell",
       "modelPlaceholder": "Leverantörens standard",
+      "modelPlaceholderNoKey": "Lägg till en API-nyckel för att läsa in modeller",
+      "modelNoKeyHelp": "Spara din API-nyckel för att visa modeller från leverantören.",
       "apiKey": "API-nyckel",
       "configure": "Konfigurera AI-leverantör",
       "apiKeyPlaceholder": "Klistra in din API-nyckel",

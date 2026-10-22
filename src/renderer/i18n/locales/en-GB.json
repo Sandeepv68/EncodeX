@@ -641,6 +641,8 @@
       },
       "model": "Model",
       "modelPlaceholder": "Provider default",
+      "modelPlaceholderNoKey": "Add an API key to load models",
+      "modelNoKeyHelp": "Save your API key to list models from the provider.",
       "apiKey": "API key",
       "configure": "Configure AI provider",
       "apiKeyPlaceholder": "Paste your API key",

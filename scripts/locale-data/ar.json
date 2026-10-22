@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "يوجد مفتاح مخزّن ({{hint}}).",
   "settings.ai.model": "النموذج",
   "settings.ai.modelPlaceholder": "النموذج الافتراضي للمزوّد",
+  "settings.ai.modelPlaceholderNoKey": "أضف مفتاح API لتحميل النماذج",
+  "settings.ai.modelNoKeyHelp": "احفظ مفتاح API الخاص بك لعرض نماذج المزوّد.",
   "settings.ai.paste": "لصق",
   "settings.ai.privacy": "يتم إرسال بيانات الفحص ونص هدفك فقط؛ ولا يتم تحميل ملفات الوسائط مطلقًا.",
   "settings.ai.provider": "المزوّد",

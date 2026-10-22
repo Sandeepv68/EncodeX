@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "En nyckel är lagrad ({{hint}}).",
   "settings.ai.model": "Modell",
   "settings.ai.modelPlaceholder": "Leverantörens standard",
+  "settings.ai.modelPlaceholderNoKey": "Lägg till en API-nyckel för att läsa in modeller",
+  "settings.ai.modelNoKeyHelp": "Spara din API-nyckel för att visa modeller från leverantören.",
   "settings.ai.paste": "Klistra in",
   "settings.ai.privacy": "Endast analysdata och måltexten skickas; mediafiler laddas aldrig upp.",
   "settings.ai.provider": "Leverantör",

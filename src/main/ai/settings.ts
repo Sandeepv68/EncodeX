@@ -16,7 +16,7 @@ import * as path from 'path';
 import { safeStorage } from 'electron';
 import { Logger } from '../../shared/logger';
 import { LOG_FAILED_TO_PERSIST_MCP_SETTINGS, LOG_FAILED_TO_READ_STORED_MCP_SETTINGS } from '../../shared/log-constants';
-import { AI_DEFAULT_MODELS, defaultAiSettings, sanitizeAiSettings, toAiSettingsView } from '../../shared/ai/settings';
+import { defaultAiSettings, sanitizeAiSettings, toAiSettingsView } from '../../shared/ai/settings';
 import { isBlankProviderConfig, toAiProviderConfig } from '../../shared/ai/settings';
 import type { AiProviderConfig, AiServerSettings, AiSettingsUpdate, AiSettingsView } from '../../shared/ai/settings';
 import type { AIProviderId } from '../../shared/ai/types';
@@ -127,71 +127,114 @@ export function decryptApiKey(settings: AiServerSettings): string | null {
  * Applies a renderer update: merges provider/model/baseUrl, encrypts a new key
  * (or clears it), persists, and returns the sanitized view.
  *
- * The flat fields of the stored document always describe the *selected*
- * provider, so switching selection moves the outgoing provider's config into
+ * The flat fields of the stored document always describe the *active* provider,
+ * so switching the active provider moves the outgoing provider's config into
  * its own slot and loads the incoming one. A pure provider switch therefore
  * never overwrites another provider's key/model/endpoint, and never clears the
  * recorded connection: that is only dropped when the connected provider's own
  * config actually changes.
+ *
+ * An update with `activate: false` targets a provider *without* making it the
+ * active one: the change lands in that provider's own stored config (or in the
+ * flat fields when it already is the active provider) and the active provider
+ * is left untouched. That is how the editor remembers "the user is now looking
+ * at this provider" without switching the provider the Copilot plans with.
  * @param {string} userDataDir - Electron `app.getPath('userData')` value.
  * @param {AiSettingsUpdate} update - The requested change.
  * @returns {AiSettingsView} The resulting renderer-safe view.
  */
 export function applyAiSettingsUpdate(userDataDir: string, update: AiSettingsUpdate): AiSettingsView {
   const current = readAiSettings(userDataDir);
-  const selected = update.providerId;
-
-  // The non-selected providers keep their own slots.
-  const others: Partial<Record<AIProviderId, AiProviderConfig>> = { ...(current.providers ?? {}) };
-  const incoming = selected === current.providerId ? toAiProviderConfig(current) : (others[selected] ?? { model: '', key: null });
-
-  // Stash the outgoing provider's config so its key survives the switch.
-  if (selected !== current.providerId) {
-    const previous = toAiProviderConfig(current);
-    if (!isBlankProviderConfig(previous)) others[current.providerId] = previous;
-  }
-  delete others[selected];
-
-  const next: AiServerSettings = { providerId: selected, model: incoming.model, key: incoming.key };
-  if (incoming.baseUrl) next.baseUrl = incoming.baseUrl;
-  if (incoming.keySetAt !== undefined) next.keySetAt = incoming.keySetAt;
-  if (incoming.storedInsecurely === true) next.storedInsecurely = true;
-
-  if (update.model !== undefined) next.model = update.model.trim();
-  if (update.baseUrl !== undefined) {
-    const trimmed = update.baseUrl.trim();
-    if (trimmed) next.baseUrl = trimmed;
-    else delete next.baseUrl;
-  }
-  if (update.clearKey) {
-    next.key = null;
-    delete next.keySetAt;
-    delete next.storedInsecurely;
-  } else if (typeof update.apiKey === 'string' && update.apiKey.length > 0) {
-    const { key, storedInsecurely } = encryptApiKey(update.apiKey);
-    next.key = key;
-    next.keySetAt = Date.now();
-    if (storedInsecurely) next.storedInsecurely = true;
-    else delete next.storedInsecurely;
-  }
-
-  // The connection pointer is global and survives a provider switch; it is
-  // only invalidated when the connected provider's own configuration changes.
+  const target = update.providerId;
+  const activate = update.activate !== false;
   const configChanged =
     update.model !== undefined ||
     update.baseUrl !== undefined ||
     update.clearKey === true ||
     (typeof update.apiKey === 'string' && update.apiKey.length > 0);
-  const connectedProviderChanged = configChanged && current.connectedProvider === selected;
+
+  let next: AiServerSettings;
+  if (activate) {
+    // The non-active providers keep their own slots.
+    const others: Partial<Record<AIProviderId, AiProviderConfig>> = { ...(current.providers ?? {}) };
+    const incoming = target === current.providerId ? toAiProviderConfig(current) : (others[target] ?? { model: '', key: null });
+
+    // Stash the outgoing provider's config so its key survives the switch.
+    if (target !== current.providerId) {
+      const previous = toAiProviderConfig(current);
+      if (!isBlankProviderConfig(previous)) others[current.providerId] = previous;
+    }
+    delete others[target];
+
+    next = {
+      providerId: target,
+      selectedProviderId: target,
+      model: incoming.model,
+      key: incoming.key,
+      ...(incoming.baseUrl ? { baseUrl: incoming.baseUrl } : {}),
+      ...(incoming.keySetAt !== undefined ? { keySetAt: incoming.keySetAt } : {}),
+      ...(incoming.storedInsecurely === true ? { storedInsecurely: true } : {}),
+      ...(Object.keys(others).length > 0 ? { providers: others } : {}),
+    };
+    applyConfigToProvider(next, update);
+  } else {
+    // The targeted provider keeps its own config; the active one is untouched.
+    next = { ...current, selectedProviderId: target };
+    if (target === current.providerId) {
+      applyConfigToProvider(next, update);
+    } else {
+      const others: Partial<Record<AIProviderId, AiProviderConfig>> = { ...(current.providers ?? {}) };
+      const slot: AiProviderConfig = { ...(others[target] ?? { model: '', key: null }) };
+      applyConfigToProvider(slot, update);
+      if (isBlankProviderConfig(slot)) delete others[target];
+      else others[target] = slot;
+      if (Object.keys(others).length > 0) next.providers = others;
+      else delete next.providers;
+    }
+  }
+
+  // The connection pointer is global and survives a provider switch; it is
+  // only invalidated when the connected provider's own configuration changes.
+  const connectedProviderChanged = configChanged && current.connectedProvider === target;
   if (!connectedProviderChanged && current.connectedAt !== undefined && current.connectedProvider !== undefined) {
     next.connectedAt = current.connectedAt;
     next.connectedProvider = current.connectedProvider;
     if (current.connectedModel !== undefined) next.connectedModel = current.connectedModel;
+  } else {
+    delete next.connectedAt;
+    delete next.connectedProvider;
+    delete next.connectedModel;
   }
 
-  if (Object.keys(others).length > 0) next.providers = others;
   writeAiSettings(userDataDir, next);
   return toAiSettingsView(next, isEncryptionAvailable());
+}
+
+/**
+ * Applies the config-carrying part of an update (model, endpoint, key) to one
+ * provider's config, encrypting a new key at rest.
+ * @param {AiProviderConfig} config - The config to update in place.
+ * @param {AiSettingsUpdate} update - The requested change.
+ * @returns {void}
+ */
+function applyConfigToProvider(config: AiProviderConfig, update: AiSettingsUpdate): void {
+  if (update.model !== undefined) config.model = update.model.trim();
+  if (update.baseUrl !== undefined) {
+    const trimmed = update.baseUrl.trim();
+    if (trimmed) config.baseUrl = trimmed;
+    else delete config.baseUrl;
+  }
+  if (update.clearKey) {
+    config.key = null;
+    delete config.keySetAt;
+    delete config.storedInsecurely;
+  } else if (typeof update.apiKey === 'string' && update.apiKey.length > 0) {
+    const { key, storedInsecurely } = encryptApiKey(update.apiKey);
+    config.key = key;
+    config.keySetAt = Date.now();
+    if (storedInsecurely) config.storedInsecurely = true;
+    else delete config.storedInsecurely;
+  }
 }
 
 /**
@@ -217,11 +260,41 @@ export function recordAiConnection(userDataDir: string, info: { providerId: AIPr
 }
 
 /**
- * Resolves the model to use for a provider: the user's model, else the built-in
- * default, else an empty string.
+ * Resolves the model to use for a provider: the configured model id, or an
+ * empty string when the user has not chosen one. There is no built-in default
+ * — the caller resolves a model from the provider's own model list instead
+ * (see `resolveProviderModel`).
  * @param {AiServerSettings} settings - The stored settings.
- * @returns {string} The effective model id.
+ * @returns {string} The configured model id, or an empty string.
  */
 export function effectiveModel(settings: AiServerSettings): string {
-  return settings.model || AI_DEFAULT_MODELS[settings.providerId] || '';
+  return settings.model.trim();
+}
+
+/**
+ * Stores a resolved model id in one provider's own config, without touching
+ * anything else: the active provider keeps its flat fields, every other
+ * provider its own slot, and the recorded connection survives. Used when the
+ * app resolved a model from the provider's model list, so the choice becomes
+ * explicit and user-overridable.
+ * @param {string} userDataDir - Electron `app.getPath('userData')` value.
+ * @param {AIProviderId} providerId - The provider the model belongs to.
+ * @param {string} model - The model id to store.
+ * @returns {AiSettingsView} The resulting renderer-safe view.
+ */
+export function persistProviderModel(userDataDir: string, providerId: AIProviderId, model: string): AiSettingsView {
+  const current = readAiSettings(userDataDir);
+  const trimmed = model.trim();
+  if (!trimmed) return toAiSettingsView(current, isEncryptionAvailable());
+  const next: AiServerSettings = { ...current };
+  if (providerId === current.providerId) {
+    next.model = trimmed;
+  } else {
+    const others: Partial<Record<AIProviderId, AiProviderConfig>> = { ...(current.providers ?? {}) };
+    const slot: AiProviderConfig = { ...(others[providerId] ?? { model: '', key: null }), model: trimmed };
+    others[providerId] = slot;
+    next.providers = others;
+  }
+  writeAiSettings(userDataDir, next);
+  return toAiSettingsView(next, isEncryptionAvailable());
 }

@@ -641,6 +641,8 @@
       },
       "model": "Modèle",
       "modelPlaceholder": "Par défaut du fournisseur",
+      "modelPlaceholderNoKey": "Ajoutez une clé API pour charger les modèles",
+      "modelNoKeyHelp": "Enregistrez votre clé API pour lister les modèles du fournisseur.",
       "apiKey": "Clé API",
       "configure": "Configurer le fournisseur d’IA",
       "apiKeyPlaceholder": "Collez votre clé API",

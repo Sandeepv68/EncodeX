@@ -641,6 +641,8 @@
       },
       "model": "Malli",
       "modelPlaceholder": "Tarjoajan oletus",
+      "modelPlaceholderNoKey": "Lisää API-avain ladataksesi malleja",
+      "modelNoKeyHelp": "Tallenna API-avaimesi, jotta voit luetella tarjoajan mallit.",
       "apiKey": "API-avain",
       "configure": "Määritä tekoälyn tarjoaja",
       "apiKeyPlaceholder": "Liitä API-avaimesi",

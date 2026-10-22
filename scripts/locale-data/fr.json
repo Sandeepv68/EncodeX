@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Une clé est enregistrée ({{hint}}).",
   "settings.ai.model": "Modèle",
   "settings.ai.modelPlaceholder": "Par défaut du fournisseur",
+  "settings.ai.modelPlaceholderNoKey": "Ajoutez une clé API pour charger les modèles",
+  "settings.ai.modelNoKeyHelp": "Enregistrez votre clé API pour lister les modèles du fournisseur.",
   "settings.ai.paste": "Coller",
   "settings.ai.privacy": "Seules les données d’analyse et le texte de votre objectif sont envoyés ; les fichiers multimédias ne sont jamais téléversés.",
   "settings.ai.provider": "Fournisseur",

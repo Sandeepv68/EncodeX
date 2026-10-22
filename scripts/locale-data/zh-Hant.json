@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "已儲存金鑰（{{hint}}）。",
   "settings.ai.model": "模型",
   "settings.ai.modelPlaceholder": "提供者預設",
+  "settings.ai.modelPlaceholderNoKey": "新增 API 金鑰以載入模型",
+  "settings.ai.modelNoKeyHelp": "儲存您的 API 金鑰以列出提供者提供的模型。",
   "settings.ai.paste": "貼上",
   "settings.ai.privacy": "僅會傳送分析資訊與您的目標文字；絕不會上傳媒體檔案。",
   "settings.ai.provider": "提供者",

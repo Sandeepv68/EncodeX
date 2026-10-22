@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Avain on tallennettu ({{hint}}).",
   "settings.ai.model": "Malli",
   "settings.ai.modelPlaceholder": "Tarjoajan oletus",
+  "settings.ai.modelPlaceholderNoKey": "Lisää API-avain ladataksesi malleja",
+  "settings.ai.modelNoKeyHelp": "Tallenna API-avaimesi, jotta voit luetella tarjoajan mallit.",
   "settings.ai.paste": "Liitä",
   "settings.ai.privacy": "Vain tutkitut tiedot ja tavoitteesi teksti lähetetään; mediatiedostoja ei koskaan lähetetä.",
   "settings.ai.provider": "Tarjoaja",

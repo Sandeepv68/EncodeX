@@ -641,6 +641,8 @@
       },
       "model": "Samhail",
       "modelPlaceholder": "Réamhshocrú an tsoláthraí",
+      "modelPlaceholderNoKey": "Cuir eochair API leis chun samhlacha a lódáil",
+      "modelNoKeyHelp": "Sábháil d'eochair API chun samhlacha ón soláthraí a liostáil.",
       "apiKey": "Eochair API",
       "configure": "Cumraigh soláthraí AI",
       "apiKeyPlaceholder": "Greamaigh d’eochair API",

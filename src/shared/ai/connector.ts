@@ -62,14 +62,16 @@ export type ConnectorId = AIProviderId | 'openai-compatible';
 
 /**
  * A stateless text-completion transport for one AI service.
+ *
+ * A connector carries no built-in model: the model id always comes from the
+ * user's configuration (or, when they left it blank, from the provider's own
+ * model list), so no model name is ever hardcoded in the app.
  * @interface AIConnector
  * @property {ConnectorId} id - The provider id this connector speaks.
- * @property {string} defaultModel - The model used when settings omit one.
  * @property {function(ConnectorRequest): Promise<ConnectorResponse>} complete -
  *   Sends the conversation and resolves the reply.
  */
 export interface AIConnector {
   readonly id: ConnectorId;
-  readonly defaultModel: string;
   complete(request: ConnectorRequest): Promise<ConnectorResponse>;
 }

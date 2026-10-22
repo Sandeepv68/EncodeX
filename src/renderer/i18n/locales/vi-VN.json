@@ -641,6 +641,8 @@
       },
       "model": "Mô hình",
       "modelPlaceholder": "Mặc định của nhà cung cấp",
+      "modelPlaceholderNoKey": "Thêm khóa API để tải mô hình",
+      "modelNoKeyHelp": "Lưu khóa API của bạn để liệt kê các mô hình từ nhà cung cấp.",
       "apiKey": "Khóa API",
       "configure": "Định cấu hình nhà cung cấp AI",
       "apiKeyPlaceholder": "Dán khóa API của bạn",

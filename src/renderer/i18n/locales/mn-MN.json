@@ -641,6 +641,8 @@
       },
       "model": "Загвар",
       "modelPlaceholder": "Үзүүлэгчийн стандарт",
+      "modelPlaceholderNoKey": "Загваруудыг ачаалахын тулд API түлхүүр нэмнэ үү",
+      "modelNoKeyHelp": "Үзүүлэгчийн загваруудыг жагсаахын тулд API түлхүүрээ хадгална уу.",
       "apiKey": "API түлхүүр",
       "configure": "AI үйлчилгээ үзүүлэгчийг тохируулах",
       "apiKeyPlaceholder": "API түлхүүрээ буулгана уу",

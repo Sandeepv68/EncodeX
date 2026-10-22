@@ -641,6 +641,8 @@
       },
       "model": "模型",
       "modelPlaceholder": "提供商默认",
+      "modelPlaceholderNoKey": "添加 API 密钥以加载模型",
+      "modelNoKeyHelp": "保存您的 API 密钥以列出提供商提供的模型。",
       "apiKey": "API 密钥",
       "configure": "配置 AI 提供商",
       "apiKeyPlaceholder": "粘贴您的 API 密钥",

@@ -47,7 +47,6 @@ function request(goal: string): OperationRoutingRequest {
 function fakeConnector(text: string): AIConnector {
   return {
     id: 'openai',
-    defaultModel: 'test-model',
     complete: vi.fn(async (_req: ConnectorRequest) => ({ text, model: 'test-model' })),
   };
 }
@@ -137,7 +136,6 @@ describe('createLLMOperationRouter', () => {
   it('returns undefined when the transport throws', async () => {
     const connector: AIConnector = {
       id: 'openai',
-      defaultModel: 'x',
       complete: vi.fn().mockRejectedValue(new Error('network down')),
     };
     const router = createLLMOperationRouter(connector, 'openai');
@@ -152,7 +150,7 @@ describe('createLLMOperationRouter', () => {
 
   it('sends a JSON-mode request with an abort signal', async () => {
     const complete = vi.fn(async (_req: ConnectorRequest) => ({ text: '{"operation":"analyze"}', model: 'm' }));
-    const router = createLLMOperationRouter({ id: 'openai', defaultModel: 'm', complete }, 'openai');
+    const router = createLLMOperationRouter({ id: 'openai', complete }, 'openai');
     await router(request('anything'));
     const arg = complete.mock.calls[0][0];
     expect(arg.jsonMode).toBe(true);
@@ -160,7 +158,7 @@ describe('createLLMOperationRouter', () => {
   });
 
   it('returns undefined when the transport rejects with a non-Error value', async () => {
-    const connector: AIConnector = { id: 'openai', defaultModel: 'x', complete: vi.fn().mockRejectedValue('boom') };
+    const connector: AIConnector = { id: 'openai', complete: vi.fn().mockRejectedValue('boom') };
     const router = createLLMOperationRouter(connector, 'openai');
     await expect(router(request('anything'))).resolves.toBeUndefined();
   });

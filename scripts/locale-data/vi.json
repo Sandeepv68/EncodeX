@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Một khóa đã được lưu ({{hint}}).",
   "settings.ai.model": "Mô hình",
   "settings.ai.modelPlaceholder": "Mặc định của nhà cung cấp",
+  "settings.ai.modelPlaceholderNoKey": "Thêm khóa API để tải mô hình",
+  "settings.ai.modelNoKeyHelp": "Lưu khóa API của bạn để liệt kê các mô hình từ nhà cung cấp.",
   "settings.ai.paste": "Dán",
   "settings.ai.privacy": "Chỉ có các dữ liệu phân tích và văn bản mục tiêu của bạn được gửi; tệp phương tiện không bao giờ được tải lên.",
   "settings.ai.provider": "Nhà cung cấp",

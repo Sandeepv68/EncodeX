@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Ключ сохранён ({{hint}}).",
   "settings.ai.model": "Модель",
   "settings.ai.modelPlaceholder": "По умолчанию у провайдера",
+  "settings.ai.modelPlaceholderNoKey": "Добавьте API-ключ, чтобы загрузить модели",
+  "settings.ai.modelNoKeyHelp": "Сохраните API-ключ, чтобы просмотреть модели провайдера.",
   "settings.ai.paste": "Вставить",
   "settings.ai.privacy": "Отправляются только данные анализа и текст вашей цели; медиафайлы никогда не загружаются.",
   "settings.ai.provider": "Провайдер",

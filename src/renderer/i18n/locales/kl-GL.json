@@ -641,6 +641,8 @@
       },
       "model": "Naatsorsueqaat",
       "modelPlaceholder": "Inissisimasut naapertorlugu piffissaq",
+      "modelPlaceholderNoKey": "API-p matuaraa ilannguk naatsorsueqaat atorniarlugit",
+      "modelNoKeyHelp": "API-p matuaraa toqqoruk inissisimasunit naatsorsueqaat takuniarlugit.",
       "apiKey": "API-p matuaraat",
       "configure": "AI-nik inissisimasut aaqqissuerit",
       "apiKeyPlaceholder": "API-p matuaraatit ilalugit",

@@ -641,6 +641,8 @@
       },
       "model": "Модель",
       "modelPlaceholder": "За замовчуванням у провайдера",
+      "modelPlaceholderNoKey": "Додайте API-ключ, щоб завантажити моделі",
+      "modelNoKeyHelp": "Збережіть свій API-ключ, щоб переглянути моделі провайдера.",
       "apiKey": "API-ключ",
       "configure": "Налаштувати ШІ-провайдера",
       "apiKeyPlaceholder": "Вставте ваш API-ключ",

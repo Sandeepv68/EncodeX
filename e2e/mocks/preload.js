@@ -357,11 +357,16 @@ const api = {
   aiSetSettings: (update) => {
     const next = update || {};
     state.aiSetCalls.push(JSON.parse(JSON.stringify(next)));
+    // Mirror src/main/ai/settings.ts: `activate: false` targets a provider
+    // without making it the active one (the Copilot keeps planning with the
+    // active provider); the choice is still remembered as the selection.
+    const activate = next.activate !== false;
     const view = {
       ...state.aiSettingsView,
-      ...(typeof next.providerId === 'string' ? { providerId: next.providerId } : {}),
+      ...(activate && typeof next.providerId === 'string' ? { providerId: next.providerId } : {}),
       ...(typeof next.model === 'string' ? { model: next.model } : {}),
       ...(typeof next.baseUrl === 'string' ? { baseUrl: next.baseUrl } : {}),
+      ...(typeof next.providerId === 'string' ? { selectedProviderId: next.providerId } : {}),
     };
     if (typeof next.apiKey === 'string' && next.apiKey.length > 0) {
       view.hasKey = true;

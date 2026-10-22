@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Hay una clave guardada ({{hint}}).",
   "settings.ai.model": "Modelo",
   "settings.ai.modelPlaceholder": "Valor predeterminado del proveedor",
+  "settings.ai.modelPlaceholderNoKey": "Añade una clave de API para cargar modelos",
+  "settings.ai.modelNoKeyHelp": "Guarda tu clave de API para listar los modelos del proveedor.",
   "settings.ai.paste": "Pegar",
   "settings.ai.privacy": "Solo se envían los datos del análisis y el texto de tu objetivo; los archivos de medios nunca se suben.",
   "settings.ai.provider": "Proveedor",

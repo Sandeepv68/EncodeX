@@ -641,6 +641,8 @@
       },
       "model": "Model",
       "modelPlaceholder": "Domyślny dostawcy",
+      "modelPlaceholderNoKey": "Dodaj klucz API, aby wczytać modele",
+      "modelNoKeyHelp": "Zapisz klucz API, aby wyświetlić modele dostawcy.",
       "apiKey": "Klucz API",
       "configure": "Skonfiguruj dostawcę AI",
       "apiKeyPlaceholder": "Wklej swój klucz API",

@@ -641,6 +641,8 @@
       },
       "model": "ආකෘතිය",
       "modelPlaceholder": "සපයන්නාගේ පෙරනිමිය",
+      "modelPlaceholderNoKey": "ආකෘති පූරණය කිරීමට API යතුරක් එක් කරන්න",
+      "modelNoKeyHelp": "සපයන්නාගේ ආකෘති ලැයිස්තුගත කිරීමට ඔබේ API යතුර සුරකින්න.",
       "apiKey": "API යතුර",
       "configure": "AI සපයන්නා වින්‍යාස කරන්න",
       "apiKeyPlaceholder": "ඔබගේ API යතුර අලවන්න",

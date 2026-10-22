@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Kua rongoa tētahi kī ({{hint}}).",
   "settings.ai.model": "Tauira",
   "settings.ai.modelPlaceholder": "Taunoa a te kaiwhakarato",
+  "settings.ai.modelPlaceholderNoKey": "Tāpiri he kī API hei uta i ngā tauira",
+  "settings.ai.modelNoKeyHelp": "Rongoatia tō kī API kia rārangi ai ngā tauira mai i te kaiwhakarato.",
   "settings.ai.paste": "Whakapiri",
   "settings.ai.privacy": "Ko ngā mēka tātari me te kuputuhi tino pai anake ka tukuna; kāore ngā kōnae pāpāho e tukuna ake.",
   "settings.ai.provider": "Kaiwhakarato",

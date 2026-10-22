@@ -641,6 +641,8 @@
       },
       "model": "Líkan",
       "modelPlaceholder": "Sjálfgefið þjónustuaðila",
+      "modelPlaceholderNoKey": "Bættu við API-lykli til að hlaða líkön",
+      "modelNoKeyHelp": "Vistaðu API-lykilinn þinn til að lista líkön frá þjónustuaðilanum.",
       "apiKey": "API-lykill",
       "configure": "Skerpðu AI-þjónustuaðila",
       "apiKeyPlaceholder": "Límdu API-lykilinn þinn",

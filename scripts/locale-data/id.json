@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Sebuah kunci disimpan ({{hint}}).",
   "settings.ai.model": "Model",
   "settings.ai.modelPlaceholder": "Default penyedia",
+  "settings.ai.modelPlaceholderNoKey": "Tambahkan kunci API untuk memuat model",
+  "settings.ai.modelNoKeyHelp": "Simpan kunci API Anda untuk menampilkan model dari penyedia.",
   "settings.ai.paste": "Tempel",
   "settings.ai.privacy": "Hanya fakta pemeriksaan dan teks tujuan Anda yang dikirim; file media tidak pernah diunggah.",
   "settings.ai.provider": "Penyedia",

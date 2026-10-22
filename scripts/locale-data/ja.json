@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "キーが保存されています（{{hint}}）。",
   "settings.ai.model": "モデル",
   "settings.ai.modelPlaceholder": "プロバイダーの既定",
+  "settings.ai.modelPlaceholderNoKey": "モデルを読み込むには API キーを追加してください",
+  "settings.ai.modelNoKeyHelp": "API キーを保存すると、プロバイダーのモデルを一覧表示できます。",
   "settings.ai.paste": "貼り付け",
   "settings.ai.privacy": "送信されるのは調査結果と目標テキストのみで、メディアファイルがアップロードされることはありません。",
   "settings.ai.provider": "プロバイダー",

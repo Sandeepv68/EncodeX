@@ -340,6 +340,8 @@
   "settings.ai.keyStored": "Klucz jest zapisany ({{hint}}).",
   "settings.ai.model": "Model",
   "settings.ai.modelPlaceholder": "Domyślny dostawcy",
+  "settings.ai.modelPlaceholderNoKey": "Dodaj klucz API, aby wczytać modele",
+  "settings.ai.modelNoKeyHelp": "Zapisz klucz API, aby wyświetlić modele dostawcy.",
   "settings.ai.paste": "Wklej",
   "settings.ai.privacy": "Wysyłane są tylko dane analizy i tekst celu; pliki multimedialne nigdy nie są wysyłane.",
   "settings.ai.provider": "Dostawca",
