@@ -36,21 +36,12 @@ export const AI_PROVIDERS_REQUIRING_KEY: ReadonlySet<AIProviderId> = new Set(['o
 export const AI_PROVIDERS_REQUIRING_NETWORK: ReadonlySet<AIProviderId> = new Set(['openai', 'anthropic', 'gemini']);
 
 /**
- * Default models per remote provider, used when the user leaves the model blank.
- * @const {Record<string, string>} AI_DEFAULT_MODELS
- */
-export const AI_DEFAULT_MODELS: Record<string, string> = {
-  openai: 'gpt-4o-mini',
-  anthropic: 'claude-3-5-haiku-latest',
-  gemini: 'gemini-3.8-flash',
-};
-
-/**
  * One provider's own configuration (API key, model, endpoint). Kept separate
  * from {@link AiServerSettings}'s flat fields so every provider remembers its
  * own key instead of sharing a single global one.
  * @interface AiProviderConfig
- * @property {string} model - The model id (empty means "provider default").
+ * @property {string} model - The model id (empty means "not chosen yet": the
+ *   app resolves one from the provider's own model list).
  * @property {string} [baseUrl] - OpenAI-compatible base URL override.
  * @property {string | null} key - Encrypted (base64) key, or null when unset.
  * @property {number} [keySetAt] - Epoch ms the key was last set.
@@ -88,16 +79,26 @@ export interface AiActiveConnection {
  * keep working unchanged. Every *other* provider's config lives in
  * {@link AiServerSettings.providers}; the selected provider is never duplicated
  * there, and the connection pointer below is global (one active connection).
+ *
+ * `providerId` is the **active** provider (the one the Copilot plans with),
+ * while {@link AiServerSettings.selectedProviderId} is the provider the user
+ * last picked in the Settings editor. The two are kept apart so browsing to
+ * another provider never silently changes the active one, while the editor can
+ * still restore the tile the user left selected on the next start.
  * @interface AiServerSettings
- * @property {AIProviderId} providerId - The selected provider.
- * @property {string} model - The model id (empty means "provider default").
+ * @property {AIProviderId} providerId - The active provider.
+ * @property {string} model - The model id (empty means "not chosen yet": the
+ *   app resolves one from the provider's own model list).
  * @property {string} [baseUrl] - OpenAI-compatible base URL override.
  * @property {string | null} key - Encrypted (base64) key, or null when unset.
  * @property {number} [keySetAt] - Epoch ms the key was last set.
  * @property {boolean} [storedInsecurely] - True when the key is plaintext
  *   because `safeStorage` was unavailable and the user accepted the risk.
  * @property {Partial<Record<AIProviderId, AiProviderConfig>>} [providers] -
- *   Configs of the providers that are *not* selected.
+ *   Configs of the providers that are *not* active.
+ * @property {AIProviderId} [selectedProviderId] - The provider the user last
+ *   selected in the Settings editor. Restored on the next start so the
+ *   previously selected (and connected) provider is auto-selected.
  * @property {number} [connectedAt] - Epoch ms of the last successful connection
  *   test. Cleared only when the connected provider's own config changes.
  * @property {AIProviderId} [connectedProvider] - The provider verified by the
@@ -113,6 +114,7 @@ export interface AiServerSettings {
   keySetAt?: number;
   storedInsecurely?: boolean;
   providers?: Partial<Record<AIProviderId, AiProviderConfig>>;
+  selectedProviderId?: AIProviderId;
   connectedAt?: number;
   connectedProvider?: AIProviderId;
   connectedModel?: string;
@@ -124,7 +126,7 @@ export interface AiServerSettings {
  * the editor without a round-trip (the selected provider's own config is the
  * flat {@link AiSettingsView} fields; every other provider is summarized here).
  * @interface AiProviderSummary
- * @property {string} model - The model id (empty means "provider default").
+ * @property {string} model - The model id (empty means "not chosen yet").
  * @property {string} [baseUrl] - Base URL override, if any.
  * @property {boolean} hasKey - Whether a key is stored for this provider.
  * @property {string} keyHint - A non-secret hint (e.g. `••••••••`).
@@ -155,8 +157,11 @@ export interface AiProviderSummary {
  * @property {AiActiveConnection} [activeConnection] - The single active
  *   connection, when one is recorded. Present regardless of which provider is
  *   currently selected, so the UI can show a connection that lives elsewhere.
+ * @property {AIProviderId} [selectedProviderId] - The provider the user last
+ *   selected in the Settings editor. Always present in a view; it falls back
+ *   to `providerId` for documents written before the selection was persisted.
  * @property {Partial<Record<AIProviderId, AiProviderSummary>>} [providerSummaries] -
- *   Non-secret summaries of the providers that are *not* selected, so the editor
+ *   Non-secret summaries of the providers that are *not* active, so the editor
  *   can show each provider's own saved key/model/endpoint the instant it is
  *   selected, without persisting the selection or a round-trip.
  */
@@ -172,17 +177,23 @@ export interface AiSettingsView {
   connectedAt?: number;
   connectedModel?: string;
   activeConnection?: AiActiveConnection;
+  selectedProviderId?: AIProviderId;
   providerSummaries?: Partial<Record<AIProviderId, AiProviderSummary>>;
 }
 
 /**
  * The renderer's request to update AI settings.
  * @interface AiSettingsUpdate
- * @property {AIProviderId} providerId - The selected provider.
+ * @property {AIProviderId} providerId - The provider the update targets.
  * @property {string} [model] - The model id.
  * @property {string} [baseUrl] - Base URL override.
  * @property {string} [apiKey] - A new plaintext key to store (encrypted at rest).
  * @property {boolean} [clearKey] - Remove any stored key.
+ * @property {boolean} [activate] - Whether the targeted provider becomes the
+ *   *active* one (the provider the Copilot plans with). Defaults to true;
+ *   `false` applies the change to the targeted provider's own stored config
+ *   without touching the active provider (used when the user only browses to
+ *   another provider in the editor).
  */
 export interface AiSettingsUpdate {
   providerId: AIProviderId;
@@ -190,6 +201,7 @@ export interface AiSettingsUpdate {
   baseUrl?: string;
   apiKey?: string;
   clearKey?: boolean;
+  activate?: boolean;
 }
 
 /**
@@ -347,6 +359,7 @@ export function sanitizeAiSettings(input: unknown): AiServerSettings {
   const key = typeof record.key === 'string' && record.key.length > 0 ? record.key : null;
   const keySetAt = typeof record.keySetAt === 'number' && Number.isFinite(record.keySetAt) ? record.keySetAt : undefined;
   const storedInsecurely = record.storedInsecurely === true;
+  const selectedProviderId = isAiProviderId(record.selectedProviderId) ? record.selectedProviderId : undefined;
   const connectedAt = typeof record.connectedAt === 'number' && Number.isFinite(record.connectedAt) ? record.connectedAt : undefined;
   const connectedProvider = isAiProviderId(record.connectedProvider) ? record.connectedProvider : undefined;
   const connectedModel =
@@ -376,6 +389,7 @@ export function sanitizeAiSettings(input: unknown): AiServerSettings {
     ...(keySetAt !== undefined ? { keySetAt } : {}),
     ...(storedInsecurely ? { storedInsecurely: true } : {}),
     ...(providers ? { providers } : {}),
+    ...(selectedProviderId !== undefined ? { selectedProviderId } : {}),
     ...(connectedAt !== undefined ? { connectedAt } : {}),
     ...(connectedProvider !== undefined ? { connectedProvider } : {}),
     ...(connectedModel !== undefined ? { connectedModel } : {}),
@@ -389,12 +403,19 @@ export function sanitizeAiSettings(input: unknown): AiServerSettings {
  * own non-secret summary is projected onto a flat view (its connection status is
  * false, because the single active connection always lives on the base view and
  * is surfaced separately via {@link AiActiveConnection}).
+ *
+ * The projection reports the projected provider as the editor's selection, so
+ * the view always describes the provider it was asked for.
  * @param {AiSettingsView} view - The server-provided view (the selected provider's).
  * @param {AIProviderId} providerId - The provider the editor now shows.
  * @returns {AiSettingsView} The view for that provider.
  */
 export function viewForProvider(view: AiSettingsView, providerId: AIProviderId): AiSettingsView {
-  if (providerId === view.providerId) return view;
+  if (providerId === view.providerId) {
+    // The active provider's own config lives in the flat fields, so the base
+    // view is the projection; only the reported selection changes.
+    return providerId === view.selectedProviderId ? view : { ...view, selectedProviderId: providerId };
+  }
   const summary = view.providerSummaries?.[providerId];
   return {
     providerId,
@@ -406,7 +427,20 @@ export function viewForProvider(view: AiSettingsView, providerId: AIProviderId):
     encryptionAvailable: view.encryptionAvailable,
     connected: false,
     ...(view.activeConnection ? { activeConnection: view.activeConnection } : {}),
+    selectedProviderId: providerId,
   };
+}
+
+/**
+ * Reads the provider the editor should show as selected: the persisted
+ * selection, falling back to the active provider for documents written before
+ * the selection was stored.
+ * @param {AiSettingsView | null} view - The settings view, or null.
+ * @returns {AIProviderId | null} The provider to select, or null when there is no view.
+ */
+export function selectedProviderOf(view: AiSettingsView | null): AIProviderId | null {
+  if (!view) return null;
+  return isAiProviderId(view.selectedProviderId) ? view.selectedProviderId : view.providerId;
 }
 
 /**
@@ -466,6 +500,9 @@ export function toAiSettingsView(settings: AiServerSettings, encryptionAvailable
     ...(connected && settings.connectedAt !== undefined ? { connectedAt: settings.connectedAt } : {}),
     ...(connected && settings.connectedModel !== undefined ? { connectedModel: settings.connectedModel } : {}),
     ...(activeConnection ? { activeConnection } : {}),
+    // The editor restores this tile on the next start; documents written
+    // before the selection was persisted fall back to the active provider.
+    selectedProviderId: settings.selectedProviderId ?? settings.providerId,
     ...(providerSummaries ? { providerSummaries } : {}),
   };
 }

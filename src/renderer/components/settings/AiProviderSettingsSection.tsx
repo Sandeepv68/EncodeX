@@ -3,7 +3,7 @@
  * (AI connector plan §8).
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Autocomplete, Button, IconButton, Tooltip, InputAdornment } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,6 +24,7 @@ import {
   AI_PROVIDERS_REQUIRING_KEY,
   AI_PROVIDERS_REQUIRING_NETWORK,
   isAiProviderId,
+  selectedProviderOf,
   viewForProvider,
 } from '../../../shared/ai/settings';
 import type { AIProviderId } from '../../../shared/ai/types';
@@ -88,25 +89,34 @@ function ProviderIcon({ id }: { id: AIProviderId }) {
  * page, paste, then save + test), and model/base-URL fields under "Advanced".
  *
  * Provider settings live in `userData/ai-settings.json` (not the settings
- * store), so this section is the one direct-IPC exception on the page. To keep
- * the page inert on mount (so every hostile/renderer suite can mount it
- * safely), the editor never fetches on mount; it hydrates from the session
- * cache in {@link useAiSettingsStore} (so navigating away and back restores
- * the provider, saved-key, and connected state instantly) and loads fresh
- * settings over IPC only when the user expands the section for the first time
- * in a session with no cached view. Every bridge call goes through
- * {@link bridgePromise} and a shape check, so a missing, throwing, or garbage
- * bridge leaves the form at its offline defaults instead of crashing the tree.
+ * store), so this section is the one direct-IPC exception on the page. The
+ * editor loads the persisted settings when it mounts and restores the provider
+ * the user last selected (and connected), so the previously chosen provider is
+ * auto-selected instead of falling back to the offline default. The selection
+ * itself is persisted on every provider click, which keeps the tile the user
+ * left on top of the list selected across restarts without ever activating a
+ * provider the user did not connect.
+ *
+ * Every bridge call goes through {@link bridgePromise} and a shape check, so a
+ * missing, throwing, or garbage bridge leaves the form at its offline defaults
+ * instead of crashing the tree. A warm session cache (this app session already
+ * loaded the settings) restores the selection instantly, without a round-trip.
  * @returns {JSX.Element} The AI-provider settings rows.
  */
 export default function AiProviderSettingsSection() {
   const { t } = useTranslation();
   const cached = useAiSettingsStore.getState();
+  // The app hydrates the connection mirror at startup, so the provider the user
+  // selected last is usually known before the page mounts. The session cache
+  // wins when it is warmer (a remount inside the same session).
+  const initialView = cached.view ?? useAiConnectionStore.getState().view ?? null;
+  const initialSelection = initialView ? (selectedProviderOf(initialView) ?? initialView.providerId) : cached.providerId;
+  const initialTarget = initialView ? viewForProvider(initialView, initialSelection) : null;
   const [open, setOpen] = useState(false);
-  const [view, setView] = useState<AiSettingsView | null>(cached.view);
-  const [providerId, setProviderId] = useState<AIProviderId>(cached.providerId);
-  const [model, setModel] = useState(cached.model);
-  const [baseUrl, setBaseUrl] = useState(cached.baseUrl);
+  const [view, setView] = useState<AiSettingsView | null>(initialView);
+  const [providerId, setProviderId] = useState<AIProviderId>(initialSelection);
+  const [model, setModel] = useState(initialTarget?.model ?? cached.model);
+  const [baseUrl, setBaseUrl] = useState(initialTarget?.baseUrl ?? cached.baseUrl);
   const [apiKey, setApiKey] = useState('');
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
@@ -116,6 +126,9 @@ export default function AiProviderSettingsSection() {
   const [modelsLoading, setModelsLoading] = useState(false);
   const [fellBackOffline, setFellBackOffline] = useState(false);
   const online = useOnlineStatus();
+  // The in-flight (or finished) settings load, so a second expand does not
+  // race the first one.
+  const loadRef = useRef<Promise<AiSettingsView | null> | null>(null);
 
   useEffect(() => {
     useAiSettingsStore.getState().patch({ view, providerId, model, baseUrl });
@@ -134,26 +147,72 @@ export default function AiProviderSettingsSection() {
   };
 
   /**
-   * Expands/collapses the editor. When a cached view from this session exists
-   * it is shown instantly and no IPC is made; otherwise the stored settings
-   * load the first time the section opens (and retry on later opens if the
-   * bridge failed).
+   * Loads the persisted AI settings into the session cache. The load is shared:
+   * a second call (e.g. expanding the editor while a load is still running)
+   * reuses the pending round-trip, and a failed load is forgotten so a later
+   * expand can retry it. Only the caches are touched - the editor is collapsed
+   * at that point, so the restored selection becomes visible when the user
+   * opens it.
+   * @returns {Promise<AiSettingsView | null>} The loaded view, or null when the
+   *   bridge could not be used.
+   */
+  const loadSettings = (): Promise<AiSettingsView | null> => {
+    if (loadRef.current) return loadRef.current;
+    const pending = (async (): Promise<AiSettingsView | null> => {
+      try {
+        const loaded = await bridgePromise(() => window.electronAPI.aiGetSettings());
+        if (!loaded || typeof loaded !== 'object' || !isAiProviderId(loaded.providerId)) {
+          loadRef.current = null;
+          return null;
+        }
+        useAiSettingsStore.getState().patch({ view: loaded });
+        useAiConnectionStore.getState().patch(loaded);
+        return loaded;
+      } catch {
+        // Hostile/unavailable bridge: keep the offline defaults and let a
+        // later expand retry the load.
+        loadRef.current = null;
+        return null;
+      }
+    })();
+    loadRef.current = pending;
+    return pending;
+  };
+
+  /**
+   * Restores the persisted provider selection into the form: the tile the user
+   * selected last becomes the selected one, showing that provider's own model
+   * and endpoint.
+   * @param {AiSettingsView} next - The view to restore from.
+   * @returns {void}
+   */
+  const restoreSelection = (next: AiSettingsView): void => {
+    const selected = selectedProviderOf(next) ?? next.providerId;
+    const target = viewForProvider(next, selected);
+    setView(next);
+    setProviderId(selected);
+    setModel(typeof target.model === 'string' ? target.model : '');
+    setBaseUrl(typeof target.baseUrl === 'string' ? target.baseUrl : '');
+  };
+
+  /**
+   * Expands/collapses the editor. Expanding restores the provider the user
+   * selected last from the cached view (the app already knows it at startup, so
+   * usually no round-trip is needed); when nothing is cached yet the stored
+   * settings load first.
    * @returns {Promise<void>} Resolves after the settings (if any) load.
    */
   const toggle = async (): Promise<void> => {
     const next = !open;
     setOpen(next);
-    if (!next || useAiSettingsStore.getState().view) return;
-    try {
-      const loaded = await bridgePromise(() => window.electronAPI.aiGetSettings());
-      if (!loaded || typeof loaded !== 'object' || !isAiProviderId(loaded.providerId)) return;
-      applyView(loaded);
-      setProviderId(loaded.providerId);
-      setModel(typeof loaded.model === 'string' ? loaded.model : '');
-      setBaseUrl(typeof loaded.baseUrl === 'string' ? loaded.baseUrl : '');
-    } catch {
-      // Hostile/unavailable bridge: keep the offline defaults.
+    if (!next) return;
+    const cachedView = useAiSettingsStore.getState().view;
+    if (cachedView) {
+      restoreSelection(cachedView);
+      return;
     }
+    const loaded = await loadSettings();
+    if (loaded) restoreSelection(loaded);
   };
 
   /**
@@ -233,10 +292,12 @@ export default function AiProviderSettingsSection() {
   };
 
   /**
-   * Removes the stored API key of the persisted provider document. The key is
+   * Removes the stored API key of the provider the editor shows. The key is
    * stored encrypted in main and only ever surfaced as `hasKey`/`keyHint`, so
-   * removal is the only way to undo a saved key from the UI. Best-effort: an
-   * unusable bridge surfaces as a save error and leaves the editor open.
+   * removal is the only way to undo a saved key from the UI. The key belongs
+   * to the selected provider, so the active provider is left alone when the
+   * two differ. Best-effort: an unusable bridge surfaces as a save error and
+   * leaves the editor open.
    * @returns {Promise<void>} Resolves once the flow settles.
    */
   const removeKey = async (): Promise<void> => {
@@ -244,7 +305,14 @@ export default function AiProviderSettingsSection() {
     setStatus(null);
     setError(null);
     try {
-      const updated = await bridgePromise(() => window.electronAPI.aiSetSettings({ providerId, clearKey: true }));
+      const active = !view || view.providerId === providerId;
+      const updated = await bridgePromise(() =>
+        window.electronAPI.aiSetSettings({
+          providerId,
+          clearKey: true,
+          ...(active ? {} : { activate: false }),
+        }),
+      );
       if (!updated || typeof updated !== 'object' || !isAiProviderId(updated.providerId)) {
         setError(t('settings.ai.saveFailed'));
         return;
@@ -260,28 +328,33 @@ export default function AiProviderSettingsSection() {
   };
 
   /**
-   * Persists the built-in rules choice (the offline fallback has no Connect
-   * button), moving the outgoing provider's config into its own slot without
-   * touching the recorded connection. Best-effort: a failed persist leaves the
+   * Persists the provider the user selected, so the editor restores it (and
+   * the connected provider it belongs to) on the next start. Selecting a
+   * remote provider never activates it for the Copilot - only the built-in
+   * rules engine, the offline fallback, switches the active provider exactly
+   * as before - so browsing the provider list cannot silently change the
+   * provider the Copilot plans with. Best-effort: a failed persist leaves the
    * editor usable.
    * @param {AIProviderId} id - The provider id to store.
    * @returns {Promise<void>} Resolves once the save settles.
    */
-  const persistProvider = async (id: AIProviderId): Promise<void> => {
+  const persistSelection = async (id: AIProviderId): Promise<void> => {
     try {
-      const updated = await bridgePromise(() => window.electronAPI.aiSetSettings({ providerId: id }));
-      if (!updated || typeof updated !== 'object' || !isAiProviderId(updated.providerId) || updated.providerId !== id) return;
+      const updated = await bridgePromise(() =>
+        window.electronAPI.aiSetSettings(id === 'rules' ? { providerId: id } : { providerId: id, activate: false }),
+      );
+      if (!updated || typeof updated !== 'object' || !isAiProviderId(updated.providerId)) return;
       applyView(updated);
     } catch {
-      // Persisting the fallback is best-effort; keep the editor usable.
+      // Persisting the selection is best-effort; keep the editor usable.
     }
   };
 
   /**
-   * Selects a provider for editing. Selecting never persists the choice (so a
-   * remote provider is never activated for Copilot until the user connects) and
-   * never connects: only the built-in rules engine — which has no Connect button
-   * and is the offline fallback — is saved on selection. The key/model/endpoint
+   * Selects a provider for editing. The choice is persisted (so the app comes
+   * back to it) but never activates a remote provider for the Copilot: only
+   * the built-in rules engine - which has no Connect button and is the
+   * offline fallback - is saved as the active provider. The key/model/endpoint
    * shown are resolved from that provider's own stored config, so switching
    * providers cannot leak the previous provider's saved-key state.
    * @param {AIProviderId} id - The provider to select.
@@ -295,7 +368,7 @@ export default function AiProviderSettingsSection() {
     const target = view ? viewForProvider(view, id) : null;
     setModel(target?.model ?? '');
     setBaseUrl(target?.baseUrl ?? '');
-    if (id === 'rules' && view?.providerId !== 'rules') void persistProvider(id);
+    void persistSelection(id);
   };
 
   const needsKey = AI_PROVIDERS_REQUIRING_KEY.has(providerId);
@@ -328,7 +401,7 @@ export default function AiProviderSettingsSection() {
     if (AI_PROVIDERS_REQUIRING_NETWORK.has(providerId)) {
       setProviderId('rules');
       setFellBackOffline(true);
-      void persistProvider('rules');
+      void persistSelection('rules');
     }
   }, [online, providerId]);
 

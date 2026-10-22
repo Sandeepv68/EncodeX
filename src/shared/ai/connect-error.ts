@@ -28,11 +28,12 @@ import type { AIProviderId } from './types';
 
 /**
  * The canonical reasons a connectivity test can fail. `offline` and `noKey`
- * are decided by the caller (they never reach a provider); the rest come from
- * a provider response or a transport failure.
+ * are decided by the caller (they never reach a provider); `noModel` is decided
+ * when no model could be resolved (neither configured nor reported by the
+ * provider); the rest come from a provider response or a transport failure.
  * @typedef {('invalidKey' | 'forbidden' | 'modelNotFound' | 'notFound' |
  *   'rateLimit' | 'quota' | 'badRequest' | 'serverError' | 'timeout' |
- *   'network' | 'emptyResponse' | 'noKey' | 'offline' | 'unknown')} AiConnectErrorReason
+ *   'network' | 'emptyResponse' | 'noKey' | 'noModel' | 'offline' | 'unknown')} AiConnectErrorReason
  */
 export type AiConnectErrorReason =
   | 'invalidKey'
@@ -47,6 +48,7 @@ export type AiConnectErrorReason =
   | 'network'
   | 'emptyResponse'
   | 'noKey'
+  | 'noModel'
   | 'offline'
   | 'unknown';
 
@@ -163,7 +165,12 @@ function classify(input: {
   const detail = (fields.message ?? '').toLowerCase();
 
   if (input.appCode === 'AI_RESPONSE_INVALID') return withStatus('emptyResponse', status);
-  if (input.appCode === 'AI_NOT_CONFIGURED') return withStatus('unknown', status);
+  if (input.appCode === 'AI_NOT_CONFIGURED') {
+    // "Not configured" covers two cases: no model could be resolved (the user
+    // left the model blank and the provider reported none) and a provider that
+    // needs no network connector. Only the first one is actionable.
+    return withStatus(lower.includes('model') ? 'noModel' : 'unknown', status);
+  }
 
   // Transport failures never carry an HTTP status: classify from the message.
   if (status === undefined) {

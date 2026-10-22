@@ -13,7 +13,6 @@
 
 import type { AIConnector, ConnectorId, ConnectorRequest, ConnectorResponse } from '../../shared/ai/connector';
 import type { AIProviderId } from '../../shared/ai/types';
-import { AI_DEFAULT_MODELS } from '../../shared/ai/settings';
 import { createError, ErrorCode } from '../../shared/errors';
 import { effectiveModel } from './settings';
 import type { AiServerSettings } from './settings';
@@ -190,28 +189,44 @@ function splitMessages(request: ConnectorRequest): { system: string; user: strin
 }
 
 /**
+ * Reads the model id a connector must send. A connector carries no built-in
+ * model: the id always comes from the user's configuration or from the
+ * provider's own model list, so a connector without one is a configuration
+ * error rather than something to paper over with a hardcoded name.
+ * @param {string | undefined} model - The configured model id.
+ * @param {string} provider - The provider id (used in the error message).
+ * @returns {string} The trimmed model id.
+ */
+function requireModel(model: string | undefined, provider: string): string {
+  const trimmed = (model ?? '').trim();
+  if (!trimmed) {
+    throw createError(ErrorCode.AI_NOT_CONFIGURED, `No model is configured for ${provider}.`);
+  }
+  return trimmed;
+}
+
+/**
  * Creates an OpenAI (or OpenAI-compatible) connector. When `baseUrl` is set the
  * request targets that host instead (OpenRouter, Groq, Ollama, LM Studio, ...).
  * @param {object} options - Configuration.
  * @param {string} options.apiKey - The API key.
- * @param {string} [options.model] - The model id.
+ * @param {string} options.model - The model id.
  * @param {string} [options.baseUrl] - OpenAI-compatible base URL override.
  * @param {FetchLike} [options.fetchImpl] - Injectable fetch.
  * @returns {AIConnector} The connector.
  */
 export function createOpenAICompatibleConnector(options: {
   apiKey: string;
-  model?: string;
+  model: string;
   baseUrl?: string;
   fetchImpl?: FetchLike;
 }): AIConnector {
   const fetchImpl = options.fetchImpl ?? (globalThis.fetch as FetchLike);
-  const model = options.model || AI_DEFAULT_MODELS.openai;
+  const model = requireModel(options.model, 'openai');
   const baseUrl = (options.baseUrl || 'https://api.openai.com/v1').replace(/\/+$/, '');
   const id: ConnectorId = options.baseUrl ? 'openai-compatible' : 'openai';
   return {
     id,
-    defaultModel: model,
     async complete(request: ConnectorRequest): Promise<ConnectorResponse> {
       const { system, user } = splitMessages(request);
       const messages = [...(system ? [{ role: 'system', content: system }] : []), { role: 'user', content: user }];
@@ -231,16 +246,15 @@ export function createOpenAICompatibleConnector(options: {
  * JSON is requested via the prompt (the planner extracts the object).
  * @param {object} options - Configuration.
  * @param {string} options.apiKey - The API key.
- * @param {string} [options.model] - The model id.
+ * @param {string} options.model - The model id.
  * @param {FetchLike} [options.fetchImpl] - Injectable fetch.
  * @returns {AIConnector} The connector.
  */
-export function createAnthropicConnector(options: { apiKey: string; model?: string; fetchImpl?: FetchLike }): AIConnector {
+export function createAnthropicConnector(options: { apiKey: string; model: string; fetchImpl?: FetchLike }): AIConnector {
   const fetchImpl = options.fetchImpl ?? (globalThis.fetch as FetchLike);
-  const model = options.model || AI_DEFAULT_MODELS.anthropic;
+  const model = requireModel(options.model, 'anthropic');
   return {
     id: 'anthropic',
-    defaultModel: model,
     async complete(request: ConnectorRequest): Promise<ConnectorResponse> {
       const { system, user } = splitMessages(request);
       const body: Record<string, unknown> = {
@@ -270,16 +284,15 @@ export function createAnthropicConnector(options: { apiKey: string; model?: stri
  * model returns a JSON object directly.
  * @param {object} options - Configuration.
  * @param {string} options.apiKey - The API key.
- * @param {string} [options.model] - The model id.
+ * @param {string} options.model - The model id.
  * @param {FetchLike} [options.fetchImpl] - Injectable fetch.
  * @returns {AIConnector} The connector.
  */
-export function createGeminiConnector(options: { apiKey: string; model?: string; fetchImpl?: FetchLike }): AIConnector {
+export function createGeminiConnector(options: { apiKey: string; model: string; fetchImpl?: FetchLike }): AIConnector {
   const fetchImpl = options.fetchImpl ?? (globalThis.fetch as FetchLike);
-  const model = options.model || AI_DEFAULT_MODELS.gemini;
+  const model = requireModel(options.model, 'gemini');
   return {
     id: 'gemini',
-    defaultModel: model,
     async complete(request: ConnectorRequest): Promise<ConnectorResponse> {
       const { system, user } = splitMessages(request);
       const generationConfig: Record<string, unknown> = {};
@@ -307,6 +320,10 @@ export function createGeminiConnector(options: { apiKey: string; model?: string;
 /**
  * Builds the connector named by the stored settings. `openai` becomes an
  * OpenAI-compatible connector when a `baseUrl` override is present.
+ *
+ * The settings must already carry a model id: resolve one with
+ * `resolveProviderModel` (the user's own model, else one from the provider's
+ * model list) before calling this.
  * @param {AiServerSettings} settings - The stored settings.
  * @param {string} apiKey - The decrypted API key.
  * @param {FetchLike} [fetchImpl] - Injectable fetch (tests).

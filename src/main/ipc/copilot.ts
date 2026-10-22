@@ -174,7 +174,7 @@ async function routeOperation(
   inputExt: string,
 ): Promise<RoutedOperation> {
   if (forced) return routeOperationDeterministic({ goal, operation: forced, inputExt });
-  const router = resolveLLMOperationRouter();
+  const router = await resolveLLMOperationRouter();
   if (router) {
     const routed = await router({
       goal,

@@ -13,7 +13,8 @@ import { app } from 'electron';
 import { createLLMOperationRouter } from '../../shared/ai/llm';
 import type { OperationRoutingRequest, RoutedOperation } from '../../shared/ai/llm';
 import { createConnectorFromSettings, isRemoteProvider } from './connectors';
-import { decryptApiKey, readAiSettings } from './settings';
+import { resolveProviderModel } from './model-resolution';
+import { decryptApiKey, effectiveModel, persistProviderModel, readAiSettings } from './settings';
 
 /**
  * The router seam the Copilot handler consumes: resolves a routed operation, or
@@ -24,16 +25,23 @@ export type OperationRouter = (request: OperationRoutingRequest) => Promise<Rout
 
 /**
  * Builds the operation router for the currently configured provider.
- * @returns {OperationRouter | null} The router, or null for offline planning.
+ *
+ * No model is hardcoded: the configured model is used, and when the user never
+ * chose one, a model is resolved from the provider's own model list and
+ * persisted, so the next request needs no extra round-trip.
+ * @returns {Promise<OperationRouter | null>} The router, or null for offline planning.
  */
-export function resolveLLMOperationRouter(): OperationRouter | null {
+export async function resolveLLMOperationRouter(): Promise<OperationRouter | null> {
   try {
     const userDataDir = app.getPath('userData');
     const settings = readAiSettings(userDataDir);
     if (!isRemoteProvider(settings.providerId)) return null;
     const apiKey = decryptApiKey(settings);
     if (!apiKey) return null;
-    const connector = createConnectorFromSettings(settings, apiKey);
+    const configured = effectiveModel(settings);
+    const model = configured || (await resolveProviderModel(settings, apiKey));
+    if (!configured) persistProviderModel(userDataDir, settings.providerId, model);
+    const connector = createConnectorFromSettings({ ...settings, model }, apiKey);
     return createLLMOperationRouter(connector, settings.providerId);
   } catch {
     return null;

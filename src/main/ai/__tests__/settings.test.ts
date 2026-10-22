@@ -219,6 +219,58 @@ describe('applyAiSettingsUpdate', () => {
       }),
     );
   });
+
+  it('records the selection without activating the provider', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o', apiKey: 'sk-1' });
+    const view = applyAiSettingsUpdate(userDataDir, { providerId: 'gemini', activate: false });
+    expect(view.providerId).toBe('openai');
+    expect(view.selectedProviderId).toBe('gemini');
+    const stored = readAiSettings(userDataDir);
+    expect(stored.providerId).toBe('openai');
+    expect(stored.selectedProviderId).toBe('gemini');
+    // The active provider keeps its own model and key.
+    expect(stored.model).toBe('gpt-4o');
+    expect(stored.key).toBe(Buffer.from('enc:sk-1').toString('base64'));
+  });
+
+  it('keeps the active provider and its connection when only the selection changes', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini', apiKey: 'sk-1' });
+    recordAiConnection(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini' });
+    const view = applyAiSettingsUpdate(userDataDir, { providerId: 'anthropic', activate: false });
+    expect(view.providerId).toBe('openai');
+    expect(view.activeConnection).toEqual(expect.objectContaining({ providerId: 'openai', model: 'gpt-4o-mini' }));
+    expect(readAiSettings(userDataDir)).toMatchObject({ connectedProvider: 'openai', connectedModel: 'gpt-4o-mini' });
+  });
+
+  it('stores a config change for a non-active provider in its own slot', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o', apiKey: 'sk-1' });
+    applyAiSettingsUpdate(userDataDir, { providerId: 'gemini', model: 'gemini-x', apiKey: 'sk-g', activate: false });
+    const stored = readAiSettings(userDataDir);
+    expect(stored.providerId).toBe('openai');
+    expect(stored.providers?.gemini).toMatchObject({ model: 'gemini-x' });
+    expect(stored.providers?.gemini?.key).toBe(Buffer.from('enc:sk-g').toString('base64'));
+  });
+
+  it('clears the key of a non-active provider without touching the active one', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o', apiKey: 'sk-1' });
+    applyAiSettingsUpdate(userDataDir, { providerId: 'gemini', apiKey: 'sk-g', activate: false });
+    const view = applyAiSettingsUpdate(userDataDir, { providerId: 'gemini', clearKey: true, activate: false });
+    const stored = readAiSettings(userDataDir);
+    // The now-empty slot is dropped, the active provider keeps its own key.
+    expect(stored.providers?.gemini).toBeUndefined();
+    expect(stored.key).toBe(Buffer.from('enc:sk-1').toString('base64'));
+    expect(view.providerId).toBe('openai');
+    expect(view.hasKey).toBe(true);
+  });
+
+  it('drops the connection when the connected provider own config changes', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini', apiKey: 'sk-1' });
+    recordAiConnection(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini' });
+    // The active (and connected) provider is edited, so the connection is stale.
+    const view = applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o', activate: false });
+    expect(view.connected).toBe(false);
+    expect(readAiSettings(userDataDir)).not.toHaveProperty('connectedAt');
+  });
 });
 
 describe('recordAiConnection', () => {
@@ -246,9 +298,12 @@ describe('recordAiConnection', () => {
 });
 
 describe('effectiveModel', () => {
-  it('prefers the user model, then the built-in default, then empty', () => {
+  it('returns the configured model when set', () => {
     expect(effectiveModel({ providerId: 'openai', model: 'custom', key: null })).toBe('custom');
-    expect(effectiveModel({ providerId: 'openai', model: '', key: null })).toBe('gpt-4o-mini');
+  });
+
+  it('returns an empty string when the model is blank', () => {
+    expect(effectiveModel({ providerId: 'openai', model: '', key: null })).toBe('');
     expect(effectiveModel({ providerId: 'rules', model: '', key: null })).toBe('');
   });
 });
