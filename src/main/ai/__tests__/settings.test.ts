@@ -21,6 +21,7 @@ import {
   decryptApiKey,
   effectiveModel,
   isEncryptionAvailable,
+  persistProviderModel,
   readAiSettings,
   recordAiConnection,
   writeAiSettings,
@@ -294,6 +295,45 @@ describe('recordAiConnection', () => {
     const view = recordAiConnection(userDataDir, { providerId: 'openai', model: '   ' });
     expect(view.connected).toBe(true);
     expect(view).not.toHaveProperty('connectedModel');
+  });
+});
+
+describe('persistProviderModel', () => {
+  it('stores a trimmed model on the active provider and keeps the connection', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini', apiKey: 'sk-1' });
+    recordAiConnection(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini' });
+
+    const view = persistProviderModel(userDataDir, 'openai', '  gpt-4o  ');
+
+    expect(view).toMatchObject({
+      providerId: 'openai',
+      model: 'gpt-4o',
+      connected: true,
+      connectedModel: 'gpt-4o-mini',
+    });
+    expect(readAiSettings(userDataDir)).toMatchObject({ model: 'gpt-4o', connectedProvider: 'openai' });
+  });
+
+  it('stores a model for a non-active provider without activating it', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini', apiKey: 'sk-1' });
+    recordAiConnection(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini' });
+
+    const view = persistProviderModel(userDataDir, 'gemini', ' gemini-3-flash ');
+
+    expect(view).toMatchObject({ providerId: 'openai', selectedProviderId: 'openai', connected: true });
+    const stored = readAiSettings(userDataDir);
+    expect(stored).toMatchObject({ providerId: 'openai', model: 'gpt-4o-mini', connectedProvider: 'openai' });
+    expect(stored.providers?.gemini).toMatchObject({ model: 'gemini-3-flash' });
+  });
+
+  it('ignores a blank model without rewriting the stored document', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o-mini', apiKey: 'sk-1' });
+    const before = fs.readFileSync(aiSettingsFilePath(userDataDir));
+
+    const view = persistProviderModel(userDataDir, 'openai', '   ');
+
+    expect(view.model).toBe('gpt-4o-mini');
+    expect(fs.readFileSync(aiSettingsFilePath(userDataDir))).toEqual(before);
   });
 });
 

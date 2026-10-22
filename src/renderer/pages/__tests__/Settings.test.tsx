@@ -535,6 +535,33 @@ describe('Settings', () => {
     expect(screen.queryByTestId('settings-ai')).not.toBeInTheDocument();
   });
 
+  it('keeps the offline defaults when the loaded settings are malformed', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({} as never);
+    renderSettings();
+    await waitFor(() => expect(window.electronAPI.aiGetSettings).toHaveBeenCalled());
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    expect(screen.getByTestId('settings-ai-provider-rules')).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('retries the background load after a rejected bridge call', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockRejectedValueOnce(new Error('bridge unavailable')).mockResolvedValueOnce({
+      providerId: 'openai',
+      model: 'gpt-4o',
+      hasKey: false,
+      keyHint: '',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: false,
+    });
+    renderSettings();
+    await waitFor(() => expect(window.electronAPI.aiGetSettings).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    await waitFor(() => expect(window.electronAPI.aiGetSettings).toHaveBeenCalledTimes(2));
+    expect(screen.getByTestId('settings-ai-provider-openai')).toHaveAttribute('aria-pressed', 'true');
+  });
+
   it('renders a provider button for every AI provider', async () => {
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
