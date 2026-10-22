@@ -1091,7 +1091,9 @@
       },
       "configure": "Configure AI provider",
       "locationNote": "AI providers are configured in Settings.",
-      "notConnected": "Not connected"
+      "notConnected": "Not connected",
+      "modelPlaceholderNoKey": "Add an API key to load models",
+      "modelNoKeyHelp": "Save your API key to list models from the provider."
     },
     "queryLabel": "Search phrase",
     "queryPlaceholder": "e.g. the part about pricing",

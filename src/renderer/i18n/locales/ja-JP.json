@@ -1091,7 +1091,9 @@
       },
       "configure": "AIプロバイダーを設定",
       "locationNote": "AIプロバイダーは「設定」で構成します。",
-      "notConnected": "未接続"
+      "notConnected": "未接続",
+      "modelPlaceholderNoKey": "モデルを読み込むには API キーを追加してください",
+      "modelNoKeyHelp": "API キーを保存すると、プロバイダーのモデルを一覧表示できます。"
     },
     "queryLabel": "検索フレーズ",
     "queryPlaceholder": "例: 価格設定の部分",

@@ -1091,7 +1091,9 @@
       },
       "configure": "Konfigurasikan pembekal AI",
       "locationNote": "Pembekal AI dikonfigurasikan dalam Tetapan.",
-      "notConnected": "Tidak bersambung"
+      "notConnected": "Tidak bersambung",
+      "modelPlaceholderNoKey": "Tambah kunci API untuk memuatkan model",
+      "modelNoKeyHelp": "Simpan kunci API anda untuk menyenaraikan model daripada pembekal."
     },
     "queryLabel": "Frasa carian",
     "queryPlaceholder": "cth. bahagian tentang harga",

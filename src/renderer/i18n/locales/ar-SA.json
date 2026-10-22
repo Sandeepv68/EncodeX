@@ -1091,7 +1091,9 @@
       },
       "configure": "ضبط مزوّد الذكاء الاصطناعي",
       "locationNote": "يتم إعداد مزوّدي الذكاء الاصطناعي في الإعدادات.",
-      "notConnected": "غير متصل"
+      "notConnected": "غير متصل",
+      "modelPlaceholderNoKey": "أضف مفتاح API لتحميل النماذج",
+      "modelNoKeyHelp": "احفظ مفتاح API الخاص بك لعرض نماذج المزوّد."
     },
     "queryLabel": "عبارة البحث",
     "queryPlaceholder": "مثال: الجزء المتعلّق بالتسعير",

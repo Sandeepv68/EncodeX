@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "AI සපයන්නන් සැකසුම් තුළ වින්‍යාස කරනු ලැබේ.",
   "copilot.ai.model": "ආකෘතිය",
   "copilot.ai.modelPlaceholder": "සපයන්නාගේ පෙරනිමිය",
+  "copilot.ai.modelPlaceholderNoKey": "ආකෘති පූරණය කිරීමට API යතුරක් එක් කරන්න",
+  "copilot.ai.modelNoKeyHelp": "සපයන්නාගේ ආකෘති ලැයිස්තුගත කිරීමට ඔබේ API යතුර සුරකින්න.",
   "copilot.ai.notConnected": "සම්බන්ධ කර නැත",
   "copilot.ai.privacy": "යවනු ලබන්නේ පරීක්ෂණ කරුණු සහ ඔබේ ඉලක්ක පෙළ පමණි; මාධ්‍ය ගොනු කිසි විටෙක උඩුගත නොකෙරේ.",
   "copilot.ai.provider": "සපයන්නා",

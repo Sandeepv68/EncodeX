@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "Ang mga AI provider ay naka-configure sa Settings.",
   "copilot.ai.model": "Modelo",
   "copilot.ai.modelPlaceholder": "Default ng provider",
+  "copilot.ai.modelPlaceholderNoKey": "Magdagdag ng API key para mag-load ng mga modelo",
+  "copilot.ai.modelNoKeyHelp": "I-save ang iyong API key para mailista ang mga modelo mula sa provider.",
   "copilot.ai.notConnected": "Walang koneksyon",
   "copilot.ai.privacy": "Tanging ang mga naprosesong impormasyon at ang teksto ng iyong layunin ang ipinapadala; hindi kailanman ina-upload ang mga media file.",
   "copilot.ai.provider": "Tagapagbigay",

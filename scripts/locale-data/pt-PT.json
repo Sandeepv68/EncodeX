@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "Os fornecedores de IA são configurados nas Definições.",
   "copilot.ai.model": "Modelo",
   "copilot.ai.modelPlaceholder": "Predefinição do fornecedor",
+  "copilot.ai.modelPlaceholderNoKey": "Adicione uma chave de API para carregar modelos",
+  "copilot.ai.modelNoKeyHelp": "Guarde a sua chave de API para listar os modelos do fornecedor.",
   "copilot.ai.notConnected": "Não ligado",
   "copilot.ai.privacy": "Apenas os dados da análise e o texto do seu objetivo são enviados; os ficheiros multimédia nunca são carregados.",
   "copilot.ai.provider": "Fornecedor",

@@ -1091,7 +1091,9 @@
       },
       "configure": "Configura provider IA",
       "locationNote": "I provider IA si configurano nelle Impostazioni.",
-      "notConnected": "Non connesso"
+      "notConnected": "Non connesso",
+      "modelPlaceholderNoKey": "Aggiungi una chiave API per caricare i modelli",
+      "modelNoKeyHelp": "Salva la chiave API per elencare i modelli del provider."
     },
     "queryLabel": "Frase di ricerca",
     "queryPlaceholder": "es. la parte sui prezzi",

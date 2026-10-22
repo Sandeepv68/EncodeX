@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "AIプロバイダーは「設定」で構成します。",
   "copilot.ai.model": "モデル",
   "copilot.ai.modelPlaceholder": "プロバイダーの既定",
+  "copilot.ai.modelPlaceholderNoKey": "モデルを読み込むには API キーを追加してください",
+  "copilot.ai.modelNoKeyHelp": "API キーを保存すると、プロバイダーのモデルを一覧表示できます。",
   "copilot.ai.notConnected": "未接続",
   "copilot.ai.privacy": "送信されるのは調査結果と目標テキストのみで、メディアファイルがアップロードされることはありません。",
   "copilot.ai.provider": "プロバイダー",

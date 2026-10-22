@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "AI-verskaffers word in Instellings opgestel.",
   "copilot.ai.model": "Model",
   "copilot.ai.modelPlaceholder": "Verskaffer-standaard",
+  "copilot.ai.modelPlaceholderNoKey": "Voeg 'n API-sleutel by om modelle te laai",
+  "copilot.ai.modelNoKeyHelp": "Stoor jou API-sleutel om modelle van die verskaffer te lys.",
   "copilot.ai.notConnected": "Nie gekoppel nie",
   "copilot.ai.privacy": "Slegs ondersoekfeite en jou doel teks word gestuur; media-lêers word nooit opgelaai nie.",
   "copilot.ai.provider": "Verskaffer",

@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "KI-leverandører konfigureres i Innstillinger.",
   "copilot.ai.model": "Modell",
   "copilot.ai.modelPlaceholder": "Leverandørens standard",
+  "copilot.ai.modelPlaceholderNoKey": "Legg til en API-nøkkel for å laste inn modeller",
+  "copilot.ai.modelNoKeyHelp": "Lagre API-nøkkelen din for å vise modeller fra leverandøren.",
   "copilot.ai.notConnected": "Ikke koblet",
   "copilot.ai.privacy": "Kun undersøkte data og målteksten din sendes; mediefiler lastes aldri opp.",
   "copilot.ai.provider": "Leverandør",

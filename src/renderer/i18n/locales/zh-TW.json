@@ -1091,7 +1091,9 @@
       },
       "configure": "設定 AI 提供者",
       "locationNote": "AI 提供者會在設定中設定。",
-      "notConnected": "未連線"
+      "notConnected": "未連線",
+      "modelPlaceholderNoKey": "新增 API 金鑰以載入模型",
+      "modelNoKeyHelp": "儲存您的 API 金鑰以列出提供者提供的模型。"
     },
     "queryLabel": "搜尋片語",
     "queryPlaceholder": "例如：關於定價的部分",

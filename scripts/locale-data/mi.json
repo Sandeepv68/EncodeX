@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "Ka whirihorahia ngā kaiwhakarato AI ki ngā Tautuhinga.",
   "copilot.ai.model": "Tauira",
   "copilot.ai.modelPlaceholder": "Taunoa a te kaiwhakarato",
+  "copilot.ai.modelPlaceholderNoKey": "Tāpiri he kī API hei uta i ngā tauira",
+  "copilot.ai.modelNoKeyHelp": "Rongoatia tō kī API kia rārangi ai ngā tauira mai i te kaiwhakarato.",
   "copilot.ai.notConnected": "Kore hono",
   "copilot.ai.privacy": "Ko ngā mēka tātari me te kuputuhi tino pai anake ka tukuna; kāore ngā kōnae pāpāho e tukuna ake.",
   "copilot.ai.provider": "Kaiwhakarato",

@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "Cumraítear soláthraithe AI sna Socruithe.",
   "copilot.ai.model": "Samhail",
   "copilot.ai.modelPlaceholder": "Réamhshocrú an tsoláthraí",
+  "copilot.ai.modelPlaceholderNoKey": "Cuir eochair API leis chun samhlacha a lódáil",
+  "copilot.ai.modelNoKeyHelp": "Sábháil d'eochair API chun samhlacha ón soláthraí a liostáil.",
   "copilot.ai.notConnected": "Gan nasc",
   "copilot.ai.privacy": "Ní sheoltar ach fíricí an anailíse agus téacs do chuspóra; ní uaslódáiltear comhaid meán riamh.",
   "copilot.ai.provider": "Soláthraí",

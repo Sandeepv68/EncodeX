@@ -1091,7 +1091,9 @@
       },
       "configure": "Cumraigh soláthraí AI",
       "locationNote": "Cumraítear soláthraithe AI sna Socruithe.",
-      "notConnected": "Gan nasc"
+      "notConnected": "Gan nasc",
+      "modelPlaceholderNoKey": "Cuir eochair API leis chun samhlacha a lódáil",
+      "modelNoKeyHelp": "Sábháil d'eochair API chun samhlacha ón soláthraí a liostáil."
     },
     "queryLabel": "Frása cuardaigh",
     "queryPlaceholder": "m.sh. an chuid faoi phraghsáil",

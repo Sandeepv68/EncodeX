@@ -1091,7 +1091,9 @@
       },
       "configure": "AI-verskaffer instel",
       "locationNote": "AI-verskaffers word in Instellings opgestel.",
-      "notConnected": "Nie gekoppel nie"
+      "notConnected": "Nie gekoppel nie",
+      "modelPlaceholderNoKey": "Voeg 'n API-sleutel by om modelle te laai",
+      "modelNoKeyHelp": "Stoor jou API-sleutel om modelle van die verskaffer te lys."
     },
     "queryLabel": "Soekfrase",
     "queryPlaceholder": "bv. die deel oor pryse",

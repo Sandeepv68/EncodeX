@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "Dostawcy AI są konfigurowani w Ustawieniach.",
   "copilot.ai.model": "Model",
   "copilot.ai.modelPlaceholder": "Domyślny dostawcy",
+  "copilot.ai.modelPlaceholderNoKey": "Dodaj klucz API, aby wczytać modele",
+  "copilot.ai.modelNoKeyHelp": "Zapisz klucz API, aby wyświetlić modele dostawcy.",
   "copilot.ai.notConnected": "Niepołączono",
   "copilot.ai.privacy": "Wysyłane są tylko dane analizy i tekst celu; pliki multimedialne nigdy nie są wysyłane.",
   "copilot.ai.provider": "Dostawca",

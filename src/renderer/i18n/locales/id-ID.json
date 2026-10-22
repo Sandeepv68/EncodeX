@@ -1091,7 +1091,9 @@
       },
       "configure": "Konfigurasi penyedia AI",
       "locationNote": "Penyedia AI dikonfigurasi di Pengaturan.",
-      "notConnected": "Tidak terhubung"
+      "notConnected": "Tidak terhubung",
+      "modelPlaceholderNoKey": "Tambahkan kunci API untuk memuat model",
+      "modelNoKeyHelp": "Simpan kunci API Anda untuk menampilkan model dari penyedia."
     },
     "queryLabel": "Frasa pencarian",
     "queryPlaceholder": "mis. bagian tentang harga",

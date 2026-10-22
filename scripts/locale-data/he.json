@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "ספקי בינה מלאכותית מוגדרים בהגדרות.",
   "copilot.ai.model": "מודל",
   "copilot.ai.modelPlaceholder": "ברירת מחדל של הספק",
+  "copilot.ai.modelPlaceholderNoKey": "הוסף מפתח API כדי לטעון מודלים",
+  "copilot.ai.modelNoKeyHelp": "שמור את מפתח ה-API שלך כדי להציג את המודלים של הספק.",
   "copilot.ai.notConnected": "לא מחובר",
   "copilot.ai.privacy": "נשלחים רק נתוני הבדיקה וטקסט המטרה שלך; קבצי מדיה לעולם לא מועלים.",
   "copilot.ai.provider": "ספק",

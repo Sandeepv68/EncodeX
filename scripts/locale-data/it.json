@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "I provider IA si configurano nelle Impostazioni.",
   "copilot.ai.model": "Modello",
   "copilot.ai.modelPlaceholder": "Predefinito del provider",
+  "copilot.ai.modelPlaceholderNoKey": "Aggiungi una chiave API per caricare i modelli",
+  "copilot.ai.modelNoKeyHelp": "Salva la chiave API per elencare i modelli del provider.",
   "copilot.ai.notConnected": "Non connesso",
   "copilot.ai.privacy": "Vengono inviati solo i dati dell’analisi e il testo del tuo obiettivo; i file non vengono mai caricati.",
   "copilot.ai.provider": "Fornitore",

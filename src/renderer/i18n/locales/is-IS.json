@@ -1091,7 +1091,9 @@
       },
       "configure": "Skerpðu AI-þjónustuaðila",
       "locationNote": "AI-þjónustuaðilar eru stilltir í Stillingum.",
-      "notConnected": "Ekki tengt"
+      "notConnected": "Ekki tengt",
+      "modelPlaceholderNoKey": "Bættu við API-lykli til að hlaða líkön",
+      "modelNoKeyHelp": "Vistaðu API-lykilinn þinn til að lista líkön frá þjónustuaðilanum."
     },
     "queryLabel": "Leitarorð",
     "queryPlaceholder": "t.d. hlutann um verðlagningu",

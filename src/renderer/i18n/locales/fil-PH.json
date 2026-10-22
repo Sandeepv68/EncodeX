@@ -1091,7 +1091,9 @@
       },
       "configure": "I-configure ang AI provider",
       "locationNote": "Ang mga AI provider ay naka-configure sa Settings.",
-      "notConnected": "Walang koneksyon"
+      "notConnected": "Walang koneksyon",
+      "modelPlaceholderNoKey": "Magdagdag ng API key para mag-load ng mga modelo",
+      "modelNoKeyHelp": "I-save ang iyong API key para mailista ang mga modelo mula sa provider."
     },
     "queryLabel": "Pariralang hahanapin",
     "queryPlaceholder": "hal. ang bahagi tungkol sa presyo",

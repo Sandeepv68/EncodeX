@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "AI 提供者會在設定中設定。",
   "copilot.ai.model": "模型",
   "copilot.ai.modelPlaceholder": "提供者預設",
+  "copilot.ai.modelPlaceholderNoKey": "新增 API 金鑰以載入模型",
+  "copilot.ai.modelNoKeyHelp": "儲存您的 API 金鑰以列出提供者提供的模型。",
   "copilot.ai.notConnected": "未連線",
   "copilot.ai.privacy": "僅會傳送分析資訊與您的目標文字；絕不會上傳媒體檔案。",
   "copilot.ai.provider": "提供者",

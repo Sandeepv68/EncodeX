@@ -1091,7 +1091,9 @@
       },
       "configure": "AI-nik inissisimasut aaqqissuerit",
       "locationNote": "AI-nik inissisimasut Aaqqissuutissat iluani aaqqissorneqarput.",
-      "notConnected": "Atortuumaanngillat"
+      "notConnected": "Atortuumaanngillat",
+      "modelPlaceholderNoKey": "API-p matuaraa ilannguk naatsorsueqaat atorniarlugit",
+      "modelNoKeyHelp": "API-p matuaraa toqqoruk inissisimasunit naatsorsueqaat takuniarlugit."
     },
     "queryLabel": "Ujarleqqissaarut",
     "queryPlaceholder": "soorlu prisinik oqaluttuassaaq",

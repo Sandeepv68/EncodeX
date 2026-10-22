@@ -121,7 +121,6 @@ export default function AiProviderSettingsSection() {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [advanced, setAdvanced] = useState(false);
   const [advancedByProvider, setAdvancedByProvider] = useState<Partial<Record<AIProviderId, boolean>>>({});
   const [modelOptions, setModelOptions] = useState<string[]>([]);
   const [modelsLoading, setModelsLoading] = useState(false);
@@ -361,11 +360,34 @@ export default function AiProviderSettingsSection() {
    * @param {AIProviderId} id - The provider to select.
    * @returns {void}
    */
+  const selectProvider = (id: AIProviderId): void => {
+    setProviderId(id);
+    setApiKey('');
+    setStatus(null);
+    setError(null);
+    setModelOptions([]);
+    const target = view ? viewForProvider(view, id) : null;
+    setModel(target?.model ?? '');
+    setBaseUrl(target?.baseUrl ?? '');
+    void persistSelection(id);
+  };
+
   const toggleAdvanced = (): void => {
     setAdvancedByProvider((prev) => ({ ...prev, [providerId]: !prev[providerId] }));
   };
 
   const advanced = advancedByProvider[providerId] === true;
+
+  const needsKey = AI_PROVIDERS_REQUIRING_KEY.has(providerId);
+  const keyUrl = AI_PROVIDER_KEY_URLS[providerId];
+  const showBaseUrl = providerId === 'openai' || providerId === 'local';
+  const resolvedView = view ? viewForProvider(view, providerId) : null;
+  const active = activeConnectionOf(view);
+  const showConnected = active?.providerId === providerId;
+  const dirty = showConnected && (apiKey !== '' || model !== (resolvedView?.model ?? '') || baseUrl !== (resolvedView?.baseUrl ?? ''));
+  const connectedNow = showConnected && !error && !dirty;
+  const keySaved = resolvedView?.hasKey === true && apiKey === '';
+  const configurable = providerId !== 'rules';
   const hasKeyForProvider = resolvedView?.hasKey === true;
   const canListModels = needsKey ? hasKeyForProvider || apiKey.trim().length > 0 : true;
 

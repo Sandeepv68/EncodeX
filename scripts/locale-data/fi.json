@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "Tekoälyn tarjoajat määritetään asetuksissa.",
   "copilot.ai.model": "Malli",
   "copilot.ai.modelPlaceholder": "Tarjoajan oletus",
+  "copilot.ai.modelPlaceholderNoKey": "Lisää API-avain ladataksesi malleja",
+  "copilot.ai.modelNoKeyHelp": "Tallenna API-avaimesi, jotta voit luetella tarjoajan mallit.",
   "copilot.ai.notConnected": "Ei yhteyttä",
   "copilot.ai.privacy": "Vain tutkitut tiedot ja tavoitteesi teksti lähetetään; mediatiedostoja ei koskaan lähetetä.",
   "copilot.ai.provider": "Tarjoaja",

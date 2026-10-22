@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "Pembekal AI dikonfigurasikan dalam Tetapan.",
   "copilot.ai.model": "Model",
   "copilot.ai.modelPlaceholder": "Lalai pembekal",
+  "copilot.ai.modelPlaceholderNoKey": "Tambah kunci API untuk memuatkan model",
+  "copilot.ai.modelNoKeyHelp": "Simpan kunci API anda untuk menyenaraikan model daripada pembekal.",
   "copilot.ai.notConnected": "Tidak bersambung",
   "copilot.ai.privacy": "Hanya fakta pemeriksaan dan teks matlamat anda yang dihantar; fail media tidak pernah dimuat naik.",
   "copilot.ai.provider": "Pembekal",

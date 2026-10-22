@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "AI-nik inissisimasut Aaqqissuutissat iluani aaqqissorneqarput.",
   "copilot.ai.model": "Naatsorsueqaat",
   "copilot.ai.modelPlaceholder": "Inissisimasut naapertorlugu piffissaq",
+  "copilot.ai.modelPlaceholderNoKey": "API-p matuaraa ilannguk naatsorsueqaat atorniarlugit",
+  "copilot.ai.modelNoKeyHelp": "API-p matuaraa toqqoruk inissisimasunit naatsorsueqaat takuniarlugit.",
   "copilot.ai.notConnected": "Atortuumaanngillat",
   "copilot.ai.privacy": "Misissorsuuummata ilusissat aamma isumassarsiannit allassimasat naapertuutissaatigineqarput; mediafilerit nammineeersissutigineqanngisaannarput.",
   "copilot.ai.provider": "Inissisimasut",

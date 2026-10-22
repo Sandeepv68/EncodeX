@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "AI प्रदायकहरू सेटिङ्समा कन्फिगर गरिन्छन्।",
   "copilot.ai.model": "मोडेल",
   "copilot.ai.modelPlaceholder": "प्रदायकको पूर्वनिर्धारित",
+  "copilot.ai.modelPlaceholderNoKey": "मोडेलहरू लोड गर्न API कुञ्जी थप्नुहोस्",
+  "copilot.ai.modelNoKeyHelp": "प्रदायकका मोडेलहरू सूचीबद्ध गर्न आफ्नो API कुञ्जी सुरक्षित गर्नुहोस्।",
   "copilot.ai.notConnected": "जोडिएको छैन",
   "copilot.ai.privacy": "जाँचका तथ्यहरू र तपाईंको लक्ष्य पाठ मात्र पठाइन्छ; मिडिया फाइलहरू कहिल्यै अपलोड हुँदैनन्।",
   "copilot.ai.provider": "प्रदायक",

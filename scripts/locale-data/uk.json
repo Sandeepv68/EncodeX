@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "ШІ-провайдери налаштовуються в параметрах.",
   "copilot.ai.model": "Модель",
   "copilot.ai.modelPlaceholder": "За замовчуванням у провайдера",
+  "copilot.ai.modelPlaceholderNoKey": "Додайте API-ключ, щоб завантажити моделі",
+  "copilot.ai.modelNoKeyHelp": "Збережіть свій API-ключ, щоб переглянути моделі провайдера.",
   "copilot.ai.notConnected": "Не підключено",
   "copilot.ai.privacy": "Надсилаються лише дані аналізу та текст вашої мети; медіафайли ніколи не завантажуються.",
   "copilot.ai.provider": "Провайдер",

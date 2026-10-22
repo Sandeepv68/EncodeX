@@ -1091,7 +1091,9 @@
       },
       "configure": "Konfigurer KI-leverandør",
       "locationNote": "KI-leverandører konfigureres i Innstillinger.",
-      "notConnected": "Ikke koblet"
+      "notConnected": "Ikke koblet",
+      "modelPlaceholderNoKey": "Legg til en API-nøkkel for å laste inn modeller",
+      "modelNoKeyHelp": "Lagre API-nøkkelen din for å vise modeller fra leverandøren."
     },
     "queryLabel": "Søkefrase",
     "queryPlaceholder": "f.eks. delen om priser",

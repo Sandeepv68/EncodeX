@@ -1091,7 +1091,9 @@
       },
       "configure": "Skonfiguruj dostawcę AI",
       "locationNote": "Dostawcy AI są konfigurowani w Ustawieniach.",
-      "notConnected": "Niepołączono"
+      "notConnected": "Niepołączono",
+      "modelPlaceholderNoKey": "Dodaj klucz API, aby wczytać modele",
+      "modelNoKeyHelp": "Zapisz klucz API, aby wyświetlić modele dostawcy."
     },
     "queryLabel": "Fraza wyszukiwania",
     "queryPlaceholder": "np. część o cenach",

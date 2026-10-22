@@ -1091,7 +1091,9 @@
       },
       "configure": "กำหนดค่าผู้ให้บริการ AI",
       "locationNote": "ผู้ให้บริการ AI ถูกกำหนดค่าในการตั้งค่า",
-      "notConnected": "ไม่ได้เชื่อมต่อ"
+      "notConnected": "ไม่ได้เชื่อมต่อ",
+      "modelPlaceholderNoKey": "เพิ่มคีย์ API เพื่อโหลดโมเดล",
+      "modelNoKeyHelp": "บันทึกคีย์ API ของคุณเพื่อแสดงรายการโมเดลจากผู้ให้บริการ"
     },
     "queryLabel": "คำค้นหา",
     "queryPlaceholder": "เช่น ส่วนเกี่ยวกับราคา",

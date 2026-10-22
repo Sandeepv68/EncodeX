@@ -1091,7 +1091,9 @@
       },
       "configure": "AI-provider configureren",
       "locationNote": "AI-providers worden geconfigureerd in Instellingen.",
-      "notConnected": "Niet verbonden"
+      "notConnected": "Niet verbonden",
+      "modelPlaceholderNoKey": "Voeg een API-sleutel toe om modellen te laden",
+      "modelNoKeyHelp": "Sla uw API-sleutel op om modellen van de provider te vermelden."
     },
     "queryLabel": "Zoekterm",
     "queryPlaceholder": "bijv. het deel over prijzen",

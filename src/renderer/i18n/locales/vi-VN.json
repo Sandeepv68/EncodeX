@@ -1091,7 +1091,9 @@
       },
       "configure": "Định cấu hình nhà cung cấp AI",
       "locationNote": "Các nhà cung cấp AI được định cấu hình trong Cài đặt.",
-      "notConnected": "Chưa kết nối"
+      "notConnected": "Chưa kết nối",
+      "modelPlaceholderNoKey": "Thêm khóa API để tải mô hình",
+      "modelNoKeyHelp": "Lưu khóa API của bạn để liệt kê các mô hình từ nhà cung cấp."
     },
     "queryLabel": "Cụm từ tìm kiếm",
     "queryPlaceholder": "vd: phần về định giá",

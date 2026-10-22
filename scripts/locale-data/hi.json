@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "AI प्रदाताओं को सेटिंग्स में कॉन्फ़िगर किया जाता है।",
   "copilot.ai.model": "मॉडल",
   "copilot.ai.modelPlaceholder": "प्रदाता का डिफ़ॉल्ट",
+  "copilot.ai.modelPlaceholderNoKey": "मॉडल लोड करने के लिए API कुंजी जोड़ें",
+  "copilot.ai.modelNoKeyHelp": "प्रदाता के मॉडल की सूची देखने के लिए अपनी API कुंजी सहेजें।",
   "copilot.ai.notConnected": "कनेक्टेड नहीं है",
   "copilot.ai.privacy": "केवल जांच तथ्य और आपके लक्ष्य का पाठ भेजा जाता है; मीडिया फ़ाइलें कभी अपलोड नहीं की जातीं।",
   "copilot.ai.provider": "प्रदाता",

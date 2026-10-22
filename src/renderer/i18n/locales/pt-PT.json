@@ -1091,7 +1091,9 @@
       },
       "configure": "Configurar fornecedor de IA",
       "locationNote": "Os fornecedores de IA são configurados nas Definições.",
-      "notConnected": "Não ligado"
+      "notConnected": "Não ligado",
+      "modelPlaceholderNoKey": "Adicione uma chave de API para carregar modelos",
+      "modelNoKeyHelp": "Guarde a sua chave de API para listar os modelos do fornecedor."
     },
     "queryLabel": "Frase de pesquisa",
     "queryPlaceholder": "por exemplo, a parte sobre preços",

@@ -1091,7 +1091,9 @@
       },
       "configure": "AI 공급자 구성",
       "locationNote": "AI 공급자는 설정에서 구성됩니다.",
-      "notConnected": "연결되지 않음"
+      "notConnected": "연결되지 않음",
+      "modelPlaceholderNoKey": "모델을 불러오려면 API 키를 추가하세요",
+      "modelNoKeyHelp": "API 키를 저장하면 공급자의 모델을 나열할 수 있습니다."
     },
     "queryLabel": "검색 구문",
     "queryPlaceholder": "예: 가격 책정에 관한 부분",

@@ -69,6 +69,8 @@
   "copilot.ai.locationNote": "AI-leverantörer konfigureras i Inställningar.",
   "copilot.ai.model": "Modell",
   "copilot.ai.modelPlaceholder": "Leverantörens standard",
+  "copilot.ai.modelPlaceholderNoKey": "Lägg till en API-nyckel för att läsa in modeller",
+  "copilot.ai.modelNoKeyHelp": "Spara din API-nyckel för att visa modeller från leverantören.",
   "copilot.ai.notConnected": "Inte ansluten",
   "copilot.ai.privacy": "Endast analysdata och måltexten skickas; mediafiler laddas aldrig upp.",
   "copilot.ai.provider": "Leverantör",
