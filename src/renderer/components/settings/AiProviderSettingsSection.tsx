@@ -618,7 +618,9 @@ export default function AiProviderSettingsSection() {
                       renderInput={(params) => (
                         <McpField
                           {...params}
-                          placeholder={needsKey && !canListModels ? t('settings.ai.modelPlaceholderNoKey') : t('settings.ai.modelPlaceholder')}
+                          placeholder={
+                            needsKey && !canListModels ? t('settings.ai.modelPlaceholderNoKey') : t('settings.ai.modelPlaceholder')
+                          }
                           helperText={needsKey && !canListModels ? t('settings.ai.modelNoKeyHelp') : undefined}
                           slotProps={{
                             ...params.slotProps,
