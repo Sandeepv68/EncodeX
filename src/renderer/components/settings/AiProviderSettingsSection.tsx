@@ -179,6 +179,13 @@ export default function AiProviderSettingsSection() {
     return pending;
   };
 
+  useEffect(() => {
+    // Restore the persisted selection in the background when the app did not
+    // hydrate a mirror before this page mounted. The editor itself stays
+    // collapsed until the user asks for it.
+    if (!initialView) void loadSettings();
+  }, []);
+
   /**
    * Restores the persisted provider selection into the form: the tile the user
    * selected last becomes the selected one, showing that provider's own model

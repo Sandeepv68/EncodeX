@@ -735,7 +735,9 @@ describe('Settings', () => {
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.change(screen.getByLabelText('settings.ai.apiKey'), { target: { value: 'sk-test' } });
     fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
     const model = screen.getByRole('combobox', { name: 'settings.ai.model' });
     await user.click(model);
     const listbox = await screen.findByRole('listbox');
@@ -777,12 +779,28 @@ describe('Settings', () => {
     spy.mockRestore();
   });
 
+  it('disables model suggestions until an API key is available', async () => {
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    const model = screen.getByRole('combobox', { name: 'settings.ai.model' });
+    expect(model).toBeDisabled();
+    expect(screen.getByText('settings.ai.modelNoKeyHelp')).toBeInTheDocument();
+    expect(window.electronAPI.aiListModels).not.toHaveBeenCalled();
+    fireEvent.change(screen.getByLabelText('settings.ai.apiKey'), { target: { value: 'sk-test' } });
+    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
+    expect(model).toBeEnabled();
+  });
+
   it('keeps the model field usable when the provider list fetch fails', async () => {
     vi.mocked(window.electronAPI.aiListModels).mockRejectedValue(new Error('offline'));
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.change(screen.getByLabelText('settings.ai.apiKey'), { target: { value: 'sk-test' } });
     fireEvent.click(screen.getByTestId('settings-ai-advanced'));
     await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
     const model = screen.getByRole('combobox', { name: 'settings.ai.model' });
@@ -797,6 +815,7 @@ describe('Settings', () => {
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.change(screen.getByLabelText('settings.ai.apiKey'), { target: { value: 'sk-test' } });
     fireEvent.click(screen.getByTestId('settings-ai-advanced'));
     await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
     expect(screen.getByRole('combobox', { name: 'settings.ai.model' })).toBeEnabled();
@@ -1072,7 +1091,6 @@ describe('Settings', () => {
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
     fireEvent.click(screen.getByTestId('settings-ai-advanced'));
-    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
     await waitFor(() => expect(screen.getByRole('textbox', { name: 'settings.ai.baseUrl' })).toBeInTheDocument());
     const base = screen.getByRole('textbox', { name: 'settings.ai.baseUrl' }) as HTMLInputElement;
     await waitFor(() => expect(base).toBeEnabled());
