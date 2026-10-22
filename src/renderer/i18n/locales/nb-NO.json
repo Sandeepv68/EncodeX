@@ -641,6 +641,8 @@
       },
       "model": "Modell",
       "modelPlaceholder": "Leverandørens standard",
+      "modelPlaceholderNoKey": "Legg til en API-nøkkel for å laste inn modeller",
+      "modelNoKeyHelp": "Lagre API-nøkkelen din for å vise modeller fra leverandøren.",
       "apiKey": "API-nøkkel",
       "configure": "Konfigurer KI-leverandør",
       "apiKeyPlaceholder": "Lim inn API-nøkkelen din",
@@ -1091,9 +1093,7 @@
       },
       "configure": "Konfigurer KI-leverandør",
       "locationNote": "KI-leverandører konfigureres i Innstillinger.",
-      "notConnected": "Ikke koblet",
-      "modelPlaceholderNoKey": "Legg til en API-nøkkel for å laste inn modeller",
-      "modelNoKeyHelp": "Lagre API-nøkkelen din for å vise modeller fra leverandøren."
+      "notConnected": "Ikke koblet"
     },
     "queryLabel": "Søkefrase",
     "queryPlaceholder": "f.eks. delen om priser",

@@ -641,6 +641,8 @@
       },
       "model": "Naatsorsueqaat",
       "modelPlaceholder": "Inissisimasut naapertorlugu piffissaq",
+      "modelPlaceholderNoKey": "API-p matuaraa ilannguk naatsorsueqaat atorniarlugit",
+      "modelNoKeyHelp": "API-p matuaraa toqqoruk inissisimasunit naatsorsueqaat takuniarlugit.",
       "apiKey": "API-p matuaraat",
       "configure": "AI-nik inissisimasut aaqqissuerit",
       "apiKeyPlaceholder": "API-p matuaraatit ilalugit",
@@ -1091,9 +1093,7 @@
       },
       "configure": "AI-nik inissisimasut aaqqissuerit",
       "locationNote": "AI-nik inissisimasut Aaqqissuutissat iluani aaqqissorneqarput.",
-      "notConnected": "Atortuumaanngillat",
-      "modelPlaceholderNoKey": "API-p matuaraa ilannguk naatsorsueqaat atorniarlugit",
-      "modelNoKeyHelp": "API-p matuaraa toqqoruk inissisimasunit naatsorsueqaat takuniarlugit."
+      "notConnected": "Atortuumaanngillat"
     },
     "queryLabel": "Ujarleqqissaarut",
     "queryPlaceholder": "soorlu prisinik oqaluttuassaaq",

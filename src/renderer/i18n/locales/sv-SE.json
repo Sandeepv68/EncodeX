@@ -641,6 +641,8 @@
       },
       "model": "Modell",
       "modelPlaceholder": "Leverantörens standard",
+      "modelPlaceholderNoKey": "Lägg till en API-nyckel för att läsa in modeller",
+      "modelNoKeyHelp": "Spara din API-nyckel för att visa modeller från leverantören.",
       "apiKey": "API-nyckel",
       "configure": "Konfigurera AI-leverantör",
       "apiKeyPlaceholder": "Klistra in din API-nyckel",
@@ -1091,9 +1093,7 @@
       },
       "configure": "Konfigurera AI-leverantör",
       "locationNote": "AI-leverantörer konfigureras i Inställningar.",
-      "notConnected": "Inte ansluten",
-      "modelPlaceholderNoKey": "Lägg till en API-nyckel för att läsa in modeller",
-      "modelNoKeyHelp": "Spara din API-nyckel för att visa modeller från leverantören."
+      "notConnected": "Inte ansluten"
     },
     "queryLabel": "Sökfras",
     "queryPlaceholder": "t.ex. delen om prissättning",

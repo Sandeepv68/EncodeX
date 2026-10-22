@@ -641,6 +641,8 @@
       },
       "model": "Model",
       "modelPlaceholder": "Default penyedia",
+      "modelPlaceholderNoKey": "Tambahkan kunci API untuk memuat model",
+      "modelNoKeyHelp": "Simpan kunci API Anda untuk menampilkan model dari penyedia.",
       "apiKey": "Kunci API",
       "configure": "Konfigurasi penyedia AI",
       "apiKeyPlaceholder": "Tempel kunci API Anda",
@@ -1091,9 +1093,7 @@
       },
       "configure": "Konfigurasi penyedia AI",
       "locationNote": "Penyedia AI dikonfigurasi di Pengaturan.",
-      "notConnected": "Tidak terhubung",
-      "modelPlaceholderNoKey": "Tambahkan kunci API untuk memuat model",
-      "modelNoKeyHelp": "Simpan kunci API Anda untuk menampilkan model dari penyedia."
+      "notConnected": "Tidak terhubung"
     },
     "queryLabel": "Frasa pencarian",
     "queryPlaceholder": "mis. bagian tentang harga",

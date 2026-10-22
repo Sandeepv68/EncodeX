@@ -641,6 +641,8 @@
       },
       "model": "Tauira",
       "modelPlaceholder": "Taunoa a te kaiwhakarato",
+      "modelPlaceholderNoKey": "Tāpiri he kī API hei uta i ngā tauira",
+      "modelNoKeyHelp": "Rongoatia tō kī API kia rārangi ai ngā tauira mai i te kaiwhakarato.",
       "apiKey": "Kī API",
       "configure": "Whirihora i te kaiwhakarato AI",
       "apiKeyPlaceholder": "Whakapiri atu i tō kī API",
@@ -1091,9 +1093,7 @@
       },
       "configure": "Whirihora i te kaiwhakarato AI",
       "locationNote": "Ka whirihorahia ngā kaiwhakarato AI ki ngā Tautuhinga.",
-      "notConnected": "Kore hono",
-      "modelPlaceholderNoKey": "Tāpiri he kī API hei uta i ngā tauira",
-      "modelNoKeyHelp": "Rongoatia tō kī API kia rārangi ai ngā tauira mai i te kaiwhakarato."
+      "notConnected": "Kore hono"
     },
     "queryLabel": "Kīanga rapu",
     "queryPlaceholder": "hei tauira, te wāhanga mō te utu",

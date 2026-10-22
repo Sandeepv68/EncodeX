@@ -641,6 +641,8 @@
       },
       "model": "מודל",
       "modelPlaceholder": "ברירת מחדל של הספק",
+      "modelPlaceholderNoKey": "הוסף מפתח API כדי לטעון מודלים",
+      "modelNoKeyHelp": "שמור את מפתח ה-API שלך כדי להציג את המודלים של הספק.",
       "apiKey": "מפתח API",
       "configure": "הגדרת ספק בינה מלאכותית",
       "apiKeyPlaceholder": "הדבק את מפתח ה-API שלך",
@@ -1091,9 +1093,7 @@
       },
       "configure": "הגדרת ספק בינה מלאכותית",
       "locationNote": "ספקי בינה מלאכותית מוגדרים בהגדרות.",
-      "notConnected": "לא מחובר",
-      "modelPlaceholderNoKey": "הוסף מפתח API כדי לטעון מודלים",
-      "modelNoKeyHelp": "שמור את מפתח ה-API שלך כדי להציג את המודלים של הספק."
+      "notConnected": "לא מחובר"
     },
     "queryLabel": "ביטוי חיפוש",
     "queryPlaceholder": "למשל: החלק על התמחור",

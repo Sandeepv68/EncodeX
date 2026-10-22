@@ -641,6 +641,8 @@
       },
       "model": "Modello",
       "modelPlaceholder": "Predefinito del provider",
+      "modelPlaceholderNoKey": "Aggiungi una chiave API per caricare i modelli",
+      "modelNoKeyHelp": "Salva la chiave API per elencare i modelli del provider.",
       "apiKey": "Chiave API",
       "configure": "Configura provider IA",
       "apiKeyPlaceholder": "Incolla la tua chiave API",
@@ -1091,9 +1093,7 @@
       },
       "configure": "Configura provider IA",
       "locationNote": "I provider IA si configurano nelle Impostazioni.",
-      "notConnected": "Non connesso",
-      "modelPlaceholderNoKey": "Aggiungi una chiave API per caricare i modelli",
-      "modelNoKeyHelp": "Salva la chiave API per elencare i modelli del provider."
+      "notConnected": "Non connesso"
     },
     "queryLabel": "Frase di ricerca",
     "queryPlaceholder": "es. la parte sui prezzi",

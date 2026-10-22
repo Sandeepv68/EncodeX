@@ -641,6 +641,8 @@
       },
       "model": "ໂມເດວ",
       "modelPlaceholder": "ຄ່າເລີ່ມຕົ້ນຂອງຜູ້ໃຫ້ບໍລິການ",
+      "modelPlaceholderNoKey": "ເພີ່ມຄີ API ເພື່ອໂຫຼດໂມເດວ",
+      "modelNoKeyHelp": "ບັນທຶກຄີ API ຂອງທ່ານ ເພື່ອສະແດງລາຍຊື່ໂມເດວຈາກຜູ້ໃຫ້ບໍລິການ.",
       "apiKey": "ຄີ API",
       "configure": "ຕັ້ງຄ່າຜູ້ໃຫ້ບໍລິການ AI",
       "apiKeyPlaceholder": "ວາງຄີ API ຂອງທ່ານ",
@@ -1091,9 +1093,7 @@
       },
       "configure": "ຕັ້ງຄ່າຜູ້ໃຫ້ບໍລິການ AI",
       "locationNote": "ຜູ້ໃຫ້ບໍລິການ AI ຖືກຕັ້ງຄ່າຢູ່ໃນການຕັ້ງຄ່າ.",
-      "notConnected": "ບໍ່ໄດ້ເຊື່ອມຕໍ່",
-      "modelPlaceholderNoKey": "ເພີ່ມຄີ API ເພື່ອໂຫຼດໂມເດວ",
-      "modelNoKeyHelp": "ບັນທຶກຄີ API ຂອງທ່ານ ເພື່ອສະແດງລາຍຊື່ໂມເດວຈາກຜູ້ໃຫ້ບໍລິການ."
+      "notConnected": "ບໍ່ໄດ້ເຊື່ອມຕໍ່"
     },
     "queryLabel": "ຄຳສຳລັບຄົ້ນຫາ",
     "queryPlaceholder": "ຕົວຢ່າງ: ສ່ວນກ່ຽວກັບລາຄາ",

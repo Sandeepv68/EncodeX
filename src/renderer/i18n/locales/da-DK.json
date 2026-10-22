@@ -641,6 +641,8 @@
       },
       "model": "Model",
       "modelPlaceholder": "Udbyderens standard",
+      "modelPlaceholderNoKey": "Tilføj en API-nøgle for at indlæse modeller",
+      "modelNoKeyHelp": "Gem din API-nøgle for at vise modeller fra udbyderen.",
       "apiKey": "API-nøgle",
       "configure": "Konfigurér AI-udbyder",
       "apiKeyPlaceholder": "Indsæt din API-nøgle",
@@ -1091,9 +1093,7 @@
       },
       "configure": "Konfigurér AI-udbyder",
       "locationNote": "AI-udbydere konfigureres i Indstillinger.",
-      "notConnected": "Ikke forbundet",
-      "modelPlaceholderNoKey": "Tilføj en API-nøgle for at indlæse modeller",
-      "modelNoKeyHelp": "Gem din API-nøgle for at vise modeller fra udbyderen."
+      "notConnected": "Ikke forbundet"
     },
     "queryLabel": "Søgefraser",
     "queryPlaceholder": "fx delen om priser",

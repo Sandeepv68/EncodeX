@@ -641,6 +641,8 @@
       },
       "model": "Malli",
       "modelPlaceholder": "Tarjoajan oletus",
+      "modelPlaceholderNoKey": "Lisää API-avain ladataksesi malleja",
+      "modelNoKeyHelp": "Tallenna API-avaimesi, jotta voit luetella tarjoajan mallit.",
       "apiKey": "API-avain",
       "configure": "Määritä tekoälyn tarjoaja",
       "apiKeyPlaceholder": "Liitä API-avaimesi",
@@ -1091,9 +1093,7 @@
       },
       "configure": "Määritä tekoälyn tarjoaja",
       "locationNote": "Tekoälyn tarjoajat määritetään asetuksissa.",
-      "notConnected": "Ei yhteyttä",
-      "modelPlaceholderNoKey": "Lisää API-avain ladataksesi malleja",
-      "modelNoKeyHelp": "Tallenna API-avaimesi, jotta voit luetella tarjoajan mallit."
+      "notConnected": "Ei yhteyttä"
     },
     "queryLabel": "Hakulause",
     "queryPlaceholder": "esim. osuus hinnoittelusta",

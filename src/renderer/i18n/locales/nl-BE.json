@@ -641,6 +641,8 @@
       },
       "model": "Model",
       "modelPlaceholder": "Standaard van de provider",
+      "modelPlaceholderNoKey": "Voeg een API-sleutel toe om modellen te laden",
+      "modelNoKeyHelp": "Sla uw API-sleutel op om modellen van de provider te vermelden.",
       "apiKey": "API-sleutel",
       "configure": "AI-provider configureren",
       "apiKeyPlaceholder": "Plak je API-sleutel",
@@ -1091,9 +1093,7 @@
       },
       "configure": "AI-provider configureren",
       "locationNote": "AI-providers worden geconfigureerd in Instellingen.",
-      "notConnected": "Niet verbonden",
-      "modelPlaceholderNoKey": "Voeg een API-sleutel toe om modellen te laden",
-      "modelNoKeyHelp": "Sla uw API-sleutel op om modellen van de provider te vermelden."
+      "notConnected": "Niet verbonden"
     },
     "queryLabel": "Zoekterm",
     "queryPlaceholder": "bijv. het deel over prijzen",

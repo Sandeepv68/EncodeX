@@ -641,6 +641,8 @@
       },
       "model": "Samhail",
       "modelPlaceholder": "Réamhshocrú an tsoláthraí",
+      "modelPlaceholderNoKey": "Cuir eochair API leis chun samhlacha a lódáil",
+      "modelNoKeyHelp": "Sábháil d'eochair API chun samhlacha ón soláthraí a liostáil.",
       "apiKey": "Eochair API",
       "configure": "Cumraigh soláthraí AI",
       "apiKeyPlaceholder": "Greamaigh d’eochair API",
@@ -1091,9 +1093,7 @@
       },
       "configure": "Cumraigh soláthraí AI",
       "locationNote": "Cumraítear soláthraithe AI sna Socruithe.",
-      "notConnected": "Gan nasc",
-      "modelPlaceholderNoKey": "Cuir eochair API leis chun samhlacha a lódáil",
-      "modelNoKeyHelp": "Sábháil d'eochair API chun samhlacha ón soláthraí a liostáil."
+      "notConnected": "Gan nasc"
     },
     "queryLabel": "Frása cuardaigh",
     "queryPlaceholder": "m.sh. an chuid faoi phraghsáil",

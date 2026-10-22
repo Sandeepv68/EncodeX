@@ -641,6 +641,8 @@
       },
       "model": "मॉडल",
       "modelPlaceholder": "प्रदाता का डिफ़ॉल्ट",
+      "modelPlaceholderNoKey": "मॉडल लोड करने के लिए API कुंजी जोड़ें",
+      "modelNoKeyHelp": "प्रदाता के मॉडल की सूची देखने के लिए अपनी API कुंजी सहेजें।",
       "apiKey": "API कुंजी",
       "configure": "AI प्रदाता कॉन्फ़िगर करें",
       "apiKeyPlaceholder": "अपनी API कुंजी पेस्ट करें",
@@ -1091,9 +1093,7 @@
       },
       "configure": "AI प्रदाता कॉन्फ़िगर करें",
       "locationNote": "AI प्रदाताओं को सेटिंग्स में कॉन्फ़िगर किया जाता है।",
-      "notConnected": "कनेक्टेड नहीं है",
-      "modelPlaceholderNoKey": "मॉडल लोड करने के लिए API कुंजी जोड़ें",
-      "modelNoKeyHelp": "प्रदाता के मॉडल की सूची देखने के लिए अपनी API कुंजी सहेजें।"
+      "notConnected": "कनेक्टेड नहीं है"
     },
     "queryLabel": "खोज वाक्यांश",
     "queryPlaceholder": "जैसे: मूल्य निर्धारण वाला भाग",

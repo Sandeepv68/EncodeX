@@ -641,6 +641,8 @@
       },
       "model": "Líkan",
       "modelPlaceholder": "Sjálfgefið þjónustuaðila",
+      "modelPlaceholderNoKey": "Bættu við API-lykli til að hlaða líkön",
+      "modelNoKeyHelp": "Vistaðu API-lykilinn þinn til að lista líkön frá þjónustuaðilanum.",
       "apiKey": "API-lykill",
       "configure": "Skerpðu AI-þjónustuaðila",
       "apiKeyPlaceholder": "Límdu API-lykilinn þinn",
@@ -1091,9 +1093,7 @@
       },
       "configure": "Skerpðu AI-þjónustuaðila",
       "locationNote": "AI-þjónustuaðilar eru stilltir í Stillingum.",
-      "notConnected": "Ekki tengt",
-      "modelPlaceholderNoKey": "Bættu við API-lykli til að hlaða líkön",
-      "modelNoKeyHelp": "Vistaðu API-lykilinn þinn til að lista líkön frá þjónustuaðilanum."
+      "notConnected": "Ekki tengt"
     },
     "queryLabel": "Leitarorð",
     "queryPlaceholder": "t.d. hlutann um verðlagningu",

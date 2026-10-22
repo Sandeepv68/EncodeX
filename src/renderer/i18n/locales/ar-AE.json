@@ -641,6 +641,8 @@
       },
       "model": "النموذج",
       "modelPlaceholder": "النموذج الافتراضي للمزوّد",
+      "modelPlaceholderNoKey": "أضف مفتاح API لتحميل النماذج",
+      "modelNoKeyHelp": "احفظ مفتاح API الخاص بك لعرض نماذج المزوّد.",
       "apiKey": "مفتاح API",
       "configure": "ضبط مزوّد الذكاء الاصطناعي",
       "apiKeyPlaceholder": "الصق مفتاح API الخاص بك",
@@ -1091,9 +1093,7 @@
       },
       "configure": "ضبط مزوّد الذكاء الاصطناعي",
       "locationNote": "يتم إعداد مزوّدي الذكاء الاصطناعي في الإعدادات.",
-      "notConnected": "غير متصل",
-      "modelPlaceholderNoKey": "أضف مفتاح API لتحميل النماذج",
-      "modelNoKeyHelp": "احفظ مفتاح API الخاص بك لعرض نماذج المزوّد."
+      "notConnected": "غير متصل"
     },
     "queryLabel": "عبارة البحث",
     "queryPlaceholder": "مثال: الجزء المتعلّق بالتسعير",

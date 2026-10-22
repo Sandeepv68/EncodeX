@@ -641,6 +641,8 @@
       },
       "model": "Modelo",
       "modelPlaceholder": "Default ng provider",
+      "modelPlaceholderNoKey": "Magdagdag ng API key para mag-load ng mga modelo",
+      "modelNoKeyHelp": "I-save ang iyong API key para mailista ang mga modelo mula sa provider.",
       "apiKey": "Susi ng API",
       "configure": "I-configure ang AI provider",
       "apiKeyPlaceholder": "Idikit ang iyong API key",
@@ -1091,9 +1093,7 @@
       },
       "configure": "I-configure ang AI provider",
       "locationNote": "Ang mga AI provider ay naka-configure sa Settings.",
-      "notConnected": "Walang koneksyon",
-      "modelPlaceholderNoKey": "Magdagdag ng API key para mag-load ng mga modelo",
-      "modelNoKeyHelp": "I-save ang iyong API key para mailista ang mga modelo mula sa provider."
+      "notConnected": "Walang koneksyon"
     },
     "queryLabel": "Pariralang hahanapin",
     "queryPlaceholder": "hal. ang bahagi tungkol sa presyo",

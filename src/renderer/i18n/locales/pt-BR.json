@@ -641,6 +641,8 @@
       },
       "model": "Modelo",
       "modelPlaceholder": "Padrão do provedor",
+      "modelPlaceholderNoKey": "Adicione uma chave de API para carregar modelos",
+      "modelNoKeyHelp": "Salve sua chave de API para listar os modelos do provedor.",
       "apiKey": "Chave de API",
       "configure": "Configurar provedor de IA",
       "apiKeyPlaceholder": "Cole sua chave de API",
@@ -1091,9 +1093,7 @@
       },
       "configure": "Configurar provedor de IA",
       "locationNote": "Os provedores de IA são configurados nas Configurações.",
-      "notConnected": "Não conectado",
-      "modelPlaceholderNoKey": "Adicione uma chave de API para carregar modelos",
-      "modelNoKeyHelp": "Salve sua chave de API para listar os modelos do provedor."
+      "notConnected": "Não conectado"
     },
     "queryLabel": "Frase de pesquisa",
     "queryPlaceholder": "por exemplo, a parte sobre preços",
