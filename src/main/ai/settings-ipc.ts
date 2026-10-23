@@ -107,7 +107,6 @@ export function registerAiSettingsIpc(): void {
       // the choice shows up in the settings and can be changed.
       const configured = (merged.model ?? '').trim();
       const model = configured || (await resolveProviderModel(merged, apiKey));
-      if (!configured) persistProviderModel(userDataDir, providerId, model);
       const connector = createConnectorFromSettings({ ...merged, model }, apiKey);
       const startedAt = Date.now();
       const response = await connector.complete({
@@ -117,6 +116,10 @@ export function registerAiSettingsIpc(): void {
         ],
         temperature: 0,
       });
+      // Only remember a model the provider actually answered with. Persisting
+      // before the ping would save an unusable auto-picked id (e.g. an image
+      // model with zero quota) and poison every later request.
+      if (!configured) persistProviderModel(userDataDir, providerId, response.model);
       const view = recordAiConnection(userDataDir, { providerId, model: response.model });
       return { ok: true, message: `Connected to ${providerId}.`, model: response.model, latencyMs: Date.now() - startedAt, view };
     } catch (err) {

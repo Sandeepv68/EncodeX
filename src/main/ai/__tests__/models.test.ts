@@ -34,11 +34,18 @@ describe('listProviderModels', () => {
     expect(res).toEqual([]);
   });
 
-  it('fetches OpenAI models and filters non-chat models', async () => {
+  it('fetches OpenAI models and filters non-text models', async () => {
     fetchImpl.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
-        data: [{ id: 'gpt-4o-mini' }, { id: 'gpt-3.5-turbo' }, { id: 'dall-e-3' }, { id: 'text-embedding-ada-002' }],
+        data: [
+          { id: 'gpt-4o-mini' },
+          { id: 'gpt-3.5-turbo' },
+          { id: 'dall-e-3' },
+          { id: 'gpt-image-1' },
+          { id: 'sora-2' },
+          { id: 'text-embedding-ada-002' },
+        ],
       }),
     });
     const res = await run({ ...baseSettings, providerId: 'openai' } as AiServerSettings, 'key');
@@ -47,7 +54,9 @@ describe('listProviderModels', () => {
     expect(new URL(url).pathname).toBe('/v1/models');
     expect(opts?.headers).toMatchObject({ authorization: 'Bearer key' });
     expect(res).toContain('gpt-4o-mini');
-    expect(res).not.toContain('dall-e-3');
+    for (const nonText of ['dall-e-3', 'gpt-image-1', 'sora-2', 'text-embedding-ada-002']) {
+      expect(res).not.toContain(nonText);
+    }
   });
 
   it('uses custom baseUrl for OpenAI', async () => {
@@ -76,12 +85,19 @@ describe('listProviderModels', () => {
     expect(res).toContain('claude-3-5-haiku-latest');
   });
 
-  it('fetches Gemini models and filters generateContent', async () => {
+  it('fetches Gemini models and filters non-text generateContent models', async () => {
     fetchImpl.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         models: [
           { name: 'models/gemini-3.8-flash', supportedGenerationMethods: ['generateContent'] },
+          { name: 'models/gemini-2.5-flash-preview-image', supportedGenerationMethods: ['generateContent'] },
+          { name: 'models/gemini-nano-banana-2.1', supportedGenerationMethods: ['generateContent'] },
+          { name: 'models/gemini-2.5-flash-preview-tts', supportedGenerationMethods: ['generateContent'] },
+          { name: 'models/gemini-2.5-flash-native-audio', supportedGenerationMethods: ['generateContent'] },
+          { name: 'models/gemini-3.5-transcribe', supportedGenerationMethods: ['generateContent'] },
+          { name: 'models/gemini-2.0-flash-live-001', supportedGenerationMethods: ['generateContent'] },
+          { name: 'models/veo-3.1', supportedGenerationMethods: ['predictLongRunning'] },
           { name: 'models/gemini-embedding-001', supportedGenerationMethods: ['embedContent'] },
         ],
       }),
@@ -91,7 +107,9 @@ describe('listProviderModels', () => {
     expect(new URL(url).hostname).toBe('generativelanguage.googleapis.com');
     expect(opts?.headers).toMatchObject({ 'x-goog-api-key': 'key' });
     expect(res).toContain('gemini-3.8-flash');
-    expect(res).not.toContain('gemini-embedding-001');
+    for (const nonText of ['preview-image', 'nano-banana', 'preview-tts', 'native-audio', 'transcribe', 'flash-live', 'veo', 'embedding']) {
+      expect(res.join(',')).not.toContain(nonText);
+    }
   });
 
   it('throws ProviderHttpError on non-2xx', async () => {

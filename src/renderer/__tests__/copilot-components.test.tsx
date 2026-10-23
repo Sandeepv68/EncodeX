@@ -329,6 +329,16 @@ describe('AssistantMessage', () => {
     expect(screen.queryByTestId('copilot-routed-as')).toBeNull();
   });
 
+  it('shows a warning when the AI provider fell back to the rules engine', () => {
+    renderMessage({ plan: { ...PLAN, routingWarning: 'AI routing failed; rules were used.' } });
+    expect(screen.getByTestId('copilot-routing-warning')).toHaveTextContent('AI routing failed; rules were used.');
+  });
+
+  it('does not show a routing warning for a provider-chosen plan', () => {
+    renderMessage({ plan: { ...PLAN, providerId: 'gemini' } });
+    expect(screen.queryByTestId('copilot-routing-warning')).toBeNull();
+  });
+
   it('renders savings and output for each action', () => {
     renderMessage({ plan: PLAN });
     expect(screen.getByText('copilot.savings')).toBeInTheDocument();

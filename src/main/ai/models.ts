@@ -36,16 +36,16 @@ async function getJson(fetchImpl: FetchLike, url: string, headers: Record<string
 }
 
 /**
- * Whether an OpenAI model id is usable for chat completions. The `/v1/models`
- * endpoint lists every model (embeddings, audio, image, moderation, legacy
- * completions), so the non-chat families are filtered out of the pick-list.
+ * Whether an OpenAI model id generates text. The `/v1/models` endpoint lists
+ * every model (embeddings, audio, image, video, moderation, legacy completions),
+ * so the non-text families are filtered out of the pick-list.
  * @param {string} id - The model id.
- * @returns {boolean} True when the id looks like a chat model.
+ * @returns {boolean} True when the id looks like a text-generation model.
  */
-function isOpenAiChatModel(id: string): boolean {
+function isOpenAiTextModel(id: string): boolean {
   const lower = id.toLowerCase();
-  const nonChat = ['embedding', 'whisper', 'tts', 'dall-e', 'moderation', 'audio', 'transcribe', 'realtime'];
-  if (nonChat.some((token) => lower.includes(token))) return false;
+  const nonText = ['embedding', 'whisper', 'tts', 'dall-e', 'image', 'sora', 'video', 'moderation', 'audio', 'transcribe', 'realtime'];
+  if (nonText.some((token) => lower.includes(token))) return false;
   // Legacy base models are superseded by the chat/instruct families.
   if (/^(davinci|babbage|curie|ada)(-|$)/.test(lower)) return false;
   return true;
@@ -78,7 +78,7 @@ function openAiModels(data: unknown): ProviderModelEntry[] {
   return rows
     .map((row) => {
       const id = row && typeof row.id === 'string' ? row.id : '';
-      if (!id || !isOpenAiChatModel(id)) return null;
+      if (!id || !isOpenAiTextModel(id)) return null;
       const created = row && typeof row.created === 'number' && Number.isFinite(row.created) ? row.created * 1000 : undefined;
       return created === undefined ? { id } : { id, created };
     })
@@ -106,9 +106,24 @@ function anthropicModels(data: unknown): ProviderModelEntry[] {
 }
 
 /**
- * Reads the model ids out of a Gemini `models.list` body. Only models that
- * advertise `generateContent` are kept; the `models/` path prefix is stripped.
- * Gemini reports no creation date, so these entries stay in name order.
+ * Whether a Gemini model id generates text. The `generateContent` capability is
+ * necessary but not sufficient: Gemini lists image-generation, text-to-speech,
+ * audio, video and embedding models under it too. Those have separate quotas
+ * (often zero on the free tier) and must never be auto-selected for the
+ * Copilot's JSON operation-routing call.
+ * @param {string} id - The model id (without the `models/` prefix).
+ * @returns {boolean} True when the id looks like a text-generation model.
+ */
+function isGeminiTextModel(id: string): boolean {
+  const lower = id.toLowerCase();
+  const nonText = ['embedding', 'tts', 'image', 'audio', 'live', 'imagen', 'veo', 'video', 'transcribe', 'nano-banana', 'lyria'];
+  return !nonText.some((token) => lower.includes(token));
+}
+
+/**
+ * Reads the model ids out of a Gemini `models.list` body. Only text-generation
+ * models that advertise `generateContent` are kept; the `models/` path prefix is
+ * stripped. Gemini reports no creation date, so these entries stay in name order.
  * @param {unknown} data - The parsed response body.
  * @returns {ProviderModelEntry[]} The model entries.
  */
@@ -119,7 +134,8 @@ function geminiModels(data: unknown): ProviderModelEntry[] {
     .filter((row) => {
       if (!row || typeof row.name !== 'string') return false;
       const methods = row.supportedGenerationMethods;
-      return Array.isArray(methods) && methods.includes('generateContent');
+      if (!Array.isArray(methods) || !methods.includes('generateContent')) return false;
+      return isGeminiTextModel((row.name as string).replace(/^models\//, ''));
     })
     .map((row) => ({ id: (row.name as string).replace(/^models\//, '') }));
 }

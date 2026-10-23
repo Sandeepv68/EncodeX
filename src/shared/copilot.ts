@@ -140,6 +140,8 @@ export interface CopilotResult {
  * @property {AgentSkip[]} skips - Files left out, with reasons.
  * @property {string[]} rationale - Plan-level reasons, one per line.
  * @property {string[]} notes - Caveats for the caller.
+ * @property {string} [routingWarning] - Set when a configured AI provider could
+ *   not choose the operation and the offline rules engine was used instead.
  * @property {WorkflowPlan} plan - The dry-run validation of the workflow.
  * @property {AIProviderId} providerId - The provider that chose the operation.
  * @property {true} isEstimated - The plan is a proposal, not a measurement.
@@ -152,6 +154,7 @@ export interface CopilotPlan {
   skips: AgentSkip[];
   rationale: string[];
   notes: string[];
+  routingWarning?: string;
   plan: WorkflowPlan;
   providerId: AIProviderId;
   isEstimated: true;
