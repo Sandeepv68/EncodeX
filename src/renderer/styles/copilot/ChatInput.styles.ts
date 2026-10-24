@@ -1,5 +1,6 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
+import { SHADOWS } from '../../colors';
 
 /**
  * Rounded composer surface that holds the Lexical editor and the inline send
@@ -10,17 +11,21 @@ import { Box } from '@mui/material';
 export const ComposerShell = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  gap: theme.spacing(1),
-  paddingInline: theme.spacing(1.5),
-  paddingBlock: theme.spacing(1),
-  borderRadius: theme.typography.pxToRem(24),
-  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+  flexWrap: 'nowrap',
+  gap: theme.spacing(0.5),
+  paddingBlock: theme.spacing(0.375),
+  paddingInline: theme.spacing(0.75),
+  borderRadius: theme.typography.pxToRem(999),
   backgroundColor: theme.palette.background.paper,
-  boxShadow: theme.shadows[1],
+  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+  transition: theme.transitions.create(['box-shadow', 'border-color']),
   cursor: 'text',
   '&:focus-within': {
     borderColor: theme.palette.primary.main,
-    boxShadow: `0 0 0 ${theme.typography.pxToRem(2)} ${alpha(theme.palette.primary.main, 0.2)}`,
+    boxShadow: `0 0 0 ${theme.typography.pxToRem(2)} ${alpha(theme.palette.primary.main, 0.2)}, ${
+      theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT
+    }`,
   },
 }));
 

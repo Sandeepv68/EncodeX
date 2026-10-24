@@ -305,14 +305,24 @@ describe('registerCopilotHandlers', () => {
     expect(result.operation).toBe('analyze');
     expect(result.providerId).toBe('openai');
     expect(result.results).toHaveLength(1);
+    expect(result.routingWarning).toBeUndefined();
   });
 
-  it('falls back to the deterministic router when the provider yields nothing', async () => {
+  it('falls back to the deterministic router and warns when the provider yields nothing', async () => {
     providerRegistryMock.resolveLLMOperationRouter.mockReturnValue(vi.fn().mockResolvedValue(undefined));
     const file = path.join(scanDir, 'one.mp4');
     const result = await plan({ goal: 'remux to mkv', inputs: [file] });
     expect(result.operation).toBe('remux');
     expect(result.providerId).toBe('rules');
+    expect(result.routingWarning).toContain('built-in rules engine');
+  });
+
+  it('does not warn when no AI provider is configured', async () => {
+    providerRegistryMock.resolveLLMOperationRouter.mockReturnValue(null);
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: 'remux to mkv', inputs: [file] });
+    expect(result.providerId).toBe('rules');
+    expect(result.routingWarning).toBeUndefined();
   });
 
   it('forwards an explicit target language and flags intelligence results as read-only', async () => {

@@ -1107,6 +1107,18 @@
     "advanced": "Avancerat",
     "advancedTitle": "Avancerade alternativ",
     "bridgeTimeout": "EncodeX svarade inte i tid. Försök igen.",
-    "planFailed": "Copilot kunde inte skapa en plan för det målet."
+    "planFailed": "Copilot kunde inte skapa en plan för det målet.",
+    "thinking": "Tänker...",
+    "resetConversation": "Starta en ny konversation",
+    "resetConfirmTitle": "Återställa konversationen?",
+    "resetConfirmMessage": "Detta rensar hela konversationshistoriken. Åtgärden kan inte ångras.",
+    "resetConfirmAction": "Återställ",
+    "loadingFiles": "Läser in filer..."
+  },
+  "leaveConfirm": {
+    "title": "Lämna Copilot?",
+    "message": "Den här chatten är fortfarande aktiv. Om du lämnar sidan kastas konversationen bort.",
+    "confirmLabel": "Lämna ändå",
+    "cancelLabel": "Stanna"
   }
 }

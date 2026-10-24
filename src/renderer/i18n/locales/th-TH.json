@@ -1107,6 +1107,18 @@
     "advanced": "ขั้นสูง",
     "advancedTitle": "ตัวเลือกขั้นสูง",
     "bridgeTimeout": "EncodeX ไม่ตอบสนองทันเวลา ลองอีกครั้ง",
-    "planFailed": "Copilot ไม่สามารถสร้างแผนสำหรับเป้าหมายนั้นได้"
+    "planFailed": "Copilot ไม่สามารถสร้างแผนสำหรับเป้าหมายนั้นได้",
+    "thinking": "กำลังคิด...",
+    "resetConversation": "เริ่มบทสนทนาใหม่",
+    "resetConfirmTitle": "รีเซ็ตบทสนทนา?",
+    "resetConfirmMessage": "การดำเนินการนี้จะล้างประวัติบทสนทนาทั้งหมด และไม่สามารถยกเลิกได้",
+    "resetConfirmAction": "รีเซ็ต",
+    "loadingFiles": "กำลังโหลดไฟล์..."
+  },
+  "leaveConfirm": {
+    "title": "ออกจาก Copilot?",
+    "message": "แชทนี้ยังคงใช้งานอยู่ การออกจากหน้าจะทำให้บทสนทนาถูกทิ้ง",
+    "confirmLabel": "ออกต่อไป",
+    "cancelLabel": "อยู่ต่อ"
   }
 }

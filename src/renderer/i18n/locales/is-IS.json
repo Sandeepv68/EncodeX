@@ -1107,6 +1107,18 @@
     "advanced": "Ítarlegt",
     "advancedTitle": "Ítarlegir valkostir",
     "bridgeTimeout": "EncodeX svaraði ekki í tíma. Reyndu aftur.",
-    "planFailed": "Copilot gat ekki búið til áætlun fyrir þetta markmið."
+    "planFailed": "Copilot gat ekki búið til áætlun fyrir þetta markmið.",
+    "thinking": "Hugsar...",
+    "resetConversation": "Byrja nýtt samtal",
+    "resetConfirmTitle": "Endurstilla samtal?",
+    "resetConfirmMessage": "Þetta mun hreinsa alla samtalssögu. Ekki er hægt að afturkalla þessa aðgerð.",
+    "resetConfirmAction": "Endurstilla",
+    "loadingFiles": "Hleð skrám..."
+  },
+  "leaveConfirm": {
+    "title": "Yfirgefa Copilot?",
+    "message": "Þetta spjall er enn virkt. Að yfirgefa síðuna mun henda samtalinu.",
+    "confirmLabel": "Yfirgefa samt",
+    "cancelLabel": "Vera áfram"
   }
 }

@@ -1107,6 +1107,18 @@
     "advanced": "Advanced",
     "advancedTitle": "Mga advanced na opsyon",
     "bridgeTimeout": "Hindi tumugon ang EncodeX sa oras. Subukan muli.",
-    "planFailed": "Hindi makabuo ang Copilot ng plano para sa layuning iyon."
+    "planFailed": "Hindi makabuo ang Copilot ng plano para sa layuning iyon.",
+    "thinking": "Nag-iisip...",
+    "resetConversation": "Magsimula ng bagong usapan",
+    "resetConfirmTitle": "I-reset ang usapan?",
+    "resetConfirmMessage": "Ito ay magbubura ng buong kasaysayan ng usapan. Hindi na ito maibabalik.",
+    "resetConfirmAction": "I-reset",
+    "loadingFiles": "Naglo-load ng mga file..."
+  },
+  "leaveConfirm": {
+    "title": "Umalis sa Copilot?",
+    "message": "Aktibo pa rin ang chat na ito. Kapag umalis ka sa pahina, itatapon ang usapan.",
+    "confirmLabel": "Umalis pa rin",
+    "cancelLabel": "Manatili"
   }
 }

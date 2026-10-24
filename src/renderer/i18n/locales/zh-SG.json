@@ -1107,6 +1107,18 @@
     "advanced": "高级",
     "advancedTitle": "高级选项",
     "bridgeTimeout": "EncodeX 未及时响应。请重试。",
-    "planFailed": "Copilot 无法为该目标制定计划。"
+    "planFailed": "Copilot 无法为该目标制定计划。",
+    "thinking": "正在思考...",
+    "resetConversation": "开始新对话",
+    "resetConfirmTitle": "重置对话？",
+    "resetConfirmMessage": "这将清除整个对话历史。此操作无法撤销。",
+    "resetConfirmAction": "重置",
+    "loadingFiles": "正在加载文件..."
+  },
+  "leaveConfirm": {
+    "title": "离开 Copilot？",
+    "message": "此聊天仍处于活跃状态。离开页面将丢弃该对话。",
+    "confirmLabel": "仍然离开",
+    "cancelLabel": "留下"
   }
 }

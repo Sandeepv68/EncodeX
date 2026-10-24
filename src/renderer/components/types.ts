@@ -547,6 +547,12 @@ export interface PageContainerProps {
   icon?: ReactNode;
   aside?: ReactNode;
   paper?: boolean;
+  /**
+   * When true, the page is constrained to the available viewport height instead
+   * of growing with its content. Used by full-height pages (e.g. Copilot) so an
+   * inner scroller owns the overflow and the composer stays pinned.
+   */
+  fill?: boolean;
   children: ReactNode;
 }
 

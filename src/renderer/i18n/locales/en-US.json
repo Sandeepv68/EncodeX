@@ -120,6 +120,12 @@
     "confirmLabel": "Close Anyway",
     "cancelLabel": "Cancel"
   },
+  "leaveConfirm": {
+    "title": "Leave Copilot?",
+    "message": "This chat is still active. Leaving the page will discard the conversation.",
+    "confirmLabel": "Leave Anyway",
+    "cancelLabel": "Stay"
+  },
   "convert": {
     "title": "Convert Media",
     "sourceFiles": "Source Files",
@@ -550,6 +556,7 @@
     "targetLanguagePlaceholder": "e.g. Spanish",
     "plan": "Plan",
     "planning": "Planning...",
+    "thinking": "Thinking...",
     "folderEmpty": "No supported media was found in that folder.",
     "filesEmpty": "No supported media was selected.",
     "errorNoGoal": "Enter a goal before planning.",
@@ -566,6 +573,11 @@
     "skipsTitle": "Skipped files",
     "rationaleTitle": "Why",
     "addToQueue": "Add {{count}} to queue",
+    "resetConversation": "Start fresh conversation",
+    "resetConfirmTitle": "Reset conversation?",
+    "resetConfirmMessage": "This will clear the entire conversation history. This action cannot be undone.",
+    "resetConfirmAction": "Reset",
+    "loadingFiles": "Loading files...",
     "applyNote": "Jobs are added to the Batch Queue; nothing runs until you start it there.",
     "addedToQueue": "Added {{count}} job(s) to the queue",
     "partiallyAdded": "Some jobs could not be added to the queue.",

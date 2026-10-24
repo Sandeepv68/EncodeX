@@ -1107,6 +1107,18 @@
     "advanced": "Zaawansowane",
     "advancedTitle": "Opcje zaawansowane",
     "bridgeTimeout": "EncodeX nie odpowiedział na czas. Spróbuj ponownie.",
-    "planFailed": "Copilot nie mógł utworzyć planu dla tego celu."
+    "planFailed": "Copilot nie mógł utworzyć planu dla tego celu.",
+    "thinking": "Myślenie...",
+    "resetConversation": "Rozpocznij nową rozmowę",
+    "resetConfirmTitle": "Zresetować rozmowę?",
+    "resetConfirmMessage": "Spowoduje to wyczyszczenie całej historii rozmowy. Tej czynności nie można cofnąć.",
+    "resetConfirmAction": "Resetuj",
+    "loadingFiles": "Ładowanie plików..."
+  },
+  "leaveConfirm": {
+    "title": "Opuścić Copilot?",
+    "message": "Ten czat jest nadal aktywny. Opuszczenie strony spowoduje odrzucenie rozmowy.",
+    "confirmLabel": "Mimo to opuść",
+    "cancelLabel": "Zostań"
   }
 }

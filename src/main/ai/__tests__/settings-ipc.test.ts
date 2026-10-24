@@ -208,20 +208,40 @@ describe('registerAiSettingsIpc', () => {
     );
   });
 
-  it('CONNECT_TEST resolves and persists a model when none is configured', async () => {
+  it('CONNECT_TEST resolves a model when none is configured and persists it only after the ping succeeds', async () => {
     settingsMock.readAiSettings.mockReturnValue({ providerId: 'openai', model: '', key: 'enc' });
     settingsMock.decryptApiKey.mockReturnValue('sk-1');
     modelMock.resolveProviderModel.mockResolvedValue('resolved-model');
-    connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockResolvedValue({ model: 'm', text: 'OK' }) });
+    let persistedBeforePing: boolean | undefined;
+    const complete = vi.fn().mockImplementation(() => {
+      persistedBeforePing = settingsMock.persistProviderModel.mock.calls.length > 0;
+      return Promise.resolve({ model: 'resolved-model', text: 'OK' });
+    });
+    connectorsMock.createConnectorFromSettings.mockReturnValue({ complete });
 
     await invoke(IPC.AI_CONNECT_TEST, { providerId: 'openai' });
 
     expect(modelMock.resolveProviderModel).toHaveBeenCalledWith(expect.objectContaining({ providerId: 'openai', model: '' }), 'sk-1');
+    expect(persistedBeforePing).toBe(false);
     expect(settingsMock.persistProviderModel).toHaveBeenCalledWith('/userData', 'openai', 'resolved-model');
     expect(connectorsMock.createConnectorFromSettings).toHaveBeenCalledWith(
       expect.objectContaining({ providerId: 'openai', model: 'resolved-model' }),
       'sk-1',
     );
+  });
+
+  it('CONNECT_TEST does not persist an auto-resolved model when the ping fails', async () => {
+    expectAppLog('warn', 'main/ai/settings-ipc');
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'gemini', model: '', key: 'enc' });
+    settingsMock.decryptApiKey.mockReturnValue('sk-1');
+    modelMock.resolveProviderModel.mockResolvedValue('gemini-2.5-flash-preview-image');
+    connectorsMock.createConnectorFromSettings.mockReturnValue({ complete: vi.fn().mockRejectedValue(new Error('quota exceeded')) });
+
+    const result = await invoke(IPC.AI_CONNECT_TEST, { providerId: 'gemini' });
+
+    expect((result as { ok: boolean }).ok).toBe(false);
+    expect(settingsMock.persistProviderModel).not.toHaveBeenCalled();
+    expect(settingsMock.recordAiConnection).not.toHaveBeenCalled();
   });
 
   it('CONNECT_TEST keeps the stored model/baseUrl when the candidate omits them', async () => {

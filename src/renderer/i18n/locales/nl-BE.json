@@ -1107,6 +1107,18 @@
     "advanced": "Geavanceerd",
     "advancedTitle": "Geavanceerde opties",
     "bridgeTimeout": "EncodeX reageerde niet op tijd. Probeer het opnieuw.",
-    "planFailed": "Copilot kon geen plan maken voor dat doel."
+    "planFailed": "Copilot kon geen plan maken voor dat doel.",
+    "thinking": "Aan het nadenken...",
+    "resetConversation": "Een nieuw gesprek starten",
+    "resetConfirmTitle": "Gesprek resetten?",
+    "resetConfirmMessage": "Hiermee wordt de volledige gespreksgeschiedenis gewist. Deze actie kan niet ongedaan worden gemaakt.",
+    "resetConfirmAction": "Resetten",
+    "loadingFiles": "Bestanden laden..."
+  },
+  "leaveConfirm": {
+    "title": "Copilot verlaten?",
+    "message": "Deze chat is nog actief. Als je de pagina verlaat, wordt het gesprek verwijderd.",
+    "confirmLabel": "Toch verlaten",
+    "cancelLabel": "Blijven"
   }
 }

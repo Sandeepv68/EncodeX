@@ -1107,6 +1107,18 @@
     "advanced": "詳細",
     "advancedTitle": "詳細オプション",
     "bridgeTimeout": "EncodeX が時間内に応答しませんでした。もう一度お試しください。",
-    "planFailed": "Copilot はその目標の計画を作成できませんでした。"
+    "planFailed": "Copilot はその目標の計画を作成できませんでした。",
+    "thinking": "考え中...",
+    "resetConversation": "新しい会話を開始",
+    "resetConfirmTitle": "会話をリセットしますか？",
+    "resetConfirmMessage": "会話履歴がすべて消去されます。この操作は元に戻せません。",
+    "resetConfirmAction": "リセット",
+    "loadingFiles": "ファイルを読み込み中..."
+  },
+  "leaveConfirm": {
+    "title": "Copilot を離れますか？",
+    "message": "このチャットはまだ進行中です。ページを離れると会話は破棄されます。",
+    "confirmLabel": "それでも離れる",
+    "cancelLabel": "とどまる"
   }
 }

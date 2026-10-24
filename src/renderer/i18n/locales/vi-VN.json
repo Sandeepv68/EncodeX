@@ -1107,6 +1107,18 @@
     "advanced": "Nâng cao",
     "advancedTitle": "Tùy chọn nâng cao",
     "bridgeTimeout": "EncodeX không phản hồi kịp thời. Hãy thử lại.",
-    "planFailed": "Copilot không thể tạo kế hoạch cho mục tiêu đó."
+    "planFailed": "Copilot không thể tạo kế hoạch cho mục tiêu đó.",
+    "thinking": "Đang suy nghĩ...",
+    "resetConversation": "Bắt đầu cuộc trò chuyện mới",
+    "resetConfirmTitle": "Đặt lại cuộc trò chuyện?",
+    "resetConfirmMessage": "Thao tác này sẽ xóa toàn bộ lịch sử trò chuyện. Không thể hoàn tác.",
+    "resetConfirmAction": "Đặt lại",
+    "loadingFiles": "Đang tải tệp..."
+  },
+  "leaveConfirm": {
+    "title": "Rời khỏi Copilot?",
+    "message": "Cuộc trò chuyện này vẫn đang hoạt động. Rời khỏi trang sẽ hủy cuộc trò chuyện.",
+    "confirmLabel": "Vẫn rời đi",
+    "cancelLabel": "Ở lại"
   }
 }

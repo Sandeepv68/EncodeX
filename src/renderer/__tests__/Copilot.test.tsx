@@ -11,8 +11,9 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderPage } from '../../test-utils/page-render';
-import { screen, waitFor, fireEvent, act } from '@testing-library/react';
+import { screen, waitFor, fireEvent, act, within } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
+import { NavigationGuardProvider } from '../NavigationGuardContext';
 import { useToastStore } from '../stores/toastStore';
 import { useAiConnectionStore } from '../stores/aiConnectionStore';
 import type { CopilotPlan } from '../../shared/copilot';
@@ -202,6 +203,37 @@ describe('Copilot page', () => {
     expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
     const status = screen.getByTestId('copilot-ai-status');
     expect(status).toHaveTextContent('copilot.ai.notConnected');
+  });
+
+  it('marks the empty transcript so the welcome and composer share the center', async () => {
+    renderPage('Copilot');
+    const conversation = screen.getByTestId('copilot-conversation');
+    expect(conversation).toHaveAttribute('data-empty', 'true');
+    expect(screen.getByTestId('copilot-plan')).toBeInTheDocument();
+
+    await typeMessage('compress for web');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+
+    expect(screen.getByTestId('copilot-conversation')).not.toHaveAttribute('data-empty');
+  });
+
+  it('clears the conversation and inputs when a reset is confirmed', async () => {
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+
+    fireEvent.click(screen.getByTestId('copilot-reset-conversation'));
+    const dialog = await screen.findByRole('dialog');
+    // DialogActions order: cancel first, confirm second.
+    fireEvent.click(within(dialog).getAllByRole('button')[1]);
+
+    await waitFor(() => expect(screen.queryByTestId('copilot-plan-summary')).not.toBeInTheDocument());
+    expect(screen.getByTestId('copilot-conversation')).toHaveAttribute('data-empty', 'true');
+    expect(getEditor().textContent ?? '').toBe('');
   });
 
   it('shows the connected provider and model from the mirrored connection', async () => {
@@ -481,13 +513,54 @@ describe('Copilot page', () => {
     expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
   });
 
+  it('navigates to Settings without prompting when no chat is active', async () => {
+    renderPage('Copilot', {
+      wrap: (children) => (
+        <NavigationGuardProvider>
+          <LocationProbe />
+          {children}
+        </NavigationGuardProvider>
+      ),
+    });
+    fireEvent.click(screen.getByTestId('copilot-ai-settings'));
+    await expectPath('/settings');
+    expect(screen.queryByTestId('confirm-dialog')).not.toBeInTheDocument();
+  });
+
+  it('asks before leaving the page while a chat is active', async () => {
+    renderPage('Copilot', {
+      wrap: (children) => (
+        <NavigationGuardProvider>
+          <LocationProbe />
+          {children}
+        </NavigationGuardProvider>
+      ),
+    });
+    await typeMessage('compress for web');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+
+    fireEvent.click(screen.getByTestId('copilot-ai-settings'));
+    expect(await screen.findByTestId('confirm-dialog')).toBeInTheDocument();
+    await expectPath('/copilot');
+
+    fireEvent.click(screen.getByTestId('confirm-cancel'));
+    await waitFor(() => expect(screen.queryByTestId('confirm-dialog')).not.toBeInTheDocument());
+    await expectPath('/copilot');
+
+    fireEvent.click(screen.getByTestId('copilot-ai-settings'));
+    fireEvent.click(await screen.findByTestId('confirm-confirm'));
+    await expectPath('/settings');
+  });
+
   it('shows a success toast and navigates to the batch queue after a full enqueue', async () => {
     renderPage('Copilot', {
       wrap: (children) => (
-        <>
+        <NavigationGuardProvider>
           <LocationProbe />
           {children}
-        </>
+        </NavigationGuardProvider>
       ),
     });
     await typeMessage('compress for web');
@@ -498,6 +571,7 @@ describe('Copilot page', () => {
     fireEvent.click(screen.getByTestId('copilot-add-to-queue'));
     await waitFor(() => expect(window.electronAPI.queueAdd).toHaveBeenCalledTimes(2));
     await expectPath('/batch');
+    expect(screen.queryByTestId('confirm-dialog')).not.toBeInTheDocument();
     const toasts = useToastStore.getState().toasts;
     expect(toasts.map((toast) => toast.message)).toContain('copilot.addedToQueue');
     expect(toasts[0].type).toBe('success');
@@ -650,7 +724,7 @@ describe('Copilot page', () => {
     await chooseFolder();
     fireEvent.click(screen.getByTestId('copilot-plan'));
     await screen.findByTestId('copilot-plan-summary');
-    expect(screen.getByText('copilot.noActions')).toBeDefined();
+    expect(screen.getByText(/copilot.noActions/)).toBeDefined();
     expect(screen.queryByTestId('copilot-add-to-queue')).toBeNull();
     expect(window.electronAPI.queueAdd).not.toHaveBeenCalled();
   });

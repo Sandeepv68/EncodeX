@@ -1107,6 +1107,18 @@
     "advanced": "מתקדם",
     "advancedTitle": "אפשרויות מתקדמות",
     "bridgeTimeout": "EncodeX לא הגיב בזמן. נסה שוב.",
-    "planFailed": "Copilot לא הצליח לבנות תוכנית עבור מטרה זו."
+    "planFailed": "Copilot לא הצליח לבנות תוכנית עבור מטרה זו.",
+    "thinking": "חושב...",
+    "resetConversation": "התחל שיחה חדשה",
+    "resetConfirmTitle": "לאפס את השיחה?",
+    "resetConfirmMessage": "זה ימחק את כל היסטוריית השיחה. לא ניתן לבטל פעולה זו.",
+    "resetConfirmAction": "איפוס",
+    "loadingFiles": "טוען קבצים..."
+  },
+  "leaveConfirm": {
+    "title": "לצאת מ-Copilot?",
+    "message": "הצ'אט הזה עדיין פעיל. יציאה מהדף תמחק את השיחה.",
+    "confirmLabel": "צא בכל זאת",
+    "cancelLabel": "הישאר"
   }
 }

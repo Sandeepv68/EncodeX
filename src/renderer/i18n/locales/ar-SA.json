@@ -1107,6 +1107,18 @@
     "advanced": "متقدم",
     "advancedTitle": "خيارات متقدمة",
     "bridgeTimeout": "لم يستجب EncodeX في الوقت المحدد. حاول مرة أخرى.",
-    "planFailed": "تعذّر على Copilot إنشاء خطة لهذا الهدف."
+    "planFailed": "تعذّر على Copilot إنشاء خطة لهذا الهدف.",
+    "thinking": "جارٍ التفكير...",
+    "resetConversation": "بدء محادثة جديدة",
+    "resetConfirmTitle": "إعادة تعيين المحادثة؟",
+    "resetConfirmMessage": "سيؤدي هذا إلى مسح سجل المحادثة بالكامل. لا يمكن التراجع عن هذا الإجراء.",
+    "resetConfirmAction": "إعادة تعيين",
+    "loadingFiles": "جارٍ تحميل الملفات..."
+  },
+  "leaveConfirm": {
+    "title": "مغادرة Copilot؟",
+    "message": "لا تزال هذه المحادثة نشطة. ستؤدي مغادرة الصفحة إلى تجاهل المحادثة.",
+    "confirmLabel": "المغادرة على أي حال",
+    "cancelLabel": "البقاء"
   }
 }

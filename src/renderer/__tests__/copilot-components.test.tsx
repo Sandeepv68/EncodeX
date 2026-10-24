@@ -212,7 +212,9 @@ describe('Conversation', () => {
       </ColorModeProvider>,
     );
     expect(screen.getByText('compress for web')).toBeInTheDocument();
-    expect(screen.getByText('copilot.planning')).toBeInTheDocument();
+    expect(screen.getAllByText(/copilot.thinking/).length).toBeGreaterThan(0);
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(screen.getByTestId('copilot-typing-dots').children).toHaveLength(3);
   });
 
   it('renders an assistant plan and invokes onAddToQueue', () => {
@@ -239,8 +241,8 @@ describe('Conversation', () => {
         <Conversation messages={messages} onAddToQueue={vi.fn()} />
       </ColorModeProvider>,
     );
-    expect(screen.getByText('copilot.errorNoGoal')).toBeInTheDocument();
-    expect(screen.getByText('copilot.noticeNoFiles')).toBeInTheDocument();
+    expect(screen.getAllByText(/copilot.errorNoGoal/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/copilot.noticeNoFiles/).length).toBeGreaterThan(0);
   });
 
   it('skips assistant messages that carry no plan, error or notice', () => {
@@ -283,6 +285,29 @@ describe('Conversation', () => {
     expect(scroll.scrollTop).toBe(480);
   });
 
+  it('renders only a window of a long transcript', () => {
+    const messages: ConversationMessage[] = Array.from({ length: 1_000 }, (_, index) => ({
+      id: `u${index}`,
+      role: 'user',
+      content: `message ${index}`,
+      timestamp: index,
+    }));
+    render(
+      <ColorModeProvider>
+        <Conversation messages={messages} onAddToQueue={vi.fn()} />
+      </ColorModeProvider>,
+    );
+    expect(screen.getByText('message 0')).toBeInTheDocument();
+    expect(screen.queryByText('message 999')).not.toBeInTheDocument();
+    expect(screen.getAllByTestId('copilot-message-row').length).toBeLessThan(50);
+
+    const conversation = screen.getByTestId('copilot-conversation');
+    conversation.scrollTop = 104_000;
+    fireEvent.scroll(conversation);
+    expect(screen.getByText('message 999')).toBeInTheDocument();
+    expect(screen.getAllByTestId('copilot-message-row').length).toBeLessThan(50);
+  });
+
   it('disables the add-to-queue button while busy', () => {
     const messages: ConversationMessage[] = [{ id: 'a1', role: 'assistant', plan: PLAN, timestamp: 2 }];
     render(
@@ -319,14 +344,32 @@ describe('AssistantMessage', () => {
 
   it('renders the routed-as chip and rationale list', () => {
     renderMessage({ plan: PLAN });
-    expect(screen.getByTestId('copilot-routed-as')).toBeInTheDocument();
-    expect(screen.getByText('copilot.rationaleTitle')).toBeInTheDocument();
+    expect(screen.getByTestId('copilot-plan-summary')).toBeInTheDocument();
+    expect(screen.getByTestId('copilot-routed-as').textContent).toMatch(/copilot.routedAs/);
+    expect(screen.getAllByText(/copilot.rationaleTitle/).length).toBeGreaterThan(0);
     expect(screen.getByText('Planned 1 conversion.')).toBeInTheDocument();
+  });
+
+  it('renders the assistant body with semantic headings and lists', () => {
+    renderMessage({ plan: PLAN });
+    expect(screen.getByTestId('copilot-plan-summary')).toBeInTheDocument();
+    expect(screen.getAllByText(/copilot.actionsTitle/).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('list').length).toBeGreaterThan(0);
   });
 
   it('omits the routed-as chip when no operation was resolved', () => {
     renderMessage({ plan: { ...PLAN, operation: null } });
     expect(screen.queryByTestId('copilot-routed-as')).toBeNull();
+  });
+
+  it('shows a warning when the AI provider fell back to the rules engine', () => {
+    renderMessage({ plan: { ...PLAN, routingWarning: 'AI routing failed; rules were used.' } });
+    expect(screen.getByTestId('copilot-routing-warning')).toHaveTextContent('AI routing failed; rules were used.');
+  });
+
+  it('does not show a routing warning for a provider-chosen plan', () => {
+    renderMessage({ plan: { ...PLAN, providerId: 'gemini' } });
+    expect(screen.queryByTestId('copilot-routing-warning')).toBeNull();
   });
 
   it('renders savings and output for each action', () => {
@@ -343,7 +386,7 @@ describe('AssistantMessage', () => {
 
   it('shows the no-actions note and hides the add-to-queue button', () => {
     renderMessage({ plan: { ...PLAN, actions: [], plan: { ...PLAN.plan, steps: [] } } });
-    expect(screen.getByText('copilot.noActions')).toBeInTheDocument();
+    expect(screen.getByText(/copilot.noActions/)).toBeInTheDocument();
     expect(screen.queryByTestId('copilot-add-to-queue')).toBeNull();
     expect(screen.queryByText('copilot.applyNote')).toBeNull();
   });
@@ -357,23 +400,23 @@ describe('AssistantMessage', () => {
         skips: [{ input: '/in/two.mp4', reason: 'Already web-optimized' }],
       },
     });
-    expect(screen.getByText('copilot.resultsTitle')).toBeInTheDocument();
+    expect(screen.getAllByText(/copilot.resultsTitle/).length).toBeGreaterThan(0);
     expect(screen.getByTestId('copilot-result')).toBeInTheDocument();
-    expect(screen.getByText('copilot.skipsTitle')).toBeInTheDocument();
+    expect(screen.getAllByText(/copilot.skipsTitle/).length).toBeGreaterThan(0);
     expect(screen.getByTestId('copilot-skip')).toBeInTheDocument();
     expect(screen.getByText('Already web-optimized')).toBeInTheDocument();
   });
 
   it('gives an error precedence over a notice and a plan', () => {
     renderMessage({ plan: PLAN, error: 'copilot.planFailed', notice: 'copilot.noticeNoFiles' });
-    expect(screen.getByText('copilot.planFailed')).toBeInTheDocument();
-    expect(screen.queryByText('copilot.noticeNoFiles')).toBeNull();
+    expect(screen.getByText(/copilot.planFailed/)).toBeInTheDocument();
+    expect(screen.queryByText(/copilot.noticeNoFiles/)).toBeNull();
     expect(screen.queryByTestId('copilot-plan-summary')).toBeNull();
   });
 
   it('gives a notice precedence over a plan', () => {
     renderMessage({ plan: PLAN, notice: 'copilot.noticeNoFiles' });
-    expect(screen.getByText('copilot.noticeNoFiles')).toBeInTheDocument();
+    expect(screen.getAllByText(/copilot.noticeNoFiles/).length).toBeGreaterThan(0);
     expect(screen.queryByTestId('copilot-plan-summary')).toBeNull();
   });
 });

@@ -1107,6 +1107,18 @@
     "advanced": "Advanced",
     "advancedTitle": "Advanced options",
     "bridgeTimeout": "EncodeX did not respond in time. Try again.",
-    "planFailed": "Copilot could not build a plan for that goal."
+    "planFailed": "Copilot could not build a plan for that goal.",
+    "thinking": "Thinking...",
+    "resetConversation": "Start fresh conversation",
+    "resetConfirmTitle": "Reset conversation?",
+    "resetConfirmMessage": "This will clear the entire conversation history. This action cannot be undone.",
+    "resetConfirmAction": "Reset",
+    "loadingFiles": "Loading files..."
+  },
+  "leaveConfirm": {
+    "title": "Leave Copilot?",
+    "message": "This chat is still active. Leaving the page will discard the conversation.",
+    "confirmLabel": "Leave Anyway",
+    "cancelLabel": "Stay"
   }
 }

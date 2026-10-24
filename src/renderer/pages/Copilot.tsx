@@ -13,13 +13,14 @@
  * inline error instead of crashing the tree.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { Alert, Box } from '@mui/material';
+import { useNavigationGuard } from '../NavigationGuardContext';
 import PageContainer from '../components/PageContainer';
 import { bridgePromise, withBridgeTimeout } from '../utils/bridge-call';
 import { useToastStore } from '../stores/toastStore';
+import { SHADOWS } from '../colors';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import type { CopilotOperationChoice, CopilotPlan } from '../../shared/copilot';
 import { formatError } from '../../shared/errors';
@@ -38,7 +39,7 @@ const FOLDER_TIMEOUT_MS = 30_000;
  */
 export default function Copilot() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { navigate, navigateWithoutGuard, registerGuard } = useNavigationGuard();
 
   /** The conversation transcript. */
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
@@ -65,6 +66,14 @@ export default function Copilot() {
   /** The single active AI connection, if any. */
   const aiConnection = activeConnectionOf(aiView);
 
+  /** Whether the transcript holds messages that would be lost on navigation. */
+  const hasActiveChat = messages.length > 0;
+
+  /** True while file/folder selection dialog is resolving. */
+  const [inputsLoading, setInputsLoading] = useState(false);
+
+  useEffect(() => registerGuard(() => hasActiveChat), [registerGuard, hasActiveChat]);
+
   /**
    * Opens the folder dialog (recursively) and replaces the current inputs.
    * @returns {Promise<void>} Resolves after the selection is stored.
@@ -72,18 +81,21 @@ export default function Copilot() {
   const chooseFolder = async (): Promise<void> => {
     setGlobalError(null);
     setNotice(null);
+    setInputsLoading(true);
     try {
       const files = await withBridgeTimeout(
         bridgePromise(() => window.electronAPI.selectFolderFiles()),
         FOLDER_TIMEOUT_MS,
         null,
       );
+      setInputsLoading(false);
       if (files && Array.isArray(files) && files.length > 0) {
         setInputs(files);
       } else if (Array.isArray(files) && files.length === 0) {
         setNotice(t('copilot.folderEmpty'));
       }
     } catch {
+      setInputsLoading(false);
       setGlobalError(t('copilot.dialogFailed'));
     }
   };
@@ -95,18 +107,21 @@ export default function Copilot() {
   const chooseFiles = async (): Promise<void> => {
     setGlobalError(null);
     setNotice(null);
+    setInputsLoading(true);
     try {
       const files = await withBridgeTimeout(
         bridgePromise(() => window.electronAPI.selectFiles()),
         FOLDER_TIMEOUT_MS,
         null,
       );
+      setInputsLoading(false);
       if (files && Array.isArray(files) && files.length > 0) {
         setInputs((current) => [...new Set([...current, ...files])]);
       } else if (Array.isArray(files) && files.length === 0) {
         setNotice(t('copilot.filesEmpty'));
       }
     } catch {
+      setInputsLoading(false);
       setGlobalError(t('copilot.dialogFailed'));
     }
   };
@@ -235,7 +250,7 @@ export default function Copilot() {
       useToastStore.getState().success(t('copilot.addedToQueue', { count: added }));
     }
     if (added === planToEnqueue.actions.length && planToEnqueue.actions.length > 0) {
-      navigate('/batch');
+      navigateWithoutGuard('/batch');
     } else if (added > 0) {
       setGlobalError(t('copilot.partiallyAdded'));
     } else {
@@ -244,18 +259,40 @@ export default function Copilot() {
   };
 
   return (
-    <PageContainer title="" paper={false}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+    <PageContainer title="" paper={false} fill>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+          minHeight: 0,
+          justifyContent: hasActiveChat ? 'flex-start' : 'center',
+        }}
+      >
         {globalError && (
-          <Box sx={{ paddingInline: 2, paddingTop: 2 }}>
-            <Alert severity="error" data-testid="copilot-error">
+          <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
+            <Alert
+              severity="error"
+              data-testid="copilot-error"
+              sx={{
+                boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
+                '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
+              }}
+            >
               {globalError}
             </Alert>
           </Box>
         )}
         {notice && (
-          <Box sx={{ paddingInline: 2, paddingTop: 2 }}>
-            <Alert severity="info" data-testid="copilot-notice">
+          <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
+            <Alert
+              severity="info"
+              data-testid="copilot-notice"
+              sx={{
+                boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
+                '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
+              }}
+            >
               {notice}
             </Alert>
           </Box>
@@ -276,13 +313,26 @@ export default function Copilot() {
           targetLanguage={targetLanguage}
           onTargetLanguageChange={setTargetLanguage}
           onRemoveInput={removeInput}
-          disabled={busy}
-          busy={busy}
+          disabled={busy || inputsLoading}
+          busy={busy || inputsLoading}
           hasInputs={inputs.length > 0}
           connection={{
             connected: aiConnection !== null,
             ...(aiConnection ? { providerId: aiConnection.providerId, model: aiConnection.model } : {}),
           }}
+          showReset={hasActiveChat}
+          onResetConversation={() => {
+            setMessages([]);
+            setInput('');
+            setInputs([]);
+            setOperation('auto');
+            setQuery('');
+            setTargetLanguage('');
+            setGlobalError(null);
+            setNotice(null);
+            setIsThinking(false);
+          }}
+          inputsLoading={inputsLoading}
         />
       </Box>
     </PageContainer>

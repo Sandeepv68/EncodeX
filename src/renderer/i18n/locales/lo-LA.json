@@ -1107,6 +1107,18 @@
     "advanced": "ຂັ້ນສູງ",
     "advancedTitle": "ຕົວເລືອກຂັ້ນສູງ",
     "bridgeTimeout": "EncodeX ບໍ່ຕອບສະໜອງທັນເວລາ. ລອງອີກຄັ້ງ.",
-    "planFailed": "Copilot ບໍ່ສາມາດສ້າງແຜນສຳລັບເປົ້າໝາຍນັ້ນໄດ້."
+    "planFailed": "Copilot ບໍ່ສາມາດສ້າງແຜນສຳລັບເປົ້າໝາຍນັ້ນໄດ້.",
+    "thinking": "ກຳລັງຄິດ...",
+    "resetConversation": "ເລີ່ມການສົນທະນາໃໝ່",
+    "resetConfirmTitle": "ຣີເຊັດການສົນທະນາ?",
+    "resetConfirmMessage": "ສິ່ງນີ້ຈະລຶບປະຫວັດການສົນທະນາທັງໝົດ. ບໍ່ສາມາດຍົກເລີກການກະທຳນີ້ໄດ້.",
+    "resetConfirmAction": "ຣີເຊັດ",
+    "loadingFiles": "ກຳລັງໂຫຼດໄຟລ໌..."
+  },
+  "leaveConfirm": {
+    "title": "ອອກຈາກ Copilot?",
+    "message": "ການສົນທະນານີ້ຍັງເຄື່ອນໄຫວຢູ່. ການອອກຈາກໜ້າຈະຍົກເລີກການສົນທະນາ.",
+    "confirmLabel": "ອອກເລີຍ",
+    "cancelLabel": "ຢູ່ຕໍ່"
   }
 }

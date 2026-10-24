@@ -156,15 +156,37 @@ function optimizedOutput(input: string, index: number): string {
 }
 
 /**
+ * The warning shown when a configured AI provider was consulted but could not
+ * produce a usable route, so the offline rules engine planned instead.
+ * @const {string} AI_FALLBACK_WARNING
+ */
+const AI_FALLBACK_WARNING =
+  'The configured AI provider could not route this goal, so the built-in rules engine was used instead. Check the AI provider settings and logs.';
+
+/**
+ * A routing result plus whether it came from the rules fallback after a
+ * configured provider failed to answer.
+ * @interface RouteDecision
+ * @property {RoutedOperation} routed - The chosen operation.
+ * @property {boolean} aiFallback - True when an AI provider was available but
+ *   returned nothing usable, so the deterministic router was used.
+ */
+interface RouteDecision {
+  routed: RoutedOperation;
+  aiFallback: boolean;
+}
+
+/**
  * Chooses the operation for a goal: an explicit choice wins, otherwise a
  * configured AI provider is consulted and the deterministic router is the
- * fallback.
+ * fallback. The fallback is reported so the caller can warn instead of silently
+ * presenting a rules-based plan as if the provider had chosen it.
  * @param {string} goal - The natural-language goal.
  * @param {import('../../shared/copilot').CopilotOperation | null} forced - Explicit operation, or null.
  * @param {ProbedEntry[]} entries - The probed candidates.
  * @param {EncoderCapabilities} capabilities - Detected encoders.
  * @param {string} inputExt - Input extension for container defaults.
- * @returns {Promise<RoutedOperation>} The routed operation.
+ * @returns {Promise<RouteDecision>} The routed operation and fallback flag.
  */
 async function routeOperation(
   goal: string,
@@ -172,8 +194,8 @@ async function routeOperation(
   entries: ProbedEntry[],
   capabilities: EncoderCapabilities,
   inputExt: string,
-): Promise<RoutedOperation> {
-  if (forced) return routeOperationDeterministic({ goal, operation: forced, inputExt });
+): Promise<RouteDecision> {
+  if (forced) return { routed: routeOperationDeterministic({ goal, operation: forced, inputExt }), aiFallback: false };
   const router = await resolveLLMOperationRouter();
   if (router) {
     const routed = await router({
@@ -183,9 +205,10 @@ async function routeOperation(
       profiles: BUILTIN_PROFILES,
       capabilities,
     });
-    if (routed) return routed;
+    if (routed) return { routed, aiFallback: false };
+    return { routed: routeOperationDeterministic({ goal, operation: null, inputExt }), aiFallback: true };
   }
-  return routeOperationDeterministic({ goal, operation: null, inputExt });
+  return { routed: routeOperationDeterministic({ goal, operation: null, inputExt }), aiFallback: false };
 }
 
 /**
@@ -277,7 +300,8 @@ export function registerCopilotHandlers(): void {
 
       const capabilities = getEncoderCapabilities() ?? EMPTY_CAPABILITIES;
       const inputExt = extname(entries[0].file).slice(1).toLowerCase() || 'mp4';
-      const routed = await routeOperation(goal, forced, entries, capabilities, inputExt);
+      const { routed, aiFallback } = await routeOperation(goal, forced, entries, capabilities, inputExt);
+      const routingWarning = aiFallback ? AI_FALLBACK_WARNING : undefined;
       if (typeof request?.query === 'string' && request.query.trim()) routed.fields.query = request.query.trim();
       if (typeof request?.targetLanguage === 'string' && request.targetLanguage.trim()) {
         routed.fields.targetLanguage = request.targetLanguage.trim();
@@ -294,6 +318,7 @@ export function registerCopilotHandlers(): void {
           skips: convert.skips,
           rationale: [...routed.rationale, ...convert.rationale],
           notes: [...convert.notes, `Operation chosen by "${routed.providerId}".`],
+          ...(routingWarning ? { routingWarning } : {}),
           plan: convert.plan,
           providerId: routed.providerId,
           isEstimated: true,
@@ -327,6 +352,7 @@ export function registerCopilotHandlers(): void {
         skips: built.skips,
         rationale: routed.rationale,
         notes,
+        ...(routingWarning ? { routingWarning } : {}),
         plan: planWorkflow({ steps: [] }),
         providerId: routed.providerId,
         isEstimated: true,

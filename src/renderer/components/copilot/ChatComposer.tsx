@@ -5,11 +5,12 @@
  */
 
 import { useState } from 'react';
-import { Box, Button, Chip, MenuItem, Popover, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, LinearProgress, MenuItem, Popover, TextField, Tooltip, Typography, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileImport, faFolderOpen, faGear, faSliders } from '@fortawesome/free-solid-svg-icons';
+import { faFileImport, faFolderOpen, faGear, faRobot, faSliders } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import ChatInput from './ChatInput';
+import { aiProviderLogo } from '../../utils/ai-provider-icons';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
 import type { AIProviderId } from '../../../shared/ai/types';
@@ -53,6 +54,9 @@ interface ChatComposerProps {
   busy?: boolean;
   hasInputs?: boolean;
   connection?: ComposerConnection;
+  onResetConversation?: () => void;
+  showReset?: boolean;
+  inputsLoading?: boolean;
 }
 
 /**
@@ -80,14 +84,31 @@ export default function ChatComposer({
   busy = false,
   hasInputs = false,
   connection,
+  onResetConversation,
+  showReset = false,
+  inputsLoading = false,
 }: ChatComposerProps) {
   const { t } = useTranslation();
+  const theme = useTheme();
   const [advancedAnchor, setAdvancedAnchor] = useState<HTMLElement | null>(null);
 
   return (
     <ComposerBar>
-      {inputs.length > 0 && (
+      {(inputs.length > 0 || inputsLoading) && (
         <AttachmentRow>
+          {inputsLoading && inputs.length === 0 && (
+            <Chip
+              label={t('copilot.loadingFiles')}
+              size="small"
+              sx={{ maxWidth: '100%' }}
+              deleteIcon={
+                <Box sx={{ display: 'flex', alignItems: 'center', width: theme.typography.pxToRem(40) }}>
+                  <LinearProgress sx={{ width: '100%' }} />
+                </Box>
+              }
+              onDelete={() => {}}
+            />
+          )}
           {inputs.map((path) => (
             <Chip
               key={path}
@@ -106,6 +127,8 @@ export default function ChatComposer({
         placeholder={t('copilot.placeholder')}
         busy={busy}
         hasInputs={hasInputs}
+        showReset={showReset}
+        onResetConversation={onResetConversation}
       />
       <ActionsRow>
         <LeftActions>
@@ -138,33 +161,80 @@ export default function ChatComposer({
           >
             {t('copilot.advanced')}
           </Button>
-          <Button
-            size="small"
-            startIcon={<FontAwesomeIcon icon={faGear} />}
-            onClick={onOpenSettings}
-            disabled={busy}
-            data-testid="copilot-ai-settings"
-          >
-            {t('copilot.ai.configure')}
-          </Button>
+          <Tooltip title={t('copilot.ai.locationNote')} placement="top" arrow>
+            <span>
+              <Button
+                size="small"
+                startIcon={<FontAwesomeIcon icon={faGear} />}
+                onClick={onOpenSettings}
+                disabled={busy}
+                data-testid="copilot-ai-settings"
+              >
+                {t('copilot.ai.configure')}
+              </Button>
+            </span>
+          </Tooltip>
         </LeftActions>
         {connection && (
           <RightActions data-testid="copilot-ai-status">
             <ConnectionStatus $connected={connection.connected}>
-              <ConnectionDot $connected={connection.connected} aria-hidden="true" />
-              {connection.connected
-                ? t('settings.ai.headerConnected', {
-                    provider: t(`settings.ai.providers.${connection.providerId}`),
-                    model: connection.model || t('settings.ai.modelPlaceholder'),
-                  })
-                : t('copilot.ai.notConnected')}
+              <Box
+                sx={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: theme.typography.pxToRem(22),
+                  height: theme.typography.pxToRem(22),
+                  borderRadius: '50%',
+                  bgcolor: 'background.paper',
+                  border: `${theme.typography.pxToRem(1)} solid`,
+                  borderColor: 'divider',
+                  flexShrink: 0,
+                }}
+              >
+                {connection.providerId && aiProviderLogo(connection.providerId, theme.palette.mode) ? (
+                  <Box
+                    component="img"
+                    src={aiProviderLogo(connection.providerId, theme.palette.mode) || undefined}
+                    alt=""
+                    sx={{ width: theme.typography.pxToRem(14), height: theme.typography.pxToRem(14) }}
+                  />
+                ) : (
+                  <Box component="span" sx={{ display: 'inline-flex', fontSize: theme.typography.pxToRem(12) }}>
+                    <FontAwesomeIcon icon={faRobot} />
+                  </Box>
+                )}
+                <ConnectionDot
+                  $connected={connection.connected}
+                  aria-hidden="true"
+                  sx={{ position: 'absolute', bottom: theme.typography.pxToRem(-1), right: theme.typography.pxToRem(-1) }}
+                />
+              </Box>
+              <Box
+                className="copilot-ai-status-text"
+                sx={{
+                  maxWidth: 0,
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  opacity: 0,
+                  transition: theme.transitions.create(['max-width', 'opacity'], {
+                    duration: theme.transitions.duration.short,
+                  }),
+                }}
+              >
+                {connection.connected
+                  ? t('settings.ai.headerConnected', {
+                      provider: t(`settings.ai.providers.${connection.providerId}`),
+                      model: connection.model || t('settings.ai.modelPlaceholder'),
+                    })
+                  : t('copilot.ai.notConnected')}
+              </Box>
             </ConnectionStatus>
           </RightActions>
         )}
       </ActionsRow>
-      <Typography variant="caption" color="text.secondary" sx={{ paddingInline: 0.5 }}>
-        {t('copilot.ai.locationNote')}
-      </Typography>
+      {/* Location note moved to tooltip on the AI configure button. */}
       <Popover
         open={Boolean(advancedAnchor)}
         anchorEl={advancedAnchor}

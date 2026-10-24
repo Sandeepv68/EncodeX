@@ -7,8 +7,8 @@
  * (temporary drawer on mobile, permanent drawer on desktop), lazy-loads every
  * feature page, and renders the route table. Each lazy page is wrapped in its
  * own `ErrorBoundary` so a crash in one feature never tears down the rest of
- * the shell, and a shared `Suspense` shows a spinner while a page chunk is
- * being fetched.
+ * the shell. Each route has its own `Suspense` fallback: Dashboard keeps the
+ * startup spinner while every other page renders a layout-matched skeleton.
  *
  * Side effects performed once at mount:
  *  - Subscribes to renderer log messages forwarded from the main process via
@@ -18,14 +18,29 @@
 
 import type { ReactNode } from 'react';
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { ColorModeProvider, useColorMode } from './ColorModeContext';
+import { NavigationGuardProvider, useNavigationGuard } from './NavigationGuardContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import {
+  AboutSkeleton,
+  AudioExtractSkeleton,
+  BatchQueueSkeleton,
+  ConvertSkeleton,
+  CopilotSkeleton,
+  DemuxSkeleton,
+  ImageCompressSkeleton,
+  LogsSkeleton,
+  MediaInfoSkeleton,
+  RemuxSkeleton,
+  SettingsSkeleton,
+  VideoCutSkeleton,
+} from './components/PageSkeletons';
 import ErrorSnackbar from './components/ErrorSnackbar';
 import ToastContainer from './components/ToastContainer';
 import CloseConfirmDialog from './components/CloseConfirmDialog';
@@ -98,7 +113,7 @@ const About = lazy(() => import('./pages/About'));
  * it has no condense toggle of its own.
  *
  * Renders the route table for every feature page, each wrapped in an
- *  `ErrorBoundary` and collectively in a `Suspense` fallback spinner. It also
+ *  `ErrorBoundary` and its own `Suspense` fallback. It also
  *  hosts the global `ErrorSnackbar`, `ToastContainer`, and `CloseConfirmDialog`
  *  so error/toast notifications and the close-with-active-jobs confirmation
  *  are shown above all routes.
@@ -117,7 +132,7 @@ function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { drawerCondensed, setDrawerCondensed } = useSettingsStore();
   const [helpOpen, setHelpOpen] = useState(false);
-  const navigate = useNavigate();
+  const { navigate } = useNavigationGuard();
   const { themeId, setTheme } = useColorMode();
 
   useLanguageDirection();
@@ -186,24 +201,33 @@ function AppLayout() {
   ]);
 
   /**
-   * Route table mapping URL paths to their lazy-loaded page elements.
-   * Keys mirror the path definitions used by AppDrawer and pageIcons.tsx.
-   * @const {Array<{path: string, element: ReactNode}>}
+   * Route table mapping URL paths to their lazy-loaded page elements and
+   * per-route loading fallbacks. Keys mirror the path definitions used by
+   * AppDrawer and pageIcons.tsx.
+   * @const {Array<{path: string, element: ReactNode, fallback: ReactNode}>}
    */
-  const routes: { path: string; element: ReactNode }[] = [
-    { path: '/', element: <Dashboard /> },
-    { path: '/convert', element: <Convert /> },
-    { path: '/media-info', element: <MediaInfo /> },
-    { path: '/image-compress', element: <ImageCompress /> },
-    { path: '/audio-extract', element: <AudioExtract /> },
-    { path: '/video-cut', element: <VideoCut /> },
-    { path: '/remux', element: <Remux /> },
-    { path: '/demux', element: <Demux /> },
-    { path: '/batch', element: <BatchQueue /> },
-    { path: '/copilot', element: <Copilot /> },
-    { path: '/logs', element: <Logs /> },
-    { path: '/settings', element: <Settings /> },
-    { path: '/about', element: <About /> },
+  const routes: { path: string; element: ReactNode; fallback: ReactNode }[] = [
+    {
+      path: '/',
+      element: <Dashboard />,
+      fallback: (
+        <PageFallback>
+          <CircularProgress aria-label={t('app.loading')} />
+        </PageFallback>
+      ),
+    },
+    { path: '/convert', element: <Convert />, fallback: <ConvertSkeleton /> },
+    { path: '/media-info', element: <MediaInfo />, fallback: <MediaInfoSkeleton /> },
+    { path: '/image-compress', element: <ImageCompress />, fallback: <ImageCompressSkeleton /> },
+    { path: '/audio-extract', element: <AudioExtract />, fallback: <AudioExtractSkeleton /> },
+    { path: '/video-cut', element: <VideoCut />, fallback: <VideoCutSkeleton /> },
+    { path: '/remux', element: <Remux />, fallback: <RemuxSkeleton /> },
+    { path: '/demux', element: <Demux />, fallback: <DemuxSkeleton /> },
+    { path: '/batch', element: <BatchQueue />, fallback: <BatchQueueSkeleton /> },
+    { path: '/copilot', element: <Copilot />, fallback: <CopilotSkeleton /> },
+    { path: '/logs', element: <Logs />, fallback: <LogsSkeleton /> },
+    { path: '/settings', element: <Settings />, fallback: <SettingsSkeleton /> },
+    { path: '/about', element: <About />, fallback: <AboutSkeleton /> },
   ];
 
   const drawerContent = (
@@ -239,19 +263,19 @@ function AppLayout() {
             )}
             <ErrorBoundary>
               <RouteContent>
-                <Suspense
-                  fallback={
-                    <PageFallback>
-                      <CircularProgress aria-label={t('app.loading')} />
-                    </PageFallback>
-                  }
-                >
-                  <Routes>
-                    {routes.map(({ path, element }) => (
-                      <Route key={path} path={path} element={<ErrorBoundary>{element}</ErrorBoundary>} />
-                    ))}
-                  </Routes>
-                </Suspense>
+                <Routes>
+                  {routes.map(({ path, element, fallback }) => (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={
+                        <ErrorBoundary>
+                          <Suspense fallback={fallback}>{element}</Suspense>
+                        </ErrorBoundary>
+                      }
+                    />
+                  ))}
+                </Routes>
               </RouteContent>
             </ErrorBoundary>
           </MainContent>
@@ -281,7 +305,9 @@ export default function App() {
   return (
     <ColorModeProvider>
       <CssBaseline />
-      <AppLayout />
+      <NavigationGuardProvider>
+        <AppLayout />
+      </NavigationGuardProvider>
     </ColorModeProvider>
   );
 }

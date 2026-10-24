@@ -1107,6 +1107,18 @@
     "advanced": "Ardghnéithe",
     "advancedTitle": "Ardroghanna",
     "bridgeTimeout": "Níor thug EncodeX freagra in am. Bain triail eile as.",
-    "planFailed": "Níorbh fhéidir le Copilot plean a chruthú don sprioc sin."
+    "planFailed": "Níorbh fhéidir le Copilot plean a chruthú don sprioc sin.",
+    "thinking": "Ag smaoineamh...",
+    "resetConversation": "Tosaigh comhrá nua",
+    "resetConfirmTitle": "Athshocraigh an comhrá?",
+    "resetConfirmMessage": "Glanfaidh sé seo stair iomlán an chomhrá. Ní féidir an gníomh seo a chealú.",
+    "resetConfirmAction": "Athshocraigh",
+    "loadingFiles": "Ag lódáil comhad..."
+  },
+  "leaveConfirm": {
+    "title": "Fág Copilot?",
+    "message": "Tá an comhrá seo gníomhach fós. Má fhágann tú an leathanach, caithfear an comhrá.",
+    "confirmLabel": "Fág mar sin féin",
+    "cancelLabel": "Fan"
   }
 }

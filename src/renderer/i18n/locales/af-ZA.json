@@ -1107,6 +1107,18 @@
     "advanced": "Gevorderd",
     "advancedTitle": "Gevorderde opsies",
     "bridgeTimeout": "EncodeX het nie betyds gereageer nie. Probeer weer.",
-    "planFailed": "Copilot kon nie 'n plan vir daardie doel bou nie."
+    "planFailed": "Copilot kon nie 'n plan vir daardie doel bou nie.",
+    "thinking": "Dink...",
+    "resetConversation": "Begin nuwe gesprek",
+    "resetConfirmTitle": "Gesprek terugstel?",
+    "resetConfirmMessage": "Dit sal die hele gesprekgeskiedenis uitwis. Hierdie aksie kan nie ongedaan gemaak word nie.",
+    "resetConfirmAction": "Terugstel",
+    "loadingFiles": "Laai lêers..."
+  },
+  "leaveConfirm": {
+    "title": "Copilot verlaat?",
+    "message": "Hierdie gesprek is nog aktief. As jy die bladsy verlaat, sal die gesprek weggegooi word.",
+    "confirmLabel": "Verlaat tog",
+    "cancelLabel": "Bly"
   }
 }

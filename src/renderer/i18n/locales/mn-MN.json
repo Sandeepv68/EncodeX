@@ -1107,6 +1107,18 @@
     "advanced": "Дэвшилтэт",
     "advancedTitle": "Нарийвчилсан сонголтууд",
     "bridgeTimeout": "EncodeX цагт нь хариу өгсөнгүй. Дахин оролдоно уу.",
-    "planFailed": "Copilot тэр зорилгод төлөвлөгөө боловсруулж чадсангүй."
+    "planFailed": "Copilot тэр зорилгод төлөвлөгөө боловсруулж чадсангүй.",
+    "thinking": "Бодож байна...",
+    "resetConversation": "Шинэ яриа эхлүүлэх",
+    "resetConfirmTitle": "Яриаг шинэчлэх үү?",
+    "resetConfirmMessage": "Энэ нь бүх ярианы түүхийг устгана. Энэ үйлдлийг буцаах боломжгүй.",
+    "resetConfirmAction": "Шинэчлэх",
+    "loadingFiles": "Файлууд ачааллаж байна..."
+  },
+  "leaveConfirm": {
+    "title": "Copilot-оос гарах уу?",
+    "message": "Энэ чат хараахан идэвхтэй байна. Хуудсаас гарвал яриа устна.",
+    "confirmLabel": "Гарсан ч зүгээр",
+    "cancelLabel": "Үлдэх"
   }
 }

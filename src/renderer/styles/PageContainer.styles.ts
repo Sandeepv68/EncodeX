@@ -12,12 +12,13 @@ import { SHADOWS } from '../colors';
  * mount and which is invalid HTML in the shipped app.
  */
 export const PageRoot = styled(Box, {
-  shouldForwardProp: (prop) => prop !== '$hasAside',
-})<{ $hasAside?: boolean }>(({ theme, $hasAside }) => ({
+  shouldForwardProp: (prop) => prop !== '$hasAside' && prop !== '$fill',
+})<{ $hasAside?: boolean; $fill?: boolean }>(({ theme, $hasAside, $fill }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'stretch',
   gap: theme.spacing(2),
+  ...($fill ? { height: '100%', minHeight: 0 } : {}),
   ...($hasAside
     ? {
         [theme.breakpoints.up('md')]: {
@@ -28,7 +29,13 @@ export const PageRoot = styled(Box, {
     : {}),
 }));
 
-export const PageBody = styled(Box)({ flex: 1, minWidth: 0 });
+export const PageBody = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$fill',
+})<{ $fill?: boolean }>(({ $fill }) => ({
+  flex: 1,
+  minWidth: 0,
+  ...($fill ? { display: 'flex', flexDirection: 'column', minHeight: 0 } : {}),
+}));
 
 export const PageTitle = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   display: 'flex',

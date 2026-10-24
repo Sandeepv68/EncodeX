@@ -1107,6 +1107,18 @@
     "advanced": "고급",
     "advancedTitle": "고급 옵션",
     "bridgeTimeout": "EncodeX가 제때 응답하지 않았습니다. 다시 시도하세요.",
-    "planFailed": "Copilot이 해당 목표에 대한 계획을 만들지 못했습니다."
+    "planFailed": "Copilot이 해당 목표에 대한 계획을 만들지 못했습니다.",
+    "thinking": "생각 중...",
+    "resetConversation": "새 대화 시작",
+    "resetConfirmTitle": "대화를 재설정할까요?",
+    "resetConfirmMessage": "전체 대화 기록이 지워집니다. 이 작업은 되돌릴 수 없습니다.",
+    "resetConfirmAction": "재설정",
+    "loadingFiles": "파일 불러오는 중..."
+  },
+  "leaveConfirm": {
+    "title": "Copilot에서 나가시겠어요?",
+    "message": "이 채팅은 아직 진행 중입니다. 페이지를 나가면 대화가 삭제됩니다.",
+    "confirmLabel": "그래도 나가기",
+    "cancelLabel": "머무르기"
   }
 }
