@@ -1,6 +1,5 @@
 import { keyframes, styled } from '@mui/material/styles';
 import { Box, Paper } from '@mui/material';
-import { SHADOWS } from '../../colors';
 
 const bubbleSlideIn = (isUser: boolean) => keyframes`
   0% {

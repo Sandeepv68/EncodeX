@@ -140,7 +140,6 @@ function resolveProfileIcon(name: string): ResolvedIcon {
     return { kind: 'brand', icon: APPLE_BRAND };
   }
 
-  // eslint-disable-next-line encodex/no-hardcoded-strings -- Generic fallback badge for unknown profiles; content-free icon abbreviation, not localizable UI copy.
   return { kind: 'badge', label: 'FILE', color: PROFILE_ICON_COLORS.fallback };
 }
 

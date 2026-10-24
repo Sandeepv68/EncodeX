@@ -101,7 +101,11 @@ export default function ChatComposer({
               label={t('copilot.loadingFiles')}
               size="small"
               sx={{ maxWidth: '100%' }}
-              deleteIcon={<Box sx={{ display: 'flex', alignItems: 'center', width: theme.typography.pxToRem(40) }}><LinearProgress sx={{ width: '100%' }} /></Box>}
+              deleteIcon={
+                <Box sx={{ display: 'flex', alignItems: 'center', width: theme.typography.pxToRem(40) }}>
+                  <LinearProgress sx={{ width: '100%' }} />
+                </Box>
+              }
               onDelete={() => {}}
             />
           )}

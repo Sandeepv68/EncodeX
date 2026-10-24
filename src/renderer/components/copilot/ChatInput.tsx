@@ -18,7 +18,18 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $getRoot, COMMAND_PRIORITY_LOW, INSERT_LINE_BREAK_COMMAND, KEY_ENTER_COMMAND } from 'lexical';
 import type { EditorState } from 'lexical';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Tooltip, useTheme } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  Tooltip,
+  useTheme,
+} from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faPlus, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
@@ -197,7 +208,14 @@ export default function ChatInput({
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <FocusableShell>
-        <EditorArea sx={{ alignItems: 'center', flexWrap: 'nowrap', gap: theme.spacing(0.5), display: showReset && onResetConversation ? 'flex' : 'flex' }}>
+        <EditorArea
+          sx={{
+            alignItems: 'center',
+            flexWrap: 'nowrap',
+            gap: theme.spacing(0.5),
+            display: showReset && onResetConversation ? 'flex' : 'flex',
+          }}
+        >
           {showReset && onResetConversation && (
             <Tooltip title={t('copilot.resetConversation')} placement="top" arrow>
               <span style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, lineHeight: 0 }}>
@@ -221,10 +239,41 @@ export default function ChatInput({
               </span>
             </Tooltip>
           )}
-          <Box sx={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', position: 'relative', height: theme.typography.pxToRem(28) }}>
+          <Box
+            sx={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', position: 'relative', height: theme.typography.pxToRem(28) }}
+          >
             <RichTextPlugin
-              contentEditable={<ContentEditable tabIndex={0} aria-label={t('copilot.inputAria')} style={{ width: '100%', outline: 'none', lineHeight: theme.typography.pxToRem(28), height: theme.typography.pxToRem(28), display: 'flex', alignItems: 'center', padding: 0, margin: 0 }} />}
-              placeholder={<EditorPlaceholder style={{ lineHeight: theme.typography.pxToRem(28), height: theme.typography.pxToRem(28), display: 'flex', alignItems: 'center', margin: 0, padding: 0, top: 0 }}>{placeholderText}</EditorPlaceholder>}
+              contentEditable={
+                <ContentEditable
+                  tabIndex={0}
+                  aria-label={t('copilot.inputAria')}
+                  style={{
+                    width: '100%',
+                    outline: 'none',
+                    lineHeight: theme.typography.pxToRem(28),
+                    height: theme.typography.pxToRem(28),
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: 0,
+                    margin: 0,
+                  }}
+                />
+              }
+              placeholder={
+                <EditorPlaceholder
+                  style={{
+                    lineHeight: theme.typography.pxToRem(28),
+                    height: theme.typography.pxToRem(28),
+                    display: 'flex',
+                    alignItems: 'center',
+                    margin: 0,
+                    padding: 0,
+                    top: 0,
+                  }}
+                >
+                  {placeholderText}
+                </EditorPlaceholder>
+              }
               ErrorBoundary={LexicalErrorBoundary}
             />
           </Box>

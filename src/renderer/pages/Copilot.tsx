@@ -286,14 +286,18 @@ export default function Copilot() {
           </Box>
         )}
         {notice && (
-          <Box sx={{ paddingInline: 2, paddingTop: 2 , paddingBottom: 2}}>
-            <Alert severity="info" data-testid="copilot-notice"  sx={{
+          <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
+            <Alert
+              severity="info"
+              data-testid="copilot-notice"
+              sx={{
                 boxShadow: (theme) =>
                   theme.palette.mode === 'dark'
                     ? '0 8px 24px rgba(0, 0, 0, 0.35)'
                     : '0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04)',
-                     '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-              }}>
+                '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
+              }}
+            >
               {notice}
             </Alert>
           </Box>

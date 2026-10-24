@@ -11,7 +11,13 @@ import type { CopilotPlan } from '../../../shared/copilot';
 import MessageBubble from './MessageBubble';
 import AssistantMessage from './AssistantMessage';
 import Welcome from './Welcome';
-import { ConversationScroll, ConversationStream, TypingDots, VirtualConversationStream, VirtualRow } from '../../styles/copilot/Conversation.styles';
+import {
+  ConversationScroll,
+  ConversationStream,
+  TypingDots,
+  VirtualConversationStream,
+  VirtualRow,
+} from '../../styles/copilot/Conversation.styles';
 
 export interface ConversationMessage {
   id: string;

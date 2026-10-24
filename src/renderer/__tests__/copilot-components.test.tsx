@@ -242,7 +242,7 @@ describe('Conversation', () => {
       </ColorModeProvider>,
     );
     expect(screen.getAllByText(/copilot.errorNoGoal/).length).toBeGreaterThan(0);
-      expect(screen.getAllByText(/copilot.noticeNoFiles/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/copilot.noticeNoFiles/).length).toBeGreaterThan(0);
   });
 
   it('skips assistant messages that carry no plan, error or notice', () => {

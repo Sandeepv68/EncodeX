@@ -131,7 +131,6 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
     (props: React.HTMLAttributes<HTMLLIElement>, option: ConversionProfile) => {
       const isActive = option.id === activeProfileId;
       return (
-        // eslint-disable-next-line encodex/no-inline-styles -- MUI Autocomplete passes runtime positioning via props.style
         <li {...props} key={option.id} style={{ ...props.style, position: 'relative', alignItems: 'flex-start' }}>
           <ProfileIcon name={option.name} />
           <OptionContent>
