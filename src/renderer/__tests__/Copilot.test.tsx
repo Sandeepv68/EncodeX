@@ -11,7 +11,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderPage } from '../../test-utils/page-render';
-import { screen, waitFor, fireEvent, act } from '@testing-library/react';
+import { screen, waitFor, fireEvent, act, within } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
 import { NavigationGuardProvider } from '../NavigationGuardContext';
 import { useToastStore } from '../stores/toastStore';
@@ -217,6 +217,23 @@ describe('Copilot page', () => {
     await screen.findByTestId('copilot-plan-summary');
 
     expect(screen.getByTestId('copilot-conversation')).not.toHaveAttribute('data-empty');
+  });
+
+  it('clears the conversation and inputs when a reset is confirmed', async () => {
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+
+    fireEvent.click(screen.getByTestId('copilot-reset-conversation'));
+    const dialog = await screen.findByRole('dialog');
+    // DialogActions order: cancel first, confirm second.
+    fireEvent.click(within(dialog).getAllByRole('button')[1]);
+
+    await waitFor(() => expect(screen.queryByTestId('copilot-plan-summary')).not.toBeInTheDocument());
+    expect(screen.getByTestId('copilot-conversation')).toHaveAttribute('data-empty', 'true');
+    expect(getEditor().textContent ?? '').toBe('');
   });
 
   it('shows the connected provider and model from the mirrored connection', async () => {
