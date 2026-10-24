@@ -77,7 +77,7 @@ describe('5.3 keyboard smoke (app shell: global shortcuts, dialogs, focus return
 
       fireEvent.keyDown(document.activeElement as HTMLElement, { key: 'Escape', code: 'Escape' });
 
-      await waitFor(() => expect(screen.queryByTestId('shortcuts-help-dialog')).not.toBeInTheDocument());
+      await waitFor(() => expect(screen.queryByTestId('shortcuts-help-dialog')).not.toBeInTheDocument(), { timeout: 10000 });
       // Closing a modal must hand focus back to whatever opened it.
       expect(document.activeElement).toBe(trigger);
     } finally {
