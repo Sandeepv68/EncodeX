@@ -1107,6 +1107,18 @@
     "advanced": "Aro nui",
     "advancedTitle": "Kōwhiringa matatau",
     "bridgeTimeout": "Kāore a EncodeX i whakautu i te wā tika. Whakamātauria anō.",
-    "planFailed": "Kāore i taea e Copilot te hanga mahere mō taua whāinga."
+    "planFailed": "Kāore i taea e Copilot te hanga mahere mō taua whāinga.",
+    "thinking": "E whakaaro ana...",
+    "resetConversation": "Tīmata kōrerorero hōu",
+    "resetConfirmTitle": "Tautuhi anō i te kōrerorero?",
+    "resetConfirmMessage": "Ka ūkui tēnei i te hitori katoa o te kōrerorero. Kāore e taea te whakakore.",
+    "resetConfirmAction": "Tautuhi anō",
+    "loadingFiles": "E uta ana i ngā kōnae..."
+  },
+  "leaveConfirm": {
+    "title": "Wehe atu i a Copilot?",
+    "message": "Kei te hohe tonu tēnei kōrerorero. Ki te waiho i te whārangi, ka whakakorengia te kōrerorero.",
+    "confirmLabel": "Wehe tonu",
+    "cancelLabel": "Noho"
   }
 }

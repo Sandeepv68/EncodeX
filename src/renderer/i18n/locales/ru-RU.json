@@ -1107,6 +1107,18 @@
     "advanced": "Дополнительно",
     "advancedTitle": "Дополнительные параметры",
     "bridgeTimeout": "EncodeX не ответил вовремя. Попробуйте снова.",
-    "planFailed": "Copilot не смог построить план для этой цели."
+    "planFailed": "Copilot не смог построить план для этой цели.",
+    "thinking": "Думает...",
+    "resetConversation": "Начать новый разговор",
+    "resetConfirmTitle": "Сбросить разговор?",
+    "resetConfirmMessage": "Вся история разговора будет очищена. Это действие нельзя отменить.",
+    "resetConfirmAction": "Сбросить",
+    "loadingFiles": "Загрузка файлов..."
+  },
+  "leaveConfirm": {
+    "title": "Покинуть Copilot?",
+    "message": "Этот чат всё ещё активен. При выходе со страницы разговор будет удалён.",
+    "confirmLabel": "Всё равно выйти",
+    "cancelLabel": "Остаться"
   }
 }

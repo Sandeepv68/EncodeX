@@ -1107,6 +1107,18 @@
     "advanced": "Lisäasetukset",
     "advancedTitle": "Lisäasetukset",
     "bridgeTimeout": "EncodeX ei vastannut ajoissa. Yritä uudelleen.",
-    "planFailed": "Copilot ei voinut luoda suunnitelmaa tälle tavoitteelle."
+    "planFailed": "Copilot ei voinut luoda suunnitelmaa tälle tavoitteelle.",
+    "thinking": "Ajattelee...",
+    "resetConversation": "Aloita uusi keskustelu",
+    "resetConfirmTitle": "Nollataanko keskustelu?",
+    "resetConfirmMessage": "Tämä tyhjentää koko keskusteluhistorian. Toimintoa ei voi kumota.",
+    "resetConfirmAction": "Nollaa",
+    "loadingFiles": "Ladataan tiedostoja..."
+  },
+  "leaveConfirm": {
+    "title": "Poistu Copilotista?",
+    "message": "Tämä keskustelu on vielä aktiivinen. Sivulta poistuminen hylkää keskustelun.",
+    "confirmLabel": "Poistu silti",
+    "cancelLabel": "Jää"
   }
 }

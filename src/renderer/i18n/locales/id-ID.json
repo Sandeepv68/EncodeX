@@ -1107,6 +1107,18 @@
     "advanced": "Lanjutan",
     "advancedTitle": "Opsi lanjutan",
     "bridgeTimeout": "EncodeX tidak merespons tepat waktu. Coba lagi.",
-    "planFailed": "Copilot tidak dapat membuat rencana untuk tujuan itu."
+    "planFailed": "Copilot tidak dapat membuat rencana untuk tujuan itu.",
+    "thinking": "Memikirkan...",
+    "resetConversation": "Mulai percakapan baru",
+    "resetConfirmTitle": "Atur ulang percakapan?",
+    "resetConfirmMessage": "Ini akan menghapus seluruh riwayat percakapan. Tindakan ini tidak dapat dibatalkan.",
+    "resetConfirmAction": "Atur ulang",
+    "loadingFiles": "Memuat file..."
+  },
+  "leaveConfirm": {
+    "title": "Tinggalkan Copilot?",
+    "message": "Chat ini masih aktif. Meninggalkan halaman akan membuang percakapan.",
+    "confirmLabel": "Tetap tinggalkan",
+    "cancelLabel": "Tetap di sini"
   }
 }

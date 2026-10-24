@@ -1107,6 +1107,18 @@
     "advanced": "Advanced",
     "advancedTitle": "Toqqagassat qaffasissat",
     "bridgeTimeout": "EncodeX piffissami nassuiaanngilaq. Misileqqikkit.",
-    "planFailed": "Copilot taassuma anguniakkamut pilaanerulersitsinavianngilaq."
+    "planFailed": "Copilot taassuma anguniakkamut pilaanerulersitsinavianngilaq.",
+    "thinking": "Eqqarsarpoq...",
+    "resetConversation": "Oqallinnermik nutaamik aallartit",
+    "resetConfirmTitle": "Oqallinneq nutaagussaviuk?",
+    "resetConfirmMessage": "Oqallinneq oqaluttuassartaa tamarmik piiarneqassaaq. Iliuuseq una utoqqatserneqarsinnaanngilaq.",
+    "resetConfirmAction": "Nutaaguk",
+    "loadingFiles": "Fiilit nassarneqarput..."
+  },
+  "leaveConfirm": {
+    "title": "Copilot qimassava?",
+    "message": "Oqallinneq una maannakkut ingerlanneqarpoq. Qupperneq qimaaguk, oqallinneq peerneqassaaq.",
+    "confirmLabel": "Qimassaaq",
+    "cancelLabel": "Utimmissa"
   }
 }

@@ -18,13 +18,14 @@
 
 import type { ReactNode } from 'react';
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { ColorModeProvider, useColorMode } from './ColorModeContext';
+import { NavigationGuardProvider, useNavigationGuard } from './NavigationGuardContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import {
   AboutSkeleton,
@@ -131,7 +132,7 @@ function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { drawerCondensed, setDrawerCondensed } = useSettingsStore();
   const [helpOpen, setHelpOpen] = useState(false);
-  const navigate = useNavigate();
+  const { navigate } = useNavigationGuard();
   const { themeId, setTheme } = useColorMode();
 
   useLanguageDirection();
@@ -304,7 +305,9 @@ export default function App() {
   return (
     <ColorModeProvider>
       <CssBaseline />
-      <AppLayout />
+      <NavigationGuardProvider>
+        <AppLayout />
+      </NavigationGuardProvider>
     </ColorModeProvider>
   );
 }

@@ -1107,6 +1107,18 @@
     "advanced": "Avansert",
     "advancedTitle": "Avanserte alternativer",
     "bridgeTimeout": "EncodeX svarte ikke i tide. Prøv igjen.",
-    "planFailed": "Copilot kunne ikke bygge en plan for det målet."
+    "planFailed": "Copilot kunne ikke bygge en plan for det målet.",
+    "thinking": "Tenker...",
+    "resetConversation": "Start en ny samtale",
+    "resetConfirmTitle": "Tilbakestille samtalen?",
+    "resetConfirmMessage": "Dette sletter hele samtalehistorikken. Denne handlingen kan ikke angres.",
+    "resetConfirmAction": "Tilbakestill",
+    "loadingFiles": "Laster inn filer..."
+  },
+  "leaveConfirm": {
+    "title": "Forlate Copilot?",
+    "message": "Denne chatten er fortsatt aktiv. Hvis du forlater siden, forkastes samtalen.",
+    "confirmLabel": "Forlat likevel",
+    "cancelLabel": "Bli"
   }
 }

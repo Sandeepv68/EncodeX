@@ -1107,6 +1107,18 @@
     "advanced": "Avancé",
     "advancedTitle": "Options avancées",
     "bridgeTimeout": "EncodeX n'a pas répondu à temps. Réessayez.",
-    "planFailed": "Copilot n'a pas pu créer de plan pour cet objectif."
+    "planFailed": "Copilot n'a pas pu créer de plan pour cet objectif.",
+    "thinking": "Réflexion...",
+    "resetConversation": "Démarrer une nouvelle conversation",
+    "resetConfirmTitle": "Réinitialiser la conversation ?",
+    "resetConfirmMessage": "Cela effacera tout l'historique de la conversation. Cette action est irréversible.",
+    "resetConfirmAction": "Réinitialiser",
+    "loadingFiles": "Chargement des fichiers..."
+  },
+  "leaveConfirm": {
+    "title": "Quitter Copilot ?",
+    "message": "Cette conversation est toujours active. Quitter la page supprimera la conversation.",
+    "confirmLabel": "Quitter quand même",
+    "cancelLabel": "Rester"
   }
 }

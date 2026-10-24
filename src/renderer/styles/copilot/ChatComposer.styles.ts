@@ -8,6 +8,7 @@ import { Box } from '@mui/material';
 export const ComposerBar = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
+  flexShrink: 0,
   gap: theme.spacing(1),
   paddingInline: theme.spacing(1),
   paddingBottom: theme.spacing(2),
@@ -47,18 +48,31 @@ export const RightActions = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(0.75),
   marginInlineStart: 'auto',
+  paddingInline: theme.spacing(0.75),
+  paddingBlock: theme.spacing(0.5),
+  borderRadius: theme.typography.pxToRem(999),
+  backgroundColor: theme.palette.action.hover,
+  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+  transition: theme.transitions.create(['padding-inline']),
+  '&:hover .copilot-ai-status-text': {
+    maxWidth: theme.typography.pxToRem(420),
+    opacity: 1,
+    marginInlineStart: theme.spacing(0.75),
+  },
+  '&:hover': {
+    paddingInline: theme.spacing(1),
+  },
 }));
 
 /** Caption naming the connected AI provider (or the disconnected state). */
 export const ConnectionStatus = styled('span', {
   shouldForwardProp: (prop) => prop !== '$connected',
-})<{ $connected?: boolean }>(({ theme, $connected }) => ({
+})<{ $connected?: boolean }>(({ theme }) => ({
   display: 'inline-flex',
   alignItems: 'center',
-  gap: theme.spacing(0.75),
   fontSize: theme.typography.pxToRem(13),
-  fontWeight: $connected ? 600 : 400,
-  color: $connected ? theme.palette.success.main : theme.palette.text.secondary,
+  fontWeight: 500,
+  color: theme.palette.text.primary,
 }));
 
 /** Status dot: green when a provider is connected, muted otherwise. */
@@ -69,7 +83,8 @@ export const ConnectionDot = styled('span', {
   height: theme.spacing(0.75),
   borderRadius: '50%',
   flexShrink: 0,
-  backgroundColor: $connected ? theme.palette.success.main : theme.palette.text.disabled,
+  backgroundColor: $connected ? theme.palette.success.light : theme.palette.text.disabled,
+  boxShadow: $connected ? `0 0 0 ${theme.typography.pxToRem(4)} ${theme.palette.success.main}14` : 'none',
 }));
 
 /** Popover panel for the advanced controls (operation, query, target language). */

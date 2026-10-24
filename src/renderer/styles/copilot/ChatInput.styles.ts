@@ -10,17 +10,24 @@ import { Box } from '@mui/material';
 export const ComposerShell = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  gap: theme.spacing(1),
-  paddingInline: theme.spacing(1.5),
-  paddingBlock: theme.spacing(1),
-  borderRadius: theme.typography.pxToRem(24),
-  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+  flexWrap: 'nowrap',
+  gap: theme.spacing(0.5),
+  paddingBlock: theme.spacing(0.375),
+  paddingInline: theme.spacing(0.75),
+  borderRadius: theme.typography.pxToRem(999),
   backgroundColor: theme.palette.background.paper,
-  boxShadow: theme.shadows[1],
+  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+  boxShadow:
+    theme.palette.mode === 'dark'
+      ? `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(0, 0, 0, 0.35)`
+      : `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(15, 23, 42, 0.08), 0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)} rgba(15, 23, 42, 0.04)`,
+  transition: theme.transitions.create(['box-shadow', 'border-color']),
   cursor: 'text',
   '&:focus-within': {
     borderColor: theme.palette.primary.main,
-    boxShadow: `0 0 0 ${theme.typography.pxToRem(2)} ${alpha(theme.palette.primary.main, 0.2)}`,
+    boxShadow: `0 0 0 ${theme.typography.pxToRem(2)} ${alpha(theme.palette.primary.main, 0.2)}, 0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} ${
+      theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.35)' : 'rgba(15, 23, 42, 0.08)'
+    }`,
   },
 }));
 

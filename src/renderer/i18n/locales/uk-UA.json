@@ -1107,6 +1107,18 @@
     "advanced": "Додатково",
     "advancedTitle": "Розширені параметри",
     "bridgeTimeout": "EncodeX не відповів вчасно. Спробуйте знову.",
-    "planFailed": "Copilot не зміг створити план для цієї мети."
+    "planFailed": "Copilot не зміг створити план для цієї мети.",
+    "thinking": "Думає...",
+    "resetConversation": "Почати нову розмову",
+    "resetConfirmTitle": "Скинути розмову?",
+    "resetConfirmMessage": "Це очистить усю історію розмови. Цю дію неможливо скасувати.",
+    "resetConfirmAction": "Скинути",
+    "loadingFiles": "Завантаження файлів..."
+  },
+  "leaveConfirm": {
+    "title": "Залишити Copilot?",
+    "message": "Цей чат ще активний. Якщо ви залишите сторінку, розмова буде скасована.",
+    "confirmLabel": "Все одно залишити",
+    "cancelLabel": "Залишитися"
   }
 }

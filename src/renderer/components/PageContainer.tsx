@@ -14,6 +14,8 @@
  *  - icon: optional ReactNode rendered before the title.
  *  - aside: optional ReactNode rendered in the side column.
  *  - paper: when true (default), wraps children in a ContentPaper card.
+ *  - fill: when true, constrains the page to the viewport height so inner
+ *    scrollers (e.g. the Copilot transcript) can own the overflow.
  *  - children: the page body content.
  */
 
@@ -38,13 +40,15 @@ import { PageRoot, PageBody, PageTitle, TitleIcon, ContentPaper } from '../style
  *   column.
  * @param {boolean} [props.paper] - When true (default), wraps children in a
  *   ContentPaper card.
+ * @param {boolean} [props.fill] - When true, constrains the page to the
+ *   available viewport height.
  * @param {React.ReactNode} props.children - The page body content.
  * @returns {JSX.Element} The page scaffold.
  */
-export default function PageContainer({ title, icon, aside, paper = true, children }: PageContainerProps) {
+export default function PageContainer({ title, icon, aside, paper = true, fill = false, children }: PageContainerProps) {
   return (
-    <PageRoot $hasAside={!!aside}>
-      <PageBody>
+    <PageRoot $hasAside={!!aside} $fill={fill}>
+      <PageBody $fill={fill}>
         {title ? (
           <PageTitle variant="h5" component="h1">
             {icon && <TitleIcon>{icon}</TitleIcon>}

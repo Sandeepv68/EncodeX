@@ -632,8 +632,8 @@ export function MediaInfoSkeleton() {
 export function CopilotSkeleton() {
   return (
     <SkeletonStatus>
-      <PageRoot $hasAside={false}>
-        <PageBody>
+      <PageRoot $hasAside={false} $fill>
+        <PageBody $fill>
           <SkeletonCopilotLayout>
             <SkeletonChatArea>
               <Bone width={240} height={30} />

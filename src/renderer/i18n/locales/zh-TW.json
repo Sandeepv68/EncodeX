@@ -1107,6 +1107,18 @@
     "advanced": "進階",
     "advancedTitle": "進階選項",
     "bridgeTimeout": "EncodeX 未及時回應。請重試。",
-    "planFailed": "Copilot 無法為該目標建立計畫。"
+    "planFailed": "Copilot 無法為該目標建立計畫。",
+    "thinking": "正在思考...",
+    "resetConversation": "開始新對話",
+    "resetConfirmTitle": "重設對話？",
+    "resetConfirmMessage": "這將清除整個對話記錄。此操作無法復原。",
+    "resetConfirmAction": "重設",
+    "loadingFiles": "正在載入檔案..."
+  },
+  "leaveConfirm": {
+    "title": "離開 Copilot？",
+    "message": "此聊天仍處於活躍狀態。離開頁面將捨棄此對話。",
+    "confirmLabel": "仍要離開",
+    "cancelLabel": "留下"
   }
 }

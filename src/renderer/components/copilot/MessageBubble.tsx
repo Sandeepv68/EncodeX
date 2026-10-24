@@ -20,9 +20,7 @@ export default function MessageBubble({ speaker, children }: MessageBubbleProps)
 
   return (
     <BubbleRow $isUser={isUser}>
-      <Bubble elevation={isUser ? 1 : 0} $isUser={isUser}>
-        {children}
-      </Bubble>
+      <Bubble $isUser={isUser}>{children}</Bubble>
     </BubbleRow>
   );
 }

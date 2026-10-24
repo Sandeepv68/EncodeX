@@ -8,6 +8,7 @@ import { faListCheck, faRobot, faWandMagicSparkles } from '@fortawesome/free-sol
 import type { CopilotAction, CopilotPlan, CopilotResult } from '../../../shared/copilot';
 import type { AgentSkip } from '../../../shared/ai/agent';
 import { useTranslation } from 'react-i18next';
+import { AssistantBody } from '../../styles/copilot/AssistantMessage.styles';
 
 export interface AssistantMessageProps {
   plan: CopilotPlan | null;
@@ -22,34 +23,65 @@ export default function AssistantMessage({ plan, onAddToQueue, busy = false, err
 
   if (error) {
     return (
-      <Typography variant="body2" color="error.main">
-        {error}
-      </Typography>
+      <Alert
+        severity="error"
+        variant="outlined"
+        sx={{
+          boxShadow: (theme) =>
+            theme.palette.mode === 'dark'
+              ? `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(0, 0, 0, 0.35)`
+              : `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(15, 23, 42, 0.08), 0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)} rgba(15, 23, 42, 0.04)`,
+          '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
+        }}
+      >
+        😅 {error}
+      </Alert>
     );
   }
 
   if (notice) {
     return (
-      <Typography variant="body2" color="info.main">
-        {notice}
-      </Typography>
+      <Alert
+        severity="info"
+        variant="outlined"
+        sx={{
+          boxShadow: (theme) =>
+            theme.palette.mode === 'dark'
+              ? `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(0, 0, 0, 0.35)`
+              : `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(15, 23, 42, 0.08), 0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)} rgba(15, 23, 42, 0.04)`,
+          '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
+        }}
+      >
+        ✨ {notice}
+      </Alert>
     );
   }
 
   if (!plan) return null;
 
   return (
-    <Box sx={{ width: '100%' }} data-testid="copilot-plan-summary">
+    <AssistantBody data-testid="copilot-plan-summary">
       {plan.operation && (
         <Chip
           size="small"
-          label={t('copilot.routedAs', { operation: t(`copilot.op.${plan.operation}`) })}
+          label={`✨ ${t('copilot.routedAs', { operation: t(`copilot.op.${plan.operation}`) })}`}
           sx={{ mb: 1 }}
           data-testid="copilot-routed-as"
         />
       )}
       {plan.routingWarning && (
-        <Alert severity="warning" sx={{ mb: 2 }} data-testid="copilot-routing-warning">
+        <Alert
+          severity="warning"
+          sx={{
+            mb: 2,
+            boxShadow: (theme) =>
+              theme.palette.mode === 'dark'
+                ? `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(0, 0, 0, 0.35)`
+                : `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(15, 23, 42, 0.08), 0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)} rgba(15, 23, 42, 0.04)`,
+            '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
+          }}
+          data-testid="copilot-routing-warning"
+        >
           {plan.routingWarning}
         </Alert>
       )}
@@ -58,7 +90,7 @@ export default function AssistantMessage({ plan, onAddToQueue, busy = false, err
       </Typography>
       {plan.actions.length === 0 ? (
         <Typography variant="body2" color="text.secondary">
-          {t('copilot.noActions')}
+          😌 {t('copilot.noActions')}
         </Typography>
       ) : (
         <List dense disablePadding>
@@ -88,7 +120,7 @@ export default function AssistantMessage({ plan, onAddToQueue, busy = false, err
       {plan.results.length > 0 && (
         <Box sx={{ mt: 2 }}>
           <Typography variant="subtitle1" sx={{ mb: 1 }}>
-            {t('copilot.resultsTitle')}
+            🎯 {t('copilot.resultsTitle')}
           </Typography>
           <List dense disablePadding>
             {plan.results.map((result: CopilotResult, index: number) => (
@@ -103,7 +135,7 @@ export default function AssistantMessage({ plan, onAddToQueue, busy = false, err
       {plan.skips.length > 0 && (
         <Box sx={{ mt: 2 }}>
           <Typography variant="subtitle1" sx={{ mb: 1 }}>
-            {t('copilot.skipsTitle')}
+            ⏭️ {t('copilot.skipsTitle')}
           </Typography>
           <List dense disablePadding>
             {plan.skips.map((skip: AgentSkip) => (
@@ -118,7 +150,7 @@ export default function AssistantMessage({ plan, onAddToQueue, busy = false, err
       {plan.rationale.length > 0 && (
         <Box sx={{ mt: 2 }}>
           <Typography variant="subtitle1" sx={{ mb: 1 }}>
-            {t('copilot.rationaleTitle')}
+            💡 {t('copilot.rationaleTitle')}
           </Typography>
           <List dense disablePadding>
             {plan.rationale.map((line: string) => (
@@ -143,13 +175,13 @@ export default function AssistantMessage({ plan, onAddToQueue, busy = false, err
             disabled={busy}
             data-testid="copilot-add-to-queue"
           >
-            {t('copilot.addToQueue', { count: plan.actions.length })}
+            🚀 {t('copilot.addToQueue', { count: plan.actions.length })}
           </Button>
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
             {t('copilot.applyNote')}
           </Typography>
         </Box>
       )}
-    </Box>
+    </AssistantBody>
   );
 }

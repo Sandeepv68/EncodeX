@@ -1107,6 +1107,18 @@
     "advanced": "උසස්",
     "advancedTitle": "උසස් විකල්ප",
     "bridgeTimeout": "EncodeX නියමිත වේලාවට පිළිතුරු නොදුන්නේය. නැවත උත්සාහ කරන්න.",
-    "planFailed": "එම ඉලක්කය සඳහා Copilot හට සැලැස්මක් ගොඩනැගීමට නොහැකි විය."
+    "planFailed": "එම ඉලක්කය සඳහා Copilot හට සැලැස්මක් ගොඩනැගීමට නොහැකි විය.",
+    "thinking": "සිතමින්...",
+    "resetConversation": "නව සංවාදයක් අරඹන්න",
+    "resetConfirmTitle": "සංවාදය යළි පිහිටුවන්නද?",
+    "resetConfirmMessage": "මෙය සම්පූර්ණ සංවාද ඉතිහාසය ඉවත් කරනු ඇත. මෙම ක්‍රියාව අහෝසි කළ නොහැක.",
+    "resetConfirmAction": "යළි පිහිටුවන්න",
+    "loadingFiles": "ගොනු පූරණය වෙමින්..."
+  },
+  "leaveConfirm": {
+    "title": "Copilot වෙතින් පිටවන්නද?",
+    "message": "මෙම කතාබස් තවමත් සක්‍රීයයි. පිටුවෙන් පිටවීමෙන් සංවාදය ඉවත දමනු ඇත.",
+    "confirmLabel": "කෙසේ වුවත් පිටවන්න",
+    "cancelLabel": "රැඳී සිටින්න"
   }
 }

@@ -1107,6 +1107,18 @@
     "advanced": "Avançado",
     "advancedTitle": "Opções avançadas",
     "bridgeTimeout": "O EncodeX não respondeu a tempo. Tente novamente.",
-    "planFailed": "O Copilot não conseguiu criar um plano para esse objetivo."
+    "planFailed": "O Copilot não conseguiu criar um plano para esse objetivo.",
+    "thinking": "A pensar...",
+    "resetConversation": "Iniciar nova conversa",
+    "resetConfirmTitle": "Repor conversa?",
+    "resetConfirmMessage": "Isto irá limpar todo o histórico da conversa. Esta ação não pode ser anulada.",
+    "resetConfirmAction": "Repor",
+    "loadingFiles": "A carregar ficheiros..."
+  },
+  "leaveConfirm": {
+    "title": "Sair do Copilot?",
+    "message": "Este chat ainda está ativo. Sair da página irá descartar a conversa.",
+    "confirmLabel": "Sair mesmo assim",
+    "cancelLabel": "Ficar"
   }
 }

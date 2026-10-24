@@ -1107,6 +1107,18 @@
     "advanced": "Lanjutan",
     "advancedTitle": "Pilihan lanjutan",
     "bridgeTimeout": "EncodeX tidak memberi respons tepat pada masanya. Cuba lagi.",
-    "planFailed": "Copilot tidak dapat membina pelan untuk matlamat itu."
+    "planFailed": "Copilot tidak dapat membina pelan untuk matlamat itu.",
+    "thinking": "Sedang berfikir...",
+    "resetConversation": "Mulakan perbualan baharu",
+    "resetConfirmTitle": "Tetapkan semula perbualan?",
+    "resetConfirmMessage": "Ini akan memadam seluruh sejarah perbualan. Tindakan ini tidak boleh dibatalkan.",
+    "resetConfirmAction": "Tetapkan semula",
+    "loadingFiles": "Memuatkan fail..."
+  },
+  "leaveConfirm": {
+    "title": "Tinggalkan Copilot?",
+    "message": "Sembang ini masih aktif. Meninggalkan halaman akan membuang perbualan.",
+    "confirmLabel": "Tinggalkan juga",
+    "cancelLabel": "Kekal"
   }
 }

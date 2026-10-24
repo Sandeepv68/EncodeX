@@ -1107,6 +1107,18 @@
     "advanced": "उन्नत",
     "advancedTitle": "उन्नत विकल्प",
     "bridgeTimeout": "EncodeX ने समय पर जवाब नहीं दिया। पुनः प्रयास करें।",
-    "planFailed": "Copilot उस लक्ष्य के लिए योजना नहीं बना सका।"
+    "planFailed": "Copilot उस लक्ष्य के लिए योजना नहीं बना सका।",
+    "thinking": "सोच रहा है...",
+    "resetConversation": "नई बातचीत शुरू करें",
+    "resetConfirmTitle": "बातचीत रीसेट करें?",
+    "resetConfirmMessage": "इससे पूरा बातचीत इतिहास मिट जाएगा। यह क्रिया पूर्ववत नहीं की जा सकती।",
+    "resetConfirmAction": "रीसेट",
+    "loadingFiles": "फ़ाइलें लोड हो रही हैं..."
+  },
+  "leaveConfirm": {
+    "title": "Copilot छोड़ें?",
+    "message": "यह चैट अभी भी सक्रिय है। पेज छोड़ने पर बातचीत खारिज हो जाएगी।",
+    "confirmLabel": "फिर भी छोड़ें",
+    "cancelLabel": "रुकें"
   }
 }

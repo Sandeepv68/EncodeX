@@ -25,8 +25,9 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigationGuard } from '../NavigationGuardContext';
 import { Box, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
@@ -114,7 +115,7 @@ const POPOVER_CLOSE_DELAY_MS = 150;
  * @returns {JSX.Element} The navigation list, divider, and language menu.
  */
 export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNavigate }: AppDrawerProps) {
-  const navigate = useNavigate();
+  const { navigate } = useNavigationGuard();
   const location = useLocation();
   const { t } = useTranslation();
   const isConverting = useConversionStore((s) => s.isConverting);

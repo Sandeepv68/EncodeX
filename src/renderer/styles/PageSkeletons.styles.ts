@@ -198,7 +198,7 @@ export const SkeletonSearchField = styled(Skeleton)(({ theme }) => ({
 export const SkeletonCopilotLayout = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
-  height: '100%',
+  flex: 1,
   minHeight: 0,
 });
 
