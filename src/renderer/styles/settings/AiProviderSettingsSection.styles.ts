@@ -172,4 +172,3 @@ export const HeaderActions = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(1.5),
 }));
-

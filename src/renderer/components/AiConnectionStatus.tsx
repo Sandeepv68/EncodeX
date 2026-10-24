@@ -53,12 +53,7 @@ export default function AiConnectionStatus({ connected, providerId, model, testI
           }}
         >
           {logo ? (
-            <Box
-              component="img"
-              src={logo}
-              alt=""
-              sx={{ width: theme.typography.pxToRem(14), height: theme.typography.pxToRem(14) }}
-            />
+            <Box component="img" src={logo} alt="" sx={{ width: theme.typography.pxToRem(14), height: theme.typography.pxToRem(14) }} />
           ) : (
             <Box component="span" sx={{ display: 'inline-flex', fontSize: theme.typography.pxToRem(12) }}>
               <FontAwesomeIcon icon={faRobot} />

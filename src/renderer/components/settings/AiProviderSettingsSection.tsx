@@ -465,13 +465,7 @@ export default function AiProviderSettingsSection() {
         <SettingsLabel variant="body1">{t('settings.ai.title')}</SettingsLabel>
         <HeaderActions>
           {!open && active && (
-            <AiConnectionStatus
-              connected
-              providerId={active.providerId}
-              model={active.model}
-              testId="settings-ai-header-status"
-              expanded
-            />
+            <AiConnectionStatus connected providerId={active.providerId} model={active.model} testId="settings-ai-header-status" expanded />
           )}
           <Button size="small" startIcon={<FontAwesomeIcon icon={faGear} />} onClick={toggle} data-testid="settings-ai-toggle">
             {t('settings.ai.configure')}
@@ -511,9 +505,7 @@ export default function AiProviderSettingsSection() {
             })}
           </ProviderGrid>
 
-          {!configurable && (
-            <AiKeyRow>{connectButton}</AiKeyRow>
-          )}
+          {!configurable && <AiKeyRow>{connectButton}</AiKeyRow>}
 
           {configurable && (
             <>
@@ -601,7 +593,6 @@ export default function AiProviderSettingsSection() {
                       {t('settings.ai.removeKey')}
                     </Button>
                   )}
-
 
                   <Button
                     size="small"
