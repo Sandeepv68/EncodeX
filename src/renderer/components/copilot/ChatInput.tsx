@@ -242,16 +242,9 @@ export default function ChatInput({
               </Box>
             </Tooltip>
           )}
-          <Box
-            sx={{ flex: 1, minWidth: 0, position: 'relative', height: theme.typography.pxToRem(28) }}
-          >
+          <Box sx={{ flex: 1, minWidth: 0, position: 'relative', height: theme.typography.pxToRem(28) }}>
             <RichTextPlugin
-              contentEditable={
-                <ContentEditable
-                  tabIndex={0}
-                  aria-label={t('copilot.inputAria')}
-                />
-              }
+              contentEditable={<ContentEditable tabIndex={0} aria-label={t('copilot.inputAria')} />}
               placeholder={<EditorPlaceholder>{placeholderText}</EditorPlaceholder>}
               ErrorBoundary={LexicalErrorBoundary}
             />
