@@ -20,6 +20,7 @@ import { useNavigationGuard } from '../NavigationGuardContext';
 import PageContainer from '../components/PageContainer';
 import { bridgePromise, withBridgeTimeout } from '../utils/bridge-call';
 import { useToastStore } from '../stores/toastStore';
+import { SHADOWS } from '../colors';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import type { CopilotOperationChoice, CopilotPlan } from '../../shared/copilot';
 import { formatError } from '../../shared/errors';
@@ -274,10 +275,7 @@ export default function Copilot() {
               severity="error"
               data-testid="copilot-error"
               sx={{
-                boxShadow: (theme) =>
-                  theme.palette.mode === 'dark'
-                    ? '0 8px 24px rgba(0, 0, 0, 0.35)'
-                    : '0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04)',
+                boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
                 '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
               }}
             >
@@ -291,10 +289,7 @@ export default function Copilot() {
               severity="info"
               data-testid="copilot-notice"
               sx={{
-                boxShadow: (theme) =>
-                  theme.palette.mode === 'dark'
-                    ? '0 8px 24px rgba(0, 0, 0, 0.35)'
-                    : '0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04)',
+                boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
                 '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
               }}
             >

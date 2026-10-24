@@ -1,5 +1,6 @@
 import { keyframes, styled } from '@mui/material/styles';
 import { Box, Paper } from '@mui/material';
+import { SHADOWS } from '../../colors';
 
 const bubbleSlideIn = (isUser: boolean) => keyframes`
   0% {
@@ -43,10 +44,7 @@ export const Bubble = styled(Paper, {
   backgroundColor: $isUser ? theme.palette.primary.main : theme.palette.background.paper,
   color: $isUser ? theme.palette.primary.contrastText : theme.palette.text.primary,
   border: $isUser ? undefined : `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
-  boxShadow:
-    theme.palette.mode === 'dark'
-      ? `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(0, 0, 0, 0.35), 0 ${theme.typography.pxToRem(1)} ${theme.typography.pxToRem(2)} rgba(0, 0, 0, 0.25)`
-      : `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(15, 23, 42, 0.08), 0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)} rgba(15, 23, 42, 0.04)`,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
   wordBreak: 'break-word',
   overflowWrap: 'anywhere',
   transformOrigin: $isUser ? 'bottom right' : 'bottom left',

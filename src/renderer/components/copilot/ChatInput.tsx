@@ -7,7 +7,7 @@
  * inserts a line break.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
@@ -183,6 +183,7 @@ export default function ChatInput({
 }: ChatInputProps) {
   const { t } = useTranslation();
   const theme = useTheme();
+  const resetDialogId = useId();
   const placeholderText = placeholder ?? t('copilot.placeholder');
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
 
@@ -218,7 +219,7 @@ export default function ChatInput({
         >
           {showReset && onResetConversation && (
             <Tooltip title={t('copilot.resetConversation')} placement="top" arrow>
-              <span style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, lineHeight: 0 }}>
+              <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, lineHeight: 0 }}>
                 <IconButton
                   size="small"
                   onClick={handleResetClick}
@@ -234,46 +235,24 @@ export default function ChatInput({
                     },
                   }}
                 >
-                  <FontAwesomeIcon icon={faPlus} style={{ fontSize: theme.typography.pxToRem(14), display: 'block' }} />
+                  <Box component="span" sx={{ display: 'block', fontSize: theme.typography.pxToRem(14) }}>
+                    <FontAwesomeIcon icon={faPlus} />
+                  </Box>
                 </IconButton>
-              </span>
+              </Box>
             </Tooltip>
           )}
           <Box
-            sx={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', position: 'relative', height: theme.typography.pxToRem(28) }}
+            sx={{ flex: 1, minWidth: 0, position: 'relative', height: theme.typography.pxToRem(28) }}
           >
             <RichTextPlugin
               contentEditable={
                 <ContentEditable
                   tabIndex={0}
                   aria-label={t('copilot.inputAria')}
-                  style={{
-                    width: '100%',
-                    outline: 'none',
-                    lineHeight: theme.typography.pxToRem(28),
-                    height: theme.typography.pxToRem(28),
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: 0,
-                    margin: 0,
-                  }}
                 />
               }
-              placeholder={
-                <EditorPlaceholder
-                  style={{
-                    lineHeight: theme.typography.pxToRem(28),
-                    height: theme.typography.pxToRem(28),
-                    display: 'flex',
-                    alignItems: 'center',
-                    margin: 0,
-                    padding: 0,
-                    top: 0,
-                  }}
-                >
-                  {placeholderText}
-                </EditorPlaceholder>
-              }
+              placeholder={<EditorPlaceholder>{placeholderText}</EditorPlaceholder>}
               ErrorBoundary={LexicalErrorBoundary}
             />
           </Box>
@@ -307,12 +286,12 @@ export default function ChatInput({
       <Dialog
         open={resetDialogOpen}
         onClose={() => setResetDialogOpen(false)}
-        aria-labelledby="copilot-reset-dialog-title"
-        aria-describedby="copilot-reset-dialog-description"
+        aria-labelledby={`${resetDialogId}-title`}
+        aria-describedby={`${resetDialogId}-description`}
       >
-        <DialogTitle id="copilot-reset-dialog-title">{t('copilot.resetConfirmTitle')}</DialogTitle>
+        <DialogTitle id={`${resetDialogId}-title`}>{t('copilot.resetConfirmTitle')}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="copilot-reset-dialog-description">{t('copilot.resetConfirmMessage')}</DialogContentText>
+          <DialogContentText id={`${resetDialogId}-description`}>{t('copilot.resetConfirmMessage')}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setResetDialogOpen(false)}>{t('closeConfirm.cancelLabel')}</Button>

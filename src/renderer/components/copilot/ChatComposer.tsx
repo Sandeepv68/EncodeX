@@ -201,7 +201,9 @@ export default function ChatComposer({
                     sx={{ width: theme.typography.pxToRem(14), height: theme.typography.pxToRem(14) }}
                   />
                 ) : (
-                  <FontAwesomeIcon icon={faRobot} style={{ fontSize: theme.typography.pxToRem(12) }} />
+                  <Box component="span" sx={{ display: 'inline-flex', fontSize: theme.typography.pxToRem(12) }}>
+                    <FontAwesomeIcon icon={faRobot} />
+                  </Box>
                 )}
                 <ConnectionDot
                   $connected={connection.connected}

@@ -1,5 +1,6 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
+import { SHADOWS } from '../../colors';
 
 /**
  * Rounded composer surface that holds the Lexical editor and the inline send
@@ -17,16 +18,13 @@ export const ComposerShell = styled(Box)(({ theme }) => ({
   borderRadius: theme.typography.pxToRem(999),
   backgroundColor: theme.palette.background.paper,
   border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
-  boxShadow:
-    theme.palette.mode === 'dark'
-      ? `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(0, 0, 0, 0.35)`
-      : `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(15, 23, 42, 0.08), 0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)} rgba(15, 23, 42, 0.04)`,
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
   transition: theme.transitions.create(['box-shadow', 'border-color']),
   cursor: 'text',
   '&:focus-within': {
     borderColor: theme.palette.primary.main,
-    boxShadow: `0 0 0 ${theme.typography.pxToRem(2)} ${alpha(theme.palette.primary.main, 0.2)}, 0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} ${
-      theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.35)' : 'rgba(15, 23, 42, 0.08)'
+    boxShadow: `0 0 0 ${theme.typography.pxToRem(2)} ${alpha(theme.palette.primary.main, 0.2)}, ${
+      theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT
     }`,
   },
 }));

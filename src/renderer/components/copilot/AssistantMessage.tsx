@@ -9,6 +9,7 @@ import type { CopilotAction, CopilotPlan, CopilotResult } from '../../../shared/
 import type { AgentSkip } from '../../../shared/ai/agent';
 import { useTranslation } from 'react-i18next';
 import { AssistantBody } from '../../styles/copilot/AssistantMessage.styles';
+import { SHADOWS } from '../../colors';
 
 export interface AssistantMessageProps {
   plan: CopilotPlan | null;
@@ -27,10 +28,7 @@ export default function AssistantMessage({ plan, onAddToQueue, busy = false, err
         severity="error"
         variant="outlined"
         sx={{
-          boxShadow: (theme) =>
-            theme.palette.mode === 'dark'
-              ? `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(0, 0, 0, 0.35)`
-              : `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(15, 23, 42, 0.08), 0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)} rgba(15, 23, 42, 0.04)`,
+          boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
           '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
         }}
       >
@@ -45,10 +43,7 @@ export default function AssistantMessage({ plan, onAddToQueue, busy = false, err
         severity="info"
         variant="outlined"
         sx={{
-          boxShadow: (theme) =>
-            theme.palette.mode === 'dark'
-              ? `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(0, 0, 0, 0.35)`
-              : `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(15, 23, 42, 0.08), 0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)} rgba(15, 23, 42, 0.04)`,
+          boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
           '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
         }}
       >
@@ -74,10 +69,7 @@ export default function AssistantMessage({ plan, onAddToQueue, busy = false, err
           severity="warning"
           sx={{
             mb: 2,
-            boxShadow: (theme) =>
-              theme.palette.mode === 'dark'
-                ? `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(0, 0, 0, 0.35)`
-                : `0 ${theme.typography.pxToRem(8)} ${theme.typography.pxToRem(24)} rgba(15, 23, 42, 0.08), 0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(6)} rgba(15, 23, 42, 0.04)`,
+            boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
             '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
           }}
           data-testid="copilot-routing-warning"
