@@ -87,6 +87,12 @@ export function registerAiSettingsIpc(): void {
     const stored = readAiSettings(userDataDir);
     const record = candidate && typeof candidate === 'object' ? (candidate as Record<string, unknown>) : {};
     const providerId = isAiProviderId(record.providerId) ? record.providerId : stored.providerId;
+    if (providerId === 'rules') {
+      // The built-in engine is always available offline: "connecting" it simply
+      // records it as the verified provider.
+      const view = recordAiConnection(userDataDir, { providerId, model: '' });
+      return { ok: true, message: 'Built-in rules engine is ready.', model: '', latencyMs: 0, view };
+    }
     if (!isRemoteProvider(providerId)) {
       return { ok: false, reason: 'offline', message: 'The selected provider runs offline and needs no connection test.' };
     }

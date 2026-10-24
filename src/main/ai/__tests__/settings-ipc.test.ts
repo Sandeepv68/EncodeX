@@ -114,9 +114,15 @@ describe('registerAiSettingsIpc', () => {
     expect(settingsMock.applyAiSettingsUpdate).toHaveBeenCalledWith('/userData', { providerId: 'rules' });
   });
 
-  it('CONNECT_TEST refuses an offline provider', async () => {
+  it('CONNECT_TEST records the built-in rules engine without a network call', async () => {
     connectorsMock.isRemoteProvider.mockReturnValue(false);
-    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'rules' })).resolves.toMatchObject({ ok: false, reason: 'offline' });
+    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'rules' })).resolves.toMatchObject({ ok: true });
+    expect(connectorsMock.createConnectorFromSettings).not.toHaveBeenCalled();
+  });
+
+  it('CONNECT_TEST refuses an offline provider other than rules', async () => {
+    connectorsMock.isRemoteProvider.mockReturnValue(false);
+    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'local' })).resolves.toMatchObject({ ok: false, reason: 'offline' });
     expect(connectorsMock.createConnectorFromSettings).not.toHaveBeenCalled();
   });
 

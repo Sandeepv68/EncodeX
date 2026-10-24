@@ -7,23 +7,14 @@
 import { useState } from 'react';
 import { Box, Button, Chip, LinearProgress, MenuItem, Popover, TextField, Tooltip, Typography, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileImport, faFolderOpen, faGear, faRobot, faSliders } from '@fortawesome/free-solid-svg-icons';
+import { faFileImport, faFolderOpen, faGear, faSliders } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import ChatInput from './ChatInput';
-import { aiProviderLogo } from '../../utils/ai-provider-icons';
+import AiConnectionStatus from '../AiConnectionStatus';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
 import type { AIProviderId } from '../../../shared/ai/types';
-import {
-  ActionsRow,
-  AdvancedPanel,
-  AttachmentRow,
-  ComposerBar,
-  ConnectionDot,
-  ConnectionStatus,
-  LeftActions,
-  RightActions,
-} from '../../styles/copilot/ChatComposer.styles';
+import { ActionsRow, AdvancedPanel, AttachmentRow, ComposerBar, LeftActions } from '../../styles/copilot/ChatComposer.styles';
 
 /** The selectable operations, in menu order (auto first, then queue, then read-only). */
 const OPERATION_CHOICES: CopilotOperationChoice[] = ['auto', ...COPILOT_QUEUE_OPERATIONS, ...COPILOT_INTELLIGENCE_OPERATIONS];
@@ -176,62 +167,12 @@ export default function ChatComposer({
           </Tooltip>
         </LeftActions>
         {connection && (
-          <RightActions data-testid="copilot-ai-status">
-            <ConnectionStatus $connected={connection.connected}>
-              <Box
-                sx={{
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: theme.typography.pxToRem(22),
-                  height: theme.typography.pxToRem(22),
-                  borderRadius: '50%',
-                  bgcolor: 'background.paper',
-                  border: `${theme.typography.pxToRem(1)} solid`,
-                  borderColor: 'divider',
-                  flexShrink: 0,
-                }}
-              >
-                {connection.providerId && aiProviderLogo(connection.providerId, theme.palette.mode) ? (
-                  <Box
-                    component="img"
-                    src={aiProviderLogo(connection.providerId, theme.palette.mode) || undefined}
-                    alt=""
-                    sx={{ width: theme.typography.pxToRem(14), height: theme.typography.pxToRem(14) }}
-                  />
-                ) : (
-                  <Box component="span" sx={{ display: 'inline-flex', fontSize: theme.typography.pxToRem(12) }}>
-                    <FontAwesomeIcon icon={faRobot} />
-                  </Box>
-                )}
-                <ConnectionDot
-                  $connected={connection.connected}
-                  aria-hidden="true"
-                  sx={{ position: 'absolute', bottom: theme.typography.pxToRem(-1), right: theme.typography.pxToRem(-1) }}
-                />
-              </Box>
-              <Box
-                className="copilot-ai-status-text"
-                sx={{
-                  maxWidth: 0,
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                  opacity: 0,
-                  transition: theme.transitions.create(['max-width', 'opacity'], {
-                    duration: theme.transitions.duration.short,
-                  }),
-                }}
-              >
-                {connection.connected
-                  ? t('settings.ai.headerConnected', {
-                      provider: t(`settings.ai.providers.${connection.providerId}`),
-                      model: connection.model || t('settings.ai.modelPlaceholder'),
-                    })
-                  : t('copilot.ai.notConnected')}
-              </Box>
-            </ConnectionStatus>
-          </RightActions>
+          <AiConnectionStatus
+            connected={connection.connected}
+            providerId={connection.providerId}
+            model={connection.model}
+            testId="copilot-ai-status"
+          />
         )}
       </ActionsRow>
       {/* Location note moved to tooltip on the AI configure button. */}

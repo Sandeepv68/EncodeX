@@ -48,9 +48,9 @@ import {
   AiAlert,
   ConnectedDot,
   HeaderActions,
-  HeaderStatus,
 } from '../../styles/settings/AiProviderSettingsSection.styles';
 import SettingLabel from './SettingLabel';
+import AiConnectionStatus from '../AiConnectionStatus';
 import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 import { useAiSettingsStore } from '../../stores/aiSettingsStore';
 import { activeConnectionOf, useAiConnectionStore } from '../../stores/aiConnectionStore';
@@ -444,19 +444,34 @@ export default function AiProviderSettingsSection() {
     if (advanced) void loadModels();
   }, [advanced, providerId, baseUrl, resolvedView?.hasKey, apiKey]);
 
+  const connectButton = (
+    <Button
+      size="small"
+      variant="contained"
+      color={connectedNow ? 'success' : 'primary'}
+      onClick={connect}
+      disabled={busy}
+      startIcon={connectedNow ? <FontAwesomeIcon icon={faCheck} /> : undefined}
+      title={connectedNow ? t('settings.ai.testAgain') : undefined}
+      data-testid="settings-ai-connect"
+    >
+      {busy ? t('settings.ai.connecting') : connectedNow ? t('settings.ai.connected') : t('settings.ai.connect')}
+    </Button>
+  );
+
   return (
     <AiSettingsSection>
       <AiHeaderRow>
         <SettingsLabel variant="body1">{t('settings.ai.title')}</SettingsLabel>
         <HeaderActions>
           {!open && active && (
-            <HeaderStatus data-testid="settings-ai-header-status">
-              <ConnectedDot aria-hidden="true" />
-              {t('settings.ai.headerConnected', {
-                provider: t(`settings.ai.providers.${active.providerId}`),
-                model: active.model || t('settings.ai.modelPlaceholder'),
-              })}
-            </HeaderStatus>
+            <AiConnectionStatus
+              connected
+              providerId={active.providerId}
+              model={active.model}
+              testId="settings-ai-header-status"
+              expanded
+            />
           )}
           <Button size="small" startIcon={<FontAwesomeIcon icon={faGear} />} onClick={toggle} data-testid="settings-ai-toggle">
             {t('settings.ai.configure')}
@@ -495,6 +510,10 @@ export default function AiProviderSettingsSection() {
               return button;
             })}
           </ProviderGrid>
+
+          {!configurable && (
+            <AiKeyRow>{connectButton}</AiKeyRow>
+          )}
 
           {configurable && (
             <>
@@ -583,18 +602,6 @@ export default function AiProviderSettingsSection() {
                     </Button>
                   )}
 
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color={connectedNow ? 'success' : 'primary'}
-                    onClick={connect}
-                    disabled={busy}
-                    startIcon={connectedNow ? <FontAwesomeIcon icon={faCheck} /> : undefined}
-                    title={connectedNow ? t('settings.ai.testAgain') : undefined}
-                    data-testid="settings-ai-connect"
-                  >
-                    {busy ? t('settings.ai.connecting') : connectedNow ? t('settings.ai.connected') : t('settings.ai.connect')}
-                  </Button>
 
                   <Button
                     size="small"
@@ -605,6 +612,8 @@ export default function AiProviderSettingsSection() {
                   >
                     {t('settings.ai.advanced')}
                   </Button>
+
+                  {connectButton}
                 </AiKeyRow>
               </AiField>
 
