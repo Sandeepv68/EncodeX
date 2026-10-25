@@ -67,6 +67,9 @@
     "cancelLabel": "ยกเลิก"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF ไม่ได้รวมมากับ EncodeX กรุณาติดตั้งด้วยตนเองและตรวจสอบให้แน่ใจว่า bmf_ffmpeg และ bmf_ffprobe อยู่ใน PATH ของคุณ",
+    "transcoderBmfLabelSuffix": " (ไม่ได้รวมมาด้วย)",
+    "transcoderBmfNotFound": "ไม่พบ BMF ใน PATH ของคุณ (ขาด: {{missing}}) กรุณาติดตั้ง BMF แล้วเลือกใหม่อีกครั้ง การแปลงด้วย BMF จะถูกปิดใช้งานจนกว่าจะตรวจพบ",
     "title": "แปลงสื่อ",
     "sourceFiles": "ไฟล์ต้นฉบับ",
     "encoding": "การเข้ารหัส",
@@ -357,6 +360,8 @@
     "videoPlayer": "เครื่องเล่นวิดีโอ"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF ไม่ได้รวมมากับ EncodeX กรุณาติดตั้งด้วยตนเองและตรวจสอบให้แน่ใจว่า bmf_ffmpeg และ bmf_ffprobe อยู่ใน PATH ของคุณ",
+    "bmfNotFound": "ไม่พบ BMF ใน PATH ของคุณ (ขาด: {{missing}}) กรุณาติดตั้ง BMF แล้วเลือกใหม่อีกครั้ง การเพิ่มงาน BMF จะถูกปิดใช้งานจนกว่าจะตรวจพบ",
     "title": "คิวงาน",
     "operation": "การดำเนินการ",
     "suffix": "คำต่อท้าย",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "ตัวกรองวิดีโอจะถูกข้ามตราบใดที่ปลายทางวิดีโอเป็น “คัดลอก” เพราะสำเนาสตรีมเข้ารหัสใหม่ไม่ได้ เลือกคอนเทนเนอร์ปลายทางเพื่อใช้ตัวกรอง"
   },
   "copilot": {
+    "saveChat": "บันทึกแชท",
+    "savedChats": "แชทที่บันทึกไว้",
+    "chatSaved": "บันทึกการสนทนาแล้ว",
+    "savedChatsTitle": "การสนทนาที่บันทึกไว้",
+    "savedChatsEmpty": "ไม่มีการสนทนาที่บันทึกไว้ ใช้ บันทึกแชท เพื่อเก็บการสนทนา",
+    "savedChatsClose": "ปิด",
+    "savedChatUntitled": "การสนทนาที่ไม่มีชื่อ",
+    "savedChatMeta": "{{count}} ข้อความ · {{date}}",
+    "savedChatOpen": "เปิด",
+    "savedChatDelete": "ลบการสนทนาที่บันทึกไว้",
+    "savedChatSaveFailed": "ไม่สามารถบันทึกการสนทนาได้ พื้นที่จัดเก็บของเบราว์เซอร์อาจเต็ม",
+    "openChatConfirmTitle": "เปิดการสนทนาที่บันทึกไว้?",
+    "openChatConfirmMessage": "การสนทนาปัจจุบันยังไม่ได้บันทึก การเปิดการสนทนานี้จะแทนที่การสนทนาปัจจุบัน",
+    "openChatSave": "บันทึกและเปิด",
+    "openChatDiscard": "ทิ้งและเปิด",
+    "openChatCancel": "ยกเลิก",
     "title": "Copilot",
     "subtitle": "อธิบายเป้าหมายแล้วให้ Copilot วางแผนการแปลง จากนั้นส่งแผนไปยังคิวแบบกลุ่ม",
     "goalLabel": "เป้าหมาย",

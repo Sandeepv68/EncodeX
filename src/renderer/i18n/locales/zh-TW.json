@@ -67,6 +67,9 @@
     "cancelLabel": "取消"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF 未隨 EncodeX 一併封裝。請手動安裝，並確認 bmf_ffmpeg 與 bmf_ffprobe 位於您的 PATH 中。",
+    "transcoderBmfLabelSuffix": " (未內建)",
+    "transcoderBmfNotFound": "在您的 PATH 中找不到 BMF（缺少：{{missing}}）。請安裝 BMF，然後重新選擇。在偵測到 BMF 之前，BMF 轉換已停用。",
     "title": "轉換媒體",
     "sourceFiles": "源檔案",
     "encoding": "編碼",
@@ -357,6 +360,8 @@
     "videoPlayer": "影片播放器"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF 未隨 EncodeX 一併封裝。請手動安裝，並確認 bmf_ffmpeg 與 bmf_ffprobe 位於您的 PATH 中。",
+    "bmfNotFound": "在您的 PATH 中找不到 BMF（缺少：{{missing}}）。請安裝 BMF，然後重新選擇。在偵測到 BMF 之前，新增 BMF 工作已停用。",
     "title": "批次佇列",
     "operation": "操作",
     "suffix": "後綴",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "當影片輸出方式為「複製」時，影片篩選器會被忽略，因為串流複製無法重新編碼。請選擇目標容器以套用篩選器。"
   },
   "copilot": {
+    "saveChat": "儲存對話",
+    "savedChats": "已儲存的對話",
+    "chatSaved": "對話已儲存",
+    "savedChatsTitle": "已儲存的對話",
+    "savedChatsEmpty": "沒有已儲存的對話。使用「儲存對話」來保存一個。",
+    "savedChatsClose": "關閉",
+    "savedChatUntitled": "未命名對話",
+    "savedChatMeta": "{{count}} 則訊息 · {{date}}",
+    "savedChatOpen": "開啟",
+    "savedChatDelete": "刪除已儲存的對話",
+    "savedChatSaveFailed": "無法儲存對話。瀏覽器儲存空間可能已滿。",
+    "openChatConfirmTitle": "開啟已儲存的對話？",
+    "openChatConfirmMessage": "目前的對話尚未儲存。開啟此對話將取代目前的對話。",
+    "openChatSave": "儲存並開啟",
+    "openChatDiscard": "捨棄並開啟",
+    "openChatCancel": "取消",
     "title": "Copilot",
     "subtitle": "描述一個目標，讓 Copilot 規劃轉換，然後將計畫推送到批次佇列。",
     "goalLabel": "目標",

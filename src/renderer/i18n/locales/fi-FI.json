@@ -67,6 +67,9 @@
     "cancelLabel": "Peruuta"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF ei ole mukana EncodeX:n kanssa. Asenna se manuaalisesti ja varmista, että bmf_ffmpeg ja bmf_ffprobe ovat PATH-polulla.",
+    "transcoderBmfLabelSuffix": " (ei mukana)",
+    "transcoderBmfNotFound": "BMF:ää ei löytynyt PATH-polulta (puuttuu: {{missing}}). Asenna BMF ja valitse se uudelleen. BMF-muunnokset ovat poissa käytöstä, kunnes se havaitaan.",
     "title": "Muunna media",
     "sourceFiles": "Lähdetiedostot",
     "encoding": "Koodaus",
@@ -357,6 +360,8 @@
     "videoPlayer": "Videosoitin"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF ei ole mukana EncodeX:n kanssa. Asenna se manuaalisesti ja varmista, että bmf_ffmpeg ja bmf_ffprobe ovat PATH-polulla.",
+    "bmfNotFound": "BMF:ää ei löytynyt PATH-polulta (puuttuu: {{missing}}). Asenna BMF ja valitse se uudelleen. BMF-töiden lisääminen on poissa käytöstä, kunnes se havaitaan.",
     "title": "Eräjono",
     "operation": "Toiminto",
     "suffix": "Pääte",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Videosuodattimet ohitetaan, kun videon kohde on \"Kopioi\", koska virran kopiointi ei voi koodata uudelleen. Suodattimet otetaan käyttöön valitsemalla kohdesäilö."
   },
   "copilot": {
+    "saveChat": "Tallenna keskustelu",
+    "savedChats": "Tallennetut keskustelut",
+    "chatSaved": "Keskustelu tallennettu",
+    "savedChatsTitle": "Tallennetut keskustelut",
+    "savedChatsEmpty": "Ei tallennettuja keskusteluja. Tallenna yksi valitsemalla Tallenna keskustelu.",
+    "savedChatsClose": "Sulje",
+    "savedChatUntitled": "Nimetön keskustelu",
+    "savedChatMeta": "{{count}} viestiä · {{date}}",
+    "savedChatOpen": "Avaa",
+    "savedChatDelete": "Poista tallennettu keskustelu",
+    "savedChatSaveFailed": "Keskustelua ei voitu tallentaa. Selaimen tallennustila voi olla täynnä.",
+    "openChatConfirmTitle": "Avataanko tallennettu keskustelu?",
+    "openChatConfirmMessage": "Nykyistä keskustelua ei ole tallennettu. Tämän avaaminen korvaa sen.",
+    "openChatSave": "Tallenna ja avaa",
+    "openChatDiscard": "Hylkää ja avaa",
+    "openChatCancel": "Peruuta",
     "title": "Copilot",
     "subtitle": "Kuvaile tavoite ja anna Copilotin suunnitella muunnokset, siirrä sitten suunnitelma eräjonoon.",
     "goalLabel": "Tavoite",

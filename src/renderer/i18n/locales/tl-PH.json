@@ -67,6 +67,9 @@
     "cancelLabel": "Kanselahin"
   },
   "convert": {
+    "transcoderBmfNotBundled": "Hindi kasama ang BMF sa EncodeX. I-install ito nang manu-mano at siguraduhing nasa iyong PATH ang bmf_ffmpeg at bmf_ffprobe.",
+    "transcoderBmfLabelSuffix": " (hindi kasama)",
+    "transcoderBmfNotFound": "Hindi nahanap ang BMF sa iyong PATH (nawawala: {{missing}}). I-install ang BMF, pagkatapos ay piliin itong muli. Naka-disable ang mga conversion ng BMF hanggang sa ma-detect ito.",
     "title": "I-convert ang Media",
     "sourceFiles": "Mga source file",
     "encoding": "Pag-encode",
@@ -357,6 +360,8 @@
     "videoPlayer": "Video player"
   },
   "batchQueue": {
+    "bmfNotBundled": "Hindi kasama ang BMF sa EncodeX. I-install ito nang manu-mano at siguraduhing nasa iyong PATH ang bmf_ffmpeg at bmf_ffprobe.",
+    "bmfNotFound": "Hindi nahanap ang BMF sa iyong PATH (nawawala: {{missing}}). I-install ang BMF, pagkatapos ay piliin itong muli. Naka-disable ang pagdagdag ng mga BMF job hanggang sa ma-detect ito.",
     "title": "Pila ng Batch",
     "operation": "Operasyon",
     "suffix": "Hulapi",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Hindi pinapansin ang mga filter ng video habang ang destinasyon ng video ay \"Kopyahin,\" dahil hindi maaaring mag-re-encode ang kopya ng stream. Pumili ng destinasyong container para mailapat ang mga filter."
   },
   "copilot": {
+    "saveChat": "I-save ang chat",
+    "savedChats": "Mga na-save na chat",
+    "chatSaved": "Na-save ang usapan",
+    "savedChatsTitle": "Mga na-save na usapan",
+    "savedChatsEmpty": "Walang na-save na usapan. Gamitin ang I-save ang chat para mag-save ng isa.",
+    "savedChatsClose": "Isara",
+    "savedChatUntitled": "Usapang walang pamagat",
+    "savedChatMeta": "{{count}} mensahe · {{date}}",
+    "savedChatOpen": "Buksan",
+    "savedChatDelete": "Burahin ang na-save na usapan",
+    "savedChatSaveFailed": "Hindi ma-save ang usapan. Maaaring puno na ang storage ng browser.",
+    "openChatConfirmTitle": "Buksan ang na-save na usapan?",
+    "openChatConfirmMessage": "Hindi pa na-save ang kasalukuyang usapan. Papalitan ito kapag binuksan ang isang ito.",
+    "openChatSave": "I-save at buksan",
+    "openChatDiscard": "Itapon at buksan",
+    "openChatCancel": "Kanselahin",
     "title": "Copilot",
     "subtitle": "Ilarawan ang isang layunin at hayaang magplano ang Copilot ng mga conversion, pagkatapos ay ipadala ang plano sa Batch Queue.",
     "goalLabel": "Layunin",

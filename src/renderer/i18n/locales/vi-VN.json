@@ -67,6 +67,9 @@
     "cancelLabel": "Hủy"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF không được đóng gói cùng EncodeX. Hãy tự cài đặt và đảm bảo bmf_ffmpeg và bmf_ffprobe nằm trong PATH của bạn.",
+    "transcoderBmfLabelSuffix": " (chưa đi kèm)",
+    "transcoderBmfNotFound": "Không tìm thấy BMF trong PATH của bạn (thiếu: {{missing}}). Hãy cài đặt BMF, sau đó chọn lại. Các chuyển đổi BMF bị vô hiệu hóa cho đến khi phát hiện được BMF.",
     "title": "Chuyển đổi phương tiện",
     "sourceFiles": "Tệp nguồn",
     "encoding": "Mã hóa",
@@ -357,6 +360,8 @@
     "videoPlayer": "Trình phát video"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF không được đóng gói cùng EncodeX. Hãy tự cài đặt và đảm bảo bmf_ffmpeg và bmf_ffprobe nằm trong PATH của bạn.",
+    "bmfNotFound": "Không tìm thấy BMF trong PATH của bạn (thiếu: {{missing}}). Hãy cài đặt BMF, sau đó chọn lại. Việc thêm tác vụ BMF bị vô hiệu hóa cho đến khi phát hiện được BMF.",
     "title": "Hàng đợi hàng loạt",
     "operation": "Thao tác",
     "suffix": "Hậu tố",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Bộ lọc video bị bỏ qua khi đích video là “Sao chép”, vì bản sao luồng không thể mã hoá lại. Hãy chọn một vùng chứa đích để áp dụng."
   },
   "copilot": {
+    "saveChat": "Lưu cuộc trò chuyện",
+    "savedChats": "Cuộc trò chuyện đã lưu",
+    "chatSaved": "Đã lưu cuộc trò chuyện",
+    "savedChatsTitle": "Cuộc trò chuyện đã lưu",
+    "savedChatsEmpty": "Chưa có cuộc trò chuyện nào được lưu. Dùng Lưu cuộc trò chuyện để lưu lại.",
+    "savedChatsClose": "Đóng",
+    "savedChatUntitled": "Cuộc trò chuyện chưa đặt tên",
+    "savedChatMeta": "{{count}} tin nhắn · {{date}}",
+    "savedChatOpen": "Mở",
+    "savedChatDelete": "Xóa cuộc trò chuyện đã lưu",
+    "savedChatSaveFailed": "Không thể lưu cuộc trò chuyện. Bộ nhớ trình duyệt có thể đã đầy.",
+    "openChatConfirmTitle": "Mở cuộc trò chuyện đã lưu?",
+    "openChatConfirmMessage": "Cuộc trò chuyện hiện tại chưa được lưu. Mở cuộc trò chuyện này sẽ thay thế nó.",
+    "openChatSave": "Lưu và mở",
+    "openChatDiscard": "Bỏ và mở",
+    "openChatCancel": "Hủy",
     "title": "Copilot",
     "subtitle": "Mô tả một mục tiêu và để Copilot lên kế hoạch chuyển đổi, sau đó đưa kế hoạch vào hàng đợi hàng loạt.",
     "goalLabel": "Mục tiêu",

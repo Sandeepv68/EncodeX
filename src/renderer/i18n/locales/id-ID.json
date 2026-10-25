@@ -67,6 +67,9 @@
     "cancelLabel": "Batal"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF tidak disertakan dengan EncodeX. Instal secara manual dan pastikan bmf_ffmpeg dan bmf_ffprobe ada di PATH Anda.",
+    "transcoderBmfLabelSuffix": " (tidak disertakan)",
+    "transcoderBmfNotFound": "BMF tidak ditemukan di PATH Anda (hilang: {{missing}}). Instal BMF, lalu pilih ulang. Konversi BMF dinonaktifkan sampai terdeteksi.",
     "title": "Konversi Media",
     "sourceFiles": "File Sumber",
     "encoding": "Penyandian",
@@ -357,6 +360,8 @@
     "videoPlayer": "Pemutar video"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF tidak disertakan dengan EncodeX. Instal secara manual dan pastikan bmf_ffmpeg dan bmf_ffprobe ada di PATH Anda.",
+    "bmfNotFound": "BMF tidak ditemukan di PATH Anda (hilang: {{missing}}). Instal BMF, lalu pilih ulang. Menambahkan tugas BMF dinonaktifkan sampai terdeteksi.",
     "title": "Antrean Batch",
     "operation": "Operasi",
     "suffix": "Akhiran",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Filter video diabaikan selama tujuan video adalah \"Salin\" karena salinan aliran tidak dapat disandikan ulang. Pilih wadah tujuan untuk menerapkan filter."
   },
   "copilot": {
+    "saveChat": "Simpan chat",
+    "savedChats": "Chat tersimpan",
+    "chatSaved": "Percakapan disimpan",
+    "savedChatsTitle": "Percakapan tersimpan",
+    "savedChatsEmpty": "Belum ada percakapan tersimpan. Gunakan Simpan chat untuk menyimpan satu.",
+    "savedChatsClose": "Tutup",
+    "savedChatUntitled": "Percakapan tanpa judul",
+    "savedChatMeta": "{{count}} pesan · {{date}}",
+    "savedChatOpen": "Buka",
+    "savedChatDelete": "Hapus percakapan tersimpan",
+    "savedChatSaveFailed": "Tidak dapat menyimpan percakapan. Penyimpanan browser mungkin penuh.",
+    "openChatConfirmTitle": "Buka percakapan tersimpan?",
+    "openChatConfirmMessage": "Percakapan saat ini belum disimpan. Membuka yang ini akan menggantinya.",
+    "openChatSave": "Simpan dan buka",
+    "openChatDiscard": "Buang dan buka",
+    "openChatCancel": "Batal",
     "title": "Copilot",
     "subtitle": "Jelaskan tujuan dan biarkan Copilot merencanakan konversinya, lalu dorong rencana tersebut ke Antrean Batch.",
     "goalLabel": "Tujuan",

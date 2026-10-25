@@ -67,6 +67,9 @@
     "cancelLabel": "Anuluj"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF nie jest dołączony do EncodeX. Zainstaluj go ręcznie i upewnij się, że bmf_ffmpeg i bmf_ffprobe są w PATH.",
+    "transcoderBmfLabelSuffix": " (nie dołączono)",
+    "transcoderBmfNotFound": "Nie znaleziono BMF w PATH (brakuje: {{missing}}). Zainstaluj BMF, a następnie wybierz go ponownie. Konwersje BMF są wyłączone, dopóki nie zostanie wykryty.",
     "title": "Konwertuj multimedia",
     "sourceFiles": "Pliki źródłowe",
     "encoding": "Kodowanie",
@@ -357,6 +360,8 @@
     "videoPlayer": "Odtwarzacz wideo"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF nie jest dołączony do EncodeX. Zainstaluj go ręcznie i upewnij się, że bmf_ffmpeg i bmf_ffprobe są w PATH.",
+    "bmfNotFound": "Nie znaleziono BMF w PATH (brakuje: {{missing}}). Zainstaluj BMF, a następnie wybierz go ponownie. Dodawanie zadań BMF jest wyłączone, dopóki nie zostanie wykryty.",
     "title": "Kolejka wsadowa",
     "operation": "Operacja",
     "suffix": "Przyrostek",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Filtry wideo są ignorowane, dopóki przeznaczenie wideo to „Kopiuj”, ponieważ kopia strumienia nie może kodować ponownie. Wybierz kontener docelowy, aby je zastosować."
   },
   "copilot": {
+    "saveChat": "Zapisz czat",
+    "savedChats": "Zapisane czaty",
+    "chatSaved": "Rozmowa zapisana",
+    "savedChatsTitle": "Zapisane rozmowy",
+    "savedChatsEmpty": "Brak zapisanych rozmów. Użyj opcji Zapisz czat, aby zapisać rozmowę.",
+    "savedChatsClose": "Zamknij",
+    "savedChatUntitled": "Rozmowa bez tytułu",
+    "savedChatMeta": "Wiadomości: {{count}} · {{date}}",
+    "savedChatOpen": "Otwórz",
+    "savedChatDelete": "Usuń zapisaną rozmowę",
+    "savedChatSaveFailed": "Nie udało się zapisać rozmowy. Pamięć przeglądarki może być pełna.",
+    "openChatConfirmTitle": "Otworzyć zapisaną rozmowę?",
+    "openChatConfirmMessage": "Bieżąca rozmowa nie została zapisana. Otwarcie tej rozmowy zastąpi bieżącą.",
+    "openChatSave": "Zapisz i otwórz",
+    "openChatDiscard": "Odrzuć i otwórz",
+    "openChatCancel": "Anuluj",
     "title": "Copilot",
     "subtitle": "Opisz cel, a Copilot zaplanuje konwersje, a następnie przenieś plan do kolejki zbiorczej.",
     "goalLabel": "Cel",

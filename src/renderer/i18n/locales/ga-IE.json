@@ -67,6 +67,9 @@
     "cancelLabel": "Cealaigh"
   },
   "convert": {
+    "transcoderBmfNotBundled": "Níl BMF pacáistithe le EncodeX. Suiteáil de láimh é agus cinntigh go bhfuil bmf_ffmpeg agus bmf_ffprobe ar do PATH.",
+    "transcoderBmfLabelSuffix": " (gan pacáistiú)",
+    "transcoderBmfNotFound": "Níor aimsíodh BMF ar do PATH (ar iarraidh: {{missing}}). Suiteáil BMF, agus roghnaigh arís é. Tá tiontuithe BMF díchumasaithe go dtí go n-aimsítear é.",
     "title": "Tiontaigh Meán",
     "sourceFiles": "Comhaid Foinse",
     "encoding": "Códú",
@@ -357,6 +360,8 @@
     "videoPlayer": "Seinnteoir físeáin"
   },
   "batchQueue": {
+    "bmfNotBundled": "Níl BMF pacáistithe le EncodeX. Suiteáil de láimh é agus cinntigh go bhfuil bmf_ffmpeg agus bmf_ffprobe ar do PATH.",
+    "bmfNotFound": "Níor aimsíodh BMF ar do PATH (ar iarraidh: {{missing}}). Suiteáil BMF, agus roghnaigh arís é. Tá poist BMF á gcur leis díchumasaithe go dtí go n-aimsítear é.",
     "title": "Scuaine Bhaisc",
     "operation": "Oibríocht",
     "suffix": "Iarmhír",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Déantar neamhaird de scagairí físeáin a fhad agus is é \"Cóipeáil\" an ceann scríbe físeáin, toisc nach féidir cóip srutha a athionchódú. Roghnaigh coimeádán ceann scríbe chun scagairí a chur i bhfeidhm."
   },
   "copilot": {
+    "saveChat": "Sábháil comhrá",
+    "savedChats": "Comhráite sábháilte",
+    "chatSaved": "Sábháladh an comhrá",
+    "savedChatsTitle": "Comhráite sábháilte",
+    "savedChatsEmpty": "Níl aon chomhrá sábháilte ann. Úsáid Sábháil comhrá chun ceann a choinneáil.",
+    "savedChatsClose": "Dún",
+    "savedChatUntitled": "Comhrá gan teideal",
+    "savedChatMeta": "{{count}} teachtaireacht · {{date}}",
+    "savedChatOpen": "Oscail",
+    "savedChatDelete": "Scrios comhrá sábháilte",
+    "savedChatSaveFailed": "Níorbh fhéidir an comhrá a shábháil. Seans go bhfuil stór an bhrabhsálaí lán.",
+    "openChatConfirmTitle": "Oscail comhrá sábháilte?",
+    "openChatConfirmMessage": "Níor sábhaíodh an comhrá reatha. Má osclaítear an ceann seo, cuirfear ina áit é.",
+    "openChatSave": "Sábháil agus oscail",
+    "openChatDiscard": "Caith amach agus oscail",
+    "openChatCancel": "Cealaigh",
     "title": "Copilot",
     "subtitle": "Déan cur síos ar sprioc agus lig do Copilot na tiontuithe a phleanáil, ansin brúigh an plean chuig an Scuaine Bhaisc.",
     "goalLabel": "Sprioc",

@@ -67,6 +67,9 @@
     "cancelLabel": "Отмена"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF не входит в состав EncodeX. Установите его вручную и убедитесь, что bmf_ffmpeg и bmf_ffprobe доступны в PATH.",
+    "transcoderBmfLabelSuffix": " (не включён)",
+    "transcoderBmfNotFound": "BMF не найден в PATH (отсутствует: {{missing}}). Установите BMF, затем выберите его снова. Конвертации BMF отключены, пока он не будет обнаружен.",
     "title": "Конвертировать медиа",
     "sourceFiles": "Исходные файлы",
     "encoding": "Кодирование",
@@ -357,6 +360,8 @@
     "videoPlayer": "Видеоплеер"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF не входит в состав EncodeX. Установите его вручную и убедитесь, что bmf_ffmpeg и bmf_ffprobe доступны в PATH.",
+    "bmfNotFound": "BMF не найден в PATH (отсутствует: {{missing}}). Установите BMF, затем выберите его снова. Добавление задач BMF отключено, пока он не будет обнаружен.",
     "title": "Пакетная очередь",
     "operation": "Операция",
     "suffix": "Суффикс",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Видеофильтры игнорируются, пока назначение видео — «Копировать», поскольку копирование потока не может перекодировать. Выберите контейнер назначения, чтобы применить фильтры."
   },
   "copilot": {
+    "saveChat": "Сохранить чат",
+    "savedChats": "Сохранённые чаты",
+    "chatSaved": "Беседа сохранена",
+    "savedChatsTitle": "Сохранённые беседы",
+    "savedChatsEmpty": "Сохранённых бесед нет. Используйте «Сохранить чат», чтобы сохранить беседу.",
+    "savedChatsClose": "Закрыть",
+    "savedChatUntitled": "Беседа без названия",
+    "savedChatMeta": "Сообщений: {{count}} · {{date}}",
+    "savedChatOpen": "Открыть",
+    "savedChatDelete": "Удалить сохранённую беседу",
+    "savedChatSaveFailed": "Не удалось сохранить беседу. Возможно, хранилище браузера заполнено.",
+    "openChatConfirmTitle": "Открыть сохранённую беседу?",
+    "openChatConfirmMessage": "Текущая беседа не сохранена. При открытии этой текущая беседа будет заменена.",
+    "openChatSave": "Сохранить и открыть",
+    "openChatDiscard": "Отменить и открыть",
+    "openChatCancel": "Отмена",
     "title": "Copilot",
     "subtitle": "Опишите цель, и Copilot спланирует конвертации, а затем отправьте план в очередь пакетной обработки.",
     "goalLabel": "Цель",

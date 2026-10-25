@@ -67,6 +67,9 @@
     "cancelLabel": "Annulla"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF non è incluso in EncodeX. Installalo manualmente e assicurati che bmf_ffmpeg e bmf_ffprobe siano nel PATH.",
+    "transcoderBmfLabelSuffix": " (non incluso)",
+    "transcoderBmfNotFound": "BMF non è stato trovato nel PATH (mancanti: {{missing}}). Installa BMF, poi selezionalo di nuovo. Le conversioni BMF restano disattivate finché non viene rilevato.",
     "title": "Converti file",
     "sourceFiles": "File di origine",
     "encoding": "Codifica",
@@ -357,6 +360,8 @@
     "videoPlayer": "Lettore video"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF non è incluso in EncodeX. Installalo manualmente e assicurati che bmf_ffmpeg e bmf_ffprobe siano nel PATH.",
+    "bmfNotFound": "BMF non è stato trovato nel PATH (mancanti: {{missing}}). Installa BMF, poi selezionalo di nuovo. L'aggiunta di lavori BMF resta disattivata finché non viene rilevato.",
     "title": "Coda batch",
     "operation": "Operazione",
     "suffix": "Suffisso",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "I filtri video vengono ignorati finché la destinazione video è «Copia», perché una copia di flusso non può ricodificare. Scegli un contenitore di destinazione per applicarli."
   },
   "copilot": {
+    "saveChat": "Salva chat",
+    "savedChats": "Chat salvate",
+    "chatSaved": "Conversazione salvata",
+    "savedChatsTitle": "Conversazioni salvate",
+    "savedChatsEmpty": "Nessuna conversazione salvata. Usa Salva chat per conservarne una.",
+    "savedChatsClose": "Chiudi",
+    "savedChatUntitled": "Conversazione senza titolo",
+    "savedChatMeta": "{{count}} messaggi · {{date}}",
+    "savedChatOpen": "Apri",
+    "savedChatDelete": "Elimina conversazione salvata",
+    "savedChatSaveFailed": "Impossibile salvare la conversazione. La memoria del browser potrebbe essere piena.",
+    "openChatConfirmTitle": "Aprire la conversazione salvata?",
+    "openChatConfirmMessage": "La conversazione corrente non è stata salvata. Aprendo questa, la sostituirai.",
+    "openChatSave": "Salva e apri",
+    "openChatDiscard": "Scarta e apri",
+    "openChatCancel": "Annulla",
     "title": "Copilot",
     "subtitle": "Descrivi un obiettivo e lascia che Copilot pianifichi le conversioni, poi invia il piano alla coda di processi.",
     "goalLabel": "Obiettivo",

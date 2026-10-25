@@ -67,6 +67,9 @@
     "cancelLabel": "ຍົກເລີກ"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF ບໍ່ໄດ້ມາພ້ອມກັບ EncodeX. ກະລຸນາຕິດຕັ້ງດ້ວຍຕົນເອງ ແລະ ກວດສອບໃຫ້ bmf_ffmpeg ແລະ bmf_ffprobe ຢູ່ໃນ PATH ຂອງທ່ານ.",
+    "transcoderBmfLabelSuffix": " (ບໍ່ໄດ້ມາພ້ອມ)",
+    "transcoderBmfNotFound": "ບໍ່ພົບ BMF ໃນ PATH ຂອງທ່ານ (ຂາດ: {{missing}}). ກະລຸນາຕິດຕັ້ງ BMF ແລ້ວເລືອກໃໝ່ອີກຄັ້ງ. ການແປງ BMF ຈະຖືກປິດໃຊ້ງານຈົນກວ່າຈະກວດພົບ.",
     "title": "ແປງສື່",
     "sourceFiles": "ໄຟລໍ໌ຕໍ້ນສະບັບ",
     "encoding": "ການເຂົ້າລະຫັດ",
@@ -357,6 +360,8 @@
     "videoPlayer": "ເຄື່ອງຫຼິ້ນວິດີໂອ"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF ບໍ່ໄດ້ມາພ້ອມກັບ EncodeX. ກະລຸນາຕິດຕັ້ງດ້ວຍຕົນເອງ ແລະ ກວດສອບໃຫ້ bmf_ffmpeg ແລະ bmf_ffprobe ຢູ່ໃນ PATH ຂອງທ່ານ.",
+    "bmfNotFound": "ບໍ່ພົບ BMF ໃນ PATH ຂອງທ່ານ (ຂາດ: {{missing}}). ກະລຸນາຕິດຕັ້ງ BMF ແລ້ວເລືອກໃໝ່ອີກຄັ້ງ. ການເພີ່ມວຽກ BMF ຖືກປິດໃຊ້ງານຈົນກວ່າຈະກວດພົບ.",
     "title": "ຄິວງານຫຼາຍອັນ",
     "operation": "ການດຳເນີນການ",
     "suffix": "ຄຳຕໍ່ທ້າຍ",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "ຟິດເຕີວິດີໂອຖືກບໍ່ສົນໃຈ ຕາບໃດທີ່ປາຍທາງວິດີໂອແມ່ນ \"ສຳເນົາ\" ເພາະສຳເນົາສະຣີມບໍ່ສາມາດເຂົ້າລະຫັດໃໝ່ໄດ້. ເລືອກຄອນເທນເນີປາຍທາງເພື່ອນຳໃຊ້ຟິດເຕີ."
   },
   "copilot": {
+    "saveChat": "ບັນທຶກແຊັດ",
+    "savedChats": "ແຊັດທີ່ບັນທຶກໄວ້",
+    "chatSaved": "ບັນທຶກການສົນທະນາແລ້ວ",
+    "savedChatsTitle": "ການສົນທະນາທີ່ບັນທຶກໄວ້",
+    "savedChatsEmpty": "ບໍ່ມີການສົນທະນາທີ່ບັນທຶກໄວ້. ໃຊ້ ບັນທຶກແຊັດ ເພື່ອເກັບໄວ້.",
+    "savedChatsClose": "ປິດ",
+    "savedChatUntitled": "ການສົນທະນາບໍ່ມີຊື່",
+    "savedChatMeta": "{{count}} ຂໍ້ຄວາມ · {{date}}",
+    "savedChatOpen": "ເປີດ",
+    "savedChatDelete": "ລຶບການສົນທະນາທີ່ບັນທຶກໄວ້",
+    "savedChatSaveFailed": "ບໍ່ສາມາດບັນທຶກການສົນທະນາໄດ້. ບ່ອນເກັບຂໍ້ມູນຂອງບຣາວເຊີອາດເຕັມແລ້ວ.",
+    "openChatConfirmTitle": "ເປີດການສົນທະນາທີ່ບັນທຶກໄວ້ບໍ?",
+    "openChatConfirmMessage": "ການສົນທະນາປັດຈຸບັນຍັງບໍ່ໄດ້ບັນທຶກ. ການເປີດອັນນີ້ຈະແທນທີ່ມັນ.",
+    "openChatSave": "ບັນທຶກ ແລະ ເປີດ",
+    "openChatDiscard": "ຍົກເລີກ ແລະ ເປີດ",
+    "openChatCancel": "ຍົກເລີກ",
     "title": "Copilot",
     "subtitle": "ອະທິບາຍເປົ້າໝາຍ ແລະໃຫ້ Copilot ວາງແຜນການແປງ ຈາກນັ້ນສົ່ງແຜນໄປທີ່ Batch Queue",
     "goalLabel": "ເປົ້າໝາຍ",

@@ -67,6 +67,9 @@
     "cancelLabel": "Naamik"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF EncodeX-ip ilaanngilaq. Aalajangersakkamik ingerlatsi, bmf_ffmpeg leqqullu bmf_ffprobe PATH-imi pisinnaasut qulakkiiguk.",
+    "transcoderBmfLabelSuffix": " (ilanngunneqanngitsoq)",
+    "transcoderBmfNotFound": "BMF PATH-imi nassaarneqanngilaq (missing: {{missing}}). BMF ingerlatsi, taamaattumik fornya. BMF-imik allanngortitsineq misissuinerup tungaanut atorunnaarsinneqarpoq.",
     "title": "Media allanngortit",
     "sourceFiles": "Filiussat aallutit",
     "encoding": "Enkodiginneq",
@@ -357,6 +360,8 @@
     "videoPlayer": "Video aallartitsivik"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF EncodeX-ip ilaanngilaq. Aalajangersakkamik ingerlatsi, bmf_ffmpeg leqqullu bmf_ffprobe PATH-imi pisinnaasut qulakkiiguk.",
+    "bmfNotFound": "BMF PATH-imi nassaarneqanngilaq (missing: {{missing}}). BMF ingerlatsi, taamaattumik fornya. BMF-imik suliat nassiussineq misissuinerup tungaanut atorunnaarsinneqarpoq.",
     "title": "Ilerleq",
     "operation": "Suliniut",
     "suffix": "Suffiks",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Video-filterit atatoginassanngillat, video-ip kingullugu inissaq \"Kopi\"-pasilluni, stream-kopik enkoderineqarsinnaanngimmat. Filterit atatseq patsiornissaat container toqqaruk."
   },
   "copilot": {
+    "saveChat": "Oqaloqatigiit allaffigi",
+    "savedChats": "Allaffigineqartut oqaloqatigiit",
+    "chatSaved": "Oqaloqatigiit allaffigineqarput",
+    "savedChatsTitle": "Allaffigineqartut oqaloqatigiit",
+    "savedChatsEmpty": "Allaffigineqartut oqaloqatigiit ilaanngillat. Oqaloqatigiit allaffigi atorlugu allaffigisinnaavat.",
+    "savedChatsClose": "Akiuk",
+    "savedChatUntitled": "Immikkoortinneqanngitsoq oqaloqatigiit",
+    "savedChatMeta": "Iterlanerit {{count}} · {{date}}",
+    "savedChatOpen": "Ammasuk",
+    "savedChatDelete": "Allaffigineqartut oqaloqatigiit peerusuk",
+    "savedChatSaveFailed": "Oqaloqatigiit allaffigineqarsinnaanngillat. Browser-ip storage-ia immiffiginngilaq.",
+    "openChatConfirmTitle": "Allaffigineqartut oqaloqatigiit ammasussanngilaq?",
+    "openChatConfirmMessage": "Oqaloqatigiit ammasut allaffigineqanngillat. Oqaloqatigiit ammasut allaffigisinnaavat, taamaattumik taanna ammassaaq.",
+    "openChatSave": "Allaffissorlugu ammasuk",
+    "openChatDiscard": "Peerlugu ammasuk",
+    "openChatCancel": "Ajorlugu",
     "title": "Copilot",
     "subtitle": "Tassaaneq allaqillugu Copilot-ip allanngortitaanik plaaneriuk, taava plaaniraq batch queue-mut iluatinnguuk.",
     "goalLabel": "Tassaaneq",

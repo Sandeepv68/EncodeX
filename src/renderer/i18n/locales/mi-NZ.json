@@ -67,6 +67,9 @@
     "cancelLabel": "Whakakore"
   },
   "convert": {
+    "transcoderBmfNotBundled": "Kāore a BMF i whakauruhia ki EncodeX. Whakauruhia ā-ringa, me whakarite kei te PATH bmf_ffmpeg me bmf_ffprobe.",
+    "transcoderBmfLabelSuffix": " (kāore i whakauruhia)",
+    "transcoderBmfNotFound": "Kāore i kitea a BMF i runga i tōu PATH (ngaro: {{missing}}). Whakauruhia a BMF, kātahi ka reretahi anō. Ka hārikehia ngā whakahuringa BMF kia kitea ai.",
     "title": "Huripokia te Pāpāho",
     "sourceFiles": "Ngā Kōnae Puna",
     "encoding": "Whakawaeheretanga",
@@ -357,6 +360,8 @@
     "videoPlayer": "Pūrere whakaata ataata"
   },
   "batchQueue": {
+    "bmfNotBundled": "Kāore a BMF i whakauruhia ki EncodeX. Whakauruhia ā-ringa, me whakarite kei te PATH bmf_ffmpeg me bmf_ffprobe.",
+    "bmfNotFound": "Kāore i kitea a BMF i runga i tōu PATH (ngaro: {{missing}}). Whakauruhia a BMF, kātahi ka reretahi anō. Ka hārikehia ngā tāpiri mahi BMF kia kitea ai.",
     "title": "Rārangi Tukinotanga",
     "operation": "Mahinga",
     "suffix": "Kūmuri",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Ka warewarehia ngā tātari ataata i te mea he \"Tārua\" te whāinga ataata, nā te mea e kore e taea te tārua awa kia whakawaehere anō. Kōwhiria he ipu whāinga kia whakamahia ai ngā tātari."
   },
   "copilot": {
+    "saveChat": "Tiaki kōrero",
+    "savedChats": "Ngā kōrero kua tiakina",
+    "chatSaved": "Kua tiakina te kōrero",
+    "savedChatsTitle": "Ngā kōrero kua tiakina",
+    "savedChatsEmpty": "Kāore he kōrero kua tiakina. Whakamahia a Tiaki kōrero hei tiaki tētahi.",
+    "savedChatsClose": "Kati",
+    "savedChatUntitled": "Kōrero kore ingoa",
+    "savedChatMeta": "{{count}} karere · {{date}}",
+    "savedChatOpen": "Whakatuwhera",
+    "savedChatDelete": "Mukua te kōrero kua tiakina",
+    "savedChatSaveFailed": "Kāore i taea te tiaki i te kōrero. Pea kua ki te tino ki te rokiroki a te kaitirotiro.",
+    "openChatConfirmTitle": "Whakatuwhera i te kōrero kua tiakina?",
+    "openChatConfirmMessage": "Kāore anō kia tiakina te kōrero o nāianei. Mā te whakatuwhera i tēnei ka whakakapia.",
+    "openChatSave": "Tiaki me te whakatuwhera",
+    "openChatDiscard": "Whakarere me te whakatuwhera",
+    "openChatCancel": "Whakakore",
     "title": "Copilot",
     "subtitle": "Whakamāramatia he whāinga, mā Copilot e whakamahere i ngā tahuri, kātahi ka tōia te mahere ki te Rārangi Puranga.",
     "goalLabel": "Whāinga",

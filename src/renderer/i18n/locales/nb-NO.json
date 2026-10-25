@@ -67,6 +67,9 @@
     "cancelLabel": "Avbryt"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF er ikke pakket med EncodeX. Installer det manuelt og sørg for at bmf_ffmpeg og bmf_ffprobe er i PATH.",
+    "transcoderBmfLabelSuffix": " (ikke inkludert)",
+    "transcoderBmfNotFound": "Fant ikke BMF i PATH (mangler: {{missing}}). Installer BMF, og velg det på nytt. BMF-konverteringer er deaktivert til det oppdages.",
     "title": "Konverter media",
     "sourceFiles": "Kilderfiler",
     "encoding": "Koding",
@@ -357,6 +360,8 @@
     "videoPlayer": "Videospiller"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF er ikke pakket med EncodeX. Installer det manuelt og sørg for at bmf_ffmpeg og bmf_ffprobe er i PATH.",
+    "bmfNotFound": "Fant ikke BMF i PATH (mangler: {{missing}}). Installer BMF, og velg det på nytt. Å legge til BMF-jobber er deaktivert til det oppdages.",
     "title": "Batchkø",
     "operation": "Operasjon",
     "suffix": "Suffiks",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Videofiltrene blir ignorert så lenge videodestinasjonen er \"Kopier\", fordi en strømkopi ikke kan kode på nytt. Velg en målcontainer for å bruke dem."
   },
   "copilot": {
+    "saveChat": "Lagre chat",
+    "savedChats": "Lagrede chatter",
+    "chatSaved": "Samtale lagret",
+    "savedChatsTitle": "Lagrede samtaler",
+    "savedChatsEmpty": "Ingen lagrede samtaler. Bruk Lagre chat for å lagre en.",
+    "savedChatsClose": "Lukk",
+    "savedChatUntitled": "Samtale uten tittel",
+    "savedChatMeta": "{{count}} meldinger · {{date}}",
+    "savedChatOpen": "Åpne",
+    "savedChatDelete": "Slett lagret samtale",
+    "savedChatSaveFailed": "Kunne ikke lagre samtalen. Nettleserlagringen kan være full.",
+    "openChatConfirmTitle": "Åpne lagret samtale?",
+    "openChatConfirmMessage": "Gjeldende samtale er ikke lagret. Åpning av denne erstatter den.",
+    "openChatSave": "Lagre og åpne",
+    "openChatDiscard": "Forkast og åpne",
+    "openChatCancel": "Avbryt",
     "title": "Copilot",
     "subtitle": "Beskriv et mål og la Copilot planlegge konverteringene, og send deretter planen til batch-køen.",
     "goalLabel": "Mål",

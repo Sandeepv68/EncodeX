@@ -67,6 +67,9 @@
     "cancelLabel": "Batal"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF tidak disertakan dengan EncodeX. Pasang secara manual dan pastikan bmf_ffmpeg dan bmf_ffprobe berada dalam PATH anda.",
+    "transcoderBmfLabelSuffix": " (tidak disertakan)",
+    "transcoderBmfNotFound": "BMF tidak dijumpai dalam PATH anda (hilang: {{missing}}). Pasang BMF, kemudian pilih semula. Penukaran BMF dilumpuhkan sehingga ia dikesan.",
     "title": "Tukar Media",
     "sourceFiles": "Fail Sumber",
     "encoding": "Pengekodan",
@@ -357,6 +360,8 @@
     "videoPlayer": "Pemain video"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF tidak disertakan dengan EncodeX. Pasang secara manual dan pastikan bmf_ffmpeg dan bmf_ffprobe berada dalam PATH anda.",
+    "bmfNotFound": "BMF tidak dijumpai dalam PATH anda (hilang: {{missing}}). Pasang BMF, kemudian pilih semula. Penambahan tugasan BMF dilumpuhkan sehingga ia dikesan.",
     "title": "Baris Giliran Kelompok",
     "operation": "Operasi",
     "suffix": "Akhiran",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Penapis video diabaikan selagi sasaran video ialah \"Salin\" kerana salinan strim tidak boleh mengekod semula. Pilih bekas sasaran untuk menggunakan penapis."
   },
   "copilot": {
+    "saveChat": "Simpan sembang",
+    "savedChats": "Sembang disimpan",
+    "chatSaved": "Perbualan disimpan",
+    "savedChatsTitle": "Perbualan disimpan",
+    "savedChatsEmpty": "Tiada perbualan disimpan. Gunakan Simpan sembang untuk menyimpan satu.",
+    "savedChatsClose": "Tutup",
+    "savedChatUntitled": "Perbualan tanpa tajuk",
+    "savedChatMeta": "{{count}} mesej · {{date}}",
+    "savedChatOpen": "Buka",
+    "savedChatDelete": "Padam perbualan disimpan",
+    "savedChatSaveFailed": "Perbualan tidak dapat disimpan. Storan pelayar mungkin penuh.",
+    "openChatConfirmTitle": "Buka perbualan disimpan?",
+    "openChatConfirmMessage": "Perbualan semasa belum disimpan. Membuka yang ini akan menggantikannya.",
+    "openChatSave": "Simpan dan buka",
+    "openChatDiscard": "Buang dan buka",
+    "openChatCancel": "Batal",
     "title": "Copilot",
     "subtitle": "Terangkan matlamat dan biarkan Copilot merancang penukaran, kemudian tolak rancangan itu ke Baris Gilir Kelompok.",
     "goalLabel": "Matlamat",

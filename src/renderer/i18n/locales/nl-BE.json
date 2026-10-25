@@ -67,6 +67,9 @@
     "cancelLabel": "Annuleren"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF is niet meegeleverd met EncodeX. Installeer het handmatig en zorg dat bmf_ffmpeg en bmf_ffprobe in je PATH staan.",
+    "transcoderBmfLabelSuffix": " (niet meegeleverd)",
+    "transcoderBmfNotFound": "BMF werd niet gevonden in je PATH (ontbreekt: {{missing}}). Installeer BMF en selecteer het opnieuw. BMF-conversies zijn uitgeschakeld tot het wordt gedetecteerd.",
     "title": "Media converteren",
     "sourceFiles": "Bronbestanden",
     "encoding": "Codering",
@@ -357,6 +360,8 @@
     "videoPlayer": "Videospeler"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF is niet meegeleverd met EncodeX. Installeer het handmatig en zorg dat bmf_ffmpeg en bmf_ffprobe in je PATH staan.",
+    "bmfNotFound": "BMF werd niet gevonden in je PATH (ontbreekt: {{missing}}). Installeer BMF en selecteer het opnieuw. Het toevoegen van BMF-taken is uitgeschakeld tot het wordt gedetecteerd.",
     "title": "Batchwachtrij",
     "operation": "Bewerking",
     "suffix": "Achtervoegsel",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Videofilters worden genegeerd zolang de videobestemming \"Kopiëren\" is, omdat een streamkopie niet opnieuw kan coderen. Kies een doelcontainer om ze toe te passen."
   },
   "copilot": {
+    "saveChat": "Chat opslaan",
+    "savedChats": "Opgeslagen chats",
+    "chatSaved": "Gesprek opgeslagen",
+    "savedChatsTitle": "Opgeslagen gesprekken",
+    "savedChatsEmpty": "Geen opgeslagen gesprekken. Gebruik Chat opslaan om er een op te slaan.",
+    "savedChatsClose": "Sluiten",
+    "savedChatUntitled": "Naamloos gesprek",
+    "savedChatMeta": "{{count}} berichten · {{date}}",
+    "savedChatOpen": "Openen",
+    "savedChatDelete": "Opgeslagen gesprek verwijderen",
+    "savedChatSaveFailed": "Het gesprek kon niet worden opgeslagen. De browseropslag is mogelijk vol.",
+    "openChatConfirmTitle": "Opgeslagen gesprek openen?",
+    "openChatConfirmMessage": "Het huidige gesprek is niet opgeslagen. Als je dit gesprek opent, wordt het vervangen.",
+    "openChatSave": "Opslaan en openen",
+    "openChatDiscard": "Negeren en openen",
+    "openChatCancel": "Annuleren",
     "title": "Copilot",
     "subtitle": "Beschrijf een doel en laat Copilot de conversies plannen, en duw het plan vervolgens naar de batchwachtrij.",
     "goalLabel": "Doel",

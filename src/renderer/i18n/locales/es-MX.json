@@ -67,6 +67,9 @@
     "cancelLabel": "Cancelar"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF no viene incluido con EncodeX. Instálalo manualmente y asegúrate de que bmf_ffmpeg y bmf_ffprobe estén en tu PATH.",
+    "transcoderBmfLabelSuffix": " (no incluido)",
+    "transcoderBmfNotFound": "No se encontró BMF en tu PATH (faltan: {{missing}}). Instala BMF y luego vuelve a seleccionarlo. Las conversiones BMF están desactivadas hasta que se detecte.",
     "title": "Convertir medio",
     "sourceFiles": "Archivos de origen",
     "encoding": "Codificación",
@@ -357,6 +360,8 @@
     "videoPlayer": "Reproductor de video"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF no viene incluido con EncodeX. Instálalo manualmente y asegúrate de que bmf_ffmpeg y bmf_ffprobe estén en tu PATH.",
+    "bmfNotFound": "No se encontró BMF en tu PATH (faltan: {{missing}}). Instala BMF y luego vuelve a seleccionarlo. Añadir trabajos BMF está desactivado hasta que se detecte.",
     "title": "Cola de lotes",
     "operation": "Operación",
     "suffix": "Sufijo",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Los filtros de video se ignoran mientras el destino de video sea «Copiar», porque una copia de flujo no puede recodificar. Elige un contenedor de destino para aplicarlos."
   },
   "copilot": {
+    "saveChat": "Guardar chat",
+    "savedChats": "Chats guardados",
+    "chatSaved": "Conversación guardada",
+    "savedChatsTitle": "Conversaciones guardadas",
+    "savedChatsEmpty": "No hay conversaciones guardadas. Usa Guardar chat para conservar una.",
+    "savedChatsClose": "Cerrar",
+    "savedChatUntitled": "Conversación sin título",
+    "savedChatMeta": "{{count}} mensajes · {{date}}",
+    "savedChatOpen": "Abrir",
+    "savedChatDelete": "Eliminar conversación guardada",
+    "savedChatSaveFailed": "No se pudo guardar la conversación. Es posible que el almacenamiento del navegador esté lleno.",
+    "openChatConfirmTitle": "¿Abrir conversación guardada?",
+    "openChatConfirmMessage": "La conversación actual no se ha guardado. Al abrir esta se reemplazará.",
+    "openChatSave": "Guardar y abrir",
+    "openChatDiscard": "Descartar y abrir",
+    "openChatCancel": "Cancelar",
     "title": "Copilot",
     "subtitle": "Describe un objetivo y deja que Copilot planifique las conversiones; luego envía el plan a la cola de procesos.",
     "goalLabel": "Objetivo",

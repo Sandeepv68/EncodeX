@@ -67,6 +67,9 @@
     "cancelLabel": "रद्द करें"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF, EncodeX के साथ पैकेज नहीं है। इसे मैन्युअल रूप से इंस्टॉल करें और सुनिश्चित करें कि bmf_ffmpeg और bmf_ffprobe आपके PATH पर हों।",
+    "transcoderBmfLabelSuffix": " (शामिल नहीं)",
+    "transcoderBmfNotFound": "BMF आपके PATH पर नहीं मिला (गायब: {{missing}})। BMF इंस्टॉल करें, फिर उसे दोबारा चुनें। पता चलने तक BMF रूपांतरण अक्षम रहेंगे।",
     "title": "मीडिया कन्वर्ट करें",
     "sourceFiles": "स्रोत फ़ाइलें",
     "encoding": "एन्कोडिंग",
@@ -357,6 +360,8 @@
     "videoPlayer": "वीडियो प्लेयर"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF, EncodeX के साथ पैकेज नहीं है। इसे मैन्युअल रूप से इंस्टॉल करें और सुनिश्चित करें कि bmf_ffmpeg और bmf_ffprobe आपके PATH पर हों।",
+    "bmfNotFound": "BMF आपके PATH पर नहीं मिला (गायब: {{missing}})। BMF इंस्टॉल करें, फिर उसे दोबारा चुनें। पता चलने तक BMF कार्य जोड़ना अक्षम रहेगा।",
     "title": "बैच क्यू",
     "operation": "ऑपरेशन",
     "suffix": "सफ़िक्स",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "जब तक वीडियो गंतव्य \"कॉपी\" है, वीडियो फ़िल्टर अनदेखे रहते हैं, क्योंकि स्ट्रीम की कॉपी फिर से एन्कोड नहीं हो सकती। फ़िल्टर लागू करने के लिए गंतव्य कंटेनर चुनें।"
   },
   "copilot": {
+    "saveChat": "चैट सहेजें",
+    "savedChats": "सहेजी गई चैट",
+    "chatSaved": "बातचीत सहेजी गई",
+    "savedChatsTitle": "सहेजी गई बातचीत",
+    "savedChatsEmpty": "कोई सहेजी गई बातचीत नहीं है। एक रखने के लिए चैट सहेजें का उपयोग करें।",
+    "savedChatsClose": "बंद करें",
+    "savedChatUntitled": "बिना शीर्षक की बातचीत",
+    "savedChatMeta": "{{count}} संदेश · {{date}}",
+    "savedChatOpen": "खोलें",
+    "savedChatDelete": "सहेजी गई बातचीत हटाएँ",
+    "savedChatSaveFailed": "बातचीत सहेजी नहीं जा सकी। ब्राउज़र स्टोरेज भर हो सकता है।",
+    "openChatConfirmTitle": "सहेजी गई बातचीत खोलें?",
+    "openChatConfirmMessage": "वर्तमान बातचीत सहेजी नहीं गई है। इसे खोलने पर वह बदल जाएगी।",
+    "openChatSave": "सहेजें और खोलें",
+    "openChatDiscard": "छोड़ें और खोलें",
+    "openChatCancel": "रद्द करें",
     "title": "Copilot",
     "subtitle": "एक लक्ष्य बताएँ और Copilot को रूपांतरणों की योजना बनाने दें, फिर योजना को बैच कतार में भेजें।",
     "goalLabel": "लक्ष्य",
