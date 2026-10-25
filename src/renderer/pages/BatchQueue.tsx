@@ -46,7 +46,7 @@ import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { FILE_FILTERS } from '../../shared/file-extensions';
 import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
 import { estimateRemaining, formatDurationCompact } from '../../shared/estimate';
-import { QueueJob, ConversionProfile } from '../../shared/types';
+import { QueueJob, ConversionProfile, TranscoderType } from '../../shared/types';
 import { useSettingsStore } from '../stores/settingsStore';
 import { readStoredBatchConfig, persistBatchConfig, type BatchConfig } from '../stores/batchConfig';
 import type { QueueAddReviewSelection } from '../components/types';
@@ -411,7 +411,7 @@ export default function BatchQueue() {
    * the first entry of TRANSCODER_TYPES and selectable via BatchControls.
    * @type {React.MutableRefObject<string>}
    */
-  const transcoderRef = useRef(TRANSCODER_TYPES[0]);
+  const transcoderRef = useRef<TranscoderType>(TRANSCODER_TYPES[0]);
 
   /**
    * Origin of the pending add-files review (dialog/folder), used to attribute
@@ -781,6 +781,15 @@ export default function BatchQueue() {
    * @returns {Promise<void>} Resolves once every enqueue request settled.
    */
   const enqueueSelections = async (selections: QueueAddReviewSelection[], source: InputSource = lastAddSourceRef.current) => {
+    if (transcoderRef.current === 'BMF') {
+      // Fresh PATH check at enqueue time: BMF may have been removed since the
+      // toolbar last checked. Unknown status (IPC failure) does not block.
+      const status = await window.electronAPI?.getBmfStatus?.().catch(() => null);
+      if (status?.available === false) {
+        useToastStore.getState().error(t('batchQueue.bmfNotFound', { missing: status.missing.join(', ') }));
+        return;
+      }
+    }
     const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
     const currentJobs = useQueueStore.getState().jobs;
     const plan = await planEnqueues({

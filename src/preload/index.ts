@@ -80,6 +80,7 @@ import {
   ImageFileInfo,
   LogEntry,
   EncoderCapabilities,
+  BmfStatus,
   WaveformData,
   ThumbnailStrip,
   WhenDoneConfig,
@@ -447,6 +448,11 @@ const api = {
     log.debug(LOG_GET_CAPABILITIES_CALLED);
     return ipcRenderer.invoke(IPC.GET_CAPABILITIES) as Promise<EncoderCapabilities | null>;
   },
+  /**
+   * Checks whether the BMF CLI tools (`bmf_ffmpeg`, `bmf_ffprobe`) are on PATH.
+   * @returns {Promise<BmfStatus>} Availability plus the names of any missing executables.
+   */
+  getBmfStatus: () => ipcRenderer.invoke(IPC.GET_BMF_STATUS) as Promise<BmfStatus>,
   /**
    * Starts a single-file media conversion. Progress is reported asynchronously through
    * the `onConversionProgress` subscription; the returned promise settles only when the

@@ -12,6 +12,7 @@ import { ipcMain } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import { getEncoderCapabilities } from '../capabilities';
+import { checkBmfAvailable } from '../transcoders/bmf-availability';
 import { LOG_IPC_GET_CAPABILITIES_CALLED } from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/capabilities');
@@ -32,6 +33,8 @@ export function registerCapabilityHandlers(): void {
    *   audioEncoders and hwaccels, or null when the FFmpeg capability probe
    *   failed.
    */
+  ipcMain.handle(IPC.GET_BMF_STATUS, () => checkBmfAvailable());
+
   ipcMain.handle(IPC.GET_CAPABILITIES, () => {
     log.debug(LOG_IPC_GET_CAPABILITIES_CALLED);
     return getEncoderCapabilities();

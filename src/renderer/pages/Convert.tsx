@@ -77,7 +77,7 @@ import { VideoFiltersSection } from '../components/VideoFiltersSection';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
-import type { EncoderType } from '../../shared/types';
+import type { BmfStatus, EncoderType } from '../../shared/types';
 import { fileName } from '../utils/path-utils';
 import { encoderTypeLabel, pixelFormatOptions, pixelGroupIcons } from '../utils/encoding-option-utils';
 import {
@@ -199,6 +199,7 @@ export default function Convert() {
   const [streamsExpanded, setStreamsExpanded] = useState(false);
   const [mediaInfo, setMediaInfo] = useState<MediaInfoType | null>(null);
   const [mediaInfoLoading, setMediaInfoLoading] = useState(false);
+  const [bmfStatus, setBmfStatus] = useState<BmfStatus | null>(null);
   const [profileEditorOpen, setProfileEditorOpen] = useState(false);
   const settingsHardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
   const settingsEncoderType = useSettingsStore((s) => s.encoderType);
@@ -272,6 +273,30 @@ export default function Convert() {
    * the panel simply shows no summary.
    * @returns {() => void} Cleanup that marks the in-flight request as cancelled.
    */
+  /**
+   * Re-checks BMF availability on PATH each time BMF is selected, so an install
+   * made while the app is open is picked up without a restart. A failed IPC call
+   * leaves the status unknown (null) and does not block conversion.
+   * @returns {void}
+   */
+  useEffect(() => {
+    if (transcoder !== 'BMF') return;
+    let cancelled = false;
+    window.electronAPI
+      ?.getBmfStatus?.()
+      .then((status) => {
+        if (!cancelled) setBmfStatus(status);
+      })
+      .catch(() => {
+        if (!cancelled) setBmfStatus(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [transcoder]);
+
+  const bmfUnavailable = transcoder === 'BMF' && bmfStatus?.available === false;
+
   useEffect(() => {
     if (!inputFile || !previewOpen) {
       setMediaInfo(null);
@@ -874,9 +899,20 @@ export default function Convert() {
             {TRANSCODER_TYPES.map((tc) => (
               <MenuItem key={tc} value={tc}>
                 {TRANSCODER_LABELS[tc]}
+                {tc === 'BMF' && t('convert.transcoderBmfLabelSuffix')}
               </MenuItem>
             ))}
           </TextField>
+          {transcoder === 'BMF' && (
+            <Typography variant="caption" color="warning.main" component="p" sx={{ mt: 0.5 }} data-testid="convert-bmf-notice">
+              {t('convert.transcoderBmfNotBundled')}
+            </Typography>
+          )}
+          {bmfUnavailable && (
+            <Typography variant="caption" color="error" component="p" sx={{ mt: 0.5 }} data-testid="convert-bmf-missing">
+              {t('convert.transcoderBmfNotFound', { missing: bmfStatus?.missing.join(', ') })}
+            </Typography>
+          )}
         </Box>
       </PageSection>
 
@@ -888,7 +924,7 @@ export default function Convert() {
               data-testid="convert-start"
               startIcon={<FontAwesomeIcon icon={faPlay} />}
               onClick={handleStartConversion}
-              disabled={!inputFile || !outputFile || isConverting}
+              disabled={!inputFile || !outputFile || isConverting || bmfUnavailable}
             >
               {isConverting ? t('convert.converting') : t('convert.startConversion')}
             </Button>
