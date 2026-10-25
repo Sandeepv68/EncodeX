@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   COPILOT_CHATS_STORAGE_KEY,
   MAX_SAVED_COPILOT_CHATS,
@@ -70,6 +70,18 @@ describe('copilotChats storage', () => {
       saveCopilotChat(chat(`c${i}`, i));
     }
     expect(readSavedCopilotChats()).toHaveLength(MAX_SAVED_COPILOT_CHATS);
+  });
+
+  it('logs and rethrows when the storage write fails', () => {
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota exceeded');
+    });
+    try {
+      expectAppLog('warn', 'renderer/stores/copilotChats');
+      expect(() => saveCopilotChat(chat('a', 1))).toThrow('quota exceeded');
+    } finally {
+      setItemSpy.mockRestore();
+    }
   });
 });
 

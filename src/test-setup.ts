@@ -147,6 +147,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     selectFile: vi.fn().mockResolvedValue(null),
     selectFiles: vi.fn().mockResolvedValue([]),
     selectFolderFiles: vi.fn().mockResolvedValue([]),
+    getBmfStatus: vi.fn().mockResolvedValue({ available: true, missing: [] }),
     copilotPlan: vi.fn().mockResolvedValue({
       goal: '',
       actions: [],

@@ -91,6 +91,7 @@ describe('Convert', () => {
     useErrorStore.setState({ currentError: null, errorHistory: [] });
     useToastStore.setState({ toasts: [] });
     useDismissedAlertsStore.setState({ dismissed: [] });
+    vi.mocked(window.electronAPI.getBmfStatus).mockResolvedValue({ available: true, missing: [] });
   });
 
   it('renders the title, fields, and start button', () => {
@@ -557,5 +558,48 @@ describe('Convert', () => {
     fireEvent.click(screen.getByTestId('filters-add-preset'));
     expect(useConversionStore.getState().videoFilters).toEqual(['unsharp=5:5:0.5:5:5:0']);
     expect(screen.getByTestId('filters-preview')).toHaveTextContent('-vf unsharp=5:5:0.5:5:5:0');
+  });
+
+  it('checks BMF on PATH when it is selected and blocks Start when the tools are missing', async () => {
+    const getBmfStatusMock = vi.mocked(window.electronAPI.getBmfStatus);
+    getBmfStatusMock.mockResolvedValue({ available: false, missing: ['bmf_ffmpeg', 'bmf_ffprobe'] });
+    renderPage();
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.transcoderCore' }));
+    fireEvent.click(screen.getByRole('option', { name: /BMF/ }));
+
+    expect(await screen.findByTestId('convert-bmf-missing')).toHaveTextContent('convert.transcoderBmfNotFound');
+    expect(getBmfStatusMock).toHaveBeenCalled();
+    expect(useConversionStore.getState().transcoder).toBe('BMF');
+  });
+
+  it('keeps BMF conversion available when the PATH check rejects', async () => {
+    vi.mocked(window.electronAPI.getBmfStatus).mockRejectedValue(new Error('ipc down'));
+    renderPage();
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.transcoderCore' }));
+    fireEvent.click(screen.getByRole('option', { name: /BMF/ }));
+
+    await waitFor(() => expect(window.electronAPI.getBmfStatus).toHaveBeenCalled());
+    expect(screen.getByTestId('convert-bmf-notice')).toBeInTheDocument();
+    expect(screen.queryByTestId('convert-bmf-missing')).toBeNull();
+  });
+
+  it('stores codec, bitrate, scale and mirror changes', async () => {
+    renderPage();
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.videoCodec' }));
+    fireEvent.click(screen.getByRole('option', { name: 'H.265/HEVC (libx265)' }));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.audioCodec' }));
+    fireEvent.click(screen.getByRole('option', { name: 'MP3 (LAME)' }));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.videoBitrate' }));
+    fireEvent.click(screen.getByRole('option', { name: '4000k' }));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.scale' }));
+    fireEvent.click(screen.getByRole('option', { name: '1280x720' }));
+    fireEvent.click(screen.getByTestId('convert-flip-v').querySelector('input')!);
+
+    const state = useConversionStore.getState();
+    expect(state.videoCodec).toBe('libx265');
+    expect(state.audioCodec).toBe('libmp3lame');
+    expect(state.videoBitrate).toBe('4000k');
+    expect(state.scale).toBe('1280x720');
+    expect(state.flipV).toBe(true);
   });
 });

@@ -66,6 +66,7 @@ describe('BatchQueue', () => {
     useToastStore.setState({ toasts: [] });
     useSettingsStore.setState({ queueConcurrency: 1, hardwareAcceleration: true });
     useDismissedAlertsStore.setState({ dismissed: [] });
+    vi.mocked(window.electronAPI.getBmfStatus).mockResolvedValue({ available: true, missing: [] });
   });
 
   it('loads the queued jobs on mount', async () => {
@@ -153,6 +154,44 @@ describe('BatchQueue', () => {
       ),
     );
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'batchQueue.enqueued')).toBe(true);
+  });
+
+  it('blocks enqueueing BMF jobs when the PATH check fails at add time', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/video.mp4']);
+    const getBmfStatusMock = vi.mocked(window.electronAPI.getBmfStatus);
+    getBmfStatusMock.mockResolvedValueOnce({ available: true, missing: [] });
+    getBmfStatusMock.mockResolvedValueOnce({ available: false, missing: ['bmf_ffmpeg'] });
+    renderPage();
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.click(screen.getByText('BMF'));
+    await waitFor(() => expect(getBmfStatusMock).toHaveBeenCalledTimes(1));
+    openAddFiles();
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+
+    await waitFor(() =>
+      expect(
+        useToastStore.getState().toasts.some((t) => t.type === 'error' && t.message === 'batchQueue.bmfNotFound'),
+      ).toBe(true),
+    );
+    expect(queueAddMock).not.toHaveBeenCalled();
+  });
+
+  it('enqueues BMF jobs when the enqueue-time status check itself fails', async () => {
+    queueListMock.mockResolvedValue([]);
+    selectFilesMock.mockResolvedValue(['/in/video.mp4']);
+    queueAddMock.mockResolvedValue('job-3');
+    const getBmfStatusMock = vi.mocked(window.electronAPI.getBmfStatus);
+    getBmfStatusMock.mockResolvedValueOnce({ available: true, missing: [] });
+    getBmfStatusMock.mockRejectedValueOnce(new Error('ipc down'));
+    renderPage();
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.click(screen.getByText('BMF'));
+    await waitFor(() => expect(getBmfStatusMock).toHaveBeenCalledTimes(1));
+    openAddFiles();
+    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
+
+    await waitFor(() => expect(queueAddMock).toHaveBeenCalledOnce());
   });
 
   it('includes rotation and mirror selections in added job options', async () => {
