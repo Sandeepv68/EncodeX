@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import SavedChatsDrawer from '../SavedChatsDrawer';
+import SavedChatsDrawer, { formatTimeAgo } from '../SavedChatsDrawer';
 import type { SavedCopilotChat } from '../../../stores/copilotChats';
 
 function chat(overrides: Partial<SavedCopilotChat> = {}): SavedCopilotChat {
@@ -21,6 +21,22 @@ function renderDrawer(chats: SavedCopilotChat[]) {
   return { result, onClose, onOpen, onDelete };
 }
 
+describe('formatTimeAgo', () => {
+  const now = 1_700_000_000_000;
+  it.each([
+    [now - 5_000, /5 sec\. ago/],
+    [now - 5 * 60_000, /5 min\. ago/],
+    [now - 3 * 3_600_000, /3 hr\. ago/],
+    [now - 2 * 86_400_000, /2 days ago/],
+  ])('formats elapsed time %#', (timestamp, expected) => {
+    expect(formatTimeAgo(timestamp, now, 'en-US')).toMatch(expected);
+  });
+
+  it('treats future timestamps as just now', () => {
+    expect(formatTimeAgo(now + 10_000, now, 'en-US')).toMatch(/0 sec\. ago/);
+  });
+});
+
 describe('SavedChatsDrawer', () => {
   it('shows the empty state when there are no saved chats', () => {
     renderDrawer([]);
@@ -37,18 +53,43 @@ describe('SavedChatsDrawer', () => {
     expect(screen.getByText('Bug triage')).toBeInTheDocument();
     expect(screen.getByText('copilot.savedChatUntitled')).toBeInTheDocument();
     expect(screen.getAllByTestId('saved-chat-item')).toHaveLength(2);
-    expect(screen.getAllByText('copilot.savedChatMeta')).toHaveLength(2);
+    expect(screen.getAllByTestId('saved-chat-count').map((el) => el.textContent)).toEqual(['1', '0']);
   });
 
-  it('fires onOpen with the selected chat', () => {
+  it('fires onOpen when the entry itself is clicked', () => {
     const first = chat({ id: 'a', title: 'Bug triage' });
     const second = chat({ id: 'b', title: 'Release notes' });
     const { onOpen } = renderDrawer([first, second]);
 
     const items = screen.getAllByTestId('saved-chat-item');
-    fireEvent.click(within(items[1]).getByRole('button', { name: 'copilot.savedChatOpen' }));
+    fireEvent.click(within(items[1]).getByTestId('saved-chat-open'));
 
     expect(onOpen).toHaveBeenCalledWith(second);
+  });
+
+  it('has no separate open button; only delete sits outside the entry', () => {
+    renderDrawer([chat({ id: 'a' })]);
+    expect(screen.queryByRole('button', { name: 'copilot.savedChatOpen' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'copilot.savedChatDelete' })).toBeInTheDocument();
+  });
+
+  it('shows a provider icon on every chat item, using the provider recorded for that chat', () => {
+    renderDrawer([
+      chat({
+        id: 'a',
+        messages: [{ id: 'm1', role: 'assistant', plan: null, providerId: 'openai', timestamp: 1 }],
+      }),
+      chat({ id: 'b' }),
+    ]);
+    const items = screen.getAllByTestId('saved-chat-item');
+    expect(within(items[0]).getByTestId('saved-chat-provider')).toBeInTheDocument();
+    expect(within(items[1]).getByTestId('saved-chat-provider')).toBeInTheDocument();
+  });
+
+  it('renders the delete control as a red cross', () => {
+    renderDrawer([chat({ id: 'a' })]);
+    const del = screen.getByRole('button', { name: 'copilot.savedChatDelete' });
+    expect(del).toHaveClass('MuiIconButton-colorError');
   });
 
   it('fires onDelete with the selected chat id', () => {

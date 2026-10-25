@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { aiProviderLogo } from '../utils/ai-provider-icons';
 import type { AIProviderId } from '../../shared/ai/types';
 import { ConnectionDot, ConnectionStatus, RightActions } from '../styles/copilot/ChatComposer.styles';
+import { SHADOWS } from '../colors';
 
 /** Props for {@link AiConnectionStatus}. */
 interface AiConnectionStatusProps {
@@ -22,6 +23,8 @@ interface AiConnectionStatusProps {
   testId?: string;
   /** Show the caption without waiting for hover. */
   expanded?: boolean;
+  /** Adds a soft drop shadow to the pill. */
+  elevated?: boolean;
 }
 
 /**
@@ -29,13 +32,16 @@ interface AiConnectionStatusProps {
  * @param {AiConnectionStatusProps} props - Component props.
  * @returns {JSX.Element} The status pill.
  */
-export default function AiConnectionStatus({ connected, providerId, model, testId, expanded = false }: AiConnectionStatusProps) {
+export default function AiConnectionStatus({ connected, providerId, model, testId, expanded = false, elevated = false }: AiConnectionStatusProps) {
   const { t } = useTranslation();
   const theme = useTheme();
   const logo = providerId ? aiProviderLogo(providerId, theme.palette.mode) : null;
 
   return (
-    <RightActions data-testid={testId}>
+    <RightActions
+      data-testid={testId}
+      sx={elevated ? { boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT } : undefined}
+    >
       <ConnectionStatus $connected={connected}>
         <Box
           sx={{

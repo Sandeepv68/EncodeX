@@ -8,6 +8,7 @@
  */
 
 import { Logger } from '../../shared/logger';
+import type { AIProviderId } from '../../shared/ai/types';
 import type { ConversationMessage } from '../components/copilot/Conversation';
 
 const log = new Logger('renderer/stores/copilotChats');
@@ -49,6 +50,7 @@ function isMessage(value: unknown): value is ConversationMessage {
     (m.role === 'user' || m.role === 'assistant') &&
     typeof m.timestamp === 'number' &&
     (m.content === undefined || typeof m.content === 'string') &&
+    (m.providerId === undefined || typeof m.providerId === 'string') &&
     (m.attachments === undefined || (Array.isArray(m.attachments) && m.attachments.every((a) => typeof a === 'string')))
   );
 }
@@ -124,6 +126,20 @@ export function deleteCopilotChat(id: string): SavedCopilotChat[] {
   const next = readSavedCopilotChats().filter((c) => c.id !== id);
   writeSavedCopilotChats(next);
   return next;
+}
+
+/**
+ * Finds the AI provider used in a transcript, taken from the most recent
+ * assistant message that recorded one.
+ * @param {ConversationMessage[]} messages - The transcript.
+ * @returns {AIProviderId | undefined} The provider id, or undefined when none was recorded.
+ */
+export function deriveCopilotChatProvider(messages: ConversationMessage[]): AIProviderId | undefined {
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const providerId = messages[i]?.providerId;
+    if (messages[i]?.role === 'assistant' && providerId) return providerId;
+  }
+  return undefined;
 }
 
 /**

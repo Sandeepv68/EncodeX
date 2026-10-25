@@ -277,6 +277,7 @@ export default function Copilot() {
       id: assistantMessageId,
       role: 'assistant',
       plan: null,
+      ...(aiConnection ? { providerId: aiConnection.providerId } : {}),
       timestamp: Date.now(),
     };
 
@@ -462,7 +463,13 @@ export default function Copilot() {
               </Alert>
             </Box>
           )}
-          <Conversation messages={messages} isThinking={isThinking} onAddToQueue={addToQueue} busy={busy} />
+          <Conversation
+            messages={messages}
+            isThinking={isThinking}
+            onAddToQueue={addToQueue}
+            busy={busy}
+            providerId={aiConnection?.providerId ?? null}
+          />
           <ChatComposer
             input={input}
             onInputChange={setInput}

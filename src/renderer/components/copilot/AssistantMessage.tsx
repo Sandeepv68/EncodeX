@@ -4,12 +4,14 @@
 
 import { Alert, Box, Button, Chip, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListCheck, faRobot, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
+import { faListCheck, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import type { CopilotAction, CopilotPlan, CopilotResult } from '../../../shared/copilot';
 import type { AgentSkip } from '../../../shared/ai/agent';
+import type { AIProviderId } from '../../../shared/ai/types';
 import { useTranslation } from 'react-i18next';
 import { AssistantBody } from '../../styles/copilot/AssistantMessage.styles';
 import { SHADOWS } from '../../colors';
+import ProviderIcon from './ProviderIcon';
 
 export interface AssistantMessageProps {
   plan: CopilotPlan | null;
@@ -17,9 +19,11 @@ export interface AssistantMessageProps {
   busy?: boolean;
   error?: string | null;
   notice?: string | null;
+  /** The currently connected provider; its logo marks each action. */
+  providerId?: AIProviderId | null;
 }
 
-export default function AssistantMessage({ plan, onAddToQueue, busy = false, error = null, notice = null }: AssistantMessageProps) {
+export default function AssistantMessage({ plan, onAddToQueue, busy = false, error = null, notice = null, providerId = null }: AssistantMessageProps) {
   const { t } = useTranslation();
 
   if (error) {
@@ -88,8 +92,8 @@ export default function AssistantMessage({ plan, onAddToQueue, busy = false, err
         <List dense disablePadding>
           {plan.actions.map((action: CopilotAction) => (
             <ListItem key={action.id} divider sx={{ px: 0 }} data-testid={`copilot-action-${action.id}`}>
-              <ListItemIcon sx={{ minWidth: 32 }}>
-                <FontAwesomeIcon icon={faRobot} />
+              <ListItemIcon sx={{ minWidth: 44 }}>
+                <ProviderIcon providerId={providerId} size={32} />
               </ListItemIcon>
               <ListItemText
                 primary={action.input}

@@ -14,6 +14,7 @@ import AiConnectionStatus from '../AiConnectionStatus';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
 import type { AIProviderId } from '../../../shared/ai/types';
+import { SHADOWS } from '../../colors';
 import { ActionsRow, AdvancedPanel, AttachmentRow, ComposerBar, LeftActions, RightActions } from '../../styles/copilot/ChatComposer.styles';
 
 /** The selectable operations, in menu order (auto first, then queue, then read-only). */
@@ -90,16 +91,17 @@ export default function ChatComposer({
   const { t } = useTranslation();
   const theme = useTheme();
   const [advancedAnchor, setAdvancedAnchor] = useState<HTMLElement | null>(null);
+  const chipShadow = theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT;
 
   return (
     <ComposerBar>
-      {(inputs.length > 0 || inputsLoading) && (
+          {(inputs.length > 0 || inputsLoading) && (
         <AttachmentRow>
           {inputsLoading && inputs.length === 0 && (
             <Chip
               label={t('copilot.loadingFiles')}
               size="small"
-              sx={{ maxWidth: '100%' }}
+              sx={{ maxWidth: '100%', boxShadow: chipShadow }}
               deleteIcon={
                 <Box sx={{ display: 'flex', alignItems: 'center', width: theme.typography.pxToRem(40) }}>
                   <LinearProgress sx={{ width: '100%' }} />
@@ -113,6 +115,7 @@ export default function ChatComposer({
               key={path}
               label={path.split(/[/\\]/).pop() || path}
               size="small"
+              sx={{ boxShadow: chipShadow }}
               onDelete={onRemoveInput ? () => onRemoveInput(path) : undefined}
             />
           ))}
@@ -183,13 +186,14 @@ export default function ChatComposer({
             </Button>
           )}
         </LeftActions>
-        <RightActions>
+        <RightActions sx={{ backgroundColor: 'transparent', border: 0, paddingInline: 0, paddingBlock: 0, '&:hover': { paddingInline: 0 } }}>
           {connection && (
             <AiConnectionStatus
               connected={connection.connected}
               providerId={connection.providerId}
               model={connection.model}
               testId="copilot-ai-status"
+              elevated
             />
           )}
           <Tooltip title={t('copilot.ai.locationNote')} placement="top" arrow>
