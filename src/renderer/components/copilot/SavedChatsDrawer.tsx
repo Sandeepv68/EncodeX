@@ -64,7 +64,17 @@ export default function SavedChatsDrawer({ open, chats, onClose, onOpen, onDelet
           bgcolor: 'background.paper',
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, p: 2, borderBottom: 1, borderColor: 'divider' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 1,
+            p: 2,
+            borderBottom: 1,
+            borderColor: 'divider',
+          }}
+        >
           <Typography variant="subtitle1" component="h2" sx={{ fontWeight: 700 }}>
             {t('copilot.savedChatsTitle')}
           </Typography>

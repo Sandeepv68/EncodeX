@@ -411,97 +411,97 @@ export default function Copilot() {
             },
           })}
         >
-        <Dialog
-          open={pendingChat !== null}
-          onClose={() => setPendingChat(null)}
-          aria-labelledby="open-chat-confirm-title"
-          data-testid="open-chat-confirm"
-        >
-          <DialogTitle id="open-chat-confirm-title">{t('copilot.openChatConfirmTitle')}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>{t('copilot.openChatConfirmMessage')}</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setPendingChat(null)} data-testid="open-chat-cancel">
-              {t('copilot.openChatCancel')}
-            </Button>
-            <Button onClick={() => resolvePendingChat('discard')} color="error" data-testid="open-chat-discard">
-              {t('copilot.openChatDiscard')}
-            </Button>
-            <Button variant="contained" onClick={() => resolvePendingChat('save')} data-testid="open-chat-save">
-              {t('copilot.openChatSave')}
-            </Button>
-          </DialogActions>
-        </Dialog>
-        {globalError && (
-          <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
-            <Alert
-              severity="error"
-              data-testid="copilot-error"
-              sx={{
-                boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
-                '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-              }}
-            >
-              {globalError}
-            </Alert>
-          </Box>
-        )}
-        {notice && (
-          <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
-            <Alert
-              severity="info"
-              data-testid="copilot-notice"
-              sx={{
-                boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
-                '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-              }}
-            >
-              {notice}
-            </Alert>
-          </Box>
-        )}
-        <Conversation messages={messages} isThinking={isThinking} onAddToQueue={addToQueue} busy={busy} />
-        <ChatComposer
-          input={input}
-          onInputChange={setInput}
-          onSubmit={buildPlan}
-          onChooseFiles={chooseFiles}
-          onChooseFolder={chooseFolder}
-          onOpenSettings={openSettings}
-          inputs={inputs}
-          operation={operation}
-          onOperationChange={setOperation}
-          query={query}
-          onQueryChange={setQuery}
-          targetLanguage={targetLanguage}
-          onTargetLanguageChange={setTargetLanguage}
-          onRemoveInput={removeInput}
-          disabled={busy || inputsLoading}
-          busy={busy || inputsLoading}
-          hasInputs={inputs.length > 0}
-          connection={{
-            connected: aiConnection !== null,
-            ...(aiConnection ? { providerId: aiConnection.providerId, model: aiConnection.model } : {}),
-          }}
-          showReset={hasActiveChat}
-          showSave={hasActiveChat}
-          onSaveChat={handleSaveChat}
-          onOpenSavedChats={openSavedChats}
-          onResetConversation={() => {
-            setMessages([]);
-            setSavedChatId(null);
-            setInput('');
-            setInputs([]);
-            setOperation('auto');
-            setQuery('');
-            setTargetLanguage('');
-            setGlobalError(null);
-            setNotice(null);
-            setIsThinking(false);
-          }}
-          inputsLoading={inputsLoading}
-        />
+          <Dialog
+            open={pendingChat !== null}
+            onClose={() => setPendingChat(null)}
+            aria-labelledby="open-chat-confirm-title"
+            data-testid="open-chat-confirm"
+          >
+            <DialogTitle id="open-chat-confirm-title">{t('copilot.openChatConfirmTitle')}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>{t('copilot.openChatConfirmMessage')}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setPendingChat(null)} data-testid="open-chat-cancel">
+                {t('copilot.openChatCancel')}
+              </Button>
+              <Button onClick={() => resolvePendingChat('discard')} color="error" data-testid="open-chat-discard">
+                {t('copilot.openChatDiscard')}
+              </Button>
+              <Button variant="contained" onClick={() => resolvePendingChat('save')} data-testid="open-chat-save">
+                {t('copilot.openChatSave')}
+              </Button>
+            </DialogActions>
+          </Dialog>
+          {globalError && (
+            <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
+              <Alert
+                severity="error"
+                data-testid="copilot-error"
+                sx={{
+                  boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
+                  '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
+                }}
+              >
+                {globalError}
+              </Alert>
+            </Box>
+          )}
+          {notice && (
+            <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
+              <Alert
+                severity="info"
+                data-testid="copilot-notice"
+                sx={{
+                  boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
+                  '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
+                }}
+              >
+                {notice}
+              </Alert>
+            </Box>
+          )}
+          <Conversation messages={messages} isThinking={isThinking} onAddToQueue={addToQueue} busy={busy} />
+          <ChatComposer
+            input={input}
+            onInputChange={setInput}
+            onSubmit={buildPlan}
+            onChooseFiles={chooseFiles}
+            onChooseFolder={chooseFolder}
+            onOpenSettings={openSettings}
+            inputs={inputs}
+            operation={operation}
+            onOperationChange={setOperation}
+            query={query}
+            onQueryChange={setQuery}
+            targetLanguage={targetLanguage}
+            onTargetLanguageChange={setTargetLanguage}
+            onRemoveInput={removeInput}
+            disabled={busy || inputsLoading}
+            busy={busy || inputsLoading}
+            hasInputs={inputs.length > 0}
+            connection={{
+              connected: aiConnection !== null,
+              ...(aiConnection ? { providerId: aiConnection.providerId, model: aiConnection.model } : {}),
+            }}
+            showReset={hasActiveChat}
+            showSave={hasActiveChat}
+            onSaveChat={handleSaveChat}
+            onOpenSavedChats={openSavedChats}
+            onResetConversation={() => {
+              setMessages([]);
+              setSavedChatId(null);
+              setInput('');
+              setInputs([]);
+              setOperation('auto');
+              setQuery('');
+              setTargetLanguage('');
+              setGlobalError(null);
+              setNotice(null);
+              setIsThinking(false);
+            }}
+            inputsLoading={inputsLoading}
+          />
         </Box>
       </Box>
     </PageContainer>
