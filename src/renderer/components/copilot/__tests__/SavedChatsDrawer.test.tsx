@@ -17,9 +17,7 @@ function renderDrawer(chats: SavedCopilotChat[]) {
   const onClose = vi.fn();
   const onOpen = vi.fn();
   const onDelete = vi.fn();
-  const result = render(
-    <SavedChatsDrawer open chats={chats} onClose={onClose} onOpen={onOpen} onDelete={onDelete} />,
-  );
+  const result = render(<SavedChatsDrawer open chats={chats} onClose={onClose} onOpen={onOpen} onDelete={onDelete} />);
   return { result, onClose, onOpen, onDelete };
 }
 

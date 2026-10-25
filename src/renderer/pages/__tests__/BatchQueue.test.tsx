@@ -170,9 +170,7 @@ describe('BatchQueue', () => {
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
 
     await waitFor(() =>
-      expect(
-        useToastStore.getState().toasts.some((t) => t.type === 'error' && t.message === 'batchQueue.bmfNotFound'),
-      ).toBe(true),
+      expect(useToastStore.getState().toasts.some((t) => t.type === 'error' && t.message === 'batchQueue.bmfNotFound')).toBe(true),
     );
     expect(queueAddMock).not.toHaveBeenCalled();
   });
