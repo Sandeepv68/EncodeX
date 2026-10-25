@@ -23,7 +23,14 @@ export interface AssistantMessageProps {
   providerId?: AIProviderId | null;
 }
 
-export default function AssistantMessage({ plan, onAddToQueue, busy = false, error = null, notice = null, providerId = null }: AssistantMessageProps) {
+export default function AssistantMessage({
+  plan,
+  onAddToQueue,
+  busy = false,
+  error = null,
+  notice = null,
+  providerId = null,
+}: AssistantMessageProps) {
   const { t } = useTranslation();
 
   if (error) {

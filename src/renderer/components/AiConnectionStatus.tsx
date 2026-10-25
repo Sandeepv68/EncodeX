@@ -32,7 +32,14 @@ interface AiConnectionStatusProps {
  * @param {AiConnectionStatusProps} props - Component props.
  * @returns {JSX.Element} The status pill.
  */
-export default function AiConnectionStatus({ connected, providerId, model, testId, expanded = false, elevated = false }: AiConnectionStatusProps) {
+export default function AiConnectionStatus({
+  connected,
+  providerId,
+  model,
+  testId,
+  expanded = false,
+  elevated = false,
+}: AiConnectionStatusProps) {
   const { t } = useTranslation();
   const theme = useTheme();
   const logo = providerId ? aiProviderLogo(providerId, theme.palette.mode) : null;

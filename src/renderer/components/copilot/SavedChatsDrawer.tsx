@@ -181,7 +181,12 @@ export default function SavedChatsDrawer({ open, chats, onClose, onOpen, onDelet
                         </Typography>
                       </Box>
                     </Box>
-                    <Tooltip title={providerId ? t(`settings.ai.providers.${providerId}`) : ''} disableHoverListener={!providerId} placement="left" arrow>
+                    <Tooltip
+                      title={providerId ? t(`settings.ai.providers.${providerId}`) : ''}
+                      disableHoverListener={!providerId}
+                      placement="left"
+                      arrow
+                    >
                       <Box
                         component="span"
                         data-testid="saved-chat-provider"

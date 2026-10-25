@@ -95,7 +95,7 @@ export default function ChatComposer({
 
   return (
     <ComposerBar>
-          {(inputs.length > 0 || inputsLoading) && (
+      {(inputs.length > 0 || inputsLoading) && (
         <AttachmentRow>
           {inputsLoading && inputs.length === 0 && (
             <Chip
@@ -186,7 +186,9 @@ export default function ChatComposer({
             </Button>
           )}
         </LeftActions>
-        <RightActions sx={{ backgroundColor: 'transparent', border: 0, paddingInline: 0, paddingBlock: 0, '&:hover': { paddingInline: 0 } }}>
+        <RightActions
+          sx={{ backgroundColor: 'transparent', border: 0, paddingInline: 0, paddingBlock: 0, '&:hover': { paddingInline: 0 } }}
+        >
           {connection && (
             <AiConnectionStatus
               connected={connection.connected}
