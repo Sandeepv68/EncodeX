@@ -97,12 +97,13 @@ describe.runIf(IS_E2E)('Settings page - AI provider editor', () => {
   });
 
   it('persists a switch to the offline rules provider and never renders a stored key', async () => {
-    // Reload so the renderer's session cache starts empty: the editor then reads
-    // the stored view set below instead of a view cached by an earlier test.
+    // Start from a stored remote selection so selecting `rules` is a real change.
+    // Seed it through the *current* page before reloading: the renderer hydrates
+    // its session cache from this file at startup, so seeding after the reload
+    // races that hydration and the editor can restore a stale provider.
+    await mockApi.setAiSettingsView(session.page, { providerId: 'openai', hasKey: true, keyHint: '••••••••' });
     session = await reloadSession(session);
     const { page } = session;
-    // Start from a stored remote selection so selecting `rules` is a real change.
-    await mockApi.setAiSettingsView(page, { providerId: 'openai', hasKey: true, keyHint: '••••••••' });
     await gotoSettings(page);
 
     await openAiEditor(page);

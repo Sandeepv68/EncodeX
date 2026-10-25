@@ -38,11 +38,13 @@ export function formatTimeAgo(timestamp: number, now: number, locale: string): s
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'short' });
   const elapsedSeconds = Math.max(0, Math.floor((now - timestamp) / 1000));
   for (const [unit, size] of TIME_UNITS) {
-    if (elapsedSeconds >= size || unit === 'second') {
+    if (elapsedSeconds >= size) {
       return rtf.format(-Math.floor(elapsedSeconds / size), unit);
     }
   }
-  return rtf.format(0, 'second');
+  // Only a sub-second (or future) elapsed time reaches this point. Keep the
+  // value negative so `numeric: 'always'` renders "0 sec. ago" not "in 0 sec.".
+  return rtf.format(-elapsedSeconds, 'second');
 }
 
 interface SavedChatsDrawerProps {
