@@ -52,6 +52,7 @@ const API_TABLE = {
   getImageFileInfo: { kind: 'invoke', channel: IPC.GET_IMAGE_FILE_INFO, params: ['filePath'] },
   getVideoPreview: { kind: 'invoke', channel: IPC.GET_VIDEO_PREVIEW, params: ['filePath'] },
   getCapabilities: { kind: 'invoke', channel: IPC.GET_CAPABILITIES, params: [] },
+  getBmfStatus: { kind: 'invoke', channel: IPC.GET_BMF_STATUS, params: [] },
   convertFile: { kind: 'invoke', channel: IPC.CONVERT_FILE, params: ['input', 'output', 'options', 'transcoderType'] },
   pauseConversion: { kind: 'invoke', channel: IPC.PAUSE_CONVERSION, params: [] },
   resumeConversion: { kind: 'invoke', channel: IPC.RESUME_CONVERSION, params: [] },
