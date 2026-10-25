@@ -35,6 +35,7 @@ import { formatError } from '../../shared/errors';
 import Conversation, { type ConversationMessage } from '../components/copilot/Conversation';
 import ChatComposer from '../components/copilot/ChatComposer';
 import { activeConnectionOf, useAiConnectionStore } from '../stores/aiConnectionStore';
+import { visuallyHidden } from '../utils/a11y';
 
 /** How long the plan request may take before the page shows a failure. */
 const PLAN_TIMEOUT_MS = 60_000;
@@ -277,6 +278,7 @@ export default function Copilot() {
       id: assistantMessageId,
       role: 'assistant',
       plan: null,
+      ...(aiConnection ? { providerId: aiConnection.providerId } : {}),
       timestamp: Date.now(),
     };
 
@@ -412,6 +414,7 @@ export default function Copilot() {
             },
           })}
         >
+          <h1 style={visuallyHidden}>{t('nav.copilot')}</h1>
           <Dialog
             open={pendingChat !== null}
             onClose={() => setPendingChat(null)}
@@ -462,7 +465,13 @@ export default function Copilot() {
               </Alert>
             </Box>
           )}
-          <Conversation messages={messages} isThinking={isThinking} onAddToQueue={addToQueue} busy={busy} />
+          <Conversation
+            messages={messages}
+            isThinking={isThinking}
+            onAddToQueue={addToQueue}
+            busy={busy}
+            providerId={aiConnection?.providerId ?? null}
+          />
           <ChatComposer
             input={input}
             onInputChange={setInput}

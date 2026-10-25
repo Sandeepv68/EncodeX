@@ -15,6 +15,12 @@ export const ComposerBar = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   [theme.breakpoints.up('sm')]: { paddingInline: theme.spacing(2) },
   [theme.breakpoints.up('md')]: { paddingInline: theme.spacing(3) },
+  // The primary accent sits below the WCAG AA 4.5:1 minimum on the default background
+  // (about 4.4:1 in light mode, 4.1:1 in dark). Use the darker shade on light surfaces
+  // and the lighter shade on dark surfaces so the text buttons clear the threshold.
+  '& .MuiButton-text': {
+    color: theme.palette.mode === 'light' ? theme.palette.primary.dark : theme.palette.primary.light,
+  },
 }));
 
 /** Wraps the removable attachment chips above the input. */

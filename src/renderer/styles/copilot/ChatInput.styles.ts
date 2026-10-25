@@ -68,7 +68,7 @@ export const EditorPlaceholder = styled(Box)(({ theme }) => ({
   lineHeight: theme.typography.pxToRem(32),
   paddingInline: theme.typography.pxToRem(4),
   pointerEvents: 'none',
-  color: theme.palette.text.disabled,
+  color: theme.palette.text.secondary,
   fontSize: theme.typography.body1.fontSize,
   whiteSpace: 'nowrap',
   overflow: 'hidden',

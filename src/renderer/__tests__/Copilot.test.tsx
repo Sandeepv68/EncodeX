@@ -779,7 +779,7 @@ describe('Copilot page', () => {
     fireEvent.click(screen.getByTestId('copilot-saved-chats'));
     fireEvent.click(screen.getByRole('button', { name: 'copilot.savedChatsClose' }));
     fireEvent.click(screen.getByTestId('copilot-saved-chats'));
-    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+    fireEvent.click(await screen.findByTestId('saved-chat-open'));
     await waitFor(() => expect(screen.queryByTestId('open-chat-confirm')).toBeNull());
     expect(within(screen.getByTestId('copilot-conversation')).getByText('compress for web')).toBeInTheDocument();
   });
@@ -789,7 +789,7 @@ describe('Copilot page', () => {
     renderPage('Copilot');
 
     fireEvent.click(screen.getByTestId('copilot-saved-chats'));
-    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+    fireEvent.click(await screen.findByTestId('saved-chat-open'));
 
     const conversation = within(screen.getByTestId('copilot-conversation'));
     expect(await conversation.findByText('saved transcript')).toBeInTheDocument();
@@ -802,14 +802,14 @@ describe('Copilot page', () => {
     await startActivePlan();
 
     fireEvent.click(screen.getByTestId('copilot-saved-chats'));
-    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+    fireEvent.click(await screen.findByTestId('saved-chat-open'));
     const dialog = await screen.findByTestId('open-chat-confirm');
 
     fireEvent.keyDown(dialog, { key: 'Escape', code: 'Escape' });
     await waitFor(() => expect(screen.queryByTestId('open-chat-confirm')).toBeNull());
     expect(screen.getByTestId('copilot-plan-summary')).toBeInTheDocument();
 
-    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+    fireEvent.click(await screen.findByTestId('saved-chat-open'));
     fireEvent.click(await screen.findByTestId('open-chat-cancel'));
     await waitFor(() => expect(screen.queryByTestId('open-chat-confirm')).toBeNull());
     expect(screen.getByTestId('copilot-plan-summary')).toBeInTheDocument();
@@ -822,7 +822,7 @@ describe('Copilot page', () => {
     await startActivePlan();
 
     fireEvent.click(screen.getByTestId('copilot-saved-chats'));
-    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+    fireEvent.click(await screen.findByTestId('saved-chat-open'));
     fireEvent.click(await screen.findByTestId('open-chat-discard'));
 
     const conversation = within(screen.getByTestId('copilot-conversation'));
@@ -836,7 +836,7 @@ describe('Copilot page', () => {
     await startActivePlan();
 
     fireEvent.click(screen.getByTestId('copilot-saved-chats'));
-    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+    fireEvent.click(await screen.findByTestId('saved-chat-open'));
     fireEvent.click(await screen.findByTestId('open-chat-save'));
 
     const conversation = within(screen.getByTestId('copilot-conversation'));
@@ -855,7 +855,7 @@ describe('Copilot page', () => {
 
     try {
       fireEvent.click(screen.getByTestId('copilot-saved-chats'));
-      fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+      fireEvent.click(await screen.findByTestId('saved-chat-open'));
       expectAppLog('warn', 'renderer/stores/copilotChats');
       fireEvent.click(await screen.findByTestId('open-chat-save'));
 

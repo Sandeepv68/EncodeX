@@ -8,6 +8,7 @@ import { Box, Typography, useTheme } from '@mui/material';
 import { measureElement as measureElementDefault, observeElementRect, useVirtualizer } from '@tanstack/react-virtual';
 import { useTranslation } from 'react-i18next';
 import type { CopilotPlan } from '../../../shared/copilot';
+import type { AIProviderId } from '../../../shared/ai/types';
 import MessageBubble from './MessageBubble';
 import AssistantMessage from './AssistantMessage';
 import Welcome from './Welcome';
@@ -27,6 +28,8 @@ export interface ConversationMessage {
   plan?: CopilotPlan | null;
   error?: string | null;
   notice?: string | null;
+  /** The AI provider that produced this assistant message. */
+  providerId?: AIProviderId;
   timestamp: number;
 }
 
@@ -35,6 +38,8 @@ interface ConversationProps {
   isThinking?: boolean;
   onAddToQueue: (plan: CopilotPlan) => void;
   busy?: boolean;
+  /** The currently connected provider, shown as the action icon. */
+  providerId?: AIProviderId | null;
 }
 
 const FALLBACK_VIEWPORT_HEIGHT = 640;
@@ -47,7 +52,7 @@ const ASSISTANT_ROW_ESTIMATE = 280;
  * @param {ConversationProps} props - Component props.
  * @returns {JSX.Element} The transcript.
  */
-export default function Conversation({ messages, isThinking = false, onAddToQueue, busy = false }: ConversationProps) {
+export default function Conversation({ messages, isThinking = false, onAddToQueue, busy = false, providerId = null }: ConversationProps) {
   const { t } = useTranslation();
   const theme = useTheme();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -133,6 +138,7 @@ export default function Conversation({ messages, isThinking = false, onAddToQueu
             if (message.plan) onAddToQueue(message.plan);
           }}
           busy={busy}
+          providerId={providerId}
           error={message.error}
           notice={message.notice}
         />

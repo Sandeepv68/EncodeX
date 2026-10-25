@@ -6,7 +6,7 @@
  *
  * jsdom cannot run `color-contrast` (every color resolves to its initial value
  * before paint) and has no viewport, so this is the tier where paint facts and
- * responsive breakpoints finally run. The matrix is 12 routes x light/dark x
+ * responsive breakpoints finally run. The matrix is 13 routes x light/dark x
  * 320/768/1440 = 72 cells.
  *
  * Two transient artifacts are handled before each axe run:
@@ -33,6 +33,7 @@ import { THEME_STORAGE_KEY } from '../../src/shared/app-constants';
 
 const ROUTES = [
   { path: '/', testId: 'nav-item-dashboard' },
+  { path: '/copilot', testId: 'nav-item-copilot' },
   { path: '/convert', testId: 'nav-item-convert' },
   { path: '/media-info', testId: 'nav-item-media-info' },
   { path: '/image-compress', testId: 'nav-item-image-compress' },
@@ -88,7 +89,7 @@ function assertAxeClean(result: AxePageResult, label: string, incompleteByRule: 
   }
 }
 
-describe('5.3 full-matrix browser axe gate (12 routes x light/dark x 320/768/1440)', () => {
+describe('5.3 full-matrix browser axe gate (13 routes x light/dark x 320/768/1440)', () => {
   let session: AppSession;
   let cells: string[] = [];
 
