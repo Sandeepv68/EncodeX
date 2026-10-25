@@ -346,29 +346,43 @@ function wirePage(page: Page): void {
  * @param {ElectronApplication} app - The running app.
  */
 async function installMainRecorder(app: ElectronApplication): Promise<void> {
-  try {
-    await app.evaluate(() => {
-      const scope = globalThis as unknown as Record<string, unknown>;
-      if (scope.__encodexE2eTripwire) return;
-      scope.__encodexE2eTripwire = true;
-      const captured: string[] = [];
-      scope.__encodexE2eMainErrors = captured;
+  // Installing crosses into the Electron main process, and Playwright can
+  // transiently drop that round-trip ("Resulting promise was garbage
+  // collected") when several apps are launching at once - which is exactly what
+  // the drift guard does beside the hostile sessions. Retry the best-effort
+  // install before treating it as a real fault, otherwise a harness hiccup is
+  // reported as a renderer crash.
+  const maxAttempts = 5;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      await app.evaluate(() => {
+        const scope = globalThis as unknown as Record<string, unknown>;
+        if (scope.__encodexE2eTripwire) return;
+        scope.__encodexE2eTripwire = true;
+        const captured: string[] = [];
+        scope.__encodexE2eMainErrors = captured;
 
-      const describe = (value: unknown): string => {
-        try {
-          if (value instanceof Error) return value.stack ? `${value.name}: ${value.message}\n${value.stack}` : String(value);
-          if (typeof value === 'string') return value;
-          return JSON.stringify(value) ?? String(value);
-        } catch {
-          return String(value);
-        }
-      };
+        const describe = (value: unknown): string => {
+          try {
+            if (value instanceof Error) return value.stack ? `${value.name}: ${value.message}\n${value.stack}` : String(value);
+            if (typeof value === 'string') return value;
+            return JSON.stringify(value) ?? String(value);
+          } catch {
+            return String(value);
+          }
+        };
 
-      process.on('uncaughtException', (err) => captured.push(describe(err)));
-      process.on('unhandledRejection', (reason) => captured.push(`unhandledRejection: ${describe(reason)}`));
-    });
-  } catch (err) {
-    record('tripwireFailure', `could not install the main-process recorder: ${String(err)}`);
+        process.on('uncaughtException', (err) => captured.push(describe(err)));
+        process.on('unhandledRejection', (reason) => captured.push(`unhandledRejection: ${describe(reason)}`));
+      });
+      return;
+    } catch (err) {
+      if (attempt === maxAttempts) {
+        record('tripwireFailure', `could not install the main-process recorder: ${String(err)}`);
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 200 * attempt));
+    }
   }
 }
 
