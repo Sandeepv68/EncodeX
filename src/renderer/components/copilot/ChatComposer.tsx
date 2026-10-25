@@ -7,14 +7,14 @@
 import { useState } from 'react';
 import { Box, Button, Chip, LinearProgress, MenuItem, Popover, TextField, Tooltip, Typography, useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileImport, faFolderOpen, faGear, faSliders } from '@fortawesome/free-solid-svg-icons';
+import { faClockRotateLeft, faFileImport, faFloppyDisk, faFolderOpen, faGear, faSliders } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import ChatInput from './ChatInput';
 import AiConnectionStatus from '../AiConnectionStatus';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
 import type { AIProviderId } from '../../../shared/ai/types';
-import { ActionsRow, AdvancedPanel, AttachmentRow, ComposerBar, LeftActions } from '../../styles/copilot/ChatComposer.styles';
+import { ActionsRow, AdvancedPanel, AttachmentRow, ComposerBar, LeftActions, RightActions } from '../../styles/copilot/ChatComposer.styles';
 
 /** The selectable operations, in menu order (auto first, then queue, then read-only). */
 const OPERATION_CHOICES: CopilotOperationChoice[] = ['auto', ...COPILOT_QUEUE_OPERATIONS, ...COPILOT_INTELLIGENCE_OPERATIONS];
@@ -47,6 +47,11 @@ interface ChatComposerProps {
   connection?: ComposerConnection;
   onResetConversation?: () => void;
   showReset?: boolean;
+  /** Saves the current transcript; only shown when `showSave` is true. */
+  onSaveChat?: () => void;
+  showSave?: boolean;
+  /** Opens the saved-conversations drawer. */
+  onOpenSavedChats?: () => void;
   inputsLoading?: boolean;
 }
 
@@ -77,6 +82,9 @@ export default function ChatComposer({
   connection,
   onResetConversation,
   showReset = false,
+  onSaveChat,
+  showSave = false,
+  onOpenSavedChats,
   inputsLoading = false,
 }: ChatComposerProps) {
   const { t } = useTranslation();
@@ -152,6 +160,38 @@ export default function ChatComposer({
           >
             {t('copilot.advanced')}
           </Button>
+          {showSave && (
+            <Button
+              size="small"
+              startIcon={<FontAwesomeIcon icon={faFloppyDisk} />}
+              onClick={onSaveChat}
+              disabled={busy}
+              data-testid="copilot-save-chat"
+            >
+              {t('copilot.saveChat')}
+            </Button>
+          )}
+          {onOpenSavedChats && (
+            <Button
+              size="small"
+              startIcon={<FontAwesomeIcon icon={faClockRotateLeft} />}
+              onClick={onOpenSavedChats}
+              disabled={busy}
+              data-testid="copilot-saved-chats"
+            >
+              {t('copilot.savedChats')}
+            </Button>
+          )}
+        </LeftActions>
+        <RightActions>
+          {connection && (
+            <AiConnectionStatus
+              connected={connection.connected}
+              providerId={connection.providerId}
+              model={connection.model}
+              testId="copilot-ai-status"
+            />
+          )}
           <Tooltip title={t('copilot.ai.locationNote')} placement="top" arrow>
             <span>
               <Button
@@ -165,15 +205,7 @@ export default function ChatComposer({
               </Button>
             </span>
           </Tooltip>
-        </LeftActions>
-        {connection && (
-          <AiConnectionStatus
-            connected={connection.connected}
-            providerId={connection.providerId}
-            model={connection.model}
-            testId="copilot-ai-status"
-          />
-        )}
+        </RightActions>
       </ActionsRow>
       {/* Location note moved to tooltip on the AI configure button. */}
       <Popover
