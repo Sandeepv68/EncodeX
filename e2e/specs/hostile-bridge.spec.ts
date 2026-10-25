@@ -79,6 +79,7 @@ const sessions = new Map<string, AppSession>();
  */
 const ROUTES = [
   { path: '/', testId: 'nav-item-dashboard' },
+  { path: '/copilot', testId: 'nav-item-copilot' },
   { path: '/convert', testId: 'nav-item-convert' },
   { path: '/media-info', testId: 'nav-item-media-info' },
   { path: '/image-compress', testId: 'nav-item-image-compress' },
@@ -230,7 +231,7 @@ describe('hostile preload: renderer survives a bridge that fails every call', ()
         session = sessions.get(mode)!;
       });
 
-      it('survives all twelve routes with no unhandled error and a mounted route each time', async () => {
+      it('survives all thirteen routes with no unhandled error and a mounted route each time', async () => {
         const session = await ensureLiveSession(sessions.get(mode)!, sessionOptions(mode));
         sessions.set(mode, session);
         await ensureTermsAccepted(session.page);

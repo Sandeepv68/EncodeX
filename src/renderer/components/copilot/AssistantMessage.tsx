@@ -88,7 +88,7 @@ export default function AssistantMessage({
           {plan.routingWarning}
         </Alert>
       )}
-      <Typography variant="subtitle1" sx={{ mb: 1 }}>
+      <Typography variant="subtitle1" component="h2" sx={{ mb: 1 }}>
         {t('copilot.actionsTitle')}
       </Typography>
       {plan.actions.length === 0 ? (
@@ -122,7 +122,7 @@ export default function AssistantMessage({
 
       {plan.results.length > 0 && (
         <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle1" sx={{ mb: 1 }}>
+          <Typography variant="subtitle1" component="h2" sx={{ mb: 1 }}>
             🎯 {t('copilot.resultsTitle')}
           </Typography>
           <List dense disablePadding>
@@ -137,7 +137,7 @@ export default function AssistantMessage({
 
       {plan.skips.length > 0 && (
         <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle1" sx={{ mb: 1 }}>
+          <Typography variant="subtitle1" component="h2" sx={{ mb: 1 }}>
             ⏭️ {t('copilot.skipsTitle')}
           </Typography>
           <List dense disablePadding>
@@ -152,7 +152,7 @@ export default function AssistantMessage({
 
       {plan.rationale.length > 0 && (
         <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle1" sx={{ mb: 1 }}>
+          <Typography variant="subtitle1" component="h2" sx={{ mb: 1 }}>
             💡 {t('copilot.rationaleTitle')}
           </Typography>
           <List dense disablePadding>
