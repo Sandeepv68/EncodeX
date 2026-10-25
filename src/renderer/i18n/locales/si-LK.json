@@ -67,6 +67,9 @@
     "cancelLabel": "අවලංගු කරන්න"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF, EncodeX සමඟ ඇසුරුම් කර නොමැත. එය අතින් ස්ථාපනය කර bmf_ffmpeg සහ bmf_ffprobe ඔබේ PATH හි ඇති බව තහවුරු කරන්න.",
+    "transcoderBmfLabelSuffix": " (ඇතුළත් නැත)",
+    "transcoderBmfNotFound": "ඔබේ PATH හි BMF සොයා ගත නොහැකි විය (නැති: {{missing}}). BMF ස්ථාපනය කර, ඉන්පසු නැවත තෝරන්න. එය හඳුනාගන්නා තෙක් BMF පරිවර්තන අක්‍රියයි.",
     "title": "මාධ්‍ය පරිවර්තනය",
     "sourceFiles": "මූලාශ්‍ර ගොනු",
     "encoding": "කේතනය",
@@ -357,6 +360,8 @@
     "videoPlayer": "වීඩියෝ ප්ලේයරය"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF, EncodeX සමඟ ඇසුරුම් කර නොමැත. එය අතින් ස්ථාපනය කර bmf_ffmpeg සහ bmf_ffprobe ඔබේ PATH හි ඇති බව තහවුරු කරන්න.",
+    "bmfNotFound": "ඔබේ PATH හි BMF සොයා ගත නොහැකි විය (නැති: {{missing}}). BMF ස්ථාපනය කර, ඉන්පසු නැවත තෝරන්න. එය හඳුනාගන්නා තෙක් BMF කාර්ය එකතු කිරීම අක්‍රියයි.",
     "title": "කණ්ඩායම් පෝලිම",
     "operation": "මෙහෙයුම",
     "suffix": "ප්‍රත්‍යය",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "ඉලක්ක වීඩියෝව \"පිටපත් කරන්න\" වන තාක් වීඩියෝ පෙරහන් නොසලකා හැරේ, මන්ද ස්ට්‍රීම් පිටපත් කිරීම නැවත කේතනය කළ නොහැක. පෙරහන් යෙදීමට ඉලක්ක බහාලුමක් තෝරන්න."
   },
   "copilot": {
+    "saveChat": "කතාබස සුරකින්න",
+    "savedChats": "සුරැකි කතාබස්",
+    "chatSaved": "සංවාදය සුරකින ලදී",
+    "savedChatsTitle": "සුරැකි සංවාද",
+    "savedChatsEmpty": "සුරැකි සංවාද නැත. එකක් තබා ගැනීමට කතාබස සුරකින්න භාවිතා කරන්න.",
+    "savedChatsClose": "වසන්න",
+    "savedChatUntitled": "නම් නැති සංවාදය",
+    "savedChatMeta": "පණිවිඩ {{count}} · {{date}}",
+    "savedChatOpen": "විවෘත කරන්න",
+    "savedChatDelete": "සුරැකි සංවාදය මකන්න",
+    "savedChatSaveFailed": "සංවාදය සුරැකීමට නොහැකි විය. බ්‍රවුසර ගබඩාව පිරී තිබිය හැක.",
+    "openChatConfirmTitle": "සුරැකි සංවාදය විවෘත කරන්නද?",
+    "openChatConfirmMessage": "වත්මන් සංවාදය සුරකින ලද නැත. මෙය විවෘත කිරීමෙන් එය ප්‍රතිස්ථාපනය වනු ඇත.",
+    "openChatSave": "සුරකා විවෘත කරන්න",
+    "openChatDiscard": "ඉවත දමා විවෘත කරන්න",
+    "openChatCancel": "අවලංගු කරන්න",
     "title": "Copilot",
     "subtitle": "ඉලක්කයක් විස්තර කර Copilot හට පරිවර්තන සැලසුම් කිරීමට ඉඩ දෙන්න, ඉන්පසු සැලැස්ම කණ්ඩායම් පෝලිමට තල්ලු කරන්න.",
     "goalLabel": "ඉලක්කය",

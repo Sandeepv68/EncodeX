@@ -172,16 +172,3 @@ export const HeaderActions = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(1.5),
 }));
-
-/**
- * The collapsed header connection summary ("Connected · Google Gemini · …"),
- * hydrated from the session cache so status survives Settings navigation.
- */
-export const HeaderStatus = styled('span')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: theme.spacing(0.75),
-  fontSize: theme.typography.pxToRem(13),
-  fontWeight: 600,
-  color: theme.palette.success.main,
-}));

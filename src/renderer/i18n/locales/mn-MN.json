@@ -67,6 +67,9 @@
     "cancelLabel": "Цуцлах"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF нь EncodeX-д багтаагүй. Гараар суулгаад bmf_ffmpeg болон bmf_ffprobe-г PATH дээр байгаа эсэхийг шалгана уу.",
+    "transcoderBmfLabelSuffix": " (багтаагүй)",
+    "transcoderBmfNotFound": "BMF-г PATH дээрээс олсонгүй (дутуу: {{missing}}). BMF-г суулгаад дахин сонгоно уу. Илрэх хүртэл BMF хөрвүүлэлт идэвхгүй байна.",
     "title": "Медиа хөрвүүлэх",
     "sourceFiles": "Эх файлууд",
     "encoding": "Кодлох",
@@ -357,6 +360,8 @@
     "videoPlayer": "Видео тоглуулагч"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF нь EncodeX-д багтаагүй. Гараар суулгаад bmf_ffmpeg болон bmf_ffprobe-г PATH дээр байгаа эсэхийг шалгана уу.",
+    "bmfNotFound": "BMF-г PATH дээрээс олсонгүй (дутуу: {{missing}}). BMF-г суулгаад дахин сонгоно уу. Илрэх хүртэл BMF ажил нэмэх идэвхгүй байна.",
     "title": "Багц дараалал",
     "operation": "Үйлдэл",
     "suffix": "Дагавар",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Зорилтот видео \"Хуулах\" байгаа цагт видео шүүлтүүрүүдийг үл тоомсорлоно, учир нь стрим хуулахыг дахин кодлох боломжгүй. Шүүлтүүр хэрэглэхийн тулд зорилтот контейнер сонгоно уу."
   },
   "copilot": {
+    "saveChat": "Чатыг хадгалах",
+    "savedChats": "Хадгалсан чатууд",
+    "chatSaved": "Яриа хадгалагдлаа",
+    "savedChatsTitle": "Хадгалсан ярианууд",
+    "savedChatsEmpty": "Хадгалсан яриа алга. Нэгийг хадгалахын тулд «Чатыг хадгалах»-ыг ашиглана уу.",
+    "savedChatsClose": "Хаах",
+    "savedChatUntitled": "Нэргүй яриа",
+    "savedChatMeta": "{{count}} мессеж · {{date}}",
+    "savedChatOpen": "Нээх",
+    "savedChatDelete": "Хадгалсан ярианыг устгах",
+    "savedChatSaveFailed": "Яриаг хадгалах боломжгүй байна. Хөтчийн санах ой дүүрсэн байж магадгүй.",
+    "openChatConfirmTitle": "Хадгалсан ярианыг нээх үү?",
+    "openChatConfirmMessage": "Одоогийн яриа хадгалагдаагүй байна. Үүнийг нээвэл одоогийн яриа солигдоно.",
+    "openChatSave": "Хадгалаад нээх",
+    "openChatDiscard": "Устгаад нээх",
+    "openChatCancel": "Цуцлах",
     "title": "Copilot",
     "subtitle": "Зорилгоо тайлбарлаж, Copilot-д хувиргалтуудыг төлөвлүүлээд, төлөвлөгөөг багц дараалалд нэмнэ үү.",
     "goalLabel": "Зорилго",

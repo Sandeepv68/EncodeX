@@ -67,6 +67,9 @@
     "cancelLabel": "Kanselleer"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF is nie saam met EncodeX verpak nie. Installeer dit self en maak seker bmf_ffmpeg en bmf_ffprobe is op jou PATH.",
+    "transcoderBmfLabelSuffix": " (nie ingesluit nie)",
+    "transcoderBmfNotFound": "BMF is nie op jou PATH gevind nie (ontbrekend: {{missing}}). Installeer BMF en kies dit daarna weer. BMF-omskakelings is gedeaktiveer totdat dit opgespoor word.",
     "title": "Skakel Media Om",
     "sourceFiles": "Bronlêers",
     "encoding": "Enkodering",
@@ -357,6 +360,8 @@
     "videoPlayer": "Videospeler"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF is nie saam met EncodeX verpak nie. Installeer dit self en maak seker bmf_ffmpeg en bmf_ffprobe is op jou PATH.",
+    "bmfNotFound": "BMF is nie op jou PATH gevind nie (ontbrekend: {{missing}}). Installeer BMF en kies dit daarna weer. Die byvoeg van BMF-take is gedeaktiveer totdat dit opgespoor word.",
     "title": "Groepwaglys",
     "operation": "Bewerking",
     "suffix": "Agtervoegsel",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Videofilters word geïgnoreer solank die videobestemming \"Kopieer\" is, omdat 'n stroomkopie nie kan herkodeer nie. Kies 'n doelhouer om hulle toe te pas."
   },
   "copilot": {
+    "saveChat": "Stoor gesprek",
+    "savedChats": "Gestoorde gesprekke",
+    "chatSaved": "Gesprek gestoor",
+    "savedChatsTitle": "Gestoorde gesprekke",
+    "savedChatsEmpty": "Geen gestoorde gesprekke nie. Gebruik Stoor gesprek om een te bewaar.",
+    "savedChatsClose": "Maak toe",
+    "savedChatUntitled": "Naamlose gesprek",
+    "savedChatMeta": "{{count}} boodskappe · {{date}}",
+    "savedChatOpen": "Maak oop",
+    "savedChatDelete": "Verwyder gestoorde gesprek",
+    "savedChatSaveFailed": "Kon nie die gesprek stoor nie. Blaaierberging is dalk vol.",
+    "openChatConfirmTitle": "Maak gestoorde gesprek oop?",
+    "openChatConfirmMessage": "Die huidige gesprek is nie gestoor nie. As jy hierdie een oopmaak, sal dit die huidige een vervang.",
+    "openChatSave": "Stoor en maak oop",
+    "openChatDiscard": "Gooi weg en maak oop",
+    "openChatCancel": "Kanselleer",
     "title": "Copilot",
     "subtitle": "Beskryf 'n doel en laat Copilot die omskakelings beplan, en stoot die plan dan na die Bondel-waglys.",
     "goalLabel": "Doel",

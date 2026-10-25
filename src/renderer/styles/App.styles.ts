@@ -42,15 +42,26 @@ export const PermanentDrawer = styled(Drawer, {
 
 export const ColumnLayout = styled(Box)({ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 });
 
-export const MainContent = styled('main')(({ theme }) => ({
+/**
+ * Main content area around the routed page. `$flush` removes the bottom padding
+ * and gap above the footer so a page (the Copilot) can sit on the footer edge;
+ * it then owns its own bottom spacing.
+ */
+export const MainContent = styled('main', {
+  shouldForwardProp: (prop) => prop !== '$flush',
+})<{ $flush?: boolean }>(({ theme, $flush }) => ({
   flex: 1,
   overflow: 'auto',
   padding: theme.spacing(2),
-  [theme.breakpoints.up('sm')]: { padding: theme.spacing(3) },
+  paddingBottom: $flush ? 0 : theme.spacing(2),
+  [theme.breakpoints.up('sm')]: {
+    padding: theme.spacing(3),
+    paddingBottom: $flush ? 0 : theme.spacing(3),
+  },
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
-  marginBottom: theme.spacing(2),
+  marginBottom: $flush ? 0 : theme.spacing(2),
 }));
 
 export const MobileMenuButton = styled(IconButton)(({ theme }) => ({

@@ -67,6 +67,9 @@
     "cancelLabel": "Abbrechen"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF ist nicht in EncodeX enthalten. Installieren Sie es manuell und stellen Sie sicher, dass bmf_ffmpeg und bmf_ffprobe in Ihrem PATH verfügbar sind.",
+    "transcoderBmfLabelSuffix": " (nicht enthalten)",
+    "transcoderBmfNotFound": "BMF wurde nicht in Ihrem PATH gefunden (fehlend: {{missing}}). Installieren Sie BMF und wählen Sie es dann erneut aus. BMF-Konvertierungen sind deaktiviert, bis es erkannt wird.",
     "title": "Medien konvertieren",
     "sourceFiles": "Quelldateien",
     "encoding": "Kodierung",
@@ -357,6 +360,8 @@
     "videoPlayer": "Videoplayer"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF ist nicht in EncodeX enthalten. Installieren Sie es manuell und stellen Sie sicher, dass bmf_ffmpeg und bmf_ffprobe in Ihrem PATH verfügbar sind.",
+    "bmfNotFound": "BMF wurde nicht in Ihrem PATH gefunden (fehlend: {{missing}}). Installieren Sie BMF und wählen Sie es dann erneut aus. Das Hinzufügen von BMF-Aufträgen ist deaktiviert, bis es erkannt wird.",
     "title": "Stapelwarteschlange",
     "operation": "Vorgang",
     "suffix": "Suffix",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Videofilter werden ignoriert, solange das Videoziel „Kopieren“ ist, da eine Stream-Kopie nicht neu kodieren kann. Wählen Sie einen Video-Zielcontainer, um sie anzuwenden."
   },
   "copilot": {
+    "saveChat": "Chat speichern",
+    "savedChats": "Gespeicherte Chats",
+    "chatSaved": "Unterhaltung gespeichert",
+    "savedChatsTitle": "Gespeicherte Unterhaltungen",
+    "savedChatsEmpty": "Keine gespeicherten Unterhaltungen. Verwenden Sie „Chat speichern“, um eine zu sichern.",
+    "savedChatsClose": "Schließen",
+    "savedChatUntitled": "Unbenannte Unterhaltung",
+    "savedChatMeta": "{{count}} Nachrichten · {{date}}",
+    "savedChatOpen": "Öffnen",
+    "savedChatDelete": "Gespeicherte Unterhaltung löschen",
+    "savedChatSaveFailed": "Die Unterhaltung konnte nicht gespeichert werden. Der Browser-Speicher ist möglicherweise voll.",
+    "openChatConfirmTitle": "Gespeicherte Unterhaltung öffnen?",
+    "openChatConfirmMessage": "Die aktuelle Unterhaltung wurde nicht gespeichert. Wenn Sie diese öffnen, wird sie ersetzt.",
+    "openChatSave": "Speichern und öffnen",
+    "openChatDiscard": "Verwerfen und öffnen",
+    "openChatCancel": "Abbrechen",
     "title": "Copilot",
     "subtitle": "Beschreibe ein Ziel und lass Copilot die Konvertierungen planen, dann übernimm den Plan in die Stapel-Warteschlange.",
     "goalLabel": "Ziel",

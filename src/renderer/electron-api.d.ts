@@ -18,6 +18,7 @@ import {
   PlayerAudioChunk,
   LogEntry,
   EncoderCapabilities,
+  BmfStatus,
   WaveformData,
   ThumbnailStrip,
   ImageExifData,
@@ -160,6 +161,12 @@ export interface ElectronAPI {
    *   audio encoders, and hwaccels, or null if the capability probe failed.
    */
   getCapabilities(): Promise<EncoderCapabilities | null>;
+  /**
+   * Checks whether the BMF CLI tools are on the system PATH over the
+   * `IPC.GET_BMF_STATUS` ('get-bmf-status') channel.
+   * @returns {Promise<BmfStatus>} Availability and any missing executables.
+   */
+  getBmfStatus(): Promise<BmfStatus>;
   /**
    * Starts a single-file media conversion over the `IPC.CONVERT_FILE`
    * ('convert-file') channel. Progress is reported asynchronously through the

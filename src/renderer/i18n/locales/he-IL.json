@@ -67,6 +67,9 @@
     "cancelLabel": "ביטול"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF אינו כלול ב-EncodeX. התקן אותו ידנית וודא ש-bmf_ffmpeg ו-bmf_ffprobe נמצאים ב-PATH שלך.",
+    "transcoderBmfLabelSuffix": " (לא כלול)",
+    "transcoderBmfNotFound": "BMF לא נמצא ב-PATH שלך (חסר: {{missing}}). התקן את BMF ואז בחר אותו מחדש. המרות BMF מושבתות עד שיזוהה.",
     "title": "המרת מדיה",
     "sourceFiles": "קבצי מקור",
     "encoding": "קידוד",
@@ -357,6 +360,8 @@
     "videoPlayer": "נגן וידאו"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF אינו כלול ב-EncodeX. התקן אותו ידנית וודא ש-bmf_ffmpeg ו-bmf_ffprobe נמצאים ב-PATH שלך.",
+    "bmfNotFound": "BMF לא נמצא ב-PATH שלך (חסר: {{missing}}). התקן את BMF ואז בחר אותו מחדש. הוספת משימות BMF מושבתת עד שיזוהה.",
     "title": "תור אצווה",
     "operation": "פעולה",
     "suffix": "סיומת",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "מסנני וידאו מתעלמים כל עוד יעד הווידאו הוא \"העתק\", מכיוון שהעתקת זרם אינה יכולה לבצע המרת קוד. בחר מיכל יעד כדי להחיל אותם."
   },
   "copilot": {
+    "saveChat": "שמור שיחה",
+    "savedChats": "שיחות שמורות",
+    "chatSaved": "השיחה נשמרה",
+    "savedChatsTitle": "שיחות שמורות",
+    "savedChatsEmpty": "אין שיחות שמורות. השתמש ב'שמור שיחה' כדי לשמור אחת.",
+    "savedChatsClose": "סגור",
+    "savedChatUntitled": "שיחה ללא כותרת",
+    "savedChatMeta": "{{count}} הודעות · {{date}}",
+    "savedChatOpen": "פתח",
+    "savedChatDelete": "מחק שיחה שמורה",
+    "savedChatSaveFailed": "לא ניתן לשמור את השיחה. אחסון הדפדפן עשוי להיות מלא.",
+    "openChatConfirmTitle": "לפתוח שיחה שמורה?",
+    "openChatConfirmMessage": "השיחה הנוכחית לא נשמרה. פתיחת שיחה זו תחליף אותה.",
+    "openChatSave": "שמור ופתח",
+    "openChatDiscard": "בטל ופתח",
+    "openChatCancel": "ביטול",
     "title": "Copilot",
     "subtitle": "תאר מטרה ותן ל-Copilot לתכנן את ההמרות, ואז דחוף את התוכנית לתור המשימות.",
     "goalLabel": "מטרה",

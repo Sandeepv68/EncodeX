@@ -67,6 +67,9 @@
     "cancelLabel": "Annuller"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF er ikke pakket med EncodeX. Installer det manuelt, og sørg for, at bmf_ffmpeg og bmf_ffprobe er på din PATH.",
+    "transcoderBmfLabelSuffix": " (ikke medfølgende)",
+    "transcoderBmfNotFound": "BMF blev ikke fundet på din PATH (mangler: {{missing}}). Installer BMF, og vælg det igen. BMF-konverteringer er deaktiveret, indtil det er registreret.",
     "title": "Konverter medie",
     "sourceFiles": "Kilderfiler",
     "encoding": "Kodning",
@@ -357,6 +360,8 @@
     "videoPlayer": "Videoafspiller"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF er ikke pakket med EncodeX. Installer det manuelt, og sørg for, at bmf_ffmpeg og bmf_ffprobe er på din PATH.",
+    "bmfNotFound": "BMF blev ikke fundet på din PATH (mangler: {{missing}}). Installer BMF, og vælg det igen. Tilføjelse af BMF-job er deaktiveret, indtil det er registreret.",
     "title": "Batchkø",
     "operation": "Handling",
     "suffix": "Suffiks",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Videofiltre ignoreres, så længe videodestinationen er \"Kopiér\", fordi en streampkopi ikke kan genkode. Vælg en destinationscontainer for at anvende dem."
   },
   "copilot": {
+    "saveChat": "Gem chat",
+    "savedChats": "Gemte chats",
+    "chatSaved": "Samtale gemt",
+    "savedChatsTitle": "Gemte samtaler",
+    "savedChatsEmpty": "Ingen gemte samtaler. Brug Gem chat for at gemme en.",
+    "savedChatsClose": "Luk",
+    "savedChatUntitled": "Samtale uden titel",
+    "savedChatMeta": "{{count}} beskeder · {{date}}",
+    "savedChatOpen": "Åbn",
+    "savedChatDelete": "Slet gemt samtale",
+    "savedChatSaveFailed": "Samtalen kunne ikke gemmes. Browserlageret er muligvis fuldt.",
+    "openChatConfirmTitle": "Åbn gemt samtale?",
+    "openChatConfirmMessage": "Den aktuelle samtale er ikke gemt. Åbner du denne, erstattes den.",
+    "openChatSave": "Gem og åbn",
+    "openChatDiscard": "Kassér og åbn",
+    "openChatCancel": "Annuller",
     "title": "Copilot",
     "subtitle": "Beskriv et mål, og lad Copilot planlægge konverteringerne, og send derefter planen til køen.",
     "goalLabel": "Mål",

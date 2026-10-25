@@ -67,6 +67,9 @@
     "cancelLabel": "Hætta við"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF fylgir ekki með EncodeX. Settu það upp handvirkt og gakktu úr skugga um að bmf_ffmpeg og bmf_ffprobe séu í PATH.",
+    "transcoderBmfLabelSuffix": " (ekki innifalið)",
+    "transcoderBmfNotFound": "BMF fannst ekki í PATH (vantar: {{missing}}). Settu upp BMF og veldu það svo aftur. BMF-umbreytingar eru óvirkar þar til það finnst.",
     "title": "Umbreyta miðli",
     "sourceFiles": "Frumskrár",
     "encoding": "Kóðun",
@@ -357,6 +360,8 @@
     "videoPlayer": "Videóspilari"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF fylgir ekki með EncodeX. Settu það upp handvirkt og gakktu úr skugga um að bmf_ffmpeg og bmf_ffprobe séu í PATH.",
+    "bmfNotFound": "BMF fannst ekki í PATH (vantar: {{missing}}). Settu upp BMF og veldu það svo aftur. Það er ekki hægt að bæta við BMF-verkum fyrr en það finnst.",
     "title": "Runubraut",
     "operation": "Aðgerð",
     "suffix": "Viðskeyti",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Myndarsíurnar eru hunsaðar á meðan myndarákvörðunin er \"Afrita\", því að straumafritun getur ekki umkóðað. Veldu áhendingargáma til að beita síunum."
   },
   "copilot": {
+    "saveChat": "Vista spjall",
+    "savedChats": "Vistuð spjöll",
+    "chatSaved": "Samtal vistað",
+    "savedChatsTitle": "Vistuð samtöl",
+    "savedChatsEmpty": "Engin vistuð samtöl. Notaðu Vista spjall til að geyma eitt.",
+    "savedChatsClose": "Loka",
+    "savedChatUntitled": "Samtal án titils",
+    "savedChatMeta": "{{count}} skilaboð · {{date}}",
+    "savedChatOpen": "Opna",
+    "savedChatDelete": "Eyða vistuðu samtali",
+    "savedChatSaveFailed": "Ekki tókst að vista samtalið. Geymsla vafrans gæti verið full.",
+    "openChatConfirmTitle": "Opna vistað samtal?",
+    "openChatConfirmMessage": "Núverandi samtal hefur ekki verið vistað. Ef þetta er opnað kemur það í staðinn.",
+    "openChatSave": "Vista og opna",
+    "openChatDiscard": "Henda og opna",
+    "openChatCancel": "Hætta við",
     "title": "Copilot",
     "subtitle": "Lýstu markmiði og leyfðu Copilot að skipuleggja umbreytingarnar, ýttu síðan áætluninni inn í runu biðröðina.",
     "goalLabel": "Markmið",

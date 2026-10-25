@@ -64,6 +64,7 @@ const API_TABLE: Record<string, MethodEntry> = {
   getImageFileInfo: { kind: 'invoke', params: ['filePath'] },
   getVideoPreview: { kind: 'invoke', params: ['filePath'] },
   getCapabilities: { kind: 'invoke', params: [] },
+  getBmfStatus: { kind: 'invoke', params: [] },
   convertFile: { kind: 'invoke', params: ['input', 'output', 'options', 'transcoderType'] },
   pauseConversion: { kind: 'invoke', params: [] },
   resumeConversion: { kind: 'invoke', params: [] },

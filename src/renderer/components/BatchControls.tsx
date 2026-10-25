@@ -49,8 +49,8 @@
  *    renders the hardware-acceleration info alert inside the controls box.
  */
 
-import { useState } from 'react';
-import { Checkbox, Grid, Menu, MenuItem, Tooltip } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Checkbox, Grid, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
@@ -68,7 +68,7 @@ import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import { MAX_QUEUE_CONCURRENCY, WHEN_DONE_ACTIONS } from '../../shared/constants';
-import type { TranscoderType, WhenDoneAction } from '../../shared/types';
+import type { BmfStatus, TranscoderType, WhenDoneAction } from '../../shared/types';
 import type { BatchControlsProps } from './types';
 import TooltipIfEnabled from './TooltipIfEnabled';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
@@ -188,6 +188,34 @@ export default function BatchControls({
   const [addMenuAnchor, setAddMenuAnchor] = useState<HTMLElement | null>(null);
   const closeAddMenu = () => setAddMenuAnchor(null);
 
+  /** Transcoder currently chosen in the select (mirrors transcoderRef for display). */
+  const [selectedTranscoder, setSelectedTranscoder] = useState<TranscoderType>(TRANSCODER_TYPES[0]);
+  /** Last BMF PATH check; null while unknown (not yet checked or IPC failed). */
+  const [bmfStatus, setBmfStatus] = useState<BmfStatus | null>(null);
+
+  /**
+   * Re-checks BMF availability on PATH whenever BMF is selected, so an install
+   * made while the app is open is picked up. Unknown status does not block adds.
+   * @returns {void}
+   */
+  useEffect(() => {
+    if (selectedTranscoder !== 'BMF') return;
+    let cancelled = false;
+    window.electronAPI
+      ?.getBmfStatus?.()
+      .then((status) => {
+        if (!cancelled) setBmfStatus(status);
+      })
+      .catch(() => {
+        if (!cancelled) setBmfStatus(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedTranscoder]);
+
+  const bmfUnavailable = selectedTranscoder === 'BMF' && bmfStatus?.available === false;
+
   /**
    * Localized display labels keyed by batch operation value.
    * @const {Record<string, string>} operationLabels
@@ -226,6 +254,7 @@ export default function BatchControls({
                 aria-label={t('batchQueue.addFiles')}
                 aria-haspopup="menu"
                 aria-expanded={Boolean(addMenuAnchor)}
+                disabled={bmfUnavailable}
                 onClick={(e) => setAddMenuAnchor(e.currentTarget)}
               >
                 <FontAwesomeIcon icon={faPlus} />
@@ -331,7 +360,9 @@ export default function BatchControls({
               slotProps={{ input: { 'aria-label': t('batchQueue.detailsTranscoder') } }}
               defaultValue={TRANSCODER_TYPES[0]}
               onChange={(e) => {
-                transcoderRef.current = e.target.value as TranscoderType;
+                const next = e.target.value as TranscoderType;
+                transcoderRef.current = next;
+                setSelectedTranscoder(next);
               }}
             >
               {TRANSCODER_TYPES.map((codec) => (
@@ -340,6 +371,16 @@ export default function BatchControls({
                 </MenuItem>
               ))}
             </TranscoderSelect>
+            {selectedTranscoder === 'BMF' && (
+              <Typography variant="caption" color="warning.main" component="p" sx={{ mt: 0.5 }} data-testid="batch-bmf-notice">
+                {t('batchQueue.bmfNotBundled')}
+              </Typography>
+            )}
+            {bmfUnavailable && (
+              <Typography variant="caption" color="error" component="p" sx={{ mt: 0.5 }} data-testid="batch-bmf-missing">
+                {t('batchQueue.bmfNotFound', { missing: bmfStatus?.missing.join(', ') })}
+              </Typography>
+            )}
           </FieldBox>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>

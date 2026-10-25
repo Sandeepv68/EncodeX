@@ -22,6 +22,7 @@
  * @property {string} GET_IMAGE_FILE_INFO - Read image file size and dimensions.
  * @property {string} GET_VIDEO_PREVIEW - Extract a preview frame from a video.
  * @property {string} GET_CAPABILITIES - Enumerate encoder and hwaccel capabilities.
+ * @property {string} GET_BMF_STATUS - Check whether the BMF CLI tools are on PATH.
  * @property {string} COPILOT_PLAN - Build a deterministic conversion plan for a
  *   goal against a folder of media files.
  * @property {string} CONVERT_FILE - Start a conversion job.
@@ -113,6 +114,7 @@ export const IPC = {
   GET_IMAGE_FILE_INFO: 'get-image-file-info',
   GET_VIDEO_PREVIEW: 'get-video-preview',
   GET_CAPABILITIES: 'get-capabilities',
+  GET_BMF_STATUS: 'get-bmf-status',
   COPILOT_PLAN: 'copilot-plan',
   CONVERT_FILE: 'convert-file',
   CANCEL_CONVERSION: 'cancel-conversion',

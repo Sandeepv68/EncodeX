@@ -67,6 +67,9 @@
     "cancelLabel": "취소"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF는 EncodeX에 포함되어 있지 않습니다. 직접 설치하고 bmf_ffmpeg와 bmf_ffprobe가 PATH에 있는지 확인하세요.",
+    "transcoderBmfLabelSuffix": " (포함되지 않음)",
+    "transcoderBmfNotFound": "PATH에서 BMF를 찾을 수 없습니다(누락: {{missing}}). BMF를 설치한 후 다시 선택하세요. BMF가 감지될 때까지 BMF 변환은 비활성화됩니다.",
     "title": "미디어 변환",
     "sourceFiles": "소스 파일",
     "encoding": "인코딩",
@@ -357,6 +360,8 @@
     "videoPlayer": "비디오 플레이어"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF는 EncodeX에 포함되어 있지 않습니다. 직접 설치하고 bmf_ffmpeg와 bmf_ffprobe가 PATH에 있는지 확인하세요.",
+    "bmfNotFound": "PATH에서 BMF를 찾을 수 없습니다(누락: {{missing}}). BMF를 설치한 후 다시 선택하세요. BMF가 감지될 때까지 BMF 작업 추가는 비활성화됩니다.",
     "title": "배치 큐",
     "operation": "작업",
     "suffix": "접미사",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "비디오 출력 방식이 “복사”인 동안 비디오 필터는 무시됩니다. 스트림 복사로는 재인코딩할 수 없기 때문입니다. 필터를 적용하려면 대상 컨테이너를 선택하세요."
   },
   "copilot": {
+    "saveChat": "채팅 저장",
+    "savedChats": "저장된 채팅",
+    "chatSaved": "대화가 저장됨",
+    "savedChatsTitle": "저장된 대화",
+    "savedChatsEmpty": "저장된 대화가 없습니다. '채팅 저장'을 사용하여 대화를 저장하세요.",
+    "savedChatsClose": "닫기",
+    "savedChatUntitled": "제목 없는 대화",
+    "savedChatMeta": "메시지 {{count}}개 · {{date}}",
+    "savedChatOpen": "열기",
+    "savedChatDelete": "저장된 대화 삭제",
+    "savedChatSaveFailed": "대화를 저장할 수 없습니다. 브라우저 저장 공간이 가득 찼을 수 있습니다.",
+    "openChatConfirmTitle": "저장된 대화를 여시겠습니까?",
+    "openChatConfirmMessage": "현재 대화가 저장되지 않았습니다. 이 대화를 열면 현재 대화가 대체됩니다.",
+    "openChatSave": "저장 후 열기",
+    "openChatDiscard": "삭제 후 열기",
+    "openChatCancel": "취소",
     "title": "Copilot",
     "subtitle": "목표를 설명하면 Copilot이 변환을 계획하고, 그 계획을 일괄 큐로 보냅니다.",
     "goalLabel": "목표",

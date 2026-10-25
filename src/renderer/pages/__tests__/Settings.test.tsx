@@ -588,11 +588,11 @@ describe('Settings', () => {
     expect(separator.compareDocumentPosition(name) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it('hides connect, advanced, and settings fields for the built-in rules provider', async () => {
+  it('offers connect but hides advanced and key fields for the built-in rules provider', async () => {
     renderSettings();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
-    expect(screen.queryByTestId('settings-ai-connect')).not.toBeInTheDocument();
+    expect(screen.getByTestId('settings-ai-connect')).toBeInTheDocument();
     expect(screen.queryByTestId('settings-ai-advanced')).not.toBeInTheDocument();
     expect(screen.getByTestId('settings-ai-rules-note')).toBeInTheDocument();
     expect(screen.queryByTestId('settings-ai-key')).not.toBeInTheDocument();
@@ -604,7 +604,7 @@ describe('Settings', () => {
     expect(screen.queryByTestId('settings-ai-rules-note')).not.toBeInTheDocument();
     fireEvent.click(screen.getByTestId('settings-ai-provider-rules'));
     await waitFor(() => expect(window.electronAPI.aiSetSettings).toHaveBeenCalledWith({ providerId: 'rules' }));
-    expect(screen.queryByTestId('settings-ai-connect')).not.toBeInTheDocument();
+    expect(screen.getByTestId('settings-ai-connect')).toBeInTheDocument();
     expect(screen.queryByTestId('settings-ai-advanced')).not.toBeInTheDocument();
     expect(screen.getByTestId('settings-ai-rules-note')).toBeInTheDocument();
   });

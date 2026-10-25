@@ -67,6 +67,9 @@
     "cancelLabel": "取消"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF 未随 EncodeX 打包。请手动安装，并确保 bmf_ffmpeg 和 bmf_ffprobe 位于您的 PATH 中。",
+    "transcoderBmfLabelSuffix": " (未打包)",
+    "transcoderBmfNotFound": "在您的 PATH 中未找到 BMF（缺少：{{missing}}）。请安装 BMF，然后重新选择。在检测到 BMF 之前，BMF 转换已禁用。",
     "title": "转换媒体",
     "sourceFiles": "源文件",
     "encoding": "编码",
@@ -357,6 +360,8 @@
     "videoPlayer": "视频播放器"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF 未随 EncodeX 打包。请手动安装，并确保 bmf_ffmpeg 和 bmf_ffprobe 位于您的 PATH 中。",
+    "bmfNotFound": "在您的 PATH 中未找到 BMF（缺少：{{missing}}）。请安装 BMF，然后重新选择。在检测到 BMF 之前，添加 BMF 任务已禁用。",
     "title": "批量队列",
     "operation": "操作",
     "suffix": "后缀",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "当视频输出方式为“复制”时，视频滤镜会被忽略，因为流复制无法重新编码。请选择输出容器以应用滤镜。"
   },
   "copilot": {
+    "saveChat": "保存对话",
+    "savedChats": "已保存的对话",
+    "chatSaved": "对话已保存",
+    "savedChatsTitle": "已保存的对话",
+    "savedChatsEmpty": "没有已保存的对话。使用“保存对话”来保存一个。",
+    "savedChatsClose": "关闭",
+    "savedChatUntitled": "未命名对话",
+    "savedChatMeta": "{{count}} 条消息 · {{date}}",
+    "savedChatOpen": "打开",
+    "savedChatDelete": "删除已保存的对话",
+    "savedChatSaveFailed": "无法保存对话。浏览器存储空间可能已满。",
+    "openChatConfirmTitle": "打开已保存的对话？",
+    "openChatConfirmMessage": "当前对话尚未保存。打开此对话将替换当前对话。",
+    "openChatSave": "保存并打开",
+    "openChatDiscard": "放弃并打开",
+    "openChatCancel": "取消",
     "title": "Copilot",
     "subtitle": "描述一个目标，让 Copilot 规划转换，然后将计划推送到批量队列。",
     "goalLabel": "目标",

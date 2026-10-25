@@ -67,6 +67,9 @@
     "cancelLabel": "Avbryt"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF ingår inte i EncodeX. Installera det manuellt och se till att bmf_ffmpeg och bmf_ffprobe finns i din PATH.",
+    "transcoderBmfLabelSuffix": " (ingår inte)",
+    "transcoderBmfNotFound": "BMF hittades inte i din PATH (saknas: {{missing}}). Installera BMF och välj det sedan igen. BMF-konverteringar är inaktiverade tills det identifieras.",
     "title": "Konvertera media",
     "sourceFiles": "Källfiler",
     "encoding": "Kodning",
@@ -357,6 +360,8 @@
     "videoPlayer": "Videospelare"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF ingår inte i EncodeX. Installera det manuellt och se till att bmf_ffmpeg och bmf_ffprobe finns i din PATH.",
+    "bmfNotFound": "BMF hittades inte i din PATH (saknas: {{missing}}). Installera BMF och välj det sedan igen. Tillägg av BMF-jobb är inaktiverat tills det identifieras.",
     "title": "Batchkö",
     "operation": "Åtgärd",
     "suffix": "Ändelse",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Videofiltren ignoreras så länge videodestinationen är \"Kopiera\", eftersom en strömkopia inte kan omkoda. Välj en destinationscontainer för att tillämpa dem."
   },
   "copilot": {
+    "saveChat": "Spara chatt",
+    "savedChats": "Sparade chattar",
+    "chatSaved": "Konversation sparad",
+    "savedChatsTitle": "Sparade konversationer",
+    "savedChatsEmpty": "Inga sparade konversationer. Använd Spara chatt för att spara en.",
+    "savedChatsClose": "Stäng",
+    "savedChatUntitled": "Namnlös konversation",
+    "savedChatMeta": "{{count}} meddelanden · {{date}}",
+    "savedChatOpen": "Öppna",
+    "savedChatDelete": "Ta bort sparad konversation",
+    "savedChatSaveFailed": "Konversationen kunde inte sparas. Webbläsarlagringen kan vara full.",
+    "openChatConfirmTitle": "Öppna sparad konversation?",
+    "openChatConfirmMessage": "Den aktuella konversationen har inte sparats. Om du öppnar denna ersätts den.",
+    "openChatSave": "Spara och öppna",
+    "openChatDiscard": "Kasta och öppna",
+    "openChatCancel": "Avbryt",
     "title": "Copilot",
     "subtitle": "Beskriv ett mål och låt Copilot planera konverteringarna, och skicka sedan planen till batchkön.",
     "goalLabel": "Mål",

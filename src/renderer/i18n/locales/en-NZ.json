@@ -67,6 +67,9 @@
     "cancelLabel": "Cancel"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF is not packaged with EncodeX. Install it manually and make sure bmf_ffmpeg and bmf_ffprobe are on your PATH.",
+    "transcoderBmfLabelSuffix": " (not bundled)",
+    "transcoderBmfNotFound": "BMF was not found on your PATH (missing: {{missing}}). Install BMF, then reselect it. BMF conversions are disabled until it is detected.",
     "title": "Convert Media",
     "sourceFiles": "Source Files",
     "encoding": "Encoding",
@@ -357,6 +360,8 @@
     "videoPlayer": "Video player"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF is not packaged with EncodeX. Install it manually and make sure bmf_ffmpeg and bmf_ffprobe are on your PATH.",
+    "bmfNotFound": "BMF was not found on your PATH (missing: {{missing}}). Install BMF, then reselect it. Adding BMF jobs is disabled until it is detected.",
     "title": "Batch Queue",
     "operation": "Operation",
     "suffix": "Suffix",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Video filters are ignored while the video target is Copy, because a stream copy cannot re-encode. Choose a video target container to apply them."
   },
   "copilot": {
+    "saveChat": "Save chat",
+    "savedChats": "Saved chats",
+    "chatSaved": "Conversation saved",
+    "savedChatsTitle": "Saved conversations",
+    "savedChatsEmpty": "No saved conversations. Use Save chat to keep one.",
+    "savedChatsClose": "Close",
+    "savedChatUntitled": "Untitled conversation",
+    "savedChatMeta": "{{count}} messages · {{date}}",
+    "savedChatOpen": "Open",
+    "savedChatDelete": "Delete saved conversation",
+    "savedChatSaveFailed": "Could not save the conversation. Browser storage may be full.",
+    "openChatConfirmTitle": "Open saved conversation?",
+    "openChatConfirmMessage": "The current conversation has not been saved. Opening this one will replace it.",
+    "openChatSave": "Save and open",
+    "openChatDiscard": "Discard and open",
+    "openChatCancel": "Cancel",
     "title": "Copilot",
     "subtitle": "Describe a goal and let Copilot plan the conversions, then push the plan to the Batch Queue.",
     "goalLabel": "Goal",

@@ -13,9 +13,17 @@
  * inline error instead of crashing the tree.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Box } from '@mui/material';
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import {
+  deleteCopilotChat,
+  deriveCopilotChatTitle,
+  readSavedCopilotChats,
+  saveCopilotChat,
+  type SavedCopilotChat,
+} from '../stores/copilotChats';
+import SavedChatsDrawer from '../components/copilot/SavedChatsDrawer';
 import { useNavigationGuard } from '../NavigationGuardContext';
 import PageContainer from '../components/PageContainer';
 import { bridgePromise, withBridgeTimeout } from '../utils/bridge-call';
@@ -40,6 +48,7 @@ const FOLDER_TIMEOUT_MS = 30_000;
 export default function Copilot() {
   const { t } = useTranslation();
   const { navigate, navigateWithoutGuard, registerGuard } = useNavigationGuard();
+  const openChatConfirmTitleId = useId();
 
   /** The conversation transcript. */
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
@@ -71,6 +80,103 @@ export default function Copilot() {
 
   /** True while file/folder selection dialog is resolving. */
   const [inputsLoading, setInputsLoading] = useState(false);
+  /** Id of the saved chat this transcript is linked to, or null if never saved. */
+  const [savedChatId, setSavedChatId] = useState<string | null>(null);
+  /** Saved chat waiting for the user's decision about the open transcript. */
+  const [pendingChat, setPendingChat] = useState<SavedCopilotChat | null>(null);
+  /** Whether the saved-conversations drawer is open. */
+  const [savedChatsOpen, setSavedChatsOpen] = useState(false);
+  /** Saved conversations shown in the dialog; read from storage each time it opens. */
+  const [savedChats, setSavedChats] = useState<SavedCopilotChat[]>([]);
+
+  /**
+   * Saves the current transcript when the user asks for it. Nothing is written
+   * automatically. Re-saving an already linked chat updates that entry.
+   * @returns {boolean} True when the chat was written to storage.
+   */
+  const handleSaveChat = (): boolean => {
+    const id = savedChatId ?? `chat-${Date.now()}`;
+    try {
+      saveCopilotChat({
+        id,
+        title: deriveCopilotChatTitle(messages),
+        savedAt: Date.now(),
+        messages,
+      });
+      setSavedChatId(id);
+      useToastStore.getState().success(t('copilot.chatSaved'));
+      return true;
+    } catch {
+      setGlobalError(t('copilot.savedChatSaveFailed'));
+      return false;
+    }
+  };
+
+  /**
+   * Opens the saved-conversations dialog with a fresh read from storage.
+   * @returns {void}
+   */
+  const openSavedChats = (): void => {
+    setSavedChats(readSavedCopilotChats());
+    setSavedChatsOpen(true);
+  };
+
+  /**
+   * Replaces the current transcript with a saved conversation and links the
+   * page to it, so later saves update that entry.
+   * @param {SavedCopilotChat} chat - The chat to load.
+   * @returns {void}
+   */
+  const loadChat = (chat: SavedCopilotChat): void => {
+    setMessages(chat.messages);
+    setSavedChatId(chat.id);
+    setInput('');
+    setInputs([]);
+    setGlobalError(null);
+    setNotice(null);
+    setSavedChatsOpen(false);
+  };
+
+  /**
+   * Handles a request to open a saved chat. When the current transcript has
+   * messages and is not that same saved chat, the user is asked first so an
+   * unsaved transcript is never discarded silently.
+   * @param {SavedCopilotChat} chat - The chat the user picked.
+   * @returns {void}
+   */
+  const handleOpenChat = (chat: SavedCopilotChat): void => {
+    if (hasActiveChat && chat.id !== savedChatId) {
+      setPendingChat(chat);
+      return;
+    }
+    loadChat(chat);
+  };
+
+  /**
+   * Resolves the open-chat confirmation. Saving first is skipped (and the
+   * switch cancelled) when the save fails, so the transcript is not lost.
+   * @param {'save' | 'discard'} choice - Whether to keep the current transcript.
+   * @returns {void}
+   */
+  const resolvePendingChat = (choice: 'save' | 'discard'): void => {
+    const chat = pendingChat;
+    setPendingChat(null);
+    if (!chat) return;
+    if (choice === 'save' && !handleSaveChat()) return;
+    loadChat(chat);
+  };
+
+  /**
+   * Deletes a saved conversation and refreshes the dialog list. If the open
+   * transcript is linked to it, the link is cleared so the next save creates a
+   * new entry.
+   * @param {string} id - The saved chat id to remove.
+   * @returns {void}
+   */
+  const handleDeleteChat = (id: string): void => {
+    setSavedChats(deleteCopilotChat(id));
+    if (savedChatId === id) setSavedChatId(null);
+  };
 
   useEffect(() => registerGuard(() => hasActiveChat), [registerGuard, hasActiveChat]);
 
@@ -260,80 +366,144 @@ export default function Copilot() {
 
   return (
     <PageContainer title="" paper={false} fill>
+      {/*
+        MainContent (App.styles.ts) pads every route by spacing(2) / spacing(3).
+        The negative margins below cancel that padding for this page so the saved-chats
+        panel sits flush to the top, bottom and left edges; the conversation column
+        re-applies the same padding so its content position is unchanged.
+      */}
       <Box
-        sx={{
+        sx={(theme) => ({
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'row',
           flex: 1,
           minHeight: 0,
-          justifyContent: hasActiveChat ? 'flex-start' : 'center',
-        }}
+          overflow: 'hidden',
+          marginInline: theme.spacing(-2),
+          marginTop: theme.spacing(-2),
+          [theme.breakpoints.up('sm')]: {
+            marginInline: theme.spacing(-3),
+            marginTop: theme.spacing(-3),
+          },
+        })}
       >
-        {globalError && (
-          <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
-            <Alert
-              severity="error"
-              data-testid="copilot-error"
-              sx={{
-                boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
-                '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-              }}
-            >
-              {globalError}
-            </Alert>
-          </Box>
-        )}
-        {notice && (
-          <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
-            <Alert
-              severity="info"
-              data-testid="copilot-notice"
-              sx={{
-                boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
-                '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-              }}
-            >
-              {notice}
-            </Alert>
-          </Box>
-        )}
-        <Conversation messages={messages} isThinking={isThinking} onAddToQueue={addToQueue} busy={busy} />
-        <ChatComposer
-          input={input}
-          onInputChange={setInput}
-          onSubmit={buildPlan}
-          onChooseFiles={chooseFiles}
-          onChooseFolder={chooseFolder}
-          onOpenSettings={openSettings}
-          inputs={inputs}
-          operation={operation}
-          onOperationChange={setOperation}
-          query={query}
-          onQueryChange={setQuery}
-          targetLanguage={targetLanguage}
-          onTargetLanguageChange={setTargetLanguage}
-          onRemoveInput={removeInput}
-          disabled={busy || inputsLoading}
-          busy={busy || inputsLoading}
-          hasInputs={inputs.length > 0}
-          connection={{
-            connected: aiConnection !== null,
-            ...(aiConnection ? { providerId: aiConnection.providerId, model: aiConnection.model } : {}),
-          }}
-          showReset={hasActiveChat}
-          onResetConversation={() => {
-            setMessages([]);
-            setInput('');
-            setInputs([]);
-            setOperation('auto');
-            setQuery('');
-            setTargetLanguage('');
-            setGlobalError(null);
-            setNotice(null);
-            setIsThinking(false);
-          }}
-          inputsLoading={inputsLoading}
+        <SavedChatsDrawer
+          open={savedChatsOpen}
+          chats={savedChats}
+          onClose={() => setSavedChatsOpen(false)}
+          onOpen={handleOpenChat}
+          onDelete={handleDeleteChat}
         />
+        <Box
+          sx={(theme) => ({
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+            minWidth: 0,
+            minHeight: 0,
+            justifyContent: hasActiveChat ? 'flex-start' : 'center',
+            paddingInline: theme.spacing(2),
+            paddingTop: theme.spacing(2),
+            paddingBottom: theme.spacing(2),
+            [theme.breakpoints.up('sm')]: {
+              paddingInline: theme.spacing(3),
+              paddingTop: theme.spacing(3),
+              paddingBottom: theme.spacing(3),
+            },
+          })}
+        >
+          <Dialog
+            open={pendingChat !== null}
+            onClose={() => setPendingChat(null)}
+            aria-labelledby={openChatConfirmTitleId}
+            data-testid="open-chat-confirm"
+          >
+            <DialogTitle id={openChatConfirmTitleId}>{t('copilot.openChatConfirmTitle')}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>{t('copilot.openChatConfirmMessage')}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setPendingChat(null)} data-testid="open-chat-cancel">
+                {t('copilot.openChatCancel')}
+              </Button>
+              <Button onClick={() => resolvePendingChat('discard')} color="error" data-testid="open-chat-discard">
+                {t('copilot.openChatDiscard')}
+              </Button>
+              <Button variant="contained" onClick={() => resolvePendingChat('save')} data-testid="open-chat-save">
+                {t('copilot.openChatSave')}
+              </Button>
+            </DialogActions>
+          </Dialog>
+          {globalError && (
+            <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
+              <Alert
+                severity="error"
+                data-testid="copilot-error"
+                sx={{
+                  boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
+                  '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
+                }}
+              >
+                {globalError}
+              </Alert>
+            </Box>
+          )}
+          {notice && (
+            <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
+              <Alert
+                severity="info"
+                data-testid="copilot-notice"
+                sx={{
+                  boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
+                  '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
+                }}
+              >
+                {notice}
+              </Alert>
+            </Box>
+          )}
+          <Conversation messages={messages} isThinking={isThinking} onAddToQueue={addToQueue} busy={busy} />
+          <ChatComposer
+            input={input}
+            onInputChange={setInput}
+            onSubmit={buildPlan}
+            onChooseFiles={chooseFiles}
+            onChooseFolder={chooseFolder}
+            onOpenSettings={openSettings}
+            inputs={inputs}
+            operation={operation}
+            onOperationChange={setOperation}
+            query={query}
+            onQueryChange={setQuery}
+            targetLanguage={targetLanguage}
+            onTargetLanguageChange={setTargetLanguage}
+            onRemoveInput={removeInput}
+            disabled={busy || inputsLoading}
+            busy={busy || inputsLoading}
+            hasInputs={inputs.length > 0}
+            connection={{
+              connected: aiConnection !== null,
+              ...(aiConnection ? { providerId: aiConnection.providerId, model: aiConnection.model } : {}),
+            }}
+            showReset={hasActiveChat}
+            showSave={hasActiveChat}
+            onSaveChat={handleSaveChat}
+            onOpenSavedChats={openSavedChats}
+            onResetConversation={() => {
+              setMessages([]);
+              setSavedChatId(null);
+              setInput('');
+              setInputs([]);
+              setOperation('auto');
+              setQuery('');
+              setTargetLanguage('');
+              setGlobalError(null);
+              setNotice(null);
+              setIsThinking(false);
+            }}
+            inputsLoading={inputsLoading}
+          />
+        </Box>
       </Box>
     </PageContainer>
   );

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import type { RefObject } from 'react';
 import BatchControls from '../BatchControls';
 import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
@@ -98,6 +98,7 @@ function renderControls(
 describe('BatchControls', () => {
   beforeEach(() => {
     useDismissedAlertsStore.setState({ dismissed: [] });
+    vi.mocked(window.electronAPI.getBmfStatus).mockResolvedValue({ available: true, missing: [] });
   });
 
   it('has no axe violations', async () => {
@@ -135,11 +136,36 @@ describe('BatchControls', () => {
     expect(onOperationChange).toHaveBeenCalledWith('extract_audio');
   });
 
-  it('updates the transcoder ref when a different transcoder is chosen', () => {
+  it('updates the transcoder ref when a different transcoder is chosen', async () => {
     const { transcoderRef } = renderControls();
     fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByText('BMF'));
     expect(transcoderRef.current).toBe('BMF');
+    await waitFor(() => expect(window.electronAPI.getBmfStatus).toHaveBeenCalled());
+  });
+
+  it('disables adding files and shows the missing-tools notice when BMF is unavailable', async () => {
+    vi.mocked(window.electronAPI.getBmfStatus).mockResolvedValue({
+      available: false,
+      missing: ['bmf_ffmpeg'],
+    });
+    renderControls();
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.click(screen.getByText('BMF'));
+
+    expect(await screen.findByTestId('batch-bmf-missing')).toHaveTextContent('batchQueue.bmfNotFound');
+    expect(screen.getByRole('button', { name: 'batchQueue.addFiles' })).toBeDisabled();
+  });
+
+  it('does not block adding files when the BMF status check rejects', async () => {
+    vi.mocked(window.electronAPI.getBmfStatus).mockRejectedValue(new Error('ipc down'));
+    renderControls();
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.click(screen.getByText('BMF'));
+
+    await waitFor(() => expect(window.electronAPI.getBmfStatus).toHaveBeenCalled());
+    expect(screen.queryByTestId('batch-bmf-missing')).toBeNull();
+    expect(screen.getByRole('button', { name: 'batchQueue.addFiles' })).not.toBeDisabled();
   });
 
   it('updates the suffix ref when the suffix field changes', () => {

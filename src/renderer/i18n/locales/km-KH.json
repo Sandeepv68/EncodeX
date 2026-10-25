@@ -67,6 +67,9 @@
     "cancelLabel": "បោះបង់"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF មិនត្រូវបានភ្ជាប់មកជាមួយ EncodeX ទេ។ សូមដំឡើងដោយដៃ ហើយធានាថា bmf_ffmpeg និង bmf_ffprobe នៅលើ PATH របស់អ្នក។",
+    "transcoderBmfLabelSuffix": " (មិនត្រូវបានភ្ជាប់មកជាមួយ)",
+    "transcoderBmfNotFound": "រកមិនឃើញ BMF នៅលើ PATH របស់អ្នកទេ (បាត់: {{missing}})។ សូមដំឡើង BMF ហើយជ្រើសរើសវាម្ដងទៀត។ ការបម្លែង BMF ត្រូវបានបិទរហូតដល់វារកឃើញ។",
     "title": "បម្លែងមេឌៀ",
     "sourceFiles": "បរគ្សនាស្សពលកលប្រងសរព",
     "encoding": "អ៊ិនកូដ",
@@ -357,6 +360,8 @@
     "videoPlayer": "អ្នកចាក់វីដេអូ"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF មិនត្រូវបានភ្ជាប់មកជាមួយ EncodeX ទេ។ សូមដំឡើងដោយដៃ ហើយធានាថា bmf_ffmpeg និង bmf_ffprobe នៅលើ PATH របស់អ្នក។",
+    "bmfNotFound": "រកមិនឃើញ BMF នៅលើ PATH របស់អ្នកទេ (បាត់: {{missing}})។ សូមដំឡើង BMF ហើយជ្រើសរើសវាម្ដងទៀត។ ការបន្ថែមការងារ BMF ត្រូវបានបិទរហូតដល់វារកឃើញ។",
     "title": "ជួរដេកដំណើរការដុំ",
     "operation": "ប្រតិបត្តិការ",
     "suffix": "បច្ច័យ",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "តម្រងវីដេអូត្រូវបានមិនអើពើ ដរាបណាគោលដៅវីដេអូគឺ «ចម្លង» ព្រោះការចម្លងស្ទ្រីមមិនអាចអ៊ិនកូដឡើងវិញបាន។ ជ្រើសកុងតឺន័រគោលដៅដើម្បីអនុវត្តតម្រង។"
   },
   "copilot": {
+    "saveChat": "រក្សាទុកការសន្ទនា",
+    "savedChats": "ការសន្ទនាដែលបានរក្សាទុក",
+    "chatSaved": "បានរក្សាទុកការសន្ទនា",
+    "savedChatsTitle": "ការសន្ទនាដែលបានរក្សាទុក",
+    "savedChatsEmpty": "មិនមានការសន្ទនាដែលបានរក្សាទុកទេ។ ប្រើ «រក្សាទុកការសន្ទនា» ដើម្បីរក្សាទុកមួយ។",
+    "savedChatsClose": "បិទ",
+    "savedChatUntitled": "ការសន្ទនាគ្មានឈ្មោះ",
+    "savedChatMeta": "សារ {{count}} · {{date}}",
+    "savedChatOpen": "បើក",
+    "savedChatDelete": "លុបការសន្ទនាដែលបានរក្សាទុក",
+    "savedChatSaveFailed": "មិនអាចរក្សាទុកការសន្ទនាបានទេ។ ទំហំផ្ទុករបស់កម្មវិធីរុករកអាចនឹងពេញ។",
+    "openChatConfirmTitle": "បើកការសន្ទនាដែលបានរក្សាទុកឬ?",
+    "openChatConfirmMessage": "ការសន្ទនាបច្ចុប្បន្នមិនទាន់បានរក្សាទុកទេ។ ការបើកការសន្ទនានេះនឹងជំនួសវា។",
+    "openChatSave": "រក្សាទុក និងបើក",
+    "openChatDiscard": "បោះបង់ និងបើក",
+    "openChatCancel": "បោះបង់",
     "title": "Copilot",
     "subtitle": "ពិពណ៌នាអំពីគោលដៅ ហើយទុកឲ្យ Copilot រៀបចំផែនការនៃការបំប្លែង បន្ទាប់មករុញផែនការទៅកាន់ជួរដេកបាច (Batch Queue)។",
     "goalLabel": "គោលដៅ",

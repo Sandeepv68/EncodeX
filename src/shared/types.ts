@@ -650,3 +650,14 @@ export interface PendingInstall {
   installerPath: string;
   version: string;
 }
+
+/**
+ * Availability of the BMF framework CLI tools on the system PATH.
+ * @interface BmfStatus
+ * @property {boolean} available - True when both bmf_ffmpeg and bmf_ffprobe resolve.
+ * @property {string[]} missing - Names of the BMF executables that were not found.
+ */
+export interface BmfStatus {
+  available: boolean;
+  missing: string[];
+}

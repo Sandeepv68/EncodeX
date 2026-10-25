@@ -67,6 +67,9 @@
     "cancelLabel": "キャンセル"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF は EncodeX に同梱されていません。手動でインストールし、bmf_ffmpeg と bmf_ffprobe が PATH 上にあることを確認してください。",
+    "transcoderBmfLabelSuffix": " (同梱なし)",
+    "transcoderBmfNotFound": "PATH 上に BMF が見つかりません（不足: {{missing}}）。BMF をインストールしてから再度選択してください。BMF が検出されるまで BMF 変換は無効になります。",
     "title": "メディア変換",
     "sourceFiles": "ソースファイル",
     "encoding": "エンコード",
@@ -357,6 +360,8 @@
     "videoPlayer": "ビデオプレーヤー"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF は EncodeX に同梱されていません。手動でインストールし、bmf_ffmpeg と bmf_ffprobe が PATH 上にあることを確認してください。",
+    "bmfNotFound": "PATH 上に BMF が見つかりません（不足: {{missing}}）。BMF をインストールしてから再度選択してください。BMF が検出されるまで BMF ジョブの追加は無効になります。",
     "title": "バッチキュー",
     "operation": "操作",
     "suffix": "サフィックス",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "動画の出力先が「コピー」の間はビデオフィルターは無視されます。ストリームコピーは再エンコードできないためです。フィルターを適用するには動画の出力先コンテナーを選択してください。"
   },
   "copilot": {
+    "saveChat": "チャットを保存",
+    "savedChats": "保存したチャット",
+    "chatSaved": "会話を保存しました",
+    "savedChatsTitle": "保存した会話",
+    "savedChatsEmpty": "保存された会話はありません。「チャットを保存」を使って会話を保存できます。",
+    "savedChatsClose": "閉じる",
+    "savedChatUntitled": "無題の会話",
+    "savedChatMeta": "{{count}} 件のメッセージ · {{date}}",
+    "savedChatOpen": "開く",
+    "savedChatDelete": "保存した会話を削除",
+    "savedChatSaveFailed": "会話を保存できませんでした。ブラウザのストレージがいっぱいの可能性があります。",
+    "openChatConfirmTitle": "保存した会話を開きますか？",
+    "openChatConfirmMessage": "現在の会話は保存されていません。この会話を開くと、現在の会話は置き換えられます。",
+    "openChatSave": "保存して開く",
+    "openChatDiscard": "破棄して開く",
+    "openChatCancel": "キャンセル",
     "title": "Copilot",
     "subtitle": "目標を説明すると Copilot が変換を計画し、その計画をバッチキューに送信します。",
     "goalLabel": "目標",

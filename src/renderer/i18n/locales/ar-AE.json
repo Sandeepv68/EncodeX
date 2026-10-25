@@ -67,6 +67,9 @@
     "cancelLabel": "إلغاء"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF غير مرفق مع EncodeX. ثبّته يدويًا وتأكد من أن bmf_ffmpeg وbmf_ffprobe موجودان في PATH الخاص بك.",
+    "transcoderBmfLabelSuffix": " (غير مرفق)",
+    "transcoderBmfNotFound": "لم يتم العثور على BMF في PATH الخاص بك (المفقود: {{missing}}). ثبّت BMF ثم أعد تحديده. ستبقى تحويلات BMF معطلة حتى يتم اكتشافه.",
     "title": "تحويل الوسائط",
     "sourceFiles": "ملفات المصدر",
     "encoding": "الترميز",
@@ -357,6 +360,8 @@
     "videoPlayer": "مشغل الفيديو"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF غير مرفق مع EncodeX. ثبّته يدويًا وتأكد من أن bmf_ffmpeg وbmf_ffprobe موجودان في PATH الخاص بك.",
+    "bmfNotFound": "لم يتم العثور على BMF في PATH الخاص بك (المفقود: {{missing}}). ثبّت BMF ثم أعد تحديده. ستبقى إضافة مهام BMF معطلة حتى يتم اكتشافه.",
     "title": "قائمة الدفعات",
     "operation": "العملية",
     "suffix": "اللاحقة",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "تُتجاهل مرشّحات الفيديو ما دامت وجهة الفيديو هي «نسخ»، لأن نسخة التدفّق لا يمكن إعادة ترميزها. اختر حاوية وجهة لتطبيق المرشّحات."
   },
   "copilot": {
+    "saveChat": "حفظ المحادثة",
+    "savedChats": "المحادثات المحفوظة",
+    "chatSaved": "تم حفظ المحادثة",
+    "savedChatsTitle": "المحادثات المحفوظة",
+    "savedChatsEmpty": "لا توجد محادثات محفوظة. استخدم «حفظ المحادثة» للاحتفاظ بمحادثة.",
+    "savedChatsClose": "إغلاق",
+    "savedChatUntitled": "محادثة بدون عنوان",
+    "savedChatMeta": "{{count}} رسالة · {{date}}",
+    "savedChatOpen": "فتح",
+    "savedChatDelete": "حذف المحادثة المحفوظة",
+    "savedChatSaveFailed": "تعذّر حفظ المحادثة. قد تكون مساحة تخزين المتصفح ممتلئة.",
+    "openChatConfirmTitle": "فتح محادثة محفوظة؟",
+    "openChatConfirmMessage": "لم يتم حفظ المحادثة الحالية. فتح هذه المحادثة سيستبدلها.",
+    "openChatSave": "حفظ وفتح",
+    "openChatDiscard": "تجاهل وفتح",
+    "openChatCancel": "إلغاء",
     "title": "Copilot",
     "subtitle": "صِف هدفًا ودَع Copilot يخطط للتحويلات، ثم ادفع الخطة إلى قائمة الدفعات.",
     "goalLabel": "الهدف",

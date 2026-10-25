@@ -16,7 +16,10 @@ import { useLocation } from 'react-router-dom';
 import { NavigationGuardProvider } from '../NavigationGuardContext';
 import { useToastStore } from '../stores/toastStore';
 import { useAiConnectionStore } from '../stores/aiConnectionStore';
+import { readSavedCopilotChats, saveCopilotChat } from '../stores/copilotChats';
+import type { SavedCopilotChat } from '../stores/copilotChats';
 import type { CopilotPlan } from '../../shared/copilot';
+import { expectAppLog } from '../../test-utils/crash-tripwire';
 
 /** The most recent route the page navigated to, captured by {@link LocationProbe}. */
 let lastPath = '';
@@ -177,9 +180,39 @@ async function chooseFolder(waitEnabled = true): Promise<void> {
   }
 }
 
+/**
+ * Writes a saved conversation straight to storage.
+ * @param {string} id - Chat id.
+ * @param {string} content - User message content, also used as the title.
+ * @param {number} savedAt - Sort timestamp.
+ * @returns {SavedCopilotChat} The stored chat.
+ */
+function seedChat(id: string, content: string, savedAt: number): SavedCopilotChat {
+  const chat: SavedCopilotChat = {
+    id,
+    title: content,
+    savedAt,
+    messages: [{ id: `${id}-m1`, role: 'user', content, timestamp: savedAt }],
+  };
+  saveCopilotChat(chat);
+  return chat;
+}
+
+/**
+ * Builds an active transcript so the open-chat confirmation is required.
+ * @returns {Promise<void>} Resolves once the plan summary is rendered.
+ */
+async function startActivePlan(): Promise<void> {
+  await typeMessage('compress for web');
+  await chooseFolder();
+  fireEvent.click(screen.getByTestId('copilot-plan'));
+  await screen.findByTestId('copilot-plan-summary');
+}
+
 describe('Copilot page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     useToastStore.setState({ toasts: [] });
     useAiConnectionStore.getState().reset();
     lastPath = '';
@@ -727,5 +760,123 @@ describe('Copilot page', () => {
     expect(screen.getByText(/copilot.noActions/)).toBeDefined();
     expect(screen.queryByTestId('copilot-add-to-queue')).toBeNull();
     expect(window.electronAPI.queueAdd).not.toHaveBeenCalled();
+  });
+
+  it('saves the transcript, updates the same entry on re-save and reopens it directly', async () => {
+    renderPage('Copilot');
+    await startActivePlan();
+
+    fireEvent.click(screen.getByTestId('copilot-save-chat'));
+    await waitFor(() => expect(readSavedCopilotChats()).toHaveLength(1));
+    const [saved] = readSavedCopilotChats();
+    expect(saved.title).toBe('compress for web');
+    expect(saved.messages.length).toBeGreaterThan(0);
+    expect(useToastStore.getState().toasts.some((t) => t.message === 'copilot.chatSaved')).toBe(true);
+
+    fireEvent.click(screen.getByTestId('copilot-save-chat'));
+    await waitFor(() => expect(readSavedCopilotChats()).toHaveLength(1));
+
+    fireEvent.click(screen.getByTestId('copilot-saved-chats'));
+    fireEvent.click(screen.getByRole('button', { name: 'copilot.savedChatsClose' }));
+    fireEvent.click(screen.getByTestId('copilot-saved-chats'));
+    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+    await waitFor(() => expect(screen.queryByTestId('open-chat-confirm')).toBeNull());
+    expect(within(screen.getByTestId('copilot-conversation')).getByText('compress for web')).toBeInTheDocument();
+  });
+
+  it('loads a saved chat straight away when the transcript is empty', async () => {
+    seedChat('saved-1', 'saved transcript', 2);
+    renderPage('Copilot');
+
+    fireEvent.click(screen.getByTestId('copilot-saved-chats'));
+    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+
+    const conversation = within(screen.getByTestId('copilot-conversation'));
+    expect(await conversation.findByText('saved transcript')).toBeInTheDocument();
+    expect(screen.getByTestId('copilot-conversation')).not.toHaveAttribute('data-empty', 'true');
+  });
+
+  it('keeps the active transcript when the open-chat prompt is cancelled', async () => {
+    seedChat('saved-1', 'saved transcript', 2);
+    renderPage('Copilot');
+    await startActivePlan();
+
+    fireEvent.click(screen.getByTestId('copilot-saved-chats'));
+    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+    const dialog = await screen.findByTestId('open-chat-confirm');
+
+    fireEvent.keyDown(dialog, { key: 'Escape', code: 'Escape' });
+    await waitFor(() => expect(screen.queryByTestId('open-chat-confirm')).toBeNull());
+    expect(screen.getByTestId('copilot-plan-summary')).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+    fireEvent.click(await screen.findByTestId('open-chat-cancel'));
+    await waitFor(() => expect(screen.queryByTestId('open-chat-confirm')).toBeNull());
+    expect(screen.getByTestId('copilot-plan-summary')).toBeInTheDocument();
+    expect(within(screen.getByTestId('copilot-conversation')).queryByText('saved transcript')).toBeNull();
+  });
+
+  it('discards the active transcript when opening a saved chat', async () => {
+    seedChat('saved-1', 'saved transcript', 2);
+    renderPage('Copilot');
+    await startActivePlan();
+
+    fireEvent.click(screen.getByTestId('copilot-saved-chats'));
+    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+    fireEvent.click(await screen.findByTestId('open-chat-discard'));
+
+    const conversation = within(screen.getByTestId('copilot-conversation'));
+    expect(await conversation.findByText('saved transcript')).toBeInTheDocument();
+    expect(screen.queryByTestId('copilot-plan-summary')).toBeNull();
+  });
+
+  it('saves the active transcript before opening another saved chat', async () => {
+    seedChat('saved-1', 'saved transcript', 2);
+    renderPage('Copilot');
+    await startActivePlan();
+
+    fireEvent.click(screen.getByTestId('copilot-saved-chats'));
+    fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+    fireEvent.click(await screen.findByTestId('open-chat-save'));
+
+    const conversation = within(screen.getByTestId('copilot-conversation'));
+    expect(await conversation.findByText('saved transcript')).toBeInTheDocument();
+    await waitFor(() => expect(readSavedCopilotChats()).toHaveLength(2));
+    expect(useToastStore.getState().toasts.some((t) => t.message === 'copilot.chatSaved')).toBe(true);
+  });
+
+  it('keeps the active transcript when saving before the switch fails', async () => {
+    seedChat('saved-1', 'saved transcript', 2);
+    renderPage('Copilot');
+    await startActivePlan();
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota exceeded');
+    });
+
+    try {
+      fireEvent.click(screen.getByTestId('copilot-saved-chats'));
+      fireEvent.click(await screen.findByRole('button', { name: 'copilot.savedChatOpen' }));
+      expectAppLog('warn', 'renderer/stores/copilotChats');
+      fireEvent.click(await screen.findByTestId('open-chat-save'));
+
+      expect(await screen.findByText('copilot.savedChatSaveFailed')).toBeInTheDocument();
+      expect(screen.getByTestId('copilot-plan-summary')).toBeInTheDocument();
+      expect(within(screen.getByTestId('copilot-conversation')).queryByText('saved transcript')).toBeNull();
+    } finally {
+      setItemSpy.mockRestore();
+    }
+  });
+
+  it('deletes a saved chat from the panel', async () => {
+    seedChat('saved-1', 'newest', 2);
+    seedChat('saved-2', 'older', 1);
+    renderPage('Copilot');
+
+    fireEvent.click(screen.getByTestId('copilot-saved-chats'));
+    expect(await screen.findAllByTestId('saved-chat-item')).toHaveLength(2);
+    fireEvent.click(screen.getAllByRole('button', { name: 'copilot.savedChatDelete' })[0]);
+
+    await waitFor(() => expect(screen.getAllByTestId('saved-chat-item')).toHaveLength(1));
+    expect(readSavedCopilotChats()).toHaveLength(1);
   });
 });

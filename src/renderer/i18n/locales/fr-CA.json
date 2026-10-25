@@ -67,6 +67,9 @@
     "cancelLabel": "Annuler"
   },
   "convert": {
+    "transcoderBmfNotBundled": "BMF n'est pas fourni avec EncodeX. Installez-le manuellement et assurez-vous que bmf_ffmpeg et bmf_ffprobe sont dans votre PATH.",
+    "transcoderBmfLabelSuffix": " (non fourni)",
+    "transcoderBmfNotFound": "BMF est introuvable dans votre PATH (manquant : {{missing}}). Installez BMF, puis resélectionnez-le. Les conversions BMF restent désactivées tant qu'il n'est pas détecté.",
     "title": "Convertir un Média",
     "sourceFiles": "Fichiers source",
     "encoding": "Encodage",
@@ -357,6 +360,8 @@
     "videoPlayer": "Lecteur vidéo"
   },
   "batchQueue": {
+    "bmfNotBundled": "BMF n'est pas fourni avec EncodeX. Installez-le manuellement et assurez-vous que bmf_ffmpeg et bmf_ffprobe sont dans votre PATH.",
+    "bmfNotFound": "BMF est introuvable dans votre PATH (manquant : {{missing}}). Installez BMF, puis resélectionnez-le. L'ajout de tâches BMF reste désactivé tant qu'il n'est pas détecté.",
     "title": "File d'Attente",
     "operation": "Opération",
     "suffix": "Suffixe",
@@ -1023,6 +1028,22 @@
     "filtersIgnoredCopy": "Les filtres vidéo sont ignorés tant que la cible vidéo est « Copier », car une copie de flux ne peut pas réencoder. Choisissez un conteneur cible pour les appliquer."
   },
   "copilot": {
+    "saveChat": "Enregistrer la conversation",
+    "savedChats": "Conversations enregistrées",
+    "chatSaved": "Conversation enregistrée",
+    "savedChatsTitle": "Conversations enregistrées",
+    "savedChatsEmpty": "Aucune conversation enregistrée. Utilisez « Enregistrer la conversation » pour en conserver une.",
+    "savedChatsClose": "Fermer",
+    "savedChatUntitled": "Conversation sans titre",
+    "savedChatMeta": "Messages : {{count}} · {{date}}",
+    "savedChatOpen": "Ouvrir",
+    "savedChatDelete": "Supprimer la conversation enregistrée",
+    "savedChatSaveFailed": "Impossible d'enregistrer la conversation. Le stockage du navigateur est peut-être plein.",
+    "openChatConfirmTitle": "Ouvrir la conversation enregistrée ?",
+    "openChatConfirmMessage": "La conversation actuelle n'a pas été enregistrée. Ouvrir celle-ci la remplacera.",
+    "openChatSave": "Enregistrer et ouvrir",
+    "openChatDiscard": "Ignorer et ouvrir",
+    "openChatCancel": "Annuler",
     "title": "Copilot",
     "subtitle": "Décrivez un objectif et laissez Copilot planifier les conversions, puis poussez le plan dans la File d'attente.",
     "goalLabel": "Objectif",
