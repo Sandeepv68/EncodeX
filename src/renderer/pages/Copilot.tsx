@@ -13,7 +13,7 @@
  * inline error instead of crashing the tree.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import {
@@ -48,6 +48,7 @@ const FOLDER_TIMEOUT_MS = 30_000;
 export default function Copilot() {
   const { t } = useTranslation();
   const { navigate, navigateWithoutGuard, registerGuard } = useNavigationGuard();
+  const openChatConfirmTitleId = useId();
 
   /** The conversation transcript. */
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
@@ -414,10 +415,10 @@ export default function Copilot() {
           <Dialog
             open={pendingChat !== null}
             onClose={() => setPendingChat(null)}
-            aria-labelledby="open-chat-confirm-title"
+            aria-labelledby={openChatConfirmTitleId}
             data-testid="open-chat-confirm"
           >
-            <DialogTitle id="open-chat-confirm-title">{t('copilot.openChatConfirmTitle')}</DialogTitle>
+            <DialogTitle id={openChatConfirmTitleId}>{t('copilot.openChatConfirmTitle')}</DialogTitle>
             <DialogContent>
               <DialogContentText>{t('copilot.openChatConfirmMessage')}</DialogContentText>
             </DialogContent>

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-21",
+  "updatedAt": "2026-10-25",
   "policy": "The `audit` job blocks on any HIGH or CRITICAL advisory from 'npm audit --json' that is NOT on this list. Each entry below is a known, tracked, unresolvable-now advisory (fix is a dependency that must land upstream or a deliberate pinned-range exception). A new entry is only added with a tracked issue; a NEW advisory not listed here fails the build even if 'npm audit' itself is still red for these known items. Moderate and lower are below the gate line but SHOULD still be drained opportunistically.",
   "advisories": [
     {
@@ -38,6 +38,12 @@
       "severity": "critical",
       "package": "shell-quote",
       "note": "shell-quote quote() command injection; propagates to 'concurrently'. Fix must land in a resolved shell-quote range."
+    },
+    {
+      "url": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5",
+      "severity": "high",
+      "package": "zod",
+      "note": "Nested zod 3.x under the dev-only @codecov/bundler-plugin-core (via @codecov/vite-plugin); advisory is fixed in zod >=4.6.6 and there is no patched 3.x release, so it clears when @codecov ships a zod 4 dependency."
     }
   ]
 }
