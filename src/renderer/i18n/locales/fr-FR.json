@@ -1035,7 +1035,7 @@
     "savedChatsEmpty": "Aucune conversation enregistrée. Utilisez « Enregistrer la conversation » pour en conserver une.",
     "savedChatsClose": "Fermer",
     "savedChatUntitled": "Conversation sans titre",
-    "savedChatMeta": "{{count}} messages · {{date}}",
+    "savedChatMeta": "Messages : {{count}} · {{date}}",
     "savedChatOpen": "Ouvrir",
     "savedChatDelete": "Supprimer la conversation enregistrée",
     "savedChatSaveFailed": "Impossible d'enregistrer la conversation. Le stockage du navigateur est peut-être plein.",
