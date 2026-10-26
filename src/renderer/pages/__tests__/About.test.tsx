@@ -39,8 +39,9 @@ describe('About', () => {
 
   it('lists the feature highlights', () => {
     render(<About />);
-    expect(screen.getByText('dashboard.descConvert')).toBeInTheDocument();
-    expect(screen.getByText('dashboard.descBatch')).toBeInTheDocument();
+    expect(screen.getByText('about.featureConvert')).toBeInTheDocument();
+    expect(screen.getByText('about.featureBatch')).toBeInTheDocument();
+    expect(screen.getByText('about.featureAutomation')).toBeInTheDocument();
   });
 
   it('shows the installed version and tech stack', () => {

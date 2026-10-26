@@ -4,7 +4,7 @@
  * navigation bar.
  *
  * Renders a PageContainer with the app logo, an intro subtitle, a feature list
- * reusing the dashboard card descriptions, meta rows for the installed version
+ * of "What you can do" highlights (about.feature* keys), meta rows for the installed version
  * (read from package.json) and the technologies the app is built with, and an
  * author & feedback section with links to the author's GitHub profile and the
  * project repository. External links open in the system browser via the main
@@ -35,17 +35,20 @@ import { useUpdateStore } from '../stores/updateStore';
 import { useTermsStore } from '../stores/termsStore';
 
 /**
- * Translation keys of the feature bullets, reused from the dashboard card
- * descriptions so the About page and the dashboard never drift apart.
+ * Translation keys of the "What you can do" feature bullets, in display order.
  * @const {readonly string[]} FEATURE_DESC_KEYS
  */
 const FEATURE_DESC_KEYS: readonly string[] = [
-  'dashboard.descConvert',
-  'dashboard.descMediaInfo',
-  'dashboard.descImage',
-  'dashboard.descAudio',
-  'dashboard.descCut',
-  'dashboard.descBatch',
+  'about.featureConvert',
+  'about.featureRemux',
+  'about.featureMediaInfo',
+  'about.featureImage',
+  'about.featureAudio',
+  'about.featureCut',
+  'about.featureProfiles',
+  'about.featureBatch',
+  'about.featureHardware',
+  'about.featureAutomation',
 ];
 
 /**
