@@ -105,7 +105,7 @@
     "@lexical/react": "^0.28.0",
     "@lexical/rich-text": "^0.28.0",
     "@lexical/utils": "^0.28.0",
-    "@modelcontextprotocol/ext-apps": "^1.7.5",
+    "@modelcontextprotocol/ext-apps": "^2.0.3",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@mui/material": "^9.5.0",
     "@sentry/electron": "^7.17.0",
