@@ -57,7 +57,9 @@
       "convert": "Конвертувати відео",
       "compress": "Стиснути файл",
       "extract": "Витягти аудіо",
-      "trim": "Обрізати кліп"
+      "trim": "Обрізати кліп",
+      "remux": "Remux файлу",
+      "copilot": "Запитати Copilot"
     }
   },
   "closeConfirm": {

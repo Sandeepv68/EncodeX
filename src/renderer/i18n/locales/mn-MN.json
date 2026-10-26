@@ -57,7 +57,9 @@
       "convert": "Видео хөрвүүлэх",
       "compress": "Файл шахах",
       "extract": "Аудио гаргаж авах",
-      "trim": "Клип тайрах"
+      "trim": "Клип тайрах",
+      "remux": "Файлыг remux хийх",
+      "copilot": "Copilot-оос асуух"
     }
   },
   "closeConfirm": {

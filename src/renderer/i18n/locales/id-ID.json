@@ -57,7 +57,9 @@
       "convert": "Konversi video",
       "compress": "Kompres file",
       "extract": "Ekstrak audio",
-      "trim": "Potong klip"
+      "trim": "Potong klip",
+      "remux": "Remux file",
+      "copilot": "Tanya Copilot"
     }
   },
   "closeConfirm": {

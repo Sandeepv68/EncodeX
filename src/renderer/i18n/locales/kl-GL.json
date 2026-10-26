@@ -57,7 +57,9 @@
       "convert": "Videomik allanngortitsineq",
       "compress": "Filinik komprimerineq",
       "extract": "Nipinik anisitsineq",
-      "trim": "Kaaserisamik savallugit"
+      "trim": "Kaaserisamik savallugit",
+      "remux": "Fiilimik remux-iuk",
+      "copilot": "Copilot-imut ajugaqarit"
     }
   },
   "closeConfirm": {

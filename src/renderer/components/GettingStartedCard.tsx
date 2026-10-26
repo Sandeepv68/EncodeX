@@ -61,12 +61,14 @@ interface GoalSpec {
   i18nKey: string;
 }
 
-/** The four goals offered on the card. @const {GoalSpec[]} */
+/** The goals offered on the card. @const {GoalSpec[]} */
 const GOALS: GoalSpec[] = [
+  { goal: 'copilot', to: '/copilot', i18nKey: 'copilot' },
   { goal: 'convert', to: '/convert', i18nKey: 'convert' },
   { goal: 'compress', to: '/image-compress', i18nKey: 'compress' },
   { goal: 'extract', to: '/audio-extract', i18nKey: 'extract' },
   { goal: 'trim', to: '/video-cut', i18nKey: 'trim' },
+  { goal: 'remux', to: '/remux', i18nKey: 'remux' },
 ];
 
 /**

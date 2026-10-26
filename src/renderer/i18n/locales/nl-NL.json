@@ -57,7 +57,9 @@
       "convert": "Video converteren",
       "compress": "Bestand comprimeren",
       "extract": "Audio extraheren",
-      "trim": "Clip bijsnijden"
+      "trim": "Clip bijsnijden",
+      "remux": "Bestand remuxen",
+      "copilot": "Vraag Copilot"
     }
   },
   "closeConfirm": {

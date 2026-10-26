@@ -57,7 +57,9 @@
       "convert": "Chuyển đổi video",
       "compress": "Nén tệp",
       "extract": "Trích xuất âm thanh",
-      "trim": "Cắt clip"
+      "trim": "Cắt clip",
+      "remux": "Remux một tệp",
+      "copilot": "Hỏi Copilot"
     }
   },
   "closeConfirm": {

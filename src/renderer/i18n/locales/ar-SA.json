@@ -57,7 +57,9 @@
       "convert": "تحويل فيديو",
       "compress": "ضغط ملف",
       "extract": "استخراج الصوت",
-      "trim": "قص مقطع"
+      "trim": "قص مقطع",
+      "remux": "إعادة تغليف ملف",
+      "copilot": "اسأل Copilot"
     }
   },
   "closeConfirm": {

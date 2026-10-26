@@ -57,7 +57,9 @@
       "convert": "Tukar video",
       "compress": "Mampatkan fail",
       "extract": "Ekstrak audio",
-      "trim": "Potong klip"
+      "trim": "Potong klip",
+      "remux": "Remux fail",
+      "copilot": "Tanya Copilot"
     }
   },
   "closeConfirm": {

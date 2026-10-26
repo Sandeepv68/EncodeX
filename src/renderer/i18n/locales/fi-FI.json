@@ -57,7 +57,9 @@
       "convert": "Muunna video",
       "compress": "Pakkaa tiedosto",
       "extract": "Pura ääniraita",
-      "trim": "Leikkaa katkelma"
+      "trim": "Leikkaa katkelma",
+      "remux": "Pakkaa tiedosto uudelleen",
+      "copilot": "Kysy Copilotilta"
     }
   },
   "closeConfirm": {

@@ -57,7 +57,9 @@
       "convert": "동영상 변환",
       "compress": "파일 압축",
       "extract": "오디오 추출",
-      "trim": "클립 자르기"
+      "trim": "클립 자르기",
+      "remux": "파일 리먹싱",
+      "copilot": "Copilot에 묻기"
     }
   },
   "closeConfirm": {

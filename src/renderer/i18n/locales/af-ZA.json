@@ -57,7 +57,9 @@
       "convert": "Omskep 'n video",
       "compress": "Komprimeer 'n lêer",
       "extract": "Onttrek klank",
-      "trim": "Snoei 'n snit"
+      "trim": "Snoei 'n snit",
+      "remux": "Herverpak 'n lêer",
+      "copilot": "Vra Copilot"
     }
   },
   "closeConfirm": {

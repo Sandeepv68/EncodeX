@@ -57,7 +57,9 @@
       "convert": "I-convert ang isang video",
       "compress": "I-compress ang isang file",
       "extract": "Kuhanin ang audio",
-      "trim": "I-trim ang isang clip"
+      "trim": "I-trim ang isang clip",
+      "remux": "I-remux ang file",
+      "copilot": "Magtanong sa Copilot"
     }
   },
   "closeConfirm": {

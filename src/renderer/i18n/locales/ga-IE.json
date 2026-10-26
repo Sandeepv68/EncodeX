@@ -57,7 +57,9 @@
       "convert": "Tiontaigh físeán",
       "compress": "Comhbhrúigh comhad",
       "extract": "Bain fuaim as",
-      "trim": "Bearr bunteascán"
+      "trim": "Bearr bunteascán",
+      "remux": "Comhad a athmhodhnú",
+      "copilot": "Fiafraigh de Copilot"
     }
   },
   "closeConfirm": {

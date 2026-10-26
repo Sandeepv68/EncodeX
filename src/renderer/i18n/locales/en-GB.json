@@ -57,7 +57,9 @@
       "convert": "Convert a video",
       "compress": "Compress a file",
       "extract": "Extract audio",
-      "trim": "Trim a clip"
+      "trim": "Trim a clip",
+      "remux": "Remux a file",
+      "copilot": "Ask Copilot"
     }
   },
   "closeConfirm": {

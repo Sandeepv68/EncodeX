@@ -57,7 +57,9 @@
       "convert": "ແປງວິດີໂອ",
       "compress": "ບີບອັດໄຟລ໌",
       "extract": "ດຶງສຽງອອກ",
-      "trim": "ຕັດຄລິບ"
+      "trim": "ຕັດຄລິບ",
+      "remux": "Remux ໄຟລ໌",
+      "copilot": "ຖາມ Copilot"
     }
   },
   "closeConfirm": {

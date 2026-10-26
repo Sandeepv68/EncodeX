@@ -57,7 +57,9 @@
       "convert": "動画を変換",
       "compress": "ファイルを圧縮",
       "extract": "音声を抽出",
-      "trim": "クリップをトリミング"
+      "trim": "クリップをトリミング",
+      "remux": "ファイルをリマックス",
+      "copilot": "Copilot に相談"
     }
   },
   "closeConfirm": {

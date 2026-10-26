@@ -57,7 +57,9 @@
       "convert": "แปลงวิดีโอ",
       "compress": "บีบอัดไฟล์",
       "extract": "แยกเสียง",
-      "trim": "ตัดคลิป"
+      "trim": "ตัดคลิป",
+      "remux": "รีมักซ์ไฟล์",
+      "copilot": "ถาม Copilot"
     }
   },
   "closeConfirm": {

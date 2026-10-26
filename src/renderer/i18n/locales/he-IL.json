@@ -57,7 +57,9 @@
       "convert": "המרת וידאו",
       "compress": "דחיסת קובץ",
       "extract": "חילוץ אודיו",
-      "trim": "חיתוך קטע"
+      "trim": "חיתוך קטע",
+      "remux": "ארוז מחדש קובץ",
+      "copilot": "שאל את Copilot"
     }
   },
   "closeConfirm": {

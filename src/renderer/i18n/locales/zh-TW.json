@@ -57,7 +57,9 @@
       "convert": "轉換影片",
       "compress": "壓縮檔案",
       "extract": "擷取音訊",
-      "trim": "裁剪片段"
+      "trim": "裁剪片段",
+      "remux": "重新封裝檔案",
+      "copilot": "詢問 Copilot"
     }
   },
   "closeConfirm": {

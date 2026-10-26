@@ -57,7 +57,9 @@
       "convert": "Hurihia tētahi ataata",
       "compress": "Kōmitimiti tētahi kōnae",
       "extract": "Tangohia te oro",
-      "trim": "Whakatote tētahi topenga"
+      "trim": "Whakatote tētahi topenga",
+      "remux": "Remux te kōnae",
+      "copilot": "Pātai ki a Copilot"
     }
   },
   "closeConfirm": {

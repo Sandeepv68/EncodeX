@@ -57,7 +57,9 @@
       "convert": "បំលែងវីដេអូ",
       "compress": "បង្ហាប់ឯកសារ",
       "extract": "ទាញយកសំឡេង",
-      "trim": "កាត់វីដេអូខ្លី"
+      "trim": "កាត់វីដេអូខ្លី",
+      "remux": "Remux ឯកសារ",
+      "copilot": "សួរ Copilot"
     }
   },
   "closeConfirm": {

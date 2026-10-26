@@ -57,7 +57,9 @@
       "convert": "Umbreyta myndbandi",
       "compress": "Þjappa skrá",
       "extract": "Sækja hljóð",
-      "trim": "Klippa bút"
+      "trim": "Klippa bút",
+      "remux": "Endurpakka skrá",
+      "copilot": "Spyrja Copilot"
     }
   },
   "closeConfirm": {

@@ -35,9 +35,9 @@ describe('GettingStartedCard', () => {
     expect(screen.getByTestId('getting-started-card')).toBeInTheDocument();
   });
 
-  it('renders all four goal chips', () => {
+  it('renders all six goal chips', () => {
     renderCard();
-    for (const goal of ['convert', 'compress', 'extract', 'trim']) {
+    for (const goal of ['convert', 'compress', 'extract', 'trim', 'remux', 'copilot']) {
       expect(screen.getByTestId(`getting-started-goal-${goal}`)).toBeInTheDocument();
     }
   });

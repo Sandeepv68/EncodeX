@@ -57,7 +57,9 @@
       "convert": "Konverter en video",
       "compress": "Komprimer en fil",
       "extract": "Udtræk lyd",
-      "trim": "Klip et klip"
+      "trim": "Klip et klip",
+      "remux": "Remux en fil",
+      "copilot": "Spørg Copilot"
     }
   },
   "closeConfirm": {

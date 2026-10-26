@@ -57,7 +57,9 @@
       "convert": "Konvertera en video",
       "compress": "Komprimera en fil",
       "extract": "Extrahera ljud",
-      "trim": "Trimma ett klipp"
+      "trim": "Trimma ett klipp",
+      "remux": "Remuxa en fil",
+      "copilot": "Fråga Copilot"
     }
   },
   "closeConfirm": {

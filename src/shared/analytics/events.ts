@@ -173,7 +173,7 @@ export type AnalyticsEventName =
   | 'ui_error_shown';
 
 /** Categorical goals offered by the first-run onboarding card. */
-export type OnboardingGoal = 'convert' | 'compress' | 'extract' | 'trim';
+export type OnboardingGoal = 'convert' | 'compress' | 'extract' | 'trim' | 'remux' | 'copilot';
 
 /** Source disambiguator shared by input-selection events (D9). */
 export type InputSource = 'dialog' | 'drop' | 'folder';
