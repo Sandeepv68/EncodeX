@@ -148,7 +148,7 @@
     "@types/ora": "^3.2.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^6.0.4",
+    "@vitejs/plugin-react": "^6.1.2",
     "@vitest/coverage-v8": "^4.1.10",
     "axe-core": "^4.13.0",
     "concurrently": "^10.0.4",
