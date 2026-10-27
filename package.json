@@ -51,6 +51,8 @@
     "test:unit": "vitest run",
     "test:coverage": "vitest run --coverage --silent",
     "test:coverage:perfile": "npm run test:coverage && npm run test:integration && node scripts/coverage-floor-report.mjs",
+    "test:coverage:floor": "node scripts/coverage-floor-gate.mjs",
+    "coverage:baseline": "node scripts/coverage-baseline.mjs",
     "test:coverage:diff": "node scripts/coverage-diff.mjs",
     "test:integration": "npm run build:main && vitest run --config vitest.integration.config.ts --passWithNoTests --silent --coverage",
     "test:media-fuzz": "vitest run --config vitest.media-fuzz.config.ts",
@@ -72,6 +74,7 @@
     "test:e2e:mcp:real": "npm run build && vitest run --config e2e/vitest.e2e.real.config.ts e2e/mcp/embedded-gui.spec.ts e2e/mcp/vscode-ui.spec.ts",
     "test:flake-detect": "node scripts/flake-detect.mjs",
     "fetch:binaries": "node scripts/fetch-media-binaries.mjs",
+    "icons:generate": "electron scripts/generate-desktop-icons.mjs",
     "gen:sentry-config": "node scripts/generate-sentry-config.mjs",
     "gen:aptabase-config": "node scripts/generate-aptabase-config.mjs",
     "perf": "vitest run --config perf/vitest.perf.config.ts",
@@ -197,16 +200,27 @@
         "filter": [
           "**/*"
         ]
+      },
+      {
+        "from": "NOTICE",
+        "to": "NOTICE"
+      },
+      {
+        "from": "LICENSES",
+        "to": "LICENSES",
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "win": {
       "target": "nsis",
-      "icon": "assets/icons/AppIcon.icon/Assets/icon.png",
+      "icon": "assets/icons/icon.ico",
       "artifactName": "${productName}-${version}-${arch}-setup.${ext}"
     },
     "mac": {
       "target": "dmg",
-      "icon": "assets/icons/AppIcon.icon/Assets/icon.png",
+      "icon": "assets/icons/icon.icns",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "linux": {
