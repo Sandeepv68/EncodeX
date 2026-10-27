@@ -53,6 +53,8 @@ export const UI_VIEW_URIS = [
   'ui://encodex/error',
   'ui://encodex/batch',
   'ui://encodex/workflow',
+  'ui://encodex/profiles',
+  'ui://encodex/capabilities',
 ];
 
 /** Every resource URI served by every surface, sorted for exact comparison. @const {string[]} */

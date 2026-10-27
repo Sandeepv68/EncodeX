@@ -57,6 +57,8 @@ describe.runIf(IS_E2E)('MCP Apps surface (e2e)', () => {
       explain_error: 'ui://encodex/error',
       plan_workflow: 'ui://encodex/workflow',
       execute_workflow: 'ui://encodex/workflow',
+      list_profiles: 'ui://encodex/profiles',
+      list_capabilities: 'ui://encodex/capabilities',
     };
     for (const [name, uri] of Object.entries(expected)) {
       const tool = tools.find((candidate) => candidate.name === name);

@@ -174,3 +174,101 @@ export const ViewStepsIndex = styled(Box)(({ theme }) => ({
 export const ViewTableScroll = styled(Box)({
   overflowX: 'auto',
 });
+
+/** Vertical stack of blocks with a consistent gap. */
+export const ViewStack = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gap: theme.spacing(1),
+}));
+
+/** One row of a list: a flexible label, a status and an action. */
+export const ViewRow = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr) auto auto',
+  alignItems: 'center',
+  gap: theme.spacing(1.5),
+  padding: theme.spacing(1.25),
+  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+}));
+
+/** Full-width slot under a row, used for the progress track. */
+export const ViewRowFooter = styled(Box)({
+  gridColumn: '1 / -1',
+});
+
+/** Inline list of label/value facts. */
+export const ViewFactsList = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: theme.spacing(0.75, 2.25),
+  listStyle: 'none',
+  margin: 0,
+  padding: 0,
+}));
+
+/** One fact of the facts list. */
+export const ViewFact = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'baseline',
+  gap: theme.spacing(0.5),
+}));
+
+/** Responsive grid of form fields. */
+export const ViewFieldGrid = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: `repeat(auto-fit, minmax(${theme.typography.pxToRem(200)}, 1fr))`,
+  gap: theme.spacing(1.25),
+}));
+
+/** Bullet list with an arrow marker. */
+export const ViewBulletList = styled(Box)(({ theme }) => ({
+  listStyle: 'none',
+  margin: 0,
+  padding: 0,
+  display: 'grid',
+  gap: theme.spacing(0.5),
+  '& > li': {
+    position: 'relative',
+    paddingInlineStart: theme.spacing(2.25),
+    '&::before': {
+      content: '"→"',
+      position: 'absolute',
+      insetInlineStart: 0,
+      color: theme.palette.text.secondary,
+    },
+  },
+}));
+
+/** Bullet list with a dot marker. */
+export const ViewDotList = styled(Box)(({ theme }) => ({
+  listStyle: 'none',
+  margin: 0,
+  padding: 0,
+  display: 'grid',
+  gap: theme.spacing(0.5),
+  '& > li': {
+    position: 'relative',
+    paddingInlineStart: theme.spacing(1.75),
+    '&::before': {
+      content: '"·"',
+      position: 'absolute',
+      insetInlineStart: theme.spacing(0.5),
+      color: theme.palette.text.secondary,
+    },
+  },
+}));
+
+/** Plain block of body text. */
+export const ViewParagraph = styled(Typography)(({ theme }) => ({
+  margin: 0,
+  color: theme.palette.text.secondary,
+  overflowWrap: 'anywhere',
+}));
+
+/** Monospaced error detail. */
+export const ViewDetail = styled(Typography)(({ theme }) => ({
+  fontSize: theme.typography.pxToRem(12),
+  color: theme.palette.text.secondary,
+  overflowWrap: 'anywhere',
+}));

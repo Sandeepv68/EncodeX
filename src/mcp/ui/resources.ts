@@ -16,6 +16,7 @@ import type { McpServer } from '@modelcontextprotocol/server';
 import { registerAppResource } from '@modelcontextprotocol/ext-apps/server';
 import { MCP_UI_RESOURCE_MIME_TYPE } from '../../shared/mcp-ui';
 import { MCP_UI_VIEWS } from './registry';
+import { buildViewDocument } from './bundle';
 
 /**
  * Security metadata attached to every EncodeX view resource (R0.3).
@@ -55,7 +56,7 @@ export function registerUiResources(server: McpServer): void {
         {
           uri: view.uri,
           mimeType: MCP_UI_RESOURCE_MIME_TYPE,
-          text: view.html(),
+          text: buildViewDocument(view.viewId),
           _meta: MCP_UI_RESOURCE_META,
         },
       ],

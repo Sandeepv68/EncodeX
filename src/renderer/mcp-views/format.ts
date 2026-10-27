@@ -74,5 +74,8 @@ export function humanizeKey(key: string): string {
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
     .replace(/[_-]+/g, ' ')
     .trim();
-  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+  if (!spaced) return spaced;
+  const [first, ...rest] = spaced.split(' ');
+  const head = first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+  return [head, ...rest.map((word) => word.toLowerCase())].join(' ');
 }

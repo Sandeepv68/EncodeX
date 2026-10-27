@@ -84,6 +84,8 @@ const REQUIRED_VIEW_URIS = [
   'ui://encodex/error',
   'ui://encodex/batch',
   'ui://encodex/workflow',
+  'ui://encodex/profiles',
+  'ui://encodex/capabilities',
 ];
 
 /**

@@ -58,6 +58,8 @@ const UI_TOOL_ARGS: Record<string, Record<string, unknown>> = {
   explain_error: { code: 'CONVERSION_FAILED' },
   plan_workflow: { steps: [{ id: 'cut', tool: 'cut_video', args: { input: '' } }] },
   execute_workflow: { steps: [{ id: 'cut', tool: 'cut_video', args: { input: '' } }] },
+  list_profiles: {},
+  list_capabilities: {},
 };
 
 /**

@@ -76,6 +76,8 @@ const VIEW_URIS = [
   'ui://encodex/error',
   'ui://encodex/batch',
   'ui://encodex/workflow',
+  'ui://encodex/profiles',
+  'ui://encodex/capabilities',
 ];
 const ALL_RESOURCE_URIS = [...RESOURCE_URIS, ...VIEW_URIS];
 const PROMPT_NAMES = ['convert-video', 'extract-audio', 'compress-image', 'batch-convert'];

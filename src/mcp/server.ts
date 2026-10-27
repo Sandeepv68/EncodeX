@@ -2571,29 +2571,33 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     async (args: z.infer<typeof workflowSchema>) => runWorkflow(args, shouldConfirm()),
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'list_capabilities',
     {
       title: 'List Capabilities',
       description: 'Returns the FFmpeg encoders and hardware acceleration methods available on this system.',
       inputSchema: z.object({}),
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.capabilities } },
     },
     async () => {
       const caps = getEncoderCapabilities();
-      return ok(JSON.stringify(caps), { capabilities: caps });
+      return okUi(JSON.stringify(caps), { capabilities: caps });
     },
   );
 
-  server.registerTool(
+  registerAppTool(
+    server,
     'list_profiles',
     {
       title: 'List Profiles',
       description: 'Lists the built-in conversion profiles (id, name, category, container, codecs, presets).',
       inputSchema: z.object({}),
+      _meta: { ui: { resourceUri: MCP_UI_VIEW_URIS.profiles } },
     },
     async () => {
       const profiles = BUILTIN_PROFILES.map((p) => profileToJson(p));
-      return ok(JSON.stringify(profiles), { profiles });
+      return okUi(JSON.stringify(profiles), { profiles });
     },
   );
 

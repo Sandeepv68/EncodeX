@@ -117,6 +117,8 @@ export const RESOURCE_URIS = [
   'ui://encodex/error',
   'ui://encodex/batch',
   'ui://encodex/workflow',
+  'ui://encodex/profiles',
+  'ui://encodex/capabilities',
 ];
 
 /** Prompt names rendered by every surface. @const {string[]} */

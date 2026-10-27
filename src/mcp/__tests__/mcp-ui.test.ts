@@ -6,6 +6,9 @@
  * `text/html;profile=mcp-app` MIME type, and `resources/read` returns a
  * self-contained HTML document (no external script/style dependencies, so it
  * renders under the host's restrictive default CSP).
+ *
+ * The views themselves are React components rendered from the shared bundle;
+ * their behaviour is covered by `src/renderer/mcp-views/__tests__`.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -18,6 +21,14 @@ import { createMcpServer } from '../server';
 import { FakeTranscoder } from './test-helpers';
 import { MCP_UI_EXTENSION_ID, MCP_UI_RESOURCE_MIME_TYPE, MCP_UI_VIEW_URIS, supportsMcpUi } from '../../shared/mcp-ui';
 import { findUiView, MCP_UI_VIEWS } from '../ui/registry';
+import { buildViewDocument } from '../ui/bundle';
+
+/**
+ * Ceiling for one served view document, in bytes. The document carries React,
+ * MUI, the `ext-apps` App class and every view, so it is large by design; the
+ * budget catches an accidental regression, not a size preference.
+ */
+const VIEW_DOCUMENT_BUDGET = 1024 * 1024;
 
 /**
  * Connected in-memory MCP session for UI tests.
@@ -76,23 +87,24 @@ describe('MCP Apps server surface', () => {
     const session = await connect();
     try {
       const { resources } = await session.client.listResources();
-      for (const uri of [
-        MCP_UI_VIEW_URIS.queue,
-        MCP_UI_VIEW_URIS.job,
-        MCP_UI_VIEW_URIS.mediaInfo,
-        MCP_UI_VIEW_URIS.convert,
-        MCP_UI_VIEW_URIS.confirm,
-        MCP_UI_VIEW_URIS.inspector,
-        MCP_UI_VIEW_URIS.plan,
-        MCP_UI_VIEW_URIS.lab,
-        MCP_UI_VIEW_URIS.error,
-        MCP_UI_VIEW_URIS.batch,
-        MCP_UI_VIEW_URIS.workflow,
-      ]) {
-        const view = resources.find((resource) => resource.uri === uri);
-        expect(view, `missing view ${uri}`).toBeDefined();
-        expect(view?.mimeType).toBe(MCP_UI_RESOURCE_MIME_TYPE);
+      for (const view of MCP_UI_VIEWS) {
+        const listed = resources.find((resource) => resource.uri === view.uri);
+        expect(listed, `missing view ${view.uri}`).toBeDefined();
+        expect(listed?.mimeType).toBe(MCP_UI_RESOURCE_MIME_TYPE);
       }
+    } finally {
+      await session.close();
+    }
+  });
+
+  it('serves every view the registry declares, including the profile and capability views', async () => {
+    const session = await connect();
+    try {
+      const { resources } = await session.client.listResources();
+      const uris = resources.map((resource) => resource.uri);
+      expect(uris).toContain(MCP_UI_VIEW_URIS.profiles);
+      expect(uris).toContain(MCP_UI_VIEW_URIS.capabilities);
+      expect(MCP_UI_VIEWS).toHaveLength(13);
     } finally {
       await session.close();
     }
@@ -133,7 +145,7 @@ describe('MCP Apps server surface', () => {
     }
   });
 
-  it('serves the queue view as self-contained HTML', async () => {
+  it('serves the queue view as self-contained HTML that mounts the queue view', async () => {
     const session = await connect();
     try {
       const result = await session.client.readResource({ uri: MCP_UI_VIEW_URIS.queue });
@@ -141,7 +153,7 @@ describe('MCP Apps server surface', () => {
       expect(first.mimeType).toBe(MCP_UI_RESOURCE_MIME_TYPE);
       const html = first.text ?? '';
       expect(html).toContain('<!doctype html>');
-      expect(html).toContain('EncodeX queue');
+      expect(html).toContain('window.__ENCODEX_VIEW__="queue"');
       expect(html).toContain('ui/initialize');
       expect(html).not.toMatch(/<script\b[^>]*\bsrc=/i);
       expect(html).not.toMatch(/<link\b[^>]*\bstylesheet/i);
@@ -153,22 +165,11 @@ describe('MCP Apps server surface', () => {
   it('serves every view self-contained and within the size budget', async () => {
     const session = await connect();
     try {
-      for (const uri of [
-        MCP_UI_VIEW_URIS.queue,
-        MCP_UI_VIEW_URIS.job,
-        MCP_UI_VIEW_URIS.mediaInfo,
-        MCP_UI_VIEW_URIS.convert,
-        MCP_UI_VIEW_URIS.confirm,
-        MCP_UI_VIEW_URIS.inspector,
-        MCP_UI_VIEW_URIS.plan,
-        MCP_UI_VIEW_URIS.lab,
-        MCP_UI_VIEW_URIS.error,
-        MCP_UI_VIEW_URIS.batch,
-        MCP_UI_VIEW_URIS.workflow,
-      ]) {
-        const result = await session.client.readResource({ uri });
+      for (const view of MCP_UI_VIEWS) {
+        const result = await session.client.readResource({ uri: view.uri });
         const html = (result.contents[0] as { text?: string }).text ?? '';
-        expect(html.length, `${uri} size budget`).toBeLessThan(100_000);
+        expect(html.length, `${view.uri} size budget`).toBeLessThan(VIEW_DOCUMENT_BUDGET);
+        expect(html, `${view.uri} bootstrap`).toContain(`window.__ENCODEX_VIEW__="${view.viewId}"`);
         expect(html).toContain('ui/initialize');
         expect(html).not.toMatch(/<script\b[^>]*\bsrc=/i);
         expect(html).not.toMatch(/<link\b[^>]*\bstylesheet/i);
@@ -252,6 +253,8 @@ describe('MCP Apps server surface', () => {
         batch_convert: MCP_UI_VIEW_URIS.batch,
         plan_workflow: MCP_UI_VIEW_URIS.workflow,
         execute_workflow: MCP_UI_VIEW_URIS.workflow,
+        list_profiles: MCP_UI_VIEW_URIS.profiles,
+        list_capabilities: MCP_UI_VIEW_URIS.capabilities,
       };
       for (const [name, uri] of Object.entries(expected)) {
         const tool = tools.find((candidate) => candidate.name === name);
@@ -259,6 +262,22 @@ describe('MCP Apps server surface', () => {
         const meta = tool?._meta as { ui?: { resourceUri?: string } } | undefined;
         expect(meta?.ui?.resourceUri, `${name} ui.resourceUri`).toBe(uri);
       }
+    } finally {
+      await session.close();
+    }
+  });
+
+  it('serves the profile and capability payloads the views render', async () => {
+    const session = await connect();
+    try {
+      const profiles = await session.client.callTool({ name: 'list_profiles', arguments: {} });
+      const profilePayload = (profiles as { structuredContent?: { profiles?: unknown[] } }).structuredContent;
+      expect(Array.isArray(profilePayload?.profiles)).toBe(true);
+      expect(profilePayload?.profiles?.length).toBeGreaterThan(0);
+
+      const capabilities = await session.client.callTool({ name: 'list_capabilities', arguments: {} });
+      const capabilityPayload = (capabilities as { structuredContent?: { capabilities?: { videoEncoders?: string[] } } }).structuredContent;
+      expect(Array.isArray(capabilityPayload?.capabilities?.videoEncoders)).toBe(true);
     } finally {
       await session.close();
     }
@@ -285,7 +304,9 @@ describe('MCP Apps view registry', () => {
 
   it('serves a self-contained HTML document for every registered view', () => {
     for (const view of MCP_UI_VIEWS) {
-      expect(view.html(), `${view.uri} html`).toContain('<!doctype html>');
+      const html = buildViewDocument(view.viewId);
+      expect(html, `${view.uri} html`).toContain('<!doctype html>');
+      expect(html, `${view.uri} bootstrap`).toContain(`window.__ENCODEX_VIEW__="${view.viewId}"`);
     }
   });
 });

@@ -75,7 +75,7 @@ export default [
       'encodex/no-hardcoded-strings': [
         'error',
         {
-          ignoreFiles: ['src/renderer/i18n/localeMeta.ts'],
+          ignoreFiles: ['src/renderer/i18n/localeMeta.ts', 'src/renderer/mcp-views/standalone/generated-strings.ts'],
         },
       ],
       'encodex/no-unused': 'error',
