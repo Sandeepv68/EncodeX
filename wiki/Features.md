@@ -2,11 +2,13 @@
 
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, conversion profiles, CLI mode, an MCP server for AI assistants, and full internationalization.
 
+> **Version:** the app is currently at `1.0.0-beta.5`, in the 1.0 production-readiness phase (release hardening, blocking audit gate, per-file coverage ratchet, mutation ratchet). The embedded MCP server and the local-model/STT/translation runtimes are the newest subsystems and are still opt-in.
+
 ## 🔄 Feature Overview
 
 ### Media Conversion
 
-Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below).
+Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below). <!-- drift:video-codecs=51 --> <!-- drift:audio-codecs=27 --> <!-- drift:pixel-formats=56 -->
 
 ### Media Rotation & Mirroring
 
@@ -14,7 +16,7 @@ Rotate videos and images by 90°, 180°, or 270° clockwise and mirror them (hor
 
 ### Conversion Profiles
 
-Choose from 115 built-in conversion presets organized into 8 categories to instantly configure codec, bitrate, quality, resolution, and container settings — no manual tweaking required. Categories include:
+Choose from 115 built-in conversion presets organized into 8 categories to instantly configure codec, bitrate, quality, resolution, and container settings — no manual tweaking required. <!-- drift:builtin-profiles=115 --> <!-- drift:profile-categories=8 --> Categories include:
 
 - **Web & Social** — optimized presets for YouTube, Instagram, TikTok, Facebook, and X (Twitter)
 - **Devices** — Apple (iPhone, iPad, Apple TV), Android, gaming consoles (PlayStation, Xbox, Nintendo Switch)
@@ -52,7 +54,7 @@ Stream-copy video or audio tracks without re-encoding (`-c copy`). Useful for fa
 
 ### Video Filters
 
-Apply up to 8 curated filter presets or a custom FFmpeg filter chain (200 characters per entry) during conversion. The presets are crop, framerate, deinterlace, denoise, sharpen, color, grayscale, and blur; custom `videoFilters` expressions run after scale and rotation. Filters require re-encoding and cannot be combined with stream copy.
+Apply up to 8 curated filter presets or a custom FFmpeg filter chain (200 characters per entry) during conversion. <!-- drift:video-filter-presets=8 --> The presets are crop, framerate, deinterlace, denoise, sharpen, color, grayscale, and blur; custom `videoFilters` expressions run after scale and rotation. Filters require re-encoding and cannot be combined with stream copy.
 
 ### Hardware Acceleration
 
@@ -97,7 +99,7 @@ Process multiple files with five configurable operations (transcode, extract aud
 
 ### Copilot (AI Assistant)
 
-The Copilot page turns a goal into a reviewable plan and can run it against the same media engine. It supports 13 operations: six queue-backed actions (convert, remux, demux, extract audio, compress image, cut) and seven read-only intelligence actions (analyze, transcribe, summarize, chapters, search transcript, translate, find similar).
+The Copilot page turns a goal into a reviewable plan and can run it against the same media engine. It supports 13 operations: six queue-backed actions (convert, remux, demux, extract audio, compress image, cut) and seven read-only intelligence actions (analyze, transcribe, summarize, chapters, search transcript, translate, find similar). <!-- drift:copilot-operations=13 -->
 
 AI providers are rules (the deterministic offline router and default), OpenAI, Anthropic, Gemini, and a local model runtime. OpenAI, Anthropic, and Gemini require an API key; the local provider runs on-device. Every plan is a proposal — nothing is queued until you confirm it.
 
@@ -105,10 +107,46 @@ AI providers are rules (the deterministic offline router and default), OpenAI, A
 
 EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so AI assistants and custom agents can drive the same media engine. Two launch modes share one tool catalogue:
 
-- **Standalone (stdio)** — `encodex --mcp` or `node dist/mcp/index.js`: 36 model-visible tools (37 registrations including the app-only `commit_operation`).
-- **Embedded (Streamable HTTP)** — toggle in **Settings → MCP Server**: the 37 registrations + 6 GUI-parity tools (live queue state, preview, timeline, system info, updates) = **43** total (42 model-visible), bound to `127.0.0.1:8765/mcp` by default with optional bearer-token auth.
+- **Standalone (stdio)** — `encodex --mcp` or `node dist/mcp/index.js`: 36 model-visible tools (37 registrations including the app-only `commit_operation`). <!-- drift:mcp-tools=36 --> <!-- drift:mcp-registrations=37 -->
+- **Embedded (Streamable HTTP)** — toggle in **Settings → MCP Server**: the 37 registrations + 6 GUI-parity tools (live queue state, preview, timeline, system info, updates) = **43** total (42 model-visible), bound to `127.0.0.1:8765/mcp` by default with optional bearer-token auth. <!-- drift:mcp-gui-tools=6 -->
 
 See the [[MCP]] page for the full tool catalogue, client configuration, and security model.
+
+### MCP Apps (Interactive Views)
+
+Beyond plain JSON tool results, the MCP surface can render interactive views inside the host client via the [MCP Apps](https://modelcontextprotocol.io) extension. `src/mcp/ui/` ships a resource registry, a renderer bridge, and an approval flow, plus 11 views:
+
+| View          | Purpose                                                     |
+| ------------- | ----------------------------------------------------------- |
+| `batch`       | Batch job list and per-job actions                          |
+| `confirm`     | Confirmation prompt before a mutating operation             |
+| `convert`     | Conversion job detail and progress                          |
+| `error`       | Structured failure with suggested fixes                     |
+| `inspector`   | Media inspector for the selected file                       |
+| `job`         | Single job status card                                      |
+| `lab`         | Media lab (analysis, recommendations, experiments)         |
+| `media-info`  | Stream-level media information                             |
+| `plan`        | Reviewable plan (the same plan object the Copilot uses)    |
+| `queue`       | Live queue state                                            |
+| `workflow`    | Multi-step workflow runner                                  |
+
+Operations that mutate the queue go through the approval bridge, so an agent cannot silently start work without the user seeing the plan.
+
+### Local Model Runtime
+
+Beyond the hosted providers, EncodeX can run models on-device:
+
+- **Local provider** — `local`, routed through `src/mcp/local-model-client.ts`; point it at a local runtime with `ENCODEX_LOCAL_MODEL_URL` and select the model with `ENCODEX_LOCAL_MODEL_MODEL`.
+- **Speech-to-text** — the whisper adapter in `src/mcp/stt-engine.ts`; configured with `ENCODEX_WHISPER_BIN` and `ENCODEX_WHISPER_MODEL`. When no engine is configured, transcription calls fail with the typed `TRANSCRIPTION_UNAVAILABLE` error instead of silently returning nothing.
+- **Translation** — `src/mcp/translate-engine.ts`; raises `TRANSLATION_UNAVAILABLE` when no engine is configured.
+
+### Output Size Estimation
+
+`src/shared/estimate.ts` provides an output-size estimate before a conversion runs. The figure is an **experimental rough upper bound**, not a guarantee, and is always labelled as an estimate wherever it is surfaced (Copilot plans, MCP `estimate_conversion`).
+
+### Audit Trail
+
+Mutating operations (conversions, queue edits, plan commits) emit structured audit entries via `src/shared/audit.ts`. Entries stream to the renderer over the `audit-entry` IPC channel and are stored by the `auditStore`, so a run can be reviewed after the fact. The audit contract is provider-agnostic and independent of the error-monitoring layer.
 
 ### Settings
 
@@ -116,7 +154,7 @@ Dedicated settings page for theme, hardware acceleration (enable/disable, mode, 
 
 ### Keyboard Shortcuts
 
-A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 82 shortcuts across 11 sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Highlights:
+A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 71 shortcuts across 11 sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 --> Highlights:
 
 - `Ctrl+/` — open the shortcuts help dialog
 - `Alt+0`…`Alt+9` — jump directly to a page (Remux is `Alt+0`)
@@ -180,7 +218,7 @@ Provider-agnostic, categorical-only usage analytics (first adapter: Aptabase) dr
 
 ### Internationalization
 
-56 locales (36 distinct base language subtags):
+56 locales (36 distinct base language subtags): <!-- drift:locales=56 --> <!-- drift:locale-subtags=36 -->
 
 | Language    | Locales                                    |
 | ----------- | ------------------------------------------ |
@@ -293,7 +331,7 @@ Structured error system with typed error codes (`ErrorCode`), user-facing locali
 | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `TRANSCODER_TYPES`                                | `['FFMPEG', 'FFTOOL', 'BMF']`                                                                                                                                     |
 | `TRANSCODER_LABELS`                               | `{ FFMPEG: 'FFmpeg (API)', FFTOOL: 'FFmpeg (CLI)', BMF: 'BMF Framework' }`                                                                                        |
-| `FFMPEG_FLAGS`                                    | `-c`, `-vcodec`, `-acodec`, `-b:v`, `-b:a`, `-qscale:v`, `-vf`, `-pix_fmt`, `-color_range`, `-ss`, `-to`, `-t`, `-y`, `-i`, `-an`, `-sn`, `-dn`, `-re`, `-copyts` |
+| `FFMPEG_FLAGS`                                    | `-c`, `-vcodec`, `-acodec`, `-b:v`, `-b:a`, `-qscale:v`, `-vf`, `-pix_fmt`, `-color_range`, `-ss`, `-to`, `-t`, `-y`, `-i`, `-an`, `-vn`, `-sn`, `-dn`, `-re`, `-copyts` |
 | `FFPROBE_FLAGS`                                   | `-v quiet -print_format json -show_format -show_streams`                                                                                                          |
 | `TRANSCODER_COMMANDS`                             | `bmf_ffmpeg`, `bmf_ffprobe`, `ffmpeg`, `ffprobe`                                                                                                                  |
 | `TRANSCODER_DEFAULTS.PROGRESS_INTERVAL_MS`        | `500`                                                                                                                                                             |

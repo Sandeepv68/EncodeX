@@ -1,5 +1,7 @@
 # Architektur
 
+<!-- drift: error-codes=28 mcp-tools=36 mcp-registrations=37 -->
+
 EncodeX ist ein plattformübergreifendes Multimedia-Konvertierungstool auf Basis von FFmpeg, React, TypeScript und Electron. Es richtet sich an Entwickler, die verstehen möchten, wie die Bausteine zusammenspielen, bevor sie beitragen.
 
 <p align="center"><img src="/images/architecture.webp" alt="EncodeX architecture" width="1024" height="1024" loading="lazy" /></p>

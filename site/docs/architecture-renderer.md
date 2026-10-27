@@ -1,4 +1,6 @@
 ---
+
+<!-- drift: audio-codecs=27 copilot-operations=13 locales=56 -->
 title: "Renderer, State & Subsystems — EncodeX Architecture"
 description: "EncodeX renderer process: React pages, Zustand stores, batch queue, video player, timeline, image processing, i18n, theming, and data flow."
 ---

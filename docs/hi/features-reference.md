@@ -1,5 +1,7 @@
 # फ़ीचर्स
 
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+
 EncodeX एक क्रॉस-प्लेटफ़ॉर्म मल्टीमीडिया रूपांतरण उपकरण है जो FFmpeg की शक्ति को एक आधुनिक, सहज desktop interface में लाता है। Electron, React, और TypeScript के साथ built, यह आपको formats के बीच media convert करने, audio extract करने, videos cut करने, और images compress करने देता है — सब कुछ एक clean, responsive UI के माध्यम से batch queue, hardware acceleration, CLI mode, और full internationalization के साथ।
 
 ## फ़ीचर overview
@@ -94,7 +96,7 @@ Embedded सर्वर सिर्फ़ loopback से binds होता �
 
 ### Keyboard shortcuts
 
-एक central shortcut registry (`src/renderer/constants/shortcuts.ts`) 11 sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard) में 82 shortcuts define करता है। Highlights:
+एक central shortcut registry (`src/renderer/constants/shortcuts.ts`) 11 sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard) में 71 shortcuts define करता है। Highlights:
 
 - `Ctrl+/` — shortcuts help dialog open करें
 - `Alt+0`…`Alt+9` — सीधे किसी page पर jump करें (`Alt+0` पर Remux)
@@ -190,6 +192,14 @@ Custom update manager जो GitHub Releases check करता है new versi
 ### Error handling
 
 28 typed error codes (`ErrorCode`), user-facing localized messages, global error snackbar, inline error banners, toast notifications, nested React error boundaries, और in-app error history (cap 50) के साथ structured error system। सभी errors `formatError()` के माध्यम से normalize होते हैं और IPC across propagate होते हैं।
+
+### MCP Apps and local models
+
+- **Interactive views (MCP Apps)**: 11 self-contained `ui://` views (queue, job, media-info, convert, confirm, inspector, plan, lab, error, batch, workflow). Mutating tools return a proposal first; the work only runs after the user approves it.
+- **Local model runtime**: the local provider (`src/mcp/local-model-client.ts`, `ENCODEX_LOCAL_MODEL_URL`, `ENCODEX_LOCAL_MODEL_MODEL`), speech-to-text (`src/mcp/stt-engine.ts`, `ENCODEX_WHISPER_BIN`, `ENCODEX_WHISPER_MODEL`) and translation (`src/mcp/translate-engine.ts`) run on-device; without a configured engine they raise typed errors (`TRANSCRIPTION_UNAVAILABLE`, `TRANSLATION_UNAVAILABLE`).
+- **Output size estimation**: `src/shared/estimate.ts` estimates the output size before a conversion - an experimental rough upper bound that is always labelled as an estimate.
+- **Audit trail**: every mutating operation (conversions, queue edits, plan commits) writes structured entries through `src/shared/audit.ts` and the `audit-entry` IPC channel.
+
 
 ## Supported media formats
 

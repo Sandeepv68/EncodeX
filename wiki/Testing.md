@@ -44,7 +44,7 @@ Coverage reports are generated in `coverage/`:
 
 ## ✅ Test Suite
 
-The suite is run by Vitest 4 across **314 test/spec files** in `src/`. Coverage uses the v8 provider.
+The suite is run by Vitest 4 across **314 test/spec files** in `src/`. <!-- drift:test-files=314 --> Coverage uses the v8 provider.
 
 | Area | What's Covered |
 | ---- | -------------- |
@@ -58,7 +58,7 @@ The suite is run by Vitest 4 across **314 test/spec files** in `src/`. Coverage 
 | **Monitoring (9 files)** | MonitoringService facade, noop provider, logger bridge, Sentry providers (main + renderer), provider factories, consent + IPC bridge |
 | **Standalone MCP (27 files)** | Server wiring, the full tool catalogue (37 registrations), conversion-options mapping, job manager, safety/validation, STT/translation, stdio integration |
 | **Preload (3 files)** | Full `electronAPI` bridge surface, every IPC method |
-| **Renderer components (44 files)** | Rendering, interactions, error states, accessibility for all shared UI components |
+| **Renderer components (44 files)** | Rendering, interactions, error states, accessibility for all shared UI components <!-- drift:renderer-component-tests=44 --> |
 | **Renderer hooks (9 files)** | Conversion orchestration, error handling, form validation, media task lifecycle, RTL direction, keyboard shortcuts, AI connection |
 | **Renderer pages (14 files)** | Full page flows: form state, validation, IPC invocation, settings persistence, Copilot, Remux/Demux, about/update |
 | **Renderer stores (22 files)** | Zustand store state transitions and persistence, terms gate, batch config, profiles, dismissed alerts, AI/audit/remux/demux |
@@ -162,7 +162,34 @@ npm run lint:rem            # rem units via spacing constants
 npm run lint:inline-styles  # no inline styles
 npm run lint:strings        # no hardcoded UI strings
 npm run lint:strings:test   # unit test for the above rule
+npm run lint:unused         # no unused declarations
+npm run lint:unused:test     # unit test for the above rule
+npm run lint:aptabase       # no direct @aptabase imports
+npm run lint:aptabase:test  # unit test for the above rule
+npm run lint:regex          # no super-linear backtracking regexes
 npm run validate:locales    # locale keys/values consistency
-npm run typecheck           # renderer + main + preload
+npm run typecheck           # renderer + main + preload + test + e2e + perf
 npm run format:check        # prettier --check
+npm run doc:drift           # documentation drift markers vs the source tree
+npm run doc:drift:test      # unit tests for the drift checker
+npm run audit:gate          # blocking dependency audit
 ```
+
+## 🧭 Specialized Test Suites
+
+Beyond the default Vitest run, the repo ships dedicated configs, each with its own npm script:
+
+| Script                    | Config                              | What it covers                                        |
+| ------------------------- | ----------------------------------- | ----------------------------------------------------- |
+| `npm run test:integration`| `vitest.integration.config.ts`      | Cross-module integration paths (builds main first)    |
+| `npm run test:media-fuzz` | `vitest.media-fuzz.config.ts`       | Corrupt-media corpus against real ffmpeg/ffprobe      |
+| `npm run test:locale-matrix` | `vitest.locale-matrix.config.ts` | 56 locales x 12 routes, RTL mirror, longest-string    |
+| `npm run test:a11y`       | `vitest.a11y.config.ts`             | axe matrix: 12 routes x light/dark x 320/768/1440     |
+| `npm run test:big-lists`  | `vitest.big-lists.config.ts`        | Render budgets (50k log rows, 3k job cards)           |
+| `npm run test:route-changes` | `vitest.route-change.config.ts`   | 1,000 rapid route changes                              |
+| `npm run test:mutate`     | `vitest.mutation.config.ts`         | Stryker mutation testing                               |
+| `npm run test:coverage:perfile` | —                              | Per-file coverage floors (ratchet)                    |
+| `npm run test:coverage:diff`  | —                               | Coverage delta vs the committed baseline              |
+| `npm run test:flake-detect`   | —                               | Flaky-test detection report                            |
+
+Mutation testing is ratcheted by `mutation-scope` / `mutation-delta` / `mutation-gate`, and the audit gate is enforced by `npm run audit:gate` (blocking in CI).

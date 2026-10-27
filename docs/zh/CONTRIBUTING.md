@@ -1,5 +1,7 @@
 # 帮助 EncodeX 变得更好
 
+<!-- drift: locales=56 locale-subtags=36 test-files=314 -->
+
 EncodeX 免费开放，由志愿者打造——你不需要会编程也能出一份力。任何人都可以这样参与：
 
 - **出问题时告诉我们。** 应用崩溃或文件转换失败时，[提交一个 issue](https://github.com/Sandeepv68/EncodeX/issues) 并描述发生了什么。普通用户的缺陷报告非常宝贵。

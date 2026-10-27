@@ -1,5 +1,7 @@
 # Utilisation CLI
 
+<!-- drift: cli-subcommands=8 -->
+
 Compilez d'abord, puis invoquez le CLI compilé via la commande `encodex` (le lanceur `bin/encodex.js` enveloppe le binaire Electron). Le mode CLI s'active explicitement avec `--cli`, `-h`/`--help`, ou par le nom de n'importe quelle sous-commande ou alias, ou automatiquement lorsqu'au moins deux arguments positionnels hors options (entrée + sortie) sont fournis :
 
 ```bash

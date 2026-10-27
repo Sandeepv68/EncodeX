@@ -1,5 +1,7 @@
 # IPC चैनल
 
+<!-- drift: ipc-channels=85 -->
+
 सभी IPC चैनल नाम `src/shared/ipc-channels.ts` में `IPC` कॉन्स्टेंट ऑब्जेक्ट पर सेंट्रली डिफ़ाइन होते हैं। मुख्य प्रोसेस `src/main/ipc/handlers.ts` के माध्यम से हैंडलर्स रजिस्टर करती है, और preload स्क्रिप्ट (`src/preload/index.ts`) renderer के लिए एक curated `window.electronAPI` API expose करती है।
 
 ## Request/response channels

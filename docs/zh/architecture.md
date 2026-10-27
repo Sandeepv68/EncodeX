@@ -1,5 +1,7 @@
 # 架构
 
+<!-- drift: error-codes=28 mcp-tools=36 mcp-registrations=37 -->
+
 EncodeX 是一款基于 FFmpeg、React、TypeScript 和 Electron 构建的跨平台多媒体转换工具。它面向希望在参与贡献之前先了解各部分如何协同工作的开发者。
 
 <p align="center"><img src="/images/architecture.webp" alt="EncodeX architecture" width="1024" height="1024" loading="lazy" /></p>

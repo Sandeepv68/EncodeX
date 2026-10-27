@@ -1,5 +1,7 @@
 # 🔌 MCP Integration
 
+<!-- drift: mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+
 EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can probe and analyze media, convert, compress, extract audio, cut, remux, demux, batch-process, and (opt-in) read live GUI state. It runs over the same media engine as the CLI, so behavior is identical across surfaces.
 
 There are two launch modes that share one tool/resource/prompt catalogue:
@@ -242,6 +244,26 @@ The standalone HTTP transport is also available via `npm run mcp:http` (`node di
 **Deliberately excluded from the MCP surface:** destructive filesystem tools, arbitrary shell/exec, settings writes, window minimize/maximize/close, live player frame/audio streaming, `--dev` handlers, and `TERMS_REJECT`.
 
 > The token is stored in plaintext in `mcp-settings.json`. It gates a loopback-only, single-user interface, so it is equivalent to the app's own trust boundary.
+
+---
+
+## 🧠 Local model runtime
+
+Some intelligence tools can run on-device instead of calling a hosted provider:
+
+| Capability      | Engine                     | Configuration                                                        | Failure mode when unset          |
+| --------------- | -------------------------- | -------------------------------------------------------------------- | --------------------------------- |
+| Local LLM       | `src/mcp/local-model-client.ts` | `ENCODEX_LOCAL_MODEL_URL`, `ENCODEX_LOCAL_MODEL_MODEL`         | Provider unavailable             |
+| Speech-to-text  | `src/mcp/stt-engine.ts`    | `ENCODEX_WHISPER_BIN`, `ENCODEX_WHISPER_MODEL`                       | `TRANSCRIPTION_UNAVAILABLE`       |
+| Translation     | `src/mcp/translate-engine.ts` | (engine-specific)                                                  | `TRANSLATION_UNAVAILABLE`         |
+
+The STT and translation adapters raise typed errors (`TRANSCRIPTION_UNAVAILABLE`, `TRANSLATION_UNAVAILABLE`) rather than returning empty results, so a host can distinguish "nothing to transcribe" from "no engine configured".
+
+---
+
+## 🎛️ MCP Apps (interactive views)
+
+Alongside the JSON tool results, the MCP surface can render interactive views in the host client through the MCP Apps extension. `src/mcp/ui/` contains the resource registry, the renderer bridge and the approval flow, and 11 views: `batch`, `confirm`, `convert`, `error`, `inspector`, `job`, `lab`, `media-info`, `plan`, `queue`, `workflow`. Mutating tools route through the approval bridge so the user sees the plan before anything is queued.
 
 ---
 

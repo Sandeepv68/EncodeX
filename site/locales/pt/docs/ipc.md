@@ -1,5 +1,7 @@
 # Canais IPC & electronAPI
 
+<!-- drift: ipc-channels=85 -->
+
 Todos os nomes de canais são centralizados em `src/shared/ipc-channels.ts`.
 
 ## Requisições (invoke do renderer)

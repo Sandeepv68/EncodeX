@@ -1,5 +1,7 @@
 # 🏗️ EncodeX Architecture
 
+<!-- drift: error-codes=28 mcp-tools=36 mcp-registrations=37 -->
+
 This document describes the internal architecture of **EncodeX**, a cross-platform multimedia conversion tool built on FFmpeg, React, TypeScript, and Electron. It is intended for developers who want to understand how the pieces fit together before contributing.
 
 <p align="center"><img src="../assets/architecture.png" alt="EncodeX architecture"></p>

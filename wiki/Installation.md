@@ -2,7 +2,7 @@
 
 ## 📌 Prerequisites
 
-- [Node.js](https://nodejs.org/) 22+
+- [Node.js](https://nodejs.org/) 22+ (enforced via the `engines` field in `package.json`)
 - [FFmpeg](https://ffmpeg.org/) — bundled via `ffmpeg-static`; falls back to system `ffmpeg` if the bundled binary is unavailable
 
 ## 📦 Install
@@ -50,24 +50,32 @@ The MCP server entry (`dist/mcp/index.js`) is produced by `npm run build:main` a
 
 ### Build Scripts
 
-| Script                   | Description                                                 |
-| ------------------------ | ----------------------------------------------------------- |
-| `npm run dev:renderer`   | Vite dev server only                                        |
-| `npm run dev:main`       | `tsc -p tsconfig.main.json --watch`                         |
-| `npm run build:renderer` | Vite production build — outputs to `dist/renderer/`         |
-| `npm run build:main`     | `tsc -p tsconfig.main.json` — outputs to `dist/main/`       |
-| `npm run build:preload`  | `tsc -p tsconfig.preload.json` — outputs to `dist/preload/` |
-| `npm run build`          | All three in sequence (after `gen:sentry-config` and `gen:aptabase-config`) |
-| `npm run start`          | Launch compiled app from `dist/` via `electron .`           |
-| `npm run electron:dev`   | Vite + Electron dev environment                             |
-| `npm run dev:start`      | Build then launch                                           |
-| `npm run format`         | `prettier --write` on `src`, `e2e`, `scripts`, `bin`        |
-| `npm run format:check`   | `prettier --check` on the same patterns                     |
-| `npm run pack`           | Build + electron-builder `--dir`                            |
-| `npm run dist`           | Build + electron-builder (NSIS/DMG/AppImage)                |
-| `npm run mcp`            | Run the standalone MCP server (`node dist/mcp/index.js`)    |
-| `npm run mcp:smoke`      | Smoke-test the standalone stdio MCP server                  |
-| `npm run mcp:smoke:electron` | Smoke-test `--mcp` through Electron (needs display/xvfb) |
+| Script                        | Description                                                 |
+| ----------------------------- | ----------------------------------------------------------- |
+| `npm run dev:renderer`        | Vite dev server only                                        |
+| `npm run dev:main`            | `tsc -p tsconfig.main.json --watch`                         |
+| `npm run build:renderer`      | Vite production build — outputs to `dist/renderer/`         |
+| `npm run build:main`          | `tsc -p tsconfig.main.json` — outputs to `dist/main/`       |
+| `npm run build:preload`       | `tsc -p tsconfig.preload.json` — outputs to `dist/preload/` |
+| `npm run build`               | All three in sequence (after `gen:sentry-config` and `gen:aptabase-config`) |
+| `npm run start`               | Launch compiled app from `dist/` via `electron .`           |
+| `npm run electron:dev`        | Vite + Electron dev environment                             |
+| `npm run dev:start`           | Build then launch                                           |
+| `npm run format`              | `prettier --write` on `src`, `e2e`, `perf`, `scripts`, `bin` |
+| `npm run format:check`        | `prettier --check` on the same patterns                     |
+| `npm run pack`                | Build + electron-builder `--dir`                            |
+| `npm run dist`                | Build + electron-builder (NSIS/DMG/AppImage)                |
+| `npm run icons:generate`      | Regenerate desktop icons from the app icon                  |
+| `npm run fetch:binaries`      | Download the platform ffmpeg/ffprobe binaries               |
+| `npm run mcp`                 | Run the standalone MCP server (`node dist/mcp/index.js`)    |
+| `npm run mcp:http`            | Run the standalone MCP HTTP transport (`dist/mcp/http-server.js`) |
+| `npm run mcp:smoke`           | Smoke-test the standalone stdio MCP server                  |
+| `npm run mcp:smoke:electron`  | Smoke-test `--mcp` through Electron (needs display/xvfb)    |
+| `npm run mcp:full-test`       | Full MCP tool-catalogue regression run                      |
+| `npm run audit:gate`          | Blocking dependency-audit gate (allowlist in `scripts/audit-allowlist.json`) |
+| `npm run doc:drift`           | Verify documentation drift markers against the source tree  |
+| `npm run docs:dev`            | VitePress dev server for the public site                    |
+| `npm run docs:build`          | Build the public site                                       |
 
 The [Testing page](Testing) covers the full testing script list; the [Contributing page](Contributing) covers lint/typecheck.
 
@@ -82,6 +90,6 @@ The [Testing page](Testing) covers the full testing script list; the [Contributi
 | Build      | Vite 8, TypeScript 5 |
 | Testing    | Vitest 4, Playwright |
 | Media      | FFmpeg (bundled via ffmpeg-static) |
-| i18n       | i18next (56 locales, 36 base language subtags) |
+| i18n       | i18next (56 locales, 36 base language subtags) <!-- drift:locales=56 --> <!-- drift:locale-subtags=36 --> |
 | AI         | @modelcontextprotocol/sdk (MCP server) |
 | Monitoring | provider-agnostic layer with a Sentry adapter |

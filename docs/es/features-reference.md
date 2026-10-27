@@ -1,5 +1,7 @@
 # Características
 
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+
 EncodeX es una herramienta multiplataforma de conversión multimedia que lleva la potencia de FFmpeg a una interfaz de escritorio moderna e intuitiva. Construida con Electron, React y TypeScript, permite convertir medios entre formatos, extraer audio, cortar vídeos y comprimir imágenes — todo mediante una UI limpia y receptiva con cola por lotes, aceleración por hardware, modo CLI e internacionalización completa.
 
 ## Resumen de características
@@ -94,7 +96,7 @@ El servidor integrado se vincula solo a loopback, valida la cabecera `Origin`, s
 
 ### Atajos de teclado
 
-Un registro central de atajos (`src/renderer/constants/shortcuts.ts`) define 82 atajos en once secciones (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Aspectos destacados:
+Un registro central de atajos (`src/renderer/constants/shortcuts.ts`) define 71 atajos en once secciones (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Aspectos destacados:
 
 - `Ctrl+/` — abrir el diálogo de ayuda de atajos
 - `Alt+0`…`Alt+9` — saltar directamente a una página (incluido Remux en `Alt+0`)
@@ -190,6 +192,14 @@ Gestor de actualizaciones personalizado que revisa GitHub Releases en busca de v
 ### Manejo de errores
 
 Sistema de errores estructurado con 28 códigos de error tipados (`ErrorCode`), mensajes localizados orientados al usuario, snackbar global de errores, banners de error en línea, notificaciones toast, React error boundaries anidados y un historial de errores dentro de la app (tope 50). Todos los errores se normalizan mediante `formatError()` y se propagan a través de IPC.
+
+### MCP Apps y modelos locales
+
+- **Vistas interactivas (MCP Apps)**: 11 vistas `ui://` autónomas (cola, trabajo, info multimedia, conversión, confirmación, inspector, plan, laboratorio, error, lote, flujo). Las herramientas que modifican el estado devuelven primero una propuesta; el trabajo solo se ejecuta tras la aprobación del usuario.
+- **Ejecución de modelos locales**: el proveedor local (`src/mcp/local-model-client.ts`, `ENCODEX_LOCAL_MODEL_URL`, `ENCODEX_LOCAL_MODEL_MODEL`), la transcripción de voz (`src/mcp/stt-engine.ts`, `ENCODEX_WHISPER_BIN`, `ENCODEX_WHISPER_MODEL`) y la traducción (`src/mcp/translate-engine.ts`) funcionan en el propio dispositivo; sin motor configurado lanzan errores tipados (`TRANSCRIPTION_UNAVAILABLE`, `TRANSLATION_UNAVAILABLE`).
+- **Estimación del tamaño de salida**: `src/shared/estimate.ts` estima el tamaño de salida antes de convertir: un límite superior experimental, siempre etiquetado como estimación.
+- **Registro de auditoría**: cada operación que modifica el estado (conversiones, cambios en la cola, confirmaciones de plan) escribe entradas estructuradas a través de `src/shared/audit.ts` y del canal IPC `audit-entry`.
+
 
 ## Formatos multimedia soportados
 

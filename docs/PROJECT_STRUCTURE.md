@@ -1,5 +1,7 @@
 # 🗂️ Project Structure
 
+<!-- drift: renderer-components=60 renderer-components-top=48 renderer-styles=57 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=13 renderer-stores=20 log-constants=527 builtin-profiles=115 profile-categories=8 e2e-specs=31 -->
+
 ```
 src/
 ├── test-setup.ts                      # Vitest global setup: jest-dom matchers + i18n/electronAPI mocks
@@ -182,7 +184,7 @@ src/
 │   │   ├── batchConfig.ts             # Batch encoding config persistence
 │   │   ├── dismissedAlertsStore.ts    # Dismissed alert banners (Zustand)
 │   │   └── types.ts                   # Zustand store state shapes + actions
-│   ├── styles/                        # Extracted MUI style constants per component (48 modules)
+│   ├── styles/                        # Extracted MUI style constants per component (57 modules)
 │   │   └── UpdateDialog.styles.ts     # Styled components for the update dialog
 │   └── utils/
 │       └── formatters.ts              # Duration/bitrate/stream formatting helpers

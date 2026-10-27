@@ -1,5 +1,7 @@
 # Funktionen
 
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+
 EncodeX ist ein plattformübergreifendes Multimedia-Konvertierungstool, das die Leistung von FFmpeg in eine moderne, intuitive Desktop-Oberfläche bringt. Gebaut mit Electron, React und TypeScript ermöglicht es, Medien zwischen Formaten zu konvertieren, Audio zu extrahieren, Videos zu schneiden und Bilder zu komprimieren — alles über eine aufgeräumte, reaktionsschnelle UI mit Batch-Warteschlange, Hardwarebeschleunigung, CLI-Modus und vollständiger Internationalisierung.
 
 ## Funktionsübersicht
@@ -190,6 +192,14 @@ Eigenes Update-Management, das GitHub Releases auf neue Versionen prüft, den Nu
 ### Fehlerbehandlung
 
 Strukturiertes Fehlersystem mit typisierten Codes (`ErrorCode`), lokalisierten Benutzermeldungen, globaler Error-Snackbar, Inline-Error-Bannern, Toast-Benachrichtigungen, verschachtelten React-Error-Boundaries und einer App-internen Fehlerhistorie (Limit 50). Alle Fehler werden über `formatError()` normalisiert und über IPC propagiert.
+
+### MCP Apps und lokale Modelle
+
+- **Interaktive Ansichten (MCP Apps)**: 11 eigenständige `ui://`-Ansichten (Warteschlange, Auftrag, Medieninfo, Konvertierung, Bestätigung, Inspektor, Plan, Labor, Fehler, Stapel, Workflow). Ändernde Werkzeuge liefern zuerst einen Vorschlag; die Arbeit läuft erst nach ausdrücklicher Bestätigung.
+- **Lokale Modell-Laufzeit**: lokaler Anbieter (`src/mcp/local-model-client.ts`, `ENCODEX_LOCAL_MODEL_URL`, `ENCODEX_LOCAL_MODEL_MODEL`), Sprache-zu-Text (`src/mcp/stt-engine.ts`, `ENCODEX_WHISPER_BIN`, `ENCODEX_WHISPER_MODEL`) und Übersetzung (`src/mcp/translate-engine.ts`) arbeiten auf dem Gerät; ohne konfigurierte Engine melden sie typisierte Fehler (`TRANSCRIPTION_UNAVAILABLE`, `TRANSLATION_UNAVAILABLE`).
+- **Größenschätzung**: `src/shared/estimate.ts` schätzt die Ausgabegröße vor der Konvertierung - eine experimentelle grobe Obergrenze, die stets als Schätzung gekennzeichnet ist.
+- **Audit-Protokoll**: Jeder mutierende Vorgang (Konvertierungen, Änderungen an der Warteschlange, Planfreigaben) schreibt strukturierte Einträge über `src/shared/audit.ts` und den IPC-Kanal `audit-entry`.
+
 
 ## Unterstützte Medienformate
 

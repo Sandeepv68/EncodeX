@@ -2,6 +2,8 @@
 
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, conversion profiles, an MCP server for AI assistants, CLI mode, and full internationalization. Everything runs locally on your machine — no accounts, no uploads, no watermarks, no subscriptions.
 
+> **Status:** `1.0.0-beta.5` — the 1.0 production-readiness phase (release hardening, blocking audit gate, coverage/mutation ratchets). The embedded MCP server and the local-model / speech-to-text / translation runtimes are the newest subsystems and remain opt-in.
+
 ## 🚀 Getting Started
 
 - [[Installation]] — Prerequisites, install, and development setup

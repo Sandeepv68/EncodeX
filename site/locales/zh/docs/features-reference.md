@@ -1,5 +1,7 @@
 # 功能
 
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+
 EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带入现代、直观的桌面界面。基于 Electron、React 和 TypeScript 构建，它让您可以在不同格式之间转换媒体、提取音频、剪切视频和压缩图像 — 全部通过简洁、灵敏的 UI 完成，并配备批处理队列、硬件加速、CLI 模式和完整的国际化。
 
 ## 功能概览
@@ -190,6 +192,15 @@ Toast 通知（success/info/warning/error），持续时间可配置，提供非
 ### 错误处理
 
 结构化错误系统，带有类型化错误码（`ErrorCode`）、面向用户的本地化消息、全局错误 snackbar、内联错误横幅、toast 通知、嵌套 React error boundaries 和应用内错误历史（上限 50）。所有错误都通过 `formatError()` 规范化并通过 IPC 传播。
+
+### MCP Apps 与本地模型
+
+- **MCP 服务器**：EncodeX 提供 Model Context Protocol 服务器（通过 `encodex --mcp` 使用 stdio，或以嵌入式 Streamable HTTP 服务器运行在 `127.0.0.1:8765/mcp`）。stdio 接口公开 36 个对模型可见的工具（37 个注册项，包含仅应用内可用的 `commit_operation`）；嵌入式接口额外提供 6 个 GUI 对等工具（共 43 个注册项、42 个对模型可见）。此外还有三个资源（`encodex://profiles`、`encodex://capabilities`、`encodex://codecs`）和四个提示模板。
+- **交互视图（MCP Apps）**：提供 11 个独立的 `ui://` 视图（队列、任务、媒体信息、转换、确认、检查器、计划、实验室、错误、批量、工作流）。会修改状态的工具会先返回提案，只有用户批准后才真正执行。
+- **本地模型运行时**：本地提供方（`src/mcp/local-model-client.ts`，`ENCODEX_LOCAL_MODEL_URL`、`ENCODEX_LOCAL_MODEL_MODEL`）、语音转文字（`src/mcp/stt-engine.ts`，`ENCODEX_WHISPER_BIN`、`ENCODEX_WHISPER_MODEL`）和翻译（`src/mcp/translate-engine.ts`）均在本机运行；未配置引擎时会抛出类型化错误（`TRANSCRIPTION_UNAVAILABLE`、`TRANSLATION_UNAVAILABLE`）。
+- **输出体积估算**：`src/shared/estimate.ts` 在转换前估算输出大小 —— 这是实验性的粗略上界，任何位置都会标注为估算值。
+- **审计日志**：所有会修改状态的操作（转换、队列编辑、计划提交）通过 `src/shared/audit.ts` 和 `audit-entry` IPC 通道写入结构化记录。
+
 
 ## 支持的媒体格式
 

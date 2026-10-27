@@ -1,5 +1,7 @@
 # Processos, sistema de build & inicialização
 
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 log-constants=527 -->
+
 ## Modelo de processos
 
 ### Processo principal (`src/main/`)

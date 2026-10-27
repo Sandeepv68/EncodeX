@@ -1,5 +1,7 @@
 # Ayuda a mejorar EncodeX
 
+<!-- drift: locales=56 locale-subtags=36 test-files=314 -->
+
 EncodeX es gratuito y lo construyen voluntarios — y no necesitas saber programar para ayudar. Estas son algunas formas en que cualquiera puede participar:
 
 - **Cuéntanos cuando algo falle.** Si la app se cierra o un archivo no se convierte, [abre un issue](https://github.com/Sandeepv68/EncodeX/issues) y describe qué pasó. Los reportes de usuarios comunes son oro.
