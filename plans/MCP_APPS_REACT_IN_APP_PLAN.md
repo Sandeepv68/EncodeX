@@ -1,11 +1,33 @@
 # MCP Apps: React views, in-app rendering, full view coverage, host verification, ext-apps 2.x
 
-> **Status:** PLANNED — nothing implemented yet.
+> **Status:** **EXECUTED (2026-10-27)** — all six phases are implemented: Phase 1 (SDK/ext-apps
+> 2.x) in `1ffc7f3b`, Phase 2 (design system + view kit) in `d83fa103`, Phases 3 and 5 (React
+> view pipeline, the two missing views) in `c2ba52b0`, Phase 4 (in-app Copilot rendering) in
+> `c3531c96`, Phase 6 (host verification) in the commit that added `scripts/mcp-host-check.mjs`
+> and `docs/MCP_UI_HOSTS.md`.
+>
+> Deviations from the plan, and why:
+>  - **D7 (one shared bundle)** was implemented as planned, but the bundle is read from disk at
+>   runtime (`src/mcp/ui/bundle.ts`) instead of being embedded in a generated TypeScript module:
+>   a committed 880 KB string would have been the largest file in the repository, and the
+>   resource read is a runtime operation anyway.
+>  - **D2 (render in-app as React, not in an iframe)** was implemented as planned. The in-app
+>   host (`src/renderer/mcp-views/AppIpcHost.ts`) forwards the view's tool calls to the main
+>   process, where `src/main/mcp/local-client.ts` runs them on the same server - and the same
+>   job manager - the embedded HTTP server exposes.
+>  - **The views keep MUI.** The measured bundle is 880 KB (React 219 KB, MUI 222 KB, the
+>   `ext-apps` App class with the MCP client stack and zod 234 KB, the views themselves the
+>   rest). The budget was raised to 1 MB and enforced by the build; `preact/compat` remains
+>   the escape hatch if a host complains about the size.
+>  - **The mutating flows were not duplicated in the transcript.** A plan attaches the
+>   inspector view (for an analysis) and the live queue view (for a queue-backed operation);
+>   the "Add to queue" button stays the single approval for a mutating operation.
+>
 > **Scope:** closes the five gaps in the MCP Apps feature (in-app rendering, missing views,
 > React view pipeline, real-host verification, ext-apps 2.x migration).
 > **Supersedes/extends:** `plans/MCP_APPS_SERVER_PLAN.md` (phases A–F, already shipped),
 > `plans/EXT_APPS_2X_MIGRATION_PLAN.md` (folded in as Phase 1),
-> `docs/MCP_UI.md` (the feature spec — will be rewritten by Phase 6).
+> `docs/MCP_UI.md` (the feature spec — rewritten in Phase 6).
 > **Related:** `docs/MCP.md`, `src/shared/mcp-ui.ts`, `src/mcp/ui/**`.
 
 ---

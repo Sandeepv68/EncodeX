@@ -98,7 +98,8 @@
     "docs:build:gh": "npm run docs:build && node scripts/normalize-build.mjs",
     "docs:preview": "vitepress preview site",
     "docs:blog": "node scripts/generate-blog.mjs",
-    "docs:rss": "node scripts/generate-rss.mjs"
+    "docs:rss": "node scripts/generate-rss.mjs",
+    "mcp:host-check": "node scripts/mcp-host-check.mjs"
   },
   "dependencies": {
     "@aptabase/electron": "^0.3.1",

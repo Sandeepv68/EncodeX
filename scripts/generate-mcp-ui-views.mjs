@@ -51,9 +51,9 @@ function readViewStrings() {
 
 /**
  * Writes the generated strings module.
- * @returns {void}
+ * @returns {Promise<void>} Resolves once the file is written.
  */
-function writeStrings() {
+async function writeStrings() {
   const strings = readViewStrings();
   const body = `/**
  * @fileoverview Translation strings for the standalone MCP App bundle.
@@ -69,7 +69,9 @@ function writeStrings() {
 /** The \`mcpViews\` namespace of the base locale. @const {object} */
 export const MCP_VIEW_STRINGS = ${JSON.stringify(strings, null, 2)} as const;
 `;
-  fs.writeFileSync(STRINGS_FILE, body);
+  const prettier = await import('prettier');
+  const formatted = await prettier.format(body, { parser: 'typescript', singleQuote: true, printWidth: 120 });
+  fs.writeFileSync(STRINGS_FILE, formatted);
   process.stdout.write(`[mcp-ui] wrote ${path.relative(ROOT, STRINGS_FILE)}\n`);
 }
 
@@ -100,5 +102,5 @@ function buildBundle() {
 }
 
 const stringsOnly = process.argv.includes('--strings-only');
-writeStrings();
+await writeStrings();
 if (!stringsOnly) buildBundle();
