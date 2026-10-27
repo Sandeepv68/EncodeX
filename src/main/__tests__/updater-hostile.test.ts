@@ -139,15 +139,26 @@ function progressEvents(): UpdateProgress[] {
     .map((call: unknown[]) => call[1] as UpdateProgress);
 }
 
-/** Builds a `release/latest` body with any shape at all. */
+/**
+ * Builds a releases-list body with any shape at all.
+ *
+ * The updater reads the **list** endpoint, so the body is an array of
+ * releases; a single release is the common case, hence the one-object
+ * signature.
+ *
+ * @param {Record<string, unknown>} overrides - Fields overriding the defaults.
+ * @returns {string} The serialized response body.
+ */
 function release(overrides: Record<string, unknown> = {}): string {
-  return JSON.stringify({
-    tag_name: 'v2.0.0',
-    body: 'notes',
-    html_url: 'https://github.com/Sandeepv68/EncodeX/releases/tag/v2.0.0',
-    assets: [{ name: ASSET_NAME, browser_download_url: ASSET_URL, size: 1024 }],
-    ...overrides,
-  });
+  return JSON.stringify([
+    {
+      tag_name: 'v2.0.0',
+      body: 'notes',
+      html_url: 'https://github.com/Sandeepv68/EncodeX/releases/tag/v2.0.0',
+      assets: [{ name: ASSET_NAME, browser_download_url: ASSET_URL, size: 1024 }],
+      ...overrides,
+    },
+  ]);
 }
 
 /** A minimal asset. */
@@ -317,10 +328,14 @@ describe('updater hostile input', () => {
   });
 
   describe('checkForUpdate against a malformed releases payload', () => {
-    it('names the problem when the top-level JSON is not an object', async () => {
-      for (const body of ['[]', '"v2.0.0"', '123', 'true', 'null']) {
-        await expect(checkAgainst(body), `body ${body}`).rejects.toThrow(/not a JSON object/);
+    it('names the problem when the top-level JSON is not an array', async () => {
+      for (const body of ['"v2.0.0"', '123', 'true', 'null']) {
+        await expect(checkAgainst(body), `body ${body}`).rejects.toThrow(/not a JSON array/);
       }
+    });
+
+    it('treats an empty release list as up to date rather than an error', async () => {
+      await expect(checkAgainst('[]')).resolves.toBeNull();
     });
 
     it('names the problem when a required field is missing or mistyped', async () => {

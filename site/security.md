@@ -1,12 +1,12 @@
 ---
 title: "Security at EncodeX — Open Source, Checksums & Reporting"
-description: "How EncodeX keeps you safe: open-source code, SHA-256 checksums published with each release, a GitHub-digest check on updates, and how to report a vulnerability. Release builds are not code-signed."
+description: "How EncodeX keeps you safe: open-source code, SHA-256 checksums published with each release, a GitHub-digest check on updates, and how to report a vulnerability. Release builds are not code-signed or notarized."
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Security at EncodeX
 
-EncodeX is open source, so security doesn't have to be taken on faith. Every release is built from public code and publishes **SHA-256 checksums** you can compare against your download. Release builds are **not code-signed**, so your operating system may show an "unknown developer" or "unidentified developer" warning.
+EncodeX is open source, so security doesn't have to be taken on faith. Every release is built from public code and publishes **SHA-256 checksums** you can compare against your download. Release builds are **not code-signed and not notarized**, so your operating system may show an "unknown developer" or "unidentified developer" warning on macOS, or a "Windows protected your PC" warning with an "Unknown publisher" message on Windows.
 
 ## What we ship you can verify
 
@@ -26,6 +26,12 @@ shasum -a 256 ./EncodeX-1.0.0.dmg
 ## macOS Gatekeeper note
 
 Because EncodeX is free and open source, is not sold through the Mac App Store, and its macOS builds are not code-signed or notarized, macOS may show a "can't be opened" message the first time. The build is the one published on the releases page. To open it, Control-click the app in Applications and choose **Open**, once. On recent macOS versions you may need to use **System Settings → Privacy & Security → Open Anyway** instead.
+
+## Windows SmartScreen note
+
+Because EncodeX is free and open source and its Windows builds are not code-signed, Windows SmartScreen may show a "Windows protected your PC" warning with an "Unknown publisher" message when you start the installer. The warning is expected and does not mean the download is corrupt. To continue, click **More info**, then **Run anyway**.
+
+SmartScreen cannot establish publisher authenticity, because the build carries no code signature. What you can compare is the SHA-256 checksum published with the release, as described above.
 
 ## The bundled FFmpeg
 

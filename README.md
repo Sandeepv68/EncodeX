@@ -157,7 +157,7 @@ Pre-built installers are available on the [Releases](https://github.com/Sandeepv
 
 ### macOS
 
-> EncodeX is not code-signed (no Apple Developer account). macOS Gatekeeper will block the app on first open.
+> EncodeX releases are not code-signed and not notarized (no Apple Developer account). macOS Gatekeeper will block the app on first open.
 
 **Option 1 — Right-click to open:**
 
@@ -170,9 +170,22 @@ Pre-built installers are available on the [Releases](https://github.com/Sandeepv
 xattr -cr /Applications/EncodeX.app
 ```
 
-### Windows / Linux
+### Windows
 
-Download the `.exe` (Windows) or `.AppImage` (Linux) installer from the [Releases](https://github.com/Sandeepv68/EncodeX/releases) page and run it.
+Download the `.exe` installer from the [Releases](https://github.com/Sandeepv68/EncodeX/releases) page and run it.
+
+> EncodeX releases are not code-signed, so Windows SmartScreen may show a "Windows protected your PC" warning with an "Unknown publisher" message. This is expected and does not mean the download is corrupt.
+
+**To run the installer:**
+
+1. Click **More info** in the SmartScreen warning
+2. Click **Run anyway**
+
+SmartScreen cannot confirm who published the file, because there is no code signature on the build.
+
+### Linux
+
+Download the `.AppImage` installer from the [Releases](https://github.com/Sandeepv68/EncodeX/releases) page and run it.
 
 ## 📌 Prerequisites (for contributors)
 

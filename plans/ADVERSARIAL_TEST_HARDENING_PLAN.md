@@ -505,16 +505,40 @@ touches every file's checkout behaviour, so it belongs in 0.6 rather than mid-ph
 
 ### 0.4 Coverage: per-file floors + diff coverage
 
-**Status: DONE (2026-09-30).** The floor is published as a report rather than enforced by enforced by
-`thresholds.perFile`, and the diff gate is stricter than the original sketch in one respect: it
+**Status: DONE (2026-09-30); the per-file floor became a blocking ratchet on 2026-10-27.** The floor
+was originally published as a report rather than enforced by `thresholds.perFile`, because a fixed
+80/70 floor could not be switched on while 30 files sat below it - a gate that fails every build
+enforces nothing. The diff gate is stricter than the original sketch in one respect: it
 checks the lines the diff _added_, not just the file's percentage.
+
+**The ratchet (2026-10-27).** `scripts/coverage-floor-gate.mjs` (`npm run test:coverage:floor`) is
+now the blocking gate, backed by a committed `coverage-baseline.json` (`npm run coverage:baseline`
+regenerates it). The rules: no file may lose coverage against its recorded number; every *new* file
+is held to the global 80/70 floor; and the repository-wide average may not fall. The gate also prints the
+files still below the global floor - 18 of them after the merge - so they can be lifted one at a
+time. The `coverage-per-file` CI job lost its `continue-on-error` and now runs both tiers followed
+by the gate; `scripts/coverage-floor-report.mjs` remains as the informational listing.
+
+The baseline is recorded **per platform**: branch coverage depends on `process.platform`, so the same
+commit measures differently on Windows and on Linux (`src/main/updater.ts` was the first file to
+prove it - 92.2% of branches on Windows against 91.6% on Linux). A single recorded number would
+fail on whichever platform it was not recorded on, so the baseline holds one entry per platform and
+the gate compares a run against its own platform's entry; a platform with no entry falls back to the
+most conservative number on record.
+
+The comparison allows 2 percentage points of slack. The v8 provider derives its statement boundaries
+from what actually ran, so the same commit measures fractionally differently from one run to the
+next - the drift reached 0.8 points across two CI runs of an unchanged tree. A tighter tolerance
+turns the gate into a coin flip, and a gate that is sometimes red for no reason gets ignored; two
+points still catches a real regression. `COVERAGE_TOLERANCE` overrides it.
 
 What was built: | Piece | Where  | Behaviour |
 | Shared coverage scope | `vitest.coverage-scope.ts`  | One include/exclude list imported by **both** vitest configs. A union of two reports is only meaningful if both tiers measured the same file set. |
 | Raw two-tier merge | `scripts/coverage-summary.mjs`  | Unions `coverage-final.json` from `coverage/` and `coverage-integration/` via `istanbul-lib-coverage`. |
 | Per-file report | `scripts/coverage-floor-report.mjs` | `npm run test:coverage:perfile`. Always exits 0. |
+| Per-file ratchet gate | `scripts/coverage-floor-gate.mjs` + `coverage-baseline.json` | `npm run test:coverage:floor`. Blocking. |
 | Diff gate | `scripts/coverage-diff.mjs`  | `npm run test:coverage:diff [base]`. Blocking. |
-| CI | `.github/workflows/ci.yml`  | `coverage-per-file` (`continue-on-error`) and `coverage-diff` jobs. | **Both tiers must be measured, or the numbers lie.** The unit config excludes
+| CI | `.github/workflows/ci.yml`  | `coverage-per-file` (blocking ratchet) and `coverage-diff` jobs. | **Both tiers must be measured, or the numbers lie.** The unit config excludes
 `**/*.integration.{test,spec}.ts`, so a unit-only report shows the CLI and MCP sources this tier
 exists to exercise as untested: `cli-batch.ts` 0.0%, `cli-info.ts` 0.0%, `mcp/http-server.ts` 3.2%.
 Merged, those are 83.1%, 80.9%, and 83.9% - the difference between inventing work and not. Nine

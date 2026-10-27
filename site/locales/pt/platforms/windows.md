@@ -32,7 +32,11 @@ Os usuários do Windows adoram EncodeX porque ele simplesmente funciona:
 
 ## Perguntas frequentes
 
+> **Nota:** As releases do EncodeX não têm assinatura de código nem notarização, então o Windows SmartScreen pode mostrar um aviso de "Windows protected your PC" com a mensagem "Editor desconhecido". Isso é esperado e não significa que o download está corrompido. Clique em **Mais informações** e depois em **Executar mesmo assim**.
+
 **EncodeX funciona no Windows 11?** Sim, EncodeX suporta completamente Windows 11 e Windows 10 (64 bits e ARM64).
+
+**Por que o Windows mostra o aviso "Windows protected your PC"?** As releases do EncodeX não têm assinatura de código, então o SmartScreen não consegue confirmar quem publicou e mostra "Editor desconhecido". O aviso é esperado em um build sem assinatura. Clique em **Mais informações** e depois em **Executar mesmo assim**.
 
 **EncodeX para Windows é realmente gratuito?** Sim — 100 % gratuito, código aberto (MIT), sem anúncios, sem marcas d'água, sem planos pagos.
 

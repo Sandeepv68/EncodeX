@@ -2,7 +2,7 @@
 
 ## Visão geral
 
-O EncodeX usa um gerenciador de atualizações integrado personalizado. Ele consulta a API do GitHub Releases para obter a release mais recente, compara a versão semântica com a do app em execução, seleciona o instalador para a plataforma e a arquitetura atuais e o baixa dentro do app com relatório de progresso. Quando o download é concluído, o usuário pode instalar e reiniciar imediatamente ou agendar o instalador para ser executado na próxima reinicialização do app.
+O EncodeX usa um gerenciador de atualizações integrado personalizado. Ele consulta a API do GitHub Releases para obter as releases publicadas, filtra-as pelo canal de atualização ao qual a versão em execução pertence, compara suas versões semânticas com a do app em execução, seleciona o instalador para a plataforma e a arquitetura atuais e o baixa dentro do app com relatório de progresso. Quando o download é concluído, o usuário pode instalar e reiniciar imediatamente ou agendar o instalador para ser executado na próxima reinicialização do app.
 
 As atualizações nunca são instaladas de forma silenciosa ou automática. Toda instalação é iniciada por uma ação do usuário, seja a partir do diálogo de atualização ou do marcador de instalação pendente que o usuário armou explicitamente.
 
@@ -10,7 +10,7 @@ As atualizações nunca são instaladas de forma silenciosa ou automática. Toda
 
 ```mermaid
 flowchart TD
-    GH["GitHub Releases API"] --> U["main/updater.ts<br/>fetches /releases/latest,<br/>compares semver, downloads"]
+    GH["GitHub Releases API"] --> U["main/updater.ts<br/>fetches /releases,<br/>filters by channel, compares semver, downloads"]
     U --> I["main/ipc/updater.ts<br/>registers IPC handlers +<br/>pushes events to renderer"]
     I --> P["preload/index.ts<br/>exposes update methods +<br/>event subscriptions"]
     P --> S["renderer/stores/updateStore.ts<br/>Zustand state for update flow"]
@@ -65,6 +65,23 @@ flowchart TD
 - Os identificadores de pre-release são comparados ponto a ponto: identificadores numéricos de forma numérica, identificadores alfanuméricos de forma lexicográfica, e os identificadores numéricos ficam abaixo dos alfanuméricos.
 - Uma atualização só é oferecida quando a versão remota é estritamente maior que a versão em execução.
 
+## Canais de atualização
+
+O canal é derivado da versão em execução e decide quais releases são elegíveis:
+
+| Canal | Versão em execução | Releases elegíveis |
+|---|---|---|
+| `stable` | sem identificador de pre-release, por exemplo `1.0.0` | apenas releases estáveis |
+| `beta` | com um identificador de pre-release, por exemplo `1.0.0-beta.5` | pre-releases *e* releases estáveis |
+
+Consequências que vale conhecer:
+
+- Uma build beta continua recebendo betas e também recebe o `1.0.0` estável quando ele for publicado.
+- Uma build estável nunca recebe uma pre-release.
+- Uma release **rascunho** nunca é oferecida a ninguém. O GitHub exclui rascunhos da lista de releases publicadas, então uma release deixada como rascunho fica invisível para o atualizador até ser publicada.
+- O endpoint de "última release" do próprio GitHub não é usado de propósito: ele resolve para a release mais recente que não seja rascunho nem pre-release, o que uma build beta nunca conseguiria ultrapassar, e uma beta publicada sem a flag de pre-release seria entregue aos usuários estáveis como se fosse a release estável. O atualizador lê a **lista** de releases e aplica ele mesmo o filtro de canal.
+- O workflow de release marca uma tag de pre-release (`v1.0.0-beta.6`) como pre-release do GitHub, para que a flag e a tag concordem.
+
 ## Lógica de seleção de assets
 
 1. Aceitar apenas nomes de arquivo simples com a extensão do instalador da plataforma:
@@ -78,7 +95,7 @@ flowchart TD
 
 ## Fluxo de download e instalação
 
-1. O renderer chama `check-for-updates`. O processo principal busca `/releases/latest` com timeout de 15 segundos, limite de resposta de 4 MB e no máximo 5 redirecionamentos.
+1. O renderer chama `check-for-updates`. O processo principal busca `/releases?per_page=100` com timeout de 15 segundos, limite de resposta de 4 MB e no máximo 5 redirecionamentos e então filtra a lista pelo canal de atualização.
 2. O asset correspondente é devolvido através de `update-available`.
 3. `download-update` transmite o instalador para `app.getPath('temp')/EncodeX-updater/`. Downloads são abortados após 60 segundos sem nenhum chunk; tamanhos de asset acima de 4 GB no payload da release são tratados como desconhecidos.
 4. O progresso é enviado via `update-progress` no máximo a cada ~300 ms, como `percent`, `transferred` e `total`.
@@ -88,6 +105,8 @@ flowchart TD
 8. `schedule-install-on-restart` grava `userData/pending-install.json`. Na próxima inicialização, `autoInstallPendingUpdate()` limpa o marcador, revalida o caminho e a versão, lança o instalador e encerra o app antes de abrir qualquer janela.
 
 As releases do EncodeX não têm assinatura de código nem notarização. A verificação do digest confirma a integridade quando o GitHub publica um digest; ela não estabelece a autenticidade de quem publicou.
+
+No Windows, executar o instalador baixado pode disparar o aviso do SmartScreen "Windows protected your PC" com a mensagem "Editor desconhecido". Isso é esperado em um build sem assinatura e não significa que o download está corrompido; o usuário clica em **Mais informações** e depois em **Executar mesmo assim**. O SmartScreen também não pode estabelecer a autenticidade de quem publicou, porque o build não tem assinatura de código. No macOS, o bloqueio equivalente na primeira abertura vem do Gatekeeper: clique com o botão direito no app e escolha **Abrir** (ou remova a quarentena com `xattr -cr /Applications/EncodeX.app`).
 
 ## Estados da UI
 
@@ -104,7 +123,7 @@ As releases do EncodeX não têm assinatura de código nem notarização. A veri
 
 ## Estratégia de testes
 
-- Unitários: comparação semver, seleção de assets, validação do download, tratamento de checksum e o marcador de instalação pendente.
+- Unitários: comparação semver, seleção de canal de atualização, seleção de assets, validação do download, tratamento de checksum e o marcador de instalação pendente.
 - Testes de entradas hostis: `src/main/__tests__/updater-hostile.test.ts` fixa o comportamento para travessia de caminho, redirecionamento, download truncado e divergência de digest.
 - Testes de IPC: registro dos handlers e encaminhamento de eventos em `src/main/ipc/__tests__/updater.test.ts`.
-- Manuais: publicar um tag/release de teste mais recente que `1.0.0-beta.5` e verificar verificação -> download -> instalação, além do caminho de instalação na próxima reinicialização.
+- Manuais: publicar um tag/release de teste mais recente que `1.0.0-beta.5` como **pre-release**, publicar o rascunho para que ele saia do estado de rascunho, e verificar verificação -> download -> instalação, além do caminho de instalação na próxima reinicialização. Em seguida, verificar a partir de uma build estável que a mesma pre-release *não* é oferecida.

@@ -29,6 +29,15 @@ The download button above is right for almost everyone — **Windows 10/11 · 64
 
 Not sure which one to pick? Go with the recommended one — if it doesn't match, Windows will tell you. Under **Other downloads** you'll also find a **Windows ARM64** build (Snapdragon laptops).
 
+::: warning First run on Windows — one extra click
+EncodeX releases are not code-signed, so Windows SmartScreen may show a "Windows protected your PC" warning with an "Unknown publisher" message. This is expected and does not mean the download is corrupt. To continue:
+
+1. Click **More info** in the warning
+2. Click **Run anyway**
+
+You only need to do this once — after that it installs normally.
+:::
+
 ### Other platforms
 
 [macOS](#mac) · [Linux](#linux)
@@ -96,7 +105,7 @@ We understand trust matters. Every conversion happens on your computer, and your
 
 ## Security
 
-Each release publishes [SHA-256 checksums](/security) alongside the installers, and if you find a problem, you can report it privately. Release builds are not code-signed. See the [security page](/security) for details.
+Each release publishes [SHA-256 checksums](/security) alongside the installers, and if you find a problem, you can report it privately. Release builds are not code-signed or notarized. See the [security page](/security) for details.
 
 ## Learn More
 

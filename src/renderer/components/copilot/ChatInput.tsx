@@ -186,6 +186,20 @@ export default function ChatInput({
   const resetDialogId = useId();
   const placeholderText = placeholder ?? t('copilot.placeholder');
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const resetConfirmRef = useRef<HTMLButtonElement>(null);
+
+  // Move focus to the confirm button when the dialog opens.
+  //
+  // The `autoFocus` prop is the obvious way to do this, but it is banned by
+  // the project's accessibility lint rule: `autoFocus` is a render-time
+  // side effect that fires on mount rather than on the transition into the
+  // dialog, and it fights the dialog's own focus trap. An effect keyed on the
+  // open state does the same thing at the right moment.
+  useEffect(() => {
+    if (resetDialogOpen) {
+      resetConfirmRef.current?.focus();
+    }
+  }, [resetDialogOpen]);
 
   const handleResetClick = () => {
     if (busy || disabled) return;
@@ -288,7 +302,7 @@ export default function ChatInput({
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setResetDialogOpen(false)}>{t('closeConfirm.cancelLabel')}</Button>
-          <Button onClick={handleResetConfirm} color="error" variant="contained" autoFocus>
+          <Button ref={resetConfirmRef} onClick={handleResetConfirm} color="error" variant="contained">
             {t('copilot.resetConfirmAction')}
           </Button>
         </DialogActions>

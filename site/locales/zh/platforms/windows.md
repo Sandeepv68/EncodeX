@@ -32,7 +32,11 @@ Windows 用户喜欢 EncodeX，因为它简单易用：
 
 ## 常见问题
 
+> **注意：** EncodeX 发布版本未进行代码签名或公证，因此 Windows SmartScreen 可能会显示「Windows protected your PC」警告和「未知发布者」信息。这是预期现象，并不表示下载已损坏。点击**更多信息**，然后点击**仍要运行**。
+
 **EncodeX 支持 Windows 11 吗？** 是的，EncodeX 完全支持 Windows 11 和 Windows 10（64 位和 ARM64）。
+
+**Windows 为什么显示「Windows protected your PC」警告？** EncodeX 发布版本没有代码签名，因此 SmartScreen 无法确认发布者并显示「未知发布者」。对于未签名的构建来说，这是预期警告。点击**更多信息**，然后点击**仍要运行**。
 
 **EncodeX Windows 版真的是免费的吗？** 是的 —— 100% 免费，开源（MIT），无广告，无水印，无付费层级。
 

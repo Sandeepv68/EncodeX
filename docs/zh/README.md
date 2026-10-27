@@ -148,7 +148,7 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面，将 FFmpeg 的全部�
 
 ### macOS
 
-> EncodeX 未进行代码签名（没有 Apple Developer 账户）。macOS Gatekeeper 会在首次打开时拦截该应用。
+> EncodeX 发布版本未进行代码签名或公证（没有 Apple Developer 账户）。macOS Gatekeeper 会在首次打开时拦截该应用。
 
 **选项 1 — 右键点击打开：**
 
@@ -161,9 +161,22 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面，将 FFmpeg 的全部�
 xattr -cr /Applications/EncodeX.app
 ```
 
-### Windows / Linux
+### Windows
 
-从 [Releases](https://github.com/Sandeepv68/EncodeX/releases) 页面下载 `.exe`（Windows）或 `.AppImage`（Linux）安装程序并运行它。
+从 [Releases](https://github.com/Sandeepv68/EncodeX/releases) 页面下载 `.exe`（Windows）安装程序并运行它。
+
+> EncodeX 发布版本未进行代码签名，因此 Windows SmartScreen 可能会显示「Windows protected your PC」警告和「未知发布者」信息。这是预期现象，并不表示下载已损坏。
+
+**运行安装程序：**
+
+1. 在警告中点击**更多信息**
+2. 点击**仍要运行**
+
+由于该构建没有任何代码签名，SmartScreen 无法确认发布者。
+
+### Linux
+
+从 [Releases](https://github.com/Sandeepv68/EncodeX/releases) 页面下载 `.AppImage`（Linux）安装程序并运行它。
 
 ## 🚀 安装（从源码）
 

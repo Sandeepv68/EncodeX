@@ -47,6 +47,7 @@ import {
   compareVersions,
   selectAsset,
   checkForUpdate,
+  channelForVersion,
   installUpdate,
   openReleaseNotes,
   cancelDownload,
@@ -55,7 +56,8 @@ import {
   readPendingInstall,
   autoInstallPendingUpdate,
 } from '../updater';
-import type { UpdateAsset } from '../../shared/types';
+import { app } from 'electron';
+import type { UpdateAsset, UpdateInfo } from '../../shared/types';
 import { expectAppLog } from '../../test-utils/crash-tripwire';
 
 const ORIGINAL_PLATFORM = process.platform;
@@ -78,11 +80,57 @@ const INSTALLER_NAME = `EncodeX-2.0.0-x64-setup${
 }`;
 const INSTALLER = nodePath.join(UPDATE_DIR, INSTALLER_NAME);
 
+/**
+ * A GitHub releases-list body.
+ *
+ * The updater reads the **list** endpoint, so the payload is an array of
+ * releases rather than a single release object. One release is the common case
+ * in these tests, which is why the helper takes a single object.
+ *
+ * @param {Record<string, unknown>} release - One release object.
+ * @returns {string} The serialized response body.
+ */
+function releaseList(release: Record<string, unknown>): string {
+  return JSON.stringify([release]);
+}
+
+/**
+ * A GitHub releases-list body carrying several releases.
+ *
+ * @param {Record<string, unknown>[]} releases - The releases, in any order.
+ * @returns {string} The serialized response body.
+ */
+function releasesList(...releases: Record<string, unknown>[]): string {
+  return JSON.stringify(releases);
+}
+
+/**
+ * A release object with sensible defaults for the channel tests.
+ *
+ * @param {string} tag - The tag name.
+ * @param {boolean} prerelease - Whether GitHub marks it as a pre-release.
+ * @param {boolean} draft - Whether it is still a draft.
+ * @returns {Record<string, unknown>} The release object.
+ */
+function releaseEntry(tag: string, prerelease = false, draft = false): Record<string, unknown> {
+  return {
+    tag_name: tag,
+    body: `notes for ${tag}`,
+    html_url: `https://github.com/Sandeepv68/EncodeX/releases/tag/${tag}`,
+    assets: [{ name: 'EncodeX-2.0.0-x64-setup.exe', browser_download_url: 'https://dl', size: 1024 }],
+    prerelease,
+    draft,
+  };
+}
+
 describe('updater', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(fs.existsSync).mockImplementation(() => true);
     vi.mocked(fs.readFileSync).mockImplementation(() => '');
+    // The channel tests override the running version; restore the default so a
+    // version override cannot leak into an unrelated test.
+    vi.mocked(app.getVersion).mockReturnValue('1.0.0');
   });
 
   afterEach(() => {
@@ -198,7 +246,7 @@ describe('updater', () => {
     });
 
     it('returns null when remote version is not newer', async () => {
-      const data = JSON.stringify({
+      const data = releaseList({
         tag_name: 'v1.0.0',
         body: '',
         html_url: 'https://',
@@ -217,7 +265,7 @@ describe('updater', () => {
 
       Object.defineProperty(process, 'platform', { value: 'win32' });
       Object.defineProperty(process, 'arch', { value: 'x64' });
-      const data = JSON.stringify({
+      const data = releaseList({
         tag_name: 'v2.0.0',
         body: 'New',
         html_url: 'https://',
@@ -234,7 +282,7 @@ describe('updater', () => {
     it('returns UpdateInfo when newer version with matching asset exists', async () => {
       Object.defineProperty(process, 'platform', { value: 'win32' });
       Object.defineProperty(process, 'arch', { value: 'x64' });
-      const data = JSON.stringify({
+      const data = releaseList({
         tag_name: 'v2.0.0',
         body: 'New features',
         html_url: 'https://github.com/r',
@@ -278,7 +326,7 @@ describe('updater', () => {
     it('strips v prefix from tag_name', async () => {
       Object.defineProperty(process, 'platform', { value: 'win32' });
       Object.defineProperty(process, 'arch', { value: 'x64' });
-      const data = JSON.stringify({
+      const data = releaseList({
         tag_name: 'v3.0.0-beta.1',
         body: '',
         html_url: 'https://',
@@ -290,6 +338,86 @@ describe('updater', () => {
       });
       const result = await checkForUpdate();
       expect(result!.version).toBe('3.0.0-beta.1');
+    });
+  });
+
+  describe('update channels', () => {
+    /**
+     * Serves a releases-list body and returns the check's outcome.
+     *
+     * @param {string} data - The serialized releases list.
+     * @returns {Promise<unknown>} The check's outcome.
+     */
+    function checkList(data: string): Promise<unknown> {
+      getMock.mockImplementationOnce((_url: unknown, _opts: unknown, cb: unknown) => {
+        const res = new EventEmitter() as EventEmitter & { statusCode: number; headers: Record<string, string> };
+        (res as unknown as { statusCode: number }).statusCode = 200;
+        (res as unknown as { headers: Record<string, string> }).headers = {};
+        (cb as (r: typeof res) => void)(res);
+        res.emit('data', Buffer.from(data));
+        res.emit('end');
+        return { on: vi.fn() };
+      });
+      return checkForUpdate();
+    }
+
+    beforeEach(() => {
+      Object.defineProperty(process, 'platform', { value: 'win32' });
+      Object.defineProperty(process, 'arch', { value: 'x64' });
+    });
+
+    it('classifies a pre-release version as the beta channel', () => {
+      expect(channelForVersion('1.0.0-beta.5')).toBe('beta');
+      expect(channelForVersion('1.0.0')).toBe('stable');
+      expect(channelForVersion('not-a-version')).toBe('stable');
+    });
+
+    it('offers a newer pre-release to a beta client', async () => {
+      vi.mocked(app.getVersion).mockReturnValue('1.0.0-beta.5');
+      const result = (await checkList(releasesList(releaseEntry('v1.0.0-beta.6', true)))) as UpdateInfo | null;
+      expect(result).not.toBeNull();
+      expect(result!.version).toBe('1.0.0-beta.6');
+    });
+
+    it('never offers a pre-release to a stable client', async () => {
+      vi.mocked(app.getVersion).mockReturnValue('1.0.0');
+      const result = await checkList(releasesList(releaseEntry('v1.0.1-beta.1', true)));
+      expect(result).toBeNull();
+    });
+
+    it('offers a newer stable release to a stable client', async () => {
+      vi.mocked(app.getVersion).mockReturnValue('1.0.0');
+      const result = (await checkList(releasesList(releaseEntry('v1.0.1')))) as UpdateInfo | null;
+      expect(result).not.toBeNull();
+      expect(result!.version).toBe('1.0.1');
+    });
+
+    it('offers a stable release to a beta client as well as a beta', async () => {
+      vi.mocked(app.getVersion).mockReturnValue('1.0.0-beta.5');
+      const result = (await checkList(releasesList(releaseEntry('v1.0.0', false, false)))) as UpdateInfo | null;
+      expect(result).not.toBeNull();
+      expect(result!.version).toBe('1.0.0');
+    });
+
+    it('picks the highest version across pre-releases and stable releases', async () => {
+      vi.mocked(app.getVersion).mockReturnValue('1.0.0-beta.5');
+      const result = (await checkList(
+        releasesList(releaseEntry('v1.0.0-beta.9', true), releaseEntry('v1.0.0'), releaseEntry('v1.0.0-beta.6', true)),
+      )) as UpdateInfo | null;
+      expect(result!.version).toBe('1.0.0');
+    });
+
+    it('never offers a draft', async () => {
+      vi.mocked(app.getVersion).mockReturnValue('1.0.0-beta.5');
+      const result = await checkList(releasesList(releaseEntry('v1.0.0-beta.6', true, true)));
+      expect(result).toBeNull();
+    });
+
+    it('skips a malformed release without losing the usable ones', async () => {
+      vi.mocked(app.getVersion).mockReturnValue('1.0.0-beta.5');
+      const result = (await checkList(releasesList({ tag_name: 42 }, releaseEntry('v1.0.0-beta.6', true)))) as UpdateInfo | null;
+      expect(result).not.toBeNull();
+      expect(result!.version).toBe('1.0.0-beta.6');
     });
   });
 

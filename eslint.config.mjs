@@ -1,11 +1,12 @@
 /**
  * @fileoverview ESLint flat config (ESLint 9).
  *
- * Optional, non-blocking accessibility linting for the renderer only. The
- * repository has no pre-existing ESLint setup, so this config intentionally
- * stays out of the way: `main`/`preload`, `e2e`, and build output are not
- * linted, and every `jsx-a11y` rule is set to `warn` so it never blocks a
- * build. Run it with `npm run lint`.
+ * Accessibility linting for the renderer only. The repository has no
+ * pre-existing ESLint setup, so this config intentionally stays out of the way:
+ * `main`/`preload`, `e2e`, and build output are not linted. Every `jsx-a11y`
+ * rule in the plugin's recommended set is enforced as an **error**, so an
+ * accessibility regression fails the build rather than scrolling past in a
+ * warning list. Run it with `npm run lint`.
  *
  * A local `no-hardcoded-px` rule (see eslint-rules/no-hardcoded-px.mjs) is
  * enforced as an error on renderer sources: hardcoded `px` units must use
@@ -24,12 +25,19 @@ import noInlineStyles from './eslint-rules/no-inline-styles.mjs';
 import noHardcodedStrings from './eslint-rules/no-hardcoded-strings.mjs';
 import noUnused from './eslint-rules/no-unused.mjs';
 
-/** Downscales a rule's severity to 'warn' while preserving its options. */
-function asWarn(value) {
-  return Array.isArray(value) ? ['warn', ...value.slice(1)] : 'warn';
-}
-
-const jsxA11yWarn = Object.fromEntries(Object.entries(jsxA11y.configs.recommended.rules).map(([rule, value]) => [rule, asWarn(value)]));
+/**
+ * The `jsx-a11y` recommended rule set, enforced as an error.
+ *
+ * The plugin's recommended rules carry their own severities (some are `off` by
+ * default); every rule it enables is promoted to `error` so the accessibility
+ * bar is the same everywhere.
+ */
+const jsxA11yErrors = Object.fromEntries(
+  Object.entries(jsxA11y.configs.recommended.rules).map(([rule, value]) => [
+    rule,
+    Array.isArray(value) ? ['error', ...value.slice(1)] : 'error',
+  ]),
+);
 
 export default [
   {
@@ -59,7 +67,7 @@ export default [
       },
     },
     rules: {
-      ...jsxA11yWarn,
+      ...jsxA11yErrors,
       'encodex/no-hardcoded-px': 'error',
       'encodex/no-hardcoded-rem': 'error',
       'encodex/no-hardcoded-colors': 'error',

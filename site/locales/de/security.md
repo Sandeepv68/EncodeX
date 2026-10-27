@@ -1,12 +1,12 @@
 ---
 title: "Sicherheit bei EncodeX — Open Source, Prüfsummen & Meldung"
-description: "So hält Sie EncodeX sicher: Open-Source-Code, mit jeder Version veröffentlichte SHA-256-Prüfsummen, ein GitHub-Digest-Check bei Updates und wie Sie eine Schwachstelle melden. Release-Builds sind nicht code-signiert."
+description: "So hält Sie EncodeX sicher: Open-Source-Code, mit jeder Version veröffentlichte SHA-256-Prüfsummen, ein GitHub-Digest-Check bei Updates und wie Sie eine Schwachstelle melden. Release-Builds sind nicht code-signiert und nicht notarisiert."
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Sicherheit bei EncodeX
 
-EncodeX ist Open Source, daher muss Sicherheit nicht auf Vertrauen beruhen. Jede Version wird aus öffentlichem Code gebaut und veröffentlicht **SHA-256-Prüfsummen**, die Sie mit Ihrem Download vergleichen können. Release-Builds sind **nicht code-signiert**, daher kann Ihr Betriebssystem eine Warnung über einen „unbekannten Entwickler" anzeigen.
+EncodeX ist Open Source, daher muss Sicherheit nicht auf Vertrauen beruhen. Jede Version wird aus öffentlichem Code gebaut und veröffentlicht **SHA-256-Prüfsummen**, die Sie mit Ihrem Download vergleichen können. Release-Builds sind **nicht code-signiert und nicht notarisiert**, daher kann Ihr Betriebssystem unter macOS eine Warnung über einen „unbekannten Entwickler" anzeigen oder unter Windows eine „Windows protected your PC"-Warnung mit der Meldung „Unbekannter Herausgeber".
 
 ## Was wir ausliefern, können Sie verifizieren
 
@@ -26,6 +26,12 @@ shasum -a 256 ./EncodeX-1.0.0.dmg
 ## Hinweis zu macOS Gatekeeper
 
 Da EncodeX kostenlos und Open Source ist, nicht über den Mac App Store verkauft wird und seine macOS-Builds nicht von Apple code-signiert oder notarisiert sind, kann macOS beim ersten Mal eine „Kann nicht geöffnet werden"-Meldung zeigen. Der Build ist der auf der Releases-Seite veröffentlichte. Zum Öffnen Control-klicken Sie die App in Programme und wählen einmal **Öffnen**. Bei neueren macOS-Versionen müssen Sie eventuell stattdessen **Systemeinstellungen → Datenschutz & Sicherheit → Dennoch öffnen** verwenden.
+
+## Hinweis zu Windows SmartScreen
+
+Da EncodeX kostenlos und Open Source ist und seine Windows-Builds nicht code-signiert sind, kann Windows SmartScreen beim Start des Installers eine Warnung „Windows protected your PC" mit der Meldung „Unbekannter Herausgeber" anzeigen. Das ist erwartet und bedeutet nicht, dass der Download beschädigt ist. Klicken Sie auf **Weitere Infos** und dann auf **Trotzdem ausführen**.
+
+Auch SmartScreen kann die Authentizität des Herausgebers nicht belegen, da der Build keine Code-Signatur trägt. Vergleichen können Sie stattdessen die mit jeder Version veröffentlichte SHA-256-Prüfsumme.
 
 ## Das gebündelte FFmpeg
 

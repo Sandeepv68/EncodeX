@@ -1,0 +1,243 @@
+EncodeX
+NOTICE file for third-party components redistributed with the EncodeX installers
+
+This NOTICE records the third-party components that EncodeX redistributes inside
+the installers produced by this repository (Windows NSIS installer, macOS DMG,
+Linux AppImage). EncodeX itself is distributed under the MIT License; the
+components listed below are redistributed under their own licenses, which are
+reproduced in the LICENSES/ directory of this repository and, where applicable,
+ship next to the binaries inside the installer.
+
+Repository: https://github.com/Sandeepv68/EncodeX
+
+
+================================================================================
+1. EncodeX (this application)
+================================================================================
+
+Component:      EncodeX
+Version:        1.0.0-beta.5 (version as declared in package.json)
+License:        MIT
+Copyright:      Copyright (c) 2026 Sandeep Vattapparambil (Sandeepv68)
+Source:         https://github.com/Sandeepv68/EncodeX
+License text:   LICENSE (repository root); also LICENSES/ is shipped alongside
+                this NOTICE.
+
+The complete corresponding source for EncodeX is published at the repository URL
+above and is offered under the MIT License, whose text is the MIT License in
+the repository root (LICENSE).
+
+
+================================================================================
+2. FFmpeg (the "ffmpeg" executable)
+================================================================================
+
+Component:      ffmpeg executable, redistributed via the npm package
+                "ffmpeg-static"
+npm package:    ffmpeg-static, version 5.3.0
+                (https://www.npmjs.com/package/ffmpeg-static)
+Package repo:   https://github.com/eugeneware/ffmpeg-static
+Binary release: tag b6.1.1 of https://github.com/eugeneware/ffmpeg-static/releases
+                (the release tag is recorded in
+                node_modules/ffmpeg-static/package.json as
+                "ffmpeg-static"."binary-release-tag", and the same tag is used
+                by scripts/fetch-media-binaries.mjs)
+FFmpeg version: 6.1.1
+                The bundled Windows x64 binary reports:
+                    ffmpeg version 6.1.1-essentials_build-www.gyan.dev
+                    Copyright (c) 2000-2023 the FFmpeg developers
+                    built with gcc 12.2.0 (Rev10, Built by MSYS2 project)
+                (read from node_modules/ffmpeg-static/ffmpeg.exe via "-version";
+                the same version and build are recorded in
+                node_modules/ffmpeg-static/ffmpeg.exe.README, which states
+                "Version: 6.1.1-essentials_build-www.gyan.dev")
+Upstream project: https://ffmpeg.org/  and  https://github.com/FFmpeg/FFmpeg
+License of the binary:
+                GNU General Public License, version 3 (GPL v3). The bundled
+                README records "License: GPL v3", and the binary's own
+                configuration line contains "--enable-gpl --enable-version3".
+                The npm package "ffmpeg-static" itself is declared
+                "GPL-3.0-or-later" in its package.json.
+Copyright lines stated by the bundled files:
+                "Copyright (c) 2000-2023 the FFmpeg developers"
+                    (ffmpeg executable, as printed by "ffmpeg -version")
+                "Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>"
+                    (the GPL-3.0 text itself, in ffmpeg.exe.LICENSE)
+                The npm package "ffmpeg-static" lists its authors as
+                "Eugene Ware <eugene@noblesamurai.com>" and
+                "Jannis R <mail@jannisr.de>" in node_modules/ffmpeg-static/package.json.
+License file bundled next to the binary:
+                node_modules/ffmpeg-static/ffmpeg.exe.LICENSE
+                (the GPL-3.0 text as shipped by the upstream binary build;
+                installed next to the executable as "ffmpeg.exe.LICENSE")
+                and node_modules/ffmpeg-static/LICENSE (the GPL-3.0 text as
+                shipped by the npm package).
+Copy of the license text in this repository:
+                LICENSES/FFmpeg-LICENSE.txt   (copy of ffmpeg.exe.LICENSE)
+                LICENSES/GPL-3.0-or-later.txt  (copy of the npm package LICENSE)
+Where it lands in the installer:
+                <resources>/ffmpeg-static/  (electron-builder "extraResources"
+                entry: from "node_modules/ffmpeg-static", to "ffmpeg-static")
+
+Source of the binaries (as recorded in node_modules/ffmpeg-static/README.md,
+"Sources of the binaries"):
+                Windows x64 builds:  https://www.gyan.dev/ffmpeg/builds/
+                Windows x86 builds:  https://github.com/sudo-nautilus/FFmpeg-Builds-Win32/
+                Linux x64/x86/ARM/ARM64 builds: https://johnvansickle.com/ffmpeg/
+                macOS x64:  https://evermeet.cx/pub/ffmpeg/
+                macOS ARM64: https://osxexperts.net/
+
+
+--------------------------------------------------------------------------------
+2.1 GPL-3.0 section 6 - Corresponding Source for the bundled FFmpeg binaries
+--------------------------------------------------------------------------------
+
+The FFmpeg executable is a GPL-3.0 work and is distributed together with its
+license text (section 1 of this NOTICE refers to LICENSES/FFmpeg-LICENSE.txt and
+LICENSES/GPL-3.0-or-later.txt, both of which are shipped with the installers).
+
+Corresponding source of the exact build:
+
+The bundled build's own build information is shipped with the binary in
+"ffmpeg.exe.README" (copied into node_modules/ffmpeg-static/ and therefore into
+the installer's resources directory). That file records:
+
+    Version: 6.1.1-essentials_build-www.gyan.dev
+    License: GPL v3
+    Source Code: https://github.com/FFmpeg/FFmpeg/commit/e38092ef93
+    release-essentials build configuration: ...
+    External libraries: avisynth, libopencore_amrnb, libvpx, bzlib, ...
+    release-essentials external libraries' versions: AMF v1.4.32, aom
+      v3.8.0-180-g0eeb62d344, ... x264 v0.164.3172, x265 3.5-153-gce8642f22, ...
+
+Accordingly, the complete corresponding source for the bundled binary consists of:
+
+  (a) The FFmpeg sources at the exact commit recorded by the upstream build,
+      https://github.com/FFmpeg/FFmpeg/commit/e38092ef93 (this is the FFmpeg
+      release/6.1 branch state used to produce the "essentials" build);
+  (b) the complete build configuration of that build, reproduced in full in the
+      bundled file "ffmpeg.exe.README" (the "release-essentials build
+      configuration" block, the "External libraries" list and the
+      "release-essentials external libraries' versions" list), which is the
+      configuration passed to the FFmpeg build system by the upstream build
+      provider; and
+  (c) the sources of the external libraries that are statically linked into the
+      binary, each at the exact version listed in "ffmpeg.exe.README"
+      (for example x264 v0.164.3172, x265 3.5-153-gce8642f22, libvpx
+      v1.13.1-601-g655da33b8, lame 3.100, opus 1.4-9-gc8549975, vorbis
+      1.3.7-10-gd84c02369, srt 1.5.3-21-g02acd18, zimg release-3.0.5-150-g7143181
+      and the other libraries enumerated in that file). These are obtained from
+      the upstream projects of those libraries; the binary provider is
+      identified in node_modules/ffmpeg-static/README.md as listed in section 2
+      above (https://www.gyan.dev/ffmpeg/builds/ for the Windows x64 build,
+      https://johnvansickle.com/ffmpeg/ for Linux, https://evermeet.cx/pub/ffmpeg/
+      for macOS x64 and https://osxexperts.net/ for macOS ARM64), each of which
+      publishes the source and build scripts for the releases it distributes.
+
+This repository does not publish its own source tarball of the exact upstream
+build. The corresponding source is therefore obtained from the upstream FFmpeg
+project and the upstream binary build providers at the URLs recorded above, and
+EncodeX additionally offers, on request and for as long as it distributes these
+binaries, to provide the complete corresponding source (including the build
+scripts and the sources of all statically linked external libraries at the
+versions listed in "ffmpeg.exe.README") for the exact binary shipped in any
+given installer. Requests for the corresponding source should be directed to
+developer@encodex.in.
+
+Note on the platform-specific Linux/macOS binaries: when EncodeX is packaged
+for a platform/architecture that differs from the build host, the executable is
+taken from the "b6.1.1" release assets of
+https://github.com/eugeneware/ffmpeg-static/releases (see
+scripts/fetch-media-binaries.mjs). Those assets are the upstream FFmpeg 6.1.1
+static builds distributed by the same providers listed in section 2, so the
+corresponding source for them is likewise the FFmpeg sources for the matching
+6.1.1 release together with the build scripts and configuration published by
+the respective provider. The exact build configuration that travels with each
+shipped binary is the "ffmpeg.exe.README" file (or the platform equivalent
+"ffmpeg.README") placed in the same resources directory.
+
+
+================================================================================
+3. FFprobe (the "ffprobe" executable)
+================================================================================
+
+Component:      ffprobe executable, redistributed via the npm package
+                "ffprobe-static"
+npm package:    ffprobe-static, version 3.1.0
+                (https://www.npmjs.com/package/ffprobe-static)
+Package repo:   https://github.com/joshwnj/ffprobe-static
+License of the npm package (wrapper only):
+                MIT
+Copyright line stated by the bundled file:
+                "Copyright (c) 2015 Josh Johnston"
+                    (node_modules/ffprobe-static/LICENSE)
+License file bundled next to the binary:
+                node_modules/ffprobe-static/LICENSE (the MIT license text of the
+                wrapper package)
+Copy of the license text in this repository:
+                LICENSES/ffprobe-static-LICENSE.txt
+                (copy of node_modules/ffprobe-static/LICENSE)
+Where it lands in the installer:
+                <resources>/ffprobe-static/  (electron-builder "extraResources"
+                entry: from "node_modules/ffprobe-static", to "ffprobe-static")
+
+License of the ffprobe executable itself:
+
+The MIT license above covers the "ffprobe-static" JavaScript wrapper only. The
+ffprobe executable is an FFmpeg program and is distributed under the GNU General
+Public License, version 3. The ffprobe binary committed in the npm package
+reports:
+
+    ffprobe version 4.0.2 Copyright (c) 2007-2018 the FFmpeg developers
+    built with gcc 7.3.1 (GCC) 20180722
+    configuration: --enable-gpl --enable-version3 ... --enable-libx264
+      --enable-libx265 ...
+
+(node_modules/ffprobe-static/bin/win32/x64/ffprobe.exe, read via "-version";
+node_modules/ffprobe-static/README.md states that those binaries are from
+http://ffmpeg.zeranoe.com/builds/ and that "Currently version 4.0.2 is installed
+for Mac, Windows and Linux".)
+
+Accordingly the GPL-3.0 license text for the ffprobe executable is the same text
+reproduced in LICENSES/FFmpeg-LICENSE.txt and LICENSES/GPL-3.0-or-later.txt,
+and the corresponding-source statement in section 2.1 applies to the ffprobe
+executable as well: the matching FFmpeg sources for the version in question
+(the 4.0.2 build is the FFmpeg 4.0.2 source tree; the 6.1.1 build is the FFmpeg
+sources at the commit recorded in "ffmpeg.exe.README"), together with the
+sources of the statically linked external libraries and the build scripts and
+configuration published by the respective upstream binary provider.
+
+Corresponding source offer for the MIT-licensed wrapper:
+The complete corresponding source for the "ffprobe-static" wrapper (version
+3.1.0), including its MIT license text, is published at
+https://github.com/joshwnj/ffprobe-static and is distributed under the MIT
+License, the text of which is reproduced in LICENSES/ffprobe-static-LICENSE.txt.
+EncodeX offers, on request and for as long as it distributes these components,
+to provide the complete corresponding source of the bundled ffprobe-static
+wrapper and of the exact ffprobe executable shipped in any given installer.
+Requests should be directed to developer@encodex.in.
+
+
+================================================================================
+4. Summary of licenses
+================================================================================
+
+FFmpeg executable            GNU General Public License, version 3
+                             text: LICENSES/FFmpeg-LICENSE.txt,
+                                  LICENSES/GPL-3.0-or-later.txt
+                             shipped with the binary as ffmpeg.exe.LICENSE
+
+FFprobe executable           GNU General Public License, version 3
+                             text: LICENSES/FFmpeg-LICENSE.txt,
+                                  LICENSES/GPL-3.0-or-later.txt
+
+ffprobe-static npm wrapper   MIT
+                             text: LICENSES/ffprobe-static-LICENSE.txt
+                             shipped with the binary as LICENSE
+
+ffmpeg-static npm wrapper    GPL-3.0-or-later
+                             text: LICENSES/GPL-3.0-or-later.txt
+                             shipped with the binary as LICENSE
+
+EncodeX                      MIT
+                             text: LICENSE

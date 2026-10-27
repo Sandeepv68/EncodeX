@@ -23,6 +23,14 @@ npm run ci:local -- all          # entire ci.yml (ubuntu-only) — hours
 npm run ci:local -- unit -v      # extra flags after stages are forwarded to act
 ```
 
+> **Not implemented yet.** `ci:local` does not exist in `package.json` — the
+> commands above are the *proposed* interface for this plan, not something you
+> can run today. Until the script lands (see the checklist in §9), run the
+> underlying npm scripts directly: `npm run format:check`, `npm run lint`,
+> `npm run typecheck`, `npm test`, `npm run test:integration`,
+> `npm run test:e2e:ci`, and so on. The mapping from stage name to command is
+> the `act-local.mjs` table in §6.
+
 ---
 
 ## 2. Verified environment (read-only research)

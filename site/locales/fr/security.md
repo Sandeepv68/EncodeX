@@ -1,12 +1,12 @@
 ---
 title: "Sécurité chez EncodeX — Open source, sommes de contrôle et signalement"
-description: "Comment EncodeX vous protège : code open source, sommes de contrôle SHA-256 publiées avec chaque version, vérification des mises à jour par digest GitHub, et comment signaler une vulnérabilité. Les versions ne sont pas signées numériquement."
+description: "Comment EncodeX vous protège : code open source, sommes de contrôle SHA-256 publiées avec chaque version, vérification des mises à jour par digest GitHub, et comment signaler une vulnérabilité. Les versions ne sont pas signées numériquement ni notariées."
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Sécurité chez EncodeX
 
-EncodeX est open source, donc la sécurité ne repose pas sur la bonne foi. Chaque version est construite à partir de code public et publie des **sommes de contrôle SHA-256** que vous pouvez comparer à votre téléchargement. Les versions ne sont **pas signées numériquement**, donc votre système d'exploitation peut afficher un avertissement « éditeur inconnu » ou « développeur non identifié ».
+EncodeX est open source, donc la sécurité ne repose pas sur la bonne foi. Chaque version est construite à partir de code public et publie des **sommes de contrôle SHA-256** que vous pouvez comparer à votre téléchargement. Les versions ne sont **pas signées numériquement ni notariées**, donc votre système d'exploitation peut afficher sur macOS un avertissement « éditeur inconnu » ou « développeur non identifié », et sur Windows un avertissement « Windows protected your PC » avec le message « éditeur inconnu ».
 
 ## Ce que nous publions, vous pouvez le vérifier
 
@@ -26,6 +26,12 @@ shasum -a 256 ./EncodeX-1.0.0.dmg
 ## Note sur Gatekeeper (macOS)
 
 Parce qu'EncodeX est gratuit et open source, n'est pas vendu sur le Mac App Store, et que ses versions macOS ne sont pas signées ni notariées par Apple, macOS peut afficher un message « ne peut pas être ouvert » la première fois : c'est le contrôle **Gatekeeper**. La version publiée sur la page des versions est celle que nous avons compilée. Pour l'ouvrir, faites Contrôle-clic sur l'app dans Applications puis choisissez **Ouvrir**, une fois. Sur les versions récentes de macOS, il vous faudra peut-être passer par **Réglages Système → Confidentialité et sécurité → Ouvrir quand même**.
+
+## Note sur SmartScreen (Windows)
+
+Parce qu'EncodeX est gratuit et open source et que ses versions Windows ne sont pas signées numériquement, Windows SmartScreen peut afficher un avertissement « Windows protected your PC » avec le message « éditeur inconnu » au lancement de l'installateur. C'est attendu et ne signifie pas que le téléchargement est corrompu : cliquez sur **Informations complémentaires**, puis sur **Exécuter quand même**.
+
+SmartScreen ne peut pas non plus établir l'authenticité de l'éditeur, car la version ne porte aucune signature de code. Ce que vous pouvez comparer, c'est la somme de contrôle SHA-256 publiée avec chaque version.
 
 ## Le FFmpeg intégré
 

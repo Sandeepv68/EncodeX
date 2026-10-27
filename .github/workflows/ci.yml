@@ -418,15 +418,16 @@ jobs:
         run: npm run test:route-changes
 
   coverage-per-file:
-    name: Report - Per-file coverage floors
-    needs: [format-check, lint, typecheck]
+    name: Gate - Per-file coverage ratchet
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    # Informational only. The per-file numbers describe a ratchet to climb, not
-    # a gate to satisfy: 30 files sit below the candidate 80/70 floor today, so
-    # making this blocking would fail every PR until all of them are fixed.
-    # Promote it to blocking once the floor is met repo-wide.
-    continue-on-error: true
+    timeout-minutes: 40
+    # Blocking. The per-file floor is enforced as a *ratchet* rather than as a
+    # fixed 80/70 threshold: a fixed floor could not be switched on while
+    # dozens of files still sit below it, so it enforced nothing. The ratchet
+    # refuses to let any file lose coverage, holds every new file to the
+    # global 80/70 floor, and lists the files that are still grandfathered so
+    # they can be lifted one at a time.
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -434,9 +435,19 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - name: Generate merged per-file report (unit + integration)
+      - name: Run the unit and integration coverage tiers
         # test:integration builds the main process itself, so no separate build.
-        run: npm run test:coverage:perfile 2>&1 | tee per-file-coverage.txt
+        run: npm run test:coverage && npm run test:integration
+      - name: Enforce the per-file coverage ratchet
+        # The baseline is recorded per platform, because branch coverage
+        # depends on `process.platform`. This job measures on Linux, so it is
+        # compared against the Linux entry rather than against whichever
+        # platform recorded the baseline.
+        env:
+          COVERAGE_PLATFORM: linux
+        run: npm run test:coverage:floor
+      - name: Report the files still below the global floor (informational)
+        run: node scripts/coverage-floor-report.mjs 2>&1 | tee per-file-coverage.txt
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
@@ -589,14 +600,17 @@ jobs:
     # Phase 9 gate: one job per shard, run in parallel instead of one 6h job.
     # Each shard mutates its own disjoint file set (`--mutate`) with the same
     # narrowed vitest tier; `mutation-gate` stitches the reports and compares.
-    # Advisory until the first completing run records the baseline (then flip to
-    # blocking): a failing shard shows the number without blocking merge.
+    #
+    # Blocking once a baseline is committed. Until `mutation/baseline.json`
+    # exists there is no number to regress from, so a shard failure has
+    # nothing to compare and the run stays advisory - recording the first
+    # baseline is the job of the weekly Mutation Ratchet workflow, and
+    # committing it arms this gate.
     name: Test - Mutation shard ${{ matrix.shard }}
     needs: [mutation-scope]
     if: needs.mutation-scope.outputs.has_mutants == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 240
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.mutation-scope.outputs.matrix) }}
@@ -607,6 +621,15 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
+      - name: Check whether a mutation baseline is committed
+        id: baseline
+        run: |
+          if [ -f mutation/baseline.json ]; then
+            echo "armed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "armed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Mutation gate not armed::No mutation/baseline.json is committed, so there is no score to regress from. This run is advisory until the weekly Mutation Ratchet workflow records and a PR commits the first baseline."
+          fi
       - name: Restore Stryker incremental state (shard ${{ matrix.shard }})
         # Keyed per shard: each shard owns a slice of the incremental file, and
         # the restore-key lets a re-shuffled slice reuse the previous run's work.
@@ -617,6 +640,7 @@ jobs:
           restore-keys: |
             stryker-incremental-${{ runner.os }}-shard${{ matrix.shard }}-
       - name: Run mutation testing (shard ${{ matrix.shard }})
+        continue-on-error: ${{ steps.baseline.outputs.armed != 'true' }}
         run: npm run test:mutate -- --concurrency 4 --mutate "${{ matrix.files }}"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
@@ -627,15 +651,17 @@ jobs:
 
   mutation-gate:
     # Phase 9 gate fan-in: merge the shard reports, then compare per-file against
-    # the committed baseline. Advisory (continue-on-error) mirrors the single-job
-    # gate it replaces; a missing shard fails the merge instead of recording a
-    # partial score.
-    name: Gate - Mutation score delta (advisory)
+    # the committed baseline. A missing shard fails the merge instead of
+    # recording a partial score.
+    #
+    # Blocking once `mutation/baseline.json` is committed; before that there is
+    # no score to regress from, so the gate reports the current number and
+    # passes.
+    name: Gate - Mutation score delta
     needs: [mutation-scope, test-mutation-delta]
     if: always() && needs.mutation-scope.outputs.has_mutants == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    continue-on-error: true
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -645,10 +671,24 @@ jobs:
         with:
           pattern: mutation-report-shard-*
           path: shards
+      - name: Check whether a mutation baseline is committed
+        id: baseline
+        run: |
+          if [ -f mutation/baseline.json ]; then
+            echo "armed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "armed=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Merge shard reports
+        if: steps.baseline.outputs.armed == 'true'
         run: node scripts/mutation-merge.mjs shards --expect ${{ needs.mutation-scope.outputs.shard_count }}
       - name: Compare against baseline (delta gate)
+        if: steps.baseline.outputs.armed == 'true'
         run: npm run test:mutation-delta
+      - name: Report that the gate is not armed yet
+        if: steps.baseline.outputs.armed != 'true'
+        run: |
+          echo "::notice title=Mutation gate not armed::No mutation/baseline.json is committed, so the mutation score has no recorded floor yet. Commit the candidate the weekly Mutation Ratchet workflow produces to arm this gate."
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:

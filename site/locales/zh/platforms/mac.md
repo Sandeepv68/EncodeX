@@ -30,7 +30,7 @@ Mac 用户选择 EncodeX，因为它是按照 Mac 的工作方式设计的：
 
 [免费下载 EncodeX](/zh/download) —— 从下载页面获取 **macOS** 版本（请查看 **其他平台**）。需要 macOS 11 或更高版本。
 
-> **注意：** EncodeX 未经过代码签名。首次启动时，macOS Gatekeeper 会要求你确认。右键点击应用并选择 **打开**，然后在对话框中再次点击 **打开**。
+> **注意：** EncodeX 发布版本未经过代码签名或公证。首次启动时，macOS Gatekeeper 会要求你确认。右键点击应用并选择 **打开**，然后在对话框中再次点击 **打开**。如果应用完全无法打开，请在终端中移除隔离属性：`xattr -cr /Applications/EncodeX.app`。
 
 ## 常见问题
 

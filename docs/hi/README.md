@@ -148,7 +148,7 @@ AI असिस्टेंट से काम करवाना चाहत�
 
 ### macOS
 
-> EncodeX code-signed नहीं है (कोई Apple Developer खाता नहीं)। macOS Gatekeeper पहली बार खोलने पर ऐप को ब्लॉक कर देगा।
+> EncodeX रिलीज़ code-signed और notarized नहीं हैं (कोई Apple Developer खाता नहीं)। macOS Gatekeeper पहली बार खोलने पर ऐप को ब्लॉक कर देगा।
 
 **विकल्प 1 — Right-click करके खोलें:**
 
@@ -161,9 +161,22 @@ AI असिस्टेंट से काम करवाना चाहत�
 xattr -cr /Applications/EncodeX.app
 ```
 
-### Windows / Linux
+### Windows
 
-[रिलीज़](https://github.com/Sandeepv68/EncodeX/releases) पेज से `.exe` (Windows) या `.AppImage` (Linux) installer डाउनलोड करें और उसे चलाएँ।
+[रिलीज़](https://github.com/Sandeepv68/EncodeX/releases) पेज से `.exe` (Windows) installer डाउनलोड करें और उसे चलाएँ।
+
+> EncodeX रिलीज़ code-signed नहीं हैं, इसलिए Windows SmartScreen "Windows protected your PC" चेतावनी के साथ "Unknown publisher" संदेश दिखा सकता है। यह अपेक्षित है और इसका मतलब नहीं कि डाउनलोड खराब है।
+
+**इंस्टॉलर चलाने के लिए:**
+
+1. चेतावनी में **More info** पर क्लिक करें
+2. **Run anyway** पर क्लिक करें
+
+बिल्ड में कोई code signature नहीं होने के कारण SmartScreen प्रकाशक की पुष्टि नहीं कर सकता।
+
+### Linux
+
+[रिलीज़](https://github.com/Sandeepv68/EncodeX/releases) पेज से `.AppImage` (Linux) installer डाउनलोड करें और उसे चलाएँ।
 
 ## 🚀 इंस्टॉल (स्रोत से)
 

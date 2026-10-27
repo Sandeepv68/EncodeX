@@ -12,6 +12,175 @@ env:
   NODE_VERSION: 22
 
 jobs:
+  gate-static:
+    # A tag must not be cut with red CI. This job runs the static half of the
+    # ci.yml gate set (format, every lint config, typecheck, locale parity,
+    # the blocking dependency-audit gate and the workflow lint) against the
+    # tagged commit.
+    name: Gate - Static checks (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Check formatting
+        run: npm run format:check
+      - name: Check ESLint (a11y + project rules)
+        run: npm run lint
+      - name: Check no hardcoded px
+        run: npm run lint:px
+      - name: Check no hardcoded colors
+        run: npm run lint:colors
+      - name: Check no hardcoded rem
+        run: npm run lint:rem
+      - name: Check no inline styles
+        run: npm run lint:inline-styles
+      - name: Check no hardcoded UI strings
+        run: npm run lint:strings
+      - name: Check no unused declarations
+        run: npm run lint:unused
+      - name: Check no direct @aptabase imports
+        run: npm run lint:aptabase
+      - name: Check no super-linear backtracking regexes
+        run: npm run lint:regex
+      - name: Typecheck every tsconfig
+        run: npm run typecheck
+      - name: Validate locale key parity
+        run: npm run validate:locales
+      - name: Blocking audit gate (new high/critical fails)
+        run: npm run audit:gate
+      - name: Check GitHub Actions workflow lint
+        uses: reviewdog/action-actionlint@48e36f54d8da326b83ab061aee2cc5e01b5ca46f # v1
+        with:
+          actionlint_flags: -color
+
+  gate-matrix:
+    # The renderer-facing half of the ci.yml gate set: the locale/RTL matrix,
+    # the axe accessibility matrix, the big-list render budgets and the
+    # rapid-route-change harness. These are the suites that catch a UI
+    # regression the unit tier cannot see, and they were previously enforced
+    # only on pull requests - a tag could be cut with any of them red.
+    name: Gate - i18n / a11y / render budgets (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Run locale matrix + RTL mirror
+        run: npm run test:locale-matrix
+      - name: Run axe matrix (strict)
+        run: npm run test:a11y
+      - name: Run big-list render budget suite
+        run: npm run test:big-lists
+      - name: Run rapid route-change harness
+        run: npm run test:route-changes
+
+  gate-coverage:
+    # The per-file coverage floor, enforced against the previous release tag
+    # rather than a branch base: a tag has no base branch, and the point of the
+    # gate is that the released commit does not lower the floor for the files
+    # it changed.
+    name: Gate - Diff coverage against the previous release (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          # Full history so the previous tag can be resolved and diffed against.
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Build main process (integration tier imports it)
+        run: npm run build:main
+      - name: Resolve the previous release tag
+        id: base
+        shell: bash
+        run: |
+          set -euo pipefail
+          previous=$(git describe --tags --abbrev=0 "${GITHUB_REF_NAME}^" 2>/dev/null || true)
+          if [ -z "$previous" ]; then
+            echo "No previous release tag to diff against - nothing to gate."
+            echo "base=" >> "$GITHUB_OUTPUT"
+          else
+            echo "Diffing against $previous"
+            echo "base=$previous" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Enforce the per-file floor on the changed files
+        if: steps.base.outputs.base != ''
+        env:
+          COVERAGE_BASE: ${{ steps.base.outputs.base }}
+        run: node scripts/coverage-diff.mjs "${{ steps.base.outputs.base }}"
+
+  gate-perf:
+    # The performance regression gate, with the same baseline comparison the
+    # ci.yml perf job runs.
+    name: Gate - Performance budgets (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Generate test media fixtures
+        run: npm run perf:generate-media
+      - name: Run performance tests
+        run: npm run perf
+      - name: Compare against baseline (regression gate)
+        run: npm run perf:compare
+
+  gate-e2e:
+    # The end-to-end suites, on the same two platforms the release ships to.
+    # Previously enforced only on pull requests.
+    name: Gate - E2E automation + production scenario (blocking)
+    needs: [build]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu
+            runner: ubuntu-latest
+          - os: windows
+            runner: windows-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: dist-${{ matrix.os }}
+          path: dist
+      - run: npm ci
+      - name: Install xvfb
+        if: matrix.os == 'ubuntu'
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+      - name: Run e2e tests (Linux)
+        if: matrix.os == 'ubuntu'
+        run: xvfb-run --auto-servernum npm run test:e2e:ci
+      - name: Run e2e tests (Windows)
+        if: matrix.os == 'windows'
+        run: npm run test:e2e:ci
+      - name: Run the real-conversion e2e scenario (Linux)
+        if: matrix.os == 'ubuntu'
+        run: xvfb-run --auto-servernum npm run test:e2e:real:ci
+
   validate-version:
     # Phase 10 (plans/ADVERSARIAL_TEST_HARDENING_PLAN.md row 10): a tag cannot
     # be cut with a red adversarial suite, so the release gates on the fuzz,
@@ -126,7 +295,19 @@ jobs:
 
   package:
     name: Package - ${{ matrix.os }} (${{ matrix.arch }})
-    needs: [validate-version]
+    # Packaging waits on the whole gate set. Every job listed here is a check
+    # that also runs on pull requests; requiring them here is what stops a tag
+    # from being cut while CI is red.
+    needs:
+      - validate-version
+      - gate-static
+      - gate-matrix
+      - gate-coverage
+      - gate-perf
+      - gate-e2e
+      - test-fuzz
+      - test-strict
+      - test-ipc-abuse
     strategy:
       fail-fast: false
       matrix:
@@ -247,10 +428,18 @@ jobs:
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           draft: true
+          # A semver pre-release tag (`v1.0.0-beta.6`) must be published as a
+          # GitHub *pre-release*. Without this flag the release is published as
+          # stable, and the updater - which now reads the release list and
+          # filters by channel - would offer the beta to stable users.
+          prerelease: ${{ contains(github.ref_name, '-') }}
           generate_release_notes: true
           files: |
             release-artifacts/**
             sbom.cdx.json
+      - name: Reminder - the draft has to be published for the updater to see it
+        run: |
+          echo "::notice title=Release published as a draft::Publish the draft to make the release visible. The in-app updater reads the published release list, and GitHub excludes drafts from it - so a release left as a draft is never offered to anyone."
 
   provenance:
     name: Generate SLSA provenance

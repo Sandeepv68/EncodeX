@@ -1,12 +1,12 @@
 ---
 title: "Seguridad en EncodeX — Código abierto, sumas de verificación y reporte"
-description: "Cómo EncodeX te mantiene a salvo: código abierto, sumas de verificación SHA-256 publicadas en cada versión, una comprobación del digest de GitHub en las actualizaciones y cómo reportar una vulnerabilidad. Las compilaciones de versión no están firmadas."
+description: "Cómo EncodeX te mantiene a salvo: código abierto, sumas de verificación SHA-256 publicadas en cada versión, una comprobación del digest de GitHub en las actualizaciones y cómo reportar una vulnerabilidad. Las compilaciones de versión no están firmadas ni notarizadas."
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Seguridad en EncodeX
 
-EncodeX es de código abierto, así que la seguridad no tiene que tomarse por fe. Cada versión se construye desde código público y publica **sumas de verificación SHA-256** que puedes comparar con tu descarga. Las compilaciones de versión **no están firmadas**, por lo que tu sistema operativo puede mostrar un aviso de "desarrollador desconocido" o "desarrollador no identificado".
+EncodeX es de código abierto, así que la seguridad no tiene que tomarse por fe. Cada versión se construye desde código público y publica **sumas de verificación SHA-256** que puedes comparar con tu descarga. Las compilaciones de versión **no están firmadas ni notarizadas**, por lo que tu sistema operativo puede mostrar en macOS un aviso de "desarrollador desconocido" o "desarrollador no identificado", y en Windows un aviso de "Windows protected your PC" con el mensaje "Editor desconocido".
 
 ## Lo que publicamos, puedes verificarlo
 
@@ -26,6 +26,12 @@ shasum -a 256 ./EncodeX-1.0.0.dmg
 ## Nota sobre Gatekeeper en macOS
 
 Como EncodeX es gratis y de código abierto, no se vende en la App Store de Mac y sus compilaciones para macOS no están firmadas ni notarizadas, macOS puede mostrar un mensaje de "no se puede abrir" la primera vez. La compilación es la publicada en la página de versiones. Para abrirla, haz Control-clic sobre la app en Aplicaciones y elige **Abrir**, una vez. En versiones recientes de macOS puede que necesites usar **Ajustes del Sistema → Privacidad y seguridad → Abrir de todos modos**.
+
+## Nota sobre SmartScreen en Windows
+
+Como EncodeX es gratis y de código abierto y sus compilaciones para Windows no están firmadas con código, Windows SmartScreen puede mostrar un aviso de "Windows protected your PC" con el mensaje "Editor desconocido" cuando inicias el instalador. Es algo previsto y no significa que la descarga esté dañada. Haz clic en **Más información** y luego en **Ejecutar de todas formas**.
+
+SmartScreen tampoco puede establecer la autenticidad del editor, porque la compilación no lleva firma de código. Lo que sí puedes comparar es la suma de verificación SHA-256 que se publica con cada versión.
 
 ## El FFmpeg incluido
 
