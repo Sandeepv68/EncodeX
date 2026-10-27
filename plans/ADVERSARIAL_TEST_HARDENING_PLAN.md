@@ -514,10 +514,17 @@ checks the lines the diff _added_, not just the file's percentage.
 **The ratchet (2026-10-27).** `scripts/coverage-floor-gate.mjs` (`npm run test:coverage:floor`) is
 now the blocking gate, backed by a committed `coverage-baseline.json` (`npm run coverage:baseline`
 regenerates it). The rules: no file may lose coverage against its recorded number; every *new* file
-is held to the global 80/70 floor; and the repository average may not fall. The gate also prints the
+is held to the global 80/70 floor; and the repository-wide average may not fall. The gate also prints the
 files still below the global floor - 18 of them after the merge - so they can be lifted one at a
 time. The `coverage-per-file` CI job lost its `continue-on-error` and now runs both tiers followed
 by the gate; `scripts/coverage-floor-report.mjs` remains as the informational listing.
+
+The baseline is recorded **per platform**: branch coverage depends on `process.platform`, so the same
+commit measures differently on Windows and on Linux (`src/main/updater.ts` was the first file to
+prove it - 92.2% of branches on Windows against 91.6% on Linux). A single recorded number would
+fail on whichever platform it was not recorded on, so the baseline holds one entry per platform and
+the gate compares a run against its own platform's entry; a platform with no entry falls back to the
+most conservative number on record.
 
 What was built: | Piece | Where  | Behaviour |
 | Shared coverage scope | `vitest.coverage-scope.ts`  | One include/exclude list imported by **both** vitest configs. A union of two reports is only meaningful if both tiers measured the same file set. |

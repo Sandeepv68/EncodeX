@@ -23,6 +23,15 @@ import { mergeCoverage, assertMergeIsSane, misses, DEFAULT_LINE_FLOOR, DEFAULT_B
  * meet the floor, and rule 1 stops the existing files from sliding back while
  * they are being lifted.
  *
+ * ## Platform-aware comparison
+ *
+ * Branch coverage depends on the platform: a `process.platform === 'win32'`
+ * branch is covered on Windows and not on Linux, so the same commit measures
+ * differently on the two. The baseline therefore records one entry per
+ * platform, and this gate compares a run against its own platform's entry. A
+ * platform with no entry of its own falls back to the most conservative number
+ * recorded for any platform, which still catches a real regression.
+ *
  * The baseline is committed and regenerated explicitly with
  * `npm run coverage:baseline`.
  *
@@ -67,20 +76,64 @@ try {
 }
 
 const baseline = loadBaseline();
-const baselineFiles = baseline?.files ?? {};
+const platforms = baseline?.platforms ?? {};
+const platformNames = Object.keys(platforms);
+
+/**
+ * The platform whose recorded numbers this run is compared against.
+ *
+ * `COVERAGE_PLATFORM` overrides the detection, which is what lets a run be
+ * checked against another platform's entry - the CI job sets it explicitly
+ * rather than relying on the runner's OS.
+ */
+const runPlatform = process.env.COVERAGE_PLATFORM ?? process.platform;
+
+if (platformNames.length === 0) {
+  console.error(`The coverage baseline at ${BASELINE_FILE} records no platform. Regenerate it.`);
+  process.exit(1);
+}
+
 const { entries, tiers, skipped } = merged;
 
 if (skipped.length > 0) {
   console.warn(`No raw report in: ${skipped.join(', ')}. Only the measured tiers are gated.`);
 }
-console.log(`Tiers merged: ${tiers.join(', ')}\n`);
+console.log(`Tiers merged: ${tiers.join(', ')}`);
+console.log(`Platforms on record: ${platformNames.join(', ')}`);
+console.log(`Comparing against the '${runPlatform}' entry.`);
+
+/**
+ * The recorded floor for a file on the platform this run happened on.
+ *
+ * The run's own platform is used when it has an entry; otherwise the most
+ * conservative number recorded for any platform, which is the only safe
+ * comparison for a platform the baseline has never seen.
+ *
+ * @param {string} file - Repo-relative source path.
+ * @returns {{lines: number, branches: number} | null} The floor, or null when no platform recorded the file.
+ */
+function floorFor(file) {
+  const own = platforms[runPlatform]?.files?.[file];
+  if (own) return { lines: own.lines, branches: own.branches };
+
+  let lines = Infinity;
+  let branches = Infinity;
+  let found = false;
+  for (const name of platformNames) {
+    const entry = platforms[name].files?.[file];
+    if (!entry) continue;
+    found = true;
+    lines = Math.min(lines, entry.lines);
+    branches = Math.min(branches, entry.branches);
+  }
+  return found ? { lines, branches } : null;
+}
 
 const failures = [];
-const regressions = [];
 const grandfathered = [];
 
 for (const entry of entries) {
-  const recorded = baselineFiles[entry.file];
+  const recorded = floorFor(entry.file);
 
   if (!recorded) {
     // A file the baseline has never seen: it is new code, and new code is
@@ -123,24 +176,35 @@ for (const entry of entries) {
 // legitimate, but the baseline then carries an entry for a file that does not
 // exist, so it is worth naming.
 const measured = new Set(entries.map((entry) => entry.file));
-const stale = Object.keys(baselineFiles).filter((file) => !measured.has(file));
+const stale = new Set();
+for (const name of platformNames) {
+  for (const file of Object.keys(platforms[name].files ?? {})) {
+    if (!measured.has(file)) stale.add(file);
+  }
+}
 
 const avgLines = entries.reduce((sum, e) => sum + e.lines, 0) / entries.length;
 const avgBranches = entries.reduce((sum, e) => sum + e.branches, 0) / entries.length;
-const recordedTotal = baseline?.total;
-if (recordedTotal) {
-  if (avgLines < recordedTotal.lines - TOLERANCE) {
-    failures.push({
-      file: '(repository total)',
-      reason: `average line coverage ${avgLines.toFixed(1)}% fell below the recorded ${recordedTotal.lines.toFixed(1)}%`,
-    });
-  }
-  if (avgBranches < recordedTotal.branches - TOLERANCE) {
-    failures.push({
-      file: '(repository total)',
-      reason: `average branch coverage ${avgBranches.toFixed(1)}% fell below the recorded ${recordedTotal.branches.toFixed(1)}%`,
-    });
-  }
+
+let totalLines = Infinity;
+let totalBranches = Infinity;
+for (const name of platformNames) {
+  const total = platforms[name].total;
+  if (!total) continue;
+  totalLines = Math.min(totalLines, total.lines);
+  totalBranches = Math.min(totalBranches, total.branches);
+}
+if (totalLines !== Infinity && avgLines < totalLines - TOLERANCE) {
+  failures.push({
+    file: '(repository total)',
+    reason: `average line coverage ${avgLines.toFixed(1)}% fell below the recorded ${totalLines.toFixed(1)}%`,
+  });
+}
+if (totalBranches !== Infinity && avgBranches < totalBranches - TOLERANCE) {
+  failures.push({
+    file: '(repository total)',
+    reason: `average branch coverage ${avgBranches.toFixed(1)}% fell below the recorded ${totalBranches.toFixed(1)}%`,
+  });
 }
 
 console.log(`Measured ${entries.length} file(s).`);
@@ -156,8 +220,8 @@ if (grandfathered.length > 0) {
   console.log('');
 }
 
-if (stale.length > 0) {
-  console.log(`Baseline entries for ${stale.length} file(s) that no longer exist (deleted?).`);
+if (stale.size > 0) {
+  console.log(`Baseline entries for ${stale.size} file(s) that no longer exist (deleted?).`);
   console.log('Regenerate the baseline with `npm run coverage:baseline` to drop them.\n');
 }
 

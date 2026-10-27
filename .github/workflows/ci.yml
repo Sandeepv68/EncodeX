@@ -439,6 +439,12 @@ jobs:
         # test:integration builds the main process itself, so no separate build.
         run: npm run test:coverage && npm run test:integration
       - name: Enforce the per-file coverage ratchet
+        # The baseline is recorded per platform, because branch coverage
+        # depends on `process.platform`. This job measures on Linux, so it is
+        # compared against the Linux entry rather than against whichever
+        # platform recorded the baseline.
+        env:
+          COVERAGE_PLATFORM: linux
         run: npm run test:coverage:floor
       - name: Report the files still below the global floor (informational)
         run: node scripts/coverage-floor-report.mjs 2>&1 | tee per-file-coverage.txt
