@@ -1,8 +1,8 @@
 /**
- * @fileoverview Saved-conversations side panel. It is laid out beside the
- * Copilot column (not over it): opening it animates its width in and the
- * conversation column shrinks to make room. Clicking an entry opens it, the
- * trash button deletes it.
+ * @fileoverview Saved-conversations side panel. It floats above the Copilot
+ * column: opening it slides it in from the left with a transform, so the
+ * conversation content is never resized, re-wrapped or re-laid out. Clicking an
+ * entry opens it, the trash button deletes it.
  */
 
 import { Box, ButtonBase, Chip, IconButton, Tooltip, Typography } from '@mui/material';
@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import type { SavedCopilotChat } from '../../stores/copilotChats';
 import { deriveCopilotChatProvider } from '../../stores/copilotChats';
 import ProviderIcon from './ProviderIcon';
+import { SHADOWS } from '../../colors';
 
 /** Width of the panel when open, in pixels. */
 const PANEL_WIDTH_PX = 320;
@@ -56,7 +57,8 @@ interface SavedChatsDrawerProps {
 }
 
 /**
- * Renders the saved-conversations panel as a flex sibling of the Copilot column.
+ * Renders the saved-conversations panel as an overlay that slides over the
+ * Copilot column.
  * @param {SavedChatsDrawerProps} props - Component props.
  * @param {boolean} props.open - Whether the panel is expanded.
  * @param {SavedCopilotChat[]} props.chats - The saved chats, newest first.
@@ -72,13 +74,17 @@ export default function SavedChatsDrawer({ open, chats, onClose, onOpen, onDelet
   return (
     <Box
       sx={{
-        flexShrink: 0,
-        alignSelf: 'stretch',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        zIndex: 1,
+        width: PANEL_WIDTH_PX,
+        maxWidth: '100%',
         display: 'flex',
-        width: open ? PANEL_WIDTH_PX : 0,
-        overflow: 'hidden',
+        transform: open ? 'translateX(0)' : 'translateX(-100%)',
         visibility: open ? 'visible' : 'hidden',
-        transition: 'width 225ms ease, visibility 225ms',
+        transition: 'transform 225ms ease, visibility 225ms',
         '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
       }}
     >
@@ -88,14 +94,18 @@ export default function SavedChatsDrawer({ open, chats, onClose, onOpen, onDelet
         data-testid="saved-chats-drawer"
         sx={{
           width: PANEL_WIDTH_PX,
+          maxWidth: '100%',
+          height: '100%',
           flex: 1,
-          alignSelf: 'stretch',
           display: 'flex',
           flexDirection: 'column',
           minHeight: 0,
           borderRight: 1,
           borderColor: 'divider',
           bgcolor: 'background.paper',
+          boxShadow: open ? 6 : 0,
+          transition: 'box-shadow 225ms ease',
+          '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
         }}
       >
         <Box
@@ -128,15 +138,22 @@ export default function SavedChatsDrawer({ open, chats, onClose, onOpen, onDelet
                 <Box
                   key={chat.id}
                   data-testid="saved-chat-item"
-                  sx={{
+                  sx={(theme) => ({
                     display: 'flex',
                     alignItems: 'center',
                     borderRadius: 1,
-                    bgcolor: 'action.hover',
-                    transition: 'background-color 150ms ease',
-                    '&:hover': { bgcolor: 'action.selected' },
+                    border: 1,
+                    borderColor: 'divider',
+                    bgcolor: 'background.paper',
+                    boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+                    transition: 'background-color 150ms ease, box-shadow 150ms ease',
+                    '&:hover': {
+                      bgcolor: 'action.selected',
+                      boxShadow:
+                        theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
+                    },
                     '&:focus-within': { bgcolor: 'action.selected' },
-                  }}
+                  })}
                 >
                   <ButtonBase
                     data-testid="saved-chat-open"

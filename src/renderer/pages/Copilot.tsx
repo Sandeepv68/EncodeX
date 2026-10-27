@@ -372,10 +372,13 @@ export default function Copilot() {
         MainContent (App.styles.ts) pads every route by spacing(2) / spacing(3).
         The negative margins below cancel that padding for this page so the saved-chats
         panel sits flush to the top, bottom and left edges; the conversation column
-        re-applies the same padding so its content position is unchanged.
+        re-applies the same padding so its content position is unchanged. The
+        container is a positioning context for the panel, which overlays and slides
+        over the conversation instead of resizing it.
       */}
       <Box
         sx={(theme) => ({
+          position: 'relative',
           display: 'flex',
           flexDirection: 'row',
           flex: 1,
